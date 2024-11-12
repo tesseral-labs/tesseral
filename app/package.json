@@ -1,0 +1,55 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "npm-run-all config tailwind esbuild",
+    "build:docker": "npm-run-all tailwind esbuild",
+    "config": "./bin/prepare-config-json > ./public/config.json",
+    "dev": "dotenv -- npm-run-all -l -p config serve tailwind:watch esbuild:watch tsc:watch",
+    "esbuild": "node ./build.mjs",
+    "esbuild:watch": "node ./build.mjs --watch",
+    "lint": "eslint",
+    "prepare": "husky",
+    "serve": "http-server -c-1 -p 8080 -P http://localhost:8080?",
+    "serve:docker": "npm run config && ./bin/serve-public",
+    "tailwind": "tailwindcss -i ./src/index.css -o ./public/index.css",
+    "tailwind:watch": "tailwindcss -i ./src/index.css -o ./public/index.css --watch",
+    "tsc": "tsc --noEmit",
+    "tsc:watch": "tsc --noEmit --watch --preserveWatchOutput"
+  },
+  "lint-staged": {
+    "*.{js,ts,css,md}": "prettier --write",
+    "*.ts": "yarn lint . --quiet"
+  },
+  "dependencies": {
+    "express": "^4.21.1",
+    "highlight.js": "^11.10.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router": "^6.28.0",
+    "react-router-dom": "^6.28.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@typescript-eslint/eslint-plugin": "^8.14.0",
+    "@typescript-eslint/parser": "^8.14.0",
+    "autoprefixer": "^10.4.20",
+    "clsx": "^2.1.1",
+    "dotenv-cli": "^7.4.2",
+    "esbuild": "^0.24.0",
+    "eslint": "^9.14.0",
+    "http-server": "^14.1.1",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10",
+    "npm-run-all": "^4.1.5",
+    "postcss": "^8.4.49",
+    "prettier": "^3.3.3",
+    "tailwind-merge": "^2.5.4",
+    "tailwindcss": "^3.4.14",
+    "tailwindcss-animate": "^1.0.7",
+    "typescript": "^5.6.3"
+  }
+}
