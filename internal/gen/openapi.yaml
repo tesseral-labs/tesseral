@@ -1,0 +1,506 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: BackendService API
+    version: 0.0.1
+paths:
+    /v1/organizations:
+        get:
+            tags:
+                - BackendService
+            description: Gets a list of organizations.
+            operationId: BackendService_ListOrganizations
+            parameters:
+                - name: projectId
+                  in: query
+                  schema:
+                    type: string
+                - name: pageToken
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListOrganizationsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - BackendService
+            description: Creates an organization.
+            operationId: BackendService_CreateOrganization
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Organization'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateOrganizationResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/organizations/{id}:
+        get:
+            tags:
+                - BackendService
+            description: Gets an organization.
+            operationId: BackendService_GetOrganization
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetOrganizationResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        patch:
+            tags:
+                - BackendService
+            description: Updates an organization.
+            operationId: BackendService_UpdateOrganization
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Organization'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateOrganizationResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/projects:
+        get:
+            tags:
+                - BackendService
+            description: Gets a list of projects.
+            operationId: BackendService_ListProjects
+            parameters:
+                - name: pageToken
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListProjectsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - BackendService
+            description: Creates a project.
+            operationId: BackendService_CreateProject
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Project'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateProjectResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/projects/{id}:
+        get:
+            tags:
+                - BackendService
+            description: Gets a project.
+            operationId: BackendService_GetProject
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetProjectResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        patch:
+            tags:
+                - BackendService
+            description: Updates a project.
+            operationId: BackendService_UpdateProject
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Project'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateProjectResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/users:
+        get:
+            tags:
+                - BackendService
+            description: Gets a list of users.
+            operationId: BackendService_ListUsers
+            parameters:
+                - name: organizationId
+                  in: query
+                  schema:
+                    type: string
+                - name: pageToken
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListUsersResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - BackendService
+            description: Creates a user.
+            operationId: BackendService_CreateUser
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/User'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateUserResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/users/{id}:
+        get:
+            tags:
+                - BackendService
+            description: Gets a user.
+            operationId: BackendService_GetUser
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetUserResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        patch:
+            tags:
+                - BackendService
+            description: Updates a user.
+            operationId: BackendService_UpdateUser
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/User'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateUserResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+components:
+    schemas:
+        CreateOrganizationResponse:
+            type: object
+            properties:
+                organization:
+                    $ref: '#/components/schemas/Organization'
+        CreateProjectResponse:
+            type: object
+            properties:
+                project:
+                    $ref: '#/components/schemas/Project'
+        CreateUserResponse:
+            type: object
+            properties:
+                user:
+                    $ref: '#/components/schemas/User'
+        GetOrganizationResponse:
+            type: object
+            properties:
+                organization:
+                    $ref: '#/components/schemas/Organization'
+        GetProjectResponse:
+            type: object
+            properties:
+                project:
+                    $ref: '#/components/schemas/Project'
+        GetUserResponse:
+            type: object
+            properties:
+                user:
+                    $ref: '#/components/schemas/User'
+        GoogleProtobufAny:
+            type: object
+            properties:
+                '@type':
+                    type: string
+                    description: The type of the serialized message.
+            additionalProperties: true
+            description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+        ListOrganizationsResponse:
+            type: object
+            properties:
+                organizations:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Organization'
+                nextPageToken:
+                    type: string
+        ListProjectsResponse:
+            type: object
+            properties:
+                projects:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Project'
+                nextPageToken:
+                    type: string
+        ListUsersResponse:
+            type: object
+            properties:
+                users:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/User'
+                nextPageToken:
+                    type: string
+        Organization:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: Unique identifier for this organization.
+                projectId:
+                    type: string
+                    description: The project this organization belongs to.
+                displayName:
+                    type: string
+                    description: An optional human-friendly name for this organization.
+                overrideLogInWithPasswordEnabled:
+                    type: boolean
+                    description: Override setting for whether login with password is enabled.
+                overrideLogInWithGoogleEnabled:
+                    type: boolean
+                    description: Override setting for whether login with Google is enabled.
+                overrideLogInWithMicrosoftEnabled:
+                    type: boolean
+                    description: Override setting for whether login with Microsoft is enabled.
+                googleHostedDomain:
+                    type: string
+                    description: Google hosted domain.
+                microsoftTenantId:
+                    type: string
+                    description: The tenant ID for Microsoft auth.
+        Project:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: Unique identifier for this project.
+                organizationId:
+                    type: string
+                    description: The organization this project belongs to.
+                logInWithPasswordEnabled:
+                    type: boolean
+                    description: Top-level setting for whether login with password is enabled (inherited by organizations by default).
+                logInWithGoogleEnabled:
+                    type: boolean
+                    description: Top-level setting for whether login with Google is enabled (inherited by organizations by default).
+                logInWithMicrosoftEnabled:
+                    type: boolean
+                    description: Top-level setting for whether login with Microsoft is enabled (inherited by organizations by default).
+                googleOauthClientId:
+                    type: string
+                    description: The oAuth Client ID to be used for Google Auth.
+                googleOauthClientSecret:
+                    type: string
+                    description: The oAuth Client secret to be used for Google Auth.
+                microsoftOauthClientId:
+                    type: string
+                    description: The oAuth Client ID to be used for Microsoft Auth.
+                microsoftOauthClientSecret:
+                    type: string
+                    description: The oAuth Client secret to be used for Microsoft Auth.
+        Status:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    description: The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code].
+                    format: int32
+                message:
+                    type: string
+                    description: A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client.
+                details:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/GoogleProtobufAny'
+                    description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
+            description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
+        UpdateOrganizationResponse:
+            type: object
+            properties:
+                organization:
+                    $ref: '#/components/schemas/Organization'
+        UpdateProjectResponse:
+            type: object
+            properties:
+                project:
+                    $ref: '#/components/schemas/Project'
+        UpdateUserResponse:
+            type: object
+            properties:
+                user:
+                    $ref: '#/components/schemas/User'
+        User:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: Unique identifier for this user.
+                organizationId:
+                    type: string
+                    description: The organization this user belongs to.
+                unverifiedEmail:
+                    type: string
+                    description: The user's email (pending verification).
+                verifiedEmail:
+                    type: string
+                    description: The user's email (after verification).
+                passwordBcrypt:
+                    type: string
+                    description: The hash of the user's password.
+                googleUserId:
+                    type: string
+                    description: The user's Google User ID.
+                microsoftUserId:
+                    type: string
+                    description: The user's Microsoft User ID.
+tags:
+    - name: BackendService

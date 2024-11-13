@@ -1,0 +1,49 @@
+module github.com/openauth-dev/openauth
+
+go 1.23.2
+
+require (
+	connectrpc.com/connect v1.17.0
+	github.com/aws/aws-sdk-go-v2/config v1.28.3
+	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.34.5
+	github.com/cyrusaf/ctxlog v1.3.3
+	github.com/golang-migrate/migrate/v4 v4.17.1
+	github.com/google/uuid v1.6.0
+	github.com/jackc/pgx/v5 v5.7.1
+	github.com/ssoready/conf v0.0.0-20240508183332-dbc356674c9e
+	github.com/ssoready/prettyuuid v0.0.0-20241023163822-285da46017b3
+	github.com/ssoready/ssoready v0.0.0-20241111201857-b3a0f34a0999
+	github.com/ucarion/cli v0.2.0
+	golang.org/x/crypto v0.29.0
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20241104194629-dd2ea8efbc28
+)
+
+require (
+	github.com/aws/aws-sdk-go-v2 v1.32.4 // indirect
+	github.com/aws/aws-sdk-go-v2/credentials v1.17.44 // indirect
+	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.16.19 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/configsources v1.3.23 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.6.23 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/ini v1.8.1 // indirect
+	github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding v1.12.0 // indirect
+	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.12.4 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sso v1.24.5 // indirect
+	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.28.4 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sts v1.32.4 // indirect
+	github.com/aws/smithy-go v1.22.0 // indirect
+	github.com/golang-migrate/migrate v3.5.4+incompatible // indirect
+	github.com/hashicorp/errwrap v1.1.0 // indirect
+	github.com/hashicorp/go-multierror v1.1.1 // indirect
+	github.com/jackc/pgpassfile v1.0.0 // indirect
+	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
+	github.com/jackc/puddle/v2 v2.2.2 // indirect
+	github.com/lib/pq v1.10.9 // indirect
+	go.uber.org/atomic v1.7.0 // indirect
+	golang.org/x/net v0.29.0 // indirect
+	golang.org/x/sync v0.9.0 // indirect
+	golang.org/x/sys v0.27.0 // indirect
+	golang.org/x/text v0.20.0 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20241104194629-dd2ea8efbc28 // indirect
+	google.golang.org/grpc v1.68.0 // indirect
+	google.golang.org/protobuf v1.35.1 // indirect
+)

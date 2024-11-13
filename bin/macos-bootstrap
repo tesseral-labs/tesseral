@@ -1,0 +1,27 @@
+#!/bin/bash
+
+if ! command -v brew 2>&1 >/dev/null
+then
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
+
+if ! command -v go 2>&1 >/dev/null
+then
+  brew install go
+fi
+
+if ! command -v sqlc 2>&1 >/dev/null
+then
+  brew install sqlc
+fi
+
+if ! command -v psql 2>&1 >/dev/null
+then
+  brew install libpq
+  echo 'export PATH="/opt/homebrew/opt/libpq/bin:$PATH"' >> ~/.zshrc
+fi
+
+if ! command -v migrate 2>&1 >/dev/null
+then
+  brew install golang-migrate
+fi
