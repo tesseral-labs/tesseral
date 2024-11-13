@@ -2,11 +2,11 @@
 // source: backend/v1/backend.proto
 
 /*
-Package gen is a reverse proxy.
+Package backendv1 is a reverse proxy.
 
 It translates gRPC into RESTful JSON APIs.
 */
-package gen
+package backendv1
 
 import (
 	"context"
@@ -15,6 +15,7 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/utilities"
+	"github.com/openauth-dev/openauth/internal/gen/openauth/v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
@@ -58,7 +59,7 @@ func local_request_BackendService_CreateOrganization_0(ctx context.Context, mars
 }
 
 func request_BackendService_GetOrganization_0(ctx context.Context, marshaler runtime.Marshaler, client BackendServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GetOrganizationRequest
+	var protoReq openauthv1.ResourceIdRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -84,7 +85,7 @@ func request_BackendService_GetOrganization_0(ctx context.Context, marshaler run
 }
 
 func local_request_BackendService_GetOrganization_0(ctx context.Context, marshaler runtime.Marshaler, server BackendServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GetOrganizationRequest
+	var protoReq openauthv1.ResourceIdRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -205,11 +206,22 @@ func local_request_BackendService_UpdateOrganization_0(ctx context.Context, mars
 
 }
 
+var (
+	filter_BackendService_CreateProject_0 = &utilities.DoubleArray{Encoding: map[string]int{"project": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+)
+
 func request_BackendService_CreateProject_0(ctx context.Context, marshaler runtime.Marshaler, client BackendServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq CreateProjectRequest
+	var protoReq openauthv1.CreateProjectRequest
 	var metadata runtime.ServerMetadata
 
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Project); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BackendService_CreateProject_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -219,10 +231,17 @@ func request_BackendService_CreateProject_0(ctx context.Context, marshaler runti
 }
 
 func local_request_BackendService_CreateProject_0(ctx context.Context, marshaler runtime.Marshaler, server BackendServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq CreateProjectRequest
+	var protoReq openauthv1.CreateProjectRequest
 	var metadata runtime.ServerMetadata
 
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Project); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BackendService_CreateProject_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -232,7 +251,7 @@ func local_request_BackendService_CreateProject_0(ctx context.Context, marshaler
 }
 
 func request_BackendService_GetProject_0(ctx context.Context, marshaler runtime.Marshaler, client BackendServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GetProjectRequest
+	var protoReq openauthv1.ResourceIdRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -258,7 +277,7 @@ func request_BackendService_GetProject_0(ctx context.Context, marshaler runtime.
 }
 
 func local_request_BackendService_GetProject_0(ctx context.Context, marshaler runtime.Marshaler, server BackendServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GetProjectRequest
+	var protoReq openauthv1.ResourceIdRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -406,7 +425,7 @@ func local_request_BackendService_CreateUser_0(ctx context.Context, marshaler ru
 }
 
 func request_BackendService_GetUser_0(ctx context.Context, marshaler runtime.Marshaler, client BackendServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GetUserRequest
+	var protoReq openauthv1.ResourceIdRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -432,7 +451,7 @@ func request_BackendService_GetUser_0(ctx context.Context, marshaler runtime.Mar
 }
 
 func local_request_BackendService_GetUser_0(ctx context.Context, marshaler runtime.Marshaler, server BackendServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GetUserRequest
+	var protoReq openauthv1.ResourceIdRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -568,7 +587,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/backend.v1.BackendService/CreateOrganization", runtime.WithHTTPPathPattern("/v1/organizations"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/backend.v1.BackendService/CreateOrganization", runtime.WithHTTPPathPattern("/backend/v1/organizations"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -593,7 +612,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/backend.v1.BackendService/GetOrganization", runtime.WithHTTPPathPattern("/v1/organizations/{id}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/backend.v1.BackendService/GetOrganization", runtime.WithHTTPPathPattern("/backend/v1/organizations/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -618,7 +637,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/backend.v1.BackendService/ListOrganizations", runtime.WithHTTPPathPattern("/v1/organizations"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/backend.v1.BackendService/ListOrganizations", runtime.WithHTTPPathPattern("/backend/v1/organizations"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -643,7 +662,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/backend.v1.BackendService/UpdateOrganization", runtime.WithHTTPPathPattern("/v1/organizations/{id}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/backend.v1.BackendService/UpdateOrganization", runtime.WithHTTPPathPattern("/backend/v1/organizations/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -668,7 +687,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/backend.v1.BackendService/CreateProject", runtime.WithHTTPPathPattern("/v1/projects"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/backend.v1.BackendService/CreateProject", runtime.WithHTTPPathPattern("/backend/v1/projects"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -693,7 +712,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/backend.v1.BackendService/GetProject", runtime.WithHTTPPathPattern("/v1/projects/{id}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/backend.v1.BackendService/GetProject", runtime.WithHTTPPathPattern("/backend/v1/projects/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -718,7 +737,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/backend.v1.BackendService/ListProjects", runtime.WithHTTPPathPattern("/v1/projects"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/backend.v1.BackendService/ListProjects", runtime.WithHTTPPathPattern("/backend/v1/projects"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -743,7 +762,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/backend.v1.BackendService/UpdateProject", runtime.WithHTTPPathPattern("/v1/projects/{id}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/backend.v1.BackendService/UpdateProject", runtime.WithHTTPPathPattern("/backend/v1/projects/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -768,7 +787,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/backend.v1.BackendService/CreateUser", runtime.WithHTTPPathPattern("/v1/users"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/backend.v1.BackendService/CreateUser", runtime.WithHTTPPathPattern("/backend/v1/users"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -793,7 +812,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/backend.v1.BackendService/GetUser", runtime.WithHTTPPathPattern("/v1/users/{id}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/backend.v1.BackendService/GetUser", runtime.WithHTTPPathPattern("/backend/v1/users/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -818,7 +837,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/backend.v1.BackendService/ListUsers", runtime.WithHTTPPathPattern("/v1/users"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/backend.v1.BackendService/ListUsers", runtime.WithHTTPPathPattern("/backend/v1/users"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -843,7 +862,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/backend.v1.BackendService/UpdateUser", runtime.WithHTTPPathPattern("/v1/users/{id}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/backend.v1.BackendService/UpdateUser", runtime.WithHTTPPathPattern("/backend/v1/users/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -907,7 +926,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/backend.v1.BackendService/CreateOrganization", runtime.WithHTTPPathPattern("/v1/organizations"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/backend.v1.BackendService/CreateOrganization", runtime.WithHTTPPathPattern("/backend/v1/organizations"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -929,7 +948,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/backend.v1.BackendService/GetOrganization", runtime.WithHTTPPathPattern("/v1/organizations/{id}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/backend.v1.BackendService/GetOrganization", runtime.WithHTTPPathPattern("/backend/v1/organizations/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -951,7 +970,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/backend.v1.BackendService/ListOrganizations", runtime.WithHTTPPathPattern("/v1/organizations"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/backend.v1.BackendService/ListOrganizations", runtime.WithHTTPPathPattern("/backend/v1/organizations"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -973,7 +992,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/backend.v1.BackendService/UpdateOrganization", runtime.WithHTTPPathPattern("/v1/organizations/{id}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/backend.v1.BackendService/UpdateOrganization", runtime.WithHTTPPathPattern("/backend/v1/organizations/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -995,7 +1014,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/backend.v1.BackendService/CreateProject", runtime.WithHTTPPathPattern("/v1/projects"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/backend.v1.BackendService/CreateProject", runtime.WithHTTPPathPattern("/backend/v1/projects"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1017,7 +1036,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/backend.v1.BackendService/GetProject", runtime.WithHTTPPathPattern("/v1/projects/{id}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/backend.v1.BackendService/GetProject", runtime.WithHTTPPathPattern("/backend/v1/projects/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1039,7 +1058,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/backend.v1.BackendService/ListProjects", runtime.WithHTTPPathPattern("/v1/projects"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/backend.v1.BackendService/ListProjects", runtime.WithHTTPPathPattern("/backend/v1/projects"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1061,7 +1080,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/backend.v1.BackendService/UpdateProject", runtime.WithHTTPPathPattern("/v1/projects/{id}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/backend.v1.BackendService/UpdateProject", runtime.WithHTTPPathPattern("/backend/v1/projects/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1083,7 +1102,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/backend.v1.BackendService/CreateUser", runtime.WithHTTPPathPattern("/v1/users"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/backend.v1.BackendService/CreateUser", runtime.WithHTTPPathPattern("/backend/v1/users"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1105,7 +1124,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/backend.v1.BackendService/GetUser", runtime.WithHTTPPathPattern("/v1/users/{id}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/backend.v1.BackendService/GetUser", runtime.WithHTTPPathPattern("/backend/v1/users/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1127,7 +1146,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/backend.v1.BackendService/ListUsers", runtime.WithHTTPPathPattern("/v1/users"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/backend.v1.BackendService/ListUsers", runtime.WithHTTPPathPattern("/backend/v1/users"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1149,7 +1168,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/backend.v1.BackendService/UpdateUser", runtime.WithHTTPPathPattern("/v1/users/{id}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/backend.v1.BackendService/UpdateUser", runtime.WithHTTPPathPattern("/backend/v1/users/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1169,29 +1188,29 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 }
 
 var (
-	pattern_BackendService_CreateOrganization_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "organizations"}, ""))
+	pattern_BackendService_CreateOrganization_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"backend", "v1", "organizations"}, ""))
 
-	pattern_BackendService_GetOrganization_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "organizations", "id"}, ""))
+	pattern_BackendService_GetOrganization_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"backend", "v1", "organizations", "id"}, ""))
 
-	pattern_BackendService_ListOrganizations_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "organizations"}, ""))
+	pattern_BackendService_ListOrganizations_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"backend", "v1", "organizations"}, ""))
 
-	pattern_BackendService_UpdateOrganization_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "organizations", "id"}, ""))
+	pattern_BackendService_UpdateOrganization_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"backend", "v1", "organizations", "id"}, ""))
 
-	pattern_BackendService_CreateProject_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "projects"}, ""))
+	pattern_BackendService_CreateProject_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"backend", "v1", "projects"}, ""))
 
-	pattern_BackendService_GetProject_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "projects", "id"}, ""))
+	pattern_BackendService_GetProject_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"backend", "v1", "projects", "id"}, ""))
 
-	pattern_BackendService_ListProjects_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "projects"}, ""))
+	pattern_BackendService_ListProjects_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"backend", "v1", "projects"}, ""))
 
-	pattern_BackendService_UpdateProject_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "projects", "id"}, ""))
+	pattern_BackendService_UpdateProject_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"backend", "v1", "projects", "id"}, ""))
 
-	pattern_BackendService_CreateUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "users"}, ""))
+	pattern_BackendService_CreateUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"backend", "v1", "users"}, ""))
 
-	pattern_BackendService_GetUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "users", "id"}, ""))
+	pattern_BackendService_GetUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"backend", "v1", "users", "id"}, ""))
 
-	pattern_BackendService_ListUsers_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "users"}, ""))
+	pattern_BackendService_ListUsers_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"backend", "v1", "users"}, ""))
 
-	pattern_BackendService_UpdateUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "users", "id"}, ""))
+	pattern_BackendService_UpdateUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"backend", "v1", "users", "id"}, ""))
 )
 
 var (

@@ -93,6 +93,9 @@ returning *;
 -- name: GetOrganizationByID :one
 select * from organizations where id = $1;
 
+-- name: GetProjectByID :one
+select * from projects where id = $1;
+
 -- name: GetOrganizationByGoogleHostedDomain :one
 select * from organizations where google_hosted_domain = $1;
 
@@ -116,6 +119,12 @@ select * from users where verified_email = $1;
 
 -- name: ListOrganizations :many
 select * from organizations;
+
+-- name: ListOrganizationsByProjectId :many
+select * from organizations where project_id = $1 order by id limit $2;
+
+-- name: ListProjects :many
+select * from projects order by id limit $1;
 
 -- name: ListUsersByEmail :many
 select * from users where unverified_email = $1 or verified_email = $1;
@@ -159,6 +168,9 @@ update projects set
   microsoft_oauth_client_id = $7,
   microsoft_oauth_client_secret = $8
 where id = $1 returning *;
+
+-- name: UpdateProjectOrganizationID :one
+update projects set organization_id = $2 where id = $1 returning *;
 
 -- name: UpdateProjectGoogleOAuthClient :one
 update projects set google_oauth_client_id = $2, google_oauth_client_secret = $3 where id = $1 returning *;

@@ -21,7 +21,7 @@ type Organization struct {
 
 type Project struct {
 	ID                         uuid.UUID
-	OrganizationID             uuid.UUID
+	OrganizationID             *uuid.UUID
 	LogInWithPasswordEnabled   bool
 	LogInWithGoogleEnabled     bool
 	LogInWithMicrosoftEnabled  bool

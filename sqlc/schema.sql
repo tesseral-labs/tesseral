@@ -45,7 +45,7 @@ ALTER TABLE public.organizations OWNER TO postgres;
 
 CREATE TABLE public.projects (
     id uuid NOT NULL,
-    organization_id uuid NOT NULL,
+    organization_id uuid,
     log_in_with_password_enabled boolean NOT NULL,
     log_in_with_google_enabled boolean NOT NULL,
     log_in_with_microsoft_enabled boolean NOT NULL,

@@ -3,8 +3,9 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { CreateOrganizationRequest, CreateOrganizationResponse, CreateProjectRequest, CreateProjectResponse, CreateUserRequest, CreateUserResponse, GetOrganizationRequest, GetOrganizationResponse, GetProjectRequest, GetProjectResponse, GetUserRequest, GetUserResponse, ListOrganizationsRequest, ListOrganizationsResponse, ListProjectsRequest, ListProjectsResponse, ListUsersRequest, ListUsersResponse, UpdateOrganizationRequest, UpdateOrganizationResponse, UpdateProjectRequest, UpdateProjectResponse, UpdateUserRequest, UpdateUserResponse } from "./backend_pb.js";
+import { CreateOrganizationRequest, CreateOrganizationResponse, CreateProjectResponse, CreateUserRequest, CreateUserResponse, GetOrganizationResponse, GetProjectResponse, GetUserResponse, ListOrganizationsRequest, ListOrganizationsResponse, ListProjectsRequest, ListProjectsResponse, ListUsersRequest, ListUsersResponse, UpdateOrganizationRequest, UpdateOrganizationResponse, UpdateProjectRequest, UpdateProjectResponse, UpdateUserRequest, UpdateUserResponse } from "./backend_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
+import { CreateProjectRequest, ResourceIdRequest } from "../../openauth/v1/openauth_pb.js";
 
 /**
  * @generated from service backend.v1.BackendService
@@ -30,7 +31,7 @@ export const BackendService = {
      */
     getOrganization: {
       name: "GetOrganization",
-      I: GetOrganizationRequest,
+      I: ResourceIdRequest,
       O: GetOrganizationResponse,
       kind: MethodKind.Unary,
     },
@@ -74,7 +75,7 @@ export const BackendService = {
      */
     getProject: {
       name: "GetProject",
-      I: GetProjectRequest,
+      I: ResourceIdRequest,
       O: GetProjectResponse,
       kind: MethodKind.Unary,
     },
@@ -118,7 +119,7 @@ export const BackendService = {
      */
     getUser: {
       name: "GetUser",
-      I: GetUserRequest,
+      I: ResourceIdRequest,
       O: GetUserResponse,
       kind: MethodKind.Unary,
     },

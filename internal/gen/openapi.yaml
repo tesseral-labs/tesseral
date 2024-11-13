@@ -3,10 +3,10 @@
 
 openapi: 3.0.3
 info:
-    title: BackendService API
+    title: ""
     version: 0.0.1
 paths:
-    /v1/organizations:
+    /backend/v1/organizations:
         get:
             tags:
                 - BackendService
@@ -58,7 +58,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /v1/organizations/{id}:
+    /backend/v1/organizations/{id}:
         get:
             tags:
                 - BackendService
@@ -67,6 +67,7 @@ paths:
             parameters:
                 - name: id
                   in: path
+                  description: The ID of the resource to retrieve.
                   required: true
                   schema:
                     type: string
@@ -113,7 +114,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /v1/projects:
+    /backend/v1/projects:
         get:
             tags:
                 - BackendService
@@ -142,6 +143,12 @@ paths:
                 - BackendService
             description: Creates a project.
             operationId: BackendService_CreateProject
+            parameters:
+                - name: displayName
+                  in: query
+                  description: The display name of the project's managing organization.
+                  schema:
+                    type: string
             requestBody:
                 content:
                     application/json:
@@ -161,7 +168,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /v1/projects/{id}:
+    /backend/v1/projects/{id}:
         get:
             tags:
                 - BackendService
@@ -170,6 +177,7 @@ paths:
             parameters:
                 - name: id
                   in: path
+                  description: The ID of the resource to retrieve.
                   required: true
                   schema:
                     type: string
@@ -216,7 +224,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /v1/users:
+    /backend/v1/users:
         get:
             tags:
                 - BackendService
@@ -268,7 +276,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /v1/users/{id}:
+    /backend/v1/users/{id}:
         get:
             tags:
                 - BackendService
@@ -277,6 +285,7 @@ paths:
             parameters:
                 - name: id
                   in: path
+                  description: The ID of the resource to retrieve.
                   required: true
                   schema:
                     type: string
@@ -317,6 +326,133 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/UpdateUserResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /frontend/v1/users:
+        get:
+            tags:
+                - FrontendService
+            description: Gets a list of users.
+            operationId: FrontendService_ListUsers
+            parameters:
+                - name: organizationId
+                  in: query
+                  schema:
+                    type: string
+                - name: pageToken
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListUsersResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - FrontendService
+            description: Creates a user.
+            operationId: FrontendService_CreateUser
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/User'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateUserResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /frontend/v1/users/{id}:
+        get:
+            tags:
+                - FrontendService
+            description: Gets a user.
+            operationId: FrontendService_GetUser
+            parameters:
+                - name: id
+                  in: path
+                  description: The ID of the resource to retrieve.
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetUserResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        patch:
+            tags:
+                - FrontendService
+            description: Updates a user.
+            operationId: FrontendService_UpdateUser
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/User'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateUserResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /frontend/v1/whoami:
+        get:
+            tags:
+                - FrontendService
+            description: Who am I?
+            operationId: FrontendService_WhoAmI
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/WhoAmIResponse'
                 default:
                     description: Default error response
                     content:
@@ -502,5 +638,15 @@ components:
                 microsoftUserId:
                     type: string
                     description: The user's Microsoft User ID.
+        WhoAmIResponse:
+            type: object
+            properties:
+                id:
+                    type: string
+                displayName:
+                    type: string
+                email:
+                    type: string
 tags:
     - name: BackendService
+    - name: FrontendService

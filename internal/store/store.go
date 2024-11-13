@@ -7,10 +7,12 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/openauth-dev/openauth/internal/pagetoken"
+	"github.com/openauth-dev/openauth/internal/store/queries"
 )
 
 type Store struct {
 	db									*pgxpool.Pool
+	q										*queries.Queries
 	pageEncoder					pagetoken.Encoder
 }
 
@@ -21,8 +23,9 @@ type NewStoreParams struct {
 
 func New(p NewStoreParams) *Store {
 	return &Store{
-		db: p.DB,
-		pageEncoder: p.PageEncoder,
+		db: 									p.DB,
+		q:                    queries.New(p.DB),
+		pageEncoder: 					p.PageEncoder,
 	}
 }
 

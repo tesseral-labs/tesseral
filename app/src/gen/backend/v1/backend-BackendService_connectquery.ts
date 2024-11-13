@@ -4,7 +4,8 @@
 // @ts-nocheck
 
 import { MethodKind } from "@bufbuild/protobuf";
-import { CreateOrganizationRequest, CreateOrganizationResponse, CreateProjectRequest, CreateProjectResponse, CreateUserRequest, CreateUserResponse, GetOrganizationRequest, GetOrganizationResponse, GetProjectRequest, GetProjectResponse, GetUserRequest, GetUserResponse, ListOrganizationsRequest, ListOrganizationsResponse, ListProjectsRequest, ListProjectsResponse, ListUsersRequest, ListUsersResponse, UpdateOrganizationRequest, UpdateOrganizationResponse, UpdateProjectRequest, UpdateProjectResponse, UpdateUserRequest, UpdateUserResponse } from "./backend_pb.js";
+import { CreateOrganizationRequest, CreateOrganizationResponse, CreateProjectResponse, CreateUserRequest, CreateUserResponse, GetOrganizationResponse, GetProjectResponse, GetUserResponse, ListOrganizationsRequest, ListOrganizationsResponse, ListProjectsRequest, ListProjectsResponse, ListUsersRequest, ListUsersResponse, UpdateOrganizationRequest, UpdateOrganizationResponse, UpdateProjectRequest, UpdateProjectResponse, UpdateUserRequest, UpdateUserResponse } from "./backend_pb.js";
+import { CreateProjectRequest, ResourceIdRequest } from "../../openauth/v1/openauth_pb.js";
 
 /**
  * Creates an organization.
@@ -31,7 +32,7 @@ export const getOrganization = {
   localName: "getOrganization",
   name: "GetOrganization",
   kind: MethodKind.Unary,
-  I: GetOrganizationRequest,
+  I: ResourceIdRequest,
   O: GetOrganizationResponse,
   service: {
     typeName: "backend.v1.BackendService"
@@ -95,7 +96,7 @@ export const getProject = {
   localName: "getProject",
   name: "GetProject",
   kind: MethodKind.Unary,
-  I: GetProjectRequest,
+  I: ResourceIdRequest,
   O: GetProjectResponse,
   service: {
     typeName: "backend.v1.BackendService"
@@ -159,7 +160,7 @@ export const getUser = {
   localName: "getUser",
   name: "GetUser",
   kind: MethodKind.Unary,
-  I: GetUserRequest,
+  I: ResourceIdRequest,
   O: GetUserResponse,
   service: {
     typeName: "backend.v1.BackendService"

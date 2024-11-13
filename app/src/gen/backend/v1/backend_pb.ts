@@ -5,298 +5,14 @@
 
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
 import { Message, proto3 } from "@bufbuild/protobuf";
-
-/**
- * @generated from message backend.v1.Organization
- */
-export class Organization extends Message<Organization> {
-  /**
-   * Unique identifier for this organization.
-   *
-   * @generated from field: string id = 1;
-   */
-  id = "";
-
-  /**
-   * The project this organization belongs to.
-   *
-   * @generated from field: string project_id = 2;
-   */
-  projectId = "";
-
-  /**
-   * An optional human-friendly name for this organization.
-   *
-   * @generated from field: string display_name = 3;
-   */
-  displayName = "";
-
-  /**
-   * Override setting for whether login with password is enabled.
-   *
-   * @generated from field: bool override_log_in_with_password_enabled = 4;
-   */
-  overrideLogInWithPasswordEnabled = false;
-
-  /**
-   * Override setting for whether login with Google is enabled.
-   *
-   * @generated from field: bool override_log_in_with_google_enabled = 5;
-   */
-  overrideLogInWithGoogleEnabled = false;
-
-  /**
-   * Override setting for whether login with Microsoft is enabled.
-   *
-   * @generated from field: bool override_log_in_with_microsoft_enabled = 6;
-   */
-  overrideLogInWithMicrosoftEnabled = false;
-
-  /**
-   * Google hosted domain.
-   *
-   * @generated from field: string google_hosted_domain = 7;
-   */
-  googleHostedDomain = "";
-
-  /**
-   * The tenant ID for Microsoft auth.
-   *
-   * @generated from field: string microsoft_tenant_id = 8;
-   */
-  microsoftTenantId = "";
-
-  constructor(data?: PartialMessage<Organization>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "backend.v1.Organization";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "project_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "display_name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 4, name: "override_log_in_with_password_enabled", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
-    { no: 5, name: "override_log_in_with_google_enabled", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
-    { no: 6, name: "override_log_in_with_microsoft_enabled", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
-    { no: 7, name: "google_hosted_domain", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 8, name: "microsoft_tenant_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Organization {
-    return new Organization().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): Organization {
-    return new Organization().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): Organization {
-    return new Organization().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: Organization | PlainMessage<Organization> | undefined, b: Organization | PlainMessage<Organization> | undefined): boolean {
-    return proto3.util.equals(Organization, a, b);
-  }
-}
-
-/**
- * @generated from message backend.v1.Project
- */
-export class Project extends Message<Project> {
-  /**
-   * Unique identifier for this project.
-   *
-   * @generated from field: string id = 1;
-   */
-  id = "";
-
-  /**
-   * The organization this project belongs to.
-   *
-   * @generated from field: string organization_id = 2;
-   */
-  organizationId = "";
-
-  /**
-   * Top-level setting for whether login with password is enabled (inherited by organizations by default).
-   *
-   * @generated from field: bool log_in_with_password_enabled = 3;
-   */
-  logInWithPasswordEnabled = false;
-
-  /**
-   * Top-level setting for whether login with Google is enabled (inherited by organizations by default).
-   *
-   * @generated from field: bool log_in_with_google_enabled = 4;
-   */
-  logInWithGoogleEnabled = false;
-
-  /**
-   * Top-level setting for whether login with Microsoft is enabled (inherited by organizations by default).
-   *
-   * @generated from field: bool log_in_with_microsoft_enabled = 5;
-   */
-  logInWithMicrosoftEnabled = false;
-
-  /**
-   * The oAuth Client ID to be used for Google Auth.
-   *
-   * @generated from field: string google_oauth_client_id = 6;
-   */
-  googleOauthClientId = "";
-
-  /**
-   * The oAuth Client secret to be used for Google Auth.
-   *
-   * @generated from field: string google_oauth_client_secret = 7;
-   */
-  googleOauthClientSecret = "";
-
-  /**
-   * The oAuth Client ID to be used for Microsoft Auth.
-   *
-   * @generated from field: string microsoft_oauth_client_id = 8;
-   */
-  microsoftOauthClientId = "";
-
-  /**
-   * The oAuth Client secret to be used for Microsoft Auth.
-   *
-   * @generated from field: string microsoft_oauth_client_secret = 9;
-   */
-  microsoftOauthClientSecret = "";
-
-  constructor(data?: PartialMessage<Project>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "backend.v1.Project";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "organization_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "log_in_with_password_enabled", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
-    { no: 4, name: "log_in_with_google_enabled", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
-    { no: 5, name: "log_in_with_microsoft_enabled", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
-    { no: 6, name: "google_oauth_client_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 7, name: "google_oauth_client_secret", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 8, name: "microsoft_oauth_client_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 9, name: "microsoft_oauth_client_secret", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Project {
-    return new Project().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): Project {
-    return new Project().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): Project {
-    return new Project().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: Project | PlainMessage<Project> | undefined, b: Project | PlainMessage<Project> | undefined): boolean {
-    return proto3.util.equals(Project, a, b);
-  }
-}
-
-/**
- * @generated from message backend.v1.User
- */
-export class User extends Message<User> {
-  /**
-   * Unique identifier for this user.
-   *
-   * @generated from field: string id = 1;
-   */
-  id = "";
-
-  /**
-   * The organization this user belongs to.
-   *
-   * @generated from field: string organization_id = 2;
-   */
-  organizationId = "";
-
-  /**
-   * The user's email (pending verification).
-   *
-   * @generated from field: string unverified_email = 3;
-   */
-  unverifiedEmail = "";
-
-  /**
-   * The user's email (after verification).
-   *
-   * @generated from field: string verified_email = 4;
-   */
-  verifiedEmail = "";
-
-  /**
-   * The hash of the user's password.
-   *
-   * @generated from field: string password_bcrypt = 5;
-   */
-  passwordBcrypt = "";
-
-  /**
-   * The user's Google User ID.
-   *
-   * @generated from field: string google_user_id = 6;
-   */
-  googleUserId = "";
-
-  /**
-   * The user's Microsoft User ID.
-   *
-   * @generated from field: string microsoft_user_id = 7;
-   */
-  microsoftUserId = "";
-
-  constructor(data?: PartialMessage<User>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "backend.v1.User";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "organization_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "unverified_email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 4, name: "verified_email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 5, name: "password_bcrypt", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 6, name: "google_user_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 7, name: "microsoft_user_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): User {
-    return new User().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): User {
-    return new User().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): User {
-    return new User().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: User | PlainMessage<User> | undefined, b: User | PlainMessage<User> | undefined): boolean {
-    return proto3.util.equals(User, a, b);
-  }
-}
+import { Organization, Project, User } from "../../openauth/v1/openauth_pb.js";
 
 /**
  * @generated from message backend.v1.CreateOrganizationRequest
  */
 export class CreateOrganizationRequest extends Message<CreateOrganizationRequest> {
   /**
-   * @generated from field: backend.v1.Organization organization = 1;
+   * @generated from field: openauth.v1.Organization organization = 1;
    */
   organization?: Organization;
 
@@ -333,7 +49,7 @@ export class CreateOrganizationRequest extends Message<CreateOrganizationRequest
  */
 export class CreateOrganizationResponse extends Message<CreateOrganizationResponse> {
   /**
-   * @generated from field: backend.v1.Organization organization = 1;
+   * @generated from field: openauth.v1.Organization organization = 1;
    */
   organization?: Organization;
 
@@ -366,48 +82,11 @@ export class CreateOrganizationResponse extends Message<CreateOrganizationRespon
 }
 
 /**
- * @generated from message backend.v1.GetOrganizationRequest
- */
-export class GetOrganizationRequest extends Message<GetOrganizationRequest> {
-  /**
-   * @generated from field: string id = 1;
-   */
-  id = "";
-
-  constructor(data?: PartialMessage<GetOrganizationRequest>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "backend.v1.GetOrganizationRequest";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetOrganizationRequest {
-    return new GetOrganizationRequest().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetOrganizationRequest {
-    return new GetOrganizationRequest().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetOrganizationRequest {
-    return new GetOrganizationRequest().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: GetOrganizationRequest | PlainMessage<GetOrganizationRequest> | undefined, b: GetOrganizationRequest | PlainMessage<GetOrganizationRequest> | undefined): boolean {
-    return proto3.util.equals(GetOrganizationRequest, a, b);
-  }
-}
-
-/**
  * @generated from message backend.v1.GetOrganizationResponse
  */
 export class GetOrganizationResponse extends Message<GetOrganizationResponse> {
   /**
-   * @generated from field: backend.v1.Organization organization = 1;
+   * @generated from field: openauth.v1.Organization organization = 1;
    */
   organization?: Organization;
 
@@ -487,7 +166,7 @@ export class ListOrganizationsRequest extends Message<ListOrganizationsRequest> 
  */
 export class ListOrganizationsResponse extends Message<ListOrganizationsResponse> {
   /**
-   * @generated from field: repeated backend.v1.Organization organizations = 1;
+   * @generated from field: repeated openauth.v1.Organization organizations = 1;
    */
   organizations: Organization[] = [];
 
@@ -535,7 +214,7 @@ export class UpdateOrganizationRequest extends Message<UpdateOrganizationRequest
   id = "";
 
   /**
-   * @generated from field: backend.v1.Organization organization = 2;
+   * @generated from field: openauth.v1.Organization organization = 2;
    */
   organization?: Organization;
 
@@ -573,7 +252,7 @@ export class UpdateOrganizationRequest extends Message<UpdateOrganizationRequest
  */
 export class UpdateOrganizationResponse extends Message<UpdateOrganizationResponse> {
   /**
-   * @generated from field: backend.v1.Organization organization = 1;
+   * @generated from field: openauth.v1.Organization organization = 1;
    */
   organization?: Organization;
 
@@ -606,48 +285,11 @@ export class UpdateOrganizationResponse extends Message<UpdateOrganizationRespon
 }
 
 /**
- * @generated from message backend.v1.CreateProjectRequest
- */
-export class CreateProjectRequest extends Message<CreateProjectRequest> {
-  /**
-   * @generated from field: backend.v1.Project project = 1;
-   */
-  project?: Project;
-
-  constructor(data?: PartialMessage<CreateProjectRequest>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "backend.v1.CreateProjectRequest";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "project", kind: "message", T: Project },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateProjectRequest {
-    return new CreateProjectRequest().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): CreateProjectRequest {
-    return new CreateProjectRequest().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): CreateProjectRequest {
-    return new CreateProjectRequest().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: CreateProjectRequest | PlainMessage<CreateProjectRequest> | undefined, b: CreateProjectRequest | PlainMessage<CreateProjectRequest> | undefined): boolean {
-    return proto3.util.equals(CreateProjectRequest, a, b);
-  }
-}
-
-/**
  * @generated from message backend.v1.CreateProjectResponse
  */
 export class CreateProjectResponse extends Message<CreateProjectResponse> {
   /**
-   * @generated from field: backend.v1.Project project = 1;
+   * @generated from field: openauth.v1.Project project = 1;
    */
   project?: Project;
 
@@ -680,48 +322,11 @@ export class CreateProjectResponse extends Message<CreateProjectResponse> {
 }
 
 /**
- * @generated from message backend.v1.GetProjectRequest
- */
-export class GetProjectRequest extends Message<GetProjectRequest> {
-  /**
-   * @generated from field: string id = 1;
-   */
-  id = "";
-
-  constructor(data?: PartialMessage<GetProjectRequest>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "backend.v1.GetProjectRequest";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetProjectRequest {
-    return new GetProjectRequest().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetProjectRequest {
-    return new GetProjectRequest().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetProjectRequest {
-    return new GetProjectRequest().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: GetProjectRequest | PlainMessage<GetProjectRequest> | undefined, b: GetProjectRequest | PlainMessage<GetProjectRequest> | undefined): boolean {
-    return proto3.util.equals(GetProjectRequest, a, b);
-  }
-}
-
-/**
  * @generated from message backend.v1.GetProjectResponse
  */
 export class GetProjectResponse extends Message<GetProjectResponse> {
   /**
-   * @generated from field: backend.v1.Project project = 1;
+   * @generated from field: openauth.v1.Project project = 1;
    */
   project?: Project;
 
@@ -795,7 +400,7 @@ export class ListProjectsRequest extends Message<ListProjectsRequest> {
  */
 export class ListProjectsResponse extends Message<ListProjectsResponse> {
   /**
-   * @generated from field: repeated backend.v1.Project projects = 1;
+   * @generated from field: repeated openauth.v1.Project projects = 1;
    */
   projects: Project[] = [];
 
@@ -843,7 +448,7 @@ export class UpdateProjectRequest extends Message<UpdateProjectRequest> {
   id = "";
 
   /**
-   * @generated from field: backend.v1.Project project = 2;
+   * @generated from field: openauth.v1.Project project = 2;
    */
   project?: Project;
 
@@ -881,7 +486,7 @@ export class UpdateProjectRequest extends Message<UpdateProjectRequest> {
  */
 export class UpdateProjectResponse extends Message<UpdateProjectResponse> {
   /**
-   * @generated from field: backend.v1.Project project = 1;
+   * @generated from field: openauth.v1.Project project = 1;
    */
   project?: Project;
 
@@ -918,7 +523,7 @@ export class UpdateProjectResponse extends Message<UpdateProjectResponse> {
  */
 export class CreateUserRequest extends Message<CreateUserRequest> {
   /**
-   * @generated from field: backend.v1.User user = 1;
+   * @generated from field: openauth.v1.User user = 1;
    */
   user?: User;
 
@@ -955,7 +560,7 @@ export class CreateUserRequest extends Message<CreateUserRequest> {
  */
 export class CreateUserResponse extends Message<CreateUserResponse> {
   /**
-   * @generated from field: backend.v1.User user = 1;
+   * @generated from field: openauth.v1.User user = 1;
    */
   user?: User;
 
@@ -988,48 +593,11 @@ export class CreateUserResponse extends Message<CreateUserResponse> {
 }
 
 /**
- * @generated from message backend.v1.GetUserRequest
- */
-export class GetUserRequest extends Message<GetUserRequest> {
-  /**
-   * @generated from field: string id = 1;
-   */
-  id = "";
-
-  constructor(data?: PartialMessage<GetUserRequest>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "backend.v1.GetUserRequest";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetUserRequest {
-    return new GetUserRequest().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetUserRequest {
-    return new GetUserRequest().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetUserRequest {
-    return new GetUserRequest().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: GetUserRequest | PlainMessage<GetUserRequest> | undefined, b: GetUserRequest | PlainMessage<GetUserRequest> | undefined): boolean {
-    return proto3.util.equals(GetUserRequest, a, b);
-  }
-}
-
-/**
  * @generated from message backend.v1.GetUserResponse
  */
 export class GetUserResponse extends Message<GetUserResponse> {
   /**
-   * @generated from field: backend.v1.User user = 1;
+   * @generated from field: openauth.v1.User user = 1;
    */
   user?: User;
 
@@ -1109,7 +677,7 @@ export class ListUsersRequest extends Message<ListUsersRequest> {
  */
 export class ListUsersResponse extends Message<ListUsersResponse> {
   /**
-   * @generated from field: repeated backend.v1.User users = 1;
+   * @generated from field: repeated openauth.v1.User users = 1;
    */
   users: User[] = [];
 
@@ -1157,7 +725,7 @@ export class UpdateUserRequest extends Message<UpdateUserRequest> {
   id = "";
 
   /**
-   * @generated from field: backend.v1.User user = 2;
+   * @generated from field: openauth.v1.User user = 2;
    */
   user?: User;
 
@@ -1195,7 +763,7 @@ export class UpdateUserRequest extends Message<UpdateUserRequest> {
  */
 export class UpdateUserResponse extends Message<UpdateUserResponse> {
   /**
-   * @generated from field: backend.v1.User user = 1;
+   * @generated from field: openauth.v1.User user = 1;
    */
   user?: User;
 

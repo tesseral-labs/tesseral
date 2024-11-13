@@ -169,7 +169,7 @@ returning id, organization_id, log_in_with_password_enabled, log_in_with_google_
 
 type CreateProjectParams struct {
 	ID                         uuid.UUID
-	OrganizationID             uuid.UUID
+	OrganizationID             *uuid.UUID
 	LogInWithPasswordEnabled   bool
 	LogInWithGoogleEnabled     bool
 	LogInWithMicrosoftEnabled  bool
@@ -310,6 +310,27 @@ func (q *Queries) GetOrganizationByID(ctx context.Context, id uuid.UUID) (Organi
 		&i.OverrideLogInWithMicrosoftEnabled,
 		&i.GoogleHostedDomain,
 		&i.MicrosoftTenantID,
+	)
+	return i, err
+}
+
+const getProjectByID = `-- name: GetProjectByID :one
+select id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret from projects where id = $1
+`
+
+func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, error) {
+	row := q.db.QueryRow(ctx, getProjectByID, id)
+	var i Project
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.LogInWithPasswordEnabled,
+		&i.LogInWithGoogleEnabled,
+		&i.LogInWithMicrosoftEnabled,
+		&i.GoogleOauthClientID,
+		&i.GoogleOauthClientSecret,
+		&i.MicrosoftOauthClientID,
+		&i.MicrosoftOauthClientSecret,
 	)
 	return i, err
 }
@@ -465,6 +486,78 @@ func (q *Queries) ListOrganizations(ctx context.Context) ([]Organization, error)
 			&i.OverrideLogInWithMicrosoftEnabled,
 			&i.GoogleHostedDomain,
 			&i.MicrosoftTenantID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listOrganizationsByProjectId = `-- name: ListOrganizationsByProjectId :many
+select id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id from organizations where project_id = $1 order by id limit $2
+`
+
+type ListOrganizationsByProjectIdParams struct {
+	ProjectID uuid.UUID
+	Limit     int32
+}
+
+func (q *Queries) ListOrganizationsByProjectId(ctx context.Context, arg ListOrganizationsByProjectIdParams) ([]Organization, error) {
+	rows, err := q.db.Query(ctx, listOrganizationsByProjectId, arg.ProjectID, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Organization
+	for rows.Next() {
+		var i Organization
+		if err := rows.Scan(
+			&i.ID,
+			&i.ProjectID,
+			&i.DisplayName,
+			&i.OverrideLogInWithPasswordEnabled,
+			&i.OverrideLogInWithGoogleEnabled,
+			&i.OverrideLogInWithMicrosoftEnabled,
+			&i.GoogleHostedDomain,
+			&i.MicrosoftTenantID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listProjects = `-- name: ListProjects :many
+select id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret from projects order by id limit $1
+`
+
+func (q *Queries) ListProjects(ctx context.Context, limit int32) ([]Project, error) {
+	rows, err := q.db.Query(ctx, listProjects, limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Project
+	for rows.Next() {
+		var i Project
+		if err := rows.Scan(
+			&i.ID,
+			&i.OrganizationID,
+			&i.LogInWithPasswordEnabled,
+			&i.LogInWithGoogleEnabled,
+			&i.LogInWithMicrosoftEnabled,
+			&i.GoogleOauthClientID,
+			&i.GoogleOauthClientSecret,
+			&i.MicrosoftOauthClientID,
+			&i.MicrosoftOauthClientSecret,
 		); err != nil {
 			return nil, err
 		}
@@ -821,6 +914,32 @@ type UpdateProjectMicrosoftOAuthClientParams struct {
 
 func (q *Queries) UpdateProjectMicrosoftOAuthClient(ctx context.Context, arg UpdateProjectMicrosoftOAuthClientParams) (Project, error) {
 	row := q.db.QueryRow(ctx, updateProjectMicrosoftOAuthClient, arg.ID, arg.MicrosoftOauthClientID, arg.MicrosoftOauthClientSecret)
+	var i Project
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.LogInWithPasswordEnabled,
+		&i.LogInWithGoogleEnabled,
+		&i.LogInWithMicrosoftEnabled,
+		&i.GoogleOauthClientID,
+		&i.GoogleOauthClientSecret,
+		&i.MicrosoftOauthClientID,
+		&i.MicrosoftOauthClientSecret,
+	)
+	return i, err
+}
+
+const updateProjectOrganizationID = `-- name: UpdateProjectOrganizationID :one
+update projects set organization_id = $2 where id = $1 returning id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret
+`
+
+type UpdateProjectOrganizationIDParams struct {
+	ID             uuid.UUID
+	OrganizationID *uuid.UUID
+}
+
+func (q *Queries) UpdateProjectOrganizationID(ctx context.Context, arg UpdateProjectOrganizationIDParams) (Project, error) {
+	row := q.db.QueryRow(ctx, updateProjectOrganizationID, arg.ID, arg.OrganizationID)
 	var i Project
 	err := row.Scan(
 		&i.ID,

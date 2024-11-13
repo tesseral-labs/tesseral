@@ -7,10 +7,16 @@ import (
 	"net/http"
 	"os"
 
-	awsconfig "github.com/aws/aws-sdk-go-v2/config"
+	"connectrpc.com/connect"
+	"connectrpc.com/vanguard"
 	"github.com/cyrusaf/ctxlog"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/openauth-dev/openauth/internal/backendservice"
+	"github.com/openauth-dev/openauth/internal/frontendservice"
+	"github.com/openauth-dev/openauth/internal/gen/backend/v1/backendv1connect"
+	"github.com/openauth-dev/openauth/internal/gen/frontend/v1/frontendv1connect"
 	"github.com/openauth-dev/openauth/internal/hexkey"
+	"github.com/openauth-dev/openauth/internal/loadenv"
 	"github.com/openauth-dev/openauth/internal/pagetoken"
 	"github.com/openauth-dev/openauth/internal/secretload"
 	"github.com/openauth-dev/openauth/internal/slogcorrelation"
@@ -25,8 +31,12 @@ func main() {
 		panic(fmt.Errorf("load secrets: %w", err))
 	}
 
+	// Attempts to load environment variables from a .env file
+	loadenv.LoadEnv()
+
 	config := struct {
 		DB 														string `conf:"db"`
+		DogfoodProjectID 							string `conf:"dogfood_project_id"`
 		PageEncodingValue            	string `conf:"page-encoding-value"`
 		ServeAddr 										string `conf:"serve_addr,noredact"`
 	}{
@@ -43,11 +53,6 @@ func main() {
 		panic(err)
 	}
 
-	awsSDKConfig, err := awsconfig.LoadDefaultConfig(context.Background())
-	if err != nil {
-		panic(err)
-	}
-
 	pageEncodingValue, err := hexkey.New(config.PageEncodingValue)
 	if err != nil {
 		panic(fmt.Errorf("parse page encoding secret: %w", err))
@@ -58,14 +63,41 @@ func main() {
 		PageEncoder: pagetoken.Encoder{Secret: pageEncodingValue},
 	})
 
+	backendConnectPath, backendConnectHandler := backendv1connect.NewBackendServiceHandler(
+		&backendservice.BackendService{
+			Store: store_,
+		},
+		connect.WithInterceptors(),
+	)
+	backend := vanguard.NewService(backendConnectPath, backendConnectHandler)
+	backendTranscoder, err := vanguard.NewTranscoder([]*vanguard.Service{backend})
+	if err != nil {
+		panic(err)
+	}
+
+	frontendConnectPath, frontendConnectHandler := frontendv1connect.NewFrontendServiceHandler(
+		&frontendservice.FrontendService{
+			Store: store_,
+		},
+		connect.WithInterceptors(),
+	)
+	frontend := vanguard.NewService(frontendConnectPath, frontendConnectHandler)
+	frontendTranscoder, err := vanguard.NewTranscoder([]*vanguard.Service{frontend})
+	if err != nil {
+		panic(err)
+	}
+
 	mux := http.NewServeMux()
 	mux.Handle("/internal/health", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		slog.InfoContext(r.Context(), "health")
 		w.WriteHeader(http.StatusOK)
 	}))
+
+	mux.Handle("/backend/v1/", backendTranscoder)
+	mux.Handle("/frontend/v1/", frontendTranscoder)
 	
 	slog.Info("serve")
-	if err := http.ListenAndServe("", slogcorrelation.NewHandler(mux)); err != nil {
+	if err := http.ListenAndServe(config.ServeAddr, slogcorrelation.NewHandler(mux)); err != nil {
 		panic(err)
 	}
 }
