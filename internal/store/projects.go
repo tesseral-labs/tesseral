@@ -8,17 +8,9 @@ import (
 	openauthv1 "github.com/openauth-dev/openauth/internal/gen/openauth/v1"
 	"github.com/openauth-dev/openauth/internal/store/idformat"
 	"github.com/openauth-dev/openauth/internal/store/queries"
-	"github.com/ssoready/conf"
 )
 
 func (s *Store) CreateProject(ctx context.Context, req *openauthv1.CreateProjectRequest) (*openauthv1.Project, error) {
-	config := struct {
-		DogfoodProjectID string `env:"DOGFOOD_PROJECT_ID"`
-	} {}
-	conf.Load(&config)
-
-	dogfoodProjectID := uuid.MustParse(config.DogfoodProjectID)
-
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -48,7 +40,7 @@ func (s *Store) CreateProject(ctx context.Context, req *openauthv1.CreateProject
 	// Update the project with the dogfooding project ID
 	updatedProject, err := q.UpdateProjectOrganizationID(ctx, queries.UpdateProjectOrganizationIDParams{
 		ID: createdProject.ID,
-		OrganizationID: &dogfoodProjectID,
+		OrganizationID: s.dogfoodProjectID,
 	})
 	if err != nil {
 		return nil, err
@@ -136,7 +128,9 @@ func (s *Store) UpdateProject(ctx context.Context, req *openauthv1.Project) (*op
 		return nil, err
 	}
 
-	updates := queries.UpdateProjectParams{}
+	updates := queries.UpdateProjectParams{
+		ID: project.ID,
+	}
 
 	// Conditionally configure Google OAuth
 	if req.GoogleOauthClientId != "" {

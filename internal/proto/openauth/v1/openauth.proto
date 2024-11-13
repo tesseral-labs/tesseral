@@ -76,6 +76,50 @@ message CreateProjectRequest {
   string display_name = 2;
 }
 
+message CreateGoogleUserRequest {
+  // The ID of the organization to scope this request to.
+  string organization_id = 1;
+  // The email address of the user to create.
+  string verified_email = 2;
+  // The Microsoft User ID of the user to create.
+  string google_user_id = 3;
+}
+
+message CreateMicrosoftUserRequest {
+  // The ID of the organization to scope this request to.
+  string organization_id = 1;
+  // The email address of the user to create.
+  string verified_email = 2;
+  // The Microsoft User ID of the user to create.
+  string microsoft_user_id = 3;
+}
+
+message CreateUnverifiedUserRequest {
+  // The ID of the organization to scope this request to.
+  string organization_id = 1;
+  // The email address of the user to create.
+  string unverified_email = 2;
+}
+
+message ListOrganizationsRequest {
+  // The ID of the project to scope this request to.
+  string project_id = 1;
+  // The page token to resume from.
+  string page_token = 2;
+}
+
+message ListOrganizationsResponse {
+  // The organizations.
+  repeated openauth.v1.Organization organizations = 1;
+  // The next page token to resume from.
+  string next_page_token = 2;
+}
+
+message OrganizationIdRequest {
+  // The ID of the organization to scope this request to.
+  string organization_id = 1;
+}
+
 message ProjectIdRequest {
   // The ID of the project to scope this request to.
   string project_id = 1;

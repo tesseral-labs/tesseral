@@ -101,23 +101,32 @@ insert into organizations (
   project_id, 
   display_name, 
   google_hosted_domain, 
-  microsoft_tenant_id
+  microsoft_tenant_id,
+  override_log_in_with_google_enabled,
+  override_log_in_with_microsoft_enabled,
+  override_log_in_with_password_enabled
 ) values (
   $1, 
   $2, 
   $3, 
   $4, 
-  $5
+  $5,
+  $6,
+  $7,
+  $8
 )
 returning id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id
 `
 
 type CreateOrganizationParams struct {
-	ID                 uuid.UUID
-	ProjectID          uuid.UUID
-	DisplayName        string
-	GoogleHostedDomain *string
-	MicrosoftTenantID  *string
+	ID                                uuid.UUID
+	ProjectID                         uuid.UUID
+	DisplayName                       string
+	GoogleHostedDomain                *string
+	MicrosoftTenantID                 *string
+	OverrideLogInWithGoogleEnabled    *bool
+	OverrideLogInWithMicrosoftEnabled *bool
+	OverrideLogInWithPasswordEnabled  *bool
 }
 
 func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganizationParams) (Organization, error) {
@@ -127,6 +136,9 @@ func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganization
 		arg.DisplayName,
 		arg.GoogleHostedDomain,
 		arg.MicrosoftTenantID,
+		arg.OverrideLogInWithGoogleEnabled,
+		arg.OverrideLogInWithMicrosoftEnabled,
+		arg.OverrideLogInWithPasswordEnabled,
 	)
 	var i Organization
 	err := row.Scan(
@@ -244,23 +256,43 @@ const createUser = `-- name: CreateUser :one
 insert into users (
   id, 
   organization_id,
-  verified_email
+  unverified_email,
+  verified_email,
+  password_bcrypt,
+  google_user_id,
+  microsoft_user_id
 ) values (
   $1, 
   $2, 
-  $3
+  $3,
+  $4,
+  $5,
+  $6,
+  $7
 )
 returning id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id
 `
 
 type CreateUserParams struct {
-	ID             uuid.UUID
-	OrganizationID uuid.UUID
-	VerifiedEmail  *string
+	ID              uuid.UUID
+	OrganizationID  uuid.UUID
+	UnverifiedEmail *string
+	VerifiedEmail   *string
+	PasswordBcrypt  *string
+	GoogleUserID    *string
+	MicrosoftUserID *string
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
-	row := q.db.QueryRow(ctx, createUser, arg.ID, arg.OrganizationID, arg.VerifiedEmail)
+	row := q.db.QueryRow(ctx, createUser,
+		arg.ID,
+		arg.OrganizationID,
+		arg.UnverifiedEmail,
+		arg.VerifiedEmail,
+		arg.PasswordBcrypt,
+		arg.GoogleUserID,
+		arg.MicrosoftUserID,
+	)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -379,16 +411,11 @@ func (q *Queries) GetUserByGoogleUserID(ctx context.Context, arg GetUserByGoogle
 }
 
 const getUserByID = `-- name: GetUserByID :one
-select id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id from users where organization_id = $1 and id = $2
+select id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id from users where id = $1
 `
 
-type GetUserByIDParams struct {
-	OrganizationID uuid.UUID
-	ID             uuid.UUID
-}
-
-func (q *Queries) GetUserByID(ctx context.Context, arg GetUserByIDParams) (User, error) {
-	row := q.db.QueryRow(ctx, getUserByID, arg.OrganizationID, arg.ID)
+func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
+	row := q.db.QueryRow(ctx, getUserByID, id)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -602,11 +629,16 @@ func (q *Queries) ListUsersByEmail(ctx context.Context, unverifiedEmail *string)
 }
 
 const listUsersByOrganization = `-- name: ListUsersByOrganization :many
-select id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id from users where organization_id = $1
+select id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id from users where organization_id = $1 order by id limit $2
 `
 
-func (q *Queries) ListUsersByOrganization(ctx context.Context, organizationID uuid.UUID) ([]User, error) {
-	rows, err := q.db.Query(ctx, listUsersByOrganization, organizationID)
+type ListUsersByOrganizationParams struct {
+	OrganizationID uuid.UUID
+	Limit          int32
+}
+
+func (q *Queries) ListUsersByOrganization(ctx context.Context, arg ListUsersByOrganizationParams) ([]User, error) {
+	rows, err := q.db.Query(ctx, listUsersByOrganization, arg.OrganizationID, arg.Limit)
 	if err != nil {
 		return nil, err
 	}
@@ -951,6 +983,50 @@ func (q *Queries) UpdateProjectOrganizationID(ctx context.Context, arg UpdatePro
 		&i.GoogleOauthClientSecret,
 		&i.MicrosoftOauthClientID,
 		&i.MicrosoftOauthClientSecret,
+	)
+	return i, err
+}
+
+const updateUser = `-- name: UpdateUser :one
+update users set 
+  organization_id = $2, 
+  unverified_email = $3, 
+  verified_email = $4, 
+  password_bcrypt = $5, 
+  google_user_id = $6, 
+  microsoft_user_id = $7 
+where id = $1 returning id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id
+`
+
+type UpdateUserParams struct {
+	ID              uuid.UUID
+	OrganizationID  uuid.UUID
+	UnverifiedEmail *string
+	VerifiedEmail   *string
+	PasswordBcrypt  *string
+	GoogleUserID    *string
+	MicrosoftUserID *string
+}
+
+func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
+	row := q.db.QueryRow(ctx, updateUser,
+		arg.ID,
+		arg.OrganizationID,
+		arg.UnverifiedEmail,
+		arg.VerifiedEmail,
+		arg.PasswordBcrypt,
+		arg.GoogleUserID,
+		arg.MicrosoftUserID,
+	)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.UnverifiedEmail,
+		&i.VerifiedEmail,
+		&i.PasswordBcrypt,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
 	)
 	return i, err
 }

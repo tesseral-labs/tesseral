@@ -4,13 +4,19 @@ insert into organizations (
   project_id, 
   display_name, 
   google_hosted_domain, 
-  microsoft_tenant_id
+  microsoft_tenant_id,
+  override_log_in_with_google_enabled,
+  override_log_in_with_microsoft_enabled,
+  override_log_in_with_password_enabled
 ) values (
   $1, 
   $2, 
   $3, 
   $4, 
-  $5
+  $5,
+  $6,
+  $7,
+  $8
 )
 returning *;
 
@@ -42,11 +48,19 @@ returning *;
 insert into users (
   id, 
   organization_id,
-  verified_email
+  unverified_email,
+  verified_email,
+  password_bcrypt,
+  google_user_id,
+  microsoft_user_id
 ) values (
   $1, 
   $2, 
-  $3
+  $3,
+  $4,
+  $5,
+  $6,
+  $7
 )
 returning *;
 
@@ -103,7 +117,7 @@ select * from organizations where google_hosted_domain = $1;
 select * from users where verified_email = $1 or unverified_email = $1;
 
 -- name: GetUserByID :one
-select * from users where organization_id = $1 and id = $2;
+select * from users where id = $1;
 
 -- name: GetUserByGoogleUserID :one
 select * from users where organization_id = $1 and google_user_id = $2;
@@ -130,7 +144,7 @@ select * from projects order by id limit $1;
 select * from users where unverified_email = $1 or verified_email = $1;
 
 -- name: ListUsersByOrganization :many
-select * from users where organization_id = $1;
+select * from users where organization_id = $1 order by id limit $2;
 
 -- name: UpdateOrganization :one
 update organizations set 
@@ -183,6 +197,16 @@ update projects set
   log_in_with_password_enabled = $2, 
   log_in_with_google_enabled = $3, 
   log_in_with_microsoft_enabled = $4 
+where id = $1 returning *;
+
+-- name: UpdateUser :one
+update users set 
+  organization_id = $2, 
+  unverified_email = $3, 
+  verified_email = $4, 
+  password_bcrypt = $5, 
+  google_user_id = $6, 
+  microsoft_user_id = $7 
 where id = $1 returning *;
 
 -- name: UpdateUserPassword :one

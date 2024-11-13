@@ -61,6 +61,15 @@ const (
 	// BackendServiceCreateUserProcedure is the fully-qualified name of the BackendService's CreateUser
 	// RPC.
 	BackendServiceCreateUserProcedure = "/backend.v1.BackendService/CreateUser"
+	// BackendServiceCreateGoogleUserProcedure is the fully-qualified name of the BackendService's
+	// CreateGoogleUser RPC.
+	BackendServiceCreateGoogleUserProcedure = "/backend.v1.BackendService/CreateGoogleUser"
+	// BackendServiceCreateMicrosoftUserProcedure is the fully-qualified name of the BackendService's
+	// CreateMicrosoftUser RPC.
+	BackendServiceCreateMicrosoftUserProcedure = "/backend.v1.BackendService/CreateMicrosoftUser"
+	// BackendServiceCreateUnverifiedUserProcedure is the fully-qualified name of the BackendService's
+	// CreateUnverifiedUser RPC.
+	BackendServiceCreateUnverifiedUserProcedure = "/backend.v1.BackendService/CreateUnverifiedUser"
 	// BackendServiceGetUserProcedure is the fully-qualified name of the BackendService's GetUser RPC.
 	BackendServiceGetUserProcedure = "/backend.v1.BackendService/GetUser"
 	// BackendServiceListUsersProcedure is the fully-qualified name of the BackendService's ListUsers
@@ -69,51 +78,66 @@ const (
 	// BackendServiceUpdateUserProcedure is the fully-qualified name of the BackendService's UpdateUser
 	// RPC.
 	BackendServiceUpdateUserProcedure = "/backend.v1.BackendService/UpdateUser"
+	// BackendServiceUpdateUserPasswordProcedure is the fully-qualified name of the BackendService's
+	// UpdateUserPassword RPC.
+	BackendServiceUpdateUserPasswordProcedure = "/backend.v1.BackendService/UpdateUserPassword"
 )
 
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
 var (
-	backendServiceServiceDescriptor                  = v1.File_backend_v1_backend_proto.Services().ByName("BackendService")
-	backendServiceCreateOrganizationMethodDescriptor = backendServiceServiceDescriptor.Methods().ByName("CreateOrganization")
-	backendServiceGetOrganizationMethodDescriptor    = backendServiceServiceDescriptor.Methods().ByName("GetOrganization")
-	backendServiceListOrganizationsMethodDescriptor  = backendServiceServiceDescriptor.Methods().ByName("ListOrganizations")
-	backendServiceUpdateOrganizationMethodDescriptor = backendServiceServiceDescriptor.Methods().ByName("UpdateOrganization")
-	backendServiceCreateProjectMethodDescriptor      = backendServiceServiceDescriptor.Methods().ByName("CreateProject")
-	backendServiceGetProjectMethodDescriptor         = backendServiceServiceDescriptor.Methods().ByName("GetProject")
-	backendServiceListProjectsMethodDescriptor       = backendServiceServiceDescriptor.Methods().ByName("ListProjects")
-	backendServiceUpdateProjectMethodDescriptor      = backendServiceServiceDescriptor.Methods().ByName("UpdateProject")
-	backendServiceCreateUserMethodDescriptor         = backendServiceServiceDescriptor.Methods().ByName("CreateUser")
-	backendServiceGetUserMethodDescriptor            = backendServiceServiceDescriptor.Methods().ByName("GetUser")
-	backendServiceListUsersMethodDescriptor          = backendServiceServiceDescriptor.Methods().ByName("ListUsers")
-	backendServiceUpdateUserMethodDescriptor         = backendServiceServiceDescriptor.Methods().ByName("UpdateUser")
+	backendServiceServiceDescriptor                    = v1.File_backend_v1_backend_proto.Services().ByName("BackendService")
+	backendServiceCreateOrganizationMethodDescriptor   = backendServiceServiceDescriptor.Methods().ByName("CreateOrganization")
+	backendServiceGetOrganizationMethodDescriptor      = backendServiceServiceDescriptor.Methods().ByName("GetOrganization")
+	backendServiceListOrganizationsMethodDescriptor    = backendServiceServiceDescriptor.Methods().ByName("ListOrganizations")
+	backendServiceUpdateOrganizationMethodDescriptor   = backendServiceServiceDescriptor.Methods().ByName("UpdateOrganization")
+	backendServiceCreateProjectMethodDescriptor        = backendServiceServiceDescriptor.Methods().ByName("CreateProject")
+	backendServiceGetProjectMethodDescriptor           = backendServiceServiceDescriptor.Methods().ByName("GetProject")
+	backendServiceListProjectsMethodDescriptor         = backendServiceServiceDescriptor.Methods().ByName("ListProjects")
+	backendServiceUpdateProjectMethodDescriptor        = backendServiceServiceDescriptor.Methods().ByName("UpdateProject")
+	backendServiceCreateUserMethodDescriptor           = backendServiceServiceDescriptor.Methods().ByName("CreateUser")
+	backendServiceCreateGoogleUserMethodDescriptor     = backendServiceServiceDescriptor.Methods().ByName("CreateGoogleUser")
+	backendServiceCreateMicrosoftUserMethodDescriptor  = backendServiceServiceDescriptor.Methods().ByName("CreateMicrosoftUser")
+	backendServiceCreateUnverifiedUserMethodDescriptor = backendServiceServiceDescriptor.Methods().ByName("CreateUnverifiedUser")
+	backendServiceGetUserMethodDescriptor              = backendServiceServiceDescriptor.Methods().ByName("GetUser")
+	backendServiceListUsersMethodDescriptor            = backendServiceServiceDescriptor.Methods().ByName("ListUsers")
+	backendServiceUpdateUserMethodDescriptor           = backendServiceServiceDescriptor.Methods().ByName("UpdateUser")
+	backendServiceUpdateUserPasswordMethodDescriptor   = backendServiceServiceDescriptor.Methods().ByName("UpdateUserPassword")
 )
 
 // BackendServiceClient is a client for the backend.v1.BackendService service.
 type BackendServiceClient interface {
 	// Creates an organization.
-	CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.CreateOrganizationResponse], error)
+	CreateOrganization(context.Context, *connect.Request[v11.Organization]) (*connect.Response[v11.Organization], error)
 	// Gets an organization.
-	GetOrganization(context.Context, *connect.Request[v11.ResourceIdRequest]) (*connect.Response[v1.GetOrganizationResponse], error)
+	GetOrganization(context.Context, *connect.Request[v11.ResourceIdRequest]) (*connect.Response[v11.Organization], error)
 	// Gets a list of organizations.
-	ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error)
+	ListOrganizations(context.Context, *connect.Request[v11.ListOrganizationsRequest]) (*connect.Response[v11.ListOrganizationsResponse], error)
 	// Updates an organization.
-	UpdateOrganization(context.Context, *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.UpdateOrganizationResponse], error)
+	UpdateOrganization(context.Context, *connect.Request[v11.Organization]) (*connect.Response[v11.Organization], error)
 	// Creates a project.
-	CreateProject(context.Context, *connect.Request[v11.CreateProjectRequest]) (*connect.Response[v1.CreateProjectResponse], error)
+	CreateProject(context.Context, *connect.Request[v11.CreateProjectRequest]) (*connect.Response[v11.Project], error)
 	// Gets a project.
-	GetProject(context.Context, *connect.Request[v11.ResourceIdRequest]) (*connect.Response[v1.GetProjectResponse], error)
+	GetProject(context.Context, *connect.Request[v11.ResourceIdRequest]) (*connect.Response[v11.Project], error)
 	// Gets a list of projects.
 	ListProjects(context.Context, *connect.Request[v1.ListProjectsRequest]) (*connect.Response[v1.ListProjectsResponse], error)
 	// Updates a project.
-	UpdateProject(context.Context, *connect.Request[v1.UpdateProjectRequest]) (*connect.Response[v1.UpdateProjectResponse], error)
+	UpdateProject(context.Context, *connect.Request[v11.Project]) (*connect.Response[v11.Project], error)
 	// Creates a user.
-	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error)
+	CreateUser(context.Context, *connect.Request[v11.User]) (*connect.Response[v11.User], error)
+	// Creates a Google user.
+	CreateGoogleUser(context.Context, *connect.Request[v11.CreateGoogleUserRequest]) (*connect.Response[v11.User], error)
+	// Creates a Microsoft user.
+	CreateMicrosoftUser(context.Context, *connect.Request[v11.CreateMicrosoftUserRequest]) (*connect.Response[v11.User], error)
+	// Creates an unverified user.
+	CreateUnverifiedUser(context.Context, *connect.Request[v11.CreateUnverifiedUserRequest]) (*connect.Response[v11.User], error)
 	// Gets a user.
-	GetUser(context.Context, *connect.Request[v11.ResourceIdRequest]) (*connect.Response[v1.GetUserResponse], error)
+	GetUser(context.Context, *connect.Request[v11.ResourceIdRequest]) (*connect.Response[v11.User], error)
 	// Gets a list of users.
 	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
 	// Updates a user.
-	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error)
+	UpdateUser(context.Context, *connect.Request[v11.User]) (*connect.Response[v11.User], error)
+	// Updates a user's password.
+	UpdateUserPassword(context.Context, *connect.Request[v1.UpdateUserPasswordRequest]) (*connect.Response[v11.User], error)
 }
 
 // NewBackendServiceClient constructs a client for the backend.v1.BackendService service. By
@@ -126,37 +150,37 @@ type BackendServiceClient interface {
 func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) BackendServiceClient {
 	baseURL = strings.TrimRight(baseURL, "/")
 	return &backendServiceClient{
-		createOrganization: connect.NewClient[v1.CreateOrganizationRequest, v1.CreateOrganizationResponse](
+		createOrganization: connect.NewClient[v11.Organization, v11.Organization](
 			httpClient,
 			baseURL+BackendServiceCreateOrganizationProcedure,
 			connect.WithSchema(backendServiceCreateOrganizationMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
-		getOrganization: connect.NewClient[v11.ResourceIdRequest, v1.GetOrganizationResponse](
+		getOrganization: connect.NewClient[v11.ResourceIdRequest, v11.Organization](
 			httpClient,
 			baseURL+BackendServiceGetOrganizationProcedure,
 			connect.WithSchema(backendServiceGetOrganizationMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
-		listOrganizations: connect.NewClient[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse](
+		listOrganizations: connect.NewClient[v11.ListOrganizationsRequest, v11.ListOrganizationsResponse](
 			httpClient,
 			baseURL+BackendServiceListOrganizationsProcedure,
 			connect.WithSchema(backendServiceListOrganizationsMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
-		updateOrganization: connect.NewClient[v1.UpdateOrganizationRequest, v1.UpdateOrganizationResponse](
+		updateOrganization: connect.NewClient[v11.Organization, v11.Organization](
 			httpClient,
 			baseURL+BackendServiceUpdateOrganizationProcedure,
 			connect.WithSchema(backendServiceUpdateOrganizationMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
-		createProject: connect.NewClient[v11.CreateProjectRequest, v1.CreateProjectResponse](
+		createProject: connect.NewClient[v11.CreateProjectRequest, v11.Project](
 			httpClient,
 			baseURL+BackendServiceCreateProjectProcedure,
 			connect.WithSchema(backendServiceCreateProjectMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
-		getProject: connect.NewClient[v11.ResourceIdRequest, v1.GetProjectResponse](
+		getProject: connect.NewClient[v11.ResourceIdRequest, v11.Project](
 			httpClient,
 			baseURL+BackendServiceGetProjectProcedure,
 			connect.WithSchema(backendServiceGetProjectMethodDescriptor),
@@ -168,19 +192,37 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(backendServiceListProjectsMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
-		updateProject: connect.NewClient[v1.UpdateProjectRequest, v1.UpdateProjectResponse](
+		updateProject: connect.NewClient[v11.Project, v11.Project](
 			httpClient,
 			baseURL+BackendServiceUpdateProjectProcedure,
 			connect.WithSchema(backendServiceUpdateProjectMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
-		createUser: connect.NewClient[v1.CreateUserRequest, v1.CreateUserResponse](
+		createUser: connect.NewClient[v11.User, v11.User](
 			httpClient,
 			baseURL+BackendServiceCreateUserProcedure,
 			connect.WithSchema(backendServiceCreateUserMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
-		getUser: connect.NewClient[v11.ResourceIdRequest, v1.GetUserResponse](
+		createGoogleUser: connect.NewClient[v11.CreateGoogleUserRequest, v11.User](
+			httpClient,
+			baseURL+BackendServiceCreateGoogleUserProcedure,
+			connect.WithSchema(backendServiceCreateGoogleUserMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		createMicrosoftUser: connect.NewClient[v11.CreateMicrosoftUserRequest, v11.User](
+			httpClient,
+			baseURL+BackendServiceCreateMicrosoftUserProcedure,
+			connect.WithSchema(backendServiceCreateMicrosoftUserMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		createUnverifiedUser: connect.NewClient[v11.CreateUnverifiedUserRequest, v11.User](
+			httpClient,
+			baseURL+BackendServiceCreateUnverifiedUserProcedure,
+			connect.WithSchema(backendServiceCreateUnverifiedUserMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		getUser: connect.NewClient[v11.ResourceIdRequest, v11.User](
 			httpClient,
 			baseURL+BackendServiceGetUserProcedure,
 			connect.WithSchema(backendServiceGetUserMethodDescriptor),
@@ -192,10 +234,16 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(backendServiceListUsersMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
-		updateUser: connect.NewClient[v1.UpdateUserRequest, v1.UpdateUserResponse](
+		updateUser: connect.NewClient[v11.User, v11.User](
 			httpClient,
 			baseURL+BackendServiceUpdateUserProcedure,
 			connect.WithSchema(backendServiceUpdateUserMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		updateUserPassword: connect.NewClient[v1.UpdateUserPasswordRequest, v11.User](
+			httpClient,
+			baseURL+BackendServiceUpdateUserPasswordProcedure,
+			connect.WithSchema(backendServiceUpdateUserPasswordMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -203,47 +251,51 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 
 // backendServiceClient implements BackendServiceClient.
 type backendServiceClient struct {
-	createOrganization *connect.Client[v1.CreateOrganizationRequest, v1.CreateOrganizationResponse]
-	getOrganization    *connect.Client[v11.ResourceIdRequest, v1.GetOrganizationResponse]
-	listOrganizations  *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
-	updateOrganization *connect.Client[v1.UpdateOrganizationRequest, v1.UpdateOrganizationResponse]
-	createProject      *connect.Client[v11.CreateProjectRequest, v1.CreateProjectResponse]
-	getProject         *connect.Client[v11.ResourceIdRequest, v1.GetProjectResponse]
-	listProjects       *connect.Client[v1.ListProjectsRequest, v1.ListProjectsResponse]
-	updateProject      *connect.Client[v1.UpdateProjectRequest, v1.UpdateProjectResponse]
-	createUser         *connect.Client[v1.CreateUserRequest, v1.CreateUserResponse]
-	getUser            *connect.Client[v11.ResourceIdRequest, v1.GetUserResponse]
-	listUsers          *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
-	updateUser         *connect.Client[v1.UpdateUserRequest, v1.UpdateUserResponse]
+	createOrganization   *connect.Client[v11.Organization, v11.Organization]
+	getOrganization      *connect.Client[v11.ResourceIdRequest, v11.Organization]
+	listOrganizations    *connect.Client[v11.ListOrganizationsRequest, v11.ListOrganizationsResponse]
+	updateOrganization   *connect.Client[v11.Organization, v11.Organization]
+	createProject        *connect.Client[v11.CreateProjectRequest, v11.Project]
+	getProject           *connect.Client[v11.ResourceIdRequest, v11.Project]
+	listProjects         *connect.Client[v1.ListProjectsRequest, v1.ListProjectsResponse]
+	updateProject        *connect.Client[v11.Project, v11.Project]
+	createUser           *connect.Client[v11.User, v11.User]
+	createGoogleUser     *connect.Client[v11.CreateGoogleUserRequest, v11.User]
+	createMicrosoftUser  *connect.Client[v11.CreateMicrosoftUserRequest, v11.User]
+	createUnverifiedUser *connect.Client[v11.CreateUnverifiedUserRequest, v11.User]
+	getUser              *connect.Client[v11.ResourceIdRequest, v11.User]
+	listUsers            *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
+	updateUser           *connect.Client[v11.User, v11.User]
+	updateUserPassword   *connect.Client[v1.UpdateUserPasswordRequest, v11.User]
 }
 
 // CreateOrganization calls backend.v1.BackendService.CreateOrganization.
-func (c *backendServiceClient) CreateOrganization(ctx context.Context, req *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.CreateOrganizationResponse], error) {
+func (c *backendServiceClient) CreateOrganization(ctx context.Context, req *connect.Request[v11.Organization]) (*connect.Response[v11.Organization], error) {
 	return c.createOrganization.CallUnary(ctx, req)
 }
 
 // GetOrganization calls backend.v1.BackendService.GetOrganization.
-func (c *backendServiceClient) GetOrganization(ctx context.Context, req *connect.Request[v11.ResourceIdRequest]) (*connect.Response[v1.GetOrganizationResponse], error) {
+func (c *backendServiceClient) GetOrganization(ctx context.Context, req *connect.Request[v11.ResourceIdRequest]) (*connect.Response[v11.Organization], error) {
 	return c.getOrganization.CallUnary(ctx, req)
 }
 
 // ListOrganizations calls backend.v1.BackendService.ListOrganizations.
-func (c *backendServiceClient) ListOrganizations(ctx context.Context, req *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error) {
+func (c *backendServiceClient) ListOrganizations(ctx context.Context, req *connect.Request[v11.ListOrganizationsRequest]) (*connect.Response[v11.ListOrganizationsResponse], error) {
 	return c.listOrganizations.CallUnary(ctx, req)
 }
 
 // UpdateOrganization calls backend.v1.BackendService.UpdateOrganization.
-func (c *backendServiceClient) UpdateOrganization(ctx context.Context, req *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.UpdateOrganizationResponse], error) {
+func (c *backendServiceClient) UpdateOrganization(ctx context.Context, req *connect.Request[v11.Organization]) (*connect.Response[v11.Organization], error) {
 	return c.updateOrganization.CallUnary(ctx, req)
 }
 
 // CreateProject calls backend.v1.BackendService.CreateProject.
-func (c *backendServiceClient) CreateProject(ctx context.Context, req *connect.Request[v11.CreateProjectRequest]) (*connect.Response[v1.CreateProjectResponse], error) {
+func (c *backendServiceClient) CreateProject(ctx context.Context, req *connect.Request[v11.CreateProjectRequest]) (*connect.Response[v11.Project], error) {
 	return c.createProject.CallUnary(ctx, req)
 }
 
 // GetProject calls backend.v1.BackendService.GetProject.
-func (c *backendServiceClient) GetProject(ctx context.Context, req *connect.Request[v11.ResourceIdRequest]) (*connect.Response[v1.GetProjectResponse], error) {
+func (c *backendServiceClient) GetProject(ctx context.Context, req *connect.Request[v11.ResourceIdRequest]) (*connect.Response[v11.Project], error) {
 	return c.getProject.CallUnary(ctx, req)
 }
 
@@ -253,17 +305,32 @@ func (c *backendServiceClient) ListProjects(ctx context.Context, req *connect.Re
 }
 
 // UpdateProject calls backend.v1.BackendService.UpdateProject.
-func (c *backendServiceClient) UpdateProject(ctx context.Context, req *connect.Request[v1.UpdateProjectRequest]) (*connect.Response[v1.UpdateProjectResponse], error) {
+func (c *backendServiceClient) UpdateProject(ctx context.Context, req *connect.Request[v11.Project]) (*connect.Response[v11.Project], error) {
 	return c.updateProject.CallUnary(ctx, req)
 }
 
 // CreateUser calls backend.v1.BackendService.CreateUser.
-func (c *backendServiceClient) CreateUser(ctx context.Context, req *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error) {
+func (c *backendServiceClient) CreateUser(ctx context.Context, req *connect.Request[v11.User]) (*connect.Response[v11.User], error) {
 	return c.createUser.CallUnary(ctx, req)
 }
 
+// CreateGoogleUser calls backend.v1.BackendService.CreateGoogleUser.
+func (c *backendServiceClient) CreateGoogleUser(ctx context.Context, req *connect.Request[v11.CreateGoogleUserRequest]) (*connect.Response[v11.User], error) {
+	return c.createGoogleUser.CallUnary(ctx, req)
+}
+
+// CreateMicrosoftUser calls backend.v1.BackendService.CreateMicrosoftUser.
+func (c *backendServiceClient) CreateMicrosoftUser(ctx context.Context, req *connect.Request[v11.CreateMicrosoftUserRequest]) (*connect.Response[v11.User], error) {
+	return c.createMicrosoftUser.CallUnary(ctx, req)
+}
+
+// CreateUnverifiedUser calls backend.v1.BackendService.CreateUnverifiedUser.
+func (c *backendServiceClient) CreateUnverifiedUser(ctx context.Context, req *connect.Request[v11.CreateUnverifiedUserRequest]) (*connect.Response[v11.User], error) {
+	return c.createUnverifiedUser.CallUnary(ctx, req)
+}
+
 // GetUser calls backend.v1.BackendService.GetUser.
-func (c *backendServiceClient) GetUser(ctx context.Context, req *connect.Request[v11.ResourceIdRequest]) (*connect.Response[v1.GetUserResponse], error) {
+func (c *backendServiceClient) GetUser(ctx context.Context, req *connect.Request[v11.ResourceIdRequest]) (*connect.Response[v11.User], error) {
 	return c.getUser.CallUnary(ctx, req)
 }
 
@@ -273,36 +340,49 @@ func (c *backendServiceClient) ListUsers(ctx context.Context, req *connect.Reque
 }
 
 // UpdateUser calls backend.v1.BackendService.UpdateUser.
-func (c *backendServiceClient) UpdateUser(ctx context.Context, req *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error) {
+func (c *backendServiceClient) UpdateUser(ctx context.Context, req *connect.Request[v11.User]) (*connect.Response[v11.User], error) {
 	return c.updateUser.CallUnary(ctx, req)
+}
+
+// UpdateUserPassword calls backend.v1.BackendService.UpdateUserPassword.
+func (c *backendServiceClient) UpdateUserPassword(ctx context.Context, req *connect.Request[v1.UpdateUserPasswordRequest]) (*connect.Response[v11.User], error) {
+	return c.updateUserPassword.CallUnary(ctx, req)
 }
 
 // BackendServiceHandler is an implementation of the backend.v1.BackendService service.
 type BackendServiceHandler interface {
 	// Creates an organization.
-	CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.CreateOrganizationResponse], error)
+	CreateOrganization(context.Context, *connect.Request[v11.Organization]) (*connect.Response[v11.Organization], error)
 	// Gets an organization.
-	GetOrganization(context.Context, *connect.Request[v11.ResourceIdRequest]) (*connect.Response[v1.GetOrganizationResponse], error)
+	GetOrganization(context.Context, *connect.Request[v11.ResourceIdRequest]) (*connect.Response[v11.Organization], error)
 	// Gets a list of organizations.
-	ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error)
+	ListOrganizations(context.Context, *connect.Request[v11.ListOrganizationsRequest]) (*connect.Response[v11.ListOrganizationsResponse], error)
 	// Updates an organization.
-	UpdateOrganization(context.Context, *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.UpdateOrganizationResponse], error)
+	UpdateOrganization(context.Context, *connect.Request[v11.Organization]) (*connect.Response[v11.Organization], error)
 	// Creates a project.
-	CreateProject(context.Context, *connect.Request[v11.CreateProjectRequest]) (*connect.Response[v1.CreateProjectResponse], error)
+	CreateProject(context.Context, *connect.Request[v11.CreateProjectRequest]) (*connect.Response[v11.Project], error)
 	// Gets a project.
-	GetProject(context.Context, *connect.Request[v11.ResourceIdRequest]) (*connect.Response[v1.GetProjectResponse], error)
+	GetProject(context.Context, *connect.Request[v11.ResourceIdRequest]) (*connect.Response[v11.Project], error)
 	// Gets a list of projects.
 	ListProjects(context.Context, *connect.Request[v1.ListProjectsRequest]) (*connect.Response[v1.ListProjectsResponse], error)
 	// Updates a project.
-	UpdateProject(context.Context, *connect.Request[v1.UpdateProjectRequest]) (*connect.Response[v1.UpdateProjectResponse], error)
+	UpdateProject(context.Context, *connect.Request[v11.Project]) (*connect.Response[v11.Project], error)
 	// Creates a user.
-	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error)
+	CreateUser(context.Context, *connect.Request[v11.User]) (*connect.Response[v11.User], error)
+	// Creates a Google user.
+	CreateGoogleUser(context.Context, *connect.Request[v11.CreateGoogleUserRequest]) (*connect.Response[v11.User], error)
+	// Creates a Microsoft user.
+	CreateMicrosoftUser(context.Context, *connect.Request[v11.CreateMicrosoftUserRequest]) (*connect.Response[v11.User], error)
+	// Creates an unverified user.
+	CreateUnverifiedUser(context.Context, *connect.Request[v11.CreateUnverifiedUserRequest]) (*connect.Response[v11.User], error)
 	// Gets a user.
-	GetUser(context.Context, *connect.Request[v11.ResourceIdRequest]) (*connect.Response[v1.GetUserResponse], error)
+	GetUser(context.Context, *connect.Request[v11.ResourceIdRequest]) (*connect.Response[v11.User], error)
 	// Gets a list of users.
 	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
 	// Updates a user.
-	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error)
+	UpdateUser(context.Context, *connect.Request[v11.User]) (*connect.Response[v11.User], error)
+	// Updates a user's password.
+	UpdateUserPassword(context.Context, *connect.Request[v1.UpdateUserPasswordRequest]) (*connect.Response[v11.User], error)
 }
 
 // NewBackendServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -365,6 +445,24 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		connect.WithSchema(backendServiceCreateUserMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
+	backendServiceCreateGoogleUserHandler := connect.NewUnaryHandler(
+		BackendServiceCreateGoogleUserProcedure,
+		svc.CreateGoogleUser,
+		connect.WithSchema(backendServiceCreateGoogleUserMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceCreateMicrosoftUserHandler := connect.NewUnaryHandler(
+		BackendServiceCreateMicrosoftUserProcedure,
+		svc.CreateMicrosoftUser,
+		connect.WithSchema(backendServiceCreateMicrosoftUserMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceCreateUnverifiedUserHandler := connect.NewUnaryHandler(
+		BackendServiceCreateUnverifiedUserProcedure,
+		svc.CreateUnverifiedUser,
+		connect.WithSchema(backendServiceCreateUnverifiedUserMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
 	backendServiceGetUserHandler := connect.NewUnaryHandler(
 		BackendServiceGetUserProcedure,
 		svc.GetUser,
@@ -381,6 +479,12 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		BackendServiceUpdateUserProcedure,
 		svc.UpdateUser,
 		connect.WithSchema(backendServiceUpdateUserMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceUpdateUserPasswordHandler := connect.NewUnaryHandler(
+		BackendServiceUpdateUserPasswordProcedure,
+		svc.UpdateUserPassword,
+		connect.WithSchema(backendServiceUpdateUserPasswordMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/backend.v1.BackendService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -403,12 +507,20 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceUpdateProjectHandler.ServeHTTP(w, r)
 		case BackendServiceCreateUserProcedure:
 			backendServiceCreateUserHandler.ServeHTTP(w, r)
+		case BackendServiceCreateGoogleUserProcedure:
+			backendServiceCreateGoogleUserHandler.ServeHTTP(w, r)
+		case BackendServiceCreateMicrosoftUserProcedure:
+			backendServiceCreateMicrosoftUserHandler.ServeHTTP(w, r)
+		case BackendServiceCreateUnverifiedUserProcedure:
+			backendServiceCreateUnverifiedUserHandler.ServeHTTP(w, r)
 		case BackendServiceGetUserProcedure:
 			backendServiceGetUserHandler.ServeHTTP(w, r)
 		case BackendServiceListUsersProcedure:
 			backendServiceListUsersHandler.ServeHTTP(w, r)
 		case BackendServiceUpdateUserProcedure:
 			backendServiceUpdateUserHandler.ServeHTTP(w, r)
+		case BackendServiceUpdateUserPasswordProcedure:
+			backendServiceUpdateUserPasswordHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -418,27 +530,27 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 // UnimplementedBackendServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedBackendServiceHandler struct{}
 
-func (UnimplementedBackendServiceHandler) CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.CreateOrganizationResponse], error) {
+func (UnimplementedBackendServiceHandler) CreateOrganization(context.Context, *connect.Request[v11.Organization]) (*connect.Response[v11.Organization], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("backend.v1.BackendService.CreateOrganization is not implemented"))
 }
 
-func (UnimplementedBackendServiceHandler) GetOrganization(context.Context, *connect.Request[v11.ResourceIdRequest]) (*connect.Response[v1.GetOrganizationResponse], error) {
+func (UnimplementedBackendServiceHandler) GetOrganization(context.Context, *connect.Request[v11.ResourceIdRequest]) (*connect.Response[v11.Organization], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("backend.v1.BackendService.GetOrganization is not implemented"))
 }
 
-func (UnimplementedBackendServiceHandler) ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error) {
+func (UnimplementedBackendServiceHandler) ListOrganizations(context.Context, *connect.Request[v11.ListOrganizationsRequest]) (*connect.Response[v11.ListOrganizationsResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("backend.v1.BackendService.ListOrganizations is not implemented"))
 }
 
-func (UnimplementedBackendServiceHandler) UpdateOrganization(context.Context, *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.UpdateOrganizationResponse], error) {
+func (UnimplementedBackendServiceHandler) UpdateOrganization(context.Context, *connect.Request[v11.Organization]) (*connect.Response[v11.Organization], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("backend.v1.BackendService.UpdateOrganization is not implemented"))
 }
 
-func (UnimplementedBackendServiceHandler) CreateProject(context.Context, *connect.Request[v11.CreateProjectRequest]) (*connect.Response[v1.CreateProjectResponse], error) {
+func (UnimplementedBackendServiceHandler) CreateProject(context.Context, *connect.Request[v11.CreateProjectRequest]) (*connect.Response[v11.Project], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("backend.v1.BackendService.CreateProject is not implemented"))
 }
 
-func (UnimplementedBackendServiceHandler) GetProject(context.Context, *connect.Request[v11.ResourceIdRequest]) (*connect.Response[v1.GetProjectResponse], error) {
+func (UnimplementedBackendServiceHandler) GetProject(context.Context, *connect.Request[v11.ResourceIdRequest]) (*connect.Response[v11.Project], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("backend.v1.BackendService.GetProject is not implemented"))
 }
 
@@ -446,15 +558,27 @@ func (UnimplementedBackendServiceHandler) ListProjects(context.Context, *connect
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("backend.v1.BackendService.ListProjects is not implemented"))
 }
 
-func (UnimplementedBackendServiceHandler) UpdateProject(context.Context, *connect.Request[v1.UpdateProjectRequest]) (*connect.Response[v1.UpdateProjectResponse], error) {
+func (UnimplementedBackendServiceHandler) UpdateProject(context.Context, *connect.Request[v11.Project]) (*connect.Response[v11.Project], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("backend.v1.BackendService.UpdateProject is not implemented"))
 }
 
-func (UnimplementedBackendServiceHandler) CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error) {
+func (UnimplementedBackendServiceHandler) CreateUser(context.Context, *connect.Request[v11.User]) (*connect.Response[v11.User], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("backend.v1.BackendService.CreateUser is not implemented"))
 }
 
-func (UnimplementedBackendServiceHandler) GetUser(context.Context, *connect.Request[v11.ResourceIdRequest]) (*connect.Response[v1.GetUserResponse], error) {
+func (UnimplementedBackendServiceHandler) CreateGoogleUser(context.Context, *connect.Request[v11.CreateGoogleUserRequest]) (*connect.Response[v11.User], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("backend.v1.BackendService.CreateGoogleUser is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) CreateMicrosoftUser(context.Context, *connect.Request[v11.CreateMicrosoftUserRequest]) (*connect.Response[v11.User], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("backend.v1.BackendService.CreateMicrosoftUser is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) CreateUnverifiedUser(context.Context, *connect.Request[v11.CreateUnverifiedUserRequest]) (*connect.Response[v11.User], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("backend.v1.BackendService.CreateUnverifiedUser is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) GetUser(context.Context, *connect.Request[v11.ResourceIdRequest]) (*connect.Response[v11.User], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("backend.v1.BackendService.GetUser is not implemented"))
 }
 
@@ -462,6 +586,10 @@ func (UnimplementedBackendServiceHandler) ListUsers(context.Context, *connect.Re
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("backend.v1.BackendService.ListUsers is not implemented"))
 }
 
-func (UnimplementedBackendServiceHandler) UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error) {
+func (UnimplementedBackendServiceHandler) UpdateUser(context.Context, *connect.Request[v11.User]) (*connect.Response[v11.User], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("backend.v1.BackendService.UpdateUser is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) UpdateUserPassword(context.Context, *connect.Request[v1.UpdateUserPasswordRequest]) (*connect.Response[v11.User], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("backend.v1.BackendService.UpdateUserPassword is not implemented"))
 }

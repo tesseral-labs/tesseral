@@ -15,10 +15,12 @@ paths:
             parameters:
                 - name: projectId
                   in: query
+                  description: The ID of the project to scope this request to.
                   schema:
                     type: string
                 - name: pageToken
                   in: query
+                  description: The page token to resume from.
                   schema:
                     type: string
             responses:
@@ -51,7 +53,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/CreateOrganizationResponse'
+                                $ref: '#/components/schemas/Organization'
                 default:
                     description: Default error response
                     content:
@@ -77,7 +79,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/GetOrganizationResponse'
+                                $ref: '#/components/schemas/Organization'
                 default:
                     description: Default error response
                     content:
@@ -92,6 +94,7 @@ paths:
             parameters:
                 - name: id
                   in: path
+                  description: Unique identifier for this organization.
                   required: true
                   schema:
                     type: string
@@ -107,7 +110,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/UpdateOrganizationResponse'
+                                $ref: '#/components/schemas/Organization'
                 default:
                     description: Default error response
                     content:
@@ -143,17 +146,11 @@ paths:
                 - BackendService
             description: Creates a project.
             operationId: BackendService_CreateProject
-            parameters:
-                - name: displayName
-                  in: query
-                  description: The display name of the project's managing organization.
-                  schema:
-                    type: string
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/Project'
+                            $ref: '#/components/schemas/CreateProjectRequest'
                 required: true
             responses:
                 "200":
@@ -161,7 +158,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/CreateProjectResponse'
+                                $ref: '#/components/schemas/Project'
                 default:
                     description: Default error response
                     content:
@@ -187,7 +184,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/GetProjectResponse'
+                                $ref: '#/components/schemas/Project'
                 default:
                     description: Default error response
                     content:
@@ -202,6 +199,7 @@ paths:
             parameters:
                 - name: id
                   in: path
+                  description: Unique identifier for this project.
                   required: true
                   schema:
                     type: string
@@ -217,7 +215,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/UpdateProjectResponse'
+                                $ref: '#/components/schemas/Project'
                 default:
                     description: Default error response
                     content:
@@ -269,7 +267,82 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/CreateUserResponse'
+                                $ref: '#/components/schemas/User'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /backend/v1/users/google:
+        post:
+            tags:
+                - BackendService
+            description: Creates a Google user.
+            operationId: BackendService_CreateGoogleUser
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateGoogleUserRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/User'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /backend/v1/users/microsoft:
+        post:
+            tags:
+                - BackendService
+            description: Creates a Microsoft user.
+            operationId: BackendService_CreateMicrosoftUser
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateMicrosoftUserRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/User'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /backend/v1/users/unverified:
+        post:
+            tags:
+                - BackendService
+            description: Creates an unverified user.
+            operationId: BackendService_CreateUnverifiedUser
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateUnverifiedUserRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/User'
                 default:
                     description: Default error response
                     content:
@@ -295,7 +368,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/GetUserResponse'
+                                $ref: '#/components/schemas/User'
                 default:
                     description: Default error response
                     content:
@@ -310,6 +383,7 @@ paths:
             parameters:
                 - name: id
                   in: path
+                  description: Unique identifier for this user.
                   required: true
                   schema:
                     type: string
@@ -325,7 +399,38 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/UpdateUserResponse'
+                                $ref: '#/components/schemas/User'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /backend/v1/users/{id}/password:
+        patch:
+            tags:
+                - BackendService
+            description: Updates a user's password.
+            operationId: BackendService_UpdateUserPassword
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UpdateUserPasswordRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/User'
                 default:
                     description: Default error response
                     content:
@@ -461,31 +566,54 @@ paths:
                                 $ref: '#/components/schemas/Status'
 components:
     schemas:
-        CreateOrganizationResponse:
+        CreateGoogleUserRequest:
             type: object
             properties:
-                organization:
-                    $ref: '#/components/schemas/Organization'
-        CreateProjectResponse:
+                organizationId:
+                    type: string
+                    description: The ID of the organization to scope this request to.
+                verifiedEmail:
+                    type: string
+                    description: The email address of the user to create.
+                googleUserId:
+                    type: string
+                    description: The Microsoft User ID of the user to create.
+        CreateMicrosoftUserRequest:
+            type: object
+            properties:
+                organizationId:
+                    type: string
+                    description: The ID of the organization to scope this request to.
+                verifiedEmail:
+                    type: string
+                    description: The email address of the user to create.
+                microsoftUserId:
+                    type: string
+                    description: The Microsoft User ID of the user to create.
+        CreateProjectRequest:
             type: object
             properties:
                 project:
-                    $ref: '#/components/schemas/Project'
+                    allOf:
+                        - $ref: '#/components/schemas/Project'
+                    description: The project to create.
+                displayName:
+                    type: string
+                    description: The display name of the project's managing organization.
+        CreateUnverifiedUserRequest:
+            type: object
+            properties:
+                organizationId:
+                    type: string
+                    description: The ID of the organization to scope this request to.
+                unverifiedEmail:
+                    type: string
+                    description: The email address of the user to create.
         CreateUserResponse:
             type: object
             properties:
                 user:
                     $ref: '#/components/schemas/User'
-        GetOrganizationResponse:
-            type: object
-            properties:
-                organization:
-                    $ref: '#/components/schemas/Organization'
-        GetProjectResponse:
-            type: object
-            properties:
-                project:
-                    $ref: '#/components/schemas/Project'
         GetUserResponse:
             type: object
             properties:
@@ -506,8 +634,10 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/Organization'
+                    description: The organizations.
                 nextPageToken:
                     type: string
+                    description: The next page token to resume from.
         ListProjectsResponse:
             type: object
             properties:
@@ -599,16 +729,13 @@ components:
                         $ref: '#/components/schemas/GoogleProtobufAny'
                     description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
             description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
-        UpdateOrganizationResponse:
+        UpdateUserPasswordRequest:
             type: object
             properties:
-                organization:
-                    $ref: '#/components/schemas/Organization'
-        UpdateProjectResponse:
-            type: object
-            properties:
-                project:
-                    $ref: '#/components/schemas/Project'
+                id:
+                    type: string
+                password:
+                    type: string
         UpdateUserResponse:
             type: object
             properties:

@@ -2,6 +2,7 @@ package backendservice
 
 import (
 	"context"
+	"fmt"
 
 	"connectrpc.com/connect"
 	backendv1 "github.com/openauth-dev/openauth/internal/gen/backend/v1"
@@ -11,28 +12,47 @@ import (
 func (s *BackendService) CreateProject(
 	ctx context.Context, 
 	req *connect.Request[openauthv1.CreateProjectRequest],
-) (*connect.Response[backendv1.CreateProjectResponse], error) {
+) (*connect.Response[openauthv1.Project], error) {
 	res, err := s.Store.CreateProject(ctx, req.Msg)
-	return nil, nil
+	if err != nil {
+		return nil, fmt.Errorf("store: %w", err)
+	}
+
+	return connect.NewResponse(res), nil
 }
 
 func (s *BackendService) GetProject(
 	ctx context.Context, 
 	req *connect.Request[openauthv1.ResourceIdRequest],
-) (*connect.Response[backendv1.GetProjectResponse], error) {
-	return nil, nil
+) (*connect.Response[openauthv1.Project], error) {
+	res, err := s.Store.GetProject(ctx, req.Msg)
+	if err != nil {
+		return nil, fmt.Errorf("store: %w", err)
+	}
+
+	return connect.NewResponse(res), nil
 }
 
 func (s *BackendService) ListProjects(
 	ctx context.Context, 
 	req *connect.Request[backendv1.ListProjectsRequest],
 ) (*connect.Response[backendv1.ListProjectsResponse], error) {
-	return nil, nil
+	res, err := s.Store.ListProjects(ctx, req.Msg)
+	if err != nil {
+		return nil, fmt.Errorf("store: %w", err)
+	}
+
+	return connect.NewResponse(res), nil
 }
 
 func (s *BackendService) UpdateProject(
 	ctx context.Context, 
-	req *connect.Request[backendv1.UpdateProjectRequest],
-) (*connect.Response[backendv1.UpdateProjectResponse], error) {
-	return nil, nil
+	req *connect.Request[openauthv1.Project],
+) (*connect.Response[openauthv1.Project], error) {
+	res, err := s.Store.UpdateProject(ctx, req.Msg)
+	if err != nil {
+		return nil, fmt.Errorf("store: %w", err)
+	}
+
+	return connect.NewResponse(res), nil
 }

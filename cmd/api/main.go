@@ -60,6 +60,7 @@ func main() {
 
 	store_ := store.New(store.NewStoreParams{
 		DB: db,
+		DogfoodProjectID: config.DogfoodProjectID,
 		PageEncoder: pagetoken.Encoder{Secret: pageEncodingValue},
 	})
 

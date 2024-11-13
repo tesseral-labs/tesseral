@@ -339,6 +339,296 @@ export class CreateProjectRequest extends Message<CreateProjectRequest> {
 }
 
 /**
+ * @generated from message openauth.v1.CreateGoogleUserRequest
+ */
+export class CreateGoogleUserRequest extends Message<CreateGoogleUserRequest> {
+  /**
+   * The ID of the organization to scope this request to.
+   *
+   * @generated from field: string organization_id = 1;
+   */
+  organizationId = "";
+
+  /**
+   * The email address of the user to create.
+   *
+   * @generated from field: string verified_email = 2;
+   */
+  verifiedEmail = "";
+
+  /**
+   * The Microsoft User ID of the user to create.
+   *
+   * @generated from field: string google_user_id = 3;
+   */
+  googleUserId = "";
+
+  constructor(data?: PartialMessage<CreateGoogleUserRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "openauth.v1.CreateGoogleUserRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "organization_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "verified_email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "google_user_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateGoogleUserRequest {
+    return new CreateGoogleUserRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): CreateGoogleUserRequest {
+    return new CreateGoogleUserRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): CreateGoogleUserRequest {
+    return new CreateGoogleUserRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: CreateGoogleUserRequest | PlainMessage<CreateGoogleUserRequest> | undefined, b: CreateGoogleUserRequest | PlainMessage<CreateGoogleUserRequest> | undefined): boolean {
+    return proto3.util.equals(CreateGoogleUserRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message openauth.v1.CreateMicrosoftUserRequest
+ */
+export class CreateMicrosoftUserRequest extends Message<CreateMicrosoftUserRequest> {
+  /**
+   * The ID of the organization to scope this request to.
+   *
+   * @generated from field: string organization_id = 1;
+   */
+  organizationId = "";
+
+  /**
+   * The email address of the user to create.
+   *
+   * @generated from field: string verified_email = 2;
+   */
+  verifiedEmail = "";
+
+  /**
+   * The Microsoft User ID of the user to create.
+   *
+   * @generated from field: string microsoft_user_id = 3;
+   */
+  microsoftUserId = "";
+
+  constructor(data?: PartialMessage<CreateMicrosoftUserRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "openauth.v1.CreateMicrosoftUserRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "organization_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "verified_email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "microsoft_user_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateMicrosoftUserRequest {
+    return new CreateMicrosoftUserRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): CreateMicrosoftUserRequest {
+    return new CreateMicrosoftUserRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): CreateMicrosoftUserRequest {
+    return new CreateMicrosoftUserRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: CreateMicrosoftUserRequest | PlainMessage<CreateMicrosoftUserRequest> | undefined, b: CreateMicrosoftUserRequest | PlainMessage<CreateMicrosoftUserRequest> | undefined): boolean {
+    return proto3.util.equals(CreateMicrosoftUserRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message openauth.v1.CreateUnverifiedUserRequest
+ */
+export class CreateUnverifiedUserRequest extends Message<CreateUnverifiedUserRequest> {
+  /**
+   * The ID of the organization to scope this request to.
+   *
+   * @generated from field: string organization_id = 1;
+   */
+  organizationId = "";
+
+  /**
+   * The email address of the user to create.
+   *
+   * @generated from field: string unverified_email = 2;
+   */
+  unverifiedEmail = "";
+
+  constructor(data?: PartialMessage<CreateUnverifiedUserRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "openauth.v1.CreateUnverifiedUserRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "organization_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "unverified_email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateUnverifiedUserRequest {
+    return new CreateUnverifiedUserRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): CreateUnverifiedUserRequest {
+    return new CreateUnverifiedUserRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): CreateUnverifiedUserRequest {
+    return new CreateUnverifiedUserRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: CreateUnverifiedUserRequest | PlainMessage<CreateUnverifiedUserRequest> | undefined, b: CreateUnverifiedUserRequest | PlainMessage<CreateUnverifiedUserRequest> | undefined): boolean {
+    return proto3.util.equals(CreateUnverifiedUserRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message openauth.v1.ListOrganizationsRequest
+ */
+export class ListOrganizationsRequest extends Message<ListOrganizationsRequest> {
+  /**
+   * The ID of the project to scope this request to.
+   *
+   * @generated from field: string project_id = 1;
+   */
+  projectId = "";
+
+  /**
+   * The page token to resume from.
+   *
+   * @generated from field: string page_token = 2;
+   */
+  pageToken = "";
+
+  constructor(data?: PartialMessage<ListOrganizationsRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "openauth.v1.ListOrganizationsRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "project_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "page_token", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ListOrganizationsRequest {
+    return new ListOrganizationsRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ListOrganizationsRequest {
+    return new ListOrganizationsRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ListOrganizationsRequest {
+    return new ListOrganizationsRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: ListOrganizationsRequest | PlainMessage<ListOrganizationsRequest> | undefined, b: ListOrganizationsRequest | PlainMessage<ListOrganizationsRequest> | undefined): boolean {
+    return proto3.util.equals(ListOrganizationsRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message openauth.v1.ListOrganizationsResponse
+ */
+export class ListOrganizationsResponse extends Message<ListOrganizationsResponse> {
+  /**
+   * The organizations.
+   *
+   * @generated from field: repeated openauth.v1.Organization organizations = 1;
+   */
+  organizations: Organization[] = [];
+
+  /**
+   * The next page token to resume from.
+   *
+   * @generated from field: string next_page_token = 2;
+   */
+  nextPageToken = "";
+
+  constructor(data?: PartialMessage<ListOrganizationsResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "openauth.v1.ListOrganizationsResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "organizations", kind: "message", T: Organization, repeated: true },
+    { no: 2, name: "next_page_token", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ListOrganizationsResponse {
+    return new ListOrganizationsResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ListOrganizationsResponse {
+    return new ListOrganizationsResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ListOrganizationsResponse {
+    return new ListOrganizationsResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: ListOrganizationsResponse | PlainMessage<ListOrganizationsResponse> | undefined, b: ListOrganizationsResponse | PlainMessage<ListOrganizationsResponse> | undefined): boolean {
+    return proto3.util.equals(ListOrganizationsResponse, a, b);
+  }
+}
+
+/**
+ * @generated from message openauth.v1.OrganizationIdRequest
+ */
+export class OrganizationIdRequest extends Message<OrganizationIdRequest> {
+  /**
+   * The ID of the organization to scope this request to.
+   *
+   * @generated from field: string organization_id = 1;
+   */
+  organizationId = "";
+
+  constructor(data?: PartialMessage<OrganizationIdRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "openauth.v1.OrganizationIdRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "organization_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): OrganizationIdRequest {
+    return new OrganizationIdRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): OrganizationIdRequest {
+    return new OrganizationIdRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): OrganizationIdRequest {
+    return new OrganizationIdRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: OrganizationIdRequest | PlainMessage<OrganizationIdRequest> | undefined, b: OrganizationIdRequest | PlainMessage<OrganizationIdRequest> | undefined): boolean {
+    return proto3.util.equals(OrganizationIdRequest, a, b);
+  }
+}
+
+/**
  * @generated from message openauth.v1.ProjectIdRequest
  */
 export class ProjectIdRequest extends Message<ProjectIdRequest> {
