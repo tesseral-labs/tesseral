@@ -1,0 +1,137 @@
+syntax = "proto3";
+
+package openauth.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+
+// Types
+
+message Organization {
+  // Unique identifier for this organization.
+  string id = 1;
+  // The project this organization belongs to.
+  string project_id = 2;
+  // An optional human-friendly name for this organization.
+  string display_name = 3;
+  // Override setting for whether login with password is enabled.
+  bool override_log_in_with_password_enabled = 4;
+  // Override setting for whether login with Google is enabled.
+  bool override_log_in_with_google_enabled = 5;
+  // Override setting for whether login with Microsoft is enabled.
+  bool override_log_in_with_microsoft_enabled = 6;
+  // Google hosted domain.
+  string google_hosted_domain = 7;
+  // The tenant ID for Microsoft auth.
+  string microsoft_tenant_id = 8;
+}
+
+message Project {
+  // Unique identifier for this project.
+  string id = 1;
+  // The organization this project belongs to.
+  string organization_id = 2;
+  // Top-level setting for whether login with password is enabled (inherited by organizations by default).
+  bool log_in_with_password_enabled = 3;
+  // Top-level setting for whether login with Google is enabled (inherited by organizations by default).
+  bool log_in_with_google_enabled = 4;
+  // Top-level setting for whether login with Microsoft is enabled (inherited by organizations by default).
+  bool log_in_with_microsoft_enabled = 5;
+  // The oAuth Client ID to be used for Google Auth.
+  string google_oauth_client_id = 6;
+  // The oAuth Client secret to be used for Google Auth.
+  string google_oauth_client_secret = 7;
+  // The oAuth Client ID to be used for Microsoft Auth.
+  string microsoft_oauth_client_id = 8;
+  // The oAuth Client secret to be used for Microsoft Auth.
+  string microsoft_oauth_client_secret = 9;
+}
+
+message User {
+  // Unique identifier for this user.
+  string id = 1;
+  // The organization this user belongs to.
+  string organization_id = 2;
+  // The user's email (pending verification).
+  string unverified_email = 3;
+  // The user's email (after verification).
+  string verified_email = 4;
+  // The hash of the user's password.
+  string password_bcrypt = 5;
+  // The user's Google User ID.
+  string google_user_id = 6;
+  // The user's Microsoft User ID.
+  string microsoft_user_id = 7;
+}
+
+// Requests
+
+message CreateProjectRequest {
+  // The project to create.
+  Project project = 1;
+  // The display name of the project's managing organization.
+  string display_name = 2;
+}
+
+message CreateGoogleUserRequest {
+  // The ID of the organization to scope this request to.
+  string organization_id = 1;
+  // The email address of the user to create.
+  string verified_email = 2;
+  // The Microsoft User ID of the user to create.
+  string google_user_id = 3;
+}
+
+message CreateMicrosoftUserRequest {
+  // The ID of the organization to scope this request to.
+  string organization_id = 1;
+  // The email address of the user to create.
+  string verified_email = 2;
+  // The Microsoft User ID of the user to create.
+  string microsoft_user_id = 3;
+}
+
+message CreateUnverifiedUserRequest {
+  // The ID of the organization to scope this request to.
+  string organization_id = 1;
+  // The email address of the user to create.
+  string unverified_email = 2;
+}
+
+message ListOrganizationsRequest {
+  // The ID of the project to scope this request to.
+  string project_id = 1;
+  // The page token to resume from.
+  string page_token = 2;
+}
+
+message ListOrganizationsResponse {
+  // The organizations.
+  repeated openauth.v1.Organization organizations = 1;
+  // The next page token to resume from.
+  string next_page_token = 2;
+}
+
+message OrganizationIdRequest {
+  // The ID of the organization to scope this request to.
+  string organization_id = 1;
+}
+
+message ProjectIdRequest {
+  // The ID of the project to scope this request to.
+  string project_id = 1;
+}
+
+message ResourceIdRequest {
+  // The ID of the resource to retrieve.
+  string id = 1;
+}
+
+message UserIdRequest {
+  // The ID of the user to scope this request to.
+  string user_id = 1;
+}
+

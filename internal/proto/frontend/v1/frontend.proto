@@ -1,0 +1,89 @@
+syntax = "proto3";
+
+package frontend.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+import "openauth/v1/openauth.proto";
+
+service FrontendService {
+  // Creates a user.
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {
+    option (google.api.http) = {
+      post: "/frontend/v1/users",
+      body: "user"
+    };
+  }
+
+  // Gets a user.
+  rpc GetUser(openauth.v1.ResourceIdRequest) returns (GetUserResponse) {
+    option (google.api.http) = {
+      get: "/frontend/v1/users/{id}"
+    };
+  }
+
+  // Gets a list of users.
+  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse) {
+    option (google.api.http) = {
+      get: "/frontend/v1/users"
+    };
+  }
+
+  // Updates a user.
+  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {
+    option (google.api.http) = {
+      patch: "/frontend/v1/users/{id}",
+      body: "user"
+    };
+  }
+
+  // Who am I?
+  rpc WhoAmI(WhoAmIRequest) returns (WhoAmIResponse) {
+    option (google.api.http) = {
+      get: "/frontend/v1/whoami"
+    };
+  }
+}
+
+message CreateUserRequest {
+  openauth.v1.User user = 1;
+}
+
+message CreateUserResponse {
+  openauth.v1.User user = 1;
+}
+
+message GetUserResponse {
+  openauth.v1.User user = 1;
+}
+
+message ListUsersRequest {
+  string organization_id = 1;
+  string page_token = 2;
+}
+
+message ListUsersResponse {
+  repeated openauth.v1.User users = 1;
+  string next_page_token = 2;
+}
+
+message UpdateUserRequest {
+  string id = 1;
+  openauth.v1.User user = 2;
+}
+
+message UpdateUserResponse {
+  openauth.v1.User user = 1;
+}
+
+message WhoAmIRequest {
+}
+
+message WhoAmIResponse {
+  string id = 1;
+  string display_name = 2;
+  string email = 3;
+}

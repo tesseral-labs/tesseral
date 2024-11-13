@@ -1,0 +1,24 @@
+#!/bin/bash
+
+set -e -o pipefail
+
+case $1 in
+  local)
+    dsn='postgres://postgres:password@localhost?sslmode=disable'
+    ;;
+
+  stage)
+    dsn=$(AWS_REGION=us-east-2 AWS_PROFILE=stage-admin aws secretsmanager get-secret-value --secret-id psql | jq -r .SecretString | jq -r .DATABASE_URL_WRITE)
+    ;;
+
+  prod)
+    dsn=$(AWS_REGION=us-east-2 AWS_PROFILE=prod-admin aws secretsmanager get-secret-value --secret-id psql | jq -r .SecretString | jq -r .DATABASE_URL_WRITE)
+    ;;
+
+  *)
+    echo "unknown environment: $1" 1>&2;
+    exit 1
+esac
+
+# shellcheck disable=SC2068
+go run ./cmd/migrate --database "$dsn" ${@:2}
