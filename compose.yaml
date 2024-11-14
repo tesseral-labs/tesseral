@@ -32,7 +32,7 @@ services:
       - ./cmd:/api/cmd
       - ./internal:/api/internal
     working_dir: /api
-    command: ["go", "run", "./cmd/api/main.go"]
+    command: ["go", "run", "./cmd/api"]
   ui:
     build: ./ui
     ports:
