@@ -1,35 +1,35 @@
 services:
-  postgres:
-    image: postgres:15.8
-    environment:
-      POSTGRES_PASSWORD: "password"
-    network_mode: host
-    ports:
-      - 5432
   app:
     build: ./app
+    command: ["npm", "run", "dev"]
     ports:
-      - 8080
+      - "8080:8080"
     volumes:
       - ./app:/app
-    command: ["npm", "run", "dev"]
   api:
+    command: ["go", "run", "./cmd/api"]
+    environment:
+      API_DB: "postgres://postgres:password@postgres:5432/postgres"
     image: golang:1.23-alpine
-    expose:
-      - 8081
-    network_mode: host
     ports:
-      - 8081
+      - "8081:8081"
     depends_on:
       - postgres
     volumes:
       - .:/api
     working_dir: /api
-    command: ["go", "run", "./cmd/api"]
+  postgres:
+    image: postgres:15.8
+    environment:
+      POSTGRES_PASSWORD: "password"
+    expose:
+      - 5432
+    ports:
+      - "5432:5432"
   ui:
     build: ./ui
+    command: ["npm", "run", "dev"]
     ports:
-      - 8082
+      - "8082:8082"
     volumes:
       - ./ui:/ui
-    command: ["npm", "run", "dev"]

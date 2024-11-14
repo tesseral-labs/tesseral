@@ -13,7 +13,10 @@ func LoadEnv() {
 		env = map[string]string{}
 	}
 	for key, value := range env {
-		slog.Info("env", key, value)
-		os.Setenv(key, value)
+		str, exists := os.LookupEnv(key)
+		slog.Info("lookup", "lookup", str)
+		if !exists {
+			os.Setenv(key, value)
+		}
 	}
 }
