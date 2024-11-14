@@ -12,7 +12,7 @@
     "esbuild:watch": "node ./build.mjs --watch",
     "lint": "eslint",
     "prepare": "husky",
-    "serve": "http-server -c-1 -p 8081 -P http://localhost:8081?",
+    "serve": "http-server -c-1 -p 8082 -P http://localhost:8081?",
     "serve:docker": "npm run config && ./bin/serve-public",
     "tailwind": "tailwindcss -i ./src/index.css -o ./public/index.css",
     "tailwind:watch": "tailwindcss -i ./src/index.css -o ./public/index.css --watch",

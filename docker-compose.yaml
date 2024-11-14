@@ -1,8 +1,0 @@
-version: "2.4"
-services:
-  postgres:
-    image: postgres:15.8
-    environment:
-      POSTGRES_PASSWORD: "password"
-    ports:
-      - "5432:5432"

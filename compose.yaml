@@ -1,0 +1,44 @@
+services:
+  postgres:
+    image: postgres:15.8
+    environment:
+      POSTGRES_PASSWORD: "password"
+    ports:
+      - "5432:5432"
+    networks:
+      - common-net
+  app:
+    build: ./app
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./app:/app
+    command: ["npm", "run", "dev"]
+  api:
+    build:
+      context: .
+      dockerfile: ./cmd/api/Dockerfile.local
+    environment:
+      API_DB: ${API_DB}
+      API_DOGFOOD_PROJECT_ID: ${API_DOGFOOD_PROJECT_ID}
+      API_SERVE_ADDR: ${API_SERVE_ADDR}
+    ports:
+      - "8081:8081"
+    depends_on:
+      - postgres
+    networks:
+      - common-net
+    volumes:
+      - ./cmd:/api/cmd
+      - ./internal:/api/internal
+    working_dir: /api
+    command: ["go", "run", "./cmd/api/main.go"]
+  ui:
+    build: ./ui
+    ports:
+      - "8082:8082"
+    volumes:
+      - ./ui:/ui
+    command: ["npm", "run", "dev"]
+networks:
+  common-net: {}
