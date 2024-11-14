@@ -1,15 +1,10 @@
 services:
-  app:
-    build: ./app
-    command: ["npm", "run", "dev"]
-    ports:
-      - "8080:8080"
-    volumes:
-      - ./app:/app
   api:
     command: ["go", "run", "./cmd/api"]
     environment:
       API_DB: "postgres://postgres:password@postgres:5432/postgres"
+    expose:
+      - 8081
     image: golang:1.23-alpine
     ports:
       - "8081:8081"
@@ -18,6 +13,26 @@ services:
     volumes:
       - .:/api
     working_dir: /api
+  app:
+    build: ./app
+    command: ["npm", "run", "dev"]
+    expose:
+      - 8080
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./app:/app
+  ngrok:
+    environment:
+      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN}
+    image: ngrok/ngrok:latest
+    volumes:
+      - ./ngrok.yml:/etc/ngrok.yml
+    command:
+      - "start"
+      - "--all"
+      - "--config"
+      - "/etc/ngrok.yml"
   postgres:
     image: postgres:15.8
     environment:
@@ -29,6 +44,8 @@ services:
   ui:
     build: ./ui
     command: ["npm", "run", "dev"]
+    expose:
+      - 8082
     ports:
       - "8082:8082"
     volumes:
