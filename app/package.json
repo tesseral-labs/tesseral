@@ -6,8 +6,7 @@
   "scripts": {
     "build": "npm-run-all config tailwind esbuild",
     "build:docker": "npm-run-all tailwind esbuild",
-    "config": "./bin/prepare-config-json > ./public/config.json",
-    "dev": "dotenv -- npm-run-all -l -p config serve tailwind:watch esbuild:watch tsc:watch",
+    "dev": "dotenv -- npm-run-all -l -p serve tailwind:watch esbuild:watch tsc:watch",
     "esbuild": "node ./build.mjs",
     "esbuild:watch": "node ./build.mjs --watch",
     "lint": "eslint",
