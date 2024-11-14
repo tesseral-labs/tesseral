@@ -35,7 +35,7 @@ func main() {
 	loadenv.LoadEnv()
 
 	config := struct {
-		DB 														string `conf:"db,noredact"`
+		DB 														string `conf:"db"`
 		DogfoodProjectID 							string `conf:"dogfood_project_id"`
 		PageEncodingValue            	string `conf:"page-encoding-value"`
 		ServeAddr 										string `conf:"serve_addr,noredact"`
