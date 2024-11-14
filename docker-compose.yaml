@@ -1,6 +1,8 @@
 services:
   api:
     command: ["go", "run", "./cmd/api"]
+    depends_on:
+      - postgres
     environment:
       API_DB: "postgres://postgres:password@postgres:5432/postgres"
     expose:
@@ -8,45 +10,45 @@ services:
     image: golang:1.23-alpine
     ports:
       - "8081:8081"
-    depends_on:
-      - postgres
     volumes:
       - .:/api
     working_dir: /api
   app:
-    build: ./app
-    command: ["npm", "run", "dev"]
+    command: bash -c "npm i --force && npm run dev"
     expose:
       - 8080
+    image: node:22.11.0
     ports:
       - "8080:8080"
     volumes:
       - ./app:/app
+    working_dir: /app
   ngrok:
-    environment:
-      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN}
-    image: ngrok/ngrok:latest
-    volumes:
-      - ./ngrok.yaml:/etc/ngrok.yaml
     command:
       - "start"
       - "--all"
       - "--config"
       - "/etc/ngrok.yaml"
+    environment:
+      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN}
+    image: ngrok/ngrok:latest
+    volumes:
+      - ./ngrok.yaml:/etc/ngrok.yaml
   postgres:
-    image: postgres:15.8
     environment:
       POSTGRES_PASSWORD: "password"
     expose:
       - 5432
+    image: postgres:15.8
     ports:
       - "5432:5432"
   ui:
-    build: ./ui
-    command: ["npm", "run", "dev"]
+    command: bash -c "npm i --force && npm run dev"
     expose:
       - 8082
+    image: node:22.11.0
     ports:
       - "8082:8082"
     volumes:
       - ./ui:/ui
+    working_dir: /ui
