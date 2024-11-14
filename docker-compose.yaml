@@ -27,12 +27,12 @@ services:
       NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN}
     image: ngrok/ngrok:latest
     volumes:
-      - ./ngrok.yml:/etc/ngrok.yml
+      - ./ngrok.yaml:/etc/ngrok.yaml
     command:
       - "start"
       - "--all"
       - "--config"
-      - "/etc/ngrok.yml"
+      - "/etc/ngrok.yaml"
   postgres:
     image: postgres:15.8
     environment:
