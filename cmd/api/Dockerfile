@@ -12,14 +12,13 @@ COPY internal ./internal
 
 ARG TARGETOS
 ARG TARGETARCH
-
-RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -ldflags "-w -s" -o backend ./cmd/backend
+RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -ldflags "-w -s" -o api ./cmd/api
 
 FROM scratch
 
-COPY --from=build /usr/share/zoneinfo /user/share/zoneinfo
+COPY --from=build /usr/share/zoneinfo /usr/share/zoneinfo
 COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=build /work/backend /backend
+COPY --from=build /work/api /api
 
-EXPOSE 8083
-ENTRYPOINT ["/backend"]
+EXPOSE 8081
+ENTRYPOINT ["/api"]

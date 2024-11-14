@@ -1,7 +1,6 @@
 package loadenv
 
 import (
-	"log/slog"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -13,7 +12,9 @@ func LoadEnv() {
 		env = map[string]string{}
 	}
 	for key, value := range env {
-		slog.Info("env", key, value)
-		os.Setenv(key, value)
+		_, exists := os.LookupEnv(key)
+		if !exists {
+			os.Setenv(key, value)
+		}
 	}
 }
