@@ -24,22 +24,22 @@ services:
       - ./app:/app
     working_dir: /app
   ngrok:
-    environment:
-      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN}
-    image: ngrok/ngrok:latest
-    volumes:
-      - ./ngrok.yaml:/etc/ngrok.yaml
     command:
       - "start"
       - "--all"
       - "--config"
       - "/etc/ngrok.yaml"
+    environment:
+      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN}
+    image: ngrok/ngrok:latest
+    volumes:
+      - ./ngrok.yaml:/etc/ngrok.yaml
   postgres:
-    image: postgres:15.8
     environment:
       POSTGRES_PASSWORD: "password"
     expose:
       - 5432
+    image: postgres:15.8
     ports:
       - "5432:5432"
   ui:
