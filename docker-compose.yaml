@@ -11,17 +11,21 @@ services:
     ports:
       - "8081:8081"
     volumes:
-      - .:/api
+      - .:/api:cached
     working_dir: /api
   app:
     command: bash -c "npm i --force && npm run dev"
+    environment:
+      APP_BUILD_IS_DEV: 1
     expose:
       - 8080
     image: node:22.11.0
     ports:
       - "8080:8080"
+    stdin_open: true
+    tty: true
     volumes:
-      - ./app:/app
+      - ./app:/app:cached
     working_dir: /app
   ngrok:
     command:
@@ -44,11 +48,14 @@ services:
       - "5432:5432"
   ui:
     command: bash -c "npm i --force && npm run dev"
+    environment:
+      UI_BUILD_IS_DEV: 1
     expose:
       - 8082
     image: node:22.11.0
     ports:
       - "8082:8082"
+    tty: true
     volumes:
-      - ./ui:/ui
+      - ./ui:/ui:cached
     working_dir: /ui

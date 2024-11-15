@@ -1,6 +1,6 @@
 import * as esbuild from 'esbuild'
 
-const APP_BUILD_IS_DEV = process.env.APP_BUILD_IS_DEV === '1'
+const UI_BUILD_IS_DEV = process.env.UI_BUILD_IS_DEV === '1'
 
 const define = {
   global: 'window',
@@ -14,14 +14,14 @@ const define = {
 const context = await esbuild.context({
   entryPoints: ['./src'],
   outfile: './public/index.js',
-  minify: !APP_BUILD_IS_DEV,
+  minify: !UI_BUILD_IS_DEV,
   bundle: true,
   sourcemap: true,
   target: ['chrome58', 'firefox57', 'safari11', 'edge18'],
   define,
 })
 
-if (APP_BUILD_IS_DEV) {
+if (UI_BUILD_IS_DEV) {
   console.log('watching')
   await context.watch()
 } else {
