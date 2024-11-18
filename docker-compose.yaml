@@ -9,7 +9,7 @@ services:
       - 8081
     image: golang:1.23-alpine
     ports:
-      - "8081:8081"
+      - "3001:8081"
     volumes:
       - .:/api:cached
     working_dir: /api
@@ -21,22 +21,11 @@ services:
       - 8080
     image: node:22.11.0
     ports:
-      - "8080:8080"
+      - "3000:8080"
     tty: true
     volumes:
       - ./app:/app:cached
     working_dir: /app
-  ngrok:
-    command:
-      - "start"
-      - "--all"
-      - "--config"
-      - "/etc/ngrok.yaml"
-    environment:
-      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN}
-    image: ngrok/ngrok:latest
-    volumes:
-      - ./ngrok.yaml:/etc/ngrok.yaml
   postgres:
     environment:
       POSTGRES_PASSWORD: "password"
@@ -53,7 +42,7 @@ services:
       - 8082
     image: node:22.11.0
     ports:
-      - "8082:8082"
+      - "3002:8082"
     tty: true
     volumes:
       - ./ui:/ui:cached
