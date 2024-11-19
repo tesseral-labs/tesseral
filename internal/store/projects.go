@@ -10,7 +10,7 @@ import (
 	"github.com/openauth-dev/openauth/internal/store/queries"
 )
 
-func (s *Store) CreateProject(ctx context.Context, req *openauthv1.CreateProjectRequest) (*openauthv1.Project, error) {
+func (s *Store) CreateProject(ctx context.Context, req *backendv1.CreateProjectRequest) (*openauthv1.Project, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -55,7 +55,7 @@ func (s *Store) CreateProject(ctx context.Context, req *openauthv1.CreateProject
 	return transformProject(&updatedProject), nil
 }
 
-func (s *Store) GetProject(ctx context.Context, req *openauthv1.ResourceIdRequest) (*openauthv1.Project, error) {
+func (s *Store) GetProject(ctx context.Context, req *backendv1.GetProjectRequest) (*openauthv1.Project, error) {
 	id, err := idformat.Project.Parse(req.Id)
 	if err != nil {
 		return nil, err
@@ -111,7 +111,7 @@ func (s *Store) ListProjects(ctx context.Context, req *backendv1.ListProjectsReq
 	}, nil
 }
 
-func (s *Store) UpdateProject(ctx context.Context, req *openauthv1.Project) (*openauthv1.Project, error) {
+func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectRequest) (*openauthv1.Project, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -133,30 +133,30 @@ func (s *Store) UpdateProject(ctx context.Context, req *openauthv1.Project) (*op
 	}
 
 	// Conditionally configure Google OAuth
-	if req.GoogleOauthClientId != "" {
-		updates.GoogleOauthClientID = &req.GoogleOauthClientId
+	if req.Project.GoogleOauthClientId != "" {
+		updates.GoogleOauthClientID = &req.Project.GoogleOauthClientId
 	}
-	if req.GoogleOauthClientSecret != "" {
-		updates.GoogleOauthClientSecret = &req.GoogleOauthClientSecret
+	if req.Project.GoogleOauthClientSecret != "" {
+		updates.GoogleOauthClientSecret = &req.Project.GoogleOauthClientSecret
 	}
 
 	// Conditionally configure Microsoft OAuth
-	if req.MicrosoftOauthClientId != "" {
-		updates.MicrosoftOauthClientID = &req.MicrosoftOauthClientId
+	if req.Project.MicrosoftOauthClientId != "" {
+		updates.MicrosoftOauthClientID = &req.Project.MicrosoftOauthClientId
 	}
-	if req.MicrosoftOauthClientSecret != "" {
-		updates.MicrosoftOauthClientSecret = &req.MicrosoftOauthClientSecret
+	if req.Project.MicrosoftOauthClientSecret != "" {
+		updates.MicrosoftOauthClientSecret = &req.Project.MicrosoftOauthClientSecret
 	}
 
 	// Conditionally enable/disable login methods
-	if req.LogInWithGoogleEnabled != project.LogInWithGoogleEnabled {
-		updates.LogInWithGoogleEnabled = req.LogInWithGoogleEnabled
+	if req.Project.LogInWithGoogleEnabled != project.LogInWithGoogleEnabled {
+		updates.LogInWithGoogleEnabled = req.Project.LogInWithGoogleEnabled
 	}
-	if req.LogInWithMicrosoftEnabled != project.LogInWithMicrosoftEnabled {
-		updates.LogInWithMicrosoftEnabled = req.LogInWithMicrosoftEnabled
+	if req.Project.LogInWithMicrosoftEnabled != project.LogInWithMicrosoftEnabled {
+		updates.LogInWithMicrosoftEnabled = req.Project.LogInWithMicrosoftEnabled
 	}
-	if req.LogInWithPasswordEnabled != project.LogInWithPasswordEnabled {
-		updates.LogInWithPasswordEnabled = req.LogInWithPasswordEnabled
+	if req.Project.LogInWithPasswordEnabled != project.LogInWithPasswordEnabled {
+		updates.LogInWithPasswordEnabled = req.Project.LogInWithPasswordEnabled
 	}
 
 	updatedProject, err := q.UpdateProject(ctx, updates)

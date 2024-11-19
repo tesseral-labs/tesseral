@@ -11,14 +11,14 @@ import (
 	"github.com/openauth-dev/openauth/internal/store/queries"
 )
 
-func (s *Store) CreateOrganization(ctx context.Context, req *openauthv1.Organization) (*openauthv1.Organization, error) {
+func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrganizationRequest) (*openauthv1.Organization, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
 	defer rollback()
 
-	projectId, err := idformat.Organization.Parse(req.ProjectId)
+	projectId, err := idformat.Organization.Parse(req.Organization.ProjectId)
 	if err != nil {
 		return nil, err
 	}
@@ -26,12 +26,12 @@ func (s *Store) CreateOrganization(ctx context.Context, req *openauthv1.Organiza
 	createdOrganization, err := q.CreateOrganization(ctx, queries.CreateOrganizationParams{
 		ID: uuid.New(),
 		ProjectID: projectId,
-		DisplayName: req.DisplayName,
-		GoogleHostedDomain: &req.GoogleHostedDomain,
-		MicrosoftTenantID: &req.MicrosoftTenantId,
-		OverrideLogInWithGoogleEnabled: &req.OverrideLogInWithGoogleEnabled,
-		OverrideLogInWithMicrosoftEnabled: &req.OverrideLogInWithMicrosoftEnabled,
-		OverrideLogInWithPasswordEnabled: &req.OverrideLogInWithPasswordEnabled,
+		DisplayName: req.Organization.DisplayName,
+		GoogleHostedDomain: &req.Organization.GoogleHostedDomain,
+		MicrosoftTenantID: &req.Organization.MicrosoftTenantId,
+		OverrideLogInWithGoogleEnabled: &req.Organization.OverrideLogInWithGoogleEnabled,
+		OverrideLogInWithMicrosoftEnabled: &req.Organization.OverrideLogInWithMicrosoftEnabled,
+		OverrideLogInWithPasswordEnabled: &req.Organization.OverrideLogInWithPasswordEnabled,
 	})
 	if err != nil {
 		return nil, err
@@ -44,7 +44,10 @@ func (s *Store) CreateOrganization(ctx context.Context, req *openauthv1.Organiza
 	return transformOrganization(createdOrganization), nil
 }
 
-func (s *Store) GetOrganization(ctx context.Context, req *backendv1.GetOrganizationRequest) (*openauthv1.Organization, error) {
+func (s *Store) GetOrganization(
+	ctx context.Context, 
+	req *backendv1.GetOrganizationRequest,
+) (*openauthv1.Organization, error) {
 	_, q, _, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -64,7 +67,10 @@ func (s *Store) GetOrganization(ctx context.Context, req *backendv1.GetOrganizat
 	return transformOrganization(organization), nil
 }
 
-func (s *Store) ListFrontendOrganizations(ctx context.Context, req *frontendv1.ListOrganizationsRequest) (*frontendv1.ListOrganizationsResponse, error) {
+func (s *Store) ListFrontendOrganizations(
+	ctx context.Context, 
+	req *frontendv1.ListOrganizationsRequest,
+) (*frontendv1.ListOrganizationsResponse, error) {
 	_, q, _, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -107,7 +113,10 @@ func (s *Store) ListFrontendOrganizations(ctx context.Context, req *frontendv1.L
 }
 
 // TODO: Ensure that this function can only be called via a backend service reuqest
-func (s *Store) ListOrganizations(ctx context.Context, req *backendv1.ListOrganizationsRequest) (*backendv1.ListOrganizationsResponse, error) {
+func (s *Store) ListOrganizations(
+	ctx context.Context, 
+	req *backendv1.ListOrganizationsRequest,
+) (*backendv1.ListOrganizationsResponse, error) {
 	_, q, _, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -150,7 +159,7 @@ func (s *Store) ListOrganizations(ctx context.Context, req *backendv1.ListOrgani
 	}, nil
 }
 
-func (s *Store) UpdateOrganization(ctx context.Context, req *openauthv1.Organization) (*openauthv1.Organization, error) {
+func (s *Store) UpdateOrganization(ctx context.Context, req *backendv1.UpdateOrganizationRequest) (*openauthv1.Organization, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -172,27 +181,27 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *openauthv1.Organiza
 	}
 
 	// Conditionally update display name
-	if req.DisplayName != "" {
-		updates.DisplayName = req.DisplayName
+	if req.Organization.DisplayName != "" {
+		updates.DisplayName = req.Organization.DisplayName
 	}
 
 	// Conditionally update login method configs
-	if req.GoogleHostedDomain != "" {
-		updates.GoogleHostedDomain = &req.GoogleHostedDomain
+	if req.Organization.GoogleHostedDomain != "" {
+		updates.GoogleHostedDomain = &req.Organization.GoogleHostedDomain
 	}
-	if req.MicrosoftTenantId != "" {
-		updates.MicrosoftTenantID = &req.MicrosoftTenantId
+	if req.Organization.MicrosoftTenantId != "" {
+		updates.MicrosoftTenantID = &req.Organization.MicrosoftTenantId
 	}
 
 	// Conditionally update overrides
-	if req.OverrideLogInWithGoogleEnabled != *existingOrganization.OverrideLogInWithGoogleEnabled {
-		updates.OverrideLogInWithGoogleEnabled = &req.OverrideLogInWithGoogleEnabled
+	if req.Organization.OverrideLogInWithGoogleEnabled != *existingOrganization.OverrideLogInWithGoogleEnabled {
+		updates.OverrideLogInWithGoogleEnabled = &req.Organization.OverrideLogInWithGoogleEnabled
 	}
-	if req.OverrideLogInWithMicrosoftEnabled != *existingOrganization.OverrideLogInWithMicrosoftEnabled {
-		updates.OverrideLogInWithMicrosoftEnabled = &req.OverrideLogInWithMicrosoftEnabled
+	if req.Organization.OverrideLogInWithMicrosoftEnabled != *existingOrganization.OverrideLogInWithMicrosoftEnabled {
+		updates.OverrideLogInWithMicrosoftEnabled = &req.Organization.OverrideLogInWithMicrosoftEnabled
 	}
-	if req.OverrideLogInWithPasswordEnabled != *existingOrganization.OverrideLogInWithPasswordEnabled {
-		updates.OverrideLogInWithPasswordEnabled = &req.OverrideLogInWithPasswordEnabled
+	if req.Organization.OverrideLogInWithPasswordEnabled != *existingOrganization.OverrideLogInWithPasswordEnabled {
+		updates.OverrideLogInWithPasswordEnabled = &req.Organization.OverrideLogInWithPasswordEnabled
 	}
 
 	updatedOrganization, err := q.UpdateOrganization(ctx, updates)

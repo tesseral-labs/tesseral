@@ -64,7 +64,7 @@ CREATE TABLE public.method_verification_challenges (
     email character varying NOT NULL,
     auth_method public.auth_method NOT NULL,
     expire_time timestamp with time zone NOT NULL,
-    secret_token character varying NOT NULL
+    secret_token_sha256 bytea NOT NULL
 );
 
 

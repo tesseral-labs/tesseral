@@ -8,131 +8,338 @@ import { Message, proto3 } from "@bufbuild/protobuf";
 import { Organization, Project, User } from "../../openauth/v1/openauth_pb.js";
 
 /**
- * @generated from message backend.v1.CreateUpdateOrganizationRequest
+ * @generated from message backend.v1.CreateOrganizationRequest
  */
-export class CreateUpdateOrganizationRequest extends Message<CreateUpdateOrganizationRequest> {
+export class CreateOrganizationRequest extends Message<CreateOrganizationRequest> {
   /**
-   * @generated from field: string id = 1;
-   */
-  id = "";
-
-  /**
-   * @generated from field: openauth.v1.Organization organization = 2;
+   * The organization to create.
+   *
+   * @generated from field: openauth.v1.Organization organization = 1;
    */
   organization?: Organization;
 
-  constructor(data?: PartialMessage<CreateUpdateOrganizationRequest>) {
+  constructor(data?: PartialMessage<CreateOrganizationRequest>) {
     super();
     proto3.util.initPartial(data, this);
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "backend.v1.CreateUpdateOrganizationRequest";
+  static readonly typeName = "backend.v1.CreateOrganizationRequest";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "organization", kind: "message", T: Organization },
+    { no: 1, name: "organization", kind: "message", T: Organization },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateUpdateOrganizationRequest {
-    return new CreateUpdateOrganizationRequest().fromBinary(bytes, options);
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateOrganizationRequest {
+    return new CreateOrganizationRequest().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): CreateUpdateOrganizationRequest {
-    return new CreateUpdateOrganizationRequest().fromJson(jsonValue, options);
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): CreateOrganizationRequest {
+    return new CreateOrganizationRequest().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): CreateUpdateOrganizationRequest {
-    return new CreateUpdateOrganizationRequest().fromJsonString(jsonString, options);
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): CreateOrganizationRequest {
+    return new CreateOrganizationRequest().fromJsonString(jsonString, options);
   }
 
-  static equals(a: CreateUpdateOrganizationRequest | PlainMessage<CreateUpdateOrganizationRequest> | undefined, b: CreateUpdateOrganizationRequest | PlainMessage<CreateUpdateOrganizationRequest> | undefined): boolean {
-    return proto3.util.equals(CreateUpdateOrganizationRequest, a, b);
+  static equals(a: CreateOrganizationRequest | PlainMessage<CreateOrganizationRequest> | undefined, b: CreateOrganizationRequest | PlainMessage<CreateOrganizationRequest> | undefined): boolean {
+    return proto3.util.equals(CreateOrganizationRequest, a, b);
   }
 }
 
 /**
- * @generated from message backend.v1.CreateUpdateProjectRequest
+ * @generated from message backend.v1.CreateProjectRequest
  */
-export class CreateUpdateProjectRequest extends Message<CreateUpdateProjectRequest> {
+export class CreateProjectRequest extends Message<CreateProjectRequest> {
   /**
-   * @generated from field: string id = 1;
-   */
-  id = "";
-
-  /**
-   * @generated from field: openauth.v1.Project project = 2;
+   * The project to create.
+   *
+   * @generated from field: openauth.v1.Project project = 1;
    */
   project?: Project;
 
-  constructor(data?: PartialMessage<CreateUpdateProjectRequest>) {
+  /**
+   * The display name of the associated organization to create.
+   *
+   * @generated from field: string display_name = 2;
+   */
+  displayName = "";
+
+  constructor(data?: PartialMessage<CreateProjectRequest>) {
     super();
     proto3.util.initPartial(data, this);
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "backend.v1.CreateUpdateProjectRequest";
+  static readonly typeName = "backend.v1.CreateProjectRequest";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "project", kind: "message", T: Project },
+    { no: 1, name: "project", kind: "message", T: Project },
+    { no: 2, name: "display_name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateUpdateProjectRequest {
-    return new CreateUpdateProjectRequest().fromBinary(bytes, options);
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateProjectRequest {
+    return new CreateProjectRequest().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): CreateUpdateProjectRequest {
-    return new CreateUpdateProjectRequest().fromJson(jsonValue, options);
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): CreateProjectRequest {
+    return new CreateProjectRequest().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): CreateUpdateProjectRequest {
-    return new CreateUpdateProjectRequest().fromJsonString(jsonString, options);
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): CreateProjectRequest {
+    return new CreateProjectRequest().fromJsonString(jsonString, options);
   }
 
-  static equals(a: CreateUpdateProjectRequest | PlainMessage<CreateUpdateProjectRequest> | undefined, b: CreateUpdateProjectRequest | PlainMessage<CreateUpdateProjectRequest> | undefined): boolean {
-    return proto3.util.equals(CreateUpdateProjectRequest, a, b);
+  static equals(a: CreateProjectRequest | PlainMessage<CreateProjectRequest> | undefined, b: CreateProjectRequest | PlainMessage<CreateProjectRequest> | undefined): boolean {
+    return proto3.util.equals(CreateProjectRequest, a, b);
   }
 }
 
 /**
- * @generated from message backend.v1.CreateUpdateUserRequest
+ * @generated from message backend.v1.CreateUserRequest
  */
-export class CreateUpdateUserRequest extends Message<CreateUpdateUserRequest> {
+export class CreateUserRequest extends Message<CreateUserRequest> {
   /**
-   * @generated from field: string id = 1;
-   */
-  id = "";
-
-  /**
-   * @generated from field: openauth.v1.User user = 2;
+   * The user to create.
+   *
+   * @generated from field: openauth.v1.User user = 1;
    */
   user?: User;
 
-  constructor(data?: PartialMessage<CreateUpdateUserRequest>) {
+  constructor(data?: PartialMessage<CreateUserRequest>) {
     super();
     proto3.util.initPartial(data, this);
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "backend.v1.CreateUpdateUserRequest";
+  static readonly typeName = "backend.v1.CreateUserRequest";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "user", kind: "message", T: User },
+    { no: 1, name: "user", kind: "message", T: User },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateUpdateUserRequest {
-    return new CreateUpdateUserRequest().fromBinary(bytes, options);
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateUserRequest {
+    return new CreateUserRequest().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): CreateUpdateUserRequest {
-    return new CreateUpdateUserRequest().fromJson(jsonValue, options);
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): CreateUserRequest {
+    return new CreateUserRequest().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): CreateUpdateUserRequest {
-    return new CreateUpdateUserRequest().fromJsonString(jsonString, options);
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): CreateUserRequest {
+    return new CreateUserRequest().fromJsonString(jsonString, options);
   }
 
-  static equals(a: CreateUpdateUserRequest | PlainMessage<CreateUpdateUserRequest> | undefined, b: CreateUpdateUserRequest | PlainMessage<CreateUpdateUserRequest> | undefined): boolean {
-    return proto3.util.equals(CreateUpdateUserRequest, a, b);
+  static equals(a: CreateUserRequest | PlainMessage<CreateUserRequest> | undefined, b: CreateUserRequest | PlainMessage<CreateUserRequest> | undefined): boolean {
+    return proto3.util.equals(CreateUserRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message backend.v1.GetOrganizationRequest
+ */
+export class GetOrganizationRequest extends Message<GetOrganizationRequest> {
+  /**
+   * The ID of the organization to get.
+   *
+   * @generated from field: string id = 1;
+   */
+  id = "";
+
+  constructor(data?: PartialMessage<GetOrganizationRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "backend.v1.GetOrganizationRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetOrganizationRequest {
+    return new GetOrganizationRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetOrganizationRequest {
+    return new GetOrganizationRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetOrganizationRequest {
+    return new GetOrganizationRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: GetOrganizationRequest | PlainMessage<GetOrganizationRequest> | undefined, b: GetOrganizationRequest | PlainMessage<GetOrganizationRequest> | undefined): boolean {
+    return proto3.util.equals(GetOrganizationRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message backend.v1.GetProjectRequest
+ */
+export class GetProjectRequest extends Message<GetProjectRequest> {
+  /**
+   * The ID of the project to get.
+   *
+   * @generated from field: string id = 1;
+   */
+  id = "";
+
+  constructor(data?: PartialMessage<GetProjectRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "backend.v1.GetProjectRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetProjectRequest {
+    return new GetProjectRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetProjectRequest {
+    return new GetProjectRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetProjectRequest {
+    return new GetProjectRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: GetProjectRequest | PlainMessage<GetProjectRequest> | undefined, b: GetProjectRequest | PlainMessage<GetProjectRequest> | undefined): boolean {
+    return proto3.util.equals(GetProjectRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message backend.v1.GetUserRequest
+ */
+export class GetUserRequest extends Message<GetUserRequest> {
+  /**
+   * The ID of the user to get.
+   *
+   * @generated from field: string id = 1;
+   */
+  id = "";
+
+  constructor(data?: PartialMessage<GetUserRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "backend.v1.GetUserRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetUserRequest {
+    return new GetUserRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetUserRequest {
+    return new GetUserRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetUserRequest {
+    return new GetUserRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: GetUserRequest | PlainMessage<GetUserRequest> | undefined, b: GetUserRequest | PlainMessage<GetUserRequest> | undefined): boolean {
+    return proto3.util.equals(GetUserRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message backend.v1.ListOrganizationsRequest
+ */
+export class ListOrganizationsRequest extends Message<ListOrganizationsRequest> {
+  /**
+   * The project ID to use for filtering.
+   *
+   * @generated from field: string project_id = 1;
+   */
+  projectId = "";
+
+  /**
+   * The page token to use for pagination.
+   *
+   * @generated from field: string page_token = 2;
+   */
+  pageToken = "";
+
+  constructor(data?: PartialMessage<ListOrganizationsRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "backend.v1.ListOrganizationsRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "project_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "page_token", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ListOrganizationsRequest {
+    return new ListOrganizationsRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ListOrganizationsRequest {
+    return new ListOrganizationsRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ListOrganizationsRequest {
+    return new ListOrganizationsRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: ListOrganizationsRequest | PlainMessage<ListOrganizationsRequest> | undefined, b: ListOrganizationsRequest | PlainMessage<ListOrganizationsRequest> | undefined): boolean {
+    return proto3.util.equals(ListOrganizationsRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message backend.v1.ListOrganizationsResponse
+ */
+export class ListOrganizationsResponse extends Message<ListOrganizationsResponse> {
+  /**
+   * The organizations retrieved by the ListOrganizations request.
+   *
+   * @generated from field: repeated openauth.v1.Organization organizations = 1;
+   */
+  organizations: Organization[] = [];
+
+  /**
+   * The next page token to use for pagination.
+   *
+   * @generated from field: string next_page_token = 2;
+   */
+  nextPageToken = "";
+
+  constructor(data?: PartialMessage<ListOrganizationsResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "backend.v1.ListOrganizationsResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "organizations", kind: "message", T: Organization, repeated: true },
+    { no: 2, name: "next_page_token", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ListOrganizationsResponse {
+    return new ListOrganizationsResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ListOrganizationsResponse {
+    return new ListOrganizationsResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ListOrganizationsResponse {
+    return new ListOrganizationsResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: ListOrganizationsResponse | PlainMessage<ListOrganizationsResponse> | undefined, b: ListOrganizationsResponse | PlainMessage<ListOrganizationsResponse> | undefined): boolean {
+    return proto3.util.equals(ListOrganizationsResponse, a, b);
   }
 }
 
@@ -141,6 +348,8 @@ export class CreateUpdateUserRequest extends Message<CreateUpdateUserRequest> {
  */
 export class ListProjectsRequest extends Message<ListProjectsRequest> {
   /**
+   * The page token to use for pagination.
+   *
    * @generated from field: string page_token = 1;
    */
   pageToken = "";
@@ -178,11 +387,15 @@ export class ListProjectsRequest extends Message<ListProjectsRequest> {
  */
 export class ListProjectsResponse extends Message<ListProjectsResponse> {
   /**
+   * The projects retrieved by the ListProjects request.
+   *
    * @generated from field: repeated openauth.v1.Project projects = 1;
    */
   projects: Project[] = [];
 
   /**
+   * The next page token to use for pagination.
+   *
    * @generated from field: string next_page_token = 2;
    */
   nextPageToken = "";
@@ -221,11 +434,15 @@ export class ListProjectsResponse extends Message<ListProjectsResponse> {
  */
 export class ListUsersRequest extends Message<ListUsersRequest> {
   /**
+   * The organization ID to use for filtering.
+   *
    * @generated from field: string organization_id = 1;
    */
   organizationId = "";
 
   /**
+   * The page token to use for pagination.
+   *
    * @generated from field: string page_token = 2;
    */
   pageToken = "";
@@ -264,11 +481,15 @@ export class ListUsersRequest extends Message<ListUsersRequest> {
  */
 export class ListUsersResponse extends Message<ListUsersResponse> {
   /**
+   * The users retrieved by the ListUsers request.
+   *
    * @generated from field: repeated openauth.v1.User users = 1;
    */
   users: User[] = [];
 
   /**
+   * The next page token to use for pagination.
+   *
    * @generated from field: string next_page_token = 2;
    */
   nextPageToken = "";
@@ -303,15 +524,113 @@ export class ListUsersResponse extends Message<ListUsersResponse> {
 }
 
 /**
- * @generated from message backend.v1.UpdateUserPasswordRequest
+ * @generated from message backend.v1.UpdateOrganizationRequest
  */
-export class UpdateUserPasswordRequest extends Message<UpdateUserPasswordRequest> {
+export class UpdateOrganizationRequest extends Message<UpdateOrganizationRequest> {
   /**
+   * The ID of the organization to update.
+   *
    * @generated from field: string id = 1;
    */
   id = "";
 
   /**
+   * The organization updates to apply.
+   *
+   * @generated from field: openauth.v1.Organization organization = 2;
+   */
+  organization?: Organization;
+
+  constructor(data?: PartialMessage<UpdateOrganizationRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "backend.v1.UpdateOrganizationRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "organization", kind: "message", T: Organization },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): UpdateOrganizationRequest {
+    return new UpdateOrganizationRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): UpdateOrganizationRequest {
+    return new UpdateOrganizationRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): UpdateOrganizationRequest {
+    return new UpdateOrganizationRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: UpdateOrganizationRequest | PlainMessage<UpdateOrganizationRequest> | undefined, b: UpdateOrganizationRequest | PlainMessage<UpdateOrganizationRequest> | undefined): boolean {
+    return proto3.util.equals(UpdateOrganizationRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message backend.v1.UpdateProjectRequest
+ */
+export class UpdateProjectRequest extends Message<UpdateProjectRequest> {
+  /**
+   * The ID of the project to update.
+   *
+   * @generated from field: string id = 1;
+   */
+  id = "";
+
+  /**
+   * The project updates to apply.
+   *
+   * @generated from field: openauth.v1.Project project = 2;
+   */
+  project?: Project;
+
+  constructor(data?: PartialMessage<UpdateProjectRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "backend.v1.UpdateProjectRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "project", kind: "message", T: Project },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): UpdateProjectRequest {
+    return new UpdateProjectRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): UpdateProjectRequest {
+    return new UpdateProjectRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): UpdateProjectRequest {
+    return new UpdateProjectRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: UpdateProjectRequest | PlainMessage<UpdateProjectRequest> | undefined, b: UpdateProjectRequest | PlainMessage<UpdateProjectRequest> | undefined): boolean {
+    return proto3.util.equals(UpdateProjectRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message backend.v1.UpdateUserPasswordRequest
+ */
+export class UpdateUserPasswordRequest extends Message<UpdateUserPasswordRequest> {
+  /**
+   * The ID of the user to update.
+   *
+   * @generated from field: string id = 1;
+   */
+  id = "";
+
+  /**
+   * The new password for the user.
+   *
    * @generated from field: string password = 2;
    */
   password = "";
@@ -346,10 +665,59 @@ export class UpdateUserPasswordRequest extends Message<UpdateUserPasswordRequest
 }
 
 /**
+ * @generated from message backend.v1.UpdateUserRequest
+ */
+export class UpdateUserRequest extends Message<UpdateUserRequest> {
+  /**
+   * The ID of the user to update.
+   *
+   * @generated from field: string id = 1;
+   */
+  id = "";
+
+  /**
+   * The user updates to apply.
+   *
+   * @generated from field: openauth.v1.User user = 2;
+   */
+  user?: User;
+
+  constructor(data?: PartialMessage<UpdateUserRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "backend.v1.UpdateUserRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "user", kind: "message", T: User },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): UpdateUserRequest {
+    return new UpdateUserRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): UpdateUserRequest {
+    return new UpdateUserRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): UpdateUserRequest {
+    return new UpdateUserRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: UpdateUserRequest | PlainMessage<UpdateUserRequest> | undefined, b: UpdateUserRequest | PlainMessage<UpdateUserRequest> | undefined): boolean {
+    return proto3.util.equals(UpdateUserRequest, a, b);
+  }
+}
+
+/**
  * @generated from message backend.v1.UpdateUserResponse
  */
 export class UpdateUserResponse extends Message<UpdateUserResponse> {
   /**
+   * The user updated by the UpdateUser request.
+   *
    * @generated from field: openauth.v1.User user = 1;
    */
   user?: User;

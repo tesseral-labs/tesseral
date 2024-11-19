@@ -70,7 +70,7 @@ func (s *Store) RevokeIntermediateSession(ctx *context.Context, ID string) error
 	}
 	defer rollback()
 
-	sessionId, err := idformat.IntermediateSession.Parse(req.ID)
+	sessionId, err := idformat.IntermediateSession.Parse(ID)
 	if err != nil {
 		return err
 	}

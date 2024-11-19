@@ -53,7 +53,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/CreateOrganizationResponse'
+                                $ref: '#/components/schemas/Organization'
                 default:
                     description: Default error response
                     content:
@@ -79,7 +79,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/GetOrganizationResponse'
+                                $ref: '#/components/schemas/Organization'
                 default:
                     description: Default error response
                     content:
@@ -102,7 +102,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/UpdateOrganizationRequest'
+                            $ref: '#/components/schemas/Organization'
                 required: true
             responses:
                 "200":
@@ -110,7 +110,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/UpdateOrganizationResponse'
+                                $ref: '#/components/schemas/Organization'
                 default:
                     description: Default error response
                     content:
@@ -147,11 +147,17 @@ paths:
                 - BackendService
             description: Creates a project.
             operationId: BackendService_CreateProject
+            parameters:
+                - name: displayName
+                  in: query
+                  description: The display name of the associated organization to create.
+                  schema:
+                    type: string
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/CreateProjectRequest'
+                            $ref: '#/components/schemas/Project'
                 required: true
             responses:
                 "200":
@@ -159,7 +165,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/CreateProjectResponse'
+                                $ref: '#/components/schemas/Project'
                 default:
                     description: Default error response
                     content:
@@ -185,7 +191,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/GetProjectResponse'
+                                $ref: '#/components/schemas/Project'
                 default:
                     description: Default error response
                     content:
@@ -208,7 +214,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/UpdateProjectRequest'
+                            $ref: '#/components/schemas/Project'
                 required: true
             responses:
                 "200":
@@ -216,7 +222,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/UpdateProjectResponse'
+                                $ref: '#/components/schemas/Project'
                 default:
                     description: Default error response
                     content:
@@ -262,7 +268,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/CreateUserRequest'
+                            $ref: '#/components/schemas/User'
                 required: true
             responses:
                 "200":
@@ -270,7 +276,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/CreateUserResponse'
+                                $ref: '#/components/schemas/User'
                 default:
                     description: Default error response
                     content:
@@ -296,7 +302,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/GetUserResponse'
+                                $ref: '#/components/schemas/User'
                 default:
                     description: Default error response
                     content:
@@ -319,7 +325,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/UpdateUserRequest'
+                            $ref: '#/components/schemas/User'
                 required: true
             responses:
                 "200":
@@ -327,7 +333,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/UpdateUserResponse'
+                                $ref: '#/components/schemas/User'
                 default:
                     description: Default error response
                     content:
@@ -359,7 +365,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/UpdateUserPasswordResponse'
+                                $ref: '#/components/schemas/User'
                 default:
                     description: Default error response
                     content:
@@ -540,34 +546,6 @@ components:
                     allOf:
                         - $ref: '#/components/schemas/Organization'
                     description: The organization to create.
-        CreateOrganizationResponse:
-            type: object
-            properties:
-                organization:
-                    allOf:
-                        - $ref: '#/components/schemas/Organization'
-                    description: The organization created by the CreateOrganization request.
-        CreateProjectRequest:
-            type: object
-            properties:
-                project:
-                    allOf:
-                        - $ref: '#/components/schemas/Project'
-                    description: The project to create.
-        CreateProjectResponse:
-            type: object
-            properties:
-                project:
-                    allOf:
-                        - $ref: '#/components/schemas/Project'
-                    description: The project created by the CreateProject request.
-        CreateUserRequest:
-            type: object
-            properties:
-                user:
-                    allOf:
-                        - $ref: '#/components/schemas/User'
-                    description: The user to create.
         CreateUserResponse:
             type: object
             properties:
@@ -575,27 +553,13 @@ components:
                     allOf:
                         - $ref: '#/components/schemas/User'
                     description: The user created by the CreateUser request.
-        GetOrganizationResponse:
-            type: object
-            properties:
-                organization:
-                    allOf:
-                        - $ref: '#/components/schemas/Organization'
-                    description: The organization retrieved by the GetOrganization request.
-        GetProjectResponse:
-            type: object
-            properties:
-                project:
-                    allOf:
-                        - $ref: '#/components/schemas/Project'
-                    description: The project retrieved by the GetProject request.
         GetUserResponse:
             type: object
             properties:
                 user:
                     allOf:
                         - $ref: '#/components/schemas/User'
-                    description: The user retrieved by the GetUser request.
+                    description: The user returned by the GetUser request.
         GoogleProtobufAny:
             type: object
             properties:
@@ -710,40 +674,6 @@ components:
                         $ref: '#/components/schemas/GoogleProtobufAny'
                     description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
             description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
-        UpdateOrganizationRequest:
-            type: object
-            properties:
-                id:
-                    type: string
-                    description: The ID of the organization to update.
-                organization:
-                    allOf:
-                        - $ref: '#/components/schemas/Organization'
-                    description: The organization updates to apply.
-        UpdateOrganizationResponse:
-            type: object
-            properties:
-                organization:
-                    allOf:
-                        - $ref: '#/components/schemas/Organization'
-                    description: The organization updated by the UpdateOrganization request.
-        UpdateProjectRequest:
-            type: object
-            properties:
-                id:
-                    type: string
-                    description: The ID of the project to update.
-                project:
-                    allOf:
-                        - $ref: '#/components/schemas/Project'
-                    description: The project updates to apply.
-        UpdateProjectResponse:
-            type: object
-            properties:
-                project:
-                    allOf:
-                        - $ref: '#/components/schemas/Project'
-                    description: The project updated by the UpdateProject request.
         UpdateUserPasswordRequest:
             type: object
             properties:
@@ -753,23 +683,6 @@ components:
                 password:
                     type: string
                     description: The new password for the user.
-        UpdateUserPasswordResponse:
-            type: object
-            properties:
-                user:
-                    allOf:
-                        - $ref: '#/components/schemas/User'
-                    description: The user updated by the UpdateUserPassword request.
-        UpdateUserRequest:
-            type: object
-            properties:
-                id:
-                    type: string
-                    description: The ID of the user to update.
-                user:
-                    allOf:
-                        - $ref: '#/components/schemas/User'
-                    description: The user updates to apply.
         UpdateUserResponse:
             type: object
             properties:

@@ -16,7 +16,7 @@ insert into method_verification_challenges (
   email,
   auth_method,
   expire_time,
-  secret_token
+  secret_token_sha256
 ) values (
   $1, 
   $2, 

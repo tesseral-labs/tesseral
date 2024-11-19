@@ -1,6 +1,7 @@
 package store
 
 import (
+	"bytes"
 	"context"
 	"crypto/rand"
 	"errors"
@@ -8,18 +9,19 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/openauth-dev/openauth/internal/crypto"
 	"github.com/openauth-dev/openauth/internal/store/idformat"
 	"github.com/openauth-dev/openauth/internal/store/queries"
 )
 
 type MethodVerificationChallenge struct {
-	ID 							uuid.UUID
-	ProjectID 			uuid.UUID
-	Email 					string
-	AuthMethod 			queries.AuthMethod
-	ExpireTime 			time.Time
-	CompleteTime 		time.Time
-	SecretToken 		string
+	ID 									uuid.UUID
+	ProjectID 					uuid.UUID
+	Email 							string
+	AuthMethod 					queries.AuthMethod
+	ExpireTime 					time.Time
+	CompleteTime 				time.Time
+	SecretTokenSha256 	[]byte
 }
 
 var ErrMethodVerificationChallengeExpired = errors.New("method verification challenge has expired")
@@ -54,6 +56,7 @@ func (s *Store) CreateMethodVerificationChallenge(
 	if err != nil {
 		return nil, err
 	}
+	secretTokenSha256 := crypto.StringToSha256(secretToken)
 
 	createdMethodVerificationChallenge, err := q.CreateMethodVerificationChallenge(*ctx, queries.CreateMethodVerificationChallengeParams{
 		ID: uuid.New(),
@@ -61,7 +64,7 @@ func (s *Store) CreateMethodVerificationChallenge(
 		Email: req.UnverifiedEmail,
 		AuthMethod: req.AuthMethod,
 		ExpireTime: &expiresAt,
-		SecretToken: secretToken,
+		SecretTokenSha256: secretTokenSha256,
 	})
 	if err != nil {
 		return nil, err
@@ -104,14 +107,16 @@ func (s *Store) CompleteMethodVerificationChallenge(
 		return ErrMethodVerificationChallengeExpired
 	}
 
+	secretTokenSha256 := crypto.StringToSha256(req.SecretToken)
+
 	// Check if the secret token matches
-	if existingMVC.SecretToken != req.SecretToken {
+	if !bytes.Equal(existingMVC.SecretTokenSha256, secretTokenSha256) {
 		return ErrMethodVerificationChallengeSecretTokenMismatch
 	}
 
 	// Update the challenge to mark it as complete
 	completeTime := time.Now()
-	updatedMVC, err := q.CompleteMethodVerificationChallenge(*ctx, queries.CompleteMethodVerificationChallengeParams{
+	_, err = q.CompleteMethodVerificationChallenge(*ctx, queries.CompleteMethodVerificationChallengeParams{
 		ID: mvcID,
 		CompleteTime: &completeTime,
 	})
@@ -123,7 +128,7 @@ func (s *Store) CompleteMethodVerificationChallenge(
 		return err
 	}
 
-	return transformMethodVerificationChallenge(updatedMVC), nil
+	return nil
 }
 
 func generateSecretToken() (string, error) {
@@ -152,6 +157,6 @@ func transformMethodVerificationChallenge(mvc queries.MethodVerificationChalleng
 		AuthMethod: mvc.AuthMethod,
 		ExpireTime: *mvc.ExpireTime,
 		CompleteTime: *mvc.CompleteTime,
-		SecretToken: mvc.SecretToken,
+		SecretTokenSha256: mvc.SecretTokenSha256,
 	}
 }

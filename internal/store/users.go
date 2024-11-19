@@ -43,91 +43,7 @@ func (s * Store) CreateUser(ctx context.Context, req *openauthv1.User) (*openaut
 	return transformUser(&createdUser), nil
 }
 
-func (s *Store) CreateUnverifiedUser(ctx context.Context, req *openauthv1.CreateUnverifiedUserRequest) (*openauthv1.User, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
-	if err != nil {
-		return nil, err
-	}
-	defer rollback()
-
-	organizationId, err := idformat.Organization.Parse(req.OrganizationId)
-	if err != nil {
-		return nil, err
-	}
-
-	createdUser, err := q.CreateUnverifiedUser(ctx, queries.CreateUnverifiedUserParams{
-		ID: uuid.New(),
-		OrganizationID: organizationId,
-		UnverifiedEmail: &req.UnverifiedEmail,
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	if err := commit(); err != nil {
-		return nil, err
-	}
-
-	return transformUser(&createdUser), nil
-}
-
-func (s *Store) CreateGoogleUser(ctx context.Context, req *openauthv1.CreateGoogleUserRequest) (*openauthv1.User, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
-	if err != nil {
-		return nil, err
-	}
-	defer rollback()
-
-	organizationId, err := idformat.Organization.Parse(req.OrganizationId)
-	if err != nil {
-		return nil, err
-	}
-
-	createdUser, err := q.CreateGoogleUser(ctx, queries.CreateGoogleUserParams{
-		ID: uuid.New(),
-		OrganizationID: organizationId,
-		GoogleUserID: &req.GoogleUserId,
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	if err := commit(); err != nil {
-		return nil, err
-	}
-
-	return transformUser(&createdUser), nil
-}
-
-func (s *Store) CreateMicrosoftUser(ctx context.Context, req *openauthv1.CreateMicrosoftUserRequest) (*openauthv1.User, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
-	if err != nil {
-		return nil, err
-	}
-	defer rollback()
-
-	organizationId, err := idformat.Organization.Parse(req.OrganizationId)
-	if err != nil {
-		return nil, err
-	}
-
-	createdUser, err := q.CreateMicrosoftUser(ctx, queries.CreateMicrosoftUserParams{
-		ID: uuid.New(),
-		OrganizationID: organizationId,
-		MicrosoftUserID: &req.MicrosoftUserId,
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	if err := commit(); err != nil {
-		return nil, err
-	}
-
-	return transformUser(&createdUser), nil
-}
-
-func (s *Store) GetUser(ctx context.Context, req *openauthv1.ResourceIdRequest) (*openauthv1.User, error) {
+func (s *Store) GetUser(ctx context.Context, req *backendv1.GetUserRequest) (*openauthv1.User, error) {
 	_, q, _, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -192,7 +108,7 @@ func (s * Store) ListUsers(ctx context.Context, req *backendv1.ListUsersRequest)
 	}, nil
 }
 
-func (s *Store) UpdateUser(ctx context.Context, req *openauthv1.User) (*openauthv1.User, error) {
+func (s *Store) UpdateUser(ctx context.Context, req *backendv1.UpdateUserRequest) (*openauthv1.User, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -204,7 +120,7 @@ func (s *Store) UpdateUser(ctx context.Context, req *openauthv1.User) (*openauth
 		return nil, err
 	}
 
-	organizationId, err := idformat.Organization.Parse(req.OrganizationId)
+	organizationId, err := idformat.Organization.Parse(req.User.OrganizationId)
 	if err != nil {
 		return nil, err
 	}
@@ -214,29 +130,29 @@ func (s *Store) UpdateUser(ctx context.Context, req *openauthv1.User) (*openauth
 	}
 
 	// Conditionally update organizationID
-	if req.OrganizationId != "" {
+	if req.User.OrganizationId != "" {
 		updates.OrganizationID = organizationId
 	}
 
 	// Conditionally update email addresses
-	if req.UnverifiedEmail != "" {
-		updates.UnverifiedEmail = &req.UnverifiedEmail
+	if req.User.UnverifiedEmail != "" {
+		updates.UnverifiedEmail = &req.User.UnverifiedEmail
 	}
-	if req.VerifiedEmail != "" {
-		updates.VerifiedEmail = &req.VerifiedEmail
+	if req.User.VerifiedEmail != "" {
+		updates.VerifiedEmail = &req.User.VerifiedEmail
 	}
 
 	// Conditionally update login method user IDs
-	if req.GoogleUserId != "" {
-		updates.GoogleUserID = &req.GoogleUserId
+	if req.User.GoogleUserId != "" {
+		updates.GoogleUserID = &req.User.GoogleUserId
 	}
-	if req.MicrosoftUserId != "" {
-		updates.MicrosoftUserID = &req.MicrosoftUserId
+	if req.User.MicrosoftUserId != "" {
+		updates.MicrosoftUserID = &req.User.MicrosoftUserId
 	}
 
 	// Conditionall update password
-	if req.PasswordBcrypt != "" {
-		updates.PasswordBcrypt = &req.PasswordBcrypt
+	if req.User.PasswordBcrypt != "" {
+		updates.PasswordBcrypt = &req.User.PasswordBcrypt
 	}
 
 	user, err := q.UpdateUser(ctx, updates)

@@ -29107,7 +29107,7 @@
   );
   var Button = import_react.default.forwardRef(
     (_a, ref) => {
-      var _b = _a, { className, variant, size, asChild = false } = _b, props = __objRest(_b, ["className", "variant", "size", "asChild"]);
+      var _b = _a, { className, variant, size } = _b, props = __objRest(_b, ["className", "variant", "size"]);
       return /* @__PURE__ */ import_react.default.createElement(
         "button",
         __spreadValues({

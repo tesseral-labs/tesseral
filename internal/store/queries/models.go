@@ -68,13 +68,13 @@ type IntermediateSession struct {
 }
 
 type MethodVerificationChallenge struct {
-	ID           uuid.UUID
-	ProjectID    uuid.UUID
-	CompleteTime *time.Time
-	Email        string
-	AuthMethod   AuthMethod
-	ExpireTime   *time.Time
-	SecretToken  string
+	ID                uuid.UUID
+	ProjectID         uuid.UUID
+	CompleteTime      *time.Time
+	Email             string
+	AuthMethod        AuthMethod
+	ExpireTime        *time.Time
+	SecretTokenSha256 []byte
 }
 
 type Organization struct {

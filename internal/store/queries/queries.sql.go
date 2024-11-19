@@ -20,7 +20,7 @@ insert into method_verification_challenges (
   $1, 
   $2
 )
-returning id, project_id, complete_time, email, auth_method, expire_time, secret_token
+returning id, project_id, complete_time, email, auth_method, expire_time, secret_token_sha256
 `
 
 type CompleteMethodVerificationChallengeParams struct {
@@ -38,7 +38,7 @@ func (q *Queries) CompleteMethodVerificationChallenge(ctx context.Context, arg C
 		&i.Email,
 		&i.AuthMethod,
 		&i.ExpireTime,
-		&i.SecretToken,
+		&i.SecretTokenSha256,
 	)
 	return i, err
 }
@@ -149,7 +149,7 @@ insert into method_verification_challenges (
   email,
   auth_method,
   expire_time,
-  secret_token
+  secret_token_sha256
 ) values (
   $1, 
   $2, 
@@ -159,17 +159,17 @@ insert into method_verification_challenges (
   $6,
   $7
 )
-returning id, project_id, complete_time, email, auth_method, expire_time, secret_token
+returning id, project_id, complete_time, email, auth_method, expire_time, secret_token_sha256
 `
 
 type CreateMethodVerificationChallengeParams struct {
-	ID           uuid.UUID
-	ProjectID    uuid.UUID
-	CompleteTime *time.Time
-	Email        string
-	AuthMethod   AuthMethod
-	ExpireTime   *time.Time
-	SecretToken  string
+	ID                uuid.UUID
+	ProjectID         uuid.UUID
+	CompleteTime      *time.Time
+	Email             string
+	AuthMethod        AuthMethod
+	ExpireTime        *time.Time
+	SecretTokenSha256 []byte
 }
 
 func (q *Queries) CreateMethodVerificationChallenge(ctx context.Context, arg CreateMethodVerificationChallengeParams) (MethodVerificationChallenge, error) {
@@ -180,7 +180,7 @@ func (q *Queries) CreateMethodVerificationChallenge(ctx context.Context, arg Cre
 		arg.Email,
 		arg.AuthMethod,
 		arg.ExpireTime,
-		arg.SecretToken,
+		arg.SecretTokenSha256,
 	)
 	var i MethodVerificationChallenge
 	err := row.Scan(
@@ -190,7 +190,7 @@ func (q *Queries) CreateMethodVerificationChallenge(ctx context.Context, arg Cre
 		&i.Email,
 		&i.AuthMethod,
 		&i.ExpireTime,
-		&i.SecretToken,
+		&i.SecretTokenSha256,
 	)
 	return i, err
 }
@@ -516,7 +516,7 @@ func (q *Queries) GetIntermediateSessionByID(ctx context.Context, id uuid.UUID) 
 }
 
 const getMethodVerificationChallengeByID = `-- name: GetMethodVerificationChallengeByID :one
-select id, project_id, complete_time, email, auth_method, expire_time, secret_token from method_verification_challenges where id = $1
+select id, project_id, complete_time, email, auth_method, expire_time, secret_token_sha256 from method_verification_challenges where id = $1
 `
 
 func (q *Queries) GetMethodVerificationChallengeByID(ctx context.Context, id uuid.UUID) (MethodVerificationChallenge, error) {
@@ -529,7 +529,7 @@ func (q *Queries) GetMethodVerificationChallengeByID(ctx context.Context, id uui
 		&i.Email,
 		&i.AuthMethod,
 		&i.ExpireTime,
-		&i.SecretToken,
+		&i.SecretTokenSha256,
 	)
 	return i, err
 }
