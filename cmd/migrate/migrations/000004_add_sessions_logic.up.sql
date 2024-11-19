@@ -15,14 +15,16 @@ create table method_verification_challenges (
   auth_method       auth_method NOT NULL,
   expire_time       timestamp with time zone NOT NULL,
   -- the verification token that the user must provide to verify the email address
-  secret_token      character varying NOT NULL,
+  secret_token      character varying NOT NULL
 );
 
 -- temprorary session created after the first step of the login process.
 -- this session has a much more limited permissions scope than the final session.
 create table intermediate_sessions(
   id                            uuid not null primary key,
-  user_id                       uuid not null,
+  project_id                    uuid not null references projects(id),
+  unverified_email              character varying,
+  verified_email                character varying,
   created_time                  timestamp with time zone not null default now(),
   -- the timestamp for when the session expires
   expire_time                   timestamp with time zone not null,

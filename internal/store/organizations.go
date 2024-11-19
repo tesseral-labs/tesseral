@@ -4,6 +4,8 @@ import (
 	"context"
 
 	"github.com/google/uuid"
+	backendv1 "github.com/openauth-dev/openauth/internal/gen/backend/v1"
+	frontendv1 "github.com/openauth-dev/openauth/internal/gen/frontend/v1"
 	openauthv1 "github.com/openauth-dev/openauth/internal/gen/openauth/v1"
 	"github.com/openauth-dev/openauth/internal/store/idformat"
 	"github.com/openauth-dev/openauth/internal/store/queries"
@@ -42,7 +44,7 @@ func (s *Store) CreateOrganization(ctx context.Context, req *openauthv1.Organiza
 	return transformOrganization(createdOrganization), nil
 }
 
-func (s *Store) GetOrganization(ctx context.Context, req *openauthv1.ResourceIdRequest) (*openauthv1.Organization, error) {
+func (s *Store) GetOrganization(ctx context.Context, req *backendv1.GetOrganizationRequest) (*openauthv1.Organization, error) {
 	_, q, _, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -62,8 +64,50 @@ func (s *Store) GetOrganization(ctx context.Context, req *openauthv1.ResourceIdR
 	return transformOrganization(organization), nil
 }
 
+func (s *Store) ListFrontendOrganizations(ctx context.Context, req *frontendv1.ListOrganizationsRequest) (*frontendv1.ListOrganizationsResponse, error) {
+	_, q, _, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	projectId, err := idformat.Project.Parse(req.ProjectId)
+	if err != nil {
+		return nil, err
+	}
+
+	limit := 10
+	organizationRecords, err := q.ListOrganizationsByProjectIdAndEmail(ctx, queries.ListOrganizationsByProjectIdAndEmailParams{
+		ProjectID: projectId,
+		VerifiedEmail: &req.Email,
+		Limit: int32(limit + 1),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	organizations := []*openauthv1.Organization{}
+	for _, organization := range organizationRecords {
+		organizations = append(organizations, &openauthv1.Organization{
+			Id: organization.ID.String(),
+			DisplayName: organization.DisplayName,
+		})
+	}
+
+	var nextPageToken string
+	if len(organizations) == limit + 1 {
+		nextPageToken = s.pageEncoder.Marshal(organizations[limit].Id)
+		organizations = organizations[:limit]
+	}
+
+	return &frontendv1.ListOrganizationsResponse{
+		Organizations: organizations,
+		NextPageToken: nextPageToken,
+	}, nil
+}
+
 // TODO: Ensure that this function can only be called via a backend service reuqest
-func (s *Store) ListOrganizations(ctx context.Context, req *openauthv1.ListOrganizationsRequest) (*openauthv1.ListOrganizationsResponse, error) {
+func (s *Store) ListOrganizations(ctx context.Context, req *backendv1.ListOrganizationsRequest) (*backendv1.ListOrganizationsResponse, error) {
 	_, q, _, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -100,7 +144,7 @@ func (s *Store) ListOrganizations(ctx context.Context, req *openauthv1.ListOrgan
 		organizations = organizations[:limit]
 	}
 
-	return &openauthv1.ListOrganizationsResponse{
+	return &backendv1.ListOrganizationsResponse{
 		Organizations: organizations,
 		NextPageToken: nextPageToken,
 	}, nil

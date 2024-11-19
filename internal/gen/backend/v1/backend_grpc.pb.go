@@ -8,7 +8,6 @@ package backendv1
 
 import (
 	context "context"
-	v1 "github.com/openauth-dev/openauth/internal/gen/openauth/v1"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -20,22 +19,19 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	BackendService_CreateOrganization_FullMethodName   = "/backend.v1.BackendService/CreateOrganization"
-	BackendService_GetOrganization_FullMethodName      = "/backend.v1.BackendService/GetOrganization"
-	BackendService_ListOrganizations_FullMethodName    = "/backend.v1.BackendService/ListOrganizations"
-	BackendService_UpdateOrganization_FullMethodName   = "/backend.v1.BackendService/UpdateOrganization"
-	BackendService_CreateProject_FullMethodName        = "/backend.v1.BackendService/CreateProject"
-	BackendService_GetProject_FullMethodName           = "/backend.v1.BackendService/GetProject"
-	BackendService_ListProjects_FullMethodName         = "/backend.v1.BackendService/ListProjects"
-	BackendService_UpdateProject_FullMethodName        = "/backend.v1.BackendService/UpdateProject"
-	BackendService_CreateUser_FullMethodName           = "/backend.v1.BackendService/CreateUser"
-	BackendService_CreateGoogleUser_FullMethodName     = "/backend.v1.BackendService/CreateGoogleUser"
-	BackendService_CreateMicrosoftUser_FullMethodName  = "/backend.v1.BackendService/CreateMicrosoftUser"
-	BackendService_CreateUnverifiedUser_FullMethodName = "/backend.v1.BackendService/CreateUnverifiedUser"
-	BackendService_GetUser_FullMethodName              = "/backend.v1.BackendService/GetUser"
-	BackendService_ListUsers_FullMethodName            = "/backend.v1.BackendService/ListUsers"
-	BackendService_UpdateUser_FullMethodName           = "/backend.v1.BackendService/UpdateUser"
-	BackendService_UpdateUserPassword_FullMethodName   = "/backend.v1.BackendService/UpdateUserPassword"
+	BackendService_CreateOrganization_FullMethodName = "/backend.v1.BackendService/CreateOrganization"
+	BackendService_GetOrganization_FullMethodName    = "/backend.v1.BackendService/GetOrganization"
+	BackendService_ListOrganizations_FullMethodName  = "/backend.v1.BackendService/ListOrganizations"
+	BackendService_UpdateOrganization_FullMethodName = "/backend.v1.BackendService/UpdateOrganization"
+	BackendService_CreateProject_FullMethodName      = "/backend.v1.BackendService/CreateProject"
+	BackendService_GetProject_FullMethodName         = "/backend.v1.BackendService/GetProject"
+	BackendService_ListProjects_FullMethodName       = "/backend.v1.BackendService/ListProjects"
+	BackendService_UpdateProject_FullMethodName      = "/backend.v1.BackendService/UpdateProject"
+	BackendService_CreateUser_FullMethodName         = "/backend.v1.BackendService/CreateUser"
+	BackendService_GetUser_FullMethodName            = "/backend.v1.BackendService/GetUser"
+	BackendService_ListUsers_FullMethodName          = "/backend.v1.BackendService/ListUsers"
+	BackendService_UpdateUser_FullMethodName         = "/backend.v1.BackendService/UpdateUser"
+	BackendService_UpdateUserPassword_FullMethodName = "/backend.v1.BackendService/UpdateUserPassword"
 )
 
 // BackendServiceClient is the client API for BackendService service.
@@ -43,37 +39,31 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type BackendServiceClient interface {
 	// Creates an organization.
-	CreateOrganization(ctx context.Context, in *v1.Organization, opts ...grpc.CallOption) (*v1.Organization, error)
+	CreateOrganization(ctx context.Context, in *CreateOrganizationRequest, opts ...grpc.CallOption) (*CreateOrganizationResponse, error)
 	// Gets an organization.
-	GetOrganization(ctx context.Context, in *v1.ResourceIdRequest, opts ...grpc.CallOption) (*v1.Organization, error)
+	GetOrganization(ctx context.Context, in *GetOrganizationRequest, opts ...grpc.CallOption) (*GetOrganizationResponse, error)
 	// Gets a list of organizations.
-	ListOrganizations(ctx context.Context, in *v1.ListOrganizationsRequest, opts ...grpc.CallOption) (*v1.ListOrganizationsResponse, error)
+	ListOrganizations(ctx context.Context, in *ListOrganizationsRequest, opts ...grpc.CallOption) (*ListOrganizationsResponse, error)
 	// Updates an organization.
-	UpdateOrganization(ctx context.Context, in *v1.Organization, opts ...grpc.CallOption) (*v1.Organization, error)
+	UpdateOrganization(ctx context.Context, in *UpdateOrganizationRequest, opts ...grpc.CallOption) (*UpdateOrganizationResponse, error)
 	// Creates a project.
-	CreateProject(ctx context.Context, in *v1.CreateProjectRequest, opts ...grpc.CallOption) (*v1.Project, error)
+	CreateProject(ctx context.Context, in *CreateProjectRequest, opts ...grpc.CallOption) (*CreateProjectResponse, error)
 	// Gets a project.
-	GetProject(ctx context.Context, in *v1.ResourceIdRequest, opts ...grpc.CallOption) (*v1.Project, error)
+	GetProject(ctx context.Context, in *GetProjectRequest, opts ...grpc.CallOption) (*GetProjectResponse, error)
 	// Gets a list of projects.
 	ListProjects(ctx context.Context, in *ListProjectsRequest, opts ...grpc.CallOption) (*ListProjectsResponse, error)
 	// Updates a project.
-	UpdateProject(ctx context.Context, in *v1.Project, opts ...grpc.CallOption) (*v1.Project, error)
+	UpdateProject(ctx context.Context, in *UpdateProjectRequest, opts ...grpc.CallOption) (*UpdateProjectResponse, error)
 	// Creates a user.
-	CreateUser(ctx context.Context, in *v1.User, opts ...grpc.CallOption) (*v1.User, error)
-	// Creates a Google user.
-	CreateGoogleUser(ctx context.Context, in *v1.CreateGoogleUserRequest, opts ...grpc.CallOption) (*v1.User, error)
-	// Creates a Microsoft user.
-	CreateMicrosoftUser(ctx context.Context, in *v1.CreateMicrosoftUserRequest, opts ...grpc.CallOption) (*v1.User, error)
-	// Creates an unverified user.
-	CreateUnverifiedUser(ctx context.Context, in *v1.CreateUnverifiedUserRequest, opts ...grpc.CallOption) (*v1.User, error)
+	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error)
 	// Gets a user.
-	GetUser(ctx context.Context, in *v1.ResourceIdRequest, opts ...grpc.CallOption) (*v1.User, error)
+	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error)
 	// Gets a list of users.
 	ListUsers(ctx context.Context, in *ListUsersRequest, opts ...grpc.CallOption) (*ListUsersResponse, error)
 	// Updates a user.
-	UpdateUser(ctx context.Context, in *v1.User, opts ...grpc.CallOption) (*v1.User, error)
+	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UpdateUserResponse, error)
 	// Updates a user's password.
-	UpdateUserPassword(ctx context.Context, in *UpdateUserPasswordRequest, opts ...grpc.CallOption) (*v1.User, error)
+	UpdateUserPassword(ctx context.Context, in *UpdateUserPasswordRequest, opts ...grpc.CallOption) (*UpdateUserPasswordResponse, error)
 }
 
 type backendServiceClient struct {
@@ -84,9 +74,9 @@ func NewBackendServiceClient(cc grpc.ClientConnInterface) BackendServiceClient {
 	return &backendServiceClient{cc}
 }
 
-func (c *backendServiceClient) CreateOrganization(ctx context.Context, in *v1.Organization, opts ...grpc.CallOption) (*v1.Organization, error) {
+func (c *backendServiceClient) CreateOrganization(ctx context.Context, in *CreateOrganizationRequest, opts ...grpc.CallOption) (*CreateOrganizationResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(v1.Organization)
+	out := new(CreateOrganizationResponse)
 	err := c.cc.Invoke(ctx, BackendService_CreateOrganization_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -94,9 +84,9 @@ func (c *backendServiceClient) CreateOrganization(ctx context.Context, in *v1.Or
 	return out, nil
 }
 
-func (c *backendServiceClient) GetOrganization(ctx context.Context, in *v1.ResourceIdRequest, opts ...grpc.CallOption) (*v1.Organization, error) {
+func (c *backendServiceClient) GetOrganization(ctx context.Context, in *GetOrganizationRequest, opts ...grpc.CallOption) (*GetOrganizationResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(v1.Organization)
+	out := new(GetOrganizationResponse)
 	err := c.cc.Invoke(ctx, BackendService_GetOrganization_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -104,9 +94,9 @@ func (c *backendServiceClient) GetOrganization(ctx context.Context, in *v1.Resou
 	return out, nil
 }
 
-func (c *backendServiceClient) ListOrganizations(ctx context.Context, in *v1.ListOrganizationsRequest, opts ...grpc.CallOption) (*v1.ListOrganizationsResponse, error) {
+func (c *backendServiceClient) ListOrganizations(ctx context.Context, in *ListOrganizationsRequest, opts ...grpc.CallOption) (*ListOrganizationsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(v1.ListOrganizationsResponse)
+	out := new(ListOrganizationsResponse)
 	err := c.cc.Invoke(ctx, BackendService_ListOrganizations_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -114,9 +104,9 @@ func (c *backendServiceClient) ListOrganizations(ctx context.Context, in *v1.Lis
 	return out, nil
 }
 
-func (c *backendServiceClient) UpdateOrganization(ctx context.Context, in *v1.Organization, opts ...grpc.CallOption) (*v1.Organization, error) {
+func (c *backendServiceClient) UpdateOrganization(ctx context.Context, in *UpdateOrganizationRequest, opts ...grpc.CallOption) (*UpdateOrganizationResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(v1.Organization)
+	out := new(UpdateOrganizationResponse)
 	err := c.cc.Invoke(ctx, BackendService_UpdateOrganization_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -124,9 +114,9 @@ func (c *backendServiceClient) UpdateOrganization(ctx context.Context, in *v1.Or
 	return out, nil
 }
 
-func (c *backendServiceClient) CreateProject(ctx context.Context, in *v1.CreateProjectRequest, opts ...grpc.CallOption) (*v1.Project, error) {
+func (c *backendServiceClient) CreateProject(ctx context.Context, in *CreateProjectRequest, opts ...grpc.CallOption) (*CreateProjectResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(v1.Project)
+	out := new(CreateProjectResponse)
 	err := c.cc.Invoke(ctx, BackendService_CreateProject_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -134,9 +124,9 @@ func (c *backendServiceClient) CreateProject(ctx context.Context, in *v1.CreateP
 	return out, nil
 }
 
-func (c *backendServiceClient) GetProject(ctx context.Context, in *v1.ResourceIdRequest, opts ...grpc.CallOption) (*v1.Project, error) {
+func (c *backendServiceClient) GetProject(ctx context.Context, in *GetProjectRequest, opts ...grpc.CallOption) (*GetProjectResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(v1.Project)
+	out := new(GetProjectResponse)
 	err := c.cc.Invoke(ctx, BackendService_GetProject_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -154,9 +144,9 @@ func (c *backendServiceClient) ListProjects(ctx context.Context, in *ListProject
 	return out, nil
 }
 
-func (c *backendServiceClient) UpdateProject(ctx context.Context, in *v1.Project, opts ...grpc.CallOption) (*v1.Project, error) {
+func (c *backendServiceClient) UpdateProject(ctx context.Context, in *UpdateProjectRequest, opts ...grpc.CallOption) (*UpdateProjectResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(v1.Project)
+	out := new(UpdateProjectResponse)
 	err := c.cc.Invoke(ctx, BackendService_UpdateProject_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -164,9 +154,9 @@ func (c *backendServiceClient) UpdateProject(ctx context.Context, in *v1.Project
 	return out, nil
 }
 
-func (c *backendServiceClient) CreateUser(ctx context.Context, in *v1.User, opts ...grpc.CallOption) (*v1.User, error) {
+func (c *backendServiceClient) CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(v1.User)
+	out := new(CreateUserResponse)
 	err := c.cc.Invoke(ctx, BackendService_CreateUser_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -174,39 +164,9 @@ func (c *backendServiceClient) CreateUser(ctx context.Context, in *v1.User, opts
 	return out, nil
 }
 
-func (c *backendServiceClient) CreateGoogleUser(ctx context.Context, in *v1.CreateGoogleUserRequest, opts ...grpc.CallOption) (*v1.User, error) {
+func (c *backendServiceClient) GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(v1.User)
-	err := c.cc.Invoke(ctx, BackendService_CreateGoogleUser_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *backendServiceClient) CreateMicrosoftUser(ctx context.Context, in *v1.CreateMicrosoftUserRequest, opts ...grpc.CallOption) (*v1.User, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(v1.User)
-	err := c.cc.Invoke(ctx, BackendService_CreateMicrosoftUser_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *backendServiceClient) CreateUnverifiedUser(ctx context.Context, in *v1.CreateUnverifiedUserRequest, opts ...grpc.CallOption) (*v1.User, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(v1.User)
-	err := c.cc.Invoke(ctx, BackendService_CreateUnverifiedUser_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *backendServiceClient) GetUser(ctx context.Context, in *v1.ResourceIdRequest, opts ...grpc.CallOption) (*v1.User, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(v1.User)
+	out := new(GetUserResponse)
 	err := c.cc.Invoke(ctx, BackendService_GetUser_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -224,9 +184,9 @@ func (c *backendServiceClient) ListUsers(ctx context.Context, in *ListUsersReque
 	return out, nil
 }
 
-func (c *backendServiceClient) UpdateUser(ctx context.Context, in *v1.User, opts ...grpc.CallOption) (*v1.User, error) {
+func (c *backendServiceClient) UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UpdateUserResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(v1.User)
+	out := new(UpdateUserResponse)
 	err := c.cc.Invoke(ctx, BackendService_UpdateUser_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -234,9 +194,9 @@ func (c *backendServiceClient) UpdateUser(ctx context.Context, in *v1.User, opts
 	return out, nil
 }
 
-func (c *backendServiceClient) UpdateUserPassword(ctx context.Context, in *UpdateUserPasswordRequest, opts ...grpc.CallOption) (*v1.User, error) {
+func (c *backendServiceClient) UpdateUserPassword(ctx context.Context, in *UpdateUserPasswordRequest, opts ...grpc.CallOption) (*UpdateUserPasswordResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(v1.User)
+	out := new(UpdateUserPasswordResponse)
 	err := c.cc.Invoke(ctx, BackendService_UpdateUserPassword_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -249,37 +209,31 @@ func (c *backendServiceClient) UpdateUserPassword(ctx context.Context, in *Updat
 // for forward compatibility.
 type BackendServiceServer interface {
 	// Creates an organization.
-	CreateOrganization(context.Context, *v1.Organization) (*v1.Organization, error)
+	CreateOrganization(context.Context, *CreateOrganizationRequest) (*CreateOrganizationResponse, error)
 	// Gets an organization.
-	GetOrganization(context.Context, *v1.ResourceIdRequest) (*v1.Organization, error)
+	GetOrganization(context.Context, *GetOrganizationRequest) (*GetOrganizationResponse, error)
 	// Gets a list of organizations.
-	ListOrganizations(context.Context, *v1.ListOrganizationsRequest) (*v1.ListOrganizationsResponse, error)
+	ListOrganizations(context.Context, *ListOrganizationsRequest) (*ListOrganizationsResponse, error)
 	// Updates an organization.
-	UpdateOrganization(context.Context, *v1.Organization) (*v1.Organization, error)
+	UpdateOrganization(context.Context, *UpdateOrganizationRequest) (*UpdateOrganizationResponse, error)
 	// Creates a project.
-	CreateProject(context.Context, *v1.CreateProjectRequest) (*v1.Project, error)
+	CreateProject(context.Context, *CreateProjectRequest) (*CreateProjectResponse, error)
 	// Gets a project.
-	GetProject(context.Context, *v1.ResourceIdRequest) (*v1.Project, error)
+	GetProject(context.Context, *GetProjectRequest) (*GetProjectResponse, error)
 	// Gets a list of projects.
 	ListProjects(context.Context, *ListProjectsRequest) (*ListProjectsResponse, error)
 	// Updates a project.
-	UpdateProject(context.Context, *v1.Project) (*v1.Project, error)
+	UpdateProject(context.Context, *UpdateProjectRequest) (*UpdateProjectResponse, error)
 	// Creates a user.
-	CreateUser(context.Context, *v1.User) (*v1.User, error)
-	// Creates a Google user.
-	CreateGoogleUser(context.Context, *v1.CreateGoogleUserRequest) (*v1.User, error)
-	// Creates a Microsoft user.
-	CreateMicrosoftUser(context.Context, *v1.CreateMicrosoftUserRequest) (*v1.User, error)
-	// Creates an unverified user.
-	CreateUnverifiedUser(context.Context, *v1.CreateUnverifiedUserRequest) (*v1.User, error)
+	CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error)
 	// Gets a user.
-	GetUser(context.Context, *v1.ResourceIdRequest) (*v1.User, error)
+	GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error)
 	// Gets a list of users.
 	ListUsers(context.Context, *ListUsersRequest) (*ListUsersResponse, error)
 	// Updates a user.
-	UpdateUser(context.Context, *v1.User) (*v1.User, error)
+	UpdateUser(context.Context, *UpdateUserRequest) (*UpdateUserResponse, error)
 	// Updates a user's password.
-	UpdateUserPassword(context.Context, *UpdateUserPasswordRequest) (*v1.User, error)
+	UpdateUserPassword(context.Context, *UpdateUserPasswordRequest) (*UpdateUserPasswordResponse, error)
 	mustEmbedUnimplementedBackendServiceServer()
 }
 
@@ -290,52 +244,43 @@ type BackendServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedBackendServiceServer struct{}
 
-func (UnimplementedBackendServiceServer) CreateOrganization(context.Context, *v1.Organization) (*v1.Organization, error) {
+func (UnimplementedBackendServiceServer) CreateOrganization(context.Context, *CreateOrganizationRequest) (*CreateOrganizationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateOrganization not implemented")
 }
-func (UnimplementedBackendServiceServer) GetOrganization(context.Context, *v1.ResourceIdRequest) (*v1.Organization, error) {
+func (UnimplementedBackendServiceServer) GetOrganization(context.Context, *GetOrganizationRequest) (*GetOrganizationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetOrganization not implemented")
 }
-func (UnimplementedBackendServiceServer) ListOrganizations(context.Context, *v1.ListOrganizationsRequest) (*v1.ListOrganizationsResponse, error) {
+func (UnimplementedBackendServiceServer) ListOrganizations(context.Context, *ListOrganizationsRequest) (*ListOrganizationsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListOrganizations not implemented")
 }
-func (UnimplementedBackendServiceServer) UpdateOrganization(context.Context, *v1.Organization) (*v1.Organization, error) {
+func (UnimplementedBackendServiceServer) UpdateOrganization(context.Context, *UpdateOrganizationRequest) (*UpdateOrganizationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateOrganization not implemented")
 }
-func (UnimplementedBackendServiceServer) CreateProject(context.Context, *v1.CreateProjectRequest) (*v1.Project, error) {
+func (UnimplementedBackendServiceServer) CreateProject(context.Context, *CreateProjectRequest) (*CreateProjectResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateProject not implemented")
 }
-func (UnimplementedBackendServiceServer) GetProject(context.Context, *v1.ResourceIdRequest) (*v1.Project, error) {
+func (UnimplementedBackendServiceServer) GetProject(context.Context, *GetProjectRequest) (*GetProjectResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetProject not implemented")
 }
 func (UnimplementedBackendServiceServer) ListProjects(context.Context, *ListProjectsRequest) (*ListProjectsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListProjects not implemented")
 }
-func (UnimplementedBackendServiceServer) UpdateProject(context.Context, *v1.Project) (*v1.Project, error) {
+func (UnimplementedBackendServiceServer) UpdateProject(context.Context, *UpdateProjectRequest) (*UpdateProjectResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateProject not implemented")
 }
-func (UnimplementedBackendServiceServer) CreateUser(context.Context, *v1.User) (*v1.User, error) {
+func (UnimplementedBackendServiceServer) CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
 }
-func (UnimplementedBackendServiceServer) CreateGoogleUser(context.Context, *v1.CreateGoogleUserRequest) (*v1.User, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateGoogleUser not implemented")
-}
-func (UnimplementedBackendServiceServer) CreateMicrosoftUser(context.Context, *v1.CreateMicrosoftUserRequest) (*v1.User, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateMicrosoftUser not implemented")
-}
-func (UnimplementedBackendServiceServer) CreateUnverifiedUser(context.Context, *v1.CreateUnverifiedUserRequest) (*v1.User, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateUnverifiedUser not implemented")
-}
-func (UnimplementedBackendServiceServer) GetUser(context.Context, *v1.ResourceIdRequest) (*v1.User, error) {
+func (UnimplementedBackendServiceServer) GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
 }
 func (UnimplementedBackendServiceServer) ListUsers(context.Context, *ListUsersRequest) (*ListUsersResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListUsers not implemented")
 }
-func (UnimplementedBackendServiceServer) UpdateUser(context.Context, *v1.User) (*v1.User, error) {
+func (UnimplementedBackendServiceServer) UpdateUser(context.Context, *UpdateUserRequest) (*UpdateUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUser not implemented")
 }
-func (UnimplementedBackendServiceServer) UpdateUserPassword(context.Context, *UpdateUserPasswordRequest) (*v1.User, error) {
+func (UnimplementedBackendServiceServer) UpdateUserPassword(context.Context, *UpdateUserPasswordRequest) (*UpdateUserPasswordResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUserPassword not implemented")
 }
 func (UnimplementedBackendServiceServer) mustEmbedUnimplementedBackendServiceServer() {}
@@ -360,7 +305,7 @@ func RegisterBackendServiceServer(s grpc.ServiceRegistrar, srv BackendServiceSer
 }
 
 func _BackendService_CreateOrganization_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(v1.Organization)
+	in := new(CreateOrganizationRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -372,13 +317,13 @@ func _BackendService_CreateOrganization_Handler(srv interface{}, ctx context.Con
 		FullMethod: BackendService_CreateOrganization_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).CreateOrganization(ctx, req.(*v1.Organization))
+		return srv.(BackendServiceServer).CreateOrganization(ctx, req.(*CreateOrganizationRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _BackendService_GetOrganization_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(v1.ResourceIdRequest)
+	in := new(GetOrganizationRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -390,13 +335,13 @@ func _BackendService_GetOrganization_Handler(srv interface{}, ctx context.Contex
 		FullMethod: BackendService_GetOrganization_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).GetOrganization(ctx, req.(*v1.ResourceIdRequest))
+		return srv.(BackendServiceServer).GetOrganization(ctx, req.(*GetOrganizationRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _BackendService_ListOrganizations_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(v1.ListOrganizationsRequest)
+	in := new(ListOrganizationsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -408,13 +353,13 @@ func _BackendService_ListOrganizations_Handler(srv interface{}, ctx context.Cont
 		FullMethod: BackendService_ListOrganizations_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).ListOrganizations(ctx, req.(*v1.ListOrganizationsRequest))
+		return srv.(BackendServiceServer).ListOrganizations(ctx, req.(*ListOrganizationsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _BackendService_UpdateOrganization_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(v1.Organization)
+	in := new(UpdateOrganizationRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -426,13 +371,13 @@ func _BackendService_UpdateOrganization_Handler(srv interface{}, ctx context.Con
 		FullMethod: BackendService_UpdateOrganization_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).UpdateOrganization(ctx, req.(*v1.Organization))
+		return srv.(BackendServiceServer).UpdateOrganization(ctx, req.(*UpdateOrganizationRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _BackendService_CreateProject_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(v1.CreateProjectRequest)
+	in := new(CreateProjectRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -444,13 +389,13 @@ func _BackendService_CreateProject_Handler(srv interface{}, ctx context.Context,
 		FullMethod: BackendService_CreateProject_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).CreateProject(ctx, req.(*v1.CreateProjectRequest))
+		return srv.(BackendServiceServer).CreateProject(ctx, req.(*CreateProjectRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _BackendService_GetProject_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(v1.ResourceIdRequest)
+	in := new(GetProjectRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -462,7 +407,7 @@ func _BackendService_GetProject_Handler(srv interface{}, ctx context.Context, de
 		FullMethod: BackendService_GetProject_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).GetProject(ctx, req.(*v1.ResourceIdRequest))
+		return srv.(BackendServiceServer).GetProject(ctx, req.(*GetProjectRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -486,7 +431,7 @@ func _BackendService_ListProjects_Handler(srv interface{}, ctx context.Context, 
 }
 
 func _BackendService_UpdateProject_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(v1.Project)
+	in := new(UpdateProjectRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -498,13 +443,13 @@ func _BackendService_UpdateProject_Handler(srv interface{}, ctx context.Context,
 		FullMethod: BackendService_UpdateProject_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).UpdateProject(ctx, req.(*v1.Project))
+		return srv.(BackendServiceServer).UpdateProject(ctx, req.(*UpdateProjectRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _BackendService_CreateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(v1.User)
+	in := new(CreateUserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -516,67 +461,13 @@ func _BackendService_CreateUser_Handler(srv interface{}, ctx context.Context, de
 		FullMethod: BackendService_CreateUser_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).CreateUser(ctx, req.(*v1.User))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _BackendService_CreateGoogleUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(v1.CreateGoogleUserRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(BackendServiceServer).CreateGoogleUser(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: BackendService_CreateGoogleUser_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).CreateGoogleUser(ctx, req.(*v1.CreateGoogleUserRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _BackendService_CreateMicrosoftUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(v1.CreateMicrosoftUserRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(BackendServiceServer).CreateMicrosoftUser(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: BackendService_CreateMicrosoftUser_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).CreateMicrosoftUser(ctx, req.(*v1.CreateMicrosoftUserRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _BackendService_CreateUnverifiedUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(v1.CreateUnverifiedUserRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(BackendServiceServer).CreateUnverifiedUser(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: BackendService_CreateUnverifiedUser_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).CreateUnverifiedUser(ctx, req.(*v1.CreateUnverifiedUserRequest))
+		return srv.(BackendServiceServer).CreateUser(ctx, req.(*CreateUserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _BackendService_GetUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(v1.ResourceIdRequest)
+	in := new(GetUserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -588,7 +479,7 @@ func _BackendService_GetUser_Handler(srv interface{}, ctx context.Context, dec f
 		FullMethod: BackendService_GetUser_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).GetUser(ctx, req.(*v1.ResourceIdRequest))
+		return srv.(BackendServiceServer).GetUser(ctx, req.(*GetUserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -612,7 +503,7 @@ func _BackendService_ListUsers_Handler(srv interface{}, ctx context.Context, dec
 }
 
 func _BackendService_UpdateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(v1.User)
+	in := new(UpdateUserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -624,7 +515,7 @@ func _BackendService_UpdateUser_Handler(srv interface{}, ctx context.Context, de
 		FullMethod: BackendService_UpdateUser_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).UpdateUser(ctx, req.(*v1.User))
+		return srv.(BackendServiceServer).UpdateUser(ctx, req.(*UpdateUserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -689,18 +580,6 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateUser",
 			Handler:    _BackendService_CreateUser_Handler,
-		},
-		{
-			MethodName: "CreateGoogleUser",
-			Handler:    _BackendService_CreateGoogleUser_Handler,
-		},
-		{
-			MethodName: "CreateMicrosoftUser",
-			Handler:    _BackendService_CreateMicrosoftUser_Handler,
-		},
-		{
-			MethodName: "CreateUnverifiedUser",
-			Handler:    _BackendService_CreateUnverifiedUser_Handler,
 		},
 		{
 			MethodName: "GetUser",

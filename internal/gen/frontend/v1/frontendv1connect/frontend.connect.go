@@ -9,7 +9,6 @@ import (
 	context "context"
 	errors "errors"
 	v1 "github.com/openauth-dev/openauth/internal/gen/frontend/v1"
-	v11 "github.com/openauth-dev/openauth/internal/gen/openauth/v1"
 	http "net/http"
 	strings "strings"
 )
@@ -39,6 +38,9 @@ const (
 	FrontendServiceCreateUserProcedure = "/frontend.v1.FrontendService/CreateUser"
 	// FrontendServiceGetUserProcedure is the fully-qualified name of the FrontendService's GetUser RPC.
 	FrontendServiceGetUserProcedure = "/frontend.v1.FrontendService/GetUser"
+	// FrontendServiceListOrganizationsProcedure is the fully-qualified name of the FrontendService's
+	// ListOrganizations RPC.
+	FrontendServiceListOrganizationsProcedure = "/frontend.v1.FrontendService/ListOrganizations"
 	// FrontendServiceListUsersProcedure is the fully-qualified name of the FrontendService's ListUsers
 	// RPC.
 	FrontendServiceListUsersProcedure = "/frontend.v1.FrontendService/ListUsers"
@@ -51,12 +53,13 @@ const (
 
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
 var (
-	frontendServiceServiceDescriptor          = v1.File_frontend_v1_frontend_proto.Services().ByName("FrontendService")
-	frontendServiceCreateUserMethodDescriptor = frontendServiceServiceDescriptor.Methods().ByName("CreateUser")
-	frontendServiceGetUserMethodDescriptor    = frontendServiceServiceDescriptor.Methods().ByName("GetUser")
-	frontendServiceListUsersMethodDescriptor  = frontendServiceServiceDescriptor.Methods().ByName("ListUsers")
-	frontendServiceUpdateUserMethodDescriptor = frontendServiceServiceDescriptor.Methods().ByName("UpdateUser")
-	frontendServiceWhoAmIMethodDescriptor     = frontendServiceServiceDescriptor.Methods().ByName("WhoAmI")
+	frontendServiceServiceDescriptor                 = v1.File_frontend_v1_frontend_proto.Services().ByName("FrontendService")
+	frontendServiceCreateUserMethodDescriptor        = frontendServiceServiceDescriptor.Methods().ByName("CreateUser")
+	frontendServiceGetUserMethodDescriptor           = frontendServiceServiceDescriptor.Methods().ByName("GetUser")
+	frontendServiceListOrganizationsMethodDescriptor = frontendServiceServiceDescriptor.Methods().ByName("ListOrganizations")
+	frontendServiceListUsersMethodDescriptor         = frontendServiceServiceDescriptor.Methods().ByName("ListUsers")
+	frontendServiceUpdateUserMethodDescriptor        = frontendServiceServiceDescriptor.Methods().ByName("UpdateUser")
+	frontendServiceWhoAmIMethodDescriptor            = frontendServiceServiceDescriptor.Methods().ByName("WhoAmI")
 )
 
 // FrontendServiceClient is a client for the frontend.v1.FrontendService service.
@@ -64,7 +67,9 @@ type FrontendServiceClient interface {
 	// Creates a user.
 	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error)
 	// Gets a user.
-	GetUser(context.Context, *connect.Request[v11.ResourceIdRequest]) (*connect.Response[v1.GetUserResponse], error)
+	GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error)
+	// Gets a list of organizations.
+	ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error)
 	// Gets a list of users.
 	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
 	// Updates a user.
@@ -89,10 +94,16 @@ func NewFrontendServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			connect.WithSchema(frontendServiceCreateUserMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
-		getUser: connect.NewClient[v11.ResourceIdRequest, v1.GetUserResponse](
+		getUser: connect.NewClient[v1.GetUserRequest, v1.GetUserResponse](
 			httpClient,
 			baseURL+FrontendServiceGetUserProcedure,
 			connect.WithSchema(frontendServiceGetUserMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		listOrganizations: connect.NewClient[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse](
+			httpClient,
+			baseURL+FrontendServiceListOrganizationsProcedure,
+			connect.WithSchema(frontendServiceListOrganizationsMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
 		listUsers: connect.NewClient[v1.ListUsersRequest, v1.ListUsersResponse](
@@ -118,11 +129,12 @@ func NewFrontendServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 
 // frontendServiceClient implements FrontendServiceClient.
 type frontendServiceClient struct {
-	createUser *connect.Client[v1.CreateUserRequest, v1.CreateUserResponse]
-	getUser    *connect.Client[v11.ResourceIdRequest, v1.GetUserResponse]
-	listUsers  *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
-	updateUser *connect.Client[v1.UpdateUserRequest, v1.UpdateUserResponse]
-	whoAmI     *connect.Client[v1.WhoAmIRequest, v1.WhoAmIResponse]
+	createUser        *connect.Client[v1.CreateUserRequest, v1.CreateUserResponse]
+	getUser           *connect.Client[v1.GetUserRequest, v1.GetUserResponse]
+	listOrganizations *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
+	listUsers         *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
+	updateUser        *connect.Client[v1.UpdateUserRequest, v1.UpdateUserResponse]
+	whoAmI            *connect.Client[v1.WhoAmIRequest, v1.WhoAmIResponse]
 }
 
 // CreateUser calls frontend.v1.FrontendService.CreateUser.
@@ -131,8 +143,13 @@ func (c *frontendServiceClient) CreateUser(ctx context.Context, req *connect.Req
 }
 
 // GetUser calls frontend.v1.FrontendService.GetUser.
-func (c *frontendServiceClient) GetUser(ctx context.Context, req *connect.Request[v11.ResourceIdRequest]) (*connect.Response[v1.GetUserResponse], error) {
+func (c *frontendServiceClient) GetUser(ctx context.Context, req *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error) {
 	return c.getUser.CallUnary(ctx, req)
+}
+
+// ListOrganizations calls frontend.v1.FrontendService.ListOrganizations.
+func (c *frontendServiceClient) ListOrganizations(ctx context.Context, req *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error) {
+	return c.listOrganizations.CallUnary(ctx, req)
 }
 
 // ListUsers calls frontend.v1.FrontendService.ListUsers.
@@ -155,7 +172,9 @@ type FrontendServiceHandler interface {
 	// Creates a user.
 	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error)
 	// Gets a user.
-	GetUser(context.Context, *connect.Request[v11.ResourceIdRequest]) (*connect.Response[v1.GetUserResponse], error)
+	GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error)
+	// Gets a list of organizations.
+	ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error)
 	// Gets a list of users.
 	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
 	// Updates a user.
@@ -182,6 +201,12 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 		connect.WithSchema(frontendServiceGetUserMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
+	frontendServiceListOrganizationsHandler := connect.NewUnaryHandler(
+		FrontendServiceListOrganizationsProcedure,
+		svc.ListOrganizations,
+		connect.WithSchema(frontendServiceListOrganizationsMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
 	frontendServiceListUsersHandler := connect.NewUnaryHandler(
 		FrontendServiceListUsersProcedure,
 		svc.ListUsers,
@@ -206,6 +231,8 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 			frontendServiceCreateUserHandler.ServeHTTP(w, r)
 		case FrontendServiceGetUserProcedure:
 			frontendServiceGetUserHandler.ServeHTTP(w, r)
+		case FrontendServiceListOrganizationsProcedure:
+			frontendServiceListOrganizationsHandler.ServeHTTP(w, r)
 		case FrontendServiceListUsersProcedure:
 			frontendServiceListUsersHandler.ServeHTTP(w, r)
 		case FrontendServiceUpdateUserProcedure:
@@ -225,8 +252,12 @@ func (UnimplementedFrontendServiceHandler) CreateUser(context.Context, *connect.
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("frontend.v1.FrontendService.CreateUser is not implemented"))
 }
 
-func (UnimplementedFrontendServiceHandler) GetUser(context.Context, *connect.Request[v11.ResourceIdRequest]) (*connect.Response[v1.GetUserResponse], error) {
+func (UnimplementedFrontendServiceHandler) GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("frontend.v1.FrontendService.GetUser is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("frontend.v1.FrontendService.ListOrganizations is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error) {

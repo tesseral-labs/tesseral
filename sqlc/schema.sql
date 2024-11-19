@@ -17,9 +17,58 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+--
+-- Name: auth_method; Type: TYPE; Schema: public; Owner: postgres
+--
+
+CREATE TYPE public.auth_method AS ENUM (
+    'email',
+    'google',
+    'microsoft'
+);
+
+
+ALTER TYPE public.auth_method OWNER TO postgres;
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
+
+--
+-- Name: intermediate_sessions; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.intermediate_sessions (
+    id uuid NOT NULL,
+    project_id uuid NOT NULL,
+    unverified_email character varying,
+    verified_email character varying,
+    created_time timestamp with time zone DEFAULT now() NOT NULL,
+    expire_time timestamp with time zone NOT NULL,
+    token character varying NOT NULL,
+    token_sha256 bytea,
+    revoked boolean DEFAULT false NOT NULL
+);
+
+
+ALTER TABLE public.intermediate_sessions OWNER TO postgres;
+
+--
+-- Name: method_verification_challenges; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.method_verification_challenges (
+    id uuid NOT NULL,
+    project_id uuid NOT NULL,
+    complete_time timestamp with time zone,
+    email character varying NOT NULL,
+    auth_method public.auth_method NOT NULL,
+    expire_time timestamp with time zone NOT NULL,
+    secret_token character varying NOT NULL
+);
+
+
+ALTER TABLE public.method_verification_challenges OWNER TO postgres;
 
 --
 -- Name: organizations; Type: TABLE; Schema: public; Owner: postgres
@@ -71,6 +120,23 @@ CREATE TABLE public.schema_migrations (
 ALTER TABLE public.schema_migrations OWNER TO postgres;
 
 --
+-- Name: sessions; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.sessions (
+    id uuid NOT NULL,
+    user_id uuid NOT NULL,
+    created_time timestamp with time zone DEFAULT now() NOT NULL,
+    expire_time timestamp with time zone NOT NULL,
+    token character varying NOT NULL,
+    token_sha256 bytea,
+    revoked boolean DEFAULT false NOT NULL
+);
+
+
+ALTER TABLE public.sessions OWNER TO postgres;
+
+--
 -- Name: users; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -86,6 +152,14 @@ CREATE TABLE public.users (
 
 
 ALTER TABLE public.users OWNER TO postgres;
+
+--
+-- Name: intermediate_sessions intermediate_sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.intermediate_sessions
+    ADD CONSTRAINT intermediate_sessions_pkey PRIMARY KEY (id);
+
 
 --
 -- Name: organizations organizations_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
@@ -125,6 +199,14 @@ ALTER TABLE ONLY public.projects
 
 ALTER TABLE ONLY public.schema_migrations
     ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
+
+
+--
+-- Name: sessions sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.sessions
+    ADD CONSTRAINT sessions_pkey PRIMARY KEY (id);
 
 
 --
@@ -168,6 +250,22 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- Name: intermediate_sessions intermediate_sessions_project_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.intermediate_sessions
+    ADD CONSTRAINT intermediate_sessions_project_id_fkey FOREIGN KEY (project_id) REFERENCES public.projects(id);
+
+
+--
+-- Name: method_verification_challenges method_verification_challenges_project_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.method_verification_challenges
+    ADD CONSTRAINT method_verification_challenges_project_id_fkey FOREIGN KEY (project_id) REFERENCES public.projects(id);
+
+
+--
 -- Name: organizations organizations_project_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -181,6 +279,14 @@ ALTER TABLE ONLY public.organizations
 
 ALTER TABLE ONLY public.projects
     ADD CONSTRAINT projects_organization_id_fkey FOREIGN KEY (organization_id) REFERENCES public.organizations(id);
+
+
+--
+-- Name: sessions sessions_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.sessions
+    ADD CONSTRAINT sessions_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 
 --

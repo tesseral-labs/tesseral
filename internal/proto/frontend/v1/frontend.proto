@@ -19,9 +19,16 @@ service FrontendService {
   }
 
   // Gets a user.
-  rpc GetUser(openauth.v1.ResourceIdRequest) returns (GetUserResponse) {
+  rpc GetUser(GetUserRequest) returns (GetUserResponse) {
     option (google.api.http) = {
       get: "/frontend/v1/users/{id}"
+    };
+  }
+
+  // Gets a list of organizations.
+  rpc ListOrganizations(ListOrganizationsRequest) returns (ListOrganizationsResponse) {
+    option (google.api.http) = {
+      get: "/frontend/v1/organizations"
     };
   }
 
@@ -48,34 +55,78 @@ service FrontendService {
   }
 }
 
+message IntermediateSession {
+  // The ID of the organization this session is scoped to.
+  string id = 1;
+  // The the unverified email address for the user.
+  string unverified_email = 2;
+  // The verified email address for the user.
+  string verified_email = 3;
+  // The time the session was created.
+  google.protobuf.Timestamp created_time = 4;
+  // The timestamp for when the session expires
+  google.protobuf.Timestamp expire_time = 5;
+}
+
 message CreateUserRequest {
+  // The user to create.
   openauth.v1.User user = 1;
 }
 
 message CreateUserResponse {
+  // The user created by the CreateUser request.
   openauth.v1.User user = 1;
+}
+
+message GetUserRequest {
+  // The ID of the user to get.
+  string id = 1;
 }
 
 message GetUserResponse {
+  // The user returned by the GetUser request.
   openauth.v1.User user = 1;
 }
 
+message ListOrganizationsRequest {
+  // The ID of the project to use for filtering.
+  string project_id = 1;
+  // The email address to use for filtering.
+  string email = 2;
+  // The page token to use for pagination.
+  string page_token = 3;
+}
+
+message ListOrganizationsResponse {
+  // The organizations returned by the ListOrganizations request.
+  repeated openauth.v1.Organization organizations = 1;
+  // The next page token to use for pagination.
+  string next_page_token = 2;
+}
+
 message ListUsersRequest {
+  // The ID of the organization to use for filtering.
   string organization_id = 1;
+  // The page token to use for pagination.
   string page_token = 2;
 }
 
 message ListUsersResponse {
+  // The users returned by the ListUsers request.
   repeated openauth.v1.User users = 1;
+  // The next page token to use for pagination.
   string next_page_token = 2;
 }
 
 message UpdateUserRequest {
+  // The ID of the user to update.
   string id = 1;
+  // The user updates to apply.
   openauth.v1.User user = 2;
 }
 
 message UpdateUserResponse {
+  // The user updated by the UpdateUser request.
   openauth.v1.User user = 1;
 }
 
@@ -83,7 +134,10 @@ message WhoAmIRequest {
 }
 
 message WhoAmIResponse {
+  // The user ID that is currently authenticated.
   string id = 1;
+  // The display name for the user.
   string display_name = 2;
+  // The email address for the user.
   string email = 3;
 }

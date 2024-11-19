@@ -11,7 +11,7 @@ import "openauth/v1/openauth.proto";
 
 service BackendService {
   // Creates an organization.
-  rpc CreateOrganization(openauth.v1.Organization) returns (openauth.v1.Organization) {
+  rpc CreateOrganization(CreateOrganizationRequest) returns (CreateOrganizationResponse) {
     option (google.api.http) = {
       post: "/backend/v1/organizations",
       body: "*"
@@ -19,21 +19,21 @@ service BackendService {
   }
 
   // Gets an organization.
-  rpc GetOrganization(openauth.v1.ResourceIdRequest) returns (openauth.v1.Organization) {
+  rpc GetOrganization(GetOrganizationRequest) returns (GetOrganizationResponse) {
     option (google.api.http) = {
       get: "/backend/v1/organizations/{id}"
     };
   }
 
   // Gets a list of organizations.
-  rpc ListOrganizations(openauth.v1.ListOrganizationsRequest) returns (openauth.v1.ListOrganizationsResponse) {
+  rpc ListOrganizations(ListOrganizationsRequest) returns (ListOrganizationsResponse) {
     option (google.api.http) = {
       get: "/backend/v1/organizations"
     };
   }
 
   // Updates an organization.
-  rpc UpdateOrganization(openauth.v1.Organization) returns (openauth.v1.Organization) {
+  rpc UpdateOrganization(UpdateOrganizationRequest) returns (UpdateOrganizationResponse) {
     option (google.api.http) = {
       patch: "/backend/v1/organizations/{id}",
       body: "*"
@@ -41,7 +41,7 @@ service BackendService {
   }
 
   // Creates a project.
-  rpc CreateProject(openauth.v1.CreateProjectRequest) returns (openauth.v1.Project) {
+  rpc CreateProject(CreateProjectRequest) returns (CreateProjectResponse) {
     option (google.api.http) = {
       post: "/backend/v1/projects",
       body: "*"
@@ -49,7 +49,7 @@ service BackendService {
   }
 
   // Gets a project.
-  rpc GetProject(openauth.v1.ResourceIdRequest) returns (openauth.v1.Project) {
+  rpc GetProject(GetProjectRequest) returns (GetProjectResponse) {
     option (google.api.http) = {
       get: "/backend/v1/projects/{id}"
     };
@@ -63,7 +63,7 @@ service BackendService {
   }
 
   // Updates a project.
-  rpc UpdateProject(openauth.v1.Project) returns (openauth.v1.Project) {
+  rpc UpdateProject(UpdateProjectRequest) returns (UpdateProjectResponse) {
     option (google.api.http) = {
       patch: "/backend/v1/projects/{id}",
       body: "*"
@@ -71,39 +71,15 @@ service BackendService {
   }
 
   // Creates a user.
-  rpc CreateUser(openauth.v1.User) returns (openauth.v1.User) {
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {
     option (google.api.http) = {
       post: "/backend/v1/users",
       body: "*"
     };
   }
 
-  // Creates a Google user.
-  rpc CreateGoogleUser(openauth.v1.CreateGoogleUserRequest) returns (openauth.v1.User) {
-    option (google.api.http) = {
-      post: "/backend/v1/users/google",
-      body: "*"
-    };
-  }
-
-  // Creates a Microsoft user.
-  rpc CreateMicrosoftUser(openauth.v1.CreateMicrosoftUserRequest) returns (openauth.v1.User) {
-    option (google.api.http) = {
-      post: "/backend/v1/users/microsoft",
-      body: "*"
-    };
-  }
-
-  // Creates an unverified user.
-  rpc CreateUnverifiedUser(openauth.v1.CreateUnverifiedUserRequest) returns (openauth.v1.User) {
-    option (google.api.http) = {
-      post: "/backend/v1/users/unverified",
-      body: "*"
-    };
-  }
-
   // Gets a user.
-  rpc GetUser(openauth.v1.ResourceIdRequest) returns (openauth.v1.User) {
+  rpc GetUser(GetUserRequest) returns (GetUserResponse) {
     option (google.api.http) = {
       get: "/backend/v1/users/{id}"
     };
@@ -117,7 +93,7 @@ service BackendService {
   }
 
   // Updates a user.
-  rpc UpdateUser(openauth.v1.User) returns (openauth.v1.User) {
+  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {
     option (google.api.http) = {
       patch: "/backend/v1/users/{id}",
       body: "*"
@@ -125,7 +101,7 @@ service BackendService {
   }
 
   // Updates a user's password.
-  rpc UpdateUserPassword(UpdateUserPasswordRequest) returns (openauth.v1.User) {
+  rpc UpdateUserPassword(UpdateUserPasswordRequest) returns (UpdateUserPasswordResponse) {
     option (google.api.http) = {
       patch: "/backend/v1/users/{id}/password",
       body: "*"
@@ -133,45 +109,150 @@ service BackendService {
   }
 }
 
-message CreateUpdateOrganizationRequest {
-  string id = 1;
-  openauth.v1.Organization organization = 2;
+message CreateOrganizationRequest {
+  // The organization to create.
+  openauth.v1.Organization organization = 1;
 }
 
-message CreateUpdateProjectRequest {
-  string id = 1;
-  openauth.v1.Project project = 2;
+message CreateOrganizationResponse {
+  // The organization created by the CreateOrganization request.
+  openauth.v1.Organization organization = 1;
 }
 
-message CreateUpdateUserRequest {
+message CreateProjectRequest {
+  // The project to create.
+  openauth.v1.Project project = 1;
+}
+
+message CreateProjectResponse {
+  // The project created by the CreateProject request.
+  openauth.v1.Project project = 1;
+}
+
+message CreateUserRequest {
+  // The user to create.
+  openauth.v1.User user = 1;
+}
+
+message CreateUserResponse {
+  // The user created by the CreateUser request.
+  openauth.v1.User user = 1;
+}
+
+message GetOrganizationRequest {
+  // The ID of the organization to get.
   string id = 1;
-  openauth.v1.User user = 2;
+}
+
+message GetOrganizationResponse {
+  // The organization retrieved by the GetOrganization request.
+  openauth.v1.Organization organization = 1;
+}
+
+message GetProjectRequest {
+  // The ID of the project to get.
+  string id = 1;
+}
+
+message GetProjectResponse {
+  // The project retrieved by the GetProject request.
+  openauth.v1.Project project = 1;
+}
+
+message GetUserRequest {
+  // The ID of the user to get.
+  string id = 1;
+}
+
+message GetUserResponse {
+  // The user retrieved by the GetUser request.
+  openauth.v1.User user = 1;
+}
+
+message ListOrganizationsRequest {
+  // The project ID to use for filtering.
+  string project_id = 1;
+  // The page token to use for pagination.
+  string page_token = 2;
+}
+
+message ListOrganizationsResponse {
+  // The organizations retrieved by the ListOrganizations request.
+  repeated openauth.v1.Organization organizations = 1;
+  // The next page token to use for pagination.
+  string next_page_token = 2;
 }
 
 message ListProjectsRequest {
+  // The page token to use for pagination.
   string page_token = 1;
 }
 
 message ListProjectsResponse {
+  // The projects retrieved by the ListProjects request.
   repeated openauth.v1.Project projects = 1;
+  // The next page token to use for pagination.
   string next_page_token = 2;
 }
 
 message ListUsersRequest {
+  // The organization ID to use for filtering.
   string organization_id = 1;
+  // The page token to use for pagination.
   string page_token = 2;
 }
 
 message ListUsersResponse {
+  // The users retrieved by the ListUsers request.
   repeated openauth.v1.User users = 1;
+  // The next page token to use for pagination.
   string next_page_token = 2;
 }
 
-message UpdateUserPasswordRequest {
+message UpdateOrganizationRequest {
+  // The ID of the organization to update.
   string id = 1;
+  // The organization updates to apply.
+  openauth.v1.Organization organization = 2;
+}
+
+message UpdateOrganizationResponse {
+  // The organization updated by the UpdateOrganization request.
+  openauth.v1.Organization organization = 1;
+}
+
+message UpdateProjectRequest {
+  // The ID of the project to update.
+  string id = 1;
+  // The project updates to apply.
+  openauth.v1.Project project = 2;
+}
+
+message UpdateProjectResponse {
+  // The project updated by the UpdateProject request.
+  openauth.v1.Project project = 1;
+}
+
+message UpdateUserPasswordRequest {
+  // The ID of the user to update.
+  string id = 1;
+  // The new password for the user.
   string password = 2;
 }
 
+message UpdateUserPasswordResponse {
+  // The user updated by the UpdateUserPassword request.
+  openauth.v1.User user = 1;
+}
+
+message UpdateUserRequest {
+  // The ID of the user to update.
+  string id = 1;
+  // The user updates to apply.
+  openauth.v1.User user = 2;
+}
+
 message UpdateUserResponse {
+  // The user updated by the UpdateUser request.
   openauth.v1.User user = 1;
 }

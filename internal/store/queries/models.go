@@ -5,8 +5,77 @@
 package queries
 
 import (
+	"database/sql/driver"
+	"fmt"
+	"time"
+
 	"github.com/google/uuid"
 )
+
+type AuthMethod string
+
+const (
+	AuthMethodEmail     AuthMethod = "email"
+	AuthMethodGoogle    AuthMethod = "google"
+	AuthMethodMicrosoft AuthMethod = "microsoft"
+)
+
+func (e *AuthMethod) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = AuthMethod(s)
+	case string:
+		*e = AuthMethod(s)
+	default:
+		return fmt.Errorf("unsupported scan type for AuthMethod: %T", src)
+	}
+	return nil
+}
+
+type NullAuthMethod struct {
+	AuthMethod AuthMethod
+	Valid      bool // Valid is true if AuthMethod is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullAuthMethod) Scan(value interface{}) error {
+	if value == nil {
+		ns.AuthMethod, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.AuthMethod.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullAuthMethod) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.AuthMethod), nil
+}
+
+type IntermediateSession struct {
+	ID              uuid.UUID
+	ProjectID       uuid.UUID
+	UnverifiedEmail *string
+	VerifiedEmail   *string
+	CreatedTime     *time.Time
+	ExpireTime      *time.Time
+	Token           string
+	TokenSha256     []byte
+	Revoked         bool
+}
+
+type MethodVerificationChallenge struct {
+	ID           uuid.UUID
+	ProjectID    uuid.UUID
+	CompleteTime *time.Time
+	Email        string
+	AuthMethod   AuthMethod
+	ExpireTime   *time.Time
+	SecretToken  string
+}
 
 type Organization struct {
 	ID                                uuid.UUID
@@ -34,6 +103,16 @@ type Project struct {
 type SchemaMigration struct {
 	Version int64
 	Dirty   bool
+}
+
+type Session struct {
+	ID          uuid.UUID
+	UserID      uuid.UUID
+	CreatedTime *time.Time
+	ExpireTime  *time.Time
+	Token       string
+	TokenSha256 []byte
+	Revoked     bool
 }
 
 type User struct {

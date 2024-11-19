@@ -15,12 +15,12 @@ paths:
             parameters:
                 - name: projectId
                   in: query
-                  description: The ID of the project to scope this request to.
+                  description: The project ID to use for filtering.
                   schema:
                     type: string
                 - name: pageToken
                   in: query
-                  description: The page token to resume from.
+                  description: The page token to use for pagination.
                   schema:
                     type: string
             responses:
@@ -45,7 +45,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/Organization'
+                            $ref: '#/components/schemas/CreateOrganizationRequest'
                 required: true
             responses:
                 "200":
@@ -53,7 +53,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/Organization'
+                                $ref: '#/components/schemas/CreateOrganizationResponse'
                 default:
                     description: Default error response
                     content:
@@ -69,7 +69,7 @@ paths:
             parameters:
                 - name: id
                   in: path
-                  description: The ID of the resource to retrieve.
+                  description: The ID of the organization to get.
                   required: true
                   schema:
                     type: string
@@ -79,7 +79,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/Organization'
+                                $ref: '#/components/schemas/GetOrganizationResponse'
                 default:
                     description: Default error response
                     content:
@@ -94,7 +94,7 @@ paths:
             parameters:
                 - name: id
                   in: path
-                  description: Unique identifier for this organization.
+                  description: The ID of the organization to update.
                   required: true
                   schema:
                     type: string
@@ -102,7 +102,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/Organization'
+                            $ref: '#/components/schemas/UpdateOrganizationRequest'
                 required: true
             responses:
                 "200":
@@ -110,7 +110,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/Organization'
+                                $ref: '#/components/schemas/UpdateOrganizationResponse'
                 default:
                     description: Default error response
                     content:
@@ -126,6 +126,7 @@ paths:
             parameters:
                 - name: pageToken
                   in: query
+                  description: The page token to use for pagination.
                   schema:
                     type: string
             responses:
@@ -158,7 +159,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/Project'
+                                $ref: '#/components/schemas/CreateProjectResponse'
                 default:
                     description: Default error response
                     content:
@@ -174,7 +175,7 @@ paths:
             parameters:
                 - name: id
                   in: path
-                  description: The ID of the resource to retrieve.
+                  description: The ID of the project to get.
                   required: true
                   schema:
                     type: string
@@ -184,7 +185,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/Project'
+                                $ref: '#/components/schemas/GetProjectResponse'
                 default:
                     description: Default error response
                     content:
@@ -199,7 +200,7 @@ paths:
             parameters:
                 - name: id
                   in: path
-                  description: Unique identifier for this project.
+                  description: The ID of the project to update.
                   required: true
                   schema:
                     type: string
@@ -207,7 +208,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/Project'
+                            $ref: '#/components/schemas/UpdateProjectRequest'
                 required: true
             responses:
                 "200":
@@ -215,7 +216,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/Project'
+                                $ref: '#/components/schemas/UpdateProjectResponse'
                 default:
                     description: Default error response
                     content:
@@ -231,10 +232,12 @@ paths:
             parameters:
                 - name: organizationId
                   in: query
+                  description: The organization ID to use for filtering.
                   schema:
                     type: string
                 - name: pageToken
                   in: query
+                  description: The page token to use for pagination.
                   schema:
                     type: string
             responses:
@@ -259,7 +262,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/User'
+                            $ref: '#/components/schemas/CreateUserRequest'
                 required: true
             responses:
                 "200":
@@ -267,82 +270,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/User'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-    /backend/v1/users/google:
-        post:
-            tags:
-                - BackendService
-            description: Creates a Google user.
-            operationId: BackendService_CreateGoogleUser
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/CreateGoogleUserRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/User'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-    /backend/v1/users/microsoft:
-        post:
-            tags:
-                - BackendService
-            description: Creates a Microsoft user.
-            operationId: BackendService_CreateMicrosoftUser
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/CreateMicrosoftUserRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/User'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-    /backend/v1/users/unverified:
-        post:
-            tags:
-                - BackendService
-            description: Creates an unverified user.
-            operationId: BackendService_CreateUnverifiedUser
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/CreateUnverifiedUserRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/User'
+                                $ref: '#/components/schemas/CreateUserResponse'
                 default:
                     description: Default error response
                     content:
@@ -358,7 +286,7 @@ paths:
             parameters:
                 - name: id
                   in: path
-                  description: The ID of the resource to retrieve.
+                  description: The ID of the user to get.
                   required: true
                   schema:
                     type: string
@@ -368,7 +296,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/User'
+                                $ref: '#/components/schemas/GetUserResponse'
                 default:
                     description: Default error response
                     content:
@@ -383,7 +311,7 @@ paths:
             parameters:
                 - name: id
                   in: path
-                  description: Unique identifier for this user.
+                  description: The ID of the user to update.
                   required: true
                   schema:
                     type: string
@@ -391,7 +319,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/User'
+                            $ref: '#/components/schemas/UpdateUserRequest'
                 required: true
             responses:
                 "200":
@@ -399,7 +327,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/User'
+                                $ref: '#/components/schemas/UpdateUserResponse'
                 default:
                     description: Default error response
                     content:
@@ -415,6 +343,7 @@ paths:
             parameters:
                 - name: id
                   in: path
+                  description: The ID of the user to update.
                   required: true
                   schema:
                     type: string
@@ -430,7 +359,42 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/User'
+                                $ref: '#/components/schemas/UpdateUserPasswordResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /frontend/v1/organizations:
+        get:
+            tags:
+                - FrontendService
+            description: Gets a list of organizations.
+            operationId: FrontendService_ListOrganizations
+            parameters:
+                - name: projectId
+                  in: query
+                  description: The ID of the project to use for filtering.
+                  schema:
+                    type: string
+                - name: email
+                  in: query
+                  description: The email address to use for filtering.
+                  schema:
+                    type: string
+                - name: pageToken
+                  in: query
+                  description: The page token to use for pagination.
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListOrganizationsResponse'
                 default:
                     description: Default error response
                     content:
@@ -446,10 +410,12 @@ paths:
             parameters:
                 - name: organizationId
                   in: query
+                  description: The ID of the organization to use for filtering.
                   schema:
                     type: string
                 - name: pageToken
                   in: query
+                  description: The page token to use for pagination.
                   schema:
                     type: string
             responses:
@@ -498,7 +464,7 @@ paths:
             parameters:
                 - name: id
                   in: path
-                  description: The ID of the resource to retrieve.
+                  description: The ID of the user to get.
                   required: true
                   schema:
                     type: string
@@ -523,6 +489,7 @@ paths:
             parameters:
                 - name: id
                   in: path
+                  description: The ID of the user to update.
                   required: true
                   schema:
                     type: string
@@ -566,30 +533,20 @@ paths:
                                 $ref: '#/components/schemas/Status'
 components:
     schemas:
-        CreateGoogleUserRequest:
+        CreateOrganizationRequest:
             type: object
             properties:
-                organizationId:
-                    type: string
-                    description: The ID of the organization to scope this request to.
-                verifiedEmail:
-                    type: string
-                    description: The email address of the user to create.
-                googleUserId:
-                    type: string
-                    description: The Microsoft User ID of the user to create.
-        CreateMicrosoftUserRequest:
+                organization:
+                    allOf:
+                        - $ref: '#/components/schemas/Organization'
+                    description: The organization to create.
+        CreateOrganizationResponse:
             type: object
             properties:
-                organizationId:
-                    type: string
-                    description: The ID of the organization to scope this request to.
-                verifiedEmail:
-                    type: string
-                    description: The email address of the user to create.
-                microsoftUserId:
-                    type: string
-                    description: The Microsoft User ID of the user to create.
+                organization:
+                    allOf:
+                        - $ref: '#/components/schemas/Organization'
+                    description: The organization created by the CreateOrganization request.
         CreateProjectRequest:
             type: object
             properties:
@@ -597,28 +554,48 @@ components:
                     allOf:
                         - $ref: '#/components/schemas/Project'
                     description: The project to create.
-                displayName:
-                    type: string
-                    description: The display name of the project's managing organization.
-        CreateUnverifiedUserRequest:
+        CreateProjectResponse:
             type: object
             properties:
-                organizationId:
-                    type: string
-                    description: The ID of the organization to scope this request to.
-                unverifiedEmail:
-                    type: string
-                    description: The email address of the user to create.
+                project:
+                    allOf:
+                        - $ref: '#/components/schemas/Project'
+                    description: The project created by the CreateProject request.
+        CreateUserRequest:
+            type: object
+            properties:
+                user:
+                    allOf:
+                        - $ref: '#/components/schemas/User'
+                    description: The user to create.
         CreateUserResponse:
             type: object
             properties:
                 user:
-                    $ref: '#/components/schemas/User'
+                    allOf:
+                        - $ref: '#/components/schemas/User'
+                    description: The user created by the CreateUser request.
+        GetOrganizationResponse:
+            type: object
+            properties:
+                organization:
+                    allOf:
+                        - $ref: '#/components/schemas/Organization'
+                    description: The organization retrieved by the GetOrganization request.
+        GetProjectResponse:
+            type: object
+            properties:
+                project:
+                    allOf:
+                        - $ref: '#/components/schemas/Project'
+                    description: The project retrieved by the GetProject request.
         GetUserResponse:
             type: object
             properties:
                 user:
-                    $ref: '#/components/schemas/User'
+                    allOf:
+                        - $ref: '#/components/schemas/User'
+                    description: The user retrieved by the GetUser request.
         GoogleProtobufAny:
             type: object
             properties:
@@ -634,10 +611,10 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/Organization'
-                    description: The organizations.
+                    description: The organizations retrieved by the ListOrganizations request.
                 nextPageToken:
                     type: string
-                    description: The next page token to resume from.
+                    description: The next page token to use for pagination.
         ListProjectsResponse:
             type: object
             properties:
@@ -645,8 +622,10 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/Project'
+                    description: The projects retrieved by the ListProjects request.
                 nextPageToken:
                     type: string
+                    description: The next page token to use for pagination.
         ListUsersResponse:
             type: object
             properties:
@@ -654,8 +633,10 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/User'
+                    description: The users retrieved by the ListUsers request.
                 nextPageToken:
                     type: string
+                    description: The next page token to use for pagination.
         Organization:
             type: object
             properties:
@@ -729,18 +710,73 @@ components:
                         $ref: '#/components/schemas/GoogleProtobufAny'
                     description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
             description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
+        UpdateOrganizationRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: The ID of the organization to update.
+                organization:
+                    allOf:
+                        - $ref: '#/components/schemas/Organization'
+                    description: The organization updates to apply.
+        UpdateOrganizationResponse:
+            type: object
+            properties:
+                organization:
+                    allOf:
+                        - $ref: '#/components/schemas/Organization'
+                    description: The organization updated by the UpdateOrganization request.
+        UpdateProjectRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: The ID of the project to update.
+                project:
+                    allOf:
+                        - $ref: '#/components/schemas/Project'
+                    description: The project updates to apply.
+        UpdateProjectResponse:
+            type: object
+            properties:
+                project:
+                    allOf:
+                        - $ref: '#/components/schemas/Project'
+                    description: The project updated by the UpdateProject request.
         UpdateUserPasswordRequest:
             type: object
             properties:
                 id:
                     type: string
+                    description: The ID of the user to update.
                 password:
                     type: string
+                    description: The new password for the user.
+        UpdateUserPasswordResponse:
+            type: object
+            properties:
+                user:
+                    allOf:
+                        - $ref: '#/components/schemas/User'
+                    description: The user updated by the UpdateUserPassword request.
+        UpdateUserRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: The ID of the user to update.
+                user:
+                    allOf:
+                        - $ref: '#/components/schemas/User'
+                    description: The user updates to apply.
         UpdateUserResponse:
             type: object
             properties:
                 user:
-                    $ref: '#/components/schemas/User'
+                    allOf:
+                        - $ref: '#/components/schemas/User'
+                    description: The user updated by the UpdateUser request.
         User:
             type: object
             properties:
@@ -770,10 +806,13 @@ components:
             properties:
                 id:
                     type: string
+                    description: The user ID that is currently authenticated.
                 displayName:
                     type: string
+                    description: The display name for the user.
                 email:
                     type: string
+                    description: The email address for the user.
 tags:
     - name: BackendService
     - name: FrontendService

@@ -4,8 +4,7 @@
 // @ts-nocheck
 
 import { MethodKind } from "@bufbuild/protobuf";
-import { CreateUserRequest, CreateUserResponse, GetUserResponse, ListUsersRequest, ListUsersResponse, UpdateUserRequest, UpdateUserResponse, WhoAmIRequest, WhoAmIResponse } from "./frontend_pb.js";
-import { ResourceIdRequest } from "../../openauth/v1/openauth_pb.js";
+import { CreateUserRequest, CreateUserResponse, GetUserRequest, GetUserResponse, ListOrganizationsRequest, ListOrganizationsResponse, ListUsersRequest, ListUsersResponse, UpdateUserRequest, UpdateUserResponse, WhoAmIRequest, WhoAmIResponse } from "./frontend_pb.js";
 
 /**
  * Creates a user.
@@ -32,8 +31,24 @@ export const getUser = {
   localName: "getUser",
   name: "GetUser",
   kind: MethodKind.Unary,
-  I: ResourceIdRequest,
+  I: GetUserRequest,
   O: GetUserResponse,
+  service: {
+    typeName: "frontend.v1.FrontendService"
+  }
+} as const;
+
+/**
+ * Gets a list of organizations.
+ *
+ * @generated from rpc frontend.v1.FrontendService.ListOrganizations
+ */
+export const listOrganizations = {
+  localName: "listOrganizations",
+  name: "ListOrganizations",
+  kind: MethodKind.Unary,
+  I: ListOrganizationsRequest,
+  O: ListOrganizationsResponse,
   service: {
     typeName: "frontend.v1.FrontendService"
   }

@@ -10,6 +10,19 @@ import "google/protobuf/struct.proto";
 
 // Types
 
+message IntermediateSession {
+  // The ID of the organization this session is scoped to.
+  string id = 1;
+  // The the unverified email address for the user.
+  string unverified_email = 2;
+  // The verified email address for the user.
+  string verified_email = 3;
+  // The time the session was created.
+  google.protobuf.Timestamp created_time = 4;
+  // The timestamp for when the session expires.
+  google.protobuf.Timestamp expire_time = 5;
+}
+
 message Organization {
   // Unique identifier for this organization.
   string id = 1;
@@ -50,6 +63,19 @@ message Project {
   string microsoft_oauth_client_secret = 9;
 }
 
+message Session {
+  // Unique identifier for this session.
+  string id = 1;
+  // The ID of the user this session is scoped to.
+  string user_id = 2;
+  // The time the session was created.
+  google.protobuf.Timestamp created_time = 3;
+  // The timestamp for when the session expires.
+  google.protobuf.Timestamp expire_time = 4;
+  // Whether the session has been revoked.
+  bool revoked = 5;
+}
+
 message User {
   // Unique identifier for this user.
   string id = 1;
@@ -66,72 +92,3 @@ message User {
   // The user's Microsoft User ID.
   string microsoft_user_id = 7;
 }
-
-// Requests
-
-message CreateProjectRequest {
-  // The project to create.
-  Project project = 1;
-  // The display name of the project's managing organization.
-  string display_name = 2;
-}
-
-message CreateGoogleUserRequest {
-  // The ID of the organization to scope this request to.
-  string organization_id = 1;
-  // The email address of the user to create.
-  string verified_email = 2;
-  // The Microsoft User ID of the user to create.
-  string google_user_id = 3;
-}
-
-message CreateMicrosoftUserRequest {
-  // The ID of the organization to scope this request to.
-  string organization_id = 1;
-  // The email address of the user to create.
-  string verified_email = 2;
-  // The Microsoft User ID of the user to create.
-  string microsoft_user_id = 3;
-}
-
-message CreateUnverifiedUserRequest {
-  // The ID of the organization to scope this request to.
-  string organization_id = 1;
-  // The email address of the user to create.
-  string unverified_email = 2;
-}
-
-message ListOrganizationsRequest {
-  // The ID of the project to scope this request to.
-  string project_id = 1;
-  // The page token to resume from.
-  string page_token = 2;
-}
-
-message ListOrganizationsResponse {
-  // The organizations.
-  repeated openauth.v1.Organization organizations = 1;
-  // The next page token to resume from.
-  string next_page_token = 2;
-}
-
-message OrganizationIdRequest {
-  // The ID of the organization to scope this request to.
-  string organization_id = 1;
-}
-
-message ProjectIdRequest {
-  // The ID of the project to scope this request to.
-  string project_id = 1;
-}
-
-message ResourceIdRequest {
-  // The ID of the resource to retrieve.
-  string id = 1;
-}
-
-message UserIdRequest {
-  // The ID of the user to scope this request to.
-  string user_id = 1;
-}
-

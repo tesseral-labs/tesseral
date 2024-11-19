@@ -3,9 +3,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { CreateUserRequest, CreateUserResponse, GetUserResponse, ListUsersRequest, ListUsersResponse, UpdateUserRequest, UpdateUserResponse, WhoAmIRequest, WhoAmIResponse } from "./frontend_pb.js";
+import { CreateUserRequest, CreateUserResponse, GetUserRequest, GetUserResponse, ListOrganizationsRequest, ListOrganizationsResponse, ListUsersRequest, ListUsersResponse, UpdateUserRequest, UpdateUserResponse, WhoAmIRequest, WhoAmIResponse } from "./frontend_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
-import { ResourceIdRequest } from "../../openauth/v1/openauth_pb.js";
 
 /**
  * @generated from service frontend.v1.FrontendService
@@ -31,8 +30,19 @@ export const FrontendService = {
      */
     getUser: {
       name: "GetUser",
-      I: ResourceIdRequest,
+      I: GetUserRequest,
       O: GetUserResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * Gets a list of organizations.
+     *
+     * @generated from rpc frontend.v1.FrontendService.ListOrganizations
+     */
+    listOrganizations: {
+      name: "ListOrganizations",
+      I: ListOrganizationsRequest,
+      O: ListOrganizationsResponse,
       kind: MethodKind.Unary,
     },
     /**
