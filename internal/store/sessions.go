@@ -13,7 +13,7 @@ import (
 type OpenAuthSession struct {
 	ID 					uuid.UUID
 	UserID 			uuid.UUID
-	CreatedTime time.Time
+	CreateTime 	time.Time
 	ExpireTime 	time.Time
 	Token 			string
 	TokenSha256 []byte
@@ -67,7 +67,7 @@ func transformSession(session queries.Session) *OpenAuthSession {
 	return &OpenAuthSession{
 		ID: session.ID,
 		UserID: session.UserID,
-		CreatedTime: *session.CreatedTime,
+		CreateTime: *session.CreateTime,
 		ExpireTime: *session.ExpireTime,
 		Token: session.Token,
 		Revoked: session.Revoked,

@@ -60,7 +60,7 @@ type IntermediateSession struct {
 	ProjectID       uuid.UUID
 	UnverifiedEmail *string
 	VerifiedEmail   *string
-	CreatedTime     *time.Time
+	CreateTime      *time.Time
 	ExpireTime      *time.Time
 	Token           string
 	TokenSha256     []byte
@@ -108,7 +108,7 @@ type SchemaMigration struct {
 type Session struct {
 	ID          uuid.UUID
 	UserID      uuid.UUID
-	CreatedTime *time.Time
+	CreateTime  *time.Time
 	ExpireTime  *time.Time
 	Token       string
 	TokenSha256 []byte

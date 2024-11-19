@@ -15,7 +15,7 @@ type IntermediateSession struct {
 	ProjectID       uuid.UUID
 	UnverifiedEmail string
 	VerifiedEmail   string
-	CreatedTime     time.Time
+	CreateTime     	time.Time
 	ExpireTime			time.Time
 	Token						string
 	TokenSha256			[]byte
@@ -164,7 +164,7 @@ func parseIntermediateSession(i *queries.IntermediateSession) *IntermediateSessi
 		ProjectID: i.ProjectID,
 		UnverifiedEmail: *i.UnverifiedEmail,
 		VerifiedEmail: *i.VerifiedEmail,
-		CreatedTime: *i.CreatedTime,
+		CreateTime: *i.CreateTime,
 		ExpireTime: *i.ExpireTime,
 		Token: i.Token,
 		TokenSha256: i.TokenSha256,

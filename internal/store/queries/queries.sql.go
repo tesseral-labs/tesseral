@@ -103,7 +103,7 @@ insert into intermediate_sessions (
   $6,
   $7
 )
-returning id, project_id, unverified_email, verified_email, created_time, expire_time, token, token_sha256, revoked
+returning id, project_id, unverified_email, verified_email, create_time, expire_time, token, token_sha256, revoked
 `
 
 type CreateIntermediateSessionParams struct {
@@ -132,7 +132,7 @@ func (q *Queries) CreateIntermediateSession(ctx context.Context, arg CreateInter
 		&i.ProjectID,
 		&i.UnverifiedEmail,
 		&i.VerifiedEmail,
-		&i.CreatedTime,
+		&i.CreateTime,
 		&i.ExpireTime,
 		&i.Token,
 		&i.TokenSha256,
@@ -374,7 +374,7 @@ insert into sessions (
   $4, 
   $5
 )
-returning id, user_id, created_time, expire_time, token, token_sha256, revoked
+returning id, user_id, create_time, expire_time, token, token_sha256, revoked
 `
 
 type CreateSessionParams struct {
@@ -397,7 +397,7 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (S
 	err := row.Scan(
 		&i.ID,
 		&i.UserID,
-		&i.CreatedTime,
+		&i.CreateTime,
 		&i.ExpireTime,
 		&i.Token,
 		&i.TokenSha256,
@@ -495,7 +495,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 }
 
 const getIntermediateSessionByID = `-- name: GetIntermediateSessionByID :one
-select id, project_id, unverified_email, verified_email, created_time, expire_time, token, token_sha256, revoked from intermediate_sessions where id = $1
+select id, project_id, unverified_email, verified_email, create_time, expire_time, token, token_sha256, revoked from intermediate_sessions where id = $1
 `
 
 func (q *Queries) GetIntermediateSessionByID(ctx context.Context, id uuid.UUID) (IntermediateSession, error) {
@@ -506,7 +506,7 @@ func (q *Queries) GetIntermediateSessionByID(ctx context.Context, id uuid.UUID) 
 		&i.ProjectID,
 		&i.UnverifiedEmail,
 		&i.VerifiedEmail,
-		&i.CreatedTime,
+		&i.CreateTime,
 		&i.ExpireTime,
 		&i.Token,
 		&i.TokenSha256,
@@ -938,7 +938,7 @@ func (q *Queries) ListUsersByOrganization(ctx context.Context, arg ListUsersByOr
 }
 
 const revokeIntermediateSession = `-- name: RevokeIntermediateSession :one
-update intermediate_sessions set revoked = true where id = $1 returning id, project_id, unverified_email, verified_email, created_time, expire_time, token, token_sha256, revoked
+update intermediate_sessions set revoked = true where id = $1 returning id, project_id, unverified_email, verified_email, create_time, expire_time, token, token_sha256, revoked
 `
 
 func (q *Queries) RevokeIntermediateSession(ctx context.Context, id uuid.UUID) (IntermediateSession, error) {
@@ -949,7 +949,7 @@ func (q *Queries) RevokeIntermediateSession(ctx context.Context, id uuid.UUID) (
 		&i.ProjectID,
 		&i.UnverifiedEmail,
 		&i.VerifiedEmail,
-		&i.CreatedTime,
+		&i.CreateTime,
 		&i.ExpireTime,
 		&i.Token,
 		&i.TokenSha256,
@@ -959,7 +959,7 @@ func (q *Queries) RevokeIntermediateSession(ctx context.Context, id uuid.UUID) (
 }
 
 const revokeSession = `-- name: RevokeSession :one
-update sessions set revoked = true where id = $1 returning id, user_id, created_time, expire_time, token, token_sha256, revoked
+update sessions set revoked = true where id = $1 returning id, user_id, create_time, expire_time, token, token_sha256, revoked
 `
 
 func (q *Queries) RevokeSession(ctx context.Context, id uuid.UUID) (Session, error) {
@@ -968,7 +968,7 @@ func (q *Queries) RevokeSession(ctx context.Context, id uuid.UUID) (Session, err
 	err := row.Scan(
 		&i.ID,
 		&i.UserID,
-		&i.CreatedTime,
+		&i.CreateTime,
 		&i.ExpireTime,
 		&i.Token,
 		&i.TokenSha256,
@@ -1416,7 +1416,7 @@ func (q *Queries) UpdateUserPassword(ctx context.Context, arg UpdateUserPassword
 }
 
 const verifyIntermediateSessionEmail = `-- name: VerifyIntermediateSessionEmail :one
-update intermediate_sessions set unverified_email = null, verified_email = $2 where id = $1 returning id, project_id, unverified_email, verified_email, created_time, expire_time, token, token_sha256, revoked
+update intermediate_sessions set unverified_email = null, verified_email = $2 where id = $1 returning id, project_id, unverified_email, verified_email, create_time, expire_time, token, token_sha256, revoked
 `
 
 type VerifyIntermediateSessionEmailParams struct {
@@ -1432,7 +1432,7 @@ func (q *Queries) VerifyIntermediateSessionEmail(ctx context.Context, arg Verify
 		&i.ProjectID,
 		&i.UnverifiedEmail,
 		&i.VerifiedEmail,
-		&i.CreatedTime,
+		&i.CreateTime,
 		&i.ExpireTime,
 		&i.Token,
 		&i.TokenSha256,

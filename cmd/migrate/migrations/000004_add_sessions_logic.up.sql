@@ -25,7 +25,7 @@ create table intermediate_sessions(
   project_id                    uuid not null references projects(id),
   unverified_email              varchar,
   verified_email                varchar,
-  created_time                  timestamp with time zone not null default now(),
+  create_time                  timestamp with time zone not null default now(),
   -- the timestamp for when the session expires
   expire_time                   timestamp with time zone not null,
   token                         varchar not null,
@@ -39,7 +39,7 @@ create table sessions
 (
   id                            uuid not null primary key,
   user_id                       uuid not null references users(id),
-  created_time                  timestamp with time zone not null default now(),
+  create_time                  timestamp with time zone not null default now(),
   -- the timestamp for when the session expires
   expire_time                   timestamp with time zone not null,
   token                         varchar not null,

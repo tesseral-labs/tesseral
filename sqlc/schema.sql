@@ -43,7 +43,7 @@ CREATE TABLE public.intermediate_sessions (
     project_id uuid NOT NULL,
     unverified_email character varying,
     verified_email character varying,
-    created_time timestamp with time zone DEFAULT now() NOT NULL,
+    create_time timestamp with time zone DEFAULT now() NOT NULL,
     expire_time timestamp with time zone NOT NULL,
     token character varying NOT NULL,
     token_sha256 bytea,
@@ -126,7 +126,7 @@ ALTER TABLE public.schema_migrations OWNER TO postgres;
 CREATE TABLE public.sessions (
     id uuid NOT NULL,
     user_id uuid NOT NULL,
-    created_time timestamp with time zone DEFAULT now() NOT NULL,
+    create_time timestamp with time zone DEFAULT now() NOT NULL,
     expire_time timestamp with time zone NOT NULL,
     token character varying NOT NULL,
     token_sha256 bytea,
