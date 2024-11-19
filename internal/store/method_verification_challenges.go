@@ -15,22 +15,22 @@ import (
 )
 
 type MethodVerificationChallenge struct {
-	ID 									uuid.UUID
-	ProjectID 					uuid.UUID
-	Email 							string
-	AuthMethod 					queries.AuthMethod
-	ExpireTime 					time.Time
-	CompleteTime 				time.Time
-	SecretTokenSha256 	[]byte
+	ID 												uuid.UUID
+	ProjectID 								uuid.UUID
+	IntermediateSessionID 		uuid.UUID
+	AuthMethod 								queries.AuthMethod
+	ExpireTime 								time.Time
+	CompleteTime 							time.Time
+	SecretTokenSha256 				[]byte
 }
 
 var ErrMethodVerificationChallengeExpired = errors.New("method verification challenge has expired")
 var ErrMethodVerificationChallengeSecretTokenMismatch = errors.New("method verification challenge secret token mismatch")
 
 type CreateMethodVerificationChallengeRequest struct {
-	ProjectID 				string
-	UnverifiedEmail 	string
-	AuthMethod 				queries.AuthMethod
+	AuthMethod 							queries.AuthMethod
+	IntermediateSessionID 	uuid.UUID
+	ProjectID 							string
 }
 
 func (s *Store) CreateMethodVerificationChallenge(
@@ -61,7 +61,7 @@ func (s *Store) CreateMethodVerificationChallenge(
 	createdMethodVerificationChallenge, err := q.CreateMethodVerificationChallenge(*ctx, queries.CreateMethodVerificationChallengeParams{
 		ID: uuid.New(),
 		ProjectID: projectId,
-		Email: req.UnverifiedEmail,
+		IntermediateSessionID: req.IntermediateSessionID,
 		AuthMethod: req.AuthMethod,
 		ExpireTime: &expiresAt,
 		SecretTokenSha256: secretTokenSha256,
@@ -153,7 +153,7 @@ func transformMethodVerificationChallenge(mvc queries.MethodVerificationChalleng
 	return &MethodVerificationChallenge{
 		ID: mvc.ID,
 		ProjectID: mvc.ProjectID,
-		Email: mvc.Email,
+		IntermediateSessionID: mvc.IntermediateSessionID,
 		AuthMethod: mvc.AuthMethod,
 		ExpireTime: *mvc.ExpireTime,
 		CompleteTime: *mvc.CompleteTime,

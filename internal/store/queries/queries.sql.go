@@ -20,7 +20,7 @@ insert into method_verification_challenges (
   $1, 
   $2
 )
-returning id, project_id, complete_time, email, auth_method, expire_time, secret_token_sha256
+returning id, project_id, complete_time, intermediate_session_id, auth_method, expire_time, secret_token_sha256
 `
 
 type CompleteMethodVerificationChallengeParams struct {
@@ -35,7 +35,7 @@ func (q *Queries) CompleteMethodVerificationChallenge(ctx context.Context, arg C
 		&i.ID,
 		&i.ProjectID,
 		&i.CompleteTime,
-		&i.Email,
+		&i.IntermediateSessionID,
 		&i.AuthMethod,
 		&i.ExpireTime,
 		&i.SecretTokenSha256,
@@ -141,12 +141,57 @@ func (q *Queries) CreateIntermediateSession(ctx context.Context, arg CreateInter
 	return i, err
 }
 
+const createIntermediateSessionSigningKey = `-- name: CreateIntermediateSessionSigningKey :one
+insert into intermediate_session_signing_keys (
+  id, 
+  project_id, 
+  public_key, 
+  private_key_cipher_text, 
+  expire_time
+) values (
+  $1, 
+  $2, 
+  $3, 
+  $4, 
+  $5
+)
+returning id, project_id, public_key, private_key_cipher_text, create_time, expire_time
+`
+
+type CreateIntermediateSessionSigningKeyParams struct {
+	ID                   uuid.UUID
+	ProjectID            uuid.UUID
+	PublicKey            []byte
+	PrivateKeyCipherText []byte
+	ExpireTime           *time.Time
+}
+
+func (q *Queries) CreateIntermediateSessionSigningKey(ctx context.Context, arg CreateIntermediateSessionSigningKeyParams) (IntermediateSessionSigningKey, error) {
+	row := q.db.QueryRow(ctx, createIntermediateSessionSigningKey,
+		arg.ID,
+		arg.ProjectID,
+		arg.PublicKey,
+		arg.PrivateKeyCipherText,
+		arg.ExpireTime,
+	)
+	var i IntermediateSessionSigningKey
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.PublicKey,
+		&i.PrivateKeyCipherText,
+		&i.CreateTime,
+		&i.ExpireTime,
+	)
+	return i, err
+}
+
 const createMethodVerificationChallenge = `-- name: CreateMethodVerificationChallenge :one
 insert into method_verification_challenges (
   id, 
   project_id, 
   complete_time, 
-  email,
+  intermediate_session_id,
   auth_method,
   expire_time,
   secret_token_sha256
@@ -159,17 +204,17 @@ insert into method_verification_challenges (
   $6,
   $7
 )
-returning id, project_id, complete_time, email, auth_method, expire_time, secret_token_sha256
+returning id, project_id, complete_time, intermediate_session_id, auth_method, expire_time, secret_token_sha256
 `
 
 type CreateMethodVerificationChallengeParams struct {
-	ID                uuid.UUID
-	ProjectID         uuid.UUID
-	CompleteTime      *time.Time
-	Email             string
-	AuthMethod        AuthMethod
-	ExpireTime        *time.Time
-	SecretTokenSha256 []byte
+	ID                    uuid.UUID
+	ProjectID             uuid.UUID
+	CompleteTime          *time.Time
+	IntermediateSessionID uuid.UUID
+	AuthMethod            AuthMethod
+	ExpireTime            *time.Time
+	SecretTokenSha256     []byte
 }
 
 func (q *Queries) CreateMethodVerificationChallenge(ctx context.Context, arg CreateMethodVerificationChallengeParams) (MethodVerificationChallenge, error) {
@@ -177,7 +222,7 @@ func (q *Queries) CreateMethodVerificationChallenge(ctx context.Context, arg Cre
 		arg.ID,
 		arg.ProjectID,
 		arg.CompleteTime,
-		arg.Email,
+		arg.IntermediateSessionID,
 		arg.AuthMethod,
 		arg.ExpireTime,
 		arg.SecretTokenSha256,
@@ -187,7 +232,7 @@ func (q *Queries) CreateMethodVerificationChallenge(ctx context.Context, arg Cre
 		&i.ID,
 		&i.ProjectID,
 		&i.CompleteTime,
-		&i.Email,
+		&i.IntermediateSessionID,
 		&i.AuthMethod,
 		&i.ExpireTime,
 		&i.SecretTokenSha256,
@@ -364,9 +409,9 @@ const createSession = `-- name: CreateSession :one
 insert into sessions (
   id, 
   user_id, 
-  expire_time, 
-  token, 
-  token_sha256
+  create_time,
+  expire_time,
+  revoked
 ) values (
   $1, 
   $2, 
@@ -374,24 +419,24 @@ insert into sessions (
   $4, 
   $5
 )
-returning id, user_id, create_time, expire_time, token, token_sha256, revoked
+returning id, user_id, create_time, expire_time, revoked
 `
 
 type CreateSessionParams struct {
-	ID          uuid.UUID
-	UserID      uuid.UUID
-	ExpireTime  *time.Time
-	Token       string
-	TokenSha256 []byte
+	ID         uuid.UUID
+	UserID     uuid.UUID
+	CreateTime *time.Time
+	ExpireTime *time.Time
+	Revoked    bool
 }
 
 func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error) {
 	row := q.db.QueryRow(ctx, createSession,
 		arg.ID,
 		arg.UserID,
+		arg.CreateTime,
 		arg.ExpireTime,
-		arg.Token,
-		arg.TokenSha256,
+		arg.Revoked,
 	)
 	var i Session
 	err := row.Scan(
@@ -399,9 +444,52 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (S
 		&i.UserID,
 		&i.CreateTime,
 		&i.ExpireTime,
-		&i.Token,
-		&i.TokenSha256,
 		&i.Revoked,
+	)
+	return i, err
+}
+
+const createSessionSigningKey = `-- name: CreateSessionSigningKey :one
+insert into session_signing_keys (
+  id, 
+  project_id, 
+  public_key, 
+  private_key_cipher_text, 
+  expire_time
+) values (
+  $1, 
+  $2, 
+  $3, 
+  $4, 
+  $5
+)
+returning id, project_id, public_key, private_key_cipher_text, create_time, expire_time
+`
+
+type CreateSessionSigningKeyParams struct {
+	ID                   uuid.UUID
+	ProjectID            uuid.UUID
+	PublicKey            []byte
+	PrivateKeyCipherText []byte
+	ExpireTime           *time.Time
+}
+
+func (q *Queries) CreateSessionSigningKey(ctx context.Context, arg CreateSessionSigningKeyParams) (SessionSigningKey, error) {
+	row := q.db.QueryRow(ctx, createSessionSigningKey,
+		arg.ID,
+		arg.ProjectID,
+		arg.PublicKey,
+		arg.PrivateKeyCipherText,
+		arg.ExpireTime,
+	)
+	var i SessionSigningKey
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.PublicKey,
+		&i.PrivateKeyCipherText,
+		&i.CreateTime,
+		&i.ExpireTime,
 	)
 	return i, err
 }
@@ -516,7 +604,7 @@ func (q *Queries) GetIntermediateSessionByID(ctx context.Context, id uuid.UUID) 
 }
 
 const getMethodVerificationChallengeByID = `-- name: GetMethodVerificationChallengeByID :one
-select id, project_id, complete_time, email, auth_method, expire_time, secret_token_sha256 from method_verification_challenges where id = $1
+select id, project_id, complete_time, intermediate_session_id, auth_method, expire_time, secret_token_sha256 from method_verification_challenges where id = $1
 `
 
 func (q *Queries) GetMethodVerificationChallengeByID(ctx context.Context, id uuid.UUID) (MethodVerificationChallenge, error) {
@@ -526,7 +614,7 @@ func (q *Queries) GetMethodVerificationChallengeByID(ctx context.Context, id uui
 		&i.ID,
 		&i.ProjectID,
 		&i.CompleteTime,
-		&i.Email,
+		&i.IntermediateSessionID,
 		&i.AuthMethod,
 		&i.ExpireTime,
 		&i.SecretTokenSha256,
@@ -959,7 +1047,7 @@ func (q *Queries) RevokeIntermediateSession(ctx context.Context, id uuid.UUID) (
 }
 
 const revokeSession = `-- name: RevokeSession :one
-update sessions set revoked = true where id = $1 returning id, user_id, create_time, expire_time, token, token_sha256, revoked
+update sessions set revoked = true where id = $1 returning id, user_id, create_time, expire_time, revoked
 `
 
 func (q *Queries) RevokeSession(ctx context.Context, id uuid.UUID) (Session, error) {
@@ -970,8 +1058,6 @@ func (q *Queries) RevokeSession(ctx context.Context, id uuid.UUID) (Session, err
 		&i.UserID,
 		&i.CreateTime,
 		&i.ExpireTime,
-		&i.Token,
-		&i.TokenSha256,
 		&i.Revoked,
 	)
 	return i, err

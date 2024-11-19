@@ -13,7 +13,7 @@ insert into method_verification_challenges (
   id, 
   project_id, 
   complete_time, 
-  email,
+  intermediate_session_id,
   auth_method,
   expire_time,
   secret_token_sha256
@@ -45,6 +45,22 @@ insert into intermediate_sessions (
   $5,
   $6,
   $7
+)
+returning *;
+
+-- name: CreateIntermediateSessionSigningKey :one
+insert into intermediate_session_signing_keys (
+  id, 
+  project_id, 
+  public_key, 
+  private_key_cipher_text, 
+  expire_time
+) values (
+  $1, 
+  $2, 
+  $3, 
+  $4, 
+  $5
 )
 returning *;
 
@@ -98,9 +114,25 @@ returning *;
 insert into sessions (
   id, 
   user_id, 
-  expire_time, 
-  token, 
-  token_sha256
+  create_time,
+  expire_time,
+  revoked
+) values (
+  $1, 
+  $2, 
+  $3, 
+  $4, 
+  $5
+)
+returning *;
+
+-- name: CreateSessionSigningKey :one
+insert into session_signing_keys (
+  id, 
+  project_id, 
+  public_key, 
+  private_key_cipher_text, 
+  expire_time
 ) values (
   $1, 
   $2, 

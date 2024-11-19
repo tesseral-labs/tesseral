@@ -15,8 +15,6 @@ type OpenAuthSession struct {
 	UserID 			uuid.UUID
 	CreateTime 	time.Time
 	ExpireTime 	time.Time
-	Token 			string
-	TokenSha256 []byte
 	Revoked 		bool
 }
 
@@ -46,7 +44,6 @@ func (s *Store) CreateSession(ctx context.Context, req *CreateSessionRequest) (*
 		ID: uuid.New(),
 		UserID: userId,
 		ExpireTime: &expiresAt,
-		Token: uuid.New().String(),
 	})
 	if err != nil {
 		return &OpenAuthSession{}, err
@@ -69,7 +66,6 @@ func transformSession(session queries.Session) *OpenAuthSession {
 		UserID: session.UserID,
 		CreateTime: *session.CreateTime,
 		ExpireTime: *session.ExpireTime,
-		Token: session.Token,
 		Revoked: session.Revoked,
 	}
 }

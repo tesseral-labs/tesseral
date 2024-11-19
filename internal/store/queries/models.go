@@ -67,14 +67,23 @@ type IntermediateSession struct {
 	Revoked         bool
 }
 
+type IntermediateSessionSigningKey struct {
+	ID                   uuid.UUID
+	ProjectID            uuid.UUID
+	PublicKey            []byte
+	PrivateKeyCipherText []byte
+	CreateTime           *time.Time
+	ExpireTime           *time.Time
+}
+
 type MethodVerificationChallenge struct {
-	ID                uuid.UUID
-	ProjectID         uuid.UUID
-	CompleteTime      *time.Time
-	Email             string
-	AuthMethod        AuthMethod
-	ExpireTime        *time.Time
-	SecretTokenSha256 []byte
+	ID                    uuid.UUID
+	ProjectID             uuid.UUID
+	CompleteTime          *time.Time
+	IntermediateSessionID uuid.UUID
+	AuthMethod            AuthMethod
+	ExpireTime            *time.Time
+	SecretTokenSha256     []byte
 }
 
 type Organization struct {
@@ -106,13 +115,20 @@ type SchemaMigration struct {
 }
 
 type Session struct {
-	ID          uuid.UUID
-	UserID      uuid.UUID
-	CreateTime  *time.Time
-	ExpireTime  *time.Time
-	Token       string
-	TokenSha256 []byte
-	Revoked     bool
+	ID         uuid.UUID
+	UserID     uuid.UUID
+	CreateTime *time.Time
+	ExpireTime *time.Time
+	Revoked    bool
+}
+
+type SessionSigningKey struct {
+	ID                   uuid.UUID
+	ProjectID            uuid.UUID
+	PublicKey            []byte
+	PrivateKeyCipherText []byte
+	CreateTime           *time.Time
+	ExpireTime           *time.Time
 }
 
 type User struct {

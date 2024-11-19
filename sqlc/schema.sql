@@ -35,6 +35,22 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- Name: intermediate_session_signing_keys; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.intermediate_session_signing_keys (
+    id uuid NOT NULL,
+    project_id uuid NOT NULL,
+    public_key bytea NOT NULL,
+    private_key_cipher_text bytea NOT NULL,
+    create_time timestamp with time zone DEFAULT now() NOT NULL,
+    expire_time timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.intermediate_session_signing_keys OWNER TO postgres;
+
+--
 -- Name: intermediate_sessions; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -61,7 +77,7 @@ CREATE TABLE public.method_verification_challenges (
     id uuid NOT NULL,
     project_id uuid NOT NULL,
     complete_time timestamp with time zone,
-    email character varying NOT NULL,
+    intermediate_session_id uuid NOT NULL,
     auth_method public.auth_method NOT NULL,
     expire_time timestamp with time zone NOT NULL,
     secret_token_sha256 bytea NOT NULL
@@ -120,6 +136,22 @@ CREATE TABLE public.schema_migrations (
 ALTER TABLE public.schema_migrations OWNER TO postgres;
 
 --
+-- Name: session_signing_keys; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.session_signing_keys (
+    id uuid NOT NULL,
+    project_id uuid NOT NULL,
+    public_key bytea NOT NULL,
+    private_key_cipher_text bytea NOT NULL,
+    create_time timestamp with time zone DEFAULT now() NOT NULL,
+    expire_time timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.session_signing_keys OWNER TO postgres;
+
+--
 -- Name: sessions; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -128,8 +160,6 @@ CREATE TABLE public.sessions (
     user_id uuid NOT NULL,
     create_time timestamp with time zone DEFAULT now() NOT NULL,
     expire_time timestamp with time zone NOT NULL,
-    token character varying NOT NULL,
-    token_sha256 bytea,
     revoked boolean DEFAULT false NOT NULL
 );
 
@@ -152,6 +182,14 @@ CREATE TABLE public.users (
 
 
 ALTER TABLE public.users OWNER TO postgres;
+
+--
+-- Name: intermediate_session_signing_keys intermediate_session_signing_keys_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.intermediate_session_signing_keys
+    ADD CONSTRAINT intermediate_session_signing_keys_pkey PRIMARY KEY (id);
+
 
 --
 -- Name: intermediate_sessions intermediate_sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
@@ -199,6 +237,14 @@ ALTER TABLE ONLY public.projects
 
 ALTER TABLE ONLY public.schema_migrations
     ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
+
+
+--
+-- Name: session_signing_keys session_signing_keys_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.session_signing_keys
+    ADD CONSTRAINT session_signing_keys_pkey PRIMARY KEY (id);
 
 
 --
@@ -250,11 +296,27 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- Name: intermediate_session_signing_keys intermediate_session_signing_keys_project_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.intermediate_session_signing_keys
+    ADD CONSTRAINT intermediate_session_signing_keys_project_id_fkey FOREIGN KEY (project_id) REFERENCES public.projects(id);
+
+
+--
 -- Name: intermediate_sessions intermediate_sessions_project_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.intermediate_sessions
     ADD CONSTRAINT intermediate_sessions_project_id_fkey FOREIGN KEY (project_id) REFERENCES public.projects(id);
+
+
+--
+-- Name: method_verification_challenges method_verification_challenges_intermediate_session_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.method_verification_challenges
+    ADD CONSTRAINT method_verification_challenges_intermediate_session_id_fkey FOREIGN KEY (intermediate_session_id) REFERENCES public.intermediate_sessions(id);
 
 
 --
@@ -279,6 +341,14 @@ ALTER TABLE ONLY public.organizations
 
 ALTER TABLE ONLY public.projects
     ADD CONSTRAINT projects_organization_id_fkey FOREIGN KEY (organization_id) REFERENCES public.organizations(id);
+
+
+--
+-- Name: session_signing_keys session_signing_keys_project_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.session_signing_keys
+    ADD CONSTRAINT session_signing_keys_project_id_fkey FOREIGN KEY (project_id) REFERENCES public.projects(id);
 
 
 --
