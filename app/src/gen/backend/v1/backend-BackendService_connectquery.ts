@@ -4,7 +4,8 @@
 // @ts-nocheck
 
 import { MethodKind } from "@bufbuild/protobuf";
-import { CreateOrganizationRequest, CreateOrganizationResponse, CreateProjectRequest, CreateProjectResponse, CreateUserRequest, CreateUserResponse, GetOrganizationRequest, GetOrganizationResponse, GetProjectRequest, GetProjectResponse, GetUserRequest, GetUserResponse, ListOrganizationsRequest, ListOrganizationsResponse, ListProjectsRequest, ListProjectsResponse, ListUsersRequest, ListUsersResponse, UpdateOrganizationRequest, UpdateOrganizationResponse, UpdateProjectRequest, UpdateProjectResponse, UpdateUserPasswordRequest, UpdateUserPasswordResponse, UpdateUserRequest, UpdateUserResponse } from "./backend_pb.js";
+import { CreateGoogleUserRequest, CreateMicrosoftUserRequest, CreateProjectRequest, CreateUnverifiedUserRequest, ListOrganizationsRequest, ListOrganizationsResponse, Organization, Project, ResourceIdRequest, User } from "../../openauth/v1/openauth_pb.js";
+import { ListProjectsRequest, ListProjectsResponse, ListUsersRequest, ListUsersResponse, UpdateUserPasswordRequest } from "./backend_pb.js";
 
 /**
  * Creates an organization.
@@ -15,8 +16,8 @@ export const createOrganization = {
   localName: "createOrganization",
   name: "CreateOrganization",
   kind: MethodKind.Unary,
-  I: CreateOrganizationRequest,
-  O: CreateOrganizationResponse,
+  I: Organization,
+  O: Organization,
   service: {
     typeName: "backend.v1.BackendService"
   }
@@ -31,8 +32,8 @@ export const getOrganization = {
   localName: "getOrganization",
   name: "GetOrganization",
   kind: MethodKind.Unary,
-  I: GetOrganizationRequest,
-  O: GetOrganizationResponse,
+  I: ResourceIdRequest,
+  O: Organization,
   service: {
     typeName: "backend.v1.BackendService"
   }
@@ -63,8 +64,8 @@ export const updateOrganization = {
   localName: "updateOrganization",
   name: "UpdateOrganization",
   kind: MethodKind.Unary,
-  I: UpdateOrganizationRequest,
-  O: UpdateOrganizationResponse,
+  I: Organization,
+  O: Organization,
   service: {
     typeName: "backend.v1.BackendService"
   }
@@ -80,7 +81,7 @@ export const createProject = {
   name: "CreateProject",
   kind: MethodKind.Unary,
   I: CreateProjectRequest,
-  O: CreateProjectResponse,
+  O: Project,
   service: {
     typeName: "backend.v1.BackendService"
   }
@@ -95,8 +96,8 @@ export const getProject = {
   localName: "getProject",
   name: "GetProject",
   kind: MethodKind.Unary,
-  I: GetProjectRequest,
-  O: GetProjectResponse,
+  I: ResourceIdRequest,
+  O: Project,
   service: {
     typeName: "backend.v1.BackendService"
   }
@@ -127,8 +128,8 @@ export const updateProject = {
   localName: "updateProject",
   name: "UpdateProject",
   kind: MethodKind.Unary,
-  I: UpdateProjectRequest,
-  O: UpdateProjectResponse,
+  I: Project,
+  O: Project,
   service: {
     typeName: "backend.v1.BackendService"
   }
@@ -143,8 +144,56 @@ export const createUser = {
   localName: "createUser",
   name: "CreateUser",
   kind: MethodKind.Unary,
-  I: CreateUserRequest,
-  O: CreateUserResponse,
+  I: User,
+  O: User,
+  service: {
+    typeName: "backend.v1.BackendService"
+  }
+} as const;
+
+/**
+ * Creates a Google user.
+ *
+ * @generated from rpc backend.v1.BackendService.CreateGoogleUser
+ */
+export const createGoogleUser = {
+  localName: "createGoogleUser",
+  name: "CreateGoogleUser",
+  kind: MethodKind.Unary,
+  I: CreateGoogleUserRequest,
+  O: User,
+  service: {
+    typeName: "backend.v1.BackendService"
+  }
+} as const;
+
+/**
+ * Creates a Microsoft user.
+ *
+ * @generated from rpc backend.v1.BackendService.CreateMicrosoftUser
+ */
+export const createMicrosoftUser = {
+  localName: "createMicrosoftUser",
+  name: "CreateMicrosoftUser",
+  kind: MethodKind.Unary,
+  I: CreateMicrosoftUserRequest,
+  O: User,
+  service: {
+    typeName: "backend.v1.BackendService"
+  }
+} as const;
+
+/**
+ * Creates an unverified user.
+ *
+ * @generated from rpc backend.v1.BackendService.CreateUnverifiedUser
+ */
+export const createUnverifiedUser = {
+  localName: "createUnverifiedUser",
+  name: "CreateUnverifiedUser",
+  kind: MethodKind.Unary,
+  I: CreateUnverifiedUserRequest,
+  O: User,
   service: {
     typeName: "backend.v1.BackendService"
   }
@@ -159,8 +208,8 @@ export const getUser = {
   localName: "getUser",
   name: "GetUser",
   kind: MethodKind.Unary,
-  I: GetUserRequest,
-  O: GetUserResponse,
+  I: ResourceIdRequest,
+  O: User,
   service: {
     typeName: "backend.v1.BackendService"
   }
@@ -191,8 +240,8 @@ export const updateUser = {
   localName: "updateUser",
   name: "UpdateUser",
   kind: MethodKind.Unary,
-  I: UpdateUserRequest,
-  O: UpdateUserResponse,
+  I: User,
+  O: User,
   service: {
     typeName: "backend.v1.BackendService"
   }
@@ -208,7 +257,7 @@ export const updateUserPassword = {
   name: "UpdateUserPassword",
   kind: MethodKind.Unary,
   I: UpdateUserPasswordRequest,
-  O: UpdateUserPasswordResponse,
+  O: User,
   service: {
     typeName: "backend.v1.BackendService"
   }

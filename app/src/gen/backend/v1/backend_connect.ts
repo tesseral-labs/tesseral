@@ -3,8 +3,9 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { CreateOrganizationRequest, CreateOrganizationResponse, CreateProjectRequest, CreateProjectResponse, CreateUserRequest, CreateUserResponse, GetOrganizationRequest, GetOrganizationResponse, GetProjectRequest, GetProjectResponse, GetUserRequest, GetUserResponse, ListOrganizationsRequest, ListOrganizationsResponse, ListProjectsRequest, ListProjectsResponse, ListUsersRequest, ListUsersResponse, UpdateOrganizationRequest, UpdateOrganizationResponse, UpdateProjectRequest, UpdateProjectResponse, UpdateUserPasswordRequest, UpdateUserPasswordResponse, UpdateUserRequest, UpdateUserResponse } from "./backend_pb.js";
+import { CreateGoogleUserRequest, CreateMicrosoftUserRequest, CreateProjectRequest, CreateUnverifiedUserRequest, ListOrganizationsRequest, ListOrganizationsResponse, Organization, Project, ResourceIdRequest, User } from "../../openauth/v1/openauth_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
+import { ListProjectsRequest, ListProjectsResponse, ListUsersRequest, ListUsersResponse, UpdateUserPasswordRequest } from "./backend_pb.js";
 
 /**
  * @generated from service backend.v1.BackendService
@@ -19,8 +20,8 @@ export const BackendService = {
      */
     createOrganization: {
       name: "CreateOrganization",
-      I: CreateOrganizationRequest,
-      O: CreateOrganizationResponse,
+      I: Organization,
+      O: Organization,
       kind: MethodKind.Unary,
     },
     /**
@@ -30,8 +31,8 @@ export const BackendService = {
      */
     getOrganization: {
       name: "GetOrganization",
-      I: GetOrganizationRequest,
-      O: GetOrganizationResponse,
+      I: ResourceIdRequest,
+      O: Organization,
       kind: MethodKind.Unary,
     },
     /**
@@ -52,8 +53,8 @@ export const BackendService = {
      */
     updateOrganization: {
       name: "UpdateOrganization",
-      I: UpdateOrganizationRequest,
-      O: UpdateOrganizationResponse,
+      I: Organization,
+      O: Organization,
       kind: MethodKind.Unary,
     },
     /**
@@ -64,7 +65,7 @@ export const BackendService = {
     createProject: {
       name: "CreateProject",
       I: CreateProjectRequest,
-      O: CreateProjectResponse,
+      O: Project,
       kind: MethodKind.Unary,
     },
     /**
@@ -74,8 +75,8 @@ export const BackendService = {
      */
     getProject: {
       name: "GetProject",
-      I: GetProjectRequest,
-      O: GetProjectResponse,
+      I: ResourceIdRequest,
+      O: Project,
       kind: MethodKind.Unary,
     },
     /**
@@ -96,8 +97,8 @@ export const BackendService = {
      */
     updateProject: {
       name: "UpdateProject",
-      I: UpdateProjectRequest,
-      O: UpdateProjectResponse,
+      I: Project,
+      O: Project,
       kind: MethodKind.Unary,
     },
     /**
@@ -107,8 +108,41 @@ export const BackendService = {
      */
     createUser: {
       name: "CreateUser",
-      I: CreateUserRequest,
-      O: CreateUserResponse,
+      I: User,
+      O: User,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * Creates a Google user.
+     *
+     * @generated from rpc backend.v1.BackendService.CreateGoogleUser
+     */
+    createGoogleUser: {
+      name: "CreateGoogleUser",
+      I: CreateGoogleUserRequest,
+      O: User,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * Creates a Microsoft user.
+     *
+     * @generated from rpc backend.v1.BackendService.CreateMicrosoftUser
+     */
+    createMicrosoftUser: {
+      name: "CreateMicrosoftUser",
+      I: CreateMicrosoftUserRequest,
+      O: User,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * Creates an unverified user.
+     *
+     * @generated from rpc backend.v1.BackendService.CreateUnverifiedUser
+     */
+    createUnverifiedUser: {
+      name: "CreateUnverifiedUser",
+      I: CreateUnverifiedUserRequest,
+      O: User,
       kind: MethodKind.Unary,
     },
     /**
@@ -118,8 +152,8 @@ export const BackendService = {
      */
     getUser: {
       name: "GetUser",
-      I: GetUserRequest,
-      O: GetUserResponse,
+      I: ResourceIdRequest,
+      O: User,
       kind: MethodKind.Unary,
     },
     /**
@@ -140,8 +174,8 @@ export const BackendService = {
      */
     updateUser: {
       name: "UpdateUser",
-      I: UpdateUserRequest,
-      O: UpdateUserResponse,
+      I: User,
+      O: User,
       kind: MethodKind.Unary,
     },
     /**
@@ -152,7 +186,7 @@ export const BackendService = {
     updateUserPassword: {
       name: "UpdateUserPassword",
       I: UpdateUserPasswordRequest,
-      O: UpdateUserPasswordResponse,
+      O: User,
       kind: MethodKind.Unary,
     },
   }

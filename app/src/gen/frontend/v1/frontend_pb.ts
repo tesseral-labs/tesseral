@@ -4,87 +4,14 @@
 // @ts-nocheck
 
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
-import { Organization, User } from "../../openauth/v1/openauth_pb.js";
-
-/**
- * @generated from message frontend.v1.IntermediateSession
- */
-export class IntermediateSession extends Message<IntermediateSession> {
-  /**
-   * The ID of the organization this session is scoped to.
-   *
-   * @generated from field: string id = 1;
-   */
-  id = "";
-
-  /**
-   * The the unverified email address for the user.
-   *
-   * @generated from field: string unverified_email = 2;
-   */
-  unverifiedEmail = "";
-
-  /**
-   * The verified email address for the user.
-   *
-   * @generated from field: string verified_email = 3;
-   */
-  verifiedEmail = "";
-
-  /**
-   * The time the session was created.
-   *
-   * @generated from field: google.protobuf.Timestamp created_time = 4;
-   */
-  createdTime?: Timestamp;
-
-  /**
-   * The timestamp for when the session expires
-   *
-   * @generated from field: google.protobuf.Timestamp expire_time = 5;
-   */
-  expireTime?: Timestamp;
-
-  constructor(data?: PartialMessage<IntermediateSession>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "frontend.v1.IntermediateSession";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "unverified_email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "verified_email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 4, name: "created_time", kind: "message", T: Timestamp },
-    { no: 5, name: "expire_time", kind: "message", T: Timestamp },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): IntermediateSession {
-    return new IntermediateSession().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): IntermediateSession {
-    return new IntermediateSession().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): IntermediateSession {
-    return new IntermediateSession().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: IntermediateSession | PlainMessage<IntermediateSession> | undefined, b: IntermediateSession | PlainMessage<IntermediateSession> | undefined): boolean {
-    return proto3.util.equals(IntermediateSession, a, b);
-  }
-}
+import { Message, proto3 } from "@bufbuild/protobuf";
+import { User } from "../../openauth/v1/openauth_pb.js";
 
 /**
  * @generated from message frontend.v1.CreateUserRequest
  */
 export class CreateUserRequest extends Message<CreateUserRequest> {
   /**
-   * The user to create.
-   *
    * @generated from field: openauth.v1.User user = 1;
    */
   user?: User;
@@ -122,8 +49,6 @@ export class CreateUserRequest extends Message<CreateUserRequest> {
  */
 export class CreateUserResponse extends Message<CreateUserResponse> {
   /**
-   * The user created by the CreateUser request.
-   *
    * @generated from field: openauth.v1.User user = 1;
    */
   user?: User;
@@ -157,51 +82,10 @@ export class CreateUserResponse extends Message<CreateUserResponse> {
 }
 
 /**
- * @generated from message frontend.v1.GetUserRequest
- */
-export class GetUserRequest extends Message<GetUserRequest> {
-  /**
-   * The ID of the user to get.
-   *
-   * @generated from field: string id = 1;
-   */
-  id = "";
-
-  constructor(data?: PartialMessage<GetUserRequest>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "frontend.v1.GetUserRequest";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetUserRequest {
-    return new GetUserRequest().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetUserRequest {
-    return new GetUserRequest().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetUserRequest {
-    return new GetUserRequest().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: GetUserRequest | PlainMessage<GetUserRequest> | undefined, b: GetUserRequest | PlainMessage<GetUserRequest> | undefined): boolean {
-    return proto3.util.equals(GetUserRequest, a, b);
-  }
-}
-
-/**
  * @generated from message frontend.v1.GetUserResponse
  */
 export class GetUserResponse extends Message<GetUserResponse> {
   /**
-   * The user returned by the GetUser request.
-   *
    * @generated from field: openauth.v1.User user = 1;
    */
   user?: User;
@@ -235,121 +119,15 @@ export class GetUserResponse extends Message<GetUserResponse> {
 }
 
 /**
- * @generated from message frontend.v1.ListOrganizationsRequest
- */
-export class ListOrganizationsRequest extends Message<ListOrganizationsRequest> {
-  /**
-   * The ID of the project to use for filtering.
-   *
-   * @generated from field: string project_id = 1;
-   */
-  projectId = "";
-
-  /**
-   * The email address to use for filtering.
-   *
-   * @generated from field: string email = 2;
-   */
-  email = "";
-
-  /**
-   * The page token to use for pagination.
-   *
-   * @generated from field: string page_token = 3;
-   */
-  pageToken = "";
-
-  constructor(data?: PartialMessage<ListOrganizationsRequest>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "frontend.v1.ListOrganizationsRequest";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "project_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "page_token", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ListOrganizationsRequest {
-    return new ListOrganizationsRequest().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ListOrganizationsRequest {
-    return new ListOrganizationsRequest().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ListOrganizationsRequest {
-    return new ListOrganizationsRequest().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: ListOrganizationsRequest | PlainMessage<ListOrganizationsRequest> | undefined, b: ListOrganizationsRequest | PlainMessage<ListOrganizationsRequest> | undefined): boolean {
-    return proto3.util.equals(ListOrganizationsRequest, a, b);
-  }
-}
-
-/**
- * @generated from message frontend.v1.ListOrganizationsResponse
- */
-export class ListOrganizationsResponse extends Message<ListOrganizationsResponse> {
-  /**
-   * The organizations returned by the ListOrganizations request.
-   *
-   * @generated from field: repeated openauth.v1.Organization organizations = 1;
-   */
-  organizations: Organization[] = [];
-
-  /**
-   * The next page token to use for pagination.
-   *
-   * @generated from field: string next_page_token = 2;
-   */
-  nextPageToken = "";
-
-  constructor(data?: PartialMessage<ListOrganizationsResponse>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "frontend.v1.ListOrganizationsResponse";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "organizations", kind: "message", T: Organization, repeated: true },
-    { no: 2, name: "next_page_token", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ListOrganizationsResponse {
-    return new ListOrganizationsResponse().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ListOrganizationsResponse {
-    return new ListOrganizationsResponse().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ListOrganizationsResponse {
-    return new ListOrganizationsResponse().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: ListOrganizationsResponse | PlainMessage<ListOrganizationsResponse> | undefined, b: ListOrganizationsResponse | PlainMessage<ListOrganizationsResponse> | undefined): boolean {
-    return proto3.util.equals(ListOrganizationsResponse, a, b);
-  }
-}
-
-/**
  * @generated from message frontend.v1.ListUsersRequest
  */
 export class ListUsersRequest extends Message<ListUsersRequest> {
   /**
-   * The ID of the organization to use for filtering.
-   *
    * @generated from field: string organization_id = 1;
    */
   organizationId = "";
 
   /**
-   * The page token to use for pagination.
-   *
    * @generated from field: string page_token = 2;
    */
   pageToken = "";
@@ -388,15 +166,11 @@ export class ListUsersRequest extends Message<ListUsersRequest> {
  */
 export class ListUsersResponse extends Message<ListUsersResponse> {
   /**
-   * The users returned by the ListUsers request.
-   *
    * @generated from field: repeated openauth.v1.User users = 1;
    */
   users: User[] = [];
 
   /**
-   * The next page token to use for pagination.
-   *
    * @generated from field: string next_page_token = 2;
    */
   nextPageToken = "";
@@ -435,15 +209,11 @@ export class ListUsersResponse extends Message<ListUsersResponse> {
  */
 export class UpdateUserRequest extends Message<UpdateUserRequest> {
   /**
-   * The ID of the user to update.
-   *
    * @generated from field: string id = 1;
    */
   id = "";
 
   /**
-   * The user updates to apply.
-   *
    * @generated from field: openauth.v1.User user = 2;
    */
   user?: User;
@@ -482,8 +252,6 @@ export class UpdateUserRequest extends Message<UpdateUserRequest> {
  */
 export class UpdateUserResponse extends Message<UpdateUserResponse> {
   /**
-   * The user updated by the UpdateUser request.
-   *
    * @generated from field: openauth.v1.User user = 1;
    */
   user?: User;
@@ -552,22 +320,16 @@ export class WhoAmIRequest extends Message<WhoAmIRequest> {
  */
 export class WhoAmIResponse extends Message<WhoAmIResponse> {
   /**
-   * The user ID that is currently authenticated.
-   *
    * @generated from field: string id = 1;
    */
   id = "";
 
   /**
-   * The display name for the user.
-   *
    * @generated from field: string display_name = 2;
    */
   displayName = "";
 
   /**
-   * The email address for the user.
-   *
    * @generated from field: string email = 3;
    */
   email = "";
