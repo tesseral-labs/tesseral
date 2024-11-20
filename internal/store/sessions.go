@@ -53,14 +53,14 @@ func (s *Store) CreateSession(ctx context.Context, req *CreateSessionRequest) (*
 		return &Session{}, err
 	}
 
-	return transformSession(session), nil
+	return parseSession(session), nil
 }
 
 func (s *Store) RevokeSession() error {
 	return nil
 }
 
-func transformSession(session queries.Session) *Session {
+func parseSession(session queries.Session) *Session {
 	return &Session{
 		ID: session.ID,
 		UserID: session.UserID,

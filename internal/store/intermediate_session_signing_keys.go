@@ -81,14 +81,7 @@ func (s *Store) CreateIntermediateSessionSigningKey(ctx context.Context, project
 		return nil, err
 	}
 
-	return &IntermediateSessionSigningKey{
-		ID: createdIntermediateSessionSigningKey.ID,
-		ProjectID: createdIntermediateSessionSigningKey.ProjectID,
-		CreateTime: *createdIntermediateSessionSigningKey.CreateTime,
-		ExpireTime: *createdIntermediateSessionSigningKey.ExpireTime,
-		PublicKey: ecdsaKeyPair.PublicKey,
-		PrivateKey: ecdsaKeyPair.PrivateKey,
-	}, nil
+	return parseIntermediateSessionSigningKey(&createdIntermediateSessionSigningKey, ecdsaKeyPair), nil
 }
 
 func (s *Store) GetIntermediateSessionSigningKeyByID(ctx context.Context, id string) (*IntermediateSessionSigningKey, error) {
@@ -124,12 +117,16 @@ func (s *Store) GetIntermediateSessionSigningKeyByID(ctx context.Context, id str
 	}
 
 	// Return the intermediate session signing key with the decrypted private key
+	return parseIntermediateSessionSigningKey(&intermediateSessionSigningKey, ecdsaKeyPair), nil
+}
+
+func parseIntermediateSessionSigningKey(issk *queries.IntermediateSessionSigningKey, keyPair *openauthecdsa.ECDSAKeyPair) *IntermediateSessionSigningKey {
 	return &IntermediateSessionSigningKey{
-		ID: intermediateSessionSigningKey.ID,
-		ProjectID: intermediateSessionSigningKey.ProjectID,
-		CreateTime: *intermediateSessionSigningKey.CreateTime,
-		ExpireTime: *intermediateSessionSigningKey.ExpireTime,
-		PublicKey: ecdsaKeyPair.PublicKey,
-		PrivateKey: ecdsaKeyPair.PrivateKey,
-	}, nil
+		ID: issk.ID,
+		ProjectID: issk.ProjectID,
+		CreateTime: *issk.CreateTime,
+		ExpireTime: *issk.ExpireTime,
+		PublicKey: keyPair.PublicKey,
+		PrivateKey: keyPair.PrivateKey,
+	}
 }

@@ -84,14 +84,7 @@ func (s *Store) CreateSessionSigningKey(ctx context.Context, projectID string) (
 	}
 
 	// Return the new method verification challenge
-	return &SessionSigningKey{
-		ID: sessionSigningKey.ID,
-		ProjectID: sessionSigningKey.ProjectID,
-		CreateTime: *sessionSigningKey.CreateTime,
-		ExpireTime: *sessionSigningKey.ExpireTime,
-		PrivateKey: ecdsaKeyPair.PrivateKey,
-		PublicKey: ecdsaKeyPair.PublicKey,
-	}, nil
+	return parseSessionSigningKey(&sessionSigningKey, ecdsaKeyPair), nil
 }
 
 func (s *Store) GetSessionSigningKeyByID(ctx context.Context, id string) (*SessionSigningKey, error) {
@@ -100,13 +93,13 @@ func (s *Store) GetSessionSigningKeyByID(ctx context.Context, id string) (*Sessi
 		return nil, err
 	}
 
-	sessionSigningKeyID, err := idformat.IntermediateSessionSigningKey.Parse(id)
+	sessionSigningKeyID, err := idformat.SessionSigningKey.Parse(id)
 	if err != nil {
 		return nil, err
 	}
 
 	// Fetch the raw record from the database
-	sessionSigningKey, err := q.GetIntermediateSessionSigningKeyByID(ctx, sessionSigningKeyID)
+	sessionSigningKey, err := q.GetSessionSigningKeyByID(ctx, sessionSigningKeyID)
 	if err != nil {
 		return nil, err
 	}
@@ -127,12 +120,16 @@ func (s *Store) GetSessionSigningKeyByID(ctx context.Context, id string) (*Sessi
 	}
 
 	// Return the intermediate session signing key with the decrypted signing key
+	return parseSessionSigningKey(&sessionSigningKey, ecdsaKeyPair), nil
+}
+
+func parseSessionSigningKey(ssk *queries.SessionSigningKey, keyPair *openauthecdsa.ECDSAKeyPair) *SessionSigningKey {
 	return &SessionSigningKey{
-		ID: sessionSigningKey.ID,
-		ProjectID: sessionSigningKey.ProjectID,
-		CreateTime: *sessionSigningKey.CreateTime,
-		ExpireTime: *sessionSigningKey.ExpireTime,
-		PrivateKey: ecdsaKeyPair.PrivateKey,
-		PublicKey: ecdsaKeyPair.PublicKey,
-	}, nil
+		ID: ssk.ID,
+		ProjectID: ssk.ProjectID,
+		CreateTime: *ssk.CreateTime,
+		ExpireTime: *ssk.ExpireTime,
+		PublicKey: keyPair.PublicKey,
+		PrivateKey: keyPair.PrivateKey,
+	}
 }

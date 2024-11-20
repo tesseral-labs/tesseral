@@ -52,7 +52,7 @@ func (s *Store) CreateProject(ctx context.Context, req *backendv1.CreateProjectR
 	}
 
 	// Return the updated project
-	return transformProject(&updatedProject), nil
+	return parseProject(&updatedProject), nil
 }
 
 func (s *Store) GetProject(ctx context.Context, req *backendv1.GetProjectRequest) (*openauthv1.Project, error) {
@@ -72,7 +72,7 @@ func (s *Store) GetProject(ctx context.Context, req *backendv1.GetProjectRequest
 		return nil, err
 	}
 
-	return transformProject(&project), nil
+	return parseProject(&project), nil
 }
 
 // TODO: Ensure that this function can only be called via a backend service reuqest
@@ -96,7 +96,7 @@ func (s *Store) ListProjects(ctx context.Context, req *backendv1.ListProjectsReq
 
 	projects := []*openauthv1.Project{}
 	for _, project := range projectRecords {
-		projects = append(projects, transformProject(&project))
+		projects = append(projects, parseProject(&project))
 	}
 
 	var nextPageToken string
@@ -168,10 +168,10 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 		return nil, err
 	}
 
-	return transformProject(&updatedProject), nil
+	return parseProject(&updatedProject), nil
 }
 
-func transformProject(project *queries.Project) *openauthv1.Project {
+func parseProject(project *queries.Project) *openauthv1.Project {
 	return &openauthv1.Project{
 		Id: project.ID.String(),
 		OrganizationId: project.OrganizationID.String(),

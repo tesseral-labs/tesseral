@@ -40,7 +40,7 @@ func (s * Store) CreateUser(ctx context.Context, req *openauthv1.User) (*openaut
 		return nil, err
 	}
 
-	return transformUser(&createdUser), nil
+	return parseUser(&createdUser), nil
 }
 
 func (s *Store) GetUser(ctx context.Context, req *backendv1.GetUserRequest) (*openauthv1.User, error) {
@@ -60,7 +60,7 @@ func (s *Store) GetUser(ctx context.Context, req *backendv1.GetUserRequest) (*op
 		return nil, err
 	}
 
-	return transformUser(&user), nil
+	return parseUser(&user), nil
 }
 
 // TODO: Ensure that this function can only be called via a backend service reuqest
@@ -92,7 +92,7 @@ func (s * Store) ListUsers(ctx context.Context, req *backendv1.ListUsersRequest)
 
 	users := []*openauthv1.User{}
 	for _, userRecord := range userRecords {
-		users = append(users, transformUser(&userRecord))
+		users = append(users, parseUser(&userRecord))
 	}
 
 	var nextPageToken string
@@ -164,7 +164,7 @@ func (s *Store) UpdateUser(ctx context.Context, req *backendv1.UpdateUserRequest
 		return nil, err
 	}
 
-	return transformUser(&user), nil
+	return parseUser(&user), nil
 }
 
 func (s *Store) UpdateUserPassword(ctx context.Context, req *backendv1.UpdateUserPasswordRequest) (*openauthv1.User, error) {
@@ -199,11 +199,11 @@ func (s *Store) UpdateUserPassword(ctx context.Context, req *backendv1.UpdateUse
 		return nil, err
 	}
 
-	return transformUser(&user), nil
+	return parseUser(&user), nil
 }
 
 
-func transformUser(user *queries.User) *openauthv1.User {
+func parseUser(user *queries.User) *openauthv1.User {
 	return &openauthv1.User{
 		Id: user.ID.String(),
 		OrganizationId: user.OrganizationID.String(),

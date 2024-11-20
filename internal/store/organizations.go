@@ -41,7 +41,7 @@ func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrg
 		return nil, err
 	}
 
-	return transformOrganization(createdOrganization), nil
+	return parseOrganization(createdOrganization), nil
 }
 
 func (s *Store) GetOrganization(
@@ -64,7 +64,7 @@ func (s *Store) GetOrganization(
 		return nil, err
 	}
 
-	return transformOrganization(organization), nil
+	return parseOrganization(organization), nil
 }
 
 func (s *Store) ListFrontendOrganizations(
@@ -144,7 +144,7 @@ func (s *Store) ListOrganizations(
 
 	organizations := []*openauthv1.Organization{}
 	for _, organization := range organizationRecords {
-		organizations = append(organizations, transformOrganization(organization))
+		organizations = append(organizations, parseOrganization(organization))
 	}
 
 	var nextPageToken string
@@ -213,10 +213,10 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *backendv1.UpdateOrg
 		return nil, err
 	}
 
-	return transformOrganization(updatedOrganization), nil
+	return parseOrganization(updatedOrganization), nil
 }
 
-func transformOrganization(organization queries.Organization) *openauthv1.Organization {
+func parseOrganization(organization queries.Organization) *openauthv1.Organization {
 	return &openauthv1.Organization{
 		Id: organization.ID.String(),
 		ProjectId: organization.ProjectID.String(),
