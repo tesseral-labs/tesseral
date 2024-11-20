@@ -3,10 +3,9 @@ package store
 import (
 	"bytes"
 	"context"
-	"crypto/rand"
 	"crypto/sha256"
 	"errors"
-	"math/big"
+	"math/rand/v2"
 	"time"
 
 	"github.com/google/uuid"
@@ -135,16 +134,9 @@ func generateSecretToken() (string, error) {
 	// Define the range for a 6-digit number: [100000, 999999]
 	min := 100000
 	max := 999999
-	rangeSize := max - min + 1
 
 	// Generate a secure random number
-	randomBigInt, err := rand.Int(rand.Reader, big.NewInt(int64(rangeSize)))
-	if err != nil {
-		return "", err
-	}
-
-	// Convert to the desired range
-	randomNumber := min + int(randomBigInt.Int64())
+	randomNumber := rand.IntN(max - min + 1) + min
 
 	return string(randomNumber), nil
 }
