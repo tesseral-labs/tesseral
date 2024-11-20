@@ -12,8 +12,8 @@ func GenerateRSAKeys() (privateKey []byte, publicKey []byte, err error) {
 		return nil, nil, err
 	}
 
-  privateKey = privateKeyToBytes(pk)
-  publicKey = publicKeyToBytes(&pk.PublicKey)
+	privateKey = privateKeyToBytes(pk)
+	publicKey = publicKeyToBytes(&pk.PublicKey)
 
 	return
 }
