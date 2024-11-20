@@ -2,8 +2,11 @@ package jwt
 
 import (
 	"context"
+	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -11,8 +14,10 @@ import (
 	"github.com/openauth-dev/openauth/internal/store"
 )
 
-var ErrInvalidJWTTOken = errors.New("invalid JWT token")
+var ErrInvalidJWTFormat = errors.New("invalid JWT format")
+var ErrInvalidJWTToken = errors.New("invalid JWT token")
 var ErrInvalidSigningMethod = errors.New("invalid signing method")
+var ErrKidNotFound = errors.New("`kid` not found in JWT header")
 
 type JWT struct {
 	store *store.Store
@@ -51,8 +56,12 @@ func NewJWT(params NewJWTParams) *JWT {
 }
 
 func (j *JWT) ParseIntermediateSessionJWT(ctx context.Context, tokenString string) (*IntermediateSessionJWTClaims, error) {
-	// TODO: Make this use the project's intermediate session signing key
-	signingKey, err := j.store.GetSessionSigningKeyByID(ctx, uuid.New().String())
+	kid, err := extractKidFromJWT(tokenString)
+	if err != nil {
+		return nil, err
+	}
+
+	signingKey, err := j.store.GetSessionSigningKeyByID(ctx, kid)
 	if err != nil {
 		return nil, err
 	}
@@ -72,15 +81,19 @@ func (j *JWT) ParseIntermediateSessionJWT(ctx context.Context, tokenString strin
 	// Extract the claims
 	claims, ok := token.Claims.(*IntermediateSessionJWTClaims)
 	if !ok || !token.Valid {
-		return nil, ErrInvalidJWTTOken
+		return nil, ErrInvalidJWTToken
 	}
 	
 	return claims, nil
 }
 
 func (j *JWT) ParseSessionJWT(ctx context.Context, tokenString string) (*SessionJWTClaims, error) {
-	// TODO: Make this use the project's intermediate session signing key
-	signingKey, err := j.store.GetSessionSigningKeyByID(ctx, uuid.New().String())
+	kid, err := extractKidFromJWT(tokenString)
+	if err != nil {
+		return nil, err
+	}
+
+	signingKey, err := j.store.GetSessionSigningKeyByID(ctx, kid)
 	if err != nil {
 		return nil, err
 	}
@@ -100,7 +113,7 @@ func (j *JWT) ParseSessionJWT(ctx context.Context, tokenString string) (*Session
 	// Extract the claims
 	claims, ok := token.Claims.(*SessionJWTClaims)
 	if !ok || !token.Valid {
-		return nil, ErrInvalidJWTTOken
+		return nil, ErrInvalidJWTToken
 	}
 
 	return claims, nil
@@ -149,4 +162,32 @@ func (j *JWT) SignSessionJWT(ctx context.Context, claims *SessionJWTClaims) (str
 	}
 
 	return tokenString, nil
+}
+
+func extractKidFromJWT(tokenString string) (string, error) {
+	// Split the token into its three parts: Header, Payload, and Signature
+	parts := strings.Split(tokenString, ".")
+	if len(parts) != 3 {
+		return "", ErrInvalidJWTFormat
+	}
+
+	// Decode the header (first part)
+	headerBytes, err := base64.RawURLEncoding.DecodeString(parts[0])
+	if err != nil {
+		return "", err
+	}
+
+	// Parse the header as JSON
+	var header map[string]interface{}
+	if err := json.Unmarshal(headerBytes, &header); err != nil {
+		return "", err
+	}
+
+	// Extract the `kid` field
+	kid, ok := header["kid"].(string)
+	if !ok {
+		return "", ErrKidNotFound
+	}
+
+	return kid, nil
 }

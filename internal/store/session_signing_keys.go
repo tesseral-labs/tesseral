@@ -79,13 +79,13 @@ func (s *Store) GetSessionSigningKeyByID(ctx context.Context, id string) (*Sessi
 		return nil, err
 	}
 
-	sessionID, err := idformat.IntermediateSessionSigningKey.Parse(id)
+	sessionSigningKeyID, err := idformat.IntermediateSessionSigningKey.Parse(id)
 	if err != nil {
 		return nil, err
 	}
 
 	// Fetch the raw record from the database
-	sessionSigningKey, err := q.GetIntermediateSessionSigningKeyByID(ctx, sessionID)
+	sessionSigningKey, err := q.GetIntermediateSessionSigningKeyByID(ctx, sessionSigningKeyID)
 	if err != nil {
 		return nil, err
 	}
