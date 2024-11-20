@@ -32,8 +32,11 @@ func (s *Store) CreateSessionSigningKey(ctx context.Context, projectID string) (
 		return nil, err
 	}
 
-	// Allow 15 minutes for the user to verify their email before expiring the intermediate session
-	expiresAt := time.Now().Add(time.Minute * 15)
+	// Allow this key to be used for 7 hours
+	// - this adds a 1 hour buffer to the 6 hour key rotation period, 
+	//   so that the key can be rotated before it expires without 
+	//   causing existing JWT parsing to fail
+	expiresAt := time.Now().Add(time.Hour * 7)
 
 	// Generate a new symmetric key
 	privateKey, publicKey, err := rsakeys.GenerateRSAKeys()
@@ -50,7 +53,6 @@ func (s *Store) CreateSessionSigningKey(ctx context.Context, projectID string) (
 	if err != nil {
 		return nil, err
 	}
-
 
 	// Create the new method verification challenge
 	sessionSigningKey, err := q.CreateSessionSigningKey(ctx, queries.CreateSessionSigningKeyParams{
