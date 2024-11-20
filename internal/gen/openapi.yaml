@@ -375,9 +375,9 @@ paths:
     /frontend/v1/email-signin:
         post:
             tags:
-                - FrontendService
+                - IntermediateService
             description: Creates a new intermediate session or session and cookies the requester.
-            operationId: FrontendService_SignInWithEmail
+            operationId: IntermediateService_SignInWithEmail
             requestBody:
                 content:
                     application/json:
@@ -766,3 +766,4 @@ components:
 tags:
     - name: BackendService
     - name: FrontendService
+    - name: IntermediateService

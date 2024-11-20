@@ -39,14 +39,6 @@ service FrontendService {
     };
   }
 
-  // Creates a new intermediate session or session and cookies the requester.
-  rpc SignInWithEmail(SignInWithEmailRequest) returns (SignInWithEmailResponse) {
-    option (google.api.http) = {
-      post: "/frontend/v1/email-signin",
-      body: "*"
-    };
-  }
-
   // Updates a user.
   rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {
     option (google.api.http) = {
@@ -111,16 +103,6 @@ message ListUsersResponse {
   repeated openauth.v1.User users = 1;
   // The next page token to use for pagination.
   string next_page_token = 2;
-}
-
-message SignInWithEmailRequest {
-  // The email address to sign in with.
-  string email = 1;
-}
-
-message SignInWithEmailResponse {
-  // The token for the intermediate session or session created by the SignInWithEmail request.
-  string SessionToken = 1;
 }
 
 message UpdateUserRequest {

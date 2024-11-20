@@ -1,4 +1,4 @@
-package authinterceptor
+package intermediateinterceptor
 
 import (
 	"context"
@@ -38,36 +38,19 @@ func New(j *jwt.JWT, s *store.Store) connect.UnaryInterceptorFunc {
 				return nil, connect.NewError(connect.CodeUnauthenticated, nil)
 			}
 
-			if strings.HasPrefix(secretValue, "openauth_secret_") {
-				// It's an API key
-				// TODO: Implement API key authentication
+      // Attempt to parse the intermediate session token
+      intermediateSessionJWT, err := j.ParseIntermediateSessionJWT(ctx, secretValue)
+      if err != nil {
+        return nil, connect.NewError(connect.CodeUnauthenticated, ErrInvalidSessionToken)
+      }
 
-			} else {
-				// Check whether the session token is an intermediate session token or a session token
-				intermediateSessionJWT, intermediateErr := j.ParseIntermediateSessionJWT(ctx, secretValue)
-				sessionJWT, sessionErr := j.ParseSessionJWT(ctx, secretValue)
-				if intermediateErr != nil && sessionErr != nil {
-					return nil, connect.NewError(connect.CodeUnauthenticated, ErrInvalidSessionToken)
-				}
-				
-				if intermediateSessionJWT != nil {
-					// It's an intermediate session token
-					ctx = authn.NewContext(ctx, authn.ContextData{
-						IntermediateSession: intermediateSessionJWT,
-					})
-				}
+      // TODO: Add checks to ensure the intermediate session token is valid
+      
+      ctx = authn.NewContext(ctx, authn.ContextData{
+        IntermediateSession: intermediateSessionJWT,
+      })
 
-				if sessionJWT != nil {
-					// It's a session token
-					ctx = authn.NewContext(ctx, authn.ContextData{
-						Session: sessionJWT,
-					})
-				}
-
-				return next(ctx, req)
-			} 
-
-			return nil, connect.NewError(connect.CodeUnauthenticated, nil)
+      return next(ctx, req)
 		}
 	}	
 }

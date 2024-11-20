@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { CreateUserRequest, CreateUserResponse, GetUserRequest, GetUserResponse, ListOrganizationsRequest, ListOrganizationsResponse, ListUsersRequest, ListUsersResponse, SignInWithEmailRequest, SignInWithEmailResponse, UpdateUserRequest, UpdateUserResponse, WhoAmIRequest, WhoAmIResponse } from "./frontend_pb.js";
+import { CreateUserRequest, CreateUserResponse, GetUserRequest, GetUserResponse, ListOrganizationsRequest, ListOrganizationsResponse, ListUsersRequest, ListUsersResponse, UpdateUserRequest, UpdateUserResponse, WhoAmIRequest, WhoAmIResponse } from "./frontend_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -54,17 +54,6 @@ export const FrontendService = {
       name: "ListUsers",
       I: ListUsersRequest,
       O: ListUsersResponse,
-      kind: MethodKind.Unary,
-    },
-    /**
-     * Creates a new intermediate session or session and cookies the requester.
-     *
-     * @generated from rpc frontend.v1.FrontendService.SignInWithEmail
-     */
-    signInWithEmail: {
-      name: "SignInWithEmail",
-      I: SignInWithEmailRequest,
-      O: SignInWithEmailResponse,
       kind: MethodKind.Unary,
     },
     /**

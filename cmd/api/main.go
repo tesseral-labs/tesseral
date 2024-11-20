@@ -11,12 +11,16 @@ import (
 	"connectrpc.com/vanguard"
 	"github.com/cyrusaf/ctxlog"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/openauth-dev/openauth/internal/authn/authinterceptor"
+	"github.com/openauth-dev/openauth/internal/authn/backendinterceptor"
+	"github.com/openauth-dev/openauth/internal/authn/frontendinterceptor"
+	"github.com/openauth-dev/openauth/internal/authn/intermediateinterceptor"
 	"github.com/openauth-dev/openauth/internal/backendservice"
 	"github.com/openauth-dev/openauth/internal/frontendservice"
 	"github.com/openauth-dev/openauth/internal/gen/backend/v1/backendv1connect"
 	"github.com/openauth-dev/openauth/internal/gen/frontend/v1/frontendv1connect"
+	"github.com/openauth-dev/openauth/internal/gen/intermediate/intermediatev1connect"
 	"github.com/openauth-dev/openauth/internal/hexkey"
+	"github.com/openauth-dev/openauth/internal/intermediateservice"
 	"github.com/openauth-dev/openauth/internal/jwt"
 	"github.com/openauth-dev/openauth/internal/loadenv"
 	"github.com/openauth-dev/openauth/internal/pagetoken"
@@ -70,13 +74,14 @@ func main() {
 		Store: store_,
 	})
 
+	// Register the backend service
 	backendConnectPath, backendConnectHandler := backendv1connect.NewBackendServiceHandler(
 		&backendservice.BackendService{
 			Store: store_,
 		},
 		connect.WithInterceptors(
 			// We may want to use separate auth interceptors for backend and frontend services
-			authinterceptor.New(jwt_, store_),
+			backendinterceptor.New(store_),
 		),
 	)
 	backend := vanguard.NewService(backendConnectPath, backendConnectHandler)
@@ -85,13 +90,14 @@ func main() {
 		panic(err)
 	}
 
+	// Register the frontend service
 	frontendConnectPath, frontendConnectHandler := frontendv1connect.NewFrontendServiceHandler(
 		&frontendservice.FrontendService{
 			Store: store_,
 		},
 		connect.WithInterceptors(
 			// We may want to use separate auth interceptors for backend and frontend services
-			authinterceptor.New(jwt_, store_),
+			frontendinterceptor.New(jwt_, store_),
 		),
 	)
 	frontend := vanguard.NewService(frontendConnectPath, frontendConnectHandler)
@@ -100,15 +106,34 @@ func main() {
 		panic(err)
 	}
 
+	// Register the intermediate service
+	intermediateConnectPath, intermediateConnectHandler := intermediatev1connect.NewIntermediateServiceHandler(
+		&intermediateservice.IntermediateService{
+			Store: store_,
+		},
+		connect.WithInterceptors(
+			intermediateinterceptor.New(jwt_, store_),
+		),
+	)
+	intermediate := vanguard.NewService(intermediateConnectPath, intermediateConnectHandler)
+	intermediateTranscoder, err := vanguard.NewTranscoder([]*vanguard.Service{intermediate})
+	if err != nil {
+		panic(err)
+	}
+
+	// Register health checks
 	mux := http.NewServeMux()
 	mux.Handle("/internal/health", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		slog.InfoContext(r.Context(), "health")
 		w.WriteHeader(http.StatusOK)
 	}))
 
+	// Register service transcoders
 	mux.Handle("/backend/v1/", backendTranscoder)
 	mux.Handle("/frontend/v1/", frontendTranscoder)
+	mux.Handle("/intermediate/v1/", intermediateTranscoder)
 	
+	// Serve the services
 	slog.Info("serve")
 	if err := http.ListenAndServe(config.ServeAddr, slogcorrelation.NewHandler(mux)); err != nil {
 		panic(err)
