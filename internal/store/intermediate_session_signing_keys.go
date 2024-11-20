@@ -21,7 +21,7 @@ type IntermediateSessionSigningKey struct {
 	PrivateKey 			*ecdsa.PrivateKey
 }
 
-func (s *Store) CreateIntermediateSessionSigningKey(ctx context.Context, projectID string) (*queries.IntermediateSessionSigningKey, error) {
+func (s *Store) CreateIntermediateSessionSigningKey(ctx context.Context, projectID string) (*IntermediateSessionSigningKey, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -81,7 +81,14 @@ func (s *Store) CreateIntermediateSessionSigningKey(ctx context.Context, project
 		return nil, err
 	}
 
-	return &createdIntermediateSessionSigningKey, nil
+	return &IntermediateSessionSigningKey{
+		ID: createdIntermediateSessionSigningKey.ID,
+		ProjectID: createdIntermediateSessionSigningKey.ProjectID,
+		CreateTime: *createdIntermediateSessionSigningKey.CreateTime,
+		ExpireTime: *createdIntermediateSessionSigningKey.ExpireTime,
+		PublicKey: ecdsaKeyPair.PublicKey,
+		PrivateKey: ecdsaKeyPair.PrivateKey,
+	}, nil
 }
 
 func (s *Store) GetIntermediateSessionSigningKeyByID(ctx context.Context, id string) (*IntermediateSessionSigningKey, error) {

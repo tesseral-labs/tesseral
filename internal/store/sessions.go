@@ -10,7 +10,7 @@ import (
 	"github.com/openauth-dev/openauth/internal/store/queries"
 )
 
-type OpenAuthSession struct {
+type Session struct {
 	ID 					uuid.UUID
 	UserID 			uuid.UUID
 	CreateTime 	time.Time
@@ -25,16 +25,16 @@ type CreateSessionRequest struct {
 	UserID string
 }
 
-func (s *Store) CreateSession(ctx context.Context, req *CreateSessionRequest) (*OpenAuthSession, error) {
+func (s *Store) CreateSession(ctx context.Context, req *CreateSessionRequest) (*Session, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
-		return &OpenAuthSession{}, err
+		return &Session{}, err
 	}
 	defer rollback()
 
 	userId, err := idformat.User.Parse(req.UserID)
 	if err != nil {
-		return &OpenAuthSession{}, err
+		return &Session{}, err
 	}
 
 	// Sessions expire after 7 days
@@ -46,11 +46,11 @@ func (s *Store) CreateSession(ctx context.Context, req *CreateSessionRequest) (*
 		ExpireTime: &expiresAt,
 	})
 	if err != nil {
-		return &OpenAuthSession{}, err
+		return &Session{}, err
 	}
 
 	if err := commit(); err != nil {
-		return &OpenAuthSession{}, err
+		return &Session{}, err
 	}
 
 	return transformSession(session), nil
@@ -60,8 +60,8 @@ func (s *Store) RevokeSession() error {
 	return nil
 }
 
-func transformSession(session queries.Session) *OpenAuthSession {
-	return &OpenAuthSession{
+func transformSession(session queries.Session) *Session {
+	return &Session{
 		ID: session.ID,
 		UserID: session.UserID,
 		CreateTime: *session.CreateTime,

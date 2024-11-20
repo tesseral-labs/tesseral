@@ -21,7 +21,7 @@ type SessionSigningKey struct {
 	PublicKey 		*ecdsa.PublicKey
 }
 
-func (s *Store) CreateSessionSigningKey(ctx context.Context, projectID string) (*queries.SessionSigningKey, error) {
+func (s *Store) CreateSessionSigningKey(ctx context.Context, projectID string) (*SessionSigningKey, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -84,7 +84,14 @@ func (s *Store) CreateSessionSigningKey(ctx context.Context, projectID string) (
 	}
 
 	// Return the new method verification challenge
-	return &sessionSigningKey, nil
+	return &SessionSigningKey{
+		ID: sessionSigningKey.ID,
+		ProjectID: sessionSigningKey.ProjectID,
+		CreateTime: *sessionSigningKey.CreateTime,
+		ExpireTime: *sessionSigningKey.ExpireTime,
+		PrivateKey: ecdsaKeyPair.PrivateKey,
+		PublicKey: ecdsaKeyPair.PublicKey,
+	}, nil
 }
 
 func (s *Store) GetSessionSigningKeyByID(ctx context.Context, id string) (*SessionSigningKey, error) {
