@@ -52,7 +52,7 @@ func (s *Store) CreateSessionSigningKey(ctx context.Context, projectID string) (
 	}
 
 	// Encrypt the symmetric key with the KMS
-	encrytpOutput, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
+	encryptOutput, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
 		KeyId:    	&s.sessionSigningKeyKmsKeyID,
 		Plaintext: 	privateKey,
 	})
@@ -72,7 +72,7 @@ func (s *Store) CreateSessionSigningKey(ctx context.Context, projectID string) (
 		ProjectID: projectId,
 		ExpireTime: &expiresAt,
 		PublicKey: publicKey,
-		PrivateKeyCipherText: encrytpOutput.CipherTextBlob,
+		PrivateKeyCipherText: encryptOutput.CipherTextBlob,
 	})
 	if err != nil {
 		return nil, err
