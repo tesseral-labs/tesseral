@@ -45,9 +45,8 @@ func (s *Store) CreateSessionSigningKey(ctx context.Context, projectID string) (
 	}
 
 	// Encrypt the symmetric key with the KMS
-	keyId := "test" // TODO: get the key ID from the environment or context
 	encrytpOutput, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
-		KeyId:    	&keyId,
+		KeyId:    	&s.sessionSigningKeyKmsKeyID,
 		Plaintext: 	privateKey,
 	})
 	if err != nil {
@@ -95,6 +94,7 @@ func (s *Store) GetSessionSigningKeyByID(ctx context.Context, id string) (*Sessi
 	// Decrypt the signing key using KMS
 	signingKey, err := s.kms.Decrypt(ctx, &kms.DecryptInput{
 		CiphertextBlob: sessionSigningKey.PrivateKeyCipherText,
+		KeyId: &s.sessionSigningKeyKmsKeyID,
 	})
 	if err != nil {
 		return nil, err

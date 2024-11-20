@@ -45,9 +45,8 @@ func (s *Store) CreateIntermediateSessionSigningKey(ctx context.Context, project
 	}
 
 	// Encrypt the symmetric key with the KMS
-	keyId := "test" // TODO: get the key ID from the environment or context
 	encrytpOutput, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
-		KeyId:    	&keyId,
+		KeyId:    	&s.intermediateSessionSigningKeyKMSKeyID,
 		Plaintext: 	privateKey,
 	})
 	if err != nil {
@@ -93,6 +92,7 @@ func (s *Store) GetIntermediateSessionSigningKeyByID(ctx context.Context, id str
 	// Decrypt the signing key using KMS
 	signingKey, err := s.kms.Decrypt(ctx, &kms.DecryptInput{
 		CiphertextBlob: intermediateSessionSigningKey.PrivateKeyCipherText,
+		KeyId: &s.intermediateSessionSigningKeyKMSKeyID,
 	})
 	if err != nil {
 		return nil, err

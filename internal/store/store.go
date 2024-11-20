@@ -14,28 +14,34 @@ import (
 )
 
 type Store struct {
-	db									*pgxpool.Pool
-	dogfoodProjectID		*uuid.UUID
-	kms 								*keyManagementService.KeyManagementService
-	q										*queries.Queries
-	pageEncoder					pagetoken.Encoder
+	db																				*pgxpool.Pool
+	dogfoodProjectID													*uuid.UUID
+	intermediateSessionSigningKeyKMSKeyID 		string
+	kms 																			*keyManagementService.KeyManagementService
+	pageEncoder																pagetoken.Encoder
+	q																					*queries.Queries
+	sessionSigningKeyKmsKeyID 								string
 }
 
 type NewStoreParams struct {
-	AwsConfig 				*aws.Config
-	DB								*pgxpool.Pool
-	DogfoodProjectID	string
-	PageEncoder				pagetoken.Encoder
+	AwsConfig 																*aws.Config
+	DB																				*pgxpool.Pool
+	DogfoodProjectID													string
+	IntermediateSessionSigningKeyKMSKeyID 		string
+	PageEncoder																pagetoken.Encoder
+	SessionSigningKeyKmsKeyID 								string
 }
 
 func New(p NewStoreParams) *Store {
 	dogfoodProjectID := uuid.MustParse(p.DogfoodProjectID)
 
 	store := &Store{
-		db: 									p.DB,
-		dogfoodProjectID: 		&dogfoodProjectID,
-		q:                    queries.New(p.DB),
-		pageEncoder: 					p.PageEncoder,
+		db: 																		p.DB,
+		dogfoodProjectID: 											&dogfoodProjectID,
+		intermediateSessionSigningKeyKMSKeyID: 	p.IntermediateSessionSigningKeyKMSKeyID,
+		pageEncoder: 														p.PageEncoder,
+		q:                    									queries.New(p.DB),
+		sessionSigningKeyKmsKeyID: 							p.SessionSigningKeyKmsKeyID,
 	}
 
 	if p.AwsConfig != nil {
