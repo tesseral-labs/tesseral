@@ -19,9 +19,9 @@ func GenerateRSAKeys() (privateKey []byte, publicKey []byte, err error) {
 }
 
 func privateKeyToBytes(privateKey *rsa.PrivateKey) []byte {
-  return x509.MarshalPKCS1PrivateKey(privateKey)
+	return x509.MarshalPKCS1PrivateKey(privateKey)
 }
 
 func publicKeyToBytes(publicKey *rsa.PublicKey) []byte {
-  return x509.MarshalPKCS1PublicKey(publicKey)
+	return x509.MarshalPKCS1PublicKey(publicKey)
 }
