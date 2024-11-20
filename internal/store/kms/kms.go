@@ -14,7 +14,7 @@ type KeyManagementService struct {
 
 type KeyManagementServiceDecryptResult struct {
 	KeyID string
-	PlainText string
+	Value []byte
 }
 
 type KeyManagementServiceEncryptResult struct {
@@ -55,7 +55,7 @@ func (k *KeyManagementService) Decrypt(ctx context.Context, params *awsKms.Decry
 
 	return &KeyManagementServiceDecryptResult{
 		KeyID: *decryptOutput.KeyId,
-		PlainText: string(decryptOutput.Plaintext),
+		Value: decryptOutput.Plaintext,
 	}, nil
 }
 

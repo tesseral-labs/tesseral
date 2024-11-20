@@ -70,7 +70,8 @@ type IntermediateSession struct {
 type IntermediateSessionSigningKey struct {
 	ID                   uuid.UUID
 	ProjectID            uuid.UUID
-	SigningKeyCipherText []byte
+	PublicKey            []byte
+	PrivateKeyCipherText []byte
 	CreateTime           *time.Time
 	ExpireTime           *time.Time
 }
@@ -124,7 +125,8 @@ type Session struct {
 type SessionSigningKey struct {
 	ID                   uuid.UUID
 	ProjectID            uuid.UUID
-	SigningKeyCipherText []byte
+	PublicKey            []byte
+	PrivateKeyCipherText []byte
 	CreateTime           *time.Time
 	ExpireTime           *time.Time
 }

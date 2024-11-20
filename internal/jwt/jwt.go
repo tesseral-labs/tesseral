@@ -12,6 +12,7 @@ import (
 )
 
 var ErrInvalidJWTTOken = errors.New("invalid JWT token")
+var ErrInvalidSigningMethod = errors.New("invalid signing method")
 
 type JWT struct {
 	store *store.Store
@@ -58,11 +59,11 @@ func (j *JWT) ParseIntermediateSessionJWT(ctx context.Context, tokenString strin
 
 	token, err := jwt.ParseWithClaims(tokenString, &IntermediateSessionJWTClaims{}, func(token *jwt.Token) (interface{}, error) {
 		// Validate the signing method
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
+			return nil, ErrInvalidSigningMethod
 		}
 
-		return signingKey, nil
+		return signingKey.PublicKey, nil
 	})
 	if err != nil {
 		return nil, err
@@ -86,11 +87,11 @@ func (j *JWT) ParseSessionJWT(ctx context.Context, tokenString string) (*Session
 
 	token, err := jwt.ParseWithClaims(tokenString, &SessionJWTClaims{}, func(token *jwt.Token) (interface{}, error) {
 		// Validate the signing method
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
 
-		return signingKey, nil
+		return signingKey.PublicKey, nil
 	})
 	if err != nil {
 		return nil, err
@@ -117,7 +118,14 @@ func (j *JWT) SignIntermediateSessionJWT(ctx context.Context, claims *Intermedia
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	return token.SignedString(signingKey)
+	token.Header["kid"] = signingKey.ID
+
+	tokenString, err := token.SignedString(signingKey.PrivateKey)
+	if err != nil {
+		return "", err
+	}
+
+	return tokenString, nil
 }
 
 func (j *JWT) SignSessionJWT(ctx context.Context, claims *SessionJWTClaims) (string, error) {
@@ -133,5 +141,12 @@ func (j *JWT) SignSessionJWT(ctx context.Context, claims *SessionJWTClaims) (str
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	return token.SignedString(signingKey)
+	token.Header["kid"] = signingKey.ID
+
+	tokenString, err :=  token.SignedString(signingKey.PrivateKey)
+	if err != nil {
+		return "", err
+	}
+
+	return tokenString, nil
 }

@@ -6,17 +6,18 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/google/uuid"
+	"github.com/openauth-dev/openauth/internal/rsakeys"
 	"github.com/openauth-dev/openauth/internal/store/idformat"
 	"github.com/openauth-dev/openauth/internal/store/queries"
-	"github.com/openauth-dev/openauth/internal/symmetrickeys"
 )
 
 type IntermediateSessionSigningKey struct {
-	ID string
-	ProjectID string
-	CreateTime time.Time
-	ExpireTime time.Time
-	SigningKey string
+	ID 							uuid.UUID
+	ProjectID 			uuid.UUID
+	CreateTime 			time.Time
+	ExpireTime 			time.Time
+	PublicKey 			[]byte
+	PrivateKey 			[]byte
 }
 
 func (s *Store) CreateIntermediateSessionSigningKey(ctx context.Context, projectID string) (*queries.IntermediateSessionSigningKey, error) {
@@ -38,7 +39,7 @@ func (s *Store) CreateIntermediateSessionSigningKey(ctx context.Context, project
 	expiresAt := time.Now().Add(time.Hour * 7)
 
 	// Generate a new symmetric key
-	key, err := symmetrickeys.GenerateSymmetricKey()
+	privateKey, publicKey, err := rsakeys.GenerateRSAKeys()
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +48,7 @@ func (s *Store) CreateIntermediateSessionSigningKey(ctx context.Context, project
 	keyId := "test" // TODO: get the key ID from the environment or context
 	encrytpOutput, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
 		KeyId:    	&keyId,
-		Plaintext: 	[]byte(key),
+		Plaintext: 	privateKey,
 	})
 	if err != nil {
 		return nil, err
@@ -58,7 +59,8 @@ func (s *Store) CreateIntermediateSessionSigningKey(ctx context.Context, project
 		ID: uuid.New(),
 		ProjectID: projectId,
 		ExpireTime: &expiresAt,
-		SigningKeyCipherText: encrytpOutput.CipherTextBlob,
+		PublicKey: publicKey,
+		PrivateKeyCipherText: encrytpOutput.CipherTextBlob,
 	})
 	if err != nil {
 		return nil, err
@@ -90,7 +92,7 @@ func (s *Store) GetIntermediateSessionSigningKeyByID(ctx context.Context, id str
 
 	// Decrypt the signing key using KMS
 	signingKey, err := s.kms.Decrypt(ctx, &kms.DecryptInput{
-		CiphertextBlob: intermediateSessionSigningKey.SigningKeyCipherText,
+		CiphertextBlob: intermediateSessionSigningKey.PrivateKeyCipherText,
 	})
 	if err != nil {
 		return nil, err
@@ -98,10 +100,11 @@ func (s *Store) GetIntermediateSessionSigningKeyByID(ctx context.Context, id str
 
 	// Return the intermediate session signing key with the decrypted signing key
 	return &IntermediateSessionSigningKey{
-		ID: intermediateSessionSigningKey.ID.String(),
-		ProjectID: intermediateSessionSigningKey.ProjectID.String(),
+		ID: intermediateSessionSigningKey.ID,
+		ProjectID: intermediateSessionSigningKey.ProjectID,
 		CreateTime: *intermediateSessionSigningKey.CreateTime,
 		ExpireTime: *intermediateSessionSigningKey.ExpireTime,
-		SigningKey: string(signingKey.PlainText),
+		PublicKey: intermediateSessionSigningKey.PublicKey,
+		PrivateKey: signingKey.Value,
 	}, nil
 }

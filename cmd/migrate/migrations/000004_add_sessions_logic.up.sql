@@ -16,11 +16,12 @@ create table intermediate_sessions(
 );
 
 create table intermediate_session_signing_keys(
-  id uuid not null primary key,
-  project_id uuid not null references projects(id),
-  signing_key_cipher_text bytea not null,
-  create_time timestamp with time zone not null default now(),
-  expire_time timestamp with time zone not null
+  id                          uuid not null primary key,
+  project_id                  uuid not null references projects(id),
+  public_key                  bytea not null,
+  private_key_cipher_text     bytea not null,
+  create_time                 timestamp with time zone not null default now(),
+  expire_time                 timestamp with time zone not null
 );
 
 -- a user's email address is verified by sending a verification challenge to the email address
@@ -54,9 +55,10 @@ create table sessions
 );
 
 create table session_signing_keys(
-  id uuid not null primary key,
-  project_id uuid not null references projects(id),
-  signing_key_cipher_text bytea not null,
-  create_time timestamp with time zone not null default now(),
-  expire_time timestamp with time zone not null
+  id                          uuid not null primary key,
+  project_id                  uuid not null references projects(id),
+  public_key                  bytea not null,
+  private_key_cipher_text     bytea not null,
+  create_time                 timestamp with time zone not null default now(),
+  expire_time                 timestamp with time zone not null
 );

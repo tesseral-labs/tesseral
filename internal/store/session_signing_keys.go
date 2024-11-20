@@ -6,17 +6,18 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/google/uuid"
+	"github.com/openauth-dev/openauth/internal/rsakeys"
 	"github.com/openauth-dev/openauth/internal/store/idformat"
 	"github.com/openauth-dev/openauth/internal/store/queries"
-	"github.com/openauth-dev/openauth/internal/symmetrickeys"
 )
 
 type SessionSigningKey struct {
-	ID uuid.UUID
-	ProjectID uuid.UUID
-	CreateTime time.Time
-	ExpireTime time.Time
-	SigningKey string
+	ID 						uuid.UUID
+	ProjectID 		uuid.UUID
+	CreateTime 		time.Time
+	ExpireTime 		time.Time
+	PublicKey 		[]byte
+	PrivateKey 		[]byte
 }
 
 func (s *Store) CreateSessionSigningKey(ctx context.Context, projectID string) (*queries.SessionSigningKey, error) {
@@ -35,7 +36,7 @@ func (s *Store) CreateSessionSigningKey(ctx context.Context, projectID string) (
 	expiresAt := time.Now().Add(time.Minute * 15)
 
 	// Generate a new symmetric key
-	key, err := symmetrickeys.GenerateSymmetricKey()
+	privateKey, publicKey, err := rsakeys.GenerateRSAKeys()
 	if err != nil {
 		return nil, err
 	}
@@ -44,7 +45,7 @@ func (s *Store) CreateSessionSigningKey(ctx context.Context, projectID string) (
 	keyId := "test" // TODO: get the key ID from the environment or context
 	encrytpOutput, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
 		KeyId:    	&keyId,
-		Plaintext: 	[]byte(key),
+		Plaintext: 	privateKey,
 	})
 	if err != nil {
 		return nil, err
@@ -56,7 +57,8 @@ func (s *Store) CreateSessionSigningKey(ctx context.Context, projectID string) (
 		ID: uuid.New(),
 		ProjectID: projectId,
 		ExpireTime: &expiresAt,
-		SigningKeyCipherText: []byte(encrytpOutput.CipherTextBlob),
+		PublicKey: publicKey,
+		PrivateKeyCipherText: encrytpOutput.CipherTextBlob,
 	})
 	if err != nil {
 		return nil, err
@@ -90,7 +92,7 @@ func (s *Store) GetSessionSigningKeyByID(ctx context.Context, id string) (*Sessi
 
 	// Decrypt the signing key using KMS
 	signingKey, err := s.kms.Decrypt(ctx, &kms.DecryptInput{
-		CiphertextBlob: sessionSigningKey.SigningKeyCipherText,
+		CiphertextBlob: sessionSigningKey.PrivateKeyCipherText,
 	})
 	if err != nil {
 		return nil, err
@@ -102,6 +104,7 @@ func (s *Store) GetSessionSigningKeyByID(ctx context.Context, id string) (*Sessi
 		ProjectID: sessionSigningKey.ProjectID,
 		CreateTime: *sessionSigningKey.CreateTime,
 		ExpireTime: *sessionSigningKey.ExpireTime,
-		SigningKey: string(signingKey.PlainText),
+		PublicKey: sessionSigningKey.PublicKey,
+		PrivateKey: signingKey.Value,
 	}, nil
 }

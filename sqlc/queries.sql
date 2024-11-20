@@ -52,13 +52,15 @@ returning *;
 insert into intermediate_session_signing_keys (
   id, 
   project_id, 
-  signing_key_cipher_text, 
+  public_key,
+  private_key_cipher_text, 
   expire_time
 ) values (
   $1, 
   $2, 
   $3, 
-  $4
+  $4,
+  $5
 )
 returning *;
 
@@ -128,13 +130,15 @@ returning *;
 insert into session_signing_keys (
   id, 
   project_id, 
-  signing_key_cipher_text, 
+  public_key,
+  private_key_cipher_text, 
   expire_time
 ) values (
   $1, 
   $2, 
   $3, 
-  $4
+  $4,
+  $5
 )
 returning *;
 
