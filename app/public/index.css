@@ -554,10 +554,6 @@ video {
   display: none;
 }
 
-.static {
-  position: static;
-}
-
 .h-full {
   height: 100%;
 }
