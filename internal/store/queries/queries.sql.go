@@ -7,9 +7,41 @@ package queries
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 )
+
+const completeMethodVerificationChallenge = `-- name: CompleteMethodVerificationChallenge :one
+insert into method_verification_challenges (
+  id, 
+  complete_time
+) values (
+  $1, 
+  $2
+)
+returning id, project_id, complete_time, intermediate_session_id, auth_method, expire_time, secret_token_sha256
+`
+
+type CompleteMethodVerificationChallengeParams struct {
+	ID           uuid.UUID
+	CompleteTime *time.Time
+}
+
+func (q *Queries) CompleteMethodVerificationChallenge(ctx context.Context, arg CompleteMethodVerificationChallengeParams) (MethodVerificationChallenge, error) {
+	row := q.db.QueryRow(ctx, completeMethodVerificationChallenge, arg.ID, arg.CompleteTime)
+	var i MethodVerificationChallenge
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.CompleteTime,
+		&i.IntermediateSessionID,
+		&i.AuthMethod,
+		&i.ExpireTime,
+		&i.SecretTokenSha256,
+	)
+	return i, err
+}
 
 const createGoogleUser = `-- name: CreateGoogleUser :one
 insert into users (
@@ -49,6 +81,161 @@ func (q *Queries) CreateGoogleUser(ctx context.Context, arg CreateGoogleUserPara
 		&i.PasswordBcrypt,
 		&i.GoogleUserID,
 		&i.MicrosoftUserID,
+	)
+	return i, err
+}
+
+const createIntermediateSession = `-- name: CreateIntermediateSession :one
+insert into intermediate_sessions (
+  id, 
+  project_id, 
+  unverified_email,
+  verified_email,
+  expire_time, 
+  token, 
+  token_sha256
+) values (
+  $1, 
+  $2, 
+  $3, 
+  $4, 
+  $5,
+  $6,
+  $7
+)
+returning id, project_id, unverified_email, verified_email, create_time, expire_time, token, token_sha256, revoked
+`
+
+type CreateIntermediateSessionParams struct {
+	ID              uuid.UUID
+	ProjectID       uuid.UUID
+	UnverifiedEmail *string
+	VerifiedEmail   *string
+	ExpireTime      *time.Time
+	Token           string
+	TokenSha256     []byte
+}
+
+func (q *Queries) CreateIntermediateSession(ctx context.Context, arg CreateIntermediateSessionParams) (IntermediateSession, error) {
+	row := q.db.QueryRow(ctx, createIntermediateSession,
+		arg.ID,
+		arg.ProjectID,
+		arg.UnverifiedEmail,
+		arg.VerifiedEmail,
+		arg.ExpireTime,
+		arg.Token,
+		arg.TokenSha256,
+	)
+	var i IntermediateSession
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.UnverifiedEmail,
+		&i.VerifiedEmail,
+		&i.CreateTime,
+		&i.ExpireTime,
+		&i.Token,
+		&i.TokenSha256,
+		&i.Revoked,
+	)
+	return i, err
+}
+
+const createIntermediateSessionSigningKey = `-- name: CreateIntermediateSessionSigningKey :one
+insert into intermediate_session_signing_keys (
+  id, 
+  project_id, 
+  public_key,
+  private_key_cipher_text, 
+  expire_time
+) values (
+  $1, 
+  $2, 
+  $3, 
+  $4,
+  $5
+)
+returning id, project_id, public_key, private_key_cipher_text, create_time, expire_time
+`
+
+type CreateIntermediateSessionSigningKeyParams struct {
+	ID                   uuid.UUID
+	ProjectID            uuid.UUID
+	PublicKey            []byte
+	PrivateKeyCipherText []byte
+	ExpireTime           *time.Time
+}
+
+func (q *Queries) CreateIntermediateSessionSigningKey(ctx context.Context, arg CreateIntermediateSessionSigningKeyParams) (IntermediateSessionSigningKey, error) {
+	row := q.db.QueryRow(ctx, createIntermediateSessionSigningKey,
+		arg.ID,
+		arg.ProjectID,
+		arg.PublicKey,
+		arg.PrivateKeyCipherText,
+		arg.ExpireTime,
+	)
+	var i IntermediateSessionSigningKey
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.PublicKey,
+		&i.PrivateKeyCipherText,
+		&i.CreateTime,
+		&i.ExpireTime,
+	)
+	return i, err
+}
+
+const createMethodVerificationChallenge = `-- name: CreateMethodVerificationChallenge :one
+insert into method_verification_challenges (
+  id, 
+  project_id, 
+  complete_time, 
+  intermediate_session_id,
+  auth_method,
+  expire_time,
+  secret_token_sha256
+) values (
+  $1, 
+  $2, 
+  $3, 
+  $4, 
+  $5,
+  $6,
+  $7
+)
+returning id, project_id, complete_time, intermediate_session_id, auth_method, expire_time, secret_token_sha256
+`
+
+type CreateMethodVerificationChallengeParams struct {
+	ID                    uuid.UUID
+	ProjectID             uuid.UUID
+	CompleteTime          *time.Time
+	IntermediateSessionID uuid.UUID
+	AuthMethod            AuthMethod
+	ExpireTime            *time.Time
+	SecretTokenSha256     []byte
+}
+
+func (q *Queries) CreateMethodVerificationChallenge(ctx context.Context, arg CreateMethodVerificationChallengeParams) (MethodVerificationChallenge, error) {
+	row := q.db.QueryRow(ctx, createMethodVerificationChallenge,
+		arg.ID,
+		arg.ProjectID,
+		arg.CompleteTime,
+		arg.IntermediateSessionID,
+		arg.AuthMethod,
+		arg.ExpireTime,
+		arg.SecretTokenSha256,
+	)
+	var i MethodVerificationChallenge
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.CompleteTime,
+		&i.IntermediateSessionID,
+		&i.AuthMethod,
+		&i.ExpireTime,
+		&i.SecretTokenSha256,
 	)
 	return i, err
 }
@@ -218,6 +405,95 @@ func (q *Queries) CreateProject(ctx context.Context, arg CreateProjectParams) (P
 	return i, err
 }
 
+const createSession = `-- name: CreateSession :one
+insert into sessions (
+  id, 
+  user_id, 
+  create_time,
+  expire_time,
+  revoked
+) values (
+  $1, 
+  $2, 
+  $3, 
+  $4, 
+  $5
+)
+returning id, user_id, create_time, expire_time, revoked
+`
+
+type CreateSessionParams struct {
+	ID         uuid.UUID
+	UserID     uuid.UUID
+	CreateTime *time.Time
+	ExpireTime *time.Time
+	Revoked    bool
+}
+
+func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error) {
+	row := q.db.QueryRow(ctx, createSession,
+		arg.ID,
+		arg.UserID,
+		arg.CreateTime,
+		arg.ExpireTime,
+		arg.Revoked,
+	)
+	var i Session
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.CreateTime,
+		&i.ExpireTime,
+		&i.Revoked,
+	)
+	return i, err
+}
+
+const createSessionSigningKey = `-- name: CreateSessionSigningKey :one
+insert into session_signing_keys (
+  id, 
+  project_id, 
+  public_key,
+  private_key_cipher_text, 
+  expire_time
+) values (
+  $1, 
+  $2, 
+  $3, 
+  $4,
+  $5
+)
+returning id, project_id, public_key, private_key_cipher_text, create_time, expire_time
+`
+
+type CreateSessionSigningKeyParams struct {
+	ID                   uuid.UUID
+	ProjectID            uuid.UUID
+	PublicKey            []byte
+	PrivateKeyCipherText []byte
+	ExpireTime           *time.Time
+}
+
+func (q *Queries) CreateSessionSigningKey(ctx context.Context, arg CreateSessionSigningKeyParams) (SessionSigningKey, error) {
+	row := q.db.QueryRow(ctx, createSessionSigningKey,
+		arg.ID,
+		arg.ProjectID,
+		arg.PublicKey,
+		arg.PrivateKeyCipherText,
+		arg.ExpireTime,
+	)
+	var i SessionSigningKey
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.PublicKey,
+		&i.PrivateKeyCipherText,
+		&i.CreateTime,
+		&i.ExpireTime,
+	)
+	return i, err
+}
+
 const createUnverifiedUser = `-- name: CreateUnverifiedUser :one
 insert into users (
   id,
@@ -306,6 +582,82 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 	return i, err
 }
 
+const getIntermediateSessionByID = `-- name: GetIntermediateSessionByID :one
+select id, project_id, unverified_email, verified_email, create_time, expire_time, token, token_sha256, revoked from intermediate_sessions where id = $1
+`
+
+func (q *Queries) GetIntermediateSessionByID(ctx context.Context, id uuid.UUID) (IntermediateSession, error) {
+	row := q.db.QueryRow(ctx, getIntermediateSessionByID, id)
+	var i IntermediateSession
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.UnverifiedEmail,
+		&i.VerifiedEmail,
+		&i.CreateTime,
+		&i.ExpireTime,
+		&i.Token,
+		&i.TokenSha256,
+		&i.Revoked,
+	)
+	return i, err
+}
+
+const getIntermediateSessionSigningKeyByID = `-- name: GetIntermediateSessionSigningKeyByID :one
+select id, project_id, public_key, private_key_cipher_text, create_time, expire_time from intermediate_session_signing_keys where id = $1
+`
+
+func (q *Queries) GetIntermediateSessionSigningKeyByID(ctx context.Context, id uuid.UUID) (IntermediateSessionSigningKey, error) {
+	row := q.db.QueryRow(ctx, getIntermediateSessionSigningKeyByID, id)
+	var i IntermediateSessionSigningKey
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.PublicKey,
+		&i.PrivateKeyCipherText,
+		&i.CreateTime,
+		&i.ExpireTime,
+	)
+	return i, err
+}
+
+const getIntermediateSessionSigningKeyByProjectID = `-- name: GetIntermediateSessionSigningKeyByProjectID :one
+select id, project_id, public_key, private_key_cipher_text, create_time, expire_time from intermediate_session_signing_keys where project_id = $1 order by create_time desc limit 1
+`
+
+func (q *Queries) GetIntermediateSessionSigningKeyByProjectID(ctx context.Context, projectID uuid.UUID) (IntermediateSessionSigningKey, error) {
+	row := q.db.QueryRow(ctx, getIntermediateSessionSigningKeyByProjectID, projectID)
+	var i IntermediateSessionSigningKey
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.PublicKey,
+		&i.PrivateKeyCipherText,
+		&i.CreateTime,
+		&i.ExpireTime,
+	)
+	return i, err
+}
+
+const getMethodVerificationChallengeByID = `-- name: GetMethodVerificationChallengeByID :one
+select id, project_id, complete_time, intermediate_session_id, auth_method, expire_time, secret_token_sha256 from method_verification_challenges where id = $1
+`
+
+func (q *Queries) GetMethodVerificationChallengeByID(ctx context.Context, id uuid.UUID) (MethodVerificationChallenge, error) {
+	row := q.db.QueryRow(ctx, getMethodVerificationChallengeByID, id)
+	var i MethodVerificationChallenge
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.CompleteTime,
+		&i.IntermediateSessionID,
+		&i.AuthMethod,
+		&i.ExpireTime,
+		&i.SecretTokenSha256,
+	)
+	return i, err
+}
+
 const getOrganizationByGoogleHostedDomain = `-- name: GetOrganizationByGoogleHostedDomain :one
 select id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id from organizations where google_hosted_domain = $1
 `
@@ -363,6 +715,59 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 		&i.GoogleOauthClientSecret,
 		&i.MicrosoftOauthClientID,
 		&i.MicrosoftOauthClientSecret,
+	)
+	return i, err
+}
+
+const getSessionByID = `-- name: GetSessionByID :one
+select id, user_id, create_time, expire_time, revoked from sessions where id = $1
+`
+
+func (q *Queries) GetSessionByID(ctx context.Context, id uuid.UUID) (Session, error) {
+	row := q.db.QueryRow(ctx, getSessionByID, id)
+	var i Session
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.CreateTime,
+		&i.ExpireTime,
+		&i.Revoked,
+	)
+	return i, err
+}
+
+const getSessionSigningKeyByID = `-- name: GetSessionSigningKeyByID :one
+select id, project_id, public_key, private_key_cipher_text, create_time, expire_time from session_signing_keys where id = $1
+`
+
+func (q *Queries) GetSessionSigningKeyByID(ctx context.Context, id uuid.UUID) (SessionSigningKey, error) {
+	row := q.db.QueryRow(ctx, getSessionSigningKeyByID, id)
+	var i SessionSigningKey
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.PublicKey,
+		&i.PrivateKeyCipherText,
+		&i.CreateTime,
+		&i.ExpireTime,
+	)
+	return i, err
+}
+
+const getSessionSigningKeyByProjectID = `-- name: GetSessionSigningKeyByProjectID :one
+select id, project_id, public_key, private_key_cipher_text, create_time, expire_time from session_signing_keys where project_id = $1 order by create_time desc limit 1
+`
+
+func (q *Queries) GetSessionSigningKeyByProjectID(ctx context.Context, projectID uuid.UUID) (SessionSigningKey, error) {
+	row := q.db.QueryRow(ctx, getSessionSigningKeyByProjectID, projectID)
+	var i SessionSigningKey
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.PublicKey,
+		&i.PrivateKeyCipherText,
+		&i.CreateTime,
+		&i.ExpireTime,
 	)
 	return i, err
 }
@@ -440,6 +845,25 @@ type GetUserByMicrosoftUserIDParams struct {
 
 func (q *Queries) GetUserByMicrosoftUserID(ctx context.Context, arg GetUserByMicrosoftUserIDParams) (User, error) {
 	row := q.db.QueryRow(ctx, getUserByMicrosoftUserID, arg.OrganizationID, arg.MicrosoftUserID)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.UnverifiedEmail,
+		&i.VerifiedEmail,
+		&i.PasswordBcrypt,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+	)
+	return i, err
+}
+
+const getUserBySessionID = `-- name: GetUserBySessionID :one
+select id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id from users where users.id = (select user_id from sessions where sessions.id = $1)
+`
+
+func (q *Queries) GetUserBySessionID(ctx context.Context, id uuid.UUID) (User, error) {
+	row := q.db.QueryRow(ctx, getUserBySessionID, id)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -535,6 +959,50 @@ type ListOrganizationsByProjectIdParams struct {
 
 func (q *Queries) ListOrganizationsByProjectId(ctx context.Context, arg ListOrganizationsByProjectIdParams) ([]Organization, error) {
 	rows, err := q.db.Query(ctx, listOrganizationsByProjectId, arg.ProjectID, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Organization
+	for rows.Next() {
+		var i Organization
+		if err := rows.Scan(
+			&i.ID,
+			&i.ProjectID,
+			&i.DisplayName,
+			&i.OverrideLogInWithPasswordEnabled,
+			&i.OverrideLogInWithGoogleEnabled,
+			&i.OverrideLogInWithMicrosoftEnabled,
+			&i.GoogleHostedDomain,
+			&i.MicrosoftTenantID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listOrganizationsByProjectIdAndEmail = `-- name: ListOrganizationsByProjectIdAndEmail :many
+select o.id, o.project_id, o.display_name, o.override_log_in_with_password_enabled, o.override_log_in_with_google_enabled, o.override_log_in_with_microsoft_enabled, o.google_hosted_domain, o.microsoft_tenant_id from organizations as o
+join users as u 
+on o.id = users.organization_id
+where project_id = $1 
+and u.verified_email = $2 or u.unverified_email = $2
+order by o.display_name limit $3
+`
+
+type ListOrganizationsByProjectIdAndEmailParams struct {
+	ProjectID     uuid.UUID
+	VerifiedEmail *string
+	Limit         int32
+}
+
+func (q *Queries) ListOrganizationsByProjectIdAndEmail(ctx context.Context, arg ListOrganizationsByProjectIdAndEmailParams) ([]Organization, error) {
+	rows, err := q.db.Query(ctx, listOrganizationsByProjectIdAndEmail, arg.ProjectID, arg.VerifiedEmail, arg.Limit)
 	if err != nil {
 		return nil, err
 	}
@@ -663,6 +1131,44 @@ func (q *Queries) ListUsersByOrganization(ctx context.Context, arg ListUsersByOr
 		return nil, err
 	}
 	return items, nil
+}
+
+const revokeIntermediateSession = `-- name: RevokeIntermediateSession :one
+update intermediate_sessions set revoked = true where id = $1 returning id, project_id, unverified_email, verified_email, create_time, expire_time, token, token_sha256, revoked
+`
+
+func (q *Queries) RevokeIntermediateSession(ctx context.Context, id uuid.UUID) (IntermediateSession, error) {
+	row := q.db.QueryRow(ctx, revokeIntermediateSession, id)
+	var i IntermediateSession
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.UnverifiedEmail,
+		&i.VerifiedEmail,
+		&i.CreateTime,
+		&i.ExpireTime,
+		&i.Token,
+		&i.TokenSha256,
+		&i.Revoked,
+	)
+	return i, err
+}
+
+const revokeSession = `-- name: RevokeSession :one
+update sessions set revoked = true where id = $1 returning id, user_id, create_time, expire_time, revoked
+`
+
+func (q *Queries) RevokeSession(ctx context.Context, id uuid.UUID) (Session, error) {
+	row := q.db.QueryRow(ctx, revokeSession, id)
+	var i Session
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.CreateTime,
+		&i.ExpireTime,
+		&i.Revoked,
+	)
+	return i, err
 }
 
 const updateOrganization = `-- name: UpdateOrganization :one
@@ -1099,6 +1605,32 @@ func (q *Queries) UpdateUserPassword(ctx context.Context, arg UpdateUserPassword
 		&i.PasswordBcrypt,
 		&i.GoogleUserID,
 		&i.MicrosoftUserID,
+	)
+	return i, err
+}
+
+const verifyIntermediateSessionEmail = `-- name: VerifyIntermediateSessionEmail :one
+update intermediate_sessions set unverified_email = null, verified_email = $2 where id = $1 returning id, project_id, unverified_email, verified_email, create_time, expire_time, token, token_sha256, revoked
+`
+
+type VerifyIntermediateSessionEmailParams struct {
+	ID            uuid.UUID
+	VerifiedEmail *string
+}
+
+func (q *Queries) VerifyIntermediateSessionEmail(ctx context.Context, arg VerifyIntermediateSessionEmailParams) (IntermediateSession, error) {
+	row := q.db.QueryRow(ctx, verifyIntermediateSessionEmail, arg.ID, arg.VerifiedEmail)
+	var i IntermediateSession
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.UnverifiedEmail,
+		&i.VerifiedEmail,
+		&i.CreateTime,
+		&i.ExpireTime,
+		&i.Token,
+		&i.TokenSha256,
+		&i.Revoked,
 	)
 	return i, err
 }

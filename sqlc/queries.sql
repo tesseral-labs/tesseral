@@ -1,3 +1,69 @@
+-- name: CompleteMethodVerificationChallenge :one
+insert into method_verification_challenges (
+  id, 
+  complete_time
+) values (
+  $1, 
+  $2
+)
+returning *;
+
+-- name: CreateMethodVerificationChallenge :one
+insert into method_verification_challenges (
+  id, 
+  project_id, 
+  complete_time, 
+  intermediate_session_id,
+  auth_method,
+  expire_time,
+  secret_token_sha256
+) values (
+  $1, 
+  $2, 
+  $3, 
+  $4, 
+  $5,
+  $6,
+  $7
+)
+returning *;
+
+-- name: CreateIntermediateSession :one
+insert into intermediate_sessions (
+  id, 
+  project_id, 
+  unverified_email,
+  verified_email,
+  expire_time, 
+  token, 
+  token_sha256
+) values (
+  $1, 
+  $2, 
+  $3, 
+  $4, 
+  $5,
+  $6,
+  $7
+)
+returning *;
+
+-- name: CreateIntermediateSessionSigningKey :one
+insert into intermediate_session_signing_keys (
+  id, 
+  project_id, 
+  public_key,
+  private_key_cipher_text, 
+  expire_time
+) values (
+  $1, 
+  $2, 
+  $3, 
+  $4,
+  $5
+)
+returning *;
+
 -- name: CreateOrganization :one
 insert into organizations (
   id, 
@@ -41,6 +107,38 @@ insert into projects (
   $7, 
   $8, 
   $9
+)
+returning *;
+
+-- name: CreateSession :one
+insert into sessions (
+  id, 
+  user_id, 
+  create_time,
+  expire_time,
+  revoked
+) values (
+  $1, 
+  $2, 
+  $3, 
+  $4, 
+  $5
+)
+returning *;
+
+-- name: CreateSessionSigningKey :one
+insert into session_signing_keys (
+  id, 
+  project_id, 
+  public_key,
+  private_key_cipher_text, 
+  expire_time
+) values (
+  $1, 
+  $2, 
+  $3, 
+  $4,
+  $5
 )
 returning *;
 
@@ -104,11 +202,32 @@ insert into users (
 )
 returning *;
 
+-- name: GetIntermediateSessionByID :one
+select * from intermediate_sessions where id = $1;
+
+-- name: GetIntermediateSessionSigningKeyByID :one
+select * from intermediate_session_signing_keys where id = $1;
+
+-- name: GetIntermediateSessionSigningKeyByProjectID :one
+select * from intermediate_session_signing_keys where project_id = $1 order by create_time desc limit 1;
+
+-- name: GetMethodVerificationChallengeByID :one
+select * from method_verification_challenges where id = $1;
+
 -- name: GetOrganizationByID :one
 select * from organizations where id = $1;
 
 -- name: GetProjectByID :one
 select * from projects where id = $1;
+
+-- name: GetSessionByID :one
+select * from sessions where id = $1;
+
+-- name: GetSessionSigningKeyByID :one
+select * from session_signing_keys where id = $1;
+
+-- name: GetSessionSigningKeyByProjectID :one
+select * from session_signing_keys where project_id = $1 order by create_time desc limit 1;
 
 -- name: GetOrganizationByGoogleHostedDomain :one
 select * from organizations where google_hosted_domain = $1;
@@ -125,6 +244,9 @@ select * from users where organization_id = $1 and google_user_id = $2;
 -- name: GetUserByMicrosoftUserID :one
 select * from users where organization_id = $1 and microsoft_user_id = $2;
 
+-- name: GetUserBySessionID :one
+select * from users where users.id = (select user_id from sessions where sessions.id = $1);
+
 -- name: GetUserByUnverifiedEmail :one
 select * from users where unverified_email = $1;
 
@@ -137,6 +259,14 @@ select * from organizations;
 -- name: ListOrganizationsByProjectId :many
 select * from organizations where project_id = $1 order by id limit $2;
 
+-- name: ListOrganizationsByProjectIdAndEmail :many
+select o.* from organizations as o
+join users as u 
+on o.id = users.organization_id
+where project_id = $1 
+and u.verified_email = $2 or u.unverified_email = $2
+order by o.display_name limit $3;
+
 -- name: ListProjects :many
 select * from projects order by id limit $1;
 
@@ -145,6 +275,12 @@ select * from users where unverified_email = $1 or verified_email = $1;
 
 -- name: ListUsersByOrganization :many
 select * from users where organization_id = $1 order by id limit $2;
+
+-- name: RevokeIntermediateSession :one
+update intermediate_sessions set revoked = true where id = $1 returning *;
+
+-- name: RevokeSession :one
+update sessions set revoked = true where id = $1 returning *;
 
 -- name: UpdateOrganization :one
 update organizations set 
@@ -217,6 +353,9 @@ update users set google_user_id = $2 where id = $1 returning *;
 
 -- name: UpdateUserMicrosoftUserID :one
 update users set microsoft_user_id = $2 where id = $1 returning *;
+
+-- name: VerifyIntermediateSessionEmail :one
+update intermediate_sessions set unverified_email = null, verified_email = $2 where id = $1 returning *;
 
 -- name: VerifyUserEmail :one
 update users set unverified_email = null, verified_email = $2 where id = $1 returning *;

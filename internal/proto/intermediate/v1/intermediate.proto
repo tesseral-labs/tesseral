@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package intermediate.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+import "openauth/v1/openauth.proto";
+
+service IntermediateService {
+  // Creates a new intermediate session or session and cookies the requester.
+  rpc SignInWithEmail(SignInWithEmailRequest) returns (SignInWithEmailResponse) {
+    option (google.api.http) = {
+      post: "/frontend/v1/email-signin",
+      body: "*"
+    };
+  }
+}
+
+message SignInWithEmailRequest {
+  // The email address to sign in with.
+  string email = 1;
+}
+
+message SignInWithEmailResponse {
+  // The token for the intermediate session or session created by the SignInWithEmail request.
+  string SessionToken = 1;
+}

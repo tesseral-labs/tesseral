@@ -15,12 +15,12 @@ paths:
             parameters:
                 - name: projectId
                   in: query
-                  description: The ID of the project to scope this request to.
+                  description: The project ID to use for filtering.
                   schema:
                     type: string
                 - name: pageToken
                   in: query
-                  description: The page token to resume from.
+                  description: The page token to use for pagination.
                   schema:
                     type: string
             responses:
@@ -45,7 +45,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/Organization'
+                            $ref: '#/components/schemas/CreateOrganizationRequest'
                 required: true
             responses:
                 "200":
@@ -69,7 +69,7 @@ paths:
             parameters:
                 - name: id
                   in: path
-                  description: The ID of the resource to retrieve.
+                  description: The ID of the organization to get.
                   required: true
                   schema:
                     type: string
@@ -94,7 +94,7 @@ paths:
             parameters:
                 - name: id
                   in: path
-                  description: Unique identifier for this organization.
+                  description: The ID of the organization to update.
                   required: true
                   schema:
                     type: string
@@ -126,6 +126,7 @@ paths:
             parameters:
                 - name: pageToken
                   in: query
+                  description: The page token to use for pagination.
                   schema:
                     type: string
             responses:
@@ -146,11 +147,17 @@ paths:
                 - BackendService
             description: Creates a project.
             operationId: BackendService_CreateProject
+            parameters:
+                - name: displayName
+                  in: query
+                  description: The display name of the associated organization to create.
+                  schema:
+                    type: string
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/CreateProjectRequest'
+                            $ref: '#/components/schemas/Project'
                 required: true
             responses:
                 "200":
@@ -174,7 +181,7 @@ paths:
             parameters:
                 - name: id
                   in: path
-                  description: The ID of the resource to retrieve.
+                  description: The ID of the project to get.
                   required: true
                   schema:
                     type: string
@@ -199,7 +206,7 @@ paths:
             parameters:
                 - name: id
                   in: path
-                  description: Unique identifier for this project.
+                  description: The ID of the project to update.
                   required: true
                   schema:
                     type: string
@@ -231,10 +238,12 @@ paths:
             parameters:
                 - name: organizationId
                   in: query
+                  description: The organization ID to use for filtering.
                   schema:
                     type: string
                 - name: pageToken
                   in: query
+                  description: The page token to use for pagination.
                   schema:
                     type: string
             responses:
@@ -274,81 +283,6 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /backend/v1/users/google:
-        post:
-            tags:
-                - BackendService
-            description: Creates a Google user.
-            operationId: BackendService_CreateGoogleUser
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/CreateGoogleUserRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/User'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-    /backend/v1/users/microsoft:
-        post:
-            tags:
-                - BackendService
-            description: Creates a Microsoft user.
-            operationId: BackendService_CreateMicrosoftUser
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/CreateMicrosoftUserRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/User'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-    /backend/v1/users/unverified:
-        post:
-            tags:
-                - BackendService
-            description: Creates an unverified user.
-            operationId: BackendService_CreateUnverifiedUser
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/CreateUnverifiedUserRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/User'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
     /backend/v1/users/{id}:
         get:
             tags:
@@ -358,7 +292,7 @@ paths:
             parameters:
                 - name: id
                   in: path
-                  description: The ID of the resource to retrieve.
+                  description: The ID of the user to get.
                   required: true
                   schema:
                     type: string
@@ -383,7 +317,7 @@ paths:
             parameters:
                 - name: id
                   in: path
-                  description: Unique identifier for this user.
+                  description: The ID of the user to update.
                   required: true
                   schema:
                     type: string
@@ -415,6 +349,7 @@ paths:
             parameters:
                 - name: id
                   in: path
+                  description: The ID of the user to update.
                   required: true
                   schema:
                     type: string
@@ -437,6 +372,66 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /frontend/v1/email-signin:
+        post:
+            tags:
+                - IntermediateService
+            description: Creates a new intermediate session or session and cookies the requester.
+            operationId: IntermediateService_SignInWithEmail
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/SignInWithEmailRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/SignInWithEmailResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /frontend/v1/organizations:
+        get:
+            tags:
+                - FrontendService
+            description: Gets a list of organizations.
+            operationId: FrontendService_ListOrganizations
+            parameters:
+                - name: projectId
+                  in: query
+                  description: The ID of the project to use for filtering.
+                  schema:
+                    type: string
+                - name: email
+                  in: query
+                  description: The email address to use for filtering.
+                  schema:
+                    type: string
+                - name: pageToken
+                  in: query
+                  description: The page token to use for pagination.
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListOrganizationsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /frontend/v1/users:
         get:
             tags:
@@ -446,10 +441,12 @@ paths:
             parameters:
                 - name: organizationId
                   in: query
+                  description: The ID of the organization to use for filtering.
                   schema:
                     type: string
                 - name: pageToken
                   in: query
+                  description: The page token to use for pagination.
                   schema:
                     type: string
             responses:
@@ -498,7 +495,7 @@ paths:
             parameters:
                 - name: id
                   in: path
-                  description: The ID of the resource to retrieve.
+                  description: The ID of the user to get.
                   required: true
                   schema:
                     type: string
@@ -523,6 +520,7 @@ paths:
             parameters:
                 - name: id
                   in: path
+                  description: The ID of the user to update.
                   required: true
                   schema:
                     type: string
@@ -566,59 +564,27 @@ paths:
                                 $ref: '#/components/schemas/Status'
 components:
     schemas:
-        CreateGoogleUserRequest:
+        CreateOrganizationRequest:
             type: object
             properties:
-                organizationId:
-                    type: string
-                    description: The ID of the organization to scope this request to.
-                verifiedEmail:
-                    type: string
-                    description: The email address of the user to create.
-                googleUserId:
-                    type: string
-                    description: The Microsoft User ID of the user to create.
-        CreateMicrosoftUserRequest:
-            type: object
-            properties:
-                organizationId:
-                    type: string
-                    description: The ID of the organization to scope this request to.
-                verifiedEmail:
-                    type: string
-                    description: The email address of the user to create.
-                microsoftUserId:
-                    type: string
-                    description: The Microsoft User ID of the user to create.
-        CreateProjectRequest:
-            type: object
-            properties:
-                project:
+                organization:
                     allOf:
-                        - $ref: '#/components/schemas/Project'
-                    description: The project to create.
-                displayName:
-                    type: string
-                    description: The display name of the project's managing organization.
-        CreateUnverifiedUserRequest:
-            type: object
-            properties:
-                organizationId:
-                    type: string
-                    description: The ID of the organization to scope this request to.
-                unverifiedEmail:
-                    type: string
-                    description: The email address of the user to create.
+                        - $ref: '#/components/schemas/Organization'
+                    description: The organization to create.
         CreateUserResponse:
             type: object
             properties:
                 user:
-                    $ref: '#/components/schemas/User'
+                    allOf:
+                        - $ref: '#/components/schemas/User'
+                    description: The user created by the CreateUser request.
         GetUserResponse:
             type: object
             properties:
                 user:
-                    $ref: '#/components/schemas/User'
+                    allOf:
+                        - $ref: '#/components/schemas/User'
+                    description: The user returned by the GetUser request.
         GoogleProtobufAny:
             type: object
             properties:
@@ -634,10 +600,10 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/Organization'
-                    description: The organizations.
+                    description: The organizations retrieved by the ListOrganizations request.
                 nextPageToken:
                     type: string
-                    description: The next page token to resume from.
+                    description: The next page token to use for pagination.
         ListProjectsResponse:
             type: object
             properties:
@@ -645,8 +611,10 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/Project'
+                    description: The projects retrieved by the ListProjects request.
                 nextPageToken:
                     type: string
+                    description: The next page token to use for pagination.
         ListUsersResponse:
             type: object
             properties:
@@ -654,8 +622,10 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/User'
+                    description: The users retrieved by the ListUsers request.
                 nextPageToken:
                     type: string
+                    description: The next page token to use for pagination.
         Organization:
             type: object
             properties:
@@ -713,6 +683,18 @@ components:
                 microsoftOauthClientSecret:
                     type: string
                     description: The oAuth Client secret to be used for Microsoft Auth.
+        SignInWithEmailRequest:
+            type: object
+            properties:
+                email:
+                    type: string
+                    description: The email address to sign in with.
+        SignInWithEmailResponse:
+            type: object
+            properties:
+                SessionToken:
+                    type: string
+                    description: The token for the intermediate session or session created by the SignInWithEmail request.
         Status:
             type: object
             properties:
@@ -734,13 +716,17 @@ components:
             properties:
                 id:
                     type: string
+                    description: The ID of the user to update.
                 password:
                     type: string
+                    description: The new password for the user.
         UpdateUserResponse:
             type: object
             properties:
                 user:
-                    $ref: '#/components/schemas/User'
+                    allOf:
+                        - $ref: '#/components/schemas/User'
+                    description: The user updated by the UpdateUser request.
         User:
             type: object
             properties:
@@ -770,10 +756,14 @@ components:
             properties:
                 id:
                     type: string
+                    description: The user ID that is currently authenticated.
                 displayName:
                     type: string
+                    description: The display name for the user.
                 email:
                     type: string
+                    description: The email address for the user.
 tags:
     - name: BackendService
     - name: FrontendService
+    - name: IntermediateService

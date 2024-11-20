@@ -8,7 +8,6 @@ package frontendv1
 
 import (
 	context "context"
-	v1 "github.com/openauth-dev/openauth/internal/gen/openauth/v1"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -20,11 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	FrontendService_CreateUser_FullMethodName = "/frontend.v1.FrontendService/CreateUser"
-	FrontendService_GetUser_FullMethodName    = "/frontend.v1.FrontendService/GetUser"
-	FrontendService_ListUsers_FullMethodName  = "/frontend.v1.FrontendService/ListUsers"
-	FrontendService_UpdateUser_FullMethodName = "/frontend.v1.FrontendService/UpdateUser"
-	FrontendService_WhoAmI_FullMethodName     = "/frontend.v1.FrontendService/WhoAmI"
+	FrontendService_CreateUser_FullMethodName        = "/frontend.v1.FrontendService/CreateUser"
+	FrontendService_GetUser_FullMethodName           = "/frontend.v1.FrontendService/GetUser"
+	FrontendService_ListOrganizations_FullMethodName = "/frontend.v1.FrontendService/ListOrganizations"
+	FrontendService_ListUsers_FullMethodName         = "/frontend.v1.FrontendService/ListUsers"
+	FrontendService_UpdateUser_FullMethodName        = "/frontend.v1.FrontendService/UpdateUser"
+	FrontendService_WhoAmI_FullMethodName            = "/frontend.v1.FrontendService/WhoAmI"
 )
 
 // FrontendServiceClient is the client API for FrontendService service.
@@ -34,7 +34,9 @@ type FrontendServiceClient interface {
 	// Creates a user.
 	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error)
 	// Gets a user.
-	GetUser(ctx context.Context, in *v1.ResourceIdRequest, opts ...grpc.CallOption) (*GetUserResponse, error)
+	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error)
+	// Gets a list of organizations.
+	ListOrganizations(ctx context.Context, in *ListOrganizationsRequest, opts ...grpc.CallOption) (*ListOrganizationsResponse, error)
 	// Gets a list of users.
 	ListUsers(ctx context.Context, in *ListUsersRequest, opts ...grpc.CallOption) (*ListUsersResponse, error)
 	// Updates a user.
@@ -61,10 +63,20 @@ func (c *frontendServiceClient) CreateUser(ctx context.Context, in *CreateUserRe
 	return out, nil
 }
 
-func (c *frontendServiceClient) GetUser(ctx context.Context, in *v1.ResourceIdRequest, opts ...grpc.CallOption) (*GetUserResponse, error) {
+func (c *frontendServiceClient) GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetUserResponse)
 	err := c.cc.Invoke(ctx, FrontendService_GetUser_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *frontendServiceClient) ListOrganizations(ctx context.Context, in *ListOrganizationsRequest, opts ...grpc.CallOption) (*ListOrganizationsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListOrganizationsResponse)
+	err := c.cc.Invoke(ctx, FrontendService_ListOrganizations_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -108,7 +120,9 @@ type FrontendServiceServer interface {
 	// Creates a user.
 	CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error)
 	// Gets a user.
-	GetUser(context.Context, *v1.ResourceIdRequest) (*GetUserResponse, error)
+	GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error)
+	// Gets a list of organizations.
+	ListOrganizations(context.Context, *ListOrganizationsRequest) (*ListOrganizationsResponse, error)
 	// Gets a list of users.
 	ListUsers(context.Context, *ListUsersRequest) (*ListUsersResponse, error)
 	// Updates a user.
@@ -128,8 +142,11 @@ type UnimplementedFrontendServiceServer struct{}
 func (UnimplementedFrontendServiceServer) CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
 }
-func (UnimplementedFrontendServiceServer) GetUser(context.Context, *v1.ResourceIdRequest) (*GetUserResponse, error) {
+func (UnimplementedFrontendServiceServer) GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
+}
+func (UnimplementedFrontendServiceServer) ListOrganizations(context.Context, *ListOrganizationsRequest) (*ListOrganizationsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListOrganizations not implemented")
 }
 func (UnimplementedFrontendServiceServer) ListUsers(context.Context, *ListUsersRequest) (*ListUsersResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListUsers not implemented")
@@ -180,7 +197,7 @@ func _FrontendService_CreateUser_Handler(srv interface{}, ctx context.Context, d
 }
 
 func _FrontendService_GetUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(v1.ResourceIdRequest)
+	in := new(GetUserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -192,7 +209,25 @@ func _FrontendService_GetUser_Handler(srv interface{}, ctx context.Context, dec 
 		FullMethod: FrontendService_GetUser_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(FrontendServiceServer).GetUser(ctx, req.(*v1.ResourceIdRequest))
+		return srv.(FrontendServiceServer).GetUser(ctx, req.(*GetUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FrontendService_ListOrganizations_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListOrganizationsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).ListOrganizations(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_ListOrganizations_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).ListOrganizations(ctx, req.(*ListOrganizationsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -265,6 +300,10 @@ var FrontendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUser",
 			Handler:    _FrontendService_GetUser_Handler,
+		},
+		{
+			MethodName: "ListOrganizations",
+			Handler:    _FrontendService_ListOrganizations_Handler,
 		},
 		{
 			MethodName: "ListUsers",
