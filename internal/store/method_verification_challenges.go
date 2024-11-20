@@ -4,12 +4,12 @@ import (
 	"bytes"
 	"context"
 	"crypto/rand"
+	"crypto/sha256"
 	"errors"
 	"math/big"
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/openauth-dev/openauth/internal/crypto"
 	"github.com/openauth-dev/openauth/internal/store/idformat"
 	"github.com/openauth-dev/openauth/internal/store/queries"
 )
@@ -56,7 +56,7 @@ func (s *Store) CreateMethodVerificationChallenge(
 	if err != nil {
 		return nil, err
 	}
-	secretTokenSha256 := crypto.StringToSha256(secretToken)
+	secretTokenSha256 := sha256.Sum256([]byte(secretToken))
 
 	createdMethodVerificationChallenge, err := q.CreateMethodVerificationChallenge(*ctx, queries.CreateMethodVerificationChallengeParams{
 		ID: uuid.New(),
@@ -64,7 +64,7 @@ func (s *Store) CreateMethodVerificationChallenge(
 		IntermediateSessionID: req.IntermediateSessionID,
 		AuthMethod: req.AuthMethod,
 		ExpireTime: &expiresAt,
-		SecretTokenSha256: secretTokenSha256,
+		SecretTokenSha256: secretTokenSha256[:],
 	})
 	if err != nil {
 		return nil, err
@@ -107,10 +107,10 @@ func (s *Store) CompleteMethodVerificationChallenge(
 		return ErrMethodVerificationChallengeExpired
 	}
 
-	secretTokenSha256 := crypto.StringToSha256(req.SecretToken)
+	secretTokenSha256 := sha256.Sum256([]byte(req.SecretToken))
 
 	// Check if the secret token matches
-	if !bytes.Equal(existingMVC.SecretTokenSha256, secretTokenSha256) {
+	if !bytes.Equal(existingMVC.SecretTokenSha256, secretTokenSha256[:]) {
 		return ErrMethodVerificationChallengeSecretTokenMismatch
 	}
 
