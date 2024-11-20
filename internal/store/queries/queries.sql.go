@@ -145,24 +145,21 @@ const createIntermediateSessionSigningKey = `-- name: CreateIntermediateSessionS
 insert into intermediate_session_signing_keys (
   id, 
   project_id, 
-  public_key, 
-  private_key_cipher_text, 
+  signing_key_cipher_text, 
   expire_time
 ) values (
   $1, 
   $2, 
   $3, 
-  $4, 
-  $5
+  $4
 )
-returning id, project_id, public_key, private_key_cipher_text, create_time, expire_time
+returning id, project_id, signing_key_cipher_text, create_time, expire_time
 `
 
 type CreateIntermediateSessionSigningKeyParams struct {
 	ID                   uuid.UUID
 	ProjectID            uuid.UUID
-	PublicKey            []byte
-	PrivateKeyCipherText []byte
+	SigningKeyCipherText []byte
 	ExpireTime           *time.Time
 }
 
@@ -170,16 +167,14 @@ func (q *Queries) CreateIntermediateSessionSigningKey(ctx context.Context, arg C
 	row := q.db.QueryRow(ctx, createIntermediateSessionSigningKey,
 		arg.ID,
 		arg.ProjectID,
-		arg.PublicKey,
-		arg.PrivateKeyCipherText,
+		arg.SigningKeyCipherText,
 		arg.ExpireTime,
 	)
 	var i IntermediateSessionSigningKey
 	err := row.Scan(
 		&i.ID,
 		&i.ProjectID,
-		&i.PublicKey,
-		&i.PrivateKeyCipherText,
+		&i.SigningKeyCipherText,
 		&i.CreateTime,
 		&i.ExpireTime,
 	)
@@ -453,24 +448,21 @@ const createSessionSigningKey = `-- name: CreateSessionSigningKey :one
 insert into session_signing_keys (
   id, 
   project_id, 
-  public_key, 
-  private_key_cipher_text, 
+  signing_key_cipher_text, 
   expire_time
 ) values (
   $1, 
   $2, 
   $3, 
-  $4, 
-  $5
+  $4
 )
-returning id, project_id, public_key, private_key_cipher_text, create_time, expire_time
+returning id, project_id, signing_key_cipher_text, create_time, expire_time
 `
 
 type CreateSessionSigningKeyParams struct {
 	ID                   uuid.UUID
 	ProjectID            uuid.UUID
-	PublicKey            []byte
-	PrivateKeyCipherText []byte
+	SigningKeyCipherText []byte
 	ExpireTime           *time.Time
 }
 
@@ -478,16 +470,14 @@ func (q *Queries) CreateSessionSigningKey(ctx context.Context, arg CreateSession
 	row := q.db.QueryRow(ctx, createSessionSigningKey,
 		arg.ID,
 		arg.ProjectID,
-		arg.PublicKey,
-		arg.PrivateKeyCipherText,
+		arg.SigningKeyCipherText,
 		arg.ExpireTime,
 	)
 	var i SessionSigningKey
 	err := row.Scan(
 		&i.ID,
 		&i.ProjectID,
-		&i.PublicKey,
-		&i.PrivateKeyCipherText,
+		&i.SigningKeyCipherText,
 		&i.CreateTime,
 		&i.ExpireTime,
 	)
@@ -603,6 +593,40 @@ func (q *Queries) GetIntermediateSessionByID(ctx context.Context, id uuid.UUID) 
 	return i, err
 }
 
+const getIntermediateSessionSigningKeyByID = `-- name: GetIntermediateSessionSigningKeyByID :one
+select id, project_id, signing_key_cipher_text, create_time, expire_time from intermediate_session_signing_keys where id = $1
+`
+
+func (q *Queries) GetIntermediateSessionSigningKeyByID(ctx context.Context, id uuid.UUID) (IntermediateSessionSigningKey, error) {
+	row := q.db.QueryRow(ctx, getIntermediateSessionSigningKeyByID, id)
+	var i IntermediateSessionSigningKey
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.SigningKeyCipherText,
+		&i.CreateTime,
+		&i.ExpireTime,
+	)
+	return i, err
+}
+
+const getIntermediateSessionSigningKeyByProjectID = `-- name: GetIntermediateSessionSigningKeyByProjectID :one
+select id, project_id, signing_key_cipher_text, create_time, expire_time from intermediate_session_signing_keys where project_id = $1 order by create_time desc limit 1
+`
+
+func (q *Queries) GetIntermediateSessionSigningKeyByProjectID(ctx context.Context, projectID uuid.UUID) (IntermediateSessionSigningKey, error) {
+	row := q.db.QueryRow(ctx, getIntermediateSessionSigningKeyByProjectID, projectID)
+	var i IntermediateSessionSigningKey
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.SigningKeyCipherText,
+		&i.CreateTime,
+		&i.ExpireTime,
+	)
+	return i, err
+}
+
 const getMethodVerificationChallengeByID = `-- name: GetMethodVerificationChallengeByID :one
 select id, project_id, complete_time, intermediate_session_id, auth_method, expire_time, secret_token_sha256 from method_verification_challenges where id = $1
 `
@@ -683,6 +707,57 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 	return i, err
 }
 
+const getSessionByID = `-- name: GetSessionByID :one
+select id, user_id, create_time, expire_time, revoked from sessions where id = $1
+`
+
+func (q *Queries) GetSessionByID(ctx context.Context, id uuid.UUID) (Session, error) {
+	row := q.db.QueryRow(ctx, getSessionByID, id)
+	var i Session
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.CreateTime,
+		&i.ExpireTime,
+		&i.Revoked,
+	)
+	return i, err
+}
+
+const getSessionSigningKeyByID = `-- name: GetSessionSigningKeyByID :one
+select id, project_id, signing_key_cipher_text, create_time, expire_time from session_signing_keys where id = $1
+`
+
+func (q *Queries) GetSessionSigningKeyByID(ctx context.Context, id uuid.UUID) (SessionSigningKey, error) {
+	row := q.db.QueryRow(ctx, getSessionSigningKeyByID, id)
+	var i SessionSigningKey
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.SigningKeyCipherText,
+		&i.CreateTime,
+		&i.ExpireTime,
+	)
+	return i, err
+}
+
+const getSessionSigningKeyByProjectID = `-- name: GetSessionSigningKeyByProjectID :one
+select id, project_id, signing_key_cipher_text, create_time, expire_time from session_signing_keys where project_id = $1 order by create_time desc limit 1
+`
+
+func (q *Queries) GetSessionSigningKeyByProjectID(ctx context.Context, projectID uuid.UUID) (SessionSigningKey, error) {
+	row := q.db.QueryRow(ctx, getSessionSigningKeyByProjectID, projectID)
+	var i SessionSigningKey
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.SigningKeyCipherText,
+		&i.CreateTime,
+		&i.ExpireTime,
+	)
+	return i, err
+}
+
 const getUserByEmail = `-- name: GetUserByEmail :one
 select id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id from users where verified_email = $1 or unverified_email = $1
 `
@@ -756,6 +831,25 @@ type GetUserByMicrosoftUserIDParams struct {
 
 func (q *Queries) GetUserByMicrosoftUserID(ctx context.Context, arg GetUserByMicrosoftUserIDParams) (User, error) {
 	row := q.db.QueryRow(ctx, getUserByMicrosoftUserID, arg.OrganizationID, arg.MicrosoftUserID)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.UnverifiedEmail,
+		&i.VerifiedEmail,
+		&i.PasswordBcrypt,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+	)
+	return i, err
+}
+
+const getUserBySessionID = `-- name: GetUserBySessionID :one
+select id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id from users where users.id = (select user_id from sessions where sessions.id = $1)
+`
+
+func (q *Queries) GetUserBySessionID(ctx context.Context, id uuid.UUID) (User, error) {
+	row := q.db.QueryRow(ctx, getUserBySessionID, id)
 	var i User
 	err := row.Scan(
 		&i.ID,

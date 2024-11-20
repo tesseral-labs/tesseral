@@ -7,11 +7,19 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
+	"github.com/openauth-dev/openauth/internal/store"
 )
 
 var ErrInvalidJWTTOken = errors.New("invalid JWT token")
 
-type JWT struct {}
+type JWT struct {
+	store *store.Store
+}
+
+type NewJWTParams struct {
+	Store *store.Store
+}
 
 type IntermediateSessionJWTClaims struct {
 	jwt.Claims
@@ -35,9 +43,18 @@ type SessionJWTClaims struct {
 	UserID string
 }
 
-func ParseIntermediateSessionJWT(tokenString string) (*IntermediateSessionJWTClaims, error) {
+func NewJWT(params NewJWTParams) *JWT {
+	return &JWT{
+		store: params.Store,
+	}
+}
+
+func (j *JWT) ParseIntermediateSessionJWT(ctx context.Context, tokenString string) (*IntermediateSessionJWTClaims, error) {
 	// TODO: Make this use the project's intermediate session signing key
-	signingKey := []byte("")
+	signingKey, err := j.store.GetSessionSigningKeyByID(ctx, uuid.New().String())
+	if err != nil {
+		return nil, err
+	}
 
 	token, err := jwt.ParseWithClaims(tokenString, &IntermediateSessionJWTClaims{}, func(token *jwt.Token) (interface{}, error) {
 		// Validate the signing method
@@ -60,9 +77,12 @@ func ParseIntermediateSessionJWT(tokenString string) (*IntermediateSessionJWTCla
 	return claims, nil
 }
 
-func ParseSessionJWT(tokenString string) (*SessionJWTClaims, error) {
-	// TODO: Make this use the project's session signing key
-	signingKey := []byte("")
+func (j *JWT) ParseSessionJWT(ctx context.Context, tokenString string) (*SessionJWTClaims, error) {
+	// TODO: Make this use the project's intermediate session signing key
+	signingKey, err := j.store.GetSessionSigningKeyByID(ctx, uuid.New().String())
+	if err != nil {
+		return nil, err
+	}
 
 	token, err := jwt.ParseWithClaims(tokenString, &SessionJWTClaims{}, func(token *jwt.Token) (interface{}, error) {
 		// Validate the signing method
@@ -85,9 +105,12 @@ func ParseSessionJWT(tokenString string) (*SessionJWTClaims, error) {
 	return claims, nil
 }
 
-func SignIntermediateSessionJWT(ctx context.Context, claims *IntermediateSessionJWTClaims) (string, error) {
+func (j *JWT) SignIntermediateSessionJWT(ctx context.Context, claims *IntermediateSessionJWTClaims) (string, error) {
 	// TODO: Make this use the project's intermediate session signing key
-	signingKey := []byte("")
+	signingKey, err := j.store.GetIntermediateSessionSigningKeyByID(ctx, uuid.New().String())
+	if err != nil {
+		return "", err
+	}
 
 	claims.IssuedAt = time.Now().Unix()
 	claims.ExpiresAt = time.Now().Add(time.Minute * 15).Unix()
@@ -97,9 +120,12 @@ func SignIntermediateSessionJWT(ctx context.Context, claims *IntermediateSession
 	return token.SignedString(signingKey)
 }
 
-func SignSessionJWT(ctx context.Context, claims *SessionJWTClaims) (string, error) {
-	// TODO: Make this use the project's session signing key
-	signingKey := []byte("")
+func (j *JWT) SignSessionJWT(ctx context.Context, claims *SessionJWTClaims) (string, error) {
+	// TODO: Make this use the project's intermediate session signing key
+	signingKey, err := j.store.GetIntermediateSessionSigningKeyByID(ctx, uuid.New().String())
+	if err != nil {
+		return "", err
+	}
 
 	claims.IssuedAt = time.Now().Unix()
 	// TODO: Make this honor the project's activity timeout

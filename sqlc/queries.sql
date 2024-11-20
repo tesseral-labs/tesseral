@@ -52,15 +52,13 @@ returning *;
 insert into intermediate_session_signing_keys (
   id, 
   project_id, 
-  public_key, 
-  private_key_cipher_text, 
+  signing_key_cipher_text, 
   expire_time
 ) values (
   $1, 
   $2, 
   $3, 
-  $4, 
-  $5
+  $4
 )
 returning *;
 
@@ -130,15 +128,13 @@ returning *;
 insert into session_signing_keys (
   id, 
   project_id, 
-  public_key, 
-  private_key_cipher_text, 
+  signing_key_cipher_text, 
   expire_time
 ) values (
   $1, 
   $2, 
   $3, 
-  $4, 
-  $5
+  $4
 )
 returning *;
 
@@ -205,6 +201,12 @@ returning *;
 -- name: GetIntermediateSessionByID :one
 select * from intermediate_sessions where id = $1;
 
+-- name: GetIntermediateSessionSigningKeyByID :one
+select * from intermediate_session_signing_keys where id = $1;
+
+-- name: GetIntermediateSessionSigningKeyByProjectID :one
+select * from intermediate_session_signing_keys where project_id = $1 order by create_time desc limit 1;
+
 -- name: GetMethodVerificationChallengeByID :one
 select * from method_verification_challenges where id = $1;
 
@@ -213,6 +215,15 @@ select * from organizations where id = $1;
 
 -- name: GetProjectByID :one
 select * from projects where id = $1;
+
+-- name: GetSessionByID :one
+select * from sessions where id = $1;
+
+-- name: GetSessionSigningKeyByID :one
+select * from session_signing_keys where id = $1;
+
+-- name: GetSessionSigningKeyByProjectID :one
+select * from session_signing_keys where project_id = $1 order by create_time desc limit 1;
 
 -- name: GetOrganizationByGoogleHostedDomain :one
 select * from organizations where google_hosted_domain = $1;
@@ -228,6 +239,9 @@ select * from users where organization_id = $1 and google_user_id = $2;
 
 -- name: GetUserByMicrosoftUserID :one
 select * from users where organization_id = $1 and microsoft_user_id = $2;
+
+-- name: GetUserBySessionID :one
+select * from users where users.id = (select user_id from sessions where sessions.id = $1);
 
 -- name: GetUserByUnverifiedEmail :one
 select * from users where unverified_email = $1;

@@ -41,8 +41,7 @@ SET default_table_access_method = heap;
 CREATE TABLE public.intermediate_session_signing_keys (
     id uuid NOT NULL,
     project_id uuid NOT NULL,
-    public_key bytea NOT NULL,
-    private_key_cipher_text bytea NOT NULL,
+    signing_key_cipher_text bytea NOT NULL,
     create_time timestamp with time zone DEFAULT now() NOT NULL,
     expire_time timestamp with time zone NOT NULL
 );
@@ -142,8 +141,7 @@ ALTER TABLE public.schema_migrations OWNER TO postgres;
 CREATE TABLE public.session_signing_keys (
     id uuid NOT NULL,
     project_id uuid NOT NULL,
-    public_key bytea NOT NULL,
-    private_key_cipher_text bytea NOT NULL,
+    signing_key_cipher_text bytea NOT NULL,
     create_time timestamp with time zone DEFAULT now() NOT NULL,
     expire_time timestamp with time zone NOT NULL
 );
@@ -159,7 +157,7 @@ CREATE TABLE public.sessions (
     id uuid NOT NULL,
     user_id uuid NOT NULL,
     create_time timestamp with time zone DEFAULT now() NOT NULL,
-    expire_time timestamp with time zone NOT NULL,
+    expire_time timestamp with time zone,
     revoked boolean DEFAULT false NOT NULL
 );
 
