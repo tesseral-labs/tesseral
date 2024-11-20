@@ -44,6 +44,9 @@ const (
 	// FrontendServiceListUsersProcedure is the fully-qualified name of the FrontendService's ListUsers
 	// RPC.
 	FrontendServiceListUsersProcedure = "/frontend.v1.FrontendService/ListUsers"
+	// FrontendServiceSignInWithEmailProcedure is the fully-qualified name of the FrontendService's
+	// SignInWithEmail RPC.
+	FrontendServiceSignInWithEmailProcedure = "/frontend.v1.FrontendService/SignInWithEmail"
 	// FrontendServiceUpdateUserProcedure is the fully-qualified name of the FrontendService's
 	// UpdateUser RPC.
 	FrontendServiceUpdateUserProcedure = "/frontend.v1.FrontendService/UpdateUser"
@@ -58,6 +61,7 @@ var (
 	frontendServiceGetUserMethodDescriptor           = frontendServiceServiceDescriptor.Methods().ByName("GetUser")
 	frontendServiceListOrganizationsMethodDescriptor = frontendServiceServiceDescriptor.Methods().ByName("ListOrganizations")
 	frontendServiceListUsersMethodDescriptor         = frontendServiceServiceDescriptor.Methods().ByName("ListUsers")
+	frontendServiceSignInWithEmailMethodDescriptor   = frontendServiceServiceDescriptor.Methods().ByName("SignInWithEmail")
 	frontendServiceUpdateUserMethodDescriptor        = frontendServiceServiceDescriptor.Methods().ByName("UpdateUser")
 	frontendServiceWhoAmIMethodDescriptor            = frontendServiceServiceDescriptor.Methods().ByName("WhoAmI")
 )
@@ -72,6 +76,8 @@ type FrontendServiceClient interface {
 	ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error)
 	// Gets a list of users.
 	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
+	// Creates a new intermediate session or session and cookies the requester.
+	SignInWithEmail(context.Context, *connect.Request[v1.SignInWithEmailRequest]) (*connect.Response[v1.SignInWithEmailResponse], error)
 	// Updates a user.
 	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error)
 	// Who am I?
@@ -112,6 +118,12 @@ func NewFrontendServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			connect.WithSchema(frontendServiceListUsersMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
+		signInWithEmail: connect.NewClient[v1.SignInWithEmailRequest, v1.SignInWithEmailResponse](
+			httpClient,
+			baseURL+FrontendServiceSignInWithEmailProcedure,
+			connect.WithSchema(frontendServiceSignInWithEmailMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
 		updateUser: connect.NewClient[v1.UpdateUserRequest, v1.UpdateUserResponse](
 			httpClient,
 			baseURL+FrontendServiceUpdateUserProcedure,
@@ -133,6 +145,7 @@ type frontendServiceClient struct {
 	getUser           *connect.Client[v1.GetUserRequest, v1.GetUserResponse]
 	listOrganizations *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
 	listUsers         *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
+	signInWithEmail   *connect.Client[v1.SignInWithEmailRequest, v1.SignInWithEmailResponse]
 	updateUser        *connect.Client[v1.UpdateUserRequest, v1.UpdateUserResponse]
 	whoAmI            *connect.Client[v1.WhoAmIRequest, v1.WhoAmIResponse]
 }
@@ -157,6 +170,11 @@ func (c *frontendServiceClient) ListUsers(ctx context.Context, req *connect.Requ
 	return c.listUsers.CallUnary(ctx, req)
 }
 
+// SignInWithEmail calls frontend.v1.FrontendService.SignInWithEmail.
+func (c *frontendServiceClient) SignInWithEmail(ctx context.Context, req *connect.Request[v1.SignInWithEmailRequest]) (*connect.Response[v1.SignInWithEmailResponse], error) {
+	return c.signInWithEmail.CallUnary(ctx, req)
+}
+
 // UpdateUser calls frontend.v1.FrontendService.UpdateUser.
 func (c *frontendServiceClient) UpdateUser(ctx context.Context, req *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error) {
 	return c.updateUser.CallUnary(ctx, req)
@@ -177,6 +195,8 @@ type FrontendServiceHandler interface {
 	ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error)
 	// Gets a list of users.
 	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
+	// Creates a new intermediate session or session and cookies the requester.
+	SignInWithEmail(context.Context, *connect.Request[v1.SignInWithEmailRequest]) (*connect.Response[v1.SignInWithEmailResponse], error)
 	// Updates a user.
 	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error)
 	// Who am I?
@@ -213,6 +233,12 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 		connect.WithSchema(frontendServiceListUsersMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
+	frontendServiceSignInWithEmailHandler := connect.NewUnaryHandler(
+		FrontendServiceSignInWithEmailProcedure,
+		svc.SignInWithEmail,
+		connect.WithSchema(frontendServiceSignInWithEmailMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
 	frontendServiceUpdateUserHandler := connect.NewUnaryHandler(
 		FrontendServiceUpdateUserProcedure,
 		svc.UpdateUser,
@@ -235,6 +261,8 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 			frontendServiceListOrganizationsHandler.ServeHTTP(w, r)
 		case FrontendServiceListUsersProcedure:
 			frontendServiceListUsersHandler.ServeHTTP(w, r)
+		case FrontendServiceSignInWithEmailProcedure:
+			frontendServiceSignInWithEmailHandler.ServeHTTP(w, r)
 		case FrontendServiceUpdateUserProcedure:
 			frontendServiceUpdateUserHandler.ServeHTTP(w, r)
 		case FrontendServiceWhoAmIProcedure:
@@ -262,6 +290,10 @@ func (UnimplementedFrontendServiceHandler) ListOrganizations(context.Context, *c
 
 func (UnimplementedFrontendServiceHandler) ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("frontend.v1.FrontendService.ListUsers is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) SignInWithEmail(context.Context, *connect.Request[v1.SignInWithEmailRequest]) (*connect.Response[v1.SignInWithEmailResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("frontend.v1.FrontendService.SignInWithEmail is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error) {

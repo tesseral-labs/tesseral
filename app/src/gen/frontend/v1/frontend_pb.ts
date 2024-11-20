@@ -4,79 +4,8 @@
 // @ts-nocheck
 
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
+import { Message, proto3 } from "@bufbuild/protobuf";
 import { Organization, User } from "../../openauth/v1/openauth_pb.js";
-
-/**
- * @generated from message frontend.v1.IntermediateSession
- */
-export class IntermediateSession extends Message<IntermediateSession> {
-  /**
-   * The ID of the organization this session is scoped to.
-   *
-   * @generated from field: string id = 1;
-   */
-  id = "";
-
-  /**
-   * The the unverified email address for the user.
-   *
-   * @generated from field: string unverified_email = 2;
-   */
-  unverifiedEmail = "";
-
-  /**
-   * The verified email address for the user.
-   *
-   * @generated from field: string verified_email = 3;
-   */
-  verifiedEmail = "";
-
-  /**
-   * The time the session was created.
-   *
-   * @generated from field: google.protobuf.Timestamp created_time = 4;
-   */
-  createdTime?: Timestamp;
-
-  /**
-   * The timestamp for when the session expires
-   *
-   * @generated from field: google.protobuf.Timestamp expire_time = 5;
-   */
-  expireTime?: Timestamp;
-
-  constructor(data?: PartialMessage<IntermediateSession>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "frontend.v1.IntermediateSession";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "unverified_email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "verified_email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 4, name: "created_time", kind: "message", T: Timestamp },
-    { no: 5, name: "expire_time", kind: "message", T: Timestamp },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): IntermediateSession {
-    return new IntermediateSession().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): IntermediateSession {
-    return new IntermediateSession().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): IntermediateSession {
-    return new IntermediateSession().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: IntermediateSession | PlainMessage<IntermediateSession> | undefined, b: IntermediateSession | PlainMessage<IntermediateSession> | undefined): boolean {
-    return proto3.util.equals(IntermediateSession, a, b);
-  }
-}
 
 /**
  * @generated from message frontend.v1.CreateUserRequest
@@ -427,6 +356,84 @@ export class ListUsersResponse extends Message<ListUsersResponse> {
 
   static equals(a: ListUsersResponse | PlainMessage<ListUsersResponse> | undefined, b: ListUsersResponse | PlainMessage<ListUsersResponse> | undefined): boolean {
     return proto3.util.equals(ListUsersResponse, a, b);
+  }
+}
+
+/**
+ * @generated from message frontend.v1.SignInWithEmailRequest
+ */
+export class SignInWithEmailRequest extends Message<SignInWithEmailRequest> {
+  /**
+   * The email address to sign in with.
+   *
+   * @generated from field: string email = 1;
+   */
+  email = "";
+
+  constructor(data?: PartialMessage<SignInWithEmailRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "frontend.v1.SignInWithEmailRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): SignInWithEmailRequest {
+    return new SignInWithEmailRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): SignInWithEmailRequest {
+    return new SignInWithEmailRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): SignInWithEmailRequest {
+    return new SignInWithEmailRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: SignInWithEmailRequest | PlainMessage<SignInWithEmailRequest> | undefined, b: SignInWithEmailRequest | PlainMessage<SignInWithEmailRequest> | undefined): boolean {
+    return proto3.util.equals(SignInWithEmailRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message frontend.v1.SignInWithEmailResponse
+ */
+export class SignInWithEmailResponse extends Message<SignInWithEmailResponse> {
+  /**
+   * The token for the intermediate session or session created by the SignInWithEmail request.
+   *
+   * @generated from field: string SessionToken = 1;
+   */
+  SessionToken = "";
+
+  constructor(data?: PartialMessage<SignInWithEmailResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "frontend.v1.SignInWithEmailResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "SessionToken", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): SignInWithEmailResponse {
+    return new SignInWithEmailResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): SignInWithEmailResponse {
+    return new SignInWithEmailResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): SignInWithEmailResponse {
+    return new SignInWithEmailResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: SignInWithEmailResponse | PlainMessage<SignInWithEmailResponse> | undefined, b: SignInWithEmailResponse | PlainMessage<SignInWithEmailResponse> | undefined): boolean {
+    return proto3.util.equals(SignInWithEmailResponse, a, b);
   }
 }
 

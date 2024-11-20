@@ -11,11 +11,11 @@ import (
 	"github.com/openauth-dev/openauth/internal/store"
 )
 
-var ErrAuthorizationHeaderRequired = errors.New("Authorization header is required")
+var ErrAuthorizationHeaderRequired = errors.New("authorization header is required")
 var ErrInvalidSessionToken = errors.New("invalid session token")
 
 var skipRPCs = []string{
-
+	"/frontend.v1.Frontend/SignInWithEmail",
 }
 
 func New(j *jwt.JWT, s *store.Store) connect.UnaryInterceptorFunc {
@@ -41,7 +41,7 @@ func New(j *jwt.JWT, s *store.Store) connect.UnaryInterceptorFunc {
 			if strings.HasPrefix(secretValue, "openauth_secret_") {
 				// It's an API key
 				// TODO: Implement API key authentication
-				
+
 			} else {
 				// Check whether the session token is an intermediate session token or a session token
 				intermediateSessionJWT, intermediateErr := j.ParseIntermediateSessionJWT(ctx, secretValue)

@@ -11,11 +11,13 @@ import (
 	"connectrpc.com/vanguard"
 	"github.com/cyrusaf/ctxlog"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/openauth-dev/openauth/internal/authn/authinterceptor"
 	"github.com/openauth-dev/openauth/internal/backendservice"
 	"github.com/openauth-dev/openauth/internal/frontendservice"
 	"github.com/openauth-dev/openauth/internal/gen/backend/v1/backendv1connect"
 	"github.com/openauth-dev/openauth/internal/gen/frontend/v1/frontendv1connect"
 	"github.com/openauth-dev/openauth/internal/hexkey"
+	"github.com/openauth-dev/openauth/internal/jwt"
 	"github.com/openauth-dev/openauth/internal/loadenv"
 	"github.com/openauth-dev/openauth/internal/pagetoken"
 	"github.com/openauth-dev/openauth/internal/secretload"
@@ -64,11 +66,18 @@ func main() {
 		PageEncoder: pagetoken.Encoder{Secret: pageEncodingValue},
 	})
 
+	jwt_ := jwt.New(jwt.NewJWTParams{
+		Store: store_,
+	})
+
 	backendConnectPath, backendConnectHandler := backendv1connect.NewBackendServiceHandler(
 		&backendservice.BackendService{
 			Store: store_,
 		},
-		connect.WithInterceptors(),
+		connect.WithInterceptors(
+			// We may want to use separate auth interceptors for backend and frontend services
+			authinterceptor.New(jwt_, store_),
+		),
 	)
 	backend := vanguard.NewService(backendConnectPath, backendConnectHandler)
 	backendTranscoder, err := vanguard.NewTranscoder([]*vanguard.Service{backend})
@@ -80,7 +89,10 @@ func main() {
 		&frontendservice.FrontendService{
 			Store: store_,
 		},
-		connect.WithInterceptors(),
+		connect.WithInterceptors(
+			// We may want to use separate auth interceptors for backend and frontend services
+			authinterceptor.New(jwt_, store_),
+		),
 	)
 	frontend := vanguard.NewService(frontendConnectPath, frontendConnectHandler)
 	frontendTranscoder, err := vanguard.NewTranscoder([]*vanguard.Service{frontend})

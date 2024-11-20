@@ -4,7 +4,7 @@
 // @ts-nocheck
 
 import { MethodKind } from "@bufbuild/protobuf";
-import { CreateUserRequest, CreateUserResponse, GetUserRequest, GetUserResponse, ListOrganizationsRequest, ListOrganizationsResponse, ListUsersRequest, ListUsersResponse, UpdateUserRequest, UpdateUserResponse, WhoAmIRequest, WhoAmIResponse } from "./frontend_pb.js";
+import { CreateUserRequest, CreateUserResponse, GetUserRequest, GetUserResponse, ListOrganizationsRequest, ListOrganizationsResponse, ListUsersRequest, ListUsersResponse, SignInWithEmailRequest, SignInWithEmailResponse, UpdateUserRequest, UpdateUserResponse, WhoAmIRequest, WhoAmIResponse } from "./frontend_pb.js";
 
 /**
  * Creates a user.
@@ -65,6 +65,22 @@ export const listUsers = {
   kind: MethodKind.Unary,
   I: ListUsersRequest,
   O: ListUsersResponse,
+  service: {
+    typeName: "frontend.v1.FrontendService"
+  }
+} as const;
+
+/**
+ * Creates a new intermediate session or session and cookies the requester.
+ *
+ * @generated from rpc frontend.v1.FrontendService.SignInWithEmail
+ */
+export const signInWithEmail = {
+  localName: "signInWithEmail",
+  name: "SignInWithEmail",
+  kind: MethodKind.Unary,
+  I: SignInWithEmailRequest,
+  O: SignInWithEmailResponse,
   service: {
     typeName: "frontend.v1.FrontendService"
   }

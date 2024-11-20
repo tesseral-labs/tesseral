@@ -49,7 +49,7 @@ type SessionJWTClaims struct {
 	UserID string
 }
 
-func NewJWT(params NewJWTParams) *JWT {
+func New(params NewJWTParams) *JWT {
 	return &JWT{
 		store: params.Store,
 	}

@@ -23,6 +23,7 @@ const (
 	FrontendService_GetUser_FullMethodName           = "/frontend.v1.FrontendService/GetUser"
 	FrontendService_ListOrganizations_FullMethodName = "/frontend.v1.FrontendService/ListOrganizations"
 	FrontendService_ListUsers_FullMethodName         = "/frontend.v1.FrontendService/ListUsers"
+	FrontendService_SignInWithEmail_FullMethodName   = "/frontend.v1.FrontendService/SignInWithEmail"
 	FrontendService_UpdateUser_FullMethodName        = "/frontend.v1.FrontendService/UpdateUser"
 	FrontendService_WhoAmI_FullMethodName            = "/frontend.v1.FrontendService/WhoAmI"
 )
@@ -39,6 +40,8 @@ type FrontendServiceClient interface {
 	ListOrganizations(ctx context.Context, in *ListOrganizationsRequest, opts ...grpc.CallOption) (*ListOrganizationsResponse, error)
 	// Gets a list of users.
 	ListUsers(ctx context.Context, in *ListUsersRequest, opts ...grpc.CallOption) (*ListUsersResponse, error)
+	// Creates a new intermediate session or session and cookies the requester.
+	SignInWithEmail(ctx context.Context, in *SignInWithEmailRequest, opts ...grpc.CallOption) (*SignInWithEmailResponse, error)
 	// Updates a user.
 	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UpdateUserResponse, error)
 	// Who am I?
@@ -93,6 +96,16 @@ func (c *frontendServiceClient) ListUsers(ctx context.Context, in *ListUsersRequ
 	return out, nil
 }
 
+func (c *frontendServiceClient) SignInWithEmail(ctx context.Context, in *SignInWithEmailRequest, opts ...grpc.CallOption) (*SignInWithEmailResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SignInWithEmailResponse)
+	err := c.cc.Invoke(ctx, FrontendService_SignInWithEmail_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *frontendServiceClient) UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UpdateUserResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(UpdateUserResponse)
@@ -125,6 +138,8 @@ type FrontendServiceServer interface {
 	ListOrganizations(context.Context, *ListOrganizationsRequest) (*ListOrganizationsResponse, error)
 	// Gets a list of users.
 	ListUsers(context.Context, *ListUsersRequest) (*ListUsersResponse, error)
+	// Creates a new intermediate session or session and cookies the requester.
+	SignInWithEmail(context.Context, *SignInWithEmailRequest) (*SignInWithEmailResponse, error)
 	// Updates a user.
 	UpdateUser(context.Context, *UpdateUserRequest) (*UpdateUserResponse, error)
 	// Who am I?
@@ -150,6 +165,9 @@ func (UnimplementedFrontendServiceServer) ListOrganizations(context.Context, *Li
 }
 func (UnimplementedFrontendServiceServer) ListUsers(context.Context, *ListUsersRequest) (*ListUsersResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListUsers not implemented")
+}
+func (UnimplementedFrontendServiceServer) SignInWithEmail(context.Context, *SignInWithEmailRequest) (*SignInWithEmailResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SignInWithEmail not implemented")
 }
 func (UnimplementedFrontendServiceServer) UpdateUser(context.Context, *UpdateUserRequest) (*UpdateUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUser not implemented")
@@ -250,6 +268,24 @@ func _FrontendService_ListUsers_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _FrontendService_SignInWithEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SignInWithEmailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).SignInWithEmail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_SignInWithEmail_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).SignInWithEmail(ctx, req.(*SignInWithEmailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _FrontendService_UpdateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UpdateUserRequest)
 	if err := dec(in); err != nil {
@@ -308,6 +344,10 @@ var FrontendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListUsers",
 			Handler:    _FrontendService_ListUsers_Handler,
+		},
+		{
+			MethodName: "SignInWithEmail",
+			Handler:    _FrontendService_SignInWithEmail_Handler,
 		},
 		{
 			MethodName: "UpdateUser",

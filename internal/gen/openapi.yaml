@@ -372,6 +372,31 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /frontend/v1/email-signin:
+        post:
+            tags:
+                - FrontendService
+            description: Creates a new intermediate session or session and cookies the requester.
+            operationId: FrontendService_SignInWithEmail
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/SignInWithEmailRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/SignInWithEmailResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /frontend/v1/organizations:
         get:
             tags:
@@ -658,6 +683,18 @@ components:
                 microsoftOauthClientSecret:
                     type: string
                     description: The oAuth Client secret to be used for Microsoft Auth.
+        SignInWithEmailRequest:
+            type: object
+            properties:
+                email:
+                    type: string
+                    description: The email address to sign in with.
+        SignInWithEmailResponse:
+            type: object
+            properties:
+                SessionToken:
+                    type: string
+                    description: The token for the intermediate session or session created by the SignInWithEmail request.
         Status:
             type: object
             properties:
