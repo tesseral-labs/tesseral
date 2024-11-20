@@ -2,11 +2,12 @@ package store
 
 import (
 	"context"
+	"crypto/ecdsa"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/google/uuid"
-	"github.com/openauth-dev/openauth/internal/rsakeys"
+	openauthecdsa "github.com/openauth-dev/openauth/internal/ecdsa"
 	"github.com/openauth-dev/openauth/internal/store/idformat"
 	"github.com/openauth-dev/openauth/internal/store/queries"
 )
@@ -16,8 +17,8 @@ type SessionSigningKey struct {
 	ProjectID 		uuid.UUID
 	CreateTime 		time.Time
 	ExpireTime 		time.Time
-	PublicKey 		[]byte
-	PrivateKey 		[]byte
+	PrivateKey 		*ecdsa.PrivateKey
+	PublicKey 		*ecdsa.PublicKey
 }
 
 func (s *Store) CreateSessionSigningKey(ctx context.Context, projectID string) (*queries.SessionSigningKey, error) {
@@ -39,7 +40,13 @@ func (s *Store) CreateSessionSigningKey(ctx context.Context, projectID string) (
 	expiresAt := time.Now().Add(time.Hour * 7)
 
 	// Generate a new symmetric key
-	privateKey, publicKey, err := rsakeys.GenerateRSAKeys()
+	ecdsaKeyPair, err := openauthecdsa.New()
+	if err != nil {
+		return nil, err
+	}
+
+	// Extract the private key
+	privateKey, err := ecdsaKeyPair.PrivateKeyPEM()
 	if err != nil {
 		return nil, err
 	}
@@ -49,6 +56,12 @@ func (s *Store) CreateSessionSigningKey(ctx context.Context, projectID string) (
 		KeyId:    	&s.sessionSigningKeyKmsKeyID,
 		Plaintext: 	privateKey,
 	})
+	if err != nil {
+		return nil, err
+	}
+
+	// Extract the public key
+	publicKey, err := ecdsaKeyPair.PublicKeyPEM()
 	if err != nil {
 		return nil, err
 	}
@@ -100,13 +113,19 @@ func (s *Store) GetSessionSigningKeyByID(ctx context.Context, id string) (*Sessi
 		return nil, err
 	}
 
+	// Create an ECDSA key pair from the decrypted private key
+	ecdsaKeyPair, err := openauthecdsa.NewFromBytes(signingKey.Value)
+	if err != nil {
+		return nil, err
+	}
+
 	// Return the intermediate session signing key with the decrypted signing key
 	return &SessionSigningKey{
 		ID: sessionSigningKey.ID,
 		ProjectID: sessionSigningKey.ProjectID,
 		CreateTime: *sessionSigningKey.CreateTime,
 		ExpireTime: *sessionSigningKey.ExpireTime,
-		PublicKey: sessionSigningKey.PublicKey,
-		PrivateKey: signingKey.Value,
+		PrivateKey: ecdsaKeyPair.PrivateKey,
+		PublicKey: ecdsaKeyPair.PublicKey,
 	}, nil
 }

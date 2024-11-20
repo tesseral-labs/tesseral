@@ -2,11 +2,12 @@ package store
 
 import (
 	"context"
+	"crypto/ecdsa"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/google/uuid"
-	"github.com/openauth-dev/openauth/internal/rsakeys"
+	openauthecdsa "github.com/openauth-dev/openauth/internal/ecdsa"
 	"github.com/openauth-dev/openauth/internal/store/idformat"
 	"github.com/openauth-dev/openauth/internal/store/queries"
 )
@@ -16,8 +17,8 @@ type IntermediateSessionSigningKey struct {
 	ProjectID 			uuid.UUID
 	CreateTime 			time.Time
 	ExpireTime 			time.Time
-	PublicKey 			[]byte
-	PrivateKey 			[]byte
+	PublicKey 			*ecdsa.PublicKey
+	PrivateKey 			*ecdsa.PrivateKey
 }
 
 func (s *Store) CreateIntermediateSessionSigningKey(ctx context.Context, projectID string) (*queries.IntermediateSessionSigningKey, error) {
@@ -39,7 +40,13 @@ func (s *Store) CreateIntermediateSessionSigningKey(ctx context.Context, project
 	expiresAt := time.Now().Add(time.Hour * 7)
 
 	// Generate a new symmetric key
-	privateKey, publicKey, err := rsakeys.GenerateRSAKeys()
+	ecdsaKeyPair, err := openauthecdsa.New()
+	if err != nil {
+		return nil, err
+	}
+
+	// Extract the private key
+	privateKeyBytes, err := ecdsaKeyPair.PrivateKeyPEM()
 	if err != nil {
 		return nil, err
 	}
@@ -47,8 +54,13 @@ func (s *Store) CreateIntermediateSessionSigningKey(ctx context.Context, project
 	// Encrypt the symmetric key with the KMS
 	encrytpOutput, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
 		KeyId:    	&s.intermediateSessionSigningKeyKMSKeyID,
-		Plaintext: 	privateKey,
+		Plaintext: 	privateKeyBytes,
 	})
+	if err != nil {
+		return nil, err
+	}
+
+	publicKey, err := ecdsaKeyPair.PublicKeyPEM()
 	if err != nil {
 		return nil, err
 	}
@@ -98,13 +110,19 @@ func (s *Store) GetIntermediateSessionSigningKeyByID(ctx context.Context, id str
 		return nil, err
 	}
 
-	// Return the intermediate session signing key with the decrypted signing key
+	// Create an ECDSA key pair from the decrypted signing key
+	ecdsaKeyPair, err := openauthecdsa.NewFromBytes(signingKey.Value)
+	if err != nil {
+		return nil, err
+	}
+
+	// Return the intermediate session signing key with the decrypted private key
 	return &IntermediateSessionSigningKey{
 		ID: intermediateSessionSigningKey.ID,
 		ProjectID: intermediateSessionSigningKey.ProjectID,
 		CreateTime: *intermediateSessionSigningKey.CreateTime,
 		ExpireTime: *intermediateSessionSigningKey.ExpireTime,
-		PublicKey: intermediateSessionSigningKey.PublicKey,
-		PrivateKey: signingKey.Value,
+		PublicKey: ecdsaKeyPair.PublicKey,
+		PrivateKey: ecdsaKeyPair.PrivateKey,
 	}, nil
 }

@@ -68,7 +68,7 @@ func (j *JWT) ParseIntermediateSessionJWT(ctx context.Context, tokenString strin
 
 	token, err := jwt.ParseWithClaims(tokenString, &IntermediateSessionJWTClaims{}, func(token *jwt.Token) (interface{}, error) {
 		// Validate the signing method
-		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
+		if _, ok := token.Method.(*jwt.SigningMethodECDSA); !ok {
 			return nil, ErrInvalidSigningMethod
 		}
 
@@ -100,7 +100,7 @@ func (j *JWT) ParseSessionJWT(ctx context.Context, tokenString string) (*Session
 
 	token, err := jwt.ParseWithClaims(tokenString, &SessionJWTClaims{}, func(token *jwt.Token) (interface{}, error) {
 		// Validate the signing method
-		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
+		if _, ok := token.Method.(*jwt.SigningMethodECDSA); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
 
@@ -129,7 +129,7 @@ func (j *JWT) SignIntermediateSessionJWT(ctx context.Context, claims *Intermedia
 	claims.IssuedAt = time.Now().Unix()
 	claims.ExpiresAt = time.Now().Add(time.Minute * 15).Unix()
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	token := jwt.NewWithClaims(jwt.SigningMethodES256, claims)
 
 	token.Header["kid"] = signingKey.ID
 
