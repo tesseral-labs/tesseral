@@ -7,7 +7,7 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/google/uuid"
-	openauthecdsa "github.com/openauth-dev/openauth/internal/ecdsa"
+	openauthecdsa "github.com/openauth-dev/openauth/internal/crypto/ecdsa"
 	"github.com/openauth-dev/openauth/internal/store/idformat"
 	"github.com/openauth-dev/openauth/internal/store/queries"
 )
