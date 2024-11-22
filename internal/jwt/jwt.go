@@ -30,23 +30,23 @@ type NewJWTParams struct {
 type IntermediateSessionJWTClaims struct {
 	jwt.Claims
 
-	Email string
+	Email     string
 	ExpiresAt int64
-	IssuedAt int64
+	IssuedAt  int64
 	ProjectID string
-	Subject string
+	Subject   string
 }
 
 type SessionJWTClaims struct {
 	jwt.Claims
 
-	Email string
-	ExpiresAt int64
-	IssuedAt int64
+	Email          string
+	ExpiresAt      int64
+	IssuedAt       int64
 	OrganizationID string
-	ProjectID string
-	Subject string
-	UserID string
+	ProjectID      string
+	Subject        string
+	UserID         string
 }
 
 func New(params NewJWTParams) *JWT {
@@ -83,7 +83,7 @@ func (j *JWT) ParseIntermediateSessionJWT(ctx context.Context, tokenString strin
 	if !ok || !token.Valid {
 		return nil, ErrInvalidJWTToken
 	}
-	
+
 	return claims, nil
 }
 
@@ -156,7 +156,7 @@ func (j *JWT) SignSessionJWT(ctx context.Context, claims *SessionJWTClaims) (str
 
 	token.Header["kid"] = signingKey.ID
 
-	tokenString, err :=  token.SignedString(signingKey.PrivateKey)
+	tokenString, err := token.SignedString(signingKey.PrivateKey)
 	if err != nil {
 		return "", err
 	}
