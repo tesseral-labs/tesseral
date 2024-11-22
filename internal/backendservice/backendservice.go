@@ -9,4 +9,3 @@ type BackendService struct {
 	Store *store.Store
 	backendv1connect.UnimplementedBackendServiceHandler
 }
-

@@ -10,25 +10,25 @@ import (
 )
 
 func (s *BackendService) UpdateUser(
-	ctx context.Context, 
+	ctx context.Context,
 	req *connect.Request[backendv1.UpdateUserRequest],
 ) (*connect.Response[openauthv1.User], error) {
-		res, err := s.Store.UpdateUser(ctx, req.Msg)
-		if err != nil {
-			return nil, fmt.Errorf("store: %w", err)
-		}
+	res, err := s.Store.UpdateUser(ctx, req.Msg)
+	if err != nil {
+		return nil, fmt.Errorf("store: %w", err)
+	}
 
-		return connect.NewResponse(res), nil
+	return connect.NewResponse(res), nil
 }
 
 func (s *BackendService) UpdateUserPassword(
-	ctx context.Context, 
+	ctx context.Context,
 	req *connect.Request[backendv1.UpdateUserPasswordRequest],
 ) (*connect.Response[openauthv1.User], error) {
-		res, err := s.Store.UpdateUserPassword(ctx, req.Msg)
-		if err != nil {
-			return nil, fmt.Errorf("store: %w", err)
-		}
+	res, err := s.Store.UpdateUserPassword(ctx, req.Msg)
+	if err != nil {
+		return nil, fmt.Errorf("store: %w", err)
+	}
 
-		return connect.NewResponse(res), nil
+	return connect.NewResponse(res), nil
 }

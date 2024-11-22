@@ -38,19 +38,19 @@ func New(j *jwt.JWT, s *store.Store) connect.UnaryInterceptorFunc {
 				return nil, connect.NewError(connect.CodeUnauthenticated, nil)
 			}
 
-      // Attempt to parse the intermediate session token
-      intermediateSessionJWT, err := j.ParseIntermediateSessionJWT(ctx, secretValue)
-      if err != nil {
-        return nil, connect.NewError(connect.CodeUnauthenticated, ErrInvalidSessionToken)
-      }
+			// Attempt to parse the intermediate session token
+			intermediateSessionJWT, err := j.ParseIntermediateSessionJWT(ctx, secretValue)
+			if err != nil {
+				return nil, connect.NewError(connect.CodeUnauthenticated, ErrInvalidSessionToken)
+			}
 
-      // TODO: Add checks to ensure the intermediate session token is valid
-      
-      ctx = authn.NewContext(ctx, authn.ContextData{
-        IntermediateSession: intermediateSessionJWT,
-      })
+			// TODO: Add checks to ensure the intermediate session token is valid
 
-      return next(ctx, req)
+			ctx = authn.NewContext(ctx, authn.ContextData{
+				IntermediateSession: intermediateSessionJWT,
+			})
+
+			return next(ctx, req)
 		}
-	}	
+	}
 }

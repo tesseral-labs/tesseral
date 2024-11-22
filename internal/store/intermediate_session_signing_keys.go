@@ -13,12 +13,12 @@ import (
 )
 
 type IntermediateSessionSigningKey struct {
-	ID 							uuid.UUID
-	ProjectID 			uuid.UUID
-	CreateTime 			time.Time
-	ExpireTime 			time.Time
-	PublicKey 			*ecdsa.PublicKey
-	PrivateKey 			*ecdsa.PrivateKey
+	ID         uuid.UUID
+	ProjectID  uuid.UUID
+	CreateTime time.Time
+	ExpireTime time.Time
+	PublicKey  *ecdsa.PublicKey
+	PrivateKey *ecdsa.PrivateKey
 }
 
 func (s *Store) CreateIntermediateSessionSigningKey(ctx context.Context, projectID string) (*IntermediateSessionSigningKey, error) {
@@ -34,8 +34,8 @@ func (s *Store) CreateIntermediateSessionSigningKey(ctx context.Context, project
 	}
 
 	// Allow this key to be used for 7 hours
-	// - this adds a 1 hour buffer to the 6 hour key rotation period, 
-	//   so that the key can be rotated before it expires without 
+	// - this adds a 1 hour buffer to the 6 hour key rotation period,
+	//   so that the key can be rotated before it expires without
 	//   causing existing JWT parsing to fail
 	expiresAt := time.Now().Add(time.Hour * 7)
 
@@ -53,8 +53,8 @@ func (s *Store) CreateIntermediateSessionSigningKey(ctx context.Context, project
 
 	// Encrypt the symmetric key with the KMS
 	encryptOutput, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
-		KeyId:    	&s.intermediateSessionSigningKeyKMSKeyID,
-		Plaintext: 	privateKeyBytes,
+		KeyId:     &s.intermediateSessionSigningKeyKMSKeyID,
+		Plaintext: privateKeyBytes,
 	})
 	if err != nil {
 		return nil, err
@@ -67,10 +67,10 @@ func (s *Store) CreateIntermediateSessionSigningKey(ctx context.Context, project
 
 	// Store the encrypted key in the database
 	createdIntermediateSessionSigningKey, err := q.CreateIntermediateSessionSigningKey(ctx, queries.CreateIntermediateSessionSigningKeyParams{
-		ID: uuid.New(),
-		ProjectID: projectId,
-		ExpireTime: &expiresAt,
-		PublicKey: publicKey,
+		ID:                   uuid.New(),
+		ProjectID:            projectId,
+		ExpireTime:           &expiresAt,
+		PublicKey:            publicKey,
 		PrivateKeyCipherText: encryptOutput.CipherTextBlob,
 	})
 	if err != nil {
@@ -104,7 +104,7 @@ func (s *Store) GetIntermediateSessionSigningKeyByID(ctx context.Context, id str
 	// Decrypt the signing key using KMS
 	signingKey, err := s.kms.Decrypt(ctx, &kms.DecryptInput{
 		CiphertextBlob: intermediateSessionSigningKey.PrivateKeyCipherText,
-		KeyId: &s.intermediateSessionSigningKeyKMSKeyID,
+		KeyId:          &s.intermediateSessionSigningKeyKMSKeyID,
 	})
 	if err != nil {
 		return nil, err
@@ -122,11 +122,11 @@ func (s *Store) GetIntermediateSessionSigningKeyByID(ctx context.Context, id str
 
 func parseIntermediateSessionSigningKey(issk *queries.IntermediateSessionSigningKey, keyPair *openauthecdsa.ECDSAKeyPair) *IntermediateSessionSigningKey {
 	return &IntermediateSessionSigningKey{
-		ID: issk.ID,
-		ProjectID: issk.ProjectID,
+		ID:         issk.ID,
+		ProjectID:  issk.ProjectID,
 		CreateTime: *issk.CreateTime,
 		ExpireTime: *issk.ExpireTime,
-		PublicKey: keyPair.PublicKey,
+		PublicKey:  keyPair.PublicKey,
 		PrivateKey: keyPair.PrivateKey,
 	}
 }

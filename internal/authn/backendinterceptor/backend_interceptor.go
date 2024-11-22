@@ -36,12 +36,12 @@ func New(s *store.Store) connect.UnaryInterceptorFunc {
 				return nil, connect.NewError(connect.CodeUnauthenticated, nil)
 			}
 
-			if strings.HasPrefix(secretValue, "openauth_secret_") {
+			if strings.HasPrefix(secretValue, "openauth_secret_") { // nolint:all
 				// It's an API key
 				// TODO: Implement API key authentication
 			}
 
 			return nil, connect.NewError(connect.CodeUnauthenticated, nil)
 		}
-	}	
+	}
 }

@@ -13,12 +13,12 @@ import (
 )
 
 type SessionSigningKey struct {
-	ID 						uuid.UUID
-	ProjectID 		uuid.UUID
-	CreateTime 		time.Time
-	ExpireTime 		time.Time
-	PrivateKey 		*ecdsa.PrivateKey
-	PublicKey 		*ecdsa.PublicKey
+	ID         uuid.UUID
+	ProjectID  uuid.UUID
+	CreateTime time.Time
+	ExpireTime time.Time
+	PrivateKey *ecdsa.PrivateKey
+	PublicKey  *ecdsa.PublicKey
 }
 
 func (s *Store) CreateSessionSigningKey(ctx context.Context, projectID string) (*SessionSigningKey, error) {
@@ -34,8 +34,8 @@ func (s *Store) CreateSessionSigningKey(ctx context.Context, projectID string) (
 	}
 
 	// Allow this key to be used for 7 hours
-	// - this adds a 1 hour buffer to the 6 hour key rotation period, 
-	//   so that the key can be rotated before it expires without 
+	// - this adds a 1 hour buffer to the 6 hour key rotation period,
+	//   so that the key can be rotated before it expires without
 	//   causing existing JWT parsing to fail
 	expiresAt := time.Now().Add(time.Hour * 7)
 
@@ -53,8 +53,8 @@ func (s *Store) CreateSessionSigningKey(ctx context.Context, projectID string) (
 
 	// Encrypt the symmetric key with the KMS
 	encryptOutput, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
-		KeyId:    	&s.sessionSigningKeyKmsKeyID,
-		Plaintext: 	privateKey,
+		KeyId:     &s.sessionSigningKeyKmsKeyID,
+		Plaintext: privateKey,
 	})
 	if err != nil {
 		return nil, err
@@ -68,10 +68,10 @@ func (s *Store) CreateSessionSigningKey(ctx context.Context, projectID string) (
 
 	// Create the new method verification challenge
 	sessionSigningKey, err := q.CreateSessionSigningKey(ctx, queries.CreateSessionSigningKeyParams{
-		ID: uuid.New(),
-		ProjectID: projectId,
-		ExpireTime: &expiresAt,
-		PublicKey: publicKey,
+		ID:                   uuid.New(),
+		ProjectID:            projectId,
+		ExpireTime:           &expiresAt,
+		PublicKey:            publicKey,
 		PrivateKeyCipherText: encryptOutput.CipherTextBlob,
 	})
 	if err != nil {
@@ -107,7 +107,7 @@ func (s *Store) GetSessionSigningKeyByID(ctx context.Context, id string) (*Sessi
 	// Decrypt the signing key using KMS
 	signingKey, err := s.kms.Decrypt(ctx, &kms.DecryptInput{
 		CiphertextBlob: sessionSigningKey.PrivateKeyCipherText,
-		KeyId: &s.sessionSigningKeyKmsKeyID,
+		KeyId:          &s.sessionSigningKeyKmsKeyID,
 	})
 	if err != nil {
 		return nil, err
@@ -125,11 +125,11 @@ func (s *Store) GetSessionSigningKeyByID(ctx context.Context, id string) (*Sessi
 
 func parseSessionSigningKey(ssk *queries.SessionSigningKey, keyPair *openauthecdsa.ECDSAKeyPair) *SessionSigningKey {
 	return &SessionSigningKey{
-		ID: ssk.ID,
-		ProjectID: ssk.ProjectID,
+		ID:         ssk.ID,
+		ProjectID:  ssk.ProjectID,
 		CreateTime: *ssk.CreateTime,
 		ExpireTime: *ssk.ExpireTime,
-		PublicKey: keyPair.PublicKey,
+		PublicKey:  keyPair.PublicKey,
 		PrivateKey: keyPair.PrivateKey,
 	}
 }

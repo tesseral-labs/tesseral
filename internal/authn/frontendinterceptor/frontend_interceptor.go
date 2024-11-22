@@ -43,7 +43,7 @@ func New(j *jwt.JWT, s *store.Store) connect.UnaryInterceptorFunc {
 			if err != nil {
 				return nil, connect.NewError(connect.CodeUnauthenticated, ErrInvalidSessionToken)
 			}
-			
+
 			// TODO: Add checks to ensure the intermediate session token is valid
 
 			ctx = authn.NewContext(ctx, authn.ContextData{
@@ -52,5 +52,5 @@ func New(j *jwt.JWT, s *store.Store) connect.UnaryInterceptorFunc {
 
 			return next(ctx, req)
 		}
-	}	
+	}
 }

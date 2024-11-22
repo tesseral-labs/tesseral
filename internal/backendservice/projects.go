@@ -10,7 +10,7 @@ import (
 )
 
 func (s *BackendService) CreateProject(
-	ctx context.Context, 
+	ctx context.Context,
 	req *connect.Request[backendv1.CreateProjectRequest],
 ) (*connect.Response[openauthv1.Project], error) {
 	res, err := s.Store.CreateProject(ctx, req.Msg)
@@ -22,7 +22,7 @@ func (s *BackendService) CreateProject(
 }
 
 func (s *BackendService) GetProject(
-	ctx context.Context, 
+	ctx context.Context,
 	req *connect.Request[backendv1.GetProjectRequest],
 ) (*connect.Response[openauthv1.Project], error) {
 	res, err := s.Store.GetProject(ctx, req.Msg)
@@ -34,7 +34,7 @@ func (s *BackendService) GetProject(
 }
 
 func (s *BackendService) ListProjects(
-	ctx context.Context, 
+	ctx context.Context,
 	req *connect.Request[backendv1.ListProjectsRequest],
 ) (*connect.Response[backendv1.ListProjectsResponse], error) {
 	res, err := s.Store.ListProjects(ctx, req.Msg)
@@ -46,7 +46,7 @@ func (s *BackendService) ListProjects(
 }
 
 func (s *BackendService) UpdateProject(
-	ctx context.Context, 
+	ctx context.Context,
 	req *connect.Request[backendv1.UpdateProjectRequest],
 ) (*connect.Response[openauthv1.Project], error) {
 	res, err := s.Store.UpdateProject(ctx, req.Msg)

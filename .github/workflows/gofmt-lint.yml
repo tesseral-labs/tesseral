@@ -1,0 +1,23 @@
+name: golangci-lint
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  gofmt:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+      - name: gofmt check
+        run: |
+          if [[ -n $(gofmt -l -w .) ]]; then
+            exit 1
+          done
