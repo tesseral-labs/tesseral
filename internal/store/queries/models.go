@@ -109,6 +109,12 @@ type Project struct {
 	MicrosoftOauthClientSecret *string
 }
 
+type ProjectApiKey struct {
+	ID                uuid.UUID
+	ProjectID         uuid.UUID
+	SecretTokenSha256 []byte
+}
+
 type SchemaMigration struct {
 	Version int64
 	Dirty   bool
