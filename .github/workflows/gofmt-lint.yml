@@ -19,4 +19,4 @@ jobs:
         run: |
           if [[ -n $(gofmt -l -w .) ]]; then
             exit 1
-          done
+          fi
