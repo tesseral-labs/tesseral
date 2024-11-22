@@ -1,6 +1,6 @@
 package signingkeys
 
-type intermediateSessionSigningKeys struct {}
+type intermediateSessionSigningKeys struct{}
 
 func NewIntermediateSessionSigningKeys() *intermediateSessionSigningKeys {
 	return &intermediateSessionSigningKeys{}

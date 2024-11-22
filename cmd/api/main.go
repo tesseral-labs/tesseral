@@ -10,6 +10,7 @@ import (
 	"connectrpc.com/connect"
 	"connectrpc.com/vanguard"
 	"github.com/cyrusaf/ctxlog"
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/openauth-dev/openauth/internal/authn/backendinterceptor"
 	"github.com/openauth-dev/openauth/internal/authn/frontendinterceptor"
@@ -18,7 +19,7 @@ import (
 	"github.com/openauth-dev/openauth/internal/frontendservice"
 	"github.com/openauth-dev/openauth/internal/gen/backend/v1/backendv1connect"
 	"github.com/openauth-dev/openauth/internal/gen/frontend/v1/frontendv1connect"
-	"github.com/openauth-dev/openauth/internal/gen/intermediate/intermediatev1connect"
+	"github.com/openauth-dev/openauth/internal/gen/intermediate/v1/intermediatev1connect"
 	"github.com/openauth-dev/openauth/internal/hexkey"
 	"github.com/openauth-dev/openauth/internal/intermediateservice"
 	"github.com/openauth-dev/openauth/internal/jwt"
@@ -41,10 +42,10 @@ func main() {
 	loadenv.LoadEnv()
 
 	config := struct {
-		DB 														string `conf:"db"`
-		DogfoodProjectID 							string `conf:"dogfood_project_id"`
-		PageEncodingValue            	string `conf:"page-encoding-value"`
-		ServeAddr 										string `conf:"serve_addr,noredact"`
+		DB                string `conf:"db"`
+		DogfoodProjectID  string `conf:"dogfood_project_id"`
+		PageEncodingValue string `conf:"page-encoding-value"`
+		ServeAddr         string `conf:"serve_addr,noredact"`
 	}{
 		PageEncodingValue: "0000000000000000000000000000000000000000000000000000000000000000",
 	}
@@ -64,10 +65,11 @@ func main() {
 		panic(fmt.Errorf("parse page encoding secret: %w", err))
 	}
 
+	dogfoodProjectID := uuid.MustParse(config.DogfoodProjectID)
 	store_ := store.New(store.NewStoreParams{
-		DB: db,
-		DogfoodProjectID: config.DogfoodProjectID,
-		PageEncoder: pagetoken.Encoder{Secret: pageEncodingValue},
+		DB:               db,
+		DogfoodProjectID: &dogfoodProjectID,
+		PageEncoder:      pagetoken.Encoder{Secret: pageEncodingValue},
 	})
 
 	jwt_ := jwt.New(jwt.NewJWTParams{
@@ -132,7 +134,7 @@ func main() {
 	mux.Handle("/backend/v1/", backendTranscoder)
 	mux.Handle("/frontend/v1/", frontendTranscoder)
 	mux.Handle("/intermediate/v1/", intermediateTranscoder)
-	
+
 	// Serve the services
 	slog.Info("serve")
 	if err := http.ListenAndServe(config.ServeAddr, slogcorrelation.NewHandler(mux)); err != nil {

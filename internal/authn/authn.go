@@ -7,11 +7,11 @@ import (
 )
 
 type ContextData struct {
-	IntermediateSession 		*jwt.IntermediateSessionJWTClaims
-	Session       					*jwt.SessionJWTClaims
+	IntermediateSession *jwt.IntermediateSessionJWTClaims
+	Session             *jwt.SessionJWTClaims
 }
 
-type ctxKey struct {}
+type ctxKey struct{}
 
 func NewContext(ctx context.Context, data ContextData) context.Context {
 	return context.WithValue(ctx, ctxKey{}, data)

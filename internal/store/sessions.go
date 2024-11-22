@@ -11,11 +11,11 @@ import (
 )
 
 type Session struct {
-	ID 					uuid.UUID
-	UserID 			uuid.UUID
-	CreateTime 	time.Time
-	ExpireTime 	time.Time
-	Revoked 		bool
+	ID         uuid.UUID
+	UserID     uuid.UUID
+	CreateTime time.Time
+	ExpireTime time.Time
+	Revoked    bool
 }
 
 var ErrSessionNotFound = errors.New("session not found")
@@ -41,8 +41,8 @@ func (s *Store) CreateSession(ctx context.Context, req *CreateSessionRequest) (*
 	expiresAt := time.Now().Add(time.Hour * 24 * 7)
 
 	session, err := q.CreateSession(ctx, queries.CreateSessionParams{
-		ID: uuid.New(),
-		UserID: userId,
+		ID:         uuid.New(),
+		UserID:     userId,
 		ExpireTime: &expiresAt,
 	})
 	if err != nil {
@@ -62,10 +62,10 @@ func (s *Store) RevokeSession() error {
 
 func parseSession(session queries.Session) *Session {
 	return &Session{
-		ID: session.ID,
-		UserID: session.UserID,
+		ID:         session.ID,
+		UserID:     session.UserID,
 		CreateTime: *session.CreateTime,
 		ExpireTime: *session.ExpireTime,
-		Revoked: session.Revoked,
+		Revoked:    session.Revoked,
 	}
 }

@@ -15,11 +15,11 @@ type IntermediateSession struct {
 	ProjectID       uuid.UUID
 	UnverifiedEmail string
 	VerifiedEmail   string
-	CreateTime     	time.Time
-	ExpireTime			time.Time
-	Token						string
-	TokenSha256			[]byte
-	Revoked 			  bool
+	CreateTime      time.Time
+	ExpireTime      time.Time
+	Token           string
+	TokenSha256     []byte
+	Revoked         bool
 }
 
 var ErrIntermediateSessionRevoked = errors.New("intermediate session has been revoked")
@@ -27,11 +27,11 @@ var ErrIntermediateSessionExpired = errors.New("intermediate session has expired
 var ErrIntermediateSessionEmailMismatch = errors.New("intermediate session email mismatch")
 
 type CreateIntermediateSessionRequest struct {
-	ProjectID 				string
-	Email 						string
+	ProjectID string
+	Email     string
 }
 
-func (s *Store) CreateIntermediateSession(ctx *context.Context, req *CreateIntermediateSessionRequest) (*IntermediateSession, error)  {
+func (s *Store) CreateIntermediateSession(ctx *context.Context, req *CreateIntermediateSessionRequest) (*IntermediateSession, error) {
 	_, q, commit, rollback, err := s.tx(*ctx)
 	if err != nil {
 		return nil, err
@@ -47,10 +47,10 @@ func (s *Store) CreateIntermediateSession(ctx *context.Context, req *CreateInter
 	expiresAt := time.Now().Add(time.Minute * 15)
 
 	createdIntermediateSession, err := q.CreateIntermediateSession(*ctx, queries.CreateIntermediateSessionParams{
-		ID: uuid.New(),
-		ProjectID: projectId,
+		ID:              uuid.New(),
+		ProjectID:       projectId,
 		UnverifiedEmail: &req.Email,
-		ExpireTime: &expiresAt,
+		ExpireTime:      &expiresAt,
 	})
 	if err != nil {
 		return nil, err
@@ -63,7 +63,7 @@ func (s *Store) CreateIntermediateSession(ctx *context.Context, req *CreateInter
 	return parseIntermediateSession(&createdIntermediateSession), nil
 }
 
-func (s *Store) RevokeIntermediateSession(ctx *context.Context, ID string) error  {
+func (s *Store) RevokeIntermediateSession(ctx *context.Context, ID string) error {
 	_, q, commit, rollback, err := s.tx(*ctx)
 	if err != nil {
 		return err
@@ -83,10 +83,10 @@ func (s *Store) RevokeIntermediateSession(ctx *context.Context, ID string) error
 		return err
 	}
 
-	return  nil
+	return nil
 }
 
-func (s *Store) GetIntermediateSession(ctx *context.Context, id string) (*IntermediateSession, error)  {
+func (s *Store) GetIntermediateSession(ctx *context.Context, id string) (*IntermediateSession, error) {
 	_, q, _, rollback, err := s.tx(*ctx)
 	if err != nil {
 		return nil, err
@@ -107,14 +107,14 @@ func (s *Store) GetIntermediateSession(ctx *context.Context, id string) (*Interm
 }
 
 type VerifyIntermediateSessionEmailRequest struct {
-	ID 				string
-	Email 		string
+	ID    string
+	Email string
 }
 
 func (s *Store) VerifyIntermediateSessionEmail(
-	ctx *context.Context, 
+	ctx *context.Context,
 	req *VerifyIntermediateSessionEmailRequest,
-) (*IntermediateSession, error)  {
+) (*IntermediateSession, error) {
 	_, q, _, rollback, err := s.tx(*ctx)
 	if err != nil {
 		return nil, err
@@ -148,7 +148,7 @@ func (s *Store) VerifyIntermediateSessionEmail(
 	}
 
 	session, err := q.VerifyIntermediateSessionEmail(*ctx, queries.VerifyIntermediateSessionEmailParams{
-		ID: sessionId,
+		ID:            sessionId,
 		VerifiedEmail: &req.Email,
 	})
 	if err != nil {
@@ -160,14 +160,14 @@ func (s *Store) VerifyIntermediateSessionEmail(
 
 func parseIntermediateSession(i *queries.IntermediateSession) *IntermediateSession {
 	return &IntermediateSession{
-		ID: i.ID,
-		ProjectID: i.ProjectID,
+		ID:              i.ID,
+		ProjectID:       i.ProjectID,
 		UnverifiedEmail: *i.UnverifiedEmail,
-		VerifiedEmail: *i.VerifiedEmail,
-		CreateTime: *i.CreateTime,
-		ExpireTime: *i.ExpireTime,
-		Token: i.Token,
-		TokenSha256: i.TokenSha256,
-		Revoked: i.Revoked,
+		VerifiedEmail:   *i.VerifiedEmail,
+		CreateTime:      *i.CreateTime,
+		ExpireTime:      *i.ExpireTime,
+		Token:           i.Token,
+		TokenSha256:     i.TokenSha256,
+		Revoked:         i.Revoked,
 	}
 }
