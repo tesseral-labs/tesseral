@@ -254,17 +254,23 @@ select * from users where unverified_email = $1;
 select * from users where verified_email = $1;
 
 -- name: ListOrganizations :many
-select * from organizations;
+select org.* from organizations as org;
 
 -- name: ListOrganizationsByProjectId :many
-select * from organizations where project_id = $1 order by id limit $2;
+select o.*
+from organizations as o 
+join projects as p
+on o.project_id = p.id
+where o.project_id = $1 
+order by o.display_name limit $2;
 
 -- name: ListOrganizationsByProjectIdAndEmail :many
-select o.* from organizations as o
+select o.*
+from organizations as o
 join users as u 
 on o.id = users.organization_id
-where project_id = $1 
-and u.verified_email = $2 or u.unverified_email = $2
+where o.project_id = $1 
+and u.verified_email = $2
 order by o.display_name limit $3;
 
 -- name: ListProjects :many

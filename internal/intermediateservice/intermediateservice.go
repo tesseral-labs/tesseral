@@ -1,7 +1,7 @@
 package intermediateservice
 
 import (
-	"github.com/openauth-dev/openauth/internal/gen/intermediate/intermediatev1connect"
+	"github.com/openauth-dev/openauth/internal/gen/intermediate/v1/intermediatev1connect"
 	"github.com/openauth-dev/openauth/internal/store"
 )
 

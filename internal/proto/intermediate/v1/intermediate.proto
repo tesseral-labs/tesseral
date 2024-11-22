@@ -13,10 +13,38 @@ service IntermediateService {
   // Creates a new intermediate session or session and cookies the requester.
   rpc SignInWithEmail(SignInWithEmailRequest) returns (SignInWithEmailResponse) {
     option (google.api.http) = {
-      post: "/frontend/v1/email-signin",
+      post: "/intermediate/v1/email-signin",
       body: "*"
     };
   }
+
+  // Gets a list of intermediate organizations.
+  rpc ListIntermediateOrganizations(ListIntermediateOrganizationsRequest) returns (ListIntermediateOrganizationsResponse) {
+    option (google.api.http) = {
+      get: "/intermediate/v1/organizations"
+    };
+  }
+}
+
+message IntermediateOrganization {
+  string id = 1;
+  string project_id = 2;
+  string display_name = 3;
+  bool log_in_with_google_enabled = 4;
+  bool log_in_with_microsoft_enabled = 5;
+  bool log_in_with_password_enabled = 6;
+}
+
+message ListIntermediateOrganizationsRequest {
+  // The project ID to list intermediate organizations for.
+  string project_id = 1;
+  // The email associated with the intermediate session.
+  string email = 2;
+}
+
+message ListIntermediateOrganizationsResponse {
+  repeated IntermediateOrganization organizations = 1;
+  string next_page_token = 2;
 }
 
 message SignInWithEmailRequest {

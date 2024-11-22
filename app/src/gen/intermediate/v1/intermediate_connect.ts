@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { SignInWithEmailRequest, SignInWithEmailResponse } from "./intermediate_pb.js";
+import { ListIntermediateOrganizationsRequest, ListIntermediateOrganizationsResponse, SignInWithEmailRequest, SignInWithEmailResponse } from "./intermediate_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -21,6 +21,17 @@ export const IntermediateService = {
       name: "SignInWithEmail",
       I: SignInWithEmailRequest,
       O: SignInWithEmailResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * Gets a list of intermediate organizations.
+     *
+     * @generated from rpc intermediate.v1.IntermediateService.ListIntermediateOrganizations
+     */
+    listIntermediateOrganizations: {
+      name: "ListIntermediateOrganizations",
+      I: ListIntermediateOrganizationsRequest,
+      O: ListIntermediateOrganizationsResponse,
       kind: MethodKind.Unary,
     },
   }

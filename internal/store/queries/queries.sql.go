@@ -916,7 +916,7 @@ func (q *Queries) GetUserByVerifiedEmail(ctx context.Context, verifiedEmail *str
 }
 
 const listOrganizations = `-- name: ListOrganizations :many
-select id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id from organizations
+select org.id, org.project_id, org.display_name, org.override_log_in_with_password_enabled, org.override_log_in_with_google_enabled, org.override_log_in_with_microsoft_enabled, org.google_hosted_domain, org.microsoft_tenant_id from organizations as org
 `
 
 func (q *Queries) ListOrganizations(ctx context.Context) ([]Organization, error) {
@@ -949,7 +949,12 @@ func (q *Queries) ListOrganizations(ctx context.Context) ([]Organization, error)
 }
 
 const listOrganizationsByProjectId = `-- name: ListOrganizationsByProjectId :many
-select id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id from organizations where project_id = $1 order by id limit $2
+select o.id, o.project_id, o.display_name, o.override_log_in_with_password_enabled, o.override_log_in_with_google_enabled, o.override_log_in_with_microsoft_enabled, o.google_hosted_domain, o.microsoft_tenant_id
+from organizations as o 
+join projects as p
+on o.project_id = p.id
+where o.project_id = $1 
+order by o.display_name limit $2
 `
 
 type ListOrganizationsByProjectIdParams struct {
@@ -987,11 +992,12 @@ func (q *Queries) ListOrganizationsByProjectId(ctx context.Context, arg ListOrga
 }
 
 const listOrganizationsByProjectIdAndEmail = `-- name: ListOrganizationsByProjectIdAndEmail :many
-select o.id, o.project_id, o.display_name, o.override_log_in_with_password_enabled, o.override_log_in_with_google_enabled, o.override_log_in_with_microsoft_enabled, o.google_hosted_domain, o.microsoft_tenant_id from organizations as o
+select o.id, o.project_id, o.display_name, o.override_log_in_with_password_enabled, o.override_log_in_with_google_enabled, o.override_log_in_with_microsoft_enabled, o.google_hosted_domain, o.microsoft_tenant_id
+from organizations as o
 join users as u 
 on o.id = users.organization_id
-where project_id = $1 
-and u.verified_email = $2 or u.unverified_email = $2
+where o.project_id = $1 
+and u.verified_email = $2
 order by o.display_name limit $3
 `
 
