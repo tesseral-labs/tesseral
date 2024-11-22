@@ -8,10 +8,9 @@ import (
 	openauthv1 "github.com/openauth-dev/openauth/internal/gen/openauth/v1"
 	"github.com/openauth-dev/openauth/internal/store/idformat"
 	"github.com/openauth-dev/openauth/internal/store/queries"
-	"golang.org/x/crypto/bcrypt"
 )
 
-func (s * Store) CreateUser(ctx context.Context, req *openauthv1.User) (*openauthv1.User, error) {
+func (s *Store) CreateUser(ctx context.Context, req *openauthv1.User) (*openauthv1.User, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -24,13 +23,13 @@ func (s * Store) CreateUser(ctx context.Context, req *openauthv1.User) (*openaut
 	}
 
 	createdUser, err := q.CreateUser(ctx, queries.CreateUserParams{
-		ID: uuid.New(),
-		OrganizationID: organizationId,
+		ID:              uuid.New(),
+		OrganizationID:  organizationId,
 		UnverifiedEmail: &req.UnverifiedEmail,
-		VerifiedEmail: &req.VerifiedEmail,
-		GoogleUserID: &req.GoogleUserId,
+		VerifiedEmail:   &req.VerifiedEmail,
+		GoogleUserID:    &req.GoogleUserId,
 		MicrosoftUserID: &req.MicrosoftUserId,
-		PasswordBcrypt: &req.PasswordBcrypt,
+		PasswordBcrypt:  &req.PasswordBcrypt,
 	})
 	if err != nil {
 		return nil, err
@@ -64,7 +63,7 @@ func (s *Store) GetUser(ctx context.Context, req *backendv1.GetUserRequest) (*op
 }
 
 // TODO: Ensure that this function can only be called via a backend service reuqest
-func (s * Store) ListUsers(ctx context.Context, req *backendv1.ListUsersRequest) (*backendv1.ListUsersResponse, error) {
+func (s *Store) ListUsers(ctx context.Context, req *backendv1.ListUsersRequest) (*backendv1.ListUsersResponse, error) {
 	_, q, _, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -84,7 +83,7 @@ func (s * Store) ListUsers(ctx context.Context, req *backendv1.ListUsersRequest)
 	limit := 10
 	userRecords, err := q.ListUsersByOrganization(ctx, queries.ListUsersByOrganizationParams{
 		OrganizationID: organizationId,
-		Limit: 				int32(limit + 1),
+		Limit:          int32(limit + 1),
 	})
 	if err != nil {
 		return nil, err
@@ -101,9 +100,8 @@ func (s * Store) ListUsers(ctx context.Context, req *backendv1.ListUsersRequest)
 		users = users[:limit]
 	}
 
-
 	return &backendv1.ListUsersResponse{
-		Users: users,
+		Users:         users,
 		NextPageToken: nextPageToken,
 	}, nil
 }
@@ -180,15 +178,13 @@ func (s *Store) UpdateUserPassword(ctx context.Context, req *backendv1.UpdateUse
 	}
 
 	// Bcrypt the password before storing
-	passwordBcryptBytes, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
+	passwordBcrypt, err := generateBcryptHash(req.Password)
 	if err != nil {
 		return nil, err
 	}
 
-	passwordBcrypt := string(passwordBcryptBytes)
-
 	user, err := q.UpdateUserPassword(ctx, queries.UpdateUserPasswordParams{
-		ID: userId,
+		ID:             userId,
 		PasswordBcrypt: &passwordBcrypt,
 	})
 	if err != nil {
@@ -202,15 +198,14 @@ func (s *Store) UpdateUserPassword(ctx context.Context, req *backendv1.UpdateUse
 	return parseUser(&user), nil
 }
 
-
 func parseUser(user *queries.User) *openauthv1.User {
 	return &openauthv1.User{
-		Id: user.ID.String(),
-		OrganizationId: user.OrganizationID.String(),
+		Id:              user.ID.String(),
+		OrganizationId:  user.OrganizationID.String(),
 		UnverifiedEmail: *user.UnverifiedEmail,
-		VerifiedEmail: *user.VerifiedEmail,
-		GoogleUserId: *user.GoogleUserID,
+		VerifiedEmail:   *user.VerifiedEmail,
+		GoogleUserId:    *user.GoogleUserID,
 		MicrosoftUserId: *user.MicrosoftUserID,
-		PasswordBcrypt: *user.PasswordBcrypt,
+		PasswordBcrypt:  *user.PasswordBcrypt,
 	}
 }
