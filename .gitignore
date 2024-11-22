@@ -1,2 +1,8 @@
 .env
 node_modules
+/app/public/index.css
+/app/public/index.js
+/app/public/index.js.map
+/ui/public/index.css
+/ui/public/index.js
+/ui/public/index.js.map

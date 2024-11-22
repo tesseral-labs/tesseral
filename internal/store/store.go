@@ -14,34 +14,32 @@ import (
 )
 
 type Store struct {
-	db																				*pgxpool.Pool
-	dogfoodProjectID													*uuid.UUID
-	intermediateSessionSigningKeyKMSKeyID 		string
-	kms 																			*keyManagementService.KeyManagementService
-	pageEncoder																pagetoken.Encoder
-	q																					*queries.Queries
-	sessionSigningKeyKmsKeyID 								string
+	db                                    *pgxpool.Pool
+	dogfoodProjectID                      *uuid.UUID
+	intermediateSessionSigningKeyKMSKeyID string
+	kms                                   *keyManagementService.KeyManagementService
+	pageEncoder                           pagetoken.Encoder
+	q                                     *queries.Queries
+	sessionSigningKeyKmsKeyID             string
 }
 
 type NewStoreParams struct {
-	AwsConfig 																*aws.Config
-	DB																				*pgxpool.Pool
-	DogfoodProjectID													string
-	IntermediateSessionSigningKeyKMSKeyID 		string
-	PageEncoder																pagetoken.Encoder
-	SessionSigningKeyKmsKeyID 								string
+	AwsConfig                             *aws.Config
+	DB                                    *pgxpool.Pool
+	DogfoodProjectID                      *uuid.UUID
+	IntermediateSessionSigningKeyKMSKeyID string
+	PageEncoder                           pagetoken.Encoder
+	SessionSigningKeyKmsKeyID             string
 }
 
 func New(p NewStoreParams) *Store {
-	dogfoodProjectID := uuid.MustParse(p.DogfoodProjectID)
-
 	store := &Store{
-		db: 																		p.DB,
-		dogfoodProjectID: 											&dogfoodProjectID,
-		intermediateSessionSigningKeyKMSKeyID: 	p.IntermediateSessionSigningKeyKMSKeyID,
-		pageEncoder: 														p.PageEncoder,
-		q:                    									queries.New(p.DB),
-		sessionSigningKeyKmsKeyID: 							p.SessionSigningKeyKmsKeyID,
+		db:                                    p.DB,
+		dogfoodProjectID:                      p.DogfoodProjectID,
+		intermediateSessionSigningKeyKMSKeyID: p.IntermediateSessionSigningKeyKMSKeyID,
+		pageEncoder:                           p.PageEncoder,
+		q:                                     queries.New(p.DB),
+		sessionSigningKeyKmsKeyID:             p.SessionSigningKeyKmsKeyID,
 	}
 
 	if p.AwsConfig != nil {
@@ -60,4 +58,12 @@ func (s *Store) tx(ctx context.Context) (tx pgx.Tx, q *queries.Queries, commit f
 	commit = func() error { return tx.Commit(ctx) }
 	rollback = func() error { return tx.Rollback(ctx) }
 	return tx, queries.New(tx), commit, rollback, nil
+}
+
+func derefOrEmpty[T any](t *T) T {
+	var z T
+	if t == nil {
+		return z
+	}
+	return *t
 }

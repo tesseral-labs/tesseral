@@ -25,14 +25,14 @@ func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrg
 	}
 
 	createdOrganization, err := q.CreateOrganization(ctx, queries.CreateOrganizationParams{
-		ID: uuid.New(),
-		ProjectID: projectId,
-		DisplayName: req.Organization.DisplayName,
-		GoogleHostedDomain: &req.Organization.GoogleHostedDomain,
-		MicrosoftTenantID: &req.Organization.MicrosoftTenantId,
-		OverrideLogInWithGoogleEnabled: &req.Organization.OverrideLogInWithGoogleEnabled,
+		ID:                                uuid.New(),
+		ProjectID:                         projectId,
+		DisplayName:                       req.Organization.DisplayName,
+		GoogleHostedDomain:                &req.Organization.GoogleHostedDomain,
+		MicrosoftTenantID:                 &req.Organization.MicrosoftTenantId,
+		OverrideLogInWithGoogleEnabled:    &req.Organization.OverrideLogInWithGoogleEnabled,
 		OverrideLogInWithMicrosoftEnabled: &req.Organization.OverrideLogInWithMicrosoftEnabled,
-		OverrideLogInWithPasswordEnabled: &req.Organization.OverrideLogInWithPasswordEnabled,
+		OverrideLogInWithPasswordEnabled:  &req.Organization.OverrideLogInWithPasswordEnabled,
 	})
 	if err != nil {
 		return nil, err
@@ -46,7 +46,7 @@ func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrg
 }
 
 func (s *Store) GetOrganization(
-	ctx context.Context, 
+	ctx context.Context,
 	req *backendv1.GetOrganizationRequest,
 ) (*openauthv1.Organization, error) {
 	_, q, _, rollback, err := s.tx(ctx)
@@ -69,7 +69,7 @@ func (s *Store) GetOrganization(
 }
 
 func (s *Store) ListFrontendOrganizations(
-	ctx context.Context, 
+	ctx context.Context,
 	req *frontendv1.ListOrganizationsRequest,
 ) (*frontendv1.ListOrganizationsResponse, error) {
 	_, q, _, rollback, err := s.tx(ctx)
@@ -85,9 +85,9 @@ func (s *Store) ListFrontendOrganizations(
 
 	limit := 10
 	organizationRecords, err := q.ListOrganizationsByProjectIdAndEmail(ctx, queries.ListOrganizationsByProjectIdAndEmailParams{
-		ProjectID: projectId,
+		ProjectID:     projectId,
 		VerifiedEmail: &req.Email,
-		Limit: int32(limit + 1),
+		Limit:         int32(limit + 1),
 	})
 	if err != nil {
 		return nil, err
@@ -96,8 +96,7 @@ func (s *Store) ListFrontendOrganizations(
 	organizations := []*openauthv1.Organization{}
 	for _, organization := range organizationRecords {
 		organizations = append(organizations, &openauthv1.Organization{
-			Id: organization.ID.String(),
-			ProjectId: organization.ProjectID.String(),
+			Id:          organization.ID.String(),
 			DisplayName: organization.DisplayName,
 			OverrideLogInWithGoogleEnabled: *organization.OverrideLogInWithGoogleEnabled,
 			OverrideLogInWithMicrosoftEnabled: *organization.OverrideLogInWithMicrosoftEnabled,
@@ -106,7 +105,7 @@ func (s *Store) ListFrontendOrganizations(
 	}
 
 	var nextPageToken string
-	if len(organizations) == limit + 1 {
+	if len(organizations) == limit+1 {
 		nextPageToken = s.pageEncoder.Marshal(organizations[limit].Id)
 		organizations = organizations[:limit]
 	}
@@ -161,7 +160,7 @@ func (s *Store) ListIntermediateOrganizations(
 
 // TODO: Ensure that this function can only be called via a backend service reuqest
 func (s *Store) ListOrganizations(
-	ctx context.Context, 
+	ctx context.Context,
 	req *backendv1.ListOrganizationsRequest,
 ) (*backendv1.ListOrganizationsResponse, error) {
 	_, q, _, rollback, err := s.tx(ctx)
@@ -183,7 +182,7 @@ func (s *Store) ListOrganizations(
 	limit := 10
 	organizationRecords, err := q.ListOrganizationsByProjectId(ctx, queries.ListOrganizationsByProjectIdParams{
 		ProjectID: projectId,
-		Limit: int32(limit + 1),
+		Limit:     int32(limit + 1),
 	})
 	if err != nil {
 		return nil, err
@@ -195,7 +194,7 @@ func (s *Store) ListOrganizations(
 	}
 
 	var nextPageToken string
-	if len(organizations) == limit + 1 {
+	if len(organizations) == limit+1 {
 		nextPageToken = s.pageEncoder.Marshal(organizations[limit].Id)
 		organizations = organizations[:limit]
 	}
@@ -275,13 +274,13 @@ func parseIntermediateOrganization(organization queries.Organization) *intermedi
 
 func parseOrganization(organization queries.Organization) *openauthv1.Organization {
 	return &openauthv1.Organization{
-		Id: organization.ID.String(),
-		ProjectId: organization.ProjectID.String(),
-		DisplayName: organization.DisplayName,
-		GoogleHostedDomain: *organization.GoogleHostedDomain,
-		MicrosoftTenantId: *organization.MicrosoftTenantID,
-		OverrideLogInWithGoogleEnabled: *organization.OverrideLogInWithGoogleEnabled,
+		Id:                                organization.ID.String(),
+		ProjectId:                         organization.ProjectID.String(),
+		DisplayName:                       organization.DisplayName,
+		GoogleHostedDomain:                *organization.GoogleHostedDomain,
+		MicrosoftTenantId:                 *organization.MicrosoftTenantID,
+		OverrideLogInWithGoogleEnabled:    *organization.OverrideLogInWithGoogleEnabled,
 		OverrideLogInWithMicrosoftEnabled: *organization.OverrideLogInWithMicrosoftEnabled,
-		OverrideLogInWithPasswordEnabled: *organization.OverrideLogInWithPasswordEnabled,
+		OverrideLogInWithPasswordEnabled:  *organization.OverrideLogInWithPasswordEnabled,
 	}
 }

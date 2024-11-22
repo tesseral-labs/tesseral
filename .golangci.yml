@@ -1,0 +1,5 @@
+issues:
+  exclude-rules:
+    - linters:
+        - errcheck
+      source: "defer rollback()"

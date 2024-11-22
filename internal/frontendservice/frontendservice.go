@@ -6,6 +6,6 @@ import (
 )
 
 type FrontendService struct {
-  Store *store.Store
+	Store *store.Store
 	frontendv1connect.UnimplementedFrontendServiceHandler
 }

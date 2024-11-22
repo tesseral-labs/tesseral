@@ -8,14 +8,14 @@ import (
 )
 
 func (s *FrontendService) WhoAmI(
-	ctx context.Context, 
+	ctx context.Context,
 	req *connect.Request[frontendv1.WhoAmIRequest],
 ) (*connect.Response[frontendv1.WhoAmIResponse], error) {
 	res := connect.Response[frontendv1.WhoAmIResponse]{
 		Msg: &frontendv1.WhoAmIResponse{
-			Id: "123",
+			Id:          "123",
 			DisplayName: "John Doe",
-			Email: "john.doe@example.com",
+			Email:       "john.doe@example.com",
 		},
 	}
 

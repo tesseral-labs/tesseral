@@ -6,6 +6,6 @@ import (
 )
 
 type IntermediateService struct {
-  Store *store.Store
+	Store *store.Store
 	intermediatev1connect.UnimplementedIntermediateServiceHandler
 }
