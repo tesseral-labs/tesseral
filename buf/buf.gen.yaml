@@ -20,9 +20,6 @@ plugins:
   - remote: buf.build/connectrpc/go
     out: internal/gen
     opt: paths=source_relative
-  - remote: buf.build/community/google-gnostic-openapi
-    out: internal/gen
-    opt: paths=source_relative
   - local: protoc-gen-es
     out: app/src/gen
     opt: target=ts
@@ -32,3 +29,5 @@ plugins:
   - local: protoc-gen-connect-query
     out: app/src/gen
     opt: target=ts
+inputs:
+  - directory: internal/proto
