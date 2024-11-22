@@ -17,6 +17,8 @@ jobs:
           go-version: stable
       - name: gofmt check
         run: |
-          if [[ -n $(gofmt -l -w .) ]]; then
+          files=$(gofmt -l -w .)
+          if [[ -n "$files" ]]; then
+            echo $files
             exit 1
           fi
