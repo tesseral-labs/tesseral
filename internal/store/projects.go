@@ -26,11 +26,11 @@ func (s *Store) CreateProject(ctx context.Context, req *backendv1.CreateProjectR
 	}
 
 	// Create the managing organization for the project
-	// - this is required to create a relationship between the project 
+	// - this is required to create a relationship between the project
 	//   and the dogfooding project
 	_, err = q.CreateOrganization(ctx, queries.CreateOrganizationParams{
-		ID: uuid.New(),
-		ProjectID: createdProject.ID,
+		ID:          uuid.New(),
+		ProjectID:   createdProject.ID,
 		DisplayName: req.DisplayName,
 	})
 	if err != nil {
@@ -39,7 +39,7 @@ func (s *Store) CreateProject(ctx context.Context, req *backendv1.CreateProjectR
 
 	// Update the project with the dogfooding project ID
 	updatedProject, err := q.UpdateProjectOrganizationID(ctx, queries.UpdateProjectOrganizationIDParams{
-		ID: createdProject.ID,
+		ID:             createdProject.ID,
 		OrganizationID: s.dogfoodProjectID,
 	})
 	if err != nil {
@@ -89,7 +89,7 @@ func (s *Store) ListProjects(ctx context.Context, req *backendv1.ListProjectsReq
 	}
 
 	limit := 10
-	projectRecords, err := q.ListProjects(ctx, int32(limit + 1))
+	projectRecords, err := q.ListProjects(ctx, int32(limit+1))
 	if err != nil {
 		return nil, err
 	}
@@ -106,7 +106,7 @@ func (s *Store) ListProjects(ctx context.Context, req *backendv1.ListProjectsReq
 	}
 
 	return &backendv1.ListProjectsResponse{
-		Projects: projects,
+		Projects:      projects,
 		NextPageToken: nextPageToken,
 	}, nil
 }
@@ -173,14 +173,14 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 
 func parseProject(project *queries.Project) *openauthv1.Project {
 	return &openauthv1.Project{
-		Id: project.ID.String(),
-		OrganizationId: project.OrganizationID.String(),
-		LogInWithPasswordEnabled: project.LogInWithPasswordEnabled,
-		LogInWithGoogleEnabled: project.LogInWithGoogleEnabled,
-		LogInWithMicrosoftEnabled: project.LogInWithMicrosoftEnabled,
-		GoogleOauthClientId: *project.GoogleOauthClientID,
-		GoogleOauthClientSecret: *project.GoogleOauthClientSecret,
-		MicrosoftOauthClientId: *project.MicrosoftOauthClientID,
-		MicrosoftOauthClientSecret: *project.MicrosoftOauthClientSecret,
+		Id:                         idformat.Project.Format(project.ID),
+		OrganizationId:             idformat.Organization.Format(*project.OrganizationID),
+		LogInWithPasswordEnabled:   project.LogInWithPasswordEnabled,
+		LogInWithGoogleEnabled:     project.LogInWithGoogleEnabled,
+		LogInWithMicrosoftEnabled:  project.LogInWithMicrosoftEnabled,
+		GoogleOauthClientId:        derefOrEmpty(project.GoogleOauthClientID),
+		GoogleOauthClientSecret:    derefOrEmpty(project.GoogleOauthClientSecret),
+		MicrosoftOauthClientId:     derefOrEmpty(project.MicrosoftOauthClientID),
+		MicrosoftOauthClientSecret: derefOrEmpty(project.MicrosoftOauthClientSecret),
 	}
 }

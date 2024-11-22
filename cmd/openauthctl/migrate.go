@@ -7,24 +7,23 @@ import (
 	"log"
 
 	"github.com/golang-migrate/migrate/v4"
-	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	"github.com/golang-migrate/migrate/v4/source/iofs"
-	"github.com/ucarion/cli"
 )
 
 //go:embed migrations
 var migrateFS embed.FS
 
-func main() {
-	cli.Run(context.Background(), version, force, up)
-}
-
-type args struct {
+type migrateArgs struct {
+	Args     args   `cli:"migrate,subcmd"`
 	Database string `cli:"-d,--database"`
 	Verbose  bool   `cli:"-v,--verbose"`
 }
 
-func (a args) migrate() (*migrate.Migrate, error) {
+func (_ migrateArgs) ExtendedDescription() string {
+	return "Run openauth database migrations"
+}
+
+func (a migrateArgs) migrate() (*migrate.Migrate, error) {
 	src, err := iofs.New(migrateFS, "migrations")
 	if err != nil {
 		return nil, fmt.Errorf("create migrate source: %w", err)
@@ -52,11 +51,11 @@ func (l logger) Verbose() bool {
 }
 
 type versionArgs struct {
-	Args args `cli:"version,subcmd"`
+	MigrateArgs migrateArgs `cli:"version,subcmd"`
 }
 
 func version(_ context.Context, args versionArgs) error {
-	m, err := args.Args.migrate()
+	m, err := args.MigrateArgs.migrate()
 	if err != nil {
 		return err
 	}
@@ -75,12 +74,12 @@ func version(_ context.Context, args versionArgs) error {
 }
 
 type forceArgs struct {
-	Args    args `cli:"force,subcmd"`
-	Version int  `cli:"version"`
+	MigrateArgs migrateArgs `cli:"force,subcmd"`
+	Version     int         `cli:"version"`
 }
 
 func force(_ context.Context, args forceArgs) error {
-	m, err := args.Args.migrate()
+	m, err := args.MigrateArgs.migrate()
 	if err != nil {
 		return err
 	}
@@ -92,11 +91,11 @@ func force(_ context.Context, args forceArgs) error {
 }
 
 type upArgs struct {
-	Args args `cli:"up,subcmd"`
+	MigrateArgs migrateArgs `cli:"up,subcmd"`
 }
 
 func up(_ context.Context, args upArgs) error {
-	m, err := args.Args.migrate()
+	m, err := args.MigrateArgs.migrate()
 	if err != nil {
 		return err
 	}

@@ -21,4 +21,4 @@ case $1 in
 esac
 
 # shellcheck disable=SC2068
-go run ./cmd/migrate --database "$dsn" ${@:2}
+go run ./cmd/openauthctl migrate --database "$dsn" ${@:2}
