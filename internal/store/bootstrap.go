@@ -9,7 +9,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/openauth-dev/openauth/internal/store/idformat"
 	"github.com/openauth-dev/openauth/internal/store/queries"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type CreateDogfoodProjectResponse struct {
@@ -72,11 +71,10 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 	}
 
 	bootstrapUserPassword := fmt.Sprintf("this_is_a_very_sensitive_password_%s", hex.EncodeToString(randomBytes[:]))
-	bootstrapUserPasswordBcryptBytes, err := bcrypt.GenerateFromPassword([]byte(bootstrapUserPassword), bcrypt.DefaultCost)
+	bootstrapUserPasswordBcrypt, err := generateBcryptHash(bootstrapUserPassword)
 	if err != nil {
 		panic(fmt.Errorf("bcrypt bootstrap user password: %w", err))
 	}
-	bootstrapUserPasswordBcrypt := string(bootstrapUserPasswordBcryptBytes)
 
 	// create the bootstrap user inside the dogfood organization
 	bootstrapUserEmail := "root@openauth.example.com"
