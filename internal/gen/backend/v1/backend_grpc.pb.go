@@ -20,19 +20,20 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	BackendService_CreateOrganization_FullMethodName = "/backend.v1.BackendService/CreateOrganization"
-	BackendService_GetOrganization_FullMethodName    = "/backend.v1.BackendService/GetOrganization"
-	BackendService_ListOrganizations_FullMethodName  = "/backend.v1.BackendService/ListOrganizations"
-	BackendService_UpdateOrganization_FullMethodName = "/backend.v1.BackendService/UpdateOrganization"
-	BackendService_CreateProject_FullMethodName      = "/backend.v1.BackendService/CreateProject"
-	BackendService_GetProject_FullMethodName         = "/backend.v1.BackendService/GetProject"
-	BackendService_ListProjects_FullMethodName       = "/backend.v1.BackendService/ListProjects"
-	BackendService_UpdateProject_FullMethodName      = "/backend.v1.BackendService/UpdateProject"
-	BackendService_CreateUser_FullMethodName         = "/backend.v1.BackendService/CreateUser"
-	BackendService_GetUser_FullMethodName            = "/backend.v1.BackendService/GetUser"
-	BackendService_ListUsers_FullMethodName          = "/backend.v1.BackendService/ListUsers"
-	BackendService_UpdateUser_FullMethodName         = "/backend.v1.BackendService/UpdateUser"
-	BackendService_UpdateUserPassword_FullMethodName = "/backend.v1.BackendService/UpdateUserPassword"
+	BackendService_CreateOrganization_FullMethodName  = "/backend.v1.BackendService/CreateOrganization"
+	BackendService_GetOrganization_FullMethodName     = "/backend.v1.BackendService/GetOrganization"
+	BackendService_ListOrganizations_FullMethodName   = "/backend.v1.BackendService/ListOrganizations"
+	BackendService_UpdateOrganization_FullMethodName  = "/backend.v1.BackendService/UpdateOrganization"
+	BackendService_CreateProject_FullMethodName       = "/backend.v1.BackendService/CreateProject"
+	BackendService_GetProject_FullMethodName          = "/backend.v1.BackendService/GetProject"
+	BackendService_ListProjects_FullMethodName        = "/backend.v1.BackendService/ListProjects"
+	BackendService_UpdateProject_FullMethodName       = "/backend.v1.BackendService/UpdateProject"
+	BackendService_CreateUser_FullMethodName          = "/backend.v1.BackendService/CreateUser"
+	BackendService_GetUser_FullMethodName             = "/backend.v1.BackendService/GetUser"
+	BackendService_ListUsers_FullMethodName           = "/backend.v1.BackendService/ListUsers"
+	BackendService_UpdateUser_FullMethodName          = "/backend.v1.BackendService/UpdateUser"
+	BackendService_UpdateUserPassword_FullMethodName  = "/backend.v1.BackendService/UpdateUserPassword"
+	BackendService_CreateProjectAPIKey_FullMethodName = "/backend.v1.BackendService/CreateProjectAPIKey"
 )
 
 // BackendServiceClient is the client API for BackendService service.
@@ -65,6 +66,7 @@ type BackendServiceClient interface {
 	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*v1.User, error)
 	// Updates a user's password.
 	UpdateUserPassword(ctx context.Context, in *UpdateUserPasswordRequest, opts ...grpc.CallOption) (*v1.User, error)
+	CreateProjectAPIKey(ctx context.Context, in *CreateProjectAPIKeyRequest, opts ...grpc.CallOption) (*CreateProjectAPIKeyResponse, error)
 }
 
 type backendServiceClient struct {
@@ -205,6 +207,16 @@ func (c *backendServiceClient) UpdateUserPassword(ctx context.Context, in *Updat
 	return out, nil
 }
 
+func (c *backendServiceClient) CreateProjectAPIKey(ctx context.Context, in *CreateProjectAPIKeyRequest, opts ...grpc.CallOption) (*CreateProjectAPIKeyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateProjectAPIKeyResponse)
+	err := c.cc.Invoke(ctx, BackendService_CreateProjectAPIKey_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // BackendServiceServer is the server API for BackendService service.
 // All implementations must embed UnimplementedBackendServiceServer
 // for forward compatibility.
@@ -235,6 +247,7 @@ type BackendServiceServer interface {
 	UpdateUser(context.Context, *UpdateUserRequest) (*v1.User, error)
 	// Updates a user's password.
 	UpdateUserPassword(context.Context, *UpdateUserPasswordRequest) (*v1.User, error)
+	CreateProjectAPIKey(context.Context, *CreateProjectAPIKeyRequest) (*CreateProjectAPIKeyResponse, error)
 	mustEmbedUnimplementedBackendServiceServer()
 }
 
@@ -283,6 +296,9 @@ func (UnimplementedBackendServiceServer) UpdateUser(context.Context, *UpdateUser
 }
 func (UnimplementedBackendServiceServer) UpdateUserPassword(context.Context, *UpdateUserPasswordRequest) (*v1.User, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUserPassword not implemented")
+}
+func (UnimplementedBackendServiceServer) CreateProjectAPIKey(context.Context, *CreateProjectAPIKeyRequest) (*CreateProjectAPIKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateProjectAPIKey not implemented")
 }
 func (UnimplementedBackendServiceServer) mustEmbedUnimplementedBackendServiceServer() {}
 func (UnimplementedBackendServiceServer) testEmbeddedByValue()                        {}
@@ -539,6 +555,24 @@ func _BackendService_UpdateUserPassword_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BackendService_CreateProjectAPIKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateProjectAPIKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).CreateProjectAPIKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_CreateProjectAPIKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).CreateProjectAPIKey(ctx, req.(*CreateProjectAPIKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // BackendService_ServiceDesc is the grpc.ServiceDesc for BackendService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -597,6 +631,10 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateUserPassword",
 			Handler:    _BackendService_UpdateUserPassword_Handler,
+		},
+		{
+			MethodName: "CreateProjectAPIKey",
+			Handler:    _BackendService_CreateProjectAPIKey_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

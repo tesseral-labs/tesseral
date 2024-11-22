@@ -750,3 +750,126 @@ export class UpdateUserResponse extends Message<UpdateUserResponse> {
   }
 }
 
+/**
+ * @generated from message backend.v1.ProjectAPIKey
+ */
+export class ProjectAPIKey extends Message<ProjectAPIKey> {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id = "";
+
+  /**
+   * @generated from field: string project_id = 2;
+   */
+  projectId = "";
+
+  /**
+   * @generated from field: string secret_token = 3;
+   */
+  secretToken = "";
+
+  constructor(data?: PartialMessage<ProjectAPIKey>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "backend.v1.ProjectAPIKey";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "project_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "secret_token", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ProjectAPIKey {
+    return new ProjectAPIKey().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ProjectAPIKey {
+    return new ProjectAPIKey().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ProjectAPIKey {
+    return new ProjectAPIKey().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: ProjectAPIKey | PlainMessage<ProjectAPIKey> | undefined, b: ProjectAPIKey | PlainMessage<ProjectAPIKey> | undefined): boolean {
+    return proto3.util.equals(ProjectAPIKey, a, b);
+  }
+}
+
+/**
+ * @generated from message backend.v1.CreateProjectAPIKeyRequest
+ */
+export class CreateProjectAPIKeyRequest extends Message<CreateProjectAPIKeyRequest> {
+  /**
+   * @generated from field: backend.v1.ProjectAPIKey project_api_key = 1;
+   */
+  projectApiKey?: ProjectAPIKey;
+
+  constructor(data?: PartialMessage<CreateProjectAPIKeyRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "backend.v1.CreateProjectAPIKeyRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "project_api_key", kind: "message", T: ProjectAPIKey },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateProjectAPIKeyRequest {
+    return new CreateProjectAPIKeyRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): CreateProjectAPIKeyRequest {
+    return new CreateProjectAPIKeyRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): CreateProjectAPIKeyRequest {
+    return new CreateProjectAPIKeyRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: CreateProjectAPIKeyRequest | PlainMessage<CreateProjectAPIKeyRequest> | undefined, b: CreateProjectAPIKeyRequest | PlainMessage<CreateProjectAPIKeyRequest> | undefined): boolean {
+    return proto3.util.equals(CreateProjectAPIKeyRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message backend.v1.CreateProjectAPIKeyResponse
+ */
+export class CreateProjectAPIKeyResponse extends Message<CreateProjectAPIKeyResponse> {
+  /**
+   * @generated from field: backend.v1.ProjectAPIKey project_api_key = 1;
+   */
+  projectApiKey?: ProjectAPIKey;
+
+  constructor(data?: PartialMessage<CreateProjectAPIKeyResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "backend.v1.CreateProjectAPIKeyResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "project_api_key", kind: "message", T: ProjectAPIKey },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateProjectAPIKeyResponse {
+    return new CreateProjectAPIKeyResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): CreateProjectAPIKeyResponse {
+    return new CreateProjectAPIKeyResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): CreateProjectAPIKeyResponse {
+    return new CreateProjectAPIKeyResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: CreateProjectAPIKeyResponse | PlainMessage<CreateProjectAPIKeyResponse> | undefined, b: CreateProjectAPIKeyResponse | PlainMessage<CreateProjectAPIKeyResponse> | undefined): boolean {
+    return proto3.util.equals(CreateProjectAPIKeyResponse, a, b);
+  }
+}
+

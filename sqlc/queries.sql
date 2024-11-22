@@ -486,8 +486,15 @@ RETURNING
     *;
 
 -- name: CountAllProjects :one
+<<<<<<< HEAD
 SELECT
     count(*)
 FROM
     projects;
 
+=======
+select count(*) from projects;
+
+-- name: CreateProjectAPIKey :one
+insert into project_api_keys (id, project_id, secret_token_sha256) values ($1, $2, $3) returning *;
+>>>>>>> bb17966 (add CreateProjectAPIKey store layer prototype)

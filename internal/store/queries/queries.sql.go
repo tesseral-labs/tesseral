@@ -327,6 +327,23 @@ func (q *Queries) CreateProject(ctx context.Context, arg CreateProjectParams) (P
 	return i, err
 }
 
+const createProjectAPIKey = `-- name: CreateProjectAPIKey :one
+insert into project_api_keys (id, project_id, secret_token_sha256) values ($1, $2, $3) returning id, project_id, secret_token_sha256
+`
+
+type CreateProjectAPIKeyParams struct {
+	ID                uuid.UUID
+	ProjectID         uuid.UUID
+	SecretTokenSha256 []byte
+}
+
+func (q *Queries) CreateProjectAPIKey(ctx context.Context, arg CreateProjectAPIKeyParams) (ProjectApiKey, error) {
+	row := q.db.QueryRow(ctx, createProjectAPIKey, arg.ID, arg.ProjectID, arg.SecretTokenSha256)
+	var i ProjectApiKey
+	err := row.Scan(&i.ID, &i.ProjectID, &i.SecretTokenSha256)
+	return i, err
+}
+
 const createSession = `-- name: CreateSession :one
 INSERT INTO sessions (id, user_id, create_time, expire_time, revoked)
     VALUES ($1, $2, $3, $4, $5)

@@ -4,7 +4,7 @@
 // @ts-nocheck
 
 import { MethodKind } from "@bufbuild/protobuf";
-import { CreateOrganizationRequest, CreateProjectRequest, CreateUserRequest, GetOrganizationRequest, GetProjectRequest, GetUserRequest, ListOrganizationsRequest, ListOrganizationsResponse, ListProjectsRequest, ListProjectsResponse, ListUsersRequest, ListUsersResponse, UpdateOrganizationRequest, UpdateProjectRequest, UpdateUserPasswordRequest, UpdateUserRequest } from "./backend_pb.js";
+import { CreateOrganizationRequest, CreateProjectAPIKeyRequest, CreateProjectAPIKeyResponse, CreateProjectRequest, CreateUserRequest, GetOrganizationRequest, GetProjectRequest, GetUserRequest, ListOrganizationsRequest, ListOrganizationsResponse, ListProjectsRequest, ListProjectsResponse, ListUsersRequest, ListUsersResponse, UpdateOrganizationRequest, UpdateProjectRequest, UpdateUserPasswordRequest, UpdateUserRequest } from "./backend_pb.js";
 import { Organization, Project, User } from "../../openauth/v1/openauth_pb.js";
 
 /**
@@ -210,6 +210,20 @@ export const updateUserPassword = {
   kind: MethodKind.Unary,
   I: UpdateUserPasswordRequest,
   O: User,
+  service: {
+    typeName: "backend.v1.BackendService"
+  }
+} as const;
+
+/**
+ * @generated from rpc backend.v1.BackendService.CreateProjectAPIKey
+ */
+export const createProjectAPIKey = {
+  localName: "createProjectAPIKey",
+  name: "CreateProjectAPIKey",
+  kind: MethodKind.Unary,
+  I: CreateProjectAPIKeyRequest,
+  O: CreateProjectAPIKeyResponse,
   service: {
     typeName: "backend.v1.BackendService"
   }
