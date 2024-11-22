@@ -3,7 +3,7 @@
 
 openapi: 3.0.3
 info:
-    title: ""
+    title: BackendService API
     version: 0.0.1
 paths:
     /backend/v1/organizations:
@@ -372,196 +372,6 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /frontend/v1/email-signin:
-        post:
-            tags:
-                - IntermediateService
-            description: Creates a new intermediate session or session and cookies the requester.
-            operationId: IntermediateService_SignInWithEmail
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/SignInWithEmailRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/SignInWithEmailResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-    /frontend/v1/organizations:
-        get:
-            tags:
-                - FrontendService
-            description: Gets a list of organizations.
-            operationId: FrontendService_ListOrganizations
-            parameters:
-                - name: projectId
-                  in: query
-                  description: The ID of the project to use for filtering.
-                  schema:
-                    type: string
-                - name: email
-                  in: query
-                  description: The email address to use for filtering.
-                  schema:
-                    type: string
-                - name: pageToken
-                  in: query
-                  description: The page token to use for pagination.
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ListOrganizationsResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-    /frontend/v1/users:
-        get:
-            tags:
-                - FrontendService
-            description: Gets a list of users.
-            operationId: FrontendService_ListUsers
-            parameters:
-                - name: organizationId
-                  in: query
-                  description: The ID of the organization to use for filtering.
-                  schema:
-                    type: string
-                - name: pageToken
-                  in: query
-                  description: The page token to use for pagination.
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ListUsersResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-        post:
-            tags:
-                - FrontendService
-            description: Creates a user.
-            operationId: FrontendService_CreateUser
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/User'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/CreateUserResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-    /frontend/v1/users/{id}:
-        get:
-            tags:
-                - FrontendService
-            description: Gets a user.
-            operationId: FrontendService_GetUser
-            parameters:
-                - name: id
-                  in: path
-                  description: The ID of the user to get.
-                  required: true
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/GetUserResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-        patch:
-            tags:
-                - FrontendService
-            description: Updates a user.
-            operationId: FrontendService_UpdateUser
-            parameters:
-                - name: id
-                  in: path
-                  description: The ID of the user to update.
-                  required: true
-                  schema:
-                    type: string
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/User'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/UpdateUserResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-    /frontend/v1/whoami:
-        get:
-            tags:
-                - FrontendService
-            description: Who am I?
-            operationId: FrontendService_WhoAmI
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/WhoAmIResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
 components:
     schemas:
         CreateOrganizationRequest:
@@ -571,20 +381,6 @@ components:
                     allOf:
                         - $ref: '#/components/schemas/Organization'
                     description: The organization to create.
-        CreateUserResponse:
-            type: object
-            properties:
-                user:
-                    allOf:
-                        - $ref: '#/components/schemas/User'
-                    description: The user created by the CreateUser request.
-        GetUserResponse:
-            type: object
-            properties:
-                user:
-                    allOf:
-                        - $ref: '#/components/schemas/User'
-                    description: The user returned by the GetUser request.
         GoogleProtobufAny:
             type: object
             properties:
@@ -683,18 +479,6 @@ components:
                 microsoftOauthClientSecret:
                     type: string
                     description: The oAuth Client secret to be used for Microsoft Auth.
-        SignInWithEmailRequest:
-            type: object
-            properties:
-                email:
-                    type: string
-                    description: The email address to sign in with.
-        SignInWithEmailResponse:
-            type: object
-            properties:
-                SessionToken:
-                    type: string
-                    description: The token for the intermediate session or session created by the SignInWithEmail request.
         Status:
             type: object
             properties:
@@ -720,13 +504,6 @@ components:
                 password:
                     type: string
                     description: The new password for the user.
-        UpdateUserResponse:
-            type: object
-            properties:
-                user:
-                    allOf:
-                        - $ref: '#/components/schemas/User'
-                    description: The user updated by the UpdateUser request.
         User:
             type: object
             properties:
@@ -751,19 +528,5 @@ components:
                 microsoftUserId:
                     type: string
                     description: The user's Microsoft User ID.
-        WhoAmIResponse:
-            type: object
-            properties:
-                id:
-                    type: string
-                    description: The user ID that is currently authenticated.
-                displayName:
-                    type: string
-                    description: The display name for the user.
-                email:
-                    type: string
-                    description: The email address for the user.
 tags:
     - name: BackendService
-    - name: FrontendService
-    - name: IntermediateService
