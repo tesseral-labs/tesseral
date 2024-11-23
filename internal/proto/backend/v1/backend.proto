@@ -219,7 +219,9 @@ message UpdateUserResponse {
 message ProjectAPIKey {
   string id = 1;
   string project_id = 2;
-  string secret_token = 3;
+  google.protobuf.Timestamp create_time = 3;
+  bool revoked = 4;
+  string secret_token = 5;
 }
 
 message CreateProjectAPIKeyRequest {

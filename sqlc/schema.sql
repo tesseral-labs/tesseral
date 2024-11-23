@@ -111,6 +111,8 @@ ALTER TABLE public.organizations OWNER TO postgres;
 CREATE TABLE public.project_api_keys (
     id uuid NOT NULL,
     project_id uuid NOT NULL,
+    create_time timestamp with time zone NOT NULL,
+    revoked boolean NOT NULL,
     secret_token_sha256 bytea NOT NULL
 );
 
