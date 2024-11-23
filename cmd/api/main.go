@@ -129,7 +129,7 @@ func main() {
 		slog.InfoContext(r.Context(), "health")
 		w.WriteHeader(http.StatusOK)
 	}))
-
+	p
 	// Register service transcoders
 	mux.Handle("/backend/v1/", backendTranscoder)
 	mux.Handle("/frontend/v1/", frontendTranscoder)

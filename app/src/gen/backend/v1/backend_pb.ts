@@ -4,7 +4,7 @@
 // @ts-nocheck
 
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message, proto3 } from "@bufbuild/protobuf";
+import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
 import { Organization, Project, User } from "../../openauth/v1/openauth_pb.js";
 
 /**
@@ -765,7 +765,17 @@ export class ProjectAPIKey extends Message<ProjectAPIKey> {
   projectId = "";
 
   /**
-   * @generated from field: string secret_token = 3;
+   * @generated from field: google.protobuf.Timestamp create_time = 3;
+   */
+  createTime?: Timestamp;
+
+  /**
+   * @generated from field: bool revoked = 4;
+   */
+  revoked = false;
+
+  /**
+   * @generated from field: string secret_token = 5;
    */
   secretToken = "";
 
@@ -779,7 +789,9 @@ export class ProjectAPIKey extends Message<ProjectAPIKey> {
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "project_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "secret_token", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "create_time", kind: "message", T: Timestamp },
+    { no: 4, name: "revoked", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
+    { no: 5, name: "secret_token", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ProjectAPIKey {

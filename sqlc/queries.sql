@@ -364,4 +364,4 @@ update users set unverified_email = null, verified_email = $2 where id = $1 retu
 select count(*) from projects;
 
 -- name: CreateProjectAPIKey :one
-insert into project_api_keys (id, project_id, secret_token_sha256) values ($1, $2, $3) returning *;
+insert into project_api_keys (id, project_id, create_time, revoked, secret_token_sha256) values ($1, $2, $3, $4, $5) returning *;

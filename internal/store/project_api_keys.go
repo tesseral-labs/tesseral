@@ -4,11 +4,13 @@ import (
 	"context"
 	"crypto/sha256"
 	"fmt"
+	"time"
 
 	"github.com/google/uuid"
 	backendv1 "github.com/openauth-dev/openauth/internal/gen/backend/v1"
 	"github.com/openauth-dev/openauth/internal/store/idformat"
 	"github.com/openauth-dev/openauth/internal/store/queries"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func (s *Store) CreateProjectAPIKey(ctx context.Context, req *backendv1.CreateProjectAPIKeyRequest) (*backendv1.CreateProjectAPIKeyResponse, error) {
@@ -26,9 +28,12 @@ func (s *Store) CreateProjectAPIKey(ctx context.Context, req *backendv1.CreatePr
 
 	secretToken := uuid.New()
 	secretTokenSHA := sha256.Sum256(secretToken[:])
+	now := time.Now()
 	qProjectAPIKey, err := q.CreateProjectAPIKey(ctx, queries.CreateProjectAPIKeyParams{
 		ID:                uuid.New(),
 		ProjectID:         projectID,
+		CreateTime:        &now,
+		Revoked:           false,
 		SecretTokenSha256: secretTokenSHA[:],
 	})
 	if err != nil {
@@ -48,6 +53,8 @@ func parseProjectAPIKey(qProjectAPIKey queries.ProjectApiKey) *backendv1.Project
 	return &backendv1.ProjectAPIKey{
 		Id:          idformat.ProjectAPIKey.Format(qProjectAPIKey.ID),
 		ProjectId:   idformat.Project.Format(qProjectAPIKey.ProjectID),
+		CreateTime:  timestamppb.New(*qProjectAPIKey.CreateTime),
+		Revoked:     qProjectAPIKey.Revoked,
 		SecretToken: "", // intentionally left blank
 	}
 }
