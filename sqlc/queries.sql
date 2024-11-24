@@ -1,364 +1,493 @@
 -- name: CompleteMethodVerificationChallenge :one
-insert into method_verification_challenges (
-  id,
-  complete_time
-) values (
-  $1,
-  $2
-)
-returning *;
+INSERT INTO method_verification_challenges (id, complete_time)
+    VALUES ($1, $2)
+RETURNING
+    *;
 
 -- name: CreateMethodVerificationChallenge :one
-insert into method_verification_challenges (
-  id,
-  project_id,
-  complete_time,
-  intermediate_session_id,
-  auth_method,
-  expire_time,
-  secret_token_sha256
-) values (
-  $1,
-  $2,
-  $3,
-  $4,
-  $5,
-  $6,
-  $7
-)
-returning *;
+INSERT INTO method_verification_challenges (id, project_id, complete_time, intermediate_session_id, auth_method, expire_time, secret_token_sha256)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
+RETURNING
+    *;
 
 -- name: CreateIntermediateSession :one
-insert into intermediate_sessions (
-  id,
-  project_id,
-  unverified_email,
-  verified_email,
-  expire_time,
-  token,
-  token_sha256
-) values (
-  $1,
-  $2,
-  $3,
-  $4,
-  $5,
-  $6,
-  $7
-)
-returning *;
+INSERT INTO intermediate_sessions (id, project_id, unverified_email, verified_email, expire_time, token, token_sha256)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
+RETURNING
+    *;
 
 -- name: CreateIntermediateSessionSigningKey :one
-insert into intermediate_session_signing_keys (
-  id,
-  project_id,
-  public_key,
-  private_key_cipher_text,
-  expire_time
-) values (
-  $1,
-  $2,
-  $3,
-  $4,
-  $5
-)
-returning *;
+INSERT INTO intermediate_session_signing_keys (id, project_id, public_key, private_key_cipher_text, expire_time)
+    VALUES ($1, $2, $3, $4, $5)
+RETURNING
+    *;
 
 -- name: CreateOrganization :one
-insert into organizations (
-  id,
-  project_id,
-  display_name,
-  google_hosted_domain,
-  microsoft_tenant_id,
-  override_log_in_with_google_enabled,
-  override_log_in_with_microsoft_enabled,
-  override_log_in_with_password_enabled
-) values (
-  $1,
-  $2,
-  $3,
-  $4,
-  $5,
-  $6,
-  $7,
-  $8
-)
-returning *;
+INSERT INTO organizations (id, project_id, display_name, google_hosted_domain, microsoft_tenant_id, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_with_password_enabled)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+RETURNING
+    *;
 
 -- name: CreateProject :one
-insert into projects (
-  id,
-  organization_id,
-  log_in_with_password_enabled,
-  log_in_with_google_enabled,
-  log_in_with_microsoft_enabled,
-  google_oauth_client_id,
-  google_oauth_client_secret,
-  microsoft_oauth_client_id,
-  microsoft_oauth_client_secret
-) values (
-  $1,
-  $2,
-  $3,
-  $4,
-  $5,
-  $6,
-  $7,
-  $8,
-  $9
-)
-returning *;
+INSERT INTO projects (id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+RETURNING
+    *;
 
 -- name: CreateSession :one
-insert into sessions (
-  id,
-  user_id,
-  create_time,
-  expire_time,
-  revoked
-) values (
-  $1,
-  $2,
-  $3,
-  $4,
-  $5
-)
-returning *;
+INSERT INTO sessions (id, user_id, create_time, expire_time, revoked)
+    VALUES ($1, $2, $3, $4, $5)
+RETURNING
+    *;
 
 -- name: CreateSessionSigningKey :one
-insert into session_signing_keys (
-  id,
-  project_id,
-  public_key,
-  private_key_cipher_text,
-  expire_time
-) values (
-  $1,
-  $2,
-  $3,
-  $4,
-  $5
-)
-returning *;
+INSERT INTO session_signing_keys (id, project_id, public_key, private_key_cipher_text, expire_time)
+    VALUES ($1, $2, $3, $4, $5)
+RETURNING
+    *;
 
 -- name: CreateUser :one
-insert into users (
-  id,
-  organization_id,
-  unverified_email,
-  verified_email,
-  password_bcrypt,
-  google_user_id,
-  microsoft_user_id
-) values (
-  $1,
-  $2,
-  $3,
-  $4,
-  $5,
-  $6,
-  $7
-)
-returning *;
+INSERT INTO users (id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
+RETURNING
+    *;
 
 -- name: CreateGoogleUser :one
-insert into users (
-  id,
-  organization_id,
-  google_user_id,
-  verified_email
-) values (
-  $1,
-  $2,
-  $3,
-  $4
-)
-returning *;
+INSERT INTO users (id, organization_id, google_user_id, verified_email)
+    VALUES ($1, $2, $3, $4)
+RETURNING
+    *;
 
 -- name: CreateMicrosoftUser :one
-insert into users (
-  id,
-  organization_id,
-  microsoft_user_id,
-  verified_email
-) values (
-  $1,
-  $2,
-  $3,
-  $4
-)
-returning *;
+INSERT INTO users (id, organization_id, microsoft_user_id, verified_email)
+    VALUES ($1, $2, $3, $4)
+RETURNING
+    *;
 
 -- name: CreateUnverifiedUser :one
-insert into users (
-  id,
-  organization_id,
-  unverified_email
-) values (
-  $1,
-  $2,
-  $3
-)
-returning *;
+INSERT INTO users (id, organization_id, unverified_email)
+    VALUES ($1, $2, $3)
+RETURNING
+    *;
 
 -- name: GetIntermediateSessionByID :one
-select * from intermediate_sessions where id = $1;
+SELECT
+    *
+FROM
+    intermediate_sessions
+WHERE
+    id = $1;
 
 -- name: GetIntermediateSessionSigningKeyByID :one
-select * from intermediate_session_signing_keys where id = $1;
+SELECT
+    *
+FROM
+    intermediate_session_signing_keys
+WHERE
+    id = $1;
 
 -- name: GetIntermediateSessionSigningKeyByProjectID :one
-select * from intermediate_session_signing_keys where project_id = $1 order by create_time desc limit 1;
+SELECT
+    *
+FROM
+    intermediate_session_signing_keys
+WHERE
+    project_id = $1
+ORDER BY
+    create_time DESC
+LIMIT 1;
 
 -- name: GetMethodVerificationChallengeByID :one
-select * from method_verification_challenges where id = $1;
+SELECT
+    *
+FROM
+    method_verification_challenges
+WHERE
+    id = $1;
 
 -- name: GetOrganizationByID :one
-select * from organizations where id = $1;
+SELECT
+    *
+FROM
+    organizations
+WHERE
+    id = $1;
 
 -- name: GetProjectByID :one
-select * from projects where id = $1;
+SELECT
+    *
+FROM
+    projects
+WHERE
+    id = $1;
 
 -- name: GetSessionByID :one
-select * from sessions where id = $1;
+SELECT
+    *
+FROM
+    sessions
+WHERE
+    id = $1;
 
 -- name: GetSessionSigningKeyByID :one
-select * from session_signing_keys where id = $1;
+SELECT
+    *
+FROM
+    session_signing_keys
+WHERE
+    id = $1;
 
 -- name: GetSessionSigningKeyByProjectID :one
-select * from session_signing_keys where project_id = $1 order by create_time desc limit 1;
+SELECT
+    *
+FROM
+    session_signing_keys
+WHERE
+    project_id = $1
+ORDER BY
+    create_time DESC
+LIMIT 1;
 
 -- name: GetOrganizationByGoogleHostedDomain :one
-select * from organizations where google_hosted_domain = $1;
+SELECT
+    *
+FROM
+    organizations
+WHERE
+    google_hosted_domain = $1;
 
 -- name: GetUserByEmail :one
-select * from users where verified_email = $1 or unverified_email = $1;
+SELECT
+    *
+FROM
+    users
+WHERE
+    verified_email = $1
+    OR unverified_email = $1;
 
 -- name: GetUserByID :one
-select * from users where id = $1;
+SELECT
+    *
+FROM
+    users
+WHERE
+    id = $1;
 
 -- name: GetUserByGoogleUserID :one
-select * from users where organization_id = $1 and google_user_id = $2;
+SELECT
+    *
+FROM
+    users
+WHERE
+    organization_id = $1
+    AND google_user_id = $2;
 
 -- name: GetUserByMicrosoftUserID :one
-select * from users where organization_id = $1 and microsoft_user_id = $2;
+SELECT
+    *
+FROM
+    users
+WHERE
+    organization_id = $1
+    AND microsoft_user_id = $2;
 
 -- name: GetUserBySessionID :one
-select * from users where users.id = (select user_id from sessions where sessions.id = $1);
+SELECT
+    *
+FROM
+    users
+WHERE
+    users.id = (
+        SELECT
+            user_id
+        FROM
+            sessions
+        WHERE
+            sessions.id = $1);
 
 -- name: GetUserByUnverifiedEmail :one
-select * from users where unverified_email = $1;
+SELECT
+    *
+FROM
+    users
+WHERE
+    unverified_email = $1;
 
 -- name: GetUserByVerifiedEmail :one
-select * from users where verified_email = $1;
+SELECT
+    *
+FROM
+    users
+WHERE
+    verified_email = $1;
 
 -- name: ListOrganizations :many
-select * from organizations;
+SELECT
+    *
+FROM
+    organizations;
 
 -- name: ListOrganizationsByProjectId :many
-select * from organizations where project_id = $1 order by id limit $2;
+SELECT
+    *
+FROM
+    organizations
+WHERE
+    project_id = $1
+ORDER BY
+    id
+LIMIT $2;
 
 -- name: ListOrganizationsByProjectIdAndEmail :many
-select o.* from organizations as o
-join users as u
-on o.id = users.organization_id
-where project_id = $1
-and u.verified_email = $2 or u.unverified_email = $2
-order by o.display_name limit $3;
+SELECT
+    o.*
+FROM
+    organizations AS o
+    JOIN users AS u ON o.id = users.organization_id
+WHERE
+    project_id = $1
+    AND u.verified_email = $2
+    OR u.unverified_email = $2
+ORDER BY
+    o.display_name
+LIMIT $3;
 
 -- name: ListProjects :many
-select * from projects order by id limit $1;
+SELECT
+    *
+FROM
+    projects
+ORDER BY
+    id
+LIMIT $1;
 
 -- name: ListUsersByEmail :many
-select * from users where unverified_email = $1 or verified_email = $1;
+SELECT
+    *
+FROM
+    users
+WHERE
+    unverified_email = $1
+    OR verified_email = $1;
 
 -- name: ListUsersByOrganization :many
-select * from users where organization_id = $1 order by id limit $2;
+SELECT
+    *
+FROM
+    users
+WHERE
+    organization_id = $1
+ORDER BY
+    id
+LIMIT $2;
 
 -- name: RevokeIntermediateSession :one
-update intermediate_sessions set revoked = true where id = $1 returning *;
+UPDATE
+    intermediate_sessions
+SET
+    revoked = TRUE
+WHERE
+    id = $1
+RETURNING
+    *;
 
 -- name: RevokeSession :one
-update sessions set revoked = true where id = $1 returning *;
+UPDATE
+    sessions
+SET
+    revoked = TRUE
+WHERE
+    id = $1
+RETURNING
+    *;
 
 -- name: UpdateOrganization :one
-update organizations set
-  display_name = $2,
-  google_hosted_domain = $3,
-  microsoft_tenant_id = $4,
-  override_log_in_with_password_enabled = $5,
-  override_log_in_with_google_enabled = $6,
-  override_log_in_with_microsoft_enabled = $7
-where id = $1 returning *;
+UPDATE
+    organizations
+SET
+    display_name = $2,
+    google_hosted_domain = $3,
+    microsoft_tenant_id = $4,
+    override_log_in_with_password_enabled = $5,
+    override_log_in_with_google_enabled = $6,
+    override_log_in_with_microsoft_enabled = $7
+WHERE
+    id = $1
+RETURNING
+    *;
 
 -- name: UpdateOrganizationDisplayName :one
-update organizations set display_name = $2 where id = $1 returning *;
+UPDATE
+    organizations
+SET
+    display_name = $2
+WHERE
+    id = $1
+RETURNING
+    *;
 
 -- name: UpdateOrganizationGoogleHostedDomain :one
-update organizations set google_hosted_domain = $2 where id = $1 returning *;
+UPDATE
+    organizations
+SET
+    google_hosted_domain = $2
+WHERE
+    id = $1
+RETURNING
+    *;
 
 -- name: UpdateOrganizationMicrosoftTenantID :one
-update organizations set microsoft_tenant_id = $2 where id = $1 returning *;
+UPDATE
+    organizations
+SET
+    microsoft_tenant_id = $2
+WHERE
+    id = $1
+RETURNING
+    *;
 
 -- name: UpdateOrganizationOverrides :one
-update organizations set
-  override_log_in_with_password_enabled = $2,
-  override_log_in_with_google_enabled = $3,
-  override_log_in_with_microsoft_enabled = $4
-where id = $1 returning *;
+UPDATE
+    organizations
+SET
+    override_log_in_with_password_enabled = $2,
+    override_log_in_with_google_enabled = $3,
+    override_log_in_with_microsoft_enabled = $4
+WHERE
+    id = $1
+RETURNING
+    *;
 
 -- name: UpdateProject :one
-update projects set
-  log_in_with_password_enabled = $2,
-  log_in_with_google_enabled = $3,
-  log_in_with_microsoft_enabled = $4,
-  google_oauth_client_id = $5,
-  google_oauth_client_secret = $6,
-  microsoft_oauth_client_id = $7,
-  microsoft_oauth_client_secret = $8
-where id = $1 returning *;
+UPDATE
+    projects
+SET
+    log_in_with_password_enabled = $2,
+    log_in_with_google_enabled = $3,
+    log_in_with_microsoft_enabled = $4,
+    google_oauth_client_id = $5,
+    google_oauth_client_secret = $6,
+    microsoft_oauth_client_id = $7,
+    microsoft_oauth_client_secret = $8
+WHERE
+    id = $1
+RETURNING
+    *;
 
 -- name: UpdateProjectOrganizationID :one
-update projects set organization_id = $2 where id = $1 returning *;
+UPDATE
+    projects
+SET
+    organization_id = $2
+WHERE
+    id = $1
+RETURNING
+    *;
 
 -- name: UpdateProjectGoogleOAuthClient :one
-update projects set google_oauth_client_id = $2, google_oauth_client_secret = $3 where id = $1 returning *;
+UPDATE
+    projects
+SET
+    google_oauth_client_id = $2,
+    google_oauth_client_secret = $3
+WHERE
+    id = $1
+RETURNING
+    *;
 
 -- name: UpdateProjectMicrosoftOAuthClient :one
-update projects set microsoft_oauth_client_id = $2, microsoft_oauth_client_secret = $3 where id = $1 returning *;
+UPDATE
+    projects
+SET
+    microsoft_oauth_client_id = $2,
+    microsoft_oauth_client_secret = $3
+WHERE
+    id = $1
+RETURNING
+    *;
 
 -- name: UpdateProjectLoginMethods :one
-update projects set
-  log_in_with_password_enabled = $2,
-  log_in_with_google_enabled = $3,
-  log_in_with_microsoft_enabled = $4
-where id = $1 returning *;
+UPDATE
+    projects
+SET
+    log_in_with_password_enabled = $2,
+    log_in_with_google_enabled = $3,
+    log_in_with_microsoft_enabled = $4
+WHERE
+    id = $1
+RETURNING
+    *;
 
 -- name: UpdateUser :one
-update users set
-  organization_id = $2,
-  unverified_email = $3,
-  verified_email = $4,
-  password_bcrypt = $5,
-  google_user_id = $6,
-  microsoft_user_id = $7
-where id = $1 returning *;
+UPDATE
+    users
+SET
+    organization_id = $2,
+    unverified_email = $3,
+    verified_email = $4,
+    password_bcrypt = $5,
+    google_user_id = $6,
+    microsoft_user_id = $7
+WHERE
+    id = $1
+RETURNING
+    *;
 
 -- name: UpdateUserPassword :one
-update users set password_bcrypt = $2 where id = $1 returning *;
+UPDATE
+    users
+SET
+    password_bcrypt = $2
+WHERE
+    id = $1
+RETURNING
+    *;
 
 -- name: UpdateUserGoogleUserID :one
-update users set google_user_id = $2 where id = $1 returning *;
+UPDATE
+    users
+SET
+    google_user_id = $2
+WHERE
+    id = $1
+RETURNING
+    *;
 
 -- name: UpdateUserMicrosoftUserID :one
-update users set microsoft_user_id = $2 where id = $1 returning *;
+UPDATE
+    users
+SET
+    microsoft_user_id = $2
+WHERE
+    id = $1
+RETURNING
+    *;
 
 -- name: VerifyIntermediateSessionEmail :one
-update intermediate_sessions set unverified_email = null, verified_email = $2 where id = $1 returning *;
+UPDATE
+    intermediate_sessions
+SET
+    unverified_email = NULL,
+    verified_email = $2
+WHERE
+    id = $1
+RETURNING
+    *;
 
 -- name: VerifyUserEmail :one
-update users set unverified_email = null, verified_email = $2 where id = $1 returning *;
+UPDATE
+    users
+SET
+    unverified_email = NULL,
+    verified_email = $2
+WHERE
+    id = $1
+RETURNING
+    *;
 
 -- name: CountAllProjects :one
-select count(*) from projects;
+SELECT
+    count(*)
+FROM
+    projects;
+
