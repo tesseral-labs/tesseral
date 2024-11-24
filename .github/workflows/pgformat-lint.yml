@@ -17,9 +17,10 @@ jobs:
           go-version: stable
       - name: pg_format check
         run: |
-          set -x
-          diff=$(diff sqlc/queries.sql <(docker run --quiet --rm --volume "$(pwd)/sqlc/queries.sql:/work/queries.sql" backplane/pgformatter queries.sql))
-          if [[ -n "$diff" ]]; then
-            echo $diff
+          set -e
+          fmt=$(docker run --quiet --rm --volume "$(pwd)/sqlc/queries.sql:/work/queries.sql" backplane/pgformatter queries.sql)
+          d=$(diff sqlc/queries.sql <(echo "$fmt"))
+          if [[ -n "$d" ]]; then
+            echo $d
             exit 1
           fi
