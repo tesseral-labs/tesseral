@@ -105,6 +105,21 @@ CREATE TABLE public.organizations (
 ALTER TABLE public.organizations OWNER TO postgres;
 
 --
+-- Name: project_api_keys; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.project_api_keys (
+    id uuid NOT NULL,
+    project_id uuid NOT NULL,
+    create_time timestamp with time zone NOT NULL,
+    revoked boolean NOT NULL,
+    secret_token_sha256 bytea NOT NULL
+);
+
+
+ALTER TABLE public.project_api_keys OWNER TO postgres;
+
+--
 -- Name: projects; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -224,6 +239,14 @@ ALTER TABLE ONLY public.organizations
 
 
 --
+-- Name: project_api_keys project_api_keys_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.project_api_keys
+    ADD CONSTRAINT project_api_keys_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: projects projects_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -333,6 +356,14 @@ ALTER TABLE ONLY public.method_verification_challenges
 
 ALTER TABLE ONLY public.organizations
     ADD CONSTRAINT organizations_project_id_fkey FOREIGN KEY (project_id) REFERENCES public.projects(id);
+
+
+--
+-- Name: project_api_keys project_api_keys_project_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.project_api_keys
+    ADD CONSTRAINT project_api_keys_project_id_fkey FOREIGN KEY (project_id) REFERENCES public.projects(id);
 
 
 --

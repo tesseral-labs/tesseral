@@ -13,14 +13,10 @@ import (
 )
 
 const completeMethodVerificationChallenge = `-- name: CompleteMethodVerificationChallenge :one
-insert into method_verification_challenges (
-  id,
-  complete_time
-) values (
-  $1,
-  $2
-)
-returning id, project_id, complete_time, intermediate_session_id, auth_method, expire_time, secret_token_sha256
+INSERT INTO method_verification_challenges (id, complete_time)
+    VALUES ($1, $2)
+RETURNING
+    id, project_id, complete_time, intermediate_session_id, auth_method, expire_time, secret_token_sha256
 `
 
 type CompleteMethodVerificationChallengeParams struct {
@@ -44,7 +40,10 @@ func (q *Queries) CompleteMethodVerificationChallenge(ctx context.Context, arg C
 }
 
 const countAllProjects = `-- name: CountAllProjects :one
-select count(*) from projects
+SELECT
+    count(*)
+FROM
+    projects
 `
 
 func (q *Queries) CountAllProjects(ctx context.Context) (int64, error) {
@@ -55,18 +54,10 @@ func (q *Queries) CountAllProjects(ctx context.Context) (int64, error) {
 }
 
 const createGoogleUser = `-- name: CreateGoogleUser :one
-insert into users (
-  id,
-  organization_id,
-  google_user_id,
-  verified_email
-) values (
-  $1,
-  $2,
-  $3,
-  $4
-)
-returning id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id
+INSERT INTO users (id, organization_id, google_user_id, verified_email)
+    VALUES ($1, $2, $3, $4)
+RETURNING
+    id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id
 `
 
 type CreateGoogleUserParams struct {
@@ -97,24 +88,10 @@ func (q *Queries) CreateGoogleUser(ctx context.Context, arg CreateGoogleUserPara
 }
 
 const createIntermediateSession = `-- name: CreateIntermediateSession :one
-insert into intermediate_sessions (
-  id,
-  project_id,
-  unverified_email,
-  verified_email,
-  expire_time,
-  token,
-  token_sha256
-) values (
-  $1,
-  $2,
-  $3,
-  $4,
-  $5,
-  $6,
-  $7
-)
-returning id, project_id, unverified_email, verified_email, create_time, expire_time, token, token_sha256, revoked
+INSERT INTO intermediate_sessions (id, project_id, unverified_email, verified_email, expire_time, token, token_sha256)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
+RETURNING
+    id, project_id, unverified_email, verified_email, create_time, expire_time, token, token_sha256, revoked
 `
 
 type CreateIntermediateSessionParams struct {
@@ -153,20 +130,10 @@ func (q *Queries) CreateIntermediateSession(ctx context.Context, arg CreateInter
 }
 
 const createIntermediateSessionSigningKey = `-- name: CreateIntermediateSessionSigningKey :one
-insert into intermediate_session_signing_keys (
-  id,
-  project_id,
-  public_key,
-  private_key_cipher_text,
-  expire_time
-) values (
-  $1,
-  $2,
-  $3,
-  $4,
-  $5
-)
-returning id, project_id, public_key, private_key_cipher_text, create_time, expire_time
+INSERT INTO intermediate_session_signing_keys (id, project_id, public_key, private_key_cipher_text, expire_time)
+    VALUES ($1, $2, $3, $4, $5)
+RETURNING
+    id, project_id, public_key, private_key_cipher_text, create_time, expire_time
 `
 
 type CreateIntermediateSessionSigningKeyParams struct {
@@ -198,24 +165,10 @@ func (q *Queries) CreateIntermediateSessionSigningKey(ctx context.Context, arg C
 }
 
 const createMethodVerificationChallenge = `-- name: CreateMethodVerificationChallenge :one
-insert into method_verification_challenges (
-  id,
-  project_id,
-  complete_time,
-  intermediate_session_id,
-  auth_method,
-  expire_time,
-  secret_token_sha256
-) values (
-  $1,
-  $2,
-  $3,
-  $4,
-  $5,
-  $6,
-  $7
-)
-returning id, project_id, complete_time, intermediate_session_id, auth_method, expire_time, secret_token_sha256
+INSERT INTO method_verification_challenges (id, project_id, complete_time, intermediate_session_id, auth_method, expire_time, secret_token_sha256)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
+RETURNING
+    id, project_id, complete_time, intermediate_session_id, auth_method, expire_time, secret_token_sha256
 `
 
 type CreateMethodVerificationChallengeParams struct {
@@ -252,18 +205,10 @@ func (q *Queries) CreateMethodVerificationChallenge(ctx context.Context, arg Cre
 }
 
 const createMicrosoftUser = `-- name: CreateMicrosoftUser :one
-insert into users (
-  id,
-  organization_id,
-  microsoft_user_id,
-  verified_email
-) values (
-  $1,
-  $2,
-  $3,
-  $4
-)
-returning id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id
+INSERT INTO users (id, organization_id, microsoft_user_id, verified_email)
+    VALUES ($1, $2, $3, $4)
+RETURNING
+    id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id
 `
 
 type CreateMicrosoftUserParams struct {
@@ -294,26 +239,10 @@ func (q *Queries) CreateMicrosoftUser(ctx context.Context, arg CreateMicrosoftUs
 }
 
 const createOrganization = `-- name: CreateOrganization :one
-insert into organizations (
-  id,
-  project_id,
-  display_name,
-  google_hosted_domain,
-  microsoft_tenant_id,
-  override_log_in_with_google_enabled,
-  override_log_in_with_microsoft_enabled,
-  override_log_in_with_password_enabled
-) values (
-  $1,
-  $2,
-  $3,
-  $4,
-  $5,
-  $6,
-  $7,
-  $8
-)
-returning id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id
+INSERT INTO organizations (id, project_id, display_name, google_hosted_domain, microsoft_tenant_id, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_with_password_enabled)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+RETURNING
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id
 `
 
 type CreateOrganizationParams struct {
@@ -353,28 +282,10 @@ func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganization
 }
 
 const createProject = `-- name: CreateProject :one
-insert into projects (
-  id,
-  organization_id,
-  log_in_with_password_enabled,
-  log_in_with_google_enabled,
-  log_in_with_microsoft_enabled,
-  google_oauth_client_id,
-  google_oauth_client_secret,
-  microsoft_oauth_client_id,
-  microsoft_oauth_client_secret
-) values (
-  $1,
-  $2,
-  $3,
-  $4,
-  $5,
-  $6,
-  $7,
-  $8,
-  $9
-)
-returning id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret
+INSERT INTO projects (id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+RETURNING
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret
 `
 
 type CreateProjectParams struct {
@@ -417,20 +328,10 @@ func (q *Queries) CreateProject(ctx context.Context, arg CreateProjectParams) (P
 }
 
 const createSession = `-- name: CreateSession :one
-insert into sessions (
-  id,
-  user_id,
-  create_time,
-  expire_time,
-  revoked
-) values (
-  $1,
-  $2,
-  $3,
-  $4,
-  $5
-)
-returning id, user_id, create_time, expire_time, revoked
+INSERT INTO sessions (id, user_id, create_time, expire_time, revoked)
+    VALUES ($1, $2, $3, $4, $5)
+RETURNING
+    id, user_id, create_time, expire_time, revoked
 `
 
 type CreateSessionParams struct {
@@ -461,20 +362,10 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (S
 }
 
 const createSessionSigningKey = `-- name: CreateSessionSigningKey :one
-insert into session_signing_keys (
-  id,
-  project_id,
-  public_key,
-  private_key_cipher_text,
-  expire_time
-) values (
-  $1,
-  $2,
-  $3,
-  $4,
-  $5
-)
-returning id, project_id, public_key, private_key_cipher_text, create_time, expire_time
+INSERT INTO session_signing_keys (id, project_id, public_key, private_key_cipher_text, expire_time)
+    VALUES ($1, $2, $3, $4, $5)
+RETURNING
+    id, project_id, public_key, private_key_cipher_text, create_time, expire_time
 `
 
 type CreateSessionSigningKeyParams struct {
@@ -506,16 +397,10 @@ func (q *Queries) CreateSessionSigningKey(ctx context.Context, arg CreateSession
 }
 
 const createUnverifiedUser = `-- name: CreateUnverifiedUser :one
-insert into users (
-  id,
-  organization_id,
-  unverified_email
-) values (
-  $1,
-  $2,
-  $3
-)
-returning id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id
+INSERT INTO users (id, organization_id, unverified_email)
+    VALUES ($1, $2, $3)
+RETURNING
+    id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id
 `
 
 type CreateUnverifiedUserParams struct {
@@ -540,24 +425,10 @@ func (q *Queries) CreateUnverifiedUser(ctx context.Context, arg CreateUnverified
 }
 
 const createUser = `-- name: CreateUser :one
-insert into users (
-  id,
-  organization_id,
-  unverified_email,
-  verified_email,
-  password_bcrypt,
-  google_user_id,
-  microsoft_user_id
-) values (
-  $1,
-  $2,
-  $3,
-  $4,
-  $5,
-  $6,
-  $7
-)
-returning id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id
+INSERT INTO users (id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
+RETURNING
+    id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id
 `
 
 type CreateUserParams struct {
@@ -594,7 +465,12 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 }
 
 const getIntermediateSessionByID = `-- name: GetIntermediateSessionByID :one
-select id, project_id, unverified_email, verified_email, create_time, expire_time, token, token_sha256, revoked from intermediate_sessions where id = $1
+SELECT
+    id, project_id, unverified_email, verified_email, create_time, expire_time, token, token_sha256, revoked
+FROM
+    intermediate_sessions
+WHERE
+    id = $1
 `
 
 func (q *Queries) GetIntermediateSessionByID(ctx context.Context, id uuid.UUID) (IntermediateSession, error) {
@@ -615,7 +491,12 @@ func (q *Queries) GetIntermediateSessionByID(ctx context.Context, id uuid.UUID) 
 }
 
 const getIntermediateSessionSigningKeyByID = `-- name: GetIntermediateSessionSigningKeyByID :one
-select id, project_id, public_key, private_key_cipher_text, create_time, expire_time from intermediate_session_signing_keys where id = $1
+SELECT
+    id, project_id, public_key, private_key_cipher_text, create_time, expire_time
+FROM
+    intermediate_session_signing_keys
+WHERE
+    id = $1
 `
 
 func (q *Queries) GetIntermediateSessionSigningKeyByID(ctx context.Context, id uuid.UUID) (IntermediateSessionSigningKey, error) {
@@ -633,7 +514,15 @@ func (q *Queries) GetIntermediateSessionSigningKeyByID(ctx context.Context, id u
 }
 
 const getIntermediateSessionSigningKeyByProjectID = `-- name: GetIntermediateSessionSigningKeyByProjectID :one
-select id, project_id, public_key, private_key_cipher_text, create_time, expire_time from intermediate_session_signing_keys where project_id = $1 order by create_time desc limit 1
+SELECT
+    id, project_id, public_key, private_key_cipher_text, create_time, expire_time
+FROM
+    intermediate_session_signing_keys
+WHERE
+    project_id = $1
+ORDER BY
+    create_time DESC
+LIMIT 1
 `
 
 func (q *Queries) GetIntermediateSessionSigningKeyByProjectID(ctx context.Context, projectID uuid.UUID) (IntermediateSessionSigningKey, error) {
@@ -651,7 +540,12 @@ func (q *Queries) GetIntermediateSessionSigningKeyByProjectID(ctx context.Contex
 }
 
 const getMethodVerificationChallengeByID = `-- name: GetMethodVerificationChallengeByID :one
-select id, project_id, complete_time, intermediate_session_id, auth_method, expire_time, secret_token_sha256 from method_verification_challenges where id = $1
+SELECT
+    id, project_id, complete_time, intermediate_session_id, auth_method, expire_time, secret_token_sha256
+FROM
+    method_verification_challenges
+WHERE
+    id = $1
 `
 
 func (q *Queries) GetMethodVerificationChallengeByID(ctx context.Context, id uuid.UUID) (MethodVerificationChallenge, error) {
@@ -670,7 +564,12 @@ func (q *Queries) GetMethodVerificationChallengeByID(ctx context.Context, id uui
 }
 
 const getOrganizationByGoogleHostedDomain = `-- name: GetOrganizationByGoogleHostedDomain :one
-select id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id from organizations where google_hosted_domain = $1
+SELECT
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id
+FROM
+    organizations
+WHERE
+    google_hosted_domain = $1
 `
 
 func (q *Queries) GetOrganizationByGoogleHostedDomain(ctx context.Context, googleHostedDomain *string) (Organization, error) {
@@ -690,7 +589,12 @@ func (q *Queries) GetOrganizationByGoogleHostedDomain(ctx context.Context, googl
 }
 
 const getOrganizationByID = `-- name: GetOrganizationByID :one
-select id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id from organizations where id = $1
+SELECT
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id
+FROM
+    organizations
+WHERE
+    id = $1
 `
 
 func (q *Queries) GetOrganizationByID(ctx context.Context, id uuid.UUID) (Organization, error) {
@@ -710,7 +614,12 @@ func (q *Queries) GetOrganizationByID(ctx context.Context, id uuid.UUID) (Organi
 }
 
 const getProjectByID = `-- name: GetProjectByID :one
-select id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret from projects where id = $1
+SELECT
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret
+FROM
+    projects
+WHERE
+    id = $1
 `
 
 func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, error) {
@@ -731,7 +640,12 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 }
 
 const getSessionByID = `-- name: GetSessionByID :one
-select id, user_id, create_time, expire_time, revoked from sessions where id = $1
+SELECT
+    id, user_id, create_time, expire_time, revoked
+FROM
+    sessions
+WHERE
+    id = $1
 `
 
 func (q *Queries) GetSessionByID(ctx context.Context, id uuid.UUID) (Session, error) {
@@ -748,7 +662,12 @@ func (q *Queries) GetSessionByID(ctx context.Context, id uuid.UUID) (Session, er
 }
 
 const getSessionSigningKeyByID = `-- name: GetSessionSigningKeyByID :one
-select id, project_id, public_key, private_key_cipher_text, create_time, expire_time from session_signing_keys where id = $1
+SELECT
+    id, project_id, public_key, private_key_cipher_text, create_time, expire_time
+FROM
+    session_signing_keys
+WHERE
+    id = $1
 `
 
 func (q *Queries) GetSessionSigningKeyByID(ctx context.Context, id uuid.UUID) (SessionSigningKey, error) {
@@ -766,7 +685,15 @@ func (q *Queries) GetSessionSigningKeyByID(ctx context.Context, id uuid.UUID) (S
 }
 
 const getSessionSigningKeyByProjectID = `-- name: GetSessionSigningKeyByProjectID :one
-select id, project_id, public_key, private_key_cipher_text, create_time, expire_time from session_signing_keys where project_id = $1 order by create_time desc limit 1
+SELECT
+    id, project_id, public_key, private_key_cipher_text, create_time, expire_time
+FROM
+    session_signing_keys
+WHERE
+    project_id = $1
+ORDER BY
+    create_time DESC
+LIMIT 1
 `
 
 func (q *Queries) GetSessionSigningKeyByProjectID(ctx context.Context, projectID uuid.UUID) (SessionSigningKey, error) {
@@ -784,7 +711,13 @@ func (q *Queries) GetSessionSigningKeyByProjectID(ctx context.Context, projectID
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
-select id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id from users where verified_email = $1 or unverified_email = $1
+SELECT
+    id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id
+FROM
+    users
+WHERE
+    verified_email = $1
+    OR unverified_email = $1
 `
 
 func (q *Queries) GetUserByEmail(ctx context.Context, verifiedEmail *string) (User, error) {
@@ -803,7 +736,13 @@ func (q *Queries) GetUserByEmail(ctx context.Context, verifiedEmail *string) (Us
 }
 
 const getUserByGoogleUserID = `-- name: GetUserByGoogleUserID :one
-select id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id from users where organization_id = $1 and google_user_id = $2
+SELECT
+    id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id
+FROM
+    users
+WHERE
+    organization_id = $1
+    AND google_user_id = $2
 `
 
 type GetUserByGoogleUserIDParams struct {
@@ -827,7 +766,12 @@ func (q *Queries) GetUserByGoogleUserID(ctx context.Context, arg GetUserByGoogle
 }
 
 const getUserByID = `-- name: GetUserByID :one
-select id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id from users where id = $1
+SELECT
+    id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id
+FROM
+    users
+WHERE
+    id = $1
 `
 
 func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
@@ -846,7 +790,13 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 }
 
 const getUserByMicrosoftUserID = `-- name: GetUserByMicrosoftUserID :one
-select id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id from users where organization_id = $1 and microsoft_user_id = $2
+SELECT
+    id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id
+FROM
+    users
+WHERE
+    organization_id = $1
+    AND microsoft_user_id = $2
 `
 
 type GetUserByMicrosoftUserIDParams struct {
@@ -870,7 +820,18 @@ func (q *Queries) GetUserByMicrosoftUserID(ctx context.Context, arg GetUserByMic
 }
 
 const getUserBySessionID = `-- name: GetUserBySessionID :one
-select id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id from users where users.id = (select user_id from sessions where sessions.id = $1)
+SELECT
+    id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id
+FROM
+    users
+WHERE
+    users.id = (
+        SELECT
+            user_id
+        FROM
+            sessions
+        WHERE
+            sessions.id = $1)
 `
 
 func (q *Queries) GetUserBySessionID(ctx context.Context, id uuid.UUID) (User, error) {
@@ -889,7 +850,12 @@ func (q *Queries) GetUserBySessionID(ctx context.Context, id uuid.UUID) (User, e
 }
 
 const getUserByUnverifiedEmail = `-- name: GetUserByUnverifiedEmail :one
-select id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id from users where unverified_email = $1
+SELECT
+    id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id
+FROM
+    users
+WHERE
+    unverified_email = $1
 `
 
 func (q *Queries) GetUserByUnverifiedEmail(ctx context.Context, unverifiedEmail *string) (User, error) {
@@ -908,7 +874,12 @@ func (q *Queries) GetUserByUnverifiedEmail(ctx context.Context, unverifiedEmail 
 }
 
 const getUserByVerifiedEmail = `-- name: GetUserByVerifiedEmail :one
-select id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id from users where verified_email = $1
+SELECT
+    id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id
+FROM
+    users
+WHERE
+    verified_email = $1
 `
 
 func (q *Queries) GetUserByVerifiedEmail(ctx context.Context, verifiedEmail *string) (User, error) {
@@ -927,7 +898,10 @@ func (q *Queries) GetUserByVerifiedEmail(ctx context.Context, verifiedEmail *str
 }
 
 const listOrganizations = `-- name: ListOrganizations :many
-select id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id from organizations
+SELECT
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id
+FROM
+    organizations
 `
 
 func (q *Queries) ListOrganizations(ctx context.Context) ([]Organization, error) {
@@ -960,7 +934,15 @@ func (q *Queries) ListOrganizations(ctx context.Context) ([]Organization, error)
 }
 
 const listOrganizationsByProjectId = `-- name: ListOrganizationsByProjectId :many
-select id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id from organizations where project_id = $1 order by id limit $2
+SELECT
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id
+FROM
+    organizations
+WHERE
+    project_id = $1
+ORDER BY
+    id
+LIMIT $2
 `
 
 type ListOrganizationsByProjectIdParams struct {
@@ -998,12 +980,18 @@ func (q *Queries) ListOrganizationsByProjectId(ctx context.Context, arg ListOrga
 }
 
 const listOrganizationsByProjectIdAndEmail = `-- name: ListOrganizationsByProjectIdAndEmail :many
-select o.id, o.project_id, o.display_name, o.override_log_in_with_password_enabled, o.override_log_in_with_google_enabled, o.override_log_in_with_microsoft_enabled, o.google_hosted_domain, o.microsoft_tenant_id from organizations as o
-join users as u
-on o.id = users.organization_id
-where project_id = $1
-and u.verified_email = $2 or u.unverified_email = $2
-order by o.display_name limit $3
+SELECT
+    o.id, o.project_id, o.display_name, o.override_log_in_with_password_enabled, o.override_log_in_with_google_enabled, o.override_log_in_with_microsoft_enabled, o.google_hosted_domain, o.microsoft_tenant_id
+FROM
+    organizations AS o
+    JOIN users AS u ON o.id = users.organization_id
+WHERE
+    project_id = $1
+    AND u.verified_email = $2
+    OR u.unverified_email = $2
+ORDER BY
+    o.display_name
+LIMIT $3
 `
 
 type ListOrganizationsByProjectIdAndEmailParams struct {
@@ -1042,7 +1030,13 @@ func (q *Queries) ListOrganizationsByProjectIdAndEmail(ctx context.Context, arg 
 }
 
 const listProjects = `-- name: ListProjects :many
-select id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret from projects order by id limit $1
+SELECT
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret
+FROM
+    projects
+ORDER BY
+    id
+LIMIT $1
 `
 
 func (q *Queries) ListProjects(ctx context.Context, limit int32) ([]Project, error) {
@@ -1076,7 +1070,13 @@ func (q *Queries) ListProjects(ctx context.Context, limit int32) ([]Project, err
 }
 
 const listUsersByEmail = `-- name: ListUsersByEmail :many
-select id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id from users where unverified_email = $1 or verified_email = $1
+SELECT
+    id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id
+FROM
+    users
+WHERE
+    unverified_email = $1
+    OR verified_email = $1
 `
 
 func (q *Queries) ListUsersByEmail(ctx context.Context, unverifiedEmail *string) ([]User, error) {
@@ -1108,7 +1108,15 @@ func (q *Queries) ListUsersByEmail(ctx context.Context, unverifiedEmail *string)
 }
 
 const listUsersByOrganization = `-- name: ListUsersByOrganization :many
-select id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id from users where organization_id = $1 order by id limit $2
+SELECT
+    id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id
+FROM
+    users
+WHERE
+    organization_id = $1
+ORDER BY
+    id
+LIMIT $2
 `
 
 type ListUsersByOrganizationParams struct {
@@ -1145,7 +1153,14 @@ func (q *Queries) ListUsersByOrganization(ctx context.Context, arg ListUsersByOr
 }
 
 const revokeIntermediateSession = `-- name: RevokeIntermediateSession :one
-update intermediate_sessions set revoked = true where id = $1 returning id, project_id, unverified_email, verified_email, create_time, expire_time, token, token_sha256, revoked
+UPDATE
+    intermediate_sessions
+SET
+    revoked = TRUE
+WHERE
+    id = $1
+RETURNING
+    id, project_id, unverified_email, verified_email, create_time, expire_time, token, token_sha256, revoked
 `
 
 func (q *Queries) RevokeIntermediateSession(ctx context.Context, id uuid.UUID) (IntermediateSession, error) {
@@ -1166,7 +1181,14 @@ func (q *Queries) RevokeIntermediateSession(ctx context.Context, id uuid.UUID) (
 }
 
 const revokeSession = `-- name: RevokeSession :one
-update sessions set revoked = true where id = $1 returning id, user_id, create_time, expire_time, revoked
+UPDATE
+    sessions
+SET
+    revoked = TRUE
+WHERE
+    id = $1
+RETURNING
+    id, user_id, create_time, expire_time, revoked
 `
 
 func (q *Queries) RevokeSession(ctx context.Context, id uuid.UUID) (Session, error) {
@@ -1183,14 +1205,19 @@ func (q *Queries) RevokeSession(ctx context.Context, id uuid.UUID) (Session, err
 }
 
 const updateOrganization = `-- name: UpdateOrganization :one
-update organizations set
-  display_name = $2,
-  google_hosted_domain = $3,
-  microsoft_tenant_id = $4,
-  override_log_in_with_password_enabled = $5,
-  override_log_in_with_google_enabled = $6,
-  override_log_in_with_microsoft_enabled = $7
-where id = $1 returning id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id
+UPDATE
+    organizations
+SET
+    display_name = $2,
+    google_hosted_domain = $3,
+    microsoft_tenant_id = $4,
+    override_log_in_with_password_enabled = $5,
+    override_log_in_with_google_enabled = $6,
+    override_log_in_with_microsoft_enabled = $7
+WHERE
+    id = $1
+RETURNING
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id
 `
 
 type UpdateOrganizationParams struct {
@@ -1228,7 +1255,14 @@ func (q *Queries) UpdateOrganization(ctx context.Context, arg UpdateOrganization
 }
 
 const updateOrganizationDisplayName = `-- name: UpdateOrganizationDisplayName :one
-update organizations set display_name = $2 where id = $1 returning id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id
+UPDATE
+    organizations
+SET
+    display_name = $2
+WHERE
+    id = $1
+RETURNING
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id
 `
 
 type UpdateOrganizationDisplayNameParams struct {
@@ -1253,7 +1287,14 @@ func (q *Queries) UpdateOrganizationDisplayName(ctx context.Context, arg UpdateO
 }
 
 const updateOrganizationGoogleHostedDomain = `-- name: UpdateOrganizationGoogleHostedDomain :one
-update organizations set google_hosted_domain = $2 where id = $1 returning id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id
+UPDATE
+    organizations
+SET
+    google_hosted_domain = $2
+WHERE
+    id = $1
+RETURNING
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id
 `
 
 type UpdateOrganizationGoogleHostedDomainParams struct {
@@ -1278,7 +1319,14 @@ func (q *Queries) UpdateOrganizationGoogleHostedDomain(ctx context.Context, arg 
 }
 
 const updateOrganizationMicrosoftTenantID = `-- name: UpdateOrganizationMicrosoftTenantID :one
-update organizations set microsoft_tenant_id = $2 where id = $1 returning id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id
+UPDATE
+    organizations
+SET
+    microsoft_tenant_id = $2
+WHERE
+    id = $1
+RETURNING
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id
 `
 
 type UpdateOrganizationMicrosoftTenantIDParams struct {
@@ -1303,11 +1351,16 @@ func (q *Queries) UpdateOrganizationMicrosoftTenantID(ctx context.Context, arg U
 }
 
 const updateOrganizationOverrides = `-- name: UpdateOrganizationOverrides :one
-update organizations set
-  override_log_in_with_password_enabled = $2,
-  override_log_in_with_google_enabled = $3,
-  override_log_in_with_microsoft_enabled = $4
-where id = $1 returning id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id
+UPDATE
+    organizations
+SET
+    override_log_in_with_password_enabled = $2,
+    override_log_in_with_google_enabled = $3,
+    override_log_in_with_microsoft_enabled = $4
+WHERE
+    id = $1
+RETURNING
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id
 `
 
 type UpdateOrganizationOverridesParams struct {
@@ -1339,15 +1392,20 @@ func (q *Queries) UpdateOrganizationOverrides(ctx context.Context, arg UpdateOrg
 }
 
 const updateProject = `-- name: UpdateProject :one
-update projects set
-  log_in_with_password_enabled = $2,
-  log_in_with_google_enabled = $3,
-  log_in_with_microsoft_enabled = $4,
-  google_oauth_client_id = $5,
-  google_oauth_client_secret = $6,
-  microsoft_oauth_client_id = $7,
-  microsoft_oauth_client_secret = $8
-where id = $1 returning id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret
+UPDATE
+    projects
+SET
+    log_in_with_password_enabled = $2,
+    log_in_with_google_enabled = $3,
+    log_in_with_microsoft_enabled = $4,
+    google_oauth_client_id = $5,
+    google_oauth_client_secret = $6,
+    microsoft_oauth_client_id = $7,
+    microsoft_oauth_client_secret = $8
+WHERE
+    id = $1
+RETURNING
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret
 `
 
 type UpdateProjectParams struct {
@@ -1388,7 +1446,15 @@ func (q *Queries) UpdateProject(ctx context.Context, arg UpdateProjectParams) (P
 }
 
 const updateProjectGoogleOAuthClient = `-- name: UpdateProjectGoogleOAuthClient :one
-update projects set google_oauth_client_id = $2, google_oauth_client_secret = $3 where id = $1 returning id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret
+UPDATE
+    projects
+SET
+    google_oauth_client_id = $2,
+    google_oauth_client_secret = $3
+WHERE
+    id = $1
+RETURNING
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret
 `
 
 type UpdateProjectGoogleOAuthClientParams struct {
@@ -1415,11 +1481,16 @@ func (q *Queries) UpdateProjectGoogleOAuthClient(ctx context.Context, arg Update
 }
 
 const updateProjectLoginMethods = `-- name: UpdateProjectLoginMethods :one
-update projects set
-  log_in_with_password_enabled = $2,
-  log_in_with_google_enabled = $3,
-  log_in_with_microsoft_enabled = $4
-where id = $1 returning id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret
+UPDATE
+    projects
+SET
+    log_in_with_password_enabled = $2,
+    log_in_with_google_enabled = $3,
+    log_in_with_microsoft_enabled = $4
+WHERE
+    id = $1
+RETURNING
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret
 `
 
 type UpdateProjectLoginMethodsParams struct {
@@ -1452,7 +1523,15 @@ func (q *Queries) UpdateProjectLoginMethods(ctx context.Context, arg UpdateProje
 }
 
 const updateProjectMicrosoftOAuthClient = `-- name: UpdateProjectMicrosoftOAuthClient :one
-update projects set microsoft_oauth_client_id = $2, microsoft_oauth_client_secret = $3 where id = $1 returning id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret
+UPDATE
+    projects
+SET
+    microsoft_oauth_client_id = $2,
+    microsoft_oauth_client_secret = $3
+WHERE
+    id = $1
+RETURNING
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret
 `
 
 type UpdateProjectMicrosoftOAuthClientParams struct {
@@ -1479,7 +1558,14 @@ func (q *Queries) UpdateProjectMicrosoftOAuthClient(ctx context.Context, arg Upd
 }
 
 const updateProjectOrganizationID = `-- name: UpdateProjectOrganizationID :one
-update projects set organization_id = $2 where id = $1 returning id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret
+UPDATE
+    projects
+SET
+    organization_id = $2
+WHERE
+    id = $1
+RETURNING
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret
 `
 
 type UpdateProjectOrganizationIDParams struct {
@@ -1505,14 +1591,19 @@ func (q *Queries) UpdateProjectOrganizationID(ctx context.Context, arg UpdatePro
 }
 
 const updateUser = `-- name: UpdateUser :one
-update users set
-  organization_id = $2,
-  unverified_email = $3,
-  verified_email = $4,
-  password_bcrypt = $5,
-  google_user_id = $6,
-  microsoft_user_id = $7
-where id = $1 returning id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id
+UPDATE
+    users
+SET
+    organization_id = $2,
+    unverified_email = $3,
+    verified_email = $4,
+    password_bcrypt = $5,
+    google_user_id = $6,
+    microsoft_user_id = $7
+WHERE
+    id = $1
+RETURNING
+    id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id
 `
 
 type UpdateUserParams struct {
@@ -1549,7 +1640,14 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 }
 
 const updateUserGoogleUserID = `-- name: UpdateUserGoogleUserID :one
-update users set google_user_id = $2 where id = $1 returning id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id
+UPDATE
+    users
+SET
+    google_user_id = $2
+WHERE
+    id = $1
+RETURNING
+    id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id
 `
 
 type UpdateUserGoogleUserIDParams struct {
@@ -1573,7 +1671,14 @@ func (q *Queries) UpdateUserGoogleUserID(ctx context.Context, arg UpdateUserGoog
 }
 
 const updateUserMicrosoftUserID = `-- name: UpdateUserMicrosoftUserID :one
-update users set microsoft_user_id = $2 where id = $1 returning id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id
+UPDATE
+    users
+SET
+    microsoft_user_id = $2
+WHERE
+    id = $1
+RETURNING
+    id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id
 `
 
 type UpdateUserMicrosoftUserIDParams struct {
@@ -1597,7 +1702,14 @@ func (q *Queries) UpdateUserMicrosoftUserID(ctx context.Context, arg UpdateUserM
 }
 
 const updateUserPassword = `-- name: UpdateUserPassword :one
-update users set password_bcrypt = $2 where id = $1 returning id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id
+UPDATE
+    users
+SET
+    password_bcrypt = $2
+WHERE
+    id = $1
+RETURNING
+    id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id
 `
 
 type UpdateUserPasswordParams struct {
@@ -1621,7 +1733,15 @@ func (q *Queries) UpdateUserPassword(ctx context.Context, arg UpdateUserPassword
 }
 
 const verifyIntermediateSessionEmail = `-- name: VerifyIntermediateSessionEmail :one
-update intermediate_sessions set unverified_email = null, verified_email = $2 where id = $1 returning id, project_id, unverified_email, verified_email, create_time, expire_time, token, token_sha256, revoked
+UPDATE
+    intermediate_sessions
+SET
+    unverified_email = NULL,
+    verified_email = $2
+WHERE
+    id = $1
+RETURNING
+    id, project_id, unverified_email, verified_email, create_time, expire_time, token, token_sha256, revoked
 `
 
 type VerifyIntermediateSessionEmailParams struct {
@@ -1647,7 +1767,15 @@ func (q *Queries) VerifyIntermediateSessionEmail(ctx context.Context, arg Verify
 }
 
 const verifyUserEmail = `-- name: VerifyUserEmail :one
-update users set unverified_email = null, verified_email = $2 where id = $1 returning id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id
+UPDATE
+    users
+SET
+    unverified_email = NULL,
+    verified_email = $2
+WHERE
+    id = $1
+RETURNING
+    id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id
 `
 
 type VerifyUserEmailParams struct {
