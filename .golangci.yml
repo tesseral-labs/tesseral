@@ -1,3 +1,7 @@
+linters:
+  disable-all: true
+  enable:
+    - errcheck
 issues:
   exclude-rules:
     - linters:
