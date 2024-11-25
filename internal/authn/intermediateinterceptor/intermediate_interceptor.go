@@ -12,9 +12,9 @@ import (
 var ErrAuthorizationHeaderRequired = errors.New("authorization header is required")
 var ErrInvalidSessionToken = errors.New("invalid session token")
 
-var skipRPCs = []string{
-	"/frontend.v1.Frontend/SignInWithEmail",
-}
+//var skipRPCs = []string{
+//	"/frontend.v1.Frontend/SignInWithEmail",
+//}
 
 func New(j *jwt.JWT, s *store.Store) connect.UnaryInterceptorFunc {
 	return func(next connect.UnaryFunc) connect.UnaryFunc {
