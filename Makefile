@@ -1,6 +1,7 @@
 .PHONY: queries
 queries:
 	pg_dump --schema-only 'postgres://postgres:password@localhost?sslmode=disable' > sqlc/schema.sql
+	docker run --rm --volume "$$(pwd)/sqlc/queries.sql:/work/queries.sql" backplane/pgformatter -i queries.sql
 	sqlc -f ./sqlc/sqlc.yaml generate
 
 .PHONY: proto
