@@ -10,18 +10,26 @@ import "google/protobuf/struct.proto";
 import "openauth/v1/openauth.proto";
 
 service IntermediateService {
+  // Creates a new organization.
+  rpc CreateOrganization(CreateOrganizationRequest) returns (openauth.v1.Organization) {
+    option (google.api.http) = {
+      post: "/intermediate/v1/organizations",
+      body: "*"
+    };
+  }
+
+  // Gets a list of organizations.
+  rpc ListOrganizations(ListOrganizationsRequest) returns (ListOrganizationsResponse) {
+    option (google.api.http) = {
+      get: "/intermediate/v1/organizations"
+    };
+  }
+
   // Creates a new intermediate session or session and cookies the requester.
   rpc SignInWithEmail(SignInWithEmailRequest) returns (SignInWithEmailResponse) {
     option (google.api.http) = {
       post: "/intermediate/v1/email-signin",
       body: "*"
-    };
-  }
-
-  // Gets a list of intermediate organizations.
-  rpc ListIntermediateOrganizations(ListIntermediateOrganizationsRequest) returns (ListIntermediateOrganizationsResponse) {
-    option (google.api.http) = {
-      get: "/intermediate/v1/organizations"
     };
   }
 }
@@ -35,14 +43,25 @@ message IntermediateOrganization {
   bool log_in_with_password_enabled = 6;
 }
 
-message ListIntermediateOrganizationsRequest {
+message CreateOrganizationRequest {
+  // The project ID to create the organization for.
+  string project_id = 1;
+  // The display name of the organization.
+  string display_name = 2;
+}
+
+message CreateOrganizationResponse {
+  openauth.v1.Organization organization = 1;
+}
+
+message ListOrganizationsRequest {
   // The project ID to list intermediate organizations for.
   string project_id = 1;
   // The email associated with the intermediate session.
   string email = 2;
 }
 
-message ListIntermediateOrganizationsResponse {
+message ListOrganizationsResponse {
   repeated IntermediateOrganization organizations = 1;
   string next_page_token = 2;
 }

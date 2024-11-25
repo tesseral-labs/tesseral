@@ -4,7 +4,40 @@
 // @ts-nocheck
 
 import { MethodKind } from "@bufbuild/protobuf";
-import { ListIntermediateOrganizationsRequest, ListIntermediateOrganizationsResponse, SignInWithEmailRequest, SignInWithEmailResponse } from "./intermediate_pb.js";
+import { CreateOrganizationRequest, ListOrganizationsRequest, ListOrganizationsResponse, SignInWithEmailRequest, SignInWithEmailResponse } from "./intermediate_pb.js";
+import { Organization } from "../../openauth/v1/openauth_pb.js";
+
+/**
+ * Creates a new organization.
+ *
+ * @generated from rpc intermediate.v1.IntermediateService.CreateOrganization
+ */
+export const createOrganization = {
+  localName: "createOrganization",
+  name: "CreateOrganization",
+  kind: MethodKind.Unary,
+  I: CreateOrganizationRequest,
+  O: Organization,
+  service: {
+    typeName: "intermediate.v1.IntermediateService"
+  }
+} as const;
+
+/**
+ * Gets a list of organizations.
+ *
+ * @generated from rpc intermediate.v1.IntermediateService.ListOrganizations
+ */
+export const listOrganizations = {
+  localName: "listOrganizations",
+  name: "ListOrganizations",
+  kind: MethodKind.Unary,
+  I: ListOrganizationsRequest,
+  O: ListOrganizationsResponse,
+  service: {
+    typeName: "intermediate.v1.IntermediateService"
+  }
+} as const;
 
 /**
  * Creates a new intermediate session or session and cookies the requester.
@@ -17,22 +50,6 @@ export const signInWithEmail = {
   kind: MethodKind.Unary,
   I: SignInWithEmailRequest,
   O: SignInWithEmailResponse,
-  service: {
-    typeName: "intermediate.v1.IntermediateService"
-  }
-} as const;
-
-/**
- * Gets a list of intermediate organizations.
- *
- * @generated from rpc intermediate.v1.IntermediateService.ListIntermediateOrganizations
- */
-export const listIntermediateOrganizations = {
-  localName: "listIntermediateOrganizations",
-  name: "ListIntermediateOrganizations",
-  kind: MethodKind.Unary,
-  I: ListIntermediateOrganizationsRequest,
-  O: ListIntermediateOrganizationsResponse,
   service: {
     typeName: "intermediate.v1.IntermediateService"
   }

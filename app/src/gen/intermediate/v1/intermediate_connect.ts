@@ -3,7 +3,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ListIntermediateOrganizationsRequest, ListIntermediateOrganizationsResponse, SignInWithEmailRequest, SignInWithEmailResponse } from "./intermediate_pb.js";
+import { CreateOrganizationRequest, ListOrganizationsRequest, ListOrganizationsResponse, SignInWithEmailRequest, SignInWithEmailResponse } from "./intermediate_pb.js";
+import { Organization } from "../../openauth/v1/openauth_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -13,6 +14,28 @@ export const IntermediateService = {
   typeName: "intermediate.v1.IntermediateService",
   methods: {
     /**
+     * Creates a new organization.
+     *
+     * @generated from rpc intermediate.v1.IntermediateService.CreateOrganization
+     */
+    createOrganization: {
+      name: "CreateOrganization",
+      I: CreateOrganizationRequest,
+      O: Organization,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * Gets a list of organizations.
+     *
+     * @generated from rpc intermediate.v1.IntermediateService.ListOrganizations
+     */
+    listOrganizations: {
+      name: "ListOrganizations",
+      I: ListOrganizationsRequest,
+      O: ListOrganizationsResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
      * Creates a new intermediate session or session and cookies the requester.
      *
      * @generated from rpc intermediate.v1.IntermediateService.SignInWithEmail
@@ -21,17 +44,6 @@ export const IntermediateService = {
       name: "SignInWithEmail",
       I: SignInWithEmailRequest,
       O: SignInWithEmailResponse,
-      kind: MethodKind.Unary,
-    },
-    /**
-     * Gets a list of intermediate organizations.
-     *
-     * @generated from rpc intermediate.v1.IntermediateService.ListIntermediateOrganizations
-     */
-    listIntermediateOrganizations: {
-      name: "ListIntermediateOrganizations",
-      I: ListIntermediateOrganizationsRequest,
-      O: ListIntermediateOrganizationsResponse,
       kind: MethodKind.Unary,
     },
   }

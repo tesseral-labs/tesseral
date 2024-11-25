@@ -8,6 +8,7 @@ package intermediatev1
 
 import (
 	context "context"
+	v1 "github.com/openauth-dev/openauth/internal/gen/openauth/v1"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -19,18 +20,21 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	IntermediateService_SignInWithEmail_FullMethodName               = "/intermediate.v1.IntermediateService/SignInWithEmail"
-	IntermediateService_ListIntermediateOrganizations_FullMethodName = "/intermediate.v1.IntermediateService/ListIntermediateOrganizations"
+	IntermediateService_CreateOrganization_FullMethodName = "/intermediate.v1.IntermediateService/CreateOrganization"
+	IntermediateService_ListOrganizations_FullMethodName  = "/intermediate.v1.IntermediateService/ListOrganizations"
+	IntermediateService_SignInWithEmail_FullMethodName    = "/intermediate.v1.IntermediateService/SignInWithEmail"
 )
 
 // IntermediateServiceClient is the client API for IntermediateService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type IntermediateServiceClient interface {
+	// Creates a new organization.
+	CreateOrganization(ctx context.Context, in *CreateOrganizationRequest, opts ...grpc.CallOption) (*v1.Organization, error)
+	// Gets a list of organizations.
+	ListOrganizations(ctx context.Context, in *ListOrganizationsRequest, opts ...grpc.CallOption) (*ListOrganizationsResponse, error)
 	// Creates a new intermediate session or session and cookies the requester.
 	SignInWithEmail(ctx context.Context, in *SignInWithEmailRequest, opts ...grpc.CallOption) (*SignInWithEmailResponse, error)
-	// Gets a list of intermediate organizations.
-	ListIntermediateOrganizations(ctx context.Context, in *ListIntermediateOrganizationsRequest, opts ...grpc.CallOption) (*ListIntermediateOrganizationsResponse, error)
 }
 
 type intermediateServiceClient struct {
@@ -39,6 +43,26 @@ type intermediateServiceClient struct {
 
 func NewIntermediateServiceClient(cc grpc.ClientConnInterface) IntermediateServiceClient {
 	return &intermediateServiceClient{cc}
+}
+
+func (c *intermediateServiceClient) CreateOrganization(ctx context.Context, in *CreateOrganizationRequest, opts ...grpc.CallOption) (*v1.Organization, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(v1.Organization)
+	err := c.cc.Invoke(ctx, IntermediateService_CreateOrganization_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *intermediateServiceClient) ListOrganizations(ctx context.Context, in *ListOrganizationsRequest, opts ...grpc.CallOption) (*ListOrganizationsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListOrganizationsResponse)
+	err := c.cc.Invoke(ctx, IntermediateService_ListOrganizations_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *intermediateServiceClient) SignInWithEmail(ctx context.Context, in *SignInWithEmailRequest, opts ...grpc.CallOption) (*SignInWithEmailResponse, error) {
@@ -51,24 +75,16 @@ func (c *intermediateServiceClient) SignInWithEmail(ctx context.Context, in *Sig
 	return out, nil
 }
 
-func (c *intermediateServiceClient) ListIntermediateOrganizations(ctx context.Context, in *ListIntermediateOrganizationsRequest, opts ...grpc.CallOption) (*ListIntermediateOrganizationsResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ListIntermediateOrganizationsResponse)
-	err := c.cc.Invoke(ctx, IntermediateService_ListIntermediateOrganizations_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // IntermediateServiceServer is the server API for IntermediateService service.
 // All implementations must embed UnimplementedIntermediateServiceServer
 // for forward compatibility.
 type IntermediateServiceServer interface {
+	// Creates a new organization.
+	CreateOrganization(context.Context, *CreateOrganizationRequest) (*v1.Organization, error)
+	// Gets a list of organizations.
+	ListOrganizations(context.Context, *ListOrganizationsRequest) (*ListOrganizationsResponse, error)
 	// Creates a new intermediate session or session and cookies the requester.
 	SignInWithEmail(context.Context, *SignInWithEmailRequest) (*SignInWithEmailResponse, error)
-	// Gets a list of intermediate organizations.
-	ListIntermediateOrganizations(context.Context, *ListIntermediateOrganizationsRequest) (*ListIntermediateOrganizationsResponse, error)
 	mustEmbedUnimplementedIntermediateServiceServer()
 }
 
@@ -79,11 +95,14 @@ type IntermediateServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedIntermediateServiceServer struct{}
 
+func (UnimplementedIntermediateServiceServer) CreateOrganization(context.Context, *CreateOrganizationRequest) (*v1.Organization, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateOrganization not implemented")
+}
+func (UnimplementedIntermediateServiceServer) ListOrganizations(context.Context, *ListOrganizationsRequest) (*ListOrganizationsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListOrganizations not implemented")
+}
 func (UnimplementedIntermediateServiceServer) SignInWithEmail(context.Context, *SignInWithEmailRequest) (*SignInWithEmailResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SignInWithEmail not implemented")
-}
-func (UnimplementedIntermediateServiceServer) ListIntermediateOrganizations(context.Context, *ListIntermediateOrganizationsRequest) (*ListIntermediateOrganizationsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListIntermediateOrganizations not implemented")
 }
 func (UnimplementedIntermediateServiceServer) mustEmbedUnimplementedIntermediateServiceServer() {}
 func (UnimplementedIntermediateServiceServer) testEmbeddedByValue()                             {}
@@ -106,6 +125,42 @@ func RegisterIntermediateServiceServer(s grpc.ServiceRegistrar, srv Intermediate
 	s.RegisterService(&IntermediateService_ServiceDesc, srv)
 }
 
+func _IntermediateService_CreateOrganization_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateOrganizationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IntermediateServiceServer).CreateOrganization(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IntermediateService_CreateOrganization_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IntermediateServiceServer).CreateOrganization(ctx, req.(*CreateOrganizationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IntermediateService_ListOrganizations_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListOrganizationsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IntermediateServiceServer).ListOrganizations(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IntermediateService_ListOrganizations_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IntermediateServiceServer).ListOrganizations(ctx, req.(*ListOrganizationsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _IntermediateService_SignInWithEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SignInWithEmailRequest)
 	if err := dec(in); err != nil {
@@ -124,24 +179,6 @@ func _IntermediateService_SignInWithEmail_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
-func _IntermediateService_ListIntermediateOrganizations_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListIntermediateOrganizationsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(IntermediateServiceServer).ListIntermediateOrganizations(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: IntermediateService_ListIntermediateOrganizations_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(IntermediateServiceServer).ListIntermediateOrganizations(ctx, req.(*ListIntermediateOrganizationsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // IntermediateService_ServiceDesc is the grpc.ServiceDesc for IntermediateService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -150,12 +187,16 @@ var IntermediateService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*IntermediateServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "SignInWithEmail",
-			Handler:    _IntermediateService_SignInWithEmail_Handler,
+			MethodName: "CreateOrganization",
+			Handler:    _IntermediateService_CreateOrganization_Handler,
 		},
 		{
-			MethodName: "ListIntermediateOrganizations",
-			Handler:    _IntermediateService_ListIntermediateOrganizations_Handler,
+			MethodName: "ListOrganizations",
+			Handler:    _IntermediateService_ListOrganizations_Handler,
+		},
+		{
+			MethodName: "SignInWithEmail",
+			Handler:    _IntermediateService_SignInWithEmail_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -45,6 +45,42 @@ func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrg
 	return parseOrganization(createdOrganization), nil
 }
 
+func (s *Store) CreateIntermediateOrganization(ctx context.Context, req *intermediatev1.CreateOrganizationRequest) (*openauthv1.Organization, error) {
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	projectId, err := idformat.Project.Parse(req.ProjectId)
+	if err != nil {
+		return nil, err
+	}
+
+	project, err := q.GetProjectByID(ctx, projectId)
+	if err != nil {
+		return nil, err
+	}
+
+	createdOrganization, err := q.CreateOrganization(ctx, queries.CreateOrganizationParams{
+		ID:                                uuid.New(),
+		ProjectID:                         projectId,
+		DisplayName:                       req.DisplayName,
+		OverrideLogInWithGoogleEnabled:    &project.LogInWithGoogleEnabled,
+		OverrideLogInWithMicrosoftEnabled: &project.LogInWithMicrosoftEnabled,
+		OverrideLogInWithPasswordEnabled:  &project.LogInWithPasswordEnabled,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if err := commit(); err != nil {
+		return nil, err
+	}
+
+	return parseOrganization(createdOrganization), nil
+}
+
 func (s *Store) GetOrganization(
 	ctx context.Context,
 	req *backendv1.GetOrganizationRequest,

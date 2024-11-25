@@ -6,7 +6,7 @@ info:
     title: IntermediateService API
     version: 0.0.1
 paths:
-    /frontend/v1/email-signin:
+    /intermediate/v1/email-signin:
         post:
             tags:
                 - IntermediateService
@@ -31,8 +31,71 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /intermediate/v1/organizations:
+        get:
+            tags:
+                - IntermediateService
+            description: Gets a list of organizations.
+            operationId: IntermediateService_ListOrganizations
+            parameters:
+                - name: projectId
+                  in: query
+                  description: The project ID to list intermediate organizations for.
+                  schema:
+                    type: string
+                - name: email
+                  in: query
+                  description: The email associated with the intermediate session.
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListOrganizationsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - IntermediateService
+            description: Creates a new organization.
+            operationId: IntermediateService_CreateOrganization
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateOrganizationRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Organization'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
 components:
     schemas:
+        CreateOrganizationRequest:
+            type: object
+            properties:
+                projectId:
+                    type: string
+                    description: The project ID to create the organization for.
+                displayName:
+                    type: string
+                    description: The display name of the organization.
         GoogleProtobufAny:
             type: object
             properties:
@@ -41,6 +104,57 @@ components:
                     description: The type of the serialized message.
             additionalProperties: true
             description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+        IntermediateOrganization:
+            type: object
+            properties:
+                id:
+                    type: string
+                projectId:
+                    type: string
+                displayName:
+                    type: string
+                logInWithGoogleEnabled:
+                    type: boolean
+                logInWithMicrosoftEnabled:
+                    type: boolean
+                logInWithPasswordEnabled:
+                    type: boolean
+        ListOrganizationsResponse:
+            type: object
+            properties:
+                organizations:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/IntermediateOrganization'
+                nextPageToken:
+                    type: string
+        Organization:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: Unique identifier for this organization.
+                projectId:
+                    type: string
+                    description: The project this organization belongs to.
+                displayName:
+                    type: string
+                    description: An optional human-friendly name for this organization.
+                overrideLogInWithPasswordEnabled:
+                    type: boolean
+                    description: Override setting for whether login with password is enabled.
+                overrideLogInWithGoogleEnabled:
+                    type: boolean
+                    description: Override setting for whether login with Google is enabled.
+                overrideLogInWithMicrosoftEnabled:
+                    type: boolean
+                    description: Override setting for whether login with Microsoft is enabled.
+                googleHostedDomain:
+                    type: string
+                    description: Google hosted domain.
+                microsoftTenantId:
+                    type: string
+                    description: The tenant ID for Microsoft auth.
         SignInWithEmailRequest:
             type: object
             properties:
