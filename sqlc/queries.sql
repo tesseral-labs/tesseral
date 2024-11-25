@@ -486,27 +486,10 @@ RETURNING
     *;
 
 -- name: CountAllProjects :one
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> d001278 (first light: create an organization via api)
 SELECT
     count(*)
 FROM
     projects;
-<<<<<<< HEAD
-
-=======
-select count(*) from projects;
-
--- name: CreateProjectAPIKey :one
-<<<<<<< HEAD
-insert into project_api_keys (id, project_id, secret_token_sha256) values ($1, $2, $3) returning *;
->>>>>>> bb17966 (add CreateProjectAPIKey store layer prototype)
-=======
-insert into project_api_keys (id, project_id, create_time, revoked, secret_token_sha256) values ($1, $2, $3, $4, $5) returning *;
->>>>>>> a2a65b0 (Add create_time, revoked to project api keys)
-=======
 
 -- name: CreateProjectAPIKey :one
 INSERT INTO project_api_keys (id, project_id, create_time, revoked, secret_token_sha256)
@@ -522,4 +505,3 @@ FROM
 WHERE
     secret_token_sha256 = $1;
 
->>>>>>> d001278 (first light: create an organization via api)
