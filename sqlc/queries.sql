@@ -268,7 +268,7 @@ order by o.display_name limit $2;
 select o.*
 from organizations as o
 join users as u 
-on o.id = users.organization_id
+on o.id = u.organization_id
 where o.project_id = $1 
 and u.verified_email = $2
 order by o.display_name limit $3;

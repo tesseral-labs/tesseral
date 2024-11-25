@@ -1006,7 +1006,7 @@ const listOrganizationsByProjectIdAndEmail = `-- name: ListOrganizationsByProjec
 select o.id, o.project_id, o.display_name, o.override_log_in_with_password_enabled, o.override_log_in_with_google_enabled, o.override_log_in_with_microsoft_enabled, o.google_hosted_domain, o.microsoft_tenant_id
 from organizations as o
 join users as u 
-on o.id = users.organization_id
+on o.id = u.organization_id
 where o.project_id = $1 
 and u.verified_email = $2
 order by o.display_name limit $3
