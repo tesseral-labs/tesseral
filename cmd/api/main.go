@@ -28,6 +28,7 @@ import (
 	"github.com/openauth-dev/openauth/internal/secretload"
 	"github.com/openauth-dev/openauth/internal/slogcorrelation"
 	"github.com/openauth-dev/openauth/internal/store"
+	"github.com/openauth-dev/openauth/internal/store/idformat"
 	"github.com/ssoready/conf"
 )
 
@@ -65,10 +66,15 @@ func main() {
 		panic(fmt.Errorf("parse page encoding secret: %w", err))
 	}
 
-	dogfoodProjectID := uuid.MustParse(config.DogfoodProjectID)
+	dogfoodProjectID, err := idformat.Project.Parse(config.DogfoodProjectID)
+	if err != nil {
+		panic(fmt.Errorf("parse dogfood project id: %w", err))
+	}
+	uuidDogfoodProjectID := uuid.UUID(dogfoodProjectID[:])
+
 	store_ := store.New(store.NewStoreParams{
 		DB:               db,
-		DogfoodProjectID: &dogfoodProjectID,
+		DogfoodProjectID: &uuidDogfoodProjectID,
 		PageEncoder:      pagetoken.Encoder{Secret: pageEncodingValue},
 	})
 
