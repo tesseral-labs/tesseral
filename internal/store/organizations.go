@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/google/uuid"
+	"github.com/openauth-dev/openauth/internal/authn"
 	backendv1 "github.com/openauth-dev/openauth/internal/gen/backend/v1"
 	frontendv1 "github.com/openauth-dev/openauth/internal/gen/frontend/v1"
 	openauthv1 "github.com/openauth-dev/openauth/internal/gen/openauth/v1"
@@ -18,14 +19,9 @@ func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrg
 	}
 	defer rollback()
 
-	projectId, err := idformat.Organization.Parse(req.Organization.ProjectId)
-	if err != nil {
-		return nil, err
-	}
-
-	createdOrganization, err := q.CreateOrganization(ctx, queries.CreateOrganizationParams{
+	qOrg, err := q.CreateOrganization(ctx, queries.CreateOrganizationParams{
 		ID:                                uuid.New(),
-		ProjectID:                         projectId,
+		ProjectID:                         authn.ProjectID(ctx),
 		DisplayName:                       req.Organization.DisplayName,
 		GoogleHostedDomain:                &req.Organization.GoogleHostedDomain,
 		MicrosoftTenantID:                 &req.Organization.MicrosoftTenantId,
@@ -41,7 +37,7 @@ func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrg
 		return nil, err
 	}
 
-	return parseOrganization(createdOrganization), nil
+	return parseOrganization(qOrg), nil
 }
 
 func (s *Store) GetOrganization(
@@ -218,13 +214,13 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *backendv1.UpdateOrg
 
 func parseOrganization(organization queries.Organization) *openauthv1.Organization {
 	return &openauthv1.Organization{
-		Id:                                organization.ID.String(),
-		ProjectId:                         organization.ProjectID.String(),
+		Id:                                idformat.Organization.Format(organization.ID),
+		ProjectId:                         idformat.Project.Format(organization.ProjectID),
 		DisplayName:                       organization.DisplayName,
-		GoogleHostedDomain:                *organization.GoogleHostedDomain,
-		MicrosoftTenantId:                 *organization.MicrosoftTenantID,
-		OverrideLogInWithGoogleEnabled:    *organization.OverrideLogInWithGoogleEnabled,
-		OverrideLogInWithMicrosoftEnabled: *organization.OverrideLogInWithMicrosoftEnabled,
-		OverrideLogInWithPasswordEnabled:  *organization.OverrideLogInWithPasswordEnabled,
+		GoogleHostedDomain:                derefOrEmpty(organization.GoogleHostedDomain),
+		MicrosoftTenantId:                 derefOrEmpty(organization.MicrosoftTenantID),
+		OverrideLogInWithGoogleEnabled:    derefOrEmpty(organization.OverrideLogInWithGoogleEnabled),
+		OverrideLogInWithMicrosoftEnabled: derefOrEmpty(organization.OverrideLogInWithMicrosoftEnabled),
+		OverrideLogInWithPasswordEnabled:  derefOrEmpty(organization.OverrideLogInWithPasswordEnabled),
 	}
 }

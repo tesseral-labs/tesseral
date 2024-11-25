@@ -327,6 +327,40 @@ func (q *Queries) CreateProject(ctx context.Context, arg CreateProjectParams) (P
 	return i, err
 }
 
+const createProjectAPIKey = `-- name: CreateProjectAPIKey :one
+INSERT INTO project_api_keys (id, project_id, create_time, revoked, secret_token_sha256)
+    VALUES ($1, $2, $3, $4, $5)
+RETURNING
+    id, project_id, create_time, revoked, secret_token_sha256
+`
+
+type CreateProjectAPIKeyParams struct {
+	ID                uuid.UUID
+	ProjectID         uuid.UUID
+	CreateTime        *time.Time
+	Revoked           bool
+	SecretTokenSha256 []byte
+}
+
+func (q *Queries) CreateProjectAPIKey(ctx context.Context, arg CreateProjectAPIKeyParams) (ProjectApiKey, error) {
+	row := q.db.QueryRow(ctx, createProjectAPIKey,
+		arg.ID,
+		arg.ProjectID,
+		arg.CreateTime,
+		arg.Revoked,
+		arg.SecretTokenSha256,
+	)
+	var i ProjectApiKey
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.CreateTime,
+		&i.Revoked,
+		&i.SecretTokenSha256,
+	)
+	return i, err
+}
+
 const createSession = `-- name: CreateSession :one
 INSERT INTO sessions (id, user_id, create_time, expire_time, revoked)
     VALUES ($1, $2, $3, $4, $5)
@@ -609,6 +643,28 @@ func (q *Queries) GetOrganizationByID(ctx context.Context, id uuid.UUID) (Organi
 		&i.OverrideLogInWithMicrosoftEnabled,
 		&i.GoogleHostedDomain,
 		&i.MicrosoftTenantID,
+	)
+	return i, err
+}
+
+const getProjectAPIKeyBySecretTokenSHA256 = `-- name: GetProjectAPIKeyBySecretTokenSHA256 :one
+SELECT
+    id, project_id, create_time, revoked, secret_token_sha256
+FROM
+    project_api_keys
+WHERE
+    secret_token_sha256 = $1
+`
+
+func (q *Queries) GetProjectAPIKeyBySecretTokenSHA256(ctx context.Context, secretTokenSha256 []byte) (ProjectApiKey, error) {
+	row := q.db.QueryRow(ctx, getProjectAPIKeyBySecretTokenSHA256, secretTokenSha256)
+	var i ProjectApiKey
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.CreateTime,
+		&i.Revoked,
+		&i.SecretTokenSha256,
 	)
 	return i, err
 }

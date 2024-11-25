@@ -107,6 +107,8 @@ service BackendService {
       body: "*"
     };
   }
+
+  rpc CreateProjectAPIKey(CreateProjectAPIKeyRequest) returns (CreateProjectAPIKeyResponse);
 }
 
 message CreateOrganizationRequest {
@@ -212,4 +214,20 @@ message UpdateUserRequest {
 message UpdateUserResponse {
   // The user updated by the UpdateUser request.
   openauth.v1.User user = 1;
+}
+
+message ProjectAPIKey {
+  string id = 1;
+  string project_id = 2;
+  google.protobuf.Timestamp create_time = 3;
+  bool revoked = 4;
+  string secret_token = 5;
+}
+
+message CreateProjectAPIKeyRequest {
+  ProjectAPIKey project_api_key = 1;
+}
+
+message CreateProjectAPIKeyResponse {
+  ProjectAPIKey project_api_key = 1;
 }

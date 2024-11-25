@@ -491,3 +491,17 @@ SELECT
 FROM
     projects;
 
+-- name: CreateProjectAPIKey :one
+INSERT INTO project_api_keys (id, project_id, create_time, revoked, secret_token_sha256)
+    VALUES ($1, $2, $3, $4, $5)
+RETURNING
+    *;
+
+-- name: GetProjectAPIKeyBySecretTokenSHA256 :one
+SELECT
+    *
+FROM
+    project_api_keys
+WHERE
+    secret_token_sha256 = $1;
+
