@@ -8,6 +8,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/openauth-dev/openauth/internal/jwt"
 	"github.com/openauth-dev/openauth/internal/pagetoken"
 	keyManagementService "github.com/openauth-dev/openauth/internal/store/kms"
 	"github.com/openauth-dev/openauth/internal/store/queries"
@@ -17,6 +18,7 @@ type Store struct {
 	db                                    *pgxpool.Pool
 	dogfoodProjectID                      *uuid.UUID
 	intermediateSessionSigningKeyKMSKeyID string
+	jwt 																 	*jwt.JWT
 	kms                                   *keyManagementService.KeyManagementService
 	pageEncoder                           pagetoken.Encoder
 	q                                     *queries.Queries
@@ -28,18 +30,20 @@ type NewStoreParams struct {
 	DB                                    *pgxpool.Pool
 	DogfoodProjectID                      *uuid.UUID
 	IntermediateSessionSigningKeyKMSKeyID string
+	JWT 																	*jwt.JWT
 	PageEncoder                           pagetoken.Encoder
 	SessionSigningKeyKmsKeyID             string
 }
 
 func New(p NewStoreParams) *Store {
 	store := &Store{
-		db:                                    p.DB,
-		dogfoodProjectID:                      p.DogfoodProjectID,
-		intermediateSessionSigningKeyKMSKeyID: p.IntermediateSessionSigningKeyKMSKeyID,
-		pageEncoder:                           p.PageEncoder,
-		q:                                     queries.New(p.DB),
-		sessionSigningKeyKmsKeyID:             p.SessionSigningKeyKmsKeyID,
+		db:                                    	p.DB,
+		dogfoodProjectID:                      	p.DogfoodProjectID,
+		intermediateSessionSigningKeyKMSKeyID: 	p.IntermediateSessionSigningKeyKMSKeyID,
+		jwt: 																		p.JWT,
+		pageEncoder:                           	p.PageEncoder,
+		q:                                     	queries.New(p.DB),
+		sessionSigningKeyKmsKeyID:             	p.SessionSigningKeyKmsKeyID,
 	}
 
 	if p.AwsConfig != nil {

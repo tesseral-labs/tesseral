@@ -253,9 +253,16 @@ export class ListOrganizationsResponse extends Message<ListOrganizationsResponse
  */
 export class SignInWithEmailRequest extends Message<SignInWithEmailRequest> {
   /**
+   * The Project ID to scope the sign in to.
+   *
+   * @generated from field: string project_id = 1;
+   */
+  projectId = "";
+
+  /**
    * The email address to sign in with.
    *
-   * @generated from field: string email = 1;
+   * @generated from field: string email = 2;
    */
   email = "";
 
@@ -267,7 +274,8 @@ export class SignInWithEmailRequest extends Message<SignInWithEmailRequest> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "intermediate.v1.SignInWithEmailRequest";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 1, name: "project_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): SignInWithEmailRequest {

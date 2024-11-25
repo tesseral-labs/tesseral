@@ -158,6 +158,9 @@ components:
         SignInWithEmailRequest:
             type: object
             properties:
+                projectId:
+                    type: string
+                    description: The Project ID to scope the sign in to.
                 email:
                     type: string
                     description: The email address to sign in with.
