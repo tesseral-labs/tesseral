@@ -45,7 +45,7 @@ func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrg
 	return parseOrganization(createdOrganization), nil
 }
 
-func (s *Store) CreateIntermediateOrganization(ctx context.Context, req *intermediatev1.CreateOrganizationRequest) (*openauthv1.Organization, error) {
+func (s *Store) CreateIntermediateOrganization(ctx context.Context, req *intermediatev1.CreateOrganizationRequest) (*intermediatev1.CreateOrganizationResponse, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -78,7 +78,9 @@ func (s *Store) CreateIntermediateOrganization(ctx context.Context, req *interme
 		return nil, err
 	}
 
-	return parseOrganization(createdOrganization), nil
+	return &intermediatev1.CreateOrganizationResponse{
+		Organization: parseOrganization(createdOrganization),
+	}, nil
 }
 
 func (s *Store) GetOrganization(
@@ -154,8 +156,8 @@ func (s *Store) ListFrontendOrganizations(
 
 func (s *Store) ListIntermediateOrganizations(
 	ctx context.Context,
-	req *intermediatev1.ListIntermediateOrganizationsRequest,
-) (*intermediatev1.ListIntermediateOrganizationsResponse, error) {
+	req *intermediatev1.ListOrganizationsRequest,
+) (*intermediatev1.ListOrganizationsResponse, error) {
 	_, q, _, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -188,7 +190,7 @@ func (s *Store) ListIntermediateOrganizations(
 		organizations = organizations[:limit]
 	}
 
-	return &intermediatev1.ListIntermediateOrganizationsResponse{
+	return &intermediatev1.ListOrganizationsResponse{
 		Organizations: organizations,
 		NextPageToken: nextPageToken,
 	}, nil

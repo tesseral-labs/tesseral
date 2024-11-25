@@ -17,9 +17,7 @@ func (s *IntermediateService) CreateOrganization(
 		return nil, fmt.Errorf("store: %w", err)
 	}
 
-	return connect.NewResponse(&intermediatev1.CreateOrganizationResponse{
-		Organization: res,
-	}), nil
+	return connect.NewResponse(res), nil
 }
 
 func (s *IntermediateService) ListOrganizations(
