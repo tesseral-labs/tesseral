@@ -72,24 +72,28 @@ const (
 	// BackendServiceUpdateUserPasswordProcedure is the fully-qualified name of the BackendService's
 	// UpdateUserPassword RPC.
 	BackendServiceUpdateUserPasswordProcedure = "/backend.v1.BackendService/UpdateUserPassword"
+	// BackendServiceCreateProjectAPIKeyProcedure is the fully-qualified name of the BackendService's
+	// CreateProjectAPIKey RPC.
+	BackendServiceCreateProjectAPIKeyProcedure = "/backend.v1.BackendService/CreateProjectAPIKey"
 )
 
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
 var (
-	backendServiceServiceDescriptor                  = v1.File_backend_v1_backend_proto.Services().ByName("BackendService")
-	backendServiceCreateOrganizationMethodDescriptor = backendServiceServiceDescriptor.Methods().ByName("CreateOrganization")
-	backendServiceGetOrganizationMethodDescriptor    = backendServiceServiceDescriptor.Methods().ByName("GetOrganization")
-	backendServiceListOrganizationsMethodDescriptor  = backendServiceServiceDescriptor.Methods().ByName("ListOrganizations")
-	backendServiceUpdateOrganizationMethodDescriptor = backendServiceServiceDescriptor.Methods().ByName("UpdateOrganization")
-	backendServiceCreateProjectMethodDescriptor      = backendServiceServiceDescriptor.Methods().ByName("CreateProject")
-	backendServiceGetProjectMethodDescriptor         = backendServiceServiceDescriptor.Methods().ByName("GetProject")
-	backendServiceListProjectsMethodDescriptor       = backendServiceServiceDescriptor.Methods().ByName("ListProjects")
-	backendServiceUpdateProjectMethodDescriptor      = backendServiceServiceDescriptor.Methods().ByName("UpdateProject")
-	backendServiceCreateUserMethodDescriptor         = backendServiceServiceDescriptor.Methods().ByName("CreateUser")
-	backendServiceGetUserMethodDescriptor            = backendServiceServiceDescriptor.Methods().ByName("GetUser")
-	backendServiceListUsersMethodDescriptor          = backendServiceServiceDescriptor.Methods().ByName("ListUsers")
-	backendServiceUpdateUserMethodDescriptor         = backendServiceServiceDescriptor.Methods().ByName("UpdateUser")
-	backendServiceUpdateUserPasswordMethodDescriptor = backendServiceServiceDescriptor.Methods().ByName("UpdateUserPassword")
+	backendServiceServiceDescriptor                   = v1.File_backend_v1_backend_proto.Services().ByName("BackendService")
+	backendServiceCreateOrganizationMethodDescriptor  = backendServiceServiceDescriptor.Methods().ByName("CreateOrganization")
+	backendServiceGetOrganizationMethodDescriptor     = backendServiceServiceDescriptor.Methods().ByName("GetOrganization")
+	backendServiceListOrganizationsMethodDescriptor   = backendServiceServiceDescriptor.Methods().ByName("ListOrganizations")
+	backendServiceUpdateOrganizationMethodDescriptor  = backendServiceServiceDescriptor.Methods().ByName("UpdateOrganization")
+	backendServiceCreateProjectMethodDescriptor       = backendServiceServiceDescriptor.Methods().ByName("CreateProject")
+	backendServiceGetProjectMethodDescriptor          = backendServiceServiceDescriptor.Methods().ByName("GetProject")
+	backendServiceListProjectsMethodDescriptor        = backendServiceServiceDescriptor.Methods().ByName("ListProjects")
+	backendServiceUpdateProjectMethodDescriptor       = backendServiceServiceDescriptor.Methods().ByName("UpdateProject")
+	backendServiceCreateUserMethodDescriptor          = backendServiceServiceDescriptor.Methods().ByName("CreateUser")
+	backendServiceGetUserMethodDescriptor             = backendServiceServiceDescriptor.Methods().ByName("GetUser")
+	backendServiceListUsersMethodDescriptor           = backendServiceServiceDescriptor.Methods().ByName("ListUsers")
+	backendServiceUpdateUserMethodDescriptor          = backendServiceServiceDescriptor.Methods().ByName("UpdateUser")
+	backendServiceUpdateUserPasswordMethodDescriptor  = backendServiceServiceDescriptor.Methods().ByName("UpdateUserPassword")
+	backendServiceCreateProjectAPIKeyMethodDescriptor = backendServiceServiceDescriptor.Methods().ByName("CreateProjectAPIKey")
 )
 
 // BackendServiceClient is a client for the backend.v1.BackendService service.
@@ -120,6 +124,7 @@ type BackendServiceClient interface {
 	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v11.User], error)
 	// Updates a user's password.
 	UpdateUserPassword(context.Context, *connect.Request[v1.UpdateUserPasswordRequest]) (*connect.Response[v11.User], error)
+	CreateProjectAPIKey(context.Context, *connect.Request[v1.CreateProjectAPIKeyRequest]) (*connect.Response[v1.CreateProjectAPIKeyResponse], error)
 }
 
 // NewBackendServiceClient constructs a client for the backend.v1.BackendService service. By
@@ -210,24 +215,31 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(backendServiceUpdateUserPasswordMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
+		createProjectAPIKey: connect.NewClient[v1.CreateProjectAPIKeyRequest, v1.CreateProjectAPIKeyResponse](
+			httpClient,
+			baseURL+BackendServiceCreateProjectAPIKeyProcedure,
+			connect.WithSchema(backendServiceCreateProjectAPIKeyMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // backendServiceClient implements BackendServiceClient.
 type backendServiceClient struct {
-	createOrganization *connect.Client[v1.CreateOrganizationRequest, v11.Organization]
-	getOrganization    *connect.Client[v1.GetOrganizationRequest, v11.Organization]
-	listOrganizations  *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
-	updateOrganization *connect.Client[v1.UpdateOrganizationRequest, v11.Organization]
-	createProject      *connect.Client[v1.CreateProjectRequest, v11.Project]
-	getProject         *connect.Client[v1.GetProjectRequest, v11.Project]
-	listProjects       *connect.Client[v1.ListProjectsRequest, v1.ListProjectsResponse]
-	updateProject      *connect.Client[v1.UpdateProjectRequest, v11.Project]
-	createUser         *connect.Client[v1.CreateUserRequest, v11.User]
-	getUser            *connect.Client[v1.GetUserRequest, v11.User]
-	listUsers          *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
-	updateUser         *connect.Client[v1.UpdateUserRequest, v11.User]
-	updateUserPassword *connect.Client[v1.UpdateUserPasswordRequest, v11.User]
+	createOrganization  *connect.Client[v1.CreateOrganizationRequest, v11.Organization]
+	getOrganization     *connect.Client[v1.GetOrganizationRequest, v11.Organization]
+	listOrganizations   *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
+	updateOrganization  *connect.Client[v1.UpdateOrganizationRequest, v11.Organization]
+	createProject       *connect.Client[v1.CreateProjectRequest, v11.Project]
+	getProject          *connect.Client[v1.GetProjectRequest, v11.Project]
+	listProjects        *connect.Client[v1.ListProjectsRequest, v1.ListProjectsResponse]
+	updateProject       *connect.Client[v1.UpdateProjectRequest, v11.Project]
+	createUser          *connect.Client[v1.CreateUserRequest, v11.User]
+	getUser             *connect.Client[v1.GetUserRequest, v11.User]
+	listUsers           *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
+	updateUser          *connect.Client[v1.UpdateUserRequest, v11.User]
+	updateUserPassword  *connect.Client[v1.UpdateUserPasswordRequest, v11.User]
+	createProjectAPIKey *connect.Client[v1.CreateProjectAPIKeyRequest, v1.CreateProjectAPIKeyResponse]
 }
 
 // CreateOrganization calls backend.v1.BackendService.CreateOrganization.
@@ -295,6 +307,11 @@ func (c *backendServiceClient) UpdateUserPassword(ctx context.Context, req *conn
 	return c.updateUserPassword.CallUnary(ctx, req)
 }
 
+// CreateProjectAPIKey calls backend.v1.BackendService.CreateProjectAPIKey.
+func (c *backendServiceClient) CreateProjectAPIKey(ctx context.Context, req *connect.Request[v1.CreateProjectAPIKeyRequest]) (*connect.Response[v1.CreateProjectAPIKeyResponse], error) {
+	return c.createProjectAPIKey.CallUnary(ctx, req)
+}
+
 // BackendServiceHandler is an implementation of the backend.v1.BackendService service.
 type BackendServiceHandler interface {
 	// Creates an organization.
@@ -323,6 +340,7 @@ type BackendServiceHandler interface {
 	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v11.User], error)
 	// Updates a user's password.
 	UpdateUserPassword(context.Context, *connect.Request[v1.UpdateUserPasswordRequest]) (*connect.Response[v11.User], error)
+	CreateProjectAPIKey(context.Context, *connect.Request[v1.CreateProjectAPIKeyRequest]) (*connect.Response[v1.CreateProjectAPIKeyResponse], error)
 }
 
 // NewBackendServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -409,6 +427,12 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		connect.WithSchema(backendServiceUpdateUserPasswordMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
+	backendServiceCreateProjectAPIKeyHandler := connect.NewUnaryHandler(
+		BackendServiceCreateProjectAPIKeyProcedure,
+		svc.CreateProjectAPIKey,
+		connect.WithSchema(backendServiceCreateProjectAPIKeyMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/backend.v1.BackendService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case BackendServiceCreateOrganizationProcedure:
@@ -437,6 +461,8 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceUpdateUserHandler.ServeHTTP(w, r)
 		case BackendServiceUpdateUserPasswordProcedure:
 			backendServiceUpdateUserPasswordHandler.ServeHTTP(w, r)
+		case BackendServiceCreateProjectAPIKeyProcedure:
+			backendServiceCreateProjectAPIKeyHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -496,4 +522,8 @@ func (UnimplementedBackendServiceHandler) UpdateUser(context.Context, *connect.R
 
 func (UnimplementedBackendServiceHandler) UpdateUserPassword(context.Context, *connect.Request[v1.UpdateUserPasswordRequest]) (*connect.Response[v11.User], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("backend.v1.BackendService.UpdateUserPassword is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) CreateProjectAPIKey(context.Context, *connect.Request[v1.CreateProjectAPIKeyRequest]) (*connect.Response[v1.CreateProjectAPIKeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("backend.v1.BackendService.CreateProjectAPIKey is not implemented"))
 }
