@@ -3,9 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
 	"strings"
 
+	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/openauth-dev/openauth/internal/loadenv"
 	"github.com/openauth-dev/openauth/internal/store"
 )
 
@@ -37,8 +40,18 @@ func bootstrap(ctx context.Context, args bootstrapArgs) error {
 		panic(err)
 	}
 
+	loadenv.LoadEnv()
+
+	awsConf, err := config.LoadDefaultConfig(context.TODO())
+	if err != nil {
+		panic(fmt.Errorf("load aws config: %w", err))
+	}
+
 	s := store.New(store.NewStoreParams{
+		AwsConfig: &awsConf,
 		DB: db,
+		IntermediateSessionSigningKeyKMSKeyID: os.Getenv("API_INTERMEDIATE_SESSION_KMS_KEY_ID"),
+		SessionSigningKeyKmsKeyID: os.Getenv("API_SESSION_KMS_KEY_ID"),
 	})
 
 	res, err := s.CreateDogfoodProject(ctx)
@@ -46,6 +59,18 @@ func bootstrap(ctx context.Context, args bootstrapArgs) error {
 		return fmt.Errorf("create dogfood project: %w", err)
 	}
 
-	fmt.Printf("%s\t%s\t%s\n", res.DogfoodProjectID, res.BootstrapUserEmail, res.BootstrapUserVerySensitivePassword)
+	signingKeyRes, err := s.CreateDogfoodSessionSigningKeys(ctx, res.DogfoodProjectID)
+	if err != nil {
+		return fmt.Errorf("create dogfood session signing keys: %w", err)
+	}
+
+	fmt.Printf(
+		"%s\t%s\t%s\t%s\t%s\n", 
+		res.DogfoodProjectID, 
+		res.BootstrapUserEmail, 
+		res.BootstrapUserVerySensitivePassword, 
+		signingKeyRes.SessionSigningKeyID, 
+		signingKeyRes.IntermediateSessionSigningKeyID,
+	)
 	return nil
 }

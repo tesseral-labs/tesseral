@@ -3,11 +3,11 @@ package intermediateinterceptor
 import (
 	"context"
 	"errors"
+	"log/slog"
 	"strings"
 
 	"connectrpc.com/connect"
 	"github.com/openauth-dev/openauth/internal/authn"
-	"github.com/openauth-dev/openauth/internal/jwt"
 	"github.com/openauth-dev/openauth/internal/store"
 )
 
@@ -15,14 +15,17 @@ var ErrAuthorizationHeaderRequired = errors.New("authorization header is require
 var ErrInvalidSessionToken = errors.New("invalid session token")
 
 var skipRPCs = []string{
-	"/frontend.v1.Frontend/SignInWithEmail",
+	"/intermediate.v1.IntermediateService/SignInWithEmail",
 }
 
-func New(j *jwt.JWT, s *store.Store) connect.UnaryInterceptorFunc {
+func New(s *store.Store) connect.UnaryInterceptorFunc {
 	return func(next connect.UnaryFunc) connect.UnaryFunc {
 		return func(ctx context.Context, req connect.AnyRequest) (connect.AnyResponse, error) {
+			slog.Info("spec", "spec", req.Spec().Procedure)
+
 			for _, rpc := range skipRPCs {
 				if req.Spec().Procedure == rpc {
+					slog.Info("skipping rpc", "rpc", rpc)
 					return next(ctx, req)
 				}
 			}
@@ -39,7 +42,7 @@ func New(j *jwt.JWT, s *store.Store) connect.UnaryInterceptorFunc {
 			}
 
 			// Attempt to parse the intermediate session token
-			intermediateSessionJWT, err := j.ParseIntermediateSessionJWT(ctx, secretValue)
+			intermediateSessionJWT, err := s.ParseIntermediateSessionJWT(ctx, secretValue)
 			if err != nil {
 				return nil, connect.NewError(connect.CodeUnauthenticated, ErrInvalidSessionToken)
 			}

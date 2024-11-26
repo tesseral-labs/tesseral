@@ -4,8 +4,7 @@
 // @ts-nocheck
 
 import { MethodKind } from "@bufbuild/protobuf";
-import { CreateOrganizationRequest, ListOrganizationsRequest, ListOrganizationsResponse, SignInWithEmailRequest, SignInWithEmailResponse } from "./intermediate_pb.js";
-import { Organization } from "../../openauth/v1/openauth_pb.js";
+import { CreateOrganizationRequest, CreateOrganizationResponse, ListOrganizationsRequest, ListOrganizationsResponse, SignInWithEmailRequest, SignInWithEmailResponse } from "./intermediate_pb.js";
 
 /**
  * Creates a new organization.
@@ -17,7 +16,7 @@ export const createOrganization = {
   name: "CreateOrganization",
   kind: MethodKind.Unary,
   I: CreateOrganizationRequest,
-  O: Organization,
+  O: CreateOrganizationResponse,
   service: {
     typeName: "intermediate.v1.IntermediateService"
   }

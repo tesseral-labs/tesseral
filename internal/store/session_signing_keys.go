@@ -3,6 +3,7 @@ package store
 import (
 	"context"
 	"crypto/ecdsa"
+	"log/slog"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
@@ -77,6 +78,8 @@ func (s *Store) CreateSessionSigningKey(ctx context.Context, projectID string) (
 	if err != nil {
 		return nil, err
 	}
+
+	slog.Info("sessionSigningKey", "sessionSigningKey", sessionSigningKey)
 
 	// Commit the transaction
 	if err := commit(); err != nil {

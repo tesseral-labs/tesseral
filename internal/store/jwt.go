@@ -1,4 +1,4 @@
-package jwt
+package store
 
 import (
 	"context"
@@ -10,22 +10,12 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/google/uuid"
-	"github.com/openauth-dev/openauth/internal/store"
 )
 
 var ErrInvalidJWTFormat = errors.New("invalid JWT format")
 var ErrInvalidJWTToken = errors.New("invalid JWT token")
 var ErrInvalidSigningMethod = errors.New("invalid signing method")
 var ErrKidNotFound = errors.New("`kid` not found in JWT header")
-
-type JWT struct {
-	store *store.Store
-}
-
-type NewJWTParams struct {
-	Store *store.Store
-}
 
 type IntermediateSessionJWTClaims struct {
 	jwt.Claims
@@ -49,31 +39,31 @@ type SessionJWTClaims struct {
 	UserID         string
 }
 
-func New(params NewJWTParams) *JWT {
-	return &JWT{
-		store: params.Store,
-	}
-}
-
-func (j *JWT) ParseIntermediateSessionJWT(ctx context.Context, tokenString string) (*IntermediateSessionJWTClaims, error) {
+func (s *Store) ParseIntermediateSessionJWT(
+	ctx context.Context, 
+	tokenString string, 
+) (*IntermediateSessionJWTClaims, error) {
 	kid, err := extractKidFromJWT(tokenString)
 	if err != nil {
 		return nil, err
 	}
 
-	signingKey, err := j.store.GetSessionSigningKeyByID(ctx, kid)
+	signingKey, err := s.GetIntermediateSessionSigningKeyByID(ctx, kid)
 	if err != nil {
 		return nil, err
 	}
 
-	token, err := jwt.ParseWithClaims(tokenString, &IntermediateSessionJWTClaims{}, func(token *jwt.Token) (interface{}, error) {
-		// Validate the signing method
-		if _, ok := token.Method.(*jwt.SigningMethodECDSA); !ok {
-			return nil, ErrInvalidSigningMethod
-		}
+	token, err := jwt.ParseWithClaims(
+		tokenString, 
+		&IntermediateSessionJWTClaims{}, 
+		func(token *jwt.Token) (interface{}, error) {
+			// Validate the signing method
+			if _, ok := token.Method.(*jwt.SigningMethodECDSA); !ok {
+				return nil, ErrInvalidSigningMethod
+			}
 
-		return signingKey.PublicKey, nil
-	})
+			return signingKey.PublicKey, nil
+		})
 	if err != nil {
 		return nil, err
 	}
@@ -87,25 +77,31 @@ func (j *JWT) ParseIntermediateSessionJWT(ctx context.Context, tokenString strin
 	return claims, nil
 }
 
-func (j *JWT) ParseSessionJWT(ctx context.Context, tokenString string) (*SessionJWTClaims, error) {
+func (s *Store) ParseSessionJWT(
+	ctx context.Context, 
+	tokenString string, 
+) (*SessionJWTClaims, error) {
 	kid, err := extractKidFromJWT(tokenString)
 	if err != nil {
 		return nil, err
 	}
 
-	signingKey, err := j.store.GetSessionSigningKeyByID(ctx, kid)
+	signingKey, err := s.GetSessionSigningKeyByID(ctx, kid)
 	if err != nil {
 		return nil, err
 	}
 
-	token, err := jwt.ParseWithClaims(tokenString, &SessionJWTClaims{}, func(token *jwt.Token) (interface{}, error) {
-		// Validate the signing method
-		if _, ok := token.Method.(*jwt.SigningMethodECDSA); !ok {
-			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
-		}
+	token, err := jwt.ParseWithClaims(
+		tokenString, 
+		&SessionJWTClaims{}, 
+		func(token *jwt.Token) (interface{}, error) {
+			// Validate the signing method
+			if _, ok := token.Method.(*jwt.SigningMethodECDSA); !ok {
+				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+			}
 
-		return signingKey.PublicKey, nil
-	})
+			return signingKey.PublicKey, nil
+		})
 	if err != nil {
 		return nil, err
 	}
@@ -119,13 +115,11 @@ func (j *JWT) ParseSessionJWT(ctx context.Context, tokenString string) (*Session
 	return claims, nil
 }
 
-func (j *JWT) SignIntermediateSessionJWT(ctx context.Context, claims *IntermediateSessionJWTClaims) (string, error) {
-	// TODO: Make this use the project's intermediate session signing key
-	signingKey, err := j.store.GetIntermediateSessionSigningKeyByID(ctx, uuid.New().String())
-	if err != nil {
-		return "", err
-	}
-
+func (s *Store) SignIntermediateSessionJWT(
+	ctx context.Context, 
+	claims *IntermediateSessionJWTClaims, 
+	signingKey *IntermediateSessionSigningKey,
+) (string, error) {
 	claims.IssuedAt = time.Now().Unix()
 	claims.ExpiresAt = time.Now().Add(time.Minute * 15).Unix()
 
@@ -141,13 +135,11 @@ func (j *JWT) SignIntermediateSessionJWT(ctx context.Context, claims *Intermedia
 	return tokenString, nil
 }
 
-func (j *JWT) SignSessionJWT(ctx context.Context, claims *SessionJWTClaims) (string, error) {
-	// TODO: Make this use the project's intermediate session signing key
-	signingKey, err := j.store.GetIntermediateSessionSigningKeyByID(ctx, uuid.New().String())
-	if err != nil {
-		return "", err
-	}
-
+func (s *Store) SignSessionJWT(
+	ctx context.Context, 
+	claims *SessionJWTClaims, 
+	signingKey *SessionSigningKey,
+) (string, error) {
 	claims.IssuedAt = time.Now().Unix()
 	// TODO: Make this honor the project's activity timeout
 	claims.ExpiresAt = time.Now().Add(time.Hour * 24).Unix()

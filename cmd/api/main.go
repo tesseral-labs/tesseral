@@ -9,6 +9,7 @@ import (
 
 	"connectrpc.com/connect"
 	"connectrpc.com/vanguard"
+	awsConfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/cyrusaf/ctxlog"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -22,12 +23,12 @@ import (
 	"github.com/openauth-dev/openauth/internal/gen/intermediate/v1/intermediatev1connect"
 	"github.com/openauth-dev/openauth/internal/hexkey"
 	"github.com/openauth-dev/openauth/internal/intermediateservice"
-	"github.com/openauth-dev/openauth/internal/jwt"
 	"github.com/openauth-dev/openauth/internal/loadenv"
 	"github.com/openauth-dev/openauth/internal/pagetoken"
 	"github.com/openauth-dev/openauth/internal/secretload"
 	"github.com/openauth-dev/openauth/internal/slogcorrelation"
 	"github.com/openauth-dev/openauth/internal/store"
+	"github.com/openauth-dev/openauth/internal/store/idformat"
 	"github.com/ssoready/conf"
 )
 
@@ -42,10 +43,12 @@ func main() {
 	loadenv.LoadEnv()
 
 	config := struct {
-		DB                string `conf:"db"`
-		DogfoodProjectID  string `conf:"dogfood_project_id"`
-		PageEncodingValue string `conf:"page-encoding-value"`
-		ServeAddr         string `conf:"serve_addr,noredact"`
+		DB                						string `conf:"db"`
+		DogfoodProjectID  						string `conf:"dogfood_project_id"`
+		IntermediateSessionKMSKeyID 	string `conf:"intermediate_session_kms_key_id"`
+		PageEncodingValue 						string `conf:"page-encoding-value"`
+		ServeAddr         						string `conf:"serve_addr,noredact"`
+		SessionKMSKeyID  							string `conf:"session_kms_key_id"`
 	}{
 		PageEncodingValue: "0000000000000000000000000000000000000000000000000000000000000000",
 	}
@@ -65,15 +68,24 @@ func main() {
 		panic(fmt.Errorf("parse page encoding secret: %w", err))
 	}
 
-	dogfoodProjectID := uuid.MustParse(config.DogfoodProjectID)
-	store_ := store.New(store.NewStoreParams{
-		DB:               db,
-		DogfoodProjectID: &dogfoodProjectID,
-		PageEncoder:      pagetoken.Encoder{Secret: pageEncodingValue},
-	})
+	dogfoodProjectID, err := idformat.Project.Parse(config.DogfoodProjectID)
+	if err != nil {
+		panic(fmt.Errorf("parse dogfood project ID: %w", err))
+	}
+	uuidDogfoodProjectID := uuid.UUID(dogfoodProjectID[:])
 
-	jwt_ := jwt.New(jwt.NewJWTParams{
-		Store: store_,
+	awsConf, err := awsConfig.LoadDefaultConfig(context.TODO(), awsConfig.WithRegion("us-east-1"))
+	if err != nil {
+		panic(fmt.Errorf("load aws config: %w", err))
+	}
+
+	store_ := store.New(store.NewStoreParams{
+		AwsConfig: 				&awsConf,
+		DB:               db,
+		DogfoodProjectID: &uuidDogfoodProjectID,
+		IntermediateSessionSigningKeyKMSKeyID: config.IntermediateSessionKMSKeyID,
+		PageEncoder:      pagetoken.Encoder{Secret: pageEncodingValue},
+		SessionSigningKeyKmsKeyID:              config.SessionKMSKeyID,
 	})
 
 	// Register the backend service
@@ -99,7 +111,7 @@ func main() {
 		},
 		connect.WithInterceptors(
 			// We may want to use separate auth interceptors for backend and frontend services
-			frontendinterceptor.New(jwt_, store_),
+			frontendinterceptor.New(store_),
 		),
 	)
 	frontend := vanguard.NewService(frontendConnectPath, frontendConnectHandler)
@@ -114,7 +126,7 @@ func main() {
 			Store: store_,
 		},
 		connect.WithInterceptors(
-			intermediateinterceptor.New(jwt_, store_),
+			intermediateinterceptor.New(store_),
 		),
 	)
 	intermediate := vanguard.NewService(intermediateConnectPath, intermediateConnectHandler)

@@ -2,11 +2,11 @@ package store
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/google/uuid"
 	intermediatev1 "github.com/openauth-dev/openauth/internal/gen/intermediate/v1"
-	"github.com/openauth-dev/openauth/internal/jwt"
 	"github.com/openauth-dev/openauth/internal/store/idformat"
 	"github.com/openauth-dev/openauth/internal/store/queries"
 )
@@ -33,18 +33,24 @@ func (s *Store) SignInWithEmail(
 
 	if len(users) > 0 {
 		// TODO: Implement factor checking before issuing a session
+		return nil, errors.New("not implemented")
 	} else {
 		// Send a verification email then issue an intermediate session, 
 		// so the user can verify their email address and create an organization
 
 		expiresAt := time.Now().Add(15 * time.Minute)
 
-		sessionToken, err := s.jwt.SignIntermediateSessionJWT(*ctx, &jwt.IntermediateSessionJWTClaims{
+		signingKey, err := s.GetIntermediateSessionSigningKeyByProjectID(*ctx, req.ProjectId)
+		if err != nil {
+			return nil, err
+		}
+
+		sessionToken, err := s.SignIntermediateSessionJWT(*ctx, &IntermediateSessionJWTClaims{
 			Email: req.Email,
 			ExpiresAt: expiresAt.Unix(),
 			IssuedAt: time.Now().Unix(),
 			ProjectID: req.ProjectId,
-		})
+		}, signingKey)
 		if err != nil {
 			return nil, err
 		}

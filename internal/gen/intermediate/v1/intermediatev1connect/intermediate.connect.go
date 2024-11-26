@@ -9,7 +9,6 @@ import (
 	context "context"
 	errors "errors"
 	v1 "github.com/openauth-dev/openauth/internal/gen/intermediate/v1"
-	v11 "github.com/openauth-dev/openauth/internal/gen/openauth/v1"
 	http "net/http"
 	strings "strings"
 )
@@ -56,7 +55,7 @@ var (
 // IntermediateServiceClient is a client for the intermediate.v1.IntermediateService service.
 type IntermediateServiceClient interface {
 	// Creates a new organization.
-	CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v11.Organization], error)
+	CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.CreateOrganizationResponse], error)
 	// Gets a list of organizations.
 	ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error)
 	// Creates a new intermediate session or session and cookies the requester.
@@ -73,7 +72,7 @@ type IntermediateServiceClient interface {
 func NewIntermediateServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) IntermediateServiceClient {
 	baseURL = strings.TrimRight(baseURL, "/")
 	return &intermediateServiceClient{
-		createOrganization: connect.NewClient[v1.CreateOrganizationRequest, v11.Organization](
+		createOrganization: connect.NewClient[v1.CreateOrganizationRequest, v1.CreateOrganizationResponse](
 			httpClient,
 			baseURL+IntermediateServiceCreateOrganizationProcedure,
 			connect.WithSchema(intermediateServiceCreateOrganizationMethodDescriptor),
@@ -96,13 +95,13 @@ func NewIntermediateServiceClient(httpClient connect.HTTPClient, baseURL string,
 
 // intermediateServiceClient implements IntermediateServiceClient.
 type intermediateServiceClient struct {
-	createOrganization *connect.Client[v1.CreateOrganizationRequest, v11.Organization]
+	createOrganization *connect.Client[v1.CreateOrganizationRequest, v1.CreateOrganizationResponse]
 	listOrganizations  *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
 	signInWithEmail    *connect.Client[v1.SignInWithEmailRequest, v1.SignInWithEmailResponse]
 }
 
 // CreateOrganization calls intermediate.v1.IntermediateService.CreateOrganization.
-func (c *intermediateServiceClient) CreateOrganization(ctx context.Context, req *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v11.Organization], error) {
+func (c *intermediateServiceClient) CreateOrganization(ctx context.Context, req *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.CreateOrganizationResponse], error) {
 	return c.createOrganization.CallUnary(ctx, req)
 }
 
@@ -120,7 +119,7 @@ func (c *intermediateServiceClient) SignInWithEmail(ctx context.Context, req *co
 // service.
 type IntermediateServiceHandler interface {
 	// Creates a new organization.
-	CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v11.Organization], error)
+	CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.CreateOrganizationResponse], error)
 	// Gets a list of organizations.
 	ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error)
 	// Creates a new intermediate session or session and cookies the requester.
@@ -168,7 +167,7 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 // UnimplementedIntermediateServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedIntermediateServiceHandler struct{}
 
-func (UnimplementedIntermediateServiceHandler) CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v11.Organization], error) {
+func (UnimplementedIntermediateServiceHandler) CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.CreateOrganizationResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("intermediate.v1.IntermediateService.CreateOrganization is not implemented"))
 }
 

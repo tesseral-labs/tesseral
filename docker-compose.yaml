@@ -2,14 +2,19 @@ services:
   api:
     command: ["go", "run", "./cmd/api"]
     depends_on:
-      - postgres
+      localstack:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
     environment:
       API_DB: "postgres://postgres:password@postgres:5432/postgres"
+    env_file:
+      - .env
     expose:
-      - 8081
+      - 3001
     image: golang:1.23-alpine
     ports:
-      - "3001:8081"
+      - "3001:3001"
     volumes:
       - .:/api:cached
     working_dir: /api
@@ -18,19 +23,46 @@ services:
     environment:
       APP_BUILD_IS_DEV: 1
     expose:
-      - 8080
+      - 3000
     image: node:22.11.0
     ports:
-      - "3000:8080"
+      - "3000:3000"
     tty: true
     volumes:
       - ./app:/app:cached
     working_dir: /app
+  localstack:
+    environment:
+      LOCALSTACK_AUTH_TOKEN: ${LOCALSTACK_AUTH_TOKEN}
+      PERSISTENCE: 1
+      SERVICES: kms
+    expose:
+      - 4566
+    healthcheck:
+      test:
+        - CMD
+        - bash
+        - -c
+        - awslocal kms list-keys
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    image: localstack/localstack:latest
+    ports:
+      - 4566:4566
+    volumes:
+      - ./localstack-setup.sh:/etc/localstack/init/ready.d/script.sh
+      - ./.env:/etc/localstack/init-output.env
   postgres:
     environment:
       POSTGRES_PASSWORD: "password"
     expose:
       - 5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
     image: postgres:15.8
     ports:
       - "5432:5432"
@@ -39,11 +71,13 @@ services:
     environment:
       UI_BUILD_IS_DEV: 1
     expose:
-      - 8082
+      - 3002
     image: node:22.11.0
     ports:
-      - "3002:8082"
+      - "3002:3002"
     tty: true
     volumes:
       - ./ui:/ui:cached
     working_dir: /ui
+volumes:
+  localstack-init-output:

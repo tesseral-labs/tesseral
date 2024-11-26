@@ -11,7 +11,7 @@ import "openauth/v1/openauth.proto";
 
 service IntermediateService {
   // Creates a new organization.
-  rpc CreateOrganization(CreateOrganizationRequest) returns (openauth.v1.Organization) {
+  rpc CreateOrganization(CreateOrganizationRequest) returns (CreateOrganizationResponse) {
     option (google.api.http) = {
       post: "/intermediate/v1/organizations",
       body: "*"

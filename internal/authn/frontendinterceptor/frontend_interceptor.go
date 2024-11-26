@@ -7,7 +7,6 @@ import (
 
 	"connectrpc.com/connect"
 	"github.com/openauth-dev/openauth/internal/authn"
-	"github.com/openauth-dev/openauth/internal/jwt"
 	"github.com/openauth-dev/openauth/internal/store"
 )
 
@@ -18,7 +17,7 @@ var skipRPCs = []string{
 	"/frontend.v1.Frontend/SignInWithEmail",
 }
 
-func New(j *jwt.JWT, s *store.Store) connect.UnaryInterceptorFunc {
+func New(s *store.Store) connect.UnaryInterceptorFunc {
 	return func(next connect.UnaryFunc) connect.UnaryFunc {
 		return func(ctx context.Context, req connect.AnyRequest) (connect.AnyResponse, error) {
 			for _, rpc := range skipRPCs {
@@ -39,7 +38,7 @@ func New(j *jwt.JWT, s *store.Store) connect.UnaryInterceptorFunc {
 			}
 
 			// Attempt to parse the session token
-			sessionJWT, err := j.ParseSessionJWT(ctx, secretValue)
+			sessionJWT, err := s.ParseSessionJWT(ctx, secretValue)
 			if err != nil {
 				return nil, connect.NewError(connect.CodeUnauthenticated, ErrInvalidSessionToken)
 			}

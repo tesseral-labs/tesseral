@@ -1,4 +1,5 @@
 .env
+.localstack.env
 node_modules
 /app/public/index.css
 /app/public/index.js

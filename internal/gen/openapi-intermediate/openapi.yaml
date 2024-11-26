@@ -78,7 +78,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/Organization'
+                                $ref: '#/components/schemas/CreateOrganizationResponse'
                 default:
                     description: Default error response
                     content:
@@ -96,6 +96,11 @@ components:
                 displayName:
                     type: string
                     description: The display name of the organization.
+        CreateOrganizationResponse:
+            type: object
+            properties:
+                organization:
+                    $ref: '#/components/schemas/Organization'
         GoogleProtobufAny:
             type: object
             properties:

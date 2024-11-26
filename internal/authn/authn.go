@@ -3,12 +3,12 @@ package authn
 import (
 	"context"
 
-	"github.com/openauth-dev/openauth/internal/jwt"
+	"github.com/openauth-dev/openauth/internal/store"
 )
 
 type ContextData struct {
-	IntermediateSession *jwt.IntermediateSessionJWTClaims
-	Session             *jwt.SessionJWTClaims
+	IntermediateSession *store.IntermediateSessionJWTClaims
+	Session             *store.SessionJWTClaims
 }
 
 type ctxKey struct{}

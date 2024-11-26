@@ -8,7 +8,6 @@ package intermediatev1
 
 import (
 	context "context"
-	v1 "github.com/openauth-dev/openauth/internal/gen/openauth/v1"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -30,7 +29,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type IntermediateServiceClient interface {
 	// Creates a new organization.
-	CreateOrganization(ctx context.Context, in *CreateOrganizationRequest, opts ...grpc.CallOption) (*v1.Organization, error)
+	CreateOrganization(ctx context.Context, in *CreateOrganizationRequest, opts ...grpc.CallOption) (*CreateOrganizationResponse, error)
 	// Gets a list of organizations.
 	ListOrganizations(ctx context.Context, in *ListOrganizationsRequest, opts ...grpc.CallOption) (*ListOrganizationsResponse, error)
 	// Creates a new intermediate session or session and cookies the requester.
@@ -45,9 +44,9 @@ func NewIntermediateServiceClient(cc grpc.ClientConnInterface) IntermediateServi
 	return &intermediateServiceClient{cc}
 }
 
-func (c *intermediateServiceClient) CreateOrganization(ctx context.Context, in *CreateOrganizationRequest, opts ...grpc.CallOption) (*v1.Organization, error) {
+func (c *intermediateServiceClient) CreateOrganization(ctx context.Context, in *CreateOrganizationRequest, opts ...grpc.CallOption) (*CreateOrganizationResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(v1.Organization)
+	out := new(CreateOrganizationResponse)
 	err := c.cc.Invoke(ctx, IntermediateService_CreateOrganization_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -80,7 +79,7 @@ func (c *intermediateServiceClient) SignInWithEmail(ctx context.Context, in *Sig
 // for forward compatibility.
 type IntermediateServiceServer interface {
 	// Creates a new organization.
-	CreateOrganization(context.Context, *CreateOrganizationRequest) (*v1.Organization, error)
+	CreateOrganization(context.Context, *CreateOrganizationRequest) (*CreateOrganizationResponse, error)
 	// Gets a list of organizations.
 	ListOrganizations(context.Context, *ListOrganizationsRequest) (*ListOrganizationsResponse, error)
 	// Creates a new intermediate session or session and cookies the requester.
@@ -95,7 +94,7 @@ type IntermediateServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedIntermediateServiceServer struct{}
 
-func (UnimplementedIntermediateServiceServer) CreateOrganization(context.Context, *CreateOrganizationRequest) (*v1.Organization, error) {
+func (UnimplementedIntermediateServiceServer) CreateOrganization(context.Context, *CreateOrganizationRequest) (*CreateOrganizationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateOrganization not implemented")
 }
 func (UnimplementedIntermediateServiceServer) ListOrganizations(context.Context, *ListOrganizationsRequest) (*ListOrganizationsResponse, error) {

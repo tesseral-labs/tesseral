@@ -3,8 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { CreateOrganizationRequest, ListOrganizationsRequest, ListOrganizationsResponse, SignInWithEmailRequest, SignInWithEmailResponse } from "./intermediate_pb.js";
-import { Organization } from "../../openauth/v1/openauth_pb.js";
+import { CreateOrganizationRequest, CreateOrganizationResponse, ListOrganizationsRequest, ListOrganizationsResponse, SignInWithEmailRequest, SignInWithEmailResponse } from "./intermediate_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -21,7 +20,7 @@ export const IntermediateService = {
     createOrganization: {
       name: "CreateOrganization",
       I: CreateOrganizationRequest,
-      O: Organization,
+      O: CreateOrganizationResponse,
       kind: MethodKind.Unary,
     },
     /**
