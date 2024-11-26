@@ -4,8 +4,79 @@
 // @ts-nocheck
 
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message, proto3 } from "@bufbuild/protobuf";
+import { Message, proto3, protoInt64 } from "@bufbuild/protobuf";
 import { Organization } from "../../openauth/v1/openauth_pb.js";
+
+/**
+ * @generated from message intermediate.v1.IntermediateSessionClaims
+ */
+export class IntermediateSessionClaims extends Message<IntermediateSessionClaims> {
+  /**
+   * The project ID the intermediate session is scoped to.
+   *
+   * @generated from field: string project_id = 1;
+   */
+  projectId = "";
+
+  /**
+   * The email associated with the intermediate session.
+   *
+   * @generated from field: string email = 2;
+   */
+  email = "";
+
+  /**
+   * The time the intermediate session expires.
+   *
+   * @generated from field: int64 expires_at = 3;
+   */
+  expiresAt = protoInt64.zero;
+
+  /**
+   * The time the intermediate session was issued.
+   *
+   * @generated from field: int64 issued_at = 4;
+   */
+  issuedAt = protoInt64.zero;
+
+  /**
+   * The subject of the intermediate session.
+   *
+   * @generated from field: string subject = 5;
+   */
+  subject = "";
+
+  constructor(data?: PartialMessage<IntermediateSessionClaims>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "intermediate.v1.IntermediateSessionClaims";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "project_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "expires_at", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
+    { no: 4, name: "issued_at", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
+    { no: 5, name: "subject", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): IntermediateSessionClaims {
+    return new IntermediateSessionClaims().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): IntermediateSessionClaims {
+    return new IntermediateSessionClaims().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): IntermediateSessionClaims {
+    return new IntermediateSessionClaims().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: IntermediateSessionClaims | PlainMessage<IntermediateSessionClaims> | undefined, b: IntermediateSessionClaims | PlainMessage<IntermediateSessionClaims> | undefined): boolean {
+    return proto3.util.equals(IntermediateSessionClaims, a, b);
+  }
+}
 
 /**
  * @generated from message intermediate.v1.IntermediateOrganization

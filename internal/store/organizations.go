@@ -14,39 +14,6 @@ import (
 	"github.com/openauth-dev/openauth/internal/store/queries"
 )
 
-func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrganizationRequest) (*openauthv1.Organization, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
-	if err != nil {
-		return nil, err
-	}
-	defer rollback()
-
-	projectId, err := idformat.Organization.Parse(req.Organization.ProjectId)
-	if err != nil {
-		return nil, err
-	}
-
-	createdOrganization, err := q.CreateOrganization(ctx, queries.CreateOrganizationParams{
-		ID:                                uuid.New(),
-		ProjectID:                         projectId,
-		DisplayName:                       req.Organization.DisplayName,
-		GoogleHostedDomain:                &req.Organization.GoogleHostedDomain,
-		MicrosoftTenantID:                 &req.Organization.MicrosoftTenantId,
-		OverrideLogInWithGoogleEnabled:    &req.Organization.OverrideLogInWithGoogleEnabled,
-		OverrideLogInWithMicrosoftEnabled: &req.Organization.OverrideLogInWithMicrosoftEnabled,
-		OverrideLogInWithPasswordEnabled:  &req.Organization.OverrideLogInWithPasswordEnabled,
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	if err := commit(); err != nil {
-		return nil, err
-	}
-
-	return parseOrganization(createdOrganization), nil
-}
-
 func (s *Store) CreateIntermediateOrganization(ctx context.Context, req *intermediatev1.CreateOrganizationRequest) (*intermediatev1.CreateOrganizationResponse, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
@@ -83,29 +50,6 @@ func (s *Store) CreateIntermediateOrganization(ctx context.Context, req *interme
 	return &intermediatev1.CreateOrganizationResponse{
 		Organization: parseOrganization(createdOrganization),
 	}, nil
-}
-
-func (s *Store) GetOrganization(
-	ctx context.Context,
-	req *backendv1.GetOrganizationRequest,
-) (*openauthv1.Organization, error) {
-	_, q, _, rollback, err := s.tx(ctx)
-	if err != nil {
-		return nil, err
-	}
-	defer rollback()
-
-	organizationId, err := idformat.Organization.Parse(req.Id)
-	if err != nil {
-		return nil, err
-	}
-
-	organization, err := q.GetOrganizationByID(ctx, organizationId)
-	if err != nil {
-		return nil, err
-	}
-
-	return parseOrganization(organization), nil
 }
 
 func (s *Store) ListFrontendOrganizations(

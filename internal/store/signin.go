@@ -9,6 +9,7 @@ import (
 	intermediatev1 "github.com/openauth-dev/openauth/internal/gen/intermediate/v1"
 	"github.com/openauth-dev/openauth/internal/store/idformat"
 	"github.com/openauth-dev/openauth/internal/store/queries"
+	"github.com/openauth-dev/openauth/internal/ujwt"
 )
 
 func (s *Store) SignInWithEmail(
@@ -45,15 +46,14 @@ func (s *Store) SignInWithEmail(
 			return nil, err
 		}
 
-		sessionToken, err := s.SignIntermediateSessionJWT(*ctx, &IntermediateSessionJWTClaims{
+		signingKeyId := idformat.IntermediateSessionSigningKey.Format(signingKey.ID)
+
+		sessionToken :=  ujwt.Sign(string(signingKeyId), signingKey.PrivateKey, &intermediatev1.IntermediateSessionClaims{
 			Email: req.Email,
 			ExpiresAt: expiresAt.Unix(),
 			IssuedAt: time.Now().Unix(),
-			ProjectID: req.ProjectId,
-		}, signingKey)
-		if err != nil {
-			return nil, err
-		}
+			ProjectId: req.ProjectId,
+		})
 
 		intermediateSession, err := q.CreateIntermediateSession(*ctx, queries.CreateIntermediateSessionParams{
 			ID: uuid.New(),

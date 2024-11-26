@@ -34,6 +34,19 @@ service IntermediateService {
   }
 }
 
+message IntermediateSessionClaims {
+  // The project ID the intermediate session is scoped to.
+  string project_id = 1;
+  // The email associated with the intermediate session.
+  string email = 2;
+  // The time the intermediate session expires.
+  int64 expires_at = 3;
+  // The time the intermediate session was issued.
+  int64 issued_at = 4;
+  // The subject of the intermediate session.
+  string subject = 5;
+}
+
 message IntermediateOrganization {
   string id = 1;
   string project_id = 2;
