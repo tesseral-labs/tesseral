@@ -113,6 +113,15 @@ FROM
 WHERE
     id = $1;
 
+-- name: GetOrganizationByProjectIDAndID :one
+SELECT
+    *
+FROM
+    organizations
+WHERE
+    id = $1
+    AND project_id = $2;
+
 -- name: GetProjectByID :one
 SELECT
     *
