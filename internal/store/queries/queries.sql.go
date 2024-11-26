@@ -647,6 +647,37 @@ func (q *Queries) GetOrganizationByID(ctx context.Context, id uuid.UUID) (Organi
 	return i, err
 }
 
+const getOrganizationByProjectIDAndID = `-- name: GetOrganizationByProjectIDAndID :one
+SELECT
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id
+FROM
+    organizations
+WHERE
+    id = $1
+    AND project_id = $2
+`
+
+type GetOrganizationByProjectIDAndIDParams struct {
+	ID        uuid.UUID
+	ProjectID uuid.UUID
+}
+
+func (q *Queries) GetOrganizationByProjectIDAndID(ctx context.Context, arg GetOrganizationByProjectIDAndIDParams) (Organization, error) {
+	row := q.db.QueryRow(ctx, getOrganizationByProjectIDAndID, arg.ID, arg.ProjectID)
+	var i Organization
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.DisplayName,
+		&i.OverrideLogInWithPasswordEnabled,
+		&i.OverrideLogInWithGoogleEnabled,
+		&i.OverrideLogInWithMicrosoftEnabled,
+		&i.GoogleHostedDomain,
+		&i.MicrosoftTenantID,
+	)
+	return i, err
+}
+
 const getProjectAPIKeyBySecretTokenSHA256 = `-- name: GetProjectAPIKeyBySecretTokenSHA256 :one
 SELECT
     id, project_id, create_time, revoked, secret_token_sha256
