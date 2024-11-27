@@ -1,21 +1,22 @@
 services:
   api:
-    command: ["go", "run", "./cmd/api"]
+    build:
+      dockerfile: ./cmd/api/Dockerfile
+      context: .
     depends_on:
       - kms
       - postgres
+    develop:
+      watch:
+        - action: rebuild
+          path: ./
     environment:
       API_DB: "postgres://postgres:password@postgres:5432/postgres"
     env_file:
       - .env
-    expose:
-      - 3001
-    image: golang:1.23-alpine
     ports:
       - "3001:3001"
-    volumes:
-      - .:/api:cached
-    working_dir: /api
+    tty: true
   app:
     command: bash -c "npm i --force && npm run dev"
     environment:
