@@ -63,6 +63,11 @@ func (s *Store) CreateSessionSigningKey(ctx context.Context, projectID string) (
 		return nil, err
 	}
 
+		// Commit the transaction
+	if err := commit(); err != nil {
+		return nil, err
+	}
+
 	// Create the new method verification challenge
 	sessionSigningKey, err := q.CreateSessionSigningKey(ctx, queries.CreateSessionSigningKeyParams{
 		ID:                   uuid.New(),

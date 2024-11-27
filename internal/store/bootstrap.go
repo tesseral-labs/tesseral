@@ -5,8 +5,12 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
+	"time"
 
+	"github.com/aws/aws-sdk-go-v2/service/kms"
+	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
+	"github.com/openauth-dev/openauth/internal/crypto/ecdsa"
 	"github.com/openauth-dev/openauth/internal/store/idformat"
 	"github.com/openauth-dev/openauth/internal/store/queries"
 )
@@ -41,7 +45,6 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 	// other
 	dogfoodProjectID := uuid.New()
 	dogfoodOrganizationID := uuid.New()
-	formattedDogfoodProjectID := idformat.Project.Format(dogfoodProjectID)
 
 	if _, err := q.CreateProject(ctx, queries.CreateProjectParams{
 		ID:                       dogfoodProjectID,
@@ -90,19 +93,59 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 		return nil, fmt.Errorf("create user: %w", err)
 	}
 
-	// create session signing key for the new project
-	sessionSigningKey, err := s.CreateSessionSigningKey(ctx, formattedDogfoodProjectID)
+	// create session signing keys for the new project
+	// Allow this key to be used for 7 hours
+	// - this adds a 1 hour buffer to the 6 hour key rotation period,
+	//   so that the key can be rotated before it expires without
+	//   causing existing JWT parsing to fail
+	expiresAt := time.Now().Add(time.Hour * 7)
+
+	// Generate a new symmetric key
+	privateKey, err := ecdsa.GenerateKey()
 	if err != nil {
-		return nil, fmt.Errorf("create project signing key: %w", err)
+		return nil, err
 	}
 
-	// create intermediate session signing key for the new project
-	intermediateSessionSigningKey, err := s.CreateIntermediateSessionSigningKey(ctx, formattedDogfoodProjectID)
+	privateKeyBytes, err := ecdsa.PrivateKeyBytes(privateKey)
 	if err != nil {
-		return nil, fmt.Errorf("create project intermediate session signing key: %w", err)
+		return nil, err
 	}
 
-	if err := commit(); err != nil {
+	// Encrypt the symmetric key with the KMS
+	sskEncryptOutput, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
+		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
+		KeyId:               &s.intermediateSessionSigningKeyKMSKeyID,
+		Plaintext:           privateKeyBytes,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	isskEncryptOutput, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
+		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
+		KeyId:               &s.sessionSigningKeyKmsKeyID,
+		Plaintext:           privateKeyBytes,
+	})
+
+	// Store the encrypted key in the database
+	sessionSigningKey, err := q.CreateIntermediateSessionSigningKey(ctx, queries.CreateIntermediateSessionSigningKeyParams{
+		ID:                   uuid.New(),
+		ProjectID:            dogfoodProjectID,
+		ExpireTime:           &expiresAt,
+		PrivateKeyCipherText: sskEncryptOutput.CipherTextBlob,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	intermediateSessionSigningKey, err := q.CreateIntermediateSessionSigningKey(ctx, queries.CreateIntermediateSessionSigningKeyParams{
+		ID:                   uuid.New(),
+		ProjectID:            dogfoodProjectID,
+		ExpireTime:           &expiresAt,
+		PrivateKeyCipherText: isskEncryptOutput.CipherTextBlob,
+	})
+
+		if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
@@ -111,6 +154,6 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 		BootstrapUserEmail:                 bootstrapUserEmail,
 		BootstrapUserVerySensitivePassword: bootstrapUserPassword,
 		SessionSigningKeyID:                idformat.SessionSigningKey.Format(sessionSigningKey.ID),
-		IntermediateSessionSigningKeyID:    idformat.IntermediateSession.Format(intermediateSessionSigningKey.ID),
+		IntermediateSessionSigningKeyID:    idformat.IntermediateSessionSigningKey.Format(intermediateSessionSigningKey.ID),
 	}, nil
 }

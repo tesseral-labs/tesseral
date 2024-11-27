@@ -2,7 +2,6 @@ package kms
 
 import (
 	"context"
-	"log/slog"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	awsKms "github.com/aws/aws-sdk-go-v2/service/kms"
@@ -26,7 +25,6 @@ func NewKeyManagementServiceFromConfig(cfg *aws.Config, endpoint *string) *KeyMa
 	return &KeyManagementService{
 		kms: awsKms.NewFromConfig(*cfg, func(o *awsKms.Options) {
 			if endpoint != nil {
-				slog.Info("endpoint", "endpoint", *endpoint)
 				o.BaseEndpoint = endpoint
 			}
 		}),
@@ -46,7 +44,6 @@ func (k *KeyManagementService) Decrypt(ctx context.Context, params *awsKms.Decry
 }
 
 func (k *KeyManagementService) Encrypt(ctx context.Context, params *awsKms.EncryptInput) (*KeyManagementServiceEncryptResult, error) {
-	slog.Info("params", "encryptParams", params)
 	encryptOutput, err := k.kms.Encrypt(ctx, params)
 	if err != nil {
 		return &KeyManagementServiceEncryptResult{}, err
