@@ -32,7 +32,7 @@ func (s *Store) SignInWithEmail(
 		return nil, err
 	}
 
-	if len(users) > 0 {
+	if users != nil {
 		// TODO: Implement factor checking before issuing a session
 		return nil, errors.New("not implemented")
 	} else {

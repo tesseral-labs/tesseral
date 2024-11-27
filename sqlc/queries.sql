@@ -17,8 +17,8 @@ RETURNING
     *;
 
 -- name: CreateIntermediateSessionSigningKey :one
-INSERT INTO intermediate_session_signing_keys (id, project_id, public_key, private_key_cipher_text, expire_time)
-    VALUES ($1, $2, $3, $4, $5)
+INSERT INTO intermediate_session_signing_keys (id, project_id, private_key_cipher_text, expire_time)
+    VALUES ($1, $2, $3, $4)
 RETURNING
     *;
 
@@ -41,8 +41,8 @@ RETURNING
     *;
 
 -- name: CreateSessionSigningKey :one
-INSERT INTO session_signing_keys (id, project_id, public_key, private_key_cipher_text, expire_time)
-    VALUES ($1, $2, $3, $4, $5)
+INSERT INTO session_signing_keys (id, project_id, private_key_cipher_text, expire_time)
+    VALUES ($1, $2, $3, $4)
 RETURNING
     *;
 

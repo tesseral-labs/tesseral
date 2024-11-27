@@ -7,7 +7,6 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	awsKms "github.com/aws/aws-sdk-go-v2/service/kms"
-	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 )
 
 type KeyManagementService struct {
@@ -32,27 +31,6 @@ func NewKeyManagementServiceFromConfig(cfg *aws.Config) *KeyManagementService {
 			o.BaseEndpoint = &endpoint
 		}),
 	}
-}
-
-func (k *KeyManagementService) CreateKey(ctx context.Context, params *awsKms.CreateKeyInput) (*awsKms.CreateKeyOutput, error) {
-	createKeyOutput, err := k.kms.CreateKey(ctx, &awsKms.CreateKeyInput{
-		// TODO: Make sure our description is appropriately set for the project the key belongs to
-		Description:           aws.String("Example KMS Key with auto-rotation enabled"),
-		KeyUsage:              types.KeyUsageTypeEncryptDecrypt,
-		CustomerMasterKeySpec: types.CustomerMasterKeySpecSymmetricDefault,
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	keyID := *createKeyOutput.KeyMetadata.KeyId
-	if _, err := k.kms.EnableKeyRotation(context.TODO(), &awsKms.EnableKeyRotationInput{
-		KeyId: &keyID,
-	}); err != nil {
-		return nil, err
-	}
-
-	return createKeyOutput, nil
 }
 
 func (k *KeyManagementService) Decrypt(ctx context.Context, params *awsKms.DecryptInput) (*KeyManagementServiceDecryptResult, error) {

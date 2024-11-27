@@ -3,7 +3,7 @@
 --
 
 -- Dumped from database version 15.8 (Debian 15.8-1.pgdg120+1)
--- Dumped by pg_dump version 17.0 (Homebrew)
+-- Dumped by pg_dump version 17.0
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -41,7 +41,6 @@ SET default_table_access_method = heap;
 CREATE TABLE public.intermediate_session_signing_keys (
     id uuid NOT NULL,
     project_id uuid NOT NULL,
-    public_key bytea NOT NULL,
     private_key_cipher_text bytea NOT NULL,
     create_time timestamp with time zone DEFAULT now() NOT NULL,
     expire_time timestamp with time zone NOT NULL
@@ -157,7 +156,6 @@ ALTER TABLE public.schema_migrations OWNER TO postgres;
 CREATE TABLE public.session_signing_keys (
     id uuid NOT NULL,
     project_id uuid NOT NULL,
-    public_key bytea NOT NULL,
     private_key_cipher_text bytea NOT NULL,
     create_time timestamp with time zone DEFAULT now() NOT NULL,
     expire_time timestamp with time zone NOT NULL
