@@ -5,7 +5,6 @@ import (
 	"errors"
 
 	"connectrpc.com/connect"
-	"github.com/openauth-dev/openauth/internal/jwt"
 	"github.com/openauth-dev/openauth/internal/store"
 )
 
@@ -16,7 +15,7 @@ var ErrInvalidSessionToken = errors.New("invalid session token")
 //	"/frontend.v1.Frontend/SignInWithEmail",
 //}
 
-func New(j *jwt.JWT, s *store.Store) connect.UnaryInterceptorFunc {
+func New(s *store.Store) connect.UnaryInterceptorFunc {
 	return func(next connect.UnaryFunc) connect.UnaryFunc {
 		return func(ctx context.Context, req connect.AnyRequest) (connect.AnyResponse, error) {
 			//for _, rpc := range skipRPCs {

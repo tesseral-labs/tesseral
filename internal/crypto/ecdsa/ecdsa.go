@@ -5,80 +5,44 @@ import (
 	"crypto/elliptic"
 	"crypto/rand"
 	"crypto/x509"
-	"encoding/pem"
-	"errors"
-
-	"github.com/golang-jwt/jwt/v5"
 )
 
-var ErrUnableToDecodePrivateKeyPEMBlock = errors.New("failed to decode PEM block containing private key")
-var ErrUnableToDecodePublicKeyPEMBlock = errors.New("failed to decode PEM block containing public key")
-
-type ECDSAKeyPair struct {
-	PrivateKey *ecdsa.PrivateKey
-	PublicKey  *ecdsa.PublicKey
+func GenerateKey() (*ecdsa.PrivateKey, error) {
+	return ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
 }
 
-// GenerateECDSAKeyPair generates an ECDSA private and public key pair
-func New() (*ECDSAKeyPair, error) {
-	// Use the P-256 curve (also known as prime256v1)
-	privateKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
-	if err != nil {
-		return nil, err
-	}
-	return &ECDSAKeyPair{
-		PrivateKey: privateKey,
-		PublicKey:  &privateKey.PublicKey,
-	}, nil
-}
-
-// NewFromBytes creates an ECDSA key pair from the given private and public key bytes
-func NewFromBytes(privateKeyBytes []byte) (*ECDSAKeyPair, error) {
-	privateKeyBlock, _ := pem.Decode(privateKeyBytes)
-	if privateKeyBlock == nil || privateKeyBlock.Type != "EC PRIVATE KEY" {
-		return nil, ErrUnableToDecodePrivateKeyPEMBlock
-	}
-	privateKey, err := jwt.ParseECPrivateKeyFromPEM(privateKeyBlock.Bytes)
+func PrivateKeyBytes(privateKey *ecdsa.PrivateKey) ([]byte, error) {
+	privateKeyBytes, err := x509.MarshalECPrivateKey(privateKey)
 	if err != nil {
 		return nil, err
 	}
 
-	return &ECDSAKeyPair{
-		PrivateKey: privateKey,
-		PublicKey:  &privateKey.PublicKey,
-	}, nil
+	return privateKeyBytes, nil
 }
 
-// SavePrivateKey saves the ECDSA private key to a PEM file
-func (k *ECDSAKeyPair) PrivateKeyPEM() ([]byte, error) {
-	// Marshal the private key into ASN.1 DER format
-	keyBytes, err := x509.MarshalECPrivateKey(k.PrivateKey)
+func PrivateKeyFromBytes(privateKeyBytes []byte) (*ecdsa.PrivateKey, error) {
+	privateKey, err := x509.ParseECPrivateKey(privateKeyBytes)
 	if err != nil {
 		return nil, err
 	}
 
-	// Create a PEM block for the private key
-	privateKeyPEM := pem.EncodeToMemory(&pem.Block{
-		Type:  "EC PRIVATE KEY",
-		Bytes: keyBytes,
-	})
-
-	return privateKeyPEM, nil
+	return privateKey, nil
 }
 
-// SavePublicKey saves the ECDSA public key to a PEM file
-func (k *ECDSAKeyPair) PublicKeyPEM() ([]byte, error) {
-	// Marshal the public key into ASN.1 DER format
-	keyBytes, err := x509.MarshalPKIXPublicKey(k.PublicKey)
+func PublicKeyBytes(publicKey *ecdsa.PublicKey) ([]byte, error) {
+	publicKeyBytes, err := x509.MarshalPKIXPublicKey(publicKey)
 	if err != nil {
 		return nil, err
 	}
 
-	// Create a PEM block for the public key
-	publicKeyPEM := pem.EncodeToMemory(&pem.Block{
-		Type:  "PUBLIC KEY",
-		Bytes: keyBytes,
-	})
+	return publicKeyBytes, nil
+}
 
-	return publicKeyPEM, nil
+func PublicKeyFromBytes(publicKeyBytes []byte) (*ecdsa.PublicKey, error) {
+	publicKey, err := x509.ParsePKIXPublicKey(publicKeyBytes)
+	if err != nil {
+		return nil, err
+	}
+
+	return publicKey.(*ecdsa.PublicKey), nil
 }

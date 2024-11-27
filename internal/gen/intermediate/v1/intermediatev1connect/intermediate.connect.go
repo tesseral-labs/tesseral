@@ -33,6 +33,12 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
+	// IntermediateServiceCreateOrganizationProcedure is the fully-qualified name of the
+	// IntermediateService's CreateOrganization RPC.
+	IntermediateServiceCreateOrganizationProcedure = "/intermediate.v1.IntermediateService/CreateOrganization"
+	// IntermediateServiceListOrganizationsProcedure is the fully-qualified name of the
+	// IntermediateService's ListOrganizations RPC.
+	IntermediateServiceListOrganizationsProcedure = "/intermediate.v1.IntermediateService/ListOrganizations"
 	// IntermediateServiceSignInWithEmailProcedure is the fully-qualified name of the
 	// IntermediateService's SignInWithEmail RPC.
 	IntermediateServiceSignInWithEmailProcedure = "/intermediate.v1.IntermediateService/SignInWithEmail"
@@ -40,12 +46,18 @@ const (
 
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
 var (
-	intermediateServiceServiceDescriptor               = v1.File_intermediate_v1_intermediate_proto.Services().ByName("IntermediateService")
-	intermediateServiceSignInWithEmailMethodDescriptor = intermediateServiceServiceDescriptor.Methods().ByName("SignInWithEmail")
+	intermediateServiceServiceDescriptor                  = v1.File_intermediate_v1_intermediate_proto.Services().ByName("IntermediateService")
+	intermediateServiceCreateOrganizationMethodDescriptor = intermediateServiceServiceDescriptor.Methods().ByName("CreateOrganization")
+	intermediateServiceListOrganizationsMethodDescriptor  = intermediateServiceServiceDescriptor.Methods().ByName("ListOrganizations")
+	intermediateServiceSignInWithEmailMethodDescriptor    = intermediateServiceServiceDescriptor.Methods().ByName("SignInWithEmail")
 )
 
 // IntermediateServiceClient is a client for the intermediate.v1.IntermediateService service.
 type IntermediateServiceClient interface {
+	// Creates a new organization.
+	CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.CreateOrganizationResponse], error)
+	// Gets a list of organizations.
+	ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error)
 	// Creates a new intermediate session or session and cookies the requester.
 	SignInWithEmail(context.Context, *connect.Request[v1.SignInWithEmailRequest]) (*connect.Response[v1.SignInWithEmailResponse], error)
 }
@@ -60,6 +72,18 @@ type IntermediateServiceClient interface {
 func NewIntermediateServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) IntermediateServiceClient {
 	baseURL = strings.TrimRight(baseURL, "/")
 	return &intermediateServiceClient{
+		createOrganization: connect.NewClient[v1.CreateOrganizationRequest, v1.CreateOrganizationResponse](
+			httpClient,
+			baseURL+IntermediateServiceCreateOrganizationProcedure,
+			connect.WithSchema(intermediateServiceCreateOrganizationMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		listOrganizations: connect.NewClient[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse](
+			httpClient,
+			baseURL+IntermediateServiceListOrganizationsProcedure,
+			connect.WithSchema(intermediateServiceListOrganizationsMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
 		signInWithEmail: connect.NewClient[v1.SignInWithEmailRequest, v1.SignInWithEmailResponse](
 			httpClient,
 			baseURL+IntermediateServiceSignInWithEmailProcedure,
@@ -71,7 +95,19 @@ func NewIntermediateServiceClient(httpClient connect.HTTPClient, baseURL string,
 
 // intermediateServiceClient implements IntermediateServiceClient.
 type intermediateServiceClient struct {
-	signInWithEmail *connect.Client[v1.SignInWithEmailRequest, v1.SignInWithEmailResponse]
+	createOrganization *connect.Client[v1.CreateOrganizationRequest, v1.CreateOrganizationResponse]
+	listOrganizations  *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
+	signInWithEmail    *connect.Client[v1.SignInWithEmailRequest, v1.SignInWithEmailResponse]
+}
+
+// CreateOrganization calls intermediate.v1.IntermediateService.CreateOrganization.
+func (c *intermediateServiceClient) CreateOrganization(ctx context.Context, req *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.CreateOrganizationResponse], error) {
+	return c.createOrganization.CallUnary(ctx, req)
+}
+
+// ListOrganizations calls intermediate.v1.IntermediateService.ListOrganizations.
+func (c *intermediateServiceClient) ListOrganizations(ctx context.Context, req *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error) {
+	return c.listOrganizations.CallUnary(ctx, req)
 }
 
 // SignInWithEmail calls intermediate.v1.IntermediateService.SignInWithEmail.
@@ -82,6 +118,10 @@ func (c *intermediateServiceClient) SignInWithEmail(ctx context.Context, req *co
 // IntermediateServiceHandler is an implementation of the intermediate.v1.IntermediateService
 // service.
 type IntermediateServiceHandler interface {
+	// Creates a new organization.
+	CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.CreateOrganizationResponse], error)
+	// Gets a list of organizations.
+	ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error)
 	// Creates a new intermediate session or session and cookies the requester.
 	SignInWithEmail(context.Context, *connect.Request[v1.SignInWithEmailRequest]) (*connect.Response[v1.SignInWithEmailResponse], error)
 }
@@ -92,6 +132,18 @@ type IntermediateServiceHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
+	intermediateServiceCreateOrganizationHandler := connect.NewUnaryHandler(
+		IntermediateServiceCreateOrganizationProcedure,
+		svc.CreateOrganization,
+		connect.WithSchema(intermediateServiceCreateOrganizationMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	intermediateServiceListOrganizationsHandler := connect.NewUnaryHandler(
+		IntermediateServiceListOrganizationsProcedure,
+		svc.ListOrganizations,
+		connect.WithSchema(intermediateServiceListOrganizationsMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
 	intermediateServiceSignInWithEmailHandler := connect.NewUnaryHandler(
 		IntermediateServiceSignInWithEmailProcedure,
 		svc.SignInWithEmail,
@@ -100,6 +152,10 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 	)
 	return "/intermediate.v1.IntermediateService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
+		case IntermediateServiceCreateOrganizationProcedure:
+			intermediateServiceCreateOrganizationHandler.ServeHTTP(w, r)
+		case IntermediateServiceListOrganizationsProcedure:
+			intermediateServiceListOrganizationsHandler.ServeHTTP(w, r)
 		case IntermediateServiceSignInWithEmailProcedure:
 			intermediateServiceSignInWithEmailHandler.ServeHTTP(w, r)
 		default:
@@ -110,6 +166,14 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 
 // UnimplementedIntermediateServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedIntermediateServiceHandler struct{}
+
+func (UnimplementedIntermediateServiceHandler) CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.CreateOrganizationResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("intermediate.v1.IntermediateService.CreateOrganization is not implemented"))
+}
+
+func (UnimplementedIntermediateServiceHandler) ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("intermediate.v1.IntermediateService.ListOrganizations is not implemented"))
+}
 
 func (UnimplementedIntermediateServiceHandler) SignInWithEmail(context.Context, *connect.Request[v1.SignInWithEmailRequest]) (*connect.Response[v1.SignInWithEmailResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("intermediate.v1.IntermediateService.SignInWithEmail is not implemented"))

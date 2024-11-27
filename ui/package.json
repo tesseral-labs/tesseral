@@ -11,7 +11,7 @@
     "esbuild:watch": "UI_BUILD_IS_DEV=1 node ./build.mjs --watch=forever",
     "lint": "eslint",
     "prepare": "husky",
-    "serve": "http-server -c-1 -p 8082 -P http://localhost:8082?",
+    "serve": "http-server -c-1 -p 3002 -P http://localhost:3002?",
     "serve:docker": "./bin/serve-public",
     "tailwind": "tailwindcss -i ./src/index.css -o ./public/index.css",
     "tailwind:watch": "tailwindcss -i ./src/index.css -o ./public/index.css --watch"

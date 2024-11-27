@@ -20,5 +20,5 @@ COPY --from=build /usr/share/zoneinfo /usr/share/zoneinfo
 COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=build /work/api /api
 
-EXPOSE 8081
+EXPOSE 3001
 ENTRYPOINT ["/api"]

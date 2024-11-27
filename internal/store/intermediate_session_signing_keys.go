@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
+	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
 	openauthecdsa "github.com/openauth-dev/openauth/internal/crypto/ecdsa"
 	"github.com/openauth-dev/openauth/internal/store/idformat"
@@ -21,14 +22,14 @@ type IntermediateSessionSigningKey struct {
 	PrivateKey *ecdsa.PrivateKey
 }
 
-func (s *Store) CreateIntermediateSessionSigningKey(ctx context.Context, projectID string) (*IntermediateSessionSigningKey, error) {
+func (s *Store) CreateIntermediateSessionSigningKey(ctx context.Context, projectId string) (*IntermediateSessionSigningKey, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
 	defer rollback()
 
-	projectId, err := idformat.Project.Parse(projectID)
+	projectID, err := idformat.Project.Parse(projectId)
 	if err != nil {
 		return nil, err
 	}
@@ -40,27 +41,27 @@ func (s *Store) CreateIntermediateSessionSigningKey(ctx context.Context, project
 	expiresAt := time.Now().Add(time.Hour * 7)
 
 	// Generate a new symmetric key
-	ecdsaKeyPair, err := openauthecdsa.New()
+	privateKey, err := openauthecdsa.GenerateKey()
 	if err != nil {
 		return nil, err
 	}
 
-	// Extract the private key
-	privateKeyBytes, err := ecdsaKeyPair.PrivateKeyPEM()
+	privateKeyBytes, err := openauthecdsa.PrivateKeyBytes(privateKey)
 	if err != nil {
 		return nil, err
 	}
 
 	// Encrypt the symmetric key with the KMS
 	encryptOutput, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
-		KeyId:     &s.intermediateSessionSigningKeyKMSKeyID,
-		Plaintext: privateKeyBytes,
+		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
+		KeyId:               &s.intermediateSessionSigningKeyKMSKeyID,
+		Plaintext:           privateKeyBytes,
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	publicKey, err := ecdsaKeyPair.PublicKeyPEM()
+	publicKeyBytes, err := openauthecdsa.PublicKeyBytes(&privateKey.PublicKey)
 	if err != nil {
 		return nil, err
 	}
@@ -68,9 +69,9 @@ func (s *Store) CreateIntermediateSessionSigningKey(ctx context.Context, project
 	// Store the encrypted key in the database
 	createdIntermediateSessionSigningKey, err := q.CreateIntermediateSessionSigningKey(ctx, queries.CreateIntermediateSessionSigningKeyParams{
 		ID:                   uuid.New(),
-		ProjectID:            projectId,
+		ProjectID:            projectID,
 		ExpireTime:           &expiresAt,
-		PublicKey:            publicKey,
+		PublicKey:            publicKeyBytes,
 		PrivateKeyCipherText: encryptOutput.CipherTextBlob,
 	})
 	if err != nil {
@@ -81,14 +82,15 @@ func (s *Store) CreateIntermediateSessionSigningKey(ctx context.Context, project
 		return nil, err
 	}
 
-	return parseIntermediateSessionSigningKey(&createdIntermediateSessionSigningKey, ecdsaKeyPair), nil
+	return parseIntermediateSessionSigningKey(&createdIntermediateSessionSigningKey, privateKey), nil
 }
 
 func (s *Store) GetIntermediateSessionSigningKeyByID(ctx context.Context, id string) (*IntermediateSessionSigningKey, error) {
-	_, q, _, _, err := s.tx(ctx)
+	_, q, _, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
+	defer rollback()
 
 	intermediateSessionSigningKeyID, err := idformat.IntermediateSessionSigningKey.Parse(id)
 	if err != nil {
@@ -102,31 +104,99 @@ func (s *Store) GetIntermediateSessionSigningKeyByID(ctx context.Context, id str
 	}
 
 	// Decrypt the signing key using KMS
-	signingKey, err := s.kms.Decrypt(ctx, &kms.DecryptInput{
-		CiphertextBlob: intermediateSessionSigningKey.PrivateKeyCipherText,
-		KeyId:          &s.intermediateSessionSigningKeyKMSKeyID,
+	decryptOutput, err := s.kms.Decrypt(ctx, &kms.DecryptInput{
+		CiphertextBlob:      intermediateSessionSigningKey.PrivateKeyCipherText,
+		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
+		KeyId:               &s.intermediateSessionSigningKeyKMSKeyID,
 	})
 	if err != nil {
 		return nil, err
 	}
 
 	// Create an ECDSA key pair from the decrypted signing key
-	ecdsaKeyPair, err := openauthecdsa.NewFromBytes(signingKey.Value)
+	privateKey, err := openauthecdsa.PrivateKeyFromBytes(decryptOutput.Value)
 	if err != nil {
 		return nil, err
 	}
 
 	// Return the intermediate session signing key with the decrypted private key
-	return parseIntermediateSessionSigningKey(&intermediateSessionSigningKey, ecdsaKeyPair), nil
+	return parseIntermediateSessionSigningKey(&intermediateSessionSigningKey, privateKey), nil
 }
 
-func parseIntermediateSessionSigningKey(issk *queries.IntermediateSessionSigningKey, keyPair *openauthecdsa.ECDSAKeyPair) *IntermediateSessionSigningKey {
+func (s *Store) GetIntermediateSessionSigningKeyByProjectID(ctx context.Context, projectId string) (*IntermediateSessionSigningKey, error) {
+	_, q, _, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	projectID, err := idformat.Project.Parse(projectId)
+	if err != nil {
+		return nil, err
+	}
+
+	// Fetch the raw record from the database
+	intermediateSessionSigningKey, err := q.GetIntermediateSessionSigningKeyByProjectID(ctx, projectID)
+	if err != nil {
+		return nil, err
+	}
+
+	// Decrypt the signing key using KMS
+	decryptOutput, err := s.kms.Decrypt(ctx, &kms.DecryptInput{
+		CiphertextBlob:      intermediateSessionSigningKey.PrivateKeyCipherText,
+		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
+		KeyId:               &s.intermediateSessionSigningKeyKMSKeyID,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	// Create an ECDSA key pair from the decrypted signing key
+	privateKey, err := openauthecdsa.PrivateKeyFromBytes(decryptOutput.Value)
+	if err != nil {
+		return nil, err
+	}
+
+	// Return the intermediate session signing key with the decrypted private key
+	return parseIntermediateSessionSigningKey(&intermediateSessionSigningKey, privateKey), nil
+}
+
+func (s *Store) GetIntermediateSessionPublicKeyByProjectID(ctx context.Context, projectId string) (*ecdsa.PublicKey, error) {
+	_, q, _, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	projectID, err := idformat.Project.Parse(projectId)
+	if err != nil {
+		return nil, err
+	}
+
+	// Fetch the raw record from the database
+	intermediateSessionSigningKey, err := q.GetIntermediateSessionSigningKeyByProjectID(ctx, projectID)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create an ECDSA key pair from the decrypted signing key
+	publicKey, err := openauthecdsa.PublicKeyFromBytes(intermediateSessionSigningKey.PublicKey)
+	if err != nil {
+		return nil, err
+	}
+
+	return publicKey, nil
+}
+
+func parseIntermediateSessionSigningKey(issk *queries.IntermediateSessionSigningKey, privateKey *ecdsa.PrivateKey) *IntermediateSessionSigningKey {
+	publicKey := &privateKey.PublicKey
+
 	return &IntermediateSessionSigningKey{
 		ID:         issk.ID,
 		ProjectID:  issk.ProjectID,
 		CreateTime: *issk.CreateTime,
 		ExpireTime: *issk.ExpireTime,
-		PublicKey:  keyPair.PublicKey,
-		PrivateKey: keyPair.PrivateKey,
+		PublicKey:  publicKey,
+		PrivateKey: privateKey,
 	}
 }

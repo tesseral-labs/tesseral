@@ -7,12 +7,146 @@ import (
 	"github.com/google/uuid"
 	"github.com/openauth-dev/openauth/internal/authn"
 	backendv1 "github.com/openauth-dev/openauth/internal/gen/backend/v1"
+	frontendv1 "github.com/openauth-dev/openauth/internal/gen/frontend/v1"
+	intermediatev1 "github.com/openauth-dev/openauth/internal/gen/intermediate/v1"
 	openauthv1 "github.com/openauth-dev/openauth/internal/gen/openauth/v1"
 	"github.com/openauth-dev/openauth/internal/store/idformat"
 	"github.com/openauth-dev/openauth/internal/store/queries"
 )
 
-func (s *Store) ListOrganizations(ctx context.Context, req *backendv1.ListOrganizationsRequest) (*backendv1.ListOrganizationsResponse, error) {
+func (s *Store) CreateIntermediateOrganization(ctx context.Context, req *intermediatev1.CreateOrganizationRequest) (*intermediatev1.CreateOrganizationResponse, error) {
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	projectId, err := idformat.Project.Parse(req.ProjectId)
+	if err != nil {
+		return nil, err
+	}
+
+	project, err := q.GetProjectByID(ctx, projectId)
+	if err != nil {
+		return nil, err
+	}
+
+	createdOrganization, err := q.CreateOrganization(ctx, queries.CreateOrganizationParams{
+		ID:                                uuid.New(),
+		ProjectID:                         projectId,
+		DisplayName:                       req.DisplayName,
+		OverrideLogInWithGoogleEnabled:    &project.LogInWithGoogleEnabled,
+		OverrideLogInWithMicrosoftEnabled: &project.LogInWithMicrosoftEnabled,
+		OverrideLogInWithPasswordEnabled:  &project.LogInWithPasswordEnabled,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if err := commit(); err != nil {
+		return nil, err
+	}
+
+	return &intermediatev1.CreateOrganizationResponse{
+		Organization: parseOrganization(createdOrganization),
+	}, nil
+}
+
+func (s *Store) ListFrontendOrganizations(
+	ctx context.Context,
+	req *frontendv1.ListOrganizationsRequest,
+) (*frontendv1.ListOrganizationsResponse, error) {
+	_, q, _, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	projectId, err := idformat.Project.Parse(req.ProjectId)
+	if err != nil {
+		return nil, err
+	}
+
+	limit := 10
+	organizationRecords, err := q.ListOrganizationsByProjectIdAndEmail(ctx, queries.ListOrganizationsByProjectIdAndEmailParams{
+		ProjectID:     projectId,
+		VerifiedEmail: &req.Email,
+		Limit:         int32(limit + 1),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	organizations := []*openauthv1.Organization{}
+	for _, organization := range organizationRecords {
+		organizations = append(organizations, &openauthv1.Organization{
+			Id:                                organization.ID.String(),
+			DisplayName:                       organization.DisplayName,
+			OverrideLogInWithGoogleEnabled:    *organization.OverrideLogInWithGoogleEnabled,
+			OverrideLogInWithMicrosoftEnabled: *organization.OverrideLogInWithMicrosoftEnabled,
+			OverrideLogInWithPasswordEnabled:  *organization.OverrideLogInWithPasswordEnabled,
+		})
+	}
+
+	var nextPageToken string
+	if len(organizations) == limit+1 {
+		nextPageToken = s.pageEncoder.Marshal(organizations[limit].Id)
+		organizations = organizations[:limit]
+	}
+
+	return &frontendv1.ListOrganizationsResponse{
+		Organizations: organizations,
+		NextPageToken: nextPageToken,
+	}, nil
+}
+
+func (s *Store) ListIntermediateOrganizations(
+	ctx context.Context,
+	req *intermediatev1.ListOrganizationsRequest,
+) (*intermediatev1.ListOrganizationsResponse, error) {
+	_, q, _, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	projectId, err := idformat.Project.Parse(req.ProjectId)
+	if err != nil {
+		return nil, err
+	}
+
+	limit := 10
+	organizationRecords, err := q.ListOrganizationsByProjectIdAndEmail(ctx, queries.ListOrganizationsByProjectIdAndEmailParams{
+		ProjectID:     projectId,
+		VerifiedEmail: &req.Email,
+		Limit:         int32(limit + 1),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	organizations := []*intermediatev1.IntermediateOrganization{}
+	for _, organization := range organizationRecords {
+		organizations = append(organizations, parseIntermediateOrganization(organization))
+	}
+
+	var nextPageToken string
+	if len(organizations) == limit+1 {
+		nextPageToken = s.pageEncoder.Marshal(organizations[limit].Id)
+		organizations = organizations[:limit]
+	}
+
+	return &intermediatev1.ListOrganizationsResponse{
+		Organizations: organizations,
+		NextPageToken: nextPageToken,
+	}, nil
+}
+
+// TODO: Ensure that this function can only be called via a backend service reuqest
+func (s *Store) ListOrganizations(
+	ctx context.Context,
+	req *backendv1.ListOrganizationsRequest,
+) (*backendv1.ListOrganizationsResponse, error) {
 	_, q, _, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -162,6 +296,16 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *backendv1.UpdateOrg
 	}
 
 	return parseOrganization(updatedOrganization), nil
+}
+
+func parseIntermediateOrganization(organization queries.Organization) *intermediatev1.IntermediateOrganization {
+	return &intermediatev1.IntermediateOrganization{
+		Id:                        organization.ID.String(),
+		DisplayName:               organization.DisplayName,
+		LogInWithGoogleEnabled:    *organization.OverrideLogInWithGoogleEnabled,
+		LogInWithMicrosoftEnabled: *organization.OverrideLogInWithMicrosoftEnabled,
+		LogInWithPasswordEnabled:  *organization.OverrideLogInWithPasswordEnabled,
+	}
 }
 
 func parseOrganization(organization queries.Organization) *openauthv1.Organization {

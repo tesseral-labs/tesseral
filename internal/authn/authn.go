@@ -6,11 +6,15 @@ import (
 
 	"github.com/google/uuid"
 	backendv1 "github.com/openauth-dev/openauth/internal/gen/backend/v1"
+	intermediatev1 "github.com/openauth-dev/openauth/internal/gen/intermediate/v1"
+	openauthv1 "github.com/openauth-dev/openauth/internal/gen/openauth/v1"
 	"github.com/openauth-dev/openauth/internal/store/idformat"
 )
 
 type ContextData struct {
-	ProjectAPIKey *backendv1.ProjectAPIKey
+	ProjectAPIKey       *backendv1.ProjectAPIKey
+	IntermediateSession *intermediatev1.IntermediateSessionClaims
+	Session             *openauthv1.SessionClaims
 }
 
 type ctxKey struct{}

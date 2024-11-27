@@ -4,16 +4,336 @@
 // @ts-nocheck
 
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message, proto3 } from "@bufbuild/protobuf";
+import { Message, proto3, protoInt64 } from "@bufbuild/protobuf";
+import { Organization } from "../../openauth/v1/openauth_pb.js";
+
+/**
+ * @generated from message intermediate.v1.IntermediateSessionClaims
+ */
+export class IntermediateSessionClaims extends Message<IntermediateSessionClaims> {
+  /**
+   * The project ID the intermediate session is scoped to.
+   *
+   * @generated from field: string project_id = 1;
+   */
+  projectId = "";
+
+  /**
+   * The email associated with the intermediate session.
+   *
+   * @generated from field: string email = 2;
+   */
+  email = "";
+
+  /**
+   * The time the intermediate session expires.
+   *
+   * @generated from field: int64 expires_at = 3;
+   */
+  expiresAt = protoInt64.zero;
+
+  /**
+   * The time the intermediate session was issued.
+   *
+   * @generated from field: int64 issued_at = 4;
+   */
+  issuedAt = protoInt64.zero;
+
+  /**
+   * The subject of the intermediate session.
+   *
+   * @generated from field: string subject = 5;
+   */
+  subject = "";
+
+  constructor(data?: PartialMessage<IntermediateSessionClaims>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "intermediate.v1.IntermediateSessionClaims";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "project_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "expires_at", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
+    { no: 4, name: "issued_at", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
+    { no: 5, name: "subject", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): IntermediateSessionClaims {
+    return new IntermediateSessionClaims().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): IntermediateSessionClaims {
+    return new IntermediateSessionClaims().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): IntermediateSessionClaims {
+    return new IntermediateSessionClaims().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: IntermediateSessionClaims | PlainMessage<IntermediateSessionClaims> | undefined, b: IntermediateSessionClaims | PlainMessage<IntermediateSessionClaims> | undefined): boolean {
+    return proto3.util.equals(IntermediateSessionClaims, a, b);
+  }
+}
+
+/**
+ * @generated from message intermediate.v1.IntermediateOrganization
+ */
+export class IntermediateOrganization extends Message<IntermediateOrganization> {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id = "";
+
+  /**
+   * @generated from field: string project_id = 2;
+   */
+  projectId = "";
+
+  /**
+   * @generated from field: string display_name = 3;
+   */
+  displayName = "";
+
+  /**
+   * @generated from field: bool log_in_with_google_enabled = 4;
+   */
+  logInWithGoogleEnabled = false;
+
+  /**
+   * @generated from field: bool log_in_with_microsoft_enabled = 5;
+   */
+  logInWithMicrosoftEnabled = false;
+
+  /**
+   * @generated from field: bool log_in_with_password_enabled = 6;
+   */
+  logInWithPasswordEnabled = false;
+
+  constructor(data?: PartialMessage<IntermediateOrganization>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "intermediate.v1.IntermediateOrganization";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "project_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "display_name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "log_in_with_google_enabled", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
+    { no: 5, name: "log_in_with_microsoft_enabled", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
+    { no: 6, name: "log_in_with_password_enabled", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): IntermediateOrganization {
+    return new IntermediateOrganization().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): IntermediateOrganization {
+    return new IntermediateOrganization().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): IntermediateOrganization {
+    return new IntermediateOrganization().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: IntermediateOrganization | PlainMessage<IntermediateOrganization> | undefined, b: IntermediateOrganization | PlainMessage<IntermediateOrganization> | undefined): boolean {
+    return proto3.util.equals(IntermediateOrganization, a, b);
+  }
+}
+
+/**
+ * @generated from message intermediate.v1.CreateOrganizationRequest
+ */
+export class CreateOrganizationRequest extends Message<CreateOrganizationRequest> {
+  /**
+   * The project ID to create the organization for.
+   *
+   * @generated from field: string project_id = 1;
+   */
+  projectId = "";
+
+  /**
+   * The display name of the organization.
+   *
+   * @generated from field: string display_name = 2;
+   */
+  displayName = "";
+
+  constructor(data?: PartialMessage<CreateOrganizationRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "intermediate.v1.CreateOrganizationRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "project_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "display_name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateOrganizationRequest {
+    return new CreateOrganizationRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): CreateOrganizationRequest {
+    return new CreateOrganizationRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): CreateOrganizationRequest {
+    return new CreateOrganizationRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: CreateOrganizationRequest | PlainMessage<CreateOrganizationRequest> | undefined, b: CreateOrganizationRequest | PlainMessage<CreateOrganizationRequest> | undefined): boolean {
+    return proto3.util.equals(CreateOrganizationRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message intermediate.v1.CreateOrganizationResponse
+ */
+export class CreateOrganizationResponse extends Message<CreateOrganizationResponse> {
+  /**
+   * @generated from field: openauth.v1.Organization organization = 1;
+   */
+  organization?: Organization;
+
+  constructor(data?: PartialMessage<CreateOrganizationResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "intermediate.v1.CreateOrganizationResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "organization", kind: "message", T: Organization },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateOrganizationResponse {
+    return new CreateOrganizationResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): CreateOrganizationResponse {
+    return new CreateOrganizationResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): CreateOrganizationResponse {
+    return new CreateOrganizationResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: CreateOrganizationResponse | PlainMessage<CreateOrganizationResponse> | undefined, b: CreateOrganizationResponse | PlainMessage<CreateOrganizationResponse> | undefined): boolean {
+    return proto3.util.equals(CreateOrganizationResponse, a, b);
+  }
+}
+
+/**
+ * @generated from message intermediate.v1.ListOrganizationsRequest
+ */
+export class ListOrganizationsRequest extends Message<ListOrganizationsRequest> {
+  /**
+   * The project ID to list intermediate organizations for.
+   *
+   * @generated from field: string project_id = 1;
+   */
+  projectId = "";
+
+  /**
+   * The email associated with the intermediate session.
+   *
+   * @generated from field: string email = 2;
+   */
+  email = "";
+
+  constructor(data?: PartialMessage<ListOrganizationsRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "intermediate.v1.ListOrganizationsRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "project_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ListOrganizationsRequest {
+    return new ListOrganizationsRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ListOrganizationsRequest {
+    return new ListOrganizationsRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ListOrganizationsRequest {
+    return new ListOrganizationsRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: ListOrganizationsRequest | PlainMessage<ListOrganizationsRequest> | undefined, b: ListOrganizationsRequest | PlainMessage<ListOrganizationsRequest> | undefined): boolean {
+    return proto3.util.equals(ListOrganizationsRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message intermediate.v1.ListOrganizationsResponse
+ */
+export class ListOrganizationsResponse extends Message<ListOrganizationsResponse> {
+  /**
+   * @generated from field: repeated intermediate.v1.IntermediateOrganization organizations = 1;
+   */
+  organizations: IntermediateOrganization[] = [];
+
+  /**
+   * @generated from field: string next_page_token = 2;
+   */
+  nextPageToken = "";
+
+  constructor(data?: PartialMessage<ListOrganizationsResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "intermediate.v1.ListOrganizationsResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "organizations", kind: "message", T: IntermediateOrganization, repeated: true },
+    { no: 2, name: "next_page_token", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ListOrganizationsResponse {
+    return new ListOrganizationsResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ListOrganizationsResponse {
+    return new ListOrganizationsResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ListOrganizationsResponse {
+    return new ListOrganizationsResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: ListOrganizationsResponse | PlainMessage<ListOrganizationsResponse> | undefined, b: ListOrganizationsResponse | PlainMessage<ListOrganizationsResponse> | undefined): boolean {
+    return proto3.util.equals(ListOrganizationsResponse, a, b);
+  }
+}
 
 /**
  * @generated from message intermediate.v1.SignInWithEmailRequest
  */
 export class SignInWithEmailRequest extends Message<SignInWithEmailRequest> {
   /**
+   * The Project ID to scope the sign in to.
+   *
+   * @generated from field: string project_id = 1;
+   */
+  projectId = "";
+
+  /**
    * The email address to sign in with.
    *
-   * @generated from field: string email = 1;
+   * @generated from field: string email = 2;
    */
   email = "";
 
@@ -25,7 +345,8 @@ export class SignInWithEmailRequest extends Message<SignInWithEmailRequest> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "intermediate.v1.SignInWithEmailRequest";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 1, name: "project_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): SignInWithEmailRequest {

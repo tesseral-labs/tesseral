@@ -2,14 +2,17 @@ services:
   api:
     command: ["go", "run", "./cmd/api"]
     depends_on:
+      - kms
       - postgres
     environment:
       API_DB: "postgres://postgres:password@postgres:5432/postgres"
+    env_file:
+      - .env
     expose:
-      - 8081
+      - 3001
     image: golang:1.23-alpine
     ports:
-      - "3001:8081"
+      - "3001:3001"
     volumes:
       - .:/api:cached
     working_dir: /api
@@ -18,14 +21,27 @@ services:
     environment:
       APP_BUILD_IS_DEV: 1
     expose:
-      - 8080
+      - 3000
     image: node:22.11.0
     ports:
-      - "3000:8080"
+      - "3000:3000"
     tty: true
     volumes:
       - ./app:/app:cached
     working_dir: /app
+  kms:
+    environment:
+      KMS_REGION: ${AWS_DEFAULT_REGION}
+      PORT: 4566
+    expose:
+      - 4566
+    image: nsmithuk/local-kms:latest
+    ports:
+      - 4566:4566
+      - 4599:4566
+    volumes:
+      - ./.kms/data/:/data/
+      - ./.kms/init/:/init/
   postgres:
     environment:
       POSTGRES_PASSWORD: "password"
@@ -39,11 +55,13 @@ services:
     environment:
       UI_BUILD_IS_DEV: 1
     expose:
-      - 8082
+      - 3002
     image: node:22.11.0
     ports:
-      - "3002:8082"
+      - "3002:3002"
     tty: true
     volumes:
       - ./ui:/ui:cached
     working_dir: /ui
+volumes:
+  localstack-init-output:

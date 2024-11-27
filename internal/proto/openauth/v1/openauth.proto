@@ -50,6 +50,19 @@ message Project {
   string microsoft_oauth_client_secret = 9;
 }
 
+message SessionClaims {
+  // The organization ID the session is scoped to.
+  string organization_id = 1;
+  // The user_id associated with the session.
+  string user_id = 2;
+  // The time the session expires.
+  int64 expires_at = 3;
+  // The time the session was issued.
+  int64 issued_at = 4;
+  // The subject of the session.
+  string subject = 5;
+}
+
 message User {
   // Unique identifier for this user.
   string id = 1;

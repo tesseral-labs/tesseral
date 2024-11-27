@@ -4,7 +4,39 @@
 // @ts-nocheck
 
 import { MethodKind } from "@bufbuild/protobuf";
-import { SignInWithEmailRequest, SignInWithEmailResponse } from "./intermediate_pb.js";
+import { CreateOrganizationRequest, CreateOrganizationResponse, ListOrganizationsRequest, ListOrganizationsResponse, SignInWithEmailRequest, SignInWithEmailResponse } from "./intermediate_pb.js";
+
+/**
+ * Creates a new organization.
+ *
+ * @generated from rpc intermediate.v1.IntermediateService.CreateOrganization
+ */
+export const createOrganization = {
+  localName: "createOrganization",
+  name: "CreateOrganization",
+  kind: MethodKind.Unary,
+  I: CreateOrganizationRequest,
+  O: CreateOrganizationResponse,
+  service: {
+    typeName: "intermediate.v1.IntermediateService"
+  }
+} as const;
+
+/**
+ * Gets a list of organizations.
+ *
+ * @generated from rpc intermediate.v1.IntermediateService.ListOrganizations
+ */
+export const listOrganizations = {
+  localName: "listOrganizations",
+  name: "ListOrganizations",
+  kind: MethodKind.Unary,
+  I: ListOrganizationsRequest,
+  O: ListOrganizationsResponse,
+  service: {
+    typeName: "intermediate.v1.IntermediateService"
+  }
+} as const;
 
 /**
  * Creates a new intermediate session or session and cookies the requester.

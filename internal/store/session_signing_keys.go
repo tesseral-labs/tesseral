@@ -3,9 +3,11 @@ package store
 import (
 	"context"
 	"crypto/ecdsa"
+	"log/slog"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
+	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
 	openauthecdsa "github.com/openauth-dev/openauth/internal/crypto/ecdsa"
 	"github.com/openauth-dev/openauth/internal/store/idformat"
@@ -40,39 +42,22 @@ func (s *Store) CreateSessionSigningKey(ctx context.Context, projectID string) (
 	expiresAt := time.Now().Add(time.Hour * 7)
 
 	// Generate a new symmetric key
-	ecdsaKeyPair, err := openauthecdsa.New()
+	privateKey, err := openauthecdsa.GenerateKey()
 	if err != nil {
 		return nil, err
 	}
 
 	// Extract the private key
-	privateKey, err := ecdsaKeyPair.PrivateKeyPEM()
+	privateKeyBytes, err := openauthecdsa.PrivateKeyBytes(privateKey)
 	if err != nil {
 		return nil, err
 	}
 
 	// Encrypt the symmetric key with the KMS
 	encryptOutput, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
-		KeyId:     &s.sessionSigningKeyKmsKeyID,
-		Plaintext: privateKey,
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	// Extract the public key
-	publicKey, err := ecdsaKeyPair.PublicKeyPEM()
-	if err != nil {
-		return nil, err
-	}
-
-	// Create the new method verification challenge
-	sessionSigningKey, err := q.CreateSessionSigningKey(ctx, queries.CreateSessionSigningKeyParams{
-		ID:                   uuid.New(),
-		ProjectID:            projectId,
-		ExpireTime:           &expiresAt,
-		PublicKey:            publicKey,
-		PrivateKeyCipherText: encryptOutput.CipherTextBlob,
+		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
+		KeyId:               &s.sessionSigningKeyKmsKeyID,
+		Plaintext:           privateKeyBytes,
 	})
 	if err != nil {
 		return nil, err
@@ -83,8 +68,32 @@ func (s *Store) CreateSessionSigningKey(ctx context.Context, projectID string) (
 		return nil, err
 	}
 
+	publicKeyBytes, err := openauthecdsa.PublicKeyBytes(&privateKey.PublicKey)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create the new method verification challenge
+	sessionSigningKey, err := q.CreateSessionSigningKey(ctx, queries.CreateSessionSigningKeyParams{
+		ID:                   uuid.New(),
+		ProjectID:            projectId,
+		ExpireTime:           &expiresAt,
+		PublicKey:            publicKeyBytes,
+		PrivateKeyCipherText: encryptOutput.CipherTextBlob,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	slog.Info("sessionSigningKey", "sessionSigningKey", sessionSigningKey)
+
+	// Commit the transaction
+	if err := commit(); err != nil {
+		return nil, err
+	}
+
 	// Return the new method verification challenge
-	return parseSessionSigningKey(&sessionSigningKey, ecdsaKeyPair), nil
+	return parseSessionSigningKey(&sessionSigningKey, privateKey), nil
 }
 
 func (s *Store) GetSessionSigningKeyByID(ctx context.Context, id string) (*SessionSigningKey, error) {
@@ -105,31 +114,59 @@ func (s *Store) GetSessionSigningKeyByID(ctx context.Context, id string) (*Sessi
 	}
 
 	// Decrypt the signing key using KMS
-	signingKey, err := s.kms.Decrypt(ctx, &kms.DecryptInput{
-		CiphertextBlob: sessionSigningKey.PrivateKeyCipherText,
-		KeyId:          &s.sessionSigningKeyKmsKeyID,
+	decryptOutput, err := s.kms.Decrypt(ctx, &kms.DecryptInput{
+		CiphertextBlob:      sessionSigningKey.PrivateKeyCipherText,
+		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
+		KeyId:               &s.sessionSigningKeyKmsKeyID,
 	})
 	if err != nil {
 		return nil, err
 	}
 
 	// Create an ECDSA key pair from the decrypted private key
-	ecdsaKeyPair, err := openauthecdsa.NewFromBytes(signingKey.Value)
+	privateKey, err := openauthecdsa.PrivateKeyFromBytes(decryptOutput.Value)
 	if err != nil {
 		return nil, err
 	}
 
 	// Return the intermediate session signing key with the decrypted signing key
-	return parseSessionSigningKey(&sessionSigningKey, ecdsaKeyPair), nil
+	return parseSessionSigningKey(&sessionSigningKey, privateKey), nil
 }
 
-func parseSessionSigningKey(ssk *queries.SessionSigningKey, keyPair *openauthecdsa.ECDSAKeyPair) *SessionSigningKey {
+func (s *Store) GetSessionPubliKeyByProjectID(ctx context.Context, projectId string) (*ecdsa.PublicKey, error) {
+	_, q, _, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	projectID, err := idformat.Project.Parse(projectId)
+	if err != nil {
+		return nil, err
+	}
+
+	sessionSigningKey, err := q.GetSessionSigningKeyByProjectID(ctx, projectID)
+	if err != nil {
+		return nil, err
+	}
+
+	publicKey, err := openauthecdsa.PublicKeyFromBytes(sessionSigningKey.PublicKey)
+	if err != nil {
+		return nil, err
+	}
+
+	return publicKey, nil
+}
+
+func parseSessionSigningKey(ssk *queries.SessionSigningKey, privateKey *ecdsa.PrivateKey) *SessionSigningKey {
+	publicKey := &privateKey.PublicKey
+
 	return &SessionSigningKey{
 		ID:         ssk.ID,
 		ProjectID:  ssk.ProjectID,
 		CreateTime: *ssk.CreateTime,
 		ExpireTime: *ssk.ExpireTime,
-		PublicKey:  keyPair.PublicKey,
-		PrivateKey: keyPair.PrivateKey,
+		PublicKey:  publicKey,
+		PrivateKey: privateKey,
 	}
 }
