@@ -14,7 +14,7 @@ func (s *IntermediateService) SignInWithEmail(
 	req *connect.Request[intermediatev1.SignInWithEmailRequest],
 ) (*connect.Response[intermediatev1.SignInWithEmailResponse], error) {
 	slog.Info("sign in with email", "email", req.Msg.Email)
-	
+
 	res, err := s.Store.SignInWithEmail(&ctx, req.Msg)
 	if err != nil {
 		return nil, fmt.Errorf("store: %w", err)

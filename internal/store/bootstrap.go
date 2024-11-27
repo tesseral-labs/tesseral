@@ -18,7 +18,7 @@ type CreateDogfoodProjectResponse struct {
 }
 
 type CreateDogfoodSessionSigningKeysResponse struct {
-	SessionSigningKeyID string
+	SessionSigningKeyID             string
 	IntermediateSessionSigningKeyID string
 }
 
@@ -104,7 +104,7 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 }
 
 func (s *Store) CreateDogfoodSessionSigningKeys(
-	ctx context.Context, 
+	ctx context.Context,
 	dogfoodProjectID string,
 ) (*CreateDogfoodSessionSigningKeysResponse, error) {
 	// create session signing key for the new project
@@ -120,7 +120,7 @@ func (s *Store) CreateDogfoodSessionSigningKeys(
 	}
 
 	return &CreateDogfoodSessionSigningKeysResponse{
-		SessionSigningKeyID: idformat.SessionSigningKey.Format(sessionSigningKey.ID), 
+		SessionSigningKeyID:             idformat.SessionSigningKey.Format(sessionSigningKey.ID),
 		IntermediateSessionSigningKeyID: idformat.IntermediateSession.Format(intermediateSessionSigningKey.ID),
 	}, nil
 }

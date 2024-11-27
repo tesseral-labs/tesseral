@@ -34,12 +34,12 @@ type NewStoreParams struct {
 
 func New(p NewStoreParams) *Store {
 	store := &Store{
-		db:                                    	p.DB,
-		dogfoodProjectID:                      	p.DogfoodProjectID,
-		intermediateSessionSigningKeyKMSKeyID: 	p.IntermediateSessionSigningKeyKMSKeyID,
-		pageEncoder:                           	p.PageEncoder,
-		q:                                     	queries.New(p.DB),
-		sessionSigningKeyKmsKeyID:             	p.SessionSigningKeyKmsKeyID,
+		db:                                    p.DB,
+		dogfoodProjectID:                      p.DogfoodProjectID,
+		intermediateSessionSigningKeyKMSKeyID: p.IntermediateSessionSigningKeyKMSKeyID,
+		pageEncoder:                           p.PageEncoder,
+		q:                                     queries.New(p.DB),
+		sessionSigningKeyKmsKeyID:             p.SessionSigningKeyKmsKeyID,
 	}
 
 	if p.AwsConfig != nil {

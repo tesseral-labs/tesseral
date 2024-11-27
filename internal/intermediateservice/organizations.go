@@ -21,7 +21,7 @@ func (s *IntermediateService) CreateOrganization(
 }
 
 func (s *IntermediateService) ListOrganizations(
-	ctx context.Context, 
+	ctx context.Context,
 	req *connect.Request[intermediatev1.ListOrganizationsRequest],
 ) (*connect.Response[intermediatev1.ListOrganizationsResponse], error) {
 	res, err := s.Store.ListIntermediateOrganizations(ctx, req.Msg)

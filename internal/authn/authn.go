@@ -12,7 +12,7 @@ import (
 )
 
 type ContextData struct {
-	ProjectAPIKey *backendv1.ProjectAPIKey
+	ProjectAPIKey       *backendv1.ProjectAPIKey
 	IntermediateSession *intermediatev1.IntermediateSessionClaims
 	Session             *openauthv1.SessionClaims
 }

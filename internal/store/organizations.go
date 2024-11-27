@@ -80,11 +80,11 @@ func (s *Store) ListFrontendOrganizations(
 	organizations := []*openauthv1.Organization{}
 	for _, organization := range organizationRecords {
 		organizations = append(organizations, &openauthv1.Organization{
-			Id:          organization.ID.String(),
-			DisplayName: organization.DisplayName,
-			OverrideLogInWithGoogleEnabled: *organization.OverrideLogInWithGoogleEnabled,
+			Id:                                organization.ID.String(),
+			DisplayName:                       organization.DisplayName,
+			OverrideLogInWithGoogleEnabled:    *organization.OverrideLogInWithGoogleEnabled,
 			OverrideLogInWithMicrosoftEnabled: *organization.OverrideLogInWithMicrosoftEnabled,
-			OverrideLogInWithPasswordEnabled: *organization.OverrideLogInWithPasswordEnabled,
+			OverrideLogInWithPasswordEnabled:  *organization.OverrideLogInWithPasswordEnabled,
 		})
 	}
 
@@ -117,9 +117,9 @@ func (s *Store) ListIntermediateOrganizations(
 
 	limit := 10
 	organizationRecords, err := q.ListOrganizationsByProjectIdAndEmail(ctx, queries.ListOrganizationsByProjectIdAndEmailParams{
-		ProjectID: projectId,
+		ProjectID:     projectId,
 		VerifiedEmail: &req.Email,
-		Limit: int32(limit + 1),
+		Limit:         int32(limit + 1),
 	})
 	if err != nil {
 		return nil, err
@@ -131,7 +131,7 @@ func (s *Store) ListIntermediateOrganizations(
 	}
 
 	var nextPageToken string
-	if len(organizations) == limit + 1 {
+	if len(organizations) == limit+1 {
 		nextPageToken = s.pageEncoder.Marshal(organizations[limit].Id)
 		organizations = organizations[:limit]
 	}
@@ -300,11 +300,11 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *backendv1.UpdateOrg
 
 func parseIntermediateOrganization(organization queries.Organization) *intermediatev1.IntermediateOrganization {
 	return &intermediatev1.IntermediateOrganization{
-		Id: organization.ID.String(),
-		DisplayName: organization.DisplayName,
-		LogInWithGoogleEnabled: *organization.OverrideLogInWithGoogleEnabled,
+		Id:                        organization.ID.String(),
+		DisplayName:               organization.DisplayName,
+		LogInWithGoogleEnabled:    *organization.OverrideLogInWithGoogleEnabled,
 		LogInWithMicrosoftEnabled: *organization.OverrideLogInWithMicrosoftEnabled,
-		LogInWithPasswordEnabled: *organization.OverrideLogInWithPasswordEnabled,
+		LogInWithPasswordEnabled:  *organization.OverrideLogInWithPasswordEnabled,
 	}
 }
 

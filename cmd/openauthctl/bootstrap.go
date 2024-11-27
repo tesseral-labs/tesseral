@@ -48,10 +48,10 @@ func bootstrap(ctx context.Context, args bootstrapArgs) error {
 	}
 
 	s := store.New(store.NewStoreParams{
-		AwsConfig: &awsConf,
-		DB: db,
+		AwsConfig:                             &awsConf,
+		DB:                                    db,
 		IntermediateSessionSigningKeyKMSKeyID: os.Getenv("API_INTERMEDIATE_SESSION_KMS_KEY_ID"),
-		SessionSigningKeyKmsKeyID: os.Getenv("API_SESSION_KMS_KEY_ID"),
+		SessionSigningKeyKmsKeyID:             os.Getenv("API_SESSION_KMS_KEY_ID"),
 	})
 
 	res, err := s.CreateDogfoodProject(ctx)
@@ -65,11 +65,11 @@ func bootstrap(ctx context.Context, args bootstrapArgs) error {
 	}
 
 	fmt.Printf(
-		"%s\t%s\t%s\t%s\t%s\n", 
-		res.DogfoodProjectID, 
-		res.BootstrapUserEmail, 
-		res.BootstrapUserVerySensitivePassword, 
-		signingKeyRes.SessionSigningKeyID, 
+		"%s\t%s\t%s\t%s\t%s\n",
+		res.DogfoodProjectID,
+		res.BootstrapUserEmail,
+		res.BootstrapUserVerySensitivePassword,
+		signingKeyRes.SessionSigningKeyID,
 		signingKeyRes.IntermediateSessionSigningKeyID,
 	)
 	return nil

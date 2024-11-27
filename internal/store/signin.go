@@ -36,7 +36,7 @@ func (s *Store) SignInWithEmail(
 		// TODO: Implement factor checking before issuing a session
 		return nil, errors.New("not implemented")
 	} else {
-		// Send a verification email then issue an intermediate session, 
+		// Send a verification email then issue an intermediate session,
 		// so the user can verify their email address and create an organization
 
 		expiresAt := time.Now().Add(15 * time.Minute)
@@ -48,19 +48,19 @@ func (s *Store) SignInWithEmail(
 
 		signingKeyId := idformat.IntermediateSessionSigningKey.Format(signingKey.ID)
 
-		sessionToken :=  ujwt.Sign(string(signingKeyId), signingKey.PrivateKey, &intermediatev1.IntermediateSessionClaims{
-			Email: req.Email,
+		sessionToken := ujwt.Sign(string(signingKeyId), signingKey.PrivateKey, &intermediatev1.IntermediateSessionClaims{
+			Email:     req.Email,
 			ExpiresAt: expiresAt.Unix(),
-			IssuedAt: time.Now().Unix(),
+			IssuedAt:  time.Now().Unix(),
 			ProjectId: req.ProjectId,
 		})
 
 		intermediateSession, err := q.CreateIntermediateSession(*ctx, queries.CreateIntermediateSessionParams{
-			ID: uuid.New(),
-			ProjectID: projectId,
+			ID:              uuid.New(),
+			ProjectID:       projectId,
 			UnverifiedEmail: &req.Email,
-			ExpireTime: &expiresAt,
-			Token: sessionToken,
+			ExpireTime:      &expiresAt,
+			Token:           sessionToken,
 		})
 		if err != nil {
 			return nil, err

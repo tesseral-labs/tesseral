@@ -54,8 +54,8 @@ func (s *Store) CreateIntermediateSessionSigningKey(ctx context.Context, project
 	// Encrypt the symmetric key with the KMS
 	encryptOutput, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
 		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
-		KeyId:     &s.intermediateSessionSigningKeyKMSKeyID,
-		Plaintext: privateKeyBytes,
+		KeyId:               &s.intermediateSessionSigningKeyKMSKeyID,
+		Plaintext:           privateKeyBytes,
 	})
 	if err != nil {
 		return nil, err
@@ -98,9 +98,9 @@ func (s *Store) GetIntermediateSessionSigningKeyByID(ctx context.Context, id str
 
 	// Decrypt the signing key using KMS
 	decryptOutput, err := s.kms.Decrypt(ctx, &kms.DecryptInput{
-		CiphertextBlob: intermediateSessionSigningKey.PrivateKeyCipherText,
+		CiphertextBlob:      intermediateSessionSigningKey.PrivateKeyCipherText,
 		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
-		KeyId:          &s.intermediateSessionSigningKeyKMSKeyID,
+		KeyId:               &s.intermediateSessionSigningKeyKMSKeyID,
 	})
 	if err != nil {
 		return nil, err
@@ -135,9 +135,9 @@ func (s *Store) GetIntermediateSessionSigningKeyByProjectID(ctx context.Context,
 
 	// Decrypt the signing key using KMS
 	decryptOutput, err := s.kms.Decrypt(ctx, &kms.DecryptInput{
-		CiphertextBlob: intermediateSessionSigningKey.PrivateKeyCipherText,
+		CiphertextBlob:      intermediateSessionSigningKey.PrivateKeyCipherText,
 		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
-		KeyId:          &s.intermediateSessionSigningKeyKMSKeyID,
+		KeyId:               &s.intermediateSessionSigningKeyKMSKeyID,
 	})
 	if err != nil {
 		return nil, err

@@ -43,12 +43,12 @@ func main() {
 	loadenv.LoadEnv()
 
 	config := struct {
-		DB                						string `conf:"db"`
-		DogfoodProjectID  						string `conf:"dogfood_project_id"`
-		IntermediateSessionKMSKeyID 	string `conf:"intermediate_session_kms_key_id"`
-		PageEncodingValue 						string `conf:"page-encoding-value"`
-		ServeAddr         						string `conf:"serve_addr,noredact"`
-		SessionKMSKeyID  							string `conf:"session_kms_key_id"`
+		DB                          string `conf:"db"`
+		DogfoodProjectID            string `conf:"dogfood_project_id"`
+		IntermediateSessionKMSKeyID string `conf:"intermediate_session_kms_key_id"`
+		PageEncodingValue           string `conf:"page-encoding-value"`
+		ServeAddr                   string `conf:"serve_addr,noredact"`
+		SessionKMSKeyID             string `conf:"session_kms_key_id"`
 	}{
 		PageEncodingValue: "0000000000000000000000000000000000000000000000000000000000000000",
 	}
@@ -80,12 +80,12 @@ func main() {
 	}
 
 	store_ := store.New(store.NewStoreParams{
-		AwsConfig: 				&awsConf,
-		DB:               db,
-		DogfoodProjectID: &uuidDogfoodProjectID,
+		AwsConfig:                             &awsConf,
+		DB:                                    db,
+		DogfoodProjectID:                      &uuidDogfoodProjectID,
 		IntermediateSessionSigningKeyKMSKeyID: config.IntermediateSessionKMSKeyID,
-		PageEncoder:      pagetoken.Encoder{Secret: pageEncodingValue},
-		SessionSigningKeyKmsKeyID:              config.SessionKMSKeyID,
+		PageEncoder:                           pagetoken.Encoder{Secret: pageEncodingValue},
+		SessionSigningKeyKmsKeyID:             config.SessionKMSKeyID,
 	})
 
 	// Register the backend service
