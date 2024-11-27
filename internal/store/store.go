@@ -26,7 +26,7 @@ type NewStoreParams struct {
 	DB                                    *pgxpool.Pool
 	DogfoodProjectID                      *uuid.UUID
 	IntermediateSessionSigningKeyKMSKeyID string
-	KMS                           				*keyManagementService.KeyManagementService
+	KMS                                   *keyManagementService.KeyManagementService
 	PageEncoder                           pagetoken.Encoder
 	SessionSigningKeyKmsKeyID             string
 }

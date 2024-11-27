@@ -63,8 +63,13 @@ func (s *Store) CreateSessionSigningKey(ctx context.Context, projectID string) (
 		return nil, err
 	}
 
-		// Commit the transaction
+	// Commit the transaction
 	if err := commit(); err != nil {
+		return nil, err
+	}
+
+	publicKeyBytes, err := openauthecdsa.PublicKeyBytes(&privateKey.PublicKey)
+	if err != nil {
 		return nil, err
 	}
 
@@ -73,6 +78,7 @@ func (s *Store) CreateSessionSigningKey(ctx context.Context, projectID string) (
 		ID:                   uuid.New(),
 		ProjectID:            projectId,
 		ExpireTime:           &expiresAt,
+		PublicKey:            publicKeyBytes,
 		PrivateKeyCipherText: encryptOutput.CipherTextBlob,
 	})
 	if err != nil {
@@ -125,6 +131,31 @@ func (s *Store) GetSessionSigningKeyByID(ctx context.Context, id string) (*Sessi
 
 	// Return the intermediate session signing key with the decrypted signing key
 	return parseSessionSigningKey(&sessionSigningKey, privateKey), nil
+}
+
+func (s *Store) GetSessionPubliKeyByProjectID(ctx context.Context, projectId string) (*ecdsa.PublicKey, error) {
+	_, q, _, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	projectID, err := idformat.Project.Parse(projectId)
+	if err != nil {
+		return nil, err
+	}
+
+	sessionSigningKey, err := q.GetSessionSigningKeyByProjectID(ctx, projectID)
+	if err != nil {
+		return nil, err
+	}
+
+	publicKey, err := openauthecdsa.PublicKeyFromBytes(sessionSigningKey.PublicKey)
+	if err != nil {
+		return nil, err
+	}
+
+	return publicKey, nil
 }
 
 func parseSessionSigningKey(ssk *queries.SessionSigningKey, privateKey *ecdsa.PrivateKey) *SessionSigningKey {

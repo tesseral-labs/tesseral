@@ -61,11 +61,17 @@ func (s *Store) CreateIntermediateSessionSigningKey(ctx context.Context, project
 		return nil, err
 	}
 
+	publicKeyBytes, err := openauthecdsa.PublicKeyBytes(&privateKey.PublicKey)
+	if err != nil {
+		return nil, err
+	}
+
 	// Store the encrypted key in the database
 	createdIntermediateSessionSigningKey, err := q.CreateIntermediateSessionSigningKey(ctx, queries.CreateIntermediateSessionSigningKeyParams{
 		ID:                   uuid.New(),
 		ProjectID:            projectID,
 		ExpireTime:           &expiresAt,
+		PublicKey:            publicKeyBytes,
 		PrivateKeyCipherText: encryptOutput.CipherTextBlob,
 	})
 	if err != nil {
@@ -80,10 +86,11 @@ func (s *Store) CreateIntermediateSessionSigningKey(ctx context.Context, project
 }
 
 func (s *Store) GetIntermediateSessionSigningKeyByID(ctx context.Context, id string) (*IntermediateSessionSigningKey, error) {
-	_, q, _, _, err := s.tx(ctx)
+	_, q, _, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
+	defer rollback()
 
 	intermediateSessionSigningKeyID, err := idformat.IntermediateSessionSigningKey.Parse(id)
 	if err != nil {
@@ -116,19 +123,20 @@ func (s *Store) GetIntermediateSessionSigningKeyByID(ctx context.Context, id str
 	return parseIntermediateSessionSigningKey(&intermediateSessionSigningKey, privateKey), nil
 }
 
-func (s *Store) GetIntermediateSessionSigningKeyByProjectID(ctx context.Context, projectIdString string) (*IntermediateSessionSigningKey, error) {
-	_, q, _, _, err := s.tx(ctx)
+func (s *Store) GetIntermediateSessionSigningKeyByProjectID(ctx context.Context, projectId string) (*IntermediateSessionSigningKey, error) {
+	_, q, _, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
+	defer rollback()
 
-	projectId, err := idformat.Project.Parse(projectIdString)
+	projectID, err := idformat.Project.Parse(projectId)
 	if err != nil {
 		return nil, err
 	}
 
 	// Fetch the raw record from the database
-	intermediateSessionSigningKey, err := q.GetIntermediateSessionSigningKeyByProjectID(ctx, projectId)
+	intermediateSessionSigningKey, err := q.GetIntermediateSessionSigningKeyByProjectID(ctx, projectID)
 	if err != nil {
 		return nil, err
 	}
@@ -151,6 +159,33 @@ func (s *Store) GetIntermediateSessionSigningKeyByProjectID(ctx context.Context,
 
 	// Return the intermediate session signing key with the decrypted private key
 	return parseIntermediateSessionSigningKey(&intermediateSessionSigningKey, privateKey), nil
+}
+
+func (s *Store) GetIntermediateSessionPublicKeyByProjectID(ctx context.Context, projectId string) (*ecdsa.PublicKey, error) {
+	_, q, _, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	projectID, err := idformat.Project.Parse(projectId)
+	if err != nil {
+		return nil, err
+	}
+
+	// Fetch the raw record from the database
+	intermediateSessionSigningKey, err := q.GetIntermediateSessionSigningKeyByProjectID(ctx, projectID)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create an ECDSA key pair from the decrypted signing key
+	publicKey, err := openauthecdsa.PublicKeyFromBytes(intermediateSessionSigningKey.PublicKey)
+	if err != nil {
+		return nil, err
+	}
+
+	return publicKey, nil
 }
 
 func parseIntermediateSessionSigningKey(issk *queries.IntermediateSessionSigningKey, privateKey *ecdsa.PrivateKey) *IntermediateSessionSigningKey {

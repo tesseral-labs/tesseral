@@ -130,15 +130,16 @@ func (q *Queries) CreateIntermediateSession(ctx context.Context, arg CreateInter
 }
 
 const createIntermediateSessionSigningKey = `-- name: CreateIntermediateSessionSigningKey :one
-INSERT INTO intermediate_session_signing_keys (id, project_id, private_key_cipher_text, expire_time)
-    VALUES ($1, $2, $3, $4)
+INSERT INTO intermediate_session_signing_keys (id, project_id, public_key, private_key_cipher_text, expire_time)
+    VALUES ($1, $2, $3, $4, $5)
 RETURNING
-    id, project_id, private_key_cipher_text, create_time, expire_time
+    id, project_id, public_key, private_key_cipher_text, create_time, expire_time
 `
 
 type CreateIntermediateSessionSigningKeyParams struct {
 	ID                   uuid.UUID
 	ProjectID            uuid.UUID
+	PublicKey            []byte
 	PrivateKeyCipherText []byte
 	ExpireTime           *time.Time
 }
@@ -147,6 +148,7 @@ func (q *Queries) CreateIntermediateSessionSigningKey(ctx context.Context, arg C
 	row := q.db.QueryRow(ctx, createIntermediateSessionSigningKey,
 		arg.ID,
 		arg.ProjectID,
+		arg.PublicKey,
 		arg.PrivateKeyCipherText,
 		arg.ExpireTime,
 	)
@@ -154,6 +156,7 @@ func (q *Queries) CreateIntermediateSessionSigningKey(ctx context.Context, arg C
 	err := row.Scan(
 		&i.ID,
 		&i.ProjectID,
+		&i.PublicKey,
 		&i.PrivateKeyCipherText,
 		&i.CreateTime,
 		&i.ExpireTime,
@@ -393,15 +396,16 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (S
 }
 
 const createSessionSigningKey = `-- name: CreateSessionSigningKey :one
-INSERT INTO session_signing_keys (id, project_id, private_key_cipher_text, expire_time)
-    VALUES ($1, $2, $3, $4)
+INSERT INTO session_signing_keys (id, project_id, public_key, private_key_cipher_text, expire_time)
+    VALUES ($1, $2, $3, $4, $5)
 RETURNING
-    id, project_id, private_key_cipher_text, create_time, expire_time
+    id, project_id, public_key, private_key_cipher_text, create_time, expire_time
 `
 
 type CreateSessionSigningKeyParams struct {
 	ID                   uuid.UUID
 	ProjectID            uuid.UUID
+	PublicKey            []byte
 	PrivateKeyCipherText []byte
 	ExpireTime           *time.Time
 }
@@ -410,6 +414,7 @@ func (q *Queries) CreateSessionSigningKey(ctx context.Context, arg CreateSession
 	row := q.db.QueryRow(ctx, createSessionSigningKey,
 		arg.ID,
 		arg.ProjectID,
+		arg.PublicKey,
 		arg.PrivateKeyCipherText,
 		arg.ExpireTime,
 	)
@@ -417,6 +422,7 @@ func (q *Queries) CreateSessionSigningKey(ctx context.Context, arg CreateSession
 	err := row.Scan(
 		&i.ID,
 		&i.ProjectID,
+		&i.PublicKey,
 		&i.PrivateKeyCipherText,
 		&i.CreateTime,
 		&i.ExpireTime,
@@ -520,7 +526,7 @@ func (q *Queries) GetIntermediateSessionByID(ctx context.Context, id uuid.UUID) 
 
 const getIntermediateSessionSigningKeyByID = `-- name: GetIntermediateSessionSigningKeyByID :one
 SELECT
-    id, project_id, private_key_cipher_text, create_time, expire_time
+    id, project_id, public_key, private_key_cipher_text, create_time, expire_time
 FROM
     intermediate_session_signing_keys
 WHERE
@@ -533,6 +539,7 @@ func (q *Queries) GetIntermediateSessionSigningKeyByID(ctx context.Context, id u
 	err := row.Scan(
 		&i.ID,
 		&i.ProjectID,
+		&i.PublicKey,
 		&i.PrivateKeyCipherText,
 		&i.CreateTime,
 		&i.ExpireTime,
@@ -542,7 +549,7 @@ func (q *Queries) GetIntermediateSessionSigningKeyByID(ctx context.Context, id u
 
 const getIntermediateSessionSigningKeyByProjectID = `-- name: GetIntermediateSessionSigningKeyByProjectID :one
 SELECT
-    id, project_id, private_key_cipher_text, create_time, expire_time
+    id, project_id, public_key, private_key_cipher_text, create_time, expire_time
 FROM
     intermediate_session_signing_keys
 WHERE
@@ -558,6 +565,7 @@ func (q *Queries) GetIntermediateSessionSigningKeyByProjectID(ctx context.Contex
 	err := row.Scan(
 		&i.ID,
 		&i.ProjectID,
+		&i.PublicKey,
 		&i.PrivateKeyCipherText,
 		&i.CreateTime,
 		&i.ExpireTime,
@@ -742,7 +750,7 @@ func (q *Queries) GetSessionByID(ctx context.Context, id uuid.UUID) (Session, er
 
 const getSessionSigningKeyByID = `-- name: GetSessionSigningKeyByID :one
 SELECT
-    id, project_id, private_key_cipher_text, create_time, expire_time
+    id, project_id, public_key, private_key_cipher_text, create_time, expire_time
 FROM
     session_signing_keys
 WHERE
@@ -755,6 +763,7 @@ func (q *Queries) GetSessionSigningKeyByID(ctx context.Context, id uuid.UUID) (S
 	err := row.Scan(
 		&i.ID,
 		&i.ProjectID,
+		&i.PublicKey,
 		&i.PrivateKeyCipherText,
 		&i.CreateTime,
 		&i.ExpireTime,
@@ -764,7 +773,7 @@ func (q *Queries) GetSessionSigningKeyByID(ctx context.Context, id uuid.UUID) (S
 
 const getSessionSigningKeyByProjectID = `-- name: GetSessionSigningKeyByProjectID :one
 SELECT
-    id, project_id, private_key_cipher_text, create_time, expire_time
+    id, project_id, public_key, private_key_cipher_text, create_time, expire_time
 FROM
     session_signing_keys
 WHERE
@@ -780,6 +789,7 @@ func (q *Queries) GetSessionSigningKeyByProjectID(ctx context.Context, projectID
 	err := row.Scan(
 		&i.ID,
 		&i.ProjectID,
+		&i.PublicKey,
 		&i.PrivateKeyCipherText,
 		&i.CreateTime,
 		&i.ExpireTime,

@@ -55,7 +55,7 @@ func bootstrap(ctx context.Context, args bootstrapArgs) error {
 	s := store.New(store.NewStoreParams{
 		DB:                                    db,
 		IntermediateSessionSigningKeyKMSKeyID: args.IntermediateSessionSigningKMSKeyID,
-		KMS: 																 		kms_,
+		KMS:                                   kms_,
 		SessionSigningKeyKmsKeyID:             args.SessionSigningKMSKeyID,
 	})
 

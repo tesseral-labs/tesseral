@@ -87,7 +87,7 @@ func main() {
 		DB:                                    db,
 		DogfoodProjectID:                      &uuidDogfoodProjectID,
 		IntermediateSessionSigningKeyKMSKeyID: config.IntermediateSessionKMSKeyID,
-		KMS: 																 kms_,
+		KMS:                                   kms_,
 		PageEncoder:                           pagetoken.Encoder{Secret: pageEncodingValue},
 		SessionSigningKeyKmsKeyID:             config.SessionKMSKeyID,
 	})

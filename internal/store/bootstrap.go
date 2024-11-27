@@ -19,8 +19,8 @@ type CreateDogfoodProjectResponse struct {
 	DogfoodProjectID                   string
 	BootstrapUserEmail                 string
 	BootstrapUserVerySensitivePassword string
-	SessionSigningKeyID             		string
-	IntermediateSessionSigningKeyID 		string
+	SessionSigningKeyID                string
+	IntermediateSessionSigningKeyID    string
 }
 
 // CreateDogfoodProject creates the dogfood project.
@@ -121,6 +121,11 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 		return nil, err
 	}
 
+	publicKeyBytes, err := ecdsa.PublicKeyBytes(&privateKey.PublicKey)
+	if err != nil {
+		return nil, err
+	}
+
 	isskEncryptOutput, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
 		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
 		KeyId:               &s.sessionSigningKeyKmsKeyID,
@@ -132,6 +137,7 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 		ID:                   uuid.New(),
 		ProjectID:            dogfoodProjectID,
 		ExpireTime:           &expiresAt,
+		PublicKey:            publicKeyBytes,
 		PrivateKeyCipherText: sskEncryptOutput.CipherTextBlob,
 	})
 	if err != nil {
@@ -142,10 +148,11 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 		ID:                   uuid.New(),
 		ProjectID:            dogfoodProjectID,
 		ExpireTime:           &expiresAt,
+		PublicKey:            publicKeyBytes,
 		PrivateKeyCipherText: isskEncryptOutput.CipherTextBlob,
 	})
 
-		if err := commit(); err != nil {
+	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
