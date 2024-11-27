@@ -131,6 +131,9 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 		KeyId:               &s.sessionSigningKeyKmsKeyID,
 		Plaintext:           privateKeyBytes,
 	})
+	if err != nil {
+		return nil, err
+	}
 
 	// Store the encrypted key in the database
 	sessionSigningKey, err := q.CreateIntermediateSessionSigningKey(ctx, queries.CreateIntermediateSessionSigningKeyParams{
@@ -151,6 +154,9 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 		PublicKey:            publicKeyBytes,
 		PrivateKeyCipherText: isskEncryptOutput.CipherTextBlob,
 	})
+	if err != nil {
+		return nil, err
+	}
 
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
