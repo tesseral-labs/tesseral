@@ -24,24 +24,6 @@ create table intermediate_session_signing_keys(
   expire_time                 timestamp with time zone not null
 );
 
--- a user's email address is verified by sending a verification challenge to the email address
--- and then having the user provide the verification token
-create table method_verification_challenges (
-  id                        uuid NOT NULL,
-  -- verifications are scoped to the project to ensure that each auth method
-  -- has a unique set of verification challenges and is only verified once 
-  -- per-project
-  project_id                uuid NOT NULL references projects(id),
-  complete_time             timestamp with time zone,
-  -- the email address to which the verification challenge was sent
-  intermediate_session_id   uuid NOT NULL references intermediate_sessions(id),
-  -- the auth method for which the verification challenge was sent
-  auth_method               auth_method NOT NULL,
-  expire_time               timestamp with time zone NOT NULL,
-  -- the verification token that the user must provide to verify the email address
-  secret_token_sha256       bytea NOT NULL
-);
-
 -- final session created after the user has verified their email address and/or
 -- completed the login process (if verification is no longer required).
 create table sessions

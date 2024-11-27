@@ -1,12 +1,6 @@
--- name: CompleteMethodVerificationChallenge :one
-INSERT INTO method_verification_challenges (id, complete_time)
-    VALUES ($1, $2)
-RETURNING
-    *;
-
--- name: CreateMethodVerificationChallenge :one
-INSERT INTO method_verification_challenges (id, project_id, complete_time, intermediate_session_id, auth_method, expire_time, secret_token_sha256)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
+-- name: CreateEmailVerificationChallenge :one
+INSERT INTO email_verification_challenges (id, intermediate_session_id, project_id, email, challenge_sha256, expire_time, google_user_id, microsoft_user_id)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 RETURNING
     *;
 
@@ -70,6 +64,27 @@ INSERT INTO users (id, organization_id, unverified_email)
 RETURNING
     *;
 
+-- name: CreateVerifiedEmail :one
+INSERT INTO verified_emails (id, project_id, email, google_user_id, microsoft_user_id)
+    VALUES ($1, $2, $3, $4, $5)
+RETURNING
+    *;
+
+-- name: GetEmailVerificationChallenge :one
+SELECT
+    *
+FROM
+    email_verification_challenges
+WHERE
+    project_id = $1
+    AND intermediate_session_id = $2
+    AND challenge_sha256 = $3
+    AND expire_time > $4
+    AND (email = $5
+        OR google_user_id = $6
+        OR microsoft_user_id = $7)
+LIMIT 1;
+
 -- name: GetIntermediateSessionByID :one
 SELECT
     *
@@ -96,14 +111,6 @@ WHERE
 ORDER BY
     create_time DESC
 LIMIT 1;
-
--- name: GetMethodVerificationChallengeByID :one
-SELECT
-    *
-FROM
-    method_verification_challenges
-WHERE
-    id = $1;
 
 -- name: GetOrganizationByID :one
 SELECT

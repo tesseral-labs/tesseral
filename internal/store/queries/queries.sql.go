@@ -12,33 +12,6 @@ import (
 	"github.com/google/uuid"
 )
 
-const completeMethodVerificationChallenge = `-- name: CompleteMethodVerificationChallenge :one
-INSERT INTO method_verification_challenges (id, complete_time)
-    VALUES ($1, $2)
-RETURNING
-    id, project_id, complete_time, intermediate_session_id, auth_method, expire_time, secret_token_sha256
-`
-
-type CompleteMethodVerificationChallengeParams struct {
-	ID           uuid.UUID
-	CompleteTime *time.Time
-}
-
-func (q *Queries) CompleteMethodVerificationChallenge(ctx context.Context, arg CompleteMethodVerificationChallengeParams) (MethodVerificationChallenge, error) {
-	row := q.db.QueryRow(ctx, completeMethodVerificationChallenge, arg.ID, arg.CompleteTime)
-	var i MethodVerificationChallenge
-	err := row.Scan(
-		&i.ID,
-		&i.ProjectID,
-		&i.CompleteTime,
-		&i.IntermediateSessionID,
-		&i.AuthMethod,
-		&i.ExpireTime,
-		&i.SecretTokenSha256,
-	)
-	return i, err
-}
-
 const countAllProjects = `-- name: CountAllProjects :one
 SELECT
     count(*)
@@ -51,6 +24,51 @@ func (q *Queries) CountAllProjects(ctx context.Context) (int64, error) {
 	var count int64
 	err := row.Scan(&count)
 	return count, err
+}
+
+const createEmailVerificationChallenge = `-- name: CreateEmailVerificationChallenge :one
+INSERT INTO email_verification_challenges (id, intermediate_session_id, project_id, email, challenge_sha256, expire_time, google_user_id, microsoft_user_id)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+RETURNING
+    id, intermediate_session_id, project_id, challenge_sha256, complete_time, create_time, email, expire_time, google_user_id, microsoft_user_id
+`
+
+type CreateEmailVerificationChallengeParams struct {
+	ID                    uuid.UUID
+	IntermediateSessionID uuid.UUID
+	ProjectID             uuid.UUID
+	Email                 *string
+	ChallengeSha256       []byte
+	ExpireTime            *time.Time
+	GoogleUserID          *string
+	MicrosoftUserID       *string
+}
+
+func (q *Queries) CreateEmailVerificationChallenge(ctx context.Context, arg CreateEmailVerificationChallengeParams) (EmailVerificationChallenge, error) {
+	row := q.db.QueryRow(ctx, createEmailVerificationChallenge,
+		arg.ID,
+		arg.IntermediateSessionID,
+		arg.ProjectID,
+		arg.Email,
+		arg.ChallengeSha256,
+		arg.ExpireTime,
+		arg.GoogleUserID,
+		arg.MicrosoftUserID,
+	)
+	var i EmailVerificationChallenge
+	err := row.Scan(
+		&i.ID,
+		&i.IntermediateSessionID,
+		&i.ProjectID,
+		&i.ChallengeSha256,
+		&i.CompleteTime,
+		&i.CreateTime,
+		&i.Email,
+		&i.ExpireTime,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+	)
+	return i, err
 }
 
 const createGoogleUser = `-- name: CreateGoogleUser :one
@@ -160,46 +178,6 @@ func (q *Queries) CreateIntermediateSessionSigningKey(ctx context.Context, arg C
 		&i.PrivateKeyCipherText,
 		&i.CreateTime,
 		&i.ExpireTime,
-	)
-	return i, err
-}
-
-const createMethodVerificationChallenge = `-- name: CreateMethodVerificationChallenge :one
-INSERT INTO method_verification_challenges (id, project_id, complete_time, intermediate_session_id, auth_method, expire_time, secret_token_sha256)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
-RETURNING
-    id, project_id, complete_time, intermediate_session_id, auth_method, expire_time, secret_token_sha256
-`
-
-type CreateMethodVerificationChallengeParams struct {
-	ID                    uuid.UUID
-	ProjectID             uuid.UUID
-	CompleteTime          *time.Time
-	IntermediateSessionID uuid.UUID
-	AuthMethod            AuthMethod
-	ExpireTime            *time.Time
-	SecretTokenSha256     []byte
-}
-
-func (q *Queries) CreateMethodVerificationChallenge(ctx context.Context, arg CreateMethodVerificationChallengeParams) (MethodVerificationChallenge, error) {
-	row := q.db.QueryRow(ctx, createMethodVerificationChallenge,
-		arg.ID,
-		arg.ProjectID,
-		arg.CompleteTime,
-		arg.IntermediateSessionID,
-		arg.AuthMethod,
-		arg.ExpireTime,
-		arg.SecretTokenSha256,
-	)
-	var i MethodVerificationChallenge
-	err := row.Scan(
-		&i.ID,
-		&i.ProjectID,
-		&i.CompleteTime,
-		&i.IntermediateSessionID,
-		&i.AuthMethod,
-		&i.ExpireTime,
-		&i.SecretTokenSha256,
 	)
 	return i, err
 }
@@ -498,6 +476,93 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 	return i, err
 }
 
+const createVerifiedEmail = `-- name: CreateVerifiedEmail :one
+INSERT INTO verified_emails (id, project_id, email, google_user_id, microsoft_user_id)
+    VALUES ($1, $2, $3, $4, $5)
+RETURNING
+    id, project_id, create_time, email, google_user_id, microsoft_user_id
+`
+
+type CreateVerifiedEmailParams struct {
+	ID              uuid.UUID
+	ProjectID       uuid.UUID
+	Email           string
+	GoogleUserID    *string
+	MicrosoftUserID *string
+}
+
+func (q *Queries) CreateVerifiedEmail(ctx context.Context, arg CreateVerifiedEmailParams) (VerifiedEmail, error) {
+	row := q.db.QueryRow(ctx, createVerifiedEmail,
+		arg.ID,
+		arg.ProjectID,
+		arg.Email,
+		arg.GoogleUserID,
+		arg.MicrosoftUserID,
+	)
+	var i VerifiedEmail
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.CreateTime,
+		&i.Email,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+	)
+	return i, err
+}
+
+const getEmailVerificationChallenge = `-- name: GetEmailVerificationChallenge :one
+SELECT
+    id, intermediate_session_id, project_id, challenge_sha256, complete_time, create_time, email, expire_time, google_user_id, microsoft_user_id
+FROM
+    email_verification_challenges
+WHERE
+    project_id = $1
+    AND intermediate_session_id = $2
+    AND challenge_sha256 = $3
+    AND expire_time > $4
+    AND (email = $5
+        OR google_user_id = $6
+        OR microsoft_user_id = $7)
+LIMIT 1
+`
+
+type GetEmailVerificationChallengeParams struct {
+	ProjectID             uuid.UUID
+	IntermediateSessionID uuid.UUID
+	ChallengeSha256       []byte
+	ExpireTime            *time.Time
+	Email                 *string
+	GoogleUserID          *string
+	MicrosoftUserID       *string
+}
+
+func (q *Queries) GetEmailVerificationChallenge(ctx context.Context, arg GetEmailVerificationChallengeParams) (EmailVerificationChallenge, error) {
+	row := q.db.QueryRow(ctx, getEmailVerificationChallenge,
+		arg.ProjectID,
+		arg.IntermediateSessionID,
+		arg.ChallengeSha256,
+		arg.ExpireTime,
+		arg.Email,
+		arg.GoogleUserID,
+		arg.MicrosoftUserID,
+	)
+	var i EmailVerificationChallenge
+	err := row.Scan(
+		&i.ID,
+		&i.IntermediateSessionID,
+		&i.ProjectID,
+		&i.ChallengeSha256,
+		&i.CompleteTime,
+		&i.CreateTime,
+		&i.Email,
+		&i.ExpireTime,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+	)
+	return i, err
+}
+
 const getIntermediateSessionByID = `-- name: GetIntermediateSessionByID :one
 SELECT
     id, project_id, unverified_email, verified_email, create_time, expire_time, token, token_sha256, revoked
@@ -569,30 +634,6 @@ func (q *Queries) GetIntermediateSessionSigningKeyByProjectID(ctx context.Contex
 		&i.PrivateKeyCipherText,
 		&i.CreateTime,
 		&i.ExpireTime,
-	)
-	return i, err
-}
-
-const getMethodVerificationChallengeByID = `-- name: GetMethodVerificationChallengeByID :one
-SELECT
-    id, project_id, complete_time, intermediate_session_id, auth_method, expire_time, secret_token_sha256
-FROM
-    method_verification_challenges
-WHERE
-    id = $1
-`
-
-func (q *Queries) GetMethodVerificationChallengeByID(ctx context.Context, id uuid.UUID) (MethodVerificationChallenge, error) {
-	row := q.db.QueryRow(ctx, getMethodVerificationChallengeByID, id)
-	var i MethodVerificationChallenge
-	err := row.Scan(
-		&i.ID,
-		&i.ProjectID,
-		&i.CompleteTime,
-		&i.IntermediateSessionID,
-		&i.AuthMethod,
-		&i.ExpireTime,
-		&i.SecretTokenSha256,
 	)
 	return i, err
 }
