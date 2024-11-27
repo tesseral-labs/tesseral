@@ -9,7 +9,7 @@ import (
 
 	"connectrpc.com/connect"
 	"connectrpc.com/vanguard"
-	awsConfig "github.com/aws/aws-sdk-go-v2/config"
+	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/cyrusaf/ctxlog"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -29,6 +29,7 @@ import (
 	"github.com/openauth-dev/openauth/internal/slogcorrelation"
 	"github.com/openauth-dev/openauth/internal/store"
 	"github.com/openauth-dev/openauth/internal/store/idformat"
+	"github.com/openauth-dev/openauth/internal/store/kms"
 	"github.com/ssoready/conf"
 )
 
@@ -46,6 +47,7 @@ func main() {
 		DB                          string `conf:"db"`
 		DogfoodProjectID            string `conf:"dogfood_project_id"`
 		IntermediateSessionKMSKeyID string `conf:"intermediate_session_kms_key_id"`
+		KMSEndpoint                 string `conf:"kms_endpoint_resolver_url,noredact"`
 		PageEncodingValue           string `conf:"page-encoding-value"`
 		ServeAddr                   string `conf:"serve_addr,noredact"`
 		SessionKMSKeyID             string `conf:"session_kms_key_id"`
@@ -74,16 +76,18 @@ func main() {
 	}
 	uuidDogfoodProjectID := uuid.UUID(dogfoodProjectID[:])
 
-	awsConf, err := awsConfig.LoadDefaultConfig(context.TODO(), awsConfig.WithRegion("us-east-1"))
+	awsConf, err := awsconfig.LoadDefaultConfig(context.TODO())
 	if err != nil {
 		panic(fmt.Errorf("load aws config: %w", err))
 	}
 
+	kms_ := kms.NewKeyManagementServiceFromConfig(&awsConf, &config.KMSEndpoint)
+
 	store_ := store.New(store.NewStoreParams{
-		AwsConfig:                             &awsConf,
 		DB:                                    db,
 		DogfoodProjectID:                      &uuidDogfoodProjectID,
 		IntermediateSessionSigningKeyKMSKeyID: config.IntermediateSessionKMSKeyID,
+		KMS: 																 kms_,
 		PageEncoder:                           pagetoken.Encoder{Secret: pageEncodingValue},
 		SessionSigningKeyKmsKeyID:             config.SessionKMSKeyID,
 	})

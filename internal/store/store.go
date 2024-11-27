@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -24,10 +23,10 @@ type Store struct {
 }
 
 type NewStoreParams struct {
-	AwsConfig                             *aws.Config
 	DB                                    *pgxpool.Pool
 	DogfoodProjectID                      *uuid.UUID
 	IntermediateSessionSigningKeyKMSKeyID string
+	KMS                           				*keyManagementService.KeyManagementService
 	PageEncoder                           pagetoken.Encoder
 	SessionSigningKeyKmsKeyID             string
 }
@@ -37,13 +36,10 @@ func New(p NewStoreParams) *Store {
 		db:                                    p.DB,
 		dogfoodProjectID:                      p.DogfoodProjectID,
 		intermediateSessionSigningKeyKMSKeyID: p.IntermediateSessionSigningKeyKMSKeyID,
+		kms:                                   p.KMS,
 		pageEncoder:                           p.PageEncoder,
 		q:                                     queries.New(p.DB),
 		sessionSigningKeyKmsKeyID:             p.SessionSigningKeyKmsKeyID,
-	}
-
-	if p.AwsConfig != nil {
-		store.kms = keyManagementService.NewKeyManagementServiceFromConfig(p.AwsConfig)
 	}
 
 	return store

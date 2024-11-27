@@ -3,7 +3,6 @@ package kms
 import (
 	"context"
 	"log/slog"
-	"os"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	awsKms "github.com/aws/aws-sdk-go-v2/service/kms"
@@ -23,12 +22,13 @@ type KeyManagementServiceEncryptResult struct {
 	CipherTextBlob []byte
 }
 
-func NewKeyManagementServiceFromConfig(cfg *aws.Config) *KeyManagementService {
-	endpoint := os.Getenv("AWS_ENDPOINT")
-
+func NewKeyManagementServiceFromConfig(cfg *aws.Config, endpoint *string) *KeyManagementService {
 	return &KeyManagementService{
 		kms: awsKms.NewFromConfig(*cfg, func(o *awsKms.Options) {
-			o.BaseEndpoint = &endpoint
+			if endpoint != nil {
+				slog.Info("endpoint", "endpoint", *endpoint)
+				o.BaseEndpoint = endpoint
+			}
 		}),
 	}
 }

@@ -3,18 +3,22 @@ package main
 import (
 	"context"
 	"fmt"
-	"os"
+	"log/slog"
 	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/openauth-dev/openauth/internal/loadenv"
 	"github.com/openauth-dev/openauth/internal/store"
+	"github.com/openauth-dev/openauth/internal/store/kms"
 )
 
 type bootstrapArgs struct {
-	Args     args   `cli:"bootstrap,subcmd"`
-	Database string `cli:"-d,--database"`
+	Args                               args   `cli:"bootstrap,subcmd"`
+	Database                           string `cli:"-d,--database"`
+	KMSEndpoint                        string `cli:"-k,--kms-endpoint"`
+	IntermediateSessionSigningKMSKeyID string `cli:"-i,--intermediate-session-kms-key-id"`
+	SessionSigningKMSKeyID             string `cli:"-s,--session-kms-key-id"`
 }
 
 func (_ bootstrapArgs) Description() string {
@@ -47,11 +51,15 @@ func bootstrap(ctx context.Context, args bootstrapArgs) error {
 		panic(fmt.Errorf("load aws config: %w", err))
 	}
 
+	slog.Info("args", "args", args)
+
+	kms_ := kms.NewKeyManagementServiceFromConfig(&awsConf, &args.KMSEndpoint)
+
 	s := store.New(store.NewStoreParams{
-		AwsConfig:                             &awsConf,
 		DB:                                    db,
-		IntermediateSessionSigningKeyKMSKeyID: os.Getenv("API_INTERMEDIATE_SESSION_KMS_KEY_ID"),
-		SessionSigningKeyKmsKeyID:             os.Getenv("API_SESSION_KMS_KEY_ID"),
+		IntermediateSessionSigningKeyKMSKeyID: args.IntermediateSessionSigningKMSKeyID,
+		KMS: 																 		kms_,
+		SessionSigningKeyKmsKeyID:             args.SessionSigningKMSKeyID,
 	})
 
 	res, err := s.CreateDogfoodProject(ctx)
@@ -59,18 +67,13 @@ func bootstrap(ctx context.Context, args bootstrapArgs) error {
 		return fmt.Errorf("create dogfood project: %w", err)
 	}
 
-	signingKeyRes, err := s.CreateDogfoodSessionSigningKeys(ctx, res.DogfoodProjectID)
-	if err != nil {
-		return fmt.Errorf("create dogfood session signing keys: %w", err)
-	}
-
 	fmt.Printf(
 		"%s\t%s\t%s\t%s\t%s\n",
 		res.DogfoodProjectID,
 		res.BootstrapUserEmail,
 		res.BootstrapUserVerySensitivePassword,
-		signingKeyRes.SessionSigningKeyID,
-		signingKeyRes.IntermediateSessionSigningKeyID,
+		res.SessionSigningKeyID,
+		res.IntermediateSessionSigningKeyID,
 	)
 	return nil
 }

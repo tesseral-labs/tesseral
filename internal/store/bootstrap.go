@@ -15,11 +15,8 @@ type CreateDogfoodProjectResponse struct {
 	DogfoodProjectID                   string
 	BootstrapUserEmail                 string
 	BootstrapUserVerySensitivePassword string
-}
-
-type CreateDogfoodSessionSigningKeysResponse struct {
-	SessionSigningKeyID             string
-	IntermediateSessionSigningKeyID string
+	SessionSigningKeyID             		string
+	IntermediateSessionSigningKeyID 		string
 }
 
 // CreateDogfoodProject creates the dogfood project.
@@ -37,13 +34,14 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 	}
 
 	if projectCount != 0 {
-		return nil, nil
+		return nil, fmt.Errorf("project count is not zero: %d", projectCount)
 	}
 
 	// directly create project and organization that cyclically refer to each
 	// other
 	dogfoodProjectID := uuid.New()
 	dogfoodOrganizationID := uuid.New()
+	formattedDogfoodProjectID := idformat.Project.Format(dogfoodProjectID)
 
 	if _, err := q.CreateProject(ctx, queries.CreateProjectParams{
 		ID:                       dogfoodProjectID,
@@ -92,6 +90,18 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 		return nil, fmt.Errorf("create user: %w", err)
 	}
 
+	// create session signing key for the new project
+	sessionSigningKey, err := s.CreateSessionSigningKey(ctx, formattedDogfoodProjectID)
+	if err != nil {
+		return nil, fmt.Errorf("create project signing key: %w", err)
+	}
+
+	// create intermediate session signing key for the new project
+	intermediateSessionSigningKey, err := s.CreateIntermediateSessionSigningKey(ctx, formattedDogfoodProjectID)
+	if err != nil {
+		return nil, fmt.Errorf("create project intermediate session signing key: %w", err)
+	}
+
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
 	}
@@ -100,27 +110,7 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 		DogfoodProjectID:                   idformat.Project.Format(dogfoodProjectID),
 		BootstrapUserEmail:                 bootstrapUserEmail,
 		BootstrapUserVerySensitivePassword: bootstrapUserPassword,
-	}, nil
-}
-
-func (s *Store) CreateDogfoodSessionSigningKeys(
-	ctx context.Context,
-	dogfoodProjectID string,
-) (*CreateDogfoodSessionSigningKeysResponse, error) {
-	// create session signing key for the new project
-	sessionSigningKey, err := s.CreateSessionSigningKey(ctx, dogfoodProjectID)
-	if err != nil {
-		return nil, fmt.Errorf("create project signing key: %w", err)
-	}
-
-	// create intermediate session signing key for the new project
-	intermediateSessionSigningKey, err := s.CreateIntermediateSessionSigningKey(ctx, dogfoodProjectID)
-	if err != nil {
-		return nil, fmt.Errorf("create project intermediate session signing key: %w", err)
-	}
-
-	return &CreateDogfoodSessionSigningKeysResponse{
-		SessionSigningKeyID:             idformat.SessionSigningKey.Format(sessionSigningKey.ID),
-		IntermediateSessionSigningKeyID: idformat.IntermediateSession.Format(intermediateSessionSigningKey.ID),
+		SessionSigningKeyID:                idformat.SessionSigningKey.Format(sessionSigningKey.ID),
+		IntermediateSessionSigningKeyID:    idformat.IntermediateSession.Format(intermediateSessionSigningKey.ID),
 	}, nil
 }
