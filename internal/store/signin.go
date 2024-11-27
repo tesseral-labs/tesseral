@@ -34,7 +34,7 @@ func (s *Store) SignInWithEmail(
 
 	if users != nil {
 		// TODO: Implement factor checking before issuing a session
-		return nil, errors.New("not implemented")
+		panic(errors.New("not implemented"))
 	} else {
 		// Send a verification email then issue an intermediate session,
 		// so the user can verify their email address and create an organization

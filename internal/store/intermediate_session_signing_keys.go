@@ -22,14 +22,14 @@ type IntermediateSessionSigningKey struct {
 	PrivateKey *ecdsa.PrivateKey
 }
 
-func (s *Store) CreateIntermediateSessionSigningKey(ctx context.Context, projectID string) (*IntermediateSessionSigningKey, error) {
+func (s *Store) CreateIntermediateSessionSigningKey(ctx context.Context, projectId string) (*IntermediateSessionSigningKey, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
 	defer rollback()
 
-	projectId, err := idformat.Project.Parse(projectID)
+	projectID, err := idformat.Project.Parse(projectId)
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +64,7 @@ func (s *Store) CreateIntermediateSessionSigningKey(ctx context.Context, project
 	// Store the encrypted key in the database
 	createdIntermediateSessionSigningKey, err := q.CreateIntermediateSessionSigningKey(ctx, queries.CreateIntermediateSessionSigningKeyParams{
 		ID:                   uuid.New(),
-		ProjectID:            projectId,
+		ProjectID:            projectID,
 		ExpireTime:           &expiresAt,
 		PrivateKeyCipherText: encryptOutput.CipherTextBlob,
 	})

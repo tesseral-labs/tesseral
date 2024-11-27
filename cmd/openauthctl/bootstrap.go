@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"log/slog"
 	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -50,8 +49,6 @@ func bootstrap(ctx context.Context, args bootstrapArgs) error {
 	if err != nil {
 		panic(fmt.Errorf("load aws config: %w", err))
 	}
-
-	slog.Info("args", "args", args)
 
 	kms_ := kms.NewKeyManagementServiceFromConfig(&awsConf, &args.KMSEndpoint)
 
