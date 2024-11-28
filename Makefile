@@ -1,3 +1,7 @@
+.PHONY: dev
+dev:
+	docker-compose up --build --watch
+
 .PHONY: queries
 queries:
 	pg_dump --schema-only 'postgres://postgres:password@localhost?sslmode=disable' > sqlc/schema.sql
