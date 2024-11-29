@@ -4,7 +4,7 @@
 // @ts-nocheck
 
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message, proto3, protoInt64 } from "@bufbuild/protobuf";
+import { Message, proto3, protoInt64, Struct } from "@bufbuild/protobuf";
 
 /**
  * @generated from message openauth.v1.Organization
@@ -201,6 +201,55 @@ export class Project extends Message<Project> {
 
   static equals(a: Project | PlainMessage<Project> | undefined, b: Project | PlainMessage<Project> | undefined): boolean {
     return proto3.util.equals(Project, a, b);
+  }
+}
+
+/**
+ * @generated from message openauth.v1.SessionSigningKey
+ */
+export class SessionSigningKey extends Message<SessionSigningKey> {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id = "";
+
+  /**
+   * @generated from field: string project_id = 2;
+   */
+  projectId = "";
+
+  /**
+   * @generated from field: google.protobuf.Struct public_key_jwk = 3;
+   */
+  publicKeyJwk?: Struct;
+
+  constructor(data?: PartialMessage<SessionSigningKey>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "openauth.v1.SessionSigningKey";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "project_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "public_key_jwk", kind: "message", T: Struct },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): SessionSigningKey {
+    return new SessionSigningKey().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): SessionSigningKey {
+    return new SessionSigningKey().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): SessionSigningKey {
+    return new SessionSigningKey().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: SessionSigningKey | PlainMessage<SessionSigningKey> | undefined, b: SessionSigningKey | PlainMessage<SessionSigningKey> | undefined): boolean {
+    return proto3.util.equals(SessionSigningKey, a, b);
   }
 }
 

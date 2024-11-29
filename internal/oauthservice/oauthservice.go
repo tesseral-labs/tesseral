@@ -1,6 +1,7 @@
 package oauthservice
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -20,7 +21,25 @@ func (s *Service) Handler() http.Handler {
 }
 
 func (s *Service) jwks(w http.ResponseWriter, r *http.Request) error {
-	fmt.Println("projectID", r.PathValue("projectID"))
+	ctx := r.Context()
+	projectID := r.PathValue("projectID")
+
+	sessionPublicKeys, err := s.Store.GetSessionPublicKeysByProjectID(ctx, projectID)
+	if err != nil {
+		return fmt.Errorf("get session public key: %w", err)
+	}
+
+	var jwksKeys []any
+	for _, key := range sessionPublicKeys {
+		jwksKeys = append(jwksKeys, key.PublicKeyJwk)
+	}
+	res := map[string]any{"keys": jwksKeys}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(res); err != nil {
+		return err
+	}
 	return nil
 }
 

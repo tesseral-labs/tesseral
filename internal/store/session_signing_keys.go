@@ -3,6 +3,8 @@ package store
 import (
 	"context"
 	"crypto/ecdsa"
+	"encoding/base64"
+	"fmt"
 	"log/slog"
 	"time"
 
@@ -10,8 +12,10 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
 	openauthecdsa "github.com/openauth/openauth/internal/crypto/ecdsa"
+	openauthv1 "github.com/openauth/openauth/internal/gen/openauth/v1"
 	"github.com/openauth/openauth/internal/store/idformat"
 	"github.com/openauth/openauth/internal/store/queries"
+	"google.golang.org/protobuf/types/known/structpb"
 )
 
 type SessionSigningKey struct {
@@ -133,7 +137,7 @@ func (s *Store) GetSessionSigningKeyByID(ctx context.Context, id string) (*Sessi
 	return parseSessionSigningKey(&sessionSigningKey, privateKey), nil
 }
 
-func (s *Store) GetSessionPubliKeyByProjectID(ctx context.Context, projectId string) (*ecdsa.PublicKey, error) {
+func (s *Store) GetSessionPublicKeysByProjectID(ctx context.Context, projectId string) ([]*openauthv1.SessionSigningKey, error) {
 	_, q, _, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -145,17 +149,37 @@ func (s *Store) GetSessionPubliKeyByProjectID(ctx context.Context, projectId str
 		return nil, err
 	}
 
-	sessionSigningKey, err := q.GetSessionSigningKeyByProjectID(ctx, projectID)
+	sessionSigningKeys, err := q.GetSessionSigningKeysByProjectID(ctx, projectID)
 	if err != nil {
 		return nil, err
 	}
 
-	publicKey, err := openauthecdsa.PublicKeyFromBytes(sessionSigningKey.PublicKey)
-	if err != nil {
-		return nil, err
+	var out []*openauthv1.SessionSigningKey
+	for _, sessionSigningKey := range sessionSigningKeys {
+		pub, err := openauthecdsa.PublicKeyFromBytes(sessionSigningKey.PublicKey)
+		if err != nil {
+			panic(fmt.Errorf("public key from bytes: %w", err))
+		}
+
+		jwk, err := structpb.NewStruct(map[string]any{
+			"kid": idformat.SessionSigningKey.Format(sessionSigningKey.ID),
+			"kty": "EC",
+			"crv": "P-256",
+			"x":   base64.RawURLEncoding.EncodeToString(pub.X.Bytes()),
+			"y":   base64.RawURLEncoding.EncodeToString(pub.Y.Bytes()),
+		})
+		if err != nil {
+			panic(fmt.Errorf("marshal public key to structpb: %w", err))
+		}
+
+		out = append(out, &openauthv1.SessionSigningKey{
+			Id:           idformat.SessionSigningKey.Format(sessionSigningKey.ID),
+			ProjectId:    idformat.Project.Format(projectID),
+			PublicKeyJwk: jwk,
+		})
 	}
 
-	return publicKey, nil
+	return out, nil
 }
 
 func parseSessionSigningKey(ssk *queries.SessionSigningKey, privateKey *ecdsa.PrivateKey) *SessionSigningKey {

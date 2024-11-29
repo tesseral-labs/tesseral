@@ -136,7 +136,7 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 	}
 
 	// Store the encrypted key in the database
-	sessionSigningKey, err := q.CreateIntermediateSessionSigningKey(ctx, queries.CreateIntermediateSessionSigningKeyParams{
+	sessionSigningKey, err := q.CreateSessionSigningKey(ctx, queries.CreateSessionSigningKeyParams{
 		ID:                   uuid.New(),
 		ProjectID:            dogfoodProjectID,
 		ExpireTime:           &expiresAt,
