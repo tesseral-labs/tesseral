@@ -1,0 +1,21 @@
+name: staticcheck-lint
+on:
+  push:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  staticcheck:
+    name: lint
+    runs-on: ubuntu-latest-m
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+      - name: staticcheck-lint
+        run: |
+          go install honnef.co/go/tools/cmd/staticcheck@latest
+          staticcheck -checks=all ./...
