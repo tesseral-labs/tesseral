@@ -1,8 +1,8 @@
 package frontendservice
 
 import (
-	"github.com/openauth-dev/openauth/internal/gen/frontend/v1/frontendv1connect"
-	"github.com/openauth-dev/openauth/internal/store"
+	"github.com/openauth/openauth/internal/gen/frontend/v1/frontendv1connect"
+	"github.com/openauth/openauth/internal/store"
 )
 
 type FrontendService struct {

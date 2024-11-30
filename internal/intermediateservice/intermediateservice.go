@@ -1,8 +1,8 @@
 package intermediateservice
 
 import (
-	"github.com/openauth-dev/openauth/internal/gen/intermediate/v1/intermediatev1connect"
-	"github.com/openauth-dev/openauth/internal/store"
+	"github.com/openauth/openauth/internal/gen/intermediate/v1/intermediatev1connect"
+	"github.com/openauth/openauth/internal/store"
 )
 
 type IntermediateService struct {

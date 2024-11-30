@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"connectrpc.com/connect"
-	"github.com/openauth-dev/openauth/internal/authn"
-	"github.com/openauth-dev/openauth/internal/store"
+	"github.com/openauth/openauth/internal/authn"
+	"github.com/openauth/openauth/internal/store"
 )
 
 var errAuthorizationHeaderRequired = errors.New("authorization header is required")
