@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	"connectrpc.com/connect"
-	backendv1 "github.com/openauth-dev/openauth/internal/gen/backend/v1"
-	openauthv1 "github.com/openauth-dev/openauth/internal/gen/openauth/v1"
+	backendv1 "github.com/openauth/openauth/internal/gen/backend/v1"
+	openauthv1 "github.com/openauth/openauth/internal/gen/openauth/v1"
 )
 
 func (s *BackendService) UpdateUser(

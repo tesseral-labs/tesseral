@@ -5,10 +5,10 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	backendv1 "github.com/openauth-dev/openauth/internal/gen/backend/v1"
-	intermediatev1 "github.com/openauth-dev/openauth/internal/gen/intermediate/v1"
-	openauthv1 "github.com/openauth-dev/openauth/internal/gen/openauth/v1"
-	"github.com/openauth-dev/openauth/internal/store/idformat"
+	backendv1 "github.com/openauth/openauth/internal/gen/backend/v1"
+	intermediatev1 "github.com/openauth/openauth/internal/gen/intermediate/v1"
+	openauthv1 "github.com/openauth/openauth/internal/gen/openauth/v1"
+	"github.com/openauth/openauth/internal/store/idformat"
 )
 
 type ContextData struct {

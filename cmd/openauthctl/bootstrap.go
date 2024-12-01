@@ -7,9 +7,9 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/openauth-dev/openauth/internal/loadenv"
-	"github.com/openauth-dev/openauth/internal/store"
-	"github.com/openauth-dev/openauth/internal/store/kms"
+	"github.com/openauth/openauth/internal/loadenv"
+	"github.com/openauth/openauth/internal/store"
+	"github.com/openauth/openauth/internal/store/kms"
 )
 
 type bootstrapArgs struct {

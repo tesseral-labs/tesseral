@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	backendv1 "github.com/openauth-dev/openauth/internal/gen/backend/v1"
-	"github.com/openauth-dev/openauth/internal/store/idformat"
-	"github.com/openauth-dev/openauth/internal/store/queries"
+	backendv1 "github.com/openauth/openauth/internal/gen/backend/v1"
+	"github.com/openauth/openauth/internal/store/idformat"
+	"github.com/openauth/openauth/internal/store/queries"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 

@@ -1,4 +1,4 @@
-module github.com/openauth-dev/openauth
+module github.com/openauth/openauth
 
 go 1.23.2
 
@@ -10,7 +10,6 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/kms v1.37.6
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.34.5
 	github.com/cyrusaf/ctxlog v1.3.3
-	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/golang-migrate/migrate/v4 v4.17.1
 	github.com/google/uuid v1.6.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.1

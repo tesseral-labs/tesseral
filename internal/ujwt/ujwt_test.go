@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/openauth-dev/openauth/internal/ujwt"
+	"github.com/openauth/openauth/internal/ujwt"
 )
 
 func TestKeyID(t *testing.T) {

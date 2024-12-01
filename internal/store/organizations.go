@@ -5,13 +5,13 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	"github.com/openauth-dev/openauth/internal/authn"
-	backendv1 "github.com/openauth-dev/openauth/internal/gen/backend/v1"
-	frontendv1 "github.com/openauth-dev/openauth/internal/gen/frontend/v1"
-	intermediatev1 "github.com/openauth-dev/openauth/internal/gen/intermediate/v1"
-	openauthv1 "github.com/openauth-dev/openauth/internal/gen/openauth/v1"
-	"github.com/openauth-dev/openauth/internal/store/idformat"
-	"github.com/openauth-dev/openauth/internal/store/queries"
+	"github.com/openauth/openauth/internal/authn"
+	backendv1 "github.com/openauth/openauth/internal/gen/backend/v1"
+	frontendv1 "github.com/openauth/openauth/internal/gen/frontend/v1"
+	intermediatev1 "github.com/openauth/openauth/internal/gen/intermediate/v1"
+	openauthv1 "github.com/openauth/openauth/internal/gen/openauth/v1"
+	"github.com/openauth/openauth/internal/store/idformat"
+	"github.com/openauth/openauth/internal/store/queries"
 )
 
 func (s *Store) CreateIntermediateOrganization(ctx context.Context, req *intermediatev1.CreateOrganizationRequest) (*intermediatev1.CreateOrganizationResponse, error) {
