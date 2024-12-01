@@ -1,4 +1,4 @@
-name: staticcheck-lint
+name: golang-lint
 on:
   push:
 
@@ -7,9 +7,25 @@ permissions:
   pull-requests: read
 
 jobs:
+  gofmt:
+    name: gofmt
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+      - name: gofmt check
+        run: |
+          files=$(gofmt -l -w .)
+          if [[ -n "$files" ]]; then
+            echo $files
+            exit 1
+          fi
+
   staticcheck:
-    name: lint
-    runs-on: ubuntu-latest-m
+    name: staticcheck
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
@@ -20,8 +36,8 @@ jobs:
           version: "2022.1.1"
 
   errcheck:
-    name: lint
-    runs-on: ubuntu-latest-m
+    name: errcheck
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
