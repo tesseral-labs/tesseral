@@ -16,6 +16,22 @@ func (s *Store) SignInWithEmail(
 	ctx *context.Context,
 	req *intermediatev1.SignInWithEmailRequest,
 ) (*intermediatev1.SignInWithEmailResponse, error) {
+	shouldVerify, err := s.shouldVerifyEmail(*ctx, req.ProjectId, req.Email, "", "")
+	if err != nil {
+		return nil, err
+	}
+
+	challenge := &EmailVerificationChallenge{}
+	if shouldVerify {
+		challenge, err = s.CreateEmailVerificationChallenge(*ctx, &CreateEmailVerificationChallengeParams{
+			ProjectID: req.ProjectId,
+			Email:     req.Email,
+		})
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	_, q, commit, rollback, err := s.tx(*ctx)
 	if err != nil {
 		return nil, err
@@ -73,5 +89,34 @@ func (s *Store) SignInWithEmail(
 		return &intermediatev1.SignInWithEmailResponse{
 			SessionToken: intermediateSession.Token,
 		}, nil
+	}
+}
+
+func (s *Store) shouldVerifyEmail(ctx context.Context, projectId string, email string, googleUserID string, microsoftUserID string) (bool, error) {
+	_, q, _, rollback, err := s.tx(ctx)
+	if err != nil {
+		return false, err
+	}
+	defer rollback()
+
+	projectID, err := idformat.Project.Parse(projectId)
+	if err != nil {
+		return false, err
+	}
+
+	verifiedEmails, err := q.ListVerifiedEmails(ctx, queries.ListVerifiedEmailsParams{
+		ProjectID:       projectID,
+		Email:           email,
+		GoogleUserID:    &googleUserID,
+		MicrosoftUserID: &microsoftUserID,
+	})
+	if err != nil {
+		return false, err
+	}
+
+	if len(verifiedEmails) == 0 {
+		return true, nil
+	} else {
+		return false, nil
 	}
 }

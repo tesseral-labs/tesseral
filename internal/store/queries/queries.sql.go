@@ -1280,6 +1280,59 @@ func (q *Queries) ListUsersByOrganization(ctx context.Context, arg ListUsersByOr
 	return items, nil
 }
 
+const listVerifiedEmails = `-- name: ListVerifiedEmails :many
+SELECT
+    id, project_id, create_time, email, google_user_id, microsoft_user_id
+FROM
+    verified_emails
+WHERE
+    project_id = $1
+    AND email = $2
+    AND (google_user_id = $3
+        OR microsoft_user_id = $4)
+ORDER BY
+    id
+`
+
+type ListVerifiedEmailsParams struct {
+	ProjectID       uuid.UUID
+	Email           string
+	GoogleUserID    *string
+	MicrosoftUserID *string
+}
+
+func (q *Queries) ListVerifiedEmails(ctx context.Context, arg ListVerifiedEmailsParams) ([]VerifiedEmail, error) {
+	rows, err := q.db.Query(ctx, listVerifiedEmails,
+		arg.ProjectID,
+		arg.Email,
+		arg.GoogleUserID,
+		arg.MicrosoftUserID,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []VerifiedEmail
+	for rows.Next() {
+		var i VerifiedEmail
+		if err := rows.Scan(
+			&i.ID,
+			&i.ProjectID,
+			&i.CreateTime,
+			&i.Email,
+			&i.GoogleUserID,
+			&i.MicrosoftUserID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const revokeIntermediateSession = `-- name: RevokeIntermediateSession :one
 UPDATE
     intermediate_sessions

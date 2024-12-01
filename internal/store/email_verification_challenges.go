@@ -16,6 +16,7 @@ type EmailVerificationChallenge struct {
 	ID                    string
 	IntermediateSessionID string
 	ProjectID             string
+	Challenge             string
 	ChallengeSha256       []byte
 	CompleteTime          time.Time
 	Email                 string
@@ -88,7 +89,7 @@ func (s *Store) CreateEmailVerificationChallenge(ctx context.Context, params *Cr
 		return nil, err
 	}
 
-	return parseEmailVerificationChallenge(&evc), nil
+	return parseEmailVerificationChallenge(&evc, secretToken), nil
 }
 
 func (s *Store) GetEmailVerificationChallenge(ctx context.Context, params *GetEmailVerificationChallengeParams) (*EmailVerificationChallenge, error) {
@@ -125,7 +126,7 @@ func (s *Store) GetEmailVerificationChallenge(ctx context.Context, params *GetEm
 		return nil, err
 	}
 
-	return parseEmailVerificationChallenge(&evc), nil
+	return parseEmailVerificationChallenge(&evc, ""), nil
 }
 
 func generateSecretToken() (string, error) {
@@ -139,11 +140,12 @@ func generateSecretToken() (string, error) {
 	return strconv.Itoa(randomNumber), nil
 }
 
-func parseEmailVerificationChallenge(evc *queries.EmailVerificationChallenge) *EmailVerificationChallenge {
+func parseEmailVerificationChallenge(evc *queries.EmailVerificationChallenge, originalChallenge string) *EmailVerificationChallenge {
 	return &EmailVerificationChallenge{
 		ID:                    idformat.EmailVerificationChallenge.Format(evc.ID),
 		IntermediateSessionID: idformat.IntermediateSession.Format(evc.IntermediateSessionID),
 		ProjectID:             idformat.Project.Format(evc.ProjectID),
+		Challenge:             originalChallenge,
 		ChallengeSha256:       evc.ChallengeSha256,
 		CompleteTime:          *evc.CompleteTime,
 		Email:                 *evc.Email,

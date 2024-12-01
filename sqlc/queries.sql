@@ -297,6 +297,19 @@ ORDER BY
     id
 LIMIT $2;
 
+-- name: ListVerifiedEmails :many
+SELECT
+    *
+FROM
+    verified_emails
+WHERE
+    project_id = $1
+    AND email = $2
+    AND (google_user_id = $3
+        OR microsoft_user_id = $4)
+ORDER BY
+    id;
+
 -- name: RevokeIntermediateSession :one
 UPDATE
     intermediate_sessions
