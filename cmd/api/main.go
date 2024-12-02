@@ -100,7 +100,7 @@ func main() {
 		},
 		connect.WithInterceptors(
 			// We may want to use separate auth interceptors for backend and frontend services
-			backendinterceptor.New(store_),
+			backendinterceptor.New(store_, config.DogfoodProjectID),
 		),
 	)
 	backend := vanguard.NewService(backendConnectPath, backendConnectHandler)
