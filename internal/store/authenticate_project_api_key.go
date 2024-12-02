@@ -7,8 +7,8 @@ import (
 	"fmt"
 
 	"github.com/jackc/pgx/v5"
-	backendv1 "github.com/openauth-dev/openauth/internal/gen/backend/v1"
-	"github.com/openauth-dev/openauth/internal/store/idformat"
+	backendv1 "github.com/openauth/openauth/internal/gen/backend/v1"
+	"github.com/openauth/openauth/internal/store/idformat"
 )
 
 var ErrBadProjectAPIKey = fmt.Errorf("bad project api key")

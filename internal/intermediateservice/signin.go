@@ -6,7 +6,7 @@ import (
 	"log/slog"
 
 	"connectrpc.com/connect"
-	intermediatev1 "github.com/openauth-dev/openauth/internal/gen/intermediate/v1"
+	intermediatev1 "github.com/openauth/openauth/internal/gen/intermediate/v1"
 )
 
 func (s *IntermediateService) SignInWithEmail(

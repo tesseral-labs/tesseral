@@ -7,9 +7,9 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/openauth-dev/openauth/internal/pagetoken"
-	keyManagementService "github.com/openauth-dev/openauth/internal/store/kms"
-	"github.com/openauth-dev/openauth/internal/store/queries"
+	"github.com/openauth/openauth/internal/pagetoken"
+	keyManagementService "github.com/openauth/openauth/internal/store/kms"
+	"github.com/openauth/openauth/internal/store/queries"
 )
 
 type Store struct {

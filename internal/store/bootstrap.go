@@ -10,9 +10,9 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
-	"github.com/openauth-dev/openauth/internal/crypto/ecdsa"
-	"github.com/openauth-dev/openauth/internal/store/idformat"
-	"github.com/openauth-dev/openauth/internal/store/queries"
+	"github.com/openauth/openauth/internal/crypto/ecdsa"
+	"github.com/openauth/openauth/internal/store/idformat"
+	"github.com/openauth/openauth/internal/store/queries"
 )
 
 type CreateDogfoodProjectResponse struct {
@@ -136,7 +136,7 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 	}
 
 	// Store the encrypted key in the database
-	sessionSigningKey, err := q.CreateIntermediateSessionSigningKey(ctx, queries.CreateIntermediateSessionSigningKeyParams{
+	sessionSigningKey, err := q.CreateSessionSigningKey(ctx, queries.CreateSessionSigningKeyParams{
 		ID:                   uuid.New(),
 		ProjectID:            dogfoodProjectID,
 		ExpireTime:           &expiresAt,

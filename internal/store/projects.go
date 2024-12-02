@@ -4,10 +4,10 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	backendv1 "github.com/openauth-dev/openauth/internal/gen/backend/v1"
-	openauthv1 "github.com/openauth-dev/openauth/internal/gen/openauth/v1"
-	"github.com/openauth-dev/openauth/internal/store/idformat"
-	"github.com/openauth-dev/openauth/internal/store/queries"
+	backendv1 "github.com/openauth/openauth/internal/gen/backend/v1"
+	openauthv1 "github.com/openauth/openauth/internal/gen/openauth/v1"
+	"github.com/openauth/openauth/internal/store/idformat"
+	"github.com/openauth/openauth/internal/store/queries"
 )
 
 func (s *Store) CreateProject(ctx context.Context, req *backendv1.CreateProjectRequest) (*openauthv1.Project, error) {

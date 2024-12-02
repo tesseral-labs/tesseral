@@ -6,10 +6,10 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	intermediatev1 "github.com/openauth-dev/openauth/internal/gen/intermediate/v1"
-	"github.com/openauth-dev/openauth/internal/store/idformat"
-	"github.com/openauth-dev/openauth/internal/store/queries"
-	"github.com/openauth-dev/openauth/internal/ujwt"
+	intermediatev1 "github.com/openauth/openauth/internal/gen/intermediate/v1"
+	"github.com/openauth/openauth/internal/store/idformat"
+	"github.com/openauth/openauth/internal/store/queries"
+	"github.com/openauth/openauth/internal/ujwt"
 )
 
 func (s *Store) SignInWithEmail(

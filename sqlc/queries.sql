@@ -153,16 +153,13 @@ FROM
 WHERE
     id = $1;
 
--- name: GetSessionSigningKeyByProjectID :one
+-- name: GetSessionSigningKeysByProjectID :many
 SELECT
     *
 FROM
     session_signing_keys
 WHERE
-    project_id = $1
-ORDER BY
-    create_time DESC
-LIMIT 1;
+    project_id = $1;
 
 -- name: GetOrganizationByGoogleHostedDomain :one
 SELECT

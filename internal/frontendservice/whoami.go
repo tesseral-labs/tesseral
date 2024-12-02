@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"connectrpc.com/connect"
-	frontendv1 "github.com/openauth-dev/openauth/internal/gen/frontend/v1"
+	frontendv1 "github.com/openauth/openauth/internal/gen/frontend/v1"
 )
 
 func (s *FrontendService) WhoAmI(
