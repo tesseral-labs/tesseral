@@ -24,6 +24,7 @@ import (
 	"github.com/openauth/openauth/internal/hexkey"
 	"github.com/openauth/openauth/internal/intermediateservice"
 	"github.com/openauth/openauth/internal/loadenv"
+	"github.com/openauth/openauth/internal/oauthservice"
 	"github.com/openauth/openauth/internal/pagetoken"
 	"github.com/openauth/openauth/internal/secretload"
 	"github.com/openauth/openauth/internal/slogcorrelation"
@@ -139,6 +140,10 @@ func main() {
 		panic(err)
 	}
 
+	oauthService := oauthservice.Service{
+		Store: store_,
+	}
+
 	// Register health checks
 	mux := http.NewServeMux()
 	mux.Handle("/internal/health", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -150,6 +155,9 @@ func main() {
 	mux.Handle("/backend/v1/", backendTranscoder)
 	mux.Handle("/frontend/v1/", frontendTranscoder)
 	mux.Handle("/intermediate/v1/", intermediateTranscoder)
+
+	// Register oauthservice
+	mux.Handle("/oauth/", oauthService.Handler())
 
 	// Serve the services
 	slog.Info("serve")

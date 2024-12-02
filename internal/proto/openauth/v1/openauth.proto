@@ -50,6 +50,12 @@ message Project {
   string microsoft_oauth_client_secret = 9;
 }
 
+message SessionSigningKey {
+  string id = 1;
+  string project_id = 2;
+  google.protobuf.Struct public_key_jwk = 3;
+}
+
 message SessionClaims {
   // The organization ID the session is scoped to.
   string organization_id = 1;
