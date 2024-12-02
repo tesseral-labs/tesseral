@@ -4,7 +4,7 @@
 // @ts-nocheck
 
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message, proto3, protoInt64, Struct } from "@bufbuild/protobuf";
+import { Message, proto3, Struct, Timestamp } from "@bufbuild/protobuf";
 
 /**
  * @generated from message openauth.v1.Organization
@@ -254,77 +254,6 @@ export class SessionSigningKey extends Message<SessionSigningKey> {
 }
 
 /**
- * @generated from message openauth.v1.SessionClaims
- */
-export class SessionClaims extends Message<SessionClaims> {
-  /**
-   * The organization ID the session is scoped to.
-   *
-   * @generated from field: string organization_id = 1;
-   */
-  organizationId = "";
-
-  /**
-   * The user_id associated with the session.
-   *
-   * @generated from field: string user_id = 2;
-   */
-  userId = "";
-
-  /**
-   * The time the session expires.
-   *
-   * @generated from field: int64 expires_at = 3;
-   */
-  expiresAt = protoInt64.zero;
-
-  /**
-   * The time the session was issued.
-   *
-   * @generated from field: int64 issued_at = 4;
-   */
-  issuedAt = protoInt64.zero;
-
-  /**
-   * The subject of the session.
-   *
-   * @generated from field: string subject = 5;
-   */
-  subject = "";
-
-  constructor(data?: PartialMessage<SessionClaims>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "openauth.v1.SessionClaims";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "organization_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "user_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "expires_at", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
-    { no: 4, name: "issued_at", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
-    { no: 5, name: "subject", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): SessionClaims {
-    return new SessionClaims().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): SessionClaims {
-    return new SessionClaims().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): SessionClaims {
-    return new SessionClaims().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: SessionClaims | PlainMessage<SessionClaims> | undefined, b: SessionClaims | PlainMessage<SessionClaims> | undefined): boolean {
-    return proto3.util.equals(SessionClaims, a, b);
-  }
-}
-
-/**
  * @generated from message openauth.v1.User
  */
 export class User extends Message<User> {
@@ -408,6 +337,67 @@ export class User extends Message<User> {
 
   static equals(a: User | PlainMessage<User> | undefined, b: User | PlainMessage<User> | undefined): boolean {
     return proto3.util.equals(User, a, b);
+  }
+}
+
+/**
+ * @generated from message openauth.v1.Session
+ */
+export class Session extends Message<Session> {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id = "";
+
+  /**
+   * @generated from field: string user_id = 2;
+   */
+  userId = "";
+
+  /**
+   * @generated from field: google.protobuf.Timestamp create_time = 3;
+   */
+  createTime?: Timestamp;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp expire_time = 4;
+   */
+  expireTime?: Timestamp;
+
+  /**
+   * @generated from field: bool revoked = 5;
+   */
+  revoked = false;
+
+  constructor(data?: PartialMessage<Session>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "openauth.v1.Session";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "user_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "create_time", kind: "message", T: Timestamp },
+    { no: 4, name: "expire_time", kind: "message", T: Timestamp },
+    { no: 5, name: "revoked", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Session {
+    return new Session().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): Session {
+    return new Session().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): Session {
+    return new Session().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: Session | PlainMessage<Session> | undefined, b: Session | PlainMessage<Session> | undefined): boolean {
+    return proto3.util.equals(Session, a, b);
   }
 }
 

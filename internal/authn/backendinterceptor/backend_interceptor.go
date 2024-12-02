@@ -54,11 +54,12 @@ func New(s *store.Store, dogfoodProjectID string) connect.UnaryInterceptorFunc {
 
 				ctx = authn.NewProjectAPIKeyContext(ctx, projectAPIKey)
 			} else {
-				// it's an openauth access token for the dogfood project, no
-				// remaining valid options
-				if err := authenticateAccessToken(ctx, s, dogfoodProjectID, secretValue); err != nil {
-					return nil, err
+				sessionCtxData, err := authenticateAccessToken(ctx, s, dogfoodProjectID, secretValue)
+				if err != nil {
+					return nil, fmt.Errorf("authenticate access token: %w", err)
 				}
+
+				ctx = authn.NewDogfoodSessionContext(ctx, *sessionCtxData)
 			}
 
 			return next(ctx, req)
@@ -66,19 +67,19 @@ func New(s *store.Store, dogfoodProjectID string) connect.UnaryInterceptorFunc {
 	}
 }
 
-func authenticateAccessToken(ctx context.Context, s *store.Store, dogfoodProjectID, accessToken string) error {
+func authenticateAccessToken(ctx context.Context, s *store.Store, dogfoodProjectID, accessToken string) (*authn.DogfoodSessionContextData, error) {
 	// our customers do this logic using our SDK, but we can't use that
 	// ourselves here; fetch the public key indicated by accessToken and then
 	// authenticate using that public key
 
 	sessionPublicKeys, err := s.GetSessionPublicKeysByProjectID(ctx, dogfoodProjectID)
 	if err != nil {
-		return fmt.Errorf("get dogfood session public keys: %w", err)
+		return nil, fmt.Errorf("get dogfood session public keys: %w", err)
 	}
 
 	kid, err := ujwt.KeyID(accessToken)
 	if err != nil {
-		return connect.NewError(connect.CodeUnauthenticated, err)
+		return nil, connect.NewError(connect.CodeUnauthenticated, err)
 	}
 
 	var sessionPublicKeyJWK map[string]any
@@ -90,7 +91,7 @@ func authenticateAccessToken(ctx context.Context, s *store.Store, dogfoodProject
 	}
 
 	if sessionPublicKeyJWK == nil {
-		return connect.NewError(connect.CodeUnauthenticated, ujwt.ErrBadJWT)
+		return nil, connect.NewError(connect.CodeUnauthenticated, ujwt.ErrBadJWT)
 	}
 
 	x, err := base64.RawURLEncoding.DecodeString(sessionPublicKeyJWK["x"].(string))
@@ -112,9 +113,12 @@ func authenticateAccessToken(ctx context.Context, s *store.Store, dogfoodProject
 
 	var claims map[string]interface{}
 	if err := ujwt.Claims(&pub, "TODO", time.Now(), &claims, accessToken); err != nil {
-		return connect.NewError(connect.CodeUnauthenticated, err)
+		return nil, connect.NewError(connect.CodeUnauthenticated, err)
 	}
 
-	fmt.Println(claims)
-	return nil
+	return &authn.DogfoodSessionContextData{
+		UserID:           claims["user"].(map[string]any)["id"].(string),
+		OrganizationID:   claims["organization"].(map[string]any)["id"].(string),
+		DogfoodProjectID: dogfoodProjectID,
+	}, nil
 }

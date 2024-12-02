@@ -198,14 +198,9 @@ func (s *Store) UpdateUserPassword(ctx context.Context, req *backendv1.UpdateUse
 	return parseUser(&user), nil
 }
 
-func parseUser(user *queries.User) *openauthv1.User {
+func parseUser(qUser *queries.User) *openauthv1.User {
 	return &openauthv1.User{
-		Id:              user.ID.String(),
-		OrganizationId:  user.OrganizationID.String(),
-		UnverifiedEmail: *user.UnverifiedEmail,
-		VerifiedEmail:   *user.VerifiedEmail,
-		GoogleUserId:    *user.GoogleUserID,
-		MicrosoftUserId: *user.MicrosoftUserID,
-		PasswordBcrypt:  *user.PasswordBcrypt,
+		Id:             idformat.User.Format(qUser.ID),
+		OrganizationId: idformat.Organization.Format(qUser.OrganizationID),
 	}
 }

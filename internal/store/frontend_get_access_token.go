@@ -3,6 +3,7 @@ package store
 import (
 	"context"
 	"crypto/sha256"
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -13,6 +14,7 @@ import (
 	"github.com/openauth/openauth/internal/store/idformat"
 	"github.com/openauth/openauth/internal/store/queries"
 	"github.com/openauth/openauth/internal/ujwt"
+	"google.golang.org/protobuf/encoding/protojson"
 )
 
 type sessionClaims struct {
@@ -23,13 +25,17 @@ type sessionClaims struct {
 	Nbf int64  `json:"nbf"`
 	Iat int64  `json:"iat"`
 	Jti string `json:"jti"`
+
+	Session      json.RawMessage `json:"session"`
+	User         json.RawMessage `json:"user"`
+	Organization json.RawMessage `json:"organization"`
 }
 
 func (s *Store) GetAccessToken(ctx context.Context, req *frontendv1.GetAccessTokenRequest) (*frontendv1.GetAccessTokenResponse, error) {
 	// TODO(ucarion): this endpoint will also look at + update state related to
 	// latest activity; calling GetAccessToken is precisely what we define
 	// "activity" to be
-	qSessionDetails, qSessionSigningKey, err := s.getAccessTokenSessionDetails(ctx, req.RefreshToken)
+	qSession, qUser, qOrganization, qSessionSigningKey, err := s.getAccessTokenSessionDetails(ctx, req.RefreshToken)
 	if err != nil {
 		return nil, fmt.Errorf("get access token session details: %w", err)
 	}
@@ -51,14 +57,33 @@ func (s *Store) GetAccessToken(ctx context.Context, req *frontendv1.GetAccessTok
 	now := time.Now()
 	exp := now.Add(5 * time.Minute) // TODO(ucarion) parameterize
 
+	sessionClaim, err := protojson.Marshal(parseSession(qSession))
+	if err != nil {
+		return nil, fmt.Errorf("marshal session claim: %w", err)
+	}
+
+	userClaim, err := protojson.Marshal(parseUser(qUser))
+	if err != nil {
+		return nil, fmt.Errorf("marshal user claim: %w", err)
+	}
+
+	organizationClaim, err := protojson.Marshal(parseOrganization(*qOrganization))
+	if err != nil {
+		return nil, fmt.Errorf("marshal organization claim: %w", err)
+	}
+
 	claims := sessionClaims{
 		Iss: "TODO",
-		Sub: idformat.User.Format(qSessionDetails.UserID),
+		Sub: idformat.User.Format(qUser.ID),
 		Aud: "TODO",
 		Exp: exp.Unix(),
 		Nbf: now.Unix(),
 		Iat: now.Unix(),
 		Jti: "TODO",
+
+		Session:      sessionClaim,
+		User:         userClaim,
+		Organization: organizationClaim,
 	}
 
 	accessToken := ujwt.Sign(idformat.SessionSigningKey.Format(qSessionSigningKey.ID), priv, claims)
@@ -70,28 +95,43 @@ func (s *Store) GetAccessToken(ctx context.Context, req *frontendv1.GetAccessTok
 //
 // Conceptually, this exists to do database operations for GetAccessToken that
 // come before calling out to AWS KMS.
-func (s *Store) getAccessTokenSessionDetails(ctx context.Context, refreshToken string) (*queries.GetSessionDetailsByRefreshTokenSHA256Row, *queries.SessionSigningKey, error) {
+func (s *Store) getAccessTokenSessionDetails(ctx context.Context, refreshToken string) (*queries.Session, *queries.User, *queries.Organization, *queries.SessionSigningKey, error) {
 	_, q, _, rollback, err := s.tx(ctx)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, nil, nil, err
 	}
 	defer rollback()
 
 	refreshTokenBytes, err := idformat.SessionRefreshToken.Parse(refreshToken)
 	if err != nil {
-		return nil, nil, fmt.Errorf("parse refresh token: %w", err)
+		return nil, nil, nil, nil, fmt.Errorf("parse refresh token: %w", err)
 	}
 
 	refreshTokenSHA := sha256.Sum256(refreshTokenBytes[:])
 	qSessionDetails, err := q.GetSessionDetailsByRefreshTokenSHA256(ctx, refreshTokenSHA[:])
 	if err != nil {
-		return nil, nil, fmt.Errorf("get session by refresh token sha256: %w", err)
+		return nil, nil, nil, nil, fmt.Errorf("get session by refresh token sha256: %w", err)
 	}
 
 	qSessionSigningKey, err := q.GetCurrentSessionKeyByProjectID(ctx, qSessionDetails.ProjectID)
 	if err != nil {
-		return nil, nil, fmt.Errorf("get current session key by project id: %w", err)
+		return nil, nil, nil, nil, fmt.Errorf("get current session key by project id: %w", err)
 	}
 
-	return &qSessionDetails, &qSessionSigningKey, nil
+	qSession, err := q.GetSessionByID(ctx, qSessionDetails.SessionID)
+	if err != nil {
+		return nil, nil, nil, nil, fmt.Errorf("get session by id: %w", err)
+	}
+
+	qUser, err := q.GetUserByID(ctx, qSessionDetails.UserID)
+	if err != nil {
+		return nil, nil, nil, nil, fmt.Errorf("get user by id: %w", err)
+	}
+
+	qOrganization, err := q.GetOrganizationByID(ctx, qSessionDetails.OrganizationID)
+	if err != nil {
+		return nil, nil, nil, nil, fmt.Errorf("get organization by id: %w", err)
+	}
+
+	return &qSession, &qUser, &qOrganization, &qSessionSigningKey, nil
 }
