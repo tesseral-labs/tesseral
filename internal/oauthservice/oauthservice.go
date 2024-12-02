@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/openauth-dev/openauth/internal/store"
+	"github.com/openauth/openauth/internal/store"
 )
 
 type Service struct {
