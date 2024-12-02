@@ -1,6 +1,7 @@
 package loadenv
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -14,7 +15,9 @@ func LoadEnv() {
 	for key, value := range env {
 		_, exists := os.LookupEnv(key)
 		if !exists {
-			os.Setenv(key, value)
+			if err := os.Setenv(key, value); err != nil {
+				panic(fmt.Errorf("setenv: %w", err))
+			}
 		}
 	}
 }
