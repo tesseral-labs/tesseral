@@ -365,7 +365,7 @@ const createSession = `-- name: CreateSession :one
 INSERT INTO sessions (id, user_id, create_time, expire_time, revoked)
     VALUES ($1, $2, $3, $4, $5)
 RETURNING
-    id, user_id, create_time, expire_time, revoked
+    id, user_id, create_time, expire_time, revoked, refresh_token_sha256
 `
 
 type CreateSessionParams struct {
@@ -391,6 +391,7 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (S
 		&i.CreateTime,
 		&i.ExpireTime,
 		&i.Revoked,
+		&i.RefreshTokenSha256,
 	)
 	return i, err
 }
@@ -494,6 +495,32 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.PasswordBcrypt,
 		&i.GoogleUserID,
 		&i.MicrosoftUserID,
+	)
+	return i, err
+}
+
+const getCurrentSessionKeyByProjectID = `-- name: GetCurrentSessionKeyByProjectID :one
+SELECT
+    id, project_id, public_key, private_key_cipher_text, create_time, expire_time
+FROM
+    session_signing_keys
+WHERE
+    project_id = $1
+ORDER BY
+    create_time DESC
+LIMIT 1
+`
+
+func (q *Queries) GetCurrentSessionKeyByProjectID(ctx context.Context, projectID uuid.UUID) (SessionSigningKey, error) {
+	row := q.db.QueryRow(ctx, getCurrentSessionKeyByProjectID, projectID)
+	var i SessionSigningKey
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.PublicKey,
+		&i.PrivateKeyCipherText,
+		&i.CreateTime,
+		&i.ExpireTime,
 	)
 	return i, err
 }
@@ -728,7 +755,7 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 
 const getSessionByID = `-- name: GetSessionByID :one
 SELECT
-    id, user_id, create_time, expire_time, revoked
+    id, user_id, create_time, expire_time, revoked, refresh_token_sha256
 FROM
     sessions
 WHERE
@@ -744,6 +771,42 @@ func (q *Queries) GetSessionByID(ctx context.Context, id uuid.UUID) (Session, er
 		&i.CreateTime,
 		&i.ExpireTime,
 		&i.Revoked,
+		&i.RefreshTokenSha256,
+	)
+	return i, err
+}
+
+const getSessionDetailsByRefreshTokenSHA256 = `-- name: GetSessionDetailsByRefreshTokenSHA256 :one
+SELECT
+    sessions.id AS session_id,
+    users.id AS user_id,
+    organizations.id AS organization_id,
+    projects.id AS project_id
+FROM
+    sessions
+    JOIN users ON sessions.user_id = users.id
+    JOIN organizations ON users.organization_id = organizations.id
+    JOIN projects ON organizations.id = projects.organization_id
+WHERE
+    revoked = FALSE
+    AND refresh_token_sha256 = $1
+`
+
+type GetSessionDetailsByRefreshTokenSHA256Row struct {
+	SessionID      uuid.UUID
+	UserID         uuid.UUID
+	OrganizationID uuid.UUID
+	ProjectID      uuid.UUID
+}
+
+func (q *Queries) GetSessionDetailsByRefreshTokenSHA256(ctx context.Context, refreshTokenSha256 []byte) (GetSessionDetailsByRefreshTokenSHA256Row, error) {
+	row := q.db.QueryRow(ctx, getSessionDetailsByRefreshTokenSHA256, refreshTokenSha256)
+	var i GetSessionDetailsByRefreshTokenSHA256Row
+	err := row.Scan(
+		&i.SessionID,
+		&i.UserID,
+		&i.OrganizationID,
+		&i.ProjectID,
 	)
 	return i, err
 }
@@ -1285,7 +1348,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, user_id, create_time, expire_time, revoked
+    id, user_id, create_time, expire_time, revoked, refresh_token_sha256
 `
 
 func (q *Queries) RevokeSession(ctx context.Context, id uuid.UUID) (Session, error) {
@@ -1297,6 +1360,7 @@ func (q *Queries) RevokeSession(ctx context.Context, id uuid.UUID) (Session, err
 		&i.CreateTime,
 		&i.ExpireTime,
 		&i.Revoked,
+		&i.RefreshTokenSha256,
 	)
 	return i, err
 }

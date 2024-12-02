@@ -11,6 +11,7 @@ var (
 	Organization                  = prettyuuid.MustNewFormat("org_", alphabet)
 	Project                       = prettyuuid.MustNewFormat("project_", alphabet)
 	Session                       = prettyuuid.MustNewFormat("session_", alphabet)
+	SessionRefreshToken           = prettyuuid.MustNewFormat("openauth_secret_session_refresh_token_", alphabet)
 	SessionSigningKey             = prettyuuid.MustNewFormat("session_signing_key_", alphabet)
 	User                          = prettyuuid.MustNewFormat("user_", alphabet)
 

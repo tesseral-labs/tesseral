@@ -8,6 +8,80 @@ import { Message, proto3 } from "@bufbuild/protobuf";
 import { Organization, User } from "../../openauth/v1/openauth_pb.js";
 
 /**
+ * @generated from message frontend.v1.GetAccessTokenRequest
+ */
+export class GetAccessTokenRequest extends Message<GetAccessTokenRequest> {
+  /**
+   * @generated from field: string refresh_token = 1;
+   */
+  refreshToken = "";
+
+  constructor(data?: PartialMessage<GetAccessTokenRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "frontend.v1.GetAccessTokenRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "refresh_token", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetAccessTokenRequest {
+    return new GetAccessTokenRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetAccessTokenRequest {
+    return new GetAccessTokenRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetAccessTokenRequest {
+    return new GetAccessTokenRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: GetAccessTokenRequest | PlainMessage<GetAccessTokenRequest> | undefined, b: GetAccessTokenRequest | PlainMessage<GetAccessTokenRequest> | undefined): boolean {
+    return proto3.util.equals(GetAccessTokenRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message frontend.v1.GetAccessTokenResponse
+ */
+export class GetAccessTokenResponse extends Message<GetAccessTokenResponse> {
+  /**
+   * @generated from field: string access_token = 2;
+   */
+  accessToken = "";
+
+  constructor(data?: PartialMessage<GetAccessTokenResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "frontend.v1.GetAccessTokenResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 2, name: "access_token", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetAccessTokenResponse {
+    return new GetAccessTokenResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetAccessTokenResponse {
+    return new GetAccessTokenResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetAccessTokenResponse {
+    return new GetAccessTokenResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: GetAccessTokenResponse | PlainMessage<GetAccessTokenResponse> | undefined, b: GetAccessTokenResponse | PlainMessage<GetAccessTokenResponse> | undefined): boolean {
+    return proto3.util.equals(GetAccessTokenResponse, a, b);
+  }
+}
+
+/**
  * @generated from message frontend.v1.CreateUserRequest
  */
 export class CreateUserRequest extends Message<CreateUserRequest> {

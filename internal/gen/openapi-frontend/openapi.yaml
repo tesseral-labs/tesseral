@@ -6,6 +6,30 @@ info:
     title: FrontendService API
     version: 0.0.1
 paths:
+    /frontend/v1/access-token:
+        post:
+            tags:
+                - FrontendService
+            operationId: FrontendService_GetAccessToken
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/GetAccessTokenRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetAccessTokenResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /frontend/v1/organizations:
         get:
             tags:
@@ -180,6 +204,16 @@ components:
                     allOf:
                         - $ref: '#/components/schemas/User'
                     description: The user created by the CreateUser request.
+        GetAccessTokenRequest:
+            type: object
+            properties:
+                refreshToken:
+                    type: string
+        GetAccessTokenResponse:
+            type: object
+            properties:
+                accessToken:
+                    type: string
         GetUserResponse:
             type: object
             properties:

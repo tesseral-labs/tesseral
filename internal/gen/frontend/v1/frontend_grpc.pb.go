@@ -19,6 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
+	FrontendService_GetAccessToken_FullMethodName    = "/frontend.v1.FrontendService/GetAccessToken"
 	FrontendService_CreateUser_FullMethodName        = "/frontend.v1.FrontendService/CreateUser"
 	FrontendService_GetUser_FullMethodName           = "/frontend.v1.FrontendService/GetUser"
 	FrontendService_ListOrganizations_FullMethodName = "/frontend.v1.FrontendService/ListOrganizations"
@@ -31,6 +32,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type FrontendServiceClient interface {
+	GetAccessToken(ctx context.Context, in *GetAccessTokenRequest, opts ...grpc.CallOption) (*GetAccessTokenResponse, error)
 	// Creates a user.
 	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error)
 	// Gets a user.
@@ -51,6 +53,16 @@ type frontendServiceClient struct {
 
 func NewFrontendServiceClient(cc grpc.ClientConnInterface) FrontendServiceClient {
 	return &frontendServiceClient{cc}
+}
+
+func (c *frontendServiceClient) GetAccessToken(ctx context.Context, in *GetAccessTokenRequest, opts ...grpc.CallOption) (*GetAccessTokenResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetAccessTokenResponse)
+	err := c.cc.Invoke(ctx, FrontendService_GetAccessToken_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *frontendServiceClient) CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error) {
@@ -117,6 +129,7 @@ func (c *frontendServiceClient) WhoAmI(ctx context.Context, in *WhoAmIRequest, o
 // All implementations must embed UnimplementedFrontendServiceServer
 // for forward compatibility.
 type FrontendServiceServer interface {
+	GetAccessToken(context.Context, *GetAccessTokenRequest) (*GetAccessTokenResponse, error)
 	// Creates a user.
 	CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error)
 	// Gets a user.
@@ -139,6 +152,9 @@ type FrontendServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedFrontendServiceServer struct{}
 
+func (UnimplementedFrontendServiceServer) GetAccessToken(context.Context, *GetAccessTokenRequest) (*GetAccessTokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAccessToken not implemented")
+}
 func (UnimplementedFrontendServiceServer) CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
 }
@@ -176,6 +192,24 @@ func RegisterFrontendServiceServer(s grpc.ServiceRegistrar, srv FrontendServiceS
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&FrontendService_ServiceDesc, srv)
+}
+
+func _FrontendService_GetAccessToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAccessTokenRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).GetAccessToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_GetAccessToken_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).GetAccessToken(ctx, req.(*GetAccessTokenRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _FrontendService_CreateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -293,6 +327,10 @@ var FrontendService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "frontend.v1.FrontendService",
 	HandlerType: (*FrontendServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetAccessToken",
+			Handler:    _FrontendService_GetAccessToken_Handler,
+		},
 		{
 			MethodName: "CreateUser",
 			Handler:    _FrontendService_CreateUser_Handler,
