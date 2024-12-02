@@ -29,13 +29,14 @@ type sessionClaims struct {
 	Session      json.RawMessage `json:"session"`
 	User         json.RawMessage `json:"user"`
 	Organization json.RawMessage `json:"organization"`
+	Project      json.RawMessage `json:"project"`
 }
 
 func (s *Store) GetAccessToken(ctx context.Context, req *frontendv1.GetAccessTokenRequest) (*frontendv1.GetAccessTokenResponse, error) {
 	// TODO(ucarion): this endpoint will also look at + update state related to
 	// latest activity; calling GetAccessToken is precisely what we define
 	// "activity" to be
-	qSession, qUser, qOrganization, qSessionSigningKey, err := s.getAccessTokenSessionDetails(ctx, req.RefreshToken)
+	qSession, qUser, qOrganization, qProject, qSessionSigningKey, err := s.getAccessTokenSessionDetails(ctx, req.RefreshToken)
 	if err != nil {
 		return nil, fmt.Errorf("get access token session details: %w", err)
 	}
@@ -72,6 +73,11 @@ func (s *Store) GetAccessToken(ctx context.Context, req *frontendv1.GetAccessTok
 		return nil, fmt.Errorf("marshal organization claim: %w", err)
 	}
 
+	projectClaim, err := protojson.Marshal(parseProject(qProject))
+	if err != nil {
+		return nil, fmt.Errorf("marshal project claim: %w", err)
+	}
+
 	claims := sessionClaims{
 		Iss: "TODO",
 		Sub: idformat.User.Format(qUser.ID),
@@ -84,6 +90,7 @@ func (s *Store) GetAccessToken(ctx context.Context, req *frontendv1.GetAccessTok
 		Session:      sessionClaim,
 		User:         userClaim,
 		Organization: organizationClaim,
+		Project:      projectClaim,
 	}
 
 	accessToken := ujwt.Sign(idformat.SessionSigningKey.Format(qSessionSigningKey.ID), priv, claims)
@@ -95,43 +102,48 @@ func (s *Store) GetAccessToken(ctx context.Context, req *frontendv1.GetAccessTok
 //
 // Conceptually, this exists to do database operations for GetAccessToken that
 // come before calling out to AWS KMS.
-func (s *Store) getAccessTokenSessionDetails(ctx context.Context, refreshToken string) (*queries.Session, *queries.User, *queries.Organization, *queries.SessionSigningKey, error) {
+func (s *Store) getAccessTokenSessionDetails(ctx context.Context, refreshToken string) (*queries.Session, *queries.User, *queries.Organization, *queries.Project, *queries.SessionSigningKey, error) {
 	_, q, _, rollback, err := s.tx(ctx)
 	if err != nil {
-		return nil, nil, nil, nil, err
+		return nil, nil, nil, nil, nil, err
 	}
 	defer rollback()
 
 	refreshTokenBytes, err := idformat.SessionRefreshToken.Parse(refreshToken)
 	if err != nil {
-		return nil, nil, nil, nil, fmt.Errorf("parse refresh token: %w", err)
+		return nil, nil, nil, nil, nil, fmt.Errorf("parse refresh token: %w", err)
 	}
 
 	refreshTokenSHA := sha256.Sum256(refreshTokenBytes[:])
 	qSessionDetails, err := q.GetSessionDetailsByRefreshTokenSHA256(ctx, refreshTokenSHA[:])
 	if err != nil {
-		return nil, nil, nil, nil, fmt.Errorf("get session by refresh token sha256: %w", err)
+		return nil, nil, nil, nil, nil, fmt.Errorf("get session by refresh token sha256: %w", err)
 	}
 
 	qSessionSigningKey, err := q.GetCurrentSessionKeyByProjectID(ctx, qSessionDetails.ProjectID)
 	if err != nil {
-		return nil, nil, nil, nil, fmt.Errorf("get current session key by project id: %w", err)
+		return nil, nil, nil, nil, nil, fmt.Errorf("get current session key by project id: %w", err)
 	}
 
 	qSession, err := q.GetSessionByID(ctx, qSessionDetails.SessionID)
 	if err != nil {
-		return nil, nil, nil, nil, fmt.Errorf("get session by id: %w", err)
+		return nil, nil, nil, nil, nil, fmt.Errorf("get session by id: %w", err)
 	}
 
 	qUser, err := q.GetUserByID(ctx, qSessionDetails.UserID)
 	if err != nil {
-		return nil, nil, nil, nil, fmt.Errorf("get user by id: %w", err)
+		return nil, nil, nil, nil, nil, fmt.Errorf("get user by id: %w", err)
 	}
 
 	qOrganization, err := q.GetOrganizationByID(ctx, qSessionDetails.OrganizationID)
 	if err != nil {
-		return nil, nil, nil, nil, fmt.Errorf("get organization by id: %w", err)
+		return nil, nil, nil, nil, nil, fmt.Errorf("get organization by id: %w", err)
 	}
 
-	return &qSession, &qUser, &qOrganization, &qSessionSigningKey, nil
+	qProject, err := q.GetProjectByID(ctx, qSessionDetails.ProjectID)
+	if err != nil {
+		return nil, nil, nil, nil, nil, fmt.Errorf("get project by id: %w", err)
+	}
+
+	return &qSession, &qUser, &qOrganization, &qProject, &qSessionSigningKey, nil
 }

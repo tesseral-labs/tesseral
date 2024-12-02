@@ -119,6 +119,6 @@ func authenticateAccessToken(ctx context.Context, s *store.Store, dogfoodProject
 	return &authn.DogfoodSessionContextData{
 		UserID:           claims["user"].(map[string]any)["id"].(string),
 		OrganizationID:   claims["organization"].(map[string]any)["id"].(string),
-		DogfoodProjectID: dogfoodProjectID,
+		DogfoodProjectID: claims["project"].(map[string]any)["id"].(string),
 	}, nil
 }
