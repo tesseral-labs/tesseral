@@ -9,8 +9,8 @@ import (
 
 	"github.com/google/uuid"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
+	"github.com/openauth/openauth/internal/intermediate/store/queries"
 	"github.com/openauth/openauth/internal/store/idformat"
-	"github.com/openauth/openauth/internal/store/queries"
 	"github.com/openauth/openauth/internal/ujwt"
 )
 

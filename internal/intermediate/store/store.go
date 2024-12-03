@@ -8,9 +8,9 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/openauth/openauth/internal/intermediate/store/queries"
 	"github.com/openauth/openauth/internal/pagetoken"
 	keyManagementService "github.com/openauth/openauth/internal/store/kms"
-	"github.com/openauth/openauth/internal/store/queries"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 

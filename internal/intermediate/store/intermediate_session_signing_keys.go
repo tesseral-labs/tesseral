@@ -9,8 +9,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
 	openauthecdsa "github.com/openauth/openauth/internal/crypto/ecdsa"
+	"github.com/openauth/openauth/internal/intermediate/store/queries"
 	"github.com/openauth/openauth/internal/store/idformat"
-	"github.com/openauth/openauth/internal/store/queries"
 )
 
 type IntermediateSessionSigningKey struct {
@@ -20,69 +20,6 @@ type IntermediateSessionSigningKey struct {
 	ExpireTime time.Time
 	PublicKey  *ecdsa.PublicKey
 	PrivateKey *ecdsa.PrivateKey
-}
-
-func (s *Store) CreateIntermediateSessionSigningKey(ctx context.Context, projectId string) (*IntermediateSessionSigningKey, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
-	if err != nil {
-		return nil, err
-	}
-	defer rollback()
-
-	projectID, err := idformat.Project.Parse(projectId)
-	if err != nil {
-		return nil, err
-	}
-
-	// Allow this key to be used for 7 hours
-	// - this adds a 1 hour buffer to the 6 hour key rotation period,
-	//   so that the key can be rotated before it expires without
-	//   causing existing JWT parsing to fail
-	expiresAt := time.Now().Add(time.Hour * 7)
-
-	// Generate a new symmetric key
-	privateKey, err := openauthecdsa.GenerateKey()
-	if err != nil {
-		return nil, err
-	}
-
-	privateKeyBytes, err := openauthecdsa.PrivateKeyBytes(privateKey)
-	if err != nil {
-		return nil, err
-	}
-
-	// Encrypt the symmetric key with the KMS
-	encryptOutput, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
-		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
-		KeyId:               &s.intermediateSessionSigningKeyKMSKeyID,
-		Plaintext:           privateKeyBytes,
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	publicKeyBytes, err := openauthecdsa.PublicKeyBytes(&privateKey.PublicKey)
-	if err != nil {
-		return nil, err
-	}
-
-	// Store the encrypted key in the database
-	createdIntermediateSessionSigningKey, err := q.CreateIntermediateSessionSigningKey(ctx, queries.CreateIntermediateSessionSigningKeyParams{
-		ID:                   uuid.New(),
-		ProjectID:            projectID,
-		ExpireTime:           &expiresAt,
-		PublicKey:            publicKeyBytes,
-		PrivateKeyCipherText: encryptOutput.CipherTextBlob,
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	if err := commit(); err != nil {
-		return nil, err
-	}
-
-	return parseIntermediateSessionSigningKey(&createdIntermediateSessionSigningKey, privateKey), nil
 }
 
 func (s *Store) GetIntermediateSessionSigningKeyByID(ctx context.Context, id string) (*IntermediateSessionSigningKey, error) {

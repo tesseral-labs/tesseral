@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/openauth/openauth/internal/intermediate/store/queries"
 	"github.com/openauth/openauth/internal/store/idformat"
-	"github.com/openauth/openauth/internal/store/queries"
 )
 
 type IntermediateSession struct {
@@ -61,29 +61,6 @@ func (s *Store) CreateIntermediateSession(ctx *context.Context, req *CreateInter
 	}
 
 	return parseIntermediateSession(&createdIntermediateSession), nil
-}
-
-func (s *Store) RevokeIntermediateSession(ctx *context.Context, ID string) error {
-	_, q, commit, rollback, err := s.tx(*ctx)
-	if err != nil {
-		return err
-	}
-	defer rollback()
-
-	sessionId, err := idformat.IntermediateSession.Parse(ID)
-	if err != nil {
-		return err
-	}
-
-	if _, err := q.RevokeIntermediateSession(*ctx, sessionId); err != nil {
-		return err
-	}
-
-	if err := commit(); err != nil {
-		return err
-	}
-
-	return nil
 }
 
 func (s *Store) GetIntermediateSession(ctx *context.Context, id string) (*IntermediateSession, error) {
