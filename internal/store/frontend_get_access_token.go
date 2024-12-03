@@ -24,7 +24,6 @@ type sessionClaims struct {
 	Exp int64  `json:"exp"`
 	Nbf int64  `json:"nbf"`
 	Iat int64  `json:"iat"`
-	Jti string `json:"jti"`
 
 	Session      json.RawMessage `json:"session"`
 	User         json.RawMessage `json:"user"`
@@ -85,7 +84,6 @@ func (s *Store) GetAccessToken(ctx context.Context, req *frontendv1.GetAccessTok
 		Exp: exp.Unix(),
 		Nbf: now.Unix(),
 		Iat: now.Unix(),
-		Jti: "TODO",
 
 		Session:      sessionClaim,
 		User:         userClaim,
