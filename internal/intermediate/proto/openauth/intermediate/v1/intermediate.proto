@@ -46,7 +46,7 @@ message IntermediateSessionClaims {
   string subject = 5;
 }
 
-message IntermediateOrganization {
+message Organization {
   string id = 1;
   string project_id = 2;
   string display_name = 3;
@@ -74,7 +74,7 @@ message ListOrganizationsRequest {
 }
 
 message ListOrganizationsResponse {
-  repeated IntermediateOrganization organizations = 1;
+  repeated Organization organizations = 1;
   string next_page_token = 2;
 }
 
@@ -88,26 +88,6 @@ message SignInWithEmailRequest {
 message SignInWithEmailResponse {
   // The token for the intermediate session or session created by the SignInWithEmail request.
   string SessionToken = 1;
-}
-
-
-message Organization {
-  // Unique identifier for this organization.
-  string id = 1;
-  // The project this organization belongs to.
-  string project_id = 2;
-  // An optional human-friendly name for this organization.
-  string display_name = 3;
-  // Override setting for whether login with password is enabled.
-  bool override_log_in_with_password_enabled = 4;
-  // Override setting for whether login with Google is enabled.
-  bool override_log_in_with_google_enabled = 5;
-  // Override setting for whether login with Microsoft is enabled.
-  bool override_log_in_with_microsoft_enabled = 6;
-  // Google hosted domain.
-  string google_hosted_domain = 7;
-  // The tenant ID for Microsoft auth.
-  string microsoft_tenant_id = 8;
 }
 
 message Project {
