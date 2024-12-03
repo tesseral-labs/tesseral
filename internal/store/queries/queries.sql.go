@@ -512,6 +512,32 @@ func (q *Queries) CreateVerifiedEmail(ctx context.Context, arg CreateVerifiedEma
 	return i, err
 }
 
+const getCurrentSessionKeyByProjectID = `-- name: GetCurrentSessionKeyByProjectID :one
+SELECT
+    id, project_id, public_key, private_key_cipher_text, create_time, expire_time
+FROM
+    session_signing_keys
+WHERE
+    project_id = $1
+ORDER BY
+    create_time DESC
+LIMIT 1
+`
+
+func (q *Queries) GetCurrentSessionKeyByProjectID(ctx context.Context, projectID uuid.UUID) (SessionSigningKey, error) {
+	row := q.db.QueryRow(ctx, getCurrentSessionKeyByProjectID, projectID)
+	var i SessionSigningKey
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.PublicKey,
+		&i.PrivateKeyCipherText,
+		&i.CreateTime,
+		&i.ExpireTime,
+	)
+	return i, err
+}
+
 const getEmailVerificationChallenge = `-- name: GetEmailVerificationChallenge :one
 SELECT
     id, intermediate_session_id, project_id, challenge_sha256, complete_time, create_time, email, expire_time, google_user_id, microsoft_user_id

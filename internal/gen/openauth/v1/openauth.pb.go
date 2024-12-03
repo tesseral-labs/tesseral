@@ -313,67 +313,6 @@ func (x *SessionSigningKey) GetPublicKeyJwk() *structpb.Struct {
 	return nil
 }
 
-type SessionSigningKey struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Id           string           `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	ProjectId    string           `protobuf:"bytes,2,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
-	PublicKeyJwk *structpb.Struct `protobuf:"bytes,3,opt,name=public_key_jwk,json=publicKeyJwk,proto3" json:"public_key_jwk,omitempty"`
-}
-
-func (x *SessionSigningKey) Reset() {
-	*x = SessionSigningKey{}
-	mi := &file_openauth_v1_openauth_proto_msgTypes[2]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *SessionSigningKey) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*SessionSigningKey) ProtoMessage() {}
-
-func (x *SessionSigningKey) ProtoReflect() protoreflect.Message {
-	mi := &file_openauth_v1_openauth_proto_msgTypes[2]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use SessionSigningKey.ProtoReflect.Descriptor instead.
-func (*SessionSigningKey) Descriptor() ([]byte, []int) {
-	return file_openauth_v1_openauth_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *SessionSigningKey) GetId() string {
-	if x != nil {
-		return x.Id
-	}
-	return ""
-}
-
-func (x *SessionSigningKey) GetProjectId() string {
-	if x != nil {
-		return x.ProjectId
-	}
-	return ""
-}
-
-func (x *SessionSigningKey) GetPublicKeyJwk() *structpb.Struct {
-	if x != nil {
-		return x.PublicKeyJwk
-	}
-	return nil
-}
-
 type User struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
