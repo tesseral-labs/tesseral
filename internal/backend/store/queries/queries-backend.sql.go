@@ -7,15 +7,513 @@ package queries
 
 import (
 	"context"
+
+	"github.com/google/uuid"
 )
 
-const test = `-- name: Test :one
-select 1
+const createOrganization = `-- name: CreateOrganization :one
+INSERT INTO organizations (id, project_id, display_name, google_hosted_domain, microsoft_tenant_id, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_with_password_enabled)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+RETURNING
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id
 `
 
-func (q *Queries) Test(ctx context.Context) (int32, error) {
-	row := q.db.QueryRow(ctx, test)
-	var column_1 int32
-	err := row.Scan(&column_1)
-	return column_1, err
+type CreateOrganizationParams struct {
+	ID                                uuid.UUID
+	ProjectID                         uuid.UUID
+	DisplayName                       string
+	GoogleHostedDomain                *string
+	MicrosoftTenantID                 *string
+	OverrideLogInWithGoogleEnabled    *bool
+	OverrideLogInWithMicrosoftEnabled *bool
+	OverrideLogInWithPasswordEnabled  *bool
+}
+
+func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganizationParams) (Organization, error) {
+	row := q.db.QueryRow(ctx, createOrganization,
+		arg.ID,
+		arg.ProjectID,
+		arg.DisplayName,
+		arg.GoogleHostedDomain,
+		arg.MicrosoftTenantID,
+		arg.OverrideLogInWithGoogleEnabled,
+		arg.OverrideLogInWithMicrosoftEnabled,
+		arg.OverrideLogInWithPasswordEnabled,
+	)
+	var i Organization
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.DisplayName,
+		&i.OverrideLogInWithPasswordEnabled,
+		&i.OverrideLogInWithGoogleEnabled,
+		&i.OverrideLogInWithMicrosoftEnabled,
+		&i.GoogleHostedDomain,
+		&i.MicrosoftTenantID,
+	)
+	return i, err
+}
+
+const createProject = `-- name: CreateProject :one
+INSERT INTO projects (id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+RETURNING
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret
+`
+
+type CreateProjectParams struct {
+	ID                         uuid.UUID
+	OrganizationID             *uuid.UUID
+	LogInWithPasswordEnabled   bool
+	LogInWithGoogleEnabled     bool
+	LogInWithMicrosoftEnabled  bool
+	GoogleOauthClientID        *string
+	GoogleOauthClientSecret    *string
+	MicrosoftOauthClientID     *string
+	MicrosoftOauthClientSecret *string
+}
+
+func (q *Queries) CreateProject(ctx context.Context, arg CreateProjectParams) (Project, error) {
+	row := q.db.QueryRow(ctx, createProject,
+		arg.ID,
+		arg.OrganizationID,
+		arg.LogInWithPasswordEnabled,
+		arg.LogInWithGoogleEnabled,
+		arg.LogInWithMicrosoftEnabled,
+		arg.GoogleOauthClientID,
+		arg.GoogleOauthClientSecret,
+		arg.MicrosoftOauthClientID,
+		arg.MicrosoftOauthClientSecret,
+	)
+	var i Project
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.LogInWithPasswordEnabled,
+		&i.LogInWithGoogleEnabled,
+		&i.LogInWithMicrosoftEnabled,
+		&i.GoogleOauthClientID,
+		&i.GoogleOauthClientSecret,
+		&i.MicrosoftOauthClientID,
+		&i.MicrosoftOauthClientSecret,
+	)
+	return i, err
+}
+
+const getOrganizationByProjectIDAndID = `-- name: GetOrganizationByProjectIDAndID :one
+SELECT
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id
+FROM
+    organizations
+WHERE
+    id = $1
+    AND project_id = $2
+`
+
+type GetOrganizationByProjectIDAndIDParams struct {
+	ID        uuid.UUID
+	ProjectID uuid.UUID
+}
+
+func (q *Queries) GetOrganizationByProjectIDAndID(ctx context.Context, arg GetOrganizationByProjectIDAndIDParams) (Organization, error) {
+	row := q.db.QueryRow(ctx, getOrganizationByProjectIDAndID, arg.ID, arg.ProjectID)
+	var i Organization
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.DisplayName,
+		&i.OverrideLogInWithPasswordEnabled,
+		&i.OverrideLogInWithGoogleEnabled,
+		&i.OverrideLogInWithMicrosoftEnabled,
+		&i.GoogleHostedDomain,
+		&i.MicrosoftTenantID,
+	)
+	return i, err
+}
+
+const getProjectAPIKeyBySecretTokenSHA256 = `-- name: GetProjectAPIKeyBySecretTokenSHA256 :one
+SELECT
+    id, project_id, create_time, revoked, secret_token_sha256
+FROM
+    project_api_keys
+WHERE
+    secret_token_sha256 = $1
+`
+
+func (q *Queries) GetProjectAPIKeyBySecretTokenSHA256(ctx context.Context, secretTokenSha256 []byte) (ProjectApiKey, error) {
+	row := q.db.QueryRow(ctx, getProjectAPIKeyBySecretTokenSHA256, secretTokenSha256)
+	var i ProjectApiKey
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.CreateTime,
+		&i.Revoked,
+		&i.SecretTokenSha256,
+	)
+	return i, err
+}
+
+const getProjectByID = `-- name: GetProjectByID :one
+SELECT
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret
+FROM
+    projects
+WHERE
+    id = $1
+`
+
+func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, error) {
+	row := q.db.QueryRow(ctx, getProjectByID, id)
+	var i Project
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.LogInWithPasswordEnabled,
+		&i.LogInWithGoogleEnabled,
+		&i.LogInWithMicrosoftEnabled,
+		&i.GoogleOauthClientID,
+		&i.GoogleOauthClientSecret,
+		&i.MicrosoftOauthClientID,
+		&i.MicrosoftOauthClientSecret,
+	)
+	return i, err
+}
+
+const getSessionSigningKeysByProjectID = `-- name: GetSessionSigningKeysByProjectID :many
+SELECT
+    id, project_id, public_key, private_key_cipher_text, create_time, expire_time
+FROM
+    session_signing_keys
+WHERE
+    project_id = $1
+`
+
+func (q *Queries) GetSessionSigningKeysByProjectID(ctx context.Context, projectID uuid.UUID) ([]SessionSigningKey, error) {
+	rows, err := q.db.Query(ctx, getSessionSigningKeysByProjectID, projectID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []SessionSigningKey
+	for rows.Next() {
+		var i SessionSigningKey
+		if err := rows.Scan(
+			&i.ID,
+			&i.ProjectID,
+			&i.PublicKey,
+			&i.PrivateKeyCipherText,
+			&i.CreateTime,
+			&i.ExpireTime,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listOrganizationsByProjectId = `-- name: ListOrganizationsByProjectId :many
+SELECT
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id
+FROM
+    organizations
+WHERE
+    project_id = $1
+ORDER BY
+    id
+LIMIT $2
+`
+
+type ListOrganizationsByProjectIdParams struct {
+	ProjectID uuid.UUID
+	Limit     int32
+}
+
+func (q *Queries) ListOrganizationsByProjectId(ctx context.Context, arg ListOrganizationsByProjectIdParams) ([]Organization, error) {
+	rows, err := q.db.Query(ctx, listOrganizationsByProjectId, arg.ProjectID, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Organization
+	for rows.Next() {
+		var i Organization
+		if err := rows.Scan(
+			&i.ID,
+			&i.ProjectID,
+			&i.DisplayName,
+			&i.OverrideLogInWithPasswordEnabled,
+			&i.OverrideLogInWithGoogleEnabled,
+			&i.OverrideLogInWithMicrosoftEnabled,
+			&i.GoogleHostedDomain,
+			&i.MicrosoftTenantID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listProjects = `-- name: ListProjects :many
+SELECT
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret
+FROM
+    projects
+ORDER BY
+    id
+LIMIT $1
+`
+
+func (q *Queries) ListProjects(ctx context.Context, limit int32) ([]Project, error) {
+	rows, err := q.db.Query(ctx, listProjects, limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Project
+	for rows.Next() {
+		var i Project
+		if err := rows.Scan(
+			&i.ID,
+			&i.OrganizationID,
+			&i.LogInWithPasswordEnabled,
+			&i.LogInWithGoogleEnabled,
+			&i.LogInWithMicrosoftEnabled,
+			&i.GoogleOauthClientID,
+			&i.GoogleOauthClientSecret,
+			&i.MicrosoftOauthClientID,
+			&i.MicrosoftOauthClientSecret,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const updateOrganization = `-- name: UpdateOrganization :one
+UPDATE
+    organizations
+SET
+    display_name = $2,
+    google_hosted_domain = $3,
+    microsoft_tenant_id = $4,
+    override_log_in_with_password_enabled = $5,
+    override_log_in_with_google_enabled = $6,
+    override_log_in_with_microsoft_enabled = $7
+WHERE
+    id = $1
+RETURNING
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id
+`
+
+type UpdateOrganizationParams struct {
+	ID                                uuid.UUID
+	DisplayName                       string
+	GoogleHostedDomain                *string
+	MicrosoftTenantID                 *string
+	OverrideLogInWithPasswordEnabled  *bool
+	OverrideLogInWithGoogleEnabled    *bool
+	OverrideLogInWithMicrosoftEnabled *bool
+}
+
+func (q *Queries) UpdateOrganization(ctx context.Context, arg UpdateOrganizationParams) (Organization, error) {
+	row := q.db.QueryRow(ctx, updateOrganization,
+		arg.ID,
+		arg.DisplayName,
+		arg.GoogleHostedDomain,
+		arg.MicrosoftTenantID,
+		arg.OverrideLogInWithPasswordEnabled,
+		arg.OverrideLogInWithGoogleEnabled,
+		arg.OverrideLogInWithMicrosoftEnabled,
+	)
+	var i Organization
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.DisplayName,
+		&i.OverrideLogInWithPasswordEnabled,
+		&i.OverrideLogInWithGoogleEnabled,
+		&i.OverrideLogInWithMicrosoftEnabled,
+		&i.GoogleHostedDomain,
+		&i.MicrosoftTenantID,
+	)
+	return i, err
+}
+
+const updateProject = `-- name: UpdateProject :one
+UPDATE
+    projects
+SET
+    log_in_with_password_enabled = $2,
+    log_in_with_google_enabled = $3,
+    log_in_with_microsoft_enabled = $4,
+    google_oauth_client_id = $5,
+    google_oauth_client_secret = $6,
+    microsoft_oauth_client_id = $7,
+    microsoft_oauth_client_secret = $8
+WHERE
+    id = $1
+RETURNING
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret
+`
+
+type UpdateProjectParams struct {
+	ID                         uuid.UUID
+	LogInWithPasswordEnabled   bool
+	LogInWithGoogleEnabled     bool
+	LogInWithMicrosoftEnabled  bool
+	GoogleOauthClientID        *string
+	GoogleOauthClientSecret    *string
+	MicrosoftOauthClientID     *string
+	MicrosoftOauthClientSecret *string
+}
+
+func (q *Queries) UpdateProject(ctx context.Context, arg UpdateProjectParams) (Project, error) {
+	row := q.db.QueryRow(ctx, updateProject,
+		arg.ID,
+		arg.LogInWithPasswordEnabled,
+		arg.LogInWithGoogleEnabled,
+		arg.LogInWithMicrosoftEnabled,
+		arg.GoogleOauthClientID,
+		arg.GoogleOauthClientSecret,
+		arg.MicrosoftOauthClientID,
+		arg.MicrosoftOauthClientSecret,
+	)
+	var i Project
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.LogInWithPasswordEnabled,
+		&i.LogInWithGoogleEnabled,
+		&i.LogInWithMicrosoftEnabled,
+		&i.GoogleOauthClientID,
+		&i.GoogleOauthClientSecret,
+		&i.MicrosoftOauthClientID,
+		&i.MicrosoftOauthClientSecret,
+	)
+	return i, err
+}
+
+const updateProjectOrganizationID = `-- name: UpdateProjectOrganizationID :one
+UPDATE
+    projects
+SET
+    organization_id = $2
+WHERE
+    id = $1
+RETURNING
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret
+`
+
+type UpdateProjectOrganizationIDParams struct {
+	ID             uuid.UUID
+	OrganizationID *uuid.UUID
+}
+
+func (q *Queries) UpdateProjectOrganizationID(ctx context.Context, arg UpdateProjectOrganizationIDParams) (Project, error) {
+	row := q.db.QueryRow(ctx, updateProjectOrganizationID, arg.ID, arg.OrganizationID)
+	var i Project
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.LogInWithPasswordEnabled,
+		&i.LogInWithGoogleEnabled,
+		&i.LogInWithMicrosoftEnabled,
+		&i.GoogleOauthClientID,
+		&i.GoogleOauthClientSecret,
+		&i.MicrosoftOauthClientID,
+		&i.MicrosoftOauthClientSecret,
+	)
+	return i, err
+}
+
+const updateUser = `-- name: UpdateUser :one
+UPDATE
+    users
+SET
+    organization_id = $2,
+    unverified_email = $3,
+    verified_email = $4,
+    password_bcrypt = $5,
+    google_user_id = $6,
+    microsoft_user_id = $7
+WHERE
+    id = $1
+RETURNING
+    id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id
+`
+
+type UpdateUserParams struct {
+	ID              uuid.UUID
+	OrganizationID  uuid.UUID
+	UnverifiedEmail *string
+	VerifiedEmail   *string
+	PasswordBcrypt  *string
+	GoogleUserID    *string
+	MicrosoftUserID *string
+}
+
+func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
+	row := q.db.QueryRow(ctx, updateUser,
+		arg.ID,
+		arg.OrganizationID,
+		arg.UnverifiedEmail,
+		arg.VerifiedEmail,
+		arg.PasswordBcrypt,
+		arg.GoogleUserID,
+		arg.MicrosoftUserID,
+	)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.UnverifiedEmail,
+		&i.VerifiedEmail,
+		&i.PasswordBcrypt,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+	)
+	return i, err
+}
+
+const updateUserPassword = `-- name: UpdateUserPassword :one
+UPDATE
+    users
+SET
+    password_bcrypt = $2
+WHERE
+    id = $1
+RETURNING
+    id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id
+`
+
+type UpdateUserPasswordParams struct {
+	ID             uuid.UUID
+	PasswordBcrypt *string
+}
+
+func (q *Queries) UpdateUserPassword(ctx context.Context, arg UpdateUserPasswordParams) (User, error) {
+	row := q.db.QueryRow(ctx, updateUserPassword, arg.ID, arg.PasswordBcrypt)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.UnverifiedEmail,
+		&i.VerifiedEmail,
+		&i.PasswordBcrypt,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+	)
+	return i, err
 }
