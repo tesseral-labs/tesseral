@@ -7,15 +7,205 @@ package queries
 
 import (
 	"context"
+
+	"github.com/google/uuid"
 )
 
-const test = `-- name: Test :one
-select 1
+const createUser = `-- name: CreateUser :one
+INSERT INTO users (id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
+RETURNING
+    id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id
 `
 
-func (q *Queries) Test(ctx context.Context) (int32, error) {
-	row := q.db.QueryRow(ctx, test)
-	var column_1 int32
-	err := row.Scan(&column_1)
-	return column_1, err
+type CreateUserParams struct {
+	ID              uuid.UUID
+	OrganizationID  uuid.UUID
+	UnverifiedEmail *string
+	VerifiedEmail   *string
+	PasswordBcrypt  *string
+	GoogleUserID    *string
+	MicrosoftUserID *string
+}
+
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
+	row := q.db.QueryRow(ctx, createUser,
+		arg.ID,
+		arg.OrganizationID,
+		arg.UnverifiedEmail,
+		arg.VerifiedEmail,
+		arg.PasswordBcrypt,
+		arg.GoogleUserID,
+		arg.MicrosoftUserID,
+	)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.UnverifiedEmail,
+		&i.VerifiedEmail,
+		&i.PasswordBcrypt,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+	)
+	return i, err
+}
+
+const getCurrentSessionKeyByProjectID = `-- name: GetCurrentSessionKeyByProjectID :one
+SELECT
+    id, project_id, public_key, private_key_cipher_text, create_time, expire_time
+FROM
+    session_signing_keys
+WHERE
+    project_id = $1
+ORDER BY
+    create_time DESC
+LIMIT 1
+`
+
+func (q *Queries) GetCurrentSessionKeyByProjectID(ctx context.Context, projectID uuid.UUID) (SessionSigningKey, error) {
+	row := q.db.QueryRow(ctx, getCurrentSessionKeyByProjectID, projectID)
+	var i SessionSigningKey
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.PublicKey,
+		&i.PrivateKeyCipherText,
+		&i.CreateTime,
+		&i.ExpireTime,
+	)
+	return i, err
+}
+
+const getOrganizationByID = `-- name: GetOrganizationByID :one
+SELECT
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id
+FROM
+    organizations
+WHERE
+    id = $1
+`
+
+func (q *Queries) GetOrganizationByID(ctx context.Context, id uuid.UUID) (Organization, error) {
+	row := q.db.QueryRow(ctx, getOrganizationByID, id)
+	var i Organization
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.DisplayName,
+		&i.OverrideLogInWithPasswordEnabled,
+		&i.OverrideLogInWithGoogleEnabled,
+		&i.OverrideLogInWithMicrosoftEnabled,
+		&i.GoogleHostedDomain,
+		&i.MicrosoftTenantID,
+	)
+	return i, err
+}
+
+const getProjectByID = `-- name: GetProjectByID :one
+SELECT
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret
+FROM
+    projects
+WHERE
+    id = $1
+`
+
+func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, error) {
+	row := q.db.QueryRow(ctx, getProjectByID, id)
+	var i Project
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.LogInWithPasswordEnabled,
+		&i.LogInWithGoogleEnabled,
+		&i.LogInWithMicrosoftEnabled,
+		&i.GoogleOauthClientID,
+		&i.GoogleOauthClientSecret,
+		&i.MicrosoftOauthClientID,
+		&i.MicrosoftOauthClientSecret,
+	)
+	return i, err
+}
+
+const getSessionByID = `-- name: GetSessionByID :one
+SELECT
+    id, user_id, create_time, expire_time, revoked, refresh_token_sha256
+FROM
+    sessions
+WHERE
+    id = $1
+`
+
+func (q *Queries) GetSessionByID(ctx context.Context, id uuid.UUID) (Session, error) {
+	row := q.db.QueryRow(ctx, getSessionByID, id)
+	var i Session
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.CreateTime,
+		&i.ExpireTime,
+		&i.Revoked,
+		&i.RefreshTokenSha256,
+	)
+	return i, err
+}
+
+const getSessionDetailsByRefreshTokenSHA256 = `-- name: GetSessionDetailsByRefreshTokenSHA256 :one
+SELECT
+    sessions.id AS session_id,
+    users.id AS user_id,
+    organizations.id AS organization_id,
+    projects.id AS project_id
+FROM
+    sessions
+    JOIN users ON sessions.user_id = users.id
+    JOIN organizations ON users.organization_id = organizations.id
+    JOIN projects ON organizations.id = projects.organization_id
+WHERE
+    revoked = FALSE
+    AND refresh_token_sha256 = $1
+`
+
+type GetSessionDetailsByRefreshTokenSHA256Row struct {
+	SessionID      uuid.UUID
+	UserID         uuid.UUID
+	OrganizationID uuid.UUID
+	ProjectID      uuid.UUID
+}
+
+func (q *Queries) GetSessionDetailsByRefreshTokenSHA256(ctx context.Context, refreshTokenSha256 []byte) (GetSessionDetailsByRefreshTokenSHA256Row, error) {
+	row := q.db.QueryRow(ctx, getSessionDetailsByRefreshTokenSHA256, refreshTokenSha256)
+	var i GetSessionDetailsByRefreshTokenSHA256Row
+	err := row.Scan(
+		&i.SessionID,
+		&i.UserID,
+		&i.OrganizationID,
+		&i.ProjectID,
+	)
+	return i, err
+}
+
+const getUserByID = `-- name: GetUserByID :one
+SELECT
+    id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id
+FROM
+    users
+WHERE
+    id = $1
+`
+
+func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
+	row := q.db.QueryRow(ctx, getUserByID, id)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.UnverifiedEmail,
+		&i.VerifiedEmail,
+		&i.PasswordBcrypt,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+	)
+	return i, err
 }

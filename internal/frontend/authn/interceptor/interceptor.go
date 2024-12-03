@@ -1,11 +1,11 @@
-package frontendinterceptor
+package interceptor
 
 import (
 	"context"
 	"errors"
 
 	"connectrpc.com/connect"
-	"github.com/openauth/openauth/internal/store"
+	"github.com/openauth/openauth/internal/frontend/store"
 )
 
 var ErrAuthorizationHeaderRequired = errors.New("authorization header is required")

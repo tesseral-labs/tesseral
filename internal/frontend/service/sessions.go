@@ -1,11 +1,11 @@
-package frontendservice
+package service
 
 import (
 	"context"
 	"fmt"
 
 	"connectrpc.com/connect"
-	frontendv1 "github.com/openauth/openauth/internal/gen/frontend/v1"
+	frontendv1 "github.com/openauth/openauth/internal/frontend/gen/openauth/frontend/v1"
 )
 
 func (s *FrontendService) GetAccessToken(ctx context.Context, req *connect.Request[frontendv1.GetAccessTokenRequest]) (*connect.Response[frontendv1.GetAccessTokenResponse], error) {
