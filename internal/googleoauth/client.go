@@ -61,6 +61,10 @@ func (c *Client) RedeemCode(ctx context.Context, req *RedeemCodeRequest) (*Redee
 		return nil, fmt.Errorf("userinfo: %w", err)
 	}
 
+	if err := c.revoke(ctx, accessToken); err != nil {
+		return nil, fmt.Errorf("revoke: %w", err)
+	}
+
 	return &RedeemCodeResponse{
 		GoogleUserID:       userInfo.Sub,
 		Email:              userInfo.Email,
@@ -143,4 +147,28 @@ func (c *Client) userinfo(ctx context.Context, accessToken string) (*userinfoRes
 	}
 
 	return &data, nil
+}
+
+func (c *Client) revoke(ctx context.Context, accessToken string) error {
+	body := url.Values{}
+	body.Set("token", accessToken)
+
+	httpReq, err := http.NewRequestWithContext(ctx, http.MethodPost, "https://oauth2.googleapis.com/revoke", strings.NewReader(body.Encode()))
+	if err != nil {
+		return fmt.Errorf("new http request: %w", err)
+	}
+
+	httpReq.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	httpRes, err := c.HTTPClient.Do(httpReq)
+	if err != nil {
+		return fmt.Errorf("send http request: %w", err)
+	}
+	defer httpRes.Body.Close()
+
+	if httpRes.StatusCode != http.StatusOK {
+		return fmt.Errorf("bad response status code: %s", httpRes.Status)
+	}
+
+	return nil
 }
