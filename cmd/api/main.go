@@ -15,14 +15,15 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/openauth/openauth/internal/authn/backendinterceptor"
 	"github.com/openauth/openauth/internal/authn/frontendinterceptor"
-	"github.com/openauth/openauth/internal/authn/intermediateinterceptor"
 	"github.com/openauth/openauth/internal/backendservice"
 	"github.com/openauth/openauth/internal/frontendservice"
 	"github.com/openauth/openauth/internal/gen/backend/v1/backendv1connect"
 	"github.com/openauth/openauth/internal/gen/frontend/v1/frontendv1connect"
-	"github.com/openauth/openauth/internal/gen/intermediate/v1/intermediatev1connect"
 	"github.com/openauth/openauth/internal/hexkey"
-	"github.com/openauth/openauth/internal/intermediateservice"
+	intermediateinterceptor "github.com/openauth/openauth/internal/intermediate/authn/interceptor"
+	"github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1/intermediatev1connect"
+	intermediateservice "github.com/openauth/openauth/internal/intermediate/service"
+	intermediatestore "github.com/openauth/openauth/internal/intermediate/store"
 	"github.com/openauth/openauth/internal/loadenv"
 	"github.com/openauth/openauth/internal/oauthservice"
 	"github.com/openauth/openauth/internal/pagetoken"
@@ -126,12 +127,20 @@ func main() {
 	}
 
 	// Register the intermediate service
+	intermediateStore := intermediatestore.New(intermediatestore.NewStoreParams{
+		DB:                                    db,
+		DogfoodProjectID:                      &uuidDogfoodProjectID,
+		IntermediateSessionSigningKeyKMSKeyID: config.IntermediateSessionKMSKeyID,
+		KMS:                                   kms_,
+		PageEncoder:                           pagetoken.Encoder{Secret: pageEncodingValue},
+		SessionSigningKeyKmsKeyID:             config.SessionKMSKeyID,
+	})
 	intermediateConnectPath, intermediateConnectHandler := intermediatev1connect.NewIntermediateServiceHandler(
-		&intermediateservice.IntermediateService{
-			Store: store_,
+		&intermediateservice.Service{
+			Store: intermediateStore,
 		},
 		connect.WithInterceptors(
-			intermediateinterceptor.New(store_),
+			intermediateinterceptor.New(intermediateStore),
 		),
 	)
 	intermediate := vanguard.NewService(intermediateConnectPath, intermediateConnectHandler)

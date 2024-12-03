@@ -109,7 +109,16 @@ components:
                     description: The type of the serialized message.
             additionalProperties: true
             description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
-        IntermediateOrganization:
+        ListOrganizationsResponse:
+            type: object
+            properties:
+                organizations:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Organization'
+                nextPageToken:
+                    type: string
+        Organization:
             type: object
             properties:
                 id:
@@ -124,42 +133,6 @@ components:
                     type: boolean
                 logInWithPasswordEnabled:
                     type: boolean
-        ListOrganizationsResponse:
-            type: object
-            properties:
-                organizations:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/IntermediateOrganization'
-                nextPageToken:
-                    type: string
-        Organization:
-            type: object
-            properties:
-                id:
-                    type: string
-                    description: Unique identifier for this organization.
-                projectId:
-                    type: string
-                    description: The project this organization belongs to.
-                displayName:
-                    type: string
-                    description: An optional human-friendly name for this organization.
-                overrideLogInWithPasswordEnabled:
-                    type: boolean
-                    description: Override setting for whether login with password is enabled.
-                overrideLogInWithGoogleEnabled:
-                    type: boolean
-                    description: Override setting for whether login with Google is enabled.
-                overrideLogInWithMicrosoftEnabled:
-                    type: boolean
-                    description: Override setting for whether login with Microsoft is enabled.
-                googleHostedDomain:
-                    type: string
-                    description: Google hosted domain.
-                microsoftTenantId:
-                    type: string
-                    description: The tenant ID for Microsoft auth.
         SignInWithEmailRequest:
             type: object
             properties:

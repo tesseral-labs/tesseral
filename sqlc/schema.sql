@@ -3,7 +3,7 @@
 --
 
 -- Dumped from database version 15.8 (Debian 15.8-1.pgdg120+1)
--- Dumped by pg_dump version 17.0 (Homebrew)
+-- Dumped by pg_dump version 17.0
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -16,36 +16,6 @@ SET check_function_bodies = false;
 SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
-
---
--- Name: public; Type: SCHEMA; Schema: -; Owner: postgres
---
-
--- *not* creating schema, since initdb creates it
-
-
-ALTER SCHEMA public OWNER TO postgres;
-
---
--- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: postgres
---
-
-COMMENT ON SCHEMA public IS '';
-
-
---
--- Name: pgcrypto; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
-
-
---
--- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
-
 
 --
 -- Name: auth_method; Type: TYPE; Schema: public; Owner: postgres
@@ -118,23 +88,6 @@ CREATE TABLE public.intermediate_sessions (
 
 
 ALTER TABLE public.intermediate_sessions OWNER TO postgres;
-
---
--- Name: method_verification_challenges; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.method_verification_challenges (
-    id uuid NOT NULL,
-    project_id uuid NOT NULL,
-    complete_time timestamp with time zone,
-    intermediate_session_id uuid NOT NULL,
-    auth_method public.auth_method NOT NULL,
-    expire_time timestamp with time zone NOT NULL,
-    secret_token_sha256 bytea NOT NULL
-);
-
-
-ALTER TABLE public.method_verification_challenges OWNER TO postgres;
 
 --
 -- Name: organizations; Type: TABLE; Schema: public; Owner: postgres
@@ -434,22 +387,6 @@ ALTER TABLE ONLY public.intermediate_sessions
 
 
 --
--- Name: method_verification_challenges method_verification_challenges_intermediate_session_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.method_verification_challenges
-    ADD CONSTRAINT method_verification_challenges_intermediate_session_id_fkey FOREIGN KEY (intermediate_session_id) REFERENCES public.intermediate_sessions(id);
-
-
---
--- Name: method_verification_challenges method_verification_challenges_project_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.method_verification_challenges
-    ADD CONSTRAINT method_verification_challenges_project_id_fkey FOREIGN KEY (project_id) REFERENCES public.projects(id);
-
-
---
 -- Name: organizations organizations_project_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -503,13 +440,6 @@ ALTER TABLE ONLY public.users
 
 ALTER TABLE ONLY public.verified_emails
     ADD CONSTRAINT verified_emails_project_id_fkey FOREIGN KEY (project_id) REFERENCES public.projects(id);
-
-
---
--- Name: SCHEMA public; Type: ACL; Schema: -; Owner: postgres
---
-
-REVOKE USAGE ON SCHEMA public FROM PUBLIC;
 
 
 --

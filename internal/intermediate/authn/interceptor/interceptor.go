@@ -5,14 +5,14 @@ import (
 	"errors"
 
 	"connectrpc.com/connect"
-	"github.com/openauth/openauth/internal/store"
+	"github.com/openauth/openauth/internal/intermediate/store"
 )
 
 var ErrAuthorizationHeaderRequired = errors.New("authorization header is required")
 var ErrInvalidSessionToken = errors.New("invalid session token")
 
 var skipRPCs = []string{
-	"/intermediate.v1.IntermediateService/SignInWithEmail",
+	"/openauth.intermediate.v1.IntermediateService/SignInWithEmail",
 }
 
 func New(s *store.Store) connect.UnaryInterceptorFunc {
