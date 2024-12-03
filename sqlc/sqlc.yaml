@@ -4,7 +4,7 @@ sql:
     queries: "queries.sql"
     schema: "schema.sql"
     gen:
-      go:
+      go: &go
         sql_package: "pgx/v5"
         package: "queries"
         out: "../internal/store/queries"
@@ -44,3 +44,24 @@ sql:
             nullable: true
             go_type:
               type: "*int32"
+  - engine: "postgresql"
+    queries: "queries-backend.sql"
+    schema: "schema.sql"
+    gen:
+      go:
+        <<: *go
+        out: "../internal/backend/store/queries"
+  - engine: "postgresql"
+    queries: "queries-frontend.sql"
+    schema: "schema.sql"
+    gen:
+      go:
+        <<: *go
+        out: "../internal/frontend/store/queries"
+  - engine: "postgresql"
+    queries: "queries-intermediate.sql"
+    schema: "schema.sql"
+    gen:
+      go:
+        <<: *go
+        out: "../internal/intermediate/store/queries"
