@@ -56,9 +56,7 @@ func New(s *store.Store) connect.UnaryInterceptorFunc {
 
 			// // TODO: Add checks to ensure the intermediate session token is valid
 
-			// ctx = authn.NewContext(ctx, authn.ContextData{
-			// 	IntermediateSession: intermediateSessionClaims,
-			// })
+			// ctx = authn.NewContext(ctx, authn.ContextData{})
 
 			return next(ctx, req)
 		}

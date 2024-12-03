@@ -2,7 +2,9 @@ package store
 
 import (
 	"context"
+	"crypto/sha256"
 	"errors"
+	"log/slog"
 	"time"
 
 	"github.com/google/uuid"
@@ -16,6 +18,11 @@ func (s *Store) SignInWithEmail(
 	ctx *context.Context,
 	req *intermediatev1.SignInWithEmailRequest,
 ) (*intermediatev1.SignInWithEmailResponse, error) {
+	shouldVerify, err := s.shouldVerifyEmail(*ctx, req.ProjectId, req.Email, "", "")
+	if err != nil {
+		return nil, err
+	}
+
 	_, q, commit, rollback, err := s.tx(*ctx)
 	if err != nil {
 		return nil, err
@@ -66,6 +73,36 @@ func (s *Store) SignInWithEmail(
 			return nil, err
 		}
 
+		if shouldVerify {
+			// Create a new secret token for the challenge
+			secretToken, err := generateSecretToken()
+			if err != nil {
+				return nil, err
+			}
+			secretTokenSha256 := sha256.Sum256([]byte(secretToken))
+
+			// TODO: Send the secret token to the user's email address
+
+			expiresAt := time.Now().Add(15 * time.Minute)
+
+			_, err = q.CreateEmailVerificationChallenge(*ctx, queries.CreateEmailVerificationChallengeParams{
+				ID:                    uuid.New(),
+				IntermediateSessionID: intermediateSession.ID,
+				ProjectID:             intermediateSession.ProjectID,
+				ChallengeSha256:       secretTokenSha256[:],
+				Email:                 &req.Email,
+				ExpireTime:            &expiresAt,
+				GoogleUserID:          nil,
+				MicrosoftUserID:       nil,
+			})
+			if err != nil {
+				return nil, err
+			}
+
+			// TODO: Remove this log line and replace with email sending
+			slog.Info("SignInWithEmail", "challenge", secretToken)
+		}
+
 		if err := commit(); err != nil {
 			return nil, err
 		}
@@ -73,5 +110,34 @@ func (s *Store) SignInWithEmail(
 		return &intermediatev1.SignInWithEmailResponse{
 			SessionToken: intermediateSession.Token,
 		}, nil
+	}
+}
+
+func (s *Store) shouldVerifyEmail(ctx context.Context, projectId string, email string, googleUserID string, microsoftUserID string) (bool, error) {
+	_, q, _, rollback, err := s.tx(ctx)
+	if err != nil {
+		return false, err
+	}
+	defer rollback()
+
+	projectID, err := idformat.Project.Parse(projectId)
+	if err != nil {
+		return false, err
+	}
+
+	verifiedEmails, err := q.ListVerifiedEmails(ctx, queries.ListVerifiedEmailsParams{
+		ProjectID:       projectID,
+		Email:           email,
+		GoogleUserID:    &googleUserID,
+		MicrosoftUserID: &microsoftUserID,
+	})
+	if err != nil {
+		return false, err
+	}
+
+	if len(verifiedEmails) == 0 {
+		return true, nil
+	} else {
+		return false, nil
 	}
 }
