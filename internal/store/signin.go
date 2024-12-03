@@ -3,6 +3,7 @@ package store
 import (
 	"context"
 	"errors"
+	"log/slog"
 	"time"
 
 	"github.com/google/uuid"
@@ -31,6 +32,9 @@ func (s *Store) SignInWithEmail(
 			return nil, err
 		}
 	}
+
+	// TODO: Remove this when we send the email
+	slog.Info("SignInWithEmail", "challenge", challenge)
 
 	_, q, commit, rollback, err := s.tx(*ctx)
 	if err != nil {

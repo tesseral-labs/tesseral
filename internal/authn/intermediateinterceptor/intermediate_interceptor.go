@@ -3,9 +3,14 @@ package intermediateinterceptor
 import (
 	"context"
 	"errors"
+	"strings"
+	"time"
 
 	"connectrpc.com/connect"
+	"github.com/openauth/openauth/internal/authn"
+	intermediatev1 "github.com/openauth/openauth/internal/gen/intermediate/v1"
 	"github.com/openauth/openauth/internal/store"
+	"github.com/openauth/openauth/internal/ujwt"
 )
 
 var ErrAuthorizationHeaderRequired = errors.New("authorization header is required")
@@ -25,40 +30,40 @@ func New(s *store.Store) connect.UnaryInterceptorFunc {
 			}
 
 			// Get the authorization header
-			// authorization := req.Header().Get("Authorization")
-			// if authorization == "" {
-			// 	return nil, connect.NewError(connect.CodeUnauthenticated, ErrAuthorizationHeaderRequired)
-			// }
+			authorization := req.Header().Get("Authorization")
+			if authorization == "" {
+				return nil, connect.NewError(connect.CodeUnauthenticated, ErrAuthorizationHeaderRequired)
+			}
 
-			// secretValue, ok := strings.CutPrefix(authorization, "Bearer ")
-			// if !ok {
-			// 	return nil, connect.NewError(connect.CodeUnauthenticated, nil)
-			// }
+			secretValue, ok := strings.CutPrefix(authorization, "Bearer ")
+			if !ok {
+				return nil, connect.NewError(connect.CodeUnauthenticated, nil)
+			}
 
-			// intermediateSessionKID, err := ujwt.KeyID(secretValue)
-			// if err != nil {
-			// 	return nil, connect.NewError(connect.CodeUnauthenticated, ErrInvalidSessionToken)
-			// }
+			intermediateSessionKID, err := ujwt.KeyID(secretValue)
+			if err != nil {
+				return nil, connect.NewError(connect.CodeUnauthenticated, ErrInvalidSessionToken)
+			}
 
-			// // Get the intermediate session signing key
-			// intermediateSessionSigningKey, err := s.GetIntermediateSessionSigningKeyByID(ctx, intermediateSessionKID)
-			// if err != nil {
-			// 	return nil, connect.NewError(connect.CodeUnauthenticated, err)
-			// }
+			// Get the intermediate session signing key
+			intermediateSessionSigningKey, err := s.GetIntermediateSessionSigningKeyByID(ctx, intermediateSessionKID)
+			if err != nil {
+				return nil, connect.NewError(connect.CodeUnauthenticated, err)
+			}
 
-			// intermediateSessionClaims := &intermediatev1.IntermediateSessionClaims{}
+			intermediateSessionClaims := &intermediatev1.IntermediateSessionClaims{}
 
-			// // Attempt to parse the intermediate session token claims
-			// err = ujwt.Claims(intermediateSessionSigningKey.PublicKey, "aud1", time.Unix(2, 0), intermediateSessionClaims, secretValue)
-			// if err != nil {
-			// 	return nil, connect.NewError(connect.CodeUnauthenticated, err)
-			// }
+			// Attempt to parse the intermediate session token claims
+			err = ujwt.Claims(intermediateSessionSigningKey.PublicKey, "aud1", time.Unix(2, 0), intermediateSessionClaims, secretValue)
+			if err != nil {
+				return nil, connect.NewError(connect.CodeUnauthenticated, err)
+			}
 
-			// // TODO: Add checks to ensure the intermediate session token is valid
+			// TODO: Add checks to ensure the intermediate session token is valid
 
-			// ctx = authn.NewContext(ctx, authn.ContextData{
-			// 	IntermediateSession: intermediateSessionClaims,
-			// })
+			ctx = authn.NewContext(ctx, authn.ContextData{
+				IntermediateSession: intermediateSessionClaims,
+			})
 
 			return next(ctx, req)
 		}

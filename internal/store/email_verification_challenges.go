@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/openauth-dev/openauth/internal/store/idformat"
-	"github.com/openauth-dev/openauth/internal/store/queries"
+	"github.com/openauth/openauth/internal/store/idformat"
+	"github.com/openauth/openauth/internal/store/queries"
 )
 
 type EmailVerificationChallenge struct {

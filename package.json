@@ -2,7 +2,7 @@
   "name": "openauth",
   "version": "1.0.0",
   "main": "index.js",
-  "repository": "git@github.com:openauth-dev/openauth",
+  "repository": "git@github.com:openauth/openauth",
   "author": "Blake Williams <blake.williams@ssoready.com>",
   "license": "MIT",
   "devDependencies": {
