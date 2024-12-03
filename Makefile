@@ -10,7 +10,6 @@ queries:
 
 .PHONY: proto
 proto:
-	npx buf generate --template buf/buf.gen.yaml
-	buf generate --template buf/buf.gen-openapi-backend.yaml
-	buf generate --template buf/buf.gen-openapi-frontend.yaml
-	buf generate --template buf/buf.gen-openapi-intermediate.yaml
+	npx buf generate --template buf/buf.gen-backend.yaml
+	npx buf generate --template buf/buf.gen-frontend.yaml
+	npx buf generate --template buf/buf.gen-intermediate.yaml
