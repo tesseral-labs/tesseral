@@ -1,0 +1,36 @@
+version: v2
+managed:
+  enabled: true
+  disable:
+    - file_option: go_package
+      module: buf.build/googleapis/googleapis
+  override:
+    - file_option: go_package_prefix
+      value: "github.com/openauth/openauth/internal/backend/gen"
+plugins:
+  - remote: buf.build/protocolbuffers/go
+    out: internal/backend/gen
+    opt: paths=source_relative
+  - remote: buf.build/grpc/go
+    out: internal/backend/gen
+    opt: paths=source_relative
+  - remote: buf.build/grpc-ecosystem/gateway
+    out: internal/backend/gen
+    opt: paths=source_relative
+  - remote: buf.build/connectrpc/go
+    out: internal/backend/gen
+    opt: paths=source_relative
+  - local: protoc-gen-es
+    out: app/src/gen
+    opt: target=ts
+  - local: protoc-gen-connect-es
+    out: app/src/gen
+    opt: target=ts
+  - local: protoc-gen-connect-query
+    out: app/src/gen
+    opt: target=ts
+  - remote: buf.build/community/google-gnostic-openapi
+    out: internal/backend/gen
+    opt: paths=source_relative
+inputs:
+  - directory: internal/backend/proto

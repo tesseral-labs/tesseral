@@ -1,0 +1,218 @@
+syntax = "proto3";
+
+package openauth.frontend.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+
+service FrontendService {
+  rpc GetAccessToken(GetAccessTokenRequest) returns (GetAccessTokenResponse) {
+    option (google.api.http) = {
+      post: "/frontend/v1/access-token",
+      body: "*"
+    };
+  }
+
+  // Creates a user.
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {
+    option (google.api.http) = {
+      post: "/frontend/v1/users",
+      body: "user"
+    };
+  }
+
+  // Gets a user.
+  rpc GetUser(GetUserRequest) returns (GetUserResponse) {
+    option (google.api.http) = {
+      get: "/frontend/v1/users/{id}"
+    };
+  }
+
+  // Gets a list of organizations.
+  rpc ListOrganizations(ListOrganizationsRequest) returns (ListOrganizationsResponse) {
+    option (google.api.http) = {
+      get: "/frontend/v1/organizations"
+    };
+  }
+
+  // Gets a list of users.
+  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse) {
+    option (google.api.http) = {
+      get: "/frontend/v1/users"
+    };
+  }
+
+  // Updates a user.
+  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {
+    option (google.api.http) = {
+      patch: "/frontend/v1/users/{id}",
+      body: "user"
+    };
+  }
+
+  // Who am I?
+  rpc WhoAmI(WhoAmIRequest) returns (WhoAmIResponse) {
+    option (google.api.http) = {
+      get: "/frontend/v1/whoami"
+    };
+  }
+}
+
+message GetAccessTokenRequest {
+  string refresh_token = 1;
+}
+
+message GetAccessTokenResponse {
+  string access_token = 2;
+}
+
+message CreateUserRequest {
+  // The user to create.
+  User user = 1;
+}
+
+message CreateUserResponse {
+  // The user created by the CreateUser request.
+  User user = 1;
+}
+
+message GetUserRequest {
+  // The ID of the user to get.
+  string id = 1;
+}
+
+message GetUserResponse {
+  // The user returned by the GetUser request.
+  User user = 1;
+}
+
+message ListOrganizationsRequest {
+  // The ID of the project to use for filtering.
+  string project_id = 1;
+  // The email address to use for filtering.
+  string email = 2;
+  // The page token to use for pagination.
+  string page_token = 3;
+}
+
+message ListOrganizationsResponse {
+  // The organizations returned by the ListOrganizations request.
+  repeated Organization organizations = 1;
+  // The next page token to use for pagination.
+  string next_page_token = 2;
+}
+
+message ListUsersRequest {
+  // The ID of the organization to use for filtering.
+  string organization_id = 1;
+  // The page token to use for pagination.
+  string page_token = 2;
+}
+
+message ListUsersResponse {
+  // The users returned by the ListUsers request.
+  repeated User users = 1;
+  // The next page token to use for pagination.
+  string next_page_token = 2;
+}
+
+message UpdateUserRequest {
+  // The ID of the user to update.
+  string id = 1;
+  // The user updates to apply.
+  User user = 2;
+}
+
+message UpdateUserResponse {
+  // The user updated by the UpdateUser request.
+  User user = 1;
+}
+
+message WhoAmIRequest {
+}
+
+message WhoAmIResponse {
+  // The user ID that is currently authenticated.
+  string id = 1;
+  // The display name for the user.
+  string display_name = 2;
+  // The email address for the user.
+  string email = 3;
+}
+
+
+message Organization {
+  // Unique identifier for this organization.
+  string id = 1;
+  // The project this organization belongs to.
+  string project_id = 2;
+  // An optional human-friendly name for this organization.
+  string display_name = 3;
+  // Override setting for whether login with password is enabled.
+  bool override_log_in_with_password_enabled = 4;
+  // Override setting for whether login with Google is enabled.
+  bool override_log_in_with_google_enabled = 5;
+  // Override setting for whether login with Microsoft is enabled.
+  bool override_log_in_with_microsoft_enabled = 6;
+  // Google hosted domain.
+  string google_hosted_domain = 7;
+  // The tenant ID for Microsoft auth.
+  string microsoft_tenant_id = 8;
+}
+
+message Project {
+  // Unique identifier for this project.
+  string id = 1;
+  // The organization this project belongs to.
+  string organization_id = 2;
+  // Top-level setting for whether login with password is enabled (inherited by organizations by default).
+  bool log_in_with_password_enabled = 3;
+  // Top-level setting for whether login with Google is enabled (inherited by organizations by default).
+  bool log_in_with_google_enabled = 4;
+  // Top-level setting for whether login with Microsoft is enabled (inherited by organizations by default).
+  bool log_in_with_microsoft_enabled = 5;
+  // The oAuth Client ID to be used for Google Auth.
+  string google_oauth_client_id = 6;
+  // The oAuth Client secret to be used for Google Auth.
+  string google_oauth_client_secret = 7;
+  // The oAuth Client ID to be used for Microsoft Auth.
+  string microsoft_oauth_client_id = 8;
+  // The oAuth Client secret to be used for Microsoft Auth.
+  string microsoft_oauth_client_secret = 9;
+}
+
+message SessionSigningKey {
+  string id = 1;
+  string project_id = 2;
+  google.protobuf.Struct public_key_jwk = 3;
+}
+
+message User {
+  // Unique identifier for this user.
+  string id = 1;
+  // The organization this user belongs to.
+  string organization_id = 2;
+  // The user's email (pending verification).
+  string unverified_email = 3;
+  // The user's email (after verification).
+  string verified_email = 4;
+  // The hash of the user's password.
+  string password_bcrypt = 5;
+  // The user's Google User ID.
+  string google_user_id = 6;
+  // The user's Microsoft User ID.
+  string microsoft_user_id = 7;
+}
+
+message Session {
+  string id = 1;
+  string user_id = 2;
+  google.protobuf.Timestamp create_time = 3;
+  google.protobuf.Timestamp expire_time = 4;
+  bool revoked = 5;
+
+  // TODO(ucarion): add session metadata like auth factors, etc here
+}

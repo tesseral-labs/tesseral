@@ -2,4 +2,6 @@ version: v2
 deps:
   - buf.build/googleapis/googleapis
 modules:
-  - path: internal/proto
+  - path: internal/backend/proto
+  - path: internal/frontend/proto
+  - path: internal/intermediate/proto

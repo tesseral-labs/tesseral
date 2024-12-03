@@ -1,0 +1,165 @@
+syntax = "proto3";
+
+package openauth.intermediate.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+
+service IntermediateService {
+  // Creates a new organization.
+  rpc CreateOrganization(CreateOrganizationRequest) returns (CreateOrganizationResponse) {
+    option (google.api.http) = {
+      post: "/intermediate/v1/organizations",
+      body: "*"
+    };
+  }
+
+  // Gets a list of organizations.
+  rpc ListOrganizations(ListOrganizationsRequest) returns (ListOrganizationsResponse) {
+    option (google.api.http) = {
+      get: "/intermediate/v1/organizations"
+    };
+  }
+
+  // Creates a new intermediate session or session and cookies the requester.
+  rpc SignInWithEmail(SignInWithEmailRequest) returns (SignInWithEmailResponse) {
+    option (google.api.http) = {
+      post: "/intermediate/v1/email-signin",
+      body: "*"
+    };
+  }
+}
+
+message IntermediateSessionClaims {
+  // The project ID the intermediate session is scoped to.
+  string project_id = 1;
+  // The email associated with the intermediate session.
+  string email = 2;
+  // The time the intermediate session expires.
+  int64 expires_at = 3;
+  // The time the intermediate session was issued.
+  int64 issued_at = 4;
+  // The subject of the intermediate session.
+  string subject = 5;
+}
+
+message IntermediateOrganization {
+  string id = 1;
+  string project_id = 2;
+  string display_name = 3;
+  bool log_in_with_google_enabled = 4;
+  bool log_in_with_microsoft_enabled = 5;
+  bool log_in_with_password_enabled = 6;
+}
+
+message CreateOrganizationRequest {
+  // The project ID to create the organization for.
+  string project_id = 1;
+  // The display name of the organization.
+  string display_name = 2;
+}
+
+message CreateOrganizationResponse {
+  Organization organization = 1;
+}
+
+message ListOrganizationsRequest {
+  // The project ID to list intermediate organizations for.
+  string project_id = 1;
+  // The email associated with the intermediate session.
+  string email = 2;
+}
+
+message ListOrganizationsResponse {
+  repeated IntermediateOrganization organizations = 1;
+  string next_page_token = 2;
+}
+
+message SignInWithEmailRequest {
+  // The Project ID to scope the sign in to.
+  string project_id = 1;
+  // The email address to sign in with.
+  string email = 2;
+}
+
+message SignInWithEmailResponse {
+  // The token for the intermediate session or session created by the SignInWithEmail request.
+  string SessionToken = 1;
+}
+
+
+message Organization {
+  // Unique identifier for this organization.
+  string id = 1;
+  // The project this organization belongs to.
+  string project_id = 2;
+  // An optional human-friendly name for this organization.
+  string display_name = 3;
+  // Override setting for whether login with password is enabled.
+  bool override_log_in_with_password_enabled = 4;
+  // Override setting for whether login with Google is enabled.
+  bool override_log_in_with_google_enabled = 5;
+  // Override setting for whether login with Microsoft is enabled.
+  bool override_log_in_with_microsoft_enabled = 6;
+  // Google hosted domain.
+  string google_hosted_domain = 7;
+  // The tenant ID for Microsoft auth.
+  string microsoft_tenant_id = 8;
+}
+
+message Project {
+  // Unique identifier for this project.
+  string id = 1;
+  // The organization this project belongs to.
+  string organization_id = 2;
+  // Top-level setting for whether login with password is enabled (inherited by organizations by default).
+  bool log_in_with_password_enabled = 3;
+  // Top-level setting for whether login with Google is enabled (inherited by organizations by default).
+  bool log_in_with_google_enabled = 4;
+  // Top-level setting for whether login with Microsoft is enabled (inherited by organizations by default).
+  bool log_in_with_microsoft_enabled = 5;
+  // The oAuth Client ID to be used for Google Auth.
+  string google_oauth_client_id = 6;
+  // The oAuth Client secret to be used for Google Auth.
+  string google_oauth_client_secret = 7;
+  // The oAuth Client ID to be used for Microsoft Auth.
+  string microsoft_oauth_client_id = 8;
+  // The oAuth Client secret to be used for Microsoft Auth.
+  string microsoft_oauth_client_secret = 9;
+}
+
+message SessionSigningKey {
+  string id = 1;
+  string project_id = 2;
+  google.protobuf.Struct public_key_jwk = 3;
+}
+
+message User {
+  // Unique identifier for this user.
+  string id = 1;
+  // The organization this user belongs to.
+  string organization_id = 2;
+  // The user's email (pending verification).
+  string unverified_email = 3;
+  // The user's email (after verification).
+  string verified_email = 4;
+  // The hash of the user's password.
+  string password_bcrypt = 5;
+  // The user's Google User ID.
+  string google_user_id = 6;
+  // The user's Microsoft User ID.
+  string microsoft_user_id = 7;
+}
+
+message Session {
+  string id = 1;
+  string user_id = 2;
+  google.protobuf.Timestamp create_time = 3;
+  google.protobuf.Timestamp expire_time = 4;
+  bool revoked = 5;
+
+  // TODO(ucarion): add session metadata like auth factors, etc here
+}
