@@ -10,6 +10,13 @@ import "google/protobuf/struct.proto";
 import "openauth/v1/openauth.proto";
 
 service FrontendService {
+  rpc GetAccessToken(GetAccessTokenRequest) returns (GetAccessTokenResponse) {
+    option (google.api.http) = {
+      post: "/frontend/v1/access-token",
+      body: "*"
+    };
+  }
+
   // Creates a user.
   rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {
     option (google.api.http) = {
@@ -53,6 +60,14 @@ service FrontendService {
       get: "/frontend/v1/whoami"
     };
   }
+}
+
+message GetAccessTokenRequest {
+  string refresh_token = 1;
+}
+
+message GetAccessTokenResponse {
+  string access_token = 2;
 }
 
 message CreateUserRequest {

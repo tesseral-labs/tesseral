@@ -123,11 +123,12 @@ type SchemaMigration struct {
 }
 
 type Session struct {
-	ID         uuid.UUID
-	UserID     uuid.UUID
-	CreateTime *time.Time
-	ExpireTime *time.Time
-	Revoked    bool
+	ID                 uuid.UUID
+	UserID             uuid.UUID
+	CreateTime         *time.Time
+	ExpireTime         *time.Time
+	Revoked            bool
+	RefreshTokenSha256 []byte
 }
 
 type SessionSigningKey struct {

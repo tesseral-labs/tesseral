@@ -4,7 +4,21 @@
 // @ts-nocheck
 
 import { MethodKind } from "@bufbuild/protobuf";
-import { CreateUserRequest, CreateUserResponse, GetUserRequest, GetUserResponse, ListOrganizationsRequest, ListOrganizationsResponse, ListUsersRequest, ListUsersResponse, UpdateUserRequest, UpdateUserResponse, WhoAmIRequest, WhoAmIResponse } from "./frontend_pb.js";
+import { CreateUserRequest, CreateUserResponse, GetAccessTokenRequest, GetAccessTokenResponse, GetUserRequest, GetUserResponse, ListOrganizationsRequest, ListOrganizationsResponse, ListUsersRequest, ListUsersResponse, UpdateUserRequest, UpdateUserResponse, WhoAmIRequest, WhoAmIResponse } from "./frontend_pb.js";
+
+/**
+ * @generated from rpc frontend.v1.FrontendService.GetAccessToken
+ */
+export const getAccessToken = {
+  localName: "getAccessToken",
+  name: "GetAccessToken",
+  kind: MethodKind.Unary,
+  I: GetAccessTokenRequest,
+  O: GetAccessTokenResponse,
+  service: {
+    typeName: "frontend.v1.FrontendService"
+  }
+} as const;
 
 /**
  * Creates a user.
