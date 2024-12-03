@@ -6,15 +6,18 @@ import (
 
 	"github.com/google/uuid"
 	backendv1 "github.com/openauth/openauth/internal/gen/backend/v1"
-	intermediatev1 "github.com/openauth/openauth/internal/gen/intermediate/v1"
-	openauthv1 "github.com/openauth/openauth/internal/gen/openauth/v1"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
 type ContextData struct {
-	ProjectAPIKey       *backendv1.ProjectAPIKey
-	IntermediateSession *intermediatev1.IntermediateSessionClaims
-	Session             *openauthv1.SessionClaims
+	ProjectAPIKey  *backendv1.ProjectAPIKey
+	DogfoodSession *DogfoodSessionContextData
+}
+
+type DogfoodSessionContextData struct {
+	UserID           string
+	OrganizationID   string
+	DogfoodProjectID string
 }
 
 type ctxKey struct{}
@@ -27,6 +30,10 @@ func NewProjectAPIKeyContext(ctx context.Context, projectAPIKey *backendv1.Proje
 	return context.WithValue(ctx, ctxKey{}, ContextData{ProjectAPIKey: projectAPIKey})
 }
 
+func NewDogfoodSessionContext(ctx context.Context, dogfoodSession DogfoodSessionContextData) context.Context {
+	return context.WithValue(ctx, ctxKey{}, ContextData{DogfoodSession: &dogfoodSession})
+}
+
 func ProjectID(ctx context.Context) uuid.UUID {
 	v, ok := ctx.Value(ctxKey{}).(ContextData)
 	if !ok {
@@ -37,6 +44,8 @@ func ProjectID(ctx context.Context) uuid.UUID {
 	switch {
 	case v.ProjectAPIKey != nil:
 		projectID = v.ProjectAPIKey.ProjectId
+	case v.DogfoodSession != nil:
+		projectID = v.DogfoodSession.DogfoodProjectID
 	default:
 		panic("unsupported authn ctx data")
 	}

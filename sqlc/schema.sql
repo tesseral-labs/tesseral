@@ -194,7 +194,8 @@ CREATE TABLE public.sessions (
     user_id uuid NOT NULL,
     create_time timestamp with time zone DEFAULT now() NOT NULL,
     expire_time timestamp with time zone,
-    revoked boolean DEFAULT false NOT NULL
+    revoked boolean DEFAULT false NOT NULL,
+    refresh_token_sha256 bytea
 );
 
 

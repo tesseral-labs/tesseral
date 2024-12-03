@@ -33,6 +33,9 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
+	// FrontendServiceGetAccessTokenProcedure is the fully-qualified name of the FrontendService's
+	// GetAccessToken RPC.
+	FrontendServiceGetAccessTokenProcedure = "/frontend.v1.FrontendService/GetAccessToken"
 	// FrontendServiceCreateUserProcedure is the fully-qualified name of the FrontendService's
 	// CreateUser RPC.
 	FrontendServiceCreateUserProcedure = "/frontend.v1.FrontendService/CreateUser"
@@ -54,6 +57,7 @@ const (
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
 var (
 	frontendServiceServiceDescriptor                 = v1.File_frontend_v1_frontend_proto.Services().ByName("FrontendService")
+	frontendServiceGetAccessTokenMethodDescriptor    = frontendServiceServiceDescriptor.Methods().ByName("GetAccessToken")
 	frontendServiceCreateUserMethodDescriptor        = frontendServiceServiceDescriptor.Methods().ByName("CreateUser")
 	frontendServiceGetUserMethodDescriptor           = frontendServiceServiceDescriptor.Methods().ByName("GetUser")
 	frontendServiceListOrganizationsMethodDescriptor = frontendServiceServiceDescriptor.Methods().ByName("ListOrganizations")
@@ -64,6 +68,7 @@ var (
 
 // FrontendServiceClient is a client for the frontend.v1.FrontendService service.
 type FrontendServiceClient interface {
+	GetAccessToken(context.Context, *connect.Request[v1.GetAccessTokenRequest]) (*connect.Response[v1.GetAccessTokenResponse], error)
 	// Creates a user.
 	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error)
 	// Gets a user.
@@ -88,6 +93,12 @@ type FrontendServiceClient interface {
 func NewFrontendServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) FrontendServiceClient {
 	baseURL = strings.TrimRight(baseURL, "/")
 	return &frontendServiceClient{
+		getAccessToken: connect.NewClient[v1.GetAccessTokenRequest, v1.GetAccessTokenResponse](
+			httpClient,
+			baseURL+FrontendServiceGetAccessTokenProcedure,
+			connect.WithSchema(frontendServiceGetAccessTokenMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
 		createUser: connect.NewClient[v1.CreateUserRequest, v1.CreateUserResponse](
 			httpClient,
 			baseURL+FrontendServiceCreateUserProcedure,
@@ -129,12 +140,18 @@ func NewFrontendServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 
 // frontendServiceClient implements FrontendServiceClient.
 type frontendServiceClient struct {
+	getAccessToken    *connect.Client[v1.GetAccessTokenRequest, v1.GetAccessTokenResponse]
 	createUser        *connect.Client[v1.CreateUserRequest, v1.CreateUserResponse]
 	getUser           *connect.Client[v1.GetUserRequest, v1.GetUserResponse]
 	listOrganizations *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
 	listUsers         *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
 	updateUser        *connect.Client[v1.UpdateUserRequest, v1.UpdateUserResponse]
 	whoAmI            *connect.Client[v1.WhoAmIRequest, v1.WhoAmIResponse]
+}
+
+// GetAccessToken calls frontend.v1.FrontendService.GetAccessToken.
+func (c *frontendServiceClient) GetAccessToken(ctx context.Context, req *connect.Request[v1.GetAccessTokenRequest]) (*connect.Response[v1.GetAccessTokenResponse], error) {
+	return c.getAccessToken.CallUnary(ctx, req)
 }
 
 // CreateUser calls frontend.v1.FrontendService.CreateUser.
@@ -169,6 +186,7 @@ func (c *frontendServiceClient) WhoAmI(ctx context.Context, req *connect.Request
 
 // FrontendServiceHandler is an implementation of the frontend.v1.FrontendService service.
 type FrontendServiceHandler interface {
+	GetAccessToken(context.Context, *connect.Request[v1.GetAccessTokenRequest]) (*connect.Response[v1.GetAccessTokenResponse], error)
 	// Creates a user.
 	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error)
 	// Gets a user.
@@ -189,6 +207,12 @@ type FrontendServiceHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
+	frontendServiceGetAccessTokenHandler := connect.NewUnaryHandler(
+		FrontendServiceGetAccessTokenProcedure,
+		svc.GetAccessToken,
+		connect.WithSchema(frontendServiceGetAccessTokenMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
 	frontendServiceCreateUserHandler := connect.NewUnaryHandler(
 		FrontendServiceCreateUserProcedure,
 		svc.CreateUser,
@@ -227,6 +251,8 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 	)
 	return "/frontend.v1.FrontendService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
+		case FrontendServiceGetAccessTokenProcedure:
+			frontendServiceGetAccessTokenHandler.ServeHTTP(w, r)
 		case FrontendServiceCreateUserProcedure:
 			frontendServiceCreateUserHandler.ServeHTTP(w, r)
 		case FrontendServiceGetUserProcedure:
@@ -247,6 +273,10 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 
 // UnimplementedFrontendServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedFrontendServiceHandler struct{}
+
+func (UnimplementedFrontendServiceHandler) GetAccessToken(context.Context, *connect.Request[v1.GetAccessTokenRequest]) (*connect.Response[v1.GetAccessTokenResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("frontend.v1.FrontendService.GetAccessToken is not implemented"))
+}
 
 func (UnimplementedFrontendServiceHandler) CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("frontend.v1.FrontendService.CreateUser is not implemented"))

@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { CreateUserRequest, CreateUserResponse, GetUserRequest, GetUserResponse, ListOrganizationsRequest, ListOrganizationsResponse, ListUsersRequest, ListUsersResponse, UpdateUserRequest, UpdateUserResponse, WhoAmIRequest, WhoAmIResponse } from "./frontend_pb.js";
+import { CreateUserRequest, CreateUserResponse, GetAccessTokenRequest, GetAccessTokenResponse, GetUserRequest, GetUserResponse, ListOrganizationsRequest, ListOrganizationsResponse, ListUsersRequest, ListUsersResponse, UpdateUserRequest, UpdateUserResponse, WhoAmIRequest, WhoAmIResponse } from "./frontend_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -12,6 +12,15 @@ import { MethodKind } from "@bufbuild/protobuf";
 export const FrontendService = {
   typeName: "frontend.v1.FrontendService",
   methods: {
+    /**
+     * @generated from rpc frontend.v1.FrontendService.GetAccessToken
+     */
+    getAccessToken: {
+      name: "GetAccessToken",
+      I: GetAccessTokenRequest,
+      O: GetAccessTokenResponse,
+      kind: MethodKind.Unary,
+    },
     /**
      * Creates a user.
      *
