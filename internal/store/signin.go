@@ -2,6 +2,7 @@ package store
 
 import (
 	"context"
+	"crypto/sha256"
 	"errors"
 	"log/slog"
 	"time"
@@ -21,20 +22,6 @@ func (s *Store) SignInWithEmail(
 	if err != nil {
 		return nil, err
 	}
-
-	challenge := &EmailVerificationChallenge{}
-	if shouldVerify {
-		challenge, err = s.CreateEmailVerificationChallenge(*ctx, &CreateEmailVerificationChallengeParams{
-			ProjectID: req.ProjectId,
-			Email:     req.Email,
-		})
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	// TODO: Remove this when we send the email
-	slog.Info("SignInWithEmail", "challenge", challenge)
 
 	_, q, commit, rollback, err := s.tx(*ctx)
 	if err != nil {
@@ -84,6 +71,36 @@ func (s *Store) SignInWithEmail(
 		})
 		if err != nil {
 			return nil, err
+		}
+
+		if shouldVerify {
+			// Create a new secret token for the challenge
+			secretToken, err := generateSecretToken()
+			if err != nil {
+				return nil, err
+			}
+			secretTokenSha256 := sha256.Sum256([]byte(secretToken))
+
+			// TODO: Send the secret token to the user's email address
+
+			expiresAt := time.Now().Add(15 * time.Minute)
+
+			_, err = q.CreateEmailVerificationChallenge(*ctx, queries.CreateEmailVerificationChallengeParams{
+				ID:                    uuid.New(),
+				IntermediateSessionID: intermediateSession.ID,
+				ProjectID:             intermediateSession.ProjectID,
+				ChallengeSha256:       secretTokenSha256[:],
+				Email:                 &req.Email,
+				ExpireTime:            &expiresAt,
+				GoogleUserID:          nil,
+				MicrosoftUserID:       nil,
+			})
+			if err != nil {
+				return nil, err
+			}
+
+			// TODO: Remove this log line and replace with email sending
+			slog.Info("SignInWithEmail", "challenge", secretToken)
 		}
 
 		if err := commit(); err != nil {
