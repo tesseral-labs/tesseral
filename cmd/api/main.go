@@ -14,11 +14,12 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/openauth/openauth/internal/authn/backendinterceptor"
-	"github.com/openauth/openauth/internal/authn/frontendinterceptor"
 	"github.com/openauth/openauth/internal/backendservice"
-	"github.com/openauth/openauth/internal/frontendservice"
+	frontendinterceptor "github.com/openauth/openauth/internal/frontend/authn/interceptor"
+	"github.com/openauth/openauth/internal/frontend/gen/openauth/frontend/v1/frontendv1connect"
+	frontendservice "github.com/openauth/openauth/internal/frontend/service"
+	frontendstore "github.com/openauth/openauth/internal/frontend/store"
 	"github.com/openauth/openauth/internal/gen/backend/v1/backendv1connect"
-	"github.com/openauth/openauth/internal/gen/frontend/v1/frontendv1connect"
 	"github.com/openauth/openauth/internal/hexkey"
 	intermediateinterceptor "github.com/openauth/openauth/internal/intermediate/authn/interceptor"
 	"github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1/intermediatev1connect"
@@ -111,13 +112,21 @@ func main() {
 	}
 
 	// Register the frontend service
+	frontendStore := frontendstore.New(frontendstore.NewStoreParams{
+		DB:                                    db,
+		DogfoodProjectID:                      &uuidDogfoodProjectID,
+		IntermediateSessionSigningKeyKMSKeyID: config.IntermediateSessionKMSKeyID,
+		KMS:                                   kms_,
+		PageEncoder:                           pagetoken.Encoder{Secret: pageEncodingValue},
+		SessionSigningKeyKmsKeyID:             config.SessionKMSKeyID,
+	})
 	frontendConnectPath, frontendConnectHandler := frontendv1connect.NewFrontendServiceHandler(
 		&frontendservice.FrontendService{
-			Store: store_,
+			Store: frontendStore,
 		},
 		connect.WithInterceptors(
 			// We may want to use separate auth interceptors for backend and frontend services
-			frontendinterceptor.New(store_),
+			frontendinterceptor.New(frontendStore),
 		),
 	)
 	frontend := vanguard.NewService(frontendConnectPath, frontendConnectHandler)
