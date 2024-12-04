@@ -65,3 +65,10 @@ sql:
       go:
         <<: *go
         out: "../internal/intermediate/store/queries"
+  - engine: "postgresql"
+    queries: "queries-oauth.sql"
+    schema: "schema.sql"
+    gen:
+      go:
+        <<: *go
+        out: "../internal/oauth/store/queries"

@@ -27,11 +27,11 @@ import (
 	intermediateservice "github.com/openauth/openauth/internal/intermediate/service"
 	intermediatestore "github.com/openauth/openauth/internal/intermediate/store"
 	"github.com/openauth/openauth/internal/loadenv"
-	"github.com/openauth/openauth/internal/oauthservice"
+	oauthservice "github.com/openauth/openauth/internal/oauth/service"
+	oauthstore "github.com/openauth/openauth/internal/oauth/store"
 	"github.com/openauth/openauth/internal/pagetoken"
 	"github.com/openauth/openauth/internal/secretload"
 	"github.com/openauth/openauth/internal/slogcorrelation"
-	"github.com/openauth/openauth/internal/store"
 	"github.com/openauth/openauth/internal/store/idformat"
 	"github.com/openauth/openauth/internal/store/kms"
 	"github.com/ssoready/conf"
@@ -158,15 +158,11 @@ func main() {
 		panic(err)
 	}
 
+	oauthStore := oauthstore.New(oauthstore.NewStoreParams{
+		DB: db,
+	})
 	oauthService := oauthservice.Service{
-		Store: store.New(store.NewStoreParams{
-			DB:                                    db,
-			DogfoodProjectID:                      &uuidDogfoodProjectID,
-			IntermediateSessionSigningKeyKMSKeyID: config.IntermediateSessionKMSKeyID,
-			KMS:                                   kms_,
-			PageEncoder:                           pagetoken.Encoder{Secret: pageEncodingValue},
-			SessionSigningKeyKmsKeyID:             config.SessionKMSKeyID,
-		}),
+		Store: oauthStore,
 	}
 
 	// Register health checks

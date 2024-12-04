@@ -1,11 +1,11 @@
-package oauthservice
+package service
 
 import (
 	"encoding/json"
 	"fmt"
 	"net/http"
 
-	"github.com/openauth/openauth/internal/store"
+	"github.com/openauth/openauth/internal/oauth/store"
 )
 
 type Service struct {
