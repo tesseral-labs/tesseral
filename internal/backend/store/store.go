@@ -7,9 +7,9 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/openauth/openauth/internal/backend/store/queries"
 	"github.com/openauth/openauth/internal/pagetoken"
 	keyManagementService "github.com/openauth/openauth/internal/store/kms"
-	"github.com/openauth/openauth/internal/store/queries"
 )
 
 type Store struct {
@@ -54,4 +54,12 @@ func (s *Store) tx(ctx context.Context) (tx pgx.Tx, q *queries.Queries, commit f
 	commit = func() error { return tx.Commit(ctx) }
 	rollback = func() error { return tx.Rollback(ctx) }
 	return tx, queries.New(tx), commit, rollback, nil
+}
+
+func derefOrEmpty[T any](t *T) T {
+	var z T
+	if t == nil {
+		return z
+	}
+	return *t
 }

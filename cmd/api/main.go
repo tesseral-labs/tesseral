@@ -13,13 +13,14 @@ import (
 	"github.com/cyrusaf/ctxlog"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/openauth/openauth/internal/authn/backendinterceptor"
-	"github.com/openauth/openauth/internal/backendservice"
+	backendinterceptor "github.com/openauth/openauth/internal/backend/authn/interceptor"
+	"github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1/backendv1connect"
+	backendservice "github.com/openauth/openauth/internal/backend/service"
+	backendstore "github.com/openauth/openauth/internal/backend/store"
 	frontendinterceptor "github.com/openauth/openauth/internal/frontend/authn/interceptor"
 	"github.com/openauth/openauth/internal/frontend/gen/openauth/frontend/v1/frontendv1connect"
 	frontendservice "github.com/openauth/openauth/internal/frontend/service"
 	frontendstore "github.com/openauth/openauth/internal/frontend/store"
-	"github.com/openauth/openauth/internal/gen/backend/v1/backendv1connect"
 	"github.com/openauth/openauth/internal/hexkey"
 	intermediateinterceptor "github.com/openauth/openauth/internal/intermediate/authn/interceptor"
 	"github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1/intermediatev1connect"
@@ -86,7 +87,8 @@ func main() {
 
 	kms_ := kms.NewKeyManagementServiceFromConfig(&awsConf, &config.KMSEndpoint)
 
-	store_ := store.New(store.NewStoreParams{
+	// Register the backend service
+	backendStore := backendstore.New(backendstore.NewStoreParams{
 		DB:                                    db,
 		DogfoodProjectID:                      &uuidDogfoodProjectID,
 		IntermediateSessionSigningKeyKMSKeyID: config.IntermediateSessionKMSKeyID,
@@ -94,15 +96,13 @@ func main() {
 		PageEncoder:                           pagetoken.Encoder{Secret: pageEncodingValue},
 		SessionSigningKeyKmsKeyID:             config.SessionKMSKeyID,
 	})
-
-	// Register the backend service
 	backendConnectPath, backendConnectHandler := backendv1connect.NewBackendServiceHandler(
-		&backendservice.BackendService{
-			Store: store_,
+		&backendservice.Service{
+			Store: backendStore,
 		},
 		connect.WithInterceptors(
 			// We may want to use separate auth interceptors for backend and frontend services
-			backendinterceptor.New(store_, config.DogfoodProjectID),
+			backendinterceptor.New(backendStore, config.DogfoodProjectID),
 		),
 	)
 	backend := vanguard.NewService(backendConnectPath, backendConnectHandler)
@@ -159,7 +159,14 @@ func main() {
 	}
 
 	oauthService := oauthservice.Service{
-		Store: store_,
+		Store: store.New(store.NewStoreParams{
+			DB:                                    db,
+			DogfoodProjectID:                      &uuidDogfoodProjectID,
+			IntermediateSessionSigningKeyKMSKeyID: config.IntermediateSessionKMSKeyID,
+			KMS:                                   kms_,
+			PageEncoder:                           pagetoken.Encoder{Secret: pageEncodingValue},
+			SessionSigningKeyKmsKeyID:             config.SessionKMSKeyID,
+		}),
 	}
 
 	// Register health checks

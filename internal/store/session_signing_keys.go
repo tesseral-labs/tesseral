@@ -100,43 +100,6 @@ func (s *Store) CreateSessionSigningKey(ctx context.Context, projectID string) (
 	return parseSessionSigningKey(&sessionSigningKey, privateKey), nil
 }
 
-func (s *Store) GetSessionSigningKeyByID(ctx context.Context, id string) (*SessionSigningKey, error) {
-	_, q, _, _, err := s.tx(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	sessionSigningKeyID, err := idformat.SessionSigningKey.Parse(id)
-	if err != nil {
-		return nil, err
-	}
-
-	// Fetch the raw record from the database
-	sessionSigningKey, err := q.GetSessionSigningKeyByID(ctx, sessionSigningKeyID)
-	if err != nil {
-		return nil, err
-	}
-
-	// Decrypt the signing key using KMS
-	decryptOutput, err := s.kms.Decrypt(ctx, &kms.DecryptInput{
-		CiphertextBlob:      sessionSigningKey.PrivateKeyCipherText,
-		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
-		KeyId:               &s.sessionSigningKeyKmsKeyID,
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	// Create an ECDSA key pair from the decrypted private key
-	privateKey, err := openauthecdsa.PrivateKeyFromBytes(decryptOutput.Value)
-	if err != nil {
-		return nil, err
-	}
-
-	// Return the intermediate session signing key with the decrypted signing key
-	return parseSessionSigningKey(&sessionSigningKey, privateKey), nil
-}
-
 func (s *Store) GetSessionPublicKeysByProjectID(ctx context.Context, projectId string) ([]*openauthv1.SessionSigningKey, error) {
 	_, q, _, rollback, err := s.tx(ctx)
 	if err != nil {
