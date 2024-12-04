@@ -3,7 +3,6 @@ package store
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -11,7 +10,6 @@ import (
 	"github.com/openauth/openauth/internal/pagetoken"
 	keyManagementService "github.com/openauth/openauth/internal/store/kms"
 	"github.com/openauth/openauth/internal/store/queries"
-	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type Store struct {
@@ -56,19 +54,4 @@ func (s *Store) tx(ctx context.Context) (tx pgx.Tx, q *queries.Queries, commit f
 	commit = func() error { return tx.Commit(ctx) }
 	rollback = func() error { return tx.Rollback(ctx) }
 	return tx, queries.New(tx), commit, rollback, nil
-}
-
-func derefOrEmpty[T any](t *T) T {
-	var z T
-	if t == nil {
-		return z
-	}
-	return *t
-}
-
-func derefTimeOrNil(t *time.Time) *timestamppb.Timestamp {
-	if t == nil {
-		return nil
-	}
-	return timestamppb.New(*t)
 }
