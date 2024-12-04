@@ -91,7 +91,7 @@ func (c *Client) token(ctx context.Context, req *RedeemCodeRequest) (string, err
 	if err != nil {
 		return "", fmt.Errorf("send http request: %w", err)
 	}
-	defer httpRes.Body.Close()
+	defer func() { _ = httpRes.Body.Close() }()
 
 	if httpRes.StatusCode != http.StatusOK {
 		return "", fmt.Errorf("bad response status code: %s", httpRes.Status)
@@ -130,7 +130,7 @@ func (c *Client) userinfo(ctx context.Context, accessToken string) (*userinfoRes
 	if err != nil {
 		return nil, fmt.Errorf("send http request: %w", err)
 	}
-	defer httpRes.Body.Close()
+	defer func() { _ = httpRes.Body.Close() }()
 
 	if httpRes.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("bad response status code: %s", httpRes.Status)
@@ -164,7 +164,7 @@ func (c *Client) revoke(ctx context.Context, accessToken string) error {
 	if err != nil {
 		return fmt.Errorf("send http request: %w", err)
 	}
-	defer httpRes.Body.Close()
+	defer func() { _ = httpRes.Body.Close() }()
 
 	if httpRes.StatusCode != http.StatusOK {
 		return fmt.Errorf("bad response status code: %s", httpRes.Status)
