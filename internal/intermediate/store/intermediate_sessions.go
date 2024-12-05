@@ -11,15 +11,13 @@ import (
 )
 
 type IntermediateSession struct {
-	ID              uuid.UUID
-	ProjectID       uuid.UUID
-	UnverifiedEmail string
-	VerifiedEmail   string
-	CreateTime      time.Time
-	ExpireTime      time.Time
-	Token           string
-	TokenSha256     []byte
-	Revoked         bool
+	ID          uuid.UUID
+	ProjectID   uuid.UUID
+	Email       string
+	CreateTime  time.Time
+	ExpireTime  time.Time
+	TokenSha256 []byte
+	Revoked     bool
 }
 
 var ErrIntermediateSessionRevoked = errors.New("intermediate session has been revoked")
@@ -47,10 +45,10 @@ func (s *Store) CreateIntermediateSession(ctx *context.Context, req *CreateInter
 	expiresAt := time.Now().Add(time.Minute * 15)
 
 	createdIntermediateSession, err := q.CreateIntermediateSession(*ctx, queries.CreateIntermediateSessionParams{
-		ID:              uuid.New(),
-		ProjectID:       projectId,
-		UnverifiedEmail: &req.Email,
-		ExpireTime:      &expiresAt,
+		ID:         uuid.New(),
+		ProjectID:  projectId,
+		Email:      &req.Email,
+		ExpireTime: &expiresAt,
 	})
 	if err != nil {
 		return nil, err
@@ -119,32 +117,35 @@ func (s *Store) VerifyIntermediateSessionEmail(
 		return nil, ErrIntermediateSessionExpired
 	}
 
-	// Check if the email in the request matches the email in the intermediate session
-	if existingIntermediateSession.UnverifiedEmail != &req.Email {
-		return nil, ErrIntermediateSessionEmailMismatch
-	}
+	panic("unimplemented")
 
-	session, err := q.VerifyIntermediateSessionEmail(*ctx, queries.VerifyIntermediateSessionEmailParams{
-		ID:            sessionId,
-		VerifiedEmail: &req.Email,
-	})
-	if err != nil {
-		return nil, err
-	}
+	// TODO what do we do here?
 
-	return parseIntermediateSession(&session), nil
+	//// Check if the email in the request matches the email in the intermediate session
+	//if existingIntermediateSession.UnverifiedEmail != &req.Email {
+	//	return nil, ErrIntermediateSessionEmailMismatch
+	//}
+	//
+	//
+	//session, err := q.VerifyIntermediateSessionEmail(*ctx, queries.VerifyIntermediateSessionEmailParams{
+	//	ID:            sessionId,
+	//	VerifiedEmail: &req.Email,
+	//})
+	//if err != nil {
+	//	return nil, err
+	//}
+
+	//return parseIntermediateSession(&session), nil
 }
 
 func parseIntermediateSession(i *queries.IntermediateSession) *IntermediateSession {
 	return &IntermediateSession{
-		ID:              i.ID,
-		ProjectID:       i.ProjectID,
-		UnverifiedEmail: *i.UnverifiedEmail,
-		VerifiedEmail:   *i.VerifiedEmail,
-		CreateTime:      *i.CreateTime,
-		ExpireTime:      *i.ExpireTime,
-		Token:           i.Token,
-		TokenSha256:     i.TokenSha256,
-		Revoked:         i.Revoked,
+		ID:        i.ID,
+		ProjectID: i.ProjectID,
+		//Email: i.Email, TODO
+		CreateTime:  *i.CreateTime,
+		ExpireTime:  *i.ExpireTime,
+		TokenSha256: i.TokenSha256,
+		Revoked:     i.Revoked,
 	}
 }

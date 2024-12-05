@@ -69,15 +69,13 @@ type EmailVerificationChallenge struct {
 }
 
 type IntermediateSession struct {
-	ID              uuid.UUID
-	ProjectID       uuid.UUID
-	UnverifiedEmail *string
-	VerifiedEmail   *string
-	CreateTime      *time.Time
-	ExpireTime      *time.Time
-	Token           string
-	TokenSha256     []byte
-	Revoked         bool
+	ID          uuid.UUID
+	ProjectID   uuid.UUID
+	CreateTime  *time.Time
+	ExpireTime  *time.Time
+	TokenSha256 []byte
+	Revoked     bool
+	Email       *string
 }
 
 type IntermediateSessionSigningKey struct {

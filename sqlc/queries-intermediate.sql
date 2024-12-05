@@ -5,8 +5,8 @@ RETURNING
     *;
 
 -- name: CreateIntermediateSession :one
-INSERT INTO intermediate_sessions (id, project_id, unverified_email, verified_email, expire_time, token, token_sha256)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
+INSERT INTO intermediate_sessions (id, project_id, expire_time, email, token_sha256)
+    VALUES ($1, $2, $3, $4, $5)
 RETURNING
     *;
 
@@ -131,15 +131,3 @@ WHERE
     id = $1
 RETURNING
     *;
-
--- name: VerifyIntermediateSessionEmail :one
-UPDATE
-    intermediate_sessions
-SET
-    unverified_email = NULL,
-    verified_email = $2
-WHERE
-    id = $1
-RETURNING
-    *;
-
