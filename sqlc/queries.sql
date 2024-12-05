@@ -11,11 +11,10 @@ RETURNING
     *;
 
 -- name: CreateProject :one
-INSERT INTO projects (id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-RETURNING
-    *;
-
+-- INSERT INTO projects (id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret)
+--     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+-- RETURNING
+--     *;
 -- name: CreateSessionSigningKey :one
 INSERT INTO session_signing_keys (id, project_id, public_key, private_key_cipher_text, expire_time)
     VALUES ($1, $2, $3, $4, $5)
@@ -92,22 +91,21 @@ WHERE
 RETURNING
     *;
 
--- name: UpdateProject :one
-UPDATE
-    projects
-SET
-    log_in_with_password_enabled = $2,
-    log_in_with_google_enabled = $3,
-    log_in_with_microsoft_enabled = $4,
-    google_oauth_client_id = $5,
-    google_oauth_client_secret = $6,
-    microsoft_oauth_client_id = $7,
-    microsoft_oauth_client_secret = $8
-WHERE
-    id = $1
-RETURNING
-    *;
-
+-- -- name: UpdateProject :one
+-- UPDATE
+--     projects
+-- SET
+--     log_in_with_password_enabled = $2,
+--     log_in_with_google_enabled = $3,
+--     log_in_with_microsoft_enabled = $4,
+--     google_oauth_client_id = $5,
+--     google_oauth_client_secret = $6,
+--     microsoft_oauth_client_id = $7,
+--     microsoft_oauth_client_secret = $8
+-- WHERE
+--     id = $1
+-- RETURNING
+--     *;
 -- name: UpdateProjectOrganizationID :one
 UPDATE
     projects

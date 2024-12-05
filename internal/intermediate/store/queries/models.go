@@ -87,6 +87,16 @@ type IntermediateSessionSigningKey struct {
 	ExpireTime           *time.Time
 }
 
+type MethodVerificationChallenge struct {
+	ID                    uuid.UUID
+	ProjectID             uuid.UUID
+	CompleteTime          *time.Time
+	IntermediateSessionID uuid.UUID
+	AuthMethod            AuthMethod
+	ExpireTime            *time.Time
+	SecretTokenSha256     []byte
+}
+
 type Organization struct {
 	ID                                uuid.UUID
 	ProjectID                         uuid.UUID
@@ -99,15 +109,15 @@ type Organization struct {
 }
 
 type Project struct {
-	ID                         uuid.UUID
-	OrganizationID             *uuid.UUID
-	LogInWithPasswordEnabled   bool
-	LogInWithGoogleEnabled     bool
-	LogInWithMicrosoftEnabled  bool
-	GoogleOauthClientID        *string
-	GoogleOauthClientSecret    *string
-	MicrosoftOauthClientID     *string
-	MicrosoftOauthClientSecret *string
+	ID                                   uuid.UUID
+	OrganizationID                       *uuid.UUID
+	LogInWithPasswordEnabled             bool
+	LogInWithGoogleEnabled               bool
+	LogInWithMicrosoftEnabled            bool
+	GoogleOauthClientID                  *string
+	MicrosoftOauthClientID               *string
+	GoogleOauthClientSecretCiphertext    *string
+	MicrosoftOauthClientSecretCiphertext *string
 }
 
 type ProjectApiKey struct {

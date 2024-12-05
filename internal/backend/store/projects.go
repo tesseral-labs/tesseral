@@ -136,7 +136,8 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 		updates.GoogleOauthClientID = &req.Project.GoogleOauthClientId
 	}
 	if req.Project.GoogleOauthClientSecret != "" {
-		updates.GoogleOauthClientSecret = &req.Project.GoogleOauthClientSecret
+		// todo
+		//updates.GoogleOauthClientSecret = &req.Project.GoogleOauthClientSecret
 	}
 
 	// Conditionally configure Microsoft OAuth
@@ -144,7 +145,8 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 		updates.MicrosoftOauthClientID = &req.Project.MicrosoftOauthClientId
 	}
 	if req.Project.MicrosoftOauthClientSecret != "" {
-		updates.MicrosoftOauthClientSecret = &req.Project.MicrosoftOauthClientSecret
+		// todo
+		//updates.MicrosoftOauthClientSecret = &req.Project.MicrosoftOauthClientSecret
 	}
 
 	// Conditionally enable/disable login methods
@@ -172,14 +174,12 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 
 func parseProject(project *queries.Project) *backendv1.Project {
 	return &backendv1.Project{
-		Id:                         idformat.Project.Format(project.ID),
-		OrganizationId:             idformat.Organization.Format(*project.OrganizationID),
-		LogInWithPasswordEnabled:   project.LogInWithPasswordEnabled,
-		LogInWithGoogleEnabled:     project.LogInWithGoogleEnabled,
-		LogInWithMicrosoftEnabled:  project.LogInWithMicrosoftEnabled,
-		GoogleOauthClientId:        derefOrEmpty(project.GoogleOauthClientID),
-		GoogleOauthClientSecret:    derefOrEmpty(project.GoogleOauthClientSecret),
-		MicrosoftOauthClientId:     derefOrEmpty(project.MicrosoftOauthClientID),
-		MicrosoftOauthClientSecret: derefOrEmpty(project.MicrosoftOauthClientSecret),
+		Id:                        idformat.Project.Format(project.ID),
+		OrganizationId:            idformat.Organization.Format(*project.OrganizationID),
+		LogInWithPasswordEnabled:  project.LogInWithPasswordEnabled,
+		LogInWithGoogleEnabled:    project.LogInWithGoogleEnabled,
+		LogInWithMicrosoftEnabled: project.LogInWithMicrosoftEnabled,
+		GoogleOauthClientId:       derefOrEmpty(project.GoogleOauthClientID),
+		MicrosoftOauthClientId:    derefOrEmpty(project.MicrosoftOauthClientID),
 	}
 }

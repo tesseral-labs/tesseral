@@ -8,14 +8,12 @@ import (
 
 func parseProject(project *queries.Project) *frontendv1.Project {
 	return &frontendv1.Project{
-		Id:                         idformat.Project.Format(project.ID),
-		OrganizationId:             idformat.Organization.Format(*project.OrganizationID),
-		LogInWithPasswordEnabled:   project.LogInWithPasswordEnabled,
-		LogInWithGoogleEnabled:     project.LogInWithGoogleEnabled,
-		LogInWithMicrosoftEnabled:  project.LogInWithMicrosoftEnabled,
-		GoogleOauthClientId:        derefOrEmpty(project.GoogleOauthClientID),
-		GoogleOauthClientSecret:    derefOrEmpty(project.GoogleOauthClientSecret),
-		MicrosoftOauthClientId:     derefOrEmpty(project.MicrosoftOauthClientID),
-		MicrosoftOauthClientSecret: derefOrEmpty(project.MicrosoftOauthClientSecret),
+		Id:                        idformat.Project.Format(project.ID),
+		OrganizationId:            idformat.Organization.Format(*project.OrganizationID),
+		LogInWithPasswordEnabled:  project.LogInWithPasswordEnabled,
+		LogInWithGoogleEnabled:    project.LogInWithGoogleEnabled,
+		LogInWithMicrosoftEnabled: project.LogInWithMicrosoftEnabled,
+		GoogleOauthClientId:       derefOrEmpty(project.GoogleOauthClientID),
+		MicrosoftOauthClientId:    derefOrEmpty(project.MicrosoftOauthClientID),
 	}
 }

@@ -105,47 +105,43 @@ func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganization
 }
 
 const createProject = `-- name: CreateProject :one
-INSERT INTO projects (id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+INSERT INTO session_signing_keys (id, project_id, public_key, private_key_cipher_text, expire_time)
+    VALUES ($1, $2, $3, $4, $5)
 RETURNING
-    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret
+    id, project_id, public_key, private_key_cipher_text, create_time, expire_time
 `
 
 type CreateProjectParams struct {
-	ID                         uuid.UUID
-	OrganizationID             *uuid.UUID
-	LogInWithPasswordEnabled   bool
-	LogInWithGoogleEnabled     bool
-	LogInWithMicrosoftEnabled  bool
-	GoogleOauthClientID        *string
-	GoogleOauthClientSecret    *string
-	MicrosoftOauthClientID     *string
-	MicrosoftOauthClientSecret *string
+	ID                   uuid.UUID
+	ProjectID            uuid.UUID
+	PublicKey            []byte
+	PrivateKeyCipherText []byte
+	ExpireTime           *time.Time
 }
 
-func (q *Queries) CreateProject(ctx context.Context, arg CreateProjectParams) (Project, error) {
+// INSERT INTO projects (id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret)
+//
+//	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+//
+// RETURNING
+//
+//	*;
+func (q *Queries) CreateProject(ctx context.Context, arg CreateProjectParams) (SessionSigningKey, error) {
 	row := q.db.QueryRow(ctx, createProject,
 		arg.ID,
-		arg.OrganizationID,
-		arg.LogInWithPasswordEnabled,
-		arg.LogInWithGoogleEnabled,
-		arg.LogInWithMicrosoftEnabled,
-		arg.GoogleOauthClientID,
-		arg.GoogleOauthClientSecret,
-		arg.MicrosoftOauthClientID,
-		arg.MicrosoftOauthClientSecret,
+		arg.ProjectID,
+		arg.PublicKey,
+		arg.PrivateKeyCipherText,
+		arg.ExpireTime,
 	)
-	var i Project
+	var i SessionSigningKey
 	err := row.Scan(
 		&i.ID,
-		&i.OrganizationID,
-		&i.LogInWithPasswordEnabled,
-		&i.LogInWithGoogleEnabled,
-		&i.LogInWithMicrosoftEnabled,
-		&i.GoogleOauthClientID,
-		&i.GoogleOauthClientSecret,
-		&i.MicrosoftOauthClientID,
-		&i.MicrosoftOauthClientSecret,
+		&i.ProjectID,
+		&i.PublicKey,
+		&i.PrivateKeyCipherText,
+		&i.CreateTime,
+		&i.ExpireTime,
 	)
 	return i, err
 }
@@ -180,41 +176,6 @@ func (q *Queries) CreateProjectAPIKey(ctx context.Context, arg CreateProjectAPIK
 		&i.CreateTime,
 		&i.Revoked,
 		&i.SecretTokenSha256,
-	)
-	return i, err
-}
-
-const createSessionSigningKey = `-- name: CreateSessionSigningKey :one
-INSERT INTO session_signing_keys (id, project_id, public_key, private_key_cipher_text, expire_time)
-    VALUES ($1, $2, $3, $4, $5)
-RETURNING
-    id, project_id, public_key, private_key_cipher_text, create_time, expire_time
-`
-
-type CreateSessionSigningKeyParams struct {
-	ID                   uuid.UUID
-	ProjectID            uuid.UUID
-	PublicKey            []byte
-	PrivateKeyCipherText []byte
-	ExpireTime           *time.Time
-}
-
-func (q *Queries) CreateSessionSigningKey(ctx context.Context, arg CreateSessionSigningKeyParams) (SessionSigningKey, error) {
-	row := q.db.QueryRow(ctx, createSessionSigningKey,
-		arg.ID,
-		arg.ProjectID,
-		arg.PublicKey,
-		arg.PrivateKeyCipherText,
-		arg.ExpireTime,
-	)
-	var i SessionSigningKey
-	err := row.Scan(
-		&i.ID,
-		&i.ProjectID,
-		&i.PublicKey,
-		&i.PrivateKeyCipherText,
-		&i.CreateTime,
-		&i.ExpireTime,
 	)
 	return i, err
 }
@@ -364,7 +325,7 @@ func (q *Queries) GetProjectAPIKeyBySecretTokenSHA256(ctx context.Context, secre
 
 const getProjectByID = `-- name: GetProjectByID :one
 SELECT
-    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext
 FROM
     projects
 WHERE
@@ -381,9 +342,9 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 		&i.LogInWithGoogleEnabled,
 		&i.LogInWithMicrosoftEnabled,
 		&i.GoogleOauthClientID,
-		&i.GoogleOauthClientSecret,
 		&i.MicrosoftOauthClientID,
-		&i.MicrosoftOauthClientSecret,
+		&i.GoogleOauthClientSecretCiphertext,
+		&i.MicrosoftOauthClientSecretCiphertext,
 	)
 	return i, err
 }
@@ -520,60 +481,6 @@ func (q *Queries) UpdateOrganization(ctx context.Context, arg UpdateOrganization
 	return i, err
 }
 
-const updateProject = `-- name: UpdateProject :one
-UPDATE
-    projects
-SET
-    log_in_with_password_enabled = $2,
-    log_in_with_google_enabled = $3,
-    log_in_with_microsoft_enabled = $4,
-    google_oauth_client_id = $5,
-    google_oauth_client_secret = $6,
-    microsoft_oauth_client_id = $7,
-    microsoft_oauth_client_secret = $8
-WHERE
-    id = $1
-RETURNING
-    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret
-`
-
-type UpdateProjectParams struct {
-	ID                         uuid.UUID
-	LogInWithPasswordEnabled   bool
-	LogInWithGoogleEnabled     bool
-	LogInWithMicrosoftEnabled  bool
-	GoogleOauthClientID        *string
-	GoogleOauthClientSecret    *string
-	MicrosoftOauthClientID     *string
-	MicrosoftOauthClientSecret *string
-}
-
-func (q *Queries) UpdateProject(ctx context.Context, arg UpdateProjectParams) (Project, error) {
-	row := q.db.QueryRow(ctx, updateProject,
-		arg.ID,
-		arg.LogInWithPasswordEnabled,
-		arg.LogInWithGoogleEnabled,
-		arg.LogInWithMicrosoftEnabled,
-		arg.GoogleOauthClientID,
-		arg.GoogleOauthClientSecret,
-		arg.MicrosoftOauthClientID,
-		arg.MicrosoftOauthClientSecret,
-	)
-	var i Project
-	err := row.Scan(
-		&i.ID,
-		&i.OrganizationID,
-		&i.LogInWithPasswordEnabled,
-		&i.LogInWithGoogleEnabled,
-		&i.LogInWithMicrosoftEnabled,
-		&i.GoogleOauthClientID,
-		&i.GoogleOauthClientSecret,
-		&i.MicrosoftOauthClientID,
-		&i.MicrosoftOauthClientSecret,
-	)
-	return i, err
-}
-
 const updateProjectOrganizationID = `-- name: UpdateProjectOrganizationID :one
 UPDATE
     projects
@@ -582,7 +489,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext
 `
 
 type UpdateProjectOrganizationIDParams struct {
@@ -590,6 +497,28 @@ type UpdateProjectOrganizationIDParams struct {
 	OrganizationID *uuid.UUID
 }
 
+// -- name: UpdateProject :one
+// UPDATE
+//
+//	projects
+//
+// SET
+//
+//	log_in_with_password_enabled = $2,
+//	log_in_with_google_enabled = $3,
+//	log_in_with_microsoft_enabled = $4,
+//	google_oauth_client_id = $5,
+//	google_oauth_client_secret = $6,
+//	microsoft_oauth_client_id = $7,
+//	microsoft_oauth_client_secret = $8
+//
+// WHERE
+//
+//	id = $1
+//
+// RETURNING
+//
+//	*;
 func (q *Queries) UpdateProjectOrganizationID(ctx context.Context, arg UpdateProjectOrganizationIDParams) (Project, error) {
 	row := q.db.QueryRow(ctx, updateProjectOrganizationID, arg.ID, arg.OrganizationID)
 	var i Project
@@ -600,9 +529,9 @@ func (q *Queries) UpdateProjectOrganizationID(ctx context.Context, arg UpdatePro
 		&i.LogInWithGoogleEnabled,
 		&i.LogInWithMicrosoftEnabled,
 		&i.GoogleOauthClientID,
-		&i.GoogleOauthClientSecret,
 		&i.MicrosoftOauthClientID,
-		&i.MicrosoftOauthClientSecret,
+		&i.GoogleOauthClientSecretCiphertext,
+		&i.MicrosoftOauthClientSecretCiphertext,
 	)
 	return i, err
 }
