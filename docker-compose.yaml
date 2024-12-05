@@ -51,6 +51,8 @@ services:
     image: postgres:15.8
     ports:
       - "5432:5432"
+    volumes:
+      - ./.postgres:/var/lib/postgresql/data
   ui:
     command: bash -c "npm i --force && npm run dev"
     environment:
@@ -64,5 +66,3 @@ services:
     volumes:
       - ./ui:/ui:cached
     working_dir: /ui
-volumes:
-  localstack-init-output:

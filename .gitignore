@@ -1,5 +1,6 @@
 .env
 .kms/data
+.postgres
 node_modules
 /app/public/index.css
 /app/public/index.js
