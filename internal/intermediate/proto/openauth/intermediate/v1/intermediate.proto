@@ -9,6 +9,12 @@ import "google/protobuf/timestamp.proto";
 import "google/protobuf/struct.proto";
 
 service IntermediateService {
+  rpc Whoami(WhoamiRequest) returns (WhoamiResponse) {
+    option (google.api.http) = {
+      get: "/intermediate/v1/whoami"
+    };
+  }
+
   // Creates a new organization.
   rpc CreateOrganization(CreateOrganizationRequest) returns (CreateOrganizationResponse) {
     option (google.api.http) = {
@@ -31,6 +37,19 @@ service IntermediateService {
       body: "*"
     };
   }
+}
+
+message IntermediateSession {
+  string id = 1;
+  string project_id = 2;
+  // TODO more things here
+}
+
+message WhoamiRequest {
+}
+
+message WhoamiResponse {
+  IntermediateSession intermediate_session = 1;
 }
 
 message IntermediateSessionClaims {

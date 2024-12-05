@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { CreateOrganizationRequest, CreateOrganizationResponse, ListOrganizationsRequest, ListOrganizationsResponse, SignInWithEmailRequest, SignInWithEmailResponse } from "./intermediate_pb.js";
+import { CreateOrganizationRequest, CreateOrganizationResponse, ListOrganizationsRequest, ListOrganizationsResponse, SignInWithEmailRequest, SignInWithEmailResponse, WhoamiRequest, WhoamiResponse } from "./intermediate_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -12,6 +12,15 @@ import { MethodKind } from "@bufbuild/protobuf";
 export const IntermediateService = {
   typeName: "openauth.intermediate.v1.IntermediateService",
   methods: {
+    /**
+     * @generated from rpc openauth.intermediate.v1.IntermediateService.Whoami
+     */
+    whoami: {
+      name: "Whoami",
+      I: WhoamiRequest,
+      O: WhoamiResponse,
+      kind: MethodKind.Unary,
+    },
     /**
      * Creates a new organization.
      *

@@ -2,13 +2,43 @@ package store
 
 import (
 	"context"
+	"crypto/sha256"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/openauth/openauth/internal/intermediate/authn"
+	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
+
+func (s *Store) GetIntermediateSessionByToken(ctx context.Context, token string) (*intermediatev1.IntermediateSession, error) {
+	tokenUUID, err := idformat.IntermediateSessionToken.Parse(token)
+	if err != nil {
+		return nil, fmt.Errorf("parse token: %w", err)
+	}
+
+	tokenSHA256 := sha256.Sum256(tokenUUID[:])
+	qIntermediateSession, err := s.q.GetIntermediateSessionByTokenSHA256(ctx, tokenSHA256[:])
+	if err != nil {
+		return nil, fmt.Errorf("get intermediate session by token sha256: %w", err)
+	}
+
+	// todo this is what parseIntermediateSession should do, but already token
+	// by another function returning a hand-written type
+	return &intermediatev1.IntermediateSession{
+		Id:        idformat.IntermediateSession.Format(qIntermediateSession.ID),
+		ProjectId: idformat.Project.Format(qIntermediateSession.ProjectID),
+	}, nil
+}
+
+func (s *Store) Whoami(ctx context.Context, req *intermediatev1.WhoamiRequest) (*intermediatev1.WhoamiResponse, error) {
+	return &intermediatev1.WhoamiResponse{
+		IntermediateSession: authn.IntermediateSession(ctx),
+	}, nil
+}
 
 type IntermediateSession struct {
 	ID          uuid.UUID

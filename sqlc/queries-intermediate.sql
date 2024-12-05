@@ -1,3 +1,6 @@
+-- name: GetIntermediateSessionByTokenSHA256 :one
+select * from intermediate_sessions where token_sha256 = $1;
+
 -- name: CreateEmailVerificationChallenge :one
 INSERT INTO email_verification_challenges (id, intermediate_session_id, project_id, email, challenge_sha256, expire_time, google_user_id, microsoft_user_id)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)

@@ -282,6 +282,25 @@ func (q *Queries) GetIntermediateSessionByID(ctx context.Context, id uuid.UUID) 
 	return i, err
 }
 
+const getIntermediateSessionByTokenSHA256 = `-- name: GetIntermediateSessionByTokenSHA256 :one
+select id, project_id, create_time, expire_time, token_sha256, revoked, email from intermediate_sessions where token_sha256 = $1
+`
+
+func (q *Queries) GetIntermediateSessionByTokenSHA256(ctx context.Context, tokenSha256 []byte) (IntermediateSession, error) {
+	row := q.db.QueryRow(ctx, getIntermediateSessionByTokenSHA256, tokenSha256)
+	var i IntermediateSession
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.CreateTime,
+		&i.ExpireTime,
+		&i.TokenSha256,
+		&i.Revoked,
+		&i.Email,
+	)
+	return i, err
+}
+
 const getIntermediateSessionSigningKeyByID = `-- name: GetIntermediateSessionSigningKeyByID :one
 SELECT
     id, project_id, public_key, private_key_cipher_text, create_time, expire_time

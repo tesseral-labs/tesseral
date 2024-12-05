@@ -33,6 +33,9 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
+	// IntermediateServiceWhoamiProcedure is the fully-qualified name of the IntermediateService's
+	// Whoami RPC.
+	IntermediateServiceWhoamiProcedure = "/openauth.intermediate.v1.IntermediateService/Whoami"
 	// IntermediateServiceCreateOrganizationProcedure is the fully-qualified name of the
 	// IntermediateService's CreateOrganization RPC.
 	IntermediateServiceCreateOrganizationProcedure = "/openauth.intermediate.v1.IntermediateService/CreateOrganization"
@@ -47,6 +50,7 @@ const (
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
 var (
 	intermediateServiceServiceDescriptor                  = v1.File_openauth_intermediate_v1_intermediate_proto.Services().ByName("IntermediateService")
+	intermediateServiceWhoamiMethodDescriptor             = intermediateServiceServiceDescriptor.Methods().ByName("Whoami")
 	intermediateServiceCreateOrganizationMethodDescriptor = intermediateServiceServiceDescriptor.Methods().ByName("CreateOrganization")
 	intermediateServiceListOrganizationsMethodDescriptor  = intermediateServiceServiceDescriptor.Methods().ByName("ListOrganizations")
 	intermediateServiceSignInWithEmailMethodDescriptor    = intermediateServiceServiceDescriptor.Methods().ByName("SignInWithEmail")
@@ -55,6 +59,7 @@ var (
 // IntermediateServiceClient is a client for the openauth.intermediate.v1.IntermediateService
 // service.
 type IntermediateServiceClient interface {
+	Whoami(context.Context, *connect.Request[v1.WhoamiRequest]) (*connect.Response[v1.WhoamiResponse], error)
 	// Creates a new organization.
 	CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.CreateOrganizationResponse], error)
 	// Gets a list of organizations.
@@ -74,6 +79,12 @@ type IntermediateServiceClient interface {
 func NewIntermediateServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) IntermediateServiceClient {
 	baseURL = strings.TrimRight(baseURL, "/")
 	return &intermediateServiceClient{
+		whoami: connect.NewClient[v1.WhoamiRequest, v1.WhoamiResponse](
+			httpClient,
+			baseURL+IntermediateServiceWhoamiProcedure,
+			connect.WithSchema(intermediateServiceWhoamiMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
 		createOrganization: connect.NewClient[v1.CreateOrganizationRequest, v1.CreateOrganizationResponse](
 			httpClient,
 			baseURL+IntermediateServiceCreateOrganizationProcedure,
@@ -97,9 +108,15 @@ func NewIntermediateServiceClient(httpClient connect.HTTPClient, baseURL string,
 
 // intermediateServiceClient implements IntermediateServiceClient.
 type intermediateServiceClient struct {
+	whoami             *connect.Client[v1.WhoamiRequest, v1.WhoamiResponse]
 	createOrganization *connect.Client[v1.CreateOrganizationRequest, v1.CreateOrganizationResponse]
 	listOrganizations  *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
 	signInWithEmail    *connect.Client[v1.SignInWithEmailRequest, v1.SignInWithEmailResponse]
+}
+
+// Whoami calls openauth.intermediate.v1.IntermediateService.Whoami.
+func (c *intermediateServiceClient) Whoami(ctx context.Context, req *connect.Request[v1.WhoamiRequest]) (*connect.Response[v1.WhoamiResponse], error) {
+	return c.whoami.CallUnary(ctx, req)
 }
 
 // CreateOrganization calls openauth.intermediate.v1.IntermediateService.CreateOrganization.
@@ -120,6 +137,7 @@ func (c *intermediateServiceClient) SignInWithEmail(ctx context.Context, req *co
 // IntermediateServiceHandler is an implementation of the
 // openauth.intermediate.v1.IntermediateService service.
 type IntermediateServiceHandler interface {
+	Whoami(context.Context, *connect.Request[v1.WhoamiRequest]) (*connect.Response[v1.WhoamiResponse], error)
 	// Creates a new organization.
 	CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.CreateOrganizationResponse], error)
 	// Gets a list of organizations.
@@ -134,6 +152,12 @@ type IntermediateServiceHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
+	intermediateServiceWhoamiHandler := connect.NewUnaryHandler(
+		IntermediateServiceWhoamiProcedure,
+		svc.Whoami,
+		connect.WithSchema(intermediateServiceWhoamiMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
 	intermediateServiceCreateOrganizationHandler := connect.NewUnaryHandler(
 		IntermediateServiceCreateOrganizationProcedure,
 		svc.CreateOrganization,
@@ -154,6 +178,8 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 	)
 	return "/openauth.intermediate.v1.IntermediateService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
+		case IntermediateServiceWhoamiProcedure:
+			intermediateServiceWhoamiHandler.ServeHTTP(w, r)
 		case IntermediateServiceCreateOrganizationProcedure:
 			intermediateServiceCreateOrganizationHandler.ServeHTTP(w, r)
 		case IntermediateServiceListOrganizationsProcedure:
@@ -168,6 +194,10 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 
 // UnimplementedIntermediateServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedIntermediateServiceHandler struct{}
+
+func (UnimplementedIntermediateServiceHandler) Whoami(context.Context, *connect.Request[v1.WhoamiRequest]) (*connect.Response[v1.WhoamiResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.Whoami is not implemented"))
+}
 
 func (UnimplementedIntermediateServiceHandler) CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.CreateOrganizationResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.CreateOrganization is not implemented"))
