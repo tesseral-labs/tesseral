@@ -66,5 +66,3 @@ services:
     volumes:
       - ./ui:/ui:cached
     working_dir: /ui
-volumes:
-  localstack-init-output:
