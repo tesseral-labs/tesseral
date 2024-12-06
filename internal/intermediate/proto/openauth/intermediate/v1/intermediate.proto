@@ -15,7 +15,7 @@ service IntermediateService {
     };
   }
 
-  rpc GetGoogleOAuthRedirectURL(GetGoogleOAuthRedirectURLRequest) returns (GetGoogleOAuthRedirectURLResponse) {
+  rpc GetGoogleOAuthRedirectURLx(GetGoogleOAuthRedirectURLRequest) returns (GetGoogleOAuthRedirectURLResponse) {
     option (google.api.http) = {
       get: "/intermediate/v1/google-oauth-redirect-url"
     };
