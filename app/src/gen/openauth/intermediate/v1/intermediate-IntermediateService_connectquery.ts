@@ -4,7 +4,21 @@
 // @ts-nocheck
 
 import { MethodKind } from "@bufbuild/protobuf";
-import { CreateOrganizationRequest, CreateOrganizationResponse, ListOrganizationsRequest, ListOrganizationsResponse, SignInWithEmailRequest, SignInWithEmailResponse } from "./intermediate_pb.js";
+import { CreateOrganizationRequest, CreateOrganizationResponse, ListOrganizationsRequest, ListOrganizationsResponse, SignInWithEmailRequest, SignInWithEmailResponse, WhoamiRequest, WhoamiResponse } from "./intermediate_pb.js";
+
+/**
+ * @generated from rpc openauth.intermediate.v1.IntermediateService.Whoami
+ */
+export const whoami = {
+  localName: "whoami",
+  name: "Whoami",
+  kind: MethodKind.Unary,
+  I: WhoamiRequest,
+  O: WhoamiResponse,
+  service: {
+    typeName: "openauth.intermediate.v1.IntermediateService"
+  }
+} as const;
 
 /**
  * Creates a new organization.

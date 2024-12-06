@@ -19,6 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
+	IntermediateService_Whoami_FullMethodName             = "/openauth.intermediate.v1.IntermediateService/Whoami"
 	IntermediateService_CreateOrganization_FullMethodName = "/openauth.intermediate.v1.IntermediateService/CreateOrganization"
 	IntermediateService_ListOrganizations_FullMethodName  = "/openauth.intermediate.v1.IntermediateService/ListOrganizations"
 	IntermediateService_SignInWithEmail_FullMethodName    = "/openauth.intermediate.v1.IntermediateService/SignInWithEmail"
@@ -28,6 +29,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type IntermediateServiceClient interface {
+	Whoami(ctx context.Context, in *WhoamiRequest, opts ...grpc.CallOption) (*WhoamiResponse, error)
 	// Creates a new organization.
 	CreateOrganization(ctx context.Context, in *CreateOrganizationRequest, opts ...grpc.CallOption) (*CreateOrganizationResponse, error)
 	// Gets a list of organizations.
@@ -42,6 +44,16 @@ type intermediateServiceClient struct {
 
 func NewIntermediateServiceClient(cc grpc.ClientConnInterface) IntermediateServiceClient {
 	return &intermediateServiceClient{cc}
+}
+
+func (c *intermediateServiceClient) Whoami(ctx context.Context, in *WhoamiRequest, opts ...grpc.CallOption) (*WhoamiResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(WhoamiResponse)
+	err := c.cc.Invoke(ctx, IntermediateService_Whoami_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *intermediateServiceClient) CreateOrganization(ctx context.Context, in *CreateOrganizationRequest, opts ...grpc.CallOption) (*CreateOrganizationResponse, error) {
@@ -78,6 +90,7 @@ func (c *intermediateServiceClient) SignInWithEmail(ctx context.Context, in *Sig
 // All implementations must embed UnimplementedIntermediateServiceServer
 // for forward compatibility.
 type IntermediateServiceServer interface {
+	Whoami(context.Context, *WhoamiRequest) (*WhoamiResponse, error)
 	// Creates a new organization.
 	CreateOrganization(context.Context, *CreateOrganizationRequest) (*CreateOrganizationResponse, error)
 	// Gets a list of organizations.
@@ -94,6 +107,9 @@ type IntermediateServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedIntermediateServiceServer struct{}
 
+func (UnimplementedIntermediateServiceServer) Whoami(context.Context, *WhoamiRequest) (*WhoamiResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Whoami not implemented")
+}
 func (UnimplementedIntermediateServiceServer) CreateOrganization(context.Context, *CreateOrganizationRequest) (*CreateOrganizationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateOrganization not implemented")
 }
@@ -122,6 +138,24 @@ func RegisterIntermediateServiceServer(s grpc.ServiceRegistrar, srv Intermediate
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&IntermediateService_ServiceDesc, srv)
+}
+
+func _IntermediateService_Whoami_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WhoamiRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IntermediateServiceServer).Whoami(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IntermediateService_Whoami_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IntermediateServiceServer).Whoami(ctx, req.(*WhoamiRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _IntermediateService_CreateOrganization_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -185,6 +219,10 @@ var IntermediateService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "openauth.intermediate.v1.IntermediateService",
 	HandlerType: (*IntermediateServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Whoami",
+			Handler:    _IntermediateService_Whoami_Handler,
+		},
 		{
 			MethodName: "CreateOrganization",
 			Handler:    _IntermediateService_CreateOrganization_Handler,

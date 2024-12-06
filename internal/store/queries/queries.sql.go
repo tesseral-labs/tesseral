@@ -446,42 +446,6 @@ func (q *Queries) GetSessionDetailsByRefreshTokenSHA256(ctx context.Context, ref
 	return i, err
 }
 
-const getSessionSigningKeysByProjectID = `-- name: GetSessionSigningKeysByProjectID :many
-SELECT
-    id, project_id, public_key, private_key_cipher_text, create_time, expire_time
-FROM
-    session_signing_keys
-WHERE
-    project_id = $1
-`
-
-func (q *Queries) GetSessionSigningKeysByProjectID(ctx context.Context, projectID uuid.UUID) ([]SessionSigningKey, error) {
-	rows, err := q.db.Query(ctx, getSessionSigningKeysByProjectID, projectID)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []SessionSigningKey
-	for rows.Next() {
-		var i SessionSigningKey
-		if err := rows.Scan(
-			&i.ID,
-			&i.ProjectID,
-			&i.PublicKey,
-			&i.PrivateKeyCipherText,
-			&i.CreateTime,
-			&i.ExpireTime,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
 const getUserByID = `-- name: GetUserByID :one
 SELECT
     id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id

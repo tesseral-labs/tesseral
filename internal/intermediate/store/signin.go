@@ -11,7 +11,6 @@ import (
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
 	"github.com/openauth/openauth/internal/store/idformat"
-	"github.com/openauth/openauth/internal/ujwt"
 )
 
 func (s *Store) SignInWithEmail(
@@ -48,26 +47,26 @@ func (s *Store) SignInWithEmail(
 
 		expiresAt := time.Now().Add(15 * time.Minute)
 
-		signingKey, err := s.GetIntermediateSessionSigningKeyByProjectID(*ctx, req.ProjectId)
-		if err != nil {
-			return nil, err
-		}
+		// TODO delete this commented out code
+		//signingKey, err := s.GetIntermediateSessionSigningKeyByProjectID(*ctx, req.ProjectId)
+		//if err != nil {
+		//	return nil, err
+		//}
 
-		signingKeyId := idformat.IntermediateSessionSigningKey.Format(signingKey.ID)
-
-		sessionToken := ujwt.Sign(string(signingKeyId), signingKey.PrivateKey, &intermediatev1.IntermediateSessionClaims{
-			Email:     req.Email,
-			ExpiresAt: expiresAt.Unix(),
-			IssuedAt:  time.Now().Unix(),
-			ProjectId: req.ProjectId,
-		})
+		//signingKeyId := idformat.IntermediateSessionSigningKey.Format(signingKey.ID)
+		//
+		//sessionToken := ujwt.Sign(string(signingKeyId), signingKey.PrivateKey, &intermediatev1.IntermediateSessionClaims{
+		//	Email:     req.Email,
+		//	ExpiresAt: expiresAt.Unix(),
+		//	IssuedAt:  time.Now().Unix(),
+		//	ProjectId: req.ProjectId,
+		//})
 
 		intermediateSession, err := q.CreateIntermediateSession(*ctx, queries.CreateIntermediateSessionParams{
-			ID:              uuid.New(),
-			ProjectID:       projectId,
-			UnverifiedEmail: &req.Email,
-			ExpireTime:      &expiresAt,
-			Token:           sessionToken,
+			ID:         uuid.New(),
+			ProjectID:  projectId,
+			Email:      &req.Email,
+			ExpireTime: &expiresAt,
 		})
 		if err != nil {
 			return nil, err
@@ -108,7 +107,8 @@ func (s *Store) SignInWithEmail(
 		}
 
 		return &intermediatev1.SignInWithEmailResponse{
-			SessionToken: intermediateSession.Token,
+			// TODO what to return here
+			//SessionToken: intermediateSession.Token,
 		}, nil
 	}
 }

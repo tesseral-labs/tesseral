@@ -7,6 +7,119 @@ import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialM
 import { Message, proto3, protoInt64, Struct, Timestamp } from "@bufbuild/protobuf";
 
 /**
+ * @generated from message openauth.intermediate.v1.IntermediateSession
+ */
+export class IntermediateSession extends Message<IntermediateSession> {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id = "";
+
+  /**
+   * TODO more things here
+   *
+   * @generated from field: string project_id = 2;
+   */
+  projectId = "";
+
+  constructor(data?: PartialMessage<IntermediateSession>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "openauth.intermediate.v1.IntermediateSession";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "project_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): IntermediateSession {
+    return new IntermediateSession().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): IntermediateSession {
+    return new IntermediateSession().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): IntermediateSession {
+    return new IntermediateSession().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: IntermediateSession | PlainMessage<IntermediateSession> | undefined, b: IntermediateSession | PlainMessage<IntermediateSession> | undefined): boolean {
+    return proto3.util.equals(IntermediateSession, a, b);
+  }
+}
+
+/**
+ * @generated from message openauth.intermediate.v1.WhoamiRequest
+ */
+export class WhoamiRequest extends Message<WhoamiRequest> {
+  constructor(data?: PartialMessage<WhoamiRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "openauth.intermediate.v1.WhoamiRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): WhoamiRequest {
+    return new WhoamiRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): WhoamiRequest {
+    return new WhoamiRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): WhoamiRequest {
+    return new WhoamiRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: WhoamiRequest | PlainMessage<WhoamiRequest> | undefined, b: WhoamiRequest | PlainMessage<WhoamiRequest> | undefined): boolean {
+    return proto3.util.equals(WhoamiRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message openauth.intermediate.v1.WhoamiResponse
+ */
+export class WhoamiResponse extends Message<WhoamiResponse> {
+  /**
+   * @generated from field: openauth.intermediate.v1.IntermediateSession intermediate_session = 1;
+   */
+  intermediateSession?: IntermediateSession;
+
+  constructor(data?: PartialMessage<WhoamiResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "openauth.intermediate.v1.WhoamiResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "intermediate_session", kind: "message", T: IntermediateSession },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): WhoamiResponse {
+    return new WhoamiResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): WhoamiResponse {
+    return new WhoamiResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): WhoamiResponse {
+    return new WhoamiResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: WhoamiResponse | PlainMessage<WhoamiResponse> | undefined, b: WhoamiResponse | PlainMessage<WhoamiResponse> | undefined): boolean {
+    return proto3.util.equals(WhoamiResponse, a, b);
+  }
+}
+
+/**
  * @generated from message openauth.intermediate.v1.IntermediateSessionClaims
  */
 export class IntermediateSessionClaims extends Message<IntermediateSessionClaims> {

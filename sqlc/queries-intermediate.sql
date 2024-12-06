@@ -1,3 +1,11 @@
+-- name: GetIntermediateSessionByTokenSHA256 :one
+SELECT
+    *
+FROM
+    intermediate_sessions
+WHERE
+    token_sha256 = $1;
+
 -- name: CreateEmailVerificationChallenge :one
 INSERT INTO email_verification_challenges (id, intermediate_session_id, project_id, email, challenge_sha256, expire_time, google_user_id, microsoft_user_id)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
@@ -5,8 +13,8 @@ RETURNING
     *;
 
 -- name: CreateIntermediateSession :one
-INSERT INTO intermediate_sessions (id, project_id, unverified_email, verified_email, expire_time, token, token_sha256)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
+INSERT INTO intermediate_sessions (id, project_id, expire_time, email, token_sha256)
+    VALUES ($1, $2, $3, $4, $5)
 RETURNING
     *;
 
@@ -127,17 +135,6 @@ UPDATE
     intermediate_sessions
 SET
     revoked = TRUE
-WHERE
-    id = $1
-RETURNING
-    *;
-
--- name: VerifyIntermediateSessionEmail :one
-UPDATE
-    intermediate_sessions
-SET
-    unverified_email = NULL,
-    verified_email = $2
 WHERE
     id = $1
 RETURNING

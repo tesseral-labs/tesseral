@@ -58,43 +58,37 @@ func (q *Queries) CreateEmailVerificationChallenge(ctx context.Context, arg Crea
 }
 
 const createIntermediateSession = `-- name: CreateIntermediateSession :one
-INSERT INTO intermediate_sessions (id, project_id, unverified_email, verified_email, expire_time, token, token_sha256)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
+INSERT INTO intermediate_sessions (id, project_id, expire_time, email, token_sha256)
+    VALUES ($1, $2, $3, $4, $5)
 RETURNING
-    id, project_id, unverified_email, verified_email, create_time, expire_time, token, token_sha256, revoked
+    id, project_id, create_time, expire_time, token_sha256, revoked, email
 `
 
 type CreateIntermediateSessionParams struct {
-	ID              uuid.UUID
-	ProjectID       uuid.UUID
-	UnverifiedEmail *string
-	VerifiedEmail   *string
-	ExpireTime      *time.Time
-	Token           string
-	TokenSha256     []byte
+	ID          uuid.UUID
+	ProjectID   uuid.UUID
+	ExpireTime  *time.Time
+	Email       *string
+	TokenSha256 []byte
 }
 
 func (q *Queries) CreateIntermediateSession(ctx context.Context, arg CreateIntermediateSessionParams) (IntermediateSession, error) {
 	row := q.db.QueryRow(ctx, createIntermediateSession,
 		arg.ID,
 		arg.ProjectID,
-		arg.UnverifiedEmail,
-		arg.VerifiedEmail,
 		arg.ExpireTime,
-		arg.Token,
+		arg.Email,
 		arg.TokenSha256,
 	)
 	var i IntermediateSession
 	err := row.Scan(
 		&i.ID,
 		&i.ProjectID,
-		&i.UnverifiedEmail,
-		&i.VerifiedEmail,
 		&i.CreateTime,
 		&i.ExpireTime,
-		&i.Token,
 		&i.TokenSha256,
 		&i.Revoked,
+		&i.Email,
 	)
 	return i, err
 }
@@ -266,7 +260,7 @@ func (q *Queries) GetEmailVerificationChallenge(ctx context.Context, arg GetEmai
 
 const getIntermediateSessionByID = `-- name: GetIntermediateSessionByID :one
 SELECT
-    id, project_id, unverified_email, verified_email, create_time, expire_time, token, token_sha256, revoked
+    id, project_id, create_time, expire_time, token_sha256, revoked, email
 FROM
     intermediate_sessions
 WHERE
@@ -279,13 +273,35 @@ func (q *Queries) GetIntermediateSessionByID(ctx context.Context, id uuid.UUID) 
 	err := row.Scan(
 		&i.ID,
 		&i.ProjectID,
-		&i.UnverifiedEmail,
-		&i.VerifiedEmail,
 		&i.CreateTime,
 		&i.ExpireTime,
-		&i.Token,
 		&i.TokenSha256,
 		&i.Revoked,
+		&i.Email,
+	)
+	return i, err
+}
+
+const getIntermediateSessionByTokenSHA256 = `-- name: GetIntermediateSessionByTokenSHA256 :one
+SELECT
+    id, project_id, create_time, expire_time, token_sha256, revoked, email
+FROM
+    intermediate_sessions
+WHERE
+    token_sha256 = $1
+`
+
+func (q *Queries) GetIntermediateSessionByTokenSHA256(ctx context.Context, tokenSha256 []byte) (IntermediateSession, error) {
+	row := q.db.QueryRow(ctx, getIntermediateSessionByTokenSHA256, tokenSha256)
+	var i IntermediateSession
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.CreateTime,
+		&i.ExpireTime,
+		&i.TokenSha256,
+		&i.Revoked,
+		&i.Email,
 	)
 	return i, err
 }
@@ -550,7 +566,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, project_id, unverified_email, verified_email, create_time, expire_time, token, token_sha256, revoked
+    id, project_id, create_time, expire_time, token_sha256, revoked, email
 `
 
 func (q *Queries) RevokeIntermediateSession(ctx context.Context, id uuid.UUID) (IntermediateSession, error) {
@@ -559,47 +575,11 @@ func (q *Queries) RevokeIntermediateSession(ctx context.Context, id uuid.UUID) (
 	err := row.Scan(
 		&i.ID,
 		&i.ProjectID,
-		&i.UnverifiedEmail,
-		&i.VerifiedEmail,
 		&i.CreateTime,
 		&i.ExpireTime,
-		&i.Token,
 		&i.TokenSha256,
 		&i.Revoked,
-	)
-	return i, err
-}
-
-const verifyIntermediateSessionEmail = `-- name: VerifyIntermediateSessionEmail :one
-UPDATE
-    intermediate_sessions
-SET
-    unverified_email = NULL,
-    verified_email = $2
-WHERE
-    id = $1
-RETURNING
-    id, project_id, unverified_email, verified_email, create_time, expire_time, token, token_sha256, revoked
-`
-
-type VerifyIntermediateSessionEmailParams struct {
-	ID            uuid.UUID
-	VerifiedEmail *string
-}
-
-func (q *Queries) VerifyIntermediateSessionEmail(ctx context.Context, arg VerifyIntermediateSessionEmailParams) (IntermediateSession, error) {
-	row := q.db.QueryRow(ctx, verifyIntermediateSessionEmail, arg.ID, arg.VerifiedEmail)
-	var i IntermediateSession
-	err := row.Scan(
-		&i.ID,
-		&i.ProjectID,
-		&i.UnverifiedEmail,
-		&i.VerifiedEmail,
-		&i.CreateTime,
-		&i.ExpireTime,
-		&i.Token,
-		&i.TokenSha256,
-		&i.Revoked,
+		&i.Email,
 	)
 	return i, err
 }
