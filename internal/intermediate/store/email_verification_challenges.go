@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/sha256"
 	"errors"
-	"log/slog"
 	"math/rand/v2"
 	"strconv"
 	"time"
@@ -71,8 +70,6 @@ func (s *Store) CompleteEmailVerificationChallenge(ctx context.Context, challeng
 		return nil, err
 	}
 
-	slog.Info("CompleteEmailVerificationChallenge", "intermediateSession", intermediateSessionID)
-
 	now := time.Now()
 	secretTokenSha256 := sha256.Sum256([]byte(challenge))
 
@@ -84,8 +81,6 @@ func (s *Store) CompleteEmailVerificationChallenge(ctx context.Context, challeng
 		MicrosoftUserID: intermediateSession.MicrosoftUserID,
 		ProjectID:       projectID,
 	}
-
-	slog.Info("CompleteEmailVerificationChallenge", "params", params)
 
 	evc, err := q.GetEmailVerificationChallenge(ctx, params)
 	if err != nil {
