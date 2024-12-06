@@ -7,6 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/openauth/openauth/internal/googleoauth"
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
 	"github.com/openauth/openauth/internal/pagetoken"
 	keyManagementService "github.com/openauth/openauth/internal/store/kms"
@@ -20,6 +21,9 @@ type Store struct {
 	pageEncoder                           pagetoken.Encoder
 	q                                     *queries.Queries
 	sessionSigningKeyKmsKeyID             string
+	googleOAuthClientSecretsKMSKeyID      string
+	microsoftOAuthClientSecretsKMSKeyID   string
+	googleOAuthClient                     *googleoauth.Client
 }
 
 type NewStoreParams struct {
@@ -29,6 +33,9 @@ type NewStoreParams struct {
 	KMS                                   *keyManagementService.KeyManagementService
 	PageEncoder                           pagetoken.Encoder
 	SessionSigningKeyKmsKeyID             string
+	GoogleOAuthClientSecretsKMSKeyID      string
+	MicrosoftOAuthClientSecretsKMSKeyID   string
+	GoogleOAuthClient                     *googleoauth.Client
 }
 
 func New(p NewStoreParams) *Store {
@@ -40,6 +47,9 @@ func New(p NewStoreParams) *Store {
 		pageEncoder:                           p.PageEncoder,
 		q:                                     queries.New(p.DB),
 		sessionSigningKeyKmsKeyID:             p.SessionSigningKeyKmsKeyID,
+		googleOAuthClient:                     p.GoogleOAuthClient,
+		googleOAuthClientSecretsKMSKeyID:      p.GoogleOAuthClientSecretsKMSKeyID,
+		microsoftOAuthClientSecretsKMSKeyID:   p.MicrosoftOAuthClientSecretsKMSKeyID,
 	}
 
 	return store

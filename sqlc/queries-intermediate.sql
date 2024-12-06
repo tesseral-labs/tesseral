@@ -149,3 +149,25 @@ WHERE
 RETURNING
     *;
 
+-- name: UpdateIntermediateSessionGoogleOAuthStateSHA256 :one
+UPDATE
+    intermediate_sessions
+SET
+    google_oauth_state_sha256 = $1
+WHERE
+    id = $2
+RETURNING
+    *;
+
+-- name: UpdateIntermediateSessionGoogleDetails :one
+UPDATE
+    intermediate_sessions
+SET
+    email = $1,
+    google_user_id = $2,
+    google_hosted_domain = $3
+WHERE
+    id = $4
+RETURNING
+    *;
+

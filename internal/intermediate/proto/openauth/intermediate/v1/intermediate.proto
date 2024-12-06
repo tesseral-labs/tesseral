@@ -15,6 +15,19 @@ service IntermediateService {
     };
   }
 
+  rpc GetGoogleOAuthRedirectURL(GetGoogleOAuthRedirectURLRequest) returns (GetGoogleOAuthRedirectURLResponse) {
+    option (google.api.http) = {
+      get: "/intermediate/v1/google-oauth-redirect-url"
+    };
+  }
+
+  rpc RedeemGoogleOAuthCode(RedeemGoogleOAuthCodeRequest) returns (RedeemGoogleOAuthCodeResponse) {
+    option (google.api.http) = {
+      post: "/intermediate/v1/redeem-google-oauth-code",
+      body: "*"
+    };
+  }
+
   // Creates a new organization.
   rpc CreateOrganization(CreateOrganizationRequest) returns (CreateOrganizationResponse) {
     option (google.api.http) = {
@@ -61,6 +74,21 @@ message WhoamiRequest {
 
 message WhoamiResponse {
   IntermediateSession intermediate_session = 1;
+}
+
+message GetGoogleOAuthRedirectURLRequest {
+}
+
+message GetGoogleOAuthRedirectURLResponse {
+  string url = 1;
+}
+
+message RedeemGoogleOAuthCodeRequest {
+  string code = 1;
+  string state = 2;
+}
+
+message RedeemGoogleOAuthCodeResponse {
 }
 
 message IntermediateSessionClaims {

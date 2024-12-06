@@ -138,6 +138,148 @@ export class WhoamiResponse extends Message<WhoamiResponse> {
 }
 
 /**
+ * @generated from message openauth.intermediate.v1.GetGoogleOAuthRedirectURLRequest
+ */
+export class GetGoogleOAuthRedirectURLRequest extends Message<GetGoogleOAuthRedirectURLRequest> {
+  constructor(data?: PartialMessage<GetGoogleOAuthRedirectURLRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "openauth.intermediate.v1.GetGoogleOAuthRedirectURLRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetGoogleOAuthRedirectURLRequest {
+    return new GetGoogleOAuthRedirectURLRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetGoogleOAuthRedirectURLRequest {
+    return new GetGoogleOAuthRedirectURLRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetGoogleOAuthRedirectURLRequest {
+    return new GetGoogleOAuthRedirectURLRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: GetGoogleOAuthRedirectURLRequest | PlainMessage<GetGoogleOAuthRedirectURLRequest> | undefined, b: GetGoogleOAuthRedirectURLRequest | PlainMessage<GetGoogleOAuthRedirectURLRequest> | undefined): boolean {
+    return proto3.util.equals(GetGoogleOAuthRedirectURLRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message openauth.intermediate.v1.GetGoogleOAuthRedirectURLResponse
+ */
+export class GetGoogleOAuthRedirectURLResponse extends Message<GetGoogleOAuthRedirectURLResponse> {
+  /**
+   * @generated from field: string url = 1;
+   */
+  url = "";
+
+  constructor(data?: PartialMessage<GetGoogleOAuthRedirectURLResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "openauth.intermediate.v1.GetGoogleOAuthRedirectURLResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "url", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetGoogleOAuthRedirectURLResponse {
+    return new GetGoogleOAuthRedirectURLResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetGoogleOAuthRedirectURLResponse {
+    return new GetGoogleOAuthRedirectURLResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetGoogleOAuthRedirectURLResponse {
+    return new GetGoogleOAuthRedirectURLResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: GetGoogleOAuthRedirectURLResponse | PlainMessage<GetGoogleOAuthRedirectURLResponse> | undefined, b: GetGoogleOAuthRedirectURLResponse | PlainMessage<GetGoogleOAuthRedirectURLResponse> | undefined): boolean {
+    return proto3.util.equals(GetGoogleOAuthRedirectURLResponse, a, b);
+  }
+}
+
+/**
+ * @generated from message openauth.intermediate.v1.RedeemGoogleOAuthCodeRequest
+ */
+export class RedeemGoogleOAuthCodeRequest extends Message<RedeemGoogleOAuthCodeRequest> {
+  /**
+   * @generated from field: string code = 1;
+   */
+  code = "";
+
+  /**
+   * @generated from field: string state = 2;
+   */
+  state = "";
+
+  constructor(data?: PartialMessage<RedeemGoogleOAuthCodeRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "openauth.intermediate.v1.RedeemGoogleOAuthCodeRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "code", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "state", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): RedeemGoogleOAuthCodeRequest {
+    return new RedeemGoogleOAuthCodeRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): RedeemGoogleOAuthCodeRequest {
+    return new RedeemGoogleOAuthCodeRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): RedeemGoogleOAuthCodeRequest {
+    return new RedeemGoogleOAuthCodeRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: RedeemGoogleOAuthCodeRequest | PlainMessage<RedeemGoogleOAuthCodeRequest> | undefined, b: RedeemGoogleOAuthCodeRequest | PlainMessage<RedeemGoogleOAuthCodeRequest> | undefined): boolean {
+    return proto3.util.equals(RedeemGoogleOAuthCodeRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message openauth.intermediate.v1.RedeemGoogleOAuthCodeResponse
+ */
+export class RedeemGoogleOAuthCodeResponse extends Message<RedeemGoogleOAuthCodeResponse> {
+  constructor(data?: PartialMessage<RedeemGoogleOAuthCodeResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "openauth.intermediate.v1.RedeemGoogleOAuthCodeResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): RedeemGoogleOAuthCodeResponse {
+    return new RedeemGoogleOAuthCodeResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): RedeemGoogleOAuthCodeResponse {
+    return new RedeemGoogleOAuthCodeResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): RedeemGoogleOAuthCodeResponse {
+    return new RedeemGoogleOAuthCodeResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: RedeemGoogleOAuthCodeResponse | PlainMessage<RedeemGoogleOAuthCodeResponse> | undefined, b: RedeemGoogleOAuthCodeResponse | PlainMessage<RedeemGoogleOAuthCodeResponse> | undefined): boolean {
+    return proto3.util.equals(RedeemGoogleOAuthCodeResponse, a, b);
+  }
+}
+
+/**
  * @generated from message openauth.intermediate.v1.IntermediateSessionClaims
  */
 export class IntermediateSessionClaims extends Message<IntermediateSessionClaims> {

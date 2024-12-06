@@ -20,7 +20,7 @@ type GetAuthorizeURLRequest struct {
 	State               string
 }
 
-func (c *Client) GetAuthorizeURL(req *GetAuthorizeURLRequest) string {
+func GetAuthorizeURL(req *GetAuthorizeURLRequest) string {
 	u, err := url.Parse("https://accounts.google.com/o/oauth2/v2/auth")
 	if err != nil {
 		panic(fmt.Errorf("parse authorize base url: %w", err))

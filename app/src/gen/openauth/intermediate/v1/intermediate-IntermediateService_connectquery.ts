@@ -3,22 +3,63 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { MethodKind } from "@bufbuild/protobuf";
-import { CreateOrganizationRequest, CreateOrganizationResponse, ListOrganizationsRequest, ListOrganizationsResponse, SignInWithEmailRequest, SignInWithEmailResponse, VerifyEmailChallengeRequest, VerifyEmailChallengeResponse, WhoamiRequest, WhoamiResponse } from "./intermediate_pb.js";
+import { MethodKind } from '@bufbuild/protobuf'
+import {
+  CreateOrganizationRequest,
+  CreateOrganizationResponse,
+  GetGoogleOAuthRedirectURLRequest,
+  GetGoogleOAuthRedirectURLResponse,
+  ListOrganizationsRequest,
+  ListOrganizationsResponse,
+  RedeemGoogleOAuthCodeRequest,
+  RedeemGoogleOAuthCodeResponse,
+  SignInWithEmailRequest,
+  SignInWithEmailResponse,
+  WhoamiRequest,
+  WhoamiResponse,
+} from './intermediate_pb.js'
 
 /**
  * @generated from rpc openauth.intermediate.v1.IntermediateService.Whoami
  */
 export const whoami = {
-  localName: "whoami",
-  name: "Whoami",
+  localName: 'whoami',
+  name: 'Whoami',
   kind: MethodKind.Unary,
   I: WhoamiRequest,
   O: WhoamiResponse,
   service: {
-    typeName: "openauth.intermediate.v1.IntermediateService"
-  }
-} as const;
+    typeName: 'openauth.intermediate.v1.IntermediateService',
+  },
+} as const
+
+/**
+ * @generated from rpc openauth.intermediate.v1.IntermediateService.GetGoogleOAuthRedirectURL
+ */
+export const getGoogleOAuthRedirectURL = {
+  localName: 'getGoogleOAuthRedirectURL',
+  name: 'GetGoogleOAuthRedirectURL',
+  kind: MethodKind.Unary,
+  I: GetGoogleOAuthRedirectURLRequest,
+  O: GetGoogleOAuthRedirectURLResponse,
+  service: {
+    typeName: 'openauth.intermediate.v1.IntermediateService',
+  },
+} as const
+
+/**
+ * @generated from rpc openauth.intermediate.v1.IntermediateService.RedeemGoogleOAuthCode
+ */
+export const redeemGoogleOAuthCode = {
+  localName: 'redeemGoogleOAuthCode',
+  name: 'RedeemGoogleOAuthCode',
+  kind: MethodKind.Unary,
+  I: RedeemGoogleOAuthCodeRequest,
+  O: RedeemGoogleOAuthCodeResponse,
+  service: {
+    typeName: 'openauth.intermediate.v1.IntermediateService',
+  },
+} as const
 
 /**
  * Creates a new organization.
@@ -26,15 +67,15 @@ export const whoami = {
  * @generated from rpc openauth.intermediate.v1.IntermediateService.CreateOrganization
  */
 export const createOrganization = {
-  localName: "createOrganization",
-  name: "CreateOrganization",
+  localName: 'createOrganization',
+  name: 'CreateOrganization',
   kind: MethodKind.Unary,
   I: CreateOrganizationRequest,
   O: CreateOrganizationResponse,
   service: {
-    typeName: "openauth.intermediate.v1.IntermediateService"
-  }
-} as const;
+    typeName: 'openauth.intermediate.v1.IntermediateService',
+  },
+} as const
 
 /**
  * Gets a list of organizations.
@@ -42,15 +83,15 @@ export const createOrganization = {
  * @generated from rpc openauth.intermediate.v1.IntermediateService.ListOrganizations
  */
 export const listOrganizations = {
-  localName: "listOrganizations",
-  name: "ListOrganizations",
+  localName: 'listOrganizations',
+  name: 'ListOrganizations',
   kind: MethodKind.Unary,
   I: ListOrganizationsRequest,
   O: ListOrganizationsResponse,
   service: {
-    typeName: "openauth.intermediate.v1.IntermediateService"
-  }
-} as const;
+    typeName: 'openauth.intermediate.v1.IntermediateService',
+  },
+} as const
 
 /**
  * Creates a new intermediate session or session and cookies the requester.
@@ -58,15 +99,15 @@ export const listOrganizations = {
  * @generated from rpc openauth.intermediate.v1.IntermediateService.SignInWithEmail
  */
 export const signInWithEmail = {
-  localName: "signInWithEmail",
-  name: "SignInWithEmail",
+  localName: 'signInWithEmail',
+  name: 'SignInWithEmail',
   kind: MethodKind.Unary,
   I: SignInWithEmailRequest,
   O: SignInWithEmailResponse,
   service: {
-    typeName: "openauth.intermediate.v1.IntermediateService"
-  }
-} as const;
+    typeName: 'openauth.intermediate.v1.IntermediateService',
+  },
+} as const
 
 /**
  * Submits a challenge for verification of email address.
@@ -74,12 +115,12 @@ export const signInWithEmail = {
  * @generated from rpc openauth.intermediate.v1.IntermediateService.VerifyEmailChallenge
  */
 export const verifyEmailChallenge = {
-  localName: "verifyEmailChallenge",
-  name: "VerifyEmailChallenge",
+  localName: 'verifyEmailChallenge',
+  name: 'VerifyEmailChallenge',
   kind: MethodKind.Unary,
   I: VerifyEmailChallengeRequest,
   O: VerifyEmailChallengeResponse,
   service: {
-    typeName: "openauth.intermediate.v1.IntermediateService"
-  }
-} as const;
+    typeName: 'openauth.intermediate.v1.IntermediateService',
+  },
+} as const

@@ -3,236 +3,293 @@
 
 openapi: 3.0.3
 info:
-    title: IntermediateService API
-    version: 0.0.1
+  title: IntermediateService API
+  version: 0.0.1
 paths:
-    /intermediate/v1/email-signin:
-        post:
-            tags:
-                - IntermediateService
-            description: Creates a new intermediate session or session and cookies the requester.
-            operationId: IntermediateService_SignInWithEmail
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/SignInWithEmailRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/SignInWithEmailResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-    /intermediate/v1/organizations:
-        get:
-            tags:
-                - IntermediateService
-            description: Gets a list of organizations.
-            operationId: IntermediateService_ListOrganizations
-            parameters:
-                - name: projectId
-                  in: query
-                  description: The project ID to list intermediate organizations for.
-                  schema:
-                    type: string
-                - name: email
-                  in: query
-                  description: The email associated with the intermediate session.
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ListOrganizationsResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-        post:
-            tags:
-                - IntermediateService
-            description: Creates a new organization.
-            operationId: IntermediateService_CreateOrganization
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/CreateOrganizationRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/CreateOrganizationResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-    /intermediate/v1/verify-email-challenge:
-        post:
-            tags:
-                - IntermediateService
-            description: Submits a challenge for verification of email address.
-            operationId: IntermediateService_VerifyEmailChallenge
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/VerifyEmailChallengeRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/VerifyEmailChallengeResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-    /intermediate/v1/whoami:
-        get:
-            tags:
-                - IntermediateService
-            operationId: IntermediateService_Whoami
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/WhoamiResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
+  /intermediate/v1/email-signin:
+    post:
+      tags:
+        - IntermediateService
+      description: Creates a new intermediate session or session and cookies the requester.
+      operationId: IntermediateService_SignInWithEmail
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignInWithEmailRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SignInWithEmailResponse"
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Status"
+  /intermediate/v1/google-oauth-redirect-url:
+    get:
+      tags:
+        - IntermediateService
+      operationId: IntermediateService_GetGoogleOAuthRedirectURL
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetGoogleOAuthRedirectURLResponse"
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Status"
+  /intermediate/v1/organizations:
+    get:
+      tags:
+        - IntermediateService
+      description: Gets a list of organizations.
+      operationId: IntermediateService_ListOrganizations
+      parameters:
+        - name: projectId
+          in: query
+          description: The project ID to list intermediate organizations for.
+          schema:
+            type: string
+        - name: email
+          in: query
+          description: The email associated with the intermediate session.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListOrganizationsResponse"
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Status"
+    post:
+      tags:
+        - IntermediateService
+      description: Creates a new organization.
+      operationId: IntermediateService_CreateOrganization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateOrganizationRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateOrganizationResponse"
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Status"
+  /intermediate/v1/redeem-google-oauth-code:
+    post:
+      tags:
+        - IntermediateService
+      operationId: IntermediateService_RedeemGoogleOAuthCode
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RedeemGoogleOAuthCodeRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RedeemGoogleOAuthCodeResponse"
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Status"
+  /intermediate/v1/verify-email-challenge:
+    post:
+      tags:
+        - IntermediateService
+      description: Submits a challenge for verification of email address.
+      operationId: IntermediateService_VerifyEmailChallenge
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerifyEmailChallengeRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VerifyEmailChallengeResponse"
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Status"
+  /intermediate/v1/whoami:
+    get:
+      tags:
+        - IntermediateService
+      operationId: IntermediateService_Whoami
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WhoamiResponse"
+        default:
+          description: Default error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Status"
 components:
-    schemas:
-        CreateOrganizationRequest:
-            type: object
-            properties:
-                projectId:
-                    type: string
-                    description: The project ID to create the organization for.
-                displayName:
-                    type: string
-                    description: The display name of the organization.
-        CreateOrganizationResponse:
-            type: object
-            properties:
-                organization:
-                    $ref: '#/components/schemas/Organization'
-        GoogleProtobufAny:
-            type: object
-            properties:
-                '@type':
-                    type: string
-                    description: The type of the serialized message.
-            additionalProperties: true
-            description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
-        IntermediateSession:
-            type: object
-            properties:
-                id:
-                    type: string
-                projectId:
-                    type: string
-                email:
-                    type: string
-                googleUserId:
-                    type: string
-                microsoftUserId:
-                    type: string
-        ListOrganizationsResponse:
-            type: object
-            properties:
-                organizations:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/Organization'
-                nextPageToken:
-                    type: string
-        Organization:
-            type: object
-            properties:
-                id:
-                    type: string
-                projectId:
-                    type: string
-                displayName:
-                    type: string
-                logInWithGoogleEnabled:
-                    type: boolean
-                logInWithMicrosoftEnabled:
-                    type: boolean
-                logInWithPasswordEnabled:
-                    type: boolean
-        SignInWithEmailRequest:
-            type: object
-            properties:
-                email:
-                    type: string
-                    description: The email address to sign in with.
-        SignInWithEmailResponse:
-            type: object
-            properties:
-                SessionToken:
-                    type: string
-                    description: The token for the intermediate session or session created by the SignInWithEmail request.
-        Status:
-            type: object
-            properties:
-                code:
-                    type: integer
-                    description: The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code].
-                    format: int32
-                message:
-                    type: string
-                    description: A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client.
-                details:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/GoogleProtobufAny'
-                    description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
-            description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
-        VerifyEmailChallengeRequest:
-            type: object
-            properties:
-                challenge:
-                    type: string
-                    description: The challenge to verify.
-        VerifyEmailChallengeResponse:
-            type: object
-            properties:
-                Success:
-                    type: boolean
-                    description: The token for the intermediate session or session created by the VerifyEmailChallenge request.
-        WhoamiResponse:
-            type: object
-            properties:
-                intermediateSession:
-                    $ref: '#/components/schemas/IntermediateSession'
+  schemas:
+    CreateOrganizationRequest:
+      type: object
+      properties:
+        projectId:
+          type: string
+          description: The project ID to create the organization for.
+        displayName:
+          type: string
+          description: The display name of the organization.
+    CreateOrganizationResponse:
+      type: object
+      properties:
+        organization:
+          $ref: "#/components/schemas/Organization"
+    GetGoogleOAuthRedirectURLResponse:
+      type: object
+      properties:
+        url:
+          type: string
+    GoogleProtobufAny:
+      type: object
+      properties:
+        "@type":
+          type: string
+          description: The type of the serialized message.
+      additionalProperties: true
+      description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+    IntermediateSession:
+      type: object
+      properties:
+        id:
+          type: string
+        projectId:
+          type: string
+        email:
+          type: string
+        googleUserId:
+          type: string
+        microsoftUserId:
+          type: string
+    ListOrganizationsResponse:
+      type: object
+      properties:
+        organizations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Organization"
+        nextPageToken:
+          type: string
+    Organization:
+      type: object
+      properties:
+        id:
+          type: string
+        projectId:
+          type: string
+        displayName:
+          type: string
+        logInWithGoogleEnabled:
+          type: boolean
+        logInWithMicrosoftEnabled:
+          type: boolean
+        logInWithPasswordEnabled:
+          type: boolean
+    RedeemGoogleOAuthCodeRequest:
+      type: object
+      properties:
+        code:
+          type: string
+        state:
+          type: string
+    RedeemGoogleOAuthCodeResponse:
+      type: object
+      properties: {}
+    SignInWithEmailRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          description: The email address to sign in with.
+    SignInWithEmailResponse:
+      type: object
+      properties:
+        SessionToken:
+          type: string
+          description: The token for the intermediate session or session created by the SignInWithEmail request.
+    Status:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code].
+          format: int32
+        message:
+          type: string
+          description: A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client.
+        details:
+          type: array
+          items:
+            $ref: "#/components/schemas/GoogleProtobufAny"
+          description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
+      description: "The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors)."
+    VerifyEmailChallengeRequest:
+      type: object
+      properties:
+        challenge:
+          type: string
+          description: The challenge to verify.
+    VerifyEmailChallengeResponse:
+      type: object
+      properties:
+        Success:
+          type: boolean
+          description: The token for the intermediate session or session created by the VerifyEmailChallenge request.
+    WhoamiResponse:
+      type: object
+      properties:
+        intermediateSession:
+          $ref: "#/components/schemas/IntermediateSession"
 tags:
-    - name: IntermediateService
+  - name: IntermediateService
