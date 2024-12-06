@@ -30,6 +30,7 @@ import (
 	oauthservice "github.com/openauth/openauth/internal/oauth/service"
 	oauthstore "github.com/openauth/openauth/internal/oauth/store"
 	"github.com/openauth/openauth/internal/pagetoken"
+	"github.com/openauth/openauth/internal/projectid"
 	"github.com/openauth/openauth/internal/secretload"
 	"github.com/openauth/openauth/internal/slogcorrelation"
 	"github.com/openauth/openauth/internal/store/idformat"
@@ -101,7 +102,9 @@ func main() {
 			Store: backendStore,
 		},
 		connect.WithInterceptors(
-			// We may want to use separate auth interceptors for backend and frontend services
+			// Project ID needs to be set on the context before auth interceptors,
+			// since authentication requires the project ID
+			projectid.NewInterceptor(),
 			backendinterceptor.New(backendStore, config.DogfoodProjectID),
 		),
 	)
@@ -125,7 +128,9 @@ func main() {
 			Store: frontendStore,
 		},
 		connect.WithInterceptors(
-			// We may want to use separate auth interceptors for backend and frontend services
+			// Project ID needs to be set on the context before auth interceptors,
+			// since authentication requires the project ID
+			projectid.NewInterceptor(),
 			frontendinterceptor.New(frontendStore),
 		),
 	)
@@ -149,6 +154,9 @@ func main() {
 			Store: intermediateStore,
 		},
 		connect.WithInterceptors(
+			// Project ID needs to be set on the context before auth interceptors,
+			// since authentication requires the project ID
+			projectid.NewInterceptor(),
 			intermediateinterceptor.New(intermediateStore),
 		),
 	)

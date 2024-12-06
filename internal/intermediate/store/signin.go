@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/openauth/openauth/internal/intermediate/authn"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
+	"github.com/openauth/openauth/internal/projectid"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
@@ -18,7 +18,7 @@ func (s *Store) SignInWithEmail(
 	ctx *context.Context,
 	req *intermediatev1.SignInWithEmailRequest,
 ) (*intermediatev1.SignInWithEmailResponse, error) {
-	projectID := authn.ProjectID(*ctx)
+	projectID := projectid.ProjectID(*ctx)
 
 	shouldVerify, err := s.shouldVerifyEmail(*ctx, projectID, req.Email, "", "")
 	if err != nil {
