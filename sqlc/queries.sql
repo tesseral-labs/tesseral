@@ -42,8 +42,7 @@ SELECT
 FROM
     organizations
 WHERE
-    id = $1
-    AND project_id = $2;
+    id = $1;
 
 -- name: GetProjectByID :one
 SELECT
@@ -166,4 +165,3 @@ FROM
 WHERE
     revoked = FALSE
     AND refresh_token_sha256 = $1;
-

@@ -4,5 +4,5 @@ create table project_api_keys
     project_id          uuid                     not null references projects (id),
     create_time         timestamp with time zone not null,
     revoked             boolean                  not null,
-    secret_token_sha25x6 bytea                    not null
+    secret_token_sha256 bytea                    not null
 );
