@@ -20,6 +20,8 @@ type Store struct {
 	pageEncoder                           pagetoken.Encoder
 	q                                     *queries.Queries
 	sessionSigningKeyKmsKeyID             string
+	googleOAuthClientSecretsKMSKeyID      string
+	microsoftOAuthClientSecretsKMSKeyID   string
 }
 
 type NewStoreParams struct {
@@ -29,6 +31,8 @@ type NewStoreParams struct {
 	KMS                                   *kms.Client
 	PageEncoder                           pagetoken.Encoder
 	SessionSigningKeyKmsKeyID             string
+	GoogleOAuthClientSecretsKMSKeyID      string
+	MicrosoftOAuthClientSecretsKMSKeyID   string
 }
 
 func New(p NewStoreParams) *Store {
@@ -36,9 +40,12 @@ func New(p NewStoreParams) *Store {
 		db:                                    p.DB,
 		dogfoodProjectID:                      p.DogfoodProjectID,
 		intermediateSessionSigningKeyKMSKeyID: p.IntermediateSessionSigningKeyKMSKeyID,
+		kms:                                   p.KMS,
 		pageEncoder:                           p.PageEncoder,
 		q:                                     queries.New(p.DB),
 		sessionSigningKeyKmsKeyID:             p.SessionSigningKeyKmsKeyID,
+		googleOAuthClientSecretsKMSKeyID:      p.GoogleOAuthClientSecretsKMSKeyID,
+		microsoftOAuthClientSecretsKMSKeyID:   p.MicrosoftOAuthClientSecretsKMSKeyID,
 	}
 
 	return store

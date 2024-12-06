@@ -49,13 +49,15 @@ func main() {
 	loadenv.LoadEnv()
 
 	config := struct {
-		DB                          string `conf:"db"`
-		DogfoodProjectID            string `conf:"dogfood_project_id"`
-		IntermediateSessionKMSKeyID string `conf:"intermediate_session_kms_key_id"`
-		KMSEndpoint                 string `conf:"kms_endpoint_resolver_url,noredact"`
-		PageEncodingValue           string `conf:"page-encoding-value"`
-		ServeAddr                   string `conf:"serve_addr,noredact"`
-		SessionKMSKeyID             string `conf:"session_kms_key_id"`
+		DB                                  string `conf:"db"`
+		DogfoodProjectID                    string `conf:"dogfood_project_id"`
+		IntermediateSessionKMSKeyID         string `conf:"intermediate_session_kms_key_id"`
+		KMSEndpoint                         string `conf:"kms_endpoint_resolver_url,noredact"`
+		PageEncodingValue                   string `conf:"page-encoding-value"`
+		ServeAddr                           string `conf:"serve_addr,noredact"`
+		SessionKMSKeyID                     string `conf:"session_kms_key_id"`
+		GoogleOAuthClientSecretsKMSKeyID    string `conf:"google_oauth_client_secrets_kms_key_id,noredact"`
+		MicrosoftOAuthClientSecretsKMSKeyID string `conf:"microsoft_oauth_client_secrets_kms_key_id,noredact"`
 	}{
 		PageEncodingValue: "0000000000000000000000000000000000000000000000000000000000000000",
 	}
@@ -86,7 +88,11 @@ func main() {
 		panic(fmt.Errorf("load aws config: %w", err))
 	}
 
-	kmsClient := kms.NewFromConfig(awsConfig)
+	kmsClient := kms.NewFromConfig(awsConfig, func(opts *kms.Options) {
+		if config.KMSEndpoint != "" {
+			opts.BaseEndpoint = &config.KMSEndpoint
+		}
+	})
 
 	kms_ := keyManagementService.NewKeyManagementServiceFromConfig(&awsConfig, &config.KMSEndpoint)
 
@@ -98,6 +104,8 @@ func main() {
 		KMS:                                   kmsClient,
 		PageEncoder:                           pagetoken.Encoder{Secret: pageEncodingValue},
 		SessionSigningKeyKmsKeyID:             config.SessionKMSKeyID,
+		GoogleOAuthClientSecretsKMSKeyID:      config.GoogleOAuthClientSecretsKMSKeyID,
+		MicrosoftOAuthClientSecretsKMSKeyID:   config.MicrosoftOAuthClientSecretsKMSKeyID,
 	})
 	backendConnectPath, backendConnectHandler := backendv1connect.NewBackendServiceHandler(
 		&backendservice.Service{

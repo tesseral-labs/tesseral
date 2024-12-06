@@ -68,9 +68,9 @@ type CreateProjectParams struct {
 	LogInWithGoogleEnabled               bool
 	LogInWithMicrosoftEnabled            bool
 	GoogleOauthClientID                  *string
-	GoogleOauthClientSecretCiphertext    *string
+	GoogleOauthClientSecretCiphertext    []byte
 	MicrosoftOauthClientID               *string
-	MicrosoftOauthClientSecretCiphertext *string
+	MicrosoftOauthClientSecretCiphertext []byte
 }
 
 func (q *Queries) CreateProject(ctx context.Context, arg CreateProjectParams) (Project, error) {
@@ -374,9 +374,9 @@ type UpdateProjectParams struct {
 	LogInWithGoogleEnabled               bool
 	LogInWithMicrosoftEnabled            bool
 	GoogleOauthClientID                  *string
-	GoogleOauthClientSecretCiphertext    *string
+	GoogleOauthClientSecretCiphertext    []byte
 	MicrosoftOauthClientID               *string
-	MicrosoftOauthClientSecretCiphertext *string
+	MicrosoftOauthClientSecretCiphertext []byte
 }
 
 func (q *Queries) UpdateProject(ctx context.Context, arg UpdateProjectParams) (Project, error) {

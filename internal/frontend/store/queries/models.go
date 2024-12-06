@@ -106,8 +106,8 @@ type Project struct {
 	LogInWithMicrosoftEnabled            bool
 	GoogleOauthClientID                  *string
 	MicrosoftOauthClientID               *string
-	GoogleOauthClientSecretCiphertext    *string
-	MicrosoftOauthClientSecretCiphertext *string
+	GoogleOauthClientSecretCiphertext    []byte
+	MicrosoftOauthClientSecretCiphertext []byte
 }
 
 type ProjectApiKey struct {
