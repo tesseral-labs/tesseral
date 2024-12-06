@@ -23,4 +23,4 @@ jobs:
           npm install
           make proto
       - name: check if index is dirty
-        run: git diff-index --quiet
+        run: git diff-index --quiet HEAD
