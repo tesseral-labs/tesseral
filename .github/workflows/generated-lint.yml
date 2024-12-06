@@ -19,4 +19,6 @@ jobs:
         with:
           node-version-file: .nvmrc
       - name: make proto
-        run: make proto
+        run: |
+          npm install
+          make proto
