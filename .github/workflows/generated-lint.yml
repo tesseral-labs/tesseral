@@ -24,3 +24,16 @@ jobs:
           make proto
       - name: check if index is dirty
         run: git diff --exit-code
+  queries:
+    name: make queries
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: sqlc-dev/setup-sqlc@v4
+        with:
+          sqlc-version: '1.27.0'
+      - name: sqlc
+        run: |
+          sqlc -f ./sqlc/sqlc.yaml generate
+      - name: check if index is dirty
+        run: git diff --exit-code
