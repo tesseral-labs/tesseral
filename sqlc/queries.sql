@@ -11,10 +11,11 @@ RETURNING
     *;
 
 -- name: CreateProject :one
--- INSERT INTO projects (id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret)
---     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
--- RETURNING
---     *;
+INSERT INTO projects (id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled)
+    VALUES ($1, $2, $3, $4, $5)
+RETURNING
+    *;
+
 -- name: CreateSessionSigningKey :one
 INSERT INTO session_signing_keys (id, project_id, public_key, private_key_cipher_text, expire_time)
     VALUES ($1, $2, $3, $4, $5)

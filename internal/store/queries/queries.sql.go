@@ -105,43 +105,39 @@ func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganization
 }
 
 const createProject = `-- name: CreateProject :one
-INSERT INTO session_signing_keys (id, project_id, public_key, private_key_cipher_text, expire_time)
+INSERT INTO projects (id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled)
     VALUES ($1, $2, $3, $4, $5)
 RETURNING
-    id, project_id, public_key, private_key_cipher_text, create_time, expire_time
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext
 `
 
 type CreateProjectParams struct {
-	ID                   uuid.UUID
-	ProjectID            uuid.UUID
-	PublicKey            []byte
-	PrivateKeyCipherText []byte
-	ExpireTime           *time.Time
+	ID                        uuid.UUID
+	OrganizationID            *uuid.UUID
+	LogInWithPasswordEnabled  bool
+	LogInWithGoogleEnabled    bool
+	LogInWithMicrosoftEnabled bool
 }
 
-// INSERT INTO projects (id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret)
-//
-//	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-//
-// RETURNING
-//
-//	*;
-func (q *Queries) CreateProject(ctx context.Context, arg CreateProjectParams) (SessionSigningKey, error) {
+func (q *Queries) CreateProject(ctx context.Context, arg CreateProjectParams) (Project, error) {
 	row := q.db.QueryRow(ctx, createProject,
 		arg.ID,
-		arg.ProjectID,
-		arg.PublicKey,
-		arg.PrivateKeyCipherText,
-		arg.ExpireTime,
+		arg.OrganizationID,
+		arg.LogInWithPasswordEnabled,
+		arg.LogInWithGoogleEnabled,
+		arg.LogInWithMicrosoftEnabled,
 	)
-	var i SessionSigningKey
+	var i Project
 	err := row.Scan(
 		&i.ID,
-		&i.ProjectID,
-		&i.PublicKey,
-		&i.PrivateKeyCipherText,
-		&i.CreateTime,
-		&i.ExpireTime,
+		&i.OrganizationID,
+		&i.LogInWithPasswordEnabled,
+		&i.LogInWithGoogleEnabled,
+		&i.LogInWithMicrosoftEnabled,
+		&i.GoogleOauthClientID,
+		&i.MicrosoftOauthClientID,
+		&i.GoogleOauthClientSecretCiphertext,
+		&i.MicrosoftOauthClientSecretCiphertext,
 	)
 	return i, err
 }
@@ -176,6 +172,41 @@ func (q *Queries) CreateProjectAPIKey(ctx context.Context, arg CreateProjectAPIK
 		&i.CreateTime,
 		&i.Revoked,
 		&i.SecretTokenSha256,
+	)
+	return i, err
+}
+
+const createSessionSigningKey = `-- name: CreateSessionSigningKey :one
+INSERT INTO session_signing_keys (id, project_id, public_key, private_key_cipher_text, expire_time)
+    VALUES ($1, $2, $3, $4, $5)
+RETURNING
+    id, project_id, public_key, private_key_cipher_text, create_time, expire_time
+`
+
+type CreateSessionSigningKeyParams struct {
+	ID                   uuid.UUID
+	ProjectID            uuid.UUID
+	PublicKey            []byte
+	PrivateKeyCipherText []byte
+	ExpireTime           *time.Time
+}
+
+func (q *Queries) CreateSessionSigningKey(ctx context.Context, arg CreateSessionSigningKeyParams) (SessionSigningKey, error) {
+	row := q.db.QueryRow(ctx, createSessionSigningKey,
+		arg.ID,
+		arg.ProjectID,
+		arg.PublicKey,
+		arg.PrivateKeyCipherText,
+		arg.ExpireTime,
+	)
+	var i SessionSigningKey
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.PublicKey,
+		&i.PrivateKeyCipherText,
+		&i.CreateTime,
+		&i.ExpireTime,
 	)
 	return i, err
 }
