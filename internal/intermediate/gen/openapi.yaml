@@ -31,6 +31,24 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /intermediate/v1/google-oauth-redirect-url:
+        get:
+            tags:
+                - IntermediateService
+            operationId: IntermediateService_GetGoogleOAuthRedirectURL
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetGoogleOAuthRedirectURLResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /intermediate/v1/organizations:
         get:
             tags:
@@ -85,6 +103,30 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /intermediate/v1/redeem-google-oauth-code:
+        post:
+            tags:
+                - IntermediateService
+            operationId: IntermediateService_RedeemGoogleOAuthCode
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/RedeemGoogleOAuthCodeRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/RedeemGoogleOAuthCodeResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /intermediate/v1/whoami:
         get:
             tags:
@@ -119,6 +161,11 @@ components:
             properties:
                 organization:
                     $ref: '#/components/schemas/Organization'
+        GetGoogleOAuthRedirectURLResponse:
+            type: object
+            properties:
+                url:
+                    type: string
         GoogleProtobufAny:
             type: object
             properties:
@@ -158,12 +205,19 @@ components:
                     type: boolean
                 logInWithPasswordEnabled:
                     type: boolean
+        RedeemGoogleOAuthCodeRequest:
+            type: object
+            properties:
+                code:
+                    type: string
+                state:
+                    type: string
+        RedeemGoogleOAuthCodeResponse:
+            type: object
+            properties: {}
         SignInWithEmailRequest:
             type: object
             properties:
-                projectId:
-                    type: string
-                    description: The Project ID to scope the sign in to.
                 email:
                     type: string
                     description: The email address to sign in with.

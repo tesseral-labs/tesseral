@@ -58,7 +58,7 @@ const createIntermediateSession = `-- name: CreateIntermediateSession :one
 INSERT INTO intermediate_sessions (id, project_id, expire_time, email, token_sha256)
     VALUES ($1, $2, $3, $4, $5)
 RETURNING
-    id, project_id, create_time, expire_time, token_sha256, revoked, email
+    id, project_id, create_time, expire_time, token_sha256, revoked, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id
 `
 
 type CreateIntermediateSessionParams struct {
@@ -86,6 +86,12 @@ func (q *Queries) CreateIntermediateSession(ctx context.Context, arg CreateInter
 		&i.TokenSha256,
 		&i.Revoked,
 		&i.Email,
+		&i.GoogleOauthStateSha256,
+		&i.MicrosoftOauthStateSha256,
+		&i.GoogleHostedDomain,
+		&i.GoogleUserID,
+		&i.MicrosoftTenantID,
+		&i.MicrosoftUserID,
 	)
 	return i, err
 }
@@ -253,7 +259,7 @@ func (q *Queries) GetEmailVerificationChallenge(ctx context.Context, arg GetEmai
 
 const getIntermediateSessionByID = `-- name: GetIntermediateSessionByID :one
 SELECT
-    id, project_id, create_time, expire_time, token_sha256, revoked, email
+    id, project_id, create_time, expire_time, token_sha256, revoked, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id
 FROM
     intermediate_sessions
 WHERE
@@ -271,13 +277,19 @@ func (q *Queries) GetIntermediateSessionByID(ctx context.Context, id uuid.UUID) 
 		&i.TokenSha256,
 		&i.Revoked,
 		&i.Email,
+		&i.GoogleOauthStateSha256,
+		&i.MicrosoftOauthStateSha256,
+		&i.GoogleHostedDomain,
+		&i.GoogleUserID,
+		&i.MicrosoftTenantID,
+		&i.MicrosoftUserID,
 	)
 	return i, err
 }
 
 const getIntermediateSessionByTokenSHA256 = `-- name: GetIntermediateSessionByTokenSHA256 :one
 SELECT
-    id, project_id, create_time, expire_time, token_sha256, revoked, email
+    id, project_id, create_time, expire_time, token_sha256, revoked, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id
 FROM
     intermediate_sessions
 WHERE
@@ -295,6 +307,12 @@ func (q *Queries) GetIntermediateSessionByTokenSHA256(ctx context.Context, token
 		&i.TokenSha256,
 		&i.Revoked,
 		&i.Email,
+		&i.GoogleOauthStateSha256,
+		&i.MicrosoftOauthStateSha256,
+		&i.GoogleHostedDomain,
+		&i.GoogleUserID,
+		&i.MicrosoftTenantID,
+		&i.MicrosoftUserID,
 	)
 	return i, err
 }
@@ -559,7 +577,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, project_id, create_time, expire_time, token_sha256, revoked, email
+    id, project_id, create_time, expire_time, token_sha256, revoked, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id
 `
 
 func (q *Queries) RevokeIntermediateSession(ctx context.Context, id uuid.UUID) (IntermediateSession, error) {
@@ -573,6 +591,95 @@ func (q *Queries) RevokeIntermediateSession(ctx context.Context, id uuid.UUID) (
 		&i.TokenSha256,
 		&i.Revoked,
 		&i.Email,
+		&i.GoogleOauthStateSha256,
+		&i.MicrosoftOauthStateSha256,
+		&i.GoogleHostedDomain,
+		&i.GoogleUserID,
+		&i.MicrosoftTenantID,
+		&i.MicrosoftUserID,
+	)
+	return i, err
+}
+
+const updateIntermediateSessionGoogleDetails = `-- name: UpdateIntermediateSessionGoogleDetails :one
+UPDATE
+    intermediate_sessions
+SET
+    email = $1,
+    google_user_id = $2,
+    google_hosted_domain = $3
+WHERE
+    id = $4
+RETURNING
+    id, project_id, create_time, expire_time, token_sha256, revoked, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id
+`
+
+type UpdateIntermediateSessionGoogleDetailsParams struct {
+	Email              *string
+	GoogleUserID       *string
+	GoogleHostedDomain *string
+	ID                 uuid.UUID
+}
+
+func (q *Queries) UpdateIntermediateSessionGoogleDetails(ctx context.Context, arg UpdateIntermediateSessionGoogleDetailsParams) (IntermediateSession, error) {
+	row := q.db.QueryRow(ctx, updateIntermediateSessionGoogleDetails,
+		arg.Email,
+		arg.GoogleUserID,
+		arg.GoogleHostedDomain,
+		arg.ID,
+	)
+	var i IntermediateSession
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.CreateTime,
+		&i.ExpireTime,
+		&i.TokenSha256,
+		&i.Revoked,
+		&i.Email,
+		&i.GoogleOauthStateSha256,
+		&i.MicrosoftOauthStateSha256,
+		&i.GoogleHostedDomain,
+		&i.GoogleUserID,
+		&i.MicrosoftTenantID,
+		&i.MicrosoftUserID,
+	)
+	return i, err
+}
+
+const updateIntermediateSessionGoogleOAuthStateSHA256 = `-- name: UpdateIntermediateSessionGoogleOAuthStateSHA256 :one
+UPDATE
+    intermediate_sessions
+SET
+    google_oauth_state_sha256 = $1
+WHERE
+    id = $2
+RETURNING
+    id, project_id, create_time, expire_time, token_sha256, revoked, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id
+`
+
+type UpdateIntermediateSessionGoogleOAuthStateSHA256Params struct {
+	GoogleOauthStateSha256 []byte
+	ID                     uuid.UUID
+}
+
+func (q *Queries) UpdateIntermediateSessionGoogleOAuthStateSHA256(ctx context.Context, arg UpdateIntermediateSessionGoogleOAuthStateSHA256Params) (IntermediateSession, error) {
+	row := q.db.QueryRow(ctx, updateIntermediateSessionGoogleOAuthStateSHA256, arg.GoogleOauthStateSha256, arg.ID)
+	var i IntermediateSession
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.CreateTime,
+		&i.ExpireTime,
+		&i.TokenSha256,
+		&i.Revoked,
+		&i.Email,
+		&i.GoogleOauthStateSha256,
+		&i.MicrosoftOauthStateSha256,
+		&i.GoogleHostedDomain,
+		&i.GoogleUserID,
+		&i.MicrosoftTenantID,
+		&i.MicrosoftUserID,
 	)
 	return i, err
 }

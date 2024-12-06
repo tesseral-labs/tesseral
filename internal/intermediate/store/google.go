@@ -1,0 +1,137 @@
+package store
+
+import (
+	"bytes"
+	"context"
+	"crypto/sha256"
+	"errors"
+	"fmt"
+
+	"connectrpc.com/connect"
+	"github.com/aws/aws-sdk-go-v2/service/kms"
+	"github.com/aws/aws-sdk-go-v2/service/kms/types"
+	"github.com/google/uuid"
+	"github.com/openauth/openauth/internal/googleoauth"
+	"github.com/openauth/openauth/internal/intermediate/authn"
+	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
+	"github.com/openauth/openauth/internal/intermediate/store/queries"
+)
+
+func (s *Store) GetGoogleOAuthRedirectURL(ctx context.Context, req *intermediatev1.GetGoogleOAuthRedirectURLRequest) (*intermediatev1.GetGoogleOAuthRedirectURLResponse, error) {
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get project by id: %v", err)
+	}
+
+	if qProject.GoogleOauthClientID == nil {
+		return nil, connect.NewError(connect.CodeFailedPrecondition, errors.New("google oauth not configured"))
+	}
+
+	state := uuid.NewString()
+	stateSHA := sha256.Sum256([]byte(state))
+	if _, err := q.UpdateIntermediateSessionGoogleOAuthStateSHA256(ctx, queries.UpdateIntermediateSessionGoogleOAuthStateSHA256Params{
+		ID:                     authn.IntermediateSessionID(ctx),
+		GoogleOauthStateSha256: stateSHA[:],
+	}); err != nil {
+		return nil, fmt.Errorf("update intermediate session google oauth state: %v", err)
+	}
+
+	url := googleoauth.GetAuthorizeURL(&googleoauth.GetAuthorizeURLRequest{
+		GoogleOAuthClientID: *qProject.GoogleOauthClientID,
+		RedirectURI:         "http://localhost:3000/google-oauth-callback", // todo
+		State:               state,
+	})
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %v", err)
+	}
+
+	return &intermediatev1.GetGoogleOAuthRedirectURLResponse{Url: url}, nil
+}
+
+func (s *Store) RedeemGoogleOAuthCode(ctx context.Context, req *intermediatev1.RedeemGoogleOAuthCodeRequest) (*intermediatev1.RedeemGoogleOAuthCodeResponse, error) {
+	qProject, qIntermediateSession, err := s.getProjectAndIntermediateSession(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("get project and intermediate session: %v", err)
+	}
+
+	if qProject.GoogleOauthClientID == nil || qProject.GoogleOauthClientSecretCiphertext == nil {
+		return nil, connect.NewError(connect.CodeFailedPrecondition, errors.New("google oauth not configured"))
+	}
+
+	stateSHA := sha256.Sum256([]byte(req.State))
+	if !bytes.Equal(qIntermediateSession.GoogleOauthStateSha256, stateSHA[:]) {
+		return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("bad state parameter"))
+	}
+
+	decryptRes, err := s.kms.Decrypt(ctx, &kms.DecryptInput{
+		CiphertextBlob:      qProject.GoogleOauthClientSecretCiphertext,
+		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
+		KeyId:               &s.googleOAuthClientSecretsKMSKeyID,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("decrypt google oauth client secret: %v", err)
+	}
+
+	// start new tx now that all kms and oauth http i/o is done
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	redeemRes, err := s.googleOAuthClient.RedeemCode(ctx, &googleoauth.RedeemCodeRequest{
+		GoogleOAuthClientID:     *qProject.GoogleOauthClientID,
+		GoogleOAuthClientSecret: string(decryptRes.Value),
+		RedirectURI:             "http://localhost:3000/google-oauth-callback", // todo
+		Code:                    req.Code,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("redeem google oauth code: %v", err)
+	}
+
+	// todo what if the intermediate session already has an email
+	// todo send an email verification challenge?
+	// todo what if redeem doesn't come back with a google hosted domain?
+	if _, err := q.UpdateIntermediateSessionGoogleDetails(ctx, queries.UpdateIntermediateSessionGoogleDetailsParams{
+		ID:                 authn.IntermediateSessionID(ctx),
+		Email:              &redeemRes.Email,
+		GoogleUserID:       &redeemRes.GoogleUserID,
+		GoogleHostedDomain: &redeemRes.GoogleHostedDomain,
+	}); err != nil {
+		return nil, fmt.Errorf("update intermediate session google details: %v", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, err
+	}
+
+	return &intermediatev1.RedeemGoogleOAuthCodeResponse{}, nil
+}
+
+func (s *Store) getProjectAndIntermediateSession(ctx context.Context) (*queries.Project, *queries.IntermediateSession, error) {
+	// this function exists to avoid doing non-database i/o operations mid-tx
+	_, q, _, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, nil, err
+	}
+	defer rollback()
+
+	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, nil, fmt.Errorf("get project by id: %v", err)
+	}
+
+	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))
+	if err != nil {
+		return nil, nil, fmt.Errorf("get intermediate session by id: %v", err)
+	}
+
+	return &qProject, &qIntermediateSession, nil
+}

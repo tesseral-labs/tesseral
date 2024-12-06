@@ -19,10 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	IntermediateService_Whoami_FullMethodName             = "/openauth.intermediate.v1.IntermediateService/Whoami"
-	IntermediateService_CreateOrganization_FullMethodName = "/openauth.intermediate.v1.IntermediateService/CreateOrganization"
-	IntermediateService_ListOrganizations_FullMethodName  = "/openauth.intermediate.v1.IntermediateService/ListOrganizations"
-	IntermediateService_SignInWithEmail_FullMethodName    = "/openauth.intermediate.v1.IntermediateService/SignInWithEmail"
+	IntermediateService_Whoami_FullMethodName                    = "/openauth.intermediate.v1.IntermediateService/Whoami"
+	IntermediateService_GetGoogleOAuthRedirectURL_FullMethodName = "/openauth.intermediate.v1.IntermediateService/GetGoogleOAuthRedirectURL"
+	IntermediateService_RedeemGoogleOAuthCode_FullMethodName     = "/openauth.intermediate.v1.IntermediateService/RedeemGoogleOAuthCode"
+	IntermediateService_CreateOrganization_FullMethodName        = "/openauth.intermediate.v1.IntermediateService/CreateOrganization"
+	IntermediateService_ListOrganizations_FullMethodName         = "/openauth.intermediate.v1.IntermediateService/ListOrganizations"
+	IntermediateService_SignInWithEmail_FullMethodName           = "/openauth.intermediate.v1.IntermediateService/SignInWithEmail"
 )
 
 // IntermediateServiceClient is the client API for IntermediateService service.
@@ -30,6 +32,8 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type IntermediateServiceClient interface {
 	Whoami(ctx context.Context, in *WhoamiRequest, opts ...grpc.CallOption) (*WhoamiResponse, error)
+	GetGoogleOAuthRedirectURL(ctx context.Context, in *GetGoogleOAuthRedirectURLRequest, opts ...grpc.CallOption) (*GetGoogleOAuthRedirectURLResponse, error)
+	RedeemGoogleOAuthCode(ctx context.Context, in *RedeemGoogleOAuthCodeRequest, opts ...grpc.CallOption) (*RedeemGoogleOAuthCodeResponse, error)
 	// Creates a new organization.
 	CreateOrganization(ctx context.Context, in *CreateOrganizationRequest, opts ...grpc.CallOption) (*CreateOrganizationResponse, error)
 	// Gets a list of organizations.
@@ -50,6 +54,26 @@ func (c *intermediateServiceClient) Whoami(ctx context.Context, in *WhoamiReques
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(WhoamiResponse)
 	err := c.cc.Invoke(ctx, IntermediateService_Whoami_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *intermediateServiceClient) GetGoogleOAuthRedirectURL(ctx context.Context, in *GetGoogleOAuthRedirectURLRequest, opts ...grpc.CallOption) (*GetGoogleOAuthRedirectURLResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetGoogleOAuthRedirectURLResponse)
+	err := c.cc.Invoke(ctx, IntermediateService_GetGoogleOAuthRedirectURL_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *intermediateServiceClient) RedeemGoogleOAuthCode(ctx context.Context, in *RedeemGoogleOAuthCodeRequest, opts ...grpc.CallOption) (*RedeemGoogleOAuthCodeResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RedeemGoogleOAuthCodeResponse)
+	err := c.cc.Invoke(ctx, IntermediateService_RedeemGoogleOAuthCode_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -91,6 +115,8 @@ func (c *intermediateServiceClient) SignInWithEmail(ctx context.Context, in *Sig
 // for forward compatibility.
 type IntermediateServiceServer interface {
 	Whoami(context.Context, *WhoamiRequest) (*WhoamiResponse, error)
+	GetGoogleOAuthRedirectURL(context.Context, *GetGoogleOAuthRedirectURLRequest) (*GetGoogleOAuthRedirectURLResponse, error)
+	RedeemGoogleOAuthCode(context.Context, *RedeemGoogleOAuthCodeRequest) (*RedeemGoogleOAuthCodeResponse, error)
 	// Creates a new organization.
 	CreateOrganization(context.Context, *CreateOrganizationRequest) (*CreateOrganizationResponse, error)
 	// Gets a list of organizations.
@@ -109,6 +135,12 @@ type UnimplementedIntermediateServiceServer struct{}
 
 func (UnimplementedIntermediateServiceServer) Whoami(context.Context, *WhoamiRequest) (*WhoamiResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Whoami not implemented")
+}
+func (UnimplementedIntermediateServiceServer) GetGoogleOAuthRedirectURL(context.Context, *GetGoogleOAuthRedirectURLRequest) (*GetGoogleOAuthRedirectURLResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetGoogleOAuthRedirectURL not implemented")
+}
+func (UnimplementedIntermediateServiceServer) RedeemGoogleOAuthCode(context.Context, *RedeemGoogleOAuthCodeRequest) (*RedeemGoogleOAuthCodeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RedeemGoogleOAuthCode not implemented")
 }
 func (UnimplementedIntermediateServiceServer) CreateOrganization(context.Context, *CreateOrganizationRequest) (*CreateOrganizationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateOrganization not implemented")
@@ -154,6 +186,42 @@ func _IntermediateService_Whoami_Handler(srv interface{}, ctx context.Context, d
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(IntermediateServiceServer).Whoami(ctx, req.(*WhoamiRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IntermediateService_GetGoogleOAuthRedirectURL_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetGoogleOAuthRedirectURLRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IntermediateServiceServer).GetGoogleOAuthRedirectURL(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IntermediateService_GetGoogleOAuthRedirectURL_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IntermediateServiceServer).GetGoogleOAuthRedirectURL(ctx, req.(*GetGoogleOAuthRedirectURLRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IntermediateService_RedeemGoogleOAuthCode_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RedeemGoogleOAuthCodeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IntermediateServiceServer).RedeemGoogleOAuthCode(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IntermediateService_RedeemGoogleOAuthCode_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IntermediateServiceServer).RedeemGoogleOAuthCode(ctx, req.(*RedeemGoogleOAuthCodeRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -222,6 +290,14 @@ var IntermediateService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Whoami",
 			Handler:    _IntermediateService_Whoami_Handler,
+		},
+		{
+			MethodName: "GetGoogleOAuthRedirectURL",
+			Handler:    _IntermediateService_GetGoogleOAuthRedirectURL_Handler,
+		},
+		{
+			MethodName: "RedeemGoogleOAuthCode",
+			Handler:    _IntermediateService_RedeemGoogleOAuthCode_Handler,
 		},
 		{
 			MethodName: "CreateOrganization",

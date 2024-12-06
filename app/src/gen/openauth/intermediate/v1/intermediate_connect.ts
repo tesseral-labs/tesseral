@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { CreateOrganizationRequest, CreateOrganizationResponse, ListOrganizationsRequest, ListOrganizationsResponse, SignInWithEmailRequest, SignInWithEmailResponse, WhoamiRequest, WhoamiResponse } from "./intermediate_pb.js";
+import { CreateOrganizationRequest, CreateOrganizationResponse, GetGoogleOAuthRedirectURLRequest, GetGoogleOAuthRedirectURLResponse, ListOrganizationsRequest, ListOrganizationsResponse, RedeemGoogleOAuthCodeRequest, RedeemGoogleOAuthCodeResponse, SignInWithEmailRequest, SignInWithEmailResponse, WhoamiRequest, WhoamiResponse } from "./intermediate_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -19,6 +19,24 @@ export const IntermediateService = {
       name: "Whoami",
       I: WhoamiRequest,
       O: WhoamiResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc openauth.intermediate.v1.IntermediateService.GetGoogleOAuthRedirectURL
+     */
+    getGoogleOAuthRedirectURL: {
+      name: "GetGoogleOAuthRedirectURL",
+      I: GetGoogleOAuthRedirectURLRequest,
+      O: GetGoogleOAuthRedirectURLResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc openauth.intermediate.v1.IntermediateService.RedeemGoogleOAuthCode
+     */
+    redeemGoogleOAuthCode: {
+      name: "RedeemGoogleOAuthCode",
+      I: RedeemGoogleOAuthCodeRequest,
+      O: RedeemGoogleOAuthCodeResponse,
       kind: MethodKind.Unary,
     },
     /**

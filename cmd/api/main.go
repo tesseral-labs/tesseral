@@ -22,6 +22,7 @@ import (
 	"github.com/openauth/openauth/internal/frontend/gen/openauth/frontend/v1/frontendv1connect"
 	frontendservice "github.com/openauth/openauth/internal/frontend/service"
 	frontendstore "github.com/openauth/openauth/internal/frontend/store"
+	"github.com/openauth/openauth/internal/googleoauth"
 	"github.com/openauth/openauth/internal/hexkey"
 	intermediateinterceptor "github.com/openauth/openauth/internal/intermediate/authn/interceptor"
 	"github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1/intermediatev1connect"
@@ -152,7 +153,10 @@ func main() {
 		IntermediateSessionSigningKeyKMSKeyID: config.IntermediateSessionKMSKeyID,
 		KMS:                                   kms_,
 		PageEncoder:                           pagetoken.Encoder{Secret: pageEncodingValue},
+		GoogleOAuthClient:                     &googleoauth.Client{HTTPClient: &http.Client{}},
 		SessionSigningKeyKmsKeyID:             config.SessionKMSKeyID,
+		GoogleOAuthClientSecretsKMSKeyID:      config.GoogleOAuthClientSecretsKMSKeyID,
+		MicrosoftOAuthClientSecretsKMSKeyID:   config.MicrosoftOAuthClientSecretsKMSKeyID,
 	})
 	intermediateConnectPath, intermediateConnectHandler := intermediatev1connect.NewIntermediateServiceHandler(
 		&intermediateservice.Service{
