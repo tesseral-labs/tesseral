@@ -3,14 +3,18 @@ package store
 import (
 	"context"
 	"crypto/sha256"
+	"errors"
 	"math/rand/v2"
 	"strconv"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
+	"github.com/openauth/openauth/internal/projectid"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
+
+var ErrProjectIDRequired = errors.New("project ID required")
 
 type EmailVerificationChallenge struct {
 	ID              string
@@ -20,6 +24,13 @@ type EmailVerificationChallenge struct {
 	CompleteTime    time.Time
 	Email           string
 	ExpireTime      time.Time
+	GoogleUserID    string
+	MicrosoftUserID string
+}
+
+type CompleteEmailVerificationChallengeParams struct {
+	Challenge       string
+	Email           string
 	GoogleUserID    string
 	MicrosoftUserID string
 }
@@ -39,6 +50,48 @@ type GetEmailVerificationChallengeParams struct {
 	GoogleUserID    string
 	MicrosoftUserID string
 	ProjectID       string
+}
+
+func (s *Store) CompleteEmailVerificationChallenge(ctx context.Context, params *CompleteEmailVerificationChallengeParams) (*EmailVerificationChallenge, error) {
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	projectID := projectid.ProjectID(ctx)
+	if projectID == uuid.Nil {
+		return nil, ErrProjectIDRequired
+	}
+
+	now := time.Now()
+	secretTokenSha256 := sha256.Sum256([]byte(params.Challenge))
+
+	evc, err := q.GetEmailVerificationChallenge(ctx, queries.GetEmailVerificationChallengeParams{
+		ExpireTime:      &now,
+		ChallengeSha256: secretTokenSha256[:],
+		Email:           &params.Email,
+		GoogleUserID:    &params.GoogleUserID,
+		MicrosoftUserID: &params.MicrosoftUserID,
+		ProjectID:       projectID,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	evc.CompleteTime = &now
+	if err := q.CompleteEmailVerificationChallenge(ctx, queries.CompleteEmailVerificationChallengeParams{
+		CompleteTime: &now,
+		ID:           evc.ID,
+	}); err != nil {
+		return nil, err
+	}
+
+	if err := commit(); err != nil {
+		return nil, err
+	}
+
+	return parseEmailVerificationChallenge(&evc, ""), nil
 }
 
 func (s *Store) CreateEmailVerificationChallenge(ctx context.Context, params *CreateEmailVerificationChallengeParams) (*EmailVerificationChallenge, error) {

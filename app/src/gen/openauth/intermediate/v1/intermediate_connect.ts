@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { CreateOrganizationRequest, CreateOrganizationResponse, ListOrganizationsRequest, ListOrganizationsResponse, SignInWithEmailRequest, SignInWithEmailResponse, WhoamiRequest, WhoamiResponse } from "./intermediate_pb.js";
+import { CreateOrganizationRequest, CreateOrganizationResponse, ListOrganizationsRequest, ListOrganizationsResponse, SignInWithEmailRequest, SignInWithEmailResponse, VerifyEmailChallengeRequest, VerifyEmailChallengeResponse, WhoamiRequest, WhoamiResponse } from "./intermediate_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -52,6 +52,17 @@ export const IntermediateService = {
       name: "SignInWithEmail",
       I: SignInWithEmailRequest,
       O: SignInWithEmailResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * Submits a challenge for verification of email address.
+     *
+     * @generated from rpc openauth.intermediate.v1.IntermediateService.VerifyEmailChallenge
+     */
+    verifyEmailChallenge: {
+      name: "VerifyEmailChallenge",
+      I: VerifyEmailChallengeRequest,
+      O: VerifyEmailChallengeResponse,
       kind: MethodKind.Unary,
     },
   }

@@ -4,7 +4,7 @@
 // @ts-nocheck
 
 import { MethodKind } from "@bufbuild/protobuf";
-import { CreateOrganizationRequest, CreateOrganizationResponse, ListOrganizationsRequest, ListOrganizationsResponse, SignInWithEmailRequest, SignInWithEmailResponse, WhoamiRequest, WhoamiResponse } from "./intermediate_pb.js";
+import { CreateOrganizationRequest, CreateOrganizationResponse, ListOrganizationsRequest, ListOrganizationsResponse, SignInWithEmailRequest, SignInWithEmailResponse, VerifyEmailChallengeRequest, VerifyEmailChallengeResponse, WhoamiRequest, WhoamiResponse } from "./intermediate_pb.js";
 
 /**
  * @generated from rpc openauth.intermediate.v1.IntermediateService.Whoami
@@ -63,6 +63,22 @@ export const signInWithEmail = {
   kind: MethodKind.Unary,
   I: SignInWithEmailRequest,
   O: SignInWithEmailResponse,
+  service: {
+    typeName: "openauth.intermediate.v1.IntermediateService"
+  }
+} as const;
+
+/**
+ * Submits a challenge for verification of email address.
+ *
+ * @generated from rpc openauth.intermediate.v1.IntermediateService.VerifyEmailChallenge
+ */
+export const verifyEmailChallenge = {
+  localName: "verifyEmailChallenge",
+  name: "VerifyEmailChallenge",
+  kind: MethodKind.Unary,
+  I: VerifyEmailChallengeRequest,
+  O: VerifyEmailChallengeResponse,
   service: {
     typeName: "openauth.intermediate.v1.IntermediateService"
   }

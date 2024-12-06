@@ -85,6 +85,31 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /intermediate/v1/verify-email-challenge:
+        post:
+            tags:
+                - IntermediateService
+            description: Submits a challenge for verification of email address.
+            operationId: IntermediateService_VerifyEmailChallenge
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/VerifyEmailChallengeRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/VerifyEmailChallengeResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /intermediate/v1/whoami:
         get:
             tags:
@@ -161,9 +186,6 @@ components:
         SignInWithEmailRequest:
             type: object
             properties:
-                projectId:
-                    type: string
-                    description: The Project ID to scope the sign in to.
                 email:
                     type: string
                     description: The email address to sign in with.
@@ -189,6 +211,21 @@ components:
                         $ref: '#/components/schemas/GoogleProtobufAny'
                     description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
             description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
+        VerifyEmailChallengeRequest:
+            type: object
+            properties:
+                email:
+                    type: string
+                    description: The email address to verify.
+                challenge:
+                    type: string
+                    description: The challenge to verify.
+        VerifyEmailChallengeResponse:
+            type: object
+            properties:
+                SessionToken:
+                    type: string
+                    description: The token for the intermediate session or session created by the VerifyEmailChallenge request.
         WhoamiResponse:
             type: object
             properties:
