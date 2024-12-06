@@ -13,16 +13,15 @@ import (
 )
 
 type EmailVerificationChallenge struct {
-	ID                    string
-	IntermediateSessionID string
-	ProjectID             string
-	Challenge             string
-	ChallengeSha256       []byte
-	CompleteTime          time.Time
-	Email                 string
-	ExpireTime            time.Time
-	GoogleUserID          string
-	MicrosoftUserID       string
+	ID              string
+	ProjectID       string
+	Challenge       string
+	ChallengeSha256 []byte
+	CompleteTime    time.Time
+	Email           string
+	ExpireTime      time.Time
+	GoogleUserID    string
+	MicrosoftUserID string
 }
 
 type CreateEmailVerificationChallengeParams struct {
@@ -35,12 +34,11 @@ type CreateEmailVerificationChallengeParams struct {
 }
 
 type GetEmailVerificationChallengeParams struct {
-	Code                  string
-	Email                 string
-	GoogleUserID          string
-	IntermediateSessionID string
-	MicrosoftUserID       string
-	ProjectID             string
+	Code            string
+	Email           string
+	GoogleUserID    string
+	MicrosoftUserID string
+	ProjectID       string
 }
 
 func (s *Store) CreateEmailVerificationChallenge(ctx context.Context, params *CreateEmailVerificationChallengeParams) (*EmailVerificationChallenge, error) {
@@ -49,11 +47,6 @@ func (s *Store) CreateEmailVerificationChallenge(ctx context.Context, params *Cr
 		return nil, err
 	}
 	defer rollback()
-
-	intermediateSessionID, err := idformat.IntermediateSession.Parse(params.IntermediateSessionID)
-	if err != nil {
-		return nil, err
-	}
 
 	projectID, err := idformat.Project.Parse(params.ProjectID)
 	if err != nil {
@@ -72,14 +65,13 @@ func (s *Store) CreateEmailVerificationChallenge(ctx context.Context, params *Cr
 	expiresAt := time.Now().Add(15 * time.Minute)
 
 	evc, err := q.CreateEmailVerificationChallenge(ctx, queries.CreateEmailVerificationChallengeParams{
-		ID:                    uuid.New(),
-		IntermediateSessionID: intermediateSessionID,
-		ProjectID:             projectID,
-		ChallengeSha256:       secretTokenSha256[:],
-		Email:                 &params.Email,
-		ExpireTime:            &expiresAt,
-		GoogleUserID:          &params.GoogleUserID,
-		MicrosoftUserID:       &params.MicrosoftUserID,
+		ID:              uuid.New(),
+		ProjectID:       projectID,
+		ChallengeSha256: secretTokenSha256[:],
+		Email:           &params.Email,
+		ExpireTime:      &expiresAt,
+		GoogleUserID:    &params.GoogleUserID,
+		MicrosoftUserID: &params.MicrosoftUserID,
 	})
 	if err != nil {
 		return nil, err
@@ -101,11 +93,6 @@ func (s *Store) GetEmailVerificationChallenge(ctx context.Context, params *GetEm
 
 	now := time.Now()
 
-	intermediateSessionID, err := idformat.IntermediateSession.Parse(params.IntermediateSessionID)
-	if err != nil {
-		return nil, err
-	}
-
 	projectID, err := idformat.Project.Parse(params.ProjectID)
 	if err != nil {
 		return nil, err
@@ -114,13 +101,12 @@ func (s *Store) GetEmailVerificationChallenge(ctx context.Context, params *GetEm
 	secretTokenSha256 := sha256.Sum256([]byte(params.Code))
 
 	evc, err := q.GetEmailVerificationChallenge(ctx, queries.GetEmailVerificationChallengeParams{
-		ExpireTime:            &now,
-		ChallengeSha256:       secretTokenSha256[:],
-		Email:                 &params.Email,
-		GoogleUserID:          &params.GoogleUserID,
-		IntermediateSessionID: intermediateSessionID,
-		MicrosoftUserID:       &params.MicrosoftUserID,
-		ProjectID:             projectID,
+		ExpireTime:      &now,
+		ChallengeSha256: secretTokenSha256[:],
+		Email:           &params.Email,
+		GoogleUserID:    &params.GoogleUserID,
+		MicrosoftUserID: &params.MicrosoftUserID,
+		ProjectID:       projectID,
 	})
 	if err != nil {
 		return nil, err
@@ -142,15 +128,14 @@ func generateSecretToken() (string, error) {
 
 func parseEmailVerificationChallenge(evc *queries.EmailVerificationChallenge, originalChallenge string) *EmailVerificationChallenge {
 	return &EmailVerificationChallenge{
-		ID:                    idformat.EmailVerificationChallenge.Format(evc.ID),
-		IntermediateSessionID: idformat.IntermediateSession.Format(evc.IntermediateSessionID),
-		ProjectID:             idformat.Project.Format(evc.ProjectID),
-		Challenge:             originalChallenge,
-		ChallengeSha256:       evc.ChallengeSha256,
-		CompleteTime:          *evc.CompleteTime,
-		Email:                 *evc.Email,
-		ExpireTime:            *evc.ExpireTime,
-		GoogleUserID:          *evc.GoogleUserID,
-		MicrosoftUserID:       *evc.MicrosoftUserID,
+		ID:              idformat.EmailVerificationChallenge.Format(evc.ID),
+		ProjectID:       idformat.Project.Format(evc.ProjectID),
+		Challenge:       originalChallenge,
+		ChallengeSha256: evc.ChallengeSha256,
+		CompleteTime:    *evc.CompleteTime,
+		Email:           *evc.Email,
+		ExpireTime:      *evc.ExpireTime,
+		GoogleUserID:    *evc.GoogleUserID,
+		MicrosoftUserID: *evc.MicrosoftUserID,
 	}
 }

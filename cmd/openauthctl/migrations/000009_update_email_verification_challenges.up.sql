@@ -1,0 +1,5 @@
+alter table email_verification_challenges
+  drop constraint email_verification_challenges_intermediate_session_id_fkey;
+
+alter table email_verification_challenges
+  drop column intermediate_session_id;

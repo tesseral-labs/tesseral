@@ -13,27 +13,25 @@ import (
 )
 
 const createEmailVerificationChallenge = `-- name: CreateEmailVerificationChallenge :one
-INSERT INTO email_verification_challenges (id, intermediate_session_id, project_id, email, challenge_sha256, expire_time, google_user_id, microsoft_user_id)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+INSERT INTO email_verification_challenges (id, project_id, email, challenge_sha256, expire_time, google_user_id, microsoft_user_id)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
 RETURNING
-    id, intermediate_session_id, project_id, challenge_sha256, complete_time, create_time, email, expire_time, google_user_id, microsoft_user_id
+    id, project_id, challenge_sha256, complete_time, create_time, email, expire_time, google_user_id, microsoft_user_id
 `
 
 type CreateEmailVerificationChallengeParams struct {
-	ID                    uuid.UUID
-	IntermediateSessionID uuid.UUID
-	ProjectID             uuid.UUID
-	Email                 *string
-	ChallengeSha256       []byte
-	ExpireTime            *time.Time
-	GoogleUserID          *string
-	MicrosoftUserID       *string
+	ID              uuid.UUID
+	ProjectID       uuid.UUID
+	Email           *string
+	ChallengeSha256 []byte
+	ExpireTime      *time.Time
+	GoogleUserID    *string
+	MicrosoftUserID *string
 }
 
 func (q *Queries) CreateEmailVerificationChallenge(ctx context.Context, arg CreateEmailVerificationChallengeParams) (EmailVerificationChallenge, error) {
 	row := q.db.QueryRow(ctx, createEmailVerificationChallenge,
 		arg.ID,
-		arg.IntermediateSessionID,
 		arg.ProjectID,
 		arg.Email,
 		arg.ChallengeSha256,
@@ -44,7 +42,6 @@ func (q *Queries) CreateEmailVerificationChallenge(ctx context.Context, arg Crea
 	var i EmailVerificationChallenge
 	err := row.Scan(
 		&i.ID,
-		&i.IntermediateSessionID,
 		&i.ProjectID,
 		&i.ChallengeSha256,
 		&i.CompleteTime,
@@ -208,34 +205,31 @@ func (q *Queries) CreateVerifiedEmail(ctx context.Context, arg CreateVerifiedEma
 
 const getEmailVerificationChallenge = `-- name: GetEmailVerificationChallenge :one
 SELECT
-    id, intermediate_session_id, project_id, challenge_sha256, complete_time, create_time, email, expire_time, google_user_id, microsoft_user_id
+    id, project_id, challenge_sha256, complete_time, create_time, email, expire_time, google_user_id, microsoft_user_id
 FROM
     email_verification_challenges
 WHERE
     project_id = $1
-    AND intermediate_session_id = $2
-    AND challenge_sha256 = $3
-    AND expire_time > $4
-    AND (email = $5
-        OR google_user_id = $6
-        OR microsoft_user_id = $7)
+    AND challenge_sha256 = $2
+    AND expire_time > $3
+    AND (email = $4
+        OR google_user_id = $5
+        OR microsoft_user_id = $6)
 LIMIT 1
 `
 
 type GetEmailVerificationChallengeParams struct {
-	ProjectID             uuid.UUID
-	IntermediateSessionID uuid.UUID
-	ChallengeSha256       []byte
-	ExpireTime            *time.Time
-	Email                 *string
-	GoogleUserID          *string
-	MicrosoftUserID       *string
+	ProjectID       uuid.UUID
+	ChallengeSha256 []byte
+	ExpireTime      *time.Time
+	Email           *string
+	GoogleUserID    *string
+	MicrosoftUserID *string
 }
 
 func (q *Queries) GetEmailVerificationChallenge(ctx context.Context, arg GetEmailVerificationChallengeParams) (EmailVerificationChallenge, error) {
 	row := q.db.QueryRow(ctx, getEmailVerificationChallenge,
 		arg.ProjectID,
-		arg.IntermediateSessionID,
 		arg.ChallengeSha256,
 		arg.ExpireTime,
 		arg.Email,
@@ -245,7 +239,6 @@ func (q *Queries) GetEmailVerificationChallenge(ctx context.Context, arg GetEmai
 	var i EmailVerificationChallenge
 	err := row.Scan(
 		&i.ID,
-		&i.IntermediateSessionID,
 		&i.ProjectID,
 		&i.ChallengeSha256,
 		&i.CompleteTime,

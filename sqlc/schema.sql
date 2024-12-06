@@ -3,7 +3,7 @@
 --
 
 -- Dumped from database version 15.8 (Debian 15.8-1.pgdg120+1)
--- Dumped by pg_dump version 17.0 (Homebrew)
+-- Dumped by pg_dump version 17.0
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -16,20 +16,6 @@ SET check_function_bodies = false;
 SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
-
---
--- Name: pgcrypto; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
-
-
---
--- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
-
 
 --
 -- Name: auth_method; Type: TYPE; Schema: public; Owner: postgres
@@ -54,7 +40,6 @@ SET default_table_access_method = heap;
 
 CREATE TABLE public.email_verification_challenges (
     id uuid NOT NULL,
-    intermediate_session_id uuid NOT NULL,
     project_id uuid NOT NULL,
     challenge_sha256 bytea,
     complete_time timestamp with time zone,
@@ -364,14 +349,6 @@ ALTER TABLE ONLY public.users
 
 ALTER TABLE ONLY public.verified_emails
     ADD CONSTRAINT verified_emails_pkey PRIMARY KEY (id);
-
-
---
--- Name: email_verification_challenges email_verification_challenges_intermediate_session_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.email_verification_challenges
-    ADD CONSTRAINT email_verification_challenges_intermediate_session_id_fkey FOREIGN KEY (intermediate_session_id) REFERENCES public.intermediate_sessions(id);
 
 
 --
