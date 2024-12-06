@@ -40,5 +40,4 @@ func ProjectID(ctx context.Context) uuid.UUID {
 	return v.projectID
 }
 
-// TODO we will likely want a convenience ProjectID(ctx) uuid.UUID method here,
-// as well as one for IntermediateSessionID
+// TODO we will likely want a convenience IntermediateSessionID(ctx context.Context) string function
