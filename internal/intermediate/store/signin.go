@@ -19,7 +19,6 @@ func (s *Store) SignInWithEmail(
 	req *intermediatev1.SignInWithEmailRequest,
 ) (*intermediatev1.SignInWithEmailResponse, error) {
 	projectID := authn.ProjectID(*ctx)
-	slog.Info("SignInWithEmail", "projectID", projectID)
 
 	shouldVerify, err := s.shouldVerifyEmail(*ctx, projectID, req.Email, "", "")
 	if err != nil {

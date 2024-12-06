@@ -3,7 +3,6 @@ package intermediateinterceptor
 import (
 	"context"
 	"errors"
-	"log/slog"
 	"strings"
 
 	"connectrpc.com/connect"
@@ -21,6 +20,8 @@ var skipRPCs = []string{
 func New(s *store.Store) connect.UnaryInterceptorFunc {
 	return func(next connect.UnaryFunc) connect.UnaryFunc {
 		return func(ctx context.Context, req connect.AnyRequest) (connect.AnyResponse, error) {
+			// Extract project ID from the request
+
 			projectIDHeader := req.Header().Get("X-OpenAuth-Project-ID")
 			if projectIDHeader == "" {
 				return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("project ID header is required"))
@@ -30,8 +31,6 @@ func New(s *store.Store) connect.UnaryInterceptorFunc {
 			if err != nil {
 				return nil, connect.NewError(connect.CodeInvalidArgument, err)
 			}
-
-			slog.Info("New", "projectID", projectID)
 
 			// Check if authentication should be skipped
 
