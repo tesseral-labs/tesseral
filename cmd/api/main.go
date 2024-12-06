@@ -191,7 +191,7 @@ func main() {
 	mux.Handle("/oauth/", oauthService.Handler())
 
 	// These handlers are registered in a FILO order much like
-	// much like a Matryoshka doll <https://en.wikipedia.org/wiki/Matryoshka_doll>
+	// a Matryoshka doll
 
 	// Use the projectid.NewHttpHandler to extract the project ID from the request
 	serve := projectid.NewHttpHandler(mux)
