@@ -98,10 +98,8 @@ message ListOrganizationsResponse {
 }
 
 message SignInWithEmailRequest {
-  // The Project ID to scope the sign in to.
-  string project_id = 1;
   // The email address to sign in with.
-  string email = 2;
+  string email = 1;
 }
 
 message SignInWithEmailResponse {

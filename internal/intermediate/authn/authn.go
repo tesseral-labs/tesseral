@@ -14,7 +14,9 @@ type ctxData struct {
 type ctxKey struct{}
 
 func NewContext(ctx context.Context, intermediateSession *intermediatev1.IntermediateSession) context.Context {
-	return context.WithValue(ctx, ctxKey{}, ctxData{intermediateSession})
+	return context.WithValue(ctx, ctxKey{}, ctxData{
+		intermediateSession,
+	})
 }
 
 func IntermediateSession(ctx context.Context) *intermediatev1.IntermediateSession {
@@ -26,5 +28,4 @@ func IntermediateSession(ctx context.Context) *intermediatev1.IntermediateSessio
 	return v.intermediateSession
 }
 
-// TODO we will likely want a convenience ProjectID(ctx) uuid.UUID method here,
-// as well as one for IntermediateSessionID
+// TODO we will likely want a convenience IntermediateSessionID(ctx context.Context) string function

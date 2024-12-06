@@ -30,6 +30,7 @@ import (
 	oauthservice "github.com/openauth/openauth/internal/oauth/service"
 	oauthstore "github.com/openauth/openauth/internal/oauth/store"
 	"github.com/openauth/openauth/internal/pagetoken"
+	"github.com/openauth/openauth/internal/projectid"
 	"github.com/openauth/openauth/internal/secretload"
 	"github.com/openauth/openauth/internal/slogcorrelation"
 	"github.com/openauth/openauth/internal/store/idformat"
@@ -101,7 +102,6 @@ func main() {
 			Store: backendStore,
 		},
 		connect.WithInterceptors(
-			// We may want to use separate auth interceptors for backend and frontend services
 			backendinterceptor.New(backendStore, config.DogfoodProjectID),
 		),
 	)
@@ -125,7 +125,6 @@ func main() {
 			Store: frontendStore,
 		},
 		connect.WithInterceptors(
-			// We may want to use separate auth interceptors for backend and frontend services
 			frontendinterceptor.New(frontendStore),
 		),
 	)
@@ -180,9 +179,17 @@ func main() {
 	// Register oauthservice
 	mux.Handle("/oauth/", oauthService.Handler())
 
+	// These handlers are registered in a FILO order much like
+	// much like a Matryoshka doll <https://en.wikipedia.org/wiki/Matryoshka_doll>
+
+	// Use the projectid.NewHttpHandler to extract the project ID from the request
+	serve := projectid.NewHttpHandler(mux)
+	// Use the slogcorrelation.NewHandler to add correlation IDs to the request
+	serve = slogcorrelation.NewHandler(serve)
+
 	// Serve the services
 	slog.Info("serve")
-	if err := http.ListenAndServe(config.ServeAddr, slogcorrelation.NewHandler(mux)); err != nil {
+	if err := http.ListenAndServe(config.ServeAddr, serve); err != nil {
 		panic(err)
 	}
 }
