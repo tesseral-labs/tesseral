@@ -102,9 +102,6 @@ func main() {
 			Store: backendStore,
 		},
 		connect.WithInterceptors(
-			// Project ID needs to be set on the context before auth interceptors,
-			// since authentication requires the project ID
-			projectid.NewInterceptor(),
 			backendinterceptor.New(backendStore, config.DogfoodProjectID),
 		),
 	)
@@ -128,9 +125,6 @@ func main() {
 			Store: frontendStore,
 		},
 		connect.WithInterceptors(
-			// Project ID needs to be set on the context before auth interceptors,
-			// since authentication requires the project ID
-			projectid.NewInterceptor(),
 			frontendinterceptor.New(frontendStore),
 		),
 	)
@@ -154,9 +148,6 @@ func main() {
 			Store: intermediateStore,
 		},
 		connect.WithInterceptors(
-			// Project ID needs to be set on the context before auth interceptors,
-			// since authentication requires the project ID
-			projectid.NewInterceptor(),
 			intermediateinterceptor.New(intermediateStore),
 		),
 	)
@@ -181,9 +172,11 @@ func main() {
 	}))
 
 	// Register service transcoders
-	mux.Handle("/backend/v1/", backendTranscoder)
-	mux.Handle("/frontend/v1/", frontendTranscoder)
-	mux.Handle("/intermediate/v1/", intermediateTranscoder)
+	// -- We're using the projectid HttpHandler to extract the project ID from the request
+	// -- and pass it to the services
+	mux.Handle("/backend/v1/", projectid.NewHttpHandler(backendTranscoder))
+	mux.Handle("/frontend/v1/", projectid.NewHttpHandler(frontendTranscoder))
+	mux.Handle("/intermediate/v1/", projectid.NewHttpHandler(intermediateTranscoder))
 
 	// Register oauthservice
 	mux.Handle("/oauth/", projectid.NewHttpHandler(oauthService.Handler()))
