@@ -9,7 +9,9 @@ services:
     develop:
       watch:
         - action: rebuild
-          path: ./
+          path: ./cmd/api/
+        - action: rebuild
+          path: ./internal/
     environment:
       API_DB: "postgres://postgres:password@postgres:5432/postgres"
     env_file:

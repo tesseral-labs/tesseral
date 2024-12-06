@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/openauth/openauth/internal/intermediate/authn"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
 	"github.com/openauth/openauth/internal/store/idformat"
@@ -17,7 +18,10 @@ func (s *Store) SignInWithEmail(
 	ctx *context.Context,
 	req *intermediatev1.SignInWithEmailRequest,
 ) (*intermediatev1.SignInWithEmailResponse, error) {
-	shouldVerify, err := s.shouldVerifyEmail(*ctx, req.ProjectId, req.Email, "", "")
+	projectID := authn.ProjectID(*ctx)
+	slog.Info("SignInWithEmail", "projectID", projectID)
+
+	shouldVerify, err := s.shouldVerifyEmail(*ctx, projectID, req.Email, "", "")
 	if err != nil {
 		return nil, err
 	}
@@ -27,11 +31,6 @@ func (s *Store) SignInWithEmail(
 		return nil, err
 	}
 	defer rollback()
-
-	projectId, err := idformat.Project.Parse(req.ProjectId)
-	if err != nil {
-		return nil, err
-	}
 
 	users, err := q.ListUsersByEmail(*ctx, &req.Email)
 	if err != nil {
@@ -52,7 +51,7 @@ func (s *Store) SignInWithEmail(
 
 		intermediateSession, err := q.CreateIntermediateSession(*ctx, queries.CreateIntermediateSessionParams{
 			ID:          uuid.New(),
-			ProjectID:   projectId,
+			ProjectID:   projectID,
 			Email:       &req.Email,
 			ExpireTime:  &expiresAt,
 			TokenSha256: tokenSha256[:],
@@ -101,17 +100,12 @@ func (s *Store) SignInWithEmail(
 	}
 }
 
-func (s *Store) shouldVerifyEmail(ctx context.Context, projectId string, email string, googleUserID string, microsoftUserID string) (bool, error) {
+func (s *Store) shouldVerifyEmail(ctx context.Context, projectID uuid.UUID, email string, googleUserID string, microsoftUserID string) (bool, error) {
 	_, q, _, rollback, err := s.tx(ctx)
 	if err != nil {
 		return false, err
 	}
 	defer rollback()
-
-	projectID, err := idformat.Project.Parse(projectId)
-	if err != nil {
-		return false, err
-	}
 
 	verifiedEmails, err := q.ListVerifiedEmails(ctx, queries.ListVerifiedEmailsParams{
 		ProjectID:       projectID,
