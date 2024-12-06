@@ -283,7 +283,12 @@ func (q *Queries) GetIntermediateSessionByID(ctx context.Context, id uuid.UUID) 
 }
 
 const getIntermediateSessionByTokenSHA256 = `-- name: GetIntermediateSessionByTokenSHA256 :one
-select id, project_id, create_time, expire_time, token_sha256, revoked, email from intermediate_sessions where token_sha256 = $1
+SELECT
+    id, project_id, create_time, expire_time, token_sha256, revoked, email
+FROM
+    intermediate_sessions
+WHERE
+    token_sha256 = $1
 `
 
 func (q *Queries) GetIntermediateSessionByTokenSHA256(ctx context.Context, tokenSha256 []byte) (IntermediateSession, error) {
