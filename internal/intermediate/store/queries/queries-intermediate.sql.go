@@ -12,6 +12,39 @@ import (
 	"github.com/google/uuid"
 )
 
+const completeEmailVerificationChallenge = `-- name: CompleteEmailVerificationChallenge :one
+UPDATE
+    email_verification_challenges
+SET
+    complete_time = $1
+WHERE
+    id = $2
+RETURNING
+    id, project_id, challenge_sha256, complete_time, create_time, email, expire_time, google_user_id, microsoft_user_id
+`
+
+type CompleteEmailVerificationChallengeParams struct {
+	CompleteTime *time.Time
+	ID           uuid.UUID
+}
+
+func (q *Queries) CompleteEmailVerificationChallenge(ctx context.Context, arg CompleteEmailVerificationChallengeParams) (EmailVerificationChallenge, error) {
+	row := q.db.QueryRow(ctx, completeEmailVerificationChallenge, arg.CompleteTime, arg.ID)
+	var i EmailVerificationChallenge
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.ChallengeSha256,
+		&i.CompleteTime,
+		&i.CreateTime,
+		&i.Email,
+		&i.ExpireTime,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+	)
+	return i, err
+}
+
 const createEmailVerificationChallenge = `-- name: CreateEmailVerificationChallenge :one
 INSERT INTO email_verification_challenges (id, project_id, email, challenge_sha256, expire_time, google_user_id, microsoft_user_id)
     VALUES ($1, $2, $3, $4, $5, $6, $7)
@@ -58,7 +91,7 @@ const createIntermediateSession = `-- name: CreateIntermediateSession :one
 INSERT INTO intermediate_sessions (id, project_id, expire_time, email, token_sha256)
     VALUES ($1, $2, $3, $4, $5)
 RETURNING
-    id, project_id, create_time, expire_time, token_sha256, revoked, email
+    id, project_id, create_time, expire_time, token_sha256, revoked, email, google_user_id, microsoft_user_id
 `
 
 type CreateIntermediateSessionParams struct {
@@ -86,6 +119,8 @@ func (q *Queries) CreateIntermediateSession(ctx context.Context, arg CreateInter
 		&i.TokenSha256,
 		&i.Revoked,
 		&i.Email,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
 	)
 	return i, err
 }
@@ -253,7 +288,7 @@ func (q *Queries) GetEmailVerificationChallenge(ctx context.Context, arg GetEmai
 
 const getIntermediateSessionByID = `-- name: GetIntermediateSessionByID :one
 SELECT
-    id, project_id, create_time, expire_time, token_sha256, revoked, email
+    id, project_id, create_time, expire_time, token_sha256, revoked, email, google_user_id, microsoft_user_id
 FROM
     intermediate_sessions
 WHERE
@@ -271,13 +306,15 @@ func (q *Queries) GetIntermediateSessionByID(ctx context.Context, id uuid.UUID) 
 		&i.TokenSha256,
 		&i.Revoked,
 		&i.Email,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
 	)
 	return i, err
 }
 
 const getIntermediateSessionByTokenSHA256 = `-- name: GetIntermediateSessionByTokenSHA256 :one
 SELECT
-    id, project_id, create_time, expire_time, token_sha256, revoked, email
+    id, project_id, create_time, expire_time, token_sha256, revoked, email, google_user_id, microsoft_user_id
 FROM
     intermediate_sessions
 WHERE
@@ -295,6 +332,8 @@ func (q *Queries) GetIntermediateSessionByTokenSHA256(ctx context.Context, token
 		&i.TokenSha256,
 		&i.Revoked,
 		&i.Email,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
 	)
 	return i, err
 }
@@ -559,7 +598,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, project_id, create_time, expire_time, token_sha256, revoked, email
+    id, project_id, create_time, expire_time, token_sha256, revoked, email, google_user_id, microsoft_user_id
 `
 
 func (q *Queries) RevokeIntermediateSession(ctx context.Context, id uuid.UUID) (IntermediateSession, error) {
@@ -573,6 +612,8 @@ func (q *Queries) RevokeIntermediateSession(ctx context.Context, id uuid.UUID) (
 		&i.TokenSha256,
 		&i.Revoked,
 		&i.Email,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
 	)
 	return i, err
 }

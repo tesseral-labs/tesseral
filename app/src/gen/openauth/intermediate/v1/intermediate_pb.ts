@@ -16,11 +16,26 @@ export class IntermediateSession extends Message<IntermediateSession> {
   id = "";
 
   /**
-   * TODO more things here
-   *
    * @generated from field: string project_id = 2;
    */
   projectId = "";
+
+  /**
+   * @generated from field: string email = 3;
+   */
+  email = "";
+
+  /**
+   * @generated from field: optional string google_user_id = 4;
+   */
+  googleUserId?: string;
+
+  /**
+   * TODO more things here
+   *
+   * @generated from field: optional string microsoft_user_id = 5;
+   */
+  microsoftUserId?: string;
 
   constructor(data?: PartialMessage<IntermediateSession>) {
     super();
@@ -32,6 +47,9 @@ export class IntermediateSession extends Message<IntermediateSession> {
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "project_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "google_user_id", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
+    { no: 5, name: "microsoft_user_id", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): IntermediateSession {
@@ -814,16 +832,9 @@ export class Session extends Message<Session> {
  */
 export class VerifyEmailChallengeRequest extends Message<VerifyEmailChallengeRequest> {
   /**
-   * The email address to verify.
-   *
-   * @generated from field: string email = 1;
-   */
-  email = "";
-
-  /**
    * The challenge to verify.
    *
-   * @generated from field: string challenge = 2;
+   * @generated from field: string challenge = 1;
    */
   challenge = "";
 
@@ -835,8 +846,7 @@ export class VerifyEmailChallengeRequest extends Message<VerifyEmailChallengeReq
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "openauth.intermediate.v1.VerifyEmailChallengeRequest";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "challenge", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 1, name: "challenge", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): VerifyEmailChallengeRequest {
@@ -863,9 +873,9 @@ export class VerifyEmailChallengeResponse extends Message<VerifyEmailChallengeRe
   /**
    * The token for the intermediate session or session created by the VerifyEmailChallenge request.
    *
-   * @generated from field: string SessionToken = 1;
+   * @generated from field: bool Success = 1;
    */
-  SessionToken = "";
+  Success = false;
 
   constructor(data?: PartialMessage<VerifyEmailChallengeResponse>) {
     super();
@@ -875,7 +885,7 @@ export class VerifyEmailChallengeResponse extends Message<VerifyEmailChallengeRe
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "openauth.intermediate.v1.VerifyEmailChallengeResponse";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "SessionToken", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 1, name: "Success", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): VerifyEmailChallengeResponse {

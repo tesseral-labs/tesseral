@@ -50,6 +50,9 @@ service IntermediateService {
 message IntermediateSession {
   string id = 1;
   string project_id = 2;
+  string email = 3;
+  optional string google_user_id = 4;
+  optional string microsoft_user_id = 5;
   // TODO more things here
 }
 
@@ -170,13 +173,11 @@ message Session {
 }
 
 message VerifyEmailChallengeRequest {
-  // The email address to verify.
-  string email = 1;
   // The challenge to verify.
-  string challenge = 2;
+  string challenge = 1;
 }
 
 message VerifyEmailChallengeResponse {
   // The token for the intermediate session or session created by the VerifyEmailChallenge request.
-  string SessionToken = 1;
+  bool Success = 1;
 }

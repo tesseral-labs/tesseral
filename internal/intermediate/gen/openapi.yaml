@@ -159,6 +159,12 @@ components:
                     type: string
                 projectId:
                     type: string
+                email:
+                    type: string
+                googleUserId:
+                    type: string
+                microsoftUserId:
+                    type: string
         ListOrganizationsResponse:
             type: object
             properties:
@@ -214,17 +220,14 @@ components:
         VerifyEmailChallengeRequest:
             type: object
             properties:
-                email:
-                    type: string
-                    description: The email address to verify.
                 challenge:
                     type: string
                     description: The challenge to verify.
         VerifyEmailChallengeResponse:
             type: object
             properties:
-                SessionToken:
-                    type: string
+                Success:
+                    type: boolean
                     description: The token for the intermediate session or session created by the VerifyEmailChallenge request.
         WhoamiResponse:
             type: object

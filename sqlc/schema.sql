@@ -80,7 +80,9 @@ CREATE TABLE public.intermediate_sessions (
     expire_time timestamp with time zone NOT NULL,
     token_sha256 bytea NOT NULL,
     revoked boolean DEFAULT false NOT NULL,
-    email character varying
+    email character varying,
+    google_user_id character varying,
+    microsoft_user_id character varying
 );
 
 
@@ -130,9 +132,9 @@ CREATE TABLE public.projects (
     log_in_with_google_enabled boolean NOT NULL,
     log_in_with_microsoft_enabled boolean NOT NULL,
     google_oauth_client_id character varying,
-    google_oauth_client_secret character varying,
     microsoft_oauth_client_id character varying,
-    microsoft_oauth_client_secret character varying
+    google_oauth_client_secret_ciphertext bytea,
+    microsoft_oauth_client_secret_ciphertext bytea
 );
 
 
