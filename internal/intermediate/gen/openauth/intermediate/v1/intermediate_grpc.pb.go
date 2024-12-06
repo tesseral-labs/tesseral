@@ -25,6 +25,7 @@ const (
 	IntermediateService_CreateOrganization_FullMethodName        = "/openauth.intermediate.v1.IntermediateService/CreateOrganization"
 	IntermediateService_ListOrganizations_FullMethodName         = "/openauth.intermediate.v1.IntermediateService/ListOrganizations"
 	IntermediateService_SignInWithEmail_FullMethodName           = "/openauth.intermediate.v1.IntermediateService/SignInWithEmail"
+	IntermediateService_VerifyEmailChallenge_FullMethodName      = "/openauth.intermediate.v1.IntermediateService/VerifyEmailChallenge"
 )
 
 // IntermediateServiceClient is the client API for IntermediateService service.
@@ -40,6 +41,8 @@ type IntermediateServiceClient interface {
 	ListOrganizations(ctx context.Context, in *ListOrganizationsRequest, opts ...grpc.CallOption) (*ListOrganizationsResponse, error)
 	// Creates a new intermediate session or session and cookies the requester.
 	SignInWithEmail(ctx context.Context, in *SignInWithEmailRequest, opts ...grpc.CallOption) (*SignInWithEmailResponse, error)
+	// Submits a challenge for verification of email address.
+	VerifyEmailChallenge(ctx context.Context, in *VerifyEmailChallengeRequest, opts ...grpc.CallOption) (*VerifyEmailChallengeResponse, error)
 }
 
 type intermediateServiceClient struct {
@@ -110,6 +113,16 @@ func (c *intermediateServiceClient) SignInWithEmail(ctx context.Context, in *Sig
 	return out, nil
 }
 
+func (c *intermediateServiceClient) VerifyEmailChallenge(ctx context.Context, in *VerifyEmailChallengeRequest, opts ...grpc.CallOption) (*VerifyEmailChallengeResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(VerifyEmailChallengeResponse)
+	err := c.cc.Invoke(ctx, IntermediateService_VerifyEmailChallenge_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // IntermediateServiceServer is the server API for IntermediateService service.
 // All implementations must embed UnimplementedIntermediateServiceServer
 // for forward compatibility.
@@ -123,6 +136,8 @@ type IntermediateServiceServer interface {
 	ListOrganizations(context.Context, *ListOrganizationsRequest) (*ListOrganizationsResponse, error)
 	// Creates a new intermediate session or session and cookies the requester.
 	SignInWithEmail(context.Context, *SignInWithEmailRequest) (*SignInWithEmailResponse, error)
+	// Submits a challenge for verification of email address.
+	VerifyEmailChallenge(context.Context, *VerifyEmailChallengeRequest) (*VerifyEmailChallengeResponse, error)
 	mustEmbedUnimplementedIntermediateServiceServer()
 }
 
@@ -150,6 +165,9 @@ func (UnimplementedIntermediateServiceServer) ListOrganizations(context.Context,
 }
 func (UnimplementedIntermediateServiceServer) SignInWithEmail(context.Context, *SignInWithEmailRequest) (*SignInWithEmailResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SignInWithEmail not implemented")
+}
+func (UnimplementedIntermediateServiceServer) VerifyEmailChallenge(context.Context, *VerifyEmailChallengeRequest) (*VerifyEmailChallengeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerifyEmailChallenge not implemented")
 }
 func (UnimplementedIntermediateServiceServer) mustEmbedUnimplementedIntermediateServiceServer() {}
 func (UnimplementedIntermediateServiceServer) testEmbeddedByValue()                             {}
@@ -280,6 +298,24 @@ func _IntermediateService_SignInWithEmail_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _IntermediateService_VerifyEmailChallenge_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VerifyEmailChallengeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IntermediateServiceServer).VerifyEmailChallenge(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IntermediateService_VerifyEmailChallenge_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IntermediateServiceServer).VerifyEmailChallenge(ctx, req.(*VerifyEmailChallengeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // IntermediateService_ServiceDesc is the grpc.ServiceDesc for IntermediateService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -310,6 +346,10 @@ var IntermediateService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SignInWithEmail",
 			Handler:    _IntermediateService_SignInWithEmail_Handler,
+		},
+		{
+			MethodName: "VerifyEmailChallenge",
+			Handler:    _IntermediateService_VerifyEmailChallenge_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

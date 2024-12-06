@@ -50,11 +50,22 @@ service IntermediateService {
       body: "*"
     };
   }
+
+  // Submits a challenge for verification of email address.
+  rpc VerifyEmailChallenge(VerifyEmailChallengeRequest) returns (VerifyEmailChallengeResponse) {
+    option (google.api.http) = {
+      post: "/intermediate/v1/verify-email-challenge",
+      body: "*"
+    };
+  }
 }
 
 message IntermediateSession {
   string id = 1;
   string project_id = 2;
+  string email = 3;
+  optional string google_user_id = 4;
+  optional string microsoft_user_id = 5;
   // TODO more things here
 }
 
@@ -188,3 +199,10 @@ message Session {
 
   // TODO(ucarion): add session metadata like auth factors, etc here
 }
+
+message VerifyEmailChallengeRequest {
+  // The challenge to verify.
+  string challenge = 1;
+}
+
+message VerifyEmailChallengeResponse {}

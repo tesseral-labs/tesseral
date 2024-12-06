@@ -1,3 +1,13 @@
+-- name: CompleteEmailVerificationChallenge :one
+UPDATE
+    email_verification_challenges
+SET
+    complete_time = $1
+WHERE
+    id = $2
+RETURNING
+    *;
+
 -- name: GetIntermediateSessionByTokenSHA256 :one
 SELECT
     *

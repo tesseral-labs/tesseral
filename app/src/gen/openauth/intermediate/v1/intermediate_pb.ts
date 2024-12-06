@@ -16,11 +16,26 @@ export class IntermediateSession extends Message<IntermediateSession> {
   id = "";
 
   /**
-   * TODO more things here
-   *
    * @generated from field: string project_id = 2;
    */
   projectId = "";
+
+  /**
+   * @generated from field: string email = 3;
+   */
+  email = "";
+
+  /**
+   * @generated from field: optional string google_user_id = 4;
+   */
+  googleUserId?: string;
+
+  /**
+   * TODO more things here
+   *
+   * @generated from field: optional string microsoft_user_id = 5;
+   */
+  microsoftUserId?: string;
 
   constructor(data?: PartialMessage<IntermediateSession>) {
     super();
@@ -32,6 +47,9 @@ export class IntermediateSession extends Message<IntermediateSession> {
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "project_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "google_user_id", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
+    { no: 5, name: "microsoft_user_id", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): IntermediateSession {
@@ -948,6 +966,76 @@ export class Session extends Message<Session> {
 
   static equals(a: Session | PlainMessage<Session> | undefined, b: Session | PlainMessage<Session> | undefined): boolean {
     return proto3.util.equals(Session, a, b);
+  }
+}
+
+/**
+ * @generated from message openauth.intermediate.v1.VerifyEmailChallengeRequest
+ */
+export class VerifyEmailChallengeRequest extends Message<VerifyEmailChallengeRequest> {
+  /**
+   * The challenge to verify.
+   *
+   * @generated from field: string challenge = 1;
+   */
+  challenge = "";
+
+  constructor(data?: PartialMessage<VerifyEmailChallengeRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "openauth.intermediate.v1.VerifyEmailChallengeRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "challenge", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): VerifyEmailChallengeRequest {
+    return new VerifyEmailChallengeRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): VerifyEmailChallengeRequest {
+    return new VerifyEmailChallengeRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): VerifyEmailChallengeRequest {
+    return new VerifyEmailChallengeRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: VerifyEmailChallengeRequest | PlainMessage<VerifyEmailChallengeRequest> | undefined, b: VerifyEmailChallengeRequest | PlainMessage<VerifyEmailChallengeRequest> | undefined): boolean {
+    return proto3.util.equals(VerifyEmailChallengeRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message openauth.intermediate.v1.VerifyEmailChallengeResponse
+ */
+export class VerifyEmailChallengeResponse extends Message<VerifyEmailChallengeResponse> {
+  constructor(data?: PartialMessage<VerifyEmailChallengeResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "openauth.intermediate.v1.VerifyEmailChallengeResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): VerifyEmailChallengeResponse {
+    return new VerifyEmailChallengeResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): VerifyEmailChallengeResponse {
+    return new VerifyEmailChallengeResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): VerifyEmailChallengeResponse {
+    return new VerifyEmailChallengeResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: VerifyEmailChallengeResponse | PlainMessage<VerifyEmailChallengeResponse> | undefined, b: VerifyEmailChallengeResponse | PlainMessage<VerifyEmailChallengeResponse> | undefined): boolean {
+    return proto3.util.equals(VerifyEmailChallengeResponse, a, b);
   }
 }
 

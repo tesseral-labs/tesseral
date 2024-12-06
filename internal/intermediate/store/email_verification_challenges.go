@@ -3,14 +3,20 @@ package store
 import (
 	"context"
 	"crypto/sha256"
+	"errors"
 	"math/rand/v2"
 	"strconv"
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/openauth/openauth/internal/intermediate/authn"
+	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
+	"github.com/openauth/openauth/internal/projectid"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
+
+var ErrProjectIDRequired = errors.New("project ID required")
 
 type EmailVerificationChallenge struct {
 	ID              string
@@ -39,6 +45,52 @@ type GetEmailVerificationChallengeParams struct {
 	GoogleUserID    string
 	MicrosoftUserID string
 	ProjectID       string
+}
+
+func (s *Store) CompleteEmailVerificationChallenge(ctx context.Context, challenge string) (*intermediatev1.VerifyEmailChallengeResponse, error) {
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	projectID := projectid.ProjectID(ctx)
+	if projectID == uuid.Nil {
+		return nil, ErrProjectIDRequired
+	}
+
+	intermediateSession := authn.IntermediateSession(ctx)
+
+	now := time.Now()
+	secretTokenSha256 := sha256.Sum256([]byte(challenge))
+
+	params := queries.GetEmailVerificationChallengeParams{
+		ExpireTime:      &now,
+		ChallengeSha256: secretTokenSha256[:],
+		Email:           &intermediateSession.Email,
+		GoogleUserID:    intermediateSession.GoogleUserId,
+		MicrosoftUserID: intermediateSession.MicrosoftUserId,
+		ProjectID:       projectID,
+	}
+
+	evc, err := q.GetEmailVerificationChallenge(ctx, params)
+	if err != nil {
+		return nil, err
+	}
+
+	evc, err = q.CompleteEmailVerificationChallenge(ctx, queries.CompleteEmailVerificationChallengeParams{
+		CompleteTime: &now,
+		ID:           evc.ID,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if err := commit(); err != nil {
+		return nil, err
+	}
+
+	return &intermediatev1.VerifyEmailChallengeResponse{}, nil
 }
 
 func (s *Store) CreateEmailVerificationChallenge(ctx context.Context, params *CreateEmailVerificationChallengeParams) (*EmailVerificationChallenge, error) {

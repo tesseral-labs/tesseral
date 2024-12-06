@@ -12,6 +12,39 @@ import (
 	"github.com/google/uuid"
 )
 
+const completeEmailVerificationChallenge = `-- name: CompleteEmailVerificationChallenge :one
+UPDATE
+    email_verification_challenges
+SET
+    complete_time = $1
+WHERE
+    id = $2
+RETURNING
+    id, project_id, challenge_sha256, complete_time, create_time, email, expire_time, google_user_id, microsoft_user_id
+`
+
+type CompleteEmailVerificationChallengeParams struct {
+	CompleteTime *time.Time
+	ID           uuid.UUID
+}
+
+func (q *Queries) CompleteEmailVerificationChallenge(ctx context.Context, arg CompleteEmailVerificationChallengeParams) (EmailVerificationChallenge, error) {
+	row := q.db.QueryRow(ctx, completeEmailVerificationChallenge, arg.CompleteTime, arg.ID)
+	var i EmailVerificationChallenge
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.ChallengeSha256,
+		&i.CompleteTime,
+		&i.CreateTime,
+		&i.Email,
+		&i.ExpireTime,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+	)
+	return i, err
+}
+
 const createEmailVerificationChallenge = `-- name: CreateEmailVerificationChallenge :one
 INSERT INTO email_verification_challenges (id, project_id, email, challenge_sha256, expire_time, google_user_id, microsoft_user_id)
     VALUES ($1, $2, $3, $4, $5, $6, $7)
