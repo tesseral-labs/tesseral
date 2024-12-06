@@ -87,16 +87,6 @@ type IntermediateSessionSigningKey struct {
 	ExpireTime           *time.Time
 }
 
-type MethodVerificationChallenge struct {
-	ID                    uuid.UUID
-	ProjectID             uuid.UUID
-	CompleteTime          *time.Time
-	IntermediateSessionID uuid.UUID
-	AuthMethod            AuthMethod
-	ExpireTime            *time.Time
-	SecretTokenSha256     []byte
-}
-
 type Organization struct {
 	ID                                uuid.UUID
 	ProjectID                         uuid.UUID
