@@ -4,7 +4,7 @@
 // @ts-nocheck
 
 import { MethodKind } from "@bufbuild/protobuf";
-import { CreateOrganizationRequest, CreateOrganizationResponse, GetGoogleOAuthRedirectURLRequest, GetGoogleOAuthRedirectURLResponse, ListOrganizationsRequest, ListOrganizationsResponse, RedeemGoogleOAuthCodeRequest, RedeemGoogleOAuthCodeResponse, SignInWithEmailRequest, SignInWithEmailResponse, VerifyEmailChallengeRequest, VerifyEmailChallengeResponse, WhoamiRequest, WhoamiResponse } from "./intermediate_pb.js";
+import { CreateOrganizationRequest, CreateOrganizationResponse, GetGoogleOAuthRedirectURLRequest, GetGoogleOAuthRedirectURLResponse, GetMicrosoftOAuthRedirectURLRequest, GetMicrosoftOAuthRedirectURLResponse, ListOrganizationsRequest, ListOrganizationsResponse, RedeemGoogleOAuthCodeRequest, RedeemGoogleOAuthCodeResponse, RedeemMicrosoftOAuthCodeRequest, RedeemMicrosoftOAuthCodeResponse, SignInWithEmailRequest, SignInWithEmailResponse, WhoamiRequest, WhoamiResponse } from "./intermediate_pb.js";
 
 /**
  * @generated from rpc openauth.intermediate.v1.IntermediateService.Whoami
@@ -43,6 +43,34 @@ export const redeemGoogleOAuthCode = {
   kind: MethodKind.Unary,
   I: RedeemGoogleOAuthCodeRequest,
   O: RedeemGoogleOAuthCodeResponse,
+  service: {
+    typeName: "openauth.intermediate.v1.IntermediateService"
+  }
+} as const;
+
+/**
+ * @generated from rpc openauth.intermediate.v1.IntermediateService.GetMicrosoftOAuthRedirectURL
+ */
+export const getMicrosoftOAuthRedirectURL = {
+  localName: "getMicrosoftOAuthRedirectURL",
+  name: "GetMicrosoftOAuthRedirectURL",
+  kind: MethodKind.Unary,
+  I: GetMicrosoftOAuthRedirectURLRequest,
+  O: GetMicrosoftOAuthRedirectURLResponse,
+  service: {
+    typeName: "openauth.intermediate.v1.IntermediateService"
+  }
+} as const;
+
+/**
+ * @generated from rpc openauth.intermediate.v1.IntermediateService.RedeemMicrosoftOAuthCode
+ */
+export const redeemMicrosoftOAuthCode = {
+  localName: "redeemMicrosoftOAuthCode",
+  name: "RedeemMicrosoftOAuthCode",
+  kind: MethodKind.Unary,
+  I: RedeemMicrosoftOAuthCodeRequest,
+  O: RedeemMicrosoftOAuthCodeResponse,
   service: {
     typeName: "openauth.intermediate.v1.IntermediateService"
   }
@@ -91,22 +119,6 @@ export const signInWithEmail = {
   kind: MethodKind.Unary,
   I: SignInWithEmailRequest,
   O: SignInWithEmailResponse,
-  service: {
-    typeName: "openauth.intermediate.v1.IntermediateService"
-  }
-} as const;
-
-/**
- * Submits a challenge for verification of email address.
- *
- * @generated from rpc openauth.intermediate.v1.IntermediateService.VerifyEmailChallenge
- */
-export const verifyEmailChallenge = {
-  localName: "verifyEmailChallenge",
-  name: "VerifyEmailChallenge",
-  kind: MethodKind.Unary,
-  I: VerifyEmailChallengeRequest,
-  O: VerifyEmailChallengeResponse,
   service: {
     typeName: "openauth.intermediate.v1.IntermediateService"
   }

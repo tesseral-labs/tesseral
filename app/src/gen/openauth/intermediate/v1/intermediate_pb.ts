@@ -280,6 +280,148 @@ export class RedeemGoogleOAuthCodeResponse extends Message<RedeemGoogleOAuthCode
 }
 
 /**
+ * @generated from message openauth.intermediate.v1.GetMicrosoftOAuthRedirectURLRequest
+ */
+export class GetMicrosoftOAuthRedirectURLRequest extends Message<GetMicrosoftOAuthRedirectURLRequest> {
+  constructor(data?: PartialMessage<GetMicrosoftOAuthRedirectURLRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "openauth.intermediate.v1.GetMicrosoftOAuthRedirectURLRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetMicrosoftOAuthRedirectURLRequest {
+    return new GetMicrosoftOAuthRedirectURLRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetMicrosoftOAuthRedirectURLRequest {
+    return new GetMicrosoftOAuthRedirectURLRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetMicrosoftOAuthRedirectURLRequest {
+    return new GetMicrosoftOAuthRedirectURLRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: GetMicrosoftOAuthRedirectURLRequest | PlainMessage<GetMicrosoftOAuthRedirectURLRequest> | undefined, b: GetMicrosoftOAuthRedirectURLRequest | PlainMessage<GetMicrosoftOAuthRedirectURLRequest> | undefined): boolean {
+    return proto3.util.equals(GetMicrosoftOAuthRedirectURLRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message openauth.intermediate.v1.GetMicrosoftOAuthRedirectURLResponse
+ */
+export class GetMicrosoftOAuthRedirectURLResponse extends Message<GetMicrosoftOAuthRedirectURLResponse> {
+  /**
+   * @generated from field: string url = 1;
+   */
+  url = "";
+
+  constructor(data?: PartialMessage<GetMicrosoftOAuthRedirectURLResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "openauth.intermediate.v1.GetMicrosoftOAuthRedirectURLResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "url", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetMicrosoftOAuthRedirectURLResponse {
+    return new GetMicrosoftOAuthRedirectURLResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetMicrosoftOAuthRedirectURLResponse {
+    return new GetMicrosoftOAuthRedirectURLResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetMicrosoftOAuthRedirectURLResponse {
+    return new GetMicrosoftOAuthRedirectURLResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: GetMicrosoftOAuthRedirectURLResponse | PlainMessage<GetMicrosoftOAuthRedirectURLResponse> | undefined, b: GetMicrosoftOAuthRedirectURLResponse | PlainMessage<GetMicrosoftOAuthRedirectURLResponse> | undefined): boolean {
+    return proto3.util.equals(GetMicrosoftOAuthRedirectURLResponse, a, b);
+  }
+}
+
+/**
+ * @generated from message openauth.intermediate.v1.RedeemMicrosoftOAuthCodeRequest
+ */
+export class RedeemMicrosoftOAuthCodeRequest extends Message<RedeemMicrosoftOAuthCodeRequest> {
+  /**
+   * @generated from field: string code = 1;
+   */
+  code = "";
+
+  /**
+   * @generated from field: string state = 2;
+   */
+  state = "";
+
+  constructor(data?: PartialMessage<RedeemMicrosoftOAuthCodeRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "openauth.intermediate.v1.RedeemMicrosoftOAuthCodeRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "code", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "state", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): RedeemMicrosoftOAuthCodeRequest {
+    return new RedeemMicrosoftOAuthCodeRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): RedeemMicrosoftOAuthCodeRequest {
+    return new RedeemMicrosoftOAuthCodeRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): RedeemMicrosoftOAuthCodeRequest {
+    return new RedeemMicrosoftOAuthCodeRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: RedeemMicrosoftOAuthCodeRequest | PlainMessage<RedeemMicrosoftOAuthCodeRequest> | undefined, b: RedeemMicrosoftOAuthCodeRequest | PlainMessage<RedeemMicrosoftOAuthCodeRequest> | undefined): boolean {
+    return proto3.util.equals(RedeemMicrosoftOAuthCodeRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message openauth.intermediate.v1.RedeemMicrosoftOAuthCodeResponse
+ */
+export class RedeemMicrosoftOAuthCodeResponse extends Message<RedeemMicrosoftOAuthCodeResponse> {
+  constructor(data?: PartialMessage<RedeemMicrosoftOAuthCodeResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "openauth.intermediate.v1.RedeemMicrosoftOAuthCodeResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): RedeemMicrosoftOAuthCodeResponse {
+    return new RedeemMicrosoftOAuthCodeResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): RedeemMicrosoftOAuthCodeResponse {
+    return new RedeemMicrosoftOAuthCodeResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): RedeemMicrosoftOAuthCodeResponse {
+    return new RedeemMicrosoftOAuthCodeResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: RedeemMicrosoftOAuthCodeResponse | PlainMessage<RedeemMicrosoftOAuthCodeResponse> | undefined, b: RedeemMicrosoftOAuthCodeResponse | PlainMessage<RedeemMicrosoftOAuthCodeResponse> | undefined): boolean {
+    return proto3.util.equals(RedeemMicrosoftOAuthCodeResponse, a, b);
+  }
+}
+
+/**
  * @generated from message openauth.intermediate.v1.IntermediateSessionClaims
  */
 export class IntermediateSessionClaims extends Message<IntermediateSessionClaims> {
