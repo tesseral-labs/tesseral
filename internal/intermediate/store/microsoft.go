@@ -98,7 +98,7 @@ func (s *Store) RedeemMicrosoftOAuthCode(ctx context.Context, req *intermediatev
 
 	// todo what if the intermediate session already has an email
 	// todo send an email verification challenge?
-	// todo what if redeem doesn't come back with a microsoft hosted domain?
+	// todo what if redeem comes back with the "public" microsoft tenant ID?
 	if _, err := q.UpdateIntermediateSessionMicrosoftDetails(ctx, queries.UpdateIntermediateSessionMicrosoftDetailsParams{
 		ID:                authn.IntermediateSessionID(ctx),
 		Email:             &redeemRes.Email,
