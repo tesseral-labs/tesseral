@@ -12,6 +12,7 @@ import (
 )
 
 var ErrAuthorizationHeaderRequired = errors.New("authorization header is required")
+var ErrProjectIDHeaderRequired = errors.New("X-OpenAuth-Project-ID header is required")
 
 var skipRPCs = []string{
 	"/openauth.intermediate.v1.IntermediateService/SignInWithEmail",
@@ -24,7 +25,7 @@ func New(s *store.Store) connect.UnaryInterceptorFunc {
 
 			projectIDHeader := req.Header().Get("X-OpenAuth-Project-ID")
 			if projectIDHeader == "" {
-				return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("project ID header is required"))
+				return nil, connect.NewError(connect.CodeInvalidArgument, ErrProjectIDHeaderRequired)
 			}
 
 			projectID, err := idformat.Project.Parse(projectIDHeader)
