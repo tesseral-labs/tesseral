@@ -3,6 +3,7 @@ package projectid
 import (
 	"context"
 	"errors"
+	"net/http"
 
 	"connectrpc.com/connect"
 	"github.com/google/uuid"
@@ -17,9 +18,24 @@ type ctxKey struct{}
 
 var ErrProjectIDHeaderRequired = errors.New("X-TODO-OpenAuth-Project-ID header is required")
 
-func newContext(ctx context.Context, projectID uuid.UUID) context.Context {
-	return context.WithValue(ctx, ctxKey{}, ctxData{
-		projectID,
+func NewHttpHandler(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		projectIDHeader := r.Header.Get("X-TODO-OpenAuth-Project-ID")
+		if projectIDHeader == "" {
+			http.Error(w, ErrProjectIDHeaderRequired.Error(), http.StatusBadRequest)
+			return
+		}
+
+		projectID, err := idformat.Project.Parse(projectIDHeader)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		ctx := newContext(r.Context(), projectID)
+		r = r.WithContext(ctx)
+
+		next.ServeHTTP(w, r)
 	})
 }
 
@@ -51,4 +67,10 @@ func ProjectID(ctx context.Context) uuid.UUID {
 	}
 
 	return v.projectID
+}
+
+func newContext(ctx context.Context, projectID uuid.UUID) context.Context {
+	return context.WithValue(ctx, ctxKey{}, ctxData{
+		projectID,
+	})
 }

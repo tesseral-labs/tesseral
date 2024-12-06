@@ -186,7 +186,7 @@ func main() {
 	mux.Handle("/intermediate/v1/", intermediateTranscoder)
 
 	// Register oauthservice
-	mux.Handle("/oauth/", oauthService.Handler())
+	mux.Handle("/oauth/", projectid.NewHttpHandler(oauthService.Handler()))
 
 	// Serve the services
 	slog.Info("serve")
