@@ -3,7 +3,7 @@
 --
 
 -- Dumped from database version 15.8 (Debian 15.8-1.pgdg120+1)
--- Dumped by pg_dump version 17.0 (Homebrew)
+-- Dumped by pg_dump version 17.0
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -16,20 +16,6 @@ SET check_function_bodies = false;
 SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
-
---
--- Name: pgcrypto; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
-
-
---
--- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
-
 
 --
 -- Name: auth_method; Type: TYPE; Schema: public; Owner: postgres
@@ -94,9 +80,6 @@ CREATE TABLE public.intermediate_sessions (
     expire_time timestamp with time zone NOT NULL,
     token_sha256 bytea NOT NULL,
     revoked boolean DEFAULT false NOT NULL,
-    email character varying,
-    google_user_id character varying,
-    microsoft_user_id character varying
     email character varying,
     google_oauth_state_sha256 bytea,
     microsoft_oauth_state_sha256 bytea,

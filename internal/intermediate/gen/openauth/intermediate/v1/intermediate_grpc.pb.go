@@ -19,13 +19,13 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	IntermediateService_Whoami_FullMethodName                      = "/openauth.intermediate.v1.IntermediateService/Whoami"
+	IntermediateService_Whoami_FullMethodName                    = "/openauth.intermediate.v1.IntermediateService/Whoami"
 	IntermediateService_GetGoogleOAuthRedirectURL_FullMethodName = "/openauth.intermediate.v1.IntermediateService/GetGoogleOAuthRedirectURL"
 	IntermediateService_RedeemGoogleOAuthCode_FullMethodName     = "/openauth.intermediate.v1.IntermediateService/RedeemGoogleOAuthCode"
-	IntermediateService_CreateOrganization_FullMethodName          = "/openauth.intermediate.v1.IntermediateService/CreateOrganization"
-	IntermediateService_ListOrganizations_FullMethodName           = "/openauth.intermediate.v1.IntermediateService/ListOrganizations"
-	IntermediateService_SignInWithEmail_FullMethodName             = "/openauth.intermediate.v1.IntermediateService/SignInWithEmail"
-	IntermediateService_VerifyEmailChallenge_FullMethodName = "/openauth.intermediate.v1.IntermediateService/VerifyEmailChallenge"
+	IntermediateService_CreateOrganization_FullMethodName        = "/openauth.intermediate.v1.IntermediateService/CreateOrganization"
+	IntermediateService_ListOrganizations_FullMethodName         = "/openauth.intermediate.v1.IntermediateService/ListOrganizations"
+	IntermediateService_SignInWithEmail_FullMethodName           = "/openauth.intermediate.v1.IntermediateService/SignInWithEmail"
+	IntermediateService_VerifyEmailChallenge_FullMethodName      = "/openauth.intermediate.v1.IntermediateService/VerifyEmailChallenge"
 )
 
 // IntermediateServiceClient is the client API for IntermediateService service.

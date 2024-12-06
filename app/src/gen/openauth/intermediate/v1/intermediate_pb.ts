@@ -1012,13 +1012,6 @@ export class VerifyEmailChallengeRequest extends Message<VerifyEmailChallengeReq
  * @generated from message openauth.intermediate.v1.VerifyEmailChallengeResponse
  */
 export class VerifyEmailChallengeResponse extends Message<VerifyEmailChallengeResponse> {
-  /**
-   * The token for the intermediate session or session created by the VerifyEmailChallenge request.
-   *
-   * @generated from field: bool Success = 1;
-   */
-  Success = false;
-
   constructor(data?: PartialMessage<VerifyEmailChallengeResponse>) {
     super();
     proto3.util.initPartial(data, this);
@@ -1027,7 +1020,6 @@ export class VerifyEmailChallengeResponse extends Message<VerifyEmailChallengeRe
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "openauth.intermediate.v1.VerifyEmailChallengeResponse";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "Success", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): VerifyEmailChallengeResponse {

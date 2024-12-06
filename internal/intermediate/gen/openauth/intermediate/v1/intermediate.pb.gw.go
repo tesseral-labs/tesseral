@@ -514,6 +514,7 @@ var (
 	pattern_IntermediateService_CreateOrganization_0        = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "organizations"}, ""))
 	pattern_IntermediateService_ListOrganizations_0         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "organizations"}, ""))
 	pattern_IntermediateService_SignInWithEmail_0           = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "email-signin"}, ""))
+	pattern_IntermediateService_VerifyEmailChallenge_0      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "verify-email-challenge"}, ""))
 )
 
 var (
@@ -523,4 +524,5 @@ var (
 	forward_IntermediateService_CreateOrganization_0        = runtime.ForwardResponseMessage
 	forward_IntermediateService_ListOrganizations_0         = runtime.ForwardResponseMessage
 	forward_IntermediateService_SignInWithEmail_0           = runtime.ForwardResponseMessage
+	forward_IntermediateService_VerifyEmailChallenge_0      = runtime.ForwardResponseMessage
 )

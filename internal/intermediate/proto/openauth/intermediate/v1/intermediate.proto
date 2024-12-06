@@ -205,7 +205,4 @@ message VerifyEmailChallengeRequest {
   string challenge = 1;
 }
 
-message VerifyEmailChallengeResponse {
-  // The token for the intermediate session or session created by the VerifyEmailChallenge request.
-  bool Success = 1;
-}
+message VerifyEmailChallengeResponse {}

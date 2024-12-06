@@ -59,16 +59,7 @@ func (s *Store) CompleteEmailVerificationChallenge(ctx context.Context, challeng
 		return nil, ErrProjectIDRequired
 	}
 
-	intermediateSessionCtx := authn.IntermediateSession(ctx)
-	intermediateSessionID, err := idformat.IntermediateSession.Parse(intermediateSessionCtx.Id)
-	if err != nil {
-		return nil, err
-	}
-
-	intermediateSession, err := q.GetIntermediateSessionByID(ctx, intermediateSessionID)
-	if err != nil {
-		return nil, err
-	}
+	intermediateSession := authn.IntermediateSession(ctx)
 
 	now := time.Now()
 	secretTokenSha256 := sha256.Sum256([]byte(challenge))
@@ -76,9 +67,9 @@ func (s *Store) CompleteEmailVerificationChallenge(ctx context.Context, challeng
 	params := queries.GetEmailVerificationChallengeParams{
 		ExpireTime:      &now,
 		ChallengeSha256: secretTokenSha256[:],
-		Email:           intermediateSession.Email,
-		GoogleUserID:    intermediateSession.GoogleUserID,
-		MicrosoftUserID: intermediateSession.MicrosoftUserID,
+		Email:           &intermediateSession.Email,
+		GoogleUserID:    intermediateSession.GoogleUserId,
+		MicrosoftUserID: intermediateSession.MicrosoftUserId,
 		ProjectID:       projectID,
 	}
 
@@ -99,9 +90,7 @@ func (s *Store) CompleteEmailVerificationChallenge(ctx context.Context, challeng
 		return nil, err
 	}
 
-	return &intermediatev1.VerifyEmailChallengeResponse{
-		Success: true,
-	}, nil
+	return &intermediatev1.VerifyEmailChallengeResponse{}, nil
 }
 
 func (s *Store) CreateEmailVerificationChallenge(ctx context.Context, params *CreateEmailVerificationChallengeParams) (*EmailVerificationChallenge, error) {
