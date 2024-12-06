@@ -172,18 +172,24 @@ func main() {
 	}))
 
 	// Register service transcoders
-	// -- We're using the projectid HttpHandler to extract the project ID from the request
-	// -- and pass it to the services
-	mux.Handle("/backend/v1/", projectid.NewHttpHandler(backendTranscoder))
-	mux.Handle("/frontend/v1/", projectid.NewHttpHandler(frontendTranscoder))
-	mux.Handle("/intermediate/v1/", projectid.NewHttpHandler(intermediateTranscoder))
+	mux.Handle("/backend/v1/", backendTranscoder)
+	mux.Handle("/frontend/v1/", frontendTranscoder)
+	mux.Handle("/intermediate/v1/", intermediateTranscoder)
 
 	// Register oauthservice
-	mux.Handle("/oauth/", projectid.NewHttpHandler(oauthService.Handler()))
+	mux.Handle("/oauth/", oauthService.Handler())
+
+	// These handlers are registered in a FILO order much like
+	// much like a Matryoshka doll <https://en.wikipedia.org/wiki/Matryoshka_doll>
+
+	// Use the projectid.NewHttpHandler to extract the project ID from the request
+	serve := projectid.NewHttpHandler(mux)
+	// Use the slogcorrelation.NewHandler to add correlation IDs to the request
+	serve = slogcorrelation.NewHandler(serve)
 
 	// Serve the services
 	slog.Info("serve")
-	if err := http.ListenAndServe(config.ServeAddr, slogcorrelation.NewHandler(mux)); err != nil {
+	if err := http.ListenAndServe(config.ServeAddr, serve); err != nil {
 		panic(err)
 	}
 }
