@@ -130,9 +130,9 @@ CREATE TABLE public.projects (
     log_in_with_google_enabled boolean NOT NULL,
     log_in_with_microsoft_enabled boolean NOT NULL,
     google_oauth_client_id character varying,
+    google_oauth_client_secret character varying,
     microsoft_oauth_client_id character varying,
-    google_oauth_client_secret_ciphertext bytea,
-    microsoft_oauth_client_secret_ciphertext bytea
+    microsoft_oauth_client_secret character varying
 );
 
 
