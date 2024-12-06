@@ -123,11 +123,6 @@ type ProjectApiKey struct {
 	SecretTokenSha256 []byte
 }
 
-type SchemaMigration struct {
-	Version int64
-	Dirty   bool
-}
-
 type Session struct {
 	ID                 uuid.UUID
 	UserID             uuid.UUID
