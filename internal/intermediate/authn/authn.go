@@ -4,7 +4,9 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/google/uuid"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
+	"github.com/openauth/openauth/internal/store/idformat"
 )
 
 type ctxData struct {
@@ -28,4 +30,18 @@ func IntermediateSession(ctx context.Context) *intermediatev1.IntermediateSessio
 	return v.intermediateSession
 }
 
-// TODO we will likely want a convenience IntermediateSessionID(ctx context.Context) string function
+func IntermediateSessionID(ctx context.Context) uuid.UUID {
+	id, err := idformat.IntermediateSession.Parse(IntermediateSession(ctx).Id)
+	if err != nil {
+		panic(fmt.Errorf("parse intermediate session id: %w", err))
+	}
+	return id
+}
+
+func ProjectID(ctx context.Context) uuid.UUID {
+	id, err := idformat.Project.Parse(IntermediateSession(ctx).ProjectId)
+	if err != nil {
+		panic(fmt.Errorf("parse project id: %w", err))
+	}
+	return id
+}

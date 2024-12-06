@@ -4,7 +4,7 @@
 // @ts-nocheck
 
 import { MethodKind } from "@bufbuild/protobuf";
-import { CreateOrganizationRequest, CreateOrganizationResponse, ListOrganizationsRequest, ListOrganizationsResponse, SignInWithEmailRequest, SignInWithEmailResponse, WhoamiRequest, WhoamiResponse } from "./intermediate_pb.js";
+import { CreateOrganizationRequest, CreateOrganizationResponse, GetGoogleOAuthRedirectURLRequest, GetGoogleOAuthRedirectURLResponse, ListOrganizationsRequest, ListOrganizationsResponse, RedeemGoogleOAuthCodeRequest, RedeemGoogleOAuthCodeResponse, SignInWithEmailRequest, SignInWithEmailResponse, WhoamiRequest, WhoamiResponse } from "./intermediate_pb.js";
 
 /**
  * @generated from rpc openauth.intermediate.v1.IntermediateService.Whoami
@@ -15,6 +15,34 @@ export const whoami = {
   kind: MethodKind.Unary,
   I: WhoamiRequest,
   O: WhoamiResponse,
+  service: {
+    typeName: "openauth.intermediate.v1.IntermediateService"
+  }
+} as const;
+
+/**
+ * @generated from rpc openauth.intermediate.v1.IntermediateService.GetGoogleOAuthRedirectURL
+ */
+export const getGoogleOAuthRedirectURL = {
+  localName: "getGoogleOAuthRedirectURL",
+  name: "GetGoogleOAuthRedirectURL",
+  kind: MethodKind.Unary,
+  I: GetGoogleOAuthRedirectURLRequest,
+  O: GetGoogleOAuthRedirectURLResponse,
+  service: {
+    typeName: "openauth.intermediate.v1.IntermediateService"
+  }
+} as const;
+
+/**
+ * @generated from rpc openauth.intermediate.v1.IntermediateService.RedeemGoogleOAuthCode
+ */
+export const redeemGoogleOAuthCode = {
+  localName: "redeemGoogleOAuthCode",
+  name: "RedeemGoogleOAuthCode",
+  kind: MethodKind.Unary,
+  I: RedeemGoogleOAuthCodeRequest,
+  O: RedeemGoogleOAuthCodeResponse,
   service: {
     typeName: "openauth.intermediate.v1.IntermediateService"
   }
