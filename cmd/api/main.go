@@ -10,6 +10,7 @@ import (
 	"connectrpc.com/connect"
 	"connectrpc.com/vanguard"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/cyrusaf/ctxlog"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -34,7 +35,7 @@ import (
 	"github.com/openauth/openauth/internal/secretload"
 	"github.com/openauth/openauth/internal/slogcorrelation"
 	"github.com/openauth/openauth/internal/store/idformat"
-	"github.com/openauth/openauth/internal/store/kms"
+	keyManagementService "github.com/openauth/openauth/internal/store/kms"
 	"github.com/ssoready/conf"
 )
 
@@ -49,13 +50,15 @@ func main() {
 	loadenv.LoadEnv()
 
 	config := struct {
-		DB                          string `conf:"db"`
-		DogfoodProjectID            string `conf:"dogfood_project_id"`
-		IntermediateSessionKMSKeyID string `conf:"intermediate_session_kms_key_id"`
-		KMSEndpoint                 string `conf:"kms_endpoint_resolver_url,noredact"`
-		PageEncodingValue           string `conf:"page-encoding-value"`
-		ServeAddr                   string `conf:"serve_addr,noredact"`
-		SessionKMSKeyID             string `conf:"session_kms_key_id"`
+		DB                                  string `conf:"db"`
+		DogfoodProjectID                    string `conf:"dogfood_project_id"`
+		IntermediateSessionKMSKeyID         string `conf:"intermediate_session_kms_key_id"`
+		KMSEndpoint                         string `conf:"kms_endpoint_resolver_url,noredact"`
+		PageEncodingValue                   string `conf:"page-encoding-value"`
+		ServeAddr                           string `conf:"serve_addr,noredact"`
+		SessionKMSKeyID                     string `conf:"session_kms_key_id"`
+		GoogleOAuthClientSecretsKMSKeyID    string `conf:"google_oauth_client_secrets_kms_key_id,noredact"`
+		MicrosoftOAuthClientSecretsKMSKeyID string `conf:"microsoft_oauth_client_secrets_kms_key_id,noredact"`
 	}{
 		PageEncodingValue: "0000000000000000000000000000000000000000000000000000000000000000",
 	}
@@ -81,21 +84,29 @@ func main() {
 	}
 	uuidDogfoodProjectID := uuid.UUID(dogfoodProjectID[:])
 
-	awsConf, err := awsconfig.LoadDefaultConfig(context.TODO())
+	awsConfig, err := awsconfig.LoadDefaultConfig(context.Background())
 	if err != nil {
 		panic(fmt.Errorf("load aws config: %w", err))
 	}
 
-	kms_ := kms.NewKeyManagementServiceFromConfig(&awsConf, &config.KMSEndpoint)
+	kmsClient := kms.NewFromConfig(awsConfig, func(opts *kms.Options) {
+		if config.KMSEndpoint != "" {
+			opts.BaseEndpoint = &config.KMSEndpoint
+		}
+	})
+
+	kms_ := keyManagementService.NewKeyManagementServiceFromConfig(&awsConfig, &config.KMSEndpoint)
 
 	// Register the backend service
 	backendStore := backendstore.New(backendstore.NewStoreParams{
 		DB:                                    db,
 		DogfoodProjectID:                      &uuidDogfoodProjectID,
 		IntermediateSessionSigningKeyKMSKeyID: config.IntermediateSessionKMSKeyID,
-		KMS:                                   kms_,
+		KMS:                                   kmsClient,
 		PageEncoder:                           pagetoken.Encoder{Secret: pageEncodingValue},
 		SessionSigningKeyKmsKeyID:             config.SessionKMSKeyID,
+		GoogleOAuthClientSecretsKMSKeyID:      config.GoogleOAuthClientSecretsKMSKeyID,
+		MicrosoftOAuthClientSecretsKMSKeyID:   config.MicrosoftOAuthClientSecretsKMSKeyID,
 	})
 	backendConnectPath, backendConnectHandler := backendv1connect.NewBackendServiceHandler(
 		&backendservice.Service{

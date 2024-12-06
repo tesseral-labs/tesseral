@@ -104,7 +104,7 @@ func (q *Queries) GetOrganizationByID(ctx context.Context, id uuid.UUID) (Organi
 
 const getProjectByID = `-- name: GetProjectByID :one
 SELECT
-    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext
 FROM
     projects
 WHERE
@@ -121,9 +121,9 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 		&i.LogInWithGoogleEnabled,
 		&i.LogInWithMicrosoftEnabled,
 		&i.GoogleOauthClientID,
-		&i.GoogleOauthClientSecret,
 		&i.MicrosoftOauthClientID,
-		&i.MicrosoftOauthClientSecret,
+		&i.GoogleOauthClientSecretCiphertext,
+		&i.MicrosoftOauthClientSecretCiphertext,
 	)
 	return i, err
 }

@@ -2,7 +2,10 @@ package store
 
 import (
 	"context"
+	"fmt"
 
+	"github.com/aws/aws-sdk-go-v2/service/kms"
+	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
 	backendv1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
 	"github.com/openauth/openauth/internal/backend/store/queries"
@@ -131,20 +134,42 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 		ID: project.ID,
 	}
 
-	// Conditionally configure Google OAuth
+	updates.GoogleOauthClientID = project.GoogleOauthClientID
 	if req.Project.GoogleOauthClientId != "" {
 		updates.GoogleOauthClientID = &req.Project.GoogleOauthClientId
 	}
+
+	updates.GoogleOauthClientSecretCiphertext = project.GoogleOauthClientSecretCiphertext
 	if req.Project.GoogleOauthClientSecret != "" {
-		updates.GoogleOauthClientSecret = &req.Project.GoogleOauthClientSecret
+		encryptRes, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
+			KeyId:               &s.googleOAuthClientSecretsKMSKeyID,
+			Plaintext:           []byte(req.Project.GoogleOauthClientSecret),
+			EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
+		})
+		if err != nil {
+			return nil, fmt.Errorf("encrypt google oauth client secret: %w", err)
+		}
+
+		updates.GoogleOauthClientSecretCiphertext = encryptRes.CiphertextBlob
 	}
 
-	// Conditionally configure Microsoft OAuth
+	updates.MicrosoftOauthClientID = project.MicrosoftOauthClientID
 	if req.Project.MicrosoftOauthClientId != "" {
 		updates.MicrosoftOauthClientID = &req.Project.MicrosoftOauthClientId
 	}
+
+	updates.MicrosoftOauthClientSecretCiphertext = project.MicrosoftOauthClientSecretCiphertext
 	if req.Project.MicrosoftOauthClientSecret != "" {
-		updates.MicrosoftOauthClientSecret = &req.Project.MicrosoftOauthClientSecret
+		encryptRes, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
+			KeyId:               &s.microsoftOAuthClientSecretsKMSKeyID,
+			Plaintext:           []byte(req.Project.MicrosoftOauthClientSecret),
+			EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
+		})
+		if err != nil {
+			return nil, fmt.Errorf("encrypt microsoft oauth client secret: %w", err)
+		}
+
+		updates.MicrosoftOauthClientSecretCiphertext = encryptRes.CiphertextBlob
 	}
 
 	// Conditionally enable/disable login methods
@@ -172,14 +197,12 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 
 func parseProject(project *queries.Project) *backendv1.Project {
 	return &backendv1.Project{
-		Id:                         idformat.Project.Format(project.ID),
-		OrganizationId:             idformat.Organization.Format(*project.OrganizationID),
-		LogInWithPasswordEnabled:   project.LogInWithPasswordEnabled,
-		LogInWithGoogleEnabled:     project.LogInWithGoogleEnabled,
-		LogInWithMicrosoftEnabled:  project.LogInWithMicrosoftEnabled,
-		GoogleOauthClientId:        derefOrEmpty(project.GoogleOauthClientID),
-		GoogleOauthClientSecret:    derefOrEmpty(project.GoogleOauthClientSecret),
-		MicrosoftOauthClientId:     derefOrEmpty(project.MicrosoftOauthClientID),
-		MicrosoftOauthClientSecret: derefOrEmpty(project.MicrosoftOauthClientSecret),
+		Id:                        idformat.Project.Format(project.ID),
+		OrganizationId:            idformat.Organization.Format(*project.OrganizationID),
+		LogInWithPasswordEnabled:  project.LogInWithPasswordEnabled,
+		LogInWithGoogleEnabled:    project.LogInWithGoogleEnabled,
+		LogInWithMicrosoftEnabled: project.LogInWithMicrosoftEnabled,
+		GoogleOauthClientId:       derefOrEmpty(project.GoogleOauthClientID),
+		MicrosoftOauthClientId:    derefOrEmpty(project.MicrosoftOauthClientID),
 	}
 }

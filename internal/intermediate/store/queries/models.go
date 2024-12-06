@@ -98,15 +98,15 @@ type Organization struct {
 }
 
 type Project struct {
-	ID                         uuid.UUID
-	OrganizationID             *uuid.UUID
-	LogInWithPasswordEnabled   bool
-	LogInWithGoogleEnabled     bool
-	LogInWithMicrosoftEnabled  bool
-	GoogleOauthClientID        *string
-	GoogleOauthClientSecret    *string
-	MicrosoftOauthClientID     *string
-	MicrosoftOauthClientSecret *string
+	ID                                   uuid.UUID
+	OrganizationID                       *uuid.UUID
+	LogInWithPasswordEnabled             bool
+	LogInWithGoogleEnabled               bool
+	LogInWithMicrosoftEnabled            bool
+	GoogleOauthClientID                  *string
+	MicrosoftOauthClientID               *string
+	GoogleOauthClientSecretCiphertext    []byte
+	MicrosoftOauthClientSecretCiphertext []byte
 }
 
 type ProjectApiKey struct {

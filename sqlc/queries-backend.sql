@@ -5,7 +5,7 @@ RETURNING
     *;
 
 -- name: CreateProject :one
-INSERT INTO projects (id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret, microsoft_oauth_client_id, microsoft_oauth_client_secret)
+INSERT INTO projects (id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_id, microsoft_oauth_client_secret_ciphertext)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 RETURNING
     *;
@@ -86,9 +86,9 @@ SET
     log_in_with_google_enabled = $3,
     log_in_with_microsoft_enabled = $4,
     google_oauth_client_id = $5,
-    google_oauth_client_secret = $6,
+    google_oauth_client_secret_ciphertext = $6,
     microsoft_oauth_client_id = $7,
-    microsoft_oauth_client_secret = $8
+    microsoft_oauth_client_secret_ciphertext = $8
 WHERE
     id = $1
 RETURNING
