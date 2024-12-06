@@ -38,6 +38,8 @@ func (s *Store) SignInWithEmail(
 		return nil, err
 	}
 
+	token := uuid.New()
+
 	if users != nil {
 		// TODO: Implement factor checking before issuing a session
 		panic(errors.New("not implemented"))
@@ -46,27 +48,14 @@ func (s *Store) SignInWithEmail(
 		// so the user can verify their email address and create an organization
 
 		expiresAt := time.Now().Add(15 * time.Minute)
-
-		// TODO delete this commented out code
-		//signingKey, err := s.GetIntermediateSessionSigningKeyByProjectID(*ctx, req.ProjectId)
-		//if err != nil {
-		//	return nil, err
-		//}
-
-		//signingKeyId := idformat.IntermediateSessionSigningKey.Format(signingKey.ID)
-		//
-		//sessionToken := ujwt.Sign(string(signingKeyId), signingKey.PrivateKey, &intermediatev1.IntermediateSessionClaims{
-		//	Email:     req.Email,
-		//	ExpiresAt: expiresAt.Unix(),
-		//	IssuedAt:  time.Now().Unix(),
-		//	ProjectId: req.ProjectId,
-		//})
+		tokenSha256 := sha256.Sum256(token[:])
 
 		intermediateSession, err := q.CreateIntermediateSession(*ctx, queries.CreateIntermediateSessionParams{
-			ID:         uuid.New(),
-			ProjectID:  projectId,
-			Email:      &req.Email,
-			ExpireTime: &expiresAt,
+			ID:          uuid.New(),
+			ProjectID:   projectId,
+			Email:       &req.Email,
+			ExpireTime:  &expiresAt,
+			TokenSha256: tokenSha256[:],
 		})
 		if err != nil {
 			return nil, err
@@ -85,14 +74,13 @@ func (s *Store) SignInWithEmail(
 			expiresAt := time.Now().Add(15 * time.Minute)
 
 			_, err = q.CreateEmailVerificationChallenge(*ctx, queries.CreateEmailVerificationChallengeParams{
-				ID:                    uuid.New(),
-				IntermediateSessionID: intermediateSession.ID,
-				ProjectID:             intermediateSession.ProjectID,
-				ChallengeSha256:       secretTokenSha256[:],
-				Email:                 &req.Email,
-				ExpireTime:            &expiresAt,
-				GoogleUserID:          nil,
-				MicrosoftUserID:       nil,
+				ID:              uuid.New(),
+				ProjectID:       intermediateSession.ProjectID,
+				ChallengeSha256: secretTokenSha256[:],
+				Email:           &req.Email,
+				ExpireTime:      &expiresAt,
+				GoogleUserID:    nil,
+				MicrosoftUserID: nil,
 			})
 			if err != nil {
 				return nil, err
@@ -108,7 +96,7 @@ func (s *Store) SignInWithEmail(
 
 		return &intermediatev1.SignInWithEmailResponse{
 			// TODO what to return here
-			//SessionToken: intermediateSession.Token,
+			SessionToken: idformat.IntermediateSessionToken.Format(token),
 		}, nil
 	}
 }

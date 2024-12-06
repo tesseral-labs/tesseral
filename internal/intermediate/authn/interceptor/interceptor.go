@@ -37,7 +37,7 @@ func New(s *store.Store) connect.UnaryInterceptorFunc {
 
 			intermediateSession, err := s.GetIntermediateSessionByToken(ctx, secretValue)
 			if err != nil {
-				return nil, connect.NewError(connect.CodeUnauthenticated, nil)
+				return nil, connect.NewError(connect.CodeUnauthenticated, err)
 			}
 
 			ctx = authn.NewContext(ctx, intermediateSession)

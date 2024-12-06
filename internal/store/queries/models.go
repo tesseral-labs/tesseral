@@ -56,16 +56,15 @@ func (ns NullAuthMethod) Value() (driver.Value, error) {
 }
 
 type EmailVerificationChallenge struct {
-	ID                    uuid.UUID
-	IntermediateSessionID uuid.UUID
-	ProjectID             uuid.UUID
-	ChallengeSha256       []byte
-	CompleteTime          *time.Time
-	CreateTime            *time.Time
-	Email                 *string
-	ExpireTime            *time.Time
-	GoogleUserID          *string
-	MicrosoftUserID       *string
+	ID              uuid.UUID
+	ProjectID       uuid.UUID
+	ChallengeSha256 []byte
+	CompleteTime    *time.Time
+	CreateTime      *time.Time
+	Email           *string
+	ExpireTime      *time.Time
+	GoogleUserID    *string
+	MicrosoftUserID *string
 }
 
 type IntermediateSession struct {

@@ -7,8 +7,8 @@ WHERE
     token_sha256 = $1;
 
 -- name: CreateEmailVerificationChallenge :one
-INSERT INTO email_verification_challenges (id, intermediate_session_id, project_id, email, challenge_sha256, expire_time, google_user_id, microsoft_user_id)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+INSERT INTO email_verification_challenges (id, project_id, email, challenge_sha256, expire_time, google_user_id, microsoft_user_id)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
 RETURNING
     *;
 
@@ -43,12 +43,11 @@ FROM
     email_verification_challenges
 WHERE
     project_id = $1
-    AND intermediate_session_id = $2
-    AND challenge_sha256 = $3
-    AND expire_time > $4
-    AND (email = $5
-        OR google_user_id = $6
-        OR microsoft_user_id = $7)
+    AND challenge_sha256 = $2
+    AND expire_time > $3
+    AND (email = $4
+        OR google_user_id = $5
+        OR microsoft_user_id = $6)
 LIMIT 1;
 
 -- name: GetIntermediateSessionByID :one
