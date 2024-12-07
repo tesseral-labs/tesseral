@@ -36,6 +36,14 @@ service IntermediateService {
     };
   }
 
+  // Issues a new email verification challenge.
+  rpc IssueEmailVerificationChallenge(IssueEmailVerificationChallengeRequest) returns (IssueEmailVerificationChallengeResponse) {
+    option (google.api.http) = {
+      post: "/intermediate/v1/issue-email-verification-challenge",
+      body: "*"
+    };
+  }
+
   // Gets a list of organizations.
   rpc ListOrganizations(ListOrganizationsRequest) returns (ListOrganizationsResponse) {
     option (google.api.http) = {
@@ -64,8 +72,11 @@ message IntermediateSession {
   string id = 1;
   string project_id = 2;
   string email = 3;
-  optional string google_user_id = 4;
-  optional string microsoft_user_id = 5;
+  optional string email_verification_challenge_id = 4;
+  optional string google_user_id = 5;
+  optional string google_hosted_domain = 6;
+  optional string microsoft_tenant_id = 7;
+  optional string microsoft_user_id = 8;
   // TODO more things here
 }
 
@@ -122,6 +133,12 @@ message CreateOrganizationRequest {
 
 message CreateOrganizationResponse {
   Organization organization = 1;
+}
+
+message IssueEmailVerificationChallengeRequest {
+}
+
+message IssueEmailVerificationChallengeResponse {
 }
 
 message ListOrganizationsRequest {

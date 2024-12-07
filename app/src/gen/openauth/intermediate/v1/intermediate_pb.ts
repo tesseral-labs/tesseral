@@ -26,14 +26,29 @@ export class IntermediateSession extends Message<IntermediateSession> {
   email = "";
 
   /**
-   * @generated from field: optional string google_user_id = 4;
+   * @generated from field: optional string email_verification_challenge_id = 4;
+   */
+  emailVerificationChallengeId?: string;
+
+  /**
+   * @generated from field: optional string google_user_id = 5;
    */
   googleUserId?: string;
 
   /**
+   * @generated from field: optional string google_hosted_domain = 6;
+   */
+  googleHostedDomain?: string;
+
+  /**
+   * @generated from field: optional string microsoft_tenant_id = 7;
+   */
+  microsoftTenantId?: string;
+
+  /**
    * TODO more things here
    *
-   * @generated from field: optional string microsoft_user_id = 5;
+   * @generated from field: optional string microsoft_user_id = 8;
    */
   microsoftUserId?: string;
 
@@ -48,8 +63,11 @@ export class IntermediateSession extends Message<IntermediateSession> {
     { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "project_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 3, name: "email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 4, name: "google_user_id", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
-    { no: 5, name: "microsoft_user_id", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
+    { no: 4, name: "email_verification_challenge_id", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
+    { no: 5, name: "google_user_id", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
+    { no: 6, name: "google_hosted_domain", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
+    { no: 7, name: "microsoft_tenant_id", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
+    { no: 8, name: "microsoft_user_id", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): IntermediateSession {
@@ -498,6 +516,68 @@ export class CreateOrganizationResponse extends Message<CreateOrganizationRespon
 
   static equals(a: CreateOrganizationResponse | PlainMessage<CreateOrganizationResponse> | undefined, b: CreateOrganizationResponse | PlainMessage<CreateOrganizationResponse> | undefined): boolean {
     return proto3.util.equals(CreateOrganizationResponse, a, b);
+  }
+}
+
+/**
+ * @generated from message openauth.intermediate.v1.IssueEmailVerificationChallengeRequest
+ */
+export class IssueEmailVerificationChallengeRequest extends Message<IssueEmailVerificationChallengeRequest> {
+  constructor(data?: PartialMessage<IssueEmailVerificationChallengeRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "openauth.intermediate.v1.IssueEmailVerificationChallengeRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): IssueEmailVerificationChallengeRequest {
+    return new IssueEmailVerificationChallengeRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): IssueEmailVerificationChallengeRequest {
+    return new IssueEmailVerificationChallengeRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): IssueEmailVerificationChallengeRequest {
+    return new IssueEmailVerificationChallengeRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: IssueEmailVerificationChallengeRequest | PlainMessage<IssueEmailVerificationChallengeRequest> | undefined, b: IssueEmailVerificationChallengeRequest | PlainMessage<IssueEmailVerificationChallengeRequest> | undefined): boolean {
+    return proto3.util.equals(IssueEmailVerificationChallengeRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message openauth.intermediate.v1.IssueEmailVerificationChallengeResponse
+ */
+export class IssueEmailVerificationChallengeResponse extends Message<IssueEmailVerificationChallengeResponse> {
+  constructor(data?: PartialMessage<IssueEmailVerificationChallengeResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "openauth.intermediate.v1.IssueEmailVerificationChallengeResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): IssueEmailVerificationChallengeResponse {
+    return new IssueEmailVerificationChallengeResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): IssueEmailVerificationChallengeResponse {
+    return new IssueEmailVerificationChallengeResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): IssueEmailVerificationChallengeResponse {
+    return new IssueEmailVerificationChallengeResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: IssueEmailVerificationChallengeResponse | PlainMessage<IssueEmailVerificationChallengeResponse> | undefined, b: IssueEmailVerificationChallengeResponse | PlainMessage<IssueEmailVerificationChallengeResponse> | undefined): boolean {
+    return proto3.util.equals(IssueEmailVerificationChallengeResponse, a, b);
   }
 }
 

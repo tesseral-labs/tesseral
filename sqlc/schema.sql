@@ -44,10 +44,9 @@ CREATE TABLE public.email_verification_challenges (
     challenge_sha256 bytea,
     complete_time timestamp with time zone,
     create_time timestamp with time zone DEFAULT now() NOT NULL,
-    email character varying,
     expire_time timestamp with time zone NOT NULL,
-    google_user_id character varying,
-    microsoft_user_id character varying
+    intermediate_session_id uuid NOT NULL,
+    revoked boolean DEFAULT false NOT NULL
 );
 
 
@@ -215,7 +214,9 @@ CREATE TABLE public.verified_emails (
     create_time timestamp with time zone DEFAULT now() NOT NULL,
     email character varying NOT NULL,
     google_user_id character varying,
-    microsoft_user_id character varying
+    microsoft_user_id character varying,
+    google_hosted_domain character varying,
+    microsoft_tenant_id character varying
 );
 
 
@@ -355,6 +356,14 @@ ALTER TABLE ONLY public.users
 
 ALTER TABLE ONLY public.verified_emails
     ADD CONSTRAINT verified_emails_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: email_verification_challenges email_verification_challenges_intermediate_session_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.email_verification_challenges
+    ADD CONSTRAINT email_verification_challenges_intermediate_session_id_fkey FOREIGN KEY (intermediate_session_id) REFERENCES public.intermediate_sessions(id) ON DELETE CASCADE;
 
 
 --

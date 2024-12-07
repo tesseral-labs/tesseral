@@ -72,13 +72,11 @@ func (s *Store) SignInWithEmail(
 			expiresAt := time.Now().Add(15 * time.Minute)
 
 			_, err = q.CreateEmailVerificationChallenge(*ctx, queries.CreateEmailVerificationChallengeParams{
-				ID:              uuid.New(),
-				ProjectID:       intermediateSession.ProjectID,
-				ChallengeSha256: secretTokenSha256[:],
-				Email:           &req.Email,
-				ExpireTime:      &expiresAt,
-				GoogleUserID:    nil,
-				MicrosoftUserID: nil,
+				ID:                    uuid.New(),
+				ChallengeSha256:       secretTokenSha256[:],
+				ExpireTime:            &expiresAt,
+				IntermediateSessionID: intermediateSession.ID,
+				ProjectID:             projectID,
 			})
 			if err != nil {
 				return nil, err

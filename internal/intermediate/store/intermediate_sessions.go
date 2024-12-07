@@ -44,13 +44,16 @@ func (s *Store) Whoami(ctx context.Context, req *intermediatev1.WhoamiRequest) (
 }
 
 type IntermediateSession struct {
-	ID          uuid.UUID
-	ProjectID   uuid.UUID
-	Email       string
-	CreateTime  time.Time
-	ExpireTime  time.Time
-	TokenSha256 []byte
-	Revoked     bool
+	ID                           uuid.UUID
+	CreateTime                   time.Time
+	Email                        string
+	EmailVerificationChallengeID uuid.UUID
+	ExpireTime                   time.Time
+	GoogleUserID                 string
+	MicrosoftUserID              string
+	ProjectID                    uuid.UUID
+	TokenSha256                  []byte
+	Revoked                      bool
 }
 
 var ErrIntermediateSessionRevoked = errors.New("intermediate session has been revoked")
@@ -173,12 +176,14 @@ func (s *Store) VerifyIntermediateSessionEmail(
 
 func parseIntermediateSession(i *queries.IntermediateSession) *IntermediateSession {
 	return &IntermediateSession{
-		ID:        i.ID,
-		ProjectID: i.ProjectID,
-		//Email: i.Email, TODO
-		CreateTime:  *i.CreateTime,
-		ExpireTime:  *i.ExpireTime,
-		TokenSha256: i.TokenSha256,
-		Revoked:     i.Revoked,
+		ID:              i.ID,
+		CreateTime:      *i.CreateTime,
+		Email:           *i.Email,
+		ExpireTime:      *i.ExpireTime,
+		GoogleUserID:    *i.GoogleUserID,
+		MicrosoftUserID: *i.MicrosoftUserID,
+		ProjectID:       i.ProjectID,
+		TokenSha256:     i.TokenSha256,
+		Revoked:         i.Revoked,
 	}
 }

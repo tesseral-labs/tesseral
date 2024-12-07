@@ -49,6 +49,31 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /intermediate/v1/issue-email-verification-challenge:
+        post:
+            tags:
+                - IntermediateService
+            description: Issues a new email verification challenge.
+            operationId: IntermediateService_IssueEmailVerificationChallenge
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/IssueEmailVerificationChallengeRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/IssueEmailVerificationChallengeResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /intermediate/v1/organizations:
         get:
             tags:
@@ -208,10 +233,22 @@ components:
                     type: string
                 email:
                     type: string
+                emailVerificationChallengeId:
+                    type: string
                 googleUserId:
+                    type: string
+                googleHostedDomain:
+                    type: string
+                microsoftTenantId:
                     type: string
                 microsoftUserId:
                     type: string
+        IssueEmailVerificationChallengeRequest:
+            type: object
+            properties: {}
+        IssueEmailVerificationChallengeResponse:
+            type: object
+            properties: {}
         ListOrganizationsResponse:
             type: object
             properties:

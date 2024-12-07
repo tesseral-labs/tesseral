@@ -19,13 +19,14 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	IntermediateService_Whoami_FullMethodName                    = "/openauth.intermediate.v1.IntermediateService/Whoami"
-	IntermediateService_GetGoogleOAuthRedirectURL_FullMethodName = "/openauth.intermediate.v1.IntermediateService/GetGoogleOAuthRedirectURL"
-	IntermediateService_RedeemGoogleOAuthCode_FullMethodName     = "/openauth.intermediate.v1.IntermediateService/RedeemGoogleOAuthCode"
-	IntermediateService_CreateOrganization_FullMethodName        = "/openauth.intermediate.v1.IntermediateService/CreateOrganization"
-	IntermediateService_ListOrganizations_FullMethodName         = "/openauth.intermediate.v1.IntermediateService/ListOrganizations"
-	IntermediateService_SignInWithEmail_FullMethodName           = "/openauth.intermediate.v1.IntermediateService/SignInWithEmail"
-	IntermediateService_VerifyEmailChallenge_FullMethodName      = "/openauth.intermediate.v1.IntermediateService/VerifyEmailChallenge"
+	IntermediateService_Whoami_FullMethodName                          = "/openauth.intermediate.v1.IntermediateService/Whoami"
+	IntermediateService_GetGoogleOAuthRedirectURL_FullMethodName       = "/openauth.intermediate.v1.IntermediateService/GetGoogleOAuthRedirectURL"
+	IntermediateService_RedeemGoogleOAuthCode_FullMethodName           = "/openauth.intermediate.v1.IntermediateService/RedeemGoogleOAuthCode"
+	IntermediateService_CreateOrganization_FullMethodName              = "/openauth.intermediate.v1.IntermediateService/CreateOrganization"
+	IntermediateService_IssueEmailVerificationChallenge_FullMethodName = "/openauth.intermediate.v1.IntermediateService/IssueEmailVerificationChallenge"
+	IntermediateService_ListOrganizations_FullMethodName               = "/openauth.intermediate.v1.IntermediateService/ListOrganizations"
+	IntermediateService_SignInWithEmail_FullMethodName                 = "/openauth.intermediate.v1.IntermediateService/SignInWithEmail"
+	IntermediateService_VerifyEmailChallenge_FullMethodName            = "/openauth.intermediate.v1.IntermediateService/VerifyEmailChallenge"
 )
 
 // IntermediateServiceClient is the client API for IntermediateService service.
@@ -37,6 +38,8 @@ type IntermediateServiceClient interface {
 	RedeemGoogleOAuthCode(ctx context.Context, in *RedeemGoogleOAuthCodeRequest, opts ...grpc.CallOption) (*RedeemGoogleOAuthCodeResponse, error)
 	// Creates a new organization.
 	CreateOrganization(ctx context.Context, in *CreateOrganizationRequest, opts ...grpc.CallOption) (*CreateOrganizationResponse, error)
+	// Issues a new email verification challenge.
+	IssueEmailVerificationChallenge(ctx context.Context, in *IssueEmailVerificationChallengeRequest, opts ...grpc.CallOption) (*IssueEmailVerificationChallengeResponse, error)
 	// Gets a list of organizations.
 	ListOrganizations(ctx context.Context, in *ListOrganizationsRequest, opts ...grpc.CallOption) (*ListOrganizationsResponse, error)
 	// Creates a new intermediate session or session and cookies the requester.
@@ -93,6 +96,16 @@ func (c *intermediateServiceClient) CreateOrganization(ctx context.Context, in *
 	return out, nil
 }
 
+func (c *intermediateServiceClient) IssueEmailVerificationChallenge(ctx context.Context, in *IssueEmailVerificationChallengeRequest, opts ...grpc.CallOption) (*IssueEmailVerificationChallengeResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(IssueEmailVerificationChallengeResponse)
+	err := c.cc.Invoke(ctx, IntermediateService_IssueEmailVerificationChallenge_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *intermediateServiceClient) ListOrganizations(ctx context.Context, in *ListOrganizationsRequest, opts ...grpc.CallOption) (*ListOrganizationsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListOrganizationsResponse)
@@ -132,6 +145,8 @@ type IntermediateServiceServer interface {
 	RedeemGoogleOAuthCode(context.Context, *RedeemGoogleOAuthCodeRequest) (*RedeemGoogleOAuthCodeResponse, error)
 	// Creates a new organization.
 	CreateOrganization(context.Context, *CreateOrganizationRequest) (*CreateOrganizationResponse, error)
+	// Issues a new email verification challenge.
+	IssueEmailVerificationChallenge(context.Context, *IssueEmailVerificationChallengeRequest) (*IssueEmailVerificationChallengeResponse, error)
 	// Gets a list of organizations.
 	ListOrganizations(context.Context, *ListOrganizationsRequest) (*ListOrganizationsResponse, error)
 	// Creates a new intermediate session or session and cookies the requester.
@@ -159,6 +174,9 @@ func (UnimplementedIntermediateServiceServer) RedeemGoogleOAuthCode(context.Cont
 }
 func (UnimplementedIntermediateServiceServer) CreateOrganization(context.Context, *CreateOrganizationRequest) (*CreateOrganizationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateOrganization not implemented")
+}
+func (UnimplementedIntermediateServiceServer) IssueEmailVerificationChallenge(context.Context, *IssueEmailVerificationChallengeRequest) (*IssueEmailVerificationChallengeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IssueEmailVerificationChallenge not implemented")
 }
 func (UnimplementedIntermediateServiceServer) ListOrganizations(context.Context, *ListOrganizationsRequest) (*ListOrganizationsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListOrganizations not implemented")
@@ -262,6 +280,24 @@ func _IntermediateService_CreateOrganization_Handler(srv interface{}, ctx contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _IntermediateService_IssueEmailVerificationChallenge_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IssueEmailVerificationChallengeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IntermediateServiceServer).IssueEmailVerificationChallenge(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IntermediateService_IssueEmailVerificationChallenge_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IntermediateServiceServer).IssueEmailVerificationChallenge(ctx, req.(*IssueEmailVerificationChallengeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _IntermediateService_ListOrganizations_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListOrganizationsRequest)
 	if err := dec(in); err != nil {
@@ -338,6 +374,10 @@ var IntermediateService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateOrganization",
 			Handler:    _IntermediateService_CreateOrganization_Handler,
+		},
+		{
+			MethodName: "IssueEmailVerificationChallenge",
+			Handler:    _IntermediateService_IssueEmailVerificationChallenge_Handler,
 		},
 		{
 			MethodName: "ListOrganizations",
