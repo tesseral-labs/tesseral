@@ -169,7 +169,7 @@ func (s *Store) IssueEmailVerificationChallenge(ctx context.Context) (*intermedi
 
 	// TODO: Send the secret token to the user's email address
 
-	_, err = q.CreateEmailVerificationChallenge(ctx, queries.CreateEmailVerificationChallengeParams{
+	evc, err := q.CreateEmailVerificationChallenge(ctx, queries.CreateEmailVerificationChallengeParams{
 		ID:                    uuid.New(),
 		ChallengeSha256:       secretTokenSha256[:],
 		ExpireTime:            &expiresAt,
@@ -184,7 +184,9 @@ func (s *Store) IssueEmailVerificationChallenge(ctx context.Context) (*intermedi
 		return nil, err
 	}
 
-	return &intermediatev1.IssueEmailVerificationChallengeResponse{}, nil
+	return &intermediatev1.IssueEmailVerificationChallengeResponse{
+		ChallengeId: idformat.EmailVerificationChallenge.Format(evc.ID),
+	}, nil
 }
 
 func generateSecretToken() (string, error) {
