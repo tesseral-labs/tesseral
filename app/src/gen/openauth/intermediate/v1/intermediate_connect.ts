@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { CreateOrganizationRequest, CreateOrganizationResponse, GetGoogleOAuthRedirectURLRequest, GetGoogleOAuthRedirectURLResponse, ListOrganizationsRequest, ListOrganizationsResponse, RedeemGoogleOAuthCodeRequest, RedeemGoogleOAuthCodeResponse, SignInWithEmailRequest, SignInWithEmailResponse, VerifyEmailChallengeRequest, VerifyEmailChallengeResponse, WhoamiRequest, WhoamiResponse } from "./intermediate_pb.js";
+import { CreateOrganizationRequest, CreateOrganizationResponse, GetGoogleOAuthRedirectURLRequest, GetGoogleOAuthRedirectURLResponse, GetMicrosoftOAuthRedirectURLRequest, GetMicrosoftOAuthRedirectURLResponse, ListOrganizationsRequest, ListOrganizationsResponse, RedeemGoogleOAuthCodeRequest, RedeemGoogleOAuthCodeResponse, RedeemMicrosoftOAuthCodeRequest, RedeemMicrosoftOAuthCodeResponse, SignInWithEmailRequest, SignInWithEmailResponse, VerifyEmailChallengeRequest, VerifyEmailChallengeResponse, WhoamiRequest, WhoamiResponse } from "./intermediate_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -37,6 +37,24 @@ export const IntermediateService = {
       name: "RedeemGoogleOAuthCode",
       I: RedeemGoogleOAuthCodeRequest,
       O: RedeemGoogleOAuthCodeResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc openauth.intermediate.v1.IntermediateService.GetMicrosoftOAuthRedirectURL
+     */
+    getMicrosoftOAuthRedirectURL: {
+      name: "GetMicrosoftOAuthRedirectURL",
+      I: GetMicrosoftOAuthRedirectURLRequest,
+      O: GetMicrosoftOAuthRedirectURLResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc openauth.intermediate.v1.IntermediateService.RedeemMicrosoftOAuthCode
+     */
+    redeemMicrosoftOAuthCode: {
+      name: "RedeemMicrosoftOAuthCode",
+      I: RedeemMicrosoftOAuthCodeRequest,
+      O: RedeemMicrosoftOAuthCodeResponse,
       kind: MethodKind.Unary,
     },
     /**

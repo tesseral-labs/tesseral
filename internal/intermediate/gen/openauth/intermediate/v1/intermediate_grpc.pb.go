@@ -19,13 +19,15 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	IntermediateService_Whoami_FullMethodName                    = "/openauth.intermediate.v1.IntermediateService/Whoami"
-	IntermediateService_GetGoogleOAuthRedirectURL_FullMethodName = "/openauth.intermediate.v1.IntermediateService/GetGoogleOAuthRedirectURL"
-	IntermediateService_RedeemGoogleOAuthCode_FullMethodName     = "/openauth.intermediate.v1.IntermediateService/RedeemGoogleOAuthCode"
-	IntermediateService_CreateOrganization_FullMethodName        = "/openauth.intermediate.v1.IntermediateService/CreateOrganization"
-	IntermediateService_ListOrganizations_FullMethodName         = "/openauth.intermediate.v1.IntermediateService/ListOrganizations"
-	IntermediateService_SignInWithEmail_FullMethodName           = "/openauth.intermediate.v1.IntermediateService/SignInWithEmail"
-	IntermediateService_VerifyEmailChallenge_FullMethodName      = "/openauth.intermediate.v1.IntermediateService/VerifyEmailChallenge"
+	IntermediateService_Whoami_FullMethodName                       = "/openauth.intermediate.v1.IntermediateService/Whoami"
+	IntermediateService_GetGoogleOAuthRedirectURL_FullMethodName    = "/openauth.intermediate.v1.IntermediateService/GetGoogleOAuthRedirectURL"
+	IntermediateService_RedeemGoogleOAuthCode_FullMethodName        = "/openauth.intermediate.v1.IntermediateService/RedeemGoogleOAuthCode"
+	IntermediateService_GetMicrosoftOAuthRedirectURL_FullMethodName = "/openauth.intermediate.v1.IntermediateService/GetMicrosoftOAuthRedirectURL"
+	IntermediateService_RedeemMicrosoftOAuthCode_FullMethodName     = "/openauth.intermediate.v1.IntermediateService/RedeemMicrosoftOAuthCode"
+	IntermediateService_CreateOrganization_FullMethodName           = "/openauth.intermediate.v1.IntermediateService/CreateOrganization"
+	IntermediateService_ListOrganizations_FullMethodName            = "/openauth.intermediate.v1.IntermediateService/ListOrganizations"
+	IntermediateService_SignInWithEmail_FullMethodName              = "/openauth.intermediate.v1.IntermediateService/SignInWithEmail"
+	IntermediateService_VerifyEmailChallenge_FullMethodName         = "/openauth.intermediate.v1.IntermediateService/VerifyEmailChallenge"
 )
 
 // IntermediateServiceClient is the client API for IntermediateService service.
@@ -35,6 +37,8 @@ type IntermediateServiceClient interface {
 	Whoami(ctx context.Context, in *WhoamiRequest, opts ...grpc.CallOption) (*WhoamiResponse, error)
 	GetGoogleOAuthRedirectURL(ctx context.Context, in *GetGoogleOAuthRedirectURLRequest, opts ...grpc.CallOption) (*GetGoogleOAuthRedirectURLResponse, error)
 	RedeemGoogleOAuthCode(ctx context.Context, in *RedeemGoogleOAuthCodeRequest, opts ...grpc.CallOption) (*RedeemGoogleOAuthCodeResponse, error)
+	GetMicrosoftOAuthRedirectURL(ctx context.Context, in *GetMicrosoftOAuthRedirectURLRequest, opts ...grpc.CallOption) (*GetMicrosoftOAuthRedirectURLResponse, error)
+	RedeemMicrosoftOAuthCode(ctx context.Context, in *RedeemMicrosoftOAuthCodeRequest, opts ...grpc.CallOption) (*RedeemMicrosoftOAuthCodeResponse, error)
 	// Creates a new organization.
 	CreateOrganization(ctx context.Context, in *CreateOrganizationRequest, opts ...grpc.CallOption) (*CreateOrganizationResponse, error)
 	// Gets a list of organizations.
@@ -77,6 +81,26 @@ func (c *intermediateServiceClient) RedeemGoogleOAuthCode(ctx context.Context, i
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(RedeemGoogleOAuthCodeResponse)
 	err := c.cc.Invoke(ctx, IntermediateService_RedeemGoogleOAuthCode_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *intermediateServiceClient) GetMicrosoftOAuthRedirectURL(ctx context.Context, in *GetMicrosoftOAuthRedirectURLRequest, opts ...grpc.CallOption) (*GetMicrosoftOAuthRedirectURLResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetMicrosoftOAuthRedirectURLResponse)
+	err := c.cc.Invoke(ctx, IntermediateService_GetMicrosoftOAuthRedirectURL_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *intermediateServiceClient) RedeemMicrosoftOAuthCode(ctx context.Context, in *RedeemMicrosoftOAuthCodeRequest, opts ...grpc.CallOption) (*RedeemMicrosoftOAuthCodeResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RedeemMicrosoftOAuthCodeResponse)
+	err := c.cc.Invoke(ctx, IntermediateService_RedeemMicrosoftOAuthCode_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -130,6 +154,8 @@ type IntermediateServiceServer interface {
 	Whoami(context.Context, *WhoamiRequest) (*WhoamiResponse, error)
 	GetGoogleOAuthRedirectURL(context.Context, *GetGoogleOAuthRedirectURLRequest) (*GetGoogleOAuthRedirectURLResponse, error)
 	RedeemGoogleOAuthCode(context.Context, *RedeemGoogleOAuthCodeRequest) (*RedeemGoogleOAuthCodeResponse, error)
+	GetMicrosoftOAuthRedirectURL(context.Context, *GetMicrosoftOAuthRedirectURLRequest) (*GetMicrosoftOAuthRedirectURLResponse, error)
+	RedeemMicrosoftOAuthCode(context.Context, *RedeemMicrosoftOAuthCodeRequest) (*RedeemMicrosoftOAuthCodeResponse, error)
 	// Creates a new organization.
 	CreateOrganization(context.Context, *CreateOrganizationRequest) (*CreateOrganizationResponse, error)
 	// Gets a list of organizations.
@@ -156,6 +182,12 @@ func (UnimplementedIntermediateServiceServer) GetGoogleOAuthRedirectURL(context.
 }
 func (UnimplementedIntermediateServiceServer) RedeemGoogleOAuthCode(context.Context, *RedeemGoogleOAuthCodeRequest) (*RedeemGoogleOAuthCodeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RedeemGoogleOAuthCode not implemented")
+}
+func (UnimplementedIntermediateServiceServer) GetMicrosoftOAuthRedirectURL(context.Context, *GetMicrosoftOAuthRedirectURLRequest) (*GetMicrosoftOAuthRedirectURLResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMicrosoftOAuthRedirectURL not implemented")
+}
+func (UnimplementedIntermediateServiceServer) RedeemMicrosoftOAuthCode(context.Context, *RedeemMicrosoftOAuthCodeRequest) (*RedeemMicrosoftOAuthCodeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RedeemMicrosoftOAuthCode not implemented")
 }
 func (UnimplementedIntermediateServiceServer) CreateOrganization(context.Context, *CreateOrganizationRequest) (*CreateOrganizationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateOrganization not implemented")
@@ -240,6 +272,42 @@ func _IntermediateService_RedeemGoogleOAuthCode_Handler(srv interface{}, ctx con
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(IntermediateServiceServer).RedeemGoogleOAuthCode(ctx, req.(*RedeemGoogleOAuthCodeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IntermediateService_GetMicrosoftOAuthRedirectURL_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetMicrosoftOAuthRedirectURLRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IntermediateServiceServer).GetMicrosoftOAuthRedirectURL(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IntermediateService_GetMicrosoftOAuthRedirectURL_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IntermediateServiceServer).GetMicrosoftOAuthRedirectURL(ctx, req.(*GetMicrosoftOAuthRedirectURLRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IntermediateService_RedeemMicrosoftOAuthCode_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RedeemMicrosoftOAuthCodeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IntermediateServiceServer).RedeemMicrosoftOAuthCode(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IntermediateService_RedeemMicrosoftOAuthCode_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IntermediateServiceServer).RedeemMicrosoftOAuthCode(ctx, req.(*RedeemMicrosoftOAuthCodeRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -334,6 +402,14 @@ var IntermediateService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RedeemGoogleOAuthCode",
 			Handler:    _IntermediateService_RedeemGoogleOAuthCode_Handler,
+		},
+		{
+			MethodName: "GetMicrosoftOAuthRedirectURL",
+			Handler:    _IntermediateService_GetMicrosoftOAuthRedirectURL_Handler,
+		},
+		{
+			MethodName: "RedeemMicrosoftOAuthCode",
+			Handler:    _IntermediateService_RedeemMicrosoftOAuthCode_Handler,
 		},
 		{
 			MethodName: "CreateOrganization",
