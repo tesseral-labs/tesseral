@@ -685,25 +685,27 @@ func RegisterIntermediateServiceHandlerClient(ctx context.Context, mux *runtime.
 }
 
 var (
-	pattern_IntermediateService_Whoami_0                       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "whoami"}, ""))
-	pattern_IntermediateService_GetGoogleOAuthRedirectURL_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "google-oauth-redirect-url"}, ""))
-	pattern_IntermediateService_RedeemGoogleOAuthCode_0        = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "redeem-google-oauth-code"}, ""))
-	pattern_IntermediateService_GetMicrosoftOAuthRedirectURL_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "microsoft-oauth-redirect-url"}, ""))
-	pattern_IntermediateService_RedeemMicrosoftOAuthCode_0     = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "redeem-microsoft-oauth-code"}, ""))
-	pattern_IntermediateService_CreateOrganization_0           = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "organizations"}, ""))
-	pattern_IntermediateService_ListOrganizations_0            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "organizations"}, ""))
-	pattern_IntermediateService_SignInWithEmail_0              = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "email-signin"}, ""))
-	pattern_IntermediateService_VerifyEmailChallenge_0         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "verify-email-challenge"}, ""))
+	pattern_IntermediateService_Whoami_0                          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "whoami"}, ""))
+	pattern_IntermediateService_GetGoogleOAuthRedirectURL_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "google-oauth-redirect-url"}, ""))
+	pattern_IntermediateService_RedeemGoogleOAuthCode_0           = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "redeem-google-oauth-code"}, ""))
+	pattern_IntermediateService_GetMicrosoftOAuthRedirectURL_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "microsoft-oauth-redirect-url"}, ""))
+	pattern_IntermediateService_RedeemMicrosoftOAuthCode_0        = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "redeem-microsoft-oauth-code"}, ""))
+	pattern_IntermediateService_CreateOrganization_0              = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "organizations"}, ""))
+	pattern_IntermediateService_IssueEmailVerificationChallenge_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "issue-email-verification-challenge"}, ""))
+	pattern_IntermediateService_ListOrganizations_0               = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "organizations"}, ""))
+	pattern_IntermediateService_SignInWithEmail_0                 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "email-signin"}, ""))
+	pattern_IntermediateService_VerifyEmailChallenge_0            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "verify-email-challenge"}, ""))
 )
 
 var (
-	forward_IntermediateService_Whoami_0                       = runtime.ForwardResponseMessage
-	forward_IntermediateService_GetGoogleOAuthRedirectURL_0    = runtime.ForwardResponseMessage
-	forward_IntermediateService_RedeemGoogleOAuthCode_0        = runtime.ForwardResponseMessage
-	forward_IntermediateService_GetMicrosoftOAuthRedirectURL_0 = runtime.ForwardResponseMessage
-	forward_IntermediateService_RedeemMicrosoftOAuthCode_0     = runtime.ForwardResponseMessage
-	forward_IntermediateService_CreateOrganization_0           = runtime.ForwardResponseMessage
-	forward_IntermediateService_ListOrganizations_0            = runtime.ForwardResponseMessage
-	forward_IntermediateService_SignInWithEmail_0              = runtime.ForwardResponseMessage
-	forward_IntermediateService_VerifyEmailChallenge_0         = runtime.ForwardResponseMessage
+	forward_IntermediateService_Whoami_0                          = runtime.ForwardResponseMessage
+	forward_IntermediateService_GetGoogleOAuthRedirectURL_0       = runtime.ForwardResponseMessage
+	forward_IntermediateService_RedeemGoogleOAuthCode_0           = runtime.ForwardResponseMessage
+	forward_IntermediateService_GetMicrosoftOAuthRedirectURL_0    = runtime.ForwardResponseMessage
+	forward_IntermediateService_RedeemMicrosoftOAuthCode_0        = runtime.ForwardResponseMessage
+	forward_IntermediateService_CreateOrganization_0              = runtime.ForwardResponseMessage
+	forward_IntermediateService_IssueEmailVerificationChallenge_0 = runtime.ForwardResponseMessage
+	forward_IntermediateService_ListOrganizations_0               = runtime.ForwardResponseMessage
+	forward_IntermediateService_SignInWithEmail_0                 = runtime.ForwardResponseMessage
+	forward_IntermediateService_VerifyEmailChallenge_0            = runtime.ForwardResponseMessage
 )
