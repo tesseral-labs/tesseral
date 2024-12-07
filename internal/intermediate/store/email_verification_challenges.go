@@ -222,16 +222,6 @@ func mustVerifyChallenge(ctx context.Context, evc *queries.EmailVerificationChal
 	return nil
 }
 
-func parseEmailVerificationChallenge(evc *queries.EmailVerificationChallenge, originalChallenge string) *EmailVerificationChallenge {
-	return &EmailVerificationChallenge{
-		ID:                    idformat.EmailVerificationChallenge.Format(evc.ID),
-		ChallengeSha256:       evc.ChallengeSha256,
-		CompleteTime:          *evc.CompleteTime,
-		IntermediateSessionID: idformat.IntermediateSession.Format(evc.IntermediateSessionID),
-		ProjectID:             idformat.Project.Format(evc.ProjectID),
-	}
-}
-
 func revokeEmailVerificationChallenge(ctx context.Context, id uuid.UUID, q *queries.Queries) error {
 	_, err := q.RevokeEmailVerificationChallenge(ctx, id)
 
