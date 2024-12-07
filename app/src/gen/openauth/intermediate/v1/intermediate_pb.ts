@@ -26,29 +26,24 @@ export class IntermediateSession extends Message<IntermediateSession> {
   email = "";
 
   /**
-   * @generated from field: optional string email_verification_challenge_id = 4;
-   */
-  emailVerificationChallengeId?: string;
-
-  /**
-   * @generated from field: optional string google_user_id = 5;
+   * @generated from field: optional string google_user_id = 4;
    */
   googleUserId?: string;
 
   /**
-   * @generated from field: optional string google_hosted_domain = 6;
+   * @generated from field: optional string google_hosted_domain = 5;
    */
   googleHostedDomain?: string;
 
   /**
-   * @generated from field: optional string microsoft_tenant_id = 7;
+   * @generated from field: optional string microsoft_tenant_id = 6;
    */
   microsoftTenantId?: string;
 
   /**
    * TODO more things here
    *
-   * @generated from field: optional string microsoft_user_id = 8;
+   * @generated from field: optional string microsoft_user_id = 7;
    */
   microsoftUserId?: string;
 
@@ -63,11 +58,10 @@ export class IntermediateSession extends Message<IntermediateSession> {
     { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "project_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 3, name: "email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 4, name: "email_verification_challenge_id", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
-    { no: 5, name: "google_user_id", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
-    { no: 6, name: "google_hosted_domain", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
-    { no: 7, name: "microsoft_tenant_id", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
-    { no: 8, name: "microsoft_user_id", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
+    { no: 4, name: "google_user_id", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
+    { no: 5, name: "google_hosted_domain", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
+    { no: 6, name: "microsoft_tenant_id", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
+    { no: 7, name: "microsoft_user_id", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): IntermediateSession {
@@ -554,6 +548,13 @@ export class IssueEmailVerificationChallengeRequest extends Message<IssueEmailVe
  * @generated from message openauth.intermediate.v1.IssueEmailVerificationChallengeResponse
  */
 export class IssueEmailVerificationChallengeResponse extends Message<IssueEmailVerificationChallengeResponse> {
+  /**
+   * The ID of the email verification challenge.
+   *
+   * @generated from field: string challenge_id = 1;
+   */
+  challengeId = "";
+
   constructor(data?: PartialMessage<IssueEmailVerificationChallengeResponse>) {
     super();
     proto3.util.initPartial(data, this);
@@ -562,6 +563,7 @@ export class IssueEmailVerificationChallengeResponse extends Message<IssueEmailV
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "openauth.intermediate.v1.IssueEmailVerificationChallengeResponse";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "challenge_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): IssueEmailVerificationChallengeResponse {
@@ -715,11 +717,11 @@ export class SignInWithEmailRequest extends Message<SignInWithEmailRequest> {
  */
 export class SignInWithEmailResponse extends Message<SignInWithEmailResponse> {
   /**
-   * The token for the intermediate session or session created by the SignInWithEmail request.
+   * The ID of the email verification challenge, if required.
    *
-   * @generated from field: string SessionToken = 1;
+   * @generated from field: optional string ChallengeID = 1;
    */
-  SessionToken = "";
+  ChallengeID?: string;
 
   constructor(data?: PartialMessage<SignInWithEmailResponse>) {
     super();
@@ -729,7 +731,7 @@ export class SignInWithEmailResponse extends Message<SignInWithEmailResponse> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "openauth.intermediate.v1.SignInWithEmailResponse";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "SessionToken", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 1, name: "ChallengeID", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): SignInWithEmailResponse {
@@ -1056,9 +1058,16 @@ export class VerifyEmailChallengeRequest extends Message<VerifyEmailChallengeReq
   /**
    * The challenge to verify.
    *
-   * @generated from field: string challenge = 1;
+   * @generated from field: string code = 1;
    */
-  challenge = "";
+  code = "";
+
+  /**
+   * The ID of the email verification challenge.
+   *
+   * @generated from field: string challenge_id = 2;
+   */
+  challengeId = "";
 
   constructor(data?: PartialMessage<VerifyEmailChallengeRequest>) {
     super();
@@ -1068,7 +1077,8 @@ export class VerifyEmailChallengeRequest extends Message<VerifyEmailChallengeReq
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "openauth.intermediate.v1.VerifyEmailChallengeRequest";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "challenge", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 1, name: "code", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "challenge_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): VerifyEmailChallengeRequest {

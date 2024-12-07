@@ -51,7 +51,7 @@ type GetEmailVerificationChallengeParams struct {
 	ProjectID       string
 }
 
-func (s *Store) CompleteEmailVerificationChallenge(ctx context.Context, challenge string) (*intermediatev1.VerifyEmailChallengeResponse, error) {
+func (s *Store) CompleteEmailVerificationChallenge(ctx context.Context, code string, evcid string) (*intermediatev1.VerifyEmailChallengeResponse, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -63,7 +63,22 @@ func (s *Store) CompleteEmailVerificationChallenge(ctx context.Context, challeng
 		return nil, ErrProjectIDRequired
 	}
 
-	// Get the email verification challenge ID from the intermediate session
+	// Get the email verification challenge from the request
+	challengeID, err := idformat.EmailVerificationChallenge.Parse(evcid)
+	if err != nil {
+		return nil, err
+	}
+	challenge, err := q.GetEmailVerificationChallengeByID(ctx, challengeID)
+	if err != nil {
+		return nil, err
+	}
+
+	// Enforce the intermediate session
+	if challenge.IntermediateSessionID.String() != authn.IntermediateSessionID(ctx).String() {
+		return nil, ErrEmailVerificationChallengeMismatch
+	}
+
+	// Get the intermediate session
 	intermediateSession := authn.IntermediateSession(ctx)
 	if intermediateSession == nil {
 		return nil, ErrIntermediateSessionRequired
@@ -75,7 +90,7 @@ func (s *Store) CompleteEmailVerificationChallenge(ctx context.Context, challeng
 	}
 
 	now := time.Now()
-	secretTokenSha256 := sha256.Sum256([]byte(challenge))
+	codeSha256 := sha256.Sum256([]byte(code))
 
 	// Get the email verification challenge
 	evc, err := q.GetEmailVerificationChallengeForCompletion(ctx, queries.GetEmailVerificationChallengeForCompletionParams{
@@ -87,7 +102,7 @@ func (s *Store) CompleteEmailVerificationChallenge(ctx context.Context, challeng
 		return nil, err
 	}
 
-	err = mustVerifyChallenge(ctx, &evc, secretTokenSha256[:], q)
+	err = mustVerifyChallenge(ctx, &evc, codeSha256[:], q)
 	if err != nil {
 		if err := commit(); err != nil {
 			return nil, err

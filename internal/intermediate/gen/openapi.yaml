@@ -233,8 +233,6 @@ components:
                     type: string
                 email:
                     type: string
-                emailVerificationChallengeId:
-                    type: string
                 googleUserId:
                     type: string
                 googleHostedDomain:
@@ -248,7 +246,10 @@ components:
             properties: {}
         IssueEmailVerificationChallengeResponse:
             type: object
-            properties: {}
+            properties:
+                challengeId:
+                    type: string
+                    description: The ID of the email verification challenge.
         ListOrganizationsResponse:
             type: object
             properties:
@@ -292,9 +293,9 @@ components:
         SignInWithEmailResponse:
             type: object
             properties:
-                SessionToken:
+                ChallengeID:
                     type: string
-                    description: The token for the intermediate session or session created by the SignInWithEmail request.
+                    description: The ID of the email verification challenge, if required.
         Status:
             type: object
             properties:
@@ -314,9 +315,12 @@ components:
         VerifyEmailChallengeRequest:
             type: object
             properties:
-                challenge:
+                code:
                     type: string
                     description: The challenge to verify.
+                challengeId:
+                    type: string
+                    description: The ID of the email verification challenge.
         VerifyEmailChallengeResponse:
             type: object
             properties: {}

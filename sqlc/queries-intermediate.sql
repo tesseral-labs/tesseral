@@ -46,6 +46,14 @@ INSERT INTO verified_emails (id, project_id, email, google_user_id, google_hoste
 RETURNING
     *;
 
+-- name: GetEmailVerificationChallengeByID :one
+SELECT
+    *
+FROM
+    email_verification_challenges
+WHERE
+    id = $1;
+
 -- name: GetEmailVerificationChallengeForCompletion :one
 SELECT
     *

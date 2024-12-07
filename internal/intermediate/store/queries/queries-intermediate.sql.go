@@ -246,6 +246,31 @@ func (q *Queries) CreateVerifiedEmail(ctx context.Context, arg CreateVerifiedEma
 	return i, err
 }
 
+const getEmailVerificationChallengeByID = `-- name: GetEmailVerificationChallengeByID :one
+SELECT
+    id, project_id, challenge_sha256, complete_time, create_time, expire_time, intermediate_session_id, revoked
+FROM
+    email_verification_challenges
+WHERE
+    id = $1
+`
+
+func (q *Queries) GetEmailVerificationChallengeByID(ctx context.Context, id uuid.UUID) (EmailVerificationChallenge, error) {
+	row := q.db.QueryRow(ctx, getEmailVerificationChallengeByID, id)
+	var i EmailVerificationChallenge
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.ChallengeSha256,
+		&i.CompleteTime,
+		&i.CreateTime,
+		&i.ExpireTime,
+		&i.IntermediateSessionID,
+		&i.Revoked,
+	)
+	return i, err
+}
+
 const getEmailVerificationChallengeForCompletion = `-- name: GetEmailVerificationChallengeForCompletion :one
 SELECT
     id, project_id, challenge_sha256, complete_time, create_time, expire_time, intermediate_session_id, revoked

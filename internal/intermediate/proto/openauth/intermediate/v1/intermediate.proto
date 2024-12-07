@@ -72,11 +72,10 @@ message IntermediateSession {
   string id = 1;
   string project_id = 2;
   string email = 3;
-  optional string email_verification_challenge_id = 4;
-  optional string google_user_id = 5;
-  optional string google_hosted_domain = 6;
-  optional string microsoft_tenant_id = 7;
-  optional string microsoft_user_id = 8;
+  optional string google_user_id = 4;
+  optional string google_hosted_domain = 5;
+  optional string microsoft_tenant_id = 6;
+  optional string microsoft_user_id = 7;
   // TODO more things here
 }
 
@@ -139,6 +138,8 @@ message IssueEmailVerificationChallengeRequest {
 }
 
 message IssueEmailVerificationChallengeResponse {
+  // The ID of the email verification challenge.
+  string challenge_id = 1;
 }
 
 message ListOrganizationsRequest {
@@ -159,8 +160,8 @@ message SignInWithEmailRequest {
 }
 
 message SignInWithEmailResponse {
-  // The token for the intermediate session or session created by the SignInWithEmail request.
-  string SessionToken = 1;
+  // The ID of the email verification challenge, if required.
+  optional string ChallengeID = 1;
 }
 
 message Project {
@@ -219,7 +220,9 @@ message Session {
 
 message VerifyEmailChallengeRequest {
   // The challenge to verify.
-  string challenge = 1;
+  string code = 1;
+  // The ID of the email verification challenge.
+  string challenge_id = 2;
 }
 
 message VerifyEmailChallengeResponse {}

@@ -59,6 +59,11 @@ func (s *Store) SignInWithEmail(
 			return nil, err
 		}
 
+		// TODO: Remove this after we're handling cookies properly
+		slog.Info("SignInWithEmail", "intermediate_session_token", idformat.IntermediateSessionToken.Format(token))
+
+		var evcid *string = nil
+
 		if shouldVerify {
 			// Create a new secret token for the challenge
 			secretToken, err := generateSecretToken()
@@ -71,7 +76,7 @@ func (s *Store) SignInWithEmail(
 
 			expiresAt := time.Now().Add(15 * time.Minute)
 
-			_, err = q.CreateEmailVerificationChallenge(*ctx, queries.CreateEmailVerificationChallengeParams{
+			evc, err := q.CreateEmailVerificationChallenge(*ctx, queries.CreateEmailVerificationChallengeParams{
 				ID:                    uuid.New(),
 				ChallengeSha256:       secretTokenSha256[:],
 				ExpireTime:            &expiresAt,
@@ -82,6 +87,9 @@ func (s *Store) SignInWithEmail(
 				return nil, err
 			}
 
+			evcID := idformat.EmailVerificationChallenge.Format(evc.ID)
+			evcid = &evcID
+
 			// TODO: Remove this log line and replace with email sending
 			slog.Info("SignInWithEmail", "challenge", secretToken)
 		}
@@ -91,8 +99,7 @@ func (s *Store) SignInWithEmail(
 		}
 
 		return &intermediatev1.SignInWithEmailResponse{
-			// TODO what to return here
-			SessionToken: idformat.IntermediateSessionToken.Format(token),
+			ChallengeID: evcid,
 		}, nil
 	}
 }
