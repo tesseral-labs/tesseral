@@ -1,0 +1,39 @@
+name: generated-lint
+on:
+  push:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  proto:
+    name: make proto
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: 1.23
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - name: make proto
+        run: |
+          npm install
+          make proto
+      - name: check if index is dirty
+        run: git diff --exit-code
+  queries:
+    name: make queries
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: sqlc-dev/setup-sqlc@v4
+        with:
+          sqlc-version: '1.27.0'
+      - name: sqlc
+        run: |
+          sqlc -f ./sqlc/sqlc.yaml generate
+      - name: check if index is dirty
+        run: git diff --exit-code
