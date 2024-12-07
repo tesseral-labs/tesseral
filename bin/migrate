@@ -4,7 +4,7 @@ set -e -o pipefail
 
 case $1 in
   local)
-    migrate -path ./cmd/openauthctl/migrations -database 'postgres://postgres:password@localhost?sslmode=disable' ${@:2}
+    docker run -v ./cmd/openauthctl/migrations:/migrations --network host migrate/migrate -path /migrations -database 'postgres://postgres:password@localhost?sslmode=disable' ${@:2}
     exit 0
     ;;
 

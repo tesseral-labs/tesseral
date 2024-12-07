@@ -2,7 +2,7 @@ version: "2"
 sql:
   - engine: "postgresql"
     queries: "queries.sql"
-    schema: "schema.sql"
+    schema: "../cmd/openauthctl/migrations"
     gen:
       go: &go
         sql_package: "pgx/v5"
@@ -46,28 +46,28 @@ sql:
               type: "*int32"
   - engine: "postgresql"
     queries: "queries-backend.sql"
-    schema: "schema.sql"
+    schema: "../cmd/openauthctl/migrations"
     gen:
       go:
         <<: *go
         out: "../internal/backend/store/queries"
   - engine: "postgresql"
     queries: "queries-frontend.sql"
-    schema: "schema.sql"
+    schema: "../cmd/openauthctl/migrations"
     gen:
       go:
         <<: *go
         out: "../internal/frontend/store/queries"
   - engine: "postgresql"
     queries: "queries-intermediate.sql"
-    schema: "schema.sql"
+    schema: "../cmd/openauthctl/migrations"
     gen:
       go:
         <<: *go
         out: "../internal/intermediate/store/queries"
   - engine: "postgresql"
     queries: "queries-oauth.sql"
-    schema: "schema.sql"
+    schema: "../cmd/openauthctl/migrations"
     gen:
       go:
         <<: *go
