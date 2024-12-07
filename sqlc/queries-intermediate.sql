@@ -190,3 +190,25 @@ WHERE
 RETURNING
     *;
 
+-- name: UpdateIntermediateSessionMicrosoftOAuthStateSHA256 :one
+UPDATE
+    intermediate_sessions
+SET
+    microsoft_oauth_state_sha256 = $1
+WHERE
+    id = $2
+RETURNING
+    *;
+
+-- name: UpdateIntermediateSessionMicrosoftDetails :one
+UPDATE
+    intermediate_sessions
+SET
+    email = $1,
+    microsoft_user_id = $2,
+    microsoft_tenant_id = $3
+WHERE
+    id = $4
+RETURNING
+    *;
+

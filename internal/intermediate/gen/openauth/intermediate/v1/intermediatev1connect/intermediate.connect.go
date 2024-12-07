@@ -42,6 +42,12 @@ const (
 	// IntermediateServiceRedeemGoogleOAuthCodeProcedure is the fully-qualified name of the
 	// IntermediateService's RedeemGoogleOAuthCode RPC.
 	IntermediateServiceRedeemGoogleOAuthCodeProcedure = "/openauth.intermediate.v1.IntermediateService/RedeemGoogleOAuthCode"
+	// IntermediateServiceGetMicrosoftOAuthRedirectURLProcedure is the fully-qualified name of the
+	// IntermediateService's GetMicrosoftOAuthRedirectURL RPC.
+	IntermediateServiceGetMicrosoftOAuthRedirectURLProcedure = "/openauth.intermediate.v1.IntermediateService/GetMicrosoftOAuthRedirectURL"
+	// IntermediateServiceRedeemMicrosoftOAuthCodeProcedure is the fully-qualified name of the
+	// IntermediateService's RedeemMicrosoftOAuthCode RPC.
+	IntermediateServiceRedeemMicrosoftOAuthCodeProcedure = "/openauth.intermediate.v1.IntermediateService/RedeemMicrosoftOAuthCode"
 	// IntermediateServiceCreateOrganizationProcedure is the fully-qualified name of the
 	// IntermediateService's CreateOrganization RPC.
 	IntermediateServiceCreateOrganizationProcedure = "/openauth.intermediate.v1.IntermediateService/CreateOrganization"
@@ -61,15 +67,16 @@ const (
 
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
 var (
-	intermediateServiceServiceDescriptor                               = v1.File_openauth_intermediate_v1_intermediate_proto.Services().ByName("IntermediateService")
-	intermediateServiceWhoamiMethodDescriptor                          = intermediateServiceServiceDescriptor.Methods().ByName("Whoami")
-	intermediateServiceGetGoogleOAuthRedirectURLMethodDescriptor       = intermediateServiceServiceDescriptor.Methods().ByName("GetGoogleOAuthRedirectURL")
-	intermediateServiceRedeemGoogleOAuthCodeMethodDescriptor           = intermediateServiceServiceDescriptor.Methods().ByName("RedeemGoogleOAuthCode")
-	intermediateServiceCreateOrganizationMethodDescriptor              = intermediateServiceServiceDescriptor.Methods().ByName("CreateOrganization")
-	intermediateServiceIssueEmailVerificationChallengeMethodDescriptor = intermediateServiceServiceDescriptor.Methods().ByName("IssueEmailVerificationChallenge")
-	intermediateServiceListOrganizationsMethodDescriptor               = intermediateServiceServiceDescriptor.Methods().ByName("ListOrganizations")
-	intermediateServiceSignInWithEmailMethodDescriptor                 = intermediateServiceServiceDescriptor.Methods().ByName("SignInWithEmail")
-	intermediateServiceVerifyEmailChallengeMethodDescriptor            = intermediateServiceServiceDescriptor.Methods().ByName("VerifyEmailChallenge")
+	intermediateServiceServiceDescriptor                            = v1.File_openauth_intermediate_v1_intermediate_proto.Services().ByName("IntermediateService")
+	intermediateServiceWhoamiMethodDescriptor                       = intermediateServiceServiceDescriptor.Methods().ByName("Whoami")
+	intermediateServiceGetGoogleOAuthRedirectURLMethodDescriptor    = intermediateServiceServiceDescriptor.Methods().ByName("GetGoogleOAuthRedirectURL")
+	intermediateServiceRedeemGoogleOAuthCodeMethodDescriptor        = intermediateServiceServiceDescriptor.Methods().ByName("RedeemGoogleOAuthCode")
+	intermediateServiceGetMicrosoftOAuthRedirectURLMethodDescriptor = intermediateServiceServiceDescriptor.Methods().ByName("GetMicrosoftOAuthRedirectURL")
+	intermediateServiceRedeemMicrosoftOAuthCodeMethodDescriptor     = intermediateServiceServiceDescriptor.Methods().ByName("RedeemMicrosoftOAuthCode")
+	intermediateServiceCreateOrganizationMethodDescriptor           = intermediateServiceServiceDescriptor.Methods().ByName("CreateOrganization")
+	intermediateServiceListOrganizationsMethodDescriptor            = intermediateServiceServiceDescriptor.Methods().ByName("ListOrganizations")
+	intermediateServiceSignInWithEmailMethodDescriptor              = intermediateServiceServiceDescriptor.Methods().ByName("SignInWithEmail")
+	intermediateServiceVerifyEmailChallengeMethodDescriptor         = intermediateServiceServiceDescriptor.Methods().ByName("VerifyEmailChallenge")
 )
 
 // IntermediateServiceClient is a client for the openauth.intermediate.v1.IntermediateService
@@ -78,6 +85,8 @@ type IntermediateServiceClient interface {
 	Whoami(context.Context, *connect.Request[v1.WhoamiRequest]) (*connect.Response[v1.WhoamiResponse], error)
 	GetGoogleOAuthRedirectURL(context.Context, *connect.Request[v1.GetGoogleOAuthRedirectURLRequest]) (*connect.Response[v1.GetGoogleOAuthRedirectURLResponse], error)
 	RedeemGoogleOAuthCode(context.Context, *connect.Request[v1.RedeemGoogleOAuthCodeRequest]) (*connect.Response[v1.RedeemGoogleOAuthCodeResponse], error)
+	GetMicrosoftOAuthRedirectURL(context.Context, *connect.Request[v1.GetMicrosoftOAuthRedirectURLRequest]) (*connect.Response[v1.GetMicrosoftOAuthRedirectURLResponse], error)
+	RedeemMicrosoftOAuthCode(context.Context, *connect.Request[v1.RedeemMicrosoftOAuthCodeRequest]) (*connect.Response[v1.RedeemMicrosoftOAuthCodeResponse], error)
 	// Creates a new organization.
 	CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.CreateOrganizationResponse], error)
 	// Issues a new email verification challenge.
@@ -119,6 +128,18 @@ func NewIntermediateServiceClient(httpClient connect.HTTPClient, baseURL string,
 			connect.WithSchema(intermediateServiceRedeemGoogleOAuthCodeMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
+		getMicrosoftOAuthRedirectURL: connect.NewClient[v1.GetMicrosoftOAuthRedirectURLRequest, v1.GetMicrosoftOAuthRedirectURLResponse](
+			httpClient,
+			baseURL+IntermediateServiceGetMicrosoftOAuthRedirectURLProcedure,
+			connect.WithSchema(intermediateServiceGetMicrosoftOAuthRedirectURLMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		redeemMicrosoftOAuthCode: connect.NewClient[v1.RedeemMicrosoftOAuthCodeRequest, v1.RedeemMicrosoftOAuthCodeResponse](
+			httpClient,
+			baseURL+IntermediateServiceRedeemMicrosoftOAuthCodeProcedure,
+			connect.WithSchema(intermediateServiceRedeemMicrosoftOAuthCodeMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
 		createOrganization: connect.NewClient[v1.CreateOrganizationRequest, v1.CreateOrganizationResponse](
 			httpClient,
 			baseURL+IntermediateServiceCreateOrganizationProcedure,
@@ -154,14 +175,15 @@ func NewIntermediateServiceClient(httpClient connect.HTTPClient, baseURL string,
 
 // intermediateServiceClient implements IntermediateServiceClient.
 type intermediateServiceClient struct {
-	whoami                          *connect.Client[v1.WhoamiRequest, v1.WhoamiResponse]
-	getGoogleOAuthRedirectURL       *connect.Client[v1.GetGoogleOAuthRedirectURLRequest, v1.GetGoogleOAuthRedirectURLResponse]
-	redeemGoogleOAuthCode           *connect.Client[v1.RedeemGoogleOAuthCodeRequest, v1.RedeemGoogleOAuthCodeResponse]
-	createOrganization              *connect.Client[v1.CreateOrganizationRequest, v1.CreateOrganizationResponse]
-	issueEmailVerificationChallenge *connect.Client[v1.IssueEmailVerificationChallengeRequest, v1.IssueEmailVerificationChallengeResponse]
-	listOrganizations               *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
-	signInWithEmail                 *connect.Client[v1.SignInWithEmailRequest, v1.SignInWithEmailResponse]
-	verifyEmailChallenge            *connect.Client[v1.VerifyEmailChallengeRequest, v1.VerifyEmailChallengeResponse]
+	whoami                       *connect.Client[v1.WhoamiRequest, v1.WhoamiResponse]
+	getGoogleOAuthRedirectURL    *connect.Client[v1.GetGoogleOAuthRedirectURLRequest, v1.GetGoogleOAuthRedirectURLResponse]
+	redeemGoogleOAuthCode        *connect.Client[v1.RedeemGoogleOAuthCodeRequest, v1.RedeemGoogleOAuthCodeResponse]
+	getMicrosoftOAuthRedirectURL *connect.Client[v1.GetMicrosoftOAuthRedirectURLRequest, v1.GetMicrosoftOAuthRedirectURLResponse]
+	redeemMicrosoftOAuthCode     *connect.Client[v1.RedeemMicrosoftOAuthCodeRequest, v1.RedeemMicrosoftOAuthCodeResponse]
+	createOrganization           *connect.Client[v1.CreateOrganizationRequest, v1.CreateOrganizationResponse]
+	listOrganizations            *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
+	signInWithEmail              *connect.Client[v1.SignInWithEmailRequest, v1.SignInWithEmailResponse]
+	verifyEmailChallenge         *connect.Client[v1.VerifyEmailChallengeRequest, v1.VerifyEmailChallengeResponse]
 }
 
 // Whoami calls openauth.intermediate.v1.IntermediateService.Whoami.
@@ -178,6 +200,18 @@ func (c *intermediateServiceClient) GetGoogleOAuthRedirectURL(ctx context.Contex
 // RedeemGoogleOAuthCode calls openauth.intermediate.v1.IntermediateService.RedeemGoogleOAuthCode.
 func (c *intermediateServiceClient) RedeemGoogleOAuthCode(ctx context.Context, req *connect.Request[v1.RedeemGoogleOAuthCodeRequest]) (*connect.Response[v1.RedeemGoogleOAuthCodeResponse], error) {
 	return c.redeemGoogleOAuthCode.CallUnary(ctx, req)
+}
+
+// GetMicrosoftOAuthRedirectURL calls
+// openauth.intermediate.v1.IntermediateService.GetMicrosoftOAuthRedirectURL.
+func (c *intermediateServiceClient) GetMicrosoftOAuthRedirectURL(ctx context.Context, req *connect.Request[v1.GetMicrosoftOAuthRedirectURLRequest]) (*connect.Response[v1.GetMicrosoftOAuthRedirectURLResponse], error) {
+	return c.getMicrosoftOAuthRedirectURL.CallUnary(ctx, req)
+}
+
+// RedeemMicrosoftOAuthCode calls
+// openauth.intermediate.v1.IntermediateService.RedeemMicrosoftOAuthCode.
+func (c *intermediateServiceClient) RedeemMicrosoftOAuthCode(ctx context.Context, req *connect.Request[v1.RedeemMicrosoftOAuthCodeRequest]) (*connect.Response[v1.RedeemMicrosoftOAuthCodeResponse], error) {
+	return c.redeemMicrosoftOAuthCode.CallUnary(ctx, req)
 }
 
 // CreateOrganization calls openauth.intermediate.v1.IntermediateService.CreateOrganization.
@@ -212,6 +246,8 @@ type IntermediateServiceHandler interface {
 	Whoami(context.Context, *connect.Request[v1.WhoamiRequest]) (*connect.Response[v1.WhoamiResponse], error)
 	GetGoogleOAuthRedirectURL(context.Context, *connect.Request[v1.GetGoogleOAuthRedirectURLRequest]) (*connect.Response[v1.GetGoogleOAuthRedirectURLResponse], error)
 	RedeemGoogleOAuthCode(context.Context, *connect.Request[v1.RedeemGoogleOAuthCodeRequest]) (*connect.Response[v1.RedeemGoogleOAuthCodeResponse], error)
+	GetMicrosoftOAuthRedirectURL(context.Context, *connect.Request[v1.GetMicrosoftOAuthRedirectURLRequest]) (*connect.Response[v1.GetMicrosoftOAuthRedirectURLResponse], error)
+	RedeemMicrosoftOAuthCode(context.Context, *connect.Request[v1.RedeemMicrosoftOAuthCodeRequest]) (*connect.Response[v1.RedeemMicrosoftOAuthCodeResponse], error)
 	// Creates a new organization.
 	CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.CreateOrganizationResponse], error)
 	// Issues a new email verification challenge.
@@ -246,6 +282,18 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 		IntermediateServiceRedeemGoogleOAuthCodeProcedure,
 		svc.RedeemGoogleOAuthCode,
 		connect.WithSchema(intermediateServiceRedeemGoogleOAuthCodeMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	intermediateServiceGetMicrosoftOAuthRedirectURLHandler := connect.NewUnaryHandler(
+		IntermediateServiceGetMicrosoftOAuthRedirectURLProcedure,
+		svc.GetMicrosoftOAuthRedirectURL,
+		connect.WithSchema(intermediateServiceGetMicrosoftOAuthRedirectURLMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	intermediateServiceRedeemMicrosoftOAuthCodeHandler := connect.NewUnaryHandler(
+		IntermediateServiceRedeemMicrosoftOAuthCodeProcedure,
+		svc.RedeemMicrosoftOAuthCode,
+		connect.WithSchema(intermediateServiceRedeemMicrosoftOAuthCodeMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
 	intermediateServiceCreateOrganizationHandler := connect.NewUnaryHandler(
@@ -286,6 +334,10 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 			intermediateServiceGetGoogleOAuthRedirectURLHandler.ServeHTTP(w, r)
 		case IntermediateServiceRedeemGoogleOAuthCodeProcedure:
 			intermediateServiceRedeemGoogleOAuthCodeHandler.ServeHTTP(w, r)
+		case IntermediateServiceGetMicrosoftOAuthRedirectURLProcedure:
+			intermediateServiceGetMicrosoftOAuthRedirectURLHandler.ServeHTTP(w, r)
+		case IntermediateServiceRedeemMicrosoftOAuthCodeProcedure:
+			intermediateServiceRedeemMicrosoftOAuthCodeHandler.ServeHTTP(w, r)
 		case IntermediateServiceCreateOrganizationProcedure:
 			intermediateServiceCreateOrganizationHandler.ServeHTTP(w, r)
 		case IntermediateServiceIssueEmailVerificationChallengeProcedure:
@@ -315,6 +367,14 @@ func (UnimplementedIntermediateServiceHandler) GetGoogleOAuthRedirectURL(context
 
 func (UnimplementedIntermediateServiceHandler) RedeemGoogleOAuthCode(context.Context, *connect.Request[v1.RedeemGoogleOAuthCodeRequest]) (*connect.Response[v1.RedeemGoogleOAuthCodeResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.RedeemGoogleOAuthCode is not implemented"))
+}
+
+func (UnimplementedIntermediateServiceHandler) GetMicrosoftOAuthRedirectURL(context.Context, *connect.Request[v1.GetMicrosoftOAuthRedirectURLRequest]) (*connect.Response[v1.GetMicrosoftOAuthRedirectURLResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.GetMicrosoftOAuthRedirectURL is not implemented"))
+}
+
+func (UnimplementedIntermediateServiceHandler) RedeemMicrosoftOAuthCode(context.Context, *connect.Request[v1.RedeemMicrosoftOAuthCodeRequest]) (*connect.Response[v1.RedeemMicrosoftOAuthCodeResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.RedeemMicrosoftOAuthCode is not implemented"))
 }
 
 func (UnimplementedIntermediateServiceHandler) CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.CreateOrganizationResponse], error) {

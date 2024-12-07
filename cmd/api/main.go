@@ -29,6 +29,7 @@ import (
 	intermediateservice "github.com/openauth/openauth/internal/intermediate/service"
 	intermediatestore "github.com/openauth/openauth/internal/intermediate/store"
 	"github.com/openauth/openauth/internal/loadenv"
+	"github.com/openauth/openauth/internal/microsoftoauth"
 	oauthservice "github.com/openauth/openauth/internal/oauth/service"
 	oauthstore "github.com/openauth/openauth/internal/oauth/store"
 	"github.com/openauth/openauth/internal/pagetoken"
@@ -154,6 +155,7 @@ func main() {
 		KMS:                                   kms_,
 		PageEncoder:                           pagetoken.Encoder{Secret: pageEncodingValue},
 		GoogleOAuthClient:                     &googleoauth.Client{HTTPClient: &http.Client{}},
+		MicrosoftOAuthClient:                  &microsoftoauth.Client{HTTPClient: &http.Client{}},
 		SessionSigningKeyKmsKeyID:             config.SessionKMSKeyID,
 		GoogleOAuthClientSecretsKMSKeyID:      config.GoogleOAuthClientSecretsKMSKeyID,
 		MicrosoftOAuthClientSecretsKMSKeyID:   config.MicrosoftOAuthClientSecretsKMSKeyID,

@@ -28,6 +28,19 @@ service IntermediateService {
     };
   }
 
+  rpc GetMicrosoftOAuthRedirectURL(GetMicrosoftOAuthRedirectURLRequest) returns (GetMicrosoftOAuthRedirectURLResponse) {
+    option (google.api.http) = {
+      get: "/intermediate/v1/microsoft-oauth-redirect-url"
+    };
+  }
+
+  rpc RedeemMicrosoftOAuthCode(RedeemMicrosoftOAuthCodeRequest) returns (RedeemMicrosoftOAuthCodeResponse) {
+    option (google.api.http) = {
+      post: "/intermediate/v1/redeem-microsoft-oauth-code",
+      body: "*"
+    };
+  }
+
   // Creates a new organization.
   rpc CreateOrganization(CreateOrganizationRequest) returns (CreateOrganizationResponse) {
     option (google.api.http) = {
@@ -100,6 +113,22 @@ message RedeemGoogleOAuthCodeRequest {
 
 message RedeemGoogleOAuthCodeResponse {
 }
+
+message GetMicrosoftOAuthRedirectURLRequest {
+}
+
+message GetMicrosoftOAuthRedirectURLResponse {
+  string url = 1;
+}
+
+message RedeemMicrosoftOAuthCodeRequest {
+  string code = 1;
+  string state = 2;
+}
+
+message RedeemMicrosoftOAuthCodeResponse {
+}
+
 
 message IntermediateSessionClaims {
   // The project ID the intermediate session is scoped to.

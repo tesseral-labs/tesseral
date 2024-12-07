@@ -764,3 +764,86 @@ func (q *Queries) UpdateIntermediateSessionGoogleOAuthStateSHA256(ctx context.Co
 	)
 	return i, err
 }
+
+const updateIntermediateSessionMicrosoftDetails = `-- name: UpdateIntermediateSessionMicrosoftDetails :one
+UPDATE
+    intermediate_sessions
+SET
+    email = $1,
+    microsoft_user_id = $2,
+    microsoft_tenant_id = $3
+WHERE
+    id = $4
+RETURNING
+    id, project_id, create_time, expire_time, token_sha256, revoked, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id
+`
+
+type UpdateIntermediateSessionMicrosoftDetailsParams struct {
+	Email             *string
+	MicrosoftUserID   *string
+	MicrosoftTenantID *string
+	ID                uuid.UUID
+}
+
+func (q *Queries) UpdateIntermediateSessionMicrosoftDetails(ctx context.Context, arg UpdateIntermediateSessionMicrosoftDetailsParams) (IntermediateSession, error) {
+	row := q.db.QueryRow(ctx, updateIntermediateSessionMicrosoftDetails,
+		arg.Email,
+		arg.MicrosoftUserID,
+		arg.MicrosoftTenantID,
+		arg.ID,
+	)
+	var i IntermediateSession
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.CreateTime,
+		&i.ExpireTime,
+		&i.TokenSha256,
+		&i.Revoked,
+		&i.Email,
+		&i.GoogleOauthStateSha256,
+		&i.MicrosoftOauthStateSha256,
+		&i.GoogleHostedDomain,
+		&i.GoogleUserID,
+		&i.MicrosoftTenantID,
+		&i.MicrosoftUserID,
+	)
+	return i, err
+}
+
+const updateIntermediateSessionMicrosoftOAuthStateSHA256 = `-- name: UpdateIntermediateSessionMicrosoftOAuthStateSHA256 :one
+UPDATE
+    intermediate_sessions
+SET
+    microsoft_oauth_state_sha256 = $1
+WHERE
+    id = $2
+RETURNING
+    id, project_id, create_time, expire_time, token_sha256, revoked, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id
+`
+
+type UpdateIntermediateSessionMicrosoftOAuthStateSHA256Params struct {
+	MicrosoftOauthStateSha256 []byte
+	ID                        uuid.UUID
+}
+
+func (q *Queries) UpdateIntermediateSessionMicrosoftOAuthStateSHA256(ctx context.Context, arg UpdateIntermediateSessionMicrosoftOAuthStateSHA256Params) (IntermediateSession, error) {
+	row := q.db.QueryRow(ctx, updateIntermediateSessionMicrosoftOAuthStateSHA256, arg.MicrosoftOauthStateSha256, arg.ID)
+	var i IntermediateSession
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.CreateTime,
+		&i.ExpireTime,
+		&i.TokenSha256,
+		&i.Revoked,
+		&i.Email,
+		&i.GoogleOauthStateSha256,
+		&i.MicrosoftOauthStateSha256,
+		&i.GoogleHostedDomain,
+		&i.GoogleUserID,
+		&i.MicrosoftTenantID,
+		&i.MicrosoftUserID,
+	)
+	return i, err
+}
