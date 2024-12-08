@@ -58,7 +58,7 @@ const createProject = `-- name: CreateProject :one
 INSERT INTO projects (id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_id, microsoft_oauth_client_secret_ciphertext)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 RETURNING
-    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, foo
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext
 `
 
 type CreateProjectParams struct {
@@ -96,7 +96,6 @@ func (q *Queries) CreateProject(ctx context.Context, arg CreateProjectParams) (P
 		&i.MicrosoftOauthClientID,
 		&i.GoogleOauthClientSecretCiphertext,
 		&i.MicrosoftOauthClientSecretCiphertext,
-		&i.Foo,
 	)
 	return i, err
 }
@@ -156,7 +155,7 @@ func (q *Queries) GetProjectAPIKeyBySecretTokenSHA256(ctx context.Context, secre
 
 const getProjectByID = `-- name: GetProjectByID :one
 SELECT
-    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, foo
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext
 FROM
     projects
 WHERE
@@ -176,7 +175,6 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 		&i.MicrosoftOauthClientID,
 		&i.GoogleOauthClientSecretCiphertext,
 		&i.MicrosoftOauthClientSecretCiphertext,
-		&i.Foo,
 	)
 	return i, err
 }
@@ -265,7 +263,7 @@ func (q *Queries) ListOrganizationsByProjectId(ctx context.Context, arg ListOrga
 
 const listProjects = `-- name: ListProjects :many
 SELECT
-    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, foo
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext
 FROM
     projects
 ORDER BY
@@ -292,7 +290,6 @@ func (q *Queries) ListProjects(ctx context.Context, limit int32) ([]Project, err
 			&i.MicrosoftOauthClientID,
 			&i.GoogleOauthClientSecretCiphertext,
 			&i.MicrosoftOauthClientSecretCiphertext,
-			&i.Foo,
 		); err != nil {
 			return nil, err
 		}
@@ -368,7 +365,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, foo
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext
 `
 
 type UpdateProjectParams struct {
@@ -404,7 +401,6 @@ func (q *Queries) UpdateProject(ctx context.Context, arg UpdateProjectParams) (P
 		&i.MicrosoftOauthClientID,
 		&i.GoogleOauthClientSecretCiphertext,
 		&i.MicrosoftOauthClientSecretCiphertext,
-		&i.Foo,
 	)
 	return i, err
 }
@@ -417,7 +413,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, foo
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext
 `
 
 type UpdateProjectOrganizationIDParams struct {
@@ -438,7 +434,6 @@ func (q *Queries) UpdateProjectOrganizationID(ctx context.Context, arg UpdatePro
 		&i.MicrosoftOauthClientID,
 		&i.GoogleOauthClientSecretCiphertext,
 		&i.MicrosoftOauthClientSecretCiphertext,
-		&i.Foo,
 	)
 	return i, err
 }

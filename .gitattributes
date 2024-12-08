@@ -18,3 +18,5 @@ internal/frontend/store/queries/** generated
 
 internal/intermediate/gen/** generated
 internal/intermediate/store/queries/** generated
+
+internal/oauth/store/queries/** generated
