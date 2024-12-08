@@ -1,4 +1,19 @@
-app/src/gen/**/*              linguist-generated=true
-internal/gen/**/*             linguist-generated=true
-internal/store/queries/**/*   linguist-generated=true
-ui/src/gen/**/*               linguist-generated=true
+# https://git-scm.com/docs/gitattributes#_defining_macro_attributes
+# https://git-scm.com/docs/gitattributes#_diff (see: "Unset")
+# https://git-scm.com/docs/gitattributes#_merge (see: "Unset")
+[attr]generated linguist-generated=true -diff -merge
+
+app/src/gen/** generated
+ui/src/gen/** generated
+
+internal/gen/** generated
+internal/store/queries/** generated
+
+internal/backend/gen/** generated
+internal/backend/store/queries/** generated
+
+internal/frontend/gen/** generated
+internal/frontend/store/queries/** generated
+
+internal/intermediate/gen/** generated
+internal/intermediate/store/queries/** generated
