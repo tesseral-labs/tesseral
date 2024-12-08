@@ -49,9 +49,16 @@ func TestCheckLineMatch(t *testing.T) {
 			wantErr:       false,
 		},
 		{
-			name:          "malformed line",
+			name:          "malformed line no count",
 			sha1HexSuffix: "suffix",
-			line:          "suffix:1:1",
+			line:          "suffix",
+			want:          false,
+			wantErr:       true,
+		},
+		{
+			name:          "malformed line bad count",
+			sha1HexSuffix: "suffix",
+			line:          "suffix:badcount",
 			want:          false,
 			wantErr:       true,
 		},
