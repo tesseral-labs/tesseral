@@ -102,6 +102,12 @@ type Organization struct {
 	MicrosoftTenantID                 *string
 }
 
+type OrganizationDomain struct {
+	ID             uuid.UUID
+	OrganizationID uuid.UUID
+	Domain         string
+}
+
 type Project struct {
 	ID                                   uuid.UUID
 	OrganizationID                       *uuid.UUID
@@ -120,6 +126,16 @@ type ProjectApiKey struct {
 	CreateTime        *time.Time
 	Revoked           bool
 	SecretTokenSha256 []byte
+}
+
+type SamlConnection struct {
+	ID                 uuid.UUID
+	OrganizationID     uuid.UUID
+	CreateTime         *time.Time
+	IsPrimary          bool
+	IdpRedirectUrl     *string
+	IdpX509Certificate []byte
+	IdpEntityID        *string
 }
 
 type Session struct {
