@@ -20,7 +20,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, project_id, challenge_sha256, complete_time, create_time, email, expire_time, google_user_id, microsoft_user_id
+    id, project_id, challenge_sha256, complete_time, create_time, expire_time, intermediate_session_id, revoked
 `
 
 type CompleteEmailVerificationChallengeParams struct {
@@ -37,40 +37,35 @@ func (q *Queries) CompleteEmailVerificationChallenge(ctx context.Context, arg Co
 		&i.ChallengeSha256,
 		&i.CompleteTime,
 		&i.CreateTime,
-		&i.Email,
 		&i.ExpireTime,
-		&i.GoogleUserID,
-		&i.MicrosoftUserID,
+		&i.IntermediateSessionID,
+		&i.Revoked,
 	)
 	return i, err
 }
 
 const createEmailVerificationChallenge = `-- name: CreateEmailVerificationChallenge :one
-INSERT INTO email_verification_challenges (id, project_id, email, challenge_sha256, expire_time, google_user_id, microsoft_user_id)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
+INSERT INTO email_verification_challenges (id, project_id, intermediate_session_id, challenge_sha256, expire_time)
+    VALUES ($1, $2, $3, $4, $5)
 RETURNING
-    id, project_id, challenge_sha256, complete_time, create_time, email, expire_time, google_user_id, microsoft_user_id
+    id, project_id, challenge_sha256, complete_time, create_time, expire_time, intermediate_session_id, revoked
 `
 
 type CreateEmailVerificationChallengeParams struct {
-	ID              uuid.UUID
-	ProjectID       uuid.UUID
-	Email           *string
-	ChallengeSha256 []byte
-	ExpireTime      *time.Time
-	GoogleUserID    *string
-	MicrosoftUserID *string
+	ID                    uuid.UUID
+	ProjectID             uuid.UUID
+	IntermediateSessionID uuid.UUID
+	ChallengeSha256       []byte
+	ExpireTime            *time.Time
 }
 
 func (q *Queries) CreateEmailVerificationChallenge(ctx context.Context, arg CreateEmailVerificationChallengeParams) (EmailVerificationChallenge, error) {
 	row := q.db.QueryRow(ctx, createEmailVerificationChallenge,
 		arg.ID,
 		arg.ProjectID,
-		arg.Email,
+		arg.IntermediateSessionID,
 		arg.ChallengeSha256,
 		arg.ExpireTime,
-		arg.GoogleUserID,
-		arg.MicrosoftUserID,
 	)
 	var i EmailVerificationChallenge
 	err := row.Scan(
@@ -79,27 +74,28 @@ func (q *Queries) CreateEmailVerificationChallenge(ctx context.Context, arg Crea
 		&i.ChallengeSha256,
 		&i.CompleteTime,
 		&i.CreateTime,
-		&i.Email,
 		&i.ExpireTime,
-		&i.GoogleUserID,
-		&i.MicrosoftUserID,
+		&i.IntermediateSessionID,
+		&i.Revoked,
 	)
 	return i, err
 }
 
 const createIntermediateSession = `-- name: CreateIntermediateSession :one
-INSERT INTO intermediate_sessions (id, project_id, expire_time, email, token_sha256)
-    VALUES ($1, $2, $3, $4, $5)
+INSERT INTO intermediate_sessions (id, project_id, expire_time, email, google_user_id, microsoft_user_id, token_sha256)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
 RETURNING
     id, project_id, create_time, expire_time, token_sha256, revoked, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id
 `
 
 type CreateIntermediateSessionParams struct {
-	ID          uuid.UUID
-	ProjectID   uuid.UUID
-	ExpireTime  *time.Time
-	Email       *string
-	TokenSha256 []byte
+	ID              uuid.UUID
+	ProjectID       uuid.UUID
+	ExpireTime      *time.Time
+	Email           *string
+	GoogleUserID    *string
+	MicrosoftUserID *string
+	TokenSha256     []byte
 }
 
 func (q *Queries) CreateIntermediateSession(ctx context.Context, arg CreateIntermediateSessionParams) (IntermediateSession, error) {
@@ -108,6 +104,8 @@ func (q *Queries) CreateIntermediateSession(ctx context.Context, arg CreateInter
 		arg.ProjectID,
 		arg.ExpireTime,
 		arg.Email,
+		arg.GoogleUserID,
+		arg.MicrosoftUserID,
 		arg.TokenSha256,
 	)
 	var i IntermediateSession
@@ -208,18 +206,20 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (S
 }
 
 const createVerifiedEmail = `-- name: CreateVerifiedEmail :one
-INSERT INTO verified_emails (id, project_id, email, google_user_id, microsoft_user_id)
-    VALUES ($1, $2, $3, $4, $5)
+INSERT INTO verified_emails (id, project_id, email, google_user_id, google_hosted_domain, microsoft_user_id, microsoft_tenant_id)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
 RETURNING
-    id, project_id, create_time, email, google_user_id, microsoft_user_id
+    id, project_id, create_time, email, google_user_id, microsoft_user_id, google_hosted_domain, microsoft_tenant_id
 `
 
 type CreateVerifiedEmailParams struct {
-	ID              uuid.UUID
-	ProjectID       uuid.UUID
-	Email           string
-	GoogleUserID    *string
-	MicrosoftUserID *string
+	ID                 uuid.UUID
+	ProjectID          uuid.UUID
+	Email              string
+	GoogleUserID       *string
+	GoogleHostedDomain *string
+	MicrosoftUserID    *string
+	MicrosoftTenantID  *string
 }
 
 func (q *Queries) CreateVerifiedEmail(ctx context.Context, arg CreateVerifiedEmailParams) (VerifiedEmail, error) {
@@ -228,7 +228,9 @@ func (q *Queries) CreateVerifiedEmail(ctx context.Context, arg CreateVerifiedEma
 		arg.ProjectID,
 		arg.Email,
 		arg.GoogleUserID,
+		arg.GoogleHostedDomain,
 		arg.MicrosoftUserID,
+		arg.MicrosoftTenantID,
 	)
 	var i VerifiedEmail
 	err := row.Scan(
@@ -238,43 +240,23 @@ func (q *Queries) CreateVerifiedEmail(ctx context.Context, arg CreateVerifiedEma
 		&i.Email,
 		&i.GoogleUserID,
 		&i.MicrosoftUserID,
+		&i.GoogleHostedDomain,
+		&i.MicrosoftTenantID,
 	)
 	return i, err
 }
 
-const getEmailVerificationChallenge = `-- name: GetEmailVerificationChallenge :one
+const getEmailVerificationChallengeByID = `-- name: GetEmailVerificationChallengeByID :one
 SELECT
-    id, project_id, challenge_sha256, complete_time, create_time, email, expire_time, google_user_id, microsoft_user_id
+    id, project_id, challenge_sha256, complete_time, create_time, expire_time, intermediate_session_id, revoked
 FROM
     email_verification_challenges
 WHERE
-    project_id = $1
-    AND challenge_sha256 = $2
-    AND expire_time > $3
-    AND (email = $4
-        OR google_user_id = $5
-        OR microsoft_user_id = $6)
-LIMIT 1
+    id = $1
 `
 
-type GetEmailVerificationChallengeParams struct {
-	ProjectID       uuid.UUID
-	ChallengeSha256 []byte
-	ExpireTime      *time.Time
-	Email           *string
-	GoogleUserID    *string
-	MicrosoftUserID *string
-}
-
-func (q *Queries) GetEmailVerificationChallenge(ctx context.Context, arg GetEmailVerificationChallengeParams) (EmailVerificationChallenge, error) {
-	row := q.db.QueryRow(ctx, getEmailVerificationChallenge,
-		arg.ProjectID,
-		arg.ChallengeSha256,
-		arg.ExpireTime,
-		arg.Email,
-		arg.GoogleUserID,
-		arg.MicrosoftUserID,
-	)
+func (q *Queries) GetEmailVerificationChallengeByID(ctx context.Context, id uuid.UUID) (EmailVerificationChallenge, error) {
+	row := q.db.QueryRow(ctx, getEmailVerificationChallengeByID, id)
 	var i EmailVerificationChallenge
 	err := row.Scan(
 		&i.ID,
@@ -282,10 +264,47 @@ func (q *Queries) GetEmailVerificationChallenge(ctx context.Context, arg GetEmai
 		&i.ChallengeSha256,
 		&i.CompleteTime,
 		&i.CreateTime,
-		&i.Email,
 		&i.ExpireTime,
-		&i.GoogleUserID,
-		&i.MicrosoftUserID,
+		&i.IntermediateSessionID,
+		&i.Revoked,
+	)
+	return i, err
+}
+
+const getEmailVerificationChallengeForCompletion = `-- name: GetEmailVerificationChallengeForCompletion :one
+SELECT
+    id, project_id, challenge_sha256, complete_time, create_time, expire_time, intermediate_session_id, revoked
+FROM
+    email_verification_challenges
+WHERE
+    project_id = $1
+    AND intermediate_session_id = $2
+    AND expire_time > $3
+    AND revoked = FALSE
+    AND complete_time IS NULL
+ORDER BY
+    create_time DESC
+LIMIT 1
+`
+
+type GetEmailVerificationChallengeForCompletionParams struct {
+	ProjectID             uuid.UUID
+	IntermediateSessionID uuid.UUID
+	ExpireTime            *time.Time
+}
+
+func (q *Queries) GetEmailVerificationChallengeForCompletion(ctx context.Context, arg GetEmailVerificationChallengeForCompletionParams) (EmailVerificationChallenge, error) {
+	row := q.db.QueryRow(ctx, getEmailVerificationChallengeForCompletion, arg.ProjectID, arg.IntermediateSessionID, arg.ExpireTime)
+	var i EmailVerificationChallenge
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.ChallengeSha256,
+		&i.CompleteTime,
+		&i.CreateTime,
+		&i.ExpireTime,
+		&i.IntermediateSessionID,
+		&i.Revoked,
 	)
 	return i, err
 }
@@ -551,7 +570,7 @@ func (q *Queries) ListUsersByEmail(ctx context.Context, unverifiedEmail *string)
 
 const listVerifiedEmails = `-- name: ListVerifiedEmails :many
 SELECT
-    id, project_id, create_time, email, google_user_id, microsoft_user_id
+    id, project_id, create_time, email, google_user_id, microsoft_user_id, google_hosted_domain, microsoft_tenant_id
 FROM
     verified_emails
 WHERE
@@ -591,6 +610,8 @@ func (q *Queries) ListVerifiedEmails(ctx context.Context, arg ListVerifiedEmails
 			&i.Email,
 			&i.GoogleUserID,
 			&i.MicrosoftUserID,
+			&i.GoogleHostedDomain,
+			&i.MicrosoftTenantID,
 		); err != nil {
 			return nil, err
 		}
@@ -600,6 +621,33 @@ func (q *Queries) ListVerifiedEmails(ctx context.Context, arg ListVerifiedEmails
 		return nil, err
 	}
 	return items, nil
+}
+
+const revokeEmailVerificationChallenge = `-- name: RevokeEmailVerificationChallenge :one
+UPDATE
+    email_verification_challenges
+SET
+    revoked = TRUE
+WHERE
+    id = $1
+RETURNING
+    id, project_id, challenge_sha256, complete_time, create_time, expire_time, intermediate_session_id, revoked
+`
+
+func (q *Queries) RevokeEmailVerificationChallenge(ctx context.Context, id uuid.UUID) (EmailVerificationChallenge, error) {
+	row := q.db.QueryRow(ctx, revokeEmailVerificationChallenge, id)
+	var i EmailVerificationChallenge
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.ChallengeSha256,
+		&i.CompleteTime,
+		&i.CreateTime,
+		&i.ExpireTime,
+		&i.IntermediateSessionID,
+		&i.Revoked,
+	)
+	return i, err
 }
 
 const revokeIntermediateSession = `-- name: RevokeIntermediateSession :one

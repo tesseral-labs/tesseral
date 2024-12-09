@@ -49,6 +49,31 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /intermediate/v1/issue-email-verification-challenge:
+        post:
+            tags:
+                - IntermediateService
+            description: Issues a new email verification challenge.
+            operationId: IntermediateService_IssueEmailVerificationChallenge
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/IssueEmailVerificationChallengeRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/IssueEmailVerificationChallengeResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /intermediate/v1/microsoft-oauth-redirect-url:
         get:
             tags:
@@ -257,8 +282,21 @@ components:
                     type: string
                 googleUserId:
                     type: string
+                googleHostedDomain:
+                    type: string
+                microsoftTenantId:
+                    type: string
                 microsoftUserId:
                     type: string
+        IssueEmailVerificationChallengeRequest:
+            type: object
+            properties: {}
+        IssueEmailVerificationChallengeResponse:
+            type: object
+            properties:
+                emailVerificationChallengeId:
+                    type: string
+                    description: The ID of the email verification challenge.
         ListOrganizationsResponse:
             type: object
             properties:
@@ -312,9 +350,9 @@ components:
         SignInWithEmailResponse:
             type: object
             properties:
-                SessionToken:
+                ChallengeID:
                     type: string
-                    description: The token for the intermediate session or session created by the SignInWithEmail request.
+                    description: The ID of the email verification challenge, if required.
         Status:
             type: object
             properties:
@@ -334,9 +372,12 @@ components:
         VerifyEmailChallengeRequest:
             type: object
             properties:
-                challenge:
+                code:
                     type: string
                     description: The challenge to verify.
+                emailVerificationChallengeId:
+                    type: string
+                    description: The ID of the email verification challenge.
         VerifyEmailChallengeResponse:
             type: object
             properties: {}

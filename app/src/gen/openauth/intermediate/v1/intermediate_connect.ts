@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { CreateOrganizationRequest, CreateOrganizationResponse, GetGoogleOAuthRedirectURLRequest, GetGoogleOAuthRedirectURLResponse, GetMicrosoftOAuthRedirectURLRequest, GetMicrosoftOAuthRedirectURLResponse, ListOrganizationsRequest, ListOrganizationsResponse, RedeemGoogleOAuthCodeRequest, RedeemGoogleOAuthCodeResponse, RedeemMicrosoftOAuthCodeRequest, RedeemMicrosoftOAuthCodeResponse, SignInWithEmailRequest, SignInWithEmailResponse, VerifyEmailChallengeRequest, VerifyEmailChallengeResponse, WhoamiRequest, WhoamiResponse } from "./intermediate_pb.js";
+import { CreateOrganizationRequest, CreateOrganizationResponse, GetGoogleOAuthRedirectURLRequest, GetGoogleOAuthRedirectURLResponse, GetMicrosoftOAuthRedirectURLRequest, GetMicrosoftOAuthRedirectURLResponse, IssueEmailVerificationChallengeRequest, IssueEmailVerificationChallengeResponse, ListOrganizationsRequest, ListOrganizationsResponse, RedeemGoogleOAuthCodeRequest, RedeemGoogleOAuthCodeResponse, RedeemMicrosoftOAuthCodeRequest, RedeemMicrosoftOAuthCodeResponse, SignInWithEmailRequest, SignInWithEmailResponse, VerifyEmailChallengeRequest, VerifyEmailChallengeResponse, WhoamiRequest, WhoamiResponse } from "./intermediate_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -66,6 +66,17 @@ export const IntermediateService = {
       name: "CreateOrganization",
       I: CreateOrganizationRequest,
       O: CreateOrganizationResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * Issues a new email verification challenge.
+     *
+     * @generated from rpc openauth.intermediate.v1.IntermediateService.IssueEmailVerificationChallenge
+     */
+    issueEmailVerificationChallenge: {
+      name: "IssueEmailVerificationChallenge",
+      I: IssueEmailVerificationChallengeRequest,
+      O: IssueEmailVerificationChallengeResponse,
       kind: MethodKind.Unary,
     },
     /**

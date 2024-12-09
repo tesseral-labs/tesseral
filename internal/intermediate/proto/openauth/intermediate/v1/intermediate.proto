@@ -49,6 +49,14 @@ service IntermediateService {
     };
   }
 
+  // Issues a new email verification challenge.
+  rpc IssueEmailVerificationChallenge(IssueEmailVerificationChallengeRequest) returns (IssueEmailVerificationChallengeResponse) {
+    option (google.api.http) = {
+      post: "/intermediate/v1/issue-email-verification-challenge",
+      body: "*"
+    };
+  }
+
   // Gets a list of organizations.
   rpc ListOrganizations(ListOrganizationsRequest) returns (ListOrganizationsResponse) {
     option (google.api.http) = {
@@ -77,8 +85,10 @@ message IntermediateSession {
   string id = 1;
   string project_id = 2;
   string email = 3;
-  optional string google_user_id = 4;
-  optional string microsoft_user_id = 5;
+  string google_user_id = 4;
+  string google_hosted_domain = 5;
+  string microsoft_tenant_id = 6;
+  string microsoft_user_id = 7;
   // TODO more things here
 }
 
@@ -153,6 +163,14 @@ message CreateOrganizationResponse {
   Organization organization = 1;
 }
 
+message IssueEmailVerificationChallengeRequest {
+}
+
+message IssueEmailVerificationChallengeResponse {
+  // The ID of the email verification challenge.
+  string email_verification_challenge_id = 1;
+}
+
 message ListOrganizationsRequest {
   // The project ID to list intermediate organizations for.
   string project_id = 1;
@@ -171,8 +189,8 @@ message SignInWithEmailRequest {
 }
 
 message SignInWithEmailResponse {
-  // The token for the intermediate session or session created by the SignInWithEmail request.
-  string SessionToken = 1;
+  // The ID of the email verification challenge, if required.
+  string ChallengeID = 1;
 }
 
 message Project {
@@ -231,7 +249,9 @@ message Session {
 
 message VerifyEmailChallengeRequest {
   // The challenge to verify.
-  string challenge = 1;
+  string code = 1;
+  // The ID of the email verification challenge.
+  string email_verification_challenge_id = 2;
 }
 
 message VerifyEmailChallengeResponse {}

@@ -4,7 +4,7 @@
 // @ts-nocheck
 
 import { MethodKind } from "@bufbuild/protobuf";
-import { CreateOrganizationRequest, CreateOrganizationResponse, GetGoogleOAuthRedirectURLRequest, GetGoogleOAuthRedirectURLResponse, GetMicrosoftOAuthRedirectURLRequest, GetMicrosoftOAuthRedirectURLResponse, ListOrganizationsRequest, ListOrganizationsResponse, RedeemGoogleOAuthCodeRequest, RedeemGoogleOAuthCodeResponse, RedeemMicrosoftOAuthCodeRequest, RedeemMicrosoftOAuthCodeResponse, SignInWithEmailRequest, SignInWithEmailResponse, VerifyEmailChallengeRequest, VerifyEmailChallengeResponse, WhoamiRequest, WhoamiResponse } from "./intermediate_pb.js";
+import { CreateOrganizationRequest, CreateOrganizationResponse, GetGoogleOAuthRedirectURLRequest, GetGoogleOAuthRedirectURLResponse, GetMicrosoftOAuthRedirectURLRequest, GetMicrosoftOAuthRedirectURLResponse, IssueEmailVerificationChallengeRequest, IssueEmailVerificationChallengeResponse, ListOrganizationsRequest, ListOrganizationsResponse, RedeemGoogleOAuthCodeRequest, RedeemGoogleOAuthCodeResponse, RedeemMicrosoftOAuthCodeRequest, RedeemMicrosoftOAuthCodeResponse, SignInWithEmailRequest, SignInWithEmailResponse, VerifyEmailChallengeRequest, VerifyEmailChallengeResponse, WhoamiRequest, WhoamiResponse } from "./intermediate_pb.js";
 
 /**
  * @generated from rpc openauth.intermediate.v1.IntermediateService.Whoami
@@ -87,6 +87,22 @@ export const createOrganization = {
   kind: MethodKind.Unary,
   I: CreateOrganizationRequest,
   O: CreateOrganizationResponse,
+  service: {
+    typeName: "openauth.intermediate.v1.IntermediateService"
+  }
+} as const;
+
+/**
+ * Issues a new email verification challenge.
+ *
+ * @generated from rpc openauth.intermediate.v1.IntermediateService.IssueEmailVerificationChallenge
+ */
+export const issueEmailVerificationChallenge = {
+  localName: "issueEmailVerificationChallenge",
+  name: "IssueEmailVerificationChallenge",
+  kind: MethodKind.Unary,
+  I: IssueEmailVerificationChallengeRequest,
+  O: IssueEmailVerificationChallengeResponse,
   service: {
     typeName: "openauth.intermediate.v1.IntermediateService"
   }

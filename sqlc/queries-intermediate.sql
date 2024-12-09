@@ -17,14 +17,14 @@ WHERE
     token_sha256 = $1;
 
 -- name: CreateEmailVerificationChallenge :one
-INSERT INTO email_verification_challenges (id, project_id, email, challenge_sha256, expire_time, google_user_id, microsoft_user_id)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
+INSERT INTO email_verification_challenges (id, project_id, intermediate_session_id, challenge_sha256, expire_time)
+    VALUES ($1, $2, $3, $4, $5)
 RETURNING
     *;
 
 -- name: CreateIntermediateSession :one
-INSERT INTO intermediate_sessions (id, project_id, expire_time, email, token_sha256)
-    VALUES ($1, $2, $3, $4, $5)
+INSERT INTO intermediate_sessions (id, project_id, expire_time, email, google_user_id, microsoft_user_id, token_sha256)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
 RETURNING
     *;
 
@@ -41,23 +41,32 @@ RETURNING
     *;
 
 -- name: CreateVerifiedEmail :one
-INSERT INTO verified_emails (id, project_id, email, google_user_id, microsoft_user_id)
-    VALUES ($1, $2, $3, $4, $5)
+INSERT INTO verified_emails (id, project_id, email, google_user_id, google_hosted_domain, microsoft_user_id, microsoft_tenant_id)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
 RETURNING
     *;
 
--- name: GetEmailVerificationChallenge :one
+-- name: GetEmailVerificationChallengeByID :one
+SELECT
+    *
+FROM
+    email_verification_challenges
+WHERE
+    id = $1;
+
+-- name: GetEmailVerificationChallengeForCompletion :one
 SELECT
     *
 FROM
     email_verification_challenges
 WHERE
     project_id = $1
-    AND challenge_sha256 = $2
+    AND intermediate_session_id = $2
     AND expire_time > $3
-    AND (email = $4
-        OR google_user_id = $5
-        OR microsoft_user_id = $6)
+    AND revoked = FALSE
+    AND complete_time IS NULL
+ORDER BY
+    create_time DESC
 LIMIT 1;
 
 -- name: GetIntermediateSessionByID :one
@@ -138,6 +147,16 @@ WHERE
         OR microsoft_user_id = $4)
 ORDER BY
     id;
+
+-- name: RevokeEmailVerificationChallenge :one
+UPDATE
+    email_verification_challenges
+SET
+    revoked = TRUE
+WHERE
+    id = $1
+RETURNING
+    *;
 
 -- name: RevokeIntermediateSession :one
 UPDATE
