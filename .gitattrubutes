@@ -1,4 +1,0 @@
-app/src/gen/**/*              linguist-generated=true
-internal/gen/**/*             linguist-generated=true
-internal/store/queries/**/*   linguist-generated=true
-ui/src/gen/**/*               linguist-generated=true

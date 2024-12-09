@@ -1,0 +1,22 @@
+# https://git-scm.com/docs/gitattributes#_defining_macro_attributes
+# https://docs.github.com/en/repositories/working-with-files/managing-files/customizing-how-changed-files-appear-on-github
+# https://git-scm.com/docs/gitattributes#_diff (see: "Unset")
+# https://git-scm.com/docs/gitattributes#_merge (see: "Unset")
+[attr]generated linguist-generated=true -diff -merge
+
+app/src/gen/** generated
+ui/src/gen/** generated
+
+internal/gen/** generated
+internal/store/queries/** generated
+
+internal/backend/gen/** generated
+internal/backend/store/queries/** generated
+
+internal/frontend/gen/** generated
+internal/frontend/store/queries/** generated
+
+internal/intermediate/gen/** generated
+internal/intermediate/store/queries/** generated
+
+internal/oauth/store/queries/** generated
