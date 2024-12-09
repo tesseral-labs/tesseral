@@ -53,6 +53,30 @@ func local_request_IntermediateService_Whoami_0(ctx context.Context, marshaler r
 	return msg, metadata, err
 }
 
+func request_IntermediateService_ExchangeIntermediateSessionForSession_0(ctx context.Context, marshaler runtime.Marshaler, client IntermediateServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq ExchangeIntermediateSessionForSessionRequest
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := client.ExchangeIntermediateSessionForSession(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_IntermediateService_ExchangeIntermediateSessionForSession_0(ctx context.Context, marshaler runtime.Marshaler, server IntermediateServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq ExchangeIntermediateSessionForSessionRequest
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := server.ExchangeIntermediateSessionForSession(ctx, &protoReq)
+	return msg, metadata, err
+}
+
 func request_IntermediateService_GetGoogleOAuthRedirectURL_0(ctx context.Context, marshaler runtime.Marshaler, client IntermediateServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
 		protoReq GetGoogleOAuthRedirectURLRequest
@@ -291,6 +315,26 @@ func RegisterIntermediateServiceHandlerServer(ctx context.Context, mux *runtime.
 		}
 		forward_IntermediateService_Whoami_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
+	mux.Handle(http.MethodPost, pattern_IntermediateService_ExchangeIntermediateSessionForSession_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/ExchangeIntermediateSessionForSession", runtime.WithHTTPPathPattern("/intermediate/v1/exchange-intermediate-session-for-session"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_IntermediateService_ExchangeIntermediateSessionForSession_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_IntermediateService_ExchangeIntermediateSessionForSession_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
 	mux.Handle(http.MethodGet, pattern_IntermediateService_GetGoogleOAuthRedirectURL_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -528,6 +572,23 @@ func RegisterIntermediateServiceHandlerClient(ctx context.Context, mux *runtime.
 		}
 		forward_IntermediateService_Whoami_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
+	mux.Handle(http.MethodPost, pattern_IntermediateService_ExchangeIntermediateSessionForSession_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/ExchangeIntermediateSessionForSession", runtime.WithHTTPPathPattern("/intermediate/v1/exchange-intermediate-session-for-session"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_IntermediateService_ExchangeIntermediateSessionForSession_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_IntermediateService_ExchangeIntermediateSessionForSession_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
 	mux.Handle(http.MethodGet, pattern_IntermediateService_GetGoogleOAuthRedirectURL_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -685,27 +746,29 @@ func RegisterIntermediateServiceHandlerClient(ctx context.Context, mux *runtime.
 }
 
 var (
-	pattern_IntermediateService_Whoami_0                          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "whoami"}, ""))
-	pattern_IntermediateService_GetGoogleOAuthRedirectURL_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "google-oauth-redirect-url"}, ""))
-	pattern_IntermediateService_RedeemGoogleOAuthCode_0           = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "redeem-google-oauth-code"}, ""))
-	pattern_IntermediateService_GetMicrosoftOAuthRedirectURL_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "microsoft-oauth-redirect-url"}, ""))
-	pattern_IntermediateService_RedeemMicrosoftOAuthCode_0        = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "redeem-microsoft-oauth-code"}, ""))
-	pattern_IntermediateService_CreateOrganization_0              = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "organizations"}, ""))
-	pattern_IntermediateService_IssueEmailVerificationChallenge_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "issue-email-verification-challenge"}, ""))
-	pattern_IntermediateService_ListOrganizations_0               = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "organizations"}, ""))
-	pattern_IntermediateService_SignInWithEmail_0                 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "email-signin"}, ""))
-	pattern_IntermediateService_VerifyEmailChallenge_0            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "verify-email-challenge"}, ""))
+	pattern_IntermediateService_Whoami_0                                = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "whoami"}, ""))
+	pattern_IntermediateService_ExchangeIntermediateSessionForSession_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "exchange-intermediate-session-for-session"}, ""))
+	pattern_IntermediateService_GetGoogleOAuthRedirectURL_0             = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "google-oauth-redirect-url"}, ""))
+	pattern_IntermediateService_RedeemGoogleOAuthCode_0                 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "redeem-google-oauth-code"}, ""))
+	pattern_IntermediateService_GetMicrosoftOAuthRedirectURL_0          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "microsoft-oauth-redirect-url"}, ""))
+	pattern_IntermediateService_RedeemMicrosoftOAuthCode_0              = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "redeem-microsoft-oauth-code"}, ""))
+	pattern_IntermediateService_CreateOrganization_0                    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "organizations"}, ""))
+	pattern_IntermediateService_IssueEmailVerificationChallenge_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "issue-email-verification-challenge"}, ""))
+	pattern_IntermediateService_ListOrganizations_0                     = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "organizations"}, ""))
+	pattern_IntermediateService_SignInWithEmail_0                       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "email-signin"}, ""))
+	pattern_IntermediateService_VerifyEmailChallenge_0                  = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "verify-email-challenge"}, ""))
 )
 
 var (
-	forward_IntermediateService_Whoami_0                          = runtime.ForwardResponseMessage
-	forward_IntermediateService_GetGoogleOAuthRedirectURL_0       = runtime.ForwardResponseMessage
-	forward_IntermediateService_RedeemGoogleOAuthCode_0           = runtime.ForwardResponseMessage
-	forward_IntermediateService_GetMicrosoftOAuthRedirectURL_0    = runtime.ForwardResponseMessage
-	forward_IntermediateService_RedeemMicrosoftOAuthCode_0        = runtime.ForwardResponseMessage
-	forward_IntermediateService_CreateOrganization_0              = runtime.ForwardResponseMessage
-	forward_IntermediateService_IssueEmailVerificationChallenge_0 = runtime.ForwardResponseMessage
-	forward_IntermediateService_ListOrganizations_0               = runtime.ForwardResponseMessage
-	forward_IntermediateService_SignInWithEmail_0                 = runtime.ForwardResponseMessage
-	forward_IntermediateService_VerifyEmailChallenge_0            = runtime.ForwardResponseMessage
+	forward_IntermediateService_Whoami_0                                = runtime.ForwardResponseMessage
+	forward_IntermediateService_ExchangeIntermediateSessionForSession_0 = runtime.ForwardResponseMessage
+	forward_IntermediateService_GetGoogleOAuthRedirectURL_0             = runtime.ForwardResponseMessage
+	forward_IntermediateService_RedeemGoogleOAuthCode_0                 = runtime.ForwardResponseMessage
+	forward_IntermediateService_GetMicrosoftOAuthRedirectURL_0          = runtime.ForwardResponseMessage
+	forward_IntermediateService_RedeemMicrosoftOAuthCode_0              = runtime.ForwardResponseMessage
+	forward_IntermediateService_CreateOrganization_0                    = runtime.ForwardResponseMessage
+	forward_IntermediateService_IssueEmailVerificationChallenge_0       = runtime.ForwardResponseMessage
+	forward_IntermediateService_ListOrganizations_0                     = runtime.ForwardResponseMessage
+	forward_IntermediateService_SignInWithEmail_0                       = runtime.ForwardResponseMessage
+	forward_IntermediateService_VerifyEmailChallenge_0                  = runtime.ForwardResponseMessage
 )

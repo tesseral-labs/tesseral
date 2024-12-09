@@ -31,6 +31,30 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /intermediate/v1/exchange-intermediate-session-for-session:
+        post:
+            tags:
+                - IntermediateService
+            operationId: IntermediateService_ExchangeIntermediateSessionForSession
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/ExchangeIntermediateSessionForSessionRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ExchangeIntermediateSessionForSessionResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /intermediate/v1/google-oauth-redirect-url:
         get:
             tags:
@@ -253,6 +277,15 @@ components:
             properties:
                 organization:
                     $ref: '#/components/schemas/Organization'
+        ExchangeIntermediateSessionForSessionRequest:
+            type: object
+            properties:
+                organizationId:
+                    type: string
+                    description: The organization ID for the full session.
+        ExchangeIntermediateSessionForSessionResponse:
+            type: object
+            properties: {}
         GetGoogleOAuthRedirectURLResponse:
             type: object
             properties:

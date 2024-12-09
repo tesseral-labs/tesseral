@@ -96,6 +96,26 @@ ORDER BY
     create_time DESC
 LIMIT 1;
 
+-- name: GetOrganizationUser :one
+SELECT
+    *
+FROM
+    users
+WHERE
+    organization_id = $1
+    AND email = $2
+    AND google_user_id = $3
+    OR microsoft_user_id = $4;
+
+-- name: GetProjectOrganizationByID :one
+SELECT
+    *
+FROM
+    organizations
+WHERE
+    id = $1
+    AND project_id = $2;
+
 -- name: GetProjectByID :one
 SELECT
     *

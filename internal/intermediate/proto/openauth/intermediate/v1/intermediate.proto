@@ -15,6 +15,13 @@ service IntermediateService {
     };
   }
 
+  rpc ExchangeIntermediateSessionForSession(ExchangeIntermediateSessionForSessionRequest) returns (ExchangeIntermediateSessionForSessionResponse) {
+    option (google.api.http) = {
+      post: "/intermediate/v1/exchange-intermediate-session-for-session",
+      body: "*"
+    };
+  }
+
   rpc GetGoogleOAuthRedirectURL(GetGoogleOAuthRedirectURLRequest) returns (GetGoogleOAuthRedirectURLResponse) {
     option (google.api.http) = {
       get: "/intermediate/v1/google-oauth-redirect-url"
@@ -97,6 +104,14 @@ message WhoamiRequest {
 
 message WhoamiResponse {
   IntermediateSession intermediate_session = 1;
+}
+
+message ExchangeIntermediateSessionForSessionRequest {
+  // The organization ID for the full session.
+  string organization_id = 1;
+}
+
+message ExchangeIntermediateSessionForSessionResponse {
 }
 
 message GetGoogleOAuthRedirectURLRequest {

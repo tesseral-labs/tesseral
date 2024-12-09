@@ -150,6 +150,76 @@ export class WhoamiResponse extends Message<WhoamiResponse> {
 }
 
 /**
+ * @generated from message openauth.intermediate.v1.ExchangeIntermediateSessionForSessionRequest
+ */
+export class ExchangeIntermediateSessionForSessionRequest extends Message<ExchangeIntermediateSessionForSessionRequest> {
+  /**
+   * The organization ID for the full session.
+   *
+   * @generated from field: string organization_id = 1;
+   */
+  organizationId = "";
+
+  constructor(data?: PartialMessage<ExchangeIntermediateSessionForSessionRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "openauth.intermediate.v1.ExchangeIntermediateSessionForSessionRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "organization_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ExchangeIntermediateSessionForSessionRequest {
+    return new ExchangeIntermediateSessionForSessionRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ExchangeIntermediateSessionForSessionRequest {
+    return new ExchangeIntermediateSessionForSessionRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ExchangeIntermediateSessionForSessionRequest {
+    return new ExchangeIntermediateSessionForSessionRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: ExchangeIntermediateSessionForSessionRequest | PlainMessage<ExchangeIntermediateSessionForSessionRequest> | undefined, b: ExchangeIntermediateSessionForSessionRequest | PlainMessage<ExchangeIntermediateSessionForSessionRequest> | undefined): boolean {
+    return proto3.util.equals(ExchangeIntermediateSessionForSessionRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message openauth.intermediate.v1.ExchangeIntermediateSessionForSessionResponse
+ */
+export class ExchangeIntermediateSessionForSessionResponse extends Message<ExchangeIntermediateSessionForSessionResponse> {
+  constructor(data?: PartialMessage<ExchangeIntermediateSessionForSessionResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "openauth.intermediate.v1.ExchangeIntermediateSessionForSessionResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ExchangeIntermediateSessionForSessionResponse {
+    return new ExchangeIntermediateSessionForSessionResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ExchangeIntermediateSessionForSessionResponse {
+    return new ExchangeIntermediateSessionForSessionResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ExchangeIntermediateSessionForSessionResponse {
+    return new ExchangeIntermediateSessionForSessionResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: ExchangeIntermediateSessionForSessionResponse | PlainMessage<ExchangeIntermediateSessionForSessionResponse> | undefined, b: ExchangeIntermediateSessionForSessionResponse | PlainMessage<ExchangeIntermediateSessionForSessionResponse> | undefined): boolean {
+    return proto3.util.equals(ExchangeIntermediateSessionForSessionResponse, a, b);
+  }
+}
+
+/**
  * @generated from message openauth.intermediate.v1.GetGoogleOAuthRedirectURLRequest
  */
 export class GetGoogleOAuthRedirectURLRequest extends Message<GetGoogleOAuthRedirectURLRequest> {

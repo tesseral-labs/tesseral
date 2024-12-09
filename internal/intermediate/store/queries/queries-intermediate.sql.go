@@ -444,6 +444,37 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 	return i, err
 }
 
+const getProjectOrganizationByID = `-- name: GetProjectOrganizationByID :one
+SELECT
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id
+FROM
+    organizations
+WHERE
+    id = $1
+    AND project_id = $2
+`
+
+type GetProjectOrganizationByIDParams struct {
+	ID        uuid.UUID
+	ProjectID uuid.UUID
+}
+
+func (q *Queries) GetProjectOrganizationByID(ctx context.Context, arg GetProjectOrganizationByIDParams) (Organization, error) {
+	row := q.db.QueryRow(ctx, getProjectOrganizationByID, arg.ID, arg.ProjectID)
+	var i Organization
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.DisplayName,
+		&i.OverrideLogInWithPasswordEnabled,
+		&i.OverrideLogInWithGoogleEnabled,
+		&i.OverrideLogInWithMicrosoftEnabled,
+		&i.GoogleHostedDomain,
+		&i.MicrosoftTenantID,
+	)
+	return i, err
+}
+
 const getSessionSigningKeysByProjectID = `-- name: GetSessionSigningKeysByProjectID :many
 SELECT
     id, project_id, public_key, private_key_cipher_text, create_time, expire_time
