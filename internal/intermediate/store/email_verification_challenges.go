@@ -59,9 +59,6 @@ func (s *Store) CompleteEmailVerificationChallenge(ctx context.Context, req *int
 	defer rollback()
 
 	projectID := projectid.ProjectID(ctx)
-	if projectID == uuid.Nil {
-		return nil, ErrProjectIDRequired
-	}
 
 	// Get the email verification challenge from the request
 	challengeID, err := idformat.EmailVerificationChallenge.Parse(req.EmailVerificationChallengeId)
@@ -149,9 +146,6 @@ func (s *Store) IssueEmailVerificationChallenge(ctx context.Context) (*intermedi
 	defer rollback()
 
 	projectID := projectid.ProjectID(ctx)
-	if projectID == uuid.Nil {
-		return nil, ErrProjectIDRequired
-	}
 
 	intermediateSessionID := authn.IntermediateSessionID(ctx)
 	if intermediateSessionID == uuid.Nil {
