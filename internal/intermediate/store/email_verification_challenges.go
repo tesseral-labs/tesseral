@@ -202,7 +202,7 @@ func verifyChallenge(ctx context.Context, evc *queries.EmailVerificationChalleng
 
 	// Check if the challenge has already been completed
 	if evc.CompleteTime != nil {
-		err := revokeEmailVerificationChallenge(ctx, evc.ID, q)
+		_, err := q.RevokeEmailVerificationChallenge(ctx, evc.ID)
 		if err != nil {
 			return err
 		}
@@ -212,7 +212,7 @@ func verifyChallenge(ctx context.Context, evc *queries.EmailVerificationChalleng
 
 	// Check if the challenge has expired
 	if evc.ExpireTime.Before(time.Now()) {
-		err := revokeEmailVerificationChallenge(ctx, evc.ID, q)
+		_, err := q.RevokeEmailVerificationChallenge(ctx, evc.ID)
 		if err != nil {
 			return err
 		}
@@ -222,7 +222,7 @@ func verifyChallenge(ctx context.Context, evc *queries.EmailVerificationChalleng
 
 	// Check if the challenge is correct
 	if !bytes.Equal(evc.ChallengeSha256, secretTokenSha256) {
-		err := revokeEmailVerificationChallenge(ctx, evc.ID, q)
+		_, err := q.RevokeEmailVerificationChallenge(ctx, evc.ID)
 		if err != nil {
 			return err
 		}
@@ -231,10 +231,4 @@ func verifyChallenge(ctx context.Context, evc *queries.EmailVerificationChalleng
 	}
 
 	return nil
-}
-
-func revokeEmailVerificationChallenge(ctx context.Context, id uuid.UUID, q *queries.Queries) error {
-	_, err := q.RevokeEmailVerificationChallenge(ctx, id)
-
-	return err
 }
