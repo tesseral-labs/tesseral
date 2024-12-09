@@ -99,7 +99,7 @@ func (s *Store) SignInWithEmail(
 		}
 
 		return &intermediatev1.SignInWithEmailResponse{
-			ChallengeID: evcid,
+			ChallengeID: *evcid,
 		}, nil
 	}
 }

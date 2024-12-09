@@ -32,8 +32,8 @@ func (s *Store) GetIntermediateSessionByToken(ctx context.Context, token string)
 		Id:              idformat.IntermediateSession.Format(qIntermediateSession.ID),
 		ProjectId:       idformat.Project.Format(qIntermediateSession.ProjectID),
 		Email:           *qIntermediateSession.Email,
-		GoogleUserId:    qIntermediateSession.GoogleUserID,
-		MicrosoftUserId: qIntermediateSession.MicrosoftUserID,
+		GoogleUserId:    *qIntermediateSession.GoogleUserID,
+		MicrosoftUserId: *qIntermediateSession.MicrosoftUserID,
 	}, nil
 }
 
