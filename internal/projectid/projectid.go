@@ -19,7 +19,7 @@ var ErrProjectIDHeaderRequired = errors.New("X-TODO-OpenAuth-Project-ID header i
 
 func NewHttpHandler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		projectIDHeader := "project_b8b1sswcix4ad7bj1b9gfekfj" // r.Header.Get("X-TODO-OpenAuth-Project-ID")
+		projectIDHeader := r.Header.Get("X-TODO-OpenAuth-Project-ID")
 		if projectIDHeader == "" {
 			http.Error(w, ErrProjectIDHeaderRequired.Error(), http.StatusBadRequest)
 			return
