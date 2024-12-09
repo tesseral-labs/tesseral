@@ -12,27 +12,6 @@ type segment struct {
 	Local string
 }
 
-func onlyPath(p path, n uxml.Node) (uxml.Node, bool) {
-	if len(p) == 0 {
-		panic("empty path")
-	}
-	if n.Element == nil {
-		return uxml.Node{}, false
-	}
-	if n.Element.Name.URI != p[0].URI || n.Element.Name.Local != p[0].Local {
-		return uxml.Node{}, false
-	}
-	if len(p) == 1 {
-		return n, true
-	}
-	for _, c := range n.Element.Children {
-		if find, ok := onlyPath(p[1:], c); ok {
-			return find, true
-		}
-	}
-	return uxml.Node{}, false
-}
-
 func onlyPathHoistNames(p path, n uxml.Node) (uxml.Node, bool) {
 	return onlyPathHoistNamesInternal(p, stack.Stack{}, n)
 }
@@ -59,9 +38,7 @@ func onlyPathHoistNamesInternal(p path, s stack.Stack, n uxml.Node) (uxml.Node, 
 
 	if len(p) == 1 {
 		var attrs []uxml.Attr
-		for _, a := range n.Element.Attrs {
-			attrs = append(attrs, a)
-		}
+		attrs = append(attrs, n.Element.Attrs...)
 		for k, v := range s.GetAll() {
 			if k == "" {
 				attrs = append(attrs, uxml.Attr{

@@ -78,7 +78,7 @@ func (s *Service) acs(w http.ResponseWriter, r *http.Request) error {
 	// todo redirect
 
 	// just to prove the concept
-	if _, err := w.Write([]byte(fmt.Sprintf("hi %s in organization %s!", validateRes.SubjectID, samlConnectionACSData.OrganizationID))); err != nil {
+	if _, err := fmt.Fprintf(w, "hi %s in organization %s!", validateRes.SubjectID, samlConnectionACSData.OrganizationID); err != nil {
 		return err
 	}
 
