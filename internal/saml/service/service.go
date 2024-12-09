@@ -2,9 +2,11 @@ package service
 
 import (
 	"fmt"
+	"html/template"
 	"net/http"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/openauth/openauth/internal/saml/internal/emailaddr"
 	"github.com/openauth/openauth/internal/saml/internal/saml"
 	"github.com/openauth/openauth/internal/saml/store"
@@ -17,9 +19,53 @@ type Service struct {
 func (s *Service) Handler() http.Handler {
 	mux := http.NewServeMux()
 
+	mux.Handle("GET /saml/v1/{samlConnectionID}/init", withErr(s.init))
 	mux.Handle("POST /saml/v1/{samlConnectionID}/acs", withErr(s.acs))
 
 	return mux
+}
+
+type initTemplateData struct {
+	SignOnURL   string
+	SAMLRequest string
+}
+
+var initTemplate = template.Must(template.New("init").Parse(`
+<html>
+	<body>
+		<form method="POST" action="{{ .SignOnURL }}">
+			<input type="hidden" name="SAMLRequest" value="{{ .SAMLRequest }}"></input>
+		</form>
+		<script>
+			document.forms[0].submit();
+		</script>
+	</body>
+</html>
+`))
+
+func (s *Service) init(w http.ResponseWriter, r *http.Request) error {
+	ctx := r.Context()
+	samlConnectionID := r.PathValue("samlConnectionID")
+
+	samlConnectionInitData, err := s.Store.GetSAMLConnectionInitData(ctx, samlConnectionID)
+	if err != nil {
+		return err
+	}
+
+	initRes := saml.Init(&saml.InitRequest{
+		RequestID:  uuid.NewString(),
+		SPEntityID: samlConnectionInitData.SPEntityID,
+		Now:        time.Now(),
+	})
+
+	if err := initTemplate.Execute(w, initTemplateData{
+		SignOnURL:   samlConnectionInitData.IDPRedirectURL,
+		SAMLRequest: initRes.SAMLRequest,
+	}); err != nil {
+		return fmt.Errorf("execute template: %w", err)
+	}
+
+	return nil
 }
 
 func (s *Service) acs(w http.ResponseWriter, r *http.Request) error {
