@@ -7,16 +7,66 @@ package queries
 
 import (
 	"context"
+
+	"github.com/google/uuid"
 )
 
-const foo = `-- name: Foo :one
+const getOrganizationDomains = `-- name: GetOrganizationDomains :many
 SELECT
-    1
+    DOMAIN
+FROM
+    organization_domains
+WHERE
+    organization_id = $1
 `
 
-func (q *Queries) Foo(ctx context.Context) (int32, error) {
-	row := q.db.QueryRow(ctx, foo)
-	var column_1 int32
-	err := row.Scan(&column_1)
-	return column_1, err
+func (q *Queries) GetOrganizationDomains(ctx context.Context, organizationID uuid.UUID) ([]string, error) {
+	rows, err := q.db.Query(ctx, getOrganizationDomains, organizationID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []string
+	for rows.Next() {
+		var domain string
+		if err := rows.Scan(&domain); err != nil {
+			return nil, err
+		}
+		items = append(items, domain)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getSAMLConnection = `-- name: GetSAMLConnection :one
+SELECT
+    saml_connections.id, saml_connections.organization_id, saml_connections.create_time, saml_connections.is_primary, saml_connections.idp_redirect_url, saml_connections.idp_x509_certificate, saml_connections.idp_entity_id
+FROM
+    saml_connections
+    JOIN organizations ON saml_connections.organization_id = organizations.id
+WHERE
+    organizations.project_id = $1
+    AND saml_connections.id = $2
+`
+
+type GetSAMLConnectionParams struct {
+	ProjectID uuid.UUID
+	ID        uuid.UUID
+}
+
+func (q *Queries) GetSAMLConnection(ctx context.Context, arg GetSAMLConnectionParams) (SamlConnection, error) {
+	row := q.db.QueryRow(ctx, getSAMLConnection, arg.ProjectID, arg.ID)
+	var i SamlConnection
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.CreateTime,
+		&i.IsPrimary,
+		&i.IdpRedirectUrl,
+		&i.IdpX509Certificate,
+		&i.IdpEntityID,
+	)
+	return i, err
 }

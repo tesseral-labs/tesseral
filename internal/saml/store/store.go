@@ -6,7 +6,7 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/openauth/openauth/internal/oauth/store/queries"
+	"github.com/openauth/openauth/internal/saml/store/queries"
 )
 
 type Store struct {

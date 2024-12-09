@@ -12,7 +12,7 @@ create table saml_connections
 create table organization_domains
 (
     id              uuid    not null primary key,
-    organization_id uuid    not null references projects (id),
+    organization_id uuid    not null references organizations (id),
     domain          varchar not null,
 
     unique (organization_id, domain)
