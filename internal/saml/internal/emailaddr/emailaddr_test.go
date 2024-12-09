@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	"github.com/ssoready/ssoready/internal/emailaddr"
+	"github.com/openauth/openauth/internal/saml/internal/emailaddr"
 )
 
 func TestParse(t *testing.T) {
@@ -36,12 +36,12 @@ func TestParse(t *testing.T) {
 			out: "example.com",
 		},
 		/**
-		 * In order to test for user group invites in Microsoft Entra, 
+		 * In order to test for user group invites in Microsoft Entra,
 		 * we need to account for the addition of the #EXT# tag in invite emails.
 		 * - https://github.com/ssoready/ssoready/issues/185
 		 */
 		{
-			in: "john-doe#EXT#@example.com",
+			in:  "john-doe#EXT#@example.com",
 			out: "example.com",
 		},
 	}

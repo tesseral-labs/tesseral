@@ -12,6 +12,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.34.5
 	github.com/cyrusaf/ctxlog v1.3.3
 	github.com/golang-migrate/migrate/v4 v4.17.1
+	github.com/google/go-cmp v0.6.0
 	github.com/google/uuid v1.6.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.1
 	github.com/jackc/pgx/v5 v5.7.1
