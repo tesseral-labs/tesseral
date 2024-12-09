@@ -34,6 +34,8 @@ import (
 	oauthstore "github.com/openauth/openauth/internal/oauth/store"
 	"github.com/openauth/openauth/internal/pagetoken"
 	"github.com/openauth/openauth/internal/projectid"
+	samlservice "github.com/openauth/openauth/internal/saml/service"
+	samlstore "github.com/openauth/openauth/internal/saml/store"
 	"github.com/openauth/openauth/internal/secretload"
 	"github.com/openauth/openauth/internal/slogcorrelation"
 	"github.com/openauth/openauth/internal/store/idformat"
@@ -181,6 +183,12 @@ func main() {
 		Store: oauthStore,
 	}
 
+	samlService := samlservice.Service{
+		Store: samlstore.New(samlstore.NewStoreParams{
+			DB: db,
+		}),
+	}
+
 	// Register health checks
 	mux := http.NewServeMux()
 	mux.Handle("/internal/health", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -195,6 +203,9 @@ func main() {
 
 	// Register oauthservice
 	mux.Handle("/oauth/", oauthService.Handler())
+
+	// Register samlservice
+	mux.Handle("/saml/", samlService.Handler())
 
 	// These handlers are registered in a FILO order much like
 	// a Matryoshka doll

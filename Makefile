@@ -8,6 +8,8 @@ queries:
 	docker run --rm --volume "$$(pwd)/sqlc/queries-backend.sql:/work/queries.sql" backplane/pgformatter -i queries.sql
 	docker run --rm --volume "$$(pwd)/sqlc/queries-frontend.sql:/work/queries.sql" backplane/pgformatter -i queries.sql
 	docker run --rm --volume "$$(pwd)/sqlc/queries-intermediate.sql:/work/queries.sql" backplane/pgformatter -i queries.sql
+	docker run --rm --volume "$$(pwd)/sqlc/queries-oauth.sql:/work/queries.sql" backplane/pgformatter -i queries.sql
+	docker run --rm --volume "$$(pwd)/sqlc/queries-saml.sql:/work/queries.sql" backplane/pgformatter -i queries.sql
 	sqlc -f ./sqlc/sqlc.yaml generate
 
 .PHONY: proto
