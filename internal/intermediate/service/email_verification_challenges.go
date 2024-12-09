@@ -18,7 +18,7 @@ func (s *Service) IssueEmailVerificationChallenge(ctx context.Context, req *conn
 }
 
 func (s *Service) VerifyEmailChallenge(ctx context.Context, req *connect.Request[intermediatev1.VerifyEmailChallengeRequest]) (*connect.Response[intermediatev1.VerifyEmailChallengeResponse], error) {
-	res, err := s.Store.CompleteEmailVerificationChallenge(ctx, req.Msg.Code, req.Msg.ChallengeId)
+	res, err := s.Store.CompleteEmailVerificationChallenge(ctx, req.Msg)
 	if err != nil {
 		return nil, fmt.Errorf("store: %w", err)
 	}

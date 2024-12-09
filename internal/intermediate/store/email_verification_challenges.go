@@ -51,7 +51,7 @@ type GetEmailVerificationChallengeParams struct {
 	ProjectID       string
 }
 
-func (s *Store) CompleteEmailVerificationChallenge(ctx context.Context, code string, evcid string) (*intermediatev1.VerifyEmailChallengeResponse, error) {
+func (s *Store) CompleteEmailVerificationChallenge(ctx context.Context, req *intermediatev1.VerifyEmailChallengeRequest) (*intermediatev1.VerifyEmailChallengeResponse, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -64,7 +64,7 @@ func (s *Store) CompleteEmailVerificationChallenge(ctx context.Context, code str
 	}
 
 	// Get the email verification challenge from the request
-	challengeID, err := idformat.EmailVerificationChallenge.Parse(evcid)
+	challengeID, err := idformat.EmailVerificationChallenge.Parse(req.ChallengeId)
 	if err != nil {
 		return nil, err
 	}
@@ -90,7 +90,7 @@ func (s *Store) CompleteEmailVerificationChallenge(ctx context.Context, code str
 	}
 
 	now := time.Now()
-	codeSha256 := sha256.Sum256([]byte(code))
+	codeSha256 := sha256.Sum256([]byte(req.Code))
 
 	// Get the email verification challenge
 	evc, err := q.GetEmailVerificationChallengeForCompletion(ctx, queries.GetEmailVerificationChallengeForCompletionParams{
