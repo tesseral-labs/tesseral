@@ -40,6 +40,12 @@ INSERT INTO sessions (id, user_id, create_time, expire_time, revoked)
 RETURNING
     *;
 
+-- name: CreateUser :one
+INSERT INTO users (id, organization_id, email, google_user_id, microsoft_user_id, create_time, update_time)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
+RETURNING
+    *;
+
 -- name: CreateVerifiedEmail :one
 INSERT INTO verified_emails (id, project_id, email, google_user_id, google_hosted_domain, microsoft_user_id, microsoft_tenant_id)
     VALUES ($1, $2, $3, $4, $5, $6, $7)
@@ -96,16 +102,43 @@ ORDER BY
     create_time DESC
 LIMIT 1;
 
--- name: GetOrganizationUser :one
+-- name: GetCurrentSessionKeyByProjectID :one
+SELECT
+    *
+FROM
+    session_signing_keys
+WHERE
+    project_id = $1
+ORDER BY
+    create_time DESC
+LIMIT 1;
+
+-- name: GetOrganizationUserByEmail :one
 SELECT
     *
 FROM
     users
 WHERE
     organization_id = $1
-    AND email = $2
-    AND google_user_id = $3
-    OR microsoft_user_id = $4;
+    AND email = $2;
+
+-- name: GetOrganizationUserByGoogleUserID :one
+SELECT
+    *
+FROM
+    users
+WHERE
+    organization_id = $1
+    AND google_user_id = $2;
+
+-- name: GetOrganizationUserByMicrosoftUserID :one
+SELECT
+    *
+FROM
+    users
+WHERE
+    organization_id = $1
+    AND microsoft_user_id = $2;
 
 -- name: GetProjectOrganizationByID :one
 SELECT

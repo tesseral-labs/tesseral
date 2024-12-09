@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const completeEmailVerificationChallenge = `-- name: CompleteEmailVerificationChallenge :one
@@ -205,6 +206,47 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (S
 	return i, err
 }
 
+const createUser = `-- name: CreateUser :one
+INSERT INTO users (id, organization_id, email, google_user_id, microsoft_user_id, create_time, update_time)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
+RETURNING
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time
+`
+
+type CreateUserParams struct {
+	ID              uuid.UUID
+	OrganizationID  uuid.UUID
+	Email           string
+	GoogleUserID    *string
+	MicrosoftUserID *string
+	CreateTime      pgtype.Timestamptz
+	UpdateTime      pgtype.Timestamptz
+}
+
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
+	row := q.db.QueryRow(ctx, createUser,
+		arg.ID,
+		arg.OrganizationID,
+		arg.Email,
+		arg.GoogleUserID,
+		arg.MicrosoftUserID,
+		arg.CreateTime,
+		arg.UpdateTime,
+	)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.PasswordBcrypt,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+		&i.Email,
+		&i.CreateTime,
+		&i.UpdateTime,
+	)
+	return i, err
+}
+
 const createVerifiedEmail = `-- name: CreateVerifiedEmail :one
 INSERT INTO verified_emails (id, project_id, email, google_user_id, google_hosted_domain, microsoft_user_id, microsoft_tenant_id)
     VALUES ($1, $2, $3, $4, $5, $6, $7)
@@ -242,6 +284,32 @@ func (q *Queries) CreateVerifiedEmail(ctx context.Context, arg CreateVerifiedEma
 		&i.MicrosoftUserID,
 		&i.GoogleHostedDomain,
 		&i.MicrosoftTenantID,
+	)
+	return i, err
+}
+
+const getCurrentSessionKeyByProjectID = `-- name: GetCurrentSessionKeyByProjectID :one
+SELECT
+    id, project_id, public_key, private_key_cipher_text, create_time, expire_time
+FROM
+    session_signing_keys
+WHERE
+    project_id = $1
+ORDER BY
+    create_time DESC
+LIMIT 1
+`
+
+func (q *Queries) GetCurrentSessionKeyByProjectID(ctx context.Context, projectID uuid.UUID) (SessionSigningKey, error) {
+	row := q.db.QueryRow(ctx, getCurrentSessionKeyByProjectID, projectID)
+	var i SessionSigningKey
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.PublicKey,
+		&i.PrivateKeyCipherText,
+		&i.CreateTime,
+		&i.ExpireTime,
 	)
 	return i, err
 }
@@ -418,32 +486,23 @@ func (q *Queries) GetIntermediateSessionSigningKeyByProjectID(ctx context.Contex
 	return i, err
 }
 
-const getOrganizationUser = `-- name: GetOrganizationUser :one
+const getOrganizationUserByEmail = `-- name: GetOrganizationUserByEmail :one
 SELECT
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time
 FROM
     users
 WHERE
     organization_id = $1
     AND email = $2
-    AND google_user_id = $3
-    OR microsoft_user_id = $4
 `
 
-type GetOrganizationUserParams struct {
-	OrganizationID  uuid.UUID
-	Email           string
-	GoogleUserID    *string
-	MicrosoftUserID *string
+type GetOrganizationUserByEmailParams struct {
+	OrganizationID uuid.UUID
+	Email          string
 }
 
-func (q *Queries) GetOrganizationUser(ctx context.Context, arg GetOrganizationUserParams) (User, error) {
-	row := q.db.QueryRow(ctx, getOrganizationUser,
-		arg.OrganizationID,
-		arg.Email,
-		arg.GoogleUserID,
-		arg.MicrosoftUserID,
-	)
+func (q *Queries) GetOrganizationUserByEmail(ctx context.Context, arg GetOrganizationUserByEmailParams) (User, error) {
+	row := q.db.QueryRow(ctx, getOrganizationUserByEmail, arg.OrganizationID, arg.Email)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -452,6 +511,70 @@ func (q *Queries) GetOrganizationUser(ctx context.Context, arg GetOrganizationUs
 		&i.GoogleUserID,
 		&i.MicrosoftUserID,
 		&i.Email,
+		&i.CreateTime,
+		&i.UpdateTime,
+	)
+	return i, err
+}
+
+const getOrganizationUserByGoogleUserID = `-- name: GetOrganizationUserByGoogleUserID :one
+SELECT
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time
+FROM
+    users
+WHERE
+    organization_id = $1
+    AND google_user_id = $2
+`
+
+type GetOrganizationUserByGoogleUserIDParams struct {
+	OrganizationID uuid.UUID
+	GoogleUserID   *string
+}
+
+func (q *Queries) GetOrganizationUserByGoogleUserID(ctx context.Context, arg GetOrganizationUserByGoogleUserIDParams) (User, error) {
+	row := q.db.QueryRow(ctx, getOrganizationUserByGoogleUserID, arg.OrganizationID, arg.GoogleUserID)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.PasswordBcrypt,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+		&i.Email,
+		&i.CreateTime,
+		&i.UpdateTime,
+	)
+	return i, err
+}
+
+const getOrganizationUserByMicrosoftUserID = `-- name: GetOrganizationUserByMicrosoftUserID :one
+SELECT
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time
+FROM
+    users
+WHERE
+    organization_id = $1
+    AND microsoft_user_id = $2
+`
+
+type GetOrganizationUserByMicrosoftUserIDParams struct {
+	OrganizationID  uuid.UUID
+	MicrosoftUserID *string
+}
+
+func (q *Queries) GetOrganizationUserByMicrosoftUserID(ctx context.Context, arg GetOrganizationUserByMicrosoftUserIDParams) (User, error) {
+	row := q.db.QueryRow(ctx, getOrganizationUserByMicrosoftUserID, arg.OrganizationID, arg.MicrosoftUserID)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.PasswordBcrypt,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+		&i.Email,
+		&i.CreateTime,
+		&i.UpdateTime,
 	)
 	return i, err
 }
@@ -600,7 +723,7 @@ func (q *Queries) ListOrganizationsByProjectIdAndEmail(ctx context.Context, arg 
 
 const listUsersByEmail = `-- name: ListUsersByEmail :many
 SELECT
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time
 FROM
     users
 WHERE
@@ -623,6 +746,8 @@ func (q *Queries) ListUsersByEmail(ctx context.Context, email string) ([]User, e
 			&i.GoogleUserID,
 			&i.MicrosoftUserID,
 			&i.Email,
+			&i.CreateTime,
+			&i.UpdateTime,
 		); err != nil {
 			return nil, err
 		}

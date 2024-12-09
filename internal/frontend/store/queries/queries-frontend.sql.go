@@ -15,7 +15,7 @@ const createUser = `-- name: CreateUser :one
 INSERT INTO users (id, organization_id, email, password_bcrypt, google_user_id, microsoft_user_id)
     VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time
 `
 
 type CreateUserParams struct {
@@ -44,6 +44,8 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.GoogleUserID,
 		&i.MicrosoftUserID,
 		&i.Email,
+		&i.CreateTime,
+		&i.UpdateTime,
 	)
 	return i, err
 }
@@ -185,7 +187,7 @@ func (q *Queries) GetSessionDetailsByRefreshTokenSHA256(ctx context.Context, ref
 
 const getUserByID = `-- name: GetUserByID :one
 SELECT
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time
 FROM
     users
 WHERE
@@ -202,6 +204,8 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 		&i.GoogleUserID,
 		&i.MicrosoftUserID,
 		&i.Email,
+		&i.CreateTime,
+		&i.UpdateTime,
 	)
 	return i, err
 }

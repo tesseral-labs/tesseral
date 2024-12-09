@@ -4,7 +4,7 @@
 // @ts-nocheck
 
 import { MethodKind } from "@bufbuild/protobuf";
-import { CreateOrganizationRequest, CreateOrganizationResponse, ExchangeIntermediateSessionForSessionRequest, ExchangeIntermediateSessionForSessionResponse, GetGoogleOAuthRedirectURLRequest, GetGoogleOAuthRedirectURLResponse, GetMicrosoftOAuthRedirectURLRequest, GetMicrosoftOAuthRedirectURLResponse, IssueEmailVerificationChallengeRequest, IssueEmailVerificationChallengeResponse, ListOrganizationsRequest, ListOrganizationsResponse, RedeemGoogleOAuthCodeRequest, RedeemGoogleOAuthCodeResponse, RedeemMicrosoftOAuthCodeRequest, RedeemMicrosoftOAuthCodeResponse, SignInWithEmailRequest, SignInWithEmailResponse, VerifyEmailChallengeRequest, VerifyEmailChallengeResponse, WhoamiRequest, WhoamiResponse } from "./intermediate_pb.js";
+import { CreateOrganizationRequest, CreateOrganizationResponse, ExchangeIntermediateSessionForNewOrganizationSessionRequest, ExchangeIntermediateSessionForNewOrganizationSessionResponse, ExchangeIntermediateSessionForSessionRequest, ExchangeIntermediateSessionForSessionResponse, GetGoogleOAuthRedirectURLRequest, GetGoogleOAuthRedirectURLResponse, GetMicrosoftOAuthRedirectURLRequest, GetMicrosoftOAuthRedirectURLResponse, IssueEmailVerificationChallengeRequest, IssueEmailVerificationChallengeResponse, ListOrganizationsRequest, ListOrganizationsResponse, RedeemGoogleOAuthCodeRequest, RedeemGoogleOAuthCodeResponse, RedeemMicrosoftOAuthCodeRequest, RedeemMicrosoftOAuthCodeResponse, SignInWithEmailRequest, SignInWithEmailResponse, VerifyEmailChallengeRequest, VerifyEmailChallengeResponse, WhoamiRequest, WhoamiResponse } from "./intermediate_pb.js";
 
 /**
  * @generated from rpc openauth.intermediate.v1.IntermediateService.Whoami
@@ -29,6 +29,20 @@ export const exchangeIntermediateSessionForSession = {
   kind: MethodKind.Unary,
   I: ExchangeIntermediateSessionForSessionRequest,
   O: ExchangeIntermediateSessionForSessionResponse,
+  service: {
+    typeName: "openauth.intermediate.v1.IntermediateService"
+  }
+} as const;
+
+/**
+ * @generated from rpc openauth.intermediate.v1.IntermediateService.ExchangeIntermediateSessionForNewOrganizationSession
+ */
+export const exchangeIntermediateSessionForNewOrganizationSession = {
+  localName: "exchangeIntermediateSessionForNewOrganizationSession",
+  name: "ExchangeIntermediateSessionForNewOrganizationSession",
+  kind: MethodKind.Unary,
+  I: ExchangeIntermediateSessionForNewOrganizationSessionRequest,
+  O: ExchangeIntermediateSessionForNewOrganizationSessionResponse,
   service: {
     typeName: "openauth.intermediate.v1.IntermediateService"
   }

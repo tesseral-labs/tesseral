@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type AuthMethod string
@@ -163,6 +164,8 @@ type User struct {
 	GoogleUserID    *string
 	MicrosoftUserID *string
 	Email           string
+	CreateTime      pgtype.Timestamptz
+	UpdateTime      pgtype.Timestamptz
 }
 
 type VerifiedEmail struct {
