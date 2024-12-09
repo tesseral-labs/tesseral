@@ -121,10 +121,10 @@ func (s *Store) CompleteEmailVerificationChallenge(ctx context.Context, req *int
 	_, err = q.CreateVerifiedEmail(ctx, queries.CreateVerifiedEmailParams{
 		ID:                 uuid.New(),
 		Email:              intermediateSession.Email,
-		GoogleUserID:       intermediateSession.GoogleUserId,
-		GoogleHostedDomain: intermediateSession.GoogleHostedDomain,
-		MicrosoftUserID:    intermediateSession.MicrosoftUserId,
-		MicrosoftTenantID:  intermediateSession.MicrosoftTenantId,
+		GoogleUserID:       &intermediateSession.GoogleUserId,
+		GoogleHostedDomain: &intermediateSession.GoogleHostedDomain,
+		MicrosoftUserID:    &intermediateSession.MicrosoftUserId,
+		MicrosoftTenantID:  &intermediateSession.MicrosoftTenantId,
 		ProjectID:          projectID,
 	})
 	if err != nil {

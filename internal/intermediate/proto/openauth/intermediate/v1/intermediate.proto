@@ -85,10 +85,10 @@ message IntermediateSession {
   string id = 1;
   string project_id = 2;
   string email = 3;
-  optional string google_user_id = 4;
-  optional string google_hosted_domain = 5;
-  optional string microsoft_tenant_id = 6;
-  optional string microsoft_user_id = 7;
+  string google_user_id = 4;
+  string google_hosted_domain = 5;
+  string microsoft_tenant_id = 6;
+  string microsoft_user_id = 7;
   // TODO more things here
 }
 
@@ -190,7 +190,7 @@ message SignInWithEmailRequest {
 
 message SignInWithEmailResponse {
   // The ID of the email verification challenge, if required.
-  optional string ChallengeID = 1;
+  string ChallengeID = 1;
 }
 
 message Project {
