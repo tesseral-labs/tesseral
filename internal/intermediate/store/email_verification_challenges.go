@@ -64,7 +64,7 @@ func (s *Store) CompleteEmailVerificationChallenge(ctx context.Context, req *int
 	}
 
 	// Get the email verification challenge from the request
-	challengeID, err := idformat.EmailVerificationChallenge.Parse(req.ChallengeId)
+	challengeID, err := idformat.EmailVerificationChallenge.Parse(req.EmailVerificationChallengeId)
 	if err != nil {
 		return nil, err
 	}

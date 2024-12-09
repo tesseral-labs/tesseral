@@ -251,7 +251,7 @@ message VerifyEmailChallengeRequest {
   // The challenge to verify.
   string code = 1;
   // The ID of the email verification challenge.
-  string challenge_id = 2;
+  string email_verification_challenge_id = 2;
 }
 
 message VerifyEmailChallengeResponse {}

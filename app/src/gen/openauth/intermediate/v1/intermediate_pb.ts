@@ -1207,9 +1207,9 @@ export class VerifyEmailChallengeRequest extends Message<VerifyEmailChallengeReq
   /**
    * The ID of the email verification challenge.
    *
-   * @generated from field: string challenge_id = 2;
+   * @generated from field: string email_verification_challenge_id = 2;
    */
-  challengeId = "";
+  emailVerificationChallengeId = "";
 
   constructor(data?: PartialMessage<VerifyEmailChallengeRequest>) {
     super();
@@ -1220,7 +1220,7 @@ export class VerifyEmailChallengeRequest extends Message<VerifyEmailChallengeReq
   static readonly typeName = "openauth.intermediate.v1.VerifyEmailChallengeRequest";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "code", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "challenge_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "email_verification_challenge_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): VerifyEmailChallengeRequest {

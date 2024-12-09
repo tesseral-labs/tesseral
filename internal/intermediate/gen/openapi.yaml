@@ -375,7 +375,7 @@ components:
                 code:
                     type: string
                     description: The challenge to verify.
-                challengeId:
+                emailVerificationChallengeId:
                     type: string
                     description: The ID of the email verification challenge.
         VerifyEmailChallengeResponse:
