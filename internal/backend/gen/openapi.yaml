@@ -513,12 +513,9 @@ components:
                 organizationId:
                     type: string
                     description: The organization this user belongs to.
-                unverifiedEmail:
+                email:
                     type: string
-                    description: The user's email (pending verification).
-                verifiedEmail:
-                    type: string
-                    description: The user's email (after verification).
+                    description: The user's email (verified).
                 passwordBcrypt:
                     type: string
                     description: The hash of the user's password.

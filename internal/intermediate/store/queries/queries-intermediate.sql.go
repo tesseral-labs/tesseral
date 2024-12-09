@@ -418,6 +418,44 @@ func (q *Queries) GetIntermediateSessionSigningKeyByProjectID(ctx context.Contex
 	return i, err
 }
 
+const getOrganizationUser = `-- name: GetOrganizationUser :one
+SELECT
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email
+FROM
+    users
+WHERE
+    organization_id = $1
+    AND email = $2
+    AND google_user_id = $3
+    OR microsoft_user_id = $4
+`
+
+type GetOrganizationUserParams struct {
+	OrganizationID  uuid.UUID
+	Email           string
+	GoogleUserID    *string
+	MicrosoftUserID *string
+}
+
+func (q *Queries) GetOrganizationUser(ctx context.Context, arg GetOrganizationUserParams) (User, error) {
+	row := q.db.QueryRow(ctx, getOrganizationUser,
+		arg.OrganizationID,
+		arg.Email,
+		arg.GoogleUserID,
+		arg.MicrosoftUserID,
+	)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.PasswordBcrypt,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+		&i.Email,
+	)
+	return i, err
+}
+
 const getProjectByID = `-- name: GetProjectByID :one
 SELECT
     id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext
@@ -519,21 +557,20 @@ FROM
     JOIN users AS u ON o.id = users.organization_id
 WHERE
     project_id = $1
-    AND u.verified_email = $2
-    OR u.unverified_email = $2
+    AND u.email = $2
 ORDER BY
     o.display_name
 LIMIT $3
 `
 
 type ListOrganizationsByProjectIdAndEmailParams struct {
-	ProjectID     uuid.UUID
-	VerifiedEmail *string
-	Limit         int32
+	ProjectID uuid.UUID
+	Email     string
+	Limit     int32
 }
 
 func (q *Queries) ListOrganizationsByProjectIdAndEmail(ctx context.Context, arg ListOrganizationsByProjectIdAndEmailParams) ([]Organization, error) {
-	rows, err := q.db.Query(ctx, listOrganizationsByProjectIdAndEmail, arg.ProjectID, arg.VerifiedEmail, arg.Limit)
+	rows, err := q.db.Query(ctx, listOrganizationsByProjectIdAndEmail, arg.ProjectID, arg.Email, arg.Limit)
 	if err != nil {
 		return nil, err
 	}
@@ -563,16 +600,15 @@ func (q *Queries) ListOrganizationsByProjectIdAndEmail(ctx context.Context, arg 
 
 const listUsersByEmail = `-- name: ListUsersByEmail :many
 SELECT
-    id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email
 FROM
     users
 WHERE
-    unverified_email = $1
-    OR verified_email = $1
+    email = $1
 `
 
-func (q *Queries) ListUsersByEmail(ctx context.Context, unverifiedEmail *string) ([]User, error) {
-	rows, err := q.db.Query(ctx, listUsersByEmail, unverifiedEmail)
+func (q *Queries) ListUsersByEmail(ctx context.Context, email string) ([]User, error) {
+	rows, err := q.db.Query(ctx, listUsersByEmail, email)
 	if err != nil {
 		return nil, err
 	}
@@ -583,11 +619,10 @@ func (q *Queries) ListUsersByEmail(ctx context.Context, unverifiedEmail *string)
 		if err := rows.Scan(
 			&i.ID,
 			&i.OrganizationID,
-			&i.UnverifiedEmail,
-			&i.VerifiedEmail,
 			&i.PasswordBcrypt,
 			&i.GoogleUserID,
 			&i.MicrosoftUserID,
+			&i.Email,
 		); err != nil {
 			return nil, err
 		}

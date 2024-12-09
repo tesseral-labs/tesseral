@@ -23,8 +23,8 @@ RETURNING
     *;
 
 -- name: CreateUser :one
-INSERT INTO users (id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
+INSERT INTO users (id, organization_id, email, password_bcrypt, google_user_id, microsoft_user_id)
+    VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING
     *;
 
@@ -122,11 +122,10 @@ UPDATE
     users
 SET
     organization_id = $2,
-    unverified_email = $3,
-    verified_email = $4,
-    password_bcrypt = $5,
-    google_user_id = $6,
-    microsoft_user_id = $7
+    email = $3,
+    password_bcrypt = $4,
+    google_user_id = $5,
+    microsoft_user_id = $6
 WHERE
     id = $1
 RETURNING

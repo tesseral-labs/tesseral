@@ -159,11 +159,10 @@ type SessionSigningKey struct {
 type User struct {
 	ID              uuid.UUID
 	OrganizationID  uuid.UUID
-	UnverifiedEmail *string
-	VerifiedEmail   *string
 	PasswordBcrypt  *string
 	GoogleUserID    *string
 	MicrosoftUserID *string
+	Email           string
 }
 
 type VerifiedEmail struct {

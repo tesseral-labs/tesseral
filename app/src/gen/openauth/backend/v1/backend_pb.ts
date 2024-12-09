@@ -1150,37 +1150,30 @@ export class User extends Message<User> {
   organizationId = "";
 
   /**
-   * The user's email (pending verification).
+   * The user's email (verified).
    *
-   * @generated from field: string unverified_email = 3;
+   * @generated from field: string email = 3;
    */
-  unverifiedEmail = "";
-
-  /**
-   * The user's email (after verification).
-   *
-   * @generated from field: string verified_email = 4;
-   */
-  verifiedEmail = "";
+  email = "";
 
   /**
    * The hash of the user's password.
    *
-   * @generated from field: string password_bcrypt = 5;
+   * @generated from field: string password_bcrypt = 4;
    */
   passwordBcrypt = "";
 
   /**
    * The user's Google User ID.
    *
-   * @generated from field: string google_user_id = 6;
+   * @generated from field: string google_user_id = 5;
    */
   googleUserId = "";
 
   /**
    * The user's Microsoft User ID.
    *
-   * @generated from field: string microsoft_user_id = 7;
+   * @generated from field: string microsoft_user_id = 6;
    */
   microsoftUserId = "";
 
@@ -1194,11 +1187,10 @@ export class User extends Message<User> {
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "organization_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "unverified_email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 4, name: "verified_email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 5, name: "password_bcrypt", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 6, name: "google_user_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 7, name: "microsoft_user_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "password_bcrypt", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 5, name: "google_user_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 6, name: "microsoft_user_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): User {

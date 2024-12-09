@@ -283,16 +283,14 @@ message User {
   string id = 1;
   // The organization this user belongs to.
   string organization_id = 2;
-  // The user's email (pending verification).
-  string unverified_email = 3;
-  // The user's email (after verification).
-  string verified_email = 4;
+  // The user's email (verified).
+  string email = 3;
   // The hash of the user's password.
-  string password_bcrypt = 5;
+  string password_bcrypt = 4;
   // The user's Google User ID.
-  string google_user_id = 6;
+  string google_user_id = 5;
   // The user's Microsoft User ID.
-  string microsoft_user_id = 7;
+  string microsoft_user_id = 6;
 }
 
 message Session {

@@ -140,8 +140,7 @@ FROM
     JOIN users AS u ON o.id = users.organization_id
 WHERE
     project_id = $1
-    AND u.verified_email = $2
-    OR u.unverified_email = $2
+    AND u.email = $2
 ORDER BY
     o.display_name
 LIMIT $3;
@@ -152,8 +151,7 @@ SELECT
 FROM
     users
 WHERE
-    unverified_email = $1
-    OR verified_email = $1;
+    email = $1;
 
 -- name: ListVerifiedEmails :many
 SELECT

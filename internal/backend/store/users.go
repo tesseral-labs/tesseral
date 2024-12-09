@@ -36,11 +36,8 @@ func (s *Store) UpdateUser(ctx context.Context, req *backendv1.UpdateUserRequest
 	}
 
 	// Conditionally update email addresses
-	if req.User.UnverifiedEmail != "" {
-		updates.UnverifiedEmail = &req.User.UnverifiedEmail
-	}
-	if req.User.VerifiedEmail != "" {
-		updates.VerifiedEmail = &req.User.VerifiedEmail
+	if req.User.Email != "" {
+		updates.Email = req.User.Email
 	}
 
 	// Conditionally update login method user IDs

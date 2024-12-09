@@ -64,9 +64,9 @@ func (s *Store) ListOrganizations(
 
 	limit := 10
 	organizationRecords, err := q.ListOrganizationsByProjectIdAndEmail(ctx, queries.ListOrganizationsByProjectIdAndEmailParams{
-		ProjectID:     projectId,
-		VerifiedEmail: &req.Email,
-		Limit:         int32(limit + 1),
+		ProjectID: projectId,
+		Email:     req.Email,
+		Limit:     int32(limit + 1),
 	})
 	if err != nil {
 		return nil, err

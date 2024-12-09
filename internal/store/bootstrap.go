@@ -87,7 +87,7 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 	if _, err := q.CreateUser(ctx, queries.CreateUserParams{
 		ID:             uuid.New(),
 		OrganizationID: dogfoodOrganizationID,
-		VerifiedEmail:  &bootstrapUserEmail,
+		Email:          bootstrapUserEmail,
 		PasswordBcrypt: &bootstrapUserPasswordBcrypt,
 	}); err != nil {
 		return nil, fmt.Errorf("create user: %w", err)

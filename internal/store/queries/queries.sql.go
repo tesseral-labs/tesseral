@@ -212,17 +212,16 @@ func (q *Queries) CreateSessionSigningKey(ctx context.Context, arg CreateSession
 }
 
 const createUser = `-- name: CreateUser :one
-INSERT INTO users (id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
+INSERT INTO users (id, organization_id, email, password_bcrypt, google_user_id, microsoft_user_id)
+    VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING
-    id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email
 `
 
 type CreateUserParams struct {
 	ID              uuid.UUID
 	OrganizationID  uuid.UUID
-	UnverifiedEmail *string
-	VerifiedEmail   *string
+	Email           string
 	PasswordBcrypt  *string
 	GoogleUserID    *string
 	MicrosoftUserID *string
@@ -232,8 +231,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 	row := q.db.QueryRow(ctx, createUser,
 		arg.ID,
 		arg.OrganizationID,
-		arg.UnverifiedEmail,
-		arg.VerifiedEmail,
+		arg.Email,
 		arg.PasswordBcrypt,
 		arg.GoogleUserID,
 		arg.MicrosoftUserID,
@@ -242,11 +240,10 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 	err := row.Scan(
 		&i.ID,
 		&i.OrganizationID,
-		&i.UnverifiedEmail,
-		&i.VerifiedEmail,
 		&i.PasswordBcrypt,
 		&i.GoogleUserID,
 		&i.MicrosoftUserID,
+		&i.Email,
 	)
 	return i, err
 }
@@ -440,7 +437,7 @@ func (q *Queries) GetSessionDetailsByRefreshTokenSHA256(ctx context.Context, ref
 
 const getUserByID = `-- name: GetUserByID :one
 SELECT
-    id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email
 FROM
     users
 WHERE
@@ -453,11 +450,10 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 	err := row.Scan(
 		&i.ID,
 		&i.OrganizationID,
-		&i.UnverifiedEmail,
-		&i.VerifiedEmail,
 		&i.PasswordBcrypt,
 		&i.GoogleUserID,
 		&i.MicrosoftUserID,
+		&i.Email,
 	)
 	return i, err
 }
@@ -572,22 +568,20 @@ UPDATE
     users
 SET
     organization_id = $2,
-    unverified_email = $3,
-    verified_email = $4,
-    password_bcrypt = $5,
-    google_user_id = $6,
-    microsoft_user_id = $7
+    email = $3,
+    password_bcrypt = $4,
+    google_user_id = $5,
+    microsoft_user_id = $6
 WHERE
     id = $1
 RETURNING
-    id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email
 `
 
 type UpdateUserParams struct {
 	ID              uuid.UUID
 	OrganizationID  uuid.UUID
-	UnverifiedEmail *string
-	VerifiedEmail   *string
+	Email           string
 	PasswordBcrypt  *string
 	GoogleUserID    *string
 	MicrosoftUserID *string
@@ -597,8 +591,7 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 	row := q.db.QueryRow(ctx, updateUser,
 		arg.ID,
 		arg.OrganizationID,
-		arg.UnverifiedEmail,
-		arg.VerifiedEmail,
+		arg.Email,
 		arg.PasswordBcrypt,
 		arg.GoogleUserID,
 		arg.MicrosoftUserID,
@@ -607,11 +600,10 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 	err := row.Scan(
 		&i.ID,
 		&i.OrganizationID,
-		&i.UnverifiedEmail,
-		&i.VerifiedEmail,
 		&i.PasswordBcrypt,
 		&i.GoogleUserID,
 		&i.MicrosoftUserID,
+		&i.Email,
 	)
 	return i, err
 }
