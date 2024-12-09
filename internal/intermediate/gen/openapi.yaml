@@ -294,7 +294,7 @@ components:
         IssueEmailVerificationChallengeResponse:
             type: object
             properties:
-                challengeId:
+                emailVerificationChallengeId:
                     type: string
                     description: The ID of the email verification challenge.
         ListOrganizationsResponse:

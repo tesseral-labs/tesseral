@@ -148,9 +148,6 @@ func (s *Store) IssueEmailVerificationChallenge(ctx context.Context) (*intermedi
 	projectID := projectid.ProjectID(ctx)
 
 	intermediateSessionID := authn.IntermediateSessionID(ctx)
-	if intermediateSessionID == uuid.Nil {
-		return nil, ErrIntermediateSessionIDRequired
-	}
 
 	// Create a new secret token for the challenge
 	secretToken, err := generateSecretToken()
@@ -179,7 +176,7 @@ func (s *Store) IssueEmailVerificationChallenge(ctx context.Context) (*intermedi
 	}
 
 	return &intermediatev1.IssueEmailVerificationChallengeResponse{
-		ChallengeId: idformat.EmailVerificationChallenge.Format(evc.ID),
+		EmailVerificationChallengeId: idformat.EmailVerificationChallenge.Format(evc.ID),
 	}, nil
 }
 

@@ -168,7 +168,7 @@ message IssueEmailVerificationChallengeRequest {
 
 message IssueEmailVerificationChallengeResponse {
   // The ID of the email verification challenge.
-  string challenge_id = 1;
+  string email_verification_challenge_id = 1;
 }
 
 message ListOrganizationsRequest {
