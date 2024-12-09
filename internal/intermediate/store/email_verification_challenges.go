@@ -99,7 +99,7 @@ func (s *Store) CompleteEmailVerificationChallenge(ctx context.Context, req *int
 		return nil, err
 	}
 
-	err = mustVerifyChallenge(ctx, &evc, codeSha256[:], q)
+	err = verifyChallenge(ctx, &evc, codeSha256[:], q)
 	if err != nil {
 		if err := commit(); err != nil {
 			return nil, err
@@ -194,7 +194,7 @@ func generateSecretToken() (string, error) {
 	return strconv.Itoa(randomNumber), nil
 }
 
-func mustVerifyChallenge(ctx context.Context, evc *queries.EmailVerificationChallenge, secretTokenSha256 []byte, q *queries.Queries) error {
+func verifyChallenge(ctx context.Context, evc *queries.EmailVerificationChallenge, secretTokenSha256 []byte, q *queries.Queries) error {
 	// Check if the challenge has been revoked
 	if evc.Revoked {
 		return ErrEmailVerificationChallengeInvalidState
