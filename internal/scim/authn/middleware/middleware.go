@@ -24,7 +24,10 @@ func New(s *store.Store, h http.Handler) http.Handler {
 			return
 		}
 
-		ctx = authn.NewContext(ctx, scimAPIKey)
+		ctx = authn.NewContext(ctx, &authn.SCIMAPIKey{
+			ID:             scimAPIKey.ID,
+			OrganizationID: scimAPIKey.OrganizationID,
+		})
 		h.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

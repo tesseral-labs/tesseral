@@ -11,6 +11,22 @@ import (
 	"github.com/google/uuid"
 )
 
+const countUsers = `-- name: CountUsers :one
+SELECT
+    count(*)
+FROM
+    users
+WHERE
+    organization_id = $1
+`
+
+func (q *Queries) CountUsers(ctx context.Context, organizationID uuid.UUID) (int64, error) {
+	row := q.db.QueryRow(ctx, countUsers, organizationID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const getSCIMAPIKeyByTokenSHA256 = `-- name: GetSCIMAPIKeyByTokenSHA256 :one
 SELECT
     scim_api_keys.id, scim_api_keys.organization_id, scim_api_keys.create_time, scim_api_keys.revoke_time, scim_api_keys.token_sha256
@@ -38,4 +54,51 @@ func (q *Queries) GetSCIMAPIKeyByTokenSHA256(ctx context.Context, arg GetSCIMAPI
 		&i.TokenSha256,
 	)
 	return i, err
+}
+
+const listUsers = `-- name: ListUsers :many
+SELECT
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time
+FROM
+    users
+WHERE
+    organization_id = $1
+ORDER BY
+    id
+LIMIT $2 OFFSET $3
+`
+
+type ListUsersParams struct {
+	OrganizationID uuid.UUID
+	Limit          int32
+	Offset         int32
+}
+
+func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]User, error) {
+	rows, err := q.db.Query(ctx, listUsers, arg.OrganizationID, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []User
+	for rows.Next() {
+		var i User
+		if err := rows.Scan(
+			&i.ID,
+			&i.OrganizationID,
+			&i.PasswordBcrypt,
+			&i.GoogleUserID,
+			&i.MicrosoftUserID,
+			&i.Email,
+			&i.CreateTime,
+			&i.UpdateTime,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }

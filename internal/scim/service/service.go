@@ -1,10 +1,10 @@
 package service
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
-	"github.com/openauth/openauth/internal/scim/authn"
 	"github.com/openauth/openauth/internal/scim/authn/middleware"
 	"github.com/openauth/openauth/internal/scim/store"
 )
@@ -22,7 +22,17 @@ func (s *Service) Handler() http.Handler {
 }
 
 func (s *Service) listUsers(w http.ResponseWriter, r *http.Request) error {
-	fmt.Println(authn.OrganizationID(r.Context()))
+	ctx := r.Context()
+	res, err := s.Store.ListUsers(ctx, &store.ListUsersRequest{})
+	if err != nil {
+		return fmt.Errorf("store: %w", err)
+	}
+
+	w.Header().Set("Content-Type", "application/scim+json")
+	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(res); err != nil {
+		return fmt.Errorf("write response: %w", err)
+	}
 	return nil
 }
 

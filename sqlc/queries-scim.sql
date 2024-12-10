@@ -8,3 +8,22 @@ WHERE
     token_sha256 = $1
     AND organizations.project_id = $2;
 
+-- name: CountUsers :one
+SELECT
+    count(*)
+FROM
+    users
+WHERE
+    organization_id = $1;
+
+-- name: ListUsers :many
+SELECT
+    *
+FROM
+    users
+WHERE
+    organization_id = $1
+ORDER BY
+    id
+LIMIT $2 OFFSET $3;
+
