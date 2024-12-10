@@ -60,14 +60,13 @@ func (s *Store) ExchangeIntermediateSessionForNewOrganizationSession(ctx context
 	expiresAt := time.Now().Add(7 * time.Hour * 24) // 7 days
 
 	// Create a new session for the user
-	token := uuid.New()
-	refreshToken := idformat.SessionRefreshToken.Format(token)
-	refreshTokenSha256 := sha256.Sum256([]byte(refreshToken))
+	refreshToken := idformat.SessionRefreshToken.Format(uuid.New())
+	refreshTokenSHA256 := sha256.Sum256([]byte(refreshToken))
 
 	qSession, err := q.CreateSession(ctx, queries.CreateSessionParams{
 		ID:                 uuid.New(),
 		ExpireTime:         &expiresAt,
-		RefreshTokenSha256: refreshTokenSha256[:],
+		RefreshTokenSha256: refreshTokenSHA256[:],
 		UserID:             qUser.ID,
 	})
 	if err != nil {
@@ -170,14 +169,13 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 	expiresAt := time.Now().Add(7 * time.Hour * 24) // 7 days
 
 	// Create a new session for the user
-	token := uuid.New()
-	refreshToken := idformat.SessionRefreshToken.Format(token)
-	refreshTokenSha256 := sha256.Sum256([]byte(refreshToken))
+	refreshToken := idformat.SessionRefreshToken.Format(uuid.New())
+	refreshTokenSHA256 := sha256.Sum256([]byte(refreshToken))
 
 	qSession, err := q.CreateSession(ctx, queries.CreateSessionParams{
 		ID:                 uuid.New(),
 		ExpireTime:         &expiresAt,
-		RefreshTokenSha256: refreshTokenSha256[:],
+		RefreshTokenSha256: refreshTokenSHA256[:],
 		UserID:             qUser.ID,
 	})
 	if err != nil {
