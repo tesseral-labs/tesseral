@@ -36,6 +36,8 @@ import (
 	"github.com/openauth/openauth/internal/projectid"
 	samlservice "github.com/openauth/openauth/internal/saml/service"
 	samlstore "github.com/openauth/openauth/internal/saml/store"
+	scimservice "github.com/openauth/openauth/internal/scim/service"
+	scimstore "github.com/openauth/openauth/internal/scim/store"
 	"github.com/openauth/openauth/internal/secretload"
 	"github.com/openauth/openauth/internal/slogcorrelation"
 	"github.com/openauth/openauth/internal/store/idformat"
@@ -189,6 +191,12 @@ func main() {
 		}),
 	}
 
+	scimService := scimservice.Service{
+		Store: scimstore.New(scimstore.NewStoreParams{
+			DB: db,
+		}),
+	}
+
 	// Register health checks
 	mux := http.NewServeMux()
 	mux.Handle("/internal/health", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -206,6 +214,9 @@ func main() {
 
 	// Register samlservice
 	mux.Handle("/saml/", samlService.Handler())
+
+	// Register scimservice
+	mux.Handle("/scim/", scimService.Handler())
 
 	// These handlers are registered in a FILO order much like
 	// a Matryoshka doll
