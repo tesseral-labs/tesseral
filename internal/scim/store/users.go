@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/openauth/openauth/internal/scim/authn"
 	"github.com/openauth/openauth/internal/scim/store/queries"
@@ -88,5 +89,34 @@ func (s *Store) ListUsers(ctx context.Context, req *ListUsersRequest) (*ListUser
 		Schemas:      []string{"urn:ietf:params:scim:schemas:core:2.0:User"},
 		TotalResults: int(count),
 		Users:        users,
+	}, nil
+}
+
+func (s *Store) CreateUser(ctx context.Context, req *User) (*User, error) {
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	// todo validate email domain
+
+	qUser, err := q.CreateUser(ctx, queries.CreateUserParams{
+		ID:             uuid.New(),
+		OrganizationID: authn.OrganizationID(ctx),
+		Email:          req.UserName,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("create user: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
+	}
+
+	return &User{
+		Schemas:  []string{"urn:ietf:params:scim:schemas:core:2.0:User"},
+		ID:       idformat.User.Format(qUser.ID),
+		UserName: qUser.Email,
 	}, nil
 }

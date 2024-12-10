@@ -27,6 +27,35 @@ func (q *Queries) CountUsers(ctx context.Context, organizationID uuid.UUID) (int
 	return count, err
 }
 
+const createUser = `-- name: CreateUser :one
+INSERT INTO users (id, organization_id, email)
+    VALUES ($1, $2, $3)
+RETURNING
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time
+`
+
+type CreateUserParams struct {
+	ID             uuid.UUID
+	OrganizationID uuid.UUID
+	Email          string
+}
+
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
+	row := q.db.QueryRow(ctx, createUser, arg.ID, arg.OrganizationID, arg.Email)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.PasswordBcrypt,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+		&i.Email,
+		&i.CreateTime,
+		&i.UpdateTime,
+	)
+	return i, err
+}
+
 const getSCIMAPIKeyByTokenSHA256 = `-- name: GetSCIMAPIKeyByTokenSHA256 :one
 SELECT
     scim_api_keys.id, scim_api_keys.organization_id, scim_api_keys.create_time, scim_api_keys.revoke_time, scim_api_keys.token_sha256
