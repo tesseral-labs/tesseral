@@ -59,8 +59,14 @@ func (s *Store) ExchangeIntermediateSessionForNewOrganizationSession(ctx context
 		return nil, err
 	}
 
-	// Issue a new full session for the user
-	session, err := createSessionForUser(ctx, *q, user)
+	expiresAt := time.Now().Add(7 * time.Hour * 24) // 7 days
+
+	// Create a new session for the user
+	session, err := q.CreateSession(ctx, queries.CreateSessionParams{
+		ID:         uuid.New(),
+		ExpireTime: &expiresAt,
+		UserID:     user.ID,
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -161,7 +167,14 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 
 	slog.Info("ExchangeIntermediateSessionForSession", "user", user)
 
-	session, err := createSessionForUser(ctx, *q, user)
+	expiresAt := time.Now().Add(7 * time.Hour * 24) // 7 days
+
+	// Create a new session for the user
+	session, err := q.CreateSession(ctx, queries.CreateSessionParams{
+		ID:         uuid.New(),
+		ExpireTime: &expiresAt,
+		UserID:     user.ID,
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -206,22 +219,6 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 	slog.Info("ExchangeIntermediateSessionForSession", "accessToken", accessToken)
 
 	return &intermediatev1.ExchangeIntermediateSessionForSessionResponse{}, nil
-}
-
-func createSessionForUser(ctx context.Context, q queries.Queries, user queries.User) (*queries.Session, error) {
-	expiresAt := time.Now().Add(7 * time.Hour * 24) // 7 days
-
-	// Create a new session for the user
-	session, err := q.CreateSession(ctx, queries.CreateSessionParams{
-		ID:         uuid.New(),
-		ExpireTime: &expiresAt,
-		UserID:     user.ID,
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	return &session, nil
 }
 
 func (s *Store) getSessionSigningKey(ctx context.Context, q *queries.Queries, projectID uuid.UUID) (*uuid.UUID, *ecdsa.PrivateKey, error) {
