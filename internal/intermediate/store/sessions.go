@@ -214,8 +214,8 @@ func createSessionForUser(ctx context.Context, q queries.Queries, user queries.U
 	// Create a new session for the user
 	session, err := q.CreateSession(ctx, queries.CreateSessionParams{
 		ID:         uuid.New(),
-		UserID:     user.ID,
 		ExpireTime: &expiresAt,
+		UserID:     user.ID,
 	})
 	if err != nil {
 		return nil, err

@@ -35,14 +35,14 @@ RETURNING
     *;
 
 -- name: CreateSession :one
-INSERT INTO sessions (id, user_id, create_time, expire_time, revoked)
-    VALUES ($1, $2, $3, $4, $5)
+INSERT INTO sessions (id, user_id, expire_time, revoked)
+    VALUES ($1, $2, $3, $4)
 RETURNING
     *;
 
 -- name: CreateUser :one
-INSERT INTO users (id, organization_id, email, google_user_id, microsoft_user_id, create_time, update_time)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
+INSERT INTO users (id, organization_id, email, google_user_id, microsoft_user_id)
+    VALUES ($1, $2, $3, $4, $5)
 RETURNING
     *;
 

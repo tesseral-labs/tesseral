@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const completeEmailVerificationChallenge = `-- name: CompleteEmailVerificationChallenge :one
@@ -172,8 +171,8 @@ func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganization
 }
 
 const createSession = `-- name: CreateSession :one
-INSERT INTO sessions (id, user_id, create_time, expire_time, revoked)
-    VALUES ($1, $2, $3, $4, $5)
+INSERT INTO sessions (id, user_id, expire_time, revoked)
+    VALUES ($1, $2, $3, $4)
 RETURNING
     id, user_id, create_time, expire_time, revoked, refresh_token_sha256
 `
@@ -181,7 +180,6 @@ RETURNING
 type CreateSessionParams struct {
 	ID         uuid.UUID
 	UserID     uuid.UUID
-	CreateTime *time.Time
 	ExpireTime *time.Time
 	Revoked    bool
 }
@@ -190,7 +188,6 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (S
 	row := q.db.QueryRow(ctx, createSession,
 		arg.ID,
 		arg.UserID,
-		arg.CreateTime,
 		arg.ExpireTime,
 		arg.Revoked,
 	)
@@ -207,8 +204,8 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (S
 }
 
 const createUser = `-- name: CreateUser :one
-INSERT INTO users (id, organization_id, email, google_user_id, microsoft_user_id, create_time, update_time)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
+INSERT INTO users (id, organization_id, email, google_user_id, microsoft_user_id)
+    VALUES ($1, $2, $3, $4, $5)
 RETURNING
     id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time
 `
@@ -219,8 +216,6 @@ type CreateUserParams struct {
 	Email           string
 	GoogleUserID    *string
 	MicrosoftUserID *string
-	CreateTime      pgtype.Timestamptz
-	UpdateTime      pgtype.Timestamptz
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
@@ -230,8 +225,6 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		arg.Email,
 		arg.GoogleUserID,
 		arg.MicrosoftUserID,
-		arg.CreateTime,
-		arg.UpdateTime,
 	)
 	var i User
 	err := row.Scan(
