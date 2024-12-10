@@ -35,7 +35,13 @@ RETURNING
     *;
 
 -- name: CreateSession :one
-INSERT INTO sessions (id, user_id, create_time, expire_time, revoked)
+INSERT INTO sessions (id, user_id, expire_time, refresh_token_sha256, revoked)
+    VALUES ($1, $2, $3, $4, $5)
+RETURNING
+    *;
+
+-- name: CreateUser :one
+INSERT INTO users (id, organization_id, email, google_user_id, microsoft_user_id)
     VALUES ($1, $2, $3, $4, $5)
 RETURNING
     *;
@@ -96,6 +102,53 @@ ORDER BY
     create_time DESC
 LIMIT 1;
 
+-- name: GetCurrentSessionKeyByProjectID :one
+SELECT
+    *
+FROM
+    session_signing_keys
+WHERE
+    project_id = $1
+ORDER BY
+    create_time DESC
+LIMIT 1;
+
+-- name: GetOrganizationUserByEmail :one
+SELECT
+    *
+FROM
+    users
+WHERE
+    organization_id = $1
+    AND email = $2;
+
+-- name: GetOrganizationUserByGoogleUserID :one
+SELECT
+    *
+FROM
+    users
+WHERE
+    organization_id = $1
+    AND google_user_id = $2;
+
+-- name: GetOrganizationUserByMicrosoftUserID :one
+SELECT
+    *
+FROM
+    users
+WHERE
+    organization_id = $1
+    AND microsoft_user_id = $2;
+
+-- name: GetProjectOrganizationByID :one
+SELECT
+    *
+FROM
+    organizations
+WHERE
+    id = $1
+    AND project_id = $2;
+
 -- name: GetProjectByID :one
 SELECT
     *
@@ -120,8 +173,7 @@ FROM
     JOIN users AS u ON o.id = users.organization_id
 WHERE
     project_id = $1
-    AND u.verified_email = $2
-    OR u.unverified_email = $2
+    AND u.email = $2
 ORDER BY
     o.display_name
 LIMIT $3;
@@ -132,8 +184,7 @@ SELECT
 FROM
     users
 WHERE
-    unverified_email = $1
-    OR verified_email = $1;
+    email = $1;
 
 -- name: ListVerifiedEmails :many
 SELECT

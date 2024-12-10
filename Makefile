@@ -17,3 +17,4 @@ proto:
 	npx buf generate --template buf/buf.gen-backend.yaml
 	npx buf generate --template buf/buf.gen-frontend.yaml
 	npx buf generate --template buf/buf.gen-intermediate.yaml
+	npx buf generate --template buf/buf.gen-oauth.yaml

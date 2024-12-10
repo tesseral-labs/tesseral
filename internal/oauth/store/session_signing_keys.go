@@ -6,12 +6,12 @@ import (
 	"fmt"
 
 	"github.com/openauth/openauth/internal/crypto/ecdsa"
-	openauthv1 "github.com/openauth/openauth/internal/gen/openauth/v1"
+	oauthv1 "github.com/openauth/openauth/internal/oauth/gen/openauth/oauth/v1"
 	"github.com/openauth/openauth/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/structpb"
 )
 
-func (s *Store) GetSessionPublicKeysByProjectID(ctx context.Context, projectId string) ([]*openauthv1.SessionSigningKey, error) {
+func (s *Store) GetSessionPublicKeysByProjectID(ctx context.Context, projectId string) ([]*oauthv1.SessionSigningKey, error) {
 	_, q, _, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -28,7 +28,7 @@ func (s *Store) GetSessionPublicKeysByProjectID(ctx context.Context, projectId s
 		return nil, err
 	}
 
-	var out []*openauthv1.SessionSigningKey
+	var out []*oauthv1.SessionSigningKey
 	for _, sessionSigningKey := range sessionSigningKeys {
 		pub, err := ecdsa.PublicKeyFromBytes(sessionSigningKey.PublicKey)
 		if err != nil {
@@ -46,7 +46,7 @@ func (s *Store) GetSessionPublicKeysByProjectID(ctx context.Context, projectId s
 			panic(fmt.Errorf("marshal public key to structpb: %w", err))
 		}
 
-		out = append(out, &openauthv1.SessionSigningKey{
+		out = append(out, &oauthv1.SessionSigningKey{
 			Id:           idformat.SessionSigningKey.Format(sessionSigningKey.ID),
 			ProjectId:    idformat.Project.Format(projectID),
 			PublicKeyJwk: jwk,

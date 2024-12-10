@@ -15,6 +15,20 @@ service IntermediateService {
     };
   }
 
+  rpc ExchangeIntermediateSessionForSession(ExchangeIntermediateSessionForSessionRequest) returns (ExchangeIntermediateSessionForSessionResponse) {
+    option (google.api.http) = {
+      post: "/intermediate/v1/exchange-intermediate-session-for-session",
+      body: "*"
+    };
+  }
+
+  rpc ExchangeIntermediateSessionForNewOrganizationSession(ExchangeIntermediateSessionForNewOrganizationSessionRequest) returns (ExchangeIntermediateSessionForNewOrganizationSessionResponse) {
+    option (google.api.http) = {
+      post: "/intermediate/v1/exchange-intermediate-session-for-new-organization-session",
+      body: "*"
+    };
+  }
+
   rpc GetGoogleOAuthRedirectURL(GetGoogleOAuthRedirectURLRequest) returns (GetGoogleOAuthRedirectURLResponse) {
     option (google.api.http) = {
       get: "/intermediate/v1/google-oauth-redirect-url"
@@ -97,6 +111,26 @@ message WhoamiRequest {
 
 message WhoamiResponse {
   IntermediateSession intermediate_session = 1;
+}
+
+message ExchangeIntermediateSessionForSessionRequest {
+  // The organization ID for the full session.
+  string organization_id = 1;
+}
+
+message ExchangeIntermediateSessionForSessionResponse {
+  // The refresh token for the new session.
+  string refresh_token = 1;
+}
+
+message ExchangeIntermediateSessionForNewOrganizationSessionRequest {
+  // The display name of the organization to create.
+  string display_name = 1;
+}
+
+message ExchangeIntermediateSessionForNewOrganizationSessionResponse {
+  // The refresh token for the new session.
+  string refresh_token = 1;
 }
 
 message GetGoogleOAuthRedirectURLRequest {

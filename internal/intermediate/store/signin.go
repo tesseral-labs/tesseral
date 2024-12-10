@@ -31,7 +31,7 @@ func (s *Store) SignInWithEmail(
 	}
 	defer rollback()
 
-	users, err := q.ListUsersByEmail(*ctx, &req.Email)
+	users, err := q.ListUsersByEmail(*ctx, req.Email)
 	if err != nil {
 		return nil, err
 	}

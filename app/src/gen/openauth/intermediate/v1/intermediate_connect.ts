@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { CreateOrganizationRequest, CreateOrganizationResponse, GetGoogleOAuthRedirectURLRequest, GetGoogleOAuthRedirectURLResponse, GetMicrosoftOAuthRedirectURLRequest, GetMicrosoftOAuthRedirectURLResponse, IssueEmailVerificationChallengeRequest, IssueEmailVerificationChallengeResponse, ListOrganizationsRequest, ListOrganizationsResponse, RedeemGoogleOAuthCodeRequest, RedeemGoogleOAuthCodeResponse, RedeemMicrosoftOAuthCodeRequest, RedeemMicrosoftOAuthCodeResponse, SignInWithEmailRequest, SignInWithEmailResponse, VerifyEmailChallengeRequest, VerifyEmailChallengeResponse, WhoamiRequest, WhoamiResponse } from "./intermediate_pb.js";
+import { CreateOrganizationRequest, CreateOrganizationResponse, ExchangeIntermediateSessionForNewOrganizationSessionRequest, ExchangeIntermediateSessionForNewOrganizationSessionResponse, ExchangeIntermediateSessionForSessionRequest, ExchangeIntermediateSessionForSessionResponse, GetGoogleOAuthRedirectURLRequest, GetGoogleOAuthRedirectURLResponse, GetMicrosoftOAuthRedirectURLRequest, GetMicrosoftOAuthRedirectURLResponse, IssueEmailVerificationChallengeRequest, IssueEmailVerificationChallengeResponse, ListOrganizationsRequest, ListOrganizationsResponse, RedeemGoogleOAuthCodeRequest, RedeemGoogleOAuthCodeResponse, RedeemMicrosoftOAuthCodeRequest, RedeemMicrosoftOAuthCodeResponse, SignInWithEmailRequest, SignInWithEmailResponse, VerifyEmailChallengeRequest, VerifyEmailChallengeResponse, WhoamiRequest, WhoamiResponse } from "./intermediate_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -19,6 +19,24 @@ export const IntermediateService = {
       name: "Whoami",
       I: WhoamiRequest,
       O: WhoamiResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc openauth.intermediate.v1.IntermediateService.ExchangeIntermediateSessionForSession
+     */
+    exchangeIntermediateSessionForSession: {
+      name: "ExchangeIntermediateSessionForSession",
+      I: ExchangeIntermediateSessionForSessionRequest,
+      O: ExchangeIntermediateSessionForSessionResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc openauth.intermediate.v1.IntermediateService.ExchangeIntermediateSessionForNewOrganizationSession
+     */
+    exchangeIntermediateSessionForNewOrganizationSession: {
+      name: "ExchangeIntermediateSessionForNewOrganizationSession",
+      I: ExchangeIntermediateSessionForNewOrganizationSessionRequest,
+      O: ExchangeIntermediateSessionForNewOrganizationSessionResponse,
       kind: MethodKind.Unary,
     },
     /**

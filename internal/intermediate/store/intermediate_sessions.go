@@ -28,13 +28,21 @@ func (s *Store) GetIntermediateSessionByToken(ctx context.Context, token string)
 
 	// todo this is what parseIntermediateSession should do, but already token
 	// by another function returning a hand-written type
-	return &intermediatev1.IntermediateSession{
-		Id:              idformat.IntermediateSession.Format(qIntermediateSession.ID),
-		ProjectId:       idformat.Project.Format(qIntermediateSession.ProjectID),
-		Email:           *qIntermediateSession.Email,
-		GoogleUserId:    *qIntermediateSession.GoogleUserID,
-		MicrosoftUserId: *qIntermediateSession.MicrosoftUserID,
-	}, nil
+	intermediateSession := &intermediatev1.IntermediateSession{
+		Id:        idformat.IntermediateSession.Format(qIntermediateSession.ID),
+		ProjectId: idformat.Project.Format(qIntermediateSession.ProjectID),
+		Email:     *qIntermediateSession.Email,
+	}
+
+	if qIntermediateSession.GoogleUserID != nil {
+		intermediateSession.GoogleUserId = *qIntermediateSession.GoogleUserID
+	}
+
+	if qIntermediateSession.MicrosoftUserID != nil {
+		intermediateSession.MicrosoftUserId = *qIntermediateSession.MicrosoftUserID
+	}
+
+	return intermediateSession, nil
 }
 
 func (s *Store) Whoami(ctx context.Context, req *intermediatev1.WhoamiRequest) (*intermediatev1.WhoamiResponse, error) {

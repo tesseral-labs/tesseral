@@ -171,26 +171,26 @@ func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganization
 }
 
 const createSession = `-- name: CreateSession :one
-INSERT INTO sessions (id, user_id, create_time, expire_time, revoked)
+INSERT INTO sessions (id, user_id, expire_time, refresh_token_sha256, revoked)
     VALUES ($1, $2, $3, $4, $5)
 RETURNING
     id, user_id, create_time, expire_time, revoked, refresh_token_sha256
 `
 
 type CreateSessionParams struct {
-	ID         uuid.UUID
-	UserID     uuid.UUID
-	CreateTime *time.Time
-	ExpireTime *time.Time
-	Revoked    bool
+	ID                 uuid.UUID
+	UserID             uuid.UUID
+	ExpireTime         *time.Time
+	RefreshTokenSha256 []byte
+	Revoked            bool
 }
 
 func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error) {
 	row := q.db.QueryRow(ctx, createSession,
 		arg.ID,
 		arg.UserID,
-		arg.CreateTime,
 		arg.ExpireTime,
+		arg.RefreshTokenSha256,
 		arg.Revoked,
 	)
 	var i Session
@@ -201,6 +201,43 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (S
 		&i.ExpireTime,
 		&i.Revoked,
 		&i.RefreshTokenSha256,
+	)
+	return i, err
+}
+
+const createUser = `-- name: CreateUser :one
+INSERT INTO users (id, organization_id, email, google_user_id, microsoft_user_id)
+    VALUES ($1, $2, $3, $4, $5)
+RETURNING
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time
+`
+
+type CreateUserParams struct {
+	ID              uuid.UUID
+	OrganizationID  uuid.UUID
+	Email           string
+	GoogleUserID    *string
+	MicrosoftUserID *string
+}
+
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
+	row := q.db.QueryRow(ctx, createUser,
+		arg.ID,
+		arg.OrganizationID,
+		arg.Email,
+		arg.GoogleUserID,
+		arg.MicrosoftUserID,
+	)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.PasswordBcrypt,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+		&i.Email,
+		&i.CreateTime,
+		&i.UpdateTime,
 	)
 	return i, err
 }
@@ -242,6 +279,32 @@ func (q *Queries) CreateVerifiedEmail(ctx context.Context, arg CreateVerifiedEma
 		&i.MicrosoftUserID,
 		&i.GoogleHostedDomain,
 		&i.MicrosoftTenantID,
+	)
+	return i, err
+}
+
+const getCurrentSessionKeyByProjectID = `-- name: GetCurrentSessionKeyByProjectID :one
+SELECT
+    id, project_id, public_key, private_key_cipher_text, create_time, expire_time
+FROM
+    session_signing_keys
+WHERE
+    project_id = $1
+ORDER BY
+    create_time DESC
+LIMIT 1
+`
+
+func (q *Queries) GetCurrentSessionKeyByProjectID(ctx context.Context, projectID uuid.UUID) (SessionSigningKey, error) {
+	row := q.db.QueryRow(ctx, getCurrentSessionKeyByProjectID, projectID)
+	var i SessionSigningKey
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.PublicKey,
+		&i.PrivateKeyCipherText,
+		&i.CreateTime,
+		&i.ExpireTime,
 	)
 	return i, err
 }
@@ -418,6 +481,99 @@ func (q *Queries) GetIntermediateSessionSigningKeyByProjectID(ctx context.Contex
 	return i, err
 }
 
+const getOrganizationUserByEmail = `-- name: GetOrganizationUserByEmail :one
+SELECT
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time
+FROM
+    users
+WHERE
+    organization_id = $1
+    AND email = $2
+`
+
+type GetOrganizationUserByEmailParams struct {
+	OrganizationID uuid.UUID
+	Email          string
+}
+
+func (q *Queries) GetOrganizationUserByEmail(ctx context.Context, arg GetOrganizationUserByEmailParams) (User, error) {
+	row := q.db.QueryRow(ctx, getOrganizationUserByEmail, arg.OrganizationID, arg.Email)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.PasswordBcrypt,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+		&i.Email,
+		&i.CreateTime,
+		&i.UpdateTime,
+	)
+	return i, err
+}
+
+const getOrganizationUserByGoogleUserID = `-- name: GetOrganizationUserByGoogleUserID :one
+SELECT
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time
+FROM
+    users
+WHERE
+    organization_id = $1
+    AND google_user_id = $2
+`
+
+type GetOrganizationUserByGoogleUserIDParams struct {
+	OrganizationID uuid.UUID
+	GoogleUserID   *string
+}
+
+func (q *Queries) GetOrganizationUserByGoogleUserID(ctx context.Context, arg GetOrganizationUserByGoogleUserIDParams) (User, error) {
+	row := q.db.QueryRow(ctx, getOrganizationUserByGoogleUserID, arg.OrganizationID, arg.GoogleUserID)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.PasswordBcrypt,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+		&i.Email,
+		&i.CreateTime,
+		&i.UpdateTime,
+	)
+	return i, err
+}
+
+const getOrganizationUserByMicrosoftUserID = `-- name: GetOrganizationUserByMicrosoftUserID :one
+SELECT
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time
+FROM
+    users
+WHERE
+    organization_id = $1
+    AND microsoft_user_id = $2
+`
+
+type GetOrganizationUserByMicrosoftUserIDParams struct {
+	OrganizationID  uuid.UUID
+	MicrosoftUserID *string
+}
+
+func (q *Queries) GetOrganizationUserByMicrosoftUserID(ctx context.Context, arg GetOrganizationUserByMicrosoftUserIDParams) (User, error) {
+	row := q.db.QueryRow(ctx, getOrganizationUserByMicrosoftUserID, arg.OrganizationID, arg.MicrosoftUserID)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.PasswordBcrypt,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+		&i.Email,
+		&i.CreateTime,
+		&i.UpdateTime,
+	)
+	return i, err
+}
+
 const getProjectByID = `-- name: GetProjectByID :one
 SELECT
     id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext
@@ -440,6 +596,37 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 		&i.MicrosoftOauthClientID,
 		&i.GoogleOauthClientSecretCiphertext,
 		&i.MicrosoftOauthClientSecretCiphertext,
+	)
+	return i, err
+}
+
+const getProjectOrganizationByID = `-- name: GetProjectOrganizationByID :one
+SELECT
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id
+FROM
+    organizations
+WHERE
+    id = $1
+    AND project_id = $2
+`
+
+type GetProjectOrganizationByIDParams struct {
+	ID        uuid.UUID
+	ProjectID uuid.UUID
+}
+
+func (q *Queries) GetProjectOrganizationByID(ctx context.Context, arg GetProjectOrganizationByIDParams) (Organization, error) {
+	row := q.db.QueryRow(ctx, getProjectOrganizationByID, arg.ID, arg.ProjectID)
+	var i Organization
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.DisplayName,
+		&i.OverrideLogInWithPasswordEnabled,
+		&i.OverrideLogInWithGoogleEnabled,
+		&i.OverrideLogInWithMicrosoftEnabled,
+		&i.GoogleHostedDomain,
+		&i.MicrosoftTenantID,
 	)
 	return i, err
 }
@@ -488,21 +675,20 @@ FROM
     JOIN users AS u ON o.id = users.organization_id
 WHERE
     project_id = $1
-    AND u.verified_email = $2
-    OR u.unverified_email = $2
+    AND u.email = $2
 ORDER BY
     o.display_name
 LIMIT $3
 `
 
 type ListOrganizationsByProjectIdAndEmailParams struct {
-	ProjectID     uuid.UUID
-	VerifiedEmail *string
-	Limit         int32
+	ProjectID uuid.UUID
+	Email     string
+	Limit     int32
 }
 
 func (q *Queries) ListOrganizationsByProjectIdAndEmail(ctx context.Context, arg ListOrganizationsByProjectIdAndEmailParams) ([]Organization, error) {
-	rows, err := q.db.Query(ctx, listOrganizationsByProjectIdAndEmail, arg.ProjectID, arg.VerifiedEmail, arg.Limit)
+	rows, err := q.db.Query(ctx, listOrganizationsByProjectIdAndEmail, arg.ProjectID, arg.Email, arg.Limit)
 	if err != nil {
 		return nil, err
 	}
@@ -532,16 +718,15 @@ func (q *Queries) ListOrganizationsByProjectIdAndEmail(ctx context.Context, arg 
 
 const listUsersByEmail = `-- name: ListUsersByEmail :many
 SELECT
-    id, organization_id, unverified_email, verified_email, password_bcrypt, google_user_id, microsoft_user_id
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time
 FROM
     users
 WHERE
-    unverified_email = $1
-    OR verified_email = $1
+    email = $1
 `
 
-func (q *Queries) ListUsersByEmail(ctx context.Context, unverifiedEmail *string) ([]User, error) {
-	rows, err := q.db.Query(ctx, listUsersByEmail, unverifiedEmail)
+func (q *Queries) ListUsersByEmail(ctx context.Context, email string) ([]User, error) {
+	rows, err := q.db.Query(ctx, listUsersByEmail, email)
 	if err != nil {
 		return nil, err
 	}
@@ -552,11 +737,12 @@ func (q *Queries) ListUsersByEmail(ctx context.Context, unverifiedEmail *string)
 		if err := rows.Scan(
 			&i.ID,
 			&i.OrganizationID,
-			&i.UnverifiedEmail,
-			&i.VerifiedEmail,
 			&i.PasswordBcrypt,
 			&i.GoogleUserID,
 			&i.MicrosoftUserID,
+			&i.Email,
+			&i.CreateTime,
+			&i.UpdateTime,
 		); err != nil {
 			return nil, err
 		}
