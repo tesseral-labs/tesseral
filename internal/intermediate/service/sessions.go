@@ -14,6 +14,9 @@ func (s *Service) ExchangeIntermediateSessionForNewOrganizationSession(ctx conte
 		return nil, fmt.Errorf("store: %w", err)
 	}
 
+	// TODO(blakeofwilliam): In the future, we'll want to use the `AccessToken` property of the response to
+	// set a cookie for the session. For the time being, we're just returning the access token
+	// to the client as a string property on the response body.
 	return connect.NewResponse(res), nil
 }
 
@@ -23,5 +26,8 @@ func (s *Service) ExchangeIntermediateSessionForSession(ctx context.Context, req
 		return nil, fmt.Errorf("store: %w", err)
 	}
 
+	// TODO(blakeofwilliam): In the future, we'll want to use the `AccessToken` property of the response to
+	// set a cookie for the session. For the time being, we're just returning the access token
+	// to the client as a string property on the response body.
 	return connect.NewResponse(res), nil
 }
