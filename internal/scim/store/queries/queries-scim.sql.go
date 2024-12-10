@@ -56,6 +56,37 @@ func (q *Queries) GetSCIMAPIKeyByTokenSHA256(ctx context.Context, arg GetSCIMAPI
 	return i, err
 }
 
+const getUserByEmail = `-- name: GetUserByEmail :one
+SELECT
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time
+FROM
+    users
+WHERE
+    organization_id = $1
+    AND email = $2
+`
+
+type GetUserByEmailParams struct {
+	OrganizationID uuid.UUID
+	Email          string
+}
+
+func (q *Queries) GetUserByEmail(ctx context.Context, arg GetUserByEmailParams) (User, error) {
+	row := q.db.QueryRow(ctx, getUserByEmail, arg.OrganizationID, arg.Email)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.PasswordBcrypt,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+		&i.Email,
+		&i.CreateTime,
+		&i.UpdateTime,
+	)
+	return i, err
+}
+
 const listUsers = `-- name: ListUsers :many
 SELECT
     id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time

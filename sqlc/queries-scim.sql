@@ -27,3 +27,12 @@ ORDER BY
     id
 LIMIT $2 OFFSET $3;
 
+-- name: GetUserByEmail :one
+SELECT
+    *
+FROM
+    users
+WHERE
+    organization_id = $1
+    AND email = $2;
+
