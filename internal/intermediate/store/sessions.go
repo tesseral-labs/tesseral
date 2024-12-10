@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/ecdsa"
 	"crypto/sha256"
-	"log/slog"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
@@ -69,7 +68,7 @@ func (s *Store) ExchangeIntermediateSessionForNewOrganizationSession(ctx context
 		ID:                 uuid.New(),
 		ExpireTime:         &expiresAt,
 		RefreshTokenSha256: refreshTokenSha256[:],
-		UserID:             user.ID,
+		UserID:             qUser.ID,
 	})
 	if err != nil {
 		return nil, err
@@ -107,12 +106,8 @@ func (s *Store) ExchangeIntermediateSessionForNewOrganizationSession(ctx context
 		return nil, err
 	}
 
-	// TODO: Replace this with cookie logic in the future
-	// - For the time being, we're just logging this so the value can be added to a request header
-	//   for testing purposes, but in the future, this will need to be set as a cookie
-	slog.Info("ExchangeIntermediateSessionForNewOrganizationSession", "accessToken", accessToken)
-
 	return &intermediatev1.ExchangeIntermediateSessionForNewOrganizationSessionResponse{
+		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
 	}, nil
 }
@@ -226,12 +221,8 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		return nil, err
 	}
 
-	// TODO: Replace this with cookie logic in the future
-	// - For the time being, we're just logging this so the value can be added to a request header
-	//   for testing purposes, but in the future, this will need to be set as a cookie
-	slog.Info("ExchangeIntermediateSessionForSession", "accessToken", accessToken)
-
 	return &intermediatev1.ExchangeIntermediateSessionForSessionResponse{
+		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
 	}, nil
 }
