@@ -26,6 +26,8 @@ func (s *Store) GetIntermediateSessionByToken(ctx context.Context, token string)
 		return nil, fmt.Errorf("get intermediate session by token sha256: %w", err)
 	}
 
+	// todo this is what parseIntermediateSession should do, but already token
+	// by another function returning a hand-written type
 	intermediateSession := &intermediatev1.IntermediateSession{
 		Id:        idformat.IntermediateSession.Format(qIntermediateSession.ID),
 		ProjectId: idformat.Project.Format(qIntermediateSession.ProjectID),
@@ -40,8 +42,6 @@ func (s *Store) GetIntermediateSessionByToken(ctx context.Context, token string)
 		intermediateSession.MicrosoftUserId = *qIntermediateSession.MicrosoftUserID
 	}
 
-	// todo this is what parseIntermediateSession should do, but already token
-	// by another function returning a hand-written type
 	return intermediateSession, nil
 }
 
