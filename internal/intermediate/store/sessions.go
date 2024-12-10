@@ -99,11 +99,11 @@ func (s *Store) ExchangeIntermediateSessionForNewOrganizationSession(ctx context
 		Revoked:    session.Revoked,
 	}, &sessions.User{
 		ID:              idformat.User.Format(user.ID),
-		CreateTime:      user.CreateTime.Time,
+		CreateTime:      *user.CreateTime,
 		Email:           user.Email,
 		GoogleUserID:    *user.GoogleUserID,
 		MicrosoftUserID: *user.MicrosoftUserID,
-		UpdateTime:      user.UpdateTime.Time,
+		UpdateTime:      *user.UpdateTime,
 	}, *sessionSigningKeyID, privateKey)
 	if err != nil {
 		return nil, err
@@ -219,11 +219,11 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		Revoked:    session.Revoked,
 	}, &sessions.User{
 		ID:              idformat.User.Format(user.ID),
-		CreateTime:      user.CreateTime.Time,
+		CreateTime:      *user.CreateTime,
 		Email:           user.Email,
 		GoogleUserID:    *user.GoogleUserID,
 		MicrosoftUserID: *user.MicrosoftUserID,
-		UpdateTime:      user.UpdateTime.Time,
+		UpdateTime:      *user.UpdateTime,
 	}, *sessionSigningKeyID, privateKey)
 	if err != nil {
 		return nil, err
