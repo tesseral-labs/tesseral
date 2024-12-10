@@ -171,17 +171,18 @@ func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganization
 }
 
 const createSession = `-- name: CreateSession :one
-INSERT INTO sessions (id, user_id, expire_time, revoked)
-    VALUES ($1, $2, $3, $4)
+INSERT INTO sessions (id, user_id, expire_time, refresh_token_sha256, revoked)
+    VALUES ($1, $2, $3, $4, $5)
 RETURNING
     id, user_id, create_time, expire_time, revoked, refresh_token_sha256
 `
 
 type CreateSessionParams struct {
-	ID         uuid.UUID
-	UserID     uuid.UUID
-	ExpireTime *time.Time
-	Revoked    bool
+	ID                 uuid.UUID
+	UserID             uuid.UUID
+	ExpireTime         *time.Time
+	RefreshTokenSha256 []byte
+	Revoked            bool
 }
 
 func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error) {
@@ -189,6 +190,7 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (S
 		arg.ID,
 		arg.UserID,
 		arg.ExpireTime,
+		arg.RefreshTokenSha256,
 		arg.Revoked,
 	)
 	var i Session

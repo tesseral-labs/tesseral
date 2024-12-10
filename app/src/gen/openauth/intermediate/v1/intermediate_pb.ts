@@ -192,6 +192,13 @@ export class ExchangeIntermediateSessionForSessionRequest extends Message<Exchan
  * @generated from message openauth.intermediate.v1.ExchangeIntermediateSessionForSessionResponse
  */
 export class ExchangeIntermediateSessionForSessionResponse extends Message<ExchangeIntermediateSessionForSessionResponse> {
+  /**
+   * The refresh token for the new session.
+   *
+   * @generated from field: string refresh_token = 1;
+   */
+  refreshToken = "";
+
   constructor(data?: PartialMessage<ExchangeIntermediateSessionForSessionResponse>) {
     super();
     proto3.util.initPartial(data, this);
@@ -200,6 +207,7 @@ export class ExchangeIntermediateSessionForSessionResponse extends Message<Excha
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "openauth.intermediate.v1.ExchangeIntermediateSessionForSessionResponse";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "refresh_token", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ExchangeIntermediateSessionForSessionResponse {
@@ -262,6 +270,13 @@ export class ExchangeIntermediateSessionForNewOrganizationSessionRequest extends
  * @generated from message openauth.intermediate.v1.ExchangeIntermediateSessionForNewOrganizationSessionResponse
  */
 export class ExchangeIntermediateSessionForNewOrganizationSessionResponse extends Message<ExchangeIntermediateSessionForNewOrganizationSessionResponse> {
+  /**
+   * The refresh token for the new session.
+   *
+   * @generated from field: string refresh_token = 1;
+   */
+  refreshToken = "";
+
   constructor(data?: PartialMessage<ExchangeIntermediateSessionForNewOrganizationSessionResponse>) {
     super();
     proto3.util.initPartial(data, this);
@@ -270,6 +285,7 @@ export class ExchangeIntermediateSessionForNewOrganizationSessionResponse extend
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "openauth.intermediate.v1.ExchangeIntermediateSessionForNewOrganizationSessionResponse";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "refresh_token", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ExchangeIntermediateSessionForNewOrganizationSessionResponse {

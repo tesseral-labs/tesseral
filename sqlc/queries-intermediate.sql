@@ -35,8 +35,8 @@ RETURNING
     *;
 
 -- name: CreateSession :one
-INSERT INTO sessions (id, user_id, expire_time, revoked)
-    VALUES ($1, $2, $3, $4)
+INSERT INTO sessions (id, user_id, expire_time, refresh_token_sha256, revoked)
+    VALUES ($1, $2, $3, $4, $5)
 RETURNING
     *;
 

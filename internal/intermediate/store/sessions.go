@@ -3,6 +3,7 @@ package store
 import (
 	"context"
 	"crypto/ecdsa"
+	"crypto/sha256"
 	"log/slog"
 	"time"
 
@@ -62,10 +63,15 @@ func (s *Store) ExchangeIntermediateSessionForNewOrganizationSession(ctx context
 	expiresAt := time.Now().Add(7 * time.Hour * 24) // 7 days
 
 	// Create a new session for the user
+	token := uuid.New()
+	refreshToken := idformat.SessionRefreshToken.Format(token)
+	refreshTokenSha256 := sha256.Sum256([]byte(refreshToken))
+
 	session, err := q.CreateSession(ctx, queries.CreateSessionParams{
-		ID:         uuid.New(),
-		ExpireTime: &expiresAt,
-		UserID:     user.ID,
+		ID:                 uuid.New(),
+		ExpireTime:         &expiresAt,
+		RefreshTokenSha256: refreshTokenSha256[:],
+		UserID:             user.ID,
 	})
 	if err != nil {
 		return nil, err
@@ -105,7 +111,9 @@ func (s *Store) ExchangeIntermediateSessionForNewOrganizationSession(ctx context
 
 	slog.Info("ExchangeIntermediateSessionForNewOrganizationSession", "accessToken", accessToken)
 
-	return &intermediatev1.ExchangeIntermediateSessionForNewOrganizationSessionResponse{}, nil
+	return &intermediatev1.ExchangeIntermediateSessionForNewOrganizationSessionResponse{
+		RefreshToken: refreshToken,
+	}, nil
 }
 
 func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *intermediatev1.ExchangeIntermediateSessionForSessionRequest) (*intermediatev1.ExchangeIntermediateSessionForSessionResponse, error) {
@@ -170,10 +178,15 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 	expiresAt := time.Now().Add(7 * time.Hour * 24) // 7 days
 
 	// Create a new session for the user
+	token := uuid.New()
+	refreshToken := idformat.SessionRefreshToken.Format(token)
+	refreshTokenSha256 := sha256.Sum256([]byte(refreshToken))
+
 	session, err := q.CreateSession(ctx, queries.CreateSessionParams{
-		ID:         uuid.New(),
-		ExpireTime: &expiresAt,
-		UserID:     user.ID,
+		ID:                 uuid.New(),
+		ExpireTime:         &expiresAt,
+		RefreshTokenSha256: refreshTokenSha256[:],
+		UserID:             user.ID,
 	})
 	if err != nil {
 		return nil, err
@@ -218,7 +231,9 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 
 	slog.Info("ExchangeIntermediateSessionForSession", "accessToken", accessToken)
 
-	return &intermediatev1.ExchangeIntermediateSessionForSessionResponse{}, nil
+	return &intermediatev1.ExchangeIntermediateSessionForSessionResponse{
+		RefreshToken: refreshToken,
+	}, nil
 }
 
 func (s *Store) getSessionSigningKey(ctx context.Context, q *queries.Queries, projectID uuid.UUID) (*uuid.UUID, *ecdsa.PrivateKey, error) {

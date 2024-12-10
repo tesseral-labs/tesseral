@@ -119,6 +119,8 @@ message ExchangeIntermediateSessionForSessionRequest {
 }
 
 message ExchangeIntermediateSessionForSessionResponse {
+  // The refresh token for the new session.
+  string refresh_token = 1;
 }
 
 message ExchangeIntermediateSessionForNewOrganizationSessionRequest {
@@ -127,6 +129,8 @@ message ExchangeIntermediateSessionForNewOrganizationSessionRequest {
 }
 
 message ExchangeIntermediateSessionForNewOrganizationSessionResponse {
+  // The refresh token for the new session.
+  string refresh_token = 1;
 }
 
 message GetGoogleOAuthRedirectURLRequest {
