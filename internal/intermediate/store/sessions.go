@@ -30,7 +30,7 @@ func (s *Store) ExchangeIntermediateSessionForNewOrganizationSession(ctx context
 	projectID := projectid.ProjectID(ctx)
 
 	// Create a new organization
-	organization, err := q.CreateOrganization(ctx, queries.CreateOrganizationParams{
+	qOrganization, err := q.CreateOrganization(ctx, queries.CreateOrganizationParams{
 		ID:                 uuid.New(),
 		ProjectID:          projectID,
 		DisplayName:        req.DisplayName,
@@ -42,9 +42,9 @@ func (s *Store) ExchangeIntermediateSessionForNewOrganizationSession(ctx context
 	}
 
 	// Create a new user for that organization
-	user, err := q.CreateUser(ctx, queries.CreateUserParams{
+	qUser, err := q.CreateUser(ctx, queries.CreateUserParams{
 		ID:              uuid.New(),
-		OrganizationID:  organization.ID,
+		OrganizationID:  qOrganization.ID,
 		Email:           intermediateSession.Email,
 		GoogleUserID:    &intermediateSession.GoogleUserId,
 		MicrosoftUserID: &intermediateSession.MicrosoftUserId,
@@ -52,8 +52,6 @@ func (s *Store) ExchangeIntermediateSessionForNewOrganizationSession(ctx context
 	if err != nil {
 		return nil, err
 	}
-
-	slog.Info("ExchangeIntermediateSessionForNewOrganizationSession", "organization", organization, "user", user)
 
 	project, err := q.GetProjectByID(ctx, projectID)
 	if err != nil {
@@ -67,7 +65,7 @@ func (s *Store) ExchangeIntermediateSessionForNewOrganizationSession(ctx context
 	refreshToken := idformat.SessionRefreshToken.Format(token)
 	refreshTokenSha256 := sha256.Sum256([]byte(refreshToken))
 
-	session, err := q.CreateSession(ctx, queries.CreateSessionParams{
+	qSession, err := q.CreateSession(ctx, queries.CreateSessionParams{
 		ID:                 uuid.New(),
 		ExpireTime:         &expiresAt,
 		RefreshTokenSha256: refreshTokenSha256[:],
@@ -87,28 +85,31 @@ func (s *Store) ExchangeIntermediateSessionForNewOrganizationSession(ctx context
 	}
 
 	accessToken, err := sessions.GetAccessToken(ctx, &sessions.Organization{
-		ID:          idformat.Organization.Format(organization.ID),
-		DisplayName: organization.DisplayName,
+		ID:          idformat.Organization.Format(qOrganization.ID),
+		DisplayName: qOrganization.DisplayName,
 	}, &sessions.Project{
 		ID: idformat.Project.Format(project.ID),
 	}, &sessions.Session{
-		ID:         idformat.Session.Format(session.ID),
-		UserID:     idformat.User.Format(user.ID),
-		CreateTime: *session.CreateTime,
-		ExpireTime: *session.ExpireTime,
-		Revoked:    session.Revoked,
+		ID:         idformat.Session.Format(qSession.ID),
+		UserID:     idformat.User.Format(qUser.ID),
+		CreateTime: *qSession.CreateTime,
+		ExpireTime: *qSession.ExpireTime,
+		Revoked:    qSession.Revoked,
 	}, &sessions.User{
-		ID:              idformat.User.Format(user.ID),
-		CreateTime:      *user.CreateTime,
-		Email:           user.Email,
-		GoogleUserID:    *user.GoogleUserID,
-		MicrosoftUserID: *user.MicrosoftUserID,
-		UpdateTime:      *user.UpdateTime,
+		ID:              idformat.User.Format(qUser.ID),
+		CreateTime:      *qUser.CreateTime,
+		Email:           qUser.Email,
+		GoogleUserID:    *qUser.GoogleUserID,
+		MicrosoftUserID: *qUser.MicrosoftUserID,
+		UpdateTime:      *qUser.UpdateTime,
 	}, *sessionSigningKeyID, privateKey)
 	if err != nil {
 		return nil, err
 	}
 
+	// TODO: Replace this with cookie logic in the future
+	// - For the time being, we're just logging this so the value can be added to a request header
+	//   for testing purposes, but in the future, this will need to be set as a cookie
 	slog.Info("ExchangeIntermediateSessionForNewOrganizationSession", "accessToken", accessToken)
 
 	return &intermediatev1.ExchangeIntermediateSessionForNewOrganizationSessionResponse{
@@ -131,7 +132,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		return nil, err
 	}
 
-	organization, err := q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
+	qOrganization, err := q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
 		ID:        organizationID,
 		ProjectID: projectID,
 	})
@@ -139,16 +140,14 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		return nil, err
 	}
 
-	slog.Info("ExchangeIntermediateSessionForSession", "organization", organization)
-
 	// Use the intermediate session state to determine the user to sign in
 	// The hierarchy of user identifiers is:
 	// 1. Microsoft user ID
 	// 2. Google user ID
 	// 3. Email
-	var user queries.User
+	var qUser queries.User
 	if intermediateSession.MicrosoftUserId != "" {
-		user, err = q.GetOrganizationUserByMicrosoftUserID(ctx, queries.GetOrganizationUserByMicrosoftUserIDParams{
+		qUser, err = q.GetOrganizationUserByMicrosoftUserID(ctx, queries.GetOrganizationUserByMicrosoftUserIDParams{
 			OrganizationID:  organizationID,
 			MicrosoftUserID: &intermediateSession.MicrosoftUserId,
 		})
@@ -156,7 +155,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 			return nil, err
 		}
 	} else if intermediateSession.GoogleUserId != "" {
-		user, err = q.GetOrganizationUserByGoogleUserID(ctx, queries.GetOrganizationUserByGoogleUserIDParams{
+		qUser, err = q.GetOrganizationUserByGoogleUserID(ctx, queries.GetOrganizationUserByGoogleUserIDParams{
 			OrganizationID: organizationID,
 			GoogleUserID:   &intermediateSession.GoogleUserId,
 		})
@@ -164,7 +163,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 			return nil, err
 		}
 	} else if intermediateSession.Email != "" {
-		user, err = q.GetOrganizationUserByEmail(ctx, queries.GetOrganizationUserByEmailParams{
+		qUser, err = q.GetOrganizationUserByEmail(ctx, queries.GetOrganizationUserByEmailParams{
 			OrganizationID: organizationID,
 			Email:          intermediateSession.Email,
 		})
@@ -173,8 +172,6 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		}
 	}
 
-	slog.Info("ExchangeIntermediateSessionForSession", "user", user)
-
 	expiresAt := time.Now().Add(7 * time.Hour * 24) // 7 days
 
 	// Create a new session for the user
@@ -182,17 +179,17 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 	refreshToken := idformat.SessionRefreshToken.Format(token)
 	refreshTokenSha256 := sha256.Sum256([]byte(refreshToken))
 
-	session, err := q.CreateSession(ctx, queries.CreateSessionParams{
+	qSession, err := q.CreateSession(ctx, queries.CreateSessionParams{
 		ID:                 uuid.New(),
 		ExpireTime:         &expiresAt,
 		RefreshTokenSha256: refreshTokenSha256[:],
-		UserID:             user.ID,
+		UserID:             qUser.ID,
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	project, err := q.GetProjectByID(ctx, projectID)
+	qProject, err := q.GetProjectByID(ctx, projectID)
 	if err != nil {
 		return nil, err
 	}
@@ -207,28 +204,31 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 	}
 
 	accessToken, err := sessions.GetAccessToken(ctx, &sessions.Organization{
-		ID:          idformat.Organization.Format(organization.ID),
-		DisplayName: organization.DisplayName,
+		ID:          idformat.Organization.Format(qOrganization.ID),
+		DisplayName: qOrganization.DisplayName,
 	}, &sessions.Project{
-		ID: idformat.Project.Format(project.ID),
+		ID: idformat.Project.Format(qProject.ID),
 	}, &sessions.Session{
-		ID:         idformat.Session.Format(session.ID),
-		UserID:     idformat.User.Format(user.ID),
-		CreateTime: *session.CreateTime,
-		ExpireTime: *session.ExpireTime,
-		Revoked:    session.Revoked,
+		ID:         idformat.Session.Format(qSession.ID),
+		UserID:     idformat.User.Format(qUser.ID),
+		CreateTime: *qSession.CreateTime,
+		ExpireTime: *qSession.ExpireTime,
+		Revoked:    qSession.Revoked,
 	}, &sessions.User{
-		ID:              idformat.User.Format(user.ID),
-		CreateTime:      *user.CreateTime,
-		Email:           user.Email,
-		GoogleUserID:    *user.GoogleUserID,
-		MicrosoftUserID: *user.MicrosoftUserID,
-		UpdateTime:      *user.UpdateTime,
+		ID:              idformat.User.Format(qUser.ID),
+		CreateTime:      *qUser.CreateTime,
+		Email:           qUser.Email,
+		GoogleUserID:    *qUser.GoogleUserID,
+		MicrosoftUserID: *qUser.MicrosoftUserID,
+		UpdateTime:      *qUser.UpdateTime,
 	}, *sessionSigningKeyID, privateKey)
 	if err != nil {
 		return nil, err
 	}
 
+	// TODO: Replace this with cookie logic in the future
+	// - For the time being, we're just logging this so the value can be added to a request header
+	//   for testing purposes, but in the future, this will need to be set as a cookie
 	slog.Info("ExchangeIntermediateSessionForSession", "accessToken", accessToken)
 
 	return &intermediatev1.ExchangeIntermediateSessionForSessionResponse{
