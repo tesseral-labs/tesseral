@@ -20,3 +20,7 @@ internal/intermediate/gen/** generated
 internal/intermediate/store/queries/** generated
 
 internal/oauth/store/queries/** generated
+
+internal/saml/store/queries/** generated
+
+internal/scim/store/queries/** generated

@@ -7,16 +7,35 @@ package queries
 
 import (
 	"context"
+
+	"github.com/google/uuid"
 )
 
-const one = `-- name: One :one
+const getSCIMAPIKeyByTokenSHA256 = `-- name: GetSCIMAPIKeyByTokenSHA256 :one
 SELECT
-    1
+    scim_api_keys.id, scim_api_keys.organization_id, scim_api_keys.create_time, scim_api_keys.revoke_time, scim_api_keys.token_sha256
+FROM
+    scim_api_keys
+    JOIN organizations ON scim_api_keys.organization_id = organizations.id
+WHERE
+    token_sha256 = $1
+    AND organizations.project_id = $2
 `
 
-func (q *Queries) One(ctx context.Context) (int32, error) {
-	row := q.db.QueryRow(ctx, one)
-	var column_1 int32
-	err := row.Scan(&column_1)
-	return column_1, err
+type GetSCIMAPIKeyByTokenSHA256Params struct {
+	TokenSha256 []byte
+	ProjectID   uuid.UUID
+}
+
+func (q *Queries) GetSCIMAPIKeyByTokenSHA256(ctx context.Context, arg GetSCIMAPIKeyByTokenSHA256Params) (ScimApiKey, error) {
+	row := q.db.QueryRow(ctx, getSCIMAPIKeyByTokenSHA256, arg.TokenSha256, arg.ProjectID)
+	var i ScimApiKey
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.CreateTime,
+		&i.RevokeTime,
+		&i.TokenSha256,
+	)
+	return i, err
 }

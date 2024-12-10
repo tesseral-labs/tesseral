@@ -138,6 +138,14 @@ type SamlConnection struct {
 	IdpEntityID        *string
 }
 
+type ScimApiKey struct {
+	ID             uuid.UUID
+	OrganizationID uuid.UUID
+	CreateTime     *time.Time
+	RevokeTime     *time.Time
+	TokenSha256    []byte
+}
+
 type Session struct {
 	ID                 uuid.UUID
 	UserID             uuid.UUID
