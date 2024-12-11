@@ -17,7 +17,9 @@ import (
 )
 
 type ListUsersRequest struct {
-	UserName string
+	Count      int
+	StartIndex int
+	UserName   string
 }
 
 type ListUsersResponse struct {
@@ -68,16 +70,26 @@ func (s *Store) ListUsers(ctx context.Context, req *ListUsersRequest) (*ListUser
 		return nil, fmt.Errorf("count users: %w", err)
 	}
 
+	limit := int32(10)
+	if req.Count != 0 {
+		limit = int32(req.Count)
+	}
+
+	offset := int32(0)
+	if req.StartIndex != 0 {
+		offset = int32(req.StartIndex-1) * limit
+	}
+
 	qUsers, err := q.ListUsers(ctx, queries.ListUsersParams{
 		OrganizationID: authn.OrganizationID(ctx),
-		Limit:          10,
-		Offset:         0,
+		Limit:          limit,
+		Offset:         offset,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("list users: %w", err)
 	}
 
-	var users []*User
+	users := []*User{} // intentionally not initialized as nil to avoid a JSON `null`
 	for _, qUser := range qUsers {
 		users = append(users, parseUser(false, qUser))
 	}

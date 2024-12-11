@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"regexp"
+	"strconv"
 
 	"github.com/openauth/openauth/internal/scim/authn/middleware"
 	"github.com/openauth/openauth/internal/scim/store"
@@ -48,8 +49,20 @@ func (s *Service) listUsers(w http.ResponseWriter, r *http.Request) error {
 		filterUserName, _ = url.QueryUnescape(match[1])
 	}
 
+	var count int
+	if r.URL.Query().Has("count") {
+		count, _ = strconv.Atoi(r.URL.Query().Get("count"))
+	}
+
+	var startIndex int
+	if r.URL.Query().Has("startIndex") {
+		startIndex, _ = strconv.Atoi(r.URL.Query().Get("startIndex"))
+	}
+
 	res, err := s.Store.ListUsers(ctx, &store.ListUsersRequest{
-		UserName: filterUserName,
+		Count:      count,
+		StartIndex: startIndex,
+		UserName:   filterUserName,
 	})
 	if err != nil {
 		return fmt.Errorf("store: %w", err)
