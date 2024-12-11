@@ -10,6 +10,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/openauth/openauth/internal/emailaddr"
 	"github.com/openauth/openauth/internal/scim/authn"
 	"github.com/openauth/openauth/internal/scim/store/queries"
@@ -181,6 +182,16 @@ func (s *Store) UpdateUser(ctx context.Context, req *User) (*User, error) {
 		Email:          req.UserName,
 	})
 	if err != nil {
+		var pgxErr *pgconn.PgError
+		if errors.As(err, &pgxErr) {
+			if pgxErr.Code == "23505" && pgxErr.ConstraintName == "users_organization_id_email_key" {
+				return nil, &BadEmailError{
+					Status: http.StatusBadRequest,
+					Detail: "a user with that email already exists",
+				}
+			}
+		}
+
 		return nil, fmt.Errorf("update user: %w", err)
 	}
 
@@ -205,23 +216,23 @@ func parseUser(withSchema bool, qUser queries.User) *User {
 	}
 }
 
-// BadEmailDomainError indicates that a email address is not within an
-// organization's list of domains.
+// BadEmailError indicates that there was a problem with a SCIM user's email
+// address.
 //
-// Instances of BadEmailDomainError are JSON-serializable SCIM errors.
-type BadEmailDomainError struct {
+// Instances of BadEmailError are JSON-serializable SCIM errors.
+type BadEmailError struct {
 	Status int    `json:"status"`
 	Detail string `json:"detail"`
 }
 
-func (e *BadEmailDomainError) Error() string {
+func (e *BadEmailError) Error() string {
 	return e.Detail
 }
 
 func (s *Store) validateEmailDomain(ctx context.Context, q *queries.Queries, email string) error {
 	domain, err := emailaddr.Parse(email)
 	if err != nil {
-		return &BadEmailDomainError{
+		return &BadEmailError{
 			Status: http.StatusBadRequest,
 			Detail: fmt.Sprintf("userName must be an email address"),
 		}
@@ -241,7 +252,7 @@ func (s *Store) validateEmailDomain(ctx context.Context, q *queries.Queries, ema
 	}
 
 	if !domainOk {
-		return &BadEmailDomainError{
+		return &BadEmailError{
 			Status: http.StatusBadRequest,
 			Detail: fmt.Sprintf("userName is not from the list of allowed domains: %s", strings.Join(qOrganizationDomains, ", ")),
 		}

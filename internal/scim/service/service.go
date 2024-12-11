@@ -109,7 +109,7 @@ func (s *Service) createUser(w http.ResponseWriter, r *http.Request) error {
 
 	user, err := s.Store.CreateUser(ctx, &reqUser)
 	if err != nil {
-		var errBadDomain *store.BadEmailDomainError
+		var errBadDomain *store.BadEmailError
 		if errors.As(err, &errBadDomain) {
 			w.Header().Set("Content-Type", "application/scim+json")
 			w.WriteHeader(http.StatusBadRequest)
@@ -149,7 +149,7 @@ func (s *Service) updateUser(w http.ResponseWriter, r *http.Request) error {
 
 	user, err := s.Store.UpdateUser(ctx, &reqUser)
 	if err != nil {
-		var errBadDomain *store.BadEmailDomainError
+		var errBadDomain *store.BadEmailError
 		if errors.As(err, &errBadDomain) {
 			w.Header().Set("Content-Type", "application/scim+json")
 			w.WriteHeader(http.StatusBadRequest)
