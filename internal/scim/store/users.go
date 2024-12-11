@@ -234,7 +234,7 @@ func (s *Store) validateEmailDomain(ctx context.Context, q *queries.Queries, ema
 	if err != nil {
 		return &BadEmailError{
 			Status: http.StatusBadRequest,
-			Detail: fmt.Sprintf("userName must be an email address"),
+			Detail: "userName must be an email address",
 		}
 	}
 
