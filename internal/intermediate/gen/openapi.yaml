@@ -428,7 +428,10 @@ components:
         SignInWithEmailResponse:
             type: object
             properties:
-                ChallengeID:
+                intermediateSessionToken:
+                    type: string
+                    description: The access token for the new intermediate session.
+                challengeId:
                     type: string
                     description: The ID of the email verification challenge, if required.
         Status:

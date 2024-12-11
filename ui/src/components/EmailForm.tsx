@@ -1,7 +1,13 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react'
+import { useMutation } from '@connectrpc/connect-query'
+
 import { Button } from './ui/button'
+import { signInWithEmail } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
+import { setIntermediateSessionToken } from '@/auth'
 
 const EmailForm = () => {
+  const signInWithEmailMutation = useMutation(signInWithEmail)
+
   const [email, setEmail] = useState<string>('')
   const [emailIsValid, setEmailIsValid] = useState<boolean>(false)
 
@@ -9,8 +15,26 @@ const EmailForm = () => {
     setEmail(e.target.value)
   }
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
+
+    try {
+      const { intermediateSessionToken, challengeId } =
+        await signInWithEmailMutation.mutateAsync({
+          email,
+        })
+
+      // set the intermediate sessionToken
+      setIntermediateSessionToken(intermediateSessionToken)
+
+      // Check if a challenge is required
+      if (challengeId) {
+        // redirect to challenge page
+        console.log(`This is where we would redirect to the challenge page`)
+      }
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   useEffect(() => {

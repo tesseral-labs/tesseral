@@ -10,16 +10,17 @@ export type Config = {
   API_URL: string
 }
 
+const configData: Config = {
+  API_URL: '__API_URL__',
+}
+
 const Context = createContext<Config>(undefined as any)
 
 export const ConfigProvider = ({ children }: { children?: ReactNode }) => {
   const [config, setConfig] = useState<Config | undefined>()
 
   useEffect(() => {
-    ;(async () => {
-      const res = await (await fetch('/config.json')).json()
-      setConfig(res)
-    })()
+    setConfig(configData)
   }, [])
 
   if (!config) {

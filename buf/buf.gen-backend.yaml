@@ -23,9 +23,6 @@ plugins:
   - local: protoc-gen-es
     out: app/src/gen
     opt: target=ts
-  - local: protoc-gen-connect-es
-    out: app/src/gen
-    opt: target=ts
   - local: protoc-gen-connect-query
     out: app/src/gen
     opt: target=ts

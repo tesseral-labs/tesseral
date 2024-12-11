@@ -59,9 +59,6 @@ func (s *Store) SignInWithEmail(
 			return nil, err
 		}
 
-		// TODO: Remove this after we're handling cookies properly
-		slog.Info("SignInWithEmail", "intermediate_session_token", idformat.IntermediateSessionToken.Format(token))
-
 		var evcid *string = nil
 
 		if shouldVerify {
@@ -99,7 +96,8 @@ func (s *Store) SignInWithEmail(
 		}
 
 		return &intermediatev1.SignInWithEmailResponse{
-			ChallengeID: *evcid,
+			IntermediateSessionToken: idformat.IntermediateSessionToken.Format(token),
+			ChallengeId:              *evcid,
 		}, nil
 	}
 }

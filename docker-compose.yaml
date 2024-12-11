@@ -58,6 +58,7 @@ services:
   ui:
     command: bash -c "npm i --force && npm run dev"
     environment:
+      UI_API_URL: ${UI_API_URL}
       UI_BUILD_IS_DEV: 1
     expose:
       - 3002

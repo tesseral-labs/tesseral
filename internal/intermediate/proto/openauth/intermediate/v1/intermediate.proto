@@ -227,8 +227,10 @@ message SignInWithEmailRequest {
 }
 
 message SignInWithEmailResponse {
+  // The access token for the new intermediate session.
+  string intermediate_session_token = 1;
   // The ID of the email verification challenge, if required.
-  string ChallengeID = 1;
+  string challenge_id = 2;
 }
 
 message Project {
