@@ -8,6 +8,14 @@ WHERE
     token_sha256 = $1
     AND organizations.project_id = $2;
 
+-- name: GetOrganizationDomains :many
+SELECT
+    DOMAIN
+FROM
+    organization_domains
+WHERE
+    organization_id = $1;
+
 -- name: CountUsers :one
 SELECT
     count(*)

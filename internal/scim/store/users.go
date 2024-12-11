@@ -4,10 +4,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net/http"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	"github.com/openauth/openauth/internal/emailaddr"
 	"github.com/openauth/openauth/internal/scim/authn"
 	"github.com/openauth/openauth/internal/scim/store/queries"
 	"github.com/openauth/openauth/internal/store/idformat"
@@ -116,7 +119,9 @@ func (s *Store) CreateUser(ctx context.Context, req *User) (*User, error) {
 	}
 	defer rollback()
 
-	// todo validate email domain
+	if err := s.validateEmailDomain(ctx, q, req.UserName); err != nil {
+		return nil, fmt.Errorf("validate email domain: %w", err)
+	}
 
 	qUser, err := q.CreateUser(ctx, queries.CreateUserParams{
 		ID:             uuid.New(),
@@ -146,7 +151,9 @@ func (s *Store) UpdateUser(ctx context.Context, req *User) (*User, error) {
 		return nil, fmt.Errorf("parse user id: %w", err)
 	}
 
-	// todo validate email domain
+	if err := s.validateEmailDomain(ctx, q, req.UserName); err != nil {
+		return nil, fmt.Errorf("validate email domain: %w", err)
+	}
 
 	// todo do we care about this bumping deactivate_time any time an update happens to the user?
 	var deactivateTime *time.Time
@@ -184,4 +191,46 @@ func parseUser(withSchema bool, qUser queries.User) *User {
 		Active:   qUser.DeactivateTime == nil,
 		UserName: qUser.Email,
 	}
+}
+
+// BadEmailDomainError indicates that a email address is not within an
+// organization's list of domains.
+//
+// Instances of BadEmailDomainError are JSON-serializable SCIM errors.
+type BadEmailDomainError struct {
+	Status int    `json:"status"`
+	Detail string `json:"detail"`
+}
+
+func (e *BadEmailDomainError) Error() string {
+	return e.Detail
+}
+
+func (s *Store) validateEmailDomain(ctx context.Context, q *queries.Queries, email string) error {
+	domain, err := emailaddr.Parse(email)
+	if err != nil {
+		return fmt.Errorf("parse email: %w", err)
+	}
+
+	qOrganizationDomains, err := q.GetOrganizationDomains(ctx, authn.OrganizationID(ctx))
+	if err != nil {
+		return fmt.Errorf("get organization domains: %w", err)
+	}
+
+	var domainOk bool
+	for _, orgDomain := range qOrganizationDomains {
+		if orgDomain == domain {
+			domainOk = true
+			break
+		}
+	}
+
+	if !domainOk {
+		return &BadEmailDomainError{
+			Status: http.StatusBadRequest,
+			Detail: fmt.Sprintf("userName is not from the list of allowed domains: %s", strings.Join(qOrganizationDomains, ", ")),
+		}
+	}
+
+	return nil
 }

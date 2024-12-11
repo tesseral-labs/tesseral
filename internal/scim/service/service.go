@@ -2,6 +2,7 @@ package service
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -95,6 +96,16 @@ func (s *Service) createUser(w http.ResponseWriter, r *http.Request) error {
 
 	user, err := s.Store.CreateUser(ctx, &reqUser)
 	if err != nil {
+		var errBadDomain *store.BadEmailDomainError
+		if errors.As(err, &errBadDomain) {
+			w.Header().Set("Content-Type", "application/scim+json")
+			w.WriteHeader(http.StatusBadRequest)
+			if err := json.NewEncoder(w).Encode(errBadDomain); err != nil {
+				return fmt.Errorf("write response: %w", err)
+			}
+			return nil
+		}
+
 		return fmt.Errorf("store: %w", err)
 	}
 
@@ -125,6 +136,16 @@ func (s *Service) updateUser(w http.ResponseWriter, r *http.Request) error {
 
 	user, err := s.Store.UpdateUser(ctx, &reqUser)
 	if err != nil {
+		var errBadDomain *store.BadEmailDomainError
+		if errors.As(err, &errBadDomain) {
+			w.Header().Set("Content-Type", "application/scim+json")
+			w.WriteHeader(http.StatusBadRequest)
+			if err := json.NewEncoder(w).Encode(errBadDomain); err != nil {
+				return fmt.Errorf("write response: %w", err)
+			}
+			return nil
+		}
+
 		return fmt.Errorf("store: %w", err)
 	}
 

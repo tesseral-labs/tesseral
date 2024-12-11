@@ -58,6 +58,35 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 	return i, err
 }
 
+const getOrganizationDomains = `-- name: GetOrganizationDomains :many
+SELECT
+    DOMAIN
+FROM
+    organization_domains
+WHERE
+    organization_id = $1
+`
+
+func (q *Queries) GetOrganizationDomains(ctx context.Context, organizationID uuid.UUID) ([]string, error) {
+	rows, err := q.db.Query(ctx, getOrganizationDomains, organizationID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []string
+	for rows.Next() {
+		var domain string
+		if err := rows.Scan(&domain); err != nil {
+			return nil, err
+		}
+		items = append(items, domain)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getSCIMAPIKeyByTokenSHA256 = `-- name: GetSCIMAPIKeyByTokenSHA256 :one
 SELECT
     scim_api_keys.id, scim_api_keys.organization_id, scim_api_keys.create_time, scim_api_keys.revoke_time, scim_api_keys.token_sha256
