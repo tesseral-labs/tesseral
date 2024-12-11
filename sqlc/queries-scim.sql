@@ -51,3 +51,14 @@ INSERT INTO users (id, organization_id, email)
 RETURNING
     *;
 
+-- name: UpdateUser :one
+UPDATE
+    users
+SET
+    email = $1
+WHERE
+    id = $2
+    AND organization_id = $3
+RETURNING
+    *;
+

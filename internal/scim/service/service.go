@@ -22,6 +22,7 @@ func (s *Service) Handler() http.Handler {
 	mux.Handle("GET /scim/v1/Users", withErr(s.listUsers))
 	mux.Handle("GET /scim/v1/Users/{userID}", withErr(s.getUser))
 	mux.Handle("POST /scim/v1/Users", withErr(s.createUser))
+	mux.Handle("PUT /scim/v1/Users/{userID}", withErr(s.updateUser))
 
 	return middleware.New(s.Store, mux)
 }
@@ -99,6 +100,36 @@ func (s *Service) createUser(w http.ResponseWriter, r *http.Request) error {
 
 	w.Header().Set("Content-Type", "application/scim+json")
 	w.WriteHeader(http.StatusCreated)
+	if err := json.NewEncoder(w).Encode(user); err != nil {
+		return fmt.Errorf("write response: %w", err)
+	}
+	return nil
+}
+
+func (s *Service) updateUser(w http.ResponseWriter, r *http.Request) error {
+	ctx := r.Context()
+
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("read body: %s", err), http.StatusBadRequest)
+		return nil
+	}
+
+	var reqUser store.User
+	if err := json.Unmarshal(body, &reqUser); err != nil {
+		http.Error(w, fmt.Sprintf("unmarshal body: %s", err), http.StatusBadRequest)
+		return nil
+	}
+
+	reqUser.ID = r.PathValue("userID")
+
+	user, err := s.Store.UpdateUser(ctx, &reqUser)
+	if err != nil {
+		return fmt.Errorf("store: %w", err)
+	}
+
+	w.Header().Set("Content-Type", "application/scim+json")
+	w.WriteHeader(http.StatusOK)
 	if err := json.NewEncoder(w).Encode(user); err != nil {
 		return fmt.Errorf("write response: %w", err)
 	}
