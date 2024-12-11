@@ -209,7 +209,10 @@ func (e *BadEmailDomainError) Error() string {
 func (s *Store) validateEmailDomain(ctx context.Context, q *queries.Queries, email string) error {
 	domain, err := emailaddr.Parse(email)
 	if err != nil {
-		return fmt.Errorf("parse email: %w", err)
+		return &BadEmailDomainError{
+			Status: http.StatusBadRequest,
+			Detail: fmt.Sprintf("userName must be an email address"),
+		}
 	}
 
 	qOrganizationDomains, err := q.GetOrganizationDomains(ctx, authn.OrganizationID(ctx))
