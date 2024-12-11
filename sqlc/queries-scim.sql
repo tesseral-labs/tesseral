@@ -55,10 +55,11 @@ RETURNING
 UPDATE
     users
 SET
-    email = $1
+    email = $1,
+    deactivate_time = $2
 WHERE
-    id = $2
-    AND organization_id = $3
+    id = $3
+    AND organization_id = $4
 RETURNING
     *;
 

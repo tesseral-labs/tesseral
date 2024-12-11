@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -19,12 +20,13 @@ type ListUsersRequest struct {
 type ListUsersResponse struct {
 	Schemas      []string `json:"schemas,omitempty"`
 	TotalResults int      `json:"totalResults"`
-	Users        []User   `json:"Resources"`
+	Users        []*User  `json:"Resources"`
 }
 
 type User struct {
 	Schemas  []string `json:"schemas,omitempty"`
 	ID       string   `json:"id"`
+	Active   bool     `json:"active"`
 	UserName string   `json:"userName"`
 }
 
@@ -45,7 +47,7 @@ func (s *Store) ListUsers(ctx context.Context, req *ListUsersRequest) (*ListUser
 				return &ListUsersResponse{
 					Schemas:      []string{"urn:ietf:params:scim:schemas:core:2.0:User"},
 					TotalResults: 0,
-					Users:        []User{},
+					Users:        []*User{},
 				}, nil
 			}
 			return nil, fmt.Errorf("get user by email: %w", err)
@@ -54,12 +56,7 @@ func (s *Store) ListUsers(ctx context.Context, req *ListUsersRequest) (*ListUser
 		return &ListUsersResponse{
 			Schemas:      []string{"urn:ietf:params:scim:schemas:core:2.0:User"},
 			TotalResults: 1,
-			Users: []User{
-				{
-					ID:       idformat.User.Format(qUser.ID),
-					UserName: qUser.Email,
-				},
-			},
+			Users:        []*User{parseUser(false, qUser)},
 		}, nil
 	}
 
@@ -77,12 +74,9 @@ func (s *Store) ListUsers(ctx context.Context, req *ListUsersRequest) (*ListUser
 		return nil, fmt.Errorf("list users: %w", err)
 	}
 
-	var users []User
+	var users []*User
 	for _, qUser := range qUsers {
-		users = append(users, User{
-			ID:       idformat.User.Format(qUser.ID),
-			UserName: qUser.Email,
-		})
+		users = append(users, parseUser(false, qUser))
 	}
 
 	return &ListUsersResponse{
@@ -112,11 +106,7 @@ func (s *Store) GetUser(ctx context.Context, id string) (*User, error) {
 		return nil, fmt.Errorf("get user by id: %w", err)
 	}
 
-	return &User{
-		Schemas:  []string{"urn:ietf:params:scim:schemas:core:2.0:User"},
-		ID:       idformat.User.Format(qUser.ID),
-		UserName: qUser.Email,
-	}, nil
+	return parseUser(true, qUser), nil
 }
 
 func (s *Store) CreateUser(ctx context.Context, req *User) (*User, error) {
@@ -141,11 +131,7 @@ func (s *Store) CreateUser(ctx context.Context, req *User) (*User, error) {
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return &User{
-		Schemas:  []string{"urn:ietf:params:scim:schemas:core:2.0:User"},
-		ID:       idformat.User.Format(qUser.ID),
-		UserName: qUser.Email,
-	}, nil
+	return parseUser(true, qUser), nil
 }
 
 func (s *Store) UpdateUser(ctx context.Context, req *User) (*User, error) {
@@ -162,9 +148,17 @@ func (s *Store) UpdateUser(ctx context.Context, req *User) (*User, error) {
 
 	// todo validate email domain
 
+	// todo do we care about this bumping deactivate_time any time an update happens to the user?
+	var deactivateTime *time.Time
+	if !req.Active {
+		now := time.Now()
+		deactivateTime = &now
+	}
+
 	qUser, err := q.UpdateUser(ctx, queries.UpdateUserParams{
 		OrganizationID: authn.OrganizationID(ctx),
 		ID:             userID,
+		DeactivateTime: deactivateTime,
 		Email:          req.UserName,
 	})
 	if err != nil {
@@ -175,9 +169,19 @@ func (s *Store) UpdateUser(ctx context.Context, req *User) (*User, error) {
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
+	return parseUser(true, qUser), nil
+}
+
+func parseUser(withSchema bool, qUser queries.User) *User {
+	var schemas []string
+	if withSchema {
+		schemas = []string{"urn:ietf:params:scim:schemas:core:2.0:User"}
+	}
+
 	return &User{
-		Schemas:  []string{"urn:ietf:params:scim:schemas:core:2.0:User"},
+		Schemas:  schemas,
 		ID:       idformat.User.Format(qUser.ID),
+		Active:   qUser.DeactivateTime == nil,
 		UserName: qUser.Email,
-	}, nil
+	}
 }
