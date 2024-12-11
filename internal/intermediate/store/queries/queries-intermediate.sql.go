@@ -209,7 +209,7 @@ const createUser = `-- name: CreateUser :one
 INSERT INTO users (id, organization_id, email, google_user_id, microsoft_user_id)
     VALUES ($1, $2, $3, $4, $5)
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time
 `
 
 type CreateUserParams struct {
@@ -238,6 +238,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.Email,
 		&i.CreateTime,
 		&i.UpdateTime,
+		&i.DeactivateTime,
 	)
 	return i, err
 }
@@ -483,7 +484,7 @@ func (q *Queries) GetIntermediateSessionSigningKeyByProjectID(ctx context.Contex
 
 const getOrganizationUserByEmail = `-- name: GetOrganizationUserByEmail :one
 SELECT
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time
 FROM
     users
 WHERE
@@ -508,13 +509,14 @@ func (q *Queries) GetOrganizationUserByEmail(ctx context.Context, arg GetOrganiz
 		&i.Email,
 		&i.CreateTime,
 		&i.UpdateTime,
+		&i.DeactivateTime,
 	)
 	return i, err
 }
 
 const getOrganizationUserByGoogleUserID = `-- name: GetOrganizationUserByGoogleUserID :one
 SELECT
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time
 FROM
     users
 WHERE
@@ -539,13 +541,14 @@ func (q *Queries) GetOrganizationUserByGoogleUserID(ctx context.Context, arg Get
 		&i.Email,
 		&i.CreateTime,
 		&i.UpdateTime,
+		&i.DeactivateTime,
 	)
 	return i, err
 }
 
 const getOrganizationUserByMicrosoftUserID = `-- name: GetOrganizationUserByMicrosoftUserID :one
 SELECT
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time
 FROM
     users
 WHERE
@@ -570,6 +573,7 @@ func (q *Queries) GetOrganizationUserByMicrosoftUserID(ctx context.Context, arg 
 		&i.Email,
 		&i.CreateTime,
 		&i.UpdateTime,
+		&i.DeactivateTime,
 	)
 	return i, err
 }
@@ -718,7 +722,7 @@ func (q *Queries) ListOrganizationsByProjectIdAndEmail(ctx context.Context, arg 
 
 const listUsersByEmail = `-- name: ListUsersByEmail :many
 SELECT
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time
 FROM
     users
 WHERE
@@ -743,6 +747,7 @@ func (q *Queries) ListUsersByEmail(ctx context.Context, email string) ([]User, e
 			&i.Email,
 			&i.CreateTime,
 			&i.UpdateTime,
+			&i.DeactivateTime,
 		); err != nil {
 			return nil, err
 		}

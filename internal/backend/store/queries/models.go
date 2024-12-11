@@ -173,6 +173,7 @@ type User struct {
 	Email           string
 	CreateTime      *time.Time
 	UpdateTime      *time.Time
+	DeactivateTime  *time.Time
 }
 
 type VerifiedEmail struct {
