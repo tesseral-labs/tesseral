@@ -450,7 +450,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time
 `
 
 type UpdateUserParams struct {
@@ -481,6 +481,7 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 		&i.Email,
 		&i.CreateTime,
 		&i.UpdateTime,
+		&i.DeactivateTime,
 	)
 	return i, err
 }
@@ -493,7 +494,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time
 `
 
 type UpdateUserPasswordParams struct {
@@ -513,6 +514,7 @@ func (q *Queries) UpdateUserPassword(ctx context.Context, arg UpdateUserPassword
 		&i.Email,
 		&i.CreateTime,
 		&i.UpdateTime,
+		&i.DeactivateTime,
 	)
 	return i, err
 }
