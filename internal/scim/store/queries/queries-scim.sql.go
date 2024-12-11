@@ -116,6 +116,37 @@ func (q *Queries) GetUserByEmail(ctx context.Context, arg GetUserByEmailParams) 
 	return i, err
 }
 
+const getUserByID = `-- name: GetUserByID :one
+SELECT
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time
+FROM
+    users
+WHERE
+    organization_id = $1
+    AND id = $2
+`
+
+type GetUserByIDParams struct {
+	OrganizationID uuid.UUID
+	ID             uuid.UUID
+}
+
+func (q *Queries) GetUserByID(ctx context.Context, arg GetUserByIDParams) (User, error) {
+	row := q.db.QueryRow(ctx, getUserByID, arg.OrganizationID, arg.ID)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.PasswordBcrypt,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+		&i.Email,
+		&i.CreateTime,
+		&i.UpdateTime,
+	)
+	return i, err
+}
+
 const listUsers = `-- name: ListUsers :many
 SELECT
     id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time

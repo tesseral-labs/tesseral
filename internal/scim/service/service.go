@@ -20,6 +20,7 @@ func (s *Service) Handler() http.Handler {
 	mux := http.NewServeMux()
 
 	mux.Handle("GET /scim/v1/Users", withErr(s.listUsers))
+	mux.Handle("GET /scim/v1/Users/{userID}", withErr(s.getUser))
 	mux.Handle("POST /scim/v1/Users", withErr(s.createUser))
 
 	return middleware.New(s.Store, mux)
@@ -55,6 +56,22 @@ func (s *Service) listUsers(w http.ResponseWriter, r *http.Request) error {
 	w.Header().Set("Content-Type", "application/scim+json")
 	w.WriteHeader(http.StatusOK)
 	if err := json.NewEncoder(w).Encode(res); err != nil {
+		return fmt.Errorf("write response: %w", err)
+	}
+	return nil
+}
+
+func (s *Service) getUser(w http.ResponseWriter, r *http.Request) error {
+	ctx := r.Context()
+
+	user, err := s.Store.GetUser(ctx, r.PathValue("userID"))
+	if err != nil {
+		return fmt.Errorf("store: %w", err)
+	}
+
+	w.Header().Set("Content-Type", "application/scim+json")
+	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(user); err != nil {
 		return fmt.Errorf("write response: %w", err)
 	}
 	return nil

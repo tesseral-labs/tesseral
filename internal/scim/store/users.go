@@ -92,6 +92,33 @@ func (s *Store) ListUsers(ctx context.Context, req *ListUsersRequest) (*ListUser
 	}, nil
 }
 
+func (s *Store) GetUser(ctx context.Context, id string) (*User, error) {
+	_, q, _, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	userID, err := idformat.User.Parse(id)
+	if err != nil {
+		return nil, fmt.Errorf("parse user id: %w", err)
+	}
+
+	qUser, err := q.GetUserByID(ctx, queries.GetUserByIDParams{
+		OrganizationID: authn.OrganizationID(ctx),
+		ID:             userID,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("get user by id: %w", err)
+	}
+
+	return &User{
+		Schemas:  []string{"urn:ietf:params:scim:schemas:core:2.0:User"},
+		ID:       idformat.User.Format(qUser.ID),
+		UserName: qUser.Email,
+	}, nil
+}
+
 func (s *Store) CreateUser(ctx context.Context, req *User) (*User, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
