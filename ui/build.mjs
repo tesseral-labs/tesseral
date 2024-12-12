@@ -17,8 +17,10 @@ const context = await esbuild.context({
   outfile: './public/index.js',
   plugins: [
     replace({
-      __REPLACED_BY_ESBUILD_API_URL__: process.env.UI_API_URL,
-      __REPLACED_BY_ESBUILD_PROJECT_ID__: process.env.UI_PROJECT_ID,
+      __REPLACED_BY_ESBUILD_API_URL__: JSON.stringify(process.env.UI_API_URL),
+      __REPLACED_BY_ESBUILD_PROJECT_ID__: JSON.stringify(
+        process.env.UI_PROJECT_ID,
+      ),
     }),
   ],
   sourcemap: true,
