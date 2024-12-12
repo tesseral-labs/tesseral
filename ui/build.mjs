@@ -10,9 +10,6 @@ if (UI_BUILD_IS_DEV) {
   })
 }
 
-console.log(process.env.UI_API_URL)
-console.log(process.env.UI_PROJECT_ID)
-
 const context = await esbuild.context({
   bundle: true,
   entryPoints: ['./src'],
