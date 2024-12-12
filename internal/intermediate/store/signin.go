@@ -25,8 +25,6 @@ func (s *Store) SignInWithEmail(
 		return nil, err
 	}
 
-	slog.InfoContext(ctx, "SignInWithEmail", "email", req.Email, "shouldVerify", shouldVerify)
-
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -96,8 +94,6 @@ func (s *Store) SignInWithEmail(
 		if err := commit(); err != nil {
 			return nil, err
 		}
-
-		slog.InfoContext(ctx, "SignInWithEmail", "email", req.Email, "intermediateSession", intermediateSession.ID)
 
 		return &intermediatev1.SignInWithEmailResponse{
 			IntermediateSessionToken: idformat.IntermediateSessionToken.Format(token),
