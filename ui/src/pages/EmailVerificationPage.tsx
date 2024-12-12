@@ -43,7 +43,7 @@ const EmailVerificationPage = () => {
         const { data } = await whoamiQuery.refetch()
         console.log('whoami data: ', data)
 
-        const challengeId = searchParams.get('challengeId')
+        const challengeId = searchParams.get('challenge_id')
         if (challengeId) {
           setChallengeId(challengeId)
         }

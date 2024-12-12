@@ -30,7 +30,7 @@ const EmailForm = () => {
       setIntermediateSessionToken(intermediateSessionToken)
 
       // redirect to challenge page
-      navigate(`/verify-email?challengeId=${challengeId}`)
+      navigate(`/verify-email?challenge_id=${challengeId}`)
     } catch (error) {
       console.error(error)
     }
