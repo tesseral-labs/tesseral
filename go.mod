@@ -17,6 +17,7 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.1
 	github.com/jackc/pgx/v5 v5.7.1
 	github.com/joho/godotenv v1.5.1
+	github.com/rs/cors v1.11.1
 	github.com/ssoready/conf v0.0.0-20240508183332-dbc356674c9e
 	github.com/ssoready/prettyuuid v0.0.0-20241023163822-285da46017b3
 	github.com/stretchr/testify v1.9.0

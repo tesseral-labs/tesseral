@@ -1,6 +1,14 @@
 import * as esbuild from 'esbuild'
+import { replace } from 'esbuild-plugin-replace'
+import { configDotenv } from 'dotenv'
 
 const APP_BUILD_IS_DEV = process.env.APP_BUILD_IS_DEV === '1'
+
+if (APP_BUILD_IS_DEV) {
+  configDotenv({
+    path: '../.env',
+  })
+}
 
 const define = {
   global: 'window',
@@ -16,6 +24,11 @@ const context = await esbuild.context({
   outfile: './public/index.js',
   minify: !APP_BUILD_IS_DEV,
   bundle: true,
+  plugins: [
+    replace({
+      __API_URL__: process.env.APP_API_URL,
+    }),
+  ],
   sourcemap: true,
   target: ['chrome58', 'firefox57', 'safari11', 'edge18'],
   define,

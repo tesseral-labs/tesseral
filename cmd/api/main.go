@@ -42,6 +42,7 @@ import (
 	"github.com/openauth/openauth/internal/slogcorrelation"
 	"github.com/openauth/openauth/internal/store/idformat"
 	keyManagementService "github.com/openauth/openauth/internal/store/kms"
+	"github.com/rs/cors"
 	"github.com/ssoready/conf"
 )
 
@@ -225,6 +226,8 @@ func main() {
 	serve := projectid.NewHttpHandler(mux)
 	// Use the slogcorrelation.NewHandler to add correlation IDs to the request
 	serve = slogcorrelation.NewHandler(serve)
+	// Add CORS headers
+	serve = cors.AllowAll().Handler(serve)
 
 	// Serve the services
 	slog.Info("serve")

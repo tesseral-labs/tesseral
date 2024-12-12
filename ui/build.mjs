@@ -1,6 +1,6 @@
-import { configDotenv } from 'dotenv'
 import * as esbuild from 'esbuild'
 import { replace } from 'esbuild-plugin-replace'
+import { configDotenv } from 'dotenv'
 
 const UI_BUILD_IS_DEV = process.env.UI_BUILD_IS_DEV === '1'
 

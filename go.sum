@@ -108,6 +108,8 @@ github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZb
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/rogpeppe/go-internal v1.13.1 h1:KvO1DLK/DRN07sQ1LQKScxyZJuNnedQ5/wKSR38lUII=
 github.com/rogpeppe/go-internal v1.13.1/go.mod h1:uMEvuHeurkdAXX61udpOXGD/AzZDWNMNyH2VO9fmH0o=
+github.com/rs/cors v1.11.1 h1:eU3gRzXLRK57F5rKMGMZURNdIG4EoAmX8k94r9wXWHA=
+github.com/rs/cors v1.11.1/go.mod h1:XyqrcTp5zjWr1wsJ8PIRZssZ8b/WMcMf71DJnit4EMU=
 github.com/ssoready/conf v0.0.0-20240508183332-dbc356674c9e h1:HGv623enEZ6punSNtGN6b3OeBwVBMpMnYie2xk9HlnE=
 github.com/ssoready/conf v0.0.0-20240508183332-dbc356674c9e/go.mod h1:oOONPDIKXlG7GzuEei63WLmLAgmeyNTxQgo44sybMrQ=
 github.com/ssoready/prettyuuid v0.0.0-20241023163822-285da46017b3 h1:nyUOgLJuQcc7OEHpnk6RxDbK6R4rIKjFZH4aYxi1LzU=

@@ -21,15 +21,11 @@ plugins:
     out: internal/frontend/gen
     opt: paths=source_relative
   - local: protoc-gen-es
-    out: app/src/gen
-    opt: target=ts
-  - local: protoc-gen-connect-query
+    include_imports: true
     out: app/src/gen
     opt: target=ts
   - local: protoc-gen-es
-    out: ui/src/gen
-    opt: target=ts
-  - local: protoc-gen-connect-query
+    include_imports: true
     out: ui/src/gen
     opt: target=ts
   - remote: buf.build/community/google-gnostic-openapi
