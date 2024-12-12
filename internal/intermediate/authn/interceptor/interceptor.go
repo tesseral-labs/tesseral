@@ -3,7 +3,6 @@ package intermediateinterceptor
 import (
 	"context"
 	"errors"
-	"log/slog"
 	"strings"
 
 	"connectrpc.com/connect"
@@ -33,21 +32,15 @@ func New(s *store.Store) connect.UnaryInterceptorFunc {
 				return nil, connect.NewError(connect.CodeUnauthenticated, ErrAuthorizationHeaderRequired)
 			}
 
-			slog.Info("intermediateinterceptor", "authorization", authorization)
-
 			secretValue, ok := strings.CutPrefix(authorization, "Bearer ")
 			if !ok {
 				return nil, connect.NewError(connect.CodeUnauthenticated, nil)
 			}
 
-			slog.Info("intermediateinterceptor", "secretValue", secretValue)
-
 			intermediateSession, err := s.GetIntermediateSessionByToken(ctx, secretValue)
 			if err != nil {
 				return nil, connect.NewError(connect.CodeUnauthenticated, err)
 			}
-
-			slog.Info("intermediateinterceptor", "intermediateSession", intermediateSession)
 
 			ctx = authn.NewContext(ctx, intermediateSession)
 			return next(ctx, req)

@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { Title } from '@/components/Title'
+
 const OrganizationsPage = () => {
   return (
     <div>

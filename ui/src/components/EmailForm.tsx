@@ -1,12 +1,13 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router'
 import { useMutation } from '@connectrpc/connect-query'
 
+import { setIntermediateSessionToken } from '@/auth'
 import { Button } from './ui/button'
 import { signInWithEmail } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
-import { setIntermediateSessionToken } from '@/auth'
-import { PROJECT_ID } from '@/config'
 
 const EmailForm = () => {
+  const navigate = useNavigate()
   const signInWithEmailMutation = useMutation(signInWithEmail)
 
   const [email, setEmail] = useState<string>('')
@@ -31,7 +32,10 @@ const EmailForm = () => {
       // Check if a challenge is required
       if (challengeId) {
         // redirect to challenge page
-        console.log(`This is where we would redirect to the challenge page`)
+        navigate(`/verify-email?challengeId=${challengeId}`)
+      } else {
+        // redirect to organizations page
+        navigate('/organizations')
       }
     } catch (error) {
       console.error(error)
