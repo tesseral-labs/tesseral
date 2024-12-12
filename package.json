@@ -6,9 +6,8 @@
   "author": "Blake Williams <blake.williams@ssoready.com>",
   "license": "MIT",
   "devDependencies": {
-    "@bufbuild/buf": "^1.46.0",
-    "@bufbuild/protoc-gen-es": "^1.10.0",
-    "@connectrpc/protoc-gen-connect-es": "^1.6.1",
-    "@connectrpc/protoc-gen-connect-query": "^1.4.2"
+    "@bufbuild/buf": "^1.47.2",
+    "@bufbuild/protoc-gen-es": "^2.2.3",
+    "@connectrpc/protoc-gen-connect-query": "^2.0.0"
   }
 }
