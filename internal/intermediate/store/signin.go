@@ -3,7 +3,6 @@ package store
 import (
 	"context"
 	"crypto/sha256"
-	"errors"
 	"log/slog"
 	"time"
 
@@ -26,64 +25,54 @@ func (s *Store) SignInWithEmail(
 	}
 	defer rollback()
 
-	users, err := q.ListUsersByEmail(ctx, req.Email)
+	token := uuid.New()
+
+	// Send a verification email then issue an intermediate session,
+	// so the user can verify their email address and create an organization
+
+	expiresAt := time.Now().Add(15 * time.Minute)
+	tokenSha256 := sha256.Sum256(token[:])
+
+	intermediateSession, err := q.CreateIntermediateSession(ctx, queries.CreateIntermediateSessionParams{
+		ID:          uuid.New(),
+		ProjectID:   projectID,
+		Email:       &req.Email,
+		ExpireTime:  &expiresAt,
+		TokenSha256: tokenSha256[:],
+	})
 	if err != nil {
 		return nil, err
 	}
 
-	token := uuid.New()
-
-	if users != nil {
-		// TODO: Implement factor checking before issuing a session
-		panic(errors.New("not implemented"))
-	} else {
-		// Send a verification email then issue an intermediate session,
-		// so the user can verify their email address and create an organization
-
-		expiresAt := time.Now().Add(15 * time.Minute)
-		tokenSha256 := sha256.Sum256(token[:])
-
-		intermediateSession, err := q.CreateIntermediateSession(ctx, queries.CreateIntermediateSessionParams{
-			ID:          uuid.New(),
-			ProjectID:   projectID,
-			Email:       &req.Email,
-			ExpireTime:  &expiresAt,
-			TokenSha256: tokenSha256[:],
-		})
-		if err != nil {
-			return nil, err
-		}
-
-		// Create a new secret token for the challenge
-		secretToken, err := generateSecretToken()
-		if err != nil {
-			return nil, err
-		}
-		secretTokenSha256 := sha256.Sum256([]byte(secretToken))
-
-		// TODO: Send the secret token to the user's email address
-
-		evc, err := q.CreateEmailVerificationChallenge(ctx, queries.CreateEmailVerificationChallengeParams{
-			ID:                    uuid.New(),
-			ChallengeSha256:       secretTokenSha256[:],
-			ExpireTime:            &expiresAt,
-			IntermediateSessionID: intermediateSession.ID,
-			ProjectID:             projectID,
-		})
-		if err != nil {
-			return nil, err
-		}
-
-		// TODO: Remove this log line and replace with email sending
-		slog.Info("SignInWithEmail", "challenge", secretToken)
-
-		if err := commit(); err != nil {
-			return nil, err
-		}
-
-		return &intermediatev1.SignInWithEmailResponse{
-			IntermediateSessionToken: idformat.IntermediateSessionToken.Format(token),
-			ChallengeId:              idformat.EmailVerificationChallenge.Format(evc.ID),
-		}, nil
+	// Create a new secret token for the challenge
+	secretToken, err := generateSecretToken()
+	if err != nil {
+		return nil, err
 	}
+	secretTokenSha256 := sha256.Sum256([]byte(secretToken))
+
+	// TODO: Send the secret token to the user's email address
+
+	evc, err := q.CreateEmailVerificationChallenge(ctx, queries.CreateEmailVerificationChallengeParams{
+		ID:                    uuid.New(),
+		ChallengeSha256:       secretTokenSha256[:],
+		ExpireTime:            &expiresAt,
+		IntermediateSessionID: intermediateSession.ID,
+		ProjectID:             projectID,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	// TODO: Remove this log line and replace with email sending
+	slog.Info("SignInWithEmail", "challenge", secretToken)
+
+	if err := commit(); err != nil {
+		return nil, err
+	}
+
+	return &intermediatev1.SignInWithEmailResponse{
+		IntermediateSessionToken: idformat.IntermediateSessionToken.Format(token),
+		ChallengeId:              idformat.EmailVerificationChallenge.Format(evc.ID),
+	}, nil
 }
