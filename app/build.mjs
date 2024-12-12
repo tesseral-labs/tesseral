@@ -10,15 +10,6 @@ if (APP_BUILD_IS_DEV) {
   })
 }
 
-const define = {
-  global: 'window',
-  ...Object.fromEntries(
-    Object.entries(process.env)
-      .filter(([k, _v]) => k.startsWith('APP_'))
-      .map(([k, v]) => [`process.env.${k}`, JSON.stringify(v)]),
-  ),
-}
-
 const context = await esbuild.context({
   entryPoints: ['./src'],
   outfile: './public/index.js',
@@ -26,12 +17,11 @@ const context = await esbuild.context({
   bundle: true,
   plugins: [
     replace({
-      __API_URL__: process.env.APP_API_URL,
+      __REPLACED_BY_ESBUILD_API_URL__: process.env.APP_API_URL,
     }),
   ],
   sourcemap: true,
   target: ['chrome58', 'firefox57', 'safari11', 'edge18'],
-  define,
 })
 
 if (APP_BUILD_IS_DEV) {

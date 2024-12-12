@@ -7,7 +7,6 @@ import { TransportProvider } from '@connectrpc/connect-query'
 import { createConnectTransport } from '@connectrpc/connect-web'
 
 import { getIntermediateSessionToken } from './auth'
-import { ConfigProvider, useConfig } from './config'
 
 import LoginPage from '@/pages/LoginPage'
 import NotFoundPage from '@/pages/NotFound'
@@ -15,12 +14,11 @@ import OrganizationsPage from '@/pages/OrganizationsPage'
 import Page from './components/Page'
 import EmailVerificationPage from './pages/EmailVerificationPage'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { API_URL } from './config'
 
 const queryClient = new QueryClient()
 
 function useTransport(): Transport {
-  const { API_URL } = useConfig()
-
   return createConnectTransport({
     baseUrl: API_URL,
     interceptors: [
@@ -58,11 +56,7 @@ const AppWithRoutes: FC = () => {
 }
 
 const App: FC = () => {
-  return (
-    <ConfigProvider>
-      <AppWithRoutes />
-    </ConfigProvider>
-  )
+  return <AppWithRoutes />
 }
 
 export default App

@@ -10,24 +10,14 @@ if (UI_BUILD_IS_DEV) {
   })
 }
 
-const define = {
-  global: 'window',
-  ...Object.fromEntries(
-    Object.entries(process.env)
-      .filter(([k, _v]) => k.startsWith('APP_'))
-      .map(([k, v]) => [`process.env.${k}`, JSON.stringify(v)]),
-  ),
-}
-
 const context = await esbuild.context({
   bundle: true,
-  define,
   entryPoints: ['./src'],
   minify: !UI_BUILD_IS_DEV,
   outfile: './public/index.js',
   plugins: [
     replace({
-      __API_URL__: process.env.UI_API_URL,
+      __REPLACED_BY_ESBUILD_API_URL__: process.env.UI_API_URL,
     }),
   ],
   sourcemap: true,
