@@ -198,10 +198,10 @@ func main() {
 		}),
 	}
 
-	connect := http.NewServeMux()
-	connect.Handle(backendConnectPath, backendConnectHandler)
-	connect.Handle(frontendConnectPath, frontendConnectHandler)
-	connect.Handle(intermediateConnectPath, intermediateConnectHandler)
+	connectMux := http.NewServeMux()
+	connectMux.Handle(backendConnectPath, backendConnectHandler)
+	connectMux.Handle(frontendConnectPath, frontendConnectHandler)
+	connectMux.Handle(intermediateConnectPath, intermediateConnectHandler)
 
 	// Register health checks
 	mux := http.NewServeMux()
@@ -211,7 +211,7 @@ func main() {
 	}))
 
 	// Register the connect service
-	mux.Handle("/internal/connect/", http.StripPrefix("/internal/connect", connect))
+	mux.Handle("/internal/connect/", http.StripPrefix("/internal/connect", connectMux))
 
 	// Register service transcoders
 	mux.Handle("/backend/v1/", backendTranscoder)
