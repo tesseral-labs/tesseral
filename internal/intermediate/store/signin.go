@@ -87,27 +87,3 @@ func (s *Store) SignInWithEmail(
 		}, nil
 	}
 }
-
-func (s *Store) shouldVerifyEmail(ctx context.Context, projectID uuid.UUID, email string, googleUserID string, microsoftUserID string) (bool, error) {
-	_, q, _, rollback, err := s.tx(ctx)
-	if err != nil {
-		return false, err
-	}
-	defer rollback()
-
-	verifiedEmails, err := q.ListVerifiedEmails(ctx, queries.ListVerifiedEmailsParams{
-		ProjectID:       projectID,
-		Email:           email,
-		GoogleUserID:    &googleUserID,
-		MicrosoftUserID: &microsoftUserID,
-	})
-	if err != nil {
-		return false, err
-	}
-
-	if len(verifiedEmails) == 0 {
-		return true, nil
-	} else {
-		return false, nil
-	}
-}
