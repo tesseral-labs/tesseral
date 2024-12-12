@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
+	"log/slog"
 
 	"connectrpc.com/connect"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
@@ -12,6 +13,8 @@ func (s *Service) SignInWithEmail(
 	ctx context.Context,
 	req *connect.Request[intermediatev1.SignInWithEmailRequest],
 ) (*connect.Response[intermediatev1.SignInWithEmailResponse], error) {
+	slog.InfoContext(ctx, "sign in with email", "msg", req.Msg)
+
 	res, err := s.Store.SignInWithEmail(&ctx, req.Msg)
 	if err != nil {
 		return nil, fmt.Errorf("store: %w", err)

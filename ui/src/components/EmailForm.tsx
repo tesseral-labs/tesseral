@@ -4,6 +4,7 @@ import { useMutation } from '@connectrpc/connect-query'
 import { Button } from './ui/button'
 import { signInWithEmail } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
 import { setIntermediateSessionToken } from '@/auth'
+import { PROJECT_ID } from '@/config'
 
 const EmailForm = () => {
   const signInWithEmailMutation = useMutation(signInWithEmail)

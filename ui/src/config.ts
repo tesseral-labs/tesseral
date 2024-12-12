@@ -1,1 +1,2 @@
 export const API_URL = '__REPLACED_BY_ESBUILD_API_URL__'
+export const PROJECT_ID = '__REPLACED_BY_ESBUILD_PROJECT_ID__'

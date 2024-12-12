@@ -10,6 +10,9 @@ if (UI_BUILD_IS_DEV) {
   })
 }
 
+console.log(process.env.UI_API_URL)
+console.log(process.env.UI_PROJECT_ID)
+
 const context = await esbuild.context({
   bundle: true,
   entryPoints: ['./src'],
@@ -18,6 +21,7 @@ const context = await esbuild.context({
   plugins: [
     replace({
       __REPLACED_BY_ESBUILD_API_URL__: process.env.UI_API_URL,
+      __REPLACED_BY_ESBUILD_PROJECT_ID__: process.env.UI_PROJECT_ID,
     }),
   ],
   sourcemap: true,

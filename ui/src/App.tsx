@@ -14,19 +14,21 @@ import OrganizationsPage from '@/pages/OrganizationsPage'
 import Page from './components/Page'
 import EmailVerificationPage from './pages/EmailVerificationPage'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { API_URL } from './config'
+import { API_URL, PROJECT_ID } from './config'
 
 const queryClient = new QueryClient()
 
 function useTransport(): Transport {
   return createConnectTransport({
-    baseUrl: API_URL,
+    baseUrl: `${API_URL}/internal/connect`,
     interceptors: [
       (next) => async (req) => {
         req.header.set(
           'Authorization',
-          `Bearer ${getIntermediateSessionToken() ?? ''}`,
+          `Bearer ${getIntermediateSessionToken() ?? 'NO_INTERMEDIATE_SESSION_TOKEN'}`,
         )
+        req.header.set('X-TODO-OpenAuth-Project-ID', PROJECT_ID)
+
         return next(req)
       },
     ],

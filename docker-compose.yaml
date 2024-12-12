@@ -60,6 +60,7 @@ services:
     environment:
       UI_API_URL: ${UI_API_URL}
       UI_BUILD_IS_DEV: 1
+      UI_PROJECT_ID: ${UI_PROJECT_ID}
     expose:
       - 3002
     image: node:22.11.0

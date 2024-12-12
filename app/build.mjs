@@ -11,10 +11,10 @@ if (APP_BUILD_IS_DEV) {
 }
 
 const context = await esbuild.context({
-  entryPoints: ['./src'],
-  outfile: './public/index.js',
-  minify: !APP_BUILD_IS_DEV,
   bundle: true,
+  entryPoints: ['./src'],
+  minify: !APP_BUILD_IS_DEV,
+  outfile: './public/index.js',
   plugins: [
     replace({
       __REPLACED_BY_ESBUILD_API_URL__: process.env.APP_API_URL,
