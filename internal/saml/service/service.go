@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/openauth/openauth/internal/saml/internal/emailaddr"
+	"github.com/openauth/openauth/internal/emailaddr"
 	"github.com/openauth/openauth/internal/saml/internal/saml"
 	"github.com/openauth/openauth/internal/saml/store"
 )
