@@ -12,7 +12,7 @@ func (s *Service) SignInWithEmail(
 	ctx context.Context,
 	req *connect.Request[intermediatev1.SignInWithEmailRequest],
 ) (*connect.Response[intermediatev1.SignInWithEmailResponse], error) {
-	res, err := s.Store.SignInWithEmail(&ctx, req.Msg)
+	res, err := s.Store.SignInWithEmail(ctx, req.Msg)
 	if err != nil {
 		return nil, fmt.Errorf("store: %w", err)
 	}

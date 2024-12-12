@@ -42,6 +42,7 @@ import (
 	"github.com/openauth/openauth/internal/slogcorrelation"
 	"github.com/openauth/openauth/internal/store/idformat"
 	keyManagementService "github.com/openauth/openauth/internal/store/kms"
+	"github.com/rs/cors"
 	"github.com/ssoready/conf"
 )
 
@@ -197,12 +198,20 @@ func main() {
 		}),
 	}
 
+	connectMux := http.NewServeMux()
+	connectMux.Handle(backendConnectPath, backendConnectHandler)
+	connectMux.Handle(frontendConnectPath, frontendConnectHandler)
+	connectMux.Handle(intermediateConnectPath, intermediateConnectHandler)
+
 	// Register health checks
 	mux := http.NewServeMux()
 	mux.Handle("/internal/health", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		slog.InfoContext(r.Context(), "health")
 		w.WriteHeader(http.StatusOK)
 	}))
+
+	// Register the connect service
+	mux.Handle("/internal/connect/", http.StripPrefix("/internal/connect", connectMux))
 
 	// Register service transcoders
 	mux.Handle("/backend/v1/", backendTranscoder)
@@ -225,6 +234,8 @@ func main() {
 	serve := projectid.NewHttpHandler(mux)
 	// Use the slogcorrelation.NewHandler to add correlation IDs to the request
 	serve = slogcorrelation.NewHandler(serve)
+	// Add CORS headers
+	serve = cors.AllowAll().Handler(serve)
 
 	// Serve the services
 	slog.Info("serve")
