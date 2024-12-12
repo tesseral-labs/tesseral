@@ -20,11 +20,6 @@ func (s *Store) SignInWithEmail(
 ) (*intermediatev1.SignInWithEmailResponse, error) {
 	projectID := projectid.ProjectID(ctx)
 
-	shouldVerify, err := s.shouldVerifyEmail(ctx, projectID, req.Email, "", "")
-	if err != nil {
-		return nil, err
-	}
-
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -59,37 +54,28 @@ func (s *Store) SignInWithEmail(
 			return nil, err
 		}
 
-		evcid := ""
-
-		if shouldVerify {
-			// Create a new secret token for the challenge
-			secretToken, err := generateSecretToken()
-			if err != nil {
-				return nil, err
-			}
-			secretTokenSha256 := sha256.Sum256([]byte(secretToken))
-
-			// TODO: Send the secret token to the user's email address
-
-			expiresAt := time.Now().Add(15 * time.Minute)
-
-			evc, err := q.CreateEmailVerificationChallenge(ctx, queries.CreateEmailVerificationChallengeParams{
-				ID:                    uuid.New(),
-				ChallengeSha256:       secretTokenSha256[:],
-				ExpireTime:            &expiresAt,
-				IntermediateSessionID: intermediateSession.ID,
-				ProjectID:             projectID,
-			})
-			if err != nil {
-				return nil, err
-			}
-
-			evcID := idformat.EmailVerificationChallenge.Format(evc.ID)
-			evcid = evcID
-
-			// TODO: Remove this log line and replace with email sending
-			slog.Info("SignInWithEmail", "challenge", secretToken)
+		// Create a new secret token for the challenge
+		secretToken, err := generateSecretToken()
+		if err != nil {
+			return nil, err
 		}
+		secretTokenSha256 := sha256.Sum256([]byte(secretToken))
+
+		// TODO: Send the secret token to the user's email address
+
+		evc, err := q.CreateEmailVerificationChallenge(ctx, queries.CreateEmailVerificationChallengeParams{
+			ID:                    uuid.New(),
+			ChallengeSha256:       secretTokenSha256[:],
+			ExpireTime:            &expiresAt,
+			IntermediateSessionID: intermediateSession.ID,
+			ProjectID:             projectID,
+		})
+		if err != nil {
+			return nil, err
+		}
+
+		// TODO: Remove this log line and replace with email sending
+		slog.Info("SignInWithEmail", "challenge", secretToken)
 
 		if err := commit(); err != nil {
 			return nil, err
@@ -97,7 +83,7 @@ func (s *Store) SignInWithEmail(
 
 		return &intermediatev1.SignInWithEmailResponse{
 			IntermediateSessionToken: idformat.IntermediateSessionToken.Format(token),
-			ChallengeId:              evcid,
+			ChallengeId:              idformat.EmailVerificationChallenge.Format(evc.ID),
 		}, nil
 	}
 }

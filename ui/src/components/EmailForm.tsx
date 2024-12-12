@@ -29,14 +29,8 @@ const EmailForm = () => {
       // set the intermediate sessionToken
       setIntermediateSessionToken(intermediateSessionToken)
 
-      // Check if a challenge is required
-      if (challengeId) {
-        // redirect to challenge page
-        navigate(`/verify-email?challengeId=${challengeId}`)
-      } else {
-        // redirect to organizations page
-        navigate('/organizations')
-      }
+      // redirect to challenge page
+      navigate(`/verify-email?challengeId=${challengeId}`)
     } catch (error) {
       console.error(error)
     }
