@@ -22,9 +22,7 @@ const EmailVerificationPage = () => {
 
   const [challengeCode, setChallengeCode] = useState<string>('')
   const [challengeId, setChallengeId] = useState<string>('')
-  const [maskedEmail, setMaskedEmail] = useState<string>('')
 
-  const whoamiQuery = useQuery(whoami)
   const verifyEmailChallengeMutation = useMutation(verifyEmailChallenge)
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -43,17 +41,6 @@ const EmailVerificationPage = () => {
       console.error(error)
     }
   }
-
-  const maskEmailString = (email: string): string => {
-    const parts = email.split('@')
-    return `${parts[0].slice(0, 2)}***@${parts[1]}`
-  }
-
-  useEffect(() => {
-    if (whoamiQuery.data) {
-      setMaskedEmail(maskEmailString(whoamiQuery.data.email))
-    }
-  }, [whoamiQuery])
 
   useEffect(() => {
     ;(async () => {
@@ -80,7 +67,7 @@ const EmailVerificationPage = () => {
         </CardHeader>
         <CardContent className="flex flex-col items-center justify-center w-full">
           <p className="text-center mb-3">
-            Please enter the verification code sent to {maskedEmail} below.
+            Please enter the verification code sent to your email address.
           </p>
           <form className="flex flex-col items-center" onSubmit={handleSubmit}>
             <input
