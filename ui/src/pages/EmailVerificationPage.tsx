@@ -24,7 +24,7 @@ const EmailVerificationPage = () => {
   const [challengeId, setChallengeId] = useState<string>('')
   const [email, setEmail] = useState<string>('')
 
-  const whoamiQuery = useQuery(whoami)
+  const { data: whoamiRes } = useQuery(whoami)
   const verifyEmailChallengeMutation = useMutation(verifyEmailChallenge)
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -43,12 +43,6 @@ const EmailVerificationPage = () => {
       console.error(error)
     }
   }
-
-  useEffect(() => {
-    if (whoamiQuery.data) {
-      setEmail(whoamiQuery.data.email)
-    }
-  }, [whoamiQuery])
 
   useEffect(() => {
     ;(async () => {
@@ -75,7 +69,8 @@ const EmailVerificationPage = () => {
         </CardHeader>
         <CardContent className="flex flex-col items-center justify-center w-full">
           <p className="text-center mb-3">
-            Please enter the verification code sent to <b>{email}</b> below.
+            Please enter the verification code sent to <b>{whoamiRes?.email}</b>{' '}
+            below.
           </p>
           <form className="flex flex-col items-center" onSubmit={handleSubmit}>
             <input
