@@ -145,9 +145,7 @@ func (s *Service) updateUser(w http.ResponseWriter, r *http.Request) error {
 		return nil
 	}
 
-	reqUser.ID = r.PathValue("userID")
-
-	user, err := s.Store.UpdateUser(ctx, &reqUser)
+	user, err := s.Store.UpdateUser(ctx, r.PathValue("userID"), reqUser)
 	if err != nil {
 		var errBadDomain *store.BadEmailError
 		if errors.As(err, &errBadDomain) {

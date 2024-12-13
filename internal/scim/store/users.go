@@ -26,14 +26,22 @@ type ListUsersRequest struct {
 type ListUsersResponse struct {
 	Schemas      []string `json:"schemas,omitempty"`
 	TotalResults int      `json:"totalResults"`
-	Users        []*User  `json:"Resources"`
+	Users        []User   `json:"Resources"`
 }
 
-type User struct {
+// User is a SCIM representation of a user. It is suitable for JSON
+// serialization.
+type User any
+
+// parsedUser is our preferred representation of SCIM users.
+//
+// Most IDPs will sometimes use different representations of users. Entra, in
+// particular, sends "active" as a string instead of a boolean.
+type parsedUser struct {
 	Schemas  []string `json:"schemas,omitempty"`
 	ID       string   `json:"id"`
-	Active   bool     `json:"active"`
 	UserName string   `json:"userName"`
+	Active   bool     `json:"active"`
 }
 
 func (s *Store) ListUsers(ctx context.Context, req *ListUsersRequest) (*ListUsersResponse, error) {
@@ -53,7 +61,7 @@ func (s *Store) ListUsers(ctx context.Context, req *ListUsersRequest) (*ListUser
 				return &ListUsersResponse{
 					Schemas:      []string{"urn:ietf:params:scim:schemas:core:2.0:User"},
 					TotalResults: 0,
-					Users:        []*User{},
+					Users:        []User{},
 				}, nil
 			}
 			return nil, fmt.Errorf("get user by email: %w", err)
@@ -62,7 +70,7 @@ func (s *Store) ListUsers(ctx context.Context, req *ListUsersRequest) (*ListUser
 		return &ListUsersResponse{
 			Schemas:      []string{"urn:ietf:params:scim:schemas:core:2.0:User"},
 			TotalResults: 1,
-			Users:        []*User{parseUser(false, qUser)},
+			Users:        []User{formatUser(false, qUser)},
 		}, nil
 	}
 
@@ -90,9 +98,9 @@ func (s *Store) ListUsers(ctx context.Context, req *ListUsersRequest) (*ListUser
 		return nil, fmt.Errorf("list users: %w", err)
 	}
 
-	users := []*User{} // intentionally not initialized as nil to avoid a JSON `null`
+	users := []User{} // intentionally not initialized as nil to avoid a JSON `null`
 	for _, qUser := range qUsers {
-		users = append(users, parseUser(false, qUser))
+		users = append(users, formatUser(false, qUser))
 	}
 
 	return &ListUsersResponse{
@@ -102,7 +110,7 @@ func (s *Store) ListUsers(ctx context.Context, req *ListUsersRequest) (*ListUser
 	}, nil
 }
 
-func (s *Store) GetUser(ctx context.Context, id string) (*User, error) {
+func (s *Store) GetUser(ctx context.Context, id string) (User, error) {
 	_, q, _, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -122,24 +130,29 @@ func (s *Store) GetUser(ctx context.Context, id string) (*User, error) {
 		return nil, fmt.Errorf("get user by id: %w", err)
 	}
 
-	return parseUser(true, qUser), nil
+	return formatUser(true, qUser), nil
 }
 
-func (s *Store) CreateUser(ctx context.Context, req *User) (*User, error) {
+func (s *Store) CreateUser(ctx context.Context, user User) (User, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
 	defer rollback()
 
-	if err := s.validateEmailDomain(ctx, q, req.UserName); err != nil {
+	parsed, err := parseUser(user)
+	if err != nil {
+		return nil, fmt.Errorf("parse user: %w", err)
+	}
+
+	if err := s.validateEmailDomain(ctx, q, parsed.UserName); err != nil {
 		return nil, fmt.Errorf("validate email domain: %w", err)
 	}
 
 	qUser, err := q.CreateUser(ctx, queries.CreateUserParams{
 		ID:             uuid.New(),
 		OrganizationID: authn.OrganizationID(ctx),
-		Email:          req.UserName,
+		Email:          parsed.UserName,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("create user: %w", err)
@@ -149,28 +162,33 @@ func (s *Store) CreateUser(ctx context.Context, req *User) (*User, error) {
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return parseUser(true, qUser), nil
+	return formatUser(true, qUser), nil
 }
 
-func (s *Store) UpdateUser(ctx context.Context, req *User) (*User, error) {
+func (s *Store) UpdateUser(ctx context.Context, id string, user User) (User, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
 	defer rollback()
 
-	userID, err := idformat.User.Parse(req.ID)
+	userID, err := idformat.User.Parse(id)
 	if err != nil {
 		return nil, fmt.Errorf("parse user id: %w", err)
 	}
 
-	if err := s.validateEmailDomain(ctx, q, req.UserName); err != nil {
+	parsed, err := parseUser(user)
+	if err != nil {
+		return nil, fmt.Errorf("parse user: %w", err)
+	}
+
+	if err := s.validateEmailDomain(ctx, q, parsed.UserName); err != nil {
 		return nil, fmt.Errorf("validate email domain: %w", err)
 	}
 
 	// todo do we care about this bumping deactivate_time any time an update happens to the user?
 	var deactivateTime *time.Time
-	if !req.Active {
+	if !parsed.Active {
 		now := time.Now()
 		deactivateTime = &now
 	}
@@ -179,7 +197,7 @@ func (s *Store) UpdateUser(ctx context.Context, req *User) (*User, error) {
 		OrganizationID: authn.OrganizationID(ctx),
 		ID:             userID,
 		DeactivateTime: deactivateTime,
-		Email:          req.UserName,
+		Email:          parsed.UserName,
 	})
 	if err != nil {
 		var pgxErr *pgconn.PgError
@@ -199,20 +217,52 @@ func (s *Store) UpdateUser(ctx context.Context, req *User) (*User, error) {
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return parseUser(true, qUser), nil
+	return formatUser(true, qUser), nil
 }
 
-func parseUser(withSchema bool, qUser queries.User) *User {
+func parseUser(user User) (*parsedUser, error) {
+	m, ok := user.(map[string]any)
+	if !ok {
+		return nil, fmt.Errorf("users must be objects")
+	}
+
+	userName, _ := m["userName"].(string)
+	if userName == "" {
+		return nil, fmt.Errorf("userName is required")
+	}
+
+	var active bool
+	if a, ok := m["active"].(bool); ok {
+		active = a
+	} else if a, ok := m["active"].(string); ok {
+		if a == "true" {
+			active = true
+		} else if a == "false" {
+			active = false
+		} else {
+			return nil, fmt.Errorf("active must be a boolean")
+		}
+	} else {
+		return nil, fmt.Errorf("active must be a boolean")
+	}
+
+	return &parsedUser{
+		UserName: userName,
+		Active:   active,
+	}, nil
+}
+
+func formatUser(withSchema bool, qUser queries.User) User {
 	var schemas []string
 	if withSchema {
 		schemas = []string{"urn:ietf:params:scim:schemas:core:2.0:User"}
 	}
 
-	return &User{
+	return parsedUser{
 		Schemas:  schemas,
 		ID:       idformat.User.Format(qUser.ID),
-		Active:   qUser.DeactivateTime == nil,
 		UserName: qUser.Email,
+		Active:   qUser.DeactivateTime == nil,
 	}
 }
 
