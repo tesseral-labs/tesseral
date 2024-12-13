@@ -41,6 +41,7 @@ const LoginPage = () => {
     if (response.isError) {
       // TODO: Handle errors on screen once an error handling strategy is in place.
       console.error(response.error)
+      return
     }
 
     if (response.data) {
