@@ -56,7 +56,7 @@ func (s *Store) Whoami(ctx context.Context, req *intermediatev1.WhoamiRequest) (
 	defer rollback()
 
 	intermediateSession := authn.IntermediateSession(ctx)
-	var isEmailVerified = false
+	var isEmailVerified bool
 
 	if intermediateSession.GoogleUserId != "" {
 		// Check if the google user id is verified
