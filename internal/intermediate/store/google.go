@@ -6,6 +6,7 @@ import (
 	"crypto/sha256"
 	"errors"
 	"fmt"
+	"log/slog"
 	"time"
 
 	"connectrpc.com/connect"
@@ -158,6 +159,9 @@ func (s *Store) RedeemGoogleOAuthCode(ctx context.Context, req *intermediatev1.R
 		}
 
 		evcID = evc.ID
+
+		// TODO: Send the secret token to the user's email address
+		slog.InfoContext(ctx, "RedeemGoogleOAuthCode", "challenge", secretToken)
 	}
 
 	if err := commit(); err != nil {
