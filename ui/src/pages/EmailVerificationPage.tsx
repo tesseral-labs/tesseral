@@ -84,7 +84,7 @@ const EmailVerificationPage = () => {
               className="text-sm rounded border border-border focus:border-primary w-[clamp(240px,50%,100%)] mb-2"
               type="submit"
             >
-              Submit
+              Verify Email Address
             </Button>
           </form>
         </CardContent>
