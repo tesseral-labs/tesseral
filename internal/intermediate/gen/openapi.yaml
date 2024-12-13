@@ -336,6 +336,8 @@ components:
             properties:
                 url:
                     type: string
+                intermediateSessionToken:
+                    type: string
         GetMicrosoftOAuthRedirectURLResponse:
             type: object
             properties:

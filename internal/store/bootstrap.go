@@ -15,6 +15,11 @@ import (
 	"github.com/openauth/openauth/internal/store/queries"
 )
 
+type CreateDogfoodProjectParams struct {
+	GoogleOAuthClientID     string
+	GoogleOAuthClientSecret string
+}
+
 type CreateDogfoodProjectResponse struct {
 	DogfoodProjectID                   string
 	BootstrapUserEmail                 string
@@ -24,7 +29,7 @@ type CreateDogfoodProjectResponse struct {
 }
 
 // CreateDogfoodProject creates the dogfood project.
-func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProjectResponse, error) {
+func (s *Store) CreateDogfoodProject(ctx context.Context, params *CreateDogfoodProjectParams) (*CreateDogfoodProjectResponse, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -46,10 +51,22 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 	dogfoodProjectID := uuid.New()
 	dogfoodOrganizationID := uuid.New()
 
+	goaSecretOutput, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
+		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
+		KeyId:               &s.googleOAuthClientSecretsKMSKeyID,
+		Plaintext:           []byte(params.GoogleOAuthClientSecret),
+	})
+	if err != nil {
+		return nil, fmt.Errorf("encrypt google oauth client secret: %w", err)
+	}
+
 	if _, err := q.CreateProject(ctx, queries.CreateProjectParams{
-		ID:                       dogfoodProjectID,
-		OrganizationID:           nil, // will populate after creating org
-		LogInWithPasswordEnabled: true,
+		ID:                                dogfoodProjectID,
+		OrganizationID:                    nil, // will populate after creating org
+		GoogleOauthClientID:               &params.GoogleOAuthClientID,
+		GoogleOauthClientSecretCiphertext: goaSecretOutput.CipherTextBlob,
+		LogInWithPasswordEnabled:          true,
+		LogInWithGoogleEnabled:            true,
 	}); err != nil {
 		return nil, fmt.Errorf("create dogfood project: %w", err)
 	}

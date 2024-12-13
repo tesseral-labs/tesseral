@@ -31,7 +31,10 @@ func (s *Store) GetIntermediateSessionByToken(ctx context.Context, token string)
 	intermediateSession := &intermediatev1.IntermediateSession{
 		Id:        idformat.IntermediateSession.Format(qIntermediateSession.ID),
 		ProjectId: idformat.Project.Format(qIntermediateSession.ProjectID),
-		Email:     *qIntermediateSession.Email,
+	}
+
+	if qIntermediateSession.Email != nil {
+		intermediateSession.Email = *qIntermediateSession.Email
 	}
 
 	if qIntermediateSession.GoogleUserID != nil {

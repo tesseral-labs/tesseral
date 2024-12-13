@@ -1,3 +1,5 @@
+import React, { useEffect } from 'react'
+
 import EmailForm from '@/components/EmailForm'
 import OAuthButton, { OAuthMethods } from '@/components/OAuthButton'
 import { Title } from '@/components/Title'
@@ -9,9 +11,61 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import TextDivider from '@/components/ui/TextDivider'
-import React from 'react'
+import { useQuery } from '@connectrpc/connect-query'
+
+import { setIntermediateSessionToken } from '@/auth'
+import { getGoogleOAuthRedirectURL } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
 
 const LoginPage = () => {
+  const googleOAuthRedirectUrlQuery = useQuery(getGoogleOAuthRedirectURL)
+
+  const [googleOAuthRedirectUrl, setGoogleOAuthRedirectUrl] = React.useState('')
+
+  const handleGoogleOAuthLogin = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    if (googleOAuthRedirectUrl) {
+      window.location.href = googleOAuthRedirectUrl
+      return
+    }
+
+    const response = await googleOAuthRedirectUrlQuery.refetch()
+
+    if (response.isError) {
+      // TODO: Handle errors on screen once an error handling strategy is in place.
+      console.error(response.error)
+    }
+
+    if (response.data) {
+      setIntermediateSessionToken(response.data.intermediateSessionToken)
+      window.location.href = response.data.url
+    }
+  }
+
+  const handleMicrosoftOAuthLogin = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+  }
+
+  useEffect(() => {
+    ;(async () => {
+      if (googleOAuthRedirectUrlQuery.isError) {
+        // TODO: Handle errors on screen once an error handling strategy is in place.
+        console.error(
+          `Error fetching Google OAuth redirect URL: ${googleOAuthRedirectUrlQuery.error}`,
+        )
+      }
+
+      if (googleOAuthRedirectUrlQuery.data) {
+        setIntermediateSessionToken(
+          googleOAuthRedirectUrlQuery.data.intermediateSessionToken,
+        )
+        setGoogleOAuthRedirectUrl(googleOAuthRedirectUrlQuery.data.url)
+      }
+    })()
+  }, [googleOAuthRedirectUrlQuery])
+
   return (
     <>
       <Title title="Login" />
@@ -26,11 +80,13 @@ const LoginPage = () => {
           <OAuthButton
             className="mb-4 w-[clamp(240px,50%,100%)]"
             method={OAuthMethods.google}
+            onClick={handleGoogleOAuthLogin}
             variant="outline"
           />
           <OAuthButton
             className="w-[clamp(240px,50%,100%)]"
             method={OAuthMethods.microsoft}
+            onClick={handleMicrosoftOAuthLogin}
             variant="outline"
           />
 

@@ -11,8 +11,8 @@ RETURNING
     *;
 
 -- name: CreateProject :one
-INSERT INTO projects (id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled)
-    VALUES ($1, $2, $3, $4, $5)
+INSERT INTO projects (id, organization_id, google_oauth_client_id, google_oauth_client_secret_ciphertext, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
 RETURNING
     *;
 

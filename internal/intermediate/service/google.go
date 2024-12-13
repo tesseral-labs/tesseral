@@ -13,6 +13,9 @@ func (s *Service) GetGoogleOAuthRedirectURL(ctx context.Context, req *connect.Re
 	if err != nil {
 		return nil, fmt.Errorf("store: %w", err)
 	}
+
+	// TODO: In the future, we need to set an intermediate session cookie here
+
 	return connect.NewResponse(res), nil
 }
 
