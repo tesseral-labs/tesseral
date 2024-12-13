@@ -18,6 +18,7 @@ type Store struct {
 	googleOAuthClientSecretsKMSKeyID      string
 	intermediateSessionSigningKeyKMSKeyID string
 	kms                                   *keyManagementService.KeyManagementService
+	microsoftOAuthClientSecretsKMSKeyID   string
 	pageEncoder                           pagetoken.Encoder
 	q                                     *queries.Queries
 	sessionSigningKeyKmsKeyID             string
@@ -29,6 +30,7 @@ type NewStoreParams struct {
 	GoogleOAuthClientSecretsKMSKeyID      string
 	IntermediateSessionSigningKeyKMSKeyID string
 	KMS                                   *keyManagementService.KeyManagementService
+	MicrosoftOAuthClientSecretsKMSKeyID   string
 	PageEncoder                           pagetoken.Encoder
 	SessionSigningKeyKmsKeyID             string
 }
@@ -40,6 +42,7 @@ func New(p NewStoreParams) *Store {
 		googleOAuthClientSecretsKMSKeyID:      p.GoogleOAuthClientSecretsKMSKeyID,
 		intermediateSessionSigningKeyKMSKeyID: p.IntermediateSessionSigningKeyKMSKeyID,
 		kms:                                   p.KMS,
+		microsoftOAuthClientSecretsKMSKeyID:   p.MicrosoftOAuthClientSecretsKMSKeyID,
 		pageEncoder:                           p.PageEncoder,
 		q:                                     queries.New(p.DB),
 		sessionSigningKeyKmsKeyID:             p.SessionSigningKeyKmsKeyID,

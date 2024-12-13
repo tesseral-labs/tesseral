@@ -16,8 +16,10 @@ import (
 )
 
 type CreateDogfoodProjectParams struct {
-	GoogleOAuthClientID     string
-	GoogleOAuthClientSecret string
+	GoogleOAuthClientID        string
+	GoogleOAuthClientSecret    string
+	MicrosoftOAuthClientID     string
+	MicrosoftOAuthClientSecret string
 }
 
 type CreateDogfoodProjectResponse struct {
@@ -60,13 +62,25 @@ func (s *Store) CreateDogfoodProject(ctx context.Context, params *CreateDogfoodP
 		return nil, fmt.Errorf("encrypt google oauth client secret: %w", err)
 	}
 
+	msoaSecretOutput, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
+		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
+		KeyId:               &s.microsoftOAuthClientSecretsKMSKeyID,
+		Plaintext:           []byte(params.MicrosoftOAuthClientSecret),
+	})
+	if err != nil {
+		return nil, fmt.Errorf("encrypt microsoft oauth client secret: %w", err)
+	}
+
 	if _, err := q.CreateProject(ctx, queries.CreateProjectParams{
-		ID:                                dogfoodProjectID,
-		OrganizationID:                    nil, // will populate after creating org
-		GoogleOauthClientID:               &params.GoogleOAuthClientID,
-		GoogleOauthClientSecretCiphertext: goaSecretOutput.CipherTextBlob,
-		LogInWithPasswordEnabled:          true,
-		LogInWithGoogleEnabled:            true,
+		ID:                                   dogfoodProjectID,
+		OrganizationID:                       nil, // will populate after creating org
+		GoogleOauthClientID:                  &params.GoogleOAuthClientID,
+		GoogleOauthClientSecretCiphertext:    goaSecretOutput.CipherTextBlob,
+		LogInWithPasswordEnabled:             true,
+		LogInWithGoogleEnabled:               true,
+		LogInWithMicrosoftEnabled:            true,
+		MicrosoftOauthClientID:               &params.MicrosoftOAuthClientID,
+		MicrosoftOauthClientSecretCiphertext: msoaSecretOutput.CipherTextBlob,
 	}); err != nil {
 		return nil, fmt.Errorf("create dogfood project: %w", err)
 	}

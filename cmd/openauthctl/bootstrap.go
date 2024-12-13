@@ -20,6 +20,9 @@ type bootstrapArgs struct {
 	GoogleOAuthClientSecret            string `cli:"--google-oauth-client-secret"`
 	GoogleOAuthClientSecretKMSKeyID    string `cli:"--google-oauth-client-secret-kms-key-id"`
 	IntermediateSessionSigningKMSKeyID string `cli:"-i,--intermediate-session-kms-key-id"`
+	MicrosoftOAuthClientID             string `cli:"--microsoft-oauth-client-id"`
+	MicrosoftOAuthClientSecret         string `cli:"--microsoft-oauth-client-secret"`
+	MicrosoftOAuthClientSecretKMSKeyID string `cli:"--microsoft-oauth-client-secret-kms-key-id"`
 	SessionSigningKMSKeyID             string `cli:"-s,--session-kms-key-id"`
 }
 
@@ -60,12 +63,15 @@ func bootstrap(ctx context.Context, args bootstrapArgs) error {
 		GoogleOAuthClientSecretsKMSKeyID:      args.GoogleOAuthClientSecretKMSKeyID,
 		IntermediateSessionSigningKeyKMSKeyID: args.IntermediateSessionSigningKMSKeyID,
 		KMS:                                   kms_,
+		MicrosoftOAuthClientSecretsKMSKeyID:   args.MicrosoftOAuthClientSecretKMSKeyID,
 		SessionSigningKeyKmsKeyID:             args.SessionSigningKMSKeyID,
 	})
 
 	res, err := s.CreateDogfoodProject(ctx, &store.CreateDogfoodProjectParams{
-		GoogleOAuthClientID:     args.GoogleOAuthClientID,
-		GoogleOAuthClientSecret: args.GoogleOAuthClientSecret,
+		GoogleOAuthClientID:        args.GoogleOAuthClientID,
+		GoogleOAuthClientSecret:    args.GoogleOAuthClientSecret,
+		MicrosoftOAuthClientID:     args.MicrosoftOAuthClientID,
+		MicrosoftOAuthClientSecret: args.MicrosoftOAuthClientSecret,
 	})
 	if err != nil {
 		return fmt.Errorf("create dogfood project: %w", err)
