@@ -5,6 +5,7 @@ import (
 	"context"
 	"crypto/sha256"
 	"errors"
+	"log/slog"
 	"math/rand/v2"
 	"strconv"
 	"time"
@@ -174,6 +175,9 @@ func (s *Store) IssueEmailVerificationChallenge(ctx context.Context) (*intermedi
 	if err := commit(); err != nil {
 		return nil, err
 	}
+
+	// TODO: Remove this log line and replace with email sending
+	slog.InfoContext(ctx, "IssueEmailVerificationChallenge", "challenge", secretToken)
 
 	return &intermediatev1.IssueEmailVerificationChallengeResponse{
 		EmailVerificationChallengeId: idformat.EmailVerificationChallenge.Format(evc.ID),
