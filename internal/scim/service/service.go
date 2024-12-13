@@ -81,6 +81,16 @@ func (s *Service) getUser(w http.ResponseWriter, r *http.Request) error {
 
 	user, err := s.Store.GetUser(ctx, r.PathValue("userID"))
 	if err != nil {
+		var scimError *store.SCIMError
+		if errors.As(err, &scimError) {
+			w.Header().Set("Content-Type", "application/scim+json")
+			w.WriteHeader(scimError.Status)
+			if err := json.NewEncoder(w).Encode(scimError); err != nil {
+				return fmt.Errorf("write response: %w", err)
+			}
+			return nil
+		}
+
 		return fmt.Errorf("store: %w", err)
 	}
 
@@ -109,7 +119,7 @@ func (s *Service) createUser(w http.ResponseWriter, r *http.Request) error {
 
 	user, err := s.Store.CreateUser(ctx, &reqUser)
 	if err != nil {
-		var errBadDomain *store.BadEmailError
+		var errBadDomain *store.SCIMError
 		if errors.As(err, &errBadDomain) {
 			w.Header().Set("Content-Type", "application/scim+json")
 			w.WriteHeader(http.StatusBadRequest)
@@ -147,7 +157,7 @@ func (s *Service) updateUser(w http.ResponseWriter, r *http.Request) error {
 
 	user, err := s.Store.UpdateUser(ctx, r.PathValue("userID"), reqUser)
 	if err != nil {
-		var errBadDomain *store.BadEmailError
+		var errBadDomain *store.SCIMError
 		if errors.As(err, &errBadDomain) {
 			w.Header().Set("Content-Type", "application/scim+json")
 			w.WriteHeader(http.StatusBadRequest)

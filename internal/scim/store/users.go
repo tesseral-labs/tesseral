@@ -119,7 +119,10 @@ func (s *Store) GetUser(ctx context.Context, id string) (User, error) {
 
 	userID, err := idformat.User.Parse(id)
 	if err != nil {
-		return nil, fmt.Errorf("parse user id: %w", err)
+		return nil, &SCIMError{
+			Status: http.StatusBadRequest,
+			Detail: fmt.Sprintf("invalid user id: %v", err),
+		}
 	}
 
 	qUser, err := q.GetUserByID(ctx, queries.GetUserByIDParams{
@@ -127,6 +130,13 @@ func (s *Store) GetUser(ctx context.Context, id string) (User, error) {
 		ID:             userID,
 	})
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, &SCIMError{
+				Status: http.StatusNotFound,
+				Detail: "user not found",
+			}
+		}
+
 		return nil, fmt.Errorf("get user by id: %w", err)
 	}
 
@@ -203,7 +213,7 @@ func (s *Store) UpdateUser(ctx context.Context, id string, user User) (User, err
 		var pgxErr *pgconn.PgError
 		if errors.As(err, &pgxErr) {
 			if pgxErr.Code == "23505" && pgxErr.ConstraintName == "users_organization_id_email_key" {
-				return nil, &BadEmailError{
+				return nil, &SCIMError{
 					Status: http.StatusBadRequest,
 					Detail: "a user with that email already exists",
 				}
@@ -266,23 +276,20 @@ func formatUser(withSchema bool, qUser queries.User) User {
 	}
 }
 
-// BadEmailError indicates that there was a problem with a SCIM user's email
-// address.
-//
-// Instances of BadEmailError are JSON-serializable SCIM errors.
-type BadEmailError struct {
+// SCIMError is a JSON-serializable SCIM error.
+type SCIMError struct {
 	Status int    `json:"status"`
 	Detail string `json:"detail"`
 }
 
-func (e *BadEmailError) Error() string {
-	return e.Detail
+func (e *SCIMError) Error() string {
+	return fmt.Sprintf("scim error: %d: %s", e.Status, e.Detail)
 }
 
 func (s *Store) validateEmailDomain(ctx context.Context, q *queries.Queries, email string) error {
 	domain, err := emailaddr.Parse(email)
 	if err != nil {
-		return &BadEmailError{
+		return &SCIMError{
 			Status: http.StatusBadRequest,
 			Detail: "userName must be an email address",
 		}
@@ -302,7 +309,7 @@ func (s *Store) validateEmailDomain(ctx context.Context, q *queries.Queries, ema
 	}
 
 	if !domainOk {
-		return &BadEmailError{
+		return &SCIMError{
 			Status: http.StatusBadRequest,
 			Detail: fmt.Sprintf("userName is not from the list of allowed domains: %s", strings.Join(qOrganizationDomains, ", ")),
 		}
