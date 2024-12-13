@@ -8,7 +8,7 @@ import (
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
-func (s *Store) WhoAmI(ctx context.Context, req *frontendv1.WhoAmIRequest) (*frontendv1.WhoAmIResponse, error) {
+func (s *Store) Whoami(ctx context.Context, req *frontendv1.WhoAmIRequest) (*frontendv1.WhoAmIResponse, error) {
 	return &frontendv1.WhoAmIResponse{}, nil
 }
 
