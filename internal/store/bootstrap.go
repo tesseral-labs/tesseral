@@ -15,13 +15,6 @@ import (
 	"github.com/openauth/openauth/internal/store/queries"
 )
 
-type CreateDogfoodProjectParams struct {
-	GoogleOAuthClientID        string
-	GoogleOAuthClientSecret    string
-	MicrosoftOAuthClientID     string
-	MicrosoftOAuthClientSecret string
-}
-
 type CreateDogfoodProjectResponse struct {
 	DogfoodProjectID                   string
 	BootstrapUserEmail                 string
@@ -31,7 +24,7 @@ type CreateDogfoodProjectResponse struct {
 }
 
 // CreateDogfoodProject creates the dogfood project.
-func (s *Store) CreateDogfoodProject(ctx context.Context, params *CreateDogfoodProjectParams) (*CreateDogfoodProjectResponse, error) {
+func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProjectResponse, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
