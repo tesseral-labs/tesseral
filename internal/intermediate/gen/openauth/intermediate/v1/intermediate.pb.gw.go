@@ -106,6 +106,9 @@ func request_IntermediateService_GetGoogleOAuthRedirectURL_0(ctx context.Context
 		protoReq GetGoogleOAuthRedirectURLRequest
 		metadata runtime.ServerMetadata
 	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
 	msg, err := client.GetGoogleOAuthRedirectURL(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 }
@@ -115,6 +118,9 @@ func local_request_IntermediateService_GetGoogleOAuthRedirectURL_0(ctx context.C
 		protoReq GetGoogleOAuthRedirectURLRequest
 		metadata runtime.ServerMetadata
 	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
 	msg, err := server.GetGoogleOAuthRedirectURL(ctx, &protoReq)
 	return msg, metadata, err
 }
@@ -379,7 +385,7 @@ func RegisterIntermediateServiceHandlerServer(ctx context.Context, mux *runtime.
 		}
 		forward_IntermediateService_ExchangeIntermediateSessionForNewOrganizationSession_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodGet, pattern_IntermediateService_GetGoogleOAuthRedirectURL_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_IntermediateService_GetGoogleOAuthRedirectURL_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -650,7 +656,7 @@ func RegisterIntermediateServiceHandlerClient(ctx context.Context, mux *runtime.
 		}
 		forward_IntermediateService_ExchangeIntermediateSessionForNewOrganizationSession_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodGet, pattern_IntermediateService_GetGoogleOAuthRedirectURL_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_IntermediateService_GetGoogleOAuthRedirectURL_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)

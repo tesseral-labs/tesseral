@@ -49,8 +49,34 @@ func (s *Store) GetIntermediateSessionByToken(ctx context.Context, token string)
 }
 
 func (s *Store) Whoami(ctx context.Context, req *intermediatev1.WhoamiRequest) (*intermediatev1.WhoamiResponse, error) {
+	_, q, _, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	intermediateSession := authn.IntermediateSession(ctx)
+	var isEmailVerified bool
+
+	if intermediateSession.GoogleUserId != "" {
+		// Check if the google user id is verified
+		isGoogleEmailVerified, err := q.IsGoogleEmailVerified(ctx, queries.IsGoogleEmailVerifiedParams{
+			Email:        intermediateSession.Email,
+			GoogleUserID: &intermediateSession.GoogleUserId,
+			ProjectID:    authn.ProjectID(ctx),
+		})
+		if err != nil {
+			return nil, err
+		}
+
+		isEmailVerified = isGoogleEmailVerified
+	}
+
 	return &intermediatev1.WhoamiResponse{
-		IntermediateSession: authn.IntermediateSession(ctx),
+		Email:           intermediateSession.Email,
+		GoogleUserId:    intermediateSession.GoogleUserId,
+		IsEmailVerified: isEmailVerified,
+		MicrosoftUserId: intermediateSession.MicrosoftUserId,
 	}, nil
 }
 

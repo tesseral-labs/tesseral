@@ -80,10 +80,16 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/Status'
     /intermediate/v1/google-oauth-redirect-url:
-        get:
+        post:
             tags:
                 - IntermediateService
             operationId: IntermediateService_GetGoogleOAuthRedirectURL
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/GetGoogleOAuthRedirectURLRequest'
+                required: true
             responses:
                 "200":
                     description: OK
@@ -331,6 +337,11 @@ components:
                 refreshToken:
                     type: string
                     description: The refresh token for the new session.
+        GetGoogleOAuthRedirectURLRequest:
+            type: object
+            properties:
+                redirectUrl:
+                    type: string
         GetGoogleOAuthRedirectURLResponse:
             type: object
             properties:
@@ -353,23 +364,6 @@ components:
                     description: The type of the serialized message.
             additionalProperties: true
             description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
-        IntermediateSession:
-            type: object
-            properties:
-                id:
-                    type: string
-                projectId:
-                    type: string
-                email:
-                    type: string
-                googleUserId:
-                    type: string
-                googleHostedDomain:
-                    type: string
-                microsoftTenantId:
-                    type: string
-                microsoftUserId:
-                    type: string
         IssueEmailVerificationChallengeRequest:
             type: object
             properties: {}
@@ -409,6 +403,8 @@ components:
                 code:
                     type: string
                 state:
+                    type: string
+                redirectUrl:
                     type: string
         RedeemGoogleOAuthCodeResponse:
             type: object
@@ -477,7 +473,20 @@ components:
         WhoamiResponse:
             type: object
             properties:
-                intermediateSession:
-                    $ref: '#/components/schemas/IntermediateSession'
+                email:
+                    type: string
+                    description: The email associated with the intermediate session.
+                googleUserId:
+                    type: string
+                    description: The Google User ID associated with the intermediate session.
+                isEmailVerified:
+                    type: boolean
+                    description: A boolean representing whether the user has verified their email address.
+                microsoftUserId:
+                    type: string
+                    description: The Microsoft User ID associated with the intermediate session.
+                organizationId:
+                    type: string
+                    description: The organization ID associated with the intermediate session.
 tags:
     - name: IntermediateService

@@ -72,15 +72,10 @@ func (s *Store) CreateDogfoodProject(ctx context.Context, params *CreateDogfoodP
 	}
 
 	if _, err := q.CreateProject(ctx, queries.CreateProjectParams{
-		ID:                                   dogfoodProjectID,
-		OrganizationID:                       nil, // will populate after creating org
-		GoogleOauthClientID:                  &params.GoogleOAuthClientID,
-		GoogleOauthClientSecretCiphertext:    goaSecretOutput.CipherTextBlob,
-		LogInWithPasswordEnabled:             true,
-		LogInWithGoogleEnabled:               true,
-		LogInWithMicrosoftEnabled:            true,
-		MicrosoftOauthClientID:               &params.MicrosoftOAuthClientID,
-		MicrosoftOauthClientSecretCiphertext: msoaSecretOutput.CipherTextBlob,
+		ID:                       dogfoodProjectID,
+		OrganizationID:           nil, // will populate after creating org
+		LogInWithPasswordEnabled: true,
+		LogInWithGoogleEnabled:   true,
 	}); err != nil {
 		return nil, fmt.Errorf("create dogfood project: %w", err)
 	}

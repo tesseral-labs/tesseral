@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react'
 
+import React, { useEffect } from 'react'
+
 import EmailForm from '@/components/EmailForm'
 import OAuthButton, { OAuthMethods } from '@/components/OAuthButton'
 import { Title } from '@/components/Title'
@@ -18,96 +20,43 @@ import {
   getGoogleOAuthRedirectURL,
   getMicrosoftOAuthRedirectURL,
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
+import { useMutation } from '@connectrpc/connect-query'
+
+import { setIntermediateSessionToken } from '@/auth'
+import { getGoogleOAuthRedirectURL } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
 
 const LoginPage = () => {
-  const googleOAuthRedirectUrlQuery = useQuery(getGoogleOAuthRedirectURL)
-  const microsoftOAuthRedirectUrlQuery = useQuery(getMicrosoftOAuthRedirectURL)
-
   const [googleOAuthRedirectUrl, setGoogleOAuthRedirectUrl] = React.useState('')
-  const [microsoftOAuthRedirectUrl, setMicrosoftOAuthRedirectUrl] =
-    React.useState('')
+
+  const googleOAuthRedirectUrlMutation = useMutation(getGoogleOAuthRedirectURL)
 
   const handleGoogleOAuthLogin = async (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
 
-    if (googleOAuthRedirectUrl) {
-      window.location.href = googleOAuthRedirectUrl
-      return
-    }
+    try {
+      if (googleOAuthRedirectUrl) {
+        window.location.href = googleOAuthRedirectUrl
+        return
+      }
 
-    const response = await googleOAuthRedirectUrlQuery.refetch()
+      const { intermediateSessionToken, url } =
+        await googleOAuthRedirectUrlMutation.mutateAsync({
+          redirectUrl: `${window.location.origin}/google-oauth-callback`,
+        })
 
-    if (response.isError) {
+      setIntermediateSessionToken(intermediateSessionToken)
+      window.location.href = url
+    } catch (error) {
       // TODO: Handle errors on screen once an error handling strategy is in place.
-      console.error(response.error)
-      return
-    }
-
-    if (response.data) {
-      setIntermediateSessionToken(response.data.intermediateSessionToken)
-      window.location.href = response.data.url
+      console.error(error)
     }
   }
 
-  const handleMicrosoftOAuthLogin = async (e: React.MouseEvent) => {
+  const handleMicrosoftOAuthLogin = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
-
-    if (microsoftOAuthRedirectUrl) {
-      window.location.href = microsoftOAuthRedirectUrl
-      return
-    }
-
-    const response = await microsoftOAuthRedirectUrlQuery.refetch()
-
-    if (response.isError) {
-      // TODO: Handle errors on screen once an error handling strategy is in place.
-      console.error(response.error)
-      return
-    }
-
-    if (response.data) {
-      setIntermediateSessionToken(response.data.intermediateSessionToken)
-      window.location.href = response.data.url
-    }
   }
-
-  useEffect(() => {
-    ;(async () => {
-      if (googleOAuthRedirectUrlQuery.isError) {
-        // TODO: Handle errors on screen once an error handling strategy is in place.
-        console.error(
-          `Error fetching Google OAuth redirect URL: ${googleOAuthRedirectUrlQuery.error}`,
-        )
-      }
-
-      if (googleOAuthRedirectUrlQuery.data) {
-        setIntermediateSessionToken(
-          googleOAuthRedirectUrlQuery.data.intermediateSessionToken,
-        )
-        setGoogleOAuthRedirectUrl(googleOAuthRedirectUrlQuery.data.url)
-      }
-    })()
-  }, [googleOAuthRedirectUrlQuery])
-
-  useEffect(() => {
-    ;(async () => {
-      if (microsoftOAuthRedirectUrlQuery.isError) {
-        // TODO: Handle errors on screen once an error handling strategy is in place.
-        console.error(
-          `Error fetching Microsoft OAuth redirect URL: ${microsoftOAuthRedirectUrlQuery.error}`,
-        )
-      }
-
-      if (microsoftOAuthRedirectUrlQuery.data) {
-        setIntermediateSessionToken(
-          microsoftOAuthRedirectUrlQuery.data.intermediateSessionToken,
-        )
-        setMicrosoftOAuthRedirectUrl(microsoftOAuthRedirectUrlQuery.data.url)
-      }
-    })()
-  }, [microsoftOAuthRedirectUrlQuery])
 
   return (
     <>
