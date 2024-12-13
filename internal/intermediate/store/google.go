@@ -110,7 +110,7 @@ func (s *Store) RedeemGoogleOAuthCode(ctx context.Context, req *intermediatev1.R
 	redeemRes, err := s.googleOAuthClient.RedeemCode(ctx, &googleoauth.RedeemCodeRequest{
 		GoogleOAuthClientID:     *qProject.GoogleOauthClientID,
 		GoogleOAuthClientSecret: string(decryptRes.Value),
-		RedirectURI:             "http://localhost:3000/google-oauth-callback", // todo
+		RedirectURI:             fmt.Sprintf("%s/google-oauth-callback", s.uiUrl),
 		Code:                    req.Code,
 	})
 	if err != nil {
