@@ -134,16 +134,3 @@ func (s *Store) RedeemMicrosoftOAuthCode(ctx context.Context, req *intermediatev
 
 	return &intermediatev1.RedeemMicrosoftOAuthCodeResponse{}, nil
 }
-
-func (s *Store) shouldVerifyMicrosoftEmail(ctx context.Context, q *queries.Queries, email string, microsoftUserID string) (bool, error) {
-	verified, err := q.IsMicrosoftEmailVerified(ctx, queries.IsMicrosoftEmailVerifiedParams{
-		Email:           email,
-		MicrosoftUserID: &microsoftUserID,
-		ProjectID:       authn.ProjectID(ctx),
-	})
-	if err != nil {
-		return false, fmt.Errorf("is microsoft email verified: %v", err)
-	}
-
-	return !verified, nil
-}

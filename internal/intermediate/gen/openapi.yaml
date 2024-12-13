@@ -435,11 +435,7 @@ components:
                     type: string
         RedeemMicrosoftOAuthCodeResponse:
             type: object
-            properties:
-                shouldVerifyEmail:
-                    type: boolean
-                emailVerificationChallengeId:
-                    type: string
+            properties: {}
         SignInWithEmailRequest:
             type: object
             properties:
