@@ -6,7 +6,6 @@ import (
 	"crypto/sha256"
 	"errors"
 	"fmt"
-	"log/slog"
 	"time"
 
 	"connectrpc.com/connect"
@@ -119,7 +118,6 @@ func (s *Store) RedeemGoogleOAuthCode(ctx context.Context, req *intermediatev1.R
 	}
 
 	// todo what if the intermediate session already has an email
-	// todo send an email verification challenge?
 	// todo what if redeem doesn't come back with a google hosted domain?
 	if _, err := q.UpdateIntermediateSessionGoogleDetails(ctx, queries.UpdateIntermediateSessionGoogleDetailsParams{
 		ID:                 authn.IntermediateSessionID(ctx),
@@ -130,53 +128,11 @@ func (s *Store) RedeemGoogleOAuthCode(ctx context.Context, req *intermediatev1.R
 		return nil, fmt.Errorf("update intermediate session google details: %v", err)
 	}
 
-	shouldVerifyEmail, err := s.shouldVerifyGoogleEmail(ctx, redeemRes.Email, redeemRes.GoogleUserID)
-	if err != nil {
-		return nil, fmt.Errorf("should verify google email: %v", err)
-	}
-
-	var evcID uuid.UUID
-
-	if shouldVerifyEmail {
-		// Create a new secret token for the challenge
-		secretToken, err := generateSecretToken()
-		if err != nil {
-			return nil, err
-		}
-
-		secretTokenSha256 := sha256.Sum256([]byte(secretToken))
-		expiresAt := time.Now().Add(15 * time.Minute)
-
-		evc, err := q.CreateEmailVerificationChallenge(ctx, queries.CreateEmailVerificationChallengeParams{
-			ID:                    uuid.New(),
-			ChallengeSha256:       secretTokenSha256[:],
-			ExpireTime:            &expiresAt,
-			IntermediateSessionID: authn.IntermediateSessionID(ctx),
-			ProjectID:             authn.ProjectID(ctx),
-		})
-		if err != nil {
-			return nil, fmt.Errorf("create email verification challenge: %v", err)
-		}
-
-		evcID = evc.ID
-
-		// TODO: Send the secret token to the user's email address
-		slog.InfoContext(ctx, "RedeemGoogleOAuthCode", "challenge", secretToken)
-	}
-
 	if err := commit(); err != nil {
 		return nil, err
 	}
 
-	response := &intermediatev1.RedeemGoogleOAuthCodeResponse{
-		ShouldVerifyEmail: shouldVerifyEmail,
-	}
-
-	if evcID != uuid.Nil {
-		response.EmailVerificationChallengeId = idformat.EmailVerificationChallenge.Format(evcID)
-	}
-
-	return response, nil
+	return &intermediatev1.RedeemGoogleOAuthCodeResponse{}, nil
 }
 
 func (s *Store) getProjectAndIntermediateSession(ctx context.Context) (*queries.Project, *queries.IntermediateSession, error) {
@@ -198,23 +154,4 @@ func (s *Store) getProjectAndIntermediateSession(ctx context.Context) (*queries.
 	}
 
 	return &qProject, &qIntermediateSession, nil
-}
-
-func (s *Store) shouldVerifyGoogleEmail(ctx context.Context, email string, googleUserID string) (bool, error) {
-	_, q, _, _, err := s.tx(ctx)
-	if err != nil {
-		return false, err
-	}
-
-	// Check if the email is already verified
-	verified, err := q.IsGoogleEmailVerified(ctx, queries.IsGoogleEmailVerifiedParams{
-		Email:        email,
-		GoogleUserID: &googleUserID,
-		ProjectID:    authn.ProjectID(ctx),
-	})
-	if err != nil {
-		return false, err
-	}
-
-	return !verified, nil
 }

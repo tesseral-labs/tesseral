@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
+	"log/slog"
 
 	"connectrpc.com/connect"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
@@ -13,5 +14,7 @@ func (s *Service) Whoami(ctx context.Context, req *connect.Request[intermediatev
 	if err != nil {
 		return nil, fmt.Errorf("store: %w", err)
 	}
+
+	slog.InfoContext(ctx, "whoami", "response", res)
 	return connect.NewResponse(res), nil
 }

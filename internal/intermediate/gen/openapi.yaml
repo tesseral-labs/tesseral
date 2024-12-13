@@ -351,23 +351,6 @@ components:
                     description: The type of the serialized message.
             additionalProperties: true
             description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
-        IntermediateSession:
-            type: object
-            properties:
-                id:
-                    type: string
-                projectId:
-                    type: string
-                email:
-                    type: string
-                googleUserId:
-                    type: string
-                googleHostedDomain:
-                    type: string
-                microsoftTenantId:
-                    type: string
-                microsoftUserId:
-                    type: string
         IssueEmailVerificationChallengeRequest:
             type: object
             properties: {}
@@ -410,11 +393,7 @@ components:
                     type: string
         RedeemGoogleOAuthCodeResponse:
             type: object
-            properties:
-                shouldVerifyEmail:
-                    type: boolean
-                emailVerificationChallengeId:
-                    type: string
+            properties: {}
         RedeemMicrosoftOAuthCodeRequest:
             type: object
             properties:
@@ -471,7 +450,20 @@ components:
         WhoamiResponse:
             type: object
             properties:
-                intermediateSession:
-                    $ref: '#/components/schemas/IntermediateSession'
+                email:
+                    type: string
+                    description: The email associated with the intermediate session.
+                googleUserId:
+                    type: string
+                    description: The Google User ID associated with the intermediate session.
+                isEmailVerified:
+                    type: boolean
+                    description: A boolean representing whether the user has verified their email address.
+                microsoftUserId:
+                    type: string
+                    description: The Microsoft User ID associated with the intermediate session.
+                organizationId:
+                    type: string
+                    description: The organization ID associated with the intermediate session.
 tags:
     - name: IntermediateService

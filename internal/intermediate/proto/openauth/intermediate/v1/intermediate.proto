@@ -110,7 +110,16 @@ message WhoamiRequest {
 }
 
 message WhoamiResponse {
-  IntermediateSession intermediate_session = 1;
+  // The email associated with the intermediate session.
+  string email = 1;
+  // The Google User ID associated with the intermediate session.
+  string google_user_id = 2;
+  // A boolean representing whether the user has verified their email address.
+  bool is_email_verified = 3;
+  // The Microsoft User ID associated with the intermediate session.
+  string microsoft_user_id = 4;
+  // The organization ID associated with the intermediate session.
+  string organization_id = 5;
 }
 
 message ExchangeIntermediateSessionForSessionRequest {
@@ -151,8 +160,6 @@ message RedeemGoogleOAuthCodeRequest {
 }
 
 message RedeemGoogleOAuthCodeResponse {
-  bool should_verify_email = 1;
-  string email_verification_challenge_id = 2;
 }
 
 message GetMicrosoftOAuthRedirectURLRequest {
