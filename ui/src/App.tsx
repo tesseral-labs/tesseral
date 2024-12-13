@@ -17,6 +17,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { API_URL, PROJECT_ID } from './config'
 import GoogleOAuthCallbackPage from './pages/GoogleOAuthCallbackPage'
 import MicrosoftOAuthCallbackPage from './pages/MicrosoftOAuthCallbackPage'
+import CreateOrganizationPage from './pages/CreateOrganizationPage'
 
 const queryClient = new QueryClient()
 
@@ -47,6 +48,10 @@ const AppWithRoutes: FC = () => {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Page />}>
+              <Route
+                path="/create-organization"
+                element={<CreateOrganizationPage />}
+              />
               <Route
                 path="/google-oauth-callback"
                 element={<GoogleOAuthCallbackPage />}
