@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useMutation, useQuery } from '@connectrpc/connect-query'
 
 import { Title } from '@/components/Title'
@@ -17,9 +17,12 @@ import {
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
 
 const EmailVerificationPage = () => {
+  const navigate = useNavigate()
   const [searchParams] = useSearchParams()
+
   const [challengeCode, setChallengeCode] = useState<string>('')
   const [challengeId, setChallengeId] = useState<string>('')
+  const [maskedEmail, setMaskedEmail] = useState<string>('')
 
   const whoamiQuery = useQuery(whoami)
   const verifyEmailChallengeMutation = useMutation(verifyEmailChallenge)
@@ -27,22 +30,34 @@ const EmailVerificationPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    const response = await verifyEmailChallengeMutation.mutateAsync({
-      emailVerificationChallengeId: challengeId,
-      code: challengeCode,
-    })
+    try {
+      const response = await verifyEmailChallengeMutation.mutateAsync({
+        emailVerificationChallengeId: challengeId,
+        code: challengeCode,
+      })
 
-    console.log('response: ', response)
+      console.log('response: ', response)
+
+      navigate('/organizations')
+    } catch (error) {
+      console.error(error)
+    }
   }
+
+  const maskEmailString = (email: string): string => {
+    const parts = email.split('@')
+    return `${parts[0].slice(0, 2)}***@${parts[1]}`
+  }
+
+  useEffect(() => {
+    if (whoamiQuery.data) {
+      setMaskedEmail(maskEmailString(whoamiQuery.data.email))
+    }
+  }, [whoamiQuery])
 
   useEffect(() => {
     ;(async () => {
       try {
-        // TODO: Remove this unless we need it.
-        // - This is just here to test that the intermediate session token is working as expected.
-        const { data } = await whoamiQuery.refetch()
-        console.log('whoami data: ', data)
-
         const challengeId = searchParams.get('challenge_id')
         if (challengeId) {
           setChallengeId(challengeId)
@@ -63,8 +78,11 @@ const EmailVerificationPage = () => {
             Verify Email Address
           </CardTitle>
         </CardHeader>
-        <CardContent className="flex flex-col items-center w-full">
-          <form onSubmit={handleSubmit}>
+        <CardContent className="flex flex-col items-center justify-center w-full">
+          <p className="text-center mb-3">
+            Please enter the verification code sent to {maskedEmail} below.
+          </p>
+          <form className="flex flex-col items-center" onSubmit={handleSubmit}>
             <input
               className="text-sm rounded border border-border focus:border-primary w-[clamp(240px,50%,100%)] mb-2"
               id="challengeCode"
