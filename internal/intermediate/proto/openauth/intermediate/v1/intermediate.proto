@@ -153,6 +153,8 @@ message GetGoogleOAuthRedirectURLRequest {
 }
 
 message GetGoogleOAuthRedirectURLResponse {
+  string url = 1;
+  string intermediate_session_token = 2;
 }
 
 message RedeemGoogleOAuthCodeRequest {
@@ -162,8 +164,6 @@ message RedeemGoogleOAuthCodeRequest {
 }
 
 message RedeemGoogleOAuthCodeResponse {
-  bool should_verify_email = 1;
-  string email_verification_challenge_id = 2;
 }
 
 message GetMicrosoftOAuthRedirectURLRequest {

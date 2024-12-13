@@ -350,7 +350,11 @@ components:
                     type: string
         GetGoogleOAuthRedirectURLResponse:
             type: object
-            properties: {}
+            properties:
+                url:
+                    type: string
+                intermediateSessionToken:
+                    type: string
         GetMicrosoftOAuthRedirectURLRequest:
             type: object
             properties:
@@ -415,11 +419,7 @@ components:
                     type: string
         RedeemGoogleOAuthCodeResponse:
             type: object
-            properties:
-                shouldVerifyEmail:
-                    type: boolean
-                emailVerificationChallengeId:
-                    type: string
+            properties: {}
         RedeemMicrosoftOAuthCodeRequest:
             type: object
             properties:
