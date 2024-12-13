@@ -1,7 +1,5 @@
 import React, { useEffect } from 'react'
 
-import React, { useEffect } from 'react'
-
 import EmailForm from '@/components/EmailForm'
 import OAuthButton, { OAuthMethods } from '@/components/OAuthButton'
 import { Title } from '@/components/Title'
@@ -13,13 +11,6 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import TextDivider from '@/components/ui/TextDivider'
-import { useQuery } from '@connectrpc/connect-query'
-
-import { setIntermediateSessionToken } from '@/auth'
-import {
-  getGoogleOAuthRedirectURL,
-  getMicrosoftOAuthRedirectURL,
-} from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
 import { useMutation } from '@connectrpc/connect-query'
 
 import { setIntermediateSessionToken } from '@/auth'
