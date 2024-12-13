@@ -46,10 +46,6 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 	dogfoodProjectID := uuid.New()
 	dogfoodOrganizationID := uuid.New()
 
-	if err != nil {
-		return nil, fmt.Errorf("encrypt microsoft oauth client secret: %w", err)
-	}
-
 	if _, err := q.CreateProject(ctx, queries.CreateProjectParams{
 		ID:                       dogfoodProjectID,
 		OrganizationID:           nil, // will populate after creating org
