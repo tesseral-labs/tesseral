@@ -410,7 +410,9 @@ components:
                     type: string
         RedeemGoogleOAuthCodeResponse:
             type: object
-            properties: {}
+            properties:
+                shouldVerifyEmail:
+                    type: boolean
         RedeemMicrosoftOAuthCodeRequest:
             type: object
             properties:

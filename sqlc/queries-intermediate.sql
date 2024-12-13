@@ -165,6 +165,16 @@ FROM
 WHERE
     project_id = $1;
 
+-- name: IsGoogleEmailVerfied :one
+SELECT
+    count(*) > 0
+FROM
+    verified_emails
+WHERE
+    project_id = $1
+    AND email = $2
+    AND google_user_id = $3;
+
 -- name: ListOrganizationsByProjectIdAndEmail :many
 SELECT
     o.*

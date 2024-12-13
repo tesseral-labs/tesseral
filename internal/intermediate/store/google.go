@@ -129,11 +129,18 @@ func (s *Store) RedeemGoogleOAuthCode(ctx context.Context, req *intermediatev1.R
 		return nil, fmt.Errorf("update intermediate session google details: %v", err)
 	}
 
+	shouldVerifyEmail, err := s.shouldVerifyGoogleEmail(ctx, redeemRes.Email, redeemRes.GoogleUserID)
+	if err != nil {
+		return nil, fmt.Errorf("should verify google email: %v", err)
+	}
+
 	if err := commit(); err != nil {
 		return nil, err
 	}
 
-	return &intermediatev1.RedeemGoogleOAuthCodeResponse{}, nil
+	return &intermediatev1.RedeemGoogleOAuthCodeResponse{
+		ShouldVerifyEmail: shouldVerifyEmail,
+	}, nil
 }
 
 func (s *Store) getProjectAndIntermediateSession(ctx context.Context) (*queries.Project, *queries.IntermediateSession, error) {
@@ -155,4 +162,23 @@ func (s *Store) getProjectAndIntermediateSession(ctx context.Context) (*queries.
 	}
 
 	return &qProject, &qIntermediateSession, nil
+}
+
+func (s *Store) shouldVerifyGoogleEmail(ctx context.Context, email string, googleUserID string) (bool, error) {
+	_, q, _, _, err := s.tx(ctx)
+	if err != nil {
+		return false, err
+	}
+
+	// Check if the email is already verified
+	verified, err := q.IsGoogleEmailVerfied(ctx, queries.IsGoogleEmailVerfiedParams{
+		Email:        email,
+		GoogleUserID: &googleUserID,
+		ProjectID:    authn.ProjectID(ctx),
+	})
+	if err != nil {
+		return false, err
+	}
+
+	return !verified, nil
 }
