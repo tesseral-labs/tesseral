@@ -129,10 +129,16 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/Status'
     /intermediate/v1/microsoft-oauth-redirect-url:
-        get:
+        post:
             tags:
                 - IntermediateService
             operationId: IntermediateService_GetMicrosoftOAuthRedirectURL
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/GetMicrosoftOAuthRedirectURLRequest'
+                required: true
             responses:
                 "200":
                     description: OK
@@ -349,6 +355,11 @@ components:
                     type: string
                 intermediateSessionToken:
                     type: string
+        GetMicrosoftOAuthRedirectURLRequest:
+            type: object
+            properties:
+                redirectUrl:
+                    type: string
         GetMicrosoftOAuthRedirectURLResponse:
             type: object
             properties:
@@ -419,6 +430,8 @@ components:
                 code:
                     type: string
                 state:
+                    type: string
+                redirectUrl:
                     type: string
         RedeemMicrosoftOAuthCodeResponse:
             type: object

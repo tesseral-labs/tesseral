@@ -14,23 +14,22 @@ import TextDivider from '@/components/ui/TextDivider'
 import { useMutation } from '@connectrpc/connect-query'
 
 import { setIntermediateSessionToken } from '@/auth'
-import { getGoogleOAuthRedirectURL } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
+import {
+  getGoogleOAuthRedirectURL,
+  getMicrosoftOAuthRedirectURL,
+} from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
 
 const LoginPage = () => {
-  const [googleOAuthRedirectUrl, setGoogleOAuthRedirectUrl] = React.useState('')
-
   const googleOAuthRedirectUrlMutation = useMutation(getGoogleOAuthRedirectURL)
+  const microsoftOAuthRedirectUrlMutation = useMutation(
+    getMicrosoftOAuthRedirectURL,
+  )
 
   const handleGoogleOAuthLogin = async (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
 
     try {
-      if (googleOAuthRedirectUrl) {
-        window.location.href = googleOAuthRedirectUrl
-        return
-      }
-
       const { intermediateSessionToken, url } =
         await googleOAuthRedirectUrlMutation.mutateAsync({
           redirectUrl: `${window.location.origin}/google-oauth-callback`,
@@ -44,9 +43,22 @@ const LoginPage = () => {
     }
   }
 
-  const handleMicrosoftOAuthLogin = (e: React.MouseEvent) => {
+  const handleMicrosoftOAuthLogin = async (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
+
+    try {
+      const { intermediateSessionToken, url } =
+        await microsoftOAuthRedirectUrlMutation.mutateAsync({
+          redirectUrl: `${window.location.origin}/microsoft-oauth-callback`,
+        })
+
+      setIntermediateSessionToken(intermediateSessionToken)
+      window.location.href = url
+    } catch (error) {
+      // TODO: Handle errors on screen once an error handling strategy is in place.
+      console.error(error)
+    }
   }
 
   return (

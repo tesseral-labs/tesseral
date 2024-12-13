@@ -1,14 +1,22 @@
 import React, { useEffect } from 'react'
 import { Title } from '@/components/Title'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { redeemMicrosoftOAuthCode } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
-import { useMutation } from '@connectrpc/connect-query'
+import {
+  issueEmailVerificationChallenge,
+  redeemMicrosoftOAuthCode,
+  whoami,
+} from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
+import { useMutation, useQuery } from '@connectrpc/connect-query'
 
 const MicrosoftOAuthCallbackPage = () => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
+  const issueEmailVerificationChallengeMutation = useMutation(
+    issueEmailVerificationChallenge,
+  )
   const redeemMicrosoftOAuthCodeMutation = useMutation(redeemMicrosoftOAuthCode)
+  const whoamiQuery = useQuery(whoami)
 
   useEffect(() => {
     ;(async () => {
@@ -17,20 +25,26 @@ const MicrosoftOAuthCallbackPage = () => {
 
       if (code && state) {
         try {
-          const { emailVerificationChallengeId, shouldVerifyEmail } =
-            await redeemMicrosoftOAuthCodeMutation.mutateAsync({
-              code,
-              state,
-            })
+          await redeemMicrosoftOAuthCodeMutation.mutateAsync({
+            code,
+            state,
+            redirectUrl: `${window.location.origin}/microsoft-oauth-callback`,
+          })
 
-          if (shouldVerifyEmail && emailVerificationChallengeId) {
-            navigate(
-              `/verify-email?challenge_id=${emailVerificationChallengeId}`,
-            )
+          const { data } = await whoamiQuery.refetch()
+          if (!data) {
+            throw new Error('No data returned from whoami query')
+          }
+
+          if (data.isEmailVerified) {
+            navigate('/organizations')
             return
           }
 
-          navigate('/organizations')
+          const { emailVerificationChallengeId } =
+            await issueEmailVerificationChallengeMutation.mutateAsync({})
+
+          navigate(`/verify-email?challenge_id=${emailVerificationChallengeId}`)
         } catch (error) {
           // TODO: Handle errors on screen once an error handling strategy is in place.
           console.error(error)

@@ -53,20 +53,6 @@ func (s *Store) CreateDogfoodProject(ctx context.Context, params *CreateDogfoodP
 	dogfoodProjectID := uuid.New()
 	dogfoodOrganizationID := uuid.New()
 
-	goaSecretOutput, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
-		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
-		KeyId:               &s.googleOAuthClientSecretsKMSKeyID,
-		Plaintext:           []byte(params.GoogleOAuthClientSecret),
-	})
-	if err != nil {
-		return nil, fmt.Errorf("encrypt google oauth client secret: %w", err)
-	}
-
-	msoaSecretOutput, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
-		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
-		KeyId:               &s.microsoftOAuthClientSecretsKMSKeyID,
-		Plaintext:           []byte(params.MicrosoftOAuthClientSecret),
-	})
 	if err != nil {
 		return nil, fmt.Errorf("encrypt microsoft oauth client secret: %w", err)
 	}

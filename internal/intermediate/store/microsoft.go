@@ -6,7 +6,6 @@ import (
 	"crypto/sha256"
 	"errors"
 	"fmt"
-	"log/slog"
 	"time"
 
 	"connectrpc.com/connect"
@@ -129,53 +128,11 @@ func (s *Store) RedeemMicrosoftOAuthCode(ctx context.Context, req *intermediatev
 		return nil, fmt.Errorf("update intermediate session microsoft details: %v", err)
 	}
 
-	shouldVerifyEmail, err := s.shouldVerifyMicrosoftEmail(ctx, q, redeemRes.Email, redeemRes.MicrosoftUserID)
-	if err != nil {
-		return nil, fmt.Errorf("should verify microsoft email: %v", err)
-	}
-
-	var evcID uuid.UUID
-
-	if shouldVerifyEmail {
-		// Create a new secret token for the challenge
-		secretToken, err := generateSecretToken()
-		if err != nil {
-			return nil, err
-		}
-
-		secretTokenSha256 := sha256.Sum256([]byte(secretToken))
-		expiresAt := time.Now().Add(15 * time.Minute)
-
-		evc, err := q.CreateEmailVerificationChallenge(ctx, queries.CreateEmailVerificationChallengeParams{
-			ID:                    uuid.New(),
-			ChallengeSha256:       secretTokenSha256[:],
-			ExpireTime:            &expiresAt,
-			IntermediateSessionID: authn.IntermediateSessionID(ctx),
-			ProjectID:             authn.ProjectID(ctx),
-		})
-		if err != nil {
-			return nil, fmt.Errorf("create email verification challenge: %v", err)
-		}
-
-		evcID = evc.ID
-
-		// TODO: Send the secret token to the user's email address
-		slog.InfoContext(ctx, "RedeemGoogleOAuthCode", "challenge", secretToken)
-	}
-
 	if err := commit(); err != nil {
 		return nil, err
 	}
 
-	response := &intermediatev1.RedeemMicrosoftOAuthCodeResponse{
-		ShouldVerifyEmail: shouldVerifyEmail,
-	}
-
-	if evcID != uuid.Nil {
-		response.EmailVerificationChallengeId = idformat.EmailVerificationChallenge.Format(evcID)
-	}
-
-	return response, nil
+	return &intermediatev1.RedeemMicrosoftOAuthCodeResponse{}, nil
 }
 
 func (s *Store) shouldVerifyMicrosoftEmail(ctx context.Context, q *queries.Queries, email string, microsoftUserID string) (bool, error) {

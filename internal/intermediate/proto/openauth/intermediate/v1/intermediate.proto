@@ -45,7 +45,8 @@ service IntermediateService {
 
   rpc GetMicrosoftOAuthRedirectURL(GetMicrosoftOAuthRedirectURLRequest) returns (GetMicrosoftOAuthRedirectURLResponse) {
     option (google.api.http) = {
-      get: "/intermediate/v1/microsoft-oauth-redirect-url"
+      post: "/intermediate/v1/microsoft-oauth-redirect-url",
+      body: "*"
     };
   }
 
@@ -168,6 +169,7 @@ message RedeemGoogleOAuthCodeResponse {
 }
 
 message GetMicrosoftOAuthRedirectURLRequest {
+  string redirect_url = 1;
 }
 
 message GetMicrosoftOAuthRedirectURLResponse {
@@ -178,11 +180,10 @@ message GetMicrosoftOAuthRedirectURLResponse {
 message RedeemMicrosoftOAuthCodeRequest {
   string code = 1;
   string state = 2;
+  string redirect_url = 3;
 }
 
 message RedeemMicrosoftOAuthCodeResponse {
-  bool should_verify_email = 1;
-  string email_verification_challenge_id = 2;
 }
 
 
