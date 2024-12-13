@@ -134,13 +134,45 @@ func (s *Store) RedeemGoogleOAuthCode(ctx context.Context, req *intermediatev1.R
 		return nil, fmt.Errorf("should verify google email: %v", err)
 	}
 
+	var evcID uuid.UUID
+
+	if shouldVerifyEmail {
+		// Create a new secret token for the challenge
+		secretToken, err := generateSecretToken()
+		if err != nil {
+			return nil, err
+		}
+
+		secretTokenSha256 := sha256.Sum256([]byte(secretToken))
+		expiresAt := time.Now().Add(15 * time.Minute)
+
+		evc, err := q.CreateEmailVerificationChallenge(ctx, queries.CreateEmailVerificationChallengeParams{
+			ID:                    uuid.New(),
+			ChallengeSha256:       secretTokenSha256[:],
+			ExpireTime:            &expiresAt,
+			IntermediateSessionID: authn.IntermediateSessionID(ctx),
+			ProjectID:             authn.ProjectID(ctx),
+		})
+		if err != nil {
+			return nil, fmt.Errorf("create email verification challenge: %v", err)
+		}
+
+		evcID = evc.ID
+	}
+
 	if err := commit(); err != nil {
 		return nil, err
 	}
 
-	return &intermediatev1.RedeemGoogleOAuthCodeResponse{
+	response := &intermediatev1.RedeemGoogleOAuthCodeResponse{
 		ShouldVerifyEmail: shouldVerifyEmail,
-	}, nil
+	}
+
+	if evcID != uuid.Nil {
+		response.EmailVerificationChallengeId = idformat.EmailVerificationChallenge.Format(evcID)
+	}
+
+	return response, nil
 }
 
 func (s *Store) getProjectAndIntermediateSession(ctx context.Context) (*queries.Project, *queries.IntermediateSession, error) {

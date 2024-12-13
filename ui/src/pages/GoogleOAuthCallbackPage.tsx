@@ -17,14 +17,16 @@ const GoogleOAuthCallbackPage = () => {
 
       if (code && state) {
         try {
-          const { shouldVerifyEmail } =
+          const { emailVerificationChallengeId, shouldVerifyEmail } =
             await redeemGoogleOAuthCodeMutation.mutateAsync({
               code,
               state,
             })
 
           if (shouldVerifyEmail) {
-            navigate('/verify-email')
+            navigate(
+              `/verify-email?challenge_id=${emailVerificationChallengeId}`,
+            )
             return
           }
 

@@ -152,6 +152,7 @@ message RedeemGoogleOAuthCodeRequest {
 
 message RedeemGoogleOAuthCodeResponse {
   bool should_verify_email = 1;
+  string email_verification_challenge_id = 2;
 }
 
 message GetMicrosoftOAuthRedirectURLRequest {

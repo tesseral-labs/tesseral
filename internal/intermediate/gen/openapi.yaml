@@ -413,6 +413,8 @@ components:
             properties:
                 shouldVerifyEmail:
                     type: boolean
+                emailVerificationChallengeId:
+                    type: string
         RedeemMicrosoftOAuthCodeRequest:
             type: object
             properties:
