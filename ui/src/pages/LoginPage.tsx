@@ -14,12 +14,18 @@ import TextDivider from '@/components/ui/TextDivider'
 import { useQuery } from '@connectrpc/connect-query'
 
 import { setIntermediateSessionToken } from '@/auth'
-import { getGoogleOAuthRedirectURL } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
+import {
+  getGoogleOAuthRedirectURL,
+  getMicrosoftOAuthRedirectURL,
+} from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
 
 const LoginPage = () => {
   const googleOAuthRedirectUrlQuery = useQuery(getGoogleOAuthRedirectURL)
+  const microsoftOAuthRedirectUrlQuery = useQuery(getMicrosoftOAuthRedirectURL)
 
   const [googleOAuthRedirectUrl, setGoogleOAuthRedirectUrl] = React.useState('')
+  const [microsoftOAuthRedirectUrl, setMicrosoftOAuthRedirectUrl] =
+    React.useState('')
 
   const handleGoogleOAuthLogin = async (e: React.MouseEvent) => {
     e.preventDefault()
@@ -43,9 +49,27 @@ const LoginPage = () => {
     }
   }
 
-  const handleMicrosoftOAuthLogin = (e: React.MouseEvent) => {
+  const handleMicrosoftOAuthLogin = async (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
+
+    if (microsoftOAuthRedirectUrl) {
+      window.location.href = microsoftOAuthRedirectUrl
+      return
+    }
+
+    const response = await microsoftOAuthRedirectUrlQuery.refetch()
+
+    if (response.isError) {
+      // TODO: Handle errors on screen once an error handling strategy is in place.
+      console.error(response.error)
+      return
+    }
+
+    if (response.data) {
+      setIntermediateSessionToken(response.data.intermediateSessionToken)
+      window.location.href = response.data.url
+    }
   }
 
   useEffect(() => {
@@ -65,6 +89,24 @@ const LoginPage = () => {
       }
     })()
   }, [googleOAuthRedirectUrlQuery])
+
+  useEffect(() => {
+    ;(async () => {
+      if (microsoftOAuthRedirectUrlQuery.isError) {
+        // TODO: Handle errors on screen once an error handling strategy is in place.
+        console.error(
+          `Error fetching Microsoft OAuth redirect URL: ${microsoftOAuthRedirectUrlQuery.error}`,
+        )
+      }
+
+      if (microsoftOAuthRedirectUrlQuery.data) {
+        setIntermediateSessionToken(
+          microsoftOAuthRedirectUrlQuery.data.intermediateSessionToken,
+        )
+        setMicrosoftOAuthRedirectUrl(microsoftOAuthRedirectUrlQuery.data.url)
+      }
+    })()
+  }, [microsoftOAuthRedirectUrlQuery])
 
   return (
     <>
