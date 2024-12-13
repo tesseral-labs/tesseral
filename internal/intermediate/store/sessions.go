@@ -33,8 +33,8 @@ func (s *Store) ExchangeIntermediateSessionForNewOrganizationSession(ctx context
 		ID:                 uuid.New(),
 		ProjectID:          projectID,
 		DisplayName:        req.DisplayName,
-		GoogleHostedDomain: &intermediateSession.GoogleHostedDomain,
-		MicrosoftTenantID:  &intermediateSession.MicrosoftTenantId,
+		GoogleHostedDomain: emptyToNil(&intermediateSession.GoogleHostedDomain),
+		MicrosoftTenantID:  emptyToNil(&intermediateSession.MicrosoftTenantId),
 	})
 	if err != nil {
 		return nil, err
@@ -45,8 +45,8 @@ func (s *Store) ExchangeIntermediateSessionForNewOrganizationSession(ctx context
 		ID:              uuid.New(),
 		OrganizationID:  qOrganization.ID,
 		Email:           intermediateSession.Email,
-		GoogleUserID:    &intermediateSession.GoogleUserId,
-		MicrosoftUserID: &intermediateSession.MicrosoftUserId,
+		GoogleUserID:    emptyToNil(&intermediateSession.GoogleUserId),
+		MicrosoftUserID: emptyToNil(&intermediateSession.MicrosoftUserId),
 	})
 	if err != nil {
 		return nil, err
@@ -97,8 +97,9 @@ func (s *Store) ExchangeIntermediateSessionForNewOrganizationSession(ctx context
 		ID:              idformat.User.Format(qUser.ID),
 		CreateTime:      *qUser.CreateTime,
 		Email:           qUser.Email,
-		GoogleUserID:    *qUser.GoogleUserID,
-		MicrosoftUserID: *qUser.MicrosoftUserID,
+		GoogleUserID:    derefOrEmpty(qUser.GoogleUserID),
+		MicrosoftUserID: derefOrEmpty(qUser.MicrosoftUserID),
+		UpdateTime:      derefOrEmpty(qUser.UpdateTime),
 	}, *sessionSigningKeyID, privateKey)
 	if err != nil {
 		return nil, err
@@ -212,7 +213,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		Email:           qUser.Email,
 		GoogleUserID:    *qUser.GoogleUserID,
 		MicrosoftUserID: *qUser.MicrosoftUserID,
-		UpdateTime:      *qUser.UpdateTime,
+		UpdateTime:      derefOrEmpty(qUser.UpdateTime),
 	}, *sessionSigningKeyID, privateKey)
 	if err != nil {
 		return nil, err
