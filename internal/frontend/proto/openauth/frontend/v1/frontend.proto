@@ -137,10 +137,12 @@ message WhoAmIRequest {
 message WhoAmIResponse {
   // The user ID that is currently authenticated.
   string id = 1;
-  // The display name for the user.
-  string display_name = 2;
   // The email address for the user.
-  string email = 3;
+  string email = 2;
+  // The organization ID for the user.
+  string organization_id = 3;
+  // The organization for the user.
+  Organization organization = 4;
 }
 
 

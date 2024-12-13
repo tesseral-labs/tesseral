@@ -26,7 +26,6 @@ const (
 	IntermediateService_RedeemGoogleOAuthCode_FullMethodName                                = "/openauth.intermediate.v1.IntermediateService/RedeemGoogleOAuthCode"
 	IntermediateService_GetMicrosoftOAuthRedirectURL_FullMethodName                         = "/openauth.intermediate.v1.IntermediateService/GetMicrosoftOAuthRedirectURL"
 	IntermediateService_RedeemMicrosoftOAuthCode_FullMethodName                             = "/openauth.intermediate.v1.IntermediateService/RedeemMicrosoftOAuthCode"
-	IntermediateService_CreateOrganization_FullMethodName                                   = "/openauth.intermediate.v1.IntermediateService/CreateOrganization"
 	IntermediateService_IssueEmailVerificationChallenge_FullMethodName                      = "/openauth.intermediate.v1.IntermediateService/IssueEmailVerificationChallenge"
 	IntermediateService_ListOrganizations_FullMethodName                                    = "/openauth.intermediate.v1.IntermediateService/ListOrganizations"
 	IntermediateService_SignInWithEmail_FullMethodName                                      = "/openauth.intermediate.v1.IntermediateService/SignInWithEmail"
@@ -44,8 +43,6 @@ type IntermediateServiceClient interface {
 	RedeemGoogleOAuthCode(ctx context.Context, in *RedeemGoogleOAuthCodeRequest, opts ...grpc.CallOption) (*RedeemGoogleOAuthCodeResponse, error)
 	GetMicrosoftOAuthRedirectURL(ctx context.Context, in *GetMicrosoftOAuthRedirectURLRequest, opts ...grpc.CallOption) (*GetMicrosoftOAuthRedirectURLResponse, error)
 	RedeemMicrosoftOAuthCode(ctx context.Context, in *RedeemMicrosoftOAuthCodeRequest, opts ...grpc.CallOption) (*RedeemMicrosoftOAuthCodeResponse, error)
-	// Creates a new organization.
-	CreateOrganization(ctx context.Context, in *CreateOrganizationRequest, opts ...grpc.CallOption) (*CreateOrganizationResponse, error)
 	// Issues a new email verification challenge.
 	IssueEmailVerificationChallenge(ctx context.Context, in *IssueEmailVerificationChallengeRequest, opts ...grpc.CallOption) (*IssueEmailVerificationChallengeResponse, error)
 	// Gets a list of organizations.
@@ -134,16 +131,6 @@ func (c *intermediateServiceClient) RedeemMicrosoftOAuthCode(ctx context.Context
 	return out, nil
 }
 
-func (c *intermediateServiceClient) CreateOrganization(ctx context.Context, in *CreateOrganizationRequest, opts ...grpc.CallOption) (*CreateOrganizationResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(CreateOrganizationResponse)
-	err := c.cc.Invoke(ctx, IntermediateService_CreateOrganization_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *intermediateServiceClient) IssueEmailVerificationChallenge(ctx context.Context, in *IssueEmailVerificationChallengeRequest, opts ...grpc.CallOption) (*IssueEmailVerificationChallengeResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(IssueEmailVerificationChallengeResponse)
@@ -195,8 +182,6 @@ type IntermediateServiceServer interface {
 	RedeemGoogleOAuthCode(context.Context, *RedeemGoogleOAuthCodeRequest) (*RedeemGoogleOAuthCodeResponse, error)
 	GetMicrosoftOAuthRedirectURL(context.Context, *GetMicrosoftOAuthRedirectURLRequest) (*GetMicrosoftOAuthRedirectURLResponse, error)
 	RedeemMicrosoftOAuthCode(context.Context, *RedeemMicrosoftOAuthCodeRequest) (*RedeemMicrosoftOAuthCodeResponse, error)
-	// Creates a new organization.
-	CreateOrganization(context.Context, *CreateOrganizationRequest) (*CreateOrganizationResponse, error)
 	// Issues a new email verification challenge.
 	IssueEmailVerificationChallenge(context.Context, *IssueEmailVerificationChallengeRequest) (*IssueEmailVerificationChallengeResponse, error)
 	// Gets a list of organizations.
@@ -235,9 +220,6 @@ func (UnimplementedIntermediateServiceServer) GetMicrosoftOAuthRedirectURL(conte
 }
 func (UnimplementedIntermediateServiceServer) RedeemMicrosoftOAuthCode(context.Context, *RedeemMicrosoftOAuthCodeRequest) (*RedeemMicrosoftOAuthCodeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RedeemMicrosoftOAuthCode not implemented")
-}
-func (UnimplementedIntermediateServiceServer) CreateOrganization(context.Context, *CreateOrganizationRequest) (*CreateOrganizationResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateOrganization not implemented")
 }
 func (UnimplementedIntermediateServiceServer) IssueEmailVerificationChallenge(context.Context, *IssueEmailVerificationChallengeRequest) (*IssueEmailVerificationChallengeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method IssueEmailVerificationChallenge not implemented")
@@ -398,24 +380,6 @@ func _IntermediateService_RedeemMicrosoftOAuthCode_Handler(srv interface{}, ctx 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _IntermediateService_CreateOrganization_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateOrganizationRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(IntermediateServiceServer).CreateOrganization(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: IntermediateService_CreateOrganization_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(IntermediateServiceServer).CreateOrganization(ctx, req.(*CreateOrganizationRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _IntermediateService_IssueEmailVerificationChallenge_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(IssueEmailVerificationChallengeRequest)
 	if err := dec(in); err != nil {
@@ -522,10 +486,6 @@ var IntermediateService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RedeemMicrosoftOAuthCode",
 			Handler:    _IntermediateService_RedeemMicrosoftOAuthCode_Handler,
-		},
-		{
-			MethodName: "CreateOrganization",
-			Handler:    _IntermediateService_CreateOrganization_Handler,
 		},
 		{
 			MethodName: "IssueEmailVerificationChallenge",

@@ -99,7 +99,6 @@ func (s *Store) ExchangeIntermediateSessionForNewOrganizationSession(ctx context
 		Email:           qUser.Email,
 		GoogleUserID:    *qUser.GoogleUserID,
 		MicrosoftUserID: *qUser.MicrosoftUserID,
-		UpdateTime:      *qUser.UpdateTime,
 	}, *sessionSigningKeyID, privateKey)
 	if err != nil {
 		return nil, err

@@ -18,6 +18,7 @@ import { API_URL, PROJECT_ID } from './config'
 import GoogleOAuthCallbackPage from './pages/GoogleOAuthCallbackPage'
 import MicrosoftOAuthCallbackPage from './pages/MicrosoftOAuthCallbackPage'
 import CreateOrganizationPage from './pages/CreateOrganizationPage'
+import SessionInfoPage from './pages/SessionInfoPage'
 
 const queryClient = new QueryClient()
 
@@ -62,6 +63,7 @@ const AppWithRoutes: FC = () => {
               />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/organizations" element={<OrganizationsPage />} />
+              <Route path="/session-info" element={<SessionInfoPage />} />
               <Route path="/verify-email" element={<EmailVerificationPage />} />
             </Route>
 

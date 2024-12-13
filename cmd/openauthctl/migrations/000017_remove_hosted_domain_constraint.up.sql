@@ -1,0 +1,3 @@
+alter table organizations
+  drop constraint organizations_project_id_google_hosted_domain_key,
+  drop constraint organizations_project_id_microsoft_tenant_id_key,;
