@@ -15,6 +15,7 @@ import Page from './components/Page'
 import EmailVerificationPage from './pages/EmailVerificationPage'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { API_URL, PROJECT_ID } from './config'
+import GoogleOAuthCallbackPage from './pages/GoogleOAuthCallbackPage'
 
 const queryClient = new QueryClient()
 
@@ -45,6 +46,10 @@ const AppWithRoutes: FC = () => {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Page />}>
+              <Route
+                path="/google-oauth-callback"
+                element={<GoogleOAuthCallbackPage />}
+              />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/organizations" element={<OrganizationsPage />} />
               <Route path="/verify-email" element={<EmailVerificationPage />} />

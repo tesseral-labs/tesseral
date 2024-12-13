@@ -50,6 +50,7 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 		ID:                       dogfoodProjectID,
 		OrganizationID:           nil, // will populate after creating org
 		LogInWithPasswordEnabled: true,
+		LogInWithGoogleEnabled:   true,
 	}); err != nil {
 		return nil, fmt.Errorf("create dogfood project: %w", err)
 	}

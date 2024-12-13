@@ -14,6 +14,7 @@ var ErrAuthorizationHeaderRequired = errors.New("authorization header is require
 
 var skipRPCs = []string{
 	"/openauth.intermediate.v1.IntermediateService/SignInWithEmail",
+	"/openauth.intermediate.v1.IntermediateService/GetGoogleOAuthRedirectURL",
 }
 
 func New(s *store.Store) connect.UnaryInterceptorFunc {

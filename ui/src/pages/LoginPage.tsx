@@ -1,3 +1,5 @@
+import React, { useEffect } from 'react'
+
 import EmailForm from '@/components/EmailForm'
 import OAuthButton, { OAuthMethods } from '@/components/OAuthButton'
 import { Title } from '@/components/Title'
@@ -9,9 +11,44 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import TextDivider from '@/components/ui/TextDivider'
-import React from 'react'
+import { useMutation } from '@connectrpc/connect-query'
+
+import { setIntermediateSessionToken } from '@/auth'
+import { getGoogleOAuthRedirectURL } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
 
 const LoginPage = () => {
+  const [googleOAuthRedirectUrl, setGoogleOAuthRedirectUrl] = React.useState('')
+
+  const googleOAuthRedirectUrlMutation = useMutation(getGoogleOAuthRedirectURL)
+
+  const handleGoogleOAuthLogin = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    try {
+      if (googleOAuthRedirectUrl) {
+        window.location.href = googleOAuthRedirectUrl
+        return
+      }
+
+      const { intermediateSessionToken, url } =
+        await googleOAuthRedirectUrlMutation.mutateAsync({
+          redirectUrl: `${window.location.origin}/google-oauth-callback`,
+        })
+
+      setIntermediateSessionToken(intermediateSessionToken)
+      window.location.href = url
+    } catch (error) {
+      // TODO: Handle errors on screen once an error handling strategy is in place.
+      console.error(error)
+    }
+  }
+
+  const handleMicrosoftOAuthLogin = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+  }
+
   return (
     <>
       <Title title="Login" />
@@ -26,11 +63,13 @@ const LoginPage = () => {
           <OAuthButton
             className="mb-4 w-[clamp(240px,50%,100%)]"
             method={OAuthMethods.google}
+            onClick={handleGoogleOAuthLogin}
             variant="outline"
           />
           <OAuthButton
             className="w-[clamp(240px,50%,100%)]"
             method={OAuthMethods.microsoft}
+            onClick={handleMicrosoftOAuthLogin}
             variant="outline"
           />
 

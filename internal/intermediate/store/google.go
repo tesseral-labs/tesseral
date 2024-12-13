@@ -6,6 +6,7 @@ import (
 	"crypto/sha256"
 	"errors"
 	"fmt"
+	"time"
 
 	"connectrpc.com/connect"
 	"github.com/aws/aws-sdk-go-v2/service/kms"
@@ -15,6 +16,8 @@ import (
 	"github.com/openauth/openauth/internal/intermediate/authn"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
+	"github.com/openauth/openauth/internal/projectid"
+	"github.com/openauth/openauth/internal/store/idformat"
 )
 
 func (s *Store) GetGoogleOAuthRedirectURL(ctx context.Context, req *intermediatev1.GetGoogleOAuthRedirectURLRequest) (*intermediatev1.GetGoogleOAuthRedirectURLResponse, error) {
@@ -24,7 +27,7 @@ func (s *Store) GetGoogleOAuthRedirectURL(ctx context.Context, req *intermediate
 	}
 	defer rollback()
 
-	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	qProject, err := q.GetProjectByID(ctx, projectid.ProjectID(ctx))
 	if err != nil {
 		return nil, fmt.Errorf("get project by id: %v", err)
 	}
@@ -33,10 +36,25 @@ func (s *Store) GetGoogleOAuthRedirectURL(ctx context.Context, req *intermediate
 		return nil, connect.NewError(connect.CodeFailedPrecondition, errors.New("google oauth not configured"))
 	}
 
+	token := uuid.New()
+	tokenSha256 := sha256.Sum256(token[:])
+	expiresAt := time.Now().Add(155 * time.Minute)
+
+	// Since this is the entrypoint for the google oauth flow, we create the intermediate session here
+	intermediateSession, err := q.CreateIntermediateSession(ctx, queries.CreateIntermediateSessionParams{
+		ID:          uuid.New(),
+		ProjectID:   projectid.ProjectID(ctx),
+		ExpireTime:  &expiresAt,
+		TokenSha256: tokenSha256[:],
+	})
+	if err != nil {
+		return nil, fmt.Errorf("create intermediate session: %v", err)
+	}
+
 	state := uuid.NewString()
 	stateSHA := sha256.Sum256([]byte(state))
 	if _, err := q.UpdateIntermediateSessionGoogleOAuthStateSHA256(ctx, queries.UpdateIntermediateSessionGoogleOAuthStateSHA256Params{
-		ID:                     authn.IntermediateSessionID(ctx),
+		ID:                     intermediateSession.ID,
 		GoogleOauthStateSha256: stateSHA[:],
 	}); err != nil {
 		return nil, fmt.Errorf("update intermediate session google oauth state: %v", err)
@@ -44,7 +62,7 @@ func (s *Store) GetGoogleOAuthRedirectURL(ctx context.Context, req *intermediate
 
 	url := googleoauth.GetAuthorizeURL(&googleoauth.GetAuthorizeURLRequest{
 		GoogleOAuthClientID: *qProject.GoogleOauthClientID,
-		RedirectURI:         "http://localhost:3000/google-oauth-callback", // todo
+		RedirectURI:         req.RedirectUrl,
 		State:               state,
 	})
 
@@ -52,7 +70,10 @@ func (s *Store) GetGoogleOAuthRedirectURL(ctx context.Context, req *intermediate
 		return nil, fmt.Errorf("commit: %v", err)
 	}
 
-	return &intermediatev1.GetGoogleOAuthRedirectURLResponse{Url: url}, nil
+	return &intermediatev1.GetGoogleOAuthRedirectURLResponse{
+		IntermediateSessionToken: idformat.IntermediateSessionToken.Format(token),
+		Url:                      url,
+	}, nil
 }
 
 func (s *Store) RedeemGoogleOAuthCode(ctx context.Context, req *intermediatev1.RedeemGoogleOAuthCodeRequest) (*intermediatev1.RedeemGoogleOAuthCodeResponse, error) {
@@ -89,7 +110,7 @@ func (s *Store) RedeemGoogleOAuthCode(ctx context.Context, req *intermediatev1.R
 	redeemRes, err := s.googleOAuthClient.RedeemCode(ctx, &googleoauth.RedeemCodeRequest{
 		GoogleOAuthClientID:     *qProject.GoogleOauthClientID,
 		GoogleOAuthClientSecret: string(decryptRes.Value),
-		RedirectURI:             "http://localhost:3000/google-oauth-callback", // todo
+		RedirectURI:             req.RedirectUrl,
 		Code:                    req.Code,
 	})
 	if err != nil {
@@ -97,7 +118,6 @@ func (s *Store) RedeemGoogleOAuthCode(ctx context.Context, req *intermediatev1.R
 	}
 
 	// todo what if the intermediate session already has an email
-	// todo send an email verification challenge?
 	// todo what if redeem doesn't come back with a google hosted domain?
 	if _, err := q.UpdateIntermediateSessionGoogleDetails(ctx, queries.UpdateIntermediateSessionGoogleDetailsParams{
 		ID:                 authn.IntermediateSessionID(ctx),
