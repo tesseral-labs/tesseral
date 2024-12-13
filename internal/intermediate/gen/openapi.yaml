@@ -350,11 +350,7 @@ components:
                     type: string
         GetGoogleOAuthRedirectURLResponse:
             type: object
-            properties:
-                url:
-                    type: string
-                intermediateSessionToken:
-                    type: string
+            properties: {}
         GetMicrosoftOAuthRedirectURLRequest:
             type: object
             properties:

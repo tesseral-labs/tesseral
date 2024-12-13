@@ -153,8 +153,6 @@ message GetGoogleOAuthRedirectURLRequest {
 }
 
 message GetGoogleOAuthRedirectURLResponse {
-  string url = 1;
-  string intermediate_session_token = 2;
 }
 
 message RedeemGoogleOAuthCodeRequest {
