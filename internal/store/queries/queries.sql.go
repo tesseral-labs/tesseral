@@ -105,28 +105,24 @@ func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganization
 }
 
 const createProject = `-- name: CreateProject :one
-INSERT INTO projects (id, organization_id, google_oauth_client_id, google_oauth_client_secret_ciphertext, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
+INSERT INTO projects (id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled)
+    VALUES ($1, $2, $3, $4, $5)
 RETURNING
     id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext
 `
 
 type CreateProjectParams struct {
-	ID                                uuid.UUID
-	OrganizationID                    *uuid.UUID
-	GoogleOauthClientID               *string
-	GoogleOauthClientSecretCiphertext []byte
-	LogInWithPasswordEnabled          bool
-	LogInWithGoogleEnabled            bool
-	LogInWithMicrosoftEnabled         bool
+	ID                        uuid.UUID
+	OrganizationID            *uuid.UUID
+	LogInWithPasswordEnabled  bool
+	LogInWithGoogleEnabled    bool
+	LogInWithMicrosoftEnabled bool
 }
 
 func (q *Queries) CreateProject(ctx context.Context, arg CreateProjectParams) (Project, error) {
 	row := q.db.QueryRow(ctx, createProject,
 		arg.ID,
 		arg.OrganizationID,
-		arg.GoogleOauthClientID,
-		arg.GoogleOauthClientSecretCiphertext,
 		arg.LogInWithPasswordEnabled,
 		arg.LogInWithGoogleEnabled,
 		arg.LogInWithMicrosoftEnabled,

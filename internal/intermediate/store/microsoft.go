@@ -6,6 +6,7 @@ import (
 	"crypto/sha256"
 	"errors"
 	"fmt"
+	"time"
 
 	"connectrpc.com/connect"
 	"github.com/aws/aws-sdk-go-v2/service/kms"
@@ -15,6 +16,8 @@ import (
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
 	"github.com/openauth/openauth/internal/microsoftoauth"
+	"github.com/openauth/openauth/internal/projectid"
+	"github.com/openauth/openauth/internal/store/idformat"
 )
 
 func (s *Store) GetMicrosoftOAuthRedirectURL(ctx context.Context, req *intermediatev1.GetMicrosoftOAuthRedirectURLRequest) (*intermediatev1.GetMicrosoftOAuthRedirectURLResponse, error) {
@@ -33,10 +36,25 @@ func (s *Store) GetMicrosoftOAuthRedirectURL(ctx context.Context, req *intermedi
 		return nil, connect.NewError(connect.CodeFailedPrecondition, errors.New("microsoft oauth not configured"))
 	}
 
+	token := uuid.New()
+	tokenSha256 := sha256.Sum256(token[:])
+	expiresAt := time.Now().Add(155 * time.Minute)
+
+	// Since this is the entrypoint for the google oauth flow, we create the intermediate session here
+	intermediateSession, err := q.CreateIntermediateSession(ctx, queries.CreateIntermediateSessionParams{
+		ID:          uuid.New(),
+		ProjectID:   projectid.ProjectID(ctx),
+		ExpireTime:  &expiresAt,
+		TokenSha256: tokenSha256[:],
+	})
+	if err != nil {
+		return nil, fmt.Errorf("create intermediate session: %v", err)
+	}
+
 	state := uuid.NewString()
 	stateSHA := sha256.Sum256([]byte(state))
 	if _, err := q.UpdateIntermediateSessionMicrosoftOAuthStateSHA256(ctx, queries.UpdateIntermediateSessionMicrosoftOAuthStateSHA256Params{
-		ID:                        authn.IntermediateSessionID(ctx),
+		ID:                        intermediateSession.ID,
 		MicrosoftOauthStateSha256: stateSHA[:],
 	}); err != nil {
 		return nil, fmt.Errorf("update intermediate session microsoft oauth state: %v", err)
@@ -44,7 +62,7 @@ func (s *Store) GetMicrosoftOAuthRedirectURL(ctx context.Context, req *intermedi
 
 	url := microsoftoauth.GetAuthorizeURL(&microsoftoauth.GetAuthorizeURLRequest{
 		MicrosoftOAuthClientID: *qProject.MicrosoftOauthClientID,
-		RedirectURI:            "http://localhost:3000/microsoft-oauth-callback", // todo
+		RedirectURI:            req.RedirectUrl,
 		State:                  state,
 	})
 
@@ -52,7 +70,10 @@ func (s *Store) GetMicrosoftOAuthRedirectURL(ctx context.Context, req *intermedi
 		return nil, fmt.Errorf("commit: %v", err)
 	}
 
-	return &intermediatev1.GetMicrosoftOAuthRedirectURLResponse{Url: url}, nil
+	return &intermediatev1.GetMicrosoftOAuthRedirectURLResponse{
+		IntermediateSessionToken: idformat.IntermediateSessionToken.Format(token),
+		Url:                      url,
+	}, nil
 }
 
 func (s *Store) RedeemMicrosoftOAuthCode(ctx context.Context, req *intermediatev1.RedeemMicrosoftOAuthCodeRequest) (*intermediatev1.RedeemMicrosoftOAuthCodeResponse, error) {
@@ -89,7 +110,7 @@ func (s *Store) RedeemMicrosoftOAuthCode(ctx context.Context, req *intermediatev
 	redeemRes, err := s.microsoftOAuthClient.RedeemCode(ctx, &microsoftoauth.RedeemCodeRequest{
 		MicrosoftOAuthClientID:     *qProject.MicrosoftOauthClientID,
 		MicrosoftOAuthClientSecret: string(decryptRes.Value),
-		RedirectURI:                "http://localhost:3000/microsoft-oauth-callback", // todo
+		RedirectURI:                req.RedirectUrl,
 		Code:                       req.Code,
 	})
 	if err != nil {
@@ -97,7 +118,6 @@ func (s *Store) RedeemMicrosoftOAuthCode(ctx context.Context, req *intermediatev
 	}
 
 	// todo what if the intermediate session already has an email
-	// todo send an email verification challenge?
 	// todo what if redeem comes back with the "public" microsoft tenant ID?
 	if _, err := q.UpdateIntermediateSessionMicrosoftDetails(ctx, queries.UpdateIntermediateSessionMicrosoftDetailsParams{
 		ID:                authn.IntermediateSessionID(ctx),
