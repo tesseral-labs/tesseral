@@ -671,7 +671,7 @@ func (q *Queries) GetSessionSigningKeysByProjectID(ctx context.Context, projectI
 	return items, nil
 }
 
-const isGoogleEmailVerfied = `-- name: IsGoogleEmailVerfied :one
+const isGoogleEmailVerified = `-- name: IsGoogleEmailVerified :one
 SELECT
     count(*) > 0
 FROM
@@ -682,14 +682,14 @@ WHERE
     AND google_user_id = $3
 `
 
-type IsGoogleEmailVerfiedParams struct {
+type IsGoogleEmailVerifiedParams struct {
 	ProjectID    uuid.UUID
 	Email        string
 	GoogleUserID *string
 }
 
-func (q *Queries) IsGoogleEmailVerfied(ctx context.Context, arg IsGoogleEmailVerfiedParams) (bool, error) {
-	row := q.db.QueryRow(ctx, isGoogleEmailVerfied, arg.ProjectID, arg.Email, arg.GoogleUserID)
+func (q *Queries) IsGoogleEmailVerified(ctx context.Context, arg IsGoogleEmailVerifiedParams) (bool, error) {
+	row := q.db.QueryRow(ctx, isGoogleEmailVerified, arg.ProjectID, arg.Email, arg.GoogleUserID)
 	var column_1 bool
 	err := row.Scan(&column_1)
 	return column_1, err

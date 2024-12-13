@@ -207,7 +207,7 @@ func (s *Store) shouldVerifyGoogleEmail(ctx context.Context, email string, googl
 	}
 
 	// Check if the email is already verified
-	verified, err := q.IsGoogleEmailVerfied(ctx, queries.IsGoogleEmailVerfiedParams{
+	verified, err := q.IsGoogleEmailVerified(ctx, queries.IsGoogleEmailVerifiedParams{
 		Email:        email,
 		GoogleUserID: &googleUserID,
 		ProjectID:    authn.ProjectID(ctx),
