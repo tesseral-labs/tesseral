@@ -23,7 +23,7 @@ const GoogleOAuthCallbackPage = () => {
               state,
             })
 
-          if (shouldVerifyEmail) {
+          if (shouldVerifyEmail && emailVerificationChallengeId) {
             navigate(
               `/verify-email?challenge_id=${emailVerificationChallengeId}`,
             )
