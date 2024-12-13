@@ -4,11 +4,11 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { redeemMicrosoftOAuthCode } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
 import { useMutation } from '@connectrpc/connect-query'
 
-const GoogleOAuthCallbackPage = () => {
+const MicrosoftOAuthCallbackPage = () => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const redeemGoogleOAuthCodeMutation = useMutation(redeemMicrosoftOAuthCode)
+  const redeemMicrosoftOAuthCodeMutation = useMutation(redeemMicrosoftOAuthCode)
 
   useEffect(() => {
     ;(async () => {
@@ -18,7 +18,7 @@ const GoogleOAuthCallbackPage = () => {
       if (code && state) {
         try {
           const { emailVerificationChallengeId, shouldVerifyEmail } =
-            await redeemGoogleOAuthCodeMutation.mutateAsync({
+            await redeemMicrosoftOAuthCodeMutation.mutateAsync({
               code,
               state,
             })
@@ -48,4 +48,4 @@ const GoogleOAuthCallbackPage = () => {
   )
 }
 
-export default GoogleOAuthCallbackPage
+export default MicrosoftOAuthCallbackPage

@@ -63,7 +63,7 @@ func (s *Store) GetMicrosoftOAuthRedirectURL(ctx context.Context, req *intermedi
 
 	url := microsoftoauth.GetAuthorizeURL(&microsoftoauth.GetAuthorizeURLRequest{
 		MicrosoftOAuthClientID: *qProject.MicrosoftOauthClientID,
-		RedirectURI:            "http://localhost:3000/microsoft-oauth-callback", // todo
+		RedirectURI:            fmt.Sprintf("%s/microsoft-oauth-callback", s.uiUrl),
 		State:                  state,
 	})
 
@@ -111,7 +111,7 @@ func (s *Store) RedeemMicrosoftOAuthCode(ctx context.Context, req *intermediatev
 	redeemRes, err := s.microsoftOAuthClient.RedeemCode(ctx, &microsoftoauth.RedeemCodeRequest{
 		MicrosoftOAuthClientID:     *qProject.MicrosoftOauthClientID,
 		MicrosoftOAuthClientSecret: string(decryptRes.Value),
-		RedirectURI:                "http://localhost:3000/microsoft-oauth-callback", // todo
+		RedirectURI:                fmt.Sprintf("%s/microsoft-oauth-callback", s.uiUrl),
 		Code:                       req.Code,
 	})
 	if err != nil {
