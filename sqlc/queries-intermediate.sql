@@ -196,19 +196,6 @@ FROM
 WHERE
     email = $1;
 
--- name: ListVerifiedEmails :many
-SELECT
-    *
-FROM
-    verified_emails
-WHERE
-    project_id = $1
-    AND email = $2
-    AND (google_user_id = $3
-        OR microsoft_user_id = $4)
-ORDER BY
-    id;
-
 -- name: RevokeEmailVerificationChallenge :one
 UPDATE
     email_verification_challenges
