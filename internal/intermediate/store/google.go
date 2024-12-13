@@ -62,7 +62,7 @@ func (s *Store) GetGoogleOAuthRedirectURL(ctx context.Context, req *intermediate
 
 	url := googleoauth.GetAuthorizeURL(&googleoauth.GetAuthorizeURLRequest{
 		GoogleOAuthClientID: *qProject.GoogleOauthClientID,
-		RedirectURI:         fmt.Sprintf("%s/google-oauth-callback", s.uiUrl),
+		RedirectURI:         req.RedirectUrl,
 		State:               state,
 	})
 
@@ -110,7 +110,7 @@ func (s *Store) RedeemGoogleOAuthCode(ctx context.Context, req *intermediatev1.R
 	redeemRes, err := s.googleOAuthClient.RedeemCode(ctx, &googleoauth.RedeemCodeRequest{
 		GoogleOAuthClientID:     *qProject.GoogleOauthClientID,
 		GoogleOAuthClientSecret: string(decryptRes.Value),
-		RedirectURI:             fmt.Sprintf("%s/google-oauth-callback", s.uiUrl),
+		RedirectURI:             req.RedirectUrl,
 		Code:                    req.Code,
 	})
 	if err != nil {

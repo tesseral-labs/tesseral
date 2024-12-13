@@ -31,7 +31,8 @@ service IntermediateService {
 
   rpc GetGoogleOAuthRedirectURL(GetGoogleOAuthRedirectURLRequest) returns (GetGoogleOAuthRedirectURLResponse) {
     option (google.api.http) = {
-      get: "/intermediate/v1/google-oauth-redirect-url"
+      post: "/intermediate/v1/google-oauth-redirect-url",
+      body: "*"
     };
   }
 
@@ -147,6 +148,7 @@ message ExchangeIntermediateSessionForNewOrganizationSessionResponse {
 }
 
 message GetGoogleOAuthRedirectURLRequest {
+  string redirect_url = 1;
 }
 
 message GetGoogleOAuthRedirectURLResponse {
@@ -157,6 +159,7 @@ message GetGoogleOAuthRedirectURLResponse {
 message RedeemGoogleOAuthCodeRequest {
   string code = 1;
   string state = 2;
+  string redirect_url = 3;
 }
 
 message RedeemGoogleOAuthCodeResponse {

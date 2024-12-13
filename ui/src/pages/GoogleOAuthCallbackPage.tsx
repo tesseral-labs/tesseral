@@ -29,6 +29,7 @@ const GoogleOAuthCallbackPage = () => {
           // Redeem the Google OAuth code.
           await redeemGoogleOAuthCodeMutation.mutateAsync({
             code,
+            redirectUrl: `${window.location.origin}/google-oauth-callback`,
             state,
           })
 

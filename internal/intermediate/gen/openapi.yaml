@@ -80,10 +80,16 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/Status'
     /intermediate/v1/google-oauth-redirect-url:
-        get:
+        post:
             tags:
                 - IntermediateService
             operationId: IntermediateService_GetGoogleOAuthRedirectURL
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/GetGoogleOAuthRedirectURLRequest'
+                required: true
             responses:
                 "200":
                     description: OK
@@ -331,6 +337,11 @@ components:
                 refreshToken:
                     type: string
                     description: The refresh token for the new session.
+        GetGoogleOAuthRedirectURLRequest:
+            type: object
+            properties:
+                redirectUrl:
+                    type: string
         GetGoogleOAuthRedirectURLResponse:
             type: object
             properties:
@@ -390,6 +401,8 @@ components:
                 code:
                     type: string
                 state:
+                    type: string
+                redirectUrl:
                     type: string
         RedeemGoogleOAuthCodeResponse:
             type: object

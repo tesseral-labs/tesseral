@@ -11,36 +11,36 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import TextDivider from '@/components/ui/TextDivider'
-import { useQuery } from '@connectrpc/connect-query'
+import { useMutation } from '@connectrpc/connect-query'
 
 import { setIntermediateSessionToken } from '@/auth'
 import { getGoogleOAuthRedirectURL } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
 
 const LoginPage = () => {
-  const googleOAuthRedirectUrlQuery = useQuery(getGoogleOAuthRedirectURL)
-
   const [googleOAuthRedirectUrl, setGoogleOAuthRedirectUrl] = React.useState('')
+
+  const googleOAuthRedirectUrlMutation = useMutation(getGoogleOAuthRedirectURL)
 
   const handleGoogleOAuthLogin = async (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
 
-    if (googleOAuthRedirectUrl) {
-      window.location.href = googleOAuthRedirectUrl
-      return
-    }
+    try {
+      if (googleOAuthRedirectUrl) {
+        window.location.href = googleOAuthRedirectUrl
+        return
+      }
 
-    const response = await googleOAuthRedirectUrlQuery.refetch()
+      const { intermediateSessionToken, url } =
+        await googleOAuthRedirectUrlMutation.mutateAsync({
+          redirectUrl: `${window.location.origin}/google-oauth-callback`,
+        })
 
-    if (response.isError) {
+      setIntermediateSessionToken(intermediateSessionToken)
+      window.location.href = url
+    } catch (error) {
       // TODO: Handle errors on screen once an error handling strategy is in place.
-      console.error(response.error)
-      return
-    }
-
-    if (response.data) {
-      setIntermediateSessionToken(response.data.intermediateSessionToken)
-      window.location.href = response.data.url
+      console.error(error)
     }
   }
 
@@ -48,24 +48,6 @@ const LoginPage = () => {
     e.preventDefault()
     e.stopPropagation()
   }
-
-  useEffect(() => {
-    ;(async () => {
-      if (googleOAuthRedirectUrlQuery.isError) {
-        // TODO: Handle errors on screen once an error handling strategy is in place.
-        console.error(
-          `Error fetching Google OAuth redirect URL: ${googleOAuthRedirectUrlQuery.error}`,
-        )
-      }
-
-      if (googleOAuthRedirectUrlQuery.data) {
-        setIntermediateSessionToken(
-          googleOAuthRedirectUrlQuery.data.intermediateSessionToken,
-        )
-        setGoogleOAuthRedirectUrl(googleOAuthRedirectUrlQuery.data.url)
-      }
-    })()
-  }, [googleOAuthRedirectUrlQuery])
 
   return (
     <>
