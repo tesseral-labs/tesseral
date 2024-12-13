@@ -343,6 +343,8 @@ components:
             properties:
                 url:
                     type: string
+                intermediateSessionToken:
+                    type: string
         GoogleProtobufAny:
             type: object
             properties:
@@ -424,7 +426,11 @@ components:
                     type: string
         RedeemMicrosoftOAuthCodeResponse:
             type: object
-            properties: {}
+            properties:
+                shouldVerifyEmail:
+                    type: boolean
+                emailVerificationChallengeId:
+                    type: string
         SignInWithEmailRequest:
             type: object
             properties:

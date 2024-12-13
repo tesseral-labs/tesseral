@@ -695,6 +695,30 @@ func (q *Queries) IsGoogleEmailVerfied(ctx context.Context, arg IsGoogleEmailVer
 	return column_1, err
 }
 
+const isMicrosoftEmailVerified = `-- name: IsMicrosoftEmailVerified :one
+SELECT
+    count(*) > 0
+FROM
+    verified_emails
+WHERE
+    project_id = $1
+    AND email = $2
+    AND microsoft_user_id = $3
+`
+
+type IsMicrosoftEmailVerifiedParams struct {
+	ProjectID       uuid.UUID
+	Email           string
+	MicrosoftUserID *string
+}
+
+func (q *Queries) IsMicrosoftEmailVerified(ctx context.Context, arg IsMicrosoftEmailVerifiedParams) (bool, error) {
+	row := q.db.QueryRow(ctx, isMicrosoftEmailVerified, arg.ProjectID, arg.Email, arg.MicrosoftUserID)
+	var column_1 bool
+	err := row.Scan(&column_1)
+	return column_1, err
+}
+
 const listOrganizationsByProjectIdAndEmail = `-- name: ListOrganizationsByProjectIdAndEmail :many
 SELECT
     o.id, o.project_id, o.display_name, o.override_log_in_with_password_enabled, o.override_log_in_with_google_enabled, o.override_log_in_with_microsoft_enabled, o.google_hosted_domain, o.microsoft_tenant_id

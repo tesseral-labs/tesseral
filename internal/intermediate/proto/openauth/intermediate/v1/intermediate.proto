@@ -160,6 +160,7 @@ message GetMicrosoftOAuthRedirectURLRequest {
 
 message GetMicrosoftOAuthRedirectURLResponse {
   string url = 1;
+  string intermediate_session_token = 2;
 }
 
 message RedeemMicrosoftOAuthCodeRequest {
@@ -168,6 +169,8 @@ message RedeemMicrosoftOAuthCodeRequest {
 }
 
 message RedeemMicrosoftOAuthCodeResponse {
+  bool should_verify_email = 1;
+  string email_verification_challenge_id = 2;
 }
 
 
