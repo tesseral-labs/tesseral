@@ -15,10 +15,8 @@ import (
 type Store struct {
 	db                                    *pgxpool.Pool
 	dogfoodProjectID                      *uuid.UUID
-	googleOAuthClientSecretsKMSKeyID      string
 	intermediateSessionSigningKeyKMSKeyID string
 	kms                                   *keyManagementService.KeyManagementService
-	microsoftOAuthClientSecretsKMSKeyID   string
 	pageEncoder                           pagetoken.Encoder
 	q                                     *queries.Queries
 	sessionSigningKeyKmsKeyID             string
@@ -27,10 +25,8 @@ type Store struct {
 type NewStoreParams struct {
 	DB                                    *pgxpool.Pool
 	DogfoodProjectID                      *uuid.UUID
-	GoogleOAuthClientSecretsKMSKeyID      string
 	IntermediateSessionSigningKeyKMSKeyID string
 	KMS                                   *keyManagementService.KeyManagementService
-	MicrosoftOAuthClientSecretsKMSKeyID   string
 	PageEncoder                           pagetoken.Encoder
 	SessionSigningKeyKmsKeyID             string
 }
@@ -39,10 +35,8 @@ func New(p NewStoreParams) *Store {
 	store := &Store{
 		db:                                    p.DB,
 		dogfoodProjectID:                      p.DogfoodProjectID,
-		googleOAuthClientSecretsKMSKeyID:      p.GoogleOAuthClientSecretsKMSKeyID,
 		intermediateSessionSigningKeyKMSKeyID: p.IntermediateSessionSigningKeyKMSKeyID,
 		kms:                                   p.KMS,
-		microsoftOAuthClientSecretsKMSKeyID:   p.MicrosoftOAuthClientSecretsKMSKeyID,
 		pageEncoder:                           p.PageEncoder,
 		q:                                     queries.New(p.DB),
 		sessionSigningKeyKmsKeyID:             p.SessionSigningKeyKmsKeyID,
