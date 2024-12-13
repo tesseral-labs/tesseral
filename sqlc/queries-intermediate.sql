@@ -165,7 +165,7 @@ FROM
 WHERE
     project_id = $1;
 
--- name: IsGoogleEmailVerfied :one
+-- name: IsGoogleEmailVerified :one
 SELECT
     count(*) > 0
 FROM
