@@ -1,10 +1,14 @@
+import { Title } from '@/components/Title'
 import React from 'react'
 
 const SessionInfoPage = () => {
   return (
-    <div>
-      <h1>Session Info</h1>
-    </div>
+    <>
+      <Title title="Session Info" />
+      <div>
+        <h1>Session Info Placeholder</h1>
+      </div>
+    </>
   )
 }
 
