@@ -33,8 +33,8 @@ func (s *Store) ExchangeIntermediateSessionForNewOrganizationSession(ctx context
 		ID:                 uuid.New(),
 		ProjectID:          projectID,
 		DisplayName:        req.DisplayName,
-		GoogleHostedDomain: emptyToNil(&intermediateSession.GoogleHostedDomain),
-		MicrosoftTenantID:  emptyToNil(&intermediateSession.MicrosoftTenantId),
+		GoogleHostedDomain: refOrNil(intermediateSession.GoogleHostedDomain),
+		MicrosoftTenantID:  refOrNil(intermediateSession.MicrosoftTenantId),
 	})
 	if err != nil {
 		return nil, err
@@ -45,8 +45,8 @@ func (s *Store) ExchangeIntermediateSessionForNewOrganizationSession(ctx context
 		ID:              uuid.New(),
 		OrganizationID:  qOrganization.ID,
 		Email:           intermediateSession.Email,
-		GoogleUserID:    emptyToNil(&intermediateSession.GoogleUserId),
-		MicrosoftUserID: emptyToNil(&intermediateSession.MicrosoftUserId),
+		GoogleUserID:    refOrNil(intermediateSession.GoogleUserId),
+		MicrosoftUserID: refOrNil(intermediateSession.MicrosoftUserId),
 	})
 	if err != nil {
 		return nil, err

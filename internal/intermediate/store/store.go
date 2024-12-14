@@ -78,9 +78,10 @@ func derefOrEmpty[T any](t *T) T {
 	return *t
 }
 
-func emptyToNil(s *string) *string {
-	if s == nil || *s == "" {
+func refOrNil[T comparable](t T) *T {
+	var z T
+	if t == z {
 		return nil
 	}
-	return s
+	return &t
 }
