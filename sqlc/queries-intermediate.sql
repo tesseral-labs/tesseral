@@ -185,18 +185,51 @@ WHERE
     AND email = $2
     AND microsoft_user_id = $3;
 
--- name: ListOrganizationsByProjectIdAndEmail :many
+-- name: ListOrganizationsByEmail :many
 SELECT
     o.*
 FROM
     organizations AS o
-    JOIN users AS u ON o.id = users.organization_id
+    JOIN users AS u ON o.id = u.organization_id
 WHERE
-    project_id = $1
+    o.project_id = $1
     AND u.email = $2
+    AND u.google_user_id IS NULL
+    AND u.microsoft_user_id IS NULL
+    AND o.id >= $3
 ORDER BY
-    o.display_name
-LIMIT $3;
+    o.id
+LIMIT $4;
+
+-- name: ListOrganizationsByGoogleUserID :many
+SELECT
+    o.*
+FROM
+    organizations AS o
+    JOIN users AS u ON o.id = u.organization_id
+WHERE
+    o.project_id = $1
+    AND u.email = $2
+    AND u.google_user_id = $3
+    AND o.id >= $4
+ORDER BY
+    o.id
+LIMIT $5;
+
+-- name: ListOrganizationsByMicrosoftUserID :many
+SELECT
+    o.*
+FROM
+    organizations AS o
+    JOIN users AS u ON o.id = u.organization_id
+WHERE
+    o.project_id = $1
+    AND u.email = $2
+    AND u.microsoft_user_id = $3
+    AND o.id >= $4
+ORDER BY
+    o.id
+LIMIT $5;
 
 -- name: ListUsersByEmail :many
 SELECT

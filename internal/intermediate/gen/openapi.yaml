@@ -159,14 +159,8 @@ paths:
             description: Gets a list of organizations.
             operationId: IntermediateService_ListOrganizations
             parameters:
-                - name: projectId
+                - name: pageToken
                   in: query
-                  description: The project ID to list intermediate organizations for.
-                  schema:
-                    type: string
-                - name: email
-                  in: query
-                  description: The email associated with the intermediate session.
                   schema:
                     type: string
             responses:

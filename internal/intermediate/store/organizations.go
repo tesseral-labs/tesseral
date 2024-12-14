@@ -3,6 +3,8 @@ package store
 import (
 	"context"
 
+	"github.com/google/uuid"
+	"github.com/openauth/openauth/internal/intermediate/authn"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
 	"github.com/openauth/openauth/internal/store/idformat"
@@ -18,23 +20,64 @@ func (s *Store) ListOrganizations(
 	}
 	defer rollback()
 
-	projectId, err := idformat.Project.Parse(req.ProjectId)
-	if err != nil {
+	intermediateSession := authn.IntermediateSession(ctx)
+
+	var startID uuid.UUID
+	if err := s.pageEncoder.Unmarshal(req.PageToken, &startID); err != nil {
 		return nil, err
 	}
 
 	limit := 10
-	organizationRecords, err := q.ListOrganizationsByProjectIdAndEmail(ctx, queries.ListOrganizationsByProjectIdAndEmailParams{
-		ProjectID: projectId,
-		Email:     req.Email,
-		Limit:     int32(limit + 1),
-	})
-	if err != nil {
-		return nil, err
+	qOrganizationRecords := []queries.Organization{}
+
+	if intermediateSession.GoogleUserId != "" {
+		qGoogleOrganizationRecords, err := q.ListOrganizationsByGoogleUserID(ctx, queries.ListOrganizationsByGoogleUserIDParams{
+			Email:        intermediateSession.Email,
+			GoogleUserID: &intermediateSession.GoogleUserId,
+			ID:           startID,
+			Limit:        int32(limit + 1),
+			ProjectID:    authn.ProjectID(ctx),
+		})
+		if err != nil {
+			return nil, err
+		}
+
+		if len(qGoogleOrganizationRecords) > 0 {
+			qOrganizationRecords = qGoogleOrganizationRecords
+		}
+	} else if intermediateSession.MicrosoftUserId != "" {
+		qMicrosoftOrganizationRecords, err := q.ListOrganizationsByMicrosoftUserID(ctx, queries.ListOrganizationsByMicrosoftUserIDParams{
+			Email:           intermediateSession.Email,
+			ID:              startID,
+			Limit:           int32(limit + 1),
+			MicrosoftUserID: &intermediateSession.MicrosoftUserId,
+			ProjectID:       authn.ProjectID(ctx),
+		})
+		if err != nil {
+			return nil, err
+		}
+
+		if len(qMicrosoftOrganizationRecords) > 0 {
+			qOrganizationRecords = qMicrosoftOrganizationRecords
+		}
+	} else {
+		qEmailOrganizationRecords, err := q.ListOrganizationsByEmail(ctx, queries.ListOrganizationsByEmailParams{
+			Email:     intermediateSession.Email,
+			ID:        startID,
+			Limit:     int32(limit + 1),
+			ProjectID: authn.ProjectID(ctx),
+		})
+		if err != nil {
+			return nil, err
+		}
+
+		if len(qEmailOrganizationRecords) > 0 {
+			qOrganizationRecords = qEmailOrganizationRecords
+		}
 	}
 
 	organizations := []*intermediatev1.Organization{}
-	for _, organization := range organizationRecords {
+	for _, organization := range qOrganizationRecords {
 		organizations = append(organizations, parseOrganization(organization))
 	}
 
@@ -52,10 +95,10 @@ func (s *Store) ListOrganizations(
 
 func parseOrganization(organization queries.Organization) *intermediatev1.Organization {
 	return &intermediatev1.Organization{
-		Id:                        organization.ID.String(),
+		Id:                        idformat.Organization.Format(organization.ID),
 		DisplayName:               organization.DisplayName,
-		LogInWithGoogleEnabled:    *organization.OverrideLogInWithGoogleEnabled,
-		LogInWithMicrosoftEnabled: *organization.OverrideLogInWithMicrosoftEnabled,
-		LogInWithPasswordEnabled:  *organization.OverrideLogInWithPasswordEnabled,
+		LogInWithGoogleEnabled:    derefOrEmpty(organization.OverrideLogInWithGoogleEnabled),
+		LogInWithMicrosoftEnabled: derefOrEmpty(organization.OverrideLogInWithMicrosoftEnabled),
+		LogInWithPasswordEnabled:  derefOrEmpty(organization.OverrideLogInWithPasswordEnabled),
 	}
 }
