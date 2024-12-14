@@ -182,30 +182,6 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-        post:
-            tags:
-                - IntermediateService
-            description: Creates a new organization.
-            operationId: IntermediateService_CreateOrganization
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/CreateOrganizationRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/CreateOrganizationResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
     /intermediate/v1/redeem-google-oauth-code:
         post:
             tags:
@@ -299,20 +275,6 @@ paths:
                                 $ref: '#/components/schemas/Status'
 components:
     schemas:
-        CreateOrganizationRequest:
-            type: object
-            properties:
-                projectId:
-                    type: string
-                    description: The project ID to create the organization for.
-                displayName:
-                    type: string
-                    description: The display name of the organization.
-        CreateOrganizationResponse:
-            type: object
-            properties:
-                organization:
-                    $ref: '#/components/schemas/Organization'
         ExchangeIntermediateSessionForNewOrganizationSessionRequest:
             type: object
             properties:

@@ -331,11 +331,15 @@ components:
                 id:
                     type: string
                     description: The user ID that is currently authenticated.
-                displayName:
-                    type: string
-                    description: The display name for the user.
                 email:
                     type: string
                     description: The email address for the user.
+                organizationId:
+                    type: string
+                    description: The organization ID for the user.
+                organization:
+                    allOf:
+                        - $ref: '#/components/schemas/Organization'
+                    description: The organization for the user.
 tags:
     - name: FrontendService

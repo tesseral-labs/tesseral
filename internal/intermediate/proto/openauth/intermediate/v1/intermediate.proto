@@ -57,14 +57,6 @@ service IntermediateService {
     };
   }
 
-  // Creates a new organization.
-  rpc CreateOrganization(CreateOrganizationRequest) returns (CreateOrganizationResponse) {
-    option (google.api.http) = {
-      post: "/intermediate/v1/organizations",
-      body: "*"
-    };
-  }
-
   // Issues a new email verification challenge.
   rpc IssueEmailVerificationChallenge(IssueEmailVerificationChallengeRequest) returns (IssueEmailVerificationChallengeResponse) {
     option (google.api.http) = {
@@ -205,17 +197,6 @@ message Organization {
   bool log_in_with_google_enabled = 4;
   bool log_in_with_microsoft_enabled = 5;
   bool log_in_with_password_enabled = 6;
-}
-
-message CreateOrganizationRequest {
-  // The project ID to create the organization for.
-  string project_id = 1;
-  // The display name of the organization.
-  string display_name = 2;
-}
-
-message CreateOrganizationResponse {
-  Organization organization = 1;
 }
 
 message IssueEmailVerificationChallengeRequest {

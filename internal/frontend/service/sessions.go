@@ -15,3 +15,11 @@ func (s *FrontendService) GetAccessToken(ctx context.Context, req *connect.Reque
 	}
 	return connect.NewResponse(res), nil
 }
+
+func (s *FrontendService) Whoami(ctx context.Context, req *connect.Request[frontendv1.WhoAmIRequest]) (*connect.Response[frontendv1.WhoAmIResponse], error) {
+	res, err := s.Store.Whoami(ctx, req.Msg)
+	if err != nil {
+		return nil, fmt.Errorf("store: %w", err)
+	}
+	return connect.NewResponse(res), nil
+}
