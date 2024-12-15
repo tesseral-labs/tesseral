@@ -278,6 +278,13 @@ func (s *Store) PatchUser(ctx context.Context, id string, operations PatchOperat
 		return nil, fmt.Errorf("parse patched user: %w", err)
 	}
 
+	// IDPs may deprovision a user by PATCHing away everything except "active".
+	// We always require email. So if a PATCHed scimUser lacks a userName (i.e.
+	// email), restore it.
+	if parsed.UserName == "" {
+		parsed.UserName = qUser.Email
+	}
+
 	// save that new state
 	//if err := s.validateEmailDomain(ctx, q, parsed.UserName); err != nil {
 	//	return nil, fmt.Errorf("validate email domain: %w", err)
@@ -355,9 +362,6 @@ func parseUser(user User) (*parsedUser, error) {
 	}
 
 	userName, _ := m["userName"].(string)
-	if userName == "" {
-		return nil, fmt.Errorf("userName is required")
-	}
 
 	var active bool
 	if _, ok := m["active"]; !ok {
