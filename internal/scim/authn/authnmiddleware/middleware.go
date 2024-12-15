@@ -1,4 +1,4 @@
-package middleware
+package authnmiddleware
 
 import (
 	"net/http"

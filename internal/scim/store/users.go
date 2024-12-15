@@ -360,7 +360,9 @@ func parseUser(user User) (*parsedUser, error) {
 	}
 
 	var active bool
-	if a, ok := m["active"].(bool); ok {
+	if _, ok := m["active"]; !ok {
+		active = true
+	} else if a, ok := m["active"].(bool); ok {
 		active = a
 	} else if a, ok := m["active"].(string); ok {
 		if a == "true" {
