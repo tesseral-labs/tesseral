@@ -71,3 +71,14 @@ WHERE
 RETURNING
     *;
 
+-- name: DeactivateUser :one
+UPDATE
+    users
+SET
+    deactivate_time = $1
+WHERE
+    id = $2
+    AND organization_id = $3
+RETURNING
+    *;
+

@@ -2,6 +2,7 @@ package store
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -13,6 +14,7 @@ import (
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/openauth/openauth/internal/emailaddr"
 	"github.com/openauth/openauth/internal/scim/authn"
+	"github.com/openauth/openauth/internal/scim/internal/scimpatch"
 	"github.com/openauth/openauth/internal/scim/store/queries"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
@@ -104,7 +106,7 @@ func (s *Store) ListUsers(ctx context.Context, req *ListUsersRequest) (*ListUser
 	}
 
 	return &ListUsersResponse{
-		Schemas:      []string{"urn:ietf:params:scim:schemas:core:2.0:User"},
+		Schemas:      []string{"urn:ietf:params:scim:api:messages:2.0:ListResponse"},
 		TotalResults: int(count),
 		Users:        users,
 	}, nil
@@ -155,9 +157,9 @@ func (s *Store) CreateUser(ctx context.Context, user User) (User, error) {
 		return nil, fmt.Errorf("parse user: %w", err)
 	}
 
-	if err := s.validateEmailDomain(ctx, q, parsed.UserName); err != nil {
-		return nil, fmt.Errorf("validate email domain: %w", err)
-	}
+	//if err := s.validateEmailDomain(ctx, q, parsed.UserName); err != nil {
+	//	return nil, fmt.Errorf("validate email domain: %w", err)
+	//}
 
 	qUser, err := q.CreateUser(ctx, queries.CreateUserParams{
 		ID:             uuid.New(),
@@ -192,9 +194,9 @@ func (s *Store) UpdateUser(ctx context.Context, id string, user User) (User, err
 		return nil, fmt.Errorf("parse user: %w", err)
 	}
 
-	if err := s.validateEmailDomain(ctx, q, parsed.UserName); err != nil {
-		return nil, fmt.Errorf("validate email domain: %w", err)
-	}
+	//if err := s.validateEmailDomain(ctx, q, parsed.UserName); err != nil {
+	//	return nil, fmt.Errorf("validate email domain: %w", err)
+	//}
 
 	// todo do we care about this bumping deactivate_time any time an update happens to the user?
 	var deactivateTime *time.Time
@@ -228,6 +230,127 @@ func (s *Store) UpdateUser(ctx context.Context, id string, user User) (User, err
 	}
 
 	return formatUser(true, qUser), nil
+}
+
+type PatchOperations struct {
+	Operations []scimpatch.Operation `json:"Operations"`
+}
+
+func (s *Store) PatchUser(ctx context.Context, id string, operations PatchOperations) (User, error) {
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	// load our representation of the current state
+	userID, err := idformat.User.Parse(id)
+	if err != nil {
+		return nil, &SCIMError{
+			Status: http.StatusBadRequest,
+			Detail: "invalid user id",
+		}
+	}
+
+	qUser, err := q.GetUserByID(ctx, queries.GetUserByIDParams{
+		OrganizationID: authn.OrganizationID(ctx),
+		ID:             userID,
+	})
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, &SCIMError{
+				Status: http.StatusNotFound,
+				Detail: "user not found",
+			}
+		}
+
+		return nil, fmt.Errorf("get user by id: %w", err)
+	}
+
+	// load current state in SCIM representation
+	scimUser := jsonify(formatUser(false, qUser))
+
+	// apply patches to that representation
+	if err := scimpatch.Patch(operations.Operations, &scimUser); err != nil {
+		return nil, fmt.Errorf("patch user: %w", err)
+	}
+
+	// convert back to preferred representation
+	parsed, err := parseUser(scimUser)
+	if err != nil {
+		fmt.Printf("fail to parse %v %v\n", operations, scimUser)
+
+		return nil, fmt.Errorf("parse patched user: %w", err)
+	}
+
+	// save that new state
+	//if err := s.validateEmailDomain(ctx, q, parsed.UserName); err != nil {
+	//	return nil, fmt.Errorf("validate email domain: %w", err)
+	//}
+
+	// todo do we care about this bumping deactivate_time any time an update happens to the user?
+	var deactivateTime *time.Time
+	if !parsed.Active {
+		now := time.Now()
+		deactivateTime = &now
+	}
+
+	qUser, err = q.UpdateUser(ctx, queries.UpdateUserParams{
+		OrganizationID: authn.OrganizationID(ctx),
+		ID:             userID,
+		DeactivateTime: deactivateTime,
+		Email:          parsed.UserName,
+	})
+	if err != nil {
+		var pgxErr *pgconn.PgError
+		if errors.As(err, &pgxErr) {
+			if pgxErr.Code == "23505" && pgxErr.ConstraintName == "users_organization_id_email_key" {
+				return nil, &SCIMError{
+					Status: http.StatusBadRequest,
+					Detail: "a user with that email already exists",
+				}
+			}
+		}
+
+		return nil, fmt.Errorf("update user: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
+	}
+
+	return formatUser(true, qUser), nil
+}
+
+func (s *Store) DeleteUser(ctx context.Context, id string) error {
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return err
+	}
+	defer rollback()
+
+	userID, err := idformat.User.Parse(id)
+	if err != nil {
+		return &SCIMError{
+			Status: http.StatusBadRequest,
+			Detail: "invalid user id",
+		}
+	}
+
+	now := time.Now()
+	if _, err := q.DeactivateUser(ctx, queries.DeactivateUserParams{
+		OrganizationID: authn.OrganizationID(ctx),
+		ID:             userID,
+		DeactivateTime: &now,
+	}); err != nil {
+		return fmt.Errorf("deactivate user: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return fmt.Errorf("commit: %w", err)
+	}
+
+	return nil
 }
 
 func parseUser(user User) (*parsedUser, error) {
@@ -316,4 +439,17 @@ func (s *Store) validateEmailDomain(ctx context.Context, q *queries.Queries, ema
 	}
 
 	return nil
+}
+
+func jsonify(t any) map[string]any {
+	b, err := json.Marshal(t)
+	if err != nil {
+		panic(err)
+	}
+
+	var v map[string]any
+	if err := json.Unmarshal(b, &v); err != nil {
+		panic(err)
+	}
+	return v
 }

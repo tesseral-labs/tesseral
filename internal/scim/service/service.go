@@ -25,6 +25,8 @@ func (s *Service) Handler() http.Handler {
 	mux.Handle("GET /scim/v1/Users/{userID}", withErr(s.getUser))
 	mux.Handle("POST /scim/v1/Users", withErr(s.createUser))
 	mux.Handle("PUT /scim/v1/Users/{userID}", withErr(s.updateUser))
+	mux.Handle("PATCH /scim/v1/Users/{userID}", withErr(s.patchUser))
+	mux.Handle("DELETE /scim/v1/Users/{userID}", withErr(s.deleteUser))
 
 	return middleware.New(s.Store, mux)
 }
@@ -117,7 +119,7 @@ func (s *Service) createUser(w http.ResponseWriter, r *http.Request) error {
 		return nil
 	}
 
-	user, err := s.Store.CreateUser(ctx, &reqUser)
+	user, err := s.Store.CreateUser(ctx, reqUser)
 	if err != nil {
 		var errBadDomain *store.SCIMError
 		if errors.As(err, &errBadDomain) {
@@ -175,6 +177,65 @@ func (s *Service) updateUser(w http.ResponseWriter, r *http.Request) error {
 	if err := json.NewEncoder(w).Encode(user); err != nil {
 		return fmt.Errorf("write response: %w", err)
 	}
+	return nil
+}
+
+func (s *Service) patchUser(w http.ResponseWriter, r *http.Request) error {
+	ctx := r.Context()
+
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("read body: %s", err), http.StatusBadRequest)
+		return nil
+	}
+
+	var operations store.PatchOperations
+	if err := json.Unmarshal(body, &operations); err != nil {
+		http.Error(w, fmt.Sprintf("unmarshal body: %s", err), http.StatusBadRequest)
+		return nil
+	}
+
+	user, err := s.Store.PatchUser(ctx, r.PathValue("userID"), operations)
+	if err != nil {
+		var scimError *store.SCIMError
+		if errors.As(err, &scimError) {
+			w.Header().Set("Content-Type", "application/scim+json")
+			w.WriteHeader(http.StatusBadRequest)
+			if err := json.NewEncoder(w).Encode(scimError); err != nil {
+				return fmt.Errorf("write response: %w", err)
+			}
+			return nil
+		}
+
+		return fmt.Errorf("store: %w", err)
+	}
+
+	w.Header().Set("Content-Type", "application/scim+json")
+	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(user); err != nil {
+		return fmt.Errorf("write response: %w", err)
+	}
+	return nil
+}
+
+func (s *Service) deleteUser(w http.ResponseWriter, r *http.Request) error {
+	ctx := r.Context()
+	if err := s.Store.DeleteUser(ctx, r.PathValue("userID")); err != nil {
+		var scimError *store.SCIMError
+		if errors.As(err, &scimError) {
+			w.Header().Set("Content-Type", "application/scim+json")
+			w.WriteHeader(http.StatusBadRequest)
+			if err := json.NewEncoder(w).Encode(scimError); err != nil {
+				return fmt.Errorf("write response: %w", err)
+			}
+			return nil
+		}
+
+		return fmt.Errorf("store: %w", err)
+	}
+
+	w.Header().Set("Content-Type", "application/scim+json")
+	w.WriteHeader(http.StatusNoContent)
 	return nil
 }
 
