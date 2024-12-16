@@ -26,8 +26,9 @@ type ListUsersRequest struct {
 }
 
 type ListUsersResponse struct {
-	TotalResults int    `json:"totalResults"`
-	Users        []User `json:"Resources"`
+	Schemas      []string `json:"schemas,omitempty"`
+	TotalResults int      `json:"totalResults"`
+	Users        []User   `json:"Resources"`
 }
 
 // User is a SCIM representation of a user. It is suitable for JSON
@@ -39,9 +40,10 @@ type User any
 // Most IDPs will sometimes use different representations of users. Entra, in
 // particular, sends "active" as a string instead of a boolean.
 type parsedUser struct {
-	ID       string `json:"id"`
-	UserName string `json:"userName"`
-	Active   bool   `json:"active"`
+	Schemas  []string `json:"schemas,omitempty"`
+	ID       string   `json:"id"`
+	UserName string   `json:"userName"`
+	Active   bool     `json:"active"`
 }
 
 func (s *Store) ListUsers(ctx context.Context, req *ListUsersRequest) (*ListUsersResponse, error) {
@@ -59,6 +61,7 @@ func (s *Store) ListUsers(ctx context.Context, req *ListUsersRequest) (*ListUser
 		if err != nil {
 			if errors.Is(err, pgx.ErrNoRows) {
 				return &ListUsersResponse{
+					Schemas:      []string{"urn:ietf:params:scim:schemas:core:2.0:User"},
 					TotalResults: 0,
 					Users:        []User{},
 				}, nil
@@ -67,8 +70,9 @@ func (s *Store) ListUsers(ctx context.Context, req *ListUsersRequest) (*ListUser
 		}
 
 		return &ListUsersResponse{
+			Schemas:      []string{"urn:ietf:params:scim:schemas:core:2.0:User"},
 			TotalResults: 1,
-			Users:        []User{formatUser(qUser)},
+			Users:        []User{formatUser(false, qUser)},
 		}, nil
 	}
 
@@ -98,10 +102,11 @@ func (s *Store) ListUsers(ctx context.Context, req *ListUsersRequest) (*ListUser
 
 	users := []User{} // intentionally not initialized as nil to avoid a JSON `null`
 	for _, qUser := range qUsers {
-		users = append(users, formatUser(qUser))
+		users = append(users, formatUser(false, qUser))
 	}
 
 	return &ListUsersResponse{
+		Schemas:      []string{"urn:ietf:params:scim:api:messages:2.0:ListResponse"},
 		TotalResults: int(count),
 		Users:        users,
 	}, nil
@@ -137,7 +142,7 @@ func (s *Store) GetUser(ctx context.Context, id string) (User, error) {
 		return nil, fmt.Errorf("get user by id: %w", err)
 	}
 
-	return formatUser(qUser), nil
+	return formatUser(true, qUser), nil
 }
 
 func (s *Store) CreateUser(ctx context.Context, user User) (User, error) {
@@ -169,7 +174,7 @@ func (s *Store) CreateUser(ctx context.Context, user User) (User, error) {
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return formatUser(qUser), nil
+	return formatUser(true, qUser), nil
 }
 
 func (s *Store) UpdateUser(ctx context.Context, id string, user User) (User, error) {
@@ -224,7 +229,7 @@ func (s *Store) UpdateUser(ctx context.Context, id string, user User) (User, err
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return formatUser(qUser), nil
+	return formatUser(true, qUser), nil
 }
 
 type PatchOperations struct {
@@ -263,7 +268,7 @@ func (s *Store) PatchUser(ctx context.Context, id string, operations PatchOperat
 	}
 
 	// load current state in SCIM representation
-	scimUser := jsonify(formatUser(qUser))
+	scimUser := jsonify(formatUser(false, qUser))
 
 	// apply patches to that representation
 	if err := scimpatch.Patch(operations.Operations, &scimUser); err != nil {
@@ -321,7 +326,7 @@ func (s *Store) PatchUser(ctx context.Context, id string, operations PatchOperat
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return formatUser(qUser), nil
+	return formatUser(true, qUser), nil
 }
 
 func (s *Store) DeleteUser(ctx context.Context, id string) error {
@@ -386,8 +391,14 @@ func parseUser(user User) (*parsedUser, error) {
 	}, nil
 }
 
-func formatUser(qUser queries.User) User {
+func formatUser(withSchema bool, qUser queries.User) User {
+	var schemas []string
+	if withSchema {
+		schemas = []string{"urn:ietf:params:scim:schemas:core:2.0:User"}
+	}
+
 	return parsedUser{
+		Schemas:  schemas,
 		ID:       idformat.User.Format(qUser.ID),
 		UserName: qUser.Email,
 		Active:   qUser.DeactivateTime == nil,
