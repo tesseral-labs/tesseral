@@ -61,7 +61,7 @@ func (s *Store) ListUsers(ctx context.Context, req *ListUsersRequest) (*ListUser
 		if err != nil {
 			if errors.Is(err, pgx.ErrNoRows) {
 				return &ListUsersResponse{
-					Schemas:      []string{"urn:ietf:params:scim:schemas:core:2.0:User"},
+					Schemas:      []string{"urn:ietf:params:scim:api:messages:2.0:ListResponse"},
 					TotalResults: 0,
 					Users:        []User{},
 				}, nil
@@ -70,7 +70,7 @@ func (s *Store) ListUsers(ctx context.Context, req *ListUsersRequest) (*ListUser
 		}
 
 		return &ListUsersResponse{
-			Schemas:      []string{"urn:ietf:params:scim:schemas:core:2.0:User"},
+			Schemas:      []string{"urn:ietf:params:scim:api:messages:2.0:ListResponse"},
 			TotalResults: 1,
 			Users:        []User{formatUser(false, qUser)},
 		}, nil
