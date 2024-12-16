@@ -374,9 +374,9 @@ func parseUser(user User) (*parsedUser, error) {
 	} else if a, ok := m["active"].(bool); ok {
 		active = a
 	} else if a, ok := m["active"].(string); ok {
-		if a == "true" {
+		if a == "True" {
 			active = true
-		} else if a == "false" {
+		} else if a == "False" {
 			active = false
 		} else {
 			return nil, fmt.Errorf("active must be a boolean")
