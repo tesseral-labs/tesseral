@@ -721,18 +721,18 @@ func (q *Queries) IsMicrosoftEmailVerified(ctx context.Context, arg IsMicrosoftE
 
 const listOrganizationsByEmail = `-- name: ListOrganizationsByEmail :many
 SELECT
-    o.id, o.project_id, o.display_name, o.override_log_in_with_password_enabled, o.override_log_in_with_google_enabled, o.override_log_in_with_microsoft_enabled, o.google_hosted_domain, o.microsoft_tenant_id
+    organizations.id, organizations.project_id, organizations.display_name, organizations.override_log_in_with_password_enabled, organizations.override_log_in_with_google_enabled, organizations.override_log_in_with_microsoft_enabled, organizations.google_hosted_domain, organizations.microsoft_tenant_id
 FROM
-    organizations AS o
-    JOIN users AS u ON o.id = u.organization_id
+    organizations
+    JOIN users ON organizations.id = users.organization_id
 WHERE
-    o.project_id = $1
-    AND u.email = $2
-    AND u.google_user_id IS NULL
-    AND u.microsoft_user_id IS NULL
-    AND o.id >= $3
+    organizations.project_id = $1
+    AND users.email = $2
+    AND users.google_user_id IS NULL
+    AND users.microsoft_user_id IS NULL
+    AND organizations.id >= $3
 ORDER BY
-    o.id
+    organizations.id
 LIMIT $4
 `
 
@@ -779,17 +779,17 @@ func (q *Queries) ListOrganizationsByEmail(ctx context.Context, arg ListOrganiza
 
 const listOrganizationsByGoogleUserID = `-- name: ListOrganizationsByGoogleUserID :many
 SELECT
-    o.id, o.project_id, o.display_name, o.override_log_in_with_password_enabled, o.override_log_in_with_google_enabled, o.override_log_in_with_microsoft_enabled, o.google_hosted_domain, o.microsoft_tenant_id
+    organizations.id, organizations.project_id, organizations.display_name, organizations.override_log_in_with_password_enabled, organizations.override_log_in_with_google_enabled, organizations.override_log_in_with_microsoft_enabled, organizations.google_hosted_domain, organizations.microsoft_tenant_id
 FROM
-    organizations AS o
-    JOIN users AS u ON o.id = u.organization_id
+    organizations
+    JOIN users ON organizations.id = users.organization_id
 WHERE
-    o.project_id = $1
-    AND u.email = $2
-    AND u.google_user_id = $3
-    AND o.id >= $4
+    organizations.project_id = $1
+    AND users.email = $2
+    AND users.google_user_id = $3
+    AND organizations.id >= $4
 ORDER BY
-    o.id
+    organizations.id
 LIMIT $5
 `
 
@@ -838,17 +838,17 @@ func (q *Queries) ListOrganizationsByGoogleUserID(ctx context.Context, arg ListO
 
 const listOrganizationsByMicrosoftUserID = `-- name: ListOrganizationsByMicrosoftUserID :many
 SELECT
-    o.id, o.project_id, o.display_name, o.override_log_in_with_password_enabled, o.override_log_in_with_google_enabled, o.override_log_in_with_microsoft_enabled, o.google_hosted_domain, o.microsoft_tenant_id
+    organizations.id, organizations.project_id, organizations.display_name, organizations.override_log_in_with_password_enabled, organizations.override_log_in_with_google_enabled, organizations.override_log_in_with_microsoft_enabled, organizations.google_hosted_domain, organizations.microsoft_tenant_id
 FROM
-    organizations AS o
-    JOIN users AS u ON o.id = u.organization_id
+    organizations
+    JOIN users ON organizations.id = users.organization_id
 WHERE
-    o.project_id = $1
-    AND u.email = $2
-    AND u.microsoft_user_id = $3
-    AND o.id >= $4
+    organizations.project_id = $1
+    AND users.email = $2
+    AND users.microsoft_user_id = $3
+    AND organizations.id >= $4
 ORDER BY
-    o.id
+    organizations.id
 LIMIT $5
 `
 
