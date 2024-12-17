@@ -208,10 +208,7 @@ message IssueEmailVerificationChallengeResponse {
 }
 
 message ListOrganizationsRequest {
-  // The project ID to list intermediate organizations for.
-  string project_id = 1;
-  // The email associated with the intermediate session.
-  string email = 2;
+  string page_token = 1;
 }
 
 message ListOrganizationsResponse {

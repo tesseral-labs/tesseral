@@ -719,28 +719,155 @@ func (q *Queries) IsMicrosoftEmailVerified(ctx context.Context, arg IsMicrosoftE
 	return column_1, err
 }
 
-const listOrganizationsByProjectIdAndEmail = `-- name: ListOrganizationsByProjectIdAndEmail :many
+const listOrganizationsByEmail = `-- name: ListOrganizationsByEmail :many
 SELECT
-    o.id, o.project_id, o.display_name, o.override_log_in_with_password_enabled, o.override_log_in_with_google_enabled, o.override_log_in_with_microsoft_enabled, o.google_hosted_domain, o.microsoft_tenant_id
+    organizations.id, organizations.project_id, organizations.display_name, organizations.override_log_in_with_password_enabled, organizations.override_log_in_with_google_enabled, organizations.override_log_in_with_microsoft_enabled, organizations.google_hosted_domain, organizations.microsoft_tenant_id
 FROM
-    organizations AS o
-    JOIN users AS u ON o.id = users.organization_id
+    organizations
+    JOIN users ON organizations.id = users.organization_id
 WHERE
-    project_id = $1
-    AND u.email = $2
+    organizations.project_id = $1
+    AND users.email = $2
+    AND users.google_user_id IS NULL
+    AND users.microsoft_user_id IS NULL
+    AND organizations.id >= $3
 ORDER BY
-    o.display_name
-LIMIT $3
+    organizations.id
+LIMIT $4
 `
 
-type ListOrganizationsByProjectIdAndEmailParams struct {
+type ListOrganizationsByEmailParams struct {
 	ProjectID uuid.UUID
 	Email     string
+	ID        uuid.UUID
 	Limit     int32
 }
 
-func (q *Queries) ListOrganizationsByProjectIdAndEmail(ctx context.Context, arg ListOrganizationsByProjectIdAndEmailParams) ([]Organization, error) {
-	rows, err := q.db.Query(ctx, listOrganizationsByProjectIdAndEmail, arg.ProjectID, arg.Email, arg.Limit)
+func (q *Queries) ListOrganizationsByEmail(ctx context.Context, arg ListOrganizationsByEmailParams) ([]Organization, error) {
+	rows, err := q.db.Query(ctx, listOrganizationsByEmail,
+		arg.ProjectID,
+		arg.Email,
+		arg.ID,
+		arg.Limit,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Organization
+	for rows.Next() {
+		var i Organization
+		if err := rows.Scan(
+			&i.ID,
+			&i.ProjectID,
+			&i.DisplayName,
+			&i.OverrideLogInWithPasswordEnabled,
+			&i.OverrideLogInWithGoogleEnabled,
+			&i.OverrideLogInWithMicrosoftEnabled,
+			&i.GoogleHostedDomain,
+			&i.MicrosoftTenantID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listOrganizationsByGoogleUserID = `-- name: ListOrganizationsByGoogleUserID :many
+SELECT
+    organizations.id, organizations.project_id, organizations.display_name, organizations.override_log_in_with_password_enabled, organizations.override_log_in_with_google_enabled, organizations.override_log_in_with_microsoft_enabled, organizations.google_hosted_domain, organizations.microsoft_tenant_id
+FROM
+    organizations
+    JOIN users ON organizations.id = users.organization_id
+WHERE
+    organizations.project_id = $1
+    AND users.email = $2
+    AND users.google_user_id = $3
+    AND organizations.id >= $4
+ORDER BY
+    organizations.id
+LIMIT $5
+`
+
+type ListOrganizationsByGoogleUserIDParams struct {
+	ProjectID    uuid.UUID
+	Email        string
+	GoogleUserID *string
+	ID           uuid.UUID
+	Limit        int32
+}
+
+func (q *Queries) ListOrganizationsByGoogleUserID(ctx context.Context, arg ListOrganizationsByGoogleUserIDParams) ([]Organization, error) {
+	rows, err := q.db.Query(ctx, listOrganizationsByGoogleUserID,
+		arg.ProjectID,
+		arg.Email,
+		arg.GoogleUserID,
+		arg.ID,
+		arg.Limit,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Organization
+	for rows.Next() {
+		var i Organization
+		if err := rows.Scan(
+			&i.ID,
+			&i.ProjectID,
+			&i.DisplayName,
+			&i.OverrideLogInWithPasswordEnabled,
+			&i.OverrideLogInWithGoogleEnabled,
+			&i.OverrideLogInWithMicrosoftEnabled,
+			&i.GoogleHostedDomain,
+			&i.MicrosoftTenantID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listOrganizationsByMicrosoftUserID = `-- name: ListOrganizationsByMicrosoftUserID :many
+SELECT
+    organizations.id, organizations.project_id, organizations.display_name, organizations.override_log_in_with_password_enabled, organizations.override_log_in_with_google_enabled, organizations.override_log_in_with_microsoft_enabled, organizations.google_hosted_domain, organizations.microsoft_tenant_id
+FROM
+    organizations
+    JOIN users ON organizations.id = users.organization_id
+WHERE
+    organizations.project_id = $1
+    AND users.email = $2
+    AND users.microsoft_user_id = $3
+    AND organizations.id >= $4
+ORDER BY
+    organizations.id
+LIMIT $5
+`
+
+type ListOrganizationsByMicrosoftUserIDParams struct {
+	ProjectID       uuid.UUID
+	Email           string
+	MicrosoftUserID *string
+	ID              uuid.UUID
+	Limit           int32
+}
+
+func (q *Queries) ListOrganizationsByMicrosoftUserID(ctx context.Context, arg ListOrganizationsByMicrosoftUserIDParams) ([]Organization, error) {
+	rows, err := q.db.Query(ctx, listOrganizationsByMicrosoftUserID,
+		arg.ProjectID,
+		arg.Email,
+		arg.MicrosoftUserID,
+		arg.ID,
+		arg.Limit,
+	)
 	if err != nil {
 		return nil, err
 	}
