@@ -9,6 +9,19 @@ import "google/protobuf/timestamp.proto";
 import "google/protobuf/struct.proto";
 
 service BackendService {
+  rpc GetProject(GetProjectRequest) returns (GetProjectResponse) {
+    option (google.api.http) = {
+      get: "/backend/v1/project"
+    };
+  }
+
+  rpc UpdateProject(UpdateProjectRequest) returns (UpdateProjectResponse) {
+    option (google.api.http) = {
+      patch: "/backend/v1/project",
+      body: "project"
+    };
+  }
+
   // Creates an organization.
   rpc CreateOrganization(CreateOrganizationRequest) returns (Organization) {
     option (google.api.http) = {
@@ -39,35 +52,6 @@ service BackendService {
     };
   }
 
-  // Creates a project.
-  rpc CreateProject(CreateProjectRequest) returns (Project) {
-    option (google.api.http) = {
-      post: "/backend/v1/projects",
-      body: "project"
-    };
-  }
-
-  // Gets a project.
-  rpc GetProject(GetProjectRequest) returns (Project) {
-    option (google.api.http) = {
-      get: "/backend/v1/projects/{id}"
-    };
-  }
-
-  // Gets a list of projects.
-  rpc ListProjects(ListProjectsRequest) returns (ListProjectsResponse) {
-    option (google.api.http) = {
-      get: "/backend/v1/projects"
-    };
-  }
-
-  // Updates a project.
-  rpc UpdateProject(UpdateProjectRequest) returns (Project) {
-    option (google.api.http) = {
-      patch: "/backend/v1/projects/{id}",
-      body: "project"
-    };
-  }
 
   // Creates a user.
   rpc CreateUser(CreateUserRequest) returns (User) {
@@ -115,13 +99,6 @@ message CreateOrganizationRequest {
   Organization organization = 1;
 }
 
-message CreateProjectRequest {
-  // The project to create.
-  Project project = 1;
-  // The display name of the associated organization to create.
-  string display_name = 2;
-}
-
 message CreateUserRequest {
   // The user to create.
   User user = 1;
@@ -133,8 +110,18 @@ message GetOrganizationRequest {
 }
 
 message GetProjectRequest {
-  // The ID of the project to get.
-  string id = 1;
+}
+
+message GetProjectResponse {
+  Project project = 1;
+}
+
+message UpdateProjectRequest {
+  Project project = 1;
+}
+
+message UpdateProjectResponse {
+  Project project = 1;
 }
 
 message GetUserRequest {
@@ -189,13 +176,6 @@ message UpdateOrganizationRequest {
   Organization organization = 2;
 }
 
-message UpdateProjectRequest {
-  // The ID of the project to update.
-  string id = 1;
-  // The project updates to apply.
-  Project project = 2;
-}
-
 message UpdateUserPasswordRequest {
   // The ID of the user to update.
   string id = 1;
@@ -231,6 +211,17 @@ message CreateProjectAPIKeyResponse {
   ProjectAPIKey project_api_key = 1;
 }
 
+message Project {
+  string id = 1;
+  string display_name = 2;
+  bool log_in_with_password_enabled = 3;
+  bool log_in_with_google_enabled = 4;
+  bool log_in_with_microsoft_enabled = 5;
+  string google_oauth_client_id = 6;
+  string google_oauth_client_secret = 7;
+  string microsoft_oauth_client_id = 8;
+  string microsoft_oauth_client_secret = 9;
+}
 
 message Organization {
   // Unique identifier for this organization.
@@ -249,27 +240,6 @@ message Organization {
   string google_hosted_domain = 7;
   // The tenant ID for Microsoft auth.
   string microsoft_tenant_id = 8;
-}
-
-message Project {
-  // Unique identifier for this project.
-  string id = 1;
-  // The organization this project belongs to.
-  string organization_id = 2;
-  // Top-level setting for whether login with password is enabled (inherited by organizations by default).
-  bool log_in_with_password_enabled = 3;
-  // Top-level setting for whether login with Google is enabled (inherited by organizations by default).
-  bool log_in_with_google_enabled = 4;
-  // Top-level setting for whether login with Microsoft is enabled (inherited by organizations by default).
-  bool log_in_with_microsoft_enabled = 5;
-  // The oAuth Client ID to be used for Google Auth.
-  string google_oauth_client_id = 6;
-  // The oAuth Client secret to be used for Google Auth.
-  string google_oauth_client_secret = 7;
-  // The oAuth Client ID to be used for Microsoft Auth.
-  string microsoft_oauth_client_id = 8;
-  // The oAuth Client secret to be used for Microsoft Auth.
-  string microsoft_oauth_client_secret = 9;
 }
 
 message SessionSigningKey {

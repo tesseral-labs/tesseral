@@ -6,140 +6,45 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
-	"github.com/google/uuid"
 	backendv1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
 	"github.com/openauth/openauth/internal/backend/store/queries"
+	"github.com/openauth/openauth/internal/projectid"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
-func (s *Store) CreateProject(ctx context.Context, req *backendv1.CreateProjectRequest) (*backendv1.Project, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
-	if err != nil {
-		return nil, err
-	}
-	defer rollback()
-
-	// Create a new project
-	createdProject, err := q.CreateProject(ctx, queries.CreateProjectParams{
-		ID: uuid.New(),
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	// Create the managing organization for the project
-	// - this is required to create a relationship between the project
-	//   and the dogfooding project
-	_, err = q.CreateOrganization(ctx, queries.CreateOrganizationParams{
-		ID:          uuid.New(),
-		ProjectID:   createdProject.ID,
-		DisplayName: req.DisplayName,
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	// Update the project with the dogfooding project ID
-	updatedProject, err := q.UpdateProjectOrganizationID(ctx, queries.UpdateProjectOrganizationIDParams{
-		ID:             createdProject.ID,
-		OrganizationID: s.dogfoodProjectID,
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	// Commit all changes
-	if err := commit(); err != nil {
-		return nil, err
-	}
-
-	// Return the updated project
-	return parseProject(&updatedProject), nil
-}
-
-func (s *Store) GetProject(ctx context.Context, req *backendv1.GetProjectRequest) (*backendv1.Project, error) {
-	id, err := idformat.Project.Parse(req.Id)
-	if err != nil {
-		return nil, err
-	}
-
+func (s *Store) GetProject(ctx context.Context, req *backendv1.GetProjectRequest) (*backendv1.GetProjectResponse, error) {
 	_, q, _, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
 	defer rollback()
 
-	project, err := q.GetProjectByID(ctx, id)
+	project, err := q.GetProjectByID(ctx, projectid.ProjectID(ctx))
 	if err != nil {
 		return nil, err
 	}
 
-	return parseProject(&project), nil
+	return &backendv1.GetProjectResponse{Project: parseProject(&project)}, nil
 }
 
-// TODO: Ensure that this function can only be called via a backend service reuqest
-func (s *Store) ListProjects(ctx context.Context, req *backendv1.ListProjectsRequest) (*backendv1.ListProjectsResponse, error) {
-	_, q, _, rollback, err := s.tx(ctx)
+func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectRequest) (*backendv1.UpdateProjectResponse, error) {
+	// fetch project outside a transaction, so that we can carry out KMS
+	// operations; we can live with possibility of conflicting concurrent writes
+	qProject, err := s.q.GetProjectByID(ctx, projectid.ProjectID(ctx))
 	if err != nil {
-		return nil, err
-	}
-	defer rollback()
-
-	var startID uuid.UUID
-	if err := s.pageEncoder.Unmarshal(req.PageToken, &startID); err != nil {
-		return nil, err
-	}
-
-	limit := 10
-	projectRecords, err := q.ListProjects(ctx, int32(limit+1))
-	if err != nil {
-		return nil, err
-	}
-
-	projects := []*backendv1.Project{}
-	for _, project := range projectRecords {
-		projects = append(projects, parseProject(&project))
-	}
-
-	var nextPageToken string
-	if len(projects) == limit+1 {
-		nextPageToken = s.pageEncoder.Marshal(projectRecords[limit].ID)
-		projects = projects[:limit]
-	}
-
-	return &backendv1.ListProjectsResponse{
-		Projects:      projects,
-		NextPageToken: nextPageToken,
-	}, nil
-}
-
-func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectRequest) (*backendv1.Project, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
-	if err != nil {
-		return nil, err
-	}
-	defer rollback()
-
-	id, err := idformat.Project.Parse(req.Id)
-	if err != nil {
-		return nil, err
-	}
-
-	project, err := q.GetProjectByID(ctx, id)
-	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 
 	updates := queries.UpdateProjectParams{
-		ID: project.ID,
+		ID: qProject.ID,
 	}
 
-	updates.GoogleOauthClientID = project.GoogleOauthClientID
+	updates.GoogleOauthClientID = qProject.GoogleOauthClientID
 	if req.Project.GoogleOauthClientId != "" {
 		updates.GoogleOauthClientID = &req.Project.GoogleOauthClientId
 	}
 
-	updates.GoogleOauthClientSecretCiphertext = project.GoogleOauthClientSecretCiphertext
+	updates.GoogleOauthClientSecretCiphertext = qProject.GoogleOauthClientSecretCiphertext
 	if req.Project.GoogleOauthClientSecret != "" {
 		encryptRes, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
 			KeyId:               &s.googleOAuthClientSecretsKMSKeyID,
@@ -153,12 +58,12 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 		updates.GoogleOauthClientSecretCiphertext = encryptRes.CiphertextBlob
 	}
 
-	updates.MicrosoftOauthClientID = project.MicrosoftOauthClientID
+	updates.MicrosoftOauthClientID = qProject.MicrosoftOauthClientID
 	if req.Project.MicrosoftOauthClientId != "" {
 		updates.MicrosoftOauthClientID = &req.Project.MicrosoftOauthClientId
 	}
 
-	updates.MicrosoftOauthClientSecretCiphertext = project.MicrosoftOauthClientSecretCiphertext
+	updates.MicrosoftOauthClientSecretCiphertext = qProject.MicrosoftOauthClientSecretCiphertext
 	if req.Project.MicrosoftOauthClientSecret != "" {
 		encryptRes, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
 			KeyId:               &s.microsoftOAuthClientSecretsKMSKeyID,
@@ -173,36 +78,42 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 	}
 
 	// Conditionally enable/disable login methods
-	if req.Project.LogInWithGoogleEnabled != project.LogInWithGoogleEnabled {
+	if req.Project.LogInWithGoogleEnabled != qProject.LogInWithGoogleEnabled {
 		updates.LogInWithGoogleEnabled = req.Project.LogInWithGoogleEnabled
 	}
-	if req.Project.LogInWithMicrosoftEnabled != project.LogInWithMicrosoftEnabled {
+	if req.Project.LogInWithMicrosoftEnabled != qProject.LogInWithMicrosoftEnabled {
 		updates.LogInWithMicrosoftEnabled = req.Project.LogInWithMicrosoftEnabled
 	}
-	if req.Project.LogInWithPasswordEnabled != project.LogInWithPasswordEnabled {
+	if req.Project.LogInWithPasswordEnabled != qProject.LogInWithPasswordEnabled {
 		updates.LogInWithPasswordEnabled = req.Project.LogInWithPasswordEnabled
 	}
 
-	updatedProject, err := q.UpdateProject(ctx, updates)
+	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
+	defer rollback()
 
-	if err := commit(); err != nil {
-		return nil, err
+	qUpdatedProject, err := q.UpdateProject(ctx, updates)
+	if err != nil {
+		return nil, fmt.Errorf("update project: %w", err)
 	}
 
-	return parseProject(&updatedProject), nil
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
+	}
+
+	return &backendv1.UpdateProjectResponse{Project: parseProject(&qUpdatedProject)}, nil
 }
 
-func parseProject(project *queries.Project) *backendv1.Project {
+func parseProject(qProject *queries.Project) *backendv1.Project {
 	return &backendv1.Project{
-		Id:                        idformat.Project.Format(project.ID),
-		OrganizationId:            idformat.Organization.Format(*project.OrganizationID),
-		LogInWithPasswordEnabled:  project.LogInWithPasswordEnabled,
-		LogInWithGoogleEnabled:    project.LogInWithGoogleEnabled,
-		LogInWithMicrosoftEnabled: project.LogInWithMicrosoftEnabled,
-		GoogleOauthClientId:       derefOrEmpty(project.GoogleOauthClientID),
-		MicrosoftOauthClientId:    derefOrEmpty(project.MicrosoftOauthClientID),
+		Id:                        idformat.Project.Format(qProject.ID),
+		DisplayName:               qProject.DisplayName,
+		LogInWithPasswordEnabled:  qProject.LogInWithPasswordEnabled,
+		LogInWithGoogleEnabled:    qProject.LogInWithGoogleEnabled,
+		LogInWithMicrosoftEnabled: qProject.LogInWithMicrosoftEnabled,
+		GoogleOauthClientId:       derefOrEmpty(qProject.GoogleOauthClientID),
+		MicrosoftOauthClientId:    derefOrEmpty(qProject.MicrosoftOauthClientID),
 	}
 }

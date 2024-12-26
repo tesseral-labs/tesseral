@@ -48,6 +48,7 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 
 	if _, err := q.CreateProject(ctx, queries.CreateProjectParams{
 		ID:                       dogfoodProjectID,
+		DisplayName:              "OpenAuth Dogfood",
 		OrganizationID:           nil, // will populate after creating org
 		LogInWithPasswordEnabled: true,
 		LogInWithGoogleEnabled:   true,

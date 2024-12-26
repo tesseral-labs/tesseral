@@ -118,6 +118,7 @@ type Project struct {
 	MicrosoftOauthClientID               *string
 	GoogleOauthClientSecretCiphertext    []byte
 	MicrosoftOauthClientSecretCiphertext []byte
+	DisplayName                          string
 }
 
 type ProjectApiKey struct {

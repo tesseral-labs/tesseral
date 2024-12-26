@@ -4,12 +4,6 @@ INSERT INTO organizations (id, project_id, display_name, google_hosted_domain, m
 RETURNING
     *;
 
--- name: CreateProject :one
-INSERT INTO projects (id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_id, microsoft_oauth_client_secret_ciphertext)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-RETURNING
-    *;
-
 -- name: GetOrganizationByProjectIDAndID :one
 SELECT
     *
