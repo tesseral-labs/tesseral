@@ -311,13 +311,14 @@ const updateProject = `-- name: UpdateProject :one
 UPDATE
     projects
 SET
-    log_in_with_password_enabled = $2,
-    log_in_with_google_enabled = $3,
-    log_in_with_microsoft_enabled = $4,
-    google_oauth_client_id = $5,
-    google_oauth_client_secret_ciphertext = $6,
-    microsoft_oauth_client_id = $7,
-    microsoft_oauth_client_secret_ciphertext = $8
+    display_name = $2,
+    log_in_with_password_enabled = $3,
+    log_in_with_google_enabled = $4,
+    log_in_with_microsoft_enabled = $5,
+    google_oauth_client_id = $6,
+    google_oauth_client_secret_ciphertext = $7,
+    microsoft_oauth_client_id = $8,
+    microsoft_oauth_client_secret_ciphertext = $9
 WHERE
     id = $1
 RETURNING
@@ -326,6 +327,7 @@ RETURNING
 
 type UpdateProjectParams struct {
 	ID                                   uuid.UUID
+	DisplayName                          string
 	LogInWithPasswordEnabled             bool
 	LogInWithGoogleEnabled               bool
 	LogInWithMicrosoftEnabled            bool
@@ -338,6 +340,7 @@ type UpdateProjectParams struct {
 func (q *Queries) UpdateProject(ctx context.Context, arg UpdateProjectParams) (Project, error) {
 	row := q.db.QueryRow(ctx, updateProject,
 		arg.ID,
+		arg.DisplayName,
 		arg.LogInWithPasswordEnabled,
 		arg.LogInWithGoogleEnabled,
 		arg.LogInWithMicrosoftEnabled,
