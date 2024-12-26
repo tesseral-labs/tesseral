@@ -19,14 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
+	BackendService_GetProject_FullMethodName          = "/openauth.backend.v1.BackendService/GetProject"
+	BackendService_UpdateProject_FullMethodName       = "/openauth.backend.v1.BackendService/UpdateProject"
 	BackendService_CreateOrganization_FullMethodName  = "/openauth.backend.v1.BackendService/CreateOrganization"
 	BackendService_GetOrganization_FullMethodName     = "/openauth.backend.v1.BackendService/GetOrganization"
 	BackendService_ListOrganizations_FullMethodName   = "/openauth.backend.v1.BackendService/ListOrganizations"
 	BackendService_UpdateOrganization_FullMethodName  = "/openauth.backend.v1.BackendService/UpdateOrganization"
-	BackendService_CreateProject_FullMethodName       = "/openauth.backend.v1.BackendService/CreateProject"
-	BackendService_GetProject_FullMethodName          = "/openauth.backend.v1.BackendService/GetProject"
-	BackendService_ListProjects_FullMethodName        = "/openauth.backend.v1.BackendService/ListProjects"
-	BackendService_UpdateProject_FullMethodName       = "/openauth.backend.v1.BackendService/UpdateProject"
 	BackendService_CreateUser_FullMethodName          = "/openauth.backend.v1.BackendService/CreateUser"
 	BackendService_GetUser_FullMethodName             = "/openauth.backend.v1.BackendService/GetUser"
 	BackendService_ListUsers_FullMethodName           = "/openauth.backend.v1.BackendService/ListUsers"
@@ -39,6 +37,8 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type BackendServiceClient interface {
+	GetProject(ctx context.Context, in *GetProjectRequest, opts ...grpc.CallOption) (*GetProjectResponse, error)
+	UpdateProject(ctx context.Context, in *UpdateProjectRequest, opts ...grpc.CallOption) (*UpdateProjectResponse, error)
 	// Creates an organization.
 	CreateOrganization(ctx context.Context, in *CreateOrganizationRequest, opts ...grpc.CallOption) (*Organization, error)
 	// Gets an organization.
@@ -47,14 +47,6 @@ type BackendServiceClient interface {
 	ListOrganizations(ctx context.Context, in *ListOrganizationsRequest, opts ...grpc.CallOption) (*ListOrganizationsResponse, error)
 	// Updates an organization.
 	UpdateOrganization(ctx context.Context, in *UpdateOrganizationRequest, opts ...grpc.CallOption) (*Organization, error)
-	// Creates a project.
-	CreateProject(ctx context.Context, in *CreateProjectRequest, opts ...grpc.CallOption) (*Project, error)
-	// Gets a project.
-	GetProject(ctx context.Context, in *GetProjectRequest, opts ...grpc.CallOption) (*Project, error)
-	// Gets a list of projects.
-	ListProjects(ctx context.Context, in *ListProjectsRequest, opts ...grpc.CallOption) (*ListProjectsResponse, error)
-	// Updates a project.
-	UpdateProject(ctx context.Context, in *UpdateProjectRequest, opts ...grpc.CallOption) (*Project, error)
 	// Creates a user.
 	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*User, error)
 	// Gets a user.
@@ -74,6 +66,26 @@ type backendServiceClient struct {
 
 func NewBackendServiceClient(cc grpc.ClientConnInterface) BackendServiceClient {
 	return &backendServiceClient{cc}
+}
+
+func (c *backendServiceClient) GetProject(ctx context.Context, in *GetProjectRequest, opts ...grpc.CallOption) (*GetProjectResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetProjectResponse)
+	err := c.cc.Invoke(ctx, BackendService_GetProject_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) UpdateProject(ctx context.Context, in *UpdateProjectRequest, opts ...grpc.CallOption) (*UpdateProjectResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateProjectResponse)
+	err := c.cc.Invoke(ctx, BackendService_UpdateProject_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *backendServiceClient) CreateOrganization(ctx context.Context, in *CreateOrganizationRequest, opts ...grpc.CallOption) (*Organization, error) {
@@ -110,46 +122,6 @@ func (c *backendServiceClient) UpdateOrganization(ctx context.Context, in *Updat
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(Organization)
 	err := c.cc.Invoke(ctx, BackendService_UpdateOrganization_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *backendServiceClient) CreateProject(ctx context.Context, in *CreateProjectRequest, opts ...grpc.CallOption) (*Project, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Project)
-	err := c.cc.Invoke(ctx, BackendService_CreateProject_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *backendServiceClient) GetProject(ctx context.Context, in *GetProjectRequest, opts ...grpc.CallOption) (*Project, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Project)
-	err := c.cc.Invoke(ctx, BackendService_GetProject_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *backendServiceClient) ListProjects(ctx context.Context, in *ListProjectsRequest, opts ...grpc.CallOption) (*ListProjectsResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ListProjectsResponse)
-	err := c.cc.Invoke(ctx, BackendService_ListProjects_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *backendServiceClient) UpdateProject(ctx context.Context, in *UpdateProjectRequest, opts ...grpc.CallOption) (*Project, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Project)
-	err := c.cc.Invoke(ctx, BackendService_UpdateProject_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -220,6 +192,8 @@ func (c *backendServiceClient) CreateProjectAPIKey(ctx context.Context, in *Crea
 // All implementations must embed UnimplementedBackendServiceServer
 // for forward compatibility.
 type BackendServiceServer interface {
+	GetProject(context.Context, *GetProjectRequest) (*GetProjectResponse, error)
+	UpdateProject(context.Context, *UpdateProjectRequest) (*UpdateProjectResponse, error)
 	// Creates an organization.
 	CreateOrganization(context.Context, *CreateOrganizationRequest) (*Organization, error)
 	// Gets an organization.
@@ -228,14 +202,6 @@ type BackendServiceServer interface {
 	ListOrganizations(context.Context, *ListOrganizationsRequest) (*ListOrganizationsResponse, error)
 	// Updates an organization.
 	UpdateOrganization(context.Context, *UpdateOrganizationRequest) (*Organization, error)
-	// Creates a project.
-	CreateProject(context.Context, *CreateProjectRequest) (*Project, error)
-	// Gets a project.
-	GetProject(context.Context, *GetProjectRequest) (*Project, error)
-	// Gets a list of projects.
-	ListProjects(context.Context, *ListProjectsRequest) (*ListProjectsResponse, error)
-	// Updates a project.
-	UpdateProject(context.Context, *UpdateProjectRequest) (*Project, error)
 	// Creates a user.
 	CreateUser(context.Context, *CreateUserRequest) (*User, error)
 	// Gets a user.
@@ -257,6 +223,12 @@ type BackendServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedBackendServiceServer struct{}
 
+func (UnimplementedBackendServiceServer) GetProject(context.Context, *GetProjectRequest) (*GetProjectResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetProject not implemented")
+}
+func (UnimplementedBackendServiceServer) UpdateProject(context.Context, *UpdateProjectRequest) (*UpdateProjectResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateProject not implemented")
+}
 func (UnimplementedBackendServiceServer) CreateOrganization(context.Context, *CreateOrganizationRequest) (*Organization, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateOrganization not implemented")
 }
@@ -268,18 +240,6 @@ func (UnimplementedBackendServiceServer) ListOrganizations(context.Context, *Lis
 }
 func (UnimplementedBackendServiceServer) UpdateOrganization(context.Context, *UpdateOrganizationRequest) (*Organization, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateOrganization not implemented")
-}
-func (UnimplementedBackendServiceServer) CreateProject(context.Context, *CreateProjectRequest) (*Project, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateProject not implemented")
-}
-func (UnimplementedBackendServiceServer) GetProject(context.Context, *GetProjectRequest) (*Project, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetProject not implemented")
-}
-func (UnimplementedBackendServiceServer) ListProjects(context.Context, *ListProjectsRequest) (*ListProjectsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListProjects not implemented")
-}
-func (UnimplementedBackendServiceServer) UpdateProject(context.Context, *UpdateProjectRequest) (*Project, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateProject not implemented")
 }
 func (UnimplementedBackendServiceServer) CreateUser(context.Context, *CreateUserRequest) (*User, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
@@ -318,6 +278,42 @@ func RegisterBackendServiceServer(s grpc.ServiceRegistrar, srv BackendServiceSer
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&BackendService_ServiceDesc, srv)
+}
+
+func _BackendService_GetProject_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetProjectRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).GetProject(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_GetProject_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).GetProject(ctx, req.(*GetProjectRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_UpdateProject_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateProjectRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).UpdateProject(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_UpdateProject_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).UpdateProject(ctx, req.(*UpdateProjectRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _BackendService_CreateOrganization_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -388,78 +384,6 @@ func _BackendService_UpdateOrganization_Handler(srv interface{}, ctx context.Con
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(BackendServiceServer).UpdateOrganization(ctx, req.(*UpdateOrganizationRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _BackendService_CreateProject_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateProjectRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(BackendServiceServer).CreateProject(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: BackendService_CreateProject_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).CreateProject(ctx, req.(*CreateProjectRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _BackendService_GetProject_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetProjectRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(BackendServiceServer).GetProject(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: BackendService_GetProject_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).GetProject(ctx, req.(*GetProjectRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _BackendService_ListProjects_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListProjectsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(BackendServiceServer).ListProjects(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: BackendService_ListProjects_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).ListProjects(ctx, req.(*ListProjectsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _BackendService_UpdateProject_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateProjectRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(BackendServiceServer).UpdateProject(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: BackendService_UpdateProject_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).UpdateProject(ctx, req.(*UpdateProjectRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -580,6 +504,14 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*BackendServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "GetProject",
+			Handler:    _BackendService_GetProject_Handler,
+		},
+		{
+			MethodName: "UpdateProject",
+			Handler:    _BackendService_UpdateProject_Handler,
+		},
+		{
 			MethodName: "CreateOrganization",
 			Handler:    _BackendService_CreateOrganization_Handler,
 		},
@@ -594,22 +526,6 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateOrganization",
 			Handler:    _BackendService_UpdateOrganization_Handler,
-		},
-		{
-			MethodName: "CreateProject",
-			Handler:    _BackendService_CreateProject_Handler,
-		},
-		{
-			MethodName: "GetProject",
-			Handler:    _BackendService_GetProject_Handler,
-		},
-		{
-			MethodName: "ListProjects",
-			Handler:    _BackendService_ListProjects_Handler,
-		},
-		{
-			MethodName: "UpdateProject",
-			Handler:    _BackendService_UpdateProject_Handler,
 		},
 		{
 			MethodName: "CreateUser",

@@ -33,6 +33,12 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
+	// BackendServiceGetProjectProcedure is the fully-qualified name of the BackendService's GetProject
+	// RPC.
+	BackendServiceGetProjectProcedure = "/openauth.backend.v1.BackendService/GetProject"
+	// BackendServiceUpdateProjectProcedure is the fully-qualified name of the BackendService's
+	// UpdateProject RPC.
+	BackendServiceUpdateProjectProcedure = "/openauth.backend.v1.BackendService/UpdateProject"
 	// BackendServiceCreateOrganizationProcedure is the fully-qualified name of the BackendService's
 	// CreateOrganization RPC.
 	BackendServiceCreateOrganizationProcedure = "/openauth.backend.v1.BackendService/CreateOrganization"
@@ -45,18 +51,6 @@ const (
 	// BackendServiceUpdateOrganizationProcedure is the fully-qualified name of the BackendService's
 	// UpdateOrganization RPC.
 	BackendServiceUpdateOrganizationProcedure = "/openauth.backend.v1.BackendService/UpdateOrganization"
-	// BackendServiceCreateProjectProcedure is the fully-qualified name of the BackendService's
-	// CreateProject RPC.
-	BackendServiceCreateProjectProcedure = "/openauth.backend.v1.BackendService/CreateProject"
-	// BackendServiceGetProjectProcedure is the fully-qualified name of the BackendService's GetProject
-	// RPC.
-	BackendServiceGetProjectProcedure = "/openauth.backend.v1.BackendService/GetProject"
-	// BackendServiceListProjectsProcedure is the fully-qualified name of the BackendService's
-	// ListProjects RPC.
-	BackendServiceListProjectsProcedure = "/openauth.backend.v1.BackendService/ListProjects"
-	// BackendServiceUpdateProjectProcedure is the fully-qualified name of the BackendService's
-	// UpdateProject RPC.
-	BackendServiceUpdateProjectProcedure = "/openauth.backend.v1.BackendService/UpdateProject"
 	// BackendServiceCreateUserProcedure is the fully-qualified name of the BackendService's CreateUser
 	// RPC.
 	BackendServiceCreateUserProcedure = "/openauth.backend.v1.BackendService/CreateUser"
@@ -79,14 +73,12 @@ const (
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
 var (
 	backendServiceServiceDescriptor                   = v1.File_openauth_backend_v1_backend_proto.Services().ByName("BackendService")
+	backendServiceGetProjectMethodDescriptor          = backendServiceServiceDescriptor.Methods().ByName("GetProject")
+	backendServiceUpdateProjectMethodDescriptor       = backendServiceServiceDescriptor.Methods().ByName("UpdateProject")
 	backendServiceCreateOrganizationMethodDescriptor  = backendServiceServiceDescriptor.Methods().ByName("CreateOrganization")
 	backendServiceGetOrganizationMethodDescriptor     = backendServiceServiceDescriptor.Methods().ByName("GetOrganization")
 	backendServiceListOrganizationsMethodDescriptor   = backendServiceServiceDescriptor.Methods().ByName("ListOrganizations")
 	backendServiceUpdateOrganizationMethodDescriptor  = backendServiceServiceDescriptor.Methods().ByName("UpdateOrganization")
-	backendServiceCreateProjectMethodDescriptor       = backendServiceServiceDescriptor.Methods().ByName("CreateProject")
-	backendServiceGetProjectMethodDescriptor          = backendServiceServiceDescriptor.Methods().ByName("GetProject")
-	backendServiceListProjectsMethodDescriptor        = backendServiceServiceDescriptor.Methods().ByName("ListProjects")
-	backendServiceUpdateProjectMethodDescriptor       = backendServiceServiceDescriptor.Methods().ByName("UpdateProject")
 	backendServiceCreateUserMethodDescriptor          = backendServiceServiceDescriptor.Methods().ByName("CreateUser")
 	backendServiceGetUserMethodDescriptor             = backendServiceServiceDescriptor.Methods().ByName("GetUser")
 	backendServiceListUsersMethodDescriptor           = backendServiceServiceDescriptor.Methods().ByName("ListUsers")
@@ -97,6 +89,8 @@ var (
 
 // BackendServiceClient is a client for the openauth.backend.v1.BackendService service.
 type BackendServiceClient interface {
+	GetProject(context.Context, *connect.Request[v1.GetProjectRequest]) (*connect.Response[v1.GetProjectResponse], error)
+	UpdateProject(context.Context, *connect.Request[v1.UpdateProjectRequest]) (*connect.Response[v1.UpdateProjectResponse], error)
 	// Creates an organization.
 	CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.Organization], error)
 	// Gets an organization.
@@ -105,14 +99,6 @@ type BackendServiceClient interface {
 	ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error)
 	// Updates an organization.
 	UpdateOrganization(context.Context, *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.Organization], error)
-	// Creates a project.
-	CreateProject(context.Context, *connect.Request[v1.CreateProjectRequest]) (*connect.Response[v1.Project], error)
-	// Gets a project.
-	GetProject(context.Context, *connect.Request[v1.GetProjectRequest]) (*connect.Response[v1.Project], error)
-	// Gets a list of projects.
-	ListProjects(context.Context, *connect.Request[v1.ListProjectsRequest]) (*connect.Response[v1.ListProjectsResponse], error)
-	// Updates a project.
-	UpdateProject(context.Context, *connect.Request[v1.UpdateProjectRequest]) (*connect.Response[v1.Project], error)
 	// Creates a user.
 	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.User], error)
 	// Gets a user.
@@ -136,6 +122,18 @@ type BackendServiceClient interface {
 func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) BackendServiceClient {
 	baseURL = strings.TrimRight(baseURL, "/")
 	return &backendServiceClient{
+		getProject: connect.NewClient[v1.GetProjectRequest, v1.GetProjectResponse](
+			httpClient,
+			baseURL+BackendServiceGetProjectProcedure,
+			connect.WithSchema(backendServiceGetProjectMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		updateProject: connect.NewClient[v1.UpdateProjectRequest, v1.UpdateProjectResponse](
+			httpClient,
+			baseURL+BackendServiceUpdateProjectProcedure,
+			connect.WithSchema(backendServiceUpdateProjectMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
 		createOrganization: connect.NewClient[v1.CreateOrganizationRequest, v1.Organization](
 			httpClient,
 			baseURL+BackendServiceCreateOrganizationProcedure,
@@ -158,30 +156,6 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			httpClient,
 			baseURL+BackendServiceUpdateOrganizationProcedure,
 			connect.WithSchema(backendServiceUpdateOrganizationMethodDescriptor),
-			connect.WithClientOptions(opts...),
-		),
-		createProject: connect.NewClient[v1.CreateProjectRequest, v1.Project](
-			httpClient,
-			baseURL+BackendServiceCreateProjectProcedure,
-			connect.WithSchema(backendServiceCreateProjectMethodDescriptor),
-			connect.WithClientOptions(opts...),
-		),
-		getProject: connect.NewClient[v1.GetProjectRequest, v1.Project](
-			httpClient,
-			baseURL+BackendServiceGetProjectProcedure,
-			connect.WithSchema(backendServiceGetProjectMethodDescriptor),
-			connect.WithClientOptions(opts...),
-		),
-		listProjects: connect.NewClient[v1.ListProjectsRequest, v1.ListProjectsResponse](
-			httpClient,
-			baseURL+BackendServiceListProjectsProcedure,
-			connect.WithSchema(backendServiceListProjectsMethodDescriptor),
-			connect.WithClientOptions(opts...),
-		),
-		updateProject: connect.NewClient[v1.UpdateProjectRequest, v1.Project](
-			httpClient,
-			baseURL+BackendServiceUpdateProjectProcedure,
-			connect.WithSchema(backendServiceUpdateProjectMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
 		createUser: connect.NewClient[v1.CreateUserRequest, v1.User](
@@ -225,20 +199,28 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 
 // backendServiceClient implements BackendServiceClient.
 type backendServiceClient struct {
+	getProject          *connect.Client[v1.GetProjectRequest, v1.GetProjectResponse]
+	updateProject       *connect.Client[v1.UpdateProjectRequest, v1.UpdateProjectResponse]
 	createOrganization  *connect.Client[v1.CreateOrganizationRequest, v1.Organization]
 	getOrganization     *connect.Client[v1.GetOrganizationRequest, v1.Organization]
 	listOrganizations   *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
 	updateOrganization  *connect.Client[v1.UpdateOrganizationRequest, v1.Organization]
-	createProject       *connect.Client[v1.CreateProjectRequest, v1.Project]
-	getProject          *connect.Client[v1.GetProjectRequest, v1.Project]
-	listProjects        *connect.Client[v1.ListProjectsRequest, v1.ListProjectsResponse]
-	updateProject       *connect.Client[v1.UpdateProjectRequest, v1.Project]
 	createUser          *connect.Client[v1.CreateUserRequest, v1.User]
 	getUser             *connect.Client[v1.GetUserRequest, v1.User]
 	listUsers           *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
 	updateUser          *connect.Client[v1.UpdateUserRequest, v1.User]
 	updateUserPassword  *connect.Client[v1.UpdateUserPasswordRequest, v1.User]
 	createProjectAPIKey *connect.Client[v1.CreateProjectAPIKeyRequest, v1.CreateProjectAPIKeyResponse]
+}
+
+// GetProject calls openauth.backend.v1.BackendService.GetProject.
+func (c *backendServiceClient) GetProject(ctx context.Context, req *connect.Request[v1.GetProjectRequest]) (*connect.Response[v1.GetProjectResponse], error) {
+	return c.getProject.CallUnary(ctx, req)
+}
+
+// UpdateProject calls openauth.backend.v1.BackendService.UpdateProject.
+func (c *backendServiceClient) UpdateProject(ctx context.Context, req *connect.Request[v1.UpdateProjectRequest]) (*connect.Response[v1.UpdateProjectResponse], error) {
+	return c.updateProject.CallUnary(ctx, req)
 }
 
 // CreateOrganization calls openauth.backend.v1.BackendService.CreateOrganization.
@@ -259,26 +241,6 @@ func (c *backendServiceClient) ListOrganizations(ctx context.Context, req *conne
 // UpdateOrganization calls openauth.backend.v1.BackendService.UpdateOrganization.
 func (c *backendServiceClient) UpdateOrganization(ctx context.Context, req *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.Organization], error) {
 	return c.updateOrganization.CallUnary(ctx, req)
-}
-
-// CreateProject calls openauth.backend.v1.BackendService.CreateProject.
-func (c *backendServiceClient) CreateProject(ctx context.Context, req *connect.Request[v1.CreateProjectRequest]) (*connect.Response[v1.Project], error) {
-	return c.createProject.CallUnary(ctx, req)
-}
-
-// GetProject calls openauth.backend.v1.BackendService.GetProject.
-func (c *backendServiceClient) GetProject(ctx context.Context, req *connect.Request[v1.GetProjectRequest]) (*connect.Response[v1.Project], error) {
-	return c.getProject.CallUnary(ctx, req)
-}
-
-// ListProjects calls openauth.backend.v1.BackendService.ListProjects.
-func (c *backendServiceClient) ListProjects(ctx context.Context, req *connect.Request[v1.ListProjectsRequest]) (*connect.Response[v1.ListProjectsResponse], error) {
-	return c.listProjects.CallUnary(ctx, req)
-}
-
-// UpdateProject calls openauth.backend.v1.BackendService.UpdateProject.
-func (c *backendServiceClient) UpdateProject(ctx context.Context, req *connect.Request[v1.UpdateProjectRequest]) (*connect.Response[v1.Project], error) {
-	return c.updateProject.CallUnary(ctx, req)
 }
 
 // CreateUser calls openauth.backend.v1.BackendService.CreateUser.
@@ -313,6 +275,8 @@ func (c *backendServiceClient) CreateProjectAPIKey(ctx context.Context, req *con
 
 // BackendServiceHandler is an implementation of the openauth.backend.v1.BackendService service.
 type BackendServiceHandler interface {
+	GetProject(context.Context, *connect.Request[v1.GetProjectRequest]) (*connect.Response[v1.GetProjectResponse], error)
+	UpdateProject(context.Context, *connect.Request[v1.UpdateProjectRequest]) (*connect.Response[v1.UpdateProjectResponse], error)
 	// Creates an organization.
 	CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.Organization], error)
 	// Gets an organization.
@@ -321,14 +285,6 @@ type BackendServiceHandler interface {
 	ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error)
 	// Updates an organization.
 	UpdateOrganization(context.Context, *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.Organization], error)
-	// Creates a project.
-	CreateProject(context.Context, *connect.Request[v1.CreateProjectRequest]) (*connect.Response[v1.Project], error)
-	// Gets a project.
-	GetProject(context.Context, *connect.Request[v1.GetProjectRequest]) (*connect.Response[v1.Project], error)
-	// Gets a list of projects.
-	ListProjects(context.Context, *connect.Request[v1.ListProjectsRequest]) (*connect.Response[v1.ListProjectsResponse], error)
-	// Updates a project.
-	UpdateProject(context.Context, *connect.Request[v1.UpdateProjectRequest]) (*connect.Response[v1.Project], error)
 	// Creates a user.
 	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.User], error)
 	// Gets a user.
@@ -348,6 +304,18 @@ type BackendServiceHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
+	backendServiceGetProjectHandler := connect.NewUnaryHandler(
+		BackendServiceGetProjectProcedure,
+		svc.GetProject,
+		connect.WithSchema(backendServiceGetProjectMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceUpdateProjectHandler := connect.NewUnaryHandler(
+		BackendServiceUpdateProjectProcedure,
+		svc.UpdateProject,
+		connect.WithSchema(backendServiceUpdateProjectMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
 	backendServiceCreateOrganizationHandler := connect.NewUnaryHandler(
 		BackendServiceCreateOrganizationProcedure,
 		svc.CreateOrganization,
@@ -370,30 +338,6 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		BackendServiceUpdateOrganizationProcedure,
 		svc.UpdateOrganization,
 		connect.WithSchema(backendServiceUpdateOrganizationMethodDescriptor),
-		connect.WithHandlerOptions(opts...),
-	)
-	backendServiceCreateProjectHandler := connect.NewUnaryHandler(
-		BackendServiceCreateProjectProcedure,
-		svc.CreateProject,
-		connect.WithSchema(backendServiceCreateProjectMethodDescriptor),
-		connect.WithHandlerOptions(opts...),
-	)
-	backendServiceGetProjectHandler := connect.NewUnaryHandler(
-		BackendServiceGetProjectProcedure,
-		svc.GetProject,
-		connect.WithSchema(backendServiceGetProjectMethodDescriptor),
-		connect.WithHandlerOptions(opts...),
-	)
-	backendServiceListProjectsHandler := connect.NewUnaryHandler(
-		BackendServiceListProjectsProcedure,
-		svc.ListProjects,
-		connect.WithSchema(backendServiceListProjectsMethodDescriptor),
-		connect.WithHandlerOptions(opts...),
-	)
-	backendServiceUpdateProjectHandler := connect.NewUnaryHandler(
-		BackendServiceUpdateProjectProcedure,
-		svc.UpdateProject,
-		connect.WithSchema(backendServiceUpdateProjectMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceCreateUserHandler := connect.NewUnaryHandler(
@@ -434,6 +378,10 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 	)
 	return "/openauth.backend.v1.BackendService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
+		case BackendServiceGetProjectProcedure:
+			backendServiceGetProjectHandler.ServeHTTP(w, r)
+		case BackendServiceUpdateProjectProcedure:
+			backendServiceUpdateProjectHandler.ServeHTTP(w, r)
 		case BackendServiceCreateOrganizationProcedure:
 			backendServiceCreateOrganizationHandler.ServeHTTP(w, r)
 		case BackendServiceGetOrganizationProcedure:
@@ -442,14 +390,6 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceListOrganizationsHandler.ServeHTTP(w, r)
 		case BackendServiceUpdateOrganizationProcedure:
 			backendServiceUpdateOrganizationHandler.ServeHTTP(w, r)
-		case BackendServiceCreateProjectProcedure:
-			backendServiceCreateProjectHandler.ServeHTTP(w, r)
-		case BackendServiceGetProjectProcedure:
-			backendServiceGetProjectHandler.ServeHTTP(w, r)
-		case BackendServiceListProjectsProcedure:
-			backendServiceListProjectsHandler.ServeHTTP(w, r)
-		case BackendServiceUpdateProjectProcedure:
-			backendServiceUpdateProjectHandler.ServeHTTP(w, r)
 		case BackendServiceCreateUserProcedure:
 			backendServiceCreateUserHandler.ServeHTTP(w, r)
 		case BackendServiceGetUserProcedure:
@@ -471,6 +411,14 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 // UnimplementedBackendServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedBackendServiceHandler struct{}
 
+func (UnimplementedBackendServiceHandler) GetProject(context.Context, *connect.Request[v1.GetProjectRequest]) (*connect.Response[v1.GetProjectResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetProject is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) UpdateProject(context.Context, *connect.Request[v1.UpdateProjectRequest]) (*connect.Response[v1.UpdateProjectResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.UpdateProject is not implemented"))
+}
+
 func (UnimplementedBackendServiceHandler) CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.Organization], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.CreateOrganization is not implemented"))
 }
@@ -485,22 +433,6 @@ func (UnimplementedBackendServiceHandler) ListOrganizations(context.Context, *co
 
 func (UnimplementedBackendServiceHandler) UpdateOrganization(context.Context, *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.Organization], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.UpdateOrganization is not implemented"))
-}
-
-func (UnimplementedBackendServiceHandler) CreateProject(context.Context, *connect.Request[v1.CreateProjectRequest]) (*connect.Response[v1.Project], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.CreateProject is not implemented"))
-}
-
-func (UnimplementedBackendServiceHandler) GetProject(context.Context, *connect.Request[v1.GetProjectRequest]) (*connect.Response[v1.Project], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetProject is not implemented"))
-}
-
-func (UnimplementedBackendServiceHandler) ListProjects(context.Context, *connect.Request[v1.ListProjectsRequest]) (*connect.Response[v1.ListProjectsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.ListProjects is not implemented"))
-}
-
-func (UnimplementedBackendServiceHandler) UpdateProject(context.Context, *connect.Request[v1.UpdateProjectRequest]) (*connect.Response[v1.Project], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.UpdateProject is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.User], error) {
