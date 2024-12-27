@@ -57,9 +57,10 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 	}
 
 	if _, err := q.CreateOrganization(ctx, queries.CreateOrganizationParams{
-		ID:          dogfoodOrganizationID,
-		ProjectID:   dogfoodProjectID,
-		DisplayName: "OpenAuth",
+		ID:                   dogfoodOrganizationID,
+		ProjectID:            dogfoodProjectID,
+		DisplayName:          "OpenAuth",
+		OverrideLogInMethods: false, // just to be explicit here
 	}); err != nil {
 		return nil, fmt.Errorf("create dogfood organization: %w", err)
 	}

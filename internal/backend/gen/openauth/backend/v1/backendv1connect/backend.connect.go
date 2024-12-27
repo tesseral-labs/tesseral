@@ -39,18 +39,21 @@ const (
 	// BackendServiceUpdateProjectProcedure is the fully-qualified name of the BackendService's
 	// UpdateProject RPC.
 	BackendServiceUpdateProjectProcedure = "/openauth.backend.v1.BackendService/UpdateProject"
-	// BackendServiceCreateOrganizationProcedure is the fully-qualified name of the BackendService's
-	// CreateOrganization RPC.
-	BackendServiceCreateOrganizationProcedure = "/openauth.backend.v1.BackendService/CreateOrganization"
-	// BackendServiceGetOrganizationProcedure is the fully-qualified name of the BackendService's
-	// GetOrganization RPC.
-	BackendServiceGetOrganizationProcedure = "/openauth.backend.v1.BackendService/GetOrganization"
 	// BackendServiceListOrganizationsProcedure is the fully-qualified name of the BackendService's
 	// ListOrganizations RPC.
 	BackendServiceListOrganizationsProcedure = "/openauth.backend.v1.BackendService/ListOrganizations"
+	// BackendServiceGetOrganizationProcedure is the fully-qualified name of the BackendService's
+	// GetOrganization RPC.
+	BackendServiceGetOrganizationProcedure = "/openauth.backend.v1.BackendService/GetOrganization"
+	// BackendServiceCreateOrganizationProcedure is the fully-qualified name of the BackendService's
+	// CreateOrganization RPC.
+	BackendServiceCreateOrganizationProcedure = "/openauth.backend.v1.BackendService/CreateOrganization"
 	// BackendServiceUpdateOrganizationProcedure is the fully-qualified name of the BackendService's
 	// UpdateOrganization RPC.
 	BackendServiceUpdateOrganizationProcedure = "/openauth.backend.v1.BackendService/UpdateOrganization"
+	// BackendServiceDeleteOrganizationProcedure is the fully-qualified name of the BackendService's
+	// DeleteOrganization RPC.
+	BackendServiceDeleteOrganizationProcedure = "/openauth.backend.v1.BackendService/DeleteOrganization"
 	// BackendServiceCreateUserProcedure is the fully-qualified name of the BackendService's CreateUser
 	// RPC.
 	BackendServiceCreateUserProcedure = "/openauth.backend.v1.BackendService/CreateUser"
@@ -75,10 +78,11 @@ var (
 	backendServiceServiceDescriptor                   = v1.File_openauth_backend_v1_backend_proto.Services().ByName("BackendService")
 	backendServiceGetProjectMethodDescriptor          = backendServiceServiceDescriptor.Methods().ByName("GetProject")
 	backendServiceUpdateProjectMethodDescriptor       = backendServiceServiceDescriptor.Methods().ByName("UpdateProject")
-	backendServiceCreateOrganizationMethodDescriptor  = backendServiceServiceDescriptor.Methods().ByName("CreateOrganization")
-	backendServiceGetOrganizationMethodDescriptor     = backendServiceServiceDescriptor.Methods().ByName("GetOrganization")
 	backendServiceListOrganizationsMethodDescriptor   = backendServiceServiceDescriptor.Methods().ByName("ListOrganizations")
+	backendServiceGetOrganizationMethodDescriptor     = backendServiceServiceDescriptor.Methods().ByName("GetOrganization")
+	backendServiceCreateOrganizationMethodDescriptor  = backendServiceServiceDescriptor.Methods().ByName("CreateOrganization")
 	backendServiceUpdateOrganizationMethodDescriptor  = backendServiceServiceDescriptor.Methods().ByName("UpdateOrganization")
+	backendServiceDeleteOrganizationMethodDescriptor  = backendServiceServiceDescriptor.Methods().ByName("DeleteOrganization")
 	backendServiceCreateUserMethodDescriptor          = backendServiceServiceDescriptor.Methods().ByName("CreateUser")
 	backendServiceGetUserMethodDescriptor             = backendServiceServiceDescriptor.Methods().ByName("GetUser")
 	backendServiceListUsersMethodDescriptor           = backendServiceServiceDescriptor.Methods().ByName("ListUsers")
@@ -91,14 +95,11 @@ var (
 type BackendServiceClient interface {
 	GetProject(context.Context, *connect.Request[v1.GetProjectRequest]) (*connect.Response[v1.GetProjectResponse], error)
 	UpdateProject(context.Context, *connect.Request[v1.UpdateProjectRequest]) (*connect.Response[v1.UpdateProjectResponse], error)
-	// Creates an organization.
-	CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.Organization], error)
-	// Gets an organization.
-	GetOrganization(context.Context, *connect.Request[v1.GetOrganizationRequest]) (*connect.Response[v1.Organization], error)
-	// Gets a list of organizations.
 	ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error)
-	// Updates an organization.
-	UpdateOrganization(context.Context, *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.Organization], error)
+	GetOrganization(context.Context, *connect.Request[v1.GetOrganizationRequest]) (*connect.Response[v1.GetOrganizationResponse], error)
+	CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.CreateOrganizationResponse], error)
+	UpdateOrganization(context.Context, *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.UpdateOrganizationResponse], error)
+	DeleteOrganization(context.Context, *connect.Request[v1.DeleteOrganizationRequest]) (*connect.Response[v1.DeleteOrganizationResponse], error)
 	// Creates a user.
 	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.User], error)
 	// Gets a user.
@@ -134,28 +135,34 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(backendServiceUpdateProjectMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
-		createOrganization: connect.NewClient[v1.CreateOrganizationRequest, v1.Organization](
-			httpClient,
-			baseURL+BackendServiceCreateOrganizationProcedure,
-			connect.WithSchema(backendServiceCreateOrganizationMethodDescriptor),
-			connect.WithClientOptions(opts...),
-		),
-		getOrganization: connect.NewClient[v1.GetOrganizationRequest, v1.Organization](
-			httpClient,
-			baseURL+BackendServiceGetOrganizationProcedure,
-			connect.WithSchema(backendServiceGetOrganizationMethodDescriptor),
-			connect.WithClientOptions(opts...),
-		),
 		listOrganizations: connect.NewClient[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse](
 			httpClient,
 			baseURL+BackendServiceListOrganizationsProcedure,
 			connect.WithSchema(backendServiceListOrganizationsMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
-		updateOrganization: connect.NewClient[v1.UpdateOrganizationRequest, v1.Organization](
+		getOrganization: connect.NewClient[v1.GetOrganizationRequest, v1.GetOrganizationResponse](
+			httpClient,
+			baseURL+BackendServiceGetOrganizationProcedure,
+			connect.WithSchema(backendServiceGetOrganizationMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		createOrganization: connect.NewClient[v1.CreateOrganizationRequest, v1.CreateOrganizationResponse](
+			httpClient,
+			baseURL+BackendServiceCreateOrganizationProcedure,
+			connect.WithSchema(backendServiceCreateOrganizationMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		updateOrganization: connect.NewClient[v1.UpdateOrganizationRequest, v1.UpdateOrganizationResponse](
 			httpClient,
 			baseURL+BackendServiceUpdateOrganizationProcedure,
 			connect.WithSchema(backendServiceUpdateOrganizationMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		deleteOrganization: connect.NewClient[v1.DeleteOrganizationRequest, v1.DeleteOrganizationResponse](
+			httpClient,
+			baseURL+BackendServiceDeleteOrganizationProcedure,
+			connect.WithSchema(backendServiceDeleteOrganizationMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
 		createUser: connect.NewClient[v1.CreateUserRequest, v1.User](
@@ -201,10 +208,11 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 type backendServiceClient struct {
 	getProject          *connect.Client[v1.GetProjectRequest, v1.GetProjectResponse]
 	updateProject       *connect.Client[v1.UpdateProjectRequest, v1.UpdateProjectResponse]
-	createOrganization  *connect.Client[v1.CreateOrganizationRequest, v1.Organization]
-	getOrganization     *connect.Client[v1.GetOrganizationRequest, v1.Organization]
 	listOrganizations   *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
-	updateOrganization  *connect.Client[v1.UpdateOrganizationRequest, v1.Organization]
+	getOrganization     *connect.Client[v1.GetOrganizationRequest, v1.GetOrganizationResponse]
+	createOrganization  *connect.Client[v1.CreateOrganizationRequest, v1.CreateOrganizationResponse]
+	updateOrganization  *connect.Client[v1.UpdateOrganizationRequest, v1.UpdateOrganizationResponse]
+	deleteOrganization  *connect.Client[v1.DeleteOrganizationRequest, v1.DeleteOrganizationResponse]
 	createUser          *connect.Client[v1.CreateUserRequest, v1.User]
 	getUser             *connect.Client[v1.GetUserRequest, v1.User]
 	listUsers           *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
@@ -223,24 +231,29 @@ func (c *backendServiceClient) UpdateProject(ctx context.Context, req *connect.R
 	return c.updateProject.CallUnary(ctx, req)
 }
 
-// CreateOrganization calls openauth.backend.v1.BackendService.CreateOrganization.
-func (c *backendServiceClient) CreateOrganization(ctx context.Context, req *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.Organization], error) {
-	return c.createOrganization.CallUnary(ctx, req)
-}
-
-// GetOrganization calls openauth.backend.v1.BackendService.GetOrganization.
-func (c *backendServiceClient) GetOrganization(ctx context.Context, req *connect.Request[v1.GetOrganizationRequest]) (*connect.Response[v1.Organization], error) {
-	return c.getOrganization.CallUnary(ctx, req)
-}
-
 // ListOrganizations calls openauth.backend.v1.BackendService.ListOrganizations.
 func (c *backendServiceClient) ListOrganizations(ctx context.Context, req *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error) {
 	return c.listOrganizations.CallUnary(ctx, req)
 }
 
+// GetOrganization calls openauth.backend.v1.BackendService.GetOrganization.
+func (c *backendServiceClient) GetOrganization(ctx context.Context, req *connect.Request[v1.GetOrganizationRequest]) (*connect.Response[v1.GetOrganizationResponse], error) {
+	return c.getOrganization.CallUnary(ctx, req)
+}
+
+// CreateOrganization calls openauth.backend.v1.BackendService.CreateOrganization.
+func (c *backendServiceClient) CreateOrganization(ctx context.Context, req *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.CreateOrganizationResponse], error) {
+	return c.createOrganization.CallUnary(ctx, req)
+}
+
 // UpdateOrganization calls openauth.backend.v1.BackendService.UpdateOrganization.
-func (c *backendServiceClient) UpdateOrganization(ctx context.Context, req *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.Organization], error) {
+func (c *backendServiceClient) UpdateOrganization(ctx context.Context, req *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.UpdateOrganizationResponse], error) {
 	return c.updateOrganization.CallUnary(ctx, req)
+}
+
+// DeleteOrganization calls openauth.backend.v1.BackendService.DeleteOrganization.
+func (c *backendServiceClient) DeleteOrganization(ctx context.Context, req *connect.Request[v1.DeleteOrganizationRequest]) (*connect.Response[v1.DeleteOrganizationResponse], error) {
+	return c.deleteOrganization.CallUnary(ctx, req)
 }
 
 // CreateUser calls openauth.backend.v1.BackendService.CreateUser.
@@ -277,14 +290,11 @@ func (c *backendServiceClient) CreateProjectAPIKey(ctx context.Context, req *con
 type BackendServiceHandler interface {
 	GetProject(context.Context, *connect.Request[v1.GetProjectRequest]) (*connect.Response[v1.GetProjectResponse], error)
 	UpdateProject(context.Context, *connect.Request[v1.UpdateProjectRequest]) (*connect.Response[v1.UpdateProjectResponse], error)
-	// Creates an organization.
-	CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.Organization], error)
-	// Gets an organization.
-	GetOrganization(context.Context, *connect.Request[v1.GetOrganizationRequest]) (*connect.Response[v1.Organization], error)
-	// Gets a list of organizations.
 	ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error)
-	// Updates an organization.
-	UpdateOrganization(context.Context, *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.Organization], error)
+	GetOrganization(context.Context, *connect.Request[v1.GetOrganizationRequest]) (*connect.Response[v1.GetOrganizationResponse], error)
+	CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.CreateOrganizationResponse], error)
+	UpdateOrganization(context.Context, *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.UpdateOrganizationResponse], error)
+	DeleteOrganization(context.Context, *connect.Request[v1.DeleteOrganizationRequest]) (*connect.Response[v1.DeleteOrganizationResponse], error)
 	// Creates a user.
 	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.User], error)
 	// Gets a user.
@@ -316,10 +326,10 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		connect.WithSchema(backendServiceUpdateProjectMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
-	backendServiceCreateOrganizationHandler := connect.NewUnaryHandler(
-		BackendServiceCreateOrganizationProcedure,
-		svc.CreateOrganization,
-		connect.WithSchema(backendServiceCreateOrganizationMethodDescriptor),
+	backendServiceListOrganizationsHandler := connect.NewUnaryHandler(
+		BackendServiceListOrganizationsProcedure,
+		svc.ListOrganizations,
+		connect.WithSchema(backendServiceListOrganizationsMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceGetOrganizationHandler := connect.NewUnaryHandler(
@@ -328,16 +338,22 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		connect.WithSchema(backendServiceGetOrganizationMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
-	backendServiceListOrganizationsHandler := connect.NewUnaryHandler(
-		BackendServiceListOrganizationsProcedure,
-		svc.ListOrganizations,
-		connect.WithSchema(backendServiceListOrganizationsMethodDescriptor),
+	backendServiceCreateOrganizationHandler := connect.NewUnaryHandler(
+		BackendServiceCreateOrganizationProcedure,
+		svc.CreateOrganization,
+		connect.WithSchema(backendServiceCreateOrganizationMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceUpdateOrganizationHandler := connect.NewUnaryHandler(
 		BackendServiceUpdateOrganizationProcedure,
 		svc.UpdateOrganization,
 		connect.WithSchema(backendServiceUpdateOrganizationMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceDeleteOrganizationHandler := connect.NewUnaryHandler(
+		BackendServiceDeleteOrganizationProcedure,
+		svc.DeleteOrganization,
+		connect.WithSchema(backendServiceDeleteOrganizationMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceCreateUserHandler := connect.NewUnaryHandler(
@@ -382,14 +398,16 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceGetProjectHandler.ServeHTTP(w, r)
 		case BackendServiceUpdateProjectProcedure:
 			backendServiceUpdateProjectHandler.ServeHTTP(w, r)
-		case BackendServiceCreateOrganizationProcedure:
-			backendServiceCreateOrganizationHandler.ServeHTTP(w, r)
-		case BackendServiceGetOrganizationProcedure:
-			backendServiceGetOrganizationHandler.ServeHTTP(w, r)
 		case BackendServiceListOrganizationsProcedure:
 			backendServiceListOrganizationsHandler.ServeHTTP(w, r)
+		case BackendServiceGetOrganizationProcedure:
+			backendServiceGetOrganizationHandler.ServeHTTP(w, r)
+		case BackendServiceCreateOrganizationProcedure:
+			backendServiceCreateOrganizationHandler.ServeHTTP(w, r)
 		case BackendServiceUpdateOrganizationProcedure:
 			backendServiceUpdateOrganizationHandler.ServeHTTP(w, r)
+		case BackendServiceDeleteOrganizationProcedure:
+			backendServiceDeleteOrganizationHandler.ServeHTTP(w, r)
 		case BackendServiceCreateUserProcedure:
 			backendServiceCreateUserHandler.ServeHTTP(w, r)
 		case BackendServiceGetUserProcedure:
@@ -419,20 +437,24 @@ func (UnimplementedBackendServiceHandler) UpdateProject(context.Context, *connec
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.UpdateProject is not implemented"))
 }
 
-func (UnimplementedBackendServiceHandler) CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.Organization], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.CreateOrganization is not implemented"))
-}
-
-func (UnimplementedBackendServiceHandler) GetOrganization(context.Context, *connect.Request[v1.GetOrganizationRequest]) (*connect.Response[v1.Organization], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetOrganization is not implemented"))
-}
-
 func (UnimplementedBackendServiceHandler) ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.ListOrganizations is not implemented"))
 }
 
-func (UnimplementedBackendServiceHandler) UpdateOrganization(context.Context, *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.Organization], error) {
+func (UnimplementedBackendServiceHandler) GetOrganization(context.Context, *connect.Request[v1.GetOrganizationRequest]) (*connect.Response[v1.GetOrganizationResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetOrganization is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.CreateOrganizationResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.CreateOrganization is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) UpdateOrganization(context.Context, *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.UpdateOrganizationResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.UpdateOrganization is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) DeleteOrganization(context.Context, *connect.Request[v1.DeleteOrganizationRequest]) (*connect.Response[v1.DeleteOrganizationResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.DeleteOrganization is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.User], error) {

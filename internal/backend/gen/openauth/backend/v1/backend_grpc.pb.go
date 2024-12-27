@@ -21,10 +21,11 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	BackendService_GetProject_FullMethodName          = "/openauth.backend.v1.BackendService/GetProject"
 	BackendService_UpdateProject_FullMethodName       = "/openauth.backend.v1.BackendService/UpdateProject"
-	BackendService_CreateOrganization_FullMethodName  = "/openauth.backend.v1.BackendService/CreateOrganization"
-	BackendService_GetOrganization_FullMethodName     = "/openauth.backend.v1.BackendService/GetOrganization"
 	BackendService_ListOrganizations_FullMethodName   = "/openauth.backend.v1.BackendService/ListOrganizations"
+	BackendService_GetOrganization_FullMethodName     = "/openauth.backend.v1.BackendService/GetOrganization"
+	BackendService_CreateOrganization_FullMethodName  = "/openauth.backend.v1.BackendService/CreateOrganization"
 	BackendService_UpdateOrganization_FullMethodName  = "/openauth.backend.v1.BackendService/UpdateOrganization"
+	BackendService_DeleteOrganization_FullMethodName  = "/openauth.backend.v1.BackendService/DeleteOrganization"
 	BackendService_CreateUser_FullMethodName          = "/openauth.backend.v1.BackendService/CreateUser"
 	BackendService_GetUser_FullMethodName             = "/openauth.backend.v1.BackendService/GetUser"
 	BackendService_ListUsers_FullMethodName           = "/openauth.backend.v1.BackendService/ListUsers"
@@ -39,14 +40,11 @@ const (
 type BackendServiceClient interface {
 	GetProject(ctx context.Context, in *GetProjectRequest, opts ...grpc.CallOption) (*GetProjectResponse, error)
 	UpdateProject(ctx context.Context, in *UpdateProjectRequest, opts ...grpc.CallOption) (*UpdateProjectResponse, error)
-	// Creates an organization.
-	CreateOrganization(ctx context.Context, in *CreateOrganizationRequest, opts ...grpc.CallOption) (*Organization, error)
-	// Gets an organization.
-	GetOrganization(ctx context.Context, in *GetOrganizationRequest, opts ...grpc.CallOption) (*Organization, error)
-	// Gets a list of organizations.
 	ListOrganizations(ctx context.Context, in *ListOrganizationsRequest, opts ...grpc.CallOption) (*ListOrganizationsResponse, error)
-	// Updates an organization.
-	UpdateOrganization(ctx context.Context, in *UpdateOrganizationRequest, opts ...grpc.CallOption) (*Organization, error)
+	GetOrganization(ctx context.Context, in *GetOrganizationRequest, opts ...grpc.CallOption) (*GetOrganizationResponse, error)
+	CreateOrganization(ctx context.Context, in *CreateOrganizationRequest, opts ...grpc.CallOption) (*CreateOrganizationResponse, error)
+	UpdateOrganization(ctx context.Context, in *UpdateOrganizationRequest, opts ...grpc.CallOption) (*UpdateOrganizationResponse, error)
+	DeleteOrganization(ctx context.Context, in *DeleteOrganizationRequest, opts ...grpc.CallOption) (*DeleteOrganizationResponse, error)
 	// Creates a user.
 	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*User, error)
 	// Gets a user.
@@ -88,26 +86,6 @@ func (c *backendServiceClient) UpdateProject(ctx context.Context, in *UpdateProj
 	return out, nil
 }
 
-func (c *backendServiceClient) CreateOrganization(ctx context.Context, in *CreateOrganizationRequest, opts ...grpc.CallOption) (*Organization, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Organization)
-	err := c.cc.Invoke(ctx, BackendService_CreateOrganization_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *backendServiceClient) GetOrganization(ctx context.Context, in *GetOrganizationRequest, opts ...grpc.CallOption) (*Organization, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Organization)
-	err := c.cc.Invoke(ctx, BackendService_GetOrganization_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *backendServiceClient) ListOrganizations(ctx context.Context, in *ListOrganizationsRequest, opts ...grpc.CallOption) (*ListOrganizationsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListOrganizationsResponse)
@@ -118,10 +96,40 @@ func (c *backendServiceClient) ListOrganizations(ctx context.Context, in *ListOr
 	return out, nil
 }
 
-func (c *backendServiceClient) UpdateOrganization(ctx context.Context, in *UpdateOrganizationRequest, opts ...grpc.CallOption) (*Organization, error) {
+func (c *backendServiceClient) GetOrganization(ctx context.Context, in *GetOrganizationRequest, opts ...grpc.CallOption) (*GetOrganizationResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Organization)
+	out := new(GetOrganizationResponse)
+	err := c.cc.Invoke(ctx, BackendService_GetOrganization_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) CreateOrganization(ctx context.Context, in *CreateOrganizationRequest, opts ...grpc.CallOption) (*CreateOrganizationResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateOrganizationResponse)
+	err := c.cc.Invoke(ctx, BackendService_CreateOrganization_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) UpdateOrganization(ctx context.Context, in *UpdateOrganizationRequest, opts ...grpc.CallOption) (*UpdateOrganizationResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateOrganizationResponse)
 	err := c.cc.Invoke(ctx, BackendService_UpdateOrganization_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) DeleteOrganization(ctx context.Context, in *DeleteOrganizationRequest, opts ...grpc.CallOption) (*DeleteOrganizationResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteOrganizationResponse)
+	err := c.cc.Invoke(ctx, BackendService_DeleteOrganization_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -194,14 +202,11 @@ func (c *backendServiceClient) CreateProjectAPIKey(ctx context.Context, in *Crea
 type BackendServiceServer interface {
 	GetProject(context.Context, *GetProjectRequest) (*GetProjectResponse, error)
 	UpdateProject(context.Context, *UpdateProjectRequest) (*UpdateProjectResponse, error)
-	// Creates an organization.
-	CreateOrganization(context.Context, *CreateOrganizationRequest) (*Organization, error)
-	// Gets an organization.
-	GetOrganization(context.Context, *GetOrganizationRequest) (*Organization, error)
-	// Gets a list of organizations.
 	ListOrganizations(context.Context, *ListOrganizationsRequest) (*ListOrganizationsResponse, error)
-	// Updates an organization.
-	UpdateOrganization(context.Context, *UpdateOrganizationRequest) (*Organization, error)
+	GetOrganization(context.Context, *GetOrganizationRequest) (*GetOrganizationResponse, error)
+	CreateOrganization(context.Context, *CreateOrganizationRequest) (*CreateOrganizationResponse, error)
+	UpdateOrganization(context.Context, *UpdateOrganizationRequest) (*UpdateOrganizationResponse, error)
+	DeleteOrganization(context.Context, *DeleteOrganizationRequest) (*DeleteOrganizationResponse, error)
 	// Creates a user.
 	CreateUser(context.Context, *CreateUserRequest) (*User, error)
 	// Gets a user.
@@ -229,17 +234,20 @@ func (UnimplementedBackendServiceServer) GetProject(context.Context, *GetProject
 func (UnimplementedBackendServiceServer) UpdateProject(context.Context, *UpdateProjectRequest) (*UpdateProjectResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateProject not implemented")
 }
-func (UnimplementedBackendServiceServer) CreateOrganization(context.Context, *CreateOrganizationRequest) (*Organization, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateOrganization not implemented")
-}
-func (UnimplementedBackendServiceServer) GetOrganization(context.Context, *GetOrganizationRequest) (*Organization, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetOrganization not implemented")
-}
 func (UnimplementedBackendServiceServer) ListOrganizations(context.Context, *ListOrganizationsRequest) (*ListOrganizationsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListOrganizations not implemented")
 }
-func (UnimplementedBackendServiceServer) UpdateOrganization(context.Context, *UpdateOrganizationRequest) (*Organization, error) {
+func (UnimplementedBackendServiceServer) GetOrganization(context.Context, *GetOrganizationRequest) (*GetOrganizationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetOrganization not implemented")
+}
+func (UnimplementedBackendServiceServer) CreateOrganization(context.Context, *CreateOrganizationRequest) (*CreateOrganizationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateOrganization not implemented")
+}
+func (UnimplementedBackendServiceServer) UpdateOrganization(context.Context, *UpdateOrganizationRequest) (*UpdateOrganizationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateOrganization not implemented")
+}
+func (UnimplementedBackendServiceServer) DeleteOrganization(context.Context, *DeleteOrganizationRequest) (*DeleteOrganizationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteOrganization not implemented")
 }
 func (UnimplementedBackendServiceServer) CreateUser(context.Context, *CreateUserRequest) (*User, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
@@ -316,20 +324,20 @@ func _BackendService_UpdateProject_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BackendService_CreateOrganization_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateOrganizationRequest)
+func _BackendService_ListOrganizations_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListOrganizationsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BackendServiceServer).CreateOrganization(ctx, in)
+		return srv.(BackendServiceServer).ListOrganizations(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BackendService_CreateOrganization_FullMethodName,
+		FullMethod: BackendService_ListOrganizations_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).CreateOrganization(ctx, req.(*CreateOrganizationRequest))
+		return srv.(BackendServiceServer).ListOrganizations(ctx, req.(*ListOrganizationsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -352,20 +360,20 @@ func _BackendService_GetOrganization_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BackendService_ListOrganizations_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListOrganizationsRequest)
+func _BackendService_CreateOrganization_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateOrganizationRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BackendServiceServer).ListOrganizations(ctx, in)
+		return srv.(BackendServiceServer).CreateOrganization(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BackendService_ListOrganizations_FullMethodName,
+		FullMethod: BackendService_CreateOrganization_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).ListOrganizations(ctx, req.(*ListOrganizationsRequest))
+		return srv.(BackendServiceServer).CreateOrganization(ctx, req.(*CreateOrganizationRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -384,6 +392,24 @@ func _BackendService_UpdateOrganization_Handler(srv interface{}, ctx context.Con
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(BackendServiceServer).UpdateOrganization(ctx, req.(*UpdateOrganizationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_DeleteOrganization_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteOrganizationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).DeleteOrganization(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_DeleteOrganization_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).DeleteOrganization(ctx, req.(*DeleteOrganizationRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -512,20 +538,24 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _BackendService_UpdateProject_Handler,
 		},
 		{
-			MethodName: "CreateOrganization",
-			Handler:    _BackendService_CreateOrganization_Handler,
+			MethodName: "ListOrganizations",
+			Handler:    _BackendService_ListOrganizations_Handler,
 		},
 		{
 			MethodName: "GetOrganization",
 			Handler:    _BackendService_GetOrganization_Handler,
 		},
 		{
-			MethodName: "ListOrganizations",
-			Handler:    _BackendService_ListOrganizations_Handler,
+			MethodName: "CreateOrganization",
+			Handler:    _BackendService_CreateOrganization_Handler,
 		},
 		{
 			MethodName: "UpdateOrganization",
 			Handler:    _BackendService_UpdateOrganization_Handler,
+		},
+		{
+			MethodName: "DeleteOrganization",
+			Handler:    _BackendService_DeleteOrganization_Handler,
 		},
 		{
 			MethodName: "CreateUser",

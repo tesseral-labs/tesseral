@@ -100,6 +100,7 @@ type Organization struct {
 	OverrideLogInWithMicrosoftEnabled *bool
 	GoogleHostedDomain                *string
 	MicrosoftTenantID                 *string
+	OverrideLogInMethods              bool
 }
 
 type OrganizationDomain struct {

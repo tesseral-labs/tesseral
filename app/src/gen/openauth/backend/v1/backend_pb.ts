@@ -13,26 +13,7 @@ import type { JsonObject, Message } from "@bufbuild/protobuf";
  * Describes the file openauth/backend/v1/backend.proto.
  */
 export const file_openauth_backend_v1_backend: GenFile = /*@__PURE__*/
-  fileDesc("CiFvcGVuYXV0aC9iYWNrZW5kL3YxL2JhY2tlbmQucHJvdG8SE29wZW5hdXRoLmJhY2tlbmQudjEiVAoZQ3JlYXRlT3JnYW5pemF0aW9uUmVxdWVzdBI3Cgxvcmdhbml6YXRpb24YASABKAsyIS5vcGVuYXV0aC5iYWNrZW5kLnYxLk9yZ2FuaXphdGlvbiI8ChFDcmVhdGVVc2VyUmVxdWVzdBInCgR1c2VyGAEgASgLMhkub3BlbmF1dGguYmFja2VuZC52MS5Vc2VyIiQKFkdldE9yZ2FuaXphdGlvblJlcXVlc3QSCgoCaWQYASABKAkiEwoRR2V0UHJvamVjdFJlcXVlc3QiQwoSR2V0UHJvamVjdFJlc3BvbnNlEi0KB3Byb2plY3QYASABKAsyHC5vcGVuYXV0aC5iYWNrZW5kLnYxLlByb2plY3QiRQoUVXBkYXRlUHJvamVjdFJlcXVlc3QSLQoHcHJvamVjdBgBIAEoCzIcLm9wZW5hdXRoLmJhY2tlbmQudjEuUHJvamVjdCJGChVVcGRhdGVQcm9qZWN0UmVzcG9uc2USLQoHcHJvamVjdBgBIAEoCzIcLm9wZW5hdXRoLmJhY2tlbmQudjEuUHJvamVjdCIcCg5HZXRVc2VyUmVxdWVzdBIKCgJpZBgBIAEoCSJCChhMaXN0T3JnYW5pemF0aW9uc1JlcXVlc3QSEgoKcHJvamVjdF9pZBgBIAEoCRISCgpwYWdlX3Rva2VuGAIgASgJIm4KGUxpc3RPcmdhbml6YXRpb25zUmVzcG9uc2USOAoNb3JnYW5pemF0aW9ucxgBIAMoCzIhLm9wZW5hdXRoLmJhY2tlbmQudjEuT3JnYW5pemF0aW9uEhcKD25leHRfcGFnZV90b2tlbhgCIAEoCSIpChNMaXN0UHJvamVjdHNSZXF1ZXN0EhIKCnBhZ2VfdG9rZW4YASABKAkiXwoUTGlzdFByb2plY3RzUmVzcG9uc2USLgoIcHJvamVjdHMYASADKAsyHC5vcGVuYXV0aC5iYWNrZW5kLnYxLlByb2plY3QSFwoPbmV4dF9wYWdlX3Rva2VuGAIgASgJIj8KEExpc3RVc2Vyc1JlcXVlc3QSFwoPb3JnYW5pemF0aW9uX2lkGAEgASgJEhIKCnBhZ2VfdG9rZW4YAiABKAkiVgoRTGlzdFVzZXJzUmVzcG9uc2USKAoFdXNlcnMYASADKAsyGS5vcGVuYXV0aC5iYWNrZW5kLnYxLlVzZXISFwoPbmV4dF9wYWdlX3Rva2VuGAIgASgJImAKGVVwZGF0ZU9yZ2FuaXphdGlvblJlcXVlc3QSCgoCaWQYASABKAkSNwoMb3JnYW5pemF0aW9uGAIgASgLMiEub3BlbmF1dGguYmFja2VuZC52MS5Pcmdhbml6YXRpb24iOQoZVXBkYXRlVXNlclBhc3N3b3JkUmVxdWVzdBIKCgJpZBgBIAEoCRIQCghwYXNzd29yZBgCIAEoCSJIChFVcGRhdGVVc2VyUmVxdWVzdBIKCgJpZBgBIAEoCRInCgR1c2VyGAIgASgLMhkub3BlbmF1dGguYmFja2VuZC52MS5Vc2VyIj0KElVwZGF0ZVVzZXJSZXNwb25zZRInCgR1c2VyGAEgASgLMhkub3BlbmF1dGguYmFja2VuZC52MS5Vc2VyIocBCg1Qcm9qZWN0QVBJS2V5EgoKAmlkGAEgASgJEhIKCnByb2plY3RfaWQYAiABKAkSLwoLY3JlYXRlX3RpbWUYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEg8KB3Jldm9rZWQYBCABKAgSFAoMc2VjcmV0X3Rva2VuGAUgASgJIlkKGkNyZWF0ZVByb2plY3RBUElLZXlSZXF1ZXN0EjsKD3Byb2plY3RfYXBpX2tleRgBIAEoCzIiLm9wZW5hdXRoLmJhY2tlbmQudjEuUHJvamVjdEFQSUtleSJaChtDcmVhdGVQcm9qZWN0QVBJS2V5UmVzcG9uc2USOwoPcHJvamVjdF9hcGlfa2V5GAEgASgLMiIub3BlbmF1dGguYmFja2VuZC52MS5Qcm9qZWN0QVBJS2V5IqoCCgdQcm9qZWN0EgoKAmlkGAEgASgJEhQKDGRpc3BsYXlfbmFtZRgCIAEoCRIkChxsb2dfaW5fd2l0aF9wYXNzd29yZF9lbmFibGVkGAMgASgIEiIKGmxvZ19pbl93aXRoX2dvb2dsZV9lbmFibGVkGAQgASgIEiUKHWxvZ19pbl93aXRoX21pY3Jvc29mdF9lbmFibGVkGAUgASgIEh4KFmdvb2dsZV9vYXV0aF9jbGllbnRfaWQYBiABKAkSIgoaZ29vZ2xlX29hdXRoX2NsaWVudF9zZWNyZXQYByABKAkSIQoZbWljcm9zb2Z0X29hdXRoX2NsaWVudF9pZBgIIAEoCRIlCh1taWNyb3NvZnRfb2F1dGhfY2xpZW50X3NlY3JldBgJIAEoCSKLAgoMT3JnYW5pemF0aW9uEgoKAmlkGAEgASgJEhIKCnByb2plY3RfaWQYAiABKAkSFAoMZGlzcGxheV9uYW1lGAMgASgJEi0KJW92ZXJyaWRlX2xvZ19pbl93aXRoX3Bhc3N3b3JkX2VuYWJsZWQYBCABKAgSKwojb3ZlcnJpZGVfbG9nX2luX3dpdGhfZ29vZ2xlX2VuYWJsZWQYBSABKAgSLgomb3ZlcnJpZGVfbG9nX2luX3dpdGhfbWljcm9zb2Z0X2VuYWJsZWQYBiABKAgSHAoUZ29vZ2xlX2hvc3RlZF9kb21haW4YByABKAkSGwoTbWljcm9zb2Z0X3RlbmFudF9pZBgIIAEoCSJkChFTZXNzaW9uU2lnbmluZ0tleRIKCgJpZBgBIAEoCRISCgpwcm9qZWN0X2lkGAIgASgJEi8KDnB1YmxpY19rZXlfandrGAMgASgLMhcuZ29vZ2xlLnByb3RvYnVmLlN0cnVjdCKGAQoEVXNlchIKCgJpZBgBIAEoCRIXCg9vcmdhbml6YXRpb25faWQYAiABKAkSDQoFZW1haWwYAyABKAkSFwoPcGFzc3dvcmRfYmNyeXB0GAQgASgJEhYKDmdvb2dsZV91c2VyX2lkGAUgASgJEhkKEW1pY3Jvc29mdF91c2VyX2lkGAYgASgJIpkBCgdTZXNzaW9uEgoKAmlkGAEgASgJEg8KB3VzZXJfaWQYAiABKAkSLwoLY3JlYXRlX3RpbWUYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi8KC2V4cGlyZV90aW1lGAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIPCgdyZXZva2VkGAUgASgIMsIMCg5CYWNrZW5kU2VydmljZRJ6CgpHZXRQcm9qZWN0EiYub3BlbmF1dGguYmFja2VuZC52MS5HZXRQcm9qZWN0UmVxdWVzdBonLm9wZW5hdXRoLmJhY2tlbmQudjEuR2V0UHJvamVjdFJlc3BvbnNlIhuC0+STAhUSEy9iYWNrZW5kL3YxL3Byb2plY3QSjAEKDVVwZGF0ZVByb2plY3QSKS5vcGVuYXV0aC5iYWNrZW5kLnYxLlVwZGF0ZVByb2plY3RSZXF1ZXN0Gioub3BlbmF1dGguYmFja2VuZC52MS5VcGRhdGVQcm9qZWN0UmVzcG9uc2UiJILT5JMCHjoHcHJvamVjdDITL2JhY2tlbmQvdjEvcHJvamVjdBKNAQoSQ3JlYXRlT3JnYW5pemF0aW9uEi4ub3BlbmF1dGguYmFja2VuZC52MS5DcmVhdGVPcmdhbml6YXRpb25SZXF1ZXN0GiEub3BlbmF1dGguYmFja2VuZC52MS5Pcmdhbml6YXRpb24iJILT5JMCHjoBKiIZL2JhY2tlbmQvdjEvb3JnYW5pemF0aW9ucxKJAQoPR2V0T3JnYW5pemF0aW9uEisub3BlbmF1dGguYmFja2VuZC52MS5HZXRPcmdhbml6YXRpb25SZXF1ZXN0GiEub3BlbmF1dGguYmFja2VuZC52MS5Pcmdhbml6YXRpb24iJoLT5JMCIBIeL2JhY2tlbmQvdjEvb3JnYW5pemF0aW9ucy97aWR9EpUBChFMaXN0T3JnYW5pemF0aW9ucxItLm9wZW5hdXRoLmJhY2tlbmQudjEuTGlzdE9yZ2FuaXphdGlvbnNSZXF1ZXN0Gi4ub3BlbmF1dGguYmFja2VuZC52MS5MaXN0T3JnYW5pemF0aW9uc1Jlc3BvbnNlIiGC0+STAhsSGS9iYWNrZW5kL3YxL29yZ2FuaXphdGlvbnMSnQEKElVwZGF0ZU9yZ2FuaXphdGlvbhIuLm9wZW5hdXRoLmJhY2tlbmQudjEuVXBkYXRlT3JnYW5pemF0aW9uUmVxdWVzdBohLm9wZW5hdXRoLmJhY2tlbmQudjEuT3JnYW5pemF0aW9uIjSC0+STAi46DG9yZ2FuaXphdGlvbjIeL2JhY2tlbmQvdjEvb3JnYW5pemF0aW9ucy97aWR9EnAKCkNyZWF0ZVVzZXISJi5vcGVuYXV0aC5iYWNrZW5kLnYxLkNyZWF0ZVVzZXJSZXF1ZXN0Ghkub3BlbmF1dGguYmFja2VuZC52MS5Vc2VyIh+C0+STAhk6BHVzZXIiES9iYWNrZW5kL3YxL3VzZXJzEmkKB0dldFVzZXISIy5vcGVuYXV0aC5iYWNrZW5kLnYxLkdldFVzZXJSZXF1ZXN0Ghkub3BlbmF1dGguYmFja2VuZC52MS5Vc2VyIh6C0+STAhgSFi9iYWNrZW5kL3YxL3VzZXJzL3tpZH0SdQoJTGlzdFVzZXJzEiUub3BlbmF1dGguYmFja2VuZC52MS5MaXN0VXNlcnNSZXF1ZXN0GiYub3BlbmF1dGguYmFja2VuZC52MS5MaXN0VXNlcnNSZXNwb25zZSIZgtPkkwITEhEvYmFja2VuZC92MS91c2VycxJ1CgpVcGRhdGVVc2VyEiYub3BlbmF1dGguYmFja2VuZC52MS5VcGRhdGVVc2VyUmVxdWVzdBoZLm9wZW5hdXRoLmJhY2tlbmQudjEuVXNlciIkgtPkkwIeOgR1c2VyMhYvYmFja2VuZC92MS91c2Vycy97aWR9EosBChJVcGRhdGVVc2VyUGFzc3dvcmQSLi5vcGVuYXV0aC5iYWNrZW5kLnYxLlVwZGF0ZVVzZXJQYXNzd29yZFJlcXVlc3QaGS5vcGVuYXV0aC5iYWNrZW5kLnYxLlVzZXIiKoLT5JMCJDoBKjIfL2JhY2tlbmQvdjEvdXNlcnMve2lkfS9wYXNzd29yZBJ4ChNDcmVhdGVQcm9qZWN0QVBJS2V5Ei8ub3BlbmF1dGguYmFja2VuZC52MS5DcmVhdGVQcm9qZWN0QVBJS2V5UmVxdWVzdBowLm9wZW5hdXRoLmJhY2tlbmQudjEuQ3JlYXRlUHJvamVjdEFQSUtleVJlc3BvbnNlQuYBChdjb20ub3BlbmF1dGguYmFja2VuZC52MUIMQmFja2VuZFByb3RvUAFaT2dpdGh1Yi5jb20vb3BlbmF1dGgvb3BlbmF1dGgvaW50ZXJuYWwvYmFja2VuZC9nZW4vb3BlbmF1dGgvYmFja2VuZC92MTtiYWNrZW5kdjGiAgNPQliqAhNPcGVuYXV0aC5CYWNrZW5kLlYxygITT3BlbmF1dGhcQmFja2VuZFxWMeICH09wZW5hdXRoXEJhY2tlbmRcVjFcR1BCTWV0YWRhdGHqAhVPcGVuYXV0aDo6QmFja2VuZDo6VjFiBnByb3RvMw", [file_google_api_annotations, file_google_protobuf_empty, file_google_protobuf_field_mask, file_google_protobuf_timestamp, file_google_protobuf_struct]);
-
-/**
- * @generated from message openauth.backend.v1.CreateOrganizationRequest
- */
-export type CreateOrganizationRequest = Message<"openauth.backend.v1.CreateOrganizationRequest"> & {
-  /**
-   * The organization to create.
-   *
-   * @generated from field: openauth.backend.v1.Organization organization = 1;
-   */
-  organization?: Organization;
-};
-
-/**
- * Describes the message openauth.backend.v1.CreateOrganizationRequest.
- * Use `create(CreateOrganizationRequestSchema)` to create a new message.
- */
-export const CreateOrganizationRequestSchema: GenMessage<CreateOrganizationRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_backend_v1_backend, 0);
+  fileDesc("CiFvcGVuYXV0aC9iYWNrZW5kL3YxL2JhY2tlbmQucHJvdG8SE29wZW5hdXRoLmJhY2tlbmQudjEiPAoRQ3JlYXRlVXNlclJlcXVlc3QSJwoEdXNlchgBIAEoCzIZLm9wZW5hdXRoLmJhY2tlbmQudjEuVXNlciITChFHZXRQcm9qZWN0UmVxdWVzdCJDChJHZXRQcm9qZWN0UmVzcG9uc2USLQoHcHJvamVjdBgBIAEoCzIcLm9wZW5hdXRoLmJhY2tlbmQudjEuUHJvamVjdCJFChRVcGRhdGVQcm9qZWN0UmVxdWVzdBItCgdwcm9qZWN0GAEgASgLMhwub3BlbmF1dGguYmFja2VuZC52MS5Qcm9qZWN0IkYKFVVwZGF0ZVByb2plY3RSZXNwb25zZRItCgdwcm9qZWN0GAEgASgLMhwub3BlbmF1dGguYmFja2VuZC52MS5Qcm9qZWN0IkIKGExpc3RPcmdhbml6YXRpb25zUmVxdWVzdBISCgpwcm9qZWN0X2lkGAEgASgJEhIKCnBhZ2VfdG9rZW4YAiABKAkibgoZTGlzdE9yZ2FuaXphdGlvbnNSZXNwb25zZRI4Cg1vcmdhbml6YXRpb25zGAEgAygLMiEub3BlbmF1dGguYmFja2VuZC52MS5Pcmdhbml6YXRpb24SFwoPbmV4dF9wYWdlX3Rva2VuGAIgASgJIiQKFkdldE9yZ2FuaXphdGlvblJlcXVlc3QSCgoCaWQYASABKAkiUgoXR2V0T3JnYW5pemF0aW9uUmVzcG9uc2USNwoMb3JnYW5pemF0aW9uGAEgASgLMiEub3BlbmF1dGguYmFja2VuZC52MS5Pcmdhbml6YXRpb24iVAoZQ3JlYXRlT3JnYW5pemF0aW9uUmVxdWVzdBI3Cgxvcmdhbml6YXRpb24YASABKAsyIS5vcGVuYXV0aC5iYWNrZW5kLnYxLk9yZ2FuaXphdGlvbiJVChpDcmVhdGVPcmdhbml6YXRpb25SZXNwb25zZRI3Cgxvcmdhbml6YXRpb24YASABKAsyIS5vcGVuYXV0aC5iYWNrZW5kLnYxLk9yZ2FuaXphdGlvbiJgChlVcGRhdGVPcmdhbml6YXRpb25SZXF1ZXN0EgoKAmlkGAEgASgJEjcKDG9yZ2FuaXphdGlvbhgCIAEoCzIhLm9wZW5hdXRoLmJhY2tlbmQudjEuT3JnYW5pemF0aW9uIlUKGlVwZGF0ZU9yZ2FuaXphdGlvblJlc3BvbnNlEjcKDG9yZ2FuaXphdGlvbhgBIAEoCzIhLm9wZW5hdXRoLmJhY2tlbmQudjEuT3JnYW5pemF0aW9uIicKGURlbGV0ZU9yZ2FuaXphdGlvblJlcXVlc3QSCgoCaWQYASABKAkiHAoaRGVsZXRlT3JnYW5pemF0aW9uUmVzcG9uc2UiHAoOR2V0VXNlclJlcXVlc3QSCgoCaWQYASABKAkiPwoQTGlzdFVzZXJzUmVxdWVzdBIXCg9vcmdhbml6YXRpb25faWQYASABKAkSEgoKcGFnZV90b2tlbhgCIAEoCSJWChFMaXN0VXNlcnNSZXNwb25zZRIoCgV1c2VycxgBIAMoCzIZLm9wZW5hdXRoLmJhY2tlbmQudjEuVXNlchIXCg9uZXh0X3BhZ2VfdG9rZW4YAiABKAkiOQoZVXBkYXRlVXNlclBhc3N3b3JkUmVxdWVzdBIKCgJpZBgBIAEoCRIQCghwYXNzd29yZBgCIAEoCSJIChFVcGRhdGVVc2VyUmVxdWVzdBIKCgJpZBgBIAEoCRInCgR1c2VyGAIgASgLMhkub3BlbmF1dGguYmFja2VuZC52MS5Vc2VyIj0KElVwZGF0ZVVzZXJSZXNwb25zZRInCgR1c2VyGAEgASgLMhkub3BlbmF1dGguYmFja2VuZC52MS5Vc2VyIocBCg1Qcm9qZWN0QVBJS2V5EgoKAmlkGAEgASgJEhIKCnByb2plY3RfaWQYAiABKAkSLwoLY3JlYXRlX3RpbWUYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEg8KB3Jldm9rZWQYBCABKAgSFAoMc2VjcmV0X3Rva2VuGAUgASgJIlkKGkNyZWF0ZVByb2plY3RBUElLZXlSZXF1ZXN0EjsKD3Byb2plY3RfYXBpX2tleRgBIAEoCzIiLm9wZW5hdXRoLmJhY2tlbmQudjEuUHJvamVjdEFQSUtleSJaChtDcmVhdGVQcm9qZWN0QVBJS2V5UmVzcG9uc2USOwoPcHJvamVjdF9hcGlfa2V5GAEgASgLMiIub3BlbmF1dGguYmFja2VuZC52MS5Qcm9qZWN0QVBJS2V5IpsDCgdQcm9qZWN0EgoKAmlkGAEgASgJEhQKDGRpc3BsYXlfbmFtZRgCIAEoCRIpChxsb2dfaW5fd2l0aF9wYXNzd29yZF9lbmFibGVkGAMgASgISACIAQESJwoabG9nX2luX3dpdGhfZ29vZ2xlX2VuYWJsZWQYBCABKAhIAYgBARIqCh1sb2dfaW5fd2l0aF9taWNyb3NvZnRfZW5hYmxlZBgFIAEoCEgCiAEBEh4KFmdvb2dsZV9vYXV0aF9jbGllbnRfaWQYBiABKAkSIgoaZ29vZ2xlX29hdXRoX2NsaWVudF9zZWNyZXQYByABKAkSIQoZbWljcm9zb2Z0X29hdXRoX2NsaWVudF9pZBgIIAEoCRIlCh1taWNyb3NvZnRfb2F1dGhfY2xpZW50X3NlY3JldBgJIAEoCUIfCh1fbG9nX2luX3dpdGhfcGFzc3dvcmRfZW5hYmxlZEIdChtfbG9nX2luX3dpdGhfZ29vZ2xlX2VuYWJsZWRCIAoeX2xvZ19pbl93aXRoX21pY3Jvc29mdF9lbmFibGVkIrICCgxPcmdhbml6YXRpb24SCgoCaWQYASABKAkSEgoKcHJvamVjdF9pZBgCIAEoCRIUCgxkaXNwbGF5X25hbWUYAyABKAkSJAoXb3ZlcnJpZGVfbG9nX2luX21ldGhvZHMYBCABKAhIAIgBARIkChxsb2dfaW5fd2l0aF9wYXNzd29yZF9lbmFibGVkGAUgASgIEiIKGmxvZ19pbl93aXRoX2dvb2dsZV9lbmFibGVkGAYgASgIEiUKHWxvZ19pbl93aXRoX21pY3Jvc29mdF9lbmFibGVkGAcgASgIEhwKFGdvb2dsZV9ob3N0ZWRfZG9tYWluGAggASgJEhsKE21pY3Jvc29mdF90ZW5hbnRfaWQYCSABKAlCGgoYX292ZXJyaWRlX2xvZ19pbl9tZXRob2RzImQKEVNlc3Npb25TaWduaW5nS2V5EgoKAmlkGAEgASgJEhIKCnByb2plY3RfaWQYAiABKAkSLwoOcHVibGljX2tleV9qd2sYAyABKAsyFy5nb29nbGUucHJvdG9idWYuU3RydWN0IoYBCgRVc2VyEgoKAmlkGAEgASgJEhcKD29yZ2FuaXphdGlvbl9pZBgCIAEoCRINCgVlbWFpbBgDIAEoCRIXCg9wYXNzd29yZF9iY3J5cHQYBCABKAkSFgoOZ29vZ2xlX3VzZXJfaWQYBSABKAkSGQoRbWljcm9zb2Z0X3VzZXJfaWQYBiABKAkimQEKB1Nlc3Npb24SCgoCaWQYASABKAkSDwoHdXNlcl9pZBgCIAEoCRIvCgtjcmVhdGVfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLwoLZXhwaXJlX3RpbWUYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEg8KB3Jldm9rZWQYBSABKAgylA4KDkJhY2tlbmRTZXJ2aWNlEnoKCkdldFByb2plY3QSJi5vcGVuYXV0aC5iYWNrZW5kLnYxLkdldFByb2plY3RSZXF1ZXN0Gicub3BlbmF1dGguYmFja2VuZC52MS5HZXRQcm9qZWN0UmVzcG9uc2UiG4LT5JMCFRITL2JhY2tlbmQvdjEvcHJvamVjdBKMAQoNVXBkYXRlUHJvamVjdBIpLm9wZW5hdXRoLmJhY2tlbmQudjEuVXBkYXRlUHJvamVjdFJlcXVlc3QaKi5vcGVuYXV0aC5iYWNrZW5kLnYxLlVwZGF0ZVByb2plY3RSZXNwb25zZSIkgtPkkwIeOgdwcm9qZWN0MhMvYmFja2VuZC92MS9wcm9qZWN0EpUBChFMaXN0T3JnYW5pemF0aW9ucxItLm9wZW5hdXRoLmJhY2tlbmQudjEuTGlzdE9yZ2FuaXphdGlvbnNSZXF1ZXN0Gi4ub3BlbmF1dGguYmFja2VuZC52MS5MaXN0T3JnYW5pemF0aW9uc1Jlc3BvbnNlIiGC0+STAhsSGS9iYWNrZW5kL3YxL29yZ2FuaXphdGlvbnMSlAEKD0dldE9yZ2FuaXphdGlvbhIrLm9wZW5hdXRoLmJhY2tlbmQudjEuR2V0T3JnYW5pemF0aW9uUmVxdWVzdBosLm9wZW5hdXRoLmJhY2tlbmQudjEuR2V0T3JnYW5pemF0aW9uUmVzcG9uc2UiJoLT5JMCIBIeL2JhY2tlbmQvdjEvb3JnYW5pemF0aW9ucy97aWR9EqYBChJDcmVhdGVPcmdhbml6YXRpb24SLi5vcGVuYXV0aC5iYWNrZW5kLnYxLkNyZWF0ZU9yZ2FuaXphdGlvblJlcXVlc3QaLy5vcGVuYXV0aC5iYWNrZW5kLnYxLkNyZWF0ZU9yZ2FuaXphdGlvblJlc3BvbnNlIi+C0+STAik6DG9yZ2FuaXphdGlvbiIZL2JhY2tlbmQvdjEvb3JnYW5pemF0aW9ucxKrAQoSVXBkYXRlT3JnYW5pemF0aW9uEi4ub3BlbmF1dGguYmFja2VuZC52MS5VcGRhdGVPcmdhbml6YXRpb25SZXF1ZXN0Gi8ub3BlbmF1dGguYmFja2VuZC52MS5VcGRhdGVPcmdhbml6YXRpb25SZXNwb25zZSI0gtPkkwIuOgxvcmdhbml6YXRpb24yHi9iYWNrZW5kL3YxL29yZ2FuaXphdGlvbnMve2lkfRKdAQoSRGVsZXRlT3JnYW5pemF0aW9uEi4ub3BlbmF1dGguYmFja2VuZC52MS5EZWxldGVPcmdhbml6YXRpb25SZXF1ZXN0Gi8ub3BlbmF1dGguYmFja2VuZC52MS5EZWxldGVPcmdhbml6YXRpb25SZXNwb25zZSImgtPkkwIgKh4vYmFja2VuZC92MS9vcmdhbml6YXRpb25zL3tpZH0ScAoKQ3JlYXRlVXNlchImLm9wZW5hdXRoLmJhY2tlbmQudjEuQ3JlYXRlVXNlclJlcXVlc3QaGS5vcGVuYXV0aC5iYWNrZW5kLnYxLlVzZXIiH4LT5JMCGToEdXNlciIRL2JhY2tlbmQvdjEvdXNlcnMSaQoHR2V0VXNlchIjLm9wZW5hdXRoLmJhY2tlbmQudjEuR2V0VXNlclJlcXVlc3QaGS5vcGVuYXV0aC5iYWNrZW5kLnYxLlVzZXIiHoLT5JMCGBIWL2JhY2tlbmQvdjEvdXNlcnMve2lkfRJ1CglMaXN0VXNlcnMSJS5vcGVuYXV0aC5iYWNrZW5kLnYxLkxpc3RVc2Vyc1JlcXVlc3QaJi5vcGVuYXV0aC5iYWNrZW5kLnYxLkxpc3RVc2Vyc1Jlc3BvbnNlIhmC0+STAhMSES9iYWNrZW5kL3YxL3VzZXJzEnUKClVwZGF0ZVVzZXISJi5vcGVuYXV0aC5iYWNrZW5kLnYxLlVwZGF0ZVVzZXJSZXF1ZXN0Ghkub3BlbmF1dGguYmFja2VuZC52MS5Vc2VyIiSC0+STAh46BHVzZXIyFi9iYWNrZW5kL3YxL3VzZXJzL3tpZH0SiwEKElVwZGF0ZVVzZXJQYXNzd29yZBIuLm9wZW5hdXRoLmJhY2tlbmQudjEuVXBkYXRlVXNlclBhc3N3b3JkUmVxdWVzdBoZLm9wZW5hdXRoLmJhY2tlbmQudjEuVXNlciIqgtPkkwIkOgEqMh8vYmFja2VuZC92MS91c2Vycy97aWR9L3Bhc3N3b3JkEngKE0NyZWF0ZVByb2plY3RBUElLZXkSLy5vcGVuYXV0aC5iYWNrZW5kLnYxLkNyZWF0ZVByb2plY3RBUElLZXlSZXF1ZXN0GjAub3BlbmF1dGguYmFja2VuZC52MS5DcmVhdGVQcm9qZWN0QVBJS2V5UmVzcG9uc2VC5gEKF2NvbS5vcGVuYXV0aC5iYWNrZW5kLnYxQgxCYWNrZW5kUHJvdG9QAVpPZ2l0aHViLmNvbS9vcGVuYXV0aC9vcGVuYXV0aC9pbnRlcm5hbC9iYWNrZW5kL2dlbi9vcGVuYXV0aC9iYWNrZW5kL3YxO2JhY2tlbmR2MaICA09CWKoCE09wZW5hdXRoLkJhY2tlbmQuVjHKAhNPcGVuYXV0aFxCYWNrZW5kXFYx4gIfT3BlbmF1dGhcQmFja2VuZFxWMVxHUEJNZXRhZGF0YeoCFU9wZW5hdXRoOjpCYWNrZW5kOjpWMWIGcHJvdG8z", [file_google_api_annotations, file_google_protobuf_empty, file_google_protobuf_field_mask, file_google_protobuf_timestamp, file_google_protobuf_struct]);
 
 /**
  * @generated from message openauth.backend.v1.CreateUserRequest
@@ -51,26 +32,7 @@ export type CreateUserRequest = Message<"openauth.backend.v1.CreateUserRequest">
  * Use `create(CreateUserRequestSchema)` to create a new message.
  */
 export const CreateUserRequestSchema: GenMessage<CreateUserRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_backend_v1_backend, 1);
-
-/**
- * @generated from message openauth.backend.v1.GetOrganizationRequest
- */
-export type GetOrganizationRequest = Message<"openauth.backend.v1.GetOrganizationRequest"> & {
-  /**
-   * The ID of the organization to get.
-   *
-   * @generated from field: string id = 1;
-   */
-  id: string;
-};
-
-/**
- * Describes the message openauth.backend.v1.GetOrganizationRequest.
- * Use `create(GetOrganizationRequestSchema)` to create a new message.
- */
-export const GetOrganizationRequestSchema: GenMessage<GetOrganizationRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_backend_v1_backend, 2);
+  messageDesc(file_openauth_backend_v1_backend, 0);
 
 /**
  * @generated from message openauth.backend.v1.GetProjectRequest
@@ -83,7 +45,7 @@ export type GetProjectRequest = Message<"openauth.backend.v1.GetProjectRequest">
  * Use `create(GetProjectRequestSchema)` to create a new message.
  */
 export const GetProjectRequestSchema: GenMessage<GetProjectRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_backend_v1_backend, 3);
+  messageDesc(file_openauth_backend_v1_backend, 1);
 
 /**
  * @generated from message openauth.backend.v1.GetProjectResponse
@@ -100,7 +62,7 @@ export type GetProjectResponse = Message<"openauth.backend.v1.GetProjectResponse
  * Use `create(GetProjectResponseSchema)` to create a new message.
  */
 export const GetProjectResponseSchema: GenMessage<GetProjectResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_backend_v1_backend, 4);
+  messageDesc(file_openauth_backend_v1_backend, 2);
 
 /**
  * @generated from message openauth.backend.v1.UpdateProjectRequest
@@ -117,7 +79,7 @@ export type UpdateProjectRequest = Message<"openauth.backend.v1.UpdateProjectReq
  * Use `create(UpdateProjectRequestSchema)` to create a new message.
  */
 export const UpdateProjectRequestSchema: GenMessage<UpdateProjectRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_backend_v1_backend, 5);
+  messageDesc(file_openauth_backend_v1_backend, 3);
 
 /**
  * @generated from message openauth.backend.v1.UpdateProjectResponse
@@ -134,7 +96,188 @@ export type UpdateProjectResponse = Message<"openauth.backend.v1.UpdateProjectRe
  * Use `create(UpdateProjectResponseSchema)` to create a new message.
  */
 export const UpdateProjectResponseSchema: GenMessage<UpdateProjectResponse> = /*@__PURE__*/
+  messageDesc(file_openauth_backend_v1_backend, 4);
+
+/**
+ * @generated from message openauth.backend.v1.ListOrganizationsRequest
+ */
+export type ListOrganizationsRequest = Message<"openauth.backend.v1.ListOrganizationsRequest"> & {
+  /**
+   * @generated from field: string project_id = 1;
+   */
+  projectId: string;
+
+  /**
+   * @generated from field: string page_token = 2;
+   */
+  pageToken: string;
+};
+
+/**
+ * Describes the message openauth.backend.v1.ListOrganizationsRequest.
+ * Use `create(ListOrganizationsRequestSchema)` to create a new message.
+ */
+export const ListOrganizationsRequestSchema: GenMessage<ListOrganizationsRequest> = /*@__PURE__*/
+  messageDesc(file_openauth_backend_v1_backend, 5);
+
+/**
+ * @generated from message openauth.backend.v1.ListOrganizationsResponse
+ */
+export type ListOrganizationsResponse = Message<"openauth.backend.v1.ListOrganizationsResponse"> & {
+  /**
+   * @generated from field: repeated openauth.backend.v1.Organization organizations = 1;
+   */
+  organizations: Organization[];
+
+  /**
+   * @generated from field: string next_page_token = 2;
+   */
+  nextPageToken: string;
+};
+
+/**
+ * Describes the message openauth.backend.v1.ListOrganizationsResponse.
+ * Use `create(ListOrganizationsResponseSchema)` to create a new message.
+ */
+export const ListOrganizationsResponseSchema: GenMessage<ListOrganizationsResponse> = /*@__PURE__*/
   messageDesc(file_openauth_backend_v1_backend, 6);
+
+/**
+ * @generated from message openauth.backend.v1.GetOrganizationRequest
+ */
+export type GetOrganizationRequest = Message<"openauth.backend.v1.GetOrganizationRequest"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+};
+
+/**
+ * Describes the message openauth.backend.v1.GetOrganizationRequest.
+ * Use `create(GetOrganizationRequestSchema)` to create a new message.
+ */
+export const GetOrganizationRequestSchema: GenMessage<GetOrganizationRequest> = /*@__PURE__*/
+  messageDesc(file_openauth_backend_v1_backend, 7);
+
+/**
+ * @generated from message openauth.backend.v1.GetOrganizationResponse
+ */
+export type GetOrganizationResponse = Message<"openauth.backend.v1.GetOrganizationResponse"> & {
+  /**
+   * @generated from field: openauth.backend.v1.Organization organization = 1;
+   */
+  organization?: Organization;
+};
+
+/**
+ * Describes the message openauth.backend.v1.GetOrganizationResponse.
+ * Use `create(GetOrganizationResponseSchema)` to create a new message.
+ */
+export const GetOrganizationResponseSchema: GenMessage<GetOrganizationResponse> = /*@__PURE__*/
+  messageDesc(file_openauth_backend_v1_backend, 8);
+
+/**
+ * @generated from message openauth.backend.v1.CreateOrganizationRequest
+ */
+export type CreateOrganizationRequest = Message<"openauth.backend.v1.CreateOrganizationRequest"> & {
+  /**
+   * @generated from field: openauth.backend.v1.Organization organization = 1;
+   */
+  organization?: Organization;
+};
+
+/**
+ * Describes the message openauth.backend.v1.CreateOrganizationRequest.
+ * Use `create(CreateOrganizationRequestSchema)` to create a new message.
+ */
+export const CreateOrganizationRequestSchema: GenMessage<CreateOrganizationRequest> = /*@__PURE__*/
+  messageDesc(file_openauth_backend_v1_backend, 9);
+
+/**
+ * @generated from message openauth.backend.v1.CreateOrganizationResponse
+ */
+export type CreateOrganizationResponse = Message<"openauth.backend.v1.CreateOrganizationResponse"> & {
+  /**
+   * @generated from field: openauth.backend.v1.Organization organization = 1;
+   */
+  organization?: Organization;
+};
+
+/**
+ * Describes the message openauth.backend.v1.CreateOrganizationResponse.
+ * Use `create(CreateOrganizationResponseSchema)` to create a new message.
+ */
+export const CreateOrganizationResponseSchema: GenMessage<CreateOrganizationResponse> = /*@__PURE__*/
+  messageDesc(file_openauth_backend_v1_backend, 10);
+
+/**
+ * @generated from message openauth.backend.v1.UpdateOrganizationRequest
+ */
+export type UpdateOrganizationRequest = Message<"openauth.backend.v1.UpdateOrganizationRequest"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+
+  /**
+   * @generated from field: openauth.backend.v1.Organization organization = 2;
+   */
+  organization?: Organization;
+};
+
+/**
+ * Describes the message openauth.backend.v1.UpdateOrganizationRequest.
+ * Use `create(UpdateOrganizationRequestSchema)` to create a new message.
+ */
+export const UpdateOrganizationRequestSchema: GenMessage<UpdateOrganizationRequest> = /*@__PURE__*/
+  messageDesc(file_openauth_backend_v1_backend, 11);
+
+/**
+ * @generated from message openauth.backend.v1.UpdateOrganizationResponse
+ */
+export type UpdateOrganizationResponse = Message<"openauth.backend.v1.UpdateOrganizationResponse"> & {
+  /**
+   * @generated from field: openauth.backend.v1.Organization organization = 1;
+   */
+  organization?: Organization;
+};
+
+/**
+ * Describes the message openauth.backend.v1.UpdateOrganizationResponse.
+ * Use `create(UpdateOrganizationResponseSchema)` to create a new message.
+ */
+export const UpdateOrganizationResponseSchema: GenMessage<UpdateOrganizationResponse> = /*@__PURE__*/
+  messageDesc(file_openauth_backend_v1_backend, 12);
+
+/**
+ * @generated from message openauth.backend.v1.DeleteOrganizationRequest
+ */
+export type DeleteOrganizationRequest = Message<"openauth.backend.v1.DeleteOrganizationRequest"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+};
+
+/**
+ * Describes the message openauth.backend.v1.DeleteOrganizationRequest.
+ * Use `create(DeleteOrganizationRequestSchema)` to create a new message.
+ */
+export const DeleteOrganizationRequestSchema: GenMessage<DeleteOrganizationRequest> = /*@__PURE__*/
+  messageDesc(file_openauth_backend_v1_backend, 13);
+
+/**
+ * @generated from message openauth.backend.v1.DeleteOrganizationResponse
+ */
+export type DeleteOrganizationResponse = Message<"openauth.backend.v1.DeleteOrganizationResponse"> & {
+};
+
+/**
+ * Describes the message openauth.backend.v1.DeleteOrganizationResponse.
+ * Use `create(DeleteOrganizationResponseSchema)` to create a new message.
+ */
+export const DeleteOrganizationResponseSchema: GenMessage<DeleteOrganizationResponse> = /*@__PURE__*/
+  messageDesc(file_openauth_backend_v1_backend, 14);
 
 /**
  * @generated from message openauth.backend.v1.GetUserRequest
@@ -153,104 +296,7 @@ export type GetUserRequest = Message<"openauth.backend.v1.GetUserRequest"> & {
  * Use `create(GetUserRequestSchema)` to create a new message.
  */
 export const GetUserRequestSchema: GenMessage<GetUserRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_backend_v1_backend, 7);
-
-/**
- * @generated from message openauth.backend.v1.ListOrganizationsRequest
- */
-export type ListOrganizationsRequest = Message<"openauth.backend.v1.ListOrganizationsRequest"> & {
-  /**
-   * The project ID to use for filtering.
-   *
-   * @generated from field: string project_id = 1;
-   */
-  projectId: string;
-
-  /**
-   * The page token to use for pagination.
-   *
-   * @generated from field: string page_token = 2;
-   */
-  pageToken: string;
-};
-
-/**
- * Describes the message openauth.backend.v1.ListOrganizationsRequest.
- * Use `create(ListOrganizationsRequestSchema)` to create a new message.
- */
-export const ListOrganizationsRequestSchema: GenMessage<ListOrganizationsRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_backend_v1_backend, 8);
-
-/**
- * @generated from message openauth.backend.v1.ListOrganizationsResponse
- */
-export type ListOrganizationsResponse = Message<"openauth.backend.v1.ListOrganizationsResponse"> & {
-  /**
-   * The organizations retrieved by the ListOrganizations request.
-   *
-   * @generated from field: repeated openauth.backend.v1.Organization organizations = 1;
-   */
-  organizations: Organization[];
-
-  /**
-   * The next page token to use for pagination.
-   *
-   * @generated from field: string next_page_token = 2;
-   */
-  nextPageToken: string;
-};
-
-/**
- * Describes the message openauth.backend.v1.ListOrganizationsResponse.
- * Use `create(ListOrganizationsResponseSchema)` to create a new message.
- */
-export const ListOrganizationsResponseSchema: GenMessage<ListOrganizationsResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_backend_v1_backend, 9);
-
-/**
- * @generated from message openauth.backend.v1.ListProjectsRequest
- */
-export type ListProjectsRequest = Message<"openauth.backend.v1.ListProjectsRequest"> & {
-  /**
-   * The page token to use for pagination.
-   *
-   * @generated from field: string page_token = 1;
-   */
-  pageToken: string;
-};
-
-/**
- * Describes the message openauth.backend.v1.ListProjectsRequest.
- * Use `create(ListProjectsRequestSchema)` to create a new message.
- */
-export const ListProjectsRequestSchema: GenMessage<ListProjectsRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_backend_v1_backend, 10);
-
-/**
- * @generated from message openauth.backend.v1.ListProjectsResponse
- */
-export type ListProjectsResponse = Message<"openauth.backend.v1.ListProjectsResponse"> & {
-  /**
-   * The projects retrieved by the ListProjects request.
-   *
-   * @generated from field: repeated openauth.backend.v1.Project projects = 1;
-   */
-  projects: Project[];
-
-  /**
-   * The next page token to use for pagination.
-   *
-   * @generated from field: string next_page_token = 2;
-   */
-  nextPageToken: string;
-};
-
-/**
- * Describes the message openauth.backend.v1.ListProjectsResponse.
- * Use `create(ListProjectsResponseSchema)` to create a new message.
- */
-export const ListProjectsResponseSchema: GenMessage<ListProjectsResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_backend_v1_backend, 11);
+  messageDesc(file_openauth_backend_v1_backend, 15);
 
 /**
  * @generated from message openauth.backend.v1.ListUsersRequest
@@ -276,7 +322,7 @@ export type ListUsersRequest = Message<"openauth.backend.v1.ListUsersRequest"> &
  * Use `create(ListUsersRequestSchema)` to create a new message.
  */
 export const ListUsersRequestSchema: GenMessage<ListUsersRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_backend_v1_backend, 12);
+  messageDesc(file_openauth_backend_v1_backend, 16);
 
 /**
  * @generated from message openauth.backend.v1.ListUsersResponse
@@ -302,33 +348,7 @@ export type ListUsersResponse = Message<"openauth.backend.v1.ListUsersResponse">
  * Use `create(ListUsersResponseSchema)` to create a new message.
  */
 export const ListUsersResponseSchema: GenMessage<ListUsersResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_backend_v1_backend, 13);
-
-/**
- * @generated from message openauth.backend.v1.UpdateOrganizationRequest
- */
-export type UpdateOrganizationRequest = Message<"openauth.backend.v1.UpdateOrganizationRequest"> & {
-  /**
-   * The ID of the organization to update.
-   *
-   * @generated from field: string id = 1;
-   */
-  id: string;
-
-  /**
-   * The organization updates to apply.
-   *
-   * @generated from field: openauth.backend.v1.Organization organization = 2;
-   */
-  organization?: Organization;
-};
-
-/**
- * Describes the message openauth.backend.v1.UpdateOrganizationRequest.
- * Use `create(UpdateOrganizationRequestSchema)` to create a new message.
- */
-export const UpdateOrganizationRequestSchema: GenMessage<UpdateOrganizationRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_backend_v1_backend, 14);
+  messageDesc(file_openauth_backend_v1_backend, 17);
 
 /**
  * @generated from message openauth.backend.v1.UpdateUserPasswordRequest
@@ -354,7 +374,7 @@ export type UpdateUserPasswordRequest = Message<"openauth.backend.v1.UpdateUserP
  * Use `create(UpdateUserPasswordRequestSchema)` to create a new message.
  */
 export const UpdateUserPasswordRequestSchema: GenMessage<UpdateUserPasswordRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_backend_v1_backend, 15);
+  messageDesc(file_openauth_backend_v1_backend, 18);
 
 /**
  * @generated from message openauth.backend.v1.UpdateUserRequest
@@ -380,7 +400,7 @@ export type UpdateUserRequest = Message<"openauth.backend.v1.UpdateUserRequest">
  * Use `create(UpdateUserRequestSchema)` to create a new message.
  */
 export const UpdateUserRequestSchema: GenMessage<UpdateUserRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_backend_v1_backend, 16);
+  messageDesc(file_openauth_backend_v1_backend, 19);
 
 /**
  * @generated from message openauth.backend.v1.UpdateUserResponse
@@ -399,7 +419,7 @@ export type UpdateUserResponse = Message<"openauth.backend.v1.UpdateUserResponse
  * Use `create(UpdateUserResponseSchema)` to create a new message.
  */
 export const UpdateUserResponseSchema: GenMessage<UpdateUserResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_backend_v1_backend, 17);
+  messageDesc(file_openauth_backend_v1_backend, 20);
 
 /**
  * @generated from message openauth.backend.v1.ProjectAPIKey
@@ -436,7 +456,7 @@ export type ProjectAPIKey = Message<"openauth.backend.v1.ProjectAPIKey"> & {
  * Use `create(ProjectAPIKeySchema)` to create a new message.
  */
 export const ProjectAPIKeySchema: GenMessage<ProjectAPIKey> = /*@__PURE__*/
-  messageDesc(file_openauth_backend_v1_backend, 18);
+  messageDesc(file_openauth_backend_v1_backend, 21);
 
 /**
  * @generated from message openauth.backend.v1.CreateProjectAPIKeyRequest
@@ -453,7 +473,7 @@ export type CreateProjectAPIKeyRequest = Message<"openauth.backend.v1.CreateProj
  * Use `create(CreateProjectAPIKeyRequestSchema)` to create a new message.
  */
 export const CreateProjectAPIKeyRequestSchema: GenMessage<CreateProjectAPIKeyRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_backend_v1_backend, 19);
+  messageDesc(file_openauth_backend_v1_backend, 22);
 
 /**
  * @generated from message openauth.backend.v1.CreateProjectAPIKeyResponse
@@ -470,7 +490,7 @@ export type CreateProjectAPIKeyResponse = Message<"openauth.backend.v1.CreatePro
  * Use `create(CreateProjectAPIKeyResponseSchema)` to create a new message.
  */
 export const CreateProjectAPIKeyResponseSchema: GenMessage<CreateProjectAPIKeyResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_backend_v1_backend, 20);
+  messageDesc(file_openauth_backend_v1_backend, 23);
 
 /**
  * @generated from message openauth.backend.v1.Project
@@ -487,19 +507,19 @@ export type Project = Message<"openauth.backend.v1.Project"> & {
   displayName: string;
 
   /**
-   * @generated from field: bool log_in_with_password_enabled = 3;
+   * @generated from field: optional bool log_in_with_password_enabled = 3;
    */
-  logInWithPasswordEnabled: boolean;
+  logInWithPasswordEnabled?: boolean;
 
   /**
-   * @generated from field: bool log_in_with_google_enabled = 4;
+   * @generated from field: optional bool log_in_with_google_enabled = 4;
    */
-  logInWithGoogleEnabled: boolean;
+  logInWithGoogleEnabled?: boolean;
 
   /**
-   * @generated from field: bool log_in_with_microsoft_enabled = 5;
+   * @generated from field: optional bool log_in_with_microsoft_enabled = 5;
    */
-  logInWithMicrosoftEnabled: boolean;
+  logInWithMicrosoftEnabled?: boolean;
 
   /**
    * @generated from field: string google_oauth_client_id = 6;
@@ -527,65 +547,54 @@ export type Project = Message<"openauth.backend.v1.Project"> & {
  * Use `create(ProjectSchema)` to create a new message.
  */
 export const ProjectSchema: GenMessage<Project> = /*@__PURE__*/
-  messageDesc(file_openauth_backend_v1_backend, 21);
+  messageDesc(file_openauth_backend_v1_backend, 24);
 
 /**
  * @generated from message openauth.backend.v1.Organization
  */
 export type Organization = Message<"openauth.backend.v1.Organization"> & {
   /**
-   * Unique identifier for this organization.
-   *
    * @generated from field: string id = 1;
    */
   id: string;
 
   /**
-   * The project this organization belongs to.
-   *
    * @generated from field: string project_id = 2;
    */
   projectId: string;
 
   /**
-   * An optional human-friendly name for this organization.
-   *
    * @generated from field: string display_name = 3;
    */
   displayName: string;
 
   /**
-   * Override setting for whether login with password is enabled.
-   *
-   * @generated from field: bool override_log_in_with_password_enabled = 4;
+   * @generated from field: optional bool override_log_in_methods = 4;
    */
-  overrideLogInWithPasswordEnabled: boolean;
+  overrideLogInMethods?: boolean;
 
   /**
-   * Override setting for whether login with Google is enabled.
-   *
-   * @generated from field: bool override_log_in_with_google_enabled = 5;
+   * @generated from field: bool log_in_with_password_enabled = 5;
    */
-  overrideLogInWithGoogleEnabled: boolean;
+  logInWithPasswordEnabled: boolean;
 
   /**
-   * Override setting for whether login with Microsoft is enabled.
-   *
-   * @generated from field: bool override_log_in_with_microsoft_enabled = 6;
+   * @generated from field: bool log_in_with_google_enabled = 6;
    */
-  overrideLogInWithMicrosoftEnabled: boolean;
+  logInWithGoogleEnabled: boolean;
 
   /**
-   * Google hosted domain.
-   *
-   * @generated from field: string google_hosted_domain = 7;
+   * @generated from field: bool log_in_with_microsoft_enabled = 7;
+   */
+  logInWithMicrosoftEnabled: boolean;
+
+  /**
+   * @generated from field: string google_hosted_domain = 8;
    */
   googleHostedDomain: string;
 
   /**
-   * The tenant ID for Microsoft auth.
-   *
-   * @generated from field: string microsoft_tenant_id = 8;
+   * @generated from field: string microsoft_tenant_id = 9;
    */
   microsoftTenantId: string;
 };
@@ -595,7 +604,7 @@ export type Organization = Message<"openauth.backend.v1.Organization"> & {
  * Use `create(OrganizationSchema)` to create a new message.
  */
 export const OrganizationSchema: GenMessage<Organization> = /*@__PURE__*/
-  messageDesc(file_openauth_backend_v1_backend, 22);
+  messageDesc(file_openauth_backend_v1_backend, 25);
 
 /**
  * @generated from message openauth.backend.v1.SessionSigningKey
@@ -622,7 +631,7 @@ export type SessionSigningKey = Message<"openauth.backend.v1.SessionSigningKey">
  * Use `create(SessionSigningKeySchema)` to create a new message.
  */
 export const SessionSigningKeySchema: GenMessage<SessionSigningKey> = /*@__PURE__*/
-  messageDesc(file_openauth_backend_v1_backend, 23);
+  messageDesc(file_openauth_backend_v1_backend, 26);
 
 /**
  * @generated from message openauth.backend.v1.User
@@ -676,7 +685,7 @@ export type User = Message<"openauth.backend.v1.User"> & {
  * Use `create(UserSchema)` to create a new message.
  */
 export const UserSchema: GenMessage<User> = /*@__PURE__*/
-  messageDesc(file_openauth_backend_v1_backend, 24);
+  messageDesc(file_openauth_backend_v1_backend, 27);
 
 /**
  * @generated from message openauth.backend.v1.Session
@@ -713,7 +722,7 @@ export type Session = Message<"openauth.backend.v1.Session"> & {
  * Use `create(SessionSchema)` to create a new message.
  */
 export const SessionSchema: GenMessage<Session> = /*@__PURE__*/
-  messageDesc(file_openauth_backend_v1_backend, 25);
+  messageDesc(file_openauth_backend_v1_backend, 28);
 
 /**
  * @generated from service openauth.backend.v1.BackendService
@@ -736,28 +745,6 @@ export const BackendService: GenService<{
     output: typeof UpdateProjectResponseSchema;
   },
   /**
-   * Creates an organization.
-   *
-   * @generated from rpc openauth.backend.v1.BackendService.CreateOrganization
-   */
-  createOrganization: {
-    methodKind: "unary";
-    input: typeof CreateOrganizationRequestSchema;
-    output: typeof OrganizationSchema;
-  },
-  /**
-   * Gets an organization.
-   *
-   * @generated from rpc openauth.backend.v1.BackendService.GetOrganization
-   */
-  getOrganization: {
-    methodKind: "unary";
-    input: typeof GetOrganizationRequestSchema;
-    output: typeof OrganizationSchema;
-  },
-  /**
-   * Gets a list of organizations.
-   *
    * @generated from rpc openauth.backend.v1.BackendService.ListOrganizations
    */
   listOrganizations: {
@@ -766,14 +753,36 @@ export const BackendService: GenService<{
     output: typeof ListOrganizationsResponseSchema;
   },
   /**
-   * Updates an organization.
-   *
+   * @generated from rpc openauth.backend.v1.BackendService.GetOrganization
+   */
+  getOrganization: {
+    methodKind: "unary";
+    input: typeof GetOrganizationRequestSchema;
+    output: typeof GetOrganizationResponseSchema;
+  },
+  /**
+   * @generated from rpc openauth.backend.v1.BackendService.CreateOrganization
+   */
+  createOrganization: {
+    methodKind: "unary";
+    input: typeof CreateOrganizationRequestSchema;
+    output: typeof CreateOrganizationResponseSchema;
+  },
+  /**
    * @generated from rpc openauth.backend.v1.BackendService.UpdateOrganization
    */
   updateOrganization: {
     methodKind: "unary";
     input: typeof UpdateOrganizationRequestSchema;
-    output: typeof OrganizationSchema;
+    output: typeof UpdateOrganizationResponseSchema;
+  },
+  /**
+   * @generated from rpc openauth.backend.v1.BackendService.DeleteOrganization
+   */
+  deleteOrganization: {
+    methodKind: "unary";
+    input: typeof DeleteOrganizationRequestSchema;
+    output: typeof DeleteOrganizationResponseSchema;
   },
   /**
    * Creates a user.

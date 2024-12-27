@@ -62,16 +62,17 @@ func (q *Queries) CreateIntermediateSessionSigningKey(ctx context.Context, arg C
 }
 
 const createOrganization = `-- name: CreateOrganization :one
-INSERT INTO organizations (id, project_id, display_name, google_hosted_domain, microsoft_tenant_id, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_with_password_enabled)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+INSERT INTO organizations (id, project_id, display_name, override_log_in_methods, google_hosted_domain, microsoft_tenant_id, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_with_password_enabled)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 RETURNING
-    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods
 `
 
 type CreateOrganizationParams struct {
 	ID                                uuid.UUID
 	ProjectID                         uuid.UUID
 	DisplayName                       string
+	OverrideLogInMethods              bool
 	GoogleHostedDomain                *string
 	MicrosoftTenantID                 *string
 	OverrideLogInWithGoogleEnabled    *bool
@@ -84,6 +85,7 @@ func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganization
 		arg.ID,
 		arg.ProjectID,
 		arg.DisplayName,
+		arg.OverrideLogInMethods,
 		arg.GoogleHostedDomain,
 		arg.MicrosoftTenantID,
 		arg.OverrideLogInWithGoogleEnabled,
@@ -100,6 +102,7 @@ func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganization
 		&i.OverrideLogInWithMicrosoftEnabled,
 		&i.GoogleHostedDomain,
 		&i.MicrosoftTenantID,
+		&i.OverrideLogInMethods,
 	)
 	return i, err
 }
@@ -256,7 +259,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 
 const getOrganizationByGoogleHostedDomain = `-- name: GetOrganizationByGoogleHostedDomain :one
 SELECT
-    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods
 FROM
     organizations
 WHERE
@@ -275,13 +278,14 @@ func (q *Queries) GetOrganizationByGoogleHostedDomain(ctx context.Context, googl
 		&i.OverrideLogInWithMicrosoftEnabled,
 		&i.GoogleHostedDomain,
 		&i.MicrosoftTenantID,
+		&i.OverrideLogInMethods,
 	)
 	return i, err
 }
 
 const getOrganizationByID = `-- name: GetOrganizationByID :one
 SELECT
-    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods
 FROM
     organizations
 WHERE
@@ -300,13 +304,14 @@ func (q *Queries) GetOrganizationByID(ctx context.Context, id uuid.UUID) (Organi
 		&i.OverrideLogInWithMicrosoftEnabled,
 		&i.GoogleHostedDomain,
 		&i.MicrosoftTenantID,
+		&i.OverrideLogInMethods,
 	)
 	return i, err
 }
 
 const getOrganizationByProjectIDAndID = `-- name: GetOrganizationByProjectIDAndID :one
 SELECT
-    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods
 FROM
     organizations
 WHERE
@@ -331,6 +336,7 @@ func (q *Queries) GetOrganizationByProjectIDAndID(ctx context.Context, arg GetOr
 		&i.OverrideLogInWithMicrosoftEnabled,
 		&i.GoogleHostedDomain,
 		&i.MicrosoftTenantID,
+		&i.OverrideLogInMethods,
 	)
 	return i, err
 }
@@ -481,7 +487,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods
 `
 
 type UpdateOrganizationParams struct {
@@ -514,6 +520,7 @@ func (q *Queries) UpdateOrganization(ctx context.Context, arg UpdateOrganization
 		&i.OverrideLogInWithMicrosoftEnabled,
 		&i.GoogleHostedDomain,
 		&i.MicrosoftTenantID,
+		&i.OverrideLogInMethods,
 	)
 	return i, err
 }

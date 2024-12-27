@@ -22,36 +22,37 @@ service BackendService {
     };
   }
 
-  // Creates an organization.
-  rpc CreateOrganization(CreateOrganizationRequest) returns (Organization) {
-    option (google.api.http) = {
-      post: "/backend/v1/organizations",
-      body: "*"
-    };
-  }
-
-  // Gets an organization.
-  rpc GetOrganization(GetOrganizationRequest) returns (Organization) {
-    option (google.api.http) = {
-      get: "/backend/v1/organizations/{id}"
-    };
-  }
-
-  // Gets a list of organizations.
   rpc ListOrganizations(ListOrganizationsRequest) returns (ListOrganizationsResponse) {
     option (google.api.http) = {
       get: "/backend/v1/organizations"
     };
   }
 
-  // Updates an organization.
-  rpc UpdateOrganization(UpdateOrganizationRequest) returns (Organization) {
+  rpc GetOrganization(GetOrganizationRequest) returns (GetOrganizationResponse) {
+    option (google.api.http) = {
+      get: "/backend/v1/organizations/{id}"
+    };
+  }
+
+  rpc CreateOrganization(CreateOrganizationRequest) returns (CreateOrganizationResponse) {
+    option (google.api.http) = {
+      post: "/backend/v1/organizations",
+      body: "organization"
+    };
+  }
+
+  rpc UpdateOrganization(UpdateOrganizationRequest) returns (UpdateOrganizationResponse) {
     option (google.api.http) = {
       patch: "/backend/v1/organizations/{id}",
       body: "organization"
     };
   }
 
+  rpc DeleteOrganization(DeleteOrganizationRequest) returns (DeleteOrganizationResponse) {
+    option (google.api.http) = {
+      delete: "/backend/v1/organizations/{id}",
+    };
+  }
 
   // Creates a user.
   rpc CreateUser(CreateUserRequest) returns (User) {
@@ -94,19 +95,9 @@ service BackendService {
   rpc CreateProjectAPIKey(CreateProjectAPIKeyRequest) returns (CreateProjectAPIKeyResponse);
 }
 
-message CreateOrganizationRequest {
-  // The organization to create.
-  Organization organization = 1;
-}
-
 message CreateUserRequest {
   // The user to create.
   User user = 1;
-}
-
-message GetOrganizationRequest {
-  // The ID of the organization to get.
-  string id = 1;
 }
 
 message GetProjectRequest {
@@ -124,35 +115,51 @@ message UpdateProjectResponse {
   Project project = 1;
 }
 
-message GetUserRequest {
-  // The ID of the user to get.
-  string id = 1;
-}
-
 message ListOrganizationsRequest {
-  // The project ID to use for filtering.
   string project_id = 1;
-  // The page token to use for pagination.
   string page_token = 2;
 }
 
 message ListOrganizationsResponse {
-  // The organizations retrieved by the ListOrganizations request.
   repeated Organization organizations = 1;
-  // The next page token to use for pagination.
   string next_page_token = 2;
 }
 
-message ListProjectsRequest {
-  // The page token to use for pagination.
-  string page_token = 1;
+message GetOrganizationRequest {
+  string id = 1;
 }
 
-message ListProjectsResponse {
-  // The projects retrieved by the ListProjects request.
-  repeated Project projects = 1;
-  // The next page token to use for pagination.
-  string next_page_token = 2;
+message GetOrganizationResponse {
+  Organization organization = 1;
+}
+
+message CreateOrganizationRequest {
+  Organization organization = 1;
+}
+
+message CreateOrganizationResponse {
+  Organization organization = 1;
+}
+
+message UpdateOrganizationRequest {
+  string id = 1;
+  Organization organization = 2;
+}
+
+message UpdateOrganizationResponse {
+  Organization organization = 1;
+}
+
+message DeleteOrganizationRequest {
+  string id = 1;
+}
+
+message DeleteOrganizationResponse {
+}
+
+message GetUserRequest {
+  // The ID of the user to get.
+  string id = 1;
 }
 
 message ListUsersRequest {
@@ -167,13 +174,6 @@ message ListUsersResponse {
   repeated User users = 1;
   // The next page token to use for pagination.
   string next_page_token = 2;
-}
-
-message UpdateOrganizationRequest {
-  // The ID of the organization to update.
-  string id = 1;
-  // The organization updates to apply.
-  Organization organization = 2;
 }
 
 message UpdateUserPasswordRequest {
@@ -214,9 +214,9 @@ message CreateProjectAPIKeyResponse {
 message Project {
   string id = 1;
   string display_name = 2;
-  bool log_in_with_password_enabled = 3;
-  bool log_in_with_google_enabled = 4;
-  bool log_in_with_microsoft_enabled = 5;
+  optional bool log_in_with_password_enabled = 3;
+  optional bool log_in_with_google_enabled = 4;
+  optional bool log_in_with_microsoft_enabled = 5;
   string google_oauth_client_id = 6;
   string google_oauth_client_secret = 7;
   string microsoft_oauth_client_id = 8;
@@ -224,22 +224,15 @@ message Project {
 }
 
 message Organization {
-  // Unique identifier for this organization.
   string id = 1;
-  // The project this organization belongs to.
   string project_id = 2;
-  // An optional human-friendly name for this organization.
   string display_name = 3;
-  // Override setting for whether login with password is enabled.
-  bool override_log_in_with_password_enabled = 4;
-  // Override setting for whether login with Google is enabled.
-  bool override_log_in_with_google_enabled = 5;
-  // Override setting for whether login with Microsoft is enabled.
-  bool override_log_in_with_microsoft_enabled = 6;
-  // Google hosted domain.
-  string google_hosted_domain = 7;
-  // The tenant ID for Microsoft auth.
-  string microsoft_tenant_id = 8;
+  optional bool override_log_in_methods = 4;
+  bool log_in_with_password_enabled = 5;
+  bool log_in_with_google_enabled = 6;
+  bool log_in_with_microsoft_enabled = 7;
+  string google_hosted_domain = 8;
+  string microsoft_tenant_id = 9;
 }
 
 message SessionSigningKey {

@@ -79,7 +79,7 @@ func (q *Queries) GetCurrentSessionKeyByProjectID(ctx context.Context, projectID
 
 const getOrganizationByID = `-- name: GetOrganizationByID :one
 SELECT
-    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods
 FROM
     organizations
 WHERE
@@ -98,6 +98,7 @@ func (q *Queries) GetOrganizationByID(ctx context.Context, id uuid.UUID) (Organi
 		&i.OverrideLogInWithMicrosoftEnabled,
 		&i.GoogleHostedDomain,
 		&i.MicrosoftTenantID,
+		&i.OverrideLogInMethods,
 	)
 	return i, err
 }
