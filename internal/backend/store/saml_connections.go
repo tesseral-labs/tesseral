@@ -157,7 +157,7 @@ func (s *Store) CreateSAMLConnection(ctx context.Context, req *backendv1.CreateS
 	}
 
 	if err := commit(); err != nil {
-		return nil, fmt.Errorf("commit transaction: %w", err)
+		return nil, fmt.Errorf("commit: %w", err)
 	}
 
 	return &backendv1.CreateSAMLConnectionResponse{SamlConnection: parseSAMLConnection(qSAMLConnection)}, nil
@@ -242,7 +242,7 @@ func (s *Store) UpdateSAMLConnection(ctx context.Context, req *backendv1.UpdateS
 	}
 
 	if err := commit(); err != nil {
-		return nil, fmt.Errorf("commit transaction: %w", err)
+		return nil, fmt.Errorf("commit: %w", err)
 	}
 
 	return &backendv1.UpdateSAMLConnectionResponse{SamlConnection: parseSAMLConnection(qUpdatedSAMLConnection)}, nil
@@ -273,7 +273,7 @@ func (s *Store) DeleteSAMLConnection(ctx context.Context, req *backendv1.DeleteS
 	}
 
 	if err := commit(); err != nil {
-		return nil, fmt.Errorf("commit transaction: %w", err)
+		return nil, fmt.Errorf("commit: %w", err)
 	}
 
 	return &backendv1.DeleteSAMLConnectionResponse{}, nil
