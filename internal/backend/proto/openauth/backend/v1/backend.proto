@@ -162,7 +162,12 @@ service BackendService {
     };
   }
 
+  rpc ListProjectAPIKeys(ListProjectAPIKeysRequest) returns (ListProjectAPIKeysResponse);
+  rpc GetProjectAPIKey(GetProjectAPIKeyRequest) returns (GetProjectAPIKeyResponse);
   rpc CreateProjectAPIKey(CreateProjectAPIKeyRequest) returns (CreateProjectAPIKeyResponse);
+  rpc UpdateProjectAPIKey(UpdateProjectAPIKeyRequest) returns (UpdateProjectAPIKeyResponse);
+  rpc DeleteProjectAPIKey(DeleteProjectAPIKeyRequest) returns (DeleteProjectAPIKeyResponse);
+  rpc RevokeProjectAPIKey(RevokeProjectAPIKeyRequest) returns (RevokeProjectAPIKeyResponse);
 }
 
 message CreateUserRequest {
@@ -358,12 +363,22 @@ message UpdateUserResponse {
   User user = 1;
 }
 
-message ProjectAPIKey {
+message ListProjectAPIKeysRequest {
+  string project_id = 1;
+  string page_token = 2;
+}
+
+message ListProjectAPIKeysResponse {
+  repeated ProjectAPIKey project_api_keys = 1;
+  string next_page_token = 2;
+}
+
+message GetProjectAPIKeyRequest {
   string id = 1;
-  string project_id = 2;
-  google.protobuf.Timestamp create_time = 3;
-  bool revoked = 4;
-  string secret_token = 5;
+}
+
+message GetProjectAPIKeyResponse {
+  ProjectAPIKey project_api_key = 1;
 }
 
 message CreateProjectAPIKeyRequest {
@@ -371,6 +386,30 @@ message CreateProjectAPIKeyRequest {
 }
 
 message CreateProjectAPIKeyResponse {
+  ProjectAPIKey project_api_key = 1;
+}
+
+message UpdateProjectAPIKeyRequest {
+  string id = 1;
+  ProjectAPIKey project_api_key = 2;
+}
+
+message UpdateProjectAPIKeyResponse {
+  ProjectAPIKey project_api_key = 1;
+}
+
+message DeleteProjectAPIKeyRequest {
+  string id = 1;
+}
+
+message DeleteProjectAPIKeyResponse {
+}
+
+message RevokeProjectAPIKeyRequest {
+  string id = 1;
+}
+
+message RevokeProjectAPIKeyResponse {
   ProjectAPIKey project_api_key = 1;
 }
 
@@ -402,6 +441,14 @@ message SessionSigningKey {
   string id = 1;
   string project_id = 2;
   google.protobuf.Struct public_key_jwk = 3;
+}
+
+message ProjectAPIKey {
+  string id = 1;
+  string project_id = 2;
+  string display_name = 3;
+  string secret_token = 4;
+  bool revoked = 5;
 }
 
 message User {

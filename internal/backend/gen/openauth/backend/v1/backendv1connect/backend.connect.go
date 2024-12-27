@@ -101,9 +101,24 @@ const (
 	// BackendServiceUpdateUserPasswordProcedure is the fully-qualified name of the BackendService's
 	// UpdateUserPassword RPC.
 	BackendServiceUpdateUserPasswordProcedure = "/openauth.backend.v1.BackendService/UpdateUserPassword"
+	// BackendServiceListProjectAPIKeysProcedure is the fully-qualified name of the BackendService's
+	// ListProjectAPIKeys RPC.
+	BackendServiceListProjectAPIKeysProcedure = "/openauth.backend.v1.BackendService/ListProjectAPIKeys"
+	// BackendServiceGetProjectAPIKeyProcedure is the fully-qualified name of the BackendService's
+	// GetProjectAPIKey RPC.
+	BackendServiceGetProjectAPIKeyProcedure = "/openauth.backend.v1.BackendService/GetProjectAPIKey"
 	// BackendServiceCreateProjectAPIKeyProcedure is the fully-qualified name of the BackendService's
 	// CreateProjectAPIKey RPC.
 	BackendServiceCreateProjectAPIKeyProcedure = "/openauth.backend.v1.BackendService/CreateProjectAPIKey"
+	// BackendServiceUpdateProjectAPIKeyProcedure is the fully-qualified name of the BackendService's
+	// UpdateProjectAPIKey RPC.
+	BackendServiceUpdateProjectAPIKeyProcedure = "/openauth.backend.v1.BackendService/UpdateProjectAPIKey"
+	// BackendServiceDeleteProjectAPIKeyProcedure is the fully-qualified name of the BackendService's
+	// DeleteProjectAPIKey RPC.
+	BackendServiceDeleteProjectAPIKeyProcedure = "/openauth.backend.v1.BackendService/DeleteProjectAPIKey"
+	// BackendServiceRevokeProjectAPIKeyProcedure is the fully-qualified name of the BackendService's
+	// RevokeProjectAPIKey RPC.
+	BackendServiceRevokeProjectAPIKeyProcedure = "/openauth.backend.v1.BackendService/RevokeProjectAPIKey"
 )
 
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
@@ -132,7 +147,12 @@ var (
 	backendServiceListUsersMethodDescriptor            = backendServiceServiceDescriptor.Methods().ByName("ListUsers")
 	backendServiceUpdateUserMethodDescriptor           = backendServiceServiceDescriptor.Methods().ByName("UpdateUser")
 	backendServiceUpdateUserPasswordMethodDescriptor   = backendServiceServiceDescriptor.Methods().ByName("UpdateUserPassword")
+	backendServiceListProjectAPIKeysMethodDescriptor   = backendServiceServiceDescriptor.Methods().ByName("ListProjectAPIKeys")
+	backendServiceGetProjectAPIKeyMethodDescriptor     = backendServiceServiceDescriptor.Methods().ByName("GetProjectAPIKey")
 	backendServiceCreateProjectAPIKeyMethodDescriptor  = backendServiceServiceDescriptor.Methods().ByName("CreateProjectAPIKey")
+	backendServiceUpdateProjectAPIKeyMethodDescriptor  = backendServiceServiceDescriptor.Methods().ByName("UpdateProjectAPIKey")
+	backendServiceDeleteProjectAPIKeyMethodDescriptor  = backendServiceServiceDescriptor.Methods().ByName("DeleteProjectAPIKey")
+	backendServiceRevokeProjectAPIKeyMethodDescriptor  = backendServiceServiceDescriptor.Methods().ByName("RevokeProjectAPIKey")
 )
 
 // BackendServiceClient is a client for the openauth.backend.v1.BackendService service.
@@ -165,7 +185,12 @@ type BackendServiceClient interface {
 	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.User], error)
 	// Updates a user's password.
 	UpdateUserPassword(context.Context, *connect.Request[v1.UpdateUserPasswordRequest]) (*connect.Response[v1.User], error)
+	ListProjectAPIKeys(context.Context, *connect.Request[v1.ListProjectAPIKeysRequest]) (*connect.Response[v1.ListProjectAPIKeysResponse], error)
+	GetProjectAPIKey(context.Context, *connect.Request[v1.GetProjectAPIKeyRequest]) (*connect.Response[v1.GetProjectAPIKeyResponse], error)
 	CreateProjectAPIKey(context.Context, *connect.Request[v1.CreateProjectAPIKeyRequest]) (*connect.Response[v1.CreateProjectAPIKeyResponse], error)
+	UpdateProjectAPIKey(context.Context, *connect.Request[v1.UpdateProjectAPIKeyRequest]) (*connect.Response[v1.UpdateProjectAPIKeyResponse], error)
+	DeleteProjectAPIKey(context.Context, *connect.Request[v1.DeleteProjectAPIKeyRequest]) (*connect.Response[v1.DeleteProjectAPIKeyResponse], error)
+	RevokeProjectAPIKey(context.Context, *connect.Request[v1.RevokeProjectAPIKeyRequest]) (*connect.Response[v1.RevokeProjectAPIKeyResponse], error)
 }
 
 // NewBackendServiceClient constructs a client for the openauth.backend.v1.BackendService service.
@@ -316,10 +341,40 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(backendServiceUpdateUserPasswordMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
+		listProjectAPIKeys: connect.NewClient[v1.ListProjectAPIKeysRequest, v1.ListProjectAPIKeysResponse](
+			httpClient,
+			baseURL+BackendServiceListProjectAPIKeysProcedure,
+			connect.WithSchema(backendServiceListProjectAPIKeysMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		getProjectAPIKey: connect.NewClient[v1.GetProjectAPIKeyRequest, v1.GetProjectAPIKeyResponse](
+			httpClient,
+			baseURL+BackendServiceGetProjectAPIKeyProcedure,
+			connect.WithSchema(backendServiceGetProjectAPIKeyMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
 		createProjectAPIKey: connect.NewClient[v1.CreateProjectAPIKeyRequest, v1.CreateProjectAPIKeyResponse](
 			httpClient,
 			baseURL+BackendServiceCreateProjectAPIKeyProcedure,
 			connect.WithSchema(backendServiceCreateProjectAPIKeyMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		updateProjectAPIKey: connect.NewClient[v1.UpdateProjectAPIKeyRequest, v1.UpdateProjectAPIKeyResponse](
+			httpClient,
+			baseURL+BackendServiceUpdateProjectAPIKeyProcedure,
+			connect.WithSchema(backendServiceUpdateProjectAPIKeyMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		deleteProjectAPIKey: connect.NewClient[v1.DeleteProjectAPIKeyRequest, v1.DeleteProjectAPIKeyResponse](
+			httpClient,
+			baseURL+BackendServiceDeleteProjectAPIKeyProcedure,
+			connect.WithSchema(backendServiceDeleteProjectAPIKeyMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		revokeProjectAPIKey: connect.NewClient[v1.RevokeProjectAPIKeyRequest, v1.RevokeProjectAPIKeyResponse](
+			httpClient,
+			baseURL+BackendServiceRevokeProjectAPIKeyProcedure,
+			connect.WithSchema(backendServiceRevokeProjectAPIKeyMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -350,7 +405,12 @@ type backendServiceClient struct {
 	listUsers            *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
 	updateUser           *connect.Client[v1.UpdateUserRequest, v1.User]
 	updateUserPassword   *connect.Client[v1.UpdateUserPasswordRequest, v1.User]
+	listProjectAPIKeys   *connect.Client[v1.ListProjectAPIKeysRequest, v1.ListProjectAPIKeysResponse]
+	getProjectAPIKey     *connect.Client[v1.GetProjectAPIKeyRequest, v1.GetProjectAPIKeyResponse]
 	createProjectAPIKey  *connect.Client[v1.CreateProjectAPIKeyRequest, v1.CreateProjectAPIKeyResponse]
+	updateProjectAPIKey  *connect.Client[v1.UpdateProjectAPIKeyRequest, v1.UpdateProjectAPIKeyResponse]
+	deleteProjectAPIKey  *connect.Client[v1.DeleteProjectAPIKeyRequest, v1.DeleteProjectAPIKeyResponse]
+	revokeProjectAPIKey  *connect.Client[v1.RevokeProjectAPIKeyRequest, v1.RevokeProjectAPIKeyResponse]
 }
 
 // GetProject calls openauth.backend.v1.BackendService.GetProject.
@@ -468,9 +528,34 @@ func (c *backendServiceClient) UpdateUserPassword(ctx context.Context, req *conn
 	return c.updateUserPassword.CallUnary(ctx, req)
 }
 
+// ListProjectAPIKeys calls openauth.backend.v1.BackendService.ListProjectAPIKeys.
+func (c *backendServiceClient) ListProjectAPIKeys(ctx context.Context, req *connect.Request[v1.ListProjectAPIKeysRequest]) (*connect.Response[v1.ListProjectAPIKeysResponse], error) {
+	return c.listProjectAPIKeys.CallUnary(ctx, req)
+}
+
+// GetProjectAPIKey calls openauth.backend.v1.BackendService.GetProjectAPIKey.
+func (c *backendServiceClient) GetProjectAPIKey(ctx context.Context, req *connect.Request[v1.GetProjectAPIKeyRequest]) (*connect.Response[v1.GetProjectAPIKeyResponse], error) {
+	return c.getProjectAPIKey.CallUnary(ctx, req)
+}
+
 // CreateProjectAPIKey calls openauth.backend.v1.BackendService.CreateProjectAPIKey.
 func (c *backendServiceClient) CreateProjectAPIKey(ctx context.Context, req *connect.Request[v1.CreateProjectAPIKeyRequest]) (*connect.Response[v1.CreateProjectAPIKeyResponse], error) {
 	return c.createProjectAPIKey.CallUnary(ctx, req)
+}
+
+// UpdateProjectAPIKey calls openauth.backend.v1.BackendService.UpdateProjectAPIKey.
+func (c *backendServiceClient) UpdateProjectAPIKey(ctx context.Context, req *connect.Request[v1.UpdateProjectAPIKeyRequest]) (*connect.Response[v1.UpdateProjectAPIKeyResponse], error) {
+	return c.updateProjectAPIKey.CallUnary(ctx, req)
+}
+
+// DeleteProjectAPIKey calls openauth.backend.v1.BackendService.DeleteProjectAPIKey.
+func (c *backendServiceClient) DeleteProjectAPIKey(ctx context.Context, req *connect.Request[v1.DeleteProjectAPIKeyRequest]) (*connect.Response[v1.DeleteProjectAPIKeyResponse], error) {
+	return c.deleteProjectAPIKey.CallUnary(ctx, req)
+}
+
+// RevokeProjectAPIKey calls openauth.backend.v1.BackendService.RevokeProjectAPIKey.
+func (c *backendServiceClient) RevokeProjectAPIKey(ctx context.Context, req *connect.Request[v1.RevokeProjectAPIKeyRequest]) (*connect.Response[v1.RevokeProjectAPIKeyResponse], error) {
+	return c.revokeProjectAPIKey.CallUnary(ctx, req)
 }
 
 // BackendServiceHandler is an implementation of the openauth.backend.v1.BackendService service.
@@ -503,7 +588,12 @@ type BackendServiceHandler interface {
 	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.User], error)
 	// Updates a user's password.
 	UpdateUserPassword(context.Context, *connect.Request[v1.UpdateUserPasswordRequest]) (*connect.Response[v1.User], error)
+	ListProjectAPIKeys(context.Context, *connect.Request[v1.ListProjectAPIKeysRequest]) (*connect.Response[v1.ListProjectAPIKeysResponse], error)
+	GetProjectAPIKey(context.Context, *connect.Request[v1.GetProjectAPIKeyRequest]) (*connect.Response[v1.GetProjectAPIKeyResponse], error)
 	CreateProjectAPIKey(context.Context, *connect.Request[v1.CreateProjectAPIKeyRequest]) (*connect.Response[v1.CreateProjectAPIKeyResponse], error)
+	UpdateProjectAPIKey(context.Context, *connect.Request[v1.UpdateProjectAPIKeyRequest]) (*connect.Response[v1.UpdateProjectAPIKeyResponse], error)
+	DeleteProjectAPIKey(context.Context, *connect.Request[v1.DeleteProjectAPIKeyRequest]) (*connect.Response[v1.DeleteProjectAPIKeyResponse], error)
+	RevokeProjectAPIKey(context.Context, *connect.Request[v1.RevokeProjectAPIKeyRequest]) (*connect.Response[v1.RevokeProjectAPIKeyResponse], error)
 }
 
 // NewBackendServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -650,10 +740,40 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		connect.WithSchema(backendServiceUpdateUserPasswordMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
+	backendServiceListProjectAPIKeysHandler := connect.NewUnaryHandler(
+		BackendServiceListProjectAPIKeysProcedure,
+		svc.ListProjectAPIKeys,
+		connect.WithSchema(backendServiceListProjectAPIKeysMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceGetProjectAPIKeyHandler := connect.NewUnaryHandler(
+		BackendServiceGetProjectAPIKeyProcedure,
+		svc.GetProjectAPIKey,
+		connect.WithSchema(backendServiceGetProjectAPIKeyMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
 	backendServiceCreateProjectAPIKeyHandler := connect.NewUnaryHandler(
 		BackendServiceCreateProjectAPIKeyProcedure,
 		svc.CreateProjectAPIKey,
 		connect.WithSchema(backendServiceCreateProjectAPIKeyMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceUpdateProjectAPIKeyHandler := connect.NewUnaryHandler(
+		BackendServiceUpdateProjectAPIKeyProcedure,
+		svc.UpdateProjectAPIKey,
+		connect.WithSchema(backendServiceUpdateProjectAPIKeyMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceDeleteProjectAPIKeyHandler := connect.NewUnaryHandler(
+		BackendServiceDeleteProjectAPIKeyProcedure,
+		svc.DeleteProjectAPIKey,
+		connect.WithSchema(backendServiceDeleteProjectAPIKeyMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceRevokeProjectAPIKeyHandler := connect.NewUnaryHandler(
+		BackendServiceRevokeProjectAPIKeyProcedure,
+		svc.RevokeProjectAPIKey,
+		connect.WithSchema(backendServiceRevokeProjectAPIKeyMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/openauth.backend.v1.BackendService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -704,8 +824,18 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceUpdateUserHandler.ServeHTTP(w, r)
 		case BackendServiceUpdateUserPasswordProcedure:
 			backendServiceUpdateUserPasswordHandler.ServeHTTP(w, r)
+		case BackendServiceListProjectAPIKeysProcedure:
+			backendServiceListProjectAPIKeysHandler.ServeHTTP(w, r)
+		case BackendServiceGetProjectAPIKeyProcedure:
+			backendServiceGetProjectAPIKeyHandler.ServeHTTP(w, r)
 		case BackendServiceCreateProjectAPIKeyProcedure:
 			backendServiceCreateProjectAPIKeyHandler.ServeHTTP(w, r)
+		case BackendServiceUpdateProjectAPIKeyProcedure:
+			backendServiceUpdateProjectAPIKeyHandler.ServeHTTP(w, r)
+		case BackendServiceDeleteProjectAPIKeyProcedure:
+			backendServiceDeleteProjectAPIKeyHandler.ServeHTTP(w, r)
+		case BackendServiceRevokeProjectAPIKeyProcedure:
+			backendServiceRevokeProjectAPIKeyHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -807,6 +937,26 @@ func (UnimplementedBackendServiceHandler) UpdateUserPassword(context.Context, *c
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.UpdateUserPassword is not implemented"))
 }
 
+func (UnimplementedBackendServiceHandler) ListProjectAPIKeys(context.Context, *connect.Request[v1.ListProjectAPIKeysRequest]) (*connect.Response[v1.ListProjectAPIKeysResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.ListProjectAPIKeys is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) GetProjectAPIKey(context.Context, *connect.Request[v1.GetProjectAPIKeyRequest]) (*connect.Response[v1.GetProjectAPIKeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetProjectAPIKey is not implemented"))
+}
+
 func (UnimplementedBackendServiceHandler) CreateProjectAPIKey(context.Context, *connect.Request[v1.CreateProjectAPIKeyRequest]) (*connect.Response[v1.CreateProjectAPIKeyResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.CreateProjectAPIKey is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) UpdateProjectAPIKey(context.Context, *connect.Request[v1.UpdateProjectAPIKeyRequest]) (*connect.Response[v1.UpdateProjectAPIKeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.UpdateProjectAPIKey is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) DeleteProjectAPIKey(context.Context, *connect.Request[v1.DeleteProjectAPIKeyRequest]) (*connect.Response[v1.DeleteProjectAPIKeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.DeleteProjectAPIKey is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) RevokeProjectAPIKey(context.Context, *connect.Request[v1.RevokeProjectAPIKeyRequest]) (*connect.Response[v1.RevokeProjectAPIKeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.RevokeProjectAPIKey is not implemented"))
 }
