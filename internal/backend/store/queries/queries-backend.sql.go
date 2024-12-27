@@ -57,6 +57,44 @@ func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganization
 	return i, err
 }
 
+const createSAMLConnection = `-- name: CreateSAMLConnection :one
+INSERT INTO saml_connections (id, organization_id, is_primary, idp_redirect_url, idp_x509_certificate, idp_entity_id)
+    VALUES ($1, $2, $3, $4, $5, $6)
+RETURNING
+    id, organization_id, create_time, is_primary, idp_redirect_url, idp_x509_certificate, idp_entity_id
+`
+
+type CreateSAMLConnectionParams struct {
+	ID                 uuid.UUID
+	OrganizationID     uuid.UUID
+	IsPrimary          bool
+	IdpRedirectUrl     *string
+	IdpX509Certificate []byte
+	IdpEntityID        *string
+}
+
+func (q *Queries) CreateSAMLConnection(ctx context.Context, arg CreateSAMLConnectionParams) (SamlConnection, error) {
+	row := q.db.QueryRow(ctx, createSAMLConnection,
+		arg.ID,
+		arg.OrganizationID,
+		arg.IsPrimary,
+		arg.IdpRedirectUrl,
+		arg.IdpX509Certificate,
+		arg.IdpEntityID,
+	)
+	var i SamlConnection
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.CreateTime,
+		&i.IsPrimary,
+		&i.IdpRedirectUrl,
+		&i.IdpX509Certificate,
+		&i.IdpEntityID,
+	)
+	return i, err
+}
+
 const deleteOrganization = `-- name: DeleteOrganization :exec
 DELETE FROM organizations
 WHERE id = $1
@@ -64,6 +102,16 @@ WHERE id = $1
 
 func (q *Queries) DeleteOrganization(ctx context.Context, id uuid.UUID) error {
 	_, err := q.db.Exec(ctx, deleteOrganization, id)
+	return err
+}
+
+const deleteSAMLConnection = `-- name: DeleteSAMLConnection :exec
+DELETE FROM saml_connections
+WHERE id = $1
+`
+
+func (q *Queries) DeleteSAMLConnection(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteSAMLConnection, id)
 	return err
 }
 
@@ -144,6 +192,37 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 		&i.GoogleOauthClientSecretCiphertext,
 		&i.MicrosoftOauthClientSecretCiphertext,
 		&i.DisplayName,
+	)
+	return i, err
+}
+
+const getSAMLConnection = `-- name: GetSAMLConnection :one
+SELECT
+    saml_connections.id, saml_connections.organization_id, saml_connections.create_time, saml_connections.is_primary, saml_connections.idp_redirect_url, saml_connections.idp_x509_certificate, saml_connections.idp_entity_id
+FROM
+    saml_connections
+    JOIN organizations ON saml_connections.organization_id = organizations.id
+WHERE
+    saml_connections.id = $1
+    AND organizations.project_id = $2
+`
+
+type GetSAMLConnectionParams struct {
+	ID        uuid.UUID
+	ProjectID uuid.UUID
+}
+
+func (q *Queries) GetSAMLConnection(ctx context.Context, arg GetSAMLConnectionParams) (SamlConnection, error) {
+	row := q.db.QueryRow(ctx, getSAMLConnection, arg.ID, arg.ProjectID)
+	var i SamlConnection
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.CreateTime,
+		&i.IsPrimary,
+		&i.IdpRedirectUrl,
+		&i.IdpX509Certificate,
+		&i.IdpEntityID,
 	)
 	return i, err
 }
@@ -272,6 +351,53 @@ func (q *Queries) ListProjects(ctx context.Context, limit int32) ([]Project, err
 	return items, nil
 }
 
+const listSAMLConnections = `-- name: ListSAMLConnections :many
+SELECT
+    id, organization_id, create_time, is_primary, idp_redirect_url, idp_x509_certificate, idp_entity_id
+FROM
+    saml_connections
+WHERE
+    organization_id = $1
+    AND id >= $2
+ORDER BY
+    id
+LIMIT $3
+`
+
+type ListSAMLConnectionsParams struct {
+	OrganizationID uuid.UUID
+	ID             uuid.UUID
+	Limit          int32
+}
+
+func (q *Queries) ListSAMLConnections(ctx context.Context, arg ListSAMLConnectionsParams) ([]SamlConnection, error) {
+	rows, err := q.db.Query(ctx, listSAMLConnections, arg.OrganizationID, arg.ID, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []SamlConnection
+	for rows.Next() {
+		var i SamlConnection
+		if err := rows.Scan(
+			&i.ID,
+			&i.OrganizationID,
+			&i.CreateTime,
+			&i.IsPrimary,
+			&i.IdpRedirectUrl,
+			&i.IdpX509Certificate,
+			&i.IdpEntityID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const updateOrganization = `-- name: UpdateOrganization :one
 UPDATE
     organizations
@@ -324,6 +450,25 @@ func (q *Queries) UpdateOrganization(ctx context.Context, arg UpdateOrganization
 		&i.OverrideLogInMethods,
 	)
 	return i, err
+}
+
+const updatePrimarySAMLConnection = `-- name: UpdatePrimarySAMLConnection :exec
+UPDATE
+    saml_connections
+SET
+    is_primary = (id = $1)
+WHERE
+    organization_id = $2
+`
+
+type UpdatePrimarySAMLConnectionParams struct {
+	ID             uuid.UUID
+	OrganizationID uuid.UUID
+}
+
+func (q *Queries) UpdatePrimarySAMLConnection(ctx context.Context, arg UpdatePrimarySAMLConnectionParams) error {
+	_, err := q.db.Exec(ctx, updatePrimarySAMLConnection, arg.ID, arg.OrganizationID)
+	return err
 }
 
 const updateProject = `-- name: UpdateProject :one
@@ -414,6 +559,49 @@ func (q *Queries) UpdateProjectOrganizationID(ctx context.Context, arg UpdatePro
 		&i.GoogleOauthClientSecretCiphertext,
 		&i.MicrosoftOauthClientSecretCiphertext,
 		&i.DisplayName,
+	)
+	return i, err
+}
+
+const updateSAMLConnection = `-- name: UpdateSAMLConnection :one
+UPDATE
+    saml_connections
+SET
+    is_primary = $1,
+    idp_redirect_url = $2,
+    idp_x509_certificate = $3,
+    idp_entity_id = $4
+WHERE
+    id = $5
+RETURNING
+    id, organization_id, create_time, is_primary, idp_redirect_url, idp_x509_certificate, idp_entity_id
+`
+
+type UpdateSAMLConnectionParams struct {
+	IsPrimary          bool
+	IdpRedirectUrl     *string
+	IdpX509Certificate []byte
+	IdpEntityID        *string
+	ID                 uuid.UUID
+}
+
+func (q *Queries) UpdateSAMLConnection(ctx context.Context, arg UpdateSAMLConnectionParams) (SamlConnection, error) {
+	row := q.db.QueryRow(ctx, updateSAMLConnection,
+		arg.IsPrimary,
+		arg.IdpRedirectUrl,
+		arg.IdpX509Certificate,
+		arg.IdpEntityID,
+		arg.ID,
+	)
+	var i SamlConnection
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.CreateTime,
+		&i.IsPrimary,
+		&i.IdpRedirectUrl,
+		&i.IdpX509Certificate,
+		&i.IdpEntityID,
 	)
 	return i, err
 }

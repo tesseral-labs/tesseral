@@ -54,6 +54,38 @@ service BackendService {
     };
   }
 
+  rpc ListSAMLConnections(ListSAMLConnectionsRequest) returns (ListSAMLConnectionsResponse) {
+    option (google.api.http) = {
+      get: "/backend/v1/saml-connections",
+    };
+  }
+
+  rpc GetSAMLConnection(GetSAMLConnectionRequest) returns (GetSAMLConnectionResponse) {
+    option (google.api.http) = {
+      get: "/backend/v1/saml-connections/{id}"
+    };
+  }
+
+  rpc CreateSAMLConnection(CreateSAMLConnectionRequest) returns (CreateSAMLConnectionResponse) {
+    option (google.api.http) = {
+      post: "/backend/v1/saml-connections",
+      body: "saml_connection"
+    };
+  }
+
+  rpc UpdateSAMLConnection(UpdateSAMLConnectionRequest) returns (UpdateSAMLConnectionResponse) {
+    option (google.api.http) = {
+      patch: "/backend/v1/saml-connections/{id}",
+      body: "saml_connection"
+    };
+  }
+
+  rpc DeleteSAMLConnection(DeleteSAMLConnectionRequest) returns (DeleteSAMLConnectionResponse) {
+    option (google.api.http) = {
+      delete: "/backend/v1/saml-connections/{id}"
+    };
+  }
+
   // Creates a user.
   rpc CreateUser(CreateUserRequest) returns (User) {
     option (google.api.http) = {
@@ -155,6 +187,49 @@ message DeleteOrganizationRequest {
 }
 
 message DeleteOrganizationResponse {
+}
+
+
+message CreateSAMLConnectionRequest {
+  SAMLConnection saml_connection = 1;
+}
+
+message CreateSAMLConnectionResponse {
+  SAMLConnection saml_connection = 1;
+}
+
+message GetSAMLConnectionRequest {
+  string id = 1;
+}
+
+message GetSAMLConnectionResponse {
+  SAMLConnection saml_connection = 1;
+}
+
+message ListSAMLConnectionsRequest {
+  string organization_id = 1;
+  string page_token = 2;
+}
+
+message ListSAMLConnectionsResponse {
+  repeated SAMLConnection saml_connections = 1;
+  string next_page_token = 2;
+}
+
+message UpdateSAMLConnectionRequest {
+  string id = 1;
+  SAMLConnection saml_connection = 2;
+}
+
+message UpdateSAMLConnectionResponse {
+  SAMLConnection saml_connection = 1;
+}
+
+message DeleteSAMLConnectionRequest {
+  string id = 1;
+}
+
+message DeleteSAMLConnectionResponse {
 }
 
 message GetUserRequest {
@@ -264,4 +339,15 @@ message Session {
   bool revoked = 5;
 
   // TODO(ucarion): add session metadata like auth factors, etc here
+}
+
+message SAMLConnection {
+  string id = 1;
+  string organization_id = 2;
+  optional bool primary = 3;
+  string sp_acs_url = 4;
+  string sp_entity_id = 5;
+  string idp_redirect_url = 6;
+  string idp_x509_certificate = 7;
+  string idp_entity_id = 8;
 }

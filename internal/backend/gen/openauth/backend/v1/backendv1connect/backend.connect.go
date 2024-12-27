@@ -54,6 +54,21 @@ const (
 	// BackendServiceDeleteOrganizationProcedure is the fully-qualified name of the BackendService's
 	// DeleteOrganization RPC.
 	BackendServiceDeleteOrganizationProcedure = "/openauth.backend.v1.BackendService/DeleteOrganization"
+	// BackendServiceListSAMLConnectionsProcedure is the fully-qualified name of the BackendService's
+	// ListSAMLConnections RPC.
+	BackendServiceListSAMLConnectionsProcedure = "/openauth.backend.v1.BackendService/ListSAMLConnections"
+	// BackendServiceGetSAMLConnectionProcedure is the fully-qualified name of the BackendService's
+	// GetSAMLConnection RPC.
+	BackendServiceGetSAMLConnectionProcedure = "/openauth.backend.v1.BackendService/GetSAMLConnection"
+	// BackendServiceCreateSAMLConnectionProcedure is the fully-qualified name of the BackendService's
+	// CreateSAMLConnection RPC.
+	BackendServiceCreateSAMLConnectionProcedure = "/openauth.backend.v1.BackendService/CreateSAMLConnection"
+	// BackendServiceUpdateSAMLConnectionProcedure is the fully-qualified name of the BackendService's
+	// UpdateSAMLConnection RPC.
+	BackendServiceUpdateSAMLConnectionProcedure = "/openauth.backend.v1.BackendService/UpdateSAMLConnection"
+	// BackendServiceDeleteSAMLConnectionProcedure is the fully-qualified name of the BackendService's
+	// DeleteSAMLConnection RPC.
+	BackendServiceDeleteSAMLConnectionProcedure = "/openauth.backend.v1.BackendService/DeleteSAMLConnection"
 	// BackendServiceCreateUserProcedure is the fully-qualified name of the BackendService's CreateUser
 	// RPC.
 	BackendServiceCreateUserProcedure = "/openauth.backend.v1.BackendService/CreateUser"
@@ -75,20 +90,25 @@ const (
 
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
 var (
-	backendServiceServiceDescriptor                   = v1.File_openauth_backend_v1_backend_proto.Services().ByName("BackendService")
-	backendServiceGetProjectMethodDescriptor          = backendServiceServiceDescriptor.Methods().ByName("GetProject")
-	backendServiceUpdateProjectMethodDescriptor       = backendServiceServiceDescriptor.Methods().ByName("UpdateProject")
-	backendServiceListOrganizationsMethodDescriptor   = backendServiceServiceDescriptor.Methods().ByName("ListOrganizations")
-	backendServiceGetOrganizationMethodDescriptor     = backendServiceServiceDescriptor.Methods().ByName("GetOrganization")
-	backendServiceCreateOrganizationMethodDescriptor  = backendServiceServiceDescriptor.Methods().ByName("CreateOrganization")
-	backendServiceUpdateOrganizationMethodDescriptor  = backendServiceServiceDescriptor.Methods().ByName("UpdateOrganization")
-	backendServiceDeleteOrganizationMethodDescriptor  = backendServiceServiceDescriptor.Methods().ByName("DeleteOrganization")
-	backendServiceCreateUserMethodDescriptor          = backendServiceServiceDescriptor.Methods().ByName("CreateUser")
-	backendServiceGetUserMethodDescriptor             = backendServiceServiceDescriptor.Methods().ByName("GetUser")
-	backendServiceListUsersMethodDescriptor           = backendServiceServiceDescriptor.Methods().ByName("ListUsers")
-	backendServiceUpdateUserMethodDescriptor          = backendServiceServiceDescriptor.Methods().ByName("UpdateUser")
-	backendServiceUpdateUserPasswordMethodDescriptor  = backendServiceServiceDescriptor.Methods().ByName("UpdateUserPassword")
-	backendServiceCreateProjectAPIKeyMethodDescriptor = backendServiceServiceDescriptor.Methods().ByName("CreateProjectAPIKey")
+	backendServiceServiceDescriptor                    = v1.File_openauth_backend_v1_backend_proto.Services().ByName("BackendService")
+	backendServiceGetProjectMethodDescriptor           = backendServiceServiceDescriptor.Methods().ByName("GetProject")
+	backendServiceUpdateProjectMethodDescriptor        = backendServiceServiceDescriptor.Methods().ByName("UpdateProject")
+	backendServiceListOrganizationsMethodDescriptor    = backendServiceServiceDescriptor.Methods().ByName("ListOrganizations")
+	backendServiceGetOrganizationMethodDescriptor      = backendServiceServiceDescriptor.Methods().ByName("GetOrganization")
+	backendServiceCreateOrganizationMethodDescriptor   = backendServiceServiceDescriptor.Methods().ByName("CreateOrganization")
+	backendServiceUpdateOrganizationMethodDescriptor   = backendServiceServiceDescriptor.Methods().ByName("UpdateOrganization")
+	backendServiceDeleteOrganizationMethodDescriptor   = backendServiceServiceDescriptor.Methods().ByName("DeleteOrganization")
+	backendServiceListSAMLConnectionsMethodDescriptor  = backendServiceServiceDescriptor.Methods().ByName("ListSAMLConnections")
+	backendServiceGetSAMLConnectionMethodDescriptor    = backendServiceServiceDescriptor.Methods().ByName("GetSAMLConnection")
+	backendServiceCreateSAMLConnectionMethodDescriptor = backendServiceServiceDescriptor.Methods().ByName("CreateSAMLConnection")
+	backendServiceUpdateSAMLConnectionMethodDescriptor = backendServiceServiceDescriptor.Methods().ByName("UpdateSAMLConnection")
+	backendServiceDeleteSAMLConnectionMethodDescriptor = backendServiceServiceDescriptor.Methods().ByName("DeleteSAMLConnection")
+	backendServiceCreateUserMethodDescriptor           = backendServiceServiceDescriptor.Methods().ByName("CreateUser")
+	backendServiceGetUserMethodDescriptor              = backendServiceServiceDescriptor.Methods().ByName("GetUser")
+	backendServiceListUsersMethodDescriptor            = backendServiceServiceDescriptor.Methods().ByName("ListUsers")
+	backendServiceUpdateUserMethodDescriptor           = backendServiceServiceDescriptor.Methods().ByName("UpdateUser")
+	backendServiceUpdateUserPasswordMethodDescriptor   = backendServiceServiceDescriptor.Methods().ByName("UpdateUserPassword")
+	backendServiceCreateProjectAPIKeyMethodDescriptor  = backendServiceServiceDescriptor.Methods().ByName("CreateProjectAPIKey")
 )
 
 // BackendServiceClient is a client for the openauth.backend.v1.BackendService service.
@@ -100,6 +120,11 @@ type BackendServiceClient interface {
 	CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.CreateOrganizationResponse], error)
 	UpdateOrganization(context.Context, *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.UpdateOrganizationResponse], error)
 	DeleteOrganization(context.Context, *connect.Request[v1.DeleteOrganizationRequest]) (*connect.Response[v1.DeleteOrganizationResponse], error)
+	ListSAMLConnections(context.Context, *connect.Request[v1.ListSAMLConnectionsRequest]) (*connect.Response[v1.ListSAMLConnectionsResponse], error)
+	GetSAMLConnection(context.Context, *connect.Request[v1.GetSAMLConnectionRequest]) (*connect.Response[v1.GetSAMLConnectionResponse], error)
+	CreateSAMLConnection(context.Context, *connect.Request[v1.CreateSAMLConnectionRequest]) (*connect.Response[v1.CreateSAMLConnectionResponse], error)
+	UpdateSAMLConnection(context.Context, *connect.Request[v1.UpdateSAMLConnectionRequest]) (*connect.Response[v1.UpdateSAMLConnectionResponse], error)
+	DeleteSAMLConnection(context.Context, *connect.Request[v1.DeleteSAMLConnectionRequest]) (*connect.Response[v1.DeleteSAMLConnectionResponse], error)
 	// Creates a user.
 	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.User], error)
 	// Gets a user.
@@ -165,6 +190,36 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(backendServiceDeleteOrganizationMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
+		listSAMLConnections: connect.NewClient[v1.ListSAMLConnectionsRequest, v1.ListSAMLConnectionsResponse](
+			httpClient,
+			baseURL+BackendServiceListSAMLConnectionsProcedure,
+			connect.WithSchema(backendServiceListSAMLConnectionsMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		getSAMLConnection: connect.NewClient[v1.GetSAMLConnectionRequest, v1.GetSAMLConnectionResponse](
+			httpClient,
+			baseURL+BackendServiceGetSAMLConnectionProcedure,
+			connect.WithSchema(backendServiceGetSAMLConnectionMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		createSAMLConnection: connect.NewClient[v1.CreateSAMLConnectionRequest, v1.CreateSAMLConnectionResponse](
+			httpClient,
+			baseURL+BackendServiceCreateSAMLConnectionProcedure,
+			connect.WithSchema(backendServiceCreateSAMLConnectionMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		updateSAMLConnection: connect.NewClient[v1.UpdateSAMLConnectionRequest, v1.UpdateSAMLConnectionResponse](
+			httpClient,
+			baseURL+BackendServiceUpdateSAMLConnectionProcedure,
+			connect.WithSchema(backendServiceUpdateSAMLConnectionMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		deleteSAMLConnection: connect.NewClient[v1.DeleteSAMLConnectionRequest, v1.DeleteSAMLConnectionResponse](
+			httpClient,
+			baseURL+BackendServiceDeleteSAMLConnectionProcedure,
+			connect.WithSchema(backendServiceDeleteSAMLConnectionMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
 		createUser: connect.NewClient[v1.CreateUserRequest, v1.User](
 			httpClient,
 			baseURL+BackendServiceCreateUserProcedure,
@@ -206,19 +261,24 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 
 // backendServiceClient implements BackendServiceClient.
 type backendServiceClient struct {
-	getProject          *connect.Client[v1.GetProjectRequest, v1.GetProjectResponse]
-	updateProject       *connect.Client[v1.UpdateProjectRequest, v1.UpdateProjectResponse]
-	listOrganizations   *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
-	getOrganization     *connect.Client[v1.GetOrganizationRequest, v1.GetOrganizationResponse]
-	createOrganization  *connect.Client[v1.CreateOrganizationRequest, v1.CreateOrganizationResponse]
-	updateOrganization  *connect.Client[v1.UpdateOrganizationRequest, v1.UpdateOrganizationResponse]
-	deleteOrganization  *connect.Client[v1.DeleteOrganizationRequest, v1.DeleteOrganizationResponse]
-	createUser          *connect.Client[v1.CreateUserRequest, v1.User]
-	getUser             *connect.Client[v1.GetUserRequest, v1.User]
-	listUsers           *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
-	updateUser          *connect.Client[v1.UpdateUserRequest, v1.User]
-	updateUserPassword  *connect.Client[v1.UpdateUserPasswordRequest, v1.User]
-	createProjectAPIKey *connect.Client[v1.CreateProjectAPIKeyRequest, v1.CreateProjectAPIKeyResponse]
+	getProject           *connect.Client[v1.GetProjectRequest, v1.GetProjectResponse]
+	updateProject        *connect.Client[v1.UpdateProjectRequest, v1.UpdateProjectResponse]
+	listOrganizations    *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
+	getOrganization      *connect.Client[v1.GetOrganizationRequest, v1.GetOrganizationResponse]
+	createOrganization   *connect.Client[v1.CreateOrganizationRequest, v1.CreateOrganizationResponse]
+	updateOrganization   *connect.Client[v1.UpdateOrganizationRequest, v1.UpdateOrganizationResponse]
+	deleteOrganization   *connect.Client[v1.DeleteOrganizationRequest, v1.DeleteOrganizationResponse]
+	listSAMLConnections  *connect.Client[v1.ListSAMLConnectionsRequest, v1.ListSAMLConnectionsResponse]
+	getSAMLConnection    *connect.Client[v1.GetSAMLConnectionRequest, v1.GetSAMLConnectionResponse]
+	createSAMLConnection *connect.Client[v1.CreateSAMLConnectionRequest, v1.CreateSAMLConnectionResponse]
+	updateSAMLConnection *connect.Client[v1.UpdateSAMLConnectionRequest, v1.UpdateSAMLConnectionResponse]
+	deleteSAMLConnection *connect.Client[v1.DeleteSAMLConnectionRequest, v1.DeleteSAMLConnectionResponse]
+	createUser           *connect.Client[v1.CreateUserRequest, v1.User]
+	getUser              *connect.Client[v1.GetUserRequest, v1.User]
+	listUsers            *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
+	updateUser           *connect.Client[v1.UpdateUserRequest, v1.User]
+	updateUserPassword   *connect.Client[v1.UpdateUserPasswordRequest, v1.User]
+	createProjectAPIKey  *connect.Client[v1.CreateProjectAPIKeyRequest, v1.CreateProjectAPIKeyResponse]
 }
 
 // GetProject calls openauth.backend.v1.BackendService.GetProject.
@@ -254,6 +314,31 @@ func (c *backendServiceClient) UpdateOrganization(ctx context.Context, req *conn
 // DeleteOrganization calls openauth.backend.v1.BackendService.DeleteOrganization.
 func (c *backendServiceClient) DeleteOrganization(ctx context.Context, req *connect.Request[v1.DeleteOrganizationRequest]) (*connect.Response[v1.DeleteOrganizationResponse], error) {
 	return c.deleteOrganization.CallUnary(ctx, req)
+}
+
+// ListSAMLConnections calls openauth.backend.v1.BackendService.ListSAMLConnections.
+func (c *backendServiceClient) ListSAMLConnections(ctx context.Context, req *connect.Request[v1.ListSAMLConnectionsRequest]) (*connect.Response[v1.ListSAMLConnectionsResponse], error) {
+	return c.listSAMLConnections.CallUnary(ctx, req)
+}
+
+// GetSAMLConnection calls openauth.backend.v1.BackendService.GetSAMLConnection.
+func (c *backendServiceClient) GetSAMLConnection(ctx context.Context, req *connect.Request[v1.GetSAMLConnectionRequest]) (*connect.Response[v1.GetSAMLConnectionResponse], error) {
+	return c.getSAMLConnection.CallUnary(ctx, req)
+}
+
+// CreateSAMLConnection calls openauth.backend.v1.BackendService.CreateSAMLConnection.
+func (c *backendServiceClient) CreateSAMLConnection(ctx context.Context, req *connect.Request[v1.CreateSAMLConnectionRequest]) (*connect.Response[v1.CreateSAMLConnectionResponse], error) {
+	return c.createSAMLConnection.CallUnary(ctx, req)
+}
+
+// UpdateSAMLConnection calls openauth.backend.v1.BackendService.UpdateSAMLConnection.
+func (c *backendServiceClient) UpdateSAMLConnection(ctx context.Context, req *connect.Request[v1.UpdateSAMLConnectionRequest]) (*connect.Response[v1.UpdateSAMLConnectionResponse], error) {
+	return c.updateSAMLConnection.CallUnary(ctx, req)
+}
+
+// DeleteSAMLConnection calls openauth.backend.v1.BackendService.DeleteSAMLConnection.
+func (c *backendServiceClient) DeleteSAMLConnection(ctx context.Context, req *connect.Request[v1.DeleteSAMLConnectionRequest]) (*connect.Response[v1.DeleteSAMLConnectionResponse], error) {
+	return c.deleteSAMLConnection.CallUnary(ctx, req)
 }
 
 // CreateUser calls openauth.backend.v1.BackendService.CreateUser.
@@ -295,6 +380,11 @@ type BackendServiceHandler interface {
 	CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.CreateOrganizationResponse], error)
 	UpdateOrganization(context.Context, *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.UpdateOrganizationResponse], error)
 	DeleteOrganization(context.Context, *connect.Request[v1.DeleteOrganizationRequest]) (*connect.Response[v1.DeleteOrganizationResponse], error)
+	ListSAMLConnections(context.Context, *connect.Request[v1.ListSAMLConnectionsRequest]) (*connect.Response[v1.ListSAMLConnectionsResponse], error)
+	GetSAMLConnection(context.Context, *connect.Request[v1.GetSAMLConnectionRequest]) (*connect.Response[v1.GetSAMLConnectionResponse], error)
+	CreateSAMLConnection(context.Context, *connect.Request[v1.CreateSAMLConnectionRequest]) (*connect.Response[v1.CreateSAMLConnectionResponse], error)
+	UpdateSAMLConnection(context.Context, *connect.Request[v1.UpdateSAMLConnectionRequest]) (*connect.Response[v1.UpdateSAMLConnectionResponse], error)
+	DeleteSAMLConnection(context.Context, *connect.Request[v1.DeleteSAMLConnectionRequest]) (*connect.Response[v1.DeleteSAMLConnectionResponse], error)
 	// Creates a user.
 	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.User], error)
 	// Gets a user.
@@ -356,6 +446,36 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		connect.WithSchema(backendServiceDeleteOrganizationMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
+	backendServiceListSAMLConnectionsHandler := connect.NewUnaryHandler(
+		BackendServiceListSAMLConnectionsProcedure,
+		svc.ListSAMLConnections,
+		connect.WithSchema(backendServiceListSAMLConnectionsMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceGetSAMLConnectionHandler := connect.NewUnaryHandler(
+		BackendServiceGetSAMLConnectionProcedure,
+		svc.GetSAMLConnection,
+		connect.WithSchema(backendServiceGetSAMLConnectionMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceCreateSAMLConnectionHandler := connect.NewUnaryHandler(
+		BackendServiceCreateSAMLConnectionProcedure,
+		svc.CreateSAMLConnection,
+		connect.WithSchema(backendServiceCreateSAMLConnectionMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceUpdateSAMLConnectionHandler := connect.NewUnaryHandler(
+		BackendServiceUpdateSAMLConnectionProcedure,
+		svc.UpdateSAMLConnection,
+		connect.WithSchema(backendServiceUpdateSAMLConnectionMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceDeleteSAMLConnectionHandler := connect.NewUnaryHandler(
+		BackendServiceDeleteSAMLConnectionProcedure,
+		svc.DeleteSAMLConnection,
+		connect.WithSchema(backendServiceDeleteSAMLConnectionMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
 	backendServiceCreateUserHandler := connect.NewUnaryHandler(
 		BackendServiceCreateUserProcedure,
 		svc.CreateUser,
@@ -408,6 +528,16 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceUpdateOrganizationHandler.ServeHTTP(w, r)
 		case BackendServiceDeleteOrganizationProcedure:
 			backendServiceDeleteOrganizationHandler.ServeHTTP(w, r)
+		case BackendServiceListSAMLConnectionsProcedure:
+			backendServiceListSAMLConnectionsHandler.ServeHTTP(w, r)
+		case BackendServiceGetSAMLConnectionProcedure:
+			backendServiceGetSAMLConnectionHandler.ServeHTTP(w, r)
+		case BackendServiceCreateSAMLConnectionProcedure:
+			backendServiceCreateSAMLConnectionHandler.ServeHTTP(w, r)
+		case BackendServiceUpdateSAMLConnectionProcedure:
+			backendServiceUpdateSAMLConnectionHandler.ServeHTTP(w, r)
+		case BackendServiceDeleteSAMLConnectionProcedure:
+			backendServiceDeleteSAMLConnectionHandler.ServeHTTP(w, r)
 		case BackendServiceCreateUserProcedure:
 			backendServiceCreateUserHandler.ServeHTTP(w, r)
 		case BackendServiceGetUserProcedure:
@@ -455,6 +585,26 @@ func (UnimplementedBackendServiceHandler) UpdateOrganization(context.Context, *c
 
 func (UnimplementedBackendServiceHandler) DeleteOrganization(context.Context, *connect.Request[v1.DeleteOrganizationRequest]) (*connect.Response[v1.DeleteOrganizationResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.DeleteOrganization is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) ListSAMLConnections(context.Context, *connect.Request[v1.ListSAMLConnectionsRequest]) (*connect.Response[v1.ListSAMLConnectionsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.ListSAMLConnections is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) GetSAMLConnection(context.Context, *connect.Request[v1.GetSAMLConnectionRequest]) (*connect.Response[v1.GetSAMLConnectionResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetSAMLConnection is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) CreateSAMLConnection(context.Context, *connect.Request[v1.CreateSAMLConnectionRequest]) (*connect.Response[v1.CreateSAMLConnectionResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.CreateSAMLConnection is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) UpdateSAMLConnection(context.Context, *connect.Request[v1.UpdateSAMLConnectionRequest]) (*connect.Response[v1.UpdateSAMLConnectionResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.UpdateSAMLConnection is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) DeleteSAMLConnection(context.Context, *connect.Request[v1.DeleteSAMLConnectionRequest]) (*connect.Response[v1.DeleteSAMLConnectionResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.DeleteSAMLConnection is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.User], error) {
