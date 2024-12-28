@@ -31,6 +31,12 @@ const (
 	BackendService_CreateSAMLConnection_FullMethodName = "/openauth.backend.v1.BackendService/CreateSAMLConnection"
 	BackendService_UpdateSAMLConnection_FullMethodName = "/openauth.backend.v1.BackendService/UpdateSAMLConnection"
 	BackendService_DeleteSAMLConnection_FullMethodName = "/openauth.backend.v1.BackendService/DeleteSAMLConnection"
+	BackendService_ListSCIMAPIKeys_FullMethodName      = "/openauth.backend.v1.BackendService/ListSCIMAPIKeys"
+	BackendService_GetSCIMAPIKey_FullMethodName        = "/openauth.backend.v1.BackendService/GetSCIMAPIKey"
+	BackendService_CreateSCIMAPIKey_FullMethodName     = "/openauth.backend.v1.BackendService/CreateSCIMAPIKey"
+	BackendService_UpdateSCIMAPIKey_FullMethodName     = "/openauth.backend.v1.BackendService/UpdateSCIMAPIKey"
+	BackendService_DeleteSCIMAPIKey_FullMethodName     = "/openauth.backend.v1.BackendService/DeleteSCIMAPIKey"
+	BackendService_RevokeSCIMAPIKey_FullMethodName     = "/openauth.backend.v1.BackendService/RevokeSCIMAPIKey"
 	BackendService_CreateUser_FullMethodName           = "/openauth.backend.v1.BackendService/CreateUser"
 	BackendService_GetUser_FullMethodName              = "/openauth.backend.v1.BackendService/GetUser"
 	BackendService_ListUsers_FullMethodName            = "/openauth.backend.v1.BackendService/ListUsers"
@@ -55,6 +61,12 @@ type BackendServiceClient interface {
 	CreateSAMLConnection(ctx context.Context, in *CreateSAMLConnectionRequest, opts ...grpc.CallOption) (*CreateSAMLConnectionResponse, error)
 	UpdateSAMLConnection(ctx context.Context, in *UpdateSAMLConnectionRequest, opts ...grpc.CallOption) (*UpdateSAMLConnectionResponse, error)
 	DeleteSAMLConnection(ctx context.Context, in *DeleteSAMLConnectionRequest, opts ...grpc.CallOption) (*DeleteSAMLConnectionResponse, error)
+	ListSCIMAPIKeys(ctx context.Context, in *ListSCIMAPIKeysRequest, opts ...grpc.CallOption) (*ListSCIMAPIKeysResponse, error)
+	GetSCIMAPIKey(ctx context.Context, in *GetSCIMAPIKeyRequest, opts ...grpc.CallOption) (*GetSCIMAPIKeyResponse, error)
+	CreateSCIMAPIKey(ctx context.Context, in *CreateSCIMAPIKeyRequest, opts ...grpc.CallOption) (*CreateSCIMAPIKeyResponse, error)
+	UpdateSCIMAPIKey(ctx context.Context, in *UpdateSCIMAPIKeyRequest, opts ...grpc.CallOption) (*UpdateSCIMAPIKeyResponse, error)
+	DeleteSCIMAPIKey(ctx context.Context, in *DeleteSCIMAPIKeyRequest, opts ...grpc.CallOption) (*DeleteSCIMAPIKeyResponse, error)
+	RevokeSCIMAPIKey(ctx context.Context, in *RevokeSCIMAPIKeyRequest, opts ...grpc.CallOption) (*RevokeSCIMAPIKeyResponse, error)
 	// Creates a user.
 	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*User, error)
 	// Gets a user.
@@ -196,6 +208,66 @@ func (c *backendServiceClient) DeleteSAMLConnection(ctx context.Context, in *Del
 	return out, nil
 }
 
+func (c *backendServiceClient) ListSCIMAPIKeys(ctx context.Context, in *ListSCIMAPIKeysRequest, opts ...grpc.CallOption) (*ListSCIMAPIKeysResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListSCIMAPIKeysResponse)
+	err := c.cc.Invoke(ctx, BackendService_ListSCIMAPIKeys_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) GetSCIMAPIKey(ctx context.Context, in *GetSCIMAPIKeyRequest, opts ...grpc.CallOption) (*GetSCIMAPIKeyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetSCIMAPIKeyResponse)
+	err := c.cc.Invoke(ctx, BackendService_GetSCIMAPIKey_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) CreateSCIMAPIKey(ctx context.Context, in *CreateSCIMAPIKeyRequest, opts ...grpc.CallOption) (*CreateSCIMAPIKeyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateSCIMAPIKeyResponse)
+	err := c.cc.Invoke(ctx, BackendService_CreateSCIMAPIKey_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) UpdateSCIMAPIKey(ctx context.Context, in *UpdateSCIMAPIKeyRequest, opts ...grpc.CallOption) (*UpdateSCIMAPIKeyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateSCIMAPIKeyResponse)
+	err := c.cc.Invoke(ctx, BackendService_UpdateSCIMAPIKey_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) DeleteSCIMAPIKey(ctx context.Context, in *DeleteSCIMAPIKeyRequest, opts ...grpc.CallOption) (*DeleteSCIMAPIKeyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteSCIMAPIKeyResponse)
+	err := c.cc.Invoke(ctx, BackendService_DeleteSCIMAPIKey_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) RevokeSCIMAPIKey(ctx context.Context, in *RevokeSCIMAPIKeyRequest, opts ...grpc.CallOption) (*RevokeSCIMAPIKeyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RevokeSCIMAPIKeyResponse)
+	err := c.cc.Invoke(ctx, BackendService_RevokeSCIMAPIKey_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *backendServiceClient) CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*User, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(User)
@@ -272,6 +344,12 @@ type BackendServiceServer interface {
 	CreateSAMLConnection(context.Context, *CreateSAMLConnectionRequest) (*CreateSAMLConnectionResponse, error)
 	UpdateSAMLConnection(context.Context, *UpdateSAMLConnectionRequest) (*UpdateSAMLConnectionResponse, error)
 	DeleteSAMLConnection(context.Context, *DeleteSAMLConnectionRequest) (*DeleteSAMLConnectionResponse, error)
+	ListSCIMAPIKeys(context.Context, *ListSCIMAPIKeysRequest) (*ListSCIMAPIKeysResponse, error)
+	GetSCIMAPIKey(context.Context, *GetSCIMAPIKeyRequest) (*GetSCIMAPIKeyResponse, error)
+	CreateSCIMAPIKey(context.Context, *CreateSCIMAPIKeyRequest) (*CreateSCIMAPIKeyResponse, error)
+	UpdateSCIMAPIKey(context.Context, *UpdateSCIMAPIKeyRequest) (*UpdateSCIMAPIKeyResponse, error)
+	DeleteSCIMAPIKey(context.Context, *DeleteSCIMAPIKeyRequest) (*DeleteSCIMAPIKeyResponse, error)
+	RevokeSCIMAPIKey(context.Context, *RevokeSCIMAPIKeyRequest) (*RevokeSCIMAPIKeyResponse, error)
 	// Creates a user.
 	CreateUser(context.Context, *CreateUserRequest) (*User, error)
 	// Gets a user.
@@ -328,6 +406,24 @@ func (UnimplementedBackendServiceServer) UpdateSAMLConnection(context.Context, *
 }
 func (UnimplementedBackendServiceServer) DeleteSAMLConnection(context.Context, *DeleteSAMLConnectionRequest) (*DeleteSAMLConnectionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteSAMLConnection not implemented")
+}
+func (UnimplementedBackendServiceServer) ListSCIMAPIKeys(context.Context, *ListSCIMAPIKeysRequest) (*ListSCIMAPIKeysResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListSCIMAPIKeys not implemented")
+}
+func (UnimplementedBackendServiceServer) GetSCIMAPIKey(context.Context, *GetSCIMAPIKeyRequest) (*GetSCIMAPIKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSCIMAPIKey not implemented")
+}
+func (UnimplementedBackendServiceServer) CreateSCIMAPIKey(context.Context, *CreateSCIMAPIKeyRequest) (*CreateSCIMAPIKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateSCIMAPIKey not implemented")
+}
+func (UnimplementedBackendServiceServer) UpdateSCIMAPIKey(context.Context, *UpdateSCIMAPIKeyRequest) (*UpdateSCIMAPIKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateSCIMAPIKey not implemented")
+}
+func (UnimplementedBackendServiceServer) DeleteSCIMAPIKey(context.Context, *DeleteSCIMAPIKeyRequest) (*DeleteSCIMAPIKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteSCIMAPIKey not implemented")
+}
+func (UnimplementedBackendServiceServer) RevokeSCIMAPIKey(context.Context, *RevokeSCIMAPIKeyRequest) (*RevokeSCIMAPIKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RevokeSCIMAPIKey not implemented")
 }
 func (UnimplementedBackendServiceServer) CreateUser(context.Context, *CreateUserRequest) (*User, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
@@ -584,6 +680,114 @@ func _BackendService_DeleteSAMLConnection_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BackendService_ListSCIMAPIKeys_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListSCIMAPIKeysRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).ListSCIMAPIKeys(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_ListSCIMAPIKeys_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).ListSCIMAPIKeys(ctx, req.(*ListSCIMAPIKeysRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_GetSCIMAPIKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetSCIMAPIKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).GetSCIMAPIKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_GetSCIMAPIKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).GetSCIMAPIKey(ctx, req.(*GetSCIMAPIKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_CreateSCIMAPIKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateSCIMAPIKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).CreateSCIMAPIKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_CreateSCIMAPIKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).CreateSCIMAPIKey(ctx, req.(*CreateSCIMAPIKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_UpdateSCIMAPIKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateSCIMAPIKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).UpdateSCIMAPIKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_UpdateSCIMAPIKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).UpdateSCIMAPIKey(ctx, req.(*UpdateSCIMAPIKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_DeleteSCIMAPIKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteSCIMAPIKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).DeleteSCIMAPIKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_DeleteSCIMAPIKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).DeleteSCIMAPIKey(ctx, req.(*DeleteSCIMAPIKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_RevokeSCIMAPIKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RevokeSCIMAPIKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).RevokeSCIMAPIKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_RevokeSCIMAPIKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).RevokeSCIMAPIKey(ctx, req.(*RevokeSCIMAPIKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _BackendService_CreateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateUserRequest)
 	if err := dec(in); err != nil {
@@ -746,6 +950,30 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteSAMLConnection",
 			Handler:    _BackendService_DeleteSAMLConnection_Handler,
+		},
+		{
+			MethodName: "ListSCIMAPIKeys",
+			Handler:    _BackendService_ListSCIMAPIKeys_Handler,
+		},
+		{
+			MethodName: "GetSCIMAPIKey",
+			Handler:    _BackendService_GetSCIMAPIKey_Handler,
+		},
+		{
+			MethodName: "CreateSCIMAPIKey",
+			Handler:    _BackendService_CreateSCIMAPIKey_Handler,
+		},
+		{
+			MethodName: "UpdateSCIMAPIKey",
+			Handler:    _BackendService_UpdateSCIMAPIKey_Handler,
+		},
+		{
+			MethodName: "DeleteSCIMAPIKey",
+			Handler:    _BackendService_DeleteSCIMAPIKey_Handler,
+		},
+		{
+			MethodName: "RevokeSCIMAPIKey",
+			Handler:    _BackendService_RevokeSCIMAPIKey_Handler,
 		},
 		{
 			MethodName: "CreateUser",

@@ -143,9 +143,8 @@ type SamlConnection struct {
 type ScimApiKey struct {
 	ID             uuid.UUID
 	OrganizationID uuid.UUID
-	CreateTime     *time.Time
-	RevokeTime     *time.Time
 	TokenSha256    []byte
+	DisplayName    string
 }
 
 type Session struct {
