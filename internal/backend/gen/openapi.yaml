@@ -458,12 +458,10 @@ paths:
             parameters:
                 - name: organizationId
                   in: query
-                  description: The organization ID to use for filtering.
                   schema:
                     type: string
                 - name: pageToken
                   in: query
-                  description: The page token to use for pagination.
                   schema:
                     type: string
             responses:
@@ -479,30 +477,6 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-        post:
-            tags:
-                - BackendService
-            description: Creates a user.
-            operationId: BackendService_CreateUser
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/User'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/User'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
     /backend/v1/users/{id}:
         get:
             tags:
@@ -512,7 +486,6 @@ paths:
             parameters:
                 - name: id
                   in: path
-                  description: The ID of the user to get.
                   required: true
                   schema:
                     type: string
@@ -522,70 +495,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/User'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-        patch:
-            tags:
-                - BackendService
-            description: Updates a user.
-            operationId: BackendService_UpdateUser
-            parameters:
-                - name: id
-                  in: path
-                  description: The ID of the user to update.
-                  required: true
-                  schema:
-                    type: string
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/User'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/User'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-    /backend/v1/users/{id}/password:
-        patch:
-            tags:
-                - BackendService
-            description: Updates a user's password.
-            operationId: BackendService_UpdateUserPassword
-            parameters:
-                - name: id
-                  in: path
-                  description: The ID of the user to update.
-                  required: true
-                  schema:
-                    type: string
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/UpdateUserPasswordRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/User'
+                                $ref: '#/components/schemas/GetUserResponse'
                 default:
                     description: Default error response
                     content:
@@ -638,6 +548,11 @@ components:
             properties:
                 scimApiKey:
                     $ref: '#/components/schemas/SCIMAPIKey'
+        GetUserResponse:
+            type: object
+            properties:
+                user:
+                    $ref: '#/components/schemas/User'
         GoogleProtobufAny:
             type: object
             properties:
@@ -680,10 +595,8 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/User'
-                    description: The users retrieved by the ListUsers request.
                 nextPageToken:
                     type: string
-                    description: The next page token to use for pagination.
         Organization:
             type: object
             properties:
@@ -799,35 +712,18 @@ components:
             properties:
                 scimApiKey:
                     $ref: '#/components/schemas/SCIMAPIKey'
-        UpdateUserPasswordRequest:
-            type: object
-            properties:
-                id:
-                    type: string
-                    description: The ID of the user to update.
-                password:
-                    type: string
-                    description: The new password for the user.
         User:
             type: object
             properties:
                 id:
                     type: string
-                    description: Unique identifier for this user.
                 organizationId:
                     type: string
-                    description: The organization this user belongs to.
                 email:
                     type: string
-                    description: The user's email (verified).
-                passwordBcrypt:
-                    type: string
-                    description: The hash of the user's password.
                 googleUserId:
                     type: string
-                    description: The user's Google User ID.
                 microsoftUserId:
                     type: string
-                    description: The user's Microsoft User ID.
 tags:
     - name: BackendService

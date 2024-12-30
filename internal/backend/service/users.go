@@ -8,11 +8,8 @@ import (
 	backendv1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
 )
 
-func (s *Service) UpdateUser(
-	ctx context.Context,
-	req *connect.Request[backendv1.UpdateUserRequest],
-) (*connect.Response[backendv1.User], error) {
-	res, err := s.Store.UpdateUser(ctx, req.Msg)
+func (s *Service) ListUsers(ctx context.Context, req *connect.Request[backendv1.ListUsersRequest]) (*connect.Response[backendv1.ListUsersResponse], error) {
+	res, err := s.Store.ListUsers(ctx, req.Msg)
 	if err != nil {
 		return nil, fmt.Errorf("store: %w", err)
 	}
@@ -20,11 +17,8 @@ func (s *Service) UpdateUser(
 	return connect.NewResponse(res), nil
 }
 
-func (s *Service) UpdateUserPassword(
-	ctx context.Context,
-	req *connect.Request[backendv1.UpdateUserPasswordRequest],
-) (*connect.Response[backendv1.User], error) {
-	res, err := s.Store.UpdateUserPassword(ctx, req.Msg)
+func (s *Service) GetUser(ctx context.Context, req *connect.Request[backendv1.GetUserRequest]) (*connect.Response[backendv1.GetUserResponse], error) {
+	res, err := s.Store.GetUser(ctx, req.Msg)
 	if err != nil {
 		return nil, fmt.Errorf("store: %w", err)
 	}

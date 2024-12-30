@@ -37,11 +37,8 @@ const (
 	BackendService_UpdateSCIMAPIKey_FullMethodName     = "/openauth.backend.v1.BackendService/UpdateSCIMAPIKey"
 	BackendService_DeleteSCIMAPIKey_FullMethodName     = "/openauth.backend.v1.BackendService/DeleteSCIMAPIKey"
 	BackendService_RevokeSCIMAPIKey_FullMethodName     = "/openauth.backend.v1.BackendService/RevokeSCIMAPIKey"
-	BackendService_CreateUser_FullMethodName           = "/openauth.backend.v1.BackendService/CreateUser"
 	BackendService_GetUser_FullMethodName              = "/openauth.backend.v1.BackendService/GetUser"
 	BackendService_ListUsers_FullMethodName            = "/openauth.backend.v1.BackendService/ListUsers"
-	BackendService_UpdateUser_FullMethodName           = "/openauth.backend.v1.BackendService/UpdateUser"
-	BackendService_UpdateUserPassword_FullMethodName   = "/openauth.backend.v1.BackendService/UpdateUserPassword"
 	BackendService_ListProjectAPIKeys_FullMethodName   = "/openauth.backend.v1.BackendService/ListProjectAPIKeys"
 	BackendService_GetProjectAPIKey_FullMethodName     = "/openauth.backend.v1.BackendService/GetProjectAPIKey"
 	BackendService_CreateProjectAPIKey_FullMethodName  = "/openauth.backend.v1.BackendService/CreateProjectAPIKey"
@@ -72,16 +69,10 @@ type BackendServiceClient interface {
 	UpdateSCIMAPIKey(ctx context.Context, in *UpdateSCIMAPIKeyRequest, opts ...grpc.CallOption) (*UpdateSCIMAPIKeyResponse, error)
 	DeleteSCIMAPIKey(ctx context.Context, in *DeleteSCIMAPIKeyRequest, opts ...grpc.CallOption) (*DeleteSCIMAPIKeyResponse, error)
 	RevokeSCIMAPIKey(ctx context.Context, in *RevokeSCIMAPIKeyRequest, opts ...grpc.CallOption) (*RevokeSCIMAPIKeyResponse, error)
-	// Creates a user.
-	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*User, error)
 	// Gets a user.
-	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*User, error)
+	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error)
 	// Gets a list of users.
 	ListUsers(ctx context.Context, in *ListUsersRequest, opts ...grpc.CallOption) (*ListUsersResponse, error)
-	// Updates a user.
-	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*User, error)
-	// Updates a user's password.
-	UpdateUserPassword(ctx context.Context, in *UpdateUserPasswordRequest, opts ...grpc.CallOption) (*User, error)
 	ListProjectAPIKeys(ctx context.Context, in *ListProjectAPIKeysRequest, opts ...grpc.CallOption) (*ListProjectAPIKeysResponse, error)
 	GetProjectAPIKey(ctx context.Context, in *GetProjectAPIKeyRequest, opts ...grpc.CallOption) (*GetProjectAPIKeyResponse, error)
 	CreateProjectAPIKey(ctx context.Context, in *CreateProjectAPIKeyRequest, opts ...grpc.CallOption) (*CreateProjectAPIKeyResponse, error)
@@ -278,19 +269,9 @@ func (c *backendServiceClient) RevokeSCIMAPIKey(ctx context.Context, in *RevokeS
 	return out, nil
 }
 
-func (c *backendServiceClient) CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*User, error) {
+func (c *backendServiceClient) GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(User)
-	err := c.cc.Invoke(ctx, BackendService_CreateUser_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *backendServiceClient) GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*User, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(User)
+	out := new(GetUserResponse)
 	err := c.cc.Invoke(ctx, BackendService_GetUser_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -302,26 +283,6 @@ func (c *backendServiceClient) ListUsers(ctx context.Context, in *ListUsersReque
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListUsersResponse)
 	err := c.cc.Invoke(ctx, BackendService_ListUsers_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *backendServiceClient) UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*User, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(User)
-	err := c.cc.Invoke(ctx, BackendService_UpdateUser_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *backendServiceClient) UpdateUserPassword(ctx context.Context, in *UpdateUserPasswordRequest, opts ...grpc.CallOption) (*User, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(User)
-	err := c.cc.Invoke(ctx, BackendService_UpdateUserPassword_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -410,16 +371,10 @@ type BackendServiceServer interface {
 	UpdateSCIMAPIKey(context.Context, *UpdateSCIMAPIKeyRequest) (*UpdateSCIMAPIKeyResponse, error)
 	DeleteSCIMAPIKey(context.Context, *DeleteSCIMAPIKeyRequest) (*DeleteSCIMAPIKeyResponse, error)
 	RevokeSCIMAPIKey(context.Context, *RevokeSCIMAPIKeyRequest) (*RevokeSCIMAPIKeyResponse, error)
-	// Creates a user.
-	CreateUser(context.Context, *CreateUserRequest) (*User, error)
 	// Gets a user.
-	GetUser(context.Context, *GetUserRequest) (*User, error)
+	GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error)
 	// Gets a list of users.
 	ListUsers(context.Context, *ListUsersRequest) (*ListUsersResponse, error)
-	// Updates a user.
-	UpdateUser(context.Context, *UpdateUserRequest) (*User, error)
-	// Updates a user's password.
-	UpdateUserPassword(context.Context, *UpdateUserPasswordRequest) (*User, error)
 	ListProjectAPIKeys(context.Context, *ListProjectAPIKeysRequest) (*ListProjectAPIKeysResponse, error)
 	GetProjectAPIKey(context.Context, *GetProjectAPIKeyRequest) (*GetProjectAPIKeyResponse, error)
 	CreateProjectAPIKey(context.Context, *CreateProjectAPIKeyRequest) (*CreateProjectAPIKeyResponse, error)
@@ -490,20 +445,11 @@ func (UnimplementedBackendServiceServer) DeleteSCIMAPIKey(context.Context, *Dele
 func (UnimplementedBackendServiceServer) RevokeSCIMAPIKey(context.Context, *RevokeSCIMAPIKeyRequest) (*RevokeSCIMAPIKeyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RevokeSCIMAPIKey not implemented")
 }
-func (UnimplementedBackendServiceServer) CreateUser(context.Context, *CreateUserRequest) (*User, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
-}
-func (UnimplementedBackendServiceServer) GetUser(context.Context, *GetUserRequest) (*User, error) {
+func (UnimplementedBackendServiceServer) GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
 }
 func (UnimplementedBackendServiceServer) ListUsers(context.Context, *ListUsersRequest) (*ListUsersResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListUsers not implemented")
-}
-func (UnimplementedBackendServiceServer) UpdateUser(context.Context, *UpdateUserRequest) (*User, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateUser not implemented")
-}
-func (UnimplementedBackendServiceServer) UpdateUserPassword(context.Context, *UpdateUserPasswordRequest) (*User, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateUserPassword not implemented")
 }
 func (UnimplementedBackendServiceServer) ListProjectAPIKeys(context.Context, *ListProjectAPIKeysRequest) (*ListProjectAPIKeysResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListProjectAPIKeys not implemented")
@@ -868,24 +814,6 @@ func _BackendService_RevokeSCIMAPIKey_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BackendService_CreateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateUserRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(BackendServiceServer).CreateUser(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: BackendService_CreateUser_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).CreateUser(ctx, req.(*CreateUserRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _BackendService_GetUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetUserRequest)
 	if err := dec(in); err != nil {
@@ -918,42 +846,6 @@ func _BackendService_ListUsers_Handler(srv interface{}, ctx context.Context, dec
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(BackendServiceServer).ListUsers(ctx, req.(*ListUsersRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _BackendService_UpdateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateUserRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(BackendServiceServer).UpdateUser(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: BackendService_UpdateUser_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).UpdateUser(ctx, req.(*UpdateUserRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _BackendService_UpdateUserPassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateUserPasswordRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(BackendServiceServer).UpdateUserPassword(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: BackendService_UpdateUserPassword_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).UpdateUserPassword(ctx, req.(*UpdateUserPasswordRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1146,24 +1038,12 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _BackendService_RevokeSCIMAPIKey_Handler,
 		},
 		{
-			MethodName: "CreateUser",
-			Handler:    _BackendService_CreateUser_Handler,
-		},
-		{
 			MethodName: "GetUser",
 			Handler:    _BackendService_GetUser_Handler,
 		},
 		{
 			MethodName: "ListUsers",
 			Handler:    _BackendService_ListUsers_Handler,
-		},
-		{
-			MethodName: "UpdateUser",
-			Handler:    _BackendService_UpdateUser_Handler,
-		},
-		{
-			MethodName: "UpdateUserPassword",
-			Handler:    _BackendService_UpdateUserPassword_Handler,
 		},
 		{
 			MethodName: "ListProjectAPIKeys",

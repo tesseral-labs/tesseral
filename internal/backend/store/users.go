@@ -2,105 +2,96 @@ package store
 
 import (
 	"context"
+	"fmt"
 
+	"github.com/google/uuid"
 	backendv1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
 	"github.com/openauth/openauth/internal/backend/store/queries"
-	"github.com/openauth/openauth/internal/crypto/bcrypt"
+	"github.com/openauth/openauth/internal/projectid"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
-func (s *Store) UpdateUser(ctx context.Context, req *backendv1.UpdateUserRequest) (*backendv1.User, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
+func (s *Store) ListUsers(ctx context.Context, req *backendv1.ListUsersRequest) (*backendv1.ListUsersResponse, error) {
+	_, q, _, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
 	defer rollback()
 
-	userId, err := idformat.User.Parse(req.Id)
+	orgID, err := idformat.Organization.Parse(req.OrganizationId)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("parse organization id: %w", err)
 	}
 
-	organizationId, err := idformat.Organization.Parse(req.User.OrganizationId)
-	if err != nil {
-		return nil, err
+	// authz
+	if _, err := q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
+		ProjectID: projectid.ProjectID(ctx),
+		ID:        orgID,
+	}); err != nil {
+		return nil, fmt.Errorf("get organization: %w", err)
 	}
 
-	updates := queries.UpdateUserParams{
-		ID: userId,
+	var startID uuid.UUID
+	if err := s.pageEncoder.Unmarshal(req.PageToken, &startID); err != nil {
+		return nil, fmt.Errorf("unmarshal page token: %w", err)
 	}
 
-	// Conditionally update organizationID
-	if req.User.OrganizationId != "" {
-		updates.OrganizationID = organizationId
-	}
-
-	// Conditionally update email addresses
-	if req.User.Email != "" {
-		updates.Email = req.User.Email
-	}
-
-	// Conditionally update login method user IDs
-	if req.User.GoogleUserId != "" {
-		updates.GoogleUserID = &req.User.GoogleUserId
-	}
-	if req.User.MicrosoftUserId != "" {
-		updates.MicrosoftUserID = &req.User.MicrosoftUserId
-	}
-
-	// Conditionall update password
-	if req.User.PasswordBcrypt != "" {
-		updates.PasswordBcrypt = &req.User.PasswordBcrypt
-	}
-
-	user, err := q.UpdateUser(ctx, updates)
-	if err != nil {
-		return nil, err
-	}
-
-	if err := commit(); err != nil {
-		return nil, err
-	}
-
-	return parseUser(&user), nil
-}
-
-func (s *Store) UpdateUserPassword(ctx context.Context, req *backendv1.UpdateUserPasswordRequest) (*backendv1.User, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
-	if err != nil {
-		return nil, err
-	}
-	defer rollback()
-
-	userId, err := idformat.User.Parse(req.Id)
-	if err != nil {
-		return nil, err
-	}
-
-	// Bcrypt the password before storing
-	passwordBcrypt, err := bcrypt.GenerateBcryptHash(req.Password)
-	if err != nil {
-		return nil, err
-	}
-
-	user, err := q.UpdateUserPassword(ctx, queries.UpdateUserPasswordParams{
-		ID:             userId,
-		PasswordBcrypt: &passwordBcrypt,
+	limit := 10
+	qUsers, err := q.ListUsers(ctx, queries.ListUsersParams{
+		OrganizationID: orgID,
+		ID:             startID,
+		Limit:          int32(limit + 1),
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("list users: %w", err)
 	}
 
-	if err := commit(); err != nil {
-		return nil, err
+	var users []*backendv1.User
+	for _, qUser := range qUsers {
+		users = append(users, parseUser(qUser))
 	}
 
-	return parseUser(&user), nil
+	var nextPageToken string
+	if len(users) == limit+1 {
+		nextPageToken = s.pageEncoder.Marshal(qUsers[limit].ID)
+		users = users[:limit]
+	}
+
+	return &backendv1.ListUsersResponse{
+		Users:         users,
+		NextPageToken: nextPageToken,
+	}, nil
 }
 
-func parseUser(qUser *queries.User) *backendv1.User {
+func (s *Store) GetUser(ctx context.Context, req *backendv1.GetUserRequest) (*backendv1.GetUserResponse, error) {
+	_, q, _, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	userID, err := idformat.User.Parse(req.Id)
+	if err != nil {
+		return nil, fmt.Errorf("parse user id: %w", err)
+	}
+
+	qUser, err := q.GetUser(ctx, queries.GetUserParams{
+		ProjectID: projectid.ProjectID(ctx),
+		ID:        userID,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("get user: %w", err)
+	}
+
+	return &backendv1.GetUserResponse{User: parseUser(qUser)}, nil
+}
+
+func parseUser(qUser queries.User) *backendv1.User {
 	return &backendv1.User{
-		Id:             idformat.User.Format(qUser.ID),
-		OrganizationId: idformat.Organization.Format(qUser.OrganizationID),
+		Id:              idformat.User.Format(qUser.ID),
+		OrganizationId:  idformat.Organization.Format(qUser.OrganizationID),
+		Email:           qUser.Email,
+		GoogleUserId:    derefOrEmpty(qUser.GoogleUserID),
+		MicrosoftUserId: derefOrEmpty(qUser.MicrosoftUserID),
 	}
 }
