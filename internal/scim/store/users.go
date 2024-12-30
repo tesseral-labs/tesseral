@@ -157,9 +157,9 @@ func (s *Store) CreateUser(ctx context.Context, user User) (User, error) {
 		return nil, fmt.Errorf("parse user: %w", err)
 	}
 
-	//if err := s.validateEmailDomain(ctx, q, parsed.UserName); err != nil {
-	//	return nil, fmt.Errorf("validate email domain: %w", err)
-	//}
+	if err := s.validateEmailDomain(ctx, q, parsed.UserName); err != nil {
+		return nil, fmt.Errorf("validate email domain: %w", err)
+	}
 
 	qUser, err := q.CreateUser(ctx, queries.CreateUserParams{
 		ID:             uuid.New(),
@@ -194,9 +194,9 @@ func (s *Store) UpdateUser(ctx context.Context, id string, user User) (User, err
 		return nil, fmt.Errorf("parse user: %w", err)
 	}
 
-	//if err := s.validateEmailDomain(ctx, q, parsed.UserName); err != nil {
-	//	return nil, fmt.Errorf("validate email domain: %w", err)
-	//}
+	if err := s.validateEmailDomain(ctx, q, parsed.UserName); err != nil {
+		return nil, fmt.Errorf("validate email domain: %w", err)
+	}
 
 	// todo do we care about this bumping deactivate_time any time an update happens to the user?
 	var deactivateTime *time.Time
@@ -290,10 +290,9 @@ func (s *Store) PatchUser(ctx context.Context, id string, operations PatchOperat
 		parsed.UserName = qUser.Email
 	}
 
-	// save that new state
-	//if err := s.validateEmailDomain(ctx, q, parsed.UserName); err != nil {
-	//	return nil, fmt.Errorf("validate email domain: %w", err)
-	//}
+	if err := s.validateEmailDomain(ctx, q, parsed.UserName); err != nil {
+		return nil, fmt.Errorf("validate email domain: %w", err)
+	}
 
 	// todo do we care about this bumping deactivate_time any time an update happens to the user?
 	var deactivateTime *time.Time
