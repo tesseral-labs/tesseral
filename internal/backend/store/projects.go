@@ -39,6 +39,11 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 		ID: qProject.ID,
 	}
 
+	updates.DisplayName = qProject.DisplayName
+	if req.Project.DisplayName != "" {
+		updates.DisplayName = req.Project.DisplayName
+	}
+
 	updates.GoogleOauthClientID = qProject.GoogleOauthClientID
 	if req.Project.GoogleOauthClientId != "" {
 		updates.GoogleOauthClientID = &req.Project.GoogleOauthClientId
