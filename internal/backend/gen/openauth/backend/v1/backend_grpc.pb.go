@@ -19,19 +19,24 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	BackendService_GetProject_FullMethodName          = "/openauth.backend.v1.BackendService/GetProject"
-	BackendService_UpdateProject_FullMethodName       = "/openauth.backend.v1.BackendService/UpdateProject"
-	BackendService_ListOrganizations_FullMethodName   = "/openauth.backend.v1.BackendService/ListOrganizations"
-	BackendService_GetOrganization_FullMethodName     = "/openauth.backend.v1.BackendService/GetOrganization"
-	BackendService_CreateOrganization_FullMethodName  = "/openauth.backend.v1.BackendService/CreateOrganization"
-	BackendService_UpdateOrganization_FullMethodName  = "/openauth.backend.v1.BackendService/UpdateOrganization"
-	BackendService_DeleteOrganization_FullMethodName  = "/openauth.backend.v1.BackendService/DeleteOrganization"
-	BackendService_CreateUser_FullMethodName          = "/openauth.backend.v1.BackendService/CreateUser"
-	BackendService_GetUser_FullMethodName             = "/openauth.backend.v1.BackendService/GetUser"
-	BackendService_ListUsers_FullMethodName           = "/openauth.backend.v1.BackendService/ListUsers"
-	BackendService_UpdateUser_FullMethodName          = "/openauth.backend.v1.BackendService/UpdateUser"
-	BackendService_UpdateUserPassword_FullMethodName  = "/openauth.backend.v1.BackendService/UpdateUserPassword"
-	BackendService_CreateProjectAPIKey_FullMethodName = "/openauth.backend.v1.BackendService/CreateProjectAPIKey"
+	BackendService_GetProject_FullMethodName           = "/openauth.backend.v1.BackendService/GetProject"
+	BackendService_UpdateProject_FullMethodName        = "/openauth.backend.v1.BackendService/UpdateProject"
+	BackendService_ListOrganizations_FullMethodName    = "/openauth.backend.v1.BackendService/ListOrganizations"
+	BackendService_GetOrganization_FullMethodName      = "/openauth.backend.v1.BackendService/GetOrganization"
+	BackendService_CreateOrganization_FullMethodName   = "/openauth.backend.v1.BackendService/CreateOrganization"
+	BackendService_UpdateOrganization_FullMethodName   = "/openauth.backend.v1.BackendService/UpdateOrganization"
+	BackendService_DeleteOrganization_FullMethodName   = "/openauth.backend.v1.BackendService/DeleteOrganization"
+	BackendService_ListSAMLConnections_FullMethodName  = "/openauth.backend.v1.BackendService/ListSAMLConnections"
+	BackendService_GetSAMLConnection_FullMethodName    = "/openauth.backend.v1.BackendService/GetSAMLConnection"
+	BackendService_CreateSAMLConnection_FullMethodName = "/openauth.backend.v1.BackendService/CreateSAMLConnection"
+	BackendService_UpdateSAMLConnection_FullMethodName = "/openauth.backend.v1.BackendService/UpdateSAMLConnection"
+	BackendService_DeleteSAMLConnection_FullMethodName = "/openauth.backend.v1.BackendService/DeleteSAMLConnection"
+	BackendService_CreateUser_FullMethodName           = "/openauth.backend.v1.BackendService/CreateUser"
+	BackendService_GetUser_FullMethodName              = "/openauth.backend.v1.BackendService/GetUser"
+	BackendService_ListUsers_FullMethodName            = "/openauth.backend.v1.BackendService/ListUsers"
+	BackendService_UpdateUser_FullMethodName           = "/openauth.backend.v1.BackendService/UpdateUser"
+	BackendService_UpdateUserPassword_FullMethodName   = "/openauth.backend.v1.BackendService/UpdateUserPassword"
+	BackendService_CreateProjectAPIKey_FullMethodName  = "/openauth.backend.v1.BackendService/CreateProjectAPIKey"
 )
 
 // BackendServiceClient is the client API for BackendService service.
@@ -45,6 +50,11 @@ type BackendServiceClient interface {
 	CreateOrganization(ctx context.Context, in *CreateOrganizationRequest, opts ...grpc.CallOption) (*CreateOrganizationResponse, error)
 	UpdateOrganization(ctx context.Context, in *UpdateOrganizationRequest, opts ...grpc.CallOption) (*UpdateOrganizationResponse, error)
 	DeleteOrganization(ctx context.Context, in *DeleteOrganizationRequest, opts ...grpc.CallOption) (*DeleteOrganizationResponse, error)
+	ListSAMLConnections(ctx context.Context, in *ListSAMLConnectionsRequest, opts ...grpc.CallOption) (*ListSAMLConnectionsResponse, error)
+	GetSAMLConnection(ctx context.Context, in *GetSAMLConnectionRequest, opts ...grpc.CallOption) (*GetSAMLConnectionResponse, error)
+	CreateSAMLConnection(ctx context.Context, in *CreateSAMLConnectionRequest, opts ...grpc.CallOption) (*CreateSAMLConnectionResponse, error)
+	UpdateSAMLConnection(ctx context.Context, in *UpdateSAMLConnectionRequest, opts ...grpc.CallOption) (*UpdateSAMLConnectionResponse, error)
+	DeleteSAMLConnection(ctx context.Context, in *DeleteSAMLConnectionRequest, opts ...grpc.CallOption) (*DeleteSAMLConnectionResponse, error)
 	// Creates a user.
 	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*User, error)
 	// Gets a user.
@@ -136,6 +146,56 @@ func (c *backendServiceClient) DeleteOrganization(ctx context.Context, in *Delet
 	return out, nil
 }
 
+func (c *backendServiceClient) ListSAMLConnections(ctx context.Context, in *ListSAMLConnectionsRequest, opts ...grpc.CallOption) (*ListSAMLConnectionsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListSAMLConnectionsResponse)
+	err := c.cc.Invoke(ctx, BackendService_ListSAMLConnections_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) GetSAMLConnection(ctx context.Context, in *GetSAMLConnectionRequest, opts ...grpc.CallOption) (*GetSAMLConnectionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetSAMLConnectionResponse)
+	err := c.cc.Invoke(ctx, BackendService_GetSAMLConnection_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) CreateSAMLConnection(ctx context.Context, in *CreateSAMLConnectionRequest, opts ...grpc.CallOption) (*CreateSAMLConnectionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateSAMLConnectionResponse)
+	err := c.cc.Invoke(ctx, BackendService_CreateSAMLConnection_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) UpdateSAMLConnection(ctx context.Context, in *UpdateSAMLConnectionRequest, opts ...grpc.CallOption) (*UpdateSAMLConnectionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateSAMLConnectionResponse)
+	err := c.cc.Invoke(ctx, BackendService_UpdateSAMLConnection_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) DeleteSAMLConnection(ctx context.Context, in *DeleteSAMLConnectionRequest, opts ...grpc.CallOption) (*DeleteSAMLConnectionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteSAMLConnectionResponse)
+	err := c.cc.Invoke(ctx, BackendService_DeleteSAMLConnection_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *backendServiceClient) CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*User, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(User)
@@ -207,6 +267,11 @@ type BackendServiceServer interface {
 	CreateOrganization(context.Context, *CreateOrganizationRequest) (*CreateOrganizationResponse, error)
 	UpdateOrganization(context.Context, *UpdateOrganizationRequest) (*UpdateOrganizationResponse, error)
 	DeleteOrganization(context.Context, *DeleteOrganizationRequest) (*DeleteOrganizationResponse, error)
+	ListSAMLConnections(context.Context, *ListSAMLConnectionsRequest) (*ListSAMLConnectionsResponse, error)
+	GetSAMLConnection(context.Context, *GetSAMLConnectionRequest) (*GetSAMLConnectionResponse, error)
+	CreateSAMLConnection(context.Context, *CreateSAMLConnectionRequest) (*CreateSAMLConnectionResponse, error)
+	UpdateSAMLConnection(context.Context, *UpdateSAMLConnectionRequest) (*UpdateSAMLConnectionResponse, error)
+	DeleteSAMLConnection(context.Context, *DeleteSAMLConnectionRequest) (*DeleteSAMLConnectionResponse, error)
 	// Creates a user.
 	CreateUser(context.Context, *CreateUserRequest) (*User, error)
 	// Gets a user.
@@ -248,6 +313,21 @@ func (UnimplementedBackendServiceServer) UpdateOrganization(context.Context, *Up
 }
 func (UnimplementedBackendServiceServer) DeleteOrganization(context.Context, *DeleteOrganizationRequest) (*DeleteOrganizationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteOrganization not implemented")
+}
+func (UnimplementedBackendServiceServer) ListSAMLConnections(context.Context, *ListSAMLConnectionsRequest) (*ListSAMLConnectionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListSAMLConnections not implemented")
+}
+func (UnimplementedBackendServiceServer) GetSAMLConnection(context.Context, *GetSAMLConnectionRequest) (*GetSAMLConnectionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSAMLConnection not implemented")
+}
+func (UnimplementedBackendServiceServer) CreateSAMLConnection(context.Context, *CreateSAMLConnectionRequest) (*CreateSAMLConnectionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateSAMLConnection not implemented")
+}
+func (UnimplementedBackendServiceServer) UpdateSAMLConnection(context.Context, *UpdateSAMLConnectionRequest) (*UpdateSAMLConnectionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateSAMLConnection not implemented")
+}
+func (UnimplementedBackendServiceServer) DeleteSAMLConnection(context.Context, *DeleteSAMLConnectionRequest) (*DeleteSAMLConnectionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteSAMLConnection not implemented")
 }
 func (UnimplementedBackendServiceServer) CreateUser(context.Context, *CreateUserRequest) (*User, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
@@ -414,6 +494,96 @@ func _BackendService_DeleteOrganization_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BackendService_ListSAMLConnections_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListSAMLConnectionsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).ListSAMLConnections(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_ListSAMLConnections_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).ListSAMLConnections(ctx, req.(*ListSAMLConnectionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_GetSAMLConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetSAMLConnectionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).GetSAMLConnection(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_GetSAMLConnection_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).GetSAMLConnection(ctx, req.(*GetSAMLConnectionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_CreateSAMLConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateSAMLConnectionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).CreateSAMLConnection(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_CreateSAMLConnection_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).CreateSAMLConnection(ctx, req.(*CreateSAMLConnectionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_UpdateSAMLConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateSAMLConnectionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).UpdateSAMLConnection(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_UpdateSAMLConnection_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).UpdateSAMLConnection(ctx, req.(*UpdateSAMLConnectionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_DeleteSAMLConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteSAMLConnectionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).DeleteSAMLConnection(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_DeleteSAMLConnection_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).DeleteSAMLConnection(ctx, req.(*DeleteSAMLConnectionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _BackendService_CreateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateUserRequest)
 	if err := dec(in); err != nil {
@@ -556,6 +726,26 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteOrganization",
 			Handler:    _BackendService_DeleteOrganization_Handler,
+		},
+		{
+			MethodName: "ListSAMLConnections",
+			Handler:    _BackendService_ListSAMLConnections_Handler,
+		},
+		{
+			MethodName: "GetSAMLConnection",
+			Handler:    _BackendService_GetSAMLConnection_Handler,
+		},
+		{
+			MethodName: "CreateSAMLConnection",
+			Handler:    _BackendService_CreateSAMLConnection_Handler,
+		},
+		{
+			MethodName: "UpdateSAMLConnection",
+			Handler:    _BackendService_UpdateSAMLConnection_Handler,
+		},
+		{
+			MethodName: "DeleteSAMLConnection",
+			Handler:    _BackendService_DeleteSAMLConnection_Handler,
 		},
 		{
 			MethodName: "CreateUser",

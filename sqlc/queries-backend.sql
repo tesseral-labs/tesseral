@@ -128,3 +128,56 @@ WHERE
 RETURNING
     *;
 
+-- name: ListSAMLConnections :many
+SELECT
+    *
+FROM
+    saml_connections
+WHERE
+    organization_id = $1
+    AND id >= $2
+ORDER BY
+    id
+LIMIT $3;
+
+-- name: GetSAMLConnection :one
+SELECT
+    saml_connections.*
+FROM
+    saml_connections
+    JOIN organizations ON saml_connections.organization_id = organizations.id
+WHERE
+    saml_connections.id = $1
+    AND organizations.project_id = $2;
+
+-- name: CreateSAMLConnection :one
+INSERT INTO saml_connections (id, organization_id, is_primary, idp_redirect_url, idp_x509_certificate, idp_entity_id)
+    VALUES ($1, $2, $3, $4, $5, $6)
+RETURNING
+    *;
+
+-- name: UpdatePrimarySAMLConnection :exec
+UPDATE
+    saml_connections
+SET
+    is_primary = (id = $1)
+WHERE
+    organization_id = $2;
+
+-- name: UpdateSAMLConnection :one
+UPDATE
+    saml_connections
+SET
+    is_primary = $1,
+    idp_redirect_url = $2,
+    idp_x509_certificate = $3,
+    idp_entity_id = $4
+WHERE
+    id = $5
+RETURNING
+    *;
+
+-- name: DeleteSAMLConnection :exec
+DELETE FROM saml_connections
+WHERE id = $1;
+

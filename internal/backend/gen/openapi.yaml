@@ -173,6 +173,132 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /backend/v1/saml-connections:
+        get:
+            tags:
+                - BackendService
+            operationId: BackendService_ListSAMLConnections
+            parameters:
+                - name: organizationId
+                  in: query
+                  schema:
+                    type: string
+                - name: pageToken
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListSAMLConnectionsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - BackendService
+            operationId: BackendService_CreateSAMLConnection
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/SAMLConnection'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateSAMLConnectionResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /backend/v1/saml-connections/{id}:
+        get:
+            tags:
+                - BackendService
+            operationId: BackendService_GetSAMLConnection
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetSAMLConnectionResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        delete:
+            tags:
+                - BackendService
+            operationId: BackendService_DeleteSAMLConnection
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DeleteSAMLConnectionResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        patch:
+            tags:
+                - BackendService
+            operationId: BackendService_UpdateSAMLConnection
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/SAMLConnection'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateSAMLConnectionResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /backend/v1/users:
         get:
             tags:
@@ -323,7 +449,15 @@ components:
             properties:
                 organization:
                     $ref: '#/components/schemas/Organization'
+        CreateSAMLConnectionResponse:
+            type: object
+            properties:
+                samlConnection:
+                    $ref: '#/components/schemas/SAMLConnection'
         DeleteOrganizationResponse:
+            type: object
+            properties: {}
+        DeleteSAMLConnectionResponse:
             type: object
             properties: {}
         GetOrganizationResponse:
@@ -336,6 +470,11 @@ components:
             properties:
                 project:
                     $ref: '#/components/schemas/Project'
+        GetSAMLConnectionResponse:
+            type: object
+            properties:
+                samlConnection:
+                    $ref: '#/components/schemas/SAMLConnection'
         GoogleProtobufAny:
             type: object
             properties:
@@ -351,6 +490,15 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/Organization'
+                nextPageToken:
+                    type: string
+        ListSAMLConnectionsResponse:
+            type: object
+            properties:
+                samlConnections:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/SAMLConnection'
                 nextPageToken:
                     type: string
         ListUsersResponse:
@@ -406,6 +554,25 @@ components:
                     type: string
                 microsoftOauthClientSecret:
                     type: string
+        SAMLConnection:
+            type: object
+            properties:
+                id:
+                    type: string
+                organizationId:
+                    type: string
+                primary:
+                    type: boolean
+                spAcsUrl:
+                    type: string
+                spEntityId:
+                    type: string
+                idpRedirectUrl:
+                    type: string
+                idpX509Certificate:
+                    type: string
+                idpEntityId:
+                    type: string
         Status:
             type: object
             properties:
@@ -432,6 +599,11 @@ components:
             properties:
                 project:
                     $ref: '#/components/schemas/Project'
+        UpdateSAMLConnectionResponse:
+            type: object
+            properties:
+                samlConnection:
+                    $ref: '#/components/schemas/SAMLConnection'
         UpdateUserPasswordRequest:
             type: object
             properties:
