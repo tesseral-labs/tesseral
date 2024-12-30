@@ -233,3 +233,54 @@ WHERE
 RETURNING
     *;
 
+-- name: ListProjectAPIKeys :many
+SELECT
+    *
+FROM
+    project_api_keys
+WHERE
+    project_id = $1
+    AND id >= $2
+ORDER BY
+    id
+LIMIT $3;
+
+-- name: GetProjectAPIKey :one
+SELECT
+    *
+FROM
+    project_api_keys
+WHERE
+    id = $1
+    AND project_id = $2;
+
+-- name: CreateProjectAPIKey :one
+INSERT INTO project_api_keys (id, project_id, display_name, secret_token_sha256)
+    VALUES ($1, $2, $3, $4)
+RETURNING
+    *;
+
+-- name: UpdateProjectAPIKey :one
+UPDATE
+    project_api_keys
+SET
+    display_name = $1
+WHERE
+    id = $2
+RETURNING
+    *;
+
+-- name: DeleteProjectAPIKey :exec
+DELETE FROM project_api_keys
+WHERE id = $1;
+
+-- name: RevokeProjectAPIKey :one
+UPDATE
+    project_api_keys
+SET
+    secret_token_sha256 = NULL
+WHERE
+    id = $1
+RETURNING
+    *;
+
