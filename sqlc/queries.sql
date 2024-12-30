@@ -138,8 +138,8 @@ FROM
     projects;
 
 -- name: CreateProjectAPIKey :one
-INSERT INTO project_api_keys (id, project_id, create_time, revoked, secret_token_sha256)
-    VALUES ($1, $2, $3, $4, $5)
+INSERT INTO project_api_keys (id, project_id, secret_token_sha256, display_name)
+    VALUES ($1, $2, $3, $4)
 RETURNING
     *;
 

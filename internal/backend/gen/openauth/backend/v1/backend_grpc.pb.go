@@ -42,7 +42,12 @@ const (
 	BackendService_ListUsers_FullMethodName            = "/openauth.backend.v1.BackendService/ListUsers"
 	BackendService_UpdateUser_FullMethodName           = "/openauth.backend.v1.BackendService/UpdateUser"
 	BackendService_UpdateUserPassword_FullMethodName   = "/openauth.backend.v1.BackendService/UpdateUserPassword"
+	BackendService_ListProjectAPIKeys_FullMethodName   = "/openauth.backend.v1.BackendService/ListProjectAPIKeys"
+	BackendService_GetProjectAPIKey_FullMethodName     = "/openauth.backend.v1.BackendService/GetProjectAPIKey"
 	BackendService_CreateProjectAPIKey_FullMethodName  = "/openauth.backend.v1.BackendService/CreateProjectAPIKey"
+	BackendService_UpdateProjectAPIKey_FullMethodName  = "/openauth.backend.v1.BackendService/UpdateProjectAPIKey"
+	BackendService_DeleteProjectAPIKey_FullMethodName  = "/openauth.backend.v1.BackendService/DeleteProjectAPIKey"
+	BackendService_RevokeProjectAPIKey_FullMethodName  = "/openauth.backend.v1.BackendService/RevokeProjectAPIKey"
 )
 
 // BackendServiceClient is the client API for BackendService service.
@@ -77,7 +82,12 @@ type BackendServiceClient interface {
 	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*User, error)
 	// Updates a user's password.
 	UpdateUserPassword(ctx context.Context, in *UpdateUserPasswordRequest, opts ...grpc.CallOption) (*User, error)
+	ListProjectAPIKeys(ctx context.Context, in *ListProjectAPIKeysRequest, opts ...grpc.CallOption) (*ListProjectAPIKeysResponse, error)
+	GetProjectAPIKey(ctx context.Context, in *GetProjectAPIKeyRequest, opts ...grpc.CallOption) (*GetProjectAPIKeyResponse, error)
 	CreateProjectAPIKey(ctx context.Context, in *CreateProjectAPIKeyRequest, opts ...grpc.CallOption) (*CreateProjectAPIKeyResponse, error)
+	UpdateProjectAPIKey(ctx context.Context, in *UpdateProjectAPIKeyRequest, opts ...grpc.CallOption) (*UpdateProjectAPIKeyResponse, error)
+	DeleteProjectAPIKey(ctx context.Context, in *DeleteProjectAPIKeyRequest, opts ...grpc.CallOption) (*DeleteProjectAPIKeyResponse, error)
+	RevokeProjectAPIKey(ctx context.Context, in *RevokeProjectAPIKeyRequest, opts ...grpc.CallOption) (*RevokeProjectAPIKeyResponse, error)
 }
 
 type backendServiceClient struct {
@@ -318,10 +328,60 @@ func (c *backendServiceClient) UpdateUserPassword(ctx context.Context, in *Updat
 	return out, nil
 }
 
+func (c *backendServiceClient) ListProjectAPIKeys(ctx context.Context, in *ListProjectAPIKeysRequest, opts ...grpc.CallOption) (*ListProjectAPIKeysResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListProjectAPIKeysResponse)
+	err := c.cc.Invoke(ctx, BackendService_ListProjectAPIKeys_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) GetProjectAPIKey(ctx context.Context, in *GetProjectAPIKeyRequest, opts ...grpc.CallOption) (*GetProjectAPIKeyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetProjectAPIKeyResponse)
+	err := c.cc.Invoke(ctx, BackendService_GetProjectAPIKey_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *backendServiceClient) CreateProjectAPIKey(ctx context.Context, in *CreateProjectAPIKeyRequest, opts ...grpc.CallOption) (*CreateProjectAPIKeyResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CreateProjectAPIKeyResponse)
 	err := c.cc.Invoke(ctx, BackendService_CreateProjectAPIKey_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) UpdateProjectAPIKey(ctx context.Context, in *UpdateProjectAPIKeyRequest, opts ...grpc.CallOption) (*UpdateProjectAPIKeyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateProjectAPIKeyResponse)
+	err := c.cc.Invoke(ctx, BackendService_UpdateProjectAPIKey_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) DeleteProjectAPIKey(ctx context.Context, in *DeleteProjectAPIKeyRequest, opts ...grpc.CallOption) (*DeleteProjectAPIKeyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteProjectAPIKeyResponse)
+	err := c.cc.Invoke(ctx, BackendService_DeleteProjectAPIKey_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) RevokeProjectAPIKey(ctx context.Context, in *RevokeProjectAPIKeyRequest, opts ...grpc.CallOption) (*RevokeProjectAPIKeyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RevokeProjectAPIKeyResponse)
+	err := c.cc.Invoke(ctx, BackendService_RevokeProjectAPIKey_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -360,7 +420,12 @@ type BackendServiceServer interface {
 	UpdateUser(context.Context, *UpdateUserRequest) (*User, error)
 	// Updates a user's password.
 	UpdateUserPassword(context.Context, *UpdateUserPasswordRequest) (*User, error)
+	ListProjectAPIKeys(context.Context, *ListProjectAPIKeysRequest) (*ListProjectAPIKeysResponse, error)
+	GetProjectAPIKey(context.Context, *GetProjectAPIKeyRequest) (*GetProjectAPIKeyResponse, error)
 	CreateProjectAPIKey(context.Context, *CreateProjectAPIKeyRequest) (*CreateProjectAPIKeyResponse, error)
+	UpdateProjectAPIKey(context.Context, *UpdateProjectAPIKeyRequest) (*UpdateProjectAPIKeyResponse, error)
+	DeleteProjectAPIKey(context.Context, *DeleteProjectAPIKeyRequest) (*DeleteProjectAPIKeyResponse, error)
+	RevokeProjectAPIKey(context.Context, *RevokeProjectAPIKeyRequest) (*RevokeProjectAPIKeyResponse, error)
 	mustEmbedUnimplementedBackendServiceServer()
 }
 
@@ -440,8 +505,23 @@ func (UnimplementedBackendServiceServer) UpdateUser(context.Context, *UpdateUser
 func (UnimplementedBackendServiceServer) UpdateUserPassword(context.Context, *UpdateUserPasswordRequest) (*User, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUserPassword not implemented")
 }
+func (UnimplementedBackendServiceServer) ListProjectAPIKeys(context.Context, *ListProjectAPIKeysRequest) (*ListProjectAPIKeysResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListProjectAPIKeys not implemented")
+}
+func (UnimplementedBackendServiceServer) GetProjectAPIKey(context.Context, *GetProjectAPIKeyRequest) (*GetProjectAPIKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetProjectAPIKey not implemented")
+}
 func (UnimplementedBackendServiceServer) CreateProjectAPIKey(context.Context, *CreateProjectAPIKeyRequest) (*CreateProjectAPIKeyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateProjectAPIKey not implemented")
+}
+func (UnimplementedBackendServiceServer) UpdateProjectAPIKey(context.Context, *UpdateProjectAPIKeyRequest) (*UpdateProjectAPIKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateProjectAPIKey not implemented")
+}
+func (UnimplementedBackendServiceServer) DeleteProjectAPIKey(context.Context, *DeleteProjectAPIKeyRequest) (*DeleteProjectAPIKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteProjectAPIKey not implemented")
+}
+func (UnimplementedBackendServiceServer) RevokeProjectAPIKey(context.Context, *RevokeProjectAPIKeyRequest) (*RevokeProjectAPIKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RevokeProjectAPIKey not implemented")
 }
 func (UnimplementedBackendServiceServer) mustEmbedUnimplementedBackendServiceServer() {}
 func (UnimplementedBackendServiceServer) testEmbeddedByValue()                        {}
@@ -878,6 +958,42 @@ func _BackendService_UpdateUserPassword_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BackendService_ListProjectAPIKeys_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListProjectAPIKeysRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).ListProjectAPIKeys(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_ListProjectAPIKeys_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).ListProjectAPIKeys(ctx, req.(*ListProjectAPIKeysRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_GetProjectAPIKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetProjectAPIKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).GetProjectAPIKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_GetProjectAPIKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).GetProjectAPIKey(ctx, req.(*GetProjectAPIKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _BackendService_CreateProjectAPIKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateProjectAPIKeyRequest)
 	if err := dec(in); err != nil {
@@ -892,6 +1008,60 @@ func _BackendService_CreateProjectAPIKey_Handler(srv interface{}, ctx context.Co
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(BackendServiceServer).CreateProjectAPIKey(ctx, req.(*CreateProjectAPIKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_UpdateProjectAPIKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateProjectAPIKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).UpdateProjectAPIKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_UpdateProjectAPIKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).UpdateProjectAPIKey(ctx, req.(*UpdateProjectAPIKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_DeleteProjectAPIKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteProjectAPIKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).DeleteProjectAPIKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_DeleteProjectAPIKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).DeleteProjectAPIKey(ctx, req.(*DeleteProjectAPIKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_RevokeProjectAPIKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RevokeProjectAPIKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).RevokeProjectAPIKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_RevokeProjectAPIKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).RevokeProjectAPIKey(ctx, req.(*RevokeProjectAPIKeyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -996,8 +1166,28 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _BackendService_UpdateUserPassword_Handler,
 		},
 		{
+			MethodName: "ListProjectAPIKeys",
+			Handler:    _BackendService_ListProjectAPIKeys_Handler,
+		},
+		{
+			MethodName: "GetProjectAPIKey",
+			Handler:    _BackendService_GetProjectAPIKey_Handler,
+		},
+		{
 			MethodName: "CreateProjectAPIKey",
 			Handler:    _BackendService_CreateProjectAPIKey_Handler,
+		},
+		{
+			MethodName: "UpdateProjectAPIKey",
+			Handler:    _BackendService_UpdateProjectAPIKey_Handler,
+		},
+		{
+			MethodName: "DeleteProjectAPIKey",
+			Handler:    _BackendService_DeleteProjectAPIKey_Handler,
+		},
+		{
+			MethodName: "RevokeProjectAPIKey",
+			Handler:    _BackendService_RevokeProjectAPIKey_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

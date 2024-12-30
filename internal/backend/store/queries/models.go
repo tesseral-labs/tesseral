@@ -125,9 +125,8 @@ type Project struct {
 type ProjectApiKey struct {
 	ID                uuid.UUID
 	ProjectID         uuid.UUID
-	CreateTime        *time.Time
-	Revoked           bool
 	SecretTokenSha256 []byte
+	DisplayName       string
 }
 
 type SamlConnection struct {
