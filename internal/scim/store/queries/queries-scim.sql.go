@@ -58,6 +58,41 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 	return i, err
 }
 
+const deactivateUser = `-- name: DeactivateUser :one
+UPDATE
+    users
+SET
+    deactivate_time = $1
+WHERE
+    id = $2
+    AND organization_id = $3
+RETURNING
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time
+`
+
+type DeactivateUserParams struct {
+	DeactivateTime *time.Time
+	ID             uuid.UUID
+	OrganizationID uuid.UUID
+}
+
+func (q *Queries) DeactivateUser(ctx context.Context, arg DeactivateUserParams) (User, error) {
+	row := q.db.QueryRow(ctx, deactivateUser, arg.DeactivateTime, arg.ID, arg.OrganizationID)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.PasswordBcrypt,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+		&i.Email,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.DeactivateTime,
+	)
+	return i, err
+}
+
 const getOrganizationDomains = `-- name: GetOrganizationDomains :many
 SELECT
     DOMAIN
