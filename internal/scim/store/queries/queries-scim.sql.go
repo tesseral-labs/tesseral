@@ -124,7 +124,7 @@ func (q *Queries) GetOrganizationDomains(ctx context.Context, organizationID uui
 
 const getSCIMAPIKeyByTokenSHA256 = `-- name: GetSCIMAPIKeyByTokenSHA256 :one
 SELECT
-    scim_api_keys.id, scim_api_keys.organization_id, scim_api_keys.create_time, scim_api_keys.revoke_time, scim_api_keys.token_sha256
+    scim_api_keys.id, scim_api_keys.organization_id, scim_api_keys.token_sha256, scim_api_keys.display_name
 FROM
     scim_api_keys
     JOIN organizations ON scim_api_keys.organization_id = organizations.id
@@ -144,9 +144,8 @@ func (q *Queries) GetSCIMAPIKeyByTokenSHA256(ctx context.Context, arg GetSCIMAPI
 	err := row.Scan(
 		&i.ID,
 		&i.OrganizationID,
-		&i.CreateTime,
-		&i.RevokeTime,
 		&i.TokenSha256,
+		&i.DisplayName,
 	)
 	return i, err
 }

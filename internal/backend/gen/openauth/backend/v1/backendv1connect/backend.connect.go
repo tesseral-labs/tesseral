@@ -69,6 +69,24 @@ const (
 	// BackendServiceDeleteSAMLConnectionProcedure is the fully-qualified name of the BackendService's
 	// DeleteSAMLConnection RPC.
 	BackendServiceDeleteSAMLConnectionProcedure = "/openauth.backend.v1.BackendService/DeleteSAMLConnection"
+	// BackendServiceListSCIMAPIKeysProcedure is the fully-qualified name of the BackendService's
+	// ListSCIMAPIKeys RPC.
+	BackendServiceListSCIMAPIKeysProcedure = "/openauth.backend.v1.BackendService/ListSCIMAPIKeys"
+	// BackendServiceGetSCIMAPIKeyProcedure is the fully-qualified name of the BackendService's
+	// GetSCIMAPIKey RPC.
+	BackendServiceGetSCIMAPIKeyProcedure = "/openauth.backend.v1.BackendService/GetSCIMAPIKey"
+	// BackendServiceCreateSCIMAPIKeyProcedure is the fully-qualified name of the BackendService's
+	// CreateSCIMAPIKey RPC.
+	BackendServiceCreateSCIMAPIKeyProcedure = "/openauth.backend.v1.BackendService/CreateSCIMAPIKey"
+	// BackendServiceUpdateSCIMAPIKeyProcedure is the fully-qualified name of the BackendService's
+	// UpdateSCIMAPIKey RPC.
+	BackendServiceUpdateSCIMAPIKeyProcedure = "/openauth.backend.v1.BackendService/UpdateSCIMAPIKey"
+	// BackendServiceDeleteSCIMAPIKeyProcedure is the fully-qualified name of the BackendService's
+	// DeleteSCIMAPIKey RPC.
+	BackendServiceDeleteSCIMAPIKeyProcedure = "/openauth.backend.v1.BackendService/DeleteSCIMAPIKey"
+	// BackendServiceRevokeSCIMAPIKeyProcedure is the fully-qualified name of the BackendService's
+	// RevokeSCIMAPIKey RPC.
+	BackendServiceRevokeSCIMAPIKeyProcedure = "/openauth.backend.v1.BackendService/RevokeSCIMAPIKey"
 	// BackendServiceCreateUserProcedure is the fully-qualified name of the BackendService's CreateUser
 	// RPC.
 	BackendServiceCreateUserProcedure = "/openauth.backend.v1.BackendService/CreateUser"
@@ -103,6 +121,12 @@ var (
 	backendServiceCreateSAMLConnectionMethodDescriptor = backendServiceServiceDescriptor.Methods().ByName("CreateSAMLConnection")
 	backendServiceUpdateSAMLConnectionMethodDescriptor = backendServiceServiceDescriptor.Methods().ByName("UpdateSAMLConnection")
 	backendServiceDeleteSAMLConnectionMethodDescriptor = backendServiceServiceDescriptor.Methods().ByName("DeleteSAMLConnection")
+	backendServiceListSCIMAPIKeysMethodDescriptor      = backendServiceServiceDescriptor.Methods().ByName("ListSCIMAPIKeys")
+	backendServiceGetSCIMAPIKeyMethodDescriptor        = backendServiceServiceDescriptor.Methods().ByName("GetSCIMAPIKey")
+	backendServiceCreateSCIMAPIKeyMethodDescriptor     = backendServiceServiceDescriptor.Methods().ByName("CreateSCIMAPIKey")
+	backendServiceUpdateSCIMAPIKeyMethodDescriptor     = backendServiceServiceDescriptor.Methods().ByName("UpdateSCIMAPIKey")
+	backendServiceDeleteSCIMAPIKeyMethodDescriptor     = backendServiceServiceDescriptor.Methods().ByName("DeleteSCIMAPIKey")
+	backendServiceRevokeSCIMAPIKeyMethodDescriptor     = backendServiceServiceDescriptor.Methods().ByName("RevokeSCIMAPIKey")
 	backendServiceCreateUserMethodDescriptor           = backendServiceServiceDescriptor.Methods().ByName("CreateUser")
 	backendServiceGetUserMethodDescriptor              = backendServiceServiceDescriptor.Methods().ByName("GetUser")
 	backendServiceListUsersMethodDescriptor            = backendServiceServiceDescriptor.Methods().ByName("ListUsers")
@@ -125,6 +149,12 @@ type BackendServiceClient interface {
 	CreateSAMLConnection(context.Context, *connect.Request[v1.CreateSAMLConnectionRequest]) (*connect.Response[v1.CreateSAMLConnectionResponse], error)
 	UpdateSAMLConnection(context.Context, *connect.Request[v1.UpdateSAMLConnectionRequest]) (*connect.Response[v1.UpdateSAMLConnectionResponse], error)
 	DeleteSAMLConnection(context.Context, *connect.Request[v1.DeleteSAMLConnectionRequest]) (*connect.Response[v1.DeleteSAMLConnectionResponse], error)
+	ListSCIMAPIKeys(context.Context, *connect.Request[v1.ListSCIMAPIKeysRequest]) (*connect.Response[v1.ListSCIMAPIKeysResponse], error)
+	GetSCIMAPIKey(context.Context, *connect.Request[v1.GetSCIMAPIKeyRequest]) (*connect.Response[v1.GetSCIMAPIKeyResponse], error)
+	CreateSCIMAPIKey(context.Context, *connect.Request[v1.CreateSCIMAPIKeyRequest]) (*connect.Response[v1.CreateSCIMAPIKeyResponse], error)
+	UpdateSCIMAPIKey(context.Context, *connect.Request[v1.UpdateSCIMAPIKeyRequest]) (*connect.Response[v1.UpdateSCIMAPIKeyResponse], error)
+	DeleteSCIMAPIKey(context.Context, *connect.Request[v1.DeleteSCIMAPIKeyRequest]) (*connect.Response[v1.DeleteSCIMAPIKeyResponse], error)
+	RevokeSCIMAPIKey(context.Context, *connect.Request[v1.RevokeSCIMAPIKeyRequest]) (*connect.Response[v1.RevokeSCIMAPIKeyResponse], error)
 	// Creates a user.
 	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.User], error)
 	// Gets a user.
@@ -220,6 +250,42 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(backendServiceDeleteSAMLConnectionMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
+		listSCIMAPIKeys: connect.NewClient[v1.ListSCIMAPIKeysRequest, v1.ListSCIMAPIKeysResponse](
+			httpClient,
+			baseURL+BackendServiceListSCIMAPIKeysProcedure,
+			connect.WithSchema(backendServiceListSCIMAPIKeysMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		getSCIMAPIKey: connect.NewClient[v1.GetSCIMAPIKeyRequest, v1.GetSCIMAPIKeyResponse](
+			httpClient,
+			baseURL+BackendServiceGetSCIMAPIKeyProcedure,
+			connect.WithSchema(backendServiceGetSCIMAPIKeyMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		createSCIMAPIKey: connect.NewClient[v1.CreateSCIMAPIKeyRequest, v1.CreateSCIMAPIKeyResponse](
+			httpClient,
+			baseURL+BackendServiceCreateSCIMAPIKeyProcedure,
+			connect.WithSchema(backendServiceCreateSCIMAPIKeyMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		updateSCIMAPIKey: connect.NewClient[v1.UpdateSCIMAPIKeyRequest, v1.UpdateSCIMAPIKeyResponse](
+			httpClient,
+			baseURL+BackendServiceUpdateSCIMAPIKeyProcedure,
+			connect.WithSchema(backendServiceUpdateSCIMAPIKeyMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		deleteSCIMAPIKey: connect.NewClient[v1.DeleteSCIMAPIKeyRequest, v1.DeleteSCIMAPIKeyResponse](
+			httpClient,
+			baseURL+BackendServiceDeleteSCIMAPIKeyProcedure,
+			connect.WithSchema(backendServiceDeleteSCIMAPIKeyMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		revokeSCIMAPIKey: connect.NewClient[v1.RevokeSCIMAPIKeyRequest, v1.RevokeSCIMAPIKeyResponse](
+			httpClient,
+			baseURL+BackendServiceRevokeSCIMAPIKeyProcedure,
+			connect.WithSchema(backendServiceRevokeSCIMAPIKeyMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
 		createUser: connect.NewClient[v1.CreateUserRequest, v1.User](
 			httpClient,
 			baseURL+BackendServiceCreateUserProcedure,
@@ -273,6 +339,12 @@ type backendServiceClient struct {
 	createSAMLConnection *connect.Client[v1.CreateSAMLConnectionRequest, v1.CreateSAMLConnectionResponse]
 	updateSAMLConnection *connect.Client[v1.UpdateSAMLConnectionRequest, v1.UpdateSAMLConnectionResponse]
 	deleteSAMLConnection *connect.Client[v1.DeleteSAMLConnectionRequest, v1.DeleteSAMLConnectionResponse]
+	listSCIMAPIKeys      *connect.Client[v1.ListSCIMAPIKeysRequest, v1.ListSCIMAPIKeysResponse]
+	getSCIMAPIKey        *connect.Client[v1.GetSCIMAPIKeyRequest, v1.GetSCIMAPIKeyResponse]
+	createSCIMAPIKey     *connect.Client[v1.CreateSCIMAPIKeyRequest, v1.CreateSCIMAPIKeyResponse]
+	updateSCIMAPIKey     *connect.Client[v1.UpdateSCIMAPIKeyRequest, v1.UpdateSCIMAPIKeyResponse]
+	deleteSCIMAPIKey     *connect.Client[v1.DeleteSCIMAPIKeyRequest, v1.DeleteSCIMAPIKeyResponse]
+	revokeSCIMAPIKey     *connect.Client[v1.RevokeSCIMAPIKeyRequest, v1.RevokeSCIMAPIKeyResponse]
 	createUser           *connect.Client[v1.CreateUserRequest, v1.User]
 	getUser              *connect.Client[v1.GetUserRequest, v1.User]
 	listUsers            *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
@@ -341,6 +413,36 @@ func (c *backendServiceClient) DeleteSAMLConnection(ctx context.Context, req *co
 	return c.deleteSAMLConnection.CallUnary(ctx, req)
 }
 
+// ListSCIMAPIKeys calls openauth.backend.v1.BackendService.ListSCIMAPIKeys.
+func (c *backendServiceClient) ListSCIMAPIKeys(ctx context.Context, req *connect.Request[v1.ListSCIMAPIKeysRequest]) (*connect.Response[v1.ListSCIMAPIKeysResponse], error) {
+	return c.listSCIMAPIKeys.CallUnary(ctx, req)
+}
+
+// GetSCIMAPIKey calls openauth.backend.v1.BackendService.GetSCIMAPIKey.
+func (c *backendServiceClient) GetSCIMAPIKey(ctx context.Context, req *connect.Request[v1.GetSCIMAPIKeyRequest]) (*connect.Response[v1.GetSCIMAPIKeyResponse], error) {
+	return c.getSCIMAPIKey.CallUnary(ctx, req)
+}
+
+// CreateSCIMAPIKey calls openauth.backend.v1.BackendService.CreateSCIMAPIKey.
+func (c *backendServiceClient) CreateSCIMAPIKey(ctx context.Context, req *connect.Request[v1.CreateSCIMAPIKeyRequest]) (*connect.Response[v1.CreateSCIMAPIKeyResponse], error) {
+	return c.createSCIMAPIKey.CallUnary(ctx, req)
+}
+
+// UpdateSCIMAPIKey calls openauth.backend.v1.BackendService.UpdateSCIMAPIKey.
+func (c *backendServiceClient) UpdateSCIMAPIKey(ctx context.Context, req *connect.Request[v1.UpdateSCIMAPIKeyRequest]) (*connect.Response[v1.UpdateSCIMAPIKeyResponse], error) {
+	return c.updateSCIMAPIKey.CallUnary(ctx, req)
+}
+
+// DeleteSCIMAPIKey calls openauth.backend.v1.BackendService.DeleteSCIMAPIKey.
+func (c *backendServiceClient) DeleteSCIMAPIKey(ctx context.Context, req *connect.Request[v1.DeleteSCIMAPIKeyRequest]) (*connect.Response[v1.DeleteSCIMAPIKeyResponse], error) {
+	return c.deleteSCIMAPIKey.CallUnary(ctx, req)
+}
+
+// RevokeSCIMAPIKey calls openauth.backend.v1.BackendService.RevokeSCIMAPIKey.
+func (c *backendServiceClient) RevokeSCIMAPIKey(ctx context.Context, req *connect.Request[v1.RevokeSCIMAPIKeyRequest]) (*connect.Response[v1.RevokeSCIMAPIKeyResponse], error) {
+	return c.revokeSCIMAPIKey.CallUnary(ctx, req)
+}
+
 // CreateUser calls openauth.backend.v1.BackendService.CreateUser.
 func (c *backendServiceClient) CreateUser(ctx context.Context, req *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.User], error) {
 	return c.createUser.CallUnary(ctx, req)
@@ -385,6 +487,12 @@ type BackendServiceHandler interface {
 	CreateSAMLConnection(context.Context, *connect.Request[v1.CreateSAMLConnectionRequest]) (*connect.Response[v1.CreateSAMLConnectionResponse], error)
 	UpdateSAMLConnection(context.Context, *connect.Request[v1.UpdateSAMLConnectionRequest]) (*connect.Response[v1.UpdateSAMLConnectionResponse], error)
 	DeleteSAMLConnection(context.Context, *connect.Request[v1.DeleteSAMLConnectionRequest]) (*connect.Response[v1.DeleteSAMLConnectionResponse], error)
+	ListSCIMAPIKeys(context.Context, *connect.Request[v1.ListSCIMAPIKeysRequest]) (*connect.Response[v1.ListSCIMAPIKeysResponse], error)
+	GetSCIMAPIKey(context.Context, *connect.Request[v1.GetSCIMAPIKeyRequest]) (*connect.Response[v1.GetSCIMAPIKeyResponse], error)
+	CreateSCIMAPIKey(context.Context, *connect.Request[v1.CreateSCIMAPIKeyRequest]) (*connect.Response[v1.CreateSCIMAPIKeyResponse], error)
+	UpdateSCIMAPIKey(context.Context, *connect.Request[v1.UpdateSCIMAPIKeyRequest]) (*connect.Response[v1.UpdateSCIMAPIKeyResponse], error)
+	DeleteSCIMAPIKey(context.Context, *connect.Request[v1.DeleteSCIMAPIKeyRequest]) (*connect.Response[v1.DeleteSCIMAPIKeyResponse], error)
+	RevokeSCIMAPIKey(context.Context, *connect.Request[v1.RevokeSCIMAPIKeyRequest]) (*connect.Response[v1.RevokeSCIMAPIKeyResponse], error)
 	// Creates a user.
 	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.User], error)
 	// Gets a user.
@@ -476,6 +584,42 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		connect.WithSchema(backendServiceDeleteSAMLConnectionMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
+	backendServiceListSCIMAPIKeysHandler := connect.NewUnaryHandler(
+		BackendServiceListSCIMAPIKeysProcedure,
+		svc.ListSCIMAPIKeys,
+		connect.WithSchema(backendServiceListSCIMAPIKeysMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceGetSCIMAPIKeyHandler := connect.NewUnaryHandler(
+		BackendServiceGetSCIMAPIKeyProcedure,
+		svc.GetSCIMAPIKey,
+		connect.WithSchema(backendServiceGetSCIMAPIKeyMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceCreateSCIMAPIKeyHandler := connect.NewUnaryHandler(
+		BackendServiceCreateSCIMAPIKeyProcedure,
+		svc.CreateSCIMAPIKey,
+		connect.WithSchema(backendServiceCreateSCIMAPIKeyMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceUpdateSCIMAPIKeyHandler := connect.NewUnaryHandler(
+		BackendServiceUpdateSCIMAPIKeyProcedure,
+		svc.UpdateSCIMAPIKey,
+		connect.WithSchema(backendServiceUpdateSCIMAPIKeyMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceDeleteSCIMAPIKeyHandler := connect.NewUnaryHandler(
+		BackendServiceDeleteSCIMAPIKeyProcedure,
+		svc.DeleteSCIMAPIKey,
+		connect.WithSchema(backendServiceDeleteSCIMAPIKeyMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceRevokeSCIMAPIKeyHandler := connect.NewUnaryHandler(
+		BackendServiceRevokeSCIMAPIKeyProcedure,
+		svc.RevokeSCIMAPIKey,
+		connect.WithSchema(backendServiceRevokeSCIMAPIKeyMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
 	backendServiceCreateUserHandler := connect.NewUnaryHandler(
 		BackendServiceCreateUserProcedure,
 		svc.CreateUser,
@@ -538,6 +682,18 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceUpdateSAMLConnectionHandler.ServeHTTP(w, r)
 		case BackendServiceDeleteSAMLConnectionProcedure:
 			backendServiceDeleteSAMLConnectionHandler.ServeHTTP(w, r)
+		case BackendServiceListSCIMAPIKeysProcedure:
+			backendServiceListSCIMAPIKeysHandler.ServeHTTP(w, r)
+		case BackendServiceGetSCIMAPIKeyProcedure:
+			backendServiceGetSCIMAPIKeyHandler.ServeHTTP(w, r)
+		case BackendServiceCreateSCIMAPIKeyProcedure:
+			backendServiceCreateSCIMAPIKeyHandler.ServeHTTP(w, r)
+		case BackendServiceUpdateSCIMAPIKeyProcedure:
+			backendServiceUpdateSCIMAPIKeyHandler.ServeHTTP(w, r)
+		case BackendServiceDeleteSCIMAPIKeyProcedure:
+			backendServiceDeleteSCIMAPIKeyHandler.ServeHTTP(w, r)
+		case BackendServiceRevokeSCIMAPIKeyProcedure:
+			backendServiceRevokeSCIMAPIKeyHandler.ServeHTTP(w, r)
 		case BackendServiceCreateUserProcedure:
 			backendServiceCreateUserHandler.ServeHTTP(w, r)
 		case BackendServiceGetUserProcedure:
@@ -605,6 +761,30 @@ func (UnimplementedBackendServiceHandler) UpdateSAMLConnection(context.Context, 
 
 func (UnimplementedBackendServiceHandler) DeleteSAMLConnection(context.Context, *connect.Request[v1.DeleteSAMLConnectionRequest]) (*connect.Response[v1.DeleteSAMLConnectionResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.DeleteSAMLConnection is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) ListSCIMAPIKeys(context.Context, *connect.Request[v1.ListSCIMAPIKeysRequest]) (*connect.Response[v1.ListSCIMAPIKeysResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.ListSCIMAPIKeys is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) GetSCIMAPIKey(context.Context, *connect.Request[v1.GetSCIMAPIKeyRequest]) (*connect.Response[v1.GetSCIMAPIKeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetSCIMAPIKey is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) CreateSCIMAPIKey(context.Context, *connect.Request[v1.CreateSCIMAPIKeyRequest]) (*connect.Response[v1.CreateSCIMAPIKeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.CreateSCIMAPIKey is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) UpdateSCIMAPIKey(context.Context, *connect.Request[v1.UpdateSCIMAPIKeyRequest]) (*connect.Response[v1.UpdateSCIMAPIKeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.UpdateSCIMAPIKey is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) DeleteSCIMAPIKey(context.Context, *connect.Request[v1.DeleteSCIMAPIKeyRequest]) (*connect.Response[v1.DeleteSCIMAPIKeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.DeleteSCIMAPIKey is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) RevokeSCIMAPIKey(context.Context, *connect.Request[v1.RevokeSCIMAPIKeyRequest]) (*connect.Response[v1.RevokeSCIMAPIKeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.RevokeSCIMAPIKey is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.User], error) {

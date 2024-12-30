@@ -181,3 +181,55 @@ RETURNING
 DELETE FROM saml_connections
 WHERE id = $1;
 
+-- name: ListSCIMAPIKeys :many
+SELECT
+    *
+FROM
+    scim_api_keys
+WHERE
+    organization_id = $1
+    AND id >= $2
+ORDER BY
+    id
+LIMIT $3;
+
+-- name: GetSCIMAPIKey :one
+SELECT
+    scim_api_keys.*
+FROM
+    scim_api_keys
+    JOIN organizations ON scim_api_keys.organization_id = organizations.id
+WHERE
+    scim_api_keys.id = $1
+    AND organizations.project_id = $2;
+
+-- name: CreateSCIMAPIKey :one
+INSERT INTO scim_api_keys (id, organization_id, display_name, token_sha256)
+    VALUES ($1, $2, $3, $4)
+RETURNING
+    *;
+
+-- name: UpdateSCIMAPIKey :one
+UPDATE
+    scim_api_keys
+SET
+    display_name = $1
+WHERE
+    id = $2
+RETURNING
+    *;
+
+-- name: DeleteSCIMAPIKey :exec
+DELETE FROM scim_api_keys
+WHERE id = $1;
+
+-- name: RevokeSCIMAPIKey :one
+UPDATE
+    scim_api_keys
+SET
+    token_sha256 = NULL
+WHERE
+    id = $1
+RETURNING
+    *;
+

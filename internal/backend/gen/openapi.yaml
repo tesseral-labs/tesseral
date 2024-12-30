@@ -299,6 +299,156 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /backend/v1/scim-api-keys:
+        get:
+            tags:
+                - BackendService
+            operationId: BackendService_ListSCIMAPIKeys
+            parameters:
+                - name: organizationId
+                  in: query
+                  schema:
+                    type: string
+                - name: pageToken
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListSCIMAPIKeysResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - BackendService
+            operationId: BackendService_CreateSCIMAPIKey
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/SCIMAPIKey'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateSCIMAPIKeyResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /backend/v1/scim-api-keys/{id}:
+        get:
+            tags:
+                - BackendService
+            operationId: BackendService_GetSCIMAPIKey
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetSCIMAPIKeyResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        delete:
+            tags:
+                - BackendService
+            operationId: BackendService_DeleteSCIMAPIKey
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DeleteSCIMAPIKeyResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        patch:
+            tags:
+                - BackendService
+            operationId: BackendService_UpdateSCIMAPIKey
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/SCIMAPIKey'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateSCIMAPIKeyResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /backend/v1/scim-api-keys/{id}/revoke:
+        post:
+            tags:
+                - BackendService
+            operationId: BackendService_RevokeSCIMAPIKey
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/RevokeSCIMAPIKeyResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /backend/v1/users:
         get:
             tags:
@@ -454,10 +604,18 @@ components:
             properties:
                 samlConnection:
                     $ref: '#/components/schemas/SAMLConnection'
+        CreateSCIMAPIKeyResponse:
+            type: object
+            properties:
+                scimApiKey:
+                    $ref: '#/components/schemas/SCIMAPIKey'
         DeleteOrganizationResponse:
             type: object
             properties: {}
         DeleteSAMLConnectionResponse:
+            type: object
+            properties: {}
+        DeleteSCIMAPIKeyResponse:
             type: object
             properties: {}
         GetOrganizationResponse:
@@ -475,6 +633,11 @@ components:
             properties:
                 samlConnection:
                     $ref: '#/components/schemas/SAMLConnection'
+        GetSCIMAPIKeyResponse:
+            type: object
+            properties:
+                scimApiKey:
+                    $ref: '#/components/schemas/SCIMAPIKey'
         GoogleProtobufAny:
             type: object
             properties:
@@ -499,6 +662,15 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/SAMLConnection'
+                nextPageToken:
+                    type: string
+        ListSCIMAPIKeysResponse:
+            type: object
+            properties:
+                scimApiKeys:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/SCIMAPIKey'
                 nextPageToken:
                     type: string
         ListUsersResponse:
@@ -554,6 +726,11 @@ components:
                     type: string
                 microsoftOauthClientSecret:
                     type: string
+        RevokeSCIMAPIKeyResponse:
+            type: object
+            properties:
+                scimApiKey:
+                    $ref: '#/components/schemas/SCIMAPIKey'
         SAMLConnection:
             type: object
             properties:
@@ -573,6 +750,19 @@ components:
                     type: string
                 idpEntityId:
                     type: string
+        SCIMAPIKey:
+            type: object
+            properties:
+                id:
+                    type: string
+                organizationId:
+                    type: string
+                displayName:
+                    type: string
+                secretToken:
+                    type: string
+                revoked:
+                    type: boolean
         Status:
             type: object
             properties:
@@ -604,6 +794,11 @@ components:
             properties:
                 samlConnection:
                     $ref: '#/components/schemas/SAMLConnection'
+        UpdateSCIMAPIKeyResponse:
+            type: object
+            properties:
+                scimApiKey:
+                    $ref: '#/components/schemas/SCIMAPIKey'
         UpdateUserPasswordRequest:
             type: object
             properties:
