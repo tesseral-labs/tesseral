@@ -57,37 +57,6 @@ func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganization
 	return i, err
 }
 
-const createProjectAPIKey = `-- name: CreateProjectAPIKey :one
-INSERT INTO project_api_keys (id, project_id, display_name, secret_token_sha256)
-    VALUES ($1, $2, $3, $4)
-RETURNING
-    id, project_id, secret_token_sha256, display_name
-`
-
-type CreateProjectAPIKeyParams struct {
-	ID                uuid.UUID
-	ProjectID         uuid.UUID
-	DisplayName       string
-	SecretTokenSha256 []byte
-}
-
-func (q *Queries) CreateProjectAPIKey(ctx context.Context, arg CreateProjectAPIKeyParams) (ProjectApiKey, error) {
-	row := q.db.QueryRow(ctx, createProjectAPIKey,
-		arg.ID,
-		arg.ProjectID,
-		arg.DisplayName,
-		arg.SecretTokenSha256,
-	)
-	var i ProjectApiKey
-	err := row.Scan(
-		&i.ID,
-		&i.ProjectID,
-		&i.SecretTokenSha256,
-		&i.DisplayName,
-	)
-	return i, err
-}
-
 const createSAMLConnection = `-- name: CreateSAMLConnection :one
 INSERT INTO saml_connections (id, organization_id, is_primary, idp_redirect_url, idp_x509_certificate, idp_entity_id)
     VALUES ($1, $2, $3, $4, $5, $6)
@@ -167,16 +136,6 @@ func (q *Queries) DeleteOrganization(ctx context.Context, id uuid.UUID) error {
 	return err
 }
 
-const deleteProjectAPIKey = `-- name: DeleteProjectAPIKey :exec
-DELETE FROM project_api_keys
-WHERE id = $1
-`
-
-func (q *Queries) DeleteProjectAPIKey(ctx context.Context, id uuid.UUID) error {
-	_, err := q.db.Exec(ctx, deleteProjectAPIKey, id)
-	return err
-}
-
 const deleteSAMLConnection = `-- name: DeleteSAMLConnection :exec
 DELETE FROM saml_connections
 WHERE id = $1
@@ -225,33 +184,6 @@ func (q *Queries) GetOrganizationByProjectIDAndID(ctx context.Context, arg GetOr
 		&i.GoogleHostedDomain,
 		&i.MicrosoftTenantID,
 		&i.OverrideLogInMethods,
-	)
-	return i, err
-}
-
-const getProjectAPIKey = `-- name: GetProjectAPIKey :one
-SELECT
-    id, project_id, secret_token_sha256, display_name
-FROM
-    project_api_keys
-WHERE
-    id = $1
-    AND project_id = $2
-`
-
-type GetProjectAPIKeyParams struct {
-	ID        uuid.UUID
-	ProjectID uuid.UUID
-}
-
-func (q *Queries) GetProjectAPIKey(ctx context.Context, arg GetProjectAPIKeyParams) (ProjectApiKey, error) {
-	row := q.db.QueryRow(ctx, getProjectAPIKey, arg.ID, arg.ProjectID)
-	var i ProjectApiKey
-	err := row.Scan(
-		&i.ID,
-		&i.ProjectID,
-		&i.SecretTokenSha256,
-		&i.DisplayName,
 	)
 	return i, err
 }
@@ -446,50 +378,6 @@ func (q *Queries) ListOrganizationsByProjectId(ctx context.Context, arg ListOrga
 	return items, nil
 }
 
-const listProjectAPIKeys = `-- name: ListProjectAPIKeys :many
-SELECT
-    id, project_id, secret_token_sha256, display_name
-FROM
-    project_api_keys
-WHERE
-    project_id = $1
-    AND id >= $2
-ORDER BY
-    id
-LIMIT $3
-`
-
-type ListProjectAPIKeysParams struct {
-	ProjectID uuid.UUID
-	ID        uuid.UUID
-	Limit     int32
-}
-
-func (q *Queries) ListProjectAPIKeys(ctx context.Context, arg ListProjectAPIKeysParams) ([]ProjectApiKey, error) {
-	rows, err := q.db.Query(ctx, listProjectAPIKeys, arg.ProjectID, arg.ID, arg.Limit)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []ProjectApiKey
-	for rows.Next() {
-		var i ProjectApiKey
-		if err := rows.Scan(
-			&i.ID,
-			&i.ProjectID,
-			&i.SecretTokenSha256,
-			&i.DisplayName,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
 const listProjects = `-- name: ListProjects :many
 SELECT
     id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name
@@ -620,29 +508,6 @@ func (q *Queries) ListSCIMAPIKeys(ctx context.Context, arg ListSCIMAPIKeysParams
 		return nil, err
 	}
 	return items, nil
-}
-
-const revokeProjectAPIKey = `-- name: RevokeProjectAPIKey :one
-UPDATE
-    project_api_keys
-SET
-    secret_token_sha256 = NULL
-WHERE
-    id = $1
-RETURNING
-    id, project_id, secret_token_sha256, display_name
-`
-
-func (q *Queries) RevokeProjectAPIKey(ctx context.Context, id uuid.UUID) (ProjectApiKey, error) {
-	row := q.db.QueryRow(ctx, revokeProjectAPIKey, id)
-	var i ProjectApiKey
-	err := row.Scan(
-		&i.ID,
-		&i.ProjectID,
-		&i.SecretTokenSha256,
-		&i.DisplayName,
-	)
-	return i, err
 }
 
 const revokeSCIMAPIKey = `-- name: RevokeSCIMAPIKey :one
@@ -794,34 +659,6 @@ func (q *Queries) UpdateProject(ctx context.Context, arg UpdateProjectParams) (P
 		&i.MicrosoftOauthClientID,
 		&i.GoogleOauthClientSecretCiphertext,
 		&i.MicrosoftOauthClientSecretCiphertext,
-		&i.DisplayName,
-	)
-	return i, err
-}
-
-const updateProjectAPIKey = `-- name: UpdateProjectAPIKey :one
-UPDATE
-    project_api_keys
-SET
-    display_name = $1
-WHERE
-    id = $2
-RETURNING
-    id, project_id, secret_token_sha256, display_name
-`
-
-type UpdateProjectAPIKeyParams struct {
-	DisplayName string
-	ID          uuid.UUID
-}
-
-func (q *Queries) UpdateProjectAPIKey(ctx context.Context, arg UpdateProjectAPIKeyParams) (ProjectApiKey, error) {
-	row := q.db.QueryRow(ctx, updateProjectAPIKey, arg.DisplayName, arg.ID)
-	var i ProjectApiKey
-	err := row.Scan(
-		&i.ID,
-		&i.ProjectID,
-		&i.SecretTokenSha256,
 		&i.DisplayName,
 	)
 	return i, err
