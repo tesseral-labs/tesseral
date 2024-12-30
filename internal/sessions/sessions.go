@@ -27,12 +27,12 @@ type sessionClaims struct {
 }
 
 type Organization struct {
-	ID          string
+	ID          string `json:"id"`
 	DisplayName string
 }
 
 type Project struct {
-	ID         string
+	ID         string `json:"id"`
 	CreateTime time.Time
 }
 
@@ -45,7 +45,7 @@ type Session struct {
 }
 
 type User struct {
-	ID              string
+	ID              string `json:"id"`
 	CreateTime      time.Time
 	Email           string
 	GoogleUserID    string

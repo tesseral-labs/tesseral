@@ -211,8 +211,8 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		ID:              idformat.User.Format(qUser.ID),
 		CreateTime:      *qUser.CreateTime,
 		Email:           qUser.Email,
-		GoogleUserID:    *qUser.GoogleUserID,
-		MicrosoftUserID: *qUser.MicrosoftUserID,
+		GoogleUserID:    derefOrEmpty(qUser.GoogleUserID),
+		MicrosoftUserID: derefOrEmpty(qUser.MicrosoftUserID),
 		UpdateTime:      derefOrEmpty(qUser.UpdateTime),
 	}, *sessionSigningKeyID, privateKey)
 	if err != nil {
