@@ -12,10 +12,10 @@ import (
 )
 
 const createOrganization = `-- name: CreateOrganization :one
-INSERT INTO organizations (id, project_id, display_name, google_hosted_domain, microsoft_tenant_id, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_with_password_enabled)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+INSERT INTO organizations (id, project_id, display_name, google_hosted_domain, microsoft_tenant_id, override_log_in_methods, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_with_password_enabled)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 RETURNING
-    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods
 `
 
 type CreateOrganizationParams struct {
@@ -24,6 +24,7 @@ type CreateOrganizationParams struct {
 	DisplayName                       string
 	GoogleHostedDomain                *string
 	MicrosoftTenantID                 *string
+	OverrideLogInMethods              bool
 	OverrideLogInWithGoogleEnabled    *bool
 	OverrideLogInWithMicrosoftEnabled *bool
 	OverrideLogInWithPasswordEnabled  *bool
@@ -36,6 +37,7 @@ func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganization
 		arg.DisplayName,
 		arg.GoogleHostedDomain,
 		arg.MicrosoftTenantID,
+		arg.OverrideLogInMethods,
 		arg.OverrideLogInWithGoogleEnabled,
 		arg.OverrideLogInWithMicrosoftEnabled,
 		arg.OverrideLogInWithPasswordEnabled,
@@ -50,13 +52,24 @@ func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganization
 		&i.OverrideLogInWithMicrosoftEnabled,
 		&i.GoogleHostedDomain,
 		&i.MicrosoftTenantID,
+		&i.OverrideLogInMethods,
 	)
 	return i, err
 }
 
+const deleteOrganization = `-- name: DeleteOrganization :exec
+DELETE FROM organizations
+WHERE id = $1
+`
+
+func (q *Queries) DeleteOrganization(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteOrganization, id)
+	return err
+}
+
 const getOrganizationByProjectIDAndID = `-- name: GetOrganizationByProjectIDAndID :one
 SELECT
-    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods
 FROM
     organizations
 WHERE
@@ -81,6 +94,7 @@ func (q *Queries) GetOrganizationByProjectIDAndID(ctx context.Context, arg GetOr
 		&i.OverrideLogInWithMicrosoftEnabled,
 		&i.GoogleHostedDomain,
 		&i.MicrosoftTenantID,
+		&i.OverrideLogInMethods,
 	)
 	return i, err
 }
@@ -172,7 +186,7 @@ func (q *Queries) GetSessionSigningKeysByProjectID(ctx context.Context, projectI
 
 const listOrganizationsByProjectId = `-- name: ListOrganizationsByProjectId :many
 SELECT
-    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods
 FROM
     organizations
 WHERE
@@ -205,6 +219,7 @@ func (q *Queries) ListOrganizationsByProjectId(ctx context.Context, arg ListOrga
 			&i.OverrideLogInWithMicrosoftEnabled,
 			&i.GoogleHostedDomain,
 			&i.MicrosoftTenantID,
+			&i.OverrideLogInMethods,
 		); err != nil {
 			return nil, err
 		}
@@ -264,13 +279,14 @@ SET
     display_name = $2,
     google_hosted_domain = $3,
     microsoft_tenant_id = $4,
-    override_log_in_with_password_enabled = $5,
-    override_log_in_with_google_enabled = $6,
-    override_log_in_with_microsoft_enabled = $7
+    override_log_in_methods = $5,
+    override_log_in_with_password_enabled = $6,
+    override_log_in_with_google_enabled = $7,
+    override_log_in_with_microsoft_enabled = $8
 WHERE
     id = $1
 RETURNING
-    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods
 `
 
 type UpdateOrganizationParams struct {
@@ -278,6 +294,7 @@ type UpdateOrganizationParams struct {
 	DisplayName                       string
 	GoogleHostedDomain                *string
 	MicrosoftTenantID                 *string
+	OverrideLogInMethods              bool
 	OverrideLogInWithPasswordEnabled  *bool
 	OverrideLogInWithGoogleEnabled    *bool
 	OverrideLogInWithMicrosoftEnabled *bool
@@ -289,6 +306,7 @@ func (q *Queries) UpdateOrganization(ctx context.Context, arg UpdateOrganization
 		arg.DisplayName,
 		arg.GoogleHostedDomain,
 		arg.MicrosoftTenantID,
+		arg.OverrideLogInMethods,
 		arg.OverrideLogInWithPasswordEnabled,
 		arg.OverrideLogInWithGoogleEnabled,
 		arg.OverrideLogInWithMicrosoftEnabled,
@@ -303,6 +321,7 @@ func (q *Queries) UpdateOrganization(ctx context.Context, arg UpdateOrganization
 		&i.OverrideLogInWithMicrosoftEnabled,
 		&i.GoogleHostedDomain,
 		&i.MicrosoftTenantID,
+		&i.OverrideLogInMethods,
 	)
 	return i, err
 }

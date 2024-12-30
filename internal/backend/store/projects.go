@@ -82,15 +82,21 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 		updates.MicrosoftOauthClientSecretCiphertext = encryptRes.CiphertextBlob
 	}
 
-	// Conditionally enable/disable login methods
-	if req.Project.LogInWithGoogleEnabled != qProject.LogInWithGoogleEnabled {
-		updates.LogInWithGoogleEnabled = req.Project.LogInWithGoogleEnabled
+	updates.LogInWithGoogleEnabled = qProject.LogInWithGoogleEnabled
+	if req.Project.LogInWithGoogleEnabled != nil {
+		// todo: validate that google is configured?
+		updates.LogInWithGoogleEnabled = *req.Project.LogInWithGoogleEnabled
 	}
-	if req.Project.LogInWithMicrosoftEnabled != qProject.LogInWithMicrosoftEnabled {
-		updates.LogInWithMicrosoftEnabled = req.Project.LogInWithMicrosoftEnabled
+
+	updates.LogInWithMicrosoftEnabled = qProject.LogInWithMicrosoftEnabled
+	if req.Project.LogInWithMicrosoftEnabled != nil {
+		// todo: validate that microsoft is configured?
+		updates.LogInWithMicrosoftEnabled = *req.Project.LogInWithMicrosoftEnabled
 	}
-	if req.Project.LogInWithPasswordEnabled != qProject.LogInWithPasswordEnabled {
-		updates.LogInWithPasswordEnabled = req.Project.LogInWithPasswordEnabled
+
+	updates.LogInWithPasswordEnabled = qProject.LogInWithPasswordEnabled
+	if req.Project.LogInWithPasswordEnabled != nil {
+		updates.LogInWithPasswordEnabled = *req.Project.LogInWithPasswordEnabled
 	}
 
 	_, q, commit, rollback, err := s.tx(ctx)
@@ -115,9 +121,9 @@ func parseProject(qProject *queries.Project) *backendv1.Project {
 	return &backendv1.Project{
 		Id:                        idformat.Project.Format(qProject.ID),
 		DisplayName:               qProject.DisplayName,
-		LogInWithPasswordEnabled:  qProject.LogInWithPasswordEnabled,
-		LogInWithGoogleEnabled:    qProject.LogInWithGoogleEnabled,
-		LogInWithMicrosoftEnabled: qProject.LogInWithMicrosoftEnabled,
+		LogInWithPasswordEnabled:  &qProject.LogInWithPasswordEnabled,
+		LogInWithGoogleEnabled:    &qProject.LogInWithGoogleEnabled,
+		LogInWithMicrosoftEnabled: &qProject.LogInWithMicrosoftEnabled,
 		GoogleOauthClientId:       derefOrEmpty(qProject.GoogleOauthClientID),
 		MicrosoftOauthClientId:    derefOrEmpty(qProject.MicrosoftOauthClientID),
 	}

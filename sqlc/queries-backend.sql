@@ -1,6 +1,6 @@
 -- name: CreateOrganization :one
-INSERT INTO organizations (id, project_id, display_name, google_hosted_domain, microsoft_tenant_id, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_with_password_enabled)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+INSERT INTO organizations (id, project_id, display_name, google_hosted_domain, microsoft_tenant_id, override_log_in_methods, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_with_password_enabled)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 RETURNING
     *;
 
@@ -64,13 +64,18 @@ SET
     display_name = $2,
     google_hosted_domain = $3,
     microsoft_tenant_id = $4,
-    override_log_in_with_password_enabled = $5,
-    override_log_in_with_google_enabled = $6,
-    override_log_in_with_microsoft_enabled = $7
+    override_log_in_methods = $5,
+    override_log_in_with_password_enabled = $6,
+    override_log_in_with_google_enabled = $7,
+    override_log_in_with_microsoft_enabled = $8
 WHERE
     id = $1
 RETURNING
     *;
+
+-- name: DeleteOrganization :exec
+DELETE FROM organizations
+WHERE id = $1;
 
 -- name: UpdateProject :one
 UPDATE

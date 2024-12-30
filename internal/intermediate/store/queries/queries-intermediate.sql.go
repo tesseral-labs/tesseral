@@ -131,7 +131,7 @@ const createOrganization = `-- name: CreateOrganization :one
 INSERT INTO organizations (id, project_id, display_name, google_hosted_domain, microsoft_tenant_id, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_with_password_enabled)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 RETURNING
-    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods
 `
 
 type CreateOrganizationParams struct {
@@ -166,6 +166,7 @@ func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganization
 		&i.OverrideLogInWithMicrosoftEnabled,
 		&i.GoogleHostedDomain,
 		&i.MicrosoftTenantID,
+		&i.OverrideLogInMethods,
 	)
 	return i, err
 }
@@ -607,7 +608,7 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 
 const getProjectOrganizationByID = `-- name: GetProjectOrganizationByID :one
 SELECT
-    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods
 FROM
     organizations
 WHERE
@@ -632,6 +633,7 @@ func (q *Queries) GetProjectOrganizationByID(ctx context.Context, arg GetProject
 		&i.OverrideLogInWithMicrosoftEnabled,
 		&i.GoogleHostedDomain,
 		&i.MicrosoftTenantID,
+		&i.OverrideLogInMethods,
 	)
 	return i, err
 }
@@ -722,7 +724,7 @@ func (q *Queries) IsMicrosoftEmailVerified(ctx context.Context, arg IsMicrosoftE
 
 const listOrganizationsByEmail = `-- name: ListOrganizationsByEmail :many
 SELECT
-    organizations.id, organizations.project_id, organizations.display_name, organizations.override_log_in_with_password_enabled, organizations.override_log_in_with_google_enabled, organizations.override_log_in_with_microsoft_enabled, organizations.google_hosted_domain, organizations.microsoft_tenant_id
+    organizations.id, organizations.project_id, organizations.display_name, organizations.override_log_in_with_password_enabled, organizations.override_log_in_with_google_enabled, organizations.override_log_in_with_microsoft_enabled, organizations.google_hosted_domain, organizations.microsoft_tenant_id, organizations.override_log_in_methods
 FROM
     organizations
     JOIN users ON organizations.id = users.organization_id
@@ -767,6 +769,7 @@ func (q *Queries) ListOrganizationsByEmail(ctx context.Context, arg ListOrganiza
 			&i.OverrideLogInWithMicrosoftEnabled,
 			&i.GoogleHostedDomain,
 			&i.MicrosoftTenantID,
+			&i.OverrideLogInMethods,
 		); err != nil {
 			return nil, err
 		}
@@ -780,7 +783,7 @@ func (q *Queries) ListOrganizationsByEmail(ctx context.Context, arg ListOrganiza
 
 const listOrganizationsByGoogleUserID = `-- name: ListOrganizationsByGoogleUserID :many
 SELECT
-    organizations.id, organizations.project_id, organizations.display_name, organizations.override_log_in_with_password_enabled, organizations.override_log_in_with_google_enabled, organizations.override_log_in_with_microsoft_enabled, organizations.google_hosted_domain, organizations.microsoft_tenant_id
+    organizations.id, organizations.project_id, organizations.display_name, organizations.override_log_in_with_password_enabled, organizations.override_log_in_with_google_enabled, organizations.override_log_in_with_microsoft_enabled, organizations.google_hosted_domain, organizations.microsoft_tenant_id, organizations.override_log_in_methods
 FROM
     organizations
     JOIN users ON organizations.id = users.organization_id
@@ -826,6 +829,7 @@ func (q *Queries) ListOrganizationsByGoogleUserID(ctx context.Context, arg ListO
 			&i.OverrideLogInWithMicrosoftEnabled,
 			&i.GoogleHostedDomain,
 			&i.MicrosoftTenantID,
+			&i.OverrideLogInMethods,
 		); err != nil {
 			return nil, err
 		}
@@ -839,7 +843,7 @@ func (q *Queries) ListOrganizationsByGoogleUserID(ctx context.Context, arg ListO
 
 const listOrganizationsByMicrosoftUserID = `-- name: ListOrganizationsByMicrosoftUserID :many
 SELECT
-    organizations.id, organizations.project_id, organizations.display_name, organizations.override_log_in_with_password_enabled, organizations.override_log_in_with_google_enabled, organizations.override_log_in_with_microsoft_enabled, organizations.google_hosted_domain, organizations.microsoft_tenant_id
+    organizations.id, organizations.project_id, organizations.display_name, organizations.override_log_in_with_password_enabled, organizations.override_log_in_with_google_enabled, organizations.override_log_in_with_microsoft_enabled, organizations.google_hosted_domain, organizations.microsoft_tenant_id, organizations.override_log_in_methods
 FROM
     organizations
     JOIN users ON organizations.id = users.organization_id
@@ -885,6 +889,7 @@ func (q *Queries) ListOrganizationsByMicrosoftUserID(ctx context.Context, arg Li
 			&i.OverrideLogInWithMicrosoftEnabled,
 			&i.GoogleHostedDomain,
 			&i.MicrosoftTenantID,
+			&i.OverrideLogInMethods,
 		); err != nil {
 			return nil, err
 		}

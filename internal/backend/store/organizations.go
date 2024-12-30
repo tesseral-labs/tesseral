@@ -11,39 +11,54 @@ import (
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
-func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrganizationRequest) (*backendv1.Organization, error) {
+func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrganizationRequest) (*backendv1.CreateOrganizationResponse, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
 	defer rollback()
 
+	var (
+		overrideLogInWithGoogleEnabled,
+		overrideLogInWithMicrosoftEnabled,
+		overrideLogInWithPasswordEnabled *bool
+	)
+
+	if req.Organization.OverrideLogInMethods != nil {
+		overrideLogInWithGoogleEnabled = &req.Organization.LogInWithGoogleEnabled
+		overrideLogInWithMicrosoftEnabled = &req.Organization.LogInWithMicrosoftEnabled
+		overrideLogInWithPasswordEnabled = &req.Organization.LogInWithPasswordEnabled
+	}
+
 	qOrg, err := q.CreateOrganization(ctx, queries.CreateOrganizationParams{
-		ID:                                uuid.New(),
-		ProjectID:                         authn.ProjectID(ctx),
-		DisplayName:                       req.Organization.DisplayName,
-		GoogleHostedDomain:                &req.Organization.GoogleHostedDomain,
-		MicrosoftTenantID:                 &req.Organization.MicrosoftTenantId,
-		OverrideLogInWithGoogleEnabled:    &req.Organization.OverrideLogInWithGoogleEnabled,
-		OverrideLogInWithMicrosoftEnabled: &req.Organization.OverrideLogInWithMicrosoftEnabled,
-		OverrideLogInWithPasswordEnabled:  &req.Organization.OverrideLogInWithPasswordEnabled,
+		ID:                 uuid.New(),
+		ProjectID:          authn.ProjectID(ctx),
+		DisplayName:        req.Organization.DisplayName,
+		GoogleHostedDomain: &req.Organization.GoogleHostedDomain,
+		MicrosoftTenantID:  &req.Organization.MicrosoftTenantId,
+
+		OverrideLogInMethods:              derefOrEmpty(req.Organization.OverrideLogInMethods),
+		OverrideLogInWithGoogleEnabled:    overrideLogInWithGoogleEnabled,
+		OverrideLogInWithMicrosoftEnabled: overrideLogInWithMicrosoftEnabled,
+		OverrideLogInWithPasswordEnabled:  overrideLogInWithPasswordEnabled,
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("create organization: %w", err)
+	}
+
+	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 
 	if err := commit(); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return parseOrganization(qOrg), nil
+	return &backendv1.CreateOrganizationResponse{Organization: parseOrganization(qProject, qOrg)}, nil
 }
 
-// TODO: Ensure that this function can only be called via a backend service reuqest
-func (s *Store) ListOrganizations(
-	ctx context.Context,
-	req *backendv1.ListOrganizationsRequest,
-) (*backendv1.ListOrganizationsResponse, error) {
+func (s *Store) ListOrganizations(ctx context.Context, req *backendv1.ListOrganizationsRequest) (*backendv1.ListOrganizationsResponse, error) {
 	_, q, _, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -55,8 +70,13 @@ func (s *Store) ListOrganizations(
 		return nil, err
 	}
 
+	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get project by id: %w", err)
+	}
+
 	limit := 10
-	organizationRecords, err := q.ListOrganizationsByProjectId(ctx, queries.ListOrganizationsByProjectIdParams{
+	qOrgs, err := q.ListOrganizationsByProjectId(ctx, queries.ListOrganizationsByProjectIdParams{
 		ProjectID: authn.ProjectID(ctx),
 		Limit:     int32(limit + 1),
 	})
@@ -65,8 +85,8 @@ func (s *Store) ListOrganizations(
 	}
 
 	var organizations []*backendv1.Organization
-	for _, organization := range organizationRecords {
-		organizations = append(organizations, parseOrganization(organization))
+	for _, qOrg := range qOrgs {
+		organizations = append(organizations, parseOrganization(qProject, qOrg))
 	}
 
 	var nextPageToken string
@@ -81,7 +101,7 @@ func (s *Store) ListOrganizations(
 	}, nil
 }
 
-func (s *Store) GetOrganization(ctx context.Context, req *backendv1.GetOrganizationRequest) (*backendv1.Organization, error) {
+func (s *Store) GetOrganization(ctx context.Context, req *backendv1.GetOrganizationRequest) (*backendv1.GetOrganizationResponse, error) {
 	_, q, _, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -93,7 +113,12 @@ func (s *Store) GetOrganization(ctx context.Context, req *backendv1.GetOrganizat
 		return nil, fmt.Errorf("parse organization id: %w", err)
 	}
 
-	organization, err := q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
+	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get project by id: %w", err)
+	}
+
+	qOrg, err := q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
 		ProjectID: authn.ProjectID(ctx),
 		ID:        organizationId,
 	})
@@ -101,81 +126,120 @@ func (s *Store) GetOrganization(ctx context.Context, req *backendv1.GetOrganizat
 		return nil, fmt.Errorf("get organization: %w", err)
 	}
 
-	return parseOrganization(organization), nil
+	return &backendv1.GetOrganizationResponse{Organization: parseOrganization(qProject, qOrg)}, nil
 }
 
-func (s *Store) UpdateOrganization(ctx context.Context, req *backendv1.UpdateOrganizationRequest) (*backendv1.Organization, error) {
+func (s *Store) UpdateOrganization(ctx context.Context, req *backendv1.UpdateOrganizationRequest) (*backendv1.UpdateOrganizationResponse, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
 	defer rollback()
 
-	organizationId, err := idformat.Organization.Parse(req.Id)
+	orgID, err := idformat.Organization.Parse(req.Id)
 	if err != nil {
 		return nil, fmt.Errorf("parse organization id: %w", err)
 	}
 
 	// fetch existing org; this also acts as a permission check
-	if _, err := q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
+	qOrg, err := q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
 		ProjectID: authn.ProjectID(ctx),
-		ID:        organizationId,
-	}); err != nil {
+		ID:        orgID,
+	})
+	if err != nil {
 		return nil, fmt.Errorf("get organization: %w", err)
 	}
 
 	updates := queries.UpdateOrganizationParams{
-		ID: organizationId,
+		ID: orgID,
 	}
 
-	// Conditionally update display name
+	updates.DisplayName = qOrg.DisplayName
 	if req.Organization.DisplayName != "" {
 		updates.DisplayName = req.Organization.DisplayName
 	}
 
-	// TODO these don't work (nil deref), but I don't think they have the right
-	// schema design anyway; skip for now
-	//
-	//// Conditionally update login method configs
-	//if req.Organization.GoogleHostedDomain != "" {
-	//	updates.GoogleHostedDomain = &req.Organization.GoogleHostedDomain
-	//}
-	//if req.Organization.MicrosoftTenantId != "" {
-	//	updates.MicrosoftTenantID = &req.Organization.MicrosoftTenantId
-	//}
-	//
-	//// Conditionally update overrides
-	//if req.Organization.OverrideLogInWithGoogleEnabled != *existingOrganization.OverrideLogInWithGoogleEnabled {
-	//	updates.OverrideLogInWithGoogleEnabled = &req.Organization.OverrideLogInWithGoogleEnabled
-	//}
-	//if req.Organization.OverrideLogInWithMicrosoftEnabled != *existingOrganization.OverrideLogInWithMicrosoftEnabled {
-	//	updates.OverrideLogInWithMicrosoftEnabled = &req.Organization.OverrideLogInWithMicrosoftEnabled
-	//}
-	//if req.Organization.OverrideLogInWithPasswordEnabled != *existingOrganization.OverrideLogInWithPasswordEnabled {
-	//	updates.OverrideLogInWithPasswordEnabled = &req.Organization.OverrideLogInWithPasswordEnabled
-	//}
+	updates.OverrideLogInMethods = qOrg.OverrideLogInMethods
+	if req.Organization.OverrideLogInMethods != nil {
+		updates.OverrideLogInMethods = *req.Organization.OverrideLogInMethods
+	}
 
-	updatedOrganization, err := q.UpdateOrganization(ctx, updates)
+	// update the override_log_in_with_..._enabled columns to null unless the
+	// organization is overriding those columns.
+	if req.Organization.GetOverrideLogInMethods() {
+		updates.OverrideLogInWithGoogleEnabled = &req.Organization.LogInWithGoogleEnabled
+		updates.OverrideLogInWithMicrosoftEnabled = &req.Organization.LogInWithMicrosoftEnabled
+		updates.OverrideLogInWithPasswordEnabled = &req.Organization.LogInWithPasswordEnabled
+	}
+
+	qUpdatedOrg, err := q.UpdateOrganization(ctx, updates)
 	if err != nil {
 		return nil, fmt.Errorf("update organization: %w", err)
 	}
 
-	if err := commit(); err != nil {
-		return nil, err
+	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 
-	return parseOrganization(updatedOrganization), nil
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
+	}
+
+	return &backendv1.UpdateOrganizationResponse{Organization: parseOrganization(qProject, qUpdatedOrg)}, nil
 }
 
-func parseOrganization(organization queries.Organization) *backendv1.Organization {
+func (s *Store) DeleteOrganization(ctx context.Context, req *backendv1.DeleteOrganizationRequest) (*backendv1.DeleteOrganizationResponse, error) {
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	orgID, err := idformat.Organization.Parse(req.Id)
+	if err != nil {
+		return nil, fmt.Errorf("parse organization id: %w", err)
+	}
+
+	// authz check
+	if _, err := q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
+		ProjectID: authn.ProjectID(ctx),
+		ID:        orgID,
+	}); err != nil {
+		return nil, fmt.Errorf("get organization: %w", err)
+	}
+
+	if err := q.DeleteOrganization(ctx, orgID); err != nil {
+		return nil, fmt.Errorf("delete organization: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
+	}
+
+	return &backendv1.DeleteOrganizationResponse{}, nil
+}
+
+func parseOrganization(qProject queries.Project, qOrg queries.Organization) *backendv1.Organization {
+	logInWithGoogleEnabled := qProject.LogInWithGoogleEnabled
+	logInWithMicrosoftEnabled := qProject.LogInWithMicrosoftEnabled
+	logInWithPasswordEnabled := qProject.LogInWithPasswordEnabled
+
+	if qOrg.OverrideLogInMethods {
+		logInWithGoogleEnabled = derefOrEmpty(qOrg.OverrideLogInWithGoogleEnabled)
+		logInWithMicrosoftEnabled = derefOrEmpty(qOrg.OverrideLogInWithMicrosoftEnabled)
+		logInWithPasswordEnabled = derefOrEmpty(qOrg.OverrideLogInWithPasswordEnabled)
+	}
+
 	return &backendv1.Organization{
-		Id:                                idformat.Organization.Format(organization.ID),
-		ProjectId:                         idformat.Project.Format(organization.ProjectID),
-		DisplayName:                       organization.DisplayName,
-		GoogleHostedDomain:                derefOrEmpty(organization.GoogleHostedDomain),
-		MicrosoftTenantId:                 derefOrEmpty(organization.MicrosoftTenantID),
-		OverrideLogInWithGoogleEnabled:    derefOrEmpty(organization.OverrideLogInWithGoogleEnabled),
-		OverrideLogInWithMicrosoftEnabled: derefOrEmpty(organization.OverrideLogInWithMicrosoftEnabled),
-		OverrideLogInWithPasswordEnabled:  derefOrEmpty(organization.OverrideLogInWithPasswordEnabled),
+		Id:                        idformat.Organization.Format(qOrg.ID),
+		ProjectId:                 idformat.Project.Format(qOrg.ProjectID),
+		DisplayName:               qOrg.DisplayName,
+		GoogleHostedDomain:        derefOrEmpty(qOrg.GoogleHostedDomain),
+		MicrosoftTenantId:         derefOrEmpty(qOrg.MicrosoftTenantID),
+		OverrideLogInMethods:      &qOrg.OverrideLogInMethods,
+		LogInWithGoogleEnabled:    logInWithGoogleEnabled,
+		LogInWithMicrosoftEnabled: logInWithMicrosoftEnabled,
+		LogInWithPasswordEnabled:  logInWithPasswordEnabled,
 	}
 }
