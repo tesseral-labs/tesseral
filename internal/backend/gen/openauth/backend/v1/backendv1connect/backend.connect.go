@@ -87,20 +87,11 @@ const (
 	// BackendServiceRevokeSCIMAPIKeyProcedure is the fully-qualified name of the BackendService's
 	// RevokeSCIMAPIKey RPC.
 	BackendServiceRevokeSCIMAPIKeyProcedure = "/openauth.backend.v1.BackendService/RevokeSCIMAPIKey"
-	// BackendServiceCreateUserProcedure is the fully-qualified name of the BackendService's CreateUser
-	// RPC.
-	BackendServiceCreateUserProcedure = "/openauth.backend.v1.BackendService/CreateUser"
 	// BackendServiceGetUserProcedure is the fully-qualified name of the BackendService's GetUser RPC.
 	BackendServiceGetUserProcedure = "/openauth.backend.v1.BackendService/GetUser"
 	// BackendServiceListUsersProcedure is the fully-qualified name of the BackendService's ListUsers
 	// RPC.
 	BackendServiceListUsersProcedure = "/openauth.backend.v1.BackendService/ListUsers"
-	// BackendServiceUpdateUserProcedure is the fully-qualified name of the BackendService's UpdateUser
-	// RPC.
-	BackendServiceUpdateUserProcedure = "/openauth.backend.v1.BackendService/UpdateUser"
-	// BackendServiceUpdateUserPasswordProcedure is the fully-qualified name of the BackendService's
-	// UpdateUserPassword RPC.
-	BackendServiceUpdateUserPasswordProcedure = "/openauth.backend.v1.BackendService/UpdateUserPassword"
 	// BackendServiceListProjectAPIKeysProcedure is the fully-qualified name of the BackendService's
 	// ListProjectAPIKeys RPC.
 	BackendServiceListProjectAPIKeysProcedure = "/openauth.backend.v1.BackendService/ListProjectAPIKeys"
@@ -142,11 +133,8 @@ var (
 	backendServiceUpdateSCIMAPIKeyMethodDescriptor     = backendServiceServiceDescriptor.Methods().ByName("UpdateSCIMAPIKey")
 	backendServiceDeleteSCIMAPIKeyMethodDescriptor     = backendServiceServiceDescriptor.Methods().ByName("DeleteSCIMAPIKey")
 	backendServiceRevokeSCIMAPIKeyMethodDescriptor     = backendServiceServiceDescriptor.Methods().ByName("RevokeSCIMAPIKey")
-	backendServiceCreateUserMethodDescriptor           = backendServiceServiceDescriptor.Methods().ByName("CreateUser")
 	backendServiceGetUserMethodDescriptor              = backendServiceServiceDescriptor.Methods().ByName("GetUser")
 	backendServiceListUsersMethodDescriptor            = backendServiceServiceDescriptor.Methods().ByName("ListUsers")
-	backendServiceUpdateUserMethodDescriptor           = backendServiceServiceDescriptor.Methods().ByName("UpdateUser")
-	backendServiceUpdateUserPasswordMethodDescriptor   = backendServiceServiceDescriptor.Methods().ByName("UpdateUserPassword")
 	backendServiceListProjectAPIKeysMethodDescriptor   = backendServiceServiceDescriptor.Methods().ByName("ListProjectAPIKeys")
 	backendServiceGetProjectAPIKeyMethodDescriptor     = backendServiceServiceDescriptor.Methods().ByName("GetProjectAPIKey")
 	backendServiceCreateProjectAPIKeyMethodDescriptor  = backendServiceServiceDescriptor.Methods().ByName("CreateProjectAPIKey")
@@ -175,16 +163,10 @@ type BackendServiceClient interface {
 	UpdateSCIMAPIKey(context.Context, *connect.Request[v1.UpdateSCIMAPIKeyRequest]) (*connect.Response[v1.UpdateSCIMAPIKeyResponse], error)
 	DeleteSCIMAPIKey(context.Context, *connect.Request[v1.DeleteSCIMAPIKeyRequest]) (*connect.Response[v1.DeleteSCIMAPIKeyResponse], error)
 	RevokeSCIMAPIKey(context.Context, *connect.Request[v1.RevokeSCIMAPIKeyRequest]) (*connect.Response[v1.RevokeSCIMAPIKeyResponse], error)
-	// Creates a user.
-	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.User], error)
 	// Gets a user.
-	GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.User], error)
+	GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error)
 	// Gets a list of users.
 	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
-	// Updates a user.
-	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.User], error)
-	// Updates a user's password.
-	UpdateUserPassword(context.Context, *connect.Request[v1.UpdateUserPasswordRequest]) (*connect.Response[v1.User], error)
 	ListProjectAPIKeys(context.Context, *connect.Request[v1.ListProjectAPIKeysRequest]) (*connect.Response[v1.ListProjectAPIKeysResponse], error)
 	GetProjectAPIKey(context.Context, *connect.Request[v1.GetProjectAPIKeyRequest]) (*connect.Response[v1.GetProjectAPIKeyResponse], error)
 	CreateProjectAPIKey(context.Context, *connect.Request[v1.CreateProjectAPIKeyRequest]) (*connect.Response[v1.CreateProjectAPIKeyResponse], error)
@@ -311,13 +293,7 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(backendServiceRevokeSCIMAPIKeyMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
-		createUser: connect.NewClient[v1.CreateUserRequest, v1.User](
-			httpClient,
-			baseURL+BackendServiceCreateUserProcedure,
-			connect.WithSchema(backendServiceCreateUserMethodDescriptor),
-			connect.WithClientOptions(opts...),
-		),
-		getUser: connect.NewClient[v1.GetUserRequest, v1.User](
+		getUser: connect.NewClient[v1.GetUserRequest, v1.GetUserResponse](
 			httpClient,
 			baseURL+BackendServiceGetUserProcedure,
 			connect.WithSchema(backendServiceGetUserMethodDescriptor),
@@ -327,18 +303,6 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			httpClient,
 			baseURL+BackendServiceListUsersProcedure,
 			connect.WithSchema(backendServiceListUsersMethodDescriptor),
-			connect.WithClientOptions(opts...),
-		),
-		updateUser: connect.NewClient[v1.UpdateUserRequest, v1.User](
-			httpClient,
-			baseURL+BackendServiceUpdateUserProcedure,
-			connect.WithSchema(backendServiceUpdateUserMethodDescriptor),
-			connect.WithClientOptions(opts...),
-		),
-		updateUserPassword: connect.NewClient[v1.UpdateUserPasswordRequest, v1.User](
-			httpClient,
-			baseURL+BackendServiceUpdateUserPasswordProcedure,
-			connect.WithSchema(backendServiceUpdateUserPasswordMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
 		listProjectAPIKeys: connect.NewClient[v1.ListProjectAPIKeysRequest, v1.ListProjectAPIKeysResponse](
@@ -400,11 +364,8 @@ type backendServiceClient struct {
 	updateSCIMAPIKey     *connect.Client[v1.UpdateSCIMAPIKeyRequest, v1.UpdateSCIMAPIKeyResponse]
 	deleteSCIMAPIKey     *connect.Client[v1.DeleteSCIMAPIKeyRequest, v1.DeleteSCIMAPIKeyResponse]
 	revokeSCIMAPIKey     *connect.Client[v1.RevokeSCIMAPIKeyRequest, v1.RevokeSCIMAPIKeyResponse]
-	createUser           *connect.Client[v1.CreateUserRequest, v1.User]
-	getUser              *connect.Client[v1.GetUserRequest, v1.User]
+	getUser              *connect.Client[v1.GetUserRequest, v1.GetUserResponse]
 	listUsers            *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
-	updateUser           *connect.Client[v1.UpdateUserRequest, v1.User]
-	updateUserPassword   *connect.Client[v1.UpdateUserPasswordRequest, v1.User]
 	listProjectAPIKeys   *connect.Client[v1.ListProjectAPIKeysRequest, v1.ListProjectAPIKeysResponse]
 	getProjectAPIKey     *connect.Client[v1.GetProjectAPIKeyRequest, v1.GetProjectAPIKeyResponse]
 	createProjectAPIKey  *connect.Client[v1.CreateProjectAPIKeyRequest, v1.CreateProjectAPIKeyResponse]
@@ -503,29 +464,14 @@ func (c *backendServiceClient) RevokeSCIMAPIKey(ctx context.Context, req *connec
 	return c.revokeSCIMAPIKey.CallUnary(ctx, req)
 }
 
-// CreateUser calls openauth.backend.v1.BackendService.CreateUser.
-func (c *backendServiceClient) CreateUser(ctx context.Context, req *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.User], error) {
-	return c.createUser.CallUnary(ctx, req)
-}
-
 // GetUser calls openauth.backend.v1.BackendService.GetUser.
-func (c *backendServiceClient) GetUser(ctx context.Context, req *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.User], error) {
+func (c *backendServiceClient) GetUser(ctx context.Context, req *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error) {
 	return c.getUser.CallUnary(ctx, req)
 }
 
 // ListUsers calls openauth.backend.v1.BackendService.ListUsers.
 func (c *backendServiceClient) ListUsers(ctx context.Context, req *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error) {
 	return c.listUsers.CallUnary(ctx, req)
-}
-
-// UpdateUser calls openauth.backend.v1.BackendService.UpdateUser.
-func (c *backendServiceClient) UpdateUser(ctx context.Context, req *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.User], error) {
-	return c.updateUser.CallUnary(ctx, req)
-}
-
-// UpdateUserPassword calls openauth.backend.v1.BackendService.UpdateUserPassword.
-func (c *backendServiceClient) UpdateUserPassword(ctx context.Context, req *connect.Request[v1.UpdateUserPasswordRequest]) (*connect.Response[v1.User], error) {
-	return c.updateUserPassword.CallUnary(ctx, req)
 }
 
 // ListProjectAPIKeys calls openauth.backend.v1.BackendService.ListProjectAPIKeys.
@@ -578,16 +524,10 @@ type BackendServiceHandler interface {
 	UpdateSCIMAPIKey(context.Context, *connect.Request[v1.UpdateSCIMAPIKeyRequest]) (*connect.Response[v1.UpdateSCIMAPIKeyResponse], error)
 	DeleteSCIMAPIKey(context.Context, *connect.Request[v1.DeleteSCIMAPIKeyRequest]) (*connect.Response[v1.DeleteSCIMAPIKeyResponse], error)
 	RevokeSCIMAPIKey(context.Context, *connect.Request[v1.RevokeSCIMAPIKeyRequest]) (*connect.Response[v1.RevokeSCIMAPIKeyResponse], error)
-	// Creates a user.
-	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.User], error)
 	// Gets a user.
-	GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.User], error)
+	GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error)
 	// Gets a list of users.
 	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
-	// Updates a user.
-	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.User], error)
-	// Updates a user's password.
-	UpdateUserPassword(context.Context, *connect.Request[v1.UpdateUserPasswordRequest]) (*connect.Response[v1.User], error)
 	ListProjectAPIKeys(context.Context, *connect.Request[v1.ListProjectAPIKeysRequest]) (*connect.Response[v1.ListProjectAPIKeysResponse], error)
 	GetProjectAPIKey(context.Context, *connect.Request[v1.GetProjectAPIKeyRequest]) (*connect.Response[v1.GetProjectAPIKeyResponse], error)
 	CreateProjectAPIKey(context.Context, *connect.Request[v1.CreateProjectAPIKeyRequest]) (*connect.Response[v1.CreateProjectAPIKeyResponse], error)
@@ -710,12 +650,6 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		connect.WithSchema(backendServiceRevokeSCIMAPIKeyMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
-	backendServiceCreateUserHandler := connect.NewUnaryHandler(
-		BackendServiceCreateUserProcedure,
-		svc.CreateUser,
-		connect.WithSchema(backendServiceCreateUserMethodDescriptor),
-		connect.WithHandlerOptions(opts...),
-	)
 	backendServiceGetUserHandler := connect.NewUnaryHandler(
 		BackendServiceGetUserProcedure,
 		svc.GetUser,
@@ -726,18 +660,6 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		BackendServiceListUsersProcedure,
 		svc.ListUsers,
 		connect.WithSchema(backendServiceListUsersMethodDescriptor),
-		connect.WithHandlerOptions(opts...),
-	)
-	backendServiceUpdateUserHandler := connect.NewUnaryHandler(
-		BackendServiceUpdateUserProcedure,
-		svc.UpdateUser,
-		connect.WithSchema(backendServiceUpdateUserMethodDescriptor),
-		connect.WithHandlerOptions(opts...),
-	)
-	backendServiceUpdateUserPasswordHandler := connect.NewUnaryHandler(
-		BackendServiceUpdateUserPasswordProcedure,
-		svc.UpdateUserPassword,
-		connect.WithSchema(backendServiceUpdateUserPasswordMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceListProjectAPIKeysHandler := connect.NewUnaryHandler(
@@ -814,16 +736,10 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceDeleteSCIMAPIKeyHandler.ServeHTTP(w, r)
 		case BackendServiceRevokeSCIMAPIKeyProcedure:
 			backendServiceRevokeSCIMAPIKeyHandler.ServeHTTP(w, r)
-		case BackendServiceCreateUserProcedure:
-			backendServiceCreateUserHandler.ServeHTTP(w, r)
 		case BackendServiceGetUserProcedure:
 			backendServiceGetUserHandler.ServeHTTP(w, r)
 		case BackendServiceListUsersProcedure:
 			backendServiceListUsersHandler.ServeHTTP(w, r)
-		case BackendServiceUpdateUserProcedure:
-			backendServiceUpdateUserHandler.ServeHTTP(w, r)
-		case BackendServiceUpdateUserPasswordProcedure:
-			backendServiceUpdateUserPasswordHandler.ServeHTTP(w, r)
 		case BackendServiceListProjectAPIKeysProcedure:
 			backendServiceListProjectAPIKeysHandler.ServeHTTP(w, r)
 		case BackendServiceGetProjectAPIKeyProcedure:
@@ -917,24 +833,12 @@ func (UnimplementedBackendServiceHandler) RevokeSCIMAPIKey(context.Context, *con
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.RevokeSCIMAPIKey is not implemented"))
 }
 
-func (UnimplementedBackendServiceHandler) CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.User], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.CreateUser is not implemented"))
-}
-
-func (UnimplementedBackendServiceHandler) GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.User], error) {
+func (UnimplementedBackendServiceHandler) GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetUser is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.ListUsers is not implemented"))
-}
-
-func (UnimplementedBackendServiceHandler) UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.User], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.UpdateUser is not implemented"))
-}
-
-func (UnimplementedBackendServiceHandler) UpdateUserPassword(context.Context, *connect.Request[v1.UpdateUserPasswordRequest]) (*connect.Response[v1.User], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.UpdateUserPassword is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) ListProjectAPIKeys(context.Context, *connect.Request[v1.ListProjectAPIKeysRequest]) (*connect.Response[v1.ListProjectAPIKeysResponse], error) {

@@ -284,3 +284,25 @@ WHERE
 RETURNING
     *;
 
+-- name: ListUsers :many
+SELECT
+    *
+FROM
+    users
+WHERE
+    organization_id = $1
+    AND id >= $2
+ORDER BY
+    id
+LIMIT $3;
+
+-- name: GetUser :one
+SELECT
+    users.*
+FROM
+    users
+    JOIN organizations ON users.organization_id = organizations.id
+WHERE
+    users.id = $1
+    AND organizations.project_id = $2;
+

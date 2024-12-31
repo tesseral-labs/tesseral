@@ -399,6 +399,39 @@ func (q *Queries) GetSessionSigningKeysByProjectID(ctx context.Context, projectI
 	return items, nil
 }
 
+const getUser = `-- name: GetUser :one
+SELECT
+    users.id, users.organization_id, users.password_bcrypt, users.google_user_id, users.microsoft_user_id, users.email, users.create_time, users.update_time, users.deactivate_time
+FROM
+    users
+    JOIN organizations ON users.organization_id = organizations.id
+WHERE
+    users.id = $1
+    AND organizations.project_id = $2
+`
+
+type GetUserParams struct {
+	ID        uuid.UUID
+	ProjectID uuid.UUID
+}
+
+func (q *Queries) GetUser(ctx context.Context, arg GetUserParams) (User, error) {
+	row := q.db.QueryRow(ctx, getUser, arg.ID, arg.ProjectID)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.PasswordBcrypt,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+		&i.Email,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.DeactivateTime,
+	)
+	return i, err
+}
+
 const listOrganizationsByProjectId = `-- name: ListOrganizationsByProjectId :many
 SELECT
     id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods
@@ -611,6 +644,55 @@ func (q *Queries) ListSCIMAPIKeys(ctx context.Context, arg ListSCIMAPIKeysParams
 			&i.OrganizationID,
 			&i.TokenSha256,
 			&i.DisplayName,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listUsers = `-- name: ListUsers :many
+SELECT
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time
+FROM
+    users
+WHERE
+    organization_id = $1
+    AND id >= $2
+ORDER BY
+    id
+LIMIT $3
+`
+
+type ListUsersParams struct {
+	OrganizationID uuid.UUID
+	ID             uuid.UUID
+	Limit          int32
+}
+
+func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]User, error) {
+	rows, err := q.db.Query(ctx, listUsers, arg.OrganizationID, arg.ID, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []User
+	for rows.Next() {
+		var i User
+		if err := rows.Scan(
+			&i.ID,
+			&i.OrganizationID,
+			&i.PasswordBcrypt,
+			&i.GoogleUserID,
+			&i.MicrosoftUserID,
+			&i.Email,
+			&i.CreateTime,
+			&i.UpdateTime,
+			&i.DeactivateTime,
 		); err != nil {
 			return nil, err
 		}
