@@ -306,3 +306,47 @@ WHERE
     users.id = $1
     AND organizations.project_id = $2;
 
+-- name: ListSessions :many
+SELECT
+    *
+FROM
+    sessions
+WHERE
+    user_id = $1
+    AND id >= $2
+ORDER BY
+    id
+LIMIT $3;
+
+-- name: GetSession :one
+SELECT
+    sessions.*
+FROM
+    sessions
+    JOIN users ON sessions.user_id = users.id
+    JOIN organizations ON users.organization_id = organizations.id
+WHERE
+    sessions.id = $1
+    AND organizations.project_id = $2;
+
+-- name: ListIntermediateSessions :many
+SELECT
+    *
+FROM
+    intermediate_sessions
+WHERE
+    project_id = $1
+    AND id >= $2
+ORDER BY
+    id
+LIMIT $3;
+
+-- name: GetIntermediateSession :one
+SELECT
+    intermediate_sessions.*
+FROM
+    intermediate_sessions
+WHERE
+    id = $1
+    AND project_id = $2;
+

@@ -87,11 +87,23 @@ const (
 	// BackendServiceRevokeSCIMAPIKeyProcedure is the fully-qualified name of the BackendService's
 	// RevokeSCIMAPIKey RPC.
 	BackendServiceRevokeSCIMAPIKeyProcedure = "/openauth.backend.v1.BackendService/RevokeSCIMAPIKey"
-	// BackendServiceGetUserProcedure is the fully-qualified name of the BackendService's GetUser RPC.
-	BackendServiceGetUserProcedure = "/openauth.backend.v1.BackendService/GetUser"
 	// BackendServiceListUsersProcedure is the fully-qualified name of the BackendService's ListUsers
 	// RPC.
 	BackendServiceListUsersProcedure = "/openauth.backend.v1.BackendService/ListUsers"
+	// BackendServiceGetUserProcedure is the fully-qualified name of the BackendService's GetUser RPC.
+	BackendServiceGetUserProcedure = "/openauth.backend.v1.BackendService/GetUser"
+	// BackendServiceListSessionsProcedure is the fully-qualified name of the BackendService's
+	// ListSessions RPC.
+	BackendServiceListSessionsProcedure = "/openauth.backend.v1.BackendService/ListSessions"
+	// BackendServiceGetSessionProcedure is the fully-qualified name of the BackendService's GetSession
+	// RPC.
+	BackendServiceGetSessionProcedure = "/openauth.backend.v1.BackendService/GetSession"
+	// BackendServiceListIntermediateSessionsProcedure is the fully-qualified name of the
+	// BackendService's ListIntermediateSessions RPC.
+	BackendServiceListIntermediateSessionsProcedure = "/openauth.backend.v1.BackendService/ListIntermediateSessions"
+	// BackendServiceGetIntermediateSessionProcedure is the fully-qualified name of the BackendService's
+	// GetIntermediateSession RPC.
+	BackendServiceGetIntermediateSessionProcedure = "/openauth.backend.v1.BackendService/GetIntermediateSession"
 	// BackendServiceListProjectAPIKeysProcedure is the fully-qualified name of the BackendService's
 	// ListProjectAPIKeys RPC.
 	BackendServiceListProjectAPIKeysProcedure = "/openauth.backend.v1.BackendService/ListProjectAPIKeys"
@@ -114,33 +126,37 @@ const (
 
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
 var (
-	backendServiceServiceDescriptor                    = v1.File_openauth_backend_v1_backend_proto.Services().ByName("BackendService")
-	backendServiceGetProjectMethodDescriptor           = backendServiceServiceDescriptor.Methods().ByName("GetProject")
-	backendServiceUpdateProjectMethodDescriptor        = backendServiceServiceDescriptor.Methods().ByName("UpdateProject")
-	backendServiceListOrganizationsMethodDescriptor    = backendServiceServiceDescriptor.Methods().ByName("ListOrganizations")
-	backendServiceGetOrganizationMethodDescriptor      = backendServiceServiceDescriptor.Methods().ByName("GetOrganization")
-	backendServiceCreateOrganizationMethodDescriptor   = backendServiceServiceDescriptor.Methods().ByName("CreateOrganization")
-	backendServiceUpdateOrganizationMethodDescriptor   = backendServiceServiceDescriptor.Methods().ByName("UpdateOrganization")
-	backendServiceDeleteOrganizationMethodDescriptor   = backendServiceServiceDescriptor.Methods().ByName("DeleteOrganization")
-	backendServiceListSAMLConnectionsMethodDescriptor  = backendServiceServiceDescriptor.Methods().ByName("ListSAMLConnections")
-	backendServiceGetSAMLConnectionMethodDescriptor    = backendServiceServiceDescriptor.Methods().ByName("GetSAMLConnection")
-	backendServiceCreateSAMLConnectionMethodDescriptor = backendServiceServiceDescriptor.Methods().ByName("CreateSAMLConnection")
-	backendServiceUpdateSAMLConnectionMethodDescriptor = backendServiceServiceDescriptor.Methods().ByName("UpdateSAMLConnection")
-	backendServiceDeleteSAMLConnectionMethodDescriptor = backendServiceServiceDescriptor.Methods().ByName("DeleteSAMLConnection")
-	backendServiceListSCIMAPIKeysMethodDescriptor      = backendServiceServiceDescriptor.Methods().ByName("ListSCIMAPIKeys")
-	backendServiceGetSCIMAPIKeyMethodDescriptor        = backendServiceServiceDescriptor.Methods().ByName("GetSCIMAPIKey")
-	backendServiceCreateSCIMAPIKeyMethodDescriptor     = backendServiceServiceDescriptor.Methods().ByName("CreateSCIMAPIKey")
-	backendServiceUpdateSCIMAPIKeyMethodDescriptor     = backendServiceServiceDescriptor.Methods().ByName("UpdateSCIMAPIKey")
-	backendServiceDeleteSCIMAPIKeyMethodDescriptor     = backendServiceServiceDescriptor.Methods().ByName("DeleteSCIMAPIKey")
-	backendServiceRevokeSCIMAPIKeyMethodDescriptor     = backendServiceServiceDescriptor.Methods().ByName("RevokeSCIMAPIKey")
-	backendServiceGetUserMethodDescriptor              = backendServiceServiceDescriptor.Methods().ByName("GetUser")
-	backendServiceListUsersMethodDescriptor            = backendServiceServiceDescriptor.Methods().ByName("ListUsers")
-	backendServiceListProjectAPIKeysMethodDescriptor   = backendServiceServiceDescriptor.Methods().ByName("ListProjectAPIKeys")
-	backendServiceGetProjectAPIKeyMethodDescriptor     = backendServiceServiceDescriptor.Methods().ByName("GetProjectAPIKey")
-	backendServiceCreateProjectAPIKeyMethodDescriptor  = backendServiceServiceDescriptor.Methods().ByName("CreateProjectAPIKey")
-	backendServiceUpdateProjectAPIKeyMethodDescriptor  = backendServiceServiceDescriptor.Methods().ByName("UpdateProjectAPIKey")
-	backendServiceDeleteProjectAPIKeyMethodDescriptor  = backendServiceServiceDescriptor.Methods().ByName("DeleteProjectAPIKey")
-	backendServiceRevokeProjectAPIKeyMethodDescriptor  = backendServiceServiceDescriptor.Methods().ByName("RevokeProjectAPIKey")
+	backendServiceServiceDescriptor                        = v1.File_openauth_backend_v1_backend_proto.Services().ByName("BackendService")
+	backendServiceGetProjectMethodDescriptor               = backendServiceServiceDescriptor.Methods().ByName("GetProject")
+	backendServiceUpdateProjectMethodDescriptor            = backendServiceServiceDescriptor.Methods().ByName("UpdateProject")
+	backendServiceListOrganizationsMethodDescriptor        = backendServiceServiceDescriptor.Methods().ByName("ListOrganizations")
+	backendServiceGetOrganizationMethodDescriptor          = backendServiceServiceDescriptor.Methods().ByName("GetOrganization")
+	backendServiceCreateOrganizationMethodDescriptor       = backendServiceServiceDescriptor.Methods().ByName("CreateOrganization")
+	backendServiceUpdateOrganizationMethodDescriptor       = backendServiceServiceDescriptor.Methods().ByName("UpdateOrganization")
+	backendServiceDeleteOrganizationMethodDescriptor       = backendServiceServiceDescriptor.Methods().ByName("DeleteOrganization")
+	backendServiceListSAMLConnectionsMethodDescriptor      = backendServiceServiceDescriptor.Methods().ByName("ListSAMLConnections")
+	backendServiceGetSAMLConnectionMethodDescriptor        = backendServiceServiceDescriptor.Methods().ByName("GetSAMLConnection")
+	backendServiceCreateSAMLConnectionMethodDescriptor     = backendServiceServiceDescriptor.Methods().ByName("CreateSAMLConnection")
+	backendServiceUpdateSAMLConnectionMethodDescriptor     = backendServiceServiceDescriptor.Methods().ByName("UpdateSAMLConnection")
+	backendServiceDeleteSAMLConnectionMethodDescriptor     = backendServiceServiceDescriptor.Methods().ByName("DeleteSAMLConnection")
+	backendServiceListSCIMAPIKeysMethodDescriptor          = backendServiceServiceDescriptor.Methods().ByName("ListSCIMAPIKeys")
+	backendServiceGetSCIMAPIKeyMethodDescriptor            = backendServiceServiceDescriptor.Methods().ByName("GetSCIMAPIKey")
+	backendServiceCreateSCIMAPIKeyMethodDescriptor         = backendServiceServiceDescriptor.Methods().ByName("CreateSCIMAPIKey")
+	backendServiceUpdateSCIMAPIKeyMethodDescriptor         = backendServiceServiceDescriptor.Methods().ByName("UpdateSCIMAPIKey")
+	backendServiceDeleteSCIMAPIKeyMethodDescriptor         = backendServiceServiceDescriptor.Methods().ByName("DeleteSCIMAPIKey")
+	backendServiceRevokeSCIMAPIKeyMethodDescriptor         = backendServiceServiceDescriptor.Methods().ByName("RevokeSCIMAPIKey")
+	backendServiceListUsersMethodDescriptor                = backendServiceServiceDescriptor.Methods().ByName("ListUsers")
+	backendServiceGetUserMethodDescriptor                  = backendServiceServiceDescriptor.Methods().ByName("GetUser")
+	backendServiceListSessionsMethodDescriptor             = backendServiceServiceDescriptor.Methods().ByName("ListSessions")
+	backendServiceGetSessionMethodDescriptor               = backendServiceServiceDescriptor.Methods().ByName("GetSession")
+	backendServiceListIntermediateSessionsMethodDescriptor = backendServiceServiceDescriptor.Methods().ByName("ListIntermediateSessions")
+	backendServiceGetIntermediateSessionMethodDescriptor   = backendServiceServiceDescriptor.Methods().ByName("GetIntermediateSession")
+	backendServiceListProjectAPIKeysMethodDescriptor       = backendServiceServiceDescriptor.Methods().ByName("ListProjectAPIKeys")
+	backendServiceGetProjectAPIKeyMethodDescriptor         = backendServiceServiceDescriptor.Methods().ByName("GetProjectAPIKey")
+	backendServiceCreateProjectAPIKeyMethodDescriptor      = backendServiceServiceDescriptor.Methods().ByName("CreateProjectAPIKey")
+	backendServiceUpdateProjectAPIKeyMethodDescriptor      = backendServiceServiceDescriptor.Methods().ByName("UpdateProjectAPIKey")
+	backendServiceDeleteProjectAPIKeyMethodDescriptor      = backendServiceServiceDescriptor.Methods().ByName("DeleteProjectAPIKey")
+	backendServiceRevokeProjectAPIKeyMethodDescriptor      = backendServiceServiceDescriptor.Methods().ByName("RevokeProjectAPIKey")
 )
 
 // BackendServiceClient is a client for the openauth.backend.v1.BackendService service.
@@ -163,10 +179,12 @@ type BackendServiceClient interface {
 	UpdateSCIMAPIKey(context.Context, *connect.Request[v1.UpdateSCIMAPIKeyRequest]) (*connect.Response[v1.UpdateSCIMAPIKeyResponse], error)
 	DeleteSCIMAPIKey(context.Context, *connect.Request[v1.DeleteSCIMAPIKeyRequest]) (*connect.Response[v1.DeleteSCIMAPIKeyResponse], error)
 	RevokeSCIMAPIKey(context.Context, *connect.Request[v1.RevokeSCIMAPIKeyRequest]) (*connect.Response[v1.RevokeSCIMAPIKeyResponse], error)
-	// Gets a user.
-	GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error)
-	// Gets a list of users.
 	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
+	GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error)
+	ListSessions(context.Context, *connect.Request[v1.ListSessionsRequest]) (*connect.Response[v1.ListSessionsResponse], error)
+	GetSession(context.Context, *connect.Request[v1.GetSessionRequest]) (*connect.Response[v1.GetSessionResponse], error)
+	ListIntermediateSessions(context.Context, *connect.Request[v1.ListIntermediateSessionsRequest]) (*connect.Response[v1.ListIntermediateSessionsResponse], error)
+	GetIntermediateSession(context.Context, *connect.Request[v1.GetIntermediateSessionRequest]) (*connect.Response[v1.GetIntermediateSessionResponse], error)
 	ListProjectAPIKeys(context.Context, *connect.Request[v1.ListProjectAPIKeysRequest]) (*connect.Response[v1.ListProjectAPIKeysResponse], error)
 	GetProjectAPIKey(context.Context, *connect.Request[v1.GetProjectAPIKeyRequest]) (*connect.Response[v1.GetProjectAPIKeyResponse], error)
 	CreateProjectAPIKey(context.Context, *connect.Request[v1.CreateProjectAPIKeyRequest]) (*connect.Response[v1.CreateProjectAPIKeyResponse], error)
@@ -293,16 +311,40 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(backendServiceRevokeSCIMAPIKeyMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
+		listUsers: connect.NewClient[v1.ListUsersRequest, v1.ListUsersResponse](
+			httpClient,
+			baseURL+BackendServiceListUsersProcedure,
+			connect.WithSchema(backendServiceListUsersMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
 		getUser: connect.NewClient[v1.GetUserRequest, v1.GetUserResponse](
 			httpClient,
 			baseURL+BackendServiceGetUserProcedure,
 			connect.WithSchema(backendServiceGetUserMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
-		listUsers: connect.NewClient[v1.ListUsersRequest, v1.ListUsersResponse](
+		listSessions: connect.NewClient[v1.ListSessionsRequest, v1.ListSessionsResponse](
 			httpClient,
-			baseURL+BackendServiceListUsersProcedure,
-			connect.WithSchema(backendServiceListUsersMethodDescriptor),
+			baseURL+BackendServiceListSessionsProcedure,
+			connect.WithSchema(backendServiceListSessionsMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		getSession: connect.NewClient[v1.GetSessionRequest, v1.GetSessionResponse](
+			httpClient,
+			baseURL+BackendServiceGetSessionProcedure,
+			connect.WithSchema(backendServiceGetSessionMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		listIntermediateSessions: connect.NewClient[v1.ListIntermediateSessionsRequest, v1.ListIntermediateSessionsResponse](
+			httpClient,
+			baseURL+BackendServiceListIntermediateSessionsProcedure,
+			connect.WithSchema(backendServiceListIntermediateSessionsMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		getIntermediateSession: connect.NewClient[v1.GetIntermediateSessionRequest, v1.GetIntermediateSessionResponse](
+			httpClient,
+			baseURL+BackendServiceGetIntermediateSessionProcedure,
+			connect.WithSchema(backendServiceGetIntermediateSessionMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
 		listProjectAPIKeys: connect.NewClient[v1.ListProjectAPIKeysRequest, v1.ListProjectAPIKeysResponse](
@@ -346,32 +388,36 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 
 // backendServiceClient implements BackendServiceClient.
 type backendServiceClient struct {
-	getProject           *connect.Client[v1.GetProjectRequest, v1.GetProjectResponse]
-	updateProject        *connect.Client[v1.UpdateProjectRequest, v1.UpdateProjectResponse]
-	listOrganizations    *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
-	getOrganization      *connect.Client[v1.GetOrganizationRequest, v1.GetOrganizationResponse]
-	createOrganization   *connect.Client[v1.CreateOrganizationRequest, v1.CreateOrganizationResponse]
-	updateOrganization   *connect.Client[v1.UpdateOrganizationRequest, v1.UpdateOrganizationResponse]
-	deleteOrganization   *connect.Client[v1.DeleteOrganizationRequest, v1.DeleteOrganizationResponse]
-	listSAMLConnections  *connect.Client[v1.ListSAMLConnectionsRequest, v1.ListSAMLConnectionsResponse]
-	getSAMLConnection    *connect.Client[v1.GetSAMLConnectionRequest, v1.GetSAMLConnectionResponse]
-	createSAMLConnection *connect.Client[v1.CreateSAMLConnectionRequest, v1.CreateSAMLConnectionResponse]
-	updateSAMLConnection *connect.Client[v1.UpdateSAMLConnectionRequest, v1.UpdateSAMLConnectionResponse]
-	deleteSAMLConnection *connect.Client[v1.DeleteSAMLConnectionRequest, v1.DeleteSAMLConnectionResponse]
-	listSCIMAPIKeys      *connect.Client[v1.ListSCIMAPIKeysRequest, v1.ListSCIMAPIKeysResponse]
-	getSCIMAPIKey        *connect.Client[v1.GetSCIMAPIKeyRequest, v1.GetSCIMAPIKeyResponse]
-	createSCIMAPIKey     *connect.Client[v1.CreateSCIMAPIKeyRequest, v1.CreateSCIMAPIKeyResponse]
-	updateSCIMAPIKey     *connect.Client[v1.UpdateSCIMAPIKeyRequest, v1.UpdateSCIMAPIKeyResponse]
-	deleteSCIMAPIKey     *connect.Client[v1.DeleteSCIMAPIKeyRequest, v1.DeleteSCIMAPIKeyResponse]
-	revokeSCIMAPIKey     *connect.Client[v1.RevokeSCIMAPIKeyRequest, v1.RevokeSCIMAPIKeyResponse]
-	getUser              *connect.Client[v1.GetUserRequest, v1.GetUserResponse]
-	listUsers            *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
-	listProjectAPIKeys   *connect.Client[v1.ListProjectAPIKeysRequest, v1.ListProjectAPIKeysResponse]
-	getProjectAPIKey     *connect.Client[v1.GetProjectAPIKeyRequest, v1.GetProjectAPIKeyResponse]
-	createProjectAPIKey  *connect.Client[v1.CreateProjectAPIKeyRequest, v1.CreateProjectAPIKeyResponse]
-	updateProjectAPIKey  *connect.Client[v1.UpdateProjectAPIKeyRequest, v1.UpdateProjectAPIKeyResponse]
-	deleteProjectAPIKey  *connect.Client[v1.DeleteProjectAPIKeyRequest, v1.DeleteProjectAPIKeyResponse]
-	revokeProjectAPIKey  *connect.Client[v1.RevokeProjectAPIKeyRequest, v1.RevokeProjectAPIKeyResponse]
+	getProject               *connect.Client[v1.GetProjectRequest, v1.GetProjectResponse]
+	updateProject            *connect.Client[v1.UpdateProjectRequest, v1.UpdateProjectResponse]
+	listOrganizations        *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
+	getOrganization          *connect.Client[v1.GetOrganizationRequest, v1.GetOrganizationResponse]
+	createOrganization       *connect.Client[v1.CreateOrganizationRequest, v1.CreateOrganizationResponse]
+	updateOrganization       *connect.Client[v1.UpdateOrganizationRequest, v1.UpdateOrganizationResponse]
+	deleteOrganization       *connect.Client[v1.DeleteOrganizationRequest, v1.DeleteOrganizationResponse]
+	listSAMLConnections      *connect.Client[v1.ListSAMLConnectionsRequest, v1.ListSAMLConnectionsResponse]
+	getSAMLConnection        *connect.Client[v1.GetSAMLConnectionRequest, v1.GetSAMLConnectionResponse]
+	createSAMLConnection     *connect.Client[v1.CreateSAMLConnectionRequest, v1.CreateSAMLConnectionResponse]
+	updateSAMLConnection     *connect.Client[v1.UpdateSAMLConnectionRequest, v1.UpdateSAMLConnectionResponse]
+	deleteSAMLConnection     *connect.Client[v1.DeleteSAMLConnectionRequest, v1.DeleteSAMLConnectionResponse]
+	listSCIMAPIKeys          *connect.Client[v1.ListSCIMAPIKeysRequest, v1.ListSCIMAPIKeysResponse]
+	getSCIMAPIKey            *connect.Client[v1.GetSCIMAPIKeyRequest, v1.GetSCIMAPIKeyResponse]
+	createSCIMAPIKey         *connect.Client[v1.CreateSCIMAPIKeyRequest, v1.CreateSCIMAPIKeyResponse]
+	updateSCIMAPIKey         *connect.Client[v1.UpdateSCIMAPIKeyRequest, v1.UpdateSCIMAPIKeyResponse]
+	deleteSCIMAPIKey         *connect.Client[v1.DeleteSCIMAPIKeyRequest, v1.DeleteSCIMAPIKeyResponse]
+	revokeSCIMAPIKey         *connect.Client[v1.RevokeSCIMAPIKeyRequest, v1.RevokeSCIMAPIKeyResponse]
+	listUsers                *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
+	getUser                  *connect.Client[v1.GetUserRequest, v1.GetUserResponse]
+	listSessions             *connect.Client[v1.ListSessionsRequest, v1.ListSessionsResponse]
+	getSession               *connect.Client[v1.GetSessionRequest, v1.GetSessionResponse]
+	listIntermediateSessions *connect.Client[v1.ListIntermediateSessionsRequest, v1.ListIntermediateSessionsResponse]
+	getIntermediateSession   *connect.Client[v1.GetIntermediateSessionRequest, v1.GetIntermediateSessionResponse]
+	listProjectAPIKeys       *connect.Client[v1.ListProjectAPIKeysRequest, v1.ListProjectAPIKeysResponse]
+	getProjectAPIKey         *connect.Client[v1.GetProjectAPIKeyRequest, v1.GetProjectAPIKeyResponse]
+	createProjectAPIKey      *connect.Client[v1.CreateProjectAPIKeyRequest, v1.CreateProjectAPIKeyResponse]
+	updateProjectAPIKey      *connect.Client[v1.UpdateProjectAPIKeyRequest, v1.UpdateProjectAPIKeyResponse]
+	deleteProjectAPIKey      *connect.Client[v1.DeleteProjectAPIKeyRequest, v1.DeleteProjectAPIKeyResponse]
+	revokeProjectAPIKey      *connect.Client[v1.RevokeProjectAPIKeyRequest, v1.RevokeProjectAPIKeyResponse]
 }
 
 // GetProject calls openauth.backend.v1.BackendService.GetProject.
@@ -464,14 +510,34 @@ func (c *backendServiceClient) RevokeSCIMAPIKey(ctx context.Context, req *connec
 	return c.revokeSCIMAPIKey.CallUnary(ctx, req)
 }
 
+// ListUsers calls openauth.backend.v1.BackendService.ListUsers.
+func (c *backendServiceClient) ListUsers(ctx context.Context, req *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error) {
+	return c.listUsers.CallUnary(ctx, req)
+}
+
 // GetUser calls openauth.backend.v1.BackendService.GetUser.
 func (c *backendServiceClient) GetUser(ctx context.Context, req *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error) {
 	return c.getUser.CallUnary(ctx, req)
 }
 
-// ListUsers calls openauth.backend.v1.BackendService.ListUsers.
-func (c *backendServiceClient) ListUsers(ctx context.Context, req *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error) {
-	return c.listUsers.CallUnary(ctx, req)
+// ListSessions calls openauth.backend.v1.BackendService.ListSessions.
+func (c *backendServiceClient) ListSessions(ctx context.Context, req *connect.Request[v1.ListSessionsRequest]) (*connect.Response[v1.ListSessionsResponse], error) {
+	return c.listSessions.CallUnary(ctx, req)
+}
+
+// GetSession calls openauth.backend.v1.BackendService.GetSession.
+func (c *backendServiceClient) GetSession(ctx context.Context, req *connect.Request[v1.GetSessionRequest]) (*connect.Response[v1.GetSessionResponse], error) {
+	return c.getSession.CallUnary(ctx, req)
+}
+
+// ListIntermediateSessions calls openauth.backend.v1.BackendService.ListIntermediateSessions.
+func (c *backendServiceClient) ListIntermediateSessions(ctx context.Context, req *connect.Request[v1.ListIntermediateSessionsRequest]) (*connect.Response[v1.ListIntermediateSessionsResponse], error) {
+	return c.listIntermediateSessions.CallUnary(ctx, req)
+}
+
+// GetIntermediateSession calls openauth.backend.v1.BackendService.GetIntermediateSession.
+func (c *backendServiceClient) GetIntermediateSession(ctx context.Context, req *connect.Request[v1.GetIntermediateSessionRequest]) (*connect.Response[v1.GetIntermediateSessionResponse], error) {
+	return c.getIntermediateSession.CallUnary(ctx, req)
 }
 
 // ListProjectAPIKeys calls openauth.backend.v1.BackendService.ListProjectAPIKeys.
@@ -524,10 +590,12 @@ type BackendServiceHandler interface {
 	UpdateSCIMAPIKey(context.Context, *connect.Request[v1.UpdateSCIMAPIKeyRequest]) (*connect.Response[v1.UpdateSCIMAPIKeyResponse], error)
 	DeleteSCIMAPIKey(context.Context, *connect.Request[v1.DeleteSCIMAPIKeyRequest]) (*connect.Response[v1.DeleteSCIMAPIKeyResponse], error)
 	RevokeSCIMAPIKey(context.Context, *connect.Request[v1.RevokeSCIMAPIKeyRequest]) (*connect.Response[v1.RevokeSCIMAPIKeyResponse], error)
-	// Gets a user.
-	GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error)
-	// Gets a list of users.
 	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
+	GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error)
+	ListSessions(context.Context, *connect.Request[v1.ListSessionsRequest]) (*connect.Response[v1.ListSessionsResponse], error)
+	GetSession(context.Context, *connect.Request[v1.GetSessionRequest]) (*connect.Response[v1.GetSessionResponse], error)
+	ListIntermediateSessions(context.Context, *connect.Request[v1.ListIntermediateSessionsRequest]) (*connect.Response[v1.ListIntermediateSessionsResponse], error)
+	GetIntermediateSession(context.Context, *connect.Request[v1.GetIntermediateSessionRequest]) (*connect.Response[v1.GetIntermediateSessionResponse], error)
 	ListProjectAPIKeys(context.Context, *connect.Request[v1.ListProjectAPIKeysRequest]) (*connect.Response[v1.ListProjectAPIKeysResponse], error)
 	GetProjectAPIKey(context.Context, *connect.Request[v1.GetProjectAPIKeyRequest]) (*connect.Response[v1.GetProjectAPIKeyResponse], error)
 	CreateProjectAPIKey(context.Context, *connect.Request[v1.CreateProjectAPIKeyRequest]) (*connect.Response[v1.CreateProjectAPIKeyResponse], error)
@@ -650,16 +718,40 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		connect.WithSchema(backendServiceRevokeSCIMAPIKeyMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
+	backendServiceListUsersHandler := connect.NewUnaryHandler(
+		BackendServiceListUsersProcedure,
+		svc.ListUsers,
+		connect.WithSchema(backendServiceListUsersMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
 	backendServiceGetUserHandler := connect.NewUnaryHandler(
 		BackendServiceGetUserProcedure,
 		svc.GetUser,
 		connect.WithSchema(backendServiceGetUserMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
-	backendServiceListUsersHandler := connect.NewUnaryHandler(
-		BackendServiceListUsersProcedure,
-		svc.ListUsers,
-		connect.WithSchema(backendServiceListUsersMethodDescriptor),
+	backendServiceListSessionsHandler := connect.NewUnaryHandler(
+		BackendServiceListSessionsProcedure,
+		svc.ListSessions,
+		connect.WithSchema(backendServiceListSessionsMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceGetSessionHandler := connect.NewUnaryHandler(
+		BackendServiceGetSessionProcedure,
+		svc.GetSession,
+		connect.WithSchema(backendServiceGetSessionMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceListIntermediateSessionsHandler := connect.NewUnaryHandler(
+		BackendServiceListIntermediateSessionsProcedure,
+		svc.ListIntermediateSessions,
+		connect.WithSchema(backendServiceListIntermediateSessionsMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceGetIntermediateSessionHandler := connect.NewUnaryHandler(
+		BackendServiceGetIntermediateSessionProcedure,
+		svc.GetIntermediateSession,
+		connect.WithSchema(backendServiceGetIntermediateSessionMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceListProjectAPIKeysHandler := connect.NewUnaryHandler(
@@ -736,10 +828,18 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceDeleteSCIMAPIKeyHandler.ServeHTTP(w, r)
 		case BackendServiceRevokeSCIMAPIKeyProcedure:
 			backendServiceRevokeSCIMAPIKeyHandler.ServeHTTP(w, r)
-		case BackendServiceGetUserProcedure:
-			backendServiceGetUserHandler.ServeHTTP(w, r)
 		case BackendServiceListUsersProcedure:
 			backendServiceListUsersHandler.ServeHTTP(w, r)
+		case BackendServiceGetUserProcedure:
+			backendServiceGetUserHandler.ServeHTTP(w, r)
+		case BackendServiceListSessionsProcedure:
+			backendServiceListSessionsHandler.ServeHTTP(w, r)
+		case BackendServiceGetSessionProcedure:
+			backendServiceGetSessionHandler.ServeHTTP(w, r)
+		case BackendServiceListIntermediateSessionsProcedure:
+			backendServiceListIntermediateSessionsHandler.ServeHTTP(w, r)
+		case BackendServiceGetIntermediateSessionProcedure:
+			backendServiceGetIntermediateSessionHandler.ServeHTTP(w, r)
 		case BackendServiceListProjectAPIKeysProcedure:
 			backendServiceListProjectAPIKeysHandler.ServeHTTP(w, r)
 		case BackendServiceGetProjectAPIKeyProcedure:
@@ -833,12 +933,28 @@ func (UnimplementedBackendServiceHandler) RevokeSCIMAPIKey(context.Context, *con
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.RevokeSCIMAPIKey is not implemented"))
 }
 
+func (UnimplementedBackendServiceHandler) ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.ListUsers is not implemented"))
+}
+
 func (UnimplementedBackendServiceHandler) GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetUser is not implemented"))
 }
 
-func (UnimplementedBackendServiceHandler) ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.ListUsers is not implemented"))
+func (UnimplementedBackendServiceHandler) ListSessions(context.Context, *connect.Request[v1.ListSessionsRequest]) (*connect.Response[v1.ListSessionsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.ListSessions is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) GetSession(context.Context, *connect.Request[v1.GetSessionRequest]) (*connect.Response[v1.GetSessionResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetSession is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) ListIntermediateSessions(context.Context, *connect.Request[v1.ListIntermediateSessionsRequest]) (*connect.Response[v1.ListIntermediateSessionsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.ListIntermediateSessions is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) GetIntermediateSession(context.Context, *connect.Request[v1.GetIntermediateSessionRequest]) (*connect.Response[v1.GetIntermediateSessionResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetIntermediateSession is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) ListProjectAPIKeys(context.Context, *connect.Request[v1.ListProjectAPIKeysRequest]) (*connect.Response[v1.ListProjectAPIKeysResponse], error) {

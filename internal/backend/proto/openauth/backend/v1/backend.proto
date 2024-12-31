@@ -124,17 +124,38 @@ service BackendService {
     };
   }
 
-  // Gets a user.
+  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse) {
+    option (google.api.http) = {
+      get: "/backend/v1/users"
+    };
+  }
+
   rpc GetUser(GetUserRequest) returns (GetUserResponse) {
     option (google.api.http) = {
       get: "/backend/v1/users/{id}"
     };
   }
 
-  // Gets a list of users.
-  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse) {
+  rpc ListSessions(ListSessionsRequest) returns (ListSessionsResponse) {
     option (google.api.http) = {
-      get: "/backend/v1/users"
+      get: "/backend/v1/sessions"
+    };
+  }
+
+  rpc GetSession(GetSessionRequest) returns (GetSessionResponse) {
+    option (google.api.http) = {
+      get: "/backend/v1/sessions/{id}"
+    };
+  }
+
+  rpc ListIntermediateSessions(ListIntermediateSessionsRequest) returns (ListIntermediateSessionsResponse) {
+    option (google.api.http) = {
+      get: "/backend/v1/intermediate-sessions"
+    };
+  }
+  rpc GetIntermediateSession(GetIntermediateSessionRequest) returns (GetIntermediateSessionResponse) {
+    option (google.api.http) = {
+      get: "/backend/v1/intermediate-sessions/{id}"
     };
   }
 
@@ -301,14 +322,6 @@ message RevokeSCIMAPIKeyResponse {
   SCIMAPIKey scim_api_key = 1;
 }
 
-message GetUserRequest {
-  string id = 1;
-}
-
-message GetUserResponse {
-  User user = 1;
-}
-
 message ListUsersRequest {
   string organization_id = 1;
   string page_token = 2;
@@ -317,6 +330,50 @@ message ListUsersRequest {
 message ListUsersResponse {
   repeated User users = 1;
   string next_page_token = 2;
+}
+
+message GetUserRequest {
+  string id = 1;
+}
+
+message GetUserResponse {
+  User user = 1;
+}
+
+
+message ListSessionsRequest {
+  string user_id = 1;
+  string page_token = 2;
+}
+
+message ListSessionsResponse {
+  repeated Session sessions = 1;
+  string next_page_token = 2;
+}
+
+message GetSessionRequest {
+  string id = 1;
+}
+
+message GetSessionResponse {
+  Session session = 1;
+}
+
+message ListIntermediateSessionsRequest {
+  string page_token = 1;
+}
+
+message ListIntermediateSessionsResponse {
+  repeated IntermediateSession intermediate_sessions = 1;
+  string next_page_token = 2;
+}
+
+message GetIntermediateSessionRequest {
+  string id = 1;
+}
+
+message GetIntermediateSessionResponse {
+  IntermediateSession intermediate_session = 1;
 }
 
 message ListProjectAPIKeysRequest {
@@ -407,6 +464,16 @@ message ProjectAPIKey {
   bool revoked = 5;
 }
 
+message IntermediateSession {
+  string id = 1;
+  string email = 2;
+  string google_hosted_domain = 3;
+  string google_user_id = 4;
+  string microsoft_tenant_id = 5;
+  string microsoft_user_id = 6;
+  bool revoked = 7;
+}
+
 message User {
   string id = 1;
   string organization_id = 2;
@@ -418,9 +485,7 @@ message User {
 message Session {
   string id = 1;
   string user_id = 2;
-  google.protobuf.Timestamp create_time = 3;
-  google.protobuf.Timestamp expire_time = 4;
-  bool revoked = 5;
+  bool revoked = 3;
 
   // TODO(ucarion): add session metadata like auth factors, etc here
 }

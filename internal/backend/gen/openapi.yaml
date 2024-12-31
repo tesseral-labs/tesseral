@@ -6,6 +6,53 @@ info:
     title: BackendService API
     version: 0.0.1
 paths:
+    /backend/v1/intermediate-sessions:
+        get:
+            tags:
+                - BackendService
+            operationId: BackendService_ListIntermediateSessions
+            parameters:
+                - name: pageToken
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListIntermediateSessionsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /backend/v1/intermediate-sessions/{id}:
+        get:
+            tags:
+                - BackendService
+            operationId: BackendService_GetIntermediateSession
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetIntermediateSessionResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /backend/v1/organizations:
         get:
             tags:
@@ -449,11 +496,61 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /backend/v1/sessions:
+        get:
+            tags:
+                - BackendService
+            operationId: BackendService_ListSessions
+            parameters:
+                - name: userId
+                  in: query
+                  schema:
+                    type: string
+                - name: pageToken
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListSessionsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /backend/v1/sessions/{id}:
+        get:
+            tags:
+                - BackendService
+            operationId: BackendService_GetSession
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetSessionResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /backend/v1/users:
         get:
             tags:
                 - BackendService
-            description: Gets a list of users.
             operationId: BackendService_ListUsers
             parameters:
                 - name: organizationId
@@ -481,7 +578,6 @@ paths:
         get:
             tags:
                 - BackendService
-            description: Gets a user.
             operationId: BackendService_GetUser
             parameters:
                 - name: id
@@ -528,6 +624,11 @@ components:
         DeleteSCIMAPIKeyResponse:
             type: object
             properties: {}
+        GetIntermediateSessionResponse:
+            type: object
+            properties:
+                intermediateSession:
+                    $ref: '#/components/schemas/IntermediateSession'
         GetOrganizationResponse:
             type: object
             properties:
@@ -548,6 +649,11 @@ components:
             properties:
                 scimApiKey:
                     $ref: '#/components/schemas/SCIMAPIKey'
+        GetSessionResponse:
+            type: object
+            properties:
+                session:
+                    $ref: '#/components/schemas/Session'
         GetUserResponse:
             type: object
             properties:
@@ -561,6 +667,32 @@ components:
                     description: The type of the serialized message.
             additionalProperties: true
             description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+        IntermediateSession:
+            type: object
+            properties:
+                id:
+                    type: string
+                email:
+                    type: string
+                googleHostedDomain:
+                    type: string
+                googleUserId:
+                    type: string
+                microsoftTenantId:
+                    type: string
+                microsoftUserId:
+                    type: string
+                revoked:
+                    type: boolean
+        ListIntermediateSessionsResponse:
+            type: object
+            properties:
+                intermediateSessions:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/IntermediateSession'
+                nextPageToken:
+                    type: string
         ListOrganizationsResponse:
             type: object
             properties:
@@ -586,6 +718,15 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/SCIMAPIKey'
+                nextPageToken:
+                    type: string
+        ListSessionsResponse:
+            type: object
+            properties:
+                sessions:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Session'
                 nextPageToken:
                     type: string
         ListUsersResponse:
@@ -673,6 +814,15 @@ components:
                 displayName:
                     type: string
                 secretToken:
+                    type: string
+                revoked:
+                    type: boolean
+        Session:
+            type: object
+            properties:
+                id:
+                    type: string
+                userId:
                     type: string
                 revoked:
                     type: boolean
