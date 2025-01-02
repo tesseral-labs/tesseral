@@ -207,8 +207,8 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (S
 }
 
 const createUser = `-- name: CreateUser :one
-INSERT INTO users (id, organization_id, email, google_user_id, microsoft_user_id, is_owner)
-    VALUES ($1, $2, $3, $4, $5, $6)
+INSERT INTO users (id, organization_id, email, google_user_id, microsoft_user_id)
+    VALUES ($1, $2, $3, $4, $5)
 RETURNING
     id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner
 `
@@ -219,7 +219,6 @@ type CreateUserParams struct {
 	Email           string
 	GoogleUserID    *string
 	MicrosoftUserID *string
-	IsOwner         bool
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
@@ -229,7 +228,6 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		arg.Email,
 		arg.GoogleUserID,
 		arg.MicrosoftUserID,
-		arg.IsOwner,
 	)
 	var i User
 	err := row.Scan(

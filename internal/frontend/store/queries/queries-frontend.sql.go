@@ -48,7 +48,6 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.CreateTime,
 		&i.UpdateTime,
 		&i.DeactivateTime,
-		&i.IsOwner,
 	)
 	return i, err
 }
@@ -216,7 +215,7 @@ func (q *Queries) GetSessionSigningKeyPublicKey(ctx context.Context, arg GetSess
 
 const getUserByID = `-- name: GetUserByID :one
 SELECT
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time
 FROM
     users
 WHERE
