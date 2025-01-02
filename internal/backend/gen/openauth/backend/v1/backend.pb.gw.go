@@ -623,6 +623,38 @@ func local_request_BackendService_RevokeSCIMAPIKey_0(ctx context.Context, marsha
 	return msg, metadata, err
 }
 
+var filter_BackendService_ListUsers_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+
+func request_BackendService_ListUsers_0(ctx context.Context, marshaler runtime.Marshaler, client BackendServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq ListUsersRequest
+		metadata runtime.ServerMetadata
+	)
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BackendService_ListUsers_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := client.ListUsers(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_BackendService_ListUsers_0(ctx context.Context, marshaler runtime.Marshaler, server BackendServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq ListUsersRequest
+		metadata runtime.ServerMetadata
+	)
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BackendService_ListUsers_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := server.ListUsers(ctx, &protoReq)
+	return msg, metadata, err
+}
+
 func request_BackendService_GetUser_0(ctx context.Context, marshaler runtime.Marshaler, client BackendServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
 		protoReq GetUserRequest
@@ -659,35 +691,139 @@ func local_request_BackendService_GetUser_0(ctx context.Context, marshaler runti
 	return msg, metadata, err
 }
 
-var filter_BackendService_ListUsers_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+var filter_BackendService_ListSessions_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 
-func request_BackendService_ListUsers_0(ctx context.Context, marshaler runtime.Marshaler, client BackendServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_BackendService_ListSessions_0(ctx context.Context, marshaler runtime.Marshaler, client BackendServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq ListUsersRequest
+		protoReq ListSessionsRequest
 		metadata runtime.ServerMetadata
 	)
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BackendService_ListUsers_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BackendService_ListSessions_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	msg, err := client.ListUsers(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.ListSessions(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 }
 
-func local_request_BackendService_ListUsers_0(ctx context.Context, marshaler runtime.Marshaler, server BackendServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_BackendService_ListSessions_0(ctx context.Context, marshaler runtime.Marshaler, server BackendServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq ListUsersRequest
+		protoReq ListSessionsRequest
 		metadata runtime.ServerMetadata
 	)
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BackendService_ListUsers_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BackendService_ListSessions_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	msg, err := server.ListUsers(ctx, &protoReq)
+	msg, err := server.ListSessions(ctx, &protoReq)
+	return msg, metadata, err
+}
+
+func request_BackendService_GetSession_0(ctx context.Context, marshaler runtime.Marshaler, client BackendServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq GetSessionRequest
+		metadata runtime.ServerMetadata
+		err      error
+	)
+	val, ok := pathParams["id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
+	}
+	protoReq.Id, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
+	}
+	msg, err := client.GetSession(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_BackendService_GetSession_0(ctx context.Context, marshaler runtime.Marshaler, server BackendServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq GetSessionRequest
+		metadata runtime.ServerMetadata
+		err      error
+	)
+	val, ok := pathParams["id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
+	}
+	protoReq.Id, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
+	}
+	msg, err := server.GetSession(ctx, &protoReq)
+	return msg, metadata, err
+}
+
+var filter_BackendService_ListIntermediateSessions_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+
+func request_BackendService_ListIntermediateSessions_0(ctx context.Context, marshaler runtime.Marshaler, client BackendServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq ListIntermediateSessionsRequest
+		metadata runtime.ServerMetadata
+	)
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BackendService_ListIntermediateSessions_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := client.ListIntermediateSessions(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_BackendService_ListIntermediateSessions_0(ctx context.Context, marshaler runtime.Marshaler, server BackendServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq ListIntermediateSessionsRequest
+		metadata runtime.ServerMetadata
+	)
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BackendService_ListIntermediateSessions_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := server.ListIntermediateSessions(ctx, &protoReq)
+	return msg, metadata, err
+}
+
+func request_BackendService_GetIntermediateSession_0(ctx context.Context, marshaler runtime.Marshaler, client BackendServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq GetIntermediateSessionRequest
+		metadata runtime.ServerMetadata
+		err      error
+	)
+	val, ok := pathParams["id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
+	}
+	protoReq.Id, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
+	}
+	msg, err := client.GetIntermediateSession(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_BackendService_GetIntermediateSession_0(ctx context.Context, marshaler runtime.Marshaler, server BackendServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq GetIntermediateSessionRequest
+		metadata runtime.ServerMetadata
+		err      error
+	)
+	val, ok := pathParams["id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
+	}
+	protoReq.Id, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
+	}
+	msg, err := server.GetIntermediateSession(ctx, &protoReq)
 	return msg, metadata, err
 }
 
@@ -1057,6 +1193,26 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		}
 		forward_BackendService_RevokeSCIMAPIKey_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
+	mux.Handle(http.MethodGet, pattern_BackendService_ListUsers_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/ListUsers", runtime.WithHTTPPathPattern("/backend/v1/users"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_BackendService_ListUsers_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_BackendService_ListUsers_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
 	mux.Handle(http.MethodGet, pattern_BackendService_GetUser_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -1077,25 +1233,85 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		}
 		forward_BackendService_GetUser_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodGet, pattern_BackendService_ListUsers_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodGet, pattern_BackendService_ListSessions_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/ListUsers", runtime.WithHTTPPathPattern("/backend/v1/users"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/ListSessions", runtime.WithHTTPPathPattern("/backend/v1/sessions"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_BackendService_ListUsers_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_BackendService_ListSessions_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		forward_BackendService_ListUsers_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_BackendService_ListSessions_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodGet, pattern_BackendService_GetSession_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/GetSession", runtime.WithHTTPPathPattern("/backend/v1/sessions/{id}"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_BackendService_GetSession_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_BackendService_GetSession_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodGet, pattern_BackendService_ListIntermediateSessions_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/ListIntermediateSessions", runtime.WithHTTPPathPattern("/backend/v1/intermediate-sessions"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_BackendService_ListIntermediateSessions_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_BackendService_ListIntermediateSessions_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodGet, pattern_BackendService_GetIntermediateSession_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/GetIntermediateSession", runtime.WithHTTPPathPattern("/backend/v1/intermediate-sessions/{id}"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_BackendService_GetIntermediateSession_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_BackendService_GetIntermediateSession_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
 
 	return nil
@@ -1443,23 +1659,6 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		}
 		forward_BackendService_RevokeSCIMAPIKey_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodGet, pattern_BackendService_GetUser_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/GetUser", runtime.WithHTTPPathPattern("/backend/v1/users/{id}"))
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := request_BackendService_GetUser_0(annotatedContext, inboundMarshaler, client, req, pathParams)
-		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
-		if err != nil {
-			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		forward_BackendService_GetUser_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-	})
 	mux.Handle(http.MethodGet, pattern_BackendService_ListUsers_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -1477,51 +1676,144 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		}
 		forward_BackendService_ListUsers_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
+	mux.Handle(http.MethodGet, pattern_BackendService_GetUser_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/GetUser", runtime.WithHTTPPathPattern("/backend/v1/users/{id}"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_BackendService_GetUser_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_BackendService_GetUser_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodGet, pattern_BackendService_ListSessions_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/ListSessions", runtime.WithHTTPPathPattern("/backend/v1/sessions"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_BackendService_ListSessions_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_BackendService_ListSessions_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodGet, pattern_BackendService_GetSession_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/GetSession", runtime.WithHTTPPathPattern("/backend/v1/sessions/{id}"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_BackendService_GetSession_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_BackendService_GetSession_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodGet, pattern_BackendService_ListIntermediateSessions_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/ListIntermediateSessions", runtime.WithHTTPPathPattern("/backend/v1/intermediate-sessions"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_BackendService_ListIntermediateSessions_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_BackendService_ListIntermediateSessions_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodGet, pattern_BackendService_GetIntermediateSession_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/GetIntermediateSession", runtime.WithHTTPPathPattern("/backend/v1/intermediate-sessions/{id}"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_BackendService_GetIntermediateSession_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_BackendService_GetIntermediateSession_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
 	return nil
 }
 
 var (
-	pattern_BackendService_GetProject_0           = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"backend", "v1", "project"}, ""))
-	pattern_BackendService_UpdateProject_0        = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"backend", "v1", "project"}, ""))
-	pattern_BackendService_ListOrganizations_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"backend", "v1", "organizations"}, ""))
-	pattern_BackendService_GetOrganization_0      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"backend", "v1", "organizations", "id"}, ""))
-	pattern_BackendService_CreateOrganization_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"backend", "v1", "organizations"}, ""))
-	pattern_BackendService_UpdateOrganization_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"backend", "v1", "organizations", "id"}, ""))
-	pattern_BackendService_DeleteOrganization_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"backend", "v1", "organizations", "id"}, ""))
-	pattern_BackendService_ListSAMLConnections_0  = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"backend", "v1", "saml-connections"}, ""))
-	pattern_BackendService_GetSAMLConnection_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"backend", "v1", "saml-connections", "id"}, ""))
-	pattern_BackendService_CreateSAMLConnection_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"backend", "v1", "saml-connections"}, ""))
-	pattern_BackendService_UpdateSAMLConnection_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"backend", "v1", "saml-connections", "id"}, ""))
-	pattern_BackendService_DeleteSAMLConnection_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"backend", "v1", "saml-connections", "id"}, ""))
-	pattern_BackendService_ListSCIMAPIKeys_0      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"backend", "v1", "scim-api-keys"}, ""))
-	pattern_BackendService_GetSCIMAPIKey_0        = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"backend", "v1", "scim-api-keys", "id"}, ""))
-	pattern_BackendService_CreateSCIMAPIKey_0     = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"backend", "v1", "scim-api-keys"}, ""))
-	pattern_BackendService_UpdateSCIMAPIKey_0     = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"backend", "v1", "scim-api-keys", "id"}, ""))
-	pattern_BackendService_DeleteSCIMAPIKey_0     = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"backend", "v1", "scim-api-keys", "id"}, ""))
-	pattern_BackendService_RevokeSCIMAPIKey_0     = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"backend", "v1", "scim-api-keys", "id", "revoke"}, ""))
-	pattern_BackendService_GetUser_0              = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"backend", "v1", "users", "id"}, ""))
-	pattern_BackendService_ListUsers_0            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"backend", "v1", "users"}, ""))
+	pattern_BackendService_GetProject_0               = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"backend", "v1", "project"}, ""))
+	pattern_BackendService_UpdateProject_0            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"backend", "v1", "project"}, ""))
+	pattern_BackendService_ListOrganizations_0        = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"backend", "v1", "organizations"}, ""))
+	pattern_BackendService_GetOrganization_0          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"backend", "v1", "organizations", "id"}, ""))
+	pattern_BackendService_CreateOrganization_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"backend", "v1", "organizations"}, ""))
+	pattern_BackendService_UpdateOrganization_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"backend", "v1", "organizations", "id"}, ""))
+	pattern_BackendService_DeleteOrganization_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"backend", "v1", "organizations", "id"}, ""))
+	pattern_BackendService_ListSAMLConnections_0      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"backend", "v1", "saml-connections"}, ""))
+	pattern_BackendService_GetSAMLConnection_0        = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"backend", "v1", "saml-connections", "id"}, ""))
+	pattern_BackendService_CreateSAMLConnection_0     = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"backend", "v1", "saml-connections"}, ""))
+	pattern_BackendService_UpdateSAMLConnection_0     = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"backend", "v1", "saml-connections", "id"}, ""))
+	pattern_BackendService_DeleteSAMLConnection_0     = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"backend", "v1", "saml-connections", "id"}, ""))
+	pattern_BackendService_ListSCIMAPIKeys_0          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"backend", "v1", "scim-api-keys"}, ""))
+	pattern_BackendService_GetSCIMAPIKey_0            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"backend", "v1", "scim-api-keys", "id"}, ""))
+	pattern_BackendService_CreateSCIMAPIKey_0         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"backend", "v1", "scim-api-keys"}, ""))
+	pattern_BackendService_UpdateSCIMAPIKey_0         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"backend", "v1", "scim-api-keys", "id"}, ""))
+	pattern_BackendService_DeleteSCIMAPIKey_0         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"backend", "v1", "scim-api-keys", "id"}, ""))
+	pattern_BackendService_RevokeSCIMAPIKey_0         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"backend", "v1", "scim-api-keys", "id", "revoke"}, ""))
+	pattern_BackendService_ListUsers_0                = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"backend", "v1", "users"}, ""))
+	pattern_BackendService_GetUser_0                  = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"backend", "v1", "users", "id"}, ""))
+	pattern_BackendService_ListSessions_0             = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"backend", "v1", "sessions"}, ""))
+	pattern_BackendService_GetSession_0               = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"backend", "v1", "sessions", "id"}, ""))
+	pattern_BackendService_ListIntermediateSessions_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"backend", "v1", "intermediate-sessions"}, ""))
+	pattern_BackendService_GetIntermediateSession_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"backend", "v1", "intermediate-sessions", "id"}, ""))
 )
 
 var (
-	forward_BackendService_GetProject_0           = runtime.ForwardResponseMessage
-	forward_BackendService_UpdateProject_0        = runtime.ForwardResponseMessage
-	forward_BackendService_ListOrganizations_0    = runtime.ForwardResponseMessage
-	forward_BackendService_GetOrganization_0      = runtime.ForwardResponseMessage
-	forward_BackendService_CreateOrganization_0   = runtime.ForwardResponseMessage
-	forward_BackendService_UpdateOrganization_0   = runtime.ForwardResponseMessage
-	forward_BackendService_DeleteOrganization_0   = runtime.ForwardResponseMessage
-	forward_BackendService_ListSAMLConnections_0  = runtime.ForwardResponseMessage
-	forward_BackendService_GetSAMLConnection_0    = runtime.ForwardResponseMessage
-	forward_BackendService_CreateSAMLConnection_0 = runtime.ForwardResponseMessage
-	forward_BackendService_UpdateSAMLConnection_0 = runtime.ForwardResponseMessage
-	forward_BackendService_DeleteSAMLConnection_0 = runtime.ForwardResponseMessage
-	forward_BackendService_ListSCIMAPIKeys_0      = runtime.ForwardResponseMessage
-	forward_BackendService_GetSCIMAPIKey_0        = runtime.ForwardResponseMessage
-	forward_BackendService_CreateSCIMAPIKey_0     = runtime.ForwardResponseMessage
-	forward_BackendService_UpdateSCIMAPIKey_0     = runtime.ForwardResponseMessage
-	forward_BackendService_DeleteSCIMAPIKey_0     = runtime.ForwardResponseMessage
-	forward_BackendService_RevokeSCIMAPIKey_0     = runtime.ForwardResponseMessage
-	forward_BackendService_GetUser_0              = runtime.ForwardResponseMessage
-	forward_BackendService_ListUsers_0            = runtime.ForwardResponseMessage
+	forward_BackendService_GetProject_0               = runtime.ForwardResponseMessage
+	forward_BackendService_UpdateProject_0            = runtime.ForwardResponseMessage
+	forward_BackendService_ListOrganizations_0        = runtime.ForwardResponseMessage
+	forward_BackendService_GetOrganization_0          = runtime.ForwardResponseMessage
+	forward_BackendService_CreateOrganization_0       = runtime.ForwardResponseMessage
+	forward_BackendService_UpdateOrganization_0       = runtime.ForwardResponseMessage
+	forward_BackendService_DeleteOrganization_0       = runtime.ForwardResponseMessage
+	forward_BackendService_ListSAMLConnections_0      = runtime.ForwardResponseMessage
+	forward_BackendService_GetSAMLConnection_0        = runtime.ForwardResponseMessage
+	forward_BackendService_CreateSAMLConnection_0     = runtime.ForwardResponseMessage
+	forward_BackendService_UpdateSAMLConnection_0     = runtime.ForwardResponseMessage
+	forward_BackendService_DeleteSAMLConnection_0     = runtime.ForwardResponseMessage
+	forward_BackendService_ListSCIMAPIKeys_0          = runtime.ForwardResponseMessage
+	forward_BackendService_GetSCIMAPIKey_0            = runtime.ForwardResponseMessage
+	forward_BackendService_CreateSCIMAPIKey_0         = runtime.ForwardResponseMessage
+	forward_BackendService_UpdateSCIMAPIKey_0         = runtime.ForwardResponseMessage
+	forward_BackendService_DeleteSCIMAPIKey_0         = runtime.ForwardResponseMessage
+	forward_BackendService_RevokeSCIMAPIKey_0         = runtime.ForwardResponseMessage
+	forward_BackendService_ListUsers_0                = runtime.ForwardResponseMessage
+	forward_BackendService_GetUser_0                  = runtime.ForwardResponseMessage
+	forward_BackendService_ListSessions_0             = runtime.ForwardResponseMessage
+	forward_BackendService_GetSession_0               = runtime.ForwardResponseMessage
+	forward_BackendService_ListIntermediateSessions_0 = runtime.ForwardResponseMessage
+	forward_BackendService_GetIntermediateSession_0   = runtime.ForwardResponseMessage
 )

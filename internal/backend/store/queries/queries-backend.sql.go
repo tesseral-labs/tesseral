@@ -197,6 +197,42 @@ func (q *Queries) DeleteSCIMAPIKey(ctx context.Context, id uuid.UUID) error {
 	return err
 }
 
+const getIntermediateSession = `-- name: GetIntermediateSession :one
+SELECT
+    intermediate_sessions.id, intermediate_sessions.project_id, intermediate_sessions.create_time, intermediate_sessions.expire_time, intermediate_sessions.token_sha256, intermediate_sessions.revoked, intermediate_sessions.email, intermediate_sessions.google_oauth_state_sha256, intermediate_sessions.microsoft_oauth_state_sha256, intermediate_sessions.google_hosted_domain, intermediate_sessions.google_user_id, intermediate_sessions.microsoft_tenant_id, intermediate_sessions.microsoft_user_id
+FROM
+    intermediate_sessions
+WHERE
+    id = $1
+    AND project_id = $2
+`
+
+type GetIntermediateSessionParams struct {
+	ID        uuid.UUID
+	ProjectID uuid.UUID
+}
+
+func (q *Queries) GetIntermediateSession(ctx context.Context, arg GetIntermediateSessionParams) (IntermediateSession, error) {
+	row := q.db.QueryRow(ctx, getIntermediateSession, arg.ID, arg.ProjectID)
+	var i IntermediateSession
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.CreateTime,
+		&i.ExpireTime,
+		&i.TokenSha256,
+		&i.Revoked,
+		&i.Email,
+		&i.GoogleOauthStateSha256,
+		&i.MicrosoftOauthStateSha256,
+		&i.GoogleHostedDomain,
+		&i.GoogleUserID,
+		&i.MicrosoftTenantID,
+		&i.MicrosoftUserID,
+	)
+	return i, err
+}
+
 const getOrganizationByProjectIDAndID = `-- name: GetOrganizationByProjectIDAndID :one
 SELECT
     id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods
@@ -363,6 +399,37 @@ func (q *Queries) GetSCIMAPIKey(ctx context.Context, arg GetSCIMAPIKeyParams) (S
 	return i, err
 }
 
+const getSession = `-- name: GetSession :one
+SELECT
+    sessions.id, sessions.user_id, sessions.create_time, sessions.expire_time, sessions.revoked, sessions.refresh_token_sha256
+FROM
+    sessions
+    JOIN users ON sessions.user_id = users.id
+    JOIN organizations ON users.organization_id = organizations.id
+WHERE
+    sessions.id = $1
+    AND organizations.project_id = $2
+`
+
+type GetSessionParams struct {
+	ID        uuid.UUID
+	ProjectID uuid.UUID
+}
+
+func (q *Queries) GetSession(ctx context.Context, arg GetSessionParams) (Session, error) {
+	row := q.db.QueryRow(ctx, getSession, arg.ID, arg.ProjectID)
+	var i Session
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.CreateTime,
+		&i.ExpireTime,
+		&i.Revoked,
+		&i.RefreshTokenSha256,
+	)
+	return i, err
+}
+
 const getSessionSigningKeysByProjectID = `-- name: GetSessionSigningKeysByProjectID :many
 SELECT
     id, project_id, public_key, private_key_cipher_text, create_time, expire_time
@@ -430,6 +497,59 @@ func (q *Queries) GetUser(ctx context.Context, arg GetUserParams) (User, error) 
 		&i.DeactivateTime,
 	)
 	return i, err
+}
+
+const listIntermediateSessions = `-- name: ListIntermediateSessions :many
+SELECT
+    id, project_id, create_time, expire_time, token_sha256, revoked, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id
+FROM
+    intermediate_sessions
+WHERE
+    project_id = $1
+    AND id >= $2
+ORDER BY
+    id
+LIMIT $3
+`
+
+type ListIntermediateSessionsParams struct {
+	ProjectID uuid.UUID
+	ID        uuid.UUID
+	Limit     int32
+}
+
+func (q *Queries) ListIntermediateSessions(ctx context.Context, arg ListIntermediateSessionsParams) ([]IntermediateSession, error) {
+	rows, err := q.db.Query(ctx, listIntermediateSessions, arg.ProjectID, arg.ID, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []IntermediateSession
+	for rows.Next() {
+		var i IntermediateSession
+		if err := rows.Scan(
+			&i.ID,
+			&i.ProjectID,
+			&i.CreateTime,
+			&i.ExpireTime,
+			&i.TokenSha256,
+			&i.Revoked,
+			&i.Email,
+			&i.GoogleOauthStateSha256,
+			&i.MicrosoftOauthStateSha256,
+			&i.GoogleHostedDomain,
+			&i.GoogleUserID,
+			&i.MicrosoftTenantID,
+			&i.MicrosoftUserID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const listOrganizationsByProjectId = `-- name: ListOrganizationsByProjectId :many
@@ -644,6 +764,52 @@ func (q *Queries) ListSCIMAPIKeys(ctx context.Context, arg ListSCIMAPIKeysParams
 			&i.OrganizationID,
 			&i.TokenSha256,
 			&i.DisplayName,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listSessions = `-- name: ListSessions :many
+SELECT
+    id, user_id, create_time, expire_time, revoked, refresh_token_sha256
+FROM
+    sessions
+WHERE
+    user_id = $1
+    AND id >= $2
+ORDER BY
+    id
+LIMIT $3
+`
+
+type ListSessionsParams struct {
+	UserID uuid.UUID
+	ID     uuid.UUID
+	Limit  int32
+}
+
+func (q *Queries) ListSessions(ctx context.Context, arg ListSessionsParams) ([]Session, error) {
+	rows, err := q.db.Query(ctx, listSessions, arg.UserID, arg.ID, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Session
+	for rows.Next() {
+		var i Session
+		if err := rows.Scan(
+			&i.ID,
+			&i.UserID,
+			&i.CreateTime,
+			&i.ExpireTime,
+			&i.Revoked,
+			&i.RefreshTokenSha256,
 		); err != nil {
 			return nil, err
 		}

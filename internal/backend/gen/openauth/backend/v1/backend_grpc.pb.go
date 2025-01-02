@@ -19,32 +19,36 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	BackendService_GetProject_FullMethodName           = "/openauth.backend.v1.BackendService/GetProject"
-	BackendService_UpdateProject_FullMethodName        = "/openauth.backend.v1.BackendService/UpdateProject"
-	BackendService_ListOrganizations_FullMethodName    = "/openauth.backend.v1.BackendService/ListOrganizations"
-	BackendService_GetOrganization_FullMethodName      = "/openauth.backend.v1.BackendService/GetOrganization"
-	BackendService_CreateOrganization_FullMethodName   = "/openauth.backend.v1.BackendService/CreateOrganization"
-	BackendService_UpdateOrganization_FullMethodName   = "/openauth.backend.v1.BackendService/UpdateOrganization"
-	BackendService_DeleteOrganization_FullMethodName   = "/openauth.backend.v1.BackendService/DeleteOrganization"
-	BackendService_ListSAMLConnections_FullMethodName  = "/openauth.backend.v1.BackendService/ListSAMLConnections"
-	BackendService_GetSAMLConnection_FullMethodName    = "/openauth.backend.v1.BackendService/GetSAMLConnection"
-	BackendService_CreateSAMLConnection_FullMethodName = "/openauth.backend.v1.BackendService/CreateSAMLConnection"
-	BackendService_UpdateSAMLConnection_FullMethodName = "/openauth.backend.v1.BackendService/UpdateSAMLConnection"
-	BackendService_DeleteSAMLConnection_FullMethodName = "/openauth.backend.v1.BackendService/DeleteSAMLConnection"
-	BackendService_ListSCIMAPIKeys_FullMethodName      = "/openauth.backend.v1.BackendService/ListSCIMAPIKeys"
-	BackendService_GetSCIMAPIKey_FullMethodName        = "/openauth.backend.v1.BackendService/GetSCIMAPIKey"
-	BackendService_CreateSCIMAPIKey_FullMethodName     = "/openauth.backend.v1.BackendService/CreateSCIMAPIKey"
-	BackendService_UpdateSCIMAPIKey_FullMethodName     = "/openauth.backend.v1.BackendService/UpdateSCIMAPIKey"
-	BackendService_DeleteSCIMAPIKey_FullMethodName     = "/openauth.backend.v1.BackendService/DeleteSCIMAPIKey"
-	BackendService_RevokeSCIMAPIKey_FullMethodName     = "/openauth.backend.v1.BackendService/RevokeSCIMAPIKey"
-	BackendService_GetUser_FullMethodName              = "/openauth.backend.v1.BackendService/GetUser"
-	BackendService_ListUsers_FullMethodName            = "/openauth.backend.v1.BackendService/ListUsers"
-	BackendService_ListProjectAPIKeys_FullMethodName   = "/openauth.backend.v1.BackendService/ListProjectAPIKeys"
-	BackendService_GetProjectAPIKey_FullMethodName     = "/openauth.backend.v1.BackendService/GetProjectAPIKey"
-	BackendService_CreateProjectAPIKey_FullMethodName  = "/openauth.backend.v1.BackendService/CreateProjectAPIKey"
-	BackendService_UpdateProjectAPIKey_FullMethodName  = "/openauth.backend.v1.BackendService/UpdateProjectAPIKey"
-	BackendService_DeleteProjectAPIKey_FullMethodName  = "/openauth.backend.v1.BackendService/DeleteProjectAPIKey"
-	BackendService_RevokeProjectAPIKey_FullMethodName  = "/openauth.backend.v1.BackendService/RevokeProjectAPIKey"
+	BackendService_GetProject_FullMethodName               = "/openauth.backend.v1.BackendService/GetProject"
+	BackendService_UpdateProject_FullMethodName            = "/openauth.backend.v1.BackendService/UpdateProject"
+	BackendService_ListOrganizations_FullMethodName        = "/openauth.backend.v1.BackendService/ListOrganizations"
+	BackendService_GetOrganization_FullMethodName          = "/openauth.backend.v1.BackendService/GetOrganization"
+	BackendService_CreateOrganization_FullMethodName       = "/openauth.backend.v1.BackendService/CreateOrganization"
+	BackendService_UpdateOrganization_FullMethodName       = "/openauth.backend.v1.BackendService/UpdateOrganization"
+	BackendService_DeleteOrganization_FullMethodName       = "/openauth.backend.v1.BackendService/DeleteOrganization"
+	BackendService_ListSAMLConnections_FullMethodName      = "/openauth.backend.v1.BackendService/ListSAMLConnections"
+	BackendService_GetSAMLConnection_FullMethodName        = "/openauth.backend.v1.BackendService/GetSAMLConnection"
+	BackendService_CreateSAMLConnection_FullMethodName     = "/openauth.backend.v1.BackendService/CreateSAMLConnection"
+	BackendService_UpdateSAMLConnection_FullMethodName     = "/openauth.backend.v1.BackendService/UpdateSAMLConnection"
+	BackendService_DeleteSAMLConnection_FullMethodName     = "/openauth.backend.v1.BackendService/DeleteSAMLConnection"
+	BackendService_ListSCIMAPIKeys_FullMethodName          = "/openauth.backend.v1.BackendService/ListSCIMAPIKeys"
+	BackendService_GetSCIMAPIKey_FullMethodName            = "/openauth.backend.v1.BackendService/GetSCIMAPIKey"
+	BackendService_CreateSCIMAPIKey_FullMethodName         = "/openauth.backend.v1.BackendService/CreateSCIMAPIKey"
+	BackendService_UpdateSCIMAPIKey_FullMethodName         = "/openauth.backend.v1.BackendService/UpdateSCIMAPIKey"
+	BackendService_DeleteSCIMAPIKey_FullMethodName         = "/openauth.backend.v1.BackendService/DeleteSCIMAPIKey"
+	BackendService_RevokeSCIMAPIKey_FullMethodName         = "/openauth.backend.v1.BackendService/RevokeSCIMAPIKey"
+	BackendService_ListUsers_FullMethodName                = "/openauth.backend.v1.BackendService/ListUsers"
+	BackendService_GetUser_FullMethodName                  = "/openauth.backend.v1.BackendService/GetUser"
+	BackendService_ListSessions_FullMethodName             = "/openauth.backend.v1.BackendService/ListSessions"
+	BackendService_GetSession_FullMethodName               = "/openauth.backend.v1.BackendService/GetSession"
+	BackendService_ListIntermediateSessions_FullMethodName = "/openauth.backend.v1.BackendService/ListIntermediateSessions"
+	BackendService_GetIntermediateSession_FullMethodName   = "/openauth.backend.v1.BackendService/GetIntermediateSession"
+	BackendService_ListProjectAPIKeys_FullMethodName       = "/openauth.backend.v1.BackendService/ListProjectAPIKeys"
+	BackendService_GetProjectAPIKey_FullMethodName         = "/openauth.backend.v1.BackendService/GetProjectAPIKey"
+	BackendService_CreateProjectAPIKey_FullMethodName      = "/openauth.backend.v1.BackendService/CreateProjectAPIKey"
+	BackendService_UpdateProjectAPIKey_FullMethodName      = "/openauth.backend.v1.BackendService/UpdateProjectAPIKey"
+	BackendService_DeleteProjectAPIKey_FullMethodName      = "/openauth.backend.v1.BackendService/DeleteProjectAPIKey"
+	BackendService_RevokeProjectAPIKey_FullMethodName      = "/openauth.backend.v1.BackendService/RevokeProjectAPIKey"
 )
 
 // BackendServiceClient is the client API for BackendService service.
@@ -69,10 +73,12 @@ type BackendServiceClient interface {
 	UpdateSCIMAPIKey(ctx context.Context, in *UpdateSCIMAPIKeyRequest, opts ...grpc.CallOption) (*UpdateSCIMAPIKeyResponse, error)
 	DeleteSCIMAPIKey(ctx context.Context, in *DeleteSCIMAPIKeyRequest, opts ...grpc.CallOption) (*DeleteSCIMAPIKeyResponse, error)
 	RevokeSCIMAPIKey(ctx context.Context, in *RevokeSCIMAPIKeyRequest, opts ...grpc.CallOption) (*RevokeSCIMAPIKeyResponse, error)
-	// Gets a user.
-	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error)
-	// Gets a list of users.
 	ListUsers(ctx context.Context, in *ListUsersRequest, opts ...grpc.CallOption) (*ListUsersResponse, error)
+	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error)
+	ListSessions(ctx context.Context, in *ListSessionsRequest, opts ...grpc.CallOption) (*ListSessionsResponse, error)
+	GetSession(ctx context.Context, in *GetSessionRequest, opts ...grpc.CallOption) (*GetSessionResponse, error)
+	ListIntermediateSessions(ctx context.Context, in *ListIntermediateSessionsRequest, opts ...grpc.CallOption) (*ListIntermediateSessionsResponse, error)
+	GetIntermediateSession(ctx context.Context, in *GetIntermediateSessionRequest, opts ...grpc.CallOption) (*GetIntermediateSessionResponse, error)
 	ListProjectAPIKeys(ctx context.Context, in *ListProjectAPIKeysRequest, opts ...grpc.CallOption) (*ListProjectAPIKeysResponse, error)
 	GetProjectAPIKey(ctx context.Context, in *GetProjectAPIKeyRequest, opts ...grpc.CallOption) (*GetProjectAPIKeyResponse, error)
 	CreateProjectAPIKey(ctx context.Context, in *CreateProjectAPIKeyRequest, opts ...grpc.CallOption) (*CreateProjectAPIKeyResponse, error)
@@ -269,6 +275,16 @@ func (c *backendServiceClient) RevokeSCIMAPIKey(ctx context.Context, in *RevokeS
 	return out, nil
 }
 
+func (c *backendServiceClient) ListUsers(ctx context.Context, in *ListUsersRequest, opts ...grpc.CallOption) (*ListUsersResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListUsersResponse)
+	err := c.cc.Invoke(ctx, BackendService_ListUsers_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *backendServiceClient) GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetUserResponse)
@@ -279,10 +295,40 @@ func (c *backendServiceClient) GetUser(ctx context.Context, in *GetUserRequest, 
 	return out, nil
 }
 
-func (c *backendServiceClient) ListUsers(ctx context.Context, in *ListUsersRequest, opts ...grpc.CallOption) (*ListUsersResponse, error) {
+func (c *backendServiceClient) ListSessions(ctx context.Context, in *ListSessionsRequest, opts ...grpc.CallOption) (*ListSessionsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ListUsersResponse)
-	err := c.cc.Invoke(ctx, BackendService_ListUsers_FullMethodName, in, out, cOpts...)
+	out := new(ListSessionsResponse)
+	err := c.cc.Invoke(ctx, BackendService_ListSessions_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) GetSession(ctx context.Context, in *GetSessionRequest, opts ...grpc.CallOption) (*GetSessionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetSessionResponse)
+	err := c.cc.Invoke(ctx, BackendService_GetSession_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) ListIntermediateSessions(ctx context.Context, in *ListIntermediateSessionsRequest, opts ...grpc.CallOption) (*ListIntermediateSessionsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListIntermediateSessionsResponse)
+	err := c.cc.Invoke(ctx, BackendService_ListIntermediateSessions_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) GetIntermediateSession(ctx context.Context, in *GetIntermediateSessionRequest, opts ...grpc.CallOption) (*GetIntermediateSessionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetIntermediateSessionResponse)
+	err := c.cc.Invoke(ctx, BackendService_GetIntermediateSession_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -371,10 +417,12 @@ type BackendServiceServer interface {
 	UpdateSCIMAPIKey(context.Context, *UpdateSCIMAPIKeyRequest) (*UpdateSCIMAPIKeyResponse, error)
 	DeleteSCIMAPIKey(context.Context, *DeleteSCIMAPIKeyRequest) (*DeleteSCIMAPIKeyResponse, error)
 	RevokeSCIMAPIKey(context.Context, *RevokeSCIMAPIKeyRequest) (*RevokeSCIMAPIKeyResponse, error)
-	// Gets a user.
-	GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error)
-	// Gets a list of users.
 	ListUsers(context.Context, *ListUsersRequest) (*ListUsersResponse, error)
+	GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error)
+	ListSessions(context.Context, *ListSessionsRequest) (*ListSessionsResponse, error)
+	GetSession(context.Context, *GetSessionRequest) (*GetSessionResponse, error)
+	ListIntermediateSessions(context.Context, *ListIntermediateSessionsRequest) (*ListIntermediateSessionsResponse, error)
+	GetIntermediateSession(context.Context, *GetIntermediateSessionRequest) (*GetIntermediateSessionResponse, error)
 	ListProjectAPIKeys(context.Context, *ListProjectAPIKeysRequest) (*ListProjectAPIKeysResponse, error)
 	GetProjectAPIKey(context.Context, *GetProjectAPIKeyRequest) (*GetProjectAPIKeyResponse, error)
 	CreateProjectAPIKey(context.Context, *CreateProjectAPIKeyRequest) (*CreateProjectAPIKeyResponse, error)
@@ -445,11 +493,23 @@ func (UnimplementedBackendServiceServer) DeleteSCIMAPIKey(context.Context, *Dele
 func (UnimplementedBackendServiceServer) RevokeSCIMAPIKey(context.Context, *RevokeSCIMAPIKeyRequest) (*RevokeSCIMAPIKeyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RevokeSCIMAPIKey not implemented")
 }
+func (UnimplementedBackendServiceServer) ListUsers(context.Context, *ListUsersRequest) (*ListUsersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListUsers not implemented")
+}
 func (UnimplementedBackendServiceServer) GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
 }
-func (UnimplementedBackendServiceServer) ListUsers(context.Context, *ListUsersRequest) (*ListUsersResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListUsers not implemented")
+func (UnimplementedBackendServiceServer) ListSessions(context.Context, *ListSessionsRequest) (*ListSessionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListSessions not implemented")
+}
+func (UnimplementedBackendServiceServer) GetSession(context.Context, *GetSessionRequest) (*GetSessionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSession not implemented")
+}
+func (UnimplementedBackendServiceServer) ListIntermediateSessions(context.Context, *ListIntermediateSessionsRequest) (*ListIntermediateSessionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListIntermediateSessions not implemented")
+}
+func (UnimplementedBackendServiceServer) GetIntermediateSession(context.Context, *GetIntermediateSessionRequest) (*GetIntermediateSessionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetIntermediateSession not implemented")
 }
 func (UnimplementedBackendServiceServer) ListProjectAPIKeys(context.Context, *ListProjectAPIKeysRequest) (*ListProjectAPIKeysResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListProjectAPIKeys not implemented")
@@ -814,6 +874,24 @@ func _BackendService_RevokeSCIMAPIKey_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BackendService_ListUsers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListUsersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).ListUsers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_ListUsers_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).ListUsers(ctx, req.(*ListUsersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _BackendService_GetUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetUserRequest)
 	if err := dec(in); err != nil {
@@ -832,20 +910,74 @@ func _BackendService_GetUser_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BackendService_ListUsers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListUsersRequest)
+func _BackendService_ListSessions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListSessionsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BackendServiceServer).ListUsers(ctx, in)
+		return srv.(BackendServiceServer).ListSessions(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BackendService_ListUsers_FullMethodName,
+		FullMethod: BackendService_ListSessions_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).ListUsers(ctx, req.(*ListUsersRequest))
+		return srv.(BackendServiceServer).ListSessions(ctx, req.(*ListSessionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_GetSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetSessionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).GetSession(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_GetSession_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).GetSession(ctx, req.(*GetSessionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_ListIntermediateSessions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListIntermediateSessionsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).ListIntermediateSessions(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_ListIntermediateSessions_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).ListIntermediateSessions(ctx, req.(*ListIntermediateSessionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_GetIntermediateSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetIntermediateSessionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).GetIntermediateSession(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_GetIntermediateSession_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).GetIntermediateSession(ctx, req.(*GetIntermediateSessionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1038,12 +1170,28 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _BackendService_RevokeSCIMAPIKey_Handler,
 		},
 		{
+			MethodName: "ListUsers",
+			Handler:    _BackendService_ListUsers_Handler,
+		},
+		{
 			MethodName: "GetUser",
 			Handler:    _BackendService_GetUser_Handler,
 		},
 		{
-			MethodName: "ListUsers",
-			Handler:    _BackendService_ListUsers_Handler,
+			MethodName: "ListSessions",
+			Handler:    _BackendService_ListSessions_Handler,
+		},
+		{
+			MethodName: "GetSession",
+			Handler:    _BackendService_GetSession_Handler,
+		},
+		{
+			MethodName: "ListIntermediateSessions",
+			Handler:    _BackendService_ListIntermediateSessions_Handler,
+		},
+		{
+			MethodName: "GetIntermediateSession",
+			Handler:    _BackendService_GetIntermediateSession_Handler,
 		},
 		{
 			MethodName: "ListProjectAPIKeys",
