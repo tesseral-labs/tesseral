@@ -13,7 +13,7 @@ import type { JsonObject, Message } from "@bufbuild/protobuf";
  * Describes the file openauth/frontend/v1/frontend.proto.
  */
 export const file_openauth_frontend_v1_frontend: GenFile = /*@__PURE__*/
-  fileDesc("CiNvcGVuYXV0aC9mcm9udGVuZC92MS9mcm9udGVuZC5wcm90bxIUb3BlbmF1dGguZnJvbnRlbmQudjEiLgoVR2V0QWNjZXNzVG9rZW5SZXF1ZXN0EhUKDXJlZnJlc2hfdG9rZW4YASABKAkiLgoWR2V0QWNjZXNzVG9rZW5SZXNwb25zZRIUCgxhY2Nlc3NfdG9rZW4YAiABKAkiEwoRR2V0UHJvamVjdFJlcXVlc3QiRAoSR2V0UHJvamVjdFJlc3BvbnNlEi4KB3Byb2plY3QYASABKAsyHS5vcGVuYXV0aC5mcm9udGVuZC52MS5Qcm9qZWN0Ij0KEUNyZWF0ZVVzZXJSZXF1ZXN0EigKBHVzZXIYASABKAsyGi5vcGVuYXV0aC5mcm9udGVuZC52MS5Vc2VyIj4KEkNyZWF0ZVVzZXJSZXNwb25zZRIoCgR1c2VyGAEgASgLMhoub3BlbmF1dGguZnJvbnRlbmQudjEuVXNlciIcCg5HZXRVc2VyUmVxdWVzdBIKCgJpZBgBIAEoCSI7Cg9HZXRVc2VyUmVzcG9uc2USKAoEdXNlchgBIAEoCzIaLm9wZW5hdXRoLmZyb250ZW5kLnYxLlVzZXIiUQoYTGlzdE9yZ2FuaXphdGlvbnNSZXF1ZXN0EhIKCnByb2plY3RfaWQYASABKAkSDQoFZW1haWwYAiABKAkSEgoKcGFnZV90b2tlbhgDIAEoCSJvChlMaXN0T3JnYW5pemF0aW9uc1Jlc3BvbnNlEjkKDW9yZ2FuaXphdGlvbnMYASADKAsyIi5vcGVuYXV0aC5mcm9udGVuZC52MS5Pcmdhbml6YXRpb24SFwoPbmV4dF9wYWdlX3Rva2VuGAIgASgJIj8KEExpc3RVc2Vyc1JlcXVlc3QSFwoPb3JnYW5pemF0aW9uX2lkGAEgASgJEhIKCnBhZ2VfdG9rZW4YAiABKAkiVwoRTGlzdFVzZXJzUmVzcG9uc2USKQoFdXNlcnMYASADKAsyGi5vcGVuYXV0aC5mcm9udGVuZC52MS5Vc2VyEhcKD25leHRfcGFnZV90b2tlbhgCIAEoCSJJChFVcGRhdGVVc2VyUmVxdWVzdBIKCgJpZBgBIAEoCRIoCgR1c2VyGAIgASgLMhoub3BlbmF1dGguZnJvbnRlbmQudjEuVXNlciI+ChJVcGRhdGVVc2VyUmVzcG9uc2USKAoEdXNlchgBIAEoCzIaLm9wZW5hdXRoLmZyb250ZW5kLnYxLlVzZXIiDwoNV2hvQW1JUmVxdWVzdCJ+Cg5XaG9BbUlSZXNwb25zZRIKCgJpZBgBIAEoCRINCgVlbWFpbBgCIAEoCRIXCg9vcmdhbml6YXRpb25faWQYAyABKAkSOAoMb3JnYW5pemF0aW9uGAQgASgLMiIub3BlbmF1dGguZnJvbnRlbmQudjEuT3JnYW5pemF0aW9uIosCCgxPcmdhbml6YXRpb24SCgoCaWQYASABKAkSEgoKcHJvamVjdF9pZBgCIAEoCRIUCgxkaXNwbGF5X25hbWUYAyABKAkSLQolb3ZlcnJpZGVfbG9nX2luX3dpdGhfcGFzc3dvcmRfZW5hYmxlZBgEIAEoCBIrCiNvdmVycmlkZV9sb2dfaW5fd2l0aF9nb29nbGVfZW5hYmxlZBgFIAEoCBIuCiZvdmVycmlkZV9sb2dfaW5fd2l0aF9taWNyb3NvZnRfZW5hYmxlZBgGIAEoCBIcChRnb29nbGVfaG9zdGVkX2RvbWFpbhgHIAEoCRIbChNtaWNyb3NvZnRfdGVuYW50X2lkGAggASgJIpwBCgdQcm9qZWN0EgoKAmlkGAEgASgJEhQKDGRpc3BsYXlfbmFtZRgCIAEoCRIkChxsb2dfaW5fd2l0aF9wYXNzd29yZF9lbmFibGVkGAMgASgIEiIKGmxvZ19pbl93aXRoX2dvb2dsZV9lbmFibGVkGAQgASgIEiUKHWxvZ19pbl93aXRoX21pY3Jvc29mdF9lbmFibGVkGAUgASgIImQKEVNlc3Npb25TaWduaW5nS2V5EgoKAmlkGAEgASgJEhIKCnByb2plY3RfaWQYAiABKAkSLwoOcHVibGljX2tleV9qd2sYAyABKAsyFy5nb29nbGUucHJvdG9idWYuU3RydWN0IqkBCgRVc2VyEgoKAmlkGAEgASgJEhcKD29yZ2FuaXphdGlvbl9pZBgCIAEoCRIYChB1bnZlcmlmaWVkX2VtYWlsGAMgASgJEhYKDnZlcmlmaWVkX2VtYWlsGAQgASgJEhcKD3Bhc3N3b3JkX2JjcnlwdBgFIAEoCRIWCg5nb29nbGVfdXNlcl9pZBgGIAEoCRIZChFtaWNyb3NvZnRfdXNlcl9pZBgHIAEoCSKZAQoHU2Vzc2lvbhIKCgJpZBgBIAEoCRIPCgd1c2VyX2lkGAIgASgJEi8KC2NyZWF0ZV90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIvCgtleHBpcmVfdGltZRgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASDwoHcmV2b2tlZBgFIAEoCDKxCAoPRnJvbnRlbmRTZXJ2aWNlEpEBCg5HZXRBY2Nlc3NUb2tlbhIrLm9wZW5hdXRoLmZyb250ZW5kLnYxLkdldEFjY2Vzc1Rva2VuUmVxdWVzdBosLm9wZW5hdXRoLmZyb250ZW5kLnYxLkdldEFjY2Vzc1Rva2VuUmVzcG9uc2UiJILT5JMCHjoBKiIZL2Zyb250ZW5kL3YxL2FjY2Vzcy10b2tlbhJ9CgpHZXRQcm9qZWN0Eicub3BlbmF1dGguZnJvbnRlbmQudjEuR2V0UHJvamVjdFJlcXVlc3QaKC5vcGVuYXV0aC5mcm9udGVuZC52MS5HZXRQcm9qZWN0UmVzcG9uc2UiHILT5JMCFhIUL2Zyb250ZW5kL3YxL3Byb2plY3QSgQEKCkNyZWF0ZVVzZXISJy5vcGVuYXV0aC5mcm9udGVuZC52MS5DcmVhdGVVc2VyUmVxdWVzdBooLm9wZW5hdXRoLmZyb250ZW5kLnYxLkNyZWF0ZVVzZXJSZXNwb25zZSIggtPkkwIaOgR1c2VyIhIvZnJvbnRlbmQvdjEvdXNlcnMSdwoHR2V0VXNlchIkLm9wZW5hdXRoLmZyb250ZW5kLnYxLkdldFVzZXJSZXF1ZXN0GiUub3BlbmF1dGguZnJvbnRlbmQudjEuR2V0VXNlclJlc3BvbnNlIh+C0+STAhkSFy9mcm9udGVuZC92MS91c2Vycy97aWR9EpgBChFMaXN0T3JnYW5pemF0aW9ucxIuLm9wZW5hdXRoLmZyb250ZW5kLnYxLkxpc3RPcmdhbml6YXRpb25zUmVxdWVzdBovLm9wZW5hdXRoLmZyb250ZW5kLnYxLkxpc3RPcmdhbml6YXRpb25zUmVzcG9uc2UiIoLT5JMCHBIaL2Zyb250ZW5kL3YxL29yZ2FuaXphdGlvbnMSeAoJTGlzdFVzZXJzEiYub3BlbmF1dGguZnJvbnRlbmQudjEuTGlzdFVzZXJzUmVxdWVzdBonLm9wZW5hdXRoLmZyb250ZW5kLnYxLkxpc3RVc2Vyc1Jlc3BvbnNlIhqC0+STAhQSEi9mcm9udGVuZC92MS91c2VycxKGAQoKVXBkYXRlVXNlchInLm9wZW5hdXRoLmZyb250ZW5kLnYxLlVwZGF0ZVVzZXJSZXF1ZXN0Gigub3BlbmF1dGguZnJvbnRlbmQudjEuVXBkYXRlVXNlclJlc3BvbnNlIiWC0+STAh86BHVzZXIyFy9mcm9udGVuZC92MS91c2Vycy97aWR9EnAKBldob0FtSRIjLm9wZW5hdXRoLmZyb250ZW5kLnYxLldob0FtSVJlcXVlc3QaJC5vcGVuYXV0aC5mcm9udGVuZC52MS5XaG9BbUlSZXNwb25zZSIbgtPkkwIVEhMvZnJvbnRlbmQvdjEvd2hvYW1pQu8BChhjb20ub3BlbmF1dGguZnJvbnRlbmQudjFCDUZyb250ZW5kUHJvdG9QAVpSZ2l0aHViLmNvbS9vcGVuYXV0aC9vcGVuYXV0aC9pbnRlcm5hbC9mcm9udGVuZC9nZW4vb3BlbmF1dGgvZnJvbnRlbmQvdjE7ZnJvbnRlbmR2MaICA09GWKoCFE9wZW5hdXRoLkZyb250ZW5kLlYxygIUT3BlbmF1dGhcRnJvbnRlbmRcVjHiAiBPcGVuYXV0aFxGcm9udGVuZFxWMVxHUEJNZXRhZGF0YeoCFk9wZW5hdXRoOjpGcm9udGVuZDo6VjFiBnByb3RvMw", [file_google_api_annotations, file_google_protobuf_empty, file_google_protobuf_field_mask, file_google_protobuf_timestamp, file_google_protobuf_struct]);
+  fileDesc("CiNvcGVuYXV0aC9mcm9udGVuZC92MS9mcm9udGVuZC5wcm90bxIUb3BlbmF1dGguZnJvbnRlbmQudjEiLgoVR2V0QWNjZXNzVG9rZW5SZXF1ZXN0EhUKDXJlZnJlc2hfdG9rZW4YASABKAkiLgoWR2V0QWNjZXNzVG9rZW5SZXNwb25zZRIUCgxhY2Nlc3NfdG9rZW4YAiABKAkiEwoRR2V0UHJvamVjdFJlcXVlc3QiRAoSR2V0UHJvamVjdFJlc3BvbnNlEi4KB3Byb2plY3QYASABKAsyHS5vcGVuYXV0aC5mcm9udGVuZC52MS5Qcm9qZWN0IhgKFkdldE9yZ2FuaXphdGlvblJlcXVlc3QiUwoXR2V0T3JnYW5pemF0aW9uUmVzcG9uc2USOAoMb3JnYW5pemF0aW9uGAEgASgLMiIub3BlbmF1dGguZnJvbnRlbmQudjEuT3JnYW5pemF0aW9uIj0KEUNyZWF0ZVVzZXJSZXF1ZXN0EigKBHVzZXIYASABKAsyGi5vcGVuYXV0aC5mcm9udGVuZC52MS5Vc2VyIj4KEkNyZWF0ZVVzZXJSZXNwb25zZRIoCgR1c2VyGAEgASgLMhoub3BlbmF1dGguZnJvbnRlbmQudjEuVXNlciIcCg5HZXRVc2VyUmVxdWVzdBIKCgJpZBgBIAEoCSI7Cg9HZXRVc2VyUmVzcG9uc2USKAoEdXNlchgBIAEoCzIaLm9wZW5hdXRoLmZyb250ZW5kLnYxLlVzZXIiUQoYTGlzdE9yZ2FuaXphdGlvbnNSZXF1ZXN0EhIKCnByb2plY3RfaWQYASABKAkSDQoFZW1haWwYAiABKAkSEgoKcGFnZV90b2tlbhgDIAEoCSJvChlMaXN0T3JnYW5pemF0aW9uc1Jlc3BvbnNlEjkKDW9yZ2FuaXphdGlvbnMYASADKAsyIi5vcGVuYXV0aC5mcm9udGVuZC52MS5Pcmdhbml6YXRpb24SFwoPbmV4dF9wYWdlX3Rva2VuGAIgASgJIj8KEExpc3RVc2Vyc1JlcXVlc3QSFwoPb3JnYW5pemF0aW9uX2lkGAEgASgJEhIKCnBhZ2VfdG9rZW4YAiABKAkiVwoRTGlzdFVzZXJzUmVzcG9uc2USKQoFdXNlcnMYASADKAsyGi5vcGVuYXV0aC5mcm9udGVuZC52MS5Vc2VyEhcKD25leHRfcGFnZV90b2tlbhgCIAEoCSJJChFVcGRhdGVVc2VyUmVxdWVzdBIKCgJpZBgBIAEoCRIoCgR1c2VyGAIgASgLMhoub3BlbmF1dGguZnJvbnRlbmQudjEuVXNlciI+ChJVcGRhdGVVc2VyUmVzcG9uc2USKAoEdXNlchgBIAEoCzIaLm9wZW5hdXRoLmZyb250ZW5kLnYxLlVzZXIiDwoNV2hvQW1JUmVxdWVzdCJ+Cg5XaG9BbUlSZXNwb25zZRIKCgJpZBgBIAEoCRINCgVlbWFpbBgCIAEoCRIXCg9vcmdhbml6YXRpb25faWQYAyABKAkSOAoMb3JnYW5pemF0aW9uGAQgASgLMiIub3BlbmF1dGguZnJvbnRlbmQudjEuT3JnYW5pemF0aW9uIpwBCgdQcm9qZWN0EgoKAmlkGAEgASgJEhQKDGRpc3BsYXlfbmFtZRgCIAEoCRIkChxsb2dfaW5fd2l0aF9wYXNzd29yZF9lbmFibGVkGAMgASgIEiIKGmxvZ19pbl93aXRoX2dvb2dsZV9lbmFibGVkGAQgASgIEiUKHWxvZ19pbl93aXRoX21pY3Jvc29mdF9lbmFibGVkGAUgASgIIrICCgxPcmdhbml6YXRpb24SCgoCaWQYASABKAkSEgoKcHJvamVjdF9pZBgCIAEoCRIUCgxkaXNwbGF5X25hbWUYAyABKAkSJAoXb3ZlcnJpZGVfbG9nX2luX21ldGhvZHMYBCABKAhIAIgBARIkChxsb2dfaW5fd2l0aF9wYXNzd29yZF9lbmFibGVkGAUgASgIEiIKGmxvZ19pbl93aXRoX2dvb2dsZV9lbmFibGVkGAYgASgIEiUKHWxvZ19pbl93aXRoX21pY3Jvc29mdF9lbmFibGVkGAcgASgIEhwKFGdvb2dsZV9ob3N0ZWRfZG9tYWluGAggASgJEhsKE21pY3Jvc29mdF90ZW5hbnRfaWQYCSABKAlCGgoYX292ZXJyaWRlX2xvZ19pbl9tZXRob2RzImQKEVNlc3Npb25TaWduaW5nS2V5EgoKAmlkGAEgASgJEhIKCnByb2plY3RfaWQYAiABKAkSLwoOcHVibGljX2tleV9qd2sYAyABKAsyFy5nb29nbGUucHJvdG9idWYuU3RydWN0IqkBCgRVc2VyEgoKAmlkGAEgASgJEhcKD29yZ2FuaXphdGlvbl9pZBgCIAEoCRIYChB1bnZlcmlmaWVkX2VtYWlsGAMgASgJEhYKDnZlcmlmaWVkX2VtYWlsGAQgASgJEhcKD3Bhc3N3b3JkX2JjcnlwdBgFIAEoCRIWCg5nb29nbGVfdXNlcl9pZBgGIAEoCRIZChFtaWNyb3NvZnRfdXNlcl9pZBgHIAEoCSKZAQoHU2Vzc2lvbhIKCgJpZBgBIAEoCRIPCgd1c2VyX2lkGAIgASgJEi8KC2NyZWF0ZV90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIvCgtleHBpcmVfdGltZRgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASDwoHcmV2b2tlZBgFIAEoCDLFCQoPRnJvbnRlbmRTZXJ2aWNlEpEBCg5HZXRBY2Nlc3NUb2tlbhIrLm9wZW5hdXRoLmZyb250ZW5kLnYxLkdldEFjY2Vzc1Rva2VuUmVxdWVzdBosLm9wZW5hdXRoLmZyb250ZW5kLnYxLkdldEFjY2Vzc1Rva2VuUmVzcG9uc2UiJILT5JMCHjoBKiIZL2Zyb250ZW5kL3YxL2FjY2Vzcy10b2tlbhJ9CgpHZXRQcm9qZWN0Eicub3BlbmF1dGguZnJvbnRlbmQudjEuR2V0UHJvamVjdFJlcXVlc3QaKC5vcGVuYXV0aC5mcm9udGVuZC52MS5HZXRQcm9qZWN0UmVzcG9uc2UiHILT5JMCFhIUL2Zyb250ZW5kL3YxL3Byb2plY3QSkQEKD0dldE9yZ2FuaXphdGlvbhIsLm9wZW5hdXRoLmZyb250ZW5kLnYxLkdldE9yZ2FuaXphdGlvblJlcXVlc3QaLS5vcGVuYXV0aC5mcm9udGVuZC52MS5HZXRPcmdhbml6YXRpb25SZXNwb25zZSIhgtPkkwIbEhkvZnJvbnRlbmQvdjEvb3JnYW5pemF0aW9uEoEBCgpDcmVhdGVVc2VyEicub3BlbmF1dGguZnJvbnRlbmQudjEuQ3JlYXRlVXNlclJlcXVlc3QaKC5vcGVuYXV0aC5mcm9udGVuZC52MS5DcmVhdGVVc2VyUmVzcG9uc2UiIILT5JMCGjoEdXNlciISL2Zyb250ZW5kL3YxL3VzZXJzEncKB0dldFVzZXISJC5vcGVuYXV0aC5mcm9udGVuZC52MS5HZXRVc2VyUmVxdWVzdBolLm9wZW5hdXRoLmZyb250ZW5kLnYxLkdldFVzZXJSZXNwb25zZSIfgtPkkwIZEhcvZnJvbnRlbmQvdjEvdXNlcnMve2lkfRKYAQoRTGlzdE9yZ2FuaXphdGlvbnMSLi5vcGVuYXV0aC5mcm9udGVuZC52MS5MaXN0T3JnYW5pemF0aW9uc1JlcXVlc3QaLy5vcGVuYXV0aC5mcm9udGVuZC52MS5MaXN0T3JnYW5pemF0aW9uc1Jlc3BvbnNlIiKC0+STAhwSGi9mcm9udGVuZC92MS9vcmdhbml6YXRpb25zEngKCUxpc3RVc2VycxImLm9wZW5hdXRoLmZyb250ZW5kLnYxLkxpc3RVc2Vyc1JlcXVlc3QaJy5vcGVuYXV0aC5mcm9udGVuZC52MS5MaXN0VXNlcnNSZXNwb25zZSIagtPkkwIUEhIvZnJvbnRlbmQvdjEvdXNlcnMShgEKClVwZGF0ZVVzZXISJy5vcGVuYXV0aC5mcm9udGVuZC52MS5VcGRhdGVVc2VyUmVxdWVzdBooLm9wZW5hdXRoLmZyb250ZW5kLnYxLlVwZGF0ZVVzZXJSZXNwb25zZSIlgtPkkwIfOgR1c2VyMhcvZnJvbnRlbmQvdjEvdXNlcnMve2lkfRJwCgZXaG9BbUkSIy5vcGVuYXV0aC5mcm9udGVuZC52MS5XaG9BbUlSZXF1ZXN0GiQub3BlbmF1dGguZnJvbnRlbmQudjEuV2hvQW1JUmVzcG9uc2UiG4LT5JMCFRITL2Zyb250ZW5kL3YxL3dob2FtaULvAQoYY29tLm9wZW5hdXRoLmZyb250ZW5kLnYxQg1Gcm9udGVuZFByb3RvUAFaUmdpdGh1Yi5jb20vb3BlbmF1dGgvb3BlbmF1dGgvaW50ZXJuYWwvZnJvbnRlbmQvZ2VuL29wZW5hdXRoL2Zyb250ZW5kL3YxO2Zyb250ZW5kdjGiAgNPRliqAhRPcGVuYXV0aC5Gcm9udGVuZC5WMcoCFE9wZW5hdXRoXEZyb250ZW5kXFYx4gIgT3BlbmF1dGhcRnJvbnRlbmRcVjFcR1BCTWV0YWRhdGHqAhZPcGVuYXV0aDo6RnJvbnRlbmQ6OlYxYgZwcm90bzM", [file_google_api_annotations, file_google_protobuf_empty, file_google_protobuf_field_mask, file_google_protobuf_timestamp, file_google_protobuf_struct]);
 
 /**
  * @generated from message openauth.frontend.v1.GetAccessTokenRequest
@@ -80,6 +80,36 @@ export const GetProjectResponseSchema: GenMessage<GetProjectResponse> = /*@__PUR
   messageDesc(file_openauth_frontend_v1_frontend, 3);
 
 /**
+ * @generated from message openauth.frontend.v1.GetOrganizationRequest
+ */
+export type GetOrganizationRequest = Message<"openauth.frontend.v1.GetOrganizationRequest"> & {
+};
+
+/**
+ * Describes the message openauth.frontend.v1.GetOrganizationRequest.
+ * Use `create(GetOrganizationRequestSchema)` to create a new message.
+ */
+export const GetOrganizationRequestSchema: GenMessage<GetOrganizationRequest> = /*@__PURE__*/
+  messageDesc(file_openauth_frontend_v1_frontend, 4);
+
+/**
+ * @generated from message openauth.frontend.v1.GetOrganizationResponse
+ */
+export type GetOrganizationResponse = Message<"openauth.frontend.v1.GetOrganizationResponse"> & {
+  /**
+   * @generated from field: openauth.frontend.v1.Organization organization = 1;
+   */
+  organization?: Organization;
+};
+
+/**
+ * Describes the message openauth.frontend.v1.GetOrganizationResponse.
+ * Use `create(GetOrganizationResponseSchema)` to create a new message.
+ */
+export const GetOrganizationResponseSchema: GenMessage<GetOrganizationResponse> = /*@__PURE__*/
+  messageDesc(file_openauth_frontend_v1_frontend, 5);
+
+/**
  * @generated from message openauth.frontend.v1.CreateUserRequest
  */
 export type CreateUserRequest = Message<"openauth.frontend.v1.CreateUserRequest"> & {
@@ -96,7 +126,7 @@ export type CreateUserRequest = Message<"openauth.frontend.v1.CreateUserRequest"
  * Use `create(CreateUserRequestSchema)` to create a new message.
  */
 export const CreateUserRequestSchema: GenMessage<CreateUserRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_frontend_v1_frontend, 4);
+  messageDesc(file_openauth_frontend_v1_frontend, 6);
 
 /**
  * @generated from message openauth.frontend.v1.CreateUserResponse
@@ -115,7 +145,7 @@ export type CreateUserResponse = Message<"openauth.frontend.v1.CreateUserRespons
  * Use `create(CreateUserResponseSchema)` to create a new message.
  */
 export const CreateUserResponseSchema: GenMessage<CreateUserResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_frontend_v1_frontend, 5);
+  messageDesc(file_openauth_frontend_v1_frontend, 7);
 
 /**
  * @generated from message openauth.frontend.v1.GetUserRequest
@@ -134,7 +164,7 @@ export type GetUserRequest = Message<"openauth.frontend.v1.GetUserRequest"> & {
  * Use `create(GetUserRequestSchema)` to create a new message.
  */
 export const GetUserRequestSchema: GenMessage<GetUserRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_frontend_v1_frontend, 6);
+  messageDesc(file_openauth_frontend_v1_frontend, 8);
 
 /**
  * @generated from message openauth.frontend.v1.GetUserResponse
@@ -153,7 +183,7 @@ export type GetUserResponse = Message<"openauth.frontend.v1.GetUserResponse"> & 
  * Use `create(GetUserResponseSchema)` to create a new message.
  */
 export const GetUserResponseSchema: GenMessage<GetUserResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_frontend_v1_frontend, 7);
+  messageDesc(file_openauth_frontend_v1_frontend, 9);
 
 /**
  * @generated from message openauth.frontend.v1.ListOrganizationsRequest
@@ -186,7 +216,7 @@ export type ListOrganizationsRequest = Message<"openauth.frontend.v1.ListOrganiz
  * Use `create(ListOrganizationsRequestSchema)` to create a new message.
  */
 export const ListOrganizationsRequestSchema: GenMessage<ListOrganizationsRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_frontend_v1_frontend, 8);
+  messageDesc(file_openauth_frontend_v1_frontend, 10);
 
 /**
  * @generated from message openauth.frontend.v1.ListOrganizationsResponse
@@ -212,7 +242,7 @@ export type ListOrganizationsResponse = Message<"openauth.frontend.v1.ListOrgani
  * Use `create(ListOrganizationsResponseSchema)` to create a new message.
  */
 export const ListOrganizationsResponseSchema: GenMessage<ListOrganizationsResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_frontend_v1_frontend, 9);
+  messageDesc(file_openauth_frontend_v1_frontend, 11);
 
 /**
  * @generated from message openauth.frontend.v1.ListUsersRequest
@@ -238,7 +268,7 @@ export type ListUsersRequest = Message<"openauth.frontend.v1.ListUsersRequest"> 
  * Use `create(ListUsersRequestSchema)` to create a new message.
  */
 export const ListUsersRequestSchema: GenMessage<ListUsersRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_frontend_v1_frontend, 10);
+  messageDesc(file_openauth_frontend_v1_frontend, 12);
 
 /**
  * @generated from message openauth.frontend.v1.ListUsersResponse
@@ -264,7 +294,7 @@ export type ListUsersResponse = Message<"openauth.frontend.v1.ListUsersResponse"
  * Use `create(ListUsersResponseSchema)` to create a new message.
  */
 export const ListUsersResponseSchema: GenMessage<ListUsersResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_frontend_v1_frontend, 11);
+  messageDesc(file_openauth_frontend_v1_frontend, 13);
 
 /**
  * @generated from message openauth.frontend.v1.UpdateUserRequest
@@ -290,7 +320,7 @@ export type UpdateUserRequest = Message<"openauth.frontend.v1.UpdateUserRequest"
  * Use `create(UpdateUserRequestSchema)` to create a new message.
  */
 export const UpdateUserRequestSchema: GenMessage<UpdateUserRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_frontend_v1_frontend, 12);
+  messageDesc(file_openauth_frontend_v1_frontend, 14);
 
 /**
  * @generated from message openauth.frontend.v1.UpdateUserResponse
@@ -309,7 +339,7 @@ export type UpdateUserResponse = Message<"openauth.frontend.v1.UpdateUserRespons
  * Use `create(UpdateUserResponseSchema)` to create a new message.
  */
 export const UpdateUserResponseSchema: GenMessage<UpdateUserResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_frontend_v1_frontend, 13);
+  messageDesc(file_openauth_frontend_v1_frontend, 15);
 
 /**
  * @generated from message openauth.frontend.v1.WhoAmIRequest
@@ -322,7 +352,7 @@ export type WhoAmIRequest = Message<"openauth.frontend.v1.WhoAmIRequest"> & {
  * Use `create(WhoAmIRequestSchema)` to create a new message.
  */
 export const WhoAmIRequestSchema: GenMessage<WhoAmIRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_frontend_v1_frontend, 14);
+  messageDesc(file_openauth_frontend_v1_frontend, 16);
 
 /**
  * @generated from message openauth.frontend.v1.WhoAmIResponse
@@ -362,75 +392,7 @@ export type WhoAmIResponse = Message<"openauth.frontend.v1.WhoAmIResponse"> & {
  * Use `create(WhoAmIResponseSchema)` to create a new message.
  */
 export const WhoAmIResponseSchema: GenMessage<WhoAmIResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_frontend_v1_frontend, 15);
-
-/**
- * @generated from message openauth.frontend.v1.Organization
- */
-export type Organization = Message<"openauth.frontend.v1.Organization"> & {
-  /**
-   * Unique identifier for this organization.
-   *
-   * @generated from field: string id = 1;
-   */
-  id: string;
-
-  /**
-   * The project this organization belongs to.
-   *
-   * @generated from field: string project_id = 2;
-   */
-  projectId: string;
-
-  /**
-   * An optional human-friendly name for this organization.
-   *
-   * @generated from field: string display_name = 3;
-   */
-  displayName: string;
-
-  /**
-   * Override setting for whether login with password is enabled.
-   *
-   * @generated from field: bool override_log_in_with_password_enabled = 4;
-   */
-  overrideLogInWithPasswordEnabled: boolean;
-
-  /**
-   * Override setting for whether login with Google is enabled.
-   *
-   * @generated from field: bool override_log_in_with_google_enabled = 5;
-   */
-  overrideLogInWithGoogleEnabled: boolean;
-
-  /**
-   * Override setting for whether login with Microsoft is enabled.
-   *
-   * @generated from field: bool override_log_in_with_microsoft_enabled = 6;
-   */
-  overrideLogInWithMicrosoftEnabled: boolean;
-
-  /**
-   * Google hosted domain.
-   *
-   * @generated from field: string google_hosted_domain = 7;
-   */
-  googleHostedDomain: string;
-
-  /**
-   * The tenant ID for Microsoft auth.
-   *
-   * @generated from field: string microsoft_tenant_id = 8;
-   */
-  microsoftTenantId: string;
-};
-
-/**
- * Describes the message openauth.frontend.v1.Organization.
- * Use `create(OrganizationSchema)` to create a new message.
- */
-export const OrganizationSchema: GenMessage<Organization> = /*@__PURE__*/
-  messageDesc(file_openauth_frontend_v1_frontend, 16);
+  messageDesc(file_openauth_frontend_v1_frontend, 17);
 
 /**
  * @generated from message openauth.frontend.v1.Project
@@ -467,7 +429,64 @@ export type Project = Message<"openauth.frontend.v1.Project"> & {
  * Use `create(ProjectSchema)` to create a new message.
  */
 export const ProjectSchema: GenMessage<Project> = /*@__PURE__*/
-  messageDesc(file_openauth_frontend_v1_frontend, 17);
+  messageDesc(file_openauth_frontend_v1_frontend, 18);
+
+/**
+ * @generated from message openauth.frontend.v1.Organization
+ */
+export type Organization = Message<"openauth.frontend.v1.Organization"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+
+  /**
+   * @generated from field: string project_id = 2;
+   */
+  projectId: string;
+
+  /**
+   * @generated from field: string display_name = 3;
+   */
+  displayName: string;
+
+  /**
+   * @generated from field: optional bool override_log_in_methods = 4;
+   */
+  overrideLogInMethods?: boolean;
+
+  /**
+   * @generated from field: bool log_in_with_password_enabled = 5;
+   */
+  logInWithPasswordEnabled: boolean;
+
+  /**
+   * @generated from field: bool log_in_with_google_enabled = 6;
+   */
+  logInWithGoogleEnabled: boolean;
+
+  /**
+   * @generated from field: bool log_in_with_microsoft_enabled = 7;
+   */
+  logInWithMicrosoftEnabled: boolean;
+
+  /**
+   * @generated from field: string google_hosted_domain = 8;
+   */
+  googleHostedDomain: string;
+
+  /**
+   * @generated from field: string microsoft_tenant_id = 9;
+   */
+  microsoftTenantId: string;
+};
+
+/**
+ * Describes the message openauth.frontend.v1.Organization.
+ * Use `create(OrganizationSchema)` to create a new message.
+ */
+export const OrganizationSchema: GenMessage<Organization> = /*@__PURE__*/
+  messageDesc(file_openauth_frontend_v1_frontend, 19);
 
 /**
  * @generated from message openauth.frontend.v1.SessionSigningKey
@@ -494,7 +513,7 @@ export type SessionSigningKey = Message<"openauth.frontend.v1.SessionSigningKey"
  * Use `create(SessionSigningKeySchema)` to create a new message.
  */
 export const SessionSigningKeySchema: GenMessage<SessionSigningKey> = /*@__PURE__*/
-  messageDesc(file_openauth_frontend_v1_frontend, 18);
+  messageDesc(file_openauth_frontend_v1_frontend, 20);
 
 /**
  * @generated from message openauth.frontend.v1.User
@@ -555,7 +574,7 @@ export type User = Message<"openauth.frontend.v1.User"> & {
  * Use `create(UserSchema)` to create a new message.
  */
 export const UserSchema: GenMessage<User> = /*@__PURE__*/
-  messageDesc(file_openauth_frontend_v1_frontend, 19);
+  messageDesc(file_openauth_frontend_v1_frontend, 21);
 
 /**
  * @generated from message openauth.frontend.v1.Session
@@ -592,7 +611,7 @@ export type Session = Message<"openauth.frontend.v1.Session"> & {
  * Use `create(SessionSchema)` to create a new message.
  */
 export const SessionSchema: GenMessage<Session> = /*@__PURE__*/
-  messageDesc(file_openauth_frontend_v1_frontend, 20);
+  messageDesc(file_openauth_frontend_v1_frontend, 22);
 
 /**
  * @generated from service openauth.frontend.v1.FrontendService
@@ -613,6 +632,14 @@ export const FrontendService: GenService<{
     methodKind: "unary";
     input: typeof GetProjectRequestSchema;
     output: typeof GetProjectResponseSchema;
+  },
+  /**
+   * @generated from rpc openauth.frontend.v1.FrontendService.GetOrganization
+   */
+  getOrganization: {
+    methodKind: "unary";
+    input: typeof GetOrganizationRequestSchema;
+    output: typeof GetOrganizationResponseSchema;
   },
   /**
    * Creates a user.

@@ -30,6 +30,24 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /frontend/v1/organization:
+        get:
+            tags:
+                - FrontendService
+            operationId: FrontendService_GetOrganization
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetOrganizationResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /frontend/v1/organizations:
         get:
             tags:
@@ -232,6 +250,11 @@ components:
             properties:
                 accessToken:
                     type: string
+        GetOrganizationResponse:
+            type: object
+            properties:
+                organization:
+                    $ref: '#/components/schemas/Organization'
         GetProjectResponse:
             type: object
             properties:
@@ -279,28 +302,22 @@ components:
             properties:
                 id:
                     type: string
-                    description: Unique identifier for this organization.
                 projectId:
                     type: string
-                    description: The project this organization belongs to.
                 displayName:
                     type: string
-                    description: An optional human-friendly name for this organization.
-                overrideLogInWithPasswordEnabled:
+                overrideLogInMethods:
                     type: boolean
-                    description: Override setting for whether login with password is enabled.
-                overrideLogInWithGoogleEnabled:
+                logInWithPasswordEnabled:
                     type: boolean
-                    description: Override setting for whether login with Google is enabled.
-                overrideLogInWithMicrosoftEnabled:
+                logInWithGoogleEnabled:
                     type: boolean
-                    description: Override setting for whether login with Microsoft is enabled.
+                logInWithMicrosoftEnabled:
+                    type: boolean
                 googleHostedDomain:
                     type: string
-                    description: Google hosted domain.
                 microsoftTenantId:
                     type: string
-                    description: The tenant ID for Microsoft auth.
         Project:
             type: object
             properties:
