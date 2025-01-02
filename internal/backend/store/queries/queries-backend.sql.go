@@ -468,7 +468,7 @@ func (q *Queries) GetSessionSigningKeysByProjectID(ctx context.Context, projectI
 
 const getUser = `-- name: GetUser :one
 SELECT
-    users.id, users.organization_id, users.password_bcrypt, users.google_user_id, users.microsoft_user_id, users.email, users.create_time, users.update_time, users.deactivate_time
+    users.id, users.organization_id, users.password_bcrypt, users.google_user_id, users.microsoft_user_id, users.email, users.create_time, users.update_time, users.deactivate_time, users.is_owner
 FROM
     users
     JOIN organizations ON users.organization_id = organizations.id
@@ -495,6 +495,7 @@ func (q *Queries) GetUser(ctx context.Context, arg GetUserParams) (User, error) 
 		&i.CreateTime,
 		&i.UpdateTime,
 		&i.DeactivateTime,
+		&i.IsOwner,
 	)
 	return i, err
 }
@@ -823,7 +824,7 @@ func (q *Queries) ListSessions(ctx context.Context, arg ListSessionsParams) ([]S
 
 const listUsers = `-- name: ListUsers :many
 SELECT
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner
 FROM
     users
 WHERE
@@ -859,6 +860,7 @@ func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]User, e
 			&i.CreateTime,
 			&i.UpdateTime,
 			&i.DeactivateTime,
+			&i.IsOwner,
 		); err != nil {
 			return nil, err
 		}
@@ -1192,7 +1194,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner
 `
 
 type UpdateUserParams struct {
@@ -1224,6 +1226,7 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 		&i.CreateTime,
 		&i.UpdateTime,
 		&i.DeactivateTime,
+		&i.IsOwner,
 	)
 	return i, err
 }
@@ -1236,7 +1239,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner
 `
 
 type UpdateUserPasswordParams struct {
@@ -1257,6 +1260,7 @@ func (q *Queries) UpdateUserPassword(ctx context.Context, arg UpdateUserPassword
 		&i.CreateTime,
 		&i.UpdateTime,
 		&i.DeactivateTime,
+		&i.IsOwner,
 	)
 	return i, err
 }
