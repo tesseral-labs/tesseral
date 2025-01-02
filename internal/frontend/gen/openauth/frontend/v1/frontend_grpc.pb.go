@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	FrontendService_GetAccessToken_FullMethodName    = "/openauth.frontend.v1.FrontendService/GetAccessToken"
+	FrontendService_GetProject_FullMethodName        = "/openauth.frontend.v1.FrontendService/GetProject"
 	FrontendService_CreateUser_FullMethodName        = "/openauth.frontend.v1.FrontendService/CreateUser"
 	FrontendService_GetUser_FullMethodName           = "/openauth.frontend.v1.FrontendService/GetUser"
 	FrontendService_ListOrganizations_FullMethodName = "/openauth.frontend.v1.FrontendService/ListOrganizations"
@@ -33,6 +34,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type FrontendServiceClient interface {
 	GetAccessToken(ctx context.Context, in *GetAccessTokenRequest, opts ...grpc.CallOption) (*GetAccessTokenResponse, error)
+	GetProject(ctx context.Context, in *GetProjectRequest, opts ...grpc.CallOption) (*GetProjectResponse, error)
 	// Creates a user.
 	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error)
 	// Gets a user.
@@ -59,6 +61,16 @@ func (c *frontendServiceClient) GetAccessToken(ctx context.Context, in *GetAcces
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetAccessTokenResponse)
 	err := c.cc.Invoke(ctx, FrontendService_GetAccessToken_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *frontendServiceClient) GetProject(ctx context.Context, in *GetProjectRequest, opts ...grpc.CallOption) (*GetProjectResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetProjectResponse)
+	err := c.cc.Invoke(ctx, FrontendService_GetProject_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -130,6 +142,7 @@ func (c *frontendServiceClient) WhoAmI(ctx context.Context, in *WhoAmIRequest, o
 // for forward compatibility.
 type FrontendServiceServer interface {
 	GetAccessToken(context.Context, *GetAccessTokenRequest) (*GetAccessTokenResponse, error)
+	GetProject(context.Context, *GetProjectRequest) (*GetProjectResponse, error)
 	// Creates a user.
 	CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error)
 	// Gets a user.
@@ -154,6 +167,9 @@ type UnimplementedFrontendServiceServer struct{}
 
 func (UnimplementedFrontendServiceServer) GetAccessToken(context.Context, *GetAccessTokenRequest) (*GetAccessTokenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAccessToken not implemented")
+}
+func (UnimplementedFrontendServiceServer) GetProject(context.Context, *GetProjectRequest) (*GetProjectResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetProject not implemented")
 }
 func (UnimplementedFrontendServiceServer) CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
@@ -208,6 +224,24 @@ func _FrontendService_GetAccessToken_Handler(srv interface{}, ctx context.Contex
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(FrontendServiceServer).GetAccessToken(ctx, req.(*GetAccessTokenRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FrontendService_GetProject_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetProjectRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).GetProject(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_GetProject_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).GetProject(ctx, req.(*GetProjectRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -330,6 +364,10 @@ var FrontendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetAccessToken",
 			Handler:    _FrontendService_GetAccessToken_Handler,
+		},
+		{
+			MethodName: "GetProject",
+			Handler:    _FrontendService_GetProject_Handler,
 		},
 		{
 			MethodName: "CreateUser",

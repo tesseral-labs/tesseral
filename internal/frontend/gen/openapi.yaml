@@ -65,6 +65,24 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /frontend/v1/project:
+        get:
+            tags:
+                - FrontendService
+            operationId: FrontendService_GetProject
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetProjectResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /frontend/v1/users:
         get:
             tags:
@@ -214,6 +232,11 @@ components:
             properties:
                 accessToken:
                     type: string
+        GetProjectResponse:
+            type: object
+            properties:
+                project:
+                    $ref: '#/components/schemas/Project'
         GetUserResponse:
             type: object
             properties:
@@ -278,6 +301,19 @@ components:
                 microsoftTenantId:
                     type: string
                     description: The tenant ID for Microsoft auth.
+        Project:
+            type: object
+            properties:
+                id:
+                    type: string
+                displayName:
+                    type: string
+                logInWithPasswordEnabled:
+                    type: boolean
+                logInWithGoogleEnabled:
+                    type: boolean
+                logInWithMicrosoftEnabled:
+                    type: boolean
         Status:
             type: object
             properties:

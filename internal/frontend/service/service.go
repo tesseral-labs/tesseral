@@ -5,7 +5,7 @@ import (
 	"github.com/openauth/openauth/internal/frontend/store"
 )
 
-type FrontendService struct {
+type Service struct {
 	Store *store.Store
 	frontendv1connect.UnimplementedFrontendServiceHandler
 }

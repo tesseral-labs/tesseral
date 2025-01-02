@@ -37,7 +37,7 @@ type Project struct {
 }
 
 type Session struct {
-	ID         string
+	ID         string `json:"id"`
 	CreateTime time.Time
 	ExpireTime time.Time
 	UserID     string

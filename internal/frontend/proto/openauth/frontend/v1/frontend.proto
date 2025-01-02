@@ -16,6 +16,12 @@ service FrontendService {
     };
   }
 
+  rpc GetProject(GetProjectRequest) returns (GetProjectResponse) {
+    option (google.api.http) = {
+      get: "/frontend/v1/project",
+    };
+  }
+
   // Creates a user.
   rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {
     option (google.api.http) = {
@@ -67,6 +73,13 @@ message GetAccessTokenRequest {
 
 message GetAccessTokenResponse {
   string access_token = 2;
+}
+
+message GetProjectRequest {
+}
+
+message GetProjectResponse {
+  Project project = 1;
 }
 
 message CreateUserRequest {
@@ -166,24 +179,11 @@ message Organization {
 }
 
 message Project {
-  // Unique identifier for this project.
   string id = 1;
-  // The organization this project belongs to.
-  string organization_id = 2;
-  // Top-level setting for whether login with password is enabled (inherited by organizations by default).
+  string display_name = 2;
   bool log_in_with_password_enabled = 3;
-  // Top-level setting for whether login with Google is enabled (inherited by organizations by default).
   bool log_in_with_google_enabled = 4;
-  // Top-level setting for whether login with Microsoft is enabled (inherited by organizations by default).
   bool log_in_with_microsoft_enabled = 5;
-  // The oAuth Client ID to be used for Google Auth.
-  string google_oauth_client_id = 6;
-  // The oAuth Client secret to be used for Google Auth.
-  string google_oauth_client_secret = 7;
-  // The oAuth Client ID to be used for Microsoft Auth.
-  string microsoft_oauth_client_id = 8;
-  // The oAuth Client secret to be used for Microsoft Auth.
-  string microsoft_oauth_client_secret = 9;
 }
 
 message SessionSigningKey {
