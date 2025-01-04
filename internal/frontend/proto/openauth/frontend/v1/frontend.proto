@@ -28,6 +28,13 @@ service FrontendService {
     };
   }
 
+  rpc UpdateOrganization(UpdateOrganizationRequest) returns (UpdateOrganizationResponse) {
+    option (google.api.http) = {
+      patch: "/frontend/v1/organization",
+      body: "organization"
+    };
+  }
+
   // Creates a user.
   rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {
     option (google.api.http) = {
@@ -92,6 +99,14 @@ message GetOrganizationRequest {
 }
 
 message GetOrganizationResponse {
+  Organization organization = 1;
+}
+
+message UpdateOrganizationRequest {
+  Organization organization = 1;
+}
+
+message UpdateOrganizationResponse {
   Organization organization = 1;
 }
 

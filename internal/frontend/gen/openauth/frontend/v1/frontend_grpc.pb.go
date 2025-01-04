@@ -19,15 +19,16 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	FrontendService_GetAccessToken_FullMethodName    = "/openauth.frontend.v1.FrontendService/GetAccessToken"
-	FrontendService_GetProject_FullMethodName        = "/openauth.frontend.v1.FrontendService/GetProject"
-	FrontendService_GetOrganization_FullMethodName   = "/openauth.frontend.v1.FrontendService/GetOrganization"
-	FrontendService_CreateUser_FullMethodName        = "/openauth.frontend.v1.FrontendService/CreateUser"
-	FrontendService_GetUser_FullMethodName           = "/openauth.frontend.v1.FrontendService/GetUser"
-	FrontendService_ListOrganizations_FullMethodName = "/openauth.frontend.v1.FrontendService/ListOrganizations"
-	FrontendService_ListUsers_FullMethodName         = "/openauth.frontend.v1.FrontendService/ListUsers"
-	FrontendService_UpdateUser_FullMethodName        = "/openauth.frontend.v1.FrontendService/UpdateUser"
-	FrontendService_WhoAmI_FullMethodName            = "/openauth.frontend.v1.FrontendService/WhoAmI"
+	FrontendService_GetAccessToken_FullMethodName     = "/openauth.frontend.v1.FrontendService/GetAccessToken"
+	FrontendService_GetProject_FullMethodName         = "/openauth.frontend.v1.FrontendService/GetProject"
+	FrontendService_GetOrganization_FullMethodName    = "/openauth.frontend.v1.FrontendService/GetOrganization"
+	FrontendService_UpdateOrganization_FullMethodName = "/openauth.frontend.v1.FrontendService/UpdateOrganization"
+	FrontendService_CreateUser_FullMethodName         = "/openauth.frontend.v1.FrontendService/CreateUser"
+	FrontendService_GetUser_FullMethodName            = "/openauth.frontend.v1.FrontendService/GetUser"
+	FrontendService_ListOrganizations_FullMethodName  = "/openauth.frontend.v1.FrontendService/ListOrganizations"
+	FrontendService_ListUsers_FullMethodName          = "/openauth.frontend.v1.FrontendService/ListUsers"
+	FrontendService_UpdateUser_FullMethodName         = "/openauth.frontend.v1.FrontendService/UpdateUser"
+	FrontendService_WhoAmI_FullMethodName             = "/openauth.frontend.v1.FrontendService/WhoAmI"
 )
 
 // FrontendServiceClient is the client API for FrontendService service.
@@ -37,6 +38,7 @@ type FrontendServiceClient interface {
 	GetAccessToken(ctx context.Context, in *GetAccessTokenRequest, opts ...grpc.CallOption) (*GetAccessTokenResponse, error)
 	GetProject(ctx context.Context, in *GetProjectRequest, opts ...grpc.CallOption) (*GetProjectResponse, error)
 	GetOrganization(ctx context.Context, in *GetOrganizationRequest, opts ...grpc.CallOption) (*GetOrganizationResponse, error)
+	UpdateOrganization(ctx context.Context, in *UpdateOrganizationRequest, opts ...grpc.CallOption) (*UpdateOrganizationResponse, error)
 	// Creates a user.
 	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error)
 	// Gets a user.
@@ -83,6 +85,16 @@ func (c *frontendServiceClient) GetOrganization(ctx context.Context, in *GetOrga
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetOrganizationResponse)
 	err := c.cc.Invoke(ctx, FrontendService_GetOrganization_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *frontendServiceClient) UpdateOrganization(ctx context.Context, in *UpdateOrganizationRequest, opts ...grpc.CallOption) (*UpdateOrganizationResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateOrganizationResponse)
+	err := c.cc.Invoke(ctx, FrontendService_UpdateOrganization_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -156,6 +168,7 @@ type FrontendServiceServer interface {
 	GetAccessToken(context.Context, *GetAccessTokenRequest) (*GetAccessTokenResponse, error)
 	GetProject(context.Context, *GetProjectRequest) (*GetProjectResponse, error)
 	GetOrganization(context.Context, *GetOrganizationRequest) (*GetOrganizationResponse, error)
+	UpdateOrganization(context.Context, *UpdateOrganizationRequest) (*UpdateOrganizationResponse, error)
 	// Creates a user.
 	CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error)
 	// Gets a user.
@@ -186,6 +199,9 @@ func (UnimplementedFrontendServiceServer) GetProject(context.Context, *GetProjec
 }
 func (UnimplementedFrontendServiceServer) GetOrganization(context.Context, *GetOrganizationRequest) (*GetOrganizationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetOrganization not implemented")
+}
+func (UnimplementedFrontendServiceServer) UpdateOrganization(context.Context, *UpdateOrganizationRequest) (*UpdateOrganizationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateOrganization not implemented")
 }
 func (UnimplementedFrontendServiceServer) CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
@@ -276,6 +292,24 @@ func _FrontendService_GetOrganization_Handler(srv interface{}, ctx context.Conte
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(FrontendServiceServer).GetOrganization(ctx, req.(*GetOrganizationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FrontendService_UpdateOrganization_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateOrganizationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).UpdateOrganization(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_UpdateOrganization_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).UpdateOrganization(ctx, req.(*UpdateOrganizationRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -406,6 +440,10 @@ var FrontendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetOrganization",
 			Handler:    _FrontendService_GetOrganization_Handler,
+		},
+		{
+			MethodName: "UpdateOrganization",
+			Handler:    _FrontendService_UpdateOrganization_Handler,
 		},
 		{
 			MethodName: "CreateUser",

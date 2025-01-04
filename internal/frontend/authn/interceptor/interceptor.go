@@ -15,6 +15,8 @@ import (
 func New(s *store.Store) connect.UnaryInterceptorFunc {
 	return func(next connect.UnaryFunc) connect.UnaryFunc {
 		return func(ctx context.Context, req connect.AnyRequest) (connect.AnyResponse, error) {
+			fmt.Println("authn interceptor", req)
+
 			// Get the authorization header
 			authorization := req.Header().Get("Authorization")
 			if authorization == "" {
@@ -32,12 +34,14 @@ func New(s *store.Store) connect.UnaryInterceptorFunc {
 				return nil, connect.NewError(connect.CodeUnauthenticated, err)
 			}
 
+			fmt.Println("before pub key")
 			// get the public key for this key; the store will check to make
 			// sure it's actually a session signing key for the current project
 			publicKey, err := s.GetSessionSigningKeyPublicKey(ctx, kid)
 			if err != nil {
 				return nil, connect.NewError(connect.CodeUnauthenticated, err)
 			}
+			fmt.Println("after pub key")
 
 			var claims map[string]interface{}
 			if err := ujwt.Claims(publicKey, "TODO", time.Now(), &claims, accessToken); err != nil {

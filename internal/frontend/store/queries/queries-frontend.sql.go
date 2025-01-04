@@ -240,3 +240,57 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 	)
 	return i, err
 }
+
+const updateOrganization = `-- name: UpdateOrganization :one
+UPDATE
+    organizations
+SET
+    display_name = $2,
+    google_hosted_domain = $3,
+    microsoft_tenant_id = $4,
+    override_log_in_methods = $5,
+    override_log_in_with_password_enabled = $6,
+    override_log_in_with_google_enabled = $7,
+    override_log_in_with_microsoft_enabled = $8
+WHERE
+    id = $1
+RETURNING
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods
+`
+
+type UpdateOrganizationParams struct {
+	ID                                uuid.UUID
+	DisplayName                       string
+	GoogleHostedDomain                *string
+	MicrosoftTenantID                 *string
+	OverrideLogInMethods              bool
+	OverrideLogInWithPasswordEnabled  *bool
+	OverrideLogInWithGoogleEnabled    *bool
+	OverrideLogInWithMicrosoftEnabled *bool
+}
+
+func (q *Queries) UpdateOrganization(ctx context.Context, arg UpdateOrganizationParams) (Organization, error) {
+	row := q.db.QueryRow(ctx, updateOrganization,
+		arg.ID,
+		arg.DisplayName,
+		arg.GoogleHostedDomain,
+		arg.MicrosoftTenantID,
+		arg.OverrideLogInMethods,
+		arg.OverrideLogInWithPasswordEnabled,
+		arg.OverrideLogInWithGoogleEnabled,
+		arg.OverrideLogInWithMicrosoftEnabled,
+	)
+	var i Organization
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.DisplayName,
+		&i.OverrideLogInWithPasswordEnabled,
+		&i.OverrideLogInWithGoogleEnabled,
+		&i.OverrideLogInWithMicrosoftEnabled,
+		&i.GoogleHostedDomain,
+		&i.MicrosoftTenantID,
+		&i.OverrideLogInMethods,
+	)
+	return i, err
+}
