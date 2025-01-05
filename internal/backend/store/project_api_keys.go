@@ -5,7 +5,9 @@ import (
 	"crypto/sha256"
 	"fmt"
 
+	"connectrpc.com/connect"
 	"github.com/google/uuid"
+	"github.com/openauth/openauth/internal/backend/authn"
 	backendv1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
 	"github.com/openauth/openauth/internal/backend/store/queries"
 	"github.com/openauth/openauth/internal/projectid"
@@ -13,6 +15,10 @@ import (
 )
 
 func (s *Store) ListProjectAPIKeys(ctx context.Context, req *backendv1.ListProjectAPIKeysRequest) (*backendv1.ListProjectAPIKeysResponse, error) {
+	if err := validateIsDogfoodSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	}
+
 	_, q, _, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -51,6 +57,10 @@ func (s *Store) ListProjectAPIKeys(ctx context.Context, req *backendv1.ListProje
 }
 
 func (s *Store) GetProjectAPIKey(ctx context.Context, req *backendv1.GetProjectAPIKeyRequest) (*backendv1.GetProjectAPIKeyResponse, error) {
+	if err := validateIsDogfoodSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	}
+
 	id, err := idformat.ProjectAPIKey.Parse(req.Id)
 	if err != nil {
 		return nil, fmt.Errorf("parse project api key id: %w", err)
@@ -68,6 +78,10 @@ func (s *Store) GetProjectAPIKey(ctx context.Context, req *backendv1.GetProjectA
 }
 
 func (s *Store) CreateProjectAPIKey(ctx context.Context, req *backendv1.CreateProjectAPIKeyRequest) (*backendv1.CreateProjectAPIKeyResponse, error) {
+	if err := validateIsDogfoodSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	}
+
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -96,6 +110,10 @@ func (s *Store) CreateProjectAPIKey(ctx context.Context, req *backendv1.CreatePr
 }
 
 func (s *Store) UpdateProjectAPIKey(ctx context.Context, req *backendv1.UpdateProjectAPIKeyRequest) (*backendv1.UpdateProjectAPIKeyResponse, error) {
+	if err := validateIsDogfoodSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	}
+
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -137,6 +155,10 @@ func (s *Store) UpdateProjectAPIKey(ctx context.Context, req *backendv1.UpdatePr
 }
 
 func (s *Store) DeleteProjectAPIKey(ctx context.Context, req *backendv1.DeleteProjectAPIKeyRequest) (*backendv1.DeleteProjectAPIKeyResponse, error) {
+	if err := validateIsDogfoodSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	}
+
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -172,6 +194,10 @@ func (s *Store) DeleteProjectAPIKey(ctx context.Context, req *backendv1.DeletePr
 }
 
 func (s *Store) RevokeProjectAPIKey(ctx context.Context, req *backendv1.RevokeProjectAPIKeyRequest) (*backendv1.RevokeProjectAPIKeyResponse, error) {
+	if err := validateIsDogfoodSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	}
+
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -203,4 +229,17 @@ func parseProjectAPIKey(qProjectAPIKey queries.ProjectApiKey) *backendv1.Project
 		SecretToken: "", // intentionally left blank
 		Revoked:     qProjectAPIKey.SecretTokenSha256 == nil,
 	}
+}
+
+// validateIsDogfoodSession returns an error if the caller isn't a dogfood
+// session.
+//
+// The intention of this method is to allow endpoints to prevent themselves from
+// being called by project API keys.
+func validateIsDogfoodSession(ctx context.Context) error {
+	data := authn.GetContextData(ctx)
+	if data.DogfoodSession == nil {
+		return connect.NewError(connect.CodeUnauthenticated, fmt.Errorf("this endpoint cannot be invoked by project API keys"))
+	}
+	return nil
 }
