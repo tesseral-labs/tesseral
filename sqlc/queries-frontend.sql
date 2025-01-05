@@ -88,3 +88,34 @@ FROM
 WHERE
     id = $1;
 
+-- name: ListUsers :many
+SELECT
+    *
+FROM
+    users
+WHERE
+    organization_id = $1
+    AND id >= $2
+ORDER BY
+    id
+LIMIT $3;
+
+-- name: GetUser :one
+SELECT
+    *
+FROM
+    users
+WHERE
+    id = $1
+    AND organization_id = $2;
+
+-- name: UpdateUser :one
+UPDATE
+    users
+SET
+    is_owner = $1
+WHERE
+    id = $2
+RETURNING
+    *;
+
