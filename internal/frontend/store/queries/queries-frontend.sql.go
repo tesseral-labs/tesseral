@@ -12,6 +12,44 @@ import (
 	"github.com/google/uuid"
 )
 
+const createSAMLConnection = `-- name: CreateSAMLConnection :one
+INSERT INTO saml_connections (id, organization_id, is_primary, idp_redirect_url, idp_x509_certificate, idp_entity_id)
+    VALUES ($1, $2, $3, $4, $5, $6)
+RETURNING
+    id, organization_id, create_time, is_primary, idp_redirect_url, idp_x509_certificate, idp_entity_id
+`
+
+type CreateSAMLConnectionParams struct {
+	ID                 uuid.UUID
+	OrganizationID     uuid.UUID
+	IsPrimary          bool
+	IdpRedirectUrl     *string
+	IdpX509Certificate []byte
+	IdpEntityID        *string
+}
+
+func (q *Queries) CreateSAMLConnection(ctx context.Context, arg CreateSAMLConnectionParams) (SamlConnection, error) {
+	row := q.db.QueryRow(ctx, createSAMLConnection,
+		arg.ID,
+		arg.OrganizationID,
+		arg.IsPrimary,
+		arg.IdpRedirectUrl,
+		arg.IdpX509Certificate,
+		arg.IdpEntityID,
+	)
+	var i SamlConnection
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.CreateTime,
+		&i.IsPrimary,
+		&i.IdpRedirectUrl,
+		&i.IdpX509Certificate,
+		&i.IdpEntityID,
+	)
+	return i, err
+}
+
 const createSCIMAPIKey = `-- name: CreateSCIMAPIKey :one
 INSERT INTO scim_api_keys (id, organization_id, display_name, token_sha256)
     VALUES ($1, $2, $3, $4)
@@ -82,6 +120,16 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.IsOwner,
 	)
 	return i, err
+}
+
+const deleteSAMLConnection = `-- name: DeleteSAMLConnection :exec
+DELETE FROM saml_connections
+WHERE id = $1
+`
+
+func (q *Queries) DeleteSAMLConnection(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteSAMLConnection, id)
+	return err
 }
 
 const deleteSCIMAPIKey = `-- name: DeleteSCIMAPIKey :exec
@@ -169,6 +217,36 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 		&i.GoogleOauthClientSecretCiphertext,
 		&i.MicrosoftOauthClientSecretCiphertext,
 		&i.DisplayName,
+	)
+	return i, err
+}
+
+const getSAMLConnection = `-- name: GetSAMLConnection :one
+SELECT
+    id, organization_id, create_time, is_primary, idp_redirect_url, idp_x509_certificate, idp_entity_id
+FROM
+    saml_connections
+WHERE
+    id = $1
+    AND organization_id = $2
+`
+
+type GetSAMLConnectionParams struct {
+	ID             uuid.UUID
+	OrganizationID uuid.UUID
+}
+
+func (q *Queries) GetSAMLConnection(ctx context.Context, arg GetSAMLConnectionParams) (SamlConnection, error) {
+	row := q.db.QueryRow(ctx, getSAMLConnection, arg.ID, arg.OrganizationID)
+	var i SamlConnection
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.CreateTime,
+		&i.IsPrimary,
+		&i.IdpRedirectUrl,
+		&i.IdpX509Certificate,
+		&i.IdpEntityID,
 	)
 	return i, err
 }
@@ -342,6 +420,53 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 	return i, err
 }
 
+const listSAMLConnections = `-- name: ListSAMLConnections :many
+SELECT
+    id, organization_id, create_time, is_primary, idp_redirect_url, idp_x509_certificate, idp_entity_id
+FROM
+    saml_connections
+WHERE
+    organization_id = $1
+    AND id >= $2
+ORDER BY
+    id
+LIMIT $3
+`
+
+type ListSAMLConnectionsParams struct {
+	OrganizationID uuid.UUID
+	ID             uuid.UUID
+	Limit          int32
+}
+
+func (q *Queries) ListSAMLConnections(ctx context.Context, arg ListSAMLConnectionsParams) ([]SamlConnection, error) {
+	rows, err := q.db.Query(ctx, listSAMLConnections, arg.OrganizationID, arg.ID, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []SamlConnection
+	for rows.Next() {
+		var i SamlConnection
+		if err := rows.Scan(
+			&i.ID,
+			&i.OrganizationID,
+			&i.CreateTime,
+			&i.IsPrimary,
+			&i.IdpRedirectUrl,
+			&i.IdpX509Certificate,
+			&i.IdpEntityID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listSCIMAPIKeys = `-- name: ListSCIMAPIKeys :many
 SELECT
     id, organization_id, token_sha256, display_name
@@ -509,6 +634,68 @@ func (q *Queries) UpdateOrganization(ctx context.Context, arg UpdateOrganization
 		&i.GoogleHostedDomain,
 		&i.MicrosoftTenantID,
 		&i.OverrideLogInMethods,
+	)
+	return i, err
+}
+
+const updatePrimarySAMLConnection = `-- name: UpdatePrimarySAMLConnection :exec
+UPDATE
+    saml_connections
+SET
+    is_primary = (id = $1)
+WHERE
+    organization_id = $2
+`
+
+type UpdatePrimarySAMLConnectionParams struct {
+	ID             uuid.UUID
+	OrganizationID uuid.UUID
+}
+
+func (q *Queries) UpdatePrimarySAMLConnection(ctx context.Context, arg UpdatePrimarySAMLConnectionParams) error {
+	_, err := q.db.Exec(ctx, updatePrimarySAMLConnection, arg.ID, arg.OrganizationID)
+	return err
+}
+
+const updateSAMLConnection = `-- name: UpdateSAMLConnection :one
+UPDATE
+    saml_connections
+SET
+    is_primary = $1,
+    idp_redirect_url = $2,
+    idp_x509_certificate = $3,
+    idp_entity_id = $4
+WHERE
+    id = $5
+RETURNING
+    id, organization_id, create_time, is_primary, idp_redirect_url, idp_x509_certificate, idp_entity_id
+`
+
+type UpdateSAMLConnectionParams struct {
+	IsPrimary          bool
+	IdpRedirectUrl     *string
+	IdpX509Certificate []byte
+	IdpEntityID        *string
+	ID                 uuid.UUID
+}
+
+func (q *Queries) UpdateSAMLConnection(ctx context.Context, arg UpdateSAMLConnectionParams) (SamlConnection, error) {
+	row := q.db.QueryRow(ctx, updateSAMLConnection,
+		arg.IsPrimary,
+		arg.IdpRedirectUrl,
+		arg.IdpX509Certificate,
+		arg.IdpEntityID,
+		arg.ID,
+	)
+	var i SamlConnection
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.CreateTime,
+		&i.IsPrimary,
+		&i.IdpRedirectUrl,
+		&i.IdpX509Certificate,
+		&i.IdpEntityID,
 	)
 	return i, err
 }
