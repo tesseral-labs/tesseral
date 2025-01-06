@@ -28,6 +28,12 @@ const (
 	FrontendService_UpdateUser_FullMethodName         = "/openauth.frontend.v1.FrontendService/UpdateUser"
 	FrontendService_ListOrganizations_FullMethodName  = "/openauth.frontend.v1.FrontendService/ListOrganizations"
 	FrontendService_WhoAmI_FullMethodName             = "/openauth.frontend.v1.FrontendService/WhoAmI"
+	FrontendService_ListSCIMAPIKeys_FullMethodName    = "/openauth.frontend.v1.FrontendService/ListSCIMAPIKeys"
+	FrontendService_GetSCIMAPIKey_FullMethodName      = "/openauth.frontend.v1.FrontendService/GetSCIMAPIKey"
+	FrontendService_CreateSCIMAPIKey_FullMethodName   = "/openauth.frontend.v1.FrontendService/CreateSCIMAPIKey"
+	FrontendService_UpdateSCIMAPIKey_FullMethodName   = "/openauth.frontend.v1.FrontendService/UpdateSCIMAPIKey"
+	FrontendService_DeleteSCIMAPIKey_FullMethodName   = "/openauth.frontend.v1.FrontendService/DeleteSCIMAPIKey"
+	FrontendService_RevokeSCIMAPIKey_FullMethodName   = "/openauth.frontend.v1.FrontendService/RevokeSCIMAPIKey"
 )
 
 // FrontendServiceClient is the client API for FrontendService service.
@@ -45,6 +51,12 @@ type FrontendServiceClient interface {
 	ListOrganizations(ctx context.Context, in *ListOrganizationsRequest, opts ...grpc.CallOption) (*ListOrganizationsResponse, error)
 	// Who am I?
 	WhoAmI(ctx context.Context, in *WhoAmIRequest, opts ...grpc.CallOption) (*WhoAmIResponse, error)
+	ListSCIMAPIKeys(ctx context.Context, in *ListSCIMAPIKeysRequest, opts ...grpc.CallOption) (*ListSCIMAPIKeysResponse, error)
+	GetSCIMAPIKey(ctx context.Context, in *GetSCIMAPIKeyRequest, opts ...grpc.CallOption) (*GetSCIMAPIKeyResponse, error)
+	CreateSCIMAPIKey(ctx context.Context, in *CreateSCIMAPIKeyRequest, opts ...grpc.CallOption) (*CreateSCIMAPIKeyResponse, error)
+	UpdateSCIMAPIKey(ctx context.Context, in *UpdateSCIMAPIKeyRequest, opts ...grpc.CallOption) (*UpdateSCIMAPIKeyResponse, error)
+	DeleteSCIMAPIKey(ctx context.Context, in *DeleteSCIMAPIKeyRequest, opts ...grpc.CallOption) (*DeleteSCIMAPIKeyResponse, error)
+	RevokeSCIMAPIKey(ctx context.Context, in *RevokeSCIMAPIKeyRequest, opts ...grpc.CallOption) (*RevokeSCIMAPIKeyResponse, error)
 }
 
 type frontendServiceClient struct {
@@ -145,6 +157,66 @@ func (c *frontendServiceClient) WhoAmI(ctx context.Context, in *WhoAmIRequest, o
 	return out, nil
 }
 
+func (c *frontendServiceClient) ListSCIMAPIKeys(ctx context.Context, in *ListSCIMAPIKeysRequest, opts ...grpc.CallOption) (*ListSCIMAPIKeysResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListSCIMAPIKeysResponse)
+	err := c.cc.Invoke(ctx, FrontendService_ListSCIMAPIKeys_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *frontendServiceClient) GetSCIMAPIKey(ctx context.Context, in *GetSCIMAPIKeyRequest, opts ...grpc.CallOption) (*GetSCIMAPIKeyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetSCIMAPIKeyResponse)
+	err := c.cc.Invoke(ctx, FrontendService_GetSCIMAPIKey_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *frontendServiceClient) CreateSCIMAPIKey(ctx context.Context, in *CreateSCIMAPIKeyRequest, opts ...grpc.CallOption) (*CreateSCIMAPIKeyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateSCIMAPIKeyResponse)
+	err := c.cc.Invoke(ctx, FrontendService_CreateSCIMAPIKey_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *frontendServiceClient) UpdateSCIMAPIKey(ctx context.Context, in *UpdateSCIMAPIKeyRequest, opts ...grpc.CallOption) (*UpdateSCIMAPIKeyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateSCIMAPIKeyResponse)
+	err := c.cc.Invoke(ctx, FrontendService_UpdateSCIMAPIKey_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *frontendServiceClient) DeleteSCIMAPIKey(ctx context.Context, in *DeleteSCIMAPIKeyRequest, opts ...grpc.CallOption) (*DeleteSCIMAPIKeyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteSCIMAPIKeyResponse)
+	err := c.cc.Invoke(ctx, FrontendService_DeleteSCIMAPIKey_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *frontendServiceClient) RevokeSCIMAPIKey(ctx context.Context, in *RevokeSCIMAPIKeyRequest, opts ...grpc.CallOption) (*RevokeSCIMAPIKeyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RevokeSCIMAPIKeyResponse)
+	err := c.cc.Invoke(ctx, FrontendService_RevokeSCIMAPIKey_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // FrontendServiceServer is the server API for FrontendService service.
 // All implementations must embed UnimplementedFrontendServiceServer
 // for forward compatibility.
@@ -160,6 +232,12 @@ type FrontendServiceServer interface {
 	ListOrganizations(context.Context, *ListOrganizationsRequest) (*ListOrganizationsResponse, error)
 	// Who am I?
 	WhoAmI(context.Context, *WhoAmIRequest) (*WhoAmIResponse, error)
+	ListSCIMAPIKeys(context.Context, *ListSCIMAPIKeysRequest) (*ListSCIMAPIKeysResponse, error)
+	GetSCIMAPIKey(context.Context, *GetSCIMAPIKeyRequest) (*GetSCIMAPIKeyResponse, error)
+	CreateSCIMAPIKey(context.Context, *CreateSCIMAPIKeyRequest) (*CreateSCIMAPIKeyResponse, error)
+	UpdateSCIMAPIKey(context.Context, *UpdateSCIMAPIKeyRequest) (*UpdateSCIMAPIKeyResponse, error)
+	DeleteSCIMAPIKey(context.Context, *DeleteSCIMAPIKeyRequest) (*DeleteSCIMAPIKeyResponse, error)
+	RevokeSCIMAPIKey(context.Context, *RevokeSCIMAPIKeyRequest) (*RevokeSCIMAPIKeyResponse, error)
 	mustEmbedUnimplementedFrontendServiceServer()
 }
 
@@ -196,6 +274,24 @@ func (UnimplementedFrontendServiceServer) ListOrganizations(context.Context, *Li
 }
 func (UnimplementedFrontendServiceServer) WhoAmI(context.Context, *WhoAmIRequest) (*WhoAmIResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method WhoAmI not implemented")
+}
+func (UnimplementedFrontendServiceServer) ListSCIMAPIKeys(context.Context, *ListSCIMAPIKeysRequest) (*ListSCIMAPIKeysResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListSCIMAPIKeys not implemented")
+}
+func (UnimplementedFrontendServiceServer) GetSCIMAPIKey(context.Context, *GetSCIMAPIKeyRequest) (*GetSCIMAPIKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSCIMAPIKey not implemented")
+}
+func (UnimplementedFrontendServiceServer) CreateSCIMAPIKey(context.Context, *CreateSCIMAPIKeyRequest) (*CreateSCIMAPIKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateSCIMAPIKey not implemented")
+}
+func (UnimplementedFrontendServiceServer) UpdateSCIMAPIKey(context.Context, *UpdateSCIMAPIKeyRequest) (*UpdateSCIMAPIKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateSCIMAPIKey not implemented")
+}
+func (UnimplementedFrontendServiceServer) DeleteSCIMAPIKey(context.Context, *DeleteSCIMAPIKeyRequest) (*DeleteSCIMAPIKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteSCIMAPIKey not implemented")
+}
+func (UnimplementedFrontendServiceServer) RevokeSCIMAPIKey(context.Context, *RevokeSCIMAPIKeyRequest) (*RevokeSCIMAPIKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RevokeSCIMAPIKey not implemented")
 }
 func (UnimplementedFrontendServiceServer) mustEmbedUnimplementedFrontendServiceServer() {}
 func (UnimplementedFrontendServiceServer) testEmbeddedByValue()                         {}
@@ -380,6 +476,114 @@ func _FrontendService_WhoAmI_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _FrontendService_ListSCIMAPIKeys_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListSCIMAPIKeysRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).ListSCIMAPIKeys(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_ListSCIMAPIKeys_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).ListSCIMAPIKeys(ctx, req.(*ListSCIMAPIKeysRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FrontendService_GetSCIMAPIKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetSCIMAPIKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).GetSCIMAPIKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_GetSCIMAPIKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).GetSCIMAPIKey(ctx, req.(*GetSCIMAPIKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FrontendService_CreateSCIMAPIKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateSCIMAPIKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).CreateSCIMAPIKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_CreateSCIMAPIKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).CreateSCIMAPIKey(ctx, req.(*CreateSCIMAPIKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FrontendService_UpdateSCIMAPIKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateSCIMAPIKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).UpdateSCIMAPIKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_UpdateSCIMAPIKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).UpdateSCIMAPIKey(ctx, req.(*UpdateSCIMAPIKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FrontendService_DeleteSCIMAPIKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteSCIMAPIKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).DeleteSCIMAPIKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_DeleteSCIMAPIKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).DeleteSCIMAPIKey(ctx, req.(*DeleteSCIMAPIKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FrontendService_RevokeSCIMAPIKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RevokeSCIMAPIKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).RevokeSCIMAPIKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_RevokeSCIMAPIKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).RevokeSCIMAPIKey(ctx, req.(*RevokeSCIMAPIKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // FrontendService_ServiceDesc is the grpc.ServiceDesc for FrontendService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -422,6 +626,30 @@ var FrontendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "WhoAmI",
 			Handler:    _FrontendService_WhoAmI_Handler,
+		},
+		{
+			MethodName: "ListSCIMAPIKeys",
+			Handler:    _FrontendService_ListSCIMAPIKeys_Handler,
+		},
+		{
+			MethodName: "GetSCIMAPIKey",
+			Handler:    _FrontendService_GetSCIMAPIKey_Handler,
+		},
+		{
+			MethodName: "CreateSCIMAPIKey",
+			Handler:    _FrontendService_CreateSCIMAPIKey_Handler,
+		},
+		{
+			MethodName: "UpdateSCIMAPIKey",
+			Handler:    _FrontendService_UpdateSCIMAPIKey_Handler,
+		},
+		{
+			MethodName: "DeleteSCIMAPIKey",
+			Handler:    _FrontendService_DeleteSCIMAPIKey_Handler,
+		},
+		{
+			MethodName: "RevokeSCIMAPIKey",
+			Handler:    _FrontendService_RevokeSCIMAPIKey_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
