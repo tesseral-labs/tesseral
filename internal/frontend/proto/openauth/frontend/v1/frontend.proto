@@ -22,18 +22,35 @@ service FrontendService {
     };
   }
 
-  // Creates a user.
-  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {
+  rpc GetOrganization(GetOrganizationRequest) returns (GetOrganizationResponse) {
     option (google.api.http) = {
-      post: "/frontend/v1/users",
-      body: "user"
+      get: "/frontend/v1/organization",
     };
   }
 
-  // Gets a user.
+  rpc UpdateOrganization(UpdateOrganizationRequest) returns (UpdateOrganizationResponse) {
+    option (google.api.http) = {
+      patch: "/frontend/v1/organization",
+      body: "organization"
+    };
+  }
+
+  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse) {
+    option (google.api.http) = {
+      get: "/frontend/v1/users"
+    };
+  }
+
   rpc GetUser(GetUserRequest) returns (GetUserResponse) {
     option (google.api.http) = {
       get: "/frontend/v1/users/{id}"
+    };
+  }
+
+  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {
+    option (google.api.http) = {
+      patch: "/frontend/v1/users/{id}",
+      body: "user"
     };
   }
 
@@ -41,13 +58,6 @@ service FrontendService {
   rpc ListOrganizations(ListOrganizationsRequest) returns (ListOrganizationsResponse) {
     option (google.api.http) = {
       get: "/frontend/v1/organizations"
-    };
-  }
-
-  // Gets a list of users.
-  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse) {
-    option (google.api.http) = {
-      get: "/frontend/v1/users"
     };
   }
 
@@ -59,18 +69,48 @@ service FrontendService {
     };
   }
 
-  // Updates a user.
-  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {
-    option (google.api.http) = {
-      patch: "/frontend/v1/users/{id}",
-      body: "user"
-    };
-  }
-
   // Who am I?
   rpc WhoAmI(WhoAmIRequest) returns (WhoAmIResponse) {
     option (google.api.http) = {
       get: "/frontend/v1/whoami"
+    };
+  }
+
+  rpc ListSCIMAPIKeys(ListSCIMAPIKeysRequest) returns (ListSCIMAPIKeysResponse) {
+    option (google.api.http) = {
+      get: "/frontend/v1/scim-api-keys"
+    };
+  }
+
+  rpc GetSCIMAPIKey(GetSCIMAPIKeyRequest) returns (GetSCIMAPIKeyResponse) {
+    option (google.api.http) = {
+      get: "/frontend/v1/scim-api-keys/{id}"
+    };
+  }
+
+  rpc CreateSCIMAPIKey(CreateSCIMAPIKeyRequest) returns (CreateSCIMAPIKeyResponse) {
+    option (google.api.http) = {
+      post: "/frontend/v1/scim-api-keys",
+      body: "scim_api_key"
+    };
+  }
+
+  rpc UpdateSCIMAPIKey(UpdateSCIMAPIKeyRequest) returns (UpdateSCIMAPIKeyResponse) {
+    option (google.api.http) = {
+      patch: "/frontend/v1/scim-api-keys/{id}",
+      body: "scim_api_key"
+    };
+  }
+
+  rpc DeleteSCIMAPIKey(DeleteSCIMAPIKeyRequest) returns (DeleteSCIMAPIKeyResponse) {
+    option (google.api.http) = {
+      delete: "/frontend/v1/scim-api-keys/{id}"
+    };
+  }
+
+  rpc RevokeSCIMAPIKey(RevokeSCIMAPIKeyRequest) returns (RevokeSCIMAPIKeyResponse) {
+    option (google.api.http) = {
+      post: "/frontend/v1/scim-api-keys/{id}/revoke",
     };
   }
 }
@@ -90,24 +130,19 @@ message GetProjectResponse {
   Project project = 1;
 }
 
-message CreateUserRequest {
-  // The user to create.
-  User user = 1;
+message GetOrganizationRequest {
 }
 
-message CreateUserResponse {
-  // The user created by the CreateUser request.
-  User user = 1;
+message GetOrganizationResponse {
+  Organization organization = 1;
 }
 
-message GetUserRequest {
-  // The ID of the user to get.
-  string id = 1;
+message UpdateOrganizationRequest {
+  Organization organization = 1;
 }
 
-message GetUserResponse {
-  // The user returned by the GetUser request.
-  User user = 1;
+message UpdateOrganizationResponse {
+  Organization organization = 1;
 }
 
 message ListOrganizationsRequest {
@@ -127,28 +162,29 @@ message ListOrganizationsResponse {
 }
 
 message ListUsersRequest {
-  // The ID of the organization to use for filtering.
   string organization_id = 1;
-  // The page token to use for pagination.
   string page_token = 2;
 }
 
 message ListUsersResponse {
-  // The users returned by the ListUsers request.
   repeated User users = 1;
-  // The next page token to use for pagination.
   string next_page_token = 2;
 }
 
-message UpdateUserRequest {
-  // The ID of the user to update.
+message GetUserRequest {
   string id = 1;
-  // The user updates to apply.
+}
+
+message GetUserResponse {
+  User user = 1;
+}
+
+message UpdateUserRequest {
+  string id = 1;
   User user = 2;
 }
 
 message UpdateUserResponse {
-  // The user updated by the UpdateUser request.
   User user = 1;
 }
 
@@ -166,24 +202,53 @@ message WhoAmIResponse {
   Organization organization = 4;
 }
 
+message ListSCIMAPIKeysRequest {
+  string page_token = 1;
+}
 
-message Organization {
-  // Unique identifier for this organization.
+message ListSCIMAPIKeysResponse {
+  repeated SCIMAPIKey scim_api_keys = 1;
+  string next_page_token = 2;
+}
+
+message GetSCIMAPIKeyRequest {
   string id = 1;
-  // The project this organization belongs to.
-  string project_id = 2;
-  // An optional human-friendly name for this organization.
-  string display_name = 3;
-  // Override setting for whether login with password is enabled.
-  bool override_log_in_with_password_enabled = 4;
-  // Override setting for whether login with Google is enabled.
-  bool override_log_in_with_google_enabled = 5;
-  // Override setting for whether login with Microsoft is enabled.
-  bool override_log_in_with_microsoft_enabled = 6;
-  // Google hosted domain.
-  string google_hosted_domain = 7;
-  // The tenant ID for Microsoft auth.
-  string microsoft_tenant_id = 8;
+}
+
+message GetSCIMAPIKeyResponse {
+  SCIMAPIKey scim_api_key = 1;
+}
+
+message CreateSCIMAPIKeyRequest {
+  SCIMAPIKey scim_api_key = 1;
+}
+
+message CreateSCIMAPIKeyResponse {
+  SCIMAPIKey scim_api_key = 1;
+}
+
+message UpdateSCIMAPIKeyRequest {
+  string id = 1;
+  SCIMAPIKey scim_api_key = 2;
+}
+
+message UpdateSCIMAPIKeyResponse {
+  SCIMAPIKey scim_api_key = 1;
+}
+
+message DeleteSCIMAPIKeyRequest {
+  string id = 1;
+}
+
+message DeleteSCIMAPIKeyResponse {
+}
+
+message RevokeSCIMAPIKeyRequest {
+  string id = 1;
+}
+
+message RevokeSCIMAPIKeyResponse {
+  SCIMAPIKey scim_api_key = 1;
 }
 
 message Project {
@@ -192,6 +257,18 @@ message Project {
   bool log_in_with_password_enabled = 3;
   bool log_in_with_google_enabled = 4;
   bool log_in_with_microsoft_enabled = 5;
+}
+
+message Organization {
+  string id = 1;
+  string project_id = 2;
+  string display_name = 3;
+  optional bool override_log_in_methods = 4;
+  bool log_in_with_password_enabled = 5;
+  bool log_in_with_google_enabled = 6;
+  bool log_in_with_microsoft_enabled = 7;
+  string google_hosted_domain = 8;
+  string microsoft_tenant_id = 9;
 }
 
 message SessionSigningKey {
@@ -211,20 +288,12 @@ message SetUserPasswordResponse {
 }
 
 message User {
-  // Unique identifier for this user.
   string id = 1;
-  // The organization this user belongs to.
   string organization_id = 2;
-  // The user's email (pending verification).
-  string unverified_email = 3;
-  // The user's email (after verification).
-  string verified_email = 4;
-  // The hash of the user's password.
-  string password_bcrypt = 5;
-  // The user's Google User ID.
-  string google_user_id = 6;
-  // The user's Microsoft User ID.
-  string microsoft_user_id = 7;
+  string email = 3;
+  optional bool owner = 6;
+  string google_user_id = 4;
+  string microsoft_user_id = 5;
 }
 
 message Session {
@@ -235,4 +304,11 @@ message Session {
   bool revoked = 5;
 
   // TODO(ucarion): add session metadata like auth factors, etc here
+}
+
+message SCIMAPIKey {
+  string id = 1;
+  string display_name = 2;
+  string secret_token = 3;
+  bool revoked = 4;
 }

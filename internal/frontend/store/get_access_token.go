@@ -62,12 +62,12 @@ func (s *Store) GetAccessToken(ctx context.Context, req *frontendv1.GetAccessTok
 		return nil, fmt.Errorf("marshal session claim: %w", err)
 	}
 
-	userClaim, err := protojson.Marshal(parseUser(qUser))
+	userClaim, err := protojson.Marshal(parseUser(*qUser))
 	if err != nil {
 		return nil, fmt.Errorf("marshal user claim: %w", err)
 	}
 
-	organizationClaim, err := protojson.Marshal(parseOrganization(*qOrganization))
+	organizationClaim, err := protojson.Marshal(parseOrganization(*qProject, *qOrganization))
 	if err != nil {
 		return nil, fmt.Errorf("marshal organization claim: %w", err)
 	}

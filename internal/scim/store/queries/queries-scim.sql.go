@@ -32,7 +32,7 @@ const createUser = `-- name: CreateUser :one
 INSERT INTO users (id, organization_id, email)
     VALUES ($1, $2, $3)
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner
 `
 
 type CreateUserParams struct {
@@ -54,6 +54,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.CreateTime,
 		&i.UpdateTime,
 		&i.DeactivateTime,
+		&i.IsOwner,
 	)
 	return i, err
 }
@@ -67,7 +68,7 @@ WHERE
     id = $2
     AND organization_id = $3
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner
 `
 
 type DeactivateUserParams struct {
@@ -89,6 +90,7 @@ func (q *Queries) DeactivateUser(ctx context.Context, arg DeactivateUserParams) 
 		&i.CreateTime,
 		&i.UpdateTime,
 		&i.DeactivateTime,
+		&i.IsOwner,
 	)
 	return i, err
 }
@@ -152,7 +154,7 @@ func (q *Queries) GetSCIMAPIKeyByTokenSHA256(ctx context.Context, arg GetSCIMAPI
 
 const getUserByEmail = `-- name: GetUserByEmail :one
 SELECT
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner
 FROM
     users
 WHERE
@@ -178,13 +180,14 @@ func (q *Queries) GetUserByEmail(ctx context.Context, arg GetUserByEmailParams) 
 		&i.CreateTime,
 		&i.UpdateTime,
 		&i.DeactivateTime,
+		&i.IsOwner,
 	)
 	return i, err
 }
 
 const getUserByID = `-- name: GetUserByID :one
 SELECT
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner
 FROM
     users
 WHERE
@@ -210,13 +213,14 @@ func (q *Queries) GetUserByID(ctx context.Context, arg GetUserByIDParams) (User,
 		&i.CreateTime,
 		&i.UpdateTime,
 		&i.DeactivateTime,
+		&i.IsOwner,
 	)
 	return i, err
 }
 
 const listUsers = `-- name: ListUsers :many
 SELECT
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner
 FROM
     users
 WHERE
@@ -251,6 +255,7 @@ func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]User, e
 			&i.CreateTime,
 			&i.UpdateTime,
 			&i.DeactivateTime,
+			&i.IsOwner,
 		); err != nil {
 			return nil, err
 		}
@@ -272,7 +277,7 @@ WHERE
     id = $3
     AND organization_id = $4
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner
 `
 
 type UpdateUserParams struct {
@@ -300,6 +305,7 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 		&i.CreateTime,
 		&i.UpdateTime,
 		&i.DeactivateTime,
+		&i.IsOwner,
 	)
 	return i, err
 }

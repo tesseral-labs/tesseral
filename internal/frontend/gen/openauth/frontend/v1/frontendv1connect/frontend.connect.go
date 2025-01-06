@@ -39,59 +39,90 @@ const (
 	// FrontendServiceGetProjectProcedure is the fully-qualified name of the FrontendService's
 	// GetProject RPC.
 	FrontendServiceGetProjectProcedure = "/openauth.frontend.v1.FrontendService/GetProject"
-	// FrontendServiceCreateUserProcedure is the fully-qualified name of the FrontendService's
-	// CreateUser RPC.
-	FrontendServiceCreateUserProcedure = "/openauth.frontend.v1.FrontendService/CreateUser"
-	// FrontendServiceGetUserProcedure is the fully-qualified name of the FrontendService's GetUser RPC.
-	FrontendServiceGetUserProcedure = "/openauth.frontend.v1.FrontendService/GetUser"
-	// FrontendServiceListOrganizationsProcedure is the fully-qualified name of the FrontendService's
-	// ListOrganizations RPC.
-	FrontendServiceListOrganizationsProcedure = "/openauth.frontend.v1.FrontendService/ListOrganizations"
+	// FrontendServiceGetOrganizationProcedure is the fully-qualified name of the FrontendService's
+	// GetOrganization RPC.
+	FrontendServiceGetOrganizationProcedure = "/openauth.frontend.v1.FrontendService/GetOrganization"
+	// FrontendServiceUpdateOrganizationProcedure is the fully-qualified name of the FrontendService's
+	// UpdateOrganization RPC.
+	FrontendServiceUpdateOrganizationProcedure = "/openauth.frontend.v1.FrontendService/UpdateOrganization"
 	// FrontendServiceListUsersProcedure is the fully-qualified name of the FrontendService's ListUsers
 	// RPC.
 	FrontendServiceListUsersProcedure = "/openauth.frontend.v1.FrontendService/ListUsers"
-	// FrontendServiceSetUserPasswordProcedure is the fully-qualified name of the FrontendService's
-	// SetUserPassword RPC.
-	FrontendServiceSetUserPasswordProcedure = "/openauth.frontend.v1.FrontendService/SetUserPassword"
+	// FrontendServiceGetUserProcedure is the fully-qualified name of the FrontendService's GetUser RPC.
+	FrontendServiceGetUserProcedure = "/openauth.frontend.v1.FrontendService/GetUser"
 	// FrontendServiceUpdateUserProcedure is the fully-qualified name of the FrontendService's
 	// UpdateUser RPC.
 	FrontendServiceUpdateUserProcedure = "/openauth.frontend.v1.FrontendService/UpdateUser"
+	// FrontendServiceListOrganizationsProcedure is the fully-qualified name of the FrontendService's
+	// ListOrganizations RPC.
+	FrontendServiceListOrganizationsProcedure = "/openauth.frontend.v1.FrontendService/ListOrganizations"
+	// FrontendServiceSetUserPasswordProcedure is the fully-qualified name of the FrontendService's
+	// SetUserPassword RPC.
+	FrontendServiceSetUserPasswordProcedure = "/openauth.frontend.v1.FrontendService/SetUserPassword"
 	// FrontendServiceWhoAmIProcedure is the fully-qualified name of the FrontendService's WhoAmI RPC.
 	FrontendServiceWhoAmIProcedure = "/openauth.frontend.v1.FrontendService/WhoAmI"
+	// FrontendServiceListSCIMAPIKeysProcedure is the fully-qualified name of the FrontendService's
+	// ListSCIMAPIKeys RPC.
+	FrontendServiceListSCIMAPIKeysProcedure = "/openauth.frontend.v1.FrontendService/ListSCIMAPIKeys"
+	// FrontendServiceGetSCIMAPIKeyProcedure is the fully-qualified name of the FrontendService's
+	// GetSCIMAPIKey RPC.
+	FrontendServiceGetSCIMAPIKeyProcedure = "/openauth.frontend.v1.FrontendService/GetSCIMAPIKey"
+	// FrontendServiceCreateSCIMAPIKeyProcedure is the fully-qualified name of the FrontendService's
+	// CreateSCIMAPIKey RPC.
+	FrontendServiceCreateSCIMAPIKeyProcedure = "/openauth.frontend.v1.FrontendService/CreateSCIMAPIKey"
+	// FrontendServiceUpdateSCIMAPIKeyProcedure is the fully-qualified name of the FrontendService's
+	// UpdateSCIMAPIKey RPC.
+	FrontendServiceUpdateSCIMAPIKeyProcedure = "/openauth.frontend.v1.FrontendService/UpdateSCIMAPIKey"
+	// FrontendServiceDeleteSCIMAPIKeyProcedure is the fully-qualified name of the FrontendService's
+	// DeleteSCIMAPIKey RPC.
+	FrontendServiceDeleteSCIMAPIKeyProcedure = "/openauth.frontend.v1.FrontendService/DeleteSCIMAPIKey"
+	// FrontendServiceRevokeSCIMAPIKeyProcedure is the fully-qualified name of the FrontendService's
+	// RevokeSCIMAPIKey RPC.
+	FrontendServiceRevokeSCIMAPIKeyProcedure = "/openauth.frontend.v1.FrontendService/RevokeSCIMAPIKey"
 )
 
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
 var (
-	frontendServiceServiceDescriptor                 = v1.File_openauth_frontend_v1_frontend_proto.Services().ByName("FrontendService")
-	frontendServiceGetAccessTokenMethodDescriptor    = frontendServiceServiceDescriptor.Methods().ByName("GetAccessToken")
-	frontendServiceGetProjectMethodDescriptor        = frontendServiceServiceDescriptor.Methods().ByName("GetProject")
-	frontendServiceCreateUserMethodDescriptor        = frontendServiceServiceDescriptor.Methods().ByName("CreateUser")
-	frontendServiceGetUserMethodDescriptor           = frontendServiceServiceDescriptor.Methods().ByName("GetUser")
-	frontendServiceListOrganizationsMethodDescriptor = frontendServiceServiceDescriptor.Methods().ByName("ListOrganizations")
-	frontendServiceListUsersMethodDescriptor         = frontendServiceServiceDescriptor.Methods().ByName("ListUsers")
-	frontendServiceSetUserPasswordMethodDescriptor   = frontendServiceServiceDescriptor.Methods().ByName("SetUserPassword")
-	frontendServiceUpdateUserMethodDescriptor        = frontendServiceServiceDescriptor.Methods().ByName("UpdateUser")
-	frontendServiceWhoAmIMethodDescriptor            = frontendServiceServiceDescriptor.Methods().ByName("WhoAmI")
+	frontendServiceServiceDescriptor                  = v1.File_openauth_frontend_v1_frontend_proto.Services().ByName("FrontendService")
+	frontendServiceGetAccessTokenMethodDescriptor     = frontendServiceServiceDescriptor.Methods().ByName("GetAccessToken")
+	frontendServiceGetProjectMethodDescriptor         = frontendServiceServiceDescriptor.Methods().ByName("GetProject")
+	frontendServiceGetOrganizationMethodDescriptor    = frontendServiceServiceDescriptor.Methods().ByName("GetOrganization")
+	frontendServiceUpdateOrganizationMethodDescriptor = frontendServiceServiceDescriptor.Methods().ByName("UpdateOrganization")
+	frontendServiceListUsersMethodDescriptor          = frontendServiceServiceDescriptor.Methods().ByName("ListUsers")
+	frontendServiceGetUserMethodDescriptor            = frontendServiceServiceDescriptor.Methods().ByName("GetUser")
+	frontendServiceUpdateUserMethodDescriptor         = frontendServiceServiceDescriptor.Methods().ByName("UpdateUser")
+	frontendServiceListOrganizationsMethodDescriptor  = frontendServiceServiceDescriptor.Methods().ByName("ListOrganizations")
+	frontendServiceSetUserPasswordMethodDescriptor    = frontendServiceServiceDescriptor.Methods().ByName("SetUserPassword")
+	frontendServiceWhoAmIMethodDescriptor             = frontendServiceServiceDescriptor.Methods().ByName("WhoAmI")
+	frontendServiceListSCIMAPIKeysMethodDescriptor    = frontendServiceServiceDescriptor.Methods().ByName("ListSCIMAPIKeys")
+	frontendServiceGetSCIMAPIKeyMethodDescriptor      = frontendServiceServiceDescriptor.Methods().ByName("GetSCIMAPIKey")
+	frontendServiceCreateSCIMAPIKeyMethodDescriptor   = frontendServiceServiceDescriptor.Methods().ByName("CreateSCIMAPIKey")
+	frontendServiceUpdateSCIMAPIKeyMethodDescriptor   = frontendServiceServiceDescriptor.Methods().ByName("UpdateSCIMAPIKey")
+	frontendServiceDeleteSCIMAPIKeyMethodDescriptor   = frontendServiceServiceDescriptor.Methods().ByName("DeleteSCIMAPIKey")
+	frontendServiceRevokeSCIMAPIKeyMethodDescriptor   = frontendServiceServiceDescriptor.Methods().ByName("RevokeSCIMAPIKey")
 )
 
 // FrontendServiceClient is a client for the openauth.frontend.v1.FrontendService service.
 type FrontendServiceClient interface {
 	GetAccessToken(context.Context, *connect.Request[v1.GetAccessTokenRequest]) (*connect.Response[v1.GetAccessTokenResponse], error)
 	GetProject(context.Context, *connect.Request[v1.GetProjectRequest]) (*connect.Response[v1.GetProjectResponse], error)
-	// Creates a user.
-	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error)
-	// Gets a user.
+	GetOrganization(context.Context, *connect.Request[v1.GetOrganizationRequest]) (*connect.Response[v1.GetOrganizationResponse], error)
+	UpdateOrganization(context.Context, *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.UpdateOrganizationResponse], error)
+	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
 	GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error)
+	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error)
 	// Gets a list of organizations.
 	ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error)
-	// Gets a list of users.
-	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
 	// Sets a user's password.
 	SetUserPassword(context.Context, *connect.Request[v1.SetUserPasswordRequest]) (*connect.Response[v1.SetUserPasswordResponse], error)
-	// Updates a user.
-	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error)
 	// Who am I?
 	WhoAmI(context.Context, *connect.Request[v1.WhoAmIRequest]) (*connect.Response[v1.WhoAmIResponse], error)
+	ListSCIMAPIKeys(context.Context, *connect.Request[v1.ListSCIMAPIKeysRequest]) (*connect.Response[v1.ListSCIMAPIKeysResponse], error)
+	GetSCIMAPIKey(context.Context, *connect.Request[v1.GetSCIMAPIKeyRequest]) (*connect.Response[v1.GetSCIMAPIKeyResponse], error)
+	CreateSCIMAPIKey(context.Context, *connect.Request[v1.CreateSCIMAPIKeyRequest]) (*connect.Response[v1.CreateSCIMAPIKeyResponse], error)
+	UpdateSCIMAPIKey(context.Context, *connect.Request[v1.UpdateSCIMAPIKeyRequest]) (*connect.Response[v1.UpdateSCIMAPIKeyResponse], error)
+	DeleteSCIMAPIKey(context.Context, *connect.Request[v1.DeleteSCIMAPIKeyRequest]) (*connect.Response[v1.DeleteSCIMAPIKeyResponse], error)
+	RevokeSCIMAPIKey(context.Context, *connect.Request[v1.RevokeSCIMAPIKeyRequest]) (*connect.Response[v1.RevokeSCIMAPIKeyResponse], error)
 }
 
 // NewFrontendServiceClient constructs a client for the openauth.frontend.v1.FrontendService
@@ -116,22 +147,16 @@ func NewFrontendServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			connect.WithSchema(frontendServiceGetProjectMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
-		createUser: connect.NewClient[v1.CreateUserRequest, v1.CreateUserResponse](
+		getOrganization: connect.NewClient[v1.GetOrganizationRequest, v1.GetOrganizationResponse](
 			httpClient,
-			baseURL+FrontendServiceCreateUserProcedure,
-			connect.WithSchema(frontendServiceCreateUserMethodDescriptor),
+			baseURL+FrontendServiceGetOrganizationProcedure,
+			connect.WithSchema(frontendServiceGetOrganizationMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
-		getUser: connect.NewClient[v1.GetUserRequest, v1.GetUserResponse](
+		updateOrganization: connect.NewClient[v1.UpdateOrganizationRequest, v1.UpdateOrganizationResponse](
 			httpClient,
-			baseURL+FrontendServiceGetUserProcedure,
-			connect.WithSchema(frontendServiceGetUserMethodDescriptor),
-			connect.WithClientOptions(opts...),
-		),
-		listOrganizations: connect.NewClient[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse](
-			httpClient,
-			baseURL+FrontendServiceListOrganizationsProcedure,
-			connect.WithSchema(frontendServiceListOrganizationsMethodDescriptor),
+			baseURL+FrontendServiceUpdateOrganizationProcedure,
+			connect.WithSchema(frontendServiceUpdateOrganizationMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
 		listUsers: connect.NewClient[v1.ListUsersRequest, v1.ListUsersResponse](
@@ -140,10 +165,10 @@ func NewFrontendServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			connect.WithSchema(frontendServiceListUsersMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
-		setUserPassword: connect.NewClient[v1.SetUserPasswordRequest, v1.SetUserPasswordResponse](
+		getUser: connect.NewClient[v1.GetUserRequest, v1.GetUserResponse](
 			httpClient,
-			baseURL+FrontendServiceSetUserPasswordProcedure,
-			connect.WithSchema(frontendServiceSetUserPasswordMethodDescriptor),
+			baseURL+FrontendServiceGetUserProcedure,
+			connect.WithSchema(frontendServiceGetUserMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
 		updateUser: connect.NewClient[v1.UpdateUserRequest, v1.UpdateUserResponse](
@@ -152,10 +177,58 @@ func NewFrontendServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			connect.WithSchema(frontendServiceUpdateUserMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
+		listOrganizations: connect.NewClient[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse](
+			httpClient,
+			baseURL+FrontendServiceListOrganizationsProcedure,
+			connect.WithSchema(frontendServiceListOrganizationsMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		setUserPassword: connect.NewClient[v1.SetUserPasswordRequest, v1.SetUserPasswordResponse](
+			httpClient,
+			baseURL+FrontendServiceSetUserPasswordProcedure,
+			connect.WithSchema(frontendServiceSetUserPasswordMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
 		whoAmI: connect.NewClient[v1.WhoAmIRequest, v1.WhoAmIResponse](
 			httpClient,
 			baseURL+FrontendServiceWhoAmIProcedure,
 			connect.WithSchema(frontendServiceWhoAmIMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		listSCIMAPIKeys: connect.NewClient[v1.ListSCIMAPIKeysRequest, v1.ListSCIMAPIKeysResponse](
+			httpClient,
+			baseURL+FrontendServiceListSCIMAPIKeysProcedure,
+			connect.WithSchema(frontendServiceListSCIMAPIKeysMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		getSCIMAPIKey: connect.NewClient[v1.GetSCIMAPIKeyRequest, v1.GetSCIMAPIKeyResponse](
+			httpClient,
+			baseURL+FrontendServiceGetSCIMAPIKeyProcedure,
+			connect.WithSchema(frontendServiceGetSCIMAPIKeyMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		createSCIMAPIKey: connect.NewClient[v1.CreateSCIMAPIKeyRequest, v1.CreateSCIMAPIKeyResponse](
+			httpClient,
+			baseURL+FrontendServiceCreateSCIMAPIKeyProcedure,
+			connect.WithSchema(frontendServiceCreateSCIMAPIKeyMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		updateSCIMAPIKey: connect.NewClient[v1.UpdateSCIMAPIKeyRequest, v1.UpdateSCIMAPIKeyResponse](
+			httpClient,
+			baseURL+FrontendServiceUpdateSCIMAPIKeyProcedure,
+			connect.WithSchema(frontendServiceUpdateSCIMAPIKeyMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		deleteSCIMAPIKey: connect.NewClient[v1.DeleteSCIMAPIKeyRequest, v1.DeleteSCIMAPIKeyResponse](
+			httpClient,
+			baseURL+FrontendServiceDeleteSCIMAPIKeyProcedure,
+			connect.WithSchema(frontendServiceDeleteSCIMAPIKeyMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		revokeSCIMAPIKey: connect.NewClient[v1.RevokeSCIMAPIKeyRequest, v1.RevokeSCIMAPIKeyResponse](
+			httpClient,
+			baseURL+FrontendServiceRevokeSCIMAPIKeyProcedure,
+			connect.WithSchema(frontendServiceRevokeSCIMAPIKeyMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -163,15 +236,22 @@ func NewFrontendServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 
 // frontendServiceClient implements FrontendServiceClient.
 type frontendServiceClient struct {
-	getAccessToken    *connect.Client[v1.GetAccessTokenRequest, v1.GetAccessTokenResponse]
-	getProject        *connect.Client[v1.GetProjectRequest, v1.GetProjectResponse]
-	createUser        *connect.Client[v1.CreateUserRequest, v1.CreateUserResponse]
-	getUser           *connect.Client[v1.GetUserRequest, v1.GetUserResponse]
-	listOrganizations *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
-	listUsers         *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
-	setUserPassword   *connect.Client[v1.SetUserPasswordRequest, v1.SetUserPasswordResponse]
-	updateUser        *connect.Client[v1.UpdateUserRequest, v1.UpdateUserResponse]
-	whoAmI            *connect.Client[v1.WhoAmIRequest, v1.WhoAmIResponse]
+	getAccessToken     *connect.Client[v1.GetAccessTokenRequest, v1.GetAccessTokenResponse]
+	getProject         *connect.Client[v1.GetProjectRequest, v1.GetProjectResponse]
+	getOrganization    *connect.Client[v1.GetOrganizationRequest, v1.GetOrganizationResponse]
+	updateOrganization *connect.Client[v1.UpdateOrganizationRequest, v1.UpdateOrganizationResponse]
+	listUsers          *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
+	getUser            *connect.Client[v1.GetUserRequest, v1.GetUserResponse]
+	updateUser         *connect.Client[v1.UpdateUserRequest, v1.UpdateUserResponse]
+	listOrganizations  *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
+	setUserPassword    *connect.Client[v1.SetUserPasswordRequest, v1.SetUserPasswordResponse]
+	whoAmI             *connect.Client[v1.WhoAmIRequest, v1.WhoAmIResponse]
+	listSCIMAPIKeys    *connect.Client[v1.ListSCIMAPIKeysRequest, v1.ListSCIMAPIKeysResponse]
+	getSCIMAPIKey      *connect.Client[v1.GetSCIMAPIKeyRequest, v1.GetSCIMAPIKeyResponse]
+	createSCIMAPIKey   *connect.Client[v1.CreateSCIMAPIKeyRequest, v1.CreateSCIMAPIKeyResponse]
+	updateSCIMAPIKey   *connect.Client[v1.UpdateSCIMAPIKeyRequest, v1.UpdateSCIMAPIKeyResponse]
+	deleteSCIMAPIKey   *connect.Client[v1.DeleteSCIMAPIKeyRequest, v1.DeleteSCIMAPIKeyResponse]
+	revokeSCIMAPIKey   *connect.Client[v1.RevokeSCIMAPIKeyRequest, v1.RevokeSCIMAPIKeyResponse]
 }
 
 // GetAccessToken calls openauth.frontend.v1.FrontendService.GetAccessToken.
@@ -184,19 +264,14 @@ func (c *frontendServiceClient) GetProject(ctx context.Context, req *connect.Req
 	return c.getProject.CallUnary(ctx, req)
 }
 
-// CreateUser calls openauth.frontend.v1.FrontendService.CreateUser.
-func (c *frontendServiceClient) CreateUser(ctx context.Context, req *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error) {
-	return c.createUser.CallUnary(ctx, req)
+// GetOrganization calls openauth.frontend.v1.FrontendService.GetOrganization.
+func (c *frontendServiceClient) GetOrganization(ctx context.Context, req *connect.Request[v1.GetOrganizationRequest]) (*connect.Response[v1.GetOrganizationResponse], error) {
+	return c.getOrganization.CallUnary(ctx, req)
 }
 
-// GetUser calls openauth.frontend.v1.FrontendService.GetUser.
-func (c *frontendServiceClient) GetUser(ctx context.Context, req *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error) {
-	return c.getUser.CallUnary(ctx, req)
-}
-
-// ListOrganizations calls openauth.frontend.v1.FrontendService.ListOrganizations.
-func (c *frontendServiceClient) ListOrganizations(ctx context.Context, req *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error) {
-	return c.listOrganizations.CallUnary(ctx, req)
+// UpdateOrganization calls openauth.frontend.v1.FrontendService.UpdateOrganization.
+func (c *frontendServiceClient) UpdateOrganization(ctx context.Context, req *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.UpdateOrganizationResponse], error) {
+	return c.updateOrganization.CallUnary(ctx, req)
 }
 
 // ListUsers calls openauth.frontend.v1.FrontendService.ListUsers.
@@ -204,9 +279,9 @@ func (c *frontendServiceClient) ListUsers(ctx context.Context, req *connect.Requ
 	return c.listUsers.CallUnary(ctx, req)
 }
 
-// SetUserPassword calls openauth.frontend.v1.FrontendService.SetUserPassword.
-func (c *frontendServiceClient) SetUserPassword(ctx context.Context, req *connect.Request[v1.SetUserPasswordRequest]) (*connect.Response[v1.SetUserPasswordResponse], error) {
-	return c.setUserPassword.CallUnary(ctx, req)
+// GetUser calls openauth.frontend.v1.FrontendService.GetUser.
+func (c *frontendServiceClient) GetUser(ctx context.Context, req *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error) {
+	return c.getUser.CallUnary(ctx, req)
 }
 
 // UpdateUser calls openauth.frontend.v1.FrontendService.UpdateUser.
@@ -214,29 +289,72 @@ func (c *frontendServiceClient) UpdateUser(ctx context.Context, req *connect.Req
 	return c.updateUser.CallUnary(ctx, req)
 }
 
+// ListOrganizations calls openauth.frontend.v1.FrontendService.ListOrganizations.
+func (c *frontendServiceClient) ListOrganizations(ctx context.Context, req *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error) {
+	return c.listOrganizations.CallUnary(ctx, req)
+}
+
+// SetUserPassword calls openauth.frontend.v1.FrontendService.SetUserPassword.
+func (c *frontendServiceClient) SetUserPassword(ctx context.Context, req *connect.Request[v1.SetUserPasswordRequest]) (*connect.Response[v1.SetUserPasswordResponse], error) {
+	return c.setUserPassword.CallUnary(ctx, req)
+}
+
 // WhoAmI calls openauth.frontend.v1.FrontendService.WhoAmI.
 func (c *frontendServiceClient) WhoAmI(ctx context.Context, req *connect.Request[v1.WhoAmIRequest]) (*connect.Response[v1.WhoAmIResponse], error) {
 	return c.whoAmI.CallUnary(ctx, req)
+}
+
+// ListSCIMAPIKeys calls openauth.frontend.v1.FrontendService.ListSCIMAPIKeys.
+func (c *frontendServiceClient) ListSCIMAPIKeys(ctx context.Context, req *connect.Request[v1.ListSCIMAPIKeysRequest]) (*connect.Response[v1.ListSCIMAPIKeysResponse], error) {
+	return c.listSCIMAPIKeys.CallUnary(ctx, req)
+}
+
+// GetSCIMAPIKey calls openauth.frontend.v1.FrontendService.GetSCIMAPIKey.
+func (c *frontendServiceClient) GetSCIMAPIKey(ctx context.Context, req *connect.Request[v1.GetSCIMAPIKeyRequest]) (*connect.Response[v1.GetSCIMAPIKeyResponse], error) {
+	return c.getSCIMAPIKey.CallUnary(ctx, req)
+}
+
+// CreateSCIMAPIKey calls openauth.frontend.v1.FrontendService.CreateSCIMAPIKey.
+func (c *frontendServiceClient) CreateSCIMAPIKey(ctx context.Context, req *connect.Request[v1.CreateSCIMAPIKeyRequest]) (*connect.Response[v1.CreateSCIMAPIKeyResponse], error) {
+	return c.createSCIMAPIKey.CallUnary(ctx, req)
+}
+
+// UpdateSCIMAPIKey calls openauth.frontend.v1.FrontendService.UpdateSCIMAPIKey.
+func (c *frontendServiceClient) UpdateSCIMAPIKey(ctx context.Context, req *connect.Request[v1.UpdateSCIMAPIKeyRequest]) (*connect.Response[v1.UpdateSCIMAPIKeyResponse], error) {
+	return c.updateSCIMAPIKey.CallUnary(ctx, req)
+}
+
+// DeleteSCIMAPIKey calls openauth.frontend.v1.FrontendService.DeleteSCIMAPIKey.
+func (c *frontendServiceClient) DeleteSCIMAPIKey(ctx context.Context, req *connect.Request[v1.DeleteSCIMAPIKeyRequest]) (*connect.Response[v1.DeleteSCIMAPIKeyResponse], error) {
+	return c.deleteSCIMAPIKey.CallUnary(ctx, req)
+}
+
+// RevokeSCIMAPIKey calls openauth.frontend.v1.FrontendService.RevokeSCIMAPIKey.
+func (c *frontendServiceClient) RevokeSCIMAPIKey(ctx context.Context, req *connect.Request[v1.RevokeSCIMAPIKeyRequest]) (*connect.Response[v1.RevokeSCIMAPIKeyResponse], error) {
+	return c.revokeSCIMAPIKey.CallUnary(ctx, req)
 }
 
 // FrontendServiceHandler is an implementation of the openauth.frontend.v1.FrontendService service.
 type FrontendServiceHandler interface {
 	GetAccessToken(context.Context, *connect.Request[v1.GetAccessTokenRequest]) (*connect.Response[v1.GetAccessTokenResponse], error)
 	GetProject(context.Context, *connect.Request[v1.GetProjectRequest]) (*connect.Response[v1.GetProjectResponse], error)
-	// Creates a user.
-	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error)
-	// Gets a user.
+	GetOrganization(context.Context, *connect.Request[v1.GetOrganizationRequest]) (*connect.Response[v1.GetOrganizationResponse], error)
+	UpdateOrganization(context.Context, *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.UpdateOrganizationResponse], error)
+	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
 	GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error)
+	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error)
 	// Gets a list of organizations.
 	ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error)
-	// Gets a list of users.
-	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
 	// Sets a user's password.
 	SetUserPassword(context.Context, *connect.Request[v1.SetUserPasswordRequest]) (*connect.Response[v1.SetUserPasswordResponse], error)
-	// Updates a user.
-	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error)
 	// Who am I?
 	WhoAmI(context.Context, *connect.Request[v1.WhoAmIRequest]) (*connect.Response[v1.WhoAmIResponse], error)
+	ListSCIMAPIKeys(context.Context, *connect.Request[v1.ListSCIMAPIKeysRequest]) (*connect.Response[v1.ListSCIMAPIKeysResponse], error)
+	GetSCIMAPIKey(context.Context, *connect.Request[v1.GetSCIMAPIKeyRequest]) (*connect.Response[v1.GetSCIMAPIKeyResponse], error)
+	CreateSCIMAPIKey(context.Context, *connect.Request[v1.CreateSCIMAPIKeyRequest]) (*connect.Response[v1.CreateSCIMAPIKeyResponse], error)
+	UpdateSCIMAPIKey(context.Context, *connect.Request[v1.UpdateSCIMAPIKeyRequest]) (*connect.Response[v1.UpdateSCIMAPIKeyResponse], error)
+	DeleteSCIMAPIKey(context.Context, *connect.Request[v1.DeleteSCIMAPIKeyRequest]) (*connect.Response[v1.DeleteSCIMAPIKeyResponse], error)
+	RevokeSCIMAPIKey(context.Context, *connect.Request[v1.RevokeSCIMAPIKeyRequest]) (*connect.Response[v1.RevokeSCIMAPIKeyResponse], error)
 }
 
 // NewFrontendServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -257,22 +375,16 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 		connect.WithSchema(frontendServiceGetProjectMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
-	frontendServiceCreateUserHandler := connect.NewUnaryHandler(
-		FrontendServiceCreateUserProcedure,
-		svc.CreateUser,
-		connect.WithSchema(frontendServiceCreateUserMethodDescriptor),
+	frontendServiceGetOrganizationHandler := connect.NewUnaryHandler(
+		FrontendServiceGetOrganizationProcedure,
+		svc.GetOrganization,
+		connect.WithSchema(frontendServiceGetOrganizationMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
-	frontendServiceGetUserHandler := connect.NewUnaryHandler(
-		FrontendServiceGetUserProcedure,
-		svc.GetUser,
-		connect.WithSchema(frontendServiceGetUserMethodDescriptor),
-		connect.WithHandlerOptions(opts...),
-	)
-	frontendServiceListOrganizationsHandler := connect.NewUnaryHandler(
-		FrontendServiceListOrganizationsProcedure,
-		svc.ListOrganizations,
-		connect.WithSchema(frontendServiceListOrganizationsMethodDescriptor),
+	frontendServiceUpdateOrganizationHandler := connect.NewUnaryHandler(
+		FrontendServiceUpdateOrganizationProcedure,
+		svc.UpdateOrganization,
+		connect.WithSchema(frontendServiceUpdateOrganizationMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
 	frontendServiceListUsersHandler := connect.NewUnaryHandler(
@@ -281,10 +393,10 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 		connect.WithSchema(frontendServiceListUsersMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
-	frontendServiceSetUserPasswordHandler := connect.NewUnaryHandler(
-		FrontendServiceSetUserPasswordProcedure,
-		svc.SetUserPassword,
-		connect.WithSchema(frontendServiceSetUserPasswordMethodDescriptor),
+	frontendServiceGetUserHandler := connect.NewUnaryHandler(
+		FrontendServiceGetUserProcedure,
+		svc.GetUser,
+		connect.WithSchema(frontendServiceGetUserMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
 	frontendServiceUpdateUserHandler := connect.NewUnaryHandler(
@@ -293,10 +405,58 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 		connect.WithSchema(frontendServiceUpdateUserMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
+	frontendServiceListOrganizationsHandler := connect.NewUnaryHandler(
+		FrontendServiceListOrganizationsProcedure,
+		svc.ListOrganizations,
+		connect.WithSchema(frontendServiceListOrganizationsMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceSetUserPasswordHandler := connect.NewUnaryHandler(
+		FrontendServiceSetUserPasswordProcedure,
+		svc.SetUserPassword,
+		connect.WithSchema(frontendServiceSetUserPasswordMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
 	frontendServiceWhoAmIHandler := connect.NewUnaryHandler(
 		FrontendServiceWhoAmIProcedure,
 		svc.WhoAmI,
 		connect.WithSchema(frontendServiceWhoAmIMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceListSCIMAPIKeysHandler := connect.NewUnaryHandler(
+		FrontendServiceListSCIMAPIKeysProcedure,
+		svc.ListSCIMAPIKeys,
+		connect.WithSchema(frontendServiceListSCIMAPIKeysMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceGetSCIMAPIKeyHandler := connect.NewUnaryHandler(
+		FrontendServiceGetSCIMAPIKeyProcedure,
+		svc.GetSCIMAPIKey,
+		connect.WithSchema(frontendServiceGetSCIMAPIKeyMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceCreateSCIMAPIKeyHandler := connect.NewUnaryHandler(
+		FrontendServiceCreateSCIMAPIKeyProcedure,
+		svc.CreateSCIMAPIKey,
+		connect.WithSchema(frontendServiceCreateSCIMAPIKeyMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceUpdateSCIMAPIKeyHandler := connect.NewUnaryHandler(
+		FrontendServiceUpdateSCIMAPIKeyProcedure,
+		svc.UpdateSCIMAPIKey,
+		connect.WithSchema(frontendServiceUpdateSCIMAPIKeyMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceDeleteSCIMAPIKeyHandler := connect.NewUnaryHandler(
+		FrontendServiceDeleteSCIMAPIKeyProcedure,
+		svc.DeleteSCIMAPIKey,
+		connect.WithSchema(frontendServiceDeleteSCIMAPIKeyMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceRevokeSCIMAPIKeyHandler := connect.NewUnaryHandler(
+		FrontendServiceRevokeSCIMAPIKeyProcedure,
+		svc.RevokeSCIMAPIKey,
+		connect.WithSchema(frontendServiceRevokeSCIMAPIKeyMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/openauth.frontend.v1.FrontendService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -305,20 +465,34 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 			frontendServiceGetAccessTokenHandler.ServeHTTP(w, r)
 		case FrontendServiceGetProjectProcedure:
 			frontendServiceGetProjectHandler.ServeHTTP(w, r)
-		case FrontendServiceCreateUserProcedure:
-			frontendServiceCreateUserHandler.ServeHTTP(w, r)
-		case FrontendServiceGetUserProcedure:
-			frontendServiceGetUserHandler.ServeHTTP(w, r)
-		case FrontendServiceListOrganizationsProcedure:
-			frontendServiceListOrganizationsHandler.ServeHTTP(w, r)
+		case FrontendServiceGetOrganizationProcedure:
+			frontendServiceGetOrganizationHandler.ServeHTTP(w, r)
+		case FrontendServiceUpdateOrganizationProcedure:
+			frontendServiceUpdateOrganizationHandler.ServeHTTP(w, r)
 		case FrontendServiceListUsersProcedure:
 			frontendServiceListUsersHandler.ServeHTTP(w, r)
-		case FrontendServiceSetUserPasswordProcedure:
-			frontendServiceSetUserPasswordHandler.ServeHTTP(w, r)
+		case FrontendServiceGetUserProcedure:
+			frontendServiceGetUserHandler.ServeHTTP(w, r)
 		case FrontendServiceUpdateUserProcedure:
 			frontendServiceUpdateUserHandler.ServeHTTP(w, r)
+		case FrontendServiceListOrganizationsProcedure:
+			frontendServiceListOrganizationsHandler.ServeHTTP(w, r)
+		case FrontendServiceSetUserPasswordProcedure:
+			frontendServiceSetUserPasswordHandler.ServeHTTP(w, r)
 		case FrontendServiceWhoAmIProcedure:
 			frontendServiceWhoAmIHandler.ServeHTTP(w, r)
+		case FrontendServiceListSCIMAPIKeysProcedure:
+			frontendServiceListSCIMAPIKeysHandler.ServeHTTP(w, r)
+		case FrontendServiceGetSCIMAPIKeyProcedure:
+			frontendServiceGetSCIMAPIKeyHandler.ServeHTTP(w, r)
+		case FrontendServiceCreateSCIMAPIKeyProcedure:
+			frontendServiceCreateSCIMAPIKeyHandler.ServeHTTP(w, r)
+		case FrontendServiceUpdateSCIMAPIKeyProcedure:
+			frontendServiceUpdateSCIMAPIKeyHandler.ServeHTTP(w, r)
+		case FrontendServiceDeleteSCIMAPIKeyProcedure:
+			frontendServiceDeleteSCIMAPIKeyHandler.ServeHTTP(w, r)
+		case FrontendServiceRevokeSCIMAPIKeyProcedure:
+			frontendServiceRevokeSCIMAPIKeyHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -336,30 +510,58 @@ func (UnimplementedFrontendServiceHandler) GetProject(context.Context, *connect.
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.GetProject is not implemented"))
 }
 
-func (UnimplementedFrontendServiceHandler) CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.CreateUser is not implemented"))
+func (UnimplementedFrontendServiceHandler) GetOrganization(context.Context, *connect.Request[v1.GetOrganizationRequest]) (*connect.Response[v1.GetOrganizationResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.GetOrganization is not implemented"))
 }
 
-func (UnimplementedFrontendServiceHandler) GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.GetUser is not implemented"))
-}
-
-func (UnimplementedFrontendServiceHandler) ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.ListOrganizations is not implemented"))
+func (UnimplementedFrontendServiceHandler) UpdateOrganization(context.Context, *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.UpdateOrganizationResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.UpdateOrganization is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.ListUsers is not implemented"))
 }
 
-func (UnimplementedFrontendServiceHandler) SetUserPassword(context.Context, *connect.Request[v1.SetUserPasswordRequest]) (*connect.Response[v1.SetUserPasswordResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.SetUserPassword is not implemented"))
+func (UnimplementedFrontendServiceHandler) GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.GetUser is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.UpdateUser is not implemented"))
 }
 
+func (UnimplementedFrontendServiceHandler) ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.ListOrganizations is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) SetUserPassword(context.Context, *connect.Request[v1.SetUserPasswordRequest]) (*connect.Response[v1.SetUserPasswordResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.SetUserPassword is not implemented"))
+}
+
 func (UnimplementedFrontendServiceHandler) WhoAmI(context.Context, *connect.Request[v1.WhoAmIRequest]) (*connect.Response[v1.WhoAmIResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.WhoAmI is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) ListSCIMAPIKeys(context.Context, *connect.Request[v1.ListSCIMAPIKeysRequest]) (*connect.Response[v1.ListSCIMAPIKeysResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.ListSCIMAPIKeys is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) GetSCIMAPIKey(context.Context, *connect.Request[v1.GetSCIMAPIKeyRequest]) (*connect.Response[v1.GetSCIMAPIKeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.GetSCIMAPIKey is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) CreateSCIMAPIKey(context.Context, *connect.Request[v1.CreateSCIMAPIKeyRequest]) (*connect.Response[v1.CreateSCIMAPIKeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.CreateSCIMAPIKey is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) UpdateSCIMAPIKey(context.Context, *connect.Request[v1.UpdateSCIMAPIKeyRequest]) (*connect.Response[v1.UpdateSCIMAPIKeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.UpdateSCIMAPIKey is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) DeleteSCIMAPIKey(context.Context, *connect.Request[v1.DeleteSCIMAPIKeyRequest]) (*connect.Response[v1.DeleteSCIMAPIKeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.DeleteSCIMAPIKey is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) RevokeSCIMAPIKey(context.Context, *connect.Request[v1.RevokeSCIMAPIKeyRequest]) (*connect.Response[v1.RevokeSCIMAPIKeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.RevokeSCIMAPIKey is not implemented"))
 }

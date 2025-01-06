@@ -33,6 +33,22 @@ FROM
 WHERE
     id = $1;
 
+-- name: UpdateOrganization :one
+UPDATE
+    organizations
+SET
+    display_name = $2,
+    google_hosted_domain = $3,
+    microsoft_tenant_id = $4,
+    override_log_in_methods = $5,
+    override_log_in_with_password_enabled = $6,
+    override_log_in_with_google_enabled = $7,
+    override_log_in_with_microsoft_enabled = $8
+WHERE
+    id = $1
+RETURNING
+    *;
+
 -- name: GetProjectByID :one
 SELECT
     *
@@ -72,6 +88,57 @@ FROM
 WHERE
     id = $1;
 
+-- name: ListSCIMAPIKeys :many
+SELECT
+    *
+FROM
+    scim_api_keys
+WHERE
+    organization_id = $1
+    AND id >= $2
+ORDER BY
+    id
+LIMIT $3;
+
+-- name: GetSCIMAPIKey :one
+SELECT
+    *
+FROM
+    scim_api_keys
+WHERE
+    id = $1
+    AND organization_id = $2;
+
+-- name: CreateSCIMAPIKey :one
+INSERT INTO scim_api_keys (id, organization_id, display_name, token_sha256)
+    VALUES ($1, $2, $3, $4)
+RETURNING
+    *;
+
+-- name: UpdateSCIMAPIKey :one
+UPDATE
+    scim_api_keys
+SET
+    display_name = $1
+WHERE
+    id = $2
+RETURNING
+    *;
+
+-- name: DeleteSCIMAPIKey :exec
+DELETE FROM scim_api_keys
+WHERE id = $1;
+
+-- name: RevokeSCIMAPIKey :one
+UPDATE
+    scim_api_keys
+SET
+    token_sha256 = NULL
+WHERE
+    id = $1
+RETURNING
+    *;
+
 -- name: SetUserPassword :one
 UPDATE
     users
@@ -79,6 +146,37 @@ SET
     password_bcrypt = $2
 WHERE
     id = $1
+RETURNING
+    *;
+
+-- name: ListUsers :many
+SELECT
+    *
+FROM
+    users
+WHERE
+    organization_id = $1
+    AND id >= $2
+ORDER BY
+    id
+LIMIT $3;
+
+-- name: GetUser :one
+SELECT
+    *
+FROM
+    users
+WHERE
+    id = $1
+    AND organization_id = $2;
+
+-- name: UpdateUser :one
+UPDATE
+    users
+SET
+    is_owner = $1
+WHERE
+    id = $2
 RETURNING
     *;
 

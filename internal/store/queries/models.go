@@ -174,6 +174,7 @@ type User struct {
 	CreateTime      *time.Time
 	UpdateTime      *time.Time
 	DeactivateTime  *time.Time
+	IsOwner         bool
 }
 
 type VerifiedEmail struct {

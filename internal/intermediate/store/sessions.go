@@ -47,6 +47,7 @@ func (s *Store) ExchangeIntermediateSessionForNewOrganizationSession(ctx context
 		Email:           intermediateSession.Email,
 		GoogleUserID:    refOrNil(intermediateSession.GoogleUserId),
 		MicrosoftUserID: refOrNil(intermediateSession.MicrosoftUserId),
+		IsOwner:         true,
 	})
 	if err != nil {
 		return nil, err

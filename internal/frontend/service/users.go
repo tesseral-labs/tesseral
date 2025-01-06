@@ -16,3 +16,28 @@ func (s *Service) SetUserPassword(ctx context.Context, req *connect.Request[fron
 
 	return connect.NewResponse(res), nil
 }
+
+func (s *Service) ListUsers(ctx context.Context, req *connect.Request[frontendv1.ListUsersRequest]) (*connect.Response[frontendv1.ListUsersResponse], error) {
+	res, err := s.Store.ListUsers(ctx, req.Msg)
+	if err != nil {
+		return nil, fmt.Errorf("store: %w", err)
+	}
+	return connect.NewResponse(res), nil
+}
+
+func (s *Service) GetUser(ctx context.Context, req *connect.Request[frontendv1.GetUserRequest]) (*connect.Response[frontendv1.GetUserResponse], error) {
+	res, err := s.Store.GetUser(ctx, req.Msg)
+	if err != nil {
+		return nil, fmt.Errorf("store: %w", err)
+	}
+	return connect.NewResponse(res), nil
+}
+
+func (s *Service) UpdateUser(ctx context.Context, req *connect.Request[frontendv1.UpdateUserRequest]) (*connect.Response[frontendv1.UpdateUserResponse], error) {
+	res, err := s.Store.UpdateUser(ctx, req.Msg)
+	if err != nil {
+		return nil, fmt.Errorf("store: %w", err)
+	}
+
+	return connect.NewResponse(res), nil
+}

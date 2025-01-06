@@ -478,6 +478,7 @@ message User {
   string id = 1;
   string organization_id = 2;
   string email = 3;
+  optional bool owner = 6;
   string google_user_id = 4;
   string microsoft_user_id = 5;
 }
