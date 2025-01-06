@@ -13,7 +13,7 @@ import type { JsonObject, Message } from "@bufbuild/protobuf";
  * Describes the file openauth/frontend/v1/frontend.proto.
  */
 export const file_openauth_frontend_v1_frontend: GenFile = /*@__PURE__*/
-  fileDesc("CiNvcGVuYXV0aC9mcm9udGVuZC92MS9mcm9udGVuZC5wcm90bxIUb3BlbmF1dGguZnJvbnRlbmQudjEiLgoVR2V0QWNjZXNzVG9rZW5SZXF1ZXN0EhUKDXJlZnJlc2hfdG9rZW4YASABKAkiLgoWR2V0QWNjZXNzVG9rZW5SZXNwb25zZRIUCgxhY2Nlc3NfdG9rZW4YAiABKAkiEwoRR2V0UHJvamVjdFJlcXVlc3QiRAoSR2V0UHJvamVjdFJlc3BvbnNlEi4KB3Byb2plY3QYASABKAsyHS5vcGVuYXV0aC5mcm9udGVuZC52MS5Qcm9qZWN0IhgKFkdldE9yZ2FuaXphdGlvblJlcXVlc3QiUwoXR2V0T3JnYW5pemF0aW9uUmVzcG9uc2USOAoMb3JnYW5pemF0aW9uGAEgASgLMiIub3BlbmF1dGguZnJvbnRlbmQudjEuT3JnYW5pemF0aW9uIlUKGVVwZGF0ZU9yZ2FuaXphdGlvblJlcXVlc3QSOAoMb3JnYW5pemF0aW9uGAEgASgLMiIub3BlbmF1dGguZnJvbnRlbmQudjEuT3JnYW5pemF0aW9uIlYKGlVwZGF0ZU9yZ2FuaXphdGlvblJlc3BvbnNlEjgKDG9yZ2FuaXphdGlvbhgBIAEoCzIiLm9wZW5hdXRoLmZyb250ZW5kLnYxLk9yZ2FuaXphdGlvbiJRChhMaXN0T3JnYW5pemF0aW9uc1JlcXVlc3QSEgoKcHJvamVjdF9pZBgBIAEoCRINCgVlbWFpbBgCIAEoCRISCgpwYWdlX3Rva2VuGAMgASgJIm8KGUxpc3RPcmdhbml6YXRpb25zUmVzcG9uc2USOQoNb3JnYW5pemF0aW9ucxgBIAMoCzIiLm9wZW5hdXRoLmZyb250ZW5kLnYxLk9yZ2FuaXphdGlvbhIXCg9uZXh0X3BhZ2VfdG9rZW4YAiABKAkiPwoQTGlzdFVzZXJzUmVxdWVzdBIXCg9vcmdhbml6YXRpb25faWQYASABKAkSEgoKcGFnZV90b2tlbhgCIAEoCSJXChFMaXN0VXNlcnNSZXNwb25zZRIpCgV1c2VycxgBIAMoCzIaLm9wZW5hdXRoLmZyb250ZW5kLnYxLlVzZXISFwoPbmV4dF9wYWdlX3Rva2VuGAIgASgJIhwKDkdldFVzZXJSZXF1ZXN0EgoKAmlkGAEgASgJIjsKD0dldFVzZXJSZXNwb25zZRIoCgR1c2VyGAEgASgLMhoub3BlbmF1dGguZnJvbnRlbmQudjEuVXNlciJJChFVcGRhdGVVc2VyUmVxdWVzdBIKCgJpZBgBIAEoCRIoCgR1c2VyGAIgASgLMhoub3BlbmF1dGguZnJvbnRlbmQudjEuVXNlciI+ChJVcGRhdGVVc2VyUmVzcG9uc2USKAoEdXNlchgBIAEoCzIaLm9wZW5hdXRoLmZyb250ZW5kLnYxLlVzZXIiDwoNV2hvQW1JUmVxdWVzdCJ+Cg5XaG9BbUlSZXNwb25zZRIKCgJpZBgBIAEoCRINCgVlbWFpbBgCIAEoCRIXCg9vcmdhbml6YXRpb25faWQYAyABKAkSOAoMb3JnYW5pemF0aW9uGAQgASgLMiIub3BlbmF1dGguZnJvbnRlbmQudjEuT3JnYW5pemF0aW9uIiwKFkxpc3RTQ0lNQVBJS2V5c1JlcXVlc3QSEgoKcGFnZV90b2tlbhgBIAEoCSJrChdMaXN0U0NJTUFQSUtleXNSZXNwb25zZRI3Cg1zY2ltX2FwaV9rZXlzGAEgAygLMiAub3BlbmF1dGguZnJvbnRlbmQudjEuU0NJTUFQSUtleRIXCg9uZXh0X3BhZ2VfdG9rZW4YAiABKAkiIgoUR2V0U0NJTUFQSUtleVJlcXVlc3QSCgoCaWQYASABKAkiTwoVR2V0U0NJTUFQSUtleVJlc3BvbnNlEjYKDHNjaW1fYXBpX2tleRgBIAEoCzIgLm9wZW5hdXRoLmZyb250ZW5kLnYxLlNDSU1BUElLZXkiUQoXQ3JlYXRlU0NJTUFQSUtleVJlcXVlc3QSNgoMc2NpbV9hcGlfa2V5GAEgASgLMiAub3BlbmF1dGguZnJvbnRlbmQudjEuU0NJTUFQSUtleSJSChhDcmVhdGVTQ0lNQVBJS2V5UmVzcG9uc2USNgoMc2NpbV9hcGlfa2V5GAEgASgLMiAub3BlbmF1dGguZnJvbnRlbmQudjEuU0NJTUFQSUtleSJdChdVcGRhdGVTQ0lNQVBJS2V5UmVxdWVzdBIKCgJpZBgBIAEoCRI2CgxzY2ltX2FwaV9rZXkYAiABKAsyIC5vcGVuYXV0aC5mcm9udGVuZC52MS5TQ0lNQVBJS2V5IlIKGFVwZGF0ZVNDSU1BUElLZXlSZXNwb25zZRI2CgxzY2ltX2FwaV9rZXkYASABKAsyIC5vcGVuYXV0aC5mcm9udGVuZC52MS5TQ0lNQVBJS2V5IiUKF0RlbGV0ZVNDSU1BUElLZXlSZXF1ZXN0EgoKAmlkGAEgASgJIhoKGERlbGV0ZVNDSU1BUElLZXlSZXNwb25zZSIlChdSZXZva2VTQ0lNQVBJS2V5UmVxdWVzdBIKCgJpZBgBIAEoCSJSChhSZXZva2VTQ0lNQVBJS2V5UmVzcG9uc2USNgoMc2NpbV9hcGlfa2V5GAEgASgLMiAub3BlbmF1dGguZnJvbnRlbmQudjEuU0NJTUFQSUtleSKcAQoHUHJvamVjdBIKCgJpZBgBIAEoCRIUCgxkaXNwbGF5X25hbWUYAiABKAkSJAocbG9nX2luX3dpdGhfcGFzc3dvcmRfZW5hYmxlZBgDIAEoCBIiChpsb2dfaW5fd2l0aF9nb29nbGVfZW5hYmxlZBgEIAEoCBIlCh1sb2dfaW5fd2l0aF9taWNyb3NvZnRfZW5hYmxlZBgFIAEoCCKyAgoMT3JnYW5pemF0aW9uEgoKAmlkGAEgASgJEhIKCnByb2plY3RfaWQYAiABKAkSFAoMZGlzcGxheV9uYW1lGAMgASgJEiQKF292ZXJyaWRlX2xvZ19pbl9tZXRob2RzGAQgASgISACIAQESJAocbG9nX2luX3dpdGhfcGFzc3dvcmRfZW5hYmxlZBgFIAEoCBIiChpsb2dfaW5fd2l0aF9nb29nbGVfZW5hYmxlZBgGIAEoCBIlCh1sb2dfaW5fd2l0aF9taWNyb3NvZnRfZW5hYmxlZBgHIAEoCBIcChRnb29nbGVfaG9zdGVkX2RvbWFpbhgIIAEoCRIbChNtaWNyb3NvZnRfdGVuYW50X2lkGAkgASgJQhoKGF9vdmVycmlkZV9sb2dfaW5fbWV0aG9kcyJkChFTZXNzaW9uU2lnbmluZ0tleRIKCgJpZBgBIAEoCRISCgpwcm9qZWN0X2lkGAIgASgJEi8KDnB1YmxpY19rZXlfandrGAMgASgLMhcuZ29vZ2xlLnByb3RvYnVmLlN0cnVjdCKLAQoEVXNlchIKCgJpZBgBIAEoCRIXCg9vcmdhbml6YXRpb25faWQYAiABKAkSDQoFZW1haWwYAyABKAkSEgoFb3duZXIYBiABKAhIAIgBARIWCg5nb29nbGVfdXNlcl9pZBgEIAEoCRIZChFtaWNyb3NvZnRfdXNlcl9pZBgFIAEoCUIICgZfb3duZXIimQEKB1Nlc3Npb24SCgoCaWQYASABKAkSDwoHdXNlcl9pZBgCIAEoCRIvCgtjcmVhdGVfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLwoLZXhwaXJlX3RpbWUYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEg8KB3Jldm9rZWQYBSABKAgiVQoKU0NJTUFQSUtleRIKCgJpZBgBIAEoCRIUCgxkaXNwbGF5X25hbWUYAiABKAkSFAoMc2VjcmV0X3Rva2VuGAMgASgJEg8KB3Jldm9rZWQYBCABKAgypxEKD0Zyb250ZW5kU2VydmljZRKRAQoOR2V0QWNjZXNzVG9rZW4SKy5vcGVuYXV0aC5mcm9udGVuZC52MS5HZXRBY2Nlc3NUb2tlblJlcXVlc3QaLC5vcGVuYXV0aC5mcm9udGVuZC52MS5HZXRBY2Nlc3NUb2tlblJlc3BvbnNlIiSC0+STAh46ASoiGS9mcm9udGVuZC92MS9hY2Nlc3MtdG9rZW4SfQoKR2V0UHJvamVjdBInLm9wZW5hdXRoLmZyb250ZW5kLnYxLkdldFByb2plY3RSZXF1ZXN0Gigub3BlbmF1dGguZnJvbnRlbmQudjEuR2V0UHJvamVjdFJlc3BvbnNlIhyC0+STAhYSFC9mcm9udGVuZC92MS9wcm9qZWN0EpEBCg9HZXRPcmdhbml6YXRpb24SLC5vcGVuYXV0aC5mcm9udGVuZC52MS5HZXRPcmdhbml6YXRpb25SZXF1ZXN0Gi0ub3BlbmF1dGguZnJvbnRlbmQudjEuR2V0T3JnYW5pemF0aW9uUmVzcG9uc2UiIYLT5JMCGxIZL2Zyb250ZW5kL3YxL29yZ2FuaXphdGlvbhKoAQoSVXBkYXRlT3JnYW5pemF0aW9uEi8ub3BlbmF1dGguZnJvbnRlbmQudjEuVXBkYXRlT3JnYW5pemF0aW9uUmVxdWVzdBowLm9wZW5hdXRoLmZyb250ZW5kLnYxLlVwZGF0ZU9yZ2FuaXphdGlvblJlc3BvbnNlIi+C0+STAik6DG9yZ2FuaXphdGlvbjIZL2Zyb250ZW5kL3YxL29yZ2FuaXphdGlvbhJ4CglMaXN0VXNlcnMSJi5vcGVuYXV0aC5mcm9udGVuZC52MS5MaXN0VXNlcnNSZXF1ZXN0Gicub3BlbmF1dGguZnJvbnRlbmQudjEuTGlzdFVzZXJzUmVzcG9uc2UiGoLT5JMCFBISL2Zyb250ZW5kL3YxL3VzZXJzEncKB0dldFVzZXISJC5vcGVuYXV0aC5mcm9udGVuZC52MS5HZXRVc2VyUmVxdWVzdBolLm9wZW5hdXRoLmZyb250ZW5kLnYxLkdldFVzZXJSZXNwb25zZSIfgtPkkwIZEhcvZnJvbnRlbmQvdjEvdXNlcnMve2lkfRKGAQoKVXBkYXRlVXNlchInLm9wZW5hdXRoLmZyb250ZW5kLnYxLlVwZGF0ZVVzZXJSZXF1ZXN0Gigub3BlbmF1dGguZnJvbnRlbmQudjEuVXBkYXRlVXNlclJlc3BvbnNlIiWC0+STAh86BHVzZXIyFy9mcm9udGVuZC92MS91c2Vycy97aWR9EpgBChFMaXN0T3JnYW5pemF0aW9ucxIuLm9wZW5hdXRoLmZyb250ZW5kLnYxLkxpc3RPcmdhbml6YXRpb25zUmVxdWVzdBovLm9wZW5hdXRoLmZyb250ZW5kLnYxLkxpc3RPcmdhbml6YXRpb25zUmVzcG9uc2UiIoLT5JMCHBIaL2Zyb250ZW5kL3YxL29yZ2FuaXphdGlvbnMScAoGV2hvQW1JEiMub3BlbmF1dGguZnJvbnRlbmQudjEuV2hvQW1JUmVxdWVzdBokLm9wZW5hdXRoLmZyb250ZW5kLnYxLldob0FtSVJlc3BvbnNlIhuC0+STAhUSEy9mcm9udGVuZC92MS93aG9hbWkSkgEKD0xpc3RTQ0lNQVBJS2V5cxIsLm9wZW5hdXRoLmZyb250ZW5kLnYxLkxpc3RTQ0lNQVBJS2V5c1JlcXVlc3QaLS5vcGVuYXV0aC5mcm9udGVuZC52MS5MaXN0U0NJTUFQSUtleXNSZXNwb25zZSIigtPkkwIcEhovZnJvbnRlbmQvdjEvc2NpbS1hcGkta2V5cxKRAQoNR2V0U0NJTUFQSUtleRIqLm9wZW5hdXRoLmZyb250ZW5kLnYxLkdldFNDSU1BUElLZXlSZXF1ZXN0Gisub3BlbmF1dGguZnJvbnRlbmQudjEuR2V0U0NJTUFQSUtleVJlc3BvbnNlIieC0+STAiESHy9mcm9udGVuZC92MS9zY2ltLWFwaS1rZXlzL3tpZH0SowEKEENyZWF0ZVNDSU1BUElLZXkSLS5vcGVuYXV0aC5mcm9udGVuZC52MS5DcmVhdGVTQ0lNQVBJS2V5UmVxdWVzdBouLm9wZW5hdXRoLmZyb250ZW5kLnYxLkNyZWF0ZVNDSU1BUElLZXlSZXNwb25zZSIwgtPkkwIqOgxzY2ltX2FwaV9rZXkiGi9mcm9udGVuZC92MS9zY2ltLWFwaS1rZXlzEqgBChBVcGRhdGVTQ0lNQVBJS2V5Ei0ub3BlbmF1dGguZnJvbnRlbmQudjEuVXBkYXRlU0NJTUFQSUtleVJlcXVlc3QaLi5vcGVuYXV0aC5mcm9udGVuZC52MS5VcGRhdGVTQ0lNQVBJS2V5UmVzcG9uc2UiNYLT5JMCLzoMc2NpbV9hcGlfa2V5Mh8vZnJvbnRlbmQvdjEvc2NpbS1hcGkta2V5cy97aWR9EpoBChBEZWxldGVTQ0lNQVBJS2V5Ei0ub3BlbmF1dGguZnJvbnRlbmQudjEuRGVsZXRlU0NJTUFQSUtleVJlcXVlc3QaLi5vcGVuYXV0aC5mcm9udGVuZC52MS5EZWxldGVTQ0lNQVBJS2V5UmVzcG9uc2UiJ4LT5JMCISofL2Zyb250ZW5kL3YxL3NjaW0tYXBpLWtleXMve2lkfRKhAQoQUmV2b2tlU0NJTUFQSUtleRItLm9wZW5hdXRoLmZyb250ZW5kLnYxLlJldm9rZVNDSU1BUElLZXlSZXF1ZXN0Gi4ub3BlbmF1dGguZnJvbnRlbmQudjEuUmV2b2tlU0NJTUFQSUtleVJlc3BvbnNlIi6C0+STAigiJi9mcm9udGVuZC92MS9zY2ltLWFwaS1rZXlzL3tpZH0vcmV2b2tlQu8BChhjb20ub3BlbmF1dGguZnJvbnRlbmQudjFCDUZyb250ZW5kUHJvdG9QAVpSZ2l0aHViLmNvbS9vcGVuYXV0aC9vcGVuYXV0aC9pbnRlcm5hbC9mcm9udGVuZC9nZW4vb3BlbmF1dGgvZnJvbnRlbmQvdjE7ZnJvbnRlbmR2MaICA09GWKoCFE9wZW5hdXRoLkZyb250ZW5kLlYxygIUT3BlbmF1dGhcRnJvbnRlbmRcVjHiAiBPcGVuYXV0aFxGcm9udGVuZFxWMVxHUEJNZXRhZGF0YeoCFk9wZW5hdXRoOjpGcm9udGVuZDo6VjFiBnByb3RvMw", [file_google_api_annotations, file_google_protobuf_empty, file_google_protobuf_field_mask, file_google_protobuf_timestamp, file_google_protobuf_struct]);
+  fileDesc("CiNvcGVuYXV0aC9mcm9udGVuZC92MS9mcm9udGVuZC5wcm90bxIUb3BlbmF1dGguZnJvbnRlbmQudjEiLgoVR2V0QWNjZXNzVG9rZW5SZXF1ZXN0EhUKDXJlZnJlc2hfdG9rZW4YASABKAkiLgoWR2V0QWNjZXNzVG9rZW5SZXNwb25zZRIUCgxhY2Nlc3NfdG9rZW4YAiABKAkiEwoRR2V0UHJvamVjdFJlcXVlc3QiRAoSR2V0UHJvamVjdFJlc3BvbnNlEi4KB3Byb2plY3QYASABKAsyHS5vcGVuYXV0aC5mcm9udGVuZC52MS5Qcm9qZWN0IhgKFkdldE9yZ2FuaXphdGlvblJlcXVlc3QiUwoXR2V0T3JnYW5pemF0aW9uUmVzcG9uc2USOAoMb3JnYW5pemF0aW9uGAEgASgLMiIub3BlbmF1dGguZnJvbnRlbmQudjEuT3JnYW5pemF0aW9uIlUKGVVwZGF0ZU9yZ2FuaXphdGlvblJlcXVlc3QSOAoMb3JnYW5pemF0aW9uGAEgASgLMiIub3BlbmF1dGguZnJvbnRlbmQudjEuT3JnYW5pemF0aW9uIlYKGlVwZGF0ZU9yZ2FuaXphdGlvblJlc3BvbnNlEjgKDG9yZ2FuaXphdGlvbhgBIAEoCzIiLm9wZW5hdXRoLmZyb250ZW5kLnYxLk9yZ2FuaXphdGlvbiJRChhMaXN0T3JnYW5pemF0aW9uc1JlcXVlc3QSEgoKcHJvamVjdF9pZBgBIAEoCRINCgVlbWFpbBgCIAEoCRISCgpwYWdlX3Rva2VuGAMgASgJIm8KGUxpc3RPcmdhbml6YXRpb25zUmVzcG9uc2USOQoNb3JnYW5pemF0aW9ucxgBIAMoCzIiLm9wZW5hdXRoLmZyb250ZW5kLnYxLk9yZ2FuaXphdGlvbhIXCg9uZXh0X3BhZ2VfdG9rZW4YAiABKAkiPwoQTGlzdFVzZXJzUmVxdWVzdBIXCg9vcmdhbml6YXRpb25faWQYASABKAkSEgoKcGFnZV90b2tlbhgCIAEoCSJXChFMaXN0VXNlcnNSZXNwb25zZRIpCgV1c2VycxgBIAMoCzIaLm9wZW5hdXRoLmZyb250ZW5kLnYxLlVzZXISFwoPbmV4dF9wYWdlX3Rva2VuGAIgASgJIhwKDkdldFVzZXJSZXF1ZXN0EgoKAmlkGAEgASgJIjsKD0dldFVzZXJSZXNwb25zZRIoCgR1c2VyGAEgASgLMhoub3BlbmF1dGguZnJvbnRlbmQudjEuVXNlciJJChFVcGRhdGVVc2VyUmVxdWVzdBIKCgJpZBgBIAEoCRIoCgR1c2VyGAIgASgLMhoub3BlbmF1dGguZnJvbnRlbmQudjEuVXNlciI+ChJVcGRhdGVVc2VyUmVzcG9uc2USKAoEdXNlchgBIAEoCzIaLm9wZW5hdXRoLmZyb250ZW5kLnYxLlVzZXIiDwoNV2hvQW1JUmVxdWVzdCJ+Cg5XaG9BbUlSZXNwb25zZRIKCgJpZBgBIAEoCRINCgVlbWFpbBgCIAEoCRIXCg9vcmdhbml6YXRpb25faWQYAyABKAkSOAoMb3JnYW5pemF0aW9uGAQgASgLMiIub3BlbmF1dGguZnJvbnRlbmQudjEuT3JnYW5pemF0aW9uIjAKGkxpc3RTQU1MQ29ubmVjdGlvbnNSZXF1ZXN0EhIKCnBhZ2VfdG9rZW4YASABKAkidgobTGlzdFNBTUxDb25uZWN0aW9uc1Jlc3BvbnNlEj4KEHNhbWxfY29ubmVjdGlvbnMYASADKAsyJC5vcGVuYXV0aC5mcm9udGVuZC52MS5TQU1MQ29ubmVjdGlvbhIXCg9uZXh0X3BhZ2VfdG9rZW4YAiABKAkiJgoYR2V0U0FNTENvbm5lY3Rpb25SZXF1ZXN0EgoKAmlkGAEgASgJIloKGUdldFNBTUxDb25uZWN0aW9uUmVzcG9uc2USPQoPc2FtbF9jb25uZWN0aW9uGAEgASgLMiQub3BlbmF1dGguZnJvbnRlbmQudjEuU0FNTENvbm5lY3Rpb24iXAobQ3JlYXRlU0FNTENvbm5lY3Rpb25SZXF1ZXN0Ej0KD3NhbWxfY29ubmVjdGlvbhgBIAEoCzIkLm9wZW5hdXRoLmZyb250ZW5kLnYxLlNBTUxDb25uZWN0aW9uIl0KHENyZWF0ZVNBTUxDb25uZWN0aW9uUmVzcG9uc2USPQoPc2FtbF9jb25uZWN0aW9uGAEgASgLMiQub3BlbmF1dGguZnJvbnRlbmQudjEuU0FNTENvbm5lY3Rpb24iaAobVXBkYXRlU0FNTENvbm5lY3Rpb25SZXF1ZXN0EgoKAmlkGAEgASgJEj0KD3NhbWxfY29ubmVjdGlvbhgCIAEoCzIkLm9wZW5hdXRoLmZyb250ZW5kLnYxLlNBTUxDb25uZWN0aW9uIl0KHFVwZGF0ZVNBTUxDb25uZWN0aW9uUmVzcG9uc2USPQoPc2FtbF9jb25uZWN0aW9uGAEgASgLMiQub3BlbmF1dGguZnJvbnRlbmQudjEuU0FNTENvbm5lY3Rpb24iKQobRGVsZXRlU0FNTENvbm5lY3Rpb25SZXF1ZXN0EgoKAmlkGAEgASgJIh4KHERlbGV0ZVNBTUxDb25uZWN0aW9uUmVzcG9uc2UiLAoWTGlzdFNDSU1BUElLZXlzUmVxdWVzdBISCgpwYWdlX3Rva2VuGAEgASgJImsKF0xpc3RTQ0lNQVBJS2V5c1Jlc3BvbnNlEjcKDXNjaW1fYXBpX2tleXMYASADKAsyIC5vcGVuYXV0aC5mcm9udGVuZC52MS5TQ0lNQVBJS2V5EhcKD25leHRfcGFnZV90b2tlbhgCIAEoCSIiChRHZXRTQ0lNQVBJS2V5UmVxdWVzdBIKCgJpZBgBIAEoCSJPChVHZXRTQ0lNQVBJS2V5UmVzcG9uc2USNgoMc2NpbV9hcGlfa2V5GAEgASgLMiAub3BlbmF1dGguZnJvbnRlbmQudjEuU0NJTUFQSUtleSJRChdDcmVhdGVTQ0lNQVBJS2V5UmVxdWVzdBI2CgxzY2ltX2FwaV9rZXkYASABKAsyIC5vcGVuYXV0aC5mcm9udGVuZC52MS5TQ0lNQVBJS2V5IlIKGENyZWF0ZVNDSU1BUElLZXlSZXNwb25zZRI2CgxzY2ltX2FwaV9rZXkYASABKAsyIC5vcGVuYXV0aC5mcm9udGVuZC52MS5TQ0lNQVBJS2V5Il0KF1VwZGF0ZVNDSU1BUElLZXlSZXF1ZXN0EgoKAmlkGAEgASgJEjYKDHNjaW1fYXBpX2tleRgCIAEoCzIgLm9wZW5hdXRoLmZyb250ZW5kLnYxLlNDSU1BUElLZXkiUgoYVXBkYXRlU0NJTUFQSUtleVJlc3BvbnNlEjYKDHNjaW1fYXBpX2tleRgBIAEoCzIgLm9wZW5hdXRoLmZyb250ZW5kLnYxLlNDSU1BUElLZXkiJQoXRGVsZXRlU0NJTUFQSUtleVJlcXVlc3QSCgoCaWQYASABKAkiGgoYRGVsZXRlU0NJTUFQSUtleVJlc3BvbnNlIiUKF1Jldm9rZVNDSU1BUElLZXlSZXF1ZXN0EgoKAmlkGAEgASgJIlIKGFJldm9rZVNDSU1BUElLZXlSZXNwb25zZRI2CgxzY2ltX2FwaV9rZXkYASABKAsyIC5vcGVuYXV0aC5mcm9udGVuZC52MS5TQ0lNQVBJS2V5IpwBCgdQcm9qZWN0EgoKAmlkGAEgASgJEhQKDGRpc3BsYXlfbmFtZRgCIAEoCRIkChxsb2dfaW5fd2l0aF9wYXNzd29yZF9lbmFibGVkGAMgASgIEiIKGmxvZ19pbl93aXRoX2dvb2dsZV9lbmFibGVkGAQgASgIEiUKHWxvZ19pbl93aXRoX21pY3Jvc29mdF9lbmFibGVkGAUgASgIIrICCgxPcmdhbml6YXRpb24SCgoCaWQYASABKAkSEgoKcHJvamVjdF9pZBgCIAEoCRIUCgxkaXNwbGF5X25hbWUYAyABKAkSJAoXb3ZlcnJpZGVfbG9nX2luX21ldGhvZHMYBCABKAhIAIgBARIkChxsb2dfaW5fd2l0aF9wYXNzd29yZF9lbmFibGVkGAUgASgIEiIKGmxvZ19pbl93aXRoX2dvb2dsZV9lbmFibGVkGAYgASgIEiUKHWxvZ19pbl93aXRoX21pY3Jvc29mdF9lbmFibGVkGAcgASgIEhwKFGdvb2dsZV9ob3N0ZWRfZG9tYWluGAggASgJEhsKE21pY3Jvc29mdF90ZW5hbnRfaWQYCSABKAlCGgoYX292ZXJyaWRlX2xvZ19pbl9tZXRob2RzImQKEVNlc3Npb25TaWduaW5nS2V5EgoKAmlkGAEgASgJEhIKCnByb2plY3RfaWQYAiABKAkSLwoOcHVibGljX2tleV9qd2sYAyABKAsyFy5nb29nbGUucHJvdG9idWYuU3RydWN0IosBCgRVc2VyEgoKAmlkGAEgASgJEhcKD29yZ2FuaXphdGlvbl9pZBgCIAEoCRINCgVlbWFpbBgDIAEoCRISCgVvd25lchgGIAEoCEgAiAEBEhYKDmdvb2dsZV91c2VyX2lkGAQgASgJEhkKEW1pY3Jvc29mdF91c2VyX2lkGAUgASgJQggKBl9vd25lciKZAQoHU2Vzc2lvbhIKCgJpZBgBIAEoCRIPCgd1c2VyX2lkGAIgASgJEi8KC2NyZWF0ZV90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIvCgtleHBpcmVfdGltZRgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASDwoHcmV2b2tlZBgFIAEoCCK3AQoOU0FNTENvbm5lY3Rpb24SCgoCaWQYASABKAkSFAoHcHJpbWFyeRgCIAEoCEgAiAEBEhIKCnNwX2Fjc191cmwYAyABKAkSFAoMc3BfZW50aXR5X2lkGAQgASgJEhgKEGlkcF9yZWRpcmVjdF91cmwYBSABKAkSHAoUaWRwX3g1MDlfY2VydGlmaWNhdGUYBiABKAkSFQoNaWRwX2VudGl0eV9pZBgHIAEoCUIKCghfcHJpbWFyeSJVCgpTQ0lNQVBJS2V5EgoKAmlkGAEgASgJEhQKDGRpc3BsYXlfbmFtZRgCIAEoCRIUCgxzZWNyZXRfdG9rZW4YAyABKAkSDwoHcmV2b2tlZBgEIAEoCDKPGAoPRnJvbnRlbmRTZXJ2aWNlEpEBCg5HZXRBY2Nlc3NUb2tlbhIrLm9wZW5hdXRoLmZyb250ZW5kLnYxLkdldEFjY2Vzc1Rva2VuUmVxdWVzdBosLm9wZW5hdXRoLmZyb250ZW5kLnYxLkdldEFjY2Vzc1Rva2VuUmVzcG9uc2UiJILT5JMCHjoBKiIZL2Zyb250ZW5kL3YxL2FjY2Vzcy10b2tlbhJ9CgpHZXRQcm9qZWN0Eicub3BlbmF1dGguZnJvbnRlbmQudjEuR2V0UHJvamVjdFJlcXVlc3QaKC5vcGVuYXV0aC5mcm9udGVuZC52MS5HZXRQcm9qZWN0UmVzcG9uc2UiHILT5JMCFhIUL2Zyb250ZW5kL3YxL3Byb2plY3QSkQEKD0dldE9yZ2FuaXphdGlvbhIsLm9wZW5hdXRoLmZyb250ZW5kLnYxLkdldE9yZ2FuaXphdGlvblJlcXVlc3QaLS5vcGVuYXV0aC5mcm9udGVuZC52MS5HZXRPcmdhbml6YXRpb25SZXNwb25zZSIhgtPkkwIbEhkvZnJvbnRlbmQvdjEvb3JnYW5pemF0aW9uEqgBChJVcGRhdGVPcmdhbml6YXRpb24SLy5vcGVuYXV0aC5mcm9udGVuZC52MS5VcGRhdGVPcmdhbml6YXRpb25SZXF1ZXN0GjAub3BlbmF1dGguZnJvbnRlbmQudjEuVXBkYXRlT3JnYW5pemF0aW9uUmVzcG9uc2UiL4LT5JMCKToMb3JnYW5pemF0aW9uMhkvZnJvbnRlbmQvdjEvb3JnYW5pemF0aW9uEngKCUxpc3RVc2VycxImLm9wZW5hdXRoLmZyb250ZW5kLnYxLkxpc3RVc2Vyc1JlcXVlc3QaJy5vcGVuYXV0aC5mcm9udGVuZC52MS5MaXN0VXNlcnNSZXNwb25zZSIagtPkkwIUEhIvZnJvbnRlbmQvdjEvdXNlcnMSdwoHR2V0VXNlchIkLm9wZW5hdXRoLmZyb250ZW5kLnYxLkdldFVzZXJSZXF1ZXN0GiUub3BlbmF1dGguZnJvbnRlbmQudjEuR2V0VXNlclJlc3BvbnNlIh+C0+STAhkSFy9mcm9udGVuZC92MS91c2Vycy97aWR9EoYBCgpVcGRhdGVVc2VyEicub3BlbmF1dGguZnJvbnRlbmQudjEuVXBkYXRlVXNlclJlcXVlc3QaKC5vcGVuYXV0aC5mcm9udGVuZC52MS5VcGRhdGVVc2VyUmVzcG9uc2UiJYLT5JMCHzoEdXNlcjIXL2Zyb250ZW5kL3YxL3VzZXJzL3tpZH0SmAEKEUxpc3RPcmdhbml6YXRpb25zEi4ub3BlbmF1dGguZnJvbnRlbmQudjEuTGlzdE9yZ2FuaXphdGlvbnNSZXF1ZXN0Gi8ub3BlbmF1dGguZnJvbnRlbmQudjEuTGlzdE9yZ2FuaXphdGlvbnNSZXNwb25zZSIigtPkkwIcEhovZnJvbnRlbmQvdjEvb3JnYW5pemF0aW9ucxJwCgZXaG9BbUkSIy5vcGVuYXV0aC5mcm9udGVuZC52MS5XaG9BbUlSZXF1ZXN0GiQub3BlbmF1dGguZnJvbnRlbmQudjEuV2hvQW1JUmVzcG9uc2UiG4LT5JMCFRITL2Zyb250ZW5kL3YxL3dob2FtaRKhAQoTTGlzdFNBTUxDb25uZWN0aW9ucxIwLm9wZW5hdXRoLmZyb250ZW5kLnYxLkxpc3RTQU1MQ29ubmVjdGlvbnNSZXF1ZXN0GjEub3BlbmF1dGguZnJvbnRlbmQudjEuTGlzdFNBTUxDb25uZWN0aW9uc1Jlc3BvbnNlIiWC0+STAh8SHS9mcm9udGVuZC92MS9zYW1sLWNvbm5lY3Rpb25zEqABChFHZXRTQU1MQ29ubmVjdGlvbhIuLm9wZW5hdXRoLmZyb250ZW5kLnYxLkdldFNBTUxDb25uZWN0aW9uUmVxdWVzdBovLm9wZW5hdXRoLmZyb250ZW5kLnYxLkdldFNBTUxDb25uZWN0aW9uUmVzcG9uc2UiKoLT5JMCJBIiL2Zyb250ZW5kL3YxL3NhbWwtY29ubmVjdGlvbnMve2lkfRK1AQoUQ3JlYXRlU0FNTENvbm5lY3Rpb24SMS5vcGVuYXV0aC5mcm9udGVuZC52MS5DcmVhdGVTQU1MQ29ubmVjdGlvblJlcXVlc3QaMi5vcGVuYXV0aC5mcm9udGVuZC52MS5DcmVhdGVTQU1MQ29ubmVjdGlvblJlc3BvbnNlIjaC0+STAjA6D3NhbWxfY29ubmVjdGlvbiIdL2Zyb250ZW5kL3YxL3NhbWwtY29ubmVjdGlvbnMSugEKFFVwZGF0ZVNBTUxDb25uZWN0aW9uEjEub3BlbmF1dGguZnJvbnRlbmQudjEuVXBkYXRlU0FNTENvbm5lY3Rpb25SZXF1ZXN0GjIub3BlbmF1dGguZnJvbnRlbmQudjEuVXBkYXRlU0FNTENvbm5lY3Rpb25SZXNwb25zZSI7gtPkkwI1Og9zYW1sX2Nvbm5lY3Rpb24yIi9mcm9udGVuZC92MS9zYW1sLWNvbm5lY3Rpb25zL3tpZH0SqQEKFERlbGV0ZVNBTUxDb25uZWN0aW9uEjEub3BlbmF1dGguZnJvbnRlbmQudjEuRGVsZXRlU0FNTENvbm5lY3Rpb25SZXF1ZXN0GjIub3BlbmF1dGguZnJvbnRlbmQudjEuRGVsZXRlU0FNTENvbm5lY3Rpb25SZXNwb25zZSIqgtPkkwIkKiIvZnJvbnRlbmQvdjEvc2FtbC1jb25uZWN0aW9ucy97aWR9EpIBCg9MaXN0U0NJTUFQSUtleXMSLC5vcGVuYXV0aC5mcm9udGVuZC52MS5MaXN0U0NJTUFQSUtleXNSZXF1ZXN0Gi0ub3BlbmF1dGguZnJvbnRlbmQudjEuTGlzdFNDSU1BUElLZXlzUmVzcG9uc2UiIoLT5JMCHBIaL2Zyb250ZW5kL3YxL3NjaW0tYXBpLWtleXMSkQEKDUdldFNDSU1BUElLZXkSKi5vcGVuYXV0aC5mcm9udGVuZC52MS5HZXRTQ0lNQVBJS2V5UmVxdWVzdBorLm9wZW5hdXRoLmZyb250ZW5kLnYxLkdldFNDSU1BUElLZXlSZXNwb25zZSIngtPkkwIhEh8vZnJvbnRlbmQvdjEvc2NpbS1hcGkta2V5cy97aWR9EqMBChBDcmVhdGVTQ0lNQVBJS2V5Ei0ub3BlbmF1dGguZnJvbnRlbmQudjEuQ3JlYXRlU0NJTUFQSUtleVJlcXVlc3QaLi5vcGVuYXV0aC5mcm9udGVuZC52MS5DcmVhdGVTQ0lNQVBJS2V5UmVzcG9uc2UiMILT5JMCKjoMc2NpbV9hcGlfa2V5IhovZnJvbnRlbmQvdjEvc2NpbS1hcGkta2V5cxKoAQoQVXBkYXRlU0NJTUFQSUtleRItLm9wZW5hdXRoLmZyb250ZW5kLnYxLlVwZGF0ZVNDSU1BUElLZXlSZXF1ZXN0Gi4ub3BlbmF1dGguZnJvbnRlbmQudjEuVXBkYXRlU0NJTUFQSUtleVJlc3BvbnNlIjWC0+STAi86DHNjaW1fYXBpX2tleTIfL2Zyb250ZW5kL3YxL3NjaW0tYXBpLWtleXMve2lkfRKaAQoQRGVsZXRlU0NJTUFQSUtleRItLm9wZW5hdXRoLmZyb250ZW5kLnYxLkRlbGV0ZVNDSU1BUElLZXlSZXF1ZXN0Gi4ub3BlbmF1dGguZnJvbnRlbmQudjEuRGVsZXRlU0NJTUFQSUtleVJlc3BvbnNlIieC0+STAiEqHy9mcm9udGVuZC92MS9zY2ltLWFwaS1rZXlzL3tpZH0SoQEKEFJldm9rZVNDSU1BUElLZXkSLS5vcGVuYXV0aC5mcm9udGVuZC52MS5SZXZva2VTQ0lNQVBJS2V5UmVxdWVzdBouLm9wZW5hdXRoLmZyb250ZW5kLnYxLlJldm9rZVNDSU1BUElLZXlSZXNwb25zZSIugtPkkwIoIiYvZnJvbnRlbmQvdjEvc2NpbS1hcGkta2V5cy97aWR9L3Jldm9rZULvAQoYY29tLm9wZW5hdXRoLmZyb250ZW5kLnYxQg1Gcm9udGVuZFByb3RvUAFaUmdpdGh1Yi5jb20vb3BlbmF1dGgvb3BlbmF1dGgvaW50ZXJuYWwvZnJvbnRlbmQvZ2VuL29wZW5hdXRoL2Zyb250ZW5kL3YxO2Zyb250ZW5kdjGiAgNPRliqAhRPcGVuYXV0aC5Gcm9udGVuZC5WMcoCFE9wZW5hdXRoXEZyb250ZW5kXFYx4gIgT3BlbmF1dGhcRnJvbnRlbmRcVjFcR1BCTWV0YWRhdGHqAhZPcGVuYXV0aDo6RnJvbnRlbmQ6OlYxYgZwcm90bzM", [file_google_api_annotations, file_google_protobuf_empty, file_google_protobuf_field_mask, file_google_protobuf_timestamp, file_google_protobuf_struct]);
 
 /**
  * @generated from message openauth.frontend.v1.GetAccessTokenRequest
@@ -373,6 +373,182 @@ export const WhoAmIResponseSchema: GenMessage<WhoAmIResponse> = /*@__PURE__*/
   messageDesc(file_openauth_frontend_v1_frontend, 17);
 
 /**
+ * @generated from message openauth.frontend.v1.ListSAMLConnectionsRequest
+ */
+export type ListSAMLConnectionsRequest = Message<"openauth.frontend.v1.ListSAMLConnectionsRequest"> & {
+  /**
+   * @generated from field: string page_token = 1;
+   */
+  pageToken: string;
+};
+
+/**
+ * Describes the message openauth.frontend.v1.ListSAMLConnectionsRequest.
+ * Use `create(ListSAMLConnectionsRequestSchema)` to create a new message.
+ */
+export const ListSAMLConnectionsRequestSchema: GenMessage<ListSAMLConnectionsRequest> = /*@__PURE__*/
+  messageDesc(file_openauth_frontend_v1_frontend, 18);
+
+/**
+ * @generated from message openauth.frontend.v1.ListSAMLConnectionsResponse
+ */
+export type ListSAMLConnectionsResponse = Message<"openauth.frontend.v1.ListSAMLConnectionsResponse"> & {
+  /**
+   * @generated from field: repeated openauth.frontend.v1.SAMLConnection saml_connections = 1;
+   */
+  samlConnections: SAMLConnection[];
+
+  /**
+   * @generated from field: string next_page_token = 2;
+   */
+  nextPageToken: string;
+};
+
+/**
+ * Describes the message openauth.frontend.v1.ListSAMLConnectionsResponse.
+ * Use `create(ListSAMLConnectionsResponseSchema)` to create a new message.
+ */
+export const ListSAMLConnectionsResponseSchema: GenMessage<ListSAMLConnectionsResponse> = /*@__PURE__*/
+  messageDesc(file_openauth_frontend_v1_frontend, 19);
+
+/**
+ * @generated from message openauth.frontend.v1.GetSAMLConnectionRequest
+ */
+export type GetSAMLConnectionRequest = Message<"openauth.frontend.v1.GetSAMLConnectionRequest"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+};
+
+/**
+ * Describes the message openauth.frontend.v1.GetSAMLConnectionRequest.
+ * Use `create(GetSAMLConnectionRequestSchema)` to create a new message.
+ */
+export const GetSAMLConnectionRequestSchema: GenMessage<GetSAMLConnectionRequest> = /*@__PURE__*/
+  messageDesc(file_openauth_frontend_v1_frontend, 20);
+
+/**
+ * @generated from message openauth.frontend.v1.GetSAMLConnectionResponse
+ */
+export type GetSAMLConnectionResponse = Message<"openauth.frontend.v1.GetSAMLConnectionResponse"> & {
+  /**
+   * @generated from field: openauth.frontend.v1.SAMLConnection saml_connection = 1;
+   */
+  samlConnection?: SAMLConnection;
+};
+
+/**
+ * Describes the message openauth.frontend.v1.GetSAMLConnectionResponse.
+ * Use `create(GetSAMLConnectionResponseSchema)` to create a new message.
+ */
+export const GetSAMLConnectionResponseSchema: GenMessage<GetSAMLConnectionResponse> = /*@__PURE__*/
+  messageDesc(file_openauth_frontend_v1_frontend, 21);
+
+/**
+ * @generated from message openauth.frontend.v1.CreateSAMLConnectionRequest
+ */
+export type CreateSAMLConnectionRequest = Message<"openauth.frontend.v1.CreateSAMLConnectionRequest"> & {
+  /**
+   * @generated from field: openauth.frontend.v1.SAMLConnection saml_connection = 1;
+   */
+  samlConnection?: SAMLConnection;
+};
+
+/**
+ * Describes the message openauth.frontend.v1.CreateSAMLConnectionRequest.
+ * Use `create(CreateSAMLConnectionRequestSchema)` to create a new message.
+ */
+export const CreateSAMLConnectionRequestSchema: GenMessage<CreateSAMLConnectionRequest> = /*@__PURE__*/
+  messageDesc(file_openauth_frontend_v1_frontend, 22);
+
+/**
+ * @generated from message openauth.frontend.v1.CreateSAMLConnectionResponse
+ */
+export type CreateSAMLConnectionResponse = Message<"openauth.frontend.v1.CreateSAMLConnectionResponse"> & {
+  /**
+   * @generated from field: openauth.frontend.v1.SAMLConnection saml_connection = 1;
+   */
+  samlConnection?: SAMLConnection;
+};
+
+/**
+ * Describes the message openauth.frontend.v1.CreateSAMLConnectionResponse.
+ * Use `create(CreateSAMLConnectionResponseSchema)` to create a new message.
+ */
+export const CreateSAMLConnectionResponseSchema: GenMessage<CreateSAMLConnectionResponse> = /*@__PURE__*/
+  messageDesc(file_openauth_frontend_v1_frontend, 23);
+
+/**
+ * @generated from message openauth.frontend.v1.UpdateSAMLConnectionRequest
+ */
+export type UpdateSAMLConnectionRequest = Message<"openauth.frontend.v1.UpdateSAMLConnectionRequest"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+
+  /**
+   * @generated from field: openauth.frontend.v1.SAMLConnection saml_connection = 2;
+   */
+  samlConnection?: SAMLConnection;
+};
+
+/**
+ * Describes the message openauth.frontend.v1.UpdateSAMLConnectionRequest.
+ * Use `create(UpdateSAMLConnectionRequestSchema)` to create a new message.
+ */
+export const UpdateSAMLConnectionRequestSchema: GenMessage<UpdateSAMLConnectionRequest> = /*@__PURE__*/
+  messageDesc(file_openauth_frontend_v1_frontend, 24);
+
+/**
+ * @generated from message openauth.frontend.v1.UpdateSAMLConnectionResponse
+ */
+export type UpdateSAMLConnectionResponse = Message<"openauth.frontend.v1.UpdateSAMLConnectionResponse"> & {
+  /**
+   * @generated from field: openauth.frontend.v1.SAMLConnection saml_connection = 1;
+   */
+  samlConnection?: SAMLConnection;
+};
+
+/**
+ * Describes the message openauth.frontend.v1.UpdateSAMLConnectionResponse.
+ * Use `create(UpdateSAMLConnectionResponseSchema)` to create a new message.
+ */
+export const UpdateSAMLConnectionResponseSchema: GenMessage<UpdateSAMLConnectionResponse> = /*@__PURE__*/
+  messageDesc(file_openauth_frontend_v1_frontend, 25);
+
+/**
+ * @generated from message openauth.frontend.v1.DeleteSAMLConnectionRequest
+ */
+export type DeleteSAMLConnectionRequest = Message<"openauth.frontend.v1.DeleteSAMLConnectionRequest"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+};
+
+/**
+ * Describes the message openauth.frontend.v1.DeleteSAMLConnectionRequest.
+ * Use `create(DeleteSAMLConnectionRequestSchema)` to create a new message.
+ */
+export const DeleteSAMLConnectionRequestSchema: GenMessage<DeleteSAMLConnectionRequest> = /*@__PURE__*/
+  messageDesc(file_openauth_frontend_v1_frontend, 26);
+
+/**
+ * @generated from message openauth.frontend.v1.DeleteSAMLConnectionResponse
+ */
+export type DeleteSAMLConnectionResponse = Message<"openauth.frontend.v1.DeleteSAMLConnectionResponse"> & {
+};
+
+/**
+ * Describes the message openauth.frontend.v1.DeleteSAMLConnectionResponse.
+ * Use `create(DeleteSAMLConnectionResponseSchema)` to create a new message.
+ */
+export const DeleteSAMLConnectionResponseSchema: GenMessage<DeleteSAMLConnectionResponse> = /*@__PURE__*/
+  messageDesc(file_openauth_frontend_v1_frontend, 27);
+
+/**
  * @generated from message openauth.frontend.v1.ListSCIMAPIKeysRequest
  */
 export type ListSCIMAPIKeysRequest = Message<"openauth.frontend.v1.ListSCIMAPIKeysRequest"> & {
@@ -387,7 +563,7 @@ export type ListSCIMAPIKeysRequest = Message<"openauth.frontend.v1.ListSCIMAPIKe
  * Use `create(ListSCIMAPIKeysRequestSchema)` to create a new message.
  */
 export const ListSCIMAPIKeysRequestSchema: GenMessage<ListSCIMAPIKeysRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_frontend_v1_frontend, 18);
+  messageDesc(file_openauth_frontend_v1_frontend, 28);
 
 /**
  * @generated from message openauth.frontend.v1.ListSCIMAPIKeysResponse
@@ -409,7 +585,7 @@ export type ListSCIMAPIKeysResponse = Message<"openauth.frontend.v1.ListSCIMAPIK
  * Use `create(ListSCIMAPIKeysResponseSchema)` to create a new message.
  */
 export const ListSCIMAPIKeysResponseSchema: GenMessage<ListSCIMAPIKeysResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_frontend_v1_frontend, 19);
+  messageDesc(file_openauth_frontend_v1_frontend, 29);
 
 /**
  * @generated from message openauth.frontend.v1.GetSCIMAPIKeyRequest
@@ -426,7 +602,7 @@ export type GetSCIMAPIKeyRequest = Message<"openauth.frontend.v1.GetSCIMAPIKeyRe
  * Use `create(GetSCIMAPIKeyRequestSchema)` to create a new message.
  */
 export const GetSCIMAPIKeyRequestSchema: GenMessage<GetSCIMAPIKeyRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_frontend_v1_frontend, 20);
+  messageDesc(file_openauth_frontend_v1_frontend, 30);
 
 /**
  * @generated from message openauth.frontend.v1.GetSCIMAPIKeyResponse
@@ -443,7 +619,7 @@ export type GetSCIMAPIKeyResponse = Message<"openauth.frontend.v1.GetSCIMAPIKeyR
  * Use `create(GetSCIMAPIKeyResponseSchema)` to create a new message.
  */
 export const GetSCIMAPIKeyResponseSchema: GenMessage<GetSCIMAPIKeyResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_frontend_v1_frontend, 21);
+  messageDesc(file_openauth_frontend_v1_frontend, 31);
 
 /**
  * @generated from message openauth.frontend.v1.CreateSCIMAPIKeyRequest
@@ -460,7 +636,7 @@ export type CreateSCIMAPIKeyRequest = Message<"openauth.frontend.v1.CreateSCIMAP
  * Use `create(CreateSCIMAPIKeyRequestSchema)` to create a new message.
  */
 export const CreateSCIMAPIKeyRequestSchema: GenMessage<CreateSCIMAPIKeyRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_frontend_v1_frontend, 22);
+  messageDesc(file_openauth_frontend_v1_frontend, 32);
 
 /**
  * @generated from message openauth.frontend.v1.CreateSCIMAPIKeyResponse
@@ -477,7 +653,7 @@ export type CreateSCIMAPIKeyResponse = Message<"openauth.frontend.v1.CreateSCIMA
  * Use `create(CreateSCIMAPIKeyResponseSchema)` to create a new message.
  */
 export const CreateSCIMAPIKeyResponseSchema: GenMessage<CreateSCIMAPIKeyResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_frontend_v1_frontend, 23);
+  messageDesc(file_openauth_frontend_v1_frontend, 33);
 
 /**
  * @generated from message openauth.frontend.v1.UpdateSCIMAPIKeyRequest
@@ -499,7 +675,7 @@ export type UpdateSCIMAPIKeyRequest = Message<"openauth.frontend.v1.UpdateSCIMAP
  * Use `create(UpdateSCIMAPIKeyRequestSchema)` to create a new message.
  */
 export const UpdateSCIMAPIKeyRequestSchema: GenMessage<UpdateSCIMAPIKeyRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_frontend_v1_frontend, 24);
+  messageDesc(file_openauth_frontend_v1_frontend, 34);
 
 /**
  * @generated from message openauth.frontend.v1.UpdateSCIMAPIKeyResponse
@@ -516,7 +692,7 @@ export type UpdateSCIMAPIKeyResponse = Message<"openauth.frontend.v1.UpdateSCIMA
  * Use `create(UpdateSCIMAPIKeyResponseSchema)` to create a new message.
  */
 export const UpdateSCIMAPIKeyResponseSchema: GenMessage<UpdateSCIMAPIKeyResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_frontend_v1_frontend, 25);
+  messageDesc(file_openauth_frontend_v1_frontend, 35);
 
 /**
  * @generated from message openauth.frontend.v1.DeleteSCIMAPIKeyRequest
@@ -533,7 +709,7 @@ export type DeleteSCIMAPIKeyRequest = Message<"openauth.frontend.v1.DeleteSCIMAP
  * Use `create(DeleteSCIMAPIKeyRequestSchema)` to create a new message.
  */
 export const DeleteSCIMAPIKeyRequestSchema: GenMessage<DeleteSCIMAPIKeyRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_frontend_v1_frontend, 26);
+  messageDesc(file_openauth_frontend_v1_frontend, 36);
 
 /**
  * @generated from message openauth.frontend.v1.DeleteSCIMAPIKeyResponse
@@ -546,7 +722,7 @@ export type DeleteSCIMAPIKeyResponse = Message<"openauth.frontend.v1.DeleteSCIMA
  * Use `create(DeleteSCIMAPIKeyResponseSchema)` to create a new message.
  */
 export const DeleteSCIMAPIKeyResponseSchema: GenMessage<DeleteSCIMAPIKeyResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_frontend_v1_frontend, 27);
+  messageDesc(file_openauth_frontend_v1_frontend, 37);
 
 /**
  * @generated from message openauth.frontend.v1.RevokeSCIMAPIKeyRequest
@@ -563,7 +739,7 @@ export type RevokeSCIMAPIKeyRequest = Message<"openauth.frontend.v1.RevokeSCIMAP
  * Use `create(RevokeSCIMAPIKeyRequestSchema)` to create a new message.
  */
 export const RevokeSCIMAPIKeyRequestSchema: GenMessage<RevokeSCIMAPIKeyRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_frontend_v1_frontend, 28);
+  messageDesc(file_openauth_frontend_v1_frontend, 38);
 
 /**
  * @generated from message openauth.frontend.v1.RevokeSCIMAPIKeyResponse
@@ -580,7 +756,7 @@ export type RevokeSCIMAPIKeyResponse = Message<"openauth.frontend.v1.RevokeSCIMA
  * Use `create(RevokeSCIMAPIKeyResponseSchema)` to create a new message.
  */
 export const RevokeSCIMAPIKeyResponseSchema: GenMessage<RevokeSCIMAPIKeyResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_frontend_v1_frontend, 29);
+  messageDesc(file_openauth_frontend_v1_frontend, 39);
 
 /**
  * @generated from message openauth.frontend.v1.Project
@@ -617,7 +793,7 @@ export type Project = Message<"openauth.frontend.v1.Project"> & {
  * Use `create(ProjectSchema)` to create a new message.
  */
 export const ProjectSchema: GenMessage<Project> = /*@__PURE__*/
-  messageDesc(file_openauth_frontend_v1_frontend, 30);
+  messageDesc(file_openauth_frontend_v1_frontend, 40);
 
 /**
  * @generated from message openauth.frontend.v1.Organization
@@ -674,7 +850,7 @@ export type Organization = Message<"openauth.frontend.v1.Organization"> & {
  * Use `create(OrganizationSchema)` to create a new message.
  */
 export const OrganizationSchema: GenMessage<Organization> = /*@__PURE__*/
-  messageDesc(file_openauth_frontend_v1_frontend, 31);
+  messageDesc(file_openauth_frontend_v1_frontend, 41);
 
 /**
  * @generated from message openauth.frontend.v1.SessionSigningKey
@@ -701,7 +877,7 @@ export type SessionSigningKey = Message<"openauth.frontend.v1.SessionSigningKey"
  * Use `create(SessionSigningKeySchema)` to create a new message.
  */
 export const SessionSigningKeySchema: GenMessage<SessionSigningKey> = /*@__PURE__*/
-  messageDesc(file_openauth_frontend_v1_frontend, 32);
+  messageDesc(file_openauth_frontend_v1_frontend, 42);
 
 /**
  * @generated from message openauth.frontend.v1.User
@@ -743,7 +919,7 @@ export type User = Message<"openauth.frontend.v1.User"> & {
  * Use `create(UserSchema)` to create a new message.
  */
 export const UserSchema: GenMessage<User> = /*@__PURE__*/
-  messageDesc(file_openauth_frontend_v1_frontend, 33);
+  messageDesc(file_openauth_frontend_v1_frontend, 43);
 
 /**
  * @generated from message openauth.frontend.v1.Session
@@ -780,7 +956,54 @@ export type Session = Message<"openauth.frontend.v1.Session"> & {
  * Use `create(SessionSchema)` to create a new message.
  */
 export const SessionSchema: GenMessage<Session> = /*@__PURE__*/
-  messageDesc(file_openauth_frontend_v1_frontend, 34);
+  messageDesc(file_openauth_frontend_v1_frontend, 44);
+
+/**
+ * @generated from message openauth.frontend.v1.SAMLConnection
+ */
+export type SAMLConnection = Message<"openauth.frontend.v1.SAMLConnection"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+
+  /**
+   * @generated from field: optional bool primary = 2;
+   */
+  primary?: boolean;
+
+  /**
+   * @generated from field: string sp_acs_url = 3;
+   */
+  spAcsUrl: string;
+
+  /**
+   * @generated from field: string sp_entity_id = 4;
+   */
+  spEntityId: string;
+
+  /**
+   * @generated from field: string idp_redirect_url = 5;
+   */
+  idpRedirectUrl: string;
+
+  /**
+   * @generated from field: string idp_x509_certificate = 6;
+   */
+  idpX509Certificate: string;
+
+  /**
+   * @generated from field: string idp_entity_id = 7;
+   */
+  idpEntityId: string;
+};
+
+/**
+ * Describes the message openauth.frontend.v1.SAMLConnection.
+ * Use `create(SAMLConnectionSchema)` to create a new message.
+ */
+export const SAMLConnectionSchema: GenMessage<SAMLConnection> = /*@__PURE__*/
+  messageDesc(file_openauth_frontend_v1_frontend, 45);
 
 /**
  * @generated from message openauth.frontend.v1.SCIMAPIKey
@@ -812,7 +1035,7 @@ export type SCIMAPIKey = Message<"openauth.frontend.v1.SCIMAPIKey"> & {
  * Use `create(SCIMAPIKeySchema)` to create a new message.
  */
 export const SCIMAPIKeySchema: GenMessage<SCIMAPIKey> = /*@__PURE__*/
-  messageDesc(file_openauth_frontend_v1_frontend, 35);
+  messageDesc(file_openauth_frontend_v1_frontend, 46);
 
 /**
  * @generated from service openauth.frontend.v1.FrontendService
@@ -893,6 +1116,46 @@ export const FrontendService: GenService<{
     methodKind: "unary";
     input: typeof WhoAmIRequestSchema;
     output: typeof WhoAmIResponseSchema;
+  },
+  /**
+   * @generated from rpc openauth.frontend.v1.FrontendService.ListSAMLConnections
+   */
+  listSAMLConnections: {
+    methodKind: "unary";
+    input: typeof ListSAMLConnectionsRequestSchema;
+    output: typeof ListSAMLConnectionsResponseSchema;
+  },
+  /**
+   * @generated from rpc openauth.frontend.v1.FrontendService.GetSAMLConnection
+   */
+  getSAMLConnection: {
+    methodKind: "unary";
+    input: typeof GetSAMLConnectionRequestSchema;
+    output: typeof GetSAMLConnectionResponseSchema;
+  },
+  /**
+   * @generated from rpc openauth.frontend.v1.FrontendService.CreateSAMLConnection
+   */
+  createSAMLConnection: {
+    methodKind: "unary";
+    input: typeof CreateSAMLConnectionRequestSchema;
+    output: typeof CreateSAMLConnectionResponseSchema;
+  },
+  /**
+   * @generated from rpc openauth.frontend.v1.FrontendService.UpdateSAMLConnection
+   */
+  updateSAMLConnection: {
+    methodKind: "unary";
+    input: typeof UpdateSAMLConnectionRequestSchema;
+    output: typeof UpdateSAMLConnectionResponseSchema;
+  },
+  /**
+   * @generated from rpc openauth.frontend.v1.FrontendService.DeleteSAMLConnection
+   */
+  deleteSAMLConnection: {
+    methodKind: "unary";
+    input: typeof DeleteSAMLConnectionRequestSchema;
+    output: typeof DeleteSAMLConnectionResponseSchema;
   },
   /**
    * @generated from rpc openauth.frontend.v1.FrontendService.ListSCIMAPIKeys

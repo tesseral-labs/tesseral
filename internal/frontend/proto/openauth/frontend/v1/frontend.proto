@@ -68,6 +68,38 @@ service FrontendService {
     };
   }
 
+  rpc ListSAMLConnections(ListSAMLConnectionsRequest) returns (ListSAMLConnectionsResponse) {
+    option (google.api.http) = {
+      get: "/frontend/v1/saml-connections",
+    };
+  }
+
+  rpc GetSAMLConnection(GetSAMLConnectionRequest) returns (GetSAMLConnectionResponse) {
+    option (google.api.http) = {
+      get: "/frontend/v1/saml-connections/{id}"
+    };
+  }
+
+  rpc CreateSAMLConnection(CreateSAMLConnectionRequest) returns (CreateSAMLConnectionResponse) {
+    option (google.api.http) = {
+      post: "/frontend/v1/saml-connections",
+      body: "saml_connection"
+    };
+  }
+
+  rpc UpdateSAMLConnection(UpdateSAMLConnectionRequest) returns (UpdateSAMLConnectionResponse) {
+    option (google.api.http) = {
+      patch: "/frontend/v1/saml-connections/{id}",
+      body: "saml_connection"
+    };
+  }
+
+  rpc DeleteSAMLConnection(DeleteSAMLConnectionRequest) returns (DeleteSAMLConnectionResponse) {
+    option (google.api.http) = {
+      delete: "/frontend/v1/saml-connections/{id}"
+    };
+  }
+
   rpc ListSCIMAPIKeys(ListSCIMAPIKeysRequest) returns (ListSCIMAPIKeysResponse) {
     option (google.api.http) = {
       get: "/frontend/v1/scim-api-keys"
@@ -194,6 +226,47 @@ message WhoAmIResponse {
   Organization organization = 4;
 }
 
+message ListSAMLConnectionsRequest {
+  string page_token = 1;
+}
+
+message ListSAMLConnectionsResponse {
+  repeated SAMLConnection saml_connections = 1;
+  string next_page_token = 2;
+}
+
+message GetSAMLConnectionRequest {
+  string id = 1;
+}
+
+message GetSAMLConnectionResponse {
+  SAMLConnection saml_connection = 1;
+}
+
+message CreateSAMLConnectionRequest {
+  SAMLConnection saml_connection = 1;
+}
+
+message CreateSAMLConnectionResponse {
+  SAMLConnection saml_connection = 1;
+}
+
+message UpdateSAMLConnectionRequest {
+  string id = 1;
+  SAMLConnection saml_connection = 2;
+}
+
+message UpdateSAMLConnectionResponse {
+  SAMLConnection saml_connection = 1;
+}
+
+message DeleteSAMLConnectionRequest {
+  string id = 1;
+}
+
+message DeleteSAMLConnectionResponse {
+}
+
 message ListSCIMAPIKeysRequest {
   string page_token = 1;
 }
@@ -286,6 +359,16 @@ message Session {
   bool revoked = 5;
 
   // TODO(ucarion): add session metadata like auth factors, etc here
+}
+
+message SAMLConnection {
+  string id = 1;
+  optional bool primary = 2;
+  string sp_acs_url = 3;
+  string sp_entity_id = 4;
+  string idp_redirect_url = 5;
+  string idp_x509_certificate = 6;
+  string idp_entity_id = 7;
 }
 
 message SCIMAPIKey {
