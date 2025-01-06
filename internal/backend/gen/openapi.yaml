@@ -871,6 +871,8 @@ components:
                     type: string
                 email:
                     type: string
+                owner:
+                    type: boolean
                 googleUserId:
                     type: string
                 microsoftUserId:

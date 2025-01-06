@@ -91,6 +91,7 @@ func parseUser(qUser queries.User) *backendv1.User {
 		Id:              idformat.User.Format(qUser.ID),
 		OrganizationId:  idformat.Organization.Format(qUser.OrganizationID),
 		Email:           qUser.Email,
+		Owner:           &qUser.IsOwner,
 		GoogleUserId:    derefOrEmpty(qUser.GoogleUserID),
 		MicrosoftUserId: derefOrEmpty(qUser.MicrosoftUserID),
 	}

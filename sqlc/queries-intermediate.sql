@@ -41,8 +41,8 @@ RETURNING
     *;
 
 -- name: CreateUser :one
-INSERT INTO users (id, organization_id, email, google_user_id, microsoft_user_id)
-    VALUES ($1, $2, $3, $4, $5)
+INSERT INTO users (id, organization_id, email, google_user_id, microsoft_user_id, is_owner)
+    VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING
     *;
 
