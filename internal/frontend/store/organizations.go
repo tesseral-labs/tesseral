@@ -19,8 +19,6 @@ func (s *Store) GetOrganization(ctx context.Context, req *frontendv1.GetOrganiza
 	}
 	defer rollback()
 
-	fmt.Println("get org", projectid.ProjectID(ctx), authn.OrganizationID(ctx))
-
 	qProject, err := q.GetProjectByID(ctx, projectid.ProjectID(ctx))
 	if err != nil {
 		return nil, fmt.Errorf("get project by id: %w", err)
