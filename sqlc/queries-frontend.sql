@@ -1,3 +1,13 @@
+-- name: GetSessionSigningKeyPublicKey :one
+SELECT
+    public_key
+FROM
+    session_signing_keys
+WHERE
+    project_id = $1
+    AND id = $2
+    AND expire_time > @now;
+
 -- name: CreateUser :one
 INSERT INTO users (id, organization_id, email, password_bcrypt, google_user_id, microsoft_user_id)
     VALUES ($1, $2, $3, $4, $5, $6)

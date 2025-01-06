@@ -8,7 +8,7 @@ import (
 	frontendv1 "github.com/openauth/openauth/internal/frontend/gen/openauth/frontend/v1"
 )
 
-func (s *FrontendService) GetAccessToken(ctx context.Context, req *connect.Request[frontendv1.GetAccessTokenRequest]) (*connect.Response[frontendv1.GetAccessTokenResponse], error) {
+func (s *Service) GetAccessToken(ctx context.Context, req *connect.Request[frontendv1.GetAccessTokenRequest]) (*connect.Response[frontendv1.GetAccessTokenResponse], error) {
 	res, err := s.Store.GetAccessToken(ctx, req.Msg)
 	if err != nil {
 		return nil, fmt.Errorf("store: %w", err)
@@ -16,7 +16,7 @@ func (s *FrontendService) GetAccessToken(ctx context.Context, req *connect.Reque
 	return connect.NewResponse(res), nil
 }
 
-func (s *FrontendService) Whoami(ctx context.Context, req *connect.Request[frontendv1.WhoAmIRequest]) (*connect.Response[frontendv1.WhoAmIResponse], error) {
+func (s *Service) Whoami(ctx context.Context, req *connect.Request[frontendv1.WhoAmIRequest]) (*connect.Response[frontendv1.WhoAmIResponse], error) {
 	res, err := s.Store.Whoami(ctx, req.Msg)
 	if err != nil {
 		return nil, fmt.Errorf("store: %w", err)

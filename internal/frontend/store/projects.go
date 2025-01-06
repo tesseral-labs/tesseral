@@ -1,19 +1,36 @@
 package store
 
 import (
+	"context"
+	"fmt"
+
 	frontendv1 "github.com/openauth/openauth/internal/frontend/gen/openauth/frontend/v1"
 	"github.com/openauth/openauth/internal/frontend/store/queries"
+	"github.com/openauth/openauth/internal/projectid"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
-func parseProject(project *queries.Project) *frontendv1.Project {
+func (s *Store) GetProject(ctx context.Context, req *frontendv1.GetProjectRequest) (*frontendv1.GetProjectResponse, error) {
+	_, q, _, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	qProject, err := q.GetProjectByID(ctx, projectid.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get project by id: %w", err)
+	}
+
+	return &frontendv1.GetProjectResponse{Project: parseProject(&qProject)}, nil
+}
+
+func parseProject(qProject *queries.Project) *frontendv1.Project {
 	return &frontendv1.Project{
-		Id:                        idformat.Project.Format(project.ID),
-		OrganizationId:            idformat.Organization.Format(*project.OrganizationID),
-		LogInWithPasswordEnabled:  project.LogInWithPasswordEnabled,
-		LogInWithGoogleEnabled:    project.LogInWithGoogleEnabled,
-		LogInWithMicrosoftEnabled: project.LogInWithMicrosoftEnabled,
-		GoogleOauthClientId:       derefOrEmpty(project.GoogleOauthClientID),
-		MicrosoftOauthClientId:    derefOrEmpty(project.MicrosoftOauthClientID),
+		Id:                        idformat.Project.Format(qProject.ID),
+		DisplayName:               qProject.DisplayName,
+		LogInWithPasswordEnabled:  qProject.LogInWithPasswordEnabled,
+		LogInWithGoogleEnabled:    qProject.LogInWithGoogleEnabled,
+		LogInWithMicrosoftEnabled: qProject.LogInWithMicrosoftEnabled,
 	}
 }

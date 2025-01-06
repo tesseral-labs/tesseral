@@ -139,7 +139,7 @@ func main() {
 		SessionSigningKeyKmsKeyID:             config.SessionKMSKeyID,
 	})
 	frontendConnectPath, frontendConnectHandler := frontendv1connect.NewFrontendServiceHandler(
-		&frontendservice.FrontendService{
+		&frontendservice.Service{
 			Store: frontendStore,
 		},
 		connect.WithInterceptors(
