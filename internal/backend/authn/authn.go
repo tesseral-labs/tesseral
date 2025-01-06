@@ -34,6 +34,14 @@ func NewDogfoodSessionContext(ctx context.Context, dogfoodSession DogfoodSession
 	return context.WithValue(ctx, ctxKey{}, ContextData{DogfoodSession: &dogfoodSession})
 }
 
+func GetContextData(ctx context.Context) ContextData {
+	v, ok := ctx.Value(ctxKey{}).(ContextData)
+	if !ok {
+		panic("ctx does not carry authn data")
+	}
+	return v
+}
+
 func ProjectID(ctx context.Context) uuid.UUID {
 	v, ok := ctx.Value(ctxKey{}).(ContextData)
 	if !ok {
