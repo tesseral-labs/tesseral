@@ -39,6 +39,9 @@ const (
 	// FrontendServiceGetProjectProcedure is the fully-qualified name of the FrontendService's
 	// GetProject RPC.
 	FrontendServiceGetProjectProcedure = "/openauth.frontend.v1.FrontendService/GetProject"
+	// FrontendServiceGetOrganizationProcedure is the fully-qualified name of the FrontendService's
+	// GetOrganization RPC.
+	FrontendServiceGetOrganizationProcedure = "/openauth.frontend.v1.FrontendService/GetOrganization"
 	// FrontendServiceCreateUserProcedure is the fully-qualified name of the FrontendService's
 	// CreateUser RPC.
 	FrontendServiceCreateUserProcedure = "/openauth.frontend.v1.FrontendService/CreateUser"
@@ -62,6 +65,7 @@ var (
 	frontendServiceServiceDescriptor                 = v1.File_openauth_frontend_v1_frontend_proto.Services().ByName("FrontendService")
 	frontendServiceGetAccessTokenMethodDescriptor    = frontendServiceServiceDescriptor.Methods().ByName("GetAccessToken")
 	frontendServiceGetProjectMethodDescriptor        = frontendServiceServiceDescriptor.Methods().ByName("GetProject")
+	frontendServiceGetOrganizationMethodDescriptor   = frontendServiceServiceDescriptor.Methods().ByName("GetOrganization")
 	frontendServiceCreateUserMethodDescriptor        = frontendServiceServiceDescriptor.Methods().ByName("CreateUser")
 	frontendServiceGetUserMethodDescriptor           = frontendServiceServiceDescriptor.Methods().ByName("GetUser")
 	frontendServiceListOrganizationsMethodDescriptor = frontendServiceServiceDescriptor.Methods().ByName("ListOrganizations")
@@ -74,6 +78,7 @@ var (
 type FrontendServiceClient interface {
 	GetAccessToken(context.Context, *connect.Request[v1.GetAccessTokenRequest]) (*connect.Response[v1.GetAccessTokenResponse], error)
 	GetProject(context.Context, *connect.Request[v1.GetProjectRequest]) (*connect.Response[v1.GetProjectResponse], error)
+	GetOrganization(context.Context, *connect.Request[v1.GetOrganizationRequest]) (*connect.Response[v1.GetOrganizationResponse], error)
 	// Creates a user.
 	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error)
 	// Gets a user.
@@ -108,6 +113,12 @@ func NewFrontendServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			httpClient,
 			baseURL+FrontendServiceGetProjectProcedure,
 			connect.WithSchema(frontendServiceGetProjectMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		getOrganization: connect.NewClient[v1.GetOrganizationRequest, v1.GetOrganizationResponse](
+			httpClient,
+			baseURL+FrontendServiceGetOrganizationProcedure,
+			connect.WithSchema(frontendServiceGetOrganizationMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
 		createUser: connect.NewClient[v1.CreateUserRequest, v1.CreateUserResponse](
@@ -153,6 +164,7 @@ func NewFrontendServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 type frontendServiceClient struct {
 	getAccessToken    *connect.Client[v1.GetAccessTokenRequest, v1.GetAccessTokenResponse]
 	getProject        *connect.Client[v1.GetProjectRequest, v1.GetProjectResponse]
+	getOrganization   *connect.Client[v1.GetOrganizationRequest, v1.GetOrganizationResponse]
 	createUser        *connect.Client[v1.CreateUserRequest, v1.CreateUserResponse]
 	getUser           *connect.Client[v1.GetUserRequest, v1.GetUserResponse]
 	listOrganizations *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
@@ -169,6 +181,11 @@ func (c *frontendServiceClient) GetAccessToken(ctx context.Context, req *connect
 // GetProject calls openauth.frontend.v1.FrontendService.GetProject.
 func (c *frontendServiceClient) GetProject(ctx context.Context, req *connect.Request[v1.GetProjectRequest]) (*connect.Response[v1.GetProjectResponse], error) {
 	return c.getProject.CallUnary(ctx, req)
+}
+
+// GetOrganization calls openauth.frontend.v1.FrontendService.GetOrganization.
+func (c *frontendServiceClient) GetOrganization(ctx context.Context, req *connect.Request[v1.GetOrganizationRequest]) (*connect.Response[v1.GetOrganizationResponse], error) {
+	return c.getOrganization.CallUnary(ctx, req)
 }
 
 // CreateUser calls openauth.frontend.v1.FrontendService.CreateUser.
@@ -205,6 +222,7 @@ func (c *frontendServiceClient) WhoAmI(ctx context.Context, req *connect.Request
 type FrontendServiceHandler interface {
 	GetAccessToken(context.Context, *connect.Request[v1.GetAccessTokenRequest]) (*connect.Response[v1.GetAccessTokenResponse], error)
 	GetProject(context.Context, *connect.Request[v1.GetProjectRequest]) (*connect.Response[v1.GetProjectResponse], error)
+	GetOrganization(context.Context, *connect.Request[v1.GetOrganizationRequest]) (*connect.Response[v1.GetOrganizationResponse], error)
 	// Creates a user.
 	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error)
 	// Gets a user.
@@ -235,6 +253,12 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 		FrontendServiceGetProjectProcedure,
 		svc.GetProject,
 		connect.WithSchema(frontendServiceGetProjectMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceGetOrganizationHandler := connect.NewUnaryHandler(
+		FrontendServiceGetOrganizationProcedure,
+		svc.GetOrganization,
+		connect.WithSchema(frontendServiceGetOrganizationMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
 	frontendServiceCreateUserHandler := connect.NewUnaryHandler(
@@ -279,6 +303,8 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 			frontendServiceGetAccessTokenHandler.ServeHTTP(w, r)
 		case FrontendServiceGetProjectProcedure:
 			frontendServiceGetProjectHandler.ServeHTTP(w, r)
+		case FrontendServiceGetOrganizationProcedure:
+			frontendServiceGetOrganizationHandler.ServeHTTP(w, r)
 		case FrontendServiceCreateUserProcedure:
 			frontendServiceCreateUserHandler.ServeHTTP(w, r)
 		case FrontendServiceGetUserProcedure:
@@ -306,6 +332,10 @@ func (UnimplementedFrontendServiceHandler) GetAccessToken(context.Context, *conn
 
 func (UnimplementedFrontendServiceHandler) GetProject(context.Context, *connect.Request[v1.GetProjectRequest]) (*connect.Response[v1.GetProjectResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.GetProject is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) GetOrganization(context.Context, *connect.Request[v1.GetOrganizationRequest]) (*connect.Response[v1.GetOrganizationResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.GetOrganization is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error) {
