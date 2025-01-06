@@ -72,3 +72,13 @@ FROM
 WHERE
     id = $1;
 
+-- name: SetUserPassword :one
+UPDATE
+    users
+SET
+    password_bcrypt = $2
+WHERE
+    id = $1
+RETURNING
+    *;
+

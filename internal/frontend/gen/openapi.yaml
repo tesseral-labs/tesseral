@@ -194,6 +194,38 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /frontend/v1/users/{id}/password:
+        post:
+            tags:
+                - FrontendService
+            description: Sets a user's password.
+            operationId: FrontendService_SetUserPassword
+            parameters:
+                - name: id
+                  in: path
+                  description: The user ID to set the password for.
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/SetUserPasswordRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/SetUserPasswordResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /frontend/v1/whoami:
         get:
             tags:
@@ -314,6 +346,18 @@ components:
                     type: boolean
                 logInWithMicrosoftEnabled:
                     type: boolean
+        SetUserPasswordRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: The user ID to set the password for.
+                password:
+                    type: string
+                    description: The the user's new password.
+        SetUserPasswordResponse:
+            type: object
+            properties: {}
         Status:
             type: object
             properties:
