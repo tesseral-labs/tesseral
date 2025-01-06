@@ -124,6 +124,152 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /frontend/v1/scim-api-keys:
+        get:
+            tags:
+                - FrontendService
+            operationId: FrontendService_ListSCIMAPIKeys
+            parameters:
+                - name: pageToken
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListSCIMAPIKeysResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - FrontendService
+            operationId: FrontendService_CreateSCIMAPIKey
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/SCIMAPIKey'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateSCIMAPIKeyResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /frontend/v1/scim-api-keys/{id}:
+        get:
+            tags:
+                - FrontendService
+            operationId: FrontendService_GetSCIMAPIKey
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetSCIMAPIKeyResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        delete:
+            tags:
+                - FrontendService
+            operationId: FrontendService_DeleteSCIMAPIKey
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DeleteSCIMAPIKeyResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        patch:
+            tags:
+                - FrontendService
+            operationId: FrontendService_UpdateSCIMAPIKey
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/SCIMAPIKey'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateSCIMAPIKeyResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /frontend/v1/scim-api-keys/{id}/revoke:
+        post:
+            tags:
+                - FrontendService
+            operationId: FrontendService_RevokeSCIMAPIKey
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/RevokeSCIMAPIKeyResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /frontend/v1/users:
         get:
             tags:
@@ -225,6 +371,14 @@ paths:
                                 $ref: '#/components/schemas/Status'
 components:
     schemas:
+        CreateSCIMAPIKeyResponse:
+            type: object
+            properties:
+                scimApiKey:
+                    $ref: '#/components/schemas/SCIMAPIKey'
+        DeleteSCIMAPIKeyResponse:
+            type: object
+            properties: {}
         GetAccessTokenRequest:
             type: object
             properties:
@@ -245,6 +399,11 @@ components:
             properties:
                 project:
                     $ref: '#/components/schemas/Project'
+        GetSCIMAPIKeyResponse:
+            type: object
+            properties:
+                scimApiKey:
+                    $ref: '#/components/schemas/SCIMAPIKey'
         GetUserResponse:
             type: object
             properties:
@@ -269,6 +428,15 @@ components:
                 nextPageToken:
                     type: string
                     description: The next page token to use for pagination.
+        ListSCIMAPIKeysResponse:
+            type: object
+            properties:
+                scimApiKeys:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/SCIMAPIKey'
+                nextPageToken:
+                    type: string
         ListUsersResponse:
             type: object
             properties:
@@ -312,6 +480,22 @@ components:
                     type: boolean
                 logInWithMicrosoftEnabled:
                     type: boolean
+        RevokeSCIMAPIKeyResponse:
+            type: object
+            properties:
+                scimApiKey:
+                    $ref: '#/components/schemas/SCIMAPIKey'
+        SCIMAPIKey:
+            type: object
+            properties:
+                id:
+                    type: string
+                displayName:
+                    type: string
+                secretToken:
+                    type: string
+                revoked:
+                    type: boolean
         Status:
             type: object
             properties:
@@ -333,6 +517,11 @@ components:
             properties:
                 organization:
                     $ref: '#/components/schemas/Organization'
+        UpdateSCIMAPIKeyResponse:
+            type: object
+            properties:
+                scimApiKey:
+                    $ref: '#/components/schemas/SCIMAPIKey'
         UpdateUserResponse:
             type: object
             properties:

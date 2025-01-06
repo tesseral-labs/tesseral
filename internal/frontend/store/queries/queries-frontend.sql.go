@@ -12,6 +12,37 @@ import (
 	"github.com/google/uuid"
 )
 
+const createSCIMAPIKey = `-- name: CreateSCIMAPIKey :one
+INSERT INTO scim_api_keys (id, organization_id, display_name, token_sha256)
+    VALUES ($1, $2, $3, $4)
+RETURNING
+    id, organization_id, token_sha256, display_name
+`
+
+type CreateSCIMAPIKeyParams struct {
+	ID             uuid.UUID
+	OrganizationID uuid.UUID
+	DisplayName    string
+	TokenSha256    []byte
+}
+
+func (q *Queries) CreateSCIMAPIKey(ctx context.Context, arg CreateSCIMAPIKeyParams) (ScimApiKey, error) {
+	row := q.db.QueryRow(ctx, createSCIMAPIKey,
+		arg.ID,
+		arg.OrganizationID,
+		arg.DisplayName,
+		arg.TokenSha256,
+	)
+	var i ScimApiKey
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.TokenSha256,
+		&i.DisplayName,
+	)
+	return i, err
+}
+
 const createUser = `-- name: CreateUser :one
 INSERT INTO users (id, organization_id, email, password_bcrypt, google_user_id, microsoft_user_id)
     VALUES ($1, $2, $3, $4, $5, $6)
@@ -51,6 +82,16 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.IsOwner,
 	)
 	return i, err
+}
+
+const deleteSCIMAPIKey = `-- name: DeleteSCIMAPIKey :exec
+DELETE FROM scim_api_keys
+WHERE id = $1
+`
+
+func (q *Queries) DeleteSCIMAPIKey(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteSCIMAPIKey, id)
+	return err
 }
 
 const getCurrentSessionKeyByProjectID = `-- name: GetCurrentSessionKeyByProjectID :one
@@ -127,6 +168,33 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 		&i.MicrosoftOauthClientID,
 		&i.GoogleOauthClientSecretCiphertext,
 		&i.MicrosoftOauthClientSecretCiphertext,
+		&i.DisplayName,
+	)
+	return i, err
+}
+
+const getSCIMAPIKey = `-- name: GetSCIMAPIKey :one
+SELECT
+    id, organization_id, token_sha256, display_name
+FROM
+    scim_api_keys
+WHERE
+    id = $1
+    AND organization_id = $2
+`
+
+type GetSCIMAPIKeyParams struct {
+	ID             uuid.UUID
+	OrganizationID uuid.UUID
+}
+
+func (q *Queries) GetSCIMAPIKey(ctx context.Context, arg GetSCIMAPIKeyParams) (ScimApiKey, error) {
+	row := q.db.QueryRow(ctx, getSCIMAPIKey, arg.ID, arg.OrganizationID)
+	var i ScimApiKey
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.TokenSha256,
 		&i.DisplayName,
 	)
 	return i, err
@@ -274,6 +342,50 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 	return i, err
 }
 
+const listSCIMAPIKeys = `-- name: ListSCIMAPIKeys :many
+SELECT
+    id, organization_id, token_sha256, display_name
+FROM
+    scim_api_keys
+WHERE
+    organization_id = $1
+    AND id >= $2
+ORDER BY
+    id
+LIMIT $3
+`
+
+type ListSCIMAPIKeysParams struct {
+	OrganizationID uuid.UUID
+	ID             uuid.UUID
+	Limit          int32
+}
+
+func (q *Queries) ListSCIMAPIKeys(ctx context.Context, arg ListSCIMAPIKeysParams) ([]ScimApiKey, error) {
+	rows, err := q.db.Query(ctx, listSCIMAPIKeys, arg.OrganizationID, arg.ID, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ScimApiKey
+	for rows.Next() {
+		var i ScimApiKey
+		if err := rows.Scan(
+			&i.ID,
+			&i.OrganizationID,
+			&i.TokenSha256,
+			&i.DisplayName,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listUsers = `-- name: ListUsers :many
 SELECT
     id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner
@@ -322,6 +434,29 @@ func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]User, e
 		return nil, err
 	}
 	return items, nil
+}
+
+const revokeSCIMAPIKey = `-- name: RevokeSCIMAPIKey :one
+UPDATE
+    scim_api_keys
+SET
+    token_sha256 = NULL
+WHERE
+    id = $1
+RETURNING
+    id, organization_id, token_sha256, display_name
+`
+
+func (q *Queries) RevokeSCIMAPIKey(ctx context.Context, id uuid.UUID) (ScimApiKey, error) {
+	row := q.db.QueryRow(ctx, revokeSCIMAPIKey, id)
+	var i ScimApiKey
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.TokenSha256,
+		&i.DisplayName,
+	)
+	return i, err
 }
 
 const updateOrganization = `-- name: UpdateOrganization :one
@@ -374,6 +509,34 @@ func (q *Queries) UpdateOrganization(ctx context.Context, arg UpdateOrganization
 		&i.GoogleHostedDomain,
 		&i.MicrosoftTenantID,
 		&i.OverrideLogInMethods,
+	)
+	return i, err
+}
+
+const updateSCIMAPIKey = `-- name: UpdateSCIMAPIKey :one
+UPDATE
+    scim_api_keys
+SET
+    display_name = $1
+WHERE
+    id = $2
+RETURNING
+    id, organization_id, token_sha256, display_name
+`
+
+type UpdateSCIMAPIKeyParams struct {
+	DisplayName string
+	ID          uuid.UUID
+}
+
+func (q *Queries) UpdateSCIMAPIKey(ctx context.Context, arg UpdateSCIMAPIKeyParams) (ScimApiKey, error) {
+	row := q.db.QueryRow(ctx, updateSCIMAPIKey, arg.DisplayName, arg.ID)
+	var i ScimApiKey
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.TokenSha256,
+		&i.DisplayName,
 	)
 	return i, err
 }

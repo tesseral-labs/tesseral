@@ -75,6 +75,10 @@ func (s *Store) GetSCIMAPIKey(ctx context.Context, req *frontendv1.GetSCIMAPIKey
 }
 
 func (s *Store) CreateSCIMAPIKey(ctx context.Context, req *frontendv1.CreateSCIMAPIKeyRequest) (*frontendv1.CreateSCIMAPIKeyResponse, error) {
+	if err := s.validateIsOwner(ctx); err != nil {
+		return nil, fmt.Errorf("validate is owner: %w", err)
+	}
+
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -103,6 +107,10 @@ func (s *Store) CreateSCIMAPIKey(ctx context.Context, req *frontendv1.CreateSCIM
 }
 
 func (s *Store) UpdateSCIMAPIKey(ctx context.Context, req *frontendv1.UpdateSCIMAPIKeyRequest) (*frontendv1.UpdateSCIMAPIKeyResponse, error) {
+	if err := s.validateIsOwner(ctx); err != nil {
+		return nil, fmt.Errorf("validate is owner: %w", err)
+	}
+
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -145,6 +153,10 @@ func (s *Store) UpdateSCIMAPIKey(ctx context.Context, req *frontendv1.UpdateSCIM
 }
 
 func (s *Store) DeleteSCIMAPIKey(ctx context.Context, req *frontendv1.DeleteSCIMAPIKeyRequest) (*frontendv1.DeleteSCIMAPIKeyResponse, error) {
+	if err := s.validateIsOwner(ctx); err != nil {
+		return nil, fmt.Errorf("validate is owner: %w", err)
+	}
+
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -181,6 +193,10 @@ func (s *Store) DeleteSCIMAPIKey(ctx context.Context, req *frontendv1.DeleteSCIM
 }
 
 func (s *Store) RevokeSCIMAPIKey(ctx context.Context, req *frontendv1.RevokeSCIMAPIKeyRequest) (*frontendv1.RevokeSCIMAPIKeyResponse, error) {
+	if err := s.validateIsOwner(ctx); err != nil {
+		return nil, fmt.Errorf("validate is owner: %w", err)
+	}
+
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err

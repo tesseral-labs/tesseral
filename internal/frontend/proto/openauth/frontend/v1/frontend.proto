@@ -67,6 +67,44 @@ service FrontendService {
       get: "/frontend/v1/whoami"
     };
   }
+
+  rpc ListSCIMAPIKeys(ListSCIMAPIKeysRequest) returns (ListSCIMAPIKeysResponse) {
+    option (google.api.http) = {
+      get: "/frontend/v1/scim-api-keys"
+    };
+  }
+
+  rpc GetSCIMAPIKey(GetSCIMAPIKeyRequest) returns (GetSCIMAPIKeyResponse) {
+    option (google.api.http) = {
+      get: "/frontend/v1/scim-api-keys/{id}"
+    };
+  }
+
+  rpc CreateSCIMAPIKey(CreateSCIMAPIKeyRequest) returns (CreateSCIMAPIKeyResponse) {
+    option (google.api.http) = {
+      post: "/frontend/v1/scim-api-keys",
+      body: "scim_api_key"
+    };
+  }
+
+  rpc UpdateSCIMAPIKey(UpdateSCIMAPIKeyRequest) returns (UpdateSCIMAPIKeyResponse) {
+    option (google.api.http) = {
+      patch: "/frontend/v1/scim-api-keys/{id}",
+      body: "scim_api_key"
+    };
+  }
+
+  rpc DeleteSCIMAPIKey(DeleteSCIMAPIKeyRequest) returns (DeleteSCIMAPIKeyResponse) {
+    option (google.api.http) = {
+      delete: "/frontend/v1/scim-api-keys/{id}"
+    };
+  }
+
+  rpc RevokeSCIMAPIKey(RevokeSCIMAPIKeyRequest) returns (RevokeSCIMAPIKeyResponse) {
+    option (google.api.http) = {
+      post: "/frontend/v1/scim-api-keys/{id}/revoke",
+    };
+  }
 }
 
 message GetAccessTokenRequest {
@@ -156,6 +194,55 @@ message WhoAmIResponse {
   Organization organization = 4;
 }
 
+message ListSCIMAPIKeysRequest {
+  string page_token = 1;
+}
+
+message ListSCIMAPIKeysResponse {
+  repeated SCIMAPIKey scim_api_keys = 1;
+  string next_page_token = 2;
+}
+
+message GetSCIMAPIKeyRequest {
+  string id = 1;
+}
+
+message GetSCIMAPIKeyResponse {
+  SCIMAPIKey scim_api_key = 1;
+}
+
+message CreateSCIMAPIKeyRequest {
+  SCIMAPIKey scim_api_key = 1;
+}
+
+message CreateSCIMAPIKeyResponse {
+  SCIMAPIKey scim_api_key = 1;
+}
+
+message UpdateSCIMAPIKeyRequest {
+  string id = 1;
+  SCIMAPIKey scim_api_key = 2;
+}
+
+message UpdateSCIMAPIKeyResponse {
+  SCIMAPIKey scim_api_key = 1;
+}
+
+message DeleteSCIMAPIKeyRequest {
+  string id = 1;
+}
+
+message DeleteSCIMAPIKeyResponse {
+}
+
+message RevokeSCIMAPIKeyRequest {
+  string id = 1;
+}
+
+message RevokeSCIMAPIKeyResponse {
+  SCIMAPIKey scim_api_key = 1;
+}
+
 message Project {
   string id = 1;
   string display_name = 2;
@@ -199,4 +286,11 @@ message Session {
   bool revoked = 5;
 
   // TODO(ucarion): add session metadata like auth factors, etc here
+}
+
+message SCIMAPIKey {
+  string id = 1;
+  string display_name = 2;
+  string secret_token = 3;
+  bool revoked = 4;
 }
