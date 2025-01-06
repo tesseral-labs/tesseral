@@ -42,36 +42,36 @@ const (
 	// FrontendServiceGetOrganizationProcedure is the fully-qualified name of the FrontendService's
 	// GetOrganization RPC.
 	FrontendServiceGetOrganizationProcedure = "/openauth.frontend.v1.FrontendService/GetOrganization"
-	// FrontendServiceCreateUserProcedure is the fully-qualified name of the FrontendService's
-	// CreateUser RPC.
-	FrontendServiceCreateUserProcedure = "/openauth.frontend.v1.FrontendService/CreateUser"
-	// FrontendServiceGetUserProcedure is the fully-qualified name of the FrontendService's GetUser RPC.
-	FrontendServiceGetUserProcedure = "/openauth.frontend.v1.FrontendService/GetUser"
-	// FrontendServiceListOrganizationsProcedure is the fully-qualified name of the FrontendService's
-	// ListOrganizations RPC.
-	FrontendServiceListOrganizationsProcedure = "/openauth.frontend.v1.FrontendService/ListOrganizations"
+	// FrontendServiceUpdateOrganizationProcedure is the fully-qualified name of the FrontendService's
+	// UpdateOrganization RPC.
+	FrontendServiceUpdateOrganizationProcedure = "/openauth.frontend.v1.FrontendService/UpdateOrganization"
 	// FrontendServiceListUsersProcedure is the fully-qualified name of the FrontendService's ListUsers
 	// RPC.
 	FrontendServiceListUsersProcedure = "/openauth.frontend.v1.FrontendService/ListUsers"
+	// FrontendServiceGetUserProcedure is the fully-qualified name of the FrontendService's GetUser RPC.
+	FrontendServiceGetUserProcedure = "/openauth.frontend.v1.FrontendService/GetUser"
 	// FrontendServiceUpdateUserProcedure is the fully-qualified name of the FrontendService's
 	// UpdateUser RPC.
 	FrontendServiceUpdateUserProcedure = "/openauth.frontend.v1.FrontendService/UpdateUser"
+	// FrontendServiceListOrganizationsProcedure is the fully-qualified name of the FrontendService's
+	// ListOrganizations RPC.
+	FrontendServiceListOrganizationsProcedure = "/openauth.frontend.v1.FrontendService/ListOrganizations"
 	// FrontendServiceWhoAmIProcedure is the fully-qualified name of the FrontendService's WhoAmI RPC.
 	FrontendServiceWhoAmIProcedure = "/openauth.frontend.v1.FrontendService/WhoAmI"
 )
 
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
 var (
-	frontendServiceServiceDescriptor                 = v1.File_openauth_frontend_v1_frontend_proto.Services().ByName("FrontendService")
-	frontendServiceGetAccessTokenMethodDescriptor    = frontendServiceServiceDescriptor.Methods().ByName("GetAccessToken")
-	frontendServiceGetProjectMethodDescriptor        = frontendServiceServiceDescriptor.Methods().ByName("GetProject")
-	frontendServiceGetOrganizationMethodDescriptor   = frontendServiceServiceDescriptor.Methods().ByName("GetOrganization")
-	frontendServiceCreateUserMethodDescriptor        = frontendServiceServiceDescriptor.Methods().ByName("CreateUser")
-	frontendServiceGetUserMethodDescriptor           = frontendServiceServiceDescriptor.Methods().ByName("GetUser")
-	frontendServiceListOrganizationsMethodDescriptor = frontendServiceServiceDescriptor.Methods().ByName("ListOrganizations")
-	frontendServiceListUsersMethodDescriptor         = frontendServiceServiceDescriptor.Methods().ByName("ListUsers")
-	frontendServiceUpdateUserMethodDescriptor        = frontendServiceServiceDescriptor.Methods().ByName("UpdateUser")
-	frontendServiceWhoAmIMethodDescriptor            = frontendServiceServiceDescriptor.Methods().ByName("WhoAmI")
+	frontendServiceServiceDescriptor                  = v1.File_openauth_frontend_v1_frontend_proto.Services().ByName("FrontendService")
+	frontendServiceGetAccessTokenMethodDescriptor     = frontendServiceServiceDescriptor.Methods().ByName("GetAccessToken")
+	frontendServiceGetProjectMethodDescriptor         = frontendServiceServiceDescriptor.Methods().ByName("GetProject")
+	frontendServiceGetOrganizationMethodDescriptor    = frontendServiceServiceDescriptor.Methods().ByName("GetOrganization")
+	frontendServiceUpdateOrganizationMethodDescriptor = frontendServiceServiceDescriptor.Methods().ByName("UpdateOrganization")
+	frontendServiceListUsersMethodDescriptor          = frontendServiceServiceDescriptor.Methods().ByName("ListUsers")
+	frontendServiceGetUserMethodDescriptor            = frontendServiceServiceDescriptor.Methods().ByName("GetUser")
+	frontendServiceUpdateUserMethodDescriptor         = frontendServiceServiceDescriptor.Methods().ByName("UpdateUser")
+	frontendServiceListOrganizationsMethodDescriptor  = frontendServiceServiceDescriptor.Methods().ByName("ListOrganizations")
+	frontendServiceWhoAmIMethodDescriptor             = frontendServiceServiceDescriptor.Methods().ByName("WhoAmI")
 )
 
 // FrontendServiceClient is a client for the openauth.frontend.v1.FrontendService service.
@@ -79,16 +79,12 @@ type FrontendServiceClient interface {
 	GetAccessToken(context.Context, *connect.Request[v1.GetAccessTokenRequest]) (*connect.Response[v1.GetAccessTokenResponse], error)
 	GetProject(context.Context, *connect.Request[v1.GetProjectRequest]) (*connect.Response[v1.GetProjectResponse], error)
 	GetOrganization(context.Context, *connect.Request[v1.GetOrganizationRequest]) (*connect.Response[v1.GetOrganizationResponse], error)
-	// Creates a user.
-	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error)
-	// Gets a user.
+	UpdateOrganization(context.Context, *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.UpdateOrganizationResponse], error)
+	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
 	GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error)
+	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error)
 	// Gets a list of organizations.
 	ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error)
-	// Gets a list of users.
-	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
-	// Updates a user.
-	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error)
 	// Who am I?
 	WhoAmI(context.Context, *connect.Request[v1.WhoAmIRequest]) (*connect.Response[v1.WhoAmIResponse], error)
 }
@@ -121,22 +117,10 @@ func NewFrontendServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			connect.WithSchema(frontendServiceGetOrganizationMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
-		createUser: connect.NewClient[v1.CreateUserRequest, v1.CreateUserResponse](
+		updateOrganization: connect.NewClient[v1.UpdateOrganizationRequest, v1.UpdateOrganizationResponse](
 			httpClient,
-			baseURL+FrontendServiceCreateUserProcedure,
-			connect.WithSchema(frontendServiceCreateUserMethodDescriptor),
-			connect.WithClientOptions(opts...),
-		),
-		getUser: connect.NewClient[v1.GetUserRequest, v1.GetUserResponse](
-			httpClient,
-			baseURL+FrontendServiceGetUserProcedure,
-			connect.WithSchema(frontendServiceGetUserMethodDescriptor),
-			connect.WithClientOptions(opts...),
-		),
-		listOrganizations: connect.NewClient[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse](
-			httpClient,
-			baseURL+FrontendServiceListOrganizationsProcedure,
-			connect.WithSchema(frontendServiceListOrganizationsMethodDescriptor),
+			baseURL+FrontendServiceUpdateOrganizationProcedure,
+			connect.WithSchema(frontendServiceUpdateOrganizationMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
 		listUsers: connect.NewClient[v1.ListUsersRequest, v1.ListUsersResponse](
@@ -145,10 +129,22 @@ func NewFrontendServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			connect.WithSchema(frontendServiceListUsersMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
+		getUser: connect.NewClient[v1.GetUserRequest, v1.GetUserResponse](
+			httpClient,
+			baseURL+FrontendServiceGetUserProcedure,
+			connect.WithSchema(frontendServiceGetUserMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
 		updateUser: connect.NewClient[v1.UpdateUserRequest, v1.UpdateUserResponse](
 			httpClient,
 			baseURL+FrontendServiceUpdateUserProcedure,
 			connect.WithSchema(frontendServiceUpdateUserMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		listOrganizations: connect.NewClient[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse](
+			httpClient,
+			baseURL+FrontendServiceListOrganizationsProcedure,
+			connect.WithSchema(frontendServiceListOrganizationsMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
 		whoAmI: connect.NewClient[v1.WhoAmIRequest, v1.WhoAmIResponse](
@@ -162,15 +158,15 @@ func NewFrontendServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 
 // frontendServiceClient implements FrontendServiceClient.
 type frontendServiceClient struct {
-	getAccessToken    *connect.Client[v1.GetAccessTokenRequest, v1.GetAccessTokenResponse]
-	getProject        *connect.Client[v1.GetProjectRequest, v1.GetProjectResponse]
-	getOrganization   *connect.Client[v1.GetOrganizationRequest, v1.GetOrganizationResponse]
-	createUser        *connect.Client[v1.CreateUserRequest, v1.CreateUserResponse]
-	getUser           *connect.Client[v1.GetUserRequest, v1.GetUserResponse]
-	listOrganizations *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
-	listUsers         *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
-	updateUser        *connect.Client[v1.UpdateUserRequest, v1.UpdateUserResponse]
-	whoAmI            *connect.Client[v1.WhoAmIRequest, v1.WhoAmIResponse]
+	getAccessToken     *connect.Client[v1.GetAccessTokenRequest, v1.GetAccessTokenResponse]
+	getProject         *connect.Client[v1.GetProjectRequest, v1.GetProjectResponse]
+	getOrganization    *connect.Client[v1.GetOrganizationRequest, v1.GetOrganizationResponse]
+	updateOrganization *connect.Client[v1.UpdateOrganizationRequest, v1.UpdateOrganizationResponse]
+	listUsers          *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
+	getUser            *connect.Client[v1.GetUserRequest, v1.GetUserResponse]
+	updateUser         *connect.Client[v1.UpdateUserRequest, v1.UpdateUserResponse]
+	listOrganizations  *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
+	whoAmI             *connect.Client[v1.WhoAmIRequest, v1.WhoAmIResponse]
 }
 
 // GetAccessToken calls openauth.frontend.v1.FrontendService.GetAccessToken.
@@ -188,19 +184,9 @@ func (c *frontendServiceClient) GetOrganization(ctx context.Context, req *connec
 	return c.getOrganization.CallUnary(ctx, req)
 }
 
-// CreateUser calls openauth.frontend.v1.FrontendService.CreateUser.
-func (c *frontendServiceClient) CreateUser(ctx context.Context, req *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error) {
-	return c.createUser.CallUnary(ctx, req)
-}
-
-// GetUser calls openauth.frontend.v1.FrontendService.GetUser.
-func (c *frontendServiceClient) GetUser(ctx context.Context, req *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error) {
-	return c.getUser.CallUnary(ctx, req)
-}
-
-// ListOrganizations calls openauth.frontend.v1.FrontendService.ListOrganizations.
-func (c *frontendServiceClient) ListOrganizations(ctx context.Context, req *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error) {
-	return c.listOrganizations.CallUnary(ctx, req)
+// UpdateOrganization calls openauth.frontend.v1.FrontendService.UpdateOrganization.
+func (c *frontendServiceClient) UpdateOrganization(ctx context.Context, req *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.UpdateOrganizationResponse], error) {
+	return c.updateOrganization.CallUnary(ctx, req)
 }
 
 // ListUsers calls openauth.frontend.v1.FrontendService.ListUsers.
@@ -208,9 +194,19 @@ func (c *frontendServiceClient) ListUsers(ctx context.Context, req *connect.Requ
 	return c.listUsers.CallUnary(ctx, req)
 }
 
+// GetUser calls openauth.frontend.v1.FrontendService.GetUser.
+func (c *frontendServiceClient) GetUser(ctx context.Context, req *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error) {
+	return c.getUser.CallUnary(ctx, req)
+}
+
 // UpdateUser calls openauth.frontend.v1.FrontendService.UpdateUser.
 func (c *frontendServiceClient) UpdateUser(ctx context.Context, req *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error) {
 	return c.updateUser.CallUnary(ctx, req)
+}
+
+// ListOrganizations calls openauth.frontend.v1.FrontendService.ListOrganizations.
+func (c *frontendServiceClient) ListOrganizations(ctx context.Context, req *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error) {
+	return c.listOrganizations.CallUnary(ctx, req)
 }
 
 // WhoAmI calls openauth.frontend.v1.FrontendService.WhoAmI.
@@ -223,16 +219,12 @@ type FrontendServiceHandler interface {
 	GetAccessToken(context.Context, *connect.Request[v1.GetAccessTokenRequest]) (*connect.Response[v1.GetAccessTokenResponse], error)
 	GetProject(context.Context, *connect.Request[v1.GetProjectRequest]) (*connect.Response[v1.GetProjectResponse], error)
 	GetOrganization(context.Context, *connect.Request[v1.GetOrganizationRequest]) (*connect.Response[v1.GetOrganizationResponse], error)
-	// Creates a user.
-	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error)
-	// Gets a user.
+	UpdateOrganization(context.Context, *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.UpdateOrganizationResponse], error)
+	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
 	GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error)
+	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error)
 	// Gets a list of organizations.
 	ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error)
-	// Gets a list of users.
-	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
-	// Updates a user.
-	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error)
 	// Who am I?
 	WhoAmI(context.Context, *connect.Request[v1.WhoAmIRequest]) (*connect.Response[v1.WhoAmIResponse], error)
 }
@@ -261,22 +253,10 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 		connect.WithSchema(frontendServiceGetOrganizationMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
-	frontendServiceCreateUserHandler := connect.NewUnaryHandler(
-		FrontendServiceCreateUserProcedure,
-		svc.CreateUser,
-		connect.WithSchema(frontendServiceCreateUserMethodDescriptor),
-		connect.WithHandlerOptions(opts...),
-	)
-	frontendServiceGetUserHandler := connect.NewUnaryHandler(
-		FrontendServiceGetUserProcedure,
-		svc.GetUser,
-		connect.WithSchema(frontendServiceGetUserMethodDescriptor),
-		connect.WithHandlerOptions(opts...),
-	)
-	frontendServiceListOrganizationsHandler := connect.NewUnaryHandler(
-		FrontendServiceListOrganizationsProcedure,
-		svc.ListOrganizations,
-		connect.WithSchema(frontendServiceListOrganizationsMethodDescriptor),
+	frontendServiceUpdateOrganizationHandler := connect.NewUnaryHandler(
+		FrontendServiceUpdateOrganizationProcedure,
+		svc.UpdateOrganization,
+		connect.WithSchema(frontendServiceUpdateOrganizationMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
 	frontendServiceListUsersHandler := connect.NewUnaryHandler(
@@ -285,10 +265,22 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 		connect.WithSchema(frontendServiceListUsersMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
+	frontendServiceGetUserHandler := connect.NewUnaryHandler(
+		FrontendServiceGetUserProcedure,
+		svc.GetUser,
+		connect.WithSchema(frontendServiceGetUserMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
 	frontendServiceUpdateUserHandler := connect.NewUnaryHandler(
 		FrontendServiceUpdateUserProcedure,
 		svc.UpdateUser,
 		connect.WithSchema(frontendServiceUpdateUserMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceListOrganizationsHandler := connect.NewUnaryHandler(
+		FrontendServiceListOrganizationsProcedure,
+		svc.ListOrganizations,
+		connect.WithSchema(frontendServiceListOrganizationsMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
 	frontendServiceWhoAmIHandler := connect.NewUnaryHandler(
@@ -305,16 +297,16 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 			frontendServiceGetProjectHandler.ServeHTTP(w, r)
 		case FrontendServiceGetOrganizationProcedure:
 			frontendServiceGetOrganizationHandler.ServeHTTP(w, r)
-		case FrontendServiceCreateUserProcedure:
-			frontendServiceCreateUserHandler.ServeHTTP(w, r)
-		case FrontendServiceGetUserProcedure:
-			frontendServiceGetUserHandler.ServeHTTP(w, r)
-		case FrontendServiceListOrganizationsProcedure:
-			frontendServiceListOrganizationsHandler.ServeHTTP(w, r)
+		case FrontendServiceUpdateOrganizationProcedure:
+			frontendServiceUpdateOrganizationHandler.ServeHTTP(w, r)
 		case FrontendServiceListUsersProcedure:
 			frontendServiceListUsersHandler.ServeHTTP(w, r)
+		case FrontendServiceGetUserProcedure:
+			frontendServiceGetUserHandler.ServeHTTP(w, r)
 		case FrontendServiceUpdateUserProcedure:
 			frontendServiceUpdateUserHandler.ServeHTTP(w, r)
+		case FrontendServiceListOrganizationsProcedure:
+			frontendServiceListOrganizationsHandler.ServeHTTP(w, r)
 		case FrontendServiceWhoAmIProcedure:
 			frontendServiceWhoAmIHandler.ServeHTTP(w, r)
 		default:
@@ -338,24 +330,24 @@ func (UnimplementedFrontendServiceHandler) GetOrganization(context.Context, *con
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.GetOrganization is not implemented"))
 }
 
-func (UnimplementedFrontendServiceHandler) CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.CreateUser is not implemented"))
-}
-
-func (UnimplementedFrontendServiceHandler) GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.GetUser is not implemented"))
-}
-
-func (UnimplementedFrontendServiceHandler) ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.ListOrganizations is not implemented"))
+func (UnimplementedFrontendServiceHandler) UpdateOrganization(context.Context, *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.UpdateOrganizationResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.UpdateOrganization is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.ListUsers is not implemented"))
 }
 
+func (UnimplementedFrontendServiceHandler) GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.GetUser is not implemented"))
+}
+
 func (UnimplementedFrontendServiceHandler) UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.UpdateUser is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.ListOrganizations is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) WhoAmI(context.Context, *connect.Request[v1.WhoAmIRequest]) (*connect.Response[v1.WhoAmIResponse], error) {

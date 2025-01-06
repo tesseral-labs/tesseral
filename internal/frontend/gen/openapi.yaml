@@ -48,6 +48,29 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+        patch:
+            tags:
+                - FrontendService
+            operationId: FrontendService_UpdateOrganization
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Organization'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateOrganizationResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /frontend/v1/organizations:
         get:
             tags:
@@ -105,17 +128,14 @@ paths:
         get:
             tags:
                 - FrontendService
-            description: Gets a list of users.
             operationId: FrontendService_ListUsers
             parameters:
                 - name: organizationId
                   in: query
-                  description: The ID of the organization to use for filtering.
                   schema:
                     type: string
                 - name: pageToken
                   in: query
-                  description: The page token to use for pagination.
                   schema:
                     type: string
             responses:
@@ -131,40 +151,14 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-        post:
-            tags:
-                - FrontendService
-            description: Creates a user.
-            operationId: FrontendService_CreateUser
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/User'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/CreateUserResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
     /frontend/v1/users/{id}:
         get:
             tags:
                 - FrontendService
-            description: Gets a user.
             operationId: FrontendService_GetUser
             parameters:
                 - name: id
                   in: path
-                  description: The ID of the user to get.
                   required: true
                   schema:
                     type: string
@@ -184,12 +178,10 @@ paths:
         patch:
             tags:
                 - FrontendService
-            description: Updates a user.
             operationId: FrontendService_UpdateUser
             parameters:
                 - name: id
                   in: path
-                  description: The ID of the user to update.
                   required: true
                   schema:
                     type: string
@@ -233,13 +225,6 @@ paths:
                                 $ref: '#/components/schemas/Status'
 components:
     schemas:
-        CreateUserResponse:
-            type: object
-            properties:
-                user:
-                    allOf:
-                        - $ref: '#/components/schemas/User'
-                    description: The user created by the CreateUser request.
         GetAccessTokenRequest:
             type: object
             properties:
@@ -264,9 +249,7 @@ components:
             type: object
             properties:
                 user:
-                    allOf:
-                        - $ref: '#/components/schemas/User'
-                    description: The user returned by the GetUser request.
+                    $ref: '#/components/schemas/User'
         GoogleProtobufAny:
             type: object
             properties:
@@ -293,10 +276,8 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/User'
-                    description: The users returned by the ListUsers request.
                 nextPageToken:
                     type: string
-                    description: The next page token to use for pagination.
         Organization:
             type: object
             properties:
@@ -347,37 +328,31 @@ components:
                         $ref: '#/components/schemas/GoogleProtobufAny'
                     description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
             description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
+        UpdateOrganizationResponse:
+            type: object
+            properties:
+                organization:
+                    $ref: '#/components/schemas/Organization'
         UpdateUserResponse:
             type: object
             properties:
                 user:
-                    allOf:
-                        - $ref: '#/components/schemas/User'
-                    description: The user updated by the UpdateUser request.
+                    $ref: '#/components/schemas/User'
         User:
             type: object
             properties:
                 id:
                     type: string
-                    description: Unique identifier for this user.
                 organizationId:
                     type: string
-                    description: The organization this user belongs to.
-                unverifiedEmail:
+                email:
                     type: string
-                    description: The user's email (pending verification).
-                verifiedEmail:
-                    type: string
-                    description: The user's email (after verification).
-                passwordBcrypt:
-                    type: string
-                    description: The hash of the user's password.
+                owner:
+                    type: boolean
                 googleUserId:
                     type: string
-                    description: The user's Google User ID.
                 microsoftUserId:
                     type: string
-                    description: The user's Microsoft User ID.
         WhoAmIResponse:
             type: object
             properties:

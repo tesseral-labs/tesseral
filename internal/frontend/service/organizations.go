@@ -15,3 +15,11 @@ func (s *Service) GetOrganization(ctx context.Context, req *connect.Request[fron
 	}
 	return connect.NewResponse(res), nil
 }
+
+func (s *Service) UpdateOrganization(ctx context.Context, req *connect.Request[frontendv1.UpdateOrganizationRequest]) (*connect.Response[frontendv1.UpdateOrganizationResponse], error) {
+	res, err := s.Store.UpdateOrganization(ctx, req.Msg)
+	if err != nil {
+		return nil, fmt.Errorf("store: %w", err)
+	}
+	return connect.NewResponse(res), nil
+}
