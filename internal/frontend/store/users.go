@@ -16,6 +16,12 @@ import (
 var errInvalidUserId = errors.New("invalid user id")
 
 func (s *Store) SetUserPassword(ctx context.Context, req *frontendv1.SetUserPasswordRequest) (*frontendv1.SetUserPasswordResponse, error) {
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
 	sessionUserID := authn.UserID(ctx)
 	userID, err := idformat.User.Parse(req.Id)
 	if err != nil {
