@@ -30,11 +30,12 @@ func (s *Store) ExchangeIntermediateSessionForNewOrganizationSession(ctx context
 
 	// Create a new organization
 	qOrganization, err := q.CreateOrganization(ctx, queries.CreateOrganizationParams{
-		ID:                 uuid.New(),
-		ProjectID:          projectID,
-		DisplayName:        req.DisplayName,
-		GoogleHostedDomain: refOrNil(intermediateSession.GoogleHostedDomain),
-		MicrosoftTenantID:  refOrNil(intermediateSession.MicrosoftTenantId),
+		ID:                   uuid.New(),
+		ProjectID:            projectID,
+		DisplayName:          req.DisplayName,
+		GoogleHostedDomain:   refOrNil(intermediateSession.GoogleHostedDomain),
+		MicrosoftTenantID:    refOrNil(intermediateSession.MicrosoftTenantId),
+		OverrideLogInMethods: false,
 	})
 	if err != nil {
 		return nil, err
