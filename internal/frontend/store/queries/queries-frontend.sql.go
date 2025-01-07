@@ -584,7 +584,7 @@ func (q *Queries) RevokeSCIMAPIKey(ctx context.Context, id uuid.UUID) (ScimApiKe
 	return i, err
 }
 
-const setUserPassword = `-- name: SetUserPassword :one
+const setPassword = `-- name: SetPassword :one
 UPDATE
     users
 SET
@@ -595,13 +595,13 @@ RETURNING
     id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner
 `
 
-type SetUserPasswordParams struct {
+type SetPasswordParams struct {
 	ID             uuid.UUID
 	PasswordBcrypt *string
 }
 
-func (q *Queries) SetUserPassword(ctx context.Context, arg SetUserPasswordParams) (User, error) {
-	row := q.db.QueryRow(ctx, setUserPassword, arg.ID, arg.PasswordBcrypt)
+func (q *Queries) SetPassword(ctx context.Context, arg SetPasswordParams) (User, error) {
+	row := q.db.QueryRow(ctx, setPassword, arg.ID, arg.PasswordBcrypt)
 	var i User
 	err := row.Scan(
 		&i.ID,

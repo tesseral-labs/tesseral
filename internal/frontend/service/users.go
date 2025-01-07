@@ -8,7 +8,7 @@ import (
 	frontendv1 "github.com/openauth/openauth/internal/frontend/gen/openauth/frontend/v1"
 )
 
-func (s *Service) SetUserPassword(ctx context.Context, req *connect.Request[frontendv1.SetUserPasswordRequest]) (*connect.Response[frontendv1.SetUserPasswordResponse], error) {
+func (s *Service) SetUserPassword(ctx context.Context, req *connect.Request[frontendv1.SetPasswordRequest]) (*connect.Response[frontendv1.SetPasswordResponse], error) {
 	res, err := s.Store.SetUserPassword(ctx, req.Msg)
 	if err != nil {
 		return nil, fmt.Errorf("store: %w", err)

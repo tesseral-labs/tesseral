@@ -12,7 +12,7 @@ import (
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
-func (s *Store) SetUserPassword(ctx context.Context, req *frontendv1.SetUserPasswordRequest) (*frontendv1.SetUserPasswordResponse, error) {
+func (s *Store) SetUserPassword(ctx context.Context, req *frontendv1.SetPasswordRequest) (*frontendv1.SetPasswordResponse, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -24,7 +24,7 @@ func (s *Store) SetUserPassword(ctx context.Context, req *frontendv1.SetUserPass
 		return nil, err
 	}
 
-	if _, err = q.SetUserPassword(ctx, queries.SetUserPasswordParams{
+	if _, err = q.SetPassword(ctx, queries.SetPasswordParams{
 		ID:             authn.UserID(ctx),
 		PasswordBcrypt: &passwordBcrypt,
 	}); err != nil {
@@ -35,7 +35,7 @@ func (s *Store) SetUserPassword(ctx context.Context, req *frontendv1.SetUserPass
 		return nil, err
 	}
 
-	return &frontendv1.SetUserPasswordResponse{}, nil
+	return &frontendv1.SetPasswordResponse{}, nil
 }
 
 func (s *Store) ListUsers(ctx context.Context, req *frontendv1.ListUsersRequest) (*frontendv1.ListUsersResponse, error) {

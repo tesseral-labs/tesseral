@@ -191,7 +191,7 @@ WHERE
 RETURNING
     *;
 
--- name: SetUserPassword :one
+-- name: SetPassword :one
 UPDATE
     users
 SET
