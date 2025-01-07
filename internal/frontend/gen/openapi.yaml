@@ -124,6 +124,128 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /frontend/v1/saml-connections:
+        get:
+            tags:
+                - FrontendService
+            operationId: FrontendService_ListSAMLConnections
+            parameters:
+                - name: pageToken
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListSAMLConnectionsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - FrontendService
+            operationId: FrontendService_CreateSAMLConnection
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/SAMLConnection'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateSAMLConnectionResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /frontend/v1/saml-connections/{id}:
+        get:
+            tags:
+                - FrontendService
+            operationId: FrontendService_GetSAMLConnection
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetSAMLConnectionResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        delete:
+            tags:
+                - FrontendService
+            operationId: FrontendService_DeleteSAMLConnection
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DeleteSAMLConnectionResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        patch:
+            tags:
+                - FrontendService
+            operationId: FrontendService_UpdateSAMLConnection
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/SAMLConnection'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateSAMLConnectionResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /frontend/v1/scim-api-keys:
         get:
             tags:
@@ -270,6 +392,31 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /frontend/v1/set-user-password:
+        post:
+            tags:
+                - FrontendService
+            description: Sets a user's password.
+            operationId: FrontendService_SetUserPassword
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/SetUserPasswordRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/SetUserPasswordResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /frontend/v1/users:
         get:
             tags:
@@ -291,31 +438,6 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ListUsersResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-    /frontend/v1/users/set-user-password:
-        post:
-            tags:
-                - FrontendService
-            description: Sets a user's password.
-            operationId: FrontendService_SetUserPassword
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/SetUserPasswordRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/SetUserPasswordResponse'
                 default:
                     description: Default error response
                     content:
@@ -396,11 +518,19 @@ paths:
                                 $ref: '#/components/schemas/Status'
 components:
     schemas:
+        CreateSAMLConnectionResponse:
+            type: object
+            properties:
+                samlConnection:
+                    $ref: '#/components/schemas/SAMLConnection'
         CreateSCIMAPIKeyResponse:
             type: object
             properties:
                 scimApiKey:
                     $ref: '#/components/schemas/SCIMAPIKey'
+        DeleteSAMLConnectionResponse:
+            type: object
+            properties: {}
         DeleteSCIMAPIKeyResponse:
             type: object
             properties: {}
@@ -424,6 +554,11 @@ components:
             properties:
                 project:
                     $ref: '#/components/schemas/Project'
+        GetSAMLConnectionResponse:
+            type: object
+            properties:
+                samlConnection:
+                    $ref: '#/components/schemas/SAMLConnection'
         GetSCIMAPIKeyResponse:
             type: object
             properties:
@@ -453,6 +588,15 @@ components:
                 nextPageToken:
                     type: string
                     description: The next page token to use for pagination.
+        ListSAMLConnectionsResponse:
+            type: object
+            properties:
+                samlConnections:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/SAMLConnection'
+                nextPageToken:
+                    type: string
         ListSCIMAPIKeysResponse:
             type: object
             properties:
@@ -510,6 +654,23 @@ components:
             properties:
                 scimApiKey:
                     $ref: '#/components/schemas/SCIMAPIKey'
+        SAMLConnection:
+            type: object
+            properties:
+                id:
+                    type: string
+                primary:
+                    type: boolean
+                spAcsUrl:
+                    type: string
+                spEntityId:
+                    type: string
+                idpRedirectUrl:
+                    type: string
+                idpX509Certificate:
+                    type: string
+                idpEntityId:
+                    type: string
         SCIMAPIKey:
             type: object
             properties:
@@ -524,9 +685,6 @@ components:
         SetUserPasswordRequest:
             type: object
             properties:
-                id:
-                    type: string
-                    description: The user ID to set the password for.
                 password:
                     type: string
                     description: The the user's new password.
@@ -554,6 +712,11 @@ components:
             properties:
                 organization:
                     $ref: '#/components/schemas/Organization'
+        UpdateSAMLConnectionResponse:
+            type: object
+            properties:
+                samlConnection:
+                    $ref: '#/components/schemas/SAMLConnection'
         UpdateSCIMAPIKeyResponse:
             type: object
             properties:

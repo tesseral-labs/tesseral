@@ -19,22 +19,27 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	FrontendService_GetAccessToken_FullMethodName     = "/openauth.frontend.v1.FrontendService/GetAccessToken"
-	FrontendService_GetProject_FullMethodName         = "/openauth.frontend.v1.FrontendService/GetProject"
-	FrontendService_GetOrganization_FullMethodName    = "/openauth.frontend.v1.FrontendService/GetOrganization"
-	FrontendService_UpdateOrganization_FullMethodName = "/openauth.frontend.v1.FrontendService/UpdateOrganization"
-	FrontendService_ListUsers_FullMethodName          = "/openauth.frontend.v1.FrontendService/ListUsers"
-	FrontendService_GetUser_FullMethodName            = "/openauth.frontend.v1.FrontendService/GetUser"
-	FrontendService_UpdateUser_FullMethodName         = "/openauth.frontend.v1.FrontendService/UpdateUser"
-	FrontendService_ListOrganizations_FullMethodName  = "/openauth.frontend.v1.FrontendService/ListOrganizations"
-	FrontendService_SetUserPassword_FullMethodName    = "/openauth.frontend.v1.FrontendService/SetUserPassword"
-	FrontendService_WhoAmI_FullMethodName             = "/openauth.frontend.v1.FrontendService/WhoAmI"
-	FrontendService_ListSCIMAPIKeys_FullMethodName    = "/openauth.frontend.v1.FrontendService/ListSCIMAPIKeys"
-	FrontendService_GetSCIMAPIKey_FullMethodName      = "/openauth.frontend.v1.FrontendService/GetSCIMAPIKey"
-	FrontendService_CreateSCIMAPIKey_FullMethodName   = "/openauth.frontend.v1.FrontendService/CreateSCIMAPIKey"
-	FrontendService_UpdateSCIMAPIKey_FullMethodName   = "/openauth.frontend.v1.FrontendService/UpdateSCIMAPIKey"
-	FrontendService_DeleteSCIMAPIKey_FullMethodName   = "/openauth.frontend.v1.FrontendService/DeleteSCIMAPIKey"
-	FrontendService_RevokeSCIMAPIKey_FullMethodName   = "/openauth.frontend.v1.FrontendService/RevokeSCIMAPIKey"
+	FrontendService_GetAccessToken_FullMethodName       = "/openauth.frontend.v1.FrontendService/GetAccessToken"
+	FrontendService_GetProject_FullMethodName           = "/openauth.frontend.v1.FrontendService/GetProject"
+	FrontendService_GetOrganization_FullMethodName      = "/openauth.frontend.v1.FrontendService/GetOrganization"
+	FrontendService_UpdateOrganization_FullMethodName   = "/openauth.frontend.v1.FrontendService/UpdateOrganization"
+	FrontendService_ListUsers_FullMethodName            = "/openauth.frontend.v1.FrontendService/ListUsers"
+	FrontendService_GetUser_FullMethodName              = "/openauth.frontend.v1.FrontendService/GetUser"
+	FrontendService_UpdateUser_FullMethodName           = "/openauth.frontend.v1.FrontendService/UpdateUser"
+	FrontendService_ListOrganizations_FullMethodName    = "/openauth.frontend.v1.FrontendService/ListOrganizations"
+	FrontendService_SetUserPassword_FullMethodName      = "/openauth.frontend.v1.FrontendService/SetUserPassword"
+	FrontendService_WhoAmI_FullMethodName               = "/openauth.frontend.v1.FrontendService/WhoAmI"
+	FrontendService_ListSAMLConnections_FullMethodName  = "/openauth.frontend.v1.FrontendService/ListSAMLConnections"
+	FrontendService_GetSAMLConnection_FullMethodName    = "/openauth.frontend.v1.FrontendService/GetSAMLConnection"
+	FrontendService_CreateSAMLConnection_FullMethodName = "/openauth.frontend.v1.FrontendService/CreateSAMLConnection"
+	FrontendService_UpdateSAMLConnection_FullMethodName = "/openauth.frontend.v1.FrontendService/UpdateSAMLConnection"
+	FrontendService_DeleteSAMLConnection_FullMethodName = "/openauth.frontend.v1.FrontendService/DeleteSAMLConnection"
+	FrontendService_ListSCIMAPIKeys_FullMethodName      = "/openauth.frontend.v1.FrontendService/ListSCIMAPIKeys"
+	FrontendService_GetSCIMAPIKey_FullMethodName        = "/openauth.frontend.v1.FrontendService/GetSCIMAPIKey"
+	FrontendService_CreateSCIMAPIKey_FullMethodName     = "/openauth.frontend.v1.FrontendService/CreateSCIMAPIKey"
+	FrontendService_UpdateSCIMAPIKey_FullMethodName     = "/openauth.frontend.v1.FrontendService/UpdateSCIMAPIKey"
+	FrontendService_DeleteSCIMAPIKey_FullMethodName     = "/openauth.frontend.v1.FrontendService/DeleteSCIMAPIKey"
+	FrontendService_RevokeSCIMAPIKey_FullMethodName     = "/openauth.frontend.v1.FrontendService/RevokeSCIMAPIKey"
 )
 
 // FrontendServiceClient is the client API for FrontendService service.
@@ -54,6 +59,11 @@ type FrontendServiceClient interface {
 	SetUserPassword(ctx context.Context, in *SetUserPasswordRequest, opts ...grpc.CallOption) (*SetUserPasswordResponse, error)
 	// Who am I?
 	WhoAmI(ctx context.Context, in *WhoAmIRequest, opts ...grpc.CallOption) (*WhoAmIResponse, error)
+	ListSAMLConnections(ctx context.Context, in *ListSAMLConnectionsRequest, opts ...grpc.CallOption) (*ListSAMLConnectionsResponse, error)
+	GetSAMLConnection(ctx context.Context, in *GetSAMLConnectionRequest, opts ...grpc.CallOption) (*GetSAMLConnectionResponse, error)
+	CreateSAMLConnection(ctx context.Context, in *CreateSAMLConnectionRequest, opts ...grpc.CallOption) (*CreateSAMLConnectionResponse, error)
+	UpdateSAMLConnection(ctx context.Context, in *UpdateSAMLConnectionRequest, opts ...grpc.CallOption) (*UpdateSAMLConnectionResponse, error)
+	DeleteSAMLConnection(ctx context.Context, in *DeleteSAMLConnectionRequest, opts ...grpc.CallOption) (*DeleteSAMLConnectionResponse, error)
 	ListSCIMAPIKeys(ctx context.Context, in *ListSCIMAPIKeysRequest, opts ...grpc.CallOption) (*ListSCIMAPIKeysResponse, error)
 	GetSCIMAPIKey(ctx context.Context, in *GetSCIMAPIKeyRequest, opts ...grpc.CallOption) (*GetSCIMAPIKeyResponse, error)
 	CreateSCIMAPIKey(ctx context.Context, in *CreateSCIMAPIKeyRequest, opts ...grpc.CallOption) (*CreateSCIMAPIKeyResponse, error)
@@ -170,6 +180,56 @@ func (c *frontendServiceClient) WhoAmI(ctx context.Context, in *WhoAmIRequest, o
 	return out, nil
 }
 
+func (c *frontendServiceClient) ListSAMLConnections(ctx context.Context, in *ListSAMLConnectionsRequest, opts ...grpc.CallOption) (*ListSAMLConnectionsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListSAMLConnectionsResponse)
+	err := c.cc.Invoke(ctx, FrontendService_ListSAMLConnections_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *frontendServiceClient) GetSAMLConnection(ctx context.Context, in *GetSAMLConnectionRequest, opts ...grpc.CallOption) (*GetSAMLConnectionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetSAMLConnectionResponse)
+	err := c.cc.Invoke(ctx, FrontendService_GetSAMLConnection_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *frontendServiceClient) CreateSAMLConnection(ctx context.Context, in *CreateSAMLConnectionRequest, opts ...grpc.CallOption) (*CreateSAMLConnectionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateSAMLConnectionResponse)
+	err := c.cc.Invoke(ctx, FrontendService_CreateSAMLConnection_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *frontendServiceClient) UpdateSAMLConnection(ctx context.Context, in *UpdateSAMLConnectionRequest, opts ...grpc.CallOption) (*UpdateSAMLConnectionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateSAMLConnectionResponse)
+	err := c.cc.Invoke(ctx, FrontendService_UpdateSAMLConnection_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *frontendServiceClient) DeleteSAMLConnection(ctx context.Context, in *DeleteSAMLConnectionRequest, opts ...grpc.CallOption) (*DeleteSAMLConnectionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteSAMLConnectionResponse)
+	err := c.cc.Invoke(ctx, FrontendService_DeleteSAMLConnection_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *frontendServiceClient) ListSCIMAPIKeys(ctx context.Context, in *ListSCIMAPIKeysRequest, opts ...grpc.CallOption) (*ListSCIMAPIKeysResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListSCIMAPIKeysResponse)
@@ -247,6 +307,11 @@ type FrontendServiceServer interface {
 	SetUserPassword(context.Context, *SetUserPasswordRequest) (*SetUserPasswordResponse, error)
 	// Who am I?
 	WhoAmI(context.Context, *WhoAmIRequest) (*WhoAmIResponse, error)
+	ListSAMLConnections(context.Context, *ListSAMLConnectionsRequest) (*ListSAMLConnectionsResponse, error)
+	GetSAMLConnection(context.Context, *GetSAMLConnectionRequest) (*GetSAMLConnectionResponse, error)
+	CreateSAMLConnection(context.Context, *CreateSAMLConnectionRequest) (*CreateSAMLConnectionResponse, error)
+	UpdateSAMLConnection(context.Context, *UpdateSAMLConnectionRequest) (*UpdateSAMLConnectionResponse, error)
+	DeleteSAMLConnection(context.Context, *DeleteSAMLConnectionRequest) (*DeleteSAMLConnectionResponse, error)
 	ListSCIMAPIKeys(context.Context, *ListSCIMAPIKeysRequest) (*ListSCIMAPIKeysResponse, error)
 	GetSCIMAPIKey(context.Context, *GetSCIMAPIKeyRequest) (*GetSCIMAPIKeyResponse, error)
 	CreateSCIMAPIKey(context.Context, *CreateSCIMAPIKeyRequest) (*CreateSCIMAPIKeyResponse, error)
@@ -292,6 +357,21 @@ func (UnimplementedFrontendServiceServer) SetUserPassword(context.Context, *SetU
 }
 func (UnimplementedFrontendServiceServer) WhoAmI(context.Context, *WhoAmIRequest) (*WhoAmIResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method WhoAmI not implemented")
+}
+func (UnimplementedFrontendServiceServer) ListSAMLConnections(context.Context, *ListSAMLConnectionsRequest) (*ListSAMLConnectionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListSAMLConnections not implemented")
+}
+func (UnimplementedFrontendServiceServer) GetSAMLConnection(context.Context, *GetSAMLConnectionRequest) (*GetSAMLConnectionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSAMLConnection not implemented")
+}
+func (UnimplementedFrontendServiceServer) CreateSAMLConnection(context.Context, *CreateSAMLConnectionRequest) (*CreateSAMLConnectionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateSAMLConnection not implemented")
+}
+func (UnimplementedFrontendServiceServer) UpdateSAMLConnection(context.Context, *UpdateSAMLConnectionRequest) (*UpdateSAMLConnectionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateSAMLConnection not implemented")
+}
+func (UnimplementedFrontendServiceServer) DeleteSAMLConnection(context.Context, *DeleteSAMLConnectionRequest) (*DeleteSAMLConnectionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteSAMLConnection not implemented")
 }
 func (UnimplementedFrontendServiceServer) ListSCIMAPIKeys(context.Context, *ListSCIMAPIKeysRequest) (*ListSCIMAPIKeysResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListSCIMAPIKeys not implemented")
@@ -512,6 +592,96 @@ func _FrontendService_WhoAmI_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _FrontendService_ListSAMLConnections_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListSAMLConnectionsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).ListSAMLConnections(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_ListSAMLConnections_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).ListSAMLConnections(ctx, req.(*ListSAMLConnectionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FrontendService_GetSAMLConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetSAMLConnectionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).GetSAMLConnection(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_GetSAMLConnection_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).GetSAMLConnection(ctx, req.(*GetSAMLConnectionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FrontendService_CreateSAMLConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateSAMLConnectionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).CreateSAMLConnection(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_CreateSAMLConnection_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).CreateSAMLConnection(ctx, req.(*CreateSAMLConnectionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FrontendService_UpdateSAMLConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateSAMLConnectionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).UpdateSAMLConnection(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_UpdateSAMLConnection_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).UpdateSAMLConnection(ctx, req.(*UpdateSAMLConnectionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FrontendService_DeleteSAMLConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteSAMLConnectionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).DeleteSAMLConnection(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_DeleteSAMLConnection_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).DeleteSAMLConnection(ctx, req.(*DeleteSAMLConnectionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _FrontendService_ListSCIMAPIKeys_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListSCIMAPIKeysRequest)
 	if err := dec(in); err != nil {
@@ -666,6 +836,26 @@ var FrontendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "WhoAmI",
 			Handler:    _FrontendService_WhoAmI_Handler,
+		},
+		{
+			MethodName: "ListSAMLConnections",
+			Handler:    _FrontendService_ListSAMLConnections_Handler,
+		},
+		{
+			MethodName: "GetSAMLConnection",
+			Handler:    _FrontendService_GetSAMLConnection_Handler,
+		},
+		{
+			MethodName: "CreateSAMLConnection",
+			Handler:    _FrontendService_CreateSAMLConnection_Handler,
+		},
+		{
+			MethodName: "UpdateSAMLConnection",
+			Handler:    _FrontendService_UpdateSAMLConnection_Handler,
+		},
+		{
+			MethodName: "DeleteSAMLConnection",
+			Handler:    _FrontendService_DeleteSAMLConnection_Handler,
 		},
 		{
 			MethodName: "ListSCIMAPIKeys",

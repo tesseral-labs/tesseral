@@ -61,6 +61,21 @@ const (
 	FrontendServiceSetUserPasswordProcedure = "/openauth.frontend.v1.FrontendService/SetUserPassword"
 	// FrontendServiceWhoAmIProcedure is the fully-qualified name of the FrontendService's WhoAmI RPC.
 	FrontendServiceWhoAmIProcedure = "/openauth.frontend.v1.FrontendService/WhoAmI"
+	// FrontendServiceListSAMLConnectionsProcedure is the fully-qualified name of the FrontendService's
+	// ListSAMLConnections RPC.
+	FrontendServiceListSAMLConnectionsProcedure = "/openauth.frontend.v1.FrontendService/ListSAMLConnections"
+	// FrontendServiceGetSAMLConnectionProcedure is the fully-qualified name of the FrontendService's
+	// GetSAMLConnection RPC.
+	FrontendServiceGetSAMLConnectionProcedure = "/openauth.frontend.v1.FrontendService/GetSAMLConnection"
+	// FrontendServiceCreateSAMLConnectionProcedure is the fully-qualified name of the FrontendService's
+	// CreateSAMLConnection RPC.
+	FrontendServiceCreateSAMLConnectionProcedure = "/openauth.frontend.v1.FrontendService/CreateSAMLConnection"
+	// FrontendServiceUpdateSAMLConnectionProcedure is the fully-qualified name of the FrontendService's
+	// UpdateSAMLConnection RPC.
+	FrontendServiceUpdateSAMLConnectionProcedure = "/openauth.frontend.v1.FrontendService/UpdateSAMLConnection"
+	// FrontendServiceDeleteSAMLConnectionProcedure is the fully-qualified name of the FrontendService's
+	// DeleteSAMLConnection RPC.
+	FrontendServiceDeleteSAMLConnectionProcedure = "/openauth.frontend.v1.FrontendService/DeleteSAMLConnection"
 	// FrontendServiceListSCIMAPIKeysProcedure is the fully-qualified name of the FrontendService's
 	// ListSCIMAPIKeys RPC.
 	FrontendServiceListSCIMAPIKeysProcedure = "/openauth.frontend.v1.FrontendService/ListSCIMAPIKeys"
@@ -83,23 +98,28 @@ const (
 
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
 var (
-	frontendServiceServiceDescriptor                  = v1.File_openauth_frontend_v1_frontend_proto.Services().ByName("FrontendService")
-	frontendServiceGetAccessTokenMethodDescriptor     = frontendServiceServiceDescriptor.Methods().ByName("GetAccessToken")
-	frontendServiceGetProjectMethodDescriptor         = frontendServiceServiceDescriptor.Methods().ByName("GetProject")
-	frontendServiceGetOrganizationMethodDescriptor    = frontendServiceServiceDescriptor.Methods().ByName("GetOrganization")
-	frontendServiceUpdateOrganizationMethodDescriptor = frontendServiceServiceDescriptor.Methods().ByName("UpdateOrganization")
-	frontendServiceListUsersMethodDescriptor          = frontendServiceServiceDescriptor.Methods().ByName("ListUsers")
-	frontendServiceGetUserMethodDescriptor            = frontendServiceServiceDescriptor.Methods().ByName("GetUser")
-	frontendServiceUpdateUserMethodDescriptor         = frontendServiceServiceDescriptor.Methods().ByName("UpdateUser")
-	frontendServiceListOrganizationsMethodDescriptor  = frontendServiceServiceDescriptor.Methods().ByName("ListOrganizations")
-	frontendServiceSetUserPasswordMethodDescriptor    = frontendServiceServiceDescriptor.Methods().ByName("SetUserPassword")
-	frontendServiceWhoAmIMethodDescriptor             = frontendServiceServiceDescriptor.Methods().ByName("WhoAmI")
-	frontendServiceListSCIMAPIKeysMethodDescriptor    = frontendServiceServiceDescriptor.Methods().ByName("ListSCIMAPIKeys")
-	frontendServiceGetSCIMAPIKeyMethodDescriptor      = frontendServiceServiceDescriptor.Methods().ByName("GetSCIMAPIKey")
-	frontendServiceCreateSCIMAPIKeyMethodDescriptor   = frontendServiceServiceDescriptor.Methods().ByName("CreateSCIMAPIKey")
-	frontendServiceUpdateSCIMAPIKeyMethodDescriptor   = frontendServiceServiceDescriptor.Methods().ByName("UpdateSCIMAPIKey")
-	frontendServiceDeleteSCIMAPIKeyMethodDescriptor   = frontendServiceServiceDescriptor.Methods().ByName("DeleteSCIMAPIKey")
-	frontendServiceRevokeSCIMAPIKeyMethodDescriptor   = frontendServiceServiceDescriptor.Methods().ByName("RevokeSCIMAPIKey")
+	frontendServiceServiceDescriptor                    = v1.File_openauth_frontend_v1_frontend_proto.Services().ByName("FrontendService")
+	frontendServiceGetAccessTokenMethodDescriptor       = frontendServiceServiceDescriptor.Methods().ByName("GetAccessToken")
+	frontendServiceGetProjectMethodDescriptor           = frontendServiceServiceDescriptor.Methods().ByName("GetProject")
+	frontendServiceGetOrganizationMethodDescriptor      = frontendServiceServiceDescriptor.Methods().ByName("GetOrganization")
+	frontendServiceUpdateOrganizationMethodDescriptor   = frontendServiceServiceDescriptor.Methods().ByName("UpdateOrganization")
+	frontendServiceListUsersMethodDescriptor            = frontendServiceServiceDescriptor.Methods().ByName("ListUsers")
+	frontendServiceGetUserMethodDescriptor              = frontendServiceServiceDescriptor.Methods().ByName("GetUser")
+	frontendServiceUpdateUserMethodDescriptor           = frontendServiceServiceDescriptor.Methods().ByName("UpdateUser")
+	frontendServiceListOrganizationsMethodDescriptor    = frontendServiceServiceDescriptor.Methods().ByName("ListOrganizations")
+	frontendServiceSetUserPasswordMethodDescriptor      = frontendServiceServiceDescriptor.Methods().ByName("SetUserPassword")
+	frontendServiceWhoAmIMethodDescriptor               = frontendServiceServiceDescriptor.Methods().ByName("WhoAmI")
+	frontendServiceListSAMLConnectionsMethodDescriptor  = frontendServiceServiceDescriptor.Methods().ByName("ListSAMLConnections")
+	frontendServiceGetSAMLConnectionMethodDescriptor    = frontendServiceServiceDescriptor.Methods().ByName("GetSAMLConnection")
+	frontendServiceCreateSAMLConnectionMethodDescriptor = frontendServiceServiceDescriptor.Methods().ByName("CreateSAMLConnection")
+	frontendServiceUpdateSAMLConnectionMethodDescriptor = frontendServiceServiceDescriptor.Methods().ByName("UpdateSAMLConnection")
+	frontendServiceDeleteSAMLConnectionMethodDescriptor = frontendServiceServiceDescriptor.Methods().ByName("DeleteSAMLConnection")
+	frontendServiceListSCIMAPIKeysMethodDescriptor      = frontendServiceServiceDescriptor.Methods().ByName("ListSCIMAPIKeys")
+	frontendServiceGetSCIMAPIKeyMethodDescriptor        = frontendServiceServiceDescriptor.Methods().ByName("GetSCIMAPIKey")
+	frontendServiceCreateSCIMAPIKeyMethodDescriptor     = frontendServiceServiceDescriptor.Methods().ByName("CreateSCIMAPIKey")
+	frontendServiceUpdateSCIMAPIKeyMethodDescriptor     = frontendServiceServiceDescriptor.Methods().ByName("UpdateSCIMAPIKey")
+	frontendServiceDeleteSCIMAPIKeyMethodDescriptor     = frontendServiceServiceDescriptor.Methods().ByName("DeleteSCIMAPIKey")
+	frontendServiceRevokeSCIMAPIKeyMethodDescriptor     = frontendServiceServiceDescriptor.Methods().ByName("RevokeSCIMAPIKey")
 )
 
 // FrontendServiceClient is a client for the openauth.frontend.v1.FrontendService service.
@@ -117,6 +137,11 @@ type FrontendServiceClient interface {
 	SetUserPassword(context.Context, *connect.Request[v1.SetUserPasswordRequest]) (*connect.Response[v1.SetUserPasswordResponse], error)
 	// Who am I?
 	WhoAmI(context.Context, *connect.Request[v1.WhoAmIRequest]) (*connect.Response[v1.WhoAmIResponse], error)
+	ListSAMLConnections(context.Context, *connect.Request[v1.ListSAMLConnectionsRequest]) (*connect.Response[v1.ListSAMLConnectionsResponse], error)
+	GetSAMLConnection(context.Context, *connect.Request[v1.GetSAMLConnectionRequest]) (*connect.Response[v1.GetSAMLConnectionResponse], error)
+	CreateSAMLConnection(context.Context, *connect.Request[v1.CreateSAMLConnectionRequest]) (*connect.Response[v1.CreateSAMLConnectionResponse], error)
+	UpdateSAMLConnection(context.Context, *connect.Request[v1.UpdateSAMLConnectionRequest]) (*connect.Response[v1.UpdateSAMLConnectionResponse], error)
+	DeleteSAMLConnection(context.Context, *connect.Request[v1.DeleteSAMLConnectionRequest]) (*connect.Response[v1.DeleteSAMLConnectionResponse], error)
 	ListSCIMAPIKeys(context.Context, *connect.Request[v1.ListSCIMAPIKeysRequest]) (*connect.Response[v1.ListSCIMAPIKeysResponse], error)
 	GetSCIMAPIKey(context.Context, *connect.Request[v1.GetSCIMAPIKeyRequest]) (*connect.Response[v1.GetSCIMAPIKeyResponse], error)
 	CreateSCIMAPIKey(context.Context, *connect.Request[v1.CreateSCIMAPIKeyRequest]) (*connect.Response[v1.CreateSCIMAPIKeyResponse], error)
@@ -195,6 +220,36 @@ func NewFrontendServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			connect.WithSchema(frontendServiceWhoAmIMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
+		listSAMLConnections: connect.NewClient[v1.ListSAMLConnectionsRequest, v1.ListSAMLConnectionsResponse](
+			httpClient,
+			baseURL+FrontendServiceListSAMLConnectionsProcedure,
+			connect.WithSchema(frontendServiceListSAMLConnectionsMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		getSAMLConnection: connect.NewClient[v1.GetSAMLConnectionRequest, v1.GetSAMLConnectionResponse](
+			httpClient,
+			baseURL+FrontendServiceGetSAMLConnectionProcedure,
+			connect.WithSchema(frontendServiceGetSAMLConnectionMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		createSAMLConnection: connect.NewClient[v1.CreateSAMLConnectionRequest, v1.CreateSAMLConnectionResponse](
+			httpClient,
+			baseURL+FrontendServiceCreateSAMLConnectionProcedure,
+			connect.WithSchema(frontendServiceCreateSAMLConnectionMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		updateSAMLConnection: connect.NewClient[v1.UpdateSAMLConnectionRequest, v1.UpdateSAMLConnectionResponse](
+			httpClient,
+			baseURL+FrontendServiceUpdateSAMLConnectionProcedure,
+			connect.WithSchema(frontendServiceUpdateSAMLConnectionMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		deleteSAMLConnection: connect.NewClient[v1.DeleteSAMLConnectionRequest, v1.DeleteSAMLConnectionResponse](
+			httpClient,
+			baseURL+FrontendServiceDeleteSAMLConnectionProcedure,
+			connect.WithSchema(frontendServiceDeleteSAMLConnectionMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
 		listSCIMAPIKeys: connect.NewClient[v1.ListSCIMAPIKeysRequest, v1.ListSCIMAPIKeysResponse](
 			httpClient,
 			baseURL+FrontendServiceListSCIMAPIKeysProcedure,
@@ -236,22 +291,27 @@ func NewFrontendServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 
 // frontendServiceClient implements FrontendServiceClient.
 type frontendServiceClient struct {
-	getAccessToken     *connect.Client[v1.GetAccessTokenRequest, v1.GetAccessTokenResponse]
-	getProject         *connect.Client[v1.GetProjectRequest, v1.GetProjectResponse]
-	getOrganization    *connect.Client[v1.GetOrganizationRequest, v1.GetOrganizationResponse]
-	updateOrganization *connect.Client[v1.UpdateOrganizationRequest, v1.UpdateOrganizationResponse]
-	listUsers          *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
-	getUser            *connect.Client[v1.GetUserRequest, v1.GetUserResponse]
-	updateUser         *connect.Client[v1.UpdateUserRequest, v1.UpdateUserResponse]
-	listOrganizations  *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
-	setUserPassword    *connect.Client[v1.SetUserPasswordRequest, v1.SetUserPasswordResponse]
-	whoAmI             *connect.Client[v1.WhoAmIRequest, v1.WhoAmIResponse]
-	listSCIMAPIKeys    *connect.Client[v1.ListSCIMAPIKeysRequest, v1.ListSCIMAPIKeysResponse]
-	getSCIMAPIKey      *connect.Client[v1.GetSCIMAPIKeyRequest, v1.GetSCIMAPIKeyResponse]
-	createSCIMAPIKey   *connect.Client[v1.CreateSCIMAPIKeyRequest, v1.CreateSCIMAPIKeyResponse]
-	updateSCIMAPIKey   *connect.Client[v1.UpdateSCIMAPIKeyRequest, v1.UpdateSCIMAPIKeyResponse]
-	deleteSCIMAPIKey   *connect.Client[v1.DeleteSCIMAPIKeyRequest, v1.DeleteSCIMAPIKeyResponse]
-	revokeSCIMAPIKey   *connect.Client[v1.RevokeSCIMAPIKeyRequest, v1.RevokeSCIMAPIKeyResponse]
+	getAccessToken       *connect.Client[v1.GetAccessTokenRequest, v1.GetAccessTokenResponse]
+	getProject           *connect.Client[v1.GetProjectRequest, v1.GetProjectResponse]
+	getOrganization      *connect.Client[v1.GetOrganizationRequest, v1.GetOrganizationResponse]
+	updateOrganization   *connect.Client[v1.UpdateOrganizationRequest, v1.UpdateOrganizationResponse]
+	listUsers            *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
+	getUser              *connect.Client[v1.GetUserRequest, v1.GetUserResponse]
+	updateUser           *connect.Client[v1.UpdateUserRequest, v1.UpdateUserResponse]
+	listOrganizations    *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
+	setUserPassword      *connect.Client[v1.SetUserPasswordRequest, v1.SetUserPasswordResponse]
+	whoAmI               *connect.Client[v1.WhoAmIRequest, v1.WhoAmIResponse]
+	listSAMLConnections  *connect.Client[v1.ListSAMLConnectionsRequest, v1.ListSAMLConnectionsResponse]
+	getSAMLConnection    *connect.Client[v1.GetSAMLConnectionRequest, v1.GetSAMLConnectionResponse]
+	createSAMLConnection *connect.Client[v1.CreateSAMLConnectionRequest, v1.CreateSAMLConnectionResponse]
+	updateSAMLConnection *connect.Client[v1.UpdateSAMLConnectionRequest, v1.UpdateSAMLConnectionResponse]
+	deleteSAMLConnection *connect.Client[v1.DeleteSAMLConnectionRequest, v1.DeleteSAMLConnectionResponse]
+	listSCIMAPIKeys      *connect.Client[v1.ListSCIMAPIKeysRequest, v1.ListSCIMAPIKeysResponse]
+	getSCIMAPIKey        *connect.Client[v1.GetSCIMAPIKeyRequest, v1.GetSCIMAPIKeyResponse]
+	createSCIMAPIKey     *connect.Client[v1.CreateSCIMAPIKeyRequest, v1.CreateSCIMAPIKeyResponse]
+	updateSCIMAPIKey     *connect.Client[v1.UpdateSCIMAPIKeyRequest, v1.UpdateSCIMAPIKeyResponse]
+	deleteSCIMAPIKey     *connect.Client[v1.DeleteSCIMAPIKeyRequest, v1.DeleteSCIMAPIKeyResponse]
+	revokeSCIMAPIKey     *connect.Client[v1.RevokeSCIMAPIKeyRequest, v1.RevokeSCIMAPIKeyResponse]
 }
 
 // GetAccessToken calls openauth.frontend.v1.FrontendService.GetAccessToken.
@@ -304,6 +364,31 @@ func (c *frontendServiceClient) WhoAmI(ctx context.Context, req *connect.Request
 	return c.whoAmI.CallUnary(ctx, req)
 }
 
+// ListSAMLConnections calls openauth.frontend.v1.FrontendService.ListSAMLConnections.
+func (c *frontendServiceClient) ListSAMLConnections(ctx context.Context, req *connect.Request[v1.ListSAMLConnectionsRequest]) (*connect.Response[v1.ListSAMLConnectionsResponse], error) {
+	return c.listSAMLConnections.CallUnary(ctx, req)
+}
+
+// GetSAMLConnection calls openauth.frontend.v1.FrontendService.GetSAMLConnection.
+func (c *frontendServiceClient) GetSAMLConnection(ctx context.Context, req *connect.Request[v1.GetSAMLConnectionRequest]) (*connect.Response[v1.GetSAMLConnectionResponse], error) {
+	return c.getSAMLConnection.CallUnary(ctx, req)
+}
+
+// CreateSAMLConnection calls openauth.frontend.v1.FrontendService.CreateSAMLConnection.
+func (c *frontendServiceClient) CreateSAMLConnection(ctx context.Context, req *connect.Request[v1.CreateSAMLConnectionRequest]) (*connect.Response[v1.CreateSAMLConnectionResponse], error) {
+	return c.createSAMLConnection.CallUnary(ctx, req)
+}
+
+// UpdateSAMLConnection calls openauth.frontend.v1.FrontendService.UpdateSAMLConnection.
+func (c *frontendServiceClient) UpdateSAMLConnection(ctx context.Context, req *connect.Request[v1.UpdateSAMLConnectionRequest]) (*connect.Response[v1.UpdateSAMLConnectionResponse], error) {
+	return c.updateSAMLConnection.CallUnary(ctx, req)
+}
+
+// DeleteSAMLConnection calls openauth.frontend.v1.FrontendService.DeleteSAMLConnection.
+func (c *frontendServiceClient) DeleteSAMLConnection(ctx context.Context, req *connect.Request[v1.DeleteSAMLConnectionRequest]) (*connect.Response[v1.DeleteSAMLConnectionResponse], error) {
+	return c.deleteSAMLConnection.CallUnary(ctx, req)
+}
+
 // ListSCIMAPIKeys calls openauth.frontend.v1.FrontendService.ListSCIMAPIKeys.
 func (c *frontendServiceClient) ListSCIMAPIKeys(ctx context.Context, req *connect.Request[v1.ListSCIMAPIKeysRequest]) (*connect.Response[v1.ListSCIMAPIKeysResponse], error) {
 	return c.listSCIMAPIKeys.CallUnary(ctx, req)
@@ -349,6 +434,11 @@ type FrontendServiceHandler interface {
 	SetUserPassword(context.Context, *connect.Request[v1.SetUserPasswordRequest]) (*connect.Response[v1.SetUserPasswordResponse], error)
 	// Who am I?
 	WhoAmI(context.Context, *connect.Request[v1.WhoAmIRequest]) (*connect.Response[v1.WhoAmIResponse], error)
+	ListSAMLConnections(context.Context, *connect.Request[v1.ListSAMLConnectionsRequest]) (*connect.Response[v1.ListSAMLConnectionsResponse], error)
+	GetSAMLConnection(context.Context, *connect.Request[v1.GetSAMLConnectionRequest]) (*connect.Response[v1.GetSAMLConnectionResponse], error)
+	CreateSAMLConnection(context.Context, *connect.Request[v1.CreateSAMLConnectionRequest]) (*connect.Response[v1.CreateSAMLConnectionResponse], error)
+	UpdateSAMLConnection(context.Context, *connect.Request[v1.UpdateSAMLConnectionRequest]) (*connect.Response[v1.UpdateSAMLConnectionResponse], error)
+	DeleteSAMLConnection(context.Context, *connect.Request[v1.DeleteSAMLConnectionRequest]) (*connect.Response[v1.DeleteSAMLConnectionResponse], error)
 	ListSCIMAPIKeys(context.Context, *connect.Request[v1.ListSCIMAPIKeysRequest]) (*connect.Response[v1.ListSCIMAPIKeysResponse], error)
 	GetSCIMAPIKey(context.Context, *connect.Request[v1.GetSCIMAPIKeyRequest]) (*connect.Response[v1.GetSCIMAPIKeyResponse], error)
 	CreateSCIMAPIKey(context.Context, *connect.Request[v1.CreateSCIMAPIKeyRequest]) (*connect.Response[v1.CreateSCIMAPIKeyResponse], error)
@@ -423,6 +513,36 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 		connect.WithSchema(frontendServiceWhoAmIMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
+	frontendServiceListSAMLConnectionsHandler := connect.NewUnaryHandler(
+		FrontendServiceListSAMLConnectionsProcedure,
+		svc.ListSAMLConnections,
+		connect.WithSchema(frontendServiceListSAMLConnectionsMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceGetSAMLConnectionHandler := connect.NewUnaryHandler(
+		FrontendServiceGetSAMLConnectionProcedure,
+		svc.GetSAMLConnection,
+		connect.WithSchema(frontendServiceGetSAMLConnectionMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceCreateSAMLConnectionHandler := connect.NewUnaryHandler(
+		FrontendServiceCreateSAMLConnectionProcedure,
+		svc.CreateSAMLConnection,
+		connect.WithSchema(frontendServiceCreateSAMLConnectionMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceUpdateSAMLConnectionHandler := connect.NewUnaryHandler(
+		FrontendServiceUpdateSAMLConnectionProcedure,
+		svc.UpdateSAMLConnection,
+		connect.WithSchema(frontendServiceUpdateSAMLConnectionMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceDeleteSAMLConnectionHandler := connect.NewUnaryHandler(
+		FrontendServiceDeleteSAMLConnectionProcedure,
+		svc.DeleteSAMLConnection,
+		connect.WithSchema(frontendServiceDeleteSAMLConnectionMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
 	frontendServiceListSCIMAPIKeysHandler := connect.NewUnaryHandler(
 		FrontendServiceListSCIMAPIKeysProcedure,
 		svc.ListSCIMAPIKeys,
@@ -481,6 +601,16 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 			frontendServiceSetUserPasswordHandler.ServeHTTP(w, r)
 		case FrontendServiceWhoAmIProcedure:
 			frontendServiceWhoAmIHandler.ServeHTTP(w, r)
+		case FrontendServiceListSAMLConnectionsProcedure:
+			frontendServiceListSAMLConnectionsHandler.ServeHTTP(w, r)
+		case FrontendServiceGetSAMLConnectionProcedure:
+			frontendServiceGetSAMLConnectionHandler.ServeHTTP(w, r)
+		case FrontendServiceCreateSAMLConnectionProcedure:
+			frontendServiceCreateSAMLConnectionHandler.ServeHTTP(w, r)
+		case FrontendServiceUpdateSAMLConnectionProcedure:
+			frontendServiceUpdateSAMLConnectionHandler.ServeHTTP(w, r)
+		case FrontendServiceDeleteSAMLConnectionProcedure:
+			frontendServiceDeleteSAMLConnectionHandler.ServeHTTP(w, r)
 		case FrontendServiceListSCIMAPIKeysProcedure:
 			frontendServiceListSCIMAPIKeysHandler.ServeHTTP(w, r)
 		case FrontendServiceGetSCIMAPIKeyProcedure:
@@ -540,6 +670,26 @@ func (UnimplementedFrontendServiceHandler) SetUserPassword(context.Context, *con
 
 func (UnimplementedFrontendServiceHandler) WhoAmI(context.Context, *connect.Request[v1.WhoAmIRequest]) (*connect.Response[v1.WhoAmIResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.WhoAmI is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) ListSAMLConnections(context.Context, *connect.Request[v1.ListSAMLConnectionsRequest]) (*connect.Response[v1.ListSAMLConnectionsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.ListSAMLConnections is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) GetSAMLConnection(context.Context, *connect.Request[v1.GetSAMLConnectionRequest]) (*connect.Response[v1.GetSAMLConnectionResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.GetSAMLConnection is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) CreateSAMLConnection(context.Context, *connect.Request[v1.CreateSAMLConnectionRequest]) (*connect.Response[v1.CreateSAMLConnectionResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.CreateSAMLConnection is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) UpdateSAMLConnection(context.Context, *connect.Request[v1.UpdateSAMLConnectionRequest]) (*connect.Response[v1.UpdateSAMLConnectionResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.UpdateSAMLConnection is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) DeleteSAMLConnection(context.Context, *connect.Request[v1.DeleteSAMLConnectionRequest]) (*connect.Response[v1.DeleteSAMLConnectionResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.DeleteSAMLConnection is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) ListSCIMAPIKeys(context.Context, *connect.Request[v1.ListSCIMAPIKeysRequest]) (*connect.Response[v1.ListSCIMAPIKeysResponse], error) {
