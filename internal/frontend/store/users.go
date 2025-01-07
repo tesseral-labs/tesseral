@@ -2,7 +2,6 @@ package store
 
 import (
 	"context"
-	"errors"
 	"fmt"
 
 	"github.com/google/uuid"
@@ -13,8 +12,6 @@ import (
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
-var errInvalidUserId = errors.New("invalid user id")
-
 func (s *Store) SetUserPassword(ctx context.Context, req *frontendv1.SetUserPasswordRequest) (*frontendv1.SetUserPasswordResponse, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
@@ -22,15 +19,7 @@ func (s *Store) SetUserPassword(ctx context.Context, req *frontendv1.SetUserPass
 	}
 	defer rollback()
 
-	sessionUserID := authn.UserID(ctx)
-	userID, err := idformat.User.Parse(req.Id)
-	if err != nil {
-		return nil, err
-	}
-
-	if sessionUserID != userID {
-		return nil, errInvalidUserId
-	}
+	userID := authn.UserID(ctx)
 
 	passwordBcrypt, err := bcrypt.GenerateBcryptHash(req.Password)
 	if err != nil {

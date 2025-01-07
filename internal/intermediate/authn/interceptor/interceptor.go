@@ -3,6 +3,7 @@ package intermediateinterceptor
 import (
 	"context"
 	"errors"
+	"log/slog"
 	"strings"
 
 	"connectrpc.com/connect"
@@ -37,6 +38,8 @@ func New(s *store.Store) connect.UnaryInterceptorFunc {
 			if !ok {
 				return nil, connect.NewError(connect.CodeUnauthenticated, nil)
 			}
+
+			slog.InfoContext(ctx, "secretValue: "+secretValue)
 
 			intermediateSession, err := s.GetIntermediateSessionByToken(ctx, secretValue)
 			if err != nil {

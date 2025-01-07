@@ -64,7 +64,7 @@ service FrontendService {
   // Sets a user's password.
   rpc SetUserPassword(SetUserPasswordRequest) returns (SetUserPasswordResponse) {
     option (google.api.http) = {
-      post: "/frontend/v1/users/{id}/password",
+      post: "/frontend/v1/set-user-password",
       body: "*"
     };
   }
@@ -278,10 +278,8 @@ message SessionSigningKey {
 }
 
 message SetUserPasswordRequest {
-  // The user ID to set the password for.
-  string id = 1;
   // The the user's new password.
-  string password = 2;
+  string password = 1;
 }
 
 message SetUserPasswordResponse {

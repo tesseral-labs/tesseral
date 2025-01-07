@@ -128,8 +128,8 @@ func (q *Queries) CreateIntermediateSession(ctx context.Context, arg CreateInter
 }
 
 const createOrganization = `-- name: CreateOrganization :one
-INSERT INTO organizations (id, project_id, display_name, google_hosted_domain, microsoft_tenant_id, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_with_password_enabled)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+INSERT INTO organizations (id, project_id, display_name, google_hosted_domain, microsoft_tenant_id, override_log_in_methods, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_with_password_enabled)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 RETURNING
     id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods
 `
@@ -140,6 +140,7 @@ type CreateOrganizationParams struct {
 	DisplayName                       string
 	GoogleHostedDomain                *string
 	MicrosoftTenantID                 *string
+	OverrideLogInMethods              bool
 	OverrideLogInWithGoogleEnabled    *bool
 	OverrideLogInWithMicrosoftEnabled *bool
 	OverrideLogInWithPasswordEnabled  *bool
@@ -152,6 +153,7 @@ func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganization
 		arg.DisplayName,
 		arg.GoogleHostedDomain,
 		arg.MicrosoftTenantID,
+		arg.OverrideLogInMethods,
 		arg.OverrideLogInWithGoogleEnabled,
 		arg.OverrideLogInWithMicrosoftEnabled,
 		arg.OverrideLogInWithPasswordEnabled,
