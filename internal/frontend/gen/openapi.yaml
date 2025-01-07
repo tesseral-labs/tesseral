@@ -392,6 +392,31 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /frontend/v1/set-user-password:
+        post:
+            tags:
+                - FrontendService
+            description: Sets a user's password.
+            operationId: FrontendService_SetPassword
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/SetPasswordRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/SetPasswordResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /frontend/v1/users:
         get:
             tags:
@@ -657,6 +682,15 @@ components:
                     type: string
                 revoked:
                     type: boolean
+        SetPasswordRequest:
+            type: object
+            properties:
+                password:
+                    type: string
+                    description: The the user's new password.
+        SetPasswordResponse:
+            type: object
+            properties: {}
         Status:
             type: object
             properties:

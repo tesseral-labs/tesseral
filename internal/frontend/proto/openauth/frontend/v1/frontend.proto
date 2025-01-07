@@ -61,6 +61,14 @@ service FrontendService {
     };
   }
 
+  // Sets a user's password.
+  rpc SetPassword(SetPasswordRequest) returns (SetPasswordResponse) {
+    option (google.api.http) = {
+      post: "/frontend/v1/set-user-password",
+      body: "*"
+    };
+  }
+
   // Who am I?
   rpc WhoAmI(WhoAmIRequest) returns (WhoAmIResponse) {
     option (google.api.http) = {
@@ -340,6 +348,14 @@ message SessionSigningKey {
   string id = 1;
   string project_id = 2;
   google.protobuf.Struct public_key_jwk = 3;
+}
+
+message SetPasswordRequest {
+  // The the user's new password.
+  string password = 1;
+}
+
+message SetPasswordResponse {
 }
 
 message User {

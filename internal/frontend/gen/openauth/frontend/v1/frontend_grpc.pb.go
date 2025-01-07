@@ -27,6 +27,7 @@ const (
 	FrontendService_GetUser_FullMethodName              = "/openauth.frontend.v1.FrontendService/GetUser"
 	FrontendService_UpdateUser_FullMethodName           = "/openauth.frontend.v1.FrontendService/UpdateUser"
 	FrontendService_ListOrganizations_FullMethodName    = "/openauth.frontend.v1.FrontendService/ListOrganizations"
+	FrontendService_SetPassword_FullMethodName          = "/openauth.frontend.v1.FrontendService/SetPassword"
 	FrontendService_WhoAmI_FullMethodName               = "/openauth.frontend.v1.FrontendService/WhoAmI"
 	FrontendService_ListSAMLConnections_FullMethodName  = "/openauth.frontend.v1.FrontendService/ListSAMLConnections"
 	FrontendService_GetSAMLConnection_FullMethodName    = "/openauth.frontend.v1.FrontendService/GetSAMLConnection"
@@ -54,6 +55,8 @@ type FrontendServiceClient interface {
 	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UpdateUserResponse, error)
 	// Gets a list of organizations.
 	ListOrganizations(ctx context.Context, in *ListOrganizationsRequest, opts ...grpc.CallOption) (*ListOrganizationsResponse, error)
+	// Sets a user's password.
+	SetPassword(ctx context.Context, in *SetPasswordRequest, opts ...grpc.CallOption) (*SetPasswordResponse, error)
 	// Who am I?
 	WhoAmI(ctx context.Context, in *WhoAmIRequest, opts ...grpc.CallOption) (*WhoAmIResponse, error)
 	ListSAMLConnections(ctx context.Context, in *ListSAMLConnectionsRequest, opts ...grpc.CallOption) (*ListSAMLConnectionsResponse, error)
@@ -151,6 +154,16 @@ func (c *frontendServiceClient) ListOrganizations(ctx context.Context, in *ListO
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListOrganizationsResponse)
 	err := c.cc.Invoke(ctx, FrontendService_ListOrganizations_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *frontendServiceClient) SetPassword(ctx context.Context, in *SetPasswordRequest, opts ...grpc.CallOption) (*SetPasswordResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SetPasswordResponse)
+	err := c.cc.Invoke(ctx, FrontendService_SetPassword_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -290,6 +303,8 @@ type FrontendServiceServer interface {
 	UpdateUser(context.Context, *UpdateUserRequest) (*UpdateUserResponse, error)
 	// Gets a list of organizations.
 	ListOrganizations(context.Context, *ListOrganizationsRequest) (*ListOrganizationsResponse, error)
+	// Sets a user's password.
+	SetPassword(context.Context, *SetPasswordRequest) (*SetPasswordResponse, error)
 	// Who am I?
 	WhoAmI(context.Context, *WhoAmIRequest) (*WhoAmIResponse, error)
 	ListSAMLConnections(context.Context, *ListSAMLConnectionsRequest) (*ListSAMLConnectionsResponse, error)
@@ -336,6 +351,9 @@ func (UnimplementedFrontendServiceServer) UpdateUser(context.Context, *UpdateUse
 }
 func (UnimplementedFrontendServiceServer) ListOrganizations(context.Context, *ListOrganizationsRequest) (*ListOrganizationsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListOrganizations not implemented")
+}
+func (UnimplementedFrontendServiceServer) SetPassword(context.Context, *SetPasswordRequest) (*SetPasswordResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetPassword not implemented")
 }
 func (UnimplementedFrontendServiceServer) WhoAmI(context.Context, *WhoAmIRequest) (*WhoAmIResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method WhoAmI not implemented")
@@ -534,6 +552,24 @@ func _FrontendService_ListOrganizations_Handler(srv interface{}, ctx context.Con
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(FrontendServiceServer).ListOrganizations(ctx, req.(*ListOrganizationsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FrontendService_SetPassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetPasswordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).SetPassword(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_SetPassword_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).SetPassword(ctx, req.(*SetPasswordRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -792,6 +828,10 @@ var FrontendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListOrganizations",
 			Handler:    _FrontendService_ListOrganizations_Handler,
+		},
+		{
+			MethodName: "SetPassword",
+			Handler:    _FrontendService_SetPassword_Handler,
 		},
 		{
 			MethodName: "WhoAmI",

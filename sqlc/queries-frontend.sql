@@ -191,6 +191,16 @@ WHERE
 RETURNING
     *;
 
+-- name: SetPassword :one
+UPDATE
+    users
+SET
+    password_bcrypt = $2
+WHERE
+    id = $1
+RETURNING
+    *;
+
 -- name: ListUsers :many
 SELECT
     *

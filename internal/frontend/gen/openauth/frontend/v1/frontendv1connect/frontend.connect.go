@@ -56,6 +56,9 @@ const (
 	// FrontendServiceListOrganizationsProcedure is the fully-qualified name of the FrontendService's
 	// ListOrganizations RPC.
 	FrontendServiceListOrganizationsProcedure = "/openauth.frontend.v1.FrontendService/ListOrganizations"
+	// FrontendServiceSetPasswordProcedure is the fully-qualified name of the FrontendService's
+	// SetPassword RPC.
+	FrontendServiceSetPasswordProcedure = "/openauth.frontend.v1.FrontendService/SetPassword"
 	// FrontendServiceWhoAmIProcedure is the fully-qualified name of the FrontendService's WhoAmI RPC.
 	FrontendServiceWhoAmIProcedure = "/openauth.frontend.v1.FrontendService/WhoAmI"
 	// FrontendServiceListSAMLConnectionsProcedure is the fully-qualified name of the FrontendService's
@@ -104,6 +107,7 @@ var (
 	frontendServiceGetUserMethodDescriptor              = frontendServiceServiceDescriptor.Methods().ByName("GetUser")
 	frontendServiceUpdateUserMethodDescriptor           = frontendServiceServiceDescriptor.Methods().ByName("UpdateUser")
 	frontendServiceListOrganizationsMethodDescriptor    = frontendServiceServiceDescriptor.Methods().ByName("ListOrganizations")
+	frontendServiceSetPasswordMethodDescriptor          = frontendServiceServiceDescriptor.Methods().ByName("SetPassword")
 	frontendServiceWhoAmIMethodDescriptor               = frontendServiceServiceDescriptor.Methods().ByName("WhoAmI")
 	frontendServiceListSAMLConnectionsMethodDescriptor  = frontendServiceServiceDescriptor.Methods().ByName("ListSAMLConnections")
 	frontendServiceGetSAMLConnectionMethodDescriptor    = frontendServiceServiceDescriptor.Methods().ByName("GetSAMLConnection")
@@ -129,6 +133,8 @@ type FrontendServiceClient interface {
 	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error)
 	// Gets a list of organizations.
 	ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error)
+	// Sets a user's password.
+	SetPassword(context.Context, *connect.Request[v1.SetPasswordRequest]) (*connect.Response[v1.SetPasswordResponse], error)
 	// Who am I?
 	WhoAmI(context.Context, *connect.Request[v1.WhoAmIRequest]) (*connect.Response[v1.WhoAmIResponse], error)
 	ListSAMLConnections(context.Context, *connect.Request[v1.ListSAMLConnectionsRequest]) (*connect.Response[v1.ListSAMLConnectionsResponse], error)
@@ -200,6 +206,12 @@ func NewFrontendServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			httpClient,
 			baseURL+FrontendServiceListOrganizationsProcedure,
 			connect.WithSchema(frontendServiceListOrganizationsMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		setPassword: connect.NewClient[v1.SetPasswordRequest, v1.SetPasswordResponse](
+			httpClient,
+			baseURL+FrontendServiceSetPasswordProcedure,
+			connect.WithSchema(frontendServiceSetPasswordMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
 		whoAmI: connect.NewClient[v1.WhoAmIRequest, v1.WhoAmIResponse](
@@ -287,6 +299,7 @@ type frontendServiceClient struct {
 	getUser              *connect.Client[v1.GetUserRequest, v1.GetUserResponse]
 	updateUser           *connect.Client[v1.UpdateUserRequest, v1.UpdateUserResponse]
 	listOrganizations    *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
+	setPassword          *connect.Client[v1.SetPasswordRequest, v1.SetPasswordResponse]
 	whoAmI               *connect.Client[v1.WhoAmIRequest, v1.WhoAmIResponse]
 	listSAMLConnections  *connect.Client[v1.ListSAMLConnectionsRequest, v1.ListSAMLConnectionsResponse]
 	getSAMLConnection    *connect.Client[v1.GetSAMLConnectionRequest, v1.GetSAMLConnectionResponse]
@@ -339,6 +352,11 @@ func (c *frontendServiceClient) UpdateUser(ctx context.Context, req *connect.Req
 // ListOrganizations calls openauth.frontend.v1.FrontendService.ListOrganizations.
 func (c *frontendServiceClient) ListOrganizations(ctx context.Context, req *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error) {
 	return c.listOrganizations.CallUnary(ctx, req)
+}
+
+// SetPassword calls openauth.frontend.v1.FrontendService.SetPassword.
+func (c *frontendServiceClient) SetPassword(ctx context.Context, req *connect.Request[v1.SetPasswordRequest]) (*connect.Response[v1.SetPasswordResponse], error) {
+	return c.setPassword.CallUnary(ctx, req)
 }
 
 // WhoAmI calls openauth.frontend.v1.FrontendService.WhoAmI.
@@ -412,6 +430,8 @@ type FrontendServiceHandler interface {
 	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error)
 	// Gets a list of organizations.
 	ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error)
+	// Sets a user's password.
+	SetPassword(context.Context, *connect.Request[v1.SetPasswordRequest]) (*connect.Response[v1.SetPasswordResponse], error)
 	// Who am I?
 	WhoAmI(context.Context, *connect.Request[v1.WhoAmIRequest]) (*connect.Response[v1.WhoAmIResponse], error)
 	ListSAMLConnections(context.Context, *connect.Request[v1.ListSAMLConnectionsRequest]) (*connect.Response[v1.ListSAMLConnectionsResponse], error)
@@ -479,6 +499,12 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 		FrontendServiceListOrganizationsProcedure,
 		svc.ListOrganizations,
 		connect.WithSchema(frontendServiceListOrganizationsMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceSetPasswordHandler := connect.NewUnaryHandler(
+		FrontendServiceSetPasswordProcedure,
+		svc.SetPassword,
+		connect.WithSchema(frontendServiceSetPasswordMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
 	frontendServiceWhoAmIHandler := connect.NewUnaryHandler(
@@ -571,6 +597,8 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 			frontendServiceUpdateUserHandler.ServeHTTP(w, r)
 		case FrontendServiceListOrganizationsProcedure:
 			frontendServiceListOrganizationsHandler.ServeHTTP(w, r)
+		case FrontendServiceSetPasswordProcedure:
+			frontendServiceSetPasswordHandler.ServeHTTP(w, r)
 		case FrontendServiceWhoAmIProcedure:
 			frontendServiceWhoAmIHandler.ServeHTTP(w, r)
 		case FrontendServiceListSAMLConnectionsProcedure:
@@ -634,6 +662,10 @@ func (UnimplementedFrontendServiceHandler) UpdateUser(context.Context, *connect.
 
 func (UnimplementedFrontendServiceHandler) ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.ListOrganizations is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) SetPassword(context.Context, *connect.Request[v1.SetPasswordRequest]) (*connect.Response[v1.SetPasswordResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.SetPassword is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) WhoAmI(context.Context, *connect.Request[v1.WhoAmIRequest]) (*connect.Response[v1.WhoAmIResponse], error) {
