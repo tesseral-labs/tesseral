@@ -19,18 +19,15 @@ func (s *Store) SetUserPassword(ctx context.Context, req *frontendv1.SetUserPass
 	}
 	defer rollback()
 
-	userID := authn.UserID(ctx)
-
 	passwordBcrypt, err := bcrypt.GenerateBcryptHash(req.Password)
 	if err != nil {
 		return nil, err
 	}
 
-	_, err = q.SetUserPassword(ctx, queries.SetUserPasswordParams{
-		ID:             userID,
+	if _, err = q.SetUserPassword(ctx, queries.SetUserPasswordParams{
+		ID:             authn.UserID(ctx),
 		PasswordBcrypt: &passwordBcrypt,
-	})
-	if err != nil {
+	}); err != nil {
 		return nil, err
 	}
 
