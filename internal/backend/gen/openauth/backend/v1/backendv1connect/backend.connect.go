@@ -124,41 +124,6 @@ const (
 	BackendServiceRevokeProjectAPIKeyProcedure = "/openauth.backend.v1.BackendService/RevokeProjectAPIKey"
 )
 
-// These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
-var (
-	backendServiceServiceDescriptor                        = v1.File_openauth_backend_v1_backend_proto.Services().ByName("BackendService")
-	backendServiceGetProjectMethodDescriptor               = backendServiceServiceDescriptor.Methods().ByName("GetProject")
-	backendServiceUpdateProjectMethodDescriptor            = backendServiceServiceDescriptor.Methods().ByName("UpdateProject")
-	backendServiceListOrganizationsMethodDescriptor        = backendServiceServiceDescriptor.Methods().ByName("ListOrganizations")
-	backendServiceGetOrganizationMethodDescriptor          = backendServiceServiceDescriptor.Methods().ByName("GetOrganization")
-	backendServiceCreateOrganizationMethodDescriptor       = backendServiceServiceDescriptor.Methods().ByName("CreateOrganization")
-	backendServiceUpdateOrganizationMethodDescriptor       = backendServiceServiceDescriptor.Methods().ByName("UpdateOrganization")
-	backendServiceDeleteOrganizationMethodDescriptor       = backendServiceServiceDescriptor.Methods().ByName("DeleteOrganization")
-	backendServiceListSAMLConnectionsMethodDescriptor      = backendServiceServiceDescriptor.Methods().ByName("ListSAMLConnections")
-	backendServiceGetSAMLConnectionMethodDescriptor        = backendServiceServiceDescriptor.Methods().ByName("GetSAMLConnection")
-	backendServiceCreateSAMLConnectionMethodDescriptor     = backendServiceServiceDescriptor.Methods().ByName("CreateSAMLConnection")
-	backendServiceUpdateSAMLConnectionMethodDescriptor     = backendServiceServiceDescriptor.Methods().ByName("UpdateSAMLConnection")
-	backendServiceDeleteSAMLConnectionMethodDescriptor     = backendServiceServiceDescriptor.Methods().ByName("DeleteSAMLConnection")
-	backendServiceListSCIMAPIKeysMethodDescriptor          = backendServiceServiceDescriptor.Methods().ByName("ListSCIMAPIKeys")
-	backendServiceGetSCIMAPIKeyMethodDescriptor            = backendServiceServiceDescriptor.Methods().ByName("GetSCIMAPIKey")
-	backendServiceCreateSCIMAPIKeyMethodDescriptor         = backendServiceServiceDescriptor.Methods().ByName("CreateSCIMAPIKey")
-	backendServiceUpdateSCIMAPIKeyMethodDescriptor         = backendServiceServiceDescriptor.Methods().ByName("UpdateSCIMAPIKey")
-	backendServiceDeleteSCIMAPIKeyMethodDescriptor         = backendServiceServiceDescriptor.Methods().ByName("DeleteSCIMAPIKey")
-	backendServiceRevokeSCIMAPIKeyMethodDescriptor         = backendServiceServiceDescriptor.Methods().ByName("RevokeSCIMAPIKey")
-	backendServiceListUsersMethodDescriptor                = backendServiceServiceDescriptor.Methods().ByName("ListUsers")
-	backendServiceGetUserMethodDescriptor                  = backendServiceServiceDescriptor.Methods().ByName("GetUser")
-	backendServiceListSessionsMethodDescriptor             = backendServiceServiceDescriptor.Methods().ByName("ListSessions")
-	backendServiceGetSessionMethodDescriptor               = backendServiceServiceDescriptor.Methods().ByName("GetSession")
-	backendServiceListIntermediateSessionsMethodDescriptor = backendServiceServiceDescriptor.Methods().ByName("ListIntermediateSessions")
-	backendServiceGetIntermediateSessionMethodDescriptor   = backendServiceServiceDescriptor.Methods().ByName("GetIntermediateSession")
-	backendServiceListProjectAPIKeysMethodDescriptor       = backendServiceServiceDescriptor.Methods().ByName("ListProjectAPIKeys")
-	backendServiceGetProjectAPIKeyMethodDescriptor         = backendServiceServiceDescriptor.Methods().ByName("GetProjectAPIKey")
-	backendServiceCreateProjectAPIKeyMethodDescriptor      = backendServiceServiceDescriptor.Methods().ByName("CreateProjectAPIKey")
-	backendServiceUpdateProjectAPIKeyMethodDescriptor      = backendServiceServiceDescriptor.Methods().ByName("UpdateProjectAPIKey")
-	backendServiceDeleteProjectAPIKeyMethodDescriptor      = backendServiceServiceDescriptor.Methods().ByName("DeleteProjectAPIKey")
-	backendServiceRevokeProjectAPIKeyMethodDescriptor      = backendServiceServiceDescriptor.Methods().ByName("RevokeProjectAPIKey")
-)
-
 // BackendServiceClient is a client for the openauth.backend.v1.BackendService service.
 type BackendServiceClient interface {
 	GetProject(context.Context, *connect.Request[v1.GetProjectRequest]) (*connect.Response[v1.GetProjectResponse], error)
@@ -202,185 +167,186 @@ type BackendServiceClient interface {
 // http://api.acme.com or https://acme.com/grpc).
 func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) BackendServiceClient {
 	baseURL = strings.TrimRight(baseURL, "/")
+	backendServiceMethods := v1.File_openauth_backend_v1_backend_proto.Services().ByName("BackendService").Methods()
 	return &backendServiceClient{
 		getProject: connect.NewClient[v1.GetProjectRequest, v1.GetProjectResponse](
 			httpClient,
 			baseURL+BackendServiceGetProjectProcedure,
-			connect.WithSchema(backendServiceGetProjectMethodDescriptor),
+			connect.WithSchema(backendServiceMethods.ByName("GetProject")),
 			connect.WithClientOptions(opts...),
 		),
 		updateProject: connect.NewClient[v1.UpdateProjectRequest, v1.UpdateProjectResponse](
 			httpClient,
 			baseURL+BackendServiceUpdateProjectProcedure,
-			connect.WithSchema(backendServiceUpdateProjectMethodDescriptor),
+			connect.WithSchema(backendServiceMethods.ByName("UpdateProject")),
 			connect.WithClientOptions(opts...),
 		),
 		listOrganizations: connect.NewClient[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse](
 			httpClient,
 			baseURL+BackendServiceListOrganizationsProcedure,
-			connect.WithSchema(backendServiceListOrganizationsMethodDescriptor),
+			connect.WithSchema(backendServiceMethods.ByName("ListOrganizations")),
 			connect.WithClientOptions(opts...),
 		),
 		getOrganization: connect.NewClient[v1.GetOrganizationRequest, v1.GetOrganizationResponse](
 			httpClient,
 			baseURL+BackendServiceGetOrganizationProcedure,
-			connect.WithSchema(backendServiceGetOrganizationMethodDescriptor),
+			connect.WithSchema(backendServiceMethods.ByName("GetOrganization")),
 			connect.WithClientOptions(opts...),
 		),
 		createOrganization: connect.NewClient[v1.CreateOrganizationRequest, v1.CreateOrganizationResponse](
 			httpClient,
 			baseURL+BackendServiceCreateOrganizationProcedure,
-			connect.WithSchema(backendServiceCreateOrganizationMethodDescriptor),
+			connect.WithSchema(backendServiceMethods.ByName("CreateOrganization")),
 			connect.WithClientOptions(opts...),
 		),
 		updateOrganization: connect.NewClient[v1.UpdateOrganizationRequest, v1.UpdateOrganizationResponse](
 			httpClient,
 			baseURL+BackendServiceUpdateOrganizationProcedure,
-			connect.WithSchema(backendServiceUpdateOrganizationMethodDescriptor),
+			connect.WithSchema(backendServiceMethods.ByName("UpdateOrganization")),
 			connect.WithClientOptions(opts...),
 		),
 		deleteOrganization: connect.NewClient[v1.DeleteOrganizationRequest, v1.DeleteOrganizationResponse](
 			httpClient,
 			baseURL+BackendServiceDeleteOrganizationProcedure,
-			connect.WithSchema(backendServiceDeleteOrganizationMethodDescriptor),
+			connect.WithSchema(backendServiceMethods.ByName("DeleteOrganization")),
 			connect.WithClientOptions(opts...),
 		),
 		listSAMLConnections: connect.NewClient[v1.ListSAMLConnectionsRequest, v1.ListSAMLConnectionsResponse](
 			httpClient,
 			baseURL+BackendServiceListSAMLConnectionsProcedure,
-			connect.WithSchema(backendServiceListSAMLConnectionsMethodDescriptor),
+			connect.WithSchema(backendServiceMethods.ByName("ListSAMLConnections")),
 			connect.WithClientOptions(opts...),
 		),
 		getSAMLConnection: connect.NewClient[v1.GetSAMLConnectionRequest, v1.GetSAMLConnectionResponse](
 			httpClient,
 			baseURL+BackendServiceGetSAMLConnectionProcedure,
-			connect.WithSchema(backendServiceGetSAMLConnectionMethodDescriptor),
+			connect.WithSchema(backendServiceMethods.ByName("GetSAMLConnection")),
 			connect.WithClientOptions(opts...),
 		),
 		createSAMLConnection: connect.NewClient[v1.CreateSAMLConnectionRequest, v1.CreateSAMLConnectionResponse](
 			httpClient,
 			baseURL+BackendServiceCreateSAMLConnectionProcedure,
-			connect.WithSchema(backendServiceCreateSAMLConnectionMethodDescriptor),
+			connect.WithSchema(backendServiceMethods.ByName("CreateSAMLConnection")),
 			connect.WithClientOptions(opts...),
 		),
 		updateSAMLConnection: connect.NewClient[v1.UpdateSAMLConnectionRequest, v1.UpdateSAMLConnectionResponse](
 			httpClient,
 			baseURL+BackendServiceUpdateSAMLConnectionProcedure,
-			connect.WithSchema(backendServiceUpdateSAMLConnectionMethodDescriptor),
+			connect.WithSchema(backendServiceMethods.ByName("UpdateSAMLConnection")),
 			connect.WithClientOptions(opts...),
 		),
 		deleteSAMLConnection: connect.NewClient[v1.DeleteSAMLConnectionRequest, v1.DeleteSAMLConnectionResponse](
 			httpClient,
 			baseURL+BackendServiceDeleteSAMLConnectionProcedure,
-			connect.WithSchema(backendServiceDeleteSAMLConnectionMethodDescriptor),
+			connect.WithSchema(backendServiceMethods.ByName("DeleteSAMLConnection")),
 			connect.WithClientOptions(opts...),
 		),
 		listSCIMAPIKeys: connect.NewClient[v1.ListSCIMAPIKeysRequest, v1.ListSCIMAPIKeysResponse](
 			httpClient,
 			baseURL+BackendServiceListSCIMAPIKeysProcedure,
-			connect.WithSchema(backendServiceListSCIMAPIKeysMethodDescriptor),
+			connect.WithSchema(backendServiceMethods.ByName("ListSCIMAPIKeys")),
 			connect.WithClientOptions(opts...),
 		),
 		getSCIMAPIKey: connect.NewClient[v1.GetSCIMAPIKeyRequest, v1.GetSCIMAPIKeyResponse](
 			httpClient,
 			baseURL+BackendServiceGetSCIMAPIKeyProcedure,
-			connect.WithSchema(backendServiceGetSCIMAPIKeyMethodDescriptor),
+			connect.WithSchema(backendServiceMethods.ByName("GetSCIMAPIKey")),
 			connect.WithClientOptions(opts...),
 		),
 		createSCIMAPIKey: connect.NewClient[v1.CreateSCIMAPIKeyRequest, v1.CreateSCIMAPIKeyResponse](
 			httpClient,
 			baseURL+BackendServiceCreateSCIMAPIKeyProcedure,
-			connect.WithSchema(backendServiceCreateSCIMAPIKeyMethodDescriptor),
+			connect.WithSchema(backendServiceMethods.ByName("CreateSCIMAPIKey")),
 			connect.WithClientOptions(opts...),
 		),
 		updateSCIMAPIKey: connect.NewClient[v1.UpdateSCIMAPIKeyRequest, v1.UpdateSCIMAPIKeyResponse](
 			httpClient,
 			baseURL+BackendServiceUpdateSCIMAPIKeyProcedure,
-			connect.WithSchema(backendServiceUpdateSCIMAPIKeyMethodDescriptor),
+			connect.WithSchema(backendServiceMethods.ByName("UpdateSCIMAPIKey")),
 			connect.WithClientOptions(opts...),
 		),
 		deleteSCIMAPIKey: connect.NewClient[v1.DeleteSCIMAPIKeyRequest, v1.DeleteSCIMAPIKeyResponse](
 			httpClient,
 			baseURL+BackendServiceDeleteSCIMAPIKeyProcedure,
-			connect.WithSchema(backendServiceDeleteSCIMAPIKeyMethodDescriptor),
+			connect.WithSchema(backendServiceMethods.ByName("DeleteSCIMAPIKey")),
 			connect.WithClientOptions(opts...),
 		),
 		revokeSCIMAPIKey: connect.NewClient[v1.RevokeSCIMAPIKeyRequest, v1.RevokeSCIMAPIKeyResponse](
 			httpClient,
 			baseURL+BackendServiceRevokeSCIMAPIKeyProcedure,
-			connect.WithSchema(backendServiceRevokeSCIMAPIKeyMethodDescriptor),
+			connect.WithSchema(backendServiceMethods.ByName("RevokeSCIMAPIKey")),
 			connect.WithClientOptions(opts...),
 		),
 		listUsers: connect.NewClient[v1.ListUsersRequest, v1.ListUsersResponse](
 			httpClient,
 			baseURL+BackendServiceListUsersProcedure,
-			connect.WithSchema(backendServiceListUsersMethodDescriptor),
+			connect.WithSchema(backendServiceMethods.ByName("ListUsers")),
 			connect.WithClientOptions(opts...),
 		),
 		getUser: connect.NewClient[v1.GetUserRequest, v1.GetUserResponse](
 			httpClient,
 			baseURL+BackendServiceGetUserProcedure,
-			connect.WithSchema(backendServiceGetUserMethodDescriptor),
+			connect.WithSchema(backendServiceMethods.ByName("GetUser")),
 			connect.WithClientOptions(opts...),
 		),
 		listSessions: connect.NewClient[v1.ListSessionsRequest, v1.ListSessionsResponse](
 			httpClient,
 			baseURL+BackendServiceListSessionsProcedure,
-			connect.WithSchema(backendServiceListSessionsMethodDescriptor),
+			connect.WithSchema(backendServiceMethods.ByName("ListSessions")),
 			connect.WithClientOptions(opts...),
 		),
 		getSession: connect.NewClient[v1.GetSessionRequest, v1.GetSessionResponse](
 			httpClient,
 			baseURL+BackendServiceGetSessionProcedure,
-			connect.WithSchema(backendServiceGetSessionMethodDescriptor),
+			connect.WithSchema(backendServiceMethods.ByName("GetSession")),
 			connect.WithClientOptions(opts...),
 		),
 		listIntermediateSessions: connect.NewClient[v1.ListIntermediateSessionsRequest, v1.ListIntermediateSessionsResponse](
 			httpClient,
 			baseURL+BackendServiceListIntermediateSessionsProcedure,
-			connect.WithSchema(backendServiceListIntermediateSessionsMethodDescriptor),
+			connect.WithSchema(backendServiceMethods.ByName("ListIntermediateSessions")),
 			connect.WithClientOptions(opts...),
 		),
 		getIntermediateSession: connect.NewClient[v1.GetIntermediateSessionRequest, v1.GetIntermediateSessionResponse](
 			httpClient,
 			baseURL+BackendServiceGetIntermediateSessionProcedure,
-			connect.WithSchema(backendServiceGetIntermediateSessionMethodDescriptor),
+			connect.WithSchema(backendServiceMethods.ByName("GetIntermediateSession")),
 			connect.WithClientOptions(opts...),
 		),
 		listProjectAPIKeys: connect.NewClient[v1.ListProjectAPIKeysRequest, v1.ListProjectAPIKeysResponse](
 			httpClient,
 			baseURL+BackendServiceListProjectAPIKeysProcedure,
-			connect.WithSchema(backendServiceListProjectAPIKeysMethodDescriptor),
+			connect.WithSchema(backendServiceMethods.ByName("ListProjectAPIKeys")),
 			connect.WithClientOptions(opts...),
 		),
 		getProjectAPIKey: connect.NewClient[v1.GetProjectAPIKeyRequest, v1.GetProjectAPIKeyResponse](
 			httpClient,
 			baseURL+BackendServiceGetProjectAPIKeyProcedure,
-			connect.WithSchema(backendServiceGetProjectAPIKeyMethodDescriptor),
+			connect.WithSchema(backendServiceMethods.ByName("GetProjectAPIKey")),
 			connect.WithClientOptions(opts...),
 		),
 		createProjectAPIKey: connect.NewClient[v1.CreateProjectAPIKeyRequest, v1.CreateProjectAPIKeyResponse](
 			httpClient,
 			baseURL+BackendServiceCreateProjectAPIKeyProcedure,
-			connect.WithSchema(backendServiceCreateProjectAPIKeyMethodDescriptor),
+			connect.WithSchema(backendServiceMethods.ByName("CreateProjectAPIKey")),
 			connect.WithClientOptions(opts...),
 		),
 		updateProjectAPIKey: connect.NewClient[v1.UpdateProjectAPIKeyRequest, v1.UpdateProjectAPIKeyResponse](
 			httpClient,
 			baseURL+BackendServiceUpdateProjectAPIKeyProcedure,
-			connect.WithSchema(backendServiceUpdateProjectAPIKeyMethodDescriptor),
+			connect.WithSchema(backendServiceMethods.ByName("UpdateProjectAPIKey")),
 			connect.WithClientOptions(opts...),
 		),
 		deleteProjectAPIKey: connect.NewClient[v1.DeleteProjectAPIKeyRequest, v1.DeleteProjectAPIKeyResponse](
 			httpClient,
 			baseURL+BackendServiceDeleteProjectAPIKeyProcedure,
-			connect.WithSchema(backendServiceDeleteProjectAPIKeyMethodDescriptor),
+			connect.WithSchema(backendServiceMethods.ByName("DeleteProjectAPIKey")),
 			connect.WithClientOptions(opts...),
 		),
 		revokeProjectAPIKey: connect.NewClient[v1.RevokeProjectAPIKeyRequest, v1.RevokeProjectAPIKeyResponse](
 			httpClient,
 			baseURL+BackendServiceRevokeProjectAPIKeyProcedure,
-			connect.WithSchema(backendServiceRevokeProjectAPIKeyMethodDescriptor),
+			connect.WithSchema(backendServiceMethods.ByName("RevokeProjectAPIKey")),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -610,184 +576,185 @@ type BackendServiceHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
+	backendServiceMethods := v1.File_openauth_backend_v1_backend_proto.Services().ByName("BackendService").Methods()
 	backendServiceGetProjectHandler := connect.NewUnaryHandler(
 		BackendServiceGetProjectProcedure,
 		svc.GetProject,
-		connect.WithSchema(backendServiceGetProjectMethodDescriptor),
+		connect.WithSchema(backendServiceMethods.ByName("GetProject")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceUpdateProjectHandler := connect.NewUnaryHandler(
 		BackendServiceUpdateProjectProcedure,
 		svc.UpdateProject,
-		connect.WithSchema(backendServiceUpdateProjectMethodDescriptor),
+		connect.WithSchema(backendServiceMethods.ByName("UpdateProject")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceListOrganizationsHandler := connect.NewUnaryHandler(
 		BackendServiceListOrganizationsProcedure,
 		svc.ListOrganizations,
-		connect.WithSchema(backendServiceListOrganizationsMethodDescriptor),
+		connect.WithSchema(backendServiceMethods.ByName("ListOrganizations")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceGetOrganizationHandler := connect.NewUnaryHandler(
 		BackendServiceGetOrganizationProcedure,
 		svc.GetOrganization,
-		connect.WithSchema(backendServiceGetOrganizationMethodDescriptor),
+		connect.WithSchema(backendServiceMethods.ByName("GetOrganization")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceCreateOrganizationHandler := connect.NewUnaryHandler(
 		BackendServiceCreateOrganizationProcedure,
 		svc.CreateOrganization,
-		connect.WithSchema(backendServiceCreateOrganizationMethodDescriptor),
+		connect.WithSchema(backendServiceMethods.ByName("CreateOrganization")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceUpdateOrganizationHandler := connect.NewUnaryHandler(
 		BackendServiceUpdateOrganizationProcedure,
 		svc.UpdateOrganization,
-		connect.WithSchema(backendServiceUpdateOrganizationMethodDescriptor),
+		connect.WithSchema(backendServiceMethods.ByName("UpdateOrganization")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceDeleteOrganizationHandler := connect.NewUnaryHandler(
 		BackendServiceDeleteOrganizationProcedure,
 		svc.DeleteOrganization,
-		connect.WithSchema(backendServiceDeleteOrganizationMethodDescriptor),
+		connect.WithSchema(backendServiceMethods.ByName("DeleteOrganization")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceListSAMLConnectionsHandler := connect.NewUnaryHandler(
 		BackendServiceListSAMLConnectionsProcedure,
 		svc.ListSAMLConnections,
-		connect.WithSchema(backendServiceListSAMLConnectionsMethodDescriptor),
+		connect.WithSchema(backendServiceMethods.ByName("ListSAMLConnections")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceGetSAMLConnectionHandler := connect.NewUnaryHandler(
 		BackendServiceGetSAMLConnectionProcedure,
 		svc.GetSAMLConnection,
-		connect.WithSchema(backendServiceGetSAMLConnectionMethodDescriptor),
+		connect.WithSchema(backendServiceMethods.ByName("GetSAMLConnection")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceCreateSAMLConnectionHandler := connect.NewUnaryHandler(
 		BackendServiceCreateSAMLConnectionProcedure,
 		svc.CreateSAMLConnection,
-		connect.WithSchema(backendServiceCreateSAMLConnectionMethodDescriptor),
+		connect.WithSchema(backendServiceMethods.ByName("CreateSAMLConnection")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceUpdateSAMLConnectionHandler := connect.NewUnaryHandler(
 		BackendServiceUpdateSAMLConnectionProcedure,
 		svc.UpdateSAMLConnection,
-		connect.WithSchema(backendServiceUpdateSAMLConnectionMethodDescriptor),
+		connect.WithSchema(backendServiceMethods.ByName("UpdateSAMLConnection")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceDeleteSAMLConnectionHandler := connect.NewUnaryHandler(
 		BackendServiceDeleteSAMLConnectionProcedure,
 		svc.DeleteSAMLConnection,
-		connect.WithSchema(backendServiceDeleteSAMLConnectionMethodDescriptor),
+		connect.WithSchema(backendServiceMethods.ByName("DeleteSAMLConnection")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceListSCIMAPIKeysHandler := connect.NewUnaryHandler(
 		BackendServiceListSCIMAPIKeysProcedure,
 		svc.ListSCIMAPIKeys,
-		connect.WithSchema(backendServiceListSCIMAPIKeysMethodDescriptor),
+		connect.WithSchema(backendServiceMethods.ByName("ListSCIMAPIKeys")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceGetSCIMAPIKeyHandler := connect.NewUnaryHandler(
 		BackendServiceGetSCIMAPIKeyProcedure,
 		svc.GetSCIMAPIKey,
-		connect.WithSchema(backendServiceGetSCIMAPIKeyMethodDescriptor),
+		connect.WithSchema(backendServiceMethods.ByName("GetSCIMAPIKey")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceCreateSCIMAPIKeyHandler := connect.NewUnaryHandler(
 		BackendServiceCreateSCIMAPIKeyProcedure,
 		svc.CreateSCIMAPIKey,
-		connect.WithSchema(backendServiceCreateSCIMAPIKeyMethodDescriptor),
+		connect.WithSchema(backendServiceMethods.ByName("CreateSCIMAPIKey")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceUpdateSCIMAPIKeyHandler := connect.NewUnaryHandler(
 		BackendServiceUpdateSCIMAPIKeyProcedure,
 		svc.UpdateSCIMAPIKey,
-		connect.WithSchema(backendServiceUpdateSCIMAPIKeyMethodDescriptor),
+		connect.WithSchema(backendServiceMethods.ByName("UpdateSCIMAPIKey")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceDeleteSCIMAPIKeyHandler := connect.NewUnaryHandler(
 		BackendServiceDeleteSCIMAPIKeyProcedure,
 		svc.DeleteSCIMAPIKey,
-		connect.WithSchema(backendServiceDeleteSCIMAPIKeyMethodDescriptor),
+		connect.WithSchema(backendServiceMethods.ByName("DeleteSCIMAPIKey")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceRevokeSCIMAPIKeyHandler := connect.NewUnaryHandler(
 		BackendServiceRevokeSCIMAPIKeyProcedure,
 		svc.RevokeSCIMAPIKey,
-		connect.WithSchema(backendServiceRevokeSCIMAPIKeyMethodDescriptor),
+		connect.WithSchema(backendServiceMethods.ByName("RevokeSCIMAPIKey")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceListUsersHandler := connect.NewUnaryHandler(
 		BackendServiceListUsersProcedure,
 		svc.ListUsers,
-		connect.WithSchema(backendServiceListUsersMethodDescriptor),
+		connect.WithSchema(backendServiceMethods.ByName("ListUsers")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceGetUserHandler := connect.NewUnaryHandler(
 		BackendServiceGetUserProcedure,
 		svc.GetUser,
-		connect.WithSchema(backendServiceGetUserMethodDescriptor),
+		connect.WithSchema(backendServiceMethods.ByName("GetUser")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceListSessionsHandler := connect.NewUnaryHandler(
 		BackendServiceListSessionsProcedure,
 		svc.ListSessions,
-		connect.WithSchema(backendServiceListSessionsMethodDescriptor),
+		connect.WithSchema(backendServiceMethods.ByName("ListSessions")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceGetSessionHandler := connect.NewUnaryHandler(
 		BackendServiceGetSessionProcedure,
 		svc.GetSession,
-		connect.WithSchema(backendServiceGetSessionMethodDescriptor),
+		connect.WithSchema(backendServiceMethods.ByName("GetSession")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceListIntermediateSessionsHandler := connect.NewUnaryHandler(
 		BackendServiceListIntermediateSessionsProcedure,
 		svc.ListIntermediateSessions,
-		connect.WithSchema(backendServiceListIntermediateSessionsMethodDescriptor),
+		connect.WithSchema(backendServiceMethods.ByName("ListIntermediateSessions")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceGetIntermediateSessionHandler := connect.NewUnaryHandler(
 		BackendServiceGetIntermediateSessionProcedure,
 		svc.GetIntermediateSession,
-		connect.WithSchema(backendServiceGetIntermediateSessionMethodDescriptor),
+		connect.WithSchema(backendServiceMethods.ByName("GetIntermediateSession")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceListProjectAPIKeysHandler := connect.NewUnaryHandler(
 		BackendServiceListProjectAPIKeysProcedure,
 		svc.ListProjectAPIKeys,
-		connect.WithSchema(backendServiceListProjectAPIKeysMethodDescriptor),
+		connect.WithSchema(backendServiceMethods.ByName("ListProjectAPIKeys")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceGetProjectAPIKeyHandler := connect.NewUnaryHandler(
 		BackendServiceGetProjectAPIKeyProcedure,
 		svc.GetProjectAPIKey,
-		connect.WithSchema(backendServiceGetProjectAPIKeyMethodDescriptor),
+		connect.WithSchema(backendServiceMethods.ByName("GetProjectAPIKey")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceCreateProjectAPIKeyHandler := connect.NewUnaryHandler(
 		BackendServiceCreateProjectAPIKeyProcedure,
 		svc.CreateProjectAPIKey,
-		connect.WithSchema(backendServiceCreateProjectAPIKeyMethodDescriptor),
+		connect.WithSchema(backendServiceMethods.ByName("CreateProjectAPIKey")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceUpdateProjectAPIKeyHandler := connect.NewUnaryHandler(
 		BackendServiceUpdateProjectAPIKeyProcedure,
 		svc.UpdateProjectAPIKey,
-		connect.WithSchema(backendServiceUpdateProjectAPIKeyMethodDescriptor),
+		connect.WithSchema(backendServiceMethods.ByName("UpdateProjectAPIKey")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceDeleteProjectAPIKeyHandler := connect.NewUnaryHandler(
 		BackendServiceDeleteProjectAPIKeyProcedure,
 		svc.DeleteProjectAPIKey,
-		connect.WithSchema(backendServiceDeleteProjectAPIKeyMethodDescriptor),
+		connect.WithSchema(backendServiceMethods.ByName("DeleteProjectAPIKey")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceRevokeProjectAPIKeyHandler := connect.NewUnaryHandler(
 		BackendServiceRevokeProjectAPIKeyProcedure,
 		svc.RevokeProjectAPIKey,
-		connect.WithSchema(backendServiceRevokeProjectAPIKeyMethodDescriptor),
+		connect.WithSchema(backendServiceMethods.ByName("RevokeProjectAPIKey")),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/openauth.backend.v1.BackendService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
