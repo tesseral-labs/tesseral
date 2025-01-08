@@ -66,7 +66,7 @@ func (s *Store) ExchangeIntermediateSessionForNewOrganizationSession(ctx context
 	refreshTokenSHA256 := sha256.Sum256([]byte(refreshToken))
 
 	qSession, err := q.CreateSession(ctx, queries.CreateSessionParams{
-		ID:                 uuid.New(),
+		ID:                 uuid.Must(uuid.NewV7()),
 		ExpireTime:         &expiresAt,
 		RefreshTokenSha256: refreshTokenSHA256[:],
 		UserID:             qUser.ID,
@@ -175,7 +175,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 	refreshTokenSHA256 := sha256.Sum256([]byte(refreshToken))
 
 	qSession, err := q.CreateSession(ctx, queries.CreateSessionParams{
-		ID:                 uuid.New(),
+		ID:                 uuid.Must(uuid.NewV7()),
 		ExpireTime:         &expiresAt,
 		RefreshTokenSha256: refreshTokenSHA256[:],
 		UserID:             qUser.ID,
