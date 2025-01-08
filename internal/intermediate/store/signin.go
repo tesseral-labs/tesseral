@@ -34,7 +34,7 @@ func (s *Store) SignInWithEmail(
 	tokenSha256 := sha256.Sum256(token[:])
 
 	intermediateSession, err := q.CreateIntermediateSession(ctx, queries.CreateIntermediateSessionParams{
-		ID:          uuid.New(),
+		ID:          uuid.Must(uuid.NewV7()),
 		ProjectID:   projectID,
 		Email:       &req.Email,
 		ExpireTime:  &expiresAt,

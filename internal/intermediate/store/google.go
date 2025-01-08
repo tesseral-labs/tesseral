@@ -42,7 +42,7 @@ func (s *Store) GetGoogleOAuthRedirectURL(ctx context.Context, req *intermediate
 
 	// Since this is the entrypoint for the google oauth flow, we create the intermediate session here
 	intermediateSession, err := q.CreateIntermediateSession(ctx, queries.CreateIntermediateSessionParams{
-		ID:          uuid.New(),
+		ID:          uuid.Must(uuid.NewV7()),
 		ProjectID:   projectid.ProjectID(ctx),
 		ExpireTime:  &expiresAt,
 		TokenSha256: tokenSha256[:],
