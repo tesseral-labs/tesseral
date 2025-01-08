@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/url"
 
+	"connectrpc.com/connect"
 	"github.com/google/uuid"
 	backendv1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
 	"github.com/openauth/openauth/internal/backend/store/queries"
@@ -102,11 +103,16 @@ func (s *Store) CreateSAMLConnection(ctx context.Context, req *backendv1.CreateS
 	}
 
 	// authz
-	if _, err := q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
+	qOrg, err := q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
 		ProjectID: projectid.ProjectID(ctx),
 		ID:        orgID,
-	}); err != nil {
+	})
+	if err != nil {
 		return nil, fmt.Errorf("get organization: %w", err)
+	}
+
+	if !qOrg.SamlEnabled {
+		return nil, connect.NewError(connect.CodeFailedPrecondition, fmt.Errorf("organization does not have SAML enabled"))
 	}
 
 	if req.SamlConnection.IdpRedirectUrl != "" {
