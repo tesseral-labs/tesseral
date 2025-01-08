@@ -208,7 +208,7 @@ WHERE
     AND organizations.project_id = $2;
 
 -- name: CreateSCIMAPIKey :one
-INSERT INTO scim_api_keys (id, organization_id, display_name, token_sha256)
+INSERT INTO scim_api_keys (id, organization_id, display_name, secret_token_sha256)
     VALUES ($1, $2, $3, $4)
 RETURNING
     *;
@@ -231,7 +231,7 @@ WHERE id = $1;
 UPDATE
     scim_api_keys
 SET
-    token_sha256 = NULL
+    secret_token_sha256 = NULL
 WHERE
     id = $1
 RETURNING

@@ -99,10 +99,10 @@ func (s *Store) CreateSCIMAPIKey(ctx context.Context, req *frontendv1.CreateSCIM
 	token := uuid.New()
 	tokenSHA256 := sha256.Sum256(token[:])
 	qSCIMAPIKey, err := q.CreateSCIMAPIKey(ctx, queries.CreateSCIMAPIKeyParams{
-		ID:             uuid.New(),
-		OrganizationID: authn.OrganizationID(ctx),
-		DisplayName:    req.ScimApiKey.DisplayName,
-		TokenSha256:    tokenSHA256[:],
+		ID:                uuid.New(),
+		OrganizationID:    authn.OrganizationID(ctx),
+		DisplayName:       req.ScimApiKey.DisplayName,
+		SecretTokenSha256: tokenSHA256[:],
 	})
 	if err != nil {
 		return nil, fmt.Errorf("create scim api key: %w", err)
@@ -188,7 +188,7 @@ func (s *Store) DeleteSCIMAPIKey(ctx context.Context, req *frontendv1.DeleteSCIM
 		return nil, fmt.Errorf("get scim api key: %w", err)
 	}
 
-	if qSCIMAPIKey.TokenSha256 != nil {
+	if qSCIMAPIKey.SecretTokenSha256 != nil {
 		return nil, fmt.Errorf("scim api key must be revoked before deletion")
 	}
 
@@ -244,6 +244,6 @@ func parseSCIMAPIKey(qSCIMAPIKey queries.ScimApiKey) *frontendv1.SCIMAPIKey {
 		Id:          idformat.SCIMAPIKey.Format(qSCIMAPIKey.ID),
 		DisplayName: qSCIMAPIKey.DisplayName,
 		SecretToken: "", // intentionally left blank
-		Revoked:     qSCIMAPIKey.TokenSha256 == nil,
+		Revoked:     qSCIMAPIKey.SecretTokenSha256 == nil,
 	}
 }

@@ -5,7 +5,7 @@ FROM
     scim_api_keys
     JOIN organizations ON scim_api_keys.organization_id = organizations.id
 WHERE
-    token_sha256 = $1
+    secret_token_sha256 = $1
     AND organizations.project_id = $2;
 
 -- name: GetOrganizationDomains :many
