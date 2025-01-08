@@ -12,8 +12,8 @@ import (
 )
 
 const createOrganization = `-- name: CreateOrganization :one
-INSERT INTO organizations (id, project_id, display_name, google_hosted_domain, microsoft_tenant_id, override_log_in_methods, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_with_password_enabled)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+INSERT INTO organizations (id, project_id, display_name, google_hosted_domain, microsoft_tenant_id, override_log_in_methods, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_with_password_enabled, saml_enabled, scim_enabled)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
 RETURNING
     id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods, saml_enabled, scim_enabled
 `
@@ -28,6 +28,8 @@ type CreateOrganizationParams struct {
 	OverrideLogInWithGoogleEnabled    *bool
 	OverrideLogInWithMicrosoftEnabled *bool
 	OverrideLogInWithPasswordEnabled  *bool
+	SamlEnabled                       bool
+	ScimEnabled                       bool
 }
 
 func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganizationParams) (Organization, error) {
@@ -41,6 +43,8 @@ func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganization
 		arg.OverrideLogInWithGoogleEnabled,
 		arg.OverrideLogInWithMicrosoftEnabled,
 		arg.OverrideLogInWithPasswordEnabled,
+		arg.SamlEnabled,
+		arg.ScimEnabled,
 	)
 	var i Organization
 	err := row.Scan(
@@ -938,7 +942,9 @@ SET
     override_log_in_methods = $5,
     override_log_in_with_password_enabled = $6,
     override_log_in_with_google_enabled = $7,
-    override_log_in_with_microsoft_enabled = $8
+    override_log_in_with_microsoft_enabled = $8,
+    saml_enabled = $9,
+    scim_enabled = $10
 WHERE
     id = $1
 RETURNING
@@ -954,6 +960,8 @@ type UpdateOrganizationParams struct {
 	OverrideLogInWithPasswordEnabled  *bool
 	OverrideLogInWithGoogleEnabled    *bool
 	OverrideLogInWithMicrosoftEnabled *bool
+	SamlEnabled                       bool
+	ScimEnabled                       bool
 }
 
 func (q *Queries) UpdateOrganization(ctx context.Context, arg UpdateOrganizationParams) (Organization, error) {
@@ -966,6 +974,8 @@ func (q *Queries) UpdateOrganization(ctx context.Context, arg UpdateOrganization
 		arg.OverrideLogInWithPasswordEnabled,
 		arg.OverrideLogInWithGoogleEnabled,
 		arg.OverrideLogInWithMicrosoftEnabled,
+		arg.SamlEnabled,
+		arg.ScimEnabled,
 	)
 	var i Organization
 	err := row.Scan(
