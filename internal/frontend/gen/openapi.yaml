@@ -636,6 +636,10 @@ components:
                     type: string
                 microsoftTenantId:
                     type: string
+                samlEnabled:
+                    type: boolean
+                scimEnabled:
+                    type: boolean
         Project:
             type: object
             properties:
