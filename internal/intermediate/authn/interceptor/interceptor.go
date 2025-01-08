@@ -3,11 +3,14 @@ package intermediateinterceptor
 import (
 	"context"
 	"errors"
-	"strings"
+	"fmt"
 
 	"connectrpc.com/connect"
+	"github.com/openauth/openauth/internal/cookies"
 	"github.com/openauth/openauth/internal/intermediate/authn"
 	"github.com/openauth/openauth/internal/intermediate/store"
+	"github.com/openauth/openauth/internal/projectid"
+	"github.com/openauth/openauth/internal/store/idformat"
 )
 
 var ErrAuthorizationHeaderRequired = errors.New("authorization header is required")
@@ -27,15 +30,13 @@ func New(s *store.Store) connect.UnaryInterceptorFunc {
 				}
 			}
 
-			// Enforce authentication if not skipping
-			authorization := req.Header().Get("Authorization")
-			if authorization == "" {
-				return nil, connect.NewError(connect.CodeUnauthenticated, ErrAuthorizationHeaderRequired)
-			}
+			projectID := projectid.ProjectID(ctx)
+			cookieName := fmt.Sprintf("tesseral:%s:intermediateAccessToken", idformat.Project.Format(projectID))
 
-			secretValue, ok := strings.CutPrefix(authorization, "Bearer ")
-			if !ok {
-				return nil, connect.NewError(connect.CodeUnauthenticated, nil)
+			// Enforce authentication if not skipping
+			secretValue, err := cookies.GetCookie(ctx, req, cookieName)
+			if err != nil {
+				return nil, connect.NewError(connect.CodeUnauthenticated, err)
 			}
 
 			intermediateSession, err := s.GetIntermediateSessionByToken(ctx, secretValue)

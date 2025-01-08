@@ -5,7 +5,9 @@ import (
 	"fmt"
 
 	"connectrpc.com/connect"
+	"github.com/openauth/openauth/internal/cookies"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
+	"github.com/openauth/openauth/internal/projectid"
 )
 
 func (s *Service) GetGoogleOAuthRedirectURL(ctx context.Context, req *connect.Request[intermediatev1.GetGoogleOAuthRedirectURLRequest]) (*connect.Response[intermediatev1.GetGoogleOAuthRedirectURLResponse], error) {
@@ -14,9 +16,12 @@ func (s *Service) GetGoogleOAuthRedirectURL(ctx context.Context, req *connect.Re
 		return nil, fmt.Errorf("store: %w", err)
 	}
 
-	// TODO: In the future, we need to set an intermediate session cookie here
+	projectID := projectid.ProjectID(ctx)
 
-	return connect.NewResponse(res), nil
+	connectResponse := connect.NewResponse(res)
+	connectResponse.Header().Add("Set-Cookie", cookies.BuildCookie(projectID, "intermediateAccessToken", res.IntermediateSessionToken, req.Spec().Schema == "https"))
+
+	return connectResponse, nil
 }
 
 func (s *Service) RedeemGoogleOAuthCode(ctx context.Context, req *connect.Request[intermediatev1.RedeemGoogleOAuthCodeRequest]) (*connect.Response[intermediatev1.RedeemGoogleOAuthCodeResponse], error) {
