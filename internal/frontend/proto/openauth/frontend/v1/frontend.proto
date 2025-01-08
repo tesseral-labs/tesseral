@@ -342,6 +342,8 @@ message Organization {
   bool log_in_with_microsoft_enabled = 7;
   string google_hosted_domain = 8;
   string microsoft_tenant_id = 9;
+  bool saml_enabled = 10;
+  bool scim_enabled = 11;
 }
 
 message SessionSigningKey {
