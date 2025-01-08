@@ -88,7 +88,9 @@ SET
     google_oauth_client_id = $6,
     google_oauth_client_secret_ciphertext = $7,
     microsoft_oauth_client_id = $8,
-    microsoft_oauth_client_secret_ciphertext = $9
+    microsoft_oauth_client_secret_ciphertext = $9,
+    organizations_saml_enabled_default = $10,
+    organizations_scim_enabled_default = $11
 WHERE
     id = $1
 RETURNING

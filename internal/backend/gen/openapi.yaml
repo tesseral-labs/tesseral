@@ -759,6 +759,10 @@ components:
                     type: string
                 microsoftTenantId:
                     type: string
+                samlEnabled:
+                    type: boolean
+                scimEnabled:
+                    type: boolean
         Project:
             type: object
             properties:
@@ -780,6 +784,10 @@ components:
                     type: string
                 microsoftOauthClientSecret:
                     type: string
+                organizationsSamlEnabledDefault:
+                    type: boolean
+                organizationsScimEnabledDefault:
+                    type: boolean
         RevokeSCIMAPIKeyResponse:
             type: object
             properties:
