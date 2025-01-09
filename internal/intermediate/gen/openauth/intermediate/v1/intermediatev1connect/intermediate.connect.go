@@ -69,22 +69,6 @@ const (
 	IntermediateServiceVerifyEmailChallengeProcedure = "/openauth.intermediate.v1.IntermediateService/VerifyEmailChallenge"
 )
 
-// These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
-var (
-	intermediateServiceServiceDescriptor                                                    = v1.File_openauth_intermediate_v1_intermediate_proto.Services().ByName("IntermediateService")
-	intermediateServiceWhoamiMethodDescriptor                                               = intermediateServiceServiceDescriptor.Methods().ByName("Whoami")
-	intermediateServiceExchangeIntermediateSessionForSessionMethodDescriptor                = intermediateServiceServiceDescriptor.Methods().ByName("ExchangeIntermediateSessionForSession")
-	intermediateServiceExchangeIntermediateSessionForNewOrganizationSessionMethodDescriptor = intermediateServiceServiceDescriptor.Methods().ByName("ExchangeIntermediateSessionForNewOrganizationSession")
-	intermediateServiceGetGoogleOAuthRedirectURLMethodDescriptor                            = intermediateServiceServiceDescriptor.Methods().ByName("GetGoogleOAuthRedirectURL")
-	intermediateServiceRedeemGoogleOAuthCodeMethodDescriptor                                = intermediateServiceServiceDescriptor.Methods().ByName("RedeemGoogleOAuthCode")
-	intermediateServiceGetMicrosoftOAuthRedirectURLMethodDescriptor                         = intermediateServiceServiceDescriptor.Methods().ByName("GetMicrosoftOAuthRedirectURL")
-	intermediateServiceRedeemMicrosoftOAuthCodeMethodDescriptor                             = intermediateServiceServiceDescriptor.Methods().ByName("RedeemMicrosoftOAuthCode")
-	intermediateServiceIssueEmailVerificationChallengeMethodDescriptor                      = intermediateServiceServiceDescriptor.Methods().ByName("IssueEmailVerificationChallenge")
-	intermediateServiceListOrganizationsMethodDescriptor                                    = intermediateServiceServiceDescriptor.Methods().ByName("ListOrganizations")
-	intermediateServiceSignInWithEmailMethodDescriptor                                      = intermediateServiceServiceDescriptor.Methods().ByName("SignInWithEmail")
-	intermediateServiceVerifyEmailChallengeMethodDescriptor                                 = intermediateServiceServiceDescriptor.Methods().ByName("VerifyEmailChallenge")
-)
-
 // IntermediateServiceClient is a client for the openauth.intermediate.v1.IntermediateService
 // service.
 type IntermediateServiceClient interface {
@@ -115,71 +99,72 @@ type IntermediateServiceClient interface {
 // http://api.acme.com or https://acme.com/grpc).
 func NewIntermediateServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) IntermediateServiceClient {
 	baseURL = strings.TrimRight(baseURL, "/")
+	intermediateServiceMethods := v1.File_openauth_intermediate_v1_intermediate_proto.Services().ByName("IntermediateService").Methods()
 	return &intermediateServiceClient{
 		whoami: connect.NewClient[v1.WhoamiRequest, v1.WhoamiResponse](
 			httpClient,
 			baseURL+IntermediateServiceWhoamiProcedure,
-			connect.WithSchema(intermediateServiceWhoamiMethodDescriptor),
+			connect.WithSchema(intermediateServiceMethods.ByName("Whoami")),
 			connect.WithClientOptions(opts...),
 		),
 		exchangeIntermediateSessionForSession: connect.NewClient[v1.ExchangeIntermediateSessionForSessionRequest, v1.ExchangeIntermediateSessionForSessionResponse](
 			httpClient,
 			baseURL+IntermediateServiceExchangeIntermediateSessionForSessionProcedure,
-			connect.WithSchema(intermediateServiceExchangeIntermediateSessionForSessionMethodDescriptor),
+			connect.WithSchema(intermediateServiceMethods.ByName("ExchangeIntermediateSessionForSession")),
 			connect.WithClientOptions(opts...),
 		),
 		exchangeIntermediateSessionForNewOrganizationSession: connect.NewClient[v1.ExchangeIntermediateSessionForNewOrganizationSessionRequest, v1.ExchangeIntermediateSessionForNewOrganizationSessionResponse](
 			httpClient,
 			baseURL+IntermediateServiceExchangeIntermediateSessionForNewOrganizationSessionProcedure,
-			connect.WithSchema(intermediateServiceExchangeIntermediateSessionForNewOrganizationSessionMethodDescriptor),
+			connect.WithSchema(intermediateServiceMethods.ByName("ExchangeIntermediateSessionForNewOrganizationSession")),
 			connect.WithClientOptions(opts...),
 		),
 		getGoogleOAuthRedirectURL: connect.NewClient[v1.GetGoogleOAuthRedirectURLRequest, v1.GetGoogleOAuthRedirectURLResponse](
 			httpClient,
 			baseURL+IntermediateServiceGetGoogleOAuthRedirectURLProcedure,
-			connect.WithSchema(intermediateServiceGetGoogleOAuthRedirectURLMethodDescriptor),
+			connect.WithSchema(intermediateServiceMethods.ByName("GetGoogleOAuthRedirectURL")),
 			connect.WithClientOptions(opts...),
 		),
 		redeemGoogleOAuthCode: connect.NewClient[v1.RedeemGoogleOAuthCodeRequest, v1.RedeemGoogleOAuthCodeResponse](
 			httpClient,
 			baseURL+IntermediateServiceRedeemGoogleOAuthCodeProcedure,
-			connect.WithSchema(intermediateServiceRedeemGoogleOAuthCodeMethodDescriptor),
+			connect.WithSchema(intermediateServiceMethods.ByName("RedeemGoogleOAuthCode")),
 			connect.WithClientOptions(opts...),
 		),
 		getMicrosoftOAuthRedirectURL: connect.NewClient[v1.GetMicrosoftOAuthRedirectURLRequest, v1.GetMicrosoftOAuthRedirectURLResponse](
 			httpClient,
 			baseURL+IntermediateServiceGetMicrosoftOAuthRedirectURLProcedure,
-			connect.WithSchema(intermediateServiceGetMicrosoftOAuthRedirectURLMethodDescriptor),
+			connect.WithSchema(intermediateServiceMethods.ByName("GetMicrosoftOAuthRedirectURL")),
 			connect.WithClientOptions(opts...),
 		),
 		redeemMicrosoftOAuthCode: connect.NewClient[v1.RedeemMicrosoftOAuthCodeRequest, v1.RedeemMicrosoftOAuthCodeResponse](
 			httpClient,
 			baseURL+IntermediateServiceRedeemMicrosoftOAuthCodeProcedure,
-			connect.WithSchema(intermediateServiceRedeemMicrosoftOAuthCodeMethodDescriptor),
+			connect.WithSchema(intermediateServiceMethods.ByName("RedeemMicrosoftOAuthCode")),
 			connect.WithClientOptions(opts...),
 		),
 		issueEmailVerificationChallenge: connect.NewClient[v1.IssueEmailVerificationChallengeRequest, v1.IssueEmailVerificationChallengeResponse](
 			httpClient,
 			baseURL+IntermediateServiceIssueEmailVerificationChallengeProcedure,
-			connect.WithSchema(intermediateServiceIssueEmailVerificationChallengeMethodDescriptor),
+			connect.WithSchema(intermediateServiceMethods.ByName("IssueEmailVerificationChallenge")),
 			connect.WithClientOptions(opts...),
 		),
 		listOrganizations: connect.NewClient[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse](
 			httpClient,
 			baseURL+IntermediateServiceListOrganizationsProcedure,
-			connect.WithSchema(intermediateServiceListOrganizationsMethodDescriptor),
+			connect.WithSchema(intermediateServiceMethods.ByName("ListOrganizations")),
 			connect.WithClientOptions(opts...),
 		),
 		signInWithEmail: connect.NewClient[v1.SignInWithEmailRequest, v1.SignInWithEmailResponse](
 			httpClient,
 			baseURL+IntermediateServiceSignInWithEmailProcedure,
-			connect.WithSchema(intermediateServiceSignInWithEmailMethodDescriptor),
+			connect.WithSchema(intermediateServiceMethods.ByName("SignInWithEmail")),
 			connect.WithClientOptions(opts...),
 		),
 		verifyEmailChallenge: connect.NewClient[v1.VerifyEmailChallengeRequest, v1.VerifyEmailChallengeResponse](
 			httpClient,
 			baseURL+IntermediateServiceVerifyEmailChallengeProcedure,
-			connect.WithSchema(intermediateServiceVerifyEmailChallengeMethodDescriptor),
+			connect.WithSchema(intermediateServiceMethods.ByName("VerifyEmailChallenge")),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -287,70 +272,71 @@ type IntermediateServiceHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
+	intermediateServiceMethods := v1.File_openauth_intermediate_v1_intermediate_proto.Services().ByName("IntermediateService").Methods()
 	intermediateServiceWhoamiHandler := connect.NewUnaryHandler(
 		IntermediateServiceWhoamiProcedure,
 		svc.Whoami,
-		connect.WithSchema(intermediateServiceWhoamiMethodDescriptor),
+		connect.WithSchema(intermediateServiceMethods.ByName("Whoami")),
 		connect.WithHandlerOptions(opts...),
 	)
 	intermediateServiceExchangeIntermediateSessionForSessionHandler := connect.NewUnaryHandler(
 		IntermediateServiceExchangeIntermediateSessionForSessionProcedure,
 		svc.ExchangeIntermediateSessionForSession,
-		connect.WithSchema(intermediateServiceExchangeIntermediateSessionForSessionMethodDescriptor),
+		connect.WithSchema(intermediateServiceMethods.ByName("ExchangeIntermediateSessionForSession")),
 		connect.WithHandlerOptions(opts...),
 	)
 	intermediateServiceExchangeIntermediateSessionForNewOrganizationSessionHandler := connect.NewUnaryHandler(
 		IntermediateServiceExchangeIntermediateSessionForNewOrganizationSessionProcedure,
 		svc.ExchangeIntermediateSessionForNewOrganizationSession,
-		connect.WithSchema(intermediateServiceExchangeIntermediateSessionForNewOrganizationSessionMethodDescriptor),
+		connect.WithSchema(intermediateServiceMethods.ByName("ExchangeIntermediateSessionForNewOrganizationSession")),
 		connect.WithHandlerOptions(opts...),
 	)
 	intermediateServiceGetGoogleOAuthRedirectURLHandler := connect.NewUnaryHandler(
 		IntermediateServiceGetGoogleOAuthRedirectURLProcedure,
 		svc.GetGoogleOAuthRedirectURL,
-		connect.WithSchema(intermediateServiceGetGoogleOAuthRedirectURLMethodDescriptor),
+		connect.WithSchema(intermediateServiceMethods.ByName("GetGoogleOAuthRedirectURL")),
 		connect.WithHandlerOptions(opts...),
 	)
 	intermediateServiceRedeemGoogleOAuthCodeHandler := connect.NewUnaryHandler(
 		IntermediateServiceRedeemGoogleOAuthCodeProcedure,
 		svc.RedeemGoogleOAuthCode,
-		connect.WithSchema(intermediateServiceRedeemGoogleOAuthCodeMethodDescriptor),
+		connect.WithSchema(intermediateServiceMethods.ByName("RedeemGoogleOAuthCode")),
 		connect.WithHandlerOptions(opts...),
 	)
 	intermediateServiceGetMicrosoftOAuthRedirectURLHandler := connect.NewUnaryHandler(
 		IntermediateServiceGetMicrosoftOAuthRedirectURLProcedure,
 		svc.GetMicrosoftOAuthRedirectURL,
-		connect.WithSchema(intermediateServiceGetMicrosoftOAuthRedirectURLMethodDescriptor),
+		connect.WithSchema(intermediateServiceMethods.ByName("GetMicrosoftOAuthRedirectURL")),
 		connect.WithHandlerOptions(opts...),
 	)
 	intermediateServiceRedeemMicrosoftOAuthCodeHandler := connect.NewUnaryHandler(
 		IntermediateServiceRedeemMicrosoftOAuthCodeProcedure,
 		svc.RedeemMicrosoftOAuthCode,
-		connect.WithSchema(intermediateServiceRedeemMicrosoftOAuthCodeMethodDescriptor),
+		connect.WithSchema(intermediateServiceMethods.ByName("RedeemMicrosoftOAuthCode")),
 		connect.WithHandlerOptions(opts...),
 	)
 	intermediateServiceIssueEmailVerificationChallengeHandler := connect.NewUnaryHandler(
 		IntermediateServiceIssueEmailVerificationChallengeProcedure,
 		svc.IssueEmailVerificationChallenge,
-		connect.WithSchema(intermediateServiceIssueEmailVerificationChallengeMethodDescriptor),
+		connect.WithSchema(intermediateServiceMethods.ByName("IssueEmailVerificationChallenge")),
 		connect.WithHandlerOptions(opts...),
 	)
 	intermediateServiceListOrganizationsHandler := connect.NewUnaryHandler(
 		IntermediateServiceListOrganizationsProcedure,
 		svc.ListOrganizations,
-		connect.WithSchema(intermediateServiceListOrganizationsMethodDescriptor),
+		connect.WithSchema(intermediateServiceMethods.ByName("ListOrganizations")),
 		connect.WithHandlerOptions(opts...),
 	)
 	intermediateServiceSignInWithEmailHandler := connect.NewUnaryHandler(
 		IntermediateServiceSignInWithEmailProcedure,
 		svc.SignInWithEmail,
-		connect.WithSchema(intermediateServiceSignInWithEmailMethodDescriptor),
+		connect.WithSchema(intermediateServiceMethods.ByName("SignInWithEmail")),
 		connect.WithHandlerOptions(opts...),
 	)
 	intermediateServiceVerifyEmailChallengeHandler := connect.NewUnaryHandler(
 		IntermediateServiceVerifyEmailChallengeProcedure,
 		svc.VerifyEmailChallenge,
-		connect.WithSchema(intermediateServiceVerifyEmailChallengeMethodDescriptor),
+		connect.WithSchema(intermediateServiceMethods.ByName("VerifyEmailChallenge")),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/openauth.intermediate.v1.IntermediateService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

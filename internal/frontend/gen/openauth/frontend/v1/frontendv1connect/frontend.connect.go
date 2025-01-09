@@ -96,32 +96,6 @@ const (
 	FrontendServiceRevokeSCIMAPIKeyProcedure = "/openauth.frontend.v1.FrontendService/RevokeSCIMAPIKey"
 )
 
-// These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
-var (
-	frontendServiceServiceDescriptor                    = v1.File_openauth_frontend_v1_frontend_proto.Services().ByName("FrontendService")
-	frontendServiceGetAccessTokenMethodDescriptor       = frontendServiceServiceDescriptor.Methods().ByName("GetAccessToken")
-	frontendServiceGetProjectMethodDescriptor           = frontendServiceServiceDescriptor.Methods().ByName("GetProject")
-	frontendServiceGetOrganizationMethodDescriptor      = frontendServiceServiceDescriptor.Methods().ByName("GetOrganization")
-	frontendServiceUpdateOrganizationMethodDescriptor   = frontendServiceServiceDescriptor.Methods().ByName("UpdateOrganization")
-	frontendServiceListUsersMethodDescriptor            = frontendServiceServiceDescriptor.Methods().ByName("ListUsers")
-	frontendServiceGetUserMethodDescriptor              = frontendServiceServiceDescriptor.Methods().ByName("GetUser")
-	frontendServiceUpdateUserMethodDescriptor           = frontendServiceServiceDescriptor.Methods().ByName("UpdateUser")
-	frontendServiceListOrganizationsMethodDescriptor    = frontendServiceServiceDescriptor.Methods().ByName("ListOrganizations")
-	frontendServiceSetPasswordMethodDescriptor          = frontendServiceServiceDescriptor.Methods().ByName("SetPassword")
-	frontendServiceWhoAmIMethodDescriptor               = frontendServiceServiceDescriptor.Methods().ByName("WhoAmI")
-	frontendServiceListSAMLConnectionsMethodDescriptor  = frontendServiceServiceDescriptor.Methods().ByName("ListSAMLConnections")
-	frontendServiceGetSAMLConnectionMethodDescriptor    = frontendServiceServiceDescriptor.Methods().ByName("GetSAMLConnection")
-	frontendServiceCreateSAMLConnectionMethodDescriptor = frontendServiceServiceDescriptor.Methods().ByName("CreateSAMLConnection")
-	frontendServiceUpdateSAMLConnectionMethodDescriptor = frontendServiceServiceDescriptor.Methods().ByName("UpdateSAMLConnection")
-	frontendServiceDeleteSAMLConnectionMethodDescriptor = frontendServiceServiceDescriptor.Methods().ByName("DeleteSAMLConnection")
-	frontendServiceListSCIMAPIKeysMethodDescriptor      = frontendServiceServiceDescriptor.Methods().ByName("ListSCIMAPIKeys")
-	frontendServiceGetSCIMAPIKeyMethodDescriptor        = frontendServiceServiceDescriptor.Methods().ByName("GetSCIMAPIKey")
-	frontendServiceCreateSCIMAPIKeyMethodDescriptor     = frontendServiceServiceDescriptor.Methods().ByName("CreateSCIMAPIKey")
-	frontendServiceUpdateSCIMAPIKeyMethodDescriptor     = frontendServiceServiceDescriptor.Methods().ByName("UpdateSCIMAPIKey")
-	frontendServiceDeleteSCIMAPIKeyMethodDescriptor     = frontendServiceServiceDescriptor.Methods().ByName("DeleteSCIMAPIKey")
-	frontendServiceRevokeSCIMAPIKeyMethodDescriptor     = frontendServiceServiceDescriptor.Methods().ByName("RevokeSCIMAPIKey")
-)
-
 // FrontendServiceClient is a client for the openauth.frontend.v1.FrontendService service.
 type FrontendServiceClient interface {
 	GetAccessToken(context.Context, *connect.Request[v1.GetAccessTokenRequest]) (*connect.Response[v1.GetAccessTokenResponse], error)
@@ -159,131 +133,132 @@ type FrontendServiceClient interface {
 // http://api.acme.com or https://acme.com/grpc).
 func NewFrontendServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) FrontendServiceClient {
 	baseURL = strings.TrimRight(baseURL, "/")
+	frontendServiceMethods := v1.File_openauth_frontend_v1_frontend_proto.Services().ByName("FrontendService").Methods()
 	return &frontendServiceClient{
 		getAccessToken: connect.NewClient[v1.GetAccessTokenRequest, v1.GetAccessTokenResponse](
 			httpClient,
 			baseURL+FrontendServiceGetAccessTokenProcedure,
-			connect.WithSchema(frontendServiceGetAccessTokenMethodDescriptor),
+			connect.WithSchema(frontendServiceMethods.ByName("GetAccessToken")),
 			connect.WithClientOptions(opts...),
 		),
 		getProject: connect.NewClient[v1.GetProjectRequest, v1.GetProjectResponse](
 			httpClient,
 			baseURL+FrontendServiceGetProjectProcedure,
-			connect.WithSchema(frontendServiceGetProjectMethodDescriptor),
+			connect.WithSchema(frontendServiceMethods.ByName("GetProject")),
 			connect.WithClientOptions(opts...),
 		),
 		getOrganization: connect.NewClient[v1.GetOrganizationRequest, v1.GetOrganizationResponse](
 			httpClient,
 			baseURL+FrontendServiceGetOrganizationProcedure,
-			connect.WithSchema(frontendServiceGetOrganizationMethodDescriptor),
+			connect.WithSchema(frontendServiceMethods.ByName("GetOrganization")),
 			connect.WithClientOptions(opts...),
 		),
 		updateOrganization: connect.NewClient[v1.UpdateOrganizationRequest, v1.UpdateOrganizationResponse](
 			httpClient,
 			baseURL+FrontendServiceUpdateOrganizationProcedure,
-			connect.WithSchema(frontendServiceUpdateOrganizationMethodDescriptor),
+			connect.WithSchema(frontendServiceMethods.ByName("UpdateOrganization")),
 			connect.WithClientOptions(opts...),
 		),
 		listUsers: connect.NewClient[v1.ListUsersRequest, v1.ListUsersResponse](
 			httpClient,
 			baseURL+FrontendServiceListUsersProcedure,
-			connect.WithSchema(frontendServiceListUsersMethodDescriptor),
+			connect.WithSchema(frontendServiceMethods.ByName("ListUsers")),
 			connect.WithClientOptions(opts...),
 		),
 		getUser: connect.NewClient[v1.GetUserRequest, v1.GetUserResponse](
 			httpClient,
 			baseURL+FrontendServiceGetUserProcedure,
-			connect.WithSchema(frontendServiceGetUserMethodDescriptor),
+			connect.WithSchema(frontendServiceMethods.ByName("GetUser")),
 			connect.WithClientOptions(opts...),
 		),
 		updateUser: connect.NewClient[v1.UpdateUserRequest, v1.UpdateUserResponse](
 			httpClient,
 			baseURL+FrontendServiceUpdateUserProcedure,
-			connect.WithSchema(frontendServiceUpdateUserMethodDescriptor),
+			connect.WithSchema(frontendServiceMethods.ByName("UpdateUser")),
 			connect.WithClientOptions(opts...),
 		),
 		listOrganizations: connect.NewClient[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse](
 			httpClient,
 			baseURL+FrontendServiceListOrganizationsProcedure,
-			connect.WithSchema(frontendServiceListOrganizationsMethodDescriptor),
+			connect.WithSchema(frontendServiceMethods.ByName("ListOrganizations")),
 			connect.WithClientOptions(opts...),
 		),
 		setPassword: connect.NewClient[v1.SetPasswordRequest, v1.SetPasswordResponse](
 			httpClient,
 			baseURL+FrontendServiceSetPasswordProcedure,
-			connect.WithSchema(frontendServiceSetPasswordMethodDescriptor),
+			connect.WithSchema(frontendServiceMethods.ByName("SetPassword")),
 			connect.WithClientOptions(opts...),
 		),
 		whoAmI: connect.NewClient[v1.WhoAmIRequest, v1.WhoAmIResponse](
 			httpClient,
 			baseURL+FrontendServiceWhoAmIProcedure,
-			connect.WithSchema(frontendServiceWhoAmIMethodDescriptor),
+			connect.WithSchema(frontendServiceMethods.ByName("WhoAmI")),
 			connect.WithClientOptions(opts...),
 		),
 		listSAMLConnections: connect.NewClient[v1.ListSAMLConnectionsRequest, v1.ListSAMLConnectionsResponse](
 			httpClient,
 			baseURL+FrontendServiceListSAMLConnectionsProcedure,
-			connect.WithSchema(frontendServiceListSAMLConnectionsMethodDescriptor),
+			connect.WithSchema(frontendServiceMethods.ByName("ListSAMLConnections")),
 			connect.WithClientOptions(opts...),
 		),
 		getSAMLConnection: connect.NewClient[v1.GetSAMLConnectionRequest, v1.GetSAMLConnectionResponse](
 			httpClient,
 			baseURL+FrontendServiceGetSAMLConnectionProcedure,
-			connect.WithSchema(frontendServiceGetSAMLConnectionMethodDescriptor),
+			connect.WithSchema(frontendServiceMethods.ByName("GetSAMLConnection")),
 			connect.WithClientOptions(opts...),
 		),
 		createSAMLConnection: connect.NewClient[v1.CreateSAMLConnectionRequest, v1.CreateSAMLConnectionResponse](
 			httpClient,
 			baseURL+FrontendServiceCreateSAMLConnectionProcedure,
-			connect.WithSchema(frontendServiceCreateSAMLConnectionMethodDescriptor),
+			connect.WithSchema(frontendServiceMethods.ByName("CreateSAMLConnection")),
 			connect.WithClientOptions(opts...),
 		),
 		updateSAMLConnection: connect.NewClient[v1.UpdateSAMLConnectionRequest, v1.UpdateSAMLConnectionResponse](
 			httpClient,
 			baseURL+FrontendServiceUpdateSAMLConnectionProcedure,
-			connect.WithSchema(frontendServiceUpdateSAMLConnectionMethodDescriptor),
+			connect.WithSchema(frontendServiceMethods.ByName("UpdateSAMLConnection")),
 			connect.WithClientOptions(opts...),
 		),
 		deleteSAMLConnection: connect.NewClient[v1.DeleteSAMLConnectionRequest, v1.DeleteSAMLConnectionResponse](
 			httpClient,
 			baseURL+FrontendServiceDeleteSAMLConnectionProcedure,
-			connect.WithSchema(frontendServiceDeleteSAMLConnectionMethodDescriptor),
+			connect.WithSchema(frontendServiceMethods.ByName("DeleteSAMLConnection")),
 			connect.WithClientOptions(opts...),
 		),
 		listSCIMAPIKeys: connect.NewClient[v1.ListSCIMAPIKeysRequest, v1.ListSCIMAPIKeysResponse](
 			httpClient,
 			baseURL+FrontendServiceListSCIMAPIKeysProcedure,
-			connect.WithSchema(frontendServiceListSCIMAPIKeysMethodDescriptor),
+			connect.WithSchema(frontendServiceMethods.ByName("ListSCIMAPIKeys")),
 			connect.WithClientOptions(opts...),
 		),
 		getSCIMAPIKey: connect.NewClient[v1.GetSCIMAPIKeyRequest, v1.GetSCIMAPIKeyResponse](
 			httpClient,
 			baseURL+FrontendServiceGetSCIMAPIKeyProcedure,
-			connect.WithSchema(frontendServiceGetSCIMAPIKeyMethodDescriptor),
+			connect.WithSchema(frontendServiceMethods.ByName("GetSCIMAPIKey")),
 			connect.WithClientOptions(opts...),
 		),
 		createSCIMAPIKey: connect.NewClient[v1.CreateSCIMAPIKeyRequest, v1.CreateSCIMAPIKeyResponse](
 			httpClient,
 			baseURL+FrontendServiceCreateSCIMAPIKeyProcedure,
-			connect.WithSchema(frontendServiceCreateSCIMAPIKeyMethodDescriptor),
+			connect.WithSchema(frontendServiceMethods.ByName("CreateSCIMAPIKey")),
 			connect.WithClientOptions(opts...),
 		),
 		updateSCIMAPIKey: connect.NewClient[v1.UpdateSCIMAPIKeyRequest, v1.UpdateSCIMAPIKeyResponse](
 			httpClient,
 			baseURL+FrontendServiceUpdateSCIMAPIKeyProcedure,
-			connect.WithSchema(frontendServiceUpdateSCIMAPIKeyMethodDescriptor),
+			connect.WithSchema(frontendServiceMethods.ByName("UpdateSCIMAPIKey")),
 			connect.WithClientOptions(opts...),
 		),
 		deleteSCIMAPIKey: connect.NewClient[v1.DeleteSCIMAPIKeyRequest, v1.DeleteSCIMAPIKeyResponse](
 			httpClient,
 			baseURL+FrontendServiceDeleteSCIMAPIKeyProcedure,
-			connect.WithSchema(frontendServiceDeleteSCIMAPIKeyMethodDescriptor),
+			connect.WithSchema(frontendServiceMethods.ByName("DeleteSCIMAPIKey")),
 			connect.WithClientOptions(opts...),
 		),
 		revokeSCIMAPIKey: connect.NewClient[v1.RevokeSCIMAPIKeyRequest, v1.RevokeSCIMAPIKeyResponse](
 			httpClient,
 			baseURL+FrontendServiceRevokeSCIMAPIKeyProcedure,
-			connect.WithSchema(frontendServiceRevokeSCIMAPIKeyMethodDescriptor),
+			connect.WithSchema(frontendServiceMethods.ByName("RevokeSCIMAPIKey")),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -453,130 +428,131 @@ type FrontendServiceHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
+	frontendServiceMethods := v1.File_openauth_frontend_v1_frontend_proto.Services().ByName("FrontendService").Methods()
 	frontendServiceGetAccessTokenHandler := connect.NewUnaryHandler(
 		FrontendServiceGetAccessTokenProcedure,
 		svc.GetAccessToken,
-		connect.WithSchema(frontendServiceGetAccessTokenMethodDescriptor),
+		connect.WithSchema(frontendServiceMethods.ByName("GetAccessToken")),
 		connect.WithHandlerOptions(opts...),
 	)
 	frontendServiceGetProjectHandler := connect.NewUnaryHandler(
 		FrontendServiceGetProjectProcedure,
 		svc.GetProject,
-		connect.WithSchema(frontendServiceGetProjectMethodDescriptor),
+		connect.WithSchema(frontendServiceMethods.ByName("GetProject")),
 		connect.WithHandlerOptions(opts...),
 	)
 	frontendServiceGetOrganizationHandler := connect.NewUnaryHandler(
 		FrontendServiceGetOrganizationProcedure,
 		svc.GetOrganization,
-		connect.WithSchema(frontendServiceGetOrganizationMethodDescriptor),
+		connect.WithSchema(frontendServiceMethods.ByName("GetOrganization")),
 		connect.WithHandlerOptions(opts...),
 	)
 	frontendServiceUpdateOrganizationHandler := connect.NewUnaryHandler(
 		FrontendServiceUpdateOrganizationProcedure,
 		svc.UpdateOrganization,
-		connect.WithSchema(frontendServiceUpdateOrganizationMethodDescriptor),
+		connect.WithSchema(frontendServiceMethods.ByName("UpdateOrganization")),
 		connect.WithHandlerOptions(opts...),
 	)
 	frontendServiceListUsersHandler := connect.NewUnaryHandler(
 		FrontendServiceListUsersProcedure,
 		svc.ListUsers,
-		connect.WithSchema(frontendServiceListUsersMethodDescriptor),
+		connect.WithSchema(frontendServiceMethods.ByName("ListUsers")),
 		connect.WithHandlerOptions(opts...),
 	)
 	frontendServiceGetUserHandler := connect.NewUnaryHandler(
 		FrontendServiceGetUserProcedure,
 		svc.GetUser,
-		connect.WithSchema(frontendServiceGetUserMethodDescriptor),
+		connect.WithSchema(frontendServiceMethods.ByName("GetUser")),
 		connect.WithHandlerOptions(opts...),
 	)
 	frontendServiceUpdateUserHandler := connect.NewUnaryHandler(
 		FrontendServiceUpdateUserProcedure,
 		svc.UpdateUser,
-		connect.WithSchema(frontendServiceUpdateUserMethodDescriptor),
+		connect.WithSchema(frontendServiceMethods.ByName("UpdateUser")),
 		connect.WithHandlerOptions(opts...),
 	)
 	frontendServiceListOrganizationsHandler := connect.NewUnaryHandler(
 		FrontendServiceListOrganizationsProcedure,
 		svc.ListOrganizations,
-		connect.WithSchema(frontendServiceListOrganizationsMethodDescriptor),
+		connect.WithSchema(frontendServiceMethods.ByName("ListOrganizations")),
 		connect.WithHandlerOptions(opts...),
 	)
 	frontendServiceSetPasswordHandler := connect.NewUnaryHandler(
 		FrontendServiceSetPasswordProcedure,
 		svc.SetPassword,
-		connect.WithSchema(frontendServiceSetPasswordMethodDescriptor),
+		connect.WithSchema(frontendServiceMethods.ByName("SetPassword")),
 		connect.WithHandlerOptions(opts...),
 	)
 	frontendServiceWhoAmIHandler := connect.NewUnaryHandler(
 		FrontendServiceWhoAmIProcedure,
 		svc.WhoAmI,
-		connect.WithSchema(frontendServiceWhoAmIMethodDescriptor),
+		connect.WithSchema(frontendServiceMethods.ByName("WhoAmI")),
 		connect.WithHandlerOptions(opts...),
 	)
 	frontendServiceListSAMLConnectionsHandler := connect.NewUnaryHandler(
 		FrontendServiceListSAMLConnectionsProcedure,
 		svc.ListSAMLConnections,
-		connect.WithSchema(frontendServiceListSAMLConnectionsMethodDescriptor),
+		connect.WithSchema(frontendServiceMethods.ByName("ListSAMLConnections")),
 		connect.WithHandlerOptions(opts...),
 	)
 	frontendServiceGetSAMLConnectionHandler := connect.NewUnaryHandler(
 		FrontendServiceGetSAMLConnectionProcedure,
 		svc.GetSAMLConnection,
-		connect.WithSchema(frontendServiceGetSAMLConnectionMethodDescriptor),
+		connect.WithSchema(frontendServiceMethods.ByName("GetSAMLConnection")),
 		connect.WithHandlerOptions(opts...),
 	)
 	frontendServiceCreateSAMLConnectionHandler := connect.NewUnaryHandler(
 		FrontendServiceCreateSAMLConnectionProcedure,
 		svc.CreateSAMLConnection,
-		connect.WithSchema(frontendServiceCreateSAMLConnectionMethodDescriptor),
+		connect.WithSchema(frontendServiceMethods.ByName("CreateSAMLConnection")),
 		connect.WithHandlerOptions(opts...),
 	)
 	frontendServiceUpdateSAMLConnectionHandler := connect.NewUnaryHandler(
 		FrontendServiceUpdateSAMLConnectionProcedure,
 		svc.UpdateSAMLConnection,
-		connect.WithSchema(frontendServiceUpdateSAMLConnectionMethodDescriptor),
+		connect.WithSchema(frontendServiceMethods.ByName("UpdateSAMLConnection")),
 		connect.WithHandlerOptions(opts...),
 	)
 	frontendServiceDeleteSAMLConnectionHandler := connect.NewUnaryHandler(
 		FrontendServiceDeleteSAMLConnectionProcedure,
 		svc.DeleteSAMLConnection,
-		connect.WithSchema(frontendServiceDeleteSAMLConnectionMethodDescriptor),
+		connect.WithSchema(frontendServiceMethods.ByName("DeleteSAMLConnection")),
 		connect.WithHandlerOptions(opts...),
 	)
 	frontendServiceListSCIMAPIKeysHandler := connect.NewUnaryHandler(
 		FrontendServiceListSCIMAPIKeysProcedure,
 		svc.ListSCIMAPIKeys,
-		connect.WithSchema(frontendServiceListSCIMAPIKeysMethodDescriptor),
+		connect.WithSchema(frontendServiceMethods.ByName("ListSCIMAPIKeys")),
 		connect.WithHandlerOptions(opts...),
 	)
 	frontendServiceGetSCIMAPIKeyHandler := connect.NewUnaryHandler(
 		FrontendServiceGetSCIMAPIKeyProcedure,
 		svc.GetSCIMAPIKey,
-		connect.WithSchema(frontendServiceGetSCIMAPIKeyMethodDescriptor),
+		connect.WithSchema(frontendServiceMethods.ByName("GetSCIMAPIKey")),
 		connect.WithHandlerOptions(opts...),
 	)
 	frontendServiceCreateSCIMAPIKeyHandler := connect.NewUnaryHandler(
 		FrontendServiceCreateSCIMAPIKeyProcedure,
 		svc.CreateSCIMAPIKey,
-		connect.WithSchema(frontendServiceCreateSCIMAPIKeyMethodDescriptor),
+		connect.WithSchema(frontendServiceMethods.ByName("CreateSCIMAPIKey")),
 		connect.WithHandlerOptions(opts...),
 	)
 	frontendServiceUpdateSCIMAPIKeyHandler := connect.NewUnaryHandler(
 		FrontendServiceUpdateSCIMAPIKeyProcedure,
 		svc.UpdateSCIMAPIKey,
-		connect.WithSchema(frontendServiceUpdateSCIMAPIKeyMethodDescriptor),
+		connect.WithSchema(frontendServiceMethods.ByName("UpdateSCIMAPIKey")),
 		connect.WithHandlerOptions(opts...),
 	)
 	frontendServiceDeleteSCIMAPIKeyHandler := connect.NewUnaryHandler(
 		FrontendServiceDeleteSCIMAPIKeyProcedure,
 		svc.DeleteSCIMAPIKey,
-		connect.WithSchema(frontendServiceDeleteSCIMAPIKeyMethodDescriptor),
+		connect.WithSchema(frontendServiceMethods.ByName("DeleteSCIMAPIKey")),
 		connect.WithHandlerOptions(opts...),
 	)
 	frontendServiceRevokeSCIMAPIKeyHandler := connect.NewUnaryHandler(
 		FrontendServiceRevokeSCIMAPIKeyProcedure,
 		svc.RevokeSCIMAPIKey,
-		connect.WithSchema(frontendServiceRevokeSCIMAPIKeyMethodDescriptor),
+		connect.WithSchema(frontendServiceMethods.ByName("RevokeSCIMAPIKey")),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/openauth.frontend.v1.FrontendService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

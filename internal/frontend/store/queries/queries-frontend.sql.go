@@ -51,17 +51,17 @@ func (q *Queries) CreateSAMLConnection(ctx context.Context, arg CreateSAMLConnec
 }
 
 const createSCIMAPIKey = `-- name: CreateSCIMAPIKey :one
-INSERT INTO scim_api_keys (id, organization_id, display_name, token_sha256)
+INSERT INTO scim_api_keys (id, organization_id, display_name, secret_token_sha256)
     VALUES ($1, $2, $3, $4)
 RETURNING
-    id, organization_id, token_sha256, display_name
+    id, organization_id, secret_token_sha256, display_name
 `
 
 type CreateSCIMAPIKeyParams struct {
-	ID             uuid.UUID
-	OrganizationID uuid.UUID
-	DisplayName    string
-	TokenSha256    []byte
+	ID                uuid.UUID
+	OrganizationID    uuid.UUID
+	DisplayName       string
+	SecretTokenSha256 []byte
 }
 
 func (q *Queries) CreateSCIMAPIKey(ctx context.Context, arg CreateSCIMAPIKeyParams) (ScimApiKey, error) {
@@ -69,13 +69,13 @@ func (q *Queries) CreateSCIMAPIKey(ctx context.Context, arg CreateSCIMAPIKeyPara
 		arg.ID,
 		arg.OrganizationID,
 		arg.DisplayName,
-		arg.TokenSha256,
+		arg.SecretTokenSha256,
 	)
 	var i ScimApiKey
 	err := row.Scan(
 		&i.ID,
 		&i.OrganizationID,
-		&i.TokenSha256,
+		&i.SecretTokenSha256,
 		&i.DisplayName,
 	)
 	return i, err
@@ -170,7 +170,7 @@ func (q *Queries) GetCurrentSessionKeyByProjectID(ctx context.Context, projectID
 
 const getOrganizationByID = `-- name: GetOrganizationByID :one
 SELECT
-    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods, saml_enabled, scim_enabled
 FROM
     organizations
 WHERE
@@ -190,13 +190,15 @@ func (q *Queries) GetOrganizationByID(ctx context.Context, id uuid.UUID) (Organi
 		&i.GoogleHostedDomain,
 		&i.MicrosoftTenantID,
 		&i.OverrideLogInMethods,
+		&i.SamlEnabled,
+		&i.ScimEnabled,
 	)
 	return i, err
 }
 
 const getProjectByID = `-- name: GetProjectByID :one
 SELECT
-    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, organizations_saml_enabled_default, organizations_scim_enabled_default
 FROM
     projects
 WHERE
@@ -217,6 +219,8 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 		&i.GoogleOauthClientSecretCiphertext,
 		&i.MicrosoftOauthClientSecretCiphertext,
 		&i.DisplayName,
+		&i.OrganizationsSamlEnabledDefault,
+		&i.OrganizationsScimEnabledDefault,
 	)
 	return i, err
 }
@@ -253,7 +257,7 @@ func (q *Queries) GetSAMLConnection(ctx context.Context, arg GetSAMLConnectionPa
 
 const getSCIMAPIKey = `-- name: GetSCIMAPIKey :one
 SELECT
-    id, organization_id, token_sha256, display_name
+    id, organization_id, secret_token_sha256, display_name
 FROM
     scim_api_keys
 WHERE
@@ -272,7 +276,7 @@ func (q *Queries) GetSCIMAPIKey(ctx context.Context, arg GetSCIMAPIKeyParams) (S
 	err := row.Scan(
 		&i.ID,
 		&i.OrganizationID,
-		&i.TokenSha256,
+		&i.SecretTokenSha256,
 		&i.DisplayName,
 	)
 	return i, err
@@ -469,7 +473,7 @@ func (q *Queries) ListSAMLConnections(ctx context.Context, arg ListSAMLConnectio
 
 const listSCIMAPIKeys = `-- name: ListSCIMAPIKeys :many
 SELECT
-    id, organization_id, token_sha256, display_name
+    id, organization_id, secret_token_sha256, display_name
 FROM
     scim_api_keys
 WHERE
@@ -498,7 +502,7 @@ func (q *Queries) ListSCIMAPIKeys(ctx context.Context, arg ListSCIMAPIKeysParams
 		if err := rows.Scan(
 			&i.ID,
 			&i.OrganizationID,
-			&i.TokenSha256,
+			&i.SecretTokenSha256,
 			&i.DisplayName,
 		); err != nil {
 			return nil, err
@@ -565,11 +569,11 @@ const revokeSCIMAPIKey = `-- name: RevokeSCIMAPIKey :one
 UPDATE
     scim_api_keys
 SET
-    token_sha256 = NULL
+    secret_token_sha256 = NULL
 WHERE
     id = $1
 RETURNING
-    id, organization_id, token_sha256, display_name
+    id, organization_id, secret_token_sha256, display_name
 `
 
 func (q *Queries) RevokeSCIMAPIKey(ctx context.Context, id uuid.UUID) (ScimApiKey, error) {
@@ -578,7 +582,7 @@ func (q *Queries) RevokeSCIMAPIKey(ctx context.Context, id uuid.UUID) (ScimApiKe
 	err := row.Scan(
 		&i.ID,
 		&i.OrganizationID,
-		&i.TokenSha256,
+		&i.SecretTokenSha256,
 		&i.DisplayName,
 	)
 	return i, err
@@ -632,7 +636,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods, saml_enabled, scim_enabled
 `
 
 type UpdateOrganizationParams struct {
@@ -668,6 +672,8 @@ func (q *Queries) UpdateOrganization(ctx context.Context, arg UpdateOrganization
 		&i.GoogleHostedDomain,
 		&i.MicrosoftTenantID,
 		&i.OverrideLogInMethods,
+		&i.SamlEnabled,
+		&i.ScimEnabled,
 	)
 	return i, err
 }
@@ -742,7 +748,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, organization_id, token_sha256, display_name
+    id, organization_id, secret_token_sha256, display_name
 `
 
 type UpdateSCIMAPIKeyParams struct {
@@ -756,7 +762,7 @@ func (q *Queries) UpdateSCIMAPIKey(ctx context.Context, arg UpdateSCIMAPIKeyPara
 	err := row.Scan(
 		&i.ID,
 		&i.OrganizationID,
-		&i.TokenSha256,
+		&i.SecretTokenSha256,
 		&i.DisplayName,
 	)
 	return i, err

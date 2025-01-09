@@ -101,6 +101,8 @@ type Organization struct {
 	GoogleHostedDomain                *string
 	MicrosoftTenantID                 *string
 	OverrideLogInMethods              bool
+	SamlEnabled                       bool
+	ScimEnabled                       bool
 }
 
 type OrganizationDomain struct {
@@ -120,6 +122,8 @@ type Project struct {
 	GoogleOauthClientSecretCiphertext    []byte
 	MicrosoftOauthClientSecretCiphertext []byte
 	DisplayName                          string
+	OrganizationsSamlEnabledDefault      bool
+	OrganizationsScimEnabledDefault      bool
 }
 
 type ProjectApiKey struct {
@@ -140,10 +144,10 @@ type SamlConnection struct {
 }
 
 type ScimApiKey struct {
-	ID             uuid.UUID
-	OrganizationID uuid.UUID
-	TokenSha256    []byte
-	DisplayName    string
+	ID                uuid.UUID
+	OrganizationID    uuid.UUID
+	SecretTokenSha256 []byte
+	DisplayName       string
 }
 
 type Session struct {

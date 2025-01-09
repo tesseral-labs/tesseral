@@ -99,6 +99,16 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 		updates.LogInWithPasswordEnabled = *req.Project.LogInWithPasswordEnabled
 	}
 
+	updates.OrganizationsSamlEnabledDefault = qProject.OrganizationsSamlEnabledDefault
+	if req.Project.OrganizationsSamlEnabledDefault != nil {
+		updates.OrganizationsSamlEnabledDefault = *req.Project.OrganizationsSamlEnabledDefault
+	}
+
+	updates.OrganizationsScimEnabledDefault = qProject.OrganizationsScimEnabledDefault
+	if req.Project.OrganizationsScimEnabledDefault != nil {
+		updates.OrganizationsScimEnabledDefault = *req.Project.OrganizationsScimEnabledDefault
+	}
+
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -119,12 +129,14 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 
 func parseProject(qProject *queries.Project) *backendv1.Project {
 	return &backendv1.Project{
-		Id:                        idformat.Project.Format(qProject.ID),
-		DisplayName:               qProject.DisplayName,
-		LogInWithPasswordEnabled:  &qProject.LogInWithPasswordEnabled,
-		LogInWithGoogleEnabled:    &qProject.LogInWithGoogleEnabled,
-		LogInWithMicrosoftEnabled: &qProject.LogInWithMicrosoftEnabled,
-		GoogleOauthClientId:       derefOrEmpty(qProject.GoogleOauthClientID),
-		MicrosoftOauthClientId:    derefOrEmpty(qProject.MicrosoftOauthClientID),
+		Id:                              idformat.Project.Format(qProject.ID),
+		DisplayName:                     qProject.DisplayName,
+		LogInWithPasswordEnabled:        &qProject.LogInWithPasswordEnabled,
+		LogInWithGoogleEnabled:          &qProject.LogInWithGoogleEnabled,
+		LogInWithMicrosoftEnabled:       &qProject.LogInWithMicrosoftEnabled,
+		GoogleOauthClientId:             derefOrEmpty(qProject.GoogleOauthClientID),
+		MicrosoftOauthClientId:          derefOrEmpty(qProject.MicrosoftOauthClientID),
+		OrganizationsSamlEnabledDefault: &qProject.OrganizationsSamlEnabledDefault,
+		OrganizationsScimEnabledDefault: &qProject.OrganizationsScimEnabledDefault,
 	}
 }

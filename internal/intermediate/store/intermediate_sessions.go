@@ -118,7 +118,7 @@ func (s *Store) CreateIntermediateSession(ctx *context.Context, req *CreateInter
 	expiresAt := time.Now().Add(time.Minute * 15)
 
 	createdIntermediateSession, err := q.CreateIntermediateSession(*ctx, queries.CreateIntermediateSessionParams{
-		ID:         uuid.New(),
+		ID:         uuid.Must(uuid.NewV7()),
 		ProjectID:  projectId,
 		Email:      &req.Email,
 		ExpireTime: &expiresAt,

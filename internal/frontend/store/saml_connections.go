@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/url"
 
+	"connectrpc.com/connect"
 	"github.com/google/uuid"
 	"github.com/openauth/openauth/internal/frontend/authn"
 	frontendv1 "github.com/openauth/openauth/internal/frontend/gen/openauth/frontend/v1"
@@ -86,6 +87,15 @@ func (s *Store) CreateSAMLConnection(ctx context.Context, req *frontendv1.Create
 		return nil, err
 	}
 	defer rollback()
+
+	qOrg, err := q.GetOrganizationByID(ctx, authn.OrganizationID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get organization by id: %w", err)
+	}
+
+	if !qOrg.SamlEnabled {
+		return nil, connect.NewError(connect.CodeFailedPrecondition, fmt.Errorf("organization does not have SAML enabled"))
+	}
 
 	if req.SamlConnection.IdpRedirectUrl != "" {
 		u, err := url.Parse(req.SamlConnection.IdpRedirectUrl)
