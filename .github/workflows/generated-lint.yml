@@ -21,7 +21,6 @@ jobs:
       - name: make proto
         run: |
           npm install
-          rm -r internal/backend/gen internal/frontend/gen internal/intermediate/gen internal/oauth/gen app/src/gen ui/src/gen
           make proto
       - name: check if index is dirty
         run: git diff --exit-code
@@ -35,7 +34,6 @@ jobs:
           sqlc-version: '1.27.0'
       - name: sqlc
         run: |
-          rm -r internal/store/queries internal/backend/store/queries internal/frontend/store/queries internal/intermediate/store/queries internal/oauth/store/queries internal/saml/store/queries internal/scim/store/queries
-          sqlc -f ./sqlc/sqlc.yaml generate
+          make queries
       - name: check if index is dirty
         run: git diff --exit-code
