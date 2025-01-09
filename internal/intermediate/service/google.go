@@ -7,7 +7,6 @@ import (
 	"connectrpc.com/connect"
 	"github.com/openauth/openauth/internal/cookies"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
-	"github.com/openauth/openauth/internal/projectid"
 )
 
 func (s *Service) GetGoogleOAuthRedirectURL(ctx context.Context, req *connect.Request[intermediatev1.GetGoogleOAuthRedirectURLRequest]) (*connect.Response[intermediatev1.GetGoogleOAuthRedirectURLResponse], error) {
@@ -16,10 +15,8 @@ func (s *Service) GetGoogleOAuthRedirectURL(ctx context.Context, req *connect.Re
 		return nil, fmt.Errorf("store: %w", err)
 	}
 
-	projectID := projectid.ProjectID(ctx)
-
 	connectResponse := connect.NewResponse(res)
-	connectResponse.Header().Add("Set-Cookie", cookies.BuildCookie(projectID, "intermediateAccessToken", res.IntermediateSessionToken, req.Spec().Schema == "https"))
+	connectResponse.Header().Add("Set-Cookie", cookies.BuildCookie(ctx, req, "intermediateAccessToken", res.IntermediateSessionToken))
 
 	return connectResponse, nil
 }

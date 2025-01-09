@@ -3,26 +3,37 @@ package cookies
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"strings"
 
 	"connectrpc.com/connect"
-	"github.com/google/uuid"
 	"github.com/openauth/openauth/internal/projectid"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
 var errCookieNotFound = fmt.Errorf("cookie not found")
 
-func BuildCookie(projectID uuid.UUID, cookieType string, accessToken string, secure bool) string {
-	secureStr := ""
-	if secure {
-		secureStr = "Secure;"
-	}
+func BuildCookie(ctx context.Context, req connect.AnyRequest, cookieType string, value string) string {
+	projectID := projectid.ProjectID(ctx)
+	secure := req.Spec().Schema == "https"
 
 	maxAge := 60 * 60 * 24 * 7 // one week
+	if cookieType == "intermediateAccessToken" {
+		maxAge = 60 * 15 // 15 minutes
+	}
 
 	// TODO: Once domains are sorted out, we'll need to set the `Domain` attribute on the cookie.
-	return fmt.Sprintf("tesseral_%s_%s=%s;SameSite=Lax;HttpOnly;MaxAge=%d;%s", idformat.Project.Format(projectID), cookieType, accessToken, maxAge, secureStr)
+	cookie := http.Cookie{
+		HttpOnly: true,
+		MaxAge:   maxAge,
+		Name:     fmt.Sprintf("tesseral_%s_%s", idformat.Project.Format(projectID), cookieType),
+		Path:     "/",
+		SameSite: http.SameSiteNoneMode,
+		Secure:   secure,
+		Value:    value,
+	}
+
+	return cookie.String()
 }
 
 func GetCookie(ctx context.Context, req connect.AnyRequest, cookieType string) (string, error) {

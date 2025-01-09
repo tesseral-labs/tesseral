@@ -7,7 +7,6 @@ import (
 	"connectrpc.com/connect"
 	"github.com/openauth/openauth/internal/cookies"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
-	"github.com/openauth/openauth/internal/projectid"
 )
 
 func (s *Service) SignInWithEmail(ctx context.Context, req *connect.Request[intermediatev1.SignInWithEmailRequest]) (*connect.Response[intermediatev1.SignInWithEmailResponse], error) {
@@ -16,10 +15,9 @@ func (s *Service) SignInWithEmail(ctx context.Context, req *connect.Request[inte
 		return nil, fmt.Errorf("store: %w", err)
 	}
 
-	projectID := projectid.ProjectID(ctx)
-
 	connectResponse := connect.NewResponse(res)
-	connectResponse.Header().Add("Set-Cookie", cookies.BuildCookie(projectID, "intermediateAccessToken", res.IntermediateSessionToken, req.Spec().Schema == "https"))
+	connectResponse.Header().Add("Set-Cookie", cookies.BuildCookie(ctx, req, "intermediateAccessToken", res.IntermediateSessionToken))
+	// connectResponse.Header().Add("Set-Cookie", "test=test; Max-Age=3600; SameSite=Lax")
 
 	return connectResponse, nil
 }

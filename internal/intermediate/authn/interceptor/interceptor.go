@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 
 	"connectrpc.com/connect"
 	"github.com/openauth/openauth/internal/cookies"
@@ -38,6 +39,8 @@ func New(s *store.Store) connect.UnaryInterceptorFunc {
 			if err != nil {
 				return nil, connect.NewError(connect.CodeUnauthenticated, err)
 			}
+
+			slog.InfoContext(ctx, "authn.interceptor", "intermediateAccessToken", secretValue)
 
 			intermediateSession, err := s.GetIntermediateSessionByToken(ctx, secretValue)
 			if err != nil {
