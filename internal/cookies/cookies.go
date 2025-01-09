@@ -17,6 +17,11 @@ func BuildCookie(ctx context.Context, req connect.AnyRequest, cookieType string,
 	projectID := projectid.ProjectID(ctx)
 	secure := req.Spec().Schema == "https"
 
+	sameSite := http.SameSiteLaxMode
+	if secure {
+		sameSite = http.SameSiteNoneMode
+	}
+
 	maxAge := 60 * 60 * 24 * 7 // one week
 	if cookieType == "intermediateAccessToken" {
 		maxAge = 60 * 15 // 15 minutes
@@ -28,7 +33,7 @@ func BuildCookie(ctx context.Context, req connect.AnyRequest, cookieType string,
 		MaxAge:   maxAge,
 		Name:     fmt.Sprintf("tesseral_%s_%s", idformat.Project.Format(projectID), cookieType),
 		Path:     "/",
-		SameSite: http.SameSiteNoneMode,
+		SameSite: sameSite,
 		Secure:   secure,
 		Value:    value,
 	}
