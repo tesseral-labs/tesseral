@@ -276,8 +276,6 @@ func parseOrganization(qProject queries.Project, qOrg queries.Organization) *bac
 		LogInWithMicrosoftEnabled: logInWithMicrosoftEnabled,
 		GoogleHostedDomain:        derefOrEmpty(qOrg.GoogleHostedDomain),
 		MicrosoftTenantId:         derefOrEmpty(qOrg.MicrosoftTenantID),
-		GoogleHostedDomain:        derefOrEmpty(qOrg.GoogleHostedDomain),
-		MicrosoftTenantId:         derefOrEmpty(qOrg.MicrosoftTenantID),
 		SamlEnabled:               &qOrg.SamlEnabled,
 		ScimEnabled:               &qOrg.ScimEnabled,
 	}
