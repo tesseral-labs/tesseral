@@ -1,10 +1,10 @@
 import { Title } from '@/components/Title'
-import { whoami } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
+import { whoAmI } from '@/gen/openauth/frontend/v1/frontend-FrontendService_connectquery'
 import { useQuery } from '@connectrpc/connect-query'
 import React from 'react'
 
 const SessionInfoPage = () => {
-  const { data: whoamiRes } = useQuery(whoami)
+  const { data: whoamiRes } = useQuery(whoAmI)
 
   return (
     <>
