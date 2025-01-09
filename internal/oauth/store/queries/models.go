@@ -101,6 +101,8 @@ type Organization struct {
 	GoogleHostedDomain                *string
 	MicrosoftTenantID                 *string
 	OverrideLogInMethods              bool
+	CreateTime                        *time.Time
+	UpdateTime                        *time.Time
 	SamlEnabled                       bool
 	ScimEnabled                       bool
 }
@@ -122,6 +124,8 @@ type Project struct {
 	GoogleOauthClientSecretCiphertext    []byte
 	MicrosoftOauthClientSecretCiphertext []byte
 	DisplayName                          string
+	CreateTime                           *time.Time
+	UpdateTime                           *time.Time
 	OrganizationsSamlEnabledDefault      bool
 	OrganizationsScimEnabledDefault      bool
 }
@@ -131,6 +135,8 @@ type ProjectApiKey struct {
 	ProjectID         uuid.UUID
 	SecretTokenSha256 []byte
 	DisplayName       string
+	CreateTime        *time.Time
+	UpdateTime        *time.Time
 }
 
 type SamlConnection struct {
@@ -141,6 +147,7 @@ type SamlConnection struct {
 	IdpRedirectUrl     *string
 	IdpX509Certificate []byte
 	IdpEntityID        *string
+	UpdateTime         *time.Time
 }
 
 type ScimApiKey struct {
@@ -148,6 +155,8 @@ type ScimApiKey struct {
 	OrganizationID    uuid.UUID
 	SecretTokenSha256 []byte
 	DisplayName       string
+	CreateTime        *time.Time
+	UpdateTime        *time.Time
 }
 
 type Session struct {

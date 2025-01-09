@@ -16,7 +16,7 @@ const createSAMLConnection = `-- name: CreateSAMLConnection :one
 INSERT INTO saml_connections (id, organization_id, is_primary, idp_redirect_url, idp_x509_certificate, idp_entity_id)
     VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING
-    id, organization_id, create_time, is_primary, idp_redirect_url, idp_x509_certificate, idp_entity_id
+    id, organization_id, create_time, is_primary, idp_redirect_url, idp_x509_certificate, idp_entity_id, update_time
 `
 
 type CreateSAMLConnectionParams struct {
@@ -46,6 +46,7 @@ func (q *Queries) CreateSAMLConnection(ctx context.Context, arg CreateSAMLConnec
 		&i.IdpRedirectUrl,
 		&i.IdpX509Certificate,
 		&i.IdpEntityID,
+		&i.UpdateTime,
 	)
 	return i, err
 }
@@ -54,7 +55,7 @@ const createSCIMAPIKey = `-- name: CreateSCIMAPIKey :one
 INSERT INTO scim_api_keys (id, organization_id, display_name, secret_token_sha256)
     VALUES ($1, $2, $3, $4)
 RETURNING
-    id, organization_id, secret_token_sha256, display_name
+    id, organization_id, secret_token_sha256, display_name, create_time, update_time
 `
 
 type CreateSCIMAPIKeyParams struct {
@@ -77,6 +78,8 @@ func (q *Queries) CreateSCIMAPIKey(ctx context.Context, arg CreateSCIMAPIKeyPara
 		&i.OrganizationID,
 		&i.SecretTokenSha256,
 		&i.DisplayName,
+		&i.CreateTime,
+		&i.UpdateTime,
 	)
 	return i, err
 }
@@ -170,7 +173,7 @@ func (q *Queries) GetCurrentSessionKeyByProjectID(ctx context.Context, projectID
 
 const getOrganizationByID = `-- name: GetOrganizationByID :one
 SELECT
-    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods, saml_enabled, scim_enabled
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods, create_time, update_time, saml_enabled, scim_enabled
 FROM
     organizations
 WHERE
@@ -190,6 +193,8 @@ func (q *Queries) GetOrganizationByID(ctx context.Context, id uuid.UUID) (Organi
 		&i.GoogleHostedDomain,
 		&i.MicrosoftTenantID,
 		&i.OverrideLogInMethods,
+		&i.CreateTime,
+		&i.UpdateTime,
 		&i.SamlEnabled,
 		&i.ScimEnabled,
 	)
@@ -198,7 +203,7 @@ func (q *Queries) GetOrganizationByID(ctx context.Context, id uuid.UUID) (Organi
 
 const getProjectByID = `-- name: GetProjectByID :one
 SELECT
-    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, organizations_saml_enabled_default, organizations_scim_enabled_default
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, organizations_saml_enabled_default, organizations_scim_enabled_default
 FROM
     projects
 WHERE
@@ -219,6 +224,8 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 		&i.GoogleOauthClientSecretCiphertext,
 		&i.MicrosoftOauthClientSecretCiphertext,
 		&i.DisplayName,
+		&i.CreateTime,
+		&i.UpdateTime,
 		&i.OrganizationsSamlEnabledDefault,
 		&i.OrganizationsScimEnabledDefault,
 	)
@@ -227,7 +234,7 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 
 const getSAMLConnection = `-- name: GetSAMLConnection :one
 SELECT
-    id, organization_id, create_time, is_primary, idp_redirect_url, idp_x509_certificate, idp_entity_id
+    id, organization_id, create_time, is_primary, idp_redirect_url, idp_x509_certificate, idp_entity_id, update_time
 FROM
     saml_connections
 WHERE
@@ -251,13 +258,14 @@ func (q *Queries) GetSAMLConnection(ctx context.Context, arg GetSAMLConnectionPa
 		&i.IdpRedirectUrl,
 		&i.IdpX509Certificate,
 		&i.IdpEntityID,
+		&i.UpdateTime,
 	)
 	return i, err
 }
 
 const getSCIMAPIKey = `-- name: GetSCIMAPIKey :one
 SELECT
-    id, organization_id, secret_token_sha256, display_name
+    id, organization_id, secret_token_sha256, display_name, create_time, update_time
 FROM
     scim_api_keys
 WHERE
@@ -278,6 +286,8 @@ func (q *Queries) GetSCIMAPIKey(ctx context.Context, arg GetSCIMAPIKeyParams) (S
 		&i.OrganizationID,
 		&i.SecretTokenSha256,
 		&i.DisplayName,
+		&i.CreateTime,
+		&i.UpdateTime,
 	)
 	return i, err
 }
@@ -426,7 +436,7 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 
 const listSAMLConnections = `-- name: ListSAMLConnections :many
 SELECT
-    id, organization_id, create_time, is_primary, idp_redirect_url, idp_x509_certificate, idp_entity_id
+    id, organization_id, create_time, is_primary, idp_redirect_url, idp_x509_certificate, idp_entity_id, update_time
 FROM
     saml_connections
 WHERE
@@ -460,6 +470,7 @@ func (q *Queries) ListSAMLConnections(ctx context.Context, arg ListSAMLConnectio
 			&i.IdpRedirectUrl,
 			&i.IdpX509Certificate,
 			&i.IdpEntityID,
+			&i.UpdateTime,
 		); err != nil {
 			return nil, err
 		}
@@ -473,7 +484,7 @@ func (q *Queries) ListSAMLConnections(ctx context.Context, arg ListSAMLConnectio
 
 const listSCIMAPIKeys = `-- name: ListSCIMAPIKeys :many
 SELECT
-    id, organization_id, secret_token_sha256, display_name
+    id, organization_id, secret_token_sha256, display_name, create_time, update_time
 FROM
     scim_api_keys
 WHERE
@@ -504,6 +515,8 @@ func (q *Queries) ListSCIMAPIKeys(ctx context.Context, arg ListSCIMAPIKeysParams
 			&i.OrganizationID,
 			&i.SecretTokenSha256,
 			&i.DisplayName,
+			&i.CreateTime,
+			&i.UpdateTime,
 		); err != nil {
 			return nil, err
 		}
@@ -569,11 +582,12 @@ const revokeSCIMAPIKey = `-- name: RevokeSCIMAPIKey :one
 UPDATE
     scim_api_keys
 SET
+    update_time = now(),
     secret_token_sha256 = NULL
 WHERE
     id = $1
 RETURNING
-    id, organization_id, secret_token_sha256, display_name
+    id, organization_id, secret_token_sha256, display_name, create_time, update_time
 `
 
 func (q *Queries) RevokeSCIMAPIKey(ctx context.Context, id uuid.UUID) (ScimApiKey, error) {
@@ -584,6 +598,8 @@ func (q *Queries) RevokeSCIMAPIKey(ctx context.Context, id uuid.UUID) (ScimApiKe
 		&i.OrganizationID,
 		&i.SecretTokenSha256,
 		&i.DisplayName,
+		&i.CreateTime,
+		&i.UpdateTime,
 	)
 	return i, err
 }
@@ -592,6 +608,7 @@ const setPassword = `-- name: SetPassword :one
 UPDATE
     users
 SET
+    update_time = now(),
     password_bcrypt = $2
 WHERE
     id = $1
@@ -626,6 +643,7 @@ const updateOrganization = `-- name: UpdateOrganization :one
 UPDATE
     organizations
 SET
+    update_time = now(),
     display_name = $2,
     google_hosted_domain = $3,
     microsoft_tenant_id = $4,
@@ -636,7 +654,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods, saml_enabled, scim_enabled
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods, create_time, update_time, saml_enabled, scim_enabled
 `
 
 type UpdateOrganizationParams struct {
@@ -672,6 +690,8 @@ func (q *Queries) UpdateOrganization(ctx context.Context, arg UpdateOrganization
 		&i.GoogleHostedDomain,
 		&i.MicrosoftTenantID,
 		&i.OverrideLogInMethods,
+		&i.CreateTime,
+		&i.UpdateTime,
 		&i.SamlEnabled,
 		&i.ScimEnabled,
 	)
@@ -701,6 +721,7 @@ const updateSAMLConnection = `-- name: UpdateSAMLConnection :one
 UPDATE
     saml_connections
 SET
+    update_time = now(),
     is_primary = $1,
     idp_redirect_url = $2,
     idp_x509_certificate = $3,
@@ -708,7 +729,7 @@ SET
 WHERE
     id = $5
 RETURNING
-    id, organization_id, create_time, is_primary, idp_redirect_url, idp_x509_certificate, idp_entity_id
+    id, organization_id, create_time, is_primary, idp_redirect_url, idp_x509_certificate, idp_entity_id, update_time
 `
 
 type UpdateSAMLConnectionParams struct {
@@ -736,6 +757,7 @@ func (q *Queries) UpdateSAMLConnection(ctx context.Context, arg UpdateSAMLConnec
 		&i.IdpRedirectUrl,
 		&i.IdpX509Certificate,
 		&i.IdpEntityID,
+		&i.UpdateTime,
 	)
 	return i, err
 }
@@ -744,11 +766,12 @@ const updateSCIMAPIKey = `-- name: UpdateSCIMAPIKey :one
 UPDATE
     scim_api_keys
 SET
+    update_time = now(),
     display_name = $1
 WHERE
     id = $2
 RETURNING
-    id, organization_id, secret_token_sha256, display_name
+    id, organization_id, secret_token_sha256, display_name, create_time, update_time
 `
 
 type UpdateSCIMAPIKeyParams struct {
@@ -764,6 +787,8 @@ func (q *Queries) UpdateSCIMAPIKey(ctx context.Context, arg UpdateSCIMAPIKeyPara
 		&i.OrganizationID,
 		&i.SecretTokenSha256,
 		&i.DisplayName,
+		&i.CreateTime,
+		&i.UpdateTime,
 	)
 	return i, err
 }
@@ -772,6 +797,7 @@ const updateUser = `-- name: UpdateUser :one
 UPDATE
     users
 SET
+    update_time = now(),
     is_owner = $1
 WHERE
     id = $2
