@@ -102,7 +102,7 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 	// - this adds a 1 hour buffer to the 6 hour key rotation period,
 	//   so that the key can be rotated before it expires without
 	//   causing existing JWT parsing to fail
-	expiresAt := time.Now().Add(time.Hour * 7)
+	expiresAt := time.Now().Add(time.Hour * 24 * 365)
 
 	// Generate a new symmetric key
 	privateKey, err := ecdsa.GenerateKey()
