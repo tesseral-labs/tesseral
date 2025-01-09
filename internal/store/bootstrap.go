@@ -98,10 +98,7 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 	}
 
 	// create session signing keys for the new project
-	// Allow this key to be used for 7 hours
-	// - this adds a 1 hour buffer to the 6 hour key rotation period,
-	//   so that the key can be rotated before it expires without
-	//   causing existing JWT parsing to fail
+	// Allow this key to be used for one year since the key rotation isn't implemented yet
 	expiresAt := time.Now().Add(time.Hour * 24 * 365)
 
 	// Generate a new symmetric key
