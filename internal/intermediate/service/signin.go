@@ -17,7 +17,6 @@ func (s *Service) SignInWithEmail(ctx context.Context, req *connect.Request[inte
 
 	connectResponse := connect.NewResponse(res)
 	connectResponse.Header().Add("Set-Cookie", cookies.BuildCookie(ctx, req, "intermediateAccessToken", res.IntermediateSessionToken))
-	// connectResponse.Header().Add("Set-Cookie", "test=test; Max-Age=3600; SameSite=Lax")
 
 	return connectResponse, nil
 }
