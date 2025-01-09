@@ -144,10 +144,10 @@ type SamlConnection struct {
 }
 
 type ScimApiKey struct {
-	ID             uuid.UUID
-	OrganizationID uuid.UUID
-	TokenSha256    []byte
-	DisplayName    string
+	ID                uuid.UUID
+	OrganizationID    uuid.UUID
+	SecretTokenSha256 []byte
+	DisplayName       string
 }
 
 type Session struct {

@@ -126,27 +126,27 @@ func (q *Queries) GetOrganizationDomains(ctx context.Context, organizationID uui
 
 const getSCIMAPIKeyByTokenSHA256 = `-- name: GetSCIMAPIKeyByTokenSHA256 :one
 SELECT
-    scim_api_keys.id, scim_api_keys.organization_id, scim_api_keys.token_sha256, scim_api_keys.display_name
+    scim_api_keys.id, scim_api_keys.organization_id, scim_api_keys.secret_token_sha256, scim_api_keys.display_name
 FROM
     scim_api_keys
     JOIN organizations ON scim_api_keys.organization_id = organizations.id
 WHERE
-    token_sha256 = $1
+    secret_token_sha256 = $1
     AND organizations.project_id = $2
 `
 
 type GetSCIMAPIKeyByTokenSHA256Params struct {
-	TokenSha256 []byte
-	ProjectID   uuid.UUID
+	SecretTokenSha256 []byte
+	ProjectID         uuid.UUID
 }
 
 func (q *Queries) GetSCIMAPIKeyByTokenSHA256(ctx context.Context, arg GetSCIMAPIKeyByTokenSHA256Params) (ScimApiKey, error) {
-	row := q.db.QueryRow(ctx, getSCIMAPIKeyByTokenSHA256, arg.TokenSha256, arg.ProjectID)
+	row := q.db.QueryRow(ctx, getSCIMAPIKeyByTokenSHA256, arg.SecretTokenSha256, arg.ProjectID)
 	var i ScimApiKey
 	err := row.Scan(
 		&i.ID,
 		&i.OrganizationID,
-		&i.TokenSha256,
+		&i.SecretTokenSha256,
 		&i.DisplayName,
 	)
 	return i, err

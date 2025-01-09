@@ -29,8 +29,8 @@ func (s *Store) GetSCIMAPIKeyByToken(ctx context.Context, token string) (*SCIMAP
 
 	tokenSHA := sha256.Sum256(tokenUUID[:])
 	qSCIMAPIKey, err := q.GetSCIMAPIKeyByTokenSHA256(ctx, queries.GetSCIMAPIKeyByTokenSHA256Params{
-		ProjectID:   projectid.ProjectID(ctx),
-		TokenSha256: tokenSHA[:],
+		ProjectID:         projectid.ProjectID(ctx),
+		SecretTokenSha256: tokenSHA[:],
 	})
 	if err != nil {
 		return nil, fmt.Errorf("get scim api key by token sha256: %w", err)
