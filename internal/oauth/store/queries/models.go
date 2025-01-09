@@ -101,10 +101,10 @@ type Organization struct {
 	GoogleHostedDomain                *string
 	MicrosoftTenantID                 *string
 	OverrideLogInMethods              bool
-	CreateTime                        *time.Time
-	UpdateTime                        *time.Time
 	SamlEnabled                       bool
 	ScimEnabled                       bool
+	CreateTime                        *time.Time
+	UpdateTime                        *time.Time
 }
 
 type OrganizationDomain struct {
@@ -124,10 +124,10 @@ type Project struct {
 	GoogleOauthClientSecretCiphertext    []byte
 	MicrosoftOauthClientSecretCiphertext []byte
 	DisplayName                          string
-	CreateTime                           *time.Time
-	UpdateTime                           *time.Time
 	OrganizationsSamlEnabledDefault      bool
 	OrganizationsScimEnabledDefault      bool
+	CreateTime                           *time.Time
+	UpdateTime                           *time.Time
 }
 
 type ProjectApiKey struct {
