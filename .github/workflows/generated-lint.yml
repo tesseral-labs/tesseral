@@ -34,6 +34,7 @@ jobs:
           sqlc-version: '1.27.0'
       - name: sqlc
         run: |
-          make queries
+          rm -r internal/store/queries internal/backend/store/queries internal/frontend/store/queries internal/intermediate/store/queries internal/oauth/store/queries internal/saml/store/queries internal/scim/store/queries
+          sqlc -f ./sqlc/sqlc.yaml generate
       - name: check if index is dirty
         run: git diff --exit-code
