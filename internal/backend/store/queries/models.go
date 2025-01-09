@@ -103,6 +103,8 @@ type Organization struct {
 	OverrideLogInMethods              bool
 	SamlEnabled                       bool
 	ScimEnabled                       bool
+	CreateTime                        *time.Time
+	UpdateTime                        *time.Time
 }
 
 type OrganizationDomain struct {
@@ -124,6 +126,8 @@ type Project struct {
 	DisplayName                          string
 	OrganizationsSamlEnabledDefault      bool
 	OrganizationsScimEnabledDefault      bool
+	CreateTime                           *time.Time
+	UpdateTime                           *time.Time
 }
 
 type ProjectApiKey struct {
@@ -131,6 +135,8 @@ type ProjectApiKey struct {
 	ProjectID         uuid.UUID
 	SecretTokenSha256 []byte
 	DisplayName       string
+	CreateTime        *time.Time
+	UpdateTime        *time.Time
 }
 
 type SamlConnection struct {
@@ -141,6 +147,7 @@ type SamlConnection struct {
 	IdpRedirectUrl     *string
 	IdpX509Certificate []byte
 	IdpEntityID        *string
+	UpdateTime         *time.Time
 }
 
 type ScimApiKey struct {
@@ -148,6 +155,8 @@ type ScimApiKey struct {
 	OrganizationID    uuid.UUID
 	SecretTokenSha256 []byte
 	DisplayName       string
+	CreateTime        *time.Time
+	UpdateTime        *time.Time
 }
 
 type Session struct {

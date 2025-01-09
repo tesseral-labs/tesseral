@@ -9,6 +9,7 @@ import (
 	"github.com/openauth/openauth/internal/backend/store/queries"
 	"github.com/openauth/openauth/internal/projectid"
 	"github.com/openauth/openauth/internal/store/idformat"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func (s *Store) ListUsers(ctx context.Context, req *backendv1.ListUsersRequest) (*backendv1.ListUsersResponse, error) {
@@ -91,6 +92,8 @@ func parseUser(qUser queries.User) *backendv1.User {
 		Id:              idformat.User.Format(qUser.ID),
 		OrganizationId:  idformat.Organization.Format(qUser.OrganizationID),
 		Email:           qUser.Email,
+		CreateTime:      timestamppb.New(*qUser.CreateTime),
+		UpdateTime:      timestamppb.New(*qUser.UpdateTime),
 		Owner:           &qUser.IsOwner,
 		GoogleUserId:    derefOrEmpty(qUser.GoogleUserID),
 		MicrosoftUserId: derefOrEmpty(qUser.MicrosoftUserID),
