@@ -3,9 +3,9 @@ package intermediateinterceptor
 import (
 	"context"
 	"errors"
-	"strings"
 
 	"connectrpc.com/connect"
+	"github.com/openauth/openauth/internal/cookies"
 	"github.com/openauth/openauth/internal/intermediate/authn"
 	"github.com/openauth/openauth/internal/intermediate/store"
 )
@@ -28,14 +28,9 @@ func New(s *store.Store) connect.UnaryInterceptorFunc {
 			}
 
 			// Enforce authentication if not skipping
-			authorization := req.Header().Get("Authorization")
-			if authorization == "" {
-				return nil, connect.NewError(connect.CodeUnauthenticated, ErrAuthorizationHeaderRequired)
-			}
-
-			secretValue, ok := strings.CutPrefix(authorization, "Bearer ")
-			if !ok {
-				return nil, connect.NewError(connect.CodeUnauthenticated, nil)
+			secretValue, err := cookies.GetCookie(ctx, req, "intermediateAccessToken")
+			if err != nil {
+				return nil, connect.NewError(connect.CodeUnauthenticated, err)
 			}
 
 			intermediateSession, err := s.GetIntermediateSessionByToken(ctx, secretValue)

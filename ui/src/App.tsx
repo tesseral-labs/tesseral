@@ -25,12 +25,9 @@ const queryClient = new QueryClient()
 function useTransport(): Transport {
   return createConnectTransport({
     baseUrl: `${API_URL}/internal/connect`,
+    fetch: (input, init) => fetch(input, { ...init, credentials: 'include' }),
     interceptors: [
       (next) => async (req) => {
-        req.header.set(
-          'Authorization',
-          `Bearer ${getIntermediateSessionToken() ?? 'NO_INTERMEDIATE_SESSION_TOKEN'}`,
-        )
         // TODO: When we figure out how to get the project ID from the server, we should remove this logic.
         req.header.set('X-TODO-OpenAuth-Project-ID', PROJECT_ID)
 

@@ -235,7 +235,22 @@ func main() {
 	// Use the slogcorrelation.NewHandler to add correlation IDs to the request
 	serve = slogcorrelation.NewHandler(serve)
 	// Add CORS headers
-	serve = cors.AllowAll().Handler(serve)
+	serve = cors.New(cors.Options{
+		AllowOriginFunc: func(origin string) bool {
+			return true
+		},
+		AllowedMethods: []string{
+			http.MethodHead,
+			http.MethodGet,
+			http.MethodPost,
+			http.MethodPut,
+			http.MethodPatch,
+			http.MethodDelete,
+		},
+		AllowedHeaders:   []string{"*"},
+		AllowCredentials: true,
+		ExposedHeaders:   []string{"*"},
+	}).Handler(serve)
 
 	// Serve the services
 	slog.Info("serve")

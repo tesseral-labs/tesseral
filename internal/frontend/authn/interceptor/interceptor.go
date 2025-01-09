@@ -2,11 +2,10 @@ package interceptor
 
 import (
 	"context"
-	"fmt"
-	"strings"
 	"time"
 
 	"connectrpc.com/connect"
+	"github.com/openauth/openauth/internal/cookies"
 	"github.com/openauth/openauth/internal/frontend/authn"
 	"github.com/openauth/openauth/internal/frontend/store"
 	"github.com/openauth/openauth/internal/ujwt"
@@ -15,15 +14,10 @@ import (
 func New(s *store.Store) connect.UnaryInterceptorFunc {
 	return func(next connect.UnaryFunc) connect.UnaryFunc {
 		return func(ctx context.Context, req connect.AnyRequest) (connect.AnyResponse, error) {
-			// Get the authorization header
-			authorization := req.Header().Get("Authorization")
-			if authorization == "" {
-				return nil, connect.NewError(connect.CodeUnauthenticated, fmt.Errorf("missing authorization header"))
-			}
-
-			accessToken, ok := strings.CutPrefix(authorization, "Bearer ")
-			if !ok {
-				return nil, connect.NewError(connect.CodeUnauthenticated, fmt.Errorf("invalid authorization header"))
+			// get the access token from the cookie to enforce authentication
+			accessToken, err := cookies.GetCookie(ctx, req, "accessToken")
+			if err != nil {
+				return nil, connect.NewError(connect.CodeUnauthenticated, err)
 			}
 
 			// determine the session signing key for this access token
