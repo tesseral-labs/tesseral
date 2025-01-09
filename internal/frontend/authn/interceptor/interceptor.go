@@ -2,7 +2,6 @@ package interceptor
 
 import (
 	"context"
-	"log/slog"
 	"time"
 
 	"connectrpc.com/connect"
@@ -26,8 +25,6 @@ func New(s *store.Store) connect.UnaryInterceptorFunc {
 			if err != nil {
 				return nil, connect.NewError(connect.CodeUnauthenticated, err)
 			}
-
-			slog.InfoContext(ctx, "authn.interceptor", "kid", kid)
 
 			// get the public key for this key; the store will check to make
 			// sure it's actually a session signing key for the current project
