@@ -13,6 +13,7 @@ import (
 	frontendv1 "github.com/openauth/openauth/internal/frontend/gen/openauth/frontend/v1"
 	"github.com/openauth/openauth/internal/frontend/store/queries"
 	"github.com/openauth/openauth/internal/store/idformat"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func (s *Store) ListSAMLConnections(ctx context.Context, req *frontendv1.ListSAMLConnectionsRequest) (*frontendv1.ListSAMLConnectionsResponse, error) {
@@ -294,6 +295,8 @@ func parseSAMLConnection(qSAMLConnection queries.SamlConnection) *frontendv1.SAM
 
 	return &frontendv1.SAMLConnection{
 		Id:                 idformat.SAMLConnection.Format(qSAMLConnection.ID),
+		CreateTime:         timestamppb.New(*qSAMLConnection.CreateTime),
+		UpdateTime:         timestamppb.New(*qSAMLConnection.UpdateTime),
 		Primary:            &qSAMLConnection.IsPrimary,
 		SpAcsUrl:           spACSURL,
 		SpEntityId:         spEntityID,

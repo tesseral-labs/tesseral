@@ -11,6 +11,7 @@ import (
 	frontendv1 "github.com/openauth/openauth/internal/frontend/gen/openauth/frontend/v1"
 	"github.com/openauth/openauth/internal/frontend/store/queries"
 	"github.com/openauth/openauth/internal/store/idformat"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func (s *Store) ListSCIMAPIKeys(ctx context.Context, req *frontendv1.ListSCIMAPIKeysRequest) (*frontendv1.ListSCIMAPIKeysResponse, error) {
@@ -243,6 +244,8 @@ func parseSCIMAPIKey(qSCIMAPIKey queries.ScimApiKey) *frontendv1.SCIMAPIKey {
 	return &frontendv1.SCIMAPIKey{
 		Id:          idformat.SCIMAPIKey.Format(qSCIMAPIKey.ID),
 		DisplayName: qSCIMAPIKey.DisplayName,
+		CreateTime:  timestamppb.New(*qSCIMAPIKey.CreateTime),
+		UpdateTime:  timestamppb.New(*qSCIMAPIKey.UpdateTime),
 		SecretToken: "", // intentionally left blank
 		Revoked:     qSCIMAPIKey.SecretTokenSha256 == nil,
 	}

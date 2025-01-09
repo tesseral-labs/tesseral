@@ -10,6 +10,7 @@ import (
 	frontendv1 "github.com/openauth/openauth/internal/frontend/gen/openauth/frontend/v1"
 	"github.com/openauth/openauth/internal/frontend/store/queries"
 	"github.com/openauth/openauth/internal/store/idformat"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func (s *Store) SetUserPassword(ctx context.Context, req *frontendv1.SetPasswordRequest) (*frontendv1.SetPasswordResponse, error) {
@@ -152,7 +153,8 @@ func (s *Store) UpdateUser(ctx context.Context, req *frontendv1.UpdateUserReques
 func parseUser(qUser queries.User) *frontendv1.User {
 	return &frontendv1.User{
 		Id:              idformat.User.Format(qUser.ID),
-		OrganizationId:  idformat.Organization.Format(qUser.OrganizationID),
+		CreateTime:      timestamppb.New(*qUser.CreateTime),
+		UpdateTime:      timestamppb.New(*qUser.UpdateTime),
 		Email:           qUser.Email,
 		Owner:           &qUser.IsOwner,
 		GoogleUserId:    derefOrEmpty(qUser.GoogleUserID),

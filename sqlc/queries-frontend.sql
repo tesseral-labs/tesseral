@@ -37,6 +37,7 @@ WHERE
 UPDATE
     organizations
 SET
+    update_time = now(),
     display_name = $2,
     google_hosted_domain = $3,
     microsoft_tenant_id = $4,
@@ -127,6 +128,7 @@ WHERE
 UPDATE
     saml_connections
 SET
+    update_time = now(),
     is_primary = $1,
     idp_redirect_url = $2,
     idp_x509_certificate = $3,
@@ -171,6 +173,7 @@ RETURNING
 UPDATE
     scim_api_keys
 SET
+    update_time = now(),
     display_name = $1
 WHERE
     id = $2
@@ -185,6 +188,7 @@ WHERE id = $1;
 UPDATE
     scim_api_keys
 SET
+    update_time = now(),
     secret_token_sha256 = NULL
 WHERE
     id = $1
@@ -195,6 +199,7 @@ RETURNING
 UPDATE
     users
 SET
+    update_time = now(),
     password_bcrypt = $2
 WHERE
     id = $1
@@ -226,9 +231,9 @@ WHERE
 UPDATE
     users
 SET
+    update_time = now(),
     is_owner = $1
 WHERE
     id = $2
 RETURNING
     *;
-
