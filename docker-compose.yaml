@@ -22,7 +22,9 @@ services:
   app:
     command: bash -c "npm i --force && npm run dev"
     environment:
+      APP_API_URL: ${APP_API_URL}
       APP_BUILD_IS_DEV: 1
+      APP_DOGFOOD_PROJECT_ID: ${APP_DOGFOOD_PROJECT_ID}
     expose:
       - 3000
     image: node:22.11.0
@@ -46,12 +48,16 @@ services:
       - ./.kms/data/:/data/
       - ./.kms/init/:/init/
   nginx:
+    depends_on:
+      - api
+      - app
+      - ui
     image: nginx:1-alpine
     logging:
       driver: "none"
     ports:
       - 80:80
-      - 443:443
+    restart: always
     volumes:
       - ./.nginx/local.conf:/etc/nginx/conf.d/default.conf
   postgres:
