@@ -5,13 +5,17 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	backendv1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
 type ContextData struct {
-	ProjectAPIKey  *backendv1.ProjectAPIKey
+	ProjectAPIKey  *ProjectAPIKeyContextData
 	DogfoodSession *DogfoodSessionContextData
+}
+
+type ProjectAPIKeyContextData struct {
+	ProjectAPIKeyID string
+	ProjectID       string
 }
 
 type DogfoodSessionContextData struct {
@@ -26,7 +30,7 @@ func NewContext(ctx context.Context, data ContextData) context.Context {
 	return context.WithValue(ctx, ctxKey{}, data)
 }
 
-func NewProjectAPIKeyContext(ctx context.Context, projectAPIKey *backendv1.ProjectAPIKey) context.Context {
+func NewProjectAPIKeyContext(ctx context.Context, projectAPIKey *ProjectAPIKeyContextData) context.Context {
 	return context.WithValue(ctx, ctxKey{}, ContextData{ProjectAPIKey: projectAPIKey})
 }
 
@@ -51,7 +55,7 @@ func ProjectID(ctx context.Context) uuid.UUID {
 	var projectID string
 	switch {
 	case v.ProjectAPIKey != nil:
-		projectID = v.ProjectAPIKey.ProjectId
+		projectID = v.ProjectAPIKey.ProjectID
 	case v.DogfoodSession != nil:
 		projectID = v.DogfoodSession.DogfoodProjectID
 	default:

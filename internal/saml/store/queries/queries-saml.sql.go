@@ -42,7 +42,7 @@ func (q *Queries) GetOrganizationDomains(ctx context.Context, organizationID uui
 
 const getSAMLConnection = `-- name: GetSAMLConnection :one
 SELECT
-    saml_connections.id, saml_connections.organization_id, saml_connections.create_time, saml_connections.is_primary, saml_connections.idp_redirect_url, saml_connections.idp_x509_certificate, saml_connections.idp_entity_id
+    saml_connections.id, saml_connections.organization_id, saml_connections.create_time, saml_connections.is_primary, saml_connections.idp_redirect_url, saml_connections.idp_x509_certificate, saml_connections.idp_entity_id, saml_connections.update_time
 FROM
     saml_connections
     JOIN organizations ON saml_connections.organization_id = organizations.id
@@ -67,6 +67,7 @@ func (q *Queries) GetSAMLConnection(ctx context.Context, arg GetSAMLConnectionPa
 		&i.IdpRedirectUrl,
 		&i.IdpX509Certificate,
 		&i.IdpEntityID,
+		&i.UpdateTime,
 	)
 	return i, err
 }

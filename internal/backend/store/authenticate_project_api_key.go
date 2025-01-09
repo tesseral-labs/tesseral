@@ -13,27 +13,32 @@ import (
 
 var ErrBadProjectAPIKey = fmt.Errorf("bad project api key")
 
-func (s *Store) AuthenticateProjectAPIKey(ctx context.Context, bearerToken string) (*backendv1.ProjectAPIKey, error) {
+func (s *Store) AuthenticateProjectAPIKey(ctx context.Context, bearerToken string) (*backendv1.ProjectAPIKey, *backendv1.Project, error) {
 	_, q, _, rollback, err := s.tx(ctx)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	defer rollback()
 
 	secretToken, err := idformat.ProjectAPIKeySecretToken.Parse(bearerToken)
 	if err != nil {
-		return nil, fmt.Errorf("parse project api key secret token: %w", err)
+		return nil, nil, fmt.Errorf("parse project api key secret token: %w", err)
 	}
 
 	secretTokenSHA := sha256.Sum256(secretToken[:])
 	qProjectAPIKey, err := q.GetProjectAPIKeyBySecretTokenSHA256(ctx, secretTokenSHA[:])
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, ErrBadProjectAPIKey
+			return nil, nil, ErrBadProjectAPIKey
 		}
 
-		return nil, fmt.Errorf("get project api key by secret token sha256: %w", err)
+		return nil, nil, fmt.Errorf("get project api key by secret token sha256: %w", err)
 	}
 
-	return parseProjectAPIKey(qProjectAPIKey), nil
+	qProject, err := q.GetProjectByID(ctx, qProjectAPIKey.ProjectID)
+	if err != nil {
+		return nil, nil, fmt.Errorf("get project by id: %w", err)
+	}
+
+	return parseProjectAPIKey(qProjectAPIKey), parseProject(&qProject), nil
 }

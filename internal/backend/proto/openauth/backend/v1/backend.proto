@@ -188,8 +188,7 @@ message UpdateProjectResponse {
 }
 
 message ListOrganizationsRequest {
-  string project_id = 1;
-  string page_token = 2;
+  string page_token = 1;
 }
 
 message ListOrganizationsResponse {
@@ -377,8 +376,7 @@ message GetIntermediateSessionResponse {
 }
 
 message ListProjectAPIKeysRequest {
-  string project_id = 1;
-  string page_token = 2;
+  string page_token = 1;
 }
 
 message ListProjectAPIKeysResponse {
@@ -429,43 +427,46 @@ message RevokeProjectAPIKeyResponse {
 message Project {
   string id = 1;
   string display_name = 2;
-  optional bool log_in_with_password_enabled = 3;
-  optional bool log_in_with_google_enabled = 4;
-  optional bool log_in_with_microsoft_enabled = 5;
-  string google_oauth_client_id = 6;
-  string google_oauth_client_secret = 7;
-  string microsoft_oauth_client_id = 8;
-  string microsoft_oauth_client_secret = 9;
-  optional bool organizations_saml_enabled_default = 10;
-  optional bool organizations_scim_enabled_default = 11;
+  google.protobuf.Timestamp create_time = 3;
+  google.protobuf.Timestamp update_time = 4;
+  optional bool log_in_with_password_enabled = 5;
+  optional bool log_in_with_google_enabled = 6;
+  optional bool log_in_with_microsoft_enabled = 7;
+  string google_oauth_client_id = 8;
+  string google_oauth_client_secret = 9;
+  string microsoft_oauth_client_id = 10;
+  string microsoft_oauth_client_secret = 11;
+  optional bool organizations_saml_enabled_default = 12;
+  optional bool organizations_scim_enabled_default = 13;
 }
 
 message Organization {
   string id = 1;
-  string project_id = 2;
-  string display_name = 3;
-  optional bool override_log_in_methods = 4;
-  bool log_in_with_password_enabled = 5;
-  bool log_in_with_google_enabled = 6;
-  bool log_in_with_microsoft_enabled = 7;
-  string google_hosted_domain = 8;
-  string microsoft_tenant_id = 9;
-  optional bool saml_enabled = 10;
-  optional bool scim_enabled = 11;
+  string display_name = 2;
+  google.protobuf.Timestamp create_time = 3;
+  google.protobuf.Timestamp update_time = 4;
+  optional bool override_log_in_methods = 5;
+  bool log_in_with_password_enabled = 6;
+  bool log_in_with_google_enabled = 7;
+  bool log_in_with_microsoft_enabled = 8;
+  string google_hosted_domain = 9;
+  string microsoft_tenant_id = 10;
+  optional bool saml_enabled = 11;
+  optional bool scim_enabled = 12;
 }
 
 message SessionSigningKey {
   string id = 1;
-  string project_id = 2;
-  google.protobuf.Struct public_key_jwk = 3;
+  google.protobuf.Struct public_key_jwk = 2;
 }
 
 message ProjectAPIKey {
   string id = 1;
-  string project_id = 2;
-  string display_name = 3;
-  string secret_token = 4;
-  bool revoked = 5;
+  string display_name = 2;
+  google.protobuf.Timestamp create_time = 3;
+  google.protobuf.Timestamp update_time = 4;
+  string secret_token = 5;
+  bool revoked = 6;
 }
 
 message IntermediateSession {
@@ -482,9 +483,11 @@ message User {
   string id = 1;
   string organization_id = 2;
   string email = 3;
+  google.protobuf.Timestamp create_time = 4;
+  google.protobuf.Timestamp update_time = 5;
   optional bool owner = 6;
-  string google_user_id = 4;
-  string microsoft_user_id = 5;
+  string google_user_id = 7;
+  string microsoft_user_id = 8;
 }
 
 message Session {
@@ -498,18 +501,22 @@ message Session {
 message SAMLConnection {
   string id = 1;
   string organization_id = 2;
-  optional bool primary = 3;
-  string sp_acs_url = 4;
-  string sp_entity_id = 5;
-  string idp_redirect_url = 6;
-  string idp_x509_certificate = 7;
-  string idp_entity_id = 8;
+  google.protobuf.Timestamp create_time = 3;
+  google.protobuf.Timestamp update_time = 4;
+  optional bool primary = 5;
+  string sp_acs_url = 6;
+  string sp_entity_id = 7;
+  string idp_redirect_url = 8;
+  string idp_x509_certificate = 9;
+  string idp_entity_id = 10;
 }
 
 message SCIMAPIKey {
   string id = 1;
   string organization_id = 2;
-  string display_name = 3;
-  string secret_token = 4;
-  bool revoked = 5;
+  google.protobuf.Timestamp create_time = 3;
+  google.protobuf.Timestamp update_time = 4;
+  string display_name = 5;
+  string secret_token = 6;
+  bool revoked = 7;
 }

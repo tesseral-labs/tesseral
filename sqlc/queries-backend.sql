@@ -61,6 +61,7 @@ LIMIT $1;
 UPDATE
     organizations
 SET
+    update_time = now(),
     display_name = $2,
     google_hosted_domain = $3,
     microsoft_tenant_id = $4,
@@ -83,6 +84,7 @@ WHERE id = $1;
 UPDATE
     projects
 SET
+    update_time = now(),
     display_name = $2,
     log_in_with_password_enabled = $3,
     log_in_with_google_enabled = $4,
@@ -112,6 +114,7 @@ RETURNING
 UPDATE
     users
 SET
+    update_time = now(),
     organization_id = $2,
     email = $3,
     password_bcrypt = $4,
@@ -126,6 +129,7 @@ RETURNING
 UPDATE
     users
 SET
+    update_time = now(),
     password_bcrypt = $2
 WHERE
     id = $1
@@ -172,6 +176,7 @@ WHERE
 UPDATE
     saml_connections
 SET
+    update_time = now(),
     is_primary = $1,
     idp_redirect_url = $2,
     idp_x509_certificate = $3,
@@ -217,6 +222,7 @@ RETURNING
 UPDATE
     scim_api_keys
 SET
+    update_time = now(),
     display_name = $1
 WHERE
     id = $2
@@ -231,6 +237,7 @@ WHERE id = $1;
 UPDATE
     scim_api_keys
 SET
+    update_time = now(),
     secret_token_sha256 = NULL
 WHERE
     id = $1
@@ -268,6 +275,7 @@ RETURNING
 UPDATE
     project_api_keys
 SET
+    update_time = now(),
     display_name = $1
 WHERE
     id = $2
@@ -282,6 +290,7 @@ WHERE id = $1;
 UPDATE
     project_api_keys
 SET
+    update_time = now(),
     secret_token_sha256 = NULL
 WHERE
     id = $1
@@ -353,4 +362,3 @@ FROM
 WHERE
     id = $1
     AND project_id = $2;
-

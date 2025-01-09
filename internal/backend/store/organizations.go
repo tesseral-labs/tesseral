@@ -9,6 +9,7 @@ import (
 	backendv1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
 	"github.com/openauth/openauth/internal/backend/store/queries"
 	"github.com/openauth/openauth/internal/store/idformat"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrganizationRequest) (*backendv1.CreateOrganizationResponse, error) {
@@ -266,12 +267,15 @@ func parseOrganization(qProject queries.Project, qOrg queries.Organization) *bac
 
 	return &backendv1.Organization{
 		Id:                        idformat.Organization.Format(qOrg.ID),
-		ProjectId:                 idformat.Project.Format(qOrg.ProjectID),
 		DisplayName:               qOrg.DisplayName,
+		CreateTime:                timestamppb.New(*qOrg.CreateTime),
+		UpdateTime:                timestamppb.New(*qOrg.UpdateTime),
 		OverrideLogInMethods:      &qOrg.OverrideLogInMethods,
 		LogInWithPasswordEnabled:  logInWithPasswordEnabled,
 		LogInWithGoogleEnabled:    logInWithGoogleEnabled,
 		LogInWithMicrosoftEnabled: logInWithMicrosoftEnabled,
+		GoogleHostedDomain:        derefOrEmpty(qOrg.GoogleHostedDomain),
+		MicrosoftTenantId:         derefOrEmpty(qOrg.MicrosoftTenantID),
 		GoogleHostedDomain:        derefOrEmpty(qOrg.GoogleHostedDomain),
 		MicrosoftTenantId:         derefOrEmpty(qOrg.MicrosoftTenantID),
 		SamlEnabled:               &qOrg.SamlEnabled,

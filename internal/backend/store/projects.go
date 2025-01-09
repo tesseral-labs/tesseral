@@ -10,6 +10,7 @@ import (
 	"github.com/openauth/openauth/internal/backend/store/queries"
 	"github.com/openauth/openauth/internal/projectid"
 	"github.com/openauth/openauth/internal/store/idformat"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func (s *Store) GetProject(ctx context.Context, req *backendv1.GetProjectRequest) (*backendv1.GetProjectResponse, error) {
@@ -131,6 +132,8 @@ func parseProject(qProject *queries.Project) *backendv1.Project {
 	return &backendv1.Project{
 		Id:                              idformat.Project.Format(qProject.ID),
 		DisplayName:                     qProject.DisplayName,
+		CreateTime:                      timestamppb.New(*qProject.CreateTime),
+		UpdateTime:                      timestamppb.New(*qProject.UpdateTime),
 		LogInWithPasswordEnabled:        &qProject.LogInWithPasswordEnabled,
 		LogInWithGoogleEnabled:          &qProject.LogInWithGoogleEnabled,
 		LogInWithMicrosoftEnabled:       &qProject.LogInWithMicrosoftEnabled,

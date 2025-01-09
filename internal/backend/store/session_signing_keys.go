@@ -48,7 +48,6 @@ func (s *Store) GetSessionPublicKeysByProjectID(ctx context.Context, projectId s
 
 		out = append(out, &backendv1.SessionSigningKey{
 			Id:           idformat.SessionSigningKey.Format(sessionSigningKey.ID),
-			ProjectId:    idformat.Project.Format(projectID),
 			PublicKeyJwk: jwk,
 		})
 	}

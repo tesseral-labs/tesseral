@@ -12,6 +12,7 @@ import (
 	"github.com/openauth/openauth/internal/backend/store/queries"
 	"github.com/openauth/openauth/internal/projectid"
 	"github.com/openauth/openauth/internal/store/idformat"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func (s *Store) ListProjectAPIKeys(ctx context.Context, req *backendv1.ListProjectAPIKeysRequest) (*backendv1.ListProjectAPIKeysResponse, error) {
@@ -224,8 +225,9 @@ func (s *Store) RevokeProjectAPIKey(ctx context.Context, req *backendv1.RevokePr
 func parseProjectAPIKey(qProjectAPIKey queries.ProjectApiKey) *backendv1.ProjectAPIKey {
 	return &backendv1.ProjectAPIKey{
 		Id:          idformat.ProjectAPIKey.Format(qProjectAPIKey.ID),
-		ProjectId:   idformat.Project.Format(qProjectAPIKey.ProjectID),
 		DisplayName: qProjectAPIKey.DisplayName,
+		CreateTime:  timestamppb.New(*qProjectAPIKey.CreateTime),
+		UpdateTime:  timestamppb.New(*qProjectAPIKey.UpdateTime),
 		SecretToken: "", // intentionally left blank
 		Revoked:     qProjectAPIKey.SecretTokenSha256 == nil,
 	}

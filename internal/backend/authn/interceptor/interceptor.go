@@ -44,7 +44,7 @@ func New(s *store.Store, dogfoodProjectID string) connect.UnaryInterceptorFunc {
 			}
 
 			if strings.HasPrefix(secretValue, "openauth_secret_key_") {
-				projectAPIKey, err := s.AuthenticateProjectAPIKey(ctx, secretValue)
+				projectAPIKey, project, err := s.AuthenticateProjectAPIKey(ctx, secretValue)
 				if err != nil {
 					if errors.Is(err, store.ErrBadProjectAPIKey) {
 						return nil, connect.NewError(connect.CodeUnauthenticated, err)
@@ -52,7 +52,10 @@ func New(s *store.Store, dogfoodProjectID string) connect.UnaryInterceptorFunc {
 					return nil, fmt.Errorf("authenticate project api key: %w", err)
 				}
 
-				ctx = authn.NewProjectAPIKeyContext(ctx, projectAPIKey)
+				ctx = authn.NewProjectAPIKeyContext(ctx, &authn.ProjectAPIKeyContextData{
+					ProjectAPIKeyID: projectAPIKey.Id,
+					ProjectID:       project.Id,
+				})
 			} else {
 				sessionCtxData, err := authenticateAccessToken(ctx, s, dogfoodProjectID, secretValue)
 				if err != nil {
