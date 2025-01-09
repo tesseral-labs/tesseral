@@ -21,7 +21,7 @@ jobs:
       - name: make proto
         run: |
           npm install
-          rm -r internal/backend/gen internal/frontend/gen internal/intermediate/gen internal/oauth/gen
+          rm -r internal/backend/gen internal/frontend/gen internal/intermediate/gen internal/oauth/gen app/src/gen ui/src/gen
           make proto
       - name: check if index is dirty
         run: git diff --exit-code
