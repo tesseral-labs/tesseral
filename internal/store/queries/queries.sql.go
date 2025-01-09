@@ -62,10 +62,10 @@ func (q *Queries) CreateIntermediateSessionSigningKey(ctx context.Context, arg C
 }
 
 const createOrganization = `-- name: CreateOrganization :one
-INSERT INTO organizations (id, project_id, display_name, override_log_in_methods, google_hosted_domain, microsoft_tenant_id, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_with_password_enabled)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+INSERT INTO organizations (id, project_id, display_name, override_log_in_methods, google_hosted_domain, microsoft_tenant_id, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_with_password_enabled, saml_enabled, scim_enabled)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
 RETURNING
-    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods, saml_enabled, scim_enabled
 `
 
 type CreateOrganizationParams struct {
@@ -78,6 +78,8 @@ type CreateOrganizationParams struct {
 	OverrideLogInWithGoogleEnabled    *bool
 	OverrideLogInWithMicrosoftEnabled *bool
 	OverrideLogInWithPasswordEnabled  *bool
+	SamlEnabled                       bool
+	ScimEnabled                       bool
 }
 
 func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganizationParams) (Organization, error) {
@@ -91,6 +93,8 @@ func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganization
 		arg.OverrideLogInWithGoogleEnabled,
 		arg.OverrideLogInWithMicrosoftEnabled,
 		arg.OverrideLogInWithPasswordEnabled,
+		arg.SamlEnabled,
+		arg.ScimEnabled,
 	)
 	var i Organization
 	err := row.Scan(
@@ -103,24 +107,28 @@ func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganization
 		&i.GoogleHostedDomain,
 		&i.MicrosoftTenantID,
 		&i.OverrideLogInMethods,
+		&i.SamlEnabled,
+		&i.ScimEnabled,
 	)
 	return i, err
 }
 
 const createProject = `-- name: CreateProject :one
-INSERT INTO projects (id, organization_id, display_name, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled)
-    VALUES ($1, $2, $3, $4, $5, $6)
+INSERT INTO projects (id, organization_id, display_name, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, organizations_saml_enabled_default, organizations_scim_enabled_default)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 RETURNING
-    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, organizations_saml_enabled_default, organizations_scim_enabled_default
 `
 
 type CreateProjectParams struct {
-	ID                        uuid.UUID
-	OrganizationID            *uuid.UUID
-	DisplayName               string
-	LogInWithPasswordEnabled  bool
-	LogInWithGoogleEnabled    bool
-	LogInWithMicrosoftEnabled bool
+	ID                              uuid.UUID
+	OrganizationID                  *uuid.UUID
+	DisplayName                     string
+	LogInWithPasswordEnabled        bool
+	LogInWithGoogleEnabled          bool
+	LogInWithMicrosoftEnabled       bool
+	OrganizationsSamlEnabledDefault bool
+	OrganizationsScimEnabledDefault bool
 }
 
 func (q *Queries) CreateProject(ctx context.Context, arg CreateProjectParams) (Project, error) {
@@ -131,6 +139,8 @@ func (q *Queries) CreateProject(ctx context.Context, arg CreateProjectParams) (P
 		arg.LogInWithPasswordEnabled,
 		arg.LogInWithGoogleEnabled,
 		arg.LogInWithMicrosoftEnabled,
+		arg.OrganizationsSamlEnabledDefault,
+		arg.OrganizationsScimEnabledDefault,
 	)
 	var i Project
 	err := row.Scan(
@@ -144,6 +154,8 @@ func (q *Queries) CreateProject(ctx context.Context, arg CreateProjectParams) (P
 		&i.GoogleOauthClientSecretCiphertext,
 		&i.MicrosoftOauthClientSecretCiphertext,
 		&i.DisplayName,
+		&i.OrganizationsSamlEnabledDefault,
+		&i.OrganizationsScimEnabledDefault,
 	)
 	return i, err
 }
@@ -259,7 +271,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 
 const getOrganizationByGoogleHostedDomain = `-- name: GetOrganizationByGoogleHostedDomain :one
 SELECT
-    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods, saml_enabled, scim_enabled
 FROM
     organizations
 WHERE
@@ -279,13 +291,15 @@ func (q *Queries) GetOrganizationByGoogleHostedDomain(ctx context.Context, googl
 		&i.GoogleHostedDomain,
 		&i.MicrosoftTenantID,
 		&i.OverrideLogInMethods,
+		&i.SamlEnabled,
+		&i.ScimEnabled,
 	)
 	return i, err
 }
 
 const getOrganizationByID = `-- name: GetOrganizationByID :one
 SELECT
-    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods, saml_enabled, scim_enabled
 FROM
     organizations
 WHERE
@@ -305,13 +319,15 @@ func (q *Queries) GetOrganizationByID(ctx context.Context, id uuid.UUID) (Organi
 		&i.GoogleHostedDomain,
 		&i.MicrosoftTenantID,
 		&i.OverrideLogInMethods,
+		&i.SamlEnabled,
+		&i.ScimEnabled,
 	)
 	return i, err
 }
 
 const getOrganizationByProjectIDAndID = `-- name: GetOrganizationByProjectIDAndID :one
 SELECT
-    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods, saml_enabled, scim_enabled
 FROM
     organizations
 WHERE
@@ -337,6 +353,8 @@ func (q *Queries) GetOrganizationByProjectIDAndID(ctx context.Context, arg GetOr
 		&i.GoogleHostedDomain,
 		&i.MicrosoftTenantID,
 		&i.OverrideLogInMethods,
+		&i.SamlEnabled,
+		&i.ScimEnabled,
 	)
 	return i, err
 }
@@ -364,7 +382,7 @@ func (q *Queries) GetProjectAPIKeyBySecretTokenSHA256(ctx context.Context, secre
 
 const getProjectByID = `-- name: GetProjectByID :one
 SELECT
-    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, organizations_saml_enabled_default, organizations_scim_enabled_default
 FROM
     projects
 WHERE
@@ -385,6 +403,8 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 		&i.GoogleOauthClientSecretCiphertext,
 		&i.MicrosoftOauthClientSecretCiphertext,
 		&i.DisplayName,
+		&i.OrganizationsSamlEnabledDefault,
+		&i.OrganizationsScimEnabledDefault,
 	)
 	return i, err
 }
@@ -487,7 +507,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods, saml_enabled, scim_enabled
 `
 
 type UpdateOrganizationParams struct {
@@ -521,6 +541,8 @@ func (q *Queries) UpdateOrganization(ctx context.Context, arg UpdateOrganization
 		&i.GoogleHostedDomain,
 		&i.MicrosoftTenantID,
 		&i.OverrideLogInMethods,
+		&i.SamlEnabled,
+		&i.ScimEnabled,
 	)
 	return i, err
 }
@@ -533,7 +555,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, organizations_saml_enabled_default, organizations_scim_enabled_default
 `
 
 type UpdateProjectOrganizationIDParams struct {
@@ -577,6 +599,8 @@ func (q *Queries) UpdateProjectOrganizationID(ctx context.Context, arg UpdatePro
 		&i.GoogleOauthClientSecretCiphertext,
 		&i.MicrosoftOauthClientSecretCiphertext,
 		&i.DisplayName,
+		&i.OrganizationsSamlEnabledDefault,
+		&i.OrganizationsScimEnabledDefault,
 	)
 	return i, err
 }

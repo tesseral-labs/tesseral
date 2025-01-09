@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"fmt"
 
+	"connectrpc.com/connect"
 	"github.com/google/uuid"
 	backendv1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
 	"github.com/openauth/openauth/internal/backend/store/queries"
@@ -100,11 +101,16 @@ func (s *Store) CreateSCIMAPIKey(ctx context.Context, req *backendv1.CreateSCIMA
 	}
 
 	// authz
-	if _, err := q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
+	qOrg, err := q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
 		ProjectID: projectid.ProjectID(ctx),
 		ID:        orgID,
-	}); err != nil {
+	})
+	if err != nil {
 		return nil, fmt.Errorf("get organization: %w", err)
+	}
+
+	if !qOrg.ScimEnabled {
+		return nil, connect.NewError(connect.CodeFailedPrecondition, fmt.Errorf("organization does not have SCIM enabled"))
 	}
 
 	token := uuid.New()

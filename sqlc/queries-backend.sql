@@ -1,6 +1,6 @@
 -- name: CreateOrganization :one
-INSERT INTO organizations (id, project_id, display_name, google_hosted_domain, microsoft_tenant_id, override_log_in_methods, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_with_password_enabled)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+INSERT INTO organizations (id, project_id, display_name, google_hosted_domain, microsoft_tenant_id, override_log_in_methods, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_with_password_enabled, saml_enabled, scim_enabled)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
 RETURNING
     *;
 
@@ -67,7 +67,9 @@ SET
     override_log_in_methods = $5,
     override_log_in_with_password_enabled = $6,
     override_log_in_with_google_enabled = $7,
-    override_log_in_with_microsoft_enabled = $8
+    override_log_in_with_microsoft_enabled = $8,
+    saml_enabled = $9,
+    scim_enabled = $10
 WHERE
     id = $1
 RETURNING
@@ -88,7 +90,9 @@ SET
     google_oauth_client_id = $6,
     google_oauth_client_secret_ciphertext = $7,
     microsoft_oauth_client_id = $8,
-    microsoft_oauth_client_secret_ciphertext = $9
+    microsoft_oauth_client_secret_ciphertext = $9,
+    organizations_saml_enabled_default = $10,
+    organizations_scim_enabled_default = $11
 WHERE
     id = $1
 RETURNING

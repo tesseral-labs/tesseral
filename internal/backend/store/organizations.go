@@ -18,6 +18,16 @@ func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrg
 	}
 	defer rollback()
 
+	var googleHostedDomain *string
+	if req.Organization.GoogleHostedDomain != "" {
+		googleHostedDomain = &req.Organization.GoogleHostedDomain
+	}
+
+	var microsoftTenantId *string
+	if req.Organization.MicrosoftTenantId != "" {
+		microsoftTenantId = &req.Organization.MicrosoftTenantId
+	}
+
 	var (
 		overrideLogInWithGoogleEnabled,
 		overrideLogInWithMicrosoftEnabled,
@@ -30,25 +40,38 @@ func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrg
 		overrideLogInWithPasswordEnabled = &req.Organization.LogInWithPasswordEnabled
 	}
 
+	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get project by id: %w", err)
+	}
+
+	samlEnabled := qProject.OrganizationsSamlEnabledDefault
+	if req.Organization.SamlEnabled != nil {
+		samlEnabled = *req.Organization.SamlEnabled
+	}
+
+	scimEnabled := qProject.OrganizationsScimEnabledDefault
+	if req.Organization.ScimEnabled != nil {
+		scimEnabled = *req.Organization.ScimEnabled
+	}
+
 	qOrg, err := q.CreateOrganization(ctx, queries.CreateOrganizationParams{
 		ID:                 uuid.New(),
 		ProjectID:          authn.ProjectID(ctx),
 		DisplayName:        req.Organization.DisplayName,
-		GoogleHostedDomain: &req.Organization.GoogleHostedDomain,
-		MicrosoftTenantID:  &req.Organization.MicrosoftTenantId,
+		GoogleHostedDomain: googleHostedDomain,
+		MicrosoftTenantID:  microsoftTenantId,
 
 		OverrideLogInMethods:              derefOrEmpty(req.Organization.OverrideLogInMethods),
 		OverrideLogInWithGoogleEnabled:    overrideLogInWithGoogleEnabled,
 		OverrideLogInWithMicrosoftEnabled: overrideLogInWithMicrosoftEnabled,
 		OverrideLogInWithPasswordEnabled:  overrideLogInWithPasswordEnabled,
+
+		SamlEnabled: samlEnabled,
+		ScimEnabled: scimEnabled,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("create organization: %w", err)
-	}
-
-	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
-	if err != nil {
-		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 
 	if err := commit(); err != nil {
@@ -172,6 +195,16 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *backendv1.UpdateOrg
 		updates.OverrideLogInWithPasswordEnabled = &req.Organization.LogInWithPasswordEnabled
 	}
 
+	updates.SamlEnabled = qOrg.SamlEnabled
+	if req.Organization.SamlEnabled != nil {
+		updates.SamlEnabled = *req.Organization.SamlEnabled
+	}
+
+	updates.ScimEnabled = qOrg.ScimEnabled
+	if req.Organization.ScimEnabled != nil {
+		updates.ScimEnabled = *req.Organization.ScimEnabled
+	}
+
 	qUpdatedOrg, err := q.UpdateOrganization(ctx, updates)
 	if err != nil {
 		return nil, fmt.Errorf("update organization: %w", err)
@@ -235,11 +268,13 @@ func parseOrganization(qProject queries.Project, qOrg queries.Organization) *bac
 		Id:                        idformat.Organization.Format(qOrg.ID),
 		ProjectId:                 idformat.Project.Format(qOrg.ProjectID),
 		DisplayName:               qOrg.DisplayName,
-		GoogleHostedDomain:        derefOrEmpty(qOrg.GoogleHostedDomain),
-		MicrosoftTenantId:         derefOrEmpty(qOrg.MicrosoftTenantID),
 		OverrideLogInMethods:      &qOrg.OverrideLogInMethods,
+		LogInWithPasswordEnabled:  logInWithPasswordEnabled,
 		LogInWithGoogleEnabled:    logInWithGoogleEnabled,
 		LogInWithMicrosoftEnabled: logInWithMicrosoftEnabled,
-		LogInWithPasswordEnabled:  logInWithPasswordEnabled,
+		GoogleHostedDomain:        derefOrEmpty(qOrg.GoogleHostedDomain),
+		MicrosoftTenantId:         derefOrEmpty(qOrg.MicrosoftTenantID),
+		SamlEnabled:               &qOrg.SamlEnabled,
+		ScimEnabled:               &qOrg.ScimEnabled,
 	}
 }
