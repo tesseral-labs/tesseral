@@ -10,18 +10,34 @@ import { FrontendService } from "./frontend_pb";
 export const getAccessToken = FrontendService.method.getAccessToken;
 
 /**
- * Creates a user.
- *
- * @generated from rpc openauth.frontend.v1.FrontendService.CreateUser
+ * @generated from rpc openauth.frontend.v1.FrontendService.GetProject
  */
-export const createUser = FrontendService.method.createUser;
+export const getProject = FrontendService.method.getProject;
 
 /**
- * Gets a user.
- *
+ * @generated from rpc openauth.frontend.v1.FrontendService.GetOrganization
+ */
+export const getOrganization = FrontendService.method.getOrganization;
+
+/**
+ * @generated from rpc openauth.frontend.v1.FrontendService.UpdateOrganization
+ */
+export const updateOrganization = FrontendService.method.updateOrganization;
+
+/**
+ * @generated from rpc openauth.frontend.v1.FrontendService.ListUsers
+ */
+export const listUsers = FrontendService.method.listUsers;
+
+/**
  * @generated from rpc openauth.frontend.v1.FrontendService.GetUser
  */
 export const getUser = FrontendService.method.getUser;
+
+/**
+ * @generated from rpc openauth.frontend.v1.FrontendService.UpdateUser
+ */
+export const updateUser = FrontendService.method.updateUser;
 
 /**
  * Gets a list of organizations.
@@ -31,18 +47,11 @@ export const getUser = FrontendService.method.getUser;
 export const listOrganizations = FrontendService.method.listOrganizations;
 
 /**
- * Gets a list of users.
+ * Sets a user's password.
  *
- * @generated from rpc openauth.frontend.v1.FrontendService.ListUsers
+ * @generated from rpc openauth.frontend.v1.FrontendService.SetPassword
  */
-export const listUsers = FrontendService.method.listUsers;
-
-/**
- * Updates a user.
- *
- * @generated from rpc openauth.frontend.v1.FrontendService.UpdateUser
- */
-export const updateUser = FrontendService.method.updateUser;
+export const setPassword = FrontendService.method.setPassword;
 
 /**
  * Who am I?
@@ -50,3 +59,58 @@ export const updateUser = FrontendService.method.updateUser;
  * @generated from rpc openauth.frontend.v1.FrontendService.WhoAmI
  */
 export const whoAmI = FrontendService.method.whoAmI;
+
+/**
+ * @generated from rpc openauth.frontend.v1.FrontendService.ListSAMLConnections
+ */
+export const listSAMLConnections = FrontendService.method.listSAMLConnections;
+
+/**
+ * @generated from rpc openauth.frontend.v1.FrontendService.GetSAMLConnection
+ */
+export const getSAMLConnection = FrontendService.method.getSAMLConnection;
+
+/**
+ * @generated from rpc openauth.frontend.v1.FrontendService.CreateSAMLConnection
+ */
+export const createSAMLConnection = FrontendService.method.createSAMLConnection;
+
+/**
+ * @generated from rpc openauth.frontend.v1.FrontendService.UpdateSAMLConnection
+ */
+export const updateSAMLConnection = FrontendService.method.updateSAMLConnection;
+
+/**
+ * @generated from rpc openauth.frontend.v1.FrontendService.DeleteSAMLConnection
+ */
+export const deleteSAMLConnection = FrontendService.method.deleteSAMLConnection;
+
+/**
+ * @generated from rpc openauth.frontend.v1.FrontendService.ListSCIMAPIKeys
+ */
+export const listSCIMAPIKeys = FrontendService.method.listSCIMAPIKeys;
+
+/**
+ * @generated from rpc openauth.frontend.v1.FrontendService.GetSCIMAPIKey
+ */
+export const getSCIMAPIKey = FrontendService.method.getSCIMAPIKey;
+
+/**
+ * @generated from rpc openauth.frontend.v1.FrontendService.CreateSCIMAPIKey
+ */
+export const createSCIMAPIKey = FrontendService.method.createSCIMAPIKey;
+
+/**
+ * @generated from rpc openauth.frontend.v1.FrontendService.UpdateSCIMAPIKey
+ */
+export const updateSCIMAPIKey = FrontendService.method.updateSCIMAPIKey;
+
+/**
+ * @generated from rpc openauth.frontend.v1.FrontendService.DeleteSCIMAPIKey
+ */
+export const deleteSCIMAPIKey = FrontendService.method.deleteSCIMAPIKey;
+
+/**
+ * @generated from rpc openauth.frontend.v1.FrontendService.RevokeSCIMAPIKey
+ */
+export const revokeSCIMAPIKey = FrontendService.method.revokeSCIMAPIKey;

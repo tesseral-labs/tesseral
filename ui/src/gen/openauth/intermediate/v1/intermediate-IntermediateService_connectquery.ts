@@ -40,13 +40,6 @@ export const getMicrosoftOAuthRedirectURL = IntermediateService.method.getMicros
 export const redeemMicrosoftOAuthCode = IntermediateService.method.redeemMicrosoftOAuthCode;
 
 /**
- * Creates a new organization.
- *
- * @generated from rpc openauth.intermediate.v1.IntermediateService.CreateOrganization
- */
-export const createOrganization = IntermediateService.method.createOrganization;
-
-/**
  * Issues a new email verification challenge.
  *
  * @generated from rpc openauth.intermediate.v1.IntermediateService.IssueEmailVerificationChallenge
