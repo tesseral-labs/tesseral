@@ -133,17 +133,17 @@ func (q *Queries) CreateSAMLConnection(ctx context.Context, arg CreateSAMLConnec
 }
 
 const createSCIMAPIKey = `-- name: CreateSCIMAPIKey :one
-INSERT INTO scim_api_keys (id, organization_id, display_name, token_sha256)
+INSERT INTO scim_api_keys (id, organization_id, display_name, secret_token_sha256)
     VALUES ($1, $2, $3, $4)
 RETURNING
-    id, organization_id, token_sha256, display_name
+    id, organization_id, secret_token_sha256, display_name
 `
 
 type CreateSCIMAPIKeyParams struct {
-	ID             uuid.UUID
-	OrganizationID uuid.UUID
-	DisplayName    string
-	TokenSha256    []byte
+	ID                uuid.UUID
+	OrganizationID    uuid.UUID
+	DisplayName       string
+	SecretTokenSha256 []byte
 }
 
 func (q *Queries) CreateSCIMAPIKey(ctx context.Context, arg CreateSCIMAPIKeyParams) (ScimApiKey, error) {
@@ -151,13 +151,13 @@ func (q *Queries) CreateSCIMAPIKey(ctx context.Context, arg CreateSCIMAPIKeyPara
 		arg.ID,
 		arg.OrganizationID,
 		arg.DisplayName,
-		arg.TokenSha256,
+		arg.SecretTokenSha256,
 	)
 	var i ScimApiKey
 	err := row.Scan(
 		&i.ID,
 		&i.OrganizationID,
-		&i.TokenSha256,
+		&i.SecretTokenSha256,
 		&i.DisplayName,
 	)
 	return i, err
@@ -383,7 +383,7 @@ func (q *Queries) GetSAMLConnection(ctx context.Context, arg GetSAMLConnectionPa
 
 const getSCIMAPIKey = `-- name: GetSCIMAPIKey :one
 SELECT
-    scim_api_keys.id, scim_api_keys.organization_id, scim_api_keys.token_sha256, scim_api_keys.display_name
+    scim_api_keys.id, scim_api_keys.organization_id, scim_api_keys.secret_token_sha256, scim_api_keys.display_name
 FROM
     scim_api_keys
     JOIN organizations ON scim_api_keys.organization_id = organizations.id
@@ -403,7 +403,7 @@ func (q *Queries) GetSCIMAPIKey(ctx context.Context, arg GetSCIMAPIKeyParams) (S
 	err := row.Scan(
 		&i.ID,
 		&i.OrganizationID,
-		&i.TokenSha256,
+		&i.SecretTokenSha256,
 		&i.DisplayName,
 	)
 	return i, err
@@ -748,7 +748,7 @@ func (q *Queries) ListSAMLConnections(ctx context.Context, arg ListSAMLConnectio
 
 const listSCIMAPIKeys = `-- name: ListSCIMAPIKeys :many
 SELECT
-    id, organization_id, token_sha256, display_name
+    id, organization_id, secret_token_sha256, display_name
 FROM
     scim_api_keys
 WHERE
@@ -777,7 +777,7 @@ func (q *Queries) ListSCIMAPIKeys(ctx context.Context, arg ListSCIMAPIKeysParams
 		if err := rows.Scan(
 			&i.ID,
 			&i.OrganizationID,
-			&i.TokenSha256,
+			&i.SecretTokenSha256,
 			&i.DisplayName,
 		); err != nil {
 			return nil, err
@@ -913,11 +913,11 @@ const revokeSCIMAPIKey = `-- name: RevokeSCIMAPIKey :one
 UPDATE
     scim_api_keys
 SET
-    token_sha256 = NULL
+    secret_token_sha256 = NULL
 WHERE
     id = $1
 RETURNING
-    id, organization_id, token_sha256, display_name
+    id, organization_id, secret_token_sha256, display_name
 `
 
 func (q *Queries) RevokeSCIMAPIKey(ctx context.Context, id uuid.UUID) (ScimApiKey, error) {
@@ -926,7 +926,7 @@ func (q *Queries) RevokeSCIMAPIKey(ctx context.Context, id uuid.UUID) (ScimApiKe
 	err := row.Scan(
 		&i.ID,
 		&i.OrganizationID,
-		&i.TokenSha256,
+		&i.SecretTokenSha256,
 		&i.DisplayName,
 	)
 	return i, err
@@ -1194,7 +1194,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, organization_id, token_sha256, display_name
+    id, organization_id, secret_token_sha256, display_name
 `
 
 type UpdateSCIMAPIKeyParams struct {
@@ -1208,7 +1208,7 @@ func (q *Queries) UpdateSCIMAPIKey(ctx context.Context, arg UpdateSCIMAPIKeyPara
 	err := row.Scan(
 		&i.ID,
 		&i.OrganizationID,
-		&i.TokenSha256,
+		&i.SecretTokenSha256,
 		&i.DisplayName,
 	)
 	return i, err
