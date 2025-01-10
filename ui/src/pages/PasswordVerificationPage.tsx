@@ -2,7 +2,10 @@ import React, { useState } from 'react'
 import { Title } from '@/components/Title'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { verifyPassword } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
+import {
+  exchangeIntermediateSessionForSession,
+  verifyPassword,
+} from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
 import { useMutation } from '@connectrpc/connect-query'
 import { useNavigate, useParams } from 'react-router'
 import { setAccessToken, setRefreshToken } from '@/auth'
@@ -12,15 +15,22 @@ const PasswordVerificationPage = () => {
   const params = useParams()
   const [password, setPassword] = useState<string>('')
 
+  const exchangeIntermediateSessionForSessionMutation = useMutation(
+    exchangeIntermediateSessionForSession,
+  )
   const verifyPasswordMutation = useMutation(verifyPassword)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     try {
+      await verifyPasswordMutation.mutateAsync({
+        password,
+        organizationId: params.organizationId,
+      })
+
       const { accessToken, refreshToken } =
-        await verifyPasswordMutation.mutateAsync({
-          password,
+        await exchangeIntermediateSessionForSessionMutation.mutateAsync({
           organizationId: params.organizationId,
         })
 

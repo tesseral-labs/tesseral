@@ -105,6 +105,8 @@ message IntermediateSession {
   string google_hosted_domain = 5;
   string microsoft_tenant_id = 6;
   string microsoft_user_id = 7;
+  bool password_verified = 8;
+  string organization_id = 9;
   // TODO more things here
 }
 
@@ -307,8 +309,4 @@ message VerifyPasswordRequest {
 }
 
 message VerifyPasswordResponse {
-  // The access token for the new session.
-  string access_token = 1;
-  // The refresh token for the new session.
-  string refresh_token = 2;
 }

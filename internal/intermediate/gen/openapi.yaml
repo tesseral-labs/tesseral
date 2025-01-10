@@ -467,13 +467,7 @@ components:
                     description: The password to verify.
         VerifyPasswordResponse:
             type: object
-            properties:
-                accessToken:
-                    type: string
-                    description: The access token for the new session.
-                refreshToken:
-                    type: string
-                    description: The refresh token for the new session.
+            properties: {}
         WhoamiResponse:
             type: object
             properties:

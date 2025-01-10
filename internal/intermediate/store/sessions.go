@@ -10,7 +10,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
-	"github.com/openauth/openauth/internal/crypto/bcrypt"
 	openauthecdsa "github.com/openauth/openauth/internal/crypto/ecdsa"
 	"github.com/openauth/openauth/internal/intermediate/authn"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
@@ -19,6 +18,8 @@ import (
 	"github.com/openauth/openauth/internal/sessions"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
+
+var errInvalidIntermediateSessionState = fmt.Errorf("invalid intermediate session state")
 
 func (s *Store) ExchangeIntermediateSessionForNewOrganizationSession(ctx context.Context, req *intermediatev1.ExchangeIntermediateSessionForNewOrganizationSessionRequest) (*intermediatev1.ExchangeIntermediateSessionForNewOrganizationSessionResponse, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
@@ -175,6 +176,10 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		if err != nil {
 			return nil, err
 		}
+
+		if !intermediateSession.PasswordVerified {
+			return nil, errInvalidIntermediateSessionState
+		}
 	}
 
 	expiresAt := time.Now().Add(7 * time.Hour * 24) // 7 days
@@ -231,110 +236,6 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 	}
 
 	return &intermediatev1.ExchangeIntermediateSessionForSessionResponse{
-		AccessToken:  accessToken,
-		RefreshToken: refreshToken,
-	}, nil
-}
-
-func (s *Store) VerifyPassword(ctx context.Context, req *intermediatev1.VerifyPasswordRequest) (*intermediatev1.VerifyPasswordResponse, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
-	if err != nil {
-		return nil, err
-	}
-	defer rollback()
-
-	projectID := authn.ProjectID(ctx)
-	intermediateSession := authn.IntermediateSession(ctx)
-	organizationID, err := idformat.Organization.Parse(req.OrganizationId)
-	if err != nil {
-		return nil, err
-	}
-
-	qOrganization, err := q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
-		ID:        organizationID,
-		ProjectID: projectID,
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	qUser, err := q.GetUserByOrganizationIDAndFactors(ctx, queries.GetUserByOrganizationIDAndFactorsParams{
-		OrganizationID:  organizationID,
-		Email:           intermediateSession.Email,
-		GoogleUserID:    refOrNil(intermediateSession.GoogleUserId),
-		MicrosoftUserID: refOrNil(intermediateSession.MicrosoftUserId),
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	err = bcrypt.CompareBcryptHash(*qUser.PasswordBcrypt, req.Password)
-	if err != nil {
-		return nil, err
-	}
-
-	_, err = q.UpdateIntermediateSessionPasswordVerified(ctx, queries.UpdateIntermediateSessionPasswordVerifiedParams{
-		ID:             authn.IntermediateSessionID(ctx),
-		OrganizationID: &qUser.OrganizationID,
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	qProject, err := q.GetProjectByID(ctx, projectID)
-	if err != nil {
-		return nil, err
-	}
-
-	expiresAt := time.Now().Add(7 * time.Hour * 24) // 7 days
-
-	// Create a new session for the user
-	refreshToken := idformat.SessionRefreshToken.Format(uuid.New())
-	refreshTokenSHA256 := sha256.Sum256([]byte(refreshToken))
-
-	qSession, err := q.CreateSession(ctx, queries.CreateSessionParams{
-		ID:                 uuid.Must(uuid.NewV7()),
-		ExpireTime:         &expiresAt,
-		RefreshTokenSha256: refreshTokenSHA256[:],
-		UserID:             qUser.ID,
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	sessionSigningKeyID, privateKey, err := s.getSessionSigningKey(ctx, q, projectID)
-	if err != nil {
-		return nil, err
-	}
-
-	if err := commit(); err != nil {
-		return nil, err
-	}
-
-	accessToken, err := sessions.GetAccessToken(ctx, &sessions.Organization{
-		ID:          idformat.Organization.Format(qOrganization.ID),
-		DisplayName: qOrganization.DisplayName,
-	}, &sessions.Project{
-		ID: idformat.Project.Format(qProject.ID),
-	}, &sessions.Session{
-		ID:         idformat.Session.Format(qSession.ID),
-		UserID:     idformat.User.Format(qUser.ID),
-		CreateTime: *qSession.CreateTime,
-		ExpireTime: *qSession.ExpireTime,
-		Revoked:    qSession.Revoked,
-	}, &sessions.User{
-		ID:              idformat.User.Format(qUser.ID),
-		CreateTime:      *qUser.CreateTime,
-		Email:           qUser.Email,
-		GoogleUserID:    derefOrEmpty(qUser.GoogleUserID),
-		MicrosoftUserID: derefOrEmpty(qUser.MicrosoftUserID),
-		UpdateTime:      derefOrEmpty(qUser.UpdateTime),
-	}, *sessionSigningKeyID, privateKey)
-	if err != nil {
-		return nil, err
-	}
-
-	return &intermediatev1.VerifyPasswordResponse{
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
 	}, nil
