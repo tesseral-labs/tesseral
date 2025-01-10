@@ -7,6 +7,7 @@ import {
   whoami,
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
 import { useMutation, useQuery } from '@connectrpc/connect-query'
+import { LoginViews } from '@/lib/views'
 
 const MicrosoftOAuthCallbackPage = () => {
   const navigate = useNavigate()
@@ -37,14 +38,21 @@ const MicrosoftOAuthCallbackPage = () => {
           }
 
           if (data.isEmailVerified) {
-            navigate('/organizations')
+            navigate('/login', {
+              state: { view: LoginViews.Organizations },
+            })
             return
           }
 
           const { emailVerificationChallengeId } =
             await issueEmailVerificationChallengeMutation.mutateAsync({})
 
-          navigate(`/verify-email?challenge_id=${emailVerificationChallengeId}`)
+          navigate(`/login`, {
+            state: {
+              view: LoginViews.EmailVerification,
+              challengeId: emailVerificationChallengeId,
+            },
+          })
         } catch (error) {
           // TODO: Handle errors on screen once an error handling strategy is in place.
           console.error(error)

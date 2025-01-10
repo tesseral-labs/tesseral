@@ -18,8 +18,9 @@ import {
 import { Link, useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { setAccessToken, setRefreshToken } from '@/auth'
+import { LoginViews } from '@/lib/views'
 
-const OrganizationsPage = () => {
+const Organizations = () => {
   const navigate = useNavigate()
 
   const [organizations, setOrganizations] = React.useState<Organization[]>([])
@@ -48,9 +49,6 @@ const OrganizationsPage = () => {
 
   const handleOrganizationClick = async (organization: Organization) => {
     try {
-      console.log(`whoamiRes`, whoamiRes)
-      console.log(`organization`, organization)
-
       // Check if the user is logging in with an email address and the organization supports passwords
       if (
         !whoamiRes?.googleUserId &&
@@ -58,7 +56,12 @@ const OrganizationsPage = () => {
         whoamiRes?.email &&
         organization.logInWithPasswordEnabled
       ) {
-        navigate(`/${organization.id}/verify-password`)
+        navigate(`/login`, {
+          state: {
+            view: LoginViews.PasswordVerification,
+            organizationId: organization.id,
+          },
+        })
         return
       }
 
@@ -117,7 +120,11 @@ const OrganizationsPage = () => {
         <CardFooter>
           <p className="text-sm text-center w-full">
             Or you can{' '}
-            <Link className="text-primary underline" to="/create-organization">
+            <Link
+              className="text-primary underline"
+              to="/login"
+              state={{ view: LoginViews.CreateOrganization }}
+            >
               create an organization
             </Link>
             .
@@ -128,4 +135,4 @@ const OrganizationsPage = () => {
   )
 }
 
-export default OrganizationsPage
+export default Organizations

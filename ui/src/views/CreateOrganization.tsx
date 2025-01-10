@@ -12,9 +12,8 @@ import { exchangeIntermediateSessionForNewOrganizationSession } from '@/gen/open
 import { useMutation } from '@connectrpc/connect-query'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router'
-import { useSearchParams } from 'react-router-dom'
 
-const CreateOrganizationPage = () => {
+const CreateOrganization = () => {
   const navigate = useNavigate()
 
   const [displayName, setDisplayName] = useState<string>('')
@@ -74,4 +73,4 @@ const CreateOrganizationPage = () => {
   )
 }
 
-export default CreateOrganizationPage
+export default CreateOrganization

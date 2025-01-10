@@ -7,12 +7,12 @@ import {
   verifyPassword,
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
 import { useMutation } from '@connectrpc/connect-query'
-import { useNavigate, useParams } from 'react-router'
+import { useLocation, useNavigate, useParams } from 'react-router'
 import { setAccessToken, setRefreshToken } from '@/auth'
 
-const PasswordVerificationPage = () => {
+const PasswordVerification = () => {
   const navigate = useNavigate()
-  const params = useParams()
+  const { state } = useLocation()
   const [password, setPassword] = useState<string>('')
 
   const exchangeIntermediateSessionForSessionMutation = useMutation(
@@ -26,12 +26,12 @@ const PasswordVerificationPage = () => {
     try {
       await verifyPasswordMutation.mutateAsync({
         password,
-        organizationId: params.organizationId,
+        organizationId: state?.organizationId,
       })
 
       const { accessToken, refreshToken } =
         await exchangeIntermediateSessionForSessionMutation.mutateAsync({
-          organizationId: params.organizationId,
+          organizationId: state?.organizationId,
         })
 
       setAccessToken(accessToken)
@@ -80,4 +80,4 @@ const PasswordVerificationPage = () => {
   )
 }
 
-export default PasswordVerificationPage
+export default PasswordVerification

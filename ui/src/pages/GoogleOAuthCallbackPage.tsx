@@ -7,6 +7,7 @@ import {
   whoami,
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
 import { useMutation, useQuery } from '@connectrpc/connect-query'
+import { LoginViews } from '@/lib/views'
 
 const GoogleOAuthCallbackPage = () => {
   const navigate = useNavigate()
@@ -41,7 +42,9 @@ const GoogleOAuthCallbackPage = () => {
 
           // If the user has verified their email, navigate to the organizations page.
           if (data.isEmailVerified) {
-            navigate('/organizations')
+            navigate('/login', {
+              state: { view: LoginViews.Organizations },
+            })
             return
           }
 
@@ -55,9 +58,13 @@ const GoogleOAuthCallbackPage = () => {
           }
 
           // Navigate to the email verification page.
-          navigate(
-            `/verify-email?challenge_id=${emailVerificationChallengeResponse.emailVerificationChallengeId}`,
-          )
+          navigate(`/login`, {
+            state: {
+              view: LoginViews.EmailVerification,
+              challengeId:
+                emailVerificationChallengeResponse.emailVerificationChallengeId,
+            },
+          })
         } catch (error) {
           // TODO: Handle errors on screen once an error handling strategy is in place.
           console.error(error)
