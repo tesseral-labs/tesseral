@@ -1,5 +1,5 @@
 # Tesseral Local Dev Entries
 
-127.0.0.1 api.tesseral.local
-127.0.0.1 app.tesseral.local
-127.0.0.1 ui.tesseral.local
+127.0.0.1 api.tesseral.example.com
+127.0.0.1 app.tesseral.example.com
+127.0.0.1 ui.tesseral.example.com
