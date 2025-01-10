@@ -27,6 +27,11 @@ func (s *Store) ListOrganizations(
 		return nil, err
 	}
 
+	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, err
+	}
+
 	limit := 10
 	qOrganizationRecords := []queries.Organization{}
 
@@ -78,7 +83,7 @@ func (s *Store) ListOrganizations(
 
 	organizations := []*intermediatev1.Organization{}
 	for _, organization := range qOrganizationRecords {
-		organizations = append(organizations, parseOrganization(organization))
+		organizations = append(organizations, parseOrganization(organization, qProject))
 	}
 
 	var nextPageToken string
@@ -93,12 +98,16 @@ func (s *Store) ListOrganizations(
 	}, nil
 }
 
-func parseOrganization(organization queries.Organization) *intermediatev1.Organization {
+func parseOrganization(organization queries.Organization, project queries.Project) *intermediatev1.Organization {
+	logInWithGoogleEnabled := project.LogInWithGoogleEnabled && (!organization.OverrideLogInMethods || organization.OverrideLogInWithGoogleEnabled != nil && *organization.OverrideLogInWithGoogleEnabled)
+	logInWithMicrosoftEnabled := project.LogInWithMicrosoftEnabled && (!organization.OverrideLogInMethods || organization.OverrideLogInWithMicrosoftEnabled != nil && *organization.OverrideLogInWithMicrosoftEnabled)
+	logInWithPasswordEnabled := project.LogInWithPasswordEnabled && (!organization.OverrideLogInMethods || organization.OverrideLogInWithPasswordEnabled != nil && *organization.OverrideLogInWithPasswordEnabled)
+
 	return &intermediatev1.Organization{
 		Id:                        idformat.Organization.Format(organization.ID),
 		DisplayName:               organization.DisplayName,
-		LogInWithGoogleEnabled:    derefOrEmpty(organization.OverrideLogInWithGoogleEnabled),
-		LogInWithMicrosoftEnabled: derefOrEmpty(organization.OverrideLogInWithMicrosoftEnabled),
-		LogInWithPasswordEnabled:  derefOrEmpty(organization.OverrideLogInWithPasswordEnabled),
+		LogInWithGoogleEnabled:    logInWithGoogleEnabled,
+		LogInWithMicrosoftEnabled: logInWithMicrosoftEnabled,
+		LogInWithPasswordEnabled:  logInWithPasswordEnabled,
 	}
 }

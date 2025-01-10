@@ -13,6 +13,6 @@ func GenerateBcryptHash(password string) (string, error) {
 	return string(hash), nil
 }
 
-//func CompareBcryptHash(hash, password string) error { // nolint:unused
-//	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-//}
+func CompareBcryptHash(hash, password string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+}

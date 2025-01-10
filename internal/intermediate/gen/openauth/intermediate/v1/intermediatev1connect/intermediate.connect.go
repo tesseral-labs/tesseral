@@ -67,6 +67,9 @@ const (
 	// IntermediateServiceVerifyEmailChallengeProcedure is the fully-qualified name of the
 	// IntermediateService's VerifyEmailChallenge RPC.
 	IntermediateServiceVerifyEmailChallengeProcedure = "/openauth.intermediate.v1.IntermediateService/VerifyEmailChallenge"
+	// IntermediateServiceVerifyPasswordProcedure is the fully-qualified name of the
+	// IntermediateService's VerifyPassword RPC.
+	IntermediateServiceVerifyPasswordProcedure = "/openauth.intermediate.v1.IntermediateService/VerifyPassword"
 )
 
 // IntermediateServiceClient is a client for the openauth.intermediate.v1.IntermediateService
@@ -87,6 +90,8 @@ type IntermediateServiceClient interface {
 	SignInWithEmail(context.Context, *connect.Request[v1.SignInWithEmailRequest]) (*connect.Response[v1.SignInWithEmailResponse], error)
 	// Submits a challenge for verification of email address.
 	VerifyEmailChallenge(context.Context, *connect.Request[v1.VerifyEmailChallengeRequest]) (*connect.Response[v1.VerifyEmailChallengeResponse], error)
+	// Submits a password for verification of session.
+	VerifyPassword(context.Context, *connect.Request[v1.VerifyPasswordRequest]) (*connect.Response[v1.VerifyPasswordResponse], error)
 }
 
 // NewIntermediateServiceClient constructs a client for the
@@ -167,6 +172,12 @@ func NewIntermediateServiceClient(httpClient connect.HTTPClient, baseURL string,
 			connect.WithSchema(intermediateServiceMethods.ByName("VerifyEmailChallenge")),
 			connect.WithClientOptions(opts...),
 		),
+		verifyPassword: connect.NewClient[v1.VerifyPasswordRequest, v1.VerifyPasswordResponse](
+			httpClient,
+			baseURL+IntermediateServiceVerifyPasswordProcedure,
+			connect.WithSchema(intermediateServiceMethods.ByName("VerifyPassword")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -183,6 +194,7 @@ type intermediateServiceClient struct {
 	listOrganizations                                    *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
 	signInWithEmail                                      *connect.Client[v1.SignInWithEmailRequest, v1.SignInWithEmailResponse]
 	verifyEmailChallenge                                 *connect.Client[v1.VerifyEmailChallengeRequest, v1.VerifyEmailChallengeResponse]
+	verifyPassword                                       *connect.Client[v1.VerifyPasswordRequest, v1.VerifyPasswordResponse]
 }
 
 // Whoami calls openauth.intermediate.v1.IntermediateService.Whoami.
@@ -246,6 +258,11 @@ func (c *intermediateServiceClient) VerifyEmailChallenge(ctx context.Context, re
 	return c.verifyEmailChallenge.CallUnary(ctx, req)
 }
 
+// VerifyPassword calls openauth.intermediate.v1.IntermediateService.VerifyPassword.
+func (c *intermediateServiceClient) VerifyPassword(ctx context.Context, req *connect.Request[v1.VerifyPasswordRequest]) (*connect.Response[v1.VerifyPasswordResponse], error) {
+	return c.verifyPassword.CallUnary(ctx, req)
+}
+
 // IntermediateServiceHandler is an implementation of the
 // openauth.intermediate.v1.IntermediateService service.
 type IntermediateServiceHandler interface {
@@ -264,6 +281,8 @@ type IntermediateServiceHandler interface {
 	SignInWithEmail(context.Context, *connect.Request[v1.SignInWithEmailRequest]) (*connect.Response[v1.SignInWithEmailResponse], error)
 	// Submits a challenge for verification of email address.
 	VerifyEmailChallenge(context.Context, *connect.Request[v1.VerifyEmailChallengeRequest]) (*connect.Response[v1.VerifyEmailChallengeResponse], error)
+	// Submits a password for verification of session.
+	VerifyPassword(context.Context, *connect.Request[v1.VerifyPasswordRequest]) (*connect.Response[v1.VerifyPasswordResponse], error)
 }
 
 // NewIntermediateServiceHandler builds an HTTP handler from the service implementation. It returns
@@ -339,6 +358,12 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 		connect.WithSchema(intermediateServiceMethods.ByName("VerifyEmailChallenge")),
 		connect.WithHandlerOptions(opts...),
 	)
+	intermediateServiceVerifyPasswordHandler := connect.NewUnaryHandler(
+		IntermediateServiceVerifyPasswordProcedure,
+		svc.VerifyPassword,
+		connect.WithSchema(intermediateServiceMethods.ByName("VerifyPassword")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/openauth.intermediate.v1.IntermediateService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case IntermediateServiceWhoamiProcedure:
@@ -363,6 +388,8 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 			intermediateServiceSignInWithEmailHandler.ServeHTTP(w, r)
 		case IntermediateServiceVerifyEmailChallengeProcedure:
 			intermediateServiceVerifyEmailChallengeHandler.ServeHTTP(w, r)
+		case IntermediateServiceVerifyPasswordProcedure:
+			intermediateServiceVerifyPasswordHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -414,4 +441,8 @@ func (UnimplementedIntermediateServiceHandler) SignInWithEmail(context.Context, 
 
 func (UnimplementedIntermediateServiceHandler) VerifyEmailChallenge(context.Context, *connect.Request[v1.VerifyEmailChallengeRequest]) (*connect.Response[v1.VerifyEmailChallengeResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.VerifyEmailChallenge is not implemented"))
+}
+
+func (UnimplementedIntermediateServiceHandler) VerifyPassword(context.Context, *connect.Request[v1.VerifyPasswordRequest]) (*connect.Response[v1.VerifyPasswordResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.VerifyPassword is not implemented"))
 }

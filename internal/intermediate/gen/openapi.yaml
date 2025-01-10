@@ -249,6 +249,31 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /intermediate/v1/verify-password-challenge:
+        post:
+            tags:
+                - IntermediateService
+            description: Submits a password for verification of session.
+            operationId: IntermediateService_VerifyPassword
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/VerifyPasswordRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/VerifyPasswordResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /intermediate/v1/whoami:
         get:
             tags:
@@ -431,6 +456,24 @@ components:
         VerifyEmailChallengeResponse:
             type: object
             properties: {}
+        VerifyPasswordRequest:
+            type: object
+            properties:
+                organizationId:
+                    type: string
+                    description: The organization ID to verify the password for.
+                password:
+                    type: string
+                    description: The password to verify.
+        VerifyPasswordResponse:
+            type: object
+            properties:
+                accessToken:
+                    type: string
+                    description: The access token for the new session.
+                refreshToken:
+                    type: string
+                    description: The refresh token for the new session.
         WhoamiResponse:
             type: object
             properties:

@@ -80,6 +80,8 @@ type IntermediateSession struct {
 	GoogleUserID              *string
 	MicrosoftTenantID         *string
 	MicrosoftUserID           *string
+	PasswordVerified          *bool
+	OrganizationID            *uuid.UUID
 }
 
 type IntermediateSessionSigningKey struct {

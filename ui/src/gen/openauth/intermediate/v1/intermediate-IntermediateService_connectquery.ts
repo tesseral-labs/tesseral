@@ -66,3 +66,10 @@ export const signInWithEmail = IntermediateService.method.signInWithEmail;
  * @generated from rpc openauth.intermediate.v1.IntermediateService.VerifyEmailChallenge
  */
 export const verifyEmailChallenge = IntermediateService.method.verifyEmailChallenge;
+
+/**
+ * Submits a password for verification of session.
+ *
+ * @generated from rpc openauth.intermediate.v1.IntermediateService.VerifyPassword
+ */
+export const verifyPassword = IntermediateService.method.verifyPassword;
