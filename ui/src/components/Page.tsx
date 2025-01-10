@@ -9,7 +9,7 @@ const Page = () => {
           {/* TODO: Make this conditionally load an Organizations configured logo */}
           <img
             className="max-w-[240px]"
-            src="/images/openauth-logo-black.svg"
+            src="/images/tesseral-logo-black.svg"
           />
         </div>
       </div>
