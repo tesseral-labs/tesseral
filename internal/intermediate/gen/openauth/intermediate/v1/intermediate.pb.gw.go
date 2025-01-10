@@ -557,7 +557,7 @@ func RegisterIntermediateServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/VerifyPassword", runtime.WithHTTPPathPattern("/intermediate/v1/verify-password-challenge"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/VerifyPassword", runtime.WithHTTPPathPattern("/intermediate/v1/verify-password"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -802,7 +802,7 @@ func RegisterIntermediateServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/VerifyPassword", runtime.WithHTTPPathPattern("/intermediate/v1/verify-password-challenge"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/VerifyPassword", runtime.WithHTTPPathPattern("/intermediate/v1/verify-password"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -830,7 +830,7 @@ var (
 	pattern_IntermediateService_ListOrganizations_0                                    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "organizations"}, ""))
 	pattern_IntermediateService_SignInWithEmail_0                                      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "email-signin"}, ""))
 	pattern_IntermediateService_VerifyEmailChallenge_0                                 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "verify-email-challenge"}, ""))
-	pattern_IntermediateService_VerifyPassword_0                                       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "verify-password-challenge"}, ""))
+	pattern_IntermediateService_VerifyPassword_0                                       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "verify-password"}, ""))
 )
 
 var (

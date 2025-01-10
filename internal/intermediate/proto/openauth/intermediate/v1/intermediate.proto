@@ -91,7 +91,7 @@ service IntermediateService {
   // Submits a password for verification of session.
   rpc VerifyPassword(VerifyPasswordRequest) returns (VerifyPasswordResponse) {
     option (google.api.http) = {
-      post: "/intermediate/v1/verify-password-challenge",
+      post: "/intermediate/v1/verify-password",
       body: "*"
     };
   }

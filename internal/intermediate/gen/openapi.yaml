@@ -249,7 +249,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /intermediate/v1/verify-password-challenge:
+    /intermediate/v1/verify-password:
         post:
             tags:
                 - IntermediateService
