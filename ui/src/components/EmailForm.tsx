@@ -5,6 +5,7 @@ import { useMutation } from '@connectrpc/connect-query'
 import { setIntermediateSessionToken } from '@/auth'
 import { Button } from './ui/button'
 import { signInWithEmail } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
+import { LoginViews } from '@/lib/views'
 
 const EmailForm = () => {
   const navigate = useNavigate()
@@ -30,7 +31,12 @@ const EmailForm = () => {
       setIntermediateSessionToken(intermediateSessionToken)
 
       // redirect to challenge page
-      navigate(`/verify-email?challenge_id=${challengeId}`)
+      navigate(`/login`, {
+        state: {
+          view: LoginViews.EmailVerification,
+          challengeId,
+        },
+      })
     } catch (error) {
       console.error(error)
     }

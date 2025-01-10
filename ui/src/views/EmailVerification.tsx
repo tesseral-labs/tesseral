@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useMutation, useQuery } from '@connectrpc/connect-query'
 
 import { Title } from '@/components/Title'
@@ -15,13 +15,13 @@ import {
   verifyEmailChallenge,
   whoami,
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
+import { LoginViews } from '@/lib/views'
 
-const EmailVerificationPage = () => {
+const EmailVerification = () => {
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
+  const { state } = useLocation()
 
   const [challengeCode, setChallengeCode] = useState<string>('')
-  const [challengeId, setChallengeId] = useState<string>('')
   const [email, setEmail] = useState<string>('')
 
   const { data: whoamiRes } = useQuery(whoami)
@@ -31,31 +31,18 @@ const EmailVerificationPage = () => {
     e.preventDefault()
 
     try {
-      const response = await verifyEmailChallengeMutation.mutateAsync({
-        emailVerificationChallengeId: challengeId,
+      await verifyEmailChallengeMutation.mutateAsync({
+        emailVerificationChallengeId: state?.challengeId,
         code: challengeCode,
       })
 
-      console.log('response: ', response)
-
-      navigate('/organizations')
+      navigate('/login', {
+        state: { view: LoginViews.Organizations },
+      })
     } catch (error) {
       console.error(error)
     }
   }
-
-  useEffect(() => {
-    ;(async () => {
-      try {
-        const challengeId = searchParams.get('challenge_id')
-        if (challengeId) {
-          setChallengeId(challengeId)
-        }
-      } catch (error) {
-        console.error(error)
-      }
-    })()
-  }, [])
 
   return (
     <>
@@ -94,4 +81,4 @@ const EmailVerificationPage = () => {
   )
 }
 
-export default EmailVerificationPage
+export default EmailVerification

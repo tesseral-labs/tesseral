@@ -5,21 +5,17 @@ import { BrowserRouter } from 'react-router-dom'
 import { Transport } from '@connectrpc/connect'
 import { TransportProvider } from '@connectrpc/connect-query'
 import { createConnectTransport } from '@connectrpc/connect-web'
-
-import { getIntermediateSessionToken } from './auth'
-
-import LoginPage from '@/pages/LoginPage'
-import NotFoundPage from '@/pages/NotFound'
-import OrganizationsPage from '@/pages/OrganizationsPage'
-import Page from './components/Page'
-import EmailVerificationPage from './pages/EmailVerificationPage'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { API_URL, PROJECT_ID } from './config'
-import GoogleOAuthCallbackPage from './pages/GoogleOAuthCallbackPage'
-import MicrosoftOAuthCallbackPage from './pages/MicrosoftOAuthCallbackPage'
-import CreateOrganizationPage from './pages/CreateOrganizationPage'
-import SessionInfoPage from './pages/SessionInfoPage'
-import PasswordVerificationPage from './pages/PasswordVerificationPage'
+
+import { API_URL, PROJECT_ID } from '@/config'
+
+import GoogleOAuthCallbackPage from '@/pages/GoogleOAuthCallbackPage'
+import LoginPage from '@/pages/LoginPage'
+import MicrosoftOAuthCallbackPage from '@/pages/MicrosoftOAuthCallbackPage'
+import NotFoundPage from '@/pages/NotFound'
+import SessionInfoPage from '@/pages/SessionInfoPage'
+
+import Page from '@/components/Page'
 
 const queryClient = new QueryClient()
 
@@ -48,10 +44,6 @@ const AppWithRoutes: FC = () => {
           <Routes>
             <Route path="/" element={<Page />}>
               <Route
-                path="/create-organization"
-                element={<CreateOrganizationPage />}
-              />
-              <Route
                 path="/google-oauth-callback"
                 element={<GoogleOAuthCallbackPage />}
               />
@@ -60,15 +52,8 @@ const AppWithRoutes: FC = () => {
                 element={<MicrosoftOAuthCallbackPage />}
               />
               <Route path="/login" element={<LoginPage />} />
-              <Route path="/organizations" element={<OrganizationsPage />} />
               <Route path="/session-info" element={<SessionInfoPage />} />
-              <Route path="/verify-email" element={<EmailVerificationPage />} />
-              <Route
-                path="/:organizationId/verify-password"
-                element={<PasswordVerificationPage />}
-              />
             </Route>
-
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </BrowserRouter>
