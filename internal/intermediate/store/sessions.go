@@ -177,7 +177,8 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 			return nil, err
 		}
 
-		if !intermediateSession.PasswordVerified {
+		// Ensure that the intermediate session is in an authorized state
+		if !intermediateSession.PasswordVerified || intermediateSession.OrganizationId != req.OrganizationId {
 			return nil, errInvalidIntermediateSessionState
 		}
 	}
