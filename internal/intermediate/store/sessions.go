@@ -19,6 +19,8 @@ import (
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
+var errInvalidIntermediateSessionState = fmt.Errorf("invalid intermediate session state")
+
 func (s *Store) ExchangeIntermediateSessionForNewOrganizationSession(ctx context.Context, req *intermediatev1.ExchangeIntermediateSessionForNewOrganizationSessionRequest) (*intermediatev1.ExchangeIntermediateSessionForNewOrganizationSessionResponse, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
@@ -173,6 +175,11 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		})
 		if err != nil {
 			return nil, err
+		}
+
+		// Ensure that the intermediate session is in an authorized state
+		if !intermediateSession.PasswordVerified || intermediateSession.OrganizationId != req.OrganizationId {
+			return nil, errInvalidIntermediateSessionState
 		}
 	}
 

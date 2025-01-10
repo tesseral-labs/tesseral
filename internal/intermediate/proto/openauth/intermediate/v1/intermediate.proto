@@ -87,6 +87,14 @@ service IntermediateService {
       body: "*"
     };
   }
+
+  // Submits a password for verification of session.
+  rpc VerifyPassword(VerifyPasswordRequest) returns (VerifyPasswordResponse) {
+    option (google.api.http) = {
+      post: "/intermediate/v1/verify-password",
+      body: "*"
+    };
+  }
 }
 
 message IntermediateSession {
@@ -97,6 +105,8 @@ message IntermediateSession {
   string google_hosted_domain = 5;
   string microsoft_tenant_id = 6;
   string microsoft_user_id = 7;
+  bool password_verified = 8;
+  string organization_id = 9;
   // TODO more things here
 }
 
@@ -290,3 +300,13 @@ message VerifyEmailChallengeRequest {
 }
 
 message VerifyEmailChallengeResponse {}
+
+message VerifyPasswordRequest {
+  // The organization ID to verify the password for.
+  string organization_id = 1;
+  // The password to verify.
+  string password = 2;
+}
+
+message VerifyPasswordResponse {
+}

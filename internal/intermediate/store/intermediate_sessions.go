@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/openauth/openauth/internal/crypto/bcrypt"
 	"github.com/openauth/openauth/internal/intermediate/authn"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
@@ -29,8 +30,13 @@ func (s *Store) GetIntermediateSessionByToken(ctx context.Context, token string)
 	// todo this is what parseIntermediateSession should do, but already token
 	// by another function returning a hand-written type
 	intermediateSession := &intermediatev1.IntermediateSession{
-		Id:        idformat.IntermediateSession.Format(qIntermediateSession.ID),
-		ProjectId: idformat.Project.Format(qIntermediateSession.ProjectID),
+		Id:               idformat.IntermediateSession.Format(qIntermediateSession.ID),
+		ProjectId:        idformat.Project.Format(qIntermediateSession.ProjectID),
+		PasswordVerified: derefOrEmpty(qIntermediateSession.PasswordVerified),
+	}
+
+	if qIntermediateSession.OrganizationID != nil {
+		intermediateSession.OrganizationId = idformat.Organization.Format(*qIntermediateSession.OrganizationID)
 	}
 
 	if qIntermediateSession.Email != nil {
@@ -46,6 +52,61 @@ func (s *Store) GetIntermediateSessionByToken(ctx context.Context, token string)
 	}
 
 	return intermediateSession, nil
+}
+
+func (s *Store) VerifyPassword(ctx context.Context, req *intermediatev1.VerifyPasswordRequest) (*intermediatev1.VerifyPasswordResponse, error) {
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	projectID := authn.ProjectID(ctx)
+	intermediateSession := authn.IntermediateSession(ctx)
+	organizationID, err := idformat.Organization.Parse(req.OrganizationId)
+	if err != nil {
+		return nil, err
+	}
+
+	// Ensure that the organization exists and is part of the project
+	_, err = q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
+		ID:        organizationID,
+		ProjectID: projectID,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	qUser, err := q.GetUserByOrganizationIDAndFactors(ctx, queries.GetUserByOrganizationIDAndFactorsParams{
+		OrganizationID:  organizationID,
+		Email:           intermediateSession.Email,
+		GoogleUserID:    refOrNil(intermediateSession.GoogleUserId),
+		MicrosoftUserID: refOrNil(intermediateSession.MicrosoftUserId),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	// Check password is valid
+	err = bcrypt.CompareBcryptHash(*qUser.PasswordBcrypt, req.Password)
+	if err != nil {
+		return nil, err
+	}
+
+	// Update the intermediate session with the new state
+	_, err = q.UpdateIntermediateSessionPasswordVerified(ctx, queries.UpdateIntermediateSessionPasswordVerifiedParams{
+		ID:             authn.IntermediateSessionID(ctx),
+		OrganizationID: &qUser.OrganizationID,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if err := commit(); err != nil {
+		return nil, err
+	}
+
+	return &intermediatev1.VerifyPasswordResponse{}, nil
 }
 
 func (s *Store) Whoami(ctx context.Context, req *intermediatev1.WhoamiRequest) (*intermediatev1.WhoamiResponse, error) {
@@ -88,6 +149,8 @@ type IntermediateSession struct {
 	ExpireTime                   time.Time
 	GoogleUserID                 string
 	MicrosoftUserID              string
+	OrganizationID               uuid.UUID
+	PasswordVerified             bool
 	ProjectID                    uuid.UUID
 	TokenSha256                  []byte
 	Revoked                      bool
@@ -213,14 +276,16 @@ func (s *Store) VerifyIntermediateSessionEmail(
 
 func parseIntermediateSession(i *queries.IntermediateSession) *IntermediateSession {
 	return &IntermediateSession{
-		ID:              i.ID,
-		CreateTime:      *i.CreateTime,
-		Email:           *i.Email,
-		ExpireTime:      *i.ExpireTime,
-		GoogleUserID:    *i.GoogleUserID,
-		MicrosoftUserID: *i.MicrosoftUserID,
-		ProjectID:       i.ProjectID,
-		TokenSha256:     i.TokenSha256,
-		Revoked:         i.Revoked,
+		ID:               i.ID,
+		CreateTime:       *i.CreateTime,
+		Email:            *i.Email,
+		ExpireTime:       *i.ExpireTime,
+		GoogleUserID:     *i.GoogleUserID,
+		MicrosoftUserID:  *i.MicrosoftUserID,
+		OrganizationID:   *i.OrganizationID,
+		PasswordVerified: *i.PasswordVerified,
+		ProjectID:        i.ProjectID,
+		TokenSha256:      i.TokenSha256,
+		Revoked:          i.Revoked,
 	}
 }

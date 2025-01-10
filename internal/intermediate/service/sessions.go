@@ -32,3 +32,12 @@ func (s *Service) ExchangeIntermediateSessionForSession(ctx context.Context, req
 
 	return connectResponse, nil
 }
+
+func (s *Service) VerifyPassword(ctx context.Context, req *connect.Request[intermediatev1.VerifyPasswordRequest]) (*connect.Response[intermediatev1.VerifyPasswordResponse], error) {
+	res, err := s.Store.VerifyPassword(ctx, req.Msg)
+	if err != nil {
+		return nil, fmt.Errorf("store: %w", err)
+	}
+
+	return connect.NewResponse(res), nil
+}

@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react'
 
 import { Title } from '@/components/Title'
-import { useMutation } from '@connectrpc/connect-query'
+import { useMutation, useQuery } from '@connectrpc/connect-query'
 import {
   exchangeIntermediateSessionForSession,
   listOrganizations,
+  whoami,
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
 import { Organization } from '@/gen/openauth/intermediate/v1/intermediate_pb'
 import {
@@ -24,6 +25,7 @@ const OrganizationsPage = () => {
   const [organizations, setOrganizations] = React.useState<Organization[]>([])
   const [pageToken, setPageToken] = React.useState('')
 
+  const { data: whoamiRes } = useQuery(whoami)
   const listOrganizationsMutation = useMutation(listOrganizations)
   const exchangeIntermediateSessionForSessionMutation = useMutation(
     exchangeIntermediateSessionForSession,
@@ -46,6 +48,20 @@ const OrganizationsPage = () => {
 
   const handleOrganizationClick = async (organization: Organization) => {
     try {
+      console.log(`whoamiRes`, whoamiRes)
+      console.log(`organization`, organization)
+
+      // Check if the user is logging in with an email address and the organization supports passwords
+      if (
+        !whoamiRes?.googleUserId &&
+        !whoamiRes?.microsoftUserId &&
+        whoamiRes?.email &&
+        organization.logInWithPasswordEnabled
+      ) {
+        navigate(`/${organization.id}/verify-password`)
+        return
+      }
+
       const { accessToken, refreshToken } =
         await exchangeIntermediateSessionForSessionMutation.mutateAsync({
           organizationId: organization.id,

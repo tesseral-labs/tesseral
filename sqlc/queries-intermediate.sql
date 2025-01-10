@@ -303,3 +303,25 @@ WHERE
 RETURNING
     *;
 
+-- name: UpdateIntermediateSessionPasswordVerified :one
+UPDATE
+    intermediate_sessions
+SET
+    password_verified = TRUE,
+    organization_id = $1
+WHERE
+    id = $2
+RETURNING
+    *;
+
+-- name: GetUserByOrganizationIDAndFactors :one
+SELECT
+    *
+FROM
+    users
+WHERE
+    organization_id = $1
+    AND (google_user_id = $2
+        OR microsoft_user_id = $3
+        OR email = $4);
+

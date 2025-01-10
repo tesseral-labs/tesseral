@@ -212,7 +212,7 @@ func (q *Queries) DeleteSCIMAPIKey(ctx context.Context, id uuid.UUID) error {
 
 const getIntermediateSession = `-- name: GetIntermediateSession :one
 SELECT
-    intermediate_sessions.id, intermediate_sessions.project_id, intermediate_sessions.create_time, intermediate_sessions.expire_time, intermediate_sessions.token_sha256, intermediate_sessions.revoked, intermediate_sessions.email, intermediate_sessions.google_oauth_state_sha256, intermediate_sessions.microsoft_oauth_state_sha256, intermediate_sessions.google_hosted_domain, intermediate_sessions.google_user_id, intermediate_sessions.microsoft_tenant_id, intermediate_sessions.microsoft_user_id
+    intermediate_sessions.id, intermediate_sessions.project_id, intermediate_sessions.create_time, intermediate_sessions.expire_time, intermediate_sessions.token_sha256, intermediate_sessions.revoked, intermediate_sessions.email, intermediate_sessions.google_oauth_state_sha256, intermediate_sessions.microsoft_oauth_state_sha256, intermediate_sessions.google_hosted_domain, intermediate_sessions.google_user_id, intermediate_sessions.microsoft_tenant_id, intermediate_sessions.microsoft_user_id, intermediate_sessions.password_verified, intermediate_sessions.organization_id
 FROM
     intermediate_sessions
 WHERE
@@ -242,6 +242,8 @@ func (q *Queries) GetIntermediateSession(ctx context.Context, arg GetIntermediat
 		&i.GoogleUserID,
 		&i.MicrosoftTenantID,
 		&i.MicrosoftUserID,
+		&i.PasswordVerified,
+		&i.OrganizationID,
 	)
 	return i, err
 }
@@ -530,7 +532,7 @@ func (q *Queries) GetUser(ctx context.Context, arg GetUserParams) (User, error) 
 
 const listIntermediateSessions = `-- name: ListIntermediateSessions :many
 SELECT
-    id, project_id, create_time, expire_time, token_sha256, revoked, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id
+    id, project_id, create_time, expire_time, token_sha256, revoked, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id
 FROM
     intermediate_sessions
 WHERE
@@ -570,6 +572,8 @@ func (q *Queries) ListIntermediateSessions(ctx context.Context, arg ListIntermed
 			&i.GoogleUserID,
 			&i.MicrosoftTenantID,
 			&i.MicrosoftUserID,
+			&i.PasswordVerified,
+			&i.OrganizationID,
 		); err != nil {
 			return nil, err
 		}

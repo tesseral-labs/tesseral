@@ -19,6 +19,7 @@ import GoogleOAuthCallbackPage from './pages/GoogleOAuthCallbackPage'
 import MicrosoftOAuthCallbackPage from './pages/MicrosoftOAuthCallbackPage'
 import CreateOrganizationPage from './pages/CreateOrganizationPage'
 import SessionInfoPage from './pages/SessionInfoPage'
+import PasswordVerificationPage from './pages/PasswordVerificationPage'
 
 const queryClient = new QueryClient()
 
@@ -62,6 +63,10 @@ const AppWithRoutes: FC = () => {
               <Route path="/organizations" element={<OrganizationsPage />} />
               <Route path="/session-info" element={<SessionInfoPage />} />
               <Route path="/verify-email" element={<EmailVerificationPage />} />
+              <Route
+                path="/:organizationId/verify-password"
+                element={<PasswordVerificationPage />}
+              />
             </Route>
 
             <Route path="*" element={<NotFoundPage />} />

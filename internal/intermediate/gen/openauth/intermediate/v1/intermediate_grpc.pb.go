@@ -30,6 +30,7 @@ const (
 	IntermediateService_ListOrganizations_FullMethodName                                    = "/openauth.intermediate.v1.IntermediateService/ListOrganizations"
 	IntermediateService_SignInWithEmail_FullMethodName                                      = "/openauth.intermediate.v1.IntermediateService/SignInWithEmail"
 	IntermediateService_VerifyEmailChallenge_FullMethodName                                 = "/openauth.intermediate.v1.IntermediateService/VerifyEmailChallenge"
+	IntermediateService_VerifyPassword_FullMethodName                                       = "/openauth.intermediate.v1.IntermediateService/VerifyPassword"
 )
 
 // IntermediateServiceClient is the client API for IntermediateService service.
@@ -51,6 +52,8 @@ type IntermediateServiceClient interface {
 	SignInWithEmail(ctx context.Context, in *SignInWithEmailRequest, opts ...grpc.CallOption) (*SignInWithEmailResponse, error)
 	// Submits a challenge for verification of email address.
 	VerifyEmailChallenge(ctx context.Context, in *VerifyEmailChallengeRequest, opts ...grpc.CallOption) (*VerifyEmailChallengeResponse, error)
+	// Submits a password for verification of session.
+	VerifyPassword(ctx context.Context, in *VerifyPasswordRequest, opts ...grpc.CallOption) (*VerifyPasswordResponse, error)
 }
 
 type intermediateServiceClient struct {
@@ -171,6 +174,16 @@ func (c *intermediateServiceClient) VerifyEmailChallenge(ctx context.Context, in
 	return out, nil
 }
 
+func (c *intermediateServiceClient) VerifyPassword(ctx context.Context, in *VerifyPasswordRequest, opts ...grpc.CallOption) (*VerifyPasswordResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(VerifyPasswordResponse)
+	err := c.cc.Invoke(ctx, IntermediateService_VerifyPassword_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // IntermediateServiceServer is the server API for IntermediateService service.
 // All implementations must embed UnimplementedIntermediateServiceServer
 // for forward compatibility.
@@ -190,6 +203,8 @@ type IntermediateServiceServer interface {
 	SignInWithEmail(context.Context, *SignInWithEmailRequest) (*SignInWithEmailResponse, error)
 	// Submits a challenge for verification of email address.
 	VerifyEmailChallenge(context.Context, *VerifyEmailChallengeRequest) (*VerifyEmailChallengeResponse, error)
+	// Submits a password for verification of session.
+	VerifyPassword(context.Context, *VerifyPasswordRequest) (*VerifyPasswordResponse, error)
 	mustEmbedUnimplementedIntermediateServiceServer()
 }
 
@@ -232,6 +247,9 @@ func (UnimplementedIntermediateServiceServer) SignInWithEmail(context.Context, *
 }
 func (UnimplementedIntermediateServiceServer) VerifyEmailChallenge(context.Context, *VerifyEmailChallengeRequest) (*VerifyEmailChallengeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifyEmailChallenge not implemented")
+}
+func (UnimplementedIntermediateServiceServer) VerifyPassword(context.Context, *VerifyPasswordRequest) (*VerifyPasswordResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerifyPassword not implemented")
 }
 func (UnimplementedIntermediateServiceServer) mustEmbedUnimplementedIntermediateServiceServer() {}
 func (UnimplementedIntermediateServiceServer) testEmbeddedByValue()                             {}
@@ -452,6 +470,24 @@ func _IntermediateService_VerifyEmailChallenge_Handler(srv interface{}, ctx cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _IntermediateService_VerifyPassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VerifyPasswordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IntermediateServiceServer).VerifyPassword(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IntermediateService_VerifyPassword_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IntermediateServiceServer).VerifyPassword(ctx, req.(*VerifyPasswordRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // IntermediateService_ServiceDesc is the grpc.ServiceDesc for IntermediateService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -502,6 +538,10 @@ var IntermediateService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "VerifyEmailChallenge",
 			Handler:    _IntermediateService_VerifyEmailChallenge_Handler,
+		},
+		{
+			MethodName: "VerifyPassword",
+			Handler:    _IntermediateService_VerifyPassword_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
