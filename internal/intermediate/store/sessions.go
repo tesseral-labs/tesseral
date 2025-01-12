@@ -186,8 +186,8 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 	expiresAt := time.Now().Add(7 * time.Hour * 24) // 7 days
 
 	// Create a new session for the user
-	refreshToken := idformat.SessionRefreshToken.Format(uuid.New())
-	refreshTokenSHA256 := sha256.Sum256([]byte(refreshToken))
+	refreshToken := uuid.New()
+	refreshTokenSHA256 := sha256.Sum256(refreshToken[:])
 
 	qSession, err := q.CreateSession(ctx, queries.CreateSessionParams{
 		ID:                 uuid.Must(uuid.NewV7()),
@@ -238,7 +238,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 
 	return &intermediatev1.ExchangeIntermediateSessionForSessionResponse{
 		AccessToken:  accessToken,
-		RefreshToken: refreshToken,
+		RefreshToken: idformat.SessionRefreshToken.Format(refreshToken),
 	}, nil
 }
 

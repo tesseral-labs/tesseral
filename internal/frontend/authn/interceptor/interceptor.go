@@ -11,9 +11,19 @@ import (
 	"github.com/openauth/openauth/internal/ujwt"
 )
 
+var skipRPCs = []string{
+	"/openauth.frontend.v1.FrontendService/GetAccessToken",
+}
+
 func New(s *store.Store) connect.UnaryInterceptorFunc {
 	return func(next connect.UnaryFunc) connect.UnaryFunc {
 		return func(ctx context.Context, req connect.AnyRequest) (connect.AnyResponse, error) {
+			for _, rpc := range skipRPCs {
+				if req.Spec().Procedure == rpc {
+					return next(ctx, req)
+				}
+			}
+
 			// get the access token from the cookie to enforce authentication
 			accessToken, err := cookies.GetCookie(ctx, req, "accessToken")
 			if err != nil {
