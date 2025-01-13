@@ -18,8 +18,6 @@ func New(s *store.Store, authAppsRootDomain string, h http.Handler) http.Handler
 
 		// TODO: Move project ID logic to a central location to service all authn interceptors that need it
 
-		// --- Start Project ID sniffing
-
 		projectSubdomainRegexp := regexp.MustCompile(fmt.Sprintf(`([a-zA-Z0-9_-]+)\.%s$`, regexp.QuoteMeta(authAppsRootDomain)))
 		host := r.Header.Get("Host")
 
