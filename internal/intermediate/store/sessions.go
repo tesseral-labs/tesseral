@@ -14,7 +14,6 @@ import (
 	"github.com/openauth/openauth/internal/intermediate/authn"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
-	"github.com/openauth/openauth/internal/projectid"
 	"github.com/openauth/openauth/internal/sessions"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
@@ -29,7 +28,7 @@ func (s *Store) ExchangeIntermediateSessionForNewOrganizationSession(ctx context
 	defer rollback()
 
 	intermediateSession := authn.IntermediateSession(ctx)
-	projectID := projectid.ProjectID(ctx)
+	projectID := authn.ProjectID(ctx)
 
 	qProject, err := q.GetProjectByID(ctx, projectID)
 	if err != nil {
@@ -131,7 +130,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 	defer rollback()
 
 	intermediateSession := authn.IntermediateSession(ctx)
-	projectID := projectid.ProjectID(ctx)
+	projectID := authn.ProjectID(ctx)
 
 	organizationID, err := idformat.Organization.Parse(req.OrganizationId)
 	if err != nil {

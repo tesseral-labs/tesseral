@@ -10,7 +10,6 @@ import (
 	"github.com/openauth/openauth/internal/backend/authn"
 	backendv1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
 	"github.com/openauth/openauth/internal/backend/store/queries"
-	"github.com/openauth/openauth/internal/projectid"
 	"github.com/openauth/openauth/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -33,7 +32,7 @@ func (s *Store) ListProjectAPIKeys(ctx context.Context, req *backendv1.ListProje
 
 	limit := 10
 	qAPIKeys, err := q.ListProjectAPIKeys(ctx, queries.ListProjectAPIKeysParams{
-		ProjectID: projectid.ProjectID(ctx),
+		ProjectID: authn.ProjectID(ctx),
 		Limit:     int32(limit + 1),
 	})
 	if err != nil {
@@ -68,7 +67,7 @@ func (s *Store) GetProjectAPIKey(ctx context.Context, req *backendv1.GetProjectA
 	}
 
 	qProjectAPIKey, err := s.q.GetProjectAPIKey(ctx, queries.GetProjectAPIKeyParams{
-		ProjectID: projectid.ProjectID(ctx),
+		ProjectID: authn.ProjectID(ctx),
 		ID:        id,
 	})
 	if err != nil {
@@ -93,7 +92,7 @@ func (s *Store) CreateProjectAPIKey(ctx context.Context, req *backendv1.CreatePr
 	tokenSHA256 := sha256.Sum256(token[:])
 	qProjectAPIKey, err := q.CreateProjectAPIKey(ctx, queries.CreateProjectAPIKeyParams{
 		ID:                uuid.New(),
-		ProjectID:         projectid.ProjectID(ctx),
+		ProjectID:         authn.ProjectID(ctx),
 		DisplayName:       req.ProjectApiKey.DisplayName,
 		SecretTokenSha256: tokenSHA256[:],
 	})
@@ -127,7 +126,7 @@ func (s *Store) UpdateProjectAPIKey(ctx context.Context, req *backendv1.UpdatePr
 	}
 
 	qProjectAPIKey, err := q.GetProjectAPIKey(ctx, queries.GetProjectAPIKeyParams{
-		ProjectID: projectid.ProjectID(ctx),
+		ProjectID: authn.ProjectID(ctx),
 		ID:        projectAPIKeyID,
 	})
 	if err != nil {
@@ -172,7 +171,7 @@ func (s *Store) DeleteProjectAPIKey(ctx context.Context, req *backendv1.DeletePr
 	}
 
 	qProjectAPIKey, err := q.GetProjectAPIKey(ctx, queries.GetProjectAPIKeyParams{
-		ProjectID: projectid.ProjectID(ctx),
+		ProjectID: authn.ProjectID(ctx),
 		ID:        projectAPIKeyID,
 	})
 	if err != nil {

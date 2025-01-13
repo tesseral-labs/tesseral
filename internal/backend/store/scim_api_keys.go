@@ -7,9 +7,9 @@ import (
 
 	"connectrpc.com/connect"
 	"github.com/google/uuid"
+	"github.com/openauth/openauth/internal/backend/authn"
 	backendv1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
 	"github.com/openauth/openauth/internal/backend/store/queries"
-	"github.com/openauth/openauth/internal/projectid"
 	"github.com/openauth/openauth/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -28,7 +28,7 @@ func (s *Store) ListSCIMAPIKeys(ctx context.Context, req *backendv1.ListSCIMAPIK
 
 	// authz
 	if _, err := q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
-		ProjectID: projectid.ProjectID(ctx),
+		ProjectID: authn.ProjectID(ctx),
 		ID:        orgID,
 	}); err != nil {
 		return nil, fmt.Errorf("get organization: %w", err)
@@ -79,7 +79,7 @@ func (s *Store) GetSCIMAPIKey(ctx context.Context, req *backendv1.GetSCIMAPIKeyR
 	}
 
 	qSCIMAPIKey, err := q.GetSCIMAPIKey(ctx, queries.GetSCIMAPIKeyParams{
-		ProjectID: projectid.ProjectID(ctx),
+		ProjectID: authn.ProjectID(ctx),
 		ID:        scimAPIKeyID,
 	})
 	if err != nil {
@@ -103,7 +103,7 @@ func (s *Store) CreateSCIMAPIKey(ctx context.Context, req *backendv1.CreateSCIMA
 
 	// authz
 	qOrg, err := q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
-		ProjectID: projectid.ProjectID(ctx),
+		ProjectID: authn.ProjectID(ctx),
 		ID:        orgID,
 	})
 	if err != nil {
@@ -149,7 +149,7 @@ func (s *Store) UpdateSCIMAPIKey(ctx context.Context, req *backendv1.UpdateSCIMA
 
 	// authz
 	qSCIMAPIKey, err := q.GetSCIMAPIKey(ctx, queries.GetSCIMAPIKeyParams{
-		ProjectID: projectid.ProjectID(ctx),
+		ProjectID: authn.ProjectID(ctx),
 		ID:        scimAPIKeyID,
 	})
 	if err != nil {
@@ -191,7 +191,7 @@ func (s *Store) DeleteSCIMAPIKey(ctx context.Context, req *backendv1.DeleteSCIMA
 
 	// authz
 	qSCIMAPIKey, err := q.GetSCIMAPIKey(ctx, queries.GetSCIMAPIKeyParams{
-		ProjectID: projectid.ProjectID(ctx),
+		ProjectID: authn.ProjectID(ctx),
 		ID:        scimAPIKeyID,
 	})
 	if err != nil {
@@ -227,7 +227,7 @@ func (s *Store) RevokeSCIMAPIKey(ctx context.Context, req *backendv1.RevokeSCIMA
 
 	// authz
 	if _, err := q.GetSCIMAPIKey(ctx, queries.GetSCIMAPIKeyParams{
-		ProjectID: projectid.ProjectID(ctx),
+		ProjectID: authn.ProjectID(ctx),
 		ID:        scimAPIKeyID,
 	}); err != nil {
 		return nil, fmt.Errorf("get scim api key: %w", err)

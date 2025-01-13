@@ -5,7 +5,7 @@ import (
 	"crypto/x509"
 	"fmt"
 
-	"github.com/openauth/openauth/internal/projectid"
+	"github.com/openauth/openauth/internal/saml/projectid"
 	"github.com/openauth/openauth/internal/saml/store/queries"
 	"github.com/openauth/openauth/internal/store/idformat"
 )

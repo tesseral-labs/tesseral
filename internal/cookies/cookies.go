@@ -7,14 +7,13 @@ import (
 	"strings"
 
 	"connectrpc.com/connect"
-	"github.com/openauth/openauth/internal/projectid"
+	"github.com/google/uuid"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
 var errCookieNotFound = fmt.Errorf("cookie not found")
 
-func BuildCookie(ctx context.Context, req connect.AnyRequest, cookieType string, value string) string {
-	projectID := projectid.ProjectID(ctx)
+func BuildCookie(ctx context.Context, req connect.AnyRequest, cookieType string, value string, projectID uuid.UUID) string {
 	secure := req.Spec().Schema == "https"
 
 	sameSite := http.SameSiteLaxMode
@@ -41,13 +40,12 @@ func BuildCookie(ctx context.Context, req connect.AnyRequest, cookieType string,
 	return cookie.String()
 }
 
-func GetCookie(ctx context.Context, req connect.AnyRequest, cookieType string) (string, error) {
+func GetCookie(ctx context.Context, req connect.AnyRequest, cookieType string, projectID uuid.UUID) (string, error) {
 	cookie := req.Header().Get("Cookie")
 	if cookie == "" {
 		return "", errCookieNotFound
 	}
 
-	projectID := projectid.ProjectID(ctx)
 	cookieName := fmt.Sprintf("tesseral_%s_%s", idformat.Project.Format(projectID), cookieType)
 
 	value, found := extractCookieValue(cookie, cookieName)

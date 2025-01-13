@@ -14,7 +14,6 @@ import (
 	"github.com/openauth/openauth/internal/intermediate/authn"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
-	"github.com/openauth/openauth/internal/projectid"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
@@ -59,7 +58,7 @@ func (s *Store) CompleteEmailVerificationChallenge(ctx context.Context, req *int
 	}
 	defer rollback()
 
-	projectID := projectid.ProjectID(ctx)
+	projectID := authn.ProjectID(ctx)
 
 	// Get the email verification challenge from the request
 	challengeID, err := idformat.EmailVerificationChallenge.Parse(req.EmailVerificationChallengeId)
@@ -146,7 +145,7 @@ func (s *Store) IssueEmailVerificationChallenge(ctx context.Context) (*intermedi
 	}
 	defer rollback()
 
-	projectID := projectid.ProjectID(ctx)
+	projectID := authn.ProjectID(ctx)
 
 	intermediateSessionID := authn.IntermediateSessionID(ctx)
 

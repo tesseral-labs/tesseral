@@ -5,9 +5,9 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
+	"github.com/openauth/openauth/internal/backend/authn"
 	backendv1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
 	"github.com/openauth/openauth/internal/backend/store/queries"
-	"github.com/openauth/openauth/internal/projectid"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
@@ -25,7 +25,7 @@ func (s *Store) ListIntermediateSessions(ctx context.Context, req *backendv1.Lis
 
 	limit := 10
 	qIntermediateSessions, err := q.ListIntermediateSessions(ctx, queries.ListIntermediateSessionsParams{
-		ProjectID: projectid.ProjectID(ctx),
+		ProjectID: authn.ProjectID(ctx),
 		ID:        startID,
 		Limit:     int32(limit + 1),
 	})
@@ -63,7 +63,7 @@ func (s *Store) GetIntermediateSession(ctx context.Context, req *backendv1.GetIn
 	}
 
 	qIntermediateSession, err := q.GetIntermediateSession(ctx, queries.GetIntermediateSessionParams{
-		ProjectID: projectid.ProjectID(ctx),
+		ProjectID: authn.ProjectID(ctx),
 		ID:        intermediateSessionID,
 	})
 	if err != nil {

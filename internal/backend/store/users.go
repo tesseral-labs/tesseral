@@ -5,9 +5,9 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
+	"github.com/openauth/openauth/internal/backend/authn"
 	backendv1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
 	"github.com/openauth/openauth/internal/backend/store/queries"
-	"github.com/openauth/openauth/internal/projectid"
 	"github.com/openauth/openauth/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -26,7 +26,7 @@ func (s *Store) ListUsers(ctx context.Context, req *backendv1.ListUsersRequest) 
 
 	// authz
 	if _, err := q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
-		ProjectID: projectid.ProjectID(ctx),
+		ProjectID: authn.ProjectID(ctx),
 		ID:        orgID,
 	}); err != nil {
 		return nil, fmt.Errorf("get organization: %w", err)
@@ -77,7 +77,7 @@ func (s *Store) GetUser(ctx context.Context, req *backendv1.GetUserRequest) (*ba
 	}
 
 	qUser, err := q.GetUser(ctx, queries.GetUserParams{
-		ProjectID: projectid.ProjectID(ctx),
+		ProjectID: authn.ProjectID(ctx),
 		ID:        userID,
 	})
 	if err != nil {

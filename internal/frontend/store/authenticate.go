@@ -6,8 +6,8 @@ import (
 	"crypto/x509"
 	"time"
 
+	"github.com/openauth/openauth/internal/frontend/authn"
 	"github.com/openauth/openauth/internal/frontend/store/queries"
-	"github.com/openauth/openauth/internal/projectid"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
@@ -19,7 +19,7 @@ func (s *Store) GetSessionSigningKeyPublicKey(ctx context.Context, sessionSignin
 
 	now := time.Now()
 	publicKeyBytes, err := s.q.GetSessionSigningKeyPublicKey(ctx, queries.GetSessionSigningKeyPublicKeyParams{
-		ProjectID: projectid.ProjectID(ctx),
+		ProjectID: authn.ProjectID(ctx),
 		ID:        sessionSigningKeyUUID,
 		Now:       &now,
 	})

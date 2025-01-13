@@ -16,7 +16,6 @@ import (
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
 	"github.com/openauth/openauth/internal/microsoftoauth"
-	"github.com/openauth/openauth/internal/projectid"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
@@ -43,7 +42,7 @@ func (s *Store) GetMicrosoftOAuthRedirectURL(ctx context.Context, req *intermedi
 	// Since this is the entrypoint for the google oauth flow, we create the intermediate session here
 	intermediateSession, err := q.CreateIntermediateSession(ctx, queries.CreateIntermediateSessionParams{
 		ID:          uuid.Must(uuid.NewV7()),
-		ProjectID:   projectid.ProjectID(ctx),
+		ProjectID:   authn.ProjectID(ctx),
 		ExpireTime:  &expiresAt,
 		TokenSha256: tokenSha256[:],
 	})

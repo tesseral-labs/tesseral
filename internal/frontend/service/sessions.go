@@ -6,11 +6,12 @@ import (
 
 	"connectrpc.com/connect"
 	"github.com/openauth/openauth/internal/cookies"
+	"github.com/openauth/openauth/internal/frontend/authn"
 	frontendv1 "github.com/openauth/openauth/internal/frontend/gen/openauth/frontend/v1"
 )
 
 func (s *Service) GetAccessToken(ctx context.Context, req *connect.Request[frontendv1.GetAccessTokenRequest]) (*connect.Response[frontendv1.GetAccessTokenResponse], error) {
-	refreshToken, _ := cookies.GetCookie(ctx, req, "refreshToken")
+	refreshToken, _ := cookies.GetCookie(ctx, req, "refreshToken", authn.ProjectID(ctx))
 	if refreshToken != "" {
 		req.Msg.RefreshToken = refreshToken
 	}
@@ -21,7 +22,7 @@ func (s *Service) GetAccessToken(ctx context.Context, req *connect.Request[front
 	}
 
 	connectRes := connect.NewResponse(res)
-	connectRes.Header().Add("Set-Cookie", cookies.BuildCookie(ctx, req, "accessToken", res.AccessToken))
+	connectRes.Header().Add("Set-Cookie", cookies.BuildCookie(ctx, req, "accessToken", res.AccessToken, authn.ProjectID(ctx)))
 
 	return connectRes, nil
 }

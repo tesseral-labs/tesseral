@@ -1,21 +1,22 @@
-package authnmiddleware
+package interceptor
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"regexp"
 	"strings"
 
 	"github.com/google/uuid"
-	"github.com/openauth/openauth/internal/scim/authn"
-	"github.com/openauth/openauth/internal/scim/store"
+	"github.com/openauth/openauth/internal/saml/projectid"
+	"github.com/openauth/openauth/internal/saml/store"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
-func New(s *store.Store, authAppsRootDomain string, h http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ctx := r.Context()
+var ErrProjectIDRequired = errors.New("project ID is required")
 
+func New(store *store.Store, authAppsRootDomain string, next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// TODO: Move project ID logic to a central location to service all authn interceptors that need it
 
 		projectSubdomainRegexp := regexp.MustCompile(fmt.Sprintf(`([a-zA-Z0-9_-]+)\.%s$`, regexp.QuoteMeta(authAppsRootDomain)))
@@ -36,7 +37,7 @@ func New(s *store.Store, authAppsRootDomain string, h http.Handler) http.Handler
 			projectID = &projectIDUUID
 		} else {
 			// get the project ID by the custom domain
-			foundProjectID, err := s.GetProjectIDByDomain(r.Context(), host)
+			foundProjectID, err := store.GetProjectIDByDomain(r.Context(), host)
 			if err != nil {
 				w.WriteHeader(http.StatusNotFound)
 				return
@@ -50,26 +51,9 @@ func New(s *store.Store, authAppsRootDomain string, h http.Handler) http.Handler
 			return
 		}
 
-		requestProjectID := idformat.Project.Format(*projectID)
+		ctx := projectid.NewContext(r.Context(), *projectID)
+		r = r.WithContext(ctx)
 
-		ctx = authn.NewContext(ctx, nil, requestProjectID)
-
-		bearerToken := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
-		if bearerToken == "" {
-			w.WriteHeader(http.StatusUnauthorized)
-			return
-		}
-
-		scimAPIKey, err := s.GetSCIMAPIKeyByToken(ctx, bearerToken)
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-
-		ctx = authn.NewContext(ctx, &authn.SCIMAPIKey{
-			ID:             scimAPIKey.ID,
-			OrganizationID: scimAPIKey.OrganizationID,
-		}, requestProjectID)
-		h.ServeHTTP(w, r.WithContext(ctx))
+		next.ServeHTTP(w, r)
 	})
 }

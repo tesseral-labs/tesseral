@@ -6,6 +6,7 @@ import (
 
 	"connectrpc.com/connect"
 	"github.com/openauth/openauth/internal/cookies"
+	"github.com/openauth/openauth/internal/intermediate/authn"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
 )
 
@@ -16,7 +17,7 @@ func (s *Service) GetMicrosoftOAuthRedirectURL(ctx context.Context, req *connect
 	}
 
 	connectResponse := connect.NewResponse(res)
-	connectResponse.Header().Add("Set-Cookie", cookies.BuildCookie(ctx, req, "intermediateAccessToken", res.IntermediateSessionToken))
+	connectResponse.Header().Add("Set-Cookie", cookies.BuildCookie(ctx, req, "intermediateAccessToken", res.IntermediateSessionToken, authn.ProjectID(ctx)))
 
 	return connectResponse, nil
 }

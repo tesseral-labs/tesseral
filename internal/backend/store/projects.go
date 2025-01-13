@@ -6,9 +6,10 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
+	"github.com/google/uuid"
+	"github.com/openauth/openauth/internal/backend/authn"
 	backendv1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
 	"github.com/openauth/openauth/internal/backend/store/queries"
-	"github.com/openauth/openauth/internal/projectid"
 	"github.com/openauth/openauth/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -20,7 +21,7 @@ func (s *Store) GetProject(ctx context.Context, req *backendv1.GetProjectRequest
 	}
 	defer rollback()
 
-	project, err := q.GetProjectByID(ctx, projectid.ProjectID(ctx))
+	project, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
 		return nil, err
 	}
@@ -28,10 +29,25 @@ func (s *Store) GetProject(ctx context.Context, req *backendv1.GetProjectRequest
 	return &backendv1.GetProjectResponse{Project: parseProject(&project)}, nil
 }
 
+func (s *Store) GetProjectIDByDomain(ctx context.Context, domain string) (*uuid.UUID, error) {
+	_, q, _, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	projectID, err := q.GetProjectIDByCustomDomain(ctx, &domain)
+	if err != nil {
+		return nil, err
+	}
+
+	return &projectID, nil
+}
+
 func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectRequest) (*backendv1.UpdateProjectResponse, error) {
 	// fetch project outside a transaction, so that we can carry out KMS
 	// operations; we can live with possibility of conflicting concurrent writes
-	qProject, err := s.q.GetProjectByID(ctx, projectid.ProjectID(ctx))
+	qProject, err := s.q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
 		return nil, fmt.Errorf("get project by id: %w", err)
 	}
@@ -110,6 +126,13 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 		updates.OrganizationsScimEnabledDefault = *req.Project.OrganizationsScimEnabledDefault
 	}
 
+	// TODO: Re-enable this when we have a need for custom domains on the app side of things
+
+	// updates.CustomDomain = qProject.CustomDomain
+	// if req.Project.CustomDomain != nil {
+	// 	updates.CustomDomain = req.Project.CustomDomain
+	// }
+
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -141,5 +164,6 @@ func parseProject(qProject *queries.Project) *backendv1.Project {
 		MicrosoftOauthClientId:          derefOrEmpty(qProject.MicrosoftOauthClientID),
 		OrganizationsSamlEnabledDefault: &qProject.OrganizationsSamlEnabledDefault,
 		OrganizationsScimEnabledDefault: &qProject.OrganizationsScimEnabledDefault,
+		CustomAuthDomain:                qProject.CustomAuthDomain,
 	}
 }

@@ -663,6 +663,8 @@ components:
                     type: boolean
                 logInWithMicrosoftEnabled:
                     type: boolean
+                customAuthDomain:
+                    type: string
         RevokeSCIMAPIKeyResponse:
             type: object
             properties:

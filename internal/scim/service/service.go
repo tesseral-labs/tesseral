@@ -21,7 +21,7 @@ type Service struct {
 	Store *store.Store
 }
 
-func (s *Service) Handler() http.Handler {
+func (s *Service) Handler(authAppRootDomain string) http.Handler {
 	mux := http.NewServeMux()
 
 	mux.Handle("GET /scim/v1/Users", withErr(s.listUsers))
@@ -31,7 +31,7 @@ func (s *Service) Handler() http.Handler {
 	mux.Handle("PATCH /scim/v1/Users/{userID}", withErr(s.patchUser))
 	mux.Handle("DELETE /scim/v1/Users/{userID}", withErr(s.deleteUser))
 
-	return logHTTP(authnmiddleware.New(s.Store, mux))
+	return logHTTP(authnmiddleware.New(s.Store, authAppRootDomain, mux))
 }
 
 var (
