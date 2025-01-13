@@ -13,7 +13,7 @@ import (
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
-var ErrProjectIDRequired = errors.New("Project ID is required")
+var ErrProjectIDRequired = errors.New("project ID is required")
 
 func New(store *store.Store, authAppsRootDomain string, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
