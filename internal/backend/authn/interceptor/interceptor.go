@@ -17,15 +17,27 @@ import (
 	"github.com/openauth/openauth/internal/ujwt"
 )
 
+var errUnknownHost = errors.New("unknown host")
 var errAuthorizationHeaderRequired = errors.New("authorization header is required")
 
-var skipRPCs = []string{
-	"/frontend.v1.Frontend/SignInWithEmail",
-}
+var skipRPCs = []string{}
 
 func New(s *store.Store, host string, dogfoodProjectID string, dogfoodAuthDomain string) connect.UnaryInterceptorFunc {
 	return func(next connect.UnaryFunc) connect.UnaryFunc {
 		return func(ctx context.Context, req connect.AnyRequest) (connect.AnyResponse, error) {
+			// --- Start domain restrictions
+
+			hostHeader := req.Header().Get("Host")
+
+			// We only want to allow backend requests to the hosts we expect
+			// - the api host
+			// - the dogfood auth host
+			if hostHeader != host && hostHeader != dogfoodAuthDomain {
+				return nil, connect.NewError(connect.CodeNotFound, errUnknownHost)
+			}
+
+			// --- Start authentication
+
 			for _, rpc := range skipRPCs {
 				if req.Spec().Procedure == rpc {
 					return next(ctx, req)

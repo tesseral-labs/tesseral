@@ -9,8 +9,8 @@ import (
 
 	"connectrpc.com/connect"
 	"github.com/google/uuid"
+	"github.com/openauth/openauth/internal/backend/authn"
 	backendv1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
-	"github.com/openauth/openauth/internal/backend/projectid"
 	"github.com/openauth/openauth/internal/backend/store/queries"
 	"github.com/openauth/openauth/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -30,7 +30,7 @@ func (s *Store) ListSAMLConnections(ctx context.Context, req *backendv1.ListSAML
 
 	// authz
 	if _, err := q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
-		ProjectID: projectid.ProjectID(ctx),
+		ProjectID: authn.ProjectID(ctx),
 		ID:        orgID,
 	}); err != nil {
 		return nil, fmt.Errorf("get organization: %w", err)
@@ -81,7 +81,7 @@ func (s *Store) GetSAMLConnection(ctx context.Context, req *backendv1.GetSAMLCon
 	}
 
 	qSAMLConnection, err := q.GetSAMLConnection(ctx, queries.GetSAMLConnectionParams{
-		ProjectID: projectid.ProjectID(ctx),
+		ProjectID: authn.ProjectID(ctx),
 		ID:        samlConnectionID,
 	})
 	if err != nil {
@@ -105,7 +105,7 @@ func (s *Store) CreateSAMLConnection(ctx context.Context, req *backendv1.CreateS
 
 	// authz
 	qOrg, err := q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
-		ProjectID: projectid.ProjectID(ctx),
+		ProjectID: authn.ProjectID(ctx),
 		ID:        orgID,
 	})
 	if err != nil {
@@ -184,7 +184,7 @@ func (s *Store) UpdateSAMLConnection(ctx context.Context, req *backendv1.UpdateS
 
 	// authz
 	qSAMLConnection, err := q.GetSAMLConnection(ctx, queries.GetSAMLConnectionParams{
-		ProjectID: projectid.ProjectID(ctx),
+		ProjectID: authn.ProjectID(ctx),
 		ID:        samlConnectionID,
 	})
 	if err != nil {
@@ -269,7 +269,7 @@ func (s *Store) DeleteSAMLConnection(ctx context.Context, req *backendv1.DeleteS
 
 	// authz
 	if _, err := q.GetSAMLConnection(ctx, queries.GetSAMLConnectionParams{
-		ProjectID: projectid.ProjectID(ctx),
+		ProjectID: authn.ProjectID(ctx),
 		ID:        samlConnectionID,
 	}); err != nil {
 		return nil, fmt.Errorf("get saml connection: %w", err)

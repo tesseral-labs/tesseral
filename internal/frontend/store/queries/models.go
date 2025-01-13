@@ -130,7 +130,7 @@ type Project struct {
 	OrganizationsScimEnabledDefault      bool
 	CreateTime                           *time.Time
 	UpdateTime                           *time.Time
-	CustomDomains                        []string
+	CustomDomain                         *string
 }
 
 type ProjectApiKey struct {

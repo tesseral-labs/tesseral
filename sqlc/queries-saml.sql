@@ -22,5 +22,5 @@ SELECT
 FROM
     projects
 WHERE
-    $1 = ANY (custom_domains);
+    custom_domain = $1;
 

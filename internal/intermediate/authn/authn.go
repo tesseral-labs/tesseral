@@ -17,10 +17,12 @@ type ctxData struct {
 type ctxKey struct{}
 
 func NewContext(ctx context.Context, intermediateSession *intermediatev1.IntermediateSession, projectID string) context.Context {
-	return context.WithValue(ctx, ctxKey{}, ctxData{
+	newContext := context.WithValue(ctx, ctxKey{}, ctxData{
 		intermediateSession,
 		projectID,
 	})
+
+	return newContext
 }
 
 func IntermediateSession(ctx context.Context) *intermediatev1.IntermediateSession {

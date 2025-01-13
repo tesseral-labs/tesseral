@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"regexp"
+	"strings"
 	"time"
 
 	"connectrpc.com/connect"
@@ -31,9 +32,9 @@ func New(s *store.Store, authAppsRootDomain string) connect.UnaryInterceptorFunc
 
 			var projectID *uuid.UUID
 			matches := projectSubdomainRegexp.FindStringSubmatch(host)
-			if len(matches) > 1 {
+			if len(matches) > 1 && strings.HasPrefix(matches[len(matches)-1], "project_") {
 				// parse the project ID from the host subdomain
-				parsedProjectID, err := idformat.Project.Parse(matches[0])
+				parsedProjectID, err := idformat.Project.Parse(matches[len(matches)-1])
 				if err != nil {
 					return nil, connect.NewError(connect.CodeInvalidArgument, err)
 				}
@@ -55,6 +56,11 @@ func New(s *store.Store, authAppsRootDomain string) connect.UnaryInterceptorFunc
 				return nil, connect.NewError(connect.CodeInvalidArgument, errInvalidProjectID)
 			}
 			requestProjectID := idformat.Project.Format(*projectID)
+
+			// Ensure the projectID is always present
+			ctx = authn.NewContext(ctx, authn.ContextData{
+				ProjectID: requestProjectID,
+			})
 
 			// --- Start authentication
 

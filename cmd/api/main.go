@@ -16,7 +16,6 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	backendinterceptor "github.com/openauth/openauth/internal/backend/authn/interceptor"
 	"github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1/backendv1connect"
-	backendprojectidinterceptor "github.com/openauth/openauth/internal/backend/projectid/interceptor"
 	backendservice "github.com/openauth/openauth/internal/backend/service"
 	backendstore "github.com/openauth/openauth/internal/backend/store"
 	frontendinterceptor "github.com/openauth/openauth/internal/frontend/authn/interceptor"
@@ -59,7 +58,7 @@ func main() {
 	loadenv.LoadEnv()
 
 	config := struct {
-		Host                                string `conf:"api_host"`
+		Host                                string `conf:"host"`
 		AuthAppsRootDomain                  string `conf:"auth_apps_root_domain"`
 		DB                                  string `conf:"db"`
 		DogfoodAuthDomain                   string `conf:"dogfood_auth_domain"`
@@ -125,7 +124,6 @@ func main() {
 			Store: backendStore,
 		},
 		connect.WithInterceptors(
-			backendprojectidinterceptor.New(backendStore),
 			backendinterceptor.New(backendStore, config.Host, config.DogfoodProjectID, config.DogfoodAuthDomain),
 		),
 	)

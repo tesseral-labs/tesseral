@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
+	"github.com/openauth/openauth/internal/backend/authn"
 	backendv1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
-	"github.com/openauth/openauth/internal/backend/projectid"
 	"github.com/openauth/openauth/internal/backend/store/queries"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
@@ -25,7 +25,7 @@ func (s *Store) ListSessions(ctx context.Context, req *backendv1.ListSessionsReq
 
 	// authz
 	if _, err := q.GetUser(ctx, queries.GetUserParams{
-		ProjectID: projectid.ProjectID(ctx),
+		ProjectID: authn.ProjectID(ctx),
 		ID:        userID,
 	}); err != nil {
 		return nil, fmt.Errorf("get organization: %w", err)
@@ -76,7 +76,7 @@ func (s *Store) GetSession(ctx context.Context, req *backendv1.GetSessionRequest
 	}
 
 	qSession, err := q.GetSession(ctx, queries.GetSessionParams{
-		ProjectID: projectid.ProjectID(ctx),
+		ProjectID: authn.ProjectID(ctx),
 		ID:        sessionID,
 	})
 	if err != nil {

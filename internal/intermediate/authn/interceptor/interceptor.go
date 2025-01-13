@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
+	"strings"
 
 	"connectrpc.com/connect"
 	"github.com/google/uuid"
@@ -32,9 +33,9 @@ func New(s *store.Store, authAppsRootDomain string) connect.UnaryInterceptorFunc
 
 			var projectID *uuid.UUID
 			matches := projectSubdomainRegexp.FindStringSubmatch(host)
-			if len(matches) > 1 {
+			if len(matches) > 1 && strings.HasPrefix(matches[len(matches)-1], "project_") {
 				// parse the project ID from the host subdomain
-				parsedProjectID, err := idformat.Project.Parse(matches[0])
+				parsedProjectID, err := idformat.Project.Parse(matches[len(matches)-1])
 				if err != nil {
 					return nil, connect.NewError(connect.CodeInvalidArgument, err)
 				}
@@ -56,6 +57,9 @@ func New(s *store.Store, authAppsRootDomain string) connect.UnaryInterceptorFunc
 				return nil, connect.NewError(connect.CodeInvalidArgument, errInvalidProjectID)
 			}
 			requestProjectID := idformat.Project.Format(*projectID)
+
+			// Ensure the projectID is always present on the context
+			ctx = authn.NewContext(ctx, nil, requestProjectID)
 
 			// --- Start authentication
 

@@ -794,10 +794,8 @@ components:
                     type: boolean
                 organizationsScimEnabledDefault:
                     type: boolean
-                customDomains:
-                    type: array
-                    items:
-                        type: string
+                customDomain:
+                    type: string
         RevokeSCIMAPIKeyResponse:
             type: object
             properties:

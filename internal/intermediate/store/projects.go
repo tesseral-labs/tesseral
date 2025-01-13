@@ -16,7 +16,7 @@ func (s *Store) GetProjectIDByDomain(ctx context.Context, domain string) (*uuid.
 	}
 	defer rollback()
 
-	projectID, err := q.GetProjectIDByCustomDomain(ctx, []string{domain})
+	projectID, err := q.GetProjectIDByCustomDomain(ctx, &domain)
 	if err != nil {
 		return nil, err
 	}
@@ -30,6 +30,6 @@ func parseProject(qProject *queries.Project) *intermediatev1.Project {
 		LogInWithPasswordEnabled:  qProject.LogInWithPasswordEnabled,
 		LogInWithGoogleEnabled:    qProject.LogInWithGoogleEnabled,
 		LogInWithMicrosoftEnabled: qProject.LogInWithMicrosoftEnabled,
-		CustomDomains:             qProject.CustomDomains,
+		CustomDomain:              derefOrEmpty(qProject.CustomDomain),
 	}
 }
