@@ -203,7 +203,7 @@ func (q *Queries) GetOrganizationByID(ctx context.Context, id uuid.UUID) (Organi
 
 const getProjectByID = `-- name: GetProjectByID :one
 SELECT
-    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, organizations_saml_enabled_default, organizations_scim_enabled_default, create_time, update_time
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, organizations_saml_enabled_default, organizations_scim_enabled_default, create_time, update_time, custom_domains
 FROM
     projects
 WHERE
@@ -228,8 +228,25 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 		&i.OrganizationsScimEnabledDefault,
 		&i.CreateTime,
 		&i.UpdateTime,
+		&i.CustomDomains,
 	)
 	return i, err
+}
+
+const getProjectIDByCustomDomain = `-- name: GetProjectIDByCustomDomain :one
+SELECT
+    id
+FROM
+    projects
+WHERE
+    $1 = ANY (custom_domains)
+`
+
+func (q *Queries) GetProjectIDByCustomDomain(ctx context.Context, customDomains []string) (uuid.UUID, error) {
+	row := q.db.QueryRow(ctx, getProjectIDByCustomDomain, customDomains)
+	var id uuid.UUID
+	err := row.Scan(&id)
+	return id, err
 }
 
 const getSAMLConnection = `-- name: GetSAMLConnection :one

@@ -11,13 +11,15 @@ import (
 
 type ctxData struct {
 	intermediateSession *intermediatev1.IntermediateSession
+	projectID           string
 }
 
 type ctxKey struct{}
 
-func NewContext(ctx context.Context, intermediateSession *intermediatev1.IntermediateSession) context.Context {
+func NewContext(ctx context.Context, intermediateSession *intermediatev1.IntermediateSession, projectID string) context.Context {
 	return context.WithValue(ctx, ctxKey{}, ctxData{
 		intermediateSession,
+		projectID,
 	})
 }
 
@@ -39,7 +41,12 @@ func IntermediateSessionID(ctx context.Context) uuid.UUID {
 }
 
 func ProjectID(ctx context.Context) uuid.UUID {
-	id, err := idformat.Project.Parse(IntermediateSession(ctx).ProjectId)
+	v, ok := ctx.Value(ctxKey{}).(ctxData)
+	if !ok {
+		panic(fmt.Errorf("ctx does not carry intermediate authn data"))
+	}
+
+	id, err := idformat.Project.Parse(v.projectID)
 	if err != nil {
 		panic(fmt.Errorf("parse project id: %w", err))
 	}

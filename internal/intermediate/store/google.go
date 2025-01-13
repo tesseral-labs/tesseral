@@ -16,7 +16,6 @@ import (
 	"github.com/openauth/openauth/internal/intermediate/authn"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
-	"github.com/openauth/openauth/internal/projectid"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
@@ -27,7 +26,7 @@ func (s *Store) GetGoogleOAuthRedirectURL(ctx context.Context, req *intermediate
 	}
 	defer rollback()
 
-	qProject, err := q.GetProjectByID(ctx, projectid.ProjectID(ctx))
+	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
 		return nil, fmt.Errorf("get project by id: %v", err)
 	}
@@ -43,7 +42,7 @@ func (s *Store) GetGoogleOAuthRedirectURL(ctx context.Context, req *intermediate
 	// Since this is the entrypoint for the google oauth flow, we create the intermediate session here
 	intermediateSession, err := q.CreateIntermediateSession(ctx, queries.CreateIntermediateSessionParams{
 		ID:          uuid.Must(uuid.NewV7()),
-		ProjectID:   projectid.ProjectID(ctx),
+		ProjectID:   authn.ProjectID(ctx),
 		ExpireTime:  &expiresAt,
 		TokenSha256: tokenSha256[:],
 	})

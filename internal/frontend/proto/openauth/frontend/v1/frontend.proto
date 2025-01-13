@@ -332,6 +332,7 @@ message Project {
   bool log_in_with_password_enabled = 5;
   bool log_in_with_google_enabled = 6;
   bool log_in_with_microsoft_enabled = 7;
+  repeated string custom_domains = 8;
 }
 
 message Organization {

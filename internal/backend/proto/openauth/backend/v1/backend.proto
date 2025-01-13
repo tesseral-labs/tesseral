@@ -438,6 +438,7 @@ message Project {
   string microsoft_oauth_client_secret = 11;
   optional bool organizations_saml_enabled_default = 12;
   optional bool organizations_scim_enabled_default = 13;
+  repeated string custom_domains = 14;
 }
 
 message Organization {

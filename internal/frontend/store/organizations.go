@@ -8,7 +8,6 @@ import (
 	"github.com/openauth/openauth/internal/frontend/authn"
 	frontendv1 "github.com/openauth/openauth/internal/frontend/gen/openauth/frontend/v1"
 	"github.com/openauth/openauth/internal/frontend/store/queries"
-	"github.com/openauth/openauth/internal/projectid"
 	"github.com/openauth/openauth/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -20,7 +19,7 @@ func (s *Store) GetOrganization(ctx context.Context, req *frontendv1.GetOrganiza
 	}
 	defer rollback()
 
-	qProject, err := q.GetProjectByID(ctx, projectid.ProjectID(ctx))
+	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
 		return nil, fmt.Errorf("get project by id: %w", err)
 	}
@@ -76,7 +75,7 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *frontendv1.UpdateOr
 		return nil, fmt.Errorf("update organization: %w", err)
 	}
 
-	qProject, err := q.GetProjectByID(ctx, projectid.ProjectID(ctx))
+	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
 		return nil, fmt.Errorf("get project by id: %w", err)
 	}

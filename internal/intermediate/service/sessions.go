@@ -6,6 +6,7 @@ import (
 
 	"connectrpc.com/connect"
 	"github.com/openauth/openauth/internal/cookies"
+	"github.com/openauth/openauth/internal/intermediate/authn"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
 )
 
@@ -16,8 +17,8 @@ func (s *Service) ExchangeIntermediateSessionForNewOrganizationSession(ctx conte
 	}
 
 	connectResponse := connect.NewResponse(res)
-	connectResponse.Header().Add("Set-Cookie", cookies.BuildCookie(ctx, req, "accessToken", res.AccessToken))
-	connectResponse.Header().Add("Set-Cookie", cookies.BuildCookie(ctx, req, "refreshToken", res.RefreshToken))
+	connectResponse.Header().Add("Set-Cookie", cookies.BuildCookie(ctx, req, "accessToken", res.AccessToken, authn.ProjectID(ctx)))
+	connectResponse.Header().Add("Set-Cookie", cookies.BuildCookie(ctx, req, "refreshToken", res.RefreshToken, authn.ProjectID(ctx)))
 
 	return connectResponse, nil
 }
@@ -29,8 +30,8 @@ func (s *Service) ExchangeIntermediateSessionForSession(ctx context.Context, req
 	}
 
 	connectResponse := connect.NewResponse(res)
-	connectResponse.Header().Add("Set-Cookie", cookies.BuildCookie(ctx, req, "accessToken", res.AccessToken))
-	connectResponse.Header().Add("Set-Cookie", cookies.BuildCookie(ctx, req, "refreshToken", res.RefreshToken))
+	connectResponse.Header().Add("Set-Cookie", cookies.BuildCookie(ctx, req, "accessToken", res.AccessToken, authn.ProjectID(ctx)))
+	connectResponse.Header().Add("Set-Cookie", cookies.BuildCookie(ctx, req, "refreshToken", res.RefreshToken, authn.ProjectID(ctx)))
 
 	return connectResponse, nil
 }

@@ -6,9 +6,10 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
+	"github.com/google/uuid"
 	backendv1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
+	"github.com/openauth/openauth/internal/backend/projectid"
 	"github.com/openauth/openauth/internal/backend/store/queries"
-	"github.com/openauth/openauth/internal/projectid"
 	"github.com/openauth/openauth/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -26,6 +27,21 @@ func (s *Store) GetProject(ctx context.Context, req *backendv1.GetProjectRequest
 	}
 
 	return &backendv1.GetProjectResponse{Project: parseProject(&project)}, nil
+}
+
+func (s *Store) GetProjectIDByDomain(ctx context.Context, domain string) (*uuid.UUID, error) {
+	_, q, _, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	projectID, err := q.GetProjectIDByCustomDomain(ctx, []string{domain})
+	if err != nil {
+		return nil, err
+	}
+
+	return &projectID, nil
 }
 
 func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectRequest) (*backendv1.UpdateProjectResponse, error) {
@@ -110,6 +126,11 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 		updates.OrganizationsScimEnabledDefault = *req.Project.OrganizationsScimEnabledDefault
 	}
 
+	updates.CustomDomains = qProject.CustomDomains
+	if req.Project.CustomDomains != nil {
+		updates.CustomDomains = req.Project.CustomDomains
+	}
+
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -141,5 +162,6 @@ func parseProject(qProject *queries.Project) *backendv1.Project {
 		MicrosoftOauthClientId:          derefOrEmpty(qProject.MicrosoftOauthClientID),
 		OrganizationsSamlEnabledDefault: &qProject.OrganizationsSamlEnabledDefault,
 		OrganizationsScimEnabledDefault: &qProject.OrganizationsScimEnabledDefault,
+		CustomDomains:                   qProject.CustomDomains,
 	}
 }

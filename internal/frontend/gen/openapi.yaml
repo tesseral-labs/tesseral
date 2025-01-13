@@ -663,6 +663,10 @@ components:
                     type: boolean
                 logInWithMicrosoftEnabled:
                     type: boolean
+                customDomains:
+                    type: array
+                    items:
+                        type: string
         RevokeSCIMAPIKeyResponse:
             type: object
             properties:

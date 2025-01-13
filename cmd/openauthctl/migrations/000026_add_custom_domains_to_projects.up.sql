@@ -1,2 +1,2 @@
 ALTER TABLE projects 
-ADD COLUMN custom_domain varchar(255);
+ADD COLUMN custom_domains text[];

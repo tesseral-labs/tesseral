@@ -16,6 +16,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	backendinterceptor "github.com/openauth/openauth/internal/backend/authn/interceptor"
 	"github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1/backendv1connect"
+	backendprojectidinterceptor "github.com/openauth/openauth/internal/backend/projectid/interceptor"
 	backendservice "github.com/openauth/openauth/internal/backend/service"
 	backendstore "github.com/openauth/openauth/internal/backend/store"
 	frontendinterceptor "github.com/openauth/openauth/internal/frontend/authn/interceptor"
@@ -33,9 +34,10 @@ import (
 	oauthservice "github.com/openauth/openauth/internal/oauth/service"
 	oauthstore "github.com/openauth/openauth/internal/oauth/store"
 	"github.com/openauth/openauth/internal/pagetoken"
-	"github.com/openauth/openauth/internal/projectid"
+	samlprojectidinterceptor "github.com/openauth/openauth/internal/saml/projectid/interceptor"
 	samlservice "github.com/openauth/openauth/internal/saml/service"
 	samlstore "github.com/openauth/openauth/internal/saml/store"
+	scimprojectidinterceptor "github.com/openauth/openauth/internal/scim/projectid/interceptor"
 	scimservice "github.com/openauth/openauth/internal/scim/service"
 	scimstore "github.com/openauth/openauth/internal/scim/store"
 	"github.com/openauth/openauth/internal/secretload"
@@ -57,7 +59,10 @@ func main() {
 	loadenv.LoadEnv()
 
 	config := struct {
+		Host                                string `conf:"api_host"`
+		AuthAppsRootDomain                  string `conf:"auth_apps_root_domain"`
 		DB                                  string `conf:"db"`
+		DogfoodAuthDomain                   string `conf:"dogfood_auth_domain"`
 		DogfoodProjectID                    string `conf:"dogfood_project_id"`
 		IntermediateSessionKMSKeyID         string `conf:"intermediate_session_kms_key_id"`
 		KMSEndpoint                         string `conf:"kms_endpoint_resolver_url,noredact"`
@@ -120,7 +125,8 @@ func main() {
 			Store: backendStore,
 		},
 		connect.WithInterceptors(
-			backendinterceptor.New(backendStore, config.DogfoodProjectID),
+			backendprojectidinterceptor.New(backendStore),
+			backendinterceptor.New(backendStore, config.Host, config.DogfoodProjectID, config.DogfoodAuthDomain),
 		),
 	)
 	backend := vanguard.NewService(backendConnectPath, backendConnectHandler)
@@ -143,7 +149,7 @@ func main() {
 			Store: frontendStore,
 		},
 		connect.WithInterceptors(
-			frontendinterceptor.New(frontendStore),
+			frontendinterceptor.New(frontendStore, config.AuthAppsRootDomain),
 		),
 	)
 	frontend := vanguard.NewService(frontendConnectPath, frontendConnectHandler)
@@ -170,7 +176,7 @@ func main() {
 			Store: intermediateStore,
 		},
 		connect.WithInterceptors(
-			intermediateinterceptor.New(intermediateStore),
+			intermediateinterceptor.New(intermediateStore, config.AuthAppsRootDomain),
 		),
 	)
 	intermediate := vanguard.NewService(intermediateConnectPath, intermediateConnectHandler)
@@ -186,17 +192,23 @@ func main() {
 		Store: oauthStore,
 	}
 
+	samlStore := samlstore.New(samlstore.NewStoreParams{
+		DB: db,
+	})
 	samlService := samlservice.Service{
-		Store: samlstore.New(samlstore.NewStoreParams{
-			DB: db,
-		}),
+		Store: samlStore,
 	}
+	samlServiceHandler := samlService.Handler()
+	samlServiceHandler = samlprojectidinterceptor.New(samlStore, samlServiceHandler)
 
+	scimStore := scimstore.New(scimstore.NewStoreParams{
+		DB: db,
+	})
 	scimService := scimservice.Service{
-		Store: scimstore.New(scimstore.NewStoreParams{
-			DB: db,
-		}),
+		Store: scimStore,
 	}
+	scimServiceHandler := scimService.Handler()
+	scimServiceHandler = scimprojectidinterceptor.New(scimStore, scimServiceHandler)
 
 	connectMux := http.NewServeMux()
 	connectMux.Handle(backendConnectPath, backendConnectHandler)
@@ -222,18 +234,16 @@ func main() {
 	mux.Handle("/oauth/", oauthService.Handler())
 
 	// Register samlservice
-	mux.Handle("/saml/", samlService.Handler())
+	mux.Handle("/saml/", samlServiceHandler)
 
 	// Register scimservice
-	mux.Handle("/scim/", scimService.Handler())
+	mux.Handle("/scim/", scimServiceHandler)
 
 	// These handlers are registered in a FILO order much like
 	// a Matryoshka doll
 
-	// Use the projectid.NewHttpHandler to extract the project ID from the request
-	serve := projectid.NewHttpHandler(mux)
 	// Use the slogcorrelation.NewHandler to add correlation IDs to the request
-	serve = slogcorrelation.NewHandler(serve)
+	serve := slogcorrelation.NewHandler(mux)
 	// Add CORS headers
 	serve = cors.New(cors.Options{
 		AllowOriginFunc: func(origin string) bool {

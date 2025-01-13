@@ -124,6 +124,22 @@ func (q *Queries) GetOrganizationDomains(ctx context.Context, organizationID uui
 	return items, nil
 }
 
+const getProjectIDByCustomDomain = `-- name: GetProjectIDByCustomDomain :one
+SELECT
+    id
+FROM
+    projects
+WHERE
+    $1 = ANY (custom_domains)
+`
+
+func (q *Queries) GetProjectIDByCustomDomain(ctx context.Context, customDomains []string) (uuid.UUID, error) {
+	row := q.db.QueryRow(ctx, getProjectIDByCustomDomain, customDomains)
+	var id uuid.UUID
+	err := row.Scan(&id)
+	return id, err
+}
+
 const getSCIMAPIKeyByTokenSHA256 = `-- name: GetSCIMAPIKeyByTokenSHA256 :one
 SELECT
     scim_api_keys.id, scim_api_keys.organization_id, scim_api_keys.secret_token_sha256, scim_api_keys.display_name, scim_api_keys.create_time, scim_api_keys.update_time

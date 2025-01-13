@@ -58,6 +58,14 @@ FROM
 WHERE
     id = $1;
 
+-- name: GetProjectIDByCustomDomain :one
+SELECT
+    id
+FROM
+    projects
+WHERE
+    $1 = ANY (custom_domains);
+
 -- name: GetSessionByID :one
 SELECT
     *

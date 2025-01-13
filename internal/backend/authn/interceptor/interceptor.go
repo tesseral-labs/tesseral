@@ -23,7 +23,7 @@ var skipRPCs = []string{
 	"/frontend.v1.Frontend/SignInWithEmail",
 }
 
-func New(s *store.Store, dogfoodProjectID string) connect.UnaryInterceptorFunc {
+func New(s *store.Store, host string, dogfoodProjectID string, dogfoodAuthDomain string) connect.UnaryInterceptorFunc {
 	return func(next connect.UnaryFunc) connect.UnaryFunc {
 		return func(ctx context.Context, req connect.AnyRequest) (connect.AnyResponse, error) {
 			for _, rpc := range skipRPCs {
