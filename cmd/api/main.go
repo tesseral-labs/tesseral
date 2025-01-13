@@ -36,7 +36,6 @@ import (
 	samlprojectidinterceptor "github.com/openauth/openauth/internal/saml/projectid/interceptor"
 	samlservice "github.com/openauth/openauth/internal/saml/service"
 	samlstore "github.com/openauth/openauth/internal/saml/store"
-	scimprojectidinterceptor "github.com/openauth/openauth/internal/scim/projectid/interceptor"
 	scimservice "github.com/openauth/openauth/internal/scim/service"
 	scimstore "github.com/openauth/openauth/internal/scim/store"
 	"github.com/openauth/openauth/internal/secretload"
@@ -197,7 +196,7 @@ func main() {
 		Store: samlStore,
 	}
 	samlServiceHandler := samlService.Handler()
-	samlServiceHandler = samlprojectidinterceptor.New(samlStore, samlServiceHandler)
+	samlServiceHandler = samlprojectidinterceptor.New(samlStore, config.AuthAppsRootDomain, samlServiceHandler)
 
 	scimStore := scimstore.New(scimstore.NewStoreParams{
 		DB: db,
@@ -205,8 +204,7 @@ func main() {
 	scimService := scimservice.Service{
 		Store: scimStore,
 	}
-	scimServiceHandler := scimService.Handler()
-	scimServiceHandler = scimprojectidinterceptor.New(scimStore, scimServiceHandler)
+	scimServiceHandler := scimService.Handler(config.AuthAppsRootDomain)
 
 	connectMux := http.NewServeMux()
 	connectMux.Handle(backendConnectPath, backendConnectHandler)

@@ -126,10 +126,12 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 		updates.OrganizationsScimEnabledDefault = *req.Project.OrganizationsScimEnabledDefault
 	}
 
-	updates.CustomDomain = qProject.CustomDomain
-	if req.Project.CustomDomain != nil {
-		updates.CustomDomain = req.Project.CustomDomain
-	}
+	// TODO: Re-enable this when we have a need for custom domains on the app side of things
+
+	// updates.CustomDomain = qProject.CustomDomain
+	// if req.Project.CustomDomain != nil {
+	// 	updates.CustomDomain = req.Project.CustomDomain
+	// }
 
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
