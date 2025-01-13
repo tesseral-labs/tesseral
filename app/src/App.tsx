@@ -13,7 +13,7 @@ const queryClient = new QueryClient()
 
 function useTransport(): Transport {
   return createConnectTransport({
-    baseUrl: `${API_URL}/internal/connect`,
+    baseUrl: `${API_URL}/api/internal/connect`,
     fetch: (input, init) => fetch(input, { ...init, credentials: 'include' }),
     interceptors: [
       (next) => async (req) => {

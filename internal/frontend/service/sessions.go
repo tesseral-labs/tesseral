@@ -5,15 +5,25 @@ import (
 	"fmt"
 
 	"connectrpc.com/connect"
+	"github.com/openauth/openauth/internal/cookies"
 	frontendv1 "github.com/openauth/openauth/internal/frontend/gen/openauth/frontend/v1"
 )
 
 func (s *Service) GetAccessToken(ctx context.Context, req *connect.Request[frontendv1.GetAccessTokenRequest]) (*connect.Response[frontendv1.GetAccessTokenResponse], error) {
+	refreshToken, _ := cookies.GetCookie(ctx, req, "refreshToken")
+	if refreshToken != "" {
+		req.Msg.RefreshToken = refreshToken
+	}
+
 	res, err := s.Store.GetAccessToken(ctx, req.Msg)
 	if err != nil {
 		return nil, fmt.Errorf("store: %w", err)
 	}
-	return connect.NewResponse(res), nil
+
+	connectRes := connect.NewResponse(res)
+	connectRes.Header().Add("Set-Cookie", cookies.BuildCookie(ctx, req, "accessToken", res.AccessToken))
+
+	return connectRes, nil
 }
 
 func (s *Service) Whoami(ctx context.Context, req *connect.Request[frontendv1.WhoAmIRequest]) (*connect.Response[frontendv1.WhoAmIResponse], error) {
