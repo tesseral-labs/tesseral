@@ -1,7 +1,9 @@
 import { useQuery } from '@tanstack/react-query'
 import { API_URL, DOGFOOD_PROJECT_ID } from '@/config'
+import { useState } from 'react'
 
 export function useAccessToken(): string {
+  const [accessToken, setAccessToken] = useLocalStorage('accessToken')
   const { data: accessToken } = useQuery({
     queryKey: ['refresh'],
     queryFn: async () => {
@@ -18,5 +20,54 @@ export function useAccessToken(): string {
     },
   })
 
+  if (!accessToken || shouldRefresh(accessToken)) {
+
+  }
+
+
   return accessToken
+}
+
+// how far in advance of its expiration an access token gets refreshed
+const ACCESS_TOKEN_REFRESH_THRESHOLD_SECONDS = 10
+
+function shouldRefresh(accessToken: string): boolean {
+  const refreshAt = parseAccessTokenExpiration(accessToken) + ACCESS_TOKEN_REFRESH_THRESHOLD_SECONDS
+  const now = Math.floor(new Date().getTime() / 1000)
+  return refreshAt < now
+}
+
+function parseAccessTokenExpiration(accessToken: string): number {
+  return JSON.parse(base64Decode(accessToken.split('.')[1])).exp
+}
+
+function base64Decode(s: string): string {
+  const binaryString = atob(s);
+
+  const bytes = new Uint8Array(binaryString.length);
+  for (let i = 0; i < binaryString.length; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+
+  return new TextDecoder().decode(bytes);
+}
+
+function useLocalStorage(
+  key: string,
+): [string | null, (_: string | null) => void] {
+  const [value, setValue] = useState<string | null>(localStorage.getItem(key))
+
+  return [
+    value,
+    (value) => {
+      if (value === null) {
+        localStorage.removeItem(key)
+        setValue(null)
+        return
+      }
+
+      localStorage.setItem(key, value)
+      setValue(value)
+    },
+  ]
 }
