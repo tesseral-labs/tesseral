@@ -46,11 +46,11 @@ SELECT
 FROM
     projects
 WHERE
-    custom_domain = $1
+    custom_auth_domain = $1
 `
 
-func (q *Queries) GetProjectIDByCustomDomain(ctx context.Context, customDomain *string) (uuid.UUID, error) {
-	row := q.db.QueryRow(ctx, getProjectIDByCustomDomain, customDomain)
+func (q *Queries) GetProjectIDByCustomDomain(ctx context.Context, customAuthDomain *string) (uuid.UUID, error) {
+	row := q.db.QueryRow(ctx, getProjectIDByCustomDomain, customAuthDomain)
 	var id uuid.UUID
 	err := row.Scan(&id)
 	return id, err

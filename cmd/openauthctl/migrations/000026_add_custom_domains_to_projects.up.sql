@@ -1,2 +1,2 @@
 ALTER TABLE projects 
-ADD COLUMN custom_domain varchar;
+ADD COLUMN custom_auth_domain varchar;

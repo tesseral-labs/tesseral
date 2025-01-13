@@ -64,7 +64,7 @@ SELECT
 FROM
     projects
 WHERE
-    custom_domain = $1;
+    custom_auth_domain = $1;
 
 -- name: GetSessionByID :one
 SELECT

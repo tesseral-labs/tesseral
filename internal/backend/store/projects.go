@@ -164,6 +164,6 @@ func parseProject(qProject *queries.Project) *backendv1.Project {
 		MicrosoftOauthClientId:          derefOrEmpty(qProject.MicrosoftOauthClientID),
 		OrganizationsSamlEnabledDefault: &qProject.OrganizationsSamlEnabledDefault,
 		OrganizationsScimEnabledDefault: &qProject.OrganizationsScimEnabledDefault,
-		CustomDomain:                    qProject.CustomDomain,
+		CustomAuthDomain:                qProject.CustomAuthDomain,
 	}
 }

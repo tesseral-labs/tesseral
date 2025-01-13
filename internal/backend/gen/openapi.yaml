@@ -794,7 +794,7 @@ components:
                     type: boolean
                 organizationsScimEnabledDefault:
                     type: boolean
-                customDomain:
+                customAuthDomain:
                     type: string
         RevokeSCIMAPIKeyResponse:
             type: object

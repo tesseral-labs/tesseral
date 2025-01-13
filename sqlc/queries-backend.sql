@@ -27,7 +27,7 @@ SELECT
 FROM
     projects
 WHERE
-    custom_domain = $1;
+    custom_auth_domain = $1;
 
 -- name: GetProjectAPIKeyBySecretTokenSHA256 :one
 SELECT
@@ -103,7 +103,7 @@ SET
     microsoft_oauth_client_secret_ciphertext = $9,
     organizations_saml_enabled_default = $10,
     organizations_scim_enabled_default = $11,
-    custom_domain = $12
+    custom_auth_domain = $12
 WHERE
     id = $1
 RETURNING

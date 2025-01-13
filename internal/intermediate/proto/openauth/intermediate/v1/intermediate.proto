@@ -258,7 +258,7 @@ message Project {
   // The oAuth Client secret to be used for Microsoft Auth.
   string microsoft_oauth_client_secret = 9;
   // The custom domains configured for the project
-  string custom_domain = 10;
+  string custom_auth_domain = 10;
 }
 
 message SessionSigningKey {
