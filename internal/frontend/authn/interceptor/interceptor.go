@@ -17,6 +17,10 @@ import (
 
 var errInvalidProjectID = fmt.Errorf("invalid project ID")
 
+var skipRPCs = []string{
+	"/openauth.frontend.v1.FrontendService/GetAccessToken",
+}
+
 func New(s *store.Store, authAppsRootDomain string) connect.UnaryInterceptorFunc {
 	return func(next connect.UnaryFunc) connect.UnaryFunc {
 		return func(ctx context.Context, req connect.AnyRequest) (connect.AnyResponse, error) {
@@ -53,6 +57,12 @@ func New(s *store.Store, authAppsRootDomain string) connect.UnaryInterceptorFunc
 			requestProjectID := idformat.Project.Format(*projectID)
 
 			// --- Start authentication
+
+			for _, rpc := range skipRPCs {
+				if req.Spec().Procedure == rpc {
+					return next(ctx, req)
+				}
+			}
 
 			// get the access token from the cookie to enforce authentication
 			accessToken, err := cookies.GetCookie(ctx, req, "accessToken", *projectID)

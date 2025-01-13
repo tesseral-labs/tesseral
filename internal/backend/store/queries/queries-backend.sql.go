@@ -374,11 +374,11 @@ SELECT
 FROM
     projects
 WHERE
-    $1::text[] = ANY (custom_domains)
+    $1 = ANY (custom_domains)
 `
 
-func (q *Queries) GetProjectIDByCustomDomain(ctx context.Context, dollar_1 []string) (uuid.UUID, error) {
-	row := q.db.QueryRow(ctx, getProjectIDByCustomDomain, dollar_1)
+func (q *Queries) GetProjectIDByCustomDomain(ctx context.Context, customDomains []string) (uuid.UUID, error) {
+	row := q.db.QueryRow(ctx, getProjectIDByCustomDomain, customDomains)
 	var id uuid.UUID
 	err := row.Scan(&id)
 	return id, err

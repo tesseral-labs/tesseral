@@ -342,7 +342,7 @@ FROM
     sessions
     JOIN users ON sessions.user_id = users.id
     JOIN organizations ON users.organization_id = organizations.id
-    JOIN projects ON organizations.id = projects.organization_id
+    JOIN projects ON projects.id = organizations.project_id
 WHERE
     revoked = FALSE
     AND refresh_token_sha256 = $1
