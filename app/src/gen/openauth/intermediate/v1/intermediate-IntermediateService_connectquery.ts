@@ -54,6 +54,13 @@ export const issueEmailVerificationChallenge = IntermediateService.method.issueE
 export const listOrganizations = IntermediateService.method.listOrganizations;
 
 /**
+ * Gets a list of SAML organizations for a given email address.
+ *
+ * @generated from rpc openauth.intermediate.v1.IntermediateService.ListSAMLOrganizations
+ */
+export const listSAMLOrganizations = IntermediateService.method.listSAMLOrganizations;
+
+/**
  * Creates a new intermediate session or session and cookies the requester.
  *
  * @generated from rpc openauth.intermediate.v1.IntermediateService.SignInWithEmail
