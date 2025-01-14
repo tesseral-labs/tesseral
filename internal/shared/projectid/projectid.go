@@ -3,12 +3,11 @@ package projectid
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/google/uuid"
 	"github.com/openauth/openauth/internal/shared/store"
 )
-
-var errProjectIDNotFound = fmt.Errorf("project ID not found")
 
 type Sniffer struct {
 	authAppsRootDomain string
@@ -26,7 +25,7 @@ func (p *Sniffer) GetProjectID(hostname string) (*uuid.UUID, error) {
 	ctx := context.Background()
 
 	// get the project ID by the custom domain
-	projectID, err := p.store.GetProjectIDByDomain(ctx, hostname)
+	projectID, err := p.store.GetProjectIDByDomain(ctx, strings.Replace(hostname, "-", "_"))
 	if err != nil {
 		return nil, fmt.Errorf("get project id: %w", err)
 	}
