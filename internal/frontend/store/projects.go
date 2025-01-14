@@ -36,5 +36,6 @@ func parseProject(qProject *queries.Project) *frontendv1.Project {
 		LogInWithGoogleEnabled:    qProject.LogInWithGoogleEnabled,
 		LogInWithMicrosoftEnabled: qProject.LogInWithMicrosoftEnabled,
 		CustomAuthDomain:          derefOrEmpty(qProject.CustomAuthDomain),
+		AuthDomain:                derefOrEmpty(qProject.AuthDomain),
 	}
 }

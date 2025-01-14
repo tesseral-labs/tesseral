@@ -796,6 +796,8 @@ components:
                     type: boolean
                 customAuthDomain:
                     type: string
+                authDomain:
+                    type: string
         RevokeSCIMAPIKeyResponse:
             type: object
             properties:
