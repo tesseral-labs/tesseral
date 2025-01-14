@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"regexp"
-	"strings"
 
 	"github.com/google/uuid"
 	"github.com/openauth/openauth/internal/shared/store"
@@ -32,7 +31,7 @@ func (p *Sniffer) GetProjectID(hostname string) (*uuid.UUID, error) {
 
 	var projectID *uuid.UUID
 	matches := projectSubdomainRegexp.FindStringSubmatch(hostname)
-	if len(matches) > 1 && strings.HasPrefix(matches[len(matches)-1], "project_") {
+	if len(matches) > 1 {
 		// parse the project ID from the host subdomain
 		parsedProjectID, err := idformat.Project.Parse(matches[len(matches)-1])
 		if err != nil {
