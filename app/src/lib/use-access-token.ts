@@ -55,7 +55,7 @@ export function useAccessToken(): string | undefined {
 const ACCESS_TOKEN_REFRESH_THRESHOLD_SECONDS = 10
 
 function shouldRefresh(accessToken: string): boolean {
-  const refreshAt = parseAccessTokenExpiration(accessToken) + ACCESS_TOKEN_REFRESH_THRESHOLD_SECONDS
+  const refreshAt = parseAccessTokenExpiration(accessToken) - ACCESS_TOKEN_REFRESH_THRESHOLD_SECONDS
   const now = Math.floor(new Date().getTime() / 1000)
   return refreshAt < now
 }
