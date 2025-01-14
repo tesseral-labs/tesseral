@@ -108,7 +108,7 @@ func (s *Store) RedeemGoogleOAuthCode(ctx context.Context, req *intermediatev1.R
 
 	redeemRes, err := s.googleOAuthClient.RedeemCode(ctx, &googleoauth.RedeemCodeRequest{
 		GoogleOAuthClientID:     *qProject.GoogleOauthClientID,
-		GoogleOAuthClientSecret: string(decryptRes.Value),
+		GoogleOAuthClientSecret: string(decryptRes.Plaintext),
 		RedirectURI:             req.RedirectUrl,
 		Code:                    req.Code,
 	})

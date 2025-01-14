@@ -51,7 +51,7 @@ func (s *Store) GetIntermediateSessionSigningKeyByID(ctx context.Context, id str
 	}
 
 	// Create an ECDSA key pair from the decrypted signing key
-	privateKey, err := openauthecdsa.PrivateKeyFromBytes(decryptOutput.Value)
+	privateKey, err := openauthecdsa.PrivateKeyFromBytes(decryptOutput.Plaintext)
 	if err != nil {
 		return nil, err
 	}
@@ -89,7 +89,7 @@ func (s *Store) GetIntermediateSessionSigningKeyByProjectID(ctx context.Context,
 	}
 
 	// Create an ECDSA key pair from the decrypted signing key
-	privateKey, err := openauthecdsa.PrivateKeyFromBytes(decryptOutput.Value)
+	privateKey, err := openauthecdsa.PrivateKeyFromBytes(decryptOutput.Plaintext)
 	if err != nil {
 		return nil, err
 	}

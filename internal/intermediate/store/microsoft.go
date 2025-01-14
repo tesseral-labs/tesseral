@@ -108,7 +108,7 @@ func (s *Store) RedeemMicrosoftOAuthCode(ctx context.Context, req *intermediatev
 
 	redeemRes, err := s.microsoftOAuthClient.RedeemCode(ctx, &microsoftoauth.RedeemCodeRequest{
 		MicrosoftOAuthClientID:     *qProject.MicrosoftOauthClientID,
-		MicrosoftOAuthClientSecret: string(decryptRes.Value),
+		MicrosoftOAuthClientSecret: string(decryptRes.Plaintext),
 		RedirectURI:                req.RedirectUrl,
 		Code:                       req.Code,
 	})

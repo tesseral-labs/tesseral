@@ -6,10 +6,10 @@ import (
 	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/openauth/openauth/internal/loadenv"
 	"github.com/openauth/openauth/internal/store"
-	"github.com/openauth/openauth/internal/store/kms"
 )
 
 type bootstrapArgs struct {
@@ -50,7 +50,11 @@ func bootstrap(ctx context.Context, args bootstrapArgs) error {
 		panic(fmt.Errorf("load aws config: %w", err))
 	}
 
-	kms_ := kms.NewKeyManagementServiceFromConfig(&awsConf, &args.KMSEndpoint)
+	kms_ := kms.NewFromConfig(awsConf, func(o *kms.Options) {
+		if args.KMSEndpoint != "" {
+			o.BaseEndpoint = &args.KMSEndpoint
+		}
+	})
 
 	s := store.New(store.NewStoreParams{
 		DB:                                    db,

@@ -49,7 +49,7 @@ func (s *Store) GetAccessToken(ctx context.Context, req *frontendv1.GetAccessTok
 		return nil, fmt.Errorf("decrypt private key cipher texts: %w", err)
 	}
 
-	priv, err := openauthecdsa.PrivateKeyFromBytes(decryptRes.Value)
+	priv, err := openauthecdsa.PrivateKeyFromBytes(decryptRes.Plaintext)
 	if err != nil {
 		return nil, fmt.Errorf("unmarshal private key: %w", err)
 	}

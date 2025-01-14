@@ -142,7 +142,7 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 		ProjectID:            dogfoodProjectID,
 		ExpireTime:           &expiresAt,
 		PublicKey:            publicKeyBytes,
-		PrivateKeyCipherText: sskEncryptOutput.CipherTextBlob,
+		PrivateKeyCipherText: sskEncryptOutput.CiphertextBlob,
 	})
 	if err != nil {
 		return nil, err
@@ -153,7 +153,7 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 		ProjectID:            dogfoodProjectID,
 		ExpireTime:           &expiresAt,
 		PublicKey:            publicKeyBytes,
-		PrivateKeyCipherText: isskEncryptOutput.CipherTextBlob,
+		PrivateKeyCipherText: isskEncryptOutput.CiphertextBlob,
 	})
 	if err != nil {
 		return nil, err

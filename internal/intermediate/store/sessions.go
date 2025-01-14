@@ -256,7 +256,7 @@ func (s *Store) getSessionSigningKey(ctx context.Context, q *queries.Queries, pr
 		return nil, nil, err
 	}
 
-	privateKey, err := openauthecdsa.PrivateKeyFromBytes(decryptResult.Value)
+	privateKey, err := openauthecdsa.PrivateKeyFromBytes(decryptResult.Plaintext)
 	if err != nil {
 		return nil, nil, err
 	}
