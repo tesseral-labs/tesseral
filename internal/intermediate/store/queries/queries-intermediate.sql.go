@@ -987,6 +987,57 @@ func (q *Queries) ListOrganizationsByMicrosoftUserID(ctx context.Context, arg Li
 	return items, nil
 }
 
+const listSAMLOrganizations = `-- name: ListSAMLOrganizations :many
+SELECT
+    organizations.id, organizations.project_id, organizations.display_name, organizations.override_log_in_with_password_enabled, organizations.override_log_in_with_google_enabled, organizations.override_log_in_with_microsoft_enabled, organizations.google_hosted_domain, organizations.microsoft_tenant_id, organizations.override_log_in_methods, organizations.saml_enabled, organizations.scim_enabled, organizations.create_time, organizations.update_time
+FROM
+    organizations
+    JOIN organization_domains ON organizations.id = organization_domains.organization_id
+WHERE
+    organizations.project_id = $1
+    AND organizations.saml_enabled = TRUE
+    AND organization_domains.domain = $2
+`
+
+type ListSAMLOrganizationsParams struct {
+	ProjectID uuid.UUID
+	Domain    string
+}
+
+func (q *Queries) ListSAMLOrganizations(ctx context.Context, arg ListSAMLOrganizationsParams) ([]Organization, error) {
+	rows, err := q.db.Query(ctx, listSAMLOrganizations, arg.ProjectID, arg.Domain)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Organization
+	for rows.Next() {
+		var i Organization
+		if err := rows.Scan(
+			&i.ID,
+			&i.ProjectID,
+			&i.DisplayName,
+			&i.OverrideLogInWithPasswordEnabled,
+			&i.OverrideLogInWithGoogleEnabled,
+			&i.OverrideLogInWithMicrosoftEnabled,
+			&i.GoogleHostedDomain,
+			&i.MicrosoftTenantID,
+			&i.OverrideLogInMethods,
+			&i.SamlEnabled,
+			&i.ScimEnabled,
+			&i.CreateTime,
+			&i.UpdateTime,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listUsersByEmail = `-- name: ListUsersByEmail :many
 SELECT
     id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner

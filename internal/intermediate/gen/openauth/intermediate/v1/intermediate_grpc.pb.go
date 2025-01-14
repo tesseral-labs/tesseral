@@ -28,6 +28,7 @@ const (
 	IntermediateService_RedeemMicrosoftOAuthCode_FullMethodName                             = "/openauth.intermediate.v1.IntermediateService/RedeemMicrosoftOAuthCode"
 	IntermediateService_IssueEmailVerificationChallenge_FullMethodName                      = "/openauth.intermediate.v1.IntermediateService/IssueEmailVerificationChallenge"
 	IntermediateService_ListOrganizations_FullMethodName                                    = "/openauth.intermediate.v1.IntermediateService/ListOrganizations"
+	IntermediateService_ListSAMLOrganizations_FullMethodName                                = "/openauth.intermediate.v1.IntermediateService/ListSAMLOrganizations"
 	IntermediateService_SignInWithEmail_FullMethodName                                      = "/openauth.intermediate.v1.IntermediateService/SignInWithEmail"
 	IntermediateService_VerifyEmailChallenge_FullMethodName                                 = "/openauth.intermediate.v1.IntermediateService/VerifyEmailChallenge"
 	IntermediateService_VerifyPassword_FullMethodName                                       = "/openauth.intermediate.v1.IntermediateService/VerifyPassword"
@@ -48,6 +49,8 @@ type IntermediateServiceClient interface {
 	IssueEmailVerificationChallenge(ctx context.Context, in *IssueEmailVerificationChallengeRequest, opts ...grpc.CallOption) (*IssueEmailVerificationChallengeResponse, error)
 	// Gets a list of organizations.
 	ListOrganizations(ctx context.Context, in *ListOrganizationsRequest, opts ...grpc.CallOption) (*ListOrganizationsResponse, error)
+	// Gets a list of SAML organizations for a given email address.
+	ListSAMLOrganizations(ctx context.Context, in *ListSAMLOrganizationsRequest, opts ...grpc.CallOption) (*ListSAMLOrganizationsResponse, error)
 	// Creates a new intermediate session or session and cookies the requester.
 	SignInWithEmail(ctx context.Context, in *SignInWithEmailRequest, opts ...grpc.CallOption) (*SignInWithEmailResponse, error)
 	// Submits a challenge for verification of email address.
@@ -154,6 +157,16 @@ func (c *intermediateServiceClient) ListOrganizations(ctx context.Context, in *L
 	return out, nil
 }
 
+func (c *intermediateServiceClient) ListSAMLOrganizations(ctx context.Context, in *ListSAMLOrganizationsRequest, opts ...grpc.CallOption) (*ListSAMLOrganizationsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListSAMLOrganizationsResponse)
+	err := c.cc.Invoke(ctx, IntermediateService_ListSAMLOrganizations_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *intermediateServiceClient) SignInWithEmail(ctx context.Context, in *SignInWithEmailRequest, opts ...grpc.CallOption) (*SignInWithEmailResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(SignInWithEmailResponse)
@@ -199,6 +212,8 @@ type IntermediateServiceServer interface {
 	IssueEmailVerificationChallenge(context.Context, *IssueEmailVerificationChallengeRequest) (*IssueEmailVerificationChallengeResponse, error)
 	// Gets a list of organizations.
 	ListOrganizations(context.Context, *ListOrganizationsRequest) (*ListOrganizationsResponse, error)
+	// Gets a list of SAML organizations for a given email address.
+	ListSAMLOrganizations(context.Context, *ListSAMLOrganizationsRequest) (*ListSAMLOrganizationsResponse, error)
 	// Creates a new intermediate session or session and cookies the requester.
 	SignInWithEmail(context.Context, *SignInWithEmailRequest) (*SignInWithEmailResponse, error)
 	// Submits a challenge for verification of email address.
@@ -241,6 +256,9 @@ func (UnimplementedIntermediateServiceServer) IssueEmailVerificationChallenge(co
 }
 func (UnimplementedIntermediateServiceServer) ListOrganizations(context.Context, *ListOrganizationsRequest) (*ListOrganizationsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListOrganizations not implemented")
+}
+func (UnimplementedIntermediateServiceServer) ListSAMLOrganizations(context.Context, *ListSAMLOrganizationsRequest) (*ListSAMLOrganizationsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListSAMLOrganizations not implemented")
 }
 func (UnimplementedIntermediateServiceServer) SignInWithEmail(context.Context, *SignInWithEmailRequest) (*SignInWithEmailResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SignInWithEmail not implemented")
@@ -434,6 +452,24 @@ func _IntermediateService_ListOrganizations_Handler(srv interface{}, ctx context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _IntermediateService_ListSAMLOrganizations_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListSAMLOrganizationsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IntermediateServiceServer).ListSAMLOrganizations(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IntermediateService_ListSAMLOrganizations_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IntermediateServiceServer).ListSAMLOrganizations(ctx, req.(*ListSAMLOrganizationsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _IntermediateService_SignInWithEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SignInWithEmailRequest)
 	if err := dec(in); err != nil {
@@ -530,6 +566,10 @@ var IntermediateService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListOrganizations",
 			Handler:    _IntermediateService_ListOrganizations_Handler,
+		},
+		{
+			MethodName: "ListSAMLOrganizations",
+			Handler:    _IntermediateService_ListSAMLOrganizations_Handler,
 		},
 		{
 			MethodName: "SignInWithEmail",

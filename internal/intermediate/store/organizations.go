@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
+	"github.com/openauth/openauth/internal/emailaddr"
 	"github.com/openauth/openauth/internal/intermediate/authn"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
@@ -96,6 +97,41 @@ func (s *Store) ListOrganizations(
 	return &intermediatev1.ListOrganizationsResponse{
 		Organizations: organizations,
 		NextPageToken: nextPageToken,
+	}, nil
+}
+
+func (s *Store) ListSAMLOrganizations(ctx context.Context, req *intermediatev1.ListSAMLOrganizationsRequest) (*intermediatev1.ListSAMLOrganizationsResponse, error) {
+	_, q, _, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	domain, err := emailaddr.Parse(req.Email)
+	if err != nil {
+		return nil, err
+	}
+
+	qOrganizations, err := q.ListSAMLOrganizations(ctx, queries.ListSAMLOrganizationsParams{
+		ProjectID: authn.ProjectID(ctx),
+		Domain:    domain,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, err
+	}
+
+	organizations := []*intermediatev1.Organization{}
+	for _, organization := range qOrganizations {
+		organizations = append(organizations, parseOrganization(organization, qProject))
+	}
+
+	return &intermediatev1.ListSAMLOrganizationsResponse{
+		Organizations: organizations,
 	}, nil
 }
 

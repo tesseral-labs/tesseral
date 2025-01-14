@@ -231,6 +231,17 @@ ORDER BY
     organizations.id
 LIMIT $5;
 
+-- name: ListSAMLOrganizations :many
+SELECT
+    organizations.*
+FROM
+    organizations
+    JOIN organization_domains ON organizations.id = organization_domains.organization_id
+WHERE
+    organizations.project_id = $1
+    AND organizations.saml_enabled = TRUE
+    AND organization_domains.domain = $2;
+
 -- name: ListUsersByEmail :many
 SELECT
     *

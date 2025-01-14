@@ -61,6 +61,9 @@ const (
 	// IntermediateServiceListOrganizationsProcedure is the fully-qualified name of the
 	// IntermediateService's ListOrganizations RPC.
 	IntermediateServiceListOrganizationsProcedure = "/openauth.intermediate.v1.IntermediateService/ListOrganizations"
+	// IntermediateServiceListSAMLOrganizationsProcedure is the fully-qualified name of the
+	// IntermediateService's ListSAMLOrganizations RPC.
+	IntermediateServiceListSAMLOrganizationsProcedure = "/openauth.intermediate.v1.IntermediateService/ListSAMLOrganizations"
 	// IntermediateServiceSignInWithEmailProcedure is the fully-qualified name of the
 	// IntermediateService's SignInWithEmail RPC.
 	IntermediateServiceSignInWithEmailProcedure = "/openauth.intermediate.v1.IntermediateService/SignInWithEmail"
@@ -86,6 +89,8 @@ type IntermediateServiceClient interface {
 	IssueEmailVerificationChallenge(context.Context, *connect.Request[v1.IssueEmailVerificationChallengeRequest]) (*connect.Response[v1.IssueEmailVerificationChallengeResponse], error)
 	// Gets a list of organizations.
 	ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error)
+	// Gets a list of SAML organizations for a given email address.
+	ListSAMLOrganizations(context.Context, *connect.Request[v1.ListSAMLOrganizationsRequest]) (*connect.Response[v1.ListSAMLOrganizationsResponse], error)
 	// Creates a new intermediate session or session and cookies the requester.
 	SignInWithEmail(context.Context, *connect.Request[v1.SignInWithEmailRequest]) (*connect.Response[v1.SignInWithEmailResponse], error)
 	// Submits a challenge for verification of email address.
@@ -160,6 +165,12 @@ func NewIntermediateServiceClient(httpClient connect.HTTPClient, baseURL string,
 			connect.WithSchema(intermediateServiceMethods.ByName("ListOrganizations")),
 			connect.WithClientOptions(opts...),
 		),
+		listSAMLOrganizations: connect.NewClient[v1.ListSAMLOrganizationsRequest, v1.ListSAMLOrganizationsResponse](
+			httpClient,
+			baseURL+IntermediateServiceListSAMLOrganizationsProcedure,
+			connect.WithSchema(intermediateServiceMethods.ByName("ListSAMLOrganizations")),
+			connect.WithClientOptions(opts...),
+		),
 		signInWithEmail: connect.NewClient[v1.SignInWithEmailRequest, v1.SignInWithEmailResponse](
 			httpClient,
 			baseURL+IntermediateServiceSignInWithEmailProcedure,
@@ -192,6 +203,7 @@ type intermediateServiceClient struct {
 	redeemMicrosoftOAuthCode                             *connect.Client[v1.RedeemMicrosoftOAuthCodeRequest, v1.RedeemMicrosoftOAuthCodeResponse]
 	issueEmailVerificationChallenge                      *connect.Client[v1.IssueEmailVerificationChallengeRequest, v1.IssueEmailVerificationChallengeResponse]
 	listOrganizations                                    *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
+	listSAMLOrganizations                                *connect.Client[v1.ListSAMLOrganizationsRequest, v1.ListSAMLOrganizationsResponse]
 	signInWithEmail                                      *connect.Client[v1.SignInWithEmailRequest, v1.SignInWithEmailResponse]
 	verifyEmailChallenge                                 *connect.Client[v1.VerifyEmailChallengeRequest, v1.VerifyEmailChallengeResponse]
 	verifyPassword                                       *connect.Client[v1.VerifyPasswordRequest, v1.VerifyPasswordResponse]
@@ -248,6 +260,11 @@ func (c *intermediateServiceClient) ListOrganizations(ctx context.Context, req *
 	return c.listOrganizations.CallUnary(ctx, req)
 }
 
+// ListSAMLOrganizations calls openauth.intermediate.v1.IntermediateService.ListSAMLOrganizations.
+func (c *intermediateServiceClient) ListSAMLOrganizations(ctx context.Context, req *connect.Request[v1.ListSAMLOrganizationsRequest]) (*connect.Response[v1.ListSAMLOrganizationsResponse], error) {
+	return c.listSAMLOrganizations.CallUnary(ctx, req)
+}
+
 // SignInWithEmail calls openauth.intermediate.v1.IntermediateService.SignInWithEmail.
 func (c *intermediateServiceClient) SignInWithEmail(ctx context.Context, req *connect.Request[v1.SignInWithEmailRequest]) (*connect.Response[v1.SignInWithEmailResponse], error) {
 	return c.signInWithEmail.CallUnary(ctx, req)
@@ -277,6 +294,8 @@ type IntermediateServiceHandler interface {
 	IssueEmailVerificationChallenge(context.Context, *connect.Request[v1.IssueEmailVerificationChallengeRequest]) (*connect.Response[v1.IssueEmailVerificationChallengeResponse], error)
 	// Gets a list of organizations.
 	ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error)
+	// Gets a list of SAML organizations for a given email address.
+	ListSAMLOrganizations(context.Context, *connect.Request[v1.ListSAMLOrganizationsRequest]) (*connect.Response[v1.ListSAMLOrganizationsResponse], error)
 	// Creates a new intermediate session or session and cookies the requester.
 	SignInWithEmail(context.Context, *connect.Request[v1.SignInWithEmailRequest]) (*connect.Response[v1.SignInWithEmailResponse], error)
 	// Submits a challenge for verification of email address.
@@ -346,6 +365,12 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 		connect.WithSchema(intermediateServiceMethods.ByName("ListOrganizations")),
 		connect.WithHandlerOptions(opts...),
 	)
+	intermediateServiceListSAMLOrganizationsHandler := connect.NewUnaryHandler(
+		IntermediateServiceListSAMLOrganizationsProcedure,
+		svc.ListSAMLOrganizations,
+		connect.WithSchema(intermediateServiceMethods.ByName("ListSAMLOrganizations")),
+		connect.WithHandlerOptions(opts...),
+	)
 	intermediateServiceSignInWithEmailHandler := connect.NewUnaryHandler(
 		IntermediateServiceSignInWithEmailProcedure,
 		svc.SignInWithEmail,
@@ -384,6 +409,8 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 			intermediateServiceIssueEmailVerificationChallengeHandler.ServeHTTP(w, r)
 		case IntermediateServiceListOrganizationsProcedure:
 			intermediateServiceListOrganizationsHandler.ServeHTTP(w, r)
+		case IntermediateServiceListSAMLOrganizationsProcedure:
+			intermediateServiceListSAMLOrganizationsHandler.ServeHTTP(w, r)
 		case IntermediateServiceSignInWithEmailProcedure:
 			intermediateServiceSignInWithEmailHandler.ServeHTTP(w, r)
 		case IntermediateServiceVerifyEmailChallengeProcedure:
@@ -433,6 +460,10 @@ func (UnimplementedIntermediateServiceHandler) IssueEmailVerificationChallenge(c
 
 func (UnimplementedIntermediateServiceHandler) ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.ListOrganizations is not implemented"))
+}
+
+func (UnimplementedIntermediateServiceHandler) ListSAMLOrganizations(context.Context, *connect.Request[v1.ListSAMLOrganizationsRequest]) (*connect.Response[v1.ListSAMLOrganizationsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.ListSAMLOrganizations is not implemented"))
 }
 
 func (UnimplementedIntermediateServiceHandler) SignInWithEmail(context.Context, *connect.Request[v1.SignInWithEmailRequest]) (*connect.Response[v1.SignInWithEmailResponse], error) {

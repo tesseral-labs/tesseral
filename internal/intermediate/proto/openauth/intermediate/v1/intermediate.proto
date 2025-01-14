@@ -72,6 +72,14 @@ service IntermediateService {
     };
   }
 
+  // Gets a list of SAML organizations for a given email address.
+  rpc ListSAMLOrganizations(ListSAMLOrganizationsRequest) returns (ListSAMLOrganizationsResponse) {
+    option (google.api.http) = {
+      post: "/intermediate/v1/saml-organizations",
+      body: "*"
+    };
+  }
+
   // Creates a new intermediate session or session and cookies the requester.
   rpc SignInWithEmail(SignInWithEmailRequest) returns (SignInWithEmailResponse) {
     option (google.api.http) = {
@@ -224,6 +232,14 @@ message ListOrganizationsRequest {
 message ListOrganizationsResponse {
   repeated Organization organizations = 1;
   string next_page_token = 2;
+}
+
+message ListSAMLOrganizationsRequest {
+  string email = 1;
+}
+
+message ListSAMLOrganizationsResponse {
+  repeated Organization organizations = 1;
 }
 
 message SignInWithEmailRequest {
