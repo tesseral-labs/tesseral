@@ -5,7 +5,7 @@ import (
 	"crypto/x509"
 	"fmt"
 
-	"github.com/openauth/openauth/internal/saml/projectid"
+	"github.com/openauth/openauth/internal/saml/authn"
 	"github.com/openauth/openauth/internal/saml/store/queries"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
@@ -31,7 +31,7 @@ func (s *Store) GetSAMLConnectionACSData(ctx context.Context, samlConnectionID s
 	}
 
 	qSAMLConnection, err := q.GetSAMLConnection(ctx, queries.GetSAMLConnectionParams{
-		ProjectID: projectid.ProjectID(ctx),
+		ProjectID: authn.ProjectID(ctx),
 		ID:        samlConnectionUUID,
 	})
 	if err != nil {

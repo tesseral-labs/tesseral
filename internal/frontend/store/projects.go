@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/google/uuid"
 	"github.com/openauth/openauth/internal/frontend/authn"
 	frontendv1 "github.com/openauth/openauth/internal/frontend/gen/openauth/frontend/v1"
 	"github.com/openauth/openauth/internal/frontend/store/queries"
@@ -25,21 +24,6 @@ func (s *Store) GetProject(ctx context.Context, req *frontendv1.GetProjectReques
 	}
 
 	return &frontendv1.GetProjectResponse{Project: parseProject(&qProject)}, nil
-}
-
-func (s *Store) GetProjectIDByDomain(ctx context.Context, domain string) (*uuid.UUID, error) {
-	_, q, _, rollback, err := s.tx(ctx)
-	if err != nil {
-		return nil, err
-	}
-	defer rollback()
-
-	projectID, err := q.GetProjectIDByCustomDomain(ctx, &domain)
-	if err != nil {
-		return nil, err
-	}
-
-	return &projectID, nil
 }
 
 func parseProject(qProject *queries.Project) *frontendv1.Project {

@@ -2,6 +2,7 @@ package store
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/google/uuid"
 )
@@ -13,10 +14,10 @@ func (s *Store) GetProjectIDByDomain(ctx context.Context, domain string) (*uuid.
 	}
 	defer rollback()
 
-	projectID, err := q.GetProjectIDByCustomDomain(ctx, &domain)
+	qProjectID, err := q.GetProjectIDByCustomAuthDomain(ctx, &domain)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("get project id by custom auth domain: %w", err)
 	}
 
-	return &projectID, nil
+	return &qProjectID, nil
 }

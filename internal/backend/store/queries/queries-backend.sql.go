@@ -368,22 +368,6 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 	return i, err
 }
 
-const getProjectIDByCustomDomain = `-- name: GetProjectIDByCustomDomain :one
-SELECT
-    id
-FROM
-    projects
-WHERE
-    custom_auth_domain = $1
-`
-
-func (q *Queries) GetProjectIDByCustomDomain(ctx context.Context, customAuthDomain *string) (uuid.UUID, error) {
-	row := q.db.QueryRow(ctx, getProjectIDByCustomDomain, customAuthDomain)
-	var id uuid.UUID
-	err := row.Scan(&id)
-	return id, err
-}
-
 const getSAMLConnection = `-- name: GetSAMLConnection :one
 SELECT
     saml_connections.id, saml_connections.organization_id, saml_connections.create_time, saml_connections.is_primary, saml_connections.idp_redirect_url, saml_connections.idp_x509_certificate, saml_connections.idp_entity_id, saml_connections.update_time

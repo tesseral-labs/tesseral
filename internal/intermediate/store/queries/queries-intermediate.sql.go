@@ -633,22 +633,6 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 	return i, err
 }
 
-const getProjectIDByCustomDomain = `-- name: GetProjectIDByCustomDomain :one
-SELECT
-    id
-FROM
-    projects
-WHERE
-    custom_auth_domain = $1
-`
-
-func (q *Queries) GetProjectIDByCustomDomain(ctx context.Context, customAuthDomain *string) (uuid.UUID, error) {
-	row := q.db.QueryRow(ctx, getProjectIDByCustomDomain, customAuthDomain)
-	var id uuid.UUID
-	err := row.Scan(&id)
-	return id, err
-}
-
 const getProjectOrganizationByID = `-- name: GetProjectOrganizationByID :one
 SELECT
     id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods, saml_enabled, scim_enabled, create_time, update_time
