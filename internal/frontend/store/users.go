@@ -22,18 +22,18 @@ func (s *Store) SetUserPassword(ctx context.Context, req *frontendv1.SetPassword
 
 	passwordBcrypt, err := bcrypt.GenerateBcryptHash(req.Password)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("generate bcrypt hash: %w", err)
 	}
 
 	if _, err = q.SetPassword(ctx, queries.SetPasswordParams{
 		ID:             authn.UserID(ctx),
 		PasswordBcrypt: &passwordBcrypt,
 	}); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("set password: %w", err)
 	}
 
 	if err := commit(); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("commit: %w", err)
 	}
 
 	return &frontendv1.SetPasswordResponse{}, nil

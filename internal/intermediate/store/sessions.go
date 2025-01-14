@@ -134,7 +134,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 
 	organizationID, err := idformat.Organization.Parse(req.OrganizationId)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("parse organization id: %w", err)
 	}
 
 	qOrganization, err := q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
@@ -142,7 +142,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		ProjectID: projectID,
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("get project organization by id: %w", err)
 	}
 
 	// Use the intermediate session state to determine the user to sign in
@@ -157,7 +157,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 			MicrosoftUserID: &intermediateSession.MicrosoftUserId,
 		})
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("get organization user by microsoft user id: %w", err)
 		}
 	} else if intermediateSession.GoogleUserId != "" {
 		qUser, err = q.GetOrganizationUserByGoogleUserID(ctx, queries.GetOrganizationUserByGoogleUserIDParams{
@@ -165,7 +165,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 			GoogleUserID:   &intermediateSession.GoogleUserId,
 		})
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("get organization user by google user id: %w", err)
 		}
 	} else if intermediateSession.Email != "" {
 		qUser, err = q.GetOrganizationUserByEmail(ctx, queries.GetOrganizationUserByEmailParams{
@@ -173,12 +173,12 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 			Email:          intermediateSession.Email,
 		})
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("get organization user by email: %w", err)
 		}
 
 		// Ensure that the intermediate session is in an authorized state
 		if !intermediateSession.PasswordVerified || intermediateSession.OrganizationId != req.OrganizationId {
-			return nil, errInvalidIntermediateSessionState
+			return nil, fmt.Errorf("verify intermediate session state: %w", errInvalidIntermediateSessionState)
 		}
 	}
 
@@ -195,21 +195,21 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		UserID:             qUser.ID,
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("create session: %w", err)
 	}
 
 	qProject, err := q.GetProjectByID(ctx, projectID)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 
 	sessionSigningKeyID, privateKey, err := s.getSessionSigningKey(ctx, q, projectID)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("get session signing key: %w", err)
 	}
 
 	if err := commit(); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("commit: %w", err)
 	}
 
 	accessToken, err := sessions.GetAccessToken(ctx, &sessions.Organization{
@@ -232,7 +232,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		UpdateTime:      derefOrEmpty(qUser.UpdateTime),
 	}, *sessionSigningKeyID, privateKey)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("get access token: %w", err)
 	}
 
 	return &intermediatev1.ExchangeIntermediateSessionForSessionResponse{
@@ -244,7 +244,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 func (s *Store) getSessionSigningKey(ctx context.Context, q *queries.Queries, projectID uuid.UUID) (*uuid.UUID, *ecdsa.PrivateKey, error) {
 	sessionSigningKey, err := q.GetCurrentSessionKeyByProjectID(ctx, projectID)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, fmt.Errorf("get current session key by project id: %w", err)
 	}
 
 	decryptResult, err := s.kms.Decrypt(ctx, &kms.DecryptInput{
@@ -253,12 +253,12 @@ func (s *Store) getSessionSigningKey(ctx context.Context, q *queries.Queries, pr
 		KeyId:               &s.sessionSigningKeyKmsKeyID,
 	})
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, fmt.Errorf("decrypt: %w", err)
 	}
 
 	privateKey, err := openauthecdsa.PrivateKeyFromBytes(decryptResult.Plaintext)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, fmt.Errorf("private key from bytes: %w", err)
 	}
 
 	return &sessionSigningKey.ID, privateKey, nil

@@ -5,6 +5,7 @@ import (
 	"context"
 	"crypto/sha256"
 	"errors"
+	"fmt"
 	"log/slog"
 	"math/rand/v2"
 	"strconv"
@@ -63,27 +64,24 @@ func (s *Store) CompleteEmailVerificationChallenge(ctx context.Context, req *int
 	// Get the email verification challenge from the request
 	challengeID, err := idformat.EmailVerificationChallenge.Parse(req.EmailVerificationChallengeId)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("parse email verification challenge id: %w", err)
 	}
 	challenge, err := q.GetEmailVerificationChallengeByID(ctx, challengeID)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("get email verification challenge by id: %w", err)
 	}
 
 	// Enforce the intermediate session
 	if challenge.IntermediateSessionID.String() != authn.IntermediateSessionID(ctx).String() {
-		return nil, ErrEmailVerificationChallengeMismatch
+		return nil, fmt.Errorf("match intermediate session IDs: %w", ErrEmailVerificationChallengeMismatch)
 	}
 
 	// Get the intermediate session
 	intermediateSession := authn.IntermediateSession(ctx)
-	if intermediateSession == nil {
-		return nil, ErrIntermediateSessionRequired
-	}
 
 	intermediateSessionID, err := idformat.IntermediateSession.Parse(intermediateSession.Id)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("parse intermediate session id: %w", err)
 	}
 
 	now := time.Now()
@@ -102,10 +100,10 @@ func (s *Store) CompleteEmailVerificationChallenge(ctx context.Context, req *int
 	err = verifyChallenge(ctx, &evc, codeSha256[:], q)
 	if err != nil {
 		if err := commit(); err != nil {
-			return nil, err
+			return nil, fmt.Errorf("commit after verify failure: %w", err)
 		}
 
-		return nil, err
+		return nil, fmt.Errorf("verify challenge: %w", err)
 	}
 
 	// Complete the email verification challenge
@@ -128,11 +126,11 @@ func (s *Store) CompleteEmailVerificationChallenge(ctx context.Context, req *int
 		ProjectID:          projectID,
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("create verified email: %w", err)
 	}
 
 	if err := commit(); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("commit: %w", err)
 	}
 
 	return &intermediatev1.VerifyEmailChallengeResponse{}, nil
@@ -152,7 +150,7 @@ func (s *Store) IssueEmailVerificationChallenge(ctx context.Context) (*intermedi
 	// Create a new secret token for the challenge
 	secretToken, err := generateSecretToken()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("generate secret token: %w", err)
 	}
 	secretTokenSha256 := sha256.Sum256([]byte(secretToken))
 
@@ -168,7 +166,7 @@ func (s *Store) IssueEmailVerificationChallenge(ctx context.Context) (*intermedi
 		ProjectID:             projectID,
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("create email verification challenge: %w", err)
 	}
 
 	if err := commit(); err != nil {
@@ -204,30 +202,30 @@ func verifyChallenge(ctx context.Context, evc *queries.EmailVerificationChalleng
 	if evc.CompleteTime != nil {
 		_, err := q.RevokeEmailVerificationChallenge(ctx, evc.ID)
 		if err != nil {
-			return err
+			return fmt.Errorf("revoke email verification challenge after complete time failure: %w", err)
 		}
 
-		return ErrEmailVerificationChallengeInvalidState
+		return fmt.Errorf("verify challenge complete time: %w", ErrEmailVerificationChallengeInvalidState)
 	}
 
 	// Check if the challenge has expired
 	if evc.ExpireTime.Before(time.Now()) {
 		_, err := q.RevokeEmailVerificationChallenge(ctx, evc.ID)
 		if err != nil {
-			return err
+			return fmt.Errorf("revoke email verification challenge after expire time failure: %w", err)
 		}
 
-		return ErrEmailVerificationChallengeInvalidState
+		return fmt.Errorf("verify challenge expire time: %w", ErrEmailVerificationChallengeInvalidState)
 	}
 
 	// Check if the challenge is correct
 	if !bytes.Equal(evc.ChallengeSha256, secretTokenSha256) {
 		_, err := q.RevokeEmailVerificationChallenge(ctx, evc.ID)
 		if err != nil {
-			return err
+			return fmt.Errorf("revoke email verification challenge: %w", err)
 		}
 
-		return ErrEmailVerificationChallengeMismatch
+		return fmt.Errorf("verify challenge sha: %w", ErrEmailVerificationChallengeMismatch)
 	}
 
 	return nil
