@@ -42,14 +42,14 @@ services:
       - 4566:4566
       - 4599:4566
     volumes:
-      - ./.kms/data/:/data/
-      - ./.kms/init/:/init/
+      - ./.local/kms/data/:/data/
+      - ./.local/kms/seed.yaml:/init/seed.yaml
   nginx:
     image: nginx:1-alpine
     ports:
       - 80:80
     volumes:
-      - ./.nginx/local.conf:/etc/nginx/conf.d/default.conf
+      - ./.local/nginx/local.conf:/etc/nginx/conf.d/default.conf
   postgres:
     environment:
       POSTGRES_PASSWORD: "password"
@@ -59,7 +59,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./.postgres:/var/lib/postgresql/data
+      - ./.local/postgres:/var/lib/postgresql/data
   ui:
     command: bash -c "npm i --force && npm run dev"
     environment:
