@@ -5,7 +5,7 @@ import (
 	"crypto/sha256"
 	"fmt"
 
-	"github.com/openauth/openauth/internal/saml/projectid"
+	"github.com/openauth/openauth/internal/saml/authn"
 	"github.com/openauth/openauth/internal/scim/store/queries"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
@@ -29,7 +29,7 @@ func (s *Store) GetSCIMAPIKeyByToken(ctx context.Context, token string) (*SCIMAP
 
 	tokenSHA := sha256.Sum256(tokenUUID[:])
 	qSCIMAPIKey, err := q.GetSCIMAPIKeyByTokenSHA256(ctx, queries.GetSCIMAPIKeyByTokenSHA256Params{
-		ProjectID:         projectid.ProjectID(ctx),
+		ProjectID:         authn.ProjectID(ctx),
 		SecretTokenSha256: tokenSHA[:],
 	})
 	if err != nil {

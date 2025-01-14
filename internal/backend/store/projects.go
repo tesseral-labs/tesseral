@@ -6,7 +6,6 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
-	"github.com/google/uuid"
 	"github.com/openauth/openauth/internal/backend/authn"
 	backendv1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
 	"github.com/openauth/openauth/internal/backend/store/queries"
@@ -27,21 +26,6 @@ func (s *Store) GetProject(ctx context.Context, req *backendv1.GetProjectRequest
 	}
 
 	return &backendv1.GetProjectResponse{Project: parseProject(&project)}, nil
-}
-
-func (s *Store) GetProjectIDByDomain(ctx context.Context, domain string) (*uuid.UUID, error) {
-	_, q, _, rollback, err := s.tx(ctx)
-	if err != nil {
-		return nil, err
-	}
-	defer rollback()
-
-	projectID, err := q.GetProjectIDByCustomDomain(ctx, &domain)
-	if err != nil {
-		return nil, err
-	}
-
-	return &projectID, nil
 }
 
 func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectRequest) (*backendv1.UpdateProjectResponse, error) {

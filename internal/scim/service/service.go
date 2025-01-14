@@ -15,13 +15,14 @@ import (
 
 	"github.com/openauth/openauth/internal/scim/authn/authnmiddleware"
 	"github.com/openauth/openauth/internal/scim/store"
+	"github.com/openauth/openauth/internal/shared/projectid"
 )
 
 type Service struct {
 	Store *store.Store
 }
 
-func (s *Service) Handler(authAppRootDomain string) http.Handler {
+func (s *Service) Handler(p *projectid.Sniffer) http.Handler {
 	mux := http.NewServeMux()
 
 	mux.Handle("GET /scim/v1/Users", withErr(s.listUsers))
@@ -31,7 +32,7 @@ func (s *Service) Handler(authAppRootDomain string) http.Handler {
 	mux.Handle("PATCH /scim/v1/Users/{userID}", withErr(s.patchUser))
 	mux.Handle("DELETE /scim/v1/Users/{userID}", withErr(s.deleteUser))
 
-	return logHTTP(authnmiddleware.New(s.Store, authAppRootDomain, mux))
+	return logHTTP(authnmiddleware.New(s.Store, p, mux))
 }
 
 var (
