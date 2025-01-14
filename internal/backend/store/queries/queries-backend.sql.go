@@ -98,6 +98,38 @@ func (q *Queries) CreateProjectAPIKey(ctx context.Context, arg CreateProjectAPIK
 	return i, err
 }
 
+const createProjectRedirectURI = `-- name: CreateProjectRedirectURI :one
+INSERT INTO project_redirect_uris (id, project_id, uri, is_primary)
+    VALUES ($1, $2, $3, COALESCE((
+            SELECT
+                FALSE
+            FROM project_redirect_uris
+            WHERE
+                project_id = $2 LIMIT 1), TRUE))
+RETURNING
+    id, project_id, uri, is_primary, created_at, updated_at
+`
+
+type CreateProjectRedirectURIParams struct {
+	ID        uuid.UUID
+	ProjectID uuid.UUID
+	Uri       string
+}
+
+func (q *Queries) CreateProjectRedirectURI(ctx context.Context, arg CreateProjectRedirectURIParams) (ProjectRedirectUri, error) {
+	row := q.db.QueryRow(ctx, createProjectRedirectURI, arg.ID, arg.ProjectID, arg.Uri)
+	var i ProjectRedirectUri
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.Uri,
+		&i.IsPrimary,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const createSAMLConnection = `-- name: CreateSAMLConnection :one
 INSERT INTO saml_connections (id, organization_id, is_primary, idp_redirect_url, idp_x509_certificate, idp_entity_id)
     VALUES ($1, $2, $3, $4, $5, $6)
@@ -187,6 +219,22 @@ WHERE id = $1
 
 func (q *Queries) DeleteProjectAPIKey(ctx context.Context, id uuid.UUID) error {
 	_, err := q.db.Exec(ctx, deleteProjectAPIKey, id)
+	return err
+}
+
+const deleteProjectRedirectURI = `-- name: DeleteProjectRedirectURI :exec
+DELETE FROM project_redirect_uris
+WHERE id = $1
+    AND project_id = $2
+`
+
+type DeleteProjectRedirectURIParams struct {
+	ID        uuid.UUID
+	ProjectID uuid.UUID
+}
+
+func (q *Queries) DeleteProjectRedirectURI(ctx context.Context, arg DeleteProjectRedirectURIParams) error {
+	_, err := q.db.Exec(ctx, deleteProjectRedirectURI, arg.ID, arg.ProjectID)
 	return err
 }
 
@@ -365,6 +413,35 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 		&i.UpdateTime,
 		&i.CustomAuthDomain,
 		&i.AuthDomain,
+	)
+	return i, err
+}
+
+const getProjectRedirectURI = `-- name: GetProjectRedirectURI :one
+SELECT
+    id, project_id, uri, is_primary, created_at, updated_at
+FROM
+    project_redirect_uris
+WHERE
+    id = $1
+    AND project_id = $2
+`
+
+type GetProjectRedirectURIParams struct {
+	ID        uuid.UUID
+	ProjectID uuid.UUID
+}
+
+func (q *Queries) GetProjectRedirectURI(ctx context.Context, arg GetProjectRedirectURIParams) (ProjectRedirectUri, error) {
+	row := q.db.QueryRow(ctx, getProjectRedirectURI, arg.ID, arg.ProjectID)
+	var i ProjectRedirectUri
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.Uri,
+		&i.IsPrimary,
+		&i.CreatedAt,
+		&i.UpdatedAt,
 	)
 	return i, err
 }
@@ -673,6 +750,42 @@ func (q *Queries) ListProjectAPIKeys(ctx context.Context, arg ListProjectAPIKeys
 			&i.DisplayName,
 			&i.CreateTime,
 			&i.UpdateTime,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listProjectRedirectURIs = `-- name: ListProjectRedirectURIs :many
+SELECT
+    id, project_id, uri, is_primary, created_at, updated_at
+FROM
+    project_redirect_uris
+WHERE
+    project_id = $1
+`
+
+func (q *Queries) ListProjectRedirectURIs(ctx context.Context, projectID uuid.UUID) ([]ProjectRedirectUri, error) {
+	rows, err := q.db.Query(ctx, listProjectRedirectURIs, projectID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ProjectRedirectUri
+	for rows.Next() {
+		var i ProjectRedirectUri
+		if err := rows.Scan(
+			&i.ID,
+			&i.ProjectID,
+			&i.Uri,
+			&i.IsPrimary,
+			&i.CreatedAt,
+			&i.UpdatedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -1201,6 +1314,45 @@ func (q *Queries) UpdateProjectOrganizationID(ctx context.Context, arg UpdatePro
 		&i.UpdateTime,
 		&i.CustomAuthDomain,
 		&i.AuthDomain,
+	)
+	return i, err
+}
+
+const updateProjectRedirectURI = `-- name: UpdateProjectRedirectURI :one
+UPDATE
+    project_redirect_uris
+SET
+    uri = $2,
+    is_primary = $3
+WHERE
+    id = $1
+    AND project_id = $4
+RETURNING
+    id, project_id, uri, is_primary, created_at, updated_at
+`
+
+type UpdateProjectRedirectURIParams struct {
+	ID        uuid.UUID
+	Uri       string
+	IsPrimary bool
+	ProjectID uuid.UUID
+}
+
+func (q *Queries) UpdateProjectRedirectURI(ctx context.Context, arg UpdateProjectRedirectURIParams) (ProjectRedirectUri, error) {
+	row := q.db.QueryRow(ctx, updateProjectRedirectURI,
+		arg.ID,
+		arg.Uri,
+		arg.IsPrimary,
+		arg.ProjectID,
+	)
+	var i ProjectRedirectUri
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.Uri,
+		&i.IsPrimary,
+		&i.CreatedAt,
+		&i.UpdatedAt,
 	)
 	return i, err
 }

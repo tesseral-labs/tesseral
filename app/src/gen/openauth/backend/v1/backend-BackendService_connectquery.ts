@@ -125,6 +125,31 @@ export const listIntermediateSessions = BackendService.method.listIntermediateSe
 export const getIntermediateSession = BackendService.method.getIntermediateSession;
 
 /**
+ * @generated from rpc openauth.backend.v1.BackendService.CreateProjectRedirectURI
+ */
+export const createProjectRedirectURI = BackendService.method.createProjectRedirectURI;
+
+/**
+ * @generated from rpc openauth.backend.v1.BackendService.DeleteProjectRedirectURI
+ */
+export const deleteProjectRedirectURI = BackendService.method.deleteProjectRedirectURI;
+
+/**
+ * @generated from rpc openauth.backend.v1.BackendService.GetProjectRedirectURI
+ */
+export const getProjectRedirectURI = BackendService.method.getProjectRedirectURI;
+
+/**
+ * @generated from rpc openauth.backend.v1.BackendService.ListProjectRedirectURIs
+ */
+export const listProjectRedirectURIs = BackendService.method.listProjectRedirectURIs;
+
+/**
+ * @generated from rpc openauth.backend.v1.BackendService.UpdateProjectRedirectURI
+ */
+export const updateProjectRedirectURI = BackendService.method.updateProjectRedirectURI;
+
+/**
  * @generated from rpc openauth.backend.v1.BackendService.ListProjectAPIKeys
  */
 export const listProjectAPIKeys = BackendService.method.listProjectAPIKeys;

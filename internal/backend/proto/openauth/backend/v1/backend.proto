@@ -159,6 +159,38 @@ service BackendService {
     };
   }
 
+  rpc CreateProjectRedirectURI(CreateProjectRedirectURIRequest) returns (CreateProjectRedirectURIResponse) {
+    option (google.api.http) = {
+      post: "/backend/v1/project-redirect-uris",
+      body: "project_redirect_uri"
+    };
+  }
+
+  rpc DeleteProjectRedirectURI(DeleteProjectRedirectURIRequest) returns (DeleteProjectRedirectURIResponse) {
+    option (google.api.http) = {
+      delete: "/backend/v1/project-redirect-uris/{id}"
+    };
+  }
+
+  rpc GetProjectRedirectURI(GetProjectRedirectURIRequest) returns (GetProjectRedirectURIResponse) {
+    option (google.api.http) = {
+      get: "/backend/v1/project-redirect-uris/{id}"
+    };
+  }
+
+  rpc ListProjectRedirectURIs(ListProjectRedirectURIsRequest) returns (ListProjectRedirectURIsResponse) {
+    option (google.api.http) = {
+      get: "/backend/v1/project-redirect-uris"
+    };
+  }
+
+  rpc UpdateProjectRedirectURI(UpdateProjectRedirectURIRequest) returns (UpdateProjectRedirectURIResponse) {
+    option (google.api.http) = {
+      patch: "/backend/v1/project-redirect-uris/{id}",
+      body: "project_redirect_uri"
+    };
+  }
+
   rpc ListProjectAPIKeys(ListProjectAPIKeysRequest) returns (ListProjectAPIKeysResponse);
   rpc GetProjectAPIKey(GetProjectAPIKeyRequest) returns (GetProjectAPIKeyResponse);
   rpc CreateProjectAPIKey(CreateProjectAPIKeyRequest) returns (CreateProjectAPIKeyResponse);
@@ -424,6 +456,46 @@ message RevokeProjectAPIKeyResponse {
   ProjectAPIKey project_api_key = 1;
 }
 
+message CreateProjectRedirectURIRequest {
+  ProjectRedirectURI project_redirect_uri = 1;
+}
+
+message CreateProjectRedirectURIResponse {
+  ProjectRedirectURI project_redirect_uri = 1;
+}
+
+message DeleteProjectRedirectURIRequest {
+  string id = 1;
+}
+
+message DeleteProjectRedirectURIResponse {
+}
+
+message GetProjectRedirectURIRequest {
+  string id = 1;
+}
+
+message GetProjectRedirectURIResponse {
+  ProjectRedirectURI project_redirect_uri = 1;
+}
+
+message ListProjectRedirectURIsRequest {
+  string project_id = 1;
+}
+
+message ListProjectRedirectURIsResponse {
+  repeated ProjectRedirectURI project_redirect_uris = 1;
+}
+
+message UpdateProjectRedirectURIRequest {
+  string id = 1;
+  ProjectRedirectURI project_redirect_uri = 2;
+}
+
+message UpdateProjectRedirectURIResponse {
+  ProjectRedirectURI project_redirect_uri = 1;
+}
+
 message Project {
   string id = 1;
   string display_name = 2;
@@ -468,6 +540,13 @@ message ProjectAPIKey {
   google.protobuf.Timestamp update_time = 4;
   string secret_token = 5;
   bool revoked = 6;
+}
+
+message ProjectRedirectURI {
+  string id = 1;
+  string project_id = 2;
+  string uri = 3;
+  bool is_primary = 4;
 }
 
 message IntermediateSession {

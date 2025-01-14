@@ -104,6 +104,21 @@ const (
 	// BackendServiceGetIntermediateSessionProcedure is the fully-qualified name of the BackendService's
 	// GetIntermediateSession RPC.
 	BackendServiceGetIntermediateSessionProcedure = "/openauth.backend.v1.BackendService/GetIntermediateSession"
+	// BackendServiceCreateProjectRedirectURIProcedure is the fully-qualified name of the
+	// BackendService's CreateProjectRedirectURI RPC.
+	BackendServiceCreateProjectRedirectURIProcedure = "/openauth.backend.v1.BackendService/CreateProjectRedirectURI"
+	// BackendServiceDeleteProjectRedirectURIProcedure is the fully-qualified name of the
+	// BackendService's DeleteProjectRedirectURI RPC.
+	BackendServiceDeleteProjectRedirectURIProcedure = "/openauth.backend.v1.BackendService/DeleteProjectRedirectURI"
+	// BackendServiceGetProjectRedirectURIProcedure is the fully-qualified name of the BackendService's
+	// GetProjectRedirectURI RPC.
+	BackendServiceGetProjectRedirectURIProcedure = "/openauth.backend.v1.BackendService/GetProjectRedirectURI"
+	// BackendServiceListProjectRedirectURIsProcedure is the fully-qualified name of the
+	// BackendService's ListProjectRedirectURIs RPC.
+	BackendServiceListProjectRedirectURIsProcedure = "/openauth.backend.v1.BackendService/ListProjectRedirectURIs"
+	// BackendServiceUpdateProjectRedirectURIProcedure is the fully-qualified name of the
+	// BackendService's UpdateProjectRedirectURI RPC.
+	BackendServiceUpdateProjectRedirectURIProcedure = "/openauth.backend.v1.BackendService/UpdateProjectRedirectURI"
 	// BackendServiceListProjectAPIKeysProcedure is the fully-qualified name of the BackendService's
 	// ListProjectAPIKeys RPC.
 	BackendServiceListProjectAPIKeysProcedure = "/openauth.backend.v1.BackendService/ListProjectAPIKeys"
@@ -150,6 +165,11 @@ type BackendServiceClient interface {
 	GetSession(context.Context, *connect.Request[v1.GetSessionRequest]) (*connect.Response[v1.GetSessionResponse], error)
 	ListIntermediateSessions(context.Context, *connect.Request[v1.ListIntermediateSessionsRequest]) (*connect.Response[v1.ListIntermediateSessionsResponse], error)
 	GetIntermediateSession(context.Context, *connect.Request[v1.GetIntermediateSessionRequest]) (*connect.Response[v1.GetIntermediateSessionResponse], error)
+	CreateProjectRedirectURI(context.Context, *connect.Request[v1.CreateProjectRedirectURIRequest]) (*connect.Response[v1.CreateProjectRedirectURIResponse], error)
+	DeleteProjectRedirectURI(context.Context, *connect.Request[v1.DeleteProjectRedirectURIRequest]) (*connect.Response[v1.DeleteProjectRedirectURIResponse], error)
+	GetProjectRedirectURI(context.Context, *connect.Request[v1.GetProjectRedirectURIRequest]) (*connect.Response[v1.GetProjectRedirectURIResponse], error)
+	ListProjectRedirectURIs(context.Context, *connect.Request[v1.ListProjectRedirectURIsRequest]) (*connect.Response[v1.ListProjectRedirectURIsResponse], error)
+	UpdateProjectRedirectURI(context.Context, *connect.Request[v1.UpdateProjectRedirectURIRequest]) (*connect.Response[v1.UpdateProjectRedirectURIResponse], error)
 	ListProjectAPIKeys(context.Context, *connect.Request[v1.ListProjectAPIKeysRequest]) (*connect.Response[v1.ListProjectAPIKeysResponse], error)
 	GetProjectAPIKey(context.Context, *connect.Request[v1.GetProjectAPIKeyRequest]) (*connect.Response[v1.GetProjectAPIKeyResponse], error)
 	CreateProjectAPIKey(context.Context, *connect.Request[v1.CreateProjectAPIKeyRequest]) (*connect.Response[v1.CreateProjectAPIKeyResponse], error)
@@ -313,6 +333,36 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(backendServiceMethods.ByName("GetIntermediateSession")),
 			connect.WithClientOptions(opts...),
 		),
+		createProjectRedirectURI: connect.NewClient[v1.CreateProjectRedirectURIRequest, v1.CreateProjectRedirectURIResponse](
+			httpClient,
+			baseURL+BackendServiceCreateProjectRedirectURIProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("CreateProjectRedirectURI")),
+			connect.WithClientOptions(opts...),
+		),
+		deleteProjectRedirectURI: connect.NewClient[v1.DeleteProjectRedirectURIRequest, v1.DeleteProjectRedirectURIResponse](
+			httpClient,
+			baseURL+BackendServiceDeleteProjectRedirectURIProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("DeleteProjectRedirectURI")),
+			connect.WithClientOptions(opts...),
+		),
+		getProjectRedirectURI: connect.NewClient[v1.GetProjectRedirectURIRequest, v1.GetProjectRedirectURIResponse](
+			httpClient,
+			baseURL+BackendServiceGetProjectRedirectURIProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("GetProjectRedirectURI")),
+			connect.WithClientOptions(opts...),
+		),
+		listProjectRedirectURIs: connect.NewClient[v1.ListProjectRedirectURIsRequest, v1.ListProjectRedirectURIsResponse](
+			httpClient,
+			baseURL+BackendServiceListProjectRedirectURIsProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("ListProjectRedirectURIs")),
+			connect.WithClientOptions(opts...),
+		),
+		updateProjectRedirectURI: connect.NewClient[v1.UpdateProjectRedirectURIRequest, v1.UpdateProjectRedirectURIResponse](
+			httpClient,
+			baseURL+BackendServiceUpdateProjectRedirectURIProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("UpdateProjectRedirectURI")),
+			connect.WithClientOptions(opts...),
+		),
 		listProjectAPIKeys: connect.NewClient[v1.ListProjectAPIKeysRequest, v1.ListProjectAPIKeysResponse](
 			httpClient,
 			baseURL+BackendServiceListProjectAPIKeysProcedure,
@@ -378,6 +428,11 @@ type backendServiceClient struct {
 	getSession               *connect.Client[v1.GetSessionRequest, v1.GetSessionResponse]
 	listIntermediateSessions *connect.Client[v1.ListIntermediateSessionsRequest, v1.ListIntermediateSessionsResponse]
 	getIntermediateSession   *connect.Client[v1.GetIntermediateSessionRequest, v1.GetIntermediateSessionResponse]
+	createProjectRedirectURI *connect.Client[v1.CreateProjectRedirectURIRequest, v1.CreateProjectRedirectURIResponse]
+	deleteProjectRedirectURI *connect.Client[v1.DeleteProjectRedirectURIRequest, v1.DeleteProjectRedirectURIResponse]
+	getProjectRedirectURI    *connect.Client[v1.GetProjectRedirectURIRequest, v1.GetProjectRedirectURIResponse]
+	listProjectRedirectURIs  *connect.Client[v1.ListProjectRedirectURIsRequest, v1.ListProjectRedirectURIsResponse]
+	updateProjectRedirectURI *connect.Client[v1.UpdateProjectRedirectURIRequest, v1.UpdateProjectRedirectURIResponse]
 	listProjectAPIKeys       *connect.Client[v1.ListProjectAPIKeysRequest, v1.ListProjectAPIKeysResponse]
 	getProjectAPIKey         *connect.Client[v1.GetProjectAPIKeyRequest, v1.GetProjectAPIKeyResponse]
 	createProjectAPIKey      *connect.Client[v1.CreateProjectAPIKeyRequest, v1.CreateProjectAPIKeyResponse]
@@ -506,6 +561,31 @@ func (c *backendServiceClient) GetIntermediateSession(ctx context.Context, req *
 	return c.getIntermediateSession.CallUnary(ctx, req)
 }
 
+// CreateProjectRedirectURI calls openauth.backend.v1.BackendService.CreateProjectRedirectURI.
+func (c *backendServiceClient) CreateProjectRedirectURI(ctx context.Context, req *connect.Request[v1.CreateProjectRedirectURIRequest]) (*connect.Response[v1.CreateProjectRedirectURIResponse], error) {
+	return c.createProjectRedirectURI.CallUnary(ctx, req)
+}
+
+// DeleteProjectRedirectURI calls openauth.backend.v1.BackendService.DeleteProjectRedirectURI.
+func (c *backendServiceClient) DeleteProjectRedirectURI(ctx context.Context, req *connect.Request[v1.DeleteProjectRedirectURIRequest]) (*connect.Response[v1.DeleteProjectRedirectURIResponse], error) {
+	return c.deleteProjectRedirectURI.CallUnary(ctx, req)
+}
+
+// GetProjectRedirectURI calls openauth.backend.v1.BackendService.GetProjectRedirectURI.
+func (c *backendServiceClient) GetProjectRedirectURI(ctx context.Context, req *connect.Request[v1.GetProjectRedirectURIRequest]) (*connect.Response[v1.GetProjectRedirectURIResponse], error) {
+	return c.getProjectRedirectURI.CallUnary(ctx, req)
+}
+
+// ListProjectRedirectURIs calls openauth.backend.v1.BackendService.ListProjectRedirectURIs.
+func (c *backendServiceClient) ListProjectRedirectURIs(ctx context.Context, req *connect.Request[v1.ListProjectRedirectURIsRequest]) (*connect.Response[v1.ListProjectRedirectURIsResponse], error) {
+	return c.listProjectRedirectURIs.CallUnary(ctx, req)
+}
+
+// UpdateProjectRedirectURI calls openauth.backend.v1.BackendService.UpdateProjectRedirectURI.
+func (c *backendServiceClient) UpdateProjectRedirectURI(ctx context.Context, req *connect.Request[v1.UpdateProjectRedirectURIRequest]) (*connect.Response[v1.UpdateProjectRedirectURIResponse], error) {
+	return c.updateProjectRedirectURI.CallUnary(ctx, req)
+}
+
 // ListProjectAPIKeys calls openauth.backend.v1.BackendService.ListProjectAPIKeys.
 func (c *backendServiceClient) ListProjectAPIKeys(ctx context.Context, req *connect.Request[v1.ListProjectAPIKeysRequest]) (*connect.Response[v1.ListProjectAPIKeysResponse], error) {
 	return c.listProjectAPIKeys.CallUnary(ctx, req)
@@ -562,6 +642,11 @@ type BackendServiceHandler interface {
 	GetSession(context.Context, *connect.Request[v1.GetSessionRequest]) (*connect.Response[v1.GetSessionResponse], error)
 	ListIntermediateSessions(context.Context, *connect.Request[v1.ListIntermediateSessionsRequest]) (*connect.Response[v1.ListIntermediateSessionsResponse], error)
 	GetIntermediateSession(context.Context, *connect.Request[v1.GetIntermediateSessionRequest]) (*connect.Response[v1.GetIntermediateSessionResponse], error)
+	CreateProjectRedirectURI(context.Context, *connect.Request[v1.CreateProjectRedirectURIRequest]) (*connect.Response[v1.CreateProjectRedirectURIResponse], error)
+	DeleteProjectRedirectURI(context.Context, *connect.Request[v1.DeleteProjectRedirectURIRequest]) (*connect.Response[v1.DeleteProjectRedirectURIResponse], error)
+	GetProjectRedirectURI(context.Context, *connect.Request[v1.GetProjectRedirectURIRequest]) (*connect.Response[v1.GetProjectRedirectURIResponse], error)
+	ListProjectRedirectURIs(context.Context, *connect.Request[v1.ListProjectRedirectURIsRequest]) (*connect.Response[v1.ListProjectRedirectURIsResponse], error)
+	UpdateProjectRedirectURI(context.Context, *connect.Request[v1.UpdateProjectRedirectURIRequest]) (*connect.Response[v1.UpdateProjectRedirectURIResponse], error)
 	ListProjectAPIKeys(context.Context, *connect.Request[v1.ListProjectAPIKeysRequest]) (*connect.Response[v1.ListProjectAPIKeysResponse], error)
 	GetProjectAPIKey(context.Context, *connect.Request[v1.GetProjectAPIKeyRequest]) (*connect.Response[v1.GetProjectAPIKeyResponse], error)
 	CreateProjectAPIKey(context.Context, *connect.Request[v1.CreateProjectAPIKeyRequest]) (*connect.Response[v1.CreateProjectAPIKeyResponse], error)
@@ -721,6 +806,36 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		connect.WithSchema(backendServiceMethods.ByName("GetIntermediateSession")),
 		connect.WithHandlerOptions(opts...),
 	)
+	backendServiceCreateProjectRedirectURIHandler := connect.NewUnaryHandler(
+		BackendServiceCreateProjectRedirectURIProcedure,
+		svc.CreateProjectRedirectURI,
+		connect.WithSchema(backendServiceMethods.ByName("CreateProjectRedirectURI")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceDeleteProjectRedirectURIHandler := connect.NewUnaryHandler(
+		BackendServiceDeleteProjectRedirectURIProcedure,
+		svc.DeleteProjectRedirectURI,
+		connect.WithSchema(backendServiceMethods.ByName("DeleteProjectRedirectURI")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceGetProjectRedirectURIHandler := connect.NewUnaryHandler(
+		BackendServiceGetProjectRedirectURIProcedure,
+		svc.GetProjectRedirectURI,
+		connect.WithSchema(backendServiceMethods.ByName("GetProjectRedirectURI")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceListProjectRedirectURIsHandler := connect.NewUnaryHandler(
+		BackendServiceListProjectRedirectURIsProcedure,
+		svc.ListProjectRedirectURIs,
+		connect.WithSchema(backendServiceMethods.ByName("ListProjectRedirectURIs")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceUpdateProjectRedirectURIHandler := connect.NewUnaryHandler(
+		BackendServiceUpdateProjectRedirectURIProcedure,
+		svc.UpdateProjectRedirectURI,
+		connect.WithSchema(backendServiceMethods.ByName("UpdateProjectRedirectURI")),
+		connect.WithHandlerOptions(opts...),
+	)
 	backendServiceListProjectAPIKeysHandler := connect.NewUnaryHandler(
 		BackendServiceListProjectAPIKeysProcedure,
 		svc.ListProjectAPIKeys,
@@ -807,6 +922,16 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceListIntermediateSessionsHandler.ServeHTTP(w, r)
 		case BackendServiceGetIntermediateSessionProcedure:
 			backendServiceGetIntermediateSessionHandler.ServeHTTP(w, r)
+		case BackendServiceCreateProjectRedirectURIProcedure:
+			backendServiceCreateProjectRedirectURIHandler.ServeHTTP(w, r)
+		case BackendServiceDeleteProjectRedirectURIProcedure:
+			backendServiceDeleteProjectRedirectURIHandler.ServeHTTP(w, r)
+		case BackendServiceGetProjectRedirectURIProcedure:
+			backendServiceGetProjectRedirectURIHandler.ServeHTTP(w, r)
+		case BackendServiceListProjectRedirectURIsProcedure:
+			backendServiceListProjectRedirectURIsHandler.ServeHTTP(w, r)
+		case BackendServiceUpdateProjectRedirectURIProcedure:
+			backendServiceUpdateProjectRedirectURIHandler.ServeHTTP(w, r)
 		case BackendServiceListProjectAPIKeysProcedure:
 			backendServiceListProjectAPIKeysHandler.ServeHTTP(w, r)
 		case BackendServiceGetProjectAPIKeyProcedure:
@@ -922,6 +1047,26 @@ func (UnimplementedBackendServiceHandler) ListIntermediateSessions(context.Conte
 
 func (UnimplementedBackendServiceHandler) GetIntermediateSession(context.Context, *connect.Request[v1.GetIntermediateSessionRequest]) (*connect.Response[v1.GetIntermediateSessionResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetIntermediateSession is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) CreateProjectRedirectURI(context.Context, *connect.Request[v1.CreateProjectRedirectURIRequest]) (*connect.Response[v1.CreateProjectRedirectURIResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.CreateProjectRedirectURI is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) DeleteProjectRedirectURI(context.Context, *connect.Request[v1.DeleteProjectRedirectURIRequest]) (*connect.Response[v1.DeleteProjectRedirectURIResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.DeleteProjectRedirectURI is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) GetProjectRedirectURI(context.Context, *connect.Request[v1.GetProjectRedirectURIRequest]) (*connect.Response[v1.GetProjectRedirectURIResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetProjectRedirectURI is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) ListProjectRedirectURIs(context.Context, *connect.Request[v1.ListProjectRedirectURIsRequest]) (*connect.Response[v1.ListProjectRedirectURIsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.ListProjectRedirectURIs is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) UpdateProjectRedirectURI(context.Context, *connect.Request[v1.UpdateProjectRedirectURIRequest]) (*connect.Response[v1.UpdateProjectRedirectURIResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.UpdateProjectRedirectURI is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) ListProjectAPIKeys(context.Context, *connect.Request[v1.ListProjectAPIKeysRequest]) (*connect.Response[v1.ListProjectAPIKeysResponse], error) {

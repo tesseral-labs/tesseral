@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type AuthMethod string
@@ -141,6 +142,15 @@ type ProjectApiKey struct {
 	DisplayName       string
 	CreateTime        *time.Time
 	UpdateTime        *time.Time
+}
+
+type ProjectRedirectUri struct {
+	ID        uuid.UUID
+	ProjectID uuid.UUID
+	Uri       string
+	IsPrimary bool
+	CreatedAt pgtype.Timestamptz
+	UpdatedAt pgtype.Timestamptz
 }
 
 type SamlConnection struct {
