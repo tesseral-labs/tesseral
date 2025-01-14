@@ -131,6 +131,7 @@ type Project struct {
 	CreateTime                           *time.Time
 	UpdateTime                           *time.Time
 	CustomAuthDomain                     *string
+	AuthDomain                           *string
 }
 
 type ProjectApiKey struct {

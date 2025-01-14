@@ -45,6 +45,8 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 	// other
 	dogfoodProjectID := uuid.New()
 	dogfoodOrganizationID := uuid.New()
+	authDomain := fmt.Sprintf("%s.%s", idformat.Project.Format(dogfoodProjectID), "tesseral.example.app")
+	customAuthDomain := "auth.app.tesseral.example.com"
 
 	if _, err := q.CreateProject(ctx, queries.CreateProjectParams{
 		ID:                       dogfoodProjectID,
@@ -52,6 +54,8 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 		OrganizationID:           nil, // will populate after creating org
 		LogInWithPasswordEnabled: true,
 		LogInWithGoogleEnabled:   true,
+		AuthDomain:               &authDomain,
+		CustomAuthDomain:         &customAuthDomain,
 	}); err != nil {
 		return nil, fmt.Errorf("create dogfood project: %w", err)
 	}

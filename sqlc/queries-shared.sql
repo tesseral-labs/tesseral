@@ -4,5 +4,6 @@ SELECT
 FROM
     projects
 WHERE
-    custom_auth_domain = $1;
+    custom_auth_domain = $1
+    OR auth_domain = $1;
 

@@ -136,6 +136,11 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 }
 
 func parseProject(qProject *queries.Project) *backendv1.Project {
+	authDomain := derefOrEmpty(qProject.AuthDomain)
+	if qProject.CustomAuthDomain != nil {
+		authDomain = *qProject.CustomAuthDomain
+	}
+
 	return &backendv1.Project{
 		Id:                              idformat.Project.Format(qProject.ID),
 		DisplayName:                     qProject.DisplayName,
@@ -148,6 +153,6 @@ func parseProject(qProject *queries.Project) *backendv1.Project {
 		MicrosoftOauthClientId:          derefOrEmpty(qProject.MicrosoftOauthClientID),
 		OrganizationsSamlEnabledDefault: &qProject.OrganizationsSamlEnabledDefault,
 		OrganizationsScimEnabledDefault: &qProject.OrganizationsScimEnabledDefault,
-		CustomAuthDomain:                qProject.CustomAuthDomain,
+		AuthDomain:                      &authDomain,
 	}
 }
