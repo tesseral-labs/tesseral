@@ -18,8 +18,10 @@ services:
     tty: true
   app:
     command: bash -c "npm i --force && npm run dev"
-    env_file:
-      - .env
+    environment:
+      APP_API_URL: ${APP_API_URL}
+      APP_BUILD_IS_DEV: 1
+      APP_DOGFOOD_PROJECT_ID: ${APP_DOGFOOD_PROJECT_ID}
     expose:
       - 3000
     image: node:22.11.0
@@ -61,7 +63,9 @@ services:
   ui:
     command: bash -c "npm i --force && npm run dev"
     environment:
+      UI_API_URL: ${UI_API_URL}
       UI_BUILD_IS_DEV: 1
+      UI_PROJECT_ID: ${UI_PROJECT_ID}
     expose:
       - 3002
     image: node:22.11.0
