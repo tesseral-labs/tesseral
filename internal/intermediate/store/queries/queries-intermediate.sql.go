@@ -603,7 +603,7 @@ func (q *Queries) GetOrganizationUserByMicrosoftUserID(ctx context.Context, arg 
 
 const getProjectByID = `-- name: GetProjectByID :one
 SELECT
-    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, organizations_saml_enabled_default, organizations_scim_enabled_default, create_time, update_time, custom_auth_domain
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, organizations_saml_enabled_default, organizations_scim_enabled_default, create_time, update_time, custom_auth_domain, auth_domain
 FROM
     projects
 WHERE
@@ -629,6 +629,7 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 		&i.CreateTime,
 		&i.UpdateTime,
 		&i.CustomAuthDomain,
+		&i.AuthDomain,
 	)
 	return i, err
 }
@@ -991,20 +992,20 @@ SELECT
     organizations.id, organizations.project_id, organizations.display_name, organizations.override_log_in_with_password_enabled, organizations.override_log_in_with_google_enabled, organizations.override_log_in_with_microsoft_enabled, organizations.google_hosted_domain, organizations.microsoft_tenant_id, organizations.override_log_in_methods, organizations.saml_enabled, organizations.scim_enabled, organizations.create_time, organizations.update_time
 FROM
     organizations
-    JOIN users ON organizations.id = users.organization_id
+    JOIN organization_domains ON organizations.id = organization_domains.organization_id
 WHERE
-    project_id = $1
-    AND saml_enabled = TRUE
-    AND users.email = $2
+    organizations.project_id = $1
+    AND organizations.saml_enabled = TRUE
+    AND organization_domains.domain = $2
 `
 
 type ListSAMLOrganizationsParams struct {
 	ProjectID uuid.UUID
-	Email     string
+	Domain    string
 }
 
 func (q *Queries) ListSAMLOrganizations(ctx context.Context, arg ListSAMLOrganizationsParams) ([]Organization, error) {
-	rows, err := q.db.Query(ctx, listSAMLOrganizations, arg.ProjectID, arg.Email)
+	rows, err := q.db.Query(ctx, listSAMLOrganizations, arg.ProjectID, arg.Domain)
 	if err != nil {
 		return nil, err
 	}

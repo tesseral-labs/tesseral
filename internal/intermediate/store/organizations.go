@@ -107,14 +107,14 @@ func (s *Store) ListSAMLOrganizations(ctx context.Context, req *intermediatev1.L
 	}
 	defer rollback()
 
-	email, err := emailaddr.Parse(req.Email)
+	domain, err := emailaddr.Parse(req.Email)
 	if err != nil {
 		return nil, err
 	}
 
 	qOrganizations, err := q.ListSAMLOrganizations(ctx, queries.ListSAMLOrganizationsParams{
 		ProjectID: authn.ProjectID(ctx),
-		Email:     email,
+		Domain:    domain,
 	})
 	if err != nil {
 		return nil, err
