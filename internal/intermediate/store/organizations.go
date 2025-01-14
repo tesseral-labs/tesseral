@@ -2,6 +2,7 @@ package store
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/google/uuid"
 	"github.com/openauth/openauth/internal/emailaddr"
@@ -25,12 +26,12 @@ func (s *Store) ListOrganizations(
 
 	var startID uuid.UUID
 	if err := s.pageEncoder.Unmarshal(req.PageToken, &startID); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("unmarshal page token: %w", err)
 	}
 
 	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 
 	limit := 10
@@ -45,7 +46,7 @@ func (s *Store) ListOrganizations(
 			ProjectID:    authn.ProjectID(ctx),
 		})
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("list organizations by google user id: %w", err)
 		}
 
 		if len(qGoogleOrganizationRecords) > 0 {
@@ -60,7 +61,7 @@ func (s *Store) ListOrganizations(
 			ProjectID:       authn.ProjectID(ctx),
 		})
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("list organizations by microsoft user id: %w", err)
 		}
 
 		if len(qMicrosoftOrganizationRecords) > 0 {
@@ -74,7 +75,7 @@ func (s *Store) ListOrganizations(
 			ProjectID: authn.ProjectID(ctx),
 		})
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("list organizations by email: %w", err)
 		}
 
 		if len(qEmailOrganizationRecords) > 0 {

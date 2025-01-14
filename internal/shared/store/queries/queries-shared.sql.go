@@ -18,6 +18,7 @@ FROM
     projects
 WHERE
     custom_auth_domain = $1
+    OR auth_domain = $1
 `
 
 func (q *Queries) GetProjectIDByCustomAuthDomain(ctx context.Context, customAuthDomain *string) (uuid.UUID, error) {

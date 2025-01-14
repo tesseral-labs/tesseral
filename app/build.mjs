@@ -13,9 +13,6 @@ const context = await esbuild.context({
   bundle: true,
   define: {
     __REPLACED_BY_ESBUILD_API_URL__: JSON.stringify(process.env.APP_API_URL),
-    __REPLACED_BY_ESBUILD_DOGFOOD_PROJECT_ID__: JSON.stringify(
-      process.env.APP_DOGFOOD_PROJECT_ID,
-    ),
   },
   entryPoints: ['./src'],
   minify: !APP_BUILD_IS_DEV,

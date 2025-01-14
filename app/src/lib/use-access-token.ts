@@ -1,5 +1,4 @@
 import { useMutation } from '@tanstack/react-query'
-import { API_URL, DOGFOOD_PROJECT_ID } from '@/config'
 import { useState } from 'react'
 
 interface User {
@@ -30,7 +29,6 @@ export function useAccessToken(): string | undefined {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-TODO-OpenAuth-Project-ID': DOGFOOD_PROJECT_ID,
         },
         body: '{}',
       })

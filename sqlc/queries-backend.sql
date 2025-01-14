@@ -95,7 +95,8 @@ SET
     microsoft_oauth_client_secret_ciphertext = $9,
     organizations_saml_enabled_default = $10,
     organizations_scim_enabled_default = $11,
-    custom_auth_domain = $12
+    custom_auth_domain = $12,
+    auth_domain = $13
 WHERE
     id = $1
 RETURNING

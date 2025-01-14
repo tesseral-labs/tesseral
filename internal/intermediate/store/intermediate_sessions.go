@@ -65,7 +65,7 @@ func (s *Store) VerifyPassword(ctx context.Context, req *intermediatev1.VerifyPa
 	intermediateSession := authn.IntermediateSession(ctx)
 	organizationID, err := idformat.Organization.Parse(req.OrganizationId)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("parse organization id: %w", err)
 	}
 
 	// Ensure that the organization exists and is part of the project
@@ -74,7 +74,7 @@ func (s *Store) VerifyPassword(ctx context.Context, req *intermediatev1.VerifyPa
 		ProjectID: projectID,
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("get project by organization id: %w", err)
 	}
 
 	qUser, err := q.GetUserByOrganizationIDAndFactors(ctx, queries.GetUserByOrganizationIDAndFactorsParams{
@@ -84,13 +84,13 @@ func (s *Store) VerifyPassword(ctx context.Context, req *intermediatev1.VerifyPa
 		MicrosoftUserID: refOrNil(intermediateSession.MicrosoftUserId),
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("get user by organization id and factors: %w", err)
 	}
 
 	// Check password is valid
 	err = bcrypt.CompareBcryptHash(*qUser.PasswordBcrypt, req.Password)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("compare bcrypt hash: %w", err)
 	}
 
 	// Update the intermediate session with the new state
@@ -99,11 +99,11 @@ func (s *Store) VerifyPassword(ctx context.Context, req *intermediatev1.VerifyPa
 		OrganizationID: &qUser.OrganizationID,
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("update intermediate session password verified: %w", err)
 	}
 
 	if err := commit(); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("commit: %w", err)
 	}
 
 	return &intermediatev1.VerifyPasswordResponse{}, nil
@@ -127,7 +127,7 @@ func (s *Store) Whoami(ctx context.Context, req *intermediatev1.WhoamiRequest) (
 			ProjectID:    authn.ProjectID(ctx),
 		})
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("is google email verified: %w", err)
 		}
 
 		isEmailVerified = isGoogleEmailVerified
@@ -174,7 +174,7 @@ func (s *Store) CreateIntermediateSession(ctx *context.Context, req *CreateInter
 
 	projectId, err := idformat.Project.Parse(req.ProjectID)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("parse project id: %w", err)
 	}
 
 	// Allow 15 minutes for the user to verify their email before expiring the intermediate session
@@ -187,11 +187,11 @@ func (s *Store) CreateIntermediateSession(ctx *context.Context, req *CreateInter
 		ExpireTime: &expiresAt,
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("create intermediate session: %w", err)
 	}
 
 	if err := commit(); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("commit: %w", err)
 	}
 
 	return parseIntermediateSession(&createdIntermediateSession), nil
@@ -206,12 +206,12 @@ func (s *Store) GetIntermediateSession(ctx *context.Context, id string) (*Interm
 
 	sessionId, err := idformat.IntermediateSession.Parse(id)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("parse intermediate session id: %w", err)
 	}
 
 	session, err := q.GetIntermediateSessionByID(*ctx, sessionId)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("get intermediate session by id: %w", err)
 	}
 
 	return parseIntermediateSession(&session), nil
@@ -234,23 +234,23 @@ func (s *Store) VerifyIntermediateSessionEmail(
 
 	sessionId, err := idformat.IntermediateSession.Parse(req.ID)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("parse intermediate session id: %w", err)
 	}
 
 	// Get the intermediate session so we can perform some checks
 	existingIntermediateSession, err := q.GetIntermediateSessionByID(*ctx, sessionId)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("get intermediate session by id: %w", err)
 	}
 
 	// Check if the intermediate session has been revoked
 	if existingIntermediateSession.Revoked {
-		return nil, ErrIntermediateSessionRevoked
+		return nil, fmt.Errorf("verify intermediate session revoked: %w", ErrIntermediateSessionRevoked)
 	}
 
 	// Check if the intermediate session has expired
 	if existingIntermediateSession.ExpireTime.Before(time.Now()) {
-		return nil, ErrIntermediateSessionExpired
+		return nil, fmt.Errorf("verify intermediate session expired: %w", ErrIntermediateSessionExpired)
 	}
 
 	panic("unimplemented")
