@@ -72,7 +72,7 @@ func (s *Store) CreateIntermediateSessionSigningKey(ctx context.Context, project
 		ProjectID:            projectID,
 		ExpireTime:           &expiresAt,
 		PublicKey:            publicKeyBytes,
-		PrivateKeyCipherText: encryptOutput.CipherTextBlob,
+		PrivateKeyCipherText: encryptOutput.CiphertextBlob,
 	})
 	if err != nil {
 		return nil, err

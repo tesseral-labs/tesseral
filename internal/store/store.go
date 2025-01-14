@@ -4,11 +4,11 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/openauth/openauth/internal/pagetoken"
-	keyManagementService "github.com/openauth/openauth/internal/store/kms"
 	"github.com/openauth/openauth/internal/store/queries"
 )
 
@@ -16,7 +16,7 @@ type Store struct {
 	db                                    *pgxpool.Pool
 	dogfoodProjectID                      *uuid.UUID
 	intermediateSessionSigningKeyKMSKeyID string
-	kms                                   *keyManagementService.KeyManagementService
+	kms                                   *kms.Client
 	pageEncoder                           pagetoken.Encoder
 	q                                     *queries.Queries
 	sessionSigningKeyKmsKeyID             string
@@ -26,7 +26,7 @@ type NewStoreParams struct {
 	DB                                    *pgxpool.Pool
 	DogfoodProjectID                      *uuid.UUID
 	IntermediateSessionSigningKeyKMSKeyID string
-	KMS                                   *keyManagementService.KeyManagementService
+	KMS                                   *kms.Client
 	PageEncoder                           pagetoken.Encoder
 	SessionSigningKeyKmsKeyID             string
 }

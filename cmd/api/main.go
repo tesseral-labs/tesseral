@@ -43,7 +43,6 @@ import (
 	sharedstore "github.com/openauth/openauth/internal/shared/store"
 	"github.com/openauth/openauth/internal/slogcorrelation"
 	"github.com/openauth/openauth/internal/store/idformat"
-	keyManagementService "github.com/openauth/openauth/internal/store/kms"
 	"github.com/rs/cors"
 	"github.com/ssoready/conf"
 )
@@ -107,7 +106,11 @@ func main() {
 		}
 	})
 
-	kms_ := keyManagementService.NewKeyManagementServiceFromConfig(&awsConfig, &config.KMSEndpoint)
+	kms_ := kms.NewFromConfig(awsConfig, func(o *kms.Options) {
+		if config.KMSEndpoint != "" {
+			o.BaseEndpoint = &config.KMSEndpoint
+		}
+	})
 
 	sharedstore_ := sharedstore.New(sharedstore.NewStoreParams{
 		AppAuthRootDomain: config.AuthAppsRootDomain,
