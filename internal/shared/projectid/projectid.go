@@ -25,7 +25,7 @@ func (p *Sniffer) GetProjectID(hostname string) (*uuid.UUID, error) {
 	ctx := context.Background()
 
 	// get the project ID by the custom domain
-	projectID, err := p.store.GetProjectIDByDomain(ctx, strings.Replace(hostname, "-", "_"))
+	projectID, err := p.store.GetProjectIDByDomain(ctx, strings.Replace(hostname, "-", "_", 1))
 	if err != nil {
 		return nil, fmt.Errorf("get project id: %w", err)
 	}
