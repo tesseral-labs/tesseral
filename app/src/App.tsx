@@ -9,6 +9,8 @@ import SessionInfoPage from './pages/SessionInfoPage'
 import NotFoundPage from './pages/NotFound'
 import { ListOrganizationsPage } from '@/pages/organizations/ListOrganizationsPage'
 import { useAccessToken } from '@/lib/use-access-token'
+import { Container } from '@/pages/Container'
+import { ViewOrganizationPage } from '@/pages/organizations/ViewOrganizationPage'
 
 const queryClient = new QueryClient()
 
@@ -40,8 +42,14 @@ function AppWithinQueryClient() {
     <TransportProvider transport={transport}>
       <BrowserRouter>
         <Routes>
+          <Route path="" element={<Container />}>
+            <Route path="/organizations" element={<ListOrganizationsPage />} />
+            <Route
+              path="/organizations/:organizationId"
+              element={<ViewOrganizationPage />}
+            />
+          </Route>
           <Route path="/" element={<SessionInfoPage />} />
-          <Route path="/organizations" element={<ListOrganizationsPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
