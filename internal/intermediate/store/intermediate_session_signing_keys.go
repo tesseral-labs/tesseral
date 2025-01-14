@@ -3,6 +3,7 @@ package store
 import (
 	"context"
 	"crypto/ecdsa"
+	"fmt"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
@@ -31,13 +32,13 @@ func (s *Store) GetIntermediateSessionSigningKeyByID(ctx context.Context, id str
 
 	intermediateSessionSigningKeyID, err := idformat.IntermediateSessionSigningKey.Parse(id)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("parse intermediate session signing key id: %w", err)
 	}
 
 	// Fetch the raw record from the database
 	intermediateSessionSigningKey, err := q.GetIntermediateSessionSigningKeyByID(ctx, intermediateSessionSigningKeyID)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("get intermediate session signing key by id: %w", err)
 	}
 
 	// Decrypt the signing key using KMS
@@ -47,13 +48,13 @@ func (s *Store) GetIntermediateSessionSigningKeyByID(ctx context.Context, id str
 		KeyId:               &s.intermediateSessionSigningKeyKMSKeyID,
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("decrypt: %w", err)
 	}
 
 	// Create an ECDSA key pair from the decrypted signing key
 	privateKey, err := openauthecdsa.PrivateKeyFromBytes(decryptOutput.Plaintext)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("private key from bytes: %w", err)
 	}
 
 	// Return the intermediate session signing key with the decrypted private key
@@ -69,13 +70,13 @@ func (s *Store) GetIntermediateSessionSigningKeyByProjectID(ctx context.Context,
 
 	projectID, err := idformat.Project.Parse(projectId)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("parse project id: %w", err)
 	}
 
 	// Fetch the raw record from the database
 	intermediateSessionSigningKey, err := q.GetIntermediateSessionSigningKeyByProjectID(ctx, projectID)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("get intermediate session signing key by project id: %w", err)
 	}
 
 	// Decrypt the signing key using KMS
@@ -85,13 +86,13 @@ func (s *Store) GetIntermediateSessionSigningKeyByProjectID(ctx context.Context,
 		KeyId:               &s.intermediateSessionSigningKeyKMSKeyID,
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("decrypt: %w", err)
 	}
 
 	// Create an ECDSA key pair from the decrypted signing key
 	privateKey, err := openauthecdsa.PrivateKeyFromBytes(decryptOutput.Plaintext)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("private key from bytes: %w", err)
 	}
 
 	// Return the intermediate session signing key with the decrypted private key
@@ -107,19 +108,19 @@ func (s *Store) GetIntermediateSessionPublicKeyByProjectID(ctx context.Context, 
 
 	projectID, err := idformat.Project.Parse(projectId)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("parse project id: %w", err)
 	}
 
 	// Fetch the raw record from the database
 	intermediateSessionSigningKey, err := q.GetIntermediateSessionSigningKeyByProjectID(ctx, projectID)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("get intermediate session signing key by project id: %w", err)
 	}
 
 	// Create an ECDSA key pair from the decrypted signing key
 	publicKey, err := openauthecdsa.PublicKeyFromBytes(intermediateSessionSigningKey.PublicKey)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("public key from bytes: %w", err)
 	}
 
 	return publicKey, nil

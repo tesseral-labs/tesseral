@@ -3,6 +3,7 @@ package store
 import (
 	"context"
 	"crypto/sha256"
+	"fmt"
 	"log/slog"
 	"time"
 
@@ -41,13 +42,13 @@ func (s *Store) SignInWithEmail(
 		TokenSha256: tokenSha256[:],
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("create intermediate session: %w", err)
 	}
 
 	// Create a new secret token for the challenge
 	secretToken, err := generateSecretToken()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("get secret token: %w", err)
 	}
 	secretTokenSha256 := sha256.Sum256([]byte(secretToken))
 
@@ -61,14 +62,14 @@ func (s *Store) SignInWithEmail(
 		ProjectID:             projectID,
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("create email verification challenge: %w", err)
 	}
 
 	// TODO: Remove this log line and replace with email sending
 	slog.Info("SignInWithEmail", "challenge", secretToken)
 
 	if err := commit(); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("commit: %w", err)
 	}
 
 	return &intermediatev1.SignInWithEmailResponse{

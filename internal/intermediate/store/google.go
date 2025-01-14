@@ -128,7 +128,7 @@ func (s *Store) RedeemGoogleOAuthCode(ctx context.Context, req *intermediatev1.R
 	}
 
 	if err := commit(); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("commit: %w", err)
 	}
 
 	return &intermediatev1.RedeemGoogleOAuthCodeResponse{}, nil
