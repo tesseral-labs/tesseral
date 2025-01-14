@@ -1,13 +1,31 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import { API_URL, DOGFOOD_PROJECT_ID } from '@/config'
 import { useState } from 'react'
 
-export function useAccessToken(): string {
+interface User {
+  id: string;
+  email: string;
+}
+
+export function useUser(): User | undefined {
+  const accessToken = useAccessToken()
+  if (!accessToken) {
+    return
+  }
+
+  const claims = JSON.parse(base64Decode(accessToken.split(".")[1]))
+  return {
+    id: claims.user.id,
+    email: claims.user.email,
+  }
+}
+
+export function useAccessToken(): string | undefined {
   const [accessToken, setAccessToken] = useLocalStorage('accessToken')
-  const { data: accessToken } = useQuery({
-    queryKey: ['refresh'],
-    queryFn: async () => {
-      const response = await fetch(`${API_URL}/api/frontend/v1/access-token`, {
+  const refresh = useMutation({
+    mutationKey: ['refresh'],
+    mutationFn: async () => {
+      const response = await fetch(`http://auth.app.tesseral.example.com/api/frontend/v1/access-token`, {
         credentials: 'include',
         method: 'POST',
         headers: {
@@ -21,11 +39,16 @@ export function useAccessToken(): string {
   })
 
   if (!accessToken || shouldRefresh(accessToken)) {
-
+    if (!refresh.isPending) {
+      refresh.mutate(undefined, {
+        onSuccess: (accessToken) => {
+          setAccessToken(accessToken)
+        }
+      })
+    }
   }
 
-
-  return accessToken
+  return accessToken ?? undefined
 }
 
 // how far in advance of its expiration an access token gets refreshed
