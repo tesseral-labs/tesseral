@@ -140,6 +140,16 @@ WHERE
     organization_id = $1
     AND microsoft_user_id = $2;
 
+-- name: GetOrganizationPrimarySAMLConnection :one
+SELECT
+    *
+FROM
+    saml_connections
+WHERE
+    organization_id = $1
+    AND is_primary = TRUE
+LIMIT 1;
+
 -- name: GetProjectOrganizationByID :one
 SELECT
     *
