@@ -43,6 +43,11 @@ const (
 	BackendService_GetSession_FullMethodName               = "/openauth.backend.v1.BackendService/GetSession"
 	BackendService_ListIntermediateSessions_FullMethodName = "/openauth.backend.v1.BackendService/ListIntermediateSessions"
 	BackendService_GetIntermediateSession_FullMethodName   = "/openauth.backend.v1.BackendService/GetIntermediateSession"
+	BackendService_CreateProjectRedirectURI_FullMethodName = "/openauth.backend.v1.BackendService/CreateProjectRedirectURI"
+	BackendService_DeleteProjectRedirectURI_FullMethodName = "/openauth.backend.v1.BackendService/DeleteProjectRedirectURI"
+	BackendService_GetProjectRedirectURI_FullMethodName    = "/openauth.backend.v1.BackendService/GetProjectRedirectURI"
+	BackendService_ListProjectRedirectURIs_FullMethodName  = "/openauth.backend.v1.BackendService/ListProjectRedirectURIs"
+	BackendService_UpdateProjectRedirectURI_FullMethodName = "/openauth.backend.v1.BackendService/UpdateProjectRedirectURI"
 	BackendService_ListProjectAPIKeys_FullMethodName       = "/openauth.backend.v1.BackendService/ListProjectAPIKeys"
 	BackendService_GetProjectAPIKey_FullMethodName         = "/openauth.backend.v1.BackendService/GetProjectAPIKey"
 	BackendService_CreateProjectAPIKey_FullMethodName      = "/openauth.backend.v1.BackendService/CreateProjectAPIKey"
@@ -79,6 +84,11 @@ type BackendServiceClient interface {
 	GetSession(ctx context.Context, in *GetSessionRequest, opts ...grpc.CallOption) (*GetSessionResponse, error)
 	ListIntermediateSessions(ctx context.Context, in *ListIntermediateSessionsRequest, opts ...grpc.CallOption) (*ListIntermediateSessionsResponse, error)
 	GetIntermediateSession(ctx context.Context, in *GetIntermediateSessionRequest, opts ...grpc.CallOption) (*GetIntermediateSessionResponse, error)
+	CreateProjectRedirectURI(ctx context.Context, in *CreateProjectRedirectURIRequest, opts ...grpc.CallOption) (*CreateProjectRedirectURIResponse, error)
+	DeleteProjectRedirectURI(ctx context.Context, in *DeleteProjectRedirectURIRequest, opts ...grpc.CallOption) (*DeleteProjectRedirectURIResponse, error)
+	GetProjectRedirectURI(ctx context.Context, in *GetProjectRedirectURIRequest, opts ...grpc.CallOption) (*GetProjectRedirectURIResponse, error)
+	ListProjectRedirectURIs(ctx context.Context, in *ListProjectRedirectURIsRequest, opts ...grpc.CallOption) (*ListProjectRedirectURIsResponse, error)
+	UpdateProjectRedirectURI(ctx context.Context, in *UpdateProjectRedirectURIRequest, opts ...grpc.CallOption) (*UpdateProjectRedirectURIResponse, error)
 	ListProjectAPIKeys(ctx context.Context, in *ListProjectAPIKeysRequest, opts ...grpc.CallOption) (*ListProjectAPIKeysResponse, error)
 	GetProjectAPIKey(ctx context.Context, in *GetProjectAPIKeyRequest, opts ...grpc.CallOption) (*GetProjectAPIKeyResponse, error)
 	CreateProjectAPIKey(ctx context.Context, in *CreateProjectAPIKeyRequest, opts ...grpc.CallOption) (*CreateProjectAPIKeyResponse, error)
@@ -335,6 +345,56 @@ func (c *backendServiceClient) GetIntermediateSession(ctx context.Context, in *G
 	return out, nil
 }
 
+func (c *backendServiceClient) CreateProjectRedirectURI(ctx context.Context, in *CreateProjectRedirectURIRequest, opts ...grpc.CallOption) (*CreateProjectRedirectURIResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateProjectRedirectURIResponse)
+	err := c.cc.Invoke(ctx, BackendService_CreateProjectRedirectURI_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) DeleteProjectRedirectURI(ctx context.Context, in *DeleteProjectRedirectURIRequest, opts ...grpc.CallOption) (*DeleteProjectRedirectURIResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteProjectRedirectURIResponse)
+	err := c.cc.Invoke(ctx, BackendService_DeleteProjectRedirectURI_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) GetProjectRedirectURI(ctx context.Context, in *GetProjectRedirectURIRequest, opts ...grpc.CallOption) (*GetProjectRedirectURIResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetProjectRedirectURIResponse)
+	err := c.cc.Invoke(ctx, BackendService_GetProjectRedirectURI_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) ListProjectRedirectURIs(ctx context.Context, in *ListProjectRedirectURIsRequest, opts ...grpc.CallOption) (*ListProjectRedirectURIsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListProjectRedirectURIsResponse)
+	err := c.cc.Invoke(ctx, BackendService_ListProjectRedirectURIs_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) UpdateProjectRedirectURI(ctx context.Context, in *UpdateProjectRedirectURIRequest, opts ...grpc.CallOption) (*UpdateProjectRedirectURIResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateProjectRedirectURIResponse)
+	err := c.cc.Invoke(ctx, BackendService_UpdateProjectRedirectURI_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *backendServiceClient) ListProjectAPIKeys(ctx context.Context, in *ListProjectAPIKeysRequest, opts ...grpc.CallOption) (*ListProjectAPIKeysResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListProjectAPIKeysResponse)
@@ -423,6 +483,11 @@ type BackendServiceServer interface {
 	GetSession(context.Context, *GetSessionRequest) (*GetSessionResponse, error)
 	ListIntermediateSessions(context.Context, *ListIntermediateSessionsRequest) (*ListIntermediateSessionsResponse, error)
 	GetIntermediateSession(context.Context, *GetIntermediateSessionRequest) (*GetIntermediateSessionResponse, error)
+	CreateProjectRedirectURI(context.Context, *CreateProjectRedirectURIRequest) (*CreateProjectRedirectURIResponse, error)
+	DeleteProjectRedirectURI(context.Context, *DeleteProjectRedirectURIRequest) (*DeleteProjectRedirectURIResponse, error)
+	GetProjectRedirectURI(context.Context, *GetProjectRedirectURIRequest) (*GetProjectRedirectURIResponse, error)
+	ListProjectRedirectURIs(context.Context, *ListProjectRedirectURIsRequest) (*ListProjectRedirectURIsResponse, error)
+	UpdateProjectRedirectURI(context.Context, *UpdateProjectRedirectURIRequest) (*UpdateProjectRedirectURIResponse, error)
 	ListProjectAPIKeys(context.Context, *ListProjectAPIKeysRequest) (*ListProjectAPIKeysResponse, error)
 	GetProjectAPIKey(context.Context, *GetProjectAPIKeyRequest) (*GetProjectAPIKeyResponse, error)
 	CreateProjectAPIKey(context.Context, *CreateProjectAPIKeyRequest) (*CreateProjectAPIKeyResponse, error)
@@ -510,6 +575,21 @@ func (UnimplementedBackendServiceServer) ListIntermediateSessions(context.Contex
 }
 func (UnimplementedBackendServiceServer) GetIntermediateSession(context.Context, *GetIntermediateSessionRequest) (*GetIntermediateSessionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetIntermediateSession not implemented")
+}
+func (UnimplementedBackendServiceServer) CreateProjectRedirectURI(context.Context, *CreateProjectRedirectURIRequest) (*CreateProjectRedirectURIResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateProjectRedirectURI not implemented")
+}
+func (UnimplementedBackendServiceServer) DeleteProjectRedirectURI(context.Context, *DeleteProjectRedirectURIRequest) (*DeleteProjectRedirectURIResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteProjectRedirectURI not implemented")
+}
+func (UnimplementedBackendServiceServer) GetProjectRedirectURI(context.Context, *GetProjectRedirectURIRequest) (*GetProjectRedirectURIResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetProjectRedirectURI not implemented")
+}
+func (UnimplementedBackendServiceServer) ListProjectRedirectURIs(context.Context, *ListProjectRedirectURIsRequest) (*ListProjectRedirectURIsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListProjectRedirectURIs not implemented")
+}
+func (UnimplementedBackendServiceServer) UpdateProjectRedirectURI(context.Context, *UpdateProjectRedirectURIRequest) (*UpdateProjectRedirectURIResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateProjectRedirectURI not implemented")
 }
 func (UnimplementedBackendServiceServer) ListProjectAPIKeys(context.Context, *ListProjectAPIKeysRequest) (*ListProjectAPIKeysResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListProjectAPIKeys not implemented")
@@ -982,6 +1062,96 @@ func _BackendService_GetIntermediateSession_Handler(srv interface{}, ctx context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BackendService_CreateProjectRedirectURI_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateProjectRedirectURIRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).CreateProjectRedirectURI(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_CreateProjectRedirectURI_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).CreateProjectRedirectURI(ctx, req.(*CreateProjectRedirectURIRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_DeleteProjectRedirectURI_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteProjectRedirectURIRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).DeleteProjectRedirectURI(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_DeleteProjectRedirectURI_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).DeleteProjectRedirectURI(ctx, req.(*DeleteProjectRedirectURIRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_GetProjectRedirectURI_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetProjectRedirectURIRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).GetProjectRedirectURI(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_GetProjectRedirectURI_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).GetProjectRedirectURI(ctx, req.(*GetProjectRedirectURIRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_ListProjectRedirectURIs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListProjectRedirectURIsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).ListProjectRedirectURIs(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_ListProjectRedirectURIs_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).ListProjectRedirectURIs(ctx, req.(*ListProjectRedirectURIsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_UpdateProjectRedirectURI_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateProjectRedirectURIRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).UpdateProjectRedirectURI(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_UpdateProjectRedirectURI_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).UpdateProjectRedirectURI(ctx, req.(*UpdateProjectRedirectURIRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _BackendService_ListProjectAPIKeys_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListProjectAPIKeysRequest)
 	if err := dec(in); err != nil {
@@ -1192,6 +1362,26 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetIntermediateSession",
 			Handler:    _BackendService_GetIntermediateSession_Handler,
+		},
+		{
+			MethodName: "CreateProjectRedirectURI",
+			Handler:    _BackendService_CreateProjectRedirectURI_Handler,
+		},
+		{
+			MethodName: "DeleteProjectRedirectURI",
+			Handler:    _BackendService_DeleteProjectRedirectURI_Handler,
+		},
+		{
+			MethodName: "GetProjectRedirectURI",
+			Handler:    _BackendService_GetProjectRedirectURI_Handler,
+		},
+		{
+			MethodName: "ListProjectRedirectURIs",
+			Handler:    _BackendService_ListProjectRedirectURIs_Handler,
+		},
+		{
+			MethodName: "UpdateProjectRedirectURI",
+			Handler:    _BackendService_UpdateProjectRedirectURI_Handler,
 		},
 		{
 			MethodName: "ListProjectAPIKeys",
