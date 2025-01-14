@@ -426,7 +426,7 @@ components:
                     type: boolean
                 logInWithPasswordEnabled:
                     type: boolean
-                samlConnectionId:
+                primarySamlConnectionId:
                     type: string
         RedeemGoogleOAuthCodeRequest:
             type: object

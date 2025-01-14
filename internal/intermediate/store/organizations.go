@@ -159,6 +159,6 @@ func parseOrganization(organization queries.Organization, project queries.Projec
 		LogInWithGoogleEnabled:    logInWithGoogleEnabled,
 		LogInWithMicrosoftEnabled: logInWithMicrosoftEnabled,
 		LogInWithPasswordEnabled:  logInWithPasswordEnabled,
-		SamlConnectionId:          &samlConnectionID,
+		PrimarySamlConnectionId:   &samlConnectionID,
 	}
 }
