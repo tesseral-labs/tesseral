@@ -216,128 +216,6 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /backend/v1/project-redirect-uris:
-        get:
-            tags:
-                - BackendService
-            operationId: BackendService_ListProjectRedirectURIs
-            parameters:
-                - name: projectId
-                  in: query
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ListProjectRedirectURIsResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-        post:
-            tags:
-                - BackendService
-            operationId: BackendService_CreateProjectRedirectURI
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/ProjectRedirectURI'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/CreateProjectRedirectURIResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-    /backend/v1/project-redirect-uris/{id}:
-        get:
-            tags:
-                - BackendService
-            operationId: BackendService_GetProjectRedirectURI
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/GetProjectRedirectURIResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-        delete:
-            tags:
-                - BackendService
-            operationId: BackendService_DeleteProjectRedirectURI
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/DeleteProjectRedirectURIResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-        patch:
-            tags:
-                - BackendService
-            operationId: BackendService_UpdateProjectRedirectURI
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                    type: string
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/ProjectRedirectURI'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/UpdateProjectRedirectURIResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
     /backend/v1/saml-connections:
         get:
             tags:
@@ -723,11 +601,6 @@ components:
             properties:
                 organization:
                     $ref: '#/components/schemas/Organization'
-        CreateProjectRedirectURIResponse:
-            type: object
-            properties:
-                projectRedirectUri:
-                    $ref: '#/components/schemas/ProjectRedirectURI'
         CreateSAMLConnectionResponse:
             type: object
             properties:
@@ -739,9 +612,6 @@ components:
                 scimApiKey:
                     $ref: '#/components/schemas/SCIMAPIKey'
         DeleteOrganizationResponse:
-            type: object
-            properties: {}
-        DeleteProjectRedirectURIResponse:
             type: object
             properties: {}
         DeleteSAMLConnectionResponse:
@@ -760,11 +630,6 @@ components:
             properties:
                 organization:
                     $ref: '#/components/schemas/Organization'
-        GetProjectRedirectURIResponse:
-            type: object
-            properties:
-                projectRedirectUri:
-                    $ref: '#/components/schemas/ProjectRedirectURI'
         GetProjectResponse:
             type: object
             properties:
@@ -833,13 +698,6 @@ components:
                         $ref: '#/components/schemas/Organization'
                 nextPageToken:
                     type: string
-        ListProjectRedirectURIsResponse:
-            type: object
-            properties:
-                projectRedirectUris:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/ProjectRedirectURI'
         ListSAMLConnectionsResponse:
             type: object
             properties:
@@ -938,17 +796,6 @@ components:
                     type: boolean
                 authDomain:
                     type: string
-        ProjectRedirectURI:
-            type: object
-            properties:
-                id:
-                    type: string
-                projectId:
-                    type: string
-                uri:
-                    type: string
-                isPrimary:
-                    type: boolean
         RevokeSCIMAPIKeyResponse:
             type: object
             properties:
@@ -1028,11 +875,6 @@ components:
             properties:
                 organization:
                     $ref: '#/components/schemas/Organization'
-        UpdateProjectRedirectURIResponse:
-            type: object
-            properties:
-                projectRedirectUri:
-                    $ref: '#/components/schemas/ProjectRedirectURI'
         UpdateProjectResponse:
             type: object
             properties:
