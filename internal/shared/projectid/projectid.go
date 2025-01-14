@@ -27,7 +27,7 @@ func NewSniffer(authAppsRootDomain string, store *store.Store) *Sniffer {
 func (p *Sniffer) GetProjectID(hostname string) (*uuid.UUID, error) {
 	ctx := context.Background()
 
-	projectSubdomainRegexp := regexp.MustCompile(fmt.Sprintf(`([a-zA-Z0-9_-]+)\.%s$`, regexp.QuoteMeta(p.authAppsRootDomain)))
+	projectSubdomainRegexp := regexp.MustCompile(fmt.Sprintf(`(project-[a-zA-Z0-9]+)\.%s$`, regexp.QuoteMeta(p.authAppsRootDomain)))
 
 	var projectID *uuid.UUID
 	matches := projectSubdomainRegexp.FindStringSubmatch(hostname)
