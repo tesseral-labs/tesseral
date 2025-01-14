@@ -2,9 +2,11 @@ package store
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/openauth/openauth/internal/emailaddr"
 	"github.com/openauth/openauth/internal/intermediate/authn"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
@@ -85,7 +87,12 @@ func (s *Store) ListOrganizations(
 
 	organizations := []*intermediatev1.Organization{}
 	for _, organization := range qOrganizationRecords {
-		organizations = append(organizations, parseOrganization(organization, qProject))
+		qSamlConnection, err := q.GetOrganizationPrimarySAMLConnection(ctx, organization.ID)
+		if err != nil && !errors.Is(err, pgx.ErrNoRows) {
+			return nil, fmt.Errorf("get organization primary saml connection: %w", err)
+		}
+
+		organizations = append(organizations, parseOrganization(organization, qProject, &qSamlConnection))
 	}
 
 	var nextPageToken string
@@ -109,7 +116,7 @@ func (s *Store) ListSAMLOrganizations(ctx context.Context, req *intermediatev1.L
 
 	domain, err := emailaddr.Parse(req.Email)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("parse email: %w", err)
 	}
 
 	qOrganizations, err := q.ListSAMLOrganizations(ctx, queries.ListSAMLOrganizationsParams{
@@ -117,7 +124,7 @@ func (s *Store) ListSAMLOrganizations(ctx context.Context, req *intermediatev1.L
 		Domain:    domain,
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("list saml organizations: %w", err)
 	}
 
 	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
@@ -127,7 +134,12 @@ func (s *Store) ListSAMLOrganizations(ctx context.Context, req *intermediatev1.L
 
 	organizations := []*intermediatev1.Organization{}
 	for _, organization := range qOrganizations {
-		organizations = append(organizations, parseOrganization(organization, qProject))
+		qSamlConnection, err := q.GetOrganizationPrimarySAMLConnection(ctx, organization.ID)
+		if err != nil {
+			return nil, fmt.Errorf("get organization primary saml connection: %w", err)
+		}
+
+		organizations = append(organizations, parseOrganization(organization, qProject, &qSamlConnection))
 	}
 
 	return &intermediatev1.ListSAMLOrganizationsResponse{
@@ -135,10 +147,11 @@ func (s *Store) ListSAMLOrganizations(ctx context.Context, req *intermediatev1.L
 	}, nil
 }
 
-func parseOrganization(organization queries.Organization, project queries.Project) *intermediatev1.Organization {
+func parseOrganization(organization queries.Organization, project queries.Project, samlConnection *queries.SamlConnection) *intermediatev1.Organization {
 	logInWithGoogleEnabled := project.LogInWithGoogleEnabled && (!organization.OverrideLogInMethods || organization.OverrideLogInWithGoogleEnabled != nil && *organization.OverrideLogInWithGoogleEnabled)
 	logInWithMicrosoftEnabled := project.LogInWithMicrosoftEnabled && (!organization.OverrideLogInMethods || organization.OverrideLogInWithMicrosoftEnabled != nil && *organization.OverrideLogInWithMicrosoftEnabled)
 	logInWithPasswordEnabled := project.LogInWithPasswordEnabled && (!organization.OverrideLogInMethods || organization.OverrideLogInWithPasswordEnabled != nil && *organization.OverrideLogInWithPasswordEnabled)
+	samlConnectionID := idformat.SAMLConnection.Format(samlConnection.ID)
 
 	return &intermediatev1.Organization{
 		Id:                        idformat.Organization.Format(organization.ID),
@@ -146,5 +159,6 @@ func parseOrganization(organization queries.Organization, project queries.Projec
 		LogInWithGoogleEnabled:    logInWithGoogleEnabled,
 		LogInWithMicrosoftEnabled: logInWithMicrosoftEnabled,
 		LogInWithPasswordEnabled:  logInWithPasswordEnabled,
+		PrimarySamlConnectionId:   &samlConnectionID,
 	}
 }

@@ -502,6 +502,33 @@ func (q *Queries) GetIntermediateSessionSigningKeyByProjectID(ctx context.Contex
 	return i, err
 }
 
+const getOrganizationPrimarySAMLConnection = `-- name: GetOrganizationPrimarySAMLConnection :one
+SELECT
+    id, organization_id, create_time, is_primary, idp_redirect_url, idp_x509_certificate, idp_entity_id, update_time
+FROM
+    saml_connections
+WHERE
+    organization_id = $1
+    AND is_primary = TRUE
+LIMIT 1
+`
+
+func (q *Queries) GetOrganizationPrimarySAMLConnection(ctx context.Context, organizationID uuid.UUID) (SamlConnection, error) {
+	row := q.db.QueryRow(ctx, getOrganizationPrimarySAMLConnection, organizationID)
+	var i SamlConnection
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.CreateTime,
+		&i.IsPrimary,
+		&i.IdpRedirectUrl,
+		&i.IdpX509Certificate,
+		&i.IdpEntityID,
+		&i.UpdateTime,
+	)
+	return i, err
+}
+
 const getOrganizationUserByEmail = `-- name: GetOrganizationUserByEmail :one
 SELECT
     id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner
