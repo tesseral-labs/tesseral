@@ -3,7 +3,7 @@ package projectid
 import (
 	"context"
 	"fmt"
-	"strings"
+	"log/slog"
 
 	"github.com/google/uuid"
 	"github.com/openauth/openauth/internal/shared/store"
@@ -24,8 +24,10 @@ func NewSniffer(authAppsRootDomain string, store *store.Store) *Sniffer {
 func (p *Sniffer) GetProjectID(hostname string) (*uuid.UUID, error) {
 	ctx := context.Background()
 
+	slog.Info("GetProjectID", "hostname", hostname)
+
 	// get the project ID by the custom domain
-	projectID, err := p.store.GetProjectIDByDomain(ctx, strings.Replace(hostname, "-", "_", 1))
+	projectID, err := p.store.GetProjectIDByDomain(ctx, hostname)
 	if err != nil {
 		return nil, fmt.Errorf("get project id: %w", err)
 	}
