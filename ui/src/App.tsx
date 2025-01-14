@@ -7,8 +7,6 @@ import { TransportProvider } from '@connectrpc/connect-query'
 import { createConnectTransport } from '@connectrpc/connect-web'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
-import { API_URL, PROJECT_ID } from '@/config'
-
 import GoogleOAuthCallbackPage from '@/pages/GoogleOAuthCallbackPage'
 import LoginPage from '@/pages/LoginPage'
 import MicrosoftOAuthCallbackPage from '@/pages/MicrosoftOAuthCallbackPage'
@@ -21,16 +19,8 @@ const queryClient = new QueryClient()
 
 function useTransport(): Transport {
   return createConnectTransport({
-    baseUrl: `${API_URL}/api/internal/connect`,
+    baseUrl: `/api/internal/connect`,
     fetch: (input, init) => fetch(input, { ...init, credentials: 'include' }),
-    interceptors: [
-      (next) => async (req) => {
-        // TODO: When we figure out how to get the project ID from the server, we should remove this logic.
-        req.header.set('X-TODO-OpenAuth-Project-ID', PROJECT_ID)
-
-        return next(req)
-      },
-    ],
   })
 }
 
