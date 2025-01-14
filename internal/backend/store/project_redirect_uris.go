@@ -12,6 +12,10 @@ import (
 )
 
 func (s *Store) CreateProjectRedirectURI(ctx context.Context, req *backendv1.CreateProjectRedirectURIRequest) (*backendv1.CreateProjectRedirectURIResponse, error) {
+	if err := validateIsDogfoodSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	}
+
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -39,6 +43,10 @@ func (s *Store) CreateProjectRedirectURI(ctx context.Context, req *backendv1.Cre
 }
 
 func (s *Store) DeleteProjectRedirectURI(ctx context.Context, req *backendv1.DeleteProjectRedirectURIRequest) (*backendv1.DeleteProjectRedirectURIResponse, error) {
+	if err := validateIsDogfoodSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	}
+
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -66,6 +74,10 @@ func (s *Store) DeleteProjectRedirectURI(ctx context.Context, req *backendv1.Del
 }
 
 func (s *Store) GetProjectRedirectURI(ctx context.Context, req *backendv1.GetProjectRedirectURIRequest) (*backendv1.GetProjectRedirectURIResponse, error) {
+	if err := validateIsDogfoodSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	}
+
 	_, q, _, _, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -90,6 +102,10 @@ func (s *Store) GetProjectRedirectURI(ctx context.Context, req *backendv1.GetPro
 }
 
 func (s *Store) ListProjectRedirectURIs(ctx context.Context, req *backendv1.ListProjectRedirectURIsRequest) (*backendv1.ListProjectRedirectURIsResponse, error) {
+	if err := validateIsDogfoodSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	}
+
 	_, q, _, _, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -111,6 +127,10 @@ func (s *Store) ListProjectRedirectURIs(ctx context.Context, req *backendv1.List
 }
 
 func (s *Store) UpdateProjectRedirectURI(ctx context.Context, req *backendv1.UpdateProjectRedirectURIRequest) (*backendv1.UpdateProjectRedirectURIResponse, error) {
+	if err := validateIsDogfoodSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	}
+
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err

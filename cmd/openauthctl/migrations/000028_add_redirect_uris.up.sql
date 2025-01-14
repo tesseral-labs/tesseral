@@ -10,3 +10,6 @@ create table project_redirect_uris (
 create unique index unique_primary_per_project
 on project_redirect_uris(project_id)
 where is_primary = true;
+
+create unique index unique_uri_per_project
+on project_redirect_uris(project_id, uri);
