@@ -113,7 +113,7 @@ func main() {
 		AppAuthRootDomain: config.AuthAppsRootDomain,
 		DB:                db,
 	})
-	projectIdSniffer := projectid.NewProjectIDSniffer(config.AuthAppsRootDomain, sharedstore_)
+	Sniffer := projectid.NewSniffer(config.AuthAppsRootDomain, sharedstore_)
 
 	// Register the backend service
 	backendStore := backendstore.New(backendstore.NewStoreParams{
@@ -154,7 +154,7 @@ func main() {
 			Store: frontendStore,
 		},
 		connect.WithInterceptors(
-			frontendinterceptor.New(frontendStore, projectIdSniffer, config.AuthAppsRootDomain),
+			frontendinterceptor.New(frontendStore, Sniffer, config.AuthAppsRootDomain),
 		),
 	)
 	frontend := vanguard.NewService(frontendConnectPath, frontendConnectHandler)
@@ -181,7 +181,7 @@ func main() {
 			Store: intermediateStore,
 		},
 		connect.WithInterceptors(
-			intermediateinterceptor.New(intermediateStore, projectIdSniffer, config.AuthAppsRootDomain),
+			intermediateinterceptor.New(intermediateStore, Sniffer, config.AuthAppsRootDomain),
 		),
 	)
 	intermediate := vanguard.NewService(intermediateConnectPath, intermediateConnectHandler)
@@ -204,7 +204,7 @@ func main() {
 		Store: samlStore,
 	}
 	samlServiceHandler := samlService.Handler()
-	samlServiceHandler = samlinterceptor.New(projectIdSniffer, samlServiceHandler)
+	samlServiceHandler = samlinterceptor.New(Sniffer, samlServiceHandler)
 
 	scimStore := scimstore.New(scimstore.NewStoreParams{
 		DB: db,
@@ -212,7 +212,7 @@ func main() {
 	scimService := scimservice.Service{
 		Store: scimStore,
 	}
-	scimServiceHandler := scimService.Handler(projectIdSniffer)
+	scimServiceHandler := scimService.Handler(Sniffer)
 
 	connectMux := http.NewServeMux()
 	connectMux.Handle(backendConnectPath, backendConnectHandler)

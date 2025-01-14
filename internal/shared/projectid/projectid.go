@@ -13,25 +13,25 @@ import (
 
 var errProjectIDNotFound = fmt.Errorf("project ID not found")
 
-type ProjectIDSniffer struct {
+type Sniffer struct {
 	authAppsRootDomain string
 	store              *store.Store
 }
 
-func NewProjectIDSniffer(authAppsRootDomain string, store *store.Store) *ProjectIDSniffer {
-	return &ProjectIDSniffer{
+func NewSniffer(authAppsRootDomain string, store *store.Store) *Sniffer {
+	return &Sniffer{
 		authAppsRootDomain: authAppsRootDomain,
 		store:              store,
 	}
 }
 
-func (p *ProjectIDSniffer) GetProjectIDFromDomain(domain string) (*uuid.UUID, error) {
+func (p *Sniffer) GetProjectID(hostname string) (*uuid.UUID, error) {
 	ctx := context.Background()
 
 	projectSubdomainRegexp := regexp.MustCompile(fmt.Sprintf(`([a-zA-Z0-9_-]+)\.%s$`, regexp.QuoteMeta(p.authAppsRootDomain)))
 
 	var projectID *uuid.UUID
-	matches := projectSubdomainRegexp.FindStringSubmatch(domain)
+	matches := projectSubdomainRegexp.FindStringSubmatch(hostname)
 	if len(matches) > 1 && strings.HasPrefix(matches[len(matches)-1], "project_") {
 		// parse the project ID from the host subdomain
 		parsedProjectID, err := idformat.Project.Parse(matches[len(matches)-1])
@@ -44,7 +44,7 @@ func (p *ProjectIDSniffer) GetProjectIDFromDomain(domain string) (*uuid.UUID, er
 		projectID = &projectIDUUID
 	} else {
 		// get the project ID by the custom domain
-		foundProjectID, err := p.store.GetProjectIDByDomain(ctx, domain)
+		foundProjectID, err := p.store.GetProjectIDByDomain(ctx, hostname)
 		if err != nil {
 			return nil, err
 		}

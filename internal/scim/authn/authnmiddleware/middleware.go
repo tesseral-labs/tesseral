@@ -10,12 +10,12 @@ import (
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
-func New(s *store.Store, p *projectid.ProjectIDSniffer, h http.Handler) http.Handler {
+func New(s *store.Store, p *projectid.Sniffer, h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 
 		// Project ID sniffing
-		projectID, err := p.GetProjectIDFromDomain(r.Host)
+		projectID, err := p.GetProjectID(r.Host)
 		if err != nil {
 			w.WriteHeader(http.StatusNotFound)
 			return

@@ -22,7 +22,7 @@ type Service struct {
 	Store *store.Store
 }
 
-func (s *Service) Handler(p *projectid.ProjectIDSniffer) http.Handler {
+func (s *Service) Handler(p *projectid.Sniffer) http.Handler {
 	mux := http.NewServeMux()
 
 	mux.Handle("GET /scim/v1/Users", withErr(s.listUsers))

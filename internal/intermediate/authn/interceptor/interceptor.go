@@ -19,10 +19,10 @@ var skipRPCs = []string{
 	"/openauth.intermediate.v1.IntermediateService/GetGoogleOAuthRedirectURL",
 }
 
-func New(s *store.Store, p *projectid.ProjectIDSniffer, authAppsRootDomain string) connect.UnaryInterceptorFunc {
+func New(s *store.Store, p *projectid.Sniffer, authAppsRootDomain string) connect.UnaryInterceptorFunc {
 	return func(next connect.UnaryFunc) connect.UnaryFunc {
 		return func(ctx context.Context, req connect.AnyRequest) (connect.AnyResponse, error) {
-			projectID, err := p.GetProjectIDFromDomain(req.Header().Get("Host"))
+			projectID, err := p.GetProjectID(req.Header().Get("Host"))
 			if err != nil {
 				return nil, connect.NewError(connect.CodeNotFound, err)
 			}
