@@ -2,7 +2,6 @@ package interceptor
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"connectrpc.com/connect"
@@ -13,8 +12,6 @@ import (
 	"github.com/openauth/openauth/internal/store/idformat"
 	"github.com/openauth/openauth/internal/ujwt"
 )
-
-var errInvalidProjectID = fmt.Errorf("invalid project ID")
 
 var skipRPCs = []string{
 	"/openauth.frontend.v1.FrontendService/GetAccessToken",

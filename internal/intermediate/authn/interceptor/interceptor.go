@@ -3,7 +3,6 @@ package intermediateinterceptor
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	"connectrpc.com/connect"
 	"github.com/openauth/openauth/internal/cookies"
@@ -13,7 +12,6 @@ import (
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
-var errInvalidProjectID = fmt.Errorf("invalid project ID")
 var ErrAuthorizationHeaderRequired = errors.New("authorization header is required")
 
 var skipRPCs = []string{

@@ -1,14 +1,11 @@
 package interceptor
 
 import (
-	"errors"
 	"net/http"
 
 	"github.com/openauth/openauth/internal/saml/authn"
 	"github.com/openauth/openauth/internal/shared/projectid"
 )
-
-var ErrProjectIDRequired = errors.New("project ID is required")
 
 func New(p *projectid.ProjectIDSniffer, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
