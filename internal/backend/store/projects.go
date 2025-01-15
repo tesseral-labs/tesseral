@@ -11,7 +11,7 @@ import (
 	"github.com/openauth/openauth/internal/backend/authn"
 	backendv1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
 	"github.com/openauth/openauth/internal/backend/store/queries"
-	"github.com/openauth/openauth/internal/shared/apierror"
+	"github.com/openauth/openauth/internal/common/apierror"
 	"github.com/openauth/openauth/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )

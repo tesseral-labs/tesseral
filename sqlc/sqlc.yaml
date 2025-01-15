@@ -92,4 +92,4 @@ sql:
     gen:
       go:
         <<: *go
-        out: "../internal/shared/store/queries"
+        out: "../internal/common/store/queries"

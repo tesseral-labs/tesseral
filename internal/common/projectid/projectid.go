@@ -6,7 +6,7 @@ import (
 	"log/slog"
 
 	"github.com/google/uuid"
-	"github.com/openauth/openauth/internal/shared/store"
+	"github.com/openauth/openauth/internal/common/store"
 )
 
 type Sniffer struct {
