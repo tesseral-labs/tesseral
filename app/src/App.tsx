@@ -17,7 +17,7 @@ import { ViewProjectPage } from '@/pages/project/ViewProjectPage'
 import { OrganizationUsersTab } from '@/pages/organizations/OrganizationUsersTab'
 import { OrganizationSAMLConnectionsTab } from '@/pages/organizations/OrganizationSAMLConnectionsTab'
 import { OrganizationSCIMAPIKeysTab } from '@/pages/organizations/OrganizationSCIMAPIKeysTab'
-import { OrganizationSettingsTab } from '@/pages/organizations/OrganizationSettingsTab'
+import { OrganizationDetailsTab } from '@/pages/organizations/OrganizationDetailsTab'
 
 const queryClient = new QueryClient()
 
@@ -63,7 +63,7 @@ function AppWithinQueryClient() {
               path="organizations/:organizationId"
               element={<ViewOrganizationPage />}
             >
-              <Route path="" element={<OrganizationUsersTab />} />
+              <Route path="" element={<OrganizationDetailsTab />} />
               <Route path="users" element={<OrganizationUsersTab />} />
               <Route
                 path="saml-connections"
@@ -73,7 +73,6 @@ function AppWithinQueryClient() {
                 path="scim-api-keys"
                 element={<OrganizationSCIMAPIKeysTab />}
               />
-              <Route path="settings" element={<OrganizationSettingsTab />} />
             </Route>
 
             <Route
