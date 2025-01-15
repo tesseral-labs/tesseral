@@ -1,6 +1,8 @@
 import { useQuery } from '@connectrpc/connect-query'
 import {
   getOrganization,
+  listSAMLConnections,
+  listSCIMAPIKeys,
   listUsers,
 } from '@/gen/openauth/backend/v1/backend-BackendService_connectquery'
 import { useParams } from 'react-router'
@@ -25,6 +27,12 @@ export function ViewOrganizationPage() {
   const { data: listUsersResponse } = useQuery(listUsers, {
     organizationId,
   })
+  const { data: listSAMLConnectionsResponse } = useQuery(listSAMLConnections, {
+    organizationId,
+  })
+  const { data: listSCIMAPIKeysResponse } = useQuery(listSCIMAPIKeys, {
+    organizationId,
+  })
 
   return (
     <div>
@@ -32,7 +40,69 @@ export function ViewOrganizationPage() {
         {getOrganizationResponse?.organization?.displayName}
       </h1>
 
-      <h2 className="font-display text-xl">Users</h2>
+      <div>ID: {organizationId}</div>
+
+      {getOrganizationResponse?.organization && (
+        <div>
+          <div>
+            Created At:
+            {DateTime.fromJSDate(
+              timestampDate(getOrganizationResponse.organization.createTime!),
+            ).toRelative()}
+          </div>
+          <div>
+            Updated At:
+            {DateTime.fromJSDate(
+              timestampDate(getOrganizationResponse.organization.updateTime!),
+            ).toRelative()}
+          </div>
+          <div>
+            Override Log in Methods?
+            {getOrganizationResponse.organization.overrideLogInMethods
+              ? 'Yes'
+              : 'No'}
+          </div>
+          <div>
+            Log in with Google?
+            {getOrganizationResponse.organization.logInWithGoogleEnabled
+              ? 'Yes'
+              : 'No'}
+          </div>
+          <div>
+            Override Log in Microsoft?
+            {getOrganizationResponse.organization.logInWithMicrosoftEnabled
+              ? 'Yes'
+              : 'No'}
+          </div>
+          <div>
+            Override Log in Password?
+            {getOrganizationResponse.organization.logInWithPasswordEnabled
+              ? 'Yes'
+              : 'No'}
+          </div>
+
+          <div>
+            Google Hosted Domain:
+            {getOrganizationResponse.organization.googleHostedDomain}
+          </div>
+          <div>
+            Microsoft Tenant ID:
+            {getOrganizationResponse.organization.microsoftTenantId}
+          </div>
+
+          <div>
+            SAML Enabled?
+            {getOrganizationResponse.organization.samlEnabled}
+          </div>
+
+          <div>
+            SCIM Enabled?
+            {getOrganizationResponse.organization.scimEnabled}
+          </div>
+        </div>
+      )}
+
+      <h2 className="font-semibold text-xl">Users</h2>
       <Table className="mt-4">
         <TableHeader>
           <TableRow>
@@ -59,6 +129,75 @@ export function ViewOrganizationPage() {
               <TableCell>
                 {DateTime.fromJSDate(
                   timestampDate(user.updateTime!),
+                ).toRelative()}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+
+      <h2 className="font-semibold text-xl">SAML Connections</h2>
+      <Table className="mt-4">
+        <TableHeader>
+          <TableRow>
+            <TableHead>ID</TableHead>
+            <TableHead>Created At</TableHead>
+            <TableHead>Updated At</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {listSAMLConnectionsResponse?.samlConnections?.map(
+            (samlConnection) => (
+              <TableRow key={samlConnection.id}>
+                <TableCell className="font-medium">
+                  <Link
+                    to={`/organizations/${organizationId}/saml-connections/${samlConnection.id}`}
+                  >
+                    {samlConnection.id}
+                  </Link>
+                </TableCell>
+                <TableCell>
+                  {DateTime.fromJSDate(
+                    timestampDate(samlConnection.createTime!),
+                  ).toRelative()}
+                </TableCell>
+                <TableCell>
+                  {DateTime.fromJSDate(
+                    timestampDate(samlConnection.updateTime!),
+                  ).toRelative()}
+                </TableCell>
+              </TableRow>
+            ),
+          )}
+        </TableBody>
+      </Table>
+      <h2 className="font-semibold text-xl">SCIM API Keys</h2>
+      <Table className="mt-4">
+        <TableHeader>
+          <TableRow>
+            <TableHead>ID</TableHead>
+            <TableHead>Created At</TableHead>
+            <TableHead>Updated At</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {listSCIMAPIKeysResponse?.scimApiKeys?.map((scimAPIKey) => (
+            <TableRow key={scimAPIKey.id}>
+              <TableCell className="font-medium">
+                <Link
+                  to={`/organizations/${organizationId}/scim-api-keys/${scimAPIKey.id}`}
+                >
+                  {scimAPIKey.id}
+                </Link>
+              </TableCell>
+              <TableCell>
+                {DateTime.fromJSDate(
+                  timestampDate(scimAPIKey.createTime!),
+                ).toRelative()}
+              </TableCell>
+              <TableCell>
+                {DateTime.fromJSDate(
+                  timestampDate(scimAPIKey.updateTime!),
                 ).toRelative()}
               </TableCell>
             </TableRow>
