@@ -11,7 +11,9 @@ import (
 	"strconv"
 	"time"
 
+	"connectrpc.com/connect"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/openauth/openauth/internal/intermediate/authn"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
@@ -64,16 +66,20 @@ func (s *Store) CompleteEmailVerificationChallenge(ctx context.Context, req *int
 	// Get the email verification challenge from the request
 	challengeID, err := idformat.EmailVerificationChallenge.Parse(req.EmailVerificationChallengeId)
 	if err != nil {
-		return nil, fmt.Errorf("parse email verification challenge id: %w", err)
+		return nil, connect.NewError(connect.CodeInvalidArgument, ErrEmailVerficationChallengeNotFound)
 	}
 	challenge, err := q.GetEmailVerificationChallengeByID(ctx, challengeID)
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, connect.NewError(connect.CodeNotFound, ErrEmailVerficationChallengeNotFound)
+		}
+
 		return nil, fmt.Errorf("get email verification challenge by id: %w", err)
 	}
 
 	// Enforce the intermediate session
 	if challenge.IntermediateSessionID.String() != authn.IntermediateSessionID(ctx).String() {
-		return nil, fmt.Errorf("match intermediate session IDs: %w", ErrEmailVerificationChallengeMismatch)
+		return nil, connect.NewError(connect.CodeFailedPrecondition, ErrEmailVerificationChallengeMismatch)
 	}
 
 	// Get the intermediate session
@@ -103,7 +109,7 @@ func (s *Store) CompleteEmailVerificationChallenge(ctx context.Context, req *int
 			return nil, fmt.Errorf("commit after verify failure: %w", err)
 		}
 
-		return nil, fmt.Errorf("verify challenge: %w", err)
+		return nil, connect.NewError(connect.CodeFailedPrecondition, err)
 	}
 
 	// Complete the email verification challenge

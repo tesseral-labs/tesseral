@@ -7,7 +7,9 @@ import (
 	"fmt"
 	"time"
 
+	"connectrpc.com/connect"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/openauth/openauth/internal/crypto/bcrypt"
 	"github.com/openauth/openauth/internal/intermediate/authn"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
@@ -240,17 +242,21 @@ func (s *Store) VerifyIntermediateSessionEmail(
 	// Get the intermediate session so we can perform some checks
 	existingIntermediateSession, err := q.GetIntermediateSessionByID(*ctx, sessionId)
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("get intermediate session by id: %w", err))
+		}
+
 		return nil, fmt.Errorf("get intermediate session by id: %w", err)
 	}
 
 	// Check if the intermediate session has been revoked
 	if existingIntermediateSession.Revoked {
-		return nil, fmt.Errorf("verify intermediate session revoked: %w", ErrIntermediateSessionRevoked)
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("verify intermediate session revoked: %w", ErrIntermediateSessionRevoked))
 	}
 
 	// Check if the intermediate session has expired
 	if existingIntermediateSession.ExpireTime.Before(time.Now()) {
-		return nil, fmt.Errorf("verify intermediate session expired: %w", ErrIntermediateSessionExpired)
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("verify intermediate session expired: %w", ErrIntermediateSessionExpired))
 	}
 
 	panic("unimplemented")

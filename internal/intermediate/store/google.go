@@ -12,6 +12,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/openauth/openauth/internal/googleoauth"
 	"github.com/openauth/openauth/internal/intermediate/authn"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
@@ -28,6 +29,10 @@ func (s *Store) GetGoogleOAuthRedirectURL(ctx context.Context, req *intermediate
 
 	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("get project by id: %v", err))
+		}
+
 		return nil, fmt.Errorf("get project by id: %v", err)
 	}
 
@@ -113,7 +118,7 @@ func (s *Store) RedeemGoogleOAuthCode(ctx context.Context, req *intermediatev1.R
 		Code:                    req.Code,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("redeem google oauth code: %v", err)
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("redeem google oauth code: %v", err))
 	}
 
 	// todo what if the intermediate session already has an email
@@ -144,11 +149,19 @@ func (s *Store) getProjectAndIntermediateSession(ctx context.Context) (*queries.
 
 	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("get project by id: %v", err))
+		}
+
 		return nil, nil, fmt.Errorf("get project by id: %v", err)
 	}
 
 	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("get intermediate session by id: %v", err))
+		}
+
 		return nil, nil, fmt.Errorf("get intermediate session by id: %v", err)
 	}
 

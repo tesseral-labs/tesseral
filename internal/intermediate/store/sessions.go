@@ -4,12 +4,15 @@ import (
 	"context"
 	"crypto/ecdsa"
 	"crypto/sha256"
+	"errors"
 	"fmt"
 	"time"
 
+	"connectrpc.com/connect"
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	openauthecdsa "github.com/openauth/openauth/internal/crypto/ecdsa"
 	"github.com/openauth/openauth/internal/intermediate/authn"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
@@ -134,7 +137,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 
 	organizationID, err := idformat.Organization.Parse(req.OrganizationId)
 	if err != nil {
-		return nil, fmt.Errorf("parse organization id: %w", err)
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("parse organization id: %w", err))
 	}
 
 	qOrganization, err := q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
@@ -142,6 +145,10 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		ProjectID: projectID,
 	})
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("get project organization by id: %w", err))
+		}
+
 		return nil, fmt.Errorf("get project organization by id: %w", err)
 	}
 
@@ -157,6 +164,10 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 			MicrosoftUserID: &intermediateSession.MicrosoftUserId,
 		})
 		if err != nil {
+			if errors.Is(err, pgx.ErrNoRows) {
+				return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("get organization user by microsoft user id: %w", err))
+			}
+
 			return nil, fmt.Errorf("get organization user by microsoft user id: %w", err)
 		}
 	} else if intermediateSession.GoogleUserId != "" {
@@ -165,6 +176,10 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 			GoogleUserID:   &intermediateSession.GoogleUserId,
 		})
 		if err != nil {
+			if errors.Is(err, pgx.ErrNoRows) {
+				return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("get organization user by google user id: %w", err))
+			}
+
 			return nil, fmt.Errorf("get organization user by google user id: %w", err)
 		}
 	} else if intermediateSession.Email != "" {
@@ -173,6 +188,10 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 			Email:          intermediateSession.Email,
 		})
 		if err != nil {
+			if errors.Is(err, pgx.ErrNoRows) {
+				return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("get organization user by email: %w", err))
+			}
+
 			return nil, fmt.Errorf("get organization user by email: %w", err)
 		}
 
@@ -200,11 +219,19 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 
 	qProject, err := q.GetProjectByID(ctx, projectID)
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("get project by id: %w", err))
+		}
+
 		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 
 	sessionSigningKeyID, privateKey, err := s.getSessionSigningKey(ctx, q, projectID)
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("get session signing key: %w", err))
+		}
+
 		return nil, fmt.Errorf("get session signing key: %w", err)
 	}
 
@@ -244,6 +271,10 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 func (s *Store) getSessionSigningKey(ctx context.Context, q *queries.Queries, projectID uuid.UUID) (*uuid.UUID, *ecdsa.PrivateKey, error) {
 	sessionSigningKey, err := q.GetCurrentSessionKeyByProjectID(ctx, projectID)
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, nil, fmt.Errorf("get current session key by project id: %w", err)
+		}
+
 		return nil, nil, fmt.Errorf("get current session key by project id: %w", err)
 	}
 
