@@ -20,7 +20,7 @@ func (s *Store) GetProjectIDByDomain(ctx context.Context, domain string) (*uuid.
 	qProjectID, err := q.GetProjectIDByCustomAuthDomain(ctx, &domain)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, apierror.NewNotFoundError("project id not found", fmt.Errorf("project id not found"))
+			return nil, apierror.NewNotFoundError("project id not found", fmt.Errorf("project id not found: %w", err))
 		}
 
 		return nil, fmt.Errorf("get project id by custom auth domain: %w", err)
