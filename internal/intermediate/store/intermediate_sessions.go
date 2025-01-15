@@ -93,6 +93,10 @@ func (s *Store) VerifyPassword(ctx context.Context, req *intermediatev1.VerifyPa
 		return nil, fmt.Errorf("get user by organization id and factors: %w", err)
 	}
 
+	if qUser.PasswordBcrypt == nil {
+		return nil, apierror.NewFailedPreconditionError("password not set", fmt.Errorf("password not set"))
+	}
+
 	// Check password is valid
 	err = bcrypt.CompareBcryptHash(*qUser.PasswordBcrypt, req.Password)
 	if err != nil {
