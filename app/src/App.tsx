@@ -14,6 +14,10 @@ import { ViewOrganizationPage } from '@/pages/organizations/ViewOrganizationPage
 import { ViewUserPage } from '@/pages/users/ViewUserPage'
 import { ListProjectAPIKeysPage } from '@/pages/project-api-keys/ListProjectAPIKeysPage'
 import { ViewProjectPage } from '@/pages/project/ViewProjectPage'
+import { OrganizationUsersTab } from '@/pages/organizations/OrganizationUsersTab'
+import { OrganizationSAMLConnectionsTab } from '@/pages/organizations/OrganizationSAMLConnectionsTab'
+import { OrganizationSCIMAPIKeysTab } from '@/pages/organizations/OrganizationSCIMAPIKeysTab'
+import { OrganizationSettingsTab } from '@/pages/organizations/OrganizationSettingsTab'
 
 const queryClient = new QueryClient()
 
@@ -46,21 +50,34 @@ function AppWithinQueryClient() {
       <BrowserRouter>
         <Routes>
           <Route path="" element={<Container />}>
-            <Route path="/" element={<ViewProjectPage />} />
+            <Route path="" element={<ViewProjectPage />} />
 
             <Route
-              path="/project-api-keys"
+              path="project-api-keys"
               element={<ListProjectAPIKeysPage />}
             />
 
-            <Route path="/organizations" element={<ListOrganizationsPage />} />
-            <Route
-              path="/organizations/:organizationId"
-              element={<ViewOrganizationPage />}
-            />
+            <Route path="organizations" element={<ListOrganizationsPage />} />
 
             <Route
-              path="/organizations/:organizationId/users/:userId"
+              path="organizations/:organizationId"
+              element={<ViewOrganizationPage />}
+            >
+              <Route path="" element={<OrganizationUsersTab />} />
+              <Route path="users" element={<OrganizationUsersTab />} />
+              <Route
+                path="saml-connections"
+                element={<OrganizationSAMLConnectionsTab />}
+              />
+              <Route
+                path="scim-api-keys"
+                element={<OrganizationSCIMAPIKeysTab />}
+              />
+              <Route path="settings" element={<OrganizationSettingsTab />} />
+            </Route>
+
+            <Route
+              path="organizations/:organizationId/users/:userId"
               element={<ViewUserPage />}
             />
           </Route>

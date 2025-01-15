@@ -5,7 +5,7 @@ import {
   listSCIMAPIKeys,
   listUsers,
 } from '@/gen/openauth/backend/v1/backend-BackendService_connectquery'
-import { useParams } from 'react-router'
+import { Outlet, useLocation, useParams } from 'react-router'
 import React from 'react'
 import {
   Table,
@@ -18,21 +18,35 @@ import {
 import { Link } from 'react-router-dom'
 import { DateTime } from 'luxon'
 import { timestampDate } from '@bufbuild/protobuf/wkt'
+import { ChevronDownIcon } from 'lucide-react'
+import { clsx } from 'clsx'
 
 export function ViewOrganizationPage() {
   const { organizationId } = useParams()
   const { data: getOrganizationResponse } = useQuery(getOrganization, {
     id: organizationId,
   })
-  const { data: listUsersResponse } = useQuery(listUsers, {
-    organizationId,
-  })
-  const { data: listSAMLConnectionsResponse } = useQuery(listSAMLConnections, {
-    organizationId,
-  })
-  const { data: listSCIMAPIKeysResponse } = useQuery(listSCIMAPIKeys, {
-    organizationId,
-  })
+  const { pathname } = useLocation()
+
+  const tabs = [
+    {
+      name: 'Users',
+      url: `/organizations/${organizationId}/users`,
+      alternativeUrl: `/organizations/${organizationId}`,
+    },
+    {
+      name: 'SAML Connections',
+      url: `/organizations/${organizationId}/saml-connections`,
+    },
+    {
+      name: 'SCIM API Keys',
+      url: `/organizations/${organizationId}/scim-api-keys`,
+    },
+    {
+      name: 'Organization Settings',
+      url: `/organizations/${organizationId}/settings`,
+    },
+  ]
 
   return (
     <div>
@@ -102,108 +116,28 @@ export function ViewOrganizationPage() {
         </div>
       )}
 
-      <h2 className="font-semibold text-xl">Users</h2>
-      <Table className="mt-4">
-        <TableHeader>
-          <TableRow>
-            <TableHead>Email</TableHead>
-            <TableHead>ID</TableHead>
-            <TableHead>Created At</TableHead>
-            <TableHead>Updated At</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {listUsersResponse?.users?.map((user) => (
-            <TableRow key={user.id}>
-              <TableCell className="font-medium">
-                <Link to={`/organizations/${organizationId}/users/${user.id}`}>
-                  {user.email}
-                </Link>
-              </TableCell>
-              <TableCell className="font-mono">{user.id}</TableCell>
-              <TableCell>
-                {DateTime.fromJSDate(
-                  timestampDate(user.createTime!),
-                ).toRelative()}
-              </TableCell>
-              <TableCell>
-                {DateTime.fromJSDate(
-                  timestampDate(user.updateTime!),
-                ).toRelative()}
-              </TableCell>
-            </TableRow>
+      <div className="border-b border-gray-200">
+        <nav aria-label="Tabs" className="-mb-px flex space-x-8">
+          {tabs.map((tab) => (
+            <Link
+              key={tab.name}
+              to={tab.url}
+              className={clsx(
+                pathname === tab.url || pathname === tab.alternativeUrl
+                  ? 'border-indigo-500 text-indigo-600'
+                  : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
+                'whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium',
+              )}
+            >
+              {tab.name}
+            </Link>
           ))}
-        </TableBody>
-      </Table>
+        </nav>
+      </div>
 
-      <h2 className="font-semibold text-xl">SAML Connections</h2>
-      <Table className="mt-4">
-        <TableHeader>
-          <TableRow>
-            <TableHead>ID</TableHead>
-            <TableHead>Created At</TableHead>
-            <TableHead>Updated At</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {listSAMLConnectionsResponse?.samlConnections?.map(
-            (samlConnection) => (
-              <TableRow key={samlConnection.id}>
-                <TableCell className="font-medium">
-                  <Link
-                    to={`/organizations/${organizationId}/saml-connections/${samlConnection.id}`}
-                  >
-                    {samlConnection.id}
-                  </Link>
-                </TableCell>
-                <TableCell>
-                  {DateTime.fromJSDate(
-                    timestampDate(samlConnection.createTime!),
-                  ).toRelative()}
-                </TableCell>
-                <TableCell>
-                  {DateTime.fromJSDate(
-                    timestampDate(samlConnection.updateTime!),
-                  ).toRelative()}
-                </TableCell>
-              </TableRow>
-            ),
-          )}
-        </TableBody>
-      </Table>
-      <h2 className="font-semibold text-xl">SCIM API Keys</h2>
-      <Table className="mt-4">
-        <TableHeader>
-          <TableRow>
-            <TableHead>ID</TableHead>
-            <TableHead>Created At</TableHead>
-            <TableHead>Updated At</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {listSCIMAPIKeysResponse?.scimApiKeys?.map((scimAPIKey) => (
-            <TableRow key={scimAPIKey.id}>
-              <TableCell className="font-medium">
-                <Link
-                  to={`/organizations/${organizationId}/scim-api-keys/${scimAPIKey.id}`}
-                >
-                  {scimAPIKey.id}
-                </Link>
-              </TableCell>
-              <TableCell>
-                {DateTime.fromJSDate(
-                  timestampDate(scimAPIKey.createTime!),
-                ).toRelative()}
-              </TableCell>
-              <TableCell>
-                {DateTime.fromJSDate(
-                  timestampDate(scimAPIKey.updateTime!),
-                ).toRelative()}
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <div className="mt-4">
+        <Outlet />
+      </div>
     </div>
   )
 }
