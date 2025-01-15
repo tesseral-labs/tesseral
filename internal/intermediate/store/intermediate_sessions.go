@@ -94,7 +94,7 @@ func (s *Store) VerifyPassword(ctx context.Context, req *intermediatev1.VerifyPa
 	}
 
 	if qUser.PasswordBcrypt == nil {
-		return nil, apierror.NewFailedPreconditionError("password not set", fmt.Errorf("password not set"))
+		return nil, apierror.NewFailedPreconditionError("user does not have a password configured", fmt.Errorf("password not set"))
 	}
 
 	// Check password is valid
