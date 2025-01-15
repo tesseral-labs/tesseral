@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 
-	"connectrpc.com/connect"
 	"github.com/jackc/pgx/v5"
 	"github.com/openauth/openauth/internal/errorcodes"
 	"github.com/openauth/openauth/internal/frontend/authn"
@@ -24,12 +23,12 @@ func (s *Store) GetOrganization(ctx context.Context, req *frontendv1.GetOrganiza
 
 	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
-		return nil, connect.NewError(connect.CodeFailedPrecondition, errorcodes.NewFailedPreconditionError())
+		return nil, errorcodes.NewNotFoundError(fmt.Errorf("project not found"))
 	}
 
 	qOrganization, err := q.GetOrganizationByID(ctx, authn.OrganizationID(ctx))
 	if err != nil {
-		return nil, connect.NewError(connect.CodeNotFound, errorcodes.NewNotFoundError())
+		return nil, errorcodes.NewNotFoundError(fmt.Errorf("organization not found"))
 	}
 
 	return &frontendv1.GetOrganizationResponse{Organization: parseOrganization(qProject, qOrganization)}, nil
@@ -49,7 +48,7 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *frontendv1.UpdateOr
 	qOrg, err := q.GetOrganizationByID(ctx, authn.OrganizationID(ctx))
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, connect.NewError(connect.CodeNotFound, errorcodes.NewNotFoundError())
+			return nil, errorcodes.NewNotFoundError(fmt.Errorf("organization not found"))
 		}
 
 		return nil, fmt.Errorf("get organization by id: %w", err)
@@ -85,7 +84,7 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *frontendv1.UpdateOr
 	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, connect.NewError(connect.CodeFailedPrecondition, errorcodes.NewNotFoundError())
+			return nil, errorcodes.NewNotFoundError(fmt.Errorf("project not found"))
 		}
 
 		return nil, fmt.Errorf("get project by id: %w", err)
@@ -137,7 +136,7 @@ func (s *Store) validateIsOwner(ctx context.Context) error {
 	}
 
 	if !qUser.IsOwner {
-		return connect.NewError(connect.CodePermissionDenied, errorcodes.NewPermissionDeniedError())
+		return errorcodes.NewPermissionDeniedError(fmt.Errorf("user must be an owner of the organization"))
 	}
 	return nil
 }

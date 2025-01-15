@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"time"
 
-	"connectrpc.com/connect"
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
@@ -31,14 +30,14 @@ func (s *Store) GetGoogleOAuthRedirectURL(ctx context.Context, req *intermediate
 	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, connect.NewError(connect.CodeNotFound, errorcodes.NewNotFoundError())
+			return nil, errorcodes.NewNotFoundError(fmt.Errorf("project not found"))
 		}
 
 		return nil, fmt.Errorf("get project by id: %v", err)
 	}
 
 	if qProject.GoogleOauthClientID == nil {
-		return nil, connect.NewError(connect.CodeFailedPrecondition, errorcodes.NewFailedPreconditionError())
+		return nil, errorcodes.NewFailedPreconditionError(fmt.Errorf("google oauth client id not set"))
 	}
 
 	token := uuid.New()
@@ -88,12 +87,12 @@ func (s *Store) RedeemGoogleOAuthCode(ctx context.Context, req *intermediatev1.R
 	}
 
 	if qProject.GoogleOauthClientID == nil || qProject.GoogleOauthClientSecretCiphertext == nil {
-		return nil, connect.NewError(connect.CodeFailedPrecondition, errorcodes.NewFailedPreconditionError())
+		return nil, errorcodes.NewFailedPreconditionError(fmt.Errorf("google oauth client id or secret not set"))
 	}
 
 	stateSHA := sha256.Sum256([]byte(req.State))
 	if !bytes.Equal(qIntermediateSession.GoogleOauthStateSha256, stateSHA[:]) {
-		return nil, connect.NewError(connect.CodeInvalidArgument, errorcodes.NewInvalidArgumentError())
+		return nil, errorcodes.NewInvalidArgumentError(fmt.Errorf("invalid state"))
 	}
 
 	decryptRes, err := s.kms.Decrypt(ctx, &kms.DecryptInput{
@@ -119,7 +118,7 @@ func (s *Store) RedeemGoogleOAuthCode(ctx context.Context, req *intermediatev1.R
 		Code:                    req.Code,
 	})
 	if err != nil {
-		return nil, connect.NewError(connect.CodeInvalidArgument, errorcodes.NewInvalidArgumentError())
+		return nil, errorcodes.NewInvalidArgumentError(fmt.Errorf("failed to redeem google oauth code: %w", err))
 	}
 
 	// todo what if the intermediate session already has an email
@@ -151,7 +150,7 @@ func (s *Store) getProjectAndIntermediateSession(ctx context.Context) (*queries.
 	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, nil, connect.NewError(connect.CodeNotFound, errorcodes.NewNotFoundError())
+			return nil, nil, errorcodes.NewNotFoundError(fmt.Errorf("project not found: %w", err))
 		}
 
 		return nil, nil, fmt.Errorf("get project by id: %v", err)
@@ -160,7 +159,7 @@ func (s *Store) getProjectAndIntermediateSession(ctx context.Context) (*queries.
 	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, nil, connect.NewError(connect.CodeNotFound, errorcodes.NewNotFoundError())
+			return nil, nil, errorcodes.NewNotFoundError(fmt.Errorf("intermediate session not found: %w", err))
 		}
 
 		return nil, nil, fmt.Errorf("get intermediate session by id: %v", err)

@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"time"
 
-	"connectrpc.com/connect"
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
@@ -43,7 +42,7 @@ func (s *Store) GetIntermediateSessionSigningKeyByID(ctx context.Context, id str
 	intermediateSessionSigningKey, err := q.GetIntermediateSessionSigningKeyByID(ctx, intermediateSessionSigningKeyID)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, connect.NewError(connect.CodeNotFound, errorcodes.NewNotFoundError())
+			return nil, errorcodes.NewNotFoundError(fmt.Errorf("intermediate session signing key not found"))
 		}
 
 		return nil, fmt.Errorf("get intermediate session signing key by id: %w", err)
@@ -85,7 +84,7 @@ func (s *Store) GetIntermediateSessionSigningKeyByProjectID(ctx context.Context,
 	intermediateSessionSigningKey, err := q.GetIntermediateSessionSigningKeyByProjectID(ctx, projectID)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, connect.NewError(connect.CodeNotFound, errorcodes.NewNotFoundError())
+			return nil, errorcodes.NewNotFoundError(fmt.Errorf("intermediate session signing key not found"))
 		}
 
 		return nil, fmt.Errorf("get intermediate session signing key by project id: %w", err)
@@ -127,7 +126,7 @@ func (s *Store) GetIntermediateSessionPublicKeyByProjectID(ctx context.Context, 
 	intermediateSessionSigningKey, err := q.GetIntermediateSessionSigningKeyByProjectID(ctx, projectID)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, connect.NewError(connect.CodeNotFound, errorcodes.NewNotFoundError())
+			return nil, errorcodes.NewNotFoundError(fmt.Errorf("intermediate session signing key not found"))
 		}
 
 		return nil, fmt.Errorf("get intermediate session signing key by project id: %w", err)

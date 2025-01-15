@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 
-	"connectrpc.com/connect"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/openauth/openauth/internal/emailaddr"
@@ -36,7 +35,7 @@ func (s *Store) ListOrganizations(
 	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, connect.NewError(connect.CodeNotFound, errorcodes.NewNotFoundError())
+			return nil, errorcodes.NewNotFoundError(fmt.Errorf("project not found"))
 		}
 		return nil, fmt.Errorf("get project by id: %w", err)
 	}
@@ -135,7 +134,7 @@ func (s *Store) ListSAMLOrganizations(ctx context.Context, req *intermediatev1.L
 	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, connect.NewError(connect.CodeNotFound, errorcodes.NewNotFoundError())
+			return nil, errorcodes.NewNotFoundError(fmt.Errorf("project not found"))
 		}
 
 		return nil, fmt.Errorf("get project by id: %w", err)

@@ -11,7 +11,6 @@ import (
 	"strconv"
 	"time"
 
-	"connectrpc.com/connect"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/openauth/openauth/internal/errorcodes"
@@ -20,14 +19,6 @@ import (
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
-
-var ErrEmailVerificationChallengeMismatch = errors.New("email verification challenge mismatch")
-var ErrEmailVerficationChallengeNotFound = errors.New("email verification challenge not found")
-var ErrEmailVerificationChallengeInvalidState = errors.New("email verification challenge in invalid state")
-var ErrEmailVerificationChallengeExpired = errors.New("email verification challenge expired")
-var ErrIntermediateSessionIDRequired = errors.New("intermediate session ID required")
-var ErrIntermediateSessionRequired = errors.New("intermediate session required")
-var ErrProjectIDRequired = errors.New("project ID required")
 
 type EmailVerificationChallenge struct {
 	ID                    string
@@ -67,12 +58,12 @@ func (s *Store) CompleteEmailVerificationChallenge(ctx context.Context, req *int
 	// Get the email verification challenge from the request
 	challengeID, err := idformat.EmailVerificationChallenge.Parse(req.EmailVerificationChallengeId)
 	if err != nil {
-		return nil, connect.NewError(connect.CodeInvalidArgument, errorcodes.NewInvalidArgumentError())
+		return nil, errorcodes.NewInvalidArgumentError(fmt.Errorf("email verification challenge id is invalid"))
 	}
 	challenge, err := q.GetEmailVerificationChallengeByID(ctx, challengeID)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, connect.NewError(connect.CodeNotFound, errorcodes.NewNotFoundError())
+			return nil, errorcodes.NewNotFoundError(fmt.Errorf("email verification challenge not found: %w", err))
 		}
 
 		return nil, fmt.Errorf("get email verification challenge by id: %w", err)
@@ -80,7 +71,7 @@ func (s *Store) CompleteEmailVerificationChallenge(ctx context.Context, req *int
 
 	// Enforce the intermediate session
 	if challenge.IntermediateSessionID.String() != authn.IntermediateSessionID(ctx).String() {
-		return nil, connect.NewError(connect.CodeFailedPrecondition, errorcodes.NewFailedPreconditionError())
+		return nil, errorcodes.NewFailedPreconditionError(fmt.Errorf("intermediate session id mismatch"))
 	}
 
 	// Get the intermediate session
@@ -110,7 +101,7 @@ func (s *Store) CompleteEmailVerificationChallenge(ctx context.Context, req *int
 			return nil, fmt.Errorf("commit after verify failure: %w", err)
 		}
 
-		return nil, connect.NewError(connect.CodeFailedPrecondition, errorcodes.NewFailedPreconditionError())
+		return nil, errorcodes.NewFailedPreconditionError(fmt.Errorf("verify challenge failure: %w", err))
 	}
 
 	// Complete the email verification challenge
@@ -202,7 +193,7 @@ func generateSecretToken() (string, error) {
 func verifyChallenge(ctx context.Context, evc *queries.EmailVerificationChallenge, secretTokenSha256 []byte, q *queries.Queries) error {
 	// Check if the challenge has been revoked
 	if evc.Revoked {
-		return ErrEmailVerificationChallengeInvalidState
+		return errorcodes.NewFailedPreconditionError(fmt.Errorf("email verification challenge revoked"))
 	}
 
 	// Check if the challenge has already been completed
@@ -212,7 +203,7 @@ func verifyChallenge(ctx context.Context, evc *queries.EmailVerificationChalleng
 			return fmt.Errorf("revoke email verification challenge after complete time failure: %w", err)
 		}
 
-		return connect.NewError(connect.CodeFailedPrecondition, errorcodes.NewFailedPreconditionError())
+		return errorcodes.NewFailedPreconditionError(fmt.Errorf("email verification challenge already completed"))
 	}
 
 	// Check if the challenge has expired
@@ -222,7 +213,7 @@ func verifyChallenge(ctx context.Context, evc *queries.EmailVerificationChalleng
 			return fmt.Errorf("revoke email verification challenge after expire time failure: %w", err)
 		}
 
-		return connect.NewError(connect.CodeFailedPrecondition, errorcodes.NewFailedPreconditionError())
+		return errorcodes.NewFailedPreconditionError(fmt.Errorf("email verification challenge expired"))
 	}
 
 	// Check if the challenge is correct
@@ -232,7 +223,7 @@ func verifyChallenge(ctx context.Context, evc *queries.EmailVerificationChalleng
 			return fmt.Errorf("revoke email verification challenge: %w", err)
 		}
 
-		return connect.NewError(connect.CodeFailedPrecondition, errorcodes.NewFailedPreconditionError())
+		return errorcodes.NewFailedPreconditionError(fmt.Errorf("email verification challenge code mismatch"))
 	}
 
 	return nil

@@ -5,7 +5,6 @@ import (
 	"crypto/sha256"
 	"fmt"
 
-	"connectrpc.com/connect"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/openauth/openauth/internal/errorcodes"
@@ -73,7 +72,7 @@ func (s *Store) GetSCIMAPIKey(ctx context.Context, req *frontendv1.GetSCIMAPIKey
 	})
 	if err != nil {
 		if err == pgx.ErrNoRows {
-			return nil, connect.NewError(connect.CodeNotFound, errorcodes.NewNotFoundError())
+			return nil, errorcodes.NewNotFoundError(fmt.Errorf("scim api key not found"))
 		}
 
 		return nil, fmt.Errorf("get scim api key: %w", err)
@@ -97,14 +96,14 @@ func (s *Store) CreateSCIMAPIKey(ctx context.Context, req *frontendv1.CreateSCIM
 	qOrg, err := q.GetOrganizationByID(ctx, authn.OrganizationID(ctx))
 	if err != nil {
 		if err == pgx.ErrNoRows {
-			return nil, connect.NewError(connect.CodeFailedPrecondition, errorcodes.NewFailedPreconditionError())
+			return nil, errorcodes.NewFailedPreconditionError(fmt.Errorf("organization not found"))
 		}
 
 		return nil, fmt.Errorf("get organization: %w", err)
 	}
 
 	if !qOrg.ScimEnabled {
-		return nil, connect.NewError(connect.CodeFailedPrecondition, errorcodes.NewFailedPreconditionError())
+		return nil, errorcodes.NewFailedPreconditionError(fmt.Errorf("scim is not enabled for the organization"))
 	}
 
 	token := uuid.New()
@@ -141,7 +140,7 @@ func (s *Store) UpdateSCIMAPIKey(ctx context.Context, req *frontendv1.UpdateSCIM
 
 	scimAPIKeyID, err := idformat.SCIMAPIKey.Parse(req.Id)
 	if err != nil {
-		return nil, connect.NewError(connect.CodeInvalidArgument, errorcodes.NewInvalidArgumentError())
+		return nil, errorcodes.NewInvalidArgumentError(fmt.Errorf("could not parse scim api key id: %w", err))
 	}
 
 	// authz
@@ -151,7 +150,7 @@ func (s *Store) UpdateSCIMAPIKey(ctx context.Context, req *frontendv1.UpdateSCIM
 	})
 	if err != nil {
 		if err == pgx.ErrNoRows {
-			return nil, connect.NewError(connect.CodeNotFound, errorcodes.NewNotFoundError())
+			return nil, errorcodes.NewNotFoundError(fmt.Errorf("scim api key not found"))
 		}
 		return nil, fmt.Errorf("get scim api key: %w", err)
 	}
@@ -190,7 +189,7 @@ func (s *Store) DeleteSCIMAPIKey(ctx context.Context, req *frontendv1.DeleteSCIM
 
 	scimAPIKeyID, err := idformat.SCIMAPIKey.Parse(req.Id)
 	if err != nil {
-		return nil, connect.NewError(connect.CodeInvalidArgument, errorcodes.NewInvalidArgumentError())
+		return nil, errorcodes.NewInvalidArgumentError(fmt.Errorf("could not parse scim api key id: %w", err))
 	}
 
 	// authz
@@ -200,14 +199,14 @@ func (s *Store) DeleteSCIMAPIKey(ctx context.Context, req *frontendv1.DeleteSCIM
 	})
 	if err != nil {
 		if err == pgx.ErrNoRows {
-			return nil, connect.NewError(connect.CodeNotFound, errorcodes.NewNotFoundError())
+			return nil, errorcodes.NewNotFoundError(fmt.Errorf("scim api key not found"))
 		}
 
 		return nil, fmt.Errorf("get scim api key: %w", err)
 	}
 
 	if qSCIMAPIKey.SecretTokenSha256 != nil {
-		return nil, connect.NewError(connect.CodeFailedPrecondition, errorcodes.NewFailedPreconditionError())
+		return nil, errorcodes.NewFailedPreconditionError(fmt.Errorf("cannot delete a scim api key with a secret token"))
 	}
 
 	if err := q.DeleteSCIMAPIKey(ctx, scimAPIKeyID); err != nil {
@@ -234,7 +233,7 @@ func (s *Store) RevokeSCIMAPIKey(ctx context.Context, req *frontendv1.RevokeSCIM
 
 	scimAPIKeyID, err := idformat.SCIMAPIKey.Parse(req.Id)
 	if err != nil {
-		return nil, connect.NewError(connect.CodeInvalidArgument, errorcodes.NewInvalidArgumentError())
+		return nil, errorcodes.NewInvalidArgumentError(fmt.Errorf("could not parse scim api key id: %w", err))
 	}
 
 	// authz
@@ -243,7 +242,7 @@ func (s *Store) RevokeSCIMAPIKey(ctx context.Context, req *frontendv1.RevokeSCIM
 		ID:             scimAPIKeyID,
 	}); err != nil {
 		if err == pgx.ErrNoRows {
-			return nil, connect.NewError(connect.CodeNotFound, errorcodes.NewNotFoundError())
+			return nil, errorcodes.NewNotFoundError(fmt.Errorf("scim api key not found"))
 		}
 
 		return nil, fmt.Errorf("get scim api key: %w", err)

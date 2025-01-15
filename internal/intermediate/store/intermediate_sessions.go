@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"time"
 
-	"connectrpc.com/connect"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/openauth/openauth/internal/crypto/bcrypt"
@@ -244,7 +243,7 @@ func (s *Store) VerifyIntermediateSessionEmail(
 	existingIntermediateSession, err := q.GetIntermediateSessionByID(*ctx, sessionId)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, connect.NewError(connect.CodeNotFound, errorcodes.NewNotFoundError())
+			return nil, errorcodes.NewNotFoundError(fmt.Errorf("intermediate session not found"))
 		}
 
 		return nil, fmt.Errorf("get intermediate session by id: %w", err)
@@ -252,12 +251,12 @@ func (s *Store) VerifyIntermediateSessionEmail(
 
 	// Check if the intermediate session has been revoked
 	if existingIntermediateSession.Revoked {
-		return nil, connect.NewError(connect.CodeInvalidArgument, errorcodes.NewInvalidArgumentError())
+		return nil, errorcodes.NewFailedPreconditionError(fmt.Errorf("intermediate session has been revoked"))
 	}
 
 	// Check if the intermediate session has expired
 	if existingIntermediateSession.ExpireTime.Before(time.Now()) {
-		return nil, connect.NewError(connect.CodeInvalidArgument, errorcodes.NewInvalidArgumentError())
+		return nil, errorcodes.NewFailedPreconditionError(fmt.Errorf("intermediate session has expired"))
 	}
 
 	panic("unimplemented")

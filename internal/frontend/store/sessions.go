@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 
-	"connectrpc.com/connect"
 	"github.com/jackc/pgx/v5"
 	"github.com/openauth/openauth/internal/errorcodes"
 	"github.com/openauth/openauth/internal/frontend/authn"
@@ -26,7 +25,7 @@ func (s *Store) Whoami(ctx context.Context, req *frontendv1.WhoAmIRequest) (*fro
 	qUser, err := q.GetUserByID(ctx, userID)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, connect.NewError(connect.CodeNotFound, errorcodes.NewNotFoundError())
+			return nil, errorcodes.NewNotFoundError(fmt.Errorf("user not found"))
 		}
 
 		return nil, fmt.Errorf("get user by id: %w", err)
@@ -35,7 +34,7 @@ func (s *Store) Whoami(ctx context.Context, req *frontendv1.WhoAmIRequest) (*fro
 	qOrganization, err := q.GetOrganizationByID(ctx, qUser.OrganizationID)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, connect.NewError(connect.CodeFailedPrecondition, errorcodes.NewFailedPreconditionError())
+			return nil, errorcodes.NewFailedPreconditionError(fmt.Errorf("organization not found"))
 		}
 
 		return nil, fmt.Errorf("get organization by id: %w", err)

@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"time"
 
-	"connectrpc.com/connect"
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
@@ -32,7 +31,7 @@ func (s *Store) GetMicrosoftOAuthRedirectURL(ctx context.Context, req *intermedi
 	}
 
 	if qProject.MicrosoftOauthClientID == nil {
-		return nil, connect.NewError(connect.CodeFailedPrecondition, errorcodes.NewFailedPreconditionError())
+		return nil, errorcodes.NewFailedPreconditionError(fmt.Errorf("microsoft oauth client id not set"))
 	}
 
 	token := uuid.New()
@@ -82,12 +81,12 @@ func (s *Store) RedeemMicrosoftOAuthCode(ctx context.Context, req *intermediatev
 	}
 
 	if qProject.MicrosoftOauthClientID == nil || qProject.MicrosoftOauthClientSecretCiphertext == nil {
-		return nil, connect.NewError(connect.CodeFailedPrecondition, errorcodes.NewFailedPreconditionError())
+		return nil, errorcodes.NewFailedPreconditionError(fmt.Errorf("microsoft oauth client id or secret not set"))
 	}
 
 	stateSHA := sha256.Sum256([]byte(req.State))
 	if !bytes.Equal(qIntermediateSession.MicrosoftOauthStateSha256, stateSHA[:]) {
-		return nil, connect.NewError(connect.CodeInvalidArgument, errorcodes.NewFailedPreconditionError())
+		return nil, errorcodes.NewFailedPreconditionError(fmt.Errorf("invalid state"))
 	}
 
 	decryptRes, err := s.kms.Decrypt(ctx, &kms.DecryptInput{

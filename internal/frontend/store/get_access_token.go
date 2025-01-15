@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"time"
 
-	"connectrpc.com/connect"
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/jackc/pgx/v5"
@@ -113,14 +112,14 @@ func (s *Store) getAccessTokenSessionDetails(ctx context.Context, refreshToken s
 
 	refreshTokenBytes, err := idformat.SessionRefreshToken.Parse(refreshToken)
 	if err != nil {
-		return nil, nil, nil, nil, nil, connect.NewError(connect.CodeInvalidArgument, errorcodes.NewInvalidArgumentError())
+		return nil, nil, nil, nil, nil, errorcodes.NewInvalidArgumentError(fmt.Errorf("could not parse refresh token: %w", err))
 	}
 
 	refreshTokenSHA := sha256.Sum256(refreshTokenBytes[:])
 	qSessionDetails, err := q.GetSessionDetailsByRefreshTokenSHA256(ctx, refreshTokenSHA[:])
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, nil, nil, nil, nil, connect.NewError(connect.CodeInvalidArgument, errorcodes.NewInvalidArgumentError())
+			return nil, nil, nil, nil, nil, errorcodes.NewInvalidArgumentError(fmt.Errorf("invalid refresh token"))
 		}
 
 		return nil, nil, nil, nil, nil, fmt.Errorf("get session by refresh token sha256: %w", err)
@@ -128,13 +127,13 @@ func (s *Store) getAccessTokenSessionDetails(ctx context.Context, refreshToken s
 
 	qSessionSigningKey, err := q.GetCurrentSessionKeyByProjectID(ctx, qSessionDetails.ProjectID)
 	if err != nil {
-		return nil, nil, nil, nil, nil, connect.NewError(connect.CodeFailedPrecondition, errorcodes.NewFailedPreconditionError())
+		return nil, nil, nil, nil, nil, errorcodes.NewFailedPreconditionError(fmt.Errorf("sessiont signing key not found"))
 	}
 
 	qSession, err := q.GetSessionByID(ctx, qSessionDetails.SessionID)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, nil, nil, nil, nil, connect.NewError(connect.CodeFailedPrecondition, errorcodes.NewFailedPreconditionError())
+			return nil, nil, nil, nil, nil, errorcodes.NewFailedPreconditionError(fmt.Errorf("session not found"))
 		}
 
 		return nil, nil, nil, nil, nil, fmt.Errorf("get session by id: %w", err)
@@ -143,7 +142,7 @@ func (s *Store) getAccessTokenSessionDetails(ctx context.Context, refreshToken s
 	qUser, err := q.GetUserByID(ctx, qSessionDetails.UserID)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, nil, nil, nil, nil, connect.NewError(connect.CodeFailedPrecondition, errorcodes.NewFailedPreconditionError())
+			return nil, nil, nil, nil, nil, errorcodes.NewFailedPreconditionError(fmt.Errorf("user not found"))
 		}
 
 		return nil, nil, nil, nil, nil, fmt.Errorf("get user by id: %w", err)
@@ -152,7 +151,7 @@ func (s *Store) getAccessTokenSessionDetails(ctx context.Context, refreshToken s
 	qOrganization, err := q.GetOrganizationByID(ctx, qSessionDetails.OrganizationID)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, nil, nil, nil, nil, connect.NewError(connect.CodeFailedPrecondition, errorcodes.NewFailedPreconditionError())
+			return nil, nil, nil, nil, nil, errorcodes.NewFailedPreconditionError(fmt.Errorf("organization not found"))
 		}
 
 		return nil, nil, nil, nil, nil, fmt.Errorf("get organization by id: %w", err)
@@ -161,7 +160,7 @@ func (s *Store) getAccessTokenSessionDetails(ctx context.Context, refreshToken s
 	qProject, err := q.GetProjectByID(ctx, qSessionDetails.ProjectID)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, nil, nil, nil, nil, connect.NewError(connect.CodeFailedPrecondition, errorcodes.NewFailedPreconditionError())
+			return nil, nil, nil, nil, nil, errorcodes.NewFailedPreconditionError(fmt.Errorf("project not found"))
 		}
 
 		return nil, nil, nil, nil, nil, fmt.Errorf("get project by id: %w", err)

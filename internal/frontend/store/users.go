@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 
-	"connectrpc.com/connect"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/openauth/openauth/internal/crypto/bcrypt"
@@ -26,7 +25,7 @@ func (s *Store) SetUserPassword(ctx context.Context, req *frontendv1.SetPassword
 
 	passwordBcrypt, err := bcrypt.GenerateBcryptHash(req.Password)
 	if err != nil {
-		return nil, connect.NewError(connect.CodeFailedPrecondition, errorcodes.NewFailedPreconditionError())
+		return nil, errorcodes.NewFailedPreconditionError(fmt.Errorf("could not generate hash: %w", err))
 	}
 
 	if _, err = q.SetPassword(ctx, queries.SetPasswordParams{
@@ -91,7 +90,7 @@ func (s *Store) GetUser(ctx context.Context, req *frontendv1.GetUserRequest) (*f
 
 	userID, err := idformat.User.Parse(req.Id)
 	if err != nil {
-		return nil, connect.NewError(connect.CodeInvalidArgument, errorcodes.NewInvalidArgumentError())
+		return nil, errorcodes.NewInvalidArgumentError(fmt.Errorf("could not parse user id: %w", err))
 	}
 
 	qUser, err := q.GetUser(ctx, queries.GetUserParams{
@@ -100,7 +99,7 @@ func (s *Store) GetUser(ctx context.Context, req *frontendv1.GetUserRequest) (*f
 	})
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, connect.NewError(connect.CodeNotFound, errorcodes.NewNotFoundError())
+			return nil, errorcodes.NewNotFoundError(fmt.Errorf("user not found"))
 		}
 
 		return nil, fmt.Errorf("get user: %w", err)
@@ -123,7 +122,7 @@ func (s *Store) UpdateUser(ctx context.Context, req *frontendv1.UpdateUserReques
 
 	userID, err := idformat.User.Parse(req.Id)
 	if err != nil {
-		return nil, connect.NewError(connect.CodeInvalidArgument, errorcodes.NewInvalidArgumentError())
+		return nil, errorcodes.NewInvalidArgumentError(fmt.Errorf("could not parse user id: %w", err))
 	}
 
 	// Fetch the existing user details. Also acts as authz check.
@@ -133,7 +132,7 @@ func (s *Store) UpdateUser(ctx context.Context, req *frontendv1.UpdateUserReques
 	})
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, connect.NewError(connect.CodeNotFound, errorcodes.NewNotFoundError())
+			return nil, errorcodes.NewNotFoundError(fmt.Errorf("user not found"))
 		}
 
 		return nil, fmt.Errorf("get user by id: %w", err)
