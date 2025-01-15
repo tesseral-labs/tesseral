@@ -10,11 +10,6 @@ import { BackendService } from "./backend_pb";
 export const getProject = BackendService.method.getProject;
 
 /**
- * @generated from rpc openauth.backend.v1.BackendService.UpdateProject
- */
-export const updateProject = BackendService.method.updateProject;
-
-/**
  * @generated from rpc openauth.backend.v1.BackendService.ListOrganizations
  */
 export const listOrganizations = BackendService.method.listOrganizations;
@@ -123,6 +118,11 @@ export const listIntermediateSessions = BackendService.method.listIntermediateSe
  * @generated from rpc openauth.backend.v1.BackendService.GetIntermediateSession
  */
 export const getIntermediateSession = BackendService.method.getIntermediateSession;
+
+/**
+ * @generated from rpc openauth.backend.v1.BackendService.UpdateProject
+ */
+export const updateProject = BackendService.method.updateProject;
 
 /**
  * @generated from rpc openauth.backend.v1.BackendService.CreateProjectRedirectURI

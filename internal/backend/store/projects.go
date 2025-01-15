@@ -36,6 +36,10 @@ func (s *Store) GetProject(ctx context.Context, req *backendv1.GetProjectRequest
 }
 
 func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectRequest) (*backendv1.UpdateProjectResponse, error) {
+	if err := validateIsDogfoodSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	}
+
 	// fetch project outside a transaction, so that we can carry out KMS
 	// operations; we can live with possibility of conflicting concurrent writes
 	qProject, err := s.q.GetProjectByID(ctx, authn.ProjectID(ctx))
@@ -121,12 +125,11 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 		updates.OrganizationsScimEnabledDefault = *req.Project.OrganizationsScimEnabledDefault
 	}
 
-	// TODO: Re-enable this when we have a need for custom domains on the app side of things
-
-	// updates.CustomDomain = qProject.CustomDomain
-	// if req.Project.CustomDomain != nil {
-	// 	updates.CustomDomain = req.Project.CustomDomain
-	// }
+	updates.CustomAuthDomain = qProject.CustomAuthDomain
+	// TODO enable when we have a use for custom domains from app
+	//if req.Project.CustomDomain != nil {
+	//	updates.CustomDomain = req.Project.CustomDomain
+	//}
 
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {

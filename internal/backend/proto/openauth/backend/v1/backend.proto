@@ -15,13 +15,6 @@ service BackendService {
     };
   }
 
-  rpc UpdateProject(UpdateProjectRequest) returns (UpdateProjectResponse) {
-    option (google.api.http) = {
-      patch: "/backend/v1/project",
-      body: "project"
-    };
-  }
-
   rpc ListOrganizations(ListOrganizationsRequest) returns (ListOrganizationsResponse) {
     option (google.api.http) = {
       get: "/backend/v1/organizations"
@@ -158,6 +151,8 @@ service BackendService {
       get: "/backend/v1/intermediate-sessions/{id}"
     };
   }
+
+  rpc UpdateProject(UpdateProjectRequest) returns (UpdateProjectResponse);
 
   rpc CreateProjectRedirectURI(CreateProjectRedirectURIRequest) returns (CreateProjectRedirectURIResponse) {}
   rpc DeleteProjectRedirectURI(DeleteProjectRedirectURIRequest) returns (DeleteProjectRedirectURIResponse) {}

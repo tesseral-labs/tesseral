@@ -193,29 +193,6 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-        patch:
-            tags:
-                - BackendService
-            operationId: BackendService_UpdateProject
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/Project'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/UpdateProjectResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
     /backend/v1/saml-connections:
         get:
             tags:
@@ -875,11 +852,6 @@ components:
             properties:
                 organization:
                     $ref: '#/components/schemas/Organization'
-        UpdateProjectResponse:
-            type: object
-            properties:
-                project:
-                    $ref: '#/components/schemas/Project'
         UpdateSAMLConnectionResponse:
             type: object
             properties:
