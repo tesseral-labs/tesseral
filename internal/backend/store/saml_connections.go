@@ -4,14 +4,16 @@ import (
 	"context"
 	"crypto/x509"
 	"encoding/pem"
+	"errors"
 	"fmt"
 	"net/url"
 
-	"connectrpc.com/connect"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/openauth/openauth/internal/backend/authn"
 	backendv1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
 	"github.com/openauth/openauth/internal/backend/store/queries"
+	"github.com/openauth/openauth/internal/shared/apierror"
 	"github.com/openauth/openauth/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -25,7 +27,7 @@ func (s *Store) ListSAMLConnections(ctx context.Context, req *backendv1.ListSAML
 
 	orgID, err := idformat.Organization.Parse(req.OrganizationId)
 	if err != nil {
-		return nil, fmt.Errorf("parse organization id: %w", err)
+		return nil, apierror.NewInvalidArgumentError("invalid organization id", fmt.Errorf("parse organization id: %w", err))
 	}
 
 	// authz
@@ -33,6 +35,10 @@ func (s *Store) ListSAMLConnections(ctx context.Context, req *backendv1.ListSAML
 		ProjectID: authn.ProjectID(ctx),
 		ID:        orgID,
 	}); err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("organization not found", fmt.Errorf("get organization by project id and id: %w", err))
+		}
+
 		return nil, fmt.Errorf("get organization: %w", err)
 	}
 
@@ -77,7 +83,7 @@ func (s *Store) GetSAMLConnection(ctx context.Context, req *backendv1.GetSAMLCon
 
 	samlConnectionID, err := idformat.SAMLConnection.Parse(req.Id)
 	if err != nil {
-		return nil, fmt.Errorf("parse saml connection id: %w", err)
+		return nil, apierror.NewInvalidArgumentError("invalid saml connection id", fmt.Errorf("parse saml connection id: %w", err))
 	}
 
 	qSAMLConnection, err := q.GetSAMLConnection(ctx, queries.GetSAMLConnectionParams{
@@ -85,6 +91,10 @@ func (s *Store) GetSAMLConnection(ctx context.Context, req *backendv1.GetSAMLCon
 		ID:        samlConnectionID,
 	})
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("saml connection not found", fmt.Errorf("get saml connection: %s", err))
+		}
+
 		return nil, fmt.Errorf("get saml connection: %w", err)
 	}
 
@@ -100,7 +110,7 @@ func (s *Store) CreateSAMLConnection(ctx context.Context, req *backendv1.CreateS
 
 	orgID, err := idformat.Organization.Parse(req.SamlConnection.OrganizationId)
 	if err != nil {
-		return nil, fmt.Errorf("parse organization id: %w", err)
+		return nil, apierror.NewInvalidArgumentError("invalid organization id", fmt.Errorf("parse organization id: %w", err))
 	}
 
 	// authz
@@ -109,21 +119,25 @@ func (s *Store) CreateSAMLConnection(ctx context.Context, req *backendv1.CreateS
 		ID:        orgID,
 	})
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("organization not found", fmt.Errorf("get organization by project id and id: %w", err))
+		}
+
 		return nil, fmt.Errorf("get organization: %w", err)
 	}
 
 	if !qOrg.SamlEnabled {
-		return nil, connect.NewError(connect.CodeFailedPrecondition, fmt.Errorf("organization does not have SAML enabled"))
+		return nil, apierror.NewFailedPreconditionError("organization does not have SAML enabled", fmt.Errorf("organization does not have SAML enabled"))
 	}
 
 	if req.SamlConnection.IdpRedirectUrl != "" {
 		u, err := url.Parse(req.SamlConnection.IdpRedirectUrl)
 		if err != nil {
-			return nil, fmt.Errorf("invalid idp redirect url: %w", err)
+			return nil, apierror.NewInvalidArgumentError("invalid idp redirect url", fmt.Errorf("invalid idp redirect url: %w", err))
 		}
 
 		if !u.IsAbs() {
-			return nil, fmt.Errorf("idp redirect url must be absolute")
+			return nil, apierror.NewInvalidArgumentError("idp redirect url must be absolute", fmt.Errorf("idp redirect url must be absolute"))
 		}
 	}
 
@@ -131,12 +145,12 @@ func (s *Store) CreateSAMLConnection(ctx context.Context, req *backendv1.CreateS
 	if req.SamlConnection.IdpX509Certificate != "" {
 		block, _ := pem.Decode([]byte(req.SamlConnection.IdpX509Certificate))
 		if block == nil || block.Type != "CERTIFICATE" {
-			return nil, fmt.Errorf("invalid certificate format")
+			return nil, apierror.NewInvalidArgumentError("invalid certificate format", fmt.Errorf("invalid certificate format"))
 		}
 
 		cert, err := x509.ParseCertificate(block.Bytes)
 		if err != nil {
-			return nil, fmt.Errorf("failed to parse certificate: %w", err)
+			return nil, apierror.NewInvalidArgumentError("invalid certificate", fmt.Errorf("failed to parse certificate: %w", err))
 		}
 
 		idpCertificate = cert.Raw
@@ -179,7 +193,7 @@ func (s *Store) UpdateSAMLConnection(ctx context.Context, req *backendv1.UpdateS
 
 	samlConnectionID, err := idformat.SAMLConnection.Parse(req.Id)
 	if err != nil {
-		return nil, fmt.Errorf("parse saml connection id: %w", err)
+		return nil, apierror.NewInvalidArgumentError("invalid saml connection id", fmt.Errorf("parse saml connection id: %w", err))
 	}
 
 	// authz
@@ -188,6 +202,10 @@ func (s *Store) UpdateSAMLConnection(ctx context.Context, req *backendv1.UpdateS
 		ID:        samlConnectionID,
 	})
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("saml connection not found", fmt.Errorf("get saml connection: %w", err))
+		}
+
 		return nil, fmt.Errorf("get saml connection: %w", err)
 	}
 
@@ -202,11 +220,11 @@ func (s *Store) UpdateSAMLConnection(ctx context.Context, req *backendv1.UpdateS
 	if req.SamlConnection.IdpRedirectUrl != "" {
 		u, err := url.Parse(req.SamlConnection.IdpRedirectUrl)
 		if err != nil {
-			return nil, fmt.Errorf("invalid idp redirect url: %w", err)
+			return nil, apierror.NewInvalidArgumentError("invalid idp redirect url", fmt.Errorf("invalid idp redirect url: %w", err))
 		}
 
 		if !u.IsAbs() {
-			return nil, fmt.Errorf("idp redirect url must be absolute")
+			return nil, apierror.NewInvalidArgumentError("idp redirect url must be absolute", fmt.Errorf("idp redirect url must be absolute"))
 		}
 
 		updates.IdpRedirectUrl = &req.SamlConnection.IdpRedirectUrl
@@ -215,12 +233,12 @@ func (s *Store) UpdateSAMLConnection(ctx context.Context, req *backendv1.UpdateS
 	if req.SamlConnection.IdpX509Certificate != "" {
 		block, _ := pem.Decode([]byte(req.SamlConnection.IdpX509Certificate))
 		if block == nil || block.Type != "CERTIFICATE" {
-			return nil, fmt.Errorf("invalid certificate format")
+			return nil, apierror.NewInvalidArgumentError("invalid certificate format", fmt.Errorf("invalid certificate format"))
 		}
 
 		cert, err := x509.ParseCertificate(block.Bytes)
 		if err != nil {
-			return nil, fmt.Errorf("failed to parse certificate: %w", err)
+			return nil, apierror.NewInvalidArgumentError("invalid certificate", fmt.Errorf("failed to parse certificate: %w", err))
 		}
 
 		updates.IdpX509Certificate = cert.Raw
@@ -264,7 +282,7 @@ func (s *Store) DeleteSAMLConnection(ctx context.Context, req *backendv1.DeleteS
 
 	samlConnectionID, err := idformat.SAMLConnection.Parse(req.Id)
 	if err != nil {
-		return nil, fmt.Errorf("parse saml connection id: %w", err)
+		return nil, apierror.NewInvalidArgumentError("invalid saml connection id", fmt.Errorf("parse saml connection id: %w", err))
 	}
 
 	// authz
@@ -272,6 +290,10 @@ func (s *Store) DeleteSAMLConnection(ctx context.Context, req *backendv1.DeleteS
 		ProjectID: authn.ProjectID(ctx),
 		ID:        samlConnectionID,
 	}); err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("saml connection not found", fmt.Errorf("get saml connection: %w", err))
+		}
+
 		return nil, fmt.Errorf("get saml connection: %w", err)
 	}
 

@@ -3,13 +3,15 @@ package store
 import (
 	"context"
 	"crypto/sha256"
+	"errors"
 	"fmt"
 
-	"connectrpc.com/connect"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/openauth/openauth/internal/backend/authn"
 	backendv1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
 	"github.com/openauth/openauth/internal/backend/store/queries"
+	"github.com/openauth/openauth/internal/shared/apierror"
 	"github.com/openauth/openauth/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -63,7 +65,7 @@ func (s *Store) GetProjectAPIKey(ctx context.Context, req *backendv1.GetProjectA
 
 	id, err := idformat.ProjectAPIKey.Parse(req.Id)
 	if err != nil {
-		return nil, fmt.Errorf("parse project api key id: %w", err)
+		return nil, apierror.NewInvalidArgumentError("invalid project api key id", fmt.Errorf("parse project api key id: %w", err))
 	}
 
 	qProjectAPIKey, err := s.q.GetProjectAPIKey(ctx, queries.GetProjectAPIKeyParams{
@@ -71,6 +73,10 @@ func (s *Store) GetProjectAPIKey(ctx context.Context, req *backendv1.GetProjectA
 		ID:        id,
 	})
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("project api key not found", fmt.Errorf("get project api key: %w", err))
+		}
+
 		return nil, fmt.Errorf("get project api key: %w", err)
 	}
 
@@ -122,7 +128,7 @@ func (s *Store) UpdateProjectAPIKey(ctx context.Context, req *backendv1.UpdatePr
 
 	projectAPIKeyID, err := idformat.ProjectAPIKey.Parse(req.Id)
 	if err != nil {
-		return nil, fmt.Errorf("parse project api key id: %w", err)
+		return nil, apierror.NewInvalidArgumentError("invalid project api key id", fmt.Errorf("parse project api key id: %w", err))
 	}
 
 	qProjectAPIKey, err := q.GetProjectAPIKey(ctx, queries.GetProjectAPIKeyParams{
@@ -130,6 +136,10 @@ func (s *Store) UpdateProjectAPIKey(ctx context.Context, req *backendv1.UpdatePr
 		ID:        projectAPIKeyID,
 	})
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("project api key not found", fmt.Errorf("get project api key: %w", err))
+		}
+
 		return nil, fmt.Errorf("get project api key: %w", err)
 	}
 
@@ -167,7 +177,7 @@ func (s *Store) DeleteProjectAPIKey(ctx context.Context, req *backendv1.DeletePr
 
 	projectAPIKeyID, err := idformat.ProjectAPIKey.Parse(req.Id)
 	if err != nil {
-		return nil, fmt.Errorf("parse project api key id: %w", err)
+		return nil, apierror.NewInvalidArgumentError("invalid project api key id", fmt.Errorf("parse project api key id: %w", err))
 	}
 
 	qProjectAPIKey, err := q.GetProjectAPIKey(ctx, queries.GetProjectAPIKeyParams{
@@ -175,11 +185,15 @@ func (s *Store) DeleteProjectAPIKey(ctx context.Context, req *backendv1.DeletePr
 		ID:        projectAPIKeyID,
 	})
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("project api key not found", fmt.Errorf("get project api key: %w", err))
+		}
+
 		return nil, fmt.Errorf("get project api key: %w", err)
 	}
 
 	if qProjectAPIKey.SecretTokenSha256 != nil {
-		return nil, fmt.Errorf("project api key must be revoked before deletion")
+		return nil, apierror.NewFailedPreconditionError("project api key must be revoked before deletion", fmt.Errorf("project api key must be revoked before deletion"))
 	}
 
 	if err := q.DeleteProjectAPIKey(ctx, projectAPIKeyID); err != nil {
@@ -206,7 +220,7 @@ func (s *Store) RevokeProjectAPIKey(ctx context.Context, req *backendv1.RevokePr
 
 	projectAPIKeyID, err := idformat.ProjectAPIKey.Parse(req.Id)
 	if err != nil {
-		return nil, fmt.Errorf("parse project api key id: %w", err)
+		return nil, apierror.NewInvalidArgumentError("invalid project api key id", fmt.Errorf("parse project api key id: %w", err))
 	}
 
 	qProjectAPIKey, err := q.RevokeProjectAPIKey(ctx, projectAPIKeyID)
@@ -240,7 +254,7 @@ func parseProjectAPIKey(qProjectAPIKey queries.ProjectApiKey) *backendv1.Project
 func validateIsDogfoodSession(ctx context.Context) error {
 	data := authn.GetContextData(ctx)
 	if data.DogfoodSession == nil {
-		return connect.NewError(connect.CodeUnauthenticated, fmt.Errorf("this endpoint cannot be invoked by project API keys"))
+		return apierror.NewUnauthenticatedError("this endpoint cannot be invoked by project API keys", fmt.Errorf("non-dogfood session request"))
 	}
 	return nil
 }

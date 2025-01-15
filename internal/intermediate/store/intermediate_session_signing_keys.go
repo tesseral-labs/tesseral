@@ -12,8 +12,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	openauthecdsa "github.com/openauth/openauth/internal/crypto/ecdsa"
-	"github.com/openauth/openauth/internal/errorcodes"
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
+	"github.com/openauth/openauth/internal/shared/apierror"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
@@ -42,7 +42,7 @@ func (s *Store) GetIntermediateSessionSigningKeyByID(ctx context.Context, id str
 	intermediateSessionSigningKey, err := q.GetIntermediateSessionSigningKeyByID(ctx, intermediateSessionSigningKeyID)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, errorcodes.NewNotFoundError(fmt.Errorf("intermediate session signing key not found"))
+			return nil, apierror.NewNotFoundError("intermediate session signing key not found", fmt.Errorf("get intermediate session signing key by id: %w", err))
 		}
 
 		return nil, fmt.Errorf("get intermediate session signing key by id: %w", err)
@@ -84,7 +84,7 @@ func (s *Store) GetIntermediateSessionSigningKeyByProjectID(ctx context.Context,
 	intermediateSessionSigningKey, err := q.GetIntermediateSessionSigningKeyByProjectID(ctx, projectID)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, errorcodes.NewNotFoundError(fmt.Errorf("intermediate session signing key not found"))
+			return nil, apierror.NewNotFoundError("intermediate session signing key not found", err)
 		}
 
 		return nil, fmt.Errorf("get intermediate session signing key by project id: %w", err)
@@ -126,7 +126,7 @@ func (s *Store) GetIntermediateSessionPublicKeyByProjectID(ctx context.Context, 
 	intermediateSessionSigningKey, err := q.GetIntermediateSessionSigningKeyByProjectID(ctx, projectID)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, errorcodes.NewNotFoundError(fmt.Errorf("intermediate session signing key not found"))
+			return nil, apierror.NewNotFoundError("intermediate session signing key not found", fmt.Errorf("get intermediate session signing key by project id: %w", err))
 		}
 
 		return nil, fmt.Errorf("get intermediate session signing key by project id: %w", err)

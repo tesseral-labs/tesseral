@@ -4,17 +4,19 @@ import (
 	"bytes"
 	"context"
 	"crypto/sha256"
+	"errors"
 	"fmt"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
-	"github.com/openauth/openauth/internal/errorcodes"
+	"github.com/jackc/pgx/v5"
 	"github.com/openauth/openauth/internal/intermediate/authn"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
 	"github.com/openauth/openauth/internal/microsoftoauth"
+	"github.com/openauth/openauth/internal/shared/apierror"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
@@ -27,11 +29,15 @@ func (s *Store) GetMicrosoftOAuthRedirectURL(ctx context.Context, req *intermedi
 
 	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("project not found", fmt.Errorf("get project by id: %v", err))
+		}
+
 		return nil, fmt.Errorf("get project by id: %v", err)
 	}
 
 	if qProject.MicrosoftOauthClientID == nil {
-		return nil, errorcodes.NewFailedPreconditionError(fmt.Errorf("microsoft oauth client id not set"))
+		return nil, apierror.NewFailedPreconditionError("microsoft oauth client id not set", fmt.Errorf("microsoft oauth client id not set"))
 	}
 
 	token := uuid.New()
@@ -81,12 +87,12 @@ func (s *Store) RedeemMicrosoftOAuthCode(ctx context.Context, req *intermediatev
 	}
 
 	if qProject.MicrosoftOauthClientID == nil || qProject.MicrosoftOauthClientSecretCiphertext == nil {
-		return nil, errorcodes.NewFailedPreconditionError(fmt.Errorf("microsoft oauth client id or secret not set"))
+		return nil, apierror.NewFailedPreconditionError("microsoft oauth client id or secret not set", fmt.Errorf("microsoft oauth client id or secret not set"))
 	}
 
 	stateSHA := sha256.Sum256([]byte(req.State))
 	if !bytes.Equal(qIntermediateSession.MicrosoftOauthStateSha256, stateSHA[:]) {
-		return nil, errorcodes.NewFailedPreconditionError(fmt.Errorf("invalid state"))
+		return nil, apierror.NewFailedPreconditionError("invalid state", fmt.Errorf("invalid state"))
 	}
 
 	decryptRes, err := s.kms.Decrypt(ctx, &kms.DecryptInput{

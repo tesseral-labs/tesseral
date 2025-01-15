@@ -10,10 +10,10 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/openauth/openauth/internal/crypto/bcrypt"
-	"github.com/openauth/openauth/internal/errorcodes"
 	"github.com/openauth/openauth/internal/intermediate/authn"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
+	"github.com/openauth/openauth/internal/shared/apierror"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
@@ -67,7 +67,7 @@ func (s *Store) VerifyPassword(ctx context.Context, req *intermediatev1.VerifyPa
 	intermediateSession := authn.IntermediateSession(ctx)
 	organizationID, err := idformat.Organization.Parse(req.OrganizationId)
 	if err != nil {
-		return nil, fmt.Errorf("parse organization id: %w", err)
+		return nil, apierror.NewInvalidArgumentError("invalid organization id", fmt.Errorf("parse organization id: %w", err))
 	}
 
 	// Ensure that the organization exists and is part of the project
@@ -76,6 +76,10 @@ func (s *Store) VerifyPassword(ctx context.Context, req *intermediatev1.VerifyPa
 		ProjectID: projectID,
 	})
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("organization not found", fmt.Errorf("get project organization by id: %w", err))
+		}
+
 		return nil, fmt.Errorf("get project by organization id: %w", err)
 	}
 
@@ -236,14 +240,14 @@ func (s *Store) VerifyIntermediateSessionEmail(
 
 	sessionId, err := idformat.IntermediateSession.Parse(req.ID)
 	if err != nil {
-		return nil, fmt.Errorf("parse intermediate session id: %w", err)
+		return nil, apierror.NewInvalidArgumentError("parse intermediate session id", err)
 	}
 
 	// Get the intermediate session so we can perform some checks
 	existingIntermediateSession, err := q.GetIntermediateSessionByID(*ctx, sessionId)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, errorcodes.NewNotFoundError(fmt.Errorf("intermediate session not found"))
+			return nil, apierror.NewNotFoundError("intermediate session not found", fmt.Errorf("intermediate session not found"))
 		}
 
 		return nil, fmt.Errorf("get intermediate session by id: %w", err)
@@ -251,12 +255,12 @@ func (s *Store) VerifyIntermediateSessionEmail(
 
 	// Check if the intermediate session has been revoked
 	if existingIntermediateSession.Revoked {
-		return nil, errorcodes.NewFailedPreconditionError(fmt.Errorf("intermediate session has been revoked"))
+		return nil, apierror.NewFailedPreconditionError("intermediate session has been revoked", fmt.Errorf("intermediate session has been revoked"))
 	}
 
 	// Check if the intermediate session has expired
 	if existingIntermediateSession.ExpireTime.Before(time.Now()) {
-		return nil, errorcodes.NewFailedPreconditionError(fmt.Errorf("intermediate session has expired"))
+		return nil, apierror.NewFailedPreconditionError("intermediate session has expired", fmt.Errorf("intermediate session has expired"))
 	}
 
 	panic("unimplemented")

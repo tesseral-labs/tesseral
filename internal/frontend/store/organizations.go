@@ -6,10 +6,10 @@ import (
 	"fmt"
 
 	"github.com/jackc/pgx/v5"
-	"github.com/openauth/openauth/internal/errorcodes"
 	"github.com/openauth/openauth/internal/frontend/authn"
 	frontendv1 "github.com/openauth/openauth/internal/frontend/gen/openauth/frontend/v1"
 	"github.com/openauth/openauth/internal/frontend/store/queries"
+	"github.com/openauth/openauth/internal/shared/apierror"
 	"github.com/openauth/openauth/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -23,12 +23,16 @@ func (s *Store) GetOrganization(ctx context.Context, req *frontendv1.GetOrganiza
 
 	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
-		return nil, errorcodes.NewNotFoundError(fmt.Errorf("project not found"))
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("project not found", fmt.Errorf("get project by id: %w", err))
+		}
+
+		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 
 	qOrganization, err := q.GetOrganizationByID(ctx, authn.OrganizationID(ctx))
 	if err != nil {
-		return nil, errorcodes.NewNotFoundError(fmt.Errorf("organization not found"))
+		return nil, apierror.NewNotFoundError("organization not found", fmt.Errorf("get organization by id: %w", err))
 	}
 
 	return &frontendv1.GetOrganizationResponse{Organization: parseOrganization(qProject, qOrganization)}, nil
@@ -48,7 +52,7 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *frontendv1.UpdateOr
 	qOrg, err := q.GetOrganizationByID(ctx, authn.OrganizationID(ctx))
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, errorcodes.NewNotFoundError(fmt.Errorf("organization not found"))
+			return nil, apierror.NewNotFoundError("organization not found", fmt.Errorf("get organization by id: %w", err))
 		}
 
 		return nil, fmt.Errorf("get organization by id: %w", err)
@@ -78,13 +82,13 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *frontendv1.UpdateOr
 
 	qUpdatedOrg, err := q.UpdateOrganization(ctx, updates)
 	if err != nil {
-		return nil, fmt.Errorf("update organization: %w", err)
+		return nil, fmt.Errorf("update organization: %w", fmt.Errorf("update organization: %w", err))
 	}
 
 	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, errorcodes.NewNotFoundError(fmt.Errorf("project not found"))
+			return nil, apierror.NewNotFoundError("project not found", fmt.Errorf("get project by id: %w", err))
 		}
 
 		return nil, fmt.Errorf("get project by id: %w", err)
@@ -136,7 +140,7 @@ func (s *Store) validateIsOwner(ctx context.Context) error {
 	}
 
 	if !qUser.IsOwner {
-		return errorcodes.NewPermissionDeniedError(fmt.Errorf("user must be an owner of the organization"))
+		return apierror.NewPermissionDeniedError("user must be an owner of the organization", fmt.Errorf("user is not an owner"))
 	}
 	return nil
 }

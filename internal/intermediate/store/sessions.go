@@ -13,11 +13,11 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	openauthecdsa "github.com/openauth/openauth/internal/crypto/ecdsa"
-	"github.com/openauth/openauth/internal/errorcodes"
 	"github.com/openauth/openauth/internal/intermediate/authn"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
 	"github.com/openauth/openauth/internal/sessions"
+	"github.com/openauth/openauth/internal/shared/apierror"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
@@ -35,7 +35,7 @@ func (s *Store) ExchangeIntermediateSessionForNewOrganizationSession(ctx context
 
 	qProject, err := q.GetProjectByID(ctx, projectID)
 	if err != nil {
-		return nil, errorcodes.NewNotFoundError(fmt.Errorf("project not found"))
+		return nil, apierror.NewNotFoundError("project not found", fmt.Errorf("get project by id: %w", err))
 	}
 
 	// Create a new organization
@@ -137,7 +137,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 
 	organizationID, err := idformat.Organization.Parse(req.OrganizationId)
 	if err != nil {
-		return nil, errorcodes.NewInvalidArgumentError(fmt.Errorf("could not parse organization id: %w", err))
+		return nil, apierror.NewInvalidArgumentError("invalid organization id", fmt.Errorf("parse organization id: %w", err))
 	}
 
 	qOrganization, err := q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
@@ -146,7 +146,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 	})
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, errorcodes.NewNotFoundError(fmt.Errorf("organization not found"))
+			return nil, apierror.NewNotFoundError("organization not found", fmt.Errorf("get project organization by id: %w", err))
 		}
 
 		return nil, fmt.Errorf("get project organization by id: %w", err)
@@ -165,7 +165,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		})
 		if err != nil {
 			if errors.Is(err, pgx.ErrNoRows) {
-				return nil, errorcodes.NewNotFoundError(fmt.Errorf("user not found"))
+				return nil, apierror.NewNotFoundError("user not found", fmt.Errorf("get organization user by microsoft user id: %w", err))
 			}
 
 			return nil, fmt.Errorf("get organization user by microsoft user id: %w", err)
@@ -177,7 +177,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		})
 		if err != nil {
 			if errors.Is(err, pgx.ErrNoRows) {
-				return nil, errorcodes.NewNotFoundError(fmt.Errorf("user not found"))
+				return nil, apierror.NewNotFoundError("user not found", fmt.Errorf("get organization user by google user id: %w", err))
 			}
 
 			return nil, fmt.Errorf("get organization user by google user id: %w", err)
@@ -189,7 +189,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		})
 		if err != nil {
 			if errors.Is(err, pgx.ErrNoRows) {
-				return nil, errorcodes.NewNotFoundError(fmt.Errorf("user not found"))
+				return nil, apierror.NewNotFoundError("user not found", fmt.Errorf("get organization user by email: %w", err))
 			}
 
 			return nil, fmt.Errorf("get organization user by email: %w", err)
@@ -220,7 +220,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 	qProject, err := q.GetProjectByID(ctx, projectID)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, errorcodes.NewNotFoundError(fmt.Errorf("project not found"))
+			return nil, apierror.NewNotFoundError("project not found", fmt.Errorf("get project by id: %w", err))
 		}
 
 		return nil, fmt.Errorf("get project by id: %w", err)
@@ -229,7 +229,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 	sessionSigningKeyID, privateKey, err := s.getSessionSigningKey(ctx, q, projectID)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, errorcodes.NewNotFoundError(fmt.Errorf("session signing key not found"))
+			return nil, apierror.NewNotFoundError("session signing key not found", fmt.Errorf("get current session key by project id: %w", err))
 		}
 
 		return nil, fmt.Errorf("get session signing key: %w", err)
@@ -272,7 +272,7 @@ func (s *Store) getSessionSigningKey(ctx context.Context, q *queries.Queries, pr
 	sessionSigningKey, err := q.GetCurrentSessionKeyByProjectID(ctx, projectID)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, nil, errorcodes.NewFailedPreconditionError(fmt.Errorf("session signing key not found"))
+			return nil, nil, apierror.NewFailedPreconditionError("session signing key not found", fmt.Errorf("get current session key by project id: %w", err))
 		}
 
 		return nil, nil, fmt.Errorf("get current session key by project id: %w", err)

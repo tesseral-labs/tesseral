@@ -2,12 +2,15 @@ package store
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/openauth/openauth/internal/backend/authn"
 	backendv1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
 	"github.com/openauth/openauth/internal/backend/store/queries"
+	"github.com/openauth/openauth/internal/shared/apierror"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
@@ -55,7 +58,7 @@ func (s *Store) DeleteProjectRedirectURI(ctx context.Context, req *backendv1.Del
 
 	projectRedirectUriID, err := idformat.ProjectRedirectURI.Parse(req.Id)
 	if err != nil {
-		return nil, fmt.Errorf("parse project redirect uri id: %w", err)
+		return nil, apierror.NewInvalidArgumentError("invalid project redirect uri id", fmt.Errorf("parse project redirect uri id: %w", err))
 	}
 
 	err = q.DeleteProjectRedirectURI(ctx, queries.DeleteProjectRedirectURIParams{
@@ -85,7 +88,7 @@ func (s *Store) GetProjectRedirectURI(ctx context.Context, req *backendv1.GetPro
 
 	projectRedirectUriID, err := idformat.ProjectRedirectURI.Parse(req.Id)
 	if err != nil {
-		return nil, fmt.Errorf("parse project redirect uri id: %w", err)
+		return nil, apierror.NewInvalidArgumentError("invalid project redirect uri", fmt.Errorf("parse project redirect uri id: %w", err))
 	}
 
 	qProjectRedirectURI, err := q.GetProjectRedirectURI(ctx, queries.GetProjectRedirectURIParams{
@@ -93,6 +96,10 @@ func (s *Store) GetProjectRedirectURI(ctx context.Context, req *backendv1.GetPro
 		ID:        projectRedirectUriID,
 	})
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("project redirect uri not found", fmt.Errorf("get project redirect uri: %w", err))
+		}
+
 		return nil, fmt.Errorf("get project redirect uri: %w", err)
 	}
 
@@ -139,7 +146,7 @@ func (s *Store) UpdateProjectRedirectURI(ctx context.Context, req *backendv1.Upd
 
 	projectRedirectUriID, err := idformat.ProjectRedirectURI.Parse(req.Id)
 	if err != nil {
-		return nil, fmt.Errorf("parse project redirect uri id: %w", err)
+		return nil, apierror.NewInvalidArgumentError("invalid project redirect uri", fmt.Errorf("parse project redirect uri id: %w", err))
 	}
 
 	qProjectRedirectURI, err := q.UpdateProjectRedirectURI(ctx, queries.UpdateProjectRedirectURIParams{
