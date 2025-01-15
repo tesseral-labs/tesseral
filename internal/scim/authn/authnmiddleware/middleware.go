@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/openauth/openauth/internal/common/projectid"
 	"github.com/openauth/openauth/internal/scim/authn"
 	"github.com/openauth/openauth/internal/scim/store"
+	"github.com/openauth/openauth/internal/shared/projectid"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 

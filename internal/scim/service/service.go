@@ -13,9 +13,9 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/openauth/openauth/internal/common/projectid"
 	"github.com/openauth/openauth/internal/scim/authn/authnmiddleware"
 	"github.com/openauth/openauth/internal/scim/store"
+	"github.com/openauth/openauth/internal/shared/projectid"
 )
 
 type Service struct {

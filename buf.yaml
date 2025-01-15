@@ -6,4 +6,4 @@ modules:
   - path: internal/frontend/proto
   - path: internal/intermediate/proto
   - path: internal/oauth/proto
-  - path: internal/common/proto
+  - path: internal/shared/proto

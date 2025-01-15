@@ -9,11 +9,11 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/openauth/openauth/internal/common/apierror"
 	"github.com/openauth/openauth/internal/crypto/bcrypt"
 	"github.com/openauth/openauth/internal/intermediate/authn"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
+	"github.com/openauth/openauth/internal/shared/apierror"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
@@ -91,10 +91,6 @@ func (s *Store) VerifyPassword(ctx context.Context, req *intermediatev1.VerifyPa
 	})
 	if err != nil {
 		return nil, fmt.Errorf("get user by organization id and factors: %w", err)
-	}
-
-	if qUser.PasswordBcrypt == nil {
-		return nil, apierror.NewFailedPreconditionError("password not set", fmt.Errorf("password not set"))
 	}
 
 	// Check password is valid

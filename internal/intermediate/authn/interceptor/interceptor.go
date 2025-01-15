@@ -5,10 +5,10 @@ import (
 	"errors"
 
 	"connectrpc.com/connect"
-	"github.com/openauth/openauth/internal/common/projectid"
 	"github.com/openauth/openauth/internal/cookies"
 	"github.com/openauth/openauth/internal/intermediate/authn"
 	"github.com/openauth/openauth/internal/intermediate/store"
+	"github.com/openauth/openauth/internal/shared/projectid"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
