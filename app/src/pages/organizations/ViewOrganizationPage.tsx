@@ -20,6 +20,15 @@ import { DateTime } from 'luxon'
 import { timestampDate } from '@bufbuild/protobuf/wkt'
 import { ChevronDownIcon } from 'lucide-react'
 import { clsx } from 'clsx'
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 export function ViewOrganizationPage() {
   const { organizationId } = useParams()
@@ -30,9 +39,12 @@ export function ViewOrganizationPage() {
 
   const tabs = [
     {
+      name: 'Details',
+      url: `/organizations/${organizationId}`,
+    },
+    {
       name: 'Users',
       url: `/organizations/${organizationId}/users`,
-      alternativeUrl: `/organizations/${organizationId}`,
     },
     {
       name: 'SAML Connections',
@@ -42,79 +54,79 @@ export function ViewOrganizationPage() {
       name: 'SCIM API Keys',
       url: `/organizations/${organizationId}/scim-api-keys`,
     },
-    {
-      name: 'Organization Settings',
-      url: `/organizations/${organizationId}/settings`,
-    },
   ]
 
   return (
-    <div>
-      <h1 className="font-semibold text-2xl">
+    // TODO remove padding when app shell in place
+    <div className="pt-8">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link to="/">Home</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link to="/organizations">Organizations</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>
+              {getOrganizationResponse?.organization?.displayName}
+            </BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
+      <h1 className="mt-4 font-semibold text-2xl">
         {getOrganizationResponse?.organization?.displayName}
       </h1>
+      <span className="mt-1 inline-block border rounded bg-gray-100 py-1 px-2 font-mono text-xs text-muted-foreground">
+        {organizationId}
+      </span>
+      <div className="mt-4">
+        An organization represents one of your business customers. Lorem ipsum
+        dolor.
+      </div>
 
-      <div>ID: {organizationId}</div>
-
-      {getOrganizationResponse?.organization && (
-        <div>
-          <div>
-            Created At:
-            {DateTime.fromJSDate(
-              timestampDate(getOrganizationResponse.organization.createTime!),
-            ).toRelative()}
+      <Card className="my-8">
+        <CardHeader className="py-4">
+          <CardTitle className="text-xl">General configuration</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-3 gap-x-2">
+            <div className="border-r border-gray-200 pr-8">
+              <div className="font-semibold">Display Name</div>
+              <div>{getOrganizationResponse?.organization?.displayName}</div>
+            </div>
+            <div className="border-r border-gray-200 pl-8 pr-8">
+              <div className="font-semibold">Created</div>
+              <div>
+                {getOrganizationResponse?.organization?.createTime &&
+                  DateTime.fromJSDate(
+                    timestampDate(
+                      getOrganizationResponse.organization.createTime,
+                    ),
+                  ).toRelative()}
+              </div>
+            </div>
+            <div className="px-8">
+              <div className="font-semibold">Last updated</div>
+              <div>
+                {getOrganizationResponse?.organization?.updateTime &&
+                  DateTime.fromJSDate(
+                    timestampDate(
+                      getOrganizationResponse.organization.updateTime,
+                    ),
+                  ).toRelative()}
+              </div>
+            </div>
           </div>
-          <div>
-            Updated At:
-            {DateTime.fromJSDate(
-              timestampDate(getOrganizationResponse.organization.updateTime!),
-            ).toRelative()}
-          </div>
-          <div>
-            Override Log in Methods?
-            {getOrganizationResponse.organization.overrideLogInMethods
-              ? 'Yes'
-              : 'No'}
-          </div>
-          <div>
-            Log in with Google?
-            {getOrganizationResponse.organization.logInWithGoogleEnabled
-              ? 'Yes'
-              : 'No'}
-          </div>
-          <div>
-            Override Log in Microsoft?
-            {getOrganizationResponse.organization.logInWithMicrosoftEnabled
-              ? 'Yes'
-              : 'No'}
-          </div>
-          <div>
-            Override Log in Password?
-            {getOrganizationResponse.organization.logInWithPasswordEnabled
-              ? 'Yes'
-              : 'No'}
-          </div>
-
-          <div>
-            Google Hosted Domain:
-            {getOrganizationResponse.organization.googleHostedDomain}
-          </div>
-          <div>
-            Microsoft Tenant ID:
-            {getOrganizationResponse.organization.microsoftTenantId}
-          </div>
-
-          <div>
-            SAML Enabled?
-            {getOrganizationResponse.organization.samlEnabled}
-          </div>
-
-          <div>
-            SCIM Enabled?
-            {getOrganizationResponse.organization.scimEnabled}
-          </div>
-        </div>
-      )}
+        </CardContent>
+      </Card>
 
       <div className="border-b border-gray-200">
         <nav aria-label="Tabs" className="-mb-px flex space-x-8">
@@ -123,7 +135,7 @@ export function ViewOrganizationPage() {
               key={tab.name}
               to={tab.url}
               className={clsx(
-                pathname === tab.url || pathname === tab.alternativeUrl
+                pathname === tab.url
                   ? 'border-indigo-500 text-indigo-600'
                   : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
                 'whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium',
