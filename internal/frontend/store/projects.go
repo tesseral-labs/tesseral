@@ -7,6 +7,7 @@ import (
 
 	"connectrpc.com/connect"
 	"github.com/jackc/pgx/v5"
+	"github.com/openauth/openauth/internal/errorcodes"
 	"github.com/openauth/openauth/internal/frontend/authn"
 	frontendv1 "github.com/openauth/openauth/internal/frontend/gen/openauth/frontend/v1"
 	"github.com/openauth/openauth/internal/frontend/store/queries"
@@ -24,7 +25,7 @@ func (s *Store) GetProject(ctx context.Context, req *frontendv1.GetProjectReques
 	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, connect.NewError(connect.CodeNotFound, errors.New("project not found"))
+			return nil, connect.NewError(connect.CodeNotFound, errorcodes.NewNotFoundError())
 		}
 
 		return nil, fmt.Errorf("get project by id: %w", err)

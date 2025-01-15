@@ -7,6 +7,7 @@ import (
 
 	"connectrpc.com/connect"
 	"github.com/jackc/pgx/v5"
+	"github.com/openauth/openauth/internal/errorcodes"
 	"github.com/openauth/openauth/internal/frontend/authn"
 	frontendv1 "github.com/openauth/openauth/internal/frontend/gen/openauth/frontend/v1"
 	"github.com/openauth/openauth/internal/frontend/store/queries"
@@ -23,12 +24,12 @@ func (s *Store) GetOrganization(ctx context.Context, req *frontendv1.GetOrganiza
 
 	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
-		return nil, fmt.Errorf("get project by id: %w", err)
+		return nil, connect.NewError(connect.CodeFailedPrecondition, errorcodes.NewFailedPreconditionError())
 	}
 
 	qOrganization, err := q.GetOrganizationByID(ctx, authn.OrganizationID(ctx))
 	if err != nil {
-		return nil, fmt.Errorf("get organization by id: %w", err)
+		return nil, connect.NewError(connect.CodeNotFound, errorcodes.NewNotFoundError())
 	}
 
 	return &frontendv1.GetOrganizationResponse{Organization: parseOrganization(qProject, qOrganization)}, nil
@@ -48,7 +49,7 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *frontendv1.UpdateOr
 	qOrg, err := q.GetOrganizationByID(ctx, authn.OrganizationID(ctx))
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, connect.NewError(connect.CodeNotFound, errors.New("organization not found"))
+			return nil, connect.NewError(connect.CodeNotFound, errorcodes.NewNotFoundError())
 		}
 
 		return nil, fmt.Errorf("get organization by id: %w", err)
@@ -84,7 +85,7 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *frontendv1.UpdateOr
 	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, connect.NewError(connect.CodeFailedPrecondition, errors.New("project not found"))
+			return nil, connect.NewError(connect.CodeFailedPrecondition, errorcodes.NewNotFoundError())
 		}
 
 		return nil, fmt.Errorf("get project by id: %w", err)
@@ -136,7 +137,7 @@ func (s *Store) validateIsOwner(ctx context.Context) error {
 	}
 
 	if !qUser.IsOwner {
-		return connect.NewError(connect.CodePermissionDenied, fmt.Errorf("you must be an organization owner to perform this action"))
+		return connect.NewError(connect.CodePermissionDenied, errorcodes.NewPermissionDeniedError())
 	}
 	return nil
 }

@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"crypto/sha256"
-	"errors"
 	"fmt"
 	"time"
 
@@ -12,6 +11,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
+	"github.com/openauth/openauth/internal/errorcodes"
 	"github.com/openauth/openauth/internal/intermediate/authn"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
@@ -32,7 +32,7 @@ func (s *Store) GetMicrosoftOAuthRedirectURL(ctx context.Context, req *intermedi
 	}
 
 	if qProject.MicrosoftOauthClientID == nil {
-		return nil, connect.NewError(connect.CodeFailedPrecondition, errors.New("microsoft oauth not configured"))
+		return nil, connect.NewError(connect.CodeFailedPrecondition, errorcodes.NewFailedPreconditionError())
 	}
 
 	token := uuid.New()
@@ -82,12 +82,12 @@ func (s *Store) RedeemMicrosoftOAuthCode(ctx context.Context, req *intermediatev
 	}
 
 	if qProject.MicrosoftOauthClientID == nil || qProject.MicrosoftOauthClientSecretCiphertext == nil {
-		return nil, connect.NewError(connect.CodeFailedPrecondition, errors.New("microsoft oauth not configured"))
+		return nil, connect.NewError(connect.CodeFailedPrecondition, errorcodes.NewFailedPreconditionError())
 	}
 
 	stateSHA := sha256.Sum256([]byte(req.State))
 	if !bytes.Equal(qIntermediateSession.MicrosoftOauthStateSha256, stateSHA[:]) {
-		return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("bad state parameter"))
+		return nil, connect.NewError(connect.CodeInvalidArgument, errorcodes.NewFailedPreconditionError())
 	}
 
 	decryptRes, err := s.kms.Decrypt(ctx, &kms.DecryptInput{

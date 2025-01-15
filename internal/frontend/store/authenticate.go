@@ -10,6 +10,7 @@ import (
 
 	"connectrpc.com/connect"
 	"github.com/jackc/pgx/v5"
+	"github.com/openauth/openauth/internal/errorcodes"
 	"github.com/openauth/openauth/internal/frontend/authn"
 	"github.com/openauth/openauth/internal/frontend/store/queries"
 	"github.com/openauth/openauth/internal/store/idformat"
@@ -29,7 +30,7 @@ func (s *Store) GetSessionSigningKeyPublicKey(ctx context.Context, sessionSignin
 	})
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, connect.NewError(connect.CodeNotFound, errors.New("session signing key not found"))
+			return nil, connect.NewError(connect.CodeNotFound, errorcodes.NewNotFoundError())
 		}
 
 		return nil, fmt.Errorf("get session signing key public key: %w", err)

@@ -9,6 +9,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/openauth/openauth/internal/crypto/bcrypt"
+	"github.com/openauth/openauth/internal/errorcodes"
 	"github.com/openauth/openauth/internal/frontend/authn"
 	frontendv1 "github.com/openauth/openauth/internal/frontend/gen/openauth/frontend/v1"
 	"github.com/openauth/openauth/internal/frontend/store/queries"
@@ -25,7 +26,7 @@ func (s *Store) SetUserPassword(ctx context.Context, req *frontendv1.SetPassword
 
 	passwordBcrypt, err := bcrypt.GenerateBcryptHash(req.Password)
 	if err != nil {
-		return nil, connect.NewError(connect.CodeFailedPrecondition, fmt.Errorf("generate bcrypt hash: %w", err))
+		return nil, connect.NewError(connect.CodeFailedPrecondition, errorcodes.NewFailedPreconditionError())
 	}
 
 	if _, err = q.SetPassword(ctx, queries.SetPasswordParams{
@@ -90,7 +91,7 @@ func (s *Store) GetUser(ctx context.Context, req *frontendv1.GetUserRequest) (*f
 
 	userID, err := idformat.User.Parse(req.Id)
 	if err != nil {
-		return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("invalid user id"))
+		return nil, connect.NewError(connect.CodeInvalidArgument, errorcodes.NewInvalidArgumentError())
 	}
 
 	qUser, err := q.GetUser(ctx, queries.GetUserParams{
@@ -99,7 +100,7 @@ func (s *Store) GetUser(ctx context.Context, req *frontendv1.GetUserRequest) (*f
 	})
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, connect.NewError(connect.CodeNotFound, errors.New("user not found"))
+			return nil, connect.NewError(connect.CodeNotFound, errorcodes.NewNotFoundError())
 		}
 
 		return nil, fmt.Errorf("get user: %w", err)
@@ -122,7 +123,7 @@ func (s *Store) UpdateUser(ctx context.Context, req *frontendv1.UpdateUserReques
 
 	userID, err := idformat.User.Parse(req.Id)
 	if err != nil {
-		return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("invalid user id"))
+		return nil, connect.NewError(connect.CodeInvalidArgument, errorcodes.NewInvalidArgumentError())
 	}
 
 	// Fetch the existing user details. Also acts as authz check.
@@ -132,7 +133,7 @@ func (s *Store) UpdateUser(ctx context.Context, req *frontendv1.UpdateUserReques
 	})
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, connect.NewError(connect.CodeNotFound, errors.New("user not found"))
+			return nil, connect.NewError(connect.CodeNotFound, errorcodes.NewNotFoundError())
 		}
 
 		return nil, fmt.Errorf("get user by id: %w", err)
