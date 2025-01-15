@@ -11,6 +11,9 @@ import { ListOrganizationsPage } from '@/pages/organizations/ListOrganizationsPa
 import { useAccessToken } from '@/lib/use-access-token'
 import { Container } from '@/pages/Container'
 import { ViewOrganizationPage } from '@/pages/organizations/ViewOrganizationPage'
+import { ViewUserPage } from '@/pages/users/ViewUserPage'
+import { ListProjectAPIKeysPage } from '@/pages/project-api-keys/ListProjectAPIKeysPage'
+import { ViewProjectPage } from '@/pages/project/ViewProjectPage'
 
 const queryClient = new QueryClient()
 
@@ -43,13 +46,24 @@ function AppWithinQueryClient() {
       <BrowserRouter>
         <Routes>
           <Route path="" element={<Container />}>
+            <Route path="/" element={<ViewProjectPage />} />
+
+            <Route
+              path="/project-api-keys"
+              element={<ListProjectAPIKeysPage />}
+            />
+
             <Route path="/organizations" element={<ListOrganizationsPage />} />
             <Route
               path="/organizations/:organizationId"
               element={<ViewOrganizationPage />}
             />
+
+            <Route
+              path="/organizations/:organizationId/users/:userId"
+              element={<ViewUserPage />}
+            />
           </Route>
-          <Route path="/" element={<SessionInfoPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>

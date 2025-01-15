@@ -40,6 +40,68 @@ export function ViewOrganizationPage() {
         {getOrganizationResponse?.organization?.displayName}
       </h1>
 
+      <div>ID: {organizationId}</div>
+
+      {getOrganizationResponse?.organization && (
+        <div>
+          <div>
+            Created At:
+            {DateTime.fromJSDate(
+              timestampDate(getOrganizationResponse.organization.createTime!),
+            ).toRelative()}
+          </div>
+          <div>
+            Updated At:
+            {DateTime.fromJSDate(
+              timestampDate(getOrganizationResponse.organization.updateTime!),
+            ).toRelative()}
+          </div>
+          <div>
+            Override Log in Methods?
+            {getOrganizationResponse.organization.overrideLogInMethods
+              ? 'Yes'
+              : 'No'}
+          </div>
+          <div>
+            Log in with Google?
+            {getOrganizationResponse.organization.logInWithGoogleEnabled
+              ? 'Yes'
+              : 'No'}
+          </div>
+          <div>
+            Override Log in Microsoft?
+            {getOrganizationResponse.organization.logInWithMicrosoftEnabled
+              ? 'Yes'
+              : 'No'}
+          </div>
+          <div>
+            Override Log in Password?
+            {getOrganizationResponse.organization.logInWithPasswordEnabled
+              ? 'Yes'
+              : 'No'}
+          </div>
+
+          <div>
+            Google Hosted Domain:
+            {getOrganizationResponse.organization.googleHostedDomain}
+          </div>
+          <div>
+            Microsoft Tenant ID:
+            {getOrganizationResponse.organization.microsoftTenantId}
+          </div>
+
+          <div>
+            SAML Enabled?
+            {getOrganizationResponse.organization.samlEnabled}
+          </div>
+
+          <div>
+            SCIM Enabled?
+            {getOrganizationResponse.organization.scimEnabled}
+          </div>
+        </div>
+      )}
+
       <h2 className="font-semibold text-xl">Users</h2>
       <Table className="mt-4">
         <TableHeader>
