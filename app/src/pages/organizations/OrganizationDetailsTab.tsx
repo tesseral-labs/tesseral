@@ -4,13 +4,17 @@ import { DateTime } from 'luxon'
 import { timestampDate } from '@bufbuild/protobuf/wkt'
 import { useParams } from 'react-router'
 import { useQuery } from '@connectrpc/connect-query'
-import { getOrganization } from '@/gen/openauth/backend/v1/backend-BackendService_connectquery'
+import {
+  getOrganization,
+  getProject,
+} from '@/gen/openauth/backend/v1/backend-BackendService_connectquery'
 
 export function OrganizationDetailsTab() {
   const { organizationId } = useParams()
   const { data: getOrganizationResponse } = useQuery(getOrganization, {
     id: organizationId,
   })
+  const { data: getProjectResponse } = useQuery(getProject, {})
 
   return (
     <Card className="my-8">
@@ -29,50 +33,61 @@ export function OrganizationDetailsTab() {
               </div>
             </div>
 
-            <div>
-              <div className="font-semibold">Log in with Google</div>
+            {getProjectResponse?.project?.logInWithGoogleEnabled && (
               <div>
-                {getOrganizationResponse?.organization?.logInWithGoogleEnabled
-                  ? 'Enabled'
-                  : 'Disabled'}
+                <div className="font-semibold">Log in with Google</div>
+                <div>
+                  {getOrganizationResponse?.organization?.logInWithGoogleEnabled
+                    ? 'Enabled'
+                    : 'Disabled'}
+                </div>
               </div>
-            </div>
+            )}
 
-            <div>
-              <div className="font-semibold">Log in with Microsoft</div>
+            {getProjectResponse?.project?.logInWithMicrosoftEnabled && (
               <div>
-                {getOrganizationResponse?.organization
-                  ?.logInWithMicrosoftEnabled
-                  ? 'Enabled'
-                  : 'Disabled'}
+                <div className="font-semibold">Log in with Microsoft</div>
+                <div>
+                  {getOrganizationResponse?.organization
+                    ?.logInWithMicrosoftEnabled
+                    ? 'Enabled'
+                    : 'Disabled'}
+                </div>
               </div>
-            </div>
+            )}
 
-            <div>
-              <div className="font-semibold">Log in with Password</div>
+            {getProjectResponse?.project?.logInWithPasswordEnabled && (
               <div>
-                {getOrganizationResponse?.organization?.logInWithPasswordEnabled
-                  ? 'Enabled'
-                  : 'Disabled'}
+                <div className="font-semibold">Log in with Password</div>
+                <div>
+                  {getOrganizationResponse?.organization
+                    ?.logInWithPasswordEnabled
+                    ? 'Enabled'
+                    : 'Disabled'}
+                </div>
               </div>
-            </div>
+            )}
           </div>
           <div className="border-r border-gray-200 pl-8 pr-8 flex flex-col gap-4">
-            <div>
-              <div className="font-semibold">Google Hosted Domain</div>
+            {getProjectResponse?.project?.logInWithGoogleEnabled && (
               <div>
-                {getOrganizationResponse?.organization?.googleHostedDomain ||
-                  '-'}
+                <div className="font-semibold">Google Hosted Domain</div>
+                <div>
+                  {getOrganizationResponse?.organization?.googleHostedDomain ||
+                    '-'}
+                </div>
               </div>
-            </div>
+            )}
 
-            <div>
-              <div className="font-semibold">Microsoft Tenant ID</div>
+            {getProjectResponse?.project?.logInWithMicrosoftEnabled && (
               <div>
-                {getOrganizationResponse?.organization?.microsoftTenantId ||
-                  '-'}
+                <div className="font-semibold">Microsoft Tenant ID</div>
+                <div>
+                  {getOrganizationResponse?.organization?.microsoftTenantId ||
+                    '-'}
+                </div>
               </div>
-            </div>
+            )}
           </div>
           <div className="border-gray-200 pl-8 flex flex-col gap-4">
             <div>
