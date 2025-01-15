@@ -4,7 +4,7 @@ import useDarkMode from '@/lib/dark-mode'
 import { cn } from '@/lib/utils'
 
 const Page = () => {
-  const [isDarkMode] = useDarkMode()
+  const isDarkMode = useDarkMode()
 
   return (
     <div
