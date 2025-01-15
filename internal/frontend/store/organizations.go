@@ -2,9 +2,11 @@ package store
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"connectrpc.com/connect"
+	"github.com/jackc/pgx/v5"
 	"github.com/openauth/openauth/internal/frontend/authn"
 	frontendv1 "github.com/openauth/openauth/internal/frontend/gen/openauth/frontend/v1"
 	"github.com/openauth/openauth/internal/frontend/store/queries"
@@ -45,6 +47,10 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *frontendv1.UpdateOr
 
 	qOrg, err := q.GetOrganizationByID(ctx, authn.OrganizationID(ctx))
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, connect.NewError(connect.CodeNotFound, errors.New("organization not found"))
+		}
+
 		return nil, fmt.Errorf("get organization by id: %w", err)
 	}
 
@@ -77,6 +83,10 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *frontendv1.UpdateOr
 
 	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, connect.NewError(connect.CodeFailedPrecondition, errors.New("project not found"))
+		}
+
 		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 
