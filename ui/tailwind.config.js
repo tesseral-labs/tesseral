@@ -10,6 +10,13 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // Brand colors
+        dark: '#010C0F',
+        light: '#F6F7F7',
+        primary: '#5046E1',
+        white: '#FFFFFF',
+
+        // Custom colors
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
