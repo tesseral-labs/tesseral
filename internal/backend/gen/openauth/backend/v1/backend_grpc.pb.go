@@ -20,7 +20,6 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	BackendService_GetProject_FullMethodName               = "/openauth.backend.v1.BackendService/GetProject"
-	BackendService_UpdateProject_FullMethodName            = "/openauth.backend.v1.BackendService/UpdateProject"
 	BackendService_ListOrganizations_FullMethodName        = "/openauth.backend.v1.BackendService/ListOrganizations"
 	BackendService_GetOrganization_FullMethodName          = "/openauth.backend.v1.BackendService/GetOrganization"
 	BackendService_CreateOrganization_FullMethodName       = "/openauth.backend.v1.BackendService/CreateOrganization"
@@ -43,6 +42,7 @@ const (
 	BackendService_GetSession_FullMethodName               = "/openauth.backend.v1.BackendService/GetSession"
 	BackendService_ListIntermediateSessions_FullMethodName = "/openauth.backend.v1.BackendService/ListIntermediateSessions"
 	BackendService_GetIntermediateSession_FullMethodName   = "/openauth.backend.v1.BackendService/GetIntermediateSession"
+	BackendService_UpdateProject_FullMethodName            = "/openauth.backend.v1.BackendService/UpdateProject"
 	BackendService_CreateProjectRedirectURI_FullMethodName = "/openauth.backend.v1.BackendService/CreateProjectRedirectURI"
 	BackendService_DeleteProjectRedirectURI_FullMethodName = "/openauth.backend.v1.BackendService/DeleteProjectRedirectURI"
 	BackendService_GetProjectRedirectURI_FullMethodName    = "/openauth.backend.v1.BackendService/GetProjectRedirectURI"
@@ -61,7 +61,6 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type BackendServiceClient interface {
 	GetProject(ctx context.Context, in *GetProjectRequest, opts ...grpc.CallOption) (*GetProjectResponse, error)
-	UpdateProject(ctx context.Context, in *UpdateProjectRequest, opts ...grpc.CallOption) (*UpdateProjectResponse, error)
 	ListOrganizations(ctx context.Context, in *ListOrganizationsRequest, opts ...grpc.CallOption) (*ListOrganizationsResponse, error)
 	GetOrganization(ctx context.Context, in *GetOrganizationRequest, opts ...grpc.CallOption) (*GetOrganizationResponse, error)
 	CreateOrganization(ctx context.Context, in *CreateOrganizationRequest, opts ...grpc.CallOption) (*CreateOrganizationResponse, error)
@@ -84,6 +83,7 @@ type BackendServiceClient interface {
 	GetSession(ctx context.Context, in *GetSessionRequest, opts ...grpc.CallOption) (*GetSessionResponse, error)
 	ListIntermediateSessions(ctx context.Context, in *ListIntermediateSessionsRequest, opts ...grpc.CallOption) (*ListIntermediateSessionsResponse, error)
 	GetIntermediateSession(ctx context.Context, in *GetIntermediateSessionRequest, opts ...grpc.CallOption) (*GetIntermediateSessionResponse, error)
+	UpdateProject(ctx context.Context, in *UpdateProjectRequest, opts ...grpc.CallOption) (*UpdateProjectResponse, error)
 	CreateProjectRedirectURI(ctx context.Context, in *CreateProjectRedirectURIRequest, opts ...grpc.CallOption) (*CreateProjectRedirectURIResponse, error)
 	DeleteProjectRedirectURI(ctx context.Context, in *DeleteProjectRedirectURIRequest, opts ...grpc.CallOption) (*DeleteProjectRedirectURIResponse, error)
 	GetProjectRedirectURI(ctx context.Context, in *GetProjectRedirectURIRequest, opts ...grpc.CallOption) (*GetProjectRedirectURIResponse, error)
@@ -109,16 +109,6 @@ func (c *backendServiceClient) GetProject(ctx context.Context, in *GetProjectReq
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetProjectResponse)
 	err := c.cc.Invoke(ctx, BackendService_GetProject_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *backendServiceClient) UpdateProject(ctx context.Context, in *UpdateProjectRequest, opts ...grpc.CallOption) (*UpdateProjectResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(UpdateProjectResponse)
-	err := c.cc.Invoke(ctx, BackendService_UpdateProject_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -345,6 +335,16 @@ func (c *backendServiceClient) GetIntermediateSession(ctx context.Context, in *G
 	return out, nil
 }
 
+func (c *backendServiceClient) UpdateProject(ctx context.Context, in *UpdateProjectRequest, opts ...grpc.CallOption) (*UpdateProjectResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateProjectResponse)
+	err := c.cc.Invoke(ctx, BackendService_UpdateProject_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *backendServiceClient) CreateProjectRedirectURI(ctx context.Context, in *CreateProjectRedirectURIRequest, opts ...grpc.CallOption) (*CreateProjectRedirectURIResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CreateProjectRedirectURIResponse)
@@ -460,7 +460,6 @@ func (c *backendServiceClient) RevokeProjectAPIKey(ctx context.Context, in *Revo
 // for forward compatibility.
 type BackendServiceServer interface {
 	GetProject(context.Context, *GetProjectRequest) (*GetProjectResponse, error)
-	UpdateProject(context.Context, *UpdateProjectRequest) (*UpdateProjectResponse, error)
 	ListOrganizations(context.Context, *ListOrganizationsRequest) (*ListOrganizationsResponse, error)
 	GetOrganization(context.Context, *GetOrganizationRequest) (*GetOrganizationResponse, error)
 	CreateOrganization(context.Context, *CreateOrganizationRequest) (*CreateOrganizationResponse, error)
@@ -483,6 +482,7 @@ type BackendServiceServer interface {
 	GetSession(context.Context, *GetSessionRequest) (*GetSessionResponse, error)
 	ListIntermediateSessions(context.Context, *ListIntermediateSessionsRequest) (*ListIntermediateSessionsResponse, error)
 	GetIntermediateSession(context.Context, *GetIntermediateSessionRequest) (*GetIntermediateSessionResponse, error)
+	UpdateProject(context.Context, *UpdateProjectRequest) (*UpdateProjectResponse, error)
 	CreateProjectRedirectURI(context.Context, *CreateProjectRedirectURIRequest) (*CreateProjectRedirectURIResponse, error)
 	DeleteProjectRedirectURI(context.Context, *DeleteProjectRedirectURIRequest) (*DeleteProjectRedirectURIResponse, error)
 	GetProjectRedirectURI(context.Context, *GetProjectRedirectURIRequest) (*GetProjectRedirectURIResponse, error)
@@ -506,9 +506,6 @@ type UnimplementedBackendServiceServer struct{}
 
 func (UnimplementedBackendServiceServer) GetProject(context.Context, *GetProjectRequest) (*GetProjectResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetProject not implemented")
-}
-func (UnimplementedBackendServiceServer) UpdateProject(context.Context, *UpdateProjectRequest) (*UpdateProjectResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateProject not implemented")
 }
 func (UnimplementedBackendServiceServer) ListOrganizations(context.Context, *ListOrganizationsRequest) (*ListOrganizationsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListOrganizations not implemented")
@@ -575,6 +572,9 @@ func (UnimplementedBackendServiceServer) ListIntermediateSessions(context.Contex
 }
 func (UnimplementedBackendServiceServer) GetIntermediateSession(context.Context, *GetIntermediateSessionRequest) (*GetIntermediateSessionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetIntermediateSession not implemented")
+}
+func (UnimplementedBackendServiceServer) UpdateProject(context.Context, *UpdateProjectRequest) (*UpdateProjectResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateProject not implemented")
 }
 func (UnimplementedBackendServiceServer) CreateProjectRedirectURI(context.Context, *CreateProjectRedirectURIRequest) (*CreateProjectRedirectURIResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateProjectRedirectURI not implemented")
@@ -644,24 +644,6 @@ func _BackendService_GetProject_Handler(srv interface{}, ctx context.Context, de
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(BackendServiceServer).GetProject(ctx, req.(*GetProjectRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _BackendService_UpdateProject_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateProjectRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(BackendServiceServer).UpdateProject(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: BackendService_UpdateProject_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).UpdateProject(ctx, req.(*UpdateProjectRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1062,6 +1044,24 @@ func _BackendService_GetIntermediateSession_Handler(srv interface{}, ctx context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BackendService_UpdateProject_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateProjectRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).UpdateProject(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_UpdateProject_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).UpdateProject(ctx, req.(*UpdateProjectRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _BackendService_CreateProjectRedirectURI_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateProjectRedirectURIRequest)
 	if err := dec(in); err != nil {
@@ -1272,10 +1272,6 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _BackendService_GetProject_Handler,
 		},
 		{
-			MethodName: "UpdateProject",
-			Handler:    _BackendService_UpdateProject_Handler,
-		},
-		{
 			MethodName: "ListOrganizations",
 			Handler:    _BackendService_ListOrganizations_Handler,
 		},
@@ -1362,6 +1358,10 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetIntermediateSession",
 			Handler:    _BackendService_GetIntermediateSession_Handler,
+		},
+		{
+			MethodName: "UpdateProject",
+			Handler:    _BackendService_UpdateProject_Handler,
 		},
 		{
 			MethodName: "CreateProjectRedirectURI",
