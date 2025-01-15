@@ -87,7 +87,7 @@ sql:
         <<: *go
         out: "../internal/scim/store/queries"
   - engine: "postgresql"
-    queries: "queries-shared.sql"
+    queries: "queries-common.sql"
     schema: "../cmd/openauthctl/migrations"
     gen:
       go:
