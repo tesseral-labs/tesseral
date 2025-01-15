@@ -98,7 +98,7 @@ const Organizations = () => {
           <ul className="w-full p-0 border border-b-0 rounded-md">
             {organizations.map((organization, idx) => (
               <li
-                className={`py-2 px-4 border-b ${idx === organizations.length ? 'rounded-b-md' : ''} hover:bg-gray-50 cursor-pointer font-semibold`}
+                className={`py-2 px-4 border-b ${idx === organizations.length ? 'rounded-b-md' : ''} hover:bg-gray-50 hover:text-dark cursor-pointer font-semibold`}
                 key={organization.id}
                 onClick={() => handleOrganizationClick(organization)}
               >

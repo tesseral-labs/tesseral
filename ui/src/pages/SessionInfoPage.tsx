@@ -10,7 +10,7 @@ const SessionInfoPage = () => {
     <>
       <Title title="Session Info" />
       <div>
-        <h1>Hello, {whoamiRes?.email}</h1>
+        <h1 className="text-foreground">Hello, {whoamiRes?.email}</h1>
       </div>
     </>
   )

@@ -53,15 +53,15 @@ const EmailVerification = () => {
           <CardTitle className="text-center uppercase text-foreground font-semibold text-sm tracking-wide mt-2">
             Verify Email Address
           </CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col items-center justify-center w-full">
-          <p className="text-center mb-3">
+          <p className="text-sm text-center mt-2 text-gray-500">
             Please enter the verification code sent to <b>{whoamiRes?.email}</b>{' '}
             below.
           </p>
+        </CardHeader>
+        <CardContent className="flex flex-col items-center justify-center w-full">
           <form className="flex flex-col items-center" onSubmit={handleSubmit}>
             <input
-              className="text-sm rounded border border-border focus:border-primary w-[clamp(240px,50%,100%)] mb-2"
+              className="text-sm bg-input rounded border border-border focus:border-primary w-[clamp(240px,50%,100%)] mb-2"
               id="challengeCode"
               placeholder="Enter your challenge code"
               value={challengeCode}

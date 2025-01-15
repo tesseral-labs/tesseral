@@ -93,7 +93,7 @@ const EmailForm = () => {
           Continue with Email
         </label>
         <input
-          className="text-sm rounded border border-border focus:border-primary w-[clamp(240px,50%,100%)] mb-2"
+          className="text-sm bg-input rounded border border-border focus:border-primary w-[clamp(240px,50%,100%)] mb-2"
           id="email"
           type="email"
           onChange={handleEmail}

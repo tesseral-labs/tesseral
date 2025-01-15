@@ -36,10 +36,10 @@
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
+    --background: 193, 88%, 3%;
     --foreground: 210 40% 98%;
 
-    --card: 222.2 84% 4.9%;
+    --card: 193, 39%, 9%;
     --card-foreground: 210 40% 98%;
 
     --popover: 222.2 84% 4.9%;
@@ -61,7 +61,7 @@
     --destructive-foreground: 210 40% 98%;
 
     --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
+    --input: 195, 18%, 22%;
     --ring: 212.7 26.8% 83.9%;
   }
 }

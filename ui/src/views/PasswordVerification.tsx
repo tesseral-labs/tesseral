@@ -53,14 +53,14 @@ const PasswordVerification = () => {
           <CardTitle className="text-center uppercase text-foreground font-semibold text-sm tracking-wide mt-2">
             Password Verification
           </CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col items-center justify-center w-full">
-          <p className="text-center mb-3">
+          <p className="text-sm text-center mt-2 text-gray-500">
             Please enter your password to continue logging in.
           </p>
+        </CardHeader>
+        <CardContent className="flex flex-col items-center justify-center w-full">
           <form className="flex flex-col items-center" onSubmit={handleSubmit}>
             <input
-              className="text-sm rounded border border-border focus:border-primary w-[clamp(240px,50%,100%)] mb-2"
+              className="text-sm bg-input rounded border border-border focus:border-primary w-[clamp(240px,50%,100%)] mb-2"
               id="password"
               placeholder="Enter your password"
               type="password"
