@@ -11,9 +11,9 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	"github.com/openauth/openauth/internal/common/apierror"
 	openauthecdsa "github.com/openauth/openauth/internal/crypto/ecdsa"
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
-	"github.com/openauth/openauth/internal/shared/apierror"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 

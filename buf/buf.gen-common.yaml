@@ -6,22 +6,22 @@ managed:
       module: buf.build/googleapis/googleapis
   override:
     - file_option: go_package_prefix
-      value: "github.com/openauth/openauth/internal/shared/gen"
+      value: "github.com/openauth/openauth/internal/common/gen"
 plugins:
   - remote: buf.build/protocolbuffers/go
-    out: internal/shared/gen
+    out: internal/common/gen
     opt: paths=source_relative
   - remote: buf.build/grpc/go
-    out: internal/shared/gen
+    out: internal/common/gen
     opt: paths=source_relative
   - remote: buf.build/grpc-ecosystem/gateway
-    out: internal/shared/gen
+    out: internal/common/gen
     opt: paths=source_relative
   - remote: buf.build/connectrpc/go
-    out: internal/shared/gen
+    out: internal/common/gen
     opt: paths=source_relative
   - remote: buf.build/community/google-gnostic-openapi
-    out: internal/shared/gen
+    out: internal/common/gen
     opt: paths=source_relative
 inputs:
-  - directory: internal/shared/proto
+  - directory: internal/common/proto

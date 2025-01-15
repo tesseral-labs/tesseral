@@ -3,8 +3,8 @@ package interceptor
 import (
 	"net/http"
 
+	"github.com/openauth/openauth/internal/common/projectid"
 	"github.com/openauth/openauth/internal/saml/authn"
-	"github.com/openauth/openauth/internal/shared/projectid"
 )
 
 func New(p *projectid.Sniffer, next http.Handler) http.Handler {

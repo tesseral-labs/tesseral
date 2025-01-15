@@ -8,7 +8,7 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	backendv1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
-	"github.com/openauth/openauth/internal/shared/apierror"
+	"github.com/openauth/openauth/internal/common/apierror"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 

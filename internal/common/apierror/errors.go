@@ -2,7 +2,7 @@ package apierror
 
 import (
 	"connectrpc.com/connect"
-	sharedv1 "github.com/openauth/openauth/internal/shared/gen/openauth/shared/v1"
+	commonv1 "github.com/openauth/openauth/internal/common/gen/openauth/common/v1"
 )
 
 var errAlreadyExists = "already_exists"
@@ -18,7 +18,7 @@ func NewAlreadyExistsError(description string, sourceError error) error {
 	err := connect.NewError(connect.CodeAlreadyExists, apiErr)
 
 	// Add details to the connect error
-	if detail, detailErr := connect.NewErrorDetail(&sharedv1.ErrorDetail{
+	if detail, detailErr := connect.NewErrorDetail(&commonv1.ErrorDetail{
 		Description: description,
 	}); detailErr == nil {
 		err.AddDetail(detail)
@@ -33,7 +33,7 @@ func NewFailedPreconditionError(description string, sourceError error) error {
 	err := connect.NewError(connect.CodeFailedPrecondition, apiErr)
 
 	// Add details to the connect error
-	if detail, detailErr := connect.NewErrorDetail(&sharedv1.ErrorDetail{
+	if detail, detailErr := connect.NewErrorDetail(&commonv1.ErrorDetail{
 		Description: description,
 	}); detailErr == nil {
 		err.AddDetail(detail)
@@ -48,7 +48,7 @@ func NewInvalidArgumentError(description string, sourceError error) error {
 	err := connect.NewError(connect.CodeInvalidArgument, apiErr)
 
 	// Add details to the connect error
-	if detail, detailErr := connect.NewErrorDetail(&sharedv1.ErrorDetail{
+	if detail, detailErr := connect.NewErrorDetail(&commonv1.ErrorDetail{
 		Description: description,
 	}); detailErr == nil {
 		err.AddDetail(detail)
@@ -63,7 +63,7 @@ func NewNotFoundError(description string, sourceError error) error {
 	err := connect.NewError(connect.CodeNotFound, apiErr)
 
 	// Add details to the connect error
-	if detail, detailErr := connect.NewErrorDetail(&sharedv1.ErrorDetail{
+	if detail, detailErr := connect.NewErrorDetail(&commonv1.ErrorDetail{
 		Description: description,
 	}); detailErr == nil {
 		err.AddDetail(detail)
@@ -78,7 +78,7 @@ func NewPermissionDeniedError(description string, sourceError error) error {
 	err := connect.NewError(connect.CodePermissionDenied, apiErr)
 
 	// Add details to the connect error
-	if detail, detailErr := connect.NewErrorDetail(&sharedv1.ErrorDetail{
+	if detail, detailErr := connect.NewErrorDetail(&commonv1.ErrorDetail{
 		Description: description,
 	}); detailErr == nil {
 		err.AddDetail(detail)
@@ -93,7 +93,7 @@ func NewUnauthenticatedError(description string, sourceError error) error {
 	err := connect.NewError(connect.CodeUnauthenticated, apiErr)
 
 	// Add details to the connect error
-	if detail, detailErr := connect.NewErrorDetail(&sharedv1.ErrorDetail{
+	if detail, detailErr := connect.NewErrorDetail(&commonv1.ErrorDetail{
 		Description: description,
 	}); detailErr == nil {
 		err.AddDetail(detail)
