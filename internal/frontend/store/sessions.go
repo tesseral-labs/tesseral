@@ -2,11 +2,14 @@ package store
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/openauth/openauth/internal/frontend/authn"
 	frontendv1 "github.com/openauth/openauth/internal/frontend/gen/openauth/frontend/v1"
 	"github.com/openauth/openauth/internal/frontend/store/queries"
+	"github.com/openauth/openauth/internal/shared/apierror"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
@@ -21,11 +24,19 @@ func (s *Store) Whoami(ctx context.Context, req *frontendv1.WhoAmIRequest) (*fro
 
 	qUser, err := q.GetUserByID(ctx, userID)
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("user not found", fmt.Errorf("get user by id: %w", err))
+		}
+
 		return nil, fmt.Errorf("get user by id: %w", err)
 	}
 
 	qOrganization, err := q.GetOrganizationByID(ctx, qUser.OrganizationID)
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewFailedPreconditionError("organization not found", fmt.Errorf("get organization by id: %w", err))
+		}
+
 		return nil, fmt.Errorf("get organization by id: %w", err)
 	}
 

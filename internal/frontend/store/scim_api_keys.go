@@ -5,11 +5,12 @@ import (
 	"crypto/sha256"
 	"fmt"
 
-	"connectrpc.com/connect"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/openauth/openauth/internal/frontend/authn"
 	frontendv1 "github.com/openauth/openauth/internal/frontend/gen/openauth/frontend/v1"
 	"github.com/openauth/openauth/internal/frontend/store/queries"
+	"github.com/openauth/openauth/internal/shared/apierror"
 	"github.com/openauth/openauth/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -70,6 +71,10 @@ func (s *Store) GetSCIMAPIKey(ctx context.Context, req *frontendv1.GetSCIMAPIKey
 		ID:             scimAPIKeyID,
 	})
 	if err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, apierror.NewNotFoundError("scim api key not found", fmt.Errorf("get scim api key: %w", err))
+		}
+
 		return nil, fmt.Errorf("get scim api key: %w", err)
 	}
 
@@ -90,11 +95,15 @@ func (s *Store) CreateSCIMAPIKey(ctx context.Context, req *frontendv1.CreateSCIM
 	// authz
 	qOrg, err := q.GetOrganizationByID(ctx, authn.OrganizationID(ctx))
 	if err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, apierror.NewFailedPreconditionError("organization not found", fmt.Errorf("get organization by id: %w", err))
+		}
+
 		return nil, fmt.Errorf("get organization: %w", err)
 	}
 
 	if !qOrg.ScimEnabled {
-		return nil, connect.NewError(connect.CodeFailedPrecondition, fmt.Errorf("organization does not have SCIM enabled"))
+		return nil, apierror.NewFailedPreconditionError("scim is not enabled for the organization", fmt.Errorf("scim is not enabled for the organization"))
 	}
 
 	token := uuid.New()
@@ -131,7 +140,7 @@ func (s *Store) UpdateSCIMAPIKey(ctx context.Context, req *frontendv1.UpdateSCIM
 
 	scimAPIKeyID, err := idformat.SCIMAPIKey.Parse(req.Id)
 	if err != nil {
-		return nil, fmt.Errorf("parse scim api key id: %w", err)
+		return nil, apierror.NewInvalidArgumentError("invalid scim api key id", fmt.Errorf("parse scim api key id: %w", err))
 	}
 
 	// authz
@@ -140,6 +149,9 @@ func (s *Store) UpdateSCIMAPIKey(ctx context.Context, req *frontendv1.UpdateSCIM
 		ID:             scimAPIKeyID,
 	})
 	if err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, apierror.NewNotFoundError("scim api key not found", fmt.Errorf("get scim api key: %w", err))
+		}
 		return nil, fmt.Errorf("get scim api key: %w", err)
 	}
 
@@ -177,7 +189,7 @@ func (s *Store) DeleteSCIMAPIKey(ctx context.Context, req *frontendv1.DeleteSCIM
 
 	scimAPIKeyID, err := idformat.SCIMAPIKey.Parse(req.Id)
 	if err != nil {
-		return nil, fmt.Errorf("parse scim api key id: %w", err)
+		return nil, apierror.NewInvalidArgumentError("invalid scim api key id", fmt.Errorf("parse scim api key: %q", err))
 	}
 
 	// authz
@@ -186,11 +198,15 @@ func (s *Store) DeleteSCIMAPIKey(ctx context.Context, req *frontendv1.DeleteSCIM
 		ID:             scimAPIKeyID,
 	})
 	if err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, apierror.NewNotFoundError("scim api key not found", fmt.Errorf("get scim api key: %w", err))
+		}
+
 		return nil, fmt.Errorf("get scim api key: %w", err)
 	}
 
 	if qSCIMAPIKey.SecretTokenSha256 != nil {
-		return nil, fmt.Errorf("scim api key must be revoked before deletion")
+		return nil, apierror.NewFailedPreconditionError("scim api key must be revoked before deleting", fmt.Errorf("scim api key must be revoked before deleting"))
 	}
 
 	if err := q.DeleteSCIMAPIKey(ctx, scimAPIKeyID); err != nil {
@@ -217,7 +233,7 @@ func (s *Store) RevokeSCIMAPIKey(ctx context.Context, req *frontendv1.RevokeSCIM
 
 	scimAPIKeyID, err := idformat.SCIMAPIKey.Parse(req.Id)
 	if err != nil {
-		return nil, fmt.Errorf("parse scim api key id: %w", err)
+		return nil, apierror.NewInvalidArgumentError("invalid scim api key id", fmt.Errorf("parse scim api key id: %w", err))
 	}
 
 	// authz
@@ -225,6 +241,10 @@ func (s *Store) RevokeSCIMAPIKey(ctx context.Context, req *frontendv1.RevokeSCIM
 		OrganizationID: authn.OrganizationID(ctx),
 		ID:             scimAPIKeyID,
 	}); err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, apierror.NewNotFoundError("scim api key not found", fmt.Errorf("get scim api key: %w", err))
+		}
+
 		return nil, fmt.Errorf("get scim api key: %w", err)
 	}
 

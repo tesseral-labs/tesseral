@@ -2,12 +2,15 @@ package store
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/openauth/openauth/internal/backend/authn"
 	backendv1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
 	"github.com/openauth/openauth/internal/backend/store/queries"
+	"github.com/openauth/openauth/internal/shared/apierror"
 	"github.com/openauth/openauth/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -21,7 +24,7 @@ func (s *Store) ListUsers(ctx context.Context, req *backendv1.ListUsersRequest) 
 
 	orgID, err := idformat.Organization.Parse(req.OrganizationId)
 	if err != nil {
-		return nil, fmt.Errorf("parse organization id: %w", err)
+		return nil, apierror.NewInvalidArgumentError("invalid organization id", fmt.Errorf("parse organization id: %w", err))
 	}
 
 	// authz
@@ -29,6 +32,10 @@ func (s *Store) ListUsers(ctx context.Context, req *backendv1.ListUsersRequest) 
 		ProjectID: authn.ProjectID(ctx),
 		ID:        orgID,
 	}); err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("organization not found", fmt.Errorf("get organization by project id and id: %w", err))
+		}
+
 		return nil, fmt.Errorf("get organization: %w", err)
 	}
 
@@ -73,7 +80,7 @@ func (s *Store) GetUser(ctx context.Context, req *backendv1.GetUserRequest) (*ba
 
 	userID, err := idformat.User.Parse(req.Id)
 	if err != nil {
-		return nil, fmt.Errorf("parse user id: %w", err)
+		return nil, apierror.NewInvalidArgumentError("invalid user id", fmt.Errorf("parse user id: %w", err))
 	}
 
 	qUser, err := q.GetUser(ctx, queries.GetUserParams{
@@ -81,6 +88,10 @@ func (s *Store) GetUser(ctx context.Context, req *backendv1.GetUserRequest) (*ba
 		ID:        userID,
 	})
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("user not found", fmt.Errorf("get user by project id and id: %w", err))
+		}
+
 		return nil, fmt.Errorf("get user: %w", err)
 	}
 

@@ -11,6 +11,7 @@ import (
 	"github.com/openauth/openauth/internal/intermediate/authn"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
+	"github.com/openauth/openauth/internal/shared/apierror"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
@@ -33,6 +34,9 @@ func (s *Store) ListOrganizations(
 
 	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("project not found", fmt.Errorf("get project by id: %w", err))
+		}
 		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 
@@ -89,7 +93,7 @@ func (s *Store) ListOrganizations(
 	for _, organization := range qOrganizationRecords {
 		qSamlConnection, err := q.GetOrganizationPrimarySAMLConnection(ctx, organization.ID)
 		if err != nil && !errors.Is(err, pgx.ErrNoRows) {
-			return nil, fmt.Errorf("get organization primary saml connection: %w", err)
+			return nil, apierror.NewNotFoundError("primary saml connection not found", fmt.Errorf("get organization primary saml connection: %w", err))
 		}
 
 		organizations = append(organizations, parseOrganization(organization, qProject, &qSamlConnection))
@@ -116,7 +120,7 @@ func (s *Store) ListSAMLOrganizations(ctx context.Context, req *intermediatev1.L
 
 	domain, err := emailaddr.Parse(req.Email)
 	if err != nil {
-		return nil, fmt.Errorf("parse email: %w", err)
+		return nil, apierror.NewInvalidArgumentError("invalid email address", fmt.Errorf("parse email: %w", err))
 	}
 
 	qOrganizations, err := q.ListSAMLOrganizations(ctx, queries.ListSAMLOrganizationsParams{
@@ -129,7 +133,11 @@ func (s *Store) ListSAMLOrganizations(ctx context.Context, req *intermediatev1.L
 
 	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
-		return nil, err
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("project not found", fmt.Errorf("get project by id: %w", err))
+		}
+
+		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 
 	organizations := []*intermediatev1.Organization{}

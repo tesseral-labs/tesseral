@@ -4,14 +4,17 @@ import (
 	"context"
 	"crypto/sha256"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
+	"github.com/jackc/pgx/v5"
 	openauthecdsa "github.com/openauth/openauth/internal/crypto/ecdsa"
 	frontendv1 "github.com/openauth/openauth/internal/frontend/gen/openauth/frontend/v1"
 	"github.com/openauth/openauth/internal/frontend/store/queries"
+	"github.com/openauth/openauth/internal/shared/apierror"
 	"github.com/openauth/openauth/internal/store/idformat"
 	"github.com/openauth/openauth/internal/ujwt"
 	"google.golang.org/protobuf/encoding/protojson"
@@ -109,37 +112,57 @@ func (s *Store) getAccessTokenSessionDetails(ctx context.Context, refreshToken s
 
 	refreshTokenBytes, err := idformat.SessionRefreshToken.Parse(refreshToken)
 	if err != nil {
-		return nil, nil, nil, nil, nil, fmt.Errorf("parse refresh token: %w", err)
+		return nil, nil, nil, nil, nil, apierror.NewInvalidArgumentError("invalid refresh token", fmt.Errorf("parse refresh token: %w", err))
 	}
 
 	refreshTokenSHA := sha256.Sum256(refreshTokenBytes[:])
 	qSessionDetails, err := q.GetSessionDetailsByRefreshTokenSHA256(ctx, refreshTokenSHA[:])
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, nil, nil, nil, nil, apierror.NewInvalidArgumentError("invalid refresh token", fmt.Errorf("get session details by refresh token sha256: %w", err))
+		}
+
 		return nil, nil, nil, nil, nil, fmt.Errorf("get session by refresh token sha256: %w", err)
 	}
 
 	qSessionSigningKey, err := q.GetCurrentSessionKeyByProjectID(ctx, qSessionDetails.ProjectID)
 	if err != nil {
-		return nil, nil, nil, nil, nil, fmt.Errorf("get current session key by project id: %w", err)
+		return nil, nil, nil, nil, nil, apierror.NewFailedPreconditionError("session signing key not found", fmt.Errorf("get current session key by project id: %w", err))
 	}
 
 	qSession, err := q.GetSessionByID(ctx, qSessionDetails.SessionID)
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, nil, nil, nil, nil, apierror.NewFailedPreconditionError("session not found", fmt.Errorf("get session by id: %w", err))
+		}
+
 		return nil, nil, nil, nil, nil, fmt.Errorf("get session by id: %w", err)
 	}
 
 	qUser, err := q.GetUserByID(ctx, qSessionDetails.UserID)
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, nil, nil, nil, nil, apierror.NewFailedPreconditionError("user not found", fmt.Errorf("get user by id: %w", err))
+		}
+
 		return nil, nil, nil, nil, nil, fmt.Errorf("get user by id: %w", err)
 	}
 
 	qOrganization, err := q.GetOrganizationByID(ctx, qSessionDetails.OrganizationID)
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, nil, nil, nil, nil, apierror.NewFailedPreconditionError("organization not found", fmt.Errorf("get organization by id: %w", err))
+		}
+
 		return nil, nil, nil, nil, nil, fmt.Errorf("get organization by id: %w", err)
 	}
 
 	qProject, err := q.GetProjectByID(ctx, qSessionDetails.ProjectID)
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, nil, nil, nil, nil, apierror.NewFailedPreconditionError("project not found", fmt.Errorf("get project by id: %w", err))
+		}
+
 		return nil, nil, nil, nil, nil, fmt.Errorf("get project by id: %w", err)
 	}
 

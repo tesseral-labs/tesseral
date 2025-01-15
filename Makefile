@@ -17,8 +17,9 @@ queries:
 
 .PHONY: proto
 proto:
-	rm -r internal/backend/gen internal/frontend/gen internal/intermediate/gen internal/oauth/gen app/src/gen ui/src/gen
+	rm -r internal/backend/gen internal/frontend/gen internal/intermediate/gen internal/oauth/gen internal/shared/gen app/src/gen ui/src/gen
 	npx buf generate --template buf/buf.gen-backend.yaml
 	npx buf generate --template buf/buf.gen-frontend.yaml
 	npx buf generate --template buf/buf.gen-intermediate.yaml
 	npx buf generate --template buf/buf.gen-oauth.yaml
+	npx buf generate --template buf/buf.gen-shared.yaml

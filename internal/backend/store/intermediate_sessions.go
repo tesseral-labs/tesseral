@@ -8,6 +8,7 @@ import (
 	"github.com/openauth/openauth/internal/backend/authn"
 	backendv1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
 	"github.com/openauth/openauth/internal/backend/store/queries"
+	"github.com/openauth/openauth/internal/shared/apierror"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
@@ -59,7 +60,7 @@ func (s *Store) GetIntermediateSession(ctx context.Context, req *backendv1.GetIn
 
 	intermediateSessionID, err := idformat.IntermediateSession.Parse(req.Id)
 	if err != nil {
-		return nil, fmt.Errorf("parse intermediate session id: %w", err)
+		return nil, apierror.NewInvalidArgumentError("invalid intermediate session id", fmt.Errorf("parse intermediate session id: %w", err))
 	}
 
 	qIntermediateSession, err := q.GetIntermediateSession(ctx, queries.GetIntermediateSessionParams{

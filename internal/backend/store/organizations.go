@@ -2,12 +2,15 @@ package store
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/openauth/openauth/internal/backend/authn"
 	backendv1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
 	"github.com/openauth/openauth/internal/backend/store/queries"
+	"github.com/openauth/openauth/internal/shared/apierror"
 	"github.com/openauth/openauth/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -43,6 +46,10 @@ func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrg
 
 	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("project not found", fmt.Errorf("get project by id: %w", err))
+		}
+
 		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 
@@ -96,6 +103,10 @@ func (s *Store) ListOrganizations(ctx context.Context, req *backendv1.ListOrgani
 
 	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("project not found", fmt.Errorf("get project by id: %w", err))
+		}
+
 		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 
@@ -134,11 +145,15 @@ func (s *Store) GetOrganization(ctx context.Context, req *backendv1.GetOrganizat
 
 	organizationId, err := idformat.Organization.Parse(req.Id)
 	if err != nil {
-		return nil, fmt.Errorf("parse organization id: %w", err)
+		return nil, apierror.NewInvalidArgumentError("invalid organization id", fmt.Errorf("parse organization id: %w", err))
 	}
 
 	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("project not found", fmt.Errorf("get project by id: %w", err))
+		}
+
 		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 
@@ -162,7 +177,7 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *backendv1.UpdateOrg
 
 	orgID, err := idformat.Organization.Parse(req.Id)
 	if err != nil {
-		return nil, fmt.Errorf("parse organization id: %w", err)
+		return nil, apierror.NewInvalidArgumentError("invalid organization id", fmt.Errorf("parse organization id: %w", err))
 	}
 
 	// fetch existing org; this also acts as a permission check
@@ -171,6 +186,10 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *backendv1.UpdateOrg
 		ID:        orgID,
 	})
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("organization not found", fmt.Errorf("get organization by id: %w", err))
+		}
+
 		return nil, fmt.Errorf("get organization: %w", err)
 	}
 
@@ -213,6 +232,10 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *backendv1.UpdateOrg
 
 	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("project not found", fmt.Errorf("get project by id: %w", err))
+		}
+
 		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 
@@ -232,7 +255,7 @@ func (s *Store) DeleteOrganization(ctx context.Context, req *backendv1.DeleteOrg
 
 	orgID, err := idformat.Organization.Parse(req.Id)
 	if err != nil {
-		return nil, fmt.Errorf("parse organization id: %w", err)
+		return nil, apierror.NewInvalidArgumentError("invalid organization id", fmt.Errorf("parse organization id: %w", err))
 	}
 
 	// authz check
@@ -240,6 +263,10 @@ func (s *Store) DeleteOrganization(ctx context.Context, req *backendv1.DeleteOrg
 		ProjectID: authn.ProjectID(ctx),
 		ID:        orgID,
 	}); err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("organization not found", fmt.Errorf("get organization by id: %w", err))
+		}
+
 		return nil, fmt.Errorf("get organization: %w", err)
 	}
 

@@ -3,10 +3,13 @@ package store
 import (
 	"context"
 	"encoding/base64"
+	"errors"
 	"fmt"
 
+	"github.com/jackc/pgx/v5"
 	backendv1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
 	openauthecdsa "github.com/openauth/openauth/internal/crypto/ecdsa"
+	"github.com/openauth/openauth/internal/shared/apierror"
 	"github.com/openauth/openauth/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/structpb"
 )
@@ -20,12 +23,16 @@ func (s *Store) GetSessionPublicKeysByProjectID(ctx context.Context, projectId s
 
 	projectID, err := idformat.Project.Parse(projectId)
 	if err != nil {
-		return nil, err
+		return nil, apierror.NewInvalidArgumentError("invalid project id", fmt.Errorf("parse project id: %w", err))
 	}
 
 	sessionSigningKeys, err := q.GetSessionSigningKeysByProjectID(ctx, projectID)
 	if err != nil {
-		return nil, err
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("session signing keys not found", fmt.Errorf("get session signing keys by project id: %w", err))
+		}
+
+		return nil, fmt.Errorf("get session signing keys by project id: %w", err)
 	}
 
 	var out []*backendv1.SessionSigningKey

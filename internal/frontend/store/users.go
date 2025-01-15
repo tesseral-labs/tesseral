@@ -2,13 +2,16 @@ package store
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/openauth/openauth/internal/crypto/bcrypt"
 	"github.com/openauth/openauth/internal/frontend/authn"
 	frontendv1 "github.com/openauth/openauth/internal/frontend/gen/openauth/frontend/v1"
 	"github.com/openauth/openauth/internal/frontend/store/queries"
+	"github.com/openauth/openauth/internal/shared/apierror"
 	"github.com/openauth/openauth/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -22,7 +25,7 @@ func (s *Store) SetUserPassword(ctx context.Context, req *frontendv1.SetPassword
 
 	passwordBcrypt, err := bcrypt.GenerateBcryptHash(req.Password)
 	if err != nil {
-		return nil, fmt.Errorf("generate bcrypt hash: %w", err)
+		return nil, apierror.NewFailedPreconditionError("could not generate password hash", fmt.Errorf("generate bcrypt hash: %w", err))
 	}
 
 	if _, err = q.SetPassword(ctx, queries.SetPasswordParams{
@@ -87,7 +90,7 @@ func (s *Store) GetUser(ctx context.Context, req *frontendv1.GetUserRequest) (*f
 
 	userID, err := idformat.User.Parse(req.Id)
 	if err != nil {
-		return nil, fmt.Errorf("parse user id: %w", err)
+		return nil, apierror.NewInvalidArgumentError("invalid user id", fmt.Errorf("parse user id: %w", err))
 	}
 
 	qUser, err := q.GetUser(ctx, queries.GetUserParams{
@@ -95,6 +98,10 @@ func (s *Store) GetUser(ctx context.Context, req *frontendv1.GetUserRequest) (*f
 		OrganizationID: authn.OrganizationID(ctx),
 	})
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("user not found", fmt.Errorf("get user by id: %w", err))
+		}
+
 		return nil, fmt.Errorf("get user: %w", err)
 	}
 
@@ -115,7 +122,7 @@ func (s *Store) UpdateUser(ctx context.Context, req *frontendv1.UpdateUserReques
 
 	userID, err := idformat.User.Parse(req.Id)
 	if err != nil {
-		return nil, fmt.Errorf("parse user id: %w", err)
+		return nil, apierror.NewInvalidArgumentError("invalid user id", fmt.Errorf("parse user id: %w", err))
 	}
 
 	// Fetch the existing user details. Also acts as authz check.
@@ -124,6 +131,10 @@ func (s *Store) UpdateUser(ctx context.Context, req *frontendv1.UpdateUserReques
 		OrganizationID: authn.OrganizationID(ctx),
 	})
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("user not found", fmt.Errorf("get user by id: %w", err))
+		}
+
 		return nil, fmt.Errorf("get user by id: %w", err)
 	}
 

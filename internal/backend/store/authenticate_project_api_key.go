@@ -8,6 +8,7 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	backendv1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
+	"github.com/openauth/openauth/internal/shared/apierror"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
@@ -22,14 +23,14 @@ func (s *Store) AuthenticateProjectAPIKey(ctx context.Context, bearerToken strin
 
 	secretToken, err := idformat.ProjectAPIKeySecretToken.Parse(bearerToken)
 	if err != nil {
-		return nil, nil, fmt.Errorf("parse project api key secret token: %w", err)
+		return nil, nil, apierror.NewInvalidArgumentError("invalid project api key secret token", fmt.Errorf("parse project api key secret token: %w", err))
 	}
 
 	secretTokenSHA := sha256.Sum256(secretToken[:])
 	qProjectAPIKey, err := q.GetProjectAPIKeyBySecretTokenSHA256(ctx, secretTokenSHA[:])
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, nil, ErrBadProjectAPIKey
+			return nil, nil, apierror.NewNotFoundError("project api key not found", fmt.Errorf("project api key not found"))
 		}
 
 		return nil, nil, fmt.Errorf("get project api key by secret token sha256: %w", err)
@@ -37,6 +38,10 @@ func (s *Store) AuthenticateProjectAPIKey(ctx context.Context, bearerToken strin
 
 	qProject, err := q.GetProjectByID(ctx, qProjectAPIKey.ProjectID)
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, nil, apierror.NewNotFoundError("project not found", fmt.Errorf("get project by id: %w", err))
+		}
+
 		return nil, nil, fmt.Errorf("get project by id: %w", err)
 	}
 

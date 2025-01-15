@@ -2,13 +2,16 @@ package store
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
+	"github.com/jackc/pgx/v5"
 	"github.com/openauth/openauth/internal/backend/authn"
 	backendv1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
 	"github.com/openauth/openauth/internal/backend/store/queries"
+	"github.com/openauth/openauth/internal/shared/apierror"
 	"github.com/openauth/openauth/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -22,6 +25,10 @@ func (s *Store) GetProject(ctx context.Context, req *backendv1.GetProjectRequest
 
 	project, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("project not found", fmt.Errorf("get project by id: %w", err))
+		}
+
 		return nil, err
 	}
 
@@ -33,6 +40,10 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 	// operations; we can live with possibility of conflicting concurrent writes
 	qProject, err := s.q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("project not found", fmt.Errorf("get project by id: %w", err))
+		}
+
 		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 

@@ -4,10 +4,14 @@ import (
 	"context"
 	"crypto/ecdsa"
 	"crypto/x509"
+	"errors"
+	"fmt"
 	"time"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/openauth/openauth/internal/frontend/authn"
 	"github.com/openauth/openauth/internal/frontend/store/queries"
+	"github.com/openauth/openauth/internal/shared/apierror"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
@@ -24,12 +28,16 @@ func (s *Store) GetSessionSigningKeyPublicKey(ctx context.Context, sessionSignin
 		Now:       &now,
 	})
 	if err != nil {
-		return nil, err
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("session signing key not found", fmt.Errorf("get session signing key public key: %w", err))
+		}
+
+		return nil, fmt.Errorf("get session signing key public key: %w", err)
 	}
 
 	publicKey, err := x509.ParsePKIXPublicKey(publicKeyBytes)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("parse public key: %w", err)
 	}
 
 	return publicKey.(*ecdsa.PublicKey), nil

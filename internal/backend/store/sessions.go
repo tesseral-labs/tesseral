@@ -2,12 +2,15 @@ package store
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/openauth/openauth/internal/backend/authn"
 	backendv1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
 	"github.com/openauth/openauth/internal/backend/store/queries"
+	"github.com/openauth/openauth/internal/shared/apierror"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
@@ -20,7 +23,7 @@ func (s *Store) ListSessions(ctx context.Context, req *backendv1.ListSessionsReq
 
 	userID, err := idformat.User.Parse(req.UserId)
 	if err != nil {
-		return nil, fmt.Errorf("parse user id: %w", err)
+		return nil, apierror.NewInvalidArgumentError("invalid user id", fmt.Errorf("parse user id: %w", err))
 	}
 
 	// authz
@@ -28,6 +31,10 @@ func (s *Store) ListSessions(ctx context.Context, req *backendv1.ListSessionsReq
 		ProjectID: authn.ProjectID(ctx),
 		ID:        userID,
 	}); err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("user not found", fmt.Errorf("get user by project id and id: %w", err))
+		}
+
 		return nil, fmt.Errorf("get organization: %w", err)
 	}
 
@@ -72,7 +79,7 @@ func (s *Store) GetSession(ctx context.Context, req *backendv1.GetSessionRequest
 
 	sessionID, err := idformat.Session.Parse(req.Id)
 	if err != nil {
-		return nil, fmt.Errorf("parse session id: %w", err)
+		return nil, apierror.NewInvalidArgumentError("invalid session id", fmt.Errorf("parse session id: %w", err))
 	}
 
 	qSession, err := q.GetSession(ctx, queries.GetSessionParams{
@@ -80,6 +87,10 @@ func (s *Store) GetSession(ctx context.Context, req *backendv1.GetSessionRequest
 		ID:        sessionID,
 	})
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("session not found", fmt.Errorf("get session: %w", err))
+		}
+
 		return nil, fmt.Errorf("get session: %w", err)
 	}
 
