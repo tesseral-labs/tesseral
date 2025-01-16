@@ -51,8 +51,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     useEffect(() => {
       const style: CSSProperties = { ...customStyle }
 
-      console.log('variant', variant)
-
       if (
         projectUiSettings?.darkModePrimaryColor &&
         isDarkMode &&
