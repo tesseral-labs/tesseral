@@ -17,8 +17,8 @@ RETURNING
     *;
 
 -- name: CreateProjectUISettings :one
-INSERT INTO project_ui_settings (id, project_id, logo_file_key, favicon_file_key, primary_color, detect_dark_mode_enabled, dark_mode_logo_file_key)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
+INSERT INTO project_ui_settings (id, project_id, primary_color, detect_dark_mode_enabled)
+    VALUES ($1, $2, $3, $4)
 RETURNING
     *;
 

@@ -4,14 +4,35 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/jackc/pgx/v5"
 	"github.com/openauth/openauth/internal/backend/authn"
 	backendv1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
 	"github.com/openauth/openauth/internal/backend/store/queries"
 	"github.com/openauth/openauth/internal/common/apierror"
+	"github.com/openauth/openauth/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
+
+func (s *Store) GetProjectUISettings(ctx context.Context, req *backendv1.GetProjectUISettingsRequest) (*backendv1.GetProjectUISettingsResponse, error) {
+	projectID := authn.ProjectID(ctx)
+
+	qProjectUISettings, err := s.q.GetProjectUISettings(ctx, projectID)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("project ui settings not found", fmt.Errorf("failed to get project ui settings: %w", err))
+		}
+
+		return nil, fmt.Errorf("failed to get project ui settings: %w", err)
+	}
+
+	return &backendv1.GetProjectUISettingsResponse{
+		ProjectUiSettings: s.parseProjectUISettings(qProjectUISettings),
+	}, nil
+}
 
 func (s *Store) UpdateProjectUISettings(ctx context.Context, req *backendv1.UpdateProjectUISettingsRequest) (*backendv1.UpdateProjectUISettingsResponse, error) {
 	projectID := authn.ProjectID(ctx)
@@ -48,34 +69,6 @@ func (s *Store) UpdateProjectUISettings(ctx context.Context, req *backendv1.Upda
 		updates.DarkModePrimaryColor = req.DarkModePrimaryColor
 	}
 
-	// Process image uploads
-	if req.Logo != nil {
-		logoFileKey, err := s.processImageUpload(ctx, "logo", req.Logo)
-		if err != nil {
-			return nil, fmt.Errorf("process image upload: %w", err)
-		}
-
-		updates.LogoFileKey = &logoFileKey
-	}
-
-	if req.Favicon != nil {
-		faviconFileKey, err := s.processImageUpload(ctx, "favicon", req.Favicon)
-		if err != nil {
-			return nil, fmt.Errorf("process image upload: %w", err)
-		}
-
-		updates.FaviconFileKey = &faviconFileKey
-	}
-
-	if req.DarkModeLogo != nil {
-		darkModeLogoFileKey, err := s.processImageUpload(ctx, "dark_mode_logo", req.DarkModeLogo)
-		if err != nil {
-			return nil, fmt.Errorf("process image upload: %w", err)
-		}
-
-		updates.DarkModeLogoFileKey = &darkModeLogoFileKey
-	}
-
 	qUpdatedProjectUISettings, err := q.UpdateProjectUISettings(ctx, updates)
 	if err != nil {
 		return nil, fmt.Errorf("failed to update project ui settings: %w", err)
@@ -85,33 +78,65 @@ func (s *Store) UpdateProjectUISettings(ctx context.Context, req *backendv1.Upda
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return &backendv1.UpdateProjectUISettingsResponse{
-		ProjectUiSettings: s.parseProjectUISettings(qUpdatedProjectUISettings),
-	}, nil
+	res := &backendv1.UpdateProjectUISettingsResponse{
+		Id:                    idformat.ProjectUISettings.Format(qUpdatedProjectUISettings.ID),
+		ProjectId:             idformat.Project.Format(projectID),
+		CreateTime:            timestamppb.New(*qUpdatedProjectUISettings.CreateTime),
+		UpdateTime:            timestamppb.New(*qUpdatedProjectUISettings.UpdateTime),
+		DarkModePrimaryColor:  derefOrEmpty(qUpdatedProjectUISettings.DarkModePrimaryColor),
+		DetectDarkModeEnabled: qUpdatedProjectUISettings.DetectDarkModeEnabled,
+		PrimaryColor:          derefOrEmpty(qUpdatedProjectUISettings.PrimaryColor),
+	}
+
+	// generate a presigned URL for the dark mode logo file
+	darkModeLogoPresignedUploadUrl, err := s.getPresignedUrlForFile(ctx, fmt.Sprintf("dark_mode_logos_v1/%s/dark_mode_logo", projectID))
+	if err != nil {
+		return nil, fmt.Errorf("failed to get presigned URL for dark mode logo file: %w", err)
+	}
+	res.DarkModeLogoPresignedUploadUrl = darkModeLogoPresignedUploadUrl
+
+	// generate a presigned URL for the favicon file
+	faviconPresignedUploadUrl, err := s.getPresignedUrlForFile(ctx, fmt.Sprintf("favicons_v1/%s/favicon", projectID))
+	if err != nil {
+		return nil, fmt.Errorf("failed to get presigned URL for favicon file: %w", err)
+	}
+	res.FaviconPresignedUploadUrl = faviconPresignedUploadUrl
+
+	// generate a presigned URL for the logo file
+	logoPresignedUploadUrl, err := s.getPresignedUrlForFile(ctx, fmt.Sprintf("logos_v1/%s/logo", projectID))
+	if err != nil {
+		return nil, fmt.Errorf("failed to get presigned URL for logo file: %w", err)
+	}
+	res.LogoPresignedUploadUrl = logoPresignedUploadUrl
+
+	return res, nil
 }
 
-func (s *Store) processImageUpload(ctx context.Context, imageType string, req *backendv1.ImageUploadRequest) (string, error) {
-	fileKey, err := getFileKeyForImageType(authn.ProjectID(ctx), imageType, req.MimeType)
+func (s *Store) getPresignedUrlForFile(ctx context.Context, fileKey string) (string, error) {
+	req, err := s.s3PresignClient.PresignPutObject(ctx, &s3.PutObjectInput{
+		Bucket: aws.String(s.s3UserContentBucketName),
+		Key:    aws.String(fileKey),
+	}, func(opts *s3.PresignOptions) {
+		opts.Expires = time.Minute // set expiry to one minute
+	})
+
 	if err != nil {
-		return "", fmt.Errorf("get filename for image type: %w", err)
+		return "", fmt.Errorf("failed to create presigned URL: %w", err)
 	}
 
-	err = s.uploadToS3(ctx, req, fileKey)
-	if err != nil {
-		return "", fmt.Errorf("upload file to S3: %w", err)
-	}
-
-	return fileKey, nil
+	return req.URL, nil
 }
 
 func (s *Store) parseProjectUISettings(pus queries.ProjectUiSetting) *backendv1.ProjectUISettings {
+	projectID := idformat.Project.Format(pus.ProjectID)
+
 	return &backendv1.ProjectUISettings{
 		PrimaryColor:          derefOrEmpty(pus.PrimaryColor),
 		DetectDarkModeEnabled: pus.DetectDarkModeEnabled,
 		DarkModePrimaryColor:  derefOrEmpty(pus.DarkModePrimaryColor),
-		LogoUrl:               s.getURLForFileKey(derefOrEmpty(pus.LogoFileKey)),
-		FaviconUrl:            s.getURLForFileKey(derefOrEmpty(pus.FaviconFileKey)),
-		DarkModeLogoUrl:       s.getURLForFileKey(derefOrEmpty(pus.DarkModeLogoFileKey)),
+		LogoUrl:               fmt.Sprintf("%s/logos_v1/%s/logo", s.userContentUrl, projectID),
+		FaviconUrl:            fmt.Sprintf("%s/favicons_v1/%s/favicon", s.userContentUrl, projectID),
+		DarkModeLogoUrl:       fmt.Sprintf("%s/dark_mode_logos_v1/%s/dark_mode_logo", s.userContentUrl, projectID),
 		CreateTime:            timestamppb.New(*pus.CreateTime),
 		UpdateTime:            timestamppb.New(*pus.UpdateTime),
 	}

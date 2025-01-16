@@ -475,16 +475,22 @@ message UpdateProjectRedirectURIResponse {
 }
 
 message UpdateProjectUISettingsRequest {
-  optional ImageUploadRequest logo = 1;
-  optional ImageUploadRequest favicon = 2;
-  optional string primary_color = 3;
-  bool detect_dark_mode_enabled = 4;
-  optional ImageUploadRequest dark_mode_logo = 5;
-  optional string dark_mode_primary_color = 6;
+  optional string primary_color = 1;
+  bool detect_dark_mode_enabled = 2;
+  optional string dark_mode_primary_color = 4;
 }
 
 message UpdateProjectUISettingsResponse {
-  ProjectUISettings project_ui_settings = 1;
+  string id = 1;
+  string project_id = 2;
+  google.protobuf.Timestamp create_time = 3;
+  google.protobuf.Timestamp update_time = 4;
+  string dark_mode_logo_presigned_upload_url = 5;
+  string favicon_presigned_upload_url = 6;
+  string logo_presigned_upload_url = 7;
+  string dark_mode_primary_color = 8;
+  bool detect_dark_mode_enabled = 9;
+  string primary_color = 10;
 }
 
 message ImageUploadRequest {
@@ -510,14 +516,16 @@ message Project {
 }
 
 message ProjectUISettings {
-  string logo_url = 1;
-  string favicon_url = 2;
-  string primary_color = 3;
-  bool detect_dark_mode_enabled = 4;
-  string dark_mode_logo_url = 5;
-  string dark_mode_primary_color = 6;
-  google.protobuf.Timestamp create_time = 7;
-  google.protobuf.Timestamp update_time = 8;
+  string id = 1;
+  string project_id = 2;
+  google.protobuf.Timestamp create_time = 3;
+  google.protobuf.Timestamp update_time = 4;
+  string logo_url = 5;
+  string favicon_url = 6;
+  string primary_color = 7;
+  bool detect_dark_mode_enabled = 8;
+  string dark_mode_logo_url = 9;
+  string dark_mode_primary_color = 10;
 }
 
 message Organization {

@@ -7,6 +7,7 @@ import (
 	"github.com/openauth/openauth/internal/intermediate/authn"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
+	"github.com/openauth/openauth/internal/store/idformat"
 )
 
 func (s *Store) GetProjectUISettings(ctx context.Context, req *intermediatev1.GetProjectUISettingsRequest) (*intermediatev1.GetProjectUISettingsResponse, error) {
@@ -28,21 +29,17 @@ func (s *Store) GetProjectUISettings(ctx context.Context, req *intermediatev1.Ge
 	}, nil
 }
 
-func (s *Store) getURLForFileKey(fileKey string) string {
-	if fileKey == "" {
-		return ""
-	}
-
-	return fmt.Sprintf("%s/%s", s.userContentUrl, fileKey)
-}
-
 func (s *Store) parseProjectUISettings(pus queries.ProjectUiSetting) *intermediatev1.ProjectUISettings {
+	projectID := idformat.Project.Format(pus.ProjectID)
+
 	return &intermediatev1.ProjectUISettings{
-		DarkModeLogoUrl:       s.getURLForFileKey(derefOrEmpty(pus.DarkModeLogoFileKey)),
+		Id:                    idformat.ProjectUISettings.Format(pus.ID),
+		ProjectId:             projectID,
+		DarkModeLogoUrl:       fmt.Sprintf("%s/dark_mode_logos_v1/%s/dark_mode_logo", s.userContentUrl, projectID),
 		DetectDarkModeEnabled: pus.DetectDarkModeEnabled,
 		DarkModePrimaryColor:  derefOrEmpty(pus.DarkModePrimaryColor),
-		FaviconUrl:            s.getURLForFileKey(derefOrEmpty(pus.FaviconFileKey)),
-		LogoUrl:               s.getURLForFileKey(derefOrEmpty(pus.LogoFileKey)),
+		FaviconUrl:            fmt.Sprintf("%s/faviconss_v1/%s/favicon", s.userContentUrl, projectID),
+		LogoUrl:               fmt.Sprintf("%s/logos_v1/%s/logo", s.userContentUrl, projectID),
 		PrimaryColor:          derefOrEmpty(pus.PrimaryColor),
 	}
 }

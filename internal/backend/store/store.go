@@ -20,8 +20,8 @@ type Store struct {
 	kms                                   *kms.Client
 	pageEncoder                           pagetoken.Encoder
 	q                                     *queries.Queries
-	s3                                    *s3.Client
-	s3BucketName                          string
+	s3PresignClient                       *s3.PresignClient
+	s3UserContentBucketName               string
 	sessionSigningKeyKmsKeyID             string
 	googleOAuthClientSecretsKMSKeyID      string
 	microsoftOAuthClientSecretsKMSKeyID   string
@@ -35,7 +35,7 @@ type NewStoreParams struct {
 	KMS                                   *kms.Client
 	PageEncoder                           pagetoken.Encoder
 	S3                                    *s3.Client
-	S3BucketName                          string
+	S3UserContentBucketName               string
 	SessionSigningKeyKmsKeyID             string
 	GoogleOAuthClientSecretsKMSKeyID      string
 	MicrosoftOAuthClientSecretsKMSKeyID   string
@@ -50,8 +50,8 @@ func New(p NewStoreParams) *Store {
 		kms:                                   p.KMS,
 		pageEncoder:                           p.PageEncoder,
 		q:                                     queries.New(p.DB),
-		s3:                                    p.S3,
-		s3BucketName:                          p.S3BucketName,
+		s3PresignClient:                       s3.NewPresignClient(p.S3),
+		s3UserContentBucketName:               p.S3UserContentBucketName,
 		sessionSigningKeyKmsKeyID:             p.SessionSigningKeyKmsKeyID,
 		googleOAuthClientSecretsKMSKeyID:      p.GoogleOAuthClientSecretsKMSKeyID,
 		microsoftOAuthClientSecretsKMSKeyID:   p.MicrosoftOAuthClientSecretsKMSKeyID,

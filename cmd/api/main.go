@@ -67,12 +67,13 @@ func main() {
 		IntermediateSessionKMSKeyID         string `conf:"intermediate_session_kms_key_id"`
 		KMSEndpoint                         string `conf:"kms_endpoint_resolver_url,noredact"`
 		PageEncodingValue                   string `conf:"page-encoding-value"`
-		S3BucketName                        string `conf:"s3_bucket_name,noredact"`
+		S3UserContentBucketName             string `conf:"s3_user_content_bucket_name,noredact"`
 		S3Endpoint                          string `conf:"s3_endpoint_resolver_url,noredact"`
 		ServeAddr                           string `conf:"serve_addr,noredact"`
 		SessionKMSKeyID                     string `conf:"session_kms_key_id"`
 		GoogleOAuthClientSecretsKMSKeyID    string `conf:"google_oauth_client_secrets_kms_key_id,noredact"`
 		MicrosoftOAuthClientSecretsKMSKeyID string `conf:"microsoft_oauth_client_secrets_kms_key_id,noredact"`
+		UserContentUrl                      string `conf:"user_content_url"`
 	}{
 		PageEncodingValue: "0000000000000000000000000000000000000000000000000000000000000000",
 	}
@@ -130,10 +131,11 @@ func main() {
 		KMS:                                   kms_,
 		PageEncoder:                           pagetoken.Encoder{Secret: pageEncodingValue},
 		S3:                                    s3_,
-		S3BucketName:                          config.S3BucketName,
+		S3UserContentBucketName:               config.S3UserContentBucketName,
 		SessionSigningKeyKmsKeyID:             config.SessionKMSKeyID,
 		GoogleOAuthClientSecretsKMSKeyID:      config.GoogleOAuthClientSecretsKMSKeyID,
 		MicrosoftOAuthClientSecretsKMSKeyID:   config.MicrosoftOAuthClientSecretsKMSKeyID,
+		UserContentUrl:                        config.UserContentUrl,
 	})
 	backendConnectPath, backendConnectHandler := backendv1connect.NewBackendServiceHandler(
 		&backendservice.Service{
@@ -184,6 +186,7 @@ func main() {
 		SessionSigningKeyKmsKeyID:             config.SessionKMSKeyID,
 		GoogleOAuthClientSecretsKMSKeyID:      config.GoogleOAuthClientSecretsKMSKeyID,
 		MicrosoftOAuthClientSecretsKMSKeyID:   config.MicrosoftOAuthClientSecretsKMSKeyID,
+		UserContentUrl:                        config.UserContentUrl,
 	})
 	intermediateConnectPath, intermediateConnectHandler := intermediatev1connect.NewIntermediateServiceHandler(
 		&intermediateservice.Service{

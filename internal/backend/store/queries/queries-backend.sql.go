@@ -448,7 +448,7 @@ func (q *Queries) GetProjectRedirectURI(ctx context.Context, arg GetProjectRedir
 
 const getProjectUISettings = `-- name: GetProjectUISettings :one
 SELECT
-    id, project_id, logo_file_key, favicon_file_key, primary_color, detect_dark_mode_enabled, dark_mode_logo_file_key, dark_mode_primary_color, create_time, update_time
+    id, project_id, primary_color, detect_dark_mode_enabled, dark_mode_primary_color, create_time, update_time
 FROM
     project_ui_settings
 WHERE
@@ -461,11 +461,8 @@ func (q *Queries) GetProjectUISettings(ctx context.Context, projectID uuid.UUID)
 	err := row.Scan(
 		&i.ID,
 		&i.ProjectID,
-		&i.LogoFileKey,
-		&i.FaviconFileKey,
 		&i.PrimaryColor,
 		&i.DetectDarkModeEnabled,
-		&i.DarkModeLogoFileKey,
 		&i.DarkModePrimaryColor,
 		&i.CreateTime,
 		&i.UpdateTime,
@@ -1389,27 +1386,21 @@ UPDATE
     project_ui_settings
 SET
     update_time = now(),
-    logo_file_key = $3,
-    favicon_file_key = $4,
-    primary_color = $5,
-    detect_dark_mode_enabled = $6,
-    dark_mode_logo_file_key = $7,
-    dark_mode_primary_color = $8
+    primary_color = $3,
+    detect_dark_mode_enabled = $4,
+    dark_mode_primary_color = $5
 WHERE
     id = $1
     AND project_id = $2
 RETURNING
-    id, project_id, logo_file_key, favicon_file_key, primary_color, detect_dark_mode_enabled, dark_mode_logo_file_key, dark_mode_primary_color, create_time, update_time
+    id, project_id, primary_color, detect_dark_mode_enabled, dark_mode_primary_color, create_time, update_time
 `
 
 type UpdateProjectUISettingsParams struct {
 	ID                    uuid.UUID
 	ProjectID             uuid.UUID
-	LogoFileKey           *string
-	FaviconFileKey        *string
 	PrimaryColor          *string
 	DetectDarkModeEnabled bool
-	DarkModeLogoFileKey   *string
 	DarkModePrimaryColor  *string
 }
 
@@ -1417,22 +1408,16 @@ func (q *Queries) UpdateProjectUISettings(ctx context.Context, arg UpdateProject
 	row := q.db.QueryRow(ctx, updateProjectUISettings,
 		arg.ID,
 		arg.ProjectID,
-		arg.LogoFileKey,
-		arg.FaviconFileKey,
 		arg.PrimaryColor,
 		arg.DetectDarkModeEnabled,
-		arg.DarkModeLogoFileKey,
 		arg.DarkModePrimaryColor,
 	)
 	var i ProjectUiSetting
 	err := row.Scan(
 		&i.ID,
 		&i.ProjectID,
-		&i.LogoFileKey,
-		&i.FaviconFileKey,
 		&i.PrimaryColor,
 		&i.DetectDarkModeEnabled,
-		&i.DarkModeLogoFileKey,
 		&i.DarkModePrimaryColor,
 		&i.CreateTime,
 		&i.UpdateTime,
