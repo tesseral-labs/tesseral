@@ -37,7 +37,7 @@ const PasswordVerification = () => {
       setAccessToken(accessToken)
       setRefreshToken(refreshToken)
 
-      navigate('/session-info')
+      navigate('/dashboard/session-info')
     } catch (error) {
       // TODO: Show an error message to the user
       console.error(error)

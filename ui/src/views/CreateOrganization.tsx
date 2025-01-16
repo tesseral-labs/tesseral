@@ -34,7 +34,7 @@ const CreateOrganization = () => {
       setAccessToken(accessToken)
       setRefreshToken(refreshToken)
 
-      navigate('/session-info')
+      navigate('/dashboard/session-info')
     } catch (error) {
       console.error(error)
     }
