@@ -9,12 +9,15 @@ const Page = () => {
   const isDarkMode = useDarkMode()
   const { data: uiSettingsRes } = useQuery(getProjectUISettings)
 
+  const shouldDetectDarkMode = () => {
+    return uiSettingsRes?.projectUiSettings?.detectDarkModeEnabled || true
+  }
+
   return (
     <div
       className={cn(
         'mx-auto flex flex-col justify-center items-center min-h-screen w-screen py-8',
-        isDarkMode &&
-          (uiSettingsRes?.projectUiSettings?.detectDarkModeEnabled || true)
+        isDarkMode && shouldDetectDarkMode()
           ? 'dark bg-dark'
           : 'light bg-muted',
       )}
