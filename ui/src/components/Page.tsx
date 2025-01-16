@@ -10,7 +10,9 @@ const Page = () => {
   const { data: uiSettingsRes } = useQuery(getProjectUISettings)
 
   const shouldDetectDarkMode = () => {
-    return uiSettingsRes?.projectUiSettings?.detectDarkModeEnabled || true
+    return uiSettingsRes?.projectUiSettings
+      ? uiSettingsRes.projectUiSettings.detectDarkModeEnabled
+      : true
   }
 
   return (
