@@ -1,6 +1,7 @@
 .env
 .local/kms/data
 .local/postgres
+.local/s3
 node_modules
 /app/public/index.css
 /app/public/index.js

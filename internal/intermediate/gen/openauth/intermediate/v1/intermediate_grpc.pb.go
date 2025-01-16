@@ -32,6 +32,7 @@ const (
 	IntermediateService_SignInWithEmail_FullMethodName                                      = "/openauth.intermediate.v1.IntermediateService/SignInWithEmail"
 	IntermediateService_VerifyEmailChallenge_FullMethodName                                 = "/openauth.intermediate.v1.IntermediateService/VerifyEmailChallenge"
 	IntermediateService_VerifyPassword_FullMethodName                                       = "/openauth.intermediate.v1.IntermediateService/VerifyPassword"
+	IntermediateService_GetProjectUISettings_FullMethodName                                 = "/openauth.intermediate.v1.IntermediateService/GetProjectUISettings"
 )
 
 // IntermediateServiceClient is the client API for IntermediateService service.
@@ -57,6 +58,7 @@ type IntermediateServiceClient interface {
 	VerifyEmailChallenge(ctx context.Context, in *VerifyEmailChallengeRequest, opts ...grpc.CallOption) (*VerifyEmailChallengeResponse, error)
 	// Submits a password for verification of session.
 	VerifyPassword(ctx context.Context, in *VerifyPasswordRequest, opts ...grpc.CallOption) (*VerifyPasswordResponse, error)
+	GetProjectUISettings(ctx context.Context, in *GetProjectUISettingsRequest, opts ...grpc.CallOption) (*GetProjectUISettingsResponse, error)
 }
 
 type intermediateServiceClient struct {
@@ -197,6 +199,16 @@ func (c *intermediateServiceClient) VerifyPassword(ctx context.Context, in *Veri
 	return out, nil
 }
 
+func (c *intermediateServiceClient) GetProjectUISettings(ctx context.Context, in *GetProjectUISettingsRequest, opts ...grpc.CallOption) (*GetProjectUISettingsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetProjectUISettingsResponse)
+	err := c.cc.Invoke(ctx, IntermediateService_GetProjectUISettings_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // IntermediateServiceServer is the server API for IntermediateService service.
 // All implementations must embed UnimplementedIntermediateServiceServer
 // for forward compatibility.
@@ -220,6 +232,7 @@ type IntermediateServiceServer interface {
 	VerifyEmailChallenge(context.Context, *VerifyEmailChallengeRequest) (*VerifyEmailChallengeResponse, error)
 	// Submits a password for verification of session.
 	VerifyPassword(context.Context, *VerifyPasswordRequest) (*VerifyPasswordResponse, error)
+	GetProjectUISettings(context.Context, *GetProjectUISettingsRequest) (*GetProjectUISettingsResponse, error)
 	mustEmbedUnimplementedIntermediateServiceServer()
 }
 
@@ -268,6 +281,9 @@ func (UnimplementedIntermediateServiceServer) VerifyEmailChallenge(context.Conte
 }
 func (UnimplementedIntermediateServiceServer) VerifyPassword(context.Context, *VerifyPasswordRequest) (*VerifyPasswordResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifyPassword not implemented")
+}
+func (UnimplementedIntermediateServiceServer) GetProjectUISettings(context.Context, *GetProjectUISettingsRequest) (*GetProjectUISettingsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetProjectUISettings not implemented")
 }
 func (UnimplementedIntermediateServiceServer) mustEmbedUnimplementedIntermediateServiceServer() {}
 func (UnimplementedIntermediateServiceServer) testEmbeddedByValue()                             {}
@@ -524,6 +540,24 @@ func _IntermediateService_VerifyPassword_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _IntermediateService_GetProjectUISettings_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetProjectUISettingsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IntermediateServiceServer).GetProjectUISettings(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IntermediateService_GetProjectUISettings_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IntermediateServiceServer).GetProjectUISettings(ctx, req.(*GetProjectUISettingsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // IntermediateService_ServiceDesc is the grpc.ServiceDesc for IntermediateService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -582,6 +616,10 @@ var IntermediateService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "VerifyPassword",
 			Handler:    _IntermediateService_VerifyPassword_Handler,
+		},
+		{
+			MethodName: "GetProjectUISettings",
+			Handler:    _IntermediateService_GetProjectUISettings_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

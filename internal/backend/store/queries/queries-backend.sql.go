@@ -446,6 +446,30 @@ func (q *Queries) GetProjectRedirectURI(ctx context.Context, arg GetProjectRedir
 	return i, err
 }
 
+const getProjectUISettings = `-- name: GetProjectUISettings :one
+SELECT
+    id, project_id, primary_color, detect_dark_mode_enabled, dark_mode_primary_color, create_time, update_time
+FROM
+    project_ui_settings
+WHERE
+    project_id = $1
+`
+
+func (q *Queries) GetProjectUISettings(ctx context.Context, projectID uuid.UUID) (ProjectUiSetting, error) {
+	row := q.db.QueryRow(ctx, getProjectUISettings, projectID)
+	var i ProjectUiSetting
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.PrimaryColor,
+		&i.DetectDarkModeEnabled,
+		&i.DarkModePrimaryColor,
+		&i.CreateTime,
+		&i.UpdateTime,
+	)
+	return i, err
+}
+
 const getSAMLConnection = `-- name: GetSAMLConnection :one
 SELECT
     saml_connections.id, saml_connections.organization_id, saml_connections.create_time, saml_connections.is_primary, saml_connections.idp_redirect_url, saml_connections.idp_x509_certificate, saml_connections.idp_entity_id, saml_connections.update_time
@@ -1353,6 +1377,50 @@ func (q *Queries) UpdateProjectRedirectURI(ctx context.Context, arg UpdateProjec
 		&i.IsPrimary,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const updateProjectUISettings = `-- name: UpdateProjectUISettings :one
+UPDATE
+    project_ui_settings
+SET
+    update_time = now(),
+    primary_color = $3,
+    detect_dark_mode_enabled = $4,
+    dark_mode_primary_color = $5
+WHERE
+    id = $1
+    AND project_id = $2
+RETURNING
+    id, project_id, primary_color, detect_dark_mode_enabled, dark_mode_primary_color, create_time, update_time
+`
+
+type UpdateProjectUISettingsParams struct {
+	ID                    uuid.UUID
+	ProjectID             uuid.UUID
+	PrimaryColor          *string
+	DetectDarkModeEnabled bool
+	DarkModePrimaryColor  *string
+}
+
+func (q *Queries) UpdateProjectUISettings(ctx context.Context, arg UpdateProjectUISettingsParams) (ProjectUiSetting, error) {
+	row := q.db.QueryRow(ctx, updateProjectUISettings,
+		arg.ID,
+		arg.ProjectID,
+		arg.PrimaryColor,
+		arg.DetectDarkModeEnabled,
+		arg.DarkModePrimaryColor,
+	)
+	var i ProjectUiSetting
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.PrimaryColor,
+		&i.DetectDarkModeEnabled,
+		&i.DarkModePrimaryColor,
+		&i.CreateTime,
+		&i.UpdateTime,
 	)
 	return i, err
 }

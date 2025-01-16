@@ -103,6 +103,8 @@ service IntermediateService {
       body: "*"
     };
   }
+
+  rpc GetProjectUISettings(GetProjectUISettingsRequest) returns (GetProjectUISettingsResponse) {}
 }
 
 message IntermediateSession {
@@ -278,6 +280,19 @@ message Project {
   string auth_domain = 10;
 }
 
+message ProjectUISettings {
+  string id = 1;
+  string project_id = 2;
+  google.protobuf.Timestamp create_time = 3;
+  google.protobuf.Timestamp update_time = 4;
+  string logo_url = 5;
+  string favicon_url = 6;
+  string primary_color = 7;
+  bool detect_dark_mode_enabled = 8;
+  string dark_mode_logo_url = 9;
+  string dark_mode_primary_color = 10;
+}
+
 message SessionSigningKey {
   string id = 1;
   string project_id = 2;
@@ -328,4 +343,12 @@ message VerifyPasswordRequest {
 }
 
 message VerifyPasswordResponse {
+}
+
+message GetProjectUISettingsRequest {
+}
+
+message GetProjectUISettingsResponse {
+  // The project's UI settings.
+  ProjectUISettings project_ui_settings = 1;
 }

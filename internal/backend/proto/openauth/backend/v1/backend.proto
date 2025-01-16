@@ -160,6 +160,9 @@ service BackendService {
   rpc ListProjectRedirectURIs(ListProjectRedirectURIsRequest) returns (ListProjectRedirectURIsResponse) {}
   rpc UpdateProjectRedirectURI(UpdateProjectRedirectURIRequest) returns (UpdateProjectRedirectURIResponse) {}
 
+  rpc GetProjectUISettings(GetProjectUISettingsRequest) returns (GetProjectUISettingsResponse) {}
+  rpc UpdateProjectUISettings(UpdateProjectUISettingsRequest) returns (UpdateProjectUISettingsResponse) {}
+
   rpc ListProjectAPIKeys(ListProjectAPIKeysRequest) returns (ListProjectAPIKeysResponse);
   rpc GetProjectAPIKey(GetProjectAPIKeyRequest) returns (GetProjectAPIKeyResponse);
   rpc CreateProjectAPIKey(CreateProjectAPIKeyRequest) returns (CreateProjectAPIKeyResponse);
@@ -456,6 +459,12 @@ message ListProjectRedirectURIsResponse {
   repeated ProjectRedirectURI project_redirect_uris = 1;
 }
 
+message GetProjectUISettingsRequest {}
+
+message GetProjectUISettingsResponse {
+  ProjectUISettings project_ui_settings = 1;
+}
+
 message UpdateProjectRedirectURIRequest {
   string id = 1;
   ProjectRedirectURI project_redirect_uri = 2;
@@ -463,6 +472,30 @@ message UpdateProjectRedirectURIRequest {
 
 message UpdateProjectRedirectURIResponse {
   ProjectRedirectURI project_redirect_uri = 1;
+}
+
+message UpdateProjectUISettingsRequest {
+  optional string primary_color = 1;
+  bool detect_dark_mode_enabled = 2;
+  optional string dark_mode_primary_color = 4;
+}
+
+message UpdateProjectUISettingsResponse {
+  string id = 1;
+  string project_id = 2;
+  google.protobuf.Timestamp create_time = 3;
+  google.protobuf.Timestamp update_time = 4;
+  string dark_mode_logo_presigned_upload_url = 5;
+  string favicon_presigned_upload_url = 6;
+  string logo_presigned_upload_url = 7;
+  string dark_mode_primary_color = 8;
+  bool detect_dark_mode_enabled = 9;
+  string primary_color = 10;
+}
+
+message ImageUploadRequest {
+  bytes data = 1;
+  string mime_type = 2;
 }
 
 message Project {
@@ -480,6 +513,19 @@ message Project {
   optional bool organizations_saml_enabled_default = 12;
   optional bool organizations_scim_enabled_default = 13;
   optional string auth_domain = 14;
+}
+
+message ProjectUISettings {
+  string id = 1;
+  string project_id = 2;
+  google.protobuf.Timestamp create_time = 3;
+  google.protobuf.Timestamp update_time = 4;
+  string logo_url = 5;
+  string favicon_url = 6;
+  string primary_color = 7;
+  bool detect_dark_mode_enabled = 8;
+  string dark_mode_logo_url = 9;
+  string dark_mode_primary_color = 10;
 }
 
 message Organization {

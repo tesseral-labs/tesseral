@@ -26,4 +26,5 @@ var (
 	SCIMAPIKeySecretToken = prettyuuid.MustNewFormat("openauth_secret_scim_api_key_", alphabet)
 
 	ProjectRedirectURI = prettyuuid.MustNewFormat("project_redirect_uri_", alphabet)
+	ProjectUISettings  = prettyuuid.MustNewFormat("project_ui_settings_", alphabet)
 )

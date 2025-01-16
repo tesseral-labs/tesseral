@@ -410,3 +410,25 @@ WHERE
     id = $1
     AND project_id = $2;
 
+-- name: GetProjectUISettings :one
+SELECT
+    *
+FROM
+    project_ui_settings
+WHERE
+    project_id = $1;
+
+-- name: UpdateProjectUISettings :one
+UPDATE
+    project_ui_settings
+SET
+    update_time = now(),
+    primary_color = $3,
+    detect_dark_mode_enabled = $4,
+    dark_mode_primary_color = $5
+WHERE
+    id = $1
+    AND project_id = $2
+RETURNING
+    *;
+

@@ -73,6 +73,9 @@ const (
 	// IntermediateServiceVerifyPasswordProcedure is the fully-qualified name of the
 	// IntermediateService's VerifyPassword RPC.
 	IntermediateServiceVerifyPasswordProcedure = "/openauth.intermediate.v1.IntermediateService/VerifyPassword"
+	// IntermediateServiceGetProjectUISettingsProcedure is the fully-qualified name of the
+	// IntermediateService's GetProjectUISettings RPC.
+	IntermediateServiceGetProjectUISettingsProcedure = "/openauth.intermediate.v1.IntermediateService/GetProjectUISettings"
 )
 
 // IntermediateServiceClient is a client for the openauth.intermediate.v1.IntermediateService
@@ -97,6 +100,7 @@ type IntermediateServiceClient interface {
 	VerifyEmailChallenge(context.Context, *connect.Request[v1.VerifyEmailChallengeRequest]) (*connect.Response[v1.VerifyEmailChallengeResponse], error)
 	// Submits a password for verification of session.
 	VerifyPassword(context.Context, *connect.Request[v1.VerifyPasswordRequest]) (*connect.Response[v1.VerifyPasswordResponse], error)
+	GetProjectUISettings(context.Context, *connect.Request[v1.GetProjectUISettingsRequest]) (*connect.Response[v1.GetProjectUISettingsResponse], error)
 }
 
 // NewIntermediateServiceClient constructs a client for the
@@ -189,6 +193,12 @@ func NewIntermediateServiceClient(httpClient connect.HTTPClient, baseURL string,
 			connect.WithSchema(intermediateServiceMethods.ByName("VerifyPassword")),
 			connect.WithClientOptions(opts...),
 		),
+		getProjectUISettings: connect.NewClient[v1.GetProjectUISettingsRequest, v1.GetProjectUISettingsResponse](
+			httpClient,
+			baseURL+IntermediateServiceGetProjectUISettingsProcedure,
+			connect.WithSchema(intermediateServiceMethods.ByName("GetProjectUISettings")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -207,6 +217,7 @@ type intermediateServiceClient struct {
 	signInWithEmail                                      *connect.Client[v1.SignInWithEmailRequest, v1.SignInWithEmailResponse]
 	verifyEmailChallenge                                 *connect.Client[v1.VerifyEmailChallengeRequest, v1.VerifyEmailChallengeResponse]
 	verifyPassword                                       *connect.Client[v1.VerifyPasswordRequest, v1.VerifyPasswordResponse]
+	getProjectUISettings                                 *connect.Client[v1.GetProjectUISettingsRequest, v1.GetProjectUISettingsResponse]
 }
 
 // Whoami calls openauth.intermediate.v1.IntermediateService.Whoami.
@@ -280,6 +291,11 @@ func (c *intermediateServiceClient) VerifyPassword(ctx context.Context, req *con
 	return c.verifyPassword.CallUnary(ctx, req)
 }
 
+// GetProjectUISettings calls openauth.intermediate.v1.IntermediateService.GetProjectUISettings.
+func (c *intermediateServiceClient) GetProjectUISettings(ctx context.Context, req *connect.Request[v1.GetProjectUISettingsRequest]) (*connect.Response[v1.GetProjectUISettingsResponse], error) {
+	return c.getProjectUISettings.CallUnary(ctx, req)
+}
+
 // IntermediateServiceHandler is an implementation of the
 // openauth.intermediate.v1.IntermediateService service.
 type IntermediateServiceHandler interface {
@@ -302,6 +318,7 @@ type IntermediateServiceHandler interface {
 	VerifyEmailChallenge(context.Context, *connect.Request[v1.VerifyEmailChallengeRequest]) (*connect.Response[v1.VerifyEmailChallengeResponse], error)
 	// Submits a password for verification of session.
 	VerifyPassword(context.Context, *connect.Request[v1.VerifyPasswordRequest]) (*connect.Response[v1.VerifyPasswordResponse], error)
+	GetProjectUISettings(context.Context, *connect.Request[v1.GetProjectUISettingsRequest]) (*connect.Response[v1.GetProjectUISettingsResponse], error)
 }
 
 // NewIntermediateServiceHandler builds an HTTP handler from the service implementation. It returns
@@ -389,6 +406,12 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 		connect.WithSchema(intermediateServiceMethods.ByName("VerifyPassword")),
 		connect.WithHandlerOptions(opts...),
 	)
+	intermediateServiceGetProjectUISettingsHandler := connect.NewUnaryHandler(
+		IntermediateServiceGetProjectUISettingsProcedure,
+		svc.GetProjectUISettings,
+		connect.WithSchema(intermediateServiceMethods.ByName("GetProjectUISettings")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/openauth.intermediate.v1.IntermediateService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case IntermediateServiceWhoamiProcedure:
@@ -417,6 +440,8 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 			intermediateServiceVerifyEmailChallengeHandler.ServeHTTP(w, r)
 		case IntermediateServiceVerifyPasswordProcedure:
 			intermediateServiceVerifyPasswordHandler.ServeHTTP(w, r)
+		case IntermediateServiceGetProjectUISettingsProcedure:
+			intermediateServiceGetProjectUISettingsHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -476,4 +501,8 @@ func (UnimplementedIntermediateServiceHandler) VerifyEmailChallenge(context.Cont
 
 func (UnimplementedIntermediateServiceHandler) VerifyPassword(context.Context, *connect.Request[v1.VerifyPasswordRequest]) (*connect.Response[v1.VerifyPasswordResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.VerifyPassword is not implemented"))
+}
+
+func (UnimplementedIntermediateServiceHandler) GetProjectUISettings(context.Context, *connect.Request[v1.GetProjectUISettingsRequest]) (*connect.Response[v1.GetProjectUISettingsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.GetProjectUISettings is not implemented"))
 }

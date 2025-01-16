@@ -11,6 +11,7 @@ import (
 	"connectrpc.com/vanguard"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/kms"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/cyrusaf/ctxlog"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -66,10 +67,13 @@ func main() {
 		IntermediateSessionKMSKeyID         string `conf:"intermediate_session_kms_key_id"`
 		KMSEndpoint                         string `conf:"kms_endpoint_resolver_url,noredact"`
 		PageEncodingValue                   string `conf:"page-encoding-value"`
+		S3UserContentBucketName             string `conf:"s3_user_content_bucket_name,noredact"`
+		S3Endpoint                          string `conf:"s3_endpoint_resolver_url,noredact"`
 		ServeAddr                           string `conf:"serve_addr,noredact"`
 		SessionKMSKeyID                     string `conf:"session_kms_key_id"`
 		GoogleOAuthClientSecretsKMSKeyID    string `conf:"google_oauth_client_secrets_kms_key_id,noredact"`
 		MicrosoftOAuthClientSecretsKMSKeyID string `conf:"microsoft_oauth_client_secrets_kms_key_id,noredact"`
+		UserContentBaseUrl                  string `conf:"user_content_base_url"`
 	}{
 		PageEncodingValue: "0000000000000000000000000000000000000000000000000000000000000000",
 	}
@@ -100,15 +104,16 @@ func main() {
 		panic(fmt.Errorf("load aws config: %w", err))
 	}
 
-	kmsClient := kms.NewFromConfig(awsConfig, func(opts *kms.Options) {
-		if config.KMSEndpoint != "" {
-			opts.BaseEndpoint = &config.KMSEndpoint
-		}
-	})
-
 	kms_ := kms.NewFromConfig(awsConfig, func(o *kms.Options) {
 		if config.KMSEndpoint != "" {
 			o.BaseEndpoint = &config.KMSEndpoint
+		}
+	})
+
+	s3_ := s3.NewFromConfig(awsConfig, func(o *s3.Options) {
+		if config.S3Endpoint != "" {
+			o.BaseEndpoint = &config.S3Endpoint
+			o.UsePathStyle = true
 		}
 	})
 
@@ -123,11 +128,14 @@ func main() {
 		DB:                                    db,
 		DogfoodProjectID:                      &uuidDogfoodProjectID,
 		IntermediateSessionSigningKeyKMSKeyID: config.IntermediateSessionKMSKeyID,
-		KMS:                                   kmsClient,
+		KMS:                                   kms_,
 		PageEncoder:                           pagetoken.Encoder{Secret: pageEncodingValue},
+		S3:                                    s3_,
+		S3UserContentBucketName:               config.S3UserContentBucketName,
 		SessionSigningKeyKmsKeyID:             config.SessionKMSKeyID,
 		GoogleOAuthClientSecretsKMSKeyID:      config.GoogleOAuthClientSecretsKMSKeyID,
 		MicrosoftOAuthClientSecretsKMSKeyID:   config.MicrosoftOAuthClientSecretsKMSKeyID,
+		UserContentBaseUrl:                    config.UserContentBaseUrl,
 	})
 	backendConnectPath, backendConnectHandler := backendv1connect.NewBackendServiceHandler(
 		&backendservice.Service{
@@ -178,6 +186,7 @@ func main() {
 		SessionSigningKeyKmsKeyID:             config.SessionKMSKeyID,
 		GoogleOAuthClientSecretsKMSKeyID:      config.GoogleOAuthClientSecretsKMSKeyID,
 		MicrosoftOAuthClientSecretsKMSKeyID:   config.MicrosoftOAuthClientSecretsKMSKeyID,
+		UserContentBaseUrl:                    config.UserContentBaseUrl,
 	})
 	intermediateConnectPath, intermediateConnectHandler := intermediatev1connect.NewIntermediateServiceHandler(
 		&intermediateservice.Service{

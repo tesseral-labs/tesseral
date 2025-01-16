@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -19,9 +20,12 @@ type Store struct {
 	kms                                   *kms.Client
 	pageEncoder                           pagetoken.Encoder
 	q                                     *queries.Queries
+	s3PresignClient                       *s3.PresignClient
+	s3UserContentBucketName               string
 	sessionSigningKeyKmsKeyID             string
 	googleOAuthClientSecretsKMSKeyID      string
 	microsoftOAuthClientSecretsKMSKeyID   string
+	userContentBaseUrl                    string
 }
 
 type NewStoreParams struct {
@@ -30,9 +34,12 @@ type NewStoreParams struct {
 	IntermediateSessionSigningKeyKMSKeyID string
 	KMS                                   *kms.Client
 	PageEncoder                           pagetoken.Encoder
+	S3                                    *s3.Client
+	S3UserContentBucketName               string
 	SessionSigningKeyKmsKeyID             string
 	GoogleOAuthClientSecretsKMSKeyID      string
 	MicrosoftOAuthClientSecretsKMSKeyID   string
+	UserContentBaseUrl                    string
 }
 
 func New(p NewStoreParams) *Store {
@@ -43,9 +50,12 @@ func New(p NewStoreParams) *Store {
 		kms:                                   p.KMS,
 		pageEncoder:                           p.PageEncoder,
 		q:                                     queries.New(p.DB),
+		s3PresignClient:                       s3.NewPresignClient(p.S3),
+		s3UserContentBucketName:               p.S3UserContentBucketName,
 		sessionSigningKeyKmsKeyID:             p.SessionSigningKeyKmsKeyID,
 		googleOAuthClientSecretsKMSKeyID:      p.GoogleOAuthClientSecretsKMSKeyID,
 		microsoftOAuthClientSecretsKMSKeyID:   p.MicrosoftOAuthClientSecretsKMSKeyID,
+		userContentBaseUrl:                    p.UserContentBaseUrl,
 	}
 
 	return store

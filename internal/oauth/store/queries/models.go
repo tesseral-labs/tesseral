@@ -153,6 +153,16 @@ type ProjectRedirectUri struct {
 	UpdatedAt pgtype.Timestamptz
 }
 
+type ProjectUiSetting struct {
+	ID                    uuid.UUID
+	ProjectID             uuid.UUID
+	PrimaryColor          *string
+	DetectDarkModeEnabled bool
+	DarkModePrimaryColor  *string
+	CreateTime            *time.Time
+	UpdateTime            *time.Time
+}
+
 type SamlConnection struct {
 	ID                 uuid.UUID
 	OrganizationID     uuid.UUID

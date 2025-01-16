@@ -60,6 +60,13 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 		return nil, fmt.Errorf("create dogfood project: %w", err)
 	}
 
+	if _, err := q.CreateProjectUISettings(ctx, queries.CreateProjectUISettingsParams{
+		ID:        uuid.New(),
+		ProjectID: dogfoodProjectID,
+	}); err != nil {
+		return nil, fmt.Errorf("create dogfood project ui settings: %w", err)
+	}
+
 	if _, err := q.CreateOrganization(ctx, queries.CreateOrganizationParams{
 		ID:                   dogfoodOrganizationID,
 		ProjectID:            dogfoodProjectID,
