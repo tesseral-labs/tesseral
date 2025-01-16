@@ -163,13 +163,15 @@ export function EditSAMLConnectionPage() {
                 <div className="text-sm font-medium leading-none">
                   Assertion Consumer Service (ACS) URL
                 </div>
-                <div>{getSAMLConnectionResponse?.samlConnection?.spAcsUrl}</div>
+                <div className="mt-1">
+                  {getSAMLConnectionResponse?.samlConnection?.spAcsUrl}
+                </div>
               </div>
               <div>
                 <div className="text-sm font-medium leading-none">
                   SP Entity ID
                 </div>
-                <div>
+                <div className="mt-1">
                   {getSAMLConnectionResponse?.samlConnection?.spEntityId}
                 </div>
               </div>
