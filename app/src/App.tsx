@@ -19,6 +19,10 @@ import { OrganizationSAMLConnectionsTab } from '@/pages/organizations/Organizati
 import { OrganizationSCIMAPIKeysTab } from '@/pages/organizations/OrganizationSCIMAPIKeysTab'
 import { OrganizationDetailsTab } from '@/pages/organizations/OrganizationDetailsTab'
 import { EditOrganizationPage } from '@/pages/organizations/EditOrganizationPage'
+import { ViewSAMLConnectionPage } from '@/pages/saml-connections/ViewSAMLConnectionPage'
+import { Toaster } from '@/components/ui/sonner'
+import { Edit } from 'lucide-react'
+import { EditSAMLConnectionPage } from '@/pages/saml-connections/EditSAMLConnectionPage'
 
 const queryClient = new QueryClient()
 
@@ -80,6 +84,14 @@ function AppWithinQueryClient() {
               element={<EditOrganizationPage />}
             />
             <Route
+              path="organizations/:organizationId/saml-connections/:samlConnectionId"
+              element={<ViewSAMLConnectionPage />}
+            />
+            <Route
+              path="organizations/:organizationId/saml-connections/:samlConnectionId/edit"
+              element={<EditSAMLConnectionPage />}
+            />
+            <Route
               path="organizations/:organizationId/users/:userId"
               element={<ViewUserPage />}
             />
@@ -95,6 +107,7 @@ const App: FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <AppWithinQueryClient />
+      <Toaster />
     </QueryClientProvider>
   )
 }
