@@ -16,6 +16,12 @@ INSERT INTO projects (id, organization_id, display_name, log_in_with_password_en
 RETURNING
     *;
 
+-- name: CreateProjectUISettings :one
+INSERT INTO project_ui_settings (id, project_id, logo_file_key, favicon_file_key, primary_color, detect_dark_mode_enabled, dark_mode_logo_file_key)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
+RETURNING
+    *;
+
 -- name: CreateSessionSigningKey :one
 INSERT INTO session_signing_keys (id, project_id, public_key, private_key_cipher_text, expire_time)
     VALUES ($1, $2, $3, $4, $5)

@@ -203,6 +203,49 @@ func (q *Queries) CreateProjectAPIKey(ctx context.Context, arg CreateProjectAPIK
 	return i, err
 }
 
+const createProjectUISettings = `-- name: CreateProjectUISettings :one
+INSERT INTO project_ui_settings (id, project_id, logo_file_key, favicon_file_key, primary_color, detect_dark_mode_enabled, dark_mode_logo_file_key)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
+RETURNING
+    id, project_id, logo_file_key, favicon_file_key, primary_color, detect_dark_mode_enabled, dark_mode_logo_file_key, dark_mode_primary_color, create_time, update_time
+`
+
+type CreateProjectUISettingsParams struct {
+	ID                    uuid.UUID
+	ProjectID             uuid.UUID
+	LogoFileKey           *string
+	FaviconFileKey        *string
+	PrimaryColor          *string
+	DetectDarkModeEnabled bool
+	DarkModeLogoFileKey   *string
+}
+
+func (q *Queries) CreateProjectUISettings(ctx context.Context, arg CreateProjectUISettingsParams) (ProjectUiSetting, error) {
+	row := q.db.QueryRow(ctx, createProjectUISettings,
+		arg.ID,
+		arg.ProjectID,
+		arg.LogoFileKey,
+		arg.FaviconFileKey,
+		arg.PrimaryColor,
+		arg.DetectDarkModeEnabled,
+		arg.DarkModeLogoFileKey,
+	)
+	var i ProjectUiSetting
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.LogoFileKey,
+		&i.FaviconFileKey,
+		&i.PrimaryColor,
+		&i.DetectDarkModeEnabled,
+		&i.DarkModeLogoFileKey,
+		&i.DarkModePrimaryColor,
+		&i.CreateTime,
+		&i.UpdateTime,
+	)
+	return i, err
+}
+
 const createSessionSigningKey = `-- name: CreateSessionSigningKey :one
 INSERT INTO session_signing_keys (id, project_id, public_key, private_key_cipher_text, expire_time)
     VALUES ($1, $2, $3, $4, $5)

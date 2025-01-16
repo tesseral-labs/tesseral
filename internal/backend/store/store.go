@@ -25,6 +25,7 @@ type Store struct {
 	sessionSigningKeyKmsKeyID             string
 	googleOAuthClientSecretsKMSKeyID      string
 	microsoftOAuthClientSecretsKMSKeyID   string
+	userContentUrl                        string
 }
 
 type NewStoreParams struct {
@@ -38,6 +39,7 @@ type NewStoreParams struct {
 	SessionSigningKeyKmsKeyID             string
 	GoogleOAuthClientSecretsKMSKeyID      string
 	MicrosoftOAuthClientSecretsKMSKeyID   string
+	UserContentUrl                        string
 }
 
 func New(p NewStoreParams) *Store {
@@ -53,6 +55,7 @@ func New(p NewStoreParams) *Store {
 		sessionSigningKeyKmsKeyID:             p.SessionSigningKeyKmsKeyID,
 		googleOAuthClientSecretsKMSKeyID:      p.GoogleOAuthClientSecretsKMSKeyID,
 		microsoftOAuthClientSecretsKMSKeyID:   p.MicrosoftOAuthClientSecretsKMSKeyID,
+		userContentUrl:                        p.UserContentUrl,
 	}
 
 	return store

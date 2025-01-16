@@ -473,7 +473,12 @@ message UpdateProjectRedirectURIResponse {
 }
 
 message UpdateProjectUISettingsRequest {
-  ImageUploadRequest logo = 1;
+  optional ImageUploadRequest logo = 1;
+  optional ImageUploadRequest favicon = 2;
+  optional string primary_color = 3;
+  bool detect_dark_mode_enabled = 4;
+  optional ImageUploadRequest dark_mode_logo = 5;
+  optional string dark_mode_primary_color = 6;
 }
 
 message UpdateProjectUISettingsResponse {
@@ -482,7 +487,7 @@ message UpdateProjectUISettingsResponse {
 
 message ImageUploadRequest {
   bytes data = 1;
-  string mimetype = 2;
+  string mime_type = 2;
 }
 
 message Project {
@@ -504,6 +509,13 @@ message Project {
 
 message ProjectUISettings {
   string logo_url = 1;
+  string favicon_url = 2;
+  string primary_color = 3;
+  bool detect_dark_mode_enabled = 4;
+  string dark_mode_logo_url = 5;
+  string dark_mode_primary_color = 6;
+  google.protobuf.Timestamp create_time = 7;
+  google.protobuf.Timestamp update_time = 8;
 }
 
 message Organization {

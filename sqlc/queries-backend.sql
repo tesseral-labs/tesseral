@@ -423,9 +423,15 @@ UPDATE
     project_ui_settings
 SET
     update_time = now(),
-    primary_color = $2,
+    logo_file_key = $3,
+    favicon_file_key = $4,
+    primary_color = $5,
+    detect_dark_mode_enabled = $6,
+    dark_mode_logo_file_key = $7,
+    dark_mode_primary_color = $8
 WHERE
     id = $1
-    AND project_id = $3
+    AND project_id = $2
 RETURNING
     *;
+

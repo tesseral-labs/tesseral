@@ -670,7 +670,7 @@ components:
                 data:
                     type: string
                     format: bytes
-                mimetype:
+                mimeType:
                     type: string
         IntermediateSession:
             type: object
@@ -810,6 +810,22 @@ components:
             properties:
                 logoUrl:
                     type: string
+                faviconUrl:
+                    type: string
+                primaryColor:
+                    type: string
+                detectDarkModeEnabled:
+                    type: boolean
+                darkModeLogoUrl:
+                    type: string
+                darkModePrimaryColor:
+                    type: string
+                createTime:
+                    type: string
+                    format: date-time
+                updateTime:
+                    type: string
+                    format: date-time
         RevokeSCIMAPIKeyResponse:
             type: object
             properties:
@@ -894,6 +910,16 @@ components:
             properties:
                 logo:
                     $ref: '#/components/schemas/ImageUploadRequest'
+                favicon:
+                    $ref: '#/components/schemas/ImageUploadRequest'
+                primaryColor:
+                    type: string
+                detectDarkModeEnabled:
+                    type: boolean
+                darkModeLogo:
+                    $ref: '#/components/schemas/ImageUploadRequest'
+                darkModePrimaryColor:
+                    type: string
         UpdateProjectUISettingsResponse:
             type: object
             properties:
