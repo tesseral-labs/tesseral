@@ -11,7 +11,7 @@ const Page = () => {
   const isDarkMode = useDarkMode()
   const projectUiSettings = useProjectUiSettings()
 
-  const [icon, setIcon] = useState<string>('/apple-touch-icon.png')
+  const [favicon, setFavicon] = useState<string>('/apple-touch-icon.png')
 
   useEffect(() => {
     if (projectUiSettings?.faviconUrl) {
@@ -21,7 +21,7 @@ const Page = () => {
           method: 'HEAD',
         })
 
-        setIcon(
+        setFavicon(
           faviconCheck.ok
             ? projectUiSettings.faviconUrl
             : '/apple-touch-icon.png',
@@ -33,8 +33,8 @@ const Page = () => {
   return (
     <>
       <Helmet>
-        <link rel="icon" href={icon} />
-        <link rel="apple-touch-icon" href={icon} />
+        <link rel="icon" href={favicon} />
+        <link rel="apple-touch-icon" href={favicon} />
       </Helmet>
 
       <div
