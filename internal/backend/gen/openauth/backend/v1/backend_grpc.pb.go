@@ -48,6 +48,7 @@ const (
 	BackendService_GetProjectRedirectURI_FullMethodName    = "/openauth.backend.v1.BackendService/GetProjectRedirectURI"
 	BackendService_ListProjectRedirectURIs_FullMethodName  = "/openauth.backend.v1.BackendService/ListProjectRedirectURIs"
 	BackendService_UpdateProjectRedirectURI_FullMethodName = "/openauth.backend.v1.BackendService/UpdateProjectRedirectURI"
+	BackendService_UpdateProjectUISettings_FullMethodName  = "/openauth.backend.v1.BackendService/UpdateProjectUISettings"
 	BackendService_ListProjectAPIKeys_FullMethodName       = "/openauth.backend.v1.BackendService/ListProjectAPIKeys"
 	BackendService_GetProjectAPIKey_FullMethodName         = "/openauth.backend.v1.BackendService/GetProjectAPIKey"
 	BackendService_CreateProjectAPIKey_FullMethodName      = "/openauth.backend.v1.BackendService/CreateProjectAPIKey"
@@ -89,6 +90,7 @@ type BackendServiceClient interface {
 	GetProjectRedirectURI(ctx context.Context, in *GetProjectRedirectURIRequest, opts ...grpc.CallOption) (*GetProjectRedirectURIResponse, error)
 	ListProjectRedirectURIs(ctx context.Context, in *ListProjectRedirectURIsRequest, opts ...grpc.CallOption) (*ListProjectRedirectURIsResponse, error)
 	UpdateProjectRedirectURI(ctx context.Context, in *UpdateProjectRedirectURIRequest, opts ...grpc.CallOption) (*UpdateProjectRedirectURIResponse, error)
+	UpdateProjectUISettings(ctx context.Context, in *UpdateProjectUISettingsRequest, opts ...grpc.CallOption) (*UpdateProjectUISettingsResponse, error)
 	ListProjectAPIKeys(ctx context.Context, in *ListProjectAPIKeysRequest, opts ...grpc.CallOption) (*ListProjectAPIKeysResponse, error)
 	GetProjectAPIKey(ctx context.Context, in *GetProjectAPIKeyRequest, opts ...grpc.CallOption) (*GetProjectAPIKeyResponse, error)
 	CreateProjectAPIKey(ctx context.Context, in *CreateProjectAPIKeyRequest, opts ...grpc.CallOption) (*CreateProjectAPIKeyResponse, error)
@@ -395,6 +397,16 @@ func (c *backendServiceClient) UpdateProjectRedirectURI(ctx context.Context, in 
 	return out, nil
 }
 
+func (c *backendServiceClient) UpdateProjectUISettings(ctx context.Context, in *UpdateProjectUISettingsRequest, opts ...grpc.CallOption) (*UpdateProjectUISettingsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateProjectUISettingsResponse)
+	err := c.cc.Invoke(ctx, BackendService_UpdateProjectUISettings_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *backendServiceClient) ListProjectAPIKeys(ctx context.Context, in *ListProjectAPIKeysRequest, opts ...grpc.CallOption) (*ListProjectAPIKeysResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListProjectAPIKeysResponse)
@@ -488,6 +500,7 @@ type BackendServiceServer interface {
 	GetProjectRedirectURI(context.Context, *GetProjectRedirectURIRequest) (*GetProjectRedirectURIResponse, error)
 	ListProjectRedirectURIs(context.Context, *ListProjectRedirectURIsRequest) (*ListProjectRedirectURIsResponse, error)
 	UpdateProjectRedirectURI(context.Context, *UpdateProjectRedirectURIRequest) (*UpdateProjectRedirectURIResponse, error)
+	UpdateProjectUISettings(context.Context, *UpdateProjectUISettingsRequest) (*UpdateProjectUISettingsResponse, error)
 	ListProjectAPIKeys(context.Context, *ListProjectAPIKeysRequest) (*ListProjectAPIKeysResponse, error)
 	GetProjectAPIKey(context.Context, *GetProjectAPIKeyRequest) (*GetProjectAPIKeyResponse, error)
 	CreateProjectAPIKey(context.Context, *CreateProjectAPIKeyRequest) (*CreateProjectAPIKeyResponse, error)
@@ -590,6 +603,9 @@ func (UnimplementedBackendServiceServer) ListProjectRedirectURIs(context.Context
 }
 func (UnimplementedBackendServiceServer) UpdateProjectRedirectURI(context.Context, *UpdateProjectRedirectURIRequest) (*UpdateProjectRedirectURIResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateProjectRedirectURI not implemented")
+}
+func (UnimplementedBackendServiceServer) UpdateProjectUISettings(context.Context, *UpdateProjectUISettingsRequest) (*UpdateProjectUISettingsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateProjectUISettings not implemented")
 }
 func (UnimplementedBackendServiceServer) ListProjectAPIKeys(context.Context, *ListProjectAPIKeysRequest) (*ListProjectAPIKeysResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListProjectAPIKeys not implemented")
@@ -1152,6 +1168,24 @@ func _BackendService_UpdateProjectRedirectURI_Handler(srv interface{}, ctx conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BackendService_UpdateProjectUISettings_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateProjectUISettingsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).UpdateProjectUISettings(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_UpdateProjectUISettings_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).UpdateProjectUISettings(ctx, req.(*UpdateProjectUISettingsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _BackendService_ListProjectAPIKeys_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListProjectAPIKeysRequest)
 	if err := dec(in); err != nil {
@@ -1382,6 +1416,10 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateProjectRedirectURI",
 			Handler:    _BackendService_UpdateProjectRedirectURI_Handler,
+		},
+		{
+			MethodName: "UpdateProjectUISettings",
+			Handler:    _BackendService_UpdateProjectUISettings_Handler,
 		},
 		{
 			MethodName: "ListProjectAPIKeys",

@@ -150,6 +150,11 @@ export const listProjectRedirectURIs = BackendService.method.listProjectRedirect
 export const updateProjectRedirectURI = BackendService.method.updateProjectRedirectURI;
 
 /**
+ * @generated from rpc openauth.backend.v1.BackendService.UpdateProjectUISettings
+ */
+export const updateProjectUISettings = BackendService.method.updateProjectUISettings;
+
+/**
  * @generated from rpc openauth.backend.v1.BackendService.ListProjectAPIKeys
  */
 export const listProjectAPIKeys = BackendService.method.listProjectAPIKeys;

@@ -160,6 +160,13 @@ service BackendService {
   rpc ListProjectRedirectURIs(ListProjectRedirectURIsRequest) returns (ListProjectRedirectURIsResponse) {}
   rpc UpdateProjectRedirectURI(UpdateProjectRedirectURIRequest) returns (UpdateProjectRedirectURIResponse) {}
 
+  rpc UpdateProjectUISettings(UpdateProjectUISettingsRequest) returns (UpdateProjectUISettingsResponse) {
+    option (google.api.http) = {
+      patch: "/backend/v1/project-ui-settings",
+      body: "*"
+    };
+  }
+
   rpc ListProjectAPIKeys(ListProjectAPIKeysRequest) returns (ListProjectAPIKeysResponse);
   rpc GetProjectAPIKey(GetProjectAPIKeyRequest) returns (GetProjectAPIKeyResponse);
   rpc CreateProjectAPIKey(CreateProjectAPIKeyRequest) returns (CreateProjectAPIKeyResponse);
@@ -465,6 +472,19 @@ message UpdateProjectRedirectURIResponse {
   ProjectRedirectURI project_redirect_uri = 1;
 }
 
+message UpdateProjectUISettingsRequest {
+  ImageUploadRequest logo = 1;
+}
+
+message UpdateProjectUISettingsResponse {
+  ProjectUISettings project_ui_settings = 1;
+}
+
+message ImageUploadRequest {
+  bytes data = 1;
+  string mimetype = 2;
+}
+
 message Project {
   string id = 1;
   string display_name = 2;
@@ -480,6 +500,10 @@ message Project {
   optional bool organizations_saml_enabled_default = 12;
   optional bool organizations_scim_enabled_default = 13;
   optional string auth_domain = 14;
+}
+
+message ProjectUISettings {
+  string logo_url = 1;
 }
 
 message Organization {

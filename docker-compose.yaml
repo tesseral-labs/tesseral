@@ -58,6 +58,15 @@ services:
       - "5432:5432"
     volumes:
       - ./.local/postgres:/var/lib/postgresql/data
+  s3:
+    image: adobe/s3mock:latest
+    environment:
+      - initialBuckets=tesseral-user-content
+      - root=containers3root
+    ports:
+      - 9090:9090
+    volumes:
+      - ./.local/s3:/containers3root
   ui:
     command: bash -c "npm i --force && npm run dev"
     environment:

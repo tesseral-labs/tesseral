@@ -3230,6 +3230,146 @@ func (x *UpdateProjectRedirectURIResponse) GetProjectRedirectUri() *ProjectRedir
 	return nil
 }
 
+type UpdateProjectUISettingsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Logo          *ImageUploadRequest    `protobuf:"bytes,1,opt,name=logo,proto3" json:"logo,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateProjectUISettingsRequest) Reset() {
+	*x = UpdateProjectUISettingsRequest{}
+	mi := &file_openauth_backend_v1_backend_proto_msgTypes[71]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateProjectUISettingsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateProjectUISettingsRequest) ProtoMessage() {}
+
+func (x *UpdateProjectUISettingsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_openauth_backend_v1_backend_proto_msgTypes[71]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateProjectUISettingsRequest.ProtoReflect.Descriptor instead.
+func (*UpdateProjectUISettingsRequest) Descriptor() ([]byte, []int) {
+	return file_openauth_backend_v1_backend_proto_rawDescGZIP(), []int{71}
+}
+
+func (x *UpdateProjectUISettingsRequest) GetLogo() *ImageUploadRequest {
+	if x != nil {
+		return x.Logo
+	}
+	return nil
+}
+
+type UpdateProjectUISettingsResponse struct {
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	ProjectUiSettings *ProjectUISettings     `protobuf:"bytes,1,opt,name=project_ui_settings,json=projectUiSettings,proto3" json:"project_ui_settings,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
+}
+
+func (x *UpdateProjectUISettingsResponse) Reset() {
+	*x = UpdateProjectUISettingsResponse{}
+	mi := &file_openauth_backend_v1_backend_proto_msgTypes[72]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateProjectUISettingsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateProjectUISettingsResponse) ProtoMessage() {}
+
+func (x *UpdateProjectUISettingsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_openauth_backend_v1_backend_proto_msgTypes[72]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateProjectUISettingsResponse.ProtoReflect.Descriptor instead.
+func (*UpdateProjectUISettingsResponse) Descriptor() ([]byte, []int) {
+	return file_openauth_backend_v1_backend_proto_rawDescGZIP(), []int{72}
+}
+
+func (x *UpdateProjectUISettingsResponse) GetProjectUiSettings() *ProjectUISettings {
+	if x != nil {
+		return x.ProjectUiSettings
+	}
+	return nil
+}
+
+type ImageUploadRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Data          []byte                 `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"`
+	Mimetype      string                 `protobuf:"bytes,2,opt,name=mimetype,proto3" json:"mimetype,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ImageUploadRequest) Reset() {
+	*x = ImageUploadRequest{}
+	mi := &file_openauth_backend_v1_backend_proto_msgTypes[73]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ImageUploadRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ImageUploadRequest) ProtoMessage() {}
+
+func (x *ImageUploadRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_openauth_backend_v1_backend_proto_msgTypes[73]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ImageUploadRequest.ProtoReflect.Descriptor instead.
+func (*ImageUploadRequest) Descriptor() ([]byte, []int) {
+	return file_openauth_backend_v1_backend_proto_rawDescGZIP(), []int{73}
+}
+
+func (x *ImageUploadRequest) GetData() []byte {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+func (x *ImageUploadRequest) GetMimetype() string {
+	if x != nil {
+		return x.Mimetype
+	}
+	return ""
+}
+
 type Project struct {
 	state                           protoimpl.MessageState `protogen:"open.v1"`
 	Id                              string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -3252,7 +3392,7 @@ type Project struct {
 
 func (x *Project) Reset() {
 	*x = Project{}
-	mi := &file_openauth_backend_v1_backend_proto_msgTypes[71]
+	mi := &file_openauth_backend_v1_backend_proto_msgTypes[74]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3264,7 +3404,7 @@ func (x *Project) String() string {
 func (*Project) ProtoMessage() {}
 
 func (x *Project) ProtoReflect() protoreflect.Message {
-	mi := &file_openauth_backend_v1_backend_proto_msgTypes[71]
+	mi := &file_openauth_backend_v1_backend_proto_msgTypes[74]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3277,7 +3417,7 @@ func (x *Project) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Project.ProtoReflect.Descriptor instead.
 func (*Project) Descriptor() ([]byte, []int) {
-	return file_openauth_backend_v1_backend_proto_rawDescGZIP(), []int{71}
+	return file_openauth_backend_v1_backend_proto_rawDescGZIP(), []int{74}
 }
 
 func (x *Project) GetId() string {
@@ -3378,6 +3518,50 @@ func (x *Project) GetAuthDomain() string {
 	return ""
 }
 
+type ProjectUISettings struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	LogoUrl       string                 `protobuf:"bytes,1,opt,name=logo_url,json=logoUrl,proto3" json:"logo_url,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ProjectUISettings) Reset() {
+	*x = ProjectUISettings{}
+	mi := &file_openauth_backend_v1_backend_proto_msgTypes[75]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ProjectUISettings) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ProjectUISettings) ProtoMessage() {}
+
+func (x *ProjectUISettings) ProtoReflect() protoreflect.Message {
+	mi := &file_openauth_backend_v1_backend_proto_msgTypes[75]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ProjectUISettings.ProtoReflect.Descriptor instead.
+func (*ProjectUISettings) Descriptor() ([]byte, []int) {
+	return file_openauth_backend_v1_backend_proto_rawDescGZIP(), []int{75}
+}
+
+func (x *ProjectUISettings) GetLogoUrl() string {
+	if x != nil {
+		return x.LogoUrl
+	}
+	return ""
+}
+
 type Organization struct {
 	state                     protoimpl.MessageState `protogen:"open.v1"`
 	Id                        string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -3398,7 +3582,7 @@ type Organization struct {
 
 func (x *Organization) Reset() {
 	*x = Organization{}
-	mi := &file_openauth_backend_v1_backend_proto_msgTypes[72]
+	mi := &file_openauth_backend_v1_backend_proto_msgTypes[76]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3410,7 +3594,7 @@ func (x *Organization) String() string {
 func (*Organization) ProtoMessage() {}
 
 func (x *Organization) ProtoReflect() protoreflect.Message {
-	mi := &file_openauth_backend_v1_backend_proto_msgTypes[72]
+	mi := &file_openauth_backend_v1_backend_proto_msgTypes[76]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3423,7 +3607,7 @@ func (x *Organization) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Organization.ProtoReflect.Descriptor instead.
 func (*Organization) Descriptor() ([]byte, []int) {
-	return file_openauth_backend_v1_backend_proto_rawDescGZIP(), []int{72}
+	return file_openauth_backend_v1_backend_proto_rawDescGZIP(), []int{76}
 }
 
 func (x *Organization) GetId() string {
@@ -3520,7 +3704,7 @@ type SessionSigningKey struct {
 
 func (x *SessionSigningKey) Reset() {
 	*x = SessionSigningKey{}
-	mi := &file_openauth_backend_v1_backend_proto_msgTypes[73]
+	mi := &file_openauth_backend_v1_backend_proto_msgTypes[77]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3532,7 +3716,7 @@ func (x *SessionSigningKey) String() string {
 func (*SessionSigningKey) ProtoMessage() {}
 
 func (x *SessionSigningKey) ProtoReflect() protoreflect.Message {
-	mi := &file_openauth_backend_v1_backend_proto_msgTypes[73]
+	mi := &file_openauth_backend_v1_backend_proto_msgTypes[77]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3545,7 +3729,7 @@ func (x *SessionSigningKey) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SessionSigningKey.ProtoReflect.Descriptor instead.
 func (*SessionSigningKey) Descriptor() ([]byte, []int) {
-	return file_openauth_backend_v1_backend_proto_rawDescGZIP(), []int{73}
+	return file_openauth_backend_v1_backend_proto_rawDescGZIP(), []int{77}
 }
 
 func (x *SessionSigningKey) GetId() string {
@@ -3576,7 +3760,7 @@ type ProjectAPIKey struct {
 
 func (x *ProjectAPIKey) Reset() {
 	*x = ProjectAPIKey{}
-	mi := &file_openauth_backend_v1_backend_proto_msgTypes[74]
+	mi := &file_openauth_backend_v1_backend_proto_msgTypes[78]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3588,7 +3772,7 @@ func (x *ProjectAPIKey) String() string {
 func (*ProjectAPIKey) ProtoMessage() {}
 
 func (x *ProjectAPIKey) ProtoReflect() protoreflect.Message {
-	mi := &file_openauth_backend_v1_backend_proto_msgTypes[74]
+	mi := &file_openauth_backend_v1_backend_proto_msgTypes[78]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3601,7 +3785,7 @@ func (x *ProjectAPIKey) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ProjectAPIKey.ProtoReflect.Descriptor instead.
 func (*ProjectAPIKey) Descriptor() ([]byte, []int) {
-	return file_openauth_backend_v1_backend_proto_rawDescGZIP(), []int{74}
+	return file_openauth_backend_v1_backend_proto_rawDescGZIP(), []int{78}
 }
 
 func (x *ProjectAPIKey) GetId() string {
@@ -3658,7 +3842,7 @@ type ProjectRedirectURI struct {
 
 func (x *ProjectRedirectURI) Reset() {
 	*x = ProjectRedirectURI{}
-	mi := &file_openauth_backend_v1_backend_proto_msgTypes[75]
+	mi := &file_openauth_backend_v1_backend_proto_msgTypes[79]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3670,7 +3854,7 @@ func (x *ProjectRedirectURI) String() string {
 func (*ProjectRedirectURI) ProtoMessage() {}
 
 func (x *ProjectRedirectURI) ProtoReflect() protoreflect.Message {
-	mi := &file_openauth_backend_v1_backend_proto_msgTypes[75]
+	mi := &file_openauth_backend_v1_backend_proto_msgTypes[79]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3683,7 +3867,7 @@ func (x *ProjectRedirectURI) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ProjectRedirectURI.ProtoReflect.Descriptor instead.
 func (*ProjectRedirectURI) Descriptor() ([]byte, []int) {
-	return file_openauth_backend_v1_backend_proto_rawDescGZIP(), []int{75}
+	return file_openauth_backend_v1_backend_proto_rawDescGZIP(), []int{79}
 }
 
 func (x *ProjectRedirectURI) GetId() string {
@@ -3729,7 +3913,7 @@ type IntermediateSession struct {
 
 func (x *IntermediateSession) Reset() {
 	*x = IntermediateSession{}
-	mi := &file_openauth_backend_v1_backend_proto_msgTypes[76]
+	mi := &file_openauth_backend_v1_backend_proto_msgTypes[80]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3741,7 +3925,7 @@ func (x *IntermediateSession) String() string {
 func (*IntermediateSession) ProtoMessage() {}
 
 func (x *IntermediateSession) ProtoReflect() protoreflect.Message {
-	mi := &file_openauth_backend_v1_backend_proto_msgTypes[76]
+	mi := &file_openauth_backend_v1_backend_proto_msgTypes[80]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3754,7 +3938,7 @@ func (x *IntermediateSession) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use IntermediateSession.ProtoReflect.Descriptor instead.
 func (*IntermediateSession) Descriptor() ([]byte, []int) {
-	return file_openauth_backend_v1_backend_proto_rawDescGZIP(), []int{76}
+	return file_openauth_backend_v1_backend_proto_rawDescGZIP(), []int{80}
 }
 
 func (x *IntermediateSession) GetId() string {
@@ -3822,7 +4006,7 @@ type User struct {
 
 func (x *User) Reset() {
 	*x = User{}
-	mi := &file_openauth_backend_v1_backend_proto_msgTypes[77]
+	mi := &file_openauth_backend_v1_backend_proto_msgTypes[81]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3834,7 +4018,7 @@ func (x *User) String() string {
 func (*User) ProtoMessage() {}
 
 func (x *User) ProtoReflect() protoreflect.Message {
-	mi := &file_openauth_backend_v1_backend_proto_msgTypes[77]
+	mi := &file_openauth_backend_v1_backend_proto_msgTypes[81]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3847,7 +4031,7 @@ func (x *User) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use User.ProtoReflect.Descriptor instead.
 func (*User) Descriptor() ([]byte, []int) {
-	return file_openauth_backend_v1_backend_proto_rawDescGZIP(), []int{77}
+	return file_openauth_backend_v1_backend_proto_rawDescGZIP(), []int{81}
 }
 
 func (x *User) GetId() string {
@@ -3917,7 +4101,7 @@ type Session struct {
 
 func (x *Session) Reset() {
 	*x = Session{}
-	mi := &file_openauth_backend_v1_backend_proto_msgTypes[78]
+	mi := &file_openauth_backend_v1_backend_proto_msgTypes[82]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3929,7 +4113,7 @@ func (x *Session) String() string {
 func (*Session) ProtoMessage() {}
 
 func (x *Session) ProtoReflect() protoreflect.Message {
-	mi := &file_openauth_backend_v1_backend_proto_msgTypes[78]
+	mi := &file_openauth_backend_v1_backend_proto_msgTypes[82]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3942,7 +4126,7 @@ func (x *Session) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Session.ProtoReflect.Descriptor instead.
 func (*Session) Descriptor() ([]byte, []int) {
-	return file_openauth_backend_v1_backend_proto_rawDescGZIP(), []int{78}
+	return file_openauth_backend_v1_backend_proto_rawDescGZIP(), []int{82}
 }
 
 func (x *Session) GetId() string {
@@ -3984,7 +4168,7 @@ type SAMLConnection struct {
 
 func (x *SAMLConnection) Reset() {
 	*x = SAMLConnection{}
-	mi := &file_openauth_backend_v1_backend_proto_msgTypes[79]
+	mi := &file_openauth_backend_v1_backend_proto_msgTypes[83]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3996,7 +4180,7 @@ func (x *SAMLConnection) String() string {
 func (*SAMLConnection) ProtoMessage() {}
 
 func (x *SAMLConnection) ProtoReflect() protoreflect.Message {
-	mi := &file_openauth_backend_v1_backend_proto_msgTypes[79]
+	mi := &file_openauth_backend_v1_backend_proto_msgTypes[83]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4009,7 +4193,7 @@ func (x *SAMLConnection) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SAMLConnection.ProtoReflect.Descriptor instead.
 func (*SAMLConnection) Descriptor() ([]byte, []int) {
-	return file_openauth_backend_v1_backend_proto_rawDescGZIP(), []int{79}
+	return file_openauth_backend_v1_backend_proto_rawDescGZIP(), []int{83}
 }
 
 func (x *SAMLConnection) GetId() string {
@@ -4097,7 +4281,7 @@ type SCIMAPIKey struct {
 
 func (x *SCIMAPIKey) Reset() {
 	*x = SCIMAPIKey{}
-	mi := &file_openauth_backend_v1_backend_proto_msgTypes[80]
+	mi := &file_openauth_backend_v1_backend_proto_msgTypes[84]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4109,7 +4293,7 @@ func (x *SCIMAPIKey) String() string {
 func (*SCIMAPIKey) ProtoMessage() {}
 
 func (x *SCIMAPIKey) ProtoReflect() protoreflect.Message {
-	mi := &file_openauth_backend_v1_backend_proto_msgTypes[80]
+	mi := &file_openauth_backend_v1_backend_proto_msgTypes[84]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4122,7 +4306,7 @@ func (x *SCIMAPIKey) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SCIMAPIKey.ProtoReflect.Descriptor instead.
 func (*SCIMAPIKey) Descriptor() ([]byte, []int) {
-	return file_openauth_backend_v1_backend_proto_rawDescGZIP(), []int{80}
+	return file_openauth_backend_v1_backend_proto_rawDescGZIP(), []int{84}
 }
 
 func (x *SCIMAPIKey) GetId() string {
@@ -4571,7 +4755,25 @@ var file_openauth_backend_v1_backend_proto_rawDesc = []byte{
 	0x0b, 0x32, 0x27, 0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x61, 0x75, 0x74, 0x68, 0x2e, 0x62, 0x61, 0x63,
 	0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x52,
 	0x65, 0x64, 0x69, 0x72, 0x65, 0x63, 0x74, 0x55, 0x52, 0x49, 0x52, 0x12, 0x70, 0x72, 0x6f, 0x6a,
-	0x65, 0x63, 0x74, 0x52, 0x65, 0x64, 0x69, 0x72, 0x65, 0x63, 0x74, 0x55, 0x72, 0x69, 0x22, 0xfd,
+	0x65, 0x63, 0x74, 0x52, 0x65, 0x64, 0x69, 0x72, 0x65, 0x63, 0x74, 0x55, 0x72, 0x69, 0x22, 0x5d,
+	0x0a, 0x1e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x55,
+	0x49, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x12, 0x3b, 0x0a, 0x04, 0x6c, 0x6f, 0x67, 0x6f, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x27,
+	0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x61, 0x75, 0x74, 0x68, 0x2e, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e,
+	0x64, 0x2e, 0x76, 0x31, 0x2e, 0x49, 0x6d, 0x61, 0x67, 0x65, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x52, 0x04, 0x6c, 0x6f, 0x67, 0x6f, 0x22, 0x79, 0x0a,
+	0x1f, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x55, 0x49,
+	0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x12, 0x56, 0x0a, 0x13, 0x70, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x5f, 0x75, 0x69, 0x5f, 0x73,
+	0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x26, 0x2e,
+	0x6f, 0x70, 0x65, 0x6e, 0x61, 0x75, 0x74, 0x68, 0x2e, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64,
+	0x2e, 0x76, 0x31, 0x2e, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x55, 0x49, 0x53, 0x65, 0x74,
+	0x74, 0x69, 0x6e, 0x67, 0x73, 0x52, 0x11, 0x70, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x55, 0x69,
+	0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x22, 0x44, 0x0a, 0x12, 0x49, 0x6d, 0x61, 0x67,
+	0x65, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12,
+	0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x04, 0x64, 0x61,
+	0x74, 0x61, 0x12, 0x1a, 0x0a, 0x08, 0x6d, 0x69, 0x6d, 0x65, 0x74, 0x79, 0x70, 0x65, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x6d, 0x69, 0x6d, 0x65, 0x74, 0x79, 0x70, 0x65, 0x22, 0xfd,
 	0x07, 0x0a, 0x07, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64,
 	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x21, 0x0a, 0x0c, 0x64, 0x69,
 	0x73, 0x70, 0x6c, 0x61, 0x79, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
@@ -4635,7 +4837,10 @@ var file_openauth_backend_v1_backend_proto_rawDesc = []byte{
 	0x64, 0x65, 0x66, 0x61, 0x75, 0x6c, 0x74, 0x42, 0x25, 0x0a, 0x23, 0x5f, 0x6f, 0x72, 0x67, 0x61,
 	0x6e, 0x69, 0x7a, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x5f, 0x73, 0x63, 0x69, 0x6d, 0x5f, 0x65,
 	0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x5f, 0x64, 0x65, 0x66, 0x61, 0x75, 0x6c, 0x74, 0x42, 0x0e,
-	0x0a, 0x0c, 0x5f, 0x61, 0x75, 0x74, 0x68, 0x5f, 0x64, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x22, 0xa5,
+	0x0a, 0x0c, 0x5f, 0x61, 0x75, 0x74, 0x68, 0x5f, 0x64, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x22, 0x2e,
+	0x0a, 0x11, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x55, 0x49, 0x53, 0x65, 0x74, 0x74, 0x69,
+	0x6e, 0x67, 0x73, 0x12, 0x19, 0x0a, 0x08, 0x6c, 0x6f, 0x67, 0x6f, 0x5f, 0x75, 0x72, 0x6c, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6c, 0x6f, 0x67, 0x6f, 0x55, 0x72, 0x6c, 0x22, 0xa5,
 	0x05, 0x0a, 0x0c, 0x4f, 0x72, 0x67, 0x61, 0x6e, 0x69, 0x7a, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12,
 	0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12,
 	0x21, 0x0a, 0x0c, 0x64, 0x69, 0x73, 0x70, 0x6c, 0x61, 0x79, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18,
@@ -4795,7 +5000,7 @@ var file_openauth_backend_v1_backend_proto_rawDesc = []byte{
 	0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x73, 0x65, 0x63,
 	0x72, 0x65, 0x74, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x12, 0x18, 0x0a, 0x07, 0x72, 0x65, 0x76, 0x6f,
 	0x6b, 0x65, 0x64, 0x18, 0x07, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x72, 0x65, 0x76, 0x6f, 0x6b,
-	0x65, 0x64, 0x32, 0xf9, 0x27, 0x0a, 0x0e, 0x42, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x53, 0x65,
+	0x65, 0x64, 0x32, 0xac, 0x29, 0x0a, 0x0e, 0x42, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x53, 0x65,
 	0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x7a, 0x0a, 0x0a, 0x47, 0x65, 0x74, 0x50, 0x72, 0x6f, 0x6a,
 	0x65, 0x63, 0x74, 0x12, 0x26, 0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x61, 0x75, 0x74, 0x68, 0x2e, 0x62,
 	0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x50, 0x72, 0x6f,
@@ -5069,67 +5274,79 @@ var file_openauth_backend_v1_backend_proto_rawDesc = []byte{
 	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x35, 0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x61, 0x75, 0x74, 0x68,
 	0x2e, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x55, 0x70, 0x64, 0x61,
 	0x74, 0x65, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x52, 0x65, 0x64, 0x69, 0x72, 0x65, 0x63,
-	0x74, 0x55, 0x52, 0x49, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x75,
-	0x0a, 0x12, 0x4c, 0x69, 0x73, 0x74, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x41, 0x50, 0x49,
-	0x4b, 0x65, 0x79, 0x73, 0x12, 0x2e, 0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x61, 0x75, 0x74, 0x68, 0x2e,
-	0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x50,
-	0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x41, 0x50, 0x49, 0x4b, 0x65, 0x79, 0x73, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x1a, 0x2f, 0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x61, 0x75, 0x74, 0x68, 0x2e,
-	0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x50,
-	0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x41, 0x50, 0x49, 0x4b, 0x65, 0x79, 0x73, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x6f, 0x0a, 0x10, 0x47, 0x65, 0x74, 0x50, 0x72, 0x6f, 0x6a,
-	0x65, 0x63, 0x74, 0x41, 0x50, 0x49, 0x4b, 0x65, 0x79, 0x12, 0x2c, 0x2e, 0x6f, 0x70, 0x65, 0x6e,
-	0x61, 0x75, 0x74, 0x68, 0x2e, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x76, 0x31, 0x2e,
-	0x47, 0x65, 0x74, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x41, 0x50, 0x49, 0x4b, 0x65, 0x79,
-	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2d, 0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x61, 0x75,
-	0x74, 0x68, 0x2e, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x47, 0x65,
-	0x74, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x41, 0x50, 0x49, 0x4b, 0x65, 0x79, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x78, 0x0a, 0x13, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65,
-	0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x41, 0x50, 0x49, 0x4b, 0x65, 0x79, 0x12, 0x2f, 0x2e,
-	0x6f, 0x70, 0x65, 0x6e, 0x61, 0x75, 0x74, 0x68, 0x2e, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64,
-	0x2e, 0x76, 0x31, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63,
-	0x74, 0x41, 0x50, 0x49, 0x4b, 0x65, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x30,
-	0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x61, 0x75, 0x74, 0x68, 0x2e, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e,
-	0x64, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x50, 0x72, 0x6f, 0x6a, 0x65,
-	0x63, 0x74, 0x41, 0x50, 0x49, 0x4b, 0x65, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
-	0x12, 0x78, 0x0a, 0x13, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63,
-	0x74, 0x41, 0x50, 0x49, 0x4b, 0x65, 0x79, 0x12, 0x2f, 0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x61, 0x75,
-	0x74, 0x68, 0x2e, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x55, 0x70,
-	0x64, 0x61, 0x74, 0x65, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x41, 0x50, 0x49, 0x4b, 0x65,
-	0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x30, 0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x61,
-	0x75, 0x74, 0x68, 0x2e, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x55,
-	0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x41, 0x50, 0x49, 0x4b,
-	0x65, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x78, 0x0a, 0x13, 0x44, 0x65,
-	0x6c, 0x65, 0x74, 0x65, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x41, 0x50, 0x49, 0x4b, 0x65,
-	0x79, 0x12, 0x2f, 0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x61, 0x75, 0x74, 0x68, 0x2e, 0x62, 0x61, 0x63,
-	0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x50, 0x72,
-	0x6f, 0x6a, 0x65, 0x63, 0x74, 0x41, 0x50, 0x49, 0x4b, 0x65, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x1a, 0x30, 0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x61, 0x75, 0x74, 0x68, 0x2e, 0x62, 0x61,
-	0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x50,
-	0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x41, 0x50, 0x49, 0x4b, 0x65, 0x79, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x78, 0x0a, 0x13, 0x52, 0x65, 0x76, 0x6f, 0x6b, 0x65, 0x50, 0x72,
-	0x6f, 0x6a, 0x65, 0x63, 0x74, 0x41, 0x50, 0x49, 0x4b, 0x65, 0x79, 0x12, 0x2f, 0x2e, 0x6f, 0x70,
-	0x65, 0x6e, 0x61, 0x75, 0x74, 0x68, 0x2e, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x76,
-	0x31, 0x2e, 0x52, 0x65, 0x76, 0x6f, 0x6b, 0x65, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x41,
-	0x50, 0x49, 0x4b, 0x65, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x30, 0x2e, 0x6f,
+	0x74, 0x55, 0x52, 0x49, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0xb0,
+	0x01, 0x0a, 0x17, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74,
+	0x55, 0x49, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x12, 0x33, 0x2e, 0x6f, 0x70, 0x65,
+	0x6e, 0x61, 0x75, 0x74, 0x68, 0x2e, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x76, 0x31,
+	0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x55, 0x49,
+	0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
+	0x34, 0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x61, 0x75, 0x74, 0x68, 0x2e, 0x62, 0x61, 0x63, 0x6b, 0x65,
+	0x6e, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x72, 0x6f, 0x6a,
+	0x65, 0x63, 0x74, 0x55, 0x49, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x2a, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x24, 0x3a, 0x01, 0x2a,
+	0x32, 0x1f, 0x2f, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2f, 0x76, 0x31, 0x2f, 0x70, 0x72,
+	0x6f, 0x6a, 0x65, 0x63, 0x74, 0x2d, 0x75, 0x69, 0x2d, 0x73, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67,
+	0x73, 0x12, 0x75, 0x0a, 0x12, 0x4c, 0x69, 0x73, 0x74, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74,
+	0x41, 0x50, 0x49, 0x4b, 0x65, 0x79, 0x73, 0x12, 0x2e, 0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x61, 0x75,
+	0x74, 0x68, 0x2e, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x4c, 0x69,
+	0x73, 0x74, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x41, 0x50, 0x49, 0x4b, 0x65, 0x79, 0x73,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2f, 0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x61, 0x75,
+	0x74, 0x68, 0x2e, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x4c, 0x69,
+	0x73, 0x74, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x41, 0x50, 0x49, 0x4b, 0x65, 0x79, 0x73,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x6f, 0x0a, 0x10, 0x47, 0x65, 0x74, 0x50,
+	0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x41, 0x50, 0x49, 0x4b, 0x65, 0x79, 0x12, 0x2c, 0x2e, 0x6f,
 	0x70, 0x65, 0x6e, 0x61, 0x75, 0x74, 0x68, 0x2e, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2e,
-	0x76, 0x31, 0x2e, 0x52, 0x65, 0x76, 0x6f, 0x6b, 0x65, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74,
-	0x41, 0x50, 0x49, 0x4b, 0x65, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42, 0xe6,
-	0x01, 0x0a, 0x17, 0x63, 0x6f, 0x6d, 0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x61, 0x75, 0x74, 0x68, 0x2e,
-	0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x76, 0x31, 0x42, 0x0c, 0x42, 0x61, 0x63, 0x6b,
-	0x65, 0x6e, 0x64, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x4f, 0x67, 0x69, 0x74, 0x68,
-	0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6f, 0x70, 0x65, 0x6e, 0x61, 0x75, 0x74, 0x68, 0x2f,
-	0x6f, 0x70, 0x65, 0x6e, 0x61, 0x75, 0x74, 0x68, 0x2f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x6e, 0x61,
-	0x6c, 0x2f, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2f, 0x67, 0x65, 0x6e, 0x2f, 0x6f, 0x70,
-	0x65, 0x6e, 0x61, 0x75, 0x74, 0x68, 0x2f, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2f, 0x76,
-	0x31, 0x3b, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x76, 0x31, 0xa2, 0x02, 0x03, 0x4f, 0x42,
-	0x58, 0xaa, 0x02, 0x13, 0x4f, 0x70, 0x65, 0x6e, 0x61, 0x75, 0x74, 0x68, 0x2e, 0x42, 0x61, 0x63,
-	0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x56, 0x31, 0xca, 0x02, 0x13, 0x4f, 0x70, 0x65, 0x6e, 0x61, 0x75,
-	0x74, 0x68, 0x5c, 0x42, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x1f,
-	0x4f, 0x70, 0x65, 0x6e, 0x61, 0x75, 0x74, 0x68, 0x5c, 0x42, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64,
-	0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea,
-	0x02, 0x15, 0x4f, 0x70, 0x65, 0x6e, 0x61, 0x75, 0x74, 0x68, 0x3a, 0x3a, 0x42, 0x61, 0x63, 0x6b,
-	0x65, 0x6e, 0x64, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x76, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x41, 0x50, 0x49,
+	0x4b, 0x65, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2d, 0x2e, 0x6f, 0x70, 0x65,
+	0x6e, 0x61, 0x75, 0x74, 0x68, 0x2e, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x76, 0x31,
+	0x2e, 0x47, 0x65, 0x74, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x41, 0x50, 0x49, 0x4b, 0x65,
+	0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x78, 0x0a, 0x13, 0x43, 0x72, 0x65,
+	0x61, 0x74, 0x65, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x41, 0x50, 0x49, 0x4b, 0x65, 0x79,
+	0x12, 0x2f, 0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x61, 0x75, 0x74, 0x68, 0x2e, 0x62, 0x61, 0x63, 0x6b,
+	0x65, 0x6e, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x50, 0x72, 0x6f,
+	0x6a, 0x65, 0x63, 0x74, 0x41, 0x50, 0x49, 0x4b, 0x65, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x1a, 0x30, 0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x61, 0x75, 0x74, 0x68, 0x2e, 0x62, 0x61, 0x63,
+	0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x50, 0x72,
+	0x6f, 0x6a, 0x65, 0x63, 0x74, 0x41, 0x50, 0x49, 0x4b, 0x65, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x12, 0x78, 0x0a, 0x13, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x72, 0x6f,
+	0x6a, 0x65, 0x63, 0x74, 0x41, 0x50, 0x49, 0x4b, 0x65, 0x79, 0x12, 0x2f, 0x2e, 0x6f, 0x70, 0x65,
+	0x6e, 0x61, 0x75, 0x74, 0x68, 0x2e, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x76, 0x31,
+	0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x41, 0x50,
+	0x49, 0x4b, 0x65, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x30, 0x2e, 0x6f, 0x70,
+	0x65, 0x6e, 0x61, 0x75, 0x74, 0x68, 0x2e, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x76,
+	0x31, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x41,
+	0x50, 0x49, 0x4b, 0x65, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x78, 0x0a,
+	0x13, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x41, 0x50,
+	0x49, 0x4b, 0x65, 0x79, 0x12, 0x2f, 0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x61, 0x75, 0x74, 0x68, 0x2e,
+	0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74,
+	0x65, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x41, 0x50, 0x49, 0x4b, 0x65, 0x79, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x30, 0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x61, 0x75, 0x74, 0x68,
+	0x2e, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x44, 0x65, 0x6c, 0x65,
+	0x74, 0x65, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x41, 0x50, 0x49, 0x4b, 0x65, 0x79, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x78, 0x0a, 0x13, 0x52, 0x65, 0x76, 0x6f, 0x6b,
+	0x65, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x41, 0x50, 0x49, 0x4b, 0x65, 0x79, 0x12, 0x2f,
+	0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x61, 0x75, 0x74, 0x68, 0x2e, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e,
+	0x64, 0x2e, 0x76, 0x31, 0x2e, 0x52, 0x65, 0x76, 0x6f, 0x6b, 0x65, 0x50, 0x72, 0x6f, 0x6a, 0x65,
+	0x63, 0x74, 0x41, 0x50, 0x49, 0x4b, 0x65, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
+	0x30, 0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x61, 0x75, 0x74, 0x68, 0x2e, 0x62, 0x61, 0x63, 0x6b, 0x65,
+	0x6e, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x52, 0x65, 0x76, 0x6f, 0x6b, 0x65, 0x50, 0x72, 0x6f, 0x6a,
+	0x65, 0x63, 0x74, 0x41, 0x50, 0x49, 0x4b, 0x65, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x42, 0xe6, 0x01, 0x0a, 0x17, 0x63, 0x6f, 0x6d, 0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x61, 0x75,
+	0x74, 0x68, 0x2e, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x76, 0x31, 0x42, 0x0c, 0x42,
+	0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x4f, 0x67,
+	0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6f, 0x70, 0x65, 0x6e, 0x61, 0x75,
+	0x74, 0x68, 0x2f, 0x6f, 0x70, 0x65, 0x6e, 0x61, 0x75, 0x74, 0x68, 0x2f, 0x69, 0x6e, 0x74, 0x65,
+	0x72, 0x6e, 0x61, 0x6c, 0x2f, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2f, 0x67, 0x65, 0x6e,
+	0x2f, 0x6f, 0x70, 0x65, 0x6e, 0x61, 0x75, 0x74, 0x68, 0x2f, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e,
+	0x64, 0x2f, 0x76, 0x31, 0x3b, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x76, 0x31, 0xa2, 0x02,
+	0x03, 0x4f, 0x42, 0x58, 0xaa, 0x02, 0x13, 0x4f, 0x70, 0x65, 0x6e, 0x61, 0x75, 0x74, 0x68, 0x2e,
+	0x42, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x56, 0x31, 0xca, 0x02, 0x13, 0x4f, 0x70, 0x65,
+	0x6e, 0x61, 0x75, 0x74, 0x68, 0x5c, 0x42, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x5c, 0x56, 0x31,
+	0xe2, 0x02, 0x1f, 0x4f, 0x70, 0x65, 0x6e, 0x61, 0x75, 0x74, 0x68, 0x5c, 0x42, 0x61, 0x63, 0x6b,
+	0x65, 0x6e, 0x64, 0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61,
+	0x74, 0x61, 0xea, 0x02, 0x15, 0x4f, 0x70, 0x65, 0x6e, 0x61, 0x75, 0x74, 0x68, 0x3a, 0x3a, 0x42,
+	0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x33,
 }
 
 var (
@@ -5144,7 +5361,7 @@ func file_openauth_backend_v1_backend_proto_rawDescGZIP() []byte {
 	return file_openauth_backend_v1_backend_proto_rawDescData
 }
 
-var file_openauth_backend_v1_backend_proto_msgTypes = make([]protoimpl.MessageInfo, 81)
+var file_openauth_backend_v1_backend_proto_msgTypes = make([]protoimpl.MessageInfo, 85)
 var file_openauth_backend_v1_backend_proto_goTypes = []any{
 	(*CreateUserRequest)(nil),                // 0: openauth.backend.v1.CreateUserRequest
 	(*GetProjectRequest)(nil),                // 1: openauth.backend.v1.GetProjectRequest
@@ -5217,150 +5434,158 @@ var file_openauth_backend_v1_backend_proto_goTypes = []any{
 	(*ListProjectRedirectURIsResponse)(nil),  // 68: openauth.backend.v1.ListProjectRedirectURIsResponse
 	(*UpdateProjectRedirectURIRequest)(nil),  // 69: openauth.backend.v1.UpdateProjectRedirectURIRequest
 	(*UpdateProjectRedirectURIResponse)(nil), // 70: openauth.backend.v1.UpdateProjectRedirectURIResponse
-	(*Project)(nil),                          // 71: openauth.backend.v1.Project
-	(*Organization)(nil),                     // 72: openauth.backend.v1.Organization
-	(*SessionSigningKey)(nil),                // 73: openauth.backend.v1.SessionSigningKey
-	(*ProjectAPIKey)(nil),                    // 74: openauth.backend.v1.ProjectAPIKey
-	(*ProjectRedirectURI)(nil),               // 75: openauth.backend.v1.ProjectRedirectURI
-	(*IntermediateSession)(nil),              // 76: openauth.backend.v1.IntermediateSession
-	(*User)(nil),                             // 77: openauth.backend.v1.User
-	(*Session)(nil),                          // 78: openauth.backend.v1.Session
-	(*SAMLConnection)(nil),                   // 79: openauth.backend.v1.SAMLConnection
-	(*SCIMAPIKey)(nil),                       // 80: openauth.backend.v1.SCIMAPIKey
-	(*timestamppb.Timestamp)(nil),            // 81: google.protobuf.Timestamp
-	(*structpb.Struct)(nil),                  // 82: google.protobuf.Struct
+	(*UpdateProjectUISettingsRequest)(nil),   // 71: openauth.backend.v1.UpdateProjectUISettingsRequest
+	(*UpdateProjectUISettingsResponse)(nil),  // 72: openauth.backend.v1.UpdateProjectUISettingsResponse
+	(*ImageUploadRequest)(nil),               // 73: openauth.backend.v1.ImageUploadRequest
+	(*Project)(nil),                          // 74: openauth.backend.v1.Project
+	(*ProjectUISettings)(nil),                // 75: openauth.backend.v1.ProjectUISettings
+	(*Organization)(nil),                     // 76: openauth.backend.v1.Organization
+	(*SessionSigningKey)(nil),                // 77: openauth.backend.v1.SessionSigningKey
+	(*ProjectAPIKey)(nil),                    // 78: openauth.backend.v1.ProjectAPIKey
+	(*ProjectRedirectURI)(nil),               // 79: openauth.backend.v1.ProjectRedirectURI
+	(*IntermediateSession)(nil),              // 80: openauth.backend.v1.IntermediateSession
+	(*User)(nil),                             // 81: openauth.backend.v1.User
+	(*Session)(nil),                          // 82: openauth.backend.v1.Session
+	(*SAMLConnection)(nil),                   // 83: openauth.backend.v1.SAMLConnection
+	(*SCIMAPIKey)(nil),                       // 84: openauth.backend.v1.SCIMAPIKey
+	(*timestamppb.Timestamp)(nil),            // 85: google.protobuf.Timestamp
+	(*structpb.Struct)(nil),                  // 86: google.protobuf.Struct
 }
 var file_openauth_backend_v1_backend_proto_depIdxs = []int32{
-	77, // 0: openauth.backend.v1.CreateUserRequest.user:type_name -> openauth.backend.v1.User
-	71, // 1: openauth.backend.v1.GetProjectResponse.project:type_name -> openauth.backend.v1.Project
-	71, // 2: openauth.backend.v1.UpdateProjectRequest.project:type_name -> openauth.backend.v1.Project
-	71, // 3: openauth.backend.v1.UpdateProjectResponse.project:type_name -> openauth.backend.v1.Project
-	72, // 4: openauth.backend.v1.ListOrganizationsResponse.organizations:type_name -> openauth.backend.v1.Organization
-	72, // 5: openauth.backend.v1.GetOrganizationResponse.organization:type_name -> openauth.backend.v1.Organization
-	72, // 6: openauth.backend.v1.CreateOrganizationRequest.organization:type_name -> openauth.backend.v1.Organization
-	72, // 7: openauth.backend.v1.CreateOrganizationResponse.organization:type_name -> openauth.backend.v1.Organization
-	72, // 8: openauth.backend.v1.UpdateOrganizationRequest.organization:type_name -> openauth.backend.v1.Organization
-	72, // 9: openauth.backend.v1.UpdateOrganizationResponse.organization:type_name -> openauth.backend.v1.Organization
-	79, // 10: openauth.backend.v1.CreateSAMLConnectionRequest.saml_connection:type_name -> openauth.backend.v1.SAMLConnection
-	79, // 11: openauth.backend.v1.CreateSAMLConnectionResponse.saml_connection:type_name -> openauth.backend.v1.SAMLConnection
-	79, // 12: openauth.backend.v1.GetSAMLConnectionResponse.saml_connection:type_name -> openauth.backend.v1.SAMLConnection
-	79, // 13: openauth.backend.v1.ListSAMLConnectionsResponse.saml_connections:type_name -> openauth.backend.v1.SAMLConnection
-	79, // 14: openauth.backend.v1.UpdateSAMLConnectionRequest.saml_connection:type_name -> openauth.backend.v1.SAMLConnection
-	79, // 15: openauth.backend.v1.UpdateSAMLConnectionResponse.saml_connection:type_name -> openauth.backend.v1.SAMLConnection
-	80, // 16: openauth.backend.v1.ListSCIMAPIKeysResponse.scim_api_keys:type_name -> openauth.backend.v1.SCIMAPIKey
-	80, // 17: openauth.backend.v1.GetSCIMAPIKeyResponse.scim_api_key:type_name -> openauth.backend.v1.SCIMAPIKey
-	80, // 18: openauth.backend.v1.CreateSCIMAPIKeyRequest.scim_api_key:type_name -> openauth.backend.v1.SCIMAPIKey
-	80, // 19: openauth.backend.v1.CreateSCIMAPIKeyResponse.scim_api_key:type_name -> openauth.backend.v1.SCIMAPIKey
-	80, // 20: openauth.backend.v1.UpdateSCIMAPIKeyRequest.scim_api_key:type_name -> openauth.backend.v1.SCIMAPIKey
-	80, // 21: openauth.backend.v1.UpdateSCIMAPIKeyResponse.scim_api_key:type_name -> openauth.backend.v1.SCIMAPIKey
-	80, // 22: openauth.backend.v1.RevokeSCIMAPIKeyResponse.scim_api_key:type_name -> openauth.backend.v1.SCIMAPIKey
-	77, // 23: openauth.backend.v1.ListUsersResponse.users:type_name -> openauth.backend.v1.User
-	77, // 24: openauth.backend.v1.GetUserResponse.user:type_name -> openauth.backend.v1.User
-	78, // 25: openauth.backend.v1.ListSessionsResponse.sessions:type_name -> openauth.backend.v1.Session
-	78, // 26: openauth.backend.v1.GetSessionResponse.session:type_name -> openauth.backend.v1.Session
-	76, // 27: openauth.backend.v1.ListIntermediateSessionsResponse.intermediate_sessions:type_name -> openauth.backend.v1.IntermediateSession
-	76, // 28: openauth.backend.v1.GetIntermediateSessionResponse.intermediate_session:type_name -> openauth.backend.v1.IntermediateSession
-	74, // 29: openauth.backend.v1.ListProjectAPIKeysResponse.project_api_keys:type_name -> openauth.backend.v1.ProjectAPIKey
-	74, // 30: openauth.backend.v1.GetProjectAPIKeyResponse.project_api_key:type_name -> openauth.backend.v1.ProjectAPIKey
-	74, // 31: openauth.backend.v1.CreateProjectAPIKeyRequest.project_api_key:type_name -> openauth.backend.v1.ProjectAPIKey
-	74, // 32: openauth.backend.v1.CreateProjectAPIKeyResponse.project_api_key:type_name -> openauth.backend.v1.ProjectAPIKey
-	74, // 33: openauth.backend.v1.UpdateProjectAPIKeyRequest.project_api_key:type_name -> openauth.backend.v1.ProjectAPIKey
-	74, // 34: openauth.backend.v1.UpdateProjectAPIKeyResponse.project_api_key:type_name -> openauth.backend.v1.ProjectAPIKey
-	74, // 35: openauth.backend.v1.RevokeProjectAPIKeyResponse.project_api_key:type_name -> openauth.backend.v1.ProjectAPIKey
-	75, // 36: openauth.backend.v1.CreateProjectRedirectURIRequest.project_redirect_uri:type_name -> openauth.backend.v1.ProjectRedirectURI
-	75, // 37: openauth.backend.v1.CreateProjectRedirectURIResponse.project_redirect_uri:type_name -> openauth.backend.v1.ProjectRedirectURI
-	75, // 38: openauth.backend.v1.GetProjectRedirectURIResponse.project_redirect_uri:type_name -> openauth.backend.v1.ProjectRedirectURI
-	75, // 39: openauth.backend.v1.ListProjectRedirectURIsResponse.project_redirect_uris:type_name -> openauth.backend.v1.ProjectRedirectURI
-	75, // 40: openauth.backend.v1.UpdateProjectRedirectURIRequest.project_redirect_uri:type_name -> openauth.backend.v1.ProjectRedirectURI
-	75, // 41: openauth.backend.v1.UpdateProjectRedirectURIResponse.project_redirect_uri:type_name -> openauth.backend.v1.ProjectRedirectURI
-	81, // 42: openauth.backend.v1.Project.create_time:type_name -> google.protobuf.Timestamp
-	81, // 43: openauth.backend.v1.Project.update_time:type_name -> google.protobuf.Timestamp
-	81, // 44: openauth.backend.v1.Organization.create_time:type_name -> google.protobuf.Timestamp
-	81, // 45: openauth.backend.v1.Organization.update_time:type_name -> google.protobuf.Timestamp
-	82, // 46: openauth.backend.v1.SessionSigningKey.public_key_jwk:type_name -> google.protobuf.Struct
-	81, // 47: openauth.backend.v1.ProjectAPIKey.create_time:type_name -> google.protobuf.Timestamp
-	81, // 48: openauth.backend.v1.ProjectAPIKey.update_time:type_name -> google.protobuf.Timestamp
-	81, // 49: openauth.backend.v1.User.create_time:type_name -> google.protobuf.Timestamp
-	81, // 50: openauth.backend.v1.User.update_time:type_name -> google.protobuf.Timestamp
-	81, // 51: openauth.backend.v1.SAMLConnection.create_time:type_name -> google.protobuf.Timestamp
-	81, // 52: openauth.backend.v1.SAMLConnection.update_time:type_name -> google.protobuf.Timestamp
-	81, // 53: openauth.backend.v1.SCIMAPIKey.create_time:type_name -> google.protobuf.Timestamp
-	81, // 54: openauth.backend.v1.SCIMAPIKey.update_time:type_name -> google.protobuf.Timestamp
-	1,  // 55: openauth.backend.v1.BackendService.GetProject:input_type -> openauth.backend.v1.GetProjectRequest
-	5,  // 56: openauth.backend.v1.BackendService.ListOrganizations:input_type -> openauth.backend.v1.ListOrganizationsRequest
-	7,  // 57: openauth.backend.v1.BackendService.GetOrganization:input_type -> openauth.backend.v1.GetOrganizationRequest
-	9,  // 58: openauth.backend.v1.BackendService.CreateOrganization:input_type -> openauth.backend.v1.CreateOrganizationRequest
-	11, // 59: openauth.backend.v1.BackendService.UpdateOrganization:input_type -> openauth.backend.v1.UpdateOrganizationRequest
-	13, // 60: openauth.backend.v1.BackendService.DeleteOrganization:input_type -> openauth.backend.v1.DeleteOrganizationRequest
-	19, // 61: openauth.backend.v1.BackendService.ListSAMLConnections:input_type -> openauth.backend.v1.ListSAMLConnectionsRequest
-	17, // 62: openauth.backend.v1.BackendService.GetSAMLConnection:input_type -> openauth.backend.v1.GetSAMLConnectionRequest
-	15, // 63: openauth.backend.v1.BackendService.CreateSAMLConnection:input_type -> openauth.backend.v1.CreateSAMLConnectionRequest
-	21, // 64: openauth.backend.v1.BackendService.UpdateSAMLConnection:input_type -> openauth.backend.v1.UpdateSAMLConnectionRequest
-	23, // 65: openauth.backend.v1.BackendService.DeleteSAMLConnection:input_type -> openauth.backend.v1.DeleteSAMLConnectionRequest
-	25, // 66: openauth.backend.v1.BackendService.ListSCIMAPIKeys:input_type -> openauth.backend.v1.ListSCIMAPIKeysRequest
-	27, // 67: openauth.backend.v1.BackendService.GetSCIMAPIKey:input_type -> openauth.backend.v1.GetSCIMAPIKeyRequest
-	29, // 68: openauth.backend.v1.BackendService.CreateSCIMAPIKey:input_type -> openauth.backend.v1.CreateSCIMAPIKeyRequest
-	31, // 69: openauth.backend.v1.BackendService.UpdateSCIMAPIKey:input_type -> openauth.backend.v1.UpdateSCIMAPIKeyRequest
-	33, // 70: openauth.backend.v1.BackendService.DeleteSCIMAPIKey:input_type -> openauth.backend.v1.DeleteSCIMAPIKeyRequest
-	35, // 71: openauth.backend.v1.BackendService.RevokeSCIMAPIKey:input_type -> openauth.backend.v1.RevokeSCIMAPIKeyRequest
-	37, // 72: openauth.backend.v1.BackendService.ListUsers:input_type -> openauth.backend.v1.ListUsersRequest
-	39, // 73: openauth.backend.v1.BackendService.GetUser:input_type -> openauth.backend.v1.GetUserRequest
-	41, // 74: openauth.backend.v1.BackendService.ListSessions:input_type -> openauth.backend.v1.ListSessionsRequest
-	43, // 75: openauth.backend.v1.BackendService.GetSession:input_type -> openauth.backend.v1.GetSessionRequest
-	45, // 76: openauth.backend.v1.BackendService.ListIntermediateSessions:input_type -> openauth.backend.v1.ListIntermediateSessionsRequest
-	47, // 77: openauth.backend.v1.BackendService.GetIntermediateSession:input_type -> openauth.backend.v1.GetIntermediateSessionRequest
-	3,  // 78: openauth.backend.v1.BackendService.UpdateProject:input_type -> openauth.backend.v1.UpdateProjectRequest
-	61, // 79: openauth.backend.v1.BackendService.CreateProjectRedirectURI:input_type -> openauth.backend.v1.CreateProjectRedirectURIRequest
-	63, // 80: openauth.backend.v1.BackendService.DeleteProjectRedirectURI:input_type -> openauth.backend.v1.DeleteProjectRedirectURIRequest
-	65, // 81: openauth.backend.v1.BackendService.GetProjectRedirectURI:input_type -> openauth.backend.v1.GetProjectRedirectURIRequest
-	67, // 82: openauth.backend.v1.BackendService.ListProjectRedirectURIs:input_type -> openauth.backend.v1.ListProjectRedirectURIsRequest
-	69, // 83: openauth.backend.v1.BackendService.UpdateProjectRedirectURI:input_type -> openauth.backend.v1.UpdateProjectRedirectURIRequest
-	49, // 84: openauth.backend.v1.BackendService.ListProjectAPIKeys:input_type -> openauth.backend.v1.ListProjectAPIKeysRequest
-	51, // 85: openauth.backend.v1.BackendService.GetProjectAPIKey:input_type -> openauth.backend.v1.GetProjectAPIKeyRequest
-	53, // 86: openauth.backend.v1.BackendService.CreateProjectAPIKey:input_type -> openauth.backend.v1.CreateProjectAPIKeyRequest
-	55, // 87: openauth.backend.v1.BackendService.UpdateProjectAPIKey:input_type -> openauth.backend.v1.UpdateProjectAPIKeyRequest
-	57, // 88: openauth.backend.v1.BackendService.DeleteProjectAPIKey:input_type -> openauth.backend.v1.DeleteProjectAPIKeyRequest
-	59, // 89: openauth.backend.v1.BackendService.RevokeProjectAPIKey:input_type -> openauth.backend.v1.RevokeProjectAPIKeyRequest
-	2,  // 90: openauth.backend.v1.BackendService.GetProject:output_type -> openauth.backend.v1.GetProjectResponse
-	6,  // 91: openauth.backend.v1.BackendService.ListOrganizations:output_type -> openauth.backend.v1.ListOrganizationsResponse
-	8,  // 92: openauth.backend.v1.BackendService.GetOrganization:output_type -> openauth.backend.v1.GetOrganizationResponse
-	10, // 93: openauth.backend.v1.BackendService.CreateOrganization:output_type -> openauth.backend.v1.CreateOrganizationResponse
-	12, // 94: openauth.backend.v1.BackendService.UpdateOrganization:output_type -> openauth.backend.v1.UpdateOrganizationResponse
-	14, // 95: openauth.backend.v1.BackendService.DeleteOrganization:output_type -> openauth.backend.v1.DeleteOrganizationResponse
-	20, // 96: openauth.backend.v1.BackendService.ListSAMLConnections:output_type -> openauth.backend.v1.ListSAMLConnectionsResponse
-	18, // 97: openauth.backend.v1.BackendService.GetSAMLConnection:output_type -> openauth.backend.v1.GetSAMLConnectionResponse
-	16, // 98: openauth.backend.v1.BackendService.CreateSAMLConnection:output_type -> openauth.backend.v1.CreateSAMLConnectionResponse
-	22, // 99: openauth.backend.v1.BackendService.UpdateSAMLConnection:output_type -> openauth.backend.v1.UpdateSAMLConnectionResponse
-	24, // 100: openauth.backend.v1.BackendService.DeleteSAMLConnection:output_type -> openauth.backend.v1.DeleteSAMLConnectionResponse
-	26, // 101: openauth.backend.v1.BackendService.ListSCIMAPIKeys:output_type -> openauth.backend.v1.ListSCIMAPIKeysResponse
-	28, // 102: openauth.backend.v1.BackendService.GetSCIMAPIKey:output_type -> openauth.backend.v1.GetSCIMAPIKeyResponse
-	30, // 103: openauth.backend.v1.BackendService.CreateSCIMAPIKey:output_type -> openauth.backend.v1.CreateSCIMAPIKeyResponse
-	32, // 104: openauth.backend.v1.BackendService.UpdateSCIMAPIKey:output_type -> openauth.backend.v1.UpdateSCIMAPIKeyResponse
-	34, // 105: openauth.backend.v1.BackendService.DeleteSCIMAPIKey:output_type -> openauth.backend.v1.DeleteSCIMAPIKeyResponse
-	36, // 106: openauth.backend.v1.BackendService.RevokeSCIMAPIKey:output_type -> openauth.backend.v1.RevokeSCIMAPIKeyResponse
-	38, // 107: openauth.backend.v1.BackendService.ListUsers:output_type -> openauth.backend.v1.ListUsersResponse
-	40, // 108: openauth.backend.v1.BackendService.GetUser:output_type -> openauth.backend.v1.GetUserResponse
-	42, // 109: openauth.backend.v1.BackendService.ListSessions:output_type -> openauth.backend.v1.ListSessionsResponse
-	44, // 110: openauth.backend.v1.BackendService.GetSession:output_type -> openauth.backend.v1.GetSessionResponse
-	46, // 111: openauth.backend.v1.BackendService.ListIntermediateSessions:output_type -> openauth.backend.v1.ListIntermediateSessionsResponse
-	48, // 112: openauth.backend.v1.BackendService.GetIntermediateSession:output_type -> openauth.backend.v1.GetIntermediateSessionResponse
-	4,  // 113: openauth.backend.v1.BackendService.UpdateProject:output_type -> openauth.backend.v1.UpdateProjectResponse
-	62, // 114: openauth.backend.v1.BackendService.CreateProjectRedirectURI:output_type -> openauth.backend.v1.CreateProjectRedirectURIResponse
-	64, // 115: openauth.backend.v1.BackendService.DeleteProjectRedirectURI:output_type -> openauth.backend.v1.DeleteProjectRedirectURIResponse
-	66, // 116: openauth.backend.v1.BackendService.GetProjectRedirectURI:output_type -> openauth.backend.v1.GetProjectRedirectURIResponse
-	68, // 117: openauth.backend.v1.BackendService.ListProjectRedirectURIs:output_type -> openauth.backend.v1.ListProjectRedirectURIsResponse
-	70, // 118: openauth.backend.v1.BackendService.UpdateProjectRedirectURI:output_type -> openauth.backend.v1.UpdateProjectRedirectURIResponse
-	50, // 119: openauth.backend.v1.BackendService.ListProjectAPIKeys:output_type -> openauth.backend.v1.ListProjectAPIKeysResponse
-	52, // 120: openauth.backend.v1.BackendService.GetProjectAPIKey:output_type -> openauth.backend.v1.GetProjectAPIKeyResponse
-	54, // 121: openauth.backend.v1.BackendService.CreateProjectAPIKey:output_type -> openauth.backend.v1.CreateProjectAPIKeyResponse
-	56, // 122: openauth.backend.v1.BackendService.UpdateProjectAPIKey:output_type -> openauth.backend.v1.UpdateProjectAPIKeyResponse
-	58, // 123: openauth.backend.v1.BackendService.DeleteProjectAPIKey:output_type -> openauth.backend.v1.DeleteProjectAPIKeyResponse
-	60, // 124: openauth.backend.v1.BackendService.RevokeProjectAPIKey:output_type -> openauth.backend.v1.RevokeProjectAPIKeyResponse
-	90, // [90:125] is the sub-list for method output_type
-	55, // [55:90] is the sub-list for method input_type
-	55, // [55:55] is the sub-list for extension type_name
-	55, // [55:55] is the sub-list for extension extendee
-	0,  // [0:55] is the sub-list for field type_name
+	81, // 0: openauth.backend.v1.CreateUserRequest.user:type_name -> openauth.backend.v1.User
+	74, // 1: openauth.backend.v1.GetProjectResponse.project:type_name -> openauth.backend.v1.Project
+	74, // 2: openauth.backend.v1.UpdateProjectRequest.project:type_name -> openauth.backend.v1.Project
+	74, // 3: openauth.backend.v1.UpdateProjectResponse.project:type_name -> openauth.backend.v1.Project
+	76, // 4: openauth.backend.v1.ListOrganizationsResponse.organizations:type_name -> openauth.backend.v1.Organization
+	76, // 5: openauth.backend.v1.GetOrganizationResponse.organization:type_name -> openauth.backend.v1.Organization
+	76, // 6: openauth.backend.v1.CreateOrganizationRequest.organization:type_name -> openauth.backend.v1.Organization
+	76, // 7: openauth.backend.v1.CreateOrganizationResponse.organization:type_name -> openauth.backend.v1.Organization
+	76, // 8: openauth.backend.v1.UpdateOrganizationRequest.organization:type_name -> openauth.backend.v1.Organization
+	76, // 9: openauth.backend.v1.UpdateOrganizationResponse.organization:type_name -> openauth.backend.v1.Organization
+	83, // 10: openauth.backend.v1.CreateSAMLConnectionRequest.saml_connection:type_name -> openauth.backend.v1.SAMLConnection
+	83, // 11: openauth.backend.v1.CreateSAMLConnectionResponse.saml_connection:type_name -> openauth.backend.v1.SAMLConnection
+	83, // 12: openauth.backend.v1.GetSAMLConnectionResponse.saml_connection:type_name -> openauth.backend.v1.SAMLConnection
+	83, // 13: openauth.backend.v1.ListSAMLConnectionsResponse.saml_connections:type_name -> openauth.backend.v1.SAMLConnection
+	83, // 14: openauth.backend.v1.UpdateSAMLConnectionRequest.saml_connection:type_name -> openauth.backend.v1.SAMLConnection
+	83, // 15: openauth.backend.v1.UpdateSAMLConnectionResponse.saml_connection:type_name -> openauth.backend.v1.SAMLConnection
+	84, // 16: openauth.backend.v1.ListSCIMAPIKeysResponse.scim_api_keys:type_name -> openauth.backend.v1.SCIMAPIKey
+	84, // 17: openauth.backend.v1.GetSCIMAPIKeyResponse.scim_api_key:type_name -> openauth.backend.v1.SCIMAPIKey
+	84, // 18: openauth.backend.v1.CreateSCIMAPIKeyRequest.scim_api_key:type_name -> openauth.backend.v1.SCIMAPIKey
+	84, // 19: openauth.backend.v1.CreateSCIMAPIKeyResponse.scim_api_key:type_name -> openauth.backend.v1.SCIMAPIKey
+	84, // 20: openauth.backend.v1.UpdateSCIMAPIKeyRequest.scim_api_key:type_name -> openauth.backend.v1.SCIMAPIKey
+	84, // 21: openauth.backend.v1.UpdateSCIMAPIKeyResponse.scim_api_key:type_name -> openauth.backend.v1.SCIMAPIKey
+	84, // 22: openauth.backend.v1.RevokeSCIMAPIKeyResponse.scim_api_key:type_name -> openauth.backend.v1.SCIMAPIKey
+	81, // 23: openauth.backend.v1.ListUsersResponse.users:type_name -> openauth.backend.v1.User
+	81, // 24: openauth.backend.v1.GetUserResponse.user:type_name -> openauth.backend.v1.User
+	82, // 25: openauth.backend.v1.ListSessionsResponse.sessions:type_name -> openauth.backend.v1.Session
+	82, // 26: openauth.backend.v1.GetSessionResponse.session:type_name -> openauth.backend.v1.Session
+	80, // 27: openauth.backend.v1.ListIntermediateSessionsResponse.intermediate_sessions:type_name -> openauth.backend.v1.IntermediateSession
+	80, // 28: openauth.backend.v1.GetIntermediateSessionResponse.intermediate_session:type_name -> openauth.backend.v1.IntermediateSession
+	78, // 29: openauth.backend.v1.ListProjectAPIKeysResponse.project_api_keys:type_name -> openauth.backend.v1.ProjectAPIKey
+	78, // 30: openauth.backend.v1.GetProjectAPIKeyResponse.project_api_key:type_name -> openauth.backend.v1.ProjectAPIKey
+	78, // 31: openauth.backend.v1.CreateProjectAPIKeyRequest.project_api_key:type_name -> openauth.backend.v1.ProjectAPIKey
+	78, // 32: openauth.backend.v1.CreateProjectAPIKeyResponse.project_api_key:type_name -> openauth.backend.v1.ProjectAPIKey
+	78, // 33: openauth.backend.v1.UpdateProjectAPIKeyRequest.project_api_key:type_name -> openauth.backend.v1.ProjectAPIKey
+	78, // 34: openauth.backend.v1.UpdateProjectAPIKeyResponse.project_api_key:type_name -> openauth.backend.v1.ProjectAPIKey
+	78, // 35: openauth.backend.v1.RevokeProjectAPIKeyResponse.project_api_key:type_name -> openauth.backend.v1.ProjectAPIKey
+	79, // 36: openauth.backend.v1.CreateProjectRedirectURIRequest.project_redirect_uri:type_name -> openauth.backend.v1.ProjectRedirectURI
+	79, // 37: openauth.backend.v1.CreateProjectRedirectURIResponse.project_redirect_uri:type_name -> openauth.backend.v1.ProjectRedirectURI
+	79, // 38: openauth.backend.v1.GetProjectRedirectURIResponse.project_redirect_uri:type_name -> openauth.backend.v1.ProjectRedirectURI
+	79, // 39: openauth.backend.v1.ListProjectRedirectURIsResponse.project_redirect_uris:type_name -> openauth.backend.v1.ProjectRedirectURI
+	79, // 40: openauth.backend.v1.UpdateProjectRedirectURIRequest.project_redirect_uri:type_name -> openauth.backend.v1.ProjectRedirectURI
+	79, // 41: openauth.backend.v1.UpdateProjectRedirectURIResponse.project_redirect_uri:type_name -> openauth.backend.v1.ProjectRedirectURI
+	73, // 42: openauth.backend.v1.UpdateProjectUISettingsRequest.logo:type_name -> openauth.backend.v1.ImageUploadRequest
+	75, // 43: openauth.backend.v1.UpdateProjectUISettingsResponse.project_ui_settings:type_name -> openauth.backend.v1.ProjectUISettings
+	85, // 44: openauth.backend.v1.Project.create_time:type_name -> google.protobuf.Timestamp
+	85, // 45: openauth.backend.v1.Project.update_time:type_name -> google.protobuf.Timestamp
+	85, // 46: openauth.backend.v1.Organization.create_time:type_name -> google.protobuf.Timestamp
+	85, // 47: openauth.backend.v1.Organization.update_time:type_name -> google.protobuf.Timestamp
+	86, // 48: openauth.backend.v1.SessionSigningKey.public_key_jwk:type_name -> google.protobuf.Struct
+	85, // 49: openauth.backend.v1.ProjectAPIKey.create_time:type_name -> google.protobuf.Timestamp
+	85, // 50: openauth.backend.v1.ProjectAPIKey.update_time:type_name -> google.protobuf.Timestamp
+	85, // 51: openauth.backend.v1.User.create_time:type_name -> google.protobuf.Timestamp
+	85, // 52: openauth.backend.v1.User.update_time:type_name -> google.protobuf.Timestamp
+	85, // 53: openauth.backend.v1.SAMLConnection.create_time:type_name -> google.protobuf.Timestamp
+	85, // 54: openauth.backend.v1.SAMLConnection.update_time:type_name -> google.protobuf.Timestamp
+	85, // 55: openauth.backend.v1.SCIMAPIKey.create_time:type_name -> google.protobuf.Timestamp
+	85, // 56: openauth.backend.v1.SCIMAPIKey.update_time:type_name -> google.protobuf.Timestamp
+	1,  // 57: openauth.backend.v1.BackendService.GetProject:input_type -> openauth.backend.v1.GetProjectRequest
+	5,  // 58: openauth.backend.v1.BackendService.ListOrganizations:input_type -> openauth.backend.v1.ListOrganizationsRequest
+	7,  // 59: openauth.backend.v1.BackendService.GetOrganization:input_type -> openauth.backend.v1.GetOrganizationRequest
+	9,  // 60: openauth.backend.v1.BackendService.CreateOrganization:input_type -> openauth.backend.v1.CreateOrganizationRequest
+	11, // 61: openauth.backend.v1.BackendService.UpdateOrganization:input_type -> openauth.backend.v1.UpdateOrganizationRequest
+	13, // 62: openauth.backend.v1.BackendService.DeleteOrganization:input_type -> openauth.backend.v1.DeleteOrganizationRequest
+	19, // 63: openauth.backend.v1.BackendService.ListSAMLConnections:input_type -> openauth.backend.v1.ListSAMLConnectionsRequest
+	17, // 64: openauth.backend.v1.BackendService.GetSAMLConnection:input_type -> openauth.backend.v1.GetSAMLConnectionRequest
+	15, // 65: openauth.backend.v1.BackendService.CreateSAMLConnection:input_type -> openauth.backend.v1.CreateSAMLConnectionRequest
+	21, // 66: openauth.backend.v1.BackendService.UpdateSAMLConnection:input_type -> openauth.backend.v1.UpdateSAMLConnectionRequest
+	23, // 67: openauth.backend.v1.BackendService.DeleteSAMLConnection:input_type -> openauth.backend.v1.DeleteSAMLConnectionRequest
+	25, // 68: openauth.backend.v1.BackendService.ListSCIMAPIKeys:input_type -> openauth.backend.v1.ListSCIMAPIKeysRequest
+	27, // 69: openauth.backend.v1.BackendService.GetSCIMAPIKey:input_type -> openauth.backend.v1.GetSCIMAPIKeyRequest
+	29, // 70: openauth.backend.v1.BackendService.CreateSCIMAPIKey:input_type -> openauth.backend.v1.CreateSCIMAPIKeyRequest
+	31, // 71: openauth.backend.v1.BackendService.UpdateSCIMAPIKey:input_type -> openauth.backend.v1.UpdateSCIMAPIKeyRequest
+	33, // 72: openauth.backend.v1.BackendService.DeleteSCIMAPIKey:input_type -> openauth.backend.v1.DeleteSCIMAPIKeyRequest
+	35, // 73: openauth.backend.v1.BackendService.RevokeSCIMAPIKey:input_type -> openauth.backend.v1.RevokeSCIMAPIKeyRequest
+	37, // 74: openauth.backend.v1.BackendService.ListUsers:input_type -> openauth.backend.v1.ListUsersRequest
+	39, // 75: openauth.backend.v1.BackendService.GetUser:input_type -> openauth.backend.v1.GetUserRequest
+	41, // 76: openauth.backend.v1.BackendService.ListSessions:input_type -> openauth.backend.v1.ListSessionsRequest
+	43, // 77: openauth.backend.v1.BackendService.GetSession:input_type -> openauth.backend.v1.GetSessionRequest
+	45, // 78: openauth.backend.v1.BackendService.ListIntermediateSessions:input_type -> openauth.backend.v1.ListIntermediateSessionsRequest
+	47, // 79: openauth.backend.v1.BackendService.GetIntermediateSession:input_type -> openauth.backend.v1.GetIntermediateSessionRequest
+	3,  // 80: openauth.backend.v1.BackendService.UpdateProject:input_type -> openauth.backend.v1.UpdateProjectRequest
+	61, // 81: openauth.backend.v1.BackendService.CreateProjectRedirectURI:input_type -> openauth.backend.v1.CreateProjectRedirectURIRequest
+	63, // 82: openauth.backend.v1.BackendService.DeleteProjectRedirectURI:input_type -> openauth.backend.v1.DeleteProjectRedirectURIRequest
+	65, // 83: openauth.backend.v1.BackendService.GetProjectRedirectURI:input_type -> openauth.backend.v1.GetProjectRedirectURIRequest
+	67, // 84: openauth.backend.v1.BackendService.ListProjectRedirectURIs:input_type -> openauth.backend.v1.ListProjectRedirectURIsRequest
+	69, // 85: openauth.backend.v1.BackendService.UpdateProjectRedirectURI:input_type -> openauth.backend.v1.UpdateProjectRedirectURIRequest
+	71, // 86: openauth.backend.v1.BackendService.UpdateProjectUISettings:input_type -> openauth.backend.v1.UpdateProjectUISettingsRequest
+	49, // 87: openauth.backend.v1.BackendService.ListProjectAPIKeys:input_type -> openauth.backend.v1.ListProjectAPIKeysRequest
+	51, // 88: openauth.backend.v1.BackendService.GetProjectAPIKey:input_type -> openauth.backend.v1.GetProjectAPIKeyRequest
+	53, // 89: openauth.backend.v1.BackendService.CreateProjectAPIKey:input_type -> openauth.backend.v1.CreateProjectAPIKeyRequest
+	55, // 90: openauth.backend.v1.BackendService.UpdateProjectAPIKey:input_type -> openauth.backend.v1.UpdateProjectAPIKeyRequest
+	57, // 91: openauth.backend.v1.BackendService.DeleteProjectAPIKey:input_type -> openauth.backend.v1.DeleteProjectAPIKeyRequest
+	59, // 92: openauth.backend.v1.BackendService.RevokeProjectAPIKey:input_type -> openauth.backend.v1.RevokeProjectAPIKeyRequest
+	2,  // 93: openauth.backend.v1.BackendService.GetProject:output_type -> openauth.backend.v1.GetProjectResponse
+	6,  // 94: openauth.backend.v1.BackendService.ListOrganizations:output_type -> openauth.backend.v1.ListOrganizationsResponse
+	8,  // 95: openauth.backend.v1.BackendService.GetOrganization:output_type -> openauth.backend.v1.GetOrganizationResponse
+	10, // 96: openauth.backend.v1.BackendService.CreateOrganization:output_type -> openauth.backend.v1.CreateOrganizationResponse
+	12, // 97: openauth.backend.v1.BackendService.UpdateOrganization:output_type -> openauth.backend.v1.UpdateOrganizationResponse
+	14, // 98: openauth.backend.v1.BackendService.DeleteOrganization:output_type -> openauth.backend.v1.DeleteOrganizationResponse
+	20, // 99: openauth.backend.v1.BackendService.ListSAMLConnections:output_type -> openauth.backend.v1.ListSAMLConnectionsResponse
+	18, // 100: openauth.backend.v1.BackendService.GetSAMLConnection:output_type -> openauth.backend.v1.GetSAMLConnectionResponse
+	16, // 101: openauth.backend.v1.BackendService.CreateSAMLConnection:output_type -> openauth.backend.v1.CreateSAMLConnectionResponse
+	22, // 102: openauth.backend.v1.BackendService.UpdateSAMLConnection:output_type -> openauth.backend.v1.UpdateSAMLConnectionResponse
+	24, // 103: openauth.backend.v1.BackendService.DeleteSAMLConnection:output_type -> openauth.backend.v1.DeleteSAMLConnectionResponse
+	26, // 104: openauth.backend.v1.BackendService.ListSCIMAPIKeys:output_type -> openauth.backend.v1.ListSCIMAPIKeysResponse
+	28, // 105: openauth.backend.v1.BackendService.GetSCIMAPIKey:output_type -> openauth.backend.v1.GetSCIMAPIKeyResponse
+	30, // 106: openauth.backend.v1.BackendService.CreateSCIMAPIKey:output_type -> openauth.backend.v1.CreateSCIMAPIKeyResponse
+	32, // 107: openauth.backend.v1.BackendService.UpdateSCIMAPIKey:output_type -> openauth.backend.v1.UpdateSCIMAPIKeyResponse
+	34, // 108: openauth.backend.v1.BackendService.DeleteSCIMAPIKey:output_type -> openauth.backend.v1.DeleteSCIMAPIKeyResponse
+	36, // 109: openauth.backend.v1.BackendService.RevokeSCIMAPIKey:output_type -> openauth.backend.v1.RevokeSCIMAPIKeyResponse
+	38, // 110: openauth.backend.v1.BackendService.ListUsers:output_type -> openauth.backend.v1.ListUsersResponse
+	40, // 111: openauth.backend.v1.BackendService.GetUser:output_type -> openauth.backend.v1.GetUserResponse
+	42, // 112: openauth.backend.v1.BackendService.ListSessions:output_type -> openauth.backend.v1.ListSessionsResponse
+	44, // 113: openauth.backend.v1.BackendService.GetSession:output_type -> openauth.backend.v1.GetSessionResponse
+	46, // 114: openauth.backend.v1.BackendService.ListIntermediateSessions:output_type -> openauth.backend.v1.ListIntermediateSessionsResponse
+	48, // 115: openauth.backend.v1.BackendService.GetIntermediateSession:output_type -> openauth.backend.v1.GetIntermediateSessionResponse
+	4,  // 116: openauth.backend.v1.BackendService.UpdateProject:output_type -> openauth.backend.v1.UpdateProjectResponse
+	62, // 117: openauth.backend.v1.BackendService.CreateProjectRedirectURI:output_type -> openauth.backend.v1.CreateProjectRedirectURIResponse
+	64, // 118: openauth.backend.v1.BackendService.DeleteProjectRedirectURI:output_type -> openauth.backend.v1.DeleteProjectRedirectURIResponse
+	66, // 119: openauth.backend.v1.BackendService.GetProjectRedirectURI:output_type -> openauth.backend.v1.GetProjectRedirectURIResponse
+	68, // 120: openauth.backend.v1.BackendService.ListProjectRedirectURIs:output_type -> openauth.backend.v1.ListProjectRedirectURIsResponse
+	70, // 121: openauth.backend.v1.BackendService.UpdateProjectRedirectURI:output_type -> openauth.backend.v1.UpdateProjectRedirectURIResponse
+	72, // 122: openauth.backend.v1.BackendService.UpdateProjectUISettings:output_type -> openauth.backend.v1.UpdateProjectUISettingsResponse
+	50, // 123: openauth.backend.v1.BackendService.ListProjectAPIKeys:output_type -> openauth.backend.v1.ListProjectAPIKeysResponse
+	52, // 124: openauth.backend.v1.BackendService.GetProjectAPIKey:output_type -> openauth.backend.v1.GetProjectAPIKeyResponse
+	54, // 125: openauth.backend.v1.BackendService.CreateProjectAPIKey:output_type -> openauth.backend.v1.CreateProjectAPIKeyResponse
+	56, // 126: openauth.backend.v1.BackendService.UpdateProjectAPIKey:output_type -> openauth.backend.v1.UpdateProjectAPIKeyResponse
+	58, // 127: openauth.backend.v1.BackendService.DeleteProjectAPIKey:output_type -> openauth.backend.v1.DeleteProjectAPIKeyResponse
+	60, // 128: openauth.backend.v1.BackendService.RevokeProjectAPIKey:output_type -> openauth.backend.v1.RevokeProjectAPIKeyResponse
+	93, // [93:129] is the sub-list for method output_type
+	57, // [57:93] is the sub-list for method input_type
+	57, // [57:57] is the sub-list for extension type_name
+	57, // [57:57] is the sub-list for extension extendee
+	0,  // [0:57] is the sub-list for field type_name
 }
 
 func init() { file_openauth_backend_v1_backend_proto_init() }
@@ -5368,17 +5593,17 @@ func file_openauth_backend_v1_backend_proto_init() {
 	if File_openauth_backend_v1_backend_proto != nil {
 		return
 	}
-	file_openauth_backend_v1_backend_proto_msgTypes[71].OneofWrappers = []any{}
-	file_openauth_backend_v1_backend_proto_msgTypes[72].OneofWrappers = []any{}
-	file_openauth_backend_v1_backend_proto_msgTypes[77].OneofWrappers = []any{}
-	file_openauth_backend_v1_backend_proto_msgTypes[79].OneofWrappers = []any{}
+	file_openauth_backend_v1_backend_proto_msgTypes[74].OneofWrappers = []any{}
+	file_openauth_backend_v1_backend_proto_msgTypes[76].OneofWrappers = []any{}
+	file_openauth_backend_v1_backend_proto_msgTypes[81].OneofWrappers = []any{}
+	file_openauth_backend_v1_backend_proto_msgTypes[83].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_openauth_backend_v1_backend_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   81,
+			NumMessages:   85,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
