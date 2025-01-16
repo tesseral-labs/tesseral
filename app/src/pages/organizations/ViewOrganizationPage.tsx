@@ -97,7 +97,7 @@ export function ViewOrganizationPage() {
           <CardTitle className="text-xl">General configuration</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-3 gap-x-2">
+          <div className="grid grid-cols-3 gap-x-2 text-sm">
             <div className="border-r border-gray-200 pr-8">
               <div className="font-semibold">Display Name</div>
               <div>{getOrganizationResponse?.organization?.displayName}</div>

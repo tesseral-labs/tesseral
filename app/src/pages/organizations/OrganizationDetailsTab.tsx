@@ -1,5 +1,11 @@
-import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import React, { useState } from 'react'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { DateTime } from 'luxon'
 import { timestampDate } from '@bufbuild/protobuf/wkt'
 import { useParams } from 'react-router'
@@ -8,6 +14,8 @@ import {
   getOrganization,
   getProject,
 } from '@/gen/openauth/backend/v1/backend-BackendService_connectquery'
+import { Button } from '@/components/ui/button'
+import { EditOrganizationDetailsButton } from '@/pages/organizations/EditOrganizationDetailsButton'
 
 export function OrganizationDetailsTab() {
   const { organizationId } = useParams()
@@ -15,14 +23,21 @@ export function OrganizationDetailsTab() {
     id: organizationId,
   })
   const { data: getProjectResponse } = useQuery(getProject, {})
+  const [dialogOpen, setDialogOpen] = useState(false)
 
   return (
-    <Card className="my-8">
-      <CardHeader className="py-4">
-        <CardTitle className="text-xl">Details</CardTitle>
+    <Card>
+      <CardHeader className="flex-row justify-between items-center">
+        <div className="flex flex-col space-y-1 5">
+          <CardTitle>Details</CardTitle>
+          <CardDescription>
+            Additional details about your organization. Lorem ipsum dolor.
+          </CardDescription>
+        </div>
+        <EditOrganizationDetailsButton />
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-3 gap-x-2">
+        <div className="grid grid-cols-3 gap-x-2 text-sm">
           <div className="border-r border-gray-200 pr-8 flex flex-col gap-4">
             <div>
               <div className="font-semibold">Override Login Methods</div>
