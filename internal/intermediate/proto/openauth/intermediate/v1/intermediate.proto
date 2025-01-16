@@ -104,11 +104,7 @@ service IntermediateService {
     };
   }
 
-  rpc GetProjectUISettings(GetProjectUISettingsRequest) returns (GetProjectUISettingsResponse) {
-    option (google.api.http) = {
-      get: "/intermediate/v1/project-ui-settings"
-    };
-  }
+  rpc GetProjectUISettings(GetProjectUISettingsRequest) returns (GetProjectUISettingsResponse) {}
 }
 
 message IntermediateSession {
