@@ -27,7 +27,7 @@ const Page = () => {
       <div className="container flex justify-center">
         <div className="mb-8">
           {/* TODO: Make this conditionally load an Organizations configured logo */}
-          {isDarkMode ? (
+          {isDarkMode && shouldDetectDarkMode() ? (
             <img
               className="max-w-[240px]"
               src="/images/tesseral-logo-white.svg"
