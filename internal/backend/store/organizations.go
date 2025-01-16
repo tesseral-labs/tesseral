@@ -287,9 +287,13 @@ func parseOrganization(qProject queries.Project, qOrg queries.Organization) *bac
 	logInWithPasswordEnabled := qProject.LogInWithPasswordEnabled
 
 	if qOrg.OverrideLogInMethods {
-		logInWithGoogleEnabled = derefOrEmpty(qOrg.OverrideLogInWithGoogleEnabled)
-		logInWithMicrosoftEnabled = derefOrEmpty(qOrg.OverrideLogInWithMicrosoftEnabled)
-		logInWithPasswordEnabled = derefOrEmpty(qOrg.OverrideLogInWithPasswordEnabled)
+		// Only allow overrides to restrict settings, not augment them. We can't
+		// easily enforce this rule in UpdateOrganization, because a project may
+		// retroactively remove support for a login method. Such an update
+		// should immediately affect all organizations.
+		logInWithGoogleEnabled = qProject.LogInWithGoogleEnabled && derefOrEmpty(qOrg.OverrideLogInWithGoogleEnabled)
+		logInWithMicrosoftEnabled = qProject.LogInWithMicrosoftEnabled && derefOrEmpty(qOrg.OverrideLogInWithMicrosoftEnabled)
+		logInWithPasswordEnabled = qProject.LogInWithPasswordEnabled && derefOrEmpty(qOrg.OverrideLogInWithPasswordEnabled)
 	}
 
 	return &backendv1.Organization{
