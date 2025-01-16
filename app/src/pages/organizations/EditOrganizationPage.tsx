@@ -2,6 +2,7 @@ import { useNavigate, useParams } from 'react-router'
 import { useMutation, useQuery } from '@connectrpc/connect-query'
 import {
   getOrganization,
+  getProject,
   updateOrganization,
 } from '@/gen/openauth/backend/v1/backend-BackendService_connectquery'
 import React, { useEffect, useState } from 'react'
@@ -50,10 +51,10 @@ const schema = z.object({
 export function EditOrganizationPage() {
   const navigate = useNavigate()
   const { organizationId } = useParams()
-  const { data: getOrganizationResponse, refetch: refetchOrganization } =
-    useQuery(getOrganization, {
-      id: organizationId,
-    })
+  const { data: getProjectResponse } = useQuery(getProject, {})
+  const { data: getOrganizationResponse } = useQuery(getOrganization, {
+    id: organizationId,
+  })
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -198,92 +199,98 @@ export function EditOrganizationPage() {
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name="logInWithGoogleEnabled"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Log in with Google</FormLabel>
-                    <FormControl>
-                      <Switch
-                        disabled={
-                          !form.getValues('overrideLogInMethods').valueOf()
-                        }
-                        className="block"
-                        checked={
-                          form.getValues('overrideLogInMethods').valueOf()
-                            ? field.value
-                            : true
-                        }
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      You can only modify this if "Override Login Methods" is
-                      enabled for this organization.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {getProjectResponse?.project?.logInWithGoogleEnabled && (
+                <FormField
+                  control={form.control}
+                  name="logInWithGoogleEnabled"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Log in with Google</FormLabel>
+                      <FormControl>
+                        <Switch
+                          disabled={
+                            !form.getValues('overrideLogInMethods').valueOf()
+                          }
+                          className="block"
+                          checked={
+                            form.getValues('overrideLogInMethods').valueOf()
+                              ? field.value
+                              : true
+                          }
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        You can only modify this if "Override Login Methods" is
+                        enabled for this organization.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
 
-              <FormField
-                control={form.control}
-                name="logInWithMicrosoftEnabled"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Log in with Microsoft</FormLabel>
-                    <FormControl>
-                      <Switch
-                        disabled={
-                          !form.getValues('overrideLogInMethods').valueOf()
-                        }
-                        className="block"
-                        checked={
-                          form.getValues('overrideLogInMethods').valueOf()
-                            ? field.value
-                            : true
-                        }
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      You can only modify this if "Override Login Methods" is
-                      enabled for this organization.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {getProjectResponse?.project?.logInWithMicrosoftEnabled && (
+                <FormField
+                  control={form.control}
+                  name="logInWithMicrosoftEnabled"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Log in with Microsoft</FormLabel>
+                      <FormControl>
+                        <Switch
+                          disabled={
+                            !form.getValues('overrideLogInMethods').valueOf()
+                          }
+                          className="block"
+                          checked={
+                            form.getValues('overrideLogInMethods').valueOf()
+                              ? field.value
+                              : true
+                          }
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        You can only modify this if "Override Login Methods" is
+                        enabled for this organization.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
 
-              <FormField
-                control={form.control}
-                name="logInWithPasswordEnabled"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Log in with Password</FormLabel>
-                    <FormControl>
-                      <Switch
-                        disabled={
-                          !form.getValues('overrideLogInMethods').valueOf()
-                        }
-                        className="block"
-                        checked={
-                          form.getValues('overrideLogInMethods').valueOf()
-                            ? field.value
-                            : true
-                        }
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      You can only modify this if "Override Login Methods" is
-                      enabled for this organization.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {getProjectResponse?.project?.logInWithPasswordEnabled && (
+                <FormField
+                  control={form.control}
+                  name="logInWithPasswordEnabled"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Log in with Password</FormLabel>
+                      <FormControl>
+                        <Switch
+                          disabled={
+                            !form.getValues('overrideLogInMethods').valueOf()
+                          }
+                          className="block"
+                          checked={
+                            form.getValues('overrideLogInMethods').valueOf()
+                              ? field.value
+                              : true
+                          }
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        You can only modify this if "Override Login Methods" is
+                        enabled for this organization.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
             </CardContent>
           </Card>
           <Card>
