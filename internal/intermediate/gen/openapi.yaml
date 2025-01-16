@@ -176,6 +176,24 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /intermediate/v1/project-ui-settings:
+        get:
+            tags:
+                - IntermediateService
+            operationId: IntermediateService_GetProjectUISettings
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetProjectUISettingsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /intermediate/v1/redeem-google-oauth-code:
         post:
             tags:
@@ -373,6 +391,13 @@ components:
                     type: string
                 intermediateSessionToken:
                     type: string
+        GetProjectUISettingsResponse:
+            type: object
+            properties:
+                projectUiSettings:
+                    allOf:
+                        - $ref: '#/components/schemas/ProjectUISettings'
+                    description: The project's UI settings.
         GoogleProtobufAny:
             type: object
             properties:
@@ -428,6 +453,27 @@ components:
                     type: boolean
                 primarySamlConnectionId:
                     type: string
+        ProjectUISettings:
+            type: object
+            properties:
+                logoUrl:
+                    type: string
+                faviconUrl:
+                    type: string
+                primaryColor:
+                    type: string
+                detectDarkModeEnabled:
+                    type: boolean
+                darkModeLogoUrl:
+                    type: string
+                darkModePrimaryColor:
+                    type: string
+                createTime:
+                    type: string
+                    format: date-time
+                updateTime:
+                    type: string
+                    format: date-time
         RedeemGoogleOAuthCodeRequest:
             type: object
             properties:

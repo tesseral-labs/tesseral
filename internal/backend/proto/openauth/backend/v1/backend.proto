@@ -160,12 +160,8 @@ service BackendService {
   rpc ListProjectRedirectURIs(ListProjectRedirectURIsRequest) returns (ListProjectRedirectURIsResponse) {}
   rpc UpdateProjectRedirectURI(UpdateProjectRedirectURIRequest) returns (UpdateProjectRedirectURIResponse) {}
 
-  rpc UpdateProjectUISettings(UpdateProjectUISettingsRequest) returns (UpdateProjectUISettingsResponse) {
-    option (google.api.http) = {
-      patch: "/backend/v1/project-ui-settings",
-      body: "*"
-    };
-  }
+  rpc GetProjectUISettings(GetProjectUISettingsRequest) returns (GetProjectUISettingsResponse) {}
+  rpc UpdateProjectUISettings(UpdateProjectUISettingsRequest) returns (UpdateProjectUISettingsResponse) {}
 
   rpc ListProjectAPIKeys(ListProjectAPIKeysRequest) returns (ListProjectAPIKeysResponse);
   rpc GetProjectAPIKey(GetProjectAPIKeyRequest) returns (GetProjectAPIKeyResponse);
@@ -461,6 +457,12 @@ message ListProjectRedirectURIsRequest {
 
 message ListProjectRedirectURIsResponse {
   repeated ProjectRedirectURI project_redirect_uris = 1;
+}
+
+message GetProjectUISettingsRequest {}
+
+message GetProjectUISettingsResponse {
+  ProjectUISettings project_ui_settings = 1;
 }
 
 message UpdateProjectRedirectURIRequest {

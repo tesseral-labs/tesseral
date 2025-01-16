@@ -18,6 +18,7 @@ var skipRPCs = []string{
 	"/openauth.intermediate.v1.IntermediateService/SignInWithEmail",
 	"/openauth.intermediate.v1.IntermediateService/GetGoogleOAuthRedirectURL",
 	"/openauth.intermediate.v1.IntermediateService/GetMicrosoftOAuthRedirectURL",
+	"/openauth.intermediate.v1.IntermediateService/GetProjectUISettings",
 	"/openauth.intermediate.v1.IntermediateService/ListSAMLOrganizations",
 }
 

@@ -106,12 +106,12 @@ func (s *Store) processImageUpload(ctx context.Context, imageType string, req *b
 
 func (s *Store) parseProjectUISettings(pus queries.ProjectUiSetting) *backendv1.ProjectUISettings {
 	return &backendv1.ProjectUISettings{
-		PrimaryColor:          *pus.PrimaryColor,
+		PrimaryColor:          derefOrEmpty(pus.PrimaryColor),
 		DetectDarkModeEnabled: pus.DetectDarkModeEnabled,
-		DarkModePrimaryColor:  *pus.DarkModePrimaryColor,
-		LogoUrl:               s.getURLForFileKey(*pus.LogoFileKey),
-		FaviconUrl:            s.getURLForFileKey(*pus.FaviconFileKey),
-		DarkModeLogoUrl:       s.getURLForFileKey(*pus.DarkModeLogoFileKey),
+		DarkModePrimaryColor:  derefOrEmpty(pus.DarkModePrimaryColor),
+		LogoUrl:               s.getURLForFileKey(derefOrEmpty(pus.LogoFileKey)),
+		FaviconUrl:            s.getURLForFileKey(derefOrEmpty(pus.FaviconFileKey)),
+		DarkModeLogoUrl:       s.getURLForFileKey(derefOrEmpty(pus.DarkModeLogoFileKey)),
 		CreateTime:            timestamppb.New(*pus.CreateTime),
 		UpdateTime:            timestamppb.New(*pus.UpdateTime),
 	}

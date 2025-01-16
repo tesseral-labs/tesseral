@@ -15,6 +15,10 @@ import (
 )
 
 func (s *Store) getURLForFileKey(fileKey string) string {
+	if fileKey == "" {
+		return ""
+	}
+
 	return fmt.Sprintf("%s/%s", s.userContentUrl, fileKey)
 }
 

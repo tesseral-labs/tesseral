@@ -119,6 +119,9 @@ const (
 	// BackendServiceUpdateProjectRedirectURIProcedure is the fully-qualified name of the
 	// BackendService's UpdateProjectRedirectURI RPC.
 	BackendServiceUpdateProjectRedirectURIProcedure = "/openauth.backend.v1.BackendService/UpdateProjectRedirectURI"
+	// BackendServiceGetProjectUISettingsProcedure is the fully-qualified name of the BackendService's
+	// GetProjectUISettings RPC.
+	BackendServiceGetProjectUISettingsProcedure = "/openauth.backend.v1.BackendService/GetProjectUISettings"
 	// BackendServiceUpdateProjectUISettingsProcedure is the fully-qualified name of the
 	// BackendService's UpdateProjectUISettings RPC.
 	BackendServiceUpdateProjectUISettingsProcedure = "/openauth.backend.v1.BackendService/UpdateProjectUISettings"
@@ -173,6 +176,7 @@ type BackendServiceClient interface {
 	GetProjectRedirectURI(context.Context, *connect.Request[v1.GetProjectRedirectURIRequest]) (*connect.Response[v1.GetProjectRedirectURIResponse], error)
 	ListProjectRedirectURIs(context.Context, *connect.Request[v1.ListProjectRedirectURIsRequest]) (*connect.Response[v1.ListProjectRedirectURIsResponse], error)
 	UpdateProjectRedirectURI(context.Context, *connect.Request[v1.UpdateProjectRedirectURIRequest]) (*connect.Response[v1.UpdateProjectRedirectURIResponse], error)
+	GetProjectUISettings(context.Context, *connect.Request[v1.GetProjectUISettingsRequest]) (*connect.Response[v1.GetProjectUISettingsResponse], error)
 	UpdateProjectUISettings(context.Context, *connect.Request[v1.UpdateProjectUISettingsRequest]) (*connect.Response[v1.UpdateProjectUISettingsResponse], error)
 	ListProjectAPIKeys(context.Context, *connect.Request[v1.ListProjectAPIKeysRequest]) (*connect.Response[v1.ListProjectAPIKeysResponse], error)
 	GetProjectAPIKey(context.Context, *connect.Request[v1.GetProjectAPIKeyRequest]) (*connect.Response[v1.GetProjectAPIKeyResponse], error)
@@ -367,6 +371,12 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(backendServiceMethods.ByName("UpdateProjectRedirectURI")),
 			connect.WithClientOptions(opts...),
 		),
+		getProjectUISettings: connect.NewClient[v1.GetProjectUISettingsRequest, v1.GetProjectUISettingsResponse](
+			httpClient,
+			baseURL+BackendServiceGetProjectUISettingsProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("GetProjectUISettings")),
+			connect.WithClientOptions(opts...),
+		),
 		updateProjectUISettings: connect.NewClient[v1.UpdateProjectUISettingsRequest, v1.UpdateProjectUISettingsResponse](
 			httpClient,
 			baseURL+BackendServiceUpdateProjectUISettingsProcedure,
@@ -443,6 +453,7 @@ type backendServiceClient struct {
 	getProjectRedirectURI    *connect.Client[v1.GetProjectRedirectURIRequest, v1.GetProjectRedirectURIResponse]
 	listProjectRedirectURIs  *connect.Client[v1.ListProjectRedirectURIsRequest, v1.ListProjectRedirectURIsResponse]
 	updateProjectRedirectURI *connect.Client[v1.UpdateProjectRedirectURIRequest, v1.UpdateProjectRedirectURIResponse]
+	getProjectUISettings     *connect.Client[v1.GetProjectUISettingsRequest, v1.GetProjectUISettingsResponse]
 	updateProjectUISettings  *connect.Client[v1.UpdateProjectUISettingsRequest, v1.UpdateProjectUISettingsResponse]
 	listProjectAPIKeys       *connect.Client[v1.ListProjectAPIKeysRequest, v1.ListProjectAPIKeysResponse]
 	getProjectAPIKey         *connect.Client[v1.GetProjectAPIKeyRequest, v1.GetProjectAPIKeyResponse]
@@ -597,6 +608,11 @@ func (c *backendServiceClient) UpdateProjectRedirectURI(ctx context.Context, req
 	return c.updateProjectRedirectURI.CallUnary(ctx, req)
 }
 
+// GetProjectUISettings calls openauth.backend.v1.BackendService.GetProjectUISettings.
+func (c *backendServiceClient) GetProjectUISettings(ctx context.Context, req *connect.Request[v1.GetProjectUISettingsRequest]) (*connect.Response[v1.GetProjectUISettingsResponse], error) {
+	return c.getProjectUISettings.CallUnary(ctx, req)
+}
+
 // UpdateProjectUISettings calls openauth.backend.v1.BackendService.UpdateProjectUISettings.
 func (c *backendServiceClient) UpdateProjectUISettings(ctx context.Context, req *connect.Request[v1.UpdateProjectUISettingsRequest]) (*connect.Response[v1.UpdateProjectUISettingsResponse], error) {
 	return c.updateProjectUISettings.CallUnary(ctx, req)
@@ -663,6 +679,7 @@ type BackendServiceHandler interface {
 	GetProjectRedirectURI(context.Context, *connect.Request[v1.GetProjectRedirectURIRequest]) (*connect.Response[v1.GetProjectRedirectURIResponse], error)
 	ListProjectRedirectURIs(context.Context, *connect.Request[v1.ListProjectRedirectURIsRequest]) (*connect.Response[v1.ListProjectRedirectURIsResponse], error)
 	UpdateProjectRedirectURI(context.Context, *connect.Request[v1.UpdateProjectRedirectURIRequest]) (*connect.Response[v1.UpdateProjectRedirectURIResponse], error)
+	GetProjectUISettings(context.Context, *connect.Request[v1.GetProjectUISettingsRequest]) (*connect.Response[v1.GetProjectUISettingsResponse], error)
 	UpdateProjectUISettings(context.Context, *connect.Request[v1.UpdateProjectUISettingsRequest]) (*connect.Response[v1.UpdateProjectUISettingsResponse], error)
 	ListProjectAPIKeys(context.Context, *connect.Request[v1.ListProjectAPIKeysRequest]) (*connect.Response[v1.ListProjectAPIKeysResponse], error)
 	GetProjectAPIKey(context.Context, *connect.Request[v1.GetProjectAPIKeyRequest]) (*connect.Response[v1.GetProjectAPIKeyResponse], error)
@@ -853,6 +870,12 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		connect.WithSchema(backendServiceMethods.ByName("UpdateProjectRedirectURI")),
 		connect.WithHandlerOptions(opts...),
 	)
+	backendServiceGetProjectUISettingsHandler := connect.NewUnaryHandler(
+		BackendServiceGetProjectUISettingsProcedure,
+		svc.GetProjectUISettings,
+		connect.WithSchema(backendServiceMethods.ByName("GetProjectUISettings")),
+		connect.WithHandlerOptions(opts...),
+	)
 	backendServiceUpdateProjectUISettingsHandler := connect.NewUnaryHandler(
 		BackendServiceUpdateProjectUISettingsProcedure,
 		svc.UpdateProjectUISettings,
@@ -955,6 +978,8 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceListProjectRedirectURIsHandler.ServeHTTP(w, r)
 		case BackendServiceUpdateProjectRedirectURIProcedure:
 			backendServiceUpdateProjectRedirectURIHandler.ServeHTTP(w, r)
+		case BackendServiceGetProjectUISettingsProcedure:
+			backendServiceGetProjectUISettingsHandler.ServeHTTP(w, r)
 		case BackendServiceUpdateProjectUISettingsProcedure:
 			backendServiceUpdateProjectUISettingsHandler.ServeHTTP(w, r)
 		case BackendServiceListProjectAPIKeysProcedure:
@@ -1092,6 +1117,10 @@ func (UnimplementedBackendServiceHandler) ListProjectRedirectURIs(context.Contex
 
 func (UnimplementedBackendServiceHandler) UpdateProjectRedirectURI(context.Context, *connect.Request[v1.UpdateProjectRedirectURIRequest]) (*connect.Response[v1.UpdateProjectRedirectURIResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.UpdateProjectRedirectURI is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) GetProjectUISettings(context.Context, *connect.Request[v1.GetProjectUISettingsRequest]) (*connect.Response[v1.GetProjectUISettingsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetProjectUISettings is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) UpdateProjectUISettings(context.Context, *connect.Request[v1.UpdateProjectUISettingsRequest]) (*connect.Response[v1.UpdateProjectUISettingsResponse], error) {

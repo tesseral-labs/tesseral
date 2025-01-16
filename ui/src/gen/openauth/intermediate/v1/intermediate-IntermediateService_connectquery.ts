@@ -80,3 +80,8 @@ export const verifyEmailChallenge = IntermediateService.method.verifyEmailChalle
  * @generated from rpc openauth.intermediate.v1.IntermediateService.VerifyPassword
  */
 export const verifyPassword = IntermediateService.method.verifyPassword;
+
+/**
+ * @generated from rpc openauth.intermediate.v1.IntermediateService.GetProjectUISettings
+ */
+export const getProjectUISettings = IntermediateService.method.getProjectUISettings;

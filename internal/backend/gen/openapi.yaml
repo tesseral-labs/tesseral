@@ -193,30 +193,6 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /backend/v1/project-ui-settings:
-        patch:
-            tags:
-                - BackendService
-            operationId: BackendService_UpdateProjectUISettings
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/UpdateProjectUISettingsRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/UpdateProjectUISettingsResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
     /backend/v1/saml-connections:
         get:
             tags:
@@ -664,14 +640,6 @@ components:
                     description: The type of the serialized message.
             additionalProperties: true
             description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
-        ImageUploadRequest:
-            type: object
-            properties:
-                data:
-                    type: string
-                    format: bytes
-                mimeType:
-                    type: string
         IntermediateSession:
             type: object
             properties:
@@ -805,27 +773,6 @@ components:
                     type: boolean
                 authDomain:
                     type: string
-        ProjectUISettings:
-            type: object
-            properties:
-                logoUrl:
-                    type: string
-                faviconUrl:
-                    type: string
-                primaryColor:
-                    type: string
-                detectDarkModeEnabled:
-                    type: boolean
-                darkModeLogoUrl:
-                    type: string
-                darkModePrimaryColor:
-                    type: string
-                createTime:
-                    type: string
-                    format: date-time
-                updateTime:
-                    type: string
-                    format: date-time
         RevokeSCIMAPIKeyResponse:
             type: object
             properties:
@@ -905,26 +852,6 @@ components:
             properties:
                 organization:
                     $ref: '#/components/schemas/Organization'
-        UpdateProjectUISettingsRequest:
-            type: object
-            properties:
-                logo:
-                    $ref: '#/components/schemas/ImageUploadRequest'
-                favicon:
-                    $ref: '#/components/schemas/ImageUploadRequest'
-                primaryColor:
-                    type: string
-                detectDarkModeEnabled:
-                    type: boolean
-                darkModeLogo:
-                    $ref: '#/components/schemas/ImageUploadRequest'
-                darkModePrimaryColor:
-                    type: string
-        UpdateProjectUISettingsResponse:
-            type: object
-            properties:
-                projectUiSettings:
-                    $ref: '#/components/schemas/ProjectUISettings'
         UpdateSAMLConnectionResponse:
             type: object
             properties:

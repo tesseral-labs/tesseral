@@ -2,15 +2,21 @@ import React from 'react'
 import { Outlet } from 'react-router'
 import useDarkMode from '@/lib/dark-mode'
 import { cn } from '@/lib/utils'
+import { useQuery } from '@connectrpc/connect-query'
+import { getProjectUISettings } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
 
 const Page = () => {
   const isDarkMode = useDarkMode()
+  const { data: uiSettingsRes } = useQuery(getProjectUISettings)
 
   return (
     <div
       className={cn(
         'mx-auto flex flex-col justify-center items-center min-h-screen w-screen py-8',
-        isDarkMode ? 'dark bg-dark' : 'light bg-muted',
+        isDarkMode &&
+          (uiSettingsRes?.projectUiSettings?.detectDarkModeEnabled || true)
+          ? 'dark bg-dark'
+          : 'light bg-muted',
       )}
     >
       <div className="container flex justify-center">

@@ -697,6 +697,33 @@ func (q *Queries) GetProjectOrganizationByID(ctx context.Context, arg GetProject
 	return i, err
 }
 
+const getProjectUISettings = `-- name: GetProjectUISettings :one
+SELECT
+    id, project_id, logo_file_key, favicon_file_key, primary_color, detect_dark_mode_enabled, dark_mode_logo_file_key, dark_mode_primary_color, create_time, update_time
+FROM
+    project_ui_settings
+WHERE
+    project_id = $1
+`
+
+func (q *Queries) GetProjectUISettings(ctx context.Context, projectID uuid.UUID) (ProjectUiSetting, error) {
+	row := q.db.QueryRow(ctx, getProjectUISettings, projectID)
+	var i ProjectUiSetting
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.LogoFileKey,
+		&i.FaviconFileKey,
+		&i.PrimaryColor,
+		&i.DetectDarkModeEnabled,
+		&i.DarkModeLogoFileKey,
+		&i.DarkModePrimaryColor,
+		&i.CreateTime,
+		&i.UpdateTime,
+	)
+	return i, err
+}
+
 const getSessionSigningKeysByProjectID = `-- name: GetSessionSigningKeysByProjectID :many
 SELECT
     id, project_id, public_key, private_key_cipher_text, create_time, expire_time
