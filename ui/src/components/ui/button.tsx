@@ -60,19 +60,17 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         (!variant || variant === 'default')
       ) {
         style.backgroundColor = projectUiSettings?.darkModePrimaryColor
-
-        if (isColorDark(projectUiSettings?.primaryColor)) {
-          style.color = 'white'
-        }
+        style.color = isColorDark(projectUiSettings?.primaryColor)
+          ? 'white'
+          : 'black'
       } else if (
         projectUiSettings?.primaryColor &&
         (!variant || variant === 'default')
       ) {
         style.backgroundColor = projectUiSettings?.primaryColor
-
-        if (isColorDark(projectUiSettings?.primaryColor)) {
-          style.color = 'white'
-        }
+        style.color = isColorDark(projectUiSettings?.primaryColor)
+          ? 'white'
+          : 'black'
       }
 
       setCustomStyle(style)
