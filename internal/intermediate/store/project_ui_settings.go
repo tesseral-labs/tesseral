@@ -35,11 +35,11 @@ func (s *Store) parseProjectUISettings(pus queries.ProjectUiSetting) *intermedia
 	return &intermediatev1.ProjectUISettings{
 		Id:                    idformat.ProjectUISettings.Format(pus.ID),
 		ProjectId:             projectID,
-		DarkModeLogoUrl:       fmt.Sprintf("%s/dark_mode_logos_v1/%s/dark_mode_logo", s.userContentUrl, projectID),
+		DarkModeLogoUrl:       fmt.Sprintf("%s/dark_mode_logos_v1/%s/dark_mode_logo", s.userContentBaseUrl, projectID),
 		DetectDarkModeEnabled: pus.DetectDarkModeEnabled,
 		DarkModePrimaryColor:  derefOrEmpty(pus.DarkModePrimaryColor),
-		FaviconUrl:            fmt.Sprintf("%s/faviconss_v1/%s/favicon", s.userContentUrl, projectID),
-		LogoUrl:               fmt.Sprintf("%s/logos_v1/%s/logo", s.userContentUrl, projectID),
+		FaviconUrl:            fmt.Sprintf("%s/faviconss_v1/%s/favicon", s.userContentBaseUrl, projectID),
+		LogoUrl:               fmt.Sprintf("%s/logos_v1/%s/logo", s.userContentBaseUrl, projectID),
 		PrimaryColor:          derefOrEmpty(pus.PrimaryColor),
 	}
 }

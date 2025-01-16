@@ -134,9 +134,9 @@ func (s *Store) parseProjectUISettings(pus queries.ProjectUiSetting) *backendv1.
 		PrimaryColor:          derefOrEmpty(pus.PrimaryColor),
 		DetectDarkModeEnabled: pus.DetectDarkModeEnabled,
 		DarkModePrimaryColor:  derefOrEmpty(pus.DarkModePrimaryColor),
-		LogoUrl:               fmt.Sprintf("%s/logos_v1/%s/logo", s.userContentUrl, projectID),
-		FaviconUrl:            fmt.Sprintf("%s/favicons_v1/%s/favicon", s.userContentUrl, projectID),
-		DarkModeLogoUrl:       fmt.Sprintf("%s/dark_mode_logos_v1/%s/dark_mode_logo", s.userContentUrl, projectID),
+		LogoUrl:               fmt.Sprintf("%s/logos_v1/%s/logo", s.userContentBaseUrl, projectID),
+		FaviconUrl:            fmt.Sprintf("%s/favicons_v1/%s/favicon", s.userContentBaseUrl, projectID),
+		DarkModeLogoUrl:       fmt.Sprintf("%s/dark_mode_logos_v1/%s/dark_mode_logo", s.userContentBaseUrl, projectID),
 		CreateTime:            timestamppb.New(*pus.CreateTime),
 		UpdateTime:            timestamppb.New(*pus.UpdateTime),
 	}
