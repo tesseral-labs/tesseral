@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { CSSProperties, useEffect, useState } from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 
-import { cn } from '@/lib/utils'
+import { cn, isColorDark } from '@/lib/utils'
+import useProjectUiSettings from '@/lib/project-ui-settings'
+import useDarkMode from '@/lib/dark-mode'
 
 const buttonVariants = cva(
   'inline-flex font-semibold items-center justify-center whitespace-nowrap rounded-md text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none',
@@ -39,10 +41,44 @@ export interface ButtonProps
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, ...props }, ref) => {
+    const isDarkMode = useDarkMode()
+    const [customStyle, setCustomStyle] = useState<CSSProperties>(
+      props.style ? { ...props.style } : {},
+    )
+
+    const projectUiSettings = useProjectUiSettings()
+
+    useEffect(() => {
+      const style: CSSProperties = { ...customStyle }
+
+      if (
+        projectUiSettings?.darkModePrimaryColor &&
+        isDarkMode &&
+        projectUiSettings?.detectDarkModeEnabled &&
+        (!variant || variant === 'default')
+      ) {
+        style.backgroundColor = projectUiSettings?.darkModePrimaryColor
+        style.color = isColorDark(projectUiSettings?.primaryColor)
+          ? 'white'
+          : 'black'
+      } else if (
+        projectUiSettings?.primaryColor &&
+        (!variant || variant === 'default')
+      ) {
+        style.backgroundColor = projectUiSettings?.primaryColor
+        style.color = isColorDark(projectUiSettings?.primaryColor)
+          ? 'white'
+          : 'black'
+      }
+
+      setCustomStyle(style)
+    }, [projectUiSettings, variant])
+
     return (
       <button
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
+        style={customStyle}
         {...props}
       />
     )
