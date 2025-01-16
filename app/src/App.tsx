@@ -18,6 +18,7 @@ import { OrganizationUsersTab } from '@/pages/organizations/OrganizationUsersTab
 import { OrganizationSAMLConnectionsTab } from '@/pages/organizations/OrganizationSAMLConnectionsTab'
 import { OrganizationSCIMAPIKeysTab } from '@/pages/organizations/OrganizationSCIMAPIKeysTab'
 import { OrganizationDetailsTab } from '@/pages/organizations/OrganizationDetailsTab'
+import { EditOrganizationPage } from '@/pages/organizations/EditOrganizationPage'
 
 const queryClient = new QueryClient()
 
@@ -74,7 +75,10 @@ function AppWithinQueryClient() {
                 element={<OrganizationSCIMAPIKeysTab />}
               />
             </Route>
-
+            <Route
+              path="organizations/:organizationId/edit"
+              element={<EditOrganizationPage />}
+            />
             <Route
               path="organizations/:organizationId/users/:userId"
               element={<ViewUserPage />}

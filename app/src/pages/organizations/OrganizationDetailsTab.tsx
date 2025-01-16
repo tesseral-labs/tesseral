@@ -6,8 +6,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { DateTime } from 'luxon'
-import { timestampDate } from '@bufbuild/protobuf/wkt'
 import { useParams } from 'react-router'
 import { useQuery } from '@connectrpc/connect-query'
 import {
@@ -15,7 +13,7 @@ import {
   getProject,
 } from '@/gen/openauth/backend/v1/backend-BackendService_connectquery'
 import { Button } from '@/components/ui/button'
-import { EditOrganizationDetailsButton } from '@/pages/organizations/EditOrganizationDetailsButton'
+import { Link } from 'react-router-dom'
 
 export function OrganizationDetailsTab() {
   const { organizationId } = useParams()
@@ -23,7 +21,6 @@ export function OrganizationDetailsTab() {
     id: organizationId,
   })
   const { data: getProjectResponse } = useQuery(getProject, {})
-  const [dialogOpen, setDialogOpen] = useState(false)
 
   return (
     <Card>
@@ -34,7 +31,9 @@ export function OrganizationDetailsTab() {
             Additional details about your organization. Lorem ipsum dolor.
           </CardDescription>
         </div>
-        <EditOrganizationDetailsButton />
+        <Button variant="outline" asChild>
+          <Link to={`/organizations/${organizationId}/edit`}>Edit</Link>
+        </Button>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-3 gap-x-2 text-sm">
