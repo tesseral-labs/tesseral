@@ -24,6 +24,7 @@ import { Toaster } from '@/components/ui/sonner'
 import { Edit } from 'lucide-react'
 import { EditSAMLConnectionPage } from '@/pages/saml-connections/EditSAMLConnectionPage'
 import { PageShell } from '@/components/page'
+import { ViewSCIMAPIKeyPage } from '@/pages/scim-api-keys/ViewSCIMAPIKeyPage'
 
 const queryClient = new QueryClient()
 
@@ -31,7 +32,7 @@ function useTransport(): Transport {
   const accessToken = useAccessToken()
 
   return createConnectTransport({
-    baseUrl: `http://auth.app.tesseral.example.com/api/internal/connect`,
+    baseUrl: `https://auth.app.tesseral.example.com/api/internal/connect`,
     fetch: (input, init) =>
       fetch(input, {
         ...init,
@@ -98,6 +99,10 @@ function AppWithinQueryClient() {
             <Route
               path="organizations/:organizationId/users/:userId"
               element={<ViewUserPage />}
+            />
+            <Route
+              path="organizations/:organizationId/scim-api-keys/:scimApiKeyId"
+              element={<ViewSCIMAPIKeyPage />}
             />
           </Route>
           <Route path="*" element={<NotFoundPage />} />

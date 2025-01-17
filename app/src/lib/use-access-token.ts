@@ -2,8 +2,8 @@ import { useMutation } from '@tanstack/react-query'
 import { useState } from 'react'
 
 interface User {
-  id: string;
-  email: string;
+  id: string
+  email: string
 }
 
 export function useUser(): User | undefined {
@@ -12,7 +12,7 @@ export function useUser(): User | undefined {
     return
   }
 
-  const claims = JSON.parse(base64Decode(accessToken.split(".")[1]))
+  const claims = JSON.parse(base64Decode(accessToken.split('.')[1]))
   return {
     id: claims.user.id,
     email: claims.user.email,
@@ -24,14 +24,17 @@ export function useAccessToken(): string | undefined {
   const refresh = useMutation({
     mutationKey: ['refresh'],
     mutationFn: async () => {
-      const response = await fetch(`http://auth.app.tesseral.example.com/api/frontend/v1/access-token`, {
-        credentials: 'include',
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `https://auth.app.tesseral.example.com/api/frontend/v1/access-token`,
+        {
+          credentials: 'include',
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: '{}',
         },
-        body: '{}',
-      })
+      )
       return (await response.json()).accessToken
     },
   })
@@ -41,7 +44,7 @@ export function useAccessToken(): string | undefined {
       refresh.mutate(undefined, {
         onSuccess: (accessToken) => {
           setAccessToken(accessToken)
-        }
+        },
       })
     }
   }
@@ -53,7 +56,9 @@ export function useAccessToken(): string | undefined {
 const ACCESS_TOKEN_REFRESH_THRESHOLD_SECONDS = 10
 
 function shouldRefresh(accessToken: string): boolean {
-  const refreshAt = parseAccessTokenExpiration(accessToken) - ACCESS_TOKEN_REFRESH_THRESHOLD_SECONDS
+  const refreshAt =
+    parseAccessTokenExpiration(accessToken) -
+    ACCESS_TOKEN_REFRESH_THRESHOLD_SECONDS
   const now = Math.floor(new Date().getTime() / 1000)
   return refreshAt < now
 }
@@ -63,14 +68,14 @@ function parseAccessTokenExpiration(accessToken: string): number {
 }
 
 function base64Decode(s: string): string {
-  const binaryString = atob(s);
+  const binaryString = atob(s)
 
-  const bytes = new Uint8Array(binaryString.length);
+  const bytes = new Uint8Array(binaryString.length)
   for (let i = 0; i < binaryString.length; i++) {
-    bytes[i] = binaryString.charCodeAt(i);
+    bytes[i] = binaryString.charCodeAt(i)
   }
 
-  return new TextDecoder().decode(bytes);
+  return new TextDecoder().decode(bytes)
 }
 
 function useLocalStorage(
