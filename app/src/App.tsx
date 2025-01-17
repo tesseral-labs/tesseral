@@ -31,7 +31,7 @@ function useTransport(): Transport {
   const accessToken = useAccessToken()
 
   return createConnectTransport({
-    baseUrl: `http://auth.app.tesseral.example.com/api/internal/connect`,
+    baseUrl: `https://auth.app.tesseral.example.com/api/internal/connect`,
     fetch: (input, init) =>
       fetch(input, {
         ...init,
