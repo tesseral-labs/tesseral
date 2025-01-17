@@ -1,4 +1,4 @@
-import React, { FC, FormEvent, useState } from 'react'
+import React, { FC, FormEvent, MouseEvent, useState } from 'react'
 import { useUser } from '@/lib/auth'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -21,15 +21,7 @@ const UserSettingsPage: FC = () => {
   const handleEmailSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    try {
-      await updateUserMutation.mutateAsync({
-        user: {
-          email,
-        },
-      })
-    } catch (error) {
-      console.error(error)
-    }
+    // TODO: Kick off email validation and show a modal to verify the new email address
   }
 
   const handlePasswordSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -48,7 +40,26 @@ const UserSettingsPage: FC = () => {
   return (
     <div className="dark:text-foreground">
       <h1 className="text-2xl font-bold mb-4">User Settings</h1>
-      <Card className="p-4">
+
+      <Card className="p-4 columns-3">
+        <div>
+          <div className="text-sm font-semibold mb-2">User ID</div>
+          <div className="text-sm text-gray-500">{user?.id}</div>
+        </div>
+        <div>
+          <div className="text-sm font-semibold mb-2">Google User ID</div>
+          <div className="text-sm text-gray-500">
+            {user?.googleUserId || '—'}
+          </div>
+        </div>
+        <div>
+          <div className="text-sm font-semibold mb-2">Microsoft User ID</div>
+          <div className="text-sm text-gray-500">
+            {user?.microsoftUserId || '—'}
+          </div>
+        </div>
+      </Card>
+      <Card className="p-4 mt-4">
         <form onSubmit={handleEmailSubmit}>
           <label className="block w-full text-sm font-semibold mb-2">
             Email
@@ -66,7 +77,11 @@ const UserSettingsPage: FC = () => {
               <>
                 <Button
                   className="text-sm rounded border border-border focus:border-primary mb-2 mr-2"
-                  onClick={() => setEditingEmail(false)}
+                  onClick={(e: MouseEvent<HTMLButtonElement>) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    setEditingEmail(false)
+                  }}
                   variant="outline"
                 >
                   Cancel
@@ -81,7 +96,11 @@ const UserSettingsPage: FC = () => {
             ) : (
               <Button
                 className="text-sm rounded border border-border focus:border-primary mb-2"
-                onClick={() => setEditingEmail(true)}
+                onClick={(e: MouseEvent<HTMLButtonElement>) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  setEditingEmail(true)
+                }}
                 variant="outline"
               >
                 Change Email
@@ -108,7 +127,12 @@ const UserSettingsPage: FC = () => {
               <>
                 <Button
                   className="text-sm rounded border border-border focus:border-primary mb-2 mr-2"
-                  onClick={() => setEditingPassword(false)}
+                  onClick={(e: MouseEvent<HTMLButtonElement>) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+
+                    setEditingPassword(false)
+                  }}
                   variant="outline"
                 >
                   Cancel
@@ -123,7 +147,11 @@ const UserSettingsPage: FC = () => {
             ) : (
               <Button
                 className="text-sm rounded border border-border focus:border-primary mb-2"
-                onClick={() => setEditingPassword(true)}
+                onClick={(e: MouseEvent<HTMLButtonElement>) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  setEditingPassword(true)
+                }}
                 variant="outline"
               >
                 Change Password
