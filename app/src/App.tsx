@@ -107,6 +107,7 @@ function AppWithinQueryClient() {
               element={<ViewSCIMAPIKeyPage />}
             />
           </Route>
+
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
