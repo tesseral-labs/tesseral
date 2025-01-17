@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { Route, Routes } from 'react-router'
+import { Navigate, Route, Routes } from 'react-router'
 import { BrowserRouter } from 'react-router-dom'
 
 import { Transport } from '@connectrpc/connect'
@@ -11,9 +11,12 @@ import GoogleOAuthCallbackPage from '@/pages/GoogleOAuthCallbackPage'
 import LoginPage from '@/pages/LoginPage'
 import MicrosoftOAuthCallbackPage from '@/pages/MicrosoftOAuthCallbackPage'
 import NotFoundPage from '@/pages/NotFound'
-import SessionInfoPage from '@/pages/SessionInfoPage'
+import SessionInfoPage from '@/pages/dashboard/SessionInfoPage'
 
 import Page from '@/components/Page'
+import UserSettingsPage from './pages/dashboard/UserSettingsPage'
+import DashboardPage from './components/DashboardPage'
+import OrganizationSettingsPage from './pages/dashboard/OrganizationSettingsPage'
 
 const queryClient = new QueryClient()
 
@@ -33,17 +36,34 @@ const AppWithRoutes: FC = () => {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Page />}>
+              <Route index element={<Navigate to="login" replace />} />
               <Route
-                path="/google-oauth-callback"
+                path="google-oauth-callback"
                 element={<GoogleOAuthCallbackPage />}
               />
               <Route
-                path="/microsoft-oauth-callback"
+                path="microsoft-oauth-callback"
                 element={<MicrosoftOAuthCallbackPage />}
               />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/session-info" element={<SessionInfoPage />} />
+              <Route path="login" element={<LoginPage />} />
             </Route>
+
+            <Route
+              path="/organization"
+              element={
+                <DashboardPage>
+                  <OrganizationSettingsPage />
+                </DashboardPage>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <DashboardPage>
+                  <UserSettingsPage />
+                </DashboardPage>
+              }
+            />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </BrowserRouter>

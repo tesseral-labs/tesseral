@@ -45,7 +45,7 @@ const Page = () => {
             : 'light bg-muted',
         )}
       >
-        <div className="container flex justify-center">
+        <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 flex justify-center">
           <div className="mb-8">
             {/* TODO: Make this conditionally load an Organizations configured logo */}
             {isDarkMode && projectUiSettings.detectDarkModeEnabled ? (
