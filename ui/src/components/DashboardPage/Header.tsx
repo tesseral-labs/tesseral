@@ -43,20 +43,18 @@ const Header: FC = () => {
         <Link
           className={cn(
             'px-4',
-            location.pathname === '/dashboard/user-settings' ? 'font-bold' : '',
+            location.pathname === '/settings' ? 'font-bold' : '',
           )}
-          to="/dashboard/user-settings"
+          to="/settings"
         >
           User Settings
         </Link>
         <Link
           className={cn(
             'px-4',
-            location.pathname === '/dashboard/organization-settings'
-              ? 'font-bold'
-              : '',
+            location.pathname === '/organization' ? 'font-bold' : '',
           )}
-          to="/dashboard/organization-settings"
+          to="/organization"
         >
           Organization Settings
         </Link>

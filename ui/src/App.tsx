@@ -48,15 +48,22 @@ const AppWithRoutes: FC = () => {
               <Route path="login" element={<LoginPage />} />
             </Route>
 
-            <Route path="/dashboard/" element={<DashboardPage />}>
-              <Route index element={<Navigate to="user-settings" replace />} />
-              <Route
-                path="organization-settings"
-                element={<OrganizationSettingsPage />}
-              />
-              <Route path="session-info" element={<SessionInfoPage />} />
-              <Route path="user-settings" element={<UserSettingsPage />} />
-            </Route>
+            <Route
+              path="/organization"
+              element={
+                <DashboardPage>
+                  <OrganizationSettingsPage />
+                </DashboardPage>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <DashboardPage>
+                  <UserSettingsPage />
+                </DashboardPage>
+              }
+            />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </BrowserRouter>

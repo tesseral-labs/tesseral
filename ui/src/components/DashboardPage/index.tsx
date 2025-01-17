@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC, PropsWithChildren, useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { cn } from '@/lib/utils'
 
@@ -13,7 +13,7 @@ import {
 } from '@/lib/auth'
 import Header from './Header'
 
-const DashboardPage: FC = () => {
+const DashboardPage: FC<PropsWithChildren> = ({ children }) => {
   const isDarkMode = useDarkMode()
   const projectUiSettings = useProjectUiSettings()
   const session = useSession()
@@ -58,7 +58,7 @@ const DashboardPage: FC = () => {
             >
               <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <Header />
-                <Outlet />
+                {children}
               </div>
             </div>
           </UserContextProvider>

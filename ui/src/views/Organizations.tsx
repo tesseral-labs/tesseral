@@ -73,7 +73,7 @@ const Organizations = () => {
       setAccessToken(accessToken)
       setRefreshToken(refreshToken)
 
-      navigate('/dashboard/session-info')
+      navigate('/settings')
     } catch (e) {
       // TODO: Display error message to user
       console.error('Error exchanging session for tokens', e)
