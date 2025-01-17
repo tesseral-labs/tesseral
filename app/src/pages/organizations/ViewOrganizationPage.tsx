@@ -30,7 +30,6 @@ import {
 } from '@/components/ui/breadcrumb'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { PageCodeSubtitle, PageDescription, PageTitle } from '@/components/page'
-import * as path from 'node:path'
 
 export function ViewOrganizationPage() {
   const { organizationId } = useParams()
