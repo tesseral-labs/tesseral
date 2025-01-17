@@ -92,12 +92,16 @@ export const useSession = (): SessionAccessTokenClaims | undefined => {
   }
 
   if (accessToken) {
+    // Check if the access token is expired
+    if (isAccessTokenExpired(accessToken) && !refresh.isPending) {
+      navigate('/login')
+      return
+    }
+
     // parse the access token and return the user claims
     const claims = JSON.parse(
       base64Decode(accessToken.split('.')[1]),
     ) as SessionAccessTokenClaims
-
-    console.log('claims:', claims)
 
     return claims
   }
@@ -127,11 +131,21 @@ export const useUser = (): SessionUserClaims | undefined => {
   return useContext(userContext)
 }
 
-function parseAccessTokenExpiration(accessToken: string): number {
-  return JSON.parse(base64Decode(accessToken.split('.')[1])).exp
+const isAccessTokenExpired = (accessToken: string): boolean => {
+  return (
+    parseAccessTokenExpiration(accessToken) <
+    Math.floor(new Date().getTime() / 1000)
+  )
 }
 
-function shouldRefresh(accessToken: string): boolean {
+const parseAccessTokenExpiration = (accessToken: string): number => {
+  const claims = JSON.parse(
+    base64Decode(accessToken.split('.')[1]),
+  ) as SessionAccessTokenClaims
+  return claims.exp
+}
+
+const shouldRefresh = (accessToken: string): boolean => {
   const refreshAt =
     parseAccessTokenExpiration(accessToken) -
     ACCESS_TOKEN_REFRESH_THRESHOLD_SECONDS
