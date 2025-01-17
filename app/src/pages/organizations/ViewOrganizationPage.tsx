@@ -30,6 +30,7 @@ import {
 } from '@/components/ui/breadcrumb'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { PageCodeSubtitle, PageDescription, PageTitle } from '@/components/page'
+import * as path from 'node:path'
 
 export function ViewOrganizationPage() {
   const { organizationId } = useParams()
@@ -40,6 +41,7 @@ export function ViewOrganizationPage() {
 
   const tabs = [
     {
+      root: true,
       name: 'Details',
       url: `/organizations/${organizationId}`,
     },
@@ -56,6 +58,8 @@ export function ViewOrganizationPage() {
       url: `/organizations/${organizationId}/scim-api-keys`,
     },
   ]
+
+  const currentTab = tabs.find((tab) => tab.url === pathname)!
 
   return (
     // TODO remove padding when app shell in place
@@ -74,11 +78,27 @@ export function ViewOrganizationPage() {
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>
-              {getOrganizationResponse?.organization?.displayName}
-            </BreadcrumbPage>
-          </BreadcrumbItem>
+          {currentTab.root ? (
+            <BreadcrumbItem>
+              <BreadcrumbPage>
+                {getOrganizationResponse?.organization?.displayName}
+              </BreadcrumbPage>
+            </BreadcrumbItem>
+          ) : (
+            <>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link to={`/organizations/${organizationId}`}>
+                    {getOrganizationResponse?.organization?.displayName}
+                  </Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>{currentTab.name}</BreadcrumbPage>
+              </BreadcrumbItem>
+            </>
+          )}
         </BreadcrumbList>
       </Breadcrumb>
 
@@ -134,7 +154,7 @@ export function ViewOrganizationPage() {
               key={tab.name}
               to={tab.url}
               className={clsx(
-                pathname === tab.url
+                tab.url === currentTab.url
                   ? 'border-indigo-500 text-indigo-600'
                   : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
                 'whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium',

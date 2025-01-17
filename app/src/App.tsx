@@ -5,11 +5,9 @@ import { createConnectTransport } from '@connectrpc/connect-web'
 import { type Transport } from '@connectrpc/connect'
 import { TransportProvider } from '@connectrpc/connect-query'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import SessionInfoPage from './pages/SessionInfoPage'
 import NotFoundPage from './pages/NotFound'
 import { ListOrganizationsPage } from '@/pages/organizations/ListOrganizationsPage'
 import { useAccessToken } from '@/lib/use-access-token'
-import { Container } from '@/pages/Container'
 import { ViewOrganizationPage } from '@/pages/organizations/ViewOrganizationPage'
 import { ViewUserPage } from '@/pages/users/ViewUserPage'
 import { ListProjectAPIKeysPage } from '@/pages/project-api-keys/ListProjectAPIKeysPage'
@@ -57,6 +55,15 @@ function AppWithinQueryClient() {
       <BrowserRouter>
         <Routes>
           <Route path="" element={<PageShell />}>
+            <Route path="" element={<ViewProjectPage />} />
+
+            <Route
+              path="project-api-keys"
+              element={<ListProjectAPIKeysPage />}
+            />
+
+            <Route path="organizations" element={<ListOrganizationsPage />} />
+
             <Route
               path="organizations/:organizationId"
               element={<ViewOrganizationPage />}
@@ -72,17 +79,6 @@ function AppWithinQueryClient() {
                 element={<OrganizationSCIMAPIKeysTab />}
               />
             </Route>
-          </Route>
-
-          <Route path="" element={<Container />}>
-            <Route path="" element={<ViewProjectPage />} />
-
-            <Route
-              path="project-api-keys"
-              element={<ListProjectAPIKeysPage />}
-            />
-
-            <Route path="organizations" element={<ListOrganizationsPage />} />
 
             <Route
               path="organizations/:organizationId/edit"

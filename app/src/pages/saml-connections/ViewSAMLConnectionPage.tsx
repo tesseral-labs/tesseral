@@ -35,6 +35,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
+import { PageCodeSubtitle, PageDescription, PageTitle } from '@/components/page'
 
 export function ViewSAMLConnectionPage() {
   const { organizationId, samlConnectionId } = useParams()
@@ -45,8 +46,7 @@ export function ViewSAMLConnectionPage() {
     id: samlConnectionId,
   })
   return (
-    // TODO remove padding when app shell in place
-    <div className="pt-8">
+    <div>
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -83,14 +83,12 @@ export function ViewSAMLConnectionPage() {
         </BreadcrumbList>
       </Breadcrumb>
 
-      <h1 className="mt-4 font-semibold text-2xl">SAML Connection</h1>
-      <span className="mt-1 inline-block border rounded bg-gray-100 py-1 px-2 font-mono text-xs text-muted-foreground">
-        {samlConnectionId}
-      </span>
-      <div className="mt-4">
+      <PageTitle>SAML Connection</PageTitle>
+      <PageCodeSubtitle>{samlConnectionId}</PageCodeSubtitle>
+      <PageDescription>
         A SAML connection is a link between Tesseral and your customer's
         enterprise Identity Provider. Lorem ipsum dolor.
-      </div>
+      </PageDescription>
 
       <Card className="my-8">
         <CardHeader className="flex-row justify-between items-center">
