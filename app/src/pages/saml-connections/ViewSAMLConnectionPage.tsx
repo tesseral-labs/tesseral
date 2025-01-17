@@ -251,7 +251,7 @@ function DangerZoneCard() {
                 Delete SAML Connection
               </div>
               <p className="text-sm">
-                Delete this SAML Connection. This cannot be undone.
+                Delete this SAML connection. This cannot be undone.
               </p>
             </div>
 

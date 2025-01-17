@@ -23,6 +23,7 @@ import { ViewSAMLConnectionPage } from '@/pages/saml-connections/ViewSAMLConnect
 import { Toaster } from '@/components/ui/sonner'
 import { Edit } from 'lucide-react'
 import { EditSAMLConnectionPage } from '@/pages/saml-connections/EditSAMLConnectionPage'
+import { ViewSCIMAPIKeyPage } from '@/pages/scim-api-keys/ViewSCIMAPIKeyPage'
 
 const queryClient = new QueryClient()
 
@@ -94,6 +95,10 @@ function AppWithinQueryClient() {
             <Route
               path="organizations/:organizationId/users/:userId"
               element={<ViewUserPage />}
+            />
+            <Route
+              path="organizations/:organizationId/scim-api-keys/:scimApiKeyId"
+              element={<ViewSCIMAPIKeyPage />}
             />
           </Route>
           <Route path="*" element={<NotFoundPage />} />

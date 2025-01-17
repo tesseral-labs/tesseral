@@ -42,16 +42,16 @@ import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
 
 const schema = z.object({
+  primary: z.boolean(),
   idpEntityId: z.string().min(1, {
     message: 'IDP Entity ID must be non-empty.',
   }),
   idpRedirectUrl: z.string().url({
     message: 'IDP Redirect URL must be a valid URL.',
   }),
-  idpX509Certificate: z.string(),
-  // idpX509Certificate: z.string().startsWith('-----BEGIN CERTIFICATE-----', {
-  //   message: 'IDP Certificate must be a PEM-encoded X.509 certificate.',
-  // }),
+  idpX509Certificate: z.string().startsWith('-----BEGIN CERTIFICATE-----', {
+    message: 'IDP Certificate must be a PEM-encoded X.509 certificate.',
+  }),
 })
 
 export function EditSAMLConnectionPage() {
@@ -72,6 +72,7 @@ export function EditSAMLConnectionPage() {
   useEffect(() => {
     if (getSAMLConnectionResponse?.samlConnection) {
       form.reset({
+        primary: getSAMLConnectionResponse.samlConnection.primary,
         idpEntityId: getSAMLConnectionResponse.samlConnection.idpEntityId,
         idpRedirectUrl: getSAMLConnectionResponse.samlConnection.idpRedirectUrl,
         idpX509Certificate:
@@ -84,6 +85,7 @@ export function EditSAMLConnectionPage() {
     await updateSAMLConnectionMutation.mutateAsync({
       id: samlConnectionId,
       samlConnection: {
+        primary: values.primary,
         idpEntityId: values.idpEntityId,
         idpRedirectUrl: values.idpRedirectUrl,
         idpX509Certificate: values.idpX509Certificate,
@@ -151,7 +153,39 @@ export function EditSAMLConnectionPage() {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <Card>
             <CardHeader>
-              <CardTitle>Service Provider Configuration</CardTitle>
+              <CardTitle>SAML connection settings</CardTitle>
+              <CardDescription>
+                Configure basic settings on this SAML connection.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-8">
+              <FormField
+                control={form.control}
+                name="primary"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Primary</FormLabel>
+                    <FormControl>
+                      <Switch
+                        className="block"
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      A primary SAML connection gets used by default within its
+                      organization.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Service Provider settings</CardTitle>
               <CardDescription>
                 The configuration here is assigned automatically by Tesseral,
                 and needs to be inputted into your customer's Identity Provider
@@ -179,7 +213,7 @@ export function EditSAMLConnectionPage() {
           </Card>
           <Card>
             <CardHeader>
-              <CardTitle>Identity Provider Configuration</CardTitle>
+              <CardTitle>Identity Provider settings</CardTitle>
               <CardDescription>
                 The configuration here needs to be copied over from the
                 customer's Identity Provider ("IDP").
