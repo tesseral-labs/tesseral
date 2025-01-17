@@ -23,6 +23,7 @@ import { ViewSAMLConnectionPage } from '@/pages/saml-connections/ViewSAMLConnect
 import { Toaster } from '@/components/ui/sonner'
 import { Edit } from 'lucide-react'
 import { EditSAMLConnectionPage } from '@/pages/saml-connections/EditSAMLConnectionPage'
+import { PageShell } from '@/components/page'
 
 const queryClient = new QueryClient()
 
@@ -54,16 +55,7 @@ function AppWithinQueryClient() {
     <TransportProvider transport={transport}>
       <BrowserRouter>
         <Routes>
-          <Route path="" element={<Container />}>
-            <Route path="" element={<ViewProjectPage />} />
-
-            <Route
-              path="project-api-keys"
-              element={<ListProjectAPIKeysPage />}
-            />
-
-            <Route path="organizations" element={<ListOrganizationsPage />} />
-
+          <Route path="" element={<PageShell />}>
             <Route
               path="organizations/:organizationId"
               element={<ViewOrganizationPage />}
@@ -79,6 +71,18 @@ function AppWithinQueryClient() {
                 element={<OrganizationSCIMAPIKeysTab />}
               />
             </Route>
+          </Route>
+
+          <Route path="" element={<Container />}>
+            <Route path="" element={<ViewProjectPage />} />
+
+            <Route
+              path="project-api-keys"
+              element={<ListProjectAPIKeysPage />}
+            />
+
+            <Route path="organizations" element={<ListOrganizationsPage />} />
+
             <Route
               path="organizations/:organizationId/edit"
               element={<EditOrganizationPage />}
