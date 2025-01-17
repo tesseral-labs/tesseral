@@ -20,6 +20,7 @@ interface SessionOrganizationClaims {
   displayName: string
   id: string
   logInWithGoogleEnabled: boolean
+  logInWithMicrosoftEnabled: boolean
   logInWithPasswordEnabled: boolean
   overrideLogInMethods: boolean
   samlEnabled: boolean
@@ -32,6 +33,7 @@ interface SessionProjectClaims {
   displayName: string
   id: string
   logInWithGoogleEnabled: boolean
+  logInWithMicrosoftEnabled: boolean
   logInWithPasswordEnabled: boolean
   updateTime: string
 }
