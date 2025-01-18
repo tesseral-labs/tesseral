@@ -35,6 +35,13 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
+import {
+  DetailsGrid,
+  DetailsGridColumn,
+  DetailsGridEntry,
+  DetailsGridKey,
+  DetailsGridValue,
+} from '@/components/details-grid'
 import { PageCodeSubtitle, PageDescription, PageTitle } from '@/components/page'
 
 export function ViewSAMLConnectionPage() {
@@ -105,42 +112,42 @@ export function ViewSAMLConnectionPage() {
           </Button>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-3 gap-x-2 text-sm">
-            <div className="border-r border-gray-200 pr-8 flex flex-col gap-4">
-              <div>
-                <div className="font-semibold">
+          <DetailsGrid>
+            <DetailsGridColumn>
+              <DetailsGridEntry>
+                <DetailsGridKey>
                   Assertion Consumer Service (ACS) URL
-                </div>
-                <div className="truncate">
+                </DetailsGridKey>
+                <DetailsGridValue>
                   {getSAMLConnectionResponse?.samlConnection?.spAcsUrl}
-                </div>
-              </div>
+                </DetailsGridValue>
+              </DetailsGridEntry>
 
-              <div>
-                <div className="font-semibold">SP Entity ID</div>
-                <div className="truncate">
+              <DetailsGridEntry>
+                <DetailsGridKey>SP Entity ID</DetailsGridKey>
+                <DetailsGridValue>
                   {getSAMLConnectionResponse?.samlConnection?.spEntityId}
-                </div>
-              </div>
-            </div>
-            <div className="border-r border-gray-200 pr-8 pl-8 flex flex-col gap-4">
-              <div>
-                <div className="font-semibold">IDP Entity ID</div>
-                <div className="truncate">
+                </DetailsGridValue>
+              </DetailsGridEntry>
+            </DetailsGridColumn>
+            <DetailsGridColumn>
+              <DetailsGridEntry>
+                <DetailsGridKey>IDP Entity ID</DetailsGridKey>
+                <DetailsGridValue>
                   {getSAMLConnectionResponse?.samlConnection?.idpEntityId ||
                     '-'}
-                </div>
-              </div>
-              <div>
-                <div className="font-semibold">IDP Redirect URL</div>
-                <div className="truncate">
+                </DetailsGridValue>
+              </DetailsGridEntry>
+              <DetailsGridEntry>
+                <DetailsGridKey>IDP Redirect URL</DetailsGridKey>
+                <DetailsGridValue>
                   {getSAMLConnectionResponse?.samlConnection?.idpRedirectUrl ||
                     '-'}
-                </div>
-              </div>
-              <div>
-                <div className="font-semibold">IDP Certificate</div>
-                <div>
+                </DetailsGridValue>
+              </DetailsGridEntry>
+              <DetailsGridEntry>
+                <DetailsGridKey>IDP Certificate</DetailsGridKey>
+                <DetailsGridValue>
                   {getSAMLConnectionResponse?.samlConnection
                     ?.idpX509Certificate ? (
                     <a
@@ -153,44 +160,44 @@ export function ViewSAMLConnectionPage() {
                   ) : (
                     '-'
                   )}
-                </div>
-              </div>
-            </div>
-            <div className="border-gray-200 pl-8 flex flex-col gap-4">
-              <div>
-                <div className="font-semibold">Primary</div>
-                <div className="truncate">
+                </DetailsGridValue>
+              </DetailsGridEntry>
+            </DetailsGridColumn>
+            <DetailsGridColumn>
+              <DetailsGridEntry>
+                <DetailsGridKey>Primary</DetailsGridKey>
+                <DetailsGridValue>
                   {getSAMLConnectionResponse?.samlConnection?.primary
                     ? 'Yes'
                     : 'No'}
-                </div>
-              </div>
+                </DetailsGridValue>
+              </DetailsGridEntry>
 
-              <div>
-                <div className="font-semibold">Created</div>
-                <div className="truncate">
+              <DetailsGridEntry>
+                <DetailsGridKey>Created</DetailsGridKey>
+                <DetailsGridValue>
                   {getSAMLConnectionResponse?.samlConnection?.createTime &&
                     DateTime.fromJSDate(
                       timestampDate(
                         getSAMLConnectionResponse?.samlConnection?.createTime,
                       ),
                     ).toRelative()}
-                </div>
-              </div>
+                </DetailsGridValue>
+              </DetailsGridEntry>
 
-              <div>
-                <div className="font-semibold">Updated</div>
-                <div className="truncate">
+              <DetailsGridEntry>
+                <DetailsGridKey>Updated</DetailsGridKey>
+                <DetailsGridValue>
                   {getSAMLConnectionResponse?.samlConnection?.updateTime &&
                     DateTime.fromJSDate(
                       timestampDate(
                         getSAMLConnectionResponse?.samlConnection?.updateTime,
                       ),
                     ).toRelative()}
-                </div>
-              </div>
-            </div>
-          </div>
+                </DetailsGridValue>
+              </DetailsGridEntry>
+            </DetailsGridColumn>
+          </DetailsGrid>
         </CardContent>
       </Card>
 
