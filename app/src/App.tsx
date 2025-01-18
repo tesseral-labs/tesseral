@@ -23,6 +23,7 @@ import { Edit } from 'lucide-react'
 import { EditSAMLConnectionPage } from '@/pages/saml-connections/EditSAMLConnectionPage'
 import { PageShell } from '@/components/page'
 import { ViewSCIMAPIKeyPage } from '@/pages/scim-api-keys/ViewSCIMAPIKeyPage'
+import { ViewProjectAPIKeyPage } from '@/pages/project-api-keys/ViewProjectAPIKey'
 
 const queryClient = new QueryClient()
 
@@ -60,6 +61,11 @@ function AppWithinQueryClient() {
             <Route
               path="project-api-keys"
               element={<ListProjectAPIKeysPage />}
+            />
+
+            <Route
+              path="project-api-keys/:projectApiKeyId"
+              element={<ViewProjectAPIKeyPage />}
             />
 
             <Route path="organizations" element={<ListOrganizationsPage />} />
