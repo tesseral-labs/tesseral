@@ -55,6 +55,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { PageCodeSubtitle, PageDescription, PageTitle } from '@/components/page'
 
 export function ViewSCIMAPIKeyPage() {
   const { organizationId, scimApiKeyId } = useParams()
@@ -66,7 +67,7 @@ export function ViewSCIMAPIKeyPage() {
   })
   return (
     // TODO remove padding when app shell in place
-    <div className="pt-8">
+    <div>
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -105,16 +106,12 @@ export function ViewSCIMAPIKeyPage() {
         </BreadcrumbList>
       </Breadcrumb>
 
-      <h1 className="mt-4 font-semibold text-2xl">
-        {getScimApiKeyResponse?.scimApiKey?.displayName}
-      </h1>
-      <span className="mt-1 inline-block border rounded bg-gray-100 py-1 px-2 font-mono text-xs text-muted-foreground">
-        {scimApiKeyId}
-      </span>
-      <div className="mt-4">
+      <PageTitle>{getScimApiKeyResponse?.scimApiKey?.displayName}</PageTitle>
+      <PageCodeSubtitle>{scimApiKeyId}</PageCodeSubtitle>
+      <PageDescription>
         A SCIM API key lets your customer do enterprise directory syncing. Lorem
         ipsum dolor.
-      </div>
+      </PageDescription>
 
       <Card className="my-8">
         <CardHeader className="flex-row justify-between items-center">
