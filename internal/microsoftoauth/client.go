@@ -11,6 +11,13 @@ import (
 	"strings"
 )
 
+// https://learn.microsoft.com/en-us/entra/identity-platform/id-token-claims-reference:
+//
+// "For sign-ins to the personal Microsoft account tenant (services like Xbox,
+// Teams for Life, or Outlook), the value is
+// 9188040d-6c67-4c5b-b112-36a304b66dad."
+const microsoftPersonalTenantID = "9188040d-6c67-4c5b-b112-36a304b66dad"
+
 type Client struct {
 	HTTPClient *http.Client
 }
@@ -122,6 +129,12 @@ func parseIDToken(idToken string) (*RedeemCodeResponse, error) {
 	}
 	if err := json.Unmarshal(claimsJSON, &claims); err != nil {
 		return nil, fmt.Errorf("unmarshal claims: %w", err)
+	}
+
+	// For safety-by-default for callers, treat the personal tenant as a
+	// non-tenant.
+	if claims.TID == microsoftPersonalTenantID {
+		claims.TID = ""
 	}
 
 	return &RedeemCodeResponse{

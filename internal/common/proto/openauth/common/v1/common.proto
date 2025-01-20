@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package openauth.shared.v1;
+package openauth.common.v1;
 
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";

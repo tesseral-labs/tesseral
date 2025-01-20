@@ -12,8 +12,9 @@ import debounce from 'lodash.debounce'
 import { setIntermediateSessionToken } from '@/auth'
 import { Button } from './ui/button'
 import {
+  createIntermediateSession,
+  issueEmailVerificationChallenge,
   listSAMLOrganizations,
-  signInWithEmail,
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
 import { LoginViews } from '@/lib/views'
 import { Organization } from '@/gen/openauth/intermediate/v1/intermediate_pb'
@@ -22,7 +23,8 @@ import TextDivider from './ui/TextDivider'
 const EmailForm = () => {
   const navigate = useNavigate()
   const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/i
-  const signInWithEmailMutation = useMutation(signInWithEmail)
+  const createIntermediateSessionMutation = useMutation(createIntermediateSession)
+  const issueEmailVerificationChallengeMutation = useMutation(issueEmailVerificationChallenge)
   const listSAMLOrganizationsMutation = useMutation(listSAMLOrganizations)
 
   const [email, setEmail] = useState<string>('')
@@ -54,19 +56,21 @@ const EmailForm = () => {
     e.preventDefault()
 
     try {
-      const { intermediateSessionToken, challengeId } =
-        await signInWithEmailMutation.mutateAsync({
-          email,
-        })
+      // this sets a cookie that subsequent requests use
+      const { intermediateSessionSecretToken } = await createIntermediateSessionMutation.mutateAsync({})
 
       // set the intermediate sessionToken
-      setIntermediateSessionToken(intermediateSessionToken)
+      setIntermediateSessionToken(intermediateSessionSecretToken)
+
+      const { emailVerificationChallengeId } = await issueEmailVerificationChallengeMutation.mutateAsync({
+        email,
+      })
 
       // redirect to challenge page
       navigate(`/login`, {
         state: {
           view: LoginViews.EmailVerification,
-          challengeId,
+          emailVerificationChallengeId,
         },
       })
     } catch (error) {

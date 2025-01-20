@@ -12,28 +12,34 @@ import { exchangeIntermediateSessionForNewOrganizationSession } from '@/gen/open
 import { useMutation } from '@connectrpc/connect-query'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router'
+import {
+  getAccessToken
+} from '@/gen/openauth/frontend/v1/frontend-FrontendService_connectquery'
 
 const CreateOrganization = () => {
   const navigate = useNavigate()
 
   const [displayName, setDisplayName] = useState<string>('')
 
-  const echangeIntermediateSessionMutation = useMutation(
+  const exchangeIntermediateSessionForNewOrganizationMutation = useMutation(
     exchangeIntermediateSessionForNewOrganizationSession,
   )
+
+  const getAccessTokenMutation = useMutation(getAccessToken)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     try {
-      const { accessToken, refreshToken } =
-        await echangeIntermediateSessionMutation.mutateAsync({
+      const { refreshToken } =
+        await exchangeIntermediateSessionForNewOrganizationMutation.mutateAsync({
           displayName,
         })
 
-      setAccessToken(accessToken)
-      setRefreshToken(refreshToken)
+      const { accessToken } = await getAccessTokenMutation.mutateAsync({})
 
+      setRefreshToken(refreshToken)
+      setAccessToken(accessToken)
       navigate('/settings')
     } catch (error) {
       console.error(error)

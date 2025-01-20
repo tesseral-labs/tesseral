@@ -6,31 +6,6 @@ info:
     title: IntermediateService API
     version: 0.0.1
 paths:
-    /intermediate/v1/email-signin:
-        post:
-            tags:
-                - IntermediateService
-            description: Creates a new intermediate session or session and cookies the requester.
-            operationId: IntermediateService_SignInWithEmail
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/SignInWithEmailRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/SignInWithEmailResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
     /intermediate/v1/exchange-intermediate-session-for-new-organization-session:
         post:
             tags:
@@ -103,11 +78,34 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /intermediate/v1/intermediate-session:
+        post:
+            tags:
+                - IntermediateService
+            operationId: IntermediateService_CreateIntermediateSession
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateIntermediateSessionRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateIntermediateSessionResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /intermediate/v1/issue-email-verification-challenge:
         post:
             tags:
                 - IntermediateService
-            description: Issues a new email verification challenge.
             operationId: IntermediateService_IssueEmailVerificationChallenge
             requestBody:
                 content:
@@ -156,13 +154,7 @@ paths:
         get:
             tags:
                 - IntermediateService
-            description: Gets a list of organizations.
             operationId: IntermediateService_ListOrganizations
-            parameters:
-                - name: pageToken
-                  in: query
-                  schema:
-                    type: string
             responses:
                 "200":
                     description: OK
@@ -228,7 +220,6 @@ paths:
         post:
             tags:
                 - IntermediateService
-            description: Gets a list of SAML organizations for a given email address.
             operationId: IntermediateService_ListSAMLOrganizations
             requestBody:
                 content:
@@ -253,7 +244,6 @@ paths:
         post:
             tags:
                 - IntermediateService
-            description: Submits a challenge for verification of email address.
             operationId: IntermediateService_VerifyEmailChallenge
             requestBody:
                 content:
@@ -278,7 +268,6 @@ paths:
         post:
             tags:
                 - IntermediateService
-            description: Submits a password for verification of session.
             operationId: IntermediateService_VerifyPassword
             requestBody:
                 content:
@@ -319,36 +308,38 @@ paths:
                                 $ref: '#/components/schemas/Status'
 components:
     schemas:
+        CreateIntermediateSessionRequest:
+            type: object
+            properties: {}
+        CreateIntermediateSessionResponse:
+            type: object
+            properties:
+                intermediateSessionSecretToken:
+                    type: string
         ExchangeIntermediateSessionForNewOrganizationSessionRequest:
             type: object
             properties:
                 displayName:
                     type: string
-                    description: The display name of the organization to create.
         ExchangeIntermediateSessionForNewOrganizationSessionResponse:
             type: object
             properties:
-                accessToken:
-                    type: string
-                    description: The session access token.
                 refreshToken:
                     type: string
-                    description: The refresh token for the new session.
+                accessToken:
+                    type: string
         ExchangeIntermediateSessionForSessionRequest:
             type: object
             properties:
                 organizationId:
                     type: string
-                    description: The organization ID for the full session.
         ExchangeIntermediateSessionForSessionResponse:
             type: object
             properties:
-                accessToken:
-                    type: string
-                    description: The session access token.
                 refreshToken:
                     type: string
-                    description: The refresh token for the new session.
+                accessToken:
+                    type: string
         GetGoogleOAuthRedirectURLRequest:
             type: object
             properties:
@@ -358,8 +349,6 @@ components:
             type: object
             properties:
                 url:
-                    type: string
-                intermediateSessionToken:
                     type: string
         GetMicrosoftOAuthRedirectURLRequest:
             type: object
@@ -371,8 +360,6 @@ components:
             properties:
                 url:
                     type: string
-                intermediateSessionToken:
-                    type: string
         GoogleProtobufAny:
             type: object
             properties:
@@ -381,15 +368,37 @@ components:
                     description: The type of the serialized message.
             additionalProperties: true
             description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+        IntermediateSession:
+            type: object
+            properties:
+                id:
+                    type: string
+                projectId:
+                    type: string
+                email:
+                    type: string
+                emailVerified:
+                    type: boolean
+                googleUserId:
+                    type: string
+                googleHostedDomain:
+                    type: string
+                microsoftUserId:
+                    type: string
+                microsoftTenantId:
+                    type: string
+                passwordVerified:
+                    type: boolean
         IssueEmailVerificationChallengeRequest:
             type: object
-            properties: {}
+            properties:
+                email:
+                    type: string
         IssueEmailVerificationChallengeResponse:
             type: object
             properties:
                 emailVerificationChallengeId:
                     type: string
-                    description: The ID of the email verification challenge.
         ListOrganizationsResponse:
             type: object
             properties:
@@ -397,8 +406,6 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/Organization'
-                nextPageToken:
-                    type: string
         ListSAMLOrganizationsRequest:
             type: object
             properties:
@@ -452,21 +459,6 @@ components:
         RedeemMicrosoftOAuthCodeResponse:
             type: object
             properties: {}
-        SignInWithEmailRequest:
-            type: object
-            properties:
-                email:
-                    type: string
-                    description: The email address to sign in with.
-        SignInWithEmailResponse:
-            type: object
-            properties:
-                intermediateSessionToken:
-                    type: string
-                    description: The access token for the new intermediate session.
-                challengeId:
-                    type: string
-                    description: The ID of the email verification challenge, if required.
         Status:
             type: object
             properties:
@@ -486,12 +478,10 @@ components:
         VerifyEmailChallengeRequest:
             type: object
             properties:
-                code:
-                    type: string
-                    description: The challenge to verify.
                 emailVerificationChallengeId:
                     type: string
-                    description: The ID of the email verification challenge.
+                code:
+                    type: string
         VerifyEmailChallengeResponse:
             type: object
             properties: {}
@@ -500,30 +490,15 @@ components:
             properties:
                 organizationId:
                     type: string
-                    description: The organization ID to verify the password for.
                 password:
                     type: string
-                    description: The password to verify.
         VerifyPasswordResponse:
             type: object
             properties: {}
         WhoamiResponse:
             type: object
             properties:
-                email:
-                    type: string
-                    description: The email associated with the intermediate session.
-                googleUserId:
-                    type: string
-                    description: The Google User ID associated with the intermediate session.
-                isEmailVerified:
-                    type: boolean
-                    description: A boolean representing whether the user has verified their email address.
-                microsoftUserId:
-                    type: string
-                    description: The Microsoft User ID associated with the intermediate session.
-                organizationId:
-                    type: string
-                    description: The organization ID associated with the intermediate session.
+                intermediateSession:
+                    $ref: '#/components/schemas/IntermediateSession'
 tags:
     - name: IntermediateService

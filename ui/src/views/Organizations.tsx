@@ -23,37 +23,19 @@ import { LoginViews } from '@/lib/views'
 const Organizations = () => {
   const navigate = useNavigate()
 
-  const [organizations, setOrganizations] = React.useState<Organization[]>([])
-  const [pageToken, setPageToken] = React.useState('')
-
   const { data: whoamiRes } = useQuery(whoami)
-  const listOrganizationsMutation = useMutation(listOrganizations)
+  const {  data: listOrganizationsResponse } = useQuery(listOrganizations)
   const exchangeIntermediateSessionForSessionMutation = useMutation(
     exchangeIntermediateSessionForSession,
   )
-
-  const fetchOrganizations = async () => {
-    const { nextPageToken, organizations: organizationsRes } =
-      await listOrganizationsMutation.mutateAsync({
-        pageToken,
-      })
-
-    setOrganizations([...organizations, ...organizationsRes])
-
-    if (nextPageToken) {
-      setPageToken(nextPageToken)
-    } else {
-      setPageToken('')
-    }
-  }
 
   const handleOrganizationClick = async (organization: Organization) => {
     try {
       // Check if the user is logging in with an email address and the organization supports passwords
       if (
-        !whoamiRes?.googleUserId &&
-        !whoamiRes?.microsoftUserId &&
-        whoamiRes?.email &&
+        !whoamiRes?.intermediateSession?.googleUserId &&
+        !whoamiRes?.intermediateSession?.microsoftUserId &&
+        whoamiRes?.intermediateSession?.email &&
         organization.logInWithPasswordEnabled
       ) {
         navigate(`/login`, {
@@ -80,10 +62,6 @@ const Organizations = () => {
     }
   }
 
-  useEffect(() => {
-    fetchOrganizations()
-  }, [])
-
   return (
     <>
       <Title title="Choose an Organization" />
@@ -96,9 +74,9 @@ const Organizations = () => {
         </CardHeader>
         <CardContent className="flex flex-col items-center justify-center w-full">
           <ul className="w-full p-0 border border-b-0 rounded-md">
-            {organizations.map((organization, idx) => (
+            {listOrganizationsResponse?.organizations?.map((organization, idx) => (
               <li
-                className={`py-2 px-4 border-b ${idx === organizations.length ? 'rounded-b-md' : ''} hover:bg-gray-50 hover:text-dark cursor-pointer font-semibold`}
+                className={`py-2 px-4 border-b ${idx === listOrganizationsResponse?.organizations?.length ? 'rounded-b-md' : ''} hover:bg-gray-50 hover:text-dark cursor-pointer font-semibold`}
                 key={organization.id}
                 onClick={() => handleOrganizationClick(organization)}
               >
@@ -106,16 +84,6 @@ const Organizations = () => {
               </li>
             ))}
           </ul>
-
-          {pageToken && pageToken.length > 0 && (
-            <Button
-              className="mt-4"
-              onClick={fetchOrganizations}
-              variant="outline"
-            >
-              Load More
-            </Button>
-          )}
         </CardContent>
         <CardFooter>
           <p className="text-sm text-center w-full">

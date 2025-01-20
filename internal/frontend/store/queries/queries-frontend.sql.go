@@ -173,7 +173,7 @@ func (q *Queries) GetCurrentSessionKeyByProjectID(ctx context.Context, projectID
 
 const getOrganizationByID = `-- name: GetOrganizationByID :one
 SELECT
-    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods, saml_enabled, scim_enabled, create_time, update_time
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_methods, saml_enabled, scim_enabled, create_time, update_time
 FROM
     organizations
 WHERE
@@ -190,8 +190,6 @@ func (q *Queries) GetOrganizationByID(ctx context.Context, id uuid.UUID) (Organi
 		&i.OverrideLogInWithPasswordEnabled,
 		&i.OverrideLogInWithGoogleEnabled,
 		&i.OverrideLogInWithMicrosoftEnabled,
-		&i.GoogleHostedDomain,
-		&i.MicrosoftTenantID,
 		&i.OverrideLogInMethods,
 		&i.SamlEnabled,
 		&i.ScimEnabled,
@@ -645,23 +643,19 @@ UPDATE
 SET
     update_time = now(),
     display_name = $2,
-    google_hosted_domain = $3,
-    microsoft_tenant_id = $4,
-    override_log_in_methods = $5,
-    override_log_in_with_password_enabled = $6,
-    override_log_in_with_google_enabled = $7,
-    override_log_in_with_microsoft_enabled = $8
+    override_log_in_methods = $3,
+    override_log_in_with_password_enabled = $4,
+    override_log_in_with_google_enabled = $5,
+    override_log_in_with_microsoft_enabled = $6
 WHERE
     id = $1
 RETURNING
-    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods, saml_enabled, scim_enabled, create_time, update_time
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_methods, saml_enabled, scim_enabled, create_time, update_time
 `
 
 type UpdateOrganizationParams struct {
 	ID                                uuid.UUID
 	DisplayName                       string
-	GoogleHostedDomain                *string
-	MicrosoftTenantID                 *string
 	OverrideLogInMethods              bool
 	OverrideLogInWithPasswordEnabled  *bool
 	OverrideLogInWithGoogleEnabled    *bool
@@ -672,8 +666,6 @@ func (q *Queries) UpdateOrganization(ctx context.Context, arg UpdateOrganization
 	row := q.db.QueryRow(ctx, updateOrganization,
 		arg.ID,
 		arg.DisplayName,
-		arg.GoogleHostedDomain,
-		arg.MicrosoftTenantID,
 		arg.OverrideLogInMethods,
 		arg.OverrideLogInWithPasswordEnabled,
 		arg.OverrideLogInWithGoogleEnabled,
@@ -687,8 +679,6 @@ func (q *Queries) UpdateOrganization(ctx context.Context, arg UpdateOrganization
 		&i.OverrideLogInWithPasswordEnabled,
 		&i.OverrideLogInWithGoogleEnabled,
 		&i.OverrideLogInWithMicrosoftEnabled,
-		&i.GoogleHostedDomain,
-		&i.MicrosoftTenantID,
 		&i.OverrideLogInMethods,
 		&i.SamlEnabled,
 		&i.ScimEnabled,

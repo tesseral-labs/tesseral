@@ -9,7 +9,7 @@ import (
 )
 
 func (s *Service) IssueEmailVerificationChallenge(ctx context.Context, req *connect.Request[intermediatev1.IssueEmailVerificationChallengeRequest]) (*connect.Response[intermediatev1.IssueEmailVerificationChallengeResponse], error) {
-	res, err := s.Store.IssueEmailVerificationChallenge(ctx)
+	res, err := s.Store.IssueEmailVerificationChallenge(ctx, req.Msg)
 	if err != nil {
 		return nil, fmt.Errorf("store: %w", err)
 	}
@@ -18,7 +18,7 @@ func (s *Service) IssueEmailVerificationChallenge(ctx context.Context, req *conn
 }
 
 func (s *Service) VerifyEmailChallenge(ctx context.Context, req *connect.Request[intermediatev1.VerifyEmailChallengeRequest]) (*connect.Response[intermediatev1.VerifyEmailChallengeResponse], error) {
-	res, err := s.Store.CompleteEmailVerificationChallenge(ctx, req.Msg)
+	res, err := s.Store.VerifyEmailChallenge(ctx, req.Msg)
 	if err != nil {
 		return nil, fmt.Errorf("store: %w", err)
 	}

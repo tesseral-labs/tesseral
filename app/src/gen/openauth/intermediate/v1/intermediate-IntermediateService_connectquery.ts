@@ -5,9 +5,29 @@
 import { IntermediateService } from "./intermediate_pb";
 
 /**
+ * @generated from rpc openauth.intermediate.v1.IntermediateService.ListSAMLOrganizations
+ */
+export const listSAMLOrganizations = IntermediateService.method.listSAMLOrganizations;
+
+/**
+ * @generated from rpc openauth.intermediate.v1.IntermediateService.GetProjectUISettings
+ */
+export const getProjectUISettings = IntermediateService.method.getProjectUISettings;
+
+/**
+ * @generated from rpc openauth.intermediate.v1.IntermediateService.CreateIntermediateSession
+ */
+export const createIntermediateSession = IntermediateService.method.createIntermediateSession;
+
+/**
  * @generated from rpc openauth.intermediate.v1.IntermediateService.Whoami
  */
 export const whoami = IntermediateService.method.whoami;
+
+/**
+ * @generated from rpc openauth.intermediate.v1.IntermediateService.ListOrganizations
+ */
+export const listOrganizations = IntermediateService.method.listOrganizations;
 
 /**
  * @generated from rpc openauth.intermediate.v1.IntermediateService.ExchangeIntermediateSessionForSession
@@ -40,48 +60,16 @@ export const getMicrosoftOAuthRedirectURL = IntermediateService.method.getMicros
 export const redeemMicrosoftOAuthCode = IntermediateService.method.redeemMicrosoftOAuthCode;
 
 /**
- * Issues a new email verification challenge.
- *
  * @generated from rpc openauth.intermediate.v1.IntermediateService.IssueEmailVerificationChallenge
  */
 export const issueEmailVerificationChallenge = IntermediateService.method.issueEmailVerificationChallenge;
 
 /**
- * Gets a list of organizations.
- *
- * @generated from rpc openauth.intermediate.v1.IntermediateService.ListOrganizations
- */
-export const listOrganizations = IntermediateService.method.listOrganizations;
-
-/**
- * Gets a list of SAML organizations for a given email address.
- *
- * @generated from rpc openauth.intermediate.v1.IntermediateService.ListSAMLOrganizations
- */
-export const listSAMLOrganizations = IntermediateService.method.listSAMLOrganizations;
-
-/**
- * Creates a new intermediate session or session and cookies the requester.
- *
- * @generated from rpc openauth.intermediate.v1.IntermediateService.SignInWithEmail
- */
-export const signInWithEmail = IntermediateService.method.signInWithEmail;
-
-/**
- * Submits a challenge for verification of email address.
- *
  * @generated from rpc openauth.intermediate.v1.IntermediateService.VerifyEmailChallenge
  */
 export const verifyEmailChallenge = IntermediateService.method.verifyEmailChallenge;
 
 /**
- * Submits a password for verification of session.
- *
  * @generated from rpc openauth.intermediate.v1.IntermediateService.VerifyPassword
  */
 export const verifyPassword = IntermediateService.method.verifyPassword;
-
-/**
- * @generated from rpc openauth.intermediate.v1.IntermediateService.GetProjectUISettings
- */
-export const getProjectUISettings = IntermediateService.method.getProjectUISettings;

@@ -16,44 +16,37 @@ const completeEmailVerificationChallenge = `-- name: CompleteEmailVerificationCh
 UPDATE
     email_verification_challenges
 SET
-    complete_time = $1
+    complete_time = now(),
+    challenge_sha256 = NULL
 WHERE
-    id = $2
+    id = $1
 RETURNING
-    id, project_id, challenge_sha256, complete_time, create_time, expire_time, intermediate_session_id, revoked
+    id, challenge_sha256, complete_time, create_time, expire_time, intermediate_session_id
 `
 
-type CompleteEmailVerificationChallengeParams struct {
-	CompleteTime *time.Time
-	ID           uuid.UUID
-}
-
-func (q *Queries) CompleteEmailVerificationChallenge(ctx context.Context, arg CompleteEmailVerificationChallengeParams) (EmailVerificationChallenge, error) {
-	row := q.db.QueryRow(ctx, completeEmailVerificationChallenge, arg.CompleteTime, arg.ID)
+func (q *Queries) CompleteEmailVerificationChallenge(ctx context.Context, id uuid.UUID) (EmailVerificationChallenge, error) {
+	row := q.db.QueryRow(ctx, completeEmailVerificationChallenge, id)
 	var i EmailVerificationChallenge
 	err := row.Scan(
 		&i.ID,
-		&i.ProjectID,
 		&i.ChallengeSha256,
 		&i.CompleteTime,
 		&i.CreateTime,
 		&i.ExpireTime,
 		&i.IntermediateSessionID,
-		&i.Revoked,
 	)
 	return i, err
 }
 
 const createEmailVerificationChallenge = `-- name: CreateEmailVerificationChallenge :one
-INSERT INTO email_verification_challenges (id, project_id, intermediate_session_id, challenge_sha256, expire_time)
-    VALUES ($1, $2, $3, $4, $5)
+INSERT INTO email_verification_challenges (id, intermediate_session_id, challenge_sha256, expire_time)
+    VALUES ($1, $2, $3, $4)
 RETURNING
-    id, project_id, challenge_sha256, complete_time, create_time, expire_time, intermediate_session_id, revoked
+    id, challenge_sha256, complete_time, create_time, expire_time, intermediate_session_id
 `
 
 type CreateEmailVerificationChallengeParams struct {
 	ID                    uuid.UUID
-	ProjectID             uuid.UUID
 	IntermediateSessionID uuid.UUID
 	ChallengeSha256       []byte
 	ExpireTime            *time.Time
@@ -62,7 +55,6 @@ type CreateEmailVerificationChallengeParams struct {
 func (q *Queries) CreateEmailVerificationChallenge(ctx context.Context, arg CreateEmailVerificationChallengeParams) (EmailVerificationChallenge, error) {
 	row := q.db.QueryRow(ctx, createEmailVerificationChallenge,
 		arg.ID,
-		arg.ProjectID,
 		arg.IntermediateSessionID,
 		arg.ChallengeSha256,
 		arg.ExpireTime,
@@ -70,32 +62,30 @@ func (q *Queries) CreateEmailVerificationChallenge(ctx context.Context, arg Crea
 	var i EmailVerificationChallenge
 	err := row.Scan(
 		&i.ID,
-		&i.ProjectID,
 		&i.ChallengeSha256,
 		&i.CompleteTime,
 		&i.CreateTime,
 		&i.ExpireTime,
 		&i.IntermediateSessionID,
-		&i.Revoked,
 	)
 	return i, err
 }
 
 const createIntermediateSession = `-- name: CreateIntermediateSession :one
-INSERT INTO intermediate_sessions (id, project_id, expire_time, email, google_user_id, microsoft_user_id, token_sha256)
+INSERT INTO intermediate_sessions (id, project_id, expire_time, email, google_user_id, microsoft_user_id, secret_token_sha256)
     VALUES ($1, $2, $3, $4, $5, $6, $7)
 RETURNING
-    id, project_id, create_time, expire_time, token_sha256, revoked, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256
 `
 
 type CreateIntermediateSessionParams struct {
-	ID              uuid.UUID
-	ProjectID       uuid.UUID
-	ExpireTime      *time.Time
-	Email           *string
-	GoogleUserID    *string
-	MicrosoftUserID *string
-	TokenSha256     []byte
+	ID                uuid.UUID
+	ProjectID         uuid.UUID
+	ExpireTime        *time.Time
+	Email             *string
+	GoogleUserID      *string
+	MicrosoftUserID   *string
+	SecretTokenSha256 []byte
 }
 
 func (q *Queries) CreateIntermediateSession(ctx context.Context, arg CreateIntermediateSessionParams) (IntermediateSession, error) {
@@ -106,7 +96,7 @@ func (q *Queries) CreateIntermediateSession(ctx context.Context, arg CreateInter
 		arg.Email,
 		arg.GoogleUserID,
 		arg.MicrosoftUserID,
-		arg.TokenSha256,
+		arg.SecretTokenSha256,
 	)
 	var i IntermediateSession
 	err := row.Scan(
@@ -114,8 +104,6 @@ func (q *Queries) CreateIntermediateSession(ctx context.Context, arg CreateInter
 		&i.ProjectID,
 		&i.CreateTime,
 		&i.ExpireTime,
-		&i.TokenSha256,
-		&i.Revoked,
 		&i.Email,
 		&i.GoogleOauthStateSha256,
 		&i.MicrosoftOauthStateSha256,
@@ -125,23 +113,23 @@ func (q *Queries) CreateIntermediateSession(ctx context.Context, arg CreateInter
 		&i.MicrosoftUserID,
 		&i.PasswordVerified,
 		&i.OrganizationID,
+		&i.UpdateTime,
+		&i.SecretTokenSha256,
 	)
 	return i, err
 }
 
 const createOrganization = `-- name: CreateOrganization :one
-INSERT INTO organizations (id, project_id, display_name, google_hosted_domain, microsoft_tenant_id, override_log_in_methods, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_with_password_enabled, saml_enabled, scim_enabled)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+INSERT INTO organizations (id, project_id, display_name, override_log_in_methods, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_with_password_enabled, saml_enabled, scim_enabled)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 RETURNING
-    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods, saml_enabled, scim_enabled, create_time, update_time
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_methods, saml_enabled, scim_enabled, create_time, update_time
 `
 
 type CreateOrganizationParams struct {
 	ID                                uuid.UUID
 	ProjectID                         uuid.UUID
 	DisplayName                       string
-	GoogleHostedDomain                *string
-	MicrosoftTenantID                 *string
 	OverrideLogInMethods              bool
 	OverrideLogInWithGoogleEnabled    *bool
 	OverrideLogInWithMicrosoftEnabled *bool
@@ -155,8 +143,6 @@ func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganization
 		arg.ID,
 		arg.ProjectID,
 		arg.DisplayName,
-		arg.GoogleHostedDomain,
-		arg.MicrosoftTenantID,
 		arg.OverrideLogInMethods,
 		arg.OverrideLogInWithGoogleEnabled,
 		arg.OverrideLogInWithMicrosoftEnabled,
@@ -172,14 +158,52 @@ func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganization
 		&i.OverrideLogInWithPasswordEnabled,
 		&i.OverrideLogInWithGoogleEnabled,
 		&i.OverrideLogInWithMicrosoftEnabled,
-		&i.GoogleHostedDomain,
-		&i.MicrosoftTenantID,
 		&i.OverrideLogInMethods,
 		&i.SamlEnabled,
 		&i.ScimEnabled,
 		&i.CreateTime,
 		&i.UpdateTime,
 	)
+	return i, err
+}
+
+const createOrganizationGoogleHostedDomain = `-- name: CreateOrganizationGoogleHostedDomain :one
+INSERT INTO organization_google_hosted_domains (id, organization_id, google_hosted_domain)
+    VALUES ($1, $2, $3)
+RETURNING
+    id, organization_id, google_hosted_domain
+`
+
+type CreateOrganizationGoogleHostedDomainParams struct {
+	ID                 uuid.UUID
+	OrganizationID     uuid.UUID
+	GoogleHostedDomain string
+}
+
+func (q *Queries) CreateOrganizationGoogleHostedDomain(ctx context.Context, arg CreateOrganizationGoogleHostedDomainParams) (OrganizationGoogleHostedDomain, error) {
+	row := q.db.QueryRow(ctx, createOrganizationGoogleHostedDomain, arg.ID, arg.OrganizationID, arg.GoogleHostedDomain)
+	var i OrganizationGoogleHostedDomain
+	err := row.Scan(&i.ID, &i.OrganizationID, &i.GoogleHostedDomain)
+	return i, err
+}
+
+const createOrganizationMicrosoftTenantID = `-- name: CreateOrganizationMicrosoftTenantID :one
+INSERT INTO organization_microsoft_tenant_ids (id, organization_id, microsoft_tenant_id)
+    VALUES ($1, $2, $3)
+RETURNING
+    id, organization_id, microsoft_tenant_id
+`
+
+type CreateOrganizationMicrosoftTenantIDParams struct {
+	ID                uuid.UUID
+	OrganizationID    uuid.UUID
+	MicrosoftTenantID string
+}
+
+func (q *Queries) CreateOrganizationMicrosoftTenantID(ctx context.Context, arg CreateOrganizationMicrosoftTenantIDParams) (OrganizationMicrosoftTenantID, error) {
+	row := q.db.QueryRow(ctx, createOrganizationMicrosoftTenantID, arg.ID, arg.OrganizationID, arg.MicrosoftTenantID)
+	var i OrganizationMicrosoftTenantID
+	err := row.Scan(&i.ID, &i.OrganizationID, &i.MicrosoftTenantID)
 	return i, err
 }
 
@@ -260,20 +284,18 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 }
 
 const createVerifiedEmail = `-- name: CreateVerifiedEmail :one
-INSERT INTO verified_emails (id, project_id, email, google_user_id, google_hosted_domain, microsoft_user_id, microsoft_tenant_id)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
+INSERT INTO verified_emails (id, project_id, email, google_user_id, microsoft_user_id)
+    VALUES ($1, $2, $3, $4, $5)
 RETURNING
-    id, project_id, create_time, email, google_user_id, microsoft_user_id, google_hosted_domain, microsoft_tenant_id
+    id, project_id, create_time, email, google_user_id, microsoft_user_id
 `
 
 type CreateVerifiedEmailParams struct {
-	ID                 uuid.UUID
-	ProjectID          uuid.UUID
-	Email              string
-	GoogleUserID       *string
-	GoogleHostedDomain *string
-	MicrosoftUserID    *string
-	MicrosoftTenantID  *string
+	ID              uuid.UUID
+	ProjectID       uuid.UUID
+	Email           string
+	GoogleUserID    *string
+	MicrosoftUserID *string
 }
 
 func (q *Queries) CreateVerifiedEmail(ctx context.Context, arg CreateVerifiedEmailParams) (VerifiedEmail, error) {
@@ -282,9 +304,7 @@ func (q *Queries) CreateVerifiedEmail(ctx context.Context, arg CreateVerifiedEma
 		arg.ProjectID,
 		arg.Email,
 		arg.GoogleUserID,
-		arg.GoogleHostedDomain,
 		arg.MicrosoftUserID,
-		arg.MicrosoftTenantID,
 	)
 	var i VerifiedEmail
 	err := row.Scan(
@@ -294,8 +314,6 @@ func (q *Queries) CreateVerifiedEmail(ctx context.Context, arg CreateVerifiedEma
 		&i.Email,
 		&i.GoogleUserID,
 		&i.MicrosoftUserID,
-		&i.GoogleHostedDomain,
-		&i.MicrosoftTenantID,
 	)
 	return i, err
 }
@@ -326,9 +344,39 @@ func (q *Queries) GetCurrentSessionKeyByProjectID(ctx context.Context, projectID
 	return i, err
 }
 
+const getEmailVerificationChallengeByChallengeSHA = `-- name: GetEmailVerificationChallengeByChallengeSHA :one
+SELECT
+    id, challenge_sha256, complete_time, create_time, expire_time, intermediate_session_id
+FROM
+    email_verification_challenges
+WHERE
+    intermediate_session_id = $1
+    AND expire_time > now()
+    AND challenge_sha256 = $2
+`
+
+type GetEmailVerificationChallengeByChallengeSHAParams struct {
+	IntermediateSessionID uuid.UUID
+	ChallengeSha256       []byte
+}
+
+func (q *Queries) GetEmailVerificationChallengeByChallengeSHA(ctx context.Context, arg GetEmailVerificationChallengeByChallengeSHAParams) (EmailVerificationChallenge, error) {
+	row := q.db.QueryRow(ctx, getEmailVerificationChallengeByChallengeSHA, arg.IntermediateSessionID, arg.ChallengeSha256)
+	var i EmailVerificationChallenge
+	err := row.Scan(
+		&i.ID,
+		&i.ChallengeSha256,
+		&i.CompleteTime,
+		&i.CreateTime,
+		&i.ExpireTime,
+		&i.IntermediateSessionID,
+	)
+	return i, err
+}
+
 const getEmailVerificationChallengeByID = `-- name: GetEmailVerificationChallengeByID :one
 SELECT
-    id, project_id, challenge_sha256, complete_time, create_time, expire_time, intermediate_session_id, revoked
+    id, challenge_sha256, complete_time, create_time, expire_time, intermediate_session_id
 FROM
     email_verification_challenges
 WHERE
@@ -340,27 +388,24 @@ func (q *Queries) GetEmailVerificationChallengeByID(ctx context.Context, id uuid
 	var i EmailVerificationChallenge
 	err := row.Scan(
 		&i.ID,
-		&i.ProjectID,
 		&i.ChallengeSha256,
 		&i.CompleteTime,
 		&i.CreateTime,
 		&i.ExpireTime,
 		&i.IntermediateSessionID,
-		&i.Revoked,
 	)
 	return i, err
 }
 
 const getEmailVerificationChallengeForCompletion = `-- name: GetEmailVerificationChallengeForCompletion :one
 SELECT
-    id, project_id, challenge_sha256, complete_time, create_time, expire_time, intermediate_session_id, revoked
+    id, challenge_sha256, complete_time, create_time, expire_time, intermediate_session_id
 FROM
     email_verification_challenges
 WHERE
-    project_id = $1
-    AND intermediate_session_id = $2
-    AND expire_time > $3
-    AND revoked = FALSE
+    intermediate_session_id = $1
+    AND expire_time > $2
+    AND challenge_sha256 IS NOT NULL
     AND complete_time IS NULL
 ORDER BY
     create_time DESC
@@ -368,30 +413,98 @@ LIMIT 1
 `
 
 type GetEmailVerificationChallengeForCompletionParams struct {
-	ProjectID             uuid.UUID
 	IntermediateSessionID uuid.UUID
 	ExpireTime            *time.Time
 }
 
 func (q *Queries) GetEmailVerificationChallengeForCompletion(ctx context.Context, arg GetEmailVerificationChallengeForCompletionParams) (EmailVerificationChallenge, error) {
-	row := q.db.QueryRow(ctx, getEmailVerificationChallengeForCompletion, arg.ProjectID, arg.IntermediateSessionID, arg.ExpireTime)
+	row := q.db.QueryRow(ctx, getEmailVerificationChallengeForCompletion, arg.IntermediateSessionID, arg.ExpireTime)
 	var i EmailVerificationChallenge
 	err := row.Scan(
 		&i.ID,
-		&i.ProjectID,
 		&i.ChallengeSha256,
 		&i.CompleteTime,
 		&i.CreateTime,
 		&i.ExpireTime,
 		&i.IntermediateSessionID,
-		&i.Revoked,
 	)
 	return i, err
 }
 
+const getEmailVerifiedByEmailVerificationChallenge = `-- name: GetEmailVerifiedByEmailVerificationChallenge :one
+SELECT
+    EXISTS (
+        SELECT
+            id, challenge_sha256, complete_time, create_time, expire_time, intermediate_session_id
+        FROM
+            email_verification_challenges
+        WHERE
+            complete_time IS NOT NULL
+            AND intermediate_session_id = $1)
+`
+
+func (q *Queries) GetEmailVerifiedByEmailVerificationChallenge(ctx context.Context, intermediateSessionID uuid.UUID) (bool, error) {
+	row := q.db.QueryRow(ctx, getEmailVerifiedByEmailVerificationChallenge, intermediateSessionID)
+	var exists bool
+	err := row.Scan(&exists)
+	return exists, err
+}
+
+const getEmailVerifiedByGoogleUserID = `-- name: GetEmailVerifiedByGoogleUserID :one
+SELECT
+    EXISTS (
+        SELECT
+            id, project_id, create_time, email, google_user_id, microsoft_user_id
+        FROM
+            verified_emails
+        WHERE
+            project_id = $1
+            AND email = $2
+            AND google_user_id = $3)
+`
+
+type GetEmailVerifiedByGoogleUserIDParams struct {
+	ProjectID    uuid.UUID
+	Email        string
+	GoogleUserID *string
+}
+
+func (q *Queries) GetEmailVerifiedByGoogleUserID(ctx context.Context, arg GetEmailVerifiedByGoogleUserIDParams) (bool, error) {
+	row := q.db.QueryRow(ctx, getEmailVerifiedByGoogleUserID, arg.ProjectID, arg.Email, arg.GoogleUserID)
+	var exists bool
+	err := row.Scan(&exists)
+	return exists, err
+}
+
+const getEmailVerifiedByMicrosoftUserID = `-- name: GetEmailVerifiedByMicrosoftUserID :one
+SELECT
+    EXISTS (
+        SELECT
+            id, project_id, create_time, email, google_user_id, microsoft_user_id
+        FROM
+            verified_emails
+        WHERE
+            project_id = $1
+            AND email = $2
+            AND microsoft_user_id = $3)
+`
+
+type GetEmailVerifiedByMicrosoftUserIDParams struct {
+	ProjectID       uuid.UUID
+	Email           string
+	MicrosoftUserID *string
+}
+
+func (q *Queries) GetEmailVerifiedByMicrosoftUserID(ctx context.Context, arg GetEmailVerifiedByMicrosoftUserIDParams) (bool, error) {
+	row := q.db.QueryRow(ctx, getEmailVerifiedByMicrosoftUserID, arg.ProjectID, arg.Email, arg.MicrosoftUserID)
+	var exists bool
+	err := row.Scan(&exists)
+	return exists, err
+}
+
 const getIntermediateSessionByID = `-- name: GetIntermediateSessionByID :one
 SELECT
-    id, project_id, create_time, expire_time, token_sha256, revoked, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256
 FROM
     intermediate_sessions
 WHERE
@@ -406,8 +519,6 @@ func (q *Queries) GetIntermediateSessionByID(ctx context.Context, id uuid.UUID) 
 		&i.ProjectID,
 		&i.CreateTime,
 		&i.ExpireTime,
-		&i.TokenSha256,
-		&i.Revoked,
 		&i.Email,
 		&i.GoogleOauthStateSha256,
 		&i.MicrosoftOauthStateSha256,
@@ -417,29 +528,35 @@ func (q *Queries) GetIntermediateSessionByID(ctx context.Context, id uuid.UUID) 
 		&i.MicrosoftUserID,
 		&i.PasswordVerified,
 		&i.OrganizationID,
+		&i.UpdateTime,
+		&i.SecretTokenSha256,
 	)
 	return i, err
 }
 
-const getIntermediateSessionByTokenSHA256 = `-- name: GetIntermediateSessionByTokenSHA256 :one
+const getIntermediateSessionByTokenSHA256AndProjectID = `-- name: GetIntermediateSessionByTokenSHA256AndProjectID :one
 SELECT
-    id, project_id, create_time, expire_time, token_sha256, revoked, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256
 FROM
     intermediate_sessions
 WHERE
-    token_sha256 = $1
+    secret_token_sha256 = $1
+    AND project_id = $2
 `
 
-func (q *Queries) GetIntermediateSessionByTokenSHA256(ctx context.Context, tokenSha256 []byte) (IntermediateSession, error) {
-	row := q.db.QueryRow(ctx, getIntermediateSessionByTokenSHA256, tokenSha256)
+type GetIntermediateSessionByTokenSHA256AndProjectIDParams struct {
+	SecretTokenSha256 []byte
+	ProjectID         uuid.UUID
+}
+
+func (q *Queries) GetIntermediateSessionByTokenSHA256AndProjectID(ctx context.Context, arg GetIntermediateSessionByTokenSHA256AndProjectIDParams) (IntermediateSession, error) {
+	row := q.db.QueryRow(ctx, getIntermediateSessionByTokenSHA256AndProjectID, arg.SecretTokenSha256, arg.ProjectID)
 	var i IntermediateSession
 	err := row.Scan(
 		&i.ID,
 		&i.ProjectID,
 		&i.CreateTime,
 		&i.ExpireTime,
-		&i.TokenSha256,
-		&i.Revoked,
 		&i.Email,
 		&i.GoogleOauthStateSha256,
 		&i.MicrosoftOauthStateSha256,
@@ -449,55 +566,8 @@ func (q *Queries) GetIntermediateSessionByTokenSHA256(ctx context.Context, token
 		&i.MicrosoftUserID,
 		&i.PasswordVerified,
 		&i.OrganizationID,
-	)
-	return i, err
-}
-
-const getIntermediateSessionSigningKeyByID = `-- name: GetIntermediateSessionSigningKeyByID :one
-SELECT
-    id, project_id, public_key, private_key_cipher_text, create_time, expire_time
-FROM
-    intermediate_session_signing_keys
-WHERE
-    id = $1
-`
-
-func (q *Queries) GetIntermediateSessionSigningKeyByID(ctx context.Context, id uuid.UUID) (IntermediateSessionSigningKey, error) {
-	row := q.db.QueryRow(ctx, getIntermediateSessionSigningKeyByID, id)
-	var i IntermediateSessionSigningKey
-	err := row.Scan(
-		&i.ID,
-		&i.ProjectID,
-		&i.PublicKey,
-		&i.PrivateKeyCipherText,
-		&i.CreateTime,
-		&i.ExpireTime,
-	)
-	return i, err
-}
-
-const getIntermediateSessionSigningKeyByProjectID = `-- name: GetIntermediateSessionSigningKeyByProjectID :one
-SELECT
-    id, project_id, public_key, private_key_cipher_text, create_time, expire_time
-FROM
-    intermediate_session_signing_keys
-WHERE
-    project_id = $1
-ORDER BY
-    create_time DESC
-LIMIT 1
-`
-
-func (q *Queries) GetIntermediateSessionSigningKeyByProjectID(ctx context.Context, projectID uuid.UUID) (IntermediateSessionSigningKey, error) {
-	row := q.db.QueryRow(ctx, getIntermediateSessionSigningKeyByProjectID, projectID)
-	var i IntermediateSessionSigningKey
-	err := row.Scan(
-		&i.ID,
-		&i.ProjectID,
-		&i.PublicKey,
-		&i.PrivateKeyCipherText,
-		&i.CreateTime,
-		&i.ExpireTime,
+		&i.UpdateTime,
+		&i.SecretTokenSha256,
 	)
 	return i, err
 }
@@ -661,7 +731,7 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 
 const getProjectOrganizationByID = `-- name: GetProjectOrganizationByID :one
 SELECT
-    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods, saml_enabled, scim_enabled, create_time, update_time
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_methods, saml_enabled, scim_enabled, create_time, update_time
 FROM
     organizations
 WHERE
@@ -684,8 +754,6 @@ func (q *Queries) GetProjectOrganizationByID(ctx context.Context, arg GetProject
 		&i.OverrideLogInWithPasswordEnabled,
 		&i.OverrideLogInWithGoogleEnabled,
 		&i.OverrideLogInWithMicrosoftEnabled,
-		&i.GoogleHostedDomain,
-		&i.MicrosoftTenantID,
 		&i.OverrideLogInMethods,
 		&i.SamlEnabled,
 		&i.ScimEnabled,
@@ -847,7 +915,7 @@ func (q *Queries) IsMicrosoftEmailVerified(ctx context.Context, arg IsMicrosoftE
 
 const listOrganizationsByEmail = `-- name: ListOrganizationsByEmail :many
 SELECT
-    organizations.id, organizations.project_id, organizations.display_name, organizations.override_log_in_with_password_enabled, organizations.override_log_in_with_google_enabled, organizations.override_log_in_with_microsoft_enabled, organizations.google_hosted_domain, organizations.microsoft_tenant_id, organizations.override_log_in_methods, organizations.saml_enabled, organizations.scim_enabled, organizations.create_time, organizations.update_time
+    organizations.id, organizations.project_id, organizations.display_name, organizations.override_log_in_with_password_enabled, organizations.override_log_in_with_google_enabled, organizations.override_log_in_with_microsoft_enabled, organizations.override_log_in_methods, organizations.saml_enabled, organizations.scim_enabled, organizations.create_time, organizations.update_time
 FROM
     organizations
     JOIN users ON organizations.id = users.organization_id
@@ -856,26 +924,15 @@ WHERE
     AND users.email = $2
     AND users.google_user_id IS NULL
     AND users.microsoft_user_id IS NULL
-    AND organizations.id >= $3
-ORDER BY
-    organizations.id
-LIMIT $4
 `
 
 type ListOrganizationsByEmailParams struct {
 	ProjectID uuid.UUID
 	Email     string
-	ID        uuid.UUID
-	Limit     int32
 }
 
 func (q *Queries) ListOrganizationsByEmail(ctx context.Context, arg ListOrganizationsByEmailParams) ([]Organization, error) {
-	rows, err := q.db.Query(ctx, listOrganizationsByEmail,
-		arg.ProjectID,
-		arg.Email,
-		arg.ID,
-		arg.Limit,
-	)
+	rows, err := q.db.Query(ctx, listOrganizationsByEmail, arg.ProjectID, arg.Email)
 	if err != nil {
 		return nil, err
 	}
@@ -890,8 +947,6 @@ func (q *Queries) ListOrganizationsByEmail(ctx context.Context, arg ListOrganiza
 			&i.OverrideLogInWithPasswordEnabled,
 			&i.OverrideLogInWithGoogleEnabled,
 			&i.OverrideLogInWithMicrosoftEnabled,
-			&i.GoogleHostedDomain,
-			&i.MicrosoftTenantID,
 			&i.OverrideLogInMethods,
 			&i.SamlEnabled,
 			&i.ScimEnabled,
@@ -908,37 +963,82 @@ func (q *Queries) ListOrganizationsByEmail(ctx context.Context, arg ListOrganiza
 	return items, nil
 }
 
-const listOrganizationsByGoogleUserID = `-- name: ListOrganizationsByGoogleUserID :many
+const listOrganizationsByGoogleHostedDomain = `-- name: ListOrganizationsByGoogleHostedDomain :many
 SELECT
-    organizations.id, organizations.project_id, organizations.display_name, organizations.override_log_in_with_password_enabled, organizations.override_log_in_with_google_enabled, organizations.override_log_in_with_microsoft_enabled, organizations.google_hosted_domain, organizations.microsoft_tenant_id, organizations.override_log_in_methods, organizations.saml_enabled, organizations.scim_enabled, organizations.create_time, organizations.update_time
+    organizations.id, organizations.project_id, organizations.display_name, organizations.override_log_in_with_password_enabled, organizations.override_log_in_with_google_enabled, organizations.override_log_in_with_microsoft_enabled, organizations.override_log_in_methods, organizations.saml_enabled, organizations.scim_enabled, organizations.create_time, organizations.update_time
+FROM
+    organizations
+    JOIN organization_google_hosted_domains ON organizations.id = organization_google_hosted_domains.organization_id
+WHERE
+    organizations.project_id = $1
+    AND organization_google_hosted_domains.google_hosted_domain = $2
+`
+
+type ListOrganizationsByGoogleHostedDomainParams struct {
+	ProjectID          uuid.UUID
+	GoogleHostedDomain string
+}
+
+func (q *Queries) ListOrganizationsByGoogleHostedDomain(ctx context.Context, arg ListOrganizationsByGoogleHostedDomainParams) ([]Organization, error) {
+	rows, err := q.db.Query(ctx, listOrganizationsByGoogleHostedDomain, arg.ProjectID, arg.GoogleHostedDomain)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Organization
+	for rows.Next() {
+		var i Organization
+		if err := rows.Scan(
+			&i.ID,
+			&i.ProjectID,
+			&i.DisplayName,
+			&i.OverrideLogInWithPasswordEnabled,
+			&i.OverrideLogInWithGoogleEnabled,
+			&i.OverrideLogInWithMicrosoftEnabled,
+			&i.OverrideLogInMethods,
+			&i.SamlEnabled,
+			&i.ScimEnabled,
+			&i.CreateTime,
+			&i.UpdateTime,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listOrganizationsByMatchingUser = `-- name: ListOrganizationsByMatchingUser :many
+SELECT
+    organizations.id, organizations.project_id, organizations.display_name, organizations.override_log_in_with_password_enabled, organizations.override_log_in_with_google_enabled, organizations.override_log_in_with_microsoft_enabled, organizations.override_log_in_methods, organizations.saml_enabled, organizations.scim_enabled, organizations.create_time, organizations.update_time
 FROM
     organizations
     JOIN users ON organizations.id = users.organization_id
 WHERE
     organizations.project_id = $1
-    AND users.email = $2
-    AND users.google_user_id = $3
-    AND organizations.id >= $4
-ORDER BY
-    organizations.id
-LIMIT $5
+    AND (users.email = $2
+        OR (users.google_user_id IS NOT NULL
+            AND users.google_user_id = $3)
+        OR (users.microsoft_user_id IS NOT NULL
+            AND users.microsoft_user_id = $4))
 `
 
-type ListOrganizationsByGoogleUserIDParams struct {
-	ProjectID    uuid.UUID
-	Email        string
-	GoogleUserID *string
-	ID           uuid.UUID
-	Limit        int32
+type ListOrganizationsByMatchingUserParams struct {
+	ProjectID       uuid.UUID
+	Email           string
+	GoogleUserID    *string
+	MicrosoftUserID *string
 }
 
-func (q *Queries) ListOrganizationsByGoogleUserID(ctx context.Context, arg ListOrganizationsByGoogleUserIDParams) ([]Organization, error) {
-	rows, err := q.db.Query(ctx, listOrganizationsByGoogleUserID,
+func (q *Queries) ListOrganizationsByMatchingUser(ctx context.Context, arg ListOrganizationsByMatchingUserParams) ([]Organization, error) {
+	rows, err := q.db.Query(ctx, listOrganizationsByMatchingUser,
 		arg.ProjectID,
 		arg.Email,
 		arg.GoogleUserID,
-		arg.ID,
-		arg.Limit,
+		arg.MicrosoftUserID,
 	)
 	if err != nil {
 		return nil, err
@@ -954,8 +1054,6 @@ func (q *Queries) ListOrganizationsByGoogleUserID(ctx context.Context, arg ListO
 			&i.OverrideLogInWithPasswordEnabled,
 			&i.OverrideLogInWithGoogleEnabled,
 			&i.OverrideLogInWithMicrosoftEnabled,
-			&i.GoogleHostedDomain,
-			&i.MicrosoftTenantID,
 			&i.OverrideLogInMethods,
 			&i.SamlEnabled,
 			&i.ScimEnabled,
@@ -972,38 +1070,24 @@ func (q *Queries) ListOrganizationsByGoogleUserID(ctx context.Context, arg ListO
 	return items, nil
 }
 
-const listOrganizationsByMicrosoftUserID = `-- name: ListOrganizationsByMicrosoftUserID :many
+const listOrganizationsByMicrosoftTenantID = `-- name: ListOrganizationsByMicrosoftTenantID :many
 SELECT
-    organizations.id, organizations.project_id, organizations.display_name, organizations.override_log_in_with_password_enabled, organizations.override_log_in_with_google_enabled, organizations.override_log_in_with_microsoft_enabled, organizations.google_hosted_domain, organizations.microsoft_tenant_id, organizations.override_log_in_methods, organizations.saml_enabled, organizations.scim_enabled, organizations.create_time, organizations.update_time
+    organizations.id, organizations.project_id, organizations.display_name, organizations.override_log_in_with_password_enabled, organizations.override_log_in_with_google_enabled, organizations.override_log_in_with_microsoft_enabled, organizations.override_log_in_methods, organizations.saml_enabled, organizations.scim_enabled, organizations.create_time, organizations.update_time
 FROM
     organizations
-    JOIN users ON organizations.id = users.organization_id
+    JOIN organization_microsoft_tenant_ids ON organizations.id = organization_microsoft_tenant_ids.organization_id
 WHERE
     organizations.project_id = $1
-    AND users.email = $2
-    AND users.microsoft_user_id = $3
-    AND organizations.id >= $4
-ORDER BY
-    organizations.id
-LIMIT $5
+    AND organization_microsoft_tenant_ids.microsoft_tenant_id = $2
 `
 
-type ListOrganizationsByMicrosoftUserIDParams struct {
-	ProjectID       uuid.UUID
-	Email           string
-	MicrosoftUserID *string
-	ID              uuid.UUID
-	Limit           int32
+type ListOrganizationsByMicrosoftTenantIDParams struct {
+	ProjectID         uuid.UUID
+	MicrosoftTenantID string
 }
 
-func (q *Queries) ListOrganizationsByMicrosoftUserID(ctx context.Context, arg ListOrganizationsByMicrosoftUserIDParams) ([]Organization, error) {
-	rows, err := q.db.Query(ctx, listOrganizationsByMicrosoftUserID,
-		arg.ProjectID,
-		arg.Email,
-		arg.MicrosoftUserID,
-		arg.ID,
-		arg.Limit,
-	)
+func (q *Queries) ListOrganizationsByMicrosoftTenantID(ctx context.Context, arg ListOrganizationsByMicrosoftTenantIDParams) ([]Organization, error) {
+	rows, err := q.db.Query(ctx, listOrganizationsByMicrosoftTenantID, arg.ProjectID, arg.MicrosoftTenantID)
 	if err != nil {
 		return nil, err
 	}
@@ -1018,8 +1102,6 @@ func (q *Queries) ListOrganizationsByMicrosoftUserID(ctx context.Context, arg Li
 			&i.OverrideLogInWithPasswordEnabled,
 			&i.OverrideLogInWithGoogleEnabled,
 			&i.OverrideLogInWithMicrosoftEnabled,
-			&i.GoogleHostedDomain,
-			&i.MicrosoftTenantID,
 			&i.OverrideLogInMethods,
 			&i.SamlEnabled,
 			&i.ScimEnabled,
@@ -1038,7 +1120,7 @@ func (q *Queries) ListOrganizationsByMicrosoftUserID(ctx context.Context, arg Li
 
 const listSAMLOrganizations = `-- name: ListSAMLOrganizations :many
 SELECT
-    organizations.id, organizations.project_id, organizations.display_name, organizations.override_log_in_with_password_enabled, organizations.override_log_in_with_google_enabled, organizations.override_log_in_with_microsoft_enabled, organizations.google_hosted_domain, organizations.microsoft_tenant_id, organizations.override_log_in_methods, organizations.saml_enabled, organizations.scim_enabled, organizations.create_time, organizations.update_time
+    organizations.id, organizations.project_id, organizations.display_name, organizations.override_log_in_with_password_enabled, organizations.override_log_in_with_google_enabled, organizations.override_log_in_with_microsoft_enabled, organizations.override_log_in_methods, organizations.saml_enabled, organizations.scim_enabled, organizations.create_time, organizations.update_time
 FROM
     organizations
     JOIN organization_domains ON organizations.id = organization_domains.organization_id
@@ -1069,8 +1151,6 @@ func (q *Queries) ListSAMLOrganizations(ctx context.Context, arg ListSAMLOrganiz
 			&i.OverrideLogInWithPasswordEnabled,
 			&i.OverrideLogInWithGoogleEnabled,
 			&i.OverrideLogInWithMicrosoftEnabled,
-			&i.GoogleHostedDomain,
-			&i.MicrosoftTenantID,
 			&i.OverrideLogInMethods,
 			&i.SamlEnabled,
 			&i.ScimEnabled,
@@ -1131,11 +1211,11 @@ const revokeEmailVerificationChallenge = `-- name: RevokeEmailVerificationChalle
 UPDATE
     email_verification_challenges
 SET
-    revoked = TRUE
+    challenge_sha256 = NULL
 WHERE
     id = $1
 RETURNING
-    id, project_id, challenge_sha256, complete_time, create_time, expire_time, intermediate_session_id, revoked
+    id, challenge_sha256, complete_time, create_time, expire_time, intermediate_session_id
 `
 
 func (q *Queries) RevokeEmailVerificationChallenge(ctx context.Context, id uuid.UUID) (EmailVerificationChallenge, error) {
@@ -1143,13 +1223,11 @@ func (q *Queries) RevokeEmailVerificationChallenge(ctx context.Context, id uuid.
 	var i EmailVerificationChallenge
 	err := row.Scan(
 		&i.ID,
-		&i.ProjectID,
 		&i.ChallengeSha256,
 		&i.CompleteTime,
 		&i.CreateTime,
 		&i.ExpireTime,
 		&i.IntermediateSessionID,
-		&i.Revoked,
 	)
 	return i, err
 }
@@ -1158,11 +1236,11 @@ const revokeIntermediateSession = `-- name: RevokeIntermediateSession :one
 UPDATE
     intermediate_sessions
 SET
-    revoked = TRUE
+    secret_token_sha256 = NULL
 WHERE
     id = $1
 RETURNING
-    id, project_id, create_time, expire_time, token_sha256, revoked, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256
 `
 
 func (q *Queries) RevokeIntermediateSession(ctx context.Context, id uuid.UUID) (IntermediateSession, error) {
@@ -1173,8 +1251,6 @@ func (q *Queries) RevokeIntermediateSession(ctx context.Context, id uuid.UUID) (
 		&i.ProjectID,
 		&i.CreateTime,
 		&i.ExpireTime,
-		&i.TokenSha256,
-		&i.Revoked,
 		&i.Email,
 		&i.GoogleOauthStateSha256,
 		&i.MicrosoftOauthStateSha256,
@@ -1184,6 +1260,49 @@ func (q *Queries) RevokeIntermediateSession(ctx context.Context, id uuid.UUID) (
 		&i.MicrosoftUserID,
 		&i.PasswordVerified,
 		&i.OrganizationID,
+		&i.UpdateTime,
+		&i.SecretTokenSha256,
+	)
+	return i, err
+}
+
+const updateIntermediateSessionEmail = `-- name: UpdateIntermediateSessionEmail :one
+UPDATE
+    intermediate_sessions
+SET
+    email = $1
+WHERE
+    id = $2
+    AND (email IS NULL
+        OR email = $1)
+RETURNING
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256
+`
+
+type UpdateIntermediateSessionEmailParams struct {
+	Email *string
+	ID    uuid.UUID
+}
+
+func (q *Queries) UpdateIntermediateSessionEmail(ctx context.Context, arg UpdateIntermediateSessionEmailParams) (IntermediateSession, error) {
+	row := q.db.QueryRow(ctx, updateIntermediateSessionEmail, arg.Email, arg.ID)
+	var i IntermediateSession
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.CreateTime,
+		&i.ExpireTime,
+		&i.Email,
+		&i.GoogleOauthStateSha256,
+		&i.MicrosoftOauthStateSha256,
+		&i.GoogleHostedDomain,
+		&i.GoogleUserID,
+		&i.MicrosoftTenantID,
+		&i.MicrosoftUserID,
+		&i.PasswordVerified,
+		&i.OrganizationID,
+		&i.UpdateTime,
+		&i.SecretTokenSha256,
 	)
 	return i, err
 }
@@ -1198,7 +1317,7 @@ SET
 WHERE
     id = $4
 RETURNING
-    id, project_id, create_time, expire_time, token_sha256, revoked, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256
 `
 
 type UpdateIntermediateSessionGoogleDetailsParams struct {
@@ -1221,8 +1340,6 @@ func (q *Queries) UpdateIntermediateSessionGoogleDetails(ctx context.Context, ar
 		&i.ProjectID,
 		&i.CreateTime,
 		&i.ExpireTime,
-		&i.TokenSha256,
-		&i.Revoked,
 		&i.Email,
 		&i.GoogleOauthStateSha256,
 		&i.MicrosoftOauthStateSha256,
@@ -1232,6 +1349,8 @@ func (q *Queries) UpdateIntermediateSessionGoogleDetails(ctx context.Context, ar
 		&i.MicrosoftUserID,
 		&i.PasswordVerified,
 		&i.OrganizationID,
+		&i.UpdateTime,
+		&i.SecretTokenSha256,
 	)
 	return i, err
 }
@@ -1244,7 +1363,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, project_id, create_time, expire_time, token_sha256, revoked, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256
 `
 
 type UpdateIntermediateSessionGoogleOAuthStateSHA256Params struct {
@@ -1260,8 +1379,6 @@ func (q *Queries) UpdateIntermediateSessionGoogleOAuthStateSHA256(ctx context.Co
 		&i.ProjectID,
 		&i.CreateTime,
 		&i.ExpireTime,
-		&i.TokenSha256,
-		&i.Revoked,
 		&i.Email,
 		&i.GoogleOauthStateSha256,
 		&i.MicrosoftOauthStateSha256,
@@ -1271,6 +1388,8 @@ func (q *Queries) UpdateIntermediateSessionGoogleOAuthStateSHA256(ctx context.Co
 		&i.MicrosoftUserID,
 		&i.PasswordVerified,
 		&i.OrganizationID,
+		&i.UpdateTime,
+		&i.SecretTokenSha256,
 	)
 	return i, err
 }
@@ -1285,7 +1404,7 @@ SET
 WHERE
     id = $4
 RETURNING
-    id, project_id, create_time, expire_time, token_sha256, revoked, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256
 `
 
 type UpdateIntermediateSessionMicrosoftDetailsParams struct {
@@ -1308,8 +1427,6 @@ func (q *Queries) UpdateIntermediateSessionMicrosoftDetails(ctx context.Context,
 		&i.ProjectID,
 		&i.CreateTime,
 		&i.ExpireTime,
-		&i.TokenSha256,
-		&i.Revoked,
 		&i.Email,
 		&i.GoogleOauthStateSha256,
 		&i.MicrosoftOauthStateSha256,
@@ -1319,6 +1436,8 @@ func (q *Queries) UpdateIntermediateSessionMicrosoftDetails(ctx context.Context,
 		&i.MicrosoftUserID,
 		&i.PasswordVerified,
 		&i.OrganizationID,
+		&i.UpdateTime,
+		&i.SecretTokenSha256,
 	)
 	return i, err
 }
@@ -1331,7 +1450,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, project_id, create_time, expire_time, token_sha256, revoked, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256
 `
 
 type UpdateIntermediateSessionMicrosoftOAuthStateSHA256Params struct {
@@ -1347,8 +1466,6 @@ func (q *Queries) UpdateIntermediateSessionMicrosoftOAuthStateSHA256(ctx context
 		&i.ProjectID,
 		&i.CreateTime,
 		&i.ExpireTime,
-		&i.TokenSha256,
-		&i.Revoked,
 		&i.Email,
 		&i.GoogleOauthStateSha256,
 		&i.MicrosoftOauthStateSha256,
@@ -1358,6 +1475,8 @@ func (q *Queries) UpdateIntermediateSessionMicrosoftOAuthStateSHA256(ctx context
 		&i.MicrosoftUserID,
 		&i.PasswordVerified,
 		&i.OrganizationID,
+		&i.UpdateTime,
+		&i.SecretTokenSha256,
 	)
 	return i, err
 }
@@ -1371,7 +1490,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, project_id, create_time, expire_time, token_sha256, revoked, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256
 `
 
 type UpdateIntermediateSessionPasswordVerifiedParams struct {
@@ -1387,8 +1506,6 @@ func (q *Queries) UpdateIntermediateSessionPasswordVerified(ctx context.Context,
 		&i.ProjectID,
 		&i.CreateTime,
 		&i.ExpireTime,
-		&i.TokenSha256,
-		&i.Revoked,
 		&i.Email,
 		&i.GoogleOauthStateSha256,
 		&i.MicrosoftOauthStateSha256,
@@ -1398,6 +1515,8 @@ func (q *Queries) UpdateIntermediateSessionPasswordVerified(ctx context.Context,
 		&i.MicrosoftUserID,
 		&i.PasswordVerified,
 		&i.OrganizationID,
+		&i.UpdateTime,
+		&i.SecretTokenSha256,
 	)
 	return i, err
 }

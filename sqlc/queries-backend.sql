@@ -1,6 +1,6 @@
 -- name: CreateOrganization :one
-INSERT INTO organizations (id, project_id, display_name, google_hosted_domain, microsoft_tenant_id, override_log_in_methods, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_with_password_enabled, saml_enabled, scim_enabled)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+INSERT INTO organizations (id, project_id, display_name, override_log_in_methods, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_with_password_enabled, saml_enabled, scim_enabled)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 RETURNING
     *;
 
@@ -63,14 +63,12 @@ UPDATE
 SET
     update_time = now(),
     display_name = $2,
-    google_hosted_domain = $3,
-    microsoft_tenant_id = $4,
-    override_log_in_methods = $5,
-    override_log_in_with_password_enabled = $6,
-    override_log_in_with_google_enabled = $7,
-    override_log_in_with_microsoft_enabled = $8,
-    saml_enabled = $9,
-    scim_enabled = $10
+    override_log_in_methods = $3,
+    override_log_in_with_password_enabled = $4,
+    override_log_in_with_google_enabled = $5,
+    override_log_in_with_microsoft_enabled = $6,
+    saml_enabled = $7,
+    scim_enabled = $8
 WHERE
     id = $1
 RETURNING

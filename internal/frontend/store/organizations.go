@@ -124,10 +124,11 @@ func parseOrganization(qProject queries.Project, qOrg queries.Organization) *fro
 		LogInWithGoogleEnabled:    logInWithGoogleEnabled,
 		LogInWithMicrosoftEnabled: logInWithMicrosoftEnabled,
 		LogInWithPasswordEnabled:  logInWithPasswordEnabled,
-		GoogleHostedDomain:        derefOrEmpty(qOrg.GoogleHostedDomain),
-		MicrosoftTenantId:         derefOrEmpty(qOrg.MicrosoftTenantID),
-		SamlEnabled:               qOrg.SamlEnabled,
-		ScimEnabled:               qOrg.ScimEnabled,
+		// TODO these are a list now
+		//GoogleHostedDomain:        derefOrEmpty(qOrg.GoogleHostedDomain),
+		//MicrosoftTenantId:         derefOrEmpty(qOrg.MicrosoftTenantID),
+		SamlEnabled: qOrg.SamlEnabled,
+		ScimEnabled: qOrg.ScimEnabled,
 	}
 }
 

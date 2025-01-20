@@ -19,8 +19,6 @@ type CreateDogfoodProjectResponse struct {
 	DogfoodProjectID                   string
 	BootstrapUserEmail                 string
 	BootstrapUserVerySensitivePassword string
-	SessionSigningKeyID                string
-	IntermediateSessionSigningKeyID    string
 }
 
 // CreateDogfoodProject creates the dogfood project.
@@ -138,35 +136,14 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 		return nil, err
 	}
 
-	isskEncryptOutput, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
-		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
-		KeyId:               &s.sessionSigningKeyKmsKeyID,
-		Plaintext:           privateKeyBytes,
-	})
-	if err != nil {
-		return nil, err
-	}
-
 	// Store the encrypted key in the database
-	sessionSigningKey, err := q.CreateSessionSigningKey(ctx, queries.CreateSessionSigningKeyParams{
+	if _, err := q.CreateSessionSigningKey(ctx, queries.CreateSessionSigningKeyParams{
 		ID:                   uuid.New(),
 		ProjectID:            dogfoodProjectID,
 		ExpireTime:           &expiresAt,
 		PublicKey:            publicKeyBytes,
 		PrivateKeyCipherText: sskEncryptOutput.CiphertextBlob,
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	intermediateSessionSigningKey, err := q.CreateIntermediateSessionSigningKey(ctx, queries.CreateIntermediateSessionSigningKeyParams{
-		ID:                   uuid.New(),
-		ProjectID:            dogfoodProjectID,
-		ExpireTime:           &expiresAt,
-		PublicKey:            publicKeyBytes,
-		PrivateKeyCipherText: isskEncryptOutput.CiphertextBlob,
-	})
-	if err != nil {
+	}); err != nil {
 		return nil, err
 	}
 
@@ -178,7 +155,5 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 		DogfoodProjectID:                   idformat.Project.Format(dogfoodProjectID),
 		BootstrapUserEmail:                 bootstrapUserEmail,
 		BootstrapUserVerySensitivePassword: bootstrapUserPassword,
-		SessionSigningKeyID:                idformat.SessionSigningKey.Format(sessionSigningKey.ID),
-		IntermediateSessionSigningKeyID:    idformat.IntermediateSessionSigningKey.Format(intermediateSessionSigningKey.ID),
 	}, nil
 }

@@ -82,6 +82,6 @@ func parseIntermediateSession(qIntermediateSession queries.IntermediateSession) 
 		GoogleUserId:       derefOrEmpty(qIntermediateSession.GoogleUserID),
 		MicrosoftTenantId:  derefOrEmpty(qIntermediateSession.MicrosoftTenantID),
 		MicrosoftUserId:    derefOrEmpty(qIntermediateSession.MicrosoftUserID),
-		Revoked:            qIntermediateSession.Revoked,
+		Revoked:            qIntermediateSession.SecretTokenSha256 == nil,
 	}
 }

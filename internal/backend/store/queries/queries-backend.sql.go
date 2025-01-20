@@ -12,18 +12,16 @@ import (
 )
 
 const createOrganization = `-- name: CreateOrganization :one
-INSERT INTO organizations (id, project_id, display_name, google_hosted_domain, microsoft_tenant_id, override_log_in_methods, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_with_password_enabled, saml_enabled, scim_enabled)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+INSERT INTO organizations (id, project_id, display_name, override_log_in_methods, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_with_password_enabled, saml_enabled, scim_enabled)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 RETURNING
-    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods, saml_enabled, scim_enabled, create_time, update_time
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_methods, saml_enabled, scim_enabled, create_time, update_time
 `
 
 type CreateOrganizationParams struct {
 	ID                                uuid.UUID
 	ProjectID                         uuid.UUID
 	DisplayName                       string
-	GoogleHostedDomain                *string
-	MicrosoftTenantID                 *string
 	OverrideLogInMethods              bool
 	OverrideLogInWithGoogleEnabled    *bool
 	OverrideLogInWithMicrosoftEnabled *bool
@@ -37,8 +35,6 @@ func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganization
 		arg.ID,
 		arg.ProjectID,
 		arg.DisplayName,
-		arg.GoogleHostedDomain,
-		arg.MicrosoftTenantID,
 		arg.OverrideLogInMethods,
 		arg.OverrideLogInWithGoogleEnabled,
 		arg.OverrideLogInWithMicrosoftEnabled,
@@ -54,8 +50,6 @@ func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganization
 		&i.OverrideLogInWithPasswordEnabled,
 		&i.OverrideLogInWithGoogleEnabled,
 		&i.OverrideLogInWithMicrosoftEnabled,
-		&i.GoogleHostedDomain,
-		&i.MicrosoftTenantID,
 		&i.OverrideLogInMethods,
 		&i.SamlEnabled,
 		&i.ScimEnabled,
@@ -260,7 +254,7 @@ func (q *Queries) DeleteSCIMAPIKey(ctx context.Context, id uuid.UUID) error {
 
 const getIntermediateSession = `-- name: GetIntermediateSession :one
 SELECT
-    intermediate_sessions.id, intermediate_sessions.project_id, intermediate_sessions.create_time, intermediate_sessions.expire_time, intermediate_sessions.token_sha256, intermediate_sessions.revoked, intermediate_sessions.email, intermediate_sessions.google_oauth_state_sha256, intermediate_sessions.microsoft_oauth_state_sha256, intermediate_sessions.google_hosted_domain, intermediate_sessions.google_user_id, intermediate_sessions.microsoft_tenant_id, intermediate_sessions.microsoft_user_id, intermediate_sessions.password_verified, intermediate_sessions.organization_id
+    intermediate_sessions.id, intermediate_sessions.project_id, intermediate_sessions.create_time, intermediate_sessions.expire_time, intermediate_sessions.email, intermediate_sessions.google_oauth_state_sha256, intermediate_sessions.microsoft_oauth_state_sha256, intermediate_sessions.google_hosted_domain, intermediate_sessions.google_user_id, intermediate_sessions.microsoft_tenant_id, intermediate_sessions.microsoft_user_id, intermediate_sessions.password_verified, intermediate_sessions.organization_id, intermediate_sessions.update_time, intermediate_sessions.secret_token_sha256
 FROM
     intermediate_sessions
 WHERE
@@ -281,8 +275,6 @@ func (q *Queries) GetIntermediateSession(ctx context.Context, arg GetIntermediat
 		&i.ProjectID,
 		&i.CreateTime,
 		&i.ExpireTime,
-		&i.TokenSha256,
-		&i.Revoked,
 		&i.Email,
 		&i.GoogleOauthStateSha256,
 		&i.MicrosoftOauthStateSha256,
@@ -292,13 +284,15 @@ func (q *Queries) GetIntermediateSession(ctx context.Context, arg GetIntermediat
 		&i.MicrosoftUserID,
 		&i.PasswordVerified,
 		&i.OrganizationID,
+		&i.UpdateTime,
+		&i.SecretTokenSha256,
 	)
 	return i, err
 }
 
 const getOrganizationByProjectIDAndID = `-- name: GetOrganizationByProjectIDAndID :one
 SELECT
-    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods, saml_enabled, scim_enabled, create_time, update_time
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_methods, saml_enabled, scim_enabled, create_time, update_time
 FROM
     organizations
 WHERE
@@ -321,8 +315,6 @@ func (q *Queries) GetOrganizationByProjectIDAndID(ctx context.Context, arg GetOr
 		&i.OverrideLogInWithPasswordEnabled,
 		&i.OverrideLogInWithGoogleEnabled,
 		&i.OverrideLogInWithMicrosoftEnabled,
-		&i.GoogleHostedDomain,
-		&i.MicrosoftTenantID,
 		&i.OverrideLogInMethods,
 		&i.SamlEnabled,
 		&i.ScimEnabled,
@@ -633,7 +625,7 @@ func (q *Queries) GetUser(ctx context.Context, arg GetUserParams) (User, error) 
 
 const listIntermediateSessions = `-- name: ListIntermediateSessions :many
 SELECT
-    id, project_id, create_time, expire_time, token_sha256, revoked, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256
 FROM
     intermediate_sessions
 WHERE
@@ -664,8 +656,6 @@ func (q *Queries) ListIntermediateSessions(ctx context.Context, arg ListIntermed
 			&i.ProjectID,
 			&i.CreateTime,
 			&i.ExpireTime,
-			&i.TokenSha256,
-			&i.Revoked,
 			&i.Email,
 			&i.GoogleOauthStateSha256,
 			&i.MicrosoftOauthStateSha256,
@@ -675,6 +665,8 @@ func (q *Queries) ListIntermediateSessions(ctx context.Context, arg ListIntermed
 			&i.MicrosoftUserID,
 			&i.PasswordVerified,
 			&i.OrganizationID,
+			&i.UpdateTime,
+			&i.SecretTokenSha256,
 		); err != nil {
 			return nil, err
 		}
@@ -688,7 +680,7 @@ func (q *Queries) ListIntermediateSessions(ctx context.Context, arg ListIntermed
 
 const listOrganizationsByProjectId = `-- name: ListOrganizationsByProjectId :many
 SELECT
-    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods, saml_enabled, scim_enabled, create_time, update_time
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_methods, saml_enabled, scim_enabled, create_time, update_time
 FROM
     organizations
 WHERE
@@ -719,8 +711,6 @@ func (q *Queries) ListOrganizationsByProjectId(ctx context.Context, arg ListOrga
 			&i.OverrideLogInWithPasswordEnabled,
 			&i.OverrideLogInWithGoogleEnabled,
 			&i.OverrideLogInWithMicrosoftEnabled,
-			&i.GoogleHostedDomain,
-			&i.MicrosoftTenantID,
 			&i.OverrideLogInMethods,
 			&i.SamlEnabled,
 			&i.ScimEnabled,
@@ -1112,25 +1102,21 @@ UPDATE
 SET
     update_time = now(),
     display_name = $2,
-    google_hosted_domain = $3,
-    microsoft_tenant_id = $4,
-    override_log_in_methods = $5,
-    override_log_in_with_password_enabled = $6,
-    override_log_in_with_google_enabled = $7,
-    override_log_in_with_microsoft_enabled = $8,
-    saml_enabled = $9,
-    scim_enabled = $10
+    override_log_in_methods = $3,
+    override_log_in_with_password_enabled = $4,
+    override_log_in_with_google_enabled = $5,
+    override_log_in_with_microsoft_enabled = $6,
+    saml_enabled = $7,
+    scim_enabled = $8
 WHERE
     id = $1
 RETURNING
-    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, google_hosted_domain, microsoft_tenant_id, override_log_in_methods, saml_enabled, scim_enabled, create_time, update_time
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_methods, saml_enabled, scim_enabled, create_time, update_time
 `
 
 type UpdateOrganizationParams struct {
 	ID                                uuid.UUID
 	DisplayName                       string
-	GoogleHostedDomain                *string
-	MicrosoftTenantID                 *string
 	OverrideLogInMethods              bool
 	OverrideLogInWithPasswordEnabled  *bool
 	OverrideLogInWithGoogleEnabled    *bool
@@ -1143,8 +1129,6 @@ func (q *Queries) UpdateOrganization(ctx context.Context, arg UpdateOrganization
 	row := q.db.QueryRow(ctx, updateOrganization,
 		arg.ID,
 		arg.DisplayName,
-		arg.GoogleHostedDomain,
-		arg.MicrosoftTenantID,
 		arg.OverrideLogInMethods,
 		arg.OverrideLogInWithPasswordEnabled,
 		arg.OverrideLogInWithGoogleEnabled,
@@ -1160,8 +1144,6 @@ func (q *Queries) UpdateOrganization(ctx context.Context, arg UpdateOrganization
 		&i.OverrideLogInWithPasswordEnabled,
 		&i.OverrideLogInWithGoogleEnabled,
 		&i.OverrideLogInWithMicrosoftEnabled,
-		&i.GoogleHostedDomain,
-		&i.MicrosoftTenantID,
 		&i.OverrideLogInMethods,
 		&i.SamlEnabled,
 		&i.ScimEnabled,
