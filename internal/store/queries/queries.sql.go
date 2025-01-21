@@ -116,23 +116,21 @@ func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganization
 }
 
 const createProject = `-- name: CreateProject :one
-INSERT INTO projects (id, organization_id, display_name, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, organizations_saml_enabled_default, organizations_scim_enabled_default, auth_domain, custom_auth_domain)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+INSERT INTO projects (id, organization_id, display_name, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, auth_domain, custom_auth_domain)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 RETURNING
-    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, organizations_saml_enabled_default, organizations_scim_enabled_default, create_time, update_time, custom_auth_domain, auth_domain
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain
 `
 
 type CreateProjectParams struct {
-	ID                              uuid.UUID
-	OrganizationID                  *uuid.UUID
-	DisplayName                     string
-	LogInWithPasswordEnabled        bool
-	LogInWithGoogleEnabled          bool
-	LogInWithMicrosoftEnabled       bool
-	OrganizationsSamlEnabledDefault bool
-	OrganizationsScimEnabledDefault bool
-	AuthDomain                      *string
-	CustomAuthDomain                *string
+	ID                        uuid.UUID
+	OrganizationID            *uuid.UUID
+	DisplayName               string
+	LogInWithPasswordEnabled  bool
+	LogInWithGoogleEnabled    bool
+	LogInWithMicrosoftEnabled bool
+	AuthDomain                *string
+	CustomAuthDomain          *string
 }
 
 func (q *Queries) CreateProject(ctx context.Context, arg CreateProjectParams) (Project, error) {
@@ -143,8 +141,6 @@ func (q *Queries) CreateProject(ctx context.Context, arg CreateProjectParams) (P
 		arg.LogInWithPasswordEnabled,
 		arg.LogInWithGoogleEnabled,
 		arg.LogInWithMicrosoftEnabled,
-		arg.OrganizationsSamlEnabledDefault,
-		arg.OrganizationsScimEnabledDefault,
 		arg.AuthDomain,
 		arg.CustomAuthDomain,
 	)
@@ -160,8 +156,6 @@ func (q *Queries) CreateProject(ctx context.Context, arg CreateProjectParams) (P
 		&i.GoogleOauthClientSecretCiphertext,
 		&i.MicrosoftOauthClientSecretCiphertext,
 		&i.DisplayName,
-		&i.OrganizationsSamlEnabledDefault,
-		&i.OrganizationsScimEnabledDefault,
 		&i.CreateTime,
 		&i.UpdateTime,
 		&i.CustomAuthDomain,
@@ -436,7 +430,7 @@ func (q *Queries) GetProjectAPIKeyBySecretTokenSHA256(ctx context.Context, secre
 
 const getProjectByID = `-- name: GetProjectByID :one
 SELECT
-    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, organizations_saml_enabled_default, organizations_scim_enabled_default, create_time, update_time, custom_auth_domain, auth_domain
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain
 FROM
     projects
 WHERE
@@ -457,8 +451,6 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 		&i.GoogleOauthClientSecretCiphertext,
 		&i.MicrosoftOauthClientSecretCiphertext,
 		&i.DisplayName,
-		&i.OrganizationsSamlEnabledDefault,
-		&i.OrganizationsScimEnabledDefault,
 		&i.CreateTime,
 		&i.UpdateTime,
 		&i.CustomAuthDomain,
@@ -615,7 +607,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, organizations_saml_enabled_default, organizations_scim_enabled_default, create_time, update_time, custom_auth_domain, auth_domain
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain
 `
 
 type UpdateProjectOrganizationIDParams struct {
@@ -659,8 +651,6 @@ func (q *Queries) UpdateProjectOrganizationID(ctx context.Context, arg UpdatePro
 		&i.GoogleOauthClientSecretCiphertext,
 		&i.MicrosoftOauthClientSecretCiphertext,
 		&i.DisplayName,
-		&i.OrganizationsSamlEnabledDefault,
-		&i.OrganizationsScimEnabledDefault,
 		&i.CreateTime,
 		&i.UpdateTime,
 		&i.CustomAuthDomain,

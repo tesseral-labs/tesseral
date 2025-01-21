@@ -33,11 +33,6 @@ func (s *Store) ExchangeIntermediateSessionForNewOrganizationSession(ctx context
 	intermediateSession := authn.IntermediateSession(ctx)
 	projectID := authn.ProjectID(ctx)
 
-	qProject, err := q.GetProjectByID(ctx, projectID)
-	if err != nil {
-		return nil, apierror.NewNotFoundError("project not found", fmt.Errorf("get project by id: %w", err))
-	}
-
 	// Create a new organization
 	qOrganization, err := q.CreateOrganization(ctx, queries.CreateOrganizationParams{
 		ID:                   uuid.New(),
@@ -46,8 +41,6 @@ func (s *Store) ExchangeIntermediateSessionForNewOrganizationSession(ctx context
 		GoogleHostedDomain:   refOrNil(intermediateSession.GoogleHostedDomain),
 		MicrosoftTenantID:    refOrNil(intermediateSession.MicrosoftTenantId),
 		OverrideLogInMethods: false,
-		SamlEnabled:          qProject.OrganizationsSamlEnabledDefault,
-		ScimEnabled:          qProject.OrganizationsScimEnabledDefault,
 	})
 	if err != nil {
 		return nil, err

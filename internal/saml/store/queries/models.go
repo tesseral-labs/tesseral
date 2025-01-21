@@ -127,8 +127,6 @@ type Project struct {
 	GoogleOauthClientSecretCiphertext    []byte
 	MicrosoftOauthClientSecretCiphertext []byte
 	DisplayName                          string
-	OrganizationsSamlEnabledDefault      bool
-	OrganizationsScimEnabledDefault      bool
 	CreateTime                           *time.Time
 	UpdateTime                           *time.Time
 	CustomAuthDomain                     *string
