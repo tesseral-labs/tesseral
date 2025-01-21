@@ -29,6 +29,7 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { PageCodeSubtitle, PageDescription, PageTitle } from '@/components/page'
 
 export function ViewOrganizationPage() {
   const { organizationId } = useParams()
@@ -39,6 +40,7 @@ export function ViewOrganizationPage() {
 
   const tabs = [
     {
+      root: true,
       name: 'Details',
       url: `/organizations/${organizationId}`,
     },
@@ -56,9 +58,11 @@ export function ViewOrganizationPage() {
     },
   ]
 
+  const currentTab = tabs.find((tab) => tab.url === pathname)!
+
   return (
     // TODO remove padding when app shell in place
-    <div className="pt-8">
+    <div>
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -73,24 +77,38 @@ export function ViewOrganizationPage() {
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>
-              {getOrganizationResponse?.organization?.displayName}
-            </BreadcrumbPage>
-          </BreadcrumbItem>
+          {currentTab.root ? (
+            <BreadcrumbItem>
+              <BreadcrumbPage>
+                {getOrganizationResponse?.organization?.displayName}
+              </BreadcrumbPage>
+            </BreadcrumbItem>
+          ) : (
+            <>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link to={`/organizations/${organizationId}`}>
+                    {getOrganizationResponse?.organization?.displayName}
+                  </Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>{currentTab.name}</BreadcrumbPage>
+              </BreadcrumbItem>
+            </>
+          )}
         </BreadcrumbList>
       </Breadcrumb>
 
-      <h1 className="mt-4 font-semibold text-2xl">
+      <PageTitle>
         {getOrganizationResponse?.organization?.displayName}
-      </h1>
-      <span className="mt-1 inline-block border rounded bg-gray-100 py-1 px-2 font-mono text-xs text-muted-foreground">
-        {organizationId}
-      </span>
-      <div className="mt-4">
+      </PageTitle>
+      <PageCodeSubtitle>{organizationId}</PageCodeSubtitle>
+      <PageDescription>
         An organization represents one of your business customers. Lorem ipsum
         dolor.
-      </div>
+      </PageDescription>
 
       <Card className="my-8">
         <CardHeader className="py-4">
@@ -135,7 +153,7 @@ export function ViewOrganizationPage() {
               key={tab.name}
               to={tab.url}
               className={clsx(
-                pathname === tab.url
+                tab.url === currentTab.url
                   ? 'border-indigo-500 text-indigo-600'
                   : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
                 'whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium',

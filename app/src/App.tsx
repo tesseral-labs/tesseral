@@ -5,11 +5,9 @@ import { createConnectTransport } from '@connectrpc/connect-web'
 import { type Transport } from '@connectrpc/connect'
 import { TransportProvider } from '@connectrpc/connect-query'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import SessionInfoPage from './pages/SessionInfoPage'
 import NotFoundPage from './pages/NotFound'
 import { ListOrganizationsPage } from '@/pages/organizations/ListOrganizationsPage'
 import { useAccessToken } from '@/lib/use-access-token'
-import { Container } from '@/pages/Container'
 import { ViewOrganizationPage } from '@/pages/organizations/ViewOrganizationPage'
 import { ViewUserPage } from '@/pages/users/ViewUserPage'
 import { ListProjectAPIKeysPage } from '@/pages/project-api-keys/ListProjectAPIKeysPage'
@@ -23,6 +21,9 @@ import { ViewSAMLConnectionPage } from '@/pages/saml-connections/ViewSAMLConnect
 import { Toaster } from '@/components/ui/sonner'
 import { Edit } from 'lucide-react'
 import { EditSAMLConnectionPage } from '@/pages/saml-connections/EditSAMLConnectionPage'
+import { PageShell } from '@/components/page'
+import { ViewSCIMAPIKeyPage } from '@/pages/scim-api-keys/ViewSCIMAPIKeyPage'
+import { ViewProjectAPIKeyPage } from '@/pages/project-api-keys/ViewProjectAPIKey'
 
 const queryClient = new QueryClient()
 
@@ -30,7 +31,7 @@ function useTransport(): Transport {
   const accessToken = useAccessToken()
 
   return createConnectTransport({
-    baseUrl: `http://auth.app.tesseral.example.com/api/internal/connect`,
+    baseUrl: `https://auth.app.tesseral.example.com/api/internal/connect`,
     fetch: (input, init) =>
       fetch(input, {
         ...init,
@@ -54,12 +55,17 @@ function AppWithinQueryClient() {
     <TransportProvider transport={transport}>
       <BrowserRouter>
         <Routes>
-          <Route path="" element={<Container />}>
+          <Route path="" element={<PageShell />}>
             <Route path="" element={<ViewProjectPage />} />
 
             <Route
               path="project-api-keys"
               element={<ListProjectAPIKeysPage />}
+            />
+
+            <Route
+              path="project-api-keys/:projectApiKeyId"
+              element={<ViewProjectAPIKeyPage />}
             />
 
             <Route path="organizations" element={<ListOrganizationsPage />} />
@@ -79,6 +85,7 @@ function AppWithinQueryClient() {
                 element={<OrganizationSCIMAPIKeysTab />}
               />
             </Route>
+
             <Route
               path="organizations/:organizationId/edit"
               element={<EditOrganizationPage />}
@@ -95,7 +102,12 @@ function AppWithinQueryClient() {
               path="organizations/:organizationId/users/:userId"
               element={<ViewUserPage />}
             />
+            <Route
+              path="organizations/:organizationId/scim-api-keys/:scimApiKeyId"
+              element={<ViewSCIMAPIKeyPage />}
+            />
           </Route>
+
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
