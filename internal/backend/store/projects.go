@@ -115,16 +115,6 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 		updates.LogInWithPasswordEnabled = *req.Project.LogInWithPasswordEnabled
 	}
 
-	updates.OrganizationsSamlEnabledDefault = qProject.OrganizationsSamlEnabledDefault
-	if req.Project.OrganizationsSamlEnabledDefault != nil {
-		updates.OrganizationsSamlEnabledDefault = *req.Project.OrganizationsSamlEnabledDefault
-	}
-
-	updates.OrganizationsScimEnabledDefault = qProject.OrganizationsScimEnabledDefault
-	if req.Project.OrganizationsScimEnabledDefault != nil {
-		updates.OrganizationsScimEnabledDefault = *req.Project.OrganizationsScimEnabledDefault
-	}
-
 	updates.CustomAuthDomain = qProject.CustomAuthDomain
 	// TODO enable when we have a use for custom domains from app
 	//if req.Project.CustomDomain != nil {
@@ -156,17 +146,15 @@ func parseProject(qProject *queries.Project) *backendv1.Project {
 	}
 
 	return &backendv1.Project{
-		Id:                              idformat.Project.Format(qProject.ID),
-		DisplayName:                     qProject.DisplayName,
-		CreateTime:                      timestamppb.New(*qProject.CreateTime),
-		UpdateTime:                      timestamppb.New(*qProject.UpdateTime),
-		LogInWithPasswordEnabled:        &qProject.LogInWithPasswordEnabled,
-		LogInWithGoogleEnabled:          &qProject.LogInWithGoogleEnabled,
-		LogInWithMicrosoftEnabled:       &qProject.LogInWithMicrosoftEnabled,
-		GoogleOauthClientId:             derefOrEmpty(qProject.GoogleOauthClientID),
-		MicrosoftOauthClientId:          derefOrEmpty(qProject.MicrosoftOauthClientID),
-		OrganizationsSamlEnabledDefault: &qProject.OrganizationsSamlEnabledDefault,
-		OrganizationsScimEnabledDefault: &qProject.OrganizationsScimEnabledDefault,
-		AuthDomain:                      &authDomain,
+		Id:                        idformat.Project.Format(qProject.ID),
+		DisplayName:               qProject.DisplayName,
+		CreateTime:                timestamppb.New(*qProject.CreateTime),
+		UpdateTime:                timestamppb.New(*qProject.UpdateTime),
+		LogInWithPasswordEnabled:  &qProject.LogInWithPasswordEnabled,
+		LogInWithGoogleEnabled:    &qProject.LogInWithGoogleEnabled,
+		LogInWithMicrosoftEnabled: &qProject.LogInWithMicrosoftEnabled,
+		GoogleOauthClientId:       derefOrEmpty(qProject.GoogleOauthClientID),
+		MicrosoftOauthClientId:    derefOrEmpty(qProject.MicrosoftOauthClientID),
+		AuthDomain:                &authDomain,
 	}
 }

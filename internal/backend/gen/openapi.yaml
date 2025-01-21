@@ -767,10 +767,6 @@ components:
                     type: string
                 microsoftOauthClientSecret:
                     type: string
-                organizationsSamlEnabledDefault:
-                    type: boolean
-                organizationsScimEnabledDefault:
-                    type: boolean
                 authDomain:
                     type: string
         RevokeSCIMAPIKeyResponse:

@@ -4,7 +4,7 @@ dev:
 
 .PHONY: queries
 queries:
-	rm -r internal/store/queries internal/backend/store/queries internal/frontend/store/queries internal/intermediate/store/queries internal/oauth/store/queries internal/saml/store/queries internal/scim/store/queries internal/common/store/queries
+	rm -rf internal/store/queries internal/backend/store/queries internal/frontend/store/queries internal/intermediate/store/queries internal/oauth/store/queries internal/saml/store/queries internal/scim/store/queries internal/common/store/queries
 	docker run --rm --volume "$$(pwd)/sqlc/queries.sql:/work/queries.sql" backplane/pgformatter -i queries.sql
 	docker run --rm --volume "$$(pwd)/sqlc/queries-backend.sql:/work/queries.sql" backplane/pgformatter -i queries.sql
 	docker run --rm --volume "$$(pwd)/sqlc/queries-frontend.sql:/work/queries.sql" backplane/pgformatter -i queries.sql
@@ -17,7 +17,7 @@ queries:
 
 .PHONY: proto
 proto:
-	rm -r internal/backend/gen internal/frontend/gen internal/intermediate/gen internal/oauth/gen internal/common/gen app/src/gen ui/src/gen
+	rm -rf internal/backend/gen internal/frontend/gen internal/intermediate/gen internal/oauth/gen internal/common/gen app/src/gen ui/src/gen
 	npx buf generate --template buf/buf.gen-backend.yaml
 	npx buf generate --template buf/buf.gen-frontend.yaml
 	npx buf generate --template buf/buf.gen-intermediate.yaml

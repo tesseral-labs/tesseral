@@ -53,12 +53,12 @@ func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrg
 		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 
-	samlEnabled := qProject.OrganizationsSamlEnabledDefault
+	var samlEnabled bool
 	if req.Organization.SamlEnabled != nil {
 		samlEnabled = *req.Organization.SamlEnabled
 	}
 
-	scimEnabled := qProject.OrganizationsScimEnabledDefault
+	var scimEnabled bool
 	if req.Organization.ScimEnabled != nil {
 		scimEnabled = *req.Organization.ScimEnabled
 	}
