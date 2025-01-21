@@ -28,7 +28,7 @@ const OrganizationSettingsPage: FC = () => {
     useQuery(listSAMLConnections)
   const updateUserMutation = useMutation(updateUser)
 
-  const changeRole = async (userId: string, isOwner: boolean) => {
+  const changeUserRole = async (userId: string, isOwner: boolean) => {
     await updateUserMutation.mutateAsync({
       id: userId,
       user: {
@@ -110,7 +110,7 @@ const OrganizationSettingsPage: FC = () => {
                           e.stopPropagation()
                           e.preventDefault()
 
-                          await changeRole(u.id, !u.owner)
+                          await changeUserRole(u.id, !u.owner)
                         }}
                       >
                         Make {u.owner ? 'Member' : 'Owner'}
