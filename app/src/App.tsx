@@ -11,7 +11,7 @@ import { useAccessToken } from '@/lib/use-access-token'
 import { ViewOrganizationPage } from '@/pages/organizations/ViewOrganizationPage'
 import { ViewUserPage } from '@/pages/users/ViewUserPage'
 import { ListProjectAPIKeysPage } from '@/pages/project-api-keys/ListProjectAPIKeysPage'
-import { ViewProjectPage } from '@/pages/project/ViewProjectPage'
+import { ViewProjectSettingsPage } from '@/pages/project/ViewProjectSettingsPage'
 import { OrganizationUsersTab } from '@/pages/organizations/OrganizationUsersTab'
 import { OrganizationSAMLConnectionsTab } from '@/pages/organizations/OrganizationSAMLConnectionsTab'
 import { OrganizationSCIMAPIKeysTab } from '@/pages/organizations/OrganizationSCIMAPIKeysTab'
@@ -24,6 +24,8 @@ import { EditSAMLConnectionPage } from '@/pages/saml-connections/EditSAMLConnect
 import { PageShell } from '@/components/page'
 import { ViewSCIMAPIKeyPage } from '@/pages/scim-api-keys/ViewSCIMAPIKeyPage'
 import { ViewProjectAPIKeyPage } from '@/pages/project-api-keys/ViewProjectAPIKey'
+import { HomePage } from '@/pages/home/HomePage'
+import { ProjectDetailsTab } from '@/pages/project/ProjectDetailsTab'
 
 const queryClient = new QueryClient()
 
@@ -56,7 +58,13 @@ function AppWithinQueryClient() {
       <BrowserRouter>
         <Routes>
           <Route path="" element={<PageShell />}>
-            <Route path="" element={<ViewProjectPage />} />
+            <Route path="" element={<HomePage />} />
+            <Route
+              path="project-settings"
+              element={<ViewProjectSettingsPage />}
+            >
+              <Route path="" element={<ProjectDetailsTab />} />
+            </Route>
 
             <Route
               path="project-api-keys"
