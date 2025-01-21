@@ -59,11 +59,6 @@ func (s *Store) ExchangeIntermediateSessionForNewOrganizationSession(ctx context
 		return nil, err
 	}
 
-	project, err := q.GetProjectByID(ctx, projectID)
-	if err != nil {
-		return nil, err
-	}
-
 	expiresAt := time.Now().Add(7 * time.Hour * 24) // 7 days
 
 	// Create a new session for the user
@@ -89,11 +84,29 @@ func (s *Store) ExchangeIntermediateSessionForNewOrganizationSession(ctx context
 		return nil, err
 	}
 
+	orgLogInWithGoogleEnabled := qProject.LogInWithGoogleEnabled && derefOrEmpty(qOrganization.OverrideLogInWithGoogleEnabled)
+	orgLogInWithMicrosoftEnabled := qProject.LogInWithMicrosoftEnabled && derefOrEmpty(qOrganization.OverrideLogInWithMicrosoftEnabled)
+	orgLogInWithPasswordEnabled := qProject.LogInWithPasswordEnabled && derefOrEmpty(qOrganization.OverrideLogInWithPasswordEnabled)
+
 	accessToken, err := sessions.GetAccessToken(ctx, &sessions.Organization{
-		ID:          idformat.Organization.Format(qOrganization.ID),
-		DisplayName: qOrganization.DisplayName,
+		ID:                        idformat.Organization.Format(qOrganization.ID),
+		ProjectID:                 idformat.Project.Format(projectID),
+		CreateTime:                derefOrEmpty(qOrganization.CreateTime),
+		UpdateTime:                derefOrEmpty(qOrganization.UpdateTime),
+		DisplayName:               qOrganization.DisplayName,
+		LogInWithGoogleEnabled:    orgLogInWithGoogleEnabled,
+		LogInWithMicrosoftEnabled: orgLogInWithMicrosoftEnabled,
+		LogInWithPasswordEnabled:  orgLogInWithPasswordEnabled,
+		SamlEnabled:               qOrganization.SamlEnabled,
 	}, &sessions.Project{
-		ID: idformat.Project.Format(project.ID),
+		ID:                        idformat.Project.Format(qProject.ID),
+		CreateTime:                derefOrEmpty(qProject.CreateTime),
+		UpdateTime:                derefOrEmpty(qProject.UpdateTime),
+		AuthDomain:                derefOrEmpty(qProject.AuthDomain),
+		DisplayName:               qProject.DisplayName,
+		LogInWithGoogleEnabled:    qProject.LogInWithGoogleEnabled,
+		LogInWithMicrosoftEnabled: qProject.LogInWithMicrosoftEnabled,
+		LogInWithPasswordEnabled:  qProject.LogInWithPasswordEnabled,
 	}, &sessions.Session{
 		ID:         idformat.Session.Format(qSession.ID),
 		UserID:     idformat.User.Format(qUser.ID),
@@ -232,11 +245,29 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
+	orgLogInWithGoogleEnabled := qProject.LogInWithGoogleEnabled && derefOrEmpty(qOrganization.OverrideLogInWithGoogleEnabled)
+	orgLogInWithMicrosoftEnabled := qProject.LogInWithMicrosoftEnabled && derefOrEmpty(qOrganization.OverrideLogInWithMicrosoftEnabled)
+	orgLogInWithPasswordEnabled := qProject.LogInWithPasswordEnabled && derefOrEmpty(qOrganization.OverrideLogInWithPasswordEnabled)
+
 	accessToken, err := sessions.GetAccessToken(ctx, &sessions.Organization{
-		ID:          idformat.Organization.Format(qOrganization.ID),
-		DisplayName: qOrganization.DisplayName,
+		ID:                        idformat.Organization.Format(qOrganization.ID),
+		ProjectID:                 idformat.Project.Format(projectID),
+		CreateTime:                derefOrEmpty(qOrganization.CreateTime),
+		UpdateTime:                derefOrEmpty(qOrganization.UpdateTime),
+		DisplayName:               qOrganization.DisplayName,
+		LogInWithGoogleEnabled:    orgLogInWithGoogleEnabled,
+		LogInWithMicrosoftEnabled: orgLogInWithMicrosoftEnabled,
+		LogInWithPasswordEnabled:  orgLogInWithPasswordEnabled,
+		SamlEnabled:               qOrganization.SamlEnabled,
 	}, &sessions.Project{
-		ID: idformat.Project.Format(qProject.ID),
+		ID:                        idformat.Project.Format(qProject.ID),
+		CreateTime:                derefOrEmpty(qProject.CreateTime),
+		UpdateTime:                derefOrEmpty(qProject.UpdateTime),
+		AuthDomain:                derefOrEmpty(qProject.AuthDomain),
+		DisplayName:               qProject.DisplayName,
+		LogInWithGoogleEnabled:    qProject.LogInWithGoogleEnabled,
+		LogInWithMicrosoftEnabled: qProject.LogInWithMicrosoftEnabled,
+		LogInWithPasswordEnabled:  qProject.LogInWithPasswordEnabled,
 	}, &sessions.Session{
 		ID:         idformat.Session.Format(qSession.ID),
 		UserID:     idformat.User.Format(qUser.ID),

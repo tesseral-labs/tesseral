@@ -27,13 +27,26 @@ type sessionClaims struct {
 }
 
 type Organization struct {
-	ID          string `json:"id"`
-	DisplayName string
+	ID                        string    `json:"id"`
+	ProjectID                 string    `json:"projectId"`
+	CreateTime                time.Time `json:"createTime"`
+	UpdateTime                time.Time `json:"updateTime"`
+	DisplayName               string    `json:"displayName"`
+	LogInWithGoogleEnabled    bool      `json:"logInWithGoogleEnabled"`
+	LogInWithMicrosoftEnabled bool      `json:"logInWithMicrosoftEnabled"`
+	LogInWithPasswordEnabled  bool      `json:"logInWithPasswordEnabled"`
+	SamlEnabled               bool      `json:"samlEnabled"`
 }
 
 type Project struct {
-	ID         string `json:"id"`
-	CreateTime time.Time
+	ID                        string `json:"id"`
+	CreateTime                time.Time
+	UpdateTime                time.Time
+	AuthDomain                string `json:"authDomain"`
+	DisplayName               string `json:"displayName"`
+	LogInWithGoogleEnabled    bool   `json:"logInWithGoogleEnabled"`
+	LogInWithMicrosoftEnabled bool   `json:"logInWithMicrosoftEnabled"`
+	LogInWithPasswordEnabled  bool   `json:"logInWithPasswordEnabled"`
 }
 
 type Session struct {
@@ -47,10 +60,10 @@ type Session struct {
 type User struct {
 	ID              string `json:"id"`
 	CreateTime      time.Time
+	UpdateTime      time.Time
 	Email           string
 	GoogleUserID    string
 	MicrosoftUserID string
-	UpdateTime      time.Time
 }
 
 func GetAccessToken(ctx context.Context, organization *Organization, project *Project, session *Session, user *User, privateKeyID uuid.UUID, privateKey *ecdsa.PrivateKey) (string, error) {

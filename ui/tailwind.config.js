@@ -11,17 +11,19 @@ module.exports = {
     extend: {
       colors: {
         // Brand colors
-        dark: '#010C0F',
+        dark: '#01090B',
         light: '#F6F7F7',
         primary: '#5046E1',
         white: '#FFFFFF',
 
         // Custom colors
+        body: 'hsl(var(--body))',
         border: 'hsl(var(--border))',
-        input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
+
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
+
         primary: {
           DEFAULT: 'hsl(var(--primary))',
           foreground: 'hsl(var(--primary-foreground))',
@@ -49,6 +51,10 @@ module.exports = {
         card: {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
+        },
+        input: {
+          DEFAULT: 'hsl(var(--input))',
+          foreground: 'hsl(var(--input-foreground))',
         },
       },
     },

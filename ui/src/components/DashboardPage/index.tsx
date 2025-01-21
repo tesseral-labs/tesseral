@@ -52,13 +52,15 @@ const DashboardPage: FC<PropsWithChildren> = ({ children }) => {
               className={cn(
                 'min-h-screen w-screen',
                 isDarkMode && projectUiSettings.detectDarkModeEnabled
-                  ? 'dark bg-dark'
-                  : 'light bg-muted',
+                  ? 'dark'
+                  : '',
               )}
             >
-              <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <Header />
-                {children}
+              <div className="bg-body w-screen min-h-screen mx-auto items-center">
+                <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
+                  <Header />
+                  <div className="py-8">{children}</div>
+                </div>
               </div>
             </div>
           </UserContextProvider>

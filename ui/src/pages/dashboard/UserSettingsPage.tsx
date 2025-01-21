@@ -1,17 +1,13 @@
-import React, { FC, FormEvent, MouseEvent, useState } from 'react'
+import React, { FC, FormEvent, MouseEvent, useEffect, useState } from 'react'
 import { useUser } from '@/lib/auth'
-import { Card } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { useMutation } from '@connectrpc/connect-query'
-import {
-  setPassword as setUserPassword,
-  updateUser,
-} from '@/gen/openauth/frontend/v1/frontend-FrontendService_connectquery'
+import { setPassword as setUserPassword } from '@/gen/openauth/frontend/v1/frontend-FrontendService_connectquery'
 
 const UserSettingsPage: FC = () => {
   const user = useUser()
   const setPasswordMutation = useMutation(setUserPassword)
-  const updateUserMutation = useMutation(updateUser)
 
   const [editingEmail, setEditingEmail] = useState(false)
   const [editingPassword, setEditingPassword] = useState(false)
@@ -37,27 +33,42 @@ const UserSettingsPage: FC = () => {
     }
   }
 
+  useEffect(() => {
+    if (user && user.email) {
+      setEmail(user.email || '')
+    }
+  }, [user])
+
   return (
     <div className="dark:text-foreground">
       <h1 className="text-2xl font-bold mb-4">User Settings</h1>
 
-      <Card className="p-4 columns-3">
-        <div>
-          <div className="text-sm font-semibold mb-2">User ID</div>
-          <div className="text-sm text-gray-500">{user?.id}</div>
-        </div>
-        <div>
-          <div className="text-sm font-semibold mb-2">Google User ID</div>
-          <div className="text-sm text-gray-500">
-            {user?.googleUserId || '—'}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-xl">Basic information</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-3 gap-x-2 text-sm">
+            <div className="border-r pr-8 dark:border-gray-700">
+              <div className="text-sm font-semibold mb-2">User ID</div>
+              <div className="text-sm text-gray-500">{user?.id}</div>
+            </div>
+            <div className="border-r px-8 dark:border-gray-700">
+              <div className="text-sm font-semibold mb-2">Google User ID</div>
+              <div className="text-sm text-gray-500">
+                {user?.googleUserId || '—'}
+              </div>
+            </div>
+            <div className="px-8">
+              <div className="text-sm font-semibold mb-2">
+                Microsoft User ID
+              </div>
+              <div className="text-sm text-gray-500">
+                {user?.microsoftUserId || '—'}
+              </div>
+            </div>
           </div>
-        </div>
-        <div>
-          <div className="text-sm font-semibold mb-2">Microsoft User ID</div>
-          <div className="text-sm text-gray-500">
-            {user?.microsoftUserId || '—'}
-          </div>
-        </div>
+        </CardContent>
       </Card>
       <Card className="p-4 mt-4">
         <form onSubmit={handleEmailSubmit}>
@@ -65,7 +76,7 @@ const UserSettingsPage: FC = () => {
             Email
           </label>
           <input
-            className="text-sm bg-input rounded border border-border focus:border-primary w-[240px] mb-2 disabled:text-gray-400 disabled:bg-gray-200"
+            className="text-sm rounded border border-border bg-input text-input-foreground disabled:bg-muted disabled:text-muted-foreground focus:border-primary w-[240px] mb-2"
             disabled={!editingEmail}
             onChange={(e) => setEmail(e.target.value)}
             type="email"
@@ -115,7 +126,7 @@ const UserSettingsPage: FC = () => {
             Password
           </label>
           <input
-            className="text-sm bg-input rounded border border-border focus:border-primary w-[240px] mb-2 disabled:text-gray-400 disabled:bg-gray-200"
+            className="text-sm rounded border border-border bg-input text-input-foreground disabled:bg-muted disabled:text-muted-foreground w-[240px] mb-2"
             disabled={!editingPassword}
             onChange={(e) => setPassword(e.target.value)}
             type="password"
