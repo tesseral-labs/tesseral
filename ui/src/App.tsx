@@ -16,6 +16,7 @@ import Page from '@/components/Page'
 import UserSettingsPage from './pages/dashboard/UserSettingsPage'
 import DashboardPage from './components/DashboardPage'
 import OrganizationSettingsPage from './pages/dashboard/OrganizationSettingsPage'
+import EditSAMLConnectionsPage from './pages/dashboard/EditSAMLConnectionsPage'
 
 const queryClient = new QueryClient()
 
@@ -52,6 +53,14 @@ const AppWithRoutes: FC = () => {
               element={
                 <DashboardPage>
                   <OrganizationSettingsPage />
+                </DashboardPage>
+              }
+            />
+            <Route
+              path="/organization/saml-connections/:samlConnectionId"
+              element={
+                <DashboardPage>
+                  <EditSAMLConnectionsPage />
                 </DashboardPage>
               }
             />

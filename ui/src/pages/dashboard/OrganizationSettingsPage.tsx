@@ -15,6 +15,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { Button } from '@/components/ui/button'
+import { Link } from 'react-router-dom'
 
 const OrganizationSettingsPage: FC = () => {
   const organization = useOrganization()
@@ -134,6 +136,7 @@ const OrganizationSettingsPage: FC = () => {
                 <TableCell>IDP Entity ID</TableCell>
                 <TableCell>IDP Redirect URL</TableCell>
                 <TableCell>IDP X509 Certificate</TableCell>
+                <TableCell></TableCell>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -147,7 +150,22 @@ const OrganizationSettingsPage: FC = () => {
                     {c.idpRedirectUrl}
                   </TableCell>
                   <TableCell className="text-gray-500">
-                    {c.idpX509Certificate ? '✓' : 'x'}
+                    {c.idpX509Certificate ? (
+                      <a
+                        className="font-medium underline underline-offset-2 decoration-muted-foreground/40"
+                        download={`Certificate ${c.id}.crt`}
+                        href={`data:text/plain;base64,${btoa(c.idpX509Certificate)}`}
+                      >
+                        Download (.crt)
+                      </a>
+                    ) : (
+                      '-'
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <Link to={`/organization/saml-connections/${c.id}`}>
+                      <Button variant="outline">Edit</Button>
+                    </Link>
                   </TableCell>
                 </TableRow>
               ))}
