@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
-	"github.com/aws/aws-sdk-go-v2/service/ses"
+	"github.com/aws/aws-sdk-go-v2/service/sesv2"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -22,7 +22,7 @@ type Store struct {
 	kms                                   *kms.Client
 	pageEncoder                           pagetoken.Encoder
 	q                                     *queries.Queries
-	ses                                   *ses.Client
+	ses                                   *sesv2.Client
 	sessionSigningKeyKmsKeyID             string
 	googleOAuthClientSecretsKMSKeyID      string
 	microsoftOAuthClientSecretsKMSKeyID   string
@@ -37,7 +37,7 @@ type NewStoreParams struct {
 	IntermediateSessionSigningKeyKMSKeyID string
 	KMS                                   *kms.Client
 	PageEncoder                           pagetoken.Encoder
-	SES                                   *ses.Client
+	SES                                   *sesv2.Client
 	SessionSigningKeyKmsKeyID             string
 	GoogleOAuthClientSecretsKMSKeyID      string
 	MicrosoftOAuthClientSecretsKMSKeyID   string
