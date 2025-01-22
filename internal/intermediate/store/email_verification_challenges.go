@@ -12,8 +12,8 @@ import (
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/service/ses"
-	"github.com/aws/aws-sdk-go-v2/service/ses/types"
+	"github.com/aws/aws-sdk-go-v2/service/sesv2"
+	"github.com/aws/aws-sdk-go-v2/service/sesv2/types"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/openauth/openauth/internal/common/apierror"
@@ -186,27 +186,23 @@ func (s *Store) IssueEmailVerificationChallenge(ctx context.Context) (*intermedi
 }
 
 func (s *Store) sendEmailVerificationChallenge(ctx context.Context, email string, secretToken string) error {
-	output, err := s.ses.SendEmail(ctx, &ses.SendEmailInput{
+	output, err := s.ses.SendEmail(ctx, &sesv2.SendEmailInput{
+		Content: &types.EmailContent{
+			Simple: &types.Message{
+				Body: &types.Body{
+					Html: &types.Content{
+						Data: aws.String(fmt.Sprintf("<h2>Please verifiy your email address to continue logging in</h2><p>Your email verification code is: %s</p>", secretToken)),
+					},
+				},
+				Subject: &types.Content{
+					Data: aws.String("Verify your email address"),
+				},
+			},
+		},
 		Destination: &types.Destination{
 			ToAddresses: []string{email},
 		},
-		Message: &types.Message{
-			Body: &types.Body{
-				Html: &types.Content{
-					Charset: aws.String("UTF-8"),
-					Data:    aws.String(fmt.Sprintf("<h1>Please verifiy your email address to continue loggin in</h1><p>Your email verification code is: %s</p>", secretToken)),
-				},
-				Text: &types.Content{
-					Charset: aws.String("UTF-8"),
-					Data:    aws.String(fmt.Sprintf("Your email verification code is: %s", secretToken)),
-				},
-			},
-			Subject: &types.Content{
-				Charset: aws.String("UTF-8"),
-				Data:    aws.String("Verify your email address"),
-			},
-		},
-		Source: aws.String("do-not-reply@tesseral.com"),
+		FromEmailAddress: aws.String("replace-me@tesseral.app"), // TODO: Replace with a real email address once verification is in place
 	})
 	if err != nil {
 		return fmt.Errorf("send email: %w", err)

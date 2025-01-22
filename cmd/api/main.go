@@ -12,7 +12,7 @@ import (
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
-	"github.com/aws/aws-sdk-go-v2/service/ses"
+	"github.com/aws/aws-sdk-go-v2/service/sesv2"
 	"github.com/cyrusaf/ctxlog"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -120,7 +120,7 @@ func main() {
 		}
 	})
 
-	ses_ := ses.NewFromConfig(awsConfig, func(o *ses.Options) {
+	ses_ := sesv2.NewFromConfig(awsConfig, func(o *sesv2.Options) {
 		if config.SESEndpoint != "" {
 			o.BaseEndpoint = &config.SESEndpoint
 		}

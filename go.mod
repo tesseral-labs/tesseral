@@ -12,6 +12,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.73.0
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.34.5
 	github.com/aws/aws-sdk-go-v2/service/ses v1.29.6
+	github.com/aws/aws-sdk-go-v2/service/sesv2 v1.41.1
 	github.com/cyrusaf/ctxlog v1.3.3
 	github.com/golang-migrate/migrate/v4 v4.17.1
 	github.com/google/go-cmp v0.6.0
