@@ -12,6 +12,7 @@ import (
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/aws/aws-sdk-go-v2/service/ses"
 	"github.com/cyrusaf/ctxlog"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -69,6 +70,7 @@ func main() {
 		PageEncodingValue                   string `conf:"page-encoding-value"`
 		S3UserContentBucketName             string `conf:"s3_user_content_bucket_name,noredact"`
 		S3Endpoint                          string `conf:"s3_endpoint_resolver_url,noredact"`
+		SESEndpoint                         string `conf:"ses_endpoint_resolver_url,noredact"`
 		ServeAddr                           string `conf:"serve_addr,noredact"`
 		SessionKMSKeyID                     string `conf:"session_kms_key_id"`
 		GoogleOAuthClientSecretsKMSKeyID    string `conf:"google_oauth_client_secrets_kms_key_id,noredact"`
@@ -114,6 +116,12 @@ func main() {
 		if config.S3Endpoint != "" {
 			o.BaseEndpoint = &config.S3Endpoint
 			o.UsePathStyle = true
+		}
+	})
+
+	ses_ := ses.NewFromConfig(awsConfig, func(o *ses.Options) {
+		if config.SESEndpoint != "" {
+			o.BaseEndpoint = &config.SESEndpoint
 		}
 	})
 
@@ -183,6 +191,7 @@ func main() {
 		PageEncoder:                           pagetoken.Encoder{Secret: pageEncodingValue},
 		GoogleOAuthClient:                     &googleoauth.Client{HTTPClient: &http.Client{}},
 		MicrosoftOAuthClient:                  &microsoftoauth.Client{HTTPClient: &http.Client{}},
+		SES:                                   ses_,
 		SessionSigningKeyKmsKeyID:             config.SessionKMSKeyID,
 		GoogleOAuthClientSecretsKMSKeyID:      config.GoogleOAuthClientSecretsKMSKeyID,
 		MicrosoftOAuthClientSecretsKMSKeyID:   config.MicrosoftOAuthClientSecretsKMSKeyID,

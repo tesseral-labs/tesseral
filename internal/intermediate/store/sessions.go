@@ -33,6 +33,16 @@ func (s *Store) ExchangeIntermediateSessionForNewOrganizationSession(ctx context
 	intermediateSession := authn.IntermediateSession(ctx)
 	projectID := authn.ProjectID(ctx)
 
+	// Get the project
+	qProject, err := q.GetProjectByID(ctx, projectID)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("project not found", fmt.Errorf("get project by id: %w", err))
+		}
+
+		return nil, fmt.Errorf("get project by id: %w", err)
+	}
+
 	// Create a new organization
 	qOrganization, err := q.CreateOrganization(ctx, queries.CreateOrganizationParams{
 		ID:                   uuid.New(),

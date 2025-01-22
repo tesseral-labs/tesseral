@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
+	"github.com/aws/aws-sdk-go-v2/service/ses"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -21,6 +22,7 @@ type Store struct {
 	kms                                   *kms.Client
 	pageEncoder                           pagetoken.Encoder
 	q                                     *queries.Queries
+	ses                                   *ses.Client
 	sessionSigningKeyKmsKeyID             string
 	googleOAuthClientSecretsKMSKeyID      string
 	microsoftOAuthClientSecretsKMSKeyID   string
@@ -35,6 +37,7 @@ type NewStoreParams struct {
 	IntermediateSessionSigningKeyKMSKeyID string
 	KMS                                   *kms.Client
 	PageEncoder                           pagetoken.Encoder
+	SES                                   *ses.Client
 	SessionSigningKeyKmsKeyID             string
 	GoogleOAuthClientSecretsKMSKeyID      string
 	MicrosoftOAuthClientSecretsKMSKeyID   string
@@ -51,6 +54,7 @@ func New(p NewStoreParams) *Store {
 		kms:                                   p.KMS,
 		pageEncoder:                           p.PageEncoder,
 		q:                                     queries.New(p.DB),
+		ses:                                   p.SES,
 		sessionSigningKeyKmsKeyID:             p.SessionSigningKeyKmsKeyID,
 		googleOAuthClient:                     p.GoogleOAuthClient,
 		microsoftOAuthClient:                  p.MicrosoftOAuthClient,
