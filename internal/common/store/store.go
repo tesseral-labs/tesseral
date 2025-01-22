@@ -4,25 +4,34 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/openauth/openauth/internal/common/store/queries"
 )
 
 type Store struct {
-	appAuthRootDomain string
-	db                *pgxpool.Pool
+	appAuthRootDomain         string
+	db                        *pgxpool.Pool
+	kms                       *kms.Client
+	sessionSigningKeyKMSKeyID string
+	q                         *queries.Queries
 }
 
 type NewStoreParams struct {
-	AppAuthRootDomain string
-	DB                *pgxpool.Pool
+	AppAuthRootDomain         string
+	DB                        *pgxpool.Pool
+	KMS                       *kms.Client
+	SessionSigningKeyKMSKeyID string
 }
 
 func New(p NewStoreParams) *Store {
 	store := &Store{
-		appAuthRootDomain: p.AppAuthRootDomain,
-		db:                p.DB,
+		appAuthRootDomain:         p.AppAuthRootDomain,
+		db:                        p.DB,
+		kms:                       p.KMS,
+		sessionSigningKeyKMSKeyID: p.SessionSigningKeyKMSKeyID,
+		q:                         queries.New(p.DB),
 	}
 
 	return store

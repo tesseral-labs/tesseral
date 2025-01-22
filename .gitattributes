@@ -10,6 +10,9 @@ ui/src/gen/** generated
 internal/gen/** generated
 internal/store/queries/** generated
 
+internal/common/gen/** generated
+internal/common/store/queries/** generated
+
 internal/backend/gen/** generated
 internal/backend/store/queries/** generated
 

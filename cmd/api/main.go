@@ -20,8 +20,9 @@ import (
 	"github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1/backendv1connect"
 	backendservice "github.com/openauth/openauth/internal/backend/service"
 	backendstore "github.com/openauth/openauth/internal/backend/store"
+	"github.com/openauth/openauth/internal/common/accesstoken"
 	"github.com/openauth/openauth/internal/common/projectid"
-	sharedstore "github.com/openauth/openauth/internal/common/store"
+	commonstore "github.com/openauth/openauth/internal/common/store"
 	frontendinterceptor "github.com/openauth/openauth/internal/frontend/authn/interceptor"
 	"github.com/openauth/openauth/internal/frontend/gen/openauth/frontend/v1/frontendv1connect"
 	frontendservice "github.com/openauth/openauth/internal/frontend/service"
@@ -125,11 +126,12 @@ func main() {
 		}
 	})
 
-	sharedstore_ := sharedstore.New(sharedstore.NewStoreParams{
-		AppAuthRootDomain: config.AuthAppsRootDomain,
-		DB:                db,
+	commonStore := commonstore.New(commonstore.NewStoreParams{
+		AppAuthRootDomain:         config.AuthAppsRootDomain,
+		DB:                        db,
+		KMS:                       kms_,
+		SessionSigningKeyKMSKeyID: config.SessionKMSKeyID,
 	})
-	Sniffer := projectid.NewSniffer(config.AuthAppsRootDomain, sharedstore_)
 
 	// Register the backend service
 	backendStore := backendstore.New(backendstore.NewStoreParams{
@@ -170,10 +172,11 @@ func main() {
 	})
 	frontendConnectPath, frontendConnectHandler := frontendv1connect.NewFrontendServiceHandler(
 		&frontendservice.Service{
-			Store: frontendStore,
+			Store:             frontendStore,
+			AccessTokenIssuer: accesstoken.NewIssuer(commonStore),
 		},
 		connect.WithInterceptors(
-			frontendinterceptor.New(frontendStore, Sniffer, config.AuthAppsRootDomain),
+			frontendinterceptor.New(frontendStore, projectid.NewSniffer(config.AuthAppsRootDomain, commonStore), config.AuthAppsRootDomain),
 		),
 	)
 	frontend := vanguard.NewService(frontendConnectPath, frontendConnectHandler)
@@ -199,10 +202,11 @@ func main() {
 	})
 	intermediateConnectPath, intermediateConnectHandler := intermediatev1connect.NewIntermediateServiceHandler(
 		&intermediateservice.Service{
-			Store: intermediateStore,
+			Store:             intermediateStore,
+			AccessTokenIssuer: accesstoken.NewIssuer(commonStore),
 		},
 		connect.WithInterceptors(
-			intermediateinterceptor.New(intermediateStore, Sniffer, config.AuthAppsRootDomain),
+			intermediateinterceptor.New(intermediateStore, projectid.NewSniffer(config.AuthAppsRootDomain, commonStore), config.AuthAppsRootDomain),
 		),
 	)
 	intermediate := vanguard.NewService(intermediateConnectPath, intermediateConnectHandler)
@@ -225,7 +229,7 @@ func main() {
 		Store: samlStore,
 	}
 	samlServiceHandler := samlService.Handler()
-	samlServiceHandler = samlinterceptor.New(Sniffer, samlServiceHandler)
+	samlServiceHandler = samlinterceptor.New(projectid.NewSniffer(config.AuthAppsRootDomain, commonStore), samlServiceHandler)
 
 	scimStore := scimstore.New(scimstore.NewStoreParams{
 		DB: db,
@@ -233,7 +237,7 @@ func main() {
 	scimService := scimservice.Service{
 		Store: scimStore,
 	}
-	scimServiceHandler := scimService.Handler(Sniffer)
+	scimServiceHandler := scimService.Handler(projectid.NewSniffer(config.AuthAppsRootDomain, commonStore))
 
 	connectMux := http.NewServeMux()
 	connectMux.Handle(backendConnectPath, backendConnectHandler)

@@ -16,13 +16,15 @@ func (s *Service) GetAccessToken(ctx context.Context, req *connect.Request[front
 		req.Msg.RefreshToken = refreshToken
 	}
 
-	res, err := s.Store.GetAccessToken(ctx, req.Msg)
+	accessToken, err := s.AccessTokenIssuer.NewAccessToken(ctx, refreshToken)
 	if err != nil {
 		return nil, fmt.Errorf("store: %w", err)
 	}
 
-	connectRes := connect.NewResponse(res)
-	connectRes.Header().Add("Set-Cookie", cookies.BuildCookie(ctx, req, "accessToken", res.AccessToken, authn.ProjectID(ctx)))
+	connectRes := connect.NewResponse(&frontendv1.GetAccessTokenResponse{
+		AccessToken: accessToken,
+	})
+	connectRes.Header().Add("Set-Cookie", cookies.BuildCookie(ctx, req, "accessToken", accessToken, authn.ProjectID(ctx)))
 
 	return connectRes, nil
 }

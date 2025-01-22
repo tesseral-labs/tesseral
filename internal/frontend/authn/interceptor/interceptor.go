@@ -2,6 +2,8 @@ package interceptor
 
 import (
 	"context"
+	"fmt"
+	"strings"
 	"time"
 
 	"connectrpc.com/connect"
@@ -56,8 +58,10 @@ func New(s *store.Store, p *projectid.Sniffer, authAppsRootDomain string) connec
 				return nil, connect.NewError(connect.CodeUnauthenticated, err)
 			}
 
+			aud := fmt.Sprintf("https://%s.tesseral.app", strings.ReplaceAll(requestProjectID, "_", "-"))
+
 			var claims map[string]interface{}
-			if err := ujwt.Claims(publicKey, "TODO", time.Now(), &claims, accessToken); err != nil {
+			if err := ujwt.Claims(publicKey, aud, time.Now(), &claims, accessToken); err != nil {
 				return nil, connect.NewError(connect.CodeUnauthenticated, err)
 			}
 
