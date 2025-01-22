@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/sha256"
 	"fmt"
-	"log/slog"
 	"time"
 
 	"github.com/google/uuid"
@@ -65,8 +64,10 @@ func (s *Store) SignInWithEmail(
 		return nil, fmt.Errorf("create email verification challenge: %w", err)
 	}
 
-	// TODO: Remove this log line and replace with email sending
-	slog.Info("SignInWithEmail", "challenge", secretToken)
+	err = s.sendEmailVerificationChallenge(ctx, req.Email, secretToken)
+	if err != nil {
+		return nil, fmt.Errorf("send email verification challenge: %w", err)
+	}
 
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)

@@ -68,6 +68,18 @@ services:
       - 9090:9090
     volumes:
       - ./.local/s3:/containers3root
+  ses:
+    build:
+      dockerfile: ./.local/ses/Dockerfile
+      context: .
+    environment:
+      AWS_SES_ACCOUNT: ${AWS_SES_ACCOUNT}
+      SMTP_TRANSPORT: ${SMTP_TRANSPORT}
+    working_dir: /srv/www/dist
+    ports:
+      - 8005:8005
+    volumes:
+      - ./.local/ses/output:/output
   ui:
     command: bash -c "npm i --force && npm run dev"
     environment:
