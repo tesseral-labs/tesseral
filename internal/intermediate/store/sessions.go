@@ -2,22 +2,17 @@ package store
 
 import (
 	"context"
-	"crypto/ecdsa"
 	"crypto/sha256"
 	"errors"
 	"fmt"
 	"time"
 
-	"github.com/aws/aws-sdk-go-v2/service/kms"
-	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/openauth/openauth/internal/common/apierror"
-	openauthecdsa "github.com/openauth/openauth/internal/crypto/ecdsa"
 	"github.com/openauth/openauth/internal/intermediate/authn"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
-	"github.com/openauth/openauth/internal/sessions"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
@@ -34,14 +29,14 @@ func (s *Store) ExchangeIntermediateSessionForNewOrganizationSession(ctx context
 	projectID := authn.ProjectID(ctx)
 
 	// Get the project
-	qProject, err := q.GetProjectByID(ctx, projectID)
-	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, apierror.NewNotFoundError("project not found", fmt.Errorf("get project by id: %w", err))
-		}
-
-		return nil, fmt.Errorf("get project by id: %w", err)
-	}
+	//qProject, err := q.GetProjectByID(ctx, projectID)
+	//if err != nil {
+	//	if errors.Is(err, pgx.ErrNoRows) {
+	//		return nil, apierror.NewNotFoundError("project not found", fmt.Errorf("get project by id: %w", err))
+	//	}
+	//
+	//	return nil, fmt.Errorf("get project by id: %w", err)
+	//}
 
 	// Create a new organization
 	qOrganization, err := q.CreateOrganization(ctx, queries.CreateOrganizationParams{
@@ -75,18 +70,12 @@ func (s *Store) ExchangeIntermediateSessionForNewOrganizationSession(ctx context
 	refreshToken := uuid.New()
 	refreshTokenSHA256 := sha256.Sum256(refreshToken[:])
 
-	qSession, err := q.CreateSession(ctx, queries.CreateSessionParams{
+	if _, err := q.CreateSession(ctx, queries.CreateSessionParams{
 		ID:                 uuid.Must(uuid.NewV7()),
 		ExpireTime:         &expiresAt,
 		RefreshTokenSha256: refreshTokenSHA256[:],
 		UserID:             qUser.ID,
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	sessionSigningKeyID, privateKey, err := s.getSessionSigningKey(ctx, q, projectID)
-	if err != nil {
+	}); err != nil {
 		return nil, err
 	}
 
@@ -94,49 +83,8 @@ func (s *Store) ExchangeIntermediateSessionForNewOrganizationSession(ctx context
 		return nil, err
 	}
 
-	orgLogInWithGoogleEnabled := qProject.LogInWithGoogleEnabled && derefOrEmpty(qOrganization.OverrideLogInWithGoogleEnabled)
-	orgLogInWithMicrosoftEnabled := qProject.LogInWithMicrosoftEnabled && derefOrEmpty(qOrganization.OverrideLogInWithMicrosoftEnabled)
-	orgLogInWithPasswordEnabled := qProject.LogInWithPasswordEnabled && derefOrEmpty(qOrganization.OverrideLogInWithPasswordEnabled)
-
-	accessToken, err := sessions.GetAccessToken(ctx, &sessions.Organization{
-		ID:                        idformat.Organization.Format(qOrganization.ID),
-		ProjectID:                 idformat.Project.Format(projectID),
-		CreateTime:                derefOrEmpty(qOrganization.CreateTime),
-		UpdateTime:                derefOrEmpty(qOrganization.UpdateTime),
-		DisplayName:               qOrganization.DisplayName,
-		LogInWithGoogleEnabled:    orgLogInWithGoogleEnabled,
-		LogInWithMicrosoftEnabled: orgLogInWithMicrosoftEnabled,
-		LogInWithPasswordEnabled:  orgLogInWithPasswordEnabled,
-		SamlEnabled:               qOrganization.SamlEnabled,
-	}, &sessions.Project{
-		ID:                        idformat.Project.Format(qProject.ID),
-		CreateTime:                derefOrEmpty(qProject.CreateTime),
-		UpdateTime:                derefOrEmpty(qProject.UpdateTime),
-		AuthDomain:                derefOrEmpty(qProject.AuthDomain),
-		DisplayName:               qProject.DisplayName,
-		LogInWithGoogleEnabled:    qProject.LogInWithGoogleEnabled,
-		LogInWithMicrosoftEnabled: qProject.LogInWithMicrosoftEnabled,
-		LogInWithPasswordEnabled:  qProject.LogInWithPasswordEnabled,
-	}, &sessions.Session{
-		ID:         idformat.Session.Format(qSession.ID),
-		UserID:     idformat.User.Format(qUser.ID),
-		CreateTime: *qSession.CreateTime,
-		ExpireTime: *qSession.ExpireTime,
-		Revoked:    qSession.Revoked,
-	}, &sessions.User{
-		ID:              idformat.User.Format(qUser.ID),
-		CreateTime:      *qUser.CreateTime,
-		Email:           qUser.Email,
-		GoogleUserID:    derefOrEmpty(qUser.GoogleUserID),
-		MicrosoftUserID: derefOrEmpty(qUser.MicrosoftUserID),
-		UpdateTime:      derefOrEmpty(qUser.UpdateTime),
-	}, *sessionSigningKeyID, privateKey)
-	if err != nil {
-		return nil, err
-	}
-
 	return &intermediatev1.ExchangeIntermediateSessionForNewOrganizationSessionResponse{
-		AccessToken:  accessToken,
+		AccessToken:  "", // populated in service
 		RefreshToken: idformat.SessionRefreshToken.Format(refreshToken),
 	}, nil
 }
@@ -149,24 +97,24 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 	defer rollback()
 
 	intermediateSession := authn.IntermediateSession(ctx)
-	projectID := authn.ProjectID(ctx)
+	//projectID := authn.ProjectID(ctx)
 
 	organizationID, err := idformat.Organization.Parse(req.OrganizationId)
 	if err != nil {
 		return nil, apierror.NewInvalidArgumentError("invalid organization id", fmt.Errorf("parse organization id: %w", err))
 	}
 
-	qOrganization, err := q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
-		ID:        organizationID,
-		ProjectID: projectID,
-	})
-	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, apierror.NewNotFoundError("organization not found", fmt.Errorf("get project organization by id: %w", err))
-		}
-
-		return nil, fmt.Errorf("get project organization by id: %w", err)
-	}
+	//qOrganization, err := q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
+	//	ID:        organizationID,
+	//	ProjectID: projectID,
+	//})
+	//if err != nil {
+	//	if errors.Is(err, pgx.ErrNoRows) {
+	//		return nil, apierror.NewNotFoundError("organization not found", fmt.Errorf("get project organization by id: %w", err))
+	//	}
+	//
+	//	return nil, fmt.Errorf("get project organization by id: %w", err)
+	//}
 
 	// Use the intermediate session state to determine the user to sign in
 	// The hierarchy of user identifiers is:
@@ -223,108 +171,21 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 	refreshToken := uuid.New()
 	refreshTokenSHA256 := sha256.Sum256(refreshToken[:])
 
-	qSession, err := q.CreateSession(ctx, queries.CreateSessionParams{
+	if _, err := q.CreateSession(ctx, queries.CreateSessionParams{
 		ID:                 uuid.Must(uuid.NewV7()),
 		ExpireTime:         &expiresAt,
 		RefreshTokenSha256: refreshTokenSHA256[:],
 		UserID:             qUser.ID,
-	})
-	if err != nil {
+	}); err != nil {
 		return nil, fmt.Errorf("create session: %w", err)
-	}
-
-	qProject, err := q.GetProjectByID(ctx, projectID)
-	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, apierror.NewNotFoundError("project not found", fmt.Errorf("get project by id: %w", err))
-		}
-
-		return nil, fmt.Errorf("get project by id: %w", err)
-	}
-
-	sessionSigningKeyID, privateKey, err := s.getSessionSigningKey(ctx, q, projectID)
-	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, apierror.NewNotFoundError("session signing key not found", fmt.Errorf("get current session key by project id: %w", err))
-		}
-
-		return nil, fmt.Errorf("get session signing key: %w", err)
 	}
 
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	orgLogInWithGoogleEnabled := qProject.LogInWithGoogleEnabled && derefOrEmpty(qOrganization.OverrideLogInWithGoogleEnabled)
-	orgLogInWithMicrosoftEnabled := qProject.LogInWithMicrosoftEnabled && derefOrEmpty(qOrganization.OverrideLogInWithMicrosoftEnabled)
-	orgLogInWithPasswordEnabled := qProject.LogInWithPasswordEnabled && derefOrEmpty(qOrganization.OverrideLogInWithPasswordEnabled)
-
-	accessToken, err := sessions.GetAccessToken(ctx, &sessions.Organization{
-		ID:                        idformat.Organization.Format(qOrganization.ID),
-		ProjectID:                 idformat.Project.Format(projectID),
-		CreateTime:                derefOrEmpty(qOrganization.CreateTime),
-		UpdateTime:                derefOrEmpty(qOrganization.UpdateTime),
-		DisplayName:               qOrganization.DisplayName,
-		LogInWithGoogleEnabled:    orgLogInWithGoogleEnabled,
-		LogInWithMicrosoftEnabled: orgLogInWithMicrosoftEnabled,
-		LogInWithPasswordEnabled:  orgLogInWithPasswordEnabled,
-		SamlEnabled:               qOrganization.SamlEnabled,
-	}, &sessions.Project{
-		ID:                        idformat.Project.Format(qProject.ID),
-		CreateTime:                derefOrEmpty(qProject.CreateTime),
-		UpdateTime:                derefOrEmpty(qProject.UpdateTime),
-		AuthDomain:                derefOrEmpty(qProject.AuthDomain),
-		DisplayName:               qProject.DisplayName,
-		LogInWithGoogleEnabled:    qProject.LogInWithGoogleEnabled,
-		LogInWithMicrosoftEnabled: qProject.LogInWithMicrosoftEnabled,
-		LogInWithPasswordEnabled:  qProject.LogInWithPasswordEnabled,
-	}, &sessions.Session{
-		ID:         idformat.Session.Format(qSession.ID),
-		UserID:     idformat.User.Format(qUser.ID),
-		CreateTime: *qSession.CreateTime,
-		ExpireTime: *qSession.ExpireTime,
-		Revoked:    qSession.Revoked,
-	}, &sessions.User{
-		ID:              idformat.User.Format(qUser.ID),
-		CreateTime:      *qUser.CreateTime,
-		Email:           qUser.Email,
-		GoogleUserID:    derefOrEmpty(qUser.GoogleUserID),
-		MicrosoftUserID: derefOrEmpty(qUser.MicrosoftUserID),
-		UpdateTime:      derefOrEmpty(qUser.UpdateTime),
-	}, *sessionSigningKeyID, privateKey)
-	if err != nil {
-		return nil, fmt.Errorf("get access token: %w", err)
-	}
-
 	return &intermediatev1.ExchangeIntermediateSessionForSessionResponse{
-		AccessToken:  accessToken,
+		AccessToken:  "", // populated in service
 		RefreshToken: idformat.SessionRefreshToken.Format(refreshToken),
 	}, nil
-}
-
-func (s *Store) getSessionSigningKey(ctx context.Context, q *queries.Queries, projectID uuid.UUID) (*uuid.UUID, *ecdsa.PrivateKey, error) {
-	sessionSigningKey, err := q.GetCurrentSessionKeyByProjectID(ctx, projectID)
-	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, nil, apierror.NewFailedPreconditionError("session signing key not found", fmt.Errorf("get current session key by project id: %w", err))
-		}
-
-		return nil, nil, fmt.Errorf("get current session key by project id: %w", err)
-	}
-
-	decryptResult, err := s.kms.Decrypt(ctx, &kms.DecryptInput{
-		CiphertextBlob:      sessionSigningKey.PrivateKeyCipherText,
-		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
-		KeyId:               &s.sessionSigningKeyKmsKeyID,
-	})
-	if err != nil {
-		return nil, nil, fmt.Errorf("decrypt: %w", err)
-	}
-
-	privateKey, err := openauthecdsa.PrivateKeyFromBytes(decryptResult.Plaintext)
-	if err != nil {
-		return nil, nil, fmt.Errorf("private key from bytes: %w", err)
-	}
-
-	return &sessionSigningKey.ID, privateKey, nil
 }

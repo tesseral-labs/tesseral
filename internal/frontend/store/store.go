@@ -3,7 +3,6 @@ package store
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/google/uuid"
@@ -11,7 +10,6 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/openauth/openauth/internal/frontend/store/queries"
 	"github.com/openauth/openauth/internal/pagetoken"
-	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type Store struct {
@@ -64,11 +62,4 @@ func derefOrEmpty[T any](t *T) T {
 		return z
 	}
 	return *t
-}
-
-func derefTimeOrNil(t *time.Time) *timestamppb.Timestamp {
-	if t == nil {
-		return nil
-	}
-	return timestamppb.New(*t)
 }

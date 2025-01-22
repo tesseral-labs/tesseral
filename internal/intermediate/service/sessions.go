@@ -16,6 +16,12 @@ func (s *Service) ExchangeIntermediateSessionForNewOrganizationSession(ctx conte
 		return nil, fmt.Errorf("store: %w", err)
 	}
 
+	accessToken, err := s.AccessTokenIssuer.NewAccessToken(ctx, res.RefreshToken)
+	if err != nil {
+		return nil, fmt.Errorf("issue access token: %w", err)
+	}
+
+	res.AccessToken = accessToken
 	connectResponse := connect.NewResponse(res)
 	connectResponse.Header().Add("Set-Cookie", cookies.BuildCookie(ctx, req, "accessToken", res.AccessToken, authn.ProjectID(ctx)))
 	connectResponse.Header().Add("Set-Cookie", cookies.BuildCookie(ctx, req, "refreshToken", res.RefreshToken, authn.ProjectID(ctx)))
@@ -29,6 +35,12 @@ func (s *Service) ExchangeIntermediateSessionForSession(ctx context.Context, req
 		return nil, fmt.Errorf("store: %w", err)
 	}
 
+	accessToken, err := s.AccessTokenIssuer.NewAccessToken(ctx, res.RefreshToken)
+	if err != nil {
+		return nil, fmt.Errorf("issue access token: %w", err)
+	}
+
+	res.AccessToken = accessToken
 	connectResponse := connect.NewResponse(res)
 	connectResponse.Header().Add("Set-Cookie", cookies.BuildCookie(ctx, req, "accessToken", res.AccessToken, authn.ProjectID(ctx)))
 	connectResponse.Header().Add("Set-Cookie", cookies.BuildCookie(ctx, req, "refreshToken", res.RefreshToken, authn.ProjectID(ctx)))
