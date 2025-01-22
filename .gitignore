@@ -2,7 +2,6 @@
 .local/kms/data
 .local/postgres
 .local/s3
-.local/ses
 .local/nginx/*.pem
 node_modules
 /app/public/index.css
