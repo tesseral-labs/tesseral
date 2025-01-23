@@ -2,304 +2,76 @@ package store
 
 import (
 	"context"
-	"crypto/sha256"
-	"errors"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5"
-	"github.com/openauth/openauth/internal/common/apierror"
-	"github.com/openauth/openauth/internal/crypto/bcrypt"
 	"github.com/openauth/openauth/internal/intermediate/authn"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
-func (s *Store) GetIntermediateSessionByToken(ctx context.Context, token string) (*intermediatev1.IntermediateSession, error) {
-	tokenUUID, err := idformat.IntermediateSessionToken.Parse(token)
+func (s *Store) getIntermediateSessionEmailVerified(ctx context.Context, q *queries.Queries, id uuid.UUID) (bool, error) {
+	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, id)
 	if err != nil {
-		return nil, fmt.Errorf("parse token: %w", err)
+		return false, fmt.Errorf("get intermediate session by id: %w", err)
 	}
 
-	tokenSHA256 := sha256.Sum256(tokenUUID[:])
-	qIntermediateSession, err := s.q.GetIntermediateSessionByTokenSHA256(ctx, tokenSHA256[:])
-	if err != nil {
-		return nil, fmt.Errorf("get intermediate session by token sha256: %w", err)
-	}
-
-	// todo this is what parseIntermediateSession should do, but already token
-	// by another function returning a hand-written type
-	intermediateSession := &intermediatev1.IntermediateSession{
-		Id:               idformat.IntermediateSession.Format(qIntermediateSession.ID),
-		ProjectId:        idformat.Project.Format(qIntermediateSession.ProjectID),
-		PasswordVerified: derefOrEmpty(qIntermediateSession.PasswordVerified),
-	}
-
-	if qIntermediateSession.OrganizationID != nil {
-		intermediateSession.OrganizationId = idformat.Organization.Format(*qIntermediateSession.OrganizationID)
-	}
-
-	if qIntermediateSession.Email != nil {
-		intermediateSession.Email = *qIntermediateSession.Email
-	}
-
+	// An email may be verified on account of a previously authenticated
+	// google or microsoft user ID-to-email pair. The google or microsoft
+	// user ID on an intermediate session is always authentic.
 	if qIntermediateSession.GoogleUserID != nil {
-		intermediateSession.GoogleUserId = *qIntermediateSession.GoogleUserID
-	}
-
-	if qIntermediateSession.MicrosoftUserID != nil {
-		intermediateSession.MicrosoftUserId = *qIntermediateSession.MicrosoftUserID
-	}
-
-	return intermediateSession, nil
-}
-
-func (s *Store) VerifyPassword(ctx context.Context, req *intermediatev1.VerifyPasswordRequest) (*intermediatev1.VerifyPasswordResponse, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
-	if err != nil {
-		return nil, err
-	}
-	defer rollback()
-
-	projectID := authn.ProjectID(ctx)
-	intermediateSession := authn.IntermediateSession(ctx)
-	organizationID, err := idformat.Organization.Parse(req.OrganizationId)
-	if err != nil {
-		return nil, apierror.NewInvalidArgumentError("invalid organization id", fmt.Errorf("parse organization id: %w", err))
-	}
-
-	// Ensure that the organization exists and is part of the project
-	_, err = q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
-		ID:        organizationID,
-		ProjectID: projectID,
-	})
-	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, apierror.NewNotFoundError("organization not found", fmt.Errorf("get project organization by id: %w", err))
-		}
-
-		return nil, fmt.Errorf("get project by organization id: %w", err)
-	}
-
-	qUser, err := q.GetUserByOrganizationIDAndFactors(ctx, queries.GetUserByOrganizationIDAndFactorsParams{
-		OrganizationID:  organizationID,
-		Email:           intermediateSession.Email,
-		GoogleUserID:    refOrNil(intermediateSession.GoogleUserId),
-		MicrosoftUserID: refOrNil(intermediateSession.MicrosoftUserId),
-	})
-	if err != nil {
-		return nil, fmt.Errorf("get user by organization id and factors: %w", err)
-	}
-
-	if qUser.PasswordBcrypt == nil {
-		return nil, apierror.NewFailedPreconditionError("user does not have a password configured", fmt.Errorf("password not set"))
-	}
-
-	// Check password is valid
-	err = bcrypt.CompareBcryptHash(*qUser.PasswordBcrypt, req.Password)
-	if err != nil {
-		return nil, fmt.Errorf("compare bcrypt hash: %w", err)
-	}
-
-	// Update the intermediate session with the new state
-	_, err = q.UpdateIntermediateSessionPasswordVerified(ctx, queries.UpdateIntermediateSessionPasswordVerifiedParams{
-		ID:             authn.IntermediateSessionID(ctx),
-		OrganizationID: &qUser.OrganizationID,
-	})
-	if err != nil {
-		return nil, fmt.Errorf("update intermediate session password verified: %w", err)
-	}
-
-	if err := commit(); err != nil {
-		return nil, fmt.Errorf("commit: %w", err)
-	}
-
-	return &intermediatev1.VerifyPasswordResponse{}, nil
-}
-
-func (s *Store) Whoami(ctx context.Context, req *intermediatev1.WhoamiRequest) (*intermediatev1.WhoamiResponse, error) {
-	_, q, _, rollback, err := s.tx(ctx)
-	if err != nil {
-		return nil, err
-	}
-	defer rollback()
-
-	intermediateSession := authn.IntermediateSession(ctx)
-	var isEmailVerified bool
-
-	if intermediateSession.GoogleUserId != "" {
-		// Check if the google user id is verified
-		isGoogleEmailVerified, err := q.IsGoogleEmailVerified(ctx, queries.IsGoogleEmailVerifiedParams{
-			Email:        intermediateSession.Email,
-			GoogleUserID: &intermediateSession.GoogleUserId,
+		qVerifiedGoogleUserID, err := q.GetEmailVerifiedByGoogleUserID(ctx, queries.GetEmailVerifiedByGoogleUserIDParams{
 			ProjectID:    authn.ProjectID(ctx),
+			Email:        *qIntermediateSession.Email,
+			GoogleUserID: qIntermediateSession.GoogleUserID,
 		})
 		if err != nil {
-			return nil, fmt.Errorf("is google email verified: %w", err)
+			return false, fmt.Errorf("get email verified by google user id: %w", err)
 		}
 
-		isEmailVerified = isGoogleEmailVerified
+		if qVerifiedGoogleUserID {
+			return true, nil
+		}
 	}
-
-	return &intermediatev1.WhoamiResponse{
-		Email:           intermediateSession.Email,
-		GoogleUserId:    intermediateSession.GoogleUserId,
-		IsEmailVerified: isEmailVerified,
-		MicrosoftUserId: intermediateSession.MicrosoftUserId,
-	}, nil
-}
-
-type IntermediateSession struct {
-	ID                           uuid.UUID
-	CreateTime                   time.Time
-	Email                        string
-	EmailVerificationChallengeID uuid.UUID
-	ExpireTime                   time.Time
-	GoogleUserID                 string
-	MicrosoftUserID              string
-	OrganizationID               uuid.UUID
-	PasswordVerified             bool
-	ProjectID                    uuid.UUID
-	TokenSha256                  []byte
-	Revoked                      bool
-}
-
-var ErrIntermediateSessionRevoked = errors.New("intermediate session has been revoked")
-var ErrIntermediateSessionExpired = errors.New("intermediate session has expired")
-var ErrIntermediateSessionEmailMismatch = errors.New("intermediate session email mismatch")
-
-type CreateIntermediateSessionRequest struct {
-	ProjectID string
-	Email     string
-}
-
-func (s *Store) CreateIntermediateSession(ctx *context.Context, req *CreateIntermediateSessionRequest) (*IntermediateSession, error) {
-	_, q, commit, rollback, err := s.tx(*ctx)
-	if err != nil {
-		return nil, err
-	}
-	defer rollback()
-
-	projectId, err := idformat.Project.Parse(req.ProjectID)
-	if err != nil {
-		return nil, fmt.Errorf("parse project id: %w", err)
-	}
-
-	// Allow 15 minutes for the user to verify their email before expiring the intermediate session
-	expiresAt := time.Now().Add(time.Minute * 15)
-
-	createdIntermediateSession, err := q.CreateIntermediateSession(*ctx, queries.CreateIntermediateSessionParams{
-		ID:         uuid.Must(uuid.NewV7()),
-		ProjectID:  projectId,
-		Email:      &req.Email,
-		ExpireTime: &expiresAt,
-	})
-	if err != nil {
-		return nil, fmt.Errorf("create intermediate session: %w", err)
-	}
-
-	if err := commit(); err != nil {
-		return nil, fmt.Errorf("commit: %w", err)
-	}
-
-	return parseIntermediateSession(&createdIntermediateSession), nil
-}
-
-func (s *Store) GetIntermediateSession(ctx *context.Context, id string) (*IntermediateSession, error) {
-	_, q, _, rollback, err := s.tx(*ctx)
-	if err != nil {
-		return nil, err
-	}
-	defer rollback()
-
-	sessionId, err := idformat.IntermediateSession.Parse(id)
-	if err != nil {
-		return nil, fmt.Errorf("parse intermediate session id: %w", err)
-	}
-
-	session, err := q.GetIntermediateSessionByID(*ctx, sessionId)
-	if err != nil {
-		return nil, fmt.Errorf("get intermediate session by id: %w", err)
-	}
-
-	return parseIntermediateSession(&session), nil
-}
-
-type VerifyIntermediateSessionEmailRequest struct {
-	ID    string
-	Email string
-}
-
-func (s *Store) VerifyIntermediateSessionEmail(
-	ctx *context.Context,
-	req *VerifyIntermediateSessionEmailRequest,
-) (*IntermediateSession, error) {
-	_, q, _, rollback, err := s.tx(*ctx)
-	if err != nil {
-		return nil, err
-	}
-	defer rollback()
-
-	sessionId, err := idformat.IntermediateSession.Parse(req.ID)
-	if err != nil {
-		return nil, apierror.NewInvalidArgumentError("parse intermediate session id", err)
-	}
-
-	// Get the intermediate session so we can perform some checks
-	existingIntermediateSession, err := q.GetIntermediateSessionByID(*ctx, sessionId)
-	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, apierror.NewNotFoundError("intermediate session not found", fmt.Errorf("intermediate session not found"))
+	if qIntermediateSession.MicrosoftUserID != nil {
+		qVerifiedMicrosoftUserID, err := q.GetEmailVerifiedByMicrosoftUserID(ctx, queries.GetEmailVerifiedByMicrosoftUserIDParams{
+			ProjectID:       authn.ProjectID(ctx),
+			Email:           *qIntermediateSession.Email,
+			MicrosoftUserID: qIntermediateSession.MicrosoftUserID,
+		})
+		if err != nil {
+			return false, fmt.Errorf("get email verified by microsoft user id: %w", err)
 		}
 
-		return nil, fmt.Errorf("get intermediate session by id: %w", err)
+		if qVerifiedMicrosoftUserID {
+			return true, nil
+		}
 	}
 
-	// Check if the intermediate session has been revoked
-	if existingIntermediateSession.Revoked {
-		return nil, apierror.NewFailedPreconditionError("intermediate session has been revoked", fmt.Errorf("intermediate session has been revoked"))
+	// If there's a successful email verification challenge associated with
+	// this intermediate session, then the email is verified.
+	qVerifiedEmailVerificationChallenge, err := q.GetEmailVerifiedByEmailVerificationChallenge(ctx, qIntermediateSession.ID)
+	if err != nil {
+		return false, fmt.Errorf("get email verified by email verification challenge: %w", err)
 	}
 
-	// Check if the intermediate session has expired
-	if existingIntermediateSession.ExpireTime.Before(time.Now()) {
-		return nil, apierror.NewFailedPreconditionError("intermediate session has expired", fmt.Errorf("intermediate session has expired"))
+	if qVerifiedEmailVerificationChallenge {
+		return true, nil
 	}
-
-	panic("unimplemented")
-
-	// TODO what do we do here?
-
-	//// Check if the email in the request matches the email in the intermediate session
-	//if existingIntermediateSession.UnverifiedEmail != &req.Email {
-	//	return nil, ErrIntermediateSessionEmailMismatch
-	//}
-	//
-	//
-	//session, err := q.VerifyIntermediateSessionEmail(*ctx, queries.VerifyIntermediateSessionEmailParams{
-	//	ID:            sessionId,
-	//	VerifiedEmail: &req.Email,
-	//})
-	//if err != nil {
-	//	return nil, err
-	//}
-
-	//return parseIntermediateSession(&session), nil
+	return false, nil
 }
 
-func parseIntermediateSession(i *queries.IntermediateSession) *IntermediateSession {
-	return &IntermediateSession{
-		ID:               i.ID,
-		CreateTime:       *i.CreateTime,
-		Email:            *i.Email,
-		ExpireTime:       *i.ExpireTime,
-		GoogleUserID:     *i.GoogleUserID,
-		MicrosoftUserID:  *i.MicrosoftUserID,
-		OrganizationID:   *i.OrganizationID,
-		PasswordVerified: *i.PasswordVerified,
-		ProjectID:        i.ProjectID,
-		TokenSha256:      i.TokenSha256,
-		Revoked:          i.Revoked,
+func parseIntermediateSession(qIntermediateSession queries.IntermediateSession, emailVerified bool) *intermediatev1.IntermediateSession {
+	return &intermediatev1.IntermediateSession{
+		Id:                 idformat.IntermediateSession.Format(qIntermediateSession.ID),
+		ProjectId:          idformat.Project.Format(qIntermediateSession.ProjectID),
+		Email:              derefOrEmpty(qIntermediateSession.Email),
+		EmailVerified:      emailVerified,
+		GoogleUserId:       derefOrEmpty(qIntermediateSession.GoogleUserID),
+		GoogleHostedDomain: derefOrEmpty(qIntermediateSession.GoogleHostedDomain),
+		MicrosoftUserId:    derefOrEmpty(qIntermediateSession.MicrosoftUserID),
+		MicrosoftTenantId:  derefOrEmpty(qIntermediateSession.MicrosoftTenantID),
+		PasswordVerified:   derefOrEmpty(qIntermediateSession.PasswordVerified),
 	}
 }

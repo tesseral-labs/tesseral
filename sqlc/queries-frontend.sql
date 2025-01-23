@@ -39,12 +39,10 @@ UPDATE
 SET
     update_time = now(),
     display_name = $2,
-    google_hosted_domain = $3,
-    microsoft_tenant_id = $4,
-    override_log_in_methods = $5,
-    override_log_in_with_password_enabled = $6,
-    override_log_in_with_google_enabled = $7,
-    override_log_in_with_microsoft_enabled = $8
+    override_log_in_methods = $3,
+    override_log_in_with_password_enabled = $4,
+    override_log_in_with_google_enabled = $5,
+    override_log_in_with_microsoft_enabled = $6
 WHERE
     id = $1
 RETURNING

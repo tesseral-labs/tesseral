@@ -344,8 +344,8 @@ message Organization {
   bool log_in_with_password_enabled = 6;
   bool log_in_with_google_enabled = 7;
   bool log_in_with_microsoft_enabled = 8;
-  string google_hosted_domain = 9;
-  string microsoft_tenant_id = 10;
+  repeated string google_hosted_domains = 9;
+  repeated string microsoft_tenant_ids = 10;
   bool saml_enabled = 11;
   bool scim_enabled = 12;
 }

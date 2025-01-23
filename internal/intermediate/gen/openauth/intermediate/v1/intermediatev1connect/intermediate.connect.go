@@ -33,9 +33,21 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
+	// IntermediateServiceListSAMLOrganizationsProcedure is the fully-qualified name of the
+	// IntermediateService's ListSAMLOrganizations RPC.
+	IntermediateServiceListSAMLOrganizationsProcedure = "/openauth.intermediate.v1.IntermediateService/ListSAMLOrganizations"
+	// IntermediateServiceGetProjectUISettingsProcedure is the fully-qualified name of the
+	// IntermediateService's GetProjectUISettings RPC.
+	IntermediateServiceGetProjectUISettingsProcedure = "/openauth.intermediate.v1.IntermediateService/GetProjectUISettings"
+	// IntermediateServiceCreateIntermediateSessionProcedure is the fully-qualified name of the
+	// IntermediateService's CreateIntermediateSession RPC.
+	IntermediateServiceCreateIntermediateSessionProcedure = "/openauth.intermediate.v1.IntermediateService/CreateIntermediateSession"
 	// IntermediateServiceWhoamiProcedure is the fully-qualified name of the IntermediateService's
 	// Whoami RPC.
 	IntermediateServiceWhoamiProcedure = "/openauth.intermediate.v1.IntermediateService/Whoami"
+	// IntermediateServiceListOrganizationsProcedure is the fully-qualified name of the
+	// IntermediateService's ListOrganizations RPC.
+	IntermediateServiceListOrganizationsProcedure = "/openauth.intermediate.v1.IntermediateService/ListOrganizations"
 	// IntermediateServiceExchangeIntermediateSessionForSessionProcedure is the fully-qualified name of
 	// the IntermediateService's ExchangeIntermediateSessionForSession RPC.
 	IntermediateServiceExchangeIntermediateSessionForSessionProcedure = "/openauth.intermediate.v1.IntermediateService/ExchangeIntermediateSessionForSession"
@@ -58,49 +70,31 @@ const (
 	// IntermediateServiceIssueEmailVerificationChallengeProcedure is the fully-qualified name of the
 	// IntermediateService's IssueEmailVerificationChallenge RPC.
 	IntermediateServiceIssueEmailVerificationChallengeProcedure = "/openauth.intermediate.v1.IntermediateService/IssueEmailVerificationChallenge"
-	// IntermediateServiceListOrganizationsProcedure is the fully-qualified name of the
-	// IntermediateService's ListOrganizations RPC.
-	IntermediateServiceListOrganizationsProcedure = "/openauth.intermediate.v1.IntermediateService/ListOrganizations"
-	// IntermediateServiceListSAMLOrganizationsProcedure is the fully-qualified name of the
-	// IntermediateService's ListSAMLOrganizations RPC.
-	IntermediateServiceListSAMLOrganizationsProcedure = "/openauth.intermediate.v1.IntermediateService/ListSAMLOrganizations"
-	// IntermediateServiceSignInWithEmailProcedure is the fully-qualified name of the
-	// IntermediateService's SignInWithEmail RPC.
-	IntermediateServiceSignInWithEmailProcedure = "/openauth.intermediate.v1.IntermediateService/SignInWithEmail"
 	// IntermediateServiceVerifyEmailChallengeProcedure is the fully-qualified name of the
 	// IntermediateService's VerifyEmailChallenge RPC.
 	IntermediateServiceVerifyEmailChallengeProcedure = "/openauth.intermediate.v1.IntermediateService/VerifyEmailChallenge"
 	// IntermediateServiceVerifyPasswordProcedure is the fully-qualified name of the
 	// IntermediateService's VerifyPassword RPC.
 	IntermediateServiceVerifyPasswordProcedure = "/openauth.intermediate.v1.IntermediateService/VerifyPassword"
-	// IntermediateServiceGetProjectUISettingsProcedure is the fully-qualified name of the
-	// IntermediateService's GetProjectUISettings RPC.
-	IntermediateServiceGetProjectUISettingsProcedure = "/openauth.intermediate.v1.IntermediateService/GetProjectUISettings"
 )
 
 // IntermediateServiceClient is a client for the openauth.intermediate.v1.IntermediateService
 // service.
 type IntermediateServiceClient interface {
+	ListSAMLOrganizations(context.Context, *connect.Request[v1.ListSAMLOrganizationsRequest]) (*connect.Response[v1.ListSAMLOrganizationsResponse], error)
+	GetProjectUISettings(context.Context, *connect.Request[v1.GetProjectUISettingsRequest]) (*connect.Response[v1.GetProjectUISettingsResponse], error)
+	CreateIntermediateSession(context.Context, *connect.Request[v1.CreateIntermediateSessionRequest]) (*connect.Response[v1.CreateIntermediateSessionResponse], error)
 	Whoami(context.Context, *connect.Request[v1.WhoamiRequest]) (*connect.Response[v1.WhoamiResponse], error)
+	ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error)
 	ExchangeIntermediateSessionForSession(context.Context, *connect.Request[v1.ExchangeIntermediateSessionForSessionRequest]) (*connect.Response[v1.ExchangeIntermediateSessionForSessionResponse], error)
 	ExchangeIntermediateSessionForNewOrganizationSession(context.Context, *connect.Request[v1.ExchangeIntermediateSessionForNewOrganizationSessionRequest]) (*connect.Response[v1.ExchangeIntermediateSessionForNewOrganizationSessionResponse], error)
 	GetGoogleOAuthRedirectURL(context.Context, *connect.Request[v1.GetGoogleOAuthRedirectURLRequest]) (*connect.Response[v1.GetGoogleOAuthRedirectURLResponse], error)
 	RedeemGoogleOAuthCode(context.Context, *connect.Request[v1.RedeemGoogleOAuthCodeRequest]) (*connect.Response[v1.RedeemGoogleOAuthCodeResponse], error)
 	GetMicrosoftOAuthRedirectURL(context.Context, *connect.Request[v1.GetMicrosoftOAuthRedirectURLRequest]) (*connect.Response[v1.GetMicrosoftOAuthRedirectURLResponse], error)
 	RedeemMicrosoftOAuthCode(context.Context, *connect.Request[v1.RedeemMicrosoftOAuthCodeRequest]) (*connect.Response[v1.RedeemMicrosoftOAuthCodeResponse], error)
-	// Issues a new email verification challenge.
 	IssueEmailVerificationChallenge(context.Context, *connect.Request[v1.IssueEmailVerificationChallengeRequest]) (*connect.Response[v1.IssueEmailVerificationChallengeResponse], error)
-	// Gets a list of organizations.
-	ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error)
-	// Gets a list of SAML organizations for a given email address.
-	ListSAMLOrganizations(context.Context, *connect.Request[v1.ListSAMLOrganizationsRequest]) (*connect.Response[v1.ListSAMLOrganizationsResponse], error)
-	// Creates a new intermediate session or session and cookies the requester.
-	SignInWithEmail(context.Context, *connect.Request[v1.SignInWithEmailRequest]) (*connect.Response[v1.SignInWithEmailResponse], error)
-	// Submits a challenge for verification of email address.
 	VerifyEmailChallenge(context.Context, *connect.Request[v1.VerifyEmailChallengeRequest]) (*connect.Response[v1.VerifyEmailChallengeResponse], error)
-	// Submits a password for verification of session.
 	VerifyPassword(context.Context, *connect.Request[v1.VerifyPasswordRequest]) (*connect.Response[v1.VerifyPasswordResponse], error)
-	GetProjectUISettings(context.Context, *connect.Request[v1.GetProjectUISettingsRequest]) (*connect.Response[v1.GetProjectUISettingsResponse], error)
 }
 
 // NewIntermediateServiceClient constructs a client for the
@@ -115,10 +109,34 @@ func NewIntermediateServiceClient(httpClient connect.HTTPClient, baseURL string,
 	baseURL = strings.TrimRight(baseURL, "/")
 	intermediateServiceMethods := v1.File_openauth_intermediate_v1_intermediate_proto.Services().ByName("IntermediateService").Methods()
 	return &intermediateServiceClient{
+		listSAMLOrganizations: connect.NewClient[v1.ListSAMLOrganizationsRequest, v1.ListSAMLOrganizationsResponse](
+			httpClient,
+			baseURL+IntermediateServiceListSAMLOrganizationsProcedure,
+			connect.WithSchema(intermediateServiceMethods.ByName("ListSAMLOrganizations")),
+			connect.WithClientOptions(opts...),
+		),
+		getProjectUISettings: connect.NewClient[v1.GetProjectUISettingsRequest, v1.GetProjectUISettingsResponse](
+			httpClient,
+			baseURL+IntermediateServiceGetProjectUISettingsProcedure,
+			connect.WithSchema(intermediateServiceMethods.ByName("GetProjectUISettings")),
+			connect.WithClientOptions(opts...),
+		),
+		createIntermediateSession: connect.NewClient[v1.CreateIntermediateSessionRequest, v1.CreateIntermediateSessionResponse](
+			httpClient,
+			baseURL+IntermediateServiceCreateIntermediateSessionProcedure,
+			connect.WithSchema(intermediateServiceMethods.ByName("CreateIntermediateSession")),
+			connect.WithClientOptions(opts...),
+		),
 		whoami: connect.NewClient[v1.WhoamiRequest, v1.WhoamiResponse](
 			httpClient,
 			baseURL+IntermediateServiceWhoamiProcedure,
 			connect.WithSchema(intermediateServiceMethods.ByName("Whoami")),
+			connect.WithClientOptions(opts...),
+		),
+		listOrganizations: connect.NewClient[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse](
+			httpClient,
+			baseURL+IntermediateServiceListOrganizationsProcedure,
+			connect.WithSchema(intermediateServiceMethods.ByName("ListOrganizations")),
 			connect.WithClientOptions(opts...),
 		),
 		exchangeIntermediateSessionForSession: connect.NewClient[v1.ExchangeIntermediateSessionForSessionRequest, v1.ExchangeIntermediateSessionForSessionResponse](
@@ -163,24 +181,6 @@ func NewIntermediateServiceClient(httpClient connect.HTTPClient, baseURL string,
 			connect.WithSchema(intermediateServiceMethods.ByName("IssueEmailVerificationChallenge")),
 			connect.WithClientOptions(opts...),
 		),
-		listOrganizations: connect.NewClient[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse](
-			httpClient,
-			baseURL+IntermediateServiceListOrganizationsProcedure,
-			connect.WithSchema(intermediateServiceMethods.ByName("ListOrganizations")),
-			connect.WithClientOptions(opts...),
-		),
-		listSAMLOrganizations: connect.NewClient[v1.ListSAMLOrganizationsRequest, v1.ListSAMLOrganizationsResponse](
-			httpClient,
-			baseURL+IntermediateServiceListSAMLOrganizationsProcedure,
-			connect.WithSchema(intermediateServiceMethods.ByName("ListSAMLOrganizations")),
-			connect.WithClientOptions(opts...),
-		),
-		signInWithEmail: connect.NewClient[v1.SignInWithEmailRequest, v1.SignInWithEmailResponse](
-			httpClient,
-			baseURL+IntermediateServiceSignInWithEmailProcedure,
-			connect.WithSchema(intermediateServiceMethods.ByName("SignInWithEmail")),
-			connect.WithClientOptions(opts...),
-		),
 		verifyEmailChallenge: connect.NewClient[v1.VerifyEmailChallengeRequest, v1.VerifyEmailChallengeResponse](
 			httpClient,
 			baseURL+IntermediateServiceVerifyEmailChallengeProcedure,
@@ -193,18 +193,16 @@ func NewIntermediateServiceClient(httpClient connect.HTTPClient, baseURL string,
 			connect.WithSchema(intermediateServiceMethods.ByName("VerifyPassword")),
 			connect.WithClientOptions(opts...),
 		),
-		getProjectUISettings: connect.NewClient[v1.GetProjectUISettingsRequest, v1.GetProjectUISettingsResponse](
-			httpClient,
-			baseURL+IntermediateServiceGetProjectUISettingsProcedure,
-			connect.WithSchema(intermediateServiceMethods.ByName("GetProjectUISettings")),
-			connect.WithClientOptions(opts...),
-		),
 	}
 }
 
 // intermediateServiceClient implements IntermediateServiceClient.
 type intermediateServiceClient struct {
+	listSAMLOrganizations                                *connect.Client[v1.ListSAMLOrganizationsRequest, v1.ListSAMLOrganizationsResponse]
+	getProjectUISettings                                 *connect.Client[v1.GetProjectUISettingsRequest, v1.GetProjectUISettingsResponse]
+	createIntermediateSession                            *connect.Client[v1.CreateIntermediateSessionRequest, v1.CreateIntermediateSessionResponse]
 	whoami                                               *connect.Client[v1.WhoamiRequest, v1.WhoamiResponse]
+	listOrganizations                                    *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
 	exchangeIntermediateSessionForSession                *connect.Client[v1.ExchangeIntermediateSessionForSessionRequest, v1.ExchangeIntermediateSessionForSessionResponse]
 	exchangeIntermediateSessionForNewOrganizationSession *connect.Client[v1.ExchangeIntermediateSessionForNewOrganizationSessionRequest, v1.ExchangeIntermediateSessionForNewOrganizationSessionResponse]
 	getGoogleOAuthRedirectURL                            *connect.Client[v1.GetGoogleOAuthRedirectURLRequest, v1.GetGoogleOAuthRedirectURLResponse]
@@ -212,17 +210,34 @@ type intermediateServiceClient struct {
 	getMicrosoftOAuthRedirectURL                         *connect.Client[v1.GetMicrosoftOAuthRedirectURLRequest, v1.GetMicrosoftOAuthRedirectURLResponse]
 	redeemMicrosoftOAuthCode                             *connect.Client[v1.RedeemMicrosoftOAuthCodeRequest, v1.RedeemMicrosoftOAuthCodeResponse]
 	issueEmailVerificationChallenge                      *connect.Client[v1.IssueEmailVerificationChallengeRequest, v1.IssueEmailVerificationChallengeResponse]
-	listOrganizations                                    *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
-	listSAMLOrganizations                                *connect.Client[v1.ListSAMLOrganizationsRequest, v1.ListSAMLOrganizationsResponse]
-	signInWithEmail                                      *connect.Client[v1.SignInWithEmailRequest, v1.SignInWithEmailResponse]
 	verifyEmailChallenge                                 *connect.Client[v1.VerifyEmailChallengeRequest, v1.VerifyEmailChallengeResponse]
 	verifyPassword                                       *connect.Client[v1.VerifyPasswordRequest, v1.VerifyPasswordResponse]
-	getProjectUISettings                                 *connect.Client[v1.GetProjectUISettingsRequest, v1.GetProjectUISettingsResponse]
+}
+
+// ListSAMLOrganizations calls openauth.intermediate.v1.IntermediateService.ListSAMLOrganizations.
+func (c *intermediateServiceClient) ListSAMLOrganizations(ctx context.Context, req *connect.Request[v1.ListSAMLOrganizationsRequest]) (*connect.Response[v1.ListSAMLOrganizationsResponse], error) {
+	return c.listSAMLOrganizations.CallUnary(ctx, req)
+}
+
+// GetProjectUISettings calls openauth.intermediate.v1.IntermediateService.GetProjectUISettings.
+func (c *intermediateServiceClient) GetProjectUISettings(ctx context.Context, req *connect.Request[v1.GetProjectUISettingsRequest]) (*connect.Response[v1.GetProjectUISettingsResponse], error) {
+	return c.getProjectUISettings.CallUnary(ctx, req)
+}
+
+// CreateIntermediateSession calls
+// openauth.intermediate.v1.IntermediateService.CreateIntermediateSession.
+func (c *intermediateServiceClient) CreateIntermediateSession(ctx context.Context, req *connect.Request[v1.CreateIntermediateSessionRequest]) (*connect.Response[v1.CreateIntermediateSessionResponse], error) {
+	return c.createIntermediateSession.CallUnary(ctx, req)
 }
 
 // Whoami calls openauth.intermediate.v1.IntermediateService.Whoami.
 func (c *intermediateServiceClient) Whoami(ctx context.Context, req *connect.Request[v1.WhoamiRequest]) (*connect.Response[v1.WhoamiResponse], error) {
 	return c.whoami.CallUnary(ctx, req)
+}
+
+// ListOrganizations calls openauth.intermediate.v1.IntermediateService.ListOrganizations.
+func (c *intermediateServiceClient) ListOrganizations(ctx context.Context, req *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error) {
+	return c.listOrganizations.CallUnary(ctx, req)
 }
 
 // ExchangeIntermediateSessionForSession calls
@@ -266,21 +281,6 @@ func (c *intermediateServiceClient) IssueEmailVerificationChallenge(ctx context.
 	return c.issueEmailVerificationChallenge.CallUnary(ctx, req)
 }
 
-// ListOrganizations calls openauth.intermediate.v1.IntermediateService.ListOrganizations.
-func (c *intermediateServiceClient) ListOrganizations(ctx context.Context, req *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error) {
-	return c.listOrganizations.CallUnary(ctx, req)
-}
-
-// ListSAMLOrganizations calls openauth.intermediate.v1.IntermediateService.ListSAMLOrganizations.
-func (c *intermediateServiceClient) ListSAMLOrganizations(ctx context.Context, req *connect.Request[v1.ListSAMLOrganizationsRequest]) (*connect.Response[v1.ListSAMLOrganizationsResponse], error) {
-	return c.listSAMLOrganizations.CallUnary(ctx, req)
-}
-
-// SignInWithEmail calls openauth.intermediate.v1.IntermediateService.SignInWithEmail.
-func (c *intermediateServiceClient) SignInWithEmail(ctx context.Context, req *connect.Request[v1.SignInWithEmailRequest]) (*connect.Response[v1.SignInWithEmailResponse], error) {
-	return c.signInWithEmail.CallUnary(ctx, req)
-}
-
 // VerifyEmailChallenge calls openauth.intermediate.v1.IntermediateService.VerifyEmailChallenge.
 func (c *intermediateServiceClient) VerifyEmailChallenge(ctx context.Context, req *connect.Request[v1.VerifyEmailChallengeRequest]) (*connect.Response[v1.VerifyEmailChallengeResponse], error) {
 	return c.verifyEmailChallenge.CallUnary(ctx, req)
@@ -291,34 +291,23 @@ func (c *intermediateServiceClient) VerifyPassword(ctx context.Context, req *con
 	return c.verifyPassword.CallUnary(ctx, req)
 }
 
-// GetProjectUISettings calls openauth.intermediate.v1.IntermediateService.GetProjectUISettings.
-func (c *intermediateServiceClient) GetProjectUISettings(ctx context.Context, req *connect.Request[v1.GetProjectUISettingsRequest]) (*connect.Response[v1.GetProjectUISettingsResponse], error) {
-	return c.getProjectUISettings.CallUnary(ctx, req)
-}
-
 // IntermediateServiceHandler is an implementation of the
 // openauth.intermediate.v1.IntermediateService service.
 type IntermediateServiceHandler interface {
+	ListSAMLOrganizations(context.Context, *connect.Request[v1.ListSAMLOrganizationsRequest]) (*connect.Response[v1.ListSAMLOrganizationsResponse], error)
+	GetProjectUISettings(context.Context, *connect.Request[v1.GetProjectUISettingsRequest]) (*connect.Response[v1.GetProjectUISettingsResponse], error)
+	CreateIntermediateSession(context.Context, *connect.Request[v1.CreateIntermediateSessionRequest]) (*connect.Response[v1.CreateIntermediateSessionResponse], error)
 	Whoami(context.Context, *connect.Request[v1.WhoamiRequest]) (*connect.Response[v1.WhoamiResponse], error)
+	ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error)
 	ExchangeIntermediateSessionForSession(context.Context, *connect.Request[v1.ExchangeIntermediateSessionForSessionRequest]) (*connect.Response[v1.ExchangeIntermediateSessionForSessionResponse], error)
 	ExchangeIntermediateSessionForNewOrganizationSession(context.Context, *connect.Request[v1.ExchangeIntermediateSessionForNewOrganizationSessionRequest]) (*connect.Response[v1.ExchangeIntermediateSessionForNewOrganizationSessionResponse], error)
 	GetGoogleOAuthRedirectURL(context.Context, *connect.Request[v1.GetGoogleOAuthRedirectURLRequest]) (*connect.Response[v1.GetGoogleOAuthRedirectURLResponse], error)
 	RedeemGoogleOAuthCode(context.Context, *connect.Request[v1.RedeemGoogleOAuthCodeRequest]) (*connect.Response[v1.RedeemGoogleOAuthCodeResponse], error)
 	GetMicrosoftOAuthRedirectURL(context.Context, *connect.Request[v1.GetMicrosoftOAuthRedirectURLRequest]) (*connect.Response[v1.GetMicrosoftOAuthRedirectURLResponse], error)
 	RedeemMicrosoftOAuthCode(context.Context, *connect.Request[v1.RedeemMicrosoftOAuthCodeRequest]) (*connect.Response[v1.RedeemMicrosoftOAuthCodeResponse], error)
-	// Issues a new email verification challenge.
 	IssueEmailVerificationChallenge(context.Context, *connect.Request[v1.IssueEmailVerificationChallengeRequest]) (*connect.Response[v1.IssueEmailVerificationChallengeResponse], error)
-	// Gets a list of organizations.
-	ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error)
-	// Gets a list of SAML organizations for a given email address.
-	ListSAMLOrganizations(context.Context, *connect.Request[v1.ListSAMLOrganizationsRequest]) (*connect.Response[v1.ListSAMLOrganizationsResponse], error)
-	// Creates a new intermediate session or session and cookies the requester.
-	SignInWithEmail(context.Context, *connect.Request[v1.SignInWithEmailRequest]) (*connect.Response[v1.SignInWithEmailResponse], error)
-	// Submits a challenge for verification of email address.
 	VerifyEmailChallenge(context.Context, *connect.Request[v1.VerifyEmailChallengeRequest]) (*connect.Response[v1.VerifyEmailChallengeResponse], error)
-	// Submits a password for verification of session.
 	VerifyPassword(context.Context, *connect.Request[v1.VerifyPasswordRequest]) (*connect.Response[v1.VerifyPasswordResponse], error)
-	GetProjectUISettings(context.Context, *connect.Request[v1.GetProjectUISettingsRequest]) (*connect.Response[v1.GetProjectUISettingsResponse], error)
 }
 
 // NewIntermediateServiceHandler builds an HTTP handler from the service implementation. It returns
@@ -328,10 +317,34 @@ type IntermediateServiceHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
 	intermediateServiceMethods := v1.File_openauth_intermediate_v1_intermediate_proto.Services().ByName("IntermediateService").Methods()
+	intermediateServiceListSAMLOrganizationsHandler := connect.NewUnaryHandler(
+		IntermediateServiceListSAMLOrganizationsProcedure,
+		svc.ListSAMLOrganizations,
+		connect.WithSchema(intermediateServiceMethods.ByName("ListSAMLOrganizations")),
+		connect.WithHandlerOptions(opts...),
+	)
+	intermediateServiceGetProjectUISettingsHandler := connect.NewUnaryHandler(
+		IntermediateServiceGetProjectUISettingsProcedure,
+		svc.GetProjectUISettings,
+		connect.WithSchema(intermediateServiceMethods.ByName("GetProjectUISettings")),
+		connect.WithHandlerOptions(opts...),
+	)
+	intermediateServiceCreateIntermediateSessionHandler := connect.NewUnaryHandler(
+		IntermediateServiceCreateIntermediateSessionProcedure,
+		svc.CreateIntermediateSession,
+		connect.WithSchema(intermediateServiceMethods.ByName("CreateIntermediateSession")),
+		connect.WithHandlerOptions(opts...),
+	)
 	intermediateServiceWhoamiHandler := connect.NewUnaryHandler(
 		IntermediateServiceWhoamiProcedure,
 		svc.Whoami,
 		connect.WithSchema(intermediateServiceMethods.ByName("Whoami")),
+		connect.WithHandlerOptions(opts...),
+	)
+	intermediateServiceListOrganizationsHandler := connect.NewUnaryHandler(
+		IntermediateServiceListOrganizationsProcedure,
+		svc.ListOrganizations,
+		connect.WithSchema(intermediateServiceMethods.ByName("ListOrganizations")),
 		connect.WithHandlerOptions(opts...),
 	)
 	intermediateServiceExchangeIntermediateSessionForSessionHandler := connect.NewUnaryHandler(
@@ -376,24 +389,6 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 		connect.WithSchema(intermediateServiceMethods.ByName("IssueEmailVerificationChallenge")),
 		connect.WithHandlerOptions(opts...),
 	)
-	intermediateServiceListOrganizationsHandler := connect.NewUnaryHandler(
-		IntermediateServiceListOrganizationsProcedure,
-		svc.ListOrganizations,
-		connect.WithSchema(intermediateServiceMethods.ByName("ListOrganizations")),
-		connect.WithHandlerOptions(opts...),
-	)
-	intermediateServiceListSAMLOrganizationsHandler := connect.NewUnaryHandler(
-		IntermediateServiceListSAMLOrganizationsProcedure,
-		svc.ListSAMLOrganizations,
-		connect.WithSchema(intermediateServiceMethods.ByName("ListSAMLOrganizations")),
-		connect.WithHandlerOptions(opts...),
-	)
-	intermediateServiceSignInWithEmailHandler := connect.NewUnaryHandler(
-		IntermediateServiceSignInWithEmailProcedure,
-		svc.SignInWithEmail,
-		connect.WithSchema(intermediateServiceMethods.ByName("SignInWithEmail")),
-		connect.WithHandlerOptions(opts...),
-	)
 	intermediateServiceVerifyEmailChallengeHandler := connect.NewUnaryHandler(
 		IntermediateServiceVerifyEmailChallengeProcedure,
 		svc.VerifyEmailChallenge,
@@ -406,16 +401,18 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 		connect.WithSchema(intermediateServiceMethods.ByName("VerifyPassword")),
 		connect.WithHandlerOptions(opts...),
 	)
-	intermediateServiceGetProjectUISettingsHandler := connect.NewUnaryHandler(
-		IntermediateServiceGetProjectUISettingsProcedure,
-		svc.GetProjectUISettings,
-		connect.WithSchema(intermediateServiceMethods.ByName("GetProjectUISettings")),
-		connect.WithHandlerOptions(opts...),
-	)
 	return "/openauth.intermediate.v1.IntermediateService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
+		case IntermediateServiceListSAMLOrganizationsProcedure:
+			intermediateServiceListSAMLOrganizationsHandler.ServeHTTP(w, r)
+		case IntermediateServiceGetProjectUISettingsProcedure:
+			intermediateServiceGetProjectUISettingsHandler.ServeHTTP(w, r)
+		case IntermediateServiceCreateIntermediateSessionProcedure:
+			intermediateServiceCreateIntermediateSessionHandler.ServeHTTP(w, r)
 		case IntermediateServiceWhoamiProcedure:
 			intermediateServiceWhoamiHandler.ServeHTTP(w, r)
+		case IntermediateServiceListOrganizationsProcedure:
+			intermediateServiceListOrganizationsHandler.ServeHTTP(w, r)
 		case IntermediateServiceExchangeIntermediateSessionForSessionProcedure:
 			intermediateServiceExchangeIntermediateSessionForSessionHandler.ServeHTTP(w, r)
 		case IntermediateServiceExchangeIntermediateSessionForNewOrganizationSessionProcedure:
@@ -430,18 +427,10 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 			intermediateServiceRedeemMicrosoftOAuthCodeHandler.ServeHTTP(w, r)
 		case IntermediateServiceIssueEmailVerificationChallengeProcedure:
 			intermediateServiceIssueEmailVerificationChallengeHandler.ServeHTTP(w, r)
-		case IntermediateServiceListOrganizationsProcedure:
-			intermediateServiceListOrganizationsHandler.ServeHTTP(w, r)
-		case IntermediateServiceListSAMLOrganizationsProcedure:
-			intermediateServiceListSAMLOrganizationsHandler.ServeHTTP(w, r)
-		case IntermediateServiceSignInWithEmailProcedure:
-			intermediateServiceSignInWithEmailHandler.ServeHTTP(w, r)
 		case IntermediateServiceVerifyEmailChallengeProcedure:
 			intermediateServiceVerifyEmailChallengeHandler.ServeHTTP(w, r)
 		case IntermediateServiceVerifyPasswordProcedure:
 			intermediateServiceVerifyPasswordHandler.ServeHTTP(w, r)
-		case IntermediateServiceGetProjectUISettingsProcedure:
-			intermediateServiceGetProjectUISettingsHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -451,8 +440,24 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 // UnimplementedIntermediateServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedIntermediateServiceHandler struct{}
 
+func (UnimplementedIntermediateServiceHandler) ListSAMLOrganizations(context.Context, *connect.Request[v1.ListSAMLOrganizationsRequest]) (*connect.Response[v1.ListSAMLOrganizationsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.ListSAMLOrganizations is not implemented"))
+}
+
+func (UnimplementedIntermediateServiceHandler) GetProjectUISettings(context.Context, *connect.Request[v1.GetProjectUISettingsRequest]) (*connect.Response[v1.GetProjectUISettingsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.GetProjectUISettings is not implemented"))
+}
+
+func (UnimplementedIntermediateServiceHandler) CreateIntermediateSession(context.Context, *connect.Request[v1.CreateIntermediateSessionRequest]) (*connect.Response[v1.CreateIntermediateSessionResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.CreateIntermediateSession is not implemented"))
+}
+
 func (UnimplementedIntermediateServiceHandler) Whoami(context.Context, *connect.Request[v1.WhoamiRequest]) (*connect.Response[v1.WhoamiResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.Whoami is not implemented"))
+}
+
+func (UnimplementedIntermediateServiceHandler) ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.ListOrganizations is not implemented"))
 }
 
 func (UnimplementedIntermediateServiceHandler) ExchangeIntermediateSessionForSession(context.Context, *connect.Request[v1.ExchangeIntermediateSessionForSessionRequest]) (*connect.Response[v1.ExchangeIntermediateSessionForSessionResponse], error) {
@@ -483,26 +488,10 @@ func (UnimplementedIntermediateServiceHandler) IssueEmailVerificationChallenge(c
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.IssueEmailVerificationChallenge is not implemented"))
 }
 
-func (UnimplementedIntermediateServiceHandler) ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.ListOrganizations is not implemented"))
-}
-
-func (UnimplementedIntermediateServiceHandler) ListSAMLOrganizations(context.Context, *connect.Request[v1.ListSAMLOrganizationsRequest]) (*connect.Response[v1.ListSAMLOrganizationsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.ListSAMLOrganizations is not implemented"))
-}
-
-func (UnimplementedIntermediateServiceHandler) SignInWithEmail(context.Context, *connect.Request[v1.SignInWithEmailRequest]) (*connect.Response[v1.SignInWithEmailResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.SignInWithEmail is not implemented"))
-}
-
 func (UnimplementedIntermediateServiceHandler) VerifyEmailChallenge(context.Context, *connect.Request[v1.VerifyEmailChallengeRequest]) (*connect.Response[v1.VerifyEmailChallengeResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.VerifyEmailChallenge is not implemented"))
 }
 
 func (UnimplementedIntermediateServiceHandler) VerifyPassword(context.Context, *connect.Request[v1.VerifyPasswordRequest]) (*connect.Response[v1.VerifyPasswordResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.VerifyPassword is not implemented"))
-}
-
-func (UnimplementedIntermediateServiceHandler) GetProjectUISettings(context.Context, *connect.Request[v1.GetProjectUISettingsRequest]) (*connect.Response[v1.GetProjectUISettingsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.GetProjectUISettings is not implemented"))
 }

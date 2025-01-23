@@ -37,39 +37,6 @@ Keys:
           y5+KYGmXlaoRhFSq1VO8mGoihA==
           -----END PRIVATE KEY-----
       - Metadata:
-          Description: "Intermediate Session Signing Keys Key"
-          KeyId: 49c5492b-b1bc-42a8-9a5c-b2015e810c1c
-          KeyUsage: "ENCRYPT_DECRYPT"
-        PrivateKeyPem: |
-          -----BEGIN PRIVATE KEY-----
-          MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQD21epc1564DeWZ
-          80XYAXTo4tjqJzEQ6VdpkRfKHraJ4WNqS8N5HjfyzmADVOgqqlbm5M+Qq0/ViMd/
-          Xqh+OUNhwvEIo6iZuNbWba3/cUV9ZFpmCv9IWvlNojc3zq0C9/fXeSqXwZWut78d
-          AuFodRdAnENiHf9aXv4pIyszAxALCSCd/UCYZRw+XUDPG4pSJrwgz2Ohkqr1SnFF
-          1aQt6onjt3Rtfn5IUs7BGEXGd6M3HeIlikSLjdoXEuevVaZO0ysiQdiYDYYQ2eFe
-          ytXefRuotRqH4dLpL6beUFRbT1MQVtqC2S0K2wWq8T5gTFejxv6E6eVqRC2xu0lj
-          TGDxnUC3AgMBAAECggEAU6K73GV69CZRS86wNbaYpGho0z4gU/ick7qD8wphE2r5
-          QoUVYK6qimz+/2H/oKVC+M1Cv2Qsks/buP6b3NkOScvB3AmIET4eHV3gfRMmVoxw
-          TO8g/KVGn9V9HD29Rao7ohj+I5mGXEMKUIwvUDOMg2nvMwmzAi35tHqkIo7BGtt8
-          gBuuHsZj9PM6MYSSZdrHP52T3K15MaHfrLb97UaryyYnhnUmBA12DBE8MseuYA7w
-          JwL3os6MwtLxRxgXnBhkk3Ist83nZNiXESXhN3d98NLS8KbX2wcbnd0B+CqRyvnv
-          GbE+CfzxPf/zTsexxpS3TlTR80vAYkubmtWIMG128QKBgQD/iQbZx2xhH6VjYWC6
-          +kc03povTKTe/MKUySO7poWjJrGbajrkq7RcXdNCglVSXcKY/BvmgsWRqJc+Jh2z
-          enFIcGOuO146FEAr3i4hGjtV01/ukgAl6Ko68gdxjyQLqrJ/bg0qQO57KEhRh5Tb
-          mR5mIkG2j2Usr4Llc3LGXIH8VQKBgQD3SNaahwum8+8kXaxgmKwfOL64rM5fLQq3
-          f0UGzKZkuRSqXJn9EKuE1rNKX4zNUBWJVF+C4bjRGLz1QRS7j2taqU4awLie+5Ak
-          M4Ww8lzHd3uKf+ESCd8DU3TzD+dggtuw+OTqVZdJKA5Kfrbg72ZUyzH3p9Oj/zMu
-          QWl3d6TU2wKBgQCaMZs6qoWRjcEE2Ou/p+pz0qcDR6JtE+RuV3kCcJdPPbgKae2j
-          sqCg49To2zCVBRK5sdc8H0kMfcjVrbZaaNYWugrMRfKz5Shb0DPRsbyAK45FrT/9
-          oAmojAdF1PQRPi17i3LSPmApXMNWvxNp91lKk/1HJfwNHNNFlYZ6f7PICQKBgQCq
-          q2ryXCJ+p/11a/F8+eJR6ig37YzBw6SR4RUTDEwLWHIa4q6lKsw2crhrrGbRjWRP
-          1BvXiVK1fg1sd+6HRQUjHZb6f+jsUVO6qJSs+5ltUdnCTWBZwtZYxVECMQfQZICc
-          NCxKT6iKpUq3v50YwiIug8+IzhwUJB5+3kacXcc14QKBgQDpjYvwAPAq1Rru/Ew4
-          hzisDSCY5CLE+X/6dvogWhJBmpaZBKDmUGi6AwK9rcwITZmlR/qU+2WqNdhHxa8S
-          uSp1A6OmOHQHA3I+J4veI0kPB2Y0Z65CyfCYm9MsNkcyFYx4tRBSOzAdA+xrJCa4
-          y5+KYGmXlaoRhFSq1VO8mGoihA==
-          -----END PRIVATE KEY-----
-      - Metadata:
           Description: "Google OAuth Client Secrets Key"
           KeyId: d5670d9b-184a-400a-a08b-d05d7b99f91c
           KeyUsage: "ENCRYPT_DECRYPT"
@@ -138,8 +105,6 @@ Keys:
 Aliases:
   - AliasName: alias/session-signing-keys-key
     TargetKeyId: bc436485-5092-42b8-92a3-0aa8b93536dc
-  - AliasName: alias/intermediate-session-signing-keys-key
-    TargetKeyId: 49c5492b-b1bc-42a8-9a5c-b2015e810c1c
   - AliasName: alias/google-oauth-client-secrets-key
     TargetKeyId: d5670d9b-184a-400a-a08b-d05d7b99f91c
   - AliasName: alias/microsoft-oauth-client-secrets-key

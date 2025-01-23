@@ -6,7 +6,6 @@ import (
 	"crypto/sha256"
 	"errors"
 	"fmt"
-	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
@@ -17,7 +16,6 @@ import (
 	"github.com/openauth/openauth/internal/intermediate/authn"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
-	"github.com/openauth/openauth/internal/store/idformat"
 )
 
 func (s *Store) GetGoogleOAuthRedirectURL(ctx context.Context, req *intermediatev1.GetGoogleOAuthRedirectURLRequest) (*intermediatev1.GetGoogleOAuthRedirectURLResponse, error) {
@@ -40,25 +38,10 @@ func (s *Store) GetGoogleOAuthRedirectURL(ctx context.Context, req *intermediate
 		return nil, apierror.NewFailedPreconditionError("google oauth client id not set", fmt.Errorf("google oauth client id not set"))
 	}
 
-	token := uuid.New()
-	tokenSha256 := sha256.Sum256(token[:])
-	expiresAt := time.Now().Add(155 * time.Minute)
-
-	// Since this is the entrypoint for the google oauth flow, we create the intermediate session here
-	intermediateSession, err := q.CreateIntermediateSession(ctx, queries.CreateIntermediateSessionParams{
-		ID:          uuid.Must(uuid.NewV7()),
-		ProjectID:   authn.ProjectID(ctx),
-		ExpireTime:  &expiresAt,
-		TokenSha256: tokenSha256[:],
-	})
-	if err != nil {
-		return nil, fmt.Errorf("create intermediate session: %v", err)
-	}
-
 	state := uuid.NewString()
 	stateSHA := sha256.Sum256([]byte(state))
 	if _, err := q.UpdateIntermediateSessionGoogleOAuthStateSHA256(ctx, queries.UpdateIntermediateSessionGoogleOAuthStateSHA256Params{
-		ID:                     intermediateSession.ID,
+		ID:                     authn.IntermediateSessionID(ctx),
 		GoogleOauthStateSha256: stateSHA[:],
 	}); err != nil {
 		return nil, fmt.Errorf("update intermediate session google oauth state: %v", err)
@@ -75,8 +58,7 @@ func (s *Store) GetGoogleOAuthRedirectURL(ctx context.Context, req *intermediate
 	}
 
 	return &intermediatev1.GetGoogleOAuthRedirectURLResponse{
-		IntermediateSessionToken: idformat.IntermediateSessionToken.Format(token),
-		Url:                      url,
+		Url: url,
 	}, nil
 }
 
@@ -104,13 +86,6 @@ func (s *Store) RedeemGoogleOAuthCode(ctx context.Context, req *intermediatev1.R
 		return nil, fmt.Errorf("decrypt google oauth client secret: %v", err)
 	}
 
-	// start new tx now that all kms and oauth http i/o is done
-	_, q, commit, rollback, err := s.tx(ctx)
-	if err != nil {
-		return nil, err
-	}
-	defer rollback()
-
 	redeemRes, err := s.googleOAuthClient.RedeemCode(ctx, &googleoauth.RedeemCodeRequest{
 		GoogleOAuthClientID:     *qProject.GoogleOauthClientID,
 		GoogleOAuthClientSecret: string(decryptRes.Plaintext),
@@ -121,15 +96,35 @@ func (s *Store) RedeemGoogleOAuthCode(ctx context.Context, req *intermediatev1.R
 		return nil, apierror.NewInvalidArgumentError("failed to redeem google oauth code", fmt.Errorf("redeem google oauth code: %v", err))
 	}
 
-	// todo what if the intermediate session already has an email
-	// todo what if redeem doesn't come back with a google hosted domain?
+	if qIntermediateSession.Email != nil && redeemRes.Email != *qIntermediateSession.Email {
+		return nil, apierror.NewInvalidArgumentError("Email mismatch", fmt.Errorf("email mismatch"))
+	}
+
+	// start new tx now that all kms and oauth http i/o is done
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
 	if _, err := q.UpdateIntermediateSessionGoogleDetails(ctx, queries.UpdateIntermediateSessionGoogleDetailsParams{
 		ID:                 authn.IntermediateSessionID(ctx),
 		Email:              &redeemRes.Email,
 		GoogleUserID:       &redeemRes.GoogleUserID,
-		GoogleHostedDomain: &redeemRes.GoogleHostedDomain,
+		GoogleHostedDomain: refOrNil(redeemRes.GoogleHostedDomain),
 	}); err != nil {
 		return nil, fmt.Errorf("update intermediate session google details: %v", err)
+	}
+
+	if redeemRes.EmailVerified {
+		if _, err := q.CreateVerifiedEmail(ctx, queries.CreateVerifiedEmailParams{
+			ID:           uuid.New(),
+			ProjectID:    authn.ProjectID(ctx),
+			Email:        redeemRes.Email,
+			GoogleUserID: &redeemRes.GoogleUserID,
+		}); err != nil {
+			return nil, fmt.Errorf("create verified email: %v", err)
+		}
 	}
 
 	if err := commit(); err != nil {

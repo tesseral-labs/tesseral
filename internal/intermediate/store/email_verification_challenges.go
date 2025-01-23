@@ -1,21 +1,15 @@
 package store
 
 import (
-	"bytes"
 	"context"
 	"crypto/sha256"
-	"errors"
 	"fmt"
 	"log/slog"
 	"math/rand/v2"
 	"strconv"
 	"time"
 
-	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/service/sesv2"
-	"github.com/aws/aws-sdk-go-v2/service/sesv2/types"
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5"
 	"github.com/openauth/openauth/internal/common/apierror"
 	"github.com/openauth/openauth/internal/intermediate/authn"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
@@ -23,151 +17,41 @@ import (
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
-type EmailVerificationChallenge struct {
-	ID                    string
-	ChallengeSha256       []byte
-	CompleteTime          time.Time
-	ProjectID             string
-	ExpireTime            time.Time
-	IntermediateSessionID string
-}
+var emailVerificationChallengeDuration = time.Minute * 10
 
-type CreateEmailVerificationChallengeParams struct {
-	ChallengeSha256       []byte
-	Email                 string
-	GoogleUserID          string
-	IntermediateSessionID string
-	MicrosoftUserID       string
-	ProjectID             string
-}
-
-type GetEmailVerificationChallengeParams struct {
-	Code            string
-	Email           string
-	GoogleUserID    string
-	MicrosoftUserID string
-	ProjectID       string
-}
-
-func (s *Store) CompleteEmailVerificationChallenge(ctx context.Context, req *intermediatev1.VerifyEmailChallengeRequest) (*intermediatev1.VerifyEmailChallengeResponse, error) {
+func (s *Store) IssueEmailVerificationChallenge(ctx context.Context, req *intermediatev1.IssueEmailVerificationChallengeRequest) (*intermediatev1.IssueEmailVerificationChallengeResponse, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
 	defer rollback()
 
-	projectID := authn.ProjectID(ctx)
-
-	// Get the email verification challenge from the request
-	challengeID, err := idformat.EmailVerificationChallenge.Parse(req.EmailVerificationChallengeId)
+	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))
 	if err != nil {
-		return nil, apierror.NewInvalidArgumentError("email verification challenge id is invalid", fmt.Errorf("parse email verification challenge id: %w", err))
-	}
-	challenge, err := q.GetEmailVerificationChallengeByID(ctx, challengeID)
-	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, apierror.NewNotFoundError("email verification challenge not found", fmt.Errorf("email verification challenge not found"))
-		}
-
-		return nil, fmt.Errorf("get email verification challenge by id: %w", err)
+		return nil, fmt.Errorf("get intermediate session by id: %w", err)
 	}
 
-	// Enforce the intermediate session
-	if challenge.IntermediateSessionID.String() != authn.IntermediateSessionID(ctx).String() {
-		return nil, apierror.NewFailedPreconditionError("intermediate session id mismatch", fmt.Errorf("intermediate session id mismatch"))
+	if qIntermediateSession.Email != nil && *qIntermediateSession.Email != req.Email {
+		return nil, apierror.NewInvalidArgumentError("email does not match existing value on intermediate session", fmt.Errorf("email does not match existing value on intermediate session"))
 	}
 
-	// Get the intermediate session
-	intermediateSession := authn.IntermediateSession(ctx)
-
-	intermediateSessionID, err := idformat.IntermediateSession.Parse(intermediateSession.Id)
-	if err != nil {
-		return nil, apierror.NewInvalidArgumentError("invalid intermediate session id", fmt.Errorf("parse intermediate session id: %w", err))
+	if _, err := q.UpdateIntermediateSessionEmail(ctx, queries.UpdateIntermediateSessionEmailParams{
+		ID:    authn.IntermediateSessionID(ctx),
+		Email: &req.Email,
+	}); err != nil {
+		return nil, fmt.Errorf("update intermediate session email: %w", err)
 	}
 
-	now := time.Now()
-	codeSha256 := sha256.Sum256([]byte(req.Code))
+	secretToken := generateSecretToken()
+	secretTokenSHA256 := sha256.Sum256([]byte(secretToken))
 
-	// Get the email verification challenge
-	evc, err := q.GetEmailVerificationChallengeForCompletion(ctx, queries.GetEmailVerificationChallengeForCompletionParams{
-		ExpireTime:            &now,
-		IntermediateSessionID: intermediateSessionID,
-		ProjectID:             projectID,
-	})
-	if err != nil {
-		return nil, err
-	}
+	expireTime := time.Now().Add(emailVerificationChallengeDuration)
 
-	err = verifyChallenge(ctx, &evc, codeSha256[:], q)
-	if err != nil {
-		if err := commit(); err != nil {
-			return nil, fmt.Errorf("commit after verify failure: %w", err)
-		}
-
-		return nil, apierror.NewFailedPreconditionError("verify challenge failure", fmt.Errorf("verify challenge: %w", err))
-	}
-
-	// Complete the email verification challenge
-	evc, err = q.CompleteEmailVerificationChallenge(ctx, queries.CompleteEmailVerificationChallengeParams{
-		CompleteTime: &now,
-		ID:           evc.ID,
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	// Create a verified email record
-	_, err = q.CreateVerifiedEmail(ctx, queries.CreateVerifiedEmailParams{
-		ID:                 uuid.New(),
-		Email:              intermediateSession.Email,
-		GoogleUserID:       &intermediateSession.GoogleUserId,
-		GoogleHostedDomain: &intermediateSession.GoogleHostedDomain,
-		MicrosoftUserID:    &intermediateSession.MicrosoftUserId,
-		MicrosoftTenantID:  &intermediateSession.MicrosoftTenantId,
-		ProjectID:          projectID,
-	})
-	if err != nil {
-		return nil, fmt.Errorf("create verified email: %w", err)
-	}
-
-	if err := commit(); err != nil {
-		return nil, fmt.Errorf("commit: %w", err)
-	}
-
-	return &intermediatev1.VerifyEmailChallengeResponse{}, nil
-}
-
-func (s *Store) IssueEmailVerificationChallenge(ctx context.Context) (*intermediatev1.IssueEmailVerificationChallengeResponse, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
-	if err != nil {
-		return nil, err
-	}
-	defer rollback()
-
-	projectID := authn.ProjectID(ctx)
-
-	intermediateSessionID := authn.IntermediateSessionID(ctx)
-
-	// Create a new secret token for the challenge
-	secretToken, err := generateSecretToken()
-	if err != nil {
-		return nil, fmt.Errorf("generate secret token: %w", err)
-	}
-	secretTokenSha256 := sha256.Sum256([]byte(secretToken))
-
-	expiresAt := time.Now().Add(15 * time.Minute)
-
-	err = s.sendEmailVerificationChallenge(ctx, authn.IntermediateSession(ctx).Email, secretToken)
-	if err != nil {
-		return nil, fmt.Errorf("send email verification challenge: %w", err)
-	}
-
-	evc, err := q.CreateEmailVerificationChallenge(ctx, queries.CreateEmailVerificationChallengeParams{
+	qEmailVerificationChallenge, err := q.CreateEmailVerificationChallenge(ctx, queries.CreateEmailVerificationChallengeParams{
 		ID:                    uuid.New(),
-		ChallengeSha256:       secretTokenSha256[:],
-		ExpireTime:            &expiresAt,
-		IntermediateSessionID: intermediateSessionID,
-		ProjectID:             projectID,
+		ChallengeSha256:       secretTokenSHA256[:],
+		ExpireTime:            &expireTime,
+		IntermediateSessionID: authn.IntermediateSessionID(ctx),
 	})
 	if err != nil {
 		return nil, fmt.Errorf("create email verification challenge: %w", err)
@@ -178,42 +62,51 @@ func (s *Store) IssueEmailVerificationChallenge(ctx context.Context) (*intermedi
 	}
 
 	// TODO: Remove this log line and replace with email sending
-	slog.InfoContext(ctx, "IssueEmailVerificationChallenge", "challenge", secretToken)
+	slog.InfoContext(ctx, "TODO-REMOVEME-IssueEmailVerificationChallenge", "challenge", secretToken)
 
 	return &intermediatev1.IssueEmailVerificationChallengeResponse{
-		EmailVerificationChallengeId: idformat.EmailVerificationChallenge.Format(evc.ID),
+		EmailVerificationChallengeId: idformat.EmailVerificationChallenge.Format(qEmailVerificationChallenge.ID),
 	}, nil
 }
 
-func (s *Store) sendEmailVerificationChallenge(ctx context.Context, email string, secretToken string) error {
-	output, err := s.ses.SendEmail(ctx, &sesv2.SendEmailInput{
-		Content: &types.EmailContent{
-			Simple: &types.Message{
-				Body: &types.Body{
-					Html: &types.Content{
-						Data: aws.String(fmt.Sprintf("<h2>Please verifiy your email address to continue logging in</h2><p>Your email verification code is: %s</p>", secretToken)),
-					},
-				},
-				Subject: &types.Content{
-					Data: aws.String("Verify your email address"),
-				},
-			},
-		},
-		Destination: &types.Destination{
-			ToAddresses: []string{email},
-		},
-		FromEmailAddress: aws.String("replace-me@tesseral.app"), // TODO: Replace with a real email address once verification is in place
+func (s *Store) VerifyEmailChallenge(ctx context.Context, req *intermediatev1.VerifyEmailChallengeRequest) (*intermediatev1.VerifyEmailChallengeResponse, error) {
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	challengeSHA256 := sha256.Sum256([]byte(req.Code))
+	qEmailVerificationChallenge, err := q.GetEmailVerificationChallengeByChallengeSHA(ctx, queries.GetEmailVerificationChallengeByChallengeSHAParams{
+		IntermediateSessionID: authn.IntermediateSessionID(ctx),
+		ChallengeSha256:       challengeSHA256[:],
 	})
 	if err != nil {
-		return fmt.Errorf("send email: %w", err)
+		return nil, fmt.Errorf("get email verification challenge by challenge sha: %w", err)
 	}
 
-	slog.InfoContext(ctx, "sendEmailVerificationChallenge", "output", output)
+	if _, err := q.CompleteEmailVerificationChallenge(ctx, qEmailVerificationChallenge.ID); err != nil {
+		return nil, fmt.Errorf("complete email verification challenge: %w", err)
+	}
 
-	return nil
+	if _, err := q.CreateVerifiedEmail(ctx, queries.CreateVerifiedEmailParams{
+		ID:              uuid.New(),
+		ProjectID:       authn.ProjectID(ctx),
+		Email:           authn.IntermediateSession(ctx).Email,
+		GoogleUserID:    refOrNil(authn.IntermediateSession(ctx).GoogleUserId),
+		MicrosoftUserID: refOrNil(authn.IntermediateSession(ctx).MicrosoftUserId),
+	}); err != nil {
+		return nil, fmt.Errorf("create verified email: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
+	}
+
+	return &intermediatev1.VerifyEmailChallengeResponse{}, nil
 }
 
-func generateSecretToken() (string, error) {
+func generateSecretToken() string {
 	// Define the range for a 6-digit number: [100000, 999999]
 	min := 100000
 	max := 999999
@@ -221,44 +114,5 @@ func generateSecretToken() (string, error) {
 	// Generate a secure random number
 	randomNumber := rand.IntN(max-min+1) + min
 
-	return strconv.Itoa(randomNumber), nil
-}
-
-func verifyChallenge(ctx context.Context, evc *queries.EmailVerificationChallenge, secretTokenSha256 []byte, q *queries.Queries) error {
-	// Check if the challenge has been revoked
-	if evc.Revoked {
-		return apierror.NewFailedPreconditionError("email verification challenge revoked", fmt.Errorf("email verification challenge revoked"))
-	}
-
-	// Check if the challenge has already been completed
-	if evc.CompleteTime != nil {
-		_, err := q.RevokeEmailVerificationChallenge(ctx, evc.ID)
-		if err != nil {
-			return fmt.Errorf("revoke email verification challenge after complete time failure: %w", err)
-		}
-
-		return apierror.NewFailedPreconditionError("email verification challenge already completed", fmt.Errorf("email verification challenge already completed"))
-	}
-
-	// Check if the challenge has expired
-	if evc.ExpireTime.Before(time.Now()) {
-		_, err := q.RevokeEmailVerificationChallenge(ctx, evc.ID)
-		if err != nil {
-			return fmt.Errorf("revoke email verification challenge after expire time failure: %w", err)
-		}
-
-		return apierror.NewFailedPreconditionError("email verification challenge expired", fmt.Errorf("email verification challenge expired"))
-	}
-
-	// Check if the challenge is correct
-	if !bytes.Equal(evc.ChallengeSha256, secretTokenSha256) {
-		_, err := q.RevokeEmailVerificationChallenge(ctx, evc.ID)
-		if err != nil {
-			return fmt.Errorf("revoke email verification challenge: %w", err)
-		}
-
-		return apierror.NewFailedPreconditionError("email verification challenge code mismatch", fmt.Errorf("email verification challenge code mismatch"))
-	}
-
-	return nil
+	return strconv.Itoa(randomNumber)
 }

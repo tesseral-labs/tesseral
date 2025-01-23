@@ -19,7 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
+	IntermediateService_ListSAMLOrganizations_FullMethodName                                = "/openauth.intermediate.v1.IntermediateService/ListSAMLOrganizations"
+	IntermediateService_GetProjectUISettings_FullMethodName                                 = "/openauth.intermediate.v1.IntermediateService/GetProjectUISettings"
+	IntermediateService_CreateIntermediateSession_FullMethodName                            = "/openauth.intermediate.v1.IntermediateService/CreateIntermediateSession"
 	IntermediateService_Whoami_FullMethodName                                               = "/openauth.intermediate.v1.IntermediateService/Whoami"
+	IntermediateService_ListOrganizations_FullMethodName                                    = "/openauth.intermediate.v1.IntermediateService/ListOrganizations"
 	IntermediateService_ExchangeIntermediateSessionForSession_FullMethodName                = "/openauth.intermediate.v1.IntermediateService/ExchangeIntermediateSessionForSession"
 	IntermediateService_ExchangeIntermediateSessionForNewOrganizationSession_FullMethodName = "/openauth.intermediate.v1.IntermediateService/ExchangeIntermediateSessionForNewOrganizationSession"
 	IntermediateService_GetGoogleOAuthRedirectURL_FullMethodName                            = "/openauth.intermediate.v1.IntermediateService/GetGoogleOAuthRedirectURL"
@@ -27,38 +31,28 @@ const (
 	IntermediateService_GetMicrosoftOAuthRedirectURL_FullMethodName                         = "/openauth.intermediate.v1.IntermediateService/GetMicrosoftOAuthRedirectURL"
 	IntermediateService_RedeemMicrosoftOAuthCode_FullMethodName                             = "/openauth.intermediate.v1.IntermediateService/RedeemMicrosoftOAuthCode"
 	IntermediateService_IssueEmailVerificationChallenge_FullMethodName                      = "/openauth.intermediate.v1.IntermediateService/IssueEmailVerificationChallenge"
-	IntermediateService_ListOrganizations_FullMethodName                                    = "/openauth.intermediate.v1.IntermediateService/ListOrganizations"
-	IntermediateService_ListSAMLOrganizations_FullMethodName                                = "/openauth.intermediate.v1.IntermediateService/ListSAMLOrganizations"
-	IntermediateService_SignInWithEmail_FullMethodName                                      = "/openauth.intermediate.v1.IntermediateService/SignInWithEmail"
 	IntermediateService_VerifyEmailChallenge_FullMethodName                                 = "/openauth.intermediate.v1.IntermediateService/VerifyEmailChallenge"
 	IntermediateService_VerifyPassword_FullMethodName                                       = "/openauth.intermediate.v1.IntermediateService/VerifyPassword"
-	IntermediateService_GetProjectUISettings_FullMethodName                                 = "/openauth.intermediate.v1.IntermediateService/GetProjectUISettings"
 )
 
 // IntermediateServiceClient is the client API for IntermediateService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type IntermediateServiceClient interface {
+	ListSAMLOrganizations(ctx context.Context, in *ListSAMLOrganizationsRequest, opts ...grpc.CallOption) (*ListSAMLOrganizationsResponse, error)
+	GetProjectUISettings(ctx context.Context, in *GetProjectUISettingsRequest, opts ...grpc.CallOption) (*GetProjectUISettingsResponse, error)
+	CreateIntermediateSession(ctx context.Context, in *CreateIntermediateSessionRequest, opts ...grpc.CallOption) (*CreateIntermediateSessionResponse, error)
 	Whoami(ctx context.Context, in *WhoamiRequest, opts ...grpc.CallOption) (*WhoamiResponse, error)
+	ListOrganizations(ctx context.Context, in *ListOrganizationsRequest, opts ...grpc.CallOption) (*ListOrganizationsResponse, error)
 	ExchangeIntermediateSessionForSession(ctx context.Context, in *ExchangeIntermediateSessionForSessionRequest, opts ...grpc.CallOption) (*ExchangeIntermediateSessionForSessionResponse, error)
 	ExchangeIntermediateSessionForNewOrganizationSession(ctx context.Context, in *ExchangeIntermediateSessionForNewOrganizationSessionRequest, opts ...grpc.CallOption) (*ExchangeIntermediateSessionForNewOrganizationSessionResponse, error)
 	GetGoogleOAuthRedirectURL(ctx context.Context, in *GetGoogleOAuthRedirectURLRequest, opts ...grpc.CallOption) (*GetGoogleOAuthRedirectURLResponse, error)
 	RedeemGoogleOAuthCode(ctx context.Context, in *RedeemGoogleOAuthCodeRequest, opts ...grpc.CallOption) (*RedeemGoogleOAuthCodeResponse, error)
 	GetMicrosoftOAuthRedirectURL(ctx context.Context, in *GetMicrosoftOAuthRedirectURLRequest, opts ...grpc.CallOption) (*GetMicrosoftOAuthRedirectURLResponse, error)
 	RedeemMicrosoftOAuthCode(ctx context.Context, in *RedeemMicrosoftOAuthCodeRequest, opts ...grpc.CallOption) (*RedeemMicrosoftOAuthCodeResponse, error)
-	// Issues a new email verification challenge.
 	IssueEmailVerificationChallenge(ctx context.Context, in *IssueEmailVerificationChallengeRequest, opts ...grpc.CallOption) (*IssueEmailVerificationChallengeResponse, error)
-	// Gets a list of organizations.
-	ListOrganizations(ctx context.Context, in *ListOrganizationsRequest, opts ...grpc.CallOption) (*ListOrganizationsResponse, error)
-	// Gets a list of SAML organizations for a given email address.
-	ListSAMLOrganizations(ctx context.Context, in *ListSAMLOrganizationsRequest, opts ...grpc.CallOption) (*ListSAMLOrganizationsResponse, error)
-	// Creates a new intermediate session or session and cookies the requester.
-	SignInWithEmail(ctx context.Context, in *SignInWithEmailRequest, opts ...grpc.CallOption) (*SignInWithEmailResponse, error)
-	// Submits a challenge for verification of email address.
 	VerifyEmailChallenge(ctx context.Context, in *VerifyEmailChallengeRequest, opts ...grpc.CallOption) (*VerifyEmailChallengeResponse, error)
-	// Submits a password for verification of session.
 	VerifyPassword(ctx context.Context, in *VerifyPasswordRequest, opts ...grpc.CallOption) (*VerifyPasswordResponse, error)
-	GetProjectUISettings(ctx context.Context, in *GetProjectUISettingsRequest, opts ...grpc.CallOption) (*GetProjectUISettingsResponse, error)
 }
 
 type intermediateServiceClient struct {
@@ -69,10 +63,50 @@ func NewIntermediateServiceClient(cc grpc.ClientConnInterface) IntermediateServi
 	return &intermediateServiceClient{cc}
 }
 
+func (c *intermediateServiceClient) ListSAMLOrganizations(ctx context.Context, in *ListSAMLOrganizationsRequest, opts ...grpc.CallOption) (*ListSAMLOrganizationsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListSAMLOrganizationsResponse)
+	err := c.cc.Invoke(ctx, IntermediateService_ListSAMLOrganizations_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *intermediateServiceClient) GetProjectUISettings(ctx context.Context, in *GetProjectUISettingsRequest, opts ...grpc.CallOption) (*GetProjectUISettingsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetProjectUISettingsResponse)
+	err := c.cc.Invoke(ctx, IntermediateService_GetProjectUISettings_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *intermediateServiceClient) CreateIntermediateSession(ctx context.Context, in *CreateIntermediateSessionRequest, opts ...grpc.CallOption) (*CreateIntermediateSessionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateIntermediateSessionResponse)
+	err := c.cc.Invoke(ctx, IntermediateService_CreateIntermediateSession_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *intermediateServiceClient) Whoami(ctx context.Context, in *WhoamiRequest, opts ...grpc.CallOption) (*WhoamiResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(WhoamiResponse)
 	err := c.cc.Invoke(ctx, IntermediateService_Whoami_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *intermediateServiceClient) ListOrganizations(ctx context.Context, in *ListOrganizationsRequest, opts ...grpc.CallOption) (*ListOrganizationsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListOrganizationsResponse)
+	err := c.cc.Invoke(ctx, IntermediateService_ListOrganizations_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -149,36 +183,6 @@ func (c *intermediateServiceClient) IssueEmailVerificationChallenge(ctx context.
 	return out, nil
 }
 
-func (c *intermediateServiceClient) ListOrganizations(ctx context.Context, in *ListOrganizationsRequest, opts ...grpc.CallOption) (*ListOrganizationsResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ListOrganizationsResponse)
-	err := c.cc.Invoke(ctx, IntermediateService_ListOrganizations_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *intermediateServiceClient) ListSAMLOrganizations(ctx context.Context, in *ListSAMLOrganizationsRequest, opts ...grpc.CallOption) (*ListSAMLOrganizationsResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ListSAMLOrganizationsResponse)
-	err := c.cc.Invoke(ctx, IntermediateService_ListSAMLOrganizations_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *intermediateServiceClient) SignInWithEmail(ctx context.Context, in *SignInWithEmailRequest, opts ...grpc.CallOption) (*SignInWithEmailResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(SignInWithEmailResponse)
-	err := c.cc.Invoke(ctx, IntermediateService_SignInWithEmail_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *intermediateServiceClient) VerifyEmailChallenge(ctx context.Context, in *VerifyEmailChallengeRequest, opts ...grpc.CallOption) (*VerifyEmailChallengeResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(VerifyEmailChallengeResponse)
@@ -199,40 +203,24 @@ func (c *intermediateServiceClient) VerifyPassword(ctx context.Context, in *Veri
 	return out, nil
 }
 
-func (c *intermediateServiceClient) GetProjectUISettings(ctx context.Context, in *GetProjectUISettingsRequest, opts ...grpc.CallOption) (*GetProjectUISettingsResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetProjectUISettingsResponse)
-	err := c.cc.Invoke(ctx, IntermediateService_GetProjectUISettings_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // IntermediateServiceServer is the server API for IntermediateService service.
 // All implementations must embed UnimplementedIntermediateServiceServer
 // for forward compatibility.
 type IntermediateServiceServer interface {
+	ListSAMLOrganizations(context.Context, *ListSAMLOrganizationsRequest) (*ListSAMLOrganizationsResponse, error)
+	GetProjectUISettings(context.Context, *GetProjectUISettingsRequest) (*GetProjectUISettingsResponse, error)
+	CreateIntermediateSession(context.Context, *CreateIntermediateSessionRequest) (*CreateIntermediateSessionResponse, error)
 	Whoami(context.Context, *WhoamiRequest) (*WhoamiResponse, error)
+	ListOrganizations(context.Context, *ListOrganizationsRequest) (*ListOrganizationsResponse, error)
 	ExchangeIntermediateSessionForSession(context.Context, *ExchangeIntermediateSessionForSessionRequest) (*ExchangeIntermediateSessionForSessionResponse, error)
 	ExchangeIntermediateSessionForNewOrganizationSession(context.Context, *ExchangeIntermediateSessionForNewOrganizationSessionRequest) (*ExchangeIntermediateSessionForNewOrganizationSessionResponse, error)
 	GetGoogleOAuthRedirectURL(context.Context, *GetGoogleOAuthRedirectURLRequest) (*GetGoogleOAuthRedirectURLResponse, error)
 	RedeemGoogleOAuthCode(context.Context, *RedeemGoogleOAuthCodeRequest) (*RedeemGoogleOAuthCodeResponse, error)
 	GetMicrosoftOAuthRedirectURL(context.Context, *GetMicrosoftOAuthRedirectURLRequest) (*GetMicrosoftOAuthRedirectURLResponse, error)
 	RedeemMicrosoftOAuthCode(context.Context, *RedeemMicrosoftOAuthCodeRequest) (*RedeemMicrosoftOAuthCodeResponse, error)
-	// Issues a new email verification challenge.
 	IssueEmailVerificationChallenge(context.Context, *IssueEmailVerificationChallengeRequest) (*IssueEmailVerificationChallengeResponse, error)
-	// Gets a list of organizations.
-	ListOrganizations(context.Context, *ListOrganizationsRequest) (*ListOrganizationsResponse, error)
-	// Gets a list of SAML organizations for a given email address.
-	ListSAMLOrganizations(context.Context, *ListSAMLOrganizationsRequest) (*ListSAMLOrganizationsResponse, error)
-	// Creates a new intermediate session or session and cookies the requester.
-	SignInWithEmail(context.Context, *SignInWithEmailRequest) (*SignInWithEmailResponse, error)
-	// Submits a challenge for verification of email address.
 	VerifyEmailChallenge(context.Context, *VerifyEmailChallengeRequest) (*VerifyEmailChallengeResponse, error)
-	// Submits a password for verification of session.
 	VerifyPassword(context.Context, *VerifyPasswordRequest) (*VerifyPasswordResponse, error)
-	GetProjectUISettings(context.Context, *GetProjectUISettingsRequest) (*GetProjectUISettingsResponse, error)
 	mustEmbedUnimplementedIntermediateServiceServer()
 }
 
@@ -243,8 +231,20 @@ type IntermediateServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedIntermediateServiceServer struct{}
 
+func (UnimplementedIntermediateServiceServer) ListSAMLOrganizations(context.Context, *ListSAMLOrganizationsRequest) (*ListSAMLOrganizationsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListSAMLOrganizations not implemented")
+}
+func (UnimplementedIntermediateServiceServer) GetProjectUISettings(context.Context, *GetProjectUISettingsRequest) (*GetProjectUISettingsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetProjectUISettings not implemented")
+}
+func (UnimplementedIntermediateServiceServer) CreateIntermediateSession(context.Context, *CreateIntermediateSessionRequest) (*CreateIntermediateSessionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateIntermediateSession not implemented")
+}
 func (UnimplementedIntermediateServiceServer) Whoami(context.Context, *WhoamiRequest) (*WhoamiResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Whoami not implemented")
+}
+func (UnimplementedIntermediateServiceServer) ListOrganizations(context.Context, *ListOrganizationsRequest) (*ListOrganizationsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListOrganizations not implemented")
 }
 func (UnimplementedIntermediateServiceServer) ExchangeIntermediateSessionForSession(context.Context, *ExchangeIntermediateSessionForSessionRequest) (*ExchangeIntermediateSessionForSessionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ExchangeIntermediateSessionForSession not implemented")
@@ -267,23 +267,11 @@ func (UnimplementedIntermediateServiceServer) RedeemMicrosoftOAuthCode(context.C
 func (UnimplementedIntermediateServiceServer) IssueEmailVerificationChallenge(context.Context, *IssueEmailVerificationChallengeRequest) (*IssueEmailVerificationChallengeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method IssueEmailVerificationChallenge not implemented")
 }
-func (UnimplementedIntermediateServiceServer) ListOrganizations(context.Context, *ListOrganizationsRequest) (*ListOrganizationsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListOrganizations not implemented")
-}
-func (UnimplementedIntermediateServiceServer) ListSAMLOrganizations(context.Context, *ListSAMLOrganizationsRequest) (*ListSAMLOrganizationsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListSAMLOrganizations not implemented")
-}
-func (UnimplementedIntermediateServiceServer) SignInWithEmail(context.Context, *SignInWithEmailRequest) (*SignInWithEmailResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SignInWithEmail not implemented")
-}
 func (UnimplementedIntermediateServiceServer) VerifyEmailChallenge(context.Context, *VerifyEmailChallengeRequest) (*VerifyEmailChallengeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifyEmailChallenge not implemented")
 }
 func (UnimplementedIntermediateServiceServer) VerifyPassword(context.Context, *VerifyPasswordRequest) (*VerifyPasswordResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifyPassword not implemented")
-}
-func (UnimplementedIntermediateServiceServer) GetProjectUISettings(context.Context, *GetProjectUISettingsRequest) (*GetProjectUISettingsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetProjectUISettings not implemented")
 }
 func (UnimplementedIntermediateServiceServer) mustEmbedUnimplementedIntermediateServiceServer() {}
 func (UnimplementedIntermediateServiceServer) testEmbeddedByValue()                             {}
@@ -306,6 +294,60 @@ func RegisterIntermediateServiceServer(s grpc.ServiceRegistrar, srv Intermediate
 	s.RegisterService(&IntermediateService_ServiceDesc, srv)
 }
 
+func _IntermediateService_ListSAMLOrganizations_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListSAMLOrganizationsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IntermediateServiceServer).ListSAMLOrganizations(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IntermediateService_ListSAMLOrganizations_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IntermediateServiceServer).ListSAMLOrganizations(ctx, req.(*ListSAMLOrganizationsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IntermediateService_GetProjectUISettings_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetProjectUISettingsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IntermediateServiceServer).GetProjectUISettings(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IntermediateService_GetProjectUISettings_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IntermediateServiceServer).GetProjectUISettings(ctx, req.(*GetProjectUISettingsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IntermediateService_CreateIntermediateSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateIntermediateSessionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IntermediateServiceServer).CreateIntermediateSession(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IntermediateService_CreateIntermediateSession_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IntermediateServiceServer).CreateIntermediateSession(ctx, req.(*CreateIntermediateSessionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _IntermediateService_Whoami_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(WhoamiRequest)
 	if err := dec(in); err != nil {
@@ -320,6 +362,24 @@ func _IntermediateService_Whoami_Handler(srv interface{}, ctx context.Context, d
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(IntermediateServiceServer).Whoami(ctx, req.(*WhoamiRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IntermediateService_ListOrganizations_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListOrganizationsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IntermediateServiceServer).ListOrganizations(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IntermediateService_ListOrganizations_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IntermediateServiceServer).ListOrganizations(ctx, req.(*ListOrganizationsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -450,60 +510,6 @@ func _IntermediateService_IssueEmailVerificationChallenge_Handler(srv interface{
 	return interceptor(ctx, in, info, handler)
 }
 
-func _IntermediateService_ListOrganizations_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListOrganizationsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(IntermediateServiceServer).ListOrganizations(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: IntermediateService_ListOrganizations_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(IntermediateServiceServer).ListOrganizations(ctx, req.(*ListOrganizationsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _IntermediateService_ListSAMLOrganizations_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListSAMLOrganizationsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(IntermediateServiceServer).ListSAMLOrganizations(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: IntermediateService_ListSAMLOrganizations_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(IntermediateServiceServer).ListSAMLOrganizations(ctx, req.(*ListSAMLOrganizationsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _IntermediateService_SignInWithEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SignInWithEmailRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(IntermediateServiceServer).SignInWithEmail(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: IntermediateService_SignInWithEmail_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(IntermediateServiceServer).SignInWithEmail(ctx, req.(*SignInWithEmailRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _IntermediateService_VerifyEmailChallenge_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(VerifyEmailChallengeRequest)
 	if err := dec(in); err != nil {
@@ -540,24 +546,6 @@ func _IntermediateService_VerifyPassword_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
-func _IntermediateService_GetProjectUISettings_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetProjectUISettingsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(IntermediateServiceServer).GetProjectUISettings(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: IntermediateService_GetProjectUISettings_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(IntermediateServiceServer).GetProjectUISettings(ctx, req.(*GetProjectUISettingsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // IntermediateService_ServiceDesc is the grpc.ServiceDesc for IntermediateService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -566,8 +554,24 @@ var IntermediateService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*IntermediateServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "ListSAMLOrganizations",
+			Handler:    _IntermediateService_ListSAMLOrganizations_Handler,
+		},
+		{
+			MethodName: "GetProjectUISettings",
+			Handler:    _IntermediateService_GetProjectUISettings_Handler,
+		},
+		{
+			MethodName: "CreateIntermediateSession",
+			Handler:    _IntermediateService_CreateIntermediateSession_Handler,
+		},
+		{
 			MethodName: "Whoami",
 			Handler:    _IntermediateService_Whoami_Handler,
+		},
+		{
+			MethodName: "ListOrganizations",
+			Handler:    _IntermediateService_ListOrganizations_Handler,
 		},
 		{
 			MethodName: "ExchangeIntermediateSessionForSession",
@@ -598,28 +602,12 @@ var IntermediateService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _IntermediateService_IssueEmailVerificationChallenge_Handler,
 		},
 		{
-			MethodName: "ListOrganizations",
-			Handler:    _IntermediateService_ListOrganizations_Handler,
-		},
-		{
-			MethodName: "ListSAMLOrganizations",
-			Handler:    _IntermediateService_ListSAMLOrganizations_Handler,
-		},
-		{
-			MethodName: "SignInWithEmail",
-			Handler:    _IntermediateService_SignInWithEmail_Handler,
-		},
-		{
 			MethodName: "VerifyEmailChallenge",
 			Handler:    _IntermediateService_VerifyEmailChallenge_Handler,
 		},
 		{
 			MethodName: "VerifyPassword",
 			Handler:    _IntermediateService_VerifyPassword_Handler,
-		},
-		{
-			MethodName: "GetProjectUISettings",
-			Handler:    _IntermediateService_GetProjectUISettings_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

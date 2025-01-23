@@ -15,11 +15,13 @@ import { useMutation } from '@connectrpc/connect-query'
 
 import { setIntermediateSessionToken } from '@/auth'
 import {
+  createIntermediateSession,
   getGoogleOAuthRedirectURL,
   getMicrosoftOAuthRedirectURL,
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
 
 const Login = () => {
+  const createIntermediateSessionMutation = useMutation(createIntermediateSession)
   const googleOAuthRedirectUrlMutation = useMutation(getGoogleOAuthRedirectURL)
   const microsoftOAuthRedirectUrlMutation = useMutation(
     getMicrosoftOAuthRedirectURL,
@@ -30,12 +32,19 @@ const Login = () => {
     e.stopPropagation()
 
     try {
-      const { intermediateSessionToken, url } =
+      // this sets a cookie that subsequent requests use
+      await createIntermediateSessionMutation.mutateAsync({})
+    } catch (error) {
+      // TODO: Handle errors on screen once an error handling strategy is in place.
+      console.error(error)
+    }
+
+    try {
+      const { url } =
         await googleOAuthRedirectUrlMutation.mutateAsync({
           redirectUrl: `${window.location.origin}/google-oauth-callback`,
         })
 
-      setIntermediateSessionToken(intermediateSessionToken)
       window.location.href = url
     } catch (error) {
       // TODO: Handle errors on screen once an error handling strategy is in place.
@@ -48,12 +57,19 @@ const Login = () => {
     e.stopPropagation()
 
     try {
-      const { intermediateSessionToken, url } =
+      // this sets a cookie that subsequent requests use
+      await createIntermediateSessionMutation.mutateAsync({})
+    } catch (error) {
+      // TODO: Handle errors on screen once an error handling strategy is in place.
+      console.error(error)
+    }
+
+    try {
+      const { url } =
         await microsoftOAuthRedirectUrlMutation.mutateAsync({
           redirectUrl: `${window.location.origin}/microsoft-oauth-callback`,
         })
 
-      setIntermediateSessionToken(intermediateSessionToken)
       window.location.href = url
     } catch (error) {
       // TODO: Handle errors on screen once an error handling strategy is in place.

@@ -1,12 +1,6 @@
--- name: CreateIntermediateSessionSigningKey :one
-INSERT INTO intermediate_session_signing_keys (id, project_id, public_key, private_key_cipher_text, expire_time)
-    VALUES ($1, $2, $3, $4, $5)
-RETURNING
-    *;
-
 -- name: CreateOrganization :one
-INSERT INTO organizations (id, project_id, display_name, override_log_in_methods, google_hosted_domain, microsoft_tenant_id, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_with_password_enabled, saml_enabled, scim_enabled)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+INSERT INTO organizations (id, project_id, display_name, override_log_in_methods, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_with_password_enabled, saml_enabled, scim_enabled)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 RETURNING
     *;
 
@@ -67,14 +61,13 @@ FROM
 WHERE
     id = $1;
 
--- name: GetOrganizationByGoogleHostedDomain :one
-SELECT
-    *
-FROM
-    organizations
-WHERE
-    google_hosted_domain = $1;
-
+-- -- name: GetOrganizationByGoogleHostedDomain :one
+-- SELECT
+--     *
+-- FROM
+--     organizations
+-- WHERE
+--     google_hosted_domain = $1;
 -- name: GetUserByID :one
 SELECT
     *
@@ -83,21 +76,20 @@ FROM
 WHERE
     id = $1;
 
--- name: UpdateOrganization :one
-UPDATE
-    organizations
-SET
-    display_name = $2,
-    google_hosted_domain = $3,
-    microsoft_tenant_id = $4,
-    override_log_in_with_password_enabled = $5,
-    override_log_in_with_google_enabled = $6,
-    override_log_in_with_microsoft_enabled = $7
-WHERE
-    id = $1
-RETURNING
-    *;
-
+-- -- name: UpdateOrganization :one
+-- UPDATE
+--     organizations
+-- SET
+--     display_name = $2,
+--     google_hosted_domain = $3,
+--     microsoft_tenant_id = $4,
+--     override_log_in_with_password_enabled = $5,
+--     override_log_in_with_google_enabled = $6,
+--     override_log_in_with_microsoft_enabled = $7
+-- WHERE
+--     id = $1
+-- RETURNING
+--     *;
 -- -- name: UpdateProject :one
 -- UPDATE
 --     projects

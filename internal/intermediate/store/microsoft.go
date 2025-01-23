@@ -6,7 +6,6 @@ import (
 	"crypto/sha256"
 	"errors"
 	"fmt"
-	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
@@ -17,7 +16,6 @@ import (
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
 	"github.com/openauth/openauth/internal/microsoftoauth"
-	"github.com/openauth/openauth/internal/store/idformat"
 )
 
 func (s *Store) GetMicrosoftOAuthRedirectURL(ctx context.Context, req *intermediatev1.GetMicrosoftOAuthRedirectURLRequest) (*intermediatev1.GetMicrosoftOAuthRedirectURLResponse, error) {
@@ -40,25 +38,10 @@ func (s *Store) GetMicrosoftOAuthRedirectURL(ctx context.Context, req *intermedi
 		return nil, apierror.NewFailedPreconditionError("microsoft oauth client id not set", fmt.Errorf("microsoft oauth client id not set"))
 	}
 
-	token := uuid.New()
-	tokenSha256 := sha256.Sum256(token[:])
-	expiresAt := time.Now().Add(155 * time.Minute)
-
-	// Since this is the entrypoint for the google oauth flow, we create the intermediate session here
-	intermediateSession, err := q.CreateIntermediateSession(ctx, queries.CreateIntermediateSessionParams{
-		ID:          uuid.Must(uuid.NewV7()),
-		ProjectID:   authn.ProjectID(ctx),
-		ExpireTime:  &expiresAt,
-		TokenSha256: tokenSha256[:],
-	})
-	if err != nil {
-		return nil, fmt.Errorf("create intermediate session: %v", err)
-	}
-
 	state := uuid.NewString()
 	stateSHA := sha256.Sum256([]byte(state))
 	if _, err := q.UpdateIntermediateSessionMicrosoftOAuthStateSHA256(ctx, queries.UpdateIntermediateSessionMicrosoftOAuthStateSHA256Params{
-		ID:                        intermediateSession.ID,
+		ID:                        authn.IntermediateSessionID(ctx),
 		MicrosoftOauthStateSha256: stateSHA[:],
 	}); err != nil {
 		return nil, fmt.Errorf("update intermediate session microsoft oauth state: %v", err)
@@ -75,8 +58,7 @@ func (s *Store) GetMicrosoftOAuthRedirectURL(ctx context.Context, req *intermedi
 	}
 
 	return &intermediatev1.GetMicrosoftOAuthRedirectURLResponse{
-		IntermediateSessionToken: idformat.IntermediateSessionToken.Format(token),
-		Url:                      url,
+		Url: url,
 	}, nil
 }
 
@@ -92,7 +74,7 @@ func (s *Store) RedeemMicrosoftOAuthCode(ctx context.Context, req *intermediatev
 
 	stateSHA := sha256.Sum256([]byte(req.State))
 	if !bytes.Equal(qIntermediateSession.MicrosoftOauthStateSha256, stateSHA[:]) {
-		return nil, apierror.NewFailedPreconditionError("invalid state", fmt.Errorf("invalid state"))
+		return nil, apierror.NewInvalidArgumentError("invalid state", fmt.Errorf("invalid state"))
 	}
 
 	decryptRes, err := s.kms.Decrypt(ctx, &kms.DecryptInput{
@@ -104,13 +86,6 @@ func (s *Store) RedeemMicrosoftOAuthCode(ctx context.Context, req *intermediatev
 		return nil, fmt.Errorf("decrypt microsoft oauth client secret: %v", err)
 	}
 
-	// start new tx now that all kms and oauth http i/o is done
-	_, q, commit, rollback, err := s.tx(ctx)
-	if err != nil {
-		return nil, err
-	}
-	defer rollback()
-
 	redeemRes, err := s.microsoftOAuthClient.RedeemCode(ctx, &microsoftoauth.RedeemCodeRequest{
 		MicrosoftOAuthClientID:     *qProject.MicrosoftOauthClientID,
 		MicrosoftOAuthClientSecret: string(decryptRes.Plaintext),
@@ -118,22 +93,31 @@ func (s *Store) RedeemMicrosoftOAuthCode(ctx context.Context, req *intermediatev
 		Code:                       req.Code,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("redeem microsoft oauth code: %v", err)
+		return nil, apierror.NewInvalidArgumentError("failed to redeem microsoft oauth code", fmt.Errorf("redeem microsoft oauth code: %v", err))
 	}
 
-	// todo what if the intermediate session already has an email
-	// todo what if redeem comes back with the "public" microsoft tenant ID?
+	if qIntermediateSession.Email != nil && redeemRes.Email != *qIntermediateSession.Email {
+		return nil, apierror.NewInvalidArgumentError("Email mismatch", fmt.Errorf("email mismatch"))
+	}
+
+	// start new tx now that all kms and oauth http i/o is done
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
 	if _, err := q.UpdateIntermediateSessionMicrosoftDetails(ctx, queries.UpdateIntermediateSessionMicrosoftDetailsParams{
 		ID:                authn.IntermediateSessionID(ctx),
 		Email:             &redeemRes.Email,
 		MicrosoftUserID:   &redeemRes.MicrosoftUserID,
-		MicrosoftTenantID: &redeemRes.MicrosoftTenantID,
+		MicrosoftTenantID: refOrNil(redeemRes.MicrosoftTenantID),
 	}); err != nil {
 		return nil, fmt.Errorf("update intermediate session microsoft details: %v", err)
 	}
 
 	if err := commit(); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("commit: %w", err)
 	}
 
 	return &intermediatev1.RedeemMicrosoftOAuthCodeResponse{}, nil

@@ -22,15 +22,16 @@ func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrg
 	}
 	defer rollback()
 
-	var googleHostedDomain *string
-	if req.Organization.GoogleHostedDomain != "" {
-		googleHostedDomain = &req.Organization.GoogleHostedDomain
-	}
-
-	var microsoftTenantId *string
-	if req.Organization.MicrosoftTenantId != "" {
-		microsoftTenantId = &req.Organization.MicrosoftTenantId
-	}
+	// TODO these are a list now
+	//var googleHostedDomain *string
+	//if req.Organization.GoogleHostedDomain != "" {
+	//	googleHostedDomain = &req.Organization.GoogleHostedDomain
+	//}
+	//
+	//var microsoftTenantId *string
+	//if req.Organization.MicrosoftTenantId != "" {
+	//	microsoftTenantId = &req.Organization.MicrosoftTenantId
+	//}
 
 	var (
 		overrideLogInWithGoogleEnabled,
@@ -64,11 +65,12 @@ func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrg
 	}
 
 	qOrg, err := q.CreateOrganization(ctx, queries.CreateOrganizationParams{
-		ID:                 uuid.New(),
-		ProjectID:          authn.ProjectID(ctx),
-		DisplayName:        req.Organization.DisplayName,
-		GoogleHostedDomain: googleHostedDomain,
-		MicrosoftTenantID:  microsoftTenantId,
+		ID:          uuid.New(),
+		ProjectID:   authn.ProjectID(ctx),
+		DisplayName: req.Organization.DisplayName,
+		// TODO these are a list now
+		//GoogleHostedDomain: googleHostedDomain,
+		//MicrosoftTenantID:  microsoftTenantId,
 
 		OverrideLogInMethods:              derefOrEmpty(req.Organization.OverrideLogInMethods),
 		OverrideLogInWithGoogleEnabled:    overrideLogInWithGoogleEnabled,
@@ -305,9 +307,10 @@ func parseOrganization(qProject queries.Project, qOrg queries.Organization) *bac
 		LogInWithPasswordEnabled:  logInWithPasswordEnabled,
 		LogInWithGoogleEnabled:    logInWithGoogleEnabled,
 		LogInWithMicrosoftEnabled: logInWithMicrosoftEnabled,
-		GoogleHostedDomain:        derefOrEmpty(qOrg.GoogleHostedDomain),
-		MicrosoftTenantId:         derefOrEmpty(qOrg.MicrosoftTenantID),
-		SamlEnabled:               &qOrg.SamlEnabled,
-		ScimEnabled:               &qOrg.ScimEnabled,
+		// TODO these are a list now
+		//GoogleHostedDomain:        derefOrEmpty(qOrg.GoogleHostedDomain),
+		//MicrosoftTenantId:         derefOrEmpty(qOrg.MicrosoftTenantID),
+		SamlEnabled: &qOrg.SamlEnabled,
+		ScimEnabled: &qOrg.ScimEnabled,
 	}
 }

@@ -69,12 +69,10 @@ func bootstrap(ctx context.Context, args bootstrapArgs) error {
 	}
 
 	fmt.Printf(
-		"%s\t%s\t%s\t%s\t%s\n",
+		"%s\t%s\t%s\n",
 		res.DogfoodProjectID,
 		res.BootstrapUserEmail,
 		res.BootstrapUserVerySensitivePassword,
-		res.SessionSigningKeyID,
-		res.IntermediateSessionSigningKeyID,
 	)
 	return nil
 }

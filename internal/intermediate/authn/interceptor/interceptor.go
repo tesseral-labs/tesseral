@@ -15,9 +15,7 @@ import (
 var ErrAuthorizationHeaderRequired = errors.New("authorization header is required")
 
 var skipRPCs = []string{
-	"/openauth.intermediate.v1.IntermediateService/SignInWithEmail",
-	"/openauth.intermediate.v1.IntermediateService/GetGoogleOAuthRedirectURL",
-	"/openauth.intermediate.v1.IntermediateService/GetMicrosoftOAuthRedirectURL",
+	"/openauth.intermediate.v1.IntermediateService/CreateIntermediateSession",
 	"/openauth.intermediate.v1.IntermediateService/GetProjectUISettings",
 	"/openauth.intermediate.v1.IntermediateService/ListSAMLOrganizations",
 }
@@ -47,7 +45,7 @@ func New(s *store.Store, p *projectid.Sniffer, authAppsRootDomain string) connec
 				return nil, connect.NewError(connect.CodeUnauthenticated, err)
 			}
 
-			intermediateSession, err := s.GetIntermediateSessionByToken(ctx, secretValue)
+			intermediateSession, err := s.AuthenticateIntermediateSession(ctx, requestProjectID, secretValue)
 			if err != nil {
 				return nil, connect.NewError(connect.CodeUnauthenticated, err)
 			}

@@ -1,36 +1,66 @@
--- name: CompleteEmailVerificationChallenge :one
-UPDATE
-    email_verification_challenges
-SET
-    complete_time = $1
-WHERE
-    id = $2
-RETURNING
-    *;
-
--- name: GetIntermediateSessionByTokenSHA256 :one
+-- name: GetIntermediateSessionByTokenSHA256AndProjectID :one
 SELECT
     *
 FROM
     intermediate_sessions
 WHERE
-    token_sha256 = $1;
+    secret_token_sha256 = $1
+    AND project_id = $2;
+
+-- name: UpdateIntermediateSessionEmail :one
+UPDATE
+    intermediate_sessions
+SET
+    email = $1
+WHERE
+    id = $2
+    AND (email IS NULL
+        OR email = $1)
+RETURNING
+    *;
 
 -- name: CreateEmailVerificationChallenge :one
-INSERT INTO email_verification_challenges (id, project_id, intermediate_session_id, challenge_sha256, expire_time)
+INSERT INTO email_verification_challenges (id, intermediate_session_id, challenge_sha256, expire_time)
+    VALUES ($1, $2, $3, $4)
+RETURNING
+    *;
+
+-- name: GetEmailVerificationChallengeByChallengeSHA :one
+SELECT
+    *
+FROM
+    email_verification_challenges
+WHERE
+    intermediate_session_id = $1
+    AND expire_time > now()
+    AND challenge_sha256 = $2;
+
+-- name: CompleteEmailVerificationChallenge :one
+UPDATE
+    email_verification_challenges
+SET
+    complete_time = now(),
+    challenge_sha256 = NULL
+WHERE
+    id = $1
+RETURNING
+    *;
+
+-- name: CreateVerifiedEmail :one
+INSERT INTO verified_emails (id, project_id, email, google_user_id, microsoft_user_id)
     VALUES ($1, $2, $3, $4, $5)
 RETURNING
     *;
 
 -- name: CreateIntermediateSession :one
-INSERT INTO intermediate_sessions (id, project_id, expire_time, email, google_user_id, microsoft_user_id, token_sha256)
+INSERT INTO intermediate_sessions (id, project_id, expire_time, email, google_user_id, microsoft_user_id, secret_token_sha256)
     VALUES ($1, $2, $3, $4, $5, $6, $7)
 RETURNING
     *;
 
 -- name: CreateOrganization :one
-INSERT INTO organizations (id, project_id, display_name, google_hosted_domain, microsoft_tenant_id, override_log_in_methods, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_with_password_enabled, saml_enabled, scim_enabled)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+INSERT INTO organizations (id, project_id, display_name, override_log_in_methods, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_with_password_enabled, saml_enabled, scim_enabled)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 RETURNING
     *;
 
@@ -43,12 +73,6 @@ RETURNING
 -- name: CreateUser :one
 INSERT INTO users (id, organization_id, email, google_user_id, microsoft_user_id, is_owner)
     VALUES ($1, $2, $3, $4, $5, $6)
-RETURNING
-    *;
-
--- name: CreateVerifiedEmail :one
-INSERT INTO verified_emails (id, project_id, email, google_user_id, google_hosted_domain, microsoft_user_id, microsoft_tenant_id)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
 RETURNING
     *;
 
@@ -66,10 +90,9 @@ SELECT
 FROM
     email_verification_challenges
 WHERE
-    project_id = $1
-    AND intermediate_session_id = $2
-    AND expire_time > $3
-    AND revoked = FALSE
+    intermediate_session_id = $1
+    AND expire_time > $2
+    AND challenge_sha256 IS NOT NULL
     AND complete_time IS NULL
 ORDER BY
     create_time DESC
@@ -82,25 +105,6 @@ FROM
     intermediate_sessions
 WHERE
     id = $1;
-
--- name: GetIntermediateSessionSigningKeyByID :one
-SELECT
-    *
-FROM
-    intermediate_session_signing_keys
-WHERE
-    id = $1;
-
--- name: GetIntermediateSessionSigningKeyByProjectID :one
-SELECT
-    *
-FROM
-    intermediate_session_signing_keys
-WHERE
-    project_id = $1
-ORDER BY
-    create_time DESC
-LIMIT 1;
 
 -- name: GetCurrentSessionKeyByProjectID :one
 SELECT
@@ -213,13 +217,29 @@ WHERE
     organizations.project_id = $1
     AND users.email = $2
     AND users.google_user_id IS NULL
-    AND users.microsoft_user_id IS NULL
-    AND organizations.id >= $3
-ORDER BY
-    organizations.id
-LIMIT $4;
+    AND users.microsoft_user_id IS NULL;
 
--- name: ListOrganizationsByGoogleUserID :many
+-- name: ListOrganizationsByGoogleHostedDomain :many
+SELECT
+    organizations.*
+FROM
+    organizations
+    JOIN organization_google_hosted_domains ON organizations.id = organization_google_hosted_domains.organization_id
+WHERE
+    organizations.project_id = $1
+    AND organization_google_hosted_domains.google_hosted_domain = $2;
+
+-- name: ListOrganizationsByMicrosoftTenantID :many
+SELECT
+    organizations.*
+FROM
+    organizations
+    JOIN organization_microsoft_tenant_ids ON organizations.id = organization_microsoft_tenant_ids.organization_id
+WHERE
+    organizations.project_id = $1
+    AND organization_microsoft_tenant_ids.microsoft_tenant_id = $2;
+
+-- name: ListOrganizationsByMatchingUser :many
 SELECT
     organizations.*
 FROM
@@ -227,27 +247,11 @@ FROM
     JOIN users ON organizations.id = users.organization_id
 WHERE
     organizations.project_id = $1
-    AND users.email = $2
-    AND users.google_user_id = $3
-    AND organizations.id >= $4
-ORDER BY
-    organizations.id
-LIMIT $5;
-
--- name: ListOrganizationsByMicrosoftUserID :many
-SELECT
-    organizations.*
-FROM
-    organizations
-    JOIN users ON organizations.id = users.organization_id
-WHERE
-    organizations.project_id = $1
-    AND users.email = $2
-    AND users.microsoft_user_id = $3
-    AND organizations.id >= $4
-ORDER BY
-    organizations.id
-LIMIT $5;
+    AND (users.email = $2
+        OR (users.google_user_id IS NOT NULL
+            AND users.google_user_id = $3)
+        OR (users.microsoft_user_id IS NOT NULL
+            AND users.microsoft_user_id = $4));
 
 -- name: ListSAMLOrganizations :many
 SELECT
@@ -272,7 +276,7 @@ WHERE
 UPDATE
     email_verification_challenges
 SET
-    revoked = TRUE
+    challenge_sha256 = NULL
 WHERE
     id = $1
 RETURNING
@@ -282,7 +286,7 @@ RETURNING
 UPDATE
     intermediate_sessions
 SET
-    revoked = TRUE
+    secret_token_sha256 = NULL
 WHERE
     id = $1
 RETURNING
@@ -353,4 +357,51 @@ WHERE
     AND (google_user_id = $2
         OR microsoft_user_id = $3
         OR email = $4);
+
+-- name: GetEmailVerifiedByGoogleUserID :one
+SELECT
+    EXISTS (
+        SELECT
+            *
+        FROM
+            verified_emails
+        WHERE
+            project_id = $1
+            AND email = $2
+            AND google_user_id = $3);
+
+-- name: GetEmailVerifiedByMicrosoftUserID :one
+SELECT
+    EXISTS (
+        SELECT
+            *
+        FROM
+            verified_emails
+        WHERE
+            project_id = $1
+            AND email = $2
+            AND microsoft_user_id = $3);
+
+-- name: GetEmailVerifiedByEmailVerificationChallenge :one
+SELECT
+    EXISTS (
+        SELECT
+            *
+        FROM
+            email_verification_challenges
+        WHERE
+            complete_time IS NOT NULL
+            AND intermediate_session_id = $1);
+
+-- name: CreateOrganizationGoogleHostedDomain :one
+INSERT INTO organization_google_hosted_domains (id, organization_id, google_hosted_domain)
+    VALUES ($1, $2, $3)
+RETURNING
+    *;
+
+-- name: CreateOrganizationMicrosoftTenantID :one
+INSERT INTO organization_microsoft_tenant_ids (id, organization_id, microsoft_tenant_id)
+    VALUES ($1, $2, $3)
+RETURNING
+    *;
 

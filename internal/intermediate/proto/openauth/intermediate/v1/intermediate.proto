@@ -9,9 +9,31 @@ import "google/protobuf/timestamp.proto";
 import "google/protobuf/struct.proto";
 
 service IntermediateService {
+  rpc ListSAMLOrganizations(ListSAMLOrganizationsRequest) returns (ListSAMLOrganizationsResponse) {
+    option (google.api.http) = {
+      post: "/intermediate/v1/saml-organizations",
+      body: "*"
+    };
+  }
+
+  rpc GetProjectUISettings(GetProjectUISettingsRequest) returns (GetProjectUISettingsResponse);
+
+  rpc CreateIntermediateSession(CreateIntermediateSessionRequest) returns (CreateIntermediateSessionResponse) {
+    option (google.api.http) = {
+      post: "/intermediate/v1/intermediate-session",
+      body: "*"
+    };
+  }
+
   rpc Whoami(WhoamiRequest) returns (WhoamiResponse) {
     option (google.api.http) = {
       get: "/intermediate/v1/whoami"
+    };
+  }
+
+  rpc ListOrganizations(ListOrganizationsRequest) returns (ListOrganizationsResponse) {
+    option (google.api.http) = {
+      get: "/intermediate/v1/organizations"
     };
   }
 
@@ -57,7 +79,6 @@ service IntermediateService {
     };
   }
 
-  // Issues a new email verification challenge.
   rpc IssueEmailVerificationChallenge(IssueEmailVerificationChallengeRequest) returns (IssueEmailVerificationChallengeResponse) {
     option (google.api.http) = {
       post: "/intermediate/v1/issue-email-verification-challenge",
@@ -65,30 +86,6 @@ service IntermediateService {
     };
   }
 
-  // Gets a list of organizations.
-  rpc ListOrganizations(ListOrganizationsRequest) returns (ListOrganizationsResponse) {
-    option (google.api.http) = {
-      get: "/intermediate/v1/organizations"
-    };
-  }
-
-  // Gets a list of SAML organizations for a given email address.
-  rpc ListSAMLOrganizations(ListSAMLOrganizationsRequest) returns (ListSAMLOrganizationsResponse) {
-    option (google.api.http) = {
-      post: "/intermediate/v1/saml-organizations",
-      body: "*"
-    };
-  }
-
-  // Creates a new intermediate session or session and cookies the requester.
-  rpc SignInWithEmail(SignInWithEmailRequest) returns (SignInWithEmailResponse) {
-    option (google.api.http) = {
-      post: "/intermediate/v1/email-signin",
-      body: "*"
-    };
-  }
-
-  // Submits a challenge for verification of email address.
   rpc VerifyEmailChallenge(VerifyEmailChallengeRequest) returns (VerifyEmailChallengeResponse) {
     option (google.api.http) = {
       post: "/intermediate/v1/verify-email-challenge",
@@ -96,68 +93,69 @@ service IntermediateService {
     };
   }
 
-  // Submits a password for verification of session.
   rpc VerifyPassword(VerifyPasswordRequest) returns (VerifyPasswordResponse) {
     option (google.api.http) = {
       post: "/intermediate/v1/verify-password",
       body: "*"
     };
   }
-
-  rpc GetProjectUISettings(GetProjectUISettingsRequest) returns (GetProjectUISettingsResponse) {}
 }
 
 message IntermediateSession {
   string id = 1;
   string project_id = 2;
   string email = 3;
-  string google_user_id = 4;
-  string google_hosted_domain = 5;
-  string microsoft_tenant_id = 6;
+  bool email_verified = 4;
+  string google_user_id = 5;
+  string google_hosted_domain = 6;
   string microsoft_user_id = 7;
-  bool password_verified = 8;
-  string organization_id = 9;
-  // TODO more things here
+  string microsoft_tenant_id = 8;
+  bool password_verified = 9;
+}
+
+message ProjectUISettings {
+  string id = 1;
+  string project_id = 2;
+  google.protobuf.Timestamp create_time = 3;
+  google.protobuf.Timestamp update_time = 4;
+  string logo_url = 5;
+  string favicon_url = 6;
+  string primary_color = 7;
+  bool detect_dark_mode_enabled = 8;
+  string dark_mode_logo_url = 9;
+  string dark_mode_primary_color = 10;
+}
+
+message CreateIntermediateSessionRequest {
+}
+
+message CreateIntermediateSessionResponse {
+  string intermediate_session_secret_token = 1;
 }
 
 message WhoamiRequest {
 }
 
 message WhoamiResponse {
-  // The email associated with the intermediate session.
-  string email = 1;
-  // The Google User ID associated with the intermediate session.
-  string google_user_id = 2;
-  // A boolean representing whether the user has verified their email address.
-  bool is_email_verified = 3;
-  // The Microsoft User ID associated with the intermediate session.
-  string microsoft_user_id = 4;
-  // The organization ID associated with the intermediate session.
-  string organization_id = 5;
+  IntermediateSession intermediate_session = 1;
 }
 
 message ExchangeIntermediateSessionForSessionRequest {
-  // The organization ID for the full session.
   string organization_id = 1;
 }
 
 message ExchangeIntermediateSessionForSessionResponse {
-  // The session access token.
-  string access_token = 1;
-  // The refresh token for the new session.
-  string refresh_token = 2;
+  string refresh_token = 1;
+  string access_token = 2;
 }
 
 message ExchangeIntermediateSessionForNewOrganizationSessionRequest {
-  // The display name of the organization to create.
   string display_name = 1;
 }
 
 message ExchangeIntermediateSessionForNewOrganizationSessionResponse {
-  // The session access token.
-  string access_token = 1;
-  // The refresh token for the new session.
-  string refresh_token = 2;
+  string refresh_token = 1;
+  string access_token = 2;
 }
 
 message GetGoogleOAuthRedirectURLRequest {
@@ -166,7 +164,6 @@ message GetGoogleOAuthRedirectURLRequest {
 
 message GetGoogleOAuthRedirectURLResponse {
   string url = 1;
-  string intermediate_session_token = 2;
 }
 
 message RedeemGoogleOAuthCodeRequest {
@@ -184,7 +181,6 @@ message GetMicrosoftOAuthRedirectURLRequest {
 
 message GetMicrosoftOAuthRedirectURLResponse {
   string url = 1;
-  string intermediate_session_token = 2;
 }
 
 message RedeemMicrosoftOAuthCodeRequest {
@@ -196,20 +192,6 @@ message RedeemMicrosoftOAuthCodeRequest {
 message RedeemMicrosoftOAuthCodeResponse {
 }
 
-
-message IntermediateSessionClaims {
-  // The project ID the intermediate session is scoped to.
-  string project_id = 1;
-  // The email associated with the intermediate session.
-  string email = 2;
-  // The time the intermediate session expires.
-  int64 expires_at = 3;
-  // The time the intermediate session was issued.
-  int64 issued_at = 4;
-  // The subject of the intermediate session.
-  string subject = 5;
-}
-
 message Organization {
   string id = 1;
   string project_id = 2;
@@ -217,24 +199,22 @@ message Organization {
   bool log_in_with_google_enabled = 4;
   bool log_in_with_microsoft_enabled = 5;
   bool log_in_with_password_enabled = 6;
-  optional string primary_saml_connection_id = 7;
+  string primary_saml_connection_id = 7;
 }
 
 message IssueEmailVerificationChallengeRequest {
+  string email = 1;
 }
 
 message IssueEmailVerificationChallengeResponse {
-  // The ID of the email verification challenge.
   string email_verification_challenge_id = 1;
 }
 
 message ListOrganizationsRequest {
-  string page_token = 1;
 }
 
 message ListOrganizationsResponse {
   repeated Organization organizations = 1;
-  string next_page_token = 2;
 }
 
 message ListSAMLOrganizationsRequest {
@@ -245,100 +225,15 @@ message ListSAMLOrganizationsResponse {
   repeated Organization organizations = 1;
 }
 
-message SignInWithEmailRequest {
-  // The email address to sign in with.
-  string email = 1;
-}
-
-message SignInWithEmailResponse {
-  // The access token for the new intermediate session.
-  string intermediate_session_token = 1;
-  // The ID of the email verification challenge, if required.
-  string challenge_id = 2;
-}
-
-message Project {
-  // Unique identifier for this project.
-  string id = 1;
-  // The organization this project belongs to.
-  string organization_id = 2;
-  // Top-level setting for whether login with password is enabled (inherited by organizations by default).
-  bool log_in_with_password_enabled = 3;
-  // Top-level setting for whether login with Google is enabled (inherited by organizations by default).
-  bool log_in_with_google_enabled = 4;
-  // Top-level setting for whether login with Microsoft is enabled (inherited by organizations by default).
-  bool log_in_with_microsoft_enabled = 5;
-  // The oAuth Client ID to be used for Google Auth.
-  string google_oauth_client_id = 6;
-  // The oAuth Client secret to be used for Google Auth.
-  string google_oauth_client_secret = 7;
-  // The oAuth Client ID to be used for Microsoft Auth.
-  string microsoft_oauth_client_id = 8;
-  // The oAuth Client secret to be used for Microsoft Auth.
-  string microsoft_oauth_client_secret = 9;
-  // The default auth domain for the project
-  string auth_domain = 10;
-}
-
-message ProjectUISettings {
-  string id = 1;
-  string project_id = 2;
-  google.protobuf.Timestamp create_time = 3;
-  google.protobuf.Timestamp update_time = 4;
-  string logo_url = 5;
-  string favicon_url = 6;
-  string primary_color = 7;
-  bool detect_dark_mode_enabled = 8;
-  string dark_mode_logo_url = 9;
-  string dark_mode_primary_color = 10;
-}
-
-message SessionSigningKey {
-  string id = 1;
-  string project_id = 2;
-  google.protobuf.Struct public_key_jwk = 3;
-}
-
-message User {
-  // Unique identifier for this user.
-  string id = 1;
-  // The organization this user belongs to.
-  string organization_id = 2;
-  // The user's email (pending verification).
-  string unverified_email = 3;
-  // The user's email (after verification).
-  string verified_email = 4;
-  // The hash of the user's password.
-  string password_bcrypt = 5;
-  // The user's Google User ID.
-  string google_user_id = 6;
-  // The user's Microsoft User ID.
-  string microsoft_user_id = 7;
-}
-
-message Session {
-  string id = 1;
-  string user_id = 2;
-  google.protobuf.Timestamp create_time = 3;
-  google.protobuf.Timestamp expire_time = 4;
-  bool revoked = 5;
-
-  // TODO(ucarion): add session metadata like auth factors, etc here
-}
-
 message VerifyEmailChallengeRequest {
-  // The challenge to verify.
-  string code = 1;
-  // The ID of the email verification challenge.
-  string email_verification_challenge_id = 2;
+  string email_verification_challenge_id = 1;
+  string code = 2;
 }
 
 message VerifyEmailChallengeResponse {}
 
 message VerifyPasswordRequest {
-  // The organization ID to verify the password for.
   string organization_id = 1;
-  // The password to verify.
   string password = 2;
 }
 
@@ -349,6 +244,5 @@ message GetProjectUISettingsRequest {
 }
 
 message GetProjectUISettingsResponse {
-  // The project's UI settings.
   ProjectUISettings project_ui_settings = 1;
 }

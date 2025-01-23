@@ -15,22 +15,17 @@ import (
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
-func (s *Store) ListOrganizations(
-	ctx context.Context,
-	req *intermediatev1.ListOrganizationsRequest,
-) (*intermediatev1.ListOrganizationsResponse, error) {
+func (s *Store) ListOrganizations(ctx context.Context, req *intermediatev1.ListOrganizationsRequest) (*intermediatev1.ListOrganizationsResponse, error) {
+	intermediateSession := authn.IntermediateSession(ctx)
+	if !intermediateSession.EmailVerified {
+		return nil, apierror.NewPermissionDeniedError("email not verified", nil)
+	}
+
 	_, q, _, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
 	defer rollback()
-
-	intermediateSession := authn.IntermediateSession(ctx)
-
-	var startID uuid.UUID
-	if err := s.pageEncoder.Unmarshal(req.PageToken, &startID); err != nil {
-		return nil, fmt.Errorf("unmarshal page token: %w", err)
-	}
 
 	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
@@ -40,57 +35,67 @@ func (s *Store) ListOrganizations(
 		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 
-	limit := 10
-	qOrganizationRecords := []queries.Organization{}
+	// Intermediate sessions can see an organization if:
+	//
+	// 1. The qOrg's google/microsoft hd/tid match, or
+	// 2. There is a user in the qOrg with the same google/microsoft user id, or
+	// 3. There is a user in the qOrg with the same email
+	//
+	// Options (2) and (3) are not redundant because a user may change their
+	// email. The exchange endpoint will know to log the user in as the one that
+	// has the same OAuth-based ID. It will also update that user's email
+	// address.
+	var qOrgs []queries.Organization
 
-	if intermediateSession.GoogleUserId != "" {
-		qGoogleOrganizationRecords, err := q.ListOrganizationsByGoogleUserID(ctx, queries.ListOrganizationsByGoogleUserIDParams{
-			Email:        intermediateSession.Email,
-			GoogleUserID: &intermediateSession.GoogleUserId,
-			ID:           startID,
-			Limit:        int32(limit + 1),
-			ProjectID:    authn.ProjectID(ctx),
+	if intermediateSession.GoogleHostedDomain != "" {
+		// orgs with the same google hosted domain
+		qGoogleOrgs, err := q.ListOrganizationsByGoogleHostedDomain(ctx, queries.ListOrganizationsByGoogleHostedDomainParams{
+			ProjectID:          authn.ProjectID(ctx),
+			GoogleHostedDomain: intermediateSession.GoogleHostedDomain,
 		})
 		if err != nil {
-			return nil, fmt.Errorf("list organizations by google user id: %w", err)
+			return nil, fmt.Errorf("list organizations by google hosted domain: %w", err)
 		}
-
-		if len(qGoogleOrganizationRecords) > 0 {
-			qOrganizationRecords = qGoogleOrganizationRecords
-		}
-	} else if intermediateSession.MicrosoftUserId != "" {
-		qMicrosoftOrganizationRecords, err := q.ListOrganizationsByMicrosoftUserID(ctx, queries.ListOrganizationsByMicrosoftUserIDParams{
-			Email:           intermediateSession.Email,
-			ID:              startID,
-			Limit:           int32(limit + 1),
-			MicrosoftUserID: &intermediateSession.MicrosoftUserId,
-			ProjectID:       authn.ProjectID(ctx),
-		})
-		if err != nil {
-			return nil, fmt.Errorf("list organizations by microsoft user id: %w", err)
-		}
-
-		if len(qMicrosoftOrganizationRecords) > 0 {
-			qOrganizationRecords = qMicrosoftOrganizationRecords
-		}
-	} else {
-		qEmailOrganizationRecords, err := q.ListOrganizationsByEmail(ctx, queries.ListOrganizationsByEmailParams{
-			Email:     intermediateSession.Email,
-			ID:        startID,
-			Limit:     int32(limit + 1),
-			ProjectID: authn.ProjectID(ctx),
-		})
-		if err != nil {
-			return nil, fmt.Errorf("list organizations by email: %w", err)
-		}
-
-		if len(qEmailOrganizationRecords) > 0 {
-			qOrganizationRecords = qEmailOrganizationRecords
-		}
+		qOrgs = append(qOrgs, qGoogleOrgs...)
 	}
 
-	organizations := []*intermediatev1.Organization{}
-	for _, organization := range qOrganizationRecords {
+	if intermediateSession.MicrosoftTenantId != "" {
+		// orgs with the same microsoft tenant ID
+		qMicrosoftOrgs, err := q.ListOrganizationsByMicrosoftTenantID(ctx, queries.ListOrganizationsByMicrosoftTenantIDParams{
+			ProjectID:         authn.ProjectID(ctx),
+			MicrosoftTenantID: intermediateSession.MicrosoftTenantId,
+		})
+		if err != nil {
+			return nil, fmt.Errorf("list organizations by microsoft tenant id: %w", err)
+		}
+		qOrgs = append(qOrgs, qMicrosoftOrgs...)
+	}
+
+	// orgs with a matching user
+	qUserOrgs, err := q.ListOrganizationsByMatchingUser(ctx, queries.ListOrganizationsByMatchingUserParams{
+		ProjectID:       authn.ProjectID(ctx),
+		Email:           intermediateSession.Email,
+		GoogleUserID:    refOrNil(intermediateSession.GoogleUserId),
+		MicrosoftUserID: refOrNil(intermediateSession.MicrosoftUserId),
+	})
+	if err != nil {
+		return nil, fmt.Errorf("list organizations by matching user: %w", err)
+	}
+	qOrgs = append(qOrgs, qUserOrgs...)
+
+	// dedupe qOrgs on ID
+	var qOrgsDeduped []queries.Organization
+	seen := map[uuid.UUID]struct{}{}
+	for _, qOrg := range qOrgs {
+		if _, ok := seen[qOrg.ID]; ok {
+			continue
+		}
+		qOrgsDeduped = append(qOrgsDeduped, qOrg)
+		seen[qOrg.ID] = struct{}{}
+	}
+
+	var organizations []*intermediatev1.Organization
+	for _, organization := range qOrgsDeduped {
 		qSamlConnection, err := q.GetOrganizationPrimarySAMLConnection(ctx, organization.ID)
 		if err != nil && !errors.Is(err, pgx.ErrNoRows) {
 			return nil, apierror.NewNotFoundError("primary saml connection not found", fmt.Errorf("get organization primary saml connection: %w", err))
@@ -99,15 +104,8 @@ func (s *Store) ListOrganizations(
 		organizations = append(organizations, parseOrganization(organization, qProject, &qSamlConnection))
 	}
 
-	var nextPageToken string
-	if len(organizations) == limit+1 {
-		nextPageToken = s.pageEncoder.Marshal(organizations[limit].Id)
-		organizations = organizations[:limit]
-	}
-
 	return &intermediatev1.ListOrganizationsResponse{
 		Organizations: organizations,
-		NextPageToken: nextPageToken,
 	}, nil
 }
 
@@ -140,7 +138,7 @@ func (s *Store) ListSAMLOrganizations(ctx context.Context, req *intermediatev1.L
 		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 
-	organizations := []*intermediatev1.Organization{}
+	var organizations []*intermediatev1.Organization
 	for _, organization := range qOrganizations {
 		qSamlConnection, err := q.GetOrganizationPrimarySAMLConnection(ctx, organization.ID)
 		if err != nil {
@@ -167,6 +165,6 @@ func parseOrganization(organization queries.Organization, project queries.Projec
 		LogInWithGoogleEnabled:    logInWithGoogleEnabled,
 		LogInWithMicrosoftEnabled: logInWithMicrosoftEnabled,
 		LogInWithPasswordEnabled:  logInWithPasswordEnabled,
-		PrimarySamlConnectionId:   &samlConnectionID,
+		PrimarySamlConnectionId:   samlConnectionID,
 	}
 }

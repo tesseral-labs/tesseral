@@ -7,13 +7,13 @@ import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv1
 import { file_google_api_annotations } from "../../../google/api/annotations_pb";
 import type { Timestamp } from "@bufbuild/protobuf/wkt";
 import { file_google_protobuf_empty, file_google_protobuf_field_mask, file_google_protobuf_struct, file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
-import type { JsonObject, Message } from "@bufbuild/protobuf";
+import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file openauth/intermediate/v1/intermediate.proto.
  */
 export const file_openauth_intermediate_v1_intermediate: GenFile = /*@__PURE__*/
-  fileDesc("CitvcGVuYXV0aC9pbnRlcm1lZGlhdGUvdjEvaW50ZXJtZWRpYXRlLnByb3RvEhhvcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEi5gEKE0ludGVybWVkaWF0ZVNlc3Npb24SCgoCaWQYASABKAkSEgoKcHJvamVjdF9pZBgCIAEoCRINCgVlbWFpbBgDIAEoCRIWCg5nb29nbGVfdXNlcl9pZBgEIAEoCRIcChRnb29nbGVfaG9zdGVkX2RvbWFpbhgFIAEoCRIbChNtaWNyb3NvZnRfdGVuYW50X2lkGAYgASgJEhkKEW1pY3Jvc29mdF91c2VyX2lkGAcgASgJEhkKEXBhc3N3b3JkX3ZlcmlmaWVkGAggASgIEhcKD29yZ2FuaXphdGlvbl9pZBgJIAEoCSIPCg1XaG9hbWlSZXF1ZXN0IoYBCg5XaG9hbWlSZXNwb25zZRINCgVlbWFpbBgBIAEoCRIWCg5nb29nbGVfdXNlcl9pZBgCIAEoCRIZChFpc19lbWFpbF92ZXJpZmllZBgDIAEoCBIZChFtaWNyb3NvZnRfdXNlcl9pZBgEIAEoCRIXCg9vcmdhbml6YXRpb25faWQYBSABKAkiRwosRXhjaGFuZ2VJbnRlcm1lZGlhdGVTZXNzaW9uRm9yU2Vzc2lvblJlcXVlc3QSFwoPb3JnYW5pemF0aW9uX2lkGAEgASgJIlwKLUV4Y2hhbmdlSW50ZXJtZWRpYXRlU2Vzc2lvbkZvclNlc3Npb25SZXNwb25zZRIUCgxhY2Nlc3NfdG9rZW4YASABKAkSFQoNcmVmcmVzaF90b2tlbhgCIAEoCSJTCjtFeGNoYW5nZUludGVybWVkaWF0ZVNlc3Npb25Gb3JOZXdPcmdhbml6YXRpb25TZXNzaW9uUmVxdWVzdBIUCgxkaXNwbGF5X25hbWUYASABKAkiawo8RXhjaGFuZ2VJbnRlcm1lZGlhdGVTZXNzaW9uRm9yTmV3T3JnYW5pemF0aW9uU2Vzc2lvblJlc3BvbnNlEhQKDGFjY2Vzc190b2tlbhgBIAEoCRIVCg1yZWZyZXNoX3Rva2VuGAIgASgJIjgKIEdldEdvb2dsZU9BdXRoUmVkaXJlY3RVUkxSZXF1ZXN0EhQKDHJlZGlyZWN0X3VybBgBIAEoCSJUCiFHZXRHb29nbGVPQXV0aFJlZGlyZWN0VVJMUmVzcG9uc2USCwoDdXJsGAEgASgJEiIKGmludGVybWVkaWF0ZV9zZXNzaW9uX3Rva2VuGAIgASgJIlEKHFJlZGVlbUdvb2dsZU9BdXRoQ29kZVJlcXVlc3QSDAoEY29kZRgBIAEoCRINCgVzdGF0ZRgCIAEoCRIUCgxyZWRpcmVjdF91cmwYAyABKAkiHwodUmVkZWVtR29vZ2xlT0F1dGhDb2RlUmVzcG9uc2UiOwojR2V0TWljcm9zb2Z0T0F1dGhSZWRpcmVjdFVSTFJlcXVlc3QSFAoMcmVkaXJlY3RfdXJsGAEgASgJIlcKJEdldE1pY3Jvc29mdE9BdXRoUmVkaXJlY3RVUkxSZXNwb25zZRILCgN1cmwYASABKAkSIgoaaW50ZXJtZWRpYXRlX3Nlc3Npb25fdG9rZW4YAiABKAkiVAofUmVkZWVtTWljcm9zb2Z0T0F1dGhDb2RlUmVxdWVzdBIMCgRjb2RlGAEgASgJEg0KBXN0YXRlGAIgASgJEhQKDHJlZGlyZWN0X3VybBgDIAEoCSIiCiBSZWRlZW1NaWNyb3NvZnRPQXV0aENvZGVSZXNwb25zZSJ2ChlJbnRlcm1lZGlhdGVTZXNzaW9uQ2xhaW1zEhIKCnByb2plY3RfaWQYASABKAkSDQoFZW1haWwYAiABKAkSEgoKZXhwaXJlc19hdBgDIAEoAxIRCglpc3N1ZWRfYXQYBCABKAMSDwoHc3ViamVjdBgFIAEoCSL9AQoMT3JnYW5pemF0aW9uEgoKAmlkGAEgASgJEhIKCnByb2plY3RfaWQYAiABKAkSFAoMZGlzcGxheV9uYW1lGAMgASgJEiIKGmxvZ19pbl93aXRoX2dvb2dsZV9lbmFibGVkGAQgASgIEiUKHWxvZ19pbl93aXRoX21pY3Jvc29mdF9lbmFibGVkGAUgASgIEiQKHGxvZ19pbl93aXRoX3Bhc3N3b3JkX2VuYWJsZWQYBiABKAgSJwoacHJpbWFyeV9zYW1sX2Nvbm5lY3Rpb25faWQYByABKAlIAIgBAUIdChtfcHJpbWFyeV9zYW1sX2Nvbm5lY3Rpb25faWQiKAomSXNzdWVFbWFpbFZlcmlmaWNhdGlvbkNoYWxsZW5nZVJlcXVlc3QiUgonSXNzdWVFbWFpbFZlcmlmaWNhdGlvbkNoYWxsZW5nZVJlc3BvbnNlEicKH2VtYWlsX3ZlcmlmaWNhdGlvbl9jaGFsbGVuZ2VfaWQYASABKAkiLgoYTGlzdE9yZ2FuaXphdGlvbnNSZXF1ZXN0EhIKCnBhZ2VfdG9rZW4YASABKAkicwoZTGlzdE9yZ2FuaXphdGlvbnNSZXNwb25zZRI9Cg1vcmdhbml6YXRpb25zGAEgAygLMiYub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLk9yZ2FuaXphdGlvbhIXCg9uZXh0X3BhZ2VfdG9rZW4YAiABKAkiLQocTGlzdFNBTUxPcmdhbml6YXRpb25zUmVxdWVzdBINCgVlbWFpbBgBIAEoCSJeCh1MaXN0U0FNTE9yZ2FuaXphdGlvbnNSZXNwb25zZRI9Cg1vcmdhbml6YXRpb25zGAEgAygLMiYub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLk9yZ2FuaXphdGlvbiInChZTaWduSW5XaXRoRW1haWxSZXF1ZXN0Eg0KBWVtYWlsGAEgASgJIlMKF1NpZ25JbldpdGhFbWFpbFJlc3BvbnNlEiIKGmludGVybWVkaWF0ZV9zZXNzaW9uX3Rva2VuGAEgASgJEhQKDGNoYWxsZW5nZV9pZBgCIAEoCSLCAgoHUHJvamVjdBIKCgJpZBgBIAEoCRIXCg9vcmdhbml6YXRpb25faWQYAiABKAkSJAocbG9nX2luX3dpdGhfcGFzc3dvcmRfZW5hYmxlZBgDIAEoCBIiChpsb2dfaW5fd2l0aF9nb29nbGVfZW5hYmxlZBgEIAEoCBIlCh1sb2dfaW5fd2l0aF9taWNyb3NvZnRfZW5hYmxlZBgFIAEoCBIeChZnb29nbGVfb2F1dGhfY2xpZW50X2lkGAYgASgJEiIKGmdvb2dsZV9vYXV0aF9jbGllbnRfc2VjcmV0GAcgASgJEiEKGW1pY3Jvc29mdF9vYXV0aF9jbGllbnRfaWQYCCABKAkSJQodbWljcm9zb2Z0X29hdXRoX2NsaWVudF9zZWNyZXQYCSABKAkSEwoLYXV0aF9kb21haW4YCiABKAkisgIKEVByb2plY3RVSVNldHRpbmdzEgoKAmlkGAEgASgJEhIKCnByb2plY3RfaWQYAiABKAkSLwoLY3JlYXRlX3RpbWUYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi8KC3VwZGF0ZV90aW1lGAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIQCghsb2dvX3VybBgFIAEoCRITCgtmYXZpY29uX3VybBgGIAEoCRIVCg1wcmltYXJ5X2NvbG9yGAcgASgJEiAKGGRldGVjdF9kYXJrX21vZGVfZW5hYmxlZBgIIAEoCBIaChJkYXJrX21vZGVfbG9nb191cmwYCSABKAkSHwoXZGFya19tb2RlX3ByaW1hcnlfY29sb3IYCiABKAkiZAoRU2Vzc2lvblNpZ25pbmdLZXkSCgoCaWQYASABKAkSEgoKcHJvamVjdF9pZBgCIAEoCRIvCg5wdWJsaWNfa2V5X2p3axgDIAEoCzIXLmdvb2dsZS5wcm90b2J1Zi5TdHJ1Y3QiqQEKBFVzZXISCgoCaWQYASABKAkSFwoPb3JnYW5pemF0aW9uX2lkGAIgASgJEhgKEHVudmVyaWZpZWRfZW1haWwYAyABKAkSFgoOdmVyaWZpZWRfZW1haWwYBCABKAkSFwoPcGFzc3dvcmRfYmNyeXB0GAUgASgJEhYKDmdvb2dsZV91c2VyX2lkGAYgASgJEhkKEW1pY3Jvc29mdF91c2VyX2lkGAcgASgJIpkBCgdTZXNzaW9uEgoKAmlkGAEgASgJEg8KB3VzZXJfaWQYAiABKAkSLwoLY3JlYXRlX3RpbWUYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi8KC2V4cGlyZV90aW1lGAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIPCgdyZXZva2VkGAUgASgIIlQKG1ZlcmlmeUVtYWlsQ2hhbGxlbmdlUmVxdWVzdBIMCgRjb2RlGAEgASgJEicKH2VtYWlsX3ZlcmlmaWNhdGlvbl9jaGFsbGVuZ2VfaWQYAiABKAkiHgocVmVyaWZ5RW1haWxDaGFsbGVuZ2VSZXNwb25zZSJCChVWZXJpZnlQYXNzd29yZFJlcXVlc3QSFwoPb3JnYW5pemF0aW9uX2lkGAEgASgJEhAKCHBhc3N3b3JkGAIgASgJIhgKFlZlcmlmeVBhc3N3b3JkUmVzcG9uc2UiHQobR2V0UHJvamVjdFVJU2V0dGluZ3NSZXF1ZXN0ImgKHEdldFByb2plY3RVSVNldHRpbmdzUmVzcG9uc2USSAoTcHJvamVjdF91aV9zZXR0aW5ncxgBIAEoCzIrLm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5Qcm9qZWN0VUlTZXR0aW5nczLiFQoTSW50ZXJtZWRpYXRlU2VydmljZRJ8CgZXaG9hbWkSJy5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuV2hvYW1pUmVxdWVzdBooLm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5XaG9hbWlSZXNwb25zZSIfgtPkkwIZEhcvaW50ZXJtZWRpYXRlL3YxL3dob2FtaRL/AQolRXhjaGFuZ2VJbnRlcm1lZGlhdGVTZXNzaW9uRm9yU2Vzc2lvbhJGLm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5FeGNoYW5nZUludGVybWVkaWF0ZVNlc3Npb25Gb3JTZXNzaW9uUmVxdWVzdBpHLm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5FeGNoYW5nZUludGVybWVkaWF0ZVNlc3Npb25Gb3JTZXNzaW9uUmVzcG9uc2UiRYLT5JMCPzoBKiI6L2ludGVybWVkaWF0ZS92MS9leGNoYW5nZS1pbnRlcm1lZGlhdGUtc2Vzc2lvbi1mb3Itc2Vzc2lvbhK9Ago0RXhjaGFuZ2VJbnRlcm1lZGlhdGVTZXNzaW9uRm9yTmV3T3JnYW5pemF0aW9uU2Vzc2lvbhJVLm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5FeGNoYW5nZUludGVybWVkaWF0ZVNlc3Npb25Gb3JOZXdPcmdhbml6YXRpb25TZXNzaW9uUmVxdWVzdBpWLm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5FeGNoYW5nZUludGVybWVkaWF0ZVNlc3Npb25Gb3JOZXdPcmdhbml6YXRpb25TZXNzaW9uUmVzcG9uc2UiVoLT5JMCUDoBKiJLL2ludGVybWVkaWF0ZS92MS9leGNoYW5nZS1pbnRlcm1lZGlhdGUtc2Vzc2lvbi1mb3ItbmV3LW9yZ2FuaXphdGlvbi1zZXNzaW9uEssBChlHZXRHb29nbGVPQXV0aFJlZGlyZWN0VVJMEjoub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLkdldEdvb2dsZU9BdXRoUmVkaXJlY3RVUkxSZXF1ZXN0Gjsub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLkdldEdvb2dsZU9BdXRoUmVkaXJlY3RVUkxSZXNwb25zZSI1gtPkkwIvOgEqIiovaW50ZXJtZWRpYXRlL3YxL2dvb2dsZS1vYXV0aC1yZWRpcmVjdC11cmwSvgEKFVJlZGVlbUdvb2dsZU9BdXRoQ29kZRI2Lm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5SZWRlZW1Hb29nbGVPQXV0aENvZGVSZXF1ZXN0Gjcub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLlJlZGVlbUdvb2dsZU9BdXRoQ29kZVJlc3BvbnNlIjSC0+STAi46ASoiKS9pbnRlcm1lZGlhdGUvdjEvcmVkZWVtLWdvb2dsZS1vYXV0aC1jb2RlEtcBChxHZXRNaWNyb3NvZnRPQXV0aFJlZGlyZWN0VVJMEj0ub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLkdldE1pY3Jvc29mdE9BdXRoUmVkaXJlY3RVUkxSZXF1ZXN0Gj4ub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLkdldE1pY3Jvc29mdE9BdXRoUmVkaXJlY3RVUkxSZXNwb25zZSI4gtPkkwIyOgEqIi0vaW50ZXJtZWRpYXRlL3YxL21pY3Jvc29mdC1vYXV0aC1yZWRpcmVjdC11cmwSygEKGFJlZGVlbU1pY3Jvc29mdE9BdXRoQ29kZRI5Lm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5SZWRlZW1NaWNyb3NvZnRPQXV0aENvZGVSZXF1ZXN0Gjoub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLlJlZGVlbU1pY3Jvc29mdE9BdXRoQ29kZVJlc3BvbnNlIjeC0+STAjE6ASoiLC9pbnRlcm1lZGlhdGUvdjEvcmVkZWVtLW1pY3Jvc29mdC1vYXV0aC1jb2RlEuYBCh9Jc3N1ZUVtYWlsVmVyaWZpY2F0aW9uQ2hhbGxlbmdlEkAub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLklzc3VlRW1haWxWZXJpZmljYXRpb25DaGFsbGVuZ2VSZXF1ZXN0GkEub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLklzc3VlRW1haWxWZXJpZmljYXRpb25DaGFsbGVuZ2VSZXNwb25zZSI+gtPkkwI4OgEqIjMvaW50ZXJtZWRpYXRlL3YxL2lzc3VlLWVtYWlsLXZlcmlmaWNhdGlvbi1jaGFsbGVuZ2USpAEKEUxpc3RPcmdhbml6YXRpb25zEjIub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLkxpc3RPcmdhbml6YXRpb25zUmVxdWVzdBozLm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5MaXN0T3JnYW5pemF0aW9uc1Jlc3BvbnNlIiaC0+STAiASHi9pbnRlcm1lZGlhdGUvdjEvb3JnYW5pemF0aW9ucxK4AQoVTGlzdFNBTUxPcmdhbml6YXRpb25zEjYub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLkxpc3RTQU1MT3JnYW5pemF0aW9uc1JlcXVlc3QaNy5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuTGlzdFNBTUxPcmdhbml6YXRpb25zUmVzcG9uc2UiLoLT5JMCKDoBKiIjL2ludGVybWVkaWF0ZS92MS9zYW1sLW9yZ2FuaXphdGlvbnMSoAEKD1NpZ25JbldpdGhFbWFpbBIwLm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5TaWduSW5XaXRoRW1haWxSZXF1ZXN0GjEub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLlNpZ25JbldpdGhFbWFpbFJlc3BvbnNlIiiC0+STAiI6ASoiHS9pbnRlcm1lZGlhdGUvdjEvZW1haWwtc2lnbmluErkBChRWZXJpZnlFbWFpbENoYWxsZW5nZRI1Lm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5WZXJpZnlFbWFpbENoYWxsZW5nZVJlcXVlc3QaNi5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuVmVyaWZ5RW1haWxDaGFsbGVuZ2VSZXNwb25zZSIygtPkkwIsOgEqIicvaW50ZXJtZWRpYXRlL3YxL3ZlcmlmeS1lbWFpbC1jaGFsbGVuZ2USoAEKDlZlcmlmeVBhc3N3b3JkEi8ub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLlZlcmlmeVBhc3N3b3JkUmVxdWVzdBowLm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5WZXJpZnlQYXNzd29yZFJlc3BvbnNlIiuC0+STAiU6ASoiIC9pbnRlcm1lZGlhdGUvdjEvdmVyaWZ5LXBhc3N3b3JkEocBChRHZXRQcm9qZWN0VUlTZXR0aW5ncxI1Lm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5HZXRQcm9qZWN0VUlTZXR0aW5nc1JlcXVlc3QaNi5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuR2V0UHJvamVjdFVJU2V0dGluZ3NSZXNwb25zZSIAQpMCChxjb20ub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxQhFJbnRlcm1lZGlhdGVQcm90b1ABWl5naXRodWIuY29tL29wZW5hdXRoL29wZW5hdXRoL2ludGVybmFsL2ludGVybWVkaWF0ZS9nZW4vb3BlbmF1dGgvaW50ZXJtZWRpYXRlL3YxO2ludGVybWVkaWF0ZXYxogIDT0lYqgIYT3BlbmF1dGguSW50ZXJtZWRpYXRlLlYxygIYT3BlbmF1dGhcSW50ZXJtZWRpYXRlXFYx4gIkT3BlbmF1dGhcSW50ZXJtZWRpYXRlXFYxXEdQQk1ldGFkYXRh6gIaT3BlbmF1dGg6OkludGVybWVkaWF0ZTo6VjFiBnByb3RvMw", [file_google_api_annotations, file_google_protobuf_empty, file_google_protobuf_field_mask, file_google_protobuf_timestamp, file_google_protobuf_struct]);
+  fileDesc("CitvcGVuYXV0aC9pbnRlcm1lZGlhdGUvdjEvaW50ZXJtZWRpYXRlLnByb3RvEhhvcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEi5QEKE0ludGVybWVkaWF0ZVNlc3Npb24SCgoCaWQYASABKAkSEgoKcHJvamVjdF9pZBgCIAEoCRINCgVlbWFpbBgDIAEoCRIWCg5lbWFpbF92ZXJpZmllZBgEIAEoCBIWCg5nb29nbGVfdXNlcl9pZBgFIAEoCRIcChRnb29nbGVfaG9zdGVkX2RvbWFpbhgGIAEoCRIZChFtaWNyb3NvZnRfdXNlcl9pZBgHIAEoCRIbChNtaWNyb3NvZnRfdGVuYW50X2lkGAggASgJEhkKEXBhc3N3b3JkX3ZlcmlmaWVkGAkgASgIIrICChFQcm9qZWN0VUlTZXR0aW5ncxIKCgJpZBgBIAEoCRISCgpwcm9qZWN0X2lkGAIgASgJEi8KC2NyZWF0ZV90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIvCgt1cGRhdGVfdGltZRgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASEAoIbG9nb191cmwYBSABKAkSEwoLZmF2aWNvbl91cmwYBiABKAkSFQoNcHJpbWFyeV9jb2xvchgHIAEoCRIgChhkZXRlY3RfZGFya19tb2RlX2VuYWJsZWQYCCABKAgSGgoSZGFya19tb2RlX2xvZ29fdXJsGAkgASgJEh8KF2RhcmtfbW9kZV9wcmltYXJ5X2NvbG9yGAogASgJIiIKIENyZWF0ZUludGVybWVkaWF0ZVNlc3Npb25SZXF1ZXN0Ik4KIUNyZWF0ZUludGVybWVkaWF0ZVNlc3Npb25SZXNwb25zZRIpCiFpbnRlcm1lZGlhdGVfc2Vzc2lvbl9zZWNyZXRfdG9rZW4YASABKAkiDwoNV2hvYW1pUmVxdWVzdCJdCg5XaG9hbWlSZXNwb25zZRJLChRpbnRlcm1lZGlhdGVfc2Vzc2lvbhgBIAEoCzItLm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5JbnRlcm1lZGlhdGVTZXNzaW9uIkcKLEV4Y2hhbmdlSW50ZXJtZWRpYXRlU2Vzc2lvbkZvclNlc3Npb25SZXF1ZXN0EhcKD29yZ2FuaXphdGlvbl9pZBgBIAEoCSJcCi1FeGNoYW5nZUludGVybWVkaWF0ZVNlc3Npb25Gb3JTZXNzaW9uUmVzcG9uc2USFQoNcmVmcmVzaF90b2tlbhgBIAEoCRIUCgxhY2Nlc3NfdG9rZW4YAiABKAkiUwo7RXhjaGFuZ2VJbnRlcm1lZGlhdGVTZXNzaW9uRm9yTmV3T3JnYW5pemF0aW9uU2Vzc2lvblJlcXVlc3QSFAoMZGlzcGxheV9uYW1lGAEgASgJImsKPEV4Y2hhbmdlSW50ZXJtZWRpYXRlU2Vzc2lvbkZvck5ld09yZ2FuaXphdGlvblNlc3Npb25SZXNwb25zZRIVCg1yZWZyZXNoX3Rva2VuGAEgASgJEhQKDGFjY2Vzc190b2tlbhgCIAEoCSI4CiBHZXRHb29nbGVPQXV0aFJlZGlyZWN0VVJMUmVxdWVzdBIUCgxyZWRpcmVjdF91cmwYASABKAkiMAohR2V0R29vZ2xlT0F1dGhSZWRpcmVjdFVSTFJlc3BvbnNlEgsKA3VybBgBIAEoCSJRChxSZWRlZW1Hb29nbGVPQXV0aENvZGVSZXF1ZXN0EgwKBGNvZGUYASABKAkSDQoFc3RhdGUYAiABKAkSFAoMcmVkaXJlY3RfdXJsGAMgASgJIh8KHVJlZGVlbUdvb2dsZU9BdXRoQ29kZVJlc3BvbnNlIjsKI0dldE1pY3Jvc29mdE9BdXRoUmVkaXJlY3RVUkxSZXF1ZXN0EhQKDHJlZGlyZWN0X3VybBgBIAEoCSIzCiRHZXRNaWNyb3NvZnRPQXV0aFJlZGlyZWN0VVJMUmVzcG9uc2USCwoDdXJsGAEgASgJIlQKH1JlZGVlbU1pY3Jvc29mdE9BdXRoQ29kZVJlcXVlc3QSDAoEY29kZRgBIAEoCRINCgVzdGF0ZRgCIAEoCRIUCgxyZWRpcmVjdF91cmwYAyABKAkiIgogUmVkZWVtTWljcm9zb2Z0T0F1dGhDb2RlUmVzcG9uc2Ui2QEKDE9yZ2FuaXphdGlvbhIKCgJpZBgBIAEoCRISCgpwcm9qZWN0X2lkGAIgASgJEhQKDGRpc3BsYXlfbmFtZRgDIAEoCRIiChpsb2dfaW5fd2l0aF9nb29nbGVfZW5hYmxlZBgEIAEoCBIlCh1sb2dfaW5fd2l0aF9taWNyb3NvZnRfZW5hYmxlZBgFIAEoCBIkChxsb2dfaW5fd2l0aF9wYXNzd29yZF9lbmFibGVkGAYgASgIEiIKGnByaW1hcnlfc2FtbF9jb25uZWN0aW9uX2lkGAcgASgJIjcKJklzc3VlRW1haWxWZXJpZmljYXRpb25DaGFsbGVuZ2VSZXF1ZXN0Eg0KBWVtYWlsGAEgASgJIlIKJ0lzc3VlRW1haWxWZXJpZmljYXRpb25DaGFsbGVuZ2VSZXNwb25zZRInCh9lbWFpbF92ZXJpZmljYXRpb25fY2hhbGxlbmdlX2lkGAEgASgJIhoKGExpc3RPcmdhbml6YXRpb25zUmVxdWVzdCJaChlMaXN0T3JnYW5pemF0aW9uc1Jlc3BvbnNlEj0KDW9yZ2FuaXphdGlvbnMYASADKAsyJi5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuT3JnYW5pemF0aW9uIi0KHExpc3RTQU1MT3JnYW5pemF0aW9uc1JlcXVlc3QSDQoFZW1haWwYASABKAkiXgodTGlzdFNBTUxPcmdhbml6YXRpb25zUmVzcG9uc2USPQoNb3JnYW5pemF0aW9ucxgBIAMoCzImLm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5Pcmdhbml6YXRpb24iVAobVmVyaWZ5RW1haWxDaGFsbGVuZ2VSZXF1ZXN0EicKH2VtYWlsX3ZlcmlmaWNhdGlvbl9jaGFsbGVuZ2VfaWQYASABKAkSDAoEY29kZRgCIAEoCSIeChxWZXJpZnlFbWFpbENoYWxsZW5nZVJlc3BvbnNlIkIKFVZlcmlmeVBhc3N3b3JkUmVxdWVzdBIXCg9vcmdhbml6YXRpb25faWQYASABKAkSEAoIcGFzc3dvcmQYAiABKAkiGAoWVmVyaWZ5UGFzc3dvcmRSZXNwb25zZSIdChtHZXRQcm9qZWN0VUlTZXR0aW5nc1JlcXVlc3QiaAocR2V0UHJvamVjdFVJU2V0dGluZ3NSZXNwb25zZRJIChNwcm9qZWN0X3VpX3NldHRpbmdzGAEgASgLMisub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLlByb2plY3RVSVNldHRpbmdzMoYWChNJbnRlcm1lZGlhdGVTZXJ2aWNlErgBChVMaXN0U0FNTE9yZ2FuaXphdGlvbnMSNi5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuTGlzdFNBTUxPcmdhbml6YXRpb25zUmVxdWVzdBo3Lm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5MaXN0U0FNTE9yZ2FuaXphdGlvbnNSZXNwb25zZSIugtPkkwIoOgEqIiMvaW50ZXJtZWRpYXRlL3YxL3NhbWwtb3JnYW5pemF0aW9ucxKFAQoUR2V0UHJvamVjdFVJU2V0dGluZ3MSNS5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuR2V0UHJvamVjdFVJU2V0dGluZ3NSZXF1ZXN0GjYub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLkdldFByb2plY3RVSVNldHRpbmdzUmVzcG9uc2USxgEKGUNyZWF0ZUludGVybWVkaWF0ZVNlc3Npb24SOi5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuQ3JlYXRlSW50ZXJtZWRpYXRlU2Vzc2lvblJlcXVlc3QaOy5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuQ3JlYXRlSW50ZXJtZWRpYXRlU2Vzc2lvblJlc3BvbnNlIjCC0+STAio6ASoiJS9pbnRlcm1lZGlhdGUvdjEvaW50ZXJtZWRpYXRlLXNlc3Npb24SfAoGV2hvYW1pEicub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLldob2FtaVJlcXVlc3QaKC5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuV2hvYW1pUmVzcG9uc2UiH4LT5JMCGRIXL2ludGVybWVkaWF0ZS92MS93aG9hbWkSpAEKEUxpc3RPcmdhbml6YXRpb25zEjIub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLkxpc3RPcmdhbml6YXRpb25zUmVxdWVzdBozLm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5MaXN0T3JnYW5pemF0aW9uc1Jlc3BvbnNlIiaC0+STAiASHi9pbnRlcm1lZGlhdGUvdjEvb3JnYW5pemF0aW9ucxL/AQolRXhjaGFuZ2VJbnRlcm1lZGlhdGVTZXNzaW9uRm9yU2Vzc2lvbhJGLm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5FeGNoYW5nZUludGVybWVkaWF0ZVNlc3Npb25Gb3JTZXNzaW9uUmVxdWVzdBpHLm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5FeGNoYW5nZUludGVybWVkaWF0ZVNlc3Npb25Gb3JTZXNzaW9uUmVzcG9uc2UiRYLT5JMCPzoBKiI6L2ludGVybWVkaWF0ZS92MS9leGNoYW5nZS1pbnRlcm1lZGlhdGUtc2Vzc2lvbi1mb3Itc2Vzc2lvbhK9Ago0RXhjaGFuZ2VJbnRlcm1lZGlhdGVTZXNzaW9uRm9yTmV3T3JnYW5pemF0aW9uU2Vzc2lvbhJVLm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5FeGNoYW5nZUludGVybWVkaWF0ZVNlc3Npb25Gb3JOZXdPcmdhbml6YXRpb25TZXNzaW9uUmVxdWVzdBpWLm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5FeGNoYW5nZUludGVybWVkaWF0ZVNlc3Npb25Gb3JOZXdPcmdhbml6YXRpb25TZXNzaW9uUmVzcG9uc2UiVoLT5JMCUDoBKiJLL2ludGVybWVkaWF0ZS92MS9leGNoYW5nZS1pbnRlcm1lZGlhdGUtc2Vzc2lvbi1mb3ItbmV3LW9yZ2FuaXphdGlvbi1zZXNzaW9uEssBChlHZXRHb29nbGVPQXV0aFJlZGlyZWN0VVJMEjoub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLkdldEdvb2dsZU9BdXRoUmVkaXJlY3RVUkxSZXF1ZXN0Gjsub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLkdldEdvb2dsZU9BdXRoUmVkaXJlY3RVUkxSZXNwb25zZSI1gtPkkwIvOgEqIiovaW50ZXJtZWRpYXRlL3YxL2dvb2dsZS1vYXV0aC1yZWRpcmVjdC11cmwSvgEKFVJlZGVlbUdvb2dsZU9BdXRoQ29kZRI2Lm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5SZWRlZW1Hb29nbGVPQXV0aENvZGVSZXF1ZXN0Gjcub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLlJlZGVlbUdvb2dsZU9BdXRoQ29kZVJlc3BvbnNlIjSC0+STAi46ASoiKS9pbnRlcm1lZGlhdGUvdjEvcmVkZWVtLWdvb2dsZS1vYXV0aC1jb2RlEtcBChxHZXRNaWNyb3NvZnRPQXV0aFJlZGlyZWN0VVJMEj0ub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLkdldE1pY3Jvc29mdE9BdXRoUmVkaXJlY3RVUkxSZXF1ZXN0Gj4ub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLkdldE1pY3Jvc29mdE9BdXRoUmVkaXJlY3RVUkxSZXNwb25zZSI4gtPkkwIyOgEqIi0vaW50ZXJtZWRpYXRlL3YxL21pY3Jvc29mdC1vYXV0aC1yZWRpcmVjdC11cmwSygEKGFJlZGVlbU1pY3Jvc29mdE9BdXRoQ29kZRI5Lm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5SZWRlZW1NaWNyb3NvZnRPQXV0aENvZGVSZXF1ZXN0Gjoub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLlJlZGVlbU1pY3Jvc29mdE9BdXRoQ29kZVJlc3BvbnNlIjeC0+STAjE6ASoiLC9pbnRlcm1lZGlhdGUvdjEvcmVkZWVtLW1pY3Jvc29mdC1vYXV0aC1jb2RlEuYBCh9Jc3N1ZUVtYWlsVmVyaWZpY2F0aW9uQ2hhbGxlbmdlEkAub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLklzc3VlRW1haWxWZXJpZmljYXRpb25DaGFsbGVuZ2VSZXF1ZXN0GkEub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLklzc3VlRW1haWxWZXJpZmljYXRpb25DaGFsbGVuZ2VSZXNwb25zZSI+gtPkkwI4OgEqIjMvaW50ZXJtZWRpYXRlL3YxL2lzc3VlLWVtYWlsLXZlcmlmaWNhdGlvbi1jaGFsbGVuZ2USuQEKFFZlcmlmeUVtYWlsQ2hhbGxlbmdlEjUub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLlZlcmlmeUVtYWlsQ2hhbGxlbmdlUmVxdWVzdBo2Lm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5WZXJpZnlFbWFpbENoYWxsZW5nZVJlc3BvbnNlIjKC0+STAiw6ASoiJy9pbnRlcm1lZGlhdGUvdjEvdmVyaWZ5LWVtYWlsLWNoYWxsZW5nZRKgAQoOVmVyaWZ5UGFzc3dvcmQSLy5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuVmVyaWZ5UGFzc3dvcmRSZXF1ZXN0GjAub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLlZlcmlmeVBhc3N3b3JkUmVzcG9uc2UiK4LT5JMCJToBKiIgL2ludGVybWVkaWF0ZS92MS92ZXJpZnktcGFzc3dvcmRCkwIKHGNvbS5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjFCEUludGVybWVkaWF0ZVByb3RvUAFaXmdpdGh1Yi5jb20vb3BlbmF1dGgvb3BlbmF1dGgvaW50ZXJuYWwvaW50ZXJtZWRpYXRlL2dlbi9vcGVuYXV0aC9pbnRlcm1lZGlhdGUvdjE7aW50ZXJtZWRpYXRldjGiAgNPSViqAhhPcGVuYXV0aC5JbnRlcm1lZGlhdGUuVjHKAhhPcGVuYXV0aFxJbnRlcm1lZGlhdGVcVjHiAiRPcGVuYXV0aFxJbnRlcm1lZGlhdGVcVjFcR1BCTWV0YWRhdGHqAhpPcGVuYXV0aDo6SW50ZXJtZWRpYXRlOjpWMWIGcHJvdG8z", [file_google_api_annotations, file_google_protobuf_empty, file_google_protobuf_field_mask, file_google_protobuf_timestamp, file_google_protobuf_struct]);
 
 /**
  * @generated from message openauth.intermediate.v1.IntermediateSession
@@ -35,19 +35,19 @@ export type IntermediateSession = Message<"openauth.intermediate.v1.Intermediate
   email: string;
 
   /**
-   * @generated from field: string google_user_id = 4;
+   * @generated from field: bool email_verified = 4;
+   */
+  emailVerified: boolean;
+
+  /**
+   * @generated from field: string google_user_id = 5;
    */
   googleUserId: string;
 
   /**
-   * @generated from field: string google_hosted_domain = 5;
+   * @generated from field: string google_hosted_domain = 6;
    */
   googleHostedDomain: string;
-
-  /**
-   * @generated from field: string microsoft_tenant_id = 6;
-   */
-  microsoftTenantId: string;
 
   /**
    * @generated from field: string microsoft_user_id = 7;
@@ -55,16 +55,14 @@ export type IntermediateSession = Message<"openauth.intermediate.v1.Intermediate
   microsoftUserId: string;
 
   /**
-   * @generated from field: bool password_verified = 8;
+   * @generated from field: string microsoft_tenant_id = 8;
    */
-  passwordVerified: boolean;
+  microsoftTenantId: string;
 
   /**
-   * TODO more things here
-   *
-   * @generated from field: string organization_id = 9;
+   * @generated from field: bool password_verified = 9;
    */
-  organizationId: string;
+  passwordVerified: boolean;
 };
 
 /**
@@ -73,640 +71,6 @@ export type IntermediateSession = Message<"openauth.intermediate.v1.Intermediate
  */
 export const IntermediateSessionSchema: GenMessage<IntermediateSession> = /*@__PURE__*/
   messageDesc(file_openauth_intermediate_v1_intermediate, 0);
-
-/**
- * @generated from message openauth.intermediate.v1.WhoamiRequest
- */
-export type WhoamiRequest = Message<"openauth.intermediate.v1.WhoamiRequest"> & {
-};
-
-/**
- * Describes the message openauth.intermediate.v1.WhoamiRequest.
- * Use `create(WhoamiRequestSchema)` to create a new message.
- */
-export const WhoamiRequestSchema: GenMessage<WhoamiRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 1);
-
-/**
- * @generated from message openauth.intermediate.v1.WhoamiResponse
- */
-export type WhoamiResponse = Message<"openauth.intermediate.v1.WhoamiResponse"> & {
-  /**
-   * The email associated with the intermediate session.
-   *
-   * @generated from field: string email = 1;
-   */
-  email: string;
-
-  /**
-   * The Google User ID associated with the intermediate session.
-   *
-   * @generated from field: string google_user_id = 2;
-   */
-  googleUserId: string;
-
-  /**
-   * A boolean representing whether the user has verified their email address.
-   *
-   * @generated from field: bool is_email_verified = 3;
-   */
-  isEmailVerified: boolean;
-
-  /**
-   * The Microsoft User ID associated with the intermediate session.
-   *
-   * @generated from field: string microsoft_user_id = 4;
-   */
-  microsoftUserId: string;
-
-  /**
-   * The organization ID associated with the intermediate session.
-   *
-   * @generated from field: string organization_id = 5;
-   */
-  organizationId: string;
-};
-
-/**
- * Describes the message openauth.intermediate.v1.WhoamiResponse.
- * Use `create(WhoamiResponseSchema)` to create a new message.
- */
-export const WhoamiResponseSchema: GenMessage<WhoamiResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 2);
-
-/**
- * @generated from message openauth.intermediate.v1.ExchangeIntermediateSessionForSessionRequest
- */
-export type ExchangeIntermediateSessionForSessionRequest = Message<"openauth.intermediate.v1.ExchangeIntermediateSessionForSessionRequest"> & {
-  /**
-   * The organization ID for the full session.
-   *
-   * @generated from field: string organization_id = 1;
-   */
-  organizationId: string;
-};
-
-/**
- * Describes the message openauth.intermediate.v1.ExchangeIntermediateSessionForSessionRequest.
- * Use `create(ExchangeIntermediateSessionForSessionRequestSchema)` to create a new message.
- */
-export const ExchangeIntermediateSessionForSessionRequestSchema: GenMessage<ExchangeIntermediateSessionForSessionRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 3);
-
-/**
- * @generated from message openauth.intermediate.v1.ExchangeIntermediateSessionForSessionResponse
- */
-export type ExchangeIntermediateSessionForSessionResponse = Message<"openauth.intermediate.v1.ExchangeIntermediateSessionForSessionResponse"> & {
-  /**
-   * The session access token.
-   *
-   * @generated from field: string access_token = 1;
-   */
-  accessToken: string;
-
-  /**
-   * The refresh token for the new session.
-   *
-   * @generated from field: string refresh_token = 2;
-   */
-  refreshToken: string;
-};
-
-/**
- * Describes the message openauth.intermediate.v1.ExchangeIntermediateSessionForSessionResponse.
- * Use `create(ExchangeIntermediateSessionForSessionResponseSchema)` to create a new message.
- */
-export const ExchangeIntermediateSessionForSessionResponseSchema: GenMessage<ExchangeIntermediateSessionForSessionResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 4);
-
-/**
- * @generated from message openauth.intermediate.v1.ExchangeIntermediateSessionForNewOrganizationSessionRequest
- */
-export type ExchangeIntermediateSessionForNewOrganizationSessionRequest = Message<"openauth.intermediate.v1.ExchangeIntermediateSessionForNewOrganizationSessionRequest"> & {
-  /**
-   * The display name of the organization to create.
-   *
-   * @generated from field: string display_name = 1;
-   */
-  displayName: string;
-};
-
-/**
- * Describes the message openauth.intermediate.v1.ExchangeIntermediateSessionForNewOrganizationSessionRequest.
- * Use `create(ExchangeIntermediateSessionForNewOrganizationSessionRequestSchema)` to create a new message.
- */
-export const ExchangeIntermediateSessionForNewOrganizationSessionRequestSchema: GenMessage<ExchangeIntermediateSessionForNewOrganizationSessionRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 5);
-
-/**
- * @generated from message openauth.intermediate.v1.ExchangeIntermediateSessionForNewOrganizationSessionResponse
- */
-export type ExchangeIntermediateSessionForNewOrganizationSessionResponse = Message<"openauth.intermediate.v1.ExchangeIntermediateSessionForNewOrganizationSessionResponse"> & {
-  /**
-   * The session access token.
-   *
-   * @generated from field: string access_token = 1;
-   */
-  accessToken: string;
-
-  /**
-   * The refresh token for the new session.
-   *
-   * @generated from field: string refresh_token = 2;
-   */
-  refreshToken: string;
-};
-
-/**
- * Describes the message openauth.intermediate.v1.ExchangeIntermediateSessionForNewOrganizationSessionResponse.
- * Use `create(ExchangeIntermediateSessionForNewOrganizationSessionResponseSchema)` to create a new message.
- */
-export const ExchangeIntermediateSessionForNewOrganizationSessionResponseSchema: GenMessage<ExchangeIntermediateSessionForNewOrganizationSessionResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 6);
-
-/**
- * @generated from message openauth.intermediate.v1.GetGoogleOAuthRedirectURLRequest
- */
-export type GetGoogleOAuthRedirectURLRequest = Message<"openauth.intermediate.v1.GetGoogleOAuthRedirectURLRequest"> & {
-  /**
-   * @generated from field: string redirect_url = 1;
-   */
-  redirectUrl: string;
-};
-
-/**
- * Describes the message openauth.intermediate.v1.GetGoogleOAuthRedirectURLRequest.
- * Use `create(GetGoogleOAuthRedirectURLRequestSchema)` to create a new message.
- */
-export const GetGoogleOAuthRedirectURLRequestSchema: GenMessage<GetGoogleOAuthRedirectURLRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 7);
-
-/**
- * @generated from message openauth.intermediate.v1.GetGoogleOAuthRedirectURLResponse
- */
-export type GetGoogleOAuthRedirectURLResponse = Message<"openauth.intermediate.v1.GetGoogleOAuthRedirectURLResponse"> & {
-  /**
-   * @generated from field: string url = 1;
-   */
-  url: string;
-
-  /**
-   * @generated from field: string intermediate_session_token = 2;
-   */
-  intermediateSessionToken: string;
-};
-
-/**
- * Describes the message openauth.intermediate.v1.GetGoogleOAuthRedirectURLResponse.
- * Use `create(GetGoogleOAuthRedirectURLResponseSchema)` to create a new message.
- */
-export const GetGoogleOAuthRedirectURLResponseSchema: GenMessage<GetGoogleOAuthRedirectURLResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 8);
-
-/**
- * @generated from message openauth.intermediate.v1.RedeemGoogleOAuthCodeRequest
- */
-export type RedeemGoogleOAuthCodeRequest = Message<"openauth.intermediate.v1.RedeemGoogleOAuthCodeRequest"> & {
-  /**
-   * @generated from field: string code = 1;
-   */
-  code: string;
-
-  /**
-   * @generated from field: string state = 2;
-   */
-  state: string;
-
-  /**
-   * @generated from field: string redirect_url = 3;
-   */
-  redirectUrl: string;
-};
-
-/**
- * Describes the message openauth.intermediate.v1.RedeemGoogleOAuthCodeRequest.
- * Use `create(RedeemGoogleOAuthCodeRequestSchema)` to create a new message.
- */
-export const RedeemGoogleOAuthCodeRequestSchema: GenMessage<RedeemGoogleOAuthCodeRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 9);
-
-/**
- * @generated from message openauth.intermediate.v1.RedeemGoogleOAuthCodeResponse
- */
-export type RedeemGoogleOAuthCodeResponse = Message<"openauth.intermediate.v1.RedeemGoogleOAuthCodeResponse"> & {
-};
-
-/**
- * Describes the message openauth.intermediate.v1.RedeemGoogleOAuthCodeResponse.
- * Use `create(RedeemGoogleOAuthCodeResponseSchema)` to create a new message.
- */
-export const RedeemGoogleOAuthCodeResponseSchema: GenMessage<RedeemGoogleOAuthCodeResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 10);
-
-/**
- * @generated from message openauth.intermediate.v1.GetMicrosoftOAuthRedirectURLRequest
- */
-export type GetMicrosoftOAuthRedirectURLRequest = Message<"openauth.intermediate.v1.GetMicrosoftOAuthRedirectURLRequest"> & {
-  /**
-   * @generated from field: string redirect_url = 1;
-   */
-  redirectUrl: string;
-};
-
-/**
- * Describes the message openauth.intermediate.v1.GetMicrosoftOAuthRedirectURLRequest.
- * Use `create(GetMicrosoftOAuthRedirectURLRequestSchema)` to create a new message.
- */
-export const GetMicrosoftOAuthRedirectURLRequestSchema: GenMessage<GetMicrosoftOAuthRedirectURLRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 11);
-
-/**
- * @generated from message openauth.intermediate.v1.GetMicrosoftOAuthRedirectURLResponse
- */
-export type GetMicrosoftOAuthRedirectURLResponse = Message<"openauth.intermediate.v1.GetMicrosoftOAuthRedirectURLResponse"> & {
-  /**
-   * @generated from field: string url = 1;
-   */
-  url: string;
-
-  /**
-   * @generated from field: string intermediate_session_token = 2;
-   */
-  intermediateSessionToken: string;
-};
-
-/**
- * Describes the message openauth.intermediate.v1.GetMicrosoftOAuthRedirectURLResponse.
- * Use `create(GetMicrosoftOAuthRedirectURLResponseSchema)` to create a new message.
- */
-export const GetMicrosoftOAuthRedirectURLResponseSchema: GenMessage<GetMicrosoftOAuthRedirectURLResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 12);
-
-/**
- * @generated from message openauth.intermediate.v1.RedeemMicrosoftOAuthCodeRequest
- */
-export type RedeemMicrosoftOAuthCodeRequest = Message<"openauth.intermediate.v1.RedeemMicrosoftOAuthCodeRequest"> & {
-  /**
-   * @generated from field: string code = 1;
-   */
-  code: string;
-
-  /**
-   * @generated from field: string state = 2;
-   */
-  state: string;
-
-  /**
-   * @generated from field: string redirect_url = 3;
-   */
-  redirectUrl: string;
-};
-
-/**
- * Describes the message openauth.intermediate.v1.RedeemMicrosoftOAuthCodeRequest.
- * Use `create(RedeemMicrosoftOAuthCodeRequestSchema)` to create a new message.
- */
-export const RedeemMicrosoftOAuthCodeRequestSchema: GenMessage<RedeemMicrosoftOAuthCodeRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 13);
-
-/**
- * @generated from message openauth.intermediate.v1.RedeemMicrosoftOAuthCodeResponse
- */
-export type RedeemMicrosoftOAuthCodeResponse = Message<"openauth.intermediate.v1.RedeemMicrosoftOAuthCodeResponse"> & {
-};
-
-/**
- * Describes the message openauth.intermediate.v1.RedeemMicrosoftOAuthCodeResponse.
- * Use `create(RedeemMicrosoftOAuthCodeResponseSchema)` to create a new message.
- */
-export const RedeemMicrosoftOAuthCodeResponseSchema: GenMessage<RedeemMicrosoftOAuthCodeResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 14);
-
-/**
- * @generated from message openauth.intermediate.v1.IntermediateSessionClaims
- */
-export type IntermediateSessionClaims = Message<"openauth.intermediate.v1.IntermediateSessionClaims"> & {
-  /**
-   * The project ID the intermediate session is scoped to.
-   *
-   * @generated from field: string project_id = 1;
-   */
-  projectId: string;
-
-  /**
-   * The email associated with the intermediate session.
-   *
-   * @generated from field: string email = 2;
-   */
-  email: string;
-
-  /**
-   * The time the intermediate session expires.
-   *
-   * @generated from field: int64 expires_at = 3;
-   */
-  expiresAt: bigint;
-
-  /**
-   * The time the intermediate session was issued.
-   *
-   * @generated from field: int64 issued_at = 4;
-   */
-  issuedAt: bigint;
-
-  /**
-   * The subject of the intermediate session.
-   *
-   * @generated from field: string subject = 5;
-   */
-  subject: string;
-};
-
-/**
- * Describes the message openauth.intermediate.v1.IntermediateSessionClaims.
- * Use `create(IntermediateSessionClaimsSchema)` to create a new message.
- */
-export const IntermediateSessionClaimsSchema: GenMessage<IntermediateSessionClaims> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 15);
-
-/**
- * @generated from message openauth.intermediate.v1.Organization
- */
-export type Organization = Message<"openauth.intermediate.v1.Organization"> & {
-  /**
-   * @generated from field: string id = 1;
-   */
-  id: string;
-
-  /**
-   * @generated from field: string project_id = 2;
-   */
-  projectId: string;
-
-  /**
-   * @generated from field: string display_name = 3;
-   */
-  displayName: string;
-
-  /**
-   * @generated from field: bool log_in_with_google_enabled = 4;
-   */
-  logInWithGoogleEnabled: boolean;
-
-  /**
-   * @generated from field: bool log_in_with_microsoft_enabled = 5;
-   */
-  logInWithMicrosoftEnabled: boolean;
-
-  /**
-   * @generated from field: bool log_in_with_password_enabled = 6;
-   */
-  logInWithPasswordEnabled: boolean;
-
-  /**
-   * @generated from field: optional string primary_saml_connection_id = 7;
-   */
-  primarySamlConnectionId?: string;
-};
-
-/**
- * Describes the message openauth.intermediate.v1.Organization.
- * Use `create(OrganizationSchema)` to create a new message.
- */
-export const OrganizationSchema: GenMessage<Organization> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 16);
-
-/**
- * @generated from message openauth.intermediate.v1.IssueEmailVerificationChallengeRequest
- */
-export type IssueEmailVerificationChallengeRequest = Message<"openauth.intermediate.v1.IssueEmailVerificationChallengeRequest"> & {
-};
-
-/**
- * Describes the message openauth.intermediate.v1.IssueEmailVerificationChallengeRequest.
- * Use `create(IssueEmailVerificationChallengeRequestSchema)` to create a new message.
- */
-export const IssueEmailVerificationChallengeRequestSchema: GenMessage<IssueEmailVerificationChallengeRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 17);
-
-/**
- * @generated from message openauth.intermediate.v1.IssueEmailVerificationChallengeResponse
- */
-export type IssueEmailVerificationChallengeResponse = Message<"openauth.intermediate.v1.IssueEmailVerificationChallengeResponse"> & {
-  /**
-   * The ID of the email verification challenge.
-   *
-   * @generated from field: string email_verification_challenge_id = 1;
-   */
-  emailVerificationChallengeId: string;
-};
-
-/**
- * Describes the message openauth.intermediate.v1.IssueEmailVerificationChallengeResponse.
- * Use `create(IssueEmailVerificationChallengeResponseSchema)` to create a new message.
- */
-export const IssueEmailVerificationChallengeResponseSchema: GenMessage<IssueEmailVerificationChallengeResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 18);
-
-/**
- * @generated from message openauth.intermediate.v1.ListOrganizationsRequest
- */
-export type ListOrganizationsRequest = Message<"openauth.intermediate.v1.ListOrganizationsRequest"> & {
-  /**
-   * @generated from field: string page_token = 1;
-   */
-  pageToken: string;
-};
-
-/**
- * Describes the message openauth.intermediate.v1.ListOrganizationsRequest.
- * Use `create(ListOrganizationsRequestSchema)` to create a new message.
- */
-export const ListOrganizationsRequestSchema: GenMessage<ListOrganizationsRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 19);
-
-/**
- * @generated from message openauth.intermediate.v1.ListOrganizationsResponse
- */
-export type ListOrganizationsResponse = Message<"openauth.intermediate.v1.ListOrganizationsResponse"> & {
-  /**
-   * @generated from field: repeated openauth.intermediate.v1.Organization organizations = 1;
-   */
-  organizations: Organization[];
-
-  /**
-   * @generated from field: string next_page_token = 2;
-   */
-  nextPageToken: string;
-};
-
-/**
- * Describes the message openauth.intermediate.v1.ListOrganizationsResponse.
- * Use `create(ListOrganizationsResponseSchema)` to create a new message.
- */
-export const ListOrganizationsResponseSchema: GenMessage<ListOrganizationsResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 20);
-
-/**
- * @generated from message openauth.intermediate.v1.ListSAMLOrganizationsRequest
- */
-export type ListSAMLOrganizationsRequest = Message<"openauth.intermediate.v1.ListSAMLOrganizationsRequest"> & {
-  /**
-   * @generated from field: string email = 1;
-   */
-  email: string;
-};
-
-/**
- * Describes the message openauth.intermediate.v1.ListSAMLOrganizationsRequest.
- * Use `create(ListSAMLOrganizationsRequestSchema)` to create a new message.
- */
-export const ListSAMLOrganizationsRequestSchema: GenMessage<ListSAMLOrganizationsRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 21);
-
-/**
- * @generated from message openauth.intermediate.v1.ListSAMLOrganizationsResponse
- */
-export type ListSAMLOrganizationsResponse = Message<"openauth.intermediate.v1.ListSAMLOrganizationsResponse"> & {
-  /**
-   * @generated from field: repeated openauth.intermediate.v1.Organization organizations = 1;
-   */
-  organizations: Organization[];
-};
-
-/**
- * Describes the message openauth.intermediate.v1.ListSAMLOrganizationsResponse.
- * Use `create(ListSAMLOrganizationsResponseSchema)` to create a new message.
- */
-export const ListSAMLOrganizationsResponseSchema: GenMessage<ListSAMLOrganizationsResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 22);
-
-/**
- * @generated from message openauth.intermediate.v1.SignInWithEmailRequest
- */
-export type SignInWithEmailRequest = Message<"openauth.intermediate.v1.SignInWithEmailRequest"> & {
-  /**
-   * The email address to sign in with.
-   *
-   * @generated from field: string email = 1;
-   */
-  email: string;
-};
-
-/**
- * Describes the message openauth.intermediate.v1.SignInWithEmailRequest.
- * Use `create(SignInWithEmailRequestSchema)` to create a new message.
- */
-export const SignInWithEmailRequestSchema: GenMessage<SignInWithEmailRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 23);
-
-/**
- * @generated from message openauth.intermediate.v1.SignInWithEmailResponse
- */
-export type SignInWithEmailResponse = Message<"openauth.intermediate.v1.SignInWithEmailResponse"> & {
-  /**
-   * The access token for the new intermediate session.
-   *
-   * @generated from field: string intermediate_session_token = 1;
-   */
-  intermediateSessionToken: string;
-
-  /**
-   * The ID of the email verification challenge, if required.
-   *
-   * @generated from field: string challenge_id = 2;
-   */
-  challengeId: string;
-};
-
-/**
- * Describes the message openauth.intermediate.v1.SignInWithEmailResponse.
- * Use `create(SignInWithEmailResponseSchema)` to create a new message.
- */
-export const SignInWithEmailResponseSchema: GenMessage<SignInWithEmailResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 24);
-
-/**
- * @generated from message openauth.intermediate.v1.Project
- */
-export type Project = Message<"openauth.intermediate.v1.Project"> & {
-  /**
-   * Unique identifier for this project.
-   *
-   * @generated from field: string id = 1;
-   */
-  id: string;
-
-  /**
-   * The organization this project belongs to.
-   *
-   * @generated from field: string organization_id = 2;
-   */
-  organizationId: string;
-
-  /**
-   * Top-level setting for whether login with password is enabled (inherited by organizations by default).
-   *
-   * @generated from field: bool log_in_with_password_enabled = 3;
-   */
-  logInWithPasswordEnabled: boolean;
-
-  /**
-   * Top-level setting for whether login with Google is enabled (inherited by organizations by default).
-   *
-   * @generated from field: bool log_in_with_google_enabled = 4;
-   */
-  logInWithGoogleEnabled: boolean;
-
-  /**
-   * Top-level setting for whether login with Microsoft is enabled (inherited by organizations by default).
-   *
-   * @generated from field: bool log_in_with_microsoft_enabled = 5;
-   */
-  logInWithMicrosoftEnabled: boolean;
-
-  /**
-   * The oAuth Client ID to be used for Google Auth.
-   *
-   * @generated from field: string google_oauth_client_id = 6;
-   */
-  googleOauthClientId: string;
-
-  /**
-   * The oAuth Client secret to be used for Google Auth.
-   *
-   * @generated from field: string google_oauth_client_secret = 7;
-   */
-  googleOauthClientSecret: string;
-
-  /**
-   * The oAuth Client ID to be used for Microsoft Auth.
-   *
-   * @generated from field: string microsoft_oauth_client_id = 8;
-   */
-  microsoftOauthClientId: string;
-
-  /**
-   * The oAuth Client secret to be used for Microsoft Auth.
-   *
-   * @generated from field: string microsoft_oauth_client_secret = 9;
-   */
-  microsoftOauthClientSecret: string;
-
-  /**
-   * The default auth domain for the project
-   *
-   * @generated from field: string auth_domain = 10;
-   */
-  authDomain: string;
-};
-
-/**
- * Describes the message openauth.intermediate.v1.Project.
- * Use `create(ProjectSchema)` to create a new message.
- */
-export const ProjectSchema: GenMessage<Project> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 25);
 
 /**
  * @generated from message openauth.intermediate.v1.ProjectUISettings
@@ -768,12 +132,298 @@ export type ProjectUISettings = Message<"openauth.intermediate.v1.ProjectUISetti
  * Use `create(ProjectUISettingsSchema)` to create a new message.
  */
 export const ProjectUISettingsSchema: GenMessage<ProjectUISettings> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 26);
+  messageDesc(file_openauth_intermediate_v1_intermediate, 1);
 
 /**
- * @generated from message openauth.intermediate.v1.SessionSigningKey
+ * @generated from message openauth.intermediate.v1.CreateIntermediateSessionRequest
  */
-export type SessionSigningKey = Message<"openauth.intermediate.v1.SessionSigningKey"> & {
+export type CreateIntermediateSessionRequest = Message<"openauth.intermediate.v1.CreateIntermediateSessionRequest"> & {
+};
+
+/**
+ * Describes the message openauth.intermediate.v1.CreateIntermediateSessionRequest.
+ * Use `create(CreateIntermediateSessionRequestSchema)` to create a new message.
+ */
+export const CreateIntermediateSessionRequestSchema: GenMessage<CreateIntermediateSessionRequest> = /*@__PURE__*/
+  messageDesc(file_openauth_intermediate_v1_intermediate, 2);
+
+/**
+ * @generated from message openauth.intermediate.v1.CreateIntermediateSessionResponse
+ */
+export type CreateIntermediateSessionResponse = Message<"openauth.intermediate.v1.CreateIntermediateSessionResponse"> & {
+  /**
+   * @generated from field: string intermediate_session_secret_token = 1;
+   */
+  intermediateSessionSecretToken: string;
+};
+
+/**
+ * Describes the message openauth.intermediate.v1.CreateIntermediateSessionResponse.
+ * Use `create(CreateIntermediateSessionResponseSchema)` to create a new message.
+ */
+export const CreateIntermediateSessionResponseSchema: GenMessage<CreateIntermediateSessionResponse> = /*@__PURE__*/
+  messageDesc(file_openauth_intermediate_v1_intermediate, 3);
+
+/**
+ * @generated from message openauth.intermediate.v1.WhoamiRequest
+ */
+export type WhoamiRequest = Message<"openauth.intermediate.v1.WhoamiRequest"> & {
+};
+
+/**
+ * Describes the message openauth.intermediate.v1.WhoamiRequest.
+ * Use `create(WhoamiRequestSchema)` to create a new message.
+ */
+export const WhoamiRequestSchema: GenMessage<WhoamiRequest> = /*@__PURE__*/
+  messageDesc(file_openauth_intermediate_v1_intermediate, 4);
+
+/**
+ * @generated from message openauth.intermediate.v1.WhoamiResponse
+ */
+export type WhoamiResponse = Message<"openauth.intermediate.v1.WhoamiResponse"> & {
+  /**
+   * @generated from field: openauth.intermediate.v1.IntermediateSession intermediate_session = 1;
+   */
+  intermediateSession?: IntermediateSession;
+};
+
+/**
+ * Describes the message openauth.intermediate.v1.WhoamiResponse.
+ * Use `create(WhoamiResponseSchema)` to create a new message.
+ */
+export const WhoamiResponseSchema: GenMessage<WhoamiResponse> = /*@__PURE__*/
+  messageDesc(file_openauth_intermediate_v1_intermediate, 5);
+
+/**
+ * @generated from message openauth.intermediate.v1.ExchangeIntermediateSessionForSessionRequest
+ */
+export type ExchangeIntermediateSessionForSessionRequest = Message<"openauth.intermediate.v1.ExchangeIntermediateSessionForSessionRequest"> & {
+  /**
+   * @generated from field: string organization_id = 1;
+   */
+  organizationId: string;
+};
+
+/**
+ * Describes the message openauth.intermediate.v1.ExchangeIntermediateSessionForSessionRequest.
+ * Use `create(ExchangeIntermediateSessionForSessionRequestSchema)` to create a new message.
+ */
+export const ExchangeIntermediateSessionForSessionRequestSchema: GenMessage<ExchangeIntermediateSessionForSessionRequest> = /*@__PURE__*/
+  messageDesc(file_openauth_intermediate_v1_intermediate, 6);
+
+/**
+ * @generated from message openauth.intermediate.v1.ExchangeIntermediateSessionForSessionResponse
+ */
+export type ExchangeIntermediateSessionForSessionResponse = Message<"openauth.intermediate.v1.ExchangeIntermediateSessionForSessionResponse"> & {
+  /**
+   * @generated from field: string refresh_token = 1;
+   */
+  refreshToken: string;
+
+  /**
+   * @generated from field: string access_token = 2;
+   */
+  accessToken: string;
+};
+
+/**
+ * Describes the message openauth.intermediate.v1.ExchangeIntermediateSessionForSessionResponse.
+ * Use `create(ExchangeIntermediateSessionForSessionResponseSchema)` to create a new message.
+ */
+export const ExchangeIntermediateSessionForSessionResponseSchema: GenMessage<ExchangeIntermediateSessionForSessionResponse> = /*@__PURE__*/
+  messageDesc(file_openauth_intermediate_v1_intermediate, 7);
+
+/**
+ * @generated from message openauth.intermediate.v1.ExchangeIntermediateSessionForNewOrganizationSessionRequest
+ */
+export type ExchangeIntermediateSessionForNewOrganizationSessionRequest = Message<"openauth.intermediate.v1.ExchangeIntermediateSessionForNewOrganizationSessionRequest"> & {
+  /**
+   * @generated from field: string display_name = 1;
+   */
+  displayName: string;
+};
+
+/**
+ * Describes the message openauth.intermediate.v1.ExchangeIntermediateSessionForNewOrganizationSessionRequest.
+ * Use `create(ExchangeIntermediateSessionForNewOrganizationSessionRequestSchema)` to create a new message.
+ */
+export const ExchangeIntermediateSessionForNewOrganizationSessionRequestSchema: GenMessage<ExchangeIntermediateSessionForNewOrganizationSessionRequest> = /*@__PURE__*/
+  messageDesc(file_openauth_intermediate_v1_intermediate, 8);
+
+/**
+ * @generated from message openauth.intermediate.v1.ExchangeIntermediateSessionForNewOrganizationSessionResponse
+ */
+export type ExchangeIntermediateSessionForNewOrganizationSessionResponse = Message<"openauth.intermediate.v1.ExchangeIntermediateSessionForNewOrganizationSessionResponse"> & {
+  /**
+   * @generated from field: string refresh_token = 1;
+   */
+  refreshToken: string;
+
+  /**
+   * @generated from field: string access_token = 2;
+   */
+  accessToken: string;
+};
+
+/**
+ * Describes the message openauth.intermediate.v1.ExchangeIntermediateSessionForNewOrganizationSessionResponse.
+ * Use `create(ExchangeIntermediateSessionForNewOrganizationSessionResponseSchema)` to create a new message.
+ */
+export const ExchangeIntermediateSessionForNewOrganizationSessionResponseSchema: GenMessage<ExchangeIntermediateSessionForNewOrganizationSessionResponse> = /*@__PURE__*/
+  messageDesc(file_openauth_intermediate_v1_intermediate, 9);
+
+/**
+ * @generated from message openauth.intermediate.v1.GetGoogleOAuthRedirectURLRequest
+ */
+export type GetGoogleOAuthRedirectURLRequest = Message<"openauth.intermediate.v1.GetGoogleOAuthRedirectURLRequest"> & {
+  /**
+   * @generated from field: string redirect_url = 1;
+   */
+  redirectUrl: string;
+};
+
+/**
+ * Describes the message openauth.intermediate.v1.GetGoogleOAuthRedirectURLRequest.
+ * Use `create(GetGoogleOAuthRedirectURLRequestSchema)` to create a new message.
+ */
+export const GetGoogleOAuthRedirectURLRequestSchema: GenMessage<GetGoogleOAuthRedirectURLRequest> = /*@__PURE__*/
+  messageDesc(file_openauth_intermediate_v1_intermediate, 10);
+
+/**
+ * @generated from message openauth.intermediate.v1.GetGoogleOAuthRedirectURLResponse
+ */
+export type GetGoogleOAuthRedirectURLResponse = Message<"openauth.intermediate.v1.GetGoogleOAuthRedirectURLResponse"> & {
+  /**
+   * @generated from field: string url = 1;
+   */
+  url: string;
+};
+
+/**
+ * Describes the message openauth.intermediate.v1.GetGoogleOAuthRedirectURLResponse.
+ * Use `create(GetGoogleOAuthRedirectURLResponseSchema)` to create a new message.
+ */
+export const GetGoogleOAuthRedirectURLResponseSchema: GenMessage<GetGoogleOAuthRedirectURLResponse> = /*@__PURE__*/
+  messageDesc(file_openauth_intermediate_v1_intermediate, 11);
+
+/**
+ * @generated from message openauth.intermediate.v1.RedeemGoogleOAuthCodeRequest
+ */
+export type RedeemGoogleOAuthCodeRequest = Message<"openauth.intermediate.v1.RedeemGoogleOAuthCodeRequest"> & {
+  /**
+   * @generated from field: string code = 1;
+   */
+  code: string;
+
+  /**
+   * @generated from field: string state = 2;
+   */
+  state: string;
+
+  /**
+   * @generated from field: string redirect_url = 3;
+   */
+  redirectUrl: string;
+};
+
+/**
+ * Describes the message openauth.intermediate.v1.RedeemGoogleOAuthCodeRequest.
+ * Use `create(RedeemGoogleOAuthCodeRequestSchema)` to create a new message.
+ */
+export const RedeemGoogleOAuthCodeRequestSchema: GenMessage<RedeemGoogleOAuthCodeRequest> = /*@__PURE__*/
+  messageDesc(file_openauth_intermediate_v1_intermediate, 12);
+
+/**
+ * @generated from message openauth.intermediate.v1.RedeemGoogleOAuthCodeResponse
+ */
+export type RedeemGoogleOAuthCodeResponse = Message<"openauth.intermediate.v1.RedeemGoogleOAuthCodeResponse"> & {
+};
+
+/**
+ * Describes the message openauth.intermediate.v1.RedeemGoogleOAuthCodeResponse.
+ * Use `create(RedeemGoogleOAuthCodeResponseSchema)` to create a new message.
+ */
+export const RedeemGoogleOAuthCodeResponseSchema: GenMessage<RedeemGoogleOAuthCodeResponse> = /*@__PURE__*/
+  messageDesc(file_openauth_intermediate_v1_intermediate, 13);
+
+/**
+ * @generated from message openauth.intermediate.v1.GetMicrosoftOAuthRedirectURLRequest
+ */
+export type GetMicrosoftOAuthRedirectURLRequest = Message<"openauth.intermediate.v1.GetMicrosoftOAuthRedirectURLRequest"> & {
+  /**
+   * @generated from field: string redirect_url = 1;
+   */
+  redirectUrl: string;
+};
+
+/**
+ * Describes the message openauth.intermediate.v1.GetMicrosoftOAuthRedirectURLRequest.
+ * Use `create(GetMicrosoftOAuthRedirectURLRequestSchema)` to create a new message.
+ */
+export const GetMicrosoftOAuthRedirectURLRequestSchema: GenMessage<GetMicrosoftOAuthRedirectURLRequest> = /*@__PURE__*/
+  messageDesc(file_openauth_intermediate_v1_intermediate, 14);
+
+/**
+ * @generated from message openauth.intermediate.v1.GetMicrosoftOAuthRedirectURLResponse
+ */
+export type GetMicrosoftOAuthRedirectURLResponse = Message<"openauth.intermediate.v1.GetMicrosoftOAuthRedirectURLResponse"> & {
+  /**
+   * @generated from field: string url = 1;
+   */
+  url: string;
+};
+
+/**
+ * Describes the message openauth.intermediate.v1.GetMicrosoftOAuthRedirectURLResponse.
+ * Use `create(GetMicrosoftOAuthRedirectURLResponseSchema)` to create a new message.
+ */
+export const GetMicrosoftOAuthRedirectURLResponseSchema: GenMessage<GetMicrosoftOAuthRedirectURLResponse> = /*@__PURE__*/
+  messageDesc(file_openauth_intermediate_v1_intermediate, 15);
+
+/**
+ * @generated from message openauth.intermediate.v1.RedeemMicrosoftOAuthCodeRequest
+ */
+export type RedeemMicrosoftOAuthCodeRequest = Message<"openauth.intermediate.v1.RedeemMicrosoftOAuthCodeRequest"> & {
+  /**
+   * @generated from field: string code = 1;
+   */
+  code: string;
+
+  /**
+   * @generated from field: string state = 2;
+   */
+  state: string;
+
+  /**
+   * @generated from field: string redirect_url = 3;
+   */
+  redirectUrl: string;
+};
+
+/**
+ * Describes the message openauth.intermediate.v1.RedeemMicrosoftOAuthCodeRequest.
+ * Use `create(RedeemMicrosoftOAuthCodeRequestSchema)` to create a new message.
+ */
+export const RedeemMicrosoftOAuthCodeRequestSchema: GenMessage<RedeemMicrosoftOAuthCodeRequest> = /*@__PURE__*/
+  messageDesc(file_openauth_intermediate_v1_intermediate, 16);
+
+/**
+ * @generated from message openauth.intermediate.v1.RedeemMicrosoftOAuthCodeResponse
+ */
+export type RedeemMicrosoftOAuthCodeResponse = Message<"openauth.intermediate.v1.RedeemMicrosoftOAuthCodeResponse"> & {
+};
+
+/**
+ * Describes the message openauth.intermediate.v1.RedeemMicrosoftOAuthCodeResponse.
+ * Use `create(RedeemMicrosoftOAuthCodeResponseSchema)` to create a new message.
+ */
+export const RedeemMicrosoftOAuthCodeResponseSchema: GenMessage<RedeemMicrosoftOAuthCodeResponse> = /*@__PURE__*/
+  messageDesc(file_openauth_intermediate_v1_intermediate, 17);
+
+/**
+ * @generated from message openauth.intermediate.v1.Organization
+ */
+export type Organization = Message<"openauth.intermediate.v1.Organization"> & {
   /**
    * @generated from field: string id = 1;
    */
@@ -785,133 +435,149 @@ export type SessionSigningKey = Message<"openauth.intermediate.v1.SessionSigning
   projectId: string;
 
   /**
-   * @generated from field: google.protobuf.Struct public_key_jwk = 3;
+   * @generated from field: string display_name = 3;
    */
-  publicKeyJwk?: JsonObject;
+  displayName: string;
+
+  /**
+   * @generated from field: bool log_in_with_google_enabled = 4;
+   */
+  logInWithGoogleEnabled: boolean;
+
+  /**
+   * @generated from field: bool log_in_with_microsoft_enabled = 5;
+   */
+  logInWithMicrosoftEnabled: boolean;
+
+  /**
+   * @generated from field: bool log_in_with_password_enabled = 6;
+   */
+  logInWithPasswordEnabled: boolean;
+
+  /**
+   * @generated from field: string primary_saml_connection_id = 7;
+   */
+  primarySamlConnectionId: string;
 };
 
 /**
- * Describes the message openauth.intermediate.v1.SessionSigningKey.
- * Use `create(SessionSigningKeySchema)` to create a new message.
+ * Describes the message openauth.intermediate.v1.Organization.
+ * Use `create(OrganizationSchema)` to create a new message.
  */
-export const SessionSigningKeySchema: GenMessage<SessionSigningKey> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 27);
+export const OrganizationSchema: GenMessage<Organization> = /*@__PURE__*/
+  messageDesc(file_openauth_intermediate_v1_intermediate, 18);
 
 /**
- * @generated from message openauth.intermediate.v1.User
+ * @generated from message openauth.intermediate.v1.IssueEmailVerificationChallengeRequest
  */
-export type User = Message<"openauth.intermediate.v1.User"> & {
+export type IssueEmailVerificationChallengeRequest = Message<"openauth.intermediate.v1.IssueEmailVerificationChallengeRequest"> & {
   /**
-   * Unique identifier for this user.
-   *
-   * @generated from field: string id = 1;
+   * @generated from field: string email = 1;
    */
-  id: string;
-
-  /**
-   * The organization this user belongs to.
-   *
-   * @generated from field: string organization_id = 2;
-   */
-  organizationId: string;
-
-  /**
-   * The user's email (pending verification).
-   *
-   * @generated from field: string unverified_email = 3;
-   */
-  unverifiedEmail: string;
-
-  /**
-   * The user's email (after verification).
-   *
-   * @generated from field: string verified_email = 4;
-   */
-  verifiedEmail: string;
-
-  /**
-   * The hash of the user's password.
-   *
-   * @generated from field: string password_bcrypt = 5;
-   */
-  passwordBcrypt: string;
-
-  /**
-   * The user's Google User ID.
-   *
-   * @generated from field: string google_user_id = 6;
-   */
-  googleUserId: string;
-
-  /**
-   * The user's Microsoft User ID.
-   *
-   * @generated from field: string microsoft_user_id = 7;
-   */
-  microsoftUserId: string;
+  email: string;
 };
 
 /**
- * Describes the message openauth.intermediate.v1.User.
- * Use `create(UserSchema)` to create a new message.
+ * Describes the message openauth.intermediate.v1.IssueEmailVerificationChallengeRequest.
+ * Use `create(IssueEmailVerificationChallengeRequestSchema)` to create a new message.
  */
-export const UserSchema: GenMessage<User> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 28);
+export const IssueEmailVerificationChallengeRequestSchema: GenMessage<IssueEmailVerificationChallengeRequest> = /*@__PURE__*/
+  messageDesc(file_openauth_intermediate_v1_intermediate, 19);
 
 /**
- * @generated from message openauth.intermediate.v1.Session
+ * @generated from message openauth.intermediate.v1.IssueEmailVerificationChallengeResponse
  */
-export type Session = Message<"openauth.intermediate.v1.Session"> & {
+export type IssueEmailVerificationChallengeResponse = Message<"openauth.intermediate.v1.IssueEmailVerificationChallengeResponse"> & {
   /**
-   * @generated from field: string id = 1;
+   * @generated from field: string email_verification_challenge_id = 1;
    */
-  id: string;
-
-  /**
-   * @generated from field: string user_id = 2;
-   */
-  userId: string;
-
-  /**
-   * @generated from field: google.protobuf.Timestamp create_time = 3;
-   */
-  createTime?: Timestamp;
-
-  /**
-   * @generated from field: google.protobuf.Timestamp expire_time = 4;
-   */
-  expireTime?: Timestamp;
-
-  /**
-   * @generated from field: bool revoked = 5;
-   */
-  revoked: boolean;
+  emailVerificationChallengeId: string;
 };
 
 /**
- * Describes the message openauth.intermediate.v1.Session.
- * Use `create(SessionSchema)` to create a new message.
+ * Describes the message openauth.intermediate.v1.IssueEmailVerificationChallengeResponse.
+ * Use `create(IssueEmailVerificationChallengeResponseSchema)` to create a new message.
  */
-export const SessionSchema: GenMessage<Session> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 29);
+export const IssueEmailVerificationChallengeResponseSchema: GenMessage<IssueEmailVerificationChallengeResponse> = /*@__PURE__*/
+  messageDesc(file_openauth_intermediate_v1_intermediate, 20);
+
+/**
+ * @generated from message openauth.intermediate.v1.ListOrganizationsRequest
+ */
+export type ListOrganizationsRequest = Message<"openauth.intermediate.v1.ListOrganizationsRequest"> & {
+};
+
+/**
+ * Describes the message openauth.intermediate.v1.ListOrganizationsRequest.
+ * Use `create(ListOrganizationsRequestSchema)` to create a new message.
+ */
+export const ListOrganizationsRequestSchema: GenMessage<ListOrganizationsRequest> = /*@__PURE__*/
+  messageDesc(file_openauth_intermediate_v1_intermediate, 21);
+
+/**
+ * @generated from message openauth.intermediate.v1.ListOrganizationsResponse
+ */
+export type ListOrganizationsResponse = Message<"openauth.intermediate.v1.ListOrganizationsResponse"> & {
+  /**
+   * @generated from field: repeated openauth.intermediate.v1.Organization organizations = 1;
+   */
+  organizations: Organization[];
+};
+
+/**
+ * Describes the message openauth.intermediate.v1.ListOrganizationsResponse.
+ * Use `create(ListOrganizationsResponseSchema)` to create a new message.
+ */
+export const ListOrganizationsResponseSchema: GenMessage<ListOrganizationsResponse> = /*@__PURE__*/
+  messageDesc(file_openauth_intermediate_v1_intermediate, 22);
+
+/**
+ * @generated from message openauth.intermediate.v1.ListSAMLOrganizationsRequest
+ */
+export type ListSAMLOrganizationsRequest = Message<"openauth.intermediate.v1.ListSAMLOrganizationsRequest"> & {
+  /**
+   * @generated from field: string email = 1;
+   */
+  email: string;
+};
+
+/**
+ * Describes the message openauth.intermediate.v1.ListSAMLOrganizationsRequest.
+ * Use `create(ListSAMLOrganizationsRequestSchema)` to create a new message.
+ */
+export const ListSAMLOrganizationsRequestSchema: GenMessage<ListSAMLOrganizationsRequest> = /*@__PURE__*/
+  messageDesc(file_openauth_intermediate_v1_intermediate, 23);
+
+/**
+ * @generated from message openauth.intermediate.v1.ListSAMLOrganizationsResponse
+ */
+export type ListSAMLOrganizationsResponse = Message<"openauth.intermediate.v1.ListSAMLOrganizationsResponse"> & {
+  /**
+   * @generated from field: repeated openauth.intermediate.v1.Organization organizations = 1;
+   */
+  organizations: Organization[];
+};
+
+/**
+ * Describes the message openauth.intermediate.v1.ListSAMLOrganizationsResponse.
+ * Use `create(ListSAMLOrganizationsResponseSchema)` to create a new message.
+ */
+export const ListSAMLOrganizationsResponseSchema: GenMessage<ListSAMLOrganizationsResponse> = /*@__PURE__*/
+  messageDesc(file_openauth_intermediate_v1_intermediate, 24);
 
 /**
  * @generated from message openauth.intermediate.v1.VerifyEmailChallengeRequest
  */
 export type VerifyEmailChallengeRequest = Message<"openauth.intermediate.v1.VerifyEmailChallengeRequest"> & {
   /**
-   * The challenge to verify.
-   *
-   * @generated from field: string code = 1;
-   */
-  code: string;
-
-  /**
-   * The ID of the email verification challenge.
-   *
-   * @generated from field: string email_verification_challenge_id = 2;
+   * @generated from field: string email_verification_challenge_id = 1;
    */
   emailVerificationChallengeId: string;
+
+  /**
+   * @generated from field: string code = 2;
+   */
+  code: string;
 };
 
 /**
@@ -919,7 +585,7 @@ export type VerifyEmailChallengeRequest = Message<"openauth.intermediate.v1.Veri
  * Use `create(VerifyEmailChallengeRequestSchema)` to create a new message.
  */
 export const VerifyEmailChallengeRequestSchema: GenMessage<VerifyEmailChallengeRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 30);
+  messageDesc(file_openauth_intermediate_v1_intermediate, 25);
 
 /**
  * @generated from message openauth.intermediate.v1.VerifyEmailChallengeResponse
@@ -932,22 +598,18 @@ export type VerifyEmailChallengeResponse = Message<"openauth.intermediate.v1.Ver
  * Use `create(VerifyEmailChallengeResponseSchema)` to create a new message.
  */
 export const VerifyEmailChallengeResponseSchema: GenMessage<VerifyEmailChallengeResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 31);
+  messageDesc(file_openauth_intermediate_v1_intermediate, 26);
 
 /**
  * @generated from message openauth.intermediate.v1.VerifyPasswordRequest
  */
 export type VerifyPasswordRequest = Message<"openauth.intermediate.v1.VerifyPasswordRequest"> & {
   /**
-   * The organization ID to verify the password for.
-   *
    * @generated from field: string organization_id = 1;
    */
   organizationId: string;
 
   /**
-   * The password to verify.
-   *
    * @generated from field: string password = 2;
    */
   password: string;
@@ -958,7 +620,7 @@ export type VerifyPasswordRequest = Message<"openauth.intermediate.v1.VerifyPass
  * Use `create(VerifyPasswordRequestSchema)` to create a new message.
  */
 export const VerifyPasswordRequestSchema: GenMessage<VerifyPasswordRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 32);
+  messageDesc(file_openauth_intermediate_v1_intermediate, 27);
 
 /**
  * @generated from message openauth.intermediate.v1.VerifyPasswordResponse
@@ -971,7 +633,7 @@ export type VerifyPasswordResponse = Message<"openauth.intermediate.v1.VerifyPas
  * Use `create(VerifyPasswordResponseSchema)` to create a new message.
  */
 export const VerifyPasswordResponseSchema: GenMessage<VerifyPasswordResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 33);
+  messageDesc(file_openauth_intermediate_v1_intermediate, 28);
 
 /**
  * @generated from message openauth.intermediate.v1.GetProjectUISettingsRequest
@@ -984,15 +646,13 @@ export type GetProjectUISettingsRequest = Message<"openauth.intermediate.v1.GetP
  * Use `create(GetProjectUISettingsRequestSchema)` to create a new message.
  */
 export const GetProjectUISettingsRequestSchema: GenMessage<GetProjectUISettingsRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 34);
+  messageDesc(file_openauth_intermediate_v1_intermediate, 29);
 
 /**
  * @generated from message openauth.intermediate.v1.GetProjectUISettingsResponse
  */
 export type GetProjectUISettingsResponse = Message<"openauth.intermediate.v1.GetProjectUISettingsResponse"> & {
   /**
-   * The project's UI settings.
-   *
    * @generated from field: openauth.intermediate.v1.ProjectUISettings project_ui_settings = 1;
    */
   projectUiSettings?: ProjectUISettings;
@@ -1003,12 +663,36 @@ export type GetProjectUISettingsResponse = Message<"openauth.intermediate.v1.Get
  * Use `create(GetProjectUISettingsResponseSchema)` to create a new message.
  */
 export const GetProjectUISettingsResponseSchema: GenMessage<GetProjectUISettingsResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 35);
+  messageDesc(file_openauth_intermediate_v1_intermediate, 30);
 
 /**
  * @generated from service openauth.intermediate.v1.IntermediateService
  */
 export const IntermediateService: GenService<{
+  /**
+   * @generated from rpc openauth.intermediate.v1.IntermediateService.ListSAMLOrganizations
+   */
+  listSAMLOrganizations: {
+    methodKind: "unary";
+    input: typeof ListSAMLOrganizationsRequestSchema;
+    output: typeof ListSAMLOrganizationsResponseSchema;
+  },
+  /**
+   * @generated from rpc openauth.intermediate.v1.IntermediateService.GetProjectUISettings
+   */
+  getProjectUISettings: {
+    methodKind: "unary";
+    input: typeof GetProjectUISettingsRequestSchema;
+    output: typeof GetProjectUISettingsResponseSchema;
+  },
+  /**
+   * @generated from rpc openauth.intermediate.v1.IntermediateService.CreateIntermediateSession
+   */
+  createIntermediateSession: {
+    methodKind: "unary";
+    input: typeof CreateIntermediateSessionRequestSchema;
+    output: typeof CreateIntermediateSessionResponseSchema;
+  },
   /**
    * @generated from rpc openauth.intermediate.v1.IntermediateService.Whoami
    */
@@ -1016,6 +700,14 @@ export const IntermediateService: GenService<{
     methodKind: "unary";
     input: typeof WhoamiRequestSchema;
     output: typeof WhoamiResponseSchema;
+  },
+  /**
+   * @generated from rpc openauth.intermediate.v1.IntermediateService.ListOrganizations
+   */
+  listOrganizations: {
+    methodKind: "unary";
+    input: typeof ListOrganizationsRequestSchema;
+    output: typeof ListOrganizationsResponseSchema;
   },
   /**
    * @generated from rpc openauth.intermediate.v1.IntermediateService.ExchangeIntermediateSessionForSession
@@ -1066,8 +758,6 @@ export const IntermediateService: GenService<{
     output: typeof RedeemMicrosoftOAuthCodeResponseSchema;
   },
   /**
-   * Issues a new email verification challenge.
-   *
    * @generated from rpc openauth.intermediate.v1.IntermediateService.IssueEmailVerificationChallenge
    */
   issueEmailVerificationChallenge: {
@@ -1076,38 +766,6 @@ export const IntermediateService: GenService<{
     output: typeof IssueEmailVerificationChallengeResponseSchema;
   },
   /**
-   * Gets a list of organizations.
-   *
-   * @generated from rpc openauth.intermediate.v1.IntermediateService.ListOrganizations
-   */
-  listOrganizations: {
-    methodKind: "unary";
-    input: typeof ListOrganizationsRequestSchema;
-    output: typeof ListOrganizationsResponseSchema;
-  },
-  /**
-   * Gets a list of SAML organizations for a given email address.
-   *
-   * @generated from rpc openauth.intermediate.v1.IntermediateService.ListSAMLOrganizations
-   */
-  listSAMLOrganizations: {
-    methodKind: "unary";
-    input: typeof ListSAMLOrganizationsRequestSchema;
-    output: typeof ListSAMLOrganizationsResponseSchema;
-  },
-  /**
-   * Creates a new intermediate session or session and cookies the requester.
-   *
-   * @generated from rpc openauth.intermediate.v1.IntermediateService.SignInWithEmail
-   */
-  signInWithEmail: {
-    methodKind: "unary";
-    input: typeof SignInWithEmailRequestSchema;
-    output: typeof SignInWithEmailResponseSchema;
-  },
-  /**
-   * Submits a challenge for verification of email address.
-   *
    * @generated from rpc openauth.intermediate.v1.IntermediateService.VerifyEmailChallenge
    */
   verifyEmailChallenge: {
@@ -1116,22 +774,12 @@ export const IntermediateService: GenService<{
     output: typeof VerifyEmailChallengeResponseSchema;
   },
   /**
-   * Submits a password for verification of session.
-   *
    * @generated from rpc openauth.intermediate.v1.IntermediateService.VerifyPassword
    */
   verifyPassword: {
     methodKind: "unary";
     input: typeof VerifyPasswordRequestSchema;
     output: typeof VerifyPasswordResponseSchema;
-  },
-  /**
-   * @generated from rpc openauth.intermediate.v1.IntermediateService.GetProjectUISettings
-   */
-  getProjectUISettings: {
-    methodKind: "unary";
-    input: typeof GetProjectUISettingsRequestSchema;
-    output: typeof GetProjectUISettingsResponseSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_openauth_intermediate_v1_intermediate, 0);

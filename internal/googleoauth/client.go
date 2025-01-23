@@ -47,6 +47,7 @@ type RedeemCodeRequest struct {
 type RedeemCodeResponse struct {
 	GoogleUserID       string
 	Email              string
+	EmailVerified      bool
 	GoogleHostedDomain string
 }
 
@@ -68,6 +69,7 @@ func (c *Client) RedeemCode(ctx context.Context, req *RedeemCodeRequest) (*Redee
 	return &RedeemCodeResponse{
 		GoogleUserID:       userInfo.Sub,
 		Email:              userInfo.Email,
+		EmailVerified:      userInfo.EmailVerified,
 		GoogleHostedDomain: userInfo.HD,
 	}, nil
 }
@@ -113,9 +115,10 @@ func (c *Client) token(ctx context.Context, req *RedeemCodeRequest) (string, err
 }
 
 type userinfoResponse struct {
-	Sub   string `json:"sub"`
-	Email string `json:"email"`
-	HD    string `json:"hd"`
+	Sub           string `json:"sub"`
+	Email         string `json:"email"`
+	EmailVerified bool   `json:"email_verified"`
+	HD            string `json:"hd"`
 }
 
 func (c *Client) userinfo(ctx context.Context, accessToken string) (*userinfoResponse, error) {

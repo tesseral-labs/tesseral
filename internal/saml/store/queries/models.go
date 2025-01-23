@@ -58,13 +58,11 @@ func (ns NullAuthMethod) Value() (driver.Value, error) {
 
 type EmailVerificationChallenge struct {
 	ID                    uuid.UUID
-	ProjectID             uuid.UUID
 	ChallengeSha256       []byte
 	CompleteTime          *time.Time
 	CreateTime            *time.Time
 	ExpireTime            *time.Time
 	IntermediateSessionID uuid.UUID
-	Revoked               bool
 }
 
 type IntermediateSession struct {
@@ -72,8 +70,6 @@ type IntermediateSession struct {
 	ProjectID                 uuid.UUID
 	CreateTime                *time.Time
 	ExpireTime                *time.Time
-	TokenSha256               []byte
-	Revoked                   bool
 	Email                     *string
 	GoogleOauthStateSha256    []byte
 	MicrosoftOauthStateSha256 []byte
@@ -83,15 +79,8 @@ type IntermediateSession struct {
 	MicrosoftUserID           *string
 	PasswordVerified          *bool
 	OrganizationID            *uuid.UUID
-}
-
-type IntermediateSessionSigningKey struct {
-	ID                   uuid.UUID
-	ProjectID            uuid.UUID
-	PublicKey            []byte
-	PrivateKeyCipherText []byte
-	CreateTime           *time.Time
-	ExpireTime           *time.Time
+	UpdateTime                *time.Time
+	SecretTokenSha256         []byte
 }
 
 type Organization struct {
@@ -101,8 +90,6 @@ type Organization struct {
 	OverrideLogInWithPasswordEnabled  *bool
 	OverrideLogInWithGoogleEnabled    *bool
 	OverrideLogInWithMicrosoftEnabled *bool
-	GoogleHostedDomain                *string
-	MicrosoftTenantID                 *string
 	OverrideLogInMethods              bool
 	SamlEnabled                       bool
 	ScimEnabled                       bool
@@ -114,6 +101,18 @@ type OrganizationDomain struct {
 	ID             uuid.UUID
 	OrganizationID uuid.UUID
 	Domain         string
+}
+
+type OrganizationGoogleHostedDomain struct {
+	ID                 uuid.UUID
+	OrganizationID     uuid.UUID
+	GoogleHostedDomain string
+}
+
+type OrganizationMicrosoftTenantID struct {
+	ID                uuid.UUID
+	OrganizationID    uuid.UUID
+	MicrosoftTenantID string
 }
 
 type Project struct {
@@ -213,12 +212,10 @@ type User struct {
 }
 
 type VerifiedEmail struct {
-	ID                 uuid.UUID
-	ProjectID          uuid.UUID
-	CreateTime         *time.Time
-	Email              string
-	GoogleUserID       *string
-	MicrosoftUserID    *string
-	GoogleHostedDomain *string
-	MicrosoftTenantID  *string
+	ID              uuid.UUID
+	ProjectID       uuid.UUID
+	CreateTime      *time.Time
+	Email           string
+	GoogleUserID    *string
+	MicrosoftUserID *string
 }
