@@ -1,6 +1,45 @@
+.PHONY: bootstrap
+bootstrap:
+	docker compose up -d --wait
+	make migrate up
+	mkdir -p .local/tmp
+	openssl genpkey -algorithm EC -pkeyopt ec_paramgen_curve:P-256 -out .local/tmp/session-signing-key.pem
+	sed -e '1d' -e '$$d' .local/tmp/session-signing-key.pem > .local/tmp/trimmed-session-signing-key.pem
+	openssl ec -in .local/tmp/session-signing-key.pem -pubout -out .local/tmp/session-signing-public-key.pem
+	AWS_DEFAULT_REGION=us-west-1 AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test aws kms encrypt --encryption-algorithm "RSAES_OAEP_SHA_256" --endpoint-url "http://localhost:4566" --key-id "bc436485-5092-42b8-92a3-0aa8b93536dc" --output text --plaintext fileb://.local/tmp/trimmed-session-signing-key.pem --query CiphertextBlob | base64 -d > .local/tmp/session-signing-key.encrypted
+	psql "postgres://postgres:password@localhost:5432?sslmode=disable" -f .local/db/seed.sql
+	docker compose stop
+	rm -rf .local/tmp
+
 .PHONY: dev
 dev:
 	docker compose up --build --watch
+
+.PHONY: keys
+keys:
+	docker compose up -d
+	mkdir -p .local/tmp
+	openssl genpkey -algorithm EC -pkeyopt ec_paramgen_curve:P-256 -out .local/tmp/session-signing-key.pem
+	sed -e '1d' -e '$$d' .local/tmp/session-signing-key.pem > .local/tmp/trimmed-session-signing-key.pem
+	openssl ec -in .local/tmp/session-signing-key.pem -pubout -out .local/tmp/session-signing-public-key.pem
+	AWS_DEFAULT_REGION=us-west-1 AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test aws kms encrypt --encryption-algorithm "RSAES_OAEP_SHA_256" --endpoint-url "http://localhost:4566" --key-id "bc436485-5092-42b8-92a3-0aa8b93536dc" --output text --plaintext fileb://.local/tmp/trimmed-session-signing-key.pem --query CiphertextBlob | base64 -d > .local/tmp/session-signing-key.encrypted
+	docker compose stop
+
+.PHONY: migrate
+ARGS = $(wordlist 2, $(words $(MAKECMDGOALS)), $(MAKECMDGOALS))
+migrate:
+	migrate -path cmd/openauthctl/migrations -database "postgres://postgres:password@localhost:5432?sslmode=disable" $(ARGS)
+%:
+	@:
+
+.PHONY: proto
+proto:
+	rm -rf internal/backend/gen internal/frontend/gen internal/intermediate/gen internal/oauth/gen internal/common/gen app/src/gen ui/src/gen
+	npx buf generate --template buf/buf.gen-backend.yaml
+	npx buf generate --template buf/buf.gen-frontend.yaml
+	npx buf generate --template buf/buf.gen-intermediate.yaml
+	npx buf generate --template buf/buf.gen-oauth.yaml
+	npx buf generate --template buf/buf.gen-common.yaml
 
 .PHONY: queries
 queries:
@@ -14,12 +53,3 @@ queries:
 	docker run --rm --volume "$$(pwd)/sqlc/queries-scim.sql:/work/queries.sql" backplane/pgformatter -i queries.sql
 	docker run --rm --volume "$$(pwd)/sqlc/queries-common.sql:/work/queries.sql" backplane/pgformatter -i queries.sql
 	sqlc -f ./sqlc/sqlc.yaml generate
-
-.PHONY: proto
-proto:
-	rm -rf internal/backend/gen internal/frontend/gen internal/intermediate/gen internal/oauth/gen internal/common/gen app/src/gen ui/src/gen
-	npx buf generate --template buf/buf.gen-backend.yaml
-	npx buf generate --template buf/buf.gen-frontend.yaml
-	npx buf generate --template buf/buf.gen-intermediate.yaml
-	npx buf generate --template buf/buf.gen-oauth.yaml
-	npx buf generate --template buf/buf.gen-common.yaml

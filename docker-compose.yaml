@@ -59,6 +59,7 @@ services:
       - "5432:5432"
     volumes:
       - ./.local/postgres:/var/lib/postgresql/data
+      - ./.local/tmp:/tmp/local
   s3:
     image: adobe/s3mock:latest
     environment:
