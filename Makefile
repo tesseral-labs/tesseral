@@ -1,5 +1,7 @@
 .PHONY: bootstrap
 bootstrap:
+	@# Install the required ssl certs
+	./bin/create-localhost-certs
 	@# Start the docker containers
 	docker compose up -d --wait
 	@# Wait for the database to be ready
