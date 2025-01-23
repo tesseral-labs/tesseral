@@ -3,6 +3,7 @@ package store
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/openauth/openauth/internal/common/apierror"
 	"github.com/openauth/openauth/internal/intermediate/authn"
@@ -10,6 +11,13 @@ import (
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
 	"github.com/openauth/openauth/internal/store/idformat"
 	"golang.org/x/crypto/bcrypt"
+)
+
+const (
+	// after this many failed attempts, lock out a user
+	passwordLockoutAttempts = 5
+	// how long to lock users out
+	passwordLockoutDuration = time.Minute * 10
 )
 
 func (s *Store) VerifyPassword(ctx context.Context, req *intermediatev1.VerifyPasswordRequest) (*intermediatev1.VerifyPasswordResponse, error) {
@@ -79,7 +87,49 @@ func (s *Store) VerifyPassword(ctx context.Context, req *intermediatev1.VerifyPa
 		return nil, apierror.NewFailedPreconditionError("user does not have password configured", nil)
 	}
 
+	if qMatchingUser.PasswordLockoutExpireTime != nil && qMatchingUser.PasswordLockoutExpireTime.After(time.Now()) {
+		return nil, apierror.NewFailedPreconditionError("too many password attempts; user is temporarily locked out", nil)
+	}
+
 	if err := bcrypt.CompareHashAndPassword([]byte(*qMatchingUser.PasswordBcrypt), []byte(req.Password)); err != nil {
+		attempts := qMatchingUser.FailedPasswordAttempts + 1
+		if attempts >= passwordLockoutAttempts {
+			// lock the user out
+			passwordLockoutExpireTime := time.Now().Add(passwordLockoutDuration)
+			if _, err := q.UpdateUserPasswordLockoutExpireTime(ctx, queries.UpdateUserPasswordLockoutExpireTimeParams{
+				ID:                        qMatchingUser.ID,
+				PasswordLockoutExpireTime: &passwordLockoutExpireTime,
+			}); err != nil {
+				return nil, err
+			}
+
+			// reset fail count
+			if _, err := q.UpdateUserFailedPasswordAttempts(ctx, queries.UpdateUserFailedPasswordAttemptsParams{
+				ID:                     qMatchingUser.ID,
+				FailedPasswordAttempts: 0,
+			}); err != nil {
+				return nil, err
+			}
+
+			if err := commit(); err != nil {
+				return nil, fmt.Errorf("commit: %w", err)
+			}
+
+			return nil, apierror.NewFailedPreconditionError("too many password attempts; user is temporarily locked out", nil)
+		}
+
+		// update fail count, but do not lock out
+		if _, err := q.UpdateUserFailedPasswordAttempts(ctx, queries.UpdateUserFailedPasswordAttemptsParams{
+			ID:                     qMatchingUser.ID,
+			FailedPasswordAttempts: attempts,
+		}); err != nil {
+			return nil, fmt.Errorf("update user failed password attempts: %w", err)
+		}
+
+		if err := commit(); err != nil {
+			return nil, fmt.Errorf("commit: %w", err)
+		}
+
 		return nil, apierror.NewFailedPreconditionError("incorrect password", fmt.Errorf("bcrypt compare: %w", err))
 	}
 
