@@ -1,14 +1,27 @@
 .PHONY: bootstrap
 bootstrap:
+	@# Start the docker containers
 	docker compose up -d --wait
+	@# Wait for the database to be ready
+	@until PGPASSWORD=password psql "postgres://postgres:password@localhost:5432?sslmode=disable" -c "SELECT 1" >/dev/null 2>&1; do \
+		echo "PostgreSQL is unavailable - retrying..."; \
+		sleep 2; \
+	done
+	@# Run database migrations
 	make migrate up
+	@# Create the tmp directory for ecdsa keys
 	mkdir -p .local/tmp
+	@# Generate the session signing key
 	openssl genpkey -algorithm EC -pkeyopt ec_paramgen_curve:P-256 -out .local/tmp/session-signing-key.pem
 	sed -e '1d' -e '$$d' .local/tmp/session-signing-key.pem > .local/tmp/trimmed-session-signing-key.pem
 	openssl ec -in .local/tmp/session-signing-key.pem -pubout -out .local/tmp/session-signing-public-key.pem
+	@# Encrypt the session signing key with KMS
 	AWS_DEFAULT_REGION=us-west-1 AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test aws kms encrypt --encryption-algorithm "RSAES_OAEP_SHA_256" --endpoint-url "http://localhost:4566" --key-id "bc436485-5092-42b8-92a3-0aa8b93536dc" --output text --plaintext fileb://.local/tmp/trimmed-session-signing-key.pem --query CiphertextBlob | base64 -d > .local/tmp/session-signing-key.encrypted
+	@# Seed the database
 	psql "postgres://postgres:password@localhost:5432?sslmode=disable" -f .local/db/seed.sql
+	@# Stop the docker containers
 	docker compose stop
+	@# Remove the tmp directory
 	rm -rf .local/tmp
 
 .PHONY: dev
