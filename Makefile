@@ -15,16 +15,6 @@ bootstrap:
 dev:
 	docker compose up --build --watch
 
-.PHONY: keys
-keys:
-	docker compose up -d
-	mkdir -p .local/tmp
-	openssl genpkey -algorithm EC -pkeyopt ec_paramgen_curve:P-256 -out .local/tmp/session-signing-key.pem
-	sed -e '1d' -e '$$d' .local/tmp/session-signing-key.pem > .local/tmp/trimmed-session-signing-key.pem
-	openssl ec -in .local/tmp/session-signing-key.pem -pubout -out .local/tmp/session-signing-public-key.pem
-	AWS_DEFAULT_REGION=us-west-1 AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test aws kms encrypt --encryption-algorithm "RSAES_OAEP_SHA_256" --endpoint-url "http://localhost:4566" --key-id "bc436485-5092-42b8-92a3-0aa8b93536dc" --output text --plaintext fileb://.local/tmp/trimmed-session-signing-key.pem --query CiphertextBlob | base64 -d > .local/tmp/session-signing-key.encrypted
-	docker compose stop
-
 .PHONY: migrate
 ARGS = $(wordlist 2, $(words $(MAKECMDGOALS)), $(MAKECMDGOALS))
 migrate:
