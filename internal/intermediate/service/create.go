@@ -17,7 +17,7 @@ func (s *Service) CreateIntermediateSession(ctx context.Context, req *connect.Re
 	}
 
 	connectResponse := connect.NewResponse(res)
-	connectResponse.Header().Add("Set-Cookie", cookies.BuildCookie(ctx, req, "intermediateAccessToken", res.IntermediateSessionSecretToken, authn.ProjectID(ctx)))
+	connectResponse.Header().Add("Set-Cookie", cookies.NewIntermediateAccessToken(authn.ProjectID(ctx), res.IntermediateSessionSecretToken))
 
 	return connectResponse, nil
 }

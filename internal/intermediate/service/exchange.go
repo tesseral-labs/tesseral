@@ -24,8 +24,8 @@ func (s *Service) ExchangeIntermediateSessionForSession(ctx context.Context, req
 	res.AccessToken = accessToken
 
 	connectRes := connect.NewResponse(res)
-	connectRes.Header().Add("Set-Cookie", cookies.BuildCookie(ctx, req, "refreshToken", res.RefreshToken, authn.ProjectID(ctx)))
-	connectRes.Header().Add("Set-Cookie", cookies.BuildCookie(ctx, req, "accessToken", res.AccessToken, authn.ProjectID(ctx)))
+	connectRes.Header().Add("Set-Cookie", cookies.NewRefreshToken(authn.ProjectID(ctx), res.RefreshToken))
+	connectRes.Header().Add("Set-Cookie", cookies.NewRefreshToken(authn.ProjectID(ctx), res.AccessToken))
 	return connectRes, nil
 }
 
@@ -43,7 +43,7 @@ func (s *Service) ExchangeIntermediateSessionForNewOrganizationSession(ctx conte
 	res.AccessToken = accessToken
 
 	connectRes := connect.NewResponse(res)
-	connectRes.Header().Add("Set-Cookie", cookies.BuildCookie(ctx, req, "refreshToken", res.RefreshToken, authn.ProjectID(ctx)))
-	connectRes.Header().Add("Set-Cookie", cookies.BuildCookie(ctx, req, "accessToken", res.AccessToken, authn.ProjectID(ctx)))
+	connectRes.Header().Add("Set-Cookie", cookies.NewRefreshToken(authn.ProjectID(ctx), res.RefreshToken))
+	connectRes.Header().Add("Set-Cookie", cookies.NewRefreshToken(authn.ProjectID(ctx), res.AccessToken))
 	return connectRes, nil
 }

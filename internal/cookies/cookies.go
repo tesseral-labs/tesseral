@@ -1,69 +1,67 @@
 package cookies
 
 import (
-	"context"
 	"fmt"
 	"net/http"
-	"strings"
+	"time"
 
 	"connectrpc.com/connect"
 	"github.com/google/uuid"
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
-var errCookieNotFound = fmt.Errorf("cookie not found")
+func NewRefreshToken(projectID uuid.UUID, value string) string {
+	return newCookie("refresh_token", 0, projectID, value)
+}
 
-func BuildCookie(ctx context.Context, req connect.AnyRequest, cookieType string, value string, projectID uuid.UUID) string {
-	secure := req.Spec().Schema == "https"
+func NewAccessToken(projectID uuid.UUID, value string) string {
+	return newCookie("access_token", 5*time.Minute, projectID, value)
+}
 
-	sameSite := http.SameSiteLaxMode
-	if secure {
-		sameSite = http.SameSiteNoneMode
-	}
+func NewIntermediateAccessToken(projectID uuid.UUID, value string) string {
+	return newCookie("intermediate_access_token", 15*time.Minute, projectID, value)
+}
 
-	maxAge := 60 * 60 * 24 * 7 // one week
-	if cookieType == "intermediateAccessToken" {
-		maxAge = 60 * 15 // 15 minutes
-	}
-
-	// TODO: Once domains are sorted out, we'll need to set the `Domain` attribute on the cookie.
-	cookie := http.Cookie{
-		HttpOnly: true,
-		MaxAge:   maxAge,
-		Name:     fmt.Sprintf("tesseral_%s_%s", idformat.Project.Format(projectID), cookieType),
-		Path:     "/",
-		SameSite: sameSite,
-		Secure:   secure,
+func newCookie(name string, maxAge time.Duration, projectID uuid.UUID, value string) string {
+	c := http.Cookie{
+		Name:     fmt.Sprintf("tesseral_%s_%s", idformat.Project.Format(projectID), name),
 		Value:    value,
+		MaxAge:   int(maxAge.Seconds()),
+		Secure:   true,
+		HttpOnly: true,
 	}
-
-	return cookie.String()
+	return c.String()
 }
 
-func GetCookie(ctx context.Context, req connect.AnyRequest, cookieType string, projectID uuid.UUID) (string, error) {
-	cookie := req.Header().Get("Cookie")
-	if cookie == "" {
-		return "", errCookieNotFound
-	}
-
-	cookieName := fmt.Sprintf("tesseral_%s_%s", idformat.Project.Format(projectID), cookieType)
-
-	value, found := extractCookieValue(cookie, cookieName)
-	if !found {
-		return "", errCookieNotFound
-	}
-
-	return value, nil
+func GetRefreshToken(projectID uuid.UUID, req connect.AnyRequest) (string, error) {
+	return getCookie("refresh_token", projectID, req)
 }
 
-func extractCookieValue(cookie string, cookieName string) (string, bool) {
-	parts := strings.Split(cookie, ";")
-	for _, part := range parts {
-		part = strings.TrimSpace(part)
-		if strings.HasPrefix(part, cookieName) {
-			return strings.CutPrefix(part, cookieName+"=")
+func GetAccessToken(projectID uuid.UUID, req connect.AnyRequest) (string, error) {
+	return getCookie("access_token", projectID, req)
+}
+
+func GetIntermediateAccessToken(projectID uuid.UUID, req connect.AnyRequest) (string, error) {
+	return getCookie("intermediate_access_token", projectID, req)
+}
+
+func getCookie(name string, projectID uuid.UUID, req connect.AnyRequest) (string, error) {
+	cookieName := fmt.Sprintf("tesseral_%s_%s", idformat.Project.Format(projectID), name)
+
+	var value string
+	for _, h := range req.Header().Values("Cookie") {
+		cookies, err := http.ParseCookie(h)
+		if err != nil {
+			return "", fmt.Errorf("parse cookie: %w", err)
+		}
+
+		for _, c := range cookies {
+			if c.Name != cookieName {
+				continue
+			}
+			value = c.Value
 		}
 	}
 
-	return "", false
+	return value, nil
 }
