@@ -407,6 +407,23 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 	return i, err
 }
 
+const getProjectIDOrganizationBacks = `-- name: GetProjectIDOrganizationBacks :one
+SELECT
+    projects.id
+FROM
+    organizations
+    JOIN projects ON projects.organization_id = organizations.id
+WHERE
+    organization_id = $1
+`
+
+func (q *Queries) GetProjectIDOrganizationBacks(ctx context.Context, organizationID *uuid.UUID) (uuid.UUID, error) {
+	row := q.db.QueryRow(ctx, getProjectIDOrganizationBacks, organizationID)
+	var id uuid.UUID
+	err := row.Scan(&id)
+	return id, err
+}
+
 const getProjectRedirectURI = `-- name: GetProjectRedirectURI :one
 SELECT
     id, project_id, uri, is_primary, created_at, updated_at
