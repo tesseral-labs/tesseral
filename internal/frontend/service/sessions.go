@@ -24,7 +24,7 @@ func (s *Service) Refresh(ctx context.Context, req *connect.Request[frontendv1.R
 	connectRes := connect.NewResponse(&frontendv1.RefreshResponse{
 		AccessToken: accessToken,
 	})
-	connectRes.Header().Add("Set-Cookie", cookies.BuildCookie(ctx, req, "accessToken", accessToken, authn.ProjectID(ctx)))
+	connectRes.Header().Add("Set-Cookie", cookies.NewAccessToken(authn.ProjectID(ctx), accessToken))
 
 	return connectRes, nil
 }

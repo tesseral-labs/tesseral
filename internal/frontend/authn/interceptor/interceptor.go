@@ -40,7 +40,7 @@ func New(s *store.Store, p *projectid.Sniffer, authAppsRootDomain string) connec
 			}
 
 			// get the access token from the cookie to enforce authentication
-			accessToken, err := cookies.GetCookie(ctx, req, "accessToken", *projectID)
+			accessToken, err := cookies.GetAccessToken(*projectID, req)
 			if err != nil {
 				return nil, connect.NewError(connect.CodeUnauthenticated, err)
 			}
