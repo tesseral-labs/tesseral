@@ -11,7 +11,7 @@ import (
 )
 
 func (s *Service) Refresh(ctx context.Context, req *connect.Request[frontendv1.RefreshRequest]) (*connect.Response[frontendv1.RefreshResponse], error) {
-	refreshToken, _ := cookies.GetCookie(ctx, req, "refreshToken", authn.ProjectID(ctx))
+	refreshToken, _ := cookies.GetRefreshToken(authn.ProjectID(ctx), req)
 	if refreshToken != "" {
 		req.Msg.RefreshToken = refreshToken
 	}
