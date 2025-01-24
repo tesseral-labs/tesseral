@@ -60,7 +60,7 @@ export const useSession = (): SessionAccessTokenClaims | undefined => {
   const refresh = useMutation({
     mutationKey: ['refresh'],
     mutationFn: async () => {
-      const response = await fetch('/api/frontend/v1/access-token', {
+      const response = await fetch('/api/frontend/v1/refresh', {
         credentials: 'include',
         method: 'POST',
         headers: {
