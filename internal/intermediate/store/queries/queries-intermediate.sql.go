@@ -1569,6 +1569,42 @@ func (q *Queries) UpdateUserFailedPasswordAttempts(ctx context.Context, arg Upda
 	return i, err
 }
 
+const updateUserPasswordBcrypt = `-- name: UpdateUserPasswordBcrypt :one
+UPDATE
+    users
+SET
+    password_bcrypt = $1
+WHERE
+    id = $2
+RETURNING
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time
+`
+
+type UpdateUserPasswordBcryptParams struct {
+	PasswordBcrypt *string
+	ID             uuid.UUID
+}
+
+func (q *Queries) UpdateUserPasswordBcrypt(ctx context.Context, arg UpdateUserPasswordBcryptParams) (User, error) {
+	row := q.db.QueryRow(ctx, updateUserPasswordBcrypt, arg.PasswordBcrypt, arg.ID)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.PasswordBcrypt,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+		&i.Email,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.DeactivateTime,
+		&i.IsOwner,
+		&i.FailedPasswordAttempts,
+		&i.PasswordLockoutExpireTime,
+	)
+	return i, err
+}
+
 const updateUserPasswordLockoutExpireTime = `-- name: UpdateUserPasswordLockoutExpireTime :one
 UPDATE
     users
