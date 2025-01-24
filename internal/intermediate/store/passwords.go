@@ -22,6 +22,15 @@ const (
 )
 
 func (s *Store) VerifyPassword(ctx context.Context, req *intermediatev1.VerifyPasswordRequest) (*intermediatev1.VerifyPasswordResponse, error) {
+	intermediateSession := authn.IntermediateSession(ctx)
+	if intermediateSession.OrganizationId != "" {
+		return nil, apierror.NewFailedPreconditionError("organization id already set for intermediate session", fmt.Errorf("organization id already set for intermediate session"))
+	}
+
+	if intermediateSession.PasswordVerified {
+		return nil, apierror.NewFailedPreconditionError("user already verified for intermediate session", fmt.Errorf("user already verified for intermediate session"))
+	}
+
 	orgID, err := idformat.Organization.Parse(req.OrganizationId)
 	if err != nil {
 		return nil, apierror.NewInvalidArgumentError("invalid organization id", fmt.Errorf("parse organization id: %w", err))

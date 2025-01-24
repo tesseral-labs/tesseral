@@ -35,11 +35,13 @@ func (s *Store) IssueEmailVerificationChallenge(ctx context.Context, req *interm
 		return nil, apierror.NewInvalidArgumentError("email does not match existing value on intermediate session", fmt.Errorf("email does not match existing value on intermediate session"))
 	}
 
-	if _, err := q.UpdateIntermediateSessionEmail(ctx, queries.UpdateIntermediateSessionEmailParams{
-		ID:    authn.IntermediateSessionID(ctx),
-		Email: &req.Email,
-	}); err != nil {
-		return nil, fmt.Errorf("update intermediate session email: %w", err)
+	if qIntermediateSession.Email == nil {
+		if _, err := q.UpdateIntermediateSessionEmail(ctx, queries.UpdateIntermediateSessionEmailParams{
+			ID:    authn.IntermediateSessionID(ctx),
+			Email: &req.Email,
+		}); err != nil {
+			return nil, fmt.Errorf("update intermediate session email: %w", err)
+		}
 	}
 
 	secretToken := generateSecretToken()
