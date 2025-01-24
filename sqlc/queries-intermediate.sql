@@ -76,28 +76,6 @@ INSERT INTO users (id, organization_id, email, google_user_id, microsoft_user_id
 RETURNING
     *;
 
--- name: GetEmailVerificationChallengeByID :one
-SELECT
-    *
-FROM
-    email_verification_challenges
-WHERE
-    id = $1;
-
--- name: GetEmailVerificationChallengeForCompletion :one
-SELECT
-    *
-FROM
-    email_verification_challenges
-WHERE
-    intermediate_session_id = $1
-    AND expire_time > $2
-    AND challenge_sha256 IS NOT NULL
-    AND complete_time IS NULL
-ORDER BY
-    create_time DESC
-LIMIT 1;
-
 -- name: GetIntermediateSessionByID :one
 SELECT
     *
@@ -105,17 +83,6 @@ FROM
     intermediate_sessions
 WHERE
     id = $1;
-
--- name: GetCurrentSessionKeyByProjectID :one
-SELECT
-    *
-FROM
-    session_signing_keys
-WHERE
-    project_id = $1
-ORDER BY
-    create_time DESC
-LIMIT 1;
 
 -- name: GetOrganizationUserByEmail :one
 SELECT
@@ -179,46 +146,6 @@ FROM
 WHERE
     project_id = $1;
 
--- name: GetSessionSigningKeysByProjectID :many
-SELECT
-    *
-FROM
-    session_signing_keys
-WHERE
-    project_id = $1;
-
--- name: IsGoogleEmailVerified :one
-SELECT
-    count(*) > 0
-FROM
-    oauth_verified_emails
-WHERE
-    project_id = $1
-    AND email = $2
-    AND google_user_id = $3;
-
--- name: IsMicrosoftEmailVerified :one
-SELECT
-    count(*) > 0
-FROM
-    oauth_verified_emails
-WHERE
-    project_id = $1
-    AND email = $2
-    AND microsoft_user_id = $3;
-
--- name: ListOrganizationsByEmail :many
-SELECT
-    organizations.*
-FROM
-    organizations
-    JOIN users ON organizations.id = users.organization_id
-WHERE
-    organizations.project_id = $1
-    AND users.email = $2
-    AND users.google_user_id IS NULL
-    AND users.microsoft_user_id IS NULL;
-
 -- name: ListOrganizationsByGoogleHostedDomain :many
 SELECT
     organizations.*
@@ -263,24 +190,6 @@ WHERE
     organizations.project_id = $1
     AND organizations.saml_enabled = TRUE
     AND organization_domains.domain = $2;
-
--- name: ListUsersByEmail :many
-SELECT
-    *
-FROM
-    users
-WHERE
-    email = $1;
-
--- name: RevokeEmailVerificationChallenge :one
-UPDATE
-    email_verification_challenges
-SET
-    challenge_sha256 = NULL
-WHERE
-    id = $1
-RETURNING
-    *;
 
 -- name: RevokeIntermediateSession :one
 UPDATE
@@ -346,17 +255,6 @@ WHERE
     id = $2
 RETURNING
     *;
-
--- name: GetUserByOrganizationIDAndFactors :one
-SELECT
-    *
-FROM
-    users
-WHERE
-    organization_id = $1
-    AND (google_user_id = $2
-        OR microsoft_user_id = $3
-        OR email = $4);
 
 -- name: GetEmailVerifiedByGoogleUserID :one
 SELECT
