@@ -33,9 +33,8 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
-	// FrontendServiceGetAccessTokenProcedure is the fully-qualified name of the FrontendService's
-	// GetAccessToken RPC.
-	FrontendServiceGetAccessTokenProcedure = "/openauth.frontend.v1.FrontendService/GetAccessToken"
+	// FrontendServiceRefreshProcedure is the fully-qualified name of the FrontendService's Refresh RPC.
+	FrontendServiceRefreshProcedure = "/openauth.frontend.v1.FrontendService/Refresh"
 	// FrontendServiceGetProjectProcedure is the fully-qualified name of the FrontendService's
 	// GetProject RPC.
 	FrontendServiceGetProjectProcedure = "/openauth.frontend.v1.FrontendService/GetProject"
@@ -98,7 +97,7 @@ const (
 
 // FrontendServiceClient is a client for the openauth.frontend.v1.FrontendService service.
 type FrontendServiceClient interface {
-	GetAccessToken(context.Context, *connect.Request[v1.GetAccessTokenRequest]) (*connect.Response[v1.GetAccessTokenResponse], error)
+	Refresh(context.Context, *connect.Request[v1.RefreshRequest]) (*connect.Response[v1.RefreshResponse], error)
 	GetProject(context.Context, *connect.Request[v1.GetProjectRequest]) (*connect.Response[v1.GetProjectResponse], error)
 	GetOrganization(context.Context, *connect.Request[v1.GetOrganizationRequest]) (*connect.Response[v1.GetOrganizationResponse], error)
 	UpdateOrganization(context.Context, *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.UpdateOrganizationResponse], error)
@@ -135,10 +134,10 @@ func NewFrontendServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 	baseURL = strings.TrimRight(baseURL, "/")
 	frontendServiceMethods := v1.File_openauth_frontend_v1_frontend_proto.Services().ByName("FrontendService").Methods()
 	return &frontendServiceClient{
-		getAccessToken: connect.NewClient[v1.GetAccessTokenRequest, v1.GetAccessTokenResponse](
+		refresh: connect.NewClient[v1.RefreshRequest, v1.RefreshResponse](
 			httpClient,
-			baseURL+FrontendServiceGetAccessTokenProcedure,
-			connect.WithSchema(frontendServiceMethods.ByName("GetAccessToken")),
+			baseURL+FrontendServiceRefreshProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("Refresh")),
 			connect.WithClientOptions(opts...),
 		),
 		getProject: connect.NewClient[v1.GetProjectRequest, v1.GetProjectResponse](
@@ -266,7 +265,7 @@ func NewFrontendServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 
 // frontendServiceClient implements FrontendServiceClient.
 type frontendServiceClient struct {
-	getAccessToken       *connect.Client[v1.GetAccessTokenRequest, v1.GetAccessTokenResponse]
+	refresh              *connect.Client[v1.RefreshRequest, v1.RefreshResponse]
 	getProject           *connect.Client[v1.GetProjectRequest, v1.GetProjectResponse]
 	getOrganization      *connect.Client[v1.GetOrganizationRequest, v1.GetOrganizationResponse]
 	updateOrganization   *connect.Client[v1.UpdateOrganizationRequest, v1.UpdateOrganizationResponse]
@@ -289,9 +288,9 @@ type frontendServiceClient struct {
 	revokeSCIMAPIKey     *connect.Client[v1.RevokeSCIMAPIKeyRequest, v1.RevokeSCIMAPIKeyResponse]
 }
 
-// GetAccessToken calls openauth.frontend.v1.FrontendService.GetAccessToken.
-func (c *frontendServiceClient) GetAccessToken(ctx context.Context, req *connect.Request[v1.GetAccessTokenRequest]) (*connect.Response[v1.GetAccessTokenResponse], error) {
-	return c.getAccessToken.CallUnary(ctx, req)
+// Refresh calls openauth.frontend.v1.FrontendService.Refresh.
+func (c *frontendServiceClient) Refresh(ctx context.Context, req *connect.Request[v1.RefreshRequest]) (*connect.Response[v1.RefreshResponse], error) {
+	return c.refresh.CallUnary(ctx, req)
 }
 
 // GetProject calls openauth.frontend.v1.FrontendService.GetProject.
@@ -396,7 +395,7 @@ func (c *frontendServiceClient) RevokeSCIMAPIKey(ctx context.Context, req *conne
 
 // FrontendServiceHandler is an implementation of the openauth.frontend.v1.FrontendService service.
 type FrontendServiceHandler interface {
-	GetAccessToken(context.Context, *connect.Request[v1.GetAccessTokenRequest]) (*connect.Response[v1.GetAccessTokenResponse], error)
+	Refresh(context.Context, *connect.Request[v1.RefreshRequest]) (*connect.Response[v1.RefreshResponse], error)
 	GetProject(context.Context, *connect.Request[v1.GetProjectRequest]) (*connect.Response[v1.GetProjectResponse], error)
 	GetOrganization(context.Context, *connect.Request[v1.GetOrganizationRequest]) (*connect.Response[v1.GetOrganizationResponse], error)
 	UpdateOrganization(context.Context, *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.UpdateOrganizationResponse], error)
@@ -429,10 +428,10 @@ type FrontendServiceHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
 	frontendServiceMethods := v1.File_openauth_frontend_v1_frontend_proto.Services().ByName("FrontendService").Methods()
-	frontendServiceGetAccessTokenHandler := connect.NewUnaryHandler(
-		FrontendServiceGetAccessTokenProcedure,
-		svc.GetAccessToken,
-		connect.WithSchema(frontendServiceMethods.ByName("GetAccessToken")),
+	frontendServiceRefreshHandler := connect.NewUnaryHandler(
+		FrontendServiceRefreshProcedure,
+		svc.Refresh,
+		connect.WithSchema(frontendServiceMethods.ByName("Refresh")),
 		connect.WithHandlerOptions(opts...),
 	)
 	frontendServiceGetProjectHandler := connect.NewUnaryHandler(
@@ -557,8 +556,8 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 	)
 	return "/openauth.frontend.v1.FrontendService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
-		case FrontendServiceGetAccessTokenProcedure:
-			frontendServiceGetAccessTokenHandler.ServeHTTP(w, r)
+		case FrontendServiceRefreshProcedure:
+			frontendServiceRefreshHandler.ServeHTTP(w, r)
 		case FrontendServiceGetProjectProcedure:
 			frontendServiceGetProjectHandler.ServeHTTP(w, r)
 		case FrontendServiceGetOrganizationProcedure:
@@ -608,8 +607,8 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 // UnimplementedFrontendServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedFrontendServiceHandler struct{}
 
-func (UnimplementedFrontendServiceHandler) GetAccessToken(context.Context, *connect.Request[v1.GetAccessTokenRequest]) (*connect.Response[v1.GetAccessTokenResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.GetAccessToken is not implemented"))
+func (UnimplementedFrontendServiceHandler) Refresh(context.Context, *connect.Request[v1.RefreshRequest]) (*connect.Response[v1.RefreshResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.Refresh is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) GetProject(context.Context, *connect.Request[v1.GetProjectRequest]) (*connect.Response[v1.GetProjectResponse], error) {

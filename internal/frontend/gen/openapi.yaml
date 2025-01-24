@@ -6,30 +6,6 @@ info:
     title: FrontendService API
     version: 0.0.1
 paths:
-    /frontend/v1/access-token:
-        post:
-            tags:
-                - FrontendService
-            operationId: FrontendService_GetAccessToken
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/GetAccessTokenRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/GetAccessTokenResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
     /frontend/v1/organization:
         get:
             tags:
@@ -118,6 +94,30 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/GetProjectResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /frontend/v1/refresh:
+        post:
+            tags:
+                - FrontendService
+            operationId: FrontendService_Refresh
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/RefreshRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/RefreshResponse'
                 default:
                     description: Default error response
                     content:
@@ -534,16 +534,6 @@ components:
         DeleteSCIMAPIKeyResponse:
             type: object
             properties: {}
-        GetAccessTokenRequest:
-            type: object
-            properties:
-                refreshToken:
-                    type: string
-        GetAccessTokenResponse:
-            type: object
-            properties:
-                accessToken:
-                    type: string
         GetOrganizationResponse:
             type: object
             properties:
@@ -668,6 +658,16 @@ components:
                 logInWithMicrosoftEnabled:
                     type: boolean
                 authDomain:
+                    type: string
+        RefreshRequest:
+            type: object
+            properties:
+                refreshToken:
+                    type: string
+        RefreshResponse:
+            type: object
+            properties:
+                accessToken:
                     type: string
         RevokeSCIMAPIKeyResponse:
             type: object

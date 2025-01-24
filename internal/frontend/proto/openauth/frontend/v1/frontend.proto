@@ -9,9 +9,9 @@ import "google/protobuf/timestamp.proto";
 import "google/protobuf/struct.proto";
 
 service FrontendService {
-  rpc GetAccessToken(GetAccessTokenRequest) returns (GetAccessTokenResponse) {
+  rpc Refresh(RefreshRequest) returns (RefreshResponse) {
     option (google.api.http) = {
-      post: "/frontend/v1/access-token",
+      post: "/frontend/v1/refresh",
       body: "*"
     };
   }
@@ -147,11 +147,11 @@ service FrontendService {
   }
 }
 
-message GetAccessTokenRequest {
+message RefreshRequest {
   string refresh_token = 1;
 }
 
-message GetAccessTokenResponse {
+message RefreshResponse {
   string access_token = 2;
 }
 
