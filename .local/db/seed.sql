@@ -2,11 +2,11 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 -- Create the Dogfood Project
 INSERT INTO projects (id, display_name, log_in_with_google_enabled, log_in_with_microsoft_enabled, log_in_with_password_enabled, auth_domain, custom_auth_domain)
-	VALUES ('56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2'::uuid, 'localhost', true, true, true, 'auth.app.tesseral.example.com', 'auth.app.tesseral.example.com');
+	VALUES ('56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2'::uuid, 'Tesseral Local', true, true, true, 'auth.app.tesseral.example.com', 'auth.app.tesseral.example.com');
 
 -- Create the Dogfood Organization
 INSERT INTO organizations (id, display_name, project_id, override_log_in_methods, saml_enabled, scim_enabled)
-  VALUES ('7a76decb-6d79-49ce-9449-34fcc53151df'::uuid, 'localhost', (SELECT id FROM projects LIMIT 1), false, true, false);
+  VALUES ('7a76decb-6d79-49ce-9449-34fcc53151df'::uuid, 'Tesseral Local', (SELECT id FROM projects LIMIT 1), false, true, false);
 
 -- Update the Dogfood Project
 UPDATE projects
@@ -14,7 +14,7 @@ UPDATE projects
 
 -- Create the Dogfood User
 INSERT INTO users (id, email, password_bcrypt, organization_id, is_owner)
-  VALUES (gen_random_uuid(), 'root@app.tesseral.example.com', crypt('this_is_a_very_sensitive_password_' || encode(gen_random_bytes(16), 'hex'), gen_salt('bf', 14)), (SELECT id FROM organizations LIMIT 1), true);
+  VALUES (gen_random_uuid(), 'root@app.tesseral.example.com', crypt('testpassword', gen_salt('bf', 14)), (SELECT id FROM organizations LIMIT 1), true);
 
 -- Create Project UI Settings
 INSERT INTO project_ui_settings (project_id)
