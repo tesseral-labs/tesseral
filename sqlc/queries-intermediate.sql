@@ -405,3 +405,23 @@ INSERT INTO organization_microsoft_tenant_ids (id, organization_id, microsoft_te
 RETURNING
     *;
 
+-- name: UpdateUserFailedPasswordAttempts :one
+UPDATE
+    users
+SET
+    failed_password_attempts = $1
+WHERE
+    id = $2
+RETURNING
+    *;
+
+-- name: UpdateUserPasswordLockoutExpireTime :one
+UPDATE
+    users
+SET
+    password_lockout_expire_time = $1
+WHERE
+    id = $2
+RETURNING
+    *;
+

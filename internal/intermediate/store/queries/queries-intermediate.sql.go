@@ -246,7 +246,7 @@ const createUser = `-- name: CreateUser :one
 INSERT INTO users (id, organization_id, email, google_user_id, microsoft_user_id, is_owner)
     VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time
 `
 
 type CreateUserParams struct {
@@ -279,6 +279,8 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.UpdateTime,
 		&i.DeactivateTime,
 		&i.IsOwner,
+		&i.FailedPasswordAttempts,
+		&i.PasswordLockoutExpireTime,
 	)
 	return i, err
 }
@@ -601,7 +603,7 @@ func (q *Queries) GetOrganizationPrimarySAMLConnection(ctx context.Context, orga
 
 const getOrganizationUserByEmail = `-- name: GetOrganizationUserByEmail :one
 SELECT
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time
 FROM
     users
 WHERE
@@ -628,13 +630,15 @@ func (q *Queries) GetOrganizationUserByEmail(ctx context.Context, arg GetOrganiz
 		&i.UpdateTime,
 		&i.DeactivateTime,
 		&i.IsOwner,
+		&i.FailedPasswordAttempts,
+		&i.PasswordLockoutExpireTime,
 	)
 	return i, err
 }
 
 const getOrganizationUserByGoogleUserID = `-- name: GetOrganizationUserByGoogleUserID :one
 SELECT
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time
 FROM
     users
 WHERE
@@ -661,13 +665,15 @@ func (q *Queries) GetOrganizationUserByGoogleUserID(ctx context.Context, arg Get
 		&i.UpdateTime,
 		&i.DeactivateTime,
 		&i.IsOwner,
+		&i.FailedPasswordAttempts,
+		&i.PasswordLockoutExpireTime,
 	)
 	return i, err
 }
 
 const getOrganizationUserByMicrosoftUserID = `-- name: GetOrganizationUserByMicrosoftUserID :one
 SELECT
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time
 FROM
     users
 WHERE
@@ -694,6 +700,8 @@ func (q *Queries) GetOrganizationUserByMicrosoftUserID(ctx context.Context, arg 
 		&i.UpdateTime,
 		&i.DeactivateTime,
 		&i.IsOwner,
+		&i.FailedPasswordAttempts,
+		&i.PasswordLockoutExpireTime,
 	)
 	return i, err
 }
@@ -825,7 +833,7 @@ func (q *Queries) GetSessionSigningKeysByProjectID(ctx context.Context, projectI
 
 const getUserByOrganizationIDAndFactors = `-- name: GetUserByOrganizationIDAndFactors :one
 SELECT
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time
 FROM
     users
 WHERE
@@ -861,6 +869,8 @@ func (q *Queries) GetUserByOrganizationIDAndFactors(ctx context.Context, arg Get
 		&i.UpdateTime,
 		&i.DeactivateTime,
 		&i.IsOwner,
+		&i.FailedPasswordAttempts,
+		&i.PasswordLockoutExpireTime,
 	)
 	return i, err
 }
@@ -1169,7 +1179,7 @@ func (q *Queries) ListSAMLOrganizations(ctx context.Context, arg ListSAMLOrganiz
 
 const listUsersByEmail = `-- name: ListUsersByEmail :many
 SELECT
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time
 FROM
     users
 WHERE
@@ -1196,6 +1206,8 @@ func (q *Queries) ListUsersByEmail(ctx context.Context, email string) ([]User, e
 			&i.UpdateTime,
 			&i.DeactivateTime,
 			&i.IsOwner,
+			&i.FailedPasswordAttempts,
+			&i.PasswordLockoutExpireTime,
 		); err != nil {
 			return nil, err
 		}
@@ -1517,6 +1529,78 @@ func (q *Queries) UpdateIntermediateSessionPasswordVerified(ctx context.Context,
 		&i.OrganizationID,
 		&i.UpdateTime,
 		&i.SecretTokenSha256,
+	)
+	return i, err
+}
+
+const updateUserFailedPasswordAttempts = `-- name: UpdateUserFailedPasswordAttempts :one
+UPDATE
+    users
+SET
+    failed_password_attempts = $1
+WHERE
+    id = $2
+RETURNING
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time
+`
+
+type UpdateUserFailedPasswordAttemptsParams struct {
+	FailedPasswordAttempts int32
+	ID                     uuid.UUID
+}
+
+func (q *Queries) UpdateUserFailedPasswordAttempts(ctx context.Context, arg UpdateUserFailedPasswordAttemptsParams) (User, error) {
+	row := q.db.QueryRow(ctx, updateUserFailedPasswordAttempts, arg.FailedPasswordAttempts, arg.ID)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.PasswordBcrypt,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+		&i.Email,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.DeactivateTime,
+		&i.IsOwner,
+		&i.FailedPasswordAttempts,
+		&i.PasswordLockoutExpireTime,
+	)
+	return i, err
+}
+
+const updateUserPasswordLockoutExpireTime = `-- name: UpdateUserPasswordLockoutExpireTime :one
+UPDATE
+    users
+SET
+    password_lockout_expire_time = $1
+WHERE
+    id = $2
+RETURNING
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time
+`
+
+type UpdateUserPasswordLockoutExpireTimeParams struct {
+	PasswordLockoutExpireTime *time.Time
+	ID                        uuid.UUID
+}
+
+func (q *Queries) UpdateUserPasswordLockoutExpireTime(ctx context.Context, arg UpdateUserPasswordLockoutExpireTimeParams) (User, error) {
+	row := q.db.QueryRow(ctx, updateUserPasswordLockoutExpireTime, arg.PasswordLockoutExpireTime, arg.ID)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.PasswordBcrypt,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+		&i.Email,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.DeactivateTime,
+		&i.IsOwner,
+		&i.FailedPasswordAttempts,
+		&i.PasswordLockoutExpireTime,
 	)
 	return i, err
 }

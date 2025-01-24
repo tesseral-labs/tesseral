@@ -88,7 +88,7 @@ const createUser = `-- name: CreateUser :one
 INSERT INTO users (id, organization_id, email, password_bcrypt, google_user_id, microsoft_user_id)
     VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time
 `
 
 type CreateUserParams struct {
@@ -121,6 +121,8 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.UpdateTime,
 		&i.DeactivateTime,
 		&i.IsOwner,
+		&i.FailedPasswordAttempts,
+		&i.PasswordLockoutExpireTime,
 	)
 	return i, err
 }
@@ -374,7 +376,7 @@ func (q *Queries) GetSessionSigningKeyPublicKey(ctx context.Context, arg GetSess
 
 const getUser = `-- name: GetUser :one
 SELECT
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time
 FROM
     users
 WHERE
@@ -401,13 +403,15 @@ func (q *Queries) GetUser(ctx context.Context, arg GetUserParams) (User, error) 
 		&i.UpdateTime,
 		&i.DeactivateTime,
 		&i.IsOwner,
+		&i.FailedPasswordAttempts,
+		&i.PasswordLockoutExpireTime,
 	)
 	return i, err
 }
 
 const getUserByID = `-- name: GetUserByID :one
 SELECT
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time
 FROM
     users
 WHERE
@@ -428,6 +432,8 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 		&i.UpdateTime,
 		&i.DeactivateTime,
 		&i.IsOwner,
+		&i.FailedPasswordAttempts,
+		&i.PasswordLockoutExpireTime,
 	)
 	return i, err
 }
@@ -528,7 +534,7 @@ func (q *Queries) ListSCIMAPIKeys(ctx context.Context, arg ListSCIMAPIKeysParams
 
 const listUsers = `-- name: ListUsers :many
 SELECT
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time
 FROM
     users
 WHERE
@@ -565,6 +571,8 @@ func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]User, e
 			&i.UpdateTime,
 			&i.DeactivateTime,
 			&i.IsOwner,
+			&i.FailedPasswordAttempts,
+			&i.PasswordLockoutExpireTime,
 		); err != nil {
 			return nil, err
 		}
@@ -611,7 +619,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time
 `
 
 type SetPasswordParams struct {
@@ -633,6 +641,8 @@ func (q *Queries) SetPassword(ctx context.Context, arg SetPasswordParams) (User,
 		&i.UpdateTime,
 		&i.DeactivateTime,
 		&i.IsOwner,
+		&i.FailedPasswordAttempts,
+		&i.PasswordLockoutExpireTime,
 	)
 	return i, err
 }
@@ -792,7 +802,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time
 `
 
 type UpdateUserParams struct {
@@ -814,6 +824,8 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 		&i.UpdateTime,
 		&i.DeactivateTime,
 		&i.IsOwner,
+		&i.FailedPasswordAttempts,
+		&i.PasswordLockoutExpireTime,
 	)
 	return i, err
 }

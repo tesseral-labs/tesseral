@@ -199,16 +199,18 @@ type SessionSigningKey struct {
 }
 
 type User struct {
-	ID              uuid.UUID
-	OrganizationID  uuid.UUID
-	PasswordBcrypt  *string
-	GoogleUserID    *string
-	MicrosoftUserID *string
-	Email           string
-	CreateTime      *time.Time
-	UpdateTime      *time.Time
-	DeactivateTime  *time.Time
-	IsOwner         bool
+	ID                        uuid.UUID
+	OrganizationID            uuid.UUID
+	PasswordBcrypt            *string
+	GoogleUserID              *string
+	MicrosoftUserID           *string
+	Email                     string
+	CreateTime                *time.Time
+	UpdateTime                *time.Time
+	DeactivateTime            *time.Time
+	IsOwner                   bool
+	FailedPasswordAttempts    int32
+	PasswordLockoutExpireTime *time.Time
 }
 
 type VerifiedEmail struct {
