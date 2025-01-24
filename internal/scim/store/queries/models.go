@@ -221,3 +221,13 @@ type User struct {
 	FailedPasswordAttempts    int32
 	PasswordLockoutExpireTime *time.Time
 }
+
+type UserImpersonationToken struct {
+	ID                uuid.UUID
+	ImpersonatorID    uuid.UUID
+	ImpersonatedID    uuid.UUID
+	CreateTime        *time.Time
+	ExpireTime        *time.Time
+	RedeemTime        *time.Time
+	SecretTokenSha256 []byte
+}

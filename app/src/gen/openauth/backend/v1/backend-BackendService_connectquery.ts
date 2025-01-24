@@ -188,3 +188,8 @@ export const deleteProjectAPIKey = BackendService.method.deleteProjectAPIKey;
  * @generated from rpc openauth.backend.v1.BackendService.RevokeProjectAPIKey
  */
 export const revokeProjectAPIKey = BackendService.method.revokeProjectAPIKey;
+
+/**
+ * @generated from rpc openauth.backend.v1.BackendService.CreateUserImpersonationToken
+ */
+export const createUserImpersonationToken = BackendService.method.createUserImpersonationToken;

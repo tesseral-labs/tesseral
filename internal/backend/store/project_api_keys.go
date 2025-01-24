@@ -245,16 +245,3 @@ func parseProjectAPIKey(qProjectAPIKey queries.ProjectApiKey) *backendv1.Project
 		Revoked:     qProjectAPIKey.SecretTokenSha256 == nil,
 	}
 }
-
-// validateIsDogfoodSession returns an error if the caller isn't a dogfood
-// session.
-//
-// The intention of this method is to allow endpoints to prevent themselves from
-// being called by project API keys.
-func validateIsDogfoodSession(ctx context.Context) error {
-	data := authn.GetContextData(ctx)
-	if data.DogfoodSession == nil {
-		return apierror.NewUnauthenticatedError("this endpoint cannot be invoked by project API keys", fmt.Errorf("non-dogfood session request"))
-	}
-	return nil
-}
