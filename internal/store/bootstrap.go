@@ -10,9 +10,11 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
+	"github.com/openauth/openauth/internal/bcryptcost"
 	"github.com/openauth/openauth/internal/crypto/ecdsa"
 	"github.com/openauth/openauth/internal/store/idformat"
 	"github.com/openauth/openauth/internal/store/queries"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type CreateDogfoodProjectResponse struct {
@@ -89,13 +91,14 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 	}
 
 	bootstrapUserPassword := fmt.Sprintf("this_is_a_very_sensitive_password_%s", hex.EncodeToString(randomBytes[:]))
-	bootstrapUserPasswordBcrypt, err := generateBcryptHash(bootstrapUserPassword)
+	bootstrapUserPasswordBcryptBytes, err := bcrypt.GenerateFromPassword([]byte(bootstrapUserPassword), bcryptcost.Cost)
 	if err != nil {
 		panic(fmt.Errorf("bcrypt bootstrap user password: %w", err))
 	}
 
 	// create the bootstrap user inside the dogfood organization
 	bootstrapUserEmail := "root@openauth.example.com"
+	bootstrapUserPasswordBcrypt := string(bootstrapUserPasswordBcryptBytes)
 	if _, err := q.CreateUser(ctx, queries.CreateUserParams{
 		ID:             uuid.New(),
 		OrganizationID: dogfoodOrganizationID,

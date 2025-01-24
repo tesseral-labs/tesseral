@@ -425,3 +425,13 @@ WHERE
 RETURNING
     *;
 
+-- name: UpdateUserPasswordBcrypt :one
+UPDATE
+    users
+SET
+    password_bcrypt = $1
+WHERE
+    id = $2
+RETURNING
+    *;
+

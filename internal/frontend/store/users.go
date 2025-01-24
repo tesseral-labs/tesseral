@@ -7,12 +7,13 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	"github.com/openauth/openauth/internal/bcryptcost"
 	"github.com/openauth/openauth/internal/common/apierror"
-	"github.com/openauth/openauth/internal/crypto/bcrypt"
 	"github.com/openauth/openauth/internal/frontend/authn"
 	frontendv1 "github.com/openauth/openauth/internal/frontend/gen/openauth/frontend/v1"
 	"github.com/openauth/openauth/internal/frontend/store/queries"
 	"github.com/openauth/openauth/internal/store/idformat"
+	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -23,11 +24,12 @@ func (s *Store) SetUserPassword(ctx context.Context, req *frontendv1.SetPassword
 	}
 	defer rollback()
 
-	passwordBcrypt, err := bcrypt.GenerateBcryptHash(req.Password)
+	passwordBcryptBytes, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcryptcost.Cost)
 	if err != nil {
 		return nil, apierror.NewFailedPreconditionError("could not generate password hash", fmt.Errorf("generate bcrypt hash: %w", err))
 	}
 
+	passwordBcrypt := string(passwordBcryptBytes)
 	if _, err = q.SetPassword(ctx, queries.SetPasswordParams{
 		ID:             authn.UserID(ctx),
 		PasswordBcrypt: &passwordBcrypt,
