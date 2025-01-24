@@ -2,7 +2,7 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 -- Create the Dogfood Project
 INSERT INTO projects (id, display_name, log_in_with_google_enabled, log_in_with_microsoft_enabled, log_in_with_password_enabled, auth_domain, custom_auth_domain)
-	VALUES ('56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2'::uuid, 'localhost', true, true, true, 'auth.app.tesseral.com', 'auth.app.tesseral.com');
+	VALUES ('56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2'::uuid, 'localhost', true, true, true, 'auth.app.tesseral.example.com', 'auth.app.tesseral.example.com');
 
 -- Create the Dogfood Organization
 INSERT INTO organizations (id, display_name, project_id, override_log_in_methods, saml_enabled, scim_enabled)
