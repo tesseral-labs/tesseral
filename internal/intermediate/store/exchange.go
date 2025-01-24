@@ -82,6 +82,11 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		return nil, err
 	}
 
+	// revoke the intermediate session
+	if _, err := q.RevokeIntermediateSession(ctx, qIntermediateSession.ID); err != nil {
+		return nil, fmt.Errorf("revoke intermediate session: %w", err)
+	}
+
 	if err := commit(); err != nil {
 		return nil, err
 	}
@@ -158,6 +163,16 @@ func (s *Store) ExchangeIntermediateSessionForNewOrganizationSession(ctx context
 		UserID:             qUser.ID,
 	}); err != nil {
 		return nil, err
+	}
+
+	// revoke the intermediate session
+	intermediateSessionUUID, err := idformat.IntermediateSession.Parse(intermediateSession.Id)
+	if err != nil {
+		panic(fmt.Errorf("parse intermediate session id: %w", err))
+	}
+
+	if _, err := q.RevokeIntermediateSession(ctx, intermediateSessionUUID); err != nil {
+		return nil, fmt.Errorf("revoke intermediate session: %w", err)
 	}
 
 	if err := commit(); err != nil {
