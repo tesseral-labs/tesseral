@@ -9,6 +9,9 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/sesv2"
+	"github.com/aws/aws-sdk-go-v2/service/sesv2/types"
 	"github.com/google/uuid"
 	"github.com/openauth/openauth/internal/common/apierror"
 	"github.com/openauth/openauth/internal/intermediate/authn"
@@ -61,8 +64,10 @@ func (s *Store) IssueEmailVerificationChallenge(ctx context.Context, req *interm
 		return nil, err
 	}
 
-	// TODO: Remove this log line and replace with email sending
-	slog.InfoContext(ctx, "TODO-REMOVEME-IssueEmailVerificationChallenge", "challenge", secretToken)
+	err = s.sendEmailVerificationChallenge(ctx, authn.IntermediateSession(ctx).Email, secretToken)
+	if err != nil {
+		return nil, fmt.Errorf("send email verification challenge: %w", err)
+	}
 
 	return &intermediatev1.IssueEmailVerificationChallengeResponse{
 		EmailVerificationChallengeId: idformat.EmailVerificationChallenge.Format(qEmailVerificationChallenge.ID),
@@ -119,4 +124,32 @@ func generateSecretToken() string {
 	randomNumber := rand.IntN(max-min+1) + min
 
 	return strconv.Itoa(randomNumber)
+}
+
+func (s *Store) sendEmailVerificationChallenge(ctx context.Context, email string, secretToken string) error {
+	output, err := s.ses.SendEmail(ctx, &sesv2.SendEmailInput{
+		Content: &types.EmailContent{
+			Simple: &types.Message{
+				Body: &types.Body{
+					Html: &types.Content{
+						Data: aws.String(fmt.Sprintf("<h2>Please verifiy your email address to continue logging in</h2><p>Your email verification code is: %s</p>", secretToken)),
+					},
+				},
+				Subject: &types.Content{
+					Data: aws.String("Verify your email address"),
+				},
+			},
+		},
+		Destination: &types.Destination{
+			ToAddresses: []string{email},
+		},
+		FromEmailAddress: aws.String("replace-me@tesseral.app"), // TODO: Replace with a real email address once verification is in place
+	})
+	if err != nil {
+		return fmt.Errorf("send email: %w", err)
+	}
+
+	slog.InfoContext(ctx, "sendEmailVerificationChallenge", "output", output)
+
+	return nil
 }
