@@ -11,7 +11,7 @@ import (
 )
 
 func (s *Service) GetAccessToken(ctx context.Context, req *connect.Request[frontendv1.GetAccessTokenRequest]) (*connect.Response[frontendv1.GetAccessTokenResponse], error) {
-	refreshToken, _ := cookies.GetCookie(ctx, req, "refreshToken", authn.ProjectID(ctx))
+	refreshToken, _ := cookies.GetRefreshToken(authn.ProjectID(ctx), req)
 	if refreshToken != "" {
 		req.Msg.RefreshToken = refreshToken
 	}
@@ -24,7 +24,7 @@ func (s *Service) GetAccessToken(ctx context.Context, req *connect.Request[front
 	connectRes := connect.NewResponse(&frontendv1.GetAccessTokenResponse{
 		AccessToken: accessToken,
 	})
-	connectRes.Header().Add("Set-Cookie", cookies.BuildCookie(ctx, req, "accessToken", accessToken, authn.ProjectID(ctx)))
+	connectRes.Header().Add("Set-Cookie", cookies.NewAccessToken(authn.ProjectID(ctx), accessToken))
 
 	return connectRes, nil
 }

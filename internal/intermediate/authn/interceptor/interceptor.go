@@ -40,7 +40,7 @@ func New(s *store.Store, p *projectid.Sniffer, authAppsRootDomain string) connec
 			}
 
 			// Enforce authentication if not skipping
-			secretValue, err := cookies.GetCookie(ctx, req, "intermediateAccessToken", *projectID)
+			secretValue, err := cookies.GetIntermediateAccessToken(*projectID, req)
 			if err != nil {
 				return nil, connect.NewError(connect.CodeUnauthenticated, err)
 			}
