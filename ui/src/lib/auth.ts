@@ -78,8 +78,10 @@ export const useSession = (): SessionAccessTokenClaims | undefined => {
     if (!refresh.isPending) {
       refresh.mutate(undefined, {
         onSuccess: (accessToken) => {
-          localStorage.setItem(`accessToken`, accessToken)
-          setAccessToken(accessToken)
+          if (accessToken) {
+            localStorage.setItem(`access_token`, accessToken)
+            setAccessToken(accessToken)
+          }
         },
       })
     }

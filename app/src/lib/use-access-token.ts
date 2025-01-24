@@ -20,7 +20,7 @@ export function useUser(): User | undefined {
 }
 
 export function useAccessToken(): string | undefined {
-  const [accessToken, setAccessToken] = useLocalStorage('accessToken')
+  const [accessToken, setAccessToken] = useLocalStorage('access_token')
   const refresh = useMutation({
     mutationKey: ['refresh'],
     mutationFn: async () => {
