@@ -47,7 +47,7 @@ RETURNING
     *;
 
 -- name: CreateVerifiedEmail :one
-INSERT INTO verified_emails (id, project_id, email, google_user_id, microsoft_user_id)
+INSERT INTO oauth_verified_emails (id, project_id, email, google_user_id, microsoft_user_id)
     VALUES ($1, $2, $3, $4, $5)
 RETURNING
     *;
@@ -191,7 +191,7 @@ WHERE
 SELECT
     count(*) > 0
 FROM
-    verified_emails
+    oauth_verified_emails
 WHERE
     project_id = $1
     AND email = $2
@@ -201,7 +201,7 @@ WHERE
 SELECT
     count(*) > 0
 FROM
-    verified_emails
+    oauth_verified_emails
 WHERE
     project_id = $1
     AND email = $2
@@ -364,7 +364,7 @@ SELECT
         SELECT
             *
         FROM
-            verified_emails
+            oauth_verified_emails
         WHERE
             project_id = $1
             AND email = $2
@@ -376,7 +376,7 @@ SELECT
         SELECT
             *
         FROM
-            verified_emails
+            oauth_verified_emails
         WHERE
             project_id = $1
             AND email = $2
@@ -420,6 +420,16 @@ UPDATE
     users
 SET
     password_lockout_expire_time = $1
+WHERE
+    id = $2
+RETURNING
+    *;
+
+-- name: UpdateUserPasswordBcrypt :one
+UPDATE
+    users
+SET
+    password_bcrypt = $1
 WHERE
     id = $2
 RETURNING

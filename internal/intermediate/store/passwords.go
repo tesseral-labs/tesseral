@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/openauth/openauth/internal/bcryptcost"
 	"github.com/openauth/openauth/internal/common/apierror"
 	"github.com/openauth/openauth/internal/intermediate/authn"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
@@ -131,6 +132,25 @@ func (s *Store) VerifyPassword(ctx context.Context, req *intermediatev1.VerifyPa
 		}
 
 		return nil, apierror.NewFailedPreconditionError("incorrect password", fmt.Errorf("bcrypt compare: %w", err))
+	}
+
+	// Re-write password back to database; this lets us progressively increase
+	// bcrypt costs over time.
+	//
+	// We could avoid these writes by checking the PasswordBcrypt using
+	// bcrypt.Cost, but for relatively small additional cost, not doing so
+	// reduces the complexity and number of paths through this code.
+	passwordBcryptBytes, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcryptcost.Cost)
+	if err != nil {
+		return nil, fmt.Errorf("generate bcrypt hash: %w", err)
+	}
+
+	passwordBcrypt := string(passwordBcryptBytes)
+	if _, err := q.UpdateUserPasswordBcrypt(ctx, queries.UpdateUserPasswordBcryptParams{
+		ID:             qMatchingUser.ID,
+		PasswordBcrypt: &passwordBcrypt,
+	}); err != nil {
+		return nil, fmt.Errorf("update user password bcrypt: %w", err)
 	}
 
 	if _, err := q.UpdateIntermediateSessionPasswordVerified(ctx, queries.UpdateIntermediateSessionPasswordVerifiedParams{
