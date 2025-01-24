@@ -1,0 +1,1 @@
+alter table verified_emails rename to oauth_verified_emails;
