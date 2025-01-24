@@ -152,17 +152,8 @@ service BackendService {
     };
   }
 
-  rpc RevokeAllOrganizationSessions(RevokeAllOrganizationSessionsRequest) returns (google.protobuf.Empty) {
-    option (google.api.http) = {
-      post: "/backend/v1/organizations/{id}/revoke-all-sessions"
-    };
-  }
-
-  rpc RevokeAllProjectSessions(RevokeAllProjectSessionsRequest) returns (google.protobuf.Empty) {
-    option (google.api.http) = {
-      post: "/backend/v1/projects/{id}/revoke-all-sessions"
-    };
-  }
+  rpc RevokeAllOrganizationSessions(RevokeAllOrganizationSessionsRequest) returns (google.protobuf.Empty) {}
+  rpc RevokeAllProjectSessions(RevokeAllProjectSessionsRequest) returns (google.protobuf.Empty) {}
 
   rpc UpdateProject(UpdateProjectRequest) returns (UpdateProjectResponse);
 

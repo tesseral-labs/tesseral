@@ -175,27 +175,6 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /backend/v1/organizations/{id}/revoke-all-sessions:
-        post:
-            tags:
-                - BackendService
-            operationId: BackendService_RevokeAllOrganizationSessions
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content: {}
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
     /backend/v1/project:
         get:
             tags:
@@ -208,27 +187,6 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/GetProjectResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-    /backend/v1/projects/{id}/revoke-all-sessions:
-        post:
-            tags:
-                - BackendService
-            operationId: BackendService_RevokeAllProjectSessions
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content: {}
                 default:
                     description: Default error response
                     content:
