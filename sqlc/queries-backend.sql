@@ -428,3 +428,39 @@ WHERE
 RETURNING
     *;
 
+-- name: RevokeAllOrganizationSessions :exec
+UPDATE
+    sessions
+SET
+    refresh_token_sha256 = NULL
+WHERE
+    user_id IN (
+        SELECT
+            id
+        FROM
+            users
+        WHERE
+            organization_id = $1)
+    AND expires_time > now();
+
+-- name: RevokeAllProjectSessions :exec
+UPDATE
+    sessions
+SET
+    refresh_token_sha256 = NULL
+WHERE
+    user_id IN (
+        SELECT
+            id
+        FROM
+            users
+        WHERE
+            organization_id IN (
+                SELECT
+                    id
+                FROM
+                    organizations
+                WHERE
+                    project_id = $1))
+        AND expires_time > now();
+

@@ -9,6 +9,7 @@ import (
 	context "context"
 	errors "errors"
 	v1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	http "net/http"
 	strings "strings"
 )
@@ -101,6 +102,12 @@ const (
 	// BackendServiceGetIntermediateSessionProcedure is the fully-qualified name of the BackendService's
 	// GetIntermediateSession RPC.
 	BackendServiceGetIntermediateSessionProcedure = "/openauth.backend.v1.BackendService/GetIntermediateSession"
+	// BackendServiceRevokeAllOrganizationSessionsProcedure is the fully-qualified name of the
+	// BackendService's RevokeAllOrganizationSessions RPC.
+	BackendServiceRevokeAllOrganizationSessionsProcedure = "/openauth.backend.v1.BackendService/RevokeAllOrganizationSessions"
+	// BackendServiceRevokeAllProjectSessionsProcedure is the fully-qualified name of the
+	// BackendService's RevokeAllProjectSessions RPC.
+	BackendServiceRevokeAllProjectSessionsProcedure = "/openauth.backend.v1.BackendService/RevokeAllProjectSessions"
 	// BackendServiceUpdateProjectProcedure is the fully-qualified name of the BackendService's
 	// UpdateProject RPC.
 	BackendServiceUpdateProjectProcedure = "/openauth.backend.v1.BackendService/UpdateProject"
@@ -170,6 +177,8 @@ type BackendServiceClient interface {
 	GetSession(context.Context, *connect.Request[v1.GetSessionRequest]) (*connect.Response[v1.GetSessionResponse], error)
 	ListIntermediateSessions(context.Context, *connect.Request[v1.ListIntermediateSessionsRequest]) (*connect.Response[v1.ListIntermediateSessionsResponse], error)
 	GetIntermediateSession(context.Context, *connect.Request[v1.GetIntermediateSessionRequest]) (*connect.Response[v1.GetIntermediateSessionResponse], error)
+	RevokeAllOrganizationSessions(context.Context, *connect.Request[v1.RevokeAllOrganizationSessionsRequest]) (*connect.Response[emptypb.Empty], error)
+	RevokeAllProjectSessions(context.Context, *connect.Request[v1.RevokeAllProjectSessionsRequest]) (*connect.Response[emptypb.Empty], error)
 	UpdateProject(context.Context, *connect.Request[v1.UpdateProjectRequest]) (*connect.Response[v1.UpdateProjectResponse], error)
 	CreateProjectRedirectURI(context.Context, *connect.Request[v1.CreateProjectRedirectURIRequest]) (*connect.Response[v1.CreateProjectRedirectURIResponse], error)
 	DeleteProjectRedirectURI(context.Context, *connect.Request[v1.DeleteProjectRedirectURIRequest]) (*connect.Response[v1.DeleteProjectRedirectURIResponse], error)
@@ -335,6 +344,18 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(backendServiceMethods.ByName("GetIntermediateSession")),
 			connect.WithClientOptions(opts...),
 		),
+		revokeAllOrganizationSessions: connect.NewClient[v1.RevokeAllOrganizationSessionsRequest, emptypb.Empty](
+			httpClient,
+			baseURL+BackendServiceRevokeAllOrganizationSessionsProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("RevokeAllOrganizationSessions")),
+			connect.WithClientOptions(opts...),
+		),
+		revokeAllProjectSessions: connect.NewClient[v1.RevokeAllProjectSessionsRequest, emptypb.Empty](
+			httpClient,
+			baseURL+BackendServiceRevokeAllProjectSessionsProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("RevokeAllProjectSessions")),
+			connect.WithClientOptions(opts...),
+		),
 		updateProject: connect.NewClient[v1.UpdateProjectRequest, v1.UpdateProjectResponse](
 			httpClient,
 			baseURL+BackendServiceUpdateProjectProcedure,
@@ -424,43 +445,45 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 
 // backendServiceClient implements BackendServiceClient.
 type backendServiceClient struct {
-	getProject               *connect.Client[v1.GetProjectRequest, v1.GetProjectResponse]
-	listOrganizations        *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
-	getOrganization          *connect.Client[v1.GetOrganizationRequest, v1.GetOrganizationResponse]
-	createOrganization       *connect.Client[v1.CreateOrganizationRequest, v1.CreateOrganizationResponse]
-	updateOrganization       *connect.Client[v1.UpdateOrganizationRequest, v1.UpdateOrganizationResponse]
-	deleteOrganization       *connect.Client[v1.DeleteOrganizationRequest, v1.DeleteOrganizationResponse]
-	listSAMLConnections      *connect.Client[v1.ListSAMLConnectionsRequest, v1.ListSAMLConnectionsResponse]
-	getSAMLConnection        *connect.Client[v1.GetSAMLConnectionRequest, v1.GetSAMLConnectionResponse]
-	createSAMLConnection     *connect.Client[v1.CreateSAMLConnectionRequest, v1.CreateSAMLConnectionResponse]
-	updateSAMLConnection     *connect.Client[v1.UpdateSAMLConnectionRequest, v1.UpdateSAMLConnectionResponse]
-	deleteSAMLConnection     *connect.Client[v1.DeleteSAMLConnectionRequest, v1.DeleteSAMLConnectionResponse]
-	listSCIMAPIKeys          *connect.Client[v1.ListSCIMAPIKeysRequest, v1.ListSCIMAPIKeysResponse]
-	getSCIMAPIKey            *connect.Client[v1.GetSCIMAPIKeyRequest, v1.GetSCIMAPIKeyResponse]
-	createSCIMAPIKey         *connect.Client[v1.CreateSCIMAPIKeyRequest, v1.CreateSCIMAPIKeyResponse]
-	updateSCIMAPIKey         *connect.Client[v1.UpdateSCIMAPIKeyRequest, v1.UpdateSCIMAPIKeyResponse]
-	deleteSCIMAPIKey         *connect.Client[v1.DeleteSCIMAPIKeyRequest, v1.DeleteSCIMAPIKeyResponse]
-	revokeSCIMAPIKey         *connect.Client[v1.RevokeSCIMAPIKeyRequest, v1.RevokeSCIMAPIKeyResponse]
-	listUsers                *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
-	getUser                  *connect.Client[v1.GetUserRequest, v1.GetUserResponse]
-	listSessions             *connect.Client[v1.ListSessionsRequest, v1.ListSessionsResponse]
-	getSession               *connect.Client[v1.GetSessionRequest, v1.GetSessionResponse]
-	listIntermediateSessions *connect.Client[v1.ListIntermediateSessionsRequest, v1.ListIntermediateSessionsResponse]
-	getIntermediateSession   *connect.Client[v1.GetIntermediateSessionRequest, v1.GetIntermediateSessionResponse]
-	updateProject            *connect.Client[v1.UpdateProjectRequest, v1.UpdateProjectResponse]
-	createProjectRedirectURI *connect.Client[v1.CreateProjectRedirectURIRequest, v1.CreateProjectRedirectURIResponse]
-	deleteProjectRedirectURI *connect.Client[v1.DeleteProjectRedirectURIRequest, v1.DeleteProjectRedirectURIResponse]
-	getProjectRedirectURI    *connect.Client[v1.GetProjectRedirectURIRequest, v1.GetProjectRedirectURIResponse]
-	listProjectRedirectURIs  *connect.Client[v1.ListProjectRedirectURIsRequest, v1.ListProjectRedirectURIsResponse]
-	updateProjectRedirectURI *connect.Client[v1.UpdateProjectRedirectURIRequest, v1.UpdateProjectRedirectURIResponse]
-	getProjectUISettings     *connect.Client[v1.GetProjectUISettingsRequest, v1.GetProjectUISettingsResponse]
-	updateProjectUISettings  *connect.Client[v1.UpdateProjectUISettingsRequest, v1.UpdateProjectUISettingsResponse]
-	listProjectAPIKeys       *connect.Client[v1.ListProjectAPIKeysRequest, v1.ListProjectAPIKeysResponse]
-	getProjectAPIKey         *connect.Client[v1.GetProjectAPIKeyRequest, v1.GetProjectAPIKeyResponse]
-	createProjectAPIKey      *connect.Client[v1.CreateProjectAPIKeyRequest, v1.CreateProjectAPIKeyResponse]
-	updateProjectAPIKey      *connect.Client[v1.UpdateProjectAPIKeyRequest, v1.UpdateProjectAPIKeyResponse]
-	deleteProjectAPIKey      *connect.Client[v1.DeleteProjectAPIKeyRequest, v1.DeleteProjectAPIKeyResponse]
-	revokeProjectAPIKey      *connect.Client[v1.RevokeProjectAPIKeyRequest, v1.RevokeProjectAPIKeyResponse]
+	getProject                    *connect.Client[v1.GetProjectRequest, v1.GetProjectResponse]
+	listOrganizations             *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
+	getOrganization               *connect.Client[v1.GetOrganizationRequest, v1.GetOrganizationResponse]
+	createOrganization            *connect.Client[v1.CreateOrganizationRequest, v1.CreateOrganizationResponse]
+	updateOrganization            *connect.Client[v1.UpdateOrganizationRequest, v1.UpdateOrganizationResponse]
+	deleteOrganization            *connect.Client[v1.DeleteOrganizationRequest, v1.DeleteOrganizationResponse]
+	listSAMLConnections           *connect.Client[v1.ListSAMLConnectionsRequest, v1.ListSAMLConnectionsResponse]
+	getSAMLConnection             *connect.Client[v1.GetSAMLConnectionRequest, v1.GetSAMLConnectionResponse]
+	createSAMLConnection          *connect.Client[v1.CreateSAMLConnectionRequest, v1.CreateSAMLConnectionResponse]
+	updateSAMLConnection          *connect.Client[v1.UpdateSAMLConnectionRequest, v1.UpdateSAMLConnectionResponse]
+	deleteSAMLConnection          *connect.Client[v1.DeleteSAMLConnectionRequest, v1.DeleteSAMLConnectionResponse]
+	listSCIMAPIKeys               *connect.Client[v1.ListSCIMAPIKeysRequest, v1.ListSCIMAPIKeysResponse]
+	getSCIMAPIKey                 *connect.Client[v1.GetSCIMAPIKeyRequest, v1.GetSCIMAPIKeyResponse]
+	createSCIMAPIKey              *connect.Client[v1.CreateSCIMAPIKeyRequest, v1.CreateSCIMAPIKeyResponse]
+	updateSCIMAPIKey              *connect.Client[v1.UpdateSCIMAPIKeyRequest, v1.UpdateSCIMAPIKeyResponse]
+	deleteSCIMAPIKey              *connect.Client[v1.DeleteSCIMAPIKeyRequest, v1.DeleteSCIMAPIKeyResponse]
+	revokeSCIMAPIKey              *connect.Client[v1.RevokeSCIMAPIKeyRequest, v1.RevokeSCIMAPIKeyResponse]
+	listUsers                     *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
+	getUser                       *connect.Client[v1.GetUserRequest, v1.GetUserResponse]
+	listSessions                  *connect.Client[v1.ListSessionsRequest, v1.ListSessionsResponse]
+	getSession                    *connect.Client[v1.GetSessionRequest, v1.GetSessionResponse]
+	listIntermediateSessions      *connect.Client[v1.ListIntermediateSessionsRequest, v1.ListIntermediateSessionsResponse]
+	getIntermediateSession        *connect.Client[v1.GetIntermediateSessionRequest, v1.GetIntermediateSessionResponse]
+	revokeAllOrganizationSessions *connect.Client[v1.RevokeAllOrganizationSessionsRequest, emptypb.Empty]
+	revokeAllProjectSessions      *connect.Client[v1.RevokeAllProjectSessionsRequest, emptypb.Empty]
+	updateProject                 *connect.Client[v1.UpdateProjectRequest, v1.UpdateProjectResponse]
+	createProjectRedirectURI      *connect.Client[v1.CreateProjectRedirectURIRequest, v1.CreateProjectRedirectURIResponse]
+	deleteProjectRedirectURI      *connect.Client[v1.DeleteProjectRedirectURIRequest, v1.DeleteProjectRedirectURIResponse]
+	getProjectRedirectURI         *connect.Client[v1.GetProjectRedirectURIRequest, v1.GetProjectRedirectURIResponse]
+	listProjectRedirectURIs       *connect.Client[v1.ListProjectRedirectURIsRequest, v1.ListProjectRedirectURIsResponse]
+	updateProjectRedirectURI      *connect.Client[v1.UpdateProjectRedirectURIRequest, v1.UpdateProjectRedirectURIResponse]
+	getProjectUISettings          *connect.Client[v1.GetProjectUISettingsRequest, v1.GetProjectUISettingsResponse]
+	updateProjectUISettings       *connect.Client[v1.UpdateProjectUISettingsRequest, v1.UpdateProjectUISettingsResponse]
+	listProjectAPIKeys            *connect.Client[v1.ListProjectAPIKeysRequest, v1.ListProjectAPIKeysResponse]
+	getProjectAPIKey              *connect.Client[v1.GetProjectAPIKeyRequest, v1.GetProjectAPIKeyResponse]
+	createProjectAPIKey           *connect.Client[v1.CreateProjectAPIKeyRequest, v1.CreateProjectAPIKeyResponse]
+	updateProjectAPIKey           *connect.Client[v1.UpdateProjectAPIKeyRequest, v1.UpdateProjectAPIKeyResponse]
+	deleteProjectAPIKey           *connect.Client[v1.DeleteProjectAPIKeyRequest, v1.DeleteProjectAPIKeyResponse]
+	revokeProjectAPIKey           *connect.Client[v1.RevokeProjectAPIKeyRequest, v1.RevokeProjectAPIKeyResponse]
 }
 
 // GetProject calls openauth.backend.v1.BackendService.GetProject.
@@ -578,6 +601,17 @@ func (c *backendServiceClient) GetIntermediateSession(ctx context.Context, req *
 	return c.getIntermediateSession.CallUnary(ctx, req)
 }
 
+// RevokeAllOrganizationSessions calls
+// openauth.backend.v1.BackendService.RevokeAllOrganizationSessions.
+func (c *backendServiceClient) RevokeAllOrganizationSessions(ctx context.Context, req *connect.Request[v1.RevokeAllOrganizationSessionsRequest]) (*connect.Response[emptypb.Empty], error) {
+	return c.revokeAllOrganizationSessions.CallUnary(ctx, req)
+}
+
+// RevokeAllProjectSessions calls openauth.backend.v1.BackendService.RevokeAllProjectSessions.
+func (c *backendServiceClient) RevokeAllProjectSessions(ctx context.Context, req *connect.Request[v1.RevokeAllProjectSessionsRequest]) (*connect.Response[emptypb.Empty], error) {
+	return c.revokeAllProjectSessions.CallUnary(ctx, req)
+}
+
 // UpdateProject calls openauth.backend.v1.BackendService.UpdateProject.
 func (c *backendServiceClient) UpdateProject(ctx context.Context, req *connect.Request[v1.UpdateProjectRequest]) (*connect.Response[v1.UpdateProjectResponse], error) {
 	return c.updateProject.CallUnary(ctx, req)
@@ -673,6 +707,8 @@ type BackendServiceHandler interface {
 	GetSession(context.Context, *connect.Request[v1.GetSessionRequest]) (*connect.Response[v1.GetSessionResponse], error)
 	ListIntermediateSessions(context.Context, *connect.Request[v1.ListIntermediateSessionsRequest]) (*connect.Response[v1.ListIntermediateSessionsResponse], error)
 	GetIntermediateSession(context.Context, *connect.Request[v1.GetIntermediateSessionRequest]) (*connect.Response[v1.GetIntermediateSessionResponse], error)
+	RevokeAllOrganizationSessions(context.Context, *connect.Request[v1.RevokeAllOrganizationSessionsRequest]) (*connect.Response[emptypb.Empty], error)
+	RevokeAllProjectSessions(context.Context, *connect.Request[v1.RevokeAllProjectSessionsRequest]) (*connect.Response[emptypb.Empty], error)
 	UpdateProject(context.Context, *connect.Request[v1.UpdateProjectRequest]) (*connect.Response[v1.UpdateProjectResponse], error)
 	CreateProjectRedirectURI(context.Context, *connect.Request[v1.CreateProjectRedirectURIRequest]) (*connect.Response[v1.CreateProjectRedirectURIResponse], error)
 	DeleteProjectRedirectURI(context.Context, *connect.Request[v1.DeleteProjectRedirectURIRequest]) (*connect.Response[v1.DeleteProjectRedirectURIResponse], error)
@@ -834,6 +870,18 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		connect.WithSchema(backendServiceMethods.ByName("GetIntermediateSession")),
 		connect.WithHandlerOptions(opts...),
 	)
+	backendServiceRevokeAllOrganizationSessionsHandler := connect.NewUnaryHandler(
+		BackendServiceRevokeAllOrganizationSessionsProcedure,
+		svc.RevokeAllOrganizationSessions,
+		connect.WithSchema(backendServiceMethods.ByName("RevokeAllOrganizationSessions")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceRevokeAllProjectSessionsHandler := connect.NewUnaryHandler(
+		BackendServiceRevokeAllProjectSessionsProcedure,
+		svc.RevokeAllProjectSessions,
+		connect.WithSchema(backendServiceMethods.ByName("RevokeAllProjectSessions")),
+		connect.WithHandlerOptions(opts...),
+	)
 	backendServiceUpdateProjectHandler := connect.NewUnaryHandler(
 		BackendServiceUpdateProjectProcedure,
 		svc.UpdateProject,
@@ -966,6 +1014,10 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceListIntermediateSessionsHandler.ServeHTTP(w, r)
 		case BackendServiceGetIntermediateSessionProcedure:
 			backendServiceGetIntermediateSessionHandler.ServeHTTP(w, r)
+		case BackendServiceRevokeAllOrganizationSessionsProcedure:
+			backendServiceRevokeAllOrganizationSessionsHandler.ServeHTTP(w, r)
+		case BackendServiceRevokeAllProjectSessionsProcedure:
+			backendServiceRevokeAllProjectSessionsHandler.ServeHTTP(w, r)
 		case BackendServiceUpdateProjectProcedure:
 			backendServiceUpdateProjectHandler.ServeHTTP(w, r)
 		case BackendServiceCreateProjectRedirectURIProcedure:
@@ -1093,6 +1145,14 @@ func (UnimplementedBackendServiceHandler) ListIntermediateSessions(context.Conte
 
 func (UnimplementedBackendServiceHandler) GetIntermediateSession(context.Context, *connect.Request[v1.GetIntermediateSessionRequest]) (*connect.Response[v1.GetIntermediateSessionResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetIntermediateSession is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) RevokeAllOrganizationSessions(context.Context, *connect.Request[v1.RevokeAllOrganizationSessionsRequest]) (*connect.Response[emptypb.Empty], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.RevokeAllOrganizationSessions is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) RevokeAllProjectSessions(context.Context, *connect.Request[v1.RevokeAllProjectSessionsRequest]) (*connect.Response[emptypb.Empty], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.RevokeAllProjectSessions is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) UpdateProject(context.Context, *connect.Request[v1.UpdateProjectRequest]) (*connect.Response[v1.UpdateProjectResponse], error) {

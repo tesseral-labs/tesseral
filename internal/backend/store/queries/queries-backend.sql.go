@@ -1048,6 +1048,54 @@ func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]User, e
 	return items, nil
 }
 
+const revokeAllOrganizationSessions = `-- name: RevokeAllOrganizationSessions :exec
+UPDATE
+    sessions
+SET
+    refresh_token_sha256 = NULL
+WHERE
+    user_id IN (
+        SELECT
+            id
+        FROM
+            users
+        WHERE
+            organization_id = $1)
+    AND expires_time > now()
+`
+
+func (q *Queries) RevokeAllOrganizationSessions(ctx context.Context, organizationID uuid.UUID) error {
+	_, err := q.db.Exec(ctx, revokeAllOrganizationSessions, organizationID)
+	return err
+}
+
+const revokeAllProjectSessions = `-- name: RevokeAllProjectSessions :exec
+UPDATE
+    sessions
+SET
+    refresh_token_sha256 = NULL
+WHERE
+    user_id IN (
+        SELECT
+            id
+        FROM
+            users
+        WHERE
+            organization_id IN (
+                SELECT
+                    id
+                FROM
+                    organizations
+                WHERE
+                    project_id = $1))
+        AND expires_time > now()
+`
+
+func (q *Queries) RevokeAllProjectSessions(ctx context.Context, projectID uuid.UUID) error {
+	_, err := q.db.Exec(ctx, revokeAllProjectSessions, projectID)
+	return err
+}
+
 const revokeProjectAPIKey = `-- name: RevokeProjectAPIKey :one
 UPDATE
     project_api_keys

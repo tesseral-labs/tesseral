@@ -120,6 +120,16 @@ export const listIntermediateSessions = BackendService.method.listIntermediateSe
 export const getIntermediateSession = BackendService.method.getIntermediateSession;
 
 /**
+ * @generated from rpc openauth.backend.v1.BackendService.RevokeAllOrganizationSessions
+ */
+export const revokeAllOrganizationSessions = BackendService.method.revokeAllOrganizationSessions;
+
+/**
+ * @generated from rpc openauth.backend.v1.BackendService.RevokeAllProjectSessions
+ */
+export const revokeAllProjectSessions = BackendService.method.revokeAllProjectSessions;
+
+/**
  * @generated from rpc openauth.backend.v1.BackendService.UpdateProject
  */
 export const updateProject = BackendService.method.updateProject;

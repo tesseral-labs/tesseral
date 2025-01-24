@@ -12,6 +12,7 @@ import (
 	"github.com/openauth/openauth/internal/backend/store/queries"
 	"github.com/openauth/openauth/internal/common/apierror"
 	"github.com/openauth/openauth/internal/store/idformat"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 func (s *Store) ListSessions(ctx context.Context, req *backendv1.ListSessionsRequest) (*backendv1.ListSessionsResponse, error) {
@@ -95,6 +96,78 @@ func (s *Store) GetSession(ctx context.Context, req *backendv1.GetSessionRequest
 	}
 
 	return &backendv1.GetSessionResponse{Session: parseSession(qSession)}, nil
+}
+
+func (s *Store) RevokeAllOrganizationSessions(ctx context.Context, req *backendv1.RevokeAllOrganizationSessionsRequest) (*emptypb.Empty, error) {
+	err := validateIsDogfoodSession(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	}
+
+	_, q, _, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	authn.ProjectID(ctx)
+
+	organizationID, err := idformat.Organization.Parse(req.Id)
+	if err != nil {
+		return nil, apierror.NewInvalidArgumentError("invalid organization id", fmt.Errorf("parse organization id: %w", err))
+	}
+
+	// Ensure that the organization exists on the currently authed project
+	_, err = q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
+		ProjectID: authn.ProjectID(ctx),
+		ID:        organizationID,
+	})
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("organization not found", fmt.Errorf("get organization by project id and id: %w", err))
+		}
+
+		return nil, fmt.Errorf("get organization: %w", err)
+	}
+
+	// Kill all of the sessions
+	err = q.RevokeAllOrganizationSessions(ctx, organizationID)
+	if err != nil {
+		return nil, fmt.Errorf("revoke all organization sessions: %w", err)
+	}
+
+	return &emptypb.Empty{}, nil
+}
+
+func (s *Store) RevokeAllProjectSessions(ctx context.Context, req *backendv1.RevokeAllProjectSessionsRequest) (*emptypb.Empty, error) {
+	err := validateIsDogfoodSession(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	}
+
+	_, q, _, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	projectID, err := idformat.Project.Parse(req.Id)
+	if err != nil {
+		return nil, apierror.NewInvalidArgumentError("invalid project id", fmt.Errorf("parse project id: %w", err))
+	}
+
+	// Ensure that the project id matches the currently authed project
+	if projectID != authn.ProjectID(ctx) {
+		return nil, apierror.NewPermissionDeniedError("project id mismatch", fmt.Errorf("project id mismatch"))
+	}
+
+	// Kill all of the sessions
+	err = q.RevokeAllProjectSessions(ctx, projectID)
+	if err != nil {
+		return nil, fmt.Errorf("revoke all project sessions: %w", err)
+	}
+
+	return &emptypb.Empty{}, nil
 }
 
 func parseSession(qSession queries.Session) *backendv1.Session {

@@ -152,6 +152,18 @@ service BackendService {
     };
   }
 
+  rpc RevokeAllOrganizationSessions(RevokeAllOrganizationSessionsRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/backend/v1/organizations/{id}/revoke-all-sessions"
+    };
+  }
+
+  rpc RevokeAllProjectSessions(RevokeAllProjectSessionsRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/backend/v1/projects/{id}/revoke-all-sessions"
+    };
+  }
+
   rpc UpdateProject(UpdateProjectRequest) returns (UpdateProjectResponse);
 
   rpc CreateProjectRedirectURI(CreateProjectRedirectURIRequest) returns (CreateProjectRedirectURIResponse) {}
@@ -491,6 +503,14 @@ message UpdateProjectUISettingsResponse {
   string dark_mode_primary_color = 8;
   bool detect_dark_mode_enabled = 9;
   string primary_color = 10;
+}
+
+message RevokeAllOrganizationSessionsRequest {
+  string id = 1;
+}
+
+message RevokeAllProjectSessionsRequest {
+  string id = 1;
 }
 
 message ImageUploadRequest {
