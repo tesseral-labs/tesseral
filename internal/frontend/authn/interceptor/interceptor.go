@@ -16,7 +16,7 @@ import (
 )
 
 var skipRPCs = []string{
-	"/openauth.frontend.v1.FrontendService/GetAccessToken",
+	"/openauth.frontend.v1.FrontendService/Refresh",
 }
 
 func New(s *store.Store, p *projectid.Sniffer, authAppsRootDomain string) connect.UnaryInterceptorFunc {

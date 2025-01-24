@@ -70,6 +70,8 @@ func (s *Store) IssueEmailVerificationChallenge(ctx context.Context, req *interm
 }
 
 func (s *Store) VerifyEmailChallenge(ctx context.Context, req *intermediatev1.VerifyEmailChallengeRequest) (*intermediatev1.VerifyEmailChallengeResponse, error) {
+	intermediateSession := authn.IntermediateSession(ctx)
+
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -89,14 +91,16 @@ func (s *Store) VerifyEmailChallenge(ctx context.Context, req *intermediatev1.Ve
 		return nil, fmt.Errorf("complete email verification challenge: %w", err)
 	}
 
-	if _, err := q.CreateVerifiedEmail(ctx, queries.CreateVerifiedEmailParams{
-		ID:              uuid.New(),
-		ProjectID:       authn.ProjectID(ctx),
-		Email:           authn.IntermediateSession(ctx).Email,
-		GoogleUserID:    refOrNil(authn.IntermediateSession(ctx).GoogleUserId),
-		MicrosoftUserID: refOrNil(authn.IntermediateSession(ctx).MicrosoftUserId),
-	}); err != nil {
-		return nil, fmt.Errorf("create verified email: %w", err)
+	if intermediateSession.GoogleUserId != "" || intermediateSession.MicrosoftUserId != "" {
+		if _, err := q.CreateVerifiedEmail(ctx, queries.CreateVerifiedEmailParams{
+			ID:              uuid.New(),
+			ProjectID:       authn.ProjectID(ctx),
+			Email:           authn.IntermediateSession(ctx).Email,
+			GoogleUserID:    refOrNil(intermediateSession.GoogleUserId),
+			MicrosoftUserID: refOrNil(intermediateSession.MicrosoftUserId),
+		}); err != nil {
+			return nil, fmt.Errorf("create verified email: %w", err)
+		}
 	}
 
 	if err := commit(); err != nil {

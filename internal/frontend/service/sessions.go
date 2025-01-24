@@ -10,7 +10,7 @@ import (
 	frontendv1 "github.com/openauth/openauth/internal/frontend/gen/openauth/frontend/v1"
 )
 
-func (s *Service) GetAccessToken(ctx context.Context, req *connect.Request[frontendv1.GetAccessTokenRequest]) (*connect.Response[frontendv1.GetAccessTokenResponse], error) {
+func (s *Service) Refresh(ctx context.Context, req *connect.Request[frontendv1.RefreshRequest]) (*connect.Response[frontendv1.RefreshResponse], error) {
 	refreshToken, _ := cookies.GetRefreshToken(authn.ProjectID(ctx), req)
 	if refreshToken != "" {
 		req.Msg.RefreshToken = refreshToken
@@ -21,7 +21,7 @@ func (s *Service) GetAccessToken(ctx context.Context, req *connect.Request[front
 		return nil, fmt.Errorf("store: %w", err)
 	}
 
-	connectRes := connect.NewResponse(&frontendv1.GetAccessTokenResponse{
+	connectRes := connect.NewResponse(&frontendv1.RefreshResponse{
 		AccessToken: accessToken,
 	})
 	connectRes.Header().Add("Set-Cookie", cookies.NewAccessToken(authn.ProjectID(ctx), accessToken))

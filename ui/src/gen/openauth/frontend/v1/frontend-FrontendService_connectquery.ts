@@ -5,9 +5,9 @@
 import { FrontendService } from "./frontend_pb";
 
 /**
- * @generated from rpc openauth.frontend.v1.FrontendService.GetAccessToken
+ * @generated from rpc openauth.frontend.v1.FrontendService.Refresh
  */
-export const getAccessToken = FrontendService.method.getAccessToken;
+export const refresh = FrontendService.method.refresh;
 
 /**
  * @generated from rpc openauth.frontend.v1.FrontendService.GetProject

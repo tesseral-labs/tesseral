@@ -19,7 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	FrontendService_GetAccessToken_FullMethodName       = "/openauth.frontend.v1.FrontendService/GetAccessToken"
+	FrontendService_Refresh_FullMethodName              = "/openauth.frontend.v1.FrontendService/Refresh"
 	FrontendService_GetProject_FullMethodName           = "/openauth.frontend.v1.FrontendService/GetProject"
 	FrontendService_GetOrganization_FullMethodName      = "/openauth.frontend.v1.FrontendService/GetOrganization"
 	FrontendService_UpdateOrganization_FullMethodName   = "/openauth.frontend.v1.FrontendService/UpdateOrganization"
@@ -46,7 +46,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type FrontendServiceClient interface {
-	GetAccessToken(ctx context.Context, in *GetAccessTokenRequest, opts ...grpc.CallOption) (*GetAccessTokenResponse, error)
+	Refresh(ctx context.Context, in *RefreshRequest, opts ...grpc.CallOption) (*RefreshResponse, error)
 	GetProject(ctx context.Context, in *GetProjectRequest, opts ...grpc.CallOption) (*GetProjectResponse, error)
 	GetOrganization(ctx context.Context, in *GetOrganizationRequest, opts ...grpc.CallOption) (*GetOrganizationResponse, error)
 	UpdateOrganization(ctx context.Context, in *UpdateOrganizationRequest, opts ...grpc.CallOption) (*UpdateOrganizationResponse, error)
@@ -80,10 +80,10 @@ func NewFrontendServiceClient(cc grpc.ClientConnInterface) FrontendServiceClient
 	return &frontendServiceClient{cc}
 }
 
-func (c *frontendServiceClient) GetAccessToken(ctx context.Context, in *GetAccessTokenRequest, opts ...grpc.CallOption) (*GetAccessTokenResponse, error) {
+func (c *frontendServiceClient) Refresh(ctx context.Context, in *RefreshRequest, opts ...grpc.CallOption) (*RefreshResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetAccessTokenResponse)
-	err := c.cc.Invoke(ctx, FrontendService_GetAccessToken_FullMethodName, in, out, cOpts...)
+	out := new(RefreshResponse)
+	err := c.cc.Invoke(ctx, FrontendService_Refresh_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -294,7 +294,7 @@ func (c *frontendServiceClient) RevokeSCIMAPIKey(ctx context.Context, in *Revoke
 // All implementations must embed UnimplementedFrontendServiceServer
 // for forward compatibility.
 type FrontendServiceServer interface {
-	GetAccessToken(context.Context, *GetAccessTokenRequest) (*GetAccessTokenResponse, error)
+	Refresh(context.Context, *RefreshRequest) (*RefreshResponse, error)
 	GetProject(context.Context, *GetProjectRequest) (*GetProjectResponse, error)
 	GetOrganization(context.Context, *GetOrganizationRequest) (*GetOrganizationResponse, error)
 	UpdateOrganization(context.Context, *UpdateOrganizationRequest) (*UpdateOrganizationResponse, error)
@@ -328,8 +328,8 @@ type FrontendServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedFrontendServiceServer struct{}
 
-func (UnimplementedFrontendServiceServer) GetAccessToken(context.Context, *GetAccessTokenRequest) (*GetAccessTokenResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAccessToken not implemented")
+func (UnimplementedFrontendServiceServer) Refresh(context.Context, *RefreshRequest) (*RefreshResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Refresh not implemented")
 }
 func (UnimplementedFrontendServiceServer) GetProject(context.Context, *GetProjectRequest) (*GetProjectResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetProject not implemented")
@@ -412,20 +412,20 @@ func RegisterFrontendServiceServer(s grpc.ServiceRegistrar, srv FrontendServiceS
 	s.RegisterService(&FrontendService_ServiceDesc, srv)
 }
 
-func _FrontendService_GetAccessToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetAccessTokenRequest)
+func _FrontendService_Refresh_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RefreshRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(FrontendServiceServer).GetAccessToken(ctx, in)
+		return srv.(FrontendServiceServer).Refresh(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: FrontendService_GetAccessToken_FullMethodName,
+		FullMethod: FrontendService_Refresh_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(FrontendServiceServer).GetAccessToken(ctx, req.(*GetAccessTokenRequest))
+		return srv.(FrontendServiceServer).Refresh(ctx, req.(*RefreshRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -798,8 +798,8 @@ var FrontendService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*FrontendServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetAccessToken",
-			Handler:    _FrontendService_GetAccessToken_Handler,
+			MethodName: "Refresh",
+			Handler:    _FrontendService_Refresh_Handler,
 		},
 		{
 			MethodName: "GetProject",

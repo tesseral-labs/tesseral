@@ -27,6 +27,7 @@ func newCookie(name string, maxAge time.Duration, projectID uuid.UUID, value str
 		Name:     fmt.Sprintf("tesseral_%s_%s", idformat.Project.Format(projectID), name),
 		Value:    value,
 		MaxAge:   int(maxAge.Seconds()),
+		Path:     "/",
 		Secure:   true,
 		HttpOnly: true,
 	}
