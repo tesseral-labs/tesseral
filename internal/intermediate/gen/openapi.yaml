@@ -389,6 +389,8 @@ components:
                     type: string
                 passwordVerified:
                     type: boolean
+                organizationId:
+                    type: string
         IssueEmailVerificationChallengeRequest:
             type: object
             properties:

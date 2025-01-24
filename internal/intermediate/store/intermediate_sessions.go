@@ -63,6 +63,11 @@ func (s *Store) getIntermediateSessionEmailVerified(ctx context.Context, q *quer
 }
 
 func parseIntermediateSession(qIntermediateSession queries.IntermediateSession, emailVerified bool) *intermediatev1.IntermediateSession {
+	var organizationID string
+	if qIntermediateSession.OrganizationID != nil {
+		organizationID = idformat.Organization.Format(*qIntermediateSession.OrganizationID)
+	}
+
 	return &intermediatev1.IntermediateSession{
 		Id:                 idformat.IntermediateSession.Format(qIntermediateSession.ID),
 		ProjectId:          idformat.Project.Format(qIntermediateSession.ProjectID),
@@ -73,5 +78,6 @@ func parseIntermediateSession(qIntermediateSession queries.IntermediateSession, 
 		MicrosoftUserId:    derefOrEmpty(qIntermediateSession.MicrosoftUserID),
 		MicrosoftTenantId:  derefOrEmpty(qIntermediateSession.MicrosoftTenantID),
 		PasswordVerified:   derefOrEmpty(qIntermediateSession.PasswordVerified),
+		OrganizationId:     organizationID,
 	}
 }
