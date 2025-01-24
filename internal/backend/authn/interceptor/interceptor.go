@@ -141,8 +141,7 @@ func authenticateAccessToken(ctx context.Context, s *store.Store, dogfoodProject
 	}
 
 	return &authn.DogfoodSessionContextData{
-		UserID:         userID,
-		OrganizationID: organizationID,
-		ProjectID:      projectID,
+		UserID:    userID,
+		ProjectID: projectID,
 	}, nil
 }
