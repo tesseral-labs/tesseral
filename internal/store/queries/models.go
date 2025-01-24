@@ -83,6 +83,15 @@ type IntermediateSession struct {
 	SecretTokenSha256         []byte
 }
 
+type OauthVerifiedEmail struct {
+	ID              uuid.UUID
+	ProjectID       uuid.UUID
+	CreateTime      *time.Time
+	Email           string
+	GoogleUserID    *string
+	MicrosoftUserID *string
+}
+
 type Organization struct {
 	ID                                uuid.UUID
 	ProjectID                         uuid.UUID
@@ -211,13 +220,4 @@ type User struct {
 	IsOwner                   bool
 	FailedPasswordAttempts    int32
 	PasswordLockoutExpireTime *time.Time
-}
-
-type VerifiedEmail struct {
-	ID              uuid.UUID
-	ProjectID       uuid.UUID
-	CreateTime      *time.Time
-	Email           string
-	GoogleUserID    *string
-	MicrosoftUserID *string
 }

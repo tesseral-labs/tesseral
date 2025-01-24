@@ -286,7 +286,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 }
 
 const createVerifiedEmail = `-- name: CreateVerifiedEmail :one
-INSERT INTO verified_emails (id, project_id, email, google_user_id, microsoft_user_id)
+INSERT INTO oauth_verified_emails (id, project_id, email, google_user_id, microsoft_user_id)
     VALUES ($1, $2, $3, $4, $5)
 RETURNING
     id, project_id, create_time, email, google_user_id, microsoft_user_id
@@ -300,7 +300,7 @@ type CreateVerifiedEmailParams struct {
 	MicrosoftUserID *string
 }
 
-func (q *Queries) CreateVerifiedEmail(ctx context.Context, arg CreateVerifiedEmailParams) (VerifiedEmail, error) {
+func (q *Queries) CreateVerifiedEmail(ctx context.Context, arg CreateVerifiedEmailParams) (OauthVerifiedEmail, error) {
 	row := q.db.QueryRow(ctx, createVerifiedEmail,
 		arg.ID,
 		arg.ProjectID,
@@ -308,7 +308,7 @@ func (q *Queries) CreateVerifiedEmail(ctx context.Context, arg CreateVerifiedEma
 		arg.GoogleUserID,
 		arg.MicrosoftUserID,
 	)
-	var i VerifiedEmail
+	var i OauthVerifiedEmail
 	err := row.Scan(
 		&i.ID,
 		&i.ProjectID,
@@ -458,7 +458,7 @@ SELECT
         SELECT
             id, project_id, create_time, email, google_user_id, microsoft_user_id
         FROM
-            verified_emails
+            oauth_verified_emails
         WHERE
             project_id = $1
             AND email = $2
@@ -484,7 +484,7 @@ SELECT
         SELECT
             id, project_id, create_time, email, google_user_id, microsoft_user_id
         FROM
-            verified_emails
+            oauth_verified_emails
         WHERE
             project_id = $1
             AND email = $2
@@ -879,7 +879,7 @@ const isGoogleEmailVerified = `-- name: IsGoogleEmailVerified :one
 SELECT
     count(*) > 0
 FROM
-    verified_emails
+    oauth_verified_emails
 WHERE
     project_id = $1
     AND email = $2
@@ -903,7 +903,7 @@ const isMicrosoftEmailVerified = `-- name: IsMicrosoftEmailVerified :one
 SELECT
     count(*) > 0
 FROM
-    verified_emails
+    oauth_verified_emails
 WHERE
     project_id = $1
     AND email = $2
