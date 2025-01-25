@@ -89,6 +89,7 @@ func parseUserImpersonationToken(qUserImpersonationToken queries.UserImpersonati
 		Id:             idformat.UserImpersonationToken.Format(qUserImpersonationToken.ID),
 		ImpersonatorId: idformat.User.Format(qUserImpersonationToken.ImpersonatorID),
 		CreateTime:     timestamppb.New(*qUserImpersonationToken.CreateTime),
+		ExpireTime:     timestamppb.New(*qUserImpersonationToken.ExpireTime),
 		SecretToken:    "", // intentionally left blank
 		ImpersonatedId: idformat.User.Format(qUserImpersonationToken.ImpersonatedID),
 	}
