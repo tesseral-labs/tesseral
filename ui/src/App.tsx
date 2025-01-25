@@ -17,6 +17,7 @@ import UserSettingsPage from './pages/dashboard/UserSettingsPage'
 import DashboardPage from './components/DashboardPage'
 import OrganizationSettingsPage from './pages/dashboard/OrganizationSettingsPage'
 import EditSAMLConnectionsPage from './pages/dashboard/EditSAMLConnectionsPage'
+import { ImpersonatePage } from '@/pages/ImpersonatePage'
 
 const queryClient = new QueryClient()
 
@@ -37,6 +38,12 @@ const AppWithRoutes: FC = () => {
           <Routes>
             <Route path="/" element={<Page />}>
               <Route index element={<Navigate to="login" replace />} />
+
+              <Route
+                path="impersonate"
+                element={<ImpersonatePage />}
+              />
+
               <Route
                 path="google-oauth-callback"
                 element={<GoogleOAuthCallbackPage />}
