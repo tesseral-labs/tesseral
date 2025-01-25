@@ -126,14 +126,22 @@ func authenticateAccessToken(ctx context.Context, s *store.Store, dogfoodProject
 
 	pub := ecdsa.PublicKey{Curve: elliptic.P256(), X: pubX, Y: pubY}
 
+	aud := fmt.Sprintf("https://%s.tesseral.app", strings.ReplaceAll(dogfoodProjectID, "_", "-"))
 	var claims map[string]interface{}
-	if err := ujwt.Claims(&pub, "TODO", time.Now(), &claims, accessToken); err != nil {
+	if err := ujwt.Claims(&pub, aud, time.Now(), &claims, accessToken); err != nil {
 		return nil, connect.NewError(connect.CodeUnauthenticated, err)
 	}
 
+	userID := claims["user"].(map[string]any)["id"].(string)
+	organizationID := claims["organization"].(map[string]any)["id"].(string)
+
+	projectID, err := s.GetProjectIDOrganizationBacks(ctx, organizationID)
+	if err != nil {
+		panic(fmt.Errorf("get project id organization backs: %w", err))
+	}
+
 	return &authn.DogfoodSessionContextData{
-		UserID:           claims["user"].(map[string]any)["id"].(string),
-		OrganizationID:   claims["organization"].(map[string]any)["id"].(string),
-		DogfoodProjectID: claims["project"].(map[string]any)["id"].(string),
+		UserID:    userID,
+		ProjectID: projectID,
 	}, nil
 }

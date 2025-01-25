@@ -48,6 +48,15 @@ ORDER BY
     id
 LIMIT $2;
 
+-- name: GetProjectIDOrganizationBacks :one
+SELECT
+    projects.id
+FROM
+    organizations
+    JOIN projects ON projects.organization_id = organizations.id
+WHERE
+    organization_id = $1;
+
 -- name: ListProjects :many
 SELECT
     *

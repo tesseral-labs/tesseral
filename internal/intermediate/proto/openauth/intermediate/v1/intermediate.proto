@@ -111,6 +111,7 @@ message IntermediateSession {
   string microsoft_user_id = 7;
   string microsoft_tenant_id = 8;
   bool password_verified = 9;
+  string organization_id = 10;
 }
 
 message ProjectUISettings {

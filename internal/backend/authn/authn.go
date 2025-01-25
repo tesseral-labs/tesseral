@@ -18,17 +18,17 @@ type ProjectAPIKeyContextData struct {
 	ProjectID       string
 }
 
+// DogfoodSessionContextData contains data related to a user logged into
+// app.tesseral.com.
 type DogfoodSessionContextData struct {
-	UserID           string
-	OrganizationID   string
-	DogfoodProjectID string
+	UserID string
+
+	// ProjectID is the ID of the project the user is manipulating. This is
+	// almost never the same thing as the dogfood project.
+	ProjectID string
 }
 
 type ctxKey struct{}
-
-func NewContext(ctx context.Context, data ContextData) context.Context {
-	return context.WithValue(ctx, ctxKey{}, data)
-}
 
 func NewProjectAPIKeyContext(ctx context.Context, projectAPIKey *ProjectAPIKeyContextData) context.Context {
 	return context.WithValue(ctx, ctxKey{}, ContextData{ProjectAPIKey: projectAPIKey})
@@ -57,7 +57,7 @@ func ProjectID(ctx context.Context) uuid.UUID {
 	case v.ProjectAPIKey != nil:
 		projectID = v.ProjectAPIKey.ProjectID
 	case v.DogfoodSession != nil:
-		projectID = v.DogfoodSession.DogfoodProjectID
+		projectID = v.DogfoodSession.ProjectID
 	default:
 		panic("unsupported authn ctx data")
 	}
