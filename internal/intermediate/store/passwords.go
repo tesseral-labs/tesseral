@@ -47,8 +47,8 @@ func (s *Store) VerifyPassword(ctx context.Context, req *intermediatev1.VerifyPa
 		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 
-	if qProject.LoginDisabled != nil && *qProject.LoginDisabled {
-		return nil, apierror.NewFailedPreconditionError("login disabled", fmt.Errorf("project login disabled"))
+	if err = enforceProjectLoginEnabled(qProject); err != nil {
+		return nil, fmt.Errorf("enforce project login enabled: %w", err)
 	}
 
 	qOrg, err := q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
@@ -59,8 +59,8 @@ func (s *Store) VerifyPassword(ctx context.Context, req *intermediatev1.VerifyPa
 		return nil, fmt.Errorf("get organization by id: %w", err)
 	}
 
-	if qOrg.LoginDisabled != nil && *qOrg.LoginDisabled {
-		return nil, apierror.NewFailedPreconditionError("login disabled", fmt.Errorf("organization login disabled"))
+	if err = enforceOrganizationLoginEnabled(qOrg); err != nil {
+		return nil, fmt.Errorf("enforce organization login enabled: %w", err)
 	}
 
 	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))

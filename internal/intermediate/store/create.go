@@ -34,8 +34,8 @@ func (s *Store) CreateIntermediateSession(ctx context.Context, req *intermediate
 		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 
-	if qProject.LoginDisabled != nil && *qProject.LoginDisabled {
-		return nil, apierror.NewPermissionDeniedError("login disabled", fmt.Errorf("project login disabled"))
+	if err = enforceProjectLoginEnabled(qProject); err != nil {
+		return nil, fmt.Errorf("enforce project login enabled: %w", err)
 	}
 
 	expireTime := time.Now().Add(intermediateSessionDuration)
