@@ -25,21 +25,3 @@ func (s *Service) GetSession(ctx context.Context, req *connect.Request[backendv1
 
 	return connect.NewResponse(res), nil
 }
-
-func (s *Service) RevokeAllOrganizationSessions(ctx context.Context, req *connect.Request[backendv1.RevokeAllOrganizationSessionsRequest]) (*connect.Response[backendv1.RevokeAllOrganizationSessionsResponse], error) {
-	res, err := s.Store.RevokeAllOrganizationSessions(ctx, req.Msg)
-	if err != nil {
-		return nil, fmt.Errorf("store: %w", err)
-	}
-
-	return connect.NewResponse(res), nil
-}
-
-func (s *Service) RevokeAllProjectSessions(ctx context.Context, req *connect.Request[backendv1.RevokeAllProjectSessionsRequest]) (*connect.Response[backendv1.RevokeAllProjectSessionsResponse], error) {
-	res, err := s.Store.RevokeAllProjectSessions(ctx, req.Msg)
-	if err != nil {
-		return nil, fmt.Errorf("store: %w", err)
-	}
-
-	return connect.NewResponse(res), nil
-}

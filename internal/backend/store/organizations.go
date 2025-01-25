@@ -283,6 +283,54 @@ func (s *Store) DeleteOrganization(ctx context.Context, req *backendv1.DeleteOrg
 	return &backendv1.DeleteOrganizationResponse{}, nil
 }
 
+func (s *Store) LockoutOrganization(ctx context.Context, req *backendv1.LockoutOrganizationRequest) (*backendv1.LockoutOrganizationResponse, error) {
+	if err := validateIsDogfoodSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	}
+
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	if err := q.DisableOrganizationLogin(ctx, authn.ProjectID(ctx)); err != nil {
+		return nil, fmt.Errorf("lockout organization: %w", err)
+	}
+
+	if err = q.RevokeAllOrganizationSessions(ctx, authn.ProjectID(ctx)); err != nil {
+		return nil, fmt.Errorf("revoke all organization sessions: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
+	}
+
+	return &backendv1.LockoutOrganizationResponse{}, nil
+}
+
+func (s *Store) UnlockOrganization(ctx context.Context, req *backendv1.UnlockOrganizationRequest) (*backendv1.UnlockOrganizationResponse, error) {
+	if err := validateIsDogfoodSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	}
+
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	if err := q.EnableOrganizationLogin(ctx, authn.ProjectID(ctx)); err != nil {
+		return nil, fmt.Errorf("unlock organization: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
+	}
+
+	return &backendv1.UnlockOrganizationResponse{}, nil
+}
+
 func parseOrganization(qProject queries.Project, qOrg queries.Organization) *backendv1.Organization {
 	logInWithGoogleEnabled := qProject.LogInWithGoogleEnabled
 	logInWithMicrosoftEnabled := qProject.LogInWithMicrosoftEnabled

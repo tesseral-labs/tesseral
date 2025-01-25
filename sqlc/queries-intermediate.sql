@@ -154,7 +154,9 @@ FROM
     JOIN organization_google_hosted_domains ON organizations.id = organization_google_hosted_domains.organization_id
 WHERE
     organizations.project_id = $1
-    AND organization_google_hosted_domains.google_hosted_domain = $2;
+    AND organization_google_hosted_domains.google_hosted_domain = $2
+    AND (organizations.login_disabled IS NULL
+        OR organizations.login_disabled = FALSE);
 
 -- name: ListOrganizationsByMicrosoftTenantID :many
 SELECT
@@ -164,7 +166,9 @@ FROM
     JOIN organization_microsoft_tenant_ids ON organizations.id = organization_microsoft_tenant_ids.organization_id
 WHERE
     organizations.project_id = $1
-    AND organization_microsoft_tenant_ids.microsoft_tenant_id = $2;
+    AND organization_microsoft_tenant_ids.microsoft_tenant_id = $2
+    AND (organizations.login_disabled IS NULL
+        OR organizations.login_disabled = FALSE);
 
 -- name: ListOrganizationsByMatchingUser :many
 SELECT
@@ -178,7 +182,9 @@ WHERE
         OR (users.google_user_id IS NOT NULL
             AND users.google_user_id = $3)
         OR (users.microsoft_user_id IS NOT NULL
-            AND users.microsoft_user_id = $4));
+            AND users.microsoft_user_id = $4))
+    AND (organizations.login_disabled IS NULL
+        OR organizations.login_disabled = FALSE);
 
 -- name: ListSAMLOrganizations :many
 SELECT

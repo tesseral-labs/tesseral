@@ -52,3 +52,21 @@ func (s *Service) DeleteOrganization(ctx context.Context, req *connect.Request[b
 
 	return connect.NewResponse(res), nil
 }
+
+func (s *Service) LockoutOrganization(ctx context.Context, req *connect.Request[backendv1.LockoutOrganizationRequest]) (*connect.Response[backendv1.LockoutOrganizationResponse], error) {
+	res, err := s.Store.LockoutOrganization(ctx, req.Msg)
+	if err != nil {
+		return nil, fmt.Errorf("store: %w", err)
+	}
+
+	return connect.NewResponse(res), nil
+}
+
+func (s *Service) UnlockOrganization(ctx context.Context, req *connect.Request[backendv1.UnlockOrganizationRequest]) (*connect.Response[backendv1.UnlockOrganizationResponse], error) {
+	res, err := s.Store.UnlockOrganization(ctx, req.Msg)
+	if err != nil {
+		return nil, fmt.Errorf("store: %w", err)
+	}
+
+	return connect.NewResponse(res), nil
+}

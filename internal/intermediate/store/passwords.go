@@ -38,12 +38,20 @@ func (s *Store) VerifyPassword(ctx context.Context, req *intermediatev1.VerifyPa
 		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 
+	if qProject.LoginDisabled != nil && *qProject.LoginDisabled {
+		return nil, apierror.NewFailedPreconditionError("login disabled", fmt.Errorf("project login disabled"))
+	}
+
 	qOrg, err := q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
 		ProjectID: authn.ProjectID(ctx),
 		ID:        orgID,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("get organization by id: %w", err)
+	}
+
+	if qOrg.LoginDisabled != nil && *qOrg.LoginDisabled {
+		return nil, apierror.NewFailedPreconditionError("login disabled", fmt.Errorf("organization login disabled"))
 	}
 
 	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))

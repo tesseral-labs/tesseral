@@ -25,3 +25,21 @@ func (s *Service) UpdateProject(ctx context.Context, req *connect.Request[backen
 
 	return connect.NewResponse(res), nil
 }
+
+func (s *Service) LockoutProject(ctx context.Context, req *connect.Request[backendv1.LockoutProjectRequest]) (*connect.Response[backendv1.LockoutProjectResponse], error) {
+	res, err := s.Store.LockoutProject(ctx, req.Msg)
+	if err != nil {
+		return nil, fmt.Errorf("store: %w", err)
+	}
+
+	return connect.NewResponse(res), nil
+}
+
+func (s *Service) UnlockProject(ctx context.Context, req *connect.Request[backendv1.UnlockProjectRequest]) (*connect.Response[backendv1.UnlockProjectResponse], error) {
+	res, err := s.Store.UnlockProject(ctx, req.Msg)
+	if err != nil {
+		return nil, fmt.Errorf("store: %w", err)
+	}
+
+	return connect.NewResponse(res), nil
+}

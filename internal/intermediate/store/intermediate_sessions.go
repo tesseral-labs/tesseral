@@ -2,9 +2,12 @@ package store
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
+	"github.com/openauth/openauth/internal/common/apierror"
 	"github.com/openauth/openauth/internal/intermediate/authn"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
@@ -60,6 +63,49 @@ func (s *Store) getIntermediateSessionEmailVerified(ctx context.Context, q *quer
 		return true, nil
 	}
 	return false, nil
+}
+
+func (s *Store) verifyOrganization(ctx context.Context, q queries.Queries) (*queries.Organization, error) {
+	// intermediateSession := authn.IntermediateSession(ctx)
+	// orgID, err := idformat.Organization.Parse(intermediateSession.OrganizationID)
+	// if err != nil {
+	// 	return nil, apierror.NewInvalidArgumentError("invalid organization id", fmt.Errorf("parse organization id: %w", err))
+	// }
+
+	// qOrg, err := q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
+	// 	ProjectID: authn.ProjectID(ctx),
+	// 	ID:        orgID,
+	// })
+	// if err != nil {
+	// 	if errors.Is(err, pgx.ErrNoRows) {
+	// 		return nil, apierror.NewNotFoundError("organization not found", fmt.Errorf("get organization by id: %w", err))
+	// 	}
+
+	// 	return nil, fmt.Errorf("get organization by id: %w", err)
+	// }
+
+	// if qOrg.LoginDisabled != nil && *qOrg.LoginDisabled {
+	// 	return nil, apierror.NewPermissionDeniedError("login disabled", fmt.Errorf("organization login disabled"))
+	// }
+
+	// return &qOrg, nil
+}
+
+func (s *Store) verifyProject(ctx context.Context, q queries.Queries) (*queries.Project, error) {
+	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("project not found", fmt.Errorf("get project by id: %w", err))
+		}
+
+		return nil, fmt.Errorf("get project by id: %w", err)
+	}
+
+	if qProject.LoginDisabled != nil && *qProject.LoginDisabled {
+		return nil, apierror.NewPermissionDeniedError("login disabled", fmt.Errorf("project login disabled"))
+	}
+
+	return &qProject, nil
 }
 
 func parseIntermediateSession(qIntermediateSession queries.IntermediateSession, emailVerified bool) *intermediatev1.IntermediateSession {

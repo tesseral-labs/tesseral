@@ -15,7 +15,7 @@ const createOrganization = `-- name: CreateOrganization :one
 INSERT INTO organizations (id, project_id, display_name, override_log_in_methods, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_with_password_enabled, saml_enabled, scim_enabled)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 RETURNING
-    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_methods, saml_enabled, scim_enabled, create_time, update_time
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_methods, saml_enabled, scim_enabled, create_time, update_time, login_disabled
 `
 
 type CreateOrganizationParams struct {
@@ -55,6 +55,7 @@ func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganization
 		&i.ScimEnabled,
 		&i.CreateTime,
 		&i.UpdateTime,
+		&i.LoginDisabled,
 	)
 	return i, err
 }
@@ -252,6 +253,62 @@ func (q *Queries) DeleteSCIMAPIKey(ctx context.Context, id uuid.UUID) error {
 	return err
 }
 
+const disableOrganizationLogin = `-- name: DisableOrganizationLogin :exec
+UPDATE
+    organizations
+SET
+    login_disabled = TRUE
+WHERE
+    id = $1
+`
+
+func (q *Queries) DisableOrganizationLogin(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, disableOrganizationLogin, id)
+	return err
+}
+
+const disableProjectLogin = `-- name: DisableProjectLogin :exec
+UPDATE
+    projects
+SET
+    login_disabled = TRUE
+WHERE
+    id = $1
+`
+
+func (q *Queries) DisableProjectLogin(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, disableProjectLogin, id)
+	return err
+}
+
+const enableOrganizationLogin = `-- name: EnableOrganizationLogin :exec
+UPDATE
+    organizations
+SET
+    login_disabled = FALSE
+WHERE
+    id = $1
+`
+
+func (q *Queries) EnableOrganizationLogin(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, enableOrganizationLogin, id)
+	return err
+}
+
+const enableProjectLogin = `-- name: EnableProjectLogin :exec
+UPDATE
+    projects
+SET
+    login_disabled = FALSE
+WHERE
+    id = $1
+`
+
+func (q *Queries) EnableProjectLogin(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, enableProjectLogin, id)
+	return err
+}
+
 const getIntermediateSession = `-- name: GetIntermediateSession :one
 SELECT
     intermediate_sessions.id, intermediate_sessions.project_id, intermediate_sessions.create_time, intermediate_sessions.expire_time, intermediate_sessions.email, intermediate_sessions.google_oauth_state_sha256, intermediate_sessions.microsoft_oauth_state_sha256, intermediate_sessions.google_hosted_domain, intermediate_sessions.google_user_id, intermediate_sessions.microsoft_tenant_id, intermediate_sessions.microsoft_user_id, intermediate_sessions.password_verified, intermediate_sessions.organization_id, intermediate_sessions.update_time, intermediate_sessions.secret_token_sha256
@@ -292,7 +349,7 @@ func (q *Queries) GetIntermediateSession(ctx context.Context, arg GetIntermediat
 
 const getOrganizationByProjectIDAndID = `-- name: GetOrganizationByProjectIDAndID :one
 SELECT
-    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_methods, saml_enabled, scim_enabled, create_time, update_time
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_methods, saml_enabled, scim_enabled, create_time, update_time, login_disabled
 FROM
     organizations
 WHERE
@@ -320,6 +377,7 @@ func (q *Queries) GetOrganizationByProjectIDAndID(ctx context.Context, arg GetOr
 		&i.ScimEnabled,
 		&i.CreateTime,
 		&i.UpdateTime,
+		&i.LoginDisabled,
 	)
 	return i, err
 }
@@ -378,7 +436,7 @@ func (q *Queries) GetProjectAPIKeyBySecretTokenSHA256(ctx context.Context, secre
 
 const getProjectByID = `-- name: GetProjectByID :one
 SELECT
-    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, login_disabled
 FROM
     projects
 WHERE
@@ -403,6 +461,7 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 		&i.UpdateTime,
 		&i.CustomAuthDomain,
 		&i.AuthDomain,
+		&i.LoginDisabled,
 	)
 	return i, err
 }
@@ -682,7 +741,7 @@ func (q *Queries) ListIntermediateSessions(ctx context.Context, arg ListIntermed
 
 const listOrganizationsByProjectId = `-- name: ListOrganizationsByProjectId :many
 SELECT
-    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_methods, saml_enabled, scim_enabled, create_time, update_time
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_methods, saml_enabled, scim_enabled, create_time, update_time, login_disabled
 FROM
     organizations
 WHERE
@@ -718,6 +777,7 @@ func (q *Queries) ListOrganizationsByProjectId(ctx context.Context, arg ListOrga
 			&i.ScimEnabled,
 			&i.CreateTime,
 			&i.UpdateTime,
+			&i.LoginDisabled,
 		); err != nil {
 			return nil, err
 		}
@@ -813,7 +873,7 @@ func (q *Queries) ListProjectRedirectURIs(ctx context.Context, projectID uuid.UU
 
 const listProjects = `-- name: ListProjects :many
 SELECT
-    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, login_disabled
 FROM
     projects
 ORDER BY
@@ -845,6 +905,7 @@ func (q *Queries) ListProjects(ctx context.Context, limit int32) ([]Project, err
 			&i.UpdateTime,
 			&i.CustomAuthDomain,
 			&i.AuthDomain,
+			&i.LoginDisabled,
 		); err != nil {
 			return nil, err
 		}
@@ -1163,7 +1224,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_methods, saml_enabled, scim_enabled, create_time, update_time
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_methods, saml_enabled, scim_enabled, create_time, update_time, login_disabled
 `
 
 type UpdateOrganizationParams struct {
@@ -1201,6 +1262,7 @@ func (q *Queries) UpdateOrganization(ctx context.Context, arg UpdateOrganization
 		&i.ScimEnabled,
 		&i.CreateTime,
 		&i.UpdateTime,
+		&i.LoginDisabled,
 	)
 	return i, err
 }
@@ -1242,7 +1304,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, login_disabled
 `
 
 type UpdateProjectParams struct {
@@ -1289,6 +1351,7 @@ func (q *Queries) UpdateProject(ctx context.Context, arg UpdateProjectParams) (P
 		&i.UpdateTime,
 		&i.CustomAuthDomain,
 		&i.AuthDomain,
+		&i.LoginDisabled,
 	)
 	return i, err
 }
@@ -1332,7 +1395,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, login_disabled
 `
 
 type UpdateProjectOrganizationIDParams struct {
@@ -1358,6 +1421,7 @@ func (q *Queries) UpdateProjectOrganizationID(ctx context.Context, arg UpdatePro
 		&i.UpdateTime,
 		&i.CustomAuthDomain,
 		&i.AuthDomain,
+		&i.LoginDisabled,
 	)
 	return i, err
 }

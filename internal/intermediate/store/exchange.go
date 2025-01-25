@@ -43,6 +43,10 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		return nil, err
 	}
 
+	if qOrg.LoginDisabled != nil && *qOrg.LoginDisabled {
+		return nil, apierror.NewPermissionDeniedError("login disabled", fmt.Errorf("organization login disabled"))
+	}
+
 	if err := s.validateAuthRequirementsSatisfied(ctx, q, qIntermediateSession.ID, qOrg.ID); err != nil {
 		return nil, fmt.Errorf("validate auth requirements satisfied: %w", err)
 	}

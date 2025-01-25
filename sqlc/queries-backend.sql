@@ -464,3 +464,35 @@ WHERE
                     project_id = $1))
         AND expires_time > now();
 
+-- name: DisableOrganizationLogin :exec
+UPDATE
+    organizations
+SET
+    login_disabled = TRUE
+WHERE
+    id = $1;
+
+-- name: EnableOrganizationLogin :exec
+UPDATE
+    organizations
+SET
+    login_disabled = FALSE
+WHERE
+    id = $1;
+
+-- name: DisableProjectLogin :exec
+UPDATE
+    projects
+SET
+    login_disabled = TRUE
+WHERE
+    id = $1;
+
+-- name: EnableProjectLogin :exec
+UPDATE
+    projects
+SET
+    login_disabled = FALSE
+WHERE
+    id = $1;
+

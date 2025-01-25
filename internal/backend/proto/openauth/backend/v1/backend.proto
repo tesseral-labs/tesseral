@@ -152,8 +152,10 @@ service BackendService {
     };
   }
 
-  rpc RevokeAllOrganizationSessions(RevokeAllOrganizationSessionsRequest) returns (RevokeAllOrganizationSessionsResponse) {}
-  rpc RevokeAllProjectSessions(RevokeAllProjectSessionsRequest) returns (RevokeAllProjectSessionsResponse) {}
+  rpc LockoutOrganization(LockoutOrganizationRequest) returns (LockoutOrganizationResponse) {}
+  rpc LockoutProject(LockoutProjectRequest) returns (LockoutProjectResponse) {}
+  rpc UnlockOrganization(UnlockOrganizationRequest) returns (UnlockOrganizationResponse) {}
+  rpc UnlockProject(UnlockProjectRequest) returns (UnlockProjectResponse) {}
 
   rpc UpdateProject(UpdateProjectRequest) returns (UpdateProjectResponse);
 
@@ -496,19 +498,29 @@ message UpdateProjectUISettingsResponse {
   string primary_color = 10;
 }
 
-message RevokeAllOrganizationSessionsRequest {
+message LockoutOrganizationRequest {
   string organization_id = 1;
 }
 
-message RevokeAllOrganizationSessionsResponse {
-}
+message LockoutOrganizationResponse {}
 
-message RevokeAllProjectSessionsRequest {
+message LockoutProjectRequest {
   string project_id = 1;
 }
 
-message RevokeAllProjectSessionsResponse {
+message LockoutProjectResponse {}
+
+message UnlockOrganizationRequest {
+  string organization_id = 1;
 }
+
+message UnlockOrganizationResponse {}
+
+message UnlockProjectRequest {
+  string project_id = 1;
+}
+
+message UnlockProjectResponse {}
 
 message ImageUploadRequest {
   bytes data = 1;
