@@ -21,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	IntermediateService_ListSAMLOrganizations_FullMethodName                                = "/openauth.intermediate.v1.IntermediateService/ListSAMLOrganizations"
 	IntermediateService_GetProjectUISettings_FullMethodName                                 = "/openauth.intermediate.v1.IntermediateService/GetProjectUISettings"
+	IntermediateService_RedeemUserImpersonationToken_FullMethodName                         = "/openauth.intermediate.v1.IntermediateService/RedeemUserImpersonationToken"
 	IntermediateService_CreateIntermediateSession_FullMethodName                            = "/openauth.intermediate.v1.IntermediateService/CreateIntermediateSession"
 	IntermediateService_Whoami_FullMethodName                                               = "/openauth.intermediate.v1.IntermediateService/Whoami"
 	IntermediateService_ListOrganizations_FullMethodName                                    = "/openauth.intermediate.v1.IntermediateService/ListOrganizations"
@@ -41,6 +42,7 @@ const (
 type IntermediateServiceClient interface {
 	ListSAMLOrganizations(ctx context.Context, in *ListSAMLOrganizationsRequest, opts ...grpc.CallOption) (*ListSAMLOrganizationsResponse, error)
 	GetProjectUISettings(ctx context.Context, in *GetProjectUISettingsRequest, opts ...grpc.CallOption) (*GetProjectUISettingsResponse, error)
+	RedeemUserImpersonationToken(ctx context.Context, in *RedeemUserImpersonationTokenRequest, opts ...grpc.CallOption) (*RedeemUserImpersonationTokenResponse, error)
 	CreateIntermediateSession(ctx context.Context, in *CreateIntermediateSessionRequest, opts ...grpc.CallOption) (*CreateIntermediateSessionResponse, error)
 	Whoami(ctx context.Context, in *WhoamiRequest, opts ...grpc.CallOption) (*WhoamiResponse, error)
 	ListOrganizations(ctx context.Context, in *ListOrganizationsRequest, opts ...grpc.CallOption) (*ListOrganizationsResponse, error)
@@ -77,6 +79,16 @@ func (c *intermediateServiceClient) GetProjectUISettings(ctx context.Context, in
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetProjectUISettingsResponse)
 	err := c.cc.Invoke(ctx, IntermediateService_GetProjectUISettings_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *intermediateServiceClient) RedeemUserImpersonationToken(ctx context.Context, in *RedeemUserImpersonationTokenRequest, opts ...grpc.CallOption) (*RedeemUserImpersonationTokenResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RedeemUserImpersonationTokenResponse)
+	err := c.cc.Invoke(ctx, IntermediateService_RedeemUserImpersonationToken_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -209,6 +221,7 @@ func (c *intermediateServiceClient) VerifyPassword(ctx context.Context, in *Veri
 type IntermediateServiceServer interface {
 	ListSAMLOrganizations(context.Context, *ListSAMLOrganizationsRequest) (*ListSAMLOrganizationsResponse, error)
 	GetProjectUISettings(context.Context, *GetProjectUISettingsRequest) (*GetProjectUISettingsResponse, error)
+	RedeemUserImpersonationToken(context.Context, *RedeemUserImpersonationTokenRequest) (*RedeemUserImpersonationTokenResponse, error)
 	CreateIntermediateSession(context.Context, *CreateIntermediateSessionRequest) (*CreateIntermediateSessionResponse, error)
 	Whoami(context.Context, *WhoamiRequest) (*WhoamiResponse, error)
 	ListOrganizations(context.Context, *ListOrganizationsRequest) (*ListOrganizationsResponse, error)
@@ -236,6 +249,9 @@ func (UnimplementedIntermediateServiceServer) ListSAMLOrganizations(context.Cont
 }
 func (UnimplementedIntermediateServiceServer) GetProjectUISettings(context.Context, *GetProjectUISettingsRequest) (*GetProjectUISettingsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetProjectUISettings not implemented")
+}
+func (UnimplementedIntermediateServiceServer) RedeemUserImpersonationToken(context.Context, *RedeemUserImpersonationTokenRequest) (*RedeemUserImpersonationTokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RedeemUserImpersonationToken not implemented")
 }
 func (UnimplementedIntermediateServiceServer) CreateIntermediateSession(context.Context, *CreateIntermediateSessionRequest) (*CreateIntermediateSessionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateIntermediateSession not implemented")
@@ -326,6 +342,24 @@ func _IntermediateService_GetProjectUISettings_Handler(srv interface{}, ctx cont
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(IntermediateServiceServer).GetProjectUISettings(ctx, req.(*GetProjectUISettingsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IntermediateService_RedeemUserImpersonationToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RedeemUserImpersonationTokenRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IntermediateServiceServer).RedeemUserImpersonationToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IntermediateService_RedeemUserImpersonationToken_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IntermediateServiceServer).RedeemUserImpersonationToken(ctx, req.(*RedeemUserImpersonationTokenRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -560,6 +594,10 @@ var IntermediateService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetProjectUISettings",
 			Handler:    _IntermediateService_GetProjectUISettings_Handler,
+		},
+		{
+			MethodName: "RedeemUserImpersonationToken",
+			Handler:    _IntermediateService_RedeemUserImpersonationToken_Handler,
 		},
 		{
 			MethodName: "CreateIntermediateSession",

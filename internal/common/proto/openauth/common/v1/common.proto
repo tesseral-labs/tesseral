@@ -19,6 +19,8 @@ message AccessTokenData {
   AccessTokenSession session = 8;
   AccessTokenUser user = 9;
   AccessTokenOrganization organization = 10;
+
+  AccessTokenImpersonator impersonator = 11;
 }
 
 message AccessTokenSession {
@@ -34,6 +36,11 @@ message AccessTokenUser {
 message AccessTokenOrganization {
   string id = 1;
   string display_name = 2;
+}
+
+message AccessTokenImpersonator {
+  string id = 1;
+  string email = 2;
 }
 
 message ErrorDetail {

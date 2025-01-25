@@ -628,7 +628,6 @@ message UserImpersonationToken {
   string id = 1;
   string impersonator_id = 2;
   google.protobuf.Timestamp create_time = 3;
-  google.protobuf.Timestamp redeem_time = 4;
-  string secret_token = 5;
-  string impersonated_id = 6;
+  string secret_token = 4;
+  string impersonated_id = 5;
 }

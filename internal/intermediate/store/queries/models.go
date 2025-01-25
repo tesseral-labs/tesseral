@@ -196,6 +196,7 @@ type Session struct {
 	ExpireTime         *time.Time
 	Revoked            bool
 	RefreshTokenSha256 []byte
+	ImpersonatorUserID *uuid.UUID
 }
 
 type SessionSigningKey struct {
@@ -225,9 +226,8 @@ type User struct {
 type UserImpersonationToken struct {
 	ID                uuid.UUID
 	ImpersonatorID    uuid.UUID
-	ImpersonatedID    uuid.UUID
 	CreateTime        *time.Time
 	ExpireTime        *time.Time
-	RedeemTime        *time.Time
+	ImpersonatedID    uuid.UUID
 	SecretTokenSha256 []byte
 }

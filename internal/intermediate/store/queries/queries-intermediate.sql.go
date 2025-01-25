@@ -71,6 +71,44 @@ func (q *Queries) CreateEmailVerificationChallenge(ctx context.Context, arg Crea
 	return i, err
 }
 
+const createImpersonatedSession = `-- name: CreateImpersonatedSession :one
+INSERT INTO sessions (id, user_id, expire_time, refresh_token_sha256, revoked, impersonator_user_id)
+    VALUES ($1, $2, $3, $4, $5, $6)
+RETURNING
+    id, user_id, create_time, expire_time, revoked, refresh_token_sha256, impersonator_user_id
+`
+
+type CreateImpersonatedSessionParams struct {
+	ID                 uuid.UUID
+	UserID             uuid.UUID
+	ExpireTime         *time.Time
+	RefreshTokenSha256 []byte
+	Revoked            bool
+	ImpersonatorUserID *uuid.UUID
+}
+
+func (q *Queries) CreateImpersonatedSession(ctx context.Context, arg CreateImpersonatedSessionParams) (Session, error) {
+	row := q.db.QueryRow(ctx, createImpersonatedSession,
+		arg.ID,
+		arg.UserID,
+		arg.ExpireTime,
+		arg.RefreshTokenSha256,
+		arg.Revoked,
+		arg.ImpersonatorUserID,
+	)
+	var i Session
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.CreateTime,
+		&i.ExpireTime,
+		&i.Revoked,
+		&i.RefreshTokenSha256,
+		&i.ImpersonatorUserID,
+	)
+	return i, err
+}
+
 const createIntermediateSession = `-- name: CreateIntermediateSession :one
 INSERT INTO intermediate_sessions (id, project_id, expire_time, email, google_user_id, microsoft_user_id, secret_token_sha256)
     VALUES ($1, $2, $3, $4, $5, $6, $7)
@@ -211,7 +249,7 @@ const createSession = `-- name: CreateSession :one
 INSERT INTO sessions (id, user_id, expire_time, refresh_token_sha256, revoked)
     VALUES ($1, $2, $3, $4, $5)
 RETURNING
-    id, user_id, create_time, expire_time, revoked, refresh_token_sha256
+    id, user_id, create_time, expire_time, revoked, refresh_token_sha256, impersonator_user_id
 `
 
 type CreateSessionParams struct {
@@ -238,6 +276,7 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (S
 		&i.ExpireTime,
 		&i.Revoked,
 		&i.RefreshTokenSha256,
+		&i.ImpersonatorUserID,
 	)
 	return i, err
 }
@@ -712,6 +751,30 @@ func (q *Queries) GetProjectUISettings(ctx context.Context, projectID uuid.UUID)
 	return i, err
 }
 
+const getUserImpersonationTokenBySecretTokenSHA256 = `-- name: GetUserImpersonationTokenBySecretTokenSHA256 :one
+SELECT
+    id, impersonator_id, create_time, expire_time, impersonated_id, secret_token_sha256
+FROM
+    user_impersonation_tokens
+WHERE
+    secret_token_sha256 = $1
+    AND expire_time > now()
+`
+
+func (q *Queries) GetUserImpersonationTokenBySecretTokenSHA256(ctx context.Context, secretTokenSha256 []byte) (UserImpersonationToken, error) {
+	row := q.db.QueryRow(ctx, getUserImpersonationTokenBySecretTokenSHA256, secretTokenSha256)
+	var i UserImpersonationToken
+	err := row.Scan(
+		&i.ID,
+		&i.ImpersonatorID,
+		&i.CreateTime,
+		&i.ExpireTime,
+		&i.ImpersonatedID,
+		&i.SecretTokenSha256,
+	)
+	return i, err
+}
+
 const listOrganizationsByGoogleHostedDomain = `-- name: ListOrganizationsByGoogleHostedDomain :many
 SELECT
     organizations.id, organizations.project_id, organizations.display_name, organizations.override_log_in_with_password_enabled, organizations.override_log_in_with_google_enabled, organizations.override_log_in_with_microsoft_enabled, organizations.override_log_in_methods, organizations.saml_enabled, organizations.scim_enabled, organizations.create_time, organizations.update_time
@@ -945,6 +1008,31 @@ func (q *Queries) RevokeIntermediateSession(ctx context.Context, id uuid.UUID) (
 		&i.PasswordVerified,
 		&i.OrganizationID,
 		&i.UpdateTime,
+		&i.SecretTokenSha256,
+	)
+	return i, err
+}
+
+const revokeUserImpersonationToken = `-- name: RevokeUserImpersonationToken :one
+UPDATE
+    user_impersonation_tokens
+SET
+    secret_token_sha256 = NULL
+WHERE
+    id = $1
+RETURNING
+    id, impersonator_id, create_time, expire_time, impersonated_id, secret_token_sha256
+`
+
+func (q *Queries) RevokeUserImpersonationToken(ctx context.Context, id uuid.UUID) (UserImpersonationToken, error) {
+	row := q.db.QueryRow(ctx, revokeUserImpersonationToken, id)
+	var i UserImpersonationToken
+	err := row.Scan(
+		&i.ID,
+		&i.ImpersonatorID,
+		&i.CreateTime,
+		&i.ExpireTime,
+		&i.ImpersonatedID,
 		&i.SecretTokenSha256,
 	)
 	return i, err
