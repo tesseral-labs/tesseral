@@ -12,7 +12,6 @@ import (
 	"github.com/openauth/openauth/internal/backend/store/queries"
 	"github.com/openauth/openauth/internal/common/apierror"
 	"github.com/openauth/openauth/internal/store/idformat"
-	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 func (s *Store) ListSessions(ctx context.Context, req *backendv1.ListSessionsRequest) (*backendv1.ListSessionsResponse, error) {
@@ -98,7 +97,7 @@ func (s *Store) GetSession(ctx context.Context, req *backendv1.GetSessionRequest
 	return &backendv1.GetSessionResponse{Session: parseSession(qSession)}, nil
 }
 
-func (s *Store) RevokeAllOrganizationSessions(ctx context.Context, req *backendv1.RevokeAllOrganizationSessionsRequest) (*emptypb.Empty, error) {
+func (s *Store) RevokeAllOrganizationSessions(ctx context.Context, req *backendv1.RevokeAllOrganizationSessionsRequest) (*backendv1.RevokeAllOrganizationSessionsResponse, error) {
 	err := validateIsDogfoodSession(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("validate is dogfood session: %w", err)
@@ -112,7 +111,7 @@ func (s *Store) RevokeAllOrganizationSessions(ctx context.Context, req *backendv
 
 	authn.ProjectID(ctx)
 
-	organizationID, err := idformat.Organization.Parse(req.Id)
+	organizationID, err := idformat.Organization.Parse(req.OrganizationId)
 	if err != nil {
 		return nil, apierror.NewInvalidArgumentError("invalid organization id", fmt.Errorf("parse organization id: %w", err))
 	}
@@ -136,10 +135,10 @@ func (s *Store) RevokeAllOrganizationSessions(ctx context.Context, req *backendv
 		return nil, fmt.Errorf("revoke all organization sessions: %w", err)
 	}
 
-	return &emptypb.Empty{}, nil
+	return &backendv1.RevokeAllOrganizationSessionsResponse{}, nil
 }
 
-func (s *Store) RevokeAllProjectSessions(ctx context.Context, req *backendv1.RevokeAllProjectSessionsRequest) (*emptypb.Empty, error) {
+func (s *Store) RevokeAllProjectSessions(ctx context.Context, req *backendv1.RevokeAllProjectSessionsRequest) (*backendv1.RevokeAllProjectSessionsResponse, error) {
 	err := validateIsDogfoodSession(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("validate is dogfood session: %w", err)
@@ -151,7 +150,7 @@ func (s *Store) RevokeAllProjectSessions(ctx context.Context, req *backendv1.Rev
 	}
 	defer rollback()
 
-	projectID, err := idformat.Project.Parse(req.Id)
+	projectID, err := idformat.Project.Parse(req.ProjectId)
 	if err != nil {
 		return nil, apierror.NewInvalidArgumentError("invalid project id", fmt.Errorf("parse project id: %w", err))
 	}
@@ -167,7 +166,7 @@ func (s *Store) RevokeAllProjectSessions(ctx context.Context, req *backendv1.Rev
 		return nil, fmt.Errorf("revoke all project sessions: %w", err)
 	}
 
-	return &emptypb.Empty{}, nil
+	return &backendv1.RevokeAllProjectSessionsResponse{}, nil
 }
 
 func parseSession(qSession queries.Session) *backendv1.Session {

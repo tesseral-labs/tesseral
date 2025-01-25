@@ -11,7 +11,6 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -88,8 +87,8 @@ type BackendServiceClient interface {
 	GetSession(ctx context.Context, in *GetSessionRequest, opts ...grpc.CallOption) (*GetSessionResponse, error)
 	ListIntermediateSessions(ctx context.Context, in *ListIntermediateSessionsRequest, opts ...grpc.CallOption) (*ListIntermediateSessionsResponse, error)
 	GetIntermediateSession(ctx context.Context, in *GetIntermediateSessionRequest, opts ...grpc.CallOption) (*GetIntermediateSessionResponse, error)
-	RevokeAllOrganizationSessions(ctx context.Context, in *RevokeAllOrganizationSessionsRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	RevokeAllProjectSessions(ctx context.Context, in *RevokeAllProjectSessionsRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	RevokeAllOrganizationSessions(ctx context.Context, in *RevokeAllOrganizationSessionsRequest, opts ...grpc.CallOption) (*RevokeAllOrganizationSessionsResponse, error)
+	RevokeAllProjectSessions(ctx context.Context, in *RevokeAllProjectSessionsRequest, opts ...grpc.CallOption) (*RevokeAllProjectSessionsResponse, error)
 	UpdateProject(ctx context.Context, in *UpdateProjectRequest, opts ...grpc.CallOption) (*UpdateProjectResponse, error)
 	CreateProjectRedirectURI(ctx context.Context, in *CreateProjectRedirectURIRequest, opts ...grpc.CallOption) (*CreateProjectRedirectURIResponse, error)
 	DeleteProjectRedirectURI(ctx context.Context, in *DeleteProjectRedirectURIRequest, opts ...grpc.CallOption) (*DeleteProjectRedirectURIResponse, error)
@@ -344,9 +343,9 @@ func (c *backendServiceClient) GetIntermediateSession(ctx context.Context, in *G
 	return out, nil
 }
 
-func (c *backendServiceClient) RevokeAllOrganizationSessions(ctx context.Context, in *RevokeAllOrganizationSessionsRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *backendServiceClient) RevokeAllOrganizationSessions(ctx context.Context, in *RevokeAllOrganizationSessionsRequest, opts ...grpc.CallOption) (*RevokeAllOrganizationSessionsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
+	out := new(RevokeAllOrganizationSessionsResponse)
 	err := c.cc.Invoke(ctx, BackendService_RevokeAllOrganizationSessions_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -354,9 +353,9 @@ func (c *backendServiceClient) RevokeAllOrganizationSessions(ctx context.Context
 	return out, nil
 }
 
-func (c *backendServiceClient) RevokeAllProjectSessions(ctx context.Context, in *RevokeAllProjectSessionsRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *backendServiceClient) RevokeAllProjectSessions(ctx context.Context, in *RevokeAllProjectSessionsRequest, opts ...grpc.CallOption) (*RevokeAllProjectSessionsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
+	out := new(RevokeAllProjectSessionsResponse)
 	err := c.cc.Invoke(ctx, BackendService_RevokeAllProjectSessions_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -531,8 +530,8 @@ type BackendServiceServer interface {
 	GetSession(context.Context, *GetSessionRequest) (*GetSessionResponse, error)
 	ListIntermediateSessions(context.Context, *ListIntermediateSessionsRequest) (*ListIntermediateSessionsResponse, error)
 	GetIntermediateSession(context.Context, *GetIntermediateSessionRequest) (*GetIntermediateSessionResponse, error)
-	RevokeAllOrganizationSessions(context.Context, *RevokeAllOrganizationSessionsRequest) (*emptypb.Empty, error)
-	RevokeAllProjectSessions(context.Context, *RevokeAllProjectSessionsRequest) (*emptypb.Empty, error)
+	RevokeAllOrganizationSessions(context.Context, *RevokeAllOrganizationSessionsRequest) (*RevokeAllOrganizationSessionsResponse, error)
+	RevokeAllProjectSessions(context.Context, *RevokeAllProjectSessionsRequest) (*RevokeAllProjectSessionsResponse, error)
 	UpdateProject(context.Context, *UpdateProjectRequest) (*UpdateProjectResponse, error)
 	CreateProjectRedirectURI(context.Context, *CreateProjectRedirectURIRequest) (*CreateProjectRedirectURIResponse, error)
 	DeleteProjectRedirectURI(context.Context, *DeleteProjectRedirectURIRequest) (*DeleteProjectRedirectURIResponse, error)
@@ -626,10 +625,10 @@ func (UnimplementedBackendServiceServer) ListIntermediateSessions(context.Contex
 func (UnimplementedBackendServiceServer) GetIntermediateSession(context.Context, *GetIntermediateSessionRequest) (*GetIntermediateSessionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetIntermediateSession not implemented")
 }
-func (UnimplementedBackendServiceServer) RevokeAllOrganizationSessions(context.Context, *RevokeAllOrganizationSessionsRequest) (*emptypb.Empty, error) {
+func (UnimplementedBackendServiceServer) RevokeAllOrganizationSessions(context.Context, *RevokeAllOrganizationSessionsRequest) (*RevokeAllOrganizationSessionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RevokeAllOrganizationSessions not implemented")
 }
-func (UnimplementedBackendServiceServer) RevokeAllProjectSessions(context.Context, *RevokeAllProjectSessionsRequest) (*emptypb.Empty, error) {
+func (UnimplementedBackendServiceServer) RevokeAllProjectSessions(context.Context, *RevokeAllProjectSessionsRequest) (*RevokeAllProjectSessionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RevokeAllProjectSessions not implemented")
 }
 func (UnimplementedBackendServiceServer) UpdateProject(context.Context, *UpdateProjectRequest) (*UpdateProjectResponse, error) {

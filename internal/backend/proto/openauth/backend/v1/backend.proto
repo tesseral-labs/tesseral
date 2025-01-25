@@ -152,8 +152,8 @@ service BackendService {
     };
   }
 
-  rpc RevokeAllOrganizationSessions(RevokeAllOrganizationSessionsRequest) returns (google.protobuf.Empty) {}
-  rpc RevokeAllProjectSessions(RevokeAllProjectSessionsRequest) returns (google.protobuf.Empty) {}
+  rpc RevokeAllOrganizationSessions(RevokeAllOrganizationSessionsRequest) returns (RevokeAllOrganizationSessionsResponse) {}
+  rpc RevokeAllProjectSessions(RevokeAllProjectSessionsRequest) returns (RevokeAllProjectSessionsResponse) {}
 
   rpc UpdateProject(UpdateProjectRequest) returns (UpdateProjectResponse);
 
@@ -497,11 +497,17 @@ message UpdateProjectUISettingsResponse {
 }
 
 message RevokeAllOrganizationSessionsRequest {
-  string id = 1;
+  string organization_id = 1;
+}
+
+message RevokeAllOrganizationSessionsResponse {
 }
 
 message RevokeAllProjectSessionsRequest {
-  string id = 1;
+  string project_id = 1;
+}
+
+message RevokeAllProjectSessionsResponse {
 }
 
 message ImageUploadRequest {
