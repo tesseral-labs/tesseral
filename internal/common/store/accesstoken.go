@@ -51,7 +51,6 @@ func (s *Store) IssueAccessToken(ctx context.Context, refreshToken string) (stri
 		}
 
 		impersonator = &commonv1.AccessTokenImpersonator{
-			Id:    idformat.User.Format(qImpersonator.ID),
 			Email: qImpersonator.Email,
 		}
 	}

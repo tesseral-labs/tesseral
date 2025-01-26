@@ -39,8 +39,7 @@ message AccessTokenOrganization {
 }
 
 message AccessTokenImpersonator {
-  string id = 1;
-  string email = 2;
+  string email = 1;
 }
 
 message ErrorDetail {
