@@ -16,9 +16,9 @@ bootstrap:
 	@# Stop the docker containers
 	docker compose stop
 
-.PHONY: dev
+.PHONY: devlet
 dev:
-	docker compose --verbose up --build --watch
+	docker compose up --build --watch
 
 .PHONY: migrate
 ARGS = $(wordlist 2, $(words $(MAKECMDGOALS)), $(MAKECMDGOALS))
