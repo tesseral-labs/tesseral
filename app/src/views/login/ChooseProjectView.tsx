@@ -62,12 +62,12 @@ const ChooseProjectView: FC<ChooseProjectViewProps> = ({ setView }) => {
 
   return (
     <>
-      <Title title="Choose an Organization" />
+      <Title title="Choose an Project" />
 
       <Card className="w-[clamp(320px,50%,420px)] mx-auto">
         <CardHeader>
           <CardTitle className="text-center uppercase text-foreground font-semibold text-sm tracking-wide mt-2">
-            Choose an Organization
+            Choose an Project
           </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col items-center justify-center w-full">
@@ -92,7 +92,7 @@ const ChooseProjectView: FC<ChooseProjectViewProps> = ({ setView }) => {
               className="text-primary underline"
               onClick={() => setView(LoginView.CreateProject)}
             >
-              create an organization
+              create a project
             </span>
             .
           </p>
