@@ -196,7 +196,6 @@ type Session struct {
 	UserID             uuid.UUID
 	CreateTime         *time.Time
 	ExpireTime         *time.Time
-	Revoked            bool
 	RefreshTokenSha256 []byte
 	ImpersonatorUserID *uuid.UUID
 }

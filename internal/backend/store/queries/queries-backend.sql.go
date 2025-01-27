@@ -636,7 +636,7 @@ func (q *Queries) GetSCIMAPIKey(ctx context.Context, arg GetSCIMAPIKeyParams) (S
 
 const getSession = `-- name: GetSession :one
 SELECT
-    sessions.id, sessions.user_id, sessions.create_time, sessions.expire_time, sessions.revoked, sessions.refresh_token_sha256, sessions.impersonator_user_id
+    sessions.id, sessions.user_id, sessions.create_time, sessions.expire_time, sessions.refresh_token_sha256, sessions.impersonator_user_id
 FROM
     sessions
     JOIN users ON sessions.user_id = users.id
@@ -659,7 +659,6 @@ func (q *Queries) GetSession(ctx context.Context, arg GetSessionParams) (Session
 		&i.UserID,
 		&i.CreateTime,
 		&i.ExpireTime,
-		&i.Revoked,
 		&i.RefreshTokenSha256,
 		&i.ImpersonatorUserID,
 	)
@@ -1104,7 +1103,7 @@ func (q *Queries) ListSCIMAPIKeys(ctx context.Context, arg ListSCIMAPIKeysParams
 
 const listSessions = `-- name: ListSessions :many
 SELECT
-    id, user_id, create_time, expire_time, revoked, refresh_token_sha256, impersonator_user_id
+    id, user_id, create_time, expire_time, refresh_token_sha256, impersonator_user_id
 FROM
     sessions
 WHERE
@@ -1135,7 +1134,6 @@ func (q *Queries) ListSessions(ctx context.Context, arg ListSessionsParams) ([]S
 			&i.UserID,
 			&i.CreateTime,
 			&i.ExpireTime,
-			&i.Revoked,
 			&i.RefreshTokenSha256,
 			&i.ImpersonatorUserID,
 		); err != nil {
