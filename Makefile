@@ -18,7 +18,7 @@ bootstrap:
 
 .PHONY: dev
 dev:
-	docker compose up --build --watch
+	docker compose --verbose up --build --watch
 
 .PHONY: migrate
 ARGS = $(wordlist 2, $(words $(MAKECMDGOALS)), $(MAKECMDGOALS))
