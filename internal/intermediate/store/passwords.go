@@ -47,7 +47,7 @@ func (s *Store) VerifyPassword(ctx context.Context, req *intermediatev1.VerifyPa
 		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 
-	if err = enforceProjectLoginEnabled(qProject); err != nil {
+	if err := enforceProjectLoginEnabled(qProject); err != nil {
 		return nil, fmt.Errorf("enforce project login enabled: %w", err)
 	}
 

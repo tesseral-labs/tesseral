@@ -34,7 +34,7 @@ func (s *Store) GetMicrosoftOAuthRedirectURL(ctx context.Context, req *intermedi
 		return nil, fmt.Errorf("get project by id: %v", err)
 	}
 
-	if err = enforceProjectLoginEnabled(qProject); err != nil {
+	if err := enforceProjectLoginEnabled(qProject); err != nil {
 		return nil, fmt.Errorf("enforce project login enabled: %w", err)
 	}
 
@@ -72,7 +72,7 @@ func (s *Store) RedeemMicrosoftOAuthCode(ctx context.Context, req *intermediatev
 		return nil, fmt.Errorf("get project and intermediate session: %v", err)
 	}
 
-	if err = enforceProjectLoginEnabled(*qProject); err != nil {
+	if err := enforceProjectLoginEnabled(*qProject); err != nil {
 		return nil, fmt.Errorf("enforce project login enabled: %w", err)
 	}
 
