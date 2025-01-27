@@ -475,7 +475,7 @@ WHERE
 UPDATE
     organizations
 SET
-    login_disabled = TRUE
+    logins_disabled = TRUE
 WHERE
     id = $1;
 
@@ -483,7 +483,7 @@ WHERE
 UPDATE
     organizations
 SET
-    login_disabled = FALSE
+    logins_disabled = FALSE
 WHERE
     id = $1;
 
@@ -491,7 +491,7 @@ WHERE
 UPDATE
     projects
 SET
-    login_disabled = TRUE
+    logins_disabled = TRUE
 WHERE
     id = $1;
 
@@ -499,7 +499,7 @@ WHERE
 UPDATE
     projects
 SET
-    login_disabled = FALSE
+    logins_disabled = FALSE
 WHERE
     id = $1;
 
