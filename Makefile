@@ -16,7 +16,7 @@ bootstrap:
 	@# Stop the docker containers
 	docker compose stop
 
-.PHONY: devlet
+.PHONY: dev
 dev:
 	docker compose up --build --watch
 
