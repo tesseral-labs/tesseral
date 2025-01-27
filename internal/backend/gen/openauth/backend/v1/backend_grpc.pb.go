@@ -19,47 +19,48 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	BackendService_GetProject_FullMethodName                = "/openauth.backend.v1.BackendService/GetProject"
-	BackendService_ListOrganizations_FullMethodName         = "/openauth.backend.v1.BackendService/ListOrganizations"
-	BackendService_GetOrganization_FullMethodName           = "/openauth.backend.v1.BackendService/GetOrganization"
-	BackendService_CreateOrganization_FullMethodName        = "/openauth.backend.v1.BackendService/CreateOrganization"
-	BackendService_UpdateOrganization_FullMethodName        = "/openauth.backend.v1.BackendService/UpdateOrganization"
-	BackendService_DeleteOrganization_FullMethodName        = "/openauth.backend.v1.BackendService/DeleteOrganization"
-	BackendService_ListSAMLConnections_FullMethodName       = "/openauth.backend.v1.BackendService/ListSAMLConnections"
-	BackendService_GetSAMLConnection_FullMethodName         = "/openauth.backend.v1.BackendService/GetSAMLConnection"
-	BackendService_CreateSAMLConnection_FullMethodName      = "/openauth.backend.v1.BackendService/CreateSAMLConnection"
-	BackendService_UpdateSAMLConnection_FullMethodName      = "/openauth.backend.v1.BackendService/UpdateSAMLConnection"
-	BackendService_DeleteSAMLConnection_FullMethodName      = "/openauth.backend.v1.BackendService/DeleteSAMLConnection"
-	BackendService_ListSCIMAPIKeys_FullMethodName           = "/openauth.backend.v1.BackendService/ListSCIMAPIKeys"
-	BackendService_GetSCIMAPIKey_FullMethodName             = "/openauth.backend.v1.BackendService/GetSCIMAPIKey"
-	BackendService_CreateSCIMAPIKey_FullMethodName          = "/openauth.backend.v1.BackendService/CreateSCIMAPIKey"
-	BackendService_UpdateSCIMAPIKey_FullMethodName          = "/openauth.backend.v1.BackendService/UpdateSCIMAPIKey"
-	BackendService_DeleteSCIMAPIKey_FullMethodName          = "/openauth.backend.v1.BackendService/DeleteSCIMAPIKey"
-	BackendService_RevokeSCIMAPIKey_FullMethodName          = "/openauth.backend.v1.BackendService/RevokeSCIMAPIKey"
-	BackendService_ListUsers_FullMethodName                 = "/openauth.backend.v1.BackendService/ListUsers"
-	BackendService_GetUser_FullMethodName                   = "/openauth.backend.v1.BackendService/GetUser"
-	BackendService_ListSessions_FullMethodName              = "/openauth.backend.v1.BackendService/ListSessions"
-	BackendService_GetSession_FullMethodName                = "/openauth.backend.v1.BackendService/GetSession"
-	BackendService_ListIntermediateSessions_FullMethodName  = "/openauth.backend.v1.BackendService/ListIntermediateSessions"
-	BackendService_GetIntermediateSession_FullMethodName    = "/openauth.backend.v1.BackendService/GetIntermediateSession"
-	BackendService_DisableOrganizationLogins_FullMethodName = "/openauth.backend.v1.BackendService/DisableOrganizationLogins"
-	BackendService_DisableProjectLogins_FullMethodName      = "/openauth.backend.v1.BackendService/DisableProjectLogins"
-	BackendService_EnableOrganizationLogins_FullMethodName  = "/openauth.backend.v1.BackendService/EnableOrganizationLogins"
-	BackendService_EnableProjectLogins_FullMethodName       = "/openauth.backend.v1.BackendService/EnableProjectLogins"
-	BackendService_UpdateProject_FullMethodName             = "/openauth.backend.v1.BackendService/UpdateProject"
-	BackendService_CreateProjectRedirectURI_FullMethodName  = "/openauth.backend.v1.BackendService/CreateProjectRedirectURI"
-	BackendService_DeleteProjectRedirectURI_FullMethodName  = "/openauth.backend.v1.BackendService/DeleteProjectRedirectURI"
-	BackendService_GetProjectRedirectURI_FullMethodName     = "/openauth.backend.v1.BackendService/GetProjectRedirectURI"
-	BackendService_ListProjectRedirectURIs_FullMethodName   = "/openauth.backend.v1.BackendService/ListProjectRedirectURIs"
-	BackendService_UpdateProjectRedirectURI_FullMethodName  = "/openauth.backend.v1.BackendService/UpdateProjectRedirectURI"
-	BackendService_GetProjectUISettings_FullMethodName      = "/openauth.backend.v1.BackendService/GetProjectUISettings"
-	BackendService_UpdateProjectUISettings_FullMethodName   = "/openauth.backend.v1.BackendService/UpdateProjectUISettings"
-	BackendService_ListProjectAPIKeys_FullMethodName        = "/openauth.backend.v1.BackendService/ListProjectAPIKeys"
-	BackendService_GetProjectAPIKey_FullMethodName          = "/openauth.backend.v1.BackendService/GetProjectAPIKey"
-	BackendService_CreateProjectAPIKey_FullMethodName       = "/openauth.backend.v1.BackendService/CreateProjectAPIKey"
-	BackendService_UpdateProjectAPIKey_FullMethodName       = "/openauth.backend.v1.BackendService/UpdateProjectAPIKey"
-	BackendService_DeleteProjectAPIKey_FullMethodName       = "/openauth.backend.v1.BackendService/DeleteProjectAPIKey"
-	BackendService_RevokeProjectAPIKey_FullMethodName       = "/openauth.backend.v1.BackendService/RevokeProjectAPIKey"
+	BackendService_GetProject_FullMethodName                   = "/openauth.backend.v1.BackendService/GetProject"
+	BackendService_ListOrganizations_FullMethodName            = "/openauth.backend.v1.BackendService/ListOrganizations"
+	BackendService_GetOrganization_FullMethodName              = "/openauth.backend.v1.BackendService/GetOrganization"
+	BackendService_CreateOrganization_FullMethodName           = "/openauth.backend.v1.BackendService/CreateOrganization"
+	BackendService_UpdateOrganization_FullMethodName           = "/openauth.backend.v1.BackendService/UpdateOrganization"
+	BackendService_DeleteOrganization_FullMethodName           = "/openauth.backend.v1.BackendService/DeleteOrganization"
+	BackendService_ListSAMLConnections_FullMethodName          = "/openauth.backend.v1.BackendService/ListSAMLConnections"
+	BackendService_GetSAMLConnection_FullMethodName            = "/openauth.backend.v1.BackendService/GetSAMLConnection"
+	BackendService_CreateSAMLConnection_FullMethodName         = "/openauth.backend.v1.BackendService/CreateSAMLConnection"
+	BackendService_UpdateSAMLConnection_FullMethodName         = "/openauth.backend.v1.BackendService/UpdateSAMLConnection"
+	BackendService_DeleteSAMLConnection_FullMethodName         = "/openauth.backend.v1.BackendService/DeleteSAMLConnection"
+	BackendService_ListSCIMAPIKeys_FullMethodName              = "/openauth.backend.v1.BackendService/ListSCIMAPIKeys"
+	BackendService_GetSCIMAPIKey_FullMethodName                = "/openauth.backend.v1.BackendService/GetSCIMAPIKey"
+	BackendService_CreateSCIMAPIKey_FullMethodName             = "/openauth.backend.v1.BackendService/CreateSCIMAPIKey"
+	BackendService_UpdateSCIMAPIKey_FullMethodName             = "/openauth.backend.v1.BackendService/UpdateSCIMAPIKey"
+	BackendService_DeleteSCIMAPIKey_FullMethodName             = "/openauth.backend.v1.BackendService/DeleteSCIMAPIKey"
+	BackendService_RevokeSCIMAPIKey_FullMethodName             = "/openauth.backend.v1.BackendService/RevokeSCIMAPIKey"
+	BackendService_ListUsers_FullMethodName                    = "/openauth.backend.v1.BackendService/ListUsers"
+	BackendService_GetUser_FullMethodName                      = "/openauth.backend.v1.BackendService/GetUser"
+	BackendService_ListSessions_FullMethodName                 = "/openauth.backend.v1.BackendService/ListSessions"
+	BackendService_GetSession_FullMethodName                   = "/openauth.backend.v1.BackendService/GetSession"
+	BackendService_ListIntermediateSessions_FullMethodName     = "/openauth.backend.v1.BackendService/ListIntermediateSessions"
+	BackendService_GetIntermediateSession_FullMethodName       = "/openauth.backend.v1.BackendService/GetIntermediateSession"
+	BackendService_DisableOrganizationLogins_FullMethodName    = "/openauth.backend.v1.BackendService/DisableOrganizationLogins"
+	BackendService_DisableProjectLogins_FullMethodName         = "/openauth.backend.v1.BackendService/DisableProjectLogins"
+	BackendService_EnableOrganizationLogins_FullMethodName     = "/openauth.backend.v1.BackendService/EnableOrganizationLogins"
+	BackendService_EnableProjectLogins_FullMethodName          = "/openauth.backend.v1.BackendService/EnableProjectLogins"
+	BackendService_UpdateProject_FullMethodName                = "/openauth.backend.v1.BackendService/UpdateProject"
+	BackendService_CreateProjectRedirectURI_FullMethodName     = "/openauth.backend.v1.BackendService/CreateProjectRedirectURI"
+	BackendService_DeleteProjectRedirectURI_FullMethodName     = "/openauth.backend.v1.BackendService/DeleteProjectRedirectURI"
+	BackendService_GetProjectRedirectURI_FullMethodName        = "/openauth.backend.v1.BackendService/GetProjectRedirectURI"
+	BackendService_ListProjectRedirectURIs_FullMethodName      = "/openauth.backend.v1.BackendService/ListProjectRedirectURIs"
+	BackendService_UpdateProjectRedirectURI_FullMethodName     = "/openauth.backend.v1.BackendService/UpdateProjectRedirectURI"
+	BackendService_GetProjectUISettings_FullMethodName         = "/openauth.backend.v1.BackendService/GetProjectUISettings"
+	BackendService_UpdateProjectUISettings_FullMethodName      = "/openauth.backend.v1.BackendService/UpdateProjectUISettings"
+	BackendService_ListProjectAPIKeys_FullMethodName           = "/openauth.backend.v1.BackendService/ListProjectAPIKeys"
+	BackendService_GetProjectAPIKey_FullMethodName             = "/openauth.backend.v1.BackendService/GetProjectAPIKey"
+	BackendService_CreateProjectAPIKey_FullMethodName          = "/openauth.backend.v1.BackendService/CreateProjectAPIKey"
+	BackendService_UpdateProjectAPIKey_FullMethodName          = "/openauth.backend.v1.BackendService/UpdateProjectAPIKey"
+	BackendService_DeleteProjectAPIKey_FullMethodName          = "/openauth.backend.v1.BackendService/DeleteProjectAPIKey"
+	BackendService_RevokeProjectAPIKey_FullMethodName          = "/openauth.backend.v1.BackendService/RevokeProjectAPIKey"
+	BackendService_CreateUserImpersonationToken_FullMethodName = "/openauth.backend.v1.BackendService/CreateUserImpersonationToken"
 )
 
 // BackendServiceClient is the client API for BackendService service.
@@ -107,6 +108,7 @@ type BackendServiceClient interface {
 	UpdateProjectAPIKey(ctx context.Context, in *UpdateProjectAPIKeyRequest, opts ...grpc.CallOption) (*UpdateProjectAPIKeyResponse, error)
 	DeleteProjectAPIKey(ctx context.Context, in *DeleteProjectAPIKeyRequest, opts ...grpc.CallOption) (*DeleteProjectAPIKeyResponse, error)
 	RevokeProjectAPIKey(ctx context.Context, in *RevokeProjectAPIKeyRequest, opts ...grpc.CallOption) (*RevokeProjectAPIKeyResponse, error)
+	CreateUserImpersonationToken(ctx context.Context, in *CreateUserImpersonationTokenRequest, opts ...grpc.CallOption) (*CreateUserImpersonationTokenResponse, error)
 }
 
 type backendServiceClient struct {
@@ -527,6 +529,16 @@ func (c *backendServiceClient) RevokeProjectAPIKey(ctx context.Context, in *Revo
 	return out, nil
 }
 
+func (c *backendServiceClient) CreateUserImpersonationToken(ctx context.Context, in *CreateUserImpersonationTokenRequest, opts ...grpc.CallOption) (*CreateUserImpersonationTokenResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateUserImpersonationTokenResponse)
+	err := c.cc.Invoke(ctx, BackendService_CreateUserImpersonationToken_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // BackendServiceServer is the server API for BackendService service.
 // All implementations must embed UnimplementedBackendServiceServer
 // for forward compatibility.
@@ -572,6 +584,7 @@ type BackendServiceServer interface {
 	UpdateProjectAPIKey(context.Context, *UpdateProjectAPIKeyRequest) (*UpdateProjectAPIKeyResponse, error)
 	DeleteProjectAPIKey(context.Context, *DeleteProjectAPIKeyRequest) (*DeleteProjectAPIKeyResponse, error)
 	RevokeProjectAPIKey(context.Context, *RevokeProjectAPIKeyRequest) (*RevokeProjectAPIKeyResponse, error)
+	CreateUserImpersonationToken(context.Context, *CreateUserImpersonationTokenRequest) (*CreateUserImpersonationTokenResponse, error)
 	mustEmbedUnimplementedBackendServiceServer()
 }
 
@@ -704,6 +717,9 @@ func (UnimplementedBackendServiceServer) DeleteProjectAPIKey(context.Context, *D
 }
 func (UnimplementedBackendServiceServer) RevokeProjectAPIKey(context.Context, *RevokeProjectAPIKeyRequest) (*RevokeProjectAPIKeyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RevokeProjectAPIKey not implemented")
+}
+func (UnimplementedBackendServiceServer) CreateUserImpersonationToken(context.Context, *CreateUserImpersonationTokenRequest) (*CreateUserImpersonationTokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateUserImpersonationToken not implemented")
 }
 func (UnimplementedBackendServiceServer) mustEmbedUnimplementedBackendServiceServer() {}
 func (UnimplementedBackendServiceServer) testEmbeddedByValue()                        {}
@@ -1464,6 +1480,24 @@ func _BackendService_RevokeProjectAPIKey_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BackendService_CreateUserImpersonationToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateUserImpersonationTokenRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).CreateUserImpersonationToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_CreateUserImpersonationToken_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).CreateUserImpersonationToken(ctx, req.(*CreateUserImpersonationTokenRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // BackendService_ServiceDesc is the grpc.ServiceDesc for BackendService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1634,6 +1668,10 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RevokeProjectAPIKey",
 			Handler:    _BackendService_RevokeProjectAPIKey_Handler,
+		},
+		{
+			MethodName: "CreateUserImpersonationToken",
+			Handler:    _BackendService_CreateUserImpersonationToken_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
