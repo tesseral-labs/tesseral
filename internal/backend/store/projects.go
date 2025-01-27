@@ -46,7 +46,7 @@ func (s *Store) DisableProjectLogins(ctx context.Context, req *backendv1.Disable
 	}
 	defer rollback()
 
-	if err = q.DisableProjectLogin(ctx, authn.ProjectID(ctx)); err != nil {
+	if err := q.DisableProjectLogins(ctx, authn.ProjectID(ctx)); err != nil {
 		return nil, fmt.Errorf("lockout project: %w", err)
 	}
 
@@ -72,7 +72,7 @@ func (s *Store) EnableProjectLogins(ctx context.Context, req *backendv1.EnablePr
 	}
 	defer rollback()
 
-	if err = q.EnableProjectLogin(ctx, authn.ProjectID(ctx)); err != nil {
+	if err := q.EnableProjectLogins(ctx, authn.ProjectID(ctx)); err != nil {
 		return nil, fmt.Errorf("unlock project: %w", err)
 	}
 

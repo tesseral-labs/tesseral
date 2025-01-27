@@ -294,11 +294,11 @@ func (s *Store) DisableOrganizationLogins(ctx context.Context, req *backendv1.Di
 	}
 	defer rollback()
 
-	if err := q.DisableOrganizationLogin(ctx, authn.ProjectID(ctx)); err != nil {
+	if err := q.DisableOrganizationLogins(ctx, authn.ProjectID(ctx)); err != nil {
 		return nil, fmt.Errorf("lockout organization: %w", err)
 	}
 
-	if err = q.RevokeAllOrganizationSessions(ctx, authn.ProjectID(ctx)); err != nil {
+	if err := q.RevokeAllOrganizationSessions(ctx, authn.ProjectID(ctx)); err != nil {
 		return nil, fmt.Errorf("revoke all organization sessions: %w", err)
 	}
 
@@ -320,7 +320,7 @@ func (s *Store) EnableOrganizationLogins(ctx context.Context, req *backendv1.Ena
 	}
 	defer rollback()
 
-	if err := q.EnableOrganizationLogin(ctx, authn.ProjectID(ctx)); err != nil {
+	if err := q.EnableOrganizationLogins(ctx, authn.ProjectID(ctx)); err != nil {
 		return nil, fmt.Errorf("unlock organization: %w", err)
 	}
 

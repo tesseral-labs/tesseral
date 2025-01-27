@@ -253,7 +253,7 @@ func (q *Queries) DeleteSCIMAPIKey(ctx context.Context, id uuid.UUID) error {
 	return err
 }
 
-const disableOrganizationLogin = `-- name: DisableOrganizationLogin :exec
+const disableOrganizationLogins = `-- name: DisableOrganizationLogins :exec
 UPDATE
     organizations
 SET
@@ -262,12 +262,12 @@ WHERE
     id = $1
 `
 
-func (q *Queries) DisableOrganizationLogin(ctx context.Context, id uuid.UUID) error {
-	_, err := q.db.Exec(ctx, disableOrganizationLogin, id)
+func (q *Queries) DisableOrganizationLogins(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, disableOrganizationLogins, id)
 	return err
 }
 
-const disableProjectLogin = `-- name: DisableProjectLogin :exec
+const disableProjectLogins = `-- name: DisableProjectLogins :exec
 UPDATE
     projects
 SET
@@ -276,12 +276,12 @@ WHERE
     id = $1
 `
 
-func (q *Queries) DisableProjectLogin(ctx context.Context, id uuid.UUID) error {
-	_, err := q.db.Exec(ctx, disableProjectLogin, id)
+func (q *Queries) DisableProjectLogins(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, disableProjectLogins, id)
 	return err
 }
 
-const enableOrganizationLogin = `-- name: EnableOrganizationLogin :exec
+const enableOrganizationLogins = `-- name: EnableOrganizationLogins :exec
 UPDATE
     organizations
 SET
@@ -290,12 +290,12 @@ WHERE
     id = $1
 `
 
-func (q *Queries) EnableOrganizationLogin(ctx context.Context, id uuid.UUID) error {
-	_, err := q.db.Exec(ctx, enableOrganizationLogin, id)
+func (q *Queries) EnableOrganizationLogins(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, enableOrganizationLogins, id)
 	return err
 }
 
-const enableProjectLogin = `-- name: EnableProjectLogin :exec
+const enableProjectLogins = `-- name: EnableProjectLogins :exec
 UPDATE
     projects
 SET
@@ -304,8 +304,8 @@ WHERE
     id = $1
 `
 
-func (q *Queries) EnableProjectLogin(ctx context.Context, id uuid.UUID) error {
-	_, err := q.db.Exec(ctx, enableProjectLogin, id)
+func (q *Queries) EnableProjectLogins(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, enableProjectLogins, id)
 	return err
 }
 
@@ -1139,7 +1139,6 @@ WHERE
             users
         WHERE
             organization_id = $1)
-    AND expires_time > now()
 `
 
 func (q *Queries) RevokeAllOrganizationSessions(ctx context.Context, organizationID uuid.UUID) error {
@@ -1166,7 +1165,6 @@ WHERE
                     organizations
                 WHERE
                     project_id = $1))
-        AND expires_time > now()
 `
 
 func (q *Queries) RevokeAllProjectSessions(ctx context.Context, projectID uuid.UUID) error {

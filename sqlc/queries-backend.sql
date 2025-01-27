@@ -449,8 +449,7 @@ WHERE
         FROM
             users
         WHERE
-            organization_id = $1)
-    AND expires_time > now();
+            organization_id = $1);
 
 -- name: RevokeAllProjectSessions :exec
 UPDATE
@@ -470,10 +469,9 @@ WHERE
                 FROM
                     organizations
                 WHERE
-                    project_id = $1))
-        AND expires_time > now();
+                    project_id = $1));
 
--- name: DisableOrganizationLogin :exec
+-- name: DisableOrganizationLogins :exec
 UPDATE
     organizations
 SET
@@ -481,7 +479,7 @@ SET
 WHERE
     id = $1;
 
--- name: EnableOrganizationLogin :exec
+-- name: EnableOrganizationLogins :exec
 UPDATE
     organizations
 SET
@@ -489,7 +487,7 @@ SET
 WHERE
     id = $1;
 
--- name: DisableProjectLogin :exec
+-- name: DisableProjectLogins :exec
 UPDATE
     projects
 SET
@@ -497,7 +495,7 @@ SET
 WHERE
     id = $1;
 
--- name: EnableProjectLogin :exec
+-- name: EnableProjectLogins :exec
 UPDATE
     projects
 SET
