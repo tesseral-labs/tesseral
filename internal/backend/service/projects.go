@@ -26,8 +26,8 @@ func (s *Service) UpdateProject(ctx context.Context, req *connect.Request[backen
 	return connect.NewResponse(res), nil
 }
 
-func (s *Service) LockoutProject(ctx context.Context, req *connect.Request[backendv1.LockoutProjectRequest]) (*connect.Response[backendv1.LockoutProjectResponse], error) {
-	res, err := s.Store.LockoutProject(ctx, req.Msg)
+func (s *Service) DisableProjectLogins(ctx context.Context, req *connect.Request[backendv1.DisableProjectLoginsRequest]) (*connect.Response[backendv1.DisableProjectLoginsResponse], error) {
+	res, err := s.Store.DisableProjectLogins(ctx, req.Msg)
 	if err != nil {
 		return nil, fmt.Errorf("store: %w", err)
 	}
@@ -35,8 +35,8 @@ func (s *Service) LockoutProject(ctx context.Context, req *connect.Request[backe
 	return connect.NewResponse(res), nil
 }
 
-func (s *Service) UnlockProject(ctx context.Context, req *connect.Request[backendv1.UnlockProjectRequest]) (*connect.Response[backendv1.UnlockProjectResponse], error) {
-	res, err := s.Store.UnlockProject(ctx, req.Msg)
+func (s *Service) EnableProjectLogins(ctx context.Context, req *connect.Request[backendv1.EnableProjectLoginsRequest]) (*connect.Response[backendv1.EnableProjectLoginsResponse], error) {
+	res, err := s.Store.EnableProjectLogins(ctx, req.Msg)
 	if err != nil {
 		return nil, fmt.Errorf("store: %w", err)
 	}

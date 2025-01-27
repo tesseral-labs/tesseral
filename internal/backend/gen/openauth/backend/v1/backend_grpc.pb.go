@@ -19,47 +19,47 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	BackendService_GetProject_FullMethodName               = "/openauth.backend.v1.BackendService/GetProject"
-	BackendService_ListOrganizations_FullMethodName        = "/openauth.backend.v1.BackendService/ListOrganizations"
-	BackendService_GetOrganization_FullMethodName          = "/openauth.backend.v1.BackendService/GetOrganization"
-	BackendService_CreateOrganization_FullMethodName       = "/openauth.backend.v1.BackendService/CreateOrganization"
-	BackendService_UpdateOrganization_FullMethodName       = "/openauth.backend.v1.BackendService/UpdateOrganization"
-	BackendService_DeleteOrganization_FullMethodName       = "/openauth.backend.v1.BackendService/DeleteOrganization"
-	BackendService_ListSAMLConnections_FullMethodName      = "/openauth.backend.v1.BackendService/ListSAMLConnections"
-	BackendService_GetSAMLConnection_FullMethodName        = "/openauth.backend.v1.BackendService/GetSAMLConnection"
-	BackendService_CreateSAMLConnection_FullMethodName     = "/openauth.backend.v1.BackendService/CreateSAMLConnection"
-	BackendService_UpdateSAMLConnection_FullMethodName     = "/openauth.backend.v1.BackendService/UpdateSAMLConnection"
-	BackendService_DeleteSAMLConnection_FullMethodName     = "/openauth.backend.v1.BackendService/DeleteSAMLConnection"
-	BackendService_ListSCIMAPIKeys_FullMethodName          = "/openauth.backend.v1.BackendService/ListSCIMAPIKeys"
-	BackendService_GetSCIMAPIKey_FullMethodName            = "/openauth.backend.v1.BackendService/GetSCIMAPIKey"
-	BackendService_CreateSCIMAPIKey_FullMethodName         = "/openauth.backend.v1.BackendService/CreateSCIMAPIKey"
-	BackendService_UpdateSCIMAPIKey_FullMethodName         = "/openauth.backend.v1.BackendService/UpdateSCIMAPIKey"
-	BackendService_DeleteSCIMAPIKey_FullMethodName         = "/openauth.backend.v1.BackendService/DeleteSCIMAPIKey"
-	BackendService_RevokeSCIMAPIKey_FullMethodName         = "/openauth.backend.v1.BackendService/RevokeSCIMAPIKey"
-	BackendService_ListUsers_FullMethodName                = "/openauth.backend.v1.BackendService/ListUsers"
-	BackendService_GetUser_FullMethodName                  = "/openauth.backend.v1.BackendService/GetUser"
-	BackendService_ListSessions_FullMethodName             = "/openauth.backend.v1.BackendService/ListSessions"
-	BackendService_GetSession_FullMethodName               = "/openauth.backend.v1.BackendService/GetSession"
-	BackendService_ListIntermediateSessions_FullMethodName = "/openauth.backend.v1.BackendService/ListIntermediateSessions"
-	BackendService_GetIntermediateSession_FullMethodName   = "/openauth.backend.v1.BackendService/GetIntermediateSession"
-	BackendService_LockoutOrganization_FullMethodName      = "/openauth.backend.v1.BackendService/LockoutOrganization"
-	BackendService_LockoutProject_FullMethodName           = "/openauth.backend.v1.BackendService/LockoutProject"
-	BackendService_UnlockOrganization_FullMethodName       = "/openauth.backend.v1.BackendService/UnlockOrganization"
-	BackendService_UnlockProject_FullMethodName            = "/openauth.backend.v1.BackendService/UnlockProject"
-	BackendService_UpdateProject_FullMethodName            = "/openauth.backend.v1.BackendService/UpdateProject"
-	BackendService_CreateProjectRedirectURI_FullMethodName = "/openauth.backend.v1.BackendService/CreateProjectRedirectURI"
-	BackendService_DeleteProjectRedirectURI_FullMethodName = "/openauth.backend.v1.BackendService/DeleteProjectRedirectURI"
-	BackendService_GetProjectRedirectURI_FullMethodName    = "/openauth.backend.v1.BackendService/GetProjectRedirectURI"
-	BackendService_ListProjectRedirectURIs_FullMethodName  = "/openauth.backend.v1.BackendService/ListProjectRedirectURIs"
-	BackendService_UpdateProjectRedirectURI_FullMethodName = "/openauth.backend.v1.BackendService/UpdateProjectRedirectURI"
-	BackendService_GetProjectUISettings_FullMethodName     = "/openauth.backend.v1.BackendService/GetProjectUISettings"
-	BackendService_UpdateProjectUISettings_FullMethodName  = "/openauth.backend.v1.BackendService/UpdateProjectUISettings"
-	BackendService_ListProjectAPIKeys_FullMethodName       = "/openauth.backend.v1.BackendService/ListProjectAPIKeys"
-	BackendService_GetProjectAPIKey_FullMethodName         = "/openauth.backend.v1.BackendService/GetProjectAPIKey"
-	BackendService_CreateProjectAPIKey_FullMethodName      = "/openauth.backend.v1.BackendService/CreateProjectAPIKey"
-	BackendService_UpdateProjectAPIKey_FullMethodName      = "/openauth.backend.v1.BackendService/UpdateProjectAPIKey"
-	BackendService_DeleteProjectAPIKey_FullMethodName      = "/openauth.backend.v1.BackendService/DeleteProjectAPIKey"
-	BackendService_RevokeProjectAPIKey_FullMethodName      = "/openauth.backend.v1.BackendService/RevokeProjectAPIKey"
+	BackendService_GetProject_FullMethodName                = "/openauth.backend.v1.BackendService/GetProject"
+	BackendService_ListOrganizations_FullMethodName         = "/openauth.backend.v1.BackendService/ListOrganizations"
+	BackendService_GetOrganization_FullMethodName           = "/openauth.backend.v1.BackendService/GetOrganization"
+	BackendService_CreateOrganization_FullMethodName        = "/openauth.backend.v1.BackendService/CreateOrganization"
+	BackendService_UpdateOrganization_FullMethodName        = "/openauth.backend.v1.BackendService/UpdateOrganization"
+	BackendService_DeleteOrganization_FullMethodName        = "/openauth.backend.v1.BackendService/DeleteOrganization"
+	BackendService_ListSAMLConnections_FullMethodName       = "/openauth.backend.v1.BackendService/ListSAMLConnections"
+	BackendService_GetSAMLConnection_FullMethodName         = "/openauth.backend.v1.BackendService/GetSAMLConnection"
+	BackendService_CreateSAMLConnection_FullMethodName      = "/openauth.backend.v1.BackendService/CreateSAMLConnection"
+	BackendService_UpdateSAMLConnection_FullMethodName      = "/openauth.backend.v1.BackendService/UpdateSAMLConnection"
+	BackendService_DeleteSAMLConnection_FullMethodName      = "/openauth.backend.v1.BackendService/DeleteSAMLConnection"
+	BackendService_ListSCIMAPIKeys_FullMethodName           = "/openauth.backend.v1.BackendService/ListSCIMAPIKeys"
+	BackendService_GetSCIMAPIKey_FullMethodName             = "/openauth.backend.v1.BackendService/GetSCIMAPIKey"
+	BackendService_CreateSCIMAPIKey_FullMethodName          = "/openauth.backend.v1.BackendService/CreateSCIMAPIKey"
+	BackendService_UpdateSCIMAPIKey_FullMethodName          = "/openauth.backend.v1.BackendService/UpdateSCIMAPIKey"
+	BackendService_DeleteSCIMAPIKey_FullMethodName          = "/openauth.backend.v1.BackendService/DeleteSCIMAPIKey"
+	BackendService_RevokeSCIMAPIKey_FullMethodName          = "/openauth.backend.v1.BackendService/RevokeSCIMAPIKey"
+	BackendService_ListUsers_FullMethodName                 = "/openauth.backend.v1.BackendService/ListUsers"
+	BackendService_GetUser_FullMethodName                   = "/openauth.backend.v1.BackendService/GetUser"
+	BackendService_ListSessions_FullMethodName              = "/openauth.backend.v1.BackendService/ListSessions"
+	BackendService_GetSession_FullMethodName                = "/openauth.backend.v1.BackendService/GetSession"
+	BackendService_ListIntermediateSessions_FullMethodName  = "/openauth.backend.v1.BackendService/ListIntermediateSessions"
+	BackendService_GetIntermediateSession_FullMethodName    = "/openauth.backend.v1.BackendService/GetIntermediateSession"
+	BackendService_DisableOrganizationLogins_FullMethodName = "/openauth.backend.v1.BackendService/DisableOrganizationLogins"
+	BackendService_DisableProjectLogins_FullMethodName      = "/openauth.backend.v1.BackendService/DisableProjectLogins"
+	BackendService_EnableOrganizationLogins_FullMethodName  = "/openauth.backend.v1.BackendService/EnableOrganizationLogins"
+	BackendService_EnableProjectLogins_FullMethodName       = "/openauth.backend.v1.BackendService/EnableProjectLogins"
+	BackendService_UpdateProject_FullMethodName             = "/openauth.backend.v1.BackendService/UpdateProject"
+	BackendService_CreateProjectRedirectURI_FullMethodName  = "/openauth.backend.v1.BackendService/CreateProjectRedirectURI"
+	BackendService_DeleteProjectRedirectURI_FullMethodName  = "/openauth.backend.v1.BackendService/DeleteProjectRedirectURI"
+	BackendService_GetProjectRedirectURI_FullMethodName     = "/openauth.backend.v1.BackendService/GetProjectRedirectURI"
+	BackendService_ListProjectRedirectURIs_FullMethodName   = "/openauth.backend.v1.BackendService/ListProjectRedirectURIs"
+	BackendService_UpdateProjectRedirectURI_FullMethodName  = "/openauth.backend.v1.BackendService/UpdateProjectRedirectURI"
+	BackendService_GetProjectUISettings_FullMethodName      = "/openauth.backend.v1.BackendService/GetProjectUISettings"
+	BackendService_UpdateProjectUISettings_FullMethodName   = "/openauth.backend.v1.BackendService/UpdateProjectUISettings"
+	BackendService_ListProjectAPIKeys_FullMethodName        = "/openauth.backend.v1.BackendService/ListProjectAPIKeys"
+	BackendService_GetProjectAPIKey_FullMethodName          = "/openauth.backend.v1.BackendService/GetProjectAPIKey"
+	BackendService_CreateProjectAPIKey_FullMethodName       = "/openauth.backend.v1.BackendService/CreateProjectAPIKey"
+	BackendService_UpdateProjectAPIKey_FullMethodName       = "/openauth.backend.v1.BackendService/UpdateProjectAPIKey"
+	BackendService_DeleteProjectAPIKey_FullMethodName       = "/openauth.backend.v1.BackendService/DeleteProjectAPIKey"
+	BackendService_RevokeProjectAPIKey_FullMethodName       = "/openauth.backend.v1.BackendService/RevokeProjectAPIKey"
 )
 
 // BackendServiceClient is the client API for BackendService service.
@@ -89,10 +89,10 @@ type BackendServiceClient interface {
 	GetSession(ctx context.Context, in *GetSessionRequest, opts ...grpc.CallOption) (*GetSessionResponse, error)
 	ListIntermediateSessions(ctx context.Context, in *ListIntermediateSessionsRequest, opts ...grpc.CallOption) (*ListIntermediateSessionsResponse, error)
 	GetIntermediateSession(ctx context.Context, in *GetIntermediateSessionRequest, opts ...grpc.CallOption) (*GetIntermediateSessionResponse, error)
-	LockoutOrganization(ctx context.Context, in *LockoutOrganizationRequest, opts ...grpc.CallOption) (*LockoutOrganizationResponse, error)
-	LockoutProject(ctx context.Context, in *LockoutProjectRequest, opts ...grpc.CallOption) (*LockoutProjectResponse, error)
-	UnlockOrganization(ctx context.Context, in *UnlockOrganizationRequest, opts ...grpc.CallOption) (*UnlockOrganizationResponse, error)
-	UnlockProject(ctx context.Context, in *UnlockProjectRequest, opts ...grpc.CallOption) (*UnlockProjectResponse, error)
+	DisableOrganizationLogins(ctx context.Context, in *DisableOrganizationLoginsRequest, opts ...grpc.CallOption) (*DisableOrganizationLoginsResponse, error)
+	DisableProjectLogins(ctx context.Context, in *DisableProjectLoginsRequest, opts ...grpc.CallOption) (*DisableProjectLoginsResponse, error)
+	EnableOrganizationLogins(ctx context.Context, in *EnableOrganizationLoginsRequest, opts ...grpc.CallOption) (*EnableOrganizationLoginsResponse, error)
+	EnableProjectLogins(ctx context.Context, in *EnableProjectLoginsRequest, opts ...grpc.CallOption) (*EnableProjectLoginsResponse, error)
 	UpdateProject(ctx context.Context, in *UpdateProjectRequest, opts ...grpc.CallOption) (*UpdateProjectResponse, error)
 	CreateProjectRedirectURI(ctx context.Context, in *CreateProjectRedirectURIRequest, opts ...grpc.CallOption) (*CreateProjectRedirectURIResponse, error)
 	DeleteProjectRedirectURI(ctx context.Context, in *DeleteProjectRedirectURIRequest, opts ...grpc.CallOption) (*DeleteProjectRedirectURIResponse, error)
@@ -347,40 +347,40 @@ func (c *backendServiceClient) GetIntermediateSession(ctx context.Context, in *G
 	return out, nil
 }
 
-func (c *backendServiceClient) LockoutOrganization(ctx context.Context, in *LockoutOrganizationRequest, opts ...grpc.CallOption) (*LockoutOrganizationResponse, error) {
+func (c *backendServiceClient) DisableOrganizationLogins(ctx context.Context, in *DisableOrganizationLoginsRequest, opts ...grpc.CallOption) (*DisableOrganizationLoginsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(LockoutOrganizationResponse)
-	err := c.cc.Invoke(ctx, BackendService_LockoutOrganization_FullMethodName, in, out, cOpts...)
+	out := new(DisableOrganizationLoginsResponse)
+	err := c.cc.Invoke(ctx, BackendService_DisableOrganizationLogins_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *backendServiceClient) LockoutProject(ctx context.Context, in *LockoutProjectRequest, opts ...grpc.CallOption) (*LockoutProjectResponse, error) {
+func (c *backendServiceClient) DisableProjectLogins(ctx context.Context, in *DisableProjectLoginsRequest, opts ...grpc.CallOption) (*DisableProjectLoginsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(LockoutProjectResponse)
-	err := c.cc.Invoke(ctx, BackendService_LockoutProject_FullMethodName, in, out, cOpts...)
+	out := new(DisableProjectLoginsResponse)
+	err := c.cc.Invoke(ctx, BackendService_DisableProjectLogins_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *backendServiceClient) UnlockOrganization(ctx context.Context, in *UnlockOrganizationRequest, opts ...grpc.CallOption) (*UnlockOrganizationResponse, error) {
+func (c *backendServiceClient) EnableOrganizationLogins(ctx context.Context, in *EnableOrganizationLoginsRequest, opts ...grpc.CallOption) (*EnableOrganizationLoginsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(UnlockOrganizationResponse)
-	err := c.cc.Invoke(ctx, BackendService_UnlockOrganization_FullMethodName, in, out, cOpts...)
+	out := new(EnableOrganizationLoginsResponse)
+	err := c.cc.Invoke(ctx, BackendService_EnableOrganizationLogins_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *backendServiceClient) UnlockProject(ctx context.Context, in *UnlockProjectRequest, opts ...grpc.CallOption) (*UnlockProjectResponse, error) {
+func (c *backendServiceClient) EnableProjectLogins(ctx context.Context, in *EnableProjectLoginsRequest, opts ...grpc.CallOption) (*EnableProjectLoginsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(UnlockProjectResponse)
-	err := c.cc.Invoke(ctx, BackendService_UnlockProject_FullMethodName, in, out, cOpts...)
+	out := new(EnableProjectLoginsResponse)
+	err := c.cc.Invoke(ctx, BackendService_EnableProjectLogins_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -554,10 +554,10 @@ type BackendServiceServer interface {
 	GetSession(context.Context, *GetSessionRequest) (*GetSessionResponse, error)
 	ListIntermediateSessions(context.Context, *ListIntermediateSessionsRequest) (*ListIntermediateSessionsResponse, error)
 	GetIntermediateSession(context.Context, *GetIntermediateSessionRequest) (*GetIntermediateSessionResponse, error)
-	LockoutOrganization(context.Context, *LockoutOrganizationRequest) (*LockoutOrganizationResponse, error)
-	LockoutProject(context.Context, *LockoutProjectRequest) (*LockoutProjectResponse, error)
-	UnlockOrganization(context.Context, *UnlockOrganizationRequest) (*UnlockOrganizationResponse, error)
-	UnlockProject(context.Context, *UnlockProjectRequest) (*UnlockProjectResponse, error)
+	DisableOrganizationLogins(context.Context, *DisableOrganizationLoginsRequest) (*DisableOrganizationLoginsResponse, error)
+	DisableProjectLogins(context.Context, *DisableProjectLoginsRequest) (*DisableProjectLoginsResponse, error)
+	EnableOrganizationLogins(context.Context, *EnableOrganizationLoginsRequest) (*EnableOrganizationLoginsResponse, error)
+	EnableProjectLogins(context.Context, *EnableProjectLoginsRequest) (*EnableProjectLoginsResponse, error)
 	UpdateProject(context.Context, *UpdateProjectRequest) (*UpdateProjectResponse, error)
 	CreateProjectRedirectURI(context.Context, *CreateProjectRedirectURIRequest) (*CreateProjectRedirectURIResponse, error)
 	DeleteProjectRedirectURI(context.Context, *DeleteProjectRedirectURIRequest) (*DeleteProjectRedirectURIResponse, error)
@@ -651,17 +651,17 @@ func (UnimplementedBackendServiceServer) ListIntermediateSessions(context.Contex
 func (UnimplementedBackendServiceServer) GetIntermediateSession(context.Context, *GetIntermediateSessionRequest) (*GetIntermediateSessionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetIntermediateSession not implemented")
 }
-func (UnimplementedBackendServiceServer) LockoutOrganization(context.Context, *LockoutOrganizationRequest) (*LockoutOrganizationResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method LockoutOrganization not implemented")
+func (UnimplementedBackendServiceServer) DisableOrganizationLogins(context.Context, *DisableOrganizationLoginsRequest) (*DisableOrganizationLoginsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DisableOrganizationLogins not implemented")
 }
-func (UnimplementedBackendServiceServer) LockoutProject(context.Context, *LockoutProjectRequest) (*LockoutProjectResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method LockoutProject not implemented")
+func (UnimplementedBackendServiceServer) DisableProjectLogins(context.Context, *DisableProjectLoginsRequest) (*DisableProjectLoginsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DisableProjectLogins not implemented")
 }
-func (UnimplementedBackendServiceServer) UnlockOrganization(context.Context, *UnlockOrganizationRequest) (*UnlockOrganizationResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UnlockOrganization not implemented")
+func (UnimplementedBackendServiceServer) EnableOrganizationLogins(context.Context, *EnableOrganizationLoginsRequest) (*EnableOrganizationLoginsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EnableOrganizationLogins not implemented")
 }
-func (UnimplementedBackendServiceServer) UnlockProject(context.Context, *UnlockProjectRequest) (*UnlockProjectResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UnlockProject not implemented")
+func (UnimplementedBackendServiceServer) EnableProjectLogins(context.Context, *EnableProjectLoginsRequest) (*EnableProjectLoginsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EnableProjectLogins not implemented")
 }
 func (UnimplementedBackendServiceServer) UpdateProject(context.Context, *UpdateProjectRequest) (*UpdateProjectResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateProject not implemented")
@@ -1140,74 +1140,74 @@ func _BackendService_GetIntermediateSession_Handler(srv interface{}, ctx context
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BackendService_LockoutOrganization_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LockoutOrganizationRequest)
+func _BackendService_DisableOrganizationLogins_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DisableOrganizationLoginsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BackendServiceServer).LockoutOrganization(ctx, in)
+		return srv.(BackendServiceServer).DisableOrganizationLogins(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BackendService_LockoutOrganization_FullMethodName,
+		FullMethod: BackendService_DisableOrganizationLogins_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).LockoutOrganization(ctx, req.(*LockoutOrganizationRequest))
+		return srv.(BackendServiceServer).DisableOrganizationLogins(ctx, req.(*DisableOrganizationLoginsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BackendService_LockoutProject_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LockoutProjectRequest)
+func _BackendService_DisableProjectLogins_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DisableProjectLoginsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BackendServiceServer).LockoutProject(ctx, in)
+		return srv.(BackendServiceServer).DisableProjectLogins(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BackendService_LockoutProject_FullMethodName,
+		FullMethod: BackendService_DisableProjectLogins_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).LockoutProject(ctx, req.(*LockoutProjectRequest))
+		return srv.(BackendServiceServer).DisableProjectLogins(ctx, req.(*DisableProjectLoginsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BackendService_UnlockOrganization_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UnlockOrganizationRequest)
+func _BackendService_EnableOrganizationLogins_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EnableOrganizationLoginsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BackendServiceServer).UnlockOrganization(ctx, in)
+		return srv.(BackendServiceServer).EnableOrganizationLogins(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BackendService_UnlockOrganization_FullMethodName,
+		FullMethod: BackendService_EnableOrganizationLogins_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).UnlockOrganization(ctx, req.(*UnlockOrganizationRequest))
+		return srv.(BackendServiceServer).EnableOrganizationLogins(ctx, req.(*EnableOrganizationLoginsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BackendService_UnlockProject_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UnlockProjectRequest)
+func _BackendService_EnableProjectLogins_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EnableProjectLoginsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BackendServiceServer).UnlockProject(ctx, in)
+		return srv.(BackendServiceServer).EnableProjectLogins(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BackendService_UnlockProject_FullMethodName,
+		FullMethod: BackendService_EnableProjectLogins_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).UnlockProject(ctx, req.(*UnlockProjectRequest))
+		return srv.(BackendServiceServer).EnableProjectLogins(ctx, req.(*EnableProjectLoginsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1564,20 +1564,20 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _BackendService_GetIntermediateSession_Handler,
 		},
 		{
-			MethodName: "LockoutOrganization",
-			Handler:    _BackendService_LockoutOrganization_Handler,
+			MethodName: "DisableOrganizationLogins",
+			Handler:    _BackendService_DisableOrganizationLogins_Handler,
 		},
 		{
-			MethodName: "LockoutProject",
-			Handler:    _BackendService_LockoutProject_Handler,
+			MethodName: "DisableProjectLogins",
+			Handler:    _BackendService_DisableProjectLogins_Handler,
 		},
 		{
-			MethodName: "UnlockOrganization",
-			Handler:    _BackendService_UnlockOrganization_Handler,
+			MethodName: "EnableOrganizationLogins",
+			Handler:    _BackendService_EnableOrganizationLogins_Handler,
 		},
 		{
-			MethodName: "UnlockProject",
-			Handler:    _BackendService_UnlockProject_Handler,
+			MethodName: "EnableProjectLogins",
+			Handler:    _BackendService_EnableProjectLogins_Handler,
 		},
 		{
 			MethodName: "UpdateProject",

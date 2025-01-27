@@ -283,7 +283,7 @@ func (s *Store) DeleteOrganization(ctx context.Context, req *backendv1.DeleteOrg
 	return &backendv1.DeleteOrganizationResponse{}, nil
 }
 
-func (s *Store) LockoutOrganization(ctx context.Context, req *backendv1.LockoutOrganizationRequest) (*backendv1.LockoutOrganizationResponse, error) {
+func (s *Store) DisableOrganizationLogins(ctx context.Context, req *backendv1.DisableOrganizationLoginsRequest) (*backendv1.DisableOrganizationLoginsResponse, error) {
 	if err := validateIsDogfoodSession(ctx); err != nil {
 		return nil, fmt.Errorf("validate is dogfood session: %w", err)
 	}
@@ -306,10 +306,10 @@ func (s *Store) LockoutOrganization(ctx context.Context, req *backendv1.LockoutO
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return &backendv1.LockoutOrganizationResponse{}, nil
+	return &backendv1.DisableOrganizationLoginsResponse{}, nil
 }
 
-func (s *Store) UnlockOrganization(ctx context.Context, req *backendv1.UnlockOrganizationRequest) (*backendv1.UnlockOrganizationResponse, error) {
+func (s *Store) EnableOrganizationLogins(ctx context.Context, req *backendv1.EnableOrganizationLoginsRequest) (*backendv1.EnableOrganizationLoginsResponse, error) {
 	if err := validateIsDogfoodSession(ctx); err != nil {
 		return nil, fmt.Errorf("validate is dogfood session: %w", err)
 	}
@@ -328,7 +328,7 @@ func (s *Store) UnlockOrganization(ctx context.Context, req *backendv1.UnlockOrg
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return &backendv1.UnlockOrganizationResponse{}, nil
+	return &backendv1.EnableOrganizationLoginsResponse{}, nil
 }
 
 func parseOrganization(qProject queries.Project, qOrg queries.Organization) *backendv1.Organization {

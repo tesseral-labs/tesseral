@@ -152,10 +152,10 @@ service BackendService {
     };
   }
 
-  rpc LockoutOrganization(LockoutOrganizationRequest) returns (LockoutOrganizationResponse) {}
-  rpc LockoutProject(LockoutProjectRequest) returns (LockoutProjectResponse) {}
-  rpc UnlockOrganization(UnlockOrganizationRequest) returns (UnlockOrganizationResponse) {}
-  rpc UnlockProject(UnlockProjectRequest) returns (UnlockProjectResponse) {}
+  rpc DisableOrganizationLogins(DisableOrganizationLoginsRequest) returns (DisableOrganizationLoginsResponse) {}
+  rpc DisableProjectLogins(DisableProjectLoginsRequest) returns (DisableProjectLoginsResponse) {}
+  rpc EnableOrganizationLogins(EnableOrganizationLoginsRequest) returns (EnableOrganizationLoginsResponse) {}
+  rpc EnableProjectLogins(EnableProjectLoginsRequest) returns (EnableProjectLoginsResponse) {}
 
   rpc UpdateProject(UpdateProjectRequest) returns (UpdateProjectResponse);
 
@@ -498,29 +498,29 @@ message UpdateProjectUISettingsResponse {
   string primary_color = 10;
 }
 
-message LockoutOrganizationRequest {
+message DisableOrganizationLoginsRequest {
   string organization_id = 1;
 }
 
-message LockoutOrganizationResponse {}
+message DisableOrganizationLoginsResponse {}
 
-message LockoutProjectRequest {
+message DisableProjectLoginsRequest {
   string project_id = 1;
 }
 
-message LockoutProjectResponse {}
+message DisableProjectLoginsResponse {}
 
-message UnlockOrganizationRequest {
+message EnableOrganizationLoginsRequest {
   string organization_id = 1;
 }
 
-message UnlockOrganizationResponse {}
+message EnableOrganizationLoginsResponse {}
 
-message UnlockProjectRequest {
+message EnableProjectLoginsRequest {
   string project_id = 1;
 }
 
-message UnlockProjectResponse {}
+message EnableProjectLoginsResponse {}
 
 message ImageUploadRequest {
   bytes data = 1;

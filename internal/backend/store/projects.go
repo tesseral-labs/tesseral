@@ -35,7 +35,7 @@ func (s *Store) GetProject(ctx context.Context, req *backendv1.GetProjectRequest
 	return &backendv1.GetProjectResponse{Project: parseProject(&project)}, nil
 }
 
-func (s *Store) LockoutProject(ctx context.Context, req *backendv1.LockoutProjectRequest) (*backendv1.LockoutProjectResponse, error) {
+func (s *Store) DisableProjectLogins(ctx context.Context, req *backendv1.DisableProjectLoginsRequest) (*backendv1.DisableProjectLoginsResponse, error) {
 	if err := validateIsDogfoodSession(ctx); err != nil {
 		return nil, fmt.Errorf("validate is dogfood session: %w", err)
 	}
@@ -58,10 +58,10 @@ func (s *Store) LockoutProject(ctx context.Context, req *backendv1.LockoutProjec
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return &backendv1.LockoutProjectResponse{}, nil
+	return &backendv1.DisableProjectLoginsResponse{}, nil
 }
 
-func (s *Store) UnlockProject(ctx context.Context, req *backendv1.UnlockProjectRequest) (*backendv1.UnlockProjectResponse, error) {
+func (s *Store) EnableProjectLogins(ctx context.Context, req *backendv1.EnableProjectLoginsRequest) (*backendv1.EnableProjectLoginsResponse, error) {
 	if err := validateIsDogfoodSession(ctx); err != nil {
 		return nil, fmt.Errorf("validate is dogfood session: %w", err)
 	}
@@ -80,7 +80,7 @@ func (s *Store) UnlockProject(ctx context.Context, req *backendv1.UnlockProjectR
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return &backendv1.UnlockProjectResponse{}, nil
+	return &backendv1.EnableProjectLoginsResponse{}, nil
 }
 
 func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectRequest) (*backendv1.UpdateProjectResponse, error) {

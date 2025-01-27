@@ -120,24 +120,24 @@ export const listIntermediateSessions = BackendService.method.listIntermediateSe
 export const getIntermediateSession = BackendService.method.getIntermediateSession;
 
 /**
- * @generated from rpc openauth.backend.v1.BackendService.LockoutOrganization
+ * @generated from rpc openauth.backend.v1.BackendService.DisableOrganizationLogins
  */
-export const lockoutOrganization = BackendService.method.lockoutOrganization;
+export const disableOrganizationLogins = BackendService.method.disableOrganizationLogins;
 
 /**
- * @generated from rpc openauth.backend.v1.BackendService.LockoutProject
+ * @generated from rpc openauth.backend.v1.BackendService.DisableProjectLogins
  */
-export const lockoutProject = BackendService.method.lockoutProject;
+export const disableProjectLogins = BackendService.method.disableProjectLogins;
 
 /**
- * @generated from rpc openauth.backend.v1.BackendService.UnlockOrganization
+ * @generated from rpc openauth.backend.v1.BackendService.EnableOrganizationLogins
  */
-export const unlockOrganization = BackendService.method.unlockOrganization;
+export const enableOrganizationLogins = BackendService.method.enableOrganizationLogins;
 
 /**
- * @generated from rpc openauth.backend.v1.BackendService.UnlockProject
+ * @generated from rpc openauth.backend.v1.BackendService.EnableProjectLogins
  */
-export const unlockProject = BackendService.method.unlockProject;
+export const enableProjectLogins = BackendService.method.enableProjectLogins;
 
 /**
  * @generated from rpc openauth.backend.v1.BackendService.UpdateProject
