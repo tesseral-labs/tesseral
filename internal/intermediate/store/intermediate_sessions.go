@@ -64,14 +64,14 @@ func (s *Store) getIntermediateSessionEmailVerified(ctx context.Context, q *quer
 }
 
 func enforceOrganizationLoginEnabled(qOrganization queries.Organization) error {
-	if qOrganization.LoginsDisabled != nil && *qOrganization.LoginsDisabled {
+	if qOrganization.LoginsDisabled {
 		return apierror.NewPermissionDeniedError("login disabled", fmt.Errorf("organization login disabled"))
 	}
 	return nil
 }
 
 func enforceProjectLoginEnabled(qProject queries.Project) error {
-	if qProject.LoginsDisabled != nil && *qProject.LoginsDisabled {
+	if qProject.LoginsDisabled {
 		return apierror.NewPermissionDeniedError("login disabled", fmt.Errorf("project login disabled"))
 	}
 	return nil
