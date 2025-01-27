@@ -59,8 +59,8 @@ RETURNING
     *;
 
 -- name: CreateOrganization :one
-INSERT INTO organizations (id, project_id, display_name, override_log_in_methods, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_with_password_enabled, saml_enabled, scim_enabled)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+INSERT INTO organizations (id, project_id, display_name, override_log_in_methods, saml_enabled, scim_enabled)
+    VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING
     *;
 

@@ -40,9 +40,9 @@ SET
     update_time = now(),
     display_name = $2,
     override_log_in_methods = $3,
-    override_log_in_with_password_enabled = $4,
-    override_log_in_with_google_enabled = $5,
-    override_log_in_with_microsoft_enabled = $6
+    disable_log_in_with_password = $4,
+    disable_log_in_with_google = $5,
+    disable_log_in_with_microsoft = $6
 WHERE
     id = $1
 RETURNING

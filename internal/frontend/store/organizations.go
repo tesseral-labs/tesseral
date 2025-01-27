@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/jackc/pgx/v5"
 	"github.com/openauth/openauth/internal/common/apierror"
 	"github.com/openauth/openauth/internal/frontend/authn"
@@ -75,9 +76,9 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *frontendv1.UpdateOr
 	// update the override_log_in_with_..._enabled columns to null unless the
 	// organization is overriding those columns.
 	if req.Organization.GetOverrideLogInMethods() {
-		updates.OverrideLogInWithGoogleEnabled = &req.Organization.LogInWithGoogleEnabled
-		updates.OverrideLogInWithMicrosoftEnabled = &req.Organization.LogInWithMicrosoftEnabled
-		updates.OverrideLogInWithPasswordEnabled = &req.Organization.LogInWithPasswordEnabled
+		updates.DisableLogInWithGoogle = aws.Bool(!req.Organization.LogInWithGoogleEnabled)
+		updates.DisableLogInWithMicrosoft = aws.Bool(!req.Organization.LogInWithMicrosoftEnabled)
+		updates.DisableLogInWithPassword = aws.Bool(!req.Organization.LogInWithPasswordEnabled)
 	}
 
 	qUpdatedOrg, err := q.UpdateOrganization(ctx, updates)
@@ -109,10 +110,15 @@ func parseOrganization(qProject queries.Project, qOrg queries.Organization) *fro
 	logInWithMicrosoftEnabled := qProject.LogInWithMicrosoftEnabled
 	logInWithPasswordEnabled := qProject.LogInWithPasswordEnabled
 
-	if qOrg.OverrideLogInMethods {
-		logInWithGoogleEnabled = derefOrEmpty(qOrg.OverrideLogInWithGoogleEnabled)
-		logInWithMicrosoftEnabled = derefOrEmpty(qOrg.OverrideLogInWithMicrosoftEnabled)
-		logInWithPasswordEnabled = derefOrEmpty(qOrg.OverrideLogInWithPasswordEnabled)
+	// allow orgs to disable login methods
+	if derefOrEmpty(qOrg.DisableLogInWithGoogle) {
+		logInWithGoogleEnabled = false
+	}
+	if derefOrEmpty(qOrg.DisableLogInWithMicrosoft) {
+		logInWithMicrosoftEnabled = false
+	}
+	if derefOrEmpty(qOrg.DisableLogInWithPassword) {
+		logInWithPasswordEnabled = false
 	}
 
 	return &frontendv1.Organization{

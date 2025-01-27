@@ -231,17 +231,17 @@ func (s *Store) validateAuthRequirementsSatisfied(ctx context.Context, q *querie
 	}
 
 	googleEnabled := qProject.LogInWithGoogleEnabled
-	if qOrg.OverrideLogInMethods && qOrg.OverrideLogInWithGoogleEnabled != nil && !*qOrg.OverrideLogInWithGoogleEnabled {
+	if derefOrEmpty(qOrg.DisableLogInWithGoogle) {
 		googleEnabled = false
 	}
 
 	microsoftEnabled := qProject.LogInWithMicrosoftEnabled
-	if qOrg.OverrideLogInMethods && qOrg.OverrideLogInWithMicrosoftEnabled != nil && !*qOrg.OverrideLogInWithMicrosoftEnabled {
+	if derefOrEmpty(qOrg.DisableLogInWithMicrosoft) {
 		microsoftEnabled = false
 	}
 
 	passwordEnabled := qProject.LogInWithPasswordEnabled
-	if qOrg.OverrideLogInMethods && qOrg.OverrideLogInWithPasswordEnabled != nil && !*qOrg.OverrideLogInWithPasswordEnabled {
+	if derefOrEmpty(qOrg.DisableLogInWithPassword) {
 		passwordEnabled = false
 	}
 
