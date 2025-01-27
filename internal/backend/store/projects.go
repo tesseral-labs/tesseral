@@ -50,7 +50,7 @@ func (s *Store) DisableProjectLogins(ctx context.Context, req *backendv1.Disable
 		return nil, fmt.Errorf("lockout project: %w", err)
 	}
 
-	if err = q.RevokeAllProjectSessions(ctx, authn.ProjectID(ctx)); err != nil {
+	if err := q.RevokeAllProjectSessions(ctx, authn.ProjectID(ctx)); err != nil {
 		return nil, fmt.Errorf("revoke all project sessions: %w", err)
 	}
 
