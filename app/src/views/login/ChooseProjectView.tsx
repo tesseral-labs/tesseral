@@ -67,7 +67,7 @@ const ChooseProjectView: FC<ChooseProjectViewProps> = ({ setView }) => {
       <Card className="w-[clamp(320px,50%,420px)] mx-auto">
         <CardHeader>
           <CardTitle className="text-center uppercase text-foreground font-semibold text-sm tracking-wide mt-2">
-            Choose an Project
+            Choose a Project
           </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col items-center justify-center w-full">
