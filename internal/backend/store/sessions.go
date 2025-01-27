@@ -101,6 +101,6 @@ func parseSession(qSession queries.Session) *backendv1.Session {
 	return &backendv1.Session{
 		Id:      idformat.Session.Format(qSession.ID),
 		UserId:  idformat.User.Format(qSession.UserID),
-		Revoked: qSession.Revoked,
+		Revoked: qSession.RefreshTokenSha256 == nil,
 	}
 }
