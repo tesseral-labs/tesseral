@@ -1,8 +1,11 @@
+import forms from '@tailwindcss/forms'
+import typography from '@tailwindcss/typography'
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ['./src/**/*.{ts,tsx}', './public/index.html'],
   darkMode: 'class',
-  plugins: [require('tailwindcss-animate')],
+  plugins: [require('tailwindcss-animate'), forms, typography],
   prefix: '',
   purge: {
     enabled: true,
@@ -51,6 +54,10 @@ module.exports = {
         md: `calc(var(--radius) - 2px)`,
         sm: 'calc(var(--radius) - 4px)',
       },
+    },
+    fontFamily: {
+      sans: `"Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"`,
+      mono: `"Roboto Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace`,
     },
   },
 }
