@@ -33,6 +33,28 @@ func (s *Store) IssueAccessToken(ctx context.Context, refreshToken string) (stri
 
 	issAndAud := fmt.Sprintf("https://%s.tesseral.app", strings.ReplaceAll(idformat.Project.Format(qDetails.ProjectID), "_", "-"))
 	now := time.Now()
+
+	// Add details about the creator of the impersonation token to the session.
+	//
+	// We could in principle add this data using a LEFT JOIN, but the vast
+	// majority of sessions are not impersonated, and so this branch is rarely
+	// exercised.
+	//
+	// Plus sqlc does not at the time of writing correctly handle the types
+	// associated with having two joins (one INNER, one LEFT) on users in the
+	// GetSessionDetailsByRefreshTokenSHA256 query.
+	var impersonator *commonv1.AccessTokenImpersonator
+	if qDetails.ImpersonatorUserID != nil {
+		qImpersonator, err := s.q.GetImpersonatorUserByID(ctx, *qDetails.ImpersonatorUserID)
+		if err != nil {
+			return "", fmt.Errorf("get impersonator user by id: %w", err)
+		}
+
+		impersonator = &commonv1.AccessTokenImpersonator{
+			Email: qImpersonator.Email,
+		}
+	}
+
 	claims := &commonv1.AccessTokenData{
 		Iss: issAndAud,
 		Sub: idformat.User.Format(qDetails.UserID),
@@ -52,6 +74,7 @@ func (s *Store) IssueAccessToken(ctx context.Context, refreshToken string) (stri
 			Id:          idformat.Organization.Format(qDetails.OrganizationID),
 			DisplayName: qDetails.OrganizationDisplayName,
 		},
+		Impersonator: impersonator,
 	}
 
 	// claims is a proto message, so we have to use protojson to encode it first

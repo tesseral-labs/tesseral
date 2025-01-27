@@ -216,6 +216,30 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /intermediate/v1/redeem-user-impersonation-token:
+        post:
+            tags:
+                - IntermediateService
+            operationId: IntermediateService_RedeemUserImpersonationToken
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/RedeemUserImpersonationTokenRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/RedeemUserImpersonationTokenResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /intermediate/v1/saml-organizations:
         post:
             tags:
@@ -461,6 +485,18 @@ components:
         RedeemMicrosoftOAuthCodeResponse:
             type: object
             properties: {}
+        RedeemUserImpersonationTokenRequest:
+            type: object
+            properties:
+                secretUserImpersonationToken:
+                    type: string
+        RedeemUserImpersonationTokenResponse:
+            type: object
+            properties:
+                refreshToken:
+                    type: string
+                accessToken:
+                    type: string
         Status:
             type: object
             properties:

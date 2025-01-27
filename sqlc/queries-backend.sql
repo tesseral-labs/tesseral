@@ -437,6 +437,23 @@ WHERE
 RETURNING
     *;
 
+-- name: GetUserForImpersonation :one
+SELECT
+    users.*
+FROM
+    users
+    JOIN organizations ON users.organization_id = organizations.id
+    JOIN projects ON organizations.id = projects.organization_id
+WHERE
+    users.id = $1
+    AND projects.organization_id = @impersonator_organization_id;
+
+-- name: CreateUserImpersonationToken :one
+INSERT INTO user_impersonation_tokens (id, impersonator_id, impersonated_id, expire_time, secret_token_sha256)
+    VALUES ($1, $2, $3, $4, $5)
+RETURNING
+    *;
+
 -- name: RevokeAllOrganizationSessions :exec
 UPDATE
     sessions

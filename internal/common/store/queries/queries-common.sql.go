@@ -37,6 +37,28 @@ func (q *Queries) GetCurrentSessionSigningKeyByProjectID(ctx context.Context, pr
 	return i, err
 }
 
+const getImpersonatorUserByID = `-- name: GetImpersonatorUserByID :one
+SELECT
+    id,
+    email
+FROM
+    users
+WHERE
+    id = $1
+`
+
+type GetImpersonatorUserByIDRow struct {
+	ID    uuid.UUID
+	Email string
+}
+
+func (q *Queries) GetImpersonatorUserByID(ctx context.Context, id uuid.UUID) (GetImpersonatorUserByIDRow, error) {
+	row := q.db.QueryRow(ctx, getImpersonatorUserByID, id)
+	var i GetImpersonatorUserByIDRow
+	err := row.Scan(&i.ID, &i.Email)
+	return i, err
+}
+
 const getProjectIDByCustomAuthDomain = `-- name: GetProjectIDByCustomAuthDomain :one
 SELECT
     id
@@ -61,7 +83,8 @@ SELECT
     users.email AS user_email,
     organizations.id AS organization_id,
     organizations.display_name AS organization_display_name,
-    organizations.project_id AS project_id
+    organizations.project_id AS project_id,
+    sessions.impersonator_user_id
 FROM
     sessions
     JOIN users ON sessions.user_id = users.id
@@ -77,6 +100,7 @@ type GetSessionDetailsByRefreshTokenSHA256Row struct {
 	OrganizationID          uuid.UUID
 	OrganizationDisplayName string
 	ProjectID               uuid.UUID
+	ImpersonatorUserID      *uuid.UUID
 }
 
 func (q *Queries) GetSessionDetailsByRefreshTokenSHA256(ctx context.Context, refreshTokenSha256 []byte) (GetSessionDetailsByRefreshTokenSHA256Row, error) {
@@ -89,6 +113,7 @@ func (q *Queries) GetSessionDetailsByRefreshTokenSHA256(ctx context.Context, ref
 		&i.OrganizationID,
 		&i.OrganizationDisplayName,
 		&i.ProjectID,
+		&i.ImpersonatorUserID,
 	)
 	return i, err
 }

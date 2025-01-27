@@ -9,7 +9,9 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/openauth/openauth/internal/backend/authn"
 	"github.com/openauth/openauth/internal/backend/store/queries"
+	"github.com/openauth/openauth/internal/common/apierror"
 	"github.com/openauth/openauth/internal/pagetoken"
 )
 
@@ -78,4 +80,17 @@ func derefOrEmpty[T any](t *T) T {
 		return z
 	}
 	return *t
+}
+
+// validateIsDogfoodSession returns an error if the caller isn't a dogfood
+// session.
+//
+// The intention of this method is to allow endpoints to prevent themselves from
+// being called by project API keys.
+func validateIsDogfoodSession(ctx context.Context) error {
+	data := authn.GetContextData(ctx)
+	if data.DogfoodSession == nil {
+		return apierror.NewUnauthenticatedError("this endpoint cannot be invoked by project API keys", fmt.Errorf("non-dogfood session request"))
+	}
+	return nil
 }

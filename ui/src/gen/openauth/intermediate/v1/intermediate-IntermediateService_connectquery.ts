@@ -15,6 +15,11 @@ export const listSAMLOrganizations = IntermediateService.method.listSAMLOrganiza
 export const getProjectUISettings = IntermediateService.method.getProjectUISettings;
 
 /**
+ * @generated from rpc openauth.intermediate.v1.IntermediateService.RedeemUserImpersonationToken
+ */
+export const redeemUserImpersonationToken = IntermediateService.method.redeemUserImpersonationToken;
+
+/**
  * @generated from rpc openauth.intermediate.v1.IntermediateService.CreateIntermediateSession
  */
 export const createIntermediateSession = IntermediateService.method.createIntermediateSession;

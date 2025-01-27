@@ -25,6 +25,9 @@ var (
 	SCIMAPIKey            = prettyuuid.MustNewFormat("scim_api_key_", alphabet)
 	SCIMAPIKeySecretToken = prettyuuid.MustNewFormat("openauth_secret_scim_api_key_", alphabet)
 
+	UserImpersonationToken       = prettyuuid.MustNewFormat("user_impersonation_token_", alphabet)
+	UserImpersonationSecretToken = prettyuuid.MustNewFormat("openauth_secret_user_impersonation_token_", alphabet)
+
 	ProjectRedirectURI = prettyuuid.MustNewFormat("project_redirect_uri_", alphabet)
 	ProjectUISettings  = prettyuuid.MustNewFormat("project_ui_settings_", alphabet)
 )

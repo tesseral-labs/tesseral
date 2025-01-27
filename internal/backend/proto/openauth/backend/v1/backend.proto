@@ -174,6 +174,8 @@ service BackendService {
   rpc UpdateProjectAPIKey(UpdateProjectAPIKeyRequest) returns (UpdateProjectAPIKeyResponse);
   rpc DeleteProjectAPIKey(DeleteProjectAPIKeyRequest) returns (DeleteProjectAPIKeyResponse);
   rpc RevokeProjectAPIKey(RevokeProjectAPIKeyRequest) returns (RevokeProjectAPIKeyResponse);
+
+  rpc CreateUserImpersonationToken(CreateUserImpersonationTokenRequest) returns (CreateUserImpersonationTokenResponse);
 }
 
 message CreateUserRequest {
@@ -527,6 +529,14 @@ message ImageUploadRequest {
   string mime_type = 2;
 }
 
+message CreateUserImpersonationTokenRequest {
+  UserImpersonationToken user_impersonation_token = 1;
+}
+
+message CreateUserImpersonationTokenResponse {
+  UserImpersonationToken user_impersonation_token = 1;
+}
+
 message Project {
   string id = 1;
   string display_name = 2;
@@ -641,4 +651,13 @@ message SCIMAPIKey {
   string display_name = 5;
   string secret_token = 6;
   bool revoked = 7;
+}
+
+message UserImpersonationToken {
+  string id = 1;
+  string impersonator_id = 2;
+  google.protobuf.Timestamp create_time = 3;
+  google.protobuf.Timestamp expire_time = 4;
+  string secret_token = 5;
+  string impersonated_id = 6;
 }

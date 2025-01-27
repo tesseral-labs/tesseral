@@ -104,7 +104,7 @@ type Organization struct {
 	ScimEnabled                       bool
 	CreateTime                        *time.Time
 	UpdateTime                        *time.Time
-	LoginsDisabled                    *bool
+	LoginsDisabled                    bool
 }
 
 type OrganizationDomain struct {
@@ -140,7 +140,7 @@ type Project struct {
 	UpdateTime                           *time.Time
 	CustomAuthDomain                     *string
 	AuthDomain                           *string
-	LoginsDisabled                       *bool
+	LoginsDisabled                       bool
 }
 
 type ProjectApiKey struct {
@@ -198,6 +198,7 @@ type Session struct {
 	ExpireTime         *time.Time
 	Revoked            bool
 	RefreshTokenSha256 []byte
+	ImpersonatorUserID *uuid.UUID
 }
 
 type SessionSigningKey struct {
@@ -222,4 +223,13 @@ type User struct {
 	IsOwner                   bool
 	FailedPasswordAttempts    int32
 	PasswordLockoutExpireTime *time.Time
+}
+
+type UserImpersonationToken struct {
+	ID                uuid.UUID
+	ImpersonatorID    uuid.UUID
+	CreateTime        *time.Time
+	ExpireTime        *time.Time
+	ImpersonatedID    uuid.UUID
+	SecretTokenSha256 []byte
 }

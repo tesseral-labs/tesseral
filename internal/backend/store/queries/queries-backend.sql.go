@@ -7,6 +7,7 @@ package queries
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -193,6 +194,41 @@ func (q *Queries) CreateSCIMAPIKey(ctx context.Context, arg CreateSCIMAPIKeyPara
 		&i.DisplayName,
 		&i.CreateTime,
 		&i.UpdateTime,
+	)
+	return i, err
+}
+
+const createUserImpersonationToken = `-- name: CreateUserImpersonationToken :one
+INSERT INTO user_impersonation_tokens (id, impersonator_id, impersonated_id, expire_time, secret_token_sha256)
+    VALUES ($1, $2, $3, $4, $5)
+RETURNING
+    id, impersonator_id, create_time, expire_time, impersonated_id, secret_token_sha256
+`
+
+type CreateUserImpersonationTokenParams struct {
+	ID                uuid.UUID
+	ImpersonatorID    uuid.UUID
+	ImpersonatedID    uuid.UUID
+	ExpireTime        *time.Time
+	SecretTokenSha256 []byte
+}
+
+func (q *Queries) CreateUserImpersonationToken(ctx context.Context, arg CreateUserImpersonationTokenParams) (UserImpersonationToken, error) {
+	row := q.db.QueryRow(ctx, createUserImpersonationToken,
+		arg.ID,
+		arg.ImpersonatorID,
+		arg.ImpersonatedID,
+		arg.ExpireTime,
+		arg.SecretTokenSha256,
+	)
+	var i UserImpersonationToken
+	err := row.Scan(
+		&i.ID,
+		&i.ImpersonatorID,
+		&i.CreateTime,
+		&i.ExpireTime,
+		&i.ImpersonatedID,
+		&i.SecretTokenSha256,
 	)
 	return i, err
 }
@@ -600,7 +636,7 @@ func (q *Queries) GetSCIMAPIKey(ctx context.Context, arg GetSCIMAPIKeyParams) (S
 
 const getSession = `-- name: GetSession :one
 SELECT
-    sessions.id, sessions.user_id, sessions.create_time, sessions.expire_time, sessions.revoked, sessions.refresh_token_sha256
+    sessions.id, sessions.user_id, sessions.create_time, sessions.expire_time, sessions.revoked, sessions.refresh_token_sha256, sessions.impersonator_user_id
 FROM
     sessions
     JOIN users ON sessions.user_id = users.id
@@ -625,6 +661,7 @@ func (q *Queries) GetSession(ctx context.Context, arg GetSessionParams) (Session
 		&i.ExpireTime,
 		&i.Revoked,
 		&i.RefreshTokenSha256,
+		&i.ImpersonatorUserID,
 	)
 	return i, err
 }
@@ -683,6 +720,43 @@ type GetUserParams struct {
 
 func (q *Queries) GetUser(ctx context.Context, arg GetUserParams) (User, error) {
 	row := q.db.QueryRow(ctx, getUser, arg.ID, arg.ProjectID)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.PasswordBcrypt,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+		&i.Email,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.DeactivateTime,
+		&i.IsOwner,
+		&i.FailedPasswordAttempts,
+		&i.PasswordLockoutExpireTime,
+	)
+	return i, err
+}
+
+const getUserForImpersonation = `-- name: GetUserForImpersonation :one
+SELECT
+    users.id, users.organization_id, users.password_bcrypt, users.google_user_id, users.microsoft_user_id, users.email, users.create_time, users.update_time, users.deactivate_time, users.is_owner, users.failed_password_attempts, users.password_lockout_expire_time
+FROM
+    users
+    JOIN organizations ON users.organization_id = organizations.id
+    JOIN projects ON organizations.id = projects.organization_id
+WHERE
+    users.id = $1
+    AND projects.organization_id = $2
+`
+
+type GetUserForImpersonationParams struct {
+	ID                         uuid.UUID
+	ImpersonatorOrganizationID *uuid.UUID
+}
+
+func (q *Queries) GetUserForImpersonation(ctx context.Context, arg GetUserForImpersonationParams) (User, error) {
+	row := q.db.QueryRow(ctx, getUserForImpersonation, arg.ID, arg.ImpersonatorOrganizationID)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -1030,7 +1104,7 @@ func (q *Queries) ListSCIMAPIKeys(ctx context.Context, arg ListSCIMAPIKeysParams
 
 const listSessions = `-- name: ListSessions :many
 SELECT
-    id, user_id, create_time, expire_time, revoked, refresh_token_sha256
+    id, user_id, create_time, expire_time, revoked, refresh_token_sha256, impersonator_user_id
 FROM
     sessions
 WHERE
@@ -1063,6 +1137,7 @@ func (q *Queries) ListSessions(ctx context.Context, arg ListSessionsParams) ([]S
 			&i.ExpireTime,
 			&i.Revoked,
 			&i.RefreshTokenSha256,
+			&i.ImpersonatorUserID,
 		); err != nil {
 			return nil, err
 		}
