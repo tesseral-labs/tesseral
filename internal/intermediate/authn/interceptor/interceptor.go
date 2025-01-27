@@ -18,6 +18,7 @@ var skipRPCs = []string{
 	"/openauth.intermediate.v1.IntermediateService/CreateIntermediateSession",
 	"/openauth.intermediate.v1.IntermediateService/GetProjectUISettings",
 	"/openauth.intermediate.v1.IntermediateService/ListSAMLOrganizations",
+	"/openauth.intermediate.v1.IntermediateService/RedeemUserImpersonationToken",
 }
 
 func New(s *store.Store, p *projectid.Sniffer, authAppsRootDomain string) connect.UnaryInterceptorFunc {

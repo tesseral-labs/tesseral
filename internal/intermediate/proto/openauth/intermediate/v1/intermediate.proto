@@ -18,6 +18,13 @@ service IntermediateService {
 
   rpc GetProjectUISettings(GetProjectUISettingsRequest) returns (GetProjectUISettingsResponse);
 
+  rpc RedeemUserImpersonationToken(RedeemUserImpersonationTokenRequest) returns (RedeemUserImpersonationTokenResponse) {
+    option (google.api.http) = {
+      post: "/intermediate/v1/redeem-user-impersonation-token",
+      body: "*"
+    };
+  }
+
   rpc CreateIntermediateSession(CreateIntermediateSessionRequest) returns (CreateIntermediateSessionResponse) {
     option (google.api.http) = {
       post: "/intermediate/v1/intermediate-session",
@@ -246,4 +253,13 @@ message GetProjectUISettingsRequest {
 
 message GetProjectUISettingsResponse {
   ProjectUISettings project_ui_settings = 1;
+}
+
+message RedeemUserImpersonationTokenRequest {
+  string secret_user_impersonation_token = 1;
+}
+
+message RedeemUserImpersonationTokenResponse {
+  string refresh_token = 1;
+  string access_token = 2;
 }

@@ -196,6 +196,7 @@ type Session struct {
 	ExpireTime         *time.Time
 	Revoked            bool
 	RefreshTokenSha256 []byte
+	ImpersonatorUserID *uuid.UUID
 }
 
 type SessionSigningKey struct {
@@ -220,4 +221,13 @@ type User struct {
 	IsOwner                   bool
 	FailedPasswordAttempts    int32
 	PasswordLockoutExpireTime *time.Time
+}
+
+type UserImpersonationToken struct {
+	ID                uuid.UUID
+	ImpersonatorID    uuid.UUID
+	CreateTime        *time.Time
+	ExpireTime        *time.Time
+	ImpersonatedID    uuid.UUID
+	SecretTokenSha256 []byte
 }

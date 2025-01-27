@@ -1,7 +1,9 @@
-import { useParams } from 'react-router'
-import { useQuery } from '@connectrpc/connect-query'
+import { useNavigate, useParams } from 'react-router'
+import { useMutation, useQuery } from '@connectrpc/connect-query'
 import {
+  createUserImpersonationToken,
   getOrganization,
+  getProject,
   getUser,
   listSessions,
 } from '@/gen/openauth/backend/v1/backend-BackendService_connectquery'
@@ -40,6 +42,7 @@ import {
 } from '@/components/ui/card'
 import { DateTime } from 'luxon'
 import { timestampDate } from '@bufbuild/protobuf/wkt'
+import { Button } from '@/components/ui/button'
 
 export function ViewUserPage() {
   const { organizationId, userId } = useParams()
@@ -190,6 +193,51 @@ export function ViewUserPage() {
           </Table>
         </CardContent>
       </Card>
+
+      <DangerZoneCard />
     </div>
+  )
+}
+
+function DangerZoneCard() {
+  const { userId } = useParams()
+  const createUserImpersonationTokenMutation = useMutation(
+    createUserImpersonationToken,
+  )
+  const { data: project } = useQuery(getProject)
+
+  async function handleImpersonate() {
+    const { userImpersonationToken } =
+      await createUserImpersonationTokenMutation.mutateAsync({
+        userImpersonationToken: {
+          impersonatedId: userId,
+        },
+      })
+
+    window.location.href = `https://${project?.project?.authDomain}/impersonate?secret-user-impersonation-token=${userImpersonationToken!.secretToken}`
+  }
+
+  return (
+    <Card className="mt-8 border-destructive">
+      <CardHeader>
+        <CardTitle>Danger Zone</CardTitle>
+      </CardHeader>
+
+      <CardContent>
+        <div className="flex justify-between items-center">
+          <div>
+            <div className="text-sm font-semibold">Impersonate User</div>
+            <p className="text-sm">
+              Impersonate this user. You will be logged in as this user. You can
+              end the impersonated session by logging out.
+            </p>
+          </div>
+
+          <Button variant="destructive" onClick={handleImpersonate}>
+            Impersonate User
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   )
 }

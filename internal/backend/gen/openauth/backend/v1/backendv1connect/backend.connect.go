@@ -143,6 +143,9 @@ const (
 	// BackendServiceRevokeProjectAPIKeyProcedure is the fully-qualified name of the BackendService's
 	// RevokeProjectAPIKey RPC.
 	BackendServiceRevokeProjectAPIKeyProcedure = "/openauth.backend.v1.BackendService/RevokeProjectAPIKey"
+	// BackendServiceCreateUserImpersonationTokenProcedure is the fully-qualified name of the
+	// BackendService's CreateUserImpersonationToken RPC.
+	BackendServiceCreateUserImpersonationTokenProcedure = "/openauth.backend.v1.BackendService/CreateUserImpersonationToken"
 )
 
 // BackendServiceClient is a client for the openauth.backend.v1.BackendService service.
@@ -184,6 +187,7 @@ type BackendServiceClient interface {
 	UpdateProjectAPIKey(context.Context, *connect.Request[v1.UpdateProjectAPIKeyRequest]) (*connect.Response[v1.UpdateProjectAPIKeyResponse], error)
 	DeleteProjectAPIKey(context.Context, *connect.Request[v1.DeleteProjectAPIKeyRequest]) (*connect.Response[v1.DeleteProjectAPIKeyResponse], error)
 	RevokeProjectAPIKey(context.Context, *connect.Request[v1.RevokeProjectAPIKeyRequest]) (*connect.Response[v1.RevokeProjectAPIKeyResponse], error)
+	CreateUserImpersonationToken(context.Context, *connect.Request[v1.CreateUserImpersonationTokenRequest]) (*connect.Response[v1.CreateUserImpersonationTokenResponse], error)
 }
 
 // NewBackendServiceClient constructs a client for the openauth.backend.v1.BackendService service.
@@ -419,48 +423,55 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(backendServiceMethods.ByName("RevokeProjectAPIKey")),
 			connect.WithClientOptions(opts...),
 		),
+		createUserImpersonationToken: connect.NewClient[v1.CreateUserImpersonationTokenRequest, v1.CreateUserImpersonationTokenResponse](
+			httpClient,
+			baseURL+BackendServiceCreateUserImpersonationTokenProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("CreateUserImpersonationToken")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // backendServiceClient implements BackendServiceClient.
 type backendServiceClient struct {
-	getProject               *connect.Client[v1.GetProjectRequest, v1.GetProjectResponse]
-	listOrganizations        *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
-	getOrganization          *connect.Client[v1.GetOrganizationRequest, v1.GetOrganizationResponse]
-	createOrganization       *connect.Client[v1.CreateOrganizationRequest, v1.CreateOrganizationResponse]
-	updateOrganization       *connect.Client[v1.UpdateOrganizationRequest, v1.UpdateOrganizationResponse]
-	deleteOrganization       *connect.Client[v1.DeleteOrganizationRequest, v1.DeleteOrganizationResponse]
-	listSAMLConnections      *connect.Client[v1.ListSAMLConnectionsRequest, v1.ListSAMLConnectionsResponse]
-	getSAMLConnection        *connect.Client[v1.GetSAMLConnectionRequest, v1.GetSAMLConnectionResponse]
-	createSAMLConnection     *connect.Client[v1.CreateSAMLConnectionRequest, v1.CreateSAMLConnectionResponse]
-	updateSAMLConnection     *connect.Client[v1.UpdateSAMLConnectionRequest, v1.UpdateSAMLConnectionResponse]
-	deleteSAMLConnection     *connect.Client[v1.DeleteSAMLConnectionRequest, v1.DeleteSAMLConnectionResponse]
-	listSCIMAPIKeys          *connect.Client[v1.ListSCIMAPIKeysRequest, v1.ListSCIMAPIKeysResponse]
-	getSCIMAPIKey            *connect.Client[v1.GetSCIMAPIKeyRequest, v1.GetSCIMAPIKeyResponse]
-	createSCIMAPIKey         *connect.Client[v1.CreateSCIMAPIKeyRequest, v1.CreateSCIMAPIKeyResponse]
-	updateSCIMAPIKey         *connect.Client[v1.UpdateSCIMAPIKeyRequest, v1.UpdateSCIMAPIKeyResponse]
-	deleteSCIMAPIKey         *connect.Client[v1.DeleteSCIMAPIKeyRequest, v1.DeleteSCIMAPIKeyResponse]
-	revokeSCIMAPIKey         *connect.Client[v1.RevokeSCIMAPIKeyRequest, v1.RevokeSCIMAPIKeyResponse]
-	listUsers                *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
-	getUser                  *connect.Client[v1.GetUserRequest, v1.GetUserResponse]
-	listSessions             *connect.Client[v1.ListSessionsRequest, v1.ListSessionsResponse]
-	getSession               *connect.Client[v1.GetSessionRequest, v1.GetSessionResponse]
-	listIntermediateSessions *connect.Client[v1.ListIntermediateSessionsRequest, v1.ListIntermediateSessionsResponse]
-	getIntermediateSession   *connect.Client[v1.GetIntermediateSessionRequest, v1.GetIntermediateSessionResponse]
-	updateProject            *connect.Client[v1.UpdateProjectRequest, v1.UpdateProjectResponse]
-	createProjectRedirectURI *connect.Client[v1.CreateProjectRedirectURIRequest, v1.CreateProjectRedirectURIResponse]
-	deleteProjectRedirectURI *connect.Client[v1.DeleteProjectRedirectURIRequest, v1.DeleteProjectRedirectURIResponse]
-	getProjectRedirectURI    *connect.Client[v1.GetProjectRedirectURIRequest, v1.GetProjectRedirectURIResponse]
-	listProjectRedirectURIs  *connect.Client[v1.ListProjectRedirectURIsRequest, v1.ListProjectRedirectURIsResponse]
-	updateProjectRedirectURI *connect.Client[v1.UpdateProjectRedirectURIRequest, v1.UpdateProjectRedirectURIResponse]
-	getProjectUISettings     *connect.Client[v1.GetProjectUISettingsRequest, v1.GetProjectUISettingsResponse]
-	updateProjectUISettings  *connect.Client[v1.UpdateProjectUISettingsRequest, v1.UpdateProjectUISettingsResponse]
-	listProjectAPIKeys       *connect.Client[v1.ListProjectAPIKeysRequest, v1.ListProjectAPIKeysResponse]
-	getProjectAPIKey         *connect.Client[v1.GetProjectAPIKeyRequest, v1.GetProjectAPIKeyResponse]
-	createProjectAPIKey      *connect.Client[v1.CreateProjectAPIKeyRequest, v1.CreateProjectAPIKeyResponse]
-	updateProjectAPIKey      *connect.Client[v1.UpdateProjectAPIKeyRequest, v1.UpdateProjectAPIKeyResponse]
-	deleteProjectAPIKey      *connect.Client[v1.DeleteProjectAPIKeyRequest, v1.DeleteProjectAPIKeyResponse]
-	revokeProjectAPIKey      *connect.Client[v1.RevokeProjectAPIKeyRequest, v1.RevokeProjectAPIKeyResponse]
+	getProject                   *connect.Client[v1.GetProjectRequest, v1.GetProjectResponse]
+	listOrganizations            *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
+	getOrganization              *connect.Client[v1.GetOrganizationRequest, v1.GetOrganizationResponse]
+	createOrganization           *connect.Client[v1.CreateOrganizationRequest, v1.CreateOrganizationResponse]
+	updateOrganization           *connect.Client[v1.UpdateOrganizationRequest, v1.UpdateOrganizationResponse]
+	deleteOrganization           *connect.Client[v1.DeleteOrganizationRequest, v1.DeleteOrganizationResponse]
+	listSAMLConnections          *connect.Client[v1.ListSAMLConnectionsRequest, v1.ListSAMLConnectionsResponse]
+	getSAMLConnection            *connect.Client[v1.GetSAMLConnectionRequest, v1.GetSAMLConnectionResponse]
+	createSAMLConnection         *connect.Client[v1.CreateSAMLConnectionRequest, v1.CreateSAMLConnectionResponse]
+	updateSAMLConnection         *connect.Client[v1.UpdateSAMLConnectionRequest, v1.UpdateSAMLConnectionResponse]
+	deleteSAMLConnection         *connect.Client[v1.DeleteSAMLConnectionRequest, v1.DeleteSAMLConnectionResponse]
+	listSCIMAPIKeys              *connect.Client[v1.ListSCIMAPIKeysRequest, v1.ListSCIMAPIKeysResponse]
+	getSCIMAPIKey                *connect.Client[v1.GetSCIMAPIKeyRequest, v1.GetSCIMAPIKeyResponse]
+	createSCIMAPIKey             *connect.Client[v1.CreateSCIMAPIKeyRequest, v1.CreateSCIMAPIKeyResponse]
+	updateSCIMAPIKey             *connect.Client[v1.UpdateSCIMAPIKeyRequest, v1.UpdateSCIMAPIKeyResponse]
+	deleteSCIMAPIKey             *connect.Client[v1.DeleteSCIMAPIKeyRequest, v1.DeleteSCIMAPIKeyResponse]
+	revokeSCIMAPIKey             *connect.Client[v1.RevokeSCIMAPIKeyRequest, v1.RevokeSCIMAPIKeyResponse]
+	listUsers                    *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
+	getUser                      *connect.Client[v1.GetUserRequest, v1.GetUserResponse]
+	listSessions                 *connect.Client[v1.ListSessionsRequest, v1.ListSessionsResponse]
+	getSession                   *connect.Client[v1.GetSessionRequest, v1.GetSessionResponse]
+	listIntermediateSessions     *connect.Client[v1.ListIntermediateSessionsRequest, v1.ListIntermediateSessionsResponse]
+	getIntermediateSession       *connect.Client[v1.GetIntermediateSessionRequest, v1.GetIntermediateSessionResponse]
+	updateProject                *connect.Client[v1.UpdateProjectRequest, v1.UpdateProjectResponse]
+	createProjectRedirectURI     *connect.Client[v1.CreateProjectRedirectURIRequest, v1.CreateProjectRedirectURIResponse]
+	deleteProjectRedirectURI     *connect.Client[v1.DeleteProjectRedirectURIRequest, v1.DeleteProjectRedirectURIResponse]
+	getProjectRedirectURI        *connect.Client[v1.GetProjectRedirectURIRequest, v1.GetProjectRedirectURIResponse]
+	listProjectRedirectURIs      *connect.Client[v1.ListProjectRedirectURIsRequest, v1.ListProjectRedirectURIsResponse]
+	updateProjectRedirectURI     *connect.Client[v1.UpdateProjectRedirectURIRequest, v1.UpdateProjectRedirectURIResponse]
+	getProjectUISettings         *connect.Client[v1.GetProjectUISettingsRequest, v1.GetProjectUISettingsResponse]
+	updateProjectUISettings      *connect.Client[v1.UpdateProjectUISettingsRequest, v1.UpdateProjectUISettingsResponse]
+	listProjectAPIKeys           *connect.Client[v1.ListProjectAPIKeysRequest, v1.ListProjectAPIKeysResponse]
+	getProjectAPIKey             *connect.Client[v1.GetProjectAPIKeyRequest, v1.GetProjectAPIKeyResponse]
+	createProjectAPIKey          *connect.Client[v1.CreateProjectAPIKeyRequest, v1.CreateProjectAPIKeyResponse]
+	updateProjectAPIKey          *connect.Client[v1.UpdateProjectAPIKeyRequest, v1.UpdateProjectAPIKeyResponse]
+	deleteProjectAPIKey          *connect.Client[v1.DeleteProjectAPIKeyRequest, v1.DeleteProjectAPIKeyResponse]
+	revokeProjectAPIKey          *connect.Client[v1.RevokeProjectAPIKeyRequest, v1.RevokeProjectAPIKeyResponse]
+	createUserImpersonationToken *connect.Client[v1.CreateUserImpersonationTokenRequest, v1.CreateUserImpersonationTokenResponse]
 }
 
 // GetProject calls openauth.backend.v1.BackendService.GetProject.
@@ -648,6 +659,12 @@ func (c *backendServiceClient) RevokeProjectAPIKey(ctx context.Context, req *con
 	return c.revokeProjectAPIKey.CallUnary(ctx, req)
 }
 
+// CreateUserImpersonationToken calls
+// openauth.backend.v1.BackendService.CreateUserImpersonationToken.
+func (c *backendServiceClient) CreateUserImpersonationToken(ctx context.Context, req *connect.Request[v1.CreateUserImpersonationTokenRequest]) (*connect.Response[v1.CreateUserImpersonationTokenResponse], error) {
+	return c.createUserImpersonationToken.CallUnary(ctx, req)
+}
+
 // BackendServiceHandler is an implementation of the openauth.backend.v1.BackendService service.
 type BackendServiceHandler interface {
 	GetProject(context.Context, *connect.Request[v1.GetProjectRequest]) (*connect.Response[v1.GetProjectResponse], error)
@@ -687,6 +704,7 @@ type BackendServiceHandler interface {
 	UpdateProjectAPIKey(context.Context, *connect.Request[v1.UpdateProjectAPIKeyRequest]) (*connect.Response[v1.UpdateProjectAPIKeyResponse], error)
 	DeleteProjectAPIKey(context.Context, *connect.Request[v1.DeleteProjectAPIKeyRequest]) (*connect.Response[v1.DeleteProjectAPIKeyResponse], error)
 	RevokeProjectAPIKey(context.Context, *connect.Request[v1.RevokeProjectAPIKeyRequest]) (*connect.Response[v1.RevokeProjectAPIKeyResponse], error)
+	CreateUserImpersonationToken(context.Context, *connect.Request[v1.CreateUserImpersonationTokenRequest]) (*connect.Response[v1.CreateUserImpersonationTokenResponse], error)
 }
 
 // NewBackendServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -918,6 +936,12 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		connect.WithSchema(backendServiceMethods.ByName("RevokeProjectAPIKey")),
 		connect.WithHandlerOptions(opts...),
 	)
+	backendServiceCreateUserImpersonationTokenHandler := connect.NewUnaryHandler(
+		BackendServiceCreateUserImpersonationTokenProcedure,
+		svc.CreateUserImpersonationToken,
+		connect.WithSchema(backendServiceMethods.ByName("CreateUserImpersonationToken")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/openauth.backend.v1.BackendService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case BackendServiceGetProjectProcedure:
@@ -994,6 +1018,8 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceDeleteProjectAPIKeyHandler.ServeHTTP(w, r)
 		case BackendServiceRevokeProjectAPIKeyProcedure:
 			backendServiceRevokeProjectAPIKeyHandler.ServeHTTP(w, r)
+		case BackendServiceCreateUserImpersonationTokenProcedure:
+			backendServiceCreateUserImpersonationTokenHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -1149,4 +1175,8 @@ func (UnimplementedBackendServiceHandler) DeleteProjectAPIKey(context.Context, *
 
 func (UnimplementedBackendServiceHandler) RevokeProjectAPIKey(context.Context, *connect.Request[v1.RevokeProjectAPIKeyRequest]) (*connect.Response[v1.RevokeProjectAPIKeyResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.RevokeProjectAPIKey is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) CreateUserImpersonationToken(context.Context, *connect.Request[v1.CreateUserImpersonationTokenRequest]) (*connect.Response[v1.CreateUserImpersonationTokenResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.CreateUserImpersonationToken is not implemented"))
 }

@@ -333,3 +333,28 @@ WHERE
 RETURNING
     *;
 
+-- name: GetUserImpersonationTokenBySecretTokenSHA256 :one
+SELECT
+    *
+FROM
+    user_impersonation_tokens
+WHERE
+    secret_token_sha256 = $1
+    AND expire_time > now();
+
+-- name: CreateImpersonatedSession :one
+INSERT INTO sessions (id, user_id, expire_time, refresh_token_sha256, revoked, impersonator_user_id)
+    VALUES ($1, $2, $3, $4, $5, $6)
+RETURNING
+    *;
+
+-- name: RevokeUserImpersonationToken :one
+UPDATE
+    user_impersonation_tokens
+SET
+    secret_token_sha256 = NULL
+WHERE
+    id = $1
+RETURNING
+    *;
+
