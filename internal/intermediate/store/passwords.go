@@ -59,7 +59,7 @@ func (s *Store) VerifyPassword(ctx context.Context, req *intermediatev1.VerifyPa
 		return nil, fmt.Errorf("get organization by id: %w", err)
 	}
 
-	if err = enforceOrganizationLoginEnabled(qOrg); err != nil {
+	if err := enforceOrganizationLoginEnabled(qOrg); err != nil {
 		return nil, fmt.Errorf("enforce organization login enabled: %w", err)
 	}
 
