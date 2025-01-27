@@ -72,10 +72,10 @@ func (q *Queries) CreateEmailVerificationChallenge(ctx context.Context, arg Crea
 }
 
 const createImpersonatedSession = `-- name: CreateImpersonatedSession :one
-INSERT INTO sessions (id, user_id, expire_time, refresh_token_sha256, revoked, impersonator_user_id)
-    VALUES ($1, $2, $3, $4, $5, $6)
+INSERT INTO sessions (id, user_id, expire_time, refresh_token_sha256, impersonator_user_id)
+    VALUES ($1, $2, $3, $4, $5)
 RETURNING
-    id, user_id, create_time, expire_time, revoked, refresh_token_sha256, impersonator_user_id
+    id, user_id, create_time, expire_time, refresh_token_sha256, impersonator_user_id
 `
 
 type CreateImpersonatedSessionParams struct {
@@ -83,7 +83,6 @@ type CreateImpersonatedSessionParams struct {
 	UserID             uuid.UUID
 	ExpireTime         *time.Time
 	RefreshTokenSha256 []byte
-	Revoked            bool
 	ImpersonatorUserID *uuid.UUID
 }
 
@@ -93,7 +92,6 @@ func (q *Queries) CreateImpersonatedSession(ctx context.Context, arg CreateImper
 		arg.UserID,
 		arg.ExpireTime,
 		arg.RefreshTokenSha256,
-		arg.Revoked,
 		arg.ImpersonatorUserID,
 	)
 	var i Session
@@ -102,7 +100,6 @@ func (q *Queries) CreateImpersonatedSession(ctx context.Context, arg CreateImper
 		&i.UserID,
 		&i.CreateTime,
 		&i.ExpireTime,
-		&i.Revoked,
 		&i.RefreshTokenSha256,
 		&i.ImpersonatorUserID,
 	)
@@ -247,10 +244,10 @@ func (q *Queries) CreateOrganizationMicrosoftTenantID(ctx context.Context, arg C
 }
 
 const createSession = `-- name: CreateSession :one
-INSERT INTO sessions (id, user_id, expire_time, refresh_token_sha256, revoked)
-    VALUES ($1, $2, $3, $4, $5)
+INSERT INTO sessions (id, user_id, expire_time, refresh_token_sha256)
+    VALUES ($1, $2, $3, $4)
 RETURNING
-    id, user_id, create_time, expire_time, revoked, refresh_token_sha256, impersonator_user_id
+    id, user_id, create_time, expire_time, refresh_token_sha256, impersonator_user_id
 `
 
 type CreateSessionParams struct {
@@ -258,7 +255,6 @@ type CreateSessionParams struct {
 	UserID             uuid.UUID
 	ExpireTime         *time.Time
 	RefreshTokenSha256 []byte
-	Revoked            bool
 }
 
 func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error) {
@@ -267,7 +263,6 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (S
 		arg.UserID,
 		arg.ExpireTime,
 		arg.RefreshTokenSha256,
-		arg.Revoked,
 	)
 	var i Session
 	err := row.Scan(
@@ -275,7 +270,6 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (S
 		&i.UserID,
 		&i.CreateTime,
 		&i.ExpireTime,
-		&i.Revoked,
 		&i.RefreshTokenSha256,
 		&i.ImpersonatorUserID,
 	)

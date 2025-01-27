@@ -296,7 +296,7 @@ func (q *Queries) GetSCIMAPIKey(ctx context.Context, arg GetSCIMAPIKeyParams) (S
 
 const getSessionByID = `-- name: GetSessionByID :one
 SELECT
-    id, user_id, create_time, expire_time, revoked, refresh_token_sha256, impersonator_user_id
+    id, user_id, create_time, expire_time, refresh_token_sha256, impersonator_user_id
 FROM
     sessions
 WHERE
@@ -311,7 +311,6 @@ func (q *Queries) GetSessionByID(ctx context.Context, id uuid.UUID) (Session, er
 		&i.UserID,
 		&i.CreateTime,
 		&i.ExpireTime,
-		&i.Revoked,
 		&i.RefreshTokenSha256,
 		&i.ImpersonatorUserID,
 	)

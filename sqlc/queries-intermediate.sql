@@ -65,8 +65,8 @@ RETURNING
     *;
 
 -- name: CreateSession :one
-INSERT INTO sessions (id, user_id, expire_time, refresh_token_sha256, revoked)
-    VALUES ($1, $2, $3, $4, $5)
+INSERT INTO sessions (id, user_id, expire_time, refresh_token_sha256)
+    VALUES ($1, $2, $3, $4)
 RETURNING
     *;
 
@@ -349,8 +349,8 @@ WHERE
     AND expire_time > now();
 
 -- name: CreateImpersonatedSession :one
-INSERT INTO sessions (id, user_id, expire_time, refresh_token_sha256, revoked, impersonator_user_id)
-    VALUES ($1, $2, $3, $4, $5, $6)
+INSERT INTO sessions (id, user_id, expire_time, refresh_token_sha256, impersonator_user_id)
+    VALUES ($1, $2, $3, $4, $5)
 RETURNING
     *;
 
