@@ -3,11 +3,8 @@ package interceptor
 import (
 	"context"
 	"crypto/ecdsa"
-	"crypto/elliptic"
-	"encoding/base64"
 	"errors"
 	"fmt"
-	"math/big"
 	"strings"
 	"time"
 
@@ -97,38 +94,16 @@ func authenticateAccessToken(ctx context.Context, s *store.Store, dogfoodProject
 		return nil, connect.NewError(connect.CodeUnauthenticated, err)
 	}
 
-	var sessionPublicKeyJWK map[string]any
+	var pub *ecdsa.PublicKey
 	for _, sessionPublicKey := range sessionPublicKeys {
-		jwk := sessionPublicKey.PublicKeyJwk.AsMap()
-		if jwk["kid"] == kid {
-			sessionPublicKeyJWK = jwk
+		if sessionPublicKey.ID == kid {
+			pub = sessionPublicKey.PublicKey
 		}
 	}
 
-	if sessionPublicKeyJWK == nil {
-		return nil, connect.NewError(connect.CodeUnauthenticated, ujwt.ErrBadJWT)
-	}
-
-	x, err := base64.RawURLEncoding.DecodeString(sessionPublicKeyJWK["x"].(string))
-	if err != nil {
-		panic(fmt.Errorf("parse jwk: %w", err))
-	}
-
-	y, err := base64.RawURLEncoding.DecodeString(sessionPublicKeyJWK["y"].(string))
-	if err != nil {
-		panic(fmt.Errorf("parse jwk: %w", err))
-	}
-
-	pubX := new(big.Int)
-	pubY := new(big.Int)
-	pubX.SetBytes(x)
-	pubY.SetBytes(y)
-
-	pub := ecdsa.PublicKey{Curve: elliptic.P256(), X: pubX, Y: pubY}
-
 	aud := fmt.Sprintf("https://%s.tesseral.app", strings.ReplaceAll(dogfoodProjectID, "_", "-"))
 	var claims map[string]interface{}
-	if err := ujwt.Claims(&pub, aud, time.Now(), &claims, accessToken); err != nil {
+	if err := ujwt.Claims(pub, aud, time.Now(), &claims, accessToken); err != nil {
 		return nil, connect.NewError(connect.CodeUnauthenticated, err)
 	}
 

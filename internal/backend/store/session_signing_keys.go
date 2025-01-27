@@ -2,19 +2,22 @@ package store
 
 import (
 	"context"
-	"encoding/base64"
+	"crypto/ecdsa"
+	"crypto/x509"
 	"errors"
 	"fmt"
 
 	"github.com/jackc/pgx/v5"
-	backendv1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
 	"github.com/openauth/openauth/internal/common/apierror"
-	openauthecdsa "github.com/openauth/openauth/internal/crypto/ecdsa"
 	"github.com/openauth/openauth/internal/store/idformat"
-	"google.golang.org/protobuf/types/known/structpb"
 )
 
-func (s *Store) GetSessionPublicKeysByProjectID(ctx context.Context, projectId string) ([]*backendv1.SessionSigningKey, error) {
+type GetSessionPublicKeysByProjectIDResponseKey struct {
+	ID        string
+	PublicKey *ecdsa.PublicKey
+}
+
+func (s *Store) GetSessionPublicKeysByProjectID(ctx context.Context, projectId string) ([]GetSessionPublicKeysByProjectIDResponseKey, error) {
 	_, q, _, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -35,27 +38,16 @@ func (s *Store) GetSessionPublicKeysByProjectID(ctx context.Context, projectId s
 		return nil, fmt.Errorf("get session signing keys by project id: %w", err)
 	}
 
-	var out []*backendv1.SessionSigningKey
+	var out []GetSessionPublicKeysByProjectIDResponseKey
 	for _, sessionSigningKey := range sessionSigningKeys {
-		pub, err := openauthecdsa.PublicKeyFromBytes(sessionSigningKey.PublicKey)
+		pub, err := x509.ParsePKIXPublicKey(sessionSigningKey.PublicKey)
 		if err != nil {
 			panic(fmt.Errorf("public key from bytes: %w", err))
 		}
 
-		jwk, err := structpb.NewStruct(map[string]any{
-			"kid": idformat.SessionSigningKey.Format(sessionSigningKey.ID),
-			"kty": "EC",
-			"crv": "P-256",
-			"x":   base64.RawURLEncoding.EncodeToString(pub.X.Bytes()),
-			"y":   base64.RawURLEncoding.EncodeToString(pub.Y.Bytes()),
-		})
-		if err != nil {
-			panic(fmt.Errorf("marshal public key to structpb: %w", err))
-		}
-
-		out = append(out, &backendv1.SessionSigningKey{
-			Id:           idformat.SessionSigningKey.Format(sessionSigningKey.ID),
-			PublicKeyJwk: jwk,
+		out = append(out, GetSessionPublicKeysByProjectIDResponseKey{
+			ID:        idformat.SessionSigningKey.Format(sessionSigningKey.ID),
+			PublicKey: pub.(*ecdsa.PublicKey),
 		})
 	}
 

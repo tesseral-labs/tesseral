@@ -2,10 +2,11 @@ package store
 
 import (
 	"context"
+	"crypto/ecdsa"
+	"crypto/x509"
 	"encoding/base64"
 	"fmt"
 
-	"github.com/openauth/openauth/internal/crypto/ecdsa"
 	oauthv1 "github.com/openauth/openauth/internal/oauth/gen/openauth/oauth/v1"
 	"github.com/openauth/openauth/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/structpb"
@@ -30,7 +31,7 @@ func (s *Store) GetSessionPublicKeysByProjectID(ctx context.Context, projectId s
 
 	var out []*oauthv1.SessionSigningKey
 	for _, sessionSigningKey := range sessionSigningKeys {
-		pub, err := ecdsa.PublicKeyFromBytes(sessionSigningKey.PublicKey)
+		pub, err := x509.ParsePKIXPublicKey(sessionSigningKey.PublicKey)
 		if err != nil {
 			panic(fmt.Errorf("public key from bytes: %w", err))
 		}
@@ -39,8 +40,8 @@ func (s *Store) GetSessionPublicKeysByProjectID(ctx context.Context, projectId s
 			"kid": idformat.SessionSigningKey.Format(sessionSigningKey.ID),
 			"kty": "EC",
 			"crv": "P-256",
-			"x":   base64.RawURLEncoding.EncodeToString(pub.X.Bytes()),
-			"y":   base64.RawURLEncoding.EncodeToString(pub.Y.Bytes()),
+			"x":   base64.RawURLEncoding.EncodeToString(pub.(*ecdsa.PublicKey).X.Bytes()),
+			"y":   base64.RawURLEncoding.EncodeToString(pub.(*ecdsa.PublicKey).Y.Bytes()),
 		})
 		if err != nil {
 			panic(fmt.Errorf("marshal public key to structpb: %w", err))
