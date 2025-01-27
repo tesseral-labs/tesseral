@@ -47,12 +47,20 @@ func (s *Store) VerifyPassword(ctx context.Context, req *intermediatev1.VerifyPa
 		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 
+	if err := enforceProjectLoginEnabled(qProject); err != nil {
+		return nil, fmt.Errorf("enforce project login enabled: %w", err)
+	}
+
 	qOrg, err := q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
 		ProjectID: authn.ProjectID(ctx),
 		ID:        orgID,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("get organization by id: %w", err)
+	}
+
+	if err := enforceOrganizationLoginEnabled(qOrg); err != nil {
+		return nil, fmt.Errorf("enforce organization login enabled: %w", err)
 	}
 
 	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))

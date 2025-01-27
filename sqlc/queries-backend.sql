@@ -454,3 +454,69 @@ INSERT INTO user_impersonation_tokens (id, impersonator_id, impersonated_id, exp
 RETURNING
     *;
 
+-- name: RevokeAllOrganizationSessions :exec
+UPDATE
+    sessions
+SET
+    refresh_token_sha256 = NULL
+WHERE
+    user_id IN (
+        SELECT
+            id
+        FROM
+            users
+        WHERE
+            organization_id = $1);
+
+-- name: RevokeAllProjectSessions :exec
+UPDATE
+    sessions
+SET
+    refresh_token_sha256 = NULL
+WHERE
+    user_id IN (
+        SELECT
+            id
+        FROM
+            users
+        WHERE
+            organization_id IN (
+                SELECT
+                    id
+                FROM
+                    organizations
+                WHERE
+                    project_id = $1));
+
+-- name: DisableOrganizationLogins :exec
+UPDATE
+    organizations
+SET
+    logins_disabled = TRUE
+WHERE
+    id = $1;
+
+-- name: EnableOrganizationLogins :exec
+UPDATE
+    organizations
+SET
+    logins_disabled = FALSE
+WHERE
+    id = $1;
+
+-- name: DisableProjectLogins :exec
+UPDATE
+    projects
+SET
+    logins_disabled = TRUE
+WHERE
+    id = $1;
+
+-- name: EnableProjectLogins :exec
+UPDATE
+    projects
+SET
+    logins_disabled = FALSE
+WHERE
+    id = $1;
+

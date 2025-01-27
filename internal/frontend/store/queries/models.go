@@ -104,6 +104,7 @@ type Organization struct {
 	ScimEnabled                       bool
 	CreateTime                        *time.Time
 	UpdateTime                        *time.Time
+	LoginsDisabled                    bool
 }
 
 type OrganizationDomain struct {
@@ -139,6 +140,7 @@ type Project struct {
 	UpdateTime                           *time.Time
 	CustomAuthDomain                     *string
 	AuthDomain                           *string
+	LoginsDisabled                       bool
 }
 
 type ProjectApiKey struct {

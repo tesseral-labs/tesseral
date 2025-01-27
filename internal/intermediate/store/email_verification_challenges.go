@@ -3,6 +3,7 @@ package store
 import (
 	"context"
 	"crypto/sha256"
+	"errors"
 	"fmt"
 	"log/slog"
 	"math/rand/v2"
@@ -13,6 +14,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/sesv2"
 	"github.com/aws/aws-sdk-go-v2/service/sesv2/types"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/openauth/openauth/internal/common/apierror"
 	"github.com/openauth/openauth/internal/intermediate/authn"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
@@ -28,6 +30,19 @@ func (s *Store) IssueEmailVerificationChallenge(ctx context.Context, req *interm
 		return nil, err
 	}
 	defer rollback()
+
+	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("get project by id: %w", fmt.Errorf("project not found: %w", err))
+		}
+
+		return nil, fmt.Errorf("get project by id: %w", err)
+	}
+
+	if err := enforceProjectLoginEnabled(qProject); err != nil {
+		return nil, fmt.Errorf("enforce project login enabled: %w", err)
+	}
 
 	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))
 	if err != nil {
@@ -84,6 +99,19 @@ func (s *Store) VerifyEmailChallenge(ctx context.Context, req *intermediatev1.Ve
 		return nil, err
 	}
 	defer rollback()
+
+	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("get project by id: %w", fmt.Errorf("project not found: %w", err))
+		}
+
+		return nil, fmt.Errorf("get project by id: %w", err)
+	}
+
+	if err := enforceProjectLoginEnabled(qProject); err != nil {
+		return nil, fmt.Errorf("enforce project login enabled: %w", err)
+	}
 
 	challengeSHA256 := sha256.Sum256([]byte(req.Code))
 	qEmailVerificationChallenge, err := q.GetEmailVerificationChallengeByChallengeSHA(ctx, queries.GetEmailVerificationChallengeByChallengeSHAParams{

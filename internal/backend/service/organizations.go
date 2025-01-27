@@ -52,3 +52,21 @@ func (s *Service) DeleteOrganization(ctx context.Context, req *connect.Request[b
 
 	return connect.NewResponse(res), nil
 }
+
+func (s *Service) DisableOrganizationLogins(ctx context.Context, req *connect.Request[backendv1.DisableOrganizationLoginsRequest]) (*connect.Response[backendv1.DisableOrganizationLoginsResponse], error) {
+	res, err := s.Store.DisableOrganizationLogins(ctx, req.Msg)
+	if err != nil {
+		return nil, fmt.Errorf("store: %w", err)
+	}
+
+	return connect.NewResponse(res), nil
+}
+
+func (s *Service) EnableOrganizationLogins(ctx context.Context, req *connect.Request[backendv1.EnableOrganizationLoginsRequest]) (*connect.Response[backendv1.EnableOrganizationLoginsResponse], error) {
+	res, err := s.Store.EnableOrganizationLogins(ctx, req.Msg)
+	if err != nil {
+		return nil, fmt.Errorf("store: %w", err)
+	}
+
+	return connect.NewResponse(res), nil
+}

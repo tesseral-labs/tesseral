@@ -42,6 +42,10 @@ const (
 	BackendService_GetSession_FullMethodName                   = "/openauth.backend.v1.BackendService/GetSession"
 	BackendService_ListIntermediateSessions_FullMethodName     = "/openauth.backend.v1.BackendService/ListIntermediateSessions"
 	BackendService_GetIntermediateSession_FullMethodName       = "/openauth.backend.v1.BackendService/GetIntermediateSession"
+	BackendService_DisableOrganizationLogins_FullMethodName    = "/openauth.backend.v1.BackendService/DisableOrganizationLogins"
+	BackendService_DisableProjectLogins_FullMethodName         = "/openauth.backend.v1.BackendService/DisableProjectLogins"
+	BackendService_EnableOrganizationLogins_FullMethodName     = "/openauth.backend.v1.BackendService/EnableOrganizationLogins"
+	BackendService_EnableProjectLogins_FullMethodName          = "/openauth.backend.v1.BackendService/EnableProjectLogins"
 	BackendService_UpdateProject_FullMethodName                = "/openauth.backend.v1.BackendService/UpdateProject"
 	BackendService_CreateProjectRedirectURI_FullMethodName     = "/openauth.backend.v1.BackendService/CreateProjectRedirectURI"
 	BackendService_DeleteProjectRedirectURI_FullMethodName     = "/openauth.backend.v1.BackendService/DeleteProjectRedirectURI"
@@ -86,6 +90,10 @@ type BackendServiceClient interface {
 	GetSession(ctx context.Context, in *GetSessionRequest, opts ...grpc.CallOption) (*GetSessionResponse, error)
 	ListIntermediateSessions(ctx context.Context, in *ListIntermediateSessionsRequest, opts ...grpc.CallOption) (*ListIntermediateSessionsResponse, error)
 	GetIntermediateSession(ctx context.Context, in *GetIntermediateSessionRequest, opts ...grpc.CallOption) (*GetIntermediateSessionResponse, error)
+	DisableOrganizationLogins(ctx context.Context, in *DisableOrganizationLoginsRequest, opts ...grpc.CallOption) (*DisableOrganizationLoginsResponse, error)
+	DisableProjectLogins(ctx context.Context, in *DisableProjectLoginsRequest, opts ...grpc.CallOption) (*DisableProjectLoginsResponse, error)
+	EnableOrganizationLogins(ctx context.Context, in *EnableOrganizationLoginsRequest, opts ...grpc.CallOption) (*EnableOrganizationLoginsResponse, error)
+	EnableProjectLogins(ctx context.Context, in *EnableProjectLoginsRequest, opts ...grpc.CallOption) (*EnableProjectLoginsResponse, error)
 	UpdateProject(ctx context.Context, in *UpdateProjectRequest, opts ...grpc.CallOption) (*UpdateProjectResponse, error)
 	CreateProjectRedirectURI(ctx context.Context, in *CreateProjectRedirectURIRequest, opts ...grpc.CallOption) (*CreateProjectRedirectURIResponse, error)
 	DeleteProjectRedirectURI(ctx context.Context, in *DeleteProjectRedirectURIRequest, opts ...grpc.CallOption) (*DeleteProjectRedirectURIResponse, error)
@@ -341,6 +349,46 @@ func (c *backendServiceClient) GetIntermediateSession(ctx context.Context, in *G
 	return out, nil
 }
 
+func (c *backendServiceClient) DisableOrganizationLogins(ctx context.Context, in *DisableOrganizationLoginsRequest, opts ...grpc.CallOption) (*DisableOrganizationLoginsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DisableOrganizationLoginsResponse)
+	err := c.cc.Invoke(ctx, BackendService_DisableOrganizationLogins_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) DisableProjectLogins(ctx context.Context, in *DisableProjectLoginsRequest, opts ...grpc.CallOption) (*DisableProjectLoginsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DisableProjectLoginsResponse)
+	err := c.cc.Invoke(ctx, BackendService_DisableProjectLogins_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) EnableOrganizationLogins(ctx context.Context, in *EnableOrganizationLoginsRequest, opts ...grpc.CallOption) (*EnableOrganizationLoginsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(EnableOrganizationLoginsResponse)
+	err := c.cc.Invoke(ctx, BackendService_EnableOrganizationLogins_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) EnableProjectLogins(ctx context.Context, in *EnableProjectLoginsRequest, opts ...grpc.CallOption) (*EnableProjectLoginsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(EnableProjectLoginsResponse)
+	err := c.cc.Invoke(ctx, BackendService_EnableProjectLogins_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *backendServiceClient) UpdateProject(ctx context.Context, in *UpdateProjectRequest, opts ...grpc.CallOption) (*UpdateProjectResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(UpdateProjectResponse)
@@ -518,6 +566,10 @@ type BackendServiceServer interface {
 	GetSession(context.Context, *GetSessionRequest) (*GetSessionResponse, error)
 	ListIntermediateSessions(context.Context, *ListIntermediateSessionsRequest) (*ListIntermediateSessionsResponse, error)
 	GetIntermediateSession(context.Context, *GetIntermediateSessionRequest) (*GetIntermediateSessionResponse, error)
+	DisableOrganizationLogins(context.Context, *DisableOrganizationLoginsRequest) (*DisableOrganizationLoginsResponse, error)
+	DisableProjectLogins(context.Context, *DisableProjectLoginsRequest) (*DisableProjectLoginsResponse, error)
+	EnableOrganizationLogins(context.Context, *EnableOrganizationLoginsRequest) (*EnableOrganizationLoginsResponse, error)
+	EnableProjectLogins(context.Context, *EnableProjectLoginsRequest) (*EnableProjectLoginsResponse, error)
 	UpdateProject(context.Context, *UpdateProjectRequest) (*UpdateProjectResponse, error)
 	CreateProjectRedirectURI(context.Context, *CreateProjectRedirectURIRequest) (*CreateProjectRedirectURIResponse, error)
 	DeleteProjectRedirectURI(context.Context, *DeleteProjectRedirectURIRequest) (*DeleteProjectRedirectURIResponse, error)
@@ -611,6 +663,18 @@ func (UnimplementedBackendServiceServer) ListIntermediateSessions(context.Contex
 }
 func (UnimplementedBackendServiceServer) GetIntermediateSession(context.Context, *GetIntermediateSessionRequest) (*GetIntermediateSessionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetIntermediateSession not implemented")
+}
+func (UnimplementedBackendServiceServer) DisableOrganizationLogins(context.Context, *DisableOrganizationLoginsRequest) (*DisableOrganizationLoginsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DisableOrganizationLogins not implemented")
+}
+func (UnimplementedBackendServiceServer) DisableProjectLogins(context.Context, *DisableProjectLoginsRequest) (*DisableProjectLoginsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DisableProjectLogins not implemented")
+}
+func (UnimplementedBackendServiceServer) EnableOrganizationLogins(context.Context, *EnableOrganizationLoginsRequest) (*EnableOrganizationLoginsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EnableOrganizationLogins not implemented")
+}
+func (UnimplementedBackendServiceServer) EnableProjectLogins(context.Context, *EnableProjectLoginsRequest) (*EnableProjectLoginsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EnableProjectLogins not implemented")
 }
 func (UnimplementedBackendServiceServer) UpdateProject(context.Context, *UpdateProjectRequest) (*UpdateProjectResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateProject not implemented")
@@ -1092,6 +1156,78 @@ func _BackendService_GetIntermediateSession_Handler(srv interface{}, ctx context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BackendService_DisableOrganizationLogins_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DisableOrganizationLoginsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).DisableOrganizationLogins(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_DisableOrganizationLogins_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).DisableOrganizationLogins(ctx, req.(*DisableOrganizationLoginsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_DisableProjectLogins_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DisableProjectLoginsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).DisableProjectLogins(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_DisableProjectLogins_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).DisableProjectLogins(ctx, req.(*DisableProjectLoginsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_EnableOrganizationLogins_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EnableOrganizationLoginsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).EnableOrganizationLogins(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_EnableOrganizationLogins_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).EnableOrganizationLogins(ctx, req.(*EnableOrganizationLoginsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_EnableProjectLogins_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EnableProjectLoginsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).EnableProjectLogins(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_EnableProjectLogins_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).EnableProjectLogins(ctx, req.(*EnableProjectLoginsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _BackendService_UpdateProject_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UpdateProjectRequest)
 	if err := dec(in); err != nil {
@@ -1460,6 +1596,22 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetIntermediateSession",
 			Handler:    _BackendService_GetIntermediateSession_Handler,
+		},
+		{
+			MethodName: "DisableOrganizationLogins",
+			Handler:    _BackendService_DisableOrganizationLogins_Handler,
+		},
+		{
+			MethodName: "DisableProjectLogins",
+			Handler:    _BackendService_DisableProjectLogins_Handler,
+		},
+		{
+			MethodName: "EnableOrganizationLogins",
+			Handler:    _BackendService_EnableOrganizationLogins_Handler,
+		},
+		{
+			MethodName: "EnableProjectLogins",
+			Handler:    _BackendService_EnableProjectLogins_Handler,
 		},
 		{
 			MethodName: "UpdateProject",

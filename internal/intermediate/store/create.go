@@ -3,10 +3,13 @@ package store
 import (
 	"context"
 	"crypto/sha256"
+	"errors"
 	"fmt"
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
+	"github.com/openauth/openauth/internal/common/apierror"
 	"github.com/openauth/openauth/internal/intermediate/authn"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
@@ -21,6 +24,19 @@ func (s *Store) CreateIntermediateSession(ctx context.Context, req *intermediate
 		return nil, err
 	}
 	defer rollback()
+
+	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("get project by id: %w", fmt.Errorf("project not found: %w", err))
+		}
+
+		return nil, fmt.Errorf("get project by id: %w", err)
+	}
+
+	if err := enforceProjectLoginEnabled(qProject); err != nil {
+		return nil, fmt.Errorf("enforce project login enabled: %w", err)
+	}
 
 	expireTime := time.Now().Add(intermediateSessionDuration)
 

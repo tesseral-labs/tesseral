@@ -34,6 +34,10 @@ func (s *Store) GetMicrosoftOAuthRedirectURL(ctx context.Context, req *intermedi
 		return nil, fmt.Errorf("get project by id: %v", err)
 	}
 
+	if err := enforceProjectLoginEnabled(qProject); err != nil {
+		return nil, fmt.Errorf("enforce project login enabled: %w", err)
+	}
+
 	if qProject.MicrosoftOauthClientID == nil {
 		return nil, apierror.NewFailedPreconditionError("microsoft oauth client id not set", fmt.Errorf("microsoft oauth client id not set"))
 	}
@@ -66,6 +70,10 @@ func (s *Store) RedeemMicrosoftOAuthCode(ctx context.Context, req *intermediatev
 	qProject, qIntermediateSession, err := s.getProjectAndIntermediateSession(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("get project and intermediate session: %v", err)
+	}
+
+	if err := enforceProjectLoginEnabled(*qProject); err != nil {
+		return nil, fmt.Errorf("enforce project login enabled: %w", err)
 	}
 
 	if qProject.MicrosoftOauthClientID == nil || qProject.MicrosoftOauthClientSecretCiphertext == nil {

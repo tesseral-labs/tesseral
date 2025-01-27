@@ -152,6 +152,11 @@ service BackendService {
     };
   }
 
+  rpc DisableOrganizationLogins(DisableOrganizationLoginsRequest) returns (DisableOrganizationLoginsResponse) {}
+  rpc DisableProjectLogins(DisableProjectLoginsRequest) returns (DisableProjectLoginsResponse) {}
+  rpc EnableOrganizationLogins(EnableOrganizationLoginsRequest) returns (EnableOrganizationLoginsResponse) {}
+  rpc EnableProjectLogins(EnableProjectLoginsRequest) returns (EnableProjectLoginsResponse) {}
+
   rpc UpdateProject(UpdateProjectRequest) returns (UpdateProjectResponse);
 
   rpc CreateProjectRedirectURI(CreateProjectRedirectURIRequest) returns (CreateProjectRedirectURIResponse) {}
@@ -494,6 +499,30 @@ message UpdateProjectUISettingsResponse {
   bool detect_dark_mode_enabled = 9;
   string primary_color = 10;
 }
+
+message DisableOrganizationLoginsRequest {
+  string organization_id = 1;
+}
+
+message DisableOrganizationLoginsResponse {}
+
+message DisableProjectLoginsRequest {
+  string project_id = 1;
+}
+
+message DisableProjectLoginsResponse {}
+
+message EnableOrganizationLoginsRequest {
+  string organization_id = 1;
+}
+
+message EnableOrganizationLoginsResponse {}
+
+message EnableProjectLoginsRequest {
+  string project_id = 1;
+}
+
+message EnableProjectLoginsResponse {}
 
 message ImageUploadRequest {
   bytes data = 1;

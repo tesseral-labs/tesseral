@@ -34,6 +34,10 @@ func (s *Store) GetGoogleOAuthRedirectURL(ctx context.Context, req *intermediate
 		return nil, fmt.Errorf("get project by id: %v", err)
 	}
 
+	if err := enforceProjectLoginEnabled(qProject); err != nil {
+		return nil, fmt.Errorf("enforce project login enabled: %w", err)
+	}
+
 	if qProject.GoogleOauthClientID == nil {
 		return nil, apierror.NewFailedPreconditionError("google oauth client id not set", fmt.Errorf("google oauth client id not set"))
 	}
@@ -66,6 +70,10 @@ func (s *Store) RedeemGoogleOAuthCode(ctx context.Context, req *intermediatev1.R
 	qProject, qIntermediateSession, err := s.getProjectAndIntermediateSession(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("get project and intermediate session: %v", err)
+	}
+
+	if err := enforceProjectLoginEnabled(*qProject); err != nil {
+		return nil, fmt.Errorf("enforce project login enabled: %w", err)
 	}
 
 	if qProject.GoogleOauthClientID == nil || qProject.GoogleOauthClientSecretCiphertext == nil {

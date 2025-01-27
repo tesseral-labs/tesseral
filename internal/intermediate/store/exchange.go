@@ -43,6 +43,10 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		return nil, err
 	}
 
+	if err := enforceOrganizationLoginEnabled(qOrg); err != nil {
+		return nil, fmt.Errorf("enforce organization login enabled: %w", err)
+	}
+
 	if err := s.validateAuthRequirementsSatisfied(ctx, q, qIntermediateSession.ID, qOrg.ID); err != nil {
 		return nil, fmt.Errorf("validate auth requirements satisfied: %w", err)
 	}
@@ -105,6 +109,19 @@ func (s *Store) ExchangeIntermediateSessionForNewOrganizationSession(ctx context
 	defer rollback()
 
 	intermediateSession := authn.IntermediateSession(ctx)
+
+	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("get project by id: %w", fmt.Errorf("project not found: %w", err))
+		}
+
+		return nil, fmt.Errorf("get project by id: %w", err)
+	}
+
+	if err := enforceProjectLoginEnabled(qProject); err != nil {
+		return nil, fmt.Errorf("enforce project login enabled: %w", err)
+	}
 
 	// Create a new organization
 	qOrganization, err := q.CreateOrganization(ctx, queries.CreateOrganizationParams{

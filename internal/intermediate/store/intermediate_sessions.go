@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
+	"github.com/openauth/openauth/internal/common/apierror"
 	"github.com/openauth/openauth/internal/intermediate/authn"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
@@ -60,6 +61,20 @@ func (s *Store) getIntermediateSessionEmailVerified(ctx context.Context, q *quer
 		return true, nil
 	}
 	return false, nil
+}
+
+func enforceOrganizationLoginEnabled(qOrganization queries.Organization) error {
+	if qOrganization.LoginsDisabled {
+		return apierror.NewPermissionDeniedError("login disabled", fmt.Errorf("organization login disabled"))
+	}
+	return nil
+}
+
+func enforceProjectLoginEnabled(qProject queries.Project) error {
+	if qProject.LoginsDisabled {
+		return apierror.NewPermissionDeniedError("login disabled", fmt.Errorf("project login disabled"))
+	}
+	return nil
 }
 
 func parseIntermediateSession(qIntermediateSession queries.IntermediateSession, emailVerified bool) *intermediatev1.IntermediateSession {

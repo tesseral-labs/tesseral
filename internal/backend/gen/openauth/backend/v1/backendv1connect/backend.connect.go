@@ -101,6 +101,18 @@ const (
 	// BackendServiceGetIntermediateSessionProcedure is the fully-qualified name of the BackendService's
 	// GetIntermediateSession RPC.
 	BackendServiceGetIntermediateSessionProcedure = "/openauth.backend.v1.BackendService/GetIntermediateSession"
+	// BackendServiceDisableOrganizationLoginsProcedure is the fully-qualified name of the
+	// BackendService's DisableOrganizationLogins RPC.
+	BackendServiceDisableOrganizationLoginsProcedure = "/openauth.backend.v1.BackendService/DisableOrganizationLogins"
+	// BackendServiceDisableProjectLoginsProcedure is the fully-qualified name of the BackendService's
+	// DisableProjectLogins RPC.
+	BackendServiceDisableProjectLoginsProcedure = "/openauth.backend.v1.BackendService/DisableProjectLogins"
+	// BackendServiceEnableOrganizationLoginsProcedure is the fully-qualified name of the
+	// BackendService's EnableOrganizationLogins RPC.
+	BackendServiceEnableOrganizationLoginsProcedure = "/openauth.backend.v1.BackendService/EnableOrganizationLogins"
+	// BackendServiceEnableProjectLoginsProcedure is the fully-qualified name of the BackendService's
+	// EnableProjectLogins RPC.
+	BackendServiceEnableProjectLoginsProcedure = "/openauth.backend.v1.BackendService/EnableProjectLogins"
 	// BackendServiceUpdateProjectProcedure is the fully-qualified name of the BackendService's
 	// UpdateProject RPC.
 	BackendServiceUpdateProjectProcedure = "/openauth.backend.v1.BackendService/UpdateProject"
@@ -173,6 +185,10 @@ type BackendServiceClient interface {
 	GetSession(context.Context, *connect.Request[v1.GetSessionRequest]) (*connect.Response[v1.GetSessionResponse], error)
 	ListIntermediateSessions(context.Context, *connect.Request[v1.ListIntermediateSessionsRequest]) (*connect.Response[v1.ListIntermediateSessionsResponse], error)
 	GetIntermediateSession(context.Context, *connect.Request[v1.GetIntermediateSessionRequest]) (*connect.Response[v1.GetIntermediateSessionResponse], error)
+	DisableOrganizationLogins(context.Context, *connect.Request[v1.DisableOrganizationLoginsRequest]) (*connect.Response[v1.DisableOrganizationLoginsResponse], error)
+	DisableProjectLogins(context.Context, *connect.Request[v1.DisableProjectLoginsRequest]) (*connect.Response[v1.DisableProjectLoginsResponse], error)
+	EnableOrganizationLogins(context.Context, *connect.Request[v1.EnableOrganizationLoginsRequest]) (*connect.Response[v1.EnableOrganizationLoginsResponse], error)
+	EnableProjectLogins(context.Context, *connect.Request[v1.EnableProjectLoginsRequest]) (*connect.Response[v1.EnableProjectLoginsResponse], error)
 	UpdateProject(context.Context, *connect.Request[v1.UpdateProjectRequest]) (*connect.Response[v1.UpdateProjectResponse], error)
 	CreateProjectRedirectURI(context.Context, *connect.Request[v1.CreateProjectRedirectURIRequest]) (*connect.Response[v1.CreateProjectRedirectURIResponse], error)
 	DeleteProjectRedirectURI(context.Context, *connect.Request[v1.DeleteProjectRedirectURIRequest]) (*connect.Response[v1.DeleteProjectRedirectURIResponse], error)
@@ -339,6 +355,30 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(backendServiceMethods.ByName("GetIntermediateSession")),
 			connect.WithClientOptions(opts...),
 		),
+		disableOrganizationLogins: connect.NewClient[v1.DisableOrganizationLoginsRequest, v1.DisableOrganizationLoginsResponse](
+			httpClient,
+			baseURL+BackendServiceDisableOrganizationLoginsProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("DisableOrganizationLogins")),
+			connect.WithClientOptions(opts...),
+		),
+		disableProjectLogins: connect.NewClient[v1.DisableProjectLoginsRequest, v1.DisableProjectLoginsResponse](
+			httpClient,
+			baseURL+BackendServiceDisableProjectLoginsProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("DisableProjectLogins")),
+			connect.WithClientOptions(opts...),
+		),
+		enableOrganizationLogins: connect.NewClient[v1.EnableOrganizationLoginsRequest, v1.EnableOrganizationLoginsResponse](
+			httpClient,
+			baseURL+BackendServiceEnableOrganizationLoginsProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("EnableOrganizationLogins")),
+			connect.WithClientOptions(opts...),
+		),
+		enableProjectLogins: connect.NewClient[v1.EnableProjectLoginsRequest, v1.EnableProjectLoginsResponse](
+			httpClient,
+			baseURL+BackendServiceEnableProjectLoginsProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("EnableProjectLogins")),
+			connect.WithClientOptions(opts...),
+		),
 		updateProject: connect.NewClient[v1.UpdateProjectRequest, v1.UpdateProjectResponse](
 			httpClient,
 			baseURL+BackendServiceUpdateProjectProcedure,
@@ -457,6 +497,10 @@ type backendServiceClient struct {
 	getSession                   *connect.Client[v1.GetSessionRequest, v1.GetSessionResponse]
 	listIntermediateSessions     *connect.Client[v1.ListIntermediateSessionsRequest, v1.ListIntermediateSessionsResponse]
 	getIntermediateSession       *connect.Client[v1.GetIntermediateSessionRequest, v1.GetIntermediateSessionResponse]
+	disableOrganizationLogins    *connect.Client[v1.DisableOrganizationLoginsRequest, v1.DisableOrganizationLoginsResponse]
+	disableProjectLogins         *connect.Client[v1.DisableProjectLoginsRequest, v1.DisableProjectLoginsResponse]
+	enableOrganizationLogins     *connect.Client[v1.EnableOrganizationLoginsRequest, v1.EnableOrganizationLoginsResponse]
+	enableProjectLogins          *connect.Client[v1.EnableProjectLoginsRequest, v1.EnableProjectLoginsResponse]
 	updateProject                *connect.Client[v1.UpdateProjectRequest, v1.UpdateProjectResponse]
 	createProjectRedirectURI     *connect.Client[v1.CreateProjectRedirectURIRequest, v1.CreateProjectRedirectURIResponse]
 	deleteProjectRedirectURI     *connect.Client[v1.DeleteProjectRedirectURIRequest, v1.DeleteProjectRedirectURIResponse]
@@ -589,6 +633,26 @@ func (c *backendServiceClient) GetIntermediateSession(ctx context.Context, req *
 	return c.getIntermediateSession.CallUnary(ctx, req)
 }
 
+// DisableOrganizationLogins calls openauth.backend.v1.BackendService.DisableOrganizationLogins.
+func (c *backendServiceClient) DisableOrganizationLogins(ctx context.Context, req *connect.Request[v1.DisableOrganizationLoginsRequest]) (*connect.Response[v1.DisableOrganizationLoginsResponse], error) {
+	return c.disableOrganizationLogins.CallUnary(ctx, req)
+}
+
+// DisableProjectLogins calls openauth.backend.v1.BackendService.DisableProjectLogins.
+func (c *backendServiceClient) DisableProjectLogins(ctx context.Context, req *connect.Request[v1.DisableProjectLoginsRequest]) (*connect.Response[v1.DisableProjectLoginsResponse], error) {
+	return c.disableProjectLogins.CallUnary(ctx, req)
+}
+
+// EnableOrganizationLogins calls openauth.backend.v1.BackendService.EnableOrganizationLogins.
+func (c *backendServiceClient) EnableOrganizationLogins(ctx context.Context, req *connect.Request[v1.EnableOrganizationLoginsRequest]) (*connect.Response[v1.EnableOrganizationLoginsResponse], error) {
+	return c.enableOrganizationLogins.CallUnary(ctx, req)
+}
+
+// EnableProjectLogins calls openauth.backend.v1.BackendService.EnableProjectLogins.
+func (c *backendServiceClient) EnableProjectLogins(ctx context.Context, req *connect.Request[v1.EnableProjectLoginsRequest]) (*connect.Response[v1.EnableProjectLoginsResponse], error) {
+	return c.enableProjectLogins.CallUnary(ctx, req)
+}
+
 // UpdateProject calls openauth.backend.v1.BackendService.UpdateProject.
 func (c *backendServiceClient) UpdateProject(ctx context.Context, req *connect.Request[v1.UpdateProjectRequest]) (*connect.Response[v1.UpdateProjectResponse], error) {
 	return c.updateProject.CallUnary(ctx, req)
@@ -690,6 +754,10 @@ type BackendServiceHandler interface {
 	GetSession(context.Context, *connect.Request[v1.GetSessionRequest]) (*connect.Response[v1.GetSessionResponse], error)
 	ListIntermediateSessions(context.Context, *connect.Request[v1.ListIntermediateSessionsRequest]) (*connect.Response[v1.ListIntermediateSessionsResponse], error)
 	GetIntermediateSession(context.Context, *connect.Request[v1.GetIntermediateSessionRequest]) (*connect.Response[v1.GetIntermediateSessionResponse], error)
+	DisableOrganizationLogins(context.Context, *connect.Request[v1.DisableOrganizationLoginsRequest]) (*connect.Response[v1.DisableOrganizationLoginsResponse], error)
+	DisableProjectLogins(context.Context, *connect.Request[v1.DisableProjectLoginsRequest]) (*connect.Response[v1.DisableProjectLoginsResponse], error)
+	EnableOrganizationLogins(context.Context, *connect.Request[v1.EnableOrganizationLoginsRequest]) (*connect.Response[v1.EnableOrganizationLoginsResponse], error)
+	EnableProjectLogins(context.Context, *connect.Request[v1.EnableProjectLoginsRequest]) (*connect.Response[v1.EnableProjectLoginsResponse], error)
 	UpdateProject(context.Context, *connect.Request[v1.UpdateProjectRequest]) (*connect.Response[v1.UpdateProjectResponse], error)
 	CreateProjectRedirectURI(context.Context, *connect.Request[v1.CreateProjectRedirectURIRequest]) (*connect.Response[v1.CreateProjectRedirectURIResponse], error)
 	DeleteProjectRedirectURI(context.Context, *connect.Request[v1.DeleteProjectRedirectURIRequest]) (*connect.Response[v1.DeleteProjectRedirectURIResponse], error)
@@ -852,6 +920,30 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		connect.WithSchema(backendServiceMethods.ByName("GetIntermediateSession")),
 		connect.WithHandlerOptions(opts...),
 	)
+	backendServiceDisableOrganizationLoginsHandler := connect.NewUnaryHandler(
+		BackendServiceDisableOrganizationLoginsProcedure,
+		svc.DisableOrganizationLogins,
+		connect.WithSchema(backendServiceMethods.ByName("DisableOrganizationLogins")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceDisableProjectLoginsHandler := connect.NewUnaryHandler(
+		BackendServiceDisableProjectLoginsProcedure,
+		svc.DisableProjectLogins,
+		connect.WithSchema(backendServiceMethods.ByName("DisableProjectLogins")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceEnableOrganizationLoginsHandler := connect.NewUnaryHandler(
+		BackendServiceEnableOrganizationLoginsProcedure,
+		svc.EnableOrganizationLogins,
+		connect.WithSchema(backendServiceMethods.ByName("EnableOrganizationLogins")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceEnableProjectLoginsHandler := connect.NewUnaryHandler(
+		BackendServiceEnableProjectLoginsProcedure,
+		svc.EnableProjectLogins,
+		connect.WithSchema(backendServiceMethods.ByName("EnableProjectLogins")),
+		connect.WithHandlerOptions(opts...),
+	)
 	backendServiceUpdateProjectHandler := connect.NewUnaryHandler(
 		BackendServiceUpdateProjectProcedure,
 		svc.UpdateProject,
@@ -990,6 +1082,14 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceListIntermediateSessionsHandler.ServeHTTP(w, r)
 		case BackendServiceGetIntermediateSessionProcedure:
 			backendServiceGetIntermediateSessionHandler.ServeHTTP(w, r)
+		case BackendServiceDisableOrganizationLoginsProcedure:
+			backendServiceDisableOrganizationLoginsHandler.ServeHTTP(w, r)
+		case BackendServiceDisableProjectLoginsProcedure:
+			backendServiceDisableProjectLoginsHandler.ServeHTTP(w, r)
+		case BackendServiceEnableOrganizationLoginsProcedure:
+			backendServiceEnableOrganizationLoginsHandler.ServeHTTP(w, r)
+		case BackendServiceEnableProjectLoginsProcedure:
+			backendServiceEnableProjectLoginsHandler.ServeHTTP(w, r)
 		case BackendServiceUpdateProjectProcedure:
 			backendServiceUpdateProjectHandler.ServeHTTP(w, r)
 		case BackendServiceCreateProjectRedirectURIProcedure:
@@ -1119,6 +1219,22 @@ func (UnimplementedBackendServiceHandler) ListIntermediateSessions(context.Conte
 
 func (UnimplementedBackendServiceHandler) GetIntermediateSession(context.Context, *connect.Request[v1.GetIntermediateSessionRequest]) (*connect.Response[v1.GetIntermediateSessionResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetIntermediateSession is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) DisableOrganizationLogins(context.Context, *connect.Request[v1.DisableOrganizationLoginsRequest]) (*connect.Response[v1.DisableOrganizationLoginsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.DisableOrganizationLogins is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) DisableProjectLogins(context.Context, *connect.Request[v1.DisableProjectLoginsRequest]) (*connect.Response[v1.DisableProjectLoginsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.DisableProjectLogins is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) EnableOrganizationLogins(context.Context, *connect.Request[v1.EnableOrganizationLoginsRequest]) (*connect.Response[v1.EnableOrganizationLoginsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.EnableOrganizationLogins is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) EnableProjectLogins(context.Context, *connect.Request[v1.EnableProjectLoginsRequest]) (*connect.Response[v1.EnableProjectLoginsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.EnableProjectLogins is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) UpdateProject(context.Context, *connect.Request[v1.UpdateProjectRequest]) (*connect.Response[v1.UpdateProjectResponse], error) {
