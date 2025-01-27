@@ -26,6 +26,7 @@ import { ViewSCIMAPIKeyPage } from '@/pages/scim-api-keys/ViewSCIMAPIKeyPage'
 import { ViewProjectAPIKeyPage } from '@/pages/project-api-keys/ViewProjectAPIKey'
 import { HomePage } from '@/pages/home/HomePage'
 import { ProjectDetailsTab } from '@/pages/project/ProjectDetailsTab'
+import LoginPage from './pages/login/LoginPage'
 
 const queryClient = new QueryClient()
 
@@ -57,7 +58,9 @@ function AppWithinQueryClient() {
     <TransportProvider transport={transport}>
       <BrowserRouter>
         <Routes>
-          <Route path="" element={<PageShell />}>
+          <Route path="/login" element={<LoginPage />} />
+
+          <Route path="/" element={<PageShell />}>
             <Route path="" element={<HomePage />} />
             <Route
               path="project-settings"

@@ -8,9 +8,11 @@ interface User {
 
 export function useUser(): User | undefined {
   const accessToken = useAccessToken()
-  if (!accessToken) {
+  if (!accessToken || accessToken.length === 0) {
     return
   }
+
+  console.log(accessToken)
 
   const claims = JSON.parse(base64Decode(accessToken.split('.')[1]))
   return {
@@ -43,7 +45,9 @@ export function useAccessToken(): string | undefined {
     if (!refresh.isPending) {
       refresh.mutate(undefined, {
         onSuccess: (accessToken) => {
-          setAccessToken(accessToken)
+          if (accessToken) {
+            setAccessToken(accessToken)
+          }
         },
       })
     }
