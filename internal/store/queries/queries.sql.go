@@ -30,7 +30,7 @@ const createOrganization = `-- name: CreateOrganization :one
 INSERT INTO organizations (id, project_id, display_name, override_log_in_methods, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_with_password_enabled, saml_enabled, scim_enabled)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 RETURNING
-    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_methods, saml_enabled, scim_enabled, create_time, update_time, login_disabled
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_methods, saml_enabled, scim_enabled, create_time, update_time, logins_disabled
 `
 
 type CreateOrganizationParams struct {
@@ -70,7 +70,7 @@ func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganization
 		&i.ScimEnabled,
 		&i.CreateTime,
 		&i.UpdateTime,
-		&i.LoginDisabled,
+		&i.LoginsDisabled,
 	)
 	return i, err
 }
@@ -79,7 +79,7 @@ const createProject = `-- name: CreateProject :one
 INSERT INTO projects (id, organization_id, display_name, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, auth_domain, custom_auth_domain)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 RETURNING
-    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, login_disabled
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled
 `
 
 type CreateProjectParams struct {
@@ -120,7 +120,7 @@ func (q *Queries) CreateProject(ctx context.Context, arg CreateProjectParams) (P
 		&i.UpdateTime,
 		&i.CustomAuthDomain,
 		&i.AuthDomain,
-		&i.LoginDisabled,
+		&i.LoginsDisabled,
 	)
 	return i, err
 }
@@ -274,7 +274,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 
 const getOrganizationByID = `-- name: GetOrganizationByID :one
 SELECT
-    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_methods, saml_enabled, scim_enabled, create_time, update_time, login_disabled
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_methods, saml_enabled, scim_enabled, create_time, update_time, logins_disabled
 FROM
     organizations
 WHERE
@@ -296,14 +296,14 @@ func (q *Queries) GetOrganizationByID(ctx context.Context, id uuid.UUID) (Organi
 		&i.ScimEnabled,
 		&i.CreateTime,
 		&i.UpdateTime,
-		&i.LoginDisabled,
+		&i.LoginsDisabled,
 	)
 	return i, err
 }
 
 const getOrganizationByProjectIDAndID = `-- name: GetOrganizationByProjectIDAndID :one
 SELECT
-    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_methods, saml_enabled, scim_enabled, create_time, update_time, login_disabled
+    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_methods, saml_enabled, scim_enabled, create_time, update_time, logins_disabled
 FROM
     organizations
 WHERE
@@ -331,7 +331,7 @@ func (q *Queries) GetOrganizationByProjectIDAndID(ctx context.Context, arg GetOr
 		&i.ScimEnabled,
 		&i.CreateTime,
 		&i.UpdateTime,
-		&i.LoginDisabled,
+		&i.LoginsDisabled,
 	)
 	return i, err
 }
@@ -361,7 +361,7 @@ func (q *Queries) GetProjectAPIKeyBySecretTokenSHA256(ctx context.Context, secre
 
 const getProjectByID = `-- name: GetProjectByID :one
 SELECT
-    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, login_disabled
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled
 FROM
     projects
 WHERE
@@ -386,7 +386,7 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 		&i.UpdateTime,
 		&i.CustomAuthDomain,
 		&i.AuthDomain,
-		&i.LoginDisabled,
+		&i.LoginsDisabled,
 	)
 	return i, err
 }
@@ -498,7 +498,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, login_disabled
+    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled
 `
 
 type UpdateProjectOrganizationIDParams struct {
@@ -568,7 +568,7 @@ func (q *Queries) UpdateProjectOrganizationID(ctx context.Context, arg UpdatePro
 		&i.UpdateTime,
 		&i.CustomAuthDomain,
 		&i.AuthDomain,
-		&i.LoginDisabled,
+		&i.LoginsDisabled,
 	)
 	return i, err
 }
