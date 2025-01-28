@@ -133,7 +133,7 @@ message IntermediateSession {
   string organization_id = 9;
   bool password_verified = 10;
   bool new_user_password_registered = 11;
-  bool email_verification_challenge_completed = 12;
+  bool email_verification_challenge_registered = 12;
 }
 
 message ProjectUISettings {

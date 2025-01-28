@@ -461,7 +461,7 @@ components:
                     type: boolean
                 newUserPasswordRegistered:
                     type: boolean
-                emailVerificationChallengeCompleted:
+                emailVerificationChallengeRegistered:
                     type: boolean
         IssueEmailVerificationChallengeRequest:
             type: object
