@@ -40,6 +40,7 @@ func (s *Store) CreateOrganization(ctx context.Context, req *intermediatev1.Crea
 	}
 
 	qOrganization, err := q.CreateOrganization(ctx, queries.CreateOrganizationParams{
+		ID:                   uuid.New(),
 		ProjectID:            authn.ProjectID(ctx),
 		DisplayName:          req.DisplayName,
 		OverrideLogInMethods: false,
@@ -169,7 +170,44 @@ func (s *Store) ListOrganizations(ctx context.Context, req *intermediatev1.ListO
 			return nil, apierror.NewNotFoundError("primary saml connection not found", fmt.Errorf("get organization primary saml connection: %w", err))
 		}
 
-		organizations = append(organizations, parseOrganization(organization, qProject, &qSamlConnection))
+		// Parse the organization before performing additional checks
+		pOrg := parseOrganization(organization, qProject, &qSamlConnection)
+
+		// Check if the user exists on the organization.
+		userExists := false
+		if intermediateSession.GoogleUserId != "" {
+			userExists, err = q.UserExistsOnOrganizationWithGoogleUserID(ctx, queries.UserExistsOnOrganizationWithGoogleUserIDParams{
+				OrganizationID: organization.ID,
+				GoogleUserID:   refOrNil(intermediateSession.GoogleUserId),
+			})
+			if err != nil {
+				return nil, fmt.Errorf("user exists on organization with google user ID: %w", err)
+			}
+		}
+
+		if !userExists && intermediateSession.MicrosoftUserId != "" {
+			userExists, err = q.UserExistsOnOrganizationWithMicrosoftUserID(ctx, queries.UserExistsOnOrganizationWithMicrosoftUserIDParams{
+				OrganizationID:  organization.ID,
+				MicrosoftUserID: refOrNil(intermediateSession.MicrosoftUserId),
+			})
+			if err != nil {
+				return nil, fmt.Errorf("user exists on organization with microsoft user ID: %w", err)
+			}
+		}
+
+		if !userExists && intermediateSession.Email != "" {
+			userExists, err = q.UserExistsOnOrganizationWithEmail(ctx, queries.UserExistsOnOrganizationWithEmailParams{
+				OrganizationID: organization.ID,
+				Email:          intermediateSession.Email,
+			})
+			if err != nil {
+				return nil, fmt.Errorf("user exists on organization with email: %w", err)
+			}
+		}
+		pOrg.UserExists = userExists
+
+		// Append the parsed organization to the list of organizations.
+		organizations = append(organizations, pOrg)
 	}
 
 	return &intermediatev1.ListOrganizationsResponse{
@@ -213,7 +251,21 @@ func (s *Store) ListSAMLOrganizations(ctx context.Context, req *intermediatev1.L
 			return nil, fmt.Errorf("get organization primary saml connection: %w", err)
 		}
 
-		organizations = append(organizations, parseOrganization(organization, qProject, &qSamlConnection))
+		// Parse the organization before performing additional checks
+		pOrg := parseOrganization(organization, qProject, &qSamlConnection)
+
+		// Check if the user exists on the organization.
+		userExists, err := q.UserExistsOnOrganizationWithEmail(ctx, queries.UserExistsOnOrganizationWithEmailParams{
+			OrganizationID: organization.ID,
+			Email:          req.Email,
+		})
+		if err != nil {
+			return nil, fmt.Errorf("user exists on organization with email: %w", err)
+		}
+		pOrg.UserExists = userExists
+
+		// Append the parsed organization to the list of organizations.
+		organizations = append(organizations, pOrg)
 	}
 
 	return &intermediatev1.ListSAMLOrganizationsResponse{

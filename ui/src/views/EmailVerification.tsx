@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import React, { Dispatch, FC, SetStateAction, useState } from 'react'
 import { useMutation, useQuery } from '@connectrpc/connect-query'
 
 import { Title } from '@/components/Title'
@@ -17,10 +16,11 @@ import {
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
 import { LoginViews } from '@/lib/views'
 
-const EmailVerification = () => {
-  const navigate = useNavigate()
-  const { state } = useLocation()
+interface EmailVerificationProps {
+  setView: Dispatch<SetStateAction<LoginViews>>
+}
 
+const EmailVerification: FC<EmailVerificationProps> = ({ setView }) => {
   const [challengeCode, setChallengeCode] = useState<string>('')
   const [email, setEmail] = useState<string>('')
 
@@ -32,13 +32,10 @@ const EmailVerification = () => {
 
     try {
       await verifyEmailChallengeMutation.mutateAsync({
-        emailVerificationChallengeId: state?.challengeId,
         code: challengeCode,
       })
 
-      navigate('/login', {
-        state: { view: LoginViews.Organizations },
-      })
+      setView(LoginViews.Organizations)
     } catch (error) {
       console.error(error)
     }
@@ -54,8 +51,8 @@ const EmailVerification = () => {
             Verify Email Address
           </CardTitle>
           <p className="text-sm text-center mt-2 text-gray-500">
-            Please enter the verification code sent to <b>{whoamiRes?.email}</b>{' '}
-            below.
+            Please enter the verification code sent to{' '}
+            <b>{whoamiRes?.intermediateSession?.email}</b> below.
           </p>
         </CardHeader>
         <CardContent className="flex flex-col items-center justify-center w-full">

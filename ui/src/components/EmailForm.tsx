@@ -1,6 +1,9 @@
 import React, {
   ChangeEvent,
+  Dispatch,
+  FC,
   FormEvent,
+  SetStateAction,
   useCallback,
   useEffect,
   useState,
@@ -20,11 +23,19 @@ import { LoginViews } from '@/lib/views'
 import { Organization } from '@/gen/openauth/intermediate/v1/intermediate_pb'
 import TextDivider from './ui/TextDivider'
 
-const EmailForm = () => {
+interface EmailFormProps {
+  setView: Dispatch<SetStateAction<LoginViews>>
+}
+
+const EmailForm: FC<EmailFormProps> = ({ setView }) => {
   const navigate = useNavigate()
   const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/i
-  const createIntermediateSessionMutation = useMutation(createIntermediateSession)
-  const issueEmailVerificationChallengeMutation = useMutation(issueEmailVerificationChallenge)
+  const createIntermediateSessionMutation = useMutation(
+    createIntermediateSession,
+  )
+  const issueEmailVerificationChallengeMutation = useMutation(
+    issueEmailVerificationChallenge,
+  )
   const listSAMLOrganizationsMutation = useMutation(listSAMLOrganizations)
 
   const [email, setEmail] = useState<string>('')
@@ -57,22 +68,18 @@ const EmailForm = () => {
 
     try {
       // this sets a cookie that subsequent requests use
-      const { intermediateSessionSecretToken } = await createIntermediateSessionMutation.mutateAsync({})
+      const { intermediateSessionSecretToken } =
+        await createIntermediateSessionMutation.mutateAsync({})
 
       // set the intermediate sessionToken
       setIntermediateSessionToken(intermediateSessionSecretToken)
 
-      const { emailVerificationChallengeId } = await issueEmailVerificationChallengeMutation.mutateAsync({
+      await issueEmailVerificationChallengeMutation.mutateAsync({
         email,
       })
 
       // redirect to challenge page
-      navigate(`/login`, {
-        state: {
-          view: LoginViews.EmailVerification,
-          emailVerificationChallengeId,
-        },
-      })
+      setView(LoginViews.EmailVerification)
     } catch (error) {
       console.error(error)
     }

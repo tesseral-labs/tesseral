@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { Dispatch, FC, SetStateAction, useEffect } from 'react'
 
 import EmailForm from '@/components/EmailForm'
 import OAuthButton, { OAuthMethods } from '@/components/OAuthButton'
@@ -13,15 +13,21 @@ import {
 import TextDivider from '@/components/ui/TextDivider'
 import { useMutation } from '@connectrpc/connect-query'
 
-import { setIntermediateSessionToken } from '@/auth'
 import {
   createIntermediateSession,
   getGoogleOAuthRedirectURL,
   getMicrosoftOAuthRedirectURL,
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
+import { LoginViews } from '@/lib/views'
 
-const Login = () => {
-  const createIntermediateSessionMutation = useMutation(createIntermediateSession)
+interface LoginProps {
+  setView: Dispatch<SetStateAction<LoginViews>>
+}
+
+const Login: FC<LoginProps> = ({ setView }) => {
+  const createIntermediateSessionMutation = useMutation(
+    createIntermediateSession,
+  )
   const googleOAuthRedirectUrlMutation = useMutation(getGoogleOAuthRedirectURL)
   const microsoftOAuthRedirectUrlMutation = useMutation(
     getMicrosoftOAuthRedirectURL,
@@ -40,10 +46,9 @@ const Login = () => {
     }
 
     try {
-      const { url } =
-        await googleOAuthRedirectUrlMutation.mutateAsync({
-          redirectUrl: `${window.location.origin}/google-oauth-callback`,
-        })
+      const { url } = await googleOAuthRedirectUrlMutation.mutateAsync({
+        redirectUrl: `${window.location.origin}/google-oauth-callback`,
+      })
 
       window.location.href = url
     } catch (error) {
@@ -65,10 +70,9 @@ const Login = () => {
     }
 
     try {
-      const { url } =
-        await microsoftOAuthRedirectUrlMutation.mutateAsync({
-          redirectUrl: `${window.location.origin}/microsoft-oauth-callback`,
-        })
+      const { url } = await microsoftOAuthRedirectUrlMutation.mutateAsync({
+        redirectUrl: `${window.location.origin}/microsoft-oauth-callback`,
+      })
 
       window.location.href = url
     } catch (error) {
@@ -103,7 +107,7 @@ const Login = () => {
 
           <TextDivider text="or" />
 
-          <EmailForm />
+          <EmailForm setView={setView} />
         </CardContent>
         <CardFooter></CardFooter>
       </Card>

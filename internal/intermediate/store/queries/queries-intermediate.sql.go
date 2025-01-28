@@ -1486,3 +1486,75 @@ func (q *Queries) UpdateUserPasswordLockoutExpireTime(ctx context.Context, arg U
 	)
 	return i, err
 }
+
+const userExistsOnOrganizationWithEmail = `-- name: UserExistsOnOrganizationWithEmail :one
+SELECT
+    EXISTS (
+        SELECT
+            id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time
+        FROM
+            users
+        WHERE
+            organization_id = $1
+            AND email = $2)
+`
+
+type UserExistsOnOrganizationWithEmailParams struct {
+	OrganizationID uuid.UUID
+	Email          string
+}
+
+func (q *Queries) UserExistsOnOrganizationWithEmail(ctx context.Context, arg UserExistsOnOrganizationWithEmailParams) (bool, error) {
+	row := q.db.QueryRow(ctx, userExistsOnOrganizationWithEmail, arg.OrganizationID, arg.Email)
+	var exists bool
+	err := row.Scan(&exists)
+	return exists, err
+}
+
+const userExistsOnOrganizationWithGoogleUserID = `-- name: UserExistsOnOrganizationWithGoogleUserID :one
+SELECT
+    EXISTS (
+        SELECT
+            id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time
+        FROM
+            users
+        WHERE
+            organization_id = $1
+            AND google_user_id = $2)
+`
+
+type UserExistsOnOrganizationWithGoogleUserIDParams struct {
+	OrganizationID uuid.UUID
+	GoogleUserID   *string
+}
+
+func (q *Queries) UserExistsOnOrganizationWithGoogleUserID(ctx context.Context, arg UserExistsOnOrganizationWithGoogleUserIDParams) (bool, error) {
+	row := q.db.QueryRow(ctx, userExistsOnOrganizationWithGoogleUserID, arg.OrganizationID, arg.GoogleUserID)
+	var exists bool
+	err := row.Scan(&exists)
+	return exists, err
+}
+
+const userExistsOnOrganizationWithMicrosoftUserID = `-- name: UserExistsOnOrganizationWithMicrosoftUserID :one
+SELECT
+    EXISTS (
+        SELECT
+            id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time
+        FROM
+            users
+        WHERE
+            organization_id = $1
+            AND microsoft_user_id = $2)
+`
+
+type UserExistsOnOrganizationWithMicrosoftUserIDParams struct {
+	OrganizationID  uuid.UUID
+	MicrosoftUserID *string
+}
+
+func (q *Queries) UserExistsOnOrganizationWithMicrosoftUserID(ctx context.Context, arg UserExistsOnOrganizationWithMicrosoftUserIDParams) (bool, error) {
+	row := q.db.QueryRow(ctx, userExistsOnOrganizationWithMicrosoftUserID, arg.OrganizationID, arg.MicrosoftUserID)
+	var exists bool
+	err := row.Scan(&exists)
+	return exists, err
+}

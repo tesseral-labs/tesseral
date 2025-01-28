@@ -364,3 +364,36 @@ WHERE
 RETURNING
     *;
 
+-- name: UserExistsOnOrganizationWithEmail :one
+SELECT
+    EXISTS (
+        SELECT
+            *
+        FROM
+            users
+        WHERE
+            organization_id = $1
+            AND email = $2);
+
+-- name: UserExistsOnOrganizationWithGoogleUserID :one
+SELECT
+    EXISTS (
+        SELECT
+            *
+        FROM
+            users
+        WHERE
+            organization_id = $1
+            AND google_user_id = $2);
+
+-- name: UserExistsOnOrganizationWithMicrosoftUserID :one
+SELECT
+    EXISTS (
+        SELECT
+            *
+        FROM
+            users
+        WHERE
+            organization_id = $1
+            AND microsoft_user_id = $2);
+

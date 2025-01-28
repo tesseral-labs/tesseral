@@ -1,6 +1,7 @@
 package store
 
 import (
+	"bytes"
 	"context"
 	"crypto/sha256"
 	"errors"
@@ -18,7 +19,6 @@ import (
 	"github.com/openauth/openauth/internal/intermediate/authn"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
-	"golang.org/x/crypto/bcrypt"
 )
 
 func (s *Store) IssueEmailVerificationChallenge(ctx context.Context, req *intermediatev1.IssueEmailVerificationChallengeRequest) (*intermediatev1.IssueEmailVerificationChallengeResponse, error) {
@@ -112,8 +112,12 @@ func (s *Store) VerifyEmailChallenge(ctx context.Context, req *intermediatev1.Ve
 	}
 
 	challengeSHA256 := sha256.Sum256([]byte(req.Code))
-	if err := bcrypt.CompareHashAndPassword(qIntermediateSession.EmailVerificationChallengeSha256, challengeSHA256[:]); err != nil {
+	if !bytes.Equal(qIntermediateSession.EmailVerificationChallengeSha256, challengeSHA256[:]) {
 		return nil, apierror.NewInvalidArgumentError("invalid email verification code", fmt.Errorf("invalid email verification code"))
+	}
+
+	if _, err := q.UpdateIntermediateSessionEmailVerificationChallengeCompleted(ctx, authn.IntermediateSessionID(ctx)); err != nil {
+		return nil, fmt.Errorf("update intermediate session email verified: %w", err)
 	}
 
 	if qIntermediateSession.GoogleUserID != nil || qIntermediateSession.MicrosoftUserID != nil {
