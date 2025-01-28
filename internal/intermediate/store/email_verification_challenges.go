@@ -83,15 +83,13 @@ func (s *Store) IssueEmailVerificationChallenge(ctx context.Context, req *interm
 }
 
 func (s *Store) VerifyEmailChallenge(ctx context.Context, req *intermediatev1.VerifyEmailChallengeRequest) (*intermediatev1.VerifyEmailChallengeResponse, error) {
-	intermediateSessionID := authn.IntermediateSessionID(ctx)
-
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
 	defer rollback()
 
-	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, intermediateSessionID)
+	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, apierror.NewNotFoundError("get intermediate session by id: %w", fmt.Errorf("intermediate session not found: %w", err))
