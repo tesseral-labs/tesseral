@@ -89,7 +89,14 @@ func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrg
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return &backendv1.CreateOrganizationResponse{Organization: parseOrganization(qProject, qOrg)}, nil
+	return &backendv1.CreateOrganizationResponse{
+		Organization: parseOrganization(parseOrganizationArgs{
+			qProject:             qProject,
+			qOrg:                 qOrg,
+			qGoogleHostedDomains: nil, // TODO
+			qMicrosoftTenantIDs:  nil, // TODO
+		}),
+	}, nil
 }
 
 func (s *Store) ListOrganizations(ctx context.Context, req *backendv1.ListOrganizationsRequest) (*backendv1.ListOrganizationsResponse, error) {
@@ -124,7 +131,12 @@ func (s *Store) ListOrganizations(ctx context.Context, req *backendv1.ListOrgani
 
 	var organizations []*backendv1.Organization
 	for _, qOrg := range qOrgs {
-		organizations = append(organizations, parseOrganization(qProject, qOrg))
+		organizations = append(organizations, parseOrganization(parseOrganizationArgs{
+			qProject:             qProject,
+			qOrg:                 qOrg,
+			qGoogleHostedDomains: nil, // TODO
+			qMicrosoftTenantIDs:  nil, // TODO
+		}))
 	}
 
 	var nextPageToken string
@@ -168,7 +180,12 @@ func (s *Store) GetOrganization(ctx context.Context, req *backendv1.GetOrganizat
 		return nil, fmt.Errorf("get organization: %w", err)
 	}
 
-	return &backendv1.GetOrganizationResponse{Organization: parseOrganization(qProject, qOrg)}, nil
+	return &backendv1.GetOrganizationResponse{Organization: parseOrganization(parseOrganizationArgs{
+		qProject:             qProject,
+		qOrg:                 qOrg,
+		qGoogleHostedDomains: nil, // TODO
+		qMicrosoftTenantIDs:  nil, // TODO
+	})}, nil
 }
 
 func (s *Store) UpdateOrganization(ctx context.Context, req *backendv1.UpdateOrganizationRequest) (*backendv1.UpdateOrganizationResponse, error) {
@@ -233,6 +250,8 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *backendv1.UpdateOrg
 		return nil, fmt.Errorf("update organization: %w", err)
 	}
 
+	fmt.Println("update org", req.Organization.GoogleHostedDomains, len(req.Organization.GoogleHostedDomains), req.Organization.GoogleHostedDomains == nil)
+
 	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
@@ -246,7 +265,12 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *backendv1.UpdateOrg
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return &backendv1.UpdateOrganizationResponse{Organization: parseOrganization(qProject, qUpdatedOrg)}, nil
+	return &backendv1.UpdateOrganizationResponse{Organization: parseOrganization(parseOrganizationArgs{
+		qProject:             qProject,
+		qOrg:                 qUpdatedOrg,
+		qGoogleHostedDomains: nil, // TODO
+		qMicrosoftTenantIDs:  nil, // TODO
+	})}, nil
 }
 
 func (s *Store) DeleteOrganization(ctx context.Context, req *backendv1.DeleteOrganizationRequest) (*backendv1.DeleteOrganizationResponse, error) {
@@ -332,35 +356,66 @@ func (s *Store) EnableOrganizationLogins(ctx context.Context, req *backendv1.Ena
 	return &backendv1.EnableOrganizationLoginsResponse{}, nil
 }
 
-func parseOrganization(qProject queries.Project, qOrg queries.Organization) *backendv1.Organization {
-	logInWithGoogleEnabled := qProject.LogInWithGoogleEnabled
-	logInWithMicrosoftEnabled := qProject.LogInWithMicrosoftEnabled
-	logInWithPasswordEnabled := qProject.LogInWithPasswordEnabled
+type parseOrganizationArgs struct {
+	qProject             queries.Project
+	qOrg                 queries.Organization
+	qGoogleHostedDomains []queries.OrganizationGoogleHostedDomain
+	qMicrosoftTenantIDs  []queries.OrganizationMicrosoftTenantID
+}
+
+func parseOrganization(args parseOrganizationArgs) *backendv1.Organization {
+	// sanity-check consistency of args
+	if args.qProject.ID != args.qOrg.ProjectID {
+		panic("project id mismatch")
+	}
+	for _, qGoogleHostedDomain := range args.qGoogleHostedDomains {
+		if qGoogleHostedDomain.OrganizationID != args.qOrg.ID {
+			panic("google hosted domain organization id mismatch")
+		}
+	}
+	for _, qMicrosoftTenantID := range args.qMicrosoftTenantIDs {
+		if qMicrosoftTenantID.OrganizationID != args.qOrg.ID {
+			panic("microsoft tenant id organization id mismatch")
+		}
+	}
+
+	logInWithGoogleEnabled := args.qProject.LogInWithGoogleEnabled
+	logInWithMicrosoftEnabled := args.qProject.LogInWithMicrosoftEnabled
+	logInWithPasswordEnabled := args.qProject.LogInWithPasswordEnabled
 
 	// allow orgs to disable login methods
-	if derefOrEmpty(qOrg.DisableLogInWithGoogle) {
+	if derefOrEmpty(args.qOrg.DisableLogInWithGoogle) {
 		logInWithGoogleEnabled = false
 	}
-	if derefOrEmpty(qOrg.DisableLogInWithMicrosoft) {
+	if derefOrEmpty(args.qOrg.DisableLogInWithMicrosoft) {
 		logInWithMicrosoftEnabled = false
 	}
-	if derefOrEmpty(qOrg.DisableLogInWithPassword) {
+	if derefOrEmpty(args.qOrg.DisableLogInWithPassword) {
 		logInWithPasswordEnabled = false
 	}
 
+	var googleHostedDomains []string
+	for _, qGoogleHostedDomain := range args.qGoogleHostedDomains {
+		googleHostedDomains = append(googleHostedDomains, qGoogleHostedDomain.GoogleHostedDomain)
+	}
+
+	var microsoftTenantIDs []string
+	for _, qMicrosoftTenantID := range args.qMicrosoftTenantIDs {
+		microsoftTenantIDs = append(microsoftTenantIDs, qMicrosoftTenantID.MicrosoftTenantID)
+	}
+
 	return &backendv1.Organization{
-		Id:                        idformat.Organization.Format(qOrg.ID),
-		DisplayName:               qOrg.DisplayName,
-		CreateTime:                timestamppb.New(*qOrg.CreateTime),
-		UpdateTime:                timestamppb.New(*qOrg.UpdateTime),
-		OverrideLogInMethods:      &qOrg.OverrideLogInMethods,
+		Id:                        idformat.Organization.Format(args.qOrg.ID),
+		DisplayName:               args.qOrg.DisplayName,
+		CreateTime:                timestamppb.New(*args.qOrg.CreateTime),
+		UpdateTime:                timestamppb.New(*args.qOrg.UpdateTime),
+		OverrideLogInMethods:      &args.qOrg.OverrideLogInMethods,
 		LogInWithPasswordEnabled:  logInWithPasswordEnabled,
 		LogInWithGoogleEnabled:    logInWithGoogleEnabled,
 		LogInWithMicrosoftEnabled: logInWithMicrosoftEnabled,
-		// TODO these are a list now
-		//GoogleHostedDomain:        derefOrEmpty(qOrg.GoogleHostedDomain),
-		//MicrosoftTenantId:         derefOrEmpty(qOrg.MicrosoftTenantID),
-		SamlEnabled: &qOrg.SamlEnabled,
-		ScimEnabled: &qOrg.ScimEnabled,
+		GoogleHostedDomains:       googleHostedDomains,
+		MicrosoftTenantIds:        microsoftTenantIDs,
+		SamlEnabled:               &args.qOrg.SamlEnabled,
+		ScimEnabled:               &args.qOrg.ScimEnabled,
 	}
 }

@@ -732,10 +732,14 @@ components:
                     type: boolean
                 logInWithMicrosoftEnabled:
                     type: boolean
-                googleHostedDomain:
-                    type: string
-                microsoftTenantId:
-                    type: string
+                googleHostedDomains:
+                    type: array
+                    items:
+                        type: string
+                microsoftTenantIds:
+                    type: array
+                    items:
+                        type: string
                 samlEnabled:
                     type: boolean
                 scimEnabled:
