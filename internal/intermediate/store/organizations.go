@@ -15,6 +15,74 @@ import (
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
+func (s *Store) CreateOrganization(ctx context.Context, req *intermediatev1.CreateOrganizationRequest) (*intermediatev1.CreateOrganizationResponse, error) {
+	intermediateSession := authn.IntermediateSession(ctx)
+	intermediateSessionID, err := idformat.IntermediateSession.Parse(intermediateSession.Id)
+	if err != nil {
+		return nil, apierror.NewInvalidArgumentError("invalid intermediate session ID", fmt.Errorf("parse intermediate session ID: %w", err))
+	}
+
+	if !intermediateSession.EmailVerified {
+		return nil, apierror.NewPermissionDeniedError("email not verified", nil)
+	}
+
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	if _, err = q.GetProjectByID(ctx, authn.ProjectID(ctx)); err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("project not found", fmt.Errorf("get project by id: %w", err))
+		}
+		return nil, fmt.Errorf("get project by id: %w", err)
+	}
+
+	qOrganization, err := q.CreateOrganization(ctx, queries.CreateOrganizationParams{
+		ProjectID:            authn.ProjectID(ctx),
+		DisplayName:          req.DisplayName,
+		OverrideLogInMethods: false,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("create organization: %w", err)
+	}
+
+	// If the intermediate session is associated with a Google or Microsoft
+	// login, associate the organization as well.
+	if intermediateSession.GoogleHostedDomain != "" {
+		if _, err := q.CreateOrganizationGoogleHostedDomain(ctx, queries.CreateOrganizationGoogleHostedDomainParams{
+			ID:                 uuid.New(),
+			OrganizationID:     qOrganization.ID,
+			GoogleHostedDomain: intermediateSession.GoogleHostedDomain,
+		}); err != nil {
+			return nil, fmt.Errorf("create organization google hosted domain: %w", err)
+		}
+	}
+	if intermediateSession.MicrosoftTenantId != "" {
+		if _, err := q.CreateOrganizationMicrosoftTenantID(ctx, queries.CreateOrganizationMicrosoftTenantIDParams{
+			ID:                uuid.New(),
+			OrganizationID:    qOrganization.ID,
+			MicrosoftTenantID: intermediateSession.MicrosoftTenantId,
+		}); err != nil {
+			return nil, fmt.Errorf("create organization microsoft tenant id: %w", err)
+		}
+	}
+
+	if _, err = q.UpdateIntermediateSessionOrganizationID(ctx, queries.UpdateIntermediateSessionOrganizationIDParams{
+		ID:             intermediateSessionID,
+		OrganizationID: &qOrganization.ID,
+	}); err != nil {
+		return nil, fmt.Errorf("update intermediate session organization ID: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
+	}
+
+	return &intermediatev1.CreateOrganizationResponse{}, nil
+}
+
 func (s *Store) ListOrganizations(ctx context.Context, req *intermediatev1.ListOrganizationsRequest) (*intermediatev1.ListOrganizationsResponse, error) {
 	intermediateSession := authn.IntermediateSession(ctx)
 	if !intermediateSession.EmailVerified {
@@ -151,6 +219,57 @@ func (s *Store) ListSAMLOrganizations(ctx context.Context, req *intermediatev1.L
 	return &intermediatev1.ListSAMLOrganizationsResponse{
 		Organizations: organizations,
 	}, nil
+}
+
+func (s *Store) SetOrganization(ctx context.Context, req *intermediatev1.SetOrganizationRequest) (*intermediatev1.SetOrganizationResponse, error) {
+	intermediateSession := authn.IntermediateSession(ctx)
+	intermediateSessionID, err := idformat.IntermediateSession.Parse(intermediateSession.Id)
+	if err != nil {
+		return nil, apierror.NewInvalidArgumentError("invalid intermediate session ID", fmt.Errorf("parse intermediate session ID: %w", err))
+	}
+
+	if intermediateSession.OrganizationId != "" {
+		return nil, apierror.NewFailedPreconditionError("organization already set", fmt.Errorf("organization already set"))
+	}
+
+	if !intermediateSession.EmailVerified {
+		return nil, apierror.NewPermissionDeniedError("email not verified", nil)
+	}
+
+	organizationID, err := idformat.Organization.Parse(req.OrganizationId)
+	if err != nil {
+		return nil, apierror.NewInvalidArgumentError("invalid organization ID", fmt.Errorf("parse organization ID: %w", err))
+	}
+
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	qOrganization, err := q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
+		ID:        organizationID,
+		ProjectID: authn.ProjectID(ctx),
+	})
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("organization not found", fmt.Errorf("get organization by id: %w", err))
+		}
+		return nil, fmt.Errorf("get organization by id: %w", err)
+	}
+
+	if _, err = q.UpdateIntermediateSessionOrganizationID(ctx, queries.UpdateIntermediateSessionOrganizationIDParams{
+		ID:             intermediateSessionID,
+		OrganizationID: &qOrganization.ID,
+	}); err != nil {
+		return nil, fmt.Errorf("update intermediate session organization ID: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
+	}
+
+	return &intermediatev1.SetOrganizationResponse{}, nil
 }
 
 func parseOrganization(qOrg queries.Organization, qProject queries.Project, qSAMLConnection *queries.SamlConnection) *intermediatev1.Organization {

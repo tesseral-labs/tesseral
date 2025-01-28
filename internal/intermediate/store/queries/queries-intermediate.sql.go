@@ -12,65 +12,6 @@ import (
 	"github.com/google/uuid"
 )
 
-const completeEmailVerificationChallenge = `-- name: CompleteEmailVerificationChallenge :one
-UPDATE
-    email_verification_challenges
-SET
-    complete_time = now(),
-    challenge_sha256 = NULL
-WHERE
-    id = $1
-RETURNING
-    id, challenge_sha256, complete_time, create_time, expire_time, intermediate_session_id
-`
-
-func (q *Queries) CompleteEmailVerificationChallenge(ctx context.Context, id uuid.UUID) (EmailVerificationChallenge, error) {
-	row := q.db.QueryRow(ctx, completeEmailVerificationChallenge, id)
-	var i EmailVerificationChallenge
-	err := row.Scan(
-		&i.ID,
-		&i.ChallengeSha256,
-		&i.CompleteTime,
-		&i.CreateTime,
-		&i.ExpireTime,
-		&i.IntermediateSessionID,
-	)
-	return i, err
-}
-
-const createEmailVerificationChallenge = `-- name: CreateEmailVerificationChallenge :one
-INSERT INTO email_verification_challenges (id, intermediate_session_id, challenge_sha256, expire_time)
-    VALUES ($1, $2, $3, $4)
-RETURNING
-    id, challenge_sha256, complete_time, create_time, expire_time, intermediate_session_id
-`
-
-type CreateEmailVerificationChallengeParams struct {
-	ID                    uuid.UUID
-	IntermediateSessionID uuid.UUID
-	ChallengeSha256       []byte
-	ExpireTime            *time.Time
-}
-
-func (q *Queries) CreateEmailVerificationChallenge(ctx context.Context, arg CreateEmailVerificationChallengeParams) (EmailVerificationChallenge, error) {
-	row := q.db.QueryRow(ctx, createEmailVerificationChallenge,
-		arg.ID,
-		arg.IntermediateSessionID,
-		arg.ChallengeSha256,
-		arg.ExpireTime,
-	)
-	var i EmailVerificationChallenge
-	err := row.Scan(
-		&i.ID,
-		&i.ChallengeSha256,
-		&i.CompleteTime,
-		&i.CreateTime,
-		&i.ExpireTime,
-		&i.IntermediateSessionID,
-	)
-	return i, err
-}
-
 const createImpersonatedSession = `-- name: CreateImpersonatedSession :one
 INSERT INTO sessions (id, user_id, expire_time, refresh_token_sha256, impersonator_user_id)
     VALUES ($1, $2, $3, $4, $5)
@@ -110,7 +51,7 @@ const createIntermediateSession = `-- name: CreateIntermediateSession :one
 INSERT INTO intermediate_sessions (id, project_id, expire_time, email, google_user_id, microsoft_user_id, secret_token_sha256)
     VALUES ($1, $2, $3, $4, $5, $6, $7)
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed
 `
 
 type CreateIntermediateSessionParams struct {
@@ -150,6 +91,9 @@ func (q *Queries) CreateIntermediateSession(ctx context.Context, arg CreateInter
 		&i.OrganizationID,
 		&i.UpdateTime,
 		&i.SecretTokenSha256,
+		&i.NewUserPasswordBcrypt,
+		&i.EmailVerificationChallengeSha256,
+		&i.EmailVerificationChallengeCompleted,
 	)
 	return i, err
 }
@@ -271,8 +215,8 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (S
 }
 
 const createUser = `-- name: CreateUser :one
-INSERT INTO users (id, organization_id, email, google_user_id, microsoft_user_id, is_owner)
-    VALUES ($1, $2, $3, $4, $5, $6)
+INSERT INTO users (id, organization_id, email, google_user_id, microsoft_user_id, is_owner, password_bcrypt)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
 RETURNING
     id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time
 `
@@ -284,6 +228,7 @@ type CreateUserParams struct {
 	GoogleUserID    *string
 	MicrosoftUserID *string
 	IsOwner         bool
+	PasswordBcrypt  *string
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
@@ -294,6 +239,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		arg.GoogleUserID,
 		arg.MicrosoftUserID,
 		arg.IsOwner,
+		arg.PasswordBcrypt,
 	)
 	var i User
 	err := row.Scan(
@@ -346,55 +292,6 @@ func (q *Queries) CreateVerifiedEmail(ctx context.Context, arg CreateVerifiedEma
 		&i.MicrosoftUserID,
 	)
 	return i, err
-}
-
-const getEmailVerificationChallengeByChallengeSHA = `-- name: GetEmailVerificationChallengeByChallengeSHA :one
-SELECT
-    id, challenge_sha256, complete_time, create_time, expire_time, intermediate_session_id
-FROM
-    email_verification_challenges
-WHERE
-    intermediate_session_id = $1
-    AND expire_time > now()
-    AND challenge_sha256 = $2
-`
-
-type GetEmailVerificationChallengeByChallengeSHAParams struct {
-	IntermediateSessionID uuid.UUID
-	ChallengeSha256       []byte
-}
-
-func (q *Queries) GetEmailVerificationChallengeByChallengeSHA(ctx context.Context, arg GetEmailVerificationChallengeByChallengeSHAParams) (EmailVerificationChallenge, error) {
-	row := q.db.QueryRow(ctx, getEmailVerificationChallengeByChallengeSHA, arg.IntermediateSessionID, arg.ChallengeSha256)
-	var i EmailVerificationChallenge
-	err := row.Scan(
-		&i.ID,
-		&i.ChallengeSha256,
-		&i.CompleteTime,
-		&i.CreateTime,
-		&i.ExpireTime,
-		&i.IntermediateSessionID,
-	)
-	return i, err
-}
-
-const getEmailVerifiedByEmailVerificationChallenge = `-- name: GetEmailVerifiedByEmailVerificationChallenge :one
-SELECT
-    EXISTS (
-        SELECT
-            id, challenge_sha256, complete_time, create_time, expire_time, intermediate_session_id
-        FROM
-            email_verification_challenges
-        WHERE
-            complete_time IS NOT NULL
-            AND intermediate_session_id = $1)
-`
-
-func (q *Queries) GetEmailVerifiedByEmailVerificationChallenge(ctx context.Context, intermediateSessionID uuid.UUID) (bool, error) {
-	row := q.db.QueryRow(ctx, getEmailVerifiedByEmailVerificationChallenge, intermediateSessionID)
-	var exists bool
-	err := row.Scan(&exists)
-	return exists, err
 }
 
 const getEmailVerifiedByGoogleUserID = `-- name: GetEmailVerifiedByGoogleUserID :one
@@ -451,7 +348,7 @@ func (q *Queries) GetEmailVerifiedByMicrosoftUserID(ctx context.Context, arg Get
 
 const getIntermediateSessionByID = `-- name: GetIntermediateSessionByID :one
 SELECT
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed
 FROM
     intermediate_sessions
 WHERE
@@ -477,13 +374,16 @@ func (q *Queries) GetIntermediateSessionByID(ctx context.Context, id uuid.UUID) 
 		&i.OrganizationID,
 		&i.UpdateTime,
 		&i.SecretTokenSha256,
+		&i.NewUserPasswordBcrypt,
+		&i.EmailVerificationChallengeSha256,
+		&i.EmailVerificationChallengeCompleted,
 	)
 	return i, err
 }
 
 const getIntermediateSessionByTokenSHA256AndProjectID = `-- name: GetIntermediateSessionByTokenSHA256AndProjectID :one
 SELECT
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed
 FROM
     intermediate_sessions
 WHERE
@@ -515,6 +415,9 @@ func (q *Queries) GetIntermediateSessionByTokenSHA256AndProjectID(ctx context.Co
 		&i.OrganizationID,
 		&i.UpdateTime,
 		&i.SecretTokenSha256,
+		&i.NewUserPasswordBcrypt,
+		&i.EmailVerificationChallengeSha256,
+		&i.EmailVerificationChallengeCompleted,
 	)
 	return i, err
 }
@@ -985,7 +888,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed
 `
 
 func (q *Queries) RevokeIntermediateSession(ctx context.Context, id uuid.UUID) (IntermediateSession, error) {
@@ -1007,6 +910,9 @@ func (q *Queries) RevokeIntermediateSession(ctx context.Context, id uuid.UUID) (
 		&i.OrganizationID,
 		&i.UpdateTime,
 		&i.SecretTokenSha256,
+		&i.NewUserPasswordBcrypt,
+		&i.EmailVerificationChallengeSha256,
+		&i.EmailVerificationChallengeCompleted,
 	)
 	return i, err
 }
@@ -1046,7 +952,7 @@ WHERE
     AND (email IS NULL
         OR email = $1)
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed
 `
 
 type UpdateIntermediateSessionEmailParams struct {
@@ -1073,6 +979,88 @@ func (q *Queries) UpdateIntermediateSessionEmail(ctx context.Context, arg Update
 		&i.OrganizationID,
 		&i.UpdateTime,
 		&i.SecretTokenSha256,
+		&i.NewUserPasswordBcrypt,
+		&i.EmailVerificationChallengeSha256,
+		&i.EmailVerificationChallengeCompleted,
+	)
+	return i, err
+}
+
+const updateIntermediateSessionEmailVerificationChallengeCompleted = `-- name: UpdateIntermediateSessionEmailVerificationChallengeCompleted :one
+UPDATE
+    intermediate_sessions
+SET
+    email_verification_challenge_completed = TRUE
+WHERE
+    id = $1
+RETURNING
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed
+`
+
+func (q *Queries) UpdateIntermediateSessionEmailVerificationChallengeCompleted(ctx context.Context, id uuid.UUID) (IntermediateSession, error) {
+	row := q.db.QueryRow(ctx, updateIntermediateSessionEmailVerificationChallengeCompleted, id)
+	var i IntermediateSession
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.CreateTime,
+		&i.ExpireTime,
+		&i.Email,
+		&i.GoogleOauthStateSha256,
+		&i.MicrosoftOauthStateSha256,
+		&i.GoogleHostedDomain,
+		&i.GoogleUserID,
+		&i.MicrosoftTenantID,
+		&i.MicrosoftUserID,
+		&i.PasswordVerified,
+		&i.OrganizationID,
+		&i.UpdateTime,
+		&i.SecretTokenSha256,
+		&i.NewUserPasswordBcrypt,
+		&i.EmailVerificationChallengeSha256,
+		&i.EmailVerificationChallengeCompleted,
+	)
+	return i, err
+}
+
+const updateIntermediateSessionEmailVerificationChallengeSha256 = `-- name: UpdateIntermediateSessionEmailVerificationChallengeSha256 :one
+UPDATE
+    intermediate_sessions
+SET
+    email_verification_challenge_sha256 = $1
+WHERE
+    id = $2
+RETURNING
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed
+`
+
+type UpdateIntermediateSessionEmailVerificationChallengeSha256Params struct {
+	EmailVerificationChallengeSha256 []byte
+	ID                               uuid.UUID
+}
+
+func (q *Queries) UpdateIntermediateSessionEmailVerificationChallengeSha256(ctx context.Context, arg UpdateIntermediateSessionEmailVerificationChallengeSha256Params) (IntermediateSession, error) {
+	row := q.db.QueryRow(ctx, updateIntermediateSessionEmailVerificationChallengeSha256, arg.EmailVerificationChallengeSha256, arg.ID)
+	var i IntermediateSession
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.CreateTime,
+		&i.ExpireTime,
+		&i.Email,
+		&i.GoogleOauthStateSha256,
+		&i.MicrosoftOauthStateSha256,
+		&i.GoogleHostedDomain,
+		&i.GoogleUserID,
+		&i.MicrosoftTenantID,
+		&i.MicrosoftUserID,
+		&i.PasswordVerified,
+		&i.OrganizationID,
+		&i.UpdateTime,
+		&i.SecretTokenSha256,
+		&i.NewUserPasswordBcrypt,
+		&i.EmailVerificationChallengeSha256,
+		&i.EmailVerificationChallengeCompleted,
 	)
 	return i, err
 }
@@ -1087,7 +1075,7 @@ SET
 WHERE
     id = $4
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed
 `
 
 type UpdateIntermediateSessionGoogleDetailsParams struct {
@@ -1121,6 +1109,9 @@ func (q *Queries) UpdateIntermediateSessionGoogleDetails(ctx context.Context, ar
 		&i.OrganizationID,
 		&i.UpdateTime,
 		&i.SecretTokenSha256,
+		&i.NewUserPasswordBcrypt,
+		&i.EmailVerificationChallengeSha256,
+		&i.EmailVerificationChallengeCompleted,
 	)
 	return i, err
 }
@@ -1133,7 +1124,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed
 `
 
 type UpdateIntermediateSessionGoogleOAuthStateSHA256Params struct {
@@ -1160,6 +1151,9 @@ func (q *Queries) UpdateIntermediateSessionGoogleOAuthStateSHA256(ctx context.Co
 		&i.OrganizationID,
 		&i.UpdateTime,
 		&i.SecretTokenSha256,
+		&i.NewUserPasswordBcrypt,
+		&i.EmailVerificationChallengeSha256,
+		&i.EmailVerificationChallengeCompleted,
 	)
 	return i, err
 }
@@ -1174,7 +1168,7 @@ SET
 WHERE
     id = $4
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed
 `
 
 type UpdateIntermediateSessionMicrosoftDetailsParams struct {
@@ -1208,6 +1202,9 @@ func (q *Queries) UpdateIntermediateSessionMicrosoftDetails(ctx context.Context,
 		&i.OrganizationID,
 		&i.UpdateTime,
 		&i.SecretTokenSha256,
+		&i.NewUserPasswordBcrypt,
+		&i.EmailVerificationChallengeSha256,
+		&i.EmailVerificationChallengeCompleted,
 	)
 	return i, err
 }
@@ -1220,7 +1217,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed
 `
 
 type UpdateIntermediateSessionMicrosoftOAuthStateSHA256Params struct {
@@ -1247,6 +1244,94 @@ func (q *Queries) UpdateIntermediateSessionMicrosoftOAuthStateSHA256(ctx context
 		&i.OrganizationID,
 		&i.UpdateTime,
 		&i.SecretTokenSha256,
+		&i.NewUserPasswordBcrypt,
+		&i.EmailVerificationChallengeSha256,
+		&i.EmailVerificationChallengeCompleted,
+	)
+	return i, err
+}
+
+const updateIntermediateSessionNewUserPasswordBcrypt = `-- name: UpdateIntermediateSessionNewUserPasswordBcrypt :one
+UPDATE
+    intermediate_sessions
+SET
+    new_user_password_bcrypt = $1,
+    password_verified = TRUE
+WHERE
+    id = $2
+RETURNING
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed
+`
+
+type UpdateIntermediateSessionNewUserPasswordBcryptParams struct {
+	NewUserPasswordBcrypt *string
+	ID                    uuid.UUID
+}
+
+func (q *Queries) UpdateIntermediateSessionNewUserPasswordBcrypt(ctx context.Context, arg UpdateIntermediateSessionNewUserPasswordBcryptParams) (IntermediateSession, error) {
+	row := q.db.QueryRow(ctx, updateIntermediateSessionNewUserPasswordBcrypt, arg.NewUserPasswordBcrypt, arg.ID)
+	var i IntermediateSession
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.CreateTime,
+		&i.ExpireTime,
+		&i.Email,
+		&i.GoogleOauthStateSha256,
+		&i.MicrosoftOauthStateSha256,
+		&i.GoogleHostedDomain,
+		&i.GoogleUserID,
+		&i.MicrosoftTenantID,
+		&i.MicrosoftUserID,
+		&i.PasswordVerified,
+		&i.OrganizationID,
+		&i.UpdateTime,
+		&i.SecretTokenSha256,
+		&i.NewUserPasswordBcrypt,
+		&i.EmailVerificationChallengeSha256,
+		&i.EmailVerificationChallengeCompleted,
+	)
+	return i, err
+}
+
+const updateIntermediateSessionOrganizationID = `-- name: UpdateIntermediateSessionOrganizationID :one
+UPDATE
+    intermediate_sessions
+SET
+    organization_id = $1
+WHERE
+    id = $2
+RETURNING
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed
+`
+
+type UpdateIntermediateSessionOrganizationIDParams struct {
+	OrganizationID *uuid.UUID
+	ID             uuid.UUID
+}
+
+func (q *Queries) UpdateIntermediateSessionOrganizationID(ctx context.Context, arg UpdateIntermediateSessionOrganizationIDParams) (IntermediateSession, error) {
+	row := q.db.QueryRow(ctx, updateIntermediateSessionOrganizationID, arg.OrganizationID, arg.ID)
+	var i IntermediateSession
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.CreateTime,
+		&i.ExpireTime,
+		&i.Email,
+		&i.GoogleOauthStateSha256,
+		&i.MicrosoftOauthStateSha256,
+		&i.GoogleHostedDomain,
+		&i.GoogleUserID,
+		&i.MicrosoftTenantID,
+		&i.MicrosoftUserID,
+		&i.PasswordVerified,
+		&i.OrganizationID,
+		&i.UpdateTime,
+		&i.SecretTokenSha256,
+		&i.NewUserPasswordBcrypt,
+		&i.EmailVerificationChallengeSha256,
+		&i.EmailVerificationChallengeCompleted,
 	)
 	return i, err
 }
@@ -1260,7 +1345,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed
 `
 
 type UpdateIntermediateSessionPasswordVerifiedParams struct {
@@ -1287,6 +1372,9 @@ func (q *Queries) UpdateIntermediateSessionPasswordVerified(ctx context.Context,
 		&i.OrganizationID,
 		&i.UpdateTime,
 		&i.SecretTokenSha256,
+		&i.NewUserPasswordBcrypt,
+		&i.EmailVerificationChallengeSha256,
+		&i.EmailVerificationChallengeCompleted,
 	)
 	return i, err
 }

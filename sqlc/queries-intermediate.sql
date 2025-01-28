@@ -19,33 +19,6 @@ WHERE
 RETURNING
     *;
 
--- name: CreateEmailVerificationChallenge :one
-INSERT INTO email_verification_challenges (id, intermediate_session_id, challenge_sha256, expire_time)
-    VALUES ($1, $2, $3, $4)
-RETURNING
-    *;
-
--- name: GetEmailVerificationChallengeByChallengeSHA :one
-SELECT
-    *
-FROM
-    email_verification_challenges
-WHERE
-    intermediate_session_id = $1
-    AND expire_time > now()
-    AND challenge_sha256 = $2;
-
--- name: CompleteEmailVerificationChallenge :one
-UPDATE
-    email_verification_challenges
-SET
-    complete_time = now(),
-    challenge_sha256 = NULL
-WHERE
-    id = $1
-RETURNING
-    *;
-
 -- name: CreateVerifiedEmail :one
 INSERT INTO oauth_verified_emails (id, project_id, email, google_user_id, microsoft_user_id)
     VALUES ($1, $2, $3, $4, $5)
@@ -71,8 +44,8 @@ RETURNING
     *;
 
 -- name: CreateUser :one
-INSERT INTO users (id, organization_id, email, google_user_id, microsoft_user_id, is_owner)
-    VALUES ($1, $2, $3, $4, $5, $6)
+INSERT INTO users (id, organization_id, email, google_user_id, microsoft_user_id, is_owner, password_bcrypt)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
 RETURNING
     *;
 
@@ -259,6 +232,47 @@ WHERE
 RETURNING
     *;
 
+-- name: UpdateIntermediateSessionOrganizationID :one
+UPDATE
+    intermediate_sessions
+SET
+    organization_id = $1
+WHERE
+    id = $2
+RETURNING
+    *;
+
+-- name: UpdateIntermediateSessionNewUserPasswordBcrypt :one
+UPDATE
+    intermediate_sessions
+SET
+    new_user_password_bcrypt = $1,
+    password_verified = TRUE
+WHERE
+    id = $2
+RETURNING
+    *;
+
+-- name: UpdateIntermediateSessionEmailVerificationChallengeSha256 :one
+UPDATE
+    intermediate_sessions
+SET
+    email_verification_challenge_sha256 = $1
+WHERE
+    id = $2
+RETURNING
+    *;
+
+-- name: UpdateIntermediateSessionEmailVerificationChallengeCompleted :one
+UPDATE
+    intermediate_sessions
+SET
+    email_verification_challenge_completed = TRUE
+WHERE
+    id = $1
+RETURNING
+    *;
+
 -- name: GetEmailVerifiedByGoogleUserID :one
 SELECT
     EXISTS (
@@ -282,17 +296,6 @@ SELECT
             project_id = $1
             AND email = $2
             AND microsoft_user_id = $3);
-
--- name: GetEmailVerifiedByEmailVerificationChallenge :one
-SELECT
-    EXISTS (
-        SELECT
-            *
-        FROM
-            email_verification_challenges
-        WHERE
-            complete_time IS NOT NULL
-            AND intermediate_session_id = $1);
 
 -- name: CreateOrganizationGoogleHostedDomain :one
 INSERT INTO organization_google_hosted_domains (id, organization_id, google_hosted_domain)

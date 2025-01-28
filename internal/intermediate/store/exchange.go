@@ -30,14 +30,9 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		return nil, fmt.Errorf("get intermediate session by id: %w", err)
 	}
 
-	orgID, err := idformat.Organization.Parse(req.OrganizationId)
-	if err != nil {
-		return nil, apierror.NewInvalidArgumentError("invalid organization id", fmt.Errorf("parse organization id: %w", err))
-	}
-
 	qOrg, err := q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
 		ProjectID: authn.ProjectID(ctx),
-		ID:        orgID,
+		ID:        *qIntermediateSession.OrganizationID,
 	})
 	if err != nil {
 		return nil, err
@@ -56,7 +51,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		return nil, fmt.Errorf("enforce organization login enabled: %w", err)
 	}
 
-	if err := s.validateAuthRequirementsSatisfied(ctx, q, qIntermediateSession.ID, qOrg.ID); err != nil {
+	if err := s.validateAuthRequirementsSatisfied(ctx, q, qIntermediateSession.ID); err != nil {
 		return nil, fmt.Errorf("validate auth requirements satisfied: %w", err)
 	}
 
@@ -73,6 +68,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 			Email:           *qIntermediateSession.Email,
 			GoogleUserID:    qIntermediateSession.GoogleUserID,
 			MicrosoftUserID: qIntermediateSession.MicrosoftUserID,
+			PasswordBcrypt:  qIntermediateSession.NewUserPasswordBcrypt,
 		})
 		if err != nil {
 			return nil, fmt.Errorf("create user: %w", err)
@@ -110,111 +106,14 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 	}, nil
 }
 
-func (s *Store) ExchangeIntermediateSessionForNewOrganizationSession(ctx context.Context, req *intermediatev1.ExchangeIntermediateSessionForNewOrganizationSessionRequest) (*intermediatev1.ExchangeIntermediateSessionForNewOrganizationSessionResponse, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
-	if err != nil {
-		return nil, err
-	}
-	defer rollback()
-
-	intermediateSession := authn.IntermediateSession(ctx)
-
-	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
-	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, apierror.NewNotFoundError("get project by id: %w", fmt.Errorf("project not found: %w", err))
-		}
-
-		return nil, fmt.Errorf("get project by id: %w", err)
-	}
-
-	if err := enforceProjectLoginEnabled(qProject); err != nil {
-		return nil, fmt.Errorf("enforce project login enabled: %w", err)
-	}
-
-	// Create a new organization
-	qOrganization, err := q.CreateOrganization(ctx, queries.CreateOrganizationParams{
-		ID:                   uuid.New(),
-		ProjectID:            authn.ProjectID(ctx),
-		DisplayName:          req.DisplayName,
-		OverrideLogInMethods: false,
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	// If the intermediate session is associated with a Google or Microsoft
-	// login, associate the organization as well.
-	if intermediateSession.GoogleHostedDomain != "" {
-		if _, err := q.CreateOrganizationGoogleHostedDomain(ctx, queries.CreateOrganizationGoogleHostedDomainParams{
-			ID:                 uuid.New(),
-			OrganizationID:     qOrganization.ID,
-			GoogleHostedDomain: intermediateSession.GoogleHostedDomain,
-		}); err != nil {
-			return nil, fmt.Errorf("create organization google hosted domain: %w", err)
-		}
-	}
-	if intermediateSession.MicrosoftTenantId != "" {
-		if _, err := q.CreateOrganizationMicrosoftTenantID(ctx, queries.CreateOrganizationMicrosoftTenantIDParams{
-			ID:                uuid.New(),
-			OrganizationID:    qOrganization.ID,
-			MicrosoftTenantID: intermediateSession.MicrosoftTenantId,
-		}); err != nil {
-			return nil, fmt.Errorf("create organization microsoft tenant id: %w", err)
-		}
-	}
-
-	// Create a new user for that organization
-	qUser, err := q.CreateUser(ctx, queries.CreateUserParams{
-		ID:              uuid.New(),
-		OrganizationID:  qOrganization.ID,
-		Email:           intermediateSession.Email,
-		GoogleUserID:    refOrNil(intermediateSession.GoogleUserId),
-		MicrosoftUserID: refOrNil(intermediateSession.MicrosoftUserId),
-		IsOwner:         true,
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	expireTime := time.Now().Add(sessionDuration)
-
-	// Create a new session for the user
-	refreshToken := uuid.New()
-	refreshTokenSHA256 := sha256.Sum256(refreshToken[:])
-	if _, err := q.CreateSession(ctx, queries.CreateSessionParams{
-		ID:                 uuid.Must(uuid.NewV7()),
-		ExpireTime:         &expireTime,
-		RefreshTokenSha256: refreshTokenSHA256[:],
-		UserID:             qUser.ID,
-	}); err != nil {
-		return nil, err
-	}
-
-	// revoke the intermediate session
-	intermediateSessionUUID, err := idformat.IntermediateSession.Parse(intermediateSession.Id)
-	if err != nil {
-		panic(fmt.Errorf("parse intermediate session id: %w", err))
-	}
-
-	if _, err := q.RevokeIntermediateSession(ctx, intermediateSessionUUID); err != nil {
-		return nil, fmt.Errorf("revoke intermediate session: %w", err)
-	}
-
-	if err := commit(); err != nil {
-		return nil, err
-	}
-
-	return &intermediatev1.ExchangeIntermediateSessionForNewOrganizationSessionResponse{
-		AccessToken:  "", // populated in service
-		RefreshToken: idformat.SessionRefreshToken.Format(refreshToken),
-	}, nil
-}
-
-func (s *Store) validateAuthRequirementsSatisfied(ctx context.Context, q *queries.Queries, intermediateSessionID, organizationID uuid.UUID) error {
+func (s *Store) validateAuthRequirementsSatisfied(ctx context.Context, q *queries.Queries, intermediateSessionID uuid.UUID) error {
 	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, intermediateSessionID)
 	if err != nil {
 		return fmt.Errorf("get intermediate session by id: %w", err)
+	}
+
+	if qIntermediateSession.OrganizationID == nil {
+		return apierror.NewFailedPreconditionError("organization not set", fmt.Errorf("organization not set"))
 	}
 
 	emailVerified, err := s.getIntermediateSessionEmailVerified(ctx, q, qIntermediateSession.ID)
@@ -233,7 +132,7 @@ func (s *Store) validateAuthRequirementsSatisfied(ctx context.Context, q *querie
 
 	qOrg, err := q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
 		ProjectID: authn.ProjectID(ctx),
-		ID:        organizationID,
+		ID:        *qIntermediateSession.OrganizationID,
 	})
 	if err != nil {
 		return fmt.Errorf("get organization by id: %w", err)

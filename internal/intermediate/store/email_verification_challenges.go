@@ -8,7 +8,6 @@ import (
 	"log/slog"
 	"math/rand/v2"
 	"strconv"
-	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/sesv2"
@@ -19,10 +18,8 @@ import (
 	"github.com/openauth/openauth/internal/intermediate/authn"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
-	"github.com/openauth/openauth/internal/store/idformat"
+	"golang.org/x/crypto/bcrypt"
 )
-
-var emailVerificationChallengeDuration = time.Minute * 10
 
 func (s *Store) IssueEmailVerificationChallenge(ctx context.Context, req *intermediatev1.IssueEmailVerificationChallengeRequest) (*intermediatev1.IssueEmailVerificationChallengeResponse, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
@@ -65,16 +62,12 @@ func (s *Store) IssueEmailVerificationChallenge(ctx context.Context, req *interm
 	secretToken := generateSecretToken()
 	secretTokenSHA256 := sha256.Sum256([]byte(secretToken))
 
-	expireTime := time.Now().Add(emailVerificationChallengeDuration)
-
-	qEmailVerificationChallenge, err := q.CreateEmailVerificationChallenge(ctx, queries.CreateEmailVerificationChallengeParams{
-		ID:                    uuid.New(),
-		ChallengeSha256:       secretTokenSHA256[:],
-		ExpireTime:            &expireTime,
-		IntermediateSessionID: authn.IntermediateSessionID(ctx),
+	_, err = q.UpdateIntermediateSessionEmailVerificationChallengeSha256(ctx, queries.UpdateIntermediateSessionEmailVerificationChallengeSha256Params{
+		ID:                               authn.IntermediateSessionID(ctx),
+		EmailVerificationChallengeSha256: secretTokenSHA256[:],
 	})
 	if err != nil {
-		return nil, fmt.Errorf("create email verification challenge: %w", err)
+		return nil, fmt.Errorf("set email verification challenge: %w", err)
 	}
 
 	if err := commit(); err != nil {
@@ -86,19 +79,24 @@ func (s *Store) IssueEmailVerificationChallenge(ctx context.Context, req *interm
 		return nil, fmt.Errorf("send email verification challenge: %w", err)
 	}
 
-	return &intermediatev1.IssueEmailVerificationChallengeResponse{
-		EmailVerificationChallengeId: idformat.EmailVerificationChallenge.Format(qEmailVerificationChallenge.ID),
-	}, nil
+	return &intermediatev1.IssueEmailVerificationChallengeResponse{}, nil
 }
 
 func (s *Store) VerifyEmailChallenge(ctx context.Context, req *intermediatev1.VerifyEmailChallengeRequest) (*intermediatev1.VerifyEmailChallengeResponse, error) {
-	intermediateSession := authn.IntermediateSession(ctx)
-
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
 	defer rollback()
+
+	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("get intermediate session by id: %w", fmt.Errorf("intermediate session not found: %w", err))
+		}
+
+		return nil, fmt.Errorf("get intermediate session by id: %w", err)
+	}
 
 	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
@@ -114,25 +112,17 @@ func (s *Store) VerifyEmailChallenge(ctx context.Context, req *intermediatev1.Ve
 	}
 
 	challengeSHA256 := sha256.Sum256([]byte(req.Code))
-	qEmailVerificationChallenge, err := q.GetEmailVerificationChallengeByChallengeSHA(ctx, queries.GetEmailVerificationChallengeByChallengeSHAParams{
-		IntermediateSessionID: authn.IntermediateSessionID(ctx),
-		ChallengeSha256:       challengeSHA256[:],
-	})
-	if err != nil {
-		return nil, fmt.Errorf("get email verification challenge by challenge sha: %w", err)
+	if err := bcrypt.CompareHashAndPassword(qIntermediateSession.EmailVerificationChallengeSha256, challengeSHA256[:]); err != nil {
+		return nil, apierror.NewInvalidArgumentError("invalid email verification code", fmt.Errorf("invalid email verification code"))
 	}
 
-	if _, err := q.CompleteEmailVerificationChallenge(ctx, qEmailVerificationChallenge.ID); err != nil {
-		return nil, fmt.Errorf("complete email verification challenge: %w", err)
-	}
-
-	if intermediateSession.GoogleUserId != "" || intermediateSession.MicrosoftUserId != "" {
+	if qIntermediateSession.GoogleUserID != nil || qIntermediateSession.MicrosoftUserID != nil {
 		if _, err := q.CreateVerifiedEmail(ctx, queries.CreateVerifiedEmailParams{
 			ID:              uuid.New(),
 			ProjectID:       authn.ProjectID(ctx),
-			Email:           authn.IntermediateSession(ctx).Email,
-			GoogleUserID:    refOrNil(intermediateSession.GoogleUserId),
-			MicrosoftUserID: refOrNil(intermediateSession.MicrosoftUserId),
+			Email:           *qIntermediateSession.Email,
+			GoogleUserID:    qIntermediateSession.GoogleUserID,
+			MicrosoftUserID: qIntermediateSession.MicrosoftUserID,
 		}); err != nil {
 			return nil, fmt.Errorf("create verified email: %w", err)
 		}

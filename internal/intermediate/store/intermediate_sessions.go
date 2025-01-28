@@ -50,16 +50,10 @@ func (s *Store) getIntermediateSessionEmailVerified(ctx context.Context, q *quer
 		}
 	}
 
-	// If there's a successful email verification challenge associated with
-	// this intermediate session, then the email is verified.
-	qVerifiedEmailVerificationChallenge, err := q.GetEmailVerifiedByEmailVerificationChallenge(ctx, qIntermediateSession.ID)
-	if err != nil {
-		return false, fmt.Errorf("get email verified by email verification challenge: %w", err)
-	}
-
-	if qVerifiedEmailVerificationChallenge {
+	if qIntermediateSession.EmailVerificationChallengeSha256 != nil && qIntermediateSession.EmailVerificationChallengeCompleted {
 		return true, nil
 	}
+
 	return false, nil
 }
 
@@ -84,15 +78,17 @@ func parseIntermediateSession(qIntermediateSession queries.IntermediateSession, 
 	}
 
 	return &intermediatev1.IntermediateSession{
-		Id:                 idformat.IntermediateSession.Format(qIntermediateSession.ID),
-		ProjectId:          idformat.Project.Format(qIntermediateSession.ProjectID),
-		Email:              derefOrEmpty(qIntermediateSession.Email),
-		EmailVerified:      emailVerified,
-		GoogleUserId:       derefOrEmpty(qIntermediateSession.GoogleUserID),
-		GoogleHostedDomain: derefOrEmpty(qIntermediateSession.GoogleHostedDomain),
-		MicrosoftUserId:    derefOrEmpty(qIntermediateSession.MicrosoftUserID),
-		MicrosoftTenantId:  derefOrEmpty(qIntermediateSession.MicrosoftTenantID),
-		PasswordVerified:   derefOrEmpty(qIntermediateSession.PasswordVerified),
-		OrganizationId:     organizationID,
+		Id:                                   idformat.IntermediateSession.Format(qIntermediateSession.ID),
+		ProjectId:                            idformat.Project.Format(qIntermediateSession.ProjectID),
+		Email:                                derefOrEmpty(qIntermediateSession.Email),
+		EmailVerified:                        emailVerified,
+		EmailVerificationChallengeRegistered: qIntermediateSession.EmailVerificationChallengeSha256 != nil,
+		GoogleUserId:                         derefOrEmpty(qIntermediateSession.GoogleUserID),
+		GoogleHostedDomain:                   derefOrEmpty(qIntermediateSession.GoogleHostedDomain),
+		MicrosoftUserId:                      derefOrEmpty(qIntermediateSession.MicrosoftUserID),
+		MicrosoftTenantId:                    derefOrEmpty(qIntermediateSession.MicrosoftTenantID),
+		PasswordVerified:                     derefOrEmpty(qIntermediateSession.PasswordVerified),
+		NewUserPasswordRegistered:            qIntermediateSession.NewUserPasswordBcrypt != nil,
+		OrganizationId:                       organizationID,
 	}
 }

@@ -38,22 +38,28 @@ service IntermediateService {
     };
   }
 
+  rpc CreateOrganization(CreateOrganizationRequest) returns (CreateOrganizationResponse) {
+    option (google.api.http) = {
+      post: "/intermediate/v1/organizations",
+      body: "*"
+    };
+  }
+
   rpc ListOrganizations(ListOrganizationsRequest) returns (ListOrganizationsResponse) {
     option (google.api.http) = {
       get: "/intermediate/v1/organizations"
     };
   }
 
-  rpc ExchangeIntermediateSessionForSession(ExchangeIntermediateSessionForSessionRequest) returns (ExchangeIntermediateSessionForSessionResponse) {
+  rpc SetOrganization(SetOrganizationRequest) returns (SetOrganizationResponse) {
     option (google.api.http) = {
-      post: "/intermediate/v1/exchange-intermediate-session-for-session",
-      body: "*"
+      post: "/intermediate/v1/set-organization",
     };
   }
 
-  rpc ExchangeIntermediateSessionForNewOrganizationSession(ExchangeIntermediateSessionForNewOrganizationSessionRequest) returns (ExchangeIntermediateSessionForNewOrganizationSessionResponse) {
+  rpc ExchangeIntermediateSessionForSession(ExchangeIntermediateSessionForSessionRequest) returns (ExchangeIntermediateSessionForSessionResponse) {
     option (google.api.http) = {
-      post: "/intermediate/v1/exchange-intermediate-session-for-new-organization-session",
+      post: "/intermediate/v1/exchange-intermediate-session-for-session",
       body: "*"
     };
   }
@@ -100,6 +106,13 @@ service IntermediateService {
     };
   }
 
+  rpc RegisterPassword(RegisterPasswordRequest) returns (RegisterPasswordResponse) {
+    option (google.api.http) = {
+      post: "/intermediate/v1/register-password",
+      body: "*"
+    };
+  }
+
   rpc VerifyPassword(VerifyPasswordRequest) returns (VerifyPasswordResponse) {
     option (google.api.http) = {
       post: "/intermediate/v1/verify-password",
@@ -117,8 +130,10 @@ message IntermediateSession {
   string google_hosted_domain = 6;
   string microsoft_user_id = 7;
   string microsoft_tenant_id = 8;
-  bool password_verified = 9;
-  string organization_id = 10;
+  string organization_id = 9;
+  bool password_verified = 10;
+  bool new_user_password_registered = 11;
+  bool email_verification_challenge_registered = 12;
 }
 
 message ProjectUISettings {
@@ -148,20 +163,25 @@ message WhoamiResponse {
   IntermediateSession intermediate_session = 1;
 }
 
+message CreateOrganizationRequest {
+  string display_name = 1;
+}
+
+message CreateOrganizationResponse {
+}
+
+message SetOrganizationRequest {
+  string organization_id = 1;
+}
+
+message SetOrganizationResponse {
+}
+
 message ExchangeIntermediateSessionForSessionRequest {
   string organization_id = 1;
 }
 
 message ExchangeIntermediateSessionForSessionResponse {
-  string refresh_token = 1;
-  string access_token = 2;
-}
-
-message ExchangeIntermediateSessionForNewOrganizationSessionRequest {
-  string display_name = 1;
-}
-
-message ExchangeIntermediateSessionForNewOrganizationSessionResponse {
   string refresh_token = 1;
   string access_token = 2;
 }
@@ -214,9 +234,7 @@ message IssueEmailVerificationChallengeRequest {
   string email = 1;
 }
 
-message IssueEmailVerificationChallengeResponse {
-  string email_verification_challenge_id = 1;
-}
+message IssueEmailVerificationChallengeResponse {}
 
 message ListOrganizationsRequest {
 }
@@ -234,11 +252,17 @@ message ListSAMLOrganizationsResponse {
 }
 
 message VerifyEmailChallengeRequest {
-  string email_verification_challenge_id = 1;
   string code = 2;
 }
 
 message VerifyEmailChallengeResponse {}
+
+message RegisterPasswordRequest {
+  string password = 1;
+}
+
+message RegisterPasswordResponse {
+}
 
 message VerifyPasswordRequest {
   string organization_id = 1;

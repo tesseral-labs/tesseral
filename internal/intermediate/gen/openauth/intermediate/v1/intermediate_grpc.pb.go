@@ -19,21 +19,23 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	IntermediateService_ListSAMLOrganizations_FullMethodName                                = "/openauth.intermediate.v1.IntermediateService/ListSAMLOrganizations"
-	IntermediateService_GetProjectUISettings_FullMethodName                                 = "/openauth.intermediate.v1.IntermediateService/GetProjectUISettings"
-	IntermediateService_RedeemUserImpersonationToken_FullMethodName                         = "/openauth.intermediate.v1.IntermediateService/RedeemUserImpersonationToken"
-	IntermediateService_CreateIntermediateSession_FullMethodName                            = "/openauth.intermediate.v1.IntermediateService/CreateIntermediateSession"
-	IntermediateService_Whoami_FullMethodName                                               = "/openauth.intermediate.v1.IntermediateService/Whoami"
-	IntermediateService_ListOrganizations_FullMethodName                                    = "/openauth.intermediate.v1.IntermediateService/ListOrganizations"
-	IntermediateService_ExchangeIntermediateSessionForSession_FullMethodName                = "/openauth.intermediate.v1.IntermediateService/ExchangeIntermediateSessionForSession"
-	IntermediateService_ExchangeIntermediateSessionForNewOrganizationSession_FullMethodName = "/openauth.intermediate.v1.IntermediateService/ExchangeIntermediateSessionForNewOrganizationSession"
-	IntermediateService_GetGoogleOAuthRedirectURL_FullMethodName                            = "/openauth.intermediate.v1.IntermediateService/GetGoogleOAuthRedirectURL"
-	IntermediateService_RedeemGoogleOAuthCode_FullMethodName                                = "/openauth.intermediate.v1.IntermediateService/RedeemGoogleOAuthCode"
-	IntermediateService_GetMicrosoftOAuthRedirectURL_FullMethodName                         = "/openauth.intermediate.v1.IntermediateService/GetMicrosoftOAuthRedirectURL"
-	IntermediateService_RedeemMicrosoftOAuthCode_FullMethodName                             = "/openauth.intermediate.v1.IntermediateService/RedeemMicrosoftOAuthCode"
-	IntermediateService_IssueEmailVerificationChallenge_FullMethodName                      = "/openauth.intermediate.v1.IntermediateService/IssueEmailVerificationChallenge"
-	IntermediateService_VerifyEmailChallenge_FullMethodName                                 = "/openauth.intermediate.v1.IntermediateService/VerifyEmailChallenge"
-	IntermediateService_VerifyPassword_FullMethodName                                       = "/openauth.intermediate.v1.IntermediateService/VerifyPassword"
+	IntermediateService_ListSAMLOrganizations_FullMethodName                 = "/openauth.intermediate.v1.IntermediateService/ListSAMLOrganizations"
+	IntermediateService_GetProjectUISettings_FullMethodName                  = "/openauth.intermediate.v1.IntermediateService/GetProjectUISettings"
+	IntermediateService_RedeemUserImpersonationToken_FullMethodName          = "/openauth.intermediate.v1.IntermediateService/RedeemUserImpersonationToken"
+	IntermediateService_CreateIntermediateSession_FullMethodName             = "/openauth.intermediate.v1.IntermediateService/CreateIntermediateSession"
+	IntermediateService_Whoami_FullMethodName                                = "/openauth.intermediate.v1.IntermediateService/Whoami"
+	IntermediateService_CreateOrganization_FullMethodName                    = "/openauth.intermediate.v1.IntermediateService/CreateOrganization"
+	IntermediateService_ListOrganizations_FullMethodName                     = "/openauth.intermediate.v1.IntermediateService/ListOrganizations"
+	IntermediateService_SetOrganization_FullMethodName                       = "/openauth.intermediate.v1.IntermediateService/SetOrganization"
+	IntermediateService_ExchangeIntermediateSessionForSession_FullMethodName = "/openauth.intermediate.v1.IntermediateService/ExchangeIntermediateSessionForSession"
+	IntermediateService_GetGoogleOAuthRedirectURL_FullMethodName             = "/openauth.intermediate.v1.IntermediateService/GetGoogleOAuthRedirectURL"
+	IntermediateService_RedeemGoogleOAuthCode_FullMethodName                 = "/openauth.intermediate.v1.IntermediateService/RedeemGoogleOAuthCode"
+	IntermediateService_GetMicrosoftOAuthRedirectURL_FullMethodName          = "/openauth.intermediate.v1.IntermediateService/GetMicrosoftOAuthRedirectURL"
+	IntermediateService_RedeemMicrosoftOAuthCode_FullMethodName              = "/openauth.intermediate.v1.IntermediateService/RedeemMicrosoftOAuthCode"
+	IntermediateService_IssueEmailVerificationChallenge_FullMethodName       = "/openauth.intermediate.v1.IntermediateService/IssueEmailVerificationChallenge"
+	IntermediateService_VerifyEmailChallenge_FullMethodName                  = "/openauth.intermediate.v1.IntermediateService/VerifyEmailChallenge"
+	IntermediateService_RegisterPassword_FullMethodName                      = "/openauth.intermediate.v1.IntermediateService/RegisterPassword"
+	IntermediateService_VerifyPassword_FullMethodName                        = "/openauth.intermediate.v1.IntermediateService/VerifyPassword"
 )
 
 // IntermediateServiceClient is the client API for IntermediateService service.
@@ -45,15 +47,17 @@ type IntermediateServiceClient interface {
 	RedeemUserImpersonationToken(ctx context.Context, in *RedeemUserImpersonationTokenRequest, opts ...grpc.CallOption) (*RedeemUserImpersonationTokenResponse, error)
 	CreateIntermediateSession(ctx context.Context, in *CreateIntermediateSessionRequest, opts ...grpc.CallOption) (*CreateIntermediateSessionResponse, error)
 	Whoami(ctx context.Context, in *WhoamiRequest, opts ...grpc.CallOption) (*WhoamiResponse, error)
+	CreateOrganization(ctx context.Context, in *CreateOrganizationRequest, opts ...grpc.CallOption) (*CreateOrganizationResponse, error)
 	ListOrganizations(ctx context.Context, in *ListOrganizationsRequest, opts ...grpc.CallOption) (*ListOrganizationsResponse, error)
+	SetOrganization(ctx context.Context, in *SetOrganizationRequest, opts ...grpc.CallOption) (*SetOrganizationResponse, error)
 	ExchangeIntermediateSessionForSession(ctx context.Context, in *ExchangeIntermediateSessionForSessionRequest, opts ...grpc.CallOption) (*ExchangeIntermediateSessionForSessionResponse, error)
-	ExchangeIntermediateSessionForNewOrganizationSession(ctx context.Context, in *ExchangeIntermediateSessionForNewOrganizationSessionRequest, opts ...grpc.CallOption) (*ExchangeIntermediateSessionForNewOrganizationSessionResponse, error)
 	GetGoogleOAuthRedirectURL(ctx context.Context, in *GetGoogleOAuthRedirectURLRequest, opts ...grpc.CallOption) (*GetGoogleOAuthRedirectURLResponse, error)
 	RedeemGoogleOAuthCode(ctx context.Context, in *RedeemGoogleOAuthCodeRequest, opts ...grpc.CallOption) (*RedeemGoogleOAuthCodeResponse, error)
 	GetMicrosoftOAuthRedirectURL(ctx context.Context, in *GetMicrosoftOAuthRedirectURLRequest, opts ...grpc.CallOption) (*GetMicrosoftOAuthRedirectURLResponse, error)
 	RedeemMicrosoftOAuthCode(ctx context.Context, in *RedeemMicrosoftOAuthCodeRequest, opts ...grpc.CallOption) (*RedeemMicrosoftOAuthCodeResponse, error)
 	IssueEmailVerificationChallenge(ctx context.Context, in *IssueEmailVerificationChallengeRequest, opts ...grpc.CallOption) (*IssueEmailVerificationChallengeResponse, error)
 	VerifyEmailChallenge(ctx context.Context, in *VerifyEmailChallengeRequest, opts ...grpc.CallOption) (*VerifyEmailChallengeResponse, error)
+	RegisterPassword(ctx context.Context, in *RegisterPasswordRequest, opts ...grpc.CallOption) (*RegisterPasswordResponse, error)
 	VerifyPassword(ctx context.Context, in *VerifyPasswordRequest, opts ...grpc.CallOption) (*VerifyPasswordResponse, error)
 }
 
@@ -115,6 +119,16 @@ func (c *intermediateServiceClient) Whoami(ctx context.Context, in *WhoamiReques
 	return out, nil
 }
 
+func (c *intermediateServiceClient) CreateOrganization(ctx context.Context, in *CreateOrganizationRequest, opts ...grpc.CallOption) (*CreateOrganizationResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateOrganizationResponse)
+	err := c.cc.Invoke(ctx, IntermediateService_CreateOrganization_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *intermediateServiceClient) ListOrganizations(ctx context.Context, in *ListOrganizationsRequest, opts ...grpc.CallOption) (*ListOrganizationsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListOrganizationsResponse)
@@ -125,20 +139,20 @@ func (c *intermediateServiceClient) ListOrganizations(ctx context.Context, in *L
 	return out, nil
 }
 
-func (c *intermediateServiceClient) ExchangeIntermediateSessionForSession(ctx context.Context, in *ExchangeIntermediateSessionForSessionRequest, opts ...grpc.CallOption) (*ExchangeIntermediateSessionForSessionResponse, error) {
+func (c *intermediateServiceClient) SetOrganization(ctx context.Context, in *SetOrganizationRequest, opts ...grpc.CallOption) (*SetOrganizationResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ExchangeIntermediateSessionForSessionResponse)
-	err := c.cc.Invoke(ctx, IntermediateService_ExchangeIntermediateSessionForSession_FullMethodName, in, out, cOpts...)
+	out := new(SetOrganizationResponse)
+	err := c.cc.Invoke(ctx, IntermediateService_SetOrganization_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *intermediateServiceClient) ExchangeIntermediateSessionForNewOrganizationSession(ctx context.Context, in *ExchangeIntermediateSessionForNewOrganizationSessionRequest, opts ...grpc.CallOption) (*ExchangeIntermediateSessionForNewOrganizationSessionResponse, error) {
+func (c *intermediateServiceClient) ExchangeIntermediateSessionForSession(ctx context.Context, in *ExchangeIntermediateSessionForSessionRequest, opts ...grpc.CallOption) (*ExchangeIntermediateSessionForSessionResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ExchangeIntermediateSessionForNewOrganizationSessionResponse)
-	err := c.cc.Invoke(ctx, IntermediateService_ExchangeIntermediateSessionForNewOrganizationSession_FullMethodName, in, out, cOpts...)
+	out := new(ExchangeIntermediateSessionForSessionResponse)
+	err := c.cc.Invoke(ctx, IntermediateService_ExchangeIntermediateSessionForSession_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -205,6 +219,16 @@ func (c *intermediateServiceClient) VerifyEmailChallenge(ctx context.Context, in
 	return out, nil
 }
 
+func (c *intermediateServiceClient) RegisterPassword(ctx context.Context, in *RegisterPasswordRequest, opts ...grpc.CallOption) (*RegisterPasswordResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RegisterPasswordResponse)
+	err := c.cc.Invoke(ctx, IntermediateService_RegisterPassword_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *intermediateServiceClient) VerifyPassword(ctx context.Context, in *VerifyPasswordRequest, opts ...grpc.CallOption) (*VerifyPasswordResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(VerifyPasswordResponse)
@@ -224,15 +248,17 @@ type IntermediateServiceServer interface {
 	RedeemUserImpersonationToken(context.Context, *RedeemUserImpersonationTokenRequest) (*RedeemUserImpersonationTokenResponse, error)
 	CreateIntermediateSession(context.Context, *CreateIntermediateSessionRequest) (*CreateIntermediateSessionResponse, error)
 	Whoami(context.Context, *WhoamiRequest) (*WhoamiResponse, error)
+	CreateOrganization(context.Context, *CreateOrganizationRequest) (*CreateOrganizationResponse, error)
 	ListOrganizations(context.Context, *ListOrganizationsRequest) (*ListOrganizationsResponse, error)
+	SetOrganization(context.Context, *SetOrganizationRequest) (*SetOrganizationResponse, error)
 	ExchangeIntermediateSessionForSession(context.Context, *ExchangeIntermediateSessionForSessionRequest) (*ExchangeIntermediateSessionForSessionResponse, error)
-	ExchangeIntermediateSessionForNewOrganizationSession(context.Context, *ExchangeIntermediateSessionForNewOrganizationSessionRequest) (*ExchangeIntermediateSessionForNewOrganizationSessionResponse, error)
 	GetGoogleOAuthRedirectURL(context.Context, *GetGoogleOAuthRedirectURLRequest) (*GetGoogleOAuthRedirectURLResponse, error)
 	RedeemGoogleOAuthCode(context.Context, *RedeemGoogleOAuthCodeRequest) (*RedeemGoogleOAuthCodeResponse, error)
 	GetMicrosoftOAuthRedirectURL(context.Context, *GetMicrosoftOAuthRedirectURLRequest) (*GetMicrosoftOAuthRedirectURLResponse, error)
 	RedeemMicrosoftOAuthCode(context.Context, *RedeemMicrosoftOAuthCodeRequest) (*RedeemMicrosoftOAuthCodeResponse, error)
 	IssueEmailVerificationChallenge(context.Context, *IssueEmailVerificationChallengeRequest) (*IssueEmailVerificationChallengeResponse, error)
 	VerifyEmailChallenge(context.Context, *VerifyEmailChallengeRequest) (*VerifyEmailChallengeResponse, error)
+	RegisterPassword(context.Context, *RegisterPasswordRequest) (*RegisterPasswordResponse, error)
 	VerifyPassword(context.Context, *VerifyPasswordRequest) (*VerifyPasswordResponse, error)
 	mustEmbedUnimplementedIntermediateServiceServer()
 }
@@ -259,14 +285,17 @@ func (UnimplementedIntermediateServiceServer) CreateIntermediateSession(context.
 func (UnimplementedIntermediateServiceServer) Whoami(context.Context, *WhoamiRequest) (*WhoamiResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Whoami not implemented")
 }
+func (UnimplementedIntermediateServiceServer) CreateOrganization(context.Context, *CreateOrganizationRequest) (*CreateOrganizationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateOrganization not implemented")
+}
 func (UnimplementedIntermediateServiceServer) ListOrganizations(context.Context, *ListOrganizationsRequest) (*ListOrganizationsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListOrganizations not implemented")
 }
+func (UnimplementedIntermediateServiceServer) SetOrganization(context.Context, *SetOrganizationRequest) (*SetOrganizationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetOrganization not implemented")
+}
 func (UnimplementedIntermediateServiceServer) ExchangeIntermediateSessionForSession(context.Context, *ExchangeIntermediateSessionForSessionRequest) (*ExchangeIntermediateSessionForSessionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ExchangeIntermediateSessionForSession not implemented")
-}
-func (UnimplementedIntermediateServiceServer) ExchangeIntermediateSessionForNewOrganizationSession(context.Context, *ExchangeIntermediateSessionForNewOrganizationSessionRequest) (*ExchangeIntermediateSessionForNewOrganizationSessionResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ExchangeIntermediateSessionForNewOrganizationSession not implemented")
 }
 func (UnimplementedIntermediateServiceServer) GetGoogleOAuthRedirectURL(context.Context, *GetGoogleOAuthRedirectURLRequest) (*GetGoogleOAuthRedirectURLResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetGoogleOAuthRedirectURL not implemented")
@@ -285,6 +314,9 @@ func (UnimplementedIntermediateServiceServer) IssueEmailVerificationChallenge(co
 }
 func (UnimplementedIntermediateServiceServer) VerifyEmailChallenge(context.Context, *VerifyEmailChallengeRequest) (*VerifyEmailChallengeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifyEmailChallenge not implemented")
+}
+func (UnimplementedIntermediateServiceServer) RegisterPassword(context.Context, *RegisterPasswordRequest) (*RegisterPasswordResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterPassword not implemented")
 }
 func (UnimplementedIntermediateServiceServer) VerifyPassword(context.Context, *VerifyPasswordRequest) (*VerifyPasswordResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifyPassword not implemented")
@@ -400,6 +432,24 @@ func _IntermediateService_Whoami_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _IntermediateService_CreateOrganization_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateOrganizationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IntermediateServiceServer).CreateOrganization(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IntermediateService_CreateOrganization_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IntermediateServiceServer).CreateOrganization(ctx, req.(*CreateOrganizationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _IntermediateService_ListOrganizations_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListOrganizationsRequest)
 	if err := dec(in); err != nil {
@@ -418,6 +468,24 @@ func _IntermediateService_ListOrganizations_Handler(srv interface{}, ctx context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _IntermediateService_SetOrganization_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetOrganizationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IntermediateServiceServer).SetOrganization(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IntermediateService_SetOrganization_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IntermediateServiceServer).SetOrganization(ctx, req.(*SetOrganizationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _IntermediateService_ExchangeIntermediateSessionForSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ExchangeIntermediateSessionForSessionRequest)
 	if err := dec(in); err != nil {
@@ -432,24 +500,6 @@ func _IntermediateService_ExchangeIntermediateSessionForSession_Handler(srv inte
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(IntermediateServiceServer).ExchangeIntermediateSessionForSession(ctx, req.(*ExchangeIntermediateSessionForSessionRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _IntermediateService_ExchangeIntermediateSessionForNewOrganizationSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ExchangeIntermediateSessionForNewOrganizationSessionRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(IntermediateServiceServer).ExchangeIntermediateSessionForNewOrganizationSession(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: IntermediateService_ExchangeIntermediateSessionForNewOrganizationSession_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(IntermediateServiceServer).ExchangeIntermediateSessionForNewOrganizationSession(ctx, req.(*ExchangeIntermediateSessionForNewOrganizationSessionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -562,6 +612,24 @@ func _IntermediateService_VerifyEmailChallenge_Handler(srv interface{}, ctx cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _IntermediateService_RegisterPassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RegisterPasswordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IntermediateServiceServer).RegisterPassword(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IntermediateService_RegisterPassword_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IntermediateServiceServer).RegisterPassword(ctx, req.(*RegisterPasswordRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _IntermediateService_VerifyPassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(VerifyPasswordRequest)
 	if err := dec(in); err != nil {
@@ -608,16 +676,20 @@ var IntermediateService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _IntermediateService_Whoami_Handler,
 		},
 		{
+			MethodName: "CreateOrganization",
+			Handler:    _IntermediateService_CreateOrganization_Handler,
+		},
+		{
 			MethodName: "ListOrganizations",
 			Handler:    _IntermediateService_ListOrganizations_Handler,
 		},
 		{
-			MethodName: "ExchangeIntermediateSessionForSession",
-			Handler:    _IntermediateService_ExchangeIntermediateSessionForSession_Handler,
+			MethodName: "SetOrganization",
+			Handler:    _IntermediateService_SetOrganization_Handler,
 		},
 		{
-			MethodName: "ExchangeIntermediateSessionForNewOrganizationSession",
-			Handler:    _IntermediateService_ExchangeIntermediateSessionForNewOrganizationSession_Handler,
+			MethodName: "ExchangeIntermediateSessionForSession",
+			Handler:    _IntermediateService_ExchangeIntermediateSessionForSession_Handler,
 		},
 		{
 			MethodName: "GetGoogleOAuthRedirectURL",
@@ -642,6 +714,10 @@ var IntermediateService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "VerifyEmailChallenge",
 			Handler:    _IntermediateService_VerifyEmailChallenge_Handler,
+		},
+		{
+			MethodName: "RegisterPassword",
+			Handler:    _IntermediateService_RegisterPassword_Handler,
 		},
 		{
 			MethodName: "VerifyPassword",

@@ -125,6 +125,30 @@ func local_request_IntermediateService_Whoami_0(ctx context.Context, marshaler r
 	return msg, metadata, err
 }
 
+func request_IntermediateService_CreateOrganization_0(ctx context.Context, marshaler runtime.Marshaler, client IntermediateServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq CreateOrganizationRequest
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := client.CreateOrganization(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_IntermediateService_CreateOrganization_0(ctx context.Context, marshaler runtime.Marshaler, server IntermediateServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq CreateOrganizationRequest
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := server.CreateOrganization(ctx, &protoReq)
+	return msg, metadata, err
+}
+
 func request_IntermediateService_ListOrganizations_0(ctx context.Context, marshaler runtime.Marshaler, client IntermediateServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
 		protoReq ListOrganizationsRequest
@@ -140,6 +164,38 @@ func local_request_IntermediateService_ListOrganizations_0(ctx context.Context, 
 		metadata runtime.ServerMetadata
 	)
 	msg, err := server.ListOrganizations(ctx, &protoReq)
+	return msg, metadata, err
+}
+
+var filter_IntermediateService_SetOrganization_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+
+func request_IntermediateService_SetOrganization_0(ctx context.Context, marshaler runtime.Marshaler, client IntermediateServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq SetOrganizationRequest
+		metadata runtime.ServerMetadata
+	)
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_IntermediateService_SetOrganization_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := client.SetOrganization(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_IntermediateService_SetOrganization_0(ctx context.Context, marshaler runtime.Marshaler, server IntermediateServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq SetOrganizationRequest
+		metadata runtime.ServerMetadata
+	)
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_IntermediateService_SetOrganization_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := server.SetOrganization(ctx, &protoReq)
 	return msg, metadata, err
 }
 
@@ -164,30 +220,6 @@ func local_request_IntermediateService_ExchangeIntermediateSessionForSession_0(c
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := server.ExchangeIntermediateSessionForSession(ctx, &protoReq)
-	return msg, metadata, err
-}
-
-func request_IntermediateService_ExchangeIntermediateSessionForNewOrganizationSession_0(ctx context.Context, marshaler runtime.Marshaler, client IntermediateServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq ExchangeIntermediateSessionForNewOrganizationSessionRequest
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	msg, err := client.ExchangeIntermediateSessionForNewOrganizationSession(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
-	return msg, metadata, err
-}
-
-func local_request_IntermediateService_ExchangeIntermediateSessionForNewOrganizationSession_0(ctx context.Context, marshaler runtime.Marshaler, server IntermediateServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq ExchangeIntermediateSessionForNewOrganizationSessionRequest
-		metadata runtime.ServerMetadata
-	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	msg, err := server.ExchangeIntermediateSessionForNewOrganizationSession(ctx, &protoReq)
 	return msg, metadata, err
 }
 
@@ -335,6 +367,30 @@ func local_request_IntermediateService_VerifyEmailChallenge_0(ctx context.Contex
 	return msg, metadata, err
 }
 
+func request_IntermediateService_RegisterPassword_0(ctx context.Context, marshaler runtime.Marshaler, client IntermediateServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq RegisterPasswordRequest
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := client.RegisterPassword(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_IntermediateService_RegisterPassword_0(ctx context.Context, marshaler runtime.Marshaler, server IntermediateServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq RegisterPasswordRequest
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := server.RegisterPassword(ctx, &protoReq)
+	return msg, metadata, err
+}
+
 func request_IntermediateService_VerifyPassword_0(ctx context.Context, marshaler runtime.Marshaler, client IntermediateServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
 		protoReq VerifyPasswordRequest
@@ -445,6 +501,26 @@ func RegisterIntermediateServiceHandlerServer(ctx context.Context, mux *runtime.
 		}
 		forward_IntermediateService_Whoami_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
+	mux.Handle(http.MethodPost, pattern_IntermediateService_CreateOrganization_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/CreateOrganization", runtime.WithHTTPPathPattern("/intermediate/v1/organizations"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_IntermediateService_CreateOrganization_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_IntermediateService_CreateOrganization_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
 	mux.Handle(http.MethodGet, pattern_IntermediateService_ListOrganizations_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -465,6 +541,26 @@ func RegisterIntermediateServiceHandlerServer(ctx context.Context, mux *runtime.
 		}
 		forward_IntermediateService_ListOrganizations_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
+	mux.Handle(http.MethodPost, pattern_IntermediateService_SetOrganization_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/SetOrganization", runtime.WithHTTPPathPattern("/intermediate/v1/set-organization"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_IntermediateService_SetOrganization_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_IntermediateService_SetOrganization_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
 	mux.Handle(http.MethodPost, pattern_IntermediateService_ExchangeIntermediateSessionForSession_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -484,26 +580,6 @@ func RegisterIntermediateServiceHandlerServer(ctx context.Context, mux *runtime.
 			return
 		}
 		forward_IntermediateService_ExchangeIntermediateSessionForSession_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-	})
-	mux.Handle(http.MethodPost, pattern_IntermediateService_ExchangeIntermediateSessionForNewOrganizationSession_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		var stream runtime.ServerTransportStream
-		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/ExchangeIntermediateSessionForNewOrganizationSession", runtime.WithHTTPPathPattern("/intermediate/v1/exchange-intermediate-session-for-new-organization-session"))
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := local_request_IntermediateService_ExchangeIntermediateSessionForNewOrganizationSession_0(annotatedContext, inboundMarshaler, server, req, pathParams)
-		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
-		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
-		if err != nil {
-			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		forward_IntermediateService_ExchangeIntermediateSessionForNewOrganizationSession_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
 	mux.Handle(http.MethodPost, pattern_IntermediateService_GetGoogleOAuthRedirectURL_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
@@ -624,6 +700,26 @@ func RegisterIntermediateServiceHandlerServer(ctx context.Context, mux *runtime.
 			return
 		}
 		forward_IntermediateService_VerifyEmailChallenge_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodPost, pattern_IntermediateService_RegisterPassword_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/RegisterPassword", runtime.WithHTTPPathPattern("/intermediate/v1/register-password"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_IntermediateService_RegisterPassword_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_IntermediateService_RegisterPassword_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
 	mux.Handle(http.MethodPost, pattern_IntermediateService_VerifyPassword_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
@@ -753,6 +849,23 @@ func RegisterIntermediateServiceHandlerClient(ctx context.Context, mux *runtime.
 		}
 		forward_IntermediateService_Whoami_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
+	mux.Handle(http.MethodPost, pattern_IntermediateService_CreateOrganization_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/CreateOrganization", runtime.WithHTTPPathPattern("/intermediate/v1/organizations"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_IntermediateService_CreateOrganization_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_IntermediateService_CreateOrganization_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
 	mux.Handle(http.MethodGet, pattern_IntermediateService_ListOrganizations_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -770,6 +883,23 @@ func RegisterIntermediateServiceHandlerClient(ctx context.Context, mux *runtime.
 		}
 		forward_IntermediateService_ListOrganizations_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
+	mux.Handle(http.MethodPost, pattern_IntermediateService_SetOrganization_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/SetOrganization", runtime.WithHTTPPathPattern("/intermediate/v1/set-organization"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_IntermediateService_SetOrganization_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_IntermediateService_SetOrganization_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
 	mux.Handle(http.MethodPost, pattern_IntermediateService_ExchangeIntermediateSessionForSession_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -786,23 +916,6 @@ func RegisterIntermediateServiceHandlerClient(ctx context.Context, mux *runtime.
 			return
 		}
 		forward_IntermediateService_ExchangeIntermediateSessionForSession_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-	})
-	mux.Handle(http.MethodPost, pattern_IntermediateService_ExchangeIntermediateSessionForNewOrganizationSession_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/ExchangeIntermediateSessionForNewOrganizationSession", runtime.WithHTTPPathPattern("/intermediate/v1/exchange-intermediate-session-for-new-organization-session"))
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := request_IntermediateService_ExchangeIntermediateSessionForNewOrganizationSession_0(annotatedContext, inboundMarshaler, client, req, pathParams)
-		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
-		if err != nil {
-			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		forward_IntermediateService_ExchangeIntermediateSessionForNewOrganizationSession_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
 	mux.Handle(http.MethodPost, pattern_IntermediateService_GetGoogleOAuthRedirectURL_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
@@ -906,6 +1019,23 @@ func RegisterIntermediateServiceHandlerClient(ctx context.Context, mux *runtime.
 		}
 		forward_IntermediateService_VerifyEmailChallenge_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
+	mux.Handle(http.MethodPost, pattern_IntermediateService_RegisterPassword_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/RegisterPassword", runtime.WithHTTPPathPattern("/intermediate/v1/register-password"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_IntermediateService_RegisterPassword_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_IntermediateService_RegisterPassword_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
 	mux.Handle(http.MethodPost, pattern_IntermediateService_VerifyPassword_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -927,35 +1057,39 @@ func RegisterIntermediateServiceHandlerClient(ctx context.Context, mux *runtime.
 }
 
 var (
-	pattern_IntermediateService_ListSAMLOrganizations_0                                = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "saml-organizations"}, ""))
-	pattern_IntermediateService_RedeemUserImpersonationToken_0                         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "redeem-user-impersonation-token"}, ""))
-	pattern_IntermediateService_CreateIntermediateSession_0                            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "intermediate-session"}, ""))
-	pattern_IntermediateService_Whoami_0                                               = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "whoami"}, ""))
-	pattern_IntermediateService_ListOrganizations_0                                    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "organizations"}, ""))
-	pattern_IntermediateService_ExchangeIntermediateSessionForSession_0                = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "exchange-intermediate-session-for-session"}, ""))
-	pattern_IntermediateService_ExchangeIntermediateSessionForNewOrganizationSession_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "exchange-intermediate-session-for-new-organization-session"}, ""))
-	pattern_IntermediateService_GetGoogleOAuthRedirectURL_0                            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "google-oauth-redirect-url"}, ""))
-	pattern_IntermediateService_RedeemGoogleOAuthCode_0                                = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "redeem-google-oauth-code"}, ""))
-	pattern_IntermediateService_GetMicrosoftOAuthRedirectURL_0                         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "microsoft-oauth-redirect-url"}, ""))
-	pattern_IntermediateService_RedeemMicrosoftOAuthCode_0                             = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "redeem-microsoft-oauth-code"}, ""))
-	pattern_IntermediateService_IssueEmailVerificationChallenge_0                      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "issue-email-verification-challenge"}, ""))
-	pattern_IntermediateService_VerifyEmailChallenge_0                                 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "verify-email-challenge"}, ""))
-	pattern_IntermediateService_VerifyPassword_0                                       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "verify-password"}, ""))
+	pattern_IntermediateService_ListSAMLOrganizations_0                 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "saml-organizations"}, ""))
+	pattern_IntermediateService_RedeemUserImpersonationToken_0          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "redeem-user-impersonation-token"}, ""))
+	pattern_IntermediateService_CreateIntermediateSession_0             = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "intermediate-session"}, ""))
+	pattern_IntermediateService_Whoami_0                                = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "whoami"}, ""))
+	pattern_IntermediateService_CreateOrganization_0                    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "organizations"}, ""))
+	pattern_IntermediateService_ListOrganizations_0                     = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "organizations"}, ""))
+	pattern_IntermediateService_SetOrganization_0                       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "set-organization"}, ""))
+	pattern_IntermediateService_ExchangeIntermediateSessionForSession_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "exchange-intermediate-session-for-session"}, ""))
+	pattern_IntermediateService_GetGoogleOAuthRedirectURL_0             = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "google-oauth-redirect-url"}, ""))
+	pattern_IntermediateService_RedeemGoogleOAuthCode_0                 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "redeem-google-oauth-code"}, ""))
+	pattern_IntermediateService_GetMicrosoftOAuthRedirectURL_0          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "microsoft-oauth-redirect-url"}, ""))
+	pattern_IntermediateService_RedeemMicrosoftOAuthCode_0              = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "redeem-microsoft-oauth-code"}, ""))
+	pattern_IntermediateService_IssueEmailVerificationChallenge_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "issue-email-verification-challenge"}, ""))
+	pattern_IntermediateService_VerifyEmailChallenge_0                  = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "verify-email-challenge"}, ""))
+	pattern_IntermediateService_RegisterPassword_0                      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "register-password"}, ""))
+	pattern_IntermediateService_VerifyPassword_0                        = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "verify-password"}, ""))
 )
 
 var (
-	forward_IntermediateService_ListSAMLOrganizations_0                                = runtime.ForwardResponseMessage
-	forward_IntermediateService_RedeemUserImpersonationToken_0                         = runtime.ForwardResponseMessage
-	forward_IntermediateService_CreateIntermediateSession_0                            = runtime.ForwardResponseMessage
-	forward_IntermediateService_Whoami_0                                               = runtime.ForwardResponseMessage
-	forward_IntermediateService_ListOrganizations_0                                    = runtime.ForwardResponseMessage
-	forward_IntermediateService_ExchangeIntermediateSessionForSession_0                = runtime.ForwardResponseMessage
-	forward_IntermediateService_ExchangeIntermediateSessionForNewOrganizationSession_0 = runtime.ForwardResponseMessage
-	forward_IntermediateService_GetGoogleOAuthRedirectURL_0                            = runtime.ForwardResponseMessage
-	forward_IntermediateService_RedeemGoogleOAuthCode_0                                = runtime.ForwardResponseMessage
-	forward_IntermediateService_GetMicrosoftOAuthRedirectURL_0                         = runtime.ForwardResponseMessage
-	forward_IntermediateService_RedeemMicrosoftOAuthCode_0                             = runtime.ForwardResponseMessage
-	forward_IntermediateService_IssueEmailVerificationChallenge_0                      = runtime.ForwardResponseMessage
-	forward_IntermediateService_VerifyEmailChallenge_0                                 = runtime.ForwardResponseMessage
-	forward_IntermediateService_VerifyPassword_0                                       = runtime.ForwardResponseMessage
+	forward_IntermediateService_ListSAMLOrganizations_0                 = runtime.ForwardResponseMessage
+	forward_IntermediateService_RedeemUserImpersonationToken_0          = runtime.ForwardResponseMessage
+	forward_IntermediateService_CreateIntermediateSession_0             = runtime.ForwardResponseMessage
+	forward_IntermediateService_Whoami_0                                = runtime.ForwardResponseMessage
+	forward_IntermediateService_CreateOrganization_0                    = runtime.ForwardResponseMessage
+	forward_IntermediateService_ListOrganizations_0                     = runtime.ForwardResponseMessage
+	forward_IntermediateService_SetOrganization_0                       = runtime.ForwardResponseMessage
+	forward_IntermediateService_ExchangeIntermediateSessionForSession_0 = runtime.ForwardResponseMessage
+	forward_IntermediateService_GetGoogleOAuthRedirectURL_0             = runtime.ForwardResponseMessage
+	forward_IntermediateService_RedeemGoogleOAuthCode_0                 = runtime.ForwardResponseMessage
+	forward_IntermediateService_GetMicrosoftOAuthRedirectURL_0          = runtime.ForwardResponseMessage
+	forward_IntermediateService_RedeemMicrosoftOAuthCode_0              = runtime.ForwardResponseMessage
+	forward_IntermediateService_IssueEmailVerificationChallenge_0       = runtime.ForwardResponseMessage
+	forward_IntermediateService_VerifyEmailChallenge_0                  = runtime.ForwardResponseMessage
+	forward_IntermediateService_RegisterPassword_0                      = runtime.ForwardResponseMessage
+	forward_IntermediateService_VerifyPassword_0                        = runtime.ForwardResponseMessage
 )

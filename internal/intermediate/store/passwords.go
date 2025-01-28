@@ -2,6 +2,7 @@ package store
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
@@ -20,6 +21,95 @@ const (
 	// how long to lock users out
 	passwordLockoutDuration = time.Minute * 10
 )
+
+func (s *Store) RegisterPassword(ctx context.Context, req *intermediatev1.RegisterPasswordRequest) (*intermediatev1.RegisterPasswordResponse, error) {
+	intermediateSession := authn.IntermediateSession(ctx)
+	if intermediateSession.OrganizationId != "" {
+		return nil, apierror.NewFailedPreconditionError("organization id already set for intermediate session", fmt.Errorf("organization id already set for intermediate session"))
+	}
+
+	if intermediateSession.PasswordVerified {
+		return nil, apierror.NewFailedPreconditionError("user already verified for intermediate session", fmt.Errorf("user already verified for intermediate session"))
+	}
+
+	// Check if the password is compromised.
+	pwned, err := s.hibp.Pwned(ctx, req.Password)
+	if err != nil {
+		return nil, fmt.Errorf("check password against HIBP: %w", err)
+	}
+	if pwned {
+		return nil, apierror.NewFailedPreconditionError("password is compromised", errors.New("password is compromised"))
+	}
+
+	orgID, err := idformat.Organization.Parse(intermediateSession.OrganizationId)
+	if err != nil {
+		return nil, apierror.NewInvalidArgumentError("invalid organization id", fmt.Errorf("parse organization id: %w", err))
+	}
+
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get project by id: %w", err)
+	}
+
+	if err := enforceProjectLoginEnabled(qProject); err != nil {
+		return nil, fmt.Errorf("enforce project login enabled: %w", err)
+	}
+
+	qOrg, err := q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
+		ProjectID: authn.ProjectID(ctx),
+		ID:        orgID,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("get organization by id: %w", err)
+	}
+
+	if err := enforceOrganizationLoginEnabled(qOrg); err != nil {
+		return nil, fmt.Errorf("enforce organization login enabled: %w", err)
+	}
+
+	// Ensure given organization is suitable for authentication over password:
+	passwordEnabled := qProject.LogInWithPasswordEnabled
+	if derefOrEmpty(qOrg.DisableLogInWithPassword) {
+		passwordEnabled = false
+	}
+	if !passwordEnabled {
+		return nil, apierror.NewFailedPreconditionError("password authentication not enabled", fmt.Errorf("password authentication not enabled"))
+	}
+
+	emailVerified, err := s.getIntermediateSessionEmailVerified(ctx, q, authn.IntermediateSessionID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get intermediate session email verified: %w", err)
+	}
+	if !emailVerified {
+		return nil, apierror.NewFailedPreconditionError("email not verified", fmt.Errorf("email not verified"))
+	}
+
+	passwordBcryptBytes, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcryptcost.Cost)
+	if err != nil {
+		return nil, fmt.Errorf("generate bcrypt hash: %w", err)
+	}
+
+	passwordBcrypt := string(passwordBcryptBytes)
+	_, err = q.UpdateIntermediateSessionNewUserPasswordBcrypt(ctx, queries.UpdateIntermediateSessionNewUserPasswordBcryptParams{
+		ID:                    authn.IntermediateSessionID(ctx),
+		NewUserPasswordBcrypt: &passwordBcrypt,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("update intermediate session new user password bcrypt: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
+	}
+
+	return &intermediatev1.RegisterPasswordResponse{}, nil
+}
 
 func (s *Store) VerifyPassword(ctx context.Context, req *intermediatev1.VerifyPasswordRequest) (*intermediatev1.VerifyPasswordResponse, error) {
 	intermediateSession := authn.IntermediateSession(ctx)

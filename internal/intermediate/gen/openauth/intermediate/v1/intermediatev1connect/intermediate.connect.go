@@ -48,16 +48,18 @@ const (
 	// IntermediateServiceWhoamiProcedure is the fully-qualified name of the IntermediateService's
 	// Whoami RPC.
 	IntermediateServiceWhoamiProcedure = "/openauth.intermediate.v1.IntermediateService/Whoami"
+	// IntermediateServiceCreateOrganizationProcedure is the fully-qualified name of the
+	// IntermediateService's CreateOrganization RPC.
+	IntermediateServiceCreateOrganizationProcedure = "/openauth.intermediate.v1.IntermediateService/CreateOrganization"
 	// IntermediateServiceListOrganizationsProcedure is the fully-qualified name of the
 	// IntermediateService's ListOrganizations RPC.
 	IntermediateServiceListOrganizationsProcedure = "/openauth.intermediate.v1.IntermediateService/ListOrganizations"
+	// IntermediateServiceSetOrganizationProcedure is the fully-qualified name of the
+	// IntermediateService's SetOrganization RPC.
+	IntermediateServiceSetOrganizationProcedure = "/openauth.intermediate.v1.IntermediateService/SetOrganization"
 	// IntermediateServiceExchangeIntermediateSessionForSessionProcedure is the fully-qualified name of
 	// the IntermediateService's ExchangeIntermediateSessionForSession RPC.
 	IntermediateServiceExchangeIntermediateSessionForSessionProcedure = "/openauth.intermediate.v1.IntermediateService/ExchangeIntermediateSessionForSession"
-	// IntermediateServiceExchangeIntermediateSessionForNewOrganizationSessionProcedure is the
-	// fully-qualified name of the IntermediateService's
-	// ExchangeIntermediateSessionForNewOrganizationSession RPC.
-	IntermediateServiceExchangeIntermediateSessionForNewOrganizationSessionProcedure = "/openauth.intermediate.v1.IntermediateService/ExchangeIntermediateSessionForNewOrganizationSession"
 	// IntermediateServiceGetGoogleOAuthRedirectURLProcedure is the fully-qualified name of the
 	// IntermediateService's GetGoogleOAuthRedirectURL RPC.
 	IntermediateServiceGetGoogleOAuthRedirectURLProcedure = "/openauth.intermediate.v1.IntermediateService/GetGoogleOAuthRedirectURL"
@@ -76,6 +78,9 @@ const (
 	// IntermediateServiceVerifyEmailChallengeProcedure is the fully-qualified name of the
 	// IntermediateService's VerifyEmailChallenge RPC.
 	IntermediateServiceVerifyEmailChallengeProcedure = "/openauth.intermediate.v1.IntermediateService/VerifyEmailChallenge"
+	// IntermediateServiceRegisterPasswordProcedure is the fully-qualified name of the
+	// IntermediateService's RegisterPassword RPC.
+	IntermediateServiceRegisterPasswordProcedure = "/openauth.intermediate.v1.IntermediateService/RegisterPassword"
 	// IntermediateServiceVerifyPasswordProcedure is the fully-qualified name of the
 	// IntermediateService's VerifyPassword RPC.
 	IntermediateServiceVerifyPasswordProcedure = "/openauth.intermediate.v1.IntermediateService/VerifyPassword"
@@ -89,15 +94,17 @@ type IntermediateServiceClient interface {
 	RedeemUserImpersonationToken(context.Context, *connect.Request[v1.RedeemUserImpersonationTokenRequest]) (*connect.Response[v1.RedeemUserImpersonationTokenResponse], error)
 	CreateIntermediateSession(context.Context, *connect.Request[v1.CreateIntermediateSessionRequest]) (*connect.Response[v1.CreateIntermediateSessionResponse], error)
 	Whoami(context.Context, *connect.Request[v1.WhoamiRequest]) (*connect.Response[v1.WhoamiResponse], error)
+	CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.CreateOrganizationResponse], error)
 	ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error)
+	SetOrganization(context.Context, *connect.Request[v1.SetOrganizationRequest]) (*connect.Response[v1.SetOrganizationResponse], error)
 	ExchangeIntermediateSessionForSession(context.Context, *connect.Request[v1.ExchangeIntermediateSessionForSessionRequest]) (*connect.Response[v1.ExchangeIntermediateSessionForSessionResponse], error)
-	ExchangeIntermediateSessionForNewOrganizationSession(context.Context, *connect.Request[v1.ExchangeIntermediateSessionForNewOrganizationSessionRequest]) (*connect.Response[v1.ExchangeIntermediateSessionForNewOrganizationSessionResponse], error)
 	GetGoogleOAuthRedirectURL(context.Context, *connect.Request[v1.GetGoogleOAuthRedirectURLRequest]) (*connect.Response[v1.GetGoogleOAuthRedirectURLResponse], error)
 	RedeemGoogleOAuthCode(context.Context, *connect.Request[v1.RedeemGoogleOAuthCodeRequest]) (*connect.Response[v1.RedeemGoogleOAuthCodeResponse], error)
 	GetMicrosoftOAuthRedirectURL(context.Context, *connect.Request[v1.GetMicrosoftOAuthRedirectURLRequest]) (*connect.Response[v1.GetMicrosoftOAuthRedirectURLResponse], error)
 	RedeemMicrosoftOAuthCode(context.Context, *connect.Request[v1.RedeemMicrosoftOAuthCodeRequest]) (*connect.Response[v1.RedeemMicrosoftOAuthCodeResponse], error)
 	IssueEmailVerificationChallenge(context.Context, *connect.Request[v1.IssueEmailVerificationChallengeRequest]) (*connect.Response[v1.IssueEmailVerificationChallengeResponse], error)
 	VerifyEmailChallenge(context.Context, *connect.Request[v1.VerifyEmailChallengeRequest]) (*connect.Response[v1.VerifyEmailChallengeResponse], error)
+	RegisterPassword(context.Context, *connect.Request[v1.RegisterPasswordRequest]) (*connect.Response[v1.RegisterPasswordResponse], error)
 	VerifyPassword(context.Context, *connect.Request[v1.VerifyPasswordRequest]) (*connect.Response[v1.VerifyPasswordResponse], error)
 }
 
@@ -143,22 +150,28 @@ func NewIntermediateServiceClient(httpClient connect.HTTPClient, baseURL string,
 			connect.WithSchema(intermediateServiceMethods.ByName("Whoami")),
 			connect.WithClientOptions(opts...),
 		),
+		createOrganization: connect.NewClient[v1.CreateOrganizationRequest, v1.CreateOrganizationResponse](
+			httpClient,
+			baseURL+IntermediateServiceCreateOrganizationProcedure,
+			connect.WithSchema(intermediateServiceMethods.ByName("CreateOrganization")),
+			connect.WithClientOptions(opts...),
+		),
 		listOrganizations: connect.NewClient[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse](
 			httpClient,
 			baseURL+IntermediateServiceListOrganizationsProcedure,
 			connect.WithSchema(intermediateServiceMethods.ByName("ListOrganizations")),
 			connect.WithClientOptions(opts...),
 		),
+		setOrganization: connect.NewClient[v1.SetOrganizationRequest, v1.SetOrganizationResponse](
+			httpClient,
+			baseURL+IntermediateServiceSetOrganizationProcedure,
+			connect.WithSchema(intermediateServiceMethods.ByName("SetOrganization")),
+			connect.WithClientOptions(opts...),
+		),
 		exchangeIntermediateSessionForSession: connect.NewClient[v1.ExchangeIntermediateSessionForSessionRequest, v1.ExchangeIntermediateSessionForSessionResponse](
 			httpClient,
 			baseURL+IntermediateServiceExchangeIntermediateSessionForSessionProcedure,
 			connect.WithSchema(intermediateServiceMethods.ByName("ExchangeIntermediateSessionForSession")),
-			connect.WithClientOptions(opts...),
-		),
-		exchangeIntermediateSessionForNewOrganizationSession: connect.NewClient[v1.ExchangeIntermediateSessionForNewOrganizationSessionRequest, v1.ExchangeIntermediateSessionForNewOrganizationSessionResponse](
-			httpClient,
-			baseURL+IntermediateServiceExchangeIntermediateSessionForNewOrganizationSessionProcedure,
-			connect.WithSchema(intermediateServiceMethods.ByName("ExchangeIntermediateSessionForNewOrganizationSession")),
 			connect.WithClientOptions(opts...),
 		),
 		getGoogleOAuthRedirectURL: connect.NewClient[v1.GetGoogleOAuthRedirectURLRequest, v1.GetGoogleOAuthRedirectURLResponse](
@@ -197,6 +210,12 @@ func NewIntermediateServiceClient(httpClient connect.HTTPClient, baseURL string,
 			connect.WithSchema(intermediateServiceMethods.ByName("VerifyEmailChallenge")),
 			connect.WithClientOptions(opts...),
 		),
+		registerPassword: connect.NewClient[v1.RegisterPasswordRequest, v1.RegisterPasswordResponse](
+			httpClient,
+			baseURL+IntermediateServiceRegisterPasswordProcedure,
+			connect.WithSchema(intermediateServiceMethods.ByName("RegisterPassword")),
+			connect.WithClientOptions(opts...),
+		),
 		verifyPassword: connect.NewClient[v1.VerifyPasswordRequest, v1.VerifyPasswordResponse](
 			httpClient,
 			baseURL+IntermediateServiceVerifyPasswordProcedure,
@@ -208,21 +227,23 @@ func NewIntermediateServiceClient(httpClient connect.HTTPClient, baseURL string,
 
 // intermediateServiceClient implements IntermediateServiceClient.
 type intermediateServiceClient struct {
-	listSAMLOrganizations                                *connect.Client[v1.ListSAMLOrganizationsRequest, v1.ListSAMLOrganizationsResponse]
-	getProjectUISettings                                 *connect.Client[v1.GetProjectUISettingsRequest, v1.GetProjectUISettingsResponse]
-	redeemUserImpersonationToken                         *connect.Client[v1.RedeemUserImpersonationTokenRequest, v1.RedeemUserImpersonationTokenResponse]
-	createIntermediateSession                            *connect.Client[v1.CreateIntermediateSessionRequest, v1.CreateIntermediateSessionResponse]
-	whoami                                               *connect.Client[v1.WhoamiRequest, v1.WhoamiResponse]
-	listOrganizations                                    *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
-	exchangeIntermediateSessionForSession                *connect.Client[v1.ExchangeIntermediateSessionForSessionRequest, v1.ExchangeIntermediateSessionForSessionResponse]
-	exchangeIntermediateSessionForNewOrganizationSession *connect.Client[v1.ExchangeIntermediateSessionForNewOrganizationSessionRequest, v1.ExchangeIntermediateSessionForNewOrganizationSessionResponse]
-	getGoogleOAuthRedirectURL                            *connect.Client[v1.GetGoogleOAuthRedirectURLRequest, v1.GetGoogleOAuthRedirectURLResponse]
-	redeemGoogleOAuthCode                                *connect.Client[v1.RedeemGoogleOAuthCodeRequest, v1.RedeemGoogleOAuthCodeResponse]
-	getMicrosoftOAuthRedirectURL                         *connect.Client[v1.GetMicrosoftOAuthRedirectURLRequest, v1.GetMicrosoftOAuthRedirectURLResponse]
-	redeemMicrosoftOAuthCode                             *connect.Client[v1.RedeemMicrosoftOAuthCodeRequest, v1.RedeemMicrosoftOAuthCodeResponse]
-	issueEmailVerificationChallenge                      *connect.Client[v1.IssueEmailVerificationChallengeRequest, v1.IssueEmailVerificationChallengeResponse]
-	verifyEmailChallenge                                 *connect.Client[v1.VerifyEmailChallengeRequest, v1.VerifyEmailChallengeResponse]
-	verifyPassword                                       *connect.Client[v1.VerifyPasswordRequest, v1.VerifyPasswordResponse]
+	listSAMLOrganizations                 *connect.Client[v1.ListSAMLOrganizationsRequest, v1.ListSAMLOrganizationsResponse]
+	getProjectUISettings                  *connect.Client[v1.GetProjectUISettingsRequest, v1.GetProjectUISettingsResponse]
+	redeemUserImpersonationToken          *connect.Client[v1.RedeemUserImpersonationTokenRequest, v1.RedeemUserImpersonationTokenResponse]
+	createIntermediateSession             *connect.Client[v1.CreateIntermediateSessionRequest, v1.CreateIntermediateSessionResponse]
+	whoami                                *connect.Client[v1.WhoamiRequest, v1.WhoamiResponse]
+	createOrganization                    *connect.Client[v1.CreateOrganizationRequest, v1.CreateOrganizationResponse]
+	listOrganizations                     *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
+	setOrganization                       *connect.Client[v1.SetOrganizationRequest, v1.SetOrganizationResponse]
+	exchangeIntermediateSessionForSession *connect.Client[v1.ExchangeIntermediateSessionForSessionRequest, v1.ExchangeIntermediateSessionForSessionResponse]
+	getGoogleOAuthRedirectURL             *connect.Client[v1.GetGoogleOAuthRedirectURLRequest, v1.GetGoogleOAuthRedirectURLResponse]
+	redeemGoogleOAuthCode                 *connect.Client[v1.RedeemGoogleOAuthCodeRequest, v1.RedeemGoogleOAuthCodeResponse]
+	getMicrosoftOAuthRedirectURL          *connect.Client[v1.GetMicrosoftOAuthRedirectURLRequest, v1.GetMicrosoftOAuthRedirectURLResponse]
+	redeemMicrosoftOAuthCode              *connect.Client[v1.RedeemMicrosoftOAuthCodeRequest, v1.RedeemMicrosoftOAuthCodeResponse]
+	issueEmailVerificationChallenge       *connect.Client[v1.IssueEmailVerificationChallengeRequest, v1.IssueEmailVerificationChallengeResponse]
+	verifyEmailChallenge                  *connect.Client[v1.VerifyEmailChallengeRequest, v1.VerifyEmailChallengeResponse]
+	registerPassword                      *connect.Client[v1.RegisterPasswordRequest, v1.RegisterPasswordResponse]
+	verifyPassword                        *connect.Client[v1.VerifyPasswordRequest, v1.VerifyPasswordResponse]
 }
 
 // ListSAMLOrganizations calls openauth.intermediate.v1.IntermediateService.ListSAMLOrganizations.
@@ -252,21 +273,25 @@ func (c *intermediateServiceClient) Whoami(ctx context.Context, req *connect.Req
 	return c.whoami.CallUnary(ctx, req)
 }
 
+// CreateOrganization calls openauth.intermediate.v1.IntermediateService.CreateOrganization.
+func (c *intermediateServiceClient) CreateOrganization(ctx context.Context, req *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.CreateOrganizationResponse], error) {
+	return c.createOrganization.CallUnary(ctx, req)
+}
+
 // ListOrganizations calls openauth.intermediate.v1.IntermediateService.ListOrganizations.
 func (c *intermediateServiceClient) ListOrganizations(ctx context.Context, req *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error) {
 	return c.listOrganizations.CallUnary(ctx, req)
+}
+
+// SetOrganization calls openauth.intermediate.v1.IntermediateService.SetOrganization.
+func (c *intermediateServiceClient) SetOrganization(ctx context.Context, req *connect.Request[v1.SetOrganizationRequest]) (*connect.Response[v1.SetOrganizationResponse], error) {
+	return c.setOrganization.CallUnary(ctx, req)
 }
 
 // ExchangeIntermediateSessionForSession calls
 // openauth.intermediate.v1.IntermediateService.ExchangeIntermediateSessionForSession.
 func (c *intermediateServiceClient) ExchangeIntermediateSessionForSession(ctx context.Context, req *connect.Request[v1.ExchangeIntermediateSessionForSessionRequest]) (*connect.Response[v1.ExchangeIntermediateSessionForSessionResponse], error) {
 	return c.exchangeIntermediateSessionForSession.CallUnary(ctx, req)
-}
-
-// ExchangeIntermediateSessionForNewOrganizationSession calls
-// openauth.intermediate.v1.IntermediateService.ExchangeIntermediateSessionForNewOrganizationSession.
-func (c *intermediateServiceClient) ExchangeIntermediateSessionForNewOrganizationSession(ctx context.Context, req *connect.Request[v1.ExchangeIntermediateSessionForNewOrganizationSessionRequest]) (*connect.Response[v1.ExchangeIntermediateSessionForNewOrganizationSessionResponse], error) {
-	return c.exchangeIntermediateSessionForNewOrganizationSession.CallUnary(ctx, req)
 }
 
 // GetGoogleOAuthRedirectURL calls
@@ -303,6 +328,11 @@ func (c *intermediateServiceClient) VerifyEmailChallenge(ctx context.Context, re
 	return c.verifyEmailChallenge.CallUnary(ctx, req)
 }
 
+// RegisterPassword calls openauth.intermediate.v1.IntermediateService.RegisterPassword.
+func (c *intermediateServiceClient) RegisterPassword(ctx context.Context, req *connect.Request[v1.RegisterPasswordRequest]) (*connect.Response[v1.RegisterPasswordResponse], error) {
+	return c.registerPassword.CallUnary(ctx, req)
+}
+
 // VerifyPassword calls openauth.intermediate.v1.IntermediateService.VerifyPassword.
 func (c *intermediateServiceClient) VerifyPassword(ctx context.Context, req *connect.Request[v1.VerifyPasswordRequest]) (*connect.Response[v1.VerifyPasswordResponse], error) {
 	return c.verifyPassword.CallUnary(ctx, req)
@@ -316,15 +346,17 @@ type IntermediateServiceHandler interface {
 	RedeemUserImpersonationToken(context.Context, *connect.Request[v1.RedeemUserImpersonationTokenRequest]) (*connect.Response[v1.RedeemUserImpersonationTokenResponse], error)
 	CreateIntermediateSession(context.Context, *connect.Request[v1.CreateIntermediateSessionRequest]) (*connect.Response[v1.CreateIntermediateSessionResponse], error)
 	Whoami(context.Context, *connect.Request[v1.WhoamiRequest]) (*connect.Response[v1.WhoamiResponse], error)
+	CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.CreateOrganizationResponse], error)
 	ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error)
+	SetOrganization(context.Context, *connect.Request[v1.SetOrganizationRequest]) (*connect.Response[v1.SetOrganizationResponse], error)
 	ExchangeIntermediateSessionForSession(context.Context, *connect.Request[v1.ExchangeIntermediateSessionForSessionRequest]) (*connect.Response[v1.ExchangeIntermediateSessionForSessionResponse], error)
-	ExchangeIntermediateSessionForNewOrganizationSession(context.Context, *connect.Request[v1.ExchangeIntermediateSessionForNewOrganizationSessionRequest]) (*connect.Response[v1.ExchangeIntermediateSessionForNewOrganizationSessionResponse], error)
 	GetGoogleOAuthRedirectURL(context.Context, *connect.Request[v1.GetGoogleOAuthRedirectURLRequest]) (*connect.Response[v1.GetGoogleOAuthRedirectURLResponse], error)
 	RedeemGoogleOAuthCode(context.Context, *connect.Request[v1.RedeemGoogleOAuthCodeRequest]) (*connect.Response[v1.RedeemGoogleOAuthCodeResponse], error)
 	GetMicrosoftOAuthRedirectURL(context.Context, *connect.Request[v1.GetMicrosoftOAuthRedirectURLRequest]) (*connect.Response[v1.GetMicrosoftOAuthRedirectURLResponse], error)
 	RedeemMicrosoftOAuthCode(context.Context, *connect.Request[v1.RedeemMicrosoftOAuthCodeRequest]) (*connect.Response[v1.RedeemMicrosoftOAuthCodeResponse], error)
 	IssueEmailVerificationChallenge(context.Context, *connect.Request[v1.IssueEmailVerificationChallengeRequest]) (*connect.Response[v1.IssueEmailVerificationChallengeResponse], error)
 	VerifyEmailChallenge(context.Context, *connect.Request[v1.VerifyEmailChallengeRequest]) (*connect.Response[v1.VerifyEmailChallengeResponse], error)
+	RegisterPassword(context.Context, *connect.Request[v1.RegisterPasswordRequest]) (*connect.Response[v1.RegisterPasswordResponse], error)
 	VerifyPassword(context.Context, *connect.Request[v1.VerifyPasswordRequest]) (*connect.Response[v1.VerifyPasswordResponse], error)
 }
 
@@ -365,22 +397,28 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 		connect.WithSchema(intermediateServiceMethods.ByName("Whoami")),
 		connect.WithHandlerOptions(opts...),
 	)
+	intermediateServiceCreateOrganizationHandler := connect.NewUnaryHandler(
+		IntermediateServiceCreateOrganizationProcedure,
+		svc.CreateOrganization,
+		connect.WithSchema(intermediateServiceMethods.ByName("CreateOrganization")),
+		connect.WithHandlerOptions(opts...),
+	)
 	intermediateServiceListOrganizationsHandler := connect.NewUnaryHandler(
 		IntermediateServiceListOrganizationsProcedure,
 		svc.ListOrganizations,
 		connect.WithSchema(intermediateServiceMethods.ByName("ListOrganizations")),
 		connect.WithHandlerOptions(opts...),
 	)
+	intermediateServiceSetOrganizationHandler := connect.NewUnaryHandler(
+		IntermediateServiceSetOrganizationProcedure,
+		svc.SetOrganization,
+		connect.WithSchema(intermediateServiceMethods.ByName("SetOrganization")),
+		connect.WithHandlerOptions(opts...),
+	)
 	intermediateServiceExchangeIntermediateSessionForSessionHandler := connect.NewUnaryHandler(
 		IntermediateServiceExchangeIntermediateSessionForSessionProcedure,
 		svc.ExchangeIntermediateSessionForSession,
 		connect.WithSchema(intermediateServiceMethods.ByName("ExchangeIntermediateSessionForSession")),
-		connect.WithHandlerOptions(opts...),
-	)
-	intermediateServiceExchangeIntermediateSessionForNewOrganizationSessionHandler := connect.NewUnaryHandler(
-		IntermediateServiceExchangeIntermediateSessionForNewOrganizationSessionProcedure,
-		svc.ExchangeIntermediateSessionForNewOrganizationSession,
-		connect.WithSchema(intermediateServiceMethods.ByName("ExchangeIntermediateSessionForNewOrganizationSession")),
 		connect.WithHandlerOptions(opts...),
 	)
 	intermediateServiceGetGoogleOAuthRedirectURLHandler := connect.NewUnaryHandler(
@@ -419,6 +457,12 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 		connect.WithSchema(intermediateServiceMethods.ByName("VerifyEmailChallenge")),
 		connect.WithHandlerOptions(opts...),
 	)
+	intermediateServiceRegisterPasswordHandler := connect.NewUnaryHandler(
+		IntermediateServiceRegisterPasswordProcedure,
+		svc.RegisterPassword,
+		connect.WithSchema(intermediateServiceMethods.ByName("RegisterPassword")),
+		connect.WithHandlerOptions(opts...),
+	)
 	intermediateServiceVerifyPasswordHandler := connect.NewUnaryHandler(
 		IntermediateServiceVerifyPasswordProcedure,
 		svc.VerifyPassword,
@@ -437,12 +481,14 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 			intermediateServiceCreateIntermediateSessionHandler.ServeHTTP(w, r)
 		case IntermediateServiceWhoamiProcedure:
 			intermediateServiceWhoamiHandler.ServeHTTP(w, r)
+		case IntermediateServiceCreateOrganizationProcedure:
+			intermediateServiceCreateOrganizationHandler.ServeHTTP(w, r)
 		case IntermediateServiceListOrganizationsProcedure:
 			intermediateServiceListOrganizationsHandler.ServeHTTP(w, r)
+		case IntermediateServiceSetOrganizationProcedure:
+			intermediateServiceSetOrganizationHandler.ServeHTTP(w, r)
 		case IntermediateServiceExchangeIntermediateSessionForSessionProcedure:
 			intermediateServiceExchangeIntermediateSessionForSessionHandler.ServeHTTP(w, r)
-		case IntermediateServiceExchangeIntermediateSessionForNewOrganizationSessionProcedure:
-			intermediateServiceExchangeIntermediateSessionForNewOrganizationSessionHandler.ServeHTTP(w, r)
 		case IntermediateServiceGetGoogleOAuthRedirectURLProcedure:
 			intermediateServiceGetGoogleOAuthRedirectURLHandler.ServeHTTP(w, r)
 		case IntermediateServiceRedeemGoogleOAuthCodeProcedure:
@@ -455,6 +501,8 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 			intermediateServiceIssueEmailVerificationChallengeHandler.ServeHTTP(w, r)
 		case IntermediateServiceVerifyEmailChallengeProcedure:
 			intermediateServiceVerifyEmailChallengeHandler.ServeHTTP(w, r)
+		case IntermediateServiceRegisterPasswordProcedure:
+			intermediateServiceRegisterPasswordHandler.ServeHTTP(w, r)
 		case IntermediateServiceVerifyPasswordProcedure:
 			intermediateServiceVerifyPasswordHandler.ServeHTTP(w, r)
 		default:
@@ -486,16 +534,20 @@ func (UnimplementedIntermediateServiceHandler) Whoami(context.Context, *connect.
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.Whoami is not implemented"))
 }
 
+func (UnimplementedIntermediateServiceHandler) CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.CreateOrganizationResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.CreateOrganization is not implemented"))
+}
+
 func (UnimplementedIntermediateServiceHandler) ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.ListOrganizations is not implemented"))
 }
 
-func (UnimplementedIntermediateServiceHandler) ExchangeIntermediateSessionForSession(context.Context, *connect.Request[v1.ExchangeIntermediateSessionForSessionRequest]) (*connect.Response[v1.ExchangeIntermediateSessionForSessionResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.ExchangeIntermediateSessionForSession is not implemented"))
+func (UnimplementedIntermediateServiceHandler) SetOrganization(context.Context, *connect.Request[v1.SetOrganizationRequest]) (*connect.Response[v1.SetOrganizationResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.SetOrganization is not implemented"))
 }
 
-func (UnimplementedIntermediateServiceHandler) ExchangeIntermediateSessionForNewOrganizationSession(context.Context, *connect.Request[v1.ExchangeIntermediateSessionForNewOrganizationSessionRequest]) (*connect.Response[v1.ExchangeIntermediateSessionForNewOrganizationSessionResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.ExchangeIntermediateSessionForNewOrganizationSession is not implemented"))
+func (UnimplementedIntermediateServiceHandler) ExchangeIntermediateSessionForSession(context.Context, *connect.Request[v1.ExchangeIntermediateSessionForSessionRequest]) (*connect.Response[v1.ExchangeIntermediateSessionForSessionResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.ExchangeIntermediateSessionForSession is not implemented"))
 }
 
 func (UnimplementedIntermediateServiceHandler) GetGoogleOAuthRedirectURL(context.Context, *connect.Request[v1.GetGoogleOAuthRedirectURLRequest]) (*connect.Response[v1.GetGoogleOAuthRedirectURLResponse], error) {
@@ -520,6 +572,10 @@ func (UnimplementedIntermediateServiceHandler) IssueEmailVerificationChallenge(c
 
 func (UnimplementedIntermediateServiceHandler) VerifyEmailChallenge(context.Context, *connect.Request[v1.VerifyEmailChallengeRequest]) (*connect.Response[v1.VerifyEmailChallengeResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.VerifyEmailChallenge is not implemented"))
+}
+
+func (UnimplementedIntermediateServiceHandler) RegisterPassword(context.Context, *connect.Request[v1.RegisterPasswordRequest]) (*connect.Response[v1.RegisterPasswordResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.RegisterPassword is not implemented"))
 }
 
 func (UnimplementedIntermediateServiceHandler) VerifyPassword(context.Context, *connect.Request[v1.VerifyPasswordRequest]) (*connect.Response[v1.VerifyPasswordResponse], error) {
