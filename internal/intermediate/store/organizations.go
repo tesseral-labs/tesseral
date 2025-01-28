@@ -32,8 +32,7 @@ func (s *Store) CreateOrganization(ctx context.Context, req *intermediatev1.Crea
 	}
 	defer rollback()
 
-	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
-	if err != nil {
+	if _, err = q.GetProjectByID(ctx, authn.ProjectID(ctx)); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, apierror.NewNotFoundError("project not found", fmt.Errorf("get project by id: %w", err))
 		}
