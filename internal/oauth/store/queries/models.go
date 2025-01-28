@@ -87,18 +87,18 @@ type OauthVerifiedEmail struct {
 }
 
 type Organization struct {
-	ID                                uuid.UUID
-	ProjectID                         uuid.UUID
-	DisplayName                       string
-	OverrideLogInWithPasswordEnabled  *bool
-	OverrideLogInWithGoogleEnabled    *bool
-	OverrideLogInWithMicrosoftEnabled *bool
-	OverrideLogInMethods              bool
-	SamlEnabled                       bool
-	ScimEnabled                       bool
-	CreateTime                        *time.Time
-	UpdateTime                        *time.Time
-	LoginsDisabled                    bool
+	ID                        uuid.UUID
+	ProjectID                 uuid.UUID
+	DisplayName               string
+	OverrideLogInMethods      bool
+	SamlEnabled               bool
+	ScimEnabled               bool
+	CreateTime                *time.Time
+	UpdateTime                *time.Time
+	LoginsDisabled            bool
+	DisableLogInWithGoogle    *bool
+	DisableLogInWithMicrosoft *bool
+	DisableLogInWithPassword  *bool
 }
 
 type OrganizationDomain struct {

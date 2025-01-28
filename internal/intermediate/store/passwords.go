@@ -155,7 +155,7 @@ func (s *Store) VerifyPassword(ctx context.Context, req *intermediatev1.VerifyPa
 	// 2. The intermediate session must have a verified email, and
 	// 3. A user in that org must have the same email.
 	passwordEnabled := qProject.LogInWithPasswordEnabled
-	if qOrg.OverrideLogInMethods && qOrg.OverrideLogInWithPasswordEnabled != nil && !*qOrg.OverrideLogInWithPasswordEnabled {
+	if derefOrEmpty(qOrg.DisableLogInWithPassword) {
 		passwordEnabled = false
 	}
 
