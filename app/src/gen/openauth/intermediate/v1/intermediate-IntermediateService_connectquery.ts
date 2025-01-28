@@ -30,19 +30,24 @@ export const createIntermediateSession = IntermediateService.method.createInterm
 export const whoami = IntermediateService.method.whoami;
 
 /**
+ * @generated from rpc openauth.intermediate.v1.IntermediateService.CreateOrganization
+ */
+export const createOrganization = IntermediateService.method.createOrganization;
+
+/**
  * @generated from rpc openauth.intermediate.v1.IntermediateService.ListOrganizations
  */
 export const listOrganizations = IntermediateService.method.listOrganizations;
 
 /**
+ * @generated from rpc openauth.intermediate.v1.IntermediateService.SetOrganization
+ */
+export const setOrganization = IntermediateService.method.setOrganization;
+
+/**
  * @generated from rpc openauth.intermediate.v1.IntermediateService.ExchangeIntermediateSessionForSession
  */
 export const exchangeIntermediateSessionForSession = IntermediateService.method.exchangeIntermediateSessionForSession;
-
-/**
- * @generated from rpc openauth.intermediate.v1.IntermediateService.ExchangeIntermediateSessionForNewOrganizationSession
- */
-export const exchangeIntermediateSessionForNewOrganizationSession = IntermediateService.method.exchangeIntermediateSessionForNewOrganizationSession;
 
 /**
  * @generated from rpc openauth.intermediate.v1.IntermediateService.GetGoogleOAuthRedirectURL
@@ -73,6 +78,11 @@ export const issueEmailVerificationChallenge = IntermediateService.method.issueE
  * @generated from rpc openauth.intermediate.v1.IntermediateService.VerifyEmailChallenge
  */
 export const verifyEmailChallenge = IntermediateService.method.verifyEmailChallenge;
+
+/**
+ * @generated from rpc openauth.intermediate.v1.IntermediateService.RegisterPassword
+ */
+export const registerPassword = IntermediateService.method.registerPassword;
 
 /**
  * @generated from rpc openauth.intermediate.v1.IntermediateService.VerifyPassword

@@ -71,8 +71,8 @@ RETURNING
     *;
 
 -- name: CreateUser :one
-INSERT INTO users (id, organization_id, email, google_user_id, microsoft_user_id, is_owner)
-    VALUES ($1, $2, $3, $4, $5, $6)
+INSERT INTO users (id, organization_id, email, google_user_id, microsoft_user_id, is_owner, password_bcrypt)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
 RETURNING
     *;
 
@@ -257,6 +257,27 @@ UPDATE
 SET
     password_verified = TRUE,
     organization_id = $1
+WHERE
+    id = $2
+RETURNING
+    *;
+
+-- name: UpdateIntermediateSessionOrganizationID :one
+UPDATE
+    intermediate_sessions
+SET
+    organization_id = $1
+WHERE
+    id = $2
+RETURNING
+    *;
+
+-- name: UpdateIntermediateSessionNewUserPasswordBcrypt :one
+UPDATE
+    intermediate_sessions
+SET
+    new_user_password_bcrypt = $1,
+    password_verified = TRUE
 WHERE
     id = $2
 RETURNING

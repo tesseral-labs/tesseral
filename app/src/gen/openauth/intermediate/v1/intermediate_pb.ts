@@ -13,7 +13,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file openauth/intermediate/v1/intermediate.proto.
  */
 export const file_openauth_intermediate_v1_intermediate: GenFile = /*@__PURE__*/
-  fileDesc("CitvcGVuYXV0aC9pbnRlcm1lZGlhdGUvdjEvaW50ZXJtZWRpYXRlLnByb3RvEhhvcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEi/gEKE0ludGVybWVkaWF0ZVNlc3Npb24SCgoCaWQYASABKAkSEgoKcHJvamVjdF9pZBgCIAEoCRINCgVlbWFpbBgDIAEoCRIWCg5lbWFpbF92ZXJpZmllZBgEIAEoCBIWCg5nb29nbGVfdXNlcl9pZBgFIAEoCRIcChRnb29nbGVfaG9zdGVkX2RvbWFpbhgGIAEoCRIZChFtaWNyb3NvZnRfdXNlcl9pZBgHIAEoCRIbChNtaWNyb3NvZnRfdGVuYW50X2lkGAggASgJEhkKEXBhc3N3b3JkX3ZlcmlmaWVkGAkgASgIEhcKD29yZ2FuaXphdGlvbl9pZBgKIAEoCSKyAgoRUHJvamVjdFVJU2V0dGluZ3MSCgoCaWQYASABKAkSEgoKcHJvamVjdF9pZBgCIAEoCRIvCgtjcmVhdGVfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLwoLdXBkYXRlX3RpbWUYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhAKCGxvZ29fdXJsGAUgASgJEhMKC2Zhdmljb25fdXJsGAYgASgJEhUKDXByaW1hcnlfY29sb3IYByABKAkSIAoYZGV0ZWN0X2RhcmtfbW9kZV9lbmFibGVkGAggASgIEhoKEmRhcmtfbW9kZV9sb2dvX3VybBgJIAEoCRIfChdkYXJrX21vZGVfcHJpbWFyeV9jb2xvchgKIAEoCSIiCiBDcmVhdGVJbnRlcm1lZGlhdGVTZXNzaW9uUmVxdWVzdCJOCiFDcmVhdGVJbnRlcm1lZGlhdGVTZXNzaW9uUmVzcG9uc2USKQohaW50ZXJtZWRpYXRlX3Nlc3Npb25fc2VjcmV0X3Rva2VuGAEgASgJIg8KDVdob2FtaVJlcXVlc3QiXQoOV2hvYW1pUmVzcG9uc2USSwoUaW50ZXJtZWRpYXRlX3Nlc3Npb24YASABKAsyLS5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuSW50ZXJtZWRpYXRlU2Vzc2lvbiJHCixFeGNoYW5nZUludGVybWVkaWF0ZVNlc3Npb25Gb3JTZXNzaW9uUmVxdWVzdBIXCg9vcmdhbml6YXRpb25faWQYASABKAkiXAotRXhjaGFuZ2VJbnRlcm1lZGlhdGVTZXNzaW9uRm9yU2Vzc2lvblJlc3BvbnNlEhUKDXJlZnJlc2hfdG9rZW4YASABKAkSFAoMYWNjZXNzX3Rva2VuGAIgASgJIlMKO0V4Y2hhbmdlSW50ZXJtZWRpYXRlU2Vzc2lvbkZvck5ld09yZ2FuaXphdGlvblNlc3Npb25SZXF1ZXN0EhQKDGRpc3BsYXlfbmFtZRgBIAEoCSJrCjxFeGNoYW5nZUludGVybWVkaWF0ZVNlc3Npb25Gb3JOZXdPcmdhbml6YXRpb25TZXNzaW9uUmVzcG9uc2USFQoNcmVmcmVzaF90b2tlbhgBIAEoCRIUCgxhY2Nlc3NfdG9rZW4YAiABKAkiOAogR2V0R29vZ2xlT0F1dGhSZWRpcmVjdFVSTFJlcXVlc3QSFAoMcmVkaXJlY3RfdXJsGAEgASgJIjAKIUdldEdvb2dsZU9BdXRoUmVkaXJlY3RVUkxSZXNwb25zZRILCgN1cmwYASABKAkiUQocUmVkZWVtR29vZ2xlT0F1dGhDb2RlUmVxdWVzdBIMCgRjb2RlGAEgASgJEg0KBXN0YXRlGAIgASgJEhQKDHJlZGlyZWN0X3VybBgDIAEoCSIfCh1SZWRlZW1Hb29nbGVPQXV0aENvZGVSZXNwb25zZSI7CiNHZXRNaWNyb3NvZnRPQXV0aFJlZGlyZWN0VVJMUmVxdWVzdBIUCgxyZWRpcmVjdF91cmwYASABKAkiMwokR2V0TWljcm9zb2Z0T0F1dGhSZWRpcmVjdFVSTFJlc3BvbnNlEgsKA3VybBgBIAEoCSJUCh9SZWRlZW1NaWNyb3NvZnRPQXV0aENvZGVSZXF1ZXN0EgwKBGNvZGUYASABKAkSDQoFc3RhdGUYAiABKAkSFAoMcmVkaXJlY3RfdXJsGAMgASgJIiIKIFJlZGVlbU1pY3Jvc29mdE9BdXRoQ29kZVJlc3BvbnNlItkBCgxPcmdhbml6YXRpb24SCgoCaWQYASABKAkSEgoKcHJvamVjdF9pZBgCIAEoCRIUCgxkaXNwbGF5X25hbWUYAyABKAkSIgoabG9nX2luX3dpdGhfZ29vZ2xlX2VuYWJsZWQYBCABKAgSJQodbG9nX2luX3dpdGhfbWljcm9zb2Z0X2VuYWJsZWQYBSABKAgSJAocbG9nX2luX3dpdGhfcGFzc3dvcmRfZW5hYmxlZBgGIAEoCBIiChpwcmltYXJ5X3NhbWxfY29ubmVjdGlvbl9pZBgHIAEoCSI3CiZJc3N1ZUVtYWlsVmVyaWZpY2F0aW9uQ2hhbGxlbmdlUmVxdWVzdBINCgVlbWFpbBgBIAEoCSJSCidJc3N1ZUVtYWlsVmVyaWZpY2F0aW9uQ2hhbGxlbmdlUmVzcG9uc2USJwofZW1haWxfdmVyaWZpY2F0aW9uX2NoYWxsZW5nZV9pZBgBIAEoCSIaChhMaXN0T3JnYW5pemF0aW9uc1JlcXVlc3QiWgoZTGlzdE9yZ2FuaXphdGlvbnNSZXNwb25zZRI9Cg1vcmdhbml6YXRpb25zGAEgAygLMiYub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLk9yZ2FuaXphdGlvbiItChxMaXN0U0FNTE9yZ2FuaXphdGlvbnNSZXF1ZXN0Eg0KBWVtYWlsGAEgASgJIl4KHUxpc3RTQU1MT3JnYW5pemF0aW9uc1Jlc3BvbnNlEj0KDW9yZ2FuaXphdGlvbnMYASADKAsyJi5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuT3JnYW5pemF0aW9uIlQKG1ZlcmlmeUVtYWlsQ2hhbGxlbmdlUmVxdWVzdBInCh9lbWFpbF92ZXJpZmljYXRpb25fY2hhbGxlbmdlX2lkGAEgASgJEgwKBGNvZGUYAiABKAkiHgocVmVyaWZ5RW1haWxDaGFsbGVuZ2VSZXNwb25zZSJCChVWZXJpZnlQYXNzd29yZFJlcXVlc3QSFwoPb3JnYW5pemF0aW9uX2lkGAEgASgJEhAKCHBhc3N3b3JkGAIgASgJIhgKFlZlcmlmeVBhc3N3b3JkUmVzcG9uc2UiHQobR2V0UHJvamVjdFVJU2V0dGluZ3NSZXF1ZXN0ImgKHEdldFByb2plY3RVSVNldHRpbmdzUmVzcG9uc2USSAoTcHJvamVjdF91aV9zZXR0aW5ncxgBIAEoCzIrLm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5Qcm9qZWN0VUlTZXR0aW5ncyJOCiNSZWRlZW1Vc2VySW1wZXJzb25hdGlvblRva2VuUmVxdWVzdBInCh9zZWNyZXRfdXNlcl9pbXBlcnNvbmF0aW9uX3Rva2VuGAEgASgJIlMKJFJlZGVlbVVzZXJJbXBlcnNvbmF0aW9uVG9rZW5SZXNwb25zZRIVCg1yZWZyZXNoX3Rva2VuGAEgASgJEhQKDGFjY2Vzc190b2tlbhgCIAEoCTLjFwoTSW50ZXJtZWRpYXRlU2VydmljZRK4AQoVTGlzdFNBTUxPcmdhbml6YXRpb25zEjYub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLkxpc3RTQU1MT3JnYW5pemF0aW9uc1JlcXVlc3QaNy5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuTGlzdFNBTUxPcmdhbml6YXRpb25zUmVzcG9uc2UiLoLT5JMCKDoBKiIjL2ludGVybWVkaWF0ZS92MS9zYW1sLW9yZ2FuaXphdGlvbnMShQEKFEdldFByb2plY3RVSVNldHRpbmdzEjUub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLkdldFByb2plY3RVSVNldHRpbmdzUmVxdWVzdBo2Lm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5HZXRQcm9qZWN0VUlTZXR0aW5nc1Jlc3BvbnNlEtoBChxSZWRlZW1Vc2VySW1wZXJzb25hdGlvblRva2VuEj0ub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLlJlZGVlbVVzZXJJbXBlcnNvbmF0aW9uVG9rZW5SZXF1ZXN0Gj4ub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLlJlZGVlbVVzZXJJbXBlcnNvbmF0aW9uVG9rZW5SZXNwb25zZSI7gtPkkwI1OgEqIjAvaW50ZXJtZWRpYXRlL3YxL3JlZGVlbS11c2VyLWltcGVyc29uYXRpb24tdG9rZW4SxgEKGUNyZWF0ZUludGVybWVkaWF0ZVNlc3Npb24SOi5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuQ3JlYXRlSW50ZXJtZWRpYXRlU2Vzc2lvblJlcXVlc3QaOy5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuQ3JlYXRlSW50ZXJtZWRpYXRlU2Vzc2lvblJlc3BvbnNlIjCC0+STAio6ASoiJS9pbnRlcm1lZGlhdGUvdjEvaW50ZXJtZWRpYXRlLXNlc3Npb24SfAoGV2hvYW1pEicub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLldob2FtaVJlcXVlc3QaKC5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuV2hvYW1pUmVzcG9uc2UiH4LT5JMCGRIXL2ludGVybWVkaWF0ZS92MS93aG9hbWkSpAEKEUxpc3RPcmdhbml6YXRpb25zEjIub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLkxpc3RPcmdhbml6YXRpb25zUmVxdWVzdBozLm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5MaXN0T3JnYW5pemF0aW9uc1Jlc3BvbnNlIiaC0+STAiASHi9pbnRlcm1lZGlhdGUvdjEvb3JnYW5pemF0aW9ucxL/AQolRXhjaGFuZ2VJbnRlcm1lZGlhdGVTZXNzaW9uRm9yU2Vzc2lvbhJGLm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5FeGNoYW5nZUludGVybWVkaWF0ZVNlc3Npb25Gb3JTZXNzaW9uUmVxdWVzdBpHLm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5FeGNoYW5nZUludGVybWVkaWF0ZVNlc3Npb25Gb3JTZXNzaW9uUmVzcG9uc2UiRYLT5JMCPzoBKiI6L2ludGVybWVkaWF0ZS92MS9leGNoYW5nZS1pbnRlcm1lZGlhdGUtc2Vzc2lvbi1mb3Itc2Vzc2lvbhK9Ago0RXhjaGFuZ2VJbnRlcm1lZGlhdGVTZXNzaW9uRm9yTmV3T3JnYW5pemF0aW9uU2Vzc2lvbhJVLm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5FeGNoYW5nZUludGVybWVkaWF0ZVNlc3Npb25Gb3JOZXdPcmdhbml6YXRpb25TZXNzaW9uUmVxdWVzdBpWLm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5FeGNoYW5nZUludGVybWVkaWF0ZVNlc3Npb25Gb3JOZXdPcmdhbml6YXRpb25TZXNzaW9uUmVzcG9uc2UiVoLT5JMCUDoBKiJLL2ludGVybWVkaWF0ZS92MS9leGNoYW5nZS1pbnRlcm1lZGlhdGUtc2Vzc2lvbi1mb3ItbmV3LW9yZ2FuaXphdGlvbi1zZXNzaW9uEssBChlHZXRHb29nbGVPQXV0aFJlZGlyZWN0VVJMEjoub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLkdldEdvb2dsZU9BdXRoUmVkaXJlY3RVUkxSZXF1ZXN0Gjsub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLkdldEdvb2dsZU9BdXRoUmVkaXJlY3RVUkxSZXNwb25zZSI1gtPkkwIvOgEqIiovaW50ZXJtZWRpYXRlL3YxL2dvb2dsZS1vYXV0aC1yZWRpcmVjdC11cmwSvgEKFVJlZGVlbUdvb2dsZU9BdXRoQ29kZRI2Lm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5SZWRlZW1Hb29nbGVPQXV0aENvZGVSZXF1ZXN0Gjcub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLlJlZGVlbUdvb2dsZU9BdXRoQ29kZVJlc3BvbnNlIjSC0+STAi46ASoiKS9pbnRlcm1lZGlhdGUvdjEvcmVkZWVtLWdvb2dsZS1vYXV0aC1jb2RlEtcBChxHZXRNaWNyb3NvZnRPQXV0aFJlZGlyZWN0VVJMEj0ub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLkdldE1pY3Jvc29mdE9BdXRoUmVkaXJlY3RVUkxSZXF1ZXN0Gj4ub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLkdldE1pY3Jvc29mdE9BdXRoUmVkaXJlY3RVUkxSZXNwb25zZSI4gtPkkwIyOgEqIi0vaW50ZXJtZWRpYXRlL3YxL21pY3Jvc29mdC1vYXV0aC1yZWRpcmVjdC11cmwSygEKGFJlZGVlbU1pY3Jvc29mdE9BdXRoQ29kZRI5Lm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5SZWRlZW1NaWNyb3NvZnRPQXV0aENvZGVSZXF1ZXN0Gjoub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLlJlZGVlbU1pY3Jvc29mdE9BdXRoQ29kZVJlc3BvbnNlIjeC0+STAjE6ASoiLC9pbnRlcm1lZGlhdGUvdjEvcmVkZWVtLW1pY3Jvc29mdC1vYXV0aC1jb2RlEuYBCh9Jc3N1ZUVtYWlsVmVyaWZpY2F0aW9uQ2hhbGxlbmdlEkAub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLklzc3VlRW1haWxWZXJpZmljYXRpb25DaGFsbGVuZ2VSZXF1ZXN0GkEub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLklzc3VlRW1haWxWZXJpZmljYXRpb25DaGFsbGVuZ2VSZXNwb25zZSI+gtPkkwI4OgEqIjMvaW50ZXJtZWRpYXRlL3YxL2lzc3VlLWVtYWlsLXZlcmlmaWNhdGlvbi1jaGFsbGVuZ2USuQEKFFZlcmlmeUVtYWlsQ2hhbGxlbmdlEjUub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLlZlcmlmeUVtYWlsQ2hhbGxlbmdlUmVxdWVzdBo2Lm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5WZXJpZnlFbWFpbENoYWxsZW5nZVJlc3BvbnNlIjKC0+STAiw6ASoiJy9pbnRlcm1lZGlhdGUvdjEvdmVyaWZ5LWVtYWlsLWNoYWxsZW5nZRKgAQoOVmVyaWZ5UGFzc3dvcmQSLy5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuVmVyaWZ5UGFzc3dvcmRSZXF1ZXN0GjAub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLlZlcmlmeVBhc3N3b3JkUmVzcG9uc2UiK4LT5JMCJToBKiIgL2ludGVybWVkaWF0ZS92MS92ZXJpZnktcGFzc3dvcmRCkwIKHGNvbS5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjFCEUludGVybWVkaWF0ZVByb3RvUAFaXmdpdGh1Yi5jb20vb3BlbmF1dGgvb3BlbmF1dGgvaW50ZXJuYWwvaW50ZXJtZWRpYXRlL2dlbi9vcGVuYXV0aC9pbnRlcm1lZGlhdGUvdjE7aW50ZXJtZWRpYXRldjGiAgNPSViqAhhPcGVuYXV0aC5JbnRlcm1lZGlhdGUuVjHKAhhPcGVuYXV0aFxJbnRlcm1lZGlhdGVcVjHiAiRPcGVuYXV0aFxJbnRlcm1lZGlhdGVcVjFcR1BCTWV0YWRhdGHqAhpPcGVuYXV0aDo6SW50ZXJtZWRpYXRlOjpWMWIGcHJvdG8z", [file_google_api_annotations, file_google_protobuf_empty, file_google_protobuf_field_mask, file_google_protobuf_timestamp, file_google_protobuf_struct]);
+  fileDesc("CitvcGVuYXV0aC9pbnRlcm1lZGlhdGUvdjEvaW50ZXJtZWRpYXRlLnByb3RvEhhvcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEiwgIKE0ludGVybWVkaWF0ZVNlc3Npb24SCgoCaWQYASABKAkSEgoKcHJvamVjdF9pZBgCIAEoCRINCgVlbWFpbBgDIAEoCRIWCg5lbWFpbF92ZXJpZmllZBgEIAEoCBIWCg5nb29nbGVfdXNlcl9pZBgFIAEoCRIcChRnb29nbGVfaG9zdGVkX2RvbWFpbhgGIAEoCRIZChFtaWNyb3NvZnRfdXNlcl9pZBgHIAEoCRIbChNtaWNyb3NvZnRfdGVuYW50X2lkGAggASgJEhkKEXBhc3N3b3JkX3ZlcmlmaWVkGAkgASgIEhcKD29yZ2FuaXphdGlvbl9pZBgKIAEoCRIlChhuZXdfdXNlcl9wYXNzd29yZF9iY3J5cHQYCyABKAlIAIgBAUIbChlfbmV3X3VzZXJfcGFzc3dvcmRfYmNyeXB0IrICChFQcm9qZWN0VUlTZXR0aW5ncxIKCgJpZBgBIAEoCRISCgpwcm9qZWN0X2lkGAIgASgJEi8KC2NyZWF0ZV90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIvCgt1cGRhdGVfdGltZRgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASEAoIbG9nb191cmwYBSABKAkSEwoLZmF2aWNvbl91cmwYBiABKAkSFQoNcHJpbWFyeV9jb2xvchgHIAEoCRIgChhkZXRlY3RfZGFya19tb2RlX2VuYWJsZWQYCCABKAgSGgoSZGFya19tb2RlX2xvZ29fdXJsGAkgASgJEh8KF2RhcmtfbW9kZV9wcmltYXJ5X2NvbG9yGAogASgJIiIKIENyZWF0ZUludGVybWVkaWF0ZVNlc3Npb25SZXF1ZXN0Ik4KIUNyZWF0ZUludGVybWVkaWF0ZVNlc3Npb25SZXNwb25zZRIpCiFpbnRlcm1lZGlhdGVfc2Vzc2lvbl9zZWNyZXRfdG9rZW4YASABKAkiDwoNV2hvYW1pUmVxdWVzdCJdCg5XaG9hbWlSZXNwb25zZRJLChRpbnRlcm1lZGlhdGVfc2Vzc2lvbhgBIAEoCzItLm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5JbnRlcm1lZGlhdGVTZXNzaW9uIjEKGUNyZWF0ZU9yZ2FuaXphdGlvblJlcXVlc3QSFAoMZGlzcGxheV9uYW1lGAEgASgJIloKGkNyZWF0ZU9yZ2FuaXphdGlvblJlc3BvbnNlEjwKDG9yZ2FuaXphdGlvbhgBIAEoCzImLm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5Pcmdhbml6YXRpb24iMQoWU2V0T3JnYW5pemF0aW9uUmVxdWVzdBIXCg9vcmdhbml6YXRpb25faWQYASABKAkiGQoXU2V0T3JnYW5pemF0aW9uUmVzcG9uc2UiRwosRXhjaGFuZ2VJbnRlcm1lZGlhdGVTZXNzaW9uRm9yU2Vzc2lvblJlcXVlc3QSFwoPb3JnYW5pemF0aW9uX2lkGAEgASgJIlwKLUV4Y2hhbmdlSW50ZXJtZWRpYXRlU2Vzc2lvbkZvclNlc3Npb25SZXNwb25zZRIVCg1yZWZyZXNoX3Rva2VuGAEgASgJEhQKDGFjY2Vzc190b2tlbhgCIAEoCSI4CiBHZXRHb29nbGVPQXV0aFJlZGlyZWN0VVJMUmVxdWVzdBIUCgxyZWRpcmVjdF91cmwYASABKAkiMAohR2V0R29vZ2xlT0F1dGhSZWRpcmVjdFVSTFJlc3BvbnNlEgsKA3VybBgBIAEoCSJRChxSZWRlZW1Hb29nbGVPQXV0aENvZGVSZXF1ZXN0EgwKBGNvZGUYASABKAkSDQoFc3RhdGUYAiABKAkSFAoMcmVkaXJlY3RfdXJsGAMgASgJIh8KHVJlZGVlbUdvb2dsZU9BdXRoQ29kZVJlc3BvbnNlIjsKI0dldE1pY3Jvc29mdE9BdXRoUmVkaXJlY3RVUkxSZXF1ZXN0EhQKDHJlZGlyZWN0X3VybBgBIAEoCSIzCiRHZXRNaWNyb3NvZnRPQXV0aFJlZGlyZWN0VVJMUmVzcG9uc2USCwoDdXJsGAEgASgJIlQKH1JlZGVlbU1pY3Jvc29mdE9BdXRoQ29kZVJlcXVlc3QSDAoEY29kZRgBIAEoCRINCgVzdGF0ZRgCIAEoCRIUCgxyZWRpcmVjdF91cmwYAyABKAkiIgogUmVkZWVtTWljcm9zb2Z0T0F1dGhDb2RlUmVzcG9uc2Ui2QEKDE9yZ2FuaXphdGlvbhIKCgJpZBgBIAEoCRISCgpwcm9qZWN0X2lkGAIgASgJEhQKDGRpc3BsYXlfbmFtZRgDIAEoCRIiChpsb2dfaW5fd2l0aF9nb29nbGVfZW5hYmxlZBgEIAEoCBIlCh1sb2dfaW5fd2l0aF9taWNyb3NvZnRfZW5hYmxlZBgFIAEoCBIkChxsb2dfaW5fd2l0aF9wYXNzd29yZF9lbmFibGVkGAYgASgIEiIKGnByaW1hcnlfc2FtbF9jb25uZWN0aW9uX2lkGAcgASgJIjcKJklzc3VlRW1haWxWZXJpZmljYXRpb25DaGFsbGVuZ2VSZXF1ZXN0Eg0KBWVtYWlsGAEgASgJIlIKJ0lzc3VlRW1haWxWZXJpZmljYXRpb25DaGFsbGVuZ2VSZXNwb25zZRInCh9lbWFpbF92ZXJpZmljYXRpb25fY2hhbGxlbmdlX2lkGAEgASgJIhoKGExpc3RPcmdhbml6YXRpb25zUmVxdWVzdCJaChlMaXN0T3JnYW5pemF0aW9uc1Jlc3BvbnNlEj0KDW9yZ2FuaXphdGlvbnMYASADKAsyJi5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuT3JnYW5pemF0aW9uIi0KHExpc3RTQU1MT3JnYW5pemF0aW9uc1JlcXVlc3QSDQoFZW1haWwYASABKAkiXgodTGlzdFNBTUxPcmdhbml6YXRpb25zUmVzcG9uc2USPQoNb3JnYW5pemF0aW9ucxgBIAMoCzImLm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5Pcmdhbml6YXRpb24iVAobVmVyaWZ5RW1haWxDaGFsbGVuZ2VSZXF1ZXN0EicKH2VtYWlsX3ZlcmlmaWNhdGlvbl9jaGFsbGVuZ2VfaWQYASABKAkSDAoEY29kZRgCIAEoCSIeChxWZXJpZnlFbWFpbENoYWxsZW5nZVJlc3BvbnNlIisKF1JlZ2lzdGVyUGFzc3dvcmRSZXF1ZXN0EhAKCHBhc3N3b3JkGAEgASgJIhoKGFJlZ2lzdGVyUGFzc3dvcmRSZXNwb25zZSJCChVWZXJpZnlQYXNzd29yZFJlcXVlc3QSFwoPb3JnYW5pemF0aW9uX2lkGAEgASgJEhAKCHBhc3N3b3JkGAIgASgJIhgKFlZlcmlmeVBhc3N3b3JkUmVzcG9uc2UiHQobR2V0UHJvamVjdFVJU2V0dGluZ3NSZXF1ZXN0ImgKHEdldFByb2plY3RVSVNldHRpbmdzUmVzcG9uc2USSAoTcHJvamVjdF91aV9zZXR0aW5ncxgBIAEoCzIrLm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5Qcm9qZWN0VUlTZXR0aW5ncyJOCiNSZWRlZW1Vc2VySW1wZXJzb25hdGlvblRva2VuUmVxdWVzdBInCh9zZWNyZXRfdXNlcl9pbXBlcnNvbmF0aW9uX3Rva2VuGAEgASgJIlMKJFJlZGVlbVVzZXJJbXBlcnNvbmF0aW9uVG9rZW5SZXNwb25zZRIVCg1yZWZyZXNoX3Rva2VuGAEgASgJEhQKDGFjY2Vzc190b2tlbhgCIAEoCTKfGQoTSW50ZXJtZWRpYXRlU2VydmljZRK4AQoVTGlzdFNBTUxPcmdhbml6YXRpb25zEjYub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLkxpc3RTQU1MT3JnYW5pemF0aW9uc1JlcXVlc3QaNy5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuTGlzdFNBTUxPcmdhbml6YXRpb25zUmVzcG9uc2UiLoLT5JMCKDoBKiIjL2ludGVybWVkaWF0ZS92MS9zYW1sLW9yZ2FuaXphdGlvbnMShQEKFEdldFByb2plY3RVSVNldHRpbmdzEjUub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLkdldFByb2plY3RVSVNldHRpbmdzUmVxdWVzdBo2Lm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5HZXRQcm9qZWN0VUlTZXR0aW5nc1Jlc3BvbnNlEtoBChxSZWRlZW1Vc2VySW1wZXJzb25hdGlvblRva2VuEj0ub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLlJlZGVlbVVzZXJJbXBlcnNvbmF0aW9uVG9rZW5SZXF1ZXN0Gj4ub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLlJlZGVlbVVzZXJJbXBlcnNvbmF0aW9uVG9rZW5SZXNwb25zZSI7gtPkkwI1OgEqIjAvaW50ZXJtZWRpYXRlL3YxL3JlZGVlbS11c2VyLWltcGVyc29uYXRpb24tdG9rZW4SxgEKGUNyZWF0ZUludGVybWVkaWF0ZVNlc3Npb24SOi5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuQ3JlYXRlSW50ZXJtZWRpYXRlU2Vzc2lvblJlcXVlc3QaOy5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuQ3JlYXRlSW50ZXJtZWRpYXRlU2Vzc2lvblJlc3BvbnNlIjCC0+STAio6ASoiJS9pbnRlcm1lZGlhdGUvdjEvaW50ZXJtZWRpYXRlLXNlc3Npb24SfAoGV2hvYW1pEicub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLldob2FtaVJlcXVlc3QaKC5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuV2hvYW1pUmVzcG9uc2UiH4LT5JMCGRIXL2ludGVybWVkaWF0ZS92MS93aG9hbWkSqgEKEkNyZWF0ZU9yZ2FuaXphdGlvbhIzLm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5DcmVhdGVPcmdhbml6YXRpb25SZXF1ZXN0GjQub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLkNyZWF0ZU9yZ2FuaXphdGlvblJlc3BvbnNlIimC0+STAiM6ASoiHi9pbnRlcm1lZGlhdGUvdjEvb3JnYW5pemF0aW9ucxKkAQoRTGlzdE9yZ2FuaXphdGlvbnMSMi5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuTGlzdE9yZ2FuaXphdGlvbnNSZXF1ZXN0GjMub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLkxpc3RPcmdhbml6YXRpb25zUmVzcG9uc2UiJoLT5JMCIBIeL2ludGVybWVkaWF0ZS92MS9vcmdhbml6YXRpb25zEqEBCg9TZXRPcmdhbml6YXRpb24SMC5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuU2V0T3JnYW5pemF0aW9uUmVxdWVzdBoxLm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5TZXRPcmdhbml6YXRpb25SZXNwb25zZSIpgtPkkwIjIiEvaW50ZXJtZWRpYXRlL3YxL3NldC1vcmdhbml6YXRpb24S/wEKJUV4Y2hhbmdlSW50ZXJtZWRpYXRlU2Vzc2lvbkZvclNlc3Npb24SRi5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuRXhjaGFuZ2VJbnRlcm1lZGlhdGVTZXNzaW9uRm9yU2Vzc2lvblJlcXVlc3QaRy5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuRXhjaGFuZ2VJbnRlcm1lZGlhdGVTZXNzaW9uRm9yU2Vzc2lvblJlc3BvbnNlIkWC0+STAj86ASoiOi9pbnRlcm1lZGlhdGUvdjEvZXhjaGFuZ2UtaW50ZXJtZWRpYXRlLXNlc3Npb24tZm9yLXNlc3Npb24SywEKGUdldEdvb2dsZU9BdXRoUmVkaXJlY3RVUkwSOi5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuR2V0R29vZ2xlT0F1dGhSZWRpcmVjdFVSTFJlcXVlc3QaOy5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuR2V0R29vZ2xlT0F1dGhSZWRpcmVjdFVSTFJlc3BvbnNlIjWC0+STAi86ASoiKi9pbnRlcm1lZGlhdGUvdjEvZ29vZ2xlLW9hdXRoLXJlZGlyZWN0LXVybBK+AQoVUmVkZWVtR29vZ2xlT0F1dGhDb2RlEjYub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLlJlZGVlbUdvb2dsZU9BdXRoQ29kZVJlcXVlc3QaNy5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuUmVkZWVtR29vZ2xlT0F1dGhDb2RlUmVzcG9uc2UiNILT5JMCLjoBKiIpL2ludGVybWVkaWF0ZS92MS9yZWRlZW0tZ29vZ2xlLW9hdXRoLWNvZGUS1wEKHEdldE1pY3Jvc29mdE9BdXRoUmVkaXJlY3RVUkwSPS5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuR2V0TWljcm9zb2Z0T0F1dGhSZWRpcmVjdFVSTFJlcXVlc3QaPi5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuR2V0TWljcm9zb2Z0T0F1dGhSZWRpcmVjdFVSTFJlc3BvbnNlIjiC0+STAjI6ASoiLS9pbnRlcm1lZGlhdGUvdjEvbWljcm9zb2Z0LW9hdXRoLXJlZGlyZWN0LXVybBLKAQoYUmVkZWVtTWljcm9zb2Z0T0F1dGhDb2RlEjkub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLlJlZGVlbU1pY3Jvc29mdE9BdXRoQ29kZVJlcXVlc3QaOi5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuUmVkZWVtTWljcm9zb2Z0T0F1dGhDb2RlUmVzcG9uc2UiN4LT5JMCMToBKiIsL2ludGVybWVkaWF0ZS92MS9yZWRlZW0tbWljcm9zb2Z0LW9hdXRoLWNvZGUS5gEKH0lzc3VlRW1haWxWZXJpZmljYXRpb25DaGFsbGVuZ2USQC5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuSXNzdWVFbWFpbFZlcmlmaWNhdGlvbkNoYWxsZW5nZVJlcXVlc3QaQS5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuSXNzdWVFbWFpbFZlcmlmaWNhdGlvbkNoYWxsZW5nZVJlc3BvbnNlIj6C0+STAjg6ASoiMy9pbnRlcm1lZGlhdGUvdjEvaXNzdWUtZW1haWwtdmVyaWZpY2F0aW9uLWNoYWxsZW5nZRK5AQoUVmVyaWZ5RW1haWxDaGFsbGVuZ2USNS5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuVmVyaWZ5RW1haWxDaGFsbGVuZ2VSZXF1ZXN0GjYub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLlZlcmlmeUVtYWlsQ2hhbGxlbmdlUmVzcG9uc2UiMoLT5JMCLDoBKiInL2ludGVybWVkaWF0ZS92MS92ZXJpZnktZW1haWwtY2hhbGxlbmdlEqgBChBSZWdpc3RlclBhc3N3b3JkEjEub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLlJlZ2lzdGVyUGFzc3dvcmRSZXF1ZXN0GjIub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLlJlZ2lzdGVyUGFzc3dvcmRSZXNwb25zZSItgtPkkwInOgEqIiIvaW50ZXJtZWRpYXRlL3YxL3JlZ2lzdGVyLXBhc3N3b3JkEqABCg5WZXJpZnlQYXNzd29yZBIvLm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5WZXJpZnlQYXNzd29yZFJlcXVlc3QaMC5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuVmVyaWZ5UGFzc3dvcmRSZXNwb25zZSIrgtPkkwIlOgEqIiAvaW50ZXJtZWRpYXRlL3YxL3ZlcmlmeS1wYXNzd29yZEKTAgocY29tLm9wZW5hdXRoLmludGVybWVkaWF0ZS52MUIRSW50ZXJtZWRpYXRlUHJvdG9QAVpeZ2l0aHViLmNvbS9vcGVuYXV0aC9vcGVuYXV0aC9pbnRlcm5hbC9pbnRlcm1lZGlhdGUvZ2VuL29wZW5hdXRoL2ludGVybWVkaWF0ZS92MTtpbnRlcm1lZGlhdGV2MaICA09JWKoCGE9wZW5hdXRoLkludGVybWVkaWF0ZS5WMcoCGE9wZW5hdXRoXEludGVybWVkaWF0ZVxWMeICJE9wZW5hdXRoXEludGVybWVkaWF0ZVxWMVxHUEJNZXRhZGF0YeoCGk9wZW5hdXRoOjpJbnRlcm1lZGlhdGU6OlYxYgZwcm90bzM", [file_google_api_annotations, file_google_protobuf_empty, file_google_protobuf_field_mask, file_google_protobuf_timestamp, file_google_protobuf_struct]);
 
 /**
  * @generated from message openauth.intermediate.v1.IntermediateSession
@@ -68,6 +68,11 @@ export type IntermediateSession = Message<"openauth.intermediate.v1.Intermediate
    * @generated from field: string organization_id = 10;
    */
   organizationId: string;
+
+  /**
+   * @generated from field: optional string new_user_password_bcrypt = 11;
+   */
+  newUserPasswordBcrypt?: string;
 };
 
 /**
@@ -200,6 +205,70 @@ export const WhoamiResponseSchema: GenMessage<WhoamiResponse> = /*@__PURE__*/
   messageDesc(file_openauth_intermediate_v1_intermediate, 5);
 
 /**
+ * @generated from message openauth.intermediate.v1.CreateOrganizationRequest
+ */
+export type CreateOrganizationRequest = Message<"openauth.intermediate.v1.CreateOrganizationRequest"> & {
+  /**
+   * @generated from field: string display_name = 1;
+   */
+  displayName: string;
+};
+
+/**
+ * Describes the message openauth.intermediate.v1.CreateOrganizationRequest.
+ * Use `create(CreateOrganizationRequestSchema)` to create a new message.
+ */
+export const CreateOrganizationRequestSchema: GenMessage<CreateOrganizationRequest> = /*@__PURE__*/
+  messageDesc(file_openauth_intermediate_v1_intermediate, 6);
+
+/**
+ * @generated from message openauth.intermediate.v1.CreateOrganizationResponse
+ */
+export type CreateOrganizationResponse = Message<"openauth.intermediate.v1.CreateOrganizationResponse"> & {
+  /**
+   * @generated from field: openauth.intermediate.v1.Organization organization = 1;
+   */
+  organization?: Organization;
+};
+
+/**
+ * Describes the message openauth.intermediate.v1.CreateOrganizationResponse.
+ * Use `create(CreateOrganizationResponseSchema)` to create a new message.
+ */
+export const CreateOrganizationResponseSchema: GenMessage<CreateOrganizationResponse> = /*@__PURE__*/
+  messageDesc(file_openauth_intermediate_v1_intermediate, 7);
+
+/**
+ * @generated from message openauth.intermediate.v1.SetOrganizationRequest
+ */
+export type SetOrganizationRequest = Message<"openauth.intermediate.v1.SetOrganizationRequest"> & {
+  /**
+   * @generated from field: string organization_id = 1;
+   */
+  organizationId: string;
+};
+
+/**
+ * Describes the message openauth.intermediate.v1.SetOrganizationRequest.
+ * Use `create(SetOrganizationRequestSchema)` to create a new message.
+ */
+export const SetOrganizationRequestSchema: GenMessage<SetOrganizationRequest> = /*@__PURE__*/
+  messageDesc(file_openauth_intermediate_v1_intermediate, 8);
+
+/**
+ * @generated from message openauth.intermediate.v1.SetOrganizationResponse
+ */
+export type SetOrganizationResponse = Message<"openauth.intermediate.v1.SetOrganizationResponse"> & {
+};
+
+/**
+ * Describes the message openauth.intermediate.v1.SetOrganizationResponse.
+ * Use `create(SetOrganizationResponseSchema)` to create a new message.
+ */
+export const SetOrganizationResponseSchema: GenMessage<SetOrganizationResponse> = /*@__PURE__*/
+  messageDesc(file_openauth_intermediate_v1_intermediate, 9);
+
+/**
  * @generated from message openauth.intermediate.v1.ExchangeIntermediateSessionForSessionRequest
  */
 export type ExchangeIntermediateSessionForSessionRequest = Message<"openauth.intermediate.v1.ExchangeIntermediateSessionForSessionRequest"> & {
@@ -214,7 +283,7 @@ export type ExchangeIntermediateSessionForSessionRequest = Message<"openauth.int
  * Use `create(ExchangeIntermediateSessionForSessionRequestSchema)` to create a new message.
  */
 export const ExchangeIntermediateSessionForSessionRequestSchema: GenMessage<ExchangeIntermediateSessionForSessionRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 6);
+  messageDesc(file_openauth_intermediate_v1_intermediate, 10);
 
 /**
  * @generated from message openauth.intermediate.v1.ExchangeIntermediateSessionForSessionResponse
@@ -236,46 +305,7 @@ export type ExchangeIntermediateSessionForSessionResponse = Message<"openauth.in
  * Use `create(ExchangeIntermediateSessionForSessionResponseSchema)` to create a new message.
  */
 export const ExchangeIntermediateSessionForSessionResponseSchema: GenMessage<ExchangeIntermediateSessionForSessionResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 7);
-
-/**
- * @generated from message openauth.intermediate.v1.ExchangeIntermediateSessionForNewOrganizationSessionRequest
- */
-export type ExchangeIntermediateSessionForNewOrganizationSessionRequest = Message<"openauth.intermediate.v1.ExchangeIntermediateSessionForNewOrganizationSessionRequest"> & {
-  /**
-   * @generated from field: string display_name = 1;
-   */
-  displayName: string;
-};
-
-/**
- * Describes the message openauth.intermediate.v1.ExchangeIntermediateSessionForNewOrganizationSessionRequest.
- * Use `create(ExchangeIntermediateSessionForNewOrganizationSessionRequestSchema)` to create a new message.
- */
-export const ExchangeIntermediateSessionForNewOrganizationSessionRequestSchema: GenMessage<ExchangeIntermediateSessionForNewOrganizationSessionRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 8);
-
-/**
- * @generated from message openauth.intermediate.v1.ExchangeIntermediateSessionForNewOrganizationSessionResponse
- */
-export type ExchangeIntermediateSessionForNewOrganizationSessionResponse = Message<"openauth.intermediate.v1.ExchangeIntermediateSessionForNewOrganizationSessionResponse"> & {
-  /**
-   * @generated from field: string refresh_token = 1;
-   */
-  refreshToken: string;
-
-  /**
-   * @generated from field: string access_token = 2;
-   */
-  accessToken: string;
-};
-
-/**
- * Describes the message openauth.intermediate.v1.ExchangeIntermediateSessionForNewOrganizationSessionResponse.
- * Use `create(ExchangeIntermediateSessionForNewOrganizationSessionResponseSchema)` to create a new message.
- */
-export const ExchangeIntermediateSessionForNewOrganizationSessionResponseSchema: GenMessage<ExchangeIntermediateSessionForNewOrganizationSessionResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 9);
+  messageDesc(file_openauth_intermediate_v1_intermediate, 11);
 
 /**
  * @generated from message openauth.intermediate.v1.GetGoogleOAuthRedirectURLRequest
@@ -292,7 +322,7 @@ export type GetGoogleOAuthRedirectURLRequest = Message<"openauth.intermediate.v1
  * Use `create(GetGoogleOAuthRedirectURLRequestSchema)` to create a new message.
  */
 export const GetGoogleOAuthRedirectURLRequestSchema: GenMessage<GetGoogleOAuthRedirectURLRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 10);
+  messageDesc(file_openauth_intermediate_v1_intermediate, 12);
 
 /**
  * @generated from message openauth.intermediate.v1.GetGoogleOAuthRedirectURLResponse
@@ -309,7 +339,7 @@ export type GetGoogleOAuthRedirectURLResponse = Message<"openauth.intermediate.v
  * Use `create(GetGoogleOAuthRedirectURLResponseSchema)` to create a new message.
  */
 export const GetGoogleOAuthRedirectURLResponseSchema: GenMessage<GetGoogleOAuthRedirectURLResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 11);
+  messageDesc(file_openauth_intermediate_v1_intermediate, 13);
 
 /**
  * @generated from message openauth.intermediate.v1.RedeemGoogleOAuthCodeRequest
@@ -336,7 +366,7 @@ export type RedeemGoogleOAuthCodeRequest = Message<"openauth.intermediate.v1.Red
  * Use `create(RedeemGoogleOAuthCodeRequestSchema)` to create a new message.
  */
 export const RedeemGoogleOAuthCodeRequestSchema: GenMessage<RedeemGoogleOAuthCodeRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 12);
+  messageDesc(file_openauth_intermediate_v1_intermediate, 14);
 
 /**
  * @generated from message openauth.intermediate.v1.RedeemGoogleOAuthCodeResponse
@@ -349,7 +379,7 @@ export type RedeemGoogleOAuthCodeResponse = Message<"openauth.intermediate.v1.Re
  * Use `create(RedeemGoogleOAuthCodeResponseSchema)` to create a new message.
  */
 export const RedeemGoogleOAuthCodeResponseSchema: GenMessage<RedeemGoogleOAuthCodeResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 13);
+  messageDesc(file_openauth_intermediate_v1_intermediate, 15);
 
 /**
  * @generated from message openauth.intermediate.v1.GetMicrosoftOAuthRedirectURLRequest
@@ -366,7 +396,7 @@ export type GetMicrosoftOAuthRedirectURLRequest = Message<"openauth.intermediate
  * Use `create(GetMicrosoftOAuthRedirectURLRequestSchema)` to create a new message.
  */
 export const GetMicrosoftOAuthRedirectURLRequestSchema: GenMessage<GetMicrosoftOAuthRedirectURLRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 14);
+  messageDesc(file_openauth_intermediate_v1_intermediate, 16);
 
 /**
  * @generated from message openauth.intermediate.v1.GetMicrosoftOAuthRedirectURLResponse
@@ -383,7 +413,7 @@ export type GetMicrosoftOAuthRedirectURLResponse = Message<"openauth.intermediat
  * Use `create(GetMicrosoftOAuthRedirectURLResponseSchema)` to create a new message.
  */
 export const GetMicrosoftOAuthRedirectURLResponseSchema: GenMessage<GetMicrosoftOAuthRedirectURLResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 15);
+  messageDesc(file_openauth_intermediate_v1_intermediate, 17);
 
 /**
  * @generated from message openauth.intermediate.v1.RedeemMicrosoftOAuthCodeRequest
@@ -410,7 +440,7 @@ export type RedeemMicrosoftOAuthCodeRequest = Message<"openauth.intermediate.v1.
  * Use `create(RedeemMicrosoftOAuthCodeRequestSchema)` to create a new message.
  */
 export const RedeemMicrosoftOAuthCodeRequestSchema: GenMessage<RedeemMicrosoftOAuthCodeRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 16);
+  messageDesc(file_openauth_intermediate_v1_intermediate, 18);
 
 /**
  * @generated from message openauth.intermediate.v1.RedeemMicrosoftOAuthCodeResponse
@@ -423,7 +453,7 @@ export type RedeemMicrosoftOAuthCodeResponse = Message<"openauth.intermediate.v1
  * Use `create(RedeemMicrosoftOAuthCodeResponseSchema)` to create a new message.
  */
 export const RedeemMicrosoftOAuthCodeResponseSchema: GenMessage<RedeemMicrosoftOAuthCodeResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 17);
+  messageDesc(file_openauth_intermediate_v1_intermediate, 19);
 
 /**
  * @generated from message openauth.intermediate.v1.Organization
@@ -470,7 +500,7 @@ export type Organization = Message<"openauth.intermediate.v1.Organization"> & {
  * Use `create(OrganizationSchema)` to create a new message.
  */
 export const OrganizationSchema: GenMessage<Organization> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 18);
+  messageDesc(file_openauth_intermediate_v1_intermediate, 20);
 
 /**
  * @generated from message openauth.intermediate.v1.IssueEmailVerificationChallengeRequest
@@ -487,7 +517,7 @@ export type IssueEmailVerificationChallengeRequest = Message<"openauth.intermedi
  * Use `create(IssueEmailVerificationChallengeRequestSchema)` to create a new message.
  */
 export const IssueEmailVerificationChallengeRequestSchema: GenMessage<IssueEmailVerificationChallengeRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 19);
+  messageDesc(file_openauth_intermediate_v1_intermediate, 21);
 
 /**
  * @generated from message openauth.intermediate.v1.IssueEmailVerificationChallengeResponse
@@ -504,7 +534,7 @@ export type IssueEmailVerificationChallengeResponse = Message<"openauth.intermed
  * Use `create(IssueEmailVerificationChallengeResponseSchema)` to create a new message.
  */
 export const IssueEmailVerificationChallengeResponseSchema: GenMessage<IssueEmailVerificationChallengeResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 20);
+  messageDesc(file_openauth_intermediate_v1_intermediate, 22);
 
 /**
  * @generated from message openauth.intermediate.v1.ListOrganizationsRequest
@@ -517,7 +547,7 @@ export type ListOrganizationsRequest = Message<"openauth.intermediate.v1.ListOrg
  * Use `create(ListOrganizationsRequestSchema)` to create a new message.
  */
 export const ListOrganizationsRequestSchema: GenMessage<ListOrganizationsRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 21);
+  messageDesc(file_openauth_intermediate_v1_intermediate, 23);
 
 /**
  * @generated from message openauth.intermediate.v1.ListOrganizationsResponse
@@ -534,7 +564,7 @@ export type ListOrganizationsResponse = Message<"openauth.intermediate.v1.ListOr
  * Use `create(ListOrganizationsResponseSchema)` to create a new message.
  */
 export const ListOrganizationsResponseSchema: GenMessage<ListOrganizationsResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 22);
+  messageDesc(file_openauth_intermediate_v1_intermediate, 24);
 
 /**
  * @generated from message openauth.intermediate.v1.ListSAMLOrganizationsRequest
@@ -551,7 +581,7 @@ export type ListSAMLOrganizationsRequest = Message<"openauth.intermediate.v1.Lis
  * Use `create(ListSAMLOrganizationsRequestSchema)` to create a new message.
  */
 export const ListSAMLOrganizationsRequestSchema: GenMessage<ListSAMLOrganizationsRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 23);
+  messageDesc(file_openauth_intermediate_v1_intermediate, 25);
 
 /**
  * @generated from message openauth.intermediate.v1.ListSAMLOrganizationsResponse
@@ -568,7 +598,7 @@ export type ListSAMLOrganizationsResponse = Message<"openauth.intermediate.v1.Li
  * Use `create(ListSAMLOrganizationsResponseSchema)` to create a new message.
  */
 export const ListSAMLOrganizationsResponseSchema: GenMessage<ListSAMLOrganizationsResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 24);
+  messageDesc(file_openauth_intermediate_v1_intermediate, 26);
 
 /**
  * @generated from message openauth.intermediate.v1.VerifyEmailChallengeRequest
@@ -590,7 +620,7 @@ export type VerifyEmailChallengeRequest = Message<"openauth.intermediate.v1.Veri
  * Use `create(VerifyEmailChallengeRequestSchema)` to create a new message.
  */
 export const VerifyEmailChallengeRequestSchema: GenMessage<VerifyEmailChallengeRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 25);
+  messageDesc(file_openauth_intermediate_v1_intermediate, 27);
 
 /**
  * @generated from message openauth.intermediate.v1.VerifyEmailChallengeResponse
@@ -603,7 +633,37 @@ export type VerifyEmailChallengeResponse = Message<"openauth.intermediate.v1.Ver
  * Use `create(VerifyEmailChallengeResponseSchema)` to create a new message.
  */
 export const VerifyEmailChallengeResponseSchema: GenMessage<VerifyEmailChallengeResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 26);
+  messageDesc(file_openauth_intermediate_v1_intermediate, 28);
+
+/**
+ * @generated from message openauth.intermediate.v1.RegisterPasswordRequest
+ */
+export type RegisterPasswordRequest = Message<"openauth.intermediate.v1.RegisterPasswordRequest"> & {
+  /**
+   * @generated from field: string password = 1;
+   */
+  password: string;
+};
+
+/**
+ * Describes the message openauth.intermediate.v1.RegisterPasswordRequest.
+ * Use `create(RegisterPasswordRequestSchema)` to create a new message.
+ */
+export const RegisterPasswordRequestSchema: GenMessage<RegisterPasswordRequest> = /*@__PURE__*/
+  messageDesc(file_openauth_intermediate_v1_intermediate, 29);
+
+/**
+ * @generated from message openauth.intermediate.v1.RegisterPasswordResponse
+ */
+export type RegisterPasswordResponse = Message<"openauth.intermediate.v1.RegisterPasswordResponse"> & {
+};
+
+/**
+ * Describes the message openauth.intermediate.v1.RegisterPasswordResponse.
+ * Use `create(RegisterPasswordResponseSchema)` to create a new message.
+ */
+export const RegisterPasswordResponseSchema: GenMessage<RegisterPasswordResponse> = /*@__PURE__*/
+  messageDesc(file_openauth_intermediate_v1_intermediate, 30);
 
 /**
  * @generated from message openauth.intermediate.v1.VerifyPasswordRequest
@@ -625,7 +685,7 @@ export type VerifyPasswordRequest = Message<"openauth.intermediate.v1.VerifyPass
  * Use `create(VerifyPasswordRequestSchema)` to create a new message.
  */
 export const VerifyPasswordRequestSchema: GenMessage<VerifyPasswordRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 27);
+  messageDesc(file_openauth_intermediate_v1_intermediate, 31);
 
 /**
  * @generated from message openauth.intermediate.v1.VerifyPasswordResponse
@@ -638,7 +698,7 @@ export type VerifyPasswordResponse = Message<"openauth.intermediate.v1.VerifyPas
  * Use `create(VerifyPasswordResponseSchema)` to create a new message.
  */
 export const VerifyPasswordResponseSchema: GenMessage<VerifyPasswordResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 28);
+  messageDesc(file_openauth_intermediate_v1_intermediate, 32);
 
 /**
  * @generated from message openauth.intermediate.v1.GetProjectUISettingsRequest
@@ -651,7 +711,7 @@ export type GetProjectUISettingsRequest = Message<"openauth.intermediate.v1.GetP
  * Use `create(GetProjectUISettingsRequestSchema)` to create a new message.
  */
 export const GetProjectUISettingsRequestSchema: GenMessage<GetProjectUISettingsRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 29);
+  messageDesc(file_openauth_intermediate_v1_intermediate, 33);
 
 /**
  * @generated from message openauth.intermediate.v1.GetProjectUISettingsResponse
@@ -668,7 +728,7 @@ export type GetProjectUISettingsResponse = Message<"openauth.intermediate.v1.Get
  * Use `create(GetProjectUISettingsResponseSchema)` to create a new message.
  */
 export const GetProjectUISettingsResponseSchema: GenMessage<GetProjectUISettingsResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 30);
+  messageDesc(file_openauth_intermediate_v1_intermediate, 34);
 
 /**
  * @generated from message openauth.intermediate.v1.RedeemUserImpersonationTokenRequest
@@ -685,7 +745,7 @@ export type RedeemUserImpersonationTokenRequest = Message<"openauth.intermediate
  * Use `create(RedeemUserImpersonationTokenRequestSchema)` to create a new message.
  */
 export const RedeemUserImpersonationTokenRequestSchema: GenMessage<RedeemUserImpersonationTokenRequest> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 31);
+  messageDesc(file_openauth_intermediate_v1_intermediate, 35);
 
 /**
  * @generated from message openauth.intermediate.v1.RedeemUserImpersonationTokenResponse
@@ -707,7 +767,7 @@ export type RedeemUserImpersonationTokenResponse = Message<"openauth.intermediat
  * Use `create(RedeemUserImpersonationTokenResponseSchema)` to create a new message.
  */
 export const RedeemUserImpersonationTokenResponseSchema: GenMessage<RedeemUserImpersonationTokenResponse> = /*@__PURE__*/
-  messageDesc(file_openauth_intermediate_v1_intermediate, 32);
+  messageDesc(file_openauth_intermediate_v1_intermediate, 36);
 
 /**
  * @generated from service openauth.intermediate.v1.IntermediateService
@@ -754,6 +814,14 @@ export const IntermediateService: GenService<{
     output: typeof WhoamiResponseSchema;
   },
   /**
+   * @generated from rpc openauth.intermediate.v1.IntermediateService.CreateOrganization
+   */
+  createOrganization: {
+    methodKind: "unary";
+    input: typeof CreateOrganizationRequestSchema;
+    output: typeof CreateOrganizationResponseSchema;
+  },
+  /**
    * @generated from rpc openauth.intermediate.v1.IntermediateService.ListOrganizations
    */
   listOrganizations: {
@@ -762,20 +830,20 @@ export const IntermediateService: GenService<{
     output: typeof ListOrganizationsResponseSchema;
   },
   /**
+   * @generated from rpc openauth.intermediate.v1.IntermediateService.SetOrganization
+   */
+  setOrganization: {
+    methodKind: "unary";
+    input: typeof SetOrganizationRequestSchema;
+    output: typeof SetOrganizationResponseSchema;
+  },
+  /**
    * @generated from rpc openauth.intermediate.v1.IntermediateService.ExchangeIntermediateSessionForSession
    */
   exchangeIntermediateSessionForSession: {
     methodKind: "unary";
     input: typeof ExchangeIntermediateSessionForSessionRequestSchema;
     output: typeof ExchangeIntermediateSessionForSessionResponseSchema;
-  },
-  /**
-   * @generated from rpc openauth.intermediate.v1.IntermediateService.ExchangeIntermediateSessionForNewOrganizationSession
-   */
-  exchangeIntermediateSessionForNewOrganizationSession: {
-    methodKind: "unary";
-    input: typeof ExchangeIntermediateSessionForNewOrganizationSessionRequestSchema;
-    output: typeof ExchangeIntermediateSessionForNewOrganizationSessionResponseSchema;
   },
   /**
    * @generated from rpc openauth.intermediate.v1.IntermediateService.GetGoogleOAuthRedirectURL
@@ -824,6 +892,14 @@ export const IntermediateService: GenService<{
     methodKind: "unary";
     input: typeof VerifyEmailChallengeRequestSchema;
     output: typeof VerifyEmailChallengeResponseSchema;
+  },
+  /**
+   * @generated from rpc openauth.intermediate.v1.IntermediateService.RegisterPassword
+   */
+  registerPassword: {
+    methodKind: "unary";
+    input: typeof RegisterPasswordRequestSchema;
+    output: typeof RegisterPasswordResponseSchema;
   },
   /**
    * @generated from rpc openauth.intermediate.v1.IntermediateService.VerifyPassword

@@ -6,30 +6,6 @@ info:
     title: IntermediateService API
     version: 0.0.1
 paths:
-    /intermediate/v1/exchange-intermediate-session-for-new-organization-session:
-        post:
-            tags:
-                - IntermediateService
-            operationId: IntermediateService_ExchangeIntermediateSessionForNewOrganizationSession
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/ExchangeIntermediateSessionForNewOrganizationSessionRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ExchangeIntermediateSessionForNewOrganizationSessionResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
     /intermediate/v1/exchange-intermediate-session-for-session:
         post:
             tags:
@@ -168,6 +144,29 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - IntermediateService
+            operationId: IntermediateService_CreateOrganization
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateOrganizationRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateOrganizationResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /intermediate/v1/redeem-google-oauth-code:
         post:
             tags:
@@ -240,6 +239,30 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /intermediate/v1/register-password:
+        post:
+            tags:
+                - IntermediateService
+            operationId: IntermediateService_RegisterPassword
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/RegisterPasswordRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/RegisterPasswordResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /intermediate/v1/saml-organizations:
         post:
             tags:
@@ -258,6 +281,29 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ListSAMLOrganizationsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /intermediate/v1/set-organization:
+        post:
+            tags:
+                - IntermediateService
+            operationId: IntermediateService_SetOrganization
+            parameters:
+                - name: organizationId
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/SetOrganizationResponse'
                 default:
                     description: Default error response
                     content:
@@ -340,18 +386,16 @@ components:
             properties:
                 intermediateSessionSecretToken:
                     type: string
-        ExchangeIntermediateSessionForNewOrganizationSessionRequest:
+        CreateOrganizationRequest:
             type: object
             properties:
                 displayName:
                     type: string
-        ExchangeIntermediateSessionForNewOrganizationSessionResponse:
+        CreateOrganizationResponse:
             type: object
             properties:
-                refreshToken:
-                    type: string
-                accessToken:
-                    type: string
+                organization:
+                    $ref: '#/components/schemas/Organization'
         ExchangeIntermediateSessionForSessionRequest:
             type: object
             properties:
@@ -414,6 +458,8 @@ components:
                 passwordVerified:
                     type: boolean
                 organizationId:
+                    type: string
+                newUserPasswordBcrypt:
                     type: string
         IssueEmailVerificationChallengeRequest:
             type: object
@@ -497,6 +543,17 @@ components:
                     type: string
                 accessToken:
                     type: string
+        RegisterPasswordRequest:
+            type: object
+            properties:
+                password:
+                    type: string
+        RegisterPasswordResponse:
+            type: object
+            properties: {}
+        SetOrganizationResponse:
+            type: object
+            properties: {}
         Status:
             type: object
             properties:

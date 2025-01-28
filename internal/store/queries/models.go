@@ -81,6 +81,7 @@ type IntermediateSession struct {
 	OrganizationID            *uuid.UUID
 	UpdateTime                *time.Time
 	SecretTokenSha256         []byte
+	NewUserPasswordBcrypt     *string
 }
 
 type OauthVerifiedEmail struct {
