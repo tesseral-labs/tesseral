@@ -26,7 +26,7 @@ func (s *Store) CreateOrganization(ctx context.Context, req *intermediatev1.Crea
 		return nil, apierror.NewPermissionDeniedError("email not verified", nil)
 	}
 
-	_, q, _, rollback, err := s.tx(ctx)
+	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -76,6 +76,10 @@ func (s *Store) CreateOrganization(ctx context.Context, req *intermediatev1.Crea
 	})
 	if err != nil {
 		return nil, fmt.Errorf("update intermediate session organization ID: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
 	}
 
 	return &intermediatev1.CreateOrganizationResponse{
@@ -228,6 +232,10 @@ func (s *Store) SetOrganization(ctx context.Context, req *intermediatev1.SetOrga
 		return nil, apierror.NewInvalidArgumentError("invalid intermediate session ID", fmt.Errorf("parse intermediate session ID: %w", err))
 	}
 
+	if intermediateSession.OrganizationId != "" {
+		return nil, apierror.NewFailedPreconditionError("organization already set", fmt.Errorf("organization already set"))
+	}
+
 	if !intermediateSession.EmailVerified {
 		return nil, apierror.NewPermissionDeniedError("email not verified", nil)
 	}
@@ -237,19 +245,11 @@ func (s *Store) SetOrganization(ctx context.Context, req *intermediatev1.SetOrga
 		return nil, apierror.NewInvalidArgumentError("invalid organization ID", fmt.Errorf("parse organization ID: %w", err))
 	}
 
-	_, q, _, rollback, err := s.tx(ctx)
+	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
 	defer rollback()
-
-	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
-	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, apierror.NewNotFoundError("project not found", fmt.Errorf("get project by id: %w", err))
-		}
-		return nil, fmt.Errorf("get project by id: %w", err)
-	}
 
 	qOrganization, err := q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
 		ID:        organizationID,
@@ -262,16 +262,16 @@ func (s *Store) SetOrganization(ctx context.Context, req *intermediatev1.SetOrga
 		return nil, fmt.Errorf("get organization by id: %w", err)
 	}
 
-	if qOrganization.ProjectID != qProject.ID {
-		return nil, apierror.NewPermissionDeniedError("organization does not belong to project", nil)
-	}
-
 	_, err = q.UpdateIntermediateSessionOrganizationID(ctx, queries.UpdateIntermediateSessionOrganizationIDParams{
 		ID:             intermediateSessionID,
 		OrganizationID: &qOrganization.ID,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("update intermediate session organization ID: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
 	}
 
 	return &intermediatev1.SetOrganizationResponse{}, nil
