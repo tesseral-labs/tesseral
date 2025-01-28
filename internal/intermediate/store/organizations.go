@@ -81,9 +81,7 @@ func (s *Store) CreateOrganization(ctx context.Context, req *intermediatev1.Crea
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return &intermediatev1.CreateOrganizationResponse{
-		Organization: parseOrganization(qOrganization, qProject, nil),
-	}, nil
+	return &intermediatev1.CreateOrganizationResponse{}, nil
 }
 
 func (s *Store) ListOrganizations(ctx context.Context, req *intermediatev1.ListOrganizationsRequest) (*intermediatev1.ListOrganizationsResponse, error) {

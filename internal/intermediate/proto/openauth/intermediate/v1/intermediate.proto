@@ -168,7 +168,6 @@ message CreateOrganizationRequest {
 }
 
 message CreateOrganizationResponse {
-  Organization organization = 1;
 }
 
 message SetOrganizationRequest {

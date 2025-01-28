@@ -2,6 +2,7 @@ package store
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
@@ -29,6 +30,15 @@ func (s *Store) RegisterPassword(ctx context.Context, req *intermediatev1.Regist
 
 	if intermediateSession.PasswordVerified {
 		return nil, apierror.NewFailedPreconditionError("user already verified for intermediate session", fmt.Errorf("user already verified for intermediate session"))
+	}
+
+	// Check if the password is compromised.
+	pwned, err := s.hibp.Pwned(ctx, req.Password)
+	if err != nil {
+		return nil, fmt.Errorf("check password against HIBP: %w", err)
+	}
+	if pwned {
+		return nil, apierror.NewFailedPreconditionError("password is compromised", errors.New("password is compromised"))
 	}
 
 	orgID, err := idformat.Organization.Parse(intermediateSession.OrganizationId)

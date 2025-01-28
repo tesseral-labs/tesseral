@@ -3,6 +3,7 @@ package store
 import (
 	"context"
 	"fmt"
+	"net/http"
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/sesv2"
@@ -10,6 +11,7 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/openauth/openauth/internal/googleoauth"
+	"github.com/openauth/openauth/internal/hibp"
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
 	"github.com/openauth/openauth/internal/microsoftoauth"
 	"github.com/openauth/openauth/internal/pagetoken"
@@ -18,6 +20,7 @@ import (
 type Store struct {
 	db                                    *pgxpool.Pool
 	dogfoodProjectID                      *uuid.UUID
+	hibp                                  *hibp.Client
 	intermediateSessionSigningKeyKMSKeyID string
 	kms                                   *kms.Client
 	pageEncoder                           pagetoken.Encoder
@@ -48,8 +51,11 @@ type NewStoreParams struct {
 
 func New(p NewStoreParams) *Store {
 	store := &Store{
-		db:                                    p.DB,
-		dogfoodProjectID:                      p.DogfoodProjectID,
+		db:               p.DB,
+		dogfoodProjectID: p.DogfoodProjectID,
+		hibp: &hibp.Client{
+			HTTPClient: http.DefaultClient,
+		},
 		intermediateSessionSigningKeyKMSKeyID: p.IntermediateSessionSigningKeyKMSKeyID,
 		kms:                                   p.KMS,
 		pageEncoder:                           p.PageEncoder,

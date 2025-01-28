@@ -393,9 +393,7 @@ components:
                     type: string
         CreateOrganizationResponse:
             type: object
-            properties:
-                organization:
-                    $ref: '#/components/schemas/Organization'
+            properties: {}
         ExchangeIntermediateSessionForSessionRequest:
             type: object
             properties:
