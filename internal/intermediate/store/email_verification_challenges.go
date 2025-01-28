@@ -8,7 +8,6 @@ import (
 	"log/slog"
 	"math/rand/v2"
 	"strconv"
-	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/sesv2"
@@ -21,8 +20,6 @@ import (
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
 	"golang.org/x/crypto/bcrypt"
 )
-
-var emailVerificationChallengeDuration = time.Minute * 10
 
 func (s *Store) IssueEmailVerificationChallenge(ctx context.Context, req *intermediatev1.IssueEmailVerificationChallengeRequest) (*intermediatev1.IssueEmailVerificationChallengeResponse, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
