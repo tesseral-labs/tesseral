@@ -83,13 +83,22 @@ func (s *Store) IssueEmailVerificationChallenge(ctx context.Context, req *interm
 }
 
 func (s *Store) VerifyEmailChallenge(ctx context.Context, req *intermediatev1.VerifyEmailChallengeRequest) (*intermediatev1.VerifyEmailChallengeResponse, error) {
-	intermediateSession := authn.IntermediateSession(ctx)
+	intermediateSessionID := authn.IntermediateSessionID(ctx)
 
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
 	defer rollback()
+
+	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, intermediateSessionID)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("get intermediate session by id: %w", fmt.Errorf("intermediate session not found: %w", err))
+		}
+
+		return nil, fmt.Errorf("get intermediate session by id: %w", err)
+	}
 
 	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
@@ -105,17 +114,17 @@ func (s *Store) VerifyEmailChallenge(ctx context.Context, req *intermediatev1.Ve
 	}
 
 	challengeSHA256 := sha256.Sum256([]byte(req.Code))
-	if err := bcrypt.CompareHashAndPassword(intermediateSession.EmailVerificationChallengeSha256, challengeSHA256[:]); err != nil {
+	if err := bcrypt.CompareHashAndPassword(qIntermediateSession.EmailVerificationChallengeSha256, challengeSHA256[:]); err != nil {
 		return nil, apierror.NewInvalidArgumentError("invalid email verification code", fmt.Errorf("invalid email verification code"))
 	}
 
-	if intermediateSession.GoogleUserId != "" || intermediateSession.MicrosoftUserId != "" {
+	if qIntermediateSession.GoogleUserID != nil || qIntermediateSession.MicrosoftUserID != nil {
 		if _, err := q.CreateVerifiedEmail(ctx, queries.CreateVerifiedEmailParams{
 			ID:              uuid.New(),
 			ProjectID:       authn.ProjectID(ctx),
-			Email:           authn.IntermediateSession(ctx).Email,
-			GoogleUserID:    refOrNil(intermediateSession.GoogleUserId),
-			MicrosoftUserID: refOrNil(intermediateSession.MicrosoftUserId),
+			Email:           *qIntermediateSession.Email,
+			GoogleUserID:    qIntermediateSession.GoogleUserID,
+			MicrosoftUserID: qIntermediateSession.MicrosoftUserID,
 		}); err != nil {
 			return nil, fmt.Errorf("create verified email: %w", err)
 		}

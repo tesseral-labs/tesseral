@@ -132,8 +132,8 @@ message IntermediateSession {
   string microsoft_tenant_id = 8;
   string organization_id = 9;
   bool password_verified = 10;
-  optional string new_user_password_bcrypt = 11;
-  optional bytes email_verification_challenge_sha256 = 12;
+  bool new_user_password_registered = 11;
+  bool email_verification_challenge_completed = 12;
 }
 
 message ProjectUISettings {

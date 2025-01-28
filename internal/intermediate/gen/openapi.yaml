@@ -459,11 +459,10 @@ components:
                     type: string
                 passwordVerified:
                     type: boolean
-                newUserPasswordBcrypt:
-                    type: string
-                emailVerificationChallengeSha256:
-                    type: string
-                    format: bytes
+                newUserPasswordRegistered:
+                    type: boolean
+                emailVerificationChallengeCompleted:
+                    type: boolean
         IssueEmailVerificationChallengeRequest:
             type: object
             properties:

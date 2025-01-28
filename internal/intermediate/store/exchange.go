@@ -19,8 +19,6 @@ import (
 const sessionDuration = time.Hour * 24 * 7
 
 func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *intermediatev1.ExchangeIntermediateSessionForSessionRequest) (*intermediatev1.ExchangeIntermediateSessionForSessionResponse, error) {
-	intermediateSession := authn.IntermediateSession(ctx)
-
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -32,14 +30,9 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		return nil, fmt.Errorf("get intermediate session by id: %w", err)
 	}
 
-	orgID, err := idformat.Organization.Parse(intermediateSession.OrganizationId)
-	if err != nil {
-		return nil, apierror.NewInvalidArgumentError("invalid organization id", fmt.Errorf("parse organization id: %w", err))
-	}
-
 	qOrg, err := q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
 		ProjectID: authn.ProjectID(ctx),
-		ID:        orgID,
+		ID:        *qIntermediateSession.OrganizationID,
 	})
 	if err != nil {
 		return nil, err
@@ -68,8 +61,8 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 			MicrosoftUserID: qIntermediateSession.MicrosoftUserID,
 		}
 
-		if intermediateSession.NewUserPasswordBcrypt != nil {
-			createUserParams.PasswordBcrypt = intermediateSession.NewUserPasswordBcrypt
+		if qIntermediateSession.NewUserPasswordBcrypt != nil {
+			createUserParams.PasswordBcrypt = qIntermediateSession.NewUserPasswordBcrypt
 		}
 
 		qNewUser, err := q.CreateUser(ctx, createUserParams)

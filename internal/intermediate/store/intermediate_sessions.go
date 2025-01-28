@@ -87,15 +87,17 @@ func parseIntermediateSession(qIntermediateSession queries.IntermediateSession, 
 	}
 
 	return &intermediatev1.IntermediateSession{
-		Id:                 idformat.IntermediateSession.Format(qIntermediateSession.ID),
-		ProjectId:          idformat.Project.Format(qIntermediateSession.ProjectID),
-		Email:              derefOrEmpty(qIntermediateSession.Email),
-		EmailVerified:      emailVerified,
-		GoogleUserId:       derefOrEmpty(qIntermediateSession.GoogleUserID),
-		GoogleHostedDomain: derefOrEmpty(qIntermediateSession.GoogleHostedDomain),
-		MicrosoftUserId:    derefOrEmpty(qIntermediateSession.MicrosoftUserID),
-		MicrosoftTenantId:  derefOrEmpty(qIntermediateSession.MicrosoftTenantID),
-		PasswordVerified:   derefOrEmpty(qIntermediateSession.PasswordVerified),
-		OrganizationId:     organizationID,
+		Id:                                  idformat.IntermediateSession.Format(qIntermediateSession.ID),
+		ProjectId:                           idformat.Project.Format(qIntermediateSession.ProjectID),
+		Email:                               derefOrEmpty(qIntermediateSession.Email),
+		EmailVerified:                       emailVerified,
+		EmailVerificationChallengeCompleted: qIntermediateSession.EmailVerificationChallengeCompleted,
+		GoogleUserId:                        derefOrEmpty(qIntermediateSession.GoogleUserID),
+		GoogleHostedDomain:                  derefOrEmpty(qIntermediateSession.GoogleHostedDomain),
+		MicrosoftUserId:                     derefOrEmpty(qIntermediateSession.MicrosoftUserID),
+		MicrosoftTenantId:                   derefOrEmpty(qIntermediateSession.MicrosoftTenantID),
+		PasswordVerified:                    derefOrEmpty(qIntermediateSession.PasswordVerified),
+		NewUserPasswordRegistered:           qIntermediateSession.NewUserPasswordBcrypt != nil,
+		OrganizationId:                      organizationID,
 	}
 }

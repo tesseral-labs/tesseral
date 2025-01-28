@@ -266,11 +266,11 @@ WHERE
 RETURNING
     *;
 
--- name: UpdateIntermediateSessionEmailVerified :one
+-- name: UpdateIntermediateSessionEmailVerificationChallengeCompleted :one
 UPDATE
     intermediate_sessions
 SET
-    email_verified = $2
+    email_verification_challenge_completed = TRUE
 WHERE
     id = $1
 RETURNING
@@ -310,7 +310,7 @@ SELECT
         WHERE
             email = $2
             AND email_verification_challenge_sha256 IS NOT NULL
-            AND email_verified = TRUE
+            AND email_verification_challenge_completed = TRUE
             AND id = $1);
 
 -- name: CreateOrganizationGoogleHostedDomain :one

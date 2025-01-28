@@ -57,24 +57,24 @@ func (ns NullAuthMethod) Value() (driver.Value, error) {
 }
 
 type IntermediateSession struct {
-	ID                               uuid.UUID
-	ProjectID                        uuid.UUID
-	CreateTime                       *time.Time
-	ExpireTime                       *time.Time
-	Email                            *string
-	GoogleOauthStateSha256           []byte
-	MicrosoftOauthStateSha256        []byte
-	GoogleHostedDomain               *string
-	GoogleUserID                     *string
-	MicrosoftTenantID                *string
-	MicrosoftUserID                  *string
-	PasswordVerified                 *bool
-	OrganizationID                   *uuid.UUID
-	UpdateTime                       *time.Time
-	SecretTokenSha256                []byte
-	NewUserPasswordBcrypt            *string
-	EmailVerificationChallengeSha256 []byte
-	EmailVerified                    bool
+	ID                                  uuid.UUID
+	ProjectID                           uuid.UUID
+	CreateTime                          *time.Time
+	ExpireTime                          *time.Time
+	Email                               *string
+	GoogleOauthStateSha256              []byte
+	MicrosoftOauthStateSha256           []byte
+	GoogleHostedDomain                  *string
+	GoogleUserID                        *string
+	MicrosoftTenantID                   *string
+	MicrosoftUserID                     *string
+	PasswordVerified                    *bool
+	OrganizationID                      *uuid.UUID
+	UpdateTime                          *time.Time
+	SecretTokenSha256                   []byte
+	NewUserPasswordBcrypt               *string
+	EmailVerificationChallengeSha256    []byte
+	EmailVerificationChallengeCompleted bool
 }
 
 type OauthVerifiedEmail struct {
