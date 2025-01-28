@@ -65,7 +65,7 @@ func (s *Store) RegisterPassword(ctx context.Context, req *intermediatev1.Regist
 
 	// Ensure given organization is suitable for authentication over password:
 	passwordEnabled := qProject.LogInWithPasswordEnabled
-	if qProject.LogInWithPasswordEnabled || (qOrg.OverrideLogInMethods && qOrg.DisableLogInWithPassword != nil && !*qOrg.DisableLogInWithPassword) {
+	if derefOrEmpty(qOrg.DisableLogInWithPassword) {
 		passwordEnabled = false
 	}
 	if !passwordEnabled {

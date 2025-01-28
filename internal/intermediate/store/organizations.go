@@ -70,11 +70,10 @@ func (s *Store) CreateOrganization(ctx context.Context, req *intermediatev1.Crea
 		}
 	}
 
-	_, err = q.UpdateIntermediateSessionOrganizationID(ctx, queries.UpdateIntermediateSessionOrganizationIDParams{
+	if _, err = q.UpdateIntermediateSessionOrganizationID(ctx, queries.UpdateIntermediateSessionOrganizationIDParams{
 		ID:             intermediateSessionID,
 		OrganizationID: &qOrganization.ID,
-	})
-	if err != nil {
+	}); err != nil {
 		return nil, fmt.Errorf("update intermediate session organization ID: %w", err)
 	}
 
