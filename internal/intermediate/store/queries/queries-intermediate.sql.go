@@ -775,8 +775,7 @@ FROM
 WHERE
     organizations.project_id = $1
     AND organization_google_hosted_domains.google_hosted_domain = $2
-    AND (organizations.login_disabled IS NULL
-        OR organizations.login_disabled = FALSE)
+    AND NOT organizations.logins_disabled
 `
 
 type ListOrganizationsByGoogleHostedDomainParams struct {
@@ -830,8 +829,7 @@ WHERE
             AND users.google_user_id = $3)
         OR (users.microsoft_user_id IS NOT NULL
             AND users.microsoft_user_id = $4))
-    AND (organizations.login_disabled IS NULL
-        OR organizations.login_disabled = FALSE)
+    AND NOT organizations.logins_disabled
 `
 
 type ListOrganizationsByMatchingUserParams struct {
@@ -888,8 +886,7 @@ FROM
 WHERE
     organizations.project_id = $1
     AND organization_microsoft_tenant_ids.microsoft_tenant_id = $2
-    AND (organizations.login_disabled IS NULL
-        OR organizations.login_disabled = FALSE)
+    AND NOT organizations.logins_disabled
 `
 
 type ListOrganizationsByMicrosoftTenantIDParams struct {
