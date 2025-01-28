@@ -27,22 +27,19 @@ func (q *Queries) CountAllProjects(ctx context.Context) (int64, error) {
 }
 
 const createOrganization = `-- name: CreateOrganization :one
-INSERT INTO organizations (id, project_id, display_name, override_log_in_methods, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_with_password_enabled, saml_enabled, scim_enabled)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+INSERT INTO organizations (id, project_id, display_name, override_log_in_methods, saml_enabled, scim_enabled)
+    VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING
-    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_methods, saml_enabled, scim_enabled, create_time, update_time, logins_disabled
+    id, project_id, display_name, override_log_in_methods, saml_enabled, scim_enabled, create_time, update_time, logins_disabled, disable_log_in_with_google, disable_log_in_with_microsoft, disable_log_in_with_password
 `
 
 type CreateOrganizationParams struct {
-	ID                                uuid.UUID
-	ProjectID                         uuid.UUID
-	DisplayName                       string
-	OverrideLogInMethods              bool
-	OverrideLogInWithGoogleEnabled    *bool
-	OverrideLogInWithMicrosoftEnabled *bool
-	OverrideLogInWithPasswordEnabled  *bool
-	SamlEnabled                       bool
-	ScimEnabled                       bool
+	ID                   uuid.UUID
+	ProjectID            uuid.UUID
+	DisplayName          string
+	OverrideLogInMethods bool
+	SamlEnabled          bool
+	ScimEnabled          bool
 }
 
 func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganizationParams) (Organization, error) {
@@ -51,9 +48,6 @@ func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganization
 		arg.ProjectID,
 		arg.DisplayName,
 		arg.OverrideLogInMethods,
-		arg.OverrideLogInWithGoogleEnabled,
-		arg.OverrideLogInWithMicrosoftEnabled,
-		arg.OverrideLogInWithPasswordEnabled,
 		arg.SamlEnabled,
 		arg.ScimEnabled,
 	)
@@ -62,15 +56,15 @@ func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganization
 		&i.ID,
 		&i.ProjectID,
 		&i.DisplayName,
-		&i.OverrideLogInWithPasswordEnabled,
-		&i.OverrideLogInWithGoogleEnabled,
-		&i.OverrideLogInWithMicrosoftEnabled,
 		&i.OverrideLogInMethods,
 		&i.SamlEnabled,
 		&i.ScimEnabled,
 		&i.CreateTime,
 		&i.UpdateTime,
 		&i.LoginsDisabled,
+		&i.DisableLogInWithGoogle,
+		&i.DisableLogInWithMicrosoft,
+		&i.DisableLogInWithPassword,
 	)
 	return i, err
 }
@@ -274,7 +268,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 
 const getOrganizationByID = `-- name: GetOrganizationByID :one
 SELECT
-    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_methods, saml_enabled, scim_enabled, create_time, update_time, logins_disabled
+    id, project_id, display_name, override_log_in_methods, saml_enabled, scim_enabled, create_time, update_time, logins_disabled, disable_log_in_with_google, disable_log_in_with_microsoft, disable_log_in_with_password
 FROM
     organizations
 WHERE
@@ -288,22 +282,22 @@ func (q *Queries) GetOrganizationByID(ctx context.Context, id uuid.UUID) (Organi
 		&i.ID,
 		&i.ProjectID,
 		&i.DisplayName,
-		&i.OverrideLogInWithPasswordEnabled,
-		&i.OverrideLogInWithGoogleEnabled,
-		&i.OverrideLogInWithMicrosoftEnabled,
 		&i.OverrideLogInMethods,
 		&i.SamlEnabled,
 		&i.ScimEnabled,
 		&i.CreateTime,
 		&i.UpdateTime,
 		&i.LoginsDisabled,
+		&i.DisableLogInWithGoogle,
+		&i.DisableLogInWithMicrosoft,
+		&i.DisableLogInWithPassword,
 	)
 	return i, err
 }
 
 const getOrganizationByProjectIDAndID = `-- name: GetOrganizationByProjectIDAndID :one
 SELECT
-    id, project_id, display_name, override_log_in_with_password_enabled, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_methods, saml_enabled, scim_enabled, create_time, update_time, logins_disabled
+    id, project_id, display_name, override_log_in_methods, saml_enabled, scim_enabled, create_time, update_time, logins_disabled, disable_log_in_with_google, disable_log_in_with_microsoft, disable_log_in_with_password
 FROM
     organizations
 WHERE
@@ -323,15 +317,15 @@ func (q *Queries) GetOrganizationByProjectIDAndID(ctx context.Context, arg GetOr
 		&i.ID,
 		&i.ProjectID,
 		&i.DisplayName,
-		&i.OverrideLogInWithPasswordEnabled,
-		&i.OverrideLogInWithGoogleEnabled,
-		&i.OverrideLogInWithMicrosoftEnabled,
 		&i.OverrideLogInMethods,
 		&i.SamlEnabled,
 		&i.ScimEnabled,
 		&i.CreateTime,
 		&i.UpdateTime,
 		&i.LoginsDisabled,
+		&i.DisableLogInWithGoogle,
+		&i.DisableLogInWithMicrosoft,
+		&i.DisableLogInWithPassword,
 	)
 	return i, err
 }

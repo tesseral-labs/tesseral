@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/openauth/openauth/internal/backend/authn"
@@ -34,15 +35,15 @@ func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrg
 	//}
 
 	var (
-		overrideLogInWithGoogleEnabled,
-		overrideLogInWithMicrosoftEnabled,
-		overrideLogInWithPasswordEnabled *bool
+		disableLogInWithGoogle,
+		disableLogInWithMicrosoft,
+		disableLogInWithPassword *bool
 	)
 
 	if req.Organization.OverrideLogInMethods != nil {
-		overrideLogInWithGoogleEnabled = &req.Organization.LogInWithGoogleEnabled
-		overrideLogInWithMicrosoftEnabled = &req.Organization.LogInWithMicrosoftEnabled
-		overrideLogInWithPasswordEnabled = &req.Organization.LogInWithPasswordEnabled
+		disableLogInWithGoogle = aws.Bool(!req.Organization.LogInWithGoogleEnabled)
+		disableLogInWithMicrosoft = aws.Bool(!req.Organization.LogInWithMicrosoftEnabled)
+		disableLogInWithPassword = aws.Bool(!req.Organization.LogInWithPasswordEnabled)
 	}
 
 	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
@@ -72,10 +73,10 @@ func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrg
 		//GoogleHostedDomain: googleHostedDomain,
 		//MicrosoftTenantID:  microsoftTenantId,
 
-		OverrideLogInMethods:              derefOrEmpty(req.Organization.OverrideLogInMethods),
-		OverrideLogInWithGoogleEnabled:    overrideLogInWithGoogleEnabled,
-		OverrideLogInWithMicrosoftEnabled: overrideLogInWithMicrosoftEnabled,
-		OverrideLogInWithPasswordEnabled:  overrideLogInWithPasswordEnabled,
+		OverrideLogInMethods:      derefOrEmpty(req.Organization.OverrideLogInMethods),
+		DisableLogInWithGoogle:    disableLogInWithGoogle,
+		DisableLogInWithMicrosoft: disableLogInWithMicrosoft,
+		DisableLogInWithPassword:  disableLogInWithPassword,
 
 		SamlEnabled: samlEnabled,
 		ScimEnabled: scimEnabled,
@@ -212,9 +213,9 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *backendv1.UpdateOrg
 	// update the override_log_in_with_..._enabled columns to null unless the
 	// organization is overriding those columns.
 	if req.Organization.GetOverrideLogInMethods() {
-		updates.OverrideLogInWithGoogleEnabled = &req.Organization.LogInWithGoogleEnabled
-		updates.OverrideLogInWithMicrosoftEnabled = &req.Organization.LogInWithMicrosoftEnabled
-		updates.OverrideLogInWithPasswordEnabled = &req.Organization.LogInWithPasswordEnabled
+		updates.DisableLogInWithGoogle = aws.Bool(!req.Organization.LogInWithGoogleEnabled)
+		updates.DisableLogInWithMicrosoft = aws.Bool(!req.Organization.LogInWithMicrosoftEnabled)
+		updates.DisableLogInWithPassword = aws.Bool(!req.Organization.LogInWithPasswordEnabled)
 	}
 
 	updates.SamlEnabled = qOrg.SamlEnabled
@@ -336,14 +337,15 @@ func parseOrganization(qProject queries.Project, qOrg queries.Organization) *bac
 	logInWithMicrosoftEnabled := qProject.LogInWithMicrosoftEnabled
 	logInWithPasswordEnabled := qProject.LogInWithPasswordEnabled
 
-	if qOrg.OverrideLogInMethods {
-		// Only allow overrides to restrict settings, not augment them. We can't
-		// easily enforce this rule in UpdateOrganization, because a project may
-		// retroactively remove support for a login method. Such an update
-		// should immediately affect all organizations.
-		logInWithGoogleEnabled = qProject.LogInWithGoogleEnabled && derefOrEmpty(qOrg.OverrideLogInWithGoogleEnabled)
-		logInWithMicrosoftEnabled = qProject.LogInWithMicrosoftEnabled && derefOrEmpty(qOrg.OverrideLogInWithMicrosoftEnabled)
-		logInWithPasswordEnabled = qProject.LogInWithPasswordEnabled && derefOrEmpty(qOrg.OverrideLogInWithPasswordEnabled)
+	// allow orgs to disable login methods
+	if derefOrEmpty(qOrg.DisableLogInWithGoogle) {
+		logInWithGoogleEnabled = false
+	}
+	if derefOrEmpty(qOrg.DisableLogInWithMicrosoft) {
+		logInWithMicrosoftEnabled = false
+	}
+	if derefOrEmpty(qOrg.DisableLogInWithPassword) {
+		logInWithPasswordEnabled = false
 	}
 
 	return &backendv1.Organization{

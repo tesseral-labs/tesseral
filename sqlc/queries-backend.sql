@@ -1,5 +1,5 @@
 -- name: CreateOrganization :one
-INSERT INTO organizations (id, project_id, display_name, override_log_in_methods, override_log_in_with_google_enabled, override_log_in_with_microsoft_enabled, override_log_in_with_password_enabled, saml_enabled, scim_enabled)
+INSERT INTO organizations (id, project_id, display_name, override_log_in_methods, disable_log_in_with_google, disable_log_in_with_microsoft, disable_log_in_with_password, saml_enabled, scim_enabled)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 RETURNING
     *;
@@ -73,9 +73,9 @@ SET
     update_time = now(),
     display_name = $2,
     override_log_in_methods = $3,
-    override_log_in_with_password_enabled = $4,
-    override_log_in_with_google_enabled = $5,
-    override_log_in_with_microsoft_enabled = $6,
+    disable_log_in_with_password = $4,
+    disable_log_in_with_google = $5,
+    disable_log_in_with_microsoft = $6,
     saml_enabled = $7,
     scim_enabled = $8
 WHERE

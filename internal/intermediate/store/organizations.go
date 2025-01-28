@@ -153,18 +153,28 @@ func (s *Store) ListSAMLOrganizations(ctx context.Context, req *intermediatev1.L
 	}, nil
 }
 
-func parseOrganization(organization queries.Organization, project queries.Project, samlConnection *queries.SamlConnection) *intermediatev1.Organization {
-	logInWithGoogleEnabled := project.LogInWithGoogleEnabled && (!organization.OverrideLogInMethods || organization.OverrideLogInWithGoogleEnabled != nil && *organization.OverrideLogInWithGoogleEnabled)
-	logInWithMicrosoftEnabled := project.LogInWithMicrosoftEnabled && (!organization.OverrideLogInMethods || organization.OverrideLogInWithMicrosoftEnabled != nil && *organization.OverrideLogInWithMicrosoftEnabled)
-	logInWithPasswordEnabled := project.LogInWithPasswordEnabled && (!organization.OverrideLogInMethods || organization.OverrideLogInWithPasswordEnabled != nil && *organization.OverrideLogInWithPasswordEnabled)
-	samlConnectionID := idformat.SAMLConnection.Format(samlConnection.ID)
+func parseOrganization(qOrg queries.Organization, qProject queries.Project, qSAMLConnection *queries.SamlConnection) *intermediatev1.Organization {
+	logInWithGoogleEnabled := qProject.LogInWithGoogleEnabled
+	logInWithMicrosoftEnabled := qProject.LogInWithMicrosoftEnabled
+	logInWithPasswordEnabled := qProject.LogInWithPasswordEnabled
+
+	// allow orgs to disable login methods
+	if derefOrEmpty(qOrg.DisableLogInWithGoogle) {
+		logInWithGoogleEnabled = false
+	}
+	if derefOrEmpty(qOrg.DisableLogInWithMicrosoft) {
+		logInWithMicrosoftEnabled = false
+	}
+	if derefOrEmpty(qOrg.DisableLogInWithPassword) {
+		logInWithPasswordEnabled = false
+	}
 
 	return &intermediatev1.Organization{
-		Id:                        idformat.Organization.Format(organization.ID),
-		DisplayName:               organization.DisplayName,
+		Id:                        idformat.Organization.Format(qOrg.ID),
+		DisplayName:               qOrg.DisplayName,
 		LogInWithGoogleEnabled:    logInWithGoogleEnabled,
 		LogInWithMicrosoftEnabled: logInWithMicrosoftEnabled,
 		LogInWithPasswordEnabled:  logInWithPasswordEnabled,
-		PrimarySamlConnectionId:   samlConnectionID,
+		PrimarySamlConnectionId:   idformat.SAMLConnection.Format(qSAMLConnection.ID),
 	}
 }
