@@ -294,32 +294,6 @@ func (q *Queries) CreateVerifiedEmail(ctx context.Context, arg CreateVerifiedEma
 	return i, err
 }
 
-const getEmailVerifiedByEmailVerificationChallenge = `-- name: GetEmailVerifiedByEmailVerificationChallenge :one
-SELECT
-    EXISTS (
-        SELECT
-            id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed
-        FROM
-            intermediate_sessions
-        WHERE
-            email = $2
-            AND email_verification_challenge_sha256 IS NOT NULL
-            AND email_verification_challenge_completed = TRUE
-            AND id = $1)
-`
-
-type GetEmailVerifiedByEmailVerificationChallengeParams struct {
-	ID    uuid.UUID
-	Email *string
-}
-
-func (q *Queries) GetEmailVerifiedByEmailVerificationChallenge(ctx context.Context, arg GetEmailVerifiedByEmailVerificationChallengeParams) (bool, error) {
-	row := q.db.QueryRow(ctx, getEmailVerifiedByEmailVerificationChallenge, arg.ID, arg.Email)
-	var exists bool
-	err := row.Scan(&exists)
-	return exists, err
-}
-
 const getEmailVerifiedByGoogleUserID = `-- name: GetEmailVerifiedByGoogleUserID :one
 SELECT
     EXISTS (
