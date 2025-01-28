@@ -300,19 +300,6 @@ SELECT
             AND email = $2
             AND microsoft_user_id = $3);
 
--- name: GetEmailVerifiedByEmailVerificationChallenge :one
-SELECT
-    EXISTS (
-        SELECT
-            *
-        FROM
-            intermediate_sessions
-        WHERE
-            email = $2
-            AND email_verification_challenge_sha256 IS NOT NULL
-            AND email_verification_challenge_completed = TRUE
-            AND id = $1);
-
 -- name: CreateOrganizationGoogleHostedDomain :one
 INSERT INTO organization_google_hosted_domains (id, organization_id, google_hosted_domain)
     VALUES ($1, $2, $3)

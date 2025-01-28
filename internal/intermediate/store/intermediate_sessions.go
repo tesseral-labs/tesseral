@@ -50,19 +50,10 @@ func (s *Store) getIntermediateSessionEmailVerified(ctx context.Context, q *quer
 		}
 	}
 
-	// If there's a successful email verification challenge associated with
-	// this intermediate session, then the email is verified.
-	qVerifiedEmailVerificationChallenge, err := q.GetEmailVerifiedByEmailVerificationChallenge(ctx, queries.GetEmailVerifiedByEmailVerificationChallengeParams{
-		ID:    qIntermediateSession.ID,
-		Email: qIntermediateSession.Email,
-	})
-	if err != nil {
-		return false, fmt.Errorf("get email verified by email verification challenge: %w", err)
-	}
-
-	if qVerifiedEmailVerificationChallenge {
+	if qIntermediateSession.EmailVerificationChallengeSha256 != nil && qIntermediateSession.EmailVerificationChallengeCompleted {
 		return true, nil
 	}
+
 	return false, nil
 }
 
