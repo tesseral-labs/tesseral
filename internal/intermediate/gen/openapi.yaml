@@ -455,12 +455,15 @@ components:
                     type: string
                 microsoftTenantId:
                     type: string
-                passwordVerified:
-                    type: boolean
                 organizationId:
                     type: string
+                passwordVerified:
+                    type: boolean
                 newUserPasswordBcrypt:
                     type: string
+                emailVerificationChallengeSha256:
+                    type: string
+                    format: bytes
         IssueEmailVerificationChallengeRequest:
             type: object
             properties:
@@ -468,9 +471,7 @@ components:
                     type: string
         IssueEmailVerificationChallengeResponse:
             type: object
-            properties:
-                emailVerificationChallengeId:
-                    type: string
+            properties: {}
         ListOrganizationsResponse:
             type: object
             properties:
@@ -573,8 +574,6 @@ components:
         VerifyEmailChallengeRequest:
             type: object
             properties:
-                emailVerificationChallengeId:
-                    type: string
                 code:
                     type: string
         VerifyEmailChallengeResponse:

@@ -130,9 +130,10 @@ message IntermediateSession {
   string google_hosted_domain = 6;
   string microsoft_user_id = 7;
   string microsoft_tenant_id = 8;
-  bool password_verified = 9;
-  string organization_id = 10;
+  string organization_id = 9;
+  bool password_verified = 10;
   optional string new_user_password_bcrypt = 11;
+  optional bytes email_verification_challenge_sha256 = 12;
 }
 
 message ProjectUISettings {
@@ -234,9 +235,7 @@ message IssueEmailVerificationChallengeRequest {
   string email = 1;
 }
 
-message IssueEmailVerificationChallengeResponse {
-  string email_verification_challenge_id = 1;
-}
+message IssueEmailVerificationChallengeResponse {}
 
 message ListOrganizationsRequest {
 }
@@ -254,7 +253,6 @@ message ListSAMLOrganizationsResponse {
 }
 
 message VerifyEmailChallengeRequest {
-  string email_verification_challenge_id = 1;
   string code = 2;
 }
 

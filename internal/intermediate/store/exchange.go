@@ -49,7 +49,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		return nil, fmt.Errorf("enforce organization login enabled: %w", err)
 	}
 
-	if err := s.validateAuthRequirementsSatisfied(ctx, q, qIntermediateSession.ID, qOrg.ID); err != nil {
+	if err := s.validateAuthRequirementsSatisfied(ctx, q, qIntermediateSession.ID); err != nil {
 		return nil, fmt.Errorf("validate auth requirements satisfied: %w", err)
 	}
 
@@ -109,10 +109,14 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 	}, nil
 }
 
-func (s *Store) validateAuthRequirementsSatisfied(ctx context.Context, q *queries.Queries, intermediateSessionID, organizationID uuid.UUID) error {
+func (s *Store) validateAuthRequirementsSatisfied(ctx context.Context, q *queries.Queries, intermediateSessionID uuid.UUID) error {
 	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, intermediateSessionID)
 	if err != nil {
 		return fmt.Errorf("get intermediate session by id: %w", err)
+	}
+
+	if qIntermediateSession.OrganizationID == nil {
+		return apierror.NewFailedPreconditionError("organization not set", fmt.Errorf("organization not set"))
 	}
 
 	emailVerified, err := s.getIntermediateSessionEmailVerified(ctx, q, qIntermediateSession.ID)
@@ -131,7 +135,7 @@ func (s *Store) validateAuthRequirementsSatisfied(ctx context.Context, q *querie
 
 	qOrg, err := q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
 		ProjectID: authn.ProjectID(ctx),
-		ID:        organizationID,
+		ID:        *qIntermediateSession.OrganizationID,
 	})
 	if err != nil {
 		return fmt.Errorf("get organization by id: %w", err)

@@ -19,33 +19,6 @@ WHERE
 RETURNING
     *;
 
--- name: CreateEmailVerificationChallenge :one
-INSERT INTO email_verification_challenges (id, intermediate_session_id, challenge_sha256, expire_time)
-    VALUES ($1, $2, $3, $4)
-RETURNING
-    *;
-
--- name: GetEmailVerificationChallengeByChallengeSHA :one
-SELECT
-    *
-FROM
-    email_verification_challenges
-WHERE
-    intermediate_session_id = $1
-    AND expire_time > now()
-    AND challenge_sha256 = $2;
-
--- name: CompleteEmailVerificationChallenge :one
-UPDATE
-    email_verification_challenges
-SET
-    complete_time = now(),
-    challenge_sha256 = NULL
-WHERE
-    id = $1
-RETURNING
-    *;
-
 -- name: CreateVerifiedEmail :one
 INSERT INTO oauth_verified_emails (id, project_id, email, google_user_id, microsoft_user_id)
     VALUES ($1, $2, $3, $4, $5)
@@ -283,6 +256,26 @@ WHERE
 RETURNING
     *;
 
+-- name: UpdateIntermediateSessionEmailVerificationChallengeSha256 :one
+UPDATE
+    intermediate_sessions
+SET
+    email_verification_challenge_sha256 = $1
+WHERE
+    id = $2
+RETURNING
+    *;
+
+-- name: UpdateIntermediateSessionEmailVerified :one
+UPDATE
+    intermediate_sessions
+SET
+    email_verified = $2
+WHERE
+    id = $1
+RETURNING
+    *;
+
 -- name: GetEmailVerifiedByGoogleUserID :one
 SELECT
     EXISTS (
@@ -313,10 +306,12 @@ SELECT
         SELECT
             *
         FROM
-            email_verification_challenges
+            intermediate_sessions
         WHERE
-            complete_time IS NOT NULL
-            AND intermediate_session_id = $1);
+            email = $2
+            AND email_verification_challenge_sha256 IS NOT NULL
+            AND email_verified = TRUE
+            AND id = $1);
 
 -- name: CreateOrganizationGoogleHostedDomain :one
 INSERT INTO organization_google_hosted_domains (id, organization_id, google_hosted_domain)
