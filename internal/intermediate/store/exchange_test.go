@@ -130,7 +130,7 @@ func TestStore_validateAuthRequirementsSatisfiedInner(t *testing.T) {
 		{
 			name: "password happy path",
 			qIntermediateSession: queries.IntermediateSession{
-				PasswordVerified: aws.Bool(true),
+				PasswordVerified: true,
 			},
 			emailVerified: true,
 			qOrg:          queries.Organization{},
@@ -142,7 +142,7 @@ func TestStore_validateAuthRequirementsSatisfiedInner(t *testing.T) {
 		{
 			name: "password email not verified",
 			qIntermediateSession: queries.IntermediateSession{
-				PasswordVerified: aws.Bool(true),
+				PasswordVerified: true,
 			},
 			emailVerified: false,
 			qOrg:          queries.Organization{},
@@ -154,7 +154,7 @@ func TestStore_validateAuthRequirementsSatisfiedInner(t *testing.T) {
 		{
 			name: "password not verified",
 			qIntermediateSession: queries.IntermediateSession{
-				PasswordVerified: aws.Bool(false),
+				PasswordVerified: false,
 			},
 			emailVerified: true,
 			qOrg:          queries.Organization{},
@@ -166,7 +166,7 @@ func TestStore_validateAuthRequirementsSatisfiedInner(t *testing.T) {
 		{
 			name: "password project not enabled",
 			qIntermediateSession: queries.IntermediateSession{
-				PasswordVerified: aws.Bool(true),
+				PasswordVerified: true,
 			},
 			emailVerified: true,
 			qOrg:          queries.Organization{},
@@ -178,7 +178,7 @@ func TestStore_validateAuthRequirementsSatisfiedInner(t *testing.T) {
 		{
 			name: "password org not enabled",
 			qIntermediateSession: queries.IntermediateSession{
-				PasswordVerified: aws.Bool(true),
+				PasswordVerified: true,
 			},
 			emailVerified: true,
 			qOrg: queries.Organization{
