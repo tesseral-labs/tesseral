@@ -37,6 +37,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import { PageTitle } from '@/components/page'
 
 const schema = z.object({
   displayName: z.string(),
@@ -100,8 +101,7 @@ export function EditOrganizationPage() {
   }
 
   return (
-    // TODO remove padding when app shell in place
-    <div className="pt-8">
+    <div>
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -130,12 +130,12 @@ export function EditOrganizationPage() {
         </BreadcrumbList>
       </Breadcrumb>
 
-      <h1 className="mt-4 mb-8 font-semibold text-2xl">
+      <PageTitle>
         Edit {getOrganizationResponse?.organization?.displayName}
-      </h1>
+      </PageTitle>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-8">
           <Card>
             <CardHeader>
               <CardTitle>Organization settings</CardTitle>
