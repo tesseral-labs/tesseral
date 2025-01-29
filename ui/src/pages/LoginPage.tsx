@@ -7,19 +7,24 @@ import Organizations from '@/views/Organizations'
 import EmailVerification from '@/views/EmailVerification'
 import Login from '@/views/Login'
 import PasswordVerification from '@/views/PasswordVerification'
+import RegisterPassword from '@/views/RegisterPassword'
 
 const LoginPage = () => {
   const location = useLocation()
-  const { view = LoginViews.Login } =
-    (location.state as { view: LoginViews }) || {}
+  const [view, setView] = useState<LoginViews>(LoginViews.Login)
 
   return (
     <>
-      {view === LoginViews.CreateOrganization && <CreateOrganization />}
-      {view === LoginViews.EmailVerification && <EmailVerification />}
-      {view === LoginViews.Login && <Login />}
-      {view === LoginViews.Organizations && <Organizations />}
+      {view === LoginViews.CreateOrganization && (
+        <CreateOrganization setView={setView} />
+      )}
+      {view === LoginViews.EmailVerification && (
+        <EmailVerification setView={setView} />
+      )}
+      {view === LoginViews.Login && <Login setView={setView} />}
+      {view === LoginViews.Organizations && <Organizations setView={setView} />}
       {view === LoginViews.PasswordVerification && <PasswordVerification />}
+      {view === LoginViews.RegisterPassword && <RegisterPassword />}
     </>
   )
 }

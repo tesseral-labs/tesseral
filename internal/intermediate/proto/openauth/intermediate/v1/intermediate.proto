@@ -228,6 +228,7 @@ message Organization {
   bool log_in_with_microsoft_enabled = 5;
   bool log_in_with_password_enabled = 6;
   string primary_saml_connection_id = 7;
+  bool user_exists = 8;
 }
 
 message IssueEmailVerificationChallengeRequest {

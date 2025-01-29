@@ -4,4 +4,5 @@ export enum LoginViews {
   EmailVerification = 'email-verification',
   Organizations = 'organizations',
   PasswordVerification = 'password-verification',
+  RegisterPassword = 'register-password',
 }

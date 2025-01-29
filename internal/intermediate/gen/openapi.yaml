@@ -505,6 +505,8 @@ components:
                     type: boolean
                 primarySamlConnectionId:
                     type: string
+                userExists:
+                    type: boolean
         RedeemGoogleOAuthCodeRequest:
             type: object
             properties:

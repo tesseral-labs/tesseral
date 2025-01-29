@@ -8,19 +8,30 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { exchangeIntermediateSessionForNewOrganizationSession } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
-import { useMutation } from '@connectrpc/connect-query'
-import React, { useState } from 'react'
+import {
+  createOrganization,
+  exchangeIntermediateSessionForSession,
+  whoami,
+} from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
+import { useMutation, useQuery } from '@connectrpc/connect-query'
+import React, { Dispatch, FC, SetStateAction, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { refresh } from '@/gen/openauth/frontend/v1/frontend-FrontendService_connectquery'
+import { LoginViews } from '@/lib/views'
 
-const CreateOrganization = () => {
+interface CreateOrganizationProps {
+  setView: Dispatch<SetStateAction<LoginViews>>
+}
+
+const CreateOrganization: FC<CreateOrganizationProps> = ({ setView }) => {
   const navigate = useNavigate()
+  const { data: whoamiRes } = useQuery(whoami)
 
   const [displayName, setDisplayName] = useState<string>('')
 
-  const exchangeIntermediateSessionForNewOrganizationMutation = useMutation(
-    exchangeIntermediateSessionForNewOrganizationSession,
+  const createOrganizationMutation = useMutation(createOrganization)
+  const exchangeIntermediateSessionForSessionMutation = useMutation(
+    exchangeIntermediateSessionForSession,
   )
 
   const refreshMutation = useMutation(refresh)
@@ -29,17 +40,26 @@ const CreateOrganization = () => {
     e.preventDefault()
 
     try {
+      await createOrganizationMutation.mutateAsync({
+        displayName,
+      })
+
+      if (
+        !whoamiRes?.intermediateSession?.googleUserId &&
+        !whoamiRes?.intermediateSession?.microsoftUserId
+      ) {
+        setView(LoginViews.RegisterPassword)
+        return
+      }
+
       const { refreshToken } =
-        await exchangeIntermediateSessionForNewOrganizationMutation.mutateAsync(
-          {
-            displayName,
-          },
-        )
+        await exchangeIntermediateSessionForSessionMutation.mutateAsync({})
 
       const { accessToken } = await refreshMutation.mutateAsync({})
 
       setRefreshToken(refreshToken)
       setAccessToken(accessToken)
+
       navigate('/settings')
     } catch (error) {
       console.error(error)
