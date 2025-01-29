@@ -205,15 +205,6 @@ func (s *Store) ListSAMLOrganizations(ctx context.Context, req *intermediatev1.L
 	}
 	defer rollback()
 
-	_, err = q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))
-	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, apierror.NewNotFoundError("intermediate session not found", fmt.Errorf("get intermediate session by id: %w", err))
-		}
-
-		return nil, fmt.Errorf("get intermediate session by id: %w", err)
-	}
-
 	domain, err := emailaddr.Parse(req.Email)
 	if err != nil {
 		return nil, apierror.NewInvalidArgumentError("invalid email address", fmt.Errorf("parse email: %w", err))
