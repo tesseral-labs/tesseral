@@ -87,7 +87,7 @@ func parseIntermediateSession(qIntermediateSession queries.IntermediateSession, 
 		GoogleHostedDomain:                   derefOrEmpty(qIntermediateSession.GoogleHostedDomain),
 		MicrosoftUserId:                      derefOrEmpty(qIntermediateSession.MicrosoftUserID),
 		MicrosoftTenantId:                    derefOrEmpty(qIntermediateSession.MicrosoftTenantID),
-		PasswordVerified:                     derefOrEmpty(qIntermediateSession.PasswordVerified),
+		PasswordVerified:                     qIntermediateSession.PasswordVerified,
 		NewUserPasswordRegistered:            qIntermediateSession.NewUserPasswordBcrypt != nil,
 		OrganizationId:                       organizationID,
 	}
