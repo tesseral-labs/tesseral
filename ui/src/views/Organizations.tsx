@@ -36,8 +36,8 @@ const Organizations: FC<OrganizationsProps> = ({ setView }) => {
 
   const isEmailLogin = (): boolean => {
     return (
-      !!!whoamiRes?.intermediateSession?.googleUserId &&
-      !!!whoamiRes?.intermediateSession?.microsoftUserId &&
+      !whoamiRes?.intermediateSession?.googleUserId &&
+      !whoamiRes?.intermediateSession?.microsoftUserId &&
       !!whoamiRes?.intermediateSession?.email
     )
   }

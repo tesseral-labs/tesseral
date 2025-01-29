@@ -100,6 +100,10 @@ func (s *Store) ListOrganizations(ctx context.Context, req *intermediatev1.ListO
 		return nil, fmt.Errorf("get intermediate session by id: %w", err)
 	}
 
+	if !authn.IntermediateSession(ctx).EmailVerified {
+		return nil, apierror.NewPermissionDeniedError("email not verified", fmt.Errorf("intermediate session has unverified email"))
+	}
+
 	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
@@ -124,7 +128,7 @@ func (s *Store) ListOrganizations(ctx context.Context, req *intermediatev1.ListO
 		// orgs with the same google hosted domain
 		qGoogleOrgs, err := q.ListOrganizationsByGoogleHostedDomain(ctx, queries.ListOrganizationsByGoogleHostedDomainParams{
 			ProjectID:          authn.ProjectID(ctx),
-			GoogleHostedDomain: derefOrEmpty(qIntermediateSession.GoogleHostedDomain),
+			GoogleHostedDomain: *qIntermediateSession.GoogleHostedDomain,
 		})
 		if err != nil {
 			return nil, fmt.Errorf("list organizations by google hosted domain: %w", err)
@@ -136,7 +140,7 @@ func (s *Store) ListOrganizations(ctx context.Context, req *intermediatev1.ListO
 		// orgs with the same microsoft tenant ID
 		qMicrosoftOrgs, err := q.ListOrganizationsByMicrosoftTenantID(ctx, queries.ListOrganizationsByMicrosoftTenantIDParams{
 			ProjectID:         authn.ProjectID(ctx),
-			MicrosoftTenantID: derefOrEmpty(qIntermediateSession.MicrosoftTenantID),
+			MicrosoftTenantID: *qIntermediateSession.MicrosoftTenantID,
 		})
 		if err != nil {
 			return nil, fmt.Errorf("list organizations by microsoft tenant id: %w", err)
@@ -147,7 +151,7 @@ func (s *Store) ListOrganizations(ctx context.Context, req *intermediatev1.ListO
 	// orgs with a matching user
 	qUserOrgs, err := q.ListOrganizationsByMatchingUser(ctx, queries.ListOrganizationsByMatchingUserParams{
 		ProjectID:       authn.ProjectID(ctx),
-		Email:           derefOrEmpty(qIntermediateSession.Email),
+		Email:           *qIntermediateSession.Email,
 		GoogleUserID:    qIntermediateSession.GoogleUserID,
 		MicrosoftUserID: qIntermediateSession.MicrosoftUserID,
 	})
@@ -168,25 +172,25 @@ func (s *Store) ListOrganizations(ctx context.Context, req *intermediatev1.ListO
 	}
 
 	var organizations []*intermediatev1.Organization
-	for _, organization := range qOrgsDeduped {
-		qSamlConnection, err := q.GetOrganizationPrimarySAMLConnection(ctx, organization.ID)
+	for _, qOrg := range qOrgsDeduped {
+		qSamlConnection, err := q.GetOrganizationPrimarySAMLConnection(ctx, qOrg.ID)
 		if err != nil && !errors.Is(err, pgx.ErrNoRows) {
 			return nil, apierror.NewNotFoundError("primary saml connection not found", fmt.Errorf("get organization primary saml connection: %w", err))
 		}
 
 		// Parse the organization before performing additional checks
-		pOrg := parseOrganization(organization, qProject, &qSamlConnection)
+		org := parseOrganization(qOrg, qProject, &qSamlConnection)
 
 		// Check if the user exists on the organization.
-		existingUser, err := s.matchEmailUser(ctx, q, organization, qIntermediateSession)
+		existingUser, err := s.matchEmailUser(ctx, q, qOrg, qIntermediateSession)
 		if err != nil {
 			return nil, fmt.Errorf("match email user: %w", err)
 		}
 
-		pOrg.UserExists = existingUser != nil
+		org.UserExists = existingUser != nil
 
 		// Append the parsed organization to the list of organizations.
-		organizations = append(organizations, pOrg)
+		organizations = append(organizations, org)
 	}
 
 	return &intermediatev1.ListOrganizationsResponse{
@@ -201,7 +205,7 @@ func (s *Store) ListSAMLOrganizations(ctx context.Context, req *intermediatev1.L
 	}
 	defer rollback()
 
-	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))
+	_, err = q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, apierror.NewNotFoundError("intermediate session not found", fmt.Errorf("get intermediate session by id: %w", err))
@@ -233,25 +237,14 @@ func (s *Store) ListSAMLOrganizations(ctx context.Context, req *intermediatev1.L
 	}
 
 	var organizations []*intermediatev1.Organization
-	for _, organization := range qOrganizations {
-		qSamlConnection, err := q.GetOrganizationPrimarySAMLConnection(ctx, organization.ID)
+	for _, qOrg := range qOrganizations {
+		qSamlConnection, err := q.GetOrganizationPrimarySAMLConnection(ctx, qOrg.ID)
 		if err != nil {
 			return nil, fmt.Errorf("get organization primary saml connection: %w", err)
 		}
 
-		// Parse the organization before performing additional checks
-		pOrg := parseOrganization(organization, qProject, &qSamlConnection)
-
-		// Check if the user exists on the organization.
-		existingUser, err := s.matchEmailUser(ctx, q, organization, qIntermediateSession)
-		if err != nil {
-			return nil, fmt.Errorf("user exists on organization with email: %w", err)
-		}
-
-		pOrg.UserExists = existingUser != nil
-
 		// Append the parsed organization to the list of organizations.
-		organizations = append(organizations, pOrg)
+		organizations = append(organizations, parseOrganization(qOrg, qProject, &qSamlConnection))
 	}
 
 	return &intermediatev1.ListSAMLOrganizationsResponse{
