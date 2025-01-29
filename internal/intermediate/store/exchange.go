@@ -121,10 +121,6 @@ func (s *Store) validateAuthRequirementsSatisfied(ctx context.Context, q *querie
 		return fmt.Errorf("get intermediate session verified: %w", err)
 	}
 
-	if !emailVerified {
-		return apierror.NewFailedPreconditionError("email not verified", nil)
-	}
-
 	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
 		return fmt.Errorf("get project by id: %w", err)
@@ -136,6 +132,14 @@ func (s *Store) validateAuthRequirementsSatisfied(ctx context.Context, q *querie
 	})
 	if err != nil {
 		return fmt.Errorf("get organization by id: %w", err)
+	}
+
+	return validateAuthRequirementsSatisfiedInner(qIntermediateSession, emailVerified, qProject, qOrg)
+}
+
+func validateAuthRequirementsSatisfiedInner(qIntermediateSession queries.IntermediateSession, emailVerified bool, qProject queries.Project, qOrg queries.Organization) error {
+	if !emailVerified {
+		return apierror.NewFailedPreconditionError("email not verified", nil)
 	}
 
 	googleEnabled := qProject.LogInWithGoogleEnabled
