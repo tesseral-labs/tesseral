@@ -175,6 +175,112 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /backend/v1/organizations/{organizationId}/google-hosted-domains:
+        get:
+            tags:
+                - BackendService
+            operationId: BackendService_GetOrganizationGoogleHostedDomains
+            parameters:
+                - name: organizationId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetOrganizationGoogleHostedDomainsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        patch:
+            tags:
+                - BackendService
+            operationId: BackendService_UpdateOrganizationGoogleHostedDomains
+            parameters:
+                - name: organizationId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/OrganizationGoogleHostedDomains'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateOrganizationGoogleHostedDomainsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /backend/v1/organizations/{organizationId}/microsoft-tenant-ids:
+        get:
+            tags:
+                - BackendService
+            operationId: BackendService_GetOrganizationMicrosoftTenantIDs
+            parameters:
+                - name: organizationId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetOrganizationMicrosoftTenantIDsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        patch:
+            tags:
+                - BackendService
+            operationId: BackendService_UpdateOrganizationMicrosoftTenantIDs
+            parameters:
+                - name: organizationId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/OrganizationMicrosoftTenantIDs'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateOrganizationMicrosoftTenantIDsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /backend/v1/project:
         get:
             tags:
@@ -602,6 +708,16 @@ components:
             properties:
                 intermediateSession:
                     $ref: '#/components/schemas/IntermediateSession'
+        GetOrganizationGoogleHostedDomainsResponse:
+            type: object
+            properties:
+                organizationGoogleHostedDomains:
+                    $ref: '#/components/schemas/OrganizationGoogleHostedDomains'
+        GetOrganizationMicrosoftTenantIDsResponse:
+            type: object
+            properties:
+                organizationMicrosoftTenantIds:
+                    $ref: '#/components/schemas/OrganizationMicrosoftTenantIDs'
         GetOrganizationResponse:
             type: object
             properties:
@@ -732,14 +848,28 @@ components:
                     type: boolean
                 logInWithMicrosoftEnabled:
                     type: boolean
-                googleHostedDomain:
-                    type: string
-                microsoftTenantId:
-                    type: string
                 samlEnabled:
                     type: boolean
                 scimEnabled:
                     type: boolean
+        OrganizationGoogleHostedDomains:
+            type: object
+            properties:
+                organizationId:
+                    type: string
+                googleHostedDomains:
+                    type: array
+                    items:
+                        type: string
+        OrganizationMicrosoftTenantIDs:
+            type: object
+            properties:
+                organizationId:
+                    type: string
+                microsoftTenantIds:
+                    type: array
+                    items:
+                        type: string
         Project:
             type: object
             properties:
@@ -843,6 +973,16 @@ components:
                         $ref: '#/components/schemas/GoogleProtobufAny'
                     description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
             description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
+        UpdateOrganizationGoogleHostedDomainsResponse:
+            type: object
+            properties:
+                organizationGoogleHostedDomains:
+                    $ref: '#/components/schemas/OrganizationGoogleHostedDomains'
+        UpdateOrganizationMicrosoftTenantIDsResponse:
+            type: object
+            properties:
+                organizationMicrosoftTenantIds:
+                    $ref: '#/components/schemas/OrganizationMicrosoftTenantIDs'
         UpdateOrganizationResponse:
             type: object
             properties:

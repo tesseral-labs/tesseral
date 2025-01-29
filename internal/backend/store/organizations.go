@@ -23,17 +23,6 @@ func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrg
 	}
 	defer rollback()
 
-	// TODO these are a list now
-	//var googleHostedDomain *string
-	//if req.Organization.GoogleHostedDomain != "" {
-	//	googleHostedDomain = &req.Organization.GoogleHostedDomain
-	//}
-	//
-	//var microsoftTenantId *string
-	//if req.Organization.MicrosoftTenantId != "" {
-	//	microsoftTenantId = &req.Organization.MicrosoftTenantId
-	//}
-
 	var (
 		disableLogInWithGoogle,
 		disableLogInWithMicrosoft,
@@ -66,13 +55,9 @@ func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrg
 	}
 
 	qOrg, err := q.CreateOrganization(ctx, queries.CreateOrganizationParams{
-		ID:          uuid.New(),
-		ProjectID:   authn.ProjectID(ctx),
-		DisplayName: req.Organization.DisplayName,
-		// TODO these are a list now
-		//GoogleHostedDomain: googleHostedDomain,
-		//MicrosoftTenantID:  microsoftTenantId,
-
+		ID:                        uuid.New(),
+		ProjectID:                 authn.ProjectID(ctx),
+		DisplayName:               req.Organization.DisplayName,
 		OverrideLogInMethods:      derefOrEmpty(req.Organization.OverrideLogInMethods),
 		DisableLogInWithGoogle:    disableLogInWithGoogle,
 		DisableLogInWithMicrosoft: disableLogInWithMicrosoft,
@@ -357,10 +342,7 @@ func parseOrganization(qProject queries.Project, qOrg queries.Organization) *bac
 		LogInWithPasswordEnabled:  logInWithPasswordEnabled,
 		LogInWithGoogleEnabled:    logInWithGoogleEnabled,
 		LogInWithMicrosoftEnabled: logInWithMicrosoftEnabled,
-		// TODO these are a list now
-		//GoogleHostedDomain:        derefOrEmpty(qOrg.GoogleHostedDomain),
-		//MicrosoftTenantId:         derefOrEmpty(qOrg.MicrosoftTenantID),
-		SamlEnabled: &qOrg.SamlEnabled,
-		ScimEnabled: &qOrg.ScimEnabled,
+		SamlEnabled:               &qOrg.SamlEnabled,
+		ScimEnabled:               &qOrg.ScimEnabled,
 	}
 }

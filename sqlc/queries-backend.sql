@@ -520,3 +520,43 @@ SET
 WHERE
     id = $1;
 
+-- name: GetOrganizationGoogleHostedDomains :many
+SELECT
+    organization_google_hosted_domains.*
+FROM
+    organization_google_hosted_domains
+    JOIN organizations ON organization_google_hosted_domains.organization_id = organizations.id
+WHERE
+    public.organization_google_hosted_domains.organization_id = $1
+    AND organizations.project_id = $2;
+
+-- name: DeleteOrganizationGoogleHostedDomains :exec
+DELETE FROM organization_google_hosted_domains
+WHERE organization_id = $1;
+
+-- name: CreateOrganizationGoogleHostedDomain :one
+INSERT INTO organization_google_hosted_domains (id, organization_id, google_hosted_domain)
+    VALUES ($1, $2, $3)
+RETURNING
+    *;
+
+-- name: GetOrganizationMicrosoftTenantIDs :many
+SELECT
+    organization_microsoft_tenant_ids.*
+FROM
+    organization_microsoft_tenant_ids
+    JOIN organizations ON organization_microsoft_tenant_ids.organization_id = organizations.id
+WHERE
+    public.organization_microsoft_tenant_ids.organization_id = $1
+    AND organizations.project_id = $2;
+
+-- name: DeleteOrganizationMicrosoftTenantIDs :exec
+DELETE FROM organization_microsoft_tenant_ids
+WHERE organization_id = $1;
+
+-- name: CreateOrganizationMicrosoftTenantID :one
+INSERT INTO organization_microsoft_tenant_ids (id, organization_id, microsoft_tenant_id)
+    VALUES ($1, $2, $3)
+RETURNING
+    *;
+

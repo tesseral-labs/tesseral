@@ -51,6 +51,18 @@ const (
 	// BackendServiceDeleteOrganizationProcedure is the fully-qualified name of the BackendService's
 	// DeleteOrganization RPC.
 	BackendServiceDeleteOrganizationProcedure = "/openauth.backend.v1.BackendService/DeleteOrganization"
+	// BackendServiceGetOrganizationGoogleHostedDomainsProcedure is the fully-qualified name of the
+	// BackendService's GetOrganizationGoogleHostedDomains RPC.
+	BackendServiceGetOrganizationGoogleHostedDomainsProcedure = "/openauth.backend.v1.BackendService/GetOrganizationGoogleHostedDomains"
+	// BackendServiceUpdateOrganizationGoogleHostedDomainsProcedure is the fully-qualified name of the
+	// BackendService's UpdateOrganizationGoogleHostedDomains RPC.
+	BackendServiceUpdateOrganizationGoogleHostedDomainsProcedure = "/openauth.backend.v1.BackendService/UpdateOrganizationGoogleHostedDomains"
+	// BackendServiceGetOrganizationMicrosoftTenantIDsProcedure is the fully-qualified name of the
+	// BackendService's GetOrganizationMicrosoftTenantIDs RPC.
+	BackendServiceGetOrganizationMicrosoftTenantIDsProcedure = "/openauth.backend.v1.BackendService/GetOrganizationMicrosoftTenantIDs"
+	// BackendServiceUpdateOrganizationMicrosoftTenantIDsProcedure is the fully-qualified name of the
+	// BackendService's UpdateOrganizationMicrosoftTenantIDs RPC.
+	BackendServiceUpdateOrganizationMicrosoftTenantIDsProcedure = "/openauth.backend.v1.BackendService/UpdateOrganizationMicrosoftTenantIDs"
 	// BackendServiceListSAMLConnectionsProcedure is the fully-qualified name of the BackendService's
 	// ListSAMLConnections RPC.
 	BackendServiceListSAMLConnectionsProcedure = "/openauth.backend.v1.BackendService/ListSAMLConnections"
@@ -168,6 +180,10 @@ type BackendServiceClient interface {
 	CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.CreateOrganizationResponse], error)
 	UpdateOrganization(context.Context, *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.UpdateOrganizationResponse], error)
 	DeleteOrganization(context.Context, *connect.Request[v1.DeleteOrganizationRequest]) (*connect.Response[v1.DeleteOrganizationResponse], error)
+	GetOrganizationGoogleHostedDomains(context.Context, *connect.Request[v1.GetOrganizationGoogleHostedDomainsRequest]) (*connect.Response[v1.GetOrganizationGoogleHostedDomainsResponse], error)
+	UpdateOrganizationGoogleHostedDomains(context.Context, *connect.Request[v1.UpdateOrganizationGoogleHostedDomainsRequest]) (*connect.Response[v1.UpdateOrganizationGoogleHostedDomainsResponse], error)
+	GetOrganizationMicrosoftTenantIDs(context.Context, *connect.Request[v1.GetOrganizationMicrosoftTenantIDsRequest]) (*connect.Response[v1.GetOrganizationMicrosoftTenantIDsResponse], error)
+	UpdateOrganizationMicrosoftTenantIDs(context.Context, *connect.Request[v1.UpdateOrganizationMicrosoftTenantIDsRequest]) (*connect.Response[v1.UpdateOrganizationMicrosoftTenantIDsResponse], error)
 	ListSAMLConnections(context.Context, *connect.Request[v1.ListSAMLConnectionsRequest]) (*connect.Response[v1.ListSAMLConnectionsResponse], error)
 	GetSAMLConnection(context.Context, *connect.Request[v1.GetSAMLConnectionRequest]) (*connect.Response[v1.GetSAMLConnectionResponse], error)
 	CreateSAMLConnection(context.Context, *connect.Request[v1.CreateSAMLConnectionRequest]) (*connect.Response[v1.CreateSAMLConnectionResponse], error)
@@ -251,6 +267,30 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			httpClient,
 			baseURL+BackendServiceDeleteOrganizationProcedure,
 			connect.WithSchema(backendServiceMethods.ByName("DeleteOrganization")),
+			connect.WithClientOptions(opts...),
+		),
+		getOrganizationGoogleHostedDomains: connect.NewClient[v1.GetOrganizationGoogleHostedDomainsRequest, v1.GetOrganizationGoogleHostedDomainsResponse](
+			httpClient,
+			baseURL+BackendServiceGetOrganizationGoogleHostedDomainsProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("GetOrganizationGoogleHostedDomains")),
+			connect.WithClientOptions(opts...),
+		),
+		updateOrganizationGoogleHostedDomains: connect.NewClient[v1.UpdateOrganizationGoogleHostedDomainsRequest, v1.UpdateOrganizationGoogleHostedDomainsResponse](
+			httpClient,
+			baseURL+BackendServiceUpdateOrganizationGoogleHostedDomainsProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("UpdateOrganizationGoogleHostedDomains")),
+			connect.WithClientOptions(opts...),
+		),
+		getOrganizationMicrosoftTenantIDs: connect.NewClient[v1.GetOrganizationMicrosoftTenantIDsRequest, v1.GetOrganizationMicrosoftTenantIDsResponse](
+			httpClient,
+			baseURL+BackendServiceGetOrganizationMicrosoftTenantIDsProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("GetOrganizationMicrosoftTenantIDs")),
+			connect.WithClientOptions(opts...),
+		),
+		updateOrganizationMicrosoftTenantIDs: connect.NewClient[v1.UpdateOrganizationMicrosoftTenantIDsRequest, v1.UpdateOrganizationMicrosoftTenantIDsResponse](
+			httpClient,
+			baseURL+BackendServiceUpdateOrganizationMicrosoftTenantIDsProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("UpdateOrganizationMicrosoftTenantIDs")),
 			connect.WithClientOptions(opts...),
 		),
 		listSAMLConnections: connect.NewClient[v1.ListSAMLConnectionsRequest, v1.ListSAMLConnectionsResponse](
@@ -474,48 +514,52 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 
 // backendServiceClient implements BackendServiceClient.
 type backendServiceClient struct {
-	getProject                   *connect.Client[v1.GetProjectRequest, v1.GetProjectResponse]
-	listOrganizations            *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
-	getOrganization              *connect.Client[v1.GetOrganizationRequest, v1.GetOrganizationResponse]
-	createOrganization           *connect.Client[v1.CreateOrganizationRequest, v1.CreateOrganizationResponse]
-	updateOrganization           *connect.Client[v1.UpdateOrganizationRequest, v1.UpdateOrganizationResponse]
-	deleteOrganization           *connect.Client[v1.DeleteOrganizationRequest, v1.DeleteOrganizationResponse]
-	listSAMLConnections          *connect.Client[v1.ListSAMLConnectionsRequest, v1.ListSAMLConnectionsResponse]
-	getSAMLConnection            *connect.Client[v1.GetSAMLConnectionRequest, v1.GetSAMLConnectionResponse]
-	createSAMLConnection         *connect.Client[v1.CreateSAMLConnectionRequest, v1.CreateSAMLConnectionResponse]
-	updateSAMLConnection         *connect.Client[v1.UpdateSAMLConnectionRequest, v1.UpdateSAMLConnectionResponse]
-	deleteSAMLConnection         *connect.Client[v1.DeleteSAMLConnectionRequest, v1.DeleteSAMLConnectionResponse]
-	listSCIMAPIKeys              *connect.Client[v1.ListSCIMAPIKeysRequest, v1.ListSCIMAPIKeysResponse]
-	getSCIMAPIKey                *connect.Client[v1.GetSCIMAPIKeyRequest, v1.GetSCIMAPIKeyResponse]
-	createSCIMAPIKey             *connect.Client[v1.CreateSCIMAPIKeyRequest, v1.CreateSCIMAPIKeyResponse]
-	updateSCIMAPIKey             *connect.Client[v1.UpdateSCIMAPIKeyRequest, v1.UpdateSCIMAPIKeyResponse]
-	deleteSCIMAPIKey             *connect.Client[v1.DeleteSCIMAPIKeyRequest, v1.DeleteSCIMAPIKeyResponse]
-	revokeSCIMAPIKey             *connect.Client[v1.RevokeSCIMAPIKeyRequest, v1.RevokeSCIMAPIKeyResponse]
-	listUsers                    *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
-	getUser                      *connect.Client[v1.GetUserRequest, v1.GetUserResponse]
-	listSessions                 *connect.Client[v1.ListSessionsRequest, v1.ListSessionsResponse]
-	getSession                   *connect.Client[v1.GetSessionRequest, v1.GetSessionResponse]
-	listIntermediateSessions     *connect.Client[v1.ListIntermediateSessionsRequest, v1.ListIntermediateSessionsResponse]
-	getIntermediateSession       *connect.Client[v1.GetIntermediateSessionRequest, v1.GetIntermediateSessionResponse]
-	disableOrganizationLogins    *connect.Client[v1.DisableOrganizationLoginsRequest, v1.DisableOrganizationLoginsResponse]
-	disableProjectLogins         *connect.Client[v1.DisableProjectLoginsRequest, v1.DisableProjectLoginsResponse]
-	enableOrganizationLogins     *connect.Client[v1.EnableOrganizationLoginsRequest, v1.EnableOrganizationLoginsResponse]
-	enableProjectLogins          *connect.Client[v1.EnableProjectLoginsRequest, v1.EnableProjectLoginsResponse]
-	updateProject                *connect.Client[v1.UpdateProjectRequest, v1.UpdateProjectResponse]
-	createProjectRedirectURI     *connect.Client[v1.CreateProjectRedirectURIRequest, v1.CreateProjectRedirectURIResponse]
-	deleteProjectRedirectURI     *connect.Client[v1.DeleteProjectRedirectURIRequest, v1.DeleteProjectRedirectURIResponse]
-	getProjectRedirectURI        *connect.Client[v1.GetProjectRedirectURIRequest, v1.GetProjectRedirectURIResponse]
-	listProjectRedirectURIs      *connect.Client[v1.ListProjectRedirectURIsRequest, v1.ListProjectRedirectURIsResponse]
-	updateProjectRedirectURI     *connect.Client[v1.UpdateProjectRedirectURIRequest, v1.UpdateProjectRedirectURIResponse]
-	getProjectUISettings         *connect.Client[v1.GetProjectUISettingsRequest, v1.GetProjectUISettingsResponse]
-	updateProjectUISettings      *connect.Client[v1.UpdateProjectUISettingsRequest, v1.UpdateProjectUISettingsResponse]
-	listProjectAPIKeys           *connect.Client[v1.ListProjectAPIKeysRequest, v1.ListProjectAPIKeysResponse]
-	getProjectAPIKey             *connect.Client[v1.GetProjectAPIKeyRequest, v1.GetProjectAPIKeyResponse]
-	createProjectAPIKey          *connect.Client[v1.CreateProjectAPIKeyRequest, v1.CreateProjectAPIKeyResponse]
-	updateProjectAPIKey          *connect.Client[v1.UpdateProjectAPIKeyRequest, v1.UpdateProjectAPIKeyResponse]
-	deleteProjectAPIKey          *connect.Client[v1.DeleteProjectAPIKeyRequest, v1.DeleteProjectAPIKeyResponse]
-	revokeProjectAPIKey          *connect.Client[v1.RevokeProjectAPIKeyRequest, v1.RevokeProjectAPIKeyResponse]
-	createUserImpersonationToken *connect.Client[v1.CreateUserImpersonationTokenRequest, v1.CreateUserImpersonationTokenResponse]
+	getProject                            *connect.Client[v1.GetProjectRequest, v1.GetProjectResponse]
+	listOrganizations                     *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
+	getOrganization                       *connect.Client[v1.GetOrganizationRequest, v1.GetOrganizationResponse]
+	createOrganization                    *connect.Client[v1.CreateOrganizationRequest, v1.CreateOrganizationResponse]
+	updateOrganization                    *connect.Client[v1.UpdateOrganizationRequest, v1.UpdateOrganizationResponse]
+	deleteOrganization                    *connect.Client[v1.DeleteOrganizationRequest, v1.DeleteOrganizationResponse]
+	getOrganizationGoogleHostedDomains    *connect.Client[v1.GetOrganizationGoogleHostedDomainsRequest, v1.GetOrganizationGoogleHostedDomainsResponse]
+	updateOrganizationGoogleHostedDomains *connect.Client[v1.UpdateOrganizationGoogleHostedDomainsRequest, v1.UpdateOrganizationGoogleHostedDomainsResponse]
+	getOrganizationMicrosoftTenantIDs     *connect.Client[v1.GetOrganizationMicrosoftTenantIDsRequest, v1.GetOrganizationMicrosoftTenantIDsResponse]
+	updateOrganizationMicrosoftTenantIDs  *connect.Client[v1.UpdateOrganizationMicrosoftTenantIDsRequest, v1.UpdateOrganizationMicrosoftTenantIDsResponse]
+	listSAMLConnections                   *connect.Client[v1.ListSAMLConnectionsRequest, v1.ListSAMLConnectionsResponse]
+	getSAMLConnection                     *connect.Client[v1.GetSAMLConnectionRequest, v1.GetSAMLConnectionResponse]
+	createSAMLConnection                  *connect.Client[v1.CreateSAMLConnectionRequest, v1.CreateSAMLConnectionResponse]
+	updateSAMLConnection                  *connect.Client[v1.UpdateSAMLConnectionRequest, v1.UpdateSAMLConnectionResponse]
+	deleteSAMLConnection                  *connect.Client[v1.DeleteSAMLConnectionRequest, v1.DeleteSAMLConnectionResponse]
+	listSCIMAPIKeys                       *connect.Client[v1.ListSCIMAPIKeysRequest, v1.ListSCIMAPIKeysResponse]
+	getSCIMAPIKey                         *connect.Client[v1.GetSCIMAPIKeyRequest, v1.GetSCIMAPIKeyResponse]
+	createSCIMAPIKey                      *connect.Client[v1.CreateSCIMAPIKeyRequest, v1.CreateSCIMAPIKeyResponse]
+	updateSCIMAPIKey                      *connect.Client[v1.UpdateSCIMAPIKeyRequest, v1.UpdateSCIMAPIKeyResponse]
+	deleteSCIMAPIKey                      *connect.Client[v1.DeleteSCIMAPIKeyRequest, v1.DeleteSCIMAPIKeyResponse]
+	revokeSCIMAPIKey                      *connect.Client[v1.RevokeSCIMAPIKeyRequest, v1.RevokeSCIMAPIKeyResponse]
+	listUsers                             *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
+	getUser                               *connect.Client[v1.GetUserRequest, v1.GetUserResponse]
+	listSessions                          *connect.Client[v1.ListSessionsRequest, v1.ListSessionsResponse]
+	getSession                            *connect.Client[v1.GetSessionRequest, v1.GetSessionResponse]
+	listIntermediateSessions              *connect.Client[v1.ListIntermediateSessionsRequest, v1.ListIntermediateSessionsResponse]
+	getIntermediateSession                *connect.Client[v1.GetIntermediateSessionRequest, v1.GetIntermediateSessionResponse]
+	disableOrganizationLogins             *connect.Client[v1.DisableOrganizationLoginsRequest, v1.DisableOrganizationLoginsResponse]
+	disableProjectLogins                  *connect.Client[v1.DisableProjectLoginsRequest, v1.DisableProjectLoginsResponse]
+	enableOrganizationLogins              *connect.Client[v1.EnableOrganizationLoginsRequest, v1.EnableOrganizationLoginsResponse]
+	enableProjectLogins                   *connect.Client[v1.EnableProjectLoginsRequest, v1.EnableProjectLoginsResponse]
+	updateProject                         *connect.Client[v1.UpdateProjectRequest, v1.UpdateProjectResponse]
+	createProjectRedirectURI              *connect.Client[v1.CreateProjectRedirectURIRequest, v1.CreateProjectRedirectURIResponse]
+	deleteProjectRedirectURI              *connect.Client[v1.DeleteProjectRedirectURIRequest, v1.DeleteProjectRedirectURIResponse]
+	getProjectRedirectURI                 *connect.Client[v1.GetProjectRedirectURIRequest, v1.GetProjectRedirectURIResponse]
+	listProjectRedirectURIs               *connect.Client[v1.ListProjectRedirectURIsRequest, v1.ListProjectRedirectURIsResponse]
+	updateProjectRedirectURI              *connect.Client[v1.UpdateProjectRedirectURIRequest, v1.UpdateProjectRedirectURIResponse]
+	getProjectUISettings                  *connect.Client[v1.GetProjectUISettingsRequest, v1.GetProjectUISettingsResponse]
+	updateProjectUISettings               *connect.Client[v1.UpdateProjectUISettingsRequest, v1.UpdateProjectUISettingsResponse]
+	listProjectAPIKeys                    *connect.Client[v1.ListProjectAPIKeysRequest, v1.ListProjectAPIKeysResponse]
+	getProjectAPIKey                      *connect.Client[v1.GetProjectAPIKeyRequest, v1.GetProjectAPIKeyResponse]
+	createProjectAPIKey                   *connect.Client[v1.CreateProjectAPIKeyRequest, v1.CreateProjectAPIKeyResponse]
+	updateProjectAPIKey                   *connect.Client[v1.UpdateProjectAPIKeyRequest, v1.UpdateProjectAPIKeyResponse]
+	deleteProjectAPIKey                   *connect.Client[v1.DeleteProjectAPIKeyRequest, v1.DeleteProjectAPIKeyResponse]
+	revokeProjectAPIKey                   *connect.Client[v1.RevokeProjectAPIKeyRequest, v1.RevokeProjectAPIKeyResponse]
+	createUserImpersonationToken          *connect.Client[v1.CreateUserImpersonationTokenRequest, v1.CreateUserImpersonationTokenResponse]
 }
 
 // GetProject calls openauth.backend.v1.BackendService.GetProject.
@@ -546,6 +590,30 @@ func (c *backendServiceClient) UpdateOrganization(ctx context.Context, req *conn
 // DeleteOrganization calls openauth.backend.v1.BackendService.DeleteOrganization.
 func (c *backendServiceClient) DeleteOrganization(ctx context.Context, req *connect.Request[v1.DeleteOrganizationRequest]) (*connect.Response[v1.DeleteOrganizationResponse], error) {
 	return c.deleteOrganization.CallUnary(ctx, req)
+}
+
+// GetOrganizationGoogleHostedDomains calls
+// openauth.backend.v1.BackendService.GetOrganizationGoogleHostedDomains.
+func (c *backendServiceClient) GetOrganizationGoogleHostedDomains(ctx context.Context, req *connect.Request[v1.GetOrganizationGoogleHostedDomainsRequest]) (*connect.Response[v1.GetOrganizationGoogleHostedDomainsResponse], error) {
+	return c.getOrganizationGoogleHostedDomains.CallUnary(ctx, req)
+}
+
+// UpdateOrganizationGoogleHostedDomains calls
+// openauth.backend.v1.BackendService.UpdateOrganizationGoogleHostedDomains.
+func (c *backendServiceClient) UpdateOrganizationGoogleHostedDomains(ctx context.Context, req *connect.Request[v1.UpdateOrganizationGoogleHostedDomainsRequest]) (*connect.Response[v1.UpdateOrganizationGoogleHostedDomainsResponse], error) {
+	return c.updateOrganizationGoogleHostedDomains.CallUnary(ctx, req)
+}
+
+// GetOrganizationMicrosoftTenantIDs calls
+// openauth.backend.v1.BackendService.GetOrganizationMicrosoftTenantIDs.
+func (c *backendServiceClient) GetOrganizationMicrosoftTenantIDs(ctx context.Context, req *connect.Request[v1.GetOrganizationMicrosoftTenantIDsRequest]) (*connect.Response[v1.GetOrganizationMicrosoftTenantIDsResponse], error) {
+	return c.getOrganizationMicrosoftTenantIDs.CallUnary(ctx, req)
+}
+
+// UpdateOrganizationMicrosoftTenantIDs calls
+// openauth.backend.v1.BackendService.UpdateOrganizationMicrosoftTenantIDs.
+func (c *backendServiceClient) UpdateOrganizationMicrosoftTenantIDs(ctx context.Context, req *connect.Request[v1.UpdateOrganizationMicrosoftTenantIDsRequest]) (*connect.Response[v1.UpdateOrganizationMicrosoftTenantIDsResponse], error) {
+	return c.updateOrganizationMicrosoftTenantIDs.CallUnary(ctx, req)
 }
 
 // ListSAMLConnections calls openauth.backend.v1.BackendService.ListSAMLConnections.
@@ -737,6 +805,10 @@ type BackendServiceHandler interface {
 	CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.CreateOrganizationResponse], error)
 	UpdateOrganization(context.Context, *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.UpdateOrganizationResponse], error)
 	DeleteOrganization(context.Context, *connect.Request[v1.DeleteOrganizationRequest]) (*connect.Response[v1.DeleteOrganizationResponse], error)
+	GetOrganizationGoogleHostedDomains(context.Context, *connect.Request[v1.GetOrganizationGoogleHostedDomainsRequest]) (*connect.Response[v1.GetOrganizationGoogleHostedDomainsResponse], error)
+	UpdateOrganizationGoogleHostedDomains(context.Context, *connect.Request[v1.UpdateOrganizationGoogleHostedDomainsRequest]) (*connect.Response[v1.UpdateOrganizationGoogleHostedDomainsResponse], error)
+	GetOrganizationMicrosoftTenantIDs(context.Context, *connect.Request[v1.GetOrganizationMicrosoftTenantIDsRequest]) (*connect.Response[v1.GetOrganizationMicrosoftTenantIDsResponse], error)
+	UpdateOrganizationMicrosoftTenantIDs(context.Context, *connect.Request[v1.UpdateOrganizationMicrosoftTenantIDsRequest]) (*connect.Response[v1.UpdateOrganizationMicrosoftTenantIDsResponse], error)
 	ListSAMLConnections(context.Context, *connect.Request[v1.ListSAMLConnectionsRequest]) (*connect.Response[v1.ListSAMLConnectionsResponse], error)
 	GetSAMLConnection(context.Context, *connect.Request[v1.GetSAMLConnectionRequest]) (*connect.Response[v1.GetSAMLConnectionResponse], error)
 	CreateSAMLConnection(context.Context, *connect.Request[v1.CreateSAMLConnectionRequest]) (*connect.Response[v1.CreateSAMLConnectionResponse], error)
@@ -816,6 +888,30 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		BackendServiceDeleteOrganizationProcedure,
 		svc.DeleteOrganization,
 		connect.WithSchema(backendServiceMethods.ByName("DeleteOrganization")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceGetOrganizationGoogleHostedDomainsHandler := connect.NewUnaryHandler(
+		BackendServiceGetOrganizationGoogleHostedDomainsProcedure,
+		svc.GetOrganizationGoogleHostedDomains,
+		connect.WithSchema(backendServiceMethods.ByName("GetOrganizationGoogleHostedDomains")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceUpdateOrganizationGoogleHostedDomainsHandler := connect.NewUnaryHandler(
+		BackendServiceUpdateOrganizationGoogleHostedDomainsProcedure,
+		svc.UpdateOrganizationGoogleHostedDomains,
+		connect.WithSchema(backendServiceMethods.ByName("UpdateOrganizationGoogleHostedDomains")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceGetOrganizationMicrosoftTenantIDsHandler := connect.NewUnaryHandler(
+		BackendServiceGetOrganizationMicrosoftTenantIDsProcedure,
+		svc.GetOrganizationMicrosoftTenantIDs,
+		connect.WithSchema(backendServiceMethods.ByName("GetOrganizationMicrosoftTenantIDs")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceUpdateOrganizationMicrosoftTenantIDsHandler := connect.NewUnaryHandler(
+		BackendServiceUpdateOrganizationMicrosoftTenantIDsProcedure,
+		svc.UpdateOrganizationMicrosoftTenantIDs,
+		connect.WithSchema(backendServiceMethods.ByName("UpdateOrganizationMicrosoftTenantIDs")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceListSAMLConnectionsHandler := connect.NewUnaryHandler(
@@ -1048,6 +1144,14 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceUpdateOrganizationHandler.ServeHTTP(w, r)
 		case BackendServiceDeleteOrganizationProcedure:
 			backendServiceDeleteOrganizationHandler.ServeHTTP(w, r)
+		case BackendServiceGetOrganizationGoogleHostedDomainsProcedure:
+			backendServiceGetOrganizationGoogleHostedDomainsHandler.ServeHTTP(w, r)
+		case BackendServiceUpdateOrganizationGoogleHostedDomainsProcedure:
+			backendServiceUpdateOrganizationGoogleHostedDomainsHandler.ServeHTTP(w, r)
+		case BackendServiceGetOrganizationMicrosoftTenantIDsProcedure:
+			backendServiceGetOrganizationMicrosoftTenantIDsHandler.ServeHTTP(w, r)
+		case BackendServiceUpdateOrganizationMicrosoftTenantIDsProcedure:
+			backendServiceUpdateOrganizationMicrosoftTenantIDsHandler.ServeHTTP(w, r)
 		case BackendServiceListSAMLConnectionsProcedure:
 			backendServiceListSAMLConnectionsHandler.ServeHTTP(w, r)
 		case BackendServiceGetSAMLConnectionProcedure:
@@ -1151,6 +1255,22 @@ func (UnimplementedBackendServiceHandler) UpdateOrganization(context.Context, *c
 
 func (UnimplementedBackendServiceHandler) DeleteOrganization(context.Context, *connect.Request[v1.DeleteOrganizationRequest]) (*connect.Response[v1.DeleteOrganizationResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.DeleteOrganization is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) GetOrganizationGoogleHostedDomains(context.Context, *connect.Request[v1.GetOrganizationGoogleHostedDomainsRequest]) (*connect.Response[v1.GetOrganizationGoogleHostedDomainsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetOrganizationGoogleHostedDomains is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) UpdateOrganizationGoogleHostedDomains(context.Context, *connect.Request[v1.UpdateOrganizationGoogleHostedDomainsRequest]) (*connect.Response[v1.UpdateOrganizationGoogleHostedDomainsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.UpdateOrganizationGoogleHostedDomains is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) GetOrganizationMicrosoftTenantIDs(context.Context, *connect.Request[v1.GetOrganizationMicrosoftTenantIDsRequest]) (*connect.Response[v1.GetOrganizationMicrosoftTenantIDsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetOrganizationMicrosoftTenantIDs is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) UpdateOrganizationMicrosoftTenantIDs(context.Context, *connect.Request[v1.UpdateOrganizationMicrosoftTenantIDsRequest]) (*connect.Response[v1.UpdateOrganizationMicrosoftTenantIDsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.UpdateOrganizationMicrosoftTenantIDs is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) ListSAMLConnections(context.Context, *connect.Request[v1.ListSAMLConnectionsRequest]) (*connect.Response[v1.ListSAMLConnectionsResponse], error) {

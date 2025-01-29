@@ -61,6 +61,46 @@ func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganization
 	return i, err
 }
 
+const createOrganizationGoogleHostedDomain = `-- name: CreateOrganizationGoogleHostedDomain :one
+INSERT INTO organization_google_hosted_domains (id, organization_id, google_hosted_domain)
+    VALUES ($1, $2, $3)
+RETURNING
+    id, organization_id, google_hosted_domain
+`
+
+type CreateOrganizationGoogleHostedDomainParams struct {
+	ID                 uuid.UUID
+	OrganizationID     uuid.UUID
+	GoogleHostedDomain string
+}
+
+func (q *Queries) CreateOrganizationGoogleHostedDomain(ctx context.Context, arg CreateOrganizationGoogleHostedDomainParams) (OrganizationGoogleHostedDomain, error) {
+	row := q.db.QueryRow(ctx, createOrganizationGoogleHostedDomain, arg.ID, arg.OrganizationID, arg.GoogleHostedDomain)
+	var i OrganizationGoogleHostedDomain
+	err := row.Scan(&i.ID, &i.OrganizationID, &i.GoogleHostedDomain)
+	return i, err
+}
+
+const createOrganizationMicrosoftTenantID = `-- name: CreateOrganizationMicrosoftTenantID :one
+INSERT INTO organization_microsoft_tenant_ids (id, organization_id, microsoft_tenant_id)
+    VALUES ($1, $2, $3)
+RETURNING
+    id, organization_id, microsoft_tenant_id
+`
+
+type CreateOrganizationMicrosoftTenantIDParams struct {
+	ID                uuid.UUID
+	OrganizationID    uuid.UUID
+	MicrosoftTenantID string
+}
+
+func (q *Queries) CreateOrganizationMicrosoftTenantID(ctx context.Context, arg CreateOrganizationMicrosoftTenantIDParams) (OrganizationMicrosoftTenantID, error) {
+	row := q.db.QueryRow(ctx, createOrganizationMicrosoftTenantID, arg.ID, arg.OrganizationID, arg.MicrosoftTenantID)
+	var i OrganizationMicrosoftTenantID
+	err := row.Scan(&i.ID, &i.OrganizationID, &i.MicrosoftTenantID)
+	return i, err
+}
+
 const createProjectAPIKey = `-- name: CreateProjectAPIKey :one
 INSERT INTO project_api_keys (id, project_id, display_name, secret_token_sha256)
     VALUES ($1, $2, $3, $4)
@@ -243,6 +283,26 @@ func (q *Queries) DeleteOrganization(ctx context.Context, id uuid.UUID) error {
 	return err
 }
 
+const deleteOrganizationGoogleHostedDomains = `-- name: DeleteOrganizationGoogleHostedDomains :exec
+DELETE FROM organization_google_hosted_domains
+WHERE organization_id = $1
+`
+
+func (q *Queries) DeleteOrganizationGoogleHostedDomains(ctx context.Context, organizationID uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteOrganizationGoogleHostedDomains, organizationID)
+	return err
+}
+
+const deleteOrganizationMicrosoftTenantIDs = `-- name: DeleteOrganizationMicrosoftTenantIDs :exec
+DELETE FROM organization_microsoft_tenant_ids
+WHERE organization_id = $1
+`
+
+func (q *Queries) DeleteOrganizationMicrosoftTenantIDs(ctx context.Context, organizationID uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteOrganizationMicrosoftTenantIDs, organizationID)
+	return err
+}
+
 const deleteProjectAPIKey = `-- name: DeleteProjectAPIKey :exec
 DELETE FROM project_api_keys
 WHERE id = $1
@@ -419,6 +479,78 @@ func (q *Queries) GetOrganizationByProjectIDAndID(ctx context.Context, arg GetOr
 		&i.DisableLogInWithPassword,
 	)
 	return i, err
+}
+
+const getOrganizationGoogleHostedDomains = `-- name: GetOrganizationGoogleHostedDomains :many
+SELECT
+    organization_google_hosted_domains.id, organization_google_hosted_domains.organization_id, organization_google_hosted_domains.google_hosted_domain
+FROM
+    organization_google_hosted_domains
+    JOIN organizations ON organization_google_hosted_domains.organization_id = organizations.id
+WHERE
+    public.organization_google_hosted_domains.organization_id = $1
+    AND organizations.project_id = $2
+`
+
+type GetOrganizationGoogleHostedDomainsParams struct {
+	OrganizationID uuid.UUID
+	ProjectID      uuid.UUID
+}
+
+func (q *Queries) GetOrganizationGoogleHostedDomains(ctx context.Context, arg GetOrganizationGoogleHostedDomainsParams) ([]OrganizationGoogleHostedDomain, error) {
+	rows, err := q.db.Query(ctx, getOrganizationGoogleHostedDomains, arg.OrganizationID, arg.ProjectID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []OrganizationGoogleHostedDomain
+	for rows.Next() {
+		var i OrganizationGoogleHostedDomain
+		if err := rows.Scan(&i.ID, &i.OrganizationID, &i.GoogleHostedDomain); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getOrganizationMicrosoftTenantIDs = `-- name: GetOrganizationMicrosoftTenantIDs :many
+SELECT
+    organization_microsoft_tenant_ids.id, organization_microsoft_tenant_ids.organization_id, organization_microsoft_tenant_ids.microsoft_tenant_id
+FROM
+    organization_microsoft_tenant_ids
+    JOIN organizations ON organization_microsoft_tenant_ids.organization_id = organizations.id
+WHERE
+    public.organization_microsoft_tenant_ids.organization_id = $1
+    AND organizations.project_id = $2
+`
+
+type GetOrganizationMicrosoftTenantIDsParams struct {
+	OrganizationID uuid.UUID
+	ProjectID      uuid.UUID
+}
+
+func (q *Queries) GetOrganizationMicrosoftTenantIDs(ctx context.Context, arg GetOrganizationMicrosoftTenantIDsParams) ([]OrganizationMicrosoftTenantID, error) {
+	rows, err := q.db.Query(ctx, getOrganizationMicrosoftTenantIDs, arg.OrganizationID, arg.ProjectID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []OrganizationMicrosoftTenantID
+	for rows.Next() {
+		var i OrganizationMicrosoftTenantID
+		if err := rows.Scan(&i.ID, &i.OrganizationID, &i.MicrosoftTenantID); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const getProjectAPIKey = `-- name: GetProjectAPIKey :one
