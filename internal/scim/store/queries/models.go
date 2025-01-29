@@ -68,7 +68,7 @@ type IntermediateSession struct {
 	GoogleUserID                        *string
 	MicrosoftTenantID                   *string
 	MicrosoftUserID                     *string
-	PasswordVerified                    *bool
+	PasswordVerified                    bool
 	OrganizationID                      *uuid.UUID
 	UpdateTime                          *time.Time
 	SecretTokenSha256                   []byte

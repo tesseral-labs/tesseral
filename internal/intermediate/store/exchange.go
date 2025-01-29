@@ -163,7 +163,7 @@ func validateAuthRequirementsSatisfiedInner(qIntermediateSession queries.Interme
 	if microsoftEnabled && qIntermediateSession.MicrosoftUserID != nil {
 		return nil
 	}
-	if passwordEnabled && qIntermediateSession.PasswordVerified != nil && *qIntermediateSession.PasswordVerified { // TODO password_verified should be non-null
+	if passwordEnabled && qIntermediateSession.PasswordVerified {
 		return nil
 	}
 
