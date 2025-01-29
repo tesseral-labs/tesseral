@@ -85,16 +85,20 @@ func (s *Store) CreateOrganization(ctx context.Context, req *intermediatev1.Crea
 }
 
 func (s *Store) ListOrganizations(ctx context.Context, req *intermediatev1.ListOrganizationsRequest) (*intermediatev1.ListOrganizationsResponse, error) {
-	intermediateSession := authn.IntermediateSession(ctx)
-	if !intermediateSession.EmailVerified {
-		return nil, apierror.NewPermissionDeniedError("email not verified", nil)
-	}
-
 	_, q, _, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
 	defer rollback()
+
+	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("intermediate session not found", fmt.Errorf("get intermediate session by id: %w", err))
+		}
+
+		return nil, fmt.Errorf("get intermediate session by id: %w", err)
+	}
 
 	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
@@ -116,11 +120,11 @@ func (s *Store) ListOrganizations(ctx context.Context, req *intermediatev1.ListO
 	// address.
 	var qOrgs []queries.Organization
 
-	if intermediateSession.GoogleHostedDomain != "" {
+	if qIntermediateSession.GoogleHostedDomain != nil {
 		// orgs with the same google hosted domain
 		qGoogleOrgs, err := q.ListOrganizationsByGoogleHostedDomain(ctx, queries.ListOrganizationsByGoogleHostedDomainParams{
 			ProjectID:          authn.ProjectID(ctx),
-			GoogleHostedDomain: intermediateSession.GoogleHostedDomain,
+			GoogleHostedDomain: derefOrEmpty(qIntermediateSession.GoogleHostedDomain),
 		})
 		if err != nil {
 			return nil, fmt.Errorf("list organizations by google hosted domain: %w", err)
@@ -128,11 +132,11 @@ func (s *Store) ListOrganizations(ctx context.Context, req *intermediatev1.ListO
 		qOrgs = append(qOrgs, qGoogleOrgs...)
 	}
 
-	if intermediateSession.MicrosoftTenantId != "" {
+	if qIntermediateSession.MicrosoftTenantID != nil {
 		// orgs with the same microsoft tenant ID
 		qMicrosoftOrgs, err := q.ListOrganizationsByMicrosoftTenantID(ctx, queries.ListOrganizationsByMicrosoftTenantIDParams{
 			ProjectID:         authn.ProjectID(ctx),
-			MicrosoftTenantID: intermediateSession.MicrosoftTenantId,
+			MicrosoftTenantID: derefOrEmpty(qIntermediateSession.MicrosoftTenantID),
 		})
 		if err != nil {
 			return nil, fmt.Errorf("list organizations by microsoft tenant id: %w", err)
@@ -143,9 +147,9 @@ func (s *Store) ListOrganizations(ctx context.Context, req *intermediatev1.ListO
 	// orgs with a matching user
 	qUserOrgs, err := q.ListOrganizationsByMatchingUser(ctx, queries.ListOrganizationsByMatchingUserParams{
 		ProjectID:       authn.ProjectID(ctx),
-		Email:           intermediateSession.Email,
-		GoogleUserID:    refOrNil(intermediateSession.GoogleUserId),
-		MicrosoftUserID: refOrNil(intermediateSession.MicrosoftUserId),
+		Email:           derefOrEmpty(qIntermediateSession.Email),
+		GoogleUserID:    qIntermediateSession.GoogleUserID,
+		MicrosoftUserID: qIntermediateSession.MicrosoftUserID,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("list organizations by matching user: %w", err)
@@ -174,37 +178,12 @@ func (s *Store) ListOrganizations(ctx context.Context, req *intermediatev1.ListO
 		pOrg := parseOrganization(organization, qProject, &qSamlConnection)
 
 		// Check if the user exists on the organization.
-		userExists := false
-		if intermediateSession.GoogleUserId != "" {
-			userExists, err = q.UserExistsOnOrganizationWithGoogleUserID(ctx, queries.UserExistsOnOrganizationWithGoogleUserIDParams{
-				OrganizationID: organization.ID,
-				GoogleUserID:   refOrNil(intermediateSession.GoogleUserId),
-			})
-			if err != nil {
-				return nil, fmt.Errorf("user exists on organization with google user ID: %w", err)
-			}
+		existingUser, err := s.matchEmailUser(ctx, q, organization, qIntermediateSession)
+		if err != nil {
+			return nil, fmt.Errorf("match email user: %w", err)
 		}
 
-		if !userExists && intermediateSession.MicrosoftUserId != "" {
-			userExists, err = q.UserExistsOnOrganizationWithMicrosoftUserID(ctx, queries.UserExistsOnOrganizationWithMicrosoftUserIDParams{
-				OrganizationID:  organization.ID,
-				MicrosoftUserID: refOrNil(intermediateSession.MicrosoftUserId),
-			})
-			if err != nil {
-				return nil, fmt.Errorf("user exists on organization with microsoft user ID: %w", err)
-			}
-		}
-
-		if !userExists && intermediateSession.Email != "" {
-			userExists, err = q.UserExistsOnOrganizationWithEmail(ctx, queries.UserExistsOnOrganizationWithEmailParams{
-				OrganizationID: organization.ID,
-				Email:          intermediateSession.Email,
-			})
-			if err != nil {
-				return nil, fmt.Errorf("user exists on organization with email: %w", err)
-			}
-		}
-		pOrg.UserExists = userExists
+		pOrg.UserExists = existingUser != nil
 
 		// Append the parsed organization to the list of organizations.
 		organizations = append(organizations, pOrg)
@@ -221,6 +200,15 @@ func (s *Store) ListSAMLOrganizations(ctx context.Context, req *intermediatev1.L
 		return nil, err
 	}
 	defer rollback()
+
+	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("intermediate session not found", fmt.Errorf("get intermediate session by id: %w", err))
+		}
+
+		return nil, fmt.Errorf("get intermediate session by id: %w", err)
+	}
 
 	domain, err := emailaddr.Parse(req.Email)
 	if err != nil {
@@ -255,14 +243,12 @@ func (s *Store) ListSAMLOrganizations(ctx context.Context, req *intermediatev1.L
 		pOrg := parseOrganization(organization, qProject, &qSamlConnection)
 
 		// Check if the user exists on the organization.
-		userExists, err := q.UserExistsOnOrganizationWithEmail(ctx, queries.UserExistsOnOrganizationWithEmailParams{
-			OrganizationID: organization.ID,
-			Email:          req.Email,
-		})
+		existingUser, err := s.matchEmailUser(ctx, q, organization, qIntermediateSession)
 		if err != nil {
 			return nil, fmt.Errorf("user exists on organization with email: %w", err)
 		}
-		pOrg.UserExists = userExists
+
+		pOrg.UserExists = existingUser != nil
 
 		// Append the parsed organization to the list of organizations.
 		organizations = append(organizations, pOrg)
