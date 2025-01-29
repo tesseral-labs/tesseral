@@ -57,8 +57,6 @@ func (s *Store) UpdateOrganizationGoogleHostedDomains(ctx context.Context, req *
 	}
 	defer rollback()
 
-	fmt.Println("update req", req)
-
 	orgID, err := idformat.Organization.Parse(req.OrganizationId)
 	if err != nil {
 		return nil, apierror.NewInvalidArgumentError("invalid organization id", fmt.Errorf("parse organization id: %w", err))
