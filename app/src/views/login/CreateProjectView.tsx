@@ -11,7 +11,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { useNavigate } from 'react-router'
 import { useMutation } from '@connectrpc/connect-query'
-import { exchangeIntermediateSessionForNewOrganizationSession } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
+// import { exchangeIntermediateSessionForNewOrganizationSession } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
 import { refresh } from '@/gen/openauth/frontend/v1/frontend-FrontendService_connectquery'
 import { setAccessToken, setRefreshToken } from '@/auth'
 import { Input } from '@/components/ui/input'
@@ -25,9 +25,9 @@ const CreateProjectView: FC<CreateProjectViewProps> = ({ setView }) => {
 
   const [displayName, setDisplayName] = useState<string>('')
 
-  const exchangeIntermediateSessionForNewOrganizationMutation = useMutation(
-    exchangeIntermediateSessionForNewOrganizationSession,
-  )
+  // const exchangeIntermediateSessionForNewOrganizationMutation = useMutation(
+  //   exchangeIntermediateSessionForNewOrganizationSession,
+  // )
 
   const refreshMutation = useMutation(refresh)
 
