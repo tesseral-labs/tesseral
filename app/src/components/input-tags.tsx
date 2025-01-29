@@ -57,9 +57,9 @@ export const InputTags = forwardRef<HTMLInputElement, InputTagsProps>(
           </Button>
         </div>
         {value.length > 0 && (
-          <div className="rounded-md min-h-[2.5rem] overflow-y-auto p-2 flex gap-2 flex-wrap items-center">
+          <div className="flex flex-wrap items-center gap-2">
             {value.map((item, idx) => (
-              <Badge key={idx} variant="secondary">
+              <Badge key={idx} variant="secondary" className="px-2 py-1">
                 {item}
                 <button
                   type="button"
@@ -68,7 +68,7 @@ export const InputTags = forwardRef<HTMLInputElement, InputTagsProps>(
                     onChange(value.filter((i) => i !== item))
                   }}
                 >
-                  <XIcon className="ml-2 text-muted-foreground size-2xl" />
+                  <XIcon className="text-muted-foreground size-4" />
                 </button>
               </Badge>
             ))}

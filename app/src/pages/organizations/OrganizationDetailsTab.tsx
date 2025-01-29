@@ -50,6 +50,8 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { InputTags } from '@/components/input-tags'
+import { EditOrganizationGoogleConfigurationButton } from '@/pages/organizations/EditOrganizationGoogleConfigurationButton'
+import { EditOrganizationMicrosoftConfigurationButton } from '@/pages/organizations/EditOrganizationMicrosoftConfigurationButton'
 
 export function OrganizationDetailsTab() {
   const { organizationId } = useParams()
@@ -163,7 +165,7 @@ export function OrganizationDetailsTab() {
                 Settings related to logging into this organization with Google.
               </CardDescription>
             </div>
-            <EditGoogleConfigurationButton />
+            <EditOrganizationGoogleConfigurationButton />
           </CardHeader>
           <CardContent>
             <DetailsGrid>
@@ -193,11 +195,15 @@ export function OrganizationDetailsTab() {
 
       {getOrganizationResponse?.organization?.logInWithMicrosoftEnabled && (
         <Card>
-          <CardHeader>
-            <CardTitle>Microsoft Configuration</CardTitle>
-            <CardDescription>
-              Settings related to logging into this organization with Microsoft.
-            </CardDescription>
+          <CardHeader className="flex-row justify-between items-center">
+            <div className="flex flex-col space-y-1 5">
+              <CardTitle>Microsoft configuration</CardTitle>
+              <CardDescription>
+                Settings related to logging into this organization with
+                Microsoft.
+              </CardDescription>
+            </div>
+            <EditOrganizationMicrosoftConfigurationButton />
           </CardHeader>
           <CardContent>
             <DetailsGrid>
@@ -225,92 +231,5 @@ export function OrganizationDetailsTab() {
         </Card>
       )}
     </div>
-  )
-}
-
-const schema = z.object({
-  googleHostedDomains: z.array(z.string()),
-})
-
-function EditGoogleConfigurationButton() {
-  const { organizationId } = useParams()
-  const { data: getOrganizationGoogleHostedDomainsResponse, refetch } =
-    useQuery(getOrganizationGoogleHostedDomains, {
-      organizationId,
-    })
-  const updateOrganizationGoogleHostedDomainsMutation = useMutation(
-    updateOrganizationGoogleHostedDomains,
-  )
-  const form = useForm<z.infer<typeof schema>>({
-    resolver: zodResolver(schema),
-    defaultValues: {
-      googleHostedDomains: [],
-    },
-  })
-  useEffect(() => {
-    if (
-      getOrganizationGoogleHostedDomainsResponse?.organizationGoogleHostedDomains
-    ) {
-      form.reset({
-        googleHostedDomains:
-          getOrganizationGoogleHostedDomainsResponse
-            .organizationGoogleHostedDomains.googleHostedDomains,
-      })
-    }
-  }, [getOrganizationGoogleHostedDomainsResponse])
-
-  const [open, setOpen] = useState(false)
-
-  async function handleSubmit(values: z.infer<typeof schema>) {
-    await updateOrganizationGoogleHostedDomainsMutation.mutateAsync({
-      organizationId,
-      organizationGoogleHostedDomains: {
-        googleHostedDomains: values.googleHostedDomains,
-      },
-    })
-    await refetch()
-    setOpen(false)
-  }
-
-  return (
-    <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger>
-        <Button variant="outline">Edit</Button>
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Edit Google configuration</AlertDialogTitle>
-          <AlertDialogDescription>
-            Edit organization google configuration.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)}>
-            <FormField
-              control={form.control}
-              name="googleHostedDomains"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Google Hosted Domains</FormLabel>
-                  <FormControl>
-                    <InputTags className="max-w-96" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    The set of Google workspaces associated with this
-                    organization. Google identifies workspaces by their "hosted
-                    domains", e.g. "example.com".
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <AlertDialogFooter className="mt-8">
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <Button type="submit">Save</Button>
-            </AlertDialogFooter>
-          </form>
-        </Form>
-      </AlertDialogContent>
-    </AlertDialog>
   )
 }
