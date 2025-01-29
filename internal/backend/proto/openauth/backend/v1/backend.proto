@@ -47,6 +47,32 @@ service BackendService {
     };
   }
 
+  rpc GetOrganizationGoogleHostedDomains(GetOrganizationGoogleHostedDomainsRequest) returns (GetOrganizationGoogleHostedDomainsResponse) {
+    option (google.api.http) = {
+      get: "/backend/v1/organizations/{organization_id}/google-hosted-domains",
+    };
+  }
+
+  rpc UpdateOrganizationGoogleHostedDomains(UpdateOrganizationGoogleHostedDomainsRequest) returns (UpdateOrganizationGoogleHostedDomainsResponse) {
+    option (google.api.http) = {
+      patch: "/backend/v1/organizations/{organization_id}/google-hosted-domains",
+      body: "organization_google_hosted_domains",
+    };
+  }
+
+  rpc GetOrganizationMicrosoftTenantIDs(GetOrganizationMicrosoftTenantIDsRequest) returns (GetOrganizationMicrosoftTenantIDsResponse) {
+    option (google.api.http) = {
+      get: "/backend/v1/organizations/{organization_id}/microsoft-tenant-ids",
+    };
+  }
+
+  rpc UpdateOrganizationMicrosoftTenantIDs(UpdateOrganizationMicrosoftTenantIDsRequest) returns (UpdateOrganizationMicrosoftTenantIDsResponse) {
+    option (google.api.http) = {
+      patch: "/backend/v1/organizations/{organization_id}/microsoft-tenant-ids",
+      body: "organization_microsoft_tenant_ids",
+    };
+  }
+
   rpc ListSAMLConnections(ListSAMLConnectionsRequest) returns (ListSAMLConnectionsResponse) {
     option (google.api.http) = {
       get: "/backend/v1/saml-connections",
@@ -239,6 +265,39 @@ message DeleteOrganizationRequest {
 message DeleteOrganizationResponse {
 }
 
+message GetOrganizationGoogleHostedDomainsRequest {
+  string organization_id = 1;
+}
+
+message GetOrganizationGoogleHostedDomainsResponse {
+  OrganizationGoogleHostedDomains organization_google_hosted_domains = 1;
+}
+
+message UpdateOrganizationGoogleHostedDomainsRequest {
+  string organization_id = 1;
+  OrganizationGoogleHostedDomains organization_google_hosted_domains = 2;
+}
+
+message UpdateOrganizationGoogleHostedDomainsResponse {
+  OrganizationGoogleHostedDomains organization_google_hosted_domains = 1;
+}
+
+message GetOrganizationMicrosoftTenantIDsRequest {
+  string organization_id = 1;
+}
+
+message GetOrganizationMicrosoftTenantIDsResponse {
+  OrganizationMicrosoftTenantIDs organization_microsoft_tenant_ids = 1;
+}
+
+message UpdateOrganizationMicrosoftTenantIDsRequest {
+  string organization_id = 1;
+  OrganizationMicrosoftTenantIDs organization_microsoft_tenant_ids = 2;
+}
+
+message UpdateOrganizationMicrosoftTenantIDsResponse {
+  OrganizationMicrosoftTenantIDs organization_microsoft_tenant_ids = 1;
+}
 
 message CreateSAMLConnectionRequest {
   SAMLConnection saml_connection = 1;
@@ -574,10 +633,18 @@ message Organization {
   bool log_in_with_password_enabled = 6;
   bool log_in_with_google_enabled = 7;
   bool log_in_with_microsoft_enabled = 8;
-  repeated string google_hosted_domains = 9;
-  repeated string microsoft_tenant_ids = 10;
-  optional bool saml_enabled = 11;
-  optional bool scim_enabled = 12;
+  optional bool saml_enabled = 9;
+  optional bool scim_enabled = 10;
+}
+
+message OrganizationGoogleHostedDomains {
+  string organization_id = 1;
+  repeated string google_hosted_domains = 2;
+}
+
+message OrganizationMicrosoftTenantIDs {
+  string organization_id = 1;
+  repeated string microsoft_tenant_ids = 2;
 }
 
 message SessionSigningKey {

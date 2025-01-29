@@ -35,6 +35,26 @@ export const updateOrganization = BackendService.method.updateOrganization;
 export const deleteOrganization = BackendService.method.deleteOrganization;
 
 /**
+ * @generated from rpc openauth.backend.v1.BackendService.GetOrganizationGoogleHostedDomains
+ */
+export const getOrganizationGoogleHostedDomains = BackendService.method.getOrganizationGoogleHostedDomains;
+
+/**
+ * @generated from rpc openauth.backend.v1.BackendService.UpdateOrganizationGoogleHostedDomains
+ */
+export const updateOrganizationGoogleHostedDomains = BackendService.method.updateOrganizationGoogleHostedDomains;
+
+/**
+ * @generated from rpc openauth.backend.v1.BackendService.GetOrganizationMicrosoftTenantIDs
+ */
+export const getOrganizationMicrosoftTenantIDs = BackendService.method.getOrganizationMicrosoftTenantIDs;
+
+/**
+ * @generated from rpc openauth.backend.v1.BackendService.UpdateOrganizationMicrosoftTenantIDs
+ */
+export const updateOrganizationMicrosoftTenantIDs = BackendService.method.updateOrganizationMicrosoftTenantIDs;
+
+/**
  * @generated from rpc openauth.backend.v1.BackendService.ListSAMLConnections
  */
 export const listSAMLConnections = BackendService.method.listSAMLConnections;

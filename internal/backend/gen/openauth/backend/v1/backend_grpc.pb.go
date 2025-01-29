@@ -19,48 +19,52 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	BackendService_GetProject_FullMethodName                   = "/openauth.backend.v1.BackendService/GetProject"
-	BackendService_ListOrganizations_FullMethodName            = "/openauth.backend.v1.BackendService/ListOrganizations"
-	BackendService_GetOrganization_FullMethodName              = "/openauth.backend.v1.BackendService/GetOrganization"
-	BackendService_CreateOrganization_FullMethodName           = "/openauth.backend.v1.BackendService/CreateOrganization"
-	BackendService_UpdateOrganization_FullMethodName           = "/openauth.backend.v1.BackendService/UpdateOrganization"
-	BackendService_DeleteOrganization_FullMethodName           = "/openauth.backend.v1.BackendService/DeleteOrganization"
-	BackendService_ListSAMLConnections_FullMethodName          = "/openauth.backend.v1.BackendService/ListSAMLConnections"
-	BackendService_GetSAMLConnection_FullMethodName            = "/openauth.backend.v1.BackendService/GetSAMLConnection"
-	BackendService_CreateSAMLConnection_FullMethodName         = "/openauth.backend.v1.BackendService/CreateSAMLConnection"
-	BackendService_UpdateSAMLConnection_FullMethodName         = "/openauth.backend.v1.BackendService/UpdateSAMLConnection"
-	BackendService_DeleteSAMLConnection_FullMethodName         = "/openauth.backend.v1.BackendService/DeleteSAMLConnection"
-	BackendService_ListSCIMAPIKeys_FullMethodName              = "/openauth.backend.v1.BackendService/ListSCIMAPIKeys"
-	BackendService_GetSCIMAPIKey_FullMethodName                = "/openauth.backend.v1.BackendService/GetSCIMAPIKey"
-	BackendService_CreateSCIMAPIKey_FullMethodName             = "/openauth.backend.v1.BackendService/CreateSCIMAPIKey"
-	BackendService_UpdateSCIMAPIKey_FullMethodName             = "/openauth.backend.v1.BackendService/UpdateSCIMAPIKey"
-	BackendService_DeleteSCIMAPIKey_FullMethodName             = "/openauth.backend.v1.BackendService/DeleteSCIMAPIKey"
-	BackendService_RevokeSCIMAPIKey_FullMethodName             = "/openauth.backend.v1.BackendService/RevokeSCIMAPIKey"
-	BackendService_ListUsers_FullMethodName                    = "/openauth.backend.v1.BackendService/ListUsers"
-	BackendService_GetUser_FullMethodName                      = "/openauth.backend.v1.BackendService/GetUser"
-	BackendService_ListSessions_FullMethodName                 = "/openauth.backend.v1.BackendService/ListSessions"
-	BackendService_GetSession_FullMethodName                   = "/openauth.backend.v1.BackendService/GetSession"
-	BackendService_ListIntermediateSessions_FullMethodName     = "/openauth.backend.v1.BackendService/ListIntermediateSessions"
-	BackendService_GetIntermediateSession_FullMethodName       = "/openauth.backend.v1.BackendService/GetIntermediateSession"
-	BackendService_DisableOrganizationLogins_FullMethodName    = "/openauth.backend.v1.BackendService/DisableOrganizationLogins"
-	BackendService_DisableProjectLogins_FullMethodName         = "/openauth.backend.v1.BackendService/DisableProjectLogins"
-	BackendService_EnableOrganizationLogins_FullMethodName     = "/openauth.backend.v1.BackendService/EnableOrganizationLogins"
-	BackendService_EnableProjectLogins_FullMethodName          = "/openauth.backend.v1.BackendService/EnableProjectLogins"
-	BackendService_UpdateProject_FullMethodName                = "/openauth.backend.v1.BackendService/UpdateProject"
-	BackendService_CreateProjectRedirectURI_FullMethodName     = "/openauth.backend.v1.BackendService/CreateProjectRedirectURI"
-	BackendService_DeleteProjectRedirectURI_FullMethodName     = "/openauth.backend.v1.BackendService/DeleteProjectRedirectURI"
-	BackendService_GetProjectRedirectURI_FullMethodName        = "/openauth.backend.v1.BackendService/GetProjectRedirectURI"
-	BackendService_ListProjectRedirectURIs_FullMethodName      = "/openauth.backend.v1.BackendService/ListProjectRedirectURIs"
-	BackendService_UpdateProjectRedirectURI_FullMethodName     = "/openauth.backend.v1.BackendService/UpdateProjectRedirectURI"
-	BackendService_GetProjectUISettings_FullMethodName         = "/openauth.backend.v1.BackendService/GetProjectUISettings"
-	BackendService_UpdateProjectUISettings_FullMethodName      = "/openauth.backend.v1.BackendService/UpdateProjectUISettings"
-	BackendService_ListProjectAPIKeys_FullMethodName           = "/openauth.backend.v1.BackendService/ListProjectAPIKeys"
-	BackendService_GetProjectAPIKey_FullMethodName             = "/openauth.backend.v1.BackendService/GetProjectAPIKey"
-	BackendService_CreateProjectAPIKey_FullMethodName          = "/openauth.backend.v1.BackendService/CreateProjectAPIKey"
-	BackendService_UpdateProjectAPIKey_FullMethodName          = "/openauth.backend.v1.BackendService/UpdateProjectAPIKey"
-	BackendService_DeleteProjectAPIKey_FullMethodName          = "/openauth.backend.v1.BackendService/DeleteProjectAPIKey"
-	BackendService_RevokeProjectAPIKey_FullMethodName          = "/openauth.backend.v1.BackendService/RevokeProjectAPIKey"
-	BackendService_CreateUserImpersonationToken_FullMethodName = "/openauth.backend.v1.BackendService/CreateUserImpersonationToken"
+	BackendService_GetProject_FullMethodName                            = "/openauth.backend.v1.BackendService/GetProject"
+	BackendService_ListOrganizations_FullMethodName                     = "/openauth.backend.v1.BackendService/ListOrganizations"
+	BackendService_GetOrganization_FullMethodName                       = "/openauth.backend.v1.BackendService/GetOrganization"
+	BackendService_CreateOrganization_FullMethodName                    = "/openauth.backend.v1.BackendService/CreateOrganization"
+	BackendService_UpdateOrganization_FullMethodName                    = "/openauth.backend.v1.BackendService/UpdateOrganization"
+	BackendService_DeleteOrganization_FullMethodName                    = "/openauth.backend.v1.BackendService/DeleteOrganization"
+	BackendService_GetOrganizationGoogleHostedDomains_FullMethodName    = "/openauth.backend.v1.BackendService/GetOrganizationGoogleHostedDomains"
+	BackendService_UpdateOrganizationGoogleHostedDomains_FullMethodName = "/openauth.backend.v1.BackendService/UpdateOrganizationGoogleHostedDomains"
+	BackendService_GetOrganizationMicrosoftTenantIDs_FullMethodName     = "/openauth.backend.v1.BackendService/GetOrganizationMicrosoftTenantIDs"
+	BackendService_UpdateOrganizationMicrosoftTenantIDs_FullMethodName  = "/openauth.backend.v1.BackendService/UpdateOrganizationMicrosoftTenantIDs"
+	BackendService_ListSAMLConnections_FullMethodName                   = "/openauth.backend.v1.BackendService/ListSAMLConnections"
+	BackendService_GetSAMLConnection_FullMethodName                     = "/openauth.backend.v1.BackendService/GetSAMLConnection"
+	BackendService_CreateSAMLConnection_FullMethodName                  = "/openauth.backend.v1.BackendService/CreateSAMLConnection"
+	BackendService_UpdateSAMLConnection_FullMethodName                  = "/openauth.backend.v1.BackendService/UpdateSAMLConnection"
+	BackendService_DeleteSAMLConnection_FullMethodName                  = "/openauth.backend.v1.BackendService/DeleteSAMLConnection"
+	BackendService_ListSCIMAPIKeys_FullMethodName                       = "/openauth.backend.v1.BackendService/ListSCIMAPIKeys"
+	BackendService_GetSCIMAPIKey_FullMethodName                         = "/openauth.backend.v1.BackendService/GetSCIMAPIKey"
+	BackendService_CreateSCIMAPIKey_FullMethodName                      = "/openauth.backend.v1.BackendService/CreateSCIMAPIKey"
+	BackendService_UpdateSCIMAPIKey_FullMethodName                      = "/openauth.backend.v1.BackendService/UpdateSCIMAPIKey"
+	BackendService_DeleteSCIMAPIKey_FullMethodName                      = "/openauth.backend.v1.BackendService/DeleteSCIMAPIKey"
+	BackendService_RevokeSCIMAPIKey_FullMethodName                      = "/openauth.backend.v1.BackendService/RevokeSCIMAPIKey"
+	BackendService_ListUsers_FullMethodName                             = "/openauth.backend.v1.BackendService/ListUsers"
+	BackendService_GetUser_FullMethodName                               = "/openauth.backend.v1.BackendService/GetUser"
+	BackendService_ListSessions_FullMethodName                          = "/openauth.backend.v1.BackendService/ListSessions"
+	BackendService_GetSession_FullMethodName                            = "/openauth.backend.v1.BackendService/GetSession"
+	BackendService_ListIntermediateSessions_FullMethodName              = "/openauth.backend.v1.BackendService/ListIntermediateSessions"
+	BackendService_GetIntermediateSession_FullMethodName                = "/openauth.backend.v1.BackendService/GetIntermediateSession"
+	BackendService_DisableOrganizationLogins_FullMethodName             = "/openauth.backend.v1.BackendService/DisableOrganizationLogins"
+	BackendService_DisableProjectLogins_FullMethodName                  = "/openauth.backend.v1.BackendService/DisableProjectLogins"
+	BackendService_EnableOrganizationLogins_FullMethodName              = "/openauth.backend.v1.BackendService/EnableOrganizationLogins"
+	BackendService_EnableProjectLogins_FullMethodName                   = "/openauth.backend.v1.BackendService/EnableProjectLogins"
+	BackendService_UpdateProject_FullMethodName                         = "/openauth.backend.v1.BackendService/UpdateProject"
+	BackendService_CreateProjectRedirectURI_FullMethodName              = "/openauth.backend.v1.BackendService/CreateProjectRedirectURI"
+	BackendService_DeleteProjectRedirectURI_FullMethodName              = "/openauth.backend.v1.BackendService/DeleteProjectRedirectURI"
+	BackendService_GetProjectRedirectURI_FullMethodName                 = "/openauth.backend.v1.BackendService/GetProjectRedirectURI"
+	BackendService_ListProjectRedirectURIs_FullMethodName               = "/openauth.backend.v1.BackendService/ListProjectRedirectURIs"
+	BackendService_UpdateProjectRedirectURI_FullMethodName              = "/openauth.backend.v1.BackendService/UpdateProjectRedirectURI"
+	BackendService_GetProjectUISettings_FullMethodName                  = "/openauth.backend.v1.BackendService/GetProjectUISettings"
+	BackendService_UpdateProjectUISettings_FullMethodName               = "/openauth.backend.v1.BackendService/UpdateProjectUISettings"
+	BackendService_ListProjectAPIKeys_FullMethodName                    = "/openauth.backend.v1.BackendService/ListProjectAPIKeys"
+	BackendService_GetProjectAPIKey_FullMethodName                      = "/openauth.backend.v1.BackendService/GetProjectAPIKey"
+	BackendService_CreateProjectAPIKey_FullMethodName                   = "/openauth.backend.v1.BackendService/CreateProjectAPIKey"
+	BackendService_UpdateProjectAPIKey_FullMethodName                   = "/openauth.backend.v1.BackendService/UpdateProjectAPIKey"
+	BackendService_DeleteProjectAPIKey_FullMethodName                   = "/openauth.backend.v1.BackendService/DeleteProjectAPIKey"
+	BackendService_RevokeProjectAPIKey_FullMethodName                   = "/openauth.backend.v1.BackendService/RevokeProjectAPIKey"
+	BackendService_CreateUserImpersonationToken_FullMethodName          = "/openauth.backend.v1.BackendService/CreateUserImpersonationToken"
 )
 
 // BackendServiceClient is the client API for BackendService service.
@@ -73,6 +77,10 @@ type BackendServiceClient interface {
 	CreateOrganization(ctx context.Context, in *CreateOrganizationRequest, opts ...grpc.CallOption) (*CreateOrganizationResponse, error)
 	UpdateOrganization(ctx context.Context, in *UpdateOrganizationRequest, opts ...grpc.CallOption) (*UpdateOrganizationResponse, error)
 	DeleteOrganization(ctx context.Context, in *DeleteOrganizationRequest, opts ...grpc.CallOption) (*DeleteOrganizationResponse, error)
+	GetOrganizationGoogleHostedDomains(ctx context.Context, in *GetOrganizationGoogleHostedDomainsRequest, opts ...grpc.CallOption) (*GetOrganizationGoogleHostedDomainsResponse, error)
+	UpdateOrganizationGoogleHostedDomains(ctx context.Context, in *UpdateOrganizationGoogleHostedDomainsRequest, opts ...grpc.CallOption) (*UpdateOrganizationGoogleHostedDomainsResponse, error)
+	GetOrganizationMicrosoftTenantIDs(ctx context.Context, in *GetOrganizationMicrosoftTenantIDsRequest, opts ...grpc.CallOption) (*GetOrganizationMicrosoftTenantIDsResponse, error)
+	UpdateOrganizationMicrosoftTenantIDs(ctx context.Context, in *UpdateOrganizationMicrosoftTenantIDsRequest, opts ...grpc.CallOption) (*UpdateOrganizationMicrosoftTenantIDsResponse, error)
 	ListSAMLConnections(ctx context.Context, in *ListSAMLConnectionsRequest, opts ...grpc.CallOption) (*ListSAMLConnectionsResponse, error)
 	GetSAMLConnection(ctx context.Context, in *GetSAMLConnectionRequest, opts ...grpc.CallOption) (*GetSAMLConnectionResponse, error)
 	CreateSAMLConnection(ctx context.Context, in *CreateSAMLConnectionRequest, opts ...grpc.CallOption) (*CreateSAMLConnectionResponse, error)
@@ -173,6 +181,46 @@ func (c *backendServiceClient) DeleteOrganization(ctx context.Context, in *Delet
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(DeleteOrganizationResponse)
 	err := c.cc.Invoke(ctx, BackendService_DeleteOrganization_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) GetOrganizationGoogleHostedDomains(ctx context.Context, in *GetOrganizationGoogleHostedDomainsRequest, opts ...grpc.CallOption) (*GetOrganizationGoogleHostedDomainsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetOrganizationGoogleHostedDomainsResponse)
+	err := c.cc.Invoke(ctx, BackendService_GetOrganizationGoogleHostedDomains_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) UpdateOrganizationGoogleHostedDomains(ctx context.Context, in *UpdateOrganizationGoogleHostedDomainsRequest, opts ...grpc.CallOption) (*UpdateOrganizationGoogleHostedDomainsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateOrganizationGoogleHostedDomainsResponse)
+	err := c.cc.Invoke(ctx, BackendService_UpdateOrganizationGoogleHostedDomains_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) GetOrganizationMicrosoftTenantIDs(ctx context.Context, in *GetOrganizationMicrosoftTenantIDsRequest, opts ...grpc.CallOption) (*GetOrganizationMicrosoftTenantIDsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetOrganizationMicrosoftTenantIDsResponse)
+	err := c.cc.Invoke(ctx, BackendService_GetOrganizationMicrosoftTenantIDs_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) UpdateOrganizationMicrosoftTenantIDs(ctx context.Context, in *UpdateOrganizationMicrosoftTenantIDsRequest, opts ...grpc.CallOption) (*UpdateOrganizationMicrosoftTenantIDsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateOrganizationMicrosoftTenantIDsResponse)
+	err := c.cc.Invoke(ctx, BackendService_UpdateOrganizationMicrosoftTenantIDs_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -549,6 +597,10 @@ type BackendServiceServer interface {
 	CreateOrganization(context.Context, *CreateOrganizationRequest) (*CreateOrganizationResponse, error)
 	UpdateOrganization(context.Context, *UpdateOrganizationRequest) (*UpdateOrganizationResponse, error)
 	DeleteOrganization(context.Context, *DeleteOrganizationRequest) (*DeleteOrganizationResponse, error)
+	GetOrganizationGoogleHostedDomains(context.Context, *GetOrganizationGoogleHostedDomainsRequest) (*GetOrganizationGoogleHostedDomainsResponse, error)
+	UpdateOrganizationGoogleHostedDomains(context.Context, *UpdateOrganizationGoogleHostedDomainsRequest) (*UpdateOrganizationGoogleHostedDomainsResponse, error)
+	GetOrganizationMicrosoftTenantIDs(context.Context, *GetOrganizationMicrosoftTenantIDsRequest) (*GetOrganizationMicrosoftTenantIDsResponse, error)
+	UpdateOrganizationMicrosoftTenantIDs(context.Context, *UpdateOrganizationMicrosoftTenantIDsRequest) (*UpdateOrganizationMicrosoftTenantIDsResponse, error)
 	ListSAMLConnections(context.Context, *ListSAMLConnectionsRequest) (*ListSAMLConnectionsResponse, error)
 	GetSAMLConnection(context.Context, *GetSAMLConnectionRequest) (*GetSAMLConnectionResponse, error)
 	CreateSAMLConnection(context.Context, *CreateSAMLConnectionRequest) (*CreateSAMLConnectionResponse, error)
@@ -612,6 +664,18 @@ func (UnimplementedBackendServiceServer) UpdateOrganization(context.Context, *Up
 }
 func (UnimplementedBackendServiceServer) DeleteOrganization(context.Context, *DeleteOrganizationRequest) (*DeleteOrganizationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteOrganization not implemented")
+}
+func (UnimplementedBackendServiceServer) GetOrganizationGoogleHostedDomains(context.Context, *GetOrganizationGoogleHostedDomainsRequest) (*GetOrganizationGoogleHostedDomainsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetOrganizationGoogleHostedDomains not implemented")
+}
+func (UnimplementedBackendServiceServer) UpdateOrganizationGoogleHostedDomains(context.Context, *UpdateOrganizationGoogleHostedDomainsRequest) (*UpdateOrganizationGoogleHostedDomainsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateOrganizationGoogleHostedDomains not implemented")
+}
+func (UnimplementedBackendServiceServer) GetOrganizationMicrosoftTenantIDs(context.Context, *GetOrganizationMicrosoftTenantIDsRequest) (*GetOrganizationMicrosoftTenantIDsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetOrganizationMicrosoftTenantIDs not implemented")
+}
+func (UnimplementedBackendServiceServer) UpdateOrganizationMicrosoftTenantIDs(context.Context, *UpdateOrganizationMicrosoftTenantIDsRequest) (*UpdateOrganizationMicrosoftTenantIDsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateOrganizationMicrosoftTenantIDs not implemented")
 }
 func (UnimplementedBackendServiceServer) ListSAMLConnections(context.Context, *ListSAMLConnectionsRequest) (*ListSAMLConnectionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListSAMLConnections not implemented")
@@ -846,6 +910,78 @@ func _BackendService_DeleteOrganization_Handler(srv interface{}, ctx context.Con
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(BackendServiceServer).DeleteOrganization(ctx, req.(*DeleteOrganizationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_GetOrganizationGoogleHostedDomains_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetOrganizationGoogleHostedDomainsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).GetOrganizationGoogleHostedDomains(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_GetOrganizationGoogleHostedDomains_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).GetOrganizationGoogleHostedDomains(ctx, req.(*GetOrganizationGoogleHostedDomainsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_UpdateOrganizationGoogleHostedDomains_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateOrganizationGoogleHostedDomainsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).UpdateOrganizationGoogleHostedDomains(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_UpdateOrganizationGoogleHostedDomains_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).UpdateOrganizationGoogleHostedDomains(ctx, req.(*UpdateOrganizationGoogleHostedDomainsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_GetOrganizationMicrosoftTenantIDs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetOrganizationMicrosoftTenantIDsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).GetOrganizationMicrosoftTenantIDs(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_GetOrganizationMicrosoftTenantIDs_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).GetOrganizationMicrosoftTenantIDs(ctx, req.(*GetOrganizationMicrosoftTenantIDsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_UpdateOrganizationMicrosoftTenantIDs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateOrganizationMicrosoftTenantIDsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).UpdateOrganizationMicrosoftTenantIDs(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_UpdateOrganizationMicrosoftTenantIDs_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).UpdateOrganizationMicrosoftTenantIDs(ctx, req.(*UpdateOrganizationMicrosoftTenantIDsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1528,6 +1664,22 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteOrganization",
 			Handler:    _BackendService_DeleteOrganization_Handler,
+		},
+		{
+			MethodName: "GetOrganizationGoogleHostedDomains",
+			Handler:    _BackendService_GetOrganizationGoogleHostedDomains_Handler,
+		},
+		{
+			MethodName: "UpdateOrganizationGoogleHostedDomains",
+			Handler:    _BackendService_UpdateOrganizationGoogleHostedDomains_Handler,
+		},
+		{
+			MethodName: "GetOrganizationMicrosoftTenantIDs",
+			Handler:    _BackendService_GetOrganizationMicrosoftTenantIDs_Handler,
+		},
+		{
+			MethodName: "UpdateOrganizationMicrosoftTenantIDs",
+			Handler:    _BackendService_UpdateOrganizationMicrosoftTenantIDs_Handler,
 		},
 		{
 			MethodName: "ListSAMLConnections",
