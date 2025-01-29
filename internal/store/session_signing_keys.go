@@ -3,13 +3,14 @@ package store
 import (
 	"context"
 	"crypto/ecdsa"
-	"log/slog"
+	"crypto/elliptic"
+	"crypto/rand"
+	"crypto/x509"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
-	openauthecdsa "github.com/openauth/openauth/internal/crypto/ecdsa"
 	"github.com/openauth/openauth/internal/store/idformat"
 	"github.com/openauth/openauth/internal/store/queries"
 )
@@ -42,13 +43,13 @@ func (s *Store) CreateSessionSigningKey(ctx context.Context, projectID string) (
 	expiresAt := time.Now().Add(time.Hour * 7)
 
 	// Generate a new symmetric key
-	privateKey, err := openauthecdsa.GenerateKey()
+	privateKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
 	if err != nil {
 		return nil, err
 	}
 
 	// Extract the private key
-	privateKeyBytes, err := openauthecdsa.PrivateKeyBytes(privateKey)
+	privateKeyBytes, err := x509.MarshalECPrivateKey(privateKey)
 	if err != nil {
 		return nil, err
 	}
@@ -68,12 +69,11 @@ func (s *Store) CreateSessionSigningKey(ctx context.Context, projectID string) (
 		return nil, err
 	}
 
-	publicKeyBytes, err := openauthecdsa.PublicKeyBytes(&privateKey.PublicKey)
+	publicKeyBytes, err := x509.MarshalPKIXPublicKey(privateKey.Public())
 	if err != nil {
 		return nil, err
 	}
 
-	// Create the new method verification challenge
 	sessionSigningKey, err := q.CreateSessionSigningKey(ctx, queries.CreateSessionSigningKeyParams{
 		ID:                   uuid.New(),
 		ProjectID:            projectId,
@@ -84,8 +84,6 @@ func (s *Store) CreateSessionSigningKey(ctx context.Context, projectID string) (
 	if err != nil {
 		return nil, err
 	}
-
-	slog.Info("sessionSigningKey", "sessionSigningKey", sessionSigningKey)
 
 	// Commit the transaction
 	if err := commit(); err != nil {

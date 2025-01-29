@@ -2,7 +2,10 @@ package store
 
 import (
 	"context"
+	"crypto/ecdsa"
+	"crypto/elliptic"
 	"crypto/rand"
+	"crypto/x509"
 	"encoding/hex"
 	"fmt"
 	"time"
@@ -11,7 +14,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
 	"github.com/openauth/openauth/internal/bcryptcost"
-	"github.com/openauth/openauth/internal/crypto/ecdsa"
 	"github.com/openauth/openauth/internal/store/idformat"
 	"github.com/openauth/openauth/internal/store/queries"
 	"golang.org/x/crypto/bcrypt"
@@ -114,12 +116,12 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 	expiresAt := time.Now().Add(time.Hour * 24 * 365)
 
 	// Generate a new symmetric key
-	privateKey, err := ecdsa.GenerateKey()
+	privateKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
 	if err != nil {
 		return nil, err
 	}
 
-	privateKeyBytes, err := ecdsa.PrivateKeyBytes(privateKey)
+	privateKeyBytes, err := x509.MarshalECPrivateKey(privateKey)
 	if err != nil {
 		return nil, err
 	}
@@ -134,7 +136,7 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 		return nil, err
 	}
 
-	publicKeyBytes, err := ecdsa.PublicKeyBytes(&privateKey.PublicKey)
+	publicKeyBytes, err := x509.MarshalPKIXPublicKey(privateKey.Public())
 	if err != nil {
 		return nil, err
 	}
