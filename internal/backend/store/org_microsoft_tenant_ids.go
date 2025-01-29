@@ -40,11 +40,6 @@ func (s *Store) GetOrganizationMicrosoftTenantIDs(ctx context.Context, req *back
 		return nil, fmt.Errorf("get organization microsoft tenant IDs: %w", err)
 	}
 
-	var microsoftTenantIDs []string
-	for _, qMicrosoftTenantID := range qMicrosoftTenantIDs {
-		microsoftTenantIDs = append(microsoftTenantIDs, qMicrosoftTenantID.MicrosoftTenantID)
-	}
-
 	return &backendv1.GetOrganizationMicrosoftTenantIDsResponse{
 		OrganizationMicrosoftTenantIds: parseOrganizationMicrosoftTenantIDs(qOrg, qMicrosoftTenantIDs),
 	}, nil
@@ -90,11 +85,6 @@ func (s *Store) UpdateOrganizationMicrosoftTenantIDs(ctx context.Context, req *b
 	})
 	if err != nil {
 		return nil, fmt.Errorf("get organization microsoft tenant IDs: %w", err)
-	}
-
-	var microsoftTenantIDs []string
-	for _, qMicrosoftTenantID := range qMicrosoftTenantIDs {
-		microsoftTenantIDs = append(microsoftTenantIDs, qMicrosoftTenantID.MicrosoftTenantID)
 	}
 
 	if err := commit(); err != nil {

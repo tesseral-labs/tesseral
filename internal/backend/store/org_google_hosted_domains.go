@@ -40,11 +40,6 @@ func (s *Store) GetOrganizationGoogleHostedDomains(ctx context.Context, req *bac
 		return nil, fmt.Errorf("get organization google hosted domains: %w", err)
 	}
 
-	var googleHostedDomains []string
-	for _, qGoogleHostedDomain := range qGoogleHostedDomains {
-		googleHostedDomains = append(googleHostedDomains, qGoogleHostedDomain.GoogleHostedDomain)
-	}
-
 	return &backendv1.GetOrganizationGoogleHostedDomainsResponse{
 		OrganizationGoogleHostedDomains: parseOrganizationGoogleHostedDomains(qOrg, qGoogleHostedDomains),
 	}, nil
@@ -90,11 +85,6 @@ func (s *Store) UpdateOrganizationGoogleHostedDomains(ctx context.Context, req *
 	})
 	if err != nil {
 		return nil, fmt.Errorf("get organization google hosted domains: %w", err)
-	}
-
-	var googleHostedDomains []string
-	for _, qGoogleHostedDomain := range qGoogleHostedDomains {
-		googleHostedDomains = append(googleHostedDomains, qGoogleHostedDomain.GoogleHostedDomain)
 	}
 
 	if err := commit(); err != nil {
