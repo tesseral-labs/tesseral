@@ -147,6 +147,13 @@ service IntermediateService {
       body: "*"
     };
   }
+
+  rpc VerifyAuthenticatorApp(VerifyAuthenticatorAppRequest) returns (VerifyAuthenticatorAppResponse) {
+    option (google.api.http) = {
+      post: "/intermediate/v1/verify-authenticator-app",
+      body: "*"
+    };
+  }
 }
 
 message IntermediateSession {

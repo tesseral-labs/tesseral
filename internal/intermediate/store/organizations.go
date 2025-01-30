@@ -190,7 +190,7 @@ func (s *Store) ListOrganizations(ctx context.Context, req *intermediatev1.ListO
 		org.UserExists = existingUser != nil
 		if existingUser != nil {
 			org.UserHasPassword = existingUser.PasswordBcrypt != nil
-			org.UserHasAuthenticatorApp = false // TODO there's no table for this yet
+			org.UserHasAuthenticatorApp = existingUser.AuthenticatorAppSecretCiphertext != nil
 
 			hasPasskeys, err := q.GetUserHasPasskey(ctx, existingUser.ID)
 			if err != nil {

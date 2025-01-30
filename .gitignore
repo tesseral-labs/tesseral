@@ -4,9 +4,9 @@
 .local/s3
 .local/nginx/*.pem
 node_modules
-/app/public/index.css
-/app/public/index.js
-/app/public/index.js.map
+/console/public/index.css
+/console/public/index.js
+/console/public/index.js.map
 /ui/public/index.css
 /ui/public/index.js
 /ui/public/index.js.map

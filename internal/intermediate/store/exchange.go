@@ -77,6 +77,14 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		qUser = &qNewUser
 	}
 
+	// if an authenticator app is registered on the intermediate session, copy
+	// it onto the user
+	if qIntermediateSession.AuthenticatorAppSecretCiphertext != nil {
+		if err := s.copyRegisteredAuthenticatorAppSettings(ctx, q, qIntermediateSession, *qUser); err != nil {
+			return nil, fmt.Errorf("copy registered authenticator app settings: %w", err)
+		}
+	}
+
 	expireTime := time.Now().Add(sessionDuration)
 
 	// Create a new session for the user
@@ -107,6 +115,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 }
 
 func (s *Store) validateAuthRequirementsSatisfied(ctx context.Context, q *queries.Queries, intermediateSessionID uuid.UUID) error {
+	// TODO update this to check for 2fa
 	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, intermediateSessionID)
 	if err != nil {
 		return fmt.Errorf("get intermediate session by id: %w", err)
@@ -249,4 +258,20 @@ func (s *Store) matchEmailUser(ctx context.Context, q *queries.Queries, qOrg que
 	}
 
 	return &qUser, nil
+}
+
+func (s *Store) copyRegisteredAuthenticatorAppSettings(ctx context.Context, q *queries.Queries, qIntermediateSession queries.IntermediateSession, qUser queries.User) error {
+	if qUser.AuthenticatorAppSecretCiphertext != nil || qUser.AuthenticatorAppBackupCodeBcrypts != nil {
+		return fmt.Errorf("user already has authenticator app registered")
+	}
+
+	if _, err := q.UpdateUserAuthenticatorApp(ctx, queries.UpdateUserAuthenticatorAppParams{
+		AuthenticatorAppSecretCiphertext:  qIntermediateSession.AuthenticatorAppSecretCiphertext,
+		AuthenticatorAppBackupCodeBcrypts: qIntermediateSession.AuthenticatorAppBackupCodeBcrypts,
+		ID:                                qUser.ID,
+	}); err != nil {
+		return fmt.Errorf("update user authenticator app: %w", err)
+	}
+
+	return nil
 }
