@@ -687,6 +687,7 @@ message User {
   optional bool owner = 6;
   string google_user_id = 7;
   string microsoft_user_id = 8;
+  bool has_authenticator_app = 9;
 }
 
 message Session {
@@ -695,6 +696,16 @@ message Session {
   bool revoked = 3;
 
   // TODO(ucarion): add session metadata like auth factors, etc here
+}
+
+message Passkey {
+  string id = 1;
+  string user_id = 2;
+  google.protobuf.Timestamp create_time = 3;
+  google.protobuf.Timestamp update_time = 4;
+  bytes credential_id = 5;
+  string public_key_pkix = 6;
+  string aaguid = 7;
 }
 
 message SAMLConnection {
