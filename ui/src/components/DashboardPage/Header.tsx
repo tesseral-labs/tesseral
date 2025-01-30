@@ -1,24 +1,21 @@
 import React, { FC, SyntheticEvent } from 'react'
 import useDarkMode from '@/lib/dark-mode'
-import useProjectUiSettings from '@/lib/project-ui-settings'
+import useSettings from '@/lib/settings'
 import { Link, useLocation } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 
 const Header: FC = () => {
   const isDarkMode = useDarkMode()
   const location = useLocation()
-  const projectUiSettings = useProjectUiSettings()
+  const settings = useSettings()
 
   return (
     <header className="flex flex-row justify-between text-foreground py-4 mb-4 border-b dark:border-gray-800">
       <div>
-        {isDarkMode && projectUiSettings.detectDarkModeEnabled ? (
+        {isDarkMode && settings.detectDarkModeEnabled ? (
           <img
             className="max-h-[30px] max-w-[150px]"
-            src={
-              projectUiSettings?.darkModeLogoUrl ||
-              '/images/tesseral-logo-white.svg'
-            }
+            src={settings?.darkModeLogoUrl || '/images/tesseral-logo-white.svg'}
             onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
               const target = e.target as HTMLImageElement
               target.onerror = null
@@ -28,9 +25,7 @@ const Header: FC = () => {
         ) : (
           <img
             className="max-h-[30px] max-w-[150px]"
-            src={
-              projectUiSettings?.logoUrl || '/images/tesseral-logo-black.svg'
-            }
+            src={settings?.logoUrl || '/images/tesseral-logo-black.svg'}
             onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
               const target = e.target as HTMLImageElement
               target.onerror = null

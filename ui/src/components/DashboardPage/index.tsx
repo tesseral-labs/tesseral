@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet'
 import { cn } from '@/lib/utils'
 
 import useDarkMode from '@/lib/dark-mode'
-import useProjectUiSettings from '@/lib/project-ui-settings'
+import useSettings from '@/lib/settings'
 import { Outlet } from 'react-router'
 import {
   OrganizationContextProvider,
@@ -15,27 +15,25 @@ import Header from './Header'
 
 const DashboardPage: FC<PropsWithChildren> = ({ children }) => {
   const isDarkMode = useDarkMode()
-  const projectUiSettings = useProjectUiSettings()
+  const settings = useSettings()
   const session = useSession()
 
   const [favicon, setFavicon] = useState<string>('/apple-touch-icon.png')
 
   useEffect(() => {
-    if (projectUiSettings?.faviconUrl) {
+    if (settings?.faviconUrl) {
       ;(async () => {
         // Check if the favicon exists before setting it
-        const faviconCheck = await fetch(projectUiSettings.faviconUrl, {
+        const faviconCheck = await fetch(settings.faviconUrl, {
           method: 'HEAD',
         })
 
         setFavicon(
-          faviconCheck.ok
-            ? projectUiSettings.faviconUrl
-            : '/apple-touch-icon.png',
+          faviconCheck.ok ? settings.faviconUrl : '/apple-touch-icon.png',
         )
       })()
     }
-  }, [projectUiSettings])
+  }, [settings])
 
   return (
     <>
@@ -51,9 +49,7 @@ const DashboardPage: FC<PropsWithChildren> = ({ children }) => {
             <div
               className={cn(
                 'min-h-screen w-screen',
-                isDarkMode && projectUiSettings.detectDarkModeEnabled
-                  ? 'dark'
-                  : '',
+                isDarkMode && settings.detectDarkModeEnabled ? 'dark' : '',
               )}
             >
               <div className="bg-body w-screen min-h-screen mx-auto items-center">

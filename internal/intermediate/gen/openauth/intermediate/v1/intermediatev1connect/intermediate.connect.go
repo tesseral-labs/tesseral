@@ -36,9 +36,9 @@ const (
 	// IntermediateServiceListSAMLOrganizationsProcedure is the fully-qualified name of the
 	// IntermediateService's ListSAMLOrganizations RPC.
 	IntermediateServiceListSAMLOrganizationsProcedure = "/openauth.intermediate.v1.IntermediateService/ListSAMLOrganizations"
-	// IntermediateServiceGetProjectUISettingsProcedure is the fully-qualified name of the
-	// IntermediateService's GetProjectUISettings RPC.
-	IntermediateServiceGetProjectUISettingsProcedure = "/openauth.intermediate.v1.IntermediateService/GetProjectUISettings"
+	// IntermediateServiceGetSettingsProcedure is the fully-qualified name of the IntermediateService's
+	// GetSettings RPC.
+	IntermediateServiceGetSettingsProcedure = "/openauth.intermediate.v1.IntermediateService/GetSettings"
 	// IntermediateServiceRedeemUserImpersonationTokenProcedure is the fully-qualified name of the
 	// IntermediateService's RedeemUserImpersonationToken RPC.
 	IntermediateServiceRedeemUserImpersonationTokenProcedure = "/openauth.intermediate.v1.IntermediateService/RedeemUserImpersonationToken"
@@ -90,7 +90,7 @@ const (
 // service.
 type IntermediateServiceClient interface {
 	ListSAMLOrganizations(context.Context, *connect.Request[v1.ListSAMLOrganizationsRequest]) (*connect.Response[v1.ListSAMLOrganizationsResponse], error)
-	GetProjectUISettings(context.Context, *connect.Request[v1.GetProjectUISettingsRequest]) (*connect.Response[v1.GetProjectUISettingsResponse], error)
+	GetSettings(context.Context, *connect.Request[v1.GetSettingsRequest]) (*connect.Response[v1.GetSettingsResponse], error)
 	RedeemUserImpersonationToken(context.Context, *connect.Request[v1.RedeemUserImpersonationTokenRequest]) (*connect.Response[v1.RedeemUserImpersonationTokenResponse], error)
 	CreateIntermediateSession(context.Context, *connect.Request[v1.CreateIntermediateSessionRequest]) (*connect.Response[v1.CreateIntermediateSessionResponse], error)
 	Whoami(context.Context, *connect.Request[v1.WhoamiRequest]) (*connect.Response[v1.WhoamiResponse], error)
@@ -126,10 +126,10 @@ func NewIntermediateServiceClient(httpClient connect.HTTPClient, baseURL string,
 			connect.WithSchema(intermediateServiceMethods.ByName("ListSAMLOrganizations")),
 			connect.WithClientOptions(opts...),
 		),
-		getProjectUISettings: connect.NewClient[v1.GetProjectUISettingsRequest, v1.GetProjectUISettingsResponse](
+		getSettings: connect.NewClient[v1.GetSettingsRequest, v1.GetSettingsResponse](
 			httpClient,
-			baseURL+IntermediateServiceGetProjectUISettingsProcedure,
-			connect.WithSchema(intermediateServiceMethods.ByName("GetProjectUISettings")),
+			baseURL+IntermediateServiceGetSettingsProcedure,
+			connect.WithSchema(intermediateServiceMethods.ByName("GetSettings")),
 			connect.WithClientOptions(opts...),
 		),
 		redeemUserImpersonationToken: connect.NewClient[v1.RedeemUserImpersonationTokenRequest, v1.RedeemUserImpersonationTokenResponse](
@@ -228,7 +228,7 @@ func NewIntermediateServiceClient(httpClient connect.HTTPClient, baseURL string,
 // intermediateServiceClient implements IntermediateServiceClient.
 type intermediateServiceClient struct {
 	listSAMLOrganizations                 *connect.Client[v1.ListSAMLOrganizationsRequest, v1.ListSAMLOrganizationsResponse]
-	getProjectUISettings                  *connect.Client[v1.GetProjectUISettingsRequest, v1.GetProjectUISettingsResponse]
+	getSettings                           *connect.Client[v1.GetSettingsRequest, v1.GetSettingsResponse]
 	redeemUserImpersonationToken          *connect.Client[v1.RedeemUserImpersonationTokenRequest, v1.RedeemUserImpersonationTokenResponse]
 	createIntermediateSession             *connect.Client[v1.CreateIntermediateSessionRequest, v1.CreateIntermediateSessionResponse]
 	whoami                                *connect.Client[v1.WhoamiRequest, v1.WhoamiResponse]
@@ -251,9 +251,9 @@ func (c *intermediateServiceClient) ListSAMLOrganizations(ctx context.Context, r
 	return c.listSAMLOrganizations.CallUnary(ctx, req)
 }
 
-// GetProjectUISettings calls openauth.intermediate.v1.IntermediateService.GetProjectUISettings.
-func (c *intermediateServiceClient) GetProjectUISettings(ctx context.Context, req *connect.Request[v1.GetProjectUISettingsRequest]) (*connect.Response[v1.GetProjectUISettingsResponse], error) {
-	return c.getProjectUISettings.CallUnary(ctx, req)
+// GetSettings calls openauth.intermediate.v1.IntermediateService.GetSettings.
+func (c *intermediateServiceClient) GetSettings(ctx context.Context, req *connect.Request[v1.GetSettingsRequest]) (*connect.Response[v1.GetSettingsResponse], error) {
+	return c.getSettings.CallUnary(ctx, req)
 }
 
 // RedeemUserImpersonationToken calls
@@ -342,7 +342,7 @@ func (c *intermediateServiceClient) VerifyPassword(ctx context.Context, req *con
 // openauth.intermediate.v1.IntermediateService service.
 type IntermediateServiceHandler interface {
 	ListSAMLOrganizations(context.Context, *connect.Request[v1.ListSAMLOrganizationsRequest]) (*connect.Response[v1.ListSAMLOrganizationsResponse], error)
-	GetProjectUISettings(context.Context, *connect.Request[v1.GetProjectUISettingsRequest]) (*connect.Response[v1.GetProjectUISettingsResponse], error)
+	GetSettings(context.Context, *connect.Request[v1.GetSettingsRequest]) (*connect.Response[v1.GetSettingsResponse], error)
 	RedeemUserImpersonationToken(context.Context, *connect.Request[v1.RedeemUserImpersonationTokenRequest]) (*connect.Response[v1.RedeemUserImpersonationTokenResponse], error)
 	CreateIntermediateSession(context.Context, *connect.Request[v1.CreateIntermediateSessionRequest]) (*connect.Response[v1.CreateIntermediateSessionResponse], error)
 	Whoami(context.Context, *connect.Request[v1.WhoamiRequest]) (*connect.Response[v1.WhoamiResponse], error)
@@ -373,10 +373,10 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 		connect.WithSchema(intermediateServiceMethods.ByName("ListSAMLOrganizations")),
 		connect.WithHandlerOptions(opts...),
 	)
-	intermediateServiceGetProjectUISettingsHandler := connect.NewUnaryHandler(
-		IntermediateServiceGetProjectUISettingsProcedure,
-		svc.GetProjectUISettings,
-		connect.WithSchema(intermediateServiceMethods.ByName("GetProjectUISettings")),
+	intermediateServiceGetSettingsHandler := connect.NewUnaryHandler(
+		IntermediateServiceGetSettingsProcedure,
+		svc.GetSettings,
+		connect.WithSchema(intermediateServiceMethods.ByName("GetSettings")),
 		connect.WithHandlerOptions(opts...),
 	)
 	intermediateServiceRedeemUserImpersonationTokenHandler := connect.NewUnaryHandler(
@@ -473,8 +473,8 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 		switch r.URL.Path {
 		case IntermediateServiceListSAMLOrganizationsProcedure:
 			intermediateServiceListSAMLOrganizationsHandler.ServeHTTP(w, r)
-		case IntermediateServiceGetProjectUISettingsProcedure:
-			intermediateServiceGetProjectUISettingsHandler.ServeHTTP(w, r)
+		case IntermediateServiceGetSettingsProcedure:
+			intermediateServiceGetSettingsHandler.ServeHTTP(w, r)
 		case IntermediateServiceRedeemUserImpersonationTokenProcedure:
 			intermediateServiceRedeemUserImpersonationTokenHandler.ServeHTTP(w, r)
 		case IntermediateServiceCreateIntermediateSessionProcedure:
@@ -518,8 +518,8 @@ func (UnimplementedIntermediateServiceHandler) ListSAMLOrganizations(context.Con
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.ListSAMLOrganizations is not implemented"))
 }
 
-func (UnimplementedIntermediateServiceHandler) GetProjectUISettings(context.Context, *connect.Request[v1.GetProjectUISettingsRequest]) (*connect.Response[v1.GetProjectUISettingsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.GetProjectUISettings is not implemented"))
+func (UnimplementedIntermediateServiceHandler) GetSettings(context.Context, *connect.Request[v1.GetSettingsRequest]) (*connect.Response[v1.GetSettingsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.GetSettings is not implemented"))
 }
 
 func (UnimplementedIntermediateServiceHandler) RedeemUserImpersonationToken(context.Context, *connect.Request[v1.RedeemUserImpersonationTokenRequest]) (*connect.Response[v1.RedeemUserImpersonationTokenResponse], error) {

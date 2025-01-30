@@ -10,9 +10,9 @@ import { IntermediateService } from "./intermediate_pb";
 export const listSAMLOrganizations = IntermediateService.method.listSAMLOrganizations;
 
 /**
- * @generated from rpc openauth.intermediate.v1.IntermediateService.GetProjectUISettings
+ * @generated from rpc openauth.intermediate.v1.IntermediateService.GetSettings
  */
-export const getProjectUISettings = IntermediateService.method.getProjectUISettings;
+export const getSettings = IntermediateService.method.getSettings;
 
 /**
  * @generated from rpc openauth.intermediate.v1.IntermediateService.RedeemUserImpersonationToken

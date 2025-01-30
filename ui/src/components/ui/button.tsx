@@ -2,7 +2,7 @@ import React, { CSSProperties, useEffect, useState } from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 
 import { cn, isColorDark } from '@/lib/utils'
-import useProjectUiSettings from '@/lib/project-ui-settings'
+import useSettings from '@/lib/settings'
 import useDarkMode from '@/lib/dark-mode'
 
 const buttonVariants = cva(
@@ -48,33 +48,29 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       props.style ? { ...props.style } : {},
     )
 
-    const projectUiSettings = useProjectUiSettings()
+    const settings = useSettings()
 
     useEffect(() => {
       const style: CSSProperties = { ...customStyle }
 
       if (
-        projectUiSettings?.darkModePrimaryColor &&
+        settings?.darkModePrimaryColor &&
         isDarkMode &&
-        projectUiSettings?.detectDarkModeEnabled &&
+        settings?.detectDarkModeEnabled &&
         (!variant || variant === 'default')
       ) {
-        style.backgroundColor = projectUiSettings?.darkModePrimaryColor
-        style.color = isColorDark(projectUiSettings?.primaryColor)
-          ? 'white'
-          : 'black'
+        style.backgroundColor = settings?.darkModePrimaryColor
+        style.color = isColorDark(settings?.primaryColor) ? 'white' : 'black'
       } else if (
-        projectUiSettings?.primaryColor &&
+        settings?.primaryColor &&
         (!variant || variant === 'default')
       ) {
-        style.backgroundColor = projectUiSettings?.primaryColor
-        style.color = isColorDark(projectUiSettings?.primaryColor)
-          ? 'white'
-          : 'black'
+        style.backgroundColor = settings?.primaryColor
+        style.color = isColorDark(settings?.primaryColor) ? 'white' : 'black'
       }
 
       setCustomStyle(style)
-    }, [projectUiSettings, variant])
+    }, [settings, variant])
 
     return (
       <button

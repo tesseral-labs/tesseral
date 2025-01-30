@@ -16,7 +16,7 @@ var ErrAuthorizationHeaderRequired = errors.New("authorization header is require
 
 var skipRPCs = []string{
 	"/openauth.intermediate.v1.IntermediateService/CreateIntermediateSession",
-	"/openauth.intermediate.v1.IntermediateService/GetProjectUISettings",
+	"/openauth.intermediate.v1.IntermediateService/GetSettings",
 	"/openauth.intermediate.v1.IntermediateService/ListSAMLOrganizations",
 	"/openauth.intermediate.v1.IntermediateService/RedeemUserImpersonationToken",
 }

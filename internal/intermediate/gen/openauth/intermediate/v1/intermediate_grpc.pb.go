@@ -20,7 +20,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	IntermediateService_ListSAMLOrganizations_FullMethodName                 = "/openauth.intermediate.v1.IntermediateService/ListSAMLOrganizations"
-	IntermediateService_GetProjectUISettings_FullMethodName                  = "/openauth.intermediate.v1.IntermediateService/GetProjectUISettings"
+	IntermediateService_GetSettings_FullMethodName                           = "/openauth.intermediate.v1.IntermediateService/GetSettings"
 	IntermediateService_RedeemUserImpersonationToken_FullMethodName          = "/openauth.intermediate.v1.IntermediateService/RedeemUserImpersonationToken"
 	IntermediateService_CreateIntermediateSession_FullMethodName             = "/openauth.intermediate.v1.IntermediateService/CreateIntermediateSession"
 	IntermediateService_Whoami_FullMethodName                                = "/openauth.intermediate.v1.IntermediateService/Whoami"
@@ -43,7 +43,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type IntermediateServiceClient interface {
 	ListSAMLOrganizations(ctx context.Context, in *ListSAMLOrganizationsRequest, opts ...grpc.CallOption) (*ListSAMLOrganizationsResponse, error)
-	GetProjectUISettings(ctx context.Context, in *GetProjectUISettingsRequest, opts ...grpc.CallOption) (*GetProjectUISettingsResponse, error)
+	GetSettings(ctx context.Context, in *GetSettingsRequest, opts ...grpc.CallOption) (*GetSettingsResponse, error)
 	RedeemUserImpersonationToken(ctx context.Context, in *RedeemUserImpersonationTokenRequest, opts ...grpc.CallOption) (*RedeemUserImpersonationTokenResponse, error)
 	CreateIntermediateSession(ctx context.Context, in *CreateIntermediateSessionRequest, opts ...grpc.CallOption) (*CreateIntermediateSessionResponse, error)
 	Whoami(ctx context.Context, in *WhoamiRequest, opts ...grpc.CallOption) (*WhoamiResponse, error)
@@ -79,10 +79,10 @@ func (c *intermediateServiceClient) ListSAMLOrganizations(ctx context.Context, i
 	return out, nil
 }
 
-func (c *intermediateServiceClient) GetProjectUISettings(ctx context.Context, in *GetProjectUISettingsRequest, opts ...grpc.CallOption) (*GetProjectUISettingsResponse, error) {
+func (c *intermediateServiceClient) GetSettings(ctx context.Context, in *GetSettingsRequest, opts ...grpc.CallOption) (*GetSettingsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetProjectUISettingsResponse)
-	err := c.cc.Invoke(ctx, IntermediateService_GetProjectUISettings_FullMethodName, in, out, cOpts...)
+	out := new(GetSettingsResponse)
+	err := c.cc.Invoke(ctx, IntermediateService_GetSettings_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -244,7 +244,7 @@ func (c *intermediateServiceClient) VerifyPassword(ctx context.Context, in *Veri
 // for forward compatibility.
 type IntermediateServiceServer interface {
 	ListSAMLOrganizations(context.Context, *ListSAMLOrganizationsRequest) (*ListSAMLOrganizationsResponse, error)
-	GetProjectUISettings(context.Context, *GetProjectUISettingsRequest) (*GetProjectUISettingsResponse, error)
+	GetSettings(context.Context, *GetSettingsRequest) (*GetSettingsResponse, error)
 	RedeemUserImpersonationToken(context.Context, *RedeemUserImpersonationTokenRequest) (*RedeemUserImpersonationTokenResponse, error)
 	CreateIntermediateSession(context.Context, *CreateIntermediateSessionRequest) (*CreateIntermediateSessionResponse, error)
 	Whoami(context.Context, *WhoamiRequest) (*WhoamiResponse, error)
@@ -273,8 +273,8 @@ type UnimplementedIntermediateServiceServer struct{}
 func (UnimplementedIntermediateServiceServer) ListSAMLOrganizations(context.Context, *ListSAMLOrganizationsRequest) (*ListSAMLOrganizationsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListSAMLOrganizations not implemented")
 }
-func (UnimplementedIntermediateServiceServer) GetProjectUISettings(context.Context, *GetProjectUISettingsRequest) (*GetProjectUISettingsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetProjectUISettings not implemented")
+func (UnimplementedIntermediateServiceServer) GetSettings(context.Context, *GetSettingsRequest) (*GetSettingsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSettings not implemented")
 }
 func (UnimplementedIntermediateServiceServer) RedeemUserImpersonationToken(context.Context, *RedeemUserImpersonationTokenRequest) (*RedeemUserImpersonationTokenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RedeemUserImpersonationToken not implemented")
@@ -360,20 +360,20 @@ func _IntermediateService_ListSAMLOrganizations_Handler(srv interface{}, ctx con
 	return interceptor(ctx, in, info, handler)
 }
 
-func _IntermediateService_GetProjectUISettings_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetProjectUISettingsRequest)
+func _IntermediateService_GetSettings_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetSettingsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(IntermediateServiceServer).GetProjectUISettings(ctx, in)
+		return srv.(IntermediateServiceServer).GetSettings(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: IntermediateService_GetProjectUISettings_FullMethodName,
+		FullMethod: IntermediateService_GetSettings_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(IntermediateServiceServer).GetProjectUISettings(ctx, req.(*GetProjectUISettingsRequest))
+		return srv.(IntermediateServiceServer).GetSettings(ctx, req.(*GetSettingsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -660,8 +660,8 @@ var IntermediateService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _IntermediateService_ListSAMLOrganizations_Handler,
 		},
 		{
-			MethodName: "GetProjectUISettings",
-			Handler:    _IntermediateService_GetProjectUISettings_Handler,
+			MethodName: "GetSettings",
+			Handler:    _IntermediateService_GetSettings_Handler,
 		},
 		{
 			MethodName: "RedeemUserImpersonationToken",

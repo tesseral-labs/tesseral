@@ -16,7 +16,7 @@ service IntermediateService {
     };
   }
 
-  rpc GetProjectUISettings(GetProjectUISettingsRequest) returns (GetProjectUISettingsResponse);
+  rpc GetSettings(GetSettingsRequest) returns (GetSettingsResponse);
 
   rpc RedeemUserImpersonationToken(RedeemUserImpersonationTokenRequest) returns (RedeemUserImpersonationTokenResponse) {
     option (google.api.http) = {
@@ -136,7 +136,7 @@ message IntermediateSession {
   bool email_verification_challenge_registered = 12;
 }
 
-message ProjectUISettings {
+message Settings {
   string id = 1;
   string project_id = 2;
   google.protobuf.Timestamp create_time = 3;
@@ -147,6 +147,9 @@ message ProjectUISettings {
   bool detect_dark_mode_enabled = 8;
   string dark_mode_logo_url = 9;
   string dark_mode_primary_color = 10;
+  bool log_in_with_google_enabled = 11;
+  bool log_in_with_microsoft_enabled = 12;
+  bool log_in_with_password_enabled = 13;
 }
 
 message CreateIntermediateSessionRequest {
@@ -273,11 +276,11 @@ message VerifyPasswordRequest {
 message VerifyPasswordResponse {
 }
 
-message GetProjectUISettingsRequest {
+message GetSettingsRequest {
 }
 
-message GetProjectUISettingsResponse {
-  ProjectUISettings project_ui_settings = 1;
+message GetSettingsResponse {
+  Settings settings = 1;
 }
 
 message RedeemUserImpersonationTokenRequest {
