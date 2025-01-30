@@ -52,7 +52,7 @@ const Organizations: FC<OrganizationsProps> = ({ setView }) => {
       if (isEmailLogin() && organization.logInWithPasswordEnabled) {
         setView(
           organization.userExists
-            ? LoginViews.PasswordVerification
+            ? LoginViews.VerifyPassword
             : LoginViews.RegisterPassword,
         )
         return

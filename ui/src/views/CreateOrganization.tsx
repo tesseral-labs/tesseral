@@ -18,6 +18,7 @@ import React, { Dispatch, FC, SetStateAction, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { refresh } from '@/gen/openauth/frontend/v1/frontend-FrontendService_connectquery'
 import { LoginViews } from '@/lib/views'
+import { Input } from '@/components/ui/input'
 
 interface CreateOrganizationProps {
   setView: Dispatch<SetStateAction<LoginViews>>
@@ -78,17 +79,14 @@ const CreateOrganization: FC<CreateOrganizationProps> = ({ setView }) => {
         </CardHeader>
         <CardContent className="flex flex-col items-center justify-center w-full">
           <form className="flex flex-col items-center" onSubmit={handleSubmit}>
-            <input
-              className="text-sm rounded border border-border focus:border-primary w-[clamp(240px,50%,100%)] mb-2"
+            <Input
+              className="w-[clamp(240px,50%,100%)] mb-2"
               id="displayName"
               placeholder="Acme, Inc."
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
             />
-            <Button
-              className="text-sm rounded border border-border focus:border-primary w-[clamp(240px,50%,100%)] mb-2"
-              type="submit"
-            >
+            <Button className="w-[clamp(240px,50%,100%)]" type="submit">
               Create Organization
             </Button>
           </form>

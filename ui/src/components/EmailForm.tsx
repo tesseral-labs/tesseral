@@ -22,6 +22,7 @@ import {
 import { LoginViews } from '@/lib/views'
 import { Organization } from '@/gen/openauth/intermediate/v1/intermediate_pb'
 import TextDivider from './ui/TextDivider'
+import { Input } from './ui/input'
 
 interface EmailFormProps {
   setView: Dispatch<SetStateAction<LoginViews>>
@@ -79,7 +80,7 @@ const EmailForm: FC<EmailFormProps> = ({ setView }) => {
       })
 
       // redirect to challenge page
-      setView(LoginViews.EmailVerification)
+      setView(LoginViews.VerifyEmail)
     } catch (error) {
       console.error(error)
     }
@@ -103,8 +104,8 @@ const EmailForm: FC<EmailFormProps> = ({ setView }) => {
         >
           Continue with Email
         </label>
-        <input
-          className="text-sm bg-input rounded border border-border focus:border-primary w-[clamp(240px,50%,100%)] mb-2"
+        <Input
+          className="w-[clamp(240px,50%,100%)] mb-2"
           id="email"
           type="email"
           onChange={handleEmail}
@@ -130,7 +131,7 @@ const EmailForm: FC<EmailFormProps> = ({ setView }) => {
               </label>
               <a
                 href={`/api/saml/v1/${organization.primarySamlConnectionId}/init`}
-                className="w-full"
+                className="w-[clamp(240px,50%,100%)]"
               >
                 <Button variant="outline">{organization.displayName}</Button>
               </a>

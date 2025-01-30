@@ -15,12 +15,13 @@ import {
   whoami,
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
 import { LoginViews } from '@/lib/views'
+import { Input } from '@/components/ui/input'
 
-interface EmailVerificationProps {
+interface VerifyEmailProps {
   setView: Dispatch<SetStateAction<LoginViews>>
 }
 
-const EmailVerification: FC<EmailVerificationProps> = ({ setView }) => {
+const VerifyEmail: FC<VerifyEmailProps> = ({ setView }) => {
   const [challengeCode, setChallengeCode] = useState<string>('')
   const [email, setEmail] = useState<string>('')
 
@@ -57,17 +58,14 @@ const EmailVerification: FC<EmailVerificationProps> = ({ setView }) => {
         </CardHeader>
         <CardContent className="flex flex-col items-center justify-center w-full">
           <form className="flex flex-col items-center" onSubmit={handleSubmit}>
-            <input
-              className="text-sm bg-input rounded border border-border focus:border-primary w-[clamp(240px,50%,100%)] mb-2"
+            <Input
+              className="w-[clamp(240px,50%,100%)] mb-2"
               id="challengeCode"
               placeholder="Enter your challenge code"
               value={challengeCode}
               onChange={(e) => setChallengeCode(e.target.value)}
             />
-            <Button
-              className="text-sm rounded border border-border focus:border-primary w-[clamp(240px,50%,100%)] mb-2"
-              type="submit"
-            >
+            <Button className="w-[clamp(240px,50%,100%)]" type="submit">
               Verify Email Address
             </Button>
           </form>
@@ -78,4 +76,4 @@ const EmailVerification: FC<EmailVerificationProps> = ({ setView }) => {
   )
 }
 
-export default EmailVerification
+export default VerifyEmail

@@ -1,4 +1,4 @@
-import React, { Dispatch, FC, SetStateAction, useEffect } from 'react'
+import React, { Dispatch, FC, SetStateAction } from 'react'
 
 import EmailForm from '@/components/EmailForm'
 import OAuthButton, { OAuthMethods } from '@/components/OAuthButton'
@@ -19,7 +19,6 @@ import {
   getMicrosoftOAuthRedirectURL,
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
 import { LoginViews } from '@/lib/views'
-import { useProject } from '@/lib/auth'
 import useSettings from '@/lib/settings'
 
 interface LoginProps {

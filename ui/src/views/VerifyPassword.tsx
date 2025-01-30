@@ -9,8 +9,9 @@ import {
 import { useMutation } from '@connectrpc/connect-query'
 import { useLocation, useNavigate, useParams } from 'react-router'
 import { setAccessToken, setRefreshToken } from '@/auth'
+import { Input } from '@/components/ui/input'
 
-const PasswordVerification = () => {
+const VerifyPassword = () => {
   const navigate = useNavigate()
   const { state } = useLocation()
   const [password, setPassword] = useState<string>('')
@@ -59,18 +60,15 @@ const PasswordVerification = () => {
         </CardHeader>
         <CardContent className="flex flex-col items-center justify-center w-full">
           <form className="flex flex-col items-center" onSubmit={handleSubmit}>
-            <input
-              className="text-sm bg-input rounded border border-border focus:border-primary w-[clamp(240px,50%,100%)] mb-2"
+            <Input
+              className="w-[clamp(240px,50%,100%)] mb-2"
               id="password"
               placeholder="Enter your password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <Button
-              className="text-sm rounded border border-border focus:border-primary w-[clamp(240px,50%,100%)] mb-2"
-              type="submit"
-            >
+            <Button className="w-[clamp(240px,50%,100%)]" type="submit">
               Log In
             </Button>
           </form>
@@ -80,4 +78,4 @@ const PasswordVerification = () => {
   )
 }
 
-export default PasswordVerification
+export default VerifyPassword
