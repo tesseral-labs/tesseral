@@ -2,33 +2,29 @@ import React, { SyntheticEvent, useEffect, useRef, useState } from 'react'
 import { Outlet } from 'react-router'
 import useDarkMode from '@/lib/dark-mode'
 import { cn } from '@/lib/utils'
-import { useQuery } from '@connectrpc/connect-query'
-import { getProjectUISettings } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
-import useProjectUiSettings from '@/lib/project-ui-settings'
+import useSettings from '@/lib/settings'
 import { Helmet } from 'react-helmet'
 
 const Page = () => {
   const isDarkMode = useDarkMode()
-  const projectUiSettings = useProjectUiSettings()
+  const settings = useSettings()
 
   const [favicon, setFavicon] = useState<string>('/apple-touch-icon.png')
 
   useEffect(() => {
-    if (projectUiSettings?.faviconUrl) {
+    if (settings?.faviconUrl) {
       ;(async () => {
         // Check if the favicon exists before setting it
-        const faviconCheck = await fetch(projectUiSettings.faviconUrl, {
+        const faviconCheck = await fetch(settings.faviconUrl, {
           method: 'HEAD',
         })
 
         setFavicon(
-          faviconCheck.ok
-            ? projectUiSettings.faviconUrl
-            : '/apple-touch-icon.png',
+          faviconCheck.ok ? settings.faviconUrl : '/apple-touch-icon.png',
         )
       })()
     }
-  }, [projectUiSettings])
+  }, [settings])
 
   return (
     <>
@@ -40,7 +36,7 @@ const Page = () => {
       <div
         className={cn(
           'min-h-screen w-screen',
-          isDarkMode && projectUiSettings.detectDarkModeEnabled
+          isDarkMode && settings.detectDarkModeEnabled
             ? 'dark bg-dark'
             : 'light bg-body',
         )}
@@ -49,11 +45,11 @@ const Page = () => {
           <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 flex justify-center">
             <div className="mb-8">
               {/* TODO: Make this conditionally load an Organizations configured logo */}
-              {isDarkMode && projectUiSettings.detectDarkModeEnabled ? (
+              {isDarkMode && settings.detectDarkModeEnabled ? (
                 <img
                   className="max-w-[240px]"
                   src={
-                    projectUiSettings?.darkModeLogoUrl ||
+                    settings?.darkModeLogoUrl ||
                     '/images/tesseral-logo-white.svg'
                   }
                   onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
@@ -65,10 +61,7 @@ const Page = () => {
               ) : (
                 <img
                   className="max-w-[240px]"
-                  src={
-                    projectUiSettings?.logoUrl ||
-                    '/images/tesseral-logo-black.svg'
-                  }
+                  src={settings?.logoUrl || '/images/tesseral-logo-black.svg'}
                   onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
                     const target = e.target as HTMLImageElement
                     target.onerror = null
