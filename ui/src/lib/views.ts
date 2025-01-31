@@ -1,7 +1,8 @@
 export enum LoginViews {
+  ChooseAdditionalFactor = 'choose-additional-factor',
+  ChooseOrganization = 'choose-organization',
   CreateOrganization = 'create-organization',
   Login = 'login',
-  Organizations = 'organizations',
   RegisterPassword = 'register-password',
   RegisterAuthenticatorApp = 'register-totp',
   RegisterPasskey = 'register-webauthn',

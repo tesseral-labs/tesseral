@@ -34,7 +34,7 @@ const GoogleOAuthCallbackPage = () => {
             state,
           })
 
-          console.log("redeemed")
+          console.log('redeemed')
 
           // Fetch the whoami query to determine if the user has verified their email.
           const { data } = await whoamiQuery.refetch()
@@ -42,12 +42,12 @@ const GoogleOAuthCallbackPage = () => {
             throw new Error('No data returned from whoami query')
           }
 
-          console.log("whoami data", JSON.stringify(data))
+          console.log('whoami data', JSON.stringify(data))
 
           // If the user has verified their email, navigate to the organizations page.
           if (data.intermediateSession!.emailVerified) {
             navigate('/login', {
-              state: { view: LoginViews.Organizations },
+              state: { view: LoginViews.ChoostOrganization },
             })
             return
           }

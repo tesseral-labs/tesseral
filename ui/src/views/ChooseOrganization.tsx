@@ -20,11 +20,11 @@ import { Link, useNavigate } from 'react-router-dom'
 import { setAccessToken, setRefreshToken } from '@/auth'
 import { LoginViews } from '@/lib/views'
 
-interface OrganizationsProps {
+interface ChooseOrganizationProps {
   setView: Dispatch<SetStateAction<LoginViews>>
 }
 
-const Organizations: FC<OrganizationsProps> = ({ setView }) => {
+const ChooseOrganization: FC<ChooseOrganizationProps> = ({ setView }) => {
   const navigate = useNavigate()
 
   const { data: whoamiRes } = useQuery(whoami)
@@ -115,4 +115,4 @@ const Organizations: FC<OrganizationsProps> = ({ setView }) => {
   )
 }
 
-export default Organizations
+export default ChooseOrganization

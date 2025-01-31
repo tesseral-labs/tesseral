@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 import { LoginViews } from '@/lib/views'
 import CreateOrganization from '@/views/CreateOrganization'
-import Organizations from '@/views/Organizations'
+import ChooseOrganization from '@/views/ChooseOrganization'
 import Login from '@/views/Login'
 import RegisterPassword from '@/views/RegisterPassword'
 import VerifyEmail from '@/views/VerifyEmail'
@@ -11,17 +11,23 @@ import RegisterAuthenticatorApp from '@/views/RegisterAuthenticatorApp'
 import RegisterPasskey from '@/views/RegisterPasskey'
 import VerifyAuthenticatorApp from '@/views/VerifyAuthenticatorApp'
 import VerifyPasskey from '@/views/VerifyPasskey'
+import ChooseAdditionalFactor from '@/views/ChooseAdditionalFactor'
 
 const LoginPage = () => {
   const [view, setView] = useState<LoginViews>(LoginViews.Login)
 
   return (
     <>
+      {view === LoginViews.ChooseAdditionalFactor && (
+        <ChooseAdditionalFactor setView={setView} />
+      )}
+      {view === LoginViews.ChooseOrganization && (
+        <ChooseOrganization setView={setView} />
+      )}
       {view === LoginViews.CreateOrganization && (
         <CreateOrganization setView={setView} />
       )}
       {view === LoginViews.Login && <Login setView={setView} />}
-      {view === LoginViews.Organizations && <Organizations setView={setView} />}
       {view === LoginViews.RegisterPassword && <RegisterPassword />}
       {view === LoginViews.RegisterAuthenticatorApp && (
         <RegisterAuthenticatorApp />
