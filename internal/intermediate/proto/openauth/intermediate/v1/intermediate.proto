@@ -291,3 +291,59 @@ message RedeemUserImpersonationTokenResponse {
   string refresh_token = 1;
   string access_token = 2;
 }
+
+message GetAuthenticatorAppOptionsRequest {
+}
+
+message GetAuthenticatorAppOptionsResponse {
+  bytes secret = 1;
+}
+
+message RegisterAuthenticatorAppRequest {
+  string totp_code = 1;
+}
+
+message RegisterAuthenticatorAppResponse {
+  repeated string recovery_codes = 1;
+}
+
+message VerifyAuthenticatorAppRequest {
+  string totp_code = 1;
+  string recovery_code = 2;
+}
+
+message VerifyAuthenticatorAppResponse {
+}
+
+message GetPasskeyOptionsRequest {
+}
+
+message GetPasskeyOptionsResponse {
+  string rp_id = 1;
+  string user_id = 2;
+  string user_display_name = 3;
+}
+
+message RegisterPasskeyRequest {
+  string attestation_object = 1;
+}
+
+message RegisterPasskeyResponse {
+}
+
+message IssuePasskeyChallengeRequest {
+}
+
+message IssuePasskeyChallengeResponse {
+  bytes challenge = 1;
+}
+
+message VerifyPasskeyChallengeRequest {
+  bytes credential_id = 1;
+  string client_data_json = 2;
+  string authenticator_data = 3;
+  string signature = 4;
+}
+
+message VerifyPasskeyChallengeResponse {
+}

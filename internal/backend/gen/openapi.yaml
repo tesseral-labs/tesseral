@@ -1019,5 +1019,7 @@ components:
                     type: string
                 microsoftUserId:
                     type: string
+                hasAuthenticatorApp:
+                    type: boolean
 tags:
     - name: BackendService
