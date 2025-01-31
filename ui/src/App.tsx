@@ -17,10 +17,7 @@ import UserSettingsPage from './pages/dashboard/UserSettingsPage'
 import DashboardPage from './components/DashboardPage'
 import OrganizationSettingsPage from './pages/dashboard/OrganizationSettingsPage'
 import EditSAMLConnectionsPage from './pages/dashboard/EditSAMLConnectionsPage'
-import { ImpersonatePage } from '@/pages/ImpersonatePage'
-import RegisterAuthenticatorApp from './views/RegisterAuthenticatorApp'
 import RegisterPasskey from './views/RegisterPasskey'
-import VerifyAuthenticatorApp from './views/VerifyAuthenticatorApp'
 
 const queryClient = new QueryClient()
 
@@ -41,6 +38,8 @@ const AppWithRoutes: FC = () => {
           <Routes>
             <Route path="/" element={<Page />}>
               <Route index element={<Navigate to="login" replace />} />
+
+              <Route path="passkey-test" element={<RegisterPasskey />} />
 
               <Route
                 path="google-oauth-callback"

@@ -2,8 +2,16 @@ import React, { FC, useEffect } from 'react'
 
 const encoder = new TextEncoder()
 
+const passkeyOptions = {
+  challenge: 'random-base64-url-string',
+  rpId: 'auth.console.tesseral.example.com',
+  rpName: 'Tesseral Localhost',
+  userId: 'random-user-id-in-base64url',
+  userDisplayName: 'User Name',
+}
+
 const RegisterPasskey: FC = () => {
-  const getPasskeyOptionsMutation = useMutation(getPasskeyOptions)
+  // const getPasskeyOptionsMutation = useMutation(getPasskeyOptions)
   // const registerPasskeyMutation = useMutation(registerPasskey)
 
   const registerPasskey = async (): Promise<any> => {
@@ -11,8 +19,8 @@ const RegisterPasskey: FC = () => {
       throw new Error('WebAuthn not supported')
     }
 
-    const { data: passkeyOptions } =
-      await getPasskeyOptionsMutation.mutateAsync({})
+    // const { data: passkeyOptions } =
+    //   await getPasskeyOptionsMutation.mutateAsync({})
     const credentialOptions: PublicKeyCredentialCreationOptions = {
       challenge: encoder.encode(passkeyOptions.challenge).buffer,
       rp: {
@@ -39,6 +47,8 @@ const RegisterPasskey: FC = () => {
     if (!credential) {
       throw new Error('No credential returned')
     }
+
+    console.log(credential)
 
     return credential
   }

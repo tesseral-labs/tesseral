@@ -4,11 +4,14 @@ import { Title } from '@/components/Title'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { useMutation } from '@connectrpc/connect-query'
 
 const RegisterAuthenticatorApp: FC = () => {
   const secretValue = 'testValue'
   const [qrcode, setQRCode] = useState<string | null>(null)
   const [code, setCode] = useState<string>('')
+
+  // const getAuthenticatorAppOptionsMutation = useMutation(getAuthenticatorAppOptions)
 
   const generateQRCode = async (value: string): Promise<string> => {
     return QRCode.toDataURL(value, {
