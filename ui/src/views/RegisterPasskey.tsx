@@ -22,7 +22,7 @@ const RegisterPasskey: FC = () => {
     // const { data: passkeyOptions } =
     //   await getPasskeyOptionsMutation.mutateAsync({})
     const credentialOptions: PublicKeyCredentialCreationOptions = {
-      challenge: encoder.encode(passkeyOptions.challenge).buffer,
+      challenge: new Uint8Array([0]).buffer,
       rp: {
         id: passkeyOptions.rpId,
         name: passkeyOptions.rpName,
