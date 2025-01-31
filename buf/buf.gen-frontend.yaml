@@ -22,10 +22,10 @@ plugins:
     opt: paths=source_relative
   - local: protoc-gen-es
     include_imports: true
-    out: app/src/gen
+    out: console/src/gen
     opt: target=ts
   - local: protoc-gen-connect-query
-    out: app/src/gen
+    out: console/src/gen
     opt: target=ts
   - local: protoc-gen-es
     include_imports: true

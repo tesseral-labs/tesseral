@@ -16,7 +16,7 @@ services:
     ports:
       - "3001:3001"
     tty: true
-  app:
+  console:
     command: bash -c "npm i --force && npm run dev"
     env_file:
       - .env
@@ -27,8 +27,8 @@ services:
       - "3000:3000"
     tty: true
     volumes:
-      - ./app:/app:cached
-    working_dir: /app
+      - ./console:/console:cached
+    working_dir: /console
   kms:
     environment:
       KMS_REGION: ${AWS_DEFAULT_REGION}
