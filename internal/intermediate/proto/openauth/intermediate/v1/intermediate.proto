@@ -126,6 +126,13 @@ service IntermediateService {
       body: "*"
     };
   }
+
+  rpc RegisterPasskey(RegisterPasskeyRequest) returns (RegisterPasskeyResponse) {
+    option (google.api.http) = {
+      post: "/intermediate/v1/register-passkey",
+      body: "*"
+    };
+  }
 }
 
 message IntermediateSession {
@@ -239,6 +246,9 @@ message Organization {
   bool log_in_with_password_enabled = 6;
   string primary_saml_connection_id = 7;
   bool user_exists = 8;
+  bool user_has_password = 9;
+  bool user_has_authenticator_app = 10;
+  bool user_has_passkey = 11;
 }
 
 message IssueEmailVerificationChallengeRequest {

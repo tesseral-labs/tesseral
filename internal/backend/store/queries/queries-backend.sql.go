@@ -407,7 +407,7 @@ func (q *Queries) EnableProjectLogins(ctx context.Context, id uuid.UUID) error {
 
 const getIntermediateSession = `-- name: GetIntermediateSession :one
 SELECT
-    intermediate_sessions.id, intermediate_sessions.project_id, intermediate_sessions.create_time, intermediate_sessions.expire_time, intermediate_sessions.email, intermediate_sessions.google_oauth_state_sha256, intermediate_sessions.microsoft_oauth_state_sha256, intermediate_sessions.google_hosted_domain, intermediate_sessions.google_user_id, intermediate_sessions.microsoft_tenant_id, intermediate_sessions.microsoft_user_id, intermediate_sessions.password_verified, intermediate_sessions.organization_id, intermediate_sessions.update_time, intermediate_sessions.secret_token_sha256, intermediate_sessions.new_user_password_bcrypt, intermediate_sessions.email_verification_challenge_sha256, intermediate_sessions.email_verification_challenge_completed
+    intermediate_sessions.id, intermediate_sessions.project_id, intermediate_sessions.create_time, intermediate_sessions.expire_time, intermediate_sessions.email, intermediate_sessions.google_oauth_state_sha256, intermediate_sessions.microsoft_oauth_state_sha256, intermediate_sessions.google_hosted_domain, intermediate_sessions.google_user_id, intermediate_sessions.microsoft_tenant_id, intermediate_sessions.microsoft_user_id, intermediate_sessions.password_verified, intermediate_sessions.organization_id, intermediate_sessions.update_time, intermediate_sessions.secret_token_sha256, intermediate_sessions.new_user_password_bcrypt, intermediate_sessions.email_verification_challenge_sha256, intermediate_sessions.email_verification_challenge_completed, intermediate_sessions.passkey_credential_id, intermediate_sessions.passkey_public_key, intermediate_sessions.passkey_aaguid, intermediate_sessions.passkey_verify_challenge_sha256, intermediate_sessions.passkey_verified
 FROM
     intermediate_sessions
 WHERE
@@ -442,6 +442,11 @@ func (q *Queries) GetIntermediateSession(ctx context.Context, arg GetIntermediat
 		&i.NewUserPasswordBcrypt,
 		&i.EmailVerificationChallengeSha256,
 		&i.EmailVerificationChallengeCompleted,
+		&i.PasskeyCredentialID,
+		&i.PasskeyPublicKey,
+		&i.PasskeyAaguid,
+		&i.PasskeyVerifyChallengeSha256,
+		&i.PasskeyVerified,
 	)
 	return i, err
 }
@@ -911,7 +916,7 @@ func (q *Queries) GetUserForImpersonation(ctx context.Context, arg GetUserForImp
 
 const listIntermediateSessions = `-- name: ListIntermediateSessions :many
 SELECT
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified
 FROM
     intermediate_sessions
 WHERE
@@ -956,6 +961,11 @@ func (q *Queries) ListIntermediateSessions(ctx context.Context, arg ListIntermed
 			&i.NewUserPasswordBcrypt,
 			&i.EmailVerificationChallengeSha256,
 			&i.EmailVerificationChallengeCompleted,
+			&i.PasskeyCredentialID,
+			&i.PasskeyPublicKey,
+			&i.PasskeyAaguid,
+			&i.PasskeyVerifyChallengeSha256,
+			&i.PasskeyVerified,
 		); err != nil {
 			return nil, err
 		}

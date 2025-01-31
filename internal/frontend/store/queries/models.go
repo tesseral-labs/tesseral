@@ -75,6 +75,11 @@ type IntermediateSession struct {
 	NewUserPasswordBcrypt               *string
 	EmailVerificationChallengeSha256    []byte
 	EmailVerificationChallengeCompleted bool
+	PasskeyCredentialID                 []byte
+	PasskeyPublicKey                    []byte
+	PasskeyAaguid                       *string
+	PasskeyVerifyChallengeSha256        []byte
+	PasskeyVerified                     bool
 }
 
 type OauthVerifiedEmail struct {
@@ -117,6 +122,16 @@ type OrganizationMicrosoftTenantID struct {
 	ID                uuid.UUID
 	OrganizationID    uuid.UUID
 	MicrosoftTenantID string
+}
+
+type Passkey struct {
+	ID           uuid.UUID
+	UserID       uuid.UUID
+	CreateTime   *time.Time
+	UpdateTime   *time.Time
+	CredentialID []byte
+	PublicKey    []byte
+	Aaguid       string
 }
 
 type Project struct {
