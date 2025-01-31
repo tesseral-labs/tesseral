@@ -327,8 +327,10 @@ message GetPasskeyOptionsRequest {
 
 message GetPasskeyOptionsResponse {
   string rp_id = 1;
-  string user_id = 2;
-  string user_display_name = 3;
+  string rp_name = 2;
+  string user_id = 3;
+  string user_display_name = 4;
+  bytes challenge = 5;
 }
 
 message RegisterPasskeyRequest {

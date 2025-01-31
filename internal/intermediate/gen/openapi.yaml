@@ -458,10 +458,15 @@ components:
             properties:
                 rpId:
                     type: string
+                rpName:
+                    type: string
                 userId:
                     type: string
                 userDisplayName:
                     type: string
+                challenge:
+                    type: string
+                    format: bytes
         GoogleProtobufAny:
             type: object
             properties:
