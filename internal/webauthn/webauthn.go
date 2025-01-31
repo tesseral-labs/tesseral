@@ -135,6 +135,7 @@ func (c *Credential) Verify(req *VerifyRequest) error {
 		return err
 	}
 
+	// TODO rsa
 	if !ecdsa.Verify(c.PublicKey.(*ecdsa.PublicKey), hash[:], sig.R, sig.S) {
 		return fmt.Errorf("invalid signature")
 	}

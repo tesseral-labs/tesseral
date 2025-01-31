@@ -119,6 +119,13 @@ service IntermediateService {
       body: "*"
     };
   }
+
+  rpc GetPasskeyOptions(GetPasskeyOptionsRequest) returns (GetPasskeyOptionsResponse) {
+    option (google.api.http) = {
+      post: "/intermediate/v1/get-passkey-options",
+      body: "*"
+    };
+  }
 }
 
 message IntermediateSession {
@@ -320,8 +327,9 @@ message GetPasskeyOptionsRequest {
 
 message GetPasskeyOptionsResponse {
   string rp_id = 1;
-  string user_id = 2;
-  string user_display_name = 3;
+  string rp_name = 2;
+  string user_id = 3;
+  string user_display_name = 4;
 }
 
 message RegisterPasskeyRequest {
