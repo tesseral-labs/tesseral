@@ -848,6 +848,12 @@ components:
                     type: boolean
                 logInWithMicrosoftEnabled:
                     type: boolean
+                logInWithAuthenticatorAppEnabled:
+                    type: boolean
+                logInWithPasskeyEnabled:
+                    type: boolean
+                requireMfa:
+                    type: boolean
                 samlEnabled:
                     type: boolean
                 scimEnabled:
@@ -888,6 +894,12 @@ components:
                 logInWithGoogleEnabled:
                     type: boolean
                 logInWithMicrosoftEnabled:
+                    type: boolean
+                logInWithAuthenticatorAppEnabled:
+                    type: boolean
+                logInWithPasskeyEnabled:
+                    type: boolean
+                requireMfa:
                     type: boolean
                 googleOauthClientId:
                     type: string

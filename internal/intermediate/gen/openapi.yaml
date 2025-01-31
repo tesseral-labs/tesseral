@@ -565,6 +565,12 @@ components:
                     type: boolean
                 logInWithPasswordEnabled:
                     type: boolean
+                logInWithAuthenticatorAppEnabled:
+                    type: boolean
+                logInWithPasskeyEnabled:
+                    type: boolean
+                requireMfa:
+                    type: boolean
                 primarySamlConnectionId:
                     type: string
                 userExists:
