@@ -87,6 +87,9 @@ const (
 	// IntermediateServiceGetPasskeyOptionsProcedure is the fully-qualified name of the
 	// IntermediateService's GetPasskeyOptions RPC.
 	IntermediateServiceGetPasskeyOptionsProcedure = "/openauth.intermediate.v1.IntermediateService/GetPasskeyOptions"
+	// IntermediateServiceRegisterPasskeyProcedure is the fully-qualified name of the
+	// IntermediateService's RegisterPasskey RPC.
+	IntermediateServiceRegisterPasskeyProcedure = "/openauth.intermediate.v1.IntermediateService/RegisterPasskey"
 )
 
 // IntermediateServiceClient is a client for the openauth.intermediate.v1.IntermediateService
@@ -110,6 +113,7 @@ type IntermediateServiceClient interface {
 	RegisterPassword(context.Context, *connect.Request[v1.RegisterPasswordRequest]) (*connect.Response[v1.RegisterPasswordResponse], error)
 	VerifyPassword(context.Context, *connect.Request[v1.VerifyPasswordRequest]) (*connect.Response[v1.VerifyPasswordResponse], error)
 	GetPasskeyOptions(context.Context, *connect.Request[v1.GetPasskeyOptionsRequest]) (*connect.Response[v1.GetPasskeyOptionsResponse], error)
+	RegisterPasskey(context.Context, *connect.Request[v1.RegisterPasskeyRequest]) (*connect.Response[v1.RegisterPasskeyResponse], error)
 }
 
 // NewIntermediateServiceClient constructs a client for the
@@ -232,6 +236,12 @@ func NewIntermediateServiceClient(httpClient connect.HTTPClient, baseURL string,
 			connect.WithSchema(intermediateServiceMethods.ByName("GetPasskeyOptions")),
 			connect.WithClientOptions(opts...),
 		),
+		registerPasskey: connect.NewClient[v1.RegisterPasskeyRequest, v1.RegisterPasskeyResponse](
+			httpClient,
+			baseURL+IntermediateServiceRegisterPasskeyProcedure,
+			connect.WithSchema(intermediateServiceMethods.ByName("RegisterPasskey")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -255,6 +265,7 @@ type intermediateServiceClient struct {
 	registerPassword                      *connect.Client[v1.RegisterPasswordRequest, v1.RegisterPasswordResponse]
 	verifyPassword                        *connect.Client[v1.VerifyPasswordRequest, v1.VerifyPasswordResponse]
 	getPasskeyOptions                     *connect.Client[v1.GetPasskeyOptionsRequest, v1.GetPasskeyOptionsResponse]
+	registerPasskey                       *connect.Client[v1.RegisterPasskeyRequest, v1.RegisterPasskeyResponse]
 }
 
 // ListSAMLOrganizations calls openauth.intermediate.v1.IntermediateService.ListSAMLOrganizations.
@@ -354,6 +365,11 @@ func (c *intermediateServiceClient) GetPasskeyOptions(ctx context.Context, req *
 	return c.getPasskeyOptions.CallUnary(ctx, req)
 }
 
+// RegisterPasskey calls openauth.intermediate.v1.IntermediateService.RegisterPasskey.
+func (c *intermediateServiceClient) RegisterPasskey(ctx context.Context, req *connect.Request[v1.RegisterPasskeyRequest]) (*connect.Response[v1.RegisterPasskeyResponse], error) {
+	return c.registerPasskey.CallUnary(ctx, req)
+}
+
 // IntermediateServiceHandler is an implementation of the
 // openauth.intermediate.v1.IntermediateService service.
 type IntermediateServiceHandler interface {
@@ -375,6 +391,7 @@ type IntermediateServiceHandler interface {
 	RegisterPassword(context.Context, *connect.Request[v1.RegisterPasswordRequest]) (*connect.Response[v1.RegisterPasswordResponse], error)
 	VerifyPassword(context.Context, *connect.Request[v1.VerifyPasswordRequest]) (*connect.Response[v1.VerifyPasswordResponse], error)
 	GetPasskeyOptions(context.Context, *connect.Request[v1.GetPasskeyOptionsRequest]) (*connect.Response[v1.GetPasskeyOptionsResponse], error)
+	RegisterPasskey(context.Context, *connect.Request[v1.RegisterPasskeyRequest]) (*connect.Response[v1.RegisterPasskeyResponse], error)
 }
 
 // NewIntermediateServiceHandler builds an HTTP handler from the service implementation. It returns
@@ -492,6 +509,12 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 		connect.WithSchema(intermediateServiceMethods.ByName("GetPasskeyOptions")),
 		connect.WithHandlerOptions(opts...),
 	)
+	intermediateServiceRegisterPasskeyHandler := connect.NewUnaryHandler(
+		IntermediateServiceRegisterPasskeyProcedure,
+		svc.RegisterPasskey,
+		connect.WithSchema(intermediateServiceMethods.ByName("RegisterPasskey")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/openauth.intermediate.v1.IntermediateService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case IntermediateServiceListSAMLOrganizationsProcedure:
@@ -530,6 +553,8 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 			intermediateServiceVerifyPasswordHandler.ServeHTTP(w, r)
 		case IntermediateServiceGetPasskeyOptionsProcedure:
 			intermediateServiceGetPasskeyOptionsHandler.ServeHTTP(w, r)
+		case IntermediateServiceRegisterPasskeyProcedure:
+			intermediateServiceRegisterPasskeyHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -609,4 +634,8 @@ func (UnimplementedIntermediateServiceHandler) VerifyPassword(context.Context, *
 
 func (UnimplementedIntermediateServiceHandler) GetPasskeyOptions(context.Context, *connect.Request[v1.GetPasskeyOptionsRequest]) (*connect.Response[v1.GetPasskeyOptionsResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.GetPasskeyOptions is not implemented"))
+}
+
+func (UnimplementedIntermediateServiceHandler) RegisterPasskey(context.Context, *connect.Request[v1.RegisterPasskeyRequest]) (*connect.Response[v1.RegisterPasskeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.RegisterPasskey is not implemented"))
 }

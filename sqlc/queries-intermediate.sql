@@ -364,3 +364,27 @@ WHERE
 RETURNING
     *;
 
+-- name: GetUserHasPasskey :one
+SELECT
+    EXISTS (
+        SELECT
+            *
+        FROM
+            passkeys
+        WHERE
+            user_id = $1);
+
+-- name: RegisterPasskey :one
+UPDATE
+    intermediate_sessions
+SET
+    passkey_credential_id = $1,
+    passkey_public_key = $2,
+    passkey_aaguid = $3,
+    passkey_verified = TRUE,
+    update_time = now()
+WHERE
+    id = $4
+RETURNING
+    *;
+
