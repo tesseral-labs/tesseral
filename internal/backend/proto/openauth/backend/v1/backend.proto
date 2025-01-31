@@ -606,7 +606,7 @@ message Project {
   optional bool log_in_with_microsoft_enabled = 7;
   optional bool log_in_with_authenticator_app_enabled = 13;
   optional bool log_in_with_passkey_enabled = 14;
-  optional bool require_mfa = 15;
+  optional bool default_require_mfa = 15;
   string google_oauth_client_id = 8;
   string google_oauth_client_secret = 9;
   string microsoft_oauth_client_id = 10;

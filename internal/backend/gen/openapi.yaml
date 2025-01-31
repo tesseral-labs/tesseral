@@ -899,7 +899,7 @@ components:
                     type: boolean
                 logInWithPasskeyEnabled:
                     type: boolean
-                requireMfa:
+                defaultRequireMfa:
                     type: boolean
                 googleOauthClientId:
                     type: string
