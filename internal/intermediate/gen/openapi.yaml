@@ -30,6 +30,30 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /intermediate/v1/get-passkey-options:
+        post:
+            tags:
+                - IntermediateService
+            operationId: IntermediateService_GetPasskeyOptions
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/GetPasskeyOptionsRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetPasskeyOptionsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /intermediate/v1/google-oauth-redirect-url:
         post:
             tags:
@@ -425,6 +449,20 @@ components:
             type: object
             properties:
                 url:
+                    type: string
+        GetPasskeyOptionsRequest:
+            type: object
+            properties: {}
+        GetPasskeyOptionsResponse:
+            type: object
+            properties:
+                rpId:
+                    type: string
+                rpName:
+                    type: string
+                userId:
+                    type: string
+                userDisplayName:
                     type: string
         GoogleProtobufAny:
             type: object
