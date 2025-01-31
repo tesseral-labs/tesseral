@@ -464,9 +464,6 @@ components:
                     type: string
                 userDisplayName:
                     type: string
-                challenge:
-                    type: string
-                    format: bytes
         GoogleProtobufAny:
             type: object
             properties:

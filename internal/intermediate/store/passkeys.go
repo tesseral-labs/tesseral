@@ -2,7 +2,6 @@ package store
 
 import (
 	"context"
-	"crypto/rand"
 	"fmt"
 
 	"github.com/openauth/openauth/internal/common/apierror"
@@ -31,18 +30,10 @@ func (s *Store) GetPasskeyOptions(ctx context.Context, req *intermediatev1.GetPa
 		return nil, fmt.Errorf("get intermediate session by id: %w", err)
 	}
 
-	challenge := make([]byte, 32)
-	if _, err := rand.Read(challenge); err != nil {
-		panic(fmt.Errorf("read random bytes: %w", err))
-	}
-
-	// TODO save this
-
 	return &intermediatev1.GetPasskeyOptionsResponse{
 		RpId:            *qProject.AuthDomain,
 		RpName:          qProject.DisplayName,
 		UserId:          fmt.Sprintf("%s|%s", *qIntermediateSession.Email, *qIntermediateSession.OrganizationID),
 		UserDisplayName: *qIntermediateSession.Email,
-		Challenge:       challenge,
 	}, nil
 }

@@ -330,7 +330,6 @@ message GetPasskeyOptionsResponse {
   string rp_name = 2;
   string user_id = 3;
   string user_display_name = 4;
-  bytes challenge = 5;
 }
 
 message RegisterPasskeyRequest {
