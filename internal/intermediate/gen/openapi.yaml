@@ -263,6 +263,30 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /intermediate/v1/register-passkey:
+        post:
+            tags:
+                - IntermediateService
+            operationId: IntermediateService_RegisterPasskey
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/RegisterPasskeyRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/RegisterPasskeyResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /intermediate/v1/register-password:
         post:
             tags:
@@ -541,9 +565,21 @@ components:
                     type: boolean
                 logInWithPasswordEnabled:
                     type: boolean
+                logInWithAuthenticatorAppEnabled:
+                    type: boolean
+                logInWithPasskeyEnabled:
+                    type: boolean
+                requireMfa:
+                    type: boolean
                 primarySamlConnectionId:
                     type: string
                 userExists:
+                    type: boolean
+                userHasPassword:
+                    type: boolean
+                userHasAuthenticatorApp:
+                    type: boolean
+                userHasPasskey:
                     type: boolean
         RedeemGoogleOAuthCodeRequest:
             type: object
@@ -581,6 +617,14 @@ components:
                     type: string
                 accessToken:
                     type: string
+        RegisterPasskeyRequest:
+            type: object
+            properties:
+                attestationObject:
+                    type: string
+        RegisterPasskeyResponse:
+            type: object
+            properties: {}
         RegisterPasswordRequest:
             type: object
             properties:

@@ -93,3 +93,8 @@ export const verifyPassword = IntermediateService.method.verifyPassword;
  * @generated from rpc openauth.intermediate.v1.IntermediateService.GetPasskeyOptions
  */
 export const getPasskeyOptions = IntermediateService.method.getPasskeyOptions;
+
+/**
+ * @generated from rpc openauth.intermediate.v1.IntermediateService.RegisterPasskey
+ */
+export const registerPasskey = IntermediateService.method.registerPasskey;
