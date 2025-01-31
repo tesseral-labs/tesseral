@@ -1,1 +1,0 @@
-export const API_URL = __REPLACED_BY_ESBUILD_API_URL__
