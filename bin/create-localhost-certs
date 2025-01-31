@@ -5,6 +5,6 @@ create_cert() {
 }
 
 create_cert "api.tesseral.example.com"
-create_cert "app.tesseral.example.com"
-create_cert "auth.app.tesseral.example.com"
+create_cert "console.tesseral.example.com"
+create_cert "auth.console.tesseral.example.com"
 create_cert "tesseralusercontent.example.com"

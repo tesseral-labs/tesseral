@@ -4,7 +4,7 @@
 # https://git-scm.com/docs/gitattributes#_merge (see: "Unset")
 [attr]generated linguist-generated=true -diff -merge
 
-app/src/gen/** generated
+console/src/gen/** generated
 ui/src/gen/** generated
 
 internal/gen/** generated
