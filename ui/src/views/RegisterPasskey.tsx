@@ -2,28 +2,36 @@ import React, { FC, useEffect } from 'react'
 
 const encoder = new TextEncoder()
 
-const exampleCredentialOptions: PublicKeyCredentialCreationOptions = {
-  challenge: encoder.encode('random-base64-url-string').buffer,
-  rp: { name: 'Tesseral Localhost' },
-  user: {
-    id: encoder.encode('random-user-id-in-base64url').buffer,
-    name: 'root@app.tesseral.example.com',
-    displayName: 'Tesseral User',
-  },
-  pubKeyCredParams: [
-    { type: 'public-key', alg: -7 }, // ECDSA with SHA-256
-    { type: 'public-key', alg: -257 }, // RSA with SHA-256
-  ],
-  timeout: 60000,
-  attestation: 'direct',
-}
-
 const RegisterPasskey: FC = () => {
-  // const RegisterPasskeyMutation = useMutation()
+  const getPasskeyOptionsMutation = useMutation(getPasskeyOptions)
+  // const registerPasskeyMutation = useMutation(registerPasskey)
 
-  const RegisterPasskey = async (
-    credentialOptions: PublicKeyCredentialCreationOptions,
-  ): Promise<any> => {
+  const registerPasskey = async (): Promise<any> => {
+    if (!navigator.credentials) {
+      throw new Error('WebAuthn not supported')
+    }
+
+    const { data: passkeyOptions } =
+      await getPasskeyOptionsMutation.mutateAsync({})
+    const credentialOptions: PublicKeyCredentialCreationOptions = {
+      challenge: encoder.encode(passkeyOptions.challenge).buffer,
+      rp: {
+        id: passkeyOptions.rpId,
+        name: passkeyOptions.rpName,
+      },
+      user: {
+        id: encoder.encode(passkeyOptions.userId).buffer,
+        name: passkeyOptions.userDisplayName,
+        displayName: passkeyOptions.userDisplayName,
+      },
+      pubKeyCredParams: [
+        { type: 'public-key', alg: -7 }, // ECDSA with SHA-256
+        { type: 'public-key', alg: -257 }, // RSA with SHA-256
+      ],
+      timeout: 60000,
+      attestation: 'direct',
+    }
+
     const credential = await navigator.credentials.create({
       publicKey: credentialOptions,
     })
@@ -37,7 +45,7 @@ const RegisterPasskey: FC = () => {
 
   useEffect(() => {
     ;(async () => {
-      const credential = await RegisterPasskey(exampleCredentialOptions)
+      const credential = await registerPasskey()
       console.log(credential)
     })()
   }, [])
