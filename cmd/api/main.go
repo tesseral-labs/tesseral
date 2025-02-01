@@ -76,6 +76,7 @@ func main() {
 		SessionKMSKeyID                     string `conf:"session_kms_key_id"`
 		GoogleOAuthClientSecretsKMSKeyID    string `conf:"google_oauth_client_secrets_kms_key_id,noredact"`
 		MicrosoftOAuthClientSecretsKMSKeyID string `conf:"microsoft_oauth_client_secrets_kms_key_id,noredact"`
+		AuthenticatorAppSecretsKMSKeyID     string `conf:"authenticator_app_secrets_kms_key_id,noredact"`
 		UserContentBaseUrl                  string `conf:"user_content_base_url"`
 	}{
 		PageEncodingValue: "0000000000000000000000000000000000000000000000000000000000000000",
@@ -198,6 +199,7 @@ func main() {
 		SessionSigningKeyKmsKeyID:             config.SessionKMSKeyID,
 		GoogleOAuthClientSecretsKMSKeyID:      config.GoogleOAuthClientSecretsKMSKeyID,
 		MicrosoftOAuthClientSecretsKMSKeyID:   config.MicrosoftOAuthClientSecretsKMSKeyID,
+		AuthenticatorAppSecretsKMSKeyID:       config.AuthenticatorAppSecretsKMSKeyID,
 		UserContentBaseUrl:                    config.UserContentBaseUrl,
 	})
 	intermediateConnectPath, intermediateConnectHandler := intermediatev1connect.NewIntermediateServiceHandler(

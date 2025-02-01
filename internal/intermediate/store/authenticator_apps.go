@@ -1,0 +1,180 @@
+package store
+
+import (
+	"context"
+	"crypto/rand"
+	"fmt"
+	"time"
+
+	"github.com/aws/aws-sdk-go-v2/service/kms"
+	"github.com/aws/aws-sdk-go-v2/service/kms/types"
+	"github.com/openauth/openauth/internal/bcryptcost"
+	"github.com/openauth/openauth/internal/common/apierror"
+	"github.com/openauth/openauth/internal/intermediate/authn"
+	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
+	"github.com/openauth/openauth/internal/intermediate/store/queries"
+	"github.com/openauth/openauth/internal/totp"
+	"golang.org/x/crypto/bcrypt"
+)
+
+const backupCodeCount = 10
+
+func (s *Store) GetAuthenticatorAppOptions(ctx context.Context, req *intermediatev1.GetAuthenticatorAppOptionsRequest) (*intermediatev1.GetAuthenticatorAppOptionsResponse, error) {
+	if err := s.checkShouldRegisterAuthenticatorApp(ctx); err != nil {
+		return nil, fmt.Errorf("check should register authenticator app: %w", err)
+	}
+
+	var secret [32]byte
+	if _, err := rand.Read(secret[:]); err != nil {
+		return nil, fmt.Errorf("read random bytes: %w", err)
+	}
+
+	encryptRes, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
+		KeyId:               &s.authenticatorAppSecretsKMSKeyID,
+		Plaintext:           secret[:],
+		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("encrypt authenticator app secret: %w", err)
+	}
+
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	if _, err := q.UpdateIntermediateSessionAuthenticatorAppSecretCiphertext(ctx, queries.UpdateIntermediateSessionAuthenticatorAppSecretCiphertextParams{
+		ID:                               authn.IntermediateSessionID(ctx),
+		AuthenticatorAppSecretCiphertext: encryptRes.CiphertextBlob,
+	}); err != nil {
+		return nil, fmt.Errorf("update intermediate session authenticator app secret ciphertext: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
+	}
+
+	return &intermediatev1.GetAuthenticatorAppOptionsResponse{
+		Secret: secret[:],
+	}, nil
+}
+
+func (s *Store) RegisterAuthenticatorApp(ctx context.Context, req *intermediatev1.RegisterAuthenticatorAppRequest) (*intermediatev1.RegisterAuthenticatorAppResponse, error) {
+	if err := s.checkShouldRegisterAuthenticatorApp(ctx); err != nil {
+		return nil, fmt.Errorf("check should register authenticator app: %w", err)
+	}
+
+	secret, err := s.getAuthenticatorAppSecret(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("get authenticator app secret: %w", err)
+	}
+
+	key := totp.Key{Secret: secret}
+	if err := key.Validate(time.Now(), req.TotpCode); err != nil {
+		return nil, apierror.NewInvalidArgumentError("invalid totp code", err)
+	}
+
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	var backupCodes []string
+	var backupCodeBcrypts [][]byte
+	for i := 0; i < backupCodeCount; i++ {
+		var code [8]byte
+		if _, err := rand.Read(code[:]); err != nil {
+			return nil, fmt.Errorf("read random bytes: %w", err)
+		}
+
+		codeFormatted := fmt.Sprintf("%x-%x-%x-%x", code[:2], code[2:4], code[4:6], code[6:])
+
+		codeBcrypt, err := bcrypt.GenerateFromPassword([]byte(codeFormatted), bcryptcost.Cost)
+		if err != nil {
+			return nil, fmt.Errorf("generate bcrypt hash: %w", err)
+		}
+
+		backupCodes = append(backupCodes, codeFormatted)
+		backupCodeBcrypts = append(backupCodeBcrypts, codeBcrypt)
+	}
+
+	if _, err := q.UpdateIntermediateSessionAuthenticatorAppVerified(ctx, queries.UpdateIntermediateSessionAuthenticatorAppVerifiedParams{
+		ID:                                authn.IntermediateSessionID(ctx),
+		AuthenticatorAppBackupCodeBcrypts: backupCodeBcrypts,
+	}); err != nil {
+		return nil, fmt.Errorf("update intermediate session authenticator app verified: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
+	}
+
+	return &intermediatev1.RegisterAuthenticatorAppResponse{
+		RecoveryCodes: backupCodes,
+	}, nil
+}
+
+func (s *Store) getAuthenticatorAppSecret(ctx context.Context) ([]byte, error) {
+	_, q, _, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get intermediate session by id: %w", err)
+	}
+
+	decryptRes, err := s.kms.Decrypt(ctx, &kms.DecryptInput{
+		KeyId:               &s.authenticatorAppSecretsKMSKeyID,
+		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
+		CiphertextBlob:      qIntermediateSession.AuthenticatorAppSecretCiphertext,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("decrypt authenticator app secret ciphertext: %w", err)
+	}
+
+	return decryptRes.Plaintext, nil
+}
+
+func (s *Store) checkShouldRegisterAuthenticatorApp(ctx context.Context) error {
+	// don't register an authenticator app if you're already matching a user,
+	// and that user has one
+
+	_, q, _, rollback, err := s.tx(ctx)
+	if err != nil {
+		return err
+	}
+	defer rollback()
+
+	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))
+	if err != nil {
+		return fmt.Errorf("get intermediate session by id: %w", err)
+	}
+
+	qOrg, err := q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
+		ProjectID: authn.ProjectID(ctx),
+		ID:        *qIntermediateSession.OrganizationID,
+	})
+	if err != nil {
+		return fmt.Errorf("get organization by id: %w", err)
+	}
+
+	qUser, err := s.matchUser(ctx, q, qOrg, qIntermediateSession)
+	if err != nil {
+		return fmt.Errorf("match user: %w", err)
+	}
+
+	// no matching user; it's ok to register passkeys
+	if qUser == nil {
+		return nil
+	}
+
+	if qUser.AuthenticatorAppSecretCiphertext != nil {
+		return apierror.NewFailedPreconditionError("user already has an authenticator app", nil)
+	}
+	return nil
+}

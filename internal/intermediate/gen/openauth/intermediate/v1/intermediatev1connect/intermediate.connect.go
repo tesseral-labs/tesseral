@@ -90,6 +90,12 @@ const (
 	// IntermediateServiceRegisterPasskeyProcedure is the fully-qualified name of the
 	// IntermediateService's RegisterPasskey RPC.
 	IntermediateServiceRegisterPasskeyProcedure = "/openauth.intermediate.v1.IntermediateService/RegisterPasskey"
+	// IntermediateServiceGetAuthenticatorAppOptionsProcedure is the fully-qualified name of the
+	// IntermediateService's GetAuthenticatorAppOptions RPC.
+	IntermediateServiceGetAuthenticatorAppOptionsProcedure = "/openauth.intermediate.v1.IntermediateService/GetAuthenticatorAppOptions"
+	// IntermediateServiceRegisterAuthenticatorAppProcedure is the fully-qualified name of the
+	// IntermediateService's RegisterAuthenticatorApp RPC.
+	IntermediateServiceRegisterAuthenticatorAppProcedure = "/openauth.intermediate.v1.IntermediateService/RegisterAuthenticatorApp"
 )
 
 // IntermediateServiceClient is a client for the openauth.intermediate.v1.IntermediateService
@@ -114,6 +120,8 @@ type IntermediateServiceClient interface {
 	VerifyPassword(context.Context, *connect.Request[v1.VerifyPasswordRequest]) (*connect.Response[v1.VerifyPasswordResponse], error)
 	GetPasskeyOptions(context.Context, *connect.Request[v1.GetPasskeyOptionsRequest]) (*connect.Response[v1.GetPasskeyOptionsResponse], error)
 	RegisterPasskey(context.Context, *connect.Request[v1.RegisterPasskeyRequest]) (*connect.Response[v1.RegisterPasskeyResponse], error)
+	GetAuthenticatorAppOptions(context.Context, *connect.Request[v1.GetAuthenticatorAppOptionsRequest]) (*connect.Response[v1.GetAuthenticatorAppOptionsResponse], error)
+	RegisterAuthenticatorApp(context.Context, *connect.Request[v1.RegisterAuthenticatorAppRequest]) (*connect.Response[v1.RegisterAuthenticatorAppResponse], error)
 }
 
 // NewIntermediateServiceClient constructs a client for the
@@ -242,6 +250,18 @@ func NewIntermediateServiceClient(httpClient connect.HTTPClient, baseURL string,
 			connect.WithSchema(intermediateServiceMethods.ByName("RegisterPasskey")),
 			connect.WithClientOptions(opts...),
 		),
+		getAuthenticatorAppOptions: connect.NewClient[v1.GetAuthenticatorAppOptionsRequest, v1.GetAuthenticatorAppOptionsResponse](
+			httpClient,
+			baseURL+IntermediateServiceGetAuthenticatorAppOptionsProcedure,
+			connect.WithSchema(intermediateServiceMethods.ByName("GetAuthenticatorAppOptions")),
+			connect.WithClientOptions(opts...),
+		),
+		registerAuthenticatorApp: connect.NewClient[v1.RegisterAuthenticatorAppRequest, v1.RegisterAuthenticatorAppResponse](
+			httpClient,
+			baseURL+IntermediateServiceRegisterAuthenticatorAppProcedure,
+			connect.WithSchema(intermediateServiceMethods.ByName("RegisterAuthenticatorApp")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -266,6 +286,8 @@ type intermediateServiceClient struct {
 	verifyPassword                        *connect.Client[v1.VerifyPasswordRequest, v1.VerifyPasswordResponse]
 	getPasskeyOptions                     *connect.Client[v1.GetPasskeyOptionsRequest, v1.GetPasskeyOptionsResponse]
 	registerPasskey                       *connect.Client[v1.RegisterPasskeyRequest, v1.RegisterPasskeyResponse]
+	getAuthenticatorAppOptions            *connect.Client[v1.GetAuthenticatorAppOptionsRequest, v1.GetAuthenticatorAppOptionsResponse]
+	registerAuthenticatorApp              *connect.Client[v1.RegisterAuthenticatorAppRequest, v1.RegisterAuthenticatorAppResponse]
 }
 
 // ListSAMLOrganizations calls openauth.intermediate.v1.IntermediateService.ListSAMLOrganizations.
@@ -370,6 +392,18 @@ func (c *intermediateServiceClient) RegisterPasskey(ctx context.Context, req *co
 	return c.registerPasskey.CallUnary(ctx, req)
 }
 
+// GetAuthenticatorAppOptions calls
+// openauth.intermediate.v1.IntermediateService.GetAuthenticatorAppOptions.
+func (c *intermediateServiceClient) GetAuthenticatorAppOptions(ctx context.Context, req *connect.Request[v1.GetAuthenticatorAppOptionsRequest]) (*connect.Response[v1.GetAuthenticatorAppOptionsResponse], error) {
+	return c.getAuthenticatorAppOptions.CallUnary(ctx, req)
+}
+
+// RegisterAuthenticatorApp calls
+// openauth.intermediate.v1.IntermediateService.RegisterAuthenticatorApp.
+func (c *intermediateServiceClient) RegisterAuthenticatorApp(ctx context.Context, req *connect.Request[v1.RegisterAuthenticatorAppRequest]) (*connect.Response[v1.RegisterAuthenticatorAppResponse], error) {
+	return c.registerAuthenticatorApp.CallUnary(ctx, req)
+}
+
 // IntermediateServiceHandler is an implementation of the
 // openauth.intermediate.v1.IntermediateService service.
 type IntermediateServiceHandler interface {
@@ -392,6 +426,8 @@ type IntermediateServiceHandler interface {
 	VerifyPassword(context.Context, *connect.Request[v1.VerifyPasswordRequest]) (*connect.Response[v1.VerifyPasswordResponse], error)
 	GetPasskeyOptions(context.Context, *connect.Request[v1.GetPasskeyOptionsRequest]) (*connect.Response[v1.GetPasskeyOptionsResponse], error)
 	RegisterPasskey(context.Context, *connect.Request[v1.RegisterPasskeyRequest]) (*connect.Response[v1.RegisterPasskeyResponse], error)
+	GetAuthenticatorAppOptions(context.Context, *connect.Request[v1.GetAuthenticatorAppOptionsRequest]) (*connect.Response[v1.GetAuthenticatorAppOptionsResponse], error)
+	RegisterAuthenticatorApp(context.Context, *connect.Request[v1.RegisterAuthenticatorAppRequest]) (*connect.Response[v1.RegisterAuthenticatorAppResponse], error)
 }
 
 // NewIntermediateServiceHandler builds an HTTP handler from the service implementation. It returns
@@ -515,6 +551,18 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 		connect.WithSchema(intermediateServiceMethods.ByName("RegisterPasskey")),
 		connect.WithHandlerOptions(opts...),
 	)
+	intermediateServiceGetAuthenticatorAppOptionsHandler := connect.NewUnaryHandler(
+		IntermediateServiceGetAuthenticatorAppOptionsProcedure,
+		svc.GetAuthenticatorAppOptions,
+		connect.WithSchema(intermediateServiceMethods.ByName("GetAuthenticatorAppOptions")),
+		connect.WithHandlerOptions(opts...),
+	)
+	intermediateServiceRegisterAuthenticatorAppHandler := connect.NewUnaryHandler(
+		IntermediateServiceRegisterAuthenticatorAppProcedure,
+		svc.RegisterAuthenticatorApp,
+		connect.WithSchema(intermediateServiceMethods.ByName("RegisterAuthenticatorApp")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/openauth.intermediate.v1.IntermediateService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case IntermediateServiceListSAMLOrganizationsProcedure:
@@ -555,6 +603,10 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 			intermediateServiceGetPasskeyOptionsHandler.ServeHTTP(w, r)
 		case IntermediateServiceRegisterPasskeyProcedure:
 			intermediateServiceRegisterPasskeyHandler.ServeHTTP(w, r)
+		case IntermediateServiceGetAuthenticatorAppOptionsProcedure:
+			intermediateServiceGetAuthenticatorAppOptionsHandler.ServeHTTP(w, r)
+		case IntermediateServiceRegisterAuthenticatorAppProcedure:
+			intermediateServiceRegisterAuthenticatorAppHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -638,4 +690,12 @@ func (UnimplementedIntermediateServiceHandler) GetPasskeyOptions(context.Context
 
 func (UnimplementedIntermediateServiceHandler) RegisterPasskey(context.Context, *connect.Request[v1.RegisterPasskeyRequest]) (*connect.Response[v1.RegisterPasskeyResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.RegisterPasskey is not implemented"))
+}
+
+func (UnimplementedIntermediateServiceHandler) GetAuthenticatorAppOptions(context.Context, *connect.Request[v1.GetAuthenticatorAppOptionsRequest]) (*connect.Response[v1.GetAuthenticatorAppOptionsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.GetAuthenticatorAppOptions is not implemented"))
+}
+
+func (UnimplementedIntermediateServiceHandler) RegisterAuthenticatorApp(context.Context, *connect.Request[v1.RegisterAuthenticatorAppRequest]) (*connect.Response[v1.RegisterAuthenticatorAppResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.RegisterAuthenticatorApp is not implemented"))
 }
