@@ -79,7 +79,7 @@ const RegisterPasskey: FC = () => {
   }, [])
 
   return (
-    <Card className="max-w-sm">
+    <Card className="w-full max-w-sm">
       <CardHeader>
         <CardTitle className="text-center">Register a Passkey</CardTitle>
       </CardHeader>

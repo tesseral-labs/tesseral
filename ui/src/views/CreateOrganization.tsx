@@ -72,7 +72,7 @@ const CreateOrganization: FC<CreateOrganizationProps> = ({ setView }) => {
     <>
       <Title title="Create a new Organization" />
 
-      <Card className="w-[clamp(320px,50%,420px)]">
+      <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle className="text-center">
             Create a new Organization

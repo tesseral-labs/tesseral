@@ -89,7 +89,7 @@ const Login: FC<LoginProps> = ({ setView }) => {
     <>
       <Title title="Login" />
 
-      <Card>
+      <Card className="w-full max-w-sm">
         <CardHeader>
           {(settings?.logInWithGoogleEnabled ||
             settings?.logInWithMicrosoftEnabled) && (
@@ -100,7 +100,7 @@ const Login: FC<LoginProps> = ({ setView }) => {
         <CardContent className="flex flex-col items-center w-full">
           <div
             className={cn(
-              'grid gap-6',
+              'w-full grid gap-6',
               settings?.logInWithGoogleEnabled &&
                 settings?.logInWithMicrosoftEnabled
                 ? 'grid-cols-2'

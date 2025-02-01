@@ -21,7 +21,7 @@ const VerifyAuthenticatorApp: FC = () => {
   return (
     <>
       <Title title="Register your time-based one-time password" />
-      <Card>
+      <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle>Register Authenticator App</CardTitle>
         </CardHeader>

@@ -47,7 +47,7 @@ const RegisterPassword = () => {
     <>
       <Title title="Set your password" />
 
-      <Card className="max-w-sm">
+      <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle className="text-center">Set your password</CardTitle>
           <p className="text-sm text-center mt-2 text-gray-500">

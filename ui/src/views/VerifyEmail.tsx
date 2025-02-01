@@ -52,7 +52,7 @@ const VerifyEmail: FC<VerifyEmailProps> = ({ setView }) => {
     <>
       <Title title="Verify Email Address" />
 
-      <Card className="max-w-sm">
+      <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle className="text-center">Verify Email Address</CardTitle>
 

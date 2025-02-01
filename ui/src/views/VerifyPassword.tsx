@@ -80,7 +80,7 @@ const VerifyPassword: FC<VerifyPasswordProps> = ({ setView }) => {
     <>
       <Title title="Verify Email Address" />
 
-      <Card>
+      <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle className="text-center">Password Verification</CardTitle>
           <p className="text-sm text-center mt-2 text-gray-500">

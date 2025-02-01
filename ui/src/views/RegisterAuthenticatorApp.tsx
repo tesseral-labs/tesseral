@@ -78,7 +78,7 @@ const RegisterAuthenticatorApp: FC = () => {
   return (
     <>
       <Title title="Register your time-based one-time password" />
-      <Card className="max-w-sm">
+      <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle className="text-center">
             Register Authenticator App

@@ -14,14 +14,18 @@ const Page = () => {
   useEffect(() => {
     if (settings?.faviconUrl) {
       ;(async () => {
-        // Check if the favicon exists before setting it
-        const faviconCheck = await fetch(settings.faviconUrl, {
-          method: 'HEAD',
-        })
+        try {
+          // Check if the favicon exists before setting it
+          const faviconCheck = await fetch(settings.faviconUrl, {
+            method: 'HEAD',
+          })
 
-        setFavicon(
-          faviconCheck.ok ? settings.faviconUrl : '/apple-touch-icon.png',
-        )
+          setFavicon(
+            faviconCheck.ok ? settings.faviconUrl : '/apple-touch-icon.png',
+          )
+        } catch (error) {
+          setFavicon('/apple-touch-icon.png')
+        }
       })()
     }
   }, [settings])

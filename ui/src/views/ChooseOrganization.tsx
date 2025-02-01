@@ -163,7 +163,7 @@ const ChooseOrganization: FC<ChooseOrganizationProps> = ({
     <>
       <Title title="Choose an Organization" />
 
-      <Card className="w-[clamp(320px,50%,420px)]">
+      <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle className="text-center uppercase text-foreground font-semibold text-sm tracking-wide mt-2">
             Choose an Organization

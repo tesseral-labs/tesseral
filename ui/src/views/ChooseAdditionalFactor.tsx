@@ -15,7 +15,7 @@ const ChooseAdditionalFactor: FC<ChooseAdditionalFactorProps> = ({
   const org = useIntermediateOrganization()
 
   return (
-    <Card className="max-w-sm">
+    <Card className="w-full max-w-sm">
       <CardHeader>
         <CardTitle className="text-center">Choose additional factor</CardTitle>
       </CardHeader>
