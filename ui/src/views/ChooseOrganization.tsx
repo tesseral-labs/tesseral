@@ -19,7 +19,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { setAccessToken, setRefreshToken } from '@/auth'
 import { LoginViews } from '@/lib/views'
 
@@ -62,7 +62,6 @@ const ChooseOrganization: FC<ChooseOrganizationProps> = ({
   //   - return the Verify{Factor} view
   const deriveNextView = (
     organization: Organization,
-    intermdiateSession: IntermediateSession,
   ): LoginViews | undefined => {
     if (organization.requireMfa) {
       if (
@@ -122,6 +121,7 @@ const ChooseOrganization: FC<ChooseOrganizationProps> = ({
       ...organization,
       requireMfa: true,
       logInWithPasskeyEnabled: true,
+      logInWithAuthenticatorAppEnabled: true,
     }
     try {
       if (!whoamiRes?.intermediateSession) {
@@ -135,10 +135,7 @@ const ChooseOrganization: FC<ChooseOrganizationProps> = ({
       setIntermediateOrganization(intermediateOrganization)
 
       // Check if the needs to provide additional factors
-      const nextView = deriveNextView(
-        intermediateOrganization,
-        whoamiRes.intermediateSession,
-      )
+      const nextView = deriveNextView(intermediateOrganization)
 
       console.log(`nextVivew: ${nextView}`)
 

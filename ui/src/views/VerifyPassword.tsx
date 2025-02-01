@@ -80,26 +80,27 @@ const VerifyPassword: FC<VerifyPasswordProps> = ({ setView }) => {
     <>
       <Title title="Verify Email Address" />
 
-      <Card className="w-[clamp(320px,50%,420px)]">
+      <Card>
         <CardHeader>
-          <CardTitle className="text-center uppercase text-foreground font-semibold text-sm tracking-wide mt-2">
-            Password Verification
-          </CardTitle>
+          <CardTitle className="text-center">Password Verification</CardTitle>
           <p className="text-sm text-center mt-2 text-gray-500">
             Please enter your password to continue logging in.
           </p>
         </CardHeader>
         <CardContent className="flex flex-col items-center justify-center w-full">
-          <form className="flex flex-col items-center" onSubmit={handleSubmit}>
+          <form
+            className="flex flex-col items-center w-full"
+            onSubmit={handleSubmit}
+          >
             <Input
-              className="w-[clamp(240px,50%,100%)] mb-2"
+              className="w-full mb-2"
               id="password"
               placeholder="Enter your password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <Button className="w-[clamp(240px,50%,100%)]" type="submit">
+            <Button className="w-full" type="submit">
               Log In
             </Button>
           </form>

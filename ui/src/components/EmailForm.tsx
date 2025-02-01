@@ -8,7 +8,6 @@ import React, {
   useEffect,
   useState,
 } from 'react'
-import { useNavigate } from 'react-router'
 import { useMutation } from '@connectrpc/connect-query'
 import debounce from 'lodash.debounce'
 
@@ -21,15 +20,15 @@ import {
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
 import { LoginViews } from '@/lib/views'
 import { Organization } from '@/gen/openauth/intermediate/v1/intermediate_pb'
-import TextDivider from './ui/TextDivider'
+import TextDivider from './ui/test-divider'
 import { Input } from './ui/input'
+import { Label } from './ui/label'
 
 interface EmailFormProps {
   setView: Dispatch<SetStateAction<LoginViews>>
 }
 
 const EmailForm: FC<EmailFormProps> = ({ setView }) => {
-  const navigate = useNavigate()
   const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/i
   const createIntermediateSessionMutation = useMutation(
     createIntermediateSession,
@@ -97,21 +96,22 @@ const EmailForm: FC<EmailFormProps> = ({ setView }) => {
 
   return (
     <>
-      <form className="flex flex-col justify-center" onSubmit={handleSubmit}>
-        <label
-          className="text-center uppercase text-foreground font-semibold text-sm mb-6 tracking-wide"
-          htmlFor="email"
-        >
-          Continue with Email
-        </label>
-        <Input
-          className="w-[clamp(240px,50%,100%)] mb-2"
-          id="email"
-          type="email"
-          onChange={handleEmail}
-          placeholder="jane.doe@email.com"
-          value={email}
-        />
+      <form
+        className="flex flex-col justify-center w-full"
+        onSubmit={handleSubmit}
+      >
+        <div className="grid gap-2">
+          <Label htmlFor="email">Email</Label>
+          <Input
+            className="w-full mb-2"
+            id="email"
+            type="email"
+            onChange={handleEmail}
+            placeholder="jane.doe@email.com"
+            value={email}
+          />
+        </div>
+
         <Button type="submit" disabled={!emailIsValid}>
           Sign In
         </Button>
@@ -119,7 +119,7 @@ const EmailForm: FC<EmailFormProps> = ({ setView }) => {
 
       {samlOrganizations && samlOrganizations.length > 0 && (
         <>
-          <TextDivider text="or" />
+          <TextDivider>or continue with SAML</TextDivider>
 
           {samlOrganizations.map((organization) => (
             <div key={organization.id} className="flex flex-col items-center">

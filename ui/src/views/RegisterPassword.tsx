@@ -46,7 +46,7 @@ const RegisterPassword = () => {
     <>
       <Title title="Set your password" />
 
-      <Card className="w-[clamp(320px,50%,420px)]">
+      <Card>
         <CardHeader>
           <CardTitle className="text-center uppercase text-foreground font-semibold text-sm tracking-wide mt-2">
             Set your password
@@ -56,9 +56,12 @@ const RegisterPassword = () => {
           </p>
         </CardHeader>
         <CardContent className="flex flex-col items-center justify-center w-full">
-          <form className="flex flex-col items-center" onSubmit={handleSubmit}>
+          <form
+            className="flex flex-col items-center w-full"
+            onSubmit={handleSubmit}
+          >
             <input
-              className="text-sm bg-input rounded border border-border focus:border-primary w-[clamp(240px,50%,100%)] mb-2"
+              className="text-sm bg-input rounded border border-border focus:border-primary w-full mb-2"
               id="password"
               placeholder="Enter your password"
               type="password"
@@ -66,7 +69,7 @@ const RegisterPassword = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
             <Button
-              className="text-sm rounded border border-border focus:border-primary w-[clamp(240px,50%,100%)] mb-2"
+              className="text-sm rounded border border-border focus:border-primary w-full mb-2"
               type="submit"
             >
               Set password

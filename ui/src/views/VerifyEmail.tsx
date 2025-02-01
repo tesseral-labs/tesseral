@@ -16,6 +16,12 @@ import {
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
 import { LoginViews } from '@/lib/views'
 import { Input } from '@/components/ui/input'
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from '@/components/ui/input-otp'
 
 interface VerifyEmailProps {
   setView: Dispatch<SetStateAction<LoginViews>>
@@ -46,26 +52,36 @@ const VerifyEmail: FC<VerifyEmailProps> = ({ setView }) => {
     <>
       <Title title="Verify Email Address" />
 
-      <Card className="w-[clamp(320px,50%,420px)]">
+      <Card className="max-w-sm">
         <CardHeader>
-          <CardTitle className="text-center uppercase text-foreground font-semibold text-sm tracking-wide mt-2">
-            Verify Email Address
-          </CardTitle>
-          <p className="text-sm text-center mt-2 text-gray-500">
+          <CardTitle className="text-center">Verify Email Address</CardTitle>
+
+          <p className="text-sm mt-2 text-muted-foreground text-center">
             Please enter the verification code sent to{' '}
             <b>{whoamiRes?.intermediateSession?.email}</b> below.
           </p>
         </CardHeader>
         <CardContent className="flex flex-col items-center justify-center w-full">
           <form className="flex flex-col items-center" onSubmit={handleSubmit}>
-            <Input
-              className="w-[clamp(240px,50%,100%)] mb-2"
+            <InputOTP
+              maxLength={6}
               id="challengeCode"
-              placeholder="Enter your challenge code"
               value={challengeCode}
-              onChange={(e) => setChallengeCode(e.target.value)}
-            />
-            <Button className="w-[clamp(240px,50%,100%)]" type="submit">
+              onChange={(value) => setChallengeCode(value)}
+            >
+              <InputOTPGroup>
+                <InputOTPSlot index={0} />
+                <InputOTPSlot index={1} />
+                <InputOTPSlot index={2} />
+              </InputOTPGroup>
+              <InputOTPSeparator />
+              <InputOTPGroup>
+                <InputOTPSlot index={3} />
+                <InputOTPSlot index={4} />
+                <InputOTPSlot index={5} />
+              </InputOTPGroup>
+            </InputOTP>
+            <Button className="w-full mt-4" type="submit">
               Verify Email Address
             </Button>
           </form>

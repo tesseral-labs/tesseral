@@ -47,7 +47,7 @@ const Page = () => {
               {/* TODO: Make this conditionally load an Organizations configured logo */}
               {isDarkMode && settings.detectDarkModeEnabled ? (
                 <img
-                  className="max-w-[240px]"
+                  className="max-w-[180px]"
                   src={
                     settings?.darkModeLogoUrl ||
                     '/images/tesseral-logo-white.svg'
@@ -60,7 +60,7 @@ const Page = () => {
                 />
               ) : (
                 <img
-                  className="max-w-[240px]"
+                  className="max-w-[180px]"
                   src={settings?.logoUrl || '/images/tesseral-logo-black.svg'}
                   onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
                     const target = e.target as HTMLImageElement
