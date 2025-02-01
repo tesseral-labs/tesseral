@@ -133,6 +133,20 @@ service IntermediateService {
       body: "*"
     };
   }
+
+  rpc GetAuthenticatorAppOptions(GetAuthenticatorAppOptionsRequest) returns (GetAuthenticatorAppOptionsResponse) {
+    option (google.api.http) = {
+      post: "/intermediate/v1/get-authenticator-app-options",
+      body: "*"
+    };
+  }
+
+  rpc RegisterAuthenticatorApp(RegisterAuthenticatorAppRequest) returns (RegisterAuthenticatorAppResponse) {
+    option (google.api.http) = {
+      post: "/intermediate/v1/register-authenticator-app",
+      body: "*"
+    };
+  }
 }
 
 message IntermediateSession {
