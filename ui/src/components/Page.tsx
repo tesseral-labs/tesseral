@@ -16,25 +16,24 @@ const Page = () => {
     console.log('Applying theme:', settings)
 
     const root = document.documentElement
-    const primary = isDarkMode
-      ? settings?.darkModePrimaryColor
-      : settings?.primaryColor
+    const darkRoot = document.querySelector('.dark')
+
+    const primary = settings?.primaryColor
+    const darkPrimary = settings?.darkModePrimaryColor
 
     if (primary) {
       const foreground = isColorDark(primary) ? '0 0% 100%' : '0 0% 0%'
 
       root.style.setProperty('--primary', hexToHSL(primary))
       root.style.setProperty('--primary-foreground', foreground)
+    }
 
-      console.log(
-        'Primary:',
-        getComputedStyle(root).getPropertyValue('--primary').trim(),
-      )
+    if (darkPrimary && darkRoot) {
+      const root = darkRoot as HTMLElement
+      const darkForeground = isColorDark(darkPrimary) ? '0 0% 100%' : '0 0% 0%'
 
-      console.log(
-        'Primary foreground:',
-        getComputedStyle(root).getPropertyValue('--primary-foreground').trim(),
-      )
+      root.style.setProperty('--primary', hexToHSL(darkPrimary))
+      root.style.setProperty('--primary-foreground', darkForeground)
     }
   }
 
