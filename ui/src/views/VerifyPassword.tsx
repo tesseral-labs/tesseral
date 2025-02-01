@@ -1,25 +1,47 @@
-import React, { useState } from 'react'
+import React, { Dispatch, FC, SetStateAction, useState } from 'react'
 import { Title } from '@/components/Title'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import {
   exchangeIntermediateSessionForSession,
   verifyPassword,
+  whoami,
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
-import { useMutation } from '@connectrpc/connect-query'
+import { useMutation, useQuery } from '@connectrpc/connect-query'
 import { useLocation, useNavigate, useParams } from 'react-router'
 import { setAccessToken, setRefreshToken } from '@/auth'
 import { Input } from '@/components/ui/input'
+import { useIntermediateOrganization } from '@/lib/auth'
+import { LoginViews } from '@/lib/views'
 
-const VerifyPassword = () => {
+interface VerifyPasswordProps {
+  setView: Dispatch<SetStateAction<LoginViews>>
+}
+
+const VerifyPassword: FC<VerifyPasswordProps> = ({ setView }) => {
+  const organization = useIntermediateOrganization()
   const navigate = useNavigate()
   const { state } = useLocation()
   const [password, setPassword] = useState<string>('')
+
+  const { data: whoamiRes } = useQuery(whoami)
 
   const exchangeIntermediateSessionForSessionMutation = useMutation(
     exchangeIntermediateSessionForSession,
   )
   const verifyPasswordMutation = useMutation(verifyPassword)
+
+  const deriveNextView = (): LoginViews | undefined => {
+    console.log(`organization`, organization)
+
+    if (
+      organization?.requireMfa &&
+      !whoamiRes?.intermediateSession?.googleUserId &&
+      !whoamiRes?.intermediateSession?.microsoftUserId
+    ) {
+      return LoginViews.ChooseAdditionalFactor
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -29,6 +51,15 @@ const VerifyPassword = () => {
         password,
         organizationId: state?.organizationId,
       })
+
+      const nextView = deriveNextView()
+
+      console.log(`nextView: ${nextView}`)
+
+      if (!!nextView) {
+        setView(nextView)
+        return
+      }
 
       const { accessToken, refreshToken } =
         await exchangeIntermediateSessionForSessionMutation.mutateAsync({

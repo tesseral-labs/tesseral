@@ -1,14 +1,22 @@
-import { getPasskeyOptions } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  getPasskeyOptions,
+  registerPasskey,
+} from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
+import { base64urlEncode } from '@/lib/utils'
 import { useMutation } from '@connectrpc/connect-query'
 import React, { FC, useEffect } from 'react'
+import { useNavigate } from 'react-router'
 
 const encoder = new TextEncoder()
 
 const RegisterPasskey: FC = () => {
-  const getPasskeyOptionsMutation = useMutation(getPasskeyOptions)
-  // const registerPasskeyMutation = useMutation(registerPasskey)
+  const navigate = useNavigate()
 
-  const registerPasskey = async (): Promise<any> => {
+  const getPasskeyOptionsMutation = useMutation(getPasskeyOptions)
+  const registerPasskeyMutation = useMutation(registerPasskey)
+
+  const registerCredential = async (): Promise<any> => {
     if (!navigator.credentials) {
       throw new Error('WebAuthn not supported')
     }
@@ -33,27 +41,41 @@ const RegisterPasskey: FC = () => {
       attestation: 'direct',
     }
 
-    const credential = await navigator.credentials.create({
+    const credential = (await navigator.credentials.create({
       publicKey: credentialOptions,
-    })
+    })) as PublicKeyCredential
 
     if (!credential) {
       throw new Error('No credential returned')
     }
 
-    console.log(credential)
+    const response = await registerPasskeyMutation.mutateAsync({
+      attestationObject: base64urlEncode(
+        (credential.response as AuthenticatorAttestationResponse)
+          .attestationObject,
+      ),
+    })
 
-    return credential
+    navigate('/settings')
   }
 
   useEffect(() => {
     ;(async () => {
-      const credential = await registerPasskey()
+      const credential = await registerCredential()
       console.log(credential)
     })()
   }, [])
 
-  return <div>Register webauthn</div>
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Register a Passkey</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p>Follow the prompts on your device to register a new Passkey.</p>
+      </CardContent>
+    </Card>
+  )
 }
 
 export default RegisterPasskey

@@ -19,6 +19,7 @@ import { useNavigate } from 'react-router'
 import { refresh } from '@/gen/openauth/frontend/v1/frontend-FrontendService_connectquery'
 import { LoginViews } from '@/lib/views'
 import { Input } from '@/components/ui/input'
+import { Organization } from '@/gen/openauth/intermediate/v1/intermediate_pb'
 
 interface CreateOrganizationProps {
   setView: Dispatch<SetStateAction<LoginViews>>

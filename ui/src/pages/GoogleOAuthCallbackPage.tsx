@@ -47,7 +47,7 @@ const GoogleOAuthCallbackPage = () => {
           // If the user has verified their email, navigate to the organizations page.
           if (data.intermediateSession!.emailVerified) {
             navigate('/login', {
-              state: { view: LoginViews.ChoostOrganization },
+              state: { view: LoginViews.ChooseOrganization },
             })
             return
           }

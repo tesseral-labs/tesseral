@@ -12,6 +12,18 @@ export const base64Decode = (s: string): string => {
   return new TextDecoder().decode(bytes)
 }
 
+export const base64urlEncode = (buffer: ArrayBuffer): string => {
+  let binary = ''
+  let bytes = new Uint8Array(buffer)
+  for (let i = 0; i < bytes.byteLength; i++) {
+    binary += String.fromCharCode(bytes[i])
+  }
+  return btoa(binary)
+    .replace(/\+/g, '-') // Replace '+' with '-'
+    .replace(/\//g, '_') // Replace '/' with '_'
+    .replace(/=+$/, '') // Remove padding '='
+}
+
 export const cn = (...inputs: ClassValue[]) => {
   return twMerge(clsx(inputs))
 }

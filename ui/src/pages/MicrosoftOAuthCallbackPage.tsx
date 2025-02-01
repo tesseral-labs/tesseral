@@ -39,7 +39,7 @@ const MicrosoftOAuthCallbackPage = () => {
 
           if (data.isEmailVerified) {
             navigate('/login', {
-              state: { view: LoginViews.ChoostOrganization },
+              state: { view: LoginViews.ChooseOrganization },
             })
             return
           }

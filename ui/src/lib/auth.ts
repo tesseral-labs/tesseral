@@ -2,6 +2,7 @@ import { useMutation } from '@tanstack/react-query'
 import { base64Decode } from './utils'
 import { useNavigate } from 'react-router'
 import { createContext, useContext, useState } from 'react'
+import { Organization } from '@/gen/openauth/intermediate/v1/intermediate_pb'
 
 // how far in advance of its expiration an access token gets refreshed
 const ACCESS_TOKEN_REFRESH_THRESHOLD_SECONDS = 10
@@ -109,6 +110,15 @@ export const useSession = (): SessionAccessTokenClaims | undefined => {
   }
 
   return
+}
+
+const intermediateOrganizationContext = createContext<Organization | undefined>(
+  undefined,
+)
+export const IntermediateOrganizationContextProvider =
+  intermediateOrganizationContext.Provider
+export const useIntermediateOrganization = (): Organization | undefined => {
+  return useContext(intermediateOrganizationContext)
 }
 
 const organizationContext = createContext<

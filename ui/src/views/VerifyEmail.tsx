@@ -36,7 +36,7 @@ const VerifyEmail: FC<VerifyEmailProps> = ({ setView }) => {
         code: challengeCode,
       })
 
-      setView(LoginViews.ChoostOrganization)
+      setView(LoginViews.ChooseOrganization)
     } catch (error) {
       console.error(error)
     }

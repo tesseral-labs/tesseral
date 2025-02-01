@@ -12,17 +12,24 @@ import RegisterPasskey from '@/views/RegisterPasskey'
 import VerifyAuthenticatorApp from '@/views/VerifyAuthenticatorApp'
 import VerifyPasskey from '@/views/VerifyPasskey'
 import ChooseAdditionalFactor from '@/views/ChooseAdditionalFactor'
+import { Organization } from '@/gen/openauth/intermediate/v1/intermediate_pb'
+import { IntermediateOrganizationContextProvider } from '@/lib/auth'
 
 const LoginPage = () => {
+  const [intermediateOrganization, setIntermediateOrganization] =
+    useState<Organization>()
   const [view, setView] = useState<LoginViews>(LoginViews.Login)
 
   return (
-    <>
+    <IntermediateOrganizationContextProvider value={intermediateOrganization}>
       {view === LoginViews.ChooseAdditionalFactor && (
         <ChooseAdditionalFactor setView={setView} />
       )}
       {view === LoginViews.ChooseOrganization && (
-        <ChooseOrganization setView={setView} />
+        <ChooseOrganization
+          setIntermediateOrganization={setIntermediateOrganization}
+          setView={setView}
+        />
       )}
       {view === LoginViews.CreateOrganization && (
         <CreateOrganization setView={setView} />
@@ -34,10 +41,12 @@ const LoginPage = () => {
       )}
       {view === LoginViews.RegisterPasskey && <RegisterPasskey />}
       {view === LoginViews.VerifyEmail && <VerifyEmail setView={setView} />}
-      {view === LoginViews.VerifyPassword && <VerifyPassword />}
+      {view === LoginViews.VerifyPassword && (
+        <VerifyPassword setView={setView} />
+      )}
       {view === LoginViews.VerifyAuthenticatorApp && <VerifyAuthenticatorApp />}
       {view === LoginViews.VerifyPasskey && <VerifyPasskey />}
-    </>
+    </IntermediateOrganizationContextProvider>
   )
 }
 
