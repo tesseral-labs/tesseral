@@ -12,16 +12,18 @@ import { useLocation, useNavigate, useParams } from 'react-router'
 import { setAccessToken, setRefreshToken } from '@/auth'
 import { Input } from '@/components/ui/input'
 import { useIntermediateOrganization } from '@/lib/auth'
-import { LoginViews } from '@/lib/views'
+import { LoginLayouts, LoginViews } from '@/lib/views'
+import { useLayout } from '@/lib/settings'
+import { cn } from '@/lib/utils'
 
 interface VerifyPasswordProps {
   setView: Dispatch<SetStateAction<LoginViews>>
 }
 
 const VerifyPassword: FC<VerifyPasswordProps> = ({ setView }) => {
+  const layout = useLayout()
   const organization = useIntermediateOrganization()
   const navigate = useNavigate()
-  const { state } = useLocation()
   const [password, setPassword] = useState<string>('')
 
   const { data: whoamiRes } = useQuery(whoami)
@@ -49,7 +51,7 @@ const VerifyPassword: FC<VerifyPasswordProps> = ({ setView }) => {
     try {
       await verifyPasswordMutation.mutateAsync({
         password,
-        organizationId: state?.organizationId,
+        organizationId: organization?.id,
       })
 
       const nextView = deriveNextView()
@@ -63,7 +65,7 @@ const VerifyPassword: FC<VerifyPasswordProps> = ({ setView }) => {
 
       const { accessToken, refreshToken } =
         await exchangeIntermediateSessionForSessionMutation.mutateAsync({
-          organizationId: state?.organizationId,
+          organizationId: organization?.id,
         })
 
       setAccessToken(accessToken)
@@ -80,7 +82,12 @@ const VerifyPassword: FC<VerifyPasswordProps> = ({ setView }) => {
     <>
       <Title title="Verify Email Address" />
 
-      <Card className="w-full max-w-sm">
+      <Card
+        className={cn(
+          'w-full max-w-sm',
+          layout !== LoginLayouts.Centered && 'shadow-none border-0',
+        )}
+      >
         <CardHeader>
           <CardTitle className="text-center">Password Verification</CardTitle>
           <p className="text-sm text-center mt-2 text-gray-500">

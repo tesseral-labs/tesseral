@@ -1,9 +1,12 @@
-import React, { Dispatch, FC, SetStateAction } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { LoginViews } from '@/lib/views'
+import React, { Dispatch, FC, SetStateAction, useEffect } from 'react'
+
 import { Button } from '@/components/ui/button'
-import { useIntermediateOrganization, useOrganization } from '@/lib/auth'
-import { useQuery } from '@connectrpc/connect-query'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+
+import { useIntermediateOrganization } from '@/lib/auth'
+import { useLayout } from '@/lib/settings'
+import { cn } from '@/lib/utils'
+import { LoginLayouts, LoginViews } from '@/lib/views'
 
 interface ChooseAdditionalFactorProps {
   setView: Dispatch<SetStateAction<LoginViews>>
@@ -13,9 +16,19 @@ const ChooseAdditionalFactor: FC<ChooseAdditionalFactorProps> = ({
   setView,
 }) => {
   const org = useIntermediateOrganization()
+  const layout = useLayout()
+
+  useEffect(() => {
+    console.log(`layout: `, layout)
+  }, [layout])
 
   return (
-    <Card className="w-full max-w-sm">
+    <Card
+      className={cn(
+        'w-full max-w-sm',
+        layout !== LoginLayouts.Centered && 'shadow-none border-0',
+      )}
+    >
       <CardHeader>
         <CardTitle className="text-center">Choose additional factor</CardTitle>
       </CardHeader>

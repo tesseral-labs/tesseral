@@ -11,7 +11,7 @@ import {
   registerAuthenticatorApp,
   whoami,
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
-import { base32Encode } from '@/lib/utils'
+import { base32Encode, cn } from '@/lib/utils'
 import { useIntermediateOrganization } from '@/lib/auth'
 import {
   InputOTP,
@@ -21,8 +21,11 @@ import {
 } from '@/components/ui/input-otp'
 import { setAccessToken, setRefreshToken } from '@/auth'
 import { useNavigate } from 'react-router'
+import { useLayout } from '@/lib/settings'
+import { LoginLayouts } from '@/lib/views'
 
 const RegisterAuthenticatorApp: FC = () => {
+  const layout = useLayout()
   const navigate = useNavigate()
   const organization = useIntermediateOrganization()
   const [qrcode, setQRCode] = useState<string | null>(null)
@@ -78,7 +81,13 @@ const RegisterAuthenticatorApp: FC = () => {
   return (
     <>
       <Title title="Register your time-based one-time password" />
-      <Card className="w-full max-w-sm">
+
+      <Card
+        className={cn(
+          'w-full max-w-sm',
+          layout !== LoginLayouts.Centered && 'shadow-none border-0',
+        )}
+      >
         <CardHeader>
           <CardTitle className="text-center">
             Register Authenticator App

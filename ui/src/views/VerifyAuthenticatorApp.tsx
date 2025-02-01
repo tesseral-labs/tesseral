@@ -8,9 +8,14 @@ import {
   InputOTPSeparator,
   InputOTPSlot,
 } from '@/components/ui/input-otp'
+import { useLayout } from '@/lib/settings'
+import { cn } from '@/lib/utils'
+import { LoginLayouts } from '@/lib/views'
 import React, { FC, useState } from 'react'
 
 const VerifyAuthenticatorApp: FC = () => {
+  const layout = useLayout()
+
   const [code, setCode] = useState('')
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -21,7 +26,13 @@ const VerifyAuthenticatorApp: FC = () => {
   return (
     <>
       <Title title="Register your time-based one-time password" />
-      <Card className="w-full max-w-sm">
+
+      <Card
+        className={cn(
+          'w-full max-w-sm',
+          layout !== LoginLayouts.Centered && 'shadow-none border-0',
+        )}
+      >
         <CardHeader>
           <CardTitle>Register Authenticator App</CardTitle>
         </CardHeader>

@@ -1,19 +1,22 @@
 import { setAccessToken, setRefreshToken } from '@/auth'
+import { Title } from '@/components/Title'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   exchangeIntermediateSessionForSession,
   getPasskeyOptions,
   registerPasskey,
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
-import { base64urlEncode } from '@/lib/utils'
+import { useLayout } from '@/lib/settings'
+import { base64urlEncode, cn } from '@/lib/utils'
+import { LoginLayouts } from '@/lib/views'
 import { useMutation } from '@connectrpc/connect-query'
 import React, { FC, useEffect } from 'react'
-import { set } from 'react-hook-form'
 import { useNavigate } from 'react-router'
 
 const encoder = new TextEncoder()
 
 const RegisterPasskey: FC = () => {
+  const layout = useLayout()
   const navigate = useNavigate()
 
   const exchangeIntermediateSessionForSessionMutation = useMutation(
@@ -79,16 +82,25 @@ const RegisterPasskey: FC = () => {
   }, [])
 
   return (
-    <Card className="w-full max-w-sm">
-      <CardHeader>
-        <CardTitle className="text-center">Register a Passkey</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <p className="text-center text-sm text-muted-foreground">
-          Follow the prompts on your device to register a new Passkey.
-        </p>
-      </CardContent>
-    </Card>
+    <>
+      <Title title="Register a Passkey" />
+
+      <Card
+        className={cn(
+          'w-full max-w-sm',
+          layout !== LoginLayouts.Centered && 'shadow-none border-0',
+        )}
+      >
+        <CardHeader>
+          <CardTitle className="text-center">Register a Passkey</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-center text-sm text-muted-foreground">
+            Follow the prompts on your device to register a new Passkey.
+          </p>
+        </CardContent>
+      </Card>
+    </>
   )
 }
 

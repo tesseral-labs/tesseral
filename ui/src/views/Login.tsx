@@ -18,8 +18,8 @@ import {
   getGoogleOAuthRedirectURL,
   getMicrosoftOAuthRedirectURL,
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
-import { LoginViews } from '@/lib/views'
-import useSettings from '@/lib/settings'
+import { LoginLayouts, LoginViews } from '@/lib/views'
+import useSettings, { useLayout } from '@/lib/settings'
 import { cn } from '@/lib/utils'
 
 interface LoginProps {
@@ -27,6 +27,7 @@ interface LoginProps {
 }
 
 const Login: FC<LoginProps> = ({ setView }) => {
+  const layout = useLayout()
   const settings = useSettings()
 
   const createIntermediateSessionMutation = useMutation(
@@ -89,7 +90,12 @@ const Login: FC<LoginProps> = ({ setView }) => {
     <>
       <Title title="Login" />
 
-      <Card className="w-full max-w-sm">
+      <Card
+        className={cn(
+          'w-full max-w-sm',
+          layout !== LoginLayouts.Centered && 'shadow-none border-0',
+        )}
+      >
         <CardHeader>
           {(settings?.logInWithGoogleEnabled ||
             settings?.logInWithMicrosoftEnabled) && (
@@ -125,7 +131,12 @@ const Login: FC<LoginProps> = ({ setView }) => {
 
           {(settings?.logInWithGoogleEnabled ||
             settings?.logInWithMicrosoftEnabled) && (
-            <TextDivider variant="wide">or continue with email</TextDivider>
+            <TextDivider
+              affects={layout !== LoginLayouts.Centered ? 'muted' : 'default'}
+              variant={layout !== LoginLayouts.Centered ? 'wider' : 'wide'}
+            >
+              or continue with email
+            </TextDivider>
           )}
 
           <EmailForm setView={setView} />

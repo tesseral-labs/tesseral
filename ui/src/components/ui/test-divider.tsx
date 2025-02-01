@@ -15,6 +15,8 @@ const textDividerVariants = cva('block relative w-full', {
     affects: {
       default:
         '[&>div.absolute>span]:border-muted-foreground [&>div.relative>span]:text-muted-foreground',
+      muted:
+        '[&>div.absolute>span]:border-muted [&>div.relative>span]:text-muted',
     },
   },
   defaultVariants: {
@@ -37,7 +39,7 @@ const TextDivider = React.forwardRef<HTMLDivElement, TextDividerProps>(
         ref={ref}
       >
         <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t border-muted"></span>
+          <span className="w-full border-t"></span>
         </div>
         <div className="relative flex justify-center text-xs uppercase">
           <span className="bg-card px-2">{children}</span>

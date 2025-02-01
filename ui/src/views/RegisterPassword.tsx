@@ -11,8 +11,12 @@ import { useMutation } from '@connectrpc/connect-query'
 import { useLocation, useNavigate, useParams } from 'react-router'
 import { setAccessToken, setRefreshToken } from '@/auth'
 import { Input } from '@/components/ui/input'
+import { useLayout } from '@/lib/settings'
+import { cn } from '@/lib/utils'
+import { LoginLayouts } from '@/lib/views'
 
 const RegisterPassword = () => {
+  const layout = useLayout()
   const navigate = useNavigate()
   const { state } = useLocation()
   const [password, setPassword] = useState<string>('')
@@ -47,7 +51,12 @@ const RegisterPassword = () => {
     <>
       <Title title="Set your password" />
 
-      <Card className="w-full max-w-sm">
+      <Card
+        className={cn(
+          'w-full max-w-sm',
+          layout !== LoginLayouts.Centered && 'shadow-none border-0',
+        )}
+      >
         <CardHeader>
           <CardTitle className="text-center">Set your password</CardTitle>
           <p className="text-sm text-center mt-2 text-gray-500">

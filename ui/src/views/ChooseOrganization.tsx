@@ -8,10 +8,7 @@ import {
   setOrganization,
   whoami,
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
-import {
-  IntermediateSession,
-  Organization,
-} from '@/gen/openauth/intermediate/v1/intermediate_pb'
+import { Organization } from '@/gen/openauth/intermediate/v1/intermediate_pb'
 import {
   Card,
   CardContent,
@@ -21,7 +18,9 @@ import {
 } from '@/components/ui/card'
 import { useNavigate } from 'react-router-dom'
 import { setAccessToken, setRefreshToken } from '@/auth'
-import { LoginViews } from '@/lib/views'
+import { LoginLayouts, LoginViews } from '@/lib/views'
+import { cn } from '@/lib/utils'
+import { useLayout } from '@/lib/settings'
 
 interface ChooseOrganizationProps {
   setIntermediateOrganization: Dispatch<
@@ -34,6 +33,7 @@ const ChooseOrganization: FC<ChooseOrganizationProps> = ({
   setIntermediateOrganization,
   setView,
 }) => {
+  const layout = useLayout()
   const navigate = useNavigate()
 
   const { data: whoamiRes } = useQuery(whoami)
@@ -163,7 +163,12 @@ const ChooseOrganization: FC<ChooseOrganizationProps> = ({
     <>
       <Title title="Choose an Organization" />
 
-      <Card className="w-full max-w-sm">
+      <Card
+        className={cn(
+          'w-full max-w-sm',
+          layout !== LoginLayouts.Centered && 'shadow-none border-0',
+        )}
+      >
         <CardHeader>
           <CardTitle className="text-center uppercase text-foreground font-semibold text-sm tracking-wide mt-2">
             Choose an Organization

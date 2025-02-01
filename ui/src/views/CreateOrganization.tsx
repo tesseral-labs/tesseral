@@ -17,15 +17,18 @@ import { useMutation, useQuery } from '@connectrpc/connect-query'
 import React, { Dispatch, FC, SetStateAction, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { refresh } from '@/gen/openauth/frontend/v1/frontend-FrontendService_connectquery'
-import { LoginViews } from '@/lib/views'
+import { LoginLayouts, LoginViews } from '@/lib/views'
 import { Input } from '@/components/ui/input'
 import { Organization } from '@/gen/openauth/intermediate/v1/intermediate_pb'
+import { useLayout } from '@/lib/settings'
+import { cn } from '@/lib/utils'
 
 interface CreateOrganizationProps {
   setView: Dispatch<SetStateAction<LoginViews>>
 }
 
 const CreateOrganization: FC<CreateOrganizationProps> = ({ setView }) => {
+  const layout = useLayout()
   const navigate = useNavigate()
   const { data: whoamiRes } = useQuery(whoami)
 
@@ -72,7 +75,12 @@ const CreateOrganization: FC<CreateOrganizationProps> = ({ setView }) => {
     <>
       <Title title="Create a new Organization" />
 
-      <Card className="w-full max-w-sm">
+      <Card
+        className={cn(
+          'w-full max-w-sm',
+          layout !== LoginLayouts.Centered && 'shadow-none border-0',
+        )}
+      >
         <CardHeader>
           <CardTitle className="text-center">
             Create a new Organization

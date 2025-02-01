@@ -1,3 +1,10 @@
+import { createContext } from 'react'
+
+export enum LoginLayouts {
+  Centered = 'centered',
+  SideBySide = 'side-by-side',
+}
+
 export enum LoginViews {
   ChooseAdditionalFactor = 'choose-additional-factor',
   ChooseOrganization = 'choose-organization',

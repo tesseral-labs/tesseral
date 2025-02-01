@@ -14,22 +14,24 @@ import {
   verifyEmailChallenge,
   whoami,
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
-import { LoginViews } from '@/lib/views'
-import { Input } from '@/components/ui/input'
+import { LoginLayouts, LoginViews } from '@/lib/views'
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSeparator,
   InputOTPSlot,
 } from '@/components/ui/input-otp'
+import { useLayout } from '@/lib/settings'
+import { cn } from '@/lib/utils'
 
 interface VerifyEmailProps {
   setView: Dispatch<SetStateAction<LoginViews>>
 }
 
 const VerifyEmail: FC<VerifyEmailProps> = ({ setView }) => {
+  const layout = useLayout()
+
   const [challengeCode, setChallengeCode] = useState<string>('')
-  const [email, setEmail] = useState<string>('')
 
   const { data: whoamiRes } = useQuery(whoami)
   const verifyEmailChallengeMutation = useMutation(verifyEmailChallenge)
@@ -52,7 +54,12 @@ const VerifyEmail: FC<VerifyEmailProps> = ({ setView }) => {
     <>
       <Title title="Verify Email Address" />
 
-      <Card className="w-full max-w-sm">
+      <Card
+        className={cn(
+          'w-full max-w-sm',
+          layout !== LoginLayouts.Centered && 'shadow-none border-0',
+        )}
+      >
         <CardHeader>
           <CardTitle className="text-center">Verify Email Address</CardTitle>
 
