@@ -74,20 +74,23 @@ const CreateOrganization: FC<CreateOrganizationProps> = ({ setView }) => {
 
       <Card className="w-[clamp(320px,50%,420px)]">
         <CardHeader>
-          <CardTitle className="text-center uppercase text-foreground font-semibold text-sm tracking-wide mt-2">
+          <CardTitle className="text-center">
             Create a new Organization
           </CardTitle>
         </CardHeader>
-        <CardContent className="flex flex-col items-center justify-center w-full">
-          <form className="flex flex-col items-center" onSubmit={handleSubmit}>
+        <CardContent>
+          <form
+            className="flex flex-col items-center w-full"
+            onSubmit={handleSubmit}
+          >
             <Input
-              className="w-[clamp(240px,50%,100%)] mb-2"
+              className="w-full mb-2"
               id="displayName"
               placeholder="Acme, Inc."
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
             />
-            <Button className="w-[clamp(240px,50%,100%)]" type="submit">
+            <Button className="w-full" type="submit">
               Create Organization
             </Button>
           </form>

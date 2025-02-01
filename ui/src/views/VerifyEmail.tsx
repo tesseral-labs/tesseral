@@ -81,7 +81,11 @@ const VerifyEmail: FC<VerifyEmailProps> = ({ setView }) => {
                 <InputOTPSlot index={5} />
               </InputOTPGroup>
             </InputOTP>
-            <Button className="w-full mt-4" type="submit">
+            <Button
+              className="w-full mt-4"
+              disabled={challengeCode.length < 6}
+              type="submit"
+            >
               Verify Email Address
             </Button>
           </form>

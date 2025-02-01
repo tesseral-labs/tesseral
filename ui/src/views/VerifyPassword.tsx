@@ -100,7 +100,11 @@ const VerifyPassword: FC<VerifyPasswordProps> = ({ setView }) => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <Button className="w-full" type="submit">
+            <Button
+              className="w-full"
+              disabled={password.length < 1}
+              type="submit"
+            >
               Log In
             </Button>
           </form>

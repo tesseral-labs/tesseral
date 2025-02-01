@@ -80,7 +80,9 @@ const RegisterAuthenticatorApp: FC = () => {
       <Title title="Register your time-based one-time password" />
       <Card className="max-w-sm">
         <CardHeader>
-          <CardTitle>Register Authenticator App</CardTitle>
+          <CardTitle className="text-center">
+            Register Authenticator App
+          </CardTitle>
         </CardHeader>
         <CardContent>
           {qrcode && (
@@ -89,7 +91,7 @@ const RegisterAuthenticatorApp: FC = () => {
             </div>
           )}
 
-          <p className="mt-4 text-sm text-center">
+          <p className="mt-4 text-sm text-center text-muted-foreground">
             Scan this QR code using your authenticator app and enter the
             resulting 6-digit code.
           </p>
@@ -112,7 +114,7 @@ const RegisterAuthenticatorApp: FC = () => {
               </InputOTPGroup>
             </InputOTP>
 
-            <Button className="mt-4" type="submit">
+            <Button className="mt-4" disabled={code.length < 6} type="submit">
               Submit
             </Button>
           </form>

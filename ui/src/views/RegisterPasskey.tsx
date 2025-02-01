@@ -1,11 +1,14 @@
+import { setAccessToken, setRefreshToken } from '@/auth'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
+  exchangeIntermediateSessionForSession,
   getPasskeyOptions,
   registerPasskey,
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
 import { base64urlEncode } from '@/lib/utils'
 import { useMutation } from '@connectrpc/connect-query'
 import React, { FC, useEffect } from 'react'
+import { set } from 'react-hook-form'
 import { useNavigate } from 'react-router'
 
 const encoder = new TextEncoder()
@@ -13,6 +16,9 @@ const encoder = new TextEncoder()
 const RegisterPasskey: FC = () => {
   const navigate = useNavigate()
 
+  const exchangeIntermediateSessionForSessionMutation = useMutation(
+    exchangeIntermediateSessionForSession,
+  )
   const getPasskeyOptionsMutation = useMutation(getPasskeyOptions)
   const registerPasskeyMutation = useMutation(registerPasskey)
 
@@ -49,12 +55,18 @@ const RegisterPasskey: FC = () => {
       throw new Error('No credential returned')
     }
 
-    const response = await registerPasskeyMutation.mutateAsync({
+    await registerPasskeyMutation.mutateAsync({
       attestationObject: base64urlEncode(
         (credential.response as AuthenticatorAttestationResponse)
           .attestationObject,
       ),
     })
+
+    const { accessToken, refreshToken } =
+      await exchangeIntermediateSessionForSessionMutation.mutateAsync({})
+
+    setAccessToken(accessToken)
+    setRefreshToken(refreshToken)
 
     navigate('/settings')
   }
@@ -67,12 +79,14 @@ const RegisterPasskey: FC = () => {
   }, [])
 
   return (
-    <Card>
+    <Card className="max-w-sm">
       <CardHeader>
-        <CardTitle>Register a Passkey</CardTitle>
+        <CardTitle className="text-center">Register a Passkey</CardTitle>
       </CardHeader>
       <CardContent>
-        <p>Follow the prompts on your device to register a new Passkey.</p>
+        <p className="text-center text-sm text-muted-foreground">
+          Follow the prompts on your device to register a new Passkey.
+        </p>
       </CardContent>
     </Card>
   )

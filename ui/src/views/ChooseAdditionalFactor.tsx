@@ -15,30 +15,28 @@ const ChooseAdditionalFactor: FC<ChooseAdditionalFactorProps> = ({
   const org = useIntermediateOrganization()
 
   return (
-    <Card>
+    <Card className="max-w-sm">
       <CardHeader>
-        <CardTitle>Choose additional factor</CardTitle>
-        <CardContent>
-          {org?.logInWithPasskeyEnabled && (
-            <Button
-              className="block w-full p-4 border-b"
-              onClick={() => setView(LoginViews.RegisterPasskey)}
-              variant="outline"
-            >
-              Continue with Passkey
-            </Button>
-          )}
-          {org?.logInWithAuthenticatorAppEnabled && (
-            <Button
-              className="block w-full p-4 border-b"
-              onClick={() => setView(LoginViews.RegisterAuthenticatorApp)}
-              variant="outline"
-            >
-              Continue with Authenticator app
-            </Button>
-          )}
-        </CardContent>
+        <CardTitle className="text-center">Choose additional factor</CardTitle>
       </CardHeader>
+      <CardContent className="grid gap-2">
+        {org?.logInWithPasskeyEnabled && (
+          <Button
+            className="w-full"
+            onClick={() => setView(LoginViews.RegisterPasskey)}
+          >
+            Continue with Passkey
+          </Button>
+        )}
+        {org?.logInWithAuthenticatorAppEnabled && (
+          <Button
+            className="w-full"
+            onClick={() => setView(LoginViews.RegisterAuthenticatorApp)}
+          >
+            Continue with Authenticator app
+          </Button>
+        )}
+      </CardContent>
     </Card>
   )
 }

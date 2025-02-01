@@ -10,6 +10,7 @@ import {
 import { useMutation } from '@connectrpc/connect-query'
 import { useLocation, useNavigate, useParams } from 'react-router'
 import { setAccessToken, setRefreshToken } from '@/auth'
+import { Input } from '@/components/ui/input'
 
 const RegisterPassword = () => {
   const navigate = useNavigate()
@@ -46,11 +47,9 @@ const RegisterPassword = () => {
     <>
       <Title title="Set your password" />
 
-      <Card>
+      <Card className="max-w-sm">
         <CardHeader>
-          <CardTitle className="text-center uppercase text-foreground font-semibold text-sm tracking-wide mt-2">
-            Set your password
-          </CardTitle>
+          <CardTitle className="text-center">Set your password</CardTitle>
           <p className="text-sm text-center mt-2 text-gray-500">
             Please set your password to continue signing up.
           </p>
@@ -60,8 +59,8 @@ const RegisterPassword = () => {
             className="flex flex-col items-center w-full"
             onSubmit={handleSubmit}
           >
-            <input
-              className="text-sm bg-input rounded border border-border focus:border-primary w-full mb-2"
+            <Input
+              className="w-full"
               id="password"
               placeholder="Enter your password"
               type="password"
@@ -69,7 +68,8 @@ const RegisterPassword = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
             <Button
-              className="text-sm rounded border border-border focus:border-primary w-full mb-2"
+              className="w-full mt-4"
+              disabled={password.length < 1}
               type="submit"
             >
               Set password
