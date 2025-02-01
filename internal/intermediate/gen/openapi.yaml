@@ -30,6 +30,30 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /intermediate/v1/get-authenticator-app-options:
+        post:
+            tags:
+                - IntermediateService
+            operationId: IntermediateService_GetAuthenticatorAppOptions
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/GetAuthenticatorAppOptionsRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetAuthenticatorAppOptionsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /intermediate/v1/get-passkey-options:
         post:
             tags:
@@ -263,6 +287,30 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /intermediate/v1/register-authenticator-app:
+        post:
+            tags:
+                - IntermediateService
+            operationId: IntermediateService_RegisterAuthenticatorApp
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/RegisterAuthenticatorAppRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/RegisterAuthenticatorAppResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /intermediate/v1/register-passkey:
         post:
             tags:
@@ -454,6 +502,15 @@ components:
                     type: string
                 accessToken:
                     type: string
+        GetAuthenticatorAppOptionsRequest:
+            type: object
+            properties: {}
+        GetAuthenticatorAppOptionsResponse:
+            type: object
+            properties:
+                secret:
+                    type: string
+                    format: bytes
         GetGoogleOAuthRedirectURLRequest:
             type: object
             properties:
@@ -617,6 +674,18 @@ components:
                     type: string
                 accessToken:
                     type: string
+        RegisterAuthenticatorAppRequest:
+            type: object
+            properties:
+                totpCode:
+                    type: string
+        RegisterAuthenticatorAppResponse:
+            type: object
+            properties:
+                recoveryCodes:
+                    type: array
+                    items:
+                        type: string
         RegisterPasskeyRequest:
             type: object
             properties:

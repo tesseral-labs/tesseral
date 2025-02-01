@@ -98,3 +98,13 @@ export const getPasskeyOptions = IntermediateService.method.getPasskeyOptions;
  * @generated from rpc openauth.intermediate.v1.IntermediateService.RegisterPasskey
  */
 export const registerPasskey = IntermediateService.method.registerPasskey;
+
+/**
+ * @generated from rpc openauth.intermediate.v1.IntermediateService.GetAuthenticatorAppOptions
+ */
+export const getAuthenticatorAppOptions = IntermediateService.method.getAuthenticatorAppOptions;
+
+/**
+ * @generated from rpc openauth.intermediate.v1.IntermediateService.RegisterAuthenticatorApp
+ */
+export const registerAuthenticatorApp = IntermediateService.method.registerAuthenticatorApp;
