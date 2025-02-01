@@ -46,6 +46,47 @@ export const cn = (...inputs: ClassValue[]) => {
   return twMerge(clsx(inputs))
 }
 
+export const hexToHSL = (hex: string): string => {
+  // Remove the "#" if present
+  hex = hex.replace(/^#/, '')
+
+  // Convert to RGB
+  const r = parseInt(hex.substring(0, 2), 16) / 255
+  const g = parseInt(hex.substring(2, 4), 16) / 255
+  const b = parseInt(hex.substring(4, 6), 16) / 255
+
+  // Get max and min values
+  const max = Math.max(r, g, b)
+  const min = Math.min(r, g, b)
+
+  let h: number = 0
+  let s: number = 0
+  let l: number = (max + min) / 2
+
+  if (max === min) {
+    h = s = 0 // Achromatic (gray)
+  } else {
+    let d = max - min
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
+
+    switch (max) {
+      case r:
+        h = (g - b) / d + (g < b ? 6 : 0)
+        break
+      case g:
+        h = (b - r) / d + 2
+        break
+      case b:
+        h = (r - g) / d + 4
+        break
+    }
+
+    h *= 60
+  }
+
+  return `${Math.round(h)} ${Math.round(s * 100)}% ${Math.round(l * 100)}%`
+}
+
 export const isColorDark = (hex: string) => {
   // Ensure hex is valid
   if (!/^#([0-9A-F]{3}|[0-9A-F]{6})$/i.test(hex)) {

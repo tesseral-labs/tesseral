@@ -6,15 +6,15 @@ import { Settings } from '@/gen/openauth/intermediate/v1/intermediate_pb'
 const useSettings = () => {
   const { data: settingsRes } = useQuery(getSettings)
 
-  const [projectUiSettings, setProjectUiSettings] = useState<Settings>(
-    settingsRes?.settings || ({} as Settings),
+  const [settings, setSettings] = useState<Settings | undefined>(
+    settingsRes?.settings,
   )
 
   useEffect(() => {
-    setProjectUiSettings(settingsRes?.settings || ({} as Settings))
+    setSettings(settingsRes?.settings)
   }, [settingsRes])
 
-  return projectUiSettings
+  return settings
 }
 
 export default useSettings

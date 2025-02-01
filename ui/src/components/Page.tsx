@@ -1,9 +1,10 @@
 import React, { SyntheticEvent, useEffect, useRef, useState } from 'react'
 import { Outlet } from 'react-router'
 import useDarkMode from '@/lib/dark-mode'
-import { cn } from '@/lib/utils'
+import { cn, hexToHSL, isColorDark } from '@/lib/utils'
 import useSettings from '@/lib/settings'
 import { Helmet } from 'react-helmet'
+import { Settings } from '@/gen/openauth/intermediate/v1/intermediate_pb'
 
 const Page = () => {
   const isDarkMode = useDarkMode()
@@ -11,17 +12,47 @@ const Page = () => {
 
   const [favicon, setFavicon] = useState<string>('/apple-touch-icon.png')
 
+  const applyTheme = () => {
+    console.log('Applying theme:', settings)
+
+    const root = document.documentElement
+    const primary = isDarkMode
+      ? settings?.darkModePrimaryColor
+      : settings?.primaryColor
+
+    if (primary) {
+      const foreground = isColorDark(primary) ? '0 0% 100%' : '0 0% 0%'
+
+      root.style.setProperty('--primary', hexToHSL(primary))
+      root.style.setProperty('--primary-foreground', foreground)
+
+      console.log(
+        'Primary:',
+        getComputedStyle(root).getPropertyValue('--primary').trim(),
+      )
+
+      console.log(
+        'Primary foreground:',
+        getComputedStyle(root).getPropertyValue('--primary-foreground').trim(),
+      )
+    }
+  }
+
   useEffect(() => {
+    if (settings) {
+      applyTheme()
+    }
+
     if (settings?.faviconUrl) {
       ;(async () => {
         try {
           // Check if the favicon exists before setting it
-          const faviconCheck = await fetch(settings.faviconUrl, {
+          const faviconCheck = await fetch(settings?.faviconUrl, {
             method: 'HEAD',
           })
 
           setFavicon(
-            faviconCheck.ok ? settings.faviconUrl : '/apple-touch-icon.png',
+            faviconCheck.ok ? settings?.faviconUrl : '/apple-touch-icon.png',
           )
         } catch (error) {
           setFavicon('/apple-touch-icon.png')
@@ -29,6 +60,10 @@ const Page = () => {
       })()
     }
   }, [settings])
+
+  useEffect(() => {
+    applyTheme()
+  }, [isDarkMode])
 
   return (
     <>
@@ -40,7 +75,7 @@ const Page = () => {
       <div
         className={cn(
           'min-h-screen w-screen',
-          isDarkMode && settings.detectDarkModeEnabled
+          isDarkMode && settings?.detectDarkModeEnabled
             ? 'dark bg-dark'
             : 'light bg-body',
         )}
@@ -49,7 +84,7 @@ const Page = () => {
           <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 flex justify-center">
             <div className="mb-8">
               {/* TODO: Make this conditionally load an Organizations configured logo */}
-              {isDarkMode && settings.detectDarkModeEnabled ? (
+              {isDarkMode && settings?.detectDarkModeEnabled ? (
                 <img
                   className="max-w-[180px]"
                   src={
