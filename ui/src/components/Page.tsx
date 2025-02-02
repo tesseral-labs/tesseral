@@ -1,5 +1,4 @@
-import React, { FC, SyntheticEvent, useEffect, useState } from 'react'
-import { Outlet } from 'react-router'
+import React, { FC, useEffect, useState } from 'react'
 import useDarkMode from '@/lib/dark-mode'
 import { cn, hexToHSL, isColorDark } from '@/lib/utils'
 import useSettings, { useLayout } from '@/lib/settings'
@@ -7,7 +6,6 @@ import { Helmet } from 'react-helmet'
 import { LoginLayouts } from '@/lib/views'
 import CenteredLayout from './layouts/centered'
 import SideBySideLayout from './layouts/side-by-side'
-import { Toaster } from './ui/sonner'
 
 const layoutMap: Record<string, FC<any>> = {
   [`${LoginLayouts.Centered}`]: CenteredLayout,
@@ -88,7 +86,6 @@ const Page = () => {
       </Helmet>
 
       <Layout />
-      <Toaster position="top-center" richColors />
     </div>
   )
 }
