@@ -6,6 +6,7 @@ import { Helmet } from 'react-helmet'
 import { LoginLayouts } from '@/lib/views'
 import CenteredLayout from './layouts/centered'
 import SideBySideLayout from './layouts/side-by-side'
+import { Toaster } from './ui/sonner'
 
 const layoutMap: Record<string, FC<any>> = {
   [`${LoginLayouts.Centered}`]: CenteredLayout,
@@ -86,6 +87,12 @@ const Page = () => {
       </Helmet>
 
       <Layout />
+
+      <Toaster
+        position={
+          layout === LoginLayouts.SideBySide ? 'top-right' : 'top-center'
+        }
+      />
     </div>
   )
 }

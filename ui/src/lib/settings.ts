@@ -11,7 +11,7 @@ export const useLayout = () => {
 
   useEffect(() => {
     setLayout(
-      ((settingsRes?.settings as any) || {}).layout || LoginLayouts.Centered,
+      ((settingsRes?.settings as any) || {}).layout || LoginLayouts.SideBySide,
     )
   }, [settingsRes])
 

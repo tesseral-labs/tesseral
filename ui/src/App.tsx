@@ -18,7 +18,6 @@ import DashboardPage from './components/DashboardPage'
 import OrganizationSettingsPage from './pages/dashboard/OrganizationSettingsPage'
 import EditSAMLConnectionsPage from './pages/dashboard/EditSAMLConnectionsPage'
 import RegisterPasskey from './views/RegisterPasskey'
-import { Toaster } from './components/ui/sonner'
 
 const queryClient = new QueryClient()
 
@@ -80,7 +79,6 @@ const AppWithRoutes: FC = () => {
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </BrowserRouter>
-        <Toaster position="top-center" />
       </QueryClientProvider>
     </TransportProvider>
   )
