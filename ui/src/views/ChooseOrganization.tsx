@@ -21,6 +21,8 @@ import { setAccessToken, setRefreshToken } from '@/auth'
 import { LoginLayouts, LoginViews } from '@/lib/views'
 import { cn } from '@/lib/utils'
 import { useLayout } from '@/lib/settings'
+import { parseErrorMessage } from '@/lib/errors'
+import { toast } from 'sonner'
 
 interface ChooseOrganizationProps {
   setIntermediateOrganization: Dispatch<
@@ -133,12 +135,17 @@ const ChooseOrganization: FC<ChooseOrganizationProps> = ({
       })
 
       setIntermediateOrganization(intermediateOrganization)
+    } catch (error) {
+      const message = parseErrorMessage(error)
 
+      toast.error('Could not set organization', {
+        description: message,
+      })
+    }
+
+    try {
       // Check if the needs to provide additional factors
       const nextView = deriveNextView(intermediateOrganization)
-
-      console.log(`nextVivew: ${nextView}`)
-
       if (!!nextView) {
         setView(nextView)
         return
@@ -153,9 +160,12 @@ const ChooseOrganization: FC<ChooseOrganizationProps> = ({
       setRefreshToken(refreshToken)
 
       navigate('/settings')
-    } catch (e) {
-      // TODO: Display error message to user
-      console.error('Error exchanging session for tokens', e)
+    } catch (error) {
+      const message = parseErrorMessage(error)
+
+      toast.error('Could not set organization', {
+        description: message,
+      })
     }
   }
 

@@ -18,10 +18,6 @@ const ChooseAdditionalFactor: FC<ChooseAdditionalFactorProps> = ({
   const org = useIntermediateOrganization()
   const layout = useLayout()
 
-  useEffect(() => {
-    console.log(`layout: `, layout)
-  }, [layout])
-
   return (
     <Card
       className={cn(

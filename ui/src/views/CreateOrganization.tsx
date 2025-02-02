@@ -22,6 +22,8 @@ import { Input } from '@/components/ui/input'
 import { Organization } from '@/gen/openauth/intermediate/v1/intermediate_pb'
 import { useLayout } from '@/lib/settings'
 import { cn } from '@/lib/utils'
+import { parseErrorMessage } from '@/lib/errors'
+import { toast } from 'sonner'
 
 interface CreateOrganizationProps {
   setView: Dispatch<SetStateAction<LoginViews>>
@@ -67,7 +69,11 @@ const CreateOrganization: FC<CreateOrganizationProps> = ({ setView }) => {
 
       navigate('/settings')
     } catch (error) {
-      console.error(error)
+      const message = parseErrorMessage(error)
+
+      toast.error('Could not create organization', {
+        description: message,
+      })
     }
   }
 

@@ -19,7 +19,6 @@ import { OrganizationDetailsTab } from '@/pages/organizations/OrganizationDetail
 import { EditOrganizationPage } from '@/pages/organizations/EditOrganizationPage'
 import { ViewSAMLConnectionPage } from '@/pages/saml-connections/ViewSAMLConnectionPage'
 import { Toaster } from '@/components/ui/sonner'
-import { Edit } from 'lucide-react'
 import { EditSAMLConnectionPage } from '@/pages/saml-connections/EditSAMLConnectionPage'
 import { PageShell } from '@/components/page'
 import { ViewSCIMAPIKeyPage } from '@/pages/scim-api-keys/ViewSCIMAPIKeyPage'

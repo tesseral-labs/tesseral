@@ -589,7 +589,7 @@
             }
             return element;
           };
-          function createElement23(type, config, children) {
+          function createElement22(type, config, children) {
             var propName;
             var props = {};
             var key = null;
@@ -1688,7 +1688,7 @@
                 error2("React.createElement: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: %s.%s", typeString, info);
               }
             }
-            var element = createElement23.apply(this, arguments);
+            var element = createElement22.apply(this, arguments);
             if (element == null) {
               return element;
             }
@@ -9495,7 +9495,7 @@
               }
             }
           }
-          function createElement23(type, props, rootContainerElement, parentNamespace) {
+          function createElement22(type, props, rootContainerElement, parentNamespace) {
             var isCustomComponentTag;
             var ownerDocument = getOwnerDocumentFromRootContainer(rootContainerElement);
             var domElement;
@@ -10365,7 +10365,7 @@
               }
               parentNamespace = hostContextDev.namespace;
             }
-            var domElement = createElement23(type, props, rootContainerInstance, parentNamespace);
+            var domElement = createElement22(type, props, rootContainerInstance, parentNamespace);
             precacheFiberNode(internalInstanceHandle, domElement);
             updateFiberProps(domElement, props);
             return domElement;
@@ -25654,11 +25654,11 @@
   });
 
   // src/index.tsx
-  var import_react50 = __toESM(require_react());
+  var import_react51 = __toESM(require_react());
   var import_client = __toESM(require_client());
 
   // src/App.tsx
-  var import_react49 = __toESM(require_react());
+  var import_react50 = __toESM(require_react());
 
   // node_modules/@tanstack/query-core/build/modern/subscribable.js
   var Subscribable = class {
@@ -56948,7 +56948,7 @@
   }
 
   // src/components/ui/sonner.tsx
-  var React69 = __toESM(require_react());
+  var import_react34 = __toESM(require_react());
 
   // node_modules/next-themes/dist/index.mjs
   var t2 = __toESM(require_react(), 1);
@@ -56989,7 +56989,7 @@
   var Toaster = (_a10) => {
     var props = __objRest(_a10, []);
     const { theme = "system" } = z2();
-    return /* @__PURE__ */ React69.createElement(
+    return /* @__PURE__ */ import_react34.default.createElement(
       Oe,
       __spreadValues({
         theme,
@@ -57007,7 +57007,7 @@
   };
 
   // src/pages/saml-connections/EditSAMLConnectionPage.tsx
-  var import_react34 = __toESM(require_react());
+  var import_react35 = __toESM(require_react());
   var schema6 = z.object({
     primary: z.boolean(),
     idpEntityId: z.string().min(1, {
@@ -57035,7 +57035,7 @@
       defaultValues: {}
     });
     const updateSAMLConnectionMutation = useMutation2(updateSAMLConnection);
-    (0, import_react34.useEffect)(() => {
+    (0, import_react35.useEffect)(() => {
       if (getSAMLConnectionResponse == null ? void 0 : getSAMLConnectionResponse.samlConnection) {
         form.reset({
           primary: getSAMLConnectionResponse.samlConnection.primary,
@@ -57062,46 +57062,46 @@
     }
     return (
       // TODO remove padding when app shell in place
-      /* @__PURE__ */ import_react34.default.createElement("div", { className: "pt-8" }, /* @__PURE__ */ import_react34.default.createElement(Breadcrumb, null, /* @__PURE__ */ import_react34.default.createElement(BreadcrumbList, null, /* @__PURE__ */ import_react34.default.createElement(BreadcrumbItem, null, /* @__PURE__ */ import_react34.default.createElement(BreadcrumbLink, { asChild: true }, /* @__PURE__ */ import_react34.default.createElement(Link, { to: "/" }, "Home"))), /* @__PURE__ */ import_react34.default.createElement(BreadcrumbSeparator, null), /* @__PURE__ */ import_react34.default.createElement(BreadcrumbItem, null, /* @__PURE__ */ import_react34.default.createElement(BreadcrumbLink, { asChild: true }, /* @__PURE__ */ import_react34.default.createElement(Link, { to: "/organizations" }, "Organizations"))), /* @__PURE__ */ import_react34.default.createElement(BreadcrumbSeparator, null), /* @__PURE__ */ import_react34.default.createElement(BreadcrumbItem, null, /* @__PURE__ */ import_react34.default.createElement(BreadcrumbLink, { asChild: true }, /* @__PURE__ */ import_react34.default.createElement(Link, { to: "/organizations/".concat(organizationId) }, (_a10 = getOrganizationResponse == null ? void 0 : getOrganizationResponse.organization) == null ? void 0 : _a10.displayName))), /* @__PURE__ */ import_react34.default.createElement(BreadcrumbSeparator, null), /* @__PURE__ */ import_react34.default.createElement(BreadcrumbItem, null, /* @__PURE__ */ import_react34.default.createElement(BreadcrumbLink, { asChild: true }, /* @__PURE__ */ import_react34.default.createElement(Link, { to: "/organizations/".concat(organizationId, "/saml-connections") }, "SAML Connections"))), /* @__PURE__ */ import_react34.default.createElement(BreadcrumbSeparator, null), /* @__PURE__ */ import_react34.default.createElement(BreadcrumbItem, null, /* @__PURE__ */ import_react34.default.createElement(BreadcrumbLink, { asChild: true }, /* @__PURE__ */ import_react34.default.createElement(
+      /* @__PURE__ */ import_react35.default.createElement("div", { className: "pt-8" }, /* @__PURE__ */ import_react35.default.createElement(Breadcrumb, null, /* @__PURE__ */ import_react35.default.createElement(BreadcrumbList, null, /* @__PURE__ */ import_react35.default.createElement(BreadcrumbItem, null, /* @__PURE__ */ import_react35.default.createElement(BreadcrumbLink, { asChild: true }, /* @__PURE__ */ import_react35.default.createElement(Link, { to: "/" }, "Home"))), /* @__PURE__ */ import_react35.default.createElement(BreadcrumbSeparator, null), /* @__PURE__ */ import_react35.default.createElement(BreadcrumbItem, null, /* @__PURE__ */ import_react35.default.createElement(BreadcrumbLink, { asChild: true }, /* @__PURE__ */ import_react35.default.createElement(Link, { to: "/organizations" }, "Organizations"))), /* @__PURE__ */ import_react35.default.createElement(BreadcrumbSeparator, null), /* @__PURE__ */ import_react35.default.createElement(BreadcrumbItem, null, /* @__PURE__ */ import_react35.default.createElement(BreadcrumbLink, { asChild: true }, /* @__PURE__ */ import_react35.default.createElement(Link, { to: "/organizations/".concat(organizationId) }, (_a10 = getOrganizationResponse == null ? void 0 : getOrganizationResponse.organization) == null ? void 0 : _a10.displayName))), /* @__PURE__ */ import_react35.default.createElement(BreadcrumbSeparator, null), /* @__PURE__ */ import_react35.default.createElement(BreadcrumbItem, null, /* @__PURE__ */ import_react35.default.createElement(BreadcrumbLink, { asChild: true }, /* @__PURE__ */ import_react35.default.createElement(Link, { to: "/organizations/".concat(organizationId, "/saml-connections") }, "SAML Connections"))), /* @__PURE__ */ import_react35.default.createElement(BreadcrumbSeparator, null), /* @__PURE__ */ import_react35.default.createElement(BreadcrumbItem, null, /* @__PURE__ */ import_react35.default.createElement(BreadcrumbLink, { asChild: true }, /* @__PURE__ */ import_react35.default.createElement(
         Link,
         {
           to: "/organizations/".concat(organizationId, "/saml-connections/").concat(samlConnectionId)
         },
         samlConnectionId
-      ))), /* @__PURE__ */ import_react34.default.createElement(BreadcrumbSeparator, null), /* @__PURE__ */ import_react34.default.createElement(BreadcrumbItem, null, /* @__PURE__ */ import_react34.default.createElement(BreadcrumbPage, null, "Edit")))), /* @__PURE__ */ import_react34.default.createElement("h1", { className: "mt-4 mb-8 font-semibold text-2xl" }, "Edit SAML Connection"), /* @__PURE__ */ import_react34.default.createElement(Form2, __spreadValues({}, form), /* @__PURE__ */ import_react34.default.createElement("form", { onSubmit: form.handleSubmit(onSubmit), className: "space-y-8" }, /* @__PURE__ */ import_react34.default.createElement(Card, null, /* @__PURE__ */ import_react34.default.createElement(CardHeader, null, /* @__PURE__ */ import_react34.default.createElement(CardTitle, null, "SAML connection settings"), /* @__PURE__ */ import_react34.default.createElement(CardDescription, null, "Configure basic settings on this SAML connection.")), /* @__PURE__ */ import_react34.default.createElement(CardContent, { className: "space-y-8" }, /* @__PURE__ */ import_react34.default.createElement(
+      ))), /* @__PURE__ */ import_react35.default.createElement(BreadcrumbSeparator, null), /* @__PURE__ */ import_react35.default.createElement(BreadcrumbItem, null, /* @__PURE__ */ import_react35.default.createElement(BreadcrumbPage, null, "Edit")))), /* @__PURE__ */ import_react35.default.createElement("h1", { className: "mt-4 mb-8 font-semibold text-2xl" }, "Edit SAML Connection"), /* @__PURE__ */ import_react35.default.createElement(Form2, __spreadValues({}, form), /* @__PURE__ */ import_react35.default.createElement("form", { onSubmit: form.handleSubmit(onSubmit), className: "space-y-8" }, /* @__PURE__ */ import_react35.default.createElement(Card, null, /* @__PURE__ */ import_react35.default.createElement(CardHeader, null, /* @__PURE__ */ import_react35.default.createElement(CardTitle, null, "SAML connection settings"), /* @__PURE__ */ import_react35.default.createElement(CardDescription, null, "Configure basic settings on this SAML connection.")), /* @__PURE__ */ import_react35.default.createElement(CardContent, { className: "space-y-8" }, /* @__PURE__ */ import_react35.default.createElement(
         FormField,
         {
           control: form.control,
           name: "primary",
-          render: ({ field }) => /* @__PURE__ */ import_react34.default.createElement(FormItem, null, /* @__PURE__ */ import_react34.default.createElement(FormLabel, null, "Primary"), /* @__PURE__ */ import_react34.default.createElement(FormControl, null, /* @__PURE__ */ import_react34.default.createElement(
+          render: ({ field }) => /* @__PURE__ */ import_react35.default.createElement(FormItem, null, /* @__PURE__ */ import_react35.default.createElement(FormLabel, null, "Primary"), /* @__PURE__ */ import_react35.default.createElement(FormControl, null, /* @__PURE__ */ import_react35.default.createElement(
             Switch2,
             {
               className: "block",
               checked: field.value,
               onCheckedChange: field.onChange
             }
-          )), /* @__PURE__ */ import_react34.default.createElement(FormDescription, null, "A primary SAML connection gets used by default within its organization."), /* @__PURE__ */ import_react34.default.createElement(FormMessage, null))
+          )), /* @__PURE__ */ import_react35.default.createElement(FormDescription, null, "A primary SAML connection gets used by default within its organization."), /* @__PURE__ */ import_react35.default.createElement(FormMessage, null))
         }
-      ))), /* @__PURE__ */ import_react34.default.createElement(Card, null, /* @__PURE__ */ import_react34.default.createElement(CardHeader, null, /* @__PURE__ */ import_react34.default.createElement(CardTitle, null, "Service Provider settings"), /* @__PURE__ */ import_react34.default.createElement(CardDescription, null, "The configuration here is assigned automatically by Tesseral, and needs to be inputted into your customer's Identity Provider by their IT admin.")), /* @__PURE__ */ import_react34.default.createElement(CardContent, { className: "space-y-8" }, /* @__PURE__ */ import_react34.default.createElement("div", null, /* @__PURE__ */ import_react34.default.createElement("div", { className: "text-sm font-medium leading-none" }, "Assertion Consumer Service (ACS) URL"), /* @__PURE__ */ import_react34.default.createElement("div", { className: "mt-1" }, (_b2 = getSAMLConnectionResponse == null ? void 0 : getSAMLConnectionResponse.samlConnection) == null ? void 0 : _b2.spAcsUrl)), /* @__PURE__ */ import_react34.default.createElement("div", null, /* @__PURE__ */ import_react34.default.createElement("div", { className: "text-sm font-medium leading-none" }, "SP Entity ID"), /* @__PURE__ */ import_react34.default.createElement("div", { className: "mt-1" }, (_c = getSAMLConnectionResponse == null ? void 0 : getSAMLConnectionResponse.samlConnection) == null ? void 0 : _c.spEntityId)))), /* @__PURE__ */ import_react34.default.createElement(Card, null, /* @__PURE__ */ import_react34.default.createElement(CardHeader, null, /* @__PURE__ */ import_react34.default.createElement(CardTitle, null, "Identity Provider settings"), /* @__PURE__ */ import_react34.default.createElement(CardDescription, null, 'The configuration here needs to be copied over from the customer\'s Identity Provider ("IDP").')), /* @__PURE__ */ import_react34.default.createElement(CardContent, { className: "space-y-8" }, /* @__PURE__ */ import_react34.default.createElement(
+      ))), /* @__PURE__ */ import_react35.default.createElement(Card, null, /* @__PURE__ */ import_react35.default.createElement(CardHeader, null, /* @__PURE__ */ import_react35.default.createElement(CardTitle, null, "Service Provider settings"), /* @__PURE__ */ import_react35.default.createElement(CardDescription, null, "The configuration here is assigned automatically by Tesseral, and needs to be inputted into your customer's Identity Provider by their IT admin.")), /* @__PURE__ */ import_react35.default.createElement(CardContent, { className: "space-y-8" }, /* @__PURE__ */ import_react35.default.createElement("div", null, /* @__PURE__ */ import_react35.default.createElement("div", { className: "text-sm font-medium leading-none" }, "Assertion Consumer Service (ACS) URL"), /* @__PURE__ */ import_react35.default.createElement("div", { className: "mt-1" }, (_b2 = getSAMLConnectionResponse == null ? void 0 : getSAMLConnectionResponse.samlConnection) == null ? void 0 : _b2.spAcsUrl)), /* @__PURE__ */ import_react35.default.createElement("div", null, /* @__PURE__ */ import_react35.default.createElement("div", { className: "text-sm font-medium leading-none" }, "SP Entity ID"), /* @__PURE__ */ import_react35.default.createElement("div", { className: "mt-1" }, (_c = getSAMLConnectionResponse == null ? void 0 : getSAMLConnectionResponse.samlConnection) == null ? void 0 : _c.spEntityId)))), /* @__PURE__ */ import_react35.default.createElement(Card, null, /* @__PURE__ */ import_react35.default.createElement(CardHeader, null, /* @__PURE__ */ import_react35.default.createElement(CardTitle, null, "Identity Provider settings"), /* @__PURE__ */ import_react35.default.createElement(CardDescription, null, 'The configuration here needs to be copied over from the customer\'s Identity Provider ("IDP").')), /* @__PURE__ */ import_react35.default.createElement(CardContent, { className: "space-y-8" }, /* @__PURE__ */ import_react35.default.createElement(
         FormField,
         {
           control: form.control,
           name: "idpEntityId",
-          render: ({ field }) => /* @__PURE__ */ import_react34.default.createElement(FormItem, null, /* @__PURE__ */ import_react34.default.createElement(FormLabel, null, "IDP Entity ID"), /* @__PURE__ */ import_react34.default.createElement(FormControl, null, /* @__PURE__ */ import_react34.default.createElement(Input, __spreadValues({ className: "max-w-96" }, field))), /* @__PURE__ */ import_react34.default.createElement(FormMessage, null))
+          render: ({ field }) => /* @__PURE__ */ import_react35.default.createElement(FormItem, null, /* @__PURE__ */ import_react35.default.createElement(FormLabel, null, "IDP Entity ID"), /* @__PURE__ */ import_react35.default.createElement(FormControl, null, /* @__PURE__ */ import_react35.default.createElement(Input, __spreadValues({ className: "max-w-96" }, field))), /* @__PURE__ */ import_react35.default.createElement(FormMessage, null))
         }
-      ), /* @__PURE__ */ import_react34.default.createElement(
+      ), /* @__PURE__ */ import_react35.default.createElement(
         FormField,
         {
           control: form.control,
           name: "idpRedirectUrl",
-          render: ({ field }) => /* @__PURE__ */ import_react34.default.createElement(FormItem, null, /* @__PURE__ */ import_react34.default.createElement(FormLabel, null, "IDP Redirect URL"), /* @__PURE__ */ import_react34.default.createElement(FormControl, null, /* @__PURE__ */ import_react34.default.createElement(Input, __spreadValues({ className: "max-w-96" }, field))), /* @__PURE__ */ import_react34.default.createElement(FormMessage, null))
+          render: ({ field }) => /* @__PURE__ */ import_react35.default.createElement(FormItem, null, /* @__PURE__ */ import_react35.default.createElement(FormLabel, null, "IDP Redirect URL"), /* @__PURE__ */ import_react35.default.createElement(FormControl, null, /* @__PURE__ */ import_react35.default.createElement(Input, __spreadValues({ className: "max-w-96" }, field))), /* @__PURE__ */ import_react35.default.createElement(FormMessage, null))
         }
-      ), /* @__PURE__ */ import_react34.default.createElement(
+      ), /* @__PURE__ */ import_react35.default.createElement(
         FormField,
         {
           control: form.control,
           name: "idpX509Certificate",
-          render: ({ field: { onChange } }) => /* @__PURE__ */ import_react34.default.createElement(FormItem, null, /* @__PURE__ */ import_react34.default.createElement(FormLabel, null, "IDP Certificate"), /* @__PURE__ */ import_react34.default.createElement(FormControl, null, /* @__PURE__ */ import_react34.default.createElement(
+          render: ({ field: { onChange } }) => /* @__PURE__ */ import_react35.default.createElement(FormItem, null, /* @__PURE__ */ import_react35.default.createElement(FormLabel, null, "IDP Certificate"), /* @__PURE__ */ import_react35.default.createElement(FormControl, null, /* @__PURE__ */ import_react35.default.createElement(
             Input,
             {
               className: "max-w-96",
@@ -57112,14 +57112,14 @@
                 }
               }
             }
-          )), /* @__PURE__ */ import_react34.default.createElement(FormDescription, null, "IDP Certificate, as a PEM-encoded X.509 certificate. These start with '-----BEGIN CERTIFICATE-----' and end with '-----END CERTIFICATE-----'."), /* @__PURE__ */ import_react34.default.createElement(FormMessage, null))
+          )), /* @__PURE__ */ import_react35.default.createElement(FormDescription, null, "IDP Certificate, as a PEM-encoded X.509 certificate. These start with '-----BEGIN CERTIFICATE-----' and end with '-----END CERTIFICATE-----'."), /* @__PURE__ */ import_react35.default.createElement(FormMessage, null))
         }
-      ))), /* @__PURE__ */ import_react34.default.createElement("div", { className: "flex justify-end gap-x-4 pb-8" }, /* @__PURE__ */ import_react34.default.createElement(Button, { variant: "outline", asChild: true }, /* @__PURE__ */ import_react34.default.createElement(Link, { to: "/organizations/".concat(organizationId) }, "Cancel")), /* @__PURE__ */ import_react34.default.createElement(Button, { type: "submit" }, "Save Changes")))))
+      ))), /* @__PURE__ */ import_react35.default.createElement("div", { className: "flex justify-end gap-x-4 pb-8" }, /* @__PURE__ */ import_react35.default.createElement(Button, { variant: "outline", asChild: true }, /* @__PURE__ */ import_react35.default.createElement(Link, { to: "/organizations/".concat(organizationId) }, "Cancel")), /* @__PURE__ */ import_react35.default.createElement(Button, { type: "submit" }, "Save Changes")))))
     );
   }
 
   // src/pages/scim-api-keys/ViewSCIMAPIKeyPage.tsx
-  var import_react35 = __toESM(require_react());
+  var import_react36 = __toESM(require_react());
   function ViewSCIMAPIKeyPage() {
     var _a10, _b2, _c, _d, _e, _f, _g, _h, _i;
     const { organizationId, scimApiKeyId } = useParams();
@@ -57131,15 +57131,15 @@
     });
     return (
       // TODO remove padding when app shell in place
-      /* @__PURE__ */ import_react35.default.createElement("div", null, /* @__PURE__ */ import_react35.default.createElement(Breadcrumb, null, /* @__PURE__ */ import_react35.default.createElement(BreadcrumbList, null, /* @__PURE__ */ import_react35.default.createElement(BreadcrumbItem, null, /* @__PURE__ */ import_react35.default.createElement(BreadcrumbLink, { asChild: true }, /* @__PURE__ */ import_react35.default.createElement(Link, { to: "/" }, "Home"))), /* @__PURE__ */ import_react35.default.createElement(BreadcrumbSeparator, null), /* @__PURE__ */ import_react35.default.createElement(BreadcrumbItem, null, /* @__PURE__ */ import_react35.default.createElement(BreadcrumbLink, { asChild: true }, /* @__PURE__ */ import_react35.default.createElement(Link, { to: "/organizations" }, "Organizations"))), /* @__PURE__ */ import_react35.default.createElement(BreadcrumbSeparator, null), /* @__PURE__ */ import_react35.default.createElement(BreadcrumbItem, null, /* @__PURE__ */ import_react35.default.createElement(BreadcrumbLink, { asChild: true }, /* @__PURE__ */ import_react35.default.createElement(Link, { to: "/organizations/".concat(organizationId) }, (_a10 = getOrganizationResponse == null ? void 0 : getOrganizationResponse.organization) == null ? void 0 : _a10.displayName))), /* @__PURE__ */ import_react35.default.createElement(BreadcrumbSeparator, null), /* @__PURE__ */ import_react35.default.createElement(BreadcrumbItem, null, /* @__PURE__ */ import_react35.default.createElement(BreadcrumbLink, { asChild: true }, /* @__PURE__ */ import_react35.default.createElement(Link, { to: "/organizations/".concat(organizationId, "/scim-api-keys") }, "SCIM API Keys"))), /* @__PURE__ */ import_react35.default.createElement(BreadcrumbSeparator, null), /* @__PURE__ */ import_react35.default.createElement(BreadcrumbItem, null, /* @__PURE__ */ import_react35.default.createElement(BreadcrumbPage, null, (_b2 = getScimApiKeyResponse == null ? void 0 : getScimApiKeyResponse.scimApiKey) == null ? void 0 : _b2.displayName)))), /* @__PURE__ */ import_react35.default.createElement(PageTitle, null, (_c = getScimApiKeyResponse == null ? void 0 : getScimApiKeyResponse.scimApiKey) == null ? void 0 : _c.displayName), /* @__PURE__ */ import_react35.default.createElement(PageCodeSubtitle, null, scimApiKeyId), /* @__PURE__ */ import_react35.default.createElement(PageDescription, null, "A SCIM API key lets your customer do enterprise directory syncing. Lorem ipsum dolor."), /* @__PURE__ */ import_react35.default.createElement(Card, { className: "my-8" }, /* @__PURE__ */ import_react35.default.createElement(CardHeader, { className: "flex-row justify-between items-center" }, /* @__PURE__ */ import_react35.default.createElement("div", { className: "flex flex-col space-y-1 5" }, /* @__PURE__ */ import_react35.default.createElement(CardTitle, null, "Configuration"), /* @__PURE__ */ import_react35.default.createElement(CardDescription, null, "Lorem ipsum dolor.")), /* @__PURE__ */ import_react35.default.createElement(EditSCIMAPIKeyButton, null)), /* @__PURE__ */ import_react35.default.createElement(CardContent, null, /* @__PURE__ */ import_react35.default.createElement("div", { className: "grid grid-cols-3 gap-x-2 text-sm" }, /* @__PURE__ */ import_react35.default.createElement("div", { className: "border-r border-gray-200 pr-8 flex flex-col gap-4" }, /* @__PURE__ */ import_react35.default.createElement("div", null, /* @__PURE__ */ import_react35.default.createElement("div", { className: "font-semibold" }, "Display Name"), /* @__PURE__ */ import_react35.default.createElement("div", { className: "truncate" }, (_d = getScimApiKeyResponse == null ? void 0 : getScimApiKeyResponse.scimApiKey) == null ? void 0 : _d.displayName)), /* @__PURE__ */ import_react35.default.createElement("div", null, /* @__PURE__ */ import_react35.default.createElement("div", { className: "font-semibold" }, "Revoked"), /* @__PURE__ */ import_react35.default.createElement("div", { className: "truncate" }, ((_e = getScimApiKeyResponse == null ? void 0 : getScimApiKeyResponse.scimApiKey) == null ? void 0 : _e.revoked) ? "Yes" : "No"))), /* @__PURE__ */ import_react35.default.createElement("div", { className: "border-r border-gray-200 pr-8 pl-8 flex flex-col gap-4" }, /* @__PURE__ */ import_react35.default.createElement("div", null, /* @__PURE__ */ import_react35.default.createElement("div", { className: "font-semibold" }, "Created"), /* @__PURE__ */ import_react35.default.createElement("div", { className: "truncate" }, ((_f = getScimApiKeyResponse == null ? void 0 : getScimApiKeyResponse.scimApiKey) == null ? void 0 : _f.createTime) && DateTime.fromJSDate(
+      /* @__PURE__ */ import_react36.default.createElement("div", null, /* @__PURE__ */ import_react36.default.createElement(Breadcrumb, null, /* @__PURE__ */ import_react36.default.createElement(BreadcrumbList, null, /* @__PURE__ */ import_react36.default.createElement(BreadcrumbItem, null, /* @__PURE__ */ import_react36.default.createElement(BreadcrumbLink, { asChild: true }, /* @__PURE__ */ import_react36.default.createElement(Link, { to: "/" }, "Home"))), /* @__PURE__ */ import_react36.default.createElement(BreadcrumbSeparator, null), /* @__PURE__ */ import_react36.default.createElement(BreadcrumbItem, null, /* @__PURE__ */ import_react36.default.createElement(BreadcrumbLink, { asChild: true }, /* @__PURE__ */ import_react36.default.createElement(Link, { to: "/organizations" }, "Organizations"))), /* @__PURE__ */ import_react36.default.createElement(BreadcrumbSeparator, null), /* @__PURE__ */ import_react36.default.createElement(BreadcrumbItem, null, /* @__PURE__ */ import_react36.default.createElement(BreadcrumbLink, { asChild: true }, /* @__PURE__ */ import_react36.default.createElement(Link, { to: "/organizations/".concat(organizationId) }, (_a10 = getOrganizationResponse == null ? void 0 : getOrganizationResponse.organization) == null ? void 0 : _a10.displayName))), /* @__PURE__ */ import_react36.default.createElement(BreadcrumbSeparator, null), /* @__PURE__ */ import_react36.default.createElement(BreadcrumbItem, null, /* @__PURE__ */ import_react36.default.createElement(BreadcrumbLink, { asChild: true }, /* @__PURE__ */ import_react36.default.createElement(Link, { to: "/organizations/".concat(organizationId, "/scim-api-keys") }, "SCIM API Keys"))), /* @__PURE__ */ import_react36.default.createElement(BreadcrumbSeparator, null), /* @__PURE__ */ import_react36.default.createElement(BreadcrumbItem, null, /* @__PURE__ */ import_react36.default.createElement(BreadcrumbPage, null, (_b2 = getScimApiKeyResponse == null ? void 0 : getScimApiKeyResponse.scimApiKey) == null ? void 0 : _b2.displayName)))), /* @__PURE__ */ import_react36.default.createElement(PageTitle, null, (_c = getScimApiKeyResponse == null ? void 0 : getScimApiKeyResponse.scimApiKey) == null ? void 0 : _c.displayName), /* @__PURE__ */ import_react36.default.createElement(PageCodeSubtitle, null, scimApiKeyId), /* @__PURE__ */ import_react36.default.createElement(PageDescription, null, "A SCIM API key lets your customer do enterprise directory syncing. Lorem ipsum dolor."), /* @__PURE__ */ import_react36.default.createElement(Card, { className: "my-8" }, /* @__PURE__ */ import_react36.default.createElement(CardHeader, { className: "flex-row justify-between items-center" }, /* @__PURE__ */ import_react36.default.createElement("div", { className: "flex flex-col space-y-1 5" }, /* @__PURE__ */ import_react36.default.createElement(CardTitle, null, "Configuration"), /* @__PURE__ */ import_react36.default.createElement(CardDescription, null, "Lorem ipsum dolor.")), /* @__PURE__ */ import_react36.default.createElement(EditSCIMAPIKeyButton, null)), /* @__PURE__ */ import_react36.default.createElement(CardContent, null, /* @__PURE__ */ import_react36.default.createElement("div", { className: "grid grid-cols-3 gap-x-2 text-sm" }, /* @__PURE__ */ import_react36.default.createElement("div", { className: "border-r border-gray-200 pr-8 flex flex-col gap-4" }, /* @__PURE__ */ import_react36.default.createElement("div", null, /* @__PURE__ */ import_react36.default.createElement("div", { className: "font-semibold" }, "Display Name"), /* @__PURE__ */ import_react36.default.createElement("div", { className: "truncate" }, (_d = getScimApiKeyResponse == null ? void 0 : getScimApiKeyResponse.scimApiKey) == null ? void 0 : _d.displayName)), /* @__PURE__ */ import_react36.default.createElement("div", null, /* @__PURE__ */ import_react36.default.createElement("div", { className: "font-semibold" }, "Revoked"), /* @__PURE__ */ import_react36.default.createElement("div", { className: "truncate" }, ((_e = getScimApiKeyResponse == null ? void 0 : getScimApiKeyResponse.scimApiKey) == null ? void 0 : _e.revoked) ? "Yes" : "No"))), /* @__PURE__ */ import_react36.default.createElement("div", { className: "border-r border-gray-200 pr-8 pl-8 flex flex-col gap-4" }, /* @__PURE__ */ import_react36.default.createElement("div", null, /* @__PURE__ */ import_react36.default.createElement("div", { className: "font-semibold" }, "Created"), /* @__PURE__ */ import_react36.default.createElement("div", { className: "truncate" }, ((_f = getScimApiKeyResponse == null ? void 0 : getScimApiKeyResponse.scimApiKey) == null ? void 0 : _f.createTime) && DateTime.fromJSDate(
         timestampDate(
           (_g = getScimApiKeyResponse == null ? void 0 : getScimApiKeyResponse.scimApiKey) == null ? void 0 : _g.createTime
         )
-      ).toRelative()))), /* @__PURE__ */ import_react35.default.createElement("div", { className: "border-gray-200 pl-8 flex flex-col gap-4" }, /* @__PURE__ */ import_react35.default.createElement("div", null, /* @__PURE__ */ import_react35.default.createElement("div", { className: "font-semibold" }, "Updated"), /* @__PURE__ */ import_react35.default.createElement("div", { className: "truncate" }, ((_h = getScimApiKeyResponse == null ? void 0 : getScimApiKeyResponse.scimApiKey) == null ? void 0 : _h.updateTime) && DateTime.fromJSDate(
+      ).toRelative()))), /* @__PURE__ */ import_react36.default.createElement("div", { className: "border-gray-200 pl-8 flex flex-col gap-4" }, /* @__PURE__ */ import_react36.default.createElement("div", null, /* @__PURE__ */ import_react36.default.createElement("div", { className: "font-semibold" }, "Updated"), /* @__PURE__ */ import_react36.default.createElement("div", { className: "truncate" }, ((_h = getScimApiKeyResponse == null ? void 0 : getScimApiKeyResponse.scimApiKey) == null ? void 0 : _h.updateTime) && DateTime.fromJSDate(
         timestampDate(
           (_i = getScimApiKeyResponse == null ? void 0 : getScimApiKeyResponse.scimApiKey) == null ? void 0 : _i.updateTime
         )
-      ).toRelative())))))), /* @__PURE__ */ import_react35.default.createElement(DangerZoneCard3, null))
+      ).toRelative())))))), /* @__PURE__ */ import_react36.default.createElement(DangerZoneCard3, null))
     );
   }
   var schema7 = z.object({
@@ -57157,14 +57157,14 @@
         displayName: ""
       }
     });
-    (0, import_react35.useEffect)(() => {
+    (0, import_react36.useEffect)(() => {
       if (getSCIMAPIKeyResponse == null ? void 0 : getSCIMAPIKeyResponse.scimApiKey) {
         form.reset({
           displayName: getSCIMAPIKeyResponse.scimApiKey.displayName
         });
       }
     }, [getSCIMAPIKeyResponse]);
-    const [open, setOpen] = (0, import_react35.useState)(false);
+    const [open, setOpen] = (0, import_react36.useState)(false);
     async function handleSubmit(values) {
       await updateSCIMAPIKeyMutation.mutateAsync({
         id: scimApiKeyId,
@@ -57175,14 +57175,14 @@
       await refetch();
       setOpen(false);
     }
-    return /* @__PURE__ */ import_react35.default.createElement(AlertDialog2, { open, onOpenChange: setOpen }, /* @__PURE__ */ import_react35.default.createElement(AlertDialogTrigger2, null, /* @__PURE__ */ import_react35.default.createElement(Button, { variant: "outline" }, "Edit")), /* @__PURE__ */ import_react35.default.createElement(AlertDialogContent2, null, /* @__PURE__ */ import_react35.default.createElement(AlertDialogHeader, null, /* @__PURE__ */ import_react35.default.createElement(AlertDialogTitle2, null, "Edit SCIM API Key"), /* @__PURE__ */ import_react35.default.createElement(AlertDialogDescription2, null, "Edit SCIM API Key settings.")), /* @__PURE__ */ import_react35.default.createElement(Form2, __spreadValues({}, form), /* @__PURE__ */ import_react35.default.createElement("form", { onSubmit: form.handleSubmit(handleSubmit) }, /* @__PURE__ */ import_react35.default.createElement(
+    return /* @__PURE__ */ import_react36.default.createElement(AlertDialog2, { open, onOpenChange: setOpen }, /* @__PURE__ */ import_react36.default.createElement(AlertDialogTrigger2, null, /* @__PURE__ */ import_react36.default.createElement(Button, { variant: "outline" }, "Edit")), /* @__PURE__ */ import_react36.default.createElement(AlertDialogContent2, null, /* @__PURE__ */ import_react36.default.createElement(AlertDialogHeader, null, /* @__PURE__ */ import_react36.default.createElement(AlertDialogTitle2, null, "Edit SCIM API Key"), /* @__PURE__ */ import_react36.default.createElement(AlertDialogDescription2, null, "Edit SCIM API Key settings.")), /* @__PURE__ */ import_react36.default.createElement(Form2, __spreadValues({}, form), /* @__PURE__ */ import_react36.default.createElement("form", { onSubmit: form.handleSubmit(handleSubmit) }, /* @__PURE__ */ import_react36.default.createElement(
       FormField,
       {
         control: form.control,
         name: "displayName",
-        render: ({ field }) => /* @__PURE__ */ import_react35.default.createElement(FormItem, null, /* @__PURE__ */ import_react35.default.createElement(FormLabel, null, "Display Name"), /* @__PURE__ */ import_react35.default.createElement(FormControl, null, /* @__PURE__ */ import_react35.default.createElement(Input, __spreadValues({ className: "max-w-96" }, field))), /* @__PURE__ */ import_react35.default.createElement(FormDescription, null, "A human-friendly name for the SCIM API Key."), /* @__PURE__ */ import_react35.default.createElement(FormMessage, null))
+        render: ({ field }) => /* @__PURE__ */ import_react36.default.createElement(FormItem, null, /* @__PURE__ */ import_react36.default.createElement(FormLabel, null, "Display Name"), /* @__PURE__ */ import_react36.default.createElement(FormControl, null, /* @__PURE__ */ import_react36.default.createElement(Input, __spreadValues({ className: "max-w-96" }, field))), /* @__PURE__ */ import_react36.default.createElement(FormDescription, null, "A human-friendly name for the SCIM API Key."), /* @__PURE__ */ import_react36.default.createElement(FormMessage, null))
       }
-    ), /* @__PURE__ */ import_react35.default.createElement(AlertDialogFooter, { className: "mt-8" }, /* @__PURE__ */ import_react35.default.createElement(AlertDialogCancel2, null, "Cancel"), /* @__PURE__ */ import_react35.default.createElement(Button, { type: "submit" }, "Save"))))));
+    ), /* @__PURE__ */ import_react36.default.createElement(AlertDialogFooter, { className: "mt-8" }, /* @__PURE__ */ import_react36.default.createElement(AlertDialogCancel2, null, "Cancel"), /* @__PURE__ */ import_react36.default.createElement(Button, { type: "submit" }, "Save"))))));
   }
   function DangerZoneCard3() {
     var _a10, _b2, _c, _d, _e;
@@ -57190,7 +57190,7 @@
     const { data: getScimApiKeyResponse, refetch } = useQuery2(getSCIMAPIKey, {
       id: scimApiKeyId
     });
-    const [confirmRevokeOpen, setConfirmRevokeOpen] = (0, import_react35.useState)(false);
+    const [confirmRevokeOpen, setConfirmRevokeOpen] = (0, import_react36.useState)(false);
     function handleRevoke() {
       setConfirmRevokeOpen(true);
     }
@@ -57203,7 +57203,7 @@
       ce.success("SCIM API Key revoked");
       setConfirmRevokeOpen(false);
     }
-    const [confirmDeleteOpen, setConfirmDeleteOpen] = (0, import_react35.useState)(false);
+    const [confirmDeleteOpen, setConfirmDeleteOpen] = (0, import_react36.useState)(false);
     function handleDelete() {
       setConfirmDeleteOpen(true);
     }
@@ -57216,7 +57216,7 @@
       ce.success("SCIM API Key deleted");
       navigate("/organizations/".concat(organizationId, "/scim-api-keys"));
     };
-    return /* @__PURE__ */ import_react35.default.createElement(import_react35.default.Fragment, null, /* @__PURE__ */ import_react35.default.createElement(AlertDialog2, { open: confirmRevokeOpen, onOpenChange: setConfirmRevokeOpen }, /* @__PURE__ */ import_react35.default.createElement(AlertDialogContent2, null, /* @__PURE__ */ import_react35.default.createElement(AlertDialogHeader, null, /* @__PURE__ */ import_react35.default.createElement(AlertDialogTitle2, null, "Revoke ", (_a10 = getScimApiKeyResponse == null ? void 0 : getScimApiKeyResponse.scimApiKey) == null ? void 0 : _a10.displayName, "?"), /* @__PURE__ */ import_react35.default.createElement(AlertDialogDescription2, null, "Revoking a SCIM API Key cannot be undone. SCIM API calls from", " ", (_b2 = getScimApiKeyResponse == null ? void 0 : getScimApiKeyResponse.scimApiKey) == null ? void 0 : _b2.displayName, " will stop working. This cannot be undone.")), /* @__PURE__ */ import_react35.default.createElement(AlertDialogFooter, null, /* @__PURE__ */ import_react35.default.createElement(AlertDialogCancel2, null, "Cancel"), /* @__PURE__ */ import_react35.default.createElement(Button, { variant: "destructive", onClick: handleConfirmRevoke }, "Revoke SCIM API Key")))), /* @__PURE__ */ import_react35.default.createElement(AlertDialog2, { open: confirmDeleteOpen, onOpenChange: setConfirmDeleteOpen }, /* @__PURE__ */ import_react35.default.createElement(AlertDialogContent2, null, /* @__PURE__ */ import_react35.default.createElement(AlertDialogHeader, null, /* @__PURE__ */ import_react35.default.createElement(AlertDialogTitle2, null, "Delete ", (_c = getScimApiKeyResponse == null ? void 0 : getScimApiKeyResponse.scimApiKey) == null ? void 0 : _c.displayName, "?"), /* @__PURE__ */ import_react35.default.createElement(AlertDialogDescription2, null, "Deleting a SCIM API Key cannot be undone.")), /* @__PURE__ */ import_react35.default.createElement(AlertDialogFooter, null, /* @__PURE__ */ import_react35.default.createElement(AlertDialogCancel2, null, "Cancel"), /* @__PURE__ */ import_react35.default.createElement(Button, { variant: "destructive", onClick: handleConfirmDelete }, "Delete SCIM API Key")))), /* @__PURE__ */ import_react35.default.createElement(Card, { className: "border-destructive" }, /* @__PURE__ */ import_react35.default.createElement(CardHeader, null, /* @__PURE__ */ import_react35.default.createElement(CardTitle, null, "Danger Zone")), /* @__PURE__ */ import_react35.default.createElement(CardContent, { className: "space-y-8" }, /* @__PURE__ */ import_react35.default.createElement("div", { className: "flex justify-between items-center" }, /* @__PURE__ */ import_react35.default.createElement("div", null, /* @__PURE__ */ import_react35.default.createElement("div", { className: "text-sm font-semibold" }, "Revoke SCIM API Key"), /* @__PURE__ */ import_react35.default.createElement("p", { className: "text-sm" }, "Revoke this SCIM API Key. SCIM API calls from this key will stop working. This cannot be undone.")), /* @__PURE__ */ import_react35.default.createElement(
+    return /* @__PURE__ */ import_react36.default.createElement(import_react36.default.Fragment, null, /* @__PURE__ */ import_react36.default.createElement(AlertDialog2, { open: confirmRevokeOpen, onOpenChange: setConfirmRevokeOpen }, /* @__PURE__ */ import_react36.default.createElement(AlertDialogContent2, null, /* @__PURE__ */ import_react36.default.createElement(AlertDialogHeader, null, /* @__PURE__ */ import_react36.default.createElement(AlertDialogTitle2, null, "Revoke ", (_a10 = getScimApiKeyResponse == null ? void 0 : getScimApiKeyResponse.scimApiKey) == null ? void 0 : _a10.displayName, "?"), /* @__PURE__ */ import_react36.default.createElement(AlertDialogDescription2, null, "Revoking a SCIM API Key cannot be undone. SCIM API calls from", " ", (_b2 = getScimApiKeyResponse == null ? void 0 : getScimApiKeyResponse.scimApiKey) == null ? void 0 : _b2.displayName, " will stop working. This cannot be undone.")), /* @__PURE__ */ import_react36.default.createElement(AlertDialogFooter, null, /* @__PURE__ */ import_react36.default.createElement(AlertDialogCancel2, null, "Cancel"), /* @__PURE__ */ import_react36.default.createElement(Button, { variant: "destructive", onClick: handleConfirmRevoke }, "Revoke SCIM API Key")))), /* @__PURE__ */ import_react36.default.createElement(AlertDialog2, { open: confirmDeleteOpen, onOpenChange: setConfirmDeleteOpen }, /* @__PURE__ */ import_react36.default.createElement(AlertDialogContent2, null, /* @__PURE__ */ import_react36.default.createElement(AlertDialogHeader, null, /* @__PURE__ */ import_react36.default.createElement(AlertDialogTitle2, null, "Delete ", (_c = getScimApiKeyResponse == null ? void 0 : getScimApiKeyResponse.scimApiKey) == null ? void 0 : _c.displayName, "?"), /* @__PURE__ */ import_react36.default.createElement(AlertDialogDescription2, null, "Deleting a SCIM API Key cannot be undone.")), /* @__PURE__ */ import_react36.default.createElement(AlertDialogFooter, null, /* @__PURE__ */ import_react36.default.createElement(AlertDialogCancel2, null, "Cancel"), /* @__PURE__ */ import_react36.default.createElement(Button, { variant: "destructive", onClick: handleConfirmDelete }, "Delete SCIM API Key")))), /* @__PURE__ */ import_react36.default.createElement(Card, { className: "border-destructive" }, /* @__PURE__ */ import_react36.default.createElement(CardHeader, null, /* @__PURE__ */ import_react36.default.createElement(CardTitle, null, "Danger Zone")), /* @__PURE__ */ import_react36.default.createElement(CardContent, { className: "space-y-8" }, /* @__PURE__ */ import_react36.default.createElement("div", { className: "flex justify-between items-center" }, /* @__PURE__ */ import_react36.default.createElement("div", null, /* @__PURE__ */ import_react36.default.createElement("div", { className: "text-sm font-semibold" }, "Revoke SCIM API Key"), /* @__PURE__ */ import_react36.default.createElement("p", { className: "text-sm" }, "Revoke this SCIM API Key. SCIM API calls from this key will stop working. This cannot be undone.")), /* @__PURE__ */ import_react36.default.createElement(
       Button,
       {
         variant: "destructive",
@@ -57224,7 +57224,7 @@
         onClick: handleRevoke
       },
       "Revoke SCIM API Key"
-    )), /* @__PURE__ */ import_react35.default.createElement("div", { className: "flex justify-between items-center" }, /* @__PURE__ */ import_react35.default.createElement("div", null, /* @__PURE__ */ import_react35.default.createElement("div", { className: "text-sm font-semibold" }, "Delete SCIM API Key"), /* @__PURE__ */ import_react35.default.createElement("p", { className: "text-sm" }, "Delete this SCIM API Key. You must revoke this SCIM API Key first.")), /* @__PURE__ */ import_react35.default.createElement(
+    )), /* @__PURE__ */ import_react36.default.createElement("div", { className: "flex justify-between items-center" }, /* @__PURE__ */ import_react36.default.createElement("div", null, /* @__PURE__ */ import_react36.default.createElement("div", { className: "text-sm font-semibold" }, "Delete SCIM API Key"), /* @__PURE__ */ import_react36.default.createElement("p", { className: "text-sm" }, "Delete this SCIM API Key. You must revoke this SCIM API Key first.")), /* @__PURE__ */ import_react36.default.createElement(
       Button,
       {
         variant: "destructive",
@@ -57236,7 +57236,7 @@
   }
 
   // src/pages/project-api-keys/ViewProjectAPIKey.tsx
-  var import_react36 = __toESM(require_react());
+  var import_react37 = __toESM(require_react());
   function ViewProjectAPIKeyPage() {
     var _a10, _b2, _c, _d, _e, _f, _g, _h;
     const { organizationId, projectApiKeyId } = useParams();
@@ -57245,15 +57245,15 @@
     });
     return (
       // TODO remove padding when app shell in place
-      /* @__PURE__ */ import_react36.default.createElement("div", null, /* @__PURE__ */ import_react36.default.createElement(Breadcrumb, null, /* @__PURE__ */ import_react36.default.createElement(BreadcrumbList, null, /* @__PURE__ */ import_react36.default.createElement(BreadcrumbItem, null, /* @__PURE__ */ import_react36.default.createElement(BreadcrumbLink, { asChild: true }, /* @__PURE__ */ import_react36.default.createElement(Link, { to: "/" }, "Home"))), /* @__PURE__ */ import_react36.default.createElement(BreadcrumbSeparator, null), /* @__PURE__ */ import_react36.default.createElement(BreadcrumbItem, null, /* @__PURE__ */ import_react36.default.createElement(BreadcrumbLink, { asChild: true }, /* @__PURE__ */ import_react36.default.createElement(Link, { to: "/project-api-keys" }, "Project API Keys"))), /* @__PURE__ */ import_react36.default.createElement(BreadcrumbSeparator, null), /* @__PURE__ */ import_react36.default.createElement(BreadcrumbItem, null, /* @__PURE__ */ import_react36.default.createElement(BreadcrumbPage, null, (_a10 = getProjectApiKeyResponse == null ? void 0 : getProjectApiKeyResponse.projectApiKey) == null ? void 0 : _a10.displayName)))), /* @__PURE__ */ import_react36.default.createElement(PageTitle, null, (_b2 = getProjectApiKeyResponse == null ? void 0 : getProjectApiKeyResponse.projectApiKey) == null ? void 0 : _b2.displayName), /* @__PURE__ */ import_react36.default.createElement(PageCodeSubtitle, null, projectApiKeyId), /* @__PURE__ */ import_react36.default.createElement(PageDescription, null, "A Project API key is how your backend talks to the Tesseral Backend API. Lorem ipsum dolor."), /* @__PURE__ */ import_react36.default.createElement(Card, { className: "my-8" }, /* @__PURE__ */ import_react36.default.createElement(CardHeader, { className: "flex-row justify-between items-center" }, /* @__PURE__ */ import_react36.default.createElement("div", { className: "flex flex-col space-y-1 5" }, /* @__PURE__ */ import_react36.default.createElement(CardTitle, null, "Configuration"), /* @__PURE__ */ import_react36.default.createElement(CardDescription, null, "Lorem ipsum dolor.")), /* @__PURE__ */ import_react36.default.createElement(EditProjectAPIKeyButton, null)), /* @__PURE__ */ import_react36.default.createElement(CardContent, null, /* @__PURE__ */ import_react36.default.createElement("div", { className: "grid grid-cols-3 gap-x-2 text-sm" }, /* @__PURE__ */ import_react36.default.createElement("div", { className: "border-r border-gray-200 pr-8 flex flex-col gap-4" }, /* @__PURE__ */ import_react36.default.createElement("div", null, /* @__PURE__ */ import_react36.default.createElement("div", { className: "font-semibold" }, "Display Name"), /* @__PURE__ */ import_react36.default.createElement("div", { className: "truncate" }, (_c = getProjectApiKeyResponse == null ? void 0 : getProjectApiKeyResponse.projectApiKey) == null ? void 0 : _c.displayName)), /* @__PURE__ */ import_react36.default.createElement("div", null, /* @__PURE__ */ import_react36.default.createElement("div", { className: "font-semibold" }, "Revoked"), /* @__PURE__ */ import_react36.default.createElement("div", { className: "truncate" }, ((_d = getProjectApiKeyResponse == null ? void 0 : getProjectApiKeyResponse.projectApiKey) == null ? void 0 : _d.revoked) ? "Yes" : "No"))), /* @__PURE__ */ import_react36.default.createElement("div", { className: "border-r border-gray-200 pr-8 pl-8 flex flex-col gap-4" }, /* @__PURE__ */ import_react36.default.createElement("div", null, /* @__PURE__ */ import_react36.default.createElement("div", { className: "font-semibold" }, "Created"), /* @__PURE__ */ import_react36.default.createElement("div", { className: "truncate" }, ((_e = getProjectApiKeyResponse == null ? void 0 : getProjectApiKeyResponse.projectApiKey) == null ? void 0 : _e.createTime) && DateTime.fromJSDate(
+      /* @__PURE__ */ import_react37.default.createElement("div", null, /* @__PURE__ */ import_react37.default.createElement(Breadcrumb, null, /* @__PURE__ */ import_react37.default.createElement(BreadcrumbList, null, /* @__PURE__ */ import_react37.default.createElement(BreadcrumbItem, null, /* @__PURE__ */ import_react37.default.createElement(BreadcrumbLink, { asChild: true }, /* @__PURE__ */ import_react37.default.createElement(Link, { to: "/" }, "Home"))), /* @__PURE__ */ import_react37.default.createElement(BreadcrumbSeparator, null), /* @__PURE__ */ import_react37.default.createElement(BreadcrumbItem, null, /* @__PURE__ */ import_react37.default.createElement(BreadcrumbLink, { asChild: true }, /* @__PURE__ */ import_react37.default.createElement(Link, { to: "/project-api-keys" }, "Project API Keys"))), /* @__PURE__ */ import_react37.default.createElement(BreadcrumbSeparator, null), /* @__PURE__ */ import_react37.default.createElement(BreadcrumbItem, null, /* @__PURE__ */ import_react37.default.createElement(BreadcrumbPage, null, (_a10 = getProjectApiKeyResponse == null ? void 0 : getProjectApiKeyResponse.projectApiKey) == null ? void 0 : _a10.displayName)))), /* @__PURE__ */ import_react37.default.createElement(PageTitle, null, (_b2 = getProjectApiKeyResponse == null ? void 0 : getProjectApiKeyResponse.projectApiKey) == null ? void 0 : _b2.displayName), /* @__PURE__ */ import_react37.default.createElement(PageCodeSubtitle, null, projectApiKeyId), /* @__PURE__ */ import_react37.default.createElement(PageDescription, null, "A Project API key is how your backend talks to the Tesseral Backend API. Lorem ipsum dolor."), /* @__PURE__ */ import_react37.default.createElement(Card, { className: "my-8" }, /* @__PURE__ */ import_react37.default.createElement(CardHeader, { className: "flex-row justify-between items-center" }, /* @__PURE__ */ import_react37.default.createElement("div", { className: "flex flex-col space-y-1 5" }, /* @__PURE__ */ import_react37.default.createElement(CardTitle, null, "Configuration"), /* @__PURE__ */ import_react37.default.createElement(CardDescription, null, "Lorem ipsum dolor.")), /* @__PURE__ */ import_react37.default.createElement(EditProjectAPIKeyButton, null)), /* @__PURE__ */ import_react37.default.createElement(CardContent, null, /* @__PURE__ */ import_react37.default.createElement("div", { className: "grid grid-cols-3 gap-x-2 text-sm" }, /* @__PURE__ */ import_react37.default.createElement("div", { className: "border-r border-gray-200 pr-8 flex flex-col gap-4" }, /* @__PURE__ */ import_react37.default.createElement("div", null, /* @__PURE__ */ import_react37.default.createElement("div", { className: "font-semibold" }, "Display Name"), /* @__PURE__ */ import_react37.default.createElement("div", { className: "truncate" }, (_c = getProjectApiKeyResponse == null ? void 0 : getProjectApiKeyResponse.projectApiKey) == null ? void 0 : _c.displayName)), /* @__PURE__ */ import_react37.default.createElement("div", null, /* @__PURE__ */ import_react37.default.createElement("div", { className: "font-semibold" }, "Revoked"), /* @__PURE__ */ import_react37.default.createElement("div", { className: "truncate" }, ((_d = getProjectApiKeyResponse == null ? void 0 : getProjectApiKeyResponse.projectApiKey) == null ? void 0 : _d.revoked) ? "Yes" : "No"))), /* @__PURE__ */ import_react37.default.createElement("div", { className: "border-r border-gray-200 pr-8 pl-8 flex flex-col gap-4" }, /* @__PURE__ */ import_react37.default.createElement("div", null, /* @__PURE__ */ import_react37.default.createElement("div", { className: "font-semibold" }, "Created"), /* @__PURE__ */ import_react37.default.createElement("div", { className: "truncate" }, ((_e = getProjectApiKeyResponse == null ? void 0 : getProjectApiKeyResponse.projectApiKey) == null ? void 0 : _e.createTime) && DateTime.fromJSDate(
         timestampDate(
           (_f = getProjectApiKeyResponse == null ? void 0 : getProjectApiKeyResponse.projectApiKey) == null ? void 0 : _f.createTime
         )
-      ).toRelative()))), /* @__PURE__ */ import_react36.default.createElement("div", { className: "border-gray-200 pl-8 flex flex-col gap-4" }, /* @__PURE__ */ import_react36.default.createElement("div", null, /* @__PURE__ */ import_react36.default.createElement("div", { className: "font-semibold" }, "Updated"), /* @__PURE__ */ import_react36.default.createElement("div", { className: "truncate" }, ((_g = getProjectApiKeyResponse == null ? void 0 : getProjectApiKeyResponse.projectApiKey) == null ? void 0 : _g.updateTime) && DateTime.fromJSDate(
+      ).toRelative()))), /* @__PURE__ */ import_react37.default.createElement("div", { className: "border-gray-200 pl-8 flex flex-col gap-4" }, /* @__PURE__ */ import_react37.default.createElement("div", null, /* @__PURE__ */ import_react37.default.createElement("div", { className: "font-semibold" }, "Updated"), /* @__PURE__ */ import_react37.default.createElement("div", { className: "truncate" }, ((_g = getProjectApiKeyResponse == null ? void 0 : getProjectApiKeyResponse.projectApiKey) == null ? void 0 : _g.updateTime) && DateTime.fromJSDate(
         timestampDate(
           (_h = getProjectApiKeyResponse == null ? void 0 : getProjectApiKeyResponse.projectApiKey) == null ? void 0 : _h.updateTime
         )
-      ).toRelative())))))), /* @__PURE__ */ import_react36.default.createElement(DangerZoneCard4, null))
+      ).toRelative())))))), /* @__PURE__ */ import_react37.default.createElement(DangerZoneCard4, null))
     );
   }
   var schema8 = z.object({
@@ -57274,14 +57274,14 @@
         displayName: ""
       }
     });
-    (0, import_react36.useEffect)(() => {
+    (0, import_react37.useEffect)(() => {
       if (getProjectAPIKeyResponse == null ? void 0 : getProjectAPIKeyResponse.projectApiKey) {
         form.reset({
           displayName: getProjectAPIKeyResponse.projectApiKey.displayName
         });
       }
     }, [getProjectAPIKeyResponse]);
-    const [open, setOpen] = (0, import_react36.useState)(false);
+    const [open, setOpen] = (0, import_react37.useState)(false);
     async function handleSubmit(values) {
       await updateProjectAPIKeyMutation.mutateAsync({
         id: projectApiKeyId,
@@ -57292,14 +57292,14 @@
       await refetch();
       setOpen(false);
     }
-    return /* @__PURE__ */ import_react36.default.createElement(AlertDialog2, { open, onOpenChange: setOpen }, /* @__PURE__ */ import_react36.default.createElement(AlertDialogTrigger2, null, /* @__PURE__ */ import_react36.default.createElement(Button, { variant: "outline" }, "Edit")), /* @__PURE__ */ import_react36.default.createElement(AlertDialogContent2, null, /* @__PURE__ */ import_react36.default.createElement(AlertDialogHeader, null, /* @__PURE__ */ import_react36.default.createElement(AlertDialogTitle2, null, "Edit Project API Key"), /* @__PURE__ */ import_react36.default.createElement(AlertDialogDescription2, null, "Edit Project API Key settings.")), /* @__PURE__ */ import_react36.default.createElement(Form2, __spreadValues({}, form), /* @__PURE__ */ import_react36.default.createElement("form", { onSubmit: form.handleSubmit(handleSubmit) }, /* @__PURE__ */ import_react36.default.createElement(
+    return /* @__PURE__ */ import_react37.default.createElement(AlertDialog2, { open, onOpenChange: setOpen }, /* @__PURE__ */ import_react37.default.createElement(AlertDialogTrigger2, null, /* @__PURE__ */ import_react37.default.createElement(Button, { variant: "outline" }, "Edit")), /* @__PURE__ */ import_react37.default.createElement(AlertDialogContent2, null, /* @__PURE__ */ import_react37.default.createElement(AlertDialogHeader, null, /* @__PURE__ */ import_react37.default.createElement(AlertDialogTitle2, null, "Edit Project API Key"), /* @__PURE__ */ import_react37.default.createElement(AlertDialogDescription2, null, "Edit Project API Key settings.")), /* @__PURE__ */ import_react37.default.createElement(Form2, __spreadValues({}, form), /* @__PURE__ */ import_react37.default.createElement("form", { onSubmit: form.handleSubmit(handleSubmit) }, /* @__PURE__ */ import_react37.default.createElement(
       FormField,
       {
         control: form.control,
         name: "displayName",
-        render: ({ field }) => /* @__PURE__ */ import_react36.default.createElement(FormItem, null, /* @__PURE__ */ import_react36.default.createElement(FormLabel, null, "Display Name"), /* @__PURE__ */ import_react36.default.createElement(FormControl, null, /* @__PURE__ */ import_react36.default.createElement(Input, __spreadValues({ className: "max-w-96" }, field))), /* @__PURE__ */ import_react36.default.createElement(FormDescription, null, "A human-friendly name for the Project API Key."), /* @__PURE__ */ import_react36.default.createElement(FormMessage, null))
+        render: ({ field }) => /* @__PURE__ */ import_react37.default.createElement(FormItem, null, /* @__PURE__ */ import_react37.default.createElement(FormLabel, null, "Display Name"), /* @__PURE__ */ import_react37.default.createElement(FormControl, null, /* @__PURE__ */ import_react37.default.createElement(Input, __spreadValues({ className: "max-w-96" }, field))), /* @__PURE__ */ import_react37.default.createElement(FormDescription, null, "A human-friendly name for the Project API Key."), /* @__PURE__ */ import_react37.default.createElement(FormMessage, null))
       }
-    ), /* @__PURE__ */ import_react36.default.createElement(AlertDialogFooter, { className: "mt-8" }, /* @__PURE__ */ import_react36.default.createElement(AlertDialogCancel2, null, "Cancel"), /* @__PURE__ */ import_react36.default.createElement(Button, { type: "submit" }, "Save"))))));
+    ), /* @__PURE__ */ import_react37.default.createElement(AlertDialogFooter, { className: "mt-8" }, /* @__PURE__ */ import_react37.default.createElement(AlertDialogCancel2, null, "Cancel"), /* @__PURE__ */ import_react37.default.createElement(Button, { type: "submit" }, "Save"))))));
   }
   function DangerZoneCard4() {
     var _a10, _b2, _c, _d, _e;
@@ -57310,7 +57310,7 @@
         id: projectApiKeyId
       }
     );
-    const [confirmRevokeOpen, setConfirmRevokeOpen] = (0, import_react36.useState)(false);
+    const [confirmRevokeOpen, setConfirmRevokeOpen] = (0, import_react37.useState)(false);
     function handleRevoke() {
       setConfirmRevokeOpen(true);
     }
@@ -57323,7 +57323,7 @@
       ce.success("Project API Key revoked");
       setConfirmRevokeOpen(false);
     }
-    const [confirmDeleteOpen, setConfirmDeleteOpen] = (0, import_react36.useState)(false);
+    const [confirmDeleteOpen, setConfirmDeleteOpen] = (0, import_react37.useState)(false);
     function handleDelete() {
       setConfirmDeleteOpen(true);
     }
@@ -57336,7 +57336,7 @@
       ce.success("Project API Key deleted");
       navigate("/project-api-keys");
     };
-    return /* @__PURE__ */ import_react36.default.createElement(import_react36.default.Fragment, null, /* @__PURE__ */ import_react36.default.createElement(AlertDialog2, { open: confirmRevokeOpen, onOpenChange: setConfirmRevokeOpen }, /* @__PURE__ */ import_react36.default.createElement(AlertDialogContent2, null, /* @__PURE__ */ import_react36.default.createElement(AlertDialogHeader, null, /* @__PURE__ */ import_react36.default.createElement(AlertDialogTitle2, null, "Revoke ", (_a10 = getProjectApiKeyResponse == null ? void 0 : getProjectApiKeyResponse.projectApiKey) == null ? void 0 : _a10.displayName, "?"), /* @__PURE__ */ import_react36.default.createElement(AlertDialogDescription2, null, "Revoking a Project API Key cannot be undone. Backend API calls from ", (_b2 = getProjectApiKeyResponse == null ? void 0 : getProjectApiKeyResponse.projectApiKey) == null ? void 0 : _b2.displayName, " will stop working. This cannot be undone.")), /* @__PURE__ */ import_react36.default.createElement(AlertDialogFooter, null, /* @__PURE__ */ import_react36.default.createElement(AlertDialogCancel2, null, "Cancel"), /* @__PURE__ */ import_react36.default.createElement(Button, { variant: "destructive", onClick: handleConfirmRevoke }, "Revoke Project API Key")))), /* @__PURE__ */ import_react36.default.createElement(AlertDialog2, { open: confirmDeleteOpen, onOpenChange: setConfirmDeleteOpen }, /* @__PURE__ */ import_react36.default.createElement(AlertDialogContent2, null, /* @__PURE__ */ import_react36.default.createElement(AlertDialogHeader, null, /* @__PURE__ */ import_react36.default.createElement(AlertDialogTitle2, null, "Delete ", (_c = getProjectApiKeyResponse == null ? void 0 : getProjectApiKeyResponse.projectApiKey) == null ? void 0 : _c.displayName, "?"), /* @__PURE__ */ import_react36.default.createElement(AlertDialogDescription2, null, "Deleting a Project API Key cannot be undone.")), /* @__PURE__ */ import_react36.default.createElement(AlertDialogFooter, null, /* @__PURE__ */ import_react36.default.createElement(AlertDialogCancel2, null, "Cancel"), /* @__PURE__ */ import_react36.default.createElement(Button, { variant: "destructive", onClick: handleConfirmDelete }, "Delete Project API Key")))), /* @__PURE__ */ import_react36.default.createElement(Card, { className: "border-destructive" }, /* @__PURE__ */ import_react36.default.createElement(CardHeader, null, /* @__PURE__ */ import_react36.default.createElement(CardTitle, null, "Danger Zone")), /* @__PURE__ */ import_react36.default.createElement(CardContent, { className: "space-y-8" }, /* @__PURE__ */ import_react36.default.createElement("div", { className: "flex justify-between items-center" }, /* @__PURE__ */ import_react36.default.createElement("div", null, /* @__PURE__ */ import_react36.default.createElement("div", { className: "text-sm font-semibold" }, "Revoke Project API Key"), /* @__PURE__ */ import_react36.default.createElement("p", { className: "text-sm" }, "Revoke this Project API Key. Backend API calls from this key will stop working. This cannot be undone.")), /* @__PURE__ */ import_react36.default.createElement(
+    return /* @__PURE__ */ import_react37.default.createElement(import_react37.default.Fragment, null, /* @__PURE__ */ import_react37.default.createElement(AlertDialog2, { open: confirmRevokeOpen, onOpenChange: setConfirmRevokeOpen }, /* @__PURE__ */ import_react37.default.createElement(AlertDialogContent2, null, /* @__PURE__ */ import_react37.default.createElement(AlertDialogHeader, null, /* @__PURE__ */ import_react37.default.createElement(AlertDialogTitle2, null, "Revoke ", (_a10 = getProjectApiKeyResponse == null ? void 0 : getProjectApiKeyResponse.projectApiKey) == null ? void 0 : _a10.displayName, "?"), /* @__PURE__ */ import_react37.default.createElement(AlertDialogDescription2, null, "Revoking a Project API Key cannot be undone. Backend API calls from ", (_b2 = getProjectApiKeyResponse == null ? void 0 : getProjectApiKeyResponse.projectApiKey) == null ? void 0 : _b2.displayName, " will stop working. This cannot be undone.")), /* @__PURE__ */ import_react37.default.createElement(AlertDialogFooter, null, /* @__PURE__ */ import_react37.default.createElement(AlertDialogCancel2, null, "Cancel"), /* @__PURE__ */ import_react37.default.createElement(Button, { variant: "destructive", onClick: handleConfirmRevoke }, "Revoke Project API Key")))), /* @__PURE__ */ import_react37.default.createElement(AlertDialog2, { open: confirmDeleteOpen, onOpenChange: setConfirmDeleteOpen }, /* @__PURE__ */ import_react37.default.createElement(AlertDialogContent2, null, /* @__PURE__ */ import_react37.default.createElement(AlertDialogHeader, null, /* @__PURE__ */ import_react37.default.createElement(AlertDialogTitle2, null, "Delete ", (_c = getProjectApiKeyResponse == null ? void 0 : getProjectApiKeyResponse.projectApiKey) == null ? void 0 : _c.displayName, "?"), /* @__PURE__ */ import_react37.default.createElement(AlertDialogDescription2, null, "Deleting a Project API Key cannot be undone.")), /* @__PURE__ */ import_react37.default.createElement(AlertDialogFooter, null, /* @__PURE__ */ import_react37.default.createElement(AlertDialogCancel2, null, "Cancel"), /* @__PURE__ */ import_react37.default.createElement(Button, { variant: "destructive", onClick: handleConfirmDelete }, "Delete Project API Key")))), /* @__PURE__ */ import_react37.default.createElement(Card, { className: "border-destructive" }, /* @__PURE__ */ import_react37.default.createElement(CardHeader, null, /* @__PURE__ */ import_react37.default.createElement(CardTitle, null, "Danger Zone")), /* @__PURE__ */ import_react37.default.createElement(CardContent, { className: "space-y-8" }, /* @__PURE__ */ import_react37.default.createElement("div", { className: "flex justify-between items-center" }, /* @__PURE__ */ import_react37.default.createElement("div", null, /* @__PURE__ */ import_react37.default.createElement("div", { className: "text-sm font-semibold" }, "Revoke Project API Key"), /* @__PURE__ */ import_react37.default.createElement("p", { className: "text-sm" }, "Revoke this Project API Key. Backend API calls from this key will stop working. This cannot be undone.")), /* @__PURE__ */ import_react37.default.createElement(
       Button,
       {
         variant: "destructive",
@@ -57344,7 +57344,7 @@
         onClick: handleRevoke
       },
       "Revoke Project API Key"
-    )), /* @__PURE__ */ import_react36.default.createElement("div", { className: "flex justify-between items-center" }, /* @__PURE__ */ import_react36.default.createElement("div", null, /* @__PURE__ */ import_react36.default.createElement("div", { className: "text-sm font-semibold" }, "Delete Project API Key"), /* @__PURE__ */ import_react36.default.createElement("p", { className: "text-sm" }, "Delete this Project API Key. You must revoke this Project API Key first.")), /* @__PURE__ */ import_react36.default.createElement(
+    )), /* @__PURE__ */ import_react37.default.createElement("div", { className: "flex justify-between items-center" }, /* @__PURE__ */ import_react37.default.createElement("div", null, /* @__PURE__ */ import_react37.default.createElement("div", { className: "text-sm font-semibold" }, "Delete Project API Key"), /* @__PURE__ */ import_react37.default.createElement("p", { className: "text-sm" }, "Delete this Project API Key. You must revoke this Project API Key first.")), /* @__PURE__ */ import_react37.default.createElement(
       Button,
       {
         variant: "destructive",
@@ -57356,24 +57356,24 @@
   }
 
   // src/pages/home/HomePage.tsx
-  var import_react37 = __toESM(require_react());
+  var import_react38 = __toESM(require_react());
   function HomePage() {
-    return /* @__PURE__ */ import_react37.default.createElement("h1", null, "home page");
+    return /* @__PURE__ */ import_react38.default.createElement("h1", null, "home page");
   }
 
   // src/pages/project/ProjectDetailsTab.tsx
-  var import_react38 = __toESM(require_react());
+  var import_react39 = __toESM(require_react());
   function ProjectDetailsTab() {
     var _a10, _b2, _c, _d, _e, _f, _g, _h, _i;
     const { data: getProjectResponse } = useQuery2(getProject, {});
-    return /* @__PURE__ */ import_react38.default.createElement("div", { className: "space-y-8" }, /* @__PURE__ */ import_react38.default.createElement(Card, null, /* @__PURE__ */ import_react38.default.createElement(CardHeader, null, /* @__PURE__ */ import_react38.default.createElement(CardTitle, null, "Authentication Settings"), /* @__PURE__ */ import_react38.default.createElement(CardDescription, null, "Configure the login methods your customers can use to log in to your application.")), /* @__PURE__ */ import_react38.default.createElement(CardContent, null, /* @__PURE__ */ import_react38.default.createElement(DetailsGrid, null, /* @__PURE__ */ import_react38.default.createElement(DetailsGridColumn, null, /* @__PURE__ */ import_react38.default.createElement(DetailsGridEntry, null, /* @__PURE__ */ import_react38.default.createElement(DetailsGridKey, null, "Log in with Password"), /* @__PURE__ */ import_react38.default.createElement(DetailsGridValue, null, ((_a10 = getProjectResponse == null ? void 0 : getProjectResponse.project) == null ? void 0 : _a10.logInWithPasswordEnabled) ? "Enabled" : "Disabled"))), /* @__PURE__ */ import_react38.default.createElement(DetailsGridColumn, null, /* @__PURE__ */ import_react38.default.createElement(DetailsGridEntry, null, /* @__PURE__ */ import_react38.default.createElement(DetailsGridKey, null, "Log in with Google"), /* @__PURE__ */ import_react38.default.createElement(DetailsGridValue, null, ((_b2 = getProjectResponse == null ? void 0 : getProjectResponse.project) == null ? void 0 : _b2.logInWithGoogleEnabled) ? "Enabled" : "Disabled"))), /* @__PURE__ */ import_react38.default.createElement(DetailsGridColumn, null, /* @__PURE__ */ import_react38.default.createElement(DetailsGridEntry, null, /* @__PURE__ */ import_react38.default.createElement(DetailsGridKey, null, "Log in with Microsoft"), /* @__PURE__ */ import_react38.default.createElement(DetailsGridValue, null, ((_c = getProjectResponse == null ? void 0 : getProjectResponse.project) == null ? void 0 : _c.logInWithMicrosoftEnabled) ? "Enabled" : "Disabled")))))), /* @__PURE__ */ import_react38.default.createElement(Card, null, /* @__PURE__ */ import_react38.default.createElement(CardHeader, null, /* @__PURE__ */ import_react38.default.createElement(CardTitle, null, "Google Settings"), /* @__PURE__ */ import_react38.default.createElement(CardDescription, null, 'Settings for "Log in with Google" in your project.')), /* @__PURE__ */ import_react38.default.createElement(CardContent, null, /* @__PURE__ */ import_react38.default.createElement(DetailsGrid, null, /* @__PURE__ */ import_react38.default.createElement(DetailsGridColumn, null, /* @__PURE__ */ import_react38.default.createElement(DetailsGridEntry, null, /* @__PURE__ */ import_react38.default.createElement(DetailsGridKey, null, "Status"), /* @__PURE__ */ import_react38.default.createElement(DetailsGridValue, null, ((_d = getProjectResponse == null ? void 0 : getProjectResponse.project) == null ? void 0 : _d.logInWithGoogleEnabled) ? "Enabled" : "Disabled"))), /* @__PURE__ */ import_react38.default.createElement(DetailsGridColumn, null, /* @__PURE__ */ import_react38.default.createElement(DetailsGridEntry, null, /* @__PURE__ */ import_react38.default.createElement(DetailsGridKey, null, "Google OAuth Client ID"), /* @__PURE__ */ import_react38.default.createElement(DetailsGridValue, null, ((_e = getProjectResponse == null ? void 0 : getProjectResponse.project) == null ? void 0 : _e.googleOauthClientId) || "-"))), /* @__PURE__ */ import_react38.default.createElement(DetailsGridColumn, null, /* @__PURE__ */ import_react38.default.createElement(DetailsGridEntry, null, /* @__PURE__ */ import_react38.default.createElement(DetailsGridKey, null, "Google OAuth Client Secret"), /* @__PURE__ */ import_react38.default.createElement(DetailsGridValue, null, ((_f = getProjectResponse == null ? void 0 : getProjectResponse.project) == null ? void 0 : _f.googleOauthClientId) ? /* @__PURE__ */ import_react38.default.createElement("div", { className: "text-muted-foreground" }, "Encrypted") : "-")))))), /* @__PURE__ */ import_react38.default.createElement(Card, null, /* @__PURE__ */ import_react38.default.createElement(CardHeader, null, /* @__PURE__ */ import_react38.default.createElement(CardTitle, null, "Microsoft Settings"), /* @__PURE__ */ import_react38.default.createElement(CardDescription, null, 'Settings for "Log in with Microsoft" in your project.')), /* @__PURE__ */ import_react38.default.createElement(CardContent, null, /* @__PURE__ */ import_react38.default.createElement(DetailsGrid, null, /* @__PURE__ */ import_react38.default.createElement(DetailsGridColumn, null, /* @__PURE__ */ import_react38.default.createElement(DetailsGridEntry, null, /* @__PURE__ */ import_react38.default.createElement(DetailsGridKey, null, "Status"), /* @__PURE__ */ import_react38.default.createElement(DetailsGridValue, null, ((_g = getProjectResponse == null ? void 0 : getProjectResponse.project) == null ? void 0 : _g.logInWithMicrosoftEnabled) ? "Enabled" : "Disabled"))), /* @__PURE__ */ import_react38.default.createElement(DetailsGridColumn, null, /* @__PURE__ */ import_react38.default.createElement(DetailsGridEntry, null, /* @__PURE__ */ import_react38.default.createElement(DetailsGridKey, null, "Microsoft OAuth Client ID"), /* @__PURE__ */ import_react38.default.createElement(DetailsGridValue, null, ((_h = getProjectResponse == null ? void 0 : getProjectResponse.project) == null ? void 0 : _h.microsoftOauthClientId) || "-"))), /* @__PURE__ */ import_react38.default.createElement(DetailsGridColumn, null, /* @__PURE__ */ import_react38.default.createElement(DetailsGridEntry, null, /* @__PURE__ */ import_react38.default.createElement(DetailsGridKey, null, "Microsoft OAuth Client Secret"), /* @__PURE__ */ import_react38.default.createElement(DetailsGridValue, null, ((_i = getProjectResponse == null ? void 0 : getProjectResponse.project) == null ? void 0 : _i.microsoftOauthClientId) ? /* @__PURE__ */ import_react38.default.createElement("div", { className: "text-muted-foreground" }, "Encrypted") : "-")))))));
+    return /* @__PURE__ */ import_react39.default.createElement("div", { className: "space-y-8" }, /* @__PURE__ */ import_react39.default.createElement(Card, null, /* @__PURE__ */ import_react39.default.createElement(CardHeader, null, /* @__PURE__ */ import_react39.default.createElement(CardTitle, null, "Authentication Settings"), /* @__PURE__ */ import_react39.default.createElement(CardDescription, null, "Configure the login methods your customers can use to log in to your application.")), /* @__PURE__ */ import_react39.default.createElement(CardContent, null, /* @__PURE__ */ import_react39.default.createElement(DetailsGrid, null, /* @__PURE__ */ import_react39.default.createElement(DetailsGridColumn, null, /* @__PURE__ */ import_react39.default.createElement(DetailsGridEntry, null, /* @__PURE__ */ import_react39.default.createElement(DetailsGridKey, null, "Log in with Password"), /* @__PURE__ */ import_react39.default.createElement(DetailsGridValue, null, ((_a10 = getProjectResponse == null ? void 0 : getProjectResponse.project) == null ? void 0 : _a10.logInWithPasswordEnabled) ? "Enabled" : "Disabled"))), /* @__PURE__ */ import_react39.default.createElement(DetailsGridColumn, null, /* @__PURE__ */ import_react39.default.createElement(DetailsGridEntry, null, /* @__PURE__ */ import_react39.default.createElement(DetailsGridKey, null, "Log in with Google"), /* @__PURE__ */ import_react39.default.createElement(DetailsGridValue, null, ((_b2 = getProjectResponse == null ? void 0 : getProjectResponse.project) == null ? void 0 : _b2.logInWithGoogleEnabled) ? "Enabled" : "Disabled"))), /* @__PURE__ */ import_react39.default.createElement(DetailsGridColumn, null, /* @__PURE__ */ import_react39.default.createElement(DetailsGridEntry, null, /* @__PURE__ */ import_react39.default.createElement(DetailsGridKey, null, "Log in with Microsoft"), /* @__PURE__ */ import_react39.default.createElement(DetailsGridValue, null, ((_c = getProjectResponse == null ? void 0 : getProjectResponse.project) == null ? void 0 : _c.logInWithMicrosoftEnabled) ? "Enabled" : "Disabled")))))), /* @__PURE__ */ import_react39.default.createElement(Card, null, /* @__PURE__ */ import_react39.default.createElement(CardHeader, null, /* @__PURE__ */ import_react39.default.createElement(CardTitle, null, "Google Settings"), /* @__PURE__ */ import_react39.default.createElement(CardDescription, null, 'Settings for "Log in with Google" in your project.')), /* @__PURE__ */ import_react39.default.createElement(CardContent, null, /* @__PURE__ */ import_react39.default.createElement(DetailsGrid, null, /* @__PURE__ */ import_react39.default.createElement(DetailsGridColumn, null, /* @__PURE__ */ import_react39.default.createElement(DetailsGridEntry, null, /* @__PURE__ */ import_react39.default.createElement(DetailsGridKey, null, "Status"), /* @__PURE__ */ import_react39.default.createElement(DetailsGridValue, null, ((_d = getProjectResponse == null ? void 0 : getProjectResponse.project) == null ? void 0 : _d.logInWithGoogleEnabled) ? "Enabled" : "Disabled"))), /* @__PURE__ */ import_react39.default.createElement(DetailsGridColumn, null, /* @__PURE__ */ import_react39.default.createElement(DetailsGridEntry, null, /* @__PURE__ */ import_react39.default.createElement(DetailsGridKey, null, "Google OAuth Client ID"), /* @__PURE__ */ import_react39.default.createElement(DetailsGridValue, null, ((_e = getProjectResponse == null ? void 0 : getProjectResponse.project) == null ? void 0 : _e.googleOauthClientId) || "-"))), /* @__PURE__ */ import_react39.default.createElement(DetailsGridColumn, null, /* @__PURE__ */ import_react39.default.createElement(DetailsGridEntry, null, /* @__PURE__ */ import_react39.default.createElement(DetailsGridKey, null, "Google OAuth Client Secret"), /* @__PURE__ */ import_react39.default.createElement(DetailsGridValue, null, ((_f = getProjectResponse == null ? void 0 : getProjectResponse.project) == null ? void 0 : _f.googleOauthClientId) ? /* @__PURE__ */ import_react39.default.createElement("div", { className: "text-muted-foreground" }, "Encrypted") : "-")))))), /* @__PURE__ */ import_react39.default.createElement(Card, null, /* @__PURE__ */ import_react39.default.createElement(CardHeader, null, /* @__PURE__ */ import_react39.default.createElement(CardTitle, null, "Microsoft Settings"), /* @__PURE__ */ import_react39.default.createElement(CardDescription, null, 'Settings for "Log in with Microsoft" in your project.')), /* @__PURE__ */ import_react39.default.createElement(CardContent, null, /* @__PURE__ */ import_react39.default.createElement(DetailsGrid, null, /* @__PURE__ */ import_react39.default.createElement(DetailsGridColumn, null, /* @__PURE__ */ import_react39.default.createElement(DetailsGridEntry, null, /* @__PURE__ */ import_react39.default.createElement(DetailsGridKey, null, "Status"), /* @__PURE__ */ import_react39.default.createElement(DetailsGridValue, null, ((_g = getProjectResponse == null ? void 0 : getProjectResponse.project) == null ? void 0 : _g.logInWithMicrosoftEnabled) ? "Enabled" : "Disabled"))), /* @__PURE__ */ import_react39.default.createElement(DetailsGridColumn, null, /* @__PURE__ */ import_react39.default.createElement(DetailsGridEntry, null, /* @__PURE__ */ import_react39.default.createElement(DetailsGridKey, null, "Microsoft OAuth Client ID"), /* @__PURE__ */ import_react39.default.createElement(DetailsGridValue, null, ((_h = getProjectResponse == null ? void 0 : getProjectResponse.project) == null ? void 0 : _h.microsoftOauthClientId) || "-"))), /* @__PURE__ */ import_react39.default.createElement(DetailsGridColumn, null, /* @__PURE__ */ import_react39.default.createElement(DetailsGridEntry, null, /* @__PURE__ */ import_react39.default.createElement(DetailsGridKey, null, "Microsoft OAuth Client Secret"), /* @__PURE__ */ import_react39.default.createElement(DetailsGridValue, null, ((_i = getProjectResponse == null ? void 0 : getProjectResponse.project) == null ? void 0 : _i.microsoftOauthClientId) ? /* @__PURE__ */ import_react39.default.createElement("div", { className: "text-muted-foreground" }, "Encrypted") : "-")))))));
   }
 
   // src/pages/login/LoginPage.tsx
-  var import_react48 = __toESM(require_react());
+  var import_react49 = __toESM(require_react());
 
   // src/views/login/ChooseProjectView.tsx
-  var import_react39 = __toESM(require_react());
+  var import_react40 = __toESM(require_react());
 
   // src/gen/openauth/intermediate/v1/intermediate_pb.ts
   var file_openauth_intermediate_v1_intermediate = /* @__PURE__ */ fileDesc("CitvcGVuYXV0aC9pbnRlcm1lZGlhdGUvdjEvaW50ZXJtZWRpYXRlLnByb3RvEhhvcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEi1QIKE0ludGVybWVkaWF0ZVNlc3Npb24SCgoCaWQYASABKAkSEgoKcHJvamVjdF9pZBgCIAEoCRINCgVlbWFpbBgDIAEoCRIWCg5lbWFpbF92ZXJpZmllZBgEIAEoCBIWCg5nb29nbGVfdXNlcl9pZBgFIAEoCRIcChRnb29nbGVfaG9zdGVkX2RvbWFpbhgGIAEoCRIZChFtaWNyb3NvZnRfdXNlcl9pZBgHIAEoCRIbChNtaWNyb3NvZnRfdGVuYW50X2lkGAggASgJEhcKD29yZ2FuaXphdGlvbl9pZBgJIAEoCRIZChFwYXNzd29yZF92ZXJpZmllZBgKIAEoCBIkChxuZXdfdXNlcl9wYXNzd29yZF9yZWdpc3RlcmVkGAsgASgIEi8KJ2VtYWlsX3ZlcmlmaWNhdGlvbl9jaGFsbGVuZ2VfcmVnaXN0ZXJlZBgMIAEoCCKaAwoIU2V0dGluZ3MSCgoCaWQYASABKAkSEgoKcHJvamVjdF9pZBgCIAEoCRIvCgtjcmVhdGVfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLwoLdXBkYXRlX3RpbWUYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhAKCGxvZ29fdXJsGAUgASgJEhMKC2Zhdmljb25fdXJsGAYgASgJEhUKDXByaW1hcnlfY29sb3IYByABKAkSIAoYZGV0ZWN0X2RhcmtfbW9kZV9lbmFibGVkGAggASgIEhoKEmRhcmtfbW9kZV9sb2dvX3VybBgJIAEoCRIfChdkYXJrX21vZGVfcHJpbWFyeV9jb2xvchgKIAEoCRIiChpsb2dfaW5fd2l0aF9nb29nbGVfZW5hYmxlZBgLIAEoCBIlCh1sb2dfaW5fd2l0aF9taWNyb3NvZnRfZW5hYmxlZBgMIAEoCBIkChxsb2dfaW5fd2l0aF9wYXNzd29yZF9lbmFibGVkGA0gASgIIiIKIENyZWF0ZUludGVybWVkaWF0ZVNlc3Npb25SZXF1ZXN0Ik4KIUNyZWF0ZUludGVybWVkaWF0ZVNlc3Npb25SZXNwb25zZRIpCiFpbnRlcm1lZGlhdGVfc2Vzc2lvbl9zZWNyZXRfdG9rZW4YASABKAkiDwoNV2hvYW1pUmVxdWVzdCJdCg5XaG9hbWlSZXNwb25zZRJLChRpbnRlcm1lZGlhdGVfc2Vzc2lvbhgBIAEoCzItLm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5JbnRlcm1lZGlhdGVTZXNzaW9uIjEKGUNyZWF0ZU9yZ2FuaXphdGlvblJlcXVlc3QSFAoMZGlzcGxheV9uYW1lGAEgASgJIhwKGkNyZWF0ZU9yZ2FuaXphdGlvblJlc3BvbnNlIjEKFlNldE9yZ2FuaXphdGlvblJlcXVlc3QSFwoPb3JnYW5pemF0aW9uX2lkGAEgASgJIhkKF1NldE9yZ2FuaXphdGlvblJlc3BvbnNlIkcKLEV4Y2hhbmdlSW50ZXJtZWRpYXRlU2Vzc2lvbkZvclNlc3Npb25SZXF1ZXN0EhcKD29yZ2FuaXphdGlvbl9pZBgBIAEoCSJcCi1FeGNoYW5nZUludGVybWVkaWF0ZVNlc3Npb25Gb3JTZXNzaW9uUmVzcG9uc2USFQoNcmVmcmVzaF90b2tlbhgBIAEoCRIUCgxhY2Nlc3NfdG9rZW4YAiABKAkiOAogR2V0R29vZ2xlT0F1dGhSZWRpcmVjdFVSTFJlcXVlc3QSFAoMcmVkaXJlY3RfdXJsGAEgASgJIjAKIUdldEdvb2dsZU9BdXRoUmVkaXJlY3RVUkxSZXNwb25zZRILCgN1cmwYASABKAkiUQocUmVkZWVtR29vZ2xlT0F1dGhDb2RlUmVxdWVzdBIMCgRjb2RlGAEgASgJEg0KBXN0YXRlGAIgASgJEhQKDHJlZGlyZWN0X3VybBgDIAEoCSIfCh1SZWRlZW1Hb29nbGVPQXV0aENvZGVSZXNwb25zZSI7CiNHZXRNaWNyb3NvZnRPQXV0aFJlZGlyZWN0VVJMUmVxdWVzdBIUCgxyZWRpcmVjdF91cmwYASABKAkiMwokR2V0TWljcm9zb2Z0T0F1dGhSZWRpcmVjdFVSTFJlc3BvbnNlEgsKA3VybBgBIAEoCSJUCh9SZWRlZW1NaWNyb3NvZnRPQXV0aENvZGVSZXF1ZXN0EgwKBGNvZGUYASABKAkSDQoFc3RhdGUYAiABKAkSFAoMcmVkaXJlY3RfdXJsGAMgASgJIiIKIFJlZGVlbU1pY3Jvc29mdE9BdXRoQ29kZVJlc3BvbnNlIrADCgxPcmdhbml6YXRpb24SCgoCaWQYASABKAkSEgoKcHJvamVjdF9pZBgCIAEoCRIUCgxkaXNwbGF5X25hbWUYAyABKAkSIgoabG9nX2luX3dpdGhfZ29vZ2xlX2VuYWJsZWQYBCABKAgSJQodbG9nX2luX3dpdGhfbWljcm9zb2Z0X2VuYWJsZWQYBSABKAgSJAocbG9nX2luX3dpdGhfcGFzc3dvcmRfZW5hYmxlZBgGIAEoCBItCiVsb2dfaW5fd2l0aF9hdXRoZW50aWNhdG9yX2FwcF9lbmFibGVkGAwgASgIEiMKG2xvZ19pbl93aXRoX3Bhc3NrZXlfZW5hYmxlZBgNIAEoCBITCgtyZXF1aXJlX21mYRgOIAEoCBIiChpwcmltYXJ5X3NhbWxfY29ubmVjdGlvbl9pZBgHIAEoCRITCgt1c2VyX2V4aXN0cxgIIAEoCBIZChF1c2VyX2hhc19wYXNzd29yZBgJIAEoCBIiChp1c2VyX2hhc19hdXRoZW50aWNhdG9yX2FwcBgKIAEoCBIYChB1c2VyX2hhc19wYXNza2V5GAsgASgIIjcKJklzc3VlRW1haWxWZXJpZmljYXRpb25DaGFsbGVuZ2VSZXF1ZXN0Eg0KBWVtYWlsGAEgASgJIikKJ0lzc3VlRW1haWxWZXJpZmljYXRpb25DaGFsbGVuZ2VSZXNwb25zZSIaChhMaXN0T3JnYW5pemF0aW9uc1JlcXVlc3QiWgoZTGlzdE9yZ2FuaXphdGlvbnNSZXNwb25zZRI9Cg1vcmdhbml6YXRpb25zGAEgAygLMiYub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLk9yZ2FuaXphdGlvbiItChxMaXN0U0FNTE9yZ2FuaXphdGlvbnNSZXF1ZXN0Eg0KBWVtYWlsGAEgASgJIl4KHUxpc3RTQU1MT3JnYW5pemF0aW9uc1Jlc3BvbnNlEj0KDW9yZ2FuaXphdGlvbnMYASADKAsyJi5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuT3JnYW5pemF0aW9uIisKG1ZlcmlmeUVtYWlsQ2hhbGxlbmdlUmVxdWVzdBIMCgRjb2RlGAIgASgJIh4KHFZlcmlmeUVtYWlsQ2hhbGxlbmdlUmVzcG9uc2UiKwoXUmVnaXN0ZXJQYXNzd29yZFJlcXVlc3QSEAoIcGFzc3dvcmQYASABKAkiGgoYUmVnaXN0ZXJQYXNzd29yZFJlc3BvbnNlIkIKFVZlcmlmeVBhc3N3b3JkUmVxdWVzdBIXCg9vcmdhbml6YXRpb25faWQYASABKAkSEAoIcGFzc3dvcmQYAiABKAkiGAoWVmVyaWZ5UGFzc3dvcmRSZXNwb25zZSIUChJHZXRTZXR0aW5nc1JlcXVlc3QiSwoTR2V0U2V0dGluZ3NSZXNwb25zZRI0CghzZXR0aW5ncxgBIAEoCzIiLm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5TZXR0aW5ncyJOCiNSZWRlZW1Vc2VySW1wZXJzb25hdGlvblRva2VuUmVxdWVzdBInCh9zZWNyZXRfdXNlcl9pbXBlcnNvbmF0aW9uX3Rva2VuGAEgASgJIlMKJFJlZGVlbVVzZXJJbXBlcnNvbmF0aW9uVG9rZW5SZXNwb25zZRIVCg1yZWZyZXNoX3Rva2VuGAEgASgJEhQKDGFjY2Vzc190b2tlbhgCIAEoCSIjCiFHZXRBdXRoZW50aWNhdG9yQXBwT3B0aW9uc1JlcXVlc3QiNAoiR2V0QXV0aGVudGljYXRvckFwcE9wdGlvbnNSZXNwb25zZRIOCgZzZWNyZXQYASABKAwiNAofUmVnaXN0ZXJBdXRoZW50aWNhdG9yQXBwUmVxdWVzdBIRCgl0b3RwX2NvZGUYASABKAkiOgogUmVnaXN0ZXJBdXRoZW50aWNhdG9yQXBwUmVzcG9uc2USFgoOcmVjb3ZlcnlfY29kZXMYASADKAkiSQodVmVyaWZ5QXV0aGVudGljYXRvckFwcFJlcXVlc3QSEQoJdG90cF9jb2RlGAEgASgJEhUKDXJlY292ZXJ5X2NvZGUYAiABKAkiIAoeVmVyaWZ5QXV0aGVudGljYXRvckFwcFJlc3BvbnNlIhoKGEdldFBhc3NrZXlPcHRpb25zUmVxdWVzdCJnChlHZXRQYXNza2V5T3B0aW9uc1Jlc3BvbnNlEg0KBXJwX2lkGAEgASgJEg8KB3JwX25hbWUYAiABKAkSDwoHdXNlcl9pZBgDIAEoCRIZChF1c2VyX2Rpc3BsYXlfbmFtZRgEIAEoCSI0ChZSZWdpc3RlclBhc3NrZXlSZXF1ZXN0EhoKEmF0dGVzdGF0aW9uX29iamVjdBgBIAEoCSIZChdSZWdpc3RlclBhc3NrZXlSZXNwb25zZSIeChxJc3N1ZVBhc3NrZXlDaGFsbGVuZ2VSZXF1ZXN0IjIKHUlzc3VlUGFzc2tleUNoYWxsZW5nZVJlc3BvbnNlEhEKCWNoYWxsZW5nZRgBIAEoDCJ/Ch1WZXJpZnlQYXNza2V5Q2hhbGxlbmdlUmVxdWVzdBIVCg1jcmVkZW50aWFsX2lkGAEgASgMEhgKEGNsaWVudF9kYXRhX2pzb24YAiABKAkSGgoSYXV0aGVudGljYXRvcl9kYXRhGAMgASgJEhEKCXNpZ25hdHVyZRgEIAEoCSIgCh5WZXJpZnlQYXNza2V5Q2hhbGxlbmdlUmVzcG9uc2Uy+x4KE0ludGVybWVkaWF0ZVNlcnZpY2USuAEKFUxpc3RTQU1MT3JnYW5pemF0aW9ucxI2Lm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5MaXN0U0FNTE9yZ2FuaXphdGlvbnNSZXF1ZXN0Gjcub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLkxpc3RTQU1MT3JnYW5pemF0aW9uc1Jlc3BvbnNlIi6C0+STAig6ASoiIy9pbnRlcm1lZGlhdGUvdjEvc2FtbC1vcmdhbml6YXRpb25zEmoKC0dldFNldHRpbmdzEiwub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLkdldFNldHRpbmdzUmVxdWVzdBotLm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5HZXRTZXR0aW5nc1Jlc3BvbnNlEtoBChxSZWRlZW1Vc2VySW1wZXJzb25hdGlvblRva2VuEj0ub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLlJlZGVlbVVzZXJJbXBlcnNvbmF0aW9uVG9rZW5SZXF1ZXN0Gj4ub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLlJlZGVlbVVzZXJJbXBlcnNvbmF0aW9uVG9rZW5SZXNwb25zZSI7gtPkkwI1OgEqIjAvaW50ZXJtZWRpYXRlL3YxL3JlZGVlbS11c2VyLWltcGVyc29uYXRpb24tdG9rZW4SxgEKGUNyZWF0ZUludGVybWVkaWF0ZVNlc3Npb24SOi5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuQ3JlYXRlSW50ZXJtZWRpYXRlU2Vzc2lvblJlcXVlc3QaOy5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuQ3JlYXRlSW50ZXJtZWRpYXRlU2Vzc2lvblJlc3BvbnNlIjCC0+STAio6ASoiJS9pbnRlcm1lZGlhdGUvdjEvaW50ZXJtZWRpYXRlLXNlc3Npb24SfAoGV2hvYW1pEicub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLldob2FtaVJlcXVlc3QaKC5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuV2hvYW1pUmVzcG9uc2UiH4LT5JMCGRIXL2ludGVybWVkaWF0ZS92MS93aG9hbWkSqgEKEkNyZWF0ZU9yZ2FuaXphdGlvbhIzLm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5DcmVhdGVPcmdhbml6YXRpb25SZXF1ZXN0GjQub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLkNyZWF0ZU9yZ2FuaXphdGlvblJlc3BvbnNlIimC0+STAiM6ASoiHi9pbnRlcm1lZGlhdGUvdjEvb3JnYW5pemF0aW9ucxKkAQoRTGlzdE9yZ2FuaXphdGlvbnMSMi5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuTGlzdE9yZ2FuaXphdGlvbnNSZXF1ZXN0GjMub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLkxpc3RPcmdhbml6YXRpb25zUmVzcG9uc2UiJoLT5JMCIBIeL2ludGVybWVkaWF0ZS92MS9vcmdhbml6YXRpb25zEqEBCg9TZXRPcmdhbml6YXRpb24SMC5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuU2V0T3JnYW5pemF0aW9uUmVxdWVzdBoxLm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5TZXRPcmdhbml6YXRpb25SZXNwb25zZSIpgtPkkwIjIiEvaW50ZXJtZWRpYXRlL3YxL3NldC1vcmdhbml6YXRpb24S/wEKJUV4Y2hhbmdlSW50ZXJtZWRpYXRlU2Vzc2lvbkZvclNlc3Npb24SRi5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuRXhjaGFuZ2VJbnRlcm1lZGlhdGVTZXNzaW9uRm9yU2Vzc2lvblJlcXVlc3QaRy5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuRXhjaGFuZ2VJbnRlcm1lZGlhdGVTZXNzaW9uRm9yU2Vzc2lvblJlc3BvbnNlIkWC0+STAj86ASoiOi9pbnRlcm1lZGlhdGUvdjEvZXhjaGFuZ2UtaW50ZXJtZWRpYXRlLXNlc3Npb24tZm9yLXNlc3Npb24SywEKGUdldEdvb2dsZU9BdXRoUmVkaXJlY3RVUkwSOi5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuR2V0R29vZ2xlT0F1dGhSZWRpcmVjdFVSTFJlcXVlc3QaOy5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuR2V0R29vZ2xlT0F1dGhSZWRpcmVjdFVSTFJlc3BvbnNlIjWC0+STAi86ASoiKi9pbnRlcm1lZGlhdGUvdjEvZ29vZ2xlLW9hdXRoLXJlZGlyZWN0LXVybBK+AQoVUmVkZWVtR29vZ2xlT0F1dGhDb2RlEjYub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLlJlZGVlbUdvb2dsZU9BdXRoQ29kZVJlcXVlc3QaNy5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuUmVkZWVtR29vZ2xlT0F1dGhDb2RlUmVzcG9uc2UiNILT5JMCLjoBKiIpL2ludGVybWVkaWF0ZS92MS9yZWRlZW0tZ29vZ2xlLW9hdXRoLWNvZGUS1wEKHEdldE1pY3Jvc29mdE9BdXRoUmVkaXJlY3RVUkwSPS5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuR2V0TWljcm9zb2Z0T0F1dGhSZWRpcmVjdFVSTFJlcXVlc3QaPi5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuR2V0TWljcm9zb2Z0T0F1dGhSZWRpcmVjdFVSTFJlc3BvbnNlIjiC0+STAjI6ASoiLS9pbnRlcm1lZGlhdGUvdjEvbWljcm9zb2Z0LW9hdXRoLXJlZGlyZWN0LXVybBLKAQoYUmVkZWVtTWljcm9zb2Z0T0F1dGhDb2RlEjkub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLlJlZGVlbU1pY3Jvc29mdE9BdXRoQ29kZVJlcXVlc3QaOi5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuUmVkZWVtTWljcm9zb2Z0T0F1dGhDb2RlUmVzcG9uc2UiN4LT5JMCMToBKiIsL2ludGVybWVkaWF0ZS92MS9yZWRlZW0tbWljcm9zb2Z0LW9hdXRoLWNvZGUS5gEKH0lzc3VlRW1haWxWZXJpZmljYXRpb25DaGFsbGVuZ2USQC5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuSXNzdWVFbWFpbFZlcmlmaWNhdGlvbkNoYWxsZW5nZVJlcXVlc3QaQS5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuSXNzdWVFbWFpbFZlcmlmaWNhdGlvbkNoYWxsZW5nZVJlc3BvbnNlIj6C0+STAjg6ASoiMy9pbnRlcm1lZGlhdGUvdjEvaXNzdWUtZW1haWwtdmVyaWZpY2F0aW9uLWNoYWxsZW5nZRK5AQoUVmVyaWZ5RW1haWxDaGFsbGVuZ2USNS5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuVmVyaWZ5RW1haWxDaGFsbGVuZ2VSZXF1ZXN0GjYub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLlZlcmlmeUVtYWlsQ2hhbGxlbmdlUmVzcG9uc2UiMoLT5JMCLDoBKiInL2ludGVybWVkaWF0ZS92MS92ZXJpZnktZW1haWwtY2hhbGxlbmdlEqgBChBSZWdpc3RlclBhc3N3b3JkEjEub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLlJlZ2lzdGVyUGFzc3dvcmRSZXF1ZXN0GjIub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLlJlZ2lzdGVyUGFzc3dvcmRSZXNwb25zZSItgtPkkwInOgEqIiIvaW50ZXJtZWRpYXRlL3YxL3JlZ2lzdGVyLXBhc3N3b3JkEqABCg5WZXJpZnlQYXNzd29yZBIvLm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5WZXJpZnlQYXNzd29yZFJlcXVlc3QaMC5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuVmVyaWZ5UGFzc3dvcmRSZXNwb25zZSIrgtPkkwIlOgEqIiAvaW50ZXJtZWRpYXRlL3YxL3ZlcmlmeS1wYXNzd29yZBKtAQoRR2V0UGFzc2tleU9wdGlvbnMSMi5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuR2V0UGFzc2tleU9wdGlvbnNSZXF1ZXN0GjMub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLkdldFBhc3NrZXlPcHRpb25zUmVzcG9uc2UiL4LT5JMCKToBKiIkL2ludGVybWVkaWF0ZS92MS9nZXQtcGFzc2tleS1vcHRpb25zEqQBCg9SZWdpc3RlclBhc3NrZXkSMC5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjEuUmVnaXN0ZXJQYXNza2V5UmVxdWVzdBoxLm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5SZWdpc3RlclBhc3NrZXlSZXNwb25zZSIsgtPkkwImOgEqIiEvaW50ZXJtZWRpYXRlL3YxL3JlZ2lzdGVyLXBhc3NrZXkS0gEKGkdldEF1dGhlbnRpY2F0b3JBcHBPcHRpb25zEjsub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLkdldEF1dGhlbnRpY2F0b3JBcHBPcHRpb25zUmVxdWVzdBo8Lm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5HZXRBdXRoZW50aWNhdG9yQXBwT3B0aW9uc1Jlc3BvbnNlIjmC0+STAjM6ASoiLi9pbnRlcm1lZGlhdGUvdjEvZ2V0LWF1dGhlbnRpY2F0b3ItYXBwLW9wdGlvbnMSyQEKGFJlZ2lzdGVyQXV0aGVudGljYXRvckFwcBI5Lm9wZW5hdXRoLmludGVybWVkaWF0ZS52MS5SZWdpc3RlckF1dGhlbnRpY2F0b3JBcHBSZXF1ZXN0Gjoub3BlbmF1dGguaW50ZXJtZWRpYXRlLnYxLlJlZ2lzdGVyQXV0aGVudGljYXRvckFwcFJlc3BvbnNlIjaC0+STAjA6ASoiKy9pbnRlcm1lZGlhdGUvdjEvcmVnaXN0ZXItYXV0aGVudGljYXRvci1hcHBCkwIKHGNvbS5vcGVuYXV0aC5pbnRlcm1lZGlhdGUudjFCEUludGVybWVkaWF0ZVByb3RvUAFaXmdpdGh1Yi5jb20vb3BlbmF1dGgvb3BlbmF1dGgvaW50ZXJuYWwvaW50ZXJtZWRpYXRlL2dlbi9vcGVuYXV0aC9pbnRlcm1lZGlhdGUvdjE7aW50ZXJtZWRpYXRldjGiAgNPSViqAhhPcGVuYXV0aC5JbnRlcm1lZGlhdGUuVjHKAhhPcGVuYXV0aFxJbnRlcm1lZGlhdGVcVjHiAiRPcGVuYXV0aFxJbnRlcm1lZGlhdGVcVjFcR1BCTWV0YWRhdGHqAhpPcGVuYXV0aDo6SW50ZXJtZWRpYXRlOjpWMWIGcHJvdG8z", [file_google_api_annotations, file_google_protobuf_empty, file_google_protobuf_field_mask, file_google_protobuf_timestamp, file_google_protobuf_struct]);
@@ -57436,10 +57436,10 @@
         console.error("Error exchanging session for tokens", e);
       }
     };
-    return /* @__PURE__ */ import_react39.default.createElement(import_react39.default.Fragment, null, /* @__PURE__ */ import_react39.default.createElement(Title, { title: "Choose an Project" }), /* @__PURE__ */ import_react39.default.createElement(Card, { className: "w-[clamp(320px,50%,420px)] mx-auto" }, /* @__PURE__ */ import_react39.default.createElement(CardHeader, null, /* @__PURE__ */ import_react39.default.createElement(CardTitle, { className: "text-center uppercase text-foreground font-semibold text-sm tracking-wide mt-2" }, "Choose a Project")), /* @__PURE__ */ import_react39.default.createElement(CardContent, { className: "flex flex-col items-center justify-center w-full" }, /* @__PURE__ */ import_react39.default.createElement("ul", { className: "w-full p-0 border border-b-0 rounded-md" }, (_a10 = listOrganizationsResponse == null ? void 0 : listOrganizationsResponse.organizations) == null ? void 0 : _a10.map(
+    return /* @__PURE__ */ import_react40.default.createElement(import_react40.default.Fragment, null, /* @__PURE__ */ import_react40.default.createElement(Title, { title: "Choose an Project" }), /* @__PURE__ */ import_react40.default.createElement(Card, { className: "w-[clamp(320px,50%,420px)] mx-auto" }, /* @__PURE__ */ import_react40.default.createElement(CardHeader, null, /* @__PURE__ */ import_react40.default.createElement(CardTitle, { className: "text-center uppercase text-foreground font-semibold text-sm tracking-wide mt-2" }, "Choose a Project")), /* @__PURE__ */ import_react40.default.createElement(CardContent, { className: "flex flex-col items-center justify-center w-full" }, /* @__PURE__ */ import_react40.default.createElement("ul", { className: "w-full p-0 border border-b-0 rounded-md" }, (_a10 = listOrganizationsResponse == null ? void 0 : listOrganizationsResponse.organizations) == null ? void 0 : _a10.map(
       (organization, idx) => {
         var _a11;
-        return /* @__PURE__ */ import_react39.default.createElement(
+        return /* @__PURE__ */ import_react40.default.createElement(
           "li",
           {
             className: "py-2 px-4 border-b ".concat(idx === ((_a11 = listOrganizationsResponse == null ? void 0 : listOrganizationsResponse.organizations) == null ? void 0 : _a11.length) ? "rounded-b-md" : "", " hover:bg-gray-50 hover:text-dark cursor-pointer font-semibold"),
@@ -57449,7 +57449,7 @@
           organization.displayName
         );
       }
-    ))), /* @__PURE__ */ import_react39.default.createElement(CardFooter, null, /* @__PURE__ */ import_react39.default.createElement("p", { className: "text-sm text-center w-full cursor-pointer" }, "Or you can", " ", /* @__PURE__ */ import_react39.default.createElement(
+    ))), /* @__PURE__ */ import_react40.default.createElement(CardFooter, null, /* @__PURE__ */ import_react40.default.createElement("p", { className: "text-sm text-center w-full cursor-pointer" }, "Or you can", " ", /* @__PURE__ */ import_react40.default.createElement(
       "span",
       {
         className: "text-primary underline",
@@ -57461,7 +57461,7 @@
   var ChooseProjectView_default = ChooseProjectView;
 
   // src/views/login/CreateProjectView.tsx
-  var import_react40 = __toESM(require_react());
+  var import_react41 = __toESM(require_react());
 
   // src/gen/openauth/frontend/v1/frontend_pb.ts
   var file_openauth_frontend_v1_frontend = /* @__PURE__ */ fileDesc("CiNvcGVuYXV0aC9mcm9udGVuZC92MS9mcm9udGVuZC5wcm90bxIUb3BlbmF1dGguZnJvbnRlbmQudjEiJwoOUmVmcmVzaFJlcXVlc3QSFQoNcmVmcmVzaF90b2tlbhgBIAEoCSInCg9SZWZyZXNoUmVzcG9uc2USFAoMYWNjZXNzX3Rva2VuGAIgASgJIhMKEUdldFByb2plY3RSZXF1ZXN0IkQKEkdldFByb2plY3RSZXNwb25zZRIuCgdwcm9qZWN0GAEgASgLMh0ub3BlbmF1dGguZnJvbnRlbmQudjEuUHJvamVjdCIYChZHZXRPcmdhbml6YXRpb25SZXF1ZXN0IlMKF0dldE9yZ2FuaXphdGlvblJlc3BvbnNlEjgKDG9yZ2FuaXphdGlvbhgBIAEoCzIiLm9wZW5hdXRoLmZyb250ZW5kLnYxLk9yZ2FuaXphdGlvbiJVChlVcGRhdGVPcmdhbml6YXRpb25SZXF1ZXN0EjgKDG9yZ2FuaXphdGlvbhgBIAEoCzIiLm9wZW5hdXRoLmZyb250ZW5kLnYxLk9yZ2FuaXphdGlvbiJWChpVcGRhdGVPcmdhbml6YXRpb25SZXNwb25zZRI4Cgxvcmdhbml6YXRpb24YASABKAsyIi5vcGVuYXV0aC5mcm9udGVuZC52MS5Pcmdhbml6YXRpb24iUQoYTGlzdE9yZ2FuaXphdGlvbnNSZXF1ZXN0EhIKCnByb2plY3RfaWQYASABKAkSDQoFZW1haWwYAiABKAkSEgoKcGFnZV90b2tlbhgDIAEoCSJvChlMaXN0T3JnYW5pemF0aW9uc1Jlc3BvbnNlEjkKDW9yZ2FuaXphdGlvbnMYASADKAsyIi5vcGVuYXV0aC5mcm9udGVuZC52MS5Pcmdhbml6YXRpb24SFwoPbmV4dF9wYWdlX3Rva2VuGAIgASgJIj8KEExpc3RVc2Vyc1JlcXVlc3QSFwoPb3JnYW5pemF0aW9uX2lkGAEgASgJEhIKCnBhZ2VfdG9rZW4YAiABKAkiVwoRTGlzdFVzZXJzUmVzcG9uc2USKQoFdXNlcnMYASADKAsyGi5vcGVuYXV0aC5mcm9udGVuZC52MS5Vc2VyEhcKD25leHRfcGFnZV90b2tlbhgCIAEoCSIcCg5HZXRVc2VyUmVxdWVzdBIKCgJpZBgBIAEoCSI7Cg9HZXRVc2VyUmVzcG9uc2USKAoEdXNlchgBIAEoCzIaLm9wZW5hdXRoLmZyb250ZW5kLnYxLlVzZXIiSQoRVXBkYXRlVXNlclJlcXVlc3QSCgoCaWQYASABKAkSKAoEdXNlchgCIAEoCzIaLm9wZW5hdXRoLmZyb250ZW5kLnYxLlVzZXIiPgoSVXBkYXRlVXNlclJlc3BvbnNlEigKBHVzZXIYASABKAsyGi5vcGVuYXV0aC5mcm9udGVuZC52MS5Vc2VyIg8KDVdob0FtSVJlcXVlc3QifgoOV2hvQW1JUmVzcG9uc2USCgoCaWQYASABKAkSDQoFZW1haWwYAiABKAkSFwoPb3JnYW5pemF0aW9uX2lkGAMgASgJEjgKDG9yZ2FuaXphdGlvbhgEIAEoCzIiLm9wZW5hdXRoLmZyb250ZW5kLnYxLk9yZ2FuaXphdGlvbiIwChpMaXN0U0FNTENvbm5lY3Rpb25zUmVxdWVzdBISCgpwYWdlX3Rva2VuGAEgASgJInYKG0xpc3RTQU1MQ29ubmVjdGlvbnNSZXNwb25zZRI+ChBzYW1sX2Nvbm5lY3Rpb25zGAEgAygLMiQub3BlbmF1dGguZnJvbnRlbmQudjEuU0FNTENvbm5lY3Rpb24SFwoPbmV4dF9wYWdlX3Rva2VuGAIgASgJIiYKGEdldFNBTUxDb25uZWN0aW9uUmVxdWVzdBIKCgJpZBgBIAEoCSJaChlHZXRTQU1MQ29ubmVjdGlvblJlc3BvbnNlEj0KD3NhbWxfY29ubmVjdGlvbhgBIAEoCzIkLm9wZW5hdXRoLmZyb250ZW5kLnYxLlNBTUxDb25uZWN0aW9uIlwKG0NyZWF0ZVNBTUxDb25uZWN0aW9uUmVxdWVzdBI9Cg9zYW1sX2Nvbm5lY3Rpb24YASABKAsyJC5vcGVuYXV0aC5mcm9udGVuZC52MS5TQU1MQ29ubmVjdGlvbiJdChxDcmVhdGVTQU1MQ29ubmVjdGlvblJlc3BvbnNlEj0KD3NhbWxfY29ubmVjdGlvbhgBIAEoCzIkLm9wZW5hdXRoLmZyb250ZW5kLnYxLlNBTUxDb25uZWN0aW9uImgKG1VwZGF0ZVNBTUxDb25uZWN0aW9uUmVxdWVzdBIKCgJpZBgBIAEoCRI9Cg9zYW1sX2Nvbm5lY3Rpb24YAiABKAsyJC5vcGVuYXV0aC5mcm9udGVuZC52MS5TQU1MQ29ubmVjdGlvbiJdChxVcGRhdGVTQU1MQ29ubmVjdGlvblJlc3BvbnNlEj0KD3NhbWxfY29ubmVjdGlvbhgBIAEoCzIkLm9wZW5hdXRoLmZyb250ZW5kLnYxLlNBTUxDb25uZWN0aW9uIikKG0RlbGV0ZVNBTUxDb25uZWN0aW9uUmVxdWVzdBIKCgJpZBgBIAEoCSIeChxEZWxldGVTQU1MQ29ubmVjdGlvblJlc3BvbnNlIiwKFkxpc3RTQ0lNQVBJS2V5c1JlcXVlc3QSEgoKcGFnZV90b2tlbhgBIAEoCSJrChdMaXN0U0NJTUFQSUtleXNSZXNwb25zZRI3Cg1zY2ltX2FwaV9rZXlzGAEgAygLMiAub3BlbmF1dGguZnJvbnRlbmQudjEuU0NJTUFQSUtleRIXCg9uZXh0X3BhZ2VfdG9rZW4YAiABKAkiIgoUR2V0U0NJTUFQSUtleVJlcXVlc3QSCgoCaWQYASABKAkiTwoVR2V0U0NJTUFQSUtleVJlc3BvbnNlEjYKDHNjaW1fYXBpX2tleRgBIAEoCzIgLm9wZW5hdXRoLmZyb250ZW5kLnYxLlNDSU1BUElLZXkiUQoXQ3JlYXRlU0NJTUFQSUtleVJlcXVlc3QSNgoMc2NpbV9hcGlfa2V5GAEgASgLMiAub3BlbmF1dGguZnJvbnRlbmQudjEuU0NJTUFQSUtleSJSChhDcmVhdGVTQ0lNQVBJS2V5UmVzcG9uc2USNgoMc2NpbV9hcGlfa2V5GAEgASgLMiAub3BlbmF1dGguZnJvbnRlbmQudjEuU0NJTUFQSUtleSJdChdVcGRhdGVTQ0lNQVBJS2V5UmVxdWVzdBIKCgJpZBgBIAEoCRI2CgxzY2ltX2FwaV9rZXkYAiABKAsyIC5vcGVuYXV0aC5mcm9udGVuZC52MS5TQ0lNQVBJS2V5IlIKGFVwZGF0ZVNDSU1BUElLZXlSZXNwb25zZRI2CgxzY2ltX2FwaV9rZXkYASABKAsyIC5vcGVuYXV0aC5mcm9udGVuZC52MS5TQ0lNQVBJS2V5IiUKF0RlbGV0ZVNDSU1BUElLZXlSZXF1ZXN0EgoKAmlkGAEgASgJIhoKGERlbGV0ZVNDSU1BUElLZXlSZXNwb25zZSIlChdSZXZva2VTQ0lNQVBJS2V5UmVxdWVzdBIKCgJpZBgBIAEoCSJSChhSZXZva2VTQ0lNQVBJS2V5UmVzcG9uc2USNgoMc2NpbV9hcGlfa2V5GAEgASgLMiAub3BlbmF1dGguZnJvbnRlbmQudjEuU0NJTUFQSUtleSKTAgoHUHJvamVjdBIKCgJpZBgBIAEoCRIUCgxkaXNwbGF5X25hbWUYAiABKAkSLwoLY3JlYXRlX3RpbWUYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi8KC3VwZGF0ZV90aW1lGAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIkChxsb2dfaW5fd2l0aF9wYXNzd29yZF9lbmFibGVkGAUgASgIEiIKGmxvZ19pbl93aXRoX2dvb2dsZV9lbmFibGVkGAYgASgIEiUKHWxvZ19pbl93aXRoX21pY3Jvc29mdF9lbmFibGVkGAcgASgIEhMKC2F1dGhfZG9tYWluGAggASgJIq4DCgxPcmdhbml6YXRpb24SCgoCaWQYASABKAkSFAoMZGlzcGxheV9uYW1lGAIgASgJEi8KC2NyZWF0ZV90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIvCgt1cGRhdGVfdGltZRgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASJAoXb3ZlcnJpZGVfbG9nX2luX21ldGhvZHMYBSABKAhIAIgBARIkChxsb2dfaW5fd2l0aF9wYXNzd29yZF9lbmFibGVkGAYgASgIEiIKGmxvZ19pbl93aXRoX2dvb2dsZV9lbmFibGVkGAcgASgIEiUKHWxvZ19pbl93aXRoX21pY3Jvc29mdF9lbmFibGVkGAggASgIEh0KFWdvb2dsZV9ob3N0ZWRfZG9tYWlucxgJIAMoCRIcChRtaWNyb3NvZnRfdGVuYW50X2lkcxgKIAMoCRIUCgxzYW1sX2VuYWJsZWQYCyABKAgSFAoMc2NpbV9lbmFibGVkGAwgASgIQhoKGF9vdmVycmlkZV9sb2dfaW5fbWV0aG9kcyJQChFTZXNzaW9uU2lnbmluZ0tleRIKCgJpZBgBIAEoCRIvCg5wdWJsaWNfa2V5X2p3axgCIAEoCzIXLmdvb2dsZS5wcm90b2J1Zi5TdHJ1Y3QiJgoSU2V0UGFzc3dvcmRSZXF1ZXN0EhAKCHBhc3N3b3JkGAEgASgJIhUKE1NldFBhc3N3b3JkUmVzcG9uc2Ui1AEKBFVzZXISCgoCaWQYASABKAkSDQoFZW1haWwYAiABKAkSLwoLY3JlYXRlX3RpbWUYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi8KC3VwZGF0ZV90aW1lGAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBISCgVvd25lchgFIAEoCEgAiAEBEhYKDmdvb2dsZV91c2VyX2lkGAYgASgJEhkKEW1pY3Jvc29mdF91c2VyX2lkGAcgASgJQggKBl9vd25lciKZAQoHU2Vzc2lvbhIKCgJpZBgBIAEoCRIPCgd1c2VyX2lkGAIgASgJEi8KC2NyZWF0ZV90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIvCgtleHBpcmVfdGltZRgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASDwoHcmV2b2tlZBgFIAEoCCKZAgoOU0FNTENvbm5lY3Rpb24SCgoCaWQYASABKAkSLwoLY3JlYXRlX3RpbWUYAiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi8KC3VwZGF0ZV90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIUCgdwcmltYXJ5GAQgASgISACIAQESEgoKc3BfYWNzX3VybBgFIAEoCRIUCgxzcF9lbnRpdHlfaWQYBiABKAkSGAoQaWRwX3JlZGlyZWN0X3VybBgHIAEoCRIcChRpZHBfeDUwOV9jZXJ0aWZpY2F0ZRgIIAEoCRIVCg1pZHBfZW50aXR5X2lkGAkgASgJQgoKCF9wcmltYXJ5IrcBCgpTQ0lNQVBJS2V5EgoKAmlkGAEgASgJEhQKDGRpc3BsYXlfbmFtZRgCIAEoCRIvCgtjcmVhdGVfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLwoLdXBkYXRlX3RpbWUYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhQKDHNlY3JldF90b2tlbhgFIAEoCRIPCgdyZXZva2VkGAYgASgIMoQZCg9Gcm9udGVuZFNlcnZpY2USdwoHUmVmcmVzaBIkLm9wZW5hdXRoLmZyb250ZW5kLnYxLlJlZnJlc2hSZXF1ZXN0GiUub3BlbmF1dGguZnJvbnRlbmQudjEuUmVmcmVzaFJlc3BvbnNlIh+C0+STAhk6ASoiFC9mcm9udGVuZC92MS9yZWZyZXNoEn0KCkdldFByb2plY3QSJy5vcGVuYXV0aC5mcm9udGVuZC52MS5HZXRQcm9qZWN0UmVxdWVzdBooLm9wZW5hdXRoLmZyb250ZW5kLnYxLkdldFByb2plY3RSZXNwb25zZSIcgtPkkwIWEhQvZnJvbnRlbmQvdjEvcHJvamVjdBKRAQoPR2V0T3JnYW5pemF0aW9uEiwub3BlbmF1dGguZnJvbnRlbmQudjEuR2V0T3JnYW5pemF0aW9uUmVxdWVzdBotLm9wZW5hdXRoLmZyb250ZW5kLnYxLkdldE9yZ2FuaXphdGlvblJlc3BvbnNlIiGC0+STAhsSGS9mcm9udGVuZC92MS9vcmdhbml6YXRpb24SqAEKElVwZGF0ZU9yZ2FuaXphdGlvbhIvLm9wZW5hdXRoLmZyb250ZW5kLnYxLlVwZGF0ZU9yZ2FuaXphdGlvblJlcXVlc3QaMC5vcGVuYXV0aC5mcm9udGVuZC52MS5VcGRhdGVPcmdhbml6YXRpb25SZXNwb25zZSIvgtPkkwIpOgxvcmdhbml6YXRpb24yGS9mcm9udGVuZC92MS9vcmdhbml6YXRpb24SeAoJTGlzdFVzZXJzEiYub3BlbmF1dGguZnJvbnRlbmQudjEuTGlzdFVzZXJzUmVxdWVzdBonLm9wZW5hdXRoLmZyb250ZW5kLnYxLkxpc3RVc2Vyc1Jlc3BvbnNlIhqC0+STAhQSEi9mcm9udGVuZC92MS91c2VycxJ3CgdHZXRVc2VyEiQub3BlbmF1dGguZnJvbnRlbmQudjEuR2V0VXNlclJlcXVlc3QaJS5vcGVuYXV0aC5mcm9udGVuZC52MS5HZXRVc2VyUmVzcG9uc2UiH4LT5JMCGRIXL2Zyb250ZW5kL3YxL3VzZXJzL3tpZH0ShgEKClVwZGF0ZVVzZXISJy5vcGVuYXV0aC5mcm9udGVuZC52MS5VcGRhdGVVc2VyUmVxdWVzdBooLm9wZW5hdXRoLmZyb250ZW5kLnYxLlVwZGF0ZVVzZXJSZXNwb25zZSIlgtPkkwIfOgR1c2VyMhcvZnJvbnRlbmQvdjEvdXNlcnMve2lkfRKYAQoRTGlzdE9yZ2FuaXphdGlvbnMSLi5vcGVuYXV0aC5mcm9udGVuZC52MS5MaXN0T3JnYW5pemF0aW9uc1JlcXVlc3QaLy5vcGVuYXV0aC5mcm9udGVuZC52MS5MaXN0T3JnYW5pemF0aW9uc1Jlc3BvbnNlIiKC0+STAhwSGi9mcm9udGVuZC92MS9vcmdhbml6YXRpb25zEo0BCgtTZXRQYXNzd29yZBIoLm9wZW5hdXRoLmZyb250ZW5kLnYxLlNldFBhc3N3b3JkUmVxdWVzdBopLm9wZW5hdXRoLmZyb250ZW5kLnYxLlNldFBhc3N3b3JkUmVzcG9uc2UiKYLT5JMCIzoBKiIeL2Zyb250ZW5kL3YxL3NldC11c2VyLXBhc3N3b3JkEnAKBldob0FtSRIjLm9wZW5hdXRoLmZyb250ZW5kLnYxLldob0FtSVJlcXVlc3QaJC5vcGVuYXV0aC5mcm9udGVuZC52MS5XaG9BbUlSZXNwb25zZSIbgtPkkwIVEhMvZnJvbnRlbmQvdjEvd2hvYW1pEqEBChNMaXN0U0FNTENvbm5lY3Rpb25zEjAub3BlbmF1dGguZnJvbnRlbmQudjEuTGlzdFNBTUxDb25uZWN0aW9uc1JlcXVlc3QaMS5vcGVuYXV0aC5mcm9udGVuZC52MS5MaXN0U0FNTENvbm5lY3Rpb25zUmVzcG9uc2UiJYLT5JMCHxIdL2Zyb250ZW5kL3YxL3NhbWwtY29ubmVjdGlvbnMSoAEKEUdldFNBTUxDb25uZWN0aW9uEi4ub3BlbmF1dGguZnJvbnRlbmQudjEuR2V0U0FNTENvbm5lY3Rpb25SZXF1ZXN0Gi8ub3BlbmF1dGguZnJvbnRlbmQudjEuR2V0U0FNTENvbm5lY3Rpb25SZXNwb25zZSIqgtPkkwIkEiIvZnJvbnRlbmQvdjEvc2FtbC1jb25uZWN0aW9ucy97aWR9ErUBChRDcmVhdGVTQU1MQ29ubmVjdGlvbhIxLm9wZW5hdXRoLmZyb250ZW5kLnYxLkNyZWF0ZVNBTUxDb25uZWN0aW9uUmVxdWVzdBoyLm9wZW5hdXRoLmZyb250ZW5kLnYxLkNyZWF0ZVNBTUxDb25uZWN0aW9uUmVzcG9uc2UiNoLT5JMCMDoPc2FtbF9jb25uZWN0aW9uIh0vZnJvbnRlbmQvdjEvc2FtbC1jb25uZWN0aW9ucxK6AQoUVXBkYXRlU0FNTENvbm5lY3Rpb24SMS5vcGVuYXV0aC5mcm9udGVuZC52MS5VcGRhdGVTQU1MQ29ubmVjdGlvblJlcXVlc3QaMi5vcGVuYXV0aC5mcm9udGVuZC52MS5VcGRhdGVTQU1MQ29ubmVjdGlvblJlc3BvbnNlIjuC0+STAjU6D3NhbWxfY29ubmVjdGlvbjIiL2Zyb250ZW5kL3YxL3NhbWwtY29ubmVjdGlvbnMve2lkfRKpAQoURGVsZXRlU0FNTENvbm5lY3Rpb24SMS5vcGVuYXV0aC5mcm9udGVuZC52MS5EZWxldGVTQU1MQ29ubmVjdGlvblJlcXVlc3QaMi5vcGVuYXV0aC5mcm9udGVuZC52MS5EZWxldGVTQU1MQ29ubmVjdGlvblJlc3BvbnNlIiqC0+STAiQqIi9mcm9udGVuZC92MS9zYW1sLWNvbm5lY3Rpb25zL3tpZH0SkgEKD0xpc3RTQ0lNQVBJS2V5cxIsLm9wZW5hdXRoLmZyb250ZW5kLnYxLkxpc3RTQ0lNQVBJS2V5c1JlcXVlc3QaLS5vcGVuYXV0aC5mcm9udGVuZC52MS5MaXN0U0NJTUFQSUtleXNSZXNwb25zZSIigtPkkwIcEhovZnJvbnRlbmQvdjEvc2NpbS1hcGkta2V5cxKRAQoNR2V0U0NJTUFQSUtleRIqLm9wZW5hdXRoLmZyb250ZW5kLnYxLkdldFNDSU1BUElLZXlSZXF1ZXN0Gisub3BlbmF1dGguZnJvbnRlbmQudjEuR2V0U0NJTUFQSUtleVJlc3BvbnNlIieC0+STAiESHy9mcm9udGVuZC92MS9zY2ltLWFwaS1rZXlzL3tpZH0SowEKEENyZWF0ZVNDSU1BUElLZXkSLS5vcGVuYXV0aC5mcm9udGVuZC52MS5DcmVhdGVTQ0lNQVBJS2V5UmVxdWVzdBouLm9wZW5hdXRoLmZyb250ZW5kLnYxLkNyZWF0ZVNDSU1BUElLZXlSZXNwb25zZSIwgtPkkwIqOgxzY2ltX2FwaV9rZXkiGi9mcm9udGVuZC92MS9zY2ltLWFwaS1rZXlzEqgBChBVcGRhdGVTQ0lNQVBJS2V5Ei0ub3BlbmF1dGguZnJvbnRlbmQudjEuVXBkYXRlU0NJTUFQSUtleVJlcXVlc3QaLi5vcGVuYXV0aC5mcm9udGVuZC52MS5VcGRhdGVTQ0lNQVBJS2V5UmVzcG9uc2UiNYLT5JMCLzoMc2NpbV9hcGlfa2V5Mh8vZnJvbnRlbmQvdjEvc2NpbS1hcGkta2V5cy97aWR9EpoBChBEZWxldGVTQ0lNQVBJS2V5Ei0ub3BlbmF1dGguZnJvbnRlbmQudjEuRGVsZXRlU0NJTUFQSUtleVJlcXVlc3QaLi5vcGVuYXV0aC5mcm9udGVuZC52MS5EZWxldGVTQ0lNQVBJS2V5UmVzcG9uc2UiJ4LT5JMCISofL2Zyb250ZW5kL3YxL3NjaW0tYXBpLWtleXMve2lkfRKhAQoQUmV2b2tlU0NJTUFQSUtleRItLm9wZW5hdXRoLmZyb250ZW5kLnYxLlJldm9rZVNDSU1BUElLZXlSZXF1ZXN0Gi4ub3BlbmF1dGguZnJvbnRlbmQudjEuUmV2b2tlU0NJTUFQSUtleVJlc3BvbnNlIi6C0+STAigiJi9mcm9udGVuZC92MS9zY2ltLWFwaS1rZXlzL3tpZH0vcmV2b2tlQu8BChhjb20ub3BlbmF1dGguZnJvbnRlbmQudjFCDUZyb250ZW5kUHJvdG9QAVpSZ2l0aHViLmNvbS9vcGVuYXV0aC9vcGVuYXV0aC9pbnRlcm5hbC9mcm9udGVuZC9nZW4vb3BlbmF1dGgvZnJvbnRlbmQvdjE7ZnJvbnRlbmR2MaICA09GWKoCFE9wZW5hdXRoLkZyb250ZW5kLlYxygIUT3BlbmF1dGhcRnJvbnRlbmRcVjHiAiBPcGVuYXV0aFxGcm9udGVuZFxWMVxHUEJNZXRhZGF0YeoCFk9wZW5hdXRoOjpGcm9udGVuZDo6VjFiBnByb3RvMw", [file_google_api_annotations, file_google_protobuf_empty, file_google_protobuf_field_mask, file_google_protobuf_timestamp, file_google_protobuf_struct]);
@@ -57493,7 +57493,7 @@
   // src/views/login/CreateProjectView.tsx
   var CreateProjectView = ({ setView }) => {
     const navigate = useNavigate();
-    const [displayName, setDisplayName] = (0, import_react40.useState)("");
+    const [displayName, setDisplayName] = (0, import_react41.useState)("");
     const refreshMutation = useMutation2(refresh);
     const handleSubmit = async (e) => {
       e.preventDefault();
@@ -57503,7 +57503,7 @@
         console.error(error2);
       }
     };
-    return /* @__PURE__ */ import_react40.default.createElement(import_react40.default.Fragment, null, /* @__PURE__ */ import_react40.default.createElement(Title, { title: "Create a new Project" }), /* @__PURE__ */ import_react40.default.createElement(Card, { className: "w-[clamp(320px,50%,420px)] mx-auto" }, /* @__PURE__ */ import_react40.default.createElement(CardHeader, null, /* @__PURE__ */ import_react40.default.createElement(CardTitle, { className: "text-center uppercase text-foreground font-semibold text-sm tracking-wide mt-2" }, "Create a new Project")), /* @__PURE__ */ import_react40.default.createElement(CardContent, { className: "flex flex-col items-center justify-center w-full" }, /* @__PURE__ */ import_react40.default.createElement("form", { className: "flex flex-col items-center", onSubmit: handleSubmit }, /* @__PURE__ */ import_react40.default.createElement(
+    return /* @__PURE__ */ import_react41.default.createElement(import_react41.default.Fragment, null, /* @__PURE__ */ import_react41.default.createElement(Title, { title: "Create a new Project" }), /* @__PURE__ */ import_react41.default.createElement(Card, { className: "w-[clamp(320px,50%,420px)] mx-auto" }, /* @__PURE__ */ import_react41.default.createElement(CardHeader, null, /* @__PURE__ */ import_react41.default.createElement(CardTitle, { className: "text-center uppercase text-foreground font-semibold text-sm tracking-wide mt-2" }, "Create a new Project")), /* @__PURE__ */ import_react41.default.createElement(CardContent, { className: "flex flex-col items-center justify-center w-full" }, /* @__PURE__ */ import_react41.default.createElement("form", { className: "flex flex-col items-center", onSubmit: handleSubmit }, /* @__PURE__ */ import_react41.default.createElement(
       Input,
       {
         className: "text-sm rounded border border-border focus:border-primary w-[clamp(240px,50%,100%)] mb-2",
@@ -57512,25 +57512,25 @@
         value: displayName,
         onChange: (e) => setDisplayName(e.target.value)
       }
-    ), /* @__PURE__ */ import_react40.default.createElement(
+    ), /* @__PURE__ */ import_react41.default.createElement(
       Button,
       {
         className: "text-sm rounded border border-border focus:border-primary w-[clamp(240px,50%,100%)] mb-2",
         type: "submit"
       },
       "Create Project"
-    ))), /* @__PURE__ */ import_react40.default.createElement(CardFooter, null)));
+    ))), /* @__PURE__ */ import_react41.default.createElement(CardFooter, null)));
   };
   var CreateProjectView_default = CreateProjectView;
 
   // src/views/login/StartLoginView.tsx
-  var import_react44 = __toESM(require_react());
+  var import_react45 = __toESM(require_react());
 
   // src/components/login/OAuthButton.tsx
-  var import_react41 = __toESM(require_react());
+  var import_react42 = __toESM(require_react());
   var OAuthButton = (_a10) => {
     var _b2 = _a10, { method } = _b2, props = __objRest(_b2, ["method"]);
-    return /* @__PURE__ */ import_react41.default.createElement(Button, __spreadValues({}, props), /* @__PURE__ */ import_react41.default.createElement("div", { className: "mr-3" }, method === "Google" /* google */ ? /* @__PURE__ */ import_react41.default.createElement(
+    return /* @__PURE__ */ import_react42.default.createElement(Button, __spreadValues({}, props), /* @__PURE__ */ import_react42.default.createElement("div", { className: "mr-3" }, method === "Google" /* google */ ? /* @__PURE__ */ import_react42.default.createElement(
       "svg",
       {
         width: "24",
@@ -57539,35 +57539,35 @@
         fill: "none",
         xmlns: "http://www.w3.org/2000/svg"
       },
-      /* @__PURE__ */ import_react41.default.createElement(
+      /* @__PURE__ */ import_react42.default.createElement(
         "path",
         {
           d: "M22.56 12.25C22.56 11.47 22.49 10.72 22.36 10H12V14.26H17.92C17.66 15.63 16.88 16.79 15.71 17.57V20.34H19.28C21.36 18.42 22.56 15.6 22.56 12.25Z",
           fill: "#4285F4"
         }
       ),
-      /* @__PURE__ */ import_react41.default.createElement(
+      /* @__PURE__ */ import_react42.default.createElement(
         "path",
         {
           d: "M12 23C14.97 23 17.46 22.02 19.28 20.34L15.71 17.57C14.73 18.23 13.48 18.63 12 18.63C9.13999 18.63 6.70999 16.7 5.83999 14.1H2.17999V16.94C3.98999 20.53 7.69999 23 12 23Z",
           fill: "#34A853"
         }
       ),
-      /* @__PURE__ */ import_react41.default.createElement(
+      /* @__PURE__ */ import_react42.default.createElement(
         "path",
         {
           d: "M5.84 14.09C5.62 13.43 5.49 12.73 5.49 12C5.49 11.27 5.62 10.57 5.84 9.91V7.07H2.18C1.43 8.55 1 10.22 1 12C1 13.78 1.43 15.45 2.18 16.93L5.03 14.71L5.84 14.09Z",
           fill: "#FBBC05"
         }
       ),
-      /* @__PURE__ */ import_react41.default.createElement(
+      /* @__PURE__ */ import_react42.default.createElement(
         "path",
         {
           d: "M12 5.38C13.62 5.38 15.06 5.94 16.21 7.02L19.36 3.87C17.45 2.09 14.97 1 12 1C7.69999 1 3.98999 3.47 2.17999 7.07L5.83999 9.91C6.70999 7.31 9.13999 5.38 12 5.38Z",
           fill: "#EA4335"
         }
       )
-    ) : null, method === "Microsoft" /* microsoft */ ? /* @__PURE__ */ import_react41.default.createElement(
+    ) : null, method === "Microsoft" /* microsoft */ ? /* @__PURE__ */ import_react42.default.createElement(
       "svg",
       {
         width: "24",
@@ -57576,21 +57576,21 @@
         fill: "none",
         xmlns: "http://www.w3.org/2000/svg"
       },
-      /* @__PURE__ */ import_react41.default.createElement("g", { clipPath: "url(#clip0_65_191)" }, /* @__PURE__ */ import_react41.default.createElement("path", { d: "M0 0H24V23H0V0Z", fill: "#F3F3F3" }), /* @__PURE__ */ import_react41.default.createElement("path", { d: "M1.04347 1H11.4783V11H1.04347V1Z", fill: "#F35325" }), /* @__PURE__ */ import_react41.default.createElement("path", { d: "M12.5217 1H22.9565V11H12.5217V1Z", fill: "#81BC06" }), /* @__PURE__ */ import_react41.default.createElement("path", { d: "M1.04347 12H11.4783V22H1.04347V12Z", fill: "#05A6F0" }), /* @__PURE__ */ import_react41.default.createElement("path", { d: "M12.5217 12H22.9565V22H12.5217V12Z", fill: "#FFBA08" })),
-      /* @__PURE__ */ import_react41.default.createElement("defs", null, /* @__PURE__ */ import_react41.default.createElement("clipPath", { id: "clip0_65_191" }, /* @__PURE__ */ import_react41.default.createElement("rect", { width: "24", height: "23", fill: "white" })))
+      /* @__PURE__ */ import_react42.default.createElement("g", { clipPath: "url(#clip0_65_191)" }, /* @__PURE__ */ import_react42.default.createElement("path", { d: "M0 0H24V23H0V0Z", fill: "#F3F3F3" }), /* @__PURE__ */ import_react42.default.createElement("path", { d: "M1.04347 1H11.4783V11H1.04347V1Z", fill: "#F35325" }), /* @__PURE__ */ import_react42.default.createElement("path", { d: "M12.5217 1H22.9565V11H12.5217V1Z", fill: "#81BC06" }), /* @__PURE__ */ import_react42.default.createElement("path", { d: "M1.04347 12H11.4783V22H1.04347V12Z", fill: "#05A6F0" }), /* @__PURE__ */ import_react42.default.createElement("path", { d: "M12.5217 12H22.9565V22H12.5217V12Z", fill: "#FFBA08" })),
+      /* @__PURE__ */ import_react42.default.createElement("defs", null, /* @__PURE__ */ import_react42.default.createElement("clipPath", { id: "clip0_65_191" }, /* @__PURE__ */ import_react42.default.createElement("rect", { width: "24", height: "23", fill: "white" })))
     ) : null), "Continue with ", method);
   };
   var OAuthButton_default = OAuthButton;
 
   // src/components/login/TextDivider.tsx
-  var import_react42 = __toESM(require_react());
+  var import_react43 = __toESM(require_react());
   var TextDivider = ({ text }) => {
-    return /* @__PURE__ */ import_react42.default.createElement("div", { className: "relative w-full mx-auto my-8 flex flex-row justify-center" }, /* @__PURE__ */ import_react42.default.createElement("div", { className: "w-full border-t absolute mt-5 z-0 dark:border-gray-700" }), /* @__PURE__ */ import_react42.default.createElement("div", { className: "px-8 py-2 inline-block relative z-1 m-auto flex-grow-0 bg-card text-border uppercase font-semibold" }, text));
+    return /* @__PURE__ */ import_react43.default.createElement("div", { className: "relative w-full mx-auto my-8 flex flex-row justify-center" }, /* @__PURE__ */ import_react43.default.createElement("div", { className: "w-full border-t absolute mt-5 z-0 dark:border-gray-700" }), /* @__PURE__ */ import_react43.default.createElement("div", { className: "px-8 py-2 inline-block relative z-1 m-auto flex-grow-0 bg-card text-border uppercase font-semibold" }, text));
   };
   var TextDivider_default = TextDivider;
 
   // src/components/login/EmailForm.tsx
-  var import_react43 = __toESM(require_react());
+  var import_react44 = __toESM(require_react());
   var import_lodash = __toESM(require_lodash());
   var EmailForm = ({ setView }) => {
     const emailRegex2 = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/i;
@@ -57601,10 +57601,10 @@
       issueEmailVerificationChallenge
     );
     const listSAMLOrganizationsMutation = useMutation2(listSAMLOrganizations);
-    const [email, setEmail] = (0, import_react43.useState)("");
-    const [emailIsValid, setEmailIsValid] = (0, import_react43.useState)(false);
-    const [samlOrganizations, setSamlOrganizations] = (0, import_react43.useState)([]);
-    const fetchSamlOrganizations = (0, import_react43.useCallback)(
+    const [email, setEmail] = (0, import_react44.useState)("");
+    const [emailIsValid, setEmailIsValid] = (0, import_react44.useState)(false);
+    const [samlOrganizations, setSamlOrganizations] = (0, import_react44.useState)([]);
+    const fetchSamlOrganizations = (0, import_react44.useCallback)(
       (0, import_lodash.default)(async () => {
         const { organizations } = await listSAMLOrganizationsMutation.mutateAsync(
           {
@@ -57633,21 +57633,21 @@
         console.error(error2);
       }
     };
-    (0, import_react43.useEffect)(() => {
+    (0, import_react44.useEffect)(() => {
       const valid = emailRegex2.test(email);
       setEmailIsValid(valid);
       if (valid) {
         fetchSamlOrganizations();
       }
     }, [email]);
-    return /* @__PURE__ */ import_react43.default.createElement(import_react43.default.Fragment, null, /* @__PURE__ */ import_react43.default.createElement("form", { className: "flex flex-col justify-center", onSubmit: handleSubmit }, /* @__PURE__ */ import_react43.default.createElement(
+    return /* @__PURE__ */ import_react44.default.createElement(import_react44.default.Fragment, null, /* @__PURE__ */ import_react44.default.createElement("form", { className: "flex flex-col justify-center", onSubmit: handleSubmit }, /* @__PURE__ */ import_react44.default.createElement(
       "label",
       {
         className: "text-center uppercase text-foreground font-semibold text-sm mb-6 tracking-wide",
         htmlFor: "email"
       },
       "Continue with Email"
-    ), /* @__PURE__ */ import_react43.default.createElement(
+    ), /* @__PURE__ */ import_react44.default.createElement(
       Input,
       {
         className: "text-sm bg-input rounded border border-border focus:border-primary w-[clamp(240px,50%,100%)] mb-2",
@@ -57657,20 +57657,20 @@
         placeholder: "jane.doe@email.com",
         value: email
       }
-    ), /* @__PURE__ */ import_react43.default.createElement(Button, { type: "submit", disabled: !emailIsValid }, "Sign In")), samlOrganizations && samlOrganizations.length > 0 && /* @__PURE__ */ import_react43.default.createElement(import_react43.default.Fragment, null, /* @__PURE__ */ import_react43.default.createElement(TextDivider_default, { text: "or" }), samlOrganizations.map((organization) => /* @__PURE__ */ import_react43.default.createElement("div", { key: organization.id, className: "flex flex-col items-center" }, /* @__PURE__ */ import_react43.default.createElement(
+    ), /* @__PURE__ */ import_react44.default.createElement(Button, { type: "submit", disabled: !emailIsValid }, "Sign In")), samlOrganizations && samlOrganizations.length > 0 && /* @__PURE__ */ import_react44.default.createElement(import_react44.default.Fragment, null, /* @__PURE__ */ import_react44.default.createElement(TextDivider_default, { text: "or" }), samlOrganizations.map((organization) => /* @__PURE__ */ import_react44.default.createElement("div", { key: organization.id, className: "flex flex-col items-center" }, /* @__PURE__ */ import_react44.default.createElement(
       "label",
       {
         className: "text-center uppercase text-foreground font-semibold text-sm mb-3 tracking-wide w-full",
         htmlFor: "email"
       },
       "Continue with SAML"
-    ), /* @__PURE__ */ import_react43.default.createElement(
+    ), /* @__PURE__ */ import_react44.default.createElement(
       "a",
       {
         href: "/api/saml/v1/".concat(organization.primarySamlConnectionId, "/init"),
         className: "w-full"
       },
-      /* @__PURE__ */ import_react43.default.createElement(Button, { variant: "outline" }, organization.displayName)
+      /* @__PURE__ */ import_react44.default.createElement(Button, { variant: "outline" }, organization.displayName)
     )))));
   };
   var EmailForm_default = EmailForm;
@@ -57718,7 +57718,7 @@
         console.error(error2);
       }
     };
-    return /* @__PURE__ */ import_react44.default.createElement(Card, { className: "w-[clamp(320px,50%,420px)]" }, /* @__PURE__ */ import_react44.default.createElement(CardHeader, null, /* @__PURE__ */ import_react44.default.createElement(CardTitle, { className: "text-center uppercase text-foreground font-semibold text-sm tracking-wide mt-2" }, "Log In with oAuth")), /* @__PURE__ */ import_react44.default.createElement(CardContent, { className: "flex flex-col items-center w-full" }, /* @__PURE__ */ import_react44.default.createElement(
+    return /* @__PURE__ */ import_react45.default.createElement(Card, { className: "w-[clamp(320px,50%,420px)]" }, /* @__PURE__ */ import_react45.default.createElement(CardHeader, null, /* @__PURE__ */ import_react45.default.createElement(CardTitle, { className: "text-center uppercase text-foreground font-semibold text-sm tracking-wide mt-2" }, "Log In with oAuth")), /* @__PURE__ */ import_react45.default.createElement(CardContent, { className: "flex flex-col items-center w-full" }, /* @__PURE__ */ import_react45.default.createElement(
       OAuthButton_default,
       {
         className: "mb-4 w-[clamp(240px,50%,100%)]",
@@ -57726,7 +57726,7 @@
         onClick: handleGoogleOAuthLogin,
         variant: "outline"
       }
-    ), /* @__PURE__ */ import_react44.default.createElement(
+    ), /* @__PURE__ */ import_react45.default.createElement(
       OAuthButton_default,
       {
         className: "w-[clamp(240px,50%,100%)]",
@@ -57734,34 +57734,34 @@
         onClick: handleMicrosoftOAuthLogin,
         variant: "outline"
       }
-    ), /* @__PURE__ */ import_react44.default.createElement(TextDivider_default, { text: "or" }), /* @__PURE__ */ import_react44.default.createElement(EmailForm_default, { setView })), /* @__PURE__ */ import_react44.default.createElement(CardFooter, null));
+    ), /* @__PURE__ */ import_react45.default.createElement(TextDivider_default, { text: "or" }), /* @__PURE__ */ import_react45.default.createElement(EmailForm_default, { setView })), /* @__PURE__ */ import_react45.default.createElement(CardFooter, null));
   };
   var StartLoginView_default = StartLoginView;
 
   // src/views/login/VerifyEmailView.tsx
-  var import_react46 = __toESM(require_react());
+  var import_react47 = __toESM(require_react());
 
   // src/lib/auth.ts
-  var import_react45 = __toESM(require_react());
+  var import_react46 = __toESM(require_react());
   var useIntermediateSession = () => {
     const { data: whoAmiRes } = useQuery2(whoami);
     return whoAmiRes == null ? void 0 : whoAmiRes.intermediateSession;
   };
-  var organizationContext = (0, import_react45.createContext)(void 0);
+  var organizationContext = (0, import_react46.createContext)(void 0);
   var OrganizationContextProvider = organizationContext.Provider;
-  var projectContext = (0, import_react45.createContext)(
+  var projectContext = (0, import_react46.createContext)(
     void 0
   );
   var ProjectContextProvider = projectContext.Provider;
-  var userContext = (0, import_react45.createContext)(void 0);
+  var userContext = (0, import_react46.createContext)(void 0);
   var UserContextProvider = userContext.Provider;
 
   // src/views/login/VerifyEmailView.tsx
   var VerifyEmailView = ({ setView }) => {
     const intermediateSession = useIntermediateSession();
     const { state } = useLocation();
-    const [challengeCode, setChallengeCode] = (0, import_react46.useState)("");
-    const [email, setEmail] = (0, import_react46.useState)("");
+    const [challengeCode, setChallengeCode] = (0, import_react47.useState)("");
+    const [email, setEmail] = (0, import_react47.useState)("");
     const verifyEmailChallengeMutation = useMutation2(verifyEmailChallenge);
     const handleSubmit = async (e) => {
       e.preventDefault();
@@ -57775,7 +57775,7 @@
         console.error(error2);
       }
     };
-    return /* @__PURE__ */ import_react46.default.createElement(import_react46.default.Fragment, null, /* @__PURE__ */ import_react46.default.createElement(Title, { title: "Verify Email Address" }), /* @__PURE__ */ import_react46.default.createElement(Card, { className: "w-[clamp(320px,50%,420px)] mx-auto" }, /* @__PURE__ */ import_react46.default.createElement(CardHeader, null, /* @__PURE__ */ import_react46.default.createElement(CardTitle, { className: "text-center uppercase text-foreground font-semibold text-sm tracking-wide mt-2" }, "Verify Email Address"), /* @__PURE__ */ import_react46.default.createElement("p", { className: "text-sm text-center mt-2 text-gray-500" }, "Please enter the verification code sent to", " ", /* @__PURE__ */ import_react46.default.createElement("b", null, intermediateSession == null ? void 0 : intermediateSession.email), " below.")), /* @__PURE__ */ import_react46.default.createElement(CardContent, { className: "flex flex-col items-center justify-center w-full" }, /* @__PURE__ */ import_react46.default.createElement("form", { className: "flex flex-col items-center", onSubmit: handleSubmit }, /* @__PURE__ */ import_react46.default.createElement(
+    return /* @__PURE__ */ import_react47.default.createElement(import_react47.default.Fragment, null, /* @__PURE__ */ import_react47.default.createElement(Title, { title: "Verify Email Address" }), /* @__PURE__ */ import_react47.default.createElement(Card, { className: "w-[clamp(320px,50%,420px)] mx-auto" }, /* @__PURE__ */ import_react47.default.createElement(CardHeader, null, /* @__PURE__ */ import_react47.default.createElement(CardTitle, { className: "text-center uppercase text-foreground font-semibold text-sm tracking-wide mt-2" }, "Verify Email Address"), /* @__PURE__ */ import_react47.default.createElement("p", { className: "text-sm text-center mt-2 text-gray-500" }, "Please enter the verification code sent to", " ", /* @__PURE__ */ import_react47.default.createElement("b", null, intermediateSession == null ? void 0 : intermediateSession.email), " below.")), /* @__PURE__ */ import_react47.default.createElement(CardContent, { className: "flex flex-col items-center justify-center w-full" }, /* @__PURE__ */ import_react47.default.createElement("form", { className: "flex flex-col items-center", onSubmit: handleSubmit }, /* @__PURE__ */ import_react47.default.createElement(
       Input,
       {
         className: "text-sm bg-input rounded border border-border focus:border-primary w-[clamp(240px,50%,100%)] mb-2",
@@ -57784,24 +57784,24 @@
         value: challengeCode,
         onChange: (e) => setChallengeCode(e.target.value)
       }
-    ), /* @__PURE__ */ import_react46.default.createElement(
+    ), /* @__PURE__ */ import_react47.default.createElement(
       Button,
       {
         className: "text-sm rounded border border-border focus:border-primary w-[clamp(240px,50%,100%)] mb-2",
         type: "submit"
       },
       "Verify Email Address"
-    ))), /* @__PURE__ */ import_react46.default.createElement(CardFooter, null)));
+    ))), /* @__PURE__ */ import_react47.default.createElement(CardFooter, null)));
   };
   var VerifyEmailView_default = VerifyEmailView;
 
   // src/views/login/VerifyPasswordView.tsx
-  var import_react47 = __toESM(require_react());
+  var import_react48 = __toESM(require_react());
   var VerifyPasswordView = ({ setView }) => {
     const intermediateSession = useIntermediateSession();
     const { state } = useLocation();
     const navigate = useNavigate();
-    const [password, setPassword2] = (0, import_react47.useState)("");
+    const [password, setPassword2] = (0, import_react48.useState)("");
     const exchangeIntermediateSessionForSessionMutation = useMutation2(
       exchangeIntermediateSessionForSession
     );
@@ -57823,7 +57823,7 @@
         console.error(error2);
       }
     };
-    return /* @__PURE__ */ import_react47.default.createElement(import_react47.default.Fragment, null, /* @__PURE__ */ import_react47.default.createElement(Title, { title: "Verify Email Address" }), /* @__PURE__ */ import_react47.default.createElement(Card, { className: "w-[clamp(320px,50%,420px)] mx-auto" }, /* @__PURE__ */ import_react47.default.createElement(CardHeader, null, /* @__PURE__ */ import_react47.default.createElement(CardTitle, { className: "text-center uppercase text-foreground font-semibold text-sm tracking-wide mt-2" }, "Password Verification"), /* @__PURE__ */ import_react47.default.createElement("p", { className: "text-sm text-center mt-2 text-gray-500" }, "Please enter your password to continue logging in.")), /* @__PURE__ */ import_react47.default.createElement(CardContent, { className: "flex flex-col items-center justify-center w-full" }, /* @__PURE__ */ import_react47.default.createElement("form", { className: "flex flex-col items-center", onSubmit: handleSubmit }, /* @__PURE__ */ import_react47.default.createElement(
+    return /* @__PURE__ */ import_react48.default.createElement(import_react48.default.Fragment, null, /* @__PURE__ */ import_react48.default.createElement(Title, { title: "Verify Email Address" }), /* @__PURE__ */ import_react48.default.createElement(Card, { className: "w-[clamp(320px,50%,420px)] mx-auto" }, /* @__PURE__ */ import_react48.default.createElement(CardHeader, null, /* @__PURE__ */ import_react48.default.createElement(CardTitle, { className: "text-center uppercase text-foreground font-semibold text-sm tracking-wide mt-2" }, "Password Verification"), /* @__PURE__ */ import_react48.default.createElement("p", { className: "text-sm text-center mt-2 text-gray-500" }, "Please enter your password to continue logging in.")), /* @__PURE__ */ import_react48.default.createElement(CardContent, { className: "flex flex-col items-center justify-center w-full" }, /* @__PURE__ */ import_react48.default.createElement("form", { className: "flex flex-col items-center", onSubmit: handleSubmit }, /* @__PURE__ */ import_react48.default.createElement(
       Input,
       {
         className: "text-sm bg-input rounded border border-border focus:border-primary w-[clamp(240px,50%,100%)] mb-2",
@@ -57833,7 +57833,7 @@
         value: password,
         onChange: (e) => setPassword2(e.target.value)
       }
-    ), /* @__PURE__ */ import_react47.default.createElement(
+    ), /* @__PURE__ */ import_react48.default.createElement(
       Button,
       {
         className: "text-sm rounded border border-border focus:border-primary w-[clamp(240px,50%,100%)] mb-2",
@@ -57846,15 +57846,15 @@
 
   // src/pages/login/LoginPage.tsx
   var LoginPage = () => {
-    const [view, setView] = (0, import_react48.useState)(2 /* StartLogin */);
-    return /* @__PURE__ */ import_react48.default.createElement("div", { className: "w-screen min-h-screen flex flex-col justify-center items-center bg-indigo-600" }, /* @__PURE__ */ import_react48.default.createElement("div", { className: "min-w-[320px] max-w-[576px]" }, /* @__PURE__ */ import_react48.default.createElement("div", { className: "w-full mb-8" }, /* @__PURE__ */ import_react48.default.createElement(
+    const [view, setView] = (0, import_react49.useState)(2 /* StartLogin */);
+    return /* @__PURE__ */ import_react49.default.createElement("div", { className: "w-screen min-h-screen flex flex-col justify-center items-center bg-indigo-600" }, /* @__PURE__ */ import_react49.default.createElement("div", { className: "min-w-[320px] max-w-[576px]" }, /* @__PURE__ */ import_react49.default.createElement("div", { className: "w-full mb-8" }, /* @__PURE__ */ import_react49.default.createElement(
       "img",
       {
         className: "h-full max-h-10 mx-auto",
         src: "/images/tesseral-logo-white.svg",
         alt: "tesseral"
       }
-    )), /* @__PURE__ */ import_react48.default.createElement("div", { className: "w-full" }, view === 0 /* ChooseProject */ ? /* @__PURE__ */ import_react48.default.createElement(ChooseProjectView_default, { setView }) : null, view === 1 /* CreateProject */ ? /* @__PURE__ */ import_react48.default.createElement(CreateProjectView_default, { setView }) : null, view === 2 /* StartLogin */ ? /* @__PURE__ */ import_react48.default.createElement(StartLoginView_default, { setView }) : null, view === 3 /* VerifyEmail */ ? /* @__PURE__ */ import_react48.default.createElement(VerifyEmailView_default, { setView }) : null, view === 4 /* VerifyPassword */ ? /* @__PURE__ */ import_react48.default.createElement(VerifyPasswordView_default, { setView }) : null)));
+    )), /* @__PURE__ */ import_react49.default.createElement("div", { className: "w-full" }, view === 0 /* ChooseProject */ ? /* @__PURE__ */ import_react49.default.createElement(ChooseProjectView_default, { setView }) : null, view === 1 /* CreateProject */ ? /* @__PURE__ */ import_react49.default.createElement(CreateProjectView_default, { setView }) : null, view === 2 /* StartLogin */ ? /* @__PURE__ */ import_react49.default.createElement(StartLoginView_default, { setView }) : null, view === 3 /* VerifyEmail */ ? /* @__PURE__ */ import_react49.default.createElement(VerifyEmailView_default, { setView }) : null, view === 4 /* VerifyPassword */ ? /* @__PURE__ */ import_react49.default.createElement(VerifyPasswordView_default, { setView }) : null)));
   };
   var LoginPage_default = LoginPage;
 
@@ -57880,87 +57880,87 @@
   }
   function AppWithinQueryClient() {
     const transport = useTransport2();
-    return /* @__PURE__ */ import_react49.default.createElement(TransportProvider, { transport }, /* @__PURE__ */ import_react49.default.createElement(BrowserRouter, null, /* @__PURE__ */ import_react49.default.createElement(Routes, null, /* @__PURE__ */ import_react49.default.createElement(Route, { path: "/login", element: /* @__PURE__ */ import_react49.default.createElement(LoginPage_default, null) }), /* @__PURE__ */ import_react49.default.createElement(Route, { path: "/", element: /* @__PURE__ */ import_react49.default.createElement(PageShell, null) }, /* @__PURE__ */ import_react49.default.createElement(Route, { path: "", element: /* @__PURE__ */ import_react49.default.createElement(HomePage, null) }), /* @__PURE__ */ import_react49.default.createElement(
+    return /* @__PURE__ */ import_react50.default.createElement(TransportProvider, { transport }, /* @__PURE__ */ import_react50.default.createElement(BrowserRouter, null, /* @__PURE__ */ import_react50.default.createElement(Routes, null, /* @__PURE__ */ import_react50.default.createElement(Route, { path: "/login", element: /* @__PURE__ */ import_react50.default.createElement(LoginPage_default, null) }), /* @__PURE__ */ import_react50.default.createElement(Route, { path: "/", element: /* @__PURE__ */ import_react50.default.createElement(PageShell, null) }, /* @__PURE__ */ import_react50.default.createElement(Route, { path: "", element: /* @__PURE__ */ import_react50.default.createElement(HomePage, null) }), /* @__PURE__ */ import_react50.default.createElement(
       Route,
       {
         path: "project-settings",
-        element: /* @__PURE__ */ import_react49.default.createElement(ViewProjectSettingsPage, null)
+        element: /* @__PURE__ */ import_react50.default.createElement(ViewProjectSettingsPage, null)
       },
-      /* @__PURE__ */ import_react49.default.createElement(Route, { path: "", element: /* @__PURE__ */ import_react49.default.createElement(ProjectDetailsTab, null) })
-    ), /* @__PURE__ */ import_react49.default.createElement(
+      /* @__PURE__ */ import_react50.default.createElement(Route, { path: "", element: /* @__PURE__ */ import_react50.default.createElement(ProjectDetailsTab, null) })
+    ), /* @__PURE__ */ import_react50.default.createElement(
       Route,
       {
         path: "project-api-keys",
-        element: /* @__PURE__ */ import_react49.default.createElement(ListProjectAPIKeysPage, null)
+        element: /* @__PURE__ */ import_react50.default.createElement(ListProjectAPIKeysPage, null)
       }
-    ), /* @__PURE__ */ import_react49.default.createElement(
+    ), /* @__PURE__ */ import_react50.default.createElement(
       Route,
       {
         path: "project-api-keys/:projectApiKeyId",
-        element: /* @__PURE__ */ import_react49.default.createElement(ViewProjectAPIKeyPage, null)
+        element: /* @__PURE__ */ import_react50.default.createElement(ViewProjectAPIKeyPage, null)
       }
-    ), /* @__PURE__ */ import_react49.default.createElement(Route, { path: "organizations", element: /* @__PURE__ */ import_react49.default.createElement(ListOrganizationsPage, null) }), /* @__PURE__ */ import_react49.default.createElement(
+    ), /* @__PURE__ */ import_react50.default.createElement(Route, { path: "organizations", element: /* @__PURE__ */ import_react50.default.createElement(ListOrganizationsPage, null) }), /* @__PURE__ */ import_react50.default.createElement(
       Route,
       {
         path: "organizations/:organizationId",
-        element: /* @__PURE__ */ import_react49.default.createElement(ViewOrganizationPage, null)
+        element: /* @__PURE__ */ import_react50.default.createElement(ViewOrganizationPage, null)
       },
-      /* @__PURE__ */ import_react49.default.createElement(Route, { path: "", element: /* @__PURE__ */ import_react49.default.createElement(OrganizationDetailsTab, null) }),
-      /* @__PURE__ */ import_react49.default.createElement(Route, { path: "users", element: /* @__PURE__ */ import_react49.default.createElement(OrganizationUsersTab, null) }),
-      /* @__PURE__ */ import_react49.default.createElement(
+      /* @__PURE__ */ import_react50.default.createElement(Route, { path: "", element: /* @__PURE__ */ import_react50.default.createElement(OrganizationDetailsTab, null) }),
+      /* @__PURE__ */ import_react50.default.createElement(Route, { path: "users", element: /* @__PURE__ */ import_react50.default.createElement(OrganizationUsersTab, null) }),
+      /* @__PURE__ */ import_react50.default.createElement(
         Route,
         {
           path: "saml-connections",
-          element: /* @__PURE__ */ import_react49.default.createElement(OrganizationSAMLConnectionsTab, null)
+          element: /* @__PURE__ */ import_react50.default.createElement(OrganizationSAMLConnectionsTab, null)
         }
       ),
-      /* @__PURE__ */ import_react49.default.createElement(
+      /* @__PURE__ */ import_react50.default.createElement(
         Route,
         {
           path: "scim-api-keys",
-          element: /* @__PURE__ */ import_react49.default.createElement(OrganizationSCIMAPIKeysTab, null)
+          element: /* @__PURE__ */ import_react50.default.createElement(OrganizationSCIMAPIKeysTab, null)
         }
       )
-    ), /* @__PURE__ */ import_react49.default.createElement(
+    ), /* @__PURE__ */ import_react50.default.createElement(
       Route,
       {
         path: "organizations/:organizationId/edit",
-        element: /* @__PURE__ */ import_react49.default.createElement(EditOrganizationPage, null)
+        element: /* @__PURE__ */ import_react50.default.createElement(EditOrganizationPage, null)
       }
-    ), /* @__PURE__ */ import_react49.default.createElement(
+    ), /* @__PURE__ */ import_react50.default.createElement(
       Route,
       {
         path: "organizations/:organizationId/saml-connections/:samlConnectionId",
-        element: /* @__PURE__ */ import_react49.default.createElement(ViewSAMLConnectionPage, null)
+        element: /* @__PURE__ */ import_react50.default.createElement(ViewSAMLConnectionPage, null)
       }
-    ), /* @__PURE__ */ import_react49.default.createElement(
+    ), /* @__PURE__ */ import_react50.default.createElement(
       Route,
       {
         path: "organizations/:organizationId/saml-connections/:samlConnectionId/edit",
-        element: /* @__PURE__ */ import_react49.default.createElement(EditSAMLConnectionPage, null)
+        element: /* @__PURE__ */ import_react50.default.createElement(EditSAMLConnectionPage, null)
       }
-    ), /* @__PURE__ */ import_react49.default.createElement(
+    ), /* @__PURE__ */ import_react50.default.createElement(
       Route,
       {
         path: "organizations/:organizationId/users/:userId",
-        element: /* @__PURE__ */ import_react49.default.createElement(ViewUserPage, null)
+        element: /* @__PURE__ */ import_react50.default.createElement(ViewUserPage, null)
       }
-    ), /* @__PURE__ */ import_react49.default.createElement(
+    ), /* @__PURE__ */ import_react50.default.createElement(
       Route,
       {
         path: "organizations/:organizationId/scim-api-keys/:scimApiKeyId",
-        element: /* @__PURE__ */ import_react49.default.createElement(ViewSCIMAPIKeyPage, null)
+        element: /* @__PURE__ */ import_react50.default.createElement(ViewSCIMAPIKeyPage, null)
       }
-    )), /* @__PURE__ */ import_react49.default.createElement(Route, { path: "*", element: /* @__PURE__ */ import_react49.default.createElement(NotFound_default, null) }))));
+    )), /* @__PURE__ */ import_react50.default.createElement(Route, { path: "*", element: /* @__PURE__ */ import_react50.default.createElement(NotFound_default, null) }))));
   }
   var App = () => {
-    return /* @__PURE__ */ import_react49.default.createElement(QueryClientProvider, { client: queryClient }, /* @__PURE__ */ import_react49.default.createElement(AppWithinQueryClient, null), /* @__PURE__ */ import_react49.default.createElement(Toaster, null));
+    return /* @__PURE__ */ import_react50.default.createElement(QueryClientProvider, { client: queryClient }, /* @__PURE__ */ import_react50.default.createElement(AppWithinQueryClient, null), /* @__PURE__ */ import_react50.default.createElement(Toaster, null));
   };
   var App_default = App;
 
   // src/index.tsx
   var root = (0, import_client.createRoot)(document.getElementById("react-root"));
-  root.render(/* @__PURE__ */ import_react50.default.createElement(App_default, null));
+  root.render(/* @__PURE__ */ import_react51.default.createElement(App_default, null));
 })();
 /*! Bundled license information:
 

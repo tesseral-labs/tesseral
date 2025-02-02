@@ -7,6 +7,7 @@ import { Helmet } from 'react-helmet'
 import { LoginLayouts } from '@/lib/views'
 import CenteredLayout from './layouts/centered'
 import SideBySideLayout from './layouts/side-by-side'
+import { Toaster } from './ui/sonner'
 
 const layoutMap: Record<string, FC<any>> = {
   [`${LoginLayouts.Centered}`]: CenteredLayout,
@@ -73,14 +74,22 @@ const Page = () => {
   }, [isDarkMode])
 
   return (
-    <>
+    <div
+      className={cn(
+        'min-h-screen w-screen',
+        isDarkMode && settings?.detectDarkModeEnabled
+          ? 'dark bg-dark'
+          : 'light bg-body',
+      )}
+    >
       <Helmet>
         <link rel="icon" href={favicon} />
         <link rel="apple-touch-icon" href={favicon} />
       </Helmet>
 
       <Layout />
-    </>
+      <Toaster position="top-center" richColors />
+    </div>
   )
 }
 

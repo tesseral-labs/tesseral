@@ -23,6 +23,8 @@ import { setAccessToken, setRefreshToken } from '@/auth'
 import { useNavigate } from 'react-router'
 import { useLayout } from '@/lib/settings'
 import { LoginLayouts } from '@/lib/views'
+import { parseErrorMessage } from '@/lib/errors'
+import { toast } from 'sonner'
 
 const RegisterAuthenticatorApp: FC = () => {
   const layout = useLayout()
@@ -67,7 +69,11 @@ const RegisterAuthenticatorApp: FC = () => {
 
       navigate('/settings')
     } catch (error) {
-      console.error(error)
+      const message = parseErrorMessage(error)
+
+      toast.error('Could not register authenticator app', {
+        description: message,
+      })
     }
   }
 

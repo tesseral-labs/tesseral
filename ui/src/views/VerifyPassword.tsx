@@ -15,6 +15,8 @@ import { useIntermediateOrganization } from '@/lib/auth'
 import { LoginLayouts, LoginViews } from '@/lib/views'
 import { useLayout } from '@/lib/settings'
 import { cn } from '@/lib/utils'
+import { toast } from 'sonner'
+import { parseErrorMessage } from '@/lib/errors'
 
 interface VerifyPasswordProps {
   setView: Dispatch<SetStateAction<LoginViews>>
@@ -73,8 +75,11 @@ const VerifyPassword: FC<VerifyPasswordProps> = ({ setView }) => {
 
       navigate('/settings')
     } catch (error) {
-      // TODO: Show an error message to the user
-      console.error(error)
+      const message = parseErrorMessage(error)
+
+      toast.error('Could not verify password', {
+        description: message,
+      })
     }
   }
 

@@ -21,6 +21,8 @@ import {
 import { LoginLayouts, LoginViews } from '@/lib/views'
 import useSettings, { useLayout } from '@/lib/settings'
 import { cn } from '@/lib/utils'
+import { parseErrorMessage } from '@/lib/errors'
+import { toast } from 'sonner'
 
 interface LoginProps {
   setView: Dispatch<SetStateAction<LoginViews>>
@@ -46,8 +48,11 @@ const Login: FC<LoginProps> = ({ setView }) => {
       // this sets a cookie that subsequent requests use
       await createIntermediateSessionMutation.mutateAsync({})
     } catch (error) {
-      // TODO: Handle errors on screen once an error handling strategy is in place.
-      console.error(error)
+      const message = parseErrorMessage(error)
+
+      toast.error('Could not initialize new session', {
+        description: message,
+      })
     }
 
     try {
@@ -57,8 +62,11 @@ const Login: FC<LoginProps> = ({ setView }) => {
 
       window.location.href = url
     } catch (error) {
-      // TODO: Handle errors on screen once an error handling strategy is in place.
-      console.error(error)
+      const message = parseErrorMessage(error)
+
+      toast.error('Could not get Google OAuth redirect URL', {
+        description: message,
+      })
     }
   }
 
@@ -70,8 +78,11 @@ const Login: FC<LoginProps> = ({ setView }) => {
       // this sets a cookie that subsequent requests use
       await createIntermediateSessionMutation.mutateAsync({})
     } catch (error) {
-      // TODO: Handle errors on screen once an error handling strategy is in place.
-      console.error(error)
+      const message = parseErrorMessage(error)
+
+      toast.error('Could not initialize new session', {
+        description: message,
+      })
     }
 
     try {
@@ -81,8 +92,11 @@ const Login: FC<LoginProps> = ({ setView }) => {
 
       window.location.href = url
     } catch (error) {
-      // TODO: Handle errors on screen once an error handling strategy is in place.
-      console.error(error)
+      const message = parseErrorMessage(error)
+
+      toast.error('Could not get Microsoft OAuth redirect URL', {
+        description: message,
+      })
     }
   }
 

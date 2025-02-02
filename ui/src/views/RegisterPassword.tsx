@@ -1,24 +1,30 @@
-import React, { useState } from 'react'
+import React, { FC, useState } from 'react'
 import { Title } from '@/components/Title'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import {
   exchangeIntermediateSessionForSession,
   registerPassword,
-  verifyPassword,
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
 import { useMutation } from '@connectrpc/connect-query'
-import { useLocation, useNavigate, useParams } from 'react-router'
+import { useNavigate } from 'react-router'
 import { setAccessToken, setRefreshToken } from '@/auth'
 import { Input } from '@/components/ui/input'
 import { useLayout } from '@/lib/settings'
 import { cn } from '@/lib/utils'
-import { LoginLayouts } from '@/lib/views'
+import { LoginLayouts, LoginViews } from '@/lib/views'
+import { parseErrorMessage } from '@/lib/errors'
+import { toast } from 'sonner'
+import { useIntermediateOrganization } from '@/lib/auth'
 
-const RegisterPassword = () => {
+interface RegisterPasswordProps {
+  setView: React.Dispatch<React.SetStateAction<LoginViews>>
+}
+
+const RegisterPassword: FC<RegisterPasswordProps> = ({ setView }) => {
+  const organization = useIntermediateOrganization()
   const layout = useLayout()
   const navigate = useNavigate()
-  const { state } = useLocation()
   const [password, setPassword] = useState<string>('')
 
   const exchangeIntermediateSessionForSessionMutation = useMutation(
@@ -34,6 +40,11 @@ const RegisterPassword = () => {
         password,
       })
 
+      if (organization?.requireMfa) {
+        setView(LoginViews.ChooseAdditionalFactor)
+        return
+      }
+
       const { accessToken, refreshToken } =
         await exchangeIntermediateSessionForSessionMutation.mutateAsync({})
 
@@ -42,8 +53,11 @@ const RegisterPassword = () => {
 
       navigate('/settings')
     } catch (error) {
-      // TODO: Show an error message to the user
-      console.error(error)
+      const message = parseErrorMessage(error)
+
+      toast.error('Could not set password', {
+        description: message,
+      })
     }
   }
 

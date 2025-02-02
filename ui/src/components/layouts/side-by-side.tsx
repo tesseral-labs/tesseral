@@ -1,6 +1,7 @@
+import React, { FC, SyntheticEvent } from 'react'
+
 import useDarkMode from '@/lib/dark-mode'
 import useSettings from '@/lib/settings'
-import React, { FC, SyntheticEvent } from 'react'
 import { Outlet } from 'react-router'
 
 const SideBySideLayout: FC = () => {
@@ -8,7 +9,7 @@ const SideBySideLayout: FC = () => {
   const settings = useSettings()
 
   return (
-    <div className="min-h-screen w-screen grid grid-cols-2 gap-0">
+    <div className="bg-body w-screen min-h-screen grid grid-cols-2 gap-0">
       <div className="bg-primary" />
       <div className="flex flex-col justify-center items-center p-4">
         <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 flex justify-center">

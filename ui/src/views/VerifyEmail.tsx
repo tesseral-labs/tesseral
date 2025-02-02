@@ -23,6 +23,9 @@ import {
 } from '@/components/ui/input-otp'
 import { useLayout } from '@/lib/settings'
 import { cn } from '@/lib/utils'
+import { toast } from 'sonner'
+import { ErrorDetail } from '@/gen/openauth/common/v1/common_pb'
+import { parseErrorMessage } from '@/lib/errors'
 
 interface VerifyEmailProps {
   setView: Dispatch<SetStateAction<LoginViews>>
@@ -46,7 +49,15 @@ const VerifyEmail: FC<VerifyEmailProps> = ({ setView }) => {
 
       setView(LoginViews.ChooseOrganization)
     } catch (error) {
-      console.error(error)
+      console.log(`error`, error)
+
+      const message = parseErrorMessage(error)
+
+      console.log(`message`, message)
+
+      toast.error('Could not verify email', {
+        description: message,
+      })
     }
   }
 
