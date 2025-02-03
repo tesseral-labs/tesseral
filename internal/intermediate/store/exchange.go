@@ -130,11 +130,6 @@ func (s *Store) validateAuthRequirementsSatisfied(ctx context.Context, q *querie
 		return fmt.Errorf("get intermediate session verified: %w", err)
 	}
 
-	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
-	if err != nil {
-		return fmt.Errorf("get project by id: %w", err)
-	}
-
 	qOrg, err := q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
 		ProjectID: authn.ProjectID(ctx),
 		ID:        *qIntermediateSession.OrganizationID,
@@ -143,10 +138,10 @@ func (s *Store) validateAuthRequirementsSatisfied(ctx context.Context, q *querie
 		return fmt.Errorf("get organization by id: %w", err)
 	}
 
-	return validateAuthRequirementsSatisfiedInner(qIntermediateSession, emailVerified, qProject, qOrg)
+	return validateAuthRequirementsSatisfiedInner(qIntermediateSession, emailVerified, qOrg)
 }
 
-func validateAuthRequirementsSatisfiedInner(qIntermediateSession queries.IntermediateSession, emailVerified bool, qProject queries.Project, qOrg queries.Organization) error {
+func validateAuthRequirementsSatisfiedInner(qIntermediateSession queries.IntermediateSession, emailVerified bool, qOrg queries.Organization) error {
 	if !emailVerified {
 		return apierror.NewFailedPreconditionError("email not verified", nil)
 	}
