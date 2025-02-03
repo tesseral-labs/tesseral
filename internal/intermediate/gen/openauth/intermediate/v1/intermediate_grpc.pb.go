@@ -38,6 +38,8 @@ const (
 	IntermediateService_VerifyPassword_FullMethodName                        = "/openauth.intermediate.v1.IntermediateService/VerifyPassword"
 	IntermediateService_GetPasskeyOptions_FullMethodName                     = "/openauth.intermediate.v1.IntermediateService/GetPasskeyOptions"
 	IntermediateService_RegisterPasskey_FullMethodName                       = "/openauth.intermediate.v1.IntermediateService/RegisterPasskey"
+	IntermediateService_IssuePasskeyChallenge_FullMethodName                 = "/openauth.intermediate.v1.IntermediateService/IssuePasskeyChallenge"
+	IntermediateService_VerifyPasskey_FullMethodName                         = "/openauth.intermediate.v1.IntermediateService/VerifyPasskey"
 	IntermediateService_GetAuthenticatorAppOptions_FullMethodName            = "/openauth.intermediate.v1.IntermediateService/GetAuthenticatorAppOptions"
 	IntermediateService_RegisterAuthenticatorApp_FullMethodName              = "/openauth.intermediate.v1.IntermediateService/RegisterAuthenticatorApp"
 	IntermediateService_VerifyAuthenticatorApp_FullMethodName                = "/openauth.intermediate.v1.IntermediateService/VerifyAuthenticatorApp"
@@ -66,6 +68,8 @@ type IntermediateServiceClient interface {
 	VerifyPassword(ctx context.Context, in *VerifyPasswordRequest, opts ...grpc.CallOption) (*VerifyPasswordResponse, error)
 	GetPasskeyOptions(ctx context.Context, in *GetPasskeyOptionsRequest, opts ...grpc.CallOption) (*GetPasskeyOptionsResponse, error)
 	RegisterPasskey(ctx context.Context, in *RegisterPasskeyRequest, opts ...grpc.CallOption) (*RegisterPasskeyResponse, error)
+	IssuePasskeyChallenge(ctx context.Context, in *IssuePasskeyChallengeRequest, opts ...grpc.CallOption) (*IssuePasskeyChallengeResponse, error)
+	VerifyPasskey(ctx context.Context, in *VerifyPasskeyRequest, opts ...grpc.CallOption) (*VerifyPasskeyResponse, error)
 	GetAuthenticatorAppOptions(ctx context.Context, in *GetAuthenticatorAppOptionsRequest, opts ...grpc.CallOption) (*GetAuthenticatorAppOptionsResponse, error)
 	RegisterAuthenticatorApp(ctx context.Context, in *RegisterAuthenticatorAppRequest, opts ...grpc.CallOption) (*RegisterAuthenticatorAppResponse, error)
 	VerifyAuthenticatorApp(ctx context.Context, in *VerifyAuthenticatorAppRequest, opts ...grpc.CallOption) (*VerifyAuthenticatorAppResponse, error)
@@ -269,6 +273,26 @@ func (c *intermediateServiceClient) RegisterPasskey(ctx context.Context, in *Reg
 	return out, nil
 }
 
+func (c *intermediateServiceClient) IssuePasskeyChallenge(ctx context.Context, in *IssuePasskeyChallengeRequest, opts ...grpc.CallOption) (*IssuePasskeyChallengeResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(IssuePasskeyChallengeResponse)
+	err := c.cc.Invoke(ctx, IntermediateService_IssuePasskeyChallenge_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *intermediateServiceClient) VerifyPasskey(ctx context.Context, in *VerifyPasskeyRequest, opts ...grpc.CallOption) (*VerifyPasskeyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(VerifyPasskeyResponse)
+	err := c.cc.Invoke(ctx, IntermediateService_VerifyPasskey_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *intermediateServiceClient) GetAuthenticatorAppOptions(ctx context.Context, in *GetAuthenticatorAppOptionsRequest, opts ...grpc.CallOption) (*GetAuthenticatorAppOptionsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetAuthenticatorAppOptionsResponse)
@@ -322,6 +346,8 @@ type IntermediateServiceServer interface {
 	VerifyPassword(context.Context, *VerifyPasswordRequest) (*VerifyPasswordResponse, error)
 	GetPasskeyOptions(context.Context, *GetPasskeyOptionsRequest) (*GetPasskeyOptionsResponse, error)
 	RegisterPasskey(context.Context, *RegisterPasskeyRequest) (*RegisterPasskeyResponse, error)
+	IssuePasskeyChallenge(context.Context, *IssuePasskeyChallengeRequest) (*IssuePasskeyChallengeResponse, error)
+	VerifyPasskey(context.Context, *VerifyPasskeyRequest) (*VerifyPasskeyResponse, error)
 	GetAuthenticatorAppOptions(context.Context, *GetAuthenticatorAppOptionsRequest) (*GetAuthenticatorAppOptionsResponse, error)
 	RegisterAuthenticatorApp(context.Context, *RegisterAuthenticatorAppRequest) (*RegisterAuthenticatorAppResponse, error)
 	VerifyAuthenticatorApp(context.Context, *VerifyAuthenticatorAppRequest) (*VerifyAuthenticatorAppResponse, error)
@@ -391,6 +417,12 @@ func (UnimplementedIntermediateServiceServer) GetPasskeyOptions(context.Context,
 }
 func (UnimplementedIntermediateServiceServer) RegisterPasskey(context.Context, *RegisterPasskeyRequest) (*RegisterPasskeyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterPasskey not implemented")
+}
+func (UnimplementedIntermediateServiceServer) IssuePasskeyChallenge(context.Context, *IssuePasskeyChallengeRequest) (*IssuePasskeyChallengeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IssuePasskeyChallenge not implemented")
+}
+func (UnimplementedIntermediateServiceServer) VerifyPasskey(context.Context, *VerifyPasskeyRequest) (*VerifyPasskeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerifyPasskey not implemented")
 }
 func (UnimplementedIntermediateServiceServer) GetAuthenticatorAppOptions(context.Context, *GetAuthenticatorAppOptionsRequest) (*GetAuthenticatorAppOptionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAuthenticatorAppOptions not implemented")
@@ -764,6 +796,42 @@ func _IntermediateService_RegisterPasskey_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _IntermediateService_IssuePasskeyChallenge_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IssuePasskeyChallengeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IntermediateServiceServer).IssuePasskeyChallenge(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IntermediateService_IssuePasskeyChallenge_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IntermediateServiceServer).IssuePasskeyChallenge(ctx, req.(*IssuePasskeyChallengeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IntermediateService_VerifyPasskey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VerifyPasskeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IntermediateServiceServer).VerifyPasskey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IntermediateService_VerifyPasskey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IntermediateServiceServer).VerifyPasskey(ctx, req.(*VerifyPasskeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _IntermediateService_GetAuthenticatorAppOptions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetAuthenticatorAppOptionsRequest)
 	if err := dec(in); err != nil {
@@ -900,6 +968,14 @@ var IntermediateService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RegisterPasskey",
 			Handler:    _IntermediateService_RegisterPasskey_Handler,
+		},
+		{
+			MethodName: "IssuePasskeyChallenge",
+			Handler:    _IntermediateService_IssuePasskeyChallenge_Handler,
+		},
+		{
+			MethodName: "VerifyPasskey",
+			Handler:    _IntermediateService_VerifyPasskey_Handler,
 		},
 		{
 			MethodName: "GetAuthenticatorAppOptions",

@@ -134,6 +134,20 @@ service IntermediateService {
     };
   }
 
+  rpc IssuePasskeyChallenge(IssuePasskeyChallengeRequest) returns (IssuePasskeyChallengeResponse) {
+    option (google.api.http) = {
+      post: "/intermediate/v1/issue-passkey-challenge",
+      body: "*"
+    };
+  }
+
+  rpc VerifyPasskey(VerifyPasskeyRequest) returns (VerifyPasskeyResponse) {
+    option (google.api.http) = {
+      post: "/intermediate/v1/verify-passkey",
+      body: "*"
+    };
+  }
+
   rpc GetAuthenticatorAppOptions(GetAuthenticatorAppOptionsRequest) returns (GetAuthenticatorAppOptionsResponse) {
     option (google.api.http) = {
       post: "/intermediate/v1/get-authenticator-app-options",
@@ -377,15 +391,16 @@ message IssuePasskeyChallengeRequest {
 }
 
 message IssuePasskeyChallengeResponse {
-  bytes challenge = 1;
+  string rp_id = 1;
+  bytes challenge = 2;
 }
 
-message VerifyPasskeyChallengeRequest {
+message VerifyPasskeyRequest {
   bytes credential_id = 1;
   string client_data_json = 2;
   string authenticator_data = 3;
   string signature = 4;
 }
 
-message VerifyPasskeyChallengeResponse {
+message VerifyPasskeyResponse {
 }

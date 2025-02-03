@@ -90,6 +90,12 @@ const (
 	// IntermediateServiceRegisterPasskeyProcedure is the fully-qualified name of the
 	// IntermediateService's RegisterPasskey RPC.
 	IntermediateServiceRegisterPasskeyProcedure = "/openauth.intermediate.v1.IntermediateService/RegisterPasskey"
+	// IntermediateServiceIssuePasskeyChallengeProcedure is the fully-qualified name of the
+	// IntermediateService's IssuePasskeyChallenge RPC.
+	IntermediateServiceIssuePasskeyChallengeProcedure = "/openauth.intermediate.v1.IntermediateService/IssuePasskeyChallenge"
+	// IntermediateServiceVerifyPasskeyProcedure is the fully-qualified name of the
+	// IntermediateService's VerifyPasskey RPC.
+	IntermediateServiceVerifyPasskeyProcedure = "/openauth.intermediate.v1.IntermediateService/VerifyPasskey"
 	// IntermediateServiceGetAuthenticatorAppOptionsProcedure is the fully-qualified name of the
 	// IntermediateService's GetAuthenticatorAppOptions RPC.
 	IntermediateServiceGetAuthenticatorAppOptionsProcedure = "/openauth.intermediate.v1.IntermediateService/GetAuthenticatorAppOptions"
@@ -123,6 +129,8 @@ type IntermediateServiceClient interface {
 	VerifyPassword(context.Context, *connect.Request[v1.VerifyPasswordRequest]) (*connect.Response[v1.VerifyPasswordResponse], error)
 	GetPasskeyOptions(context.Context, *connect.Request[v1.GetPasskeyOptionsRequest]) (*connect.Response[v1.GetPasskeyOptionsResponse], error)
 	RegisterPasskey(context.Context, *connect.Request[v1.RegisterPasskeyRequest]) (*connect.Response[v1.RegisterPasskeyResponse], error)
+	IssuePasskeyChallenge(context.Context, *connect.Request[v1.IssuePasskeyChallengeRequest]) (*connect.Response[v1.IssuePasskeyChallengeResponse], error)
+	VerifyPasskey(context.Context, *connect.Request[v1.VerifyPasskeyRequest]) (*connect.Response[v1.VerifyPasskeyResponse], error)
 	GetAuthenticatorAppOptions(context.Context, *connect.Request[v1.GetAuthenticatorAppOptionsRequest]) (*connect.Response[v1.GetAuthenticatorAppOptionsResponse], error)
 	RegisterAuthenticatorApp(context.Context, *connect.Request[v1.RegisterAuthenticatorAppRequest]) (*connect.Response[v1.RegisterAuthenticatorAppResponse], error)
 	VerifyAuthenticatorApp(context.Context, *connect.Request[v1.VerifyAuthenticatorAppRequest]) (*connect.Response[v1.VerifyAuthenticatorAppResponse], error)
@@ -254,6 +262,18 @@ func NewIntermediateServiceClient(httpClient connect.HTTPClient, baseURL string,
 			connect.WithSchema(intermediateServiceMethods.ByName("RegisterPasskey")),
 			connect.WithClientOptions(opts...),
 		),
+		issuePasskeyChallenge: connect.NewClient[v1.IssuePasskeyChallengeRequest, v1.IssuePasskeyChallengeResponse](
+			httpClient,
+			baseURL+IntermediateServiceIssuePasskeyChallengeProcedure,
+			connect.WithSchema(intermediateServiceMethods.ByName("IssuePasskeyChallenge")),
+			connect.WithClientOptions(opts...),
+		),
+		verifyPasskey: connect.NewClient[v1.VerifyPasskeyRequest, v1.VerifyPasskeyResponse](
+			httpClient,
+			baseURL+IntermediateServiceVerifyPasskeyProcedure,
+			connect.WithSchema(intermediateServiceMethods.ByName("VerifyPasskey")),
+			connect.WithClientOptions(opts...),
+		),
 		getAuthenticatorAppOptions: connect.NewClient[v1.GetAuthenticatorAppOptionsRequest, v1.GetAuthenticatorAppOptionsResponse](
 			httpClient,
 			baseURL+IntermediateServiceGetAuthenticatorAppOptionsProcedure,
@@ -296,6 +316,8 @@ type intermediateServiceClient struct {
 	verifyPassword                        *connect.Client[v1.VerifyPasswordRequest, v1.VerifyPasswordResponse]
 	getPasskeyOptions                     *connect.Client[v1.GetPasskeyOptionsRequest, v1.GetPasskeyOptionsResponse]
 	registerPasskey                       *connect.Client[v1.RegisterPasskeyRequest, v1.RegisterPasskeyResponse]
+	issuePasskeyChallenge                 *connect.Client[v1.IssuePasskeyChallengeRequest, v1.IssuePasskeyChallengeResponse]
+	verifyPasskey                         *connect.Client[v1.VerifyPasskeyRequest, v1.VerifyPasskeyResponse]
 	getAuthenticatorAppOptions            *connect.Client[v1.GetAuthenticatorAppOptionsRequest, v1.GetAuthenticatorAppOptionsResponse]
 	registerAuthenticatorApp              *connect.Client[v1.RegisterAuthenticatorAppRequest, v1.RegisterAuthenticatorAppResponse]
 	verifyAuthenticatorApp                *connect.Client[v1.VerifyAuthenticatorAppRequest, v1.VerifyAuthenticatorAppResponse]
@@ -403,6 +425,16 @@ func (c *intermediateServiceClient) RegisterPasskey(ctx context.Context, req *co
 	return c.registerPasskey.CallUnary(ctx, req)
 }
 
+// IssuePasskeyChallenge calls openauth.intermediate.v1.IntermediateService.IssuePasskeyChallenge.
+func (c *intermediateServiceClient) IssuePasskeyChallenge(ctx context.Context, req *connect.Request[v1.IssuePasskeyChallengeRequest]) (*connect.Response[v1.IssuePasskeyChallengeResponse], error) {
+	return c.issuePasskeyChallenge.CallUnary(ctx, req)
+}
+
+// VerifyPasskey calls openauth.intermediate.v1.IntermediateService.VerifyPasskey.
+func (c *intermediateServiceClient) VerifyPasskey(ctx context.Context, req *connect.Request[v1.VerifyPasskeyRequest]) (*connect.Response[v1.VerifyPasskeyResponse], error) {
+	return c.verifyPasskey.CallUnary(ctx, req)
+}
+
 // GetAuthenticatorAppOptions calls
 // openauth.intermediate.v1.IntermediateService.GetAuthenticatorAppOptions.
 func (c *intermediateServiceClient) GetAuthenticatorAppOptions(ctx context.Context, req *connect.Request[v1.GetAuthenticatorAppOptionsRequest]) (*connect.Response[v1.GetAuthenticatorAppOptionsResponse], error) {
@@ -442,6 +474,8 @@ type IntermediateServiceHandler interface {
 	VerifyPassword(context.Context, *connect.Request[v1.VerifyPasswordRequest]) (*connect.Response[v1.VerifyPasswordResponse], error)
 	GetPasskeyOptions(context.Context, *connect.Request[v1.GetPasskeyOptionsRequest]) (*connect.Response[v1.GetPasskeyOptionsResponse], error)
 	RegisterPasskey(context.Context, *connect.Request[v1.RegisterPasskeyRequest]) (*connect.Response[v1.RegisterPasskeyResponse], error)
+	IssuePasskeyChallenge(context.Context, *connect.Request[v1.IssuePasskeyChallengeRequest]) (*connect.Response[v1.IssuePasskeyChallengeResponse], error)
+	VerifyPasskey(context.Context, *connect.Request[v1.VerifyPasskeyRequest]) (*connect.Response[v1.VerifyPasskeyResponse], error)
 	GetAuthenticatorAppOptions(context.Context, *connect.Request[v1.GetAuthenticatorAppOptionsRequest]) (*connect.Response[v1.GetAuthenticatorAppOptionsResponse], error)
 	RegisterAuthenticatorApp(context.Context, *connect.Request[v1.RegisterAuthenticatorAppRequest]) (*connect.Response[v1.RegisterAuthenticatorAppResponse], error)
 	VerifyAuthenticatorApp(context.Context, *connect.Request[v1.VerifyAuthenticatorAppRequest]) (*connect.Response[v1.VerifyAuthenticatorAppResponse], error)
@@ -568,6 +602,18 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 		connect.WithSchema(intermediateServiceMethods.ByName("RegisterPasskey")),
 		connect.WithHandlerOptions(opts...),
 	)
+	intermediateServiceIssuePasskeyChallengeHandler := connect.NewUnaryHandler(
+		IntermediateServiceIssuePasskeyChallengeProcedure,
+		svc.IssuePasskeyChallenge,
+		connect.WithSchema(intermediateServiceMethods.ByName("IssuePasskeyChallenge")),
+		connect.WithHandlerOptions(opts...),
+	)
+	intermediateServiceVerifyPasskeyHandler := connect.NewUnaryHandler(
+		IntermediateServiceVerifyPasskeyProcedure,
+		svc.VerifyPasskey,
+		connect.WithSchema(intermediateServiceMethods.ByName("VerifyPasskey")),
+		connect.WithHandlerOptions(opts...),
+	)
 	intermediateServiceGetAuthenticatorAppOptionsHandler := connect.NewUnaryHandler(
 		IntermediateServiceGetAuthenticatorAppOptionsProcedure,
 		svc.GetAuthenticatorAppOptions,
@@ -626,6 +672,10 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 			intermediateServiceGetPasskeyOptionsHandler.ServeHTTP(w, r)
 		case IntermediateServiceRegisterPasskeyProcedure:
 			intermediateServiceRegisterPasskeyHandler.ServeHTTP(w, r)
+		case IntermediateServiceIssuePasskeyChallengeProcedure:
+			intermediateServiceIssuePasskeyChallengeHandler.ServeHTTP(w, r)
+		case IntermediateServiceVerifyPasskeyProcedure:
+			intermediateServiceVerifyPasskeyHandler.ServeHTTP(w, r)
 		case IntermediateServiceGetAuthenticatorAppOptionsProcedure:
 			intermediateServiceGetAuthenticatorAppOptionsHandler.ServeHTTP(w, r)
 		case IntermediateServiceRegisterAuthenticatorAppProcedure:
@@ -715,6 +765,14 @@ func (UnimplementedIntermediateServiceHandler) GetPasskeyOptions(context.Context
 
 func (UnimplementedIntermediateServiceHandler) RegisterPasskey(context.Context, *connect.Request[v1.RegisterPasskeyRequest]) (*connect.Response[v1.RegisterPasskeyResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.RegisterPasskey is not implemented"))
+}
+
+func (UnimplementedIntermediateServiceHandler) IssuePasskeyChallenge(context.Context, *connect.Request[v1.IssuePasskeyChallengeRequest]) (*connect.Response[v1.IssuePasskeyChallengeResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.IssuePasskeyChallenge is not implemented"))
+}
+
+func (UnimplementedIntermediateServiceHandler) VerifyPasskey(context.Context, *connect.Request[v1.VerifyPasskeyRequest]) (*connect.Response[v1.VerifyPasskeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.VerifyPasskey is not implemented"))
 }
 
 func (UnimplementedIntermediateServiceHandler) GetAuthenticatorAppOptions(context.Context, *connect.Request[v1.GetAuthenticatorAppOptionsRequest]) (*connect.Response[v1.GetAuthenticatorAppOptionsResponse], error) {

@@ -600,6 +600,36 @@ func (q *Queries) GetOrganizationUserByMicrosoftUserID(ctx context.Context, arg 
 	return i, err
 }
 
+const getPasskeyByCredentialID = `-- name: GetPasskeyByCredentialID :one
+SELECT
+    id, user_id, create_time, update_time, credential_id, public_key, aaguid
+FROM
+    passkeys
+WHERE
+    credential_id = $1
+    AND user_id = $2
+`
+
+type GetPasskeyByCredentialIDParams struct {
+	CredentialID []byte
+	UserID       uuid.UUID
+}
+
+func (q *Queries) GetPasskeyByCredentialID(ctx context.Context, arg GetPasskeyByCredentialIDParams) (Passkey, error) {
+	row := q.db.QueryRow(ctx, getPasskeyByCredentialID, arg.CredentialID, arg.UserID)
+	var i Passkey
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.CredentialID,
+		&i.PublicKey,
+		&i.Aaguid,
+	)
+	return i, err
+}
+
 const getProjectByID = `-- name: GetProjectByID :one
 SELECT
     id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey
@@ -1670,6 +1700,104 @@ type UpdateIntermediateSessionOrganizationIDParams struct {
 
 func (q *Queries) UpdateIntermediateSessionOrganizationID(ctx context.Context, arg UpdateIntermediateSessionOrganizationIDParams) (IntermediateSession, error) {
 	row := q.db.QueryRow(ctx, updateIntermediateSessionOrganizationID, arg.OrganizationID, arg.ID)
+	var i IntermediateSession
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.CreateTime,
+		&i.ExpireTime,
+		&i.Email,
+		&i.GoogleOauthStateSha256,
+		&i.MicrosoftOauthStateSha256,
+		&i.GoogleHostedDomain,
+		&i.GoogleUserID,
+		&i.MicrosoftTenantID,
+		&i.MicrosoftUserID,
+		&i.PasswordVerified,
+		&i.OrganizationID,
+		&i.UpdateTime,
+		&i.SecretTokenSha256,
+		&i.NewUserPasswordBcrypt,
+		&i.EmailVerificationChallengeSha256,
+		&i.EmailVerificationChallengeCompleted,
+		&i.PasskeyCredentialID,
+		&i.PasskeyPublicKey,
+		&i.PasskeyAaguid,
+		&i.PasskeyVerifyChallengeSha256,
+		&i.PasskeyVerified,
+		&i.AuthenticatorAppSecretCiphertext,
+		&i.AuthenticatorAppVerified,
+		&i.AuthenticatorAppRecoveryCodeBcrypts,
+	)
+	return i, err
+}
+
+const updateIntermediateSessionPasskeyVerified = `-- name: UpdateIntermediateSessionPasskeyVerified :one
+UPDATE
+    intermediate_sessions
+SET
+    passkey_verify_challenge_sha256 = NULL,
+    passkey_verified = TRUE,
+    update_time = now()
+WHERE
+    id = $1
+RETURNING
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_recovery_code_bcrypts
+`
+
+func (q *Queries) UpdateIntermediateSessionPasskeyVerified(ctx context.Context, id uuid.UUID) (IntermediateSession, error) {
+	row := q.db.QueryRow(ctx, updateIntermediateSessionPasskeyVerified, id)
+	var i IntermediateSession
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.CreateTime,
+		&i.ExpireTime,
+		&i.Email,
+		&i.GoogleOauthStateSha256,
+		&i.MicrosoftOauthStateSha256,
+		&i.GoogleHostedDomain,
+		&i.GoogleUserID,
+		&i.MicrosoftTenantID,
+		&i.MicrosoftUserID,
+		&i.PasswordVerified,
+		&i.OrganizationID,
+		&i.UpdateTime,
+		&i.SecretTokenSha256,
+		&i.NewUserPasswordBcrypt,
+		&i.EmailVerificationChallengeSha256,
+		&i.EmailVerificationChallengeCompleted,
+		&i.PasskeyCredentialID,
+		&i.PasskeyPublicKey,
+		&i.PasskeyAaguid,
+		&i.PasskeyVerifyChallengeSha256,
+		&i.PasskeyVerified,
+		&i.AuthenticatorAppSecretCiphertext,
+		&i.AuthenticatorAppVerified,
+		&i.AuthenticatorAppRecoveryCodeBcrypts,
+	)
+	return i, err
+}
+
+const updateIntermediateSessionPasskeyVerifyChallengeSHA256 = `-- name: UpdateIntermediateSessionPasskeyVerifyChallengeSHA256 :one
+UPDATE
+    intermediate_sessions
+SET
+    passkey_verify_challenge_sha256 = $1,
+    update_time = now()
+WHERE
+    id = $2
+RETURNING
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_recovery_code_bcrypts
+`
+
+type UpdateIntermediateSessionPasskeyVerifyChallengeSHA256Params struct {
+	PasskeyVerifyChallengeSha256 []byte
+	ID                           uuid.UUID
+}
+
+func (q *Queries) UpdateIntermediateSessionPasskeyVerifyChallengeSHA256(ctx context.Context, arg UpdateIntermediateSessionPasskeyVerifyChallengeSHA256Params) (IntermediateSession, error) {
+	row := q.db.QueryRow(ctx, updateIntermediateSessionPasskeyVerifyChallengeSHA256, arg.PasskeyVerifyChallengeSha256, arg.ID)
 	var i IntermediateSession
 	err := row.Scan(
 		&i.ID,
