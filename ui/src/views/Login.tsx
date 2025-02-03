@@ -111,9 +111,8 @@ const Login: FC<LoginProps> = ({ setView }) => {
         )}
       >
         <CardHeader>
-          {(settings?.logInWithGoogle ||
-            settings?.logInWithMicrosoft) && (
-            <CardTitle className="text-center">Continue with OAuth</CardTitle>
+          {(settings?.logInWithGoogle || settings?.logInWithMicrosoft) && (
+            <CardTitle className="text-center">Log in with</CardTitle>
           )}
         </CardHeader>
 
@@ -121,8 +120,7 @@ const Login: FC<LoginProps> = ({ setView }) => {
           <div
             className={cn(
               'w-full grid gap-6',
-              settings?.logInWithGoogle &&
-                settings?.logInWithMicrosoft
+              settings?.logInWithGoogle && settings?.logInWithMicrosoft
                 ? 'grid-cols-2'
                 : 'grid-cols-1',
             )}
@@ -143,10 +141,8 @@ const Login: FC<LoginProps> = ({ setView }) => {
             )}
           </div>
 
-          {(settings?.logInWithGoogle ||
-            settings?.logInWithMicrosoft) && (
+          {(settings?.logInWithGoogle || settings?.logInWithMicrosoft) && (
             <TextDivider
-              affects={layout !== LoginLayouts.Centered ? 'muted' : 'default'}
               variant={layout !== LoginLayouts.Centered ? 'wider' : 'wide'}
             >
               or continue with email
