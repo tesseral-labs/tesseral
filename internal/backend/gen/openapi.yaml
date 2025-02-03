@@ -840,17 +840,15 @@ components:
                 updateTime:
                     type: string
                     format: date-time
-                overrideLogInMethods:
+                logInWithPassword:
                     type: boolean
-                logInWithPasswordEnabled:
+                logInWithGoogle:
                     type: boolean
-                logInWithGoogleEnabled:
+                logInWithMicrosoft:
                     type: boolean
-                logInWithMicrosoftEnabled:
+                logInWithAuthenticatorApp:
                     type: boolean
-                logInWithAuthenticatorAppEnabled:
-                    type: boolean
-                logInWithPasskeyEnabled:
+                logInWithPasskey:
                     type: boolean
                 requireMfa:
                     type: boolean
@@ -889,15 +887,15 @@ components:
                 updateTime:
                     type: string
                     format: date-time
-                logInWithPasswordEnabled:
+                logInWithPassword:
                     type: boolean
-                logInWithGoogleEnabled:
+                logInWithGoogle:
                     type: boolean
-                logInWithMicrosoftEnabled:
+                logInWithMicrosoft:
                     type: boolean
-                logInWithAuthenticatorAppEnabled:
+                logInWithAuthenticatorApp:
                     type: boolean
-                logInWithPasskeyEnabled:
+                logInWithPasskey:
                     type: boolean
                 googleOauthClientId:
                     type: string

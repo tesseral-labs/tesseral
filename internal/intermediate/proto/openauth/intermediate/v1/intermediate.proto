@@ -260,19 +260,18 @@ message RedeemMicrosoftOAuthCodeResponse {
 
 message Organization {
   string id = 1;
-  string project_id = 2;
-  string display_name = 3;
-  bool log_in_with_google = 4;
-  bool log_in_with_microsoft = 5;
-  bool log_in_with_password = 6;
-  bool log_in_with_authenticator_app = 12;
-  bool log_in_with_passkey = 13;
-  bool require_mfa = 14;
-  string primary_saml_connection_id = 7;
-  bool user_exists = 8;
-  bool user_has_password = 9;
-  bool user_has_authenticator_app = 10;
-  bool user_has_passkey = 11;
+  string display_name = 2;
+  bool log_in_with_google = 3;
+  bool log_in_with_microsoft = 4;
+  bool log_in_with_password = 5;
+  bool log_in_with_authenticator_app = 6;
+  bool log_in_with_passkey = 7;
+  bool require_mfa = 8;
+  string primary_saml_connection_id = 9;
+  bool user_exists = 10;
+  bool user_has_password = 11;
+  bool user_has_authenticator_app = 12;
+  bool user_has_passkey = 13;
 }
 
 message IssueEmailVerificationChallengeRequest {

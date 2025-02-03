@@ -1,6 +1,6 @@
 -- name: CreateOrganization :one
-INSERT INTO organizations (id, project_id, display_name, override_log_in_methods, disable_log_in_with_google, disable_log_in_with_microsoft, disable_log_in_with_password, saml_enabled, scim_enabled)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+INSERT INTO organizations (id, project_id, display_name, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_authenticator_app, log_in_with_passkey, saml_enabled, scim_enabled)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
 RETURNING
     *;
 
@@ -72,12 +72,13 @@ UPDATE
 SET
     update_time = now(),
     display_name = $2,
-    override_log_in_methods = $3,
-    disable_log_in_with_password = $4,
-    disable_log_in_with_google = $5,
-    disable_log_in_with_microsoft = $6,
-    saml_enabled = $7,
-    scim_enabled = $8
+    log_in_with_password = $3,
+    log_in_with_google = $4,
+    log_in_with_microsoft = $5,
+    log_in_with_authenticator_app = $6,
+    log_in_with_passkey = $7,
+    saml_enabled = $8,
+    scim_enabled = $9
 WHERE
     id = $1
 RETURNING
@@ -93,15 +94,17 @@ UPDATE
 SET
     update_time = now(),
     display_name = $2,
-    log_in_with_password_enabled = $3,
-    log_in_with_google_enabled = $4,
-    log_in_with_microsoft_enabled = $5,
-    google_oauth_client_id = $6,
-    google_oauth_client_secret_ciphertext = $7,
-    microsoft_oauth_client_id = $8,
-    microsoft_oauth_client_secret_ciphertext = $9,
-    custom_auth_domain = $10,
-    auth_domain = $11
+    log_in_with_password = $3,
+    log_in_with_google = $4,
+    log_in_with_microsoft = $5,
+    log_in_with_authenticator_app = $6,
+    log_in_with_passkey = $7,
+    google_oauth_client_id = $8,
+    google_oauth_client_secret_ciphertext = $9,
+    microsoft_oauth_client_id = $10,
+    microsoft_oauth_client_secret_ciphertext = $11,
+    custom_auth_domain = $12,
+    auth_domain = $13
 WHERE
     id = $1
 RETURNING

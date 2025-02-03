@@ -151,28 +151,13 @@ func validateAuthRequirementsSatisfiedInner(qIntermediateSession queries.Interme
 		return apierror.NewFailedPreconditionError("email not verified", nil)
 	}
 
-	googleEnabled := qProject.LogInWithGoogleEnabled
-	if derefOrEmpty(qOrg.DisableLogInWithGoogle) {
-		googleEnabled = false
-	}
-
-	microsoftEnabled := qProject.LogInWithMicrosoftEnabled
-	if derefOrEmpty(qOrg.DisableLogInWithMicrosoft) {
-		microsoftEnabled = false
-	}
-
-	passwordEnabled := qProject.LogInWithPasswordEnabled
-	if derefOrEmpty(qOrg.DisableLogInWithPassword) {
-		passwordEnabled = false
-	}
-
-	if googleEnabled && qIntermediateSession.GoogleUserID != nil {
+	if qOrg.LogInWithGoogle && qIntermediateSession.GoogleUserID != nil {
 		return nil
 	}
-	if microsoftEnabled && qIntermediateSession.MicrosoftUserID != nil {
+	if qOrg.LogInWithMicrosoft && qIntermediateSession.MicrosoftUserID != nil {
 		return nil
 	}
-	if passwordEnabled && qIntermediateSession.PasswordVerified {
+	if qOrg.LogInWithPassword && qIntermediateSession.PasswordVerified {
 		return nil
 	}
 
