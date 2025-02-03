@@ -636,19 +636,17 @@ components:
             properties:
                 id:
                     type: string
-                projectId:
-                    type: string
                 displayName:
                     type: string
-                logInWithGoogleEnabled:
+                logInWithGoogle:
                     type: boolean
-                logInWithMicrosoftEnabled:
+                logInWithMicrosoft:
                     type: boolean
-                logInWithPasswordEnabled:
+                logInWithPassword:
                     type: boolean
-                logInWithAuthenticatorAppEnabled:
+                logInWithAuthenticatorApp:
                     type: boolean
-                logInWithPasskeyEnabled:
+                logInWithPasskey:
                     type: boolean
                 requireMfa:
                     type: boolean

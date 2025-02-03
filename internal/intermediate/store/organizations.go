@@ -32,18 +32,20 @@ func (s *Store) CreateOrganization(ctx context.Context, req *intermediatev1.Crea
 	}
 	defer rollback()
 
-	if _, err = q.GetProjectByID(ctx, authn.ProjectID(ctx)); err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, apierror.NewNotFoundError("project not found", fmt.Errorf("get project by id: %w", err))
-		}
+	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	if err != nil {
 		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 
 	qOrganization, err := q.CreateOrganization(ctx, queries.CreateOrganizationParams{
-		ID:                   uuid.New(),
-		ProjectID:            authn.ProjectID(ctx),
-		DisplayName:          req.DisplayName,
-		OverrideLogInMethods: false,
+		ID:                 uuid.New(),
+		ProjectID:          authn.ProjectID(ctx),
+		DisplayName:        req.DisplayName,
+		LogInWithGoogle:    qProject.LogInWithGoogle,
+		LogInWithMicrosoft: qProject.LogInWithMicrosoft,
+		LogInWithPassword:  qProject.LogInWithPassword,
+		SamlEnabled:        false,
+		ScimEnabled:        false,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("create organization: %w", err)
@@ -306,27 +308,15 @@ func (s *Store) SetOrganization(ctx context.Context, req *intermediatev1.SetOrga
 }
 
 func parseOrganization(qOrg queries.Organization, qProject queries.Project, qSAMLConnection *queries.SamlConnection) *intermediatev1.Organization {
-	logInWithGoogleEnabled := qProject.LogInWithGoogleEnabled
-	logInWithMicrosoftEnabled := qProject.LogInWithMicrosoftEnabled
-	logInWithPasswordEnabled := qProject.LogInWithPasswordEnabled
-
-	// allow orgs to disable login methods
-	if derefOrEmpty(qOrg.DisableLogInWithGoogle) {
-		logInWithGoogleEnabled = false
-	}
-	if derefOrEmpty(qOrg.DisableLogInWithMicrosoft) {
-		logInWithMicrosoftEnabled = false
-	}
-	if derefOrEmpty(qOrg.DisableLogInWithPassword) {
-		logInWithPasswordEnabled = false
-	}
-
 	return &intermediatev1.Organization{
 		Id:                        idformat.Organization.Format(qOrg.ID),
 		DisplayName:               qOrg.DisplayName,
-		LogInWithGoogleEnabled:    logInWithGoogleEnabled,
-		LogInWithMicrosoftEnabled: logInWithMicrosoftEnabled,
-		LogInWithPasswordEnabled:  logInWithPasswordEnabled,
+		LogInWithGoogle:           qOrg.LogInWithGoogle,
+		LogInWithMicrosoft:        qOrg.LogInWithMicrosoft,
+		LogInWithPassword:         qOrg.LogInWithPassword,
+		LogInWithAuthenticatorApp: qOrg.LogInWithAuthenticatorApp,
+		LogInWithPasskey:          qOrg.LogInWithPasskey,
+		RequireMfa:                qOrg.RequireMfa,
 		PrimarySamlConnectionId:   idformat.SAMLConnection.Format(qSAMLConnection.ID),
 	}
 }

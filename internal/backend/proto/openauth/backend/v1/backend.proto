@@ -603,11 +603,11 @@ message Project {
   string display_name = 2;
   google.protobuf.Timestamp create_time = 3;
   google.protobuf.Timestamp update_time = 4;
-  optional bool log_in_with_password_enabled = 5;
-  optional bool log_in_with_google_enabled = 6;
-  optional bool log_in_with_microsoft_enabled = 7;
-  optional bool log_in_with_authenticator_app_enabled = 13;
-  optional bool log_in_with_passkey_enabled = 14;
+  optional bool log_in_with_password = 5;
+  optional bool log_in_with_google = 6;
+  optional bool log_in_with_microsoft = 7;
+  optional bool log_in_with_authenticator_app = 13;
+  optional bool log_in_with_passkey = 14;
   string google_oauth_client_id = 8;
   string google_oauth_client_secret = 9;
   string microsoft_oauth_client_id = 10;
@@ -634,13 +634,12 @@ message Organization {
   string display_name = 2;
   google.protobuf.Timestamp create_time = 3;
   google.protobuf.Timestamp update_time = 4;
-  optional bool override_log_in_methods = 5;
-  bool log_in_with_password_enabled = 6;
-  bool log_in_with_google_enabled = 7;
-  bool log_in_with_microsoft_enabled = 8;
-  bool log_in_with_authenticator_app_enabled = 11;
-  bool log_in_with_passkey_enabled = 12;
-  bool require_mfa = 13;
+  optional bool log_in_with_password = 6;
+  optional bool log_in_with_google = 7;
+  optional bool log_in_with_microsoft = 8;
+  optional bool log_in_with_authenticator_app = 11;
+  optional bool log_in_with_passkey = 12;
+  optional bool require_mfa = 13;
   optional bool saml_enabled = 9;
   optional bool scim_enabled = 10;
 }

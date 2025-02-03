@@ -140,15 +140,17 @@ type Organization struct {
 	ID                        uuid.UUID
 	ProjectID                 uuid.UUID
 	DisplayName               string
-	OverrideLogInMethods      bool
 	SamlEnabled               bool
 	ScimEnabled               bool
 	CreateTime                *time.Time
 	UpdateTime                *time.Time
 	LoginsDisabled            bool
-	DisableLogInWithGoogle    *bool
-	DisableLogInWithMicrosoft *bool
-	DisableLogInWithPassword  *bool
+	LogInWithGoogle           bool
+	LogInWithMicrosoft        bool
+	LogInWithPassword         bool
+	LogInWithAuthenticatorApp bool
+	LogInWithPasskey          bool
+	RequireMfa                bool
 }
 
 type OrganizationDomain struct {
@@ -182,9 +184,9 @@ type Passkey struct {
 type Project struct {
 	ID                                   uuid.UUID
 	OrganizationID                       *uuid.UUID
-	LogInWithPasswordEnabled             bool
-	LogInWithGoogleEnabled               bool
-	LogInWithMicrosoftEnabled            bool
+	LogInWithPassword                    bool
+	LogInWithGoogle                      bool
+	LogInWithMicrosoft                   bool
 	GoogleOauthClientID                  *string
 	MicrosoftOauthClientID               *string
 	GoogleOauthClientSecretCiphertext    []byte
@@ -195,6 +197,8 @@ type Project struct {
 	CustomAuthDomain                     *string
 	AuthDomain                           *string
 	LoginsDisabled                       bool
+	LogInWithAuthenticatorApp            bool
+	LogInWithPasskey                     bool
 }
 
 type ProjectApiKey struct {

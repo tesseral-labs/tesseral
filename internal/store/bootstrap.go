@@ -51,13 +51,13 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 	customAuthDomain := "auth.app.tesseral.example.com"
 
 	if _, err := q.CreateProject(ctx, queries.CreateProjectParams{
-		ID:                       dogfoodProjectID,
-		DisplayName:              "OpenAuth Dogfood",
-		OrganizationID:           nil, // will populate after creating org
-		LogInWithPasswordEnabled: true,
-		LogInWithGoogleEnabled:   true,
-		AuthDomain:               &authDomain,
-		CustomAuthDomain:         &customAuthDomain,
+		ID:                dogfoodProjectID,
+		DisplayName:       "OpenAuth Dogfood",
+		OrganizationID:    nil, // will populate after creating org
+		LogInWithPassword: true,
+		LogInWithGoogle:   true,
+		AuthDomain:        &authDomain,
+		CustomAuthDomain:  &customAuthDomain,
 	}); err != nil {
 		return nil, fmt.Errorf("create dogfood project: %w", err)
 	}
@@ -70,10 +70,9 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 	}
 
 	if _, err := q.CreateOrganization(ctx, queries.CreateOrganizationParams{
-		ID:                   dogfoodOrganizationID,
-		ProjectID:            dogfoodProjectID,
-		DisplayName:          "OpenAuth",
-		OverrideLogInMethods: false, // just to be explicit here
+		ID:          dogfoodOrganizationID,
+		ProjectID:   dogfoodProjectID,
+		DisplayName: "OpenAuth",
 	}); err != nil {
 		return nil, fmt.Errorf("create dogfood organization: %w", err)
 	}

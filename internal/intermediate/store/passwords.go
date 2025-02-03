@@ -71,11 +71,7 @@ func (s *Store) RegisterPassword(ctx context.Context, req *intermediatev1.Regist
 	}
 
 	// Ensure given organization is suitable for authentication over password:
-	passwordEnabled := qProject.LogInWithPasswordEnabled
-	if derefOrEmpty(qOrg.DisableLogInWithPassword) {
-		passwordEnabled = false
-	}
-	if !passwordEnabled {
+	if !qOrg.LogInWithPassword {
 		return nil, apierror.NewFailedPreconditionError("password authentication not enabled", fmt.Errorf("password authentication not enabled"))
 	}
 
@@ -158,12 +154,7 @@ func (s *Store) VerifyPassword(ctx context.Context, req *intermediatev1.VerifyPa
 	// 1. The organization must have passwords enabled,
 	// 2. The intermediate session must have a verified email, and
 	// 3. A user in that org must have the same email.
-	passwordEnabled := qProject.LogInWithPasswordEnabled
-	if derefOrEmpty(qOrg.DisableLogInWithPassword) {
-		passwordEnabled = false
-	}
-
-	if !passwordEnabled {
+	if !qOrg.LogInWithPassword {
 		return nil, apierror.NewFailedPreconditionError("password authentication not enabled", nil)
 	}
 

@@ -130,11 +130,6 @@ func (s *Store) validateAuthRequirementsSatisfied(ctx context.Context, q *querie
 		return fmt.Errorf("get intermediate session verified: %w", err)
 	}
 
-	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
-	if err != nil {
-		return fmt.Errorf("get project by id: %w", err)
-	}
-
 	qOrg, err := q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
 		ProjectID: authn.ProjectID(ctx),
 		ID:        *qIntermediateSession.OrganizationID,
@@ -143,36 +138,21 @@ func (s *Store) validateAuthRequirementsSatisfied(ctx context.Context, q *querie
 		return fmt.Errorf("get organization by id: %w", err)
 	}
 
-	return validateAuthRequirementsSatisfiedInner(qIntermediateSession, emailVerified, qProject, qOrg)
+	return validateAuthRequirementsSatisfiedInner(qIntermediateSession, emailVerified, qOrg)
 }
 
-func validateAuthRequirementsSatisfiedInner(qIntermediateSession queries.IntermediateSession, emailVerified bool, qProject queries.Project, qOrg queries.Organization) error {
+func validateAuthRequirementsSatisfiedInner(qIntermediateSession queries.IntermediateSession, emailVerified bool, qOrg queries.Organization) error {
 	if !emailVerified {
 		return apierror.NewFailedPreconditionError("email not verified", nil)
 	}
 
-	googleEnabled := qProject.LogInWithGoogleEnabled
-	if derefOrEmpty(qOrg.DisableLogInWithGoogle) {
-		googleEnabled = false
-	}
-
-	microsoftEnabled := qProject.LogInWithMicrosoftEnabled
-	if derefOrEmpty(qOrg.DisableLogInWithMicrosoft) {
-		microsoftEnabled = false
-	}
-
-	passwordEnabled := qProject.LogInWithPasswordEnabled
-	if derefOrEmpty(qOrg.DisableLogInWithPassword) {
-		passwordEnabled = false
-	}
-
-	if googleEnabled && qIntermediateSession.GoogleUserID != nil {
+	if qOrg.LogInWithGoogle && qIntermediateSession.GoogleUserID != nil {
 		return nil
 	}
-	if microsoftEnabled && qIntermediateSession.MicrosoftUserID != nil {
+	if qOrg.LogInWithMicrosoft && qIntermediateSession.MicrosoftUserID != nil {
 		return nil
 	}
-	if passwordEnabled && qIntermediateSession.PasswordVerified {
+	if qOrg.LogInWithPassword && qIntermediateSession.PasswordVerified {
 		return nil
 	}
 

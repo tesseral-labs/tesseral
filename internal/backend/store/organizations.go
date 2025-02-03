@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/openauth/openauth/internal/backend/authn"
@@ -23,18 +22,6 @@ func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrg
 	}
 	defer rollback()
 
-	var (
-		disableLogInWithGoogle,
-		disableLogInWithMicrosoft,
-		disableLogInWithPassword *bool
-	)
-
-	if req.Organization.OverrideLogInMethods != nil {
-		disableLogInWithGoogle = aws.Bool(!req.Organization.LogInWithGoogleEnabled)
-		disableLogInWithMicrosoft = aws.Bool(!req.Organization.LogInWithMicrosoftEnabled)
-		disableLogInWithPassword = aws.Bool(!req.Organization.LogInWithPasswordEnabled)
-	}
-
 	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
@@ -42,6 +29,26 @@ func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrg
 		}
 
 		return nil, fmt.Errorf("get project by id: %w", err)
+	}
+
+	if derefOrEmpty(req.Organization.LogInWithGoogle) && !qProject.LogInWithGoogle {
+		return nil, apierror.NewPermissionDeniedError("log in with google is not enabled for this project", fmt.Errorf("log in with google is not enabled for this project"))
+	}
+
+	if derefOrEmpty(req.Organization.LogInWithMicrosoft) && !qProject.LogInWithMicrosoft {
+		return nil, apierror.NewPermissionDeniedError("log in with microsoft is not enabled for this project", fmt.Errorf("log in with microsoft is not enabled for this project"))
+	}
+
+	if derefOrEmpty(req.Organization.LogInWithPassword) && !qProject.LogInWithPassword {
+		return nil, apierror.NewPermissionDeniedError("log in with password is not enabled for this project", fmt.Errorf("log in with password is not enabled for this project"))
+	}
+
+	if derefOrEmpty(req.Organization.LogInWithAuthenticatorApp) && !qProject.LogInWithAuthenticatorApp {
+		return nil, apierror.NewPermissionDeniedError("log in with authenticator app is not enabled for this project", fmt.Errorf("log in with authenticator app is not enabled for this project"))
+	}
+
+	if derefOrEmpty(req.Organization.LogInWithPasskey) && !qProject.LogInWithPasskey {
+		return nil, apierror.NewPermissionDeniedError("log in with passkey is not enabled for this project", fmt.Errorf("log in with passkey is not enabled for this project"))
 	}
 
 	var samlEnabled bool
@@ -58,13 +65,13 @@ func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrg
 		ID:                        uuid.New(),
 		ProjectID:                 authn.ProjectID(ctx),
 		DisplayName:               req.Organization.DisplayName,
-		OverrideLogInMethods:      derefOrEmpty(req.Organization.OverrideLogInMethods),
-		DisableLogInWithGoogle:    disableLogInWithGoogle,
-		DisableLogInWithMicrosoft: disableLogInWithMicrosoft,
-		DisableLogInWithPassword:  disableLogInWithPassword,
-
-		SamlEnabled: samlEnabled,
-		ScimEnabled: scimEnabled,
+		LogInWithGoogle:           derefOrEmpty(req.Organization.LogInWithGoogle),
+		LogInWithMicrosoft:        derefOrEmpty(req.Organization.LogInWithMicrosoft),
+		LogInWithPassword:         derefOrEmpty(req.Organization.LogInWithPassword),
+		LogInWithAuthenticatorApp: derefOrEmpty(req.Organization.LogInWithAuthenticatorApp),
+		LogInWithPasskey:          derefOrEmpty(req.Organization.LogInWithPasskey),
+		SamlEnabled:               samlEnabled,
+		ScimEnabled:               scimEnabled,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("create organization: %w", err)
@@ -168,6 +175,11 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *backendv1.UpdateOrg
 		return nil, apierror.NewInvalidArgumentError("invalid organization id", fmt.Errorf("parse organization id: %w", err))
 	}
 
+	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get project by id: %w", err)
+	}
+
 	// fetch existing org; this also acts as a permission check
 	qOrg, err := q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
 		ProjectID: authn.ProjectID(ctx),
@@ -190,17 +202,49 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *backendv1.UpdateOrg
 		updates.DisplayName = req.Organization.DisplayName
 	}
 
-	updates.OverrideLogInMethods = qOrg.OverrideLogInMethods
-	if req.Organization.OverrideLogInMethods != nil {
-		updates.OverrideLogInMethods = *req.Organization.OverrideLogInMethods
+	updates.LogInWithGoogle = qOrg.LogInWithGoogle
+	if req.Organization.LogInWithGoogle != nil {
+		if *req.Organization.LogInWithGoogle && !qProject.LogInWithGoogle {
+			return nil, apierror.NewPermissionDeniedError("log in with google is not enabled for this project", fmt.Errorf("log in with google is not enabled for this project"))
+		}
+
+		updates.LogInWithGoogle = *req.Organization.LogInWithGoogle
 	}
 
-	// update the override_log_in_with_..._enabled columns to null unless the
-	// organization is overriding those columns.
-	if req.Organization.GetOverrideLogInMethods() {
-		updates.DisableLogInWithGoogle = aws.Bool(!req.Organization.LogInWithGoogleEnabled)
-		updates.DisableLogInWithMicrosoft = aws.Bool(!req.Organization.LogInWithMicrosoftEnabled)
-		updates.DisableLogInWithPassword = aws.Bool(!req.Organization.LogInWithPasswordEnabled)
+	updates.LogInWithMicrosoft = qOrg.LogInWithMicrosoft
+	if req.Organization.LogInWithMicrosoft != nil {
+		if *req.Organization.LogInWithMicrosoft && !qProject.LogInWithMicrosoft {
+			return nil, apierror.NewPermissionDeniedError("log in with microsoft is not enabled for this project", fmt.Errorf("log in with microsoft is not enabled for this project"))
+		}
+
+		updates.LogInWithMicrosoft = *req.Organization.LogInWithMicrosoft
+	}
+
+	updates.LogInWithPassword = qOrg.LogInWithPassword
+	if req.Organization.LogInWithPassword != nil {
+		if *req.Organization.LogInWithPassword && !qProject.LogInWithPassword {
+			return nil, apierror.NewPermissionDeniedError("log in with password is not enabled for this project", fmt.Errorf("log in with password is not enabled for this project"))
+		}
+
+		updates.LogInWithPassword = *req.Organization.LogInWithPassword
+	}
+
+	updates.LogInWithAuthenticatorApp = qOrg.LogInWithAuthenticatorApp
+	if req.Organization.LogInWithAuthenticatorApp != nil {
+		if *req.Organization.LogInWithAuthenticatorApp && !qProject.LogInWithAuthenticatorApp {
+			return nil, apierror.NewPermissionDeniedError("log in with authenticator app is not enabled for this project", fmt.Errorf("log in with authenticator app is not enabled for this project"))
+		}
+
+		updates.LogInWithAuthenticatorApp = *req.Organization.LogInWithAuthenticatorApp
+	}
+
+	updates.LogInWithPasskey = qOrg.LogInWithPasskey
+	if req.Organization.LogInWithPasskey != nil {
+		if *req.Organization.LogInWithPasskey && !qProject.LogInWithPasskey {
+			return nil, apierror.NewPermissionDeniedError("log in with passkey is not enabled for this project", fmt.Errorf("log in with passkey is not enabled for this project"))
+		}
+
+		updates.LogInWithPasskey = *req.Organization.LogInWithPasskey
 	}
 
 	updates.SamlEnabled = qOrg.SamlEnabled
@@ -216,15 +260,6 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *backendv1.UpdateOrg
 	qUpdatedOrg, err := q.UpdateOrganization(ctx, updates)
 	if err != nil {
 		return nil, fmt.Errorf("update organization: %w", err)
-	}
-
-	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
-	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, apierror.NewNotFoundError("project not found", fmt.Errorf("get project by id: %w", err))
-		}
-
-		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 
 	if err := commit(); err != nil {
@@ -318,30 +353,17 @@ func (s *Store) EnableOrganizationLogins(ctx context.Context, req *backendv1.Ena
 }
 
 func parseOrganization(qProject queries.Project, qOrg queries.Organization) *backendv1.Organization {
-	logInWithGoogleEnabled := qProject.LogInWithGoogleEnabled
-	logInWithMicrosoftEnabled := qProject.LogInWithMicrosoftEnabled
-	logInWithPasswordEnabled := qProject.LogInWithPasswordEnabled
-
-	// allow orgs to disable login methods
-	if derefOrEmpty(qOrg.DisableLogInWithGoogle) {
-		logInWithGoogleEnabled = false
-	}
-	if derefOrEmpty(qOrg.DisableLogInWithMicrosoft) {
-		logInWithMicrosoftEnabled = false
-	}
-	if derefOrEmpty(qOrg.DisableLogInWithPassword) {
-		logInWithPasswordEnabled = false
-	}
-
 	return &backendv1.Organization{
 		Id:                        idformat.Organization.Format(qOrg.ID),
 		DisplayName:               qOrg.DisplayName,
 		CreateTime:                timestamppb.New(*qOrg.CreateTime),
 		UpdateTime:                timestamppb.New(*qOrg.UpdateTime),
-		OverrideLogInMethods:      &qOrg.OverrideLogInMethods,
-		LogInWithPasswordEnabled:  logInWithPasswordEnabled,
-		LogInWithGoogleEnabled:    logInWithGoogleEnabled,
-		LogInWithMicrosoftEnabled: logInWithMicrosoftEnabled,
+		LogInWithPassword:         &qOrg.LogInWithPassword,
+		LogInWithGoogle:           &qOrg.LogInWithGoogle,
+		LogInWithMicrosoft:        &qOrg.LogInWithMicrosoft,
+		LogInWithAuthenticatorApp: &qOrg.LogInWithAuthenticatorApp,
+		LogInWithPasskey:          &qOrg.LogInWithPasskey,
+		RequireMfa:                &qOrg.RequireMfa,
 		SamlEnabled:               &qOrg.SamlEnabled,
 		ScimEnabled:               &qOrg.ScimEnabled,
 	}

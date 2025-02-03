@@ -179,7 +179,7 @@ func (q *Queries) GetCurrentSessionKeyByProjectID(ctx context.Context, projectID
 
 const getOrganizationByID = `-- name: GetOrganizationByID :one
 SELECT
-    id, project_id, display_name, override_log_in_methods, saml_enabled, scim_enabled, create_time, update_time, logins_disabled, disable_log_in_with_google, disable_log_in_with_microsoft, disable_log_in_with_password
+    id, project_id, display_name, saml_enabled, scim_enabled, create_time, update_time, logins_disabled, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_authenticator_app, log_in_with_passkey, require_mfa
 FROM
     organizations
 WHERE
@@ -193,22 +193,24 @@ func (q *Queries) GetOrganizationByID(ctx context.Context, id uuid.UUID) (Organi
 		&i.ID,
 		&i.ProjectID,
 		&i.DisplayName,
-		&i.OverrideLogInMethods,
 		&i.SamlEnabled,
 		&i.ScimEnabled,
 		&i.CreateTime,
 		&i.UpdateTime,
 		&i.LoginsDisabled,
-		&i.DisableLogInWithGoogle,
-		&i.DisableLogInWithMicrosoft,
-		&i.DisableLogInWithPassword,
+		&i.LogInWithGoogle,
+		&i.LogInWithMicrosoft,
+		&i.LogInWithPassword,
+		&i.LogInWithAuthenticatorApp,
+		&i.LogInWithPasskey,
+		&i.RequireMfa,
 	)
 	return i, err
 }
 
 const getProjectByID = `-- name: GetProjectByID :one
 SELECT
-    id, organization_id, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey
 FROM
     projects
 WHERE
@@ -221,9 +223,9 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 	err := row.Scan(
 		&i.ID,
 		&i.OrganizationID,
-		&i.LogInWithPasswordEnabled,
-		&i.LogInWithGoogleEnabled,
-		&i.LogInWithMicrosoftEnabled,
+		&i.LogInWithPassword,
+		&i.LogInWithGoogle,
+		&i.LogInWithMicrosoft,
 		&i.GoogleOauthClientID,
 		&i.MicrosoftOauthClientID,
 		&i.GoogleOauthClientSecretCiphertext,
@@ -234,6 +236,8 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 		&i.CustomAuthDomain,
 		&i.AuthDomain,
 		&i.LoginsDisabled,
+		&i.LogInWithAuthenticatorApp,
+		&i.LogInWithPasskey,
 	)
 	return i, err
 }
@@ -675,48 +679,53 @@ UPDATE
 SET
     update_time = now(),
     display_name = $2,
-    override_log_in_methods = $3,
-    disable_log_in_with_password = $4,
-    disable_log_in_with_google = $5,
-    disable_log_in_with_microsoft = $6
+    log_in_with_password = $3,
+    log_in_with_google = $4,
+    log_in_with_microsoft = $5,
+    log_in_with_authenticator_app = $6,
+    log_in_with_passkey = $7
 WHERE
     id = $1
 RETURNING
-    id, project_id, display_name, override_log_in_methods, saml_enabled, scim_enabled, create_time, update_time, logins_disabled, disable_log_in_with_google, disable_log_in_with_microsoft, disable_log_in_with_password
+    id, project_id, display_name, saml_enabled, scim_enabled, create_time, update_time, logins_disabled, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_authenticator_app, log_in_with_passkey, require_mfa
 `
 
 type UpdateOrganizationParams struct {
 	ID                        uuid.UUID
 	DisplayName               string
-	OverrideLogInMethods      bool
-	DisableLogInWithPassword  *bool
-	DisableLogInWithGoogle    *bool
-	DisableLogInWithMicrosoft *bool
+	LogInWithPassword         bool
+	LogInWithGoogle           bool
+	LogInWithMicrosoft        bool
+	LogInWithAuthenticatorApp bool
+	LogInWithPasskey          bool
 }
 
 func (q *Queries) UpdateOrganization(ctx context.Context, arg UpdateOrganizationParams) (Organization, error) {
 	row := q.db.QueryRow(ctx, updateOrganization,
 		arg.ID,
 		arg.DisplayName,
-		arg.OverrideLogInMethods,
-		arg.DisableLogInWithPassword,
-		arg.DisableLogInWithGoogle,
-		arg.DisableLogInWithMicrosoft,
+		arg.LogInWithPassword,
+		arg.LogInWithGoogle,
+		arg.LogInWithMicrosoft,
+		arg.LogInWithAuthenticatorApp,
+		arg.LogInWithPasskey,
 	)
 	var i Organization
 	err := row.Scan(
 		&i.ID,
 		&i.ProjectID,
 		&i.DisplayName,
-		&i.OverrideLogInMethods,
 		&i.SamlEnabled,
 		&i.ScimEnabled,
 		&i.CreateTime,
 		&i.UpdateTime,
 		&i.LoginsDisabled,
-		&i.DisableLogInWithGoogle,
-		&i.DisableLogInWithMicrosoft,
-		&i.DisableLogInWithPassword,
+		&i.LogInWithGoogle,
+		&i.LogInWithMicrosoft,
+		&i.LogInWithPassword,
+		&i.LogInWithAuthenticatorApp,
+		&i.LogInWithPasskey,
+		&i.RequireMfa,
 	)
 	return i, err
 }

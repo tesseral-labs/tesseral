@@ -39,10 +39,11 @@ UPDATE
 SET
     update_time = now(),
     display_name = $2,
-    override_log_in_methods = $3,
-    disable_log_in_with_password = $4,
-    disable_log_in_with_google = $5,
-    disable_log_in_with_microsoft = $6
+    log_in_with_password = $3,
+    log_in_with_google = $4,
+    log_in_with_microsoft = $5,
+    log_in_with_authenticator_app = $6,
+    log_in_with_passkey = $7
 WHERE
     id = $1
 RETURNING
