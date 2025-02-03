@@ -432,21 +432,21 @@ WHERE
 RETURNING
     *;
 
--- name: UpdateUserFailedAuthenticatorAppBackupCodeAttempts :one
+-- name: UpdateUserFailedAuthenticatorAppAttempts :one
 UPDATE
     users
 SET
-    failed_authenticator_app_backup_code_attempts = $1
+    failed_authenticator_app_attempts = $1
 WHERE
     id = $2
 RETURNING
     *;
 
--- name: UpdateUserAuthenticatorAppBackupCodeLockoutExpireTime :one
+-- name: UpdateUserAuthenticatorAppLockoutExpireTime :one
 UPDATE
     users
 SET
-    authenticator_app_backup_code_lockout_expire_time = $1
+    authenticator_app_lockout_expire_time = $1
 WHERE
     id = $2
 RETURNING

@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/openauth/openauth/internal/bcryptcost"
@@ -131,6 +130,10 @@ func (s *Store) RegisterAuthenticatorApp(ctx context.Context, req *intermediatev
 }
 
 func (s *Store) VerifyAuthenticatorApp(ctx context.Context, req *intermediatev1.VerifyAuthenticatorAppRequest) (*intermediatev1.VerifyAuthenticatorAppResponse, error) {
+	if err := s.checkAuthenticatorAppLockedOut(ctx); err != nil {
+		return nil, fmt.Errorf("check authenticator app not locked out: %w", err)
+	}
+
 	if req.RecoveryCode != "" {
 		if err := s.verifyAuthenticatorAppByBackupCode(ctx, req.RecoveryCode); err != nil {
 			return nil, fmt.Errorf("verify authenticator app by backup code: %w", err)
@@ -166,7 +169,15 @@ func (s *Store) verifyAuthenticatorAppByTOTPCode(ctx context.Context, totpCode s
 
 	key := totp.Key{Secret: secret}
 	if err := key.Validate(time.Now(), totpCode); err != nil {
+		if err := s.updateUserAuthenticatorAppLockoutState(ctx, false); err != nil {
+			return fmt.Errorf("update user authenticator app lockout state: %w", err)
+		}
+
 		return apierror.NewInvalidArgumentError("invalid totp code", err)
+	}
+
+	if err := s.updateUserAuthenticatorAppLockoutState(ctx, true); err != nil {
+		return fmt.Errorf("update user authenticator app lockout state: %w", err)
 	}
 
 	return nil
@@ -174,6 +185,56 @@ func (s *Store) verifyAuthenticatorAppByTOTPCode(ctx context.Context, totpCode s
 
 func (s *Store) verifyAuthenticatorAppByBackupCode(ctx context.Context, backupCode string) error {
 	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return err
+	}
+	defer rollback()
+
+	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))
+	if err != nil {
+		return fmt.Errorf("get intermediate session by id: %w", err)
+	}
+
+	var ok bool
+	var backupCodeBcrypts [][]byte
+	for _, b := range qIntermediateSession.AuthenticatorAppBackupCodeBcrypts {
+		if bcrypt.CompareHashAndPassword(b, []byte(backupCode)) == nil {
+			ok = true
+			continue // do not keep this bcrypt around; the code is used
+		}
+
+		backupCodeBcrypts = append(backupCodeBcrypts, b)
+	}
+
+	if !ok {
+		if err := s.updateUserAuthenticatorAppLockoutState(ctx, false); err != nil {
+			return fmt.Errorf("update user authenticator app lockout state: %w", err)
+		}
+
+		return apierror.NewInvalidArgumentError("invalid backup code", nil)
+	}
+
+	// write back the remaining backup codes to the user
+	if _, err := q.UpdateIntermediateSessionAuthenticatorAppBackupCodeBcrypts(ctx, queries.UpdateIntermediateSessionAuthenticatorAppBackupCodeBcryptsParams{
+		ID:                                authn.IntermediateSessionID(ctx),
+		AuthenticatorAppBackupCodeBcrypts: backupCodeBcrypts,
+	}); err != nil {
+		return fmt.Errorf("update intermediate session authenticator app backup code bcrypts: %w", err)
+	}
+
+	if err := s.updateUserAuthenticatorAppLockoutState(ctx, true); err != nil {
+		return fmt.Errorf("update user authenticator app lockout state: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return fmt.Errorf("commit: %w", err)
+	}
+
+	return nil
+}
+
+func (s *Store) checkAuthenticatorAppLockedOut(ctx context.Context) error {
+	_, q, _, rollback, err := s.tx(ctx)
 	if err != nil {
 		return err
 	}
@@ -194,80 +255,85 @@ func (s *Store) verifyAuthenticatorAppByBackupCode(ctx context.Context, backupCo
 		return fmt.Errorf("match user: %w", err)
 	}
 
-	if qMatchingUser.AuthenticatorAppBackupCodeLockoutExpireTime != nil && qMatchingUser.AuthenticatorAppBackupCodeLockoutExpireTime.After(time.Now()) {
-		return apierror.NewFailedPreconditionError("too many backup code attempts attempts; user is temporarily locked out", nil)
+	if qMatchingUser.AuthenticatorAppLockoutExpireTime != nil && qMatchingUser.AuthenticatorAppLockoutExpireTime.After(time.Now()) {
+		return apierror.NewFailedPreconditionError("too many authenticator app attempts; user is temporarily locked out", nil)
+	}
+	return nil
+}
+
+func (s *Store) updateUserAuthenticatorAppLockoutState(ctx context.Context, lastAttemptSuccessful bool) error {
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return err
+	}
+	defer rollback()
+
+	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))
+	if err != nil {
+		return fmt.Errorf("get intermediate session by id: %w", err)
 	}
 
-	var ok bool
-	var backupCodeBcrypts [][]byte
-	for _, b := range qIntermediateSession.AuthenticatorAppBackupCodeBcrypts {
-		if bcrypt.CompareHashAndPassword(b, []byte(backupCode)) == nil {
-			ok = true
-			continue // do not keep this bcrypt around; the code is used
-		}
-
-		backupCodeBcrypts = append(backupCodeBcrypts, b)
+	qOrg, err := q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
+		ProjectID: authn.ProjectID(ctx),
+		ID:        *qIntermediateSession.OrganizationID,
+	})
+	if err != nil {
+		return fmt.Errorf("get organization by id: %w", err)
 	}
 
-	// update backup code attempt / lockout state
-	if ok {
-		// success; reset fail count
-		if _, err := q.UpdateUserFailedAuthenticatorAppBackupCodeAttempts(ctx, queries.UpdateUserFailedAuthenticatorAppBackupCodeAttemptsParams{
-			ID:                                       qMatchingUser.ID,
-			FailedAuthenticatorAppBackupCodeAttempts: aws.Int32(0),
+	qMatchingUser, err := s.matchUser(ctx, q, qOrg, qIntermediateSession)
+	if err != nil {
+		return fmt.Errorf("match user: %w", err)
+	}
+
+	if lastAttemptSuccessful {
+		if _, err := q.UpdateUserFailedAuthenticatorAppAttempts(ctx, queries.UpdateUserFailedAuthenticatorAppAttemptsParams{
+			ID:                             qMatchingUser.ID,
+			FailedAuthenticatorAppAttempts: 0,
 		}); err != nil {
-			return fmt.Errorf("update user failed authenticator app backup code attempts: %w", err)
-		}
-	} else {
-		// failure; bump fail count and check to see if we should lock out
-		attempts := qMatchingUser.FailedPasswordAttempts + 1
-		if attempts >= backupCodeLockoutAttempts {
-			// lock the user out
-			backupCodeLockoutExpireTime := time.Now().Add(backupCodeLockoutDuration)
-			if _, err := q.UpdateUserAuthenticatorAppBackupCodeLockoutExpireTime(ctx, queries.UpdateUserAuthenticatorAppBackupCodeLockoutExpireTimeParams{
-				ID: qMatchingUser.ID,
-				AuthenticatorAppBackupCodeLockoutExpireTime: &backupCodeLockoutExpireTime,
-			}); err != nil {
-				return fmt.Errorf("update user authenticator app backup code lockout expire time: %w", err)
-			}
-
-			// reset fail count
-			if _, err := q.UpdateUserFailedAuthenticatorAppBackupCodeAttempts(ctx, queries.UpdateUserFailedAuthenticatorAppBackupCodeAttemptsParams{
-				ID:                                       qMatchingUser.ID,
-				FailedAuthenticatorAppBackupCodeAttempts: aws.Int32(0),
-			}); err != nil {
-				return fmt.Errorf("update user failed authenticator app backup code attempts: %w", err)
-			}
-
-			if err := commit(); err != nil {
-				return fmt.Errorf("commit: %w", err)
-			}
-
-			return apierror.NewFailedPreconditionError("too many backup code attempts attempts; user is temporarily locked out", nil)
+			return fmt.Errorf("update user failed authenticator app attempts: %w", err)
 		}
 
-		// update fail count, but do not lock out
-		if _, err := q.UpdateUserFailedAuthenticatorAppBackupCodeAttempts(ctx, queries.UpdateUserFailedAuthenticatorAppBackupCodeAttemptsParams{
-			ID:                                       qMatchingUser.ID,
-			FailedAuthenticatorAppBackupCodeAttempts: &attempts,
-		}); err != nil {
-			return fmt.Errorf("update user failed password attempts: %w", err)
+		if err := commit(); err != nil {
+			return fmt.Errorf("commit: %w", err)
 		}
 
-		return apierror.NewInvalidArgumentError("invalid backup code", nil)
+		return nil
 	}
 
-	if _, err := q.UpdateIntermediateSessionAuthenticatorAppBackupCodeBcrypts(ctx, queries.UpdateIntermediateSessionAuthenticatorAppBackupCodeBcryptsParams{
-		ID:                                authn.IntermediateSessionID(ctx),
-		AuthenticatorAppBackupCodeBcrypts: backupCodeBcrypts,
+	attempts := qMatchingUser.FailedAuthenticatorAppAttempts + 1
+	if attempts >= backupCodeLockoutAttempts {
+		// lock the user out
+		expireTime := time.Now().Add(backupCodeLockoutDuration)
+		if _, err := q.UpdateUserAuthenticatorAppLockoutExpireTime(ctx, queries.UpdateUserAuthenticatorAppLockoutExpireTimeParams{
+			ID:                                qMatchingUser.ID,
+			AuthenticatorAppLockoutExpireTime: &expireTime,
+		}); err != nil {
+			return fmt.Errorf("update user authenticator app lockout expire time: %w", err)
+		}
+
+		// reset fail count
+		if _, err := q.UpdateUserFailedAuthenticatorAppAttempts(ctx, queries.UpdateUserFailedAuthenticatorAppAttemptsParams{
+			ID:                             qMatchingUser.ID,
+			FailedAuthenticatorAppAttempts: 0,
+		}); err != nil {
+			return fmt.Errorf("update user failed authenticator app attempts: %w", err)
+		}
+
+		if err := commit(); err != nil {
+			return fmt.Errorf("commit: %w", err)
+		}
+
+		return apierror.NewFailedPreconditionError("too many authenticator app attempts; user is temporarily locked out", nil)
+	}
+
+	// bump attempt count
+	if _, err := q.UpdateUserFailedAuthenticatorAppAttempts(ctx, queries.UpdateUserFailedAuthenticatorAppAttemptsParams{
+		ID:                             qMatchingUser.ID,
+		FailedAuthenticatorAppAttempts: attempts,
 	}); err != nil {
-		return fmt.Errorf("update intermediate session authenticator app backup code bcrypts: %w", err)
+		return fmt.Errorf("update user failed authenticator app attempts: %w", err)
 	}
-
-	if err := commit(); err != nil {
-		return fmt.Errorf("commit: %w", err)
-	}
-
 	return nil
 }
 

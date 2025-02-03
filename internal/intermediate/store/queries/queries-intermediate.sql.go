@@ -232,7 +232,7 @@ const createUser = `-- name: CreateUser :one
 INSERT INTO users (id, organization_id, email, google_user_id, microsoft_user_id, is_owner, password_bcrypt)
     VALUES ($1, $2, $3, $4, $5, $6, $7)
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_backup_code_bcrypts, failed_authenticator_app_backup_code_attempts, authenticator_app_backup_code_lockout_expire_time
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_backup_code_bcrypts, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time
 `
 
 type CreateUserParams struct {
@@ -271,8 +271,8 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.PasswordLockoutExpireTime,
 		&i.AuthenticatorAppSecretCiphertext,
 		&i.AuthenticatorAppBackupCodeBcrypts,
-		&i.FailedAuthenticatorAppBackupCodeAttempts,
-		&i.AuthenticatorAppBackupCodeLockoutExpireTime,
+		&i.FailedAuthenticatorAppAttempts,
+		&i.AuthenticatorAppLockoutExpireTime,
 	)
 	return i, err
 }
@@ -485,7 +485,7 @@ func (q *Queries) GetOrganizationPrimarySAMLConnection(ctx context.Context, orga
 
 const getOrganizationUserByEmail = `-- name: GetOrganizationUserByEmail :one
 SELECT
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_backup_code_bcrypts, failed_authenticator_app_backup_code_attempts, authenticator_app_backup_code_lockout_expire_time
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_backup_code_bcrypts, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time
 FROM
     users
 WHERE
@@ -516,15 +516,15 @@ func (q *Queries) GetOrganizationUserByEmail(ctx context.Context, arg GetOrganiz
 		&i.PasswordLockoutExpireTime,
 		&i.AuthenticatorAppSecretCiphertext,
 		&i.AuthenticatorAppBackupCodeBcrypts,
-		&i.FailedAuthenticatorAppBackupCodeAttempts,
-		&i.AuthenticatorAppBackupCodeLockoutExpireTime,
+		&i.FailedAuthenticatorAppAttempts,
+		&i.AuthenticatorAppLockoutExpireTime,
 	)
 	return i, err
 }
 
 const getOrganizationUserByGoogleUserID = `-- name: GetOrganizationUserByGoogleUserID :one
 SELECT
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_backup_code_bcrypts, failed_authenticator_app_backup_code_attempts, authenticator_app_backup_code_lockout_expire_time
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_backup_code_bcrypts, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time
 FROM
     users
 WHERE
@@ -555,15 +555,15 @@ func (q *Queries) GetOrganizationUserByGoogleUserID(ctx context.Context, arg Get
 		&i.PasswordLockoutExpireTime,
 		&i.AuthenticatorAppSecretCiphertext,
 		&i.AuthenticatorAppBackupCodeBcrypts,
-		&i.FailedAuthenticatorAppBackupCodeAttempts,
-		&i.AuthenticatorAppBackupCodeLockoutExpireTime,
+		&i.FailedAuthenticatorAppAttempts,
+		&i.AuthenticatorAppLockoutExpireTime,
 	)
 	return i, err
 }
 
 const getOrganizationUserByMicrosoftUserID = `-- name: GetOrganizationUserByMicrosoftUserID :one
 SELECT
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_backup_code_bcrypts, failed_authenticator_app_backup_code_attempts, authenticator_app_backup_code_lockout_expire_time
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_backup_code_bcrypts, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time
 FROM
     users
 WHERE
@@ -594,8 +594,8 @@ func (q *Queries) GetOrganizationUserByMicrosoftUserID(ctx context.Context, arg 
 		&i.PasswordLockoutExpireTime,
 		&i.AuthenticatorAppSecretCiphertext,
 		&i.AuthenticatorAppBackupCodeBcrypts,
-		&i.FailedAuthenticatorAppBackupCodeAttempts,
-		&i.AuthenticatorAppBackupCodeLockoutExpireTime,
+		&i.FailedAuthenticatorAppAttempts,
+		&i.AuthenticatorAppLockoutExpireTime,
 	)
 	return i, err
 }
@@ -1761,7 +1761,7 @@ SET
 WHERE
     id = $3
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_backup_code_bcrypts, failed_authenticator_app_backup_code_attempts, authenticator_app_backup_code_lockout_expire_time
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_backup_code_bcrypts, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time
 `
 
 type UpdateUserAuthenticatorAppParams struct {
@@ -1788,30 +1788,30 @@ func (q *Queries) UpdateUserAuthenticatorApp(ctx context.Context, arg UpdateUser
 		&i.PasswordLockoutExpireTime,
 		&i.AuthenticatorAppSecretCiphertext,
 		&i.AuthenticatorAppBackupCodeBcrypts,
-		&i.FailedAuthenticatorAppBackupCodeAttempts,
-		&i.AuthenticatorAppBackupCodeLockoutExpireTime,
+		&i.FailedAuthenticatorAppAttempts,
+		&i.AuthenticatorAppLockoutExpireTime,
 	)
 	return i, err
 }
 
-const updateUserAuthenticatorAppBackupCodeLockoutExpireTime = `-- name: UpdateUserAuthenticatorAppBackupCodeLockoutExpireTime :one
+const updateUserAuthenticatorAppLockoutExpireTime = `-- name: UpdateUserAuthenticatorAppLockoutExpireTime :one
 UPDATE
     users
 SET
-    authenticator_app_backup_code_lockout_expire_time = $1
+    authenticator_app_lockout_expire_time = $1
 WHERE
     id = $2
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_backup_code_bcrypts, failed_authenticator_app_backup_code_attempts, authenticator_app_backup_code_lockout_expire_time
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_backup_code_bcrypts, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time
 `
 
-type UpdateUserAuthenticatorAppBackupCodeLockoutExpireTimeParams struct {
-	AuthenticatorAppBackupCodeLockoutExpireTime *time.Time
-	ID                                          uuid.UUID
+type UpdateUserAuthenticatorAppLockoutExpireTimeParams struct {
+	AuthenticatorAppLockoutExpireTime *time.Time
+	ID                                uuid.UUID
 }
 
-func (q *Queries) UpdateUserAuthenticatorAppBackupCodeLockoutExpireTime(ctx context.Context, arg UpdateUserAuthenticatorAppBackupCodeLockoutExpireTimeParams) (User, error) {
-	row := q.db.QueryRow(ctx, updateUserAuthenticatorAppBackupCodeLockoutExpireTime, arg.AuthenticatorAppBackupCodeLockoutExpireTime, arg.ID)
+func (q *Queries) UpdateUserAuthenticatorAppLockoutExpireTime(ctx context.Context, arg UpdateUserAuthenticatorAppLockoutExpireTimeParams) (User, error) {
+	row := q.db.QueryRow(ctx, updateUserAuthenticatorAppLockoutExpireTime, arg.AuthenticatorAppLockoutExpireTime, arg.ID)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -1828,30 +1828,30 @@ func (q *Queries) UpdateUserAuthenticatorAppBackupCodeLockoutExpireTime(ctx cont
 		&i.PasswordLockoutExpireTime,
 		&i.AuthenticatorAppSecretCiphertext,
 		&i.AuthenticatorAppBackupCodeBcrypts,
-		&i.FailedAuthenticatorAppBackupCodeAttempts,
-		&i.AuthenticatorAppBackupCodeLockoutExpireTime,
+		&i.FailedAuthenticatorAppAttempts,
+		&i.AuthenticatorAppLockoutExpireTime,
 	)
 	return i, err
 }
 
-const updateUserFailedAuthenticatorAppBackupCodeAttempts = `-- name: UpdateUserFailedAuthenticatorAppBackupCodeAttempts :one
+const updateUserFailedAuthenticatorAppAttempts = `-- name: UpdateUserFailedAuthenticatorAppAttempts :one
 UPDATE
     users
 SET
-    failed_authenticator_app_backup_code_attempts = $1
+    failed_authenticator_app_attempts = $1
 WHERE
     id = $2
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_backup_code_bcrypts, failed_authenticator_app_backup_code_attempts, authenticator_app_backup_code_lockout_expire_time
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_backup_code_bcrypts, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time
 `
 
-type UpdateUserFailedAuthenticatorAppBackupCodeAttemptsParams struct {
-	FailedAuthenticatorAppBackupCodeAttempts *int32
-	ID                                       uuid.UUID
+type UpdateUserFailedAuthenticatorAppAttemptsParams struct {
+	FailedAuthenticatorAppAttempts int32
+	ID                             uuid.UUID
 }
 
-func (q *Queries) UpdateUserFailedAuthenticatorAppBackupCodeAttempts(ctx context.Context, arg UpdateUserFailedAuthenticatorAppBackupCodeAttemptsParams) (User, error) {
-	row := q.db.QueryRow(ctx, updateUserFailedAuthenticatorAppBackupCodeAttempts, arg.FailedAuthenticatorAppBackupCodeAttempts, arg.ID)
+func (q *Queries) UpdateUserFailedAuthenticatorAppAttempts(ctx context.Context, arg UpdateUserFailedAuthenticatorAppAttemptsParams) (User, error) {
+	row := q.db.QueryRow(ctx, updateUserFailedAuthenticatorAppAttempts, arg.FailedAuthenticatorAppAttempts, arg.ID)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -1868,8 +1868,8 @@ func (q *Queries) UpdateUserFailedAuthenticatorAppBackupCodeAttempts(ctx context
 		&i.PasswordLockoutExpireTime,
 		&i.AuthenticatorAppSecretCiphertext,
 		&i.AuthenticatorAppBackupCodeBcrypts,
-		&i.FailedAuthenticatorAppBackupCodeAttempts,
-		&i.AuthenticatorAppBackupCodeLockoutExpireTime,
+		&i.FailedAuthenticatorAppAttempts,
+		&i.AuthenticatorAppLockoutExpireTime,
 	)
 	return i, err
 }
@@ -1882,7 +1882,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_backup_code_bcrypts, failed_authenticator_app_backup_code_attempts, authenticator_app_backup_code_lockout_expire_time
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_backup_code_bcrypts, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time
 `
 
 type UpdateUserFailedPasswordAttemptsParams struct {
@@ -1908,8 +1908,8 @@ func (q *Queries) UpdateUserFailedPasswordAttempts(ctx context.Context, arg Upda
 		&i.PasswordLockoutExpireTime,
 		&i.AuthenticatorAppSecretCiphertext,
 		&i.AuthenticatorAppBackupCodeBcrypts,
-		&i.FailedAuthenticatorAppBackupCodeAttempts,
-		&i.AuthenticatorAppBackupCodeLockoutExpireTime,
+		&i.FailedAuthenticatorAppAttempts,
+		&i.AuthenticatorAppLockoutExpireTime,
 	)
 	return i, err
 }
@@ -1922,7 +1922,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_backup_code_bcrypts, failed_authenticator_app_backup_code_attempts, authenticator_app_backup_code_lockout_expire_time
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_backup_code_bcrypts, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time
 `
 
 type UpdateUserPasswordBcryptParams struct {
@@ -1948,8 +1948,8 @@ func (q *Queries) UpdateUserPasswordBcrypt(ctx context.Context, arg UpdateUserPa
 		&i.PasswordLockoutExpireTime,
 		&i.AuthenticatorAppSecretCiphertext,
 		&i.AuthenticatorAppBackupCodeBcrypts,
-		&i.FailedAuthenticatorAppBackupCodeAttempts,
-		&i.AuthenticatorAppBackupCodeLockoutExpireTime,
+		&i.FailedAuthenticatorAppAttempts,
+		&i.AuthenticatorAppLockoutExpireTime,
 	)
 	return i, err
 }
@@ -1962,7 +1962,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_backup_code_bcrypts, failed_authenticator_app_backup_code_attempts, authenticator_app_backup_code_lockout_expire_time
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_backup_code_bcrypts, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time
 `
 
 type UpdateUserPasswordLockoutExpireTimeParams struct {
@@ -1988,8 +1988,8 @@ func (q *Queries) UpdateUserPasswordLockoutExpireTime(ctx context.Context, arg U
 		&i.PasswordLockoutExpireTime,
 		&i.AuthenticatorAppSecretCiphertext,
 		&i.AuthenticatorAppBackupCodeBcrypts,
-		&i.FailedAuthenticatorAppBackupCodeAttempts,
-		&i.AuthenticatorAppBackupCodeLockoutExpireTime,
+		&i.FailedAuthenticatorAppAttempts,
+		&i.AuthenticatorAppLockoutExpireTime,
 	)
 	return i, err
 }
