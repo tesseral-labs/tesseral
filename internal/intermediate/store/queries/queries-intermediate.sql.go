@@ -1087,6 +1087,57 @@ func (q *Queries) RevokeUserImpersonationToken(ctx context.Context, id uuid.UUID
 	return i, err
 }
 
+const updateIntermediateSessionAuthenticatorAppBackupCodeBcrypts = `-- name: UpdateIntermediateSessionAuthenticatorAppBackupCodeBcrypts :one
+UPDATE
+    intermediate_sessions
+SET
+    authenticator_app_backup_code_bcrypts = $1,
+    update_time = now()
+WHERE
+    id = $2
+RETURNING
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_backup_code_bcrypts
+`
+
+type UpdateIntermediateSessionAuthenticatorAppBackupCodeBcryptsParams struct {
+	AuthenticatorAppBackupCodeBcrypts [][]byte
+	ID                                uuid.UUID
+}
+
+func (q *Queries) UpdateIntermediateSessionAuthenticatorAppBackupCodeBcrypts(ctx context.Context, arg UpdateIntermediateSessionAuthenticatorAppBackupCodeBcryptsParams) (IntermediateSession, error) {
+	row := q.db.QueryRow(ctx, updateIntermediateSessionAuthenticatorAppBackupCodeBcrypts, arg.AuthenticatorAppBackupCodeBcrypts, arg.ID)
+	var i IntermediateSession
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.CreateTime,
+		&i.ExpireTime,
+		&i.Email,
+		&i.GoogleOauthStateSha256,
+		&i.MicrosoftOauthStateSha256,
+		&i.GoogleHostedDomain,
+		&i.GoogleUserID,
+		&i.MicrosoftTenantID,
+		&i.MicrosoftUserID,
+		&i.PasswordVerified,
+		&i.OrganizationID,
+		&i.UpdateTime,
+		&i.SecretTokenSha256,
+		&i.NewUserPasswordBcrypt,
+		&i.EmailVerificationChallengeSha256,
+		&i.EmailVerificationChallengeCompleted,
+		&i.PasskeyCredentialID,
+		&i.PasskeyPublicKey,
+		&i.PasskeyAaguid,
+		&i.PasskeyVerifyChallengeSha256,
+		&i.PasskeyVerified,
+		&i.AuthenticatorAppSecretCiphertext,
+		&i.AuthenticatorAppVerified,
+		&i.AuthenticatorAppBackupCodeBcrypts,
+	)
+	return i, err
+}
+
 const updateIntermediateSessionAuthenticatorAppSecretCiphertext = `-- name: UpdateIntermediateSessionAuthenticatorAppSecretCiphertext :one
 UPDATE
     intermediate_sessions
@@ -1143,21 +1194,15 @@ UPDATE
     intermediate_sessions
 SET
     authenticator_app_verified = TRUE,
-    authenticator_app_backup_code_bcrypts = $1,
     update_time = now()
 WHERE
-    id = $2
+    id = $1
 RETURNING
     id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_backup_code_bcrypts
 `
 
-type UpdateIntermediateSessionAuthenticatorAppVerifiedParams struct {
-	AuthenticatorAppBackupCodeBcrypts [][]byte
-	ID                                uuid.UUID
-}
-
-func (q *Queries) UpdateIntermediateSessionAuthenticatorAppVerified(ctx context.Context, arg UpdateIntermediateSessionAuthenticatorAppVerifiedParams) (IntermediateSession, error) {
-	row := q.db.QueryRow(ctx, updateIntermediateSessionAuthenticatorAppVerified, arg.AuthenticatorAppBackupCodeBcrypts, arg.ID)
+func (q *Queries) UpdateIntermediateSessionAuthenticatorAppVerified(ctx context.Context, id uuid.UUID) (IntermediateSession, error) {
+	row := q.db.QueryRow(ctx, updateIntermediateSessionAuthenticatorAppVerified, id)
 	var i IntermediateSession
 	err := row.Scan(
 		&i.ID,
@@ -1727,6 +1772,86 @@ type UpdateUserAuthenticatorAppParams struct {
 
 func (q *Queries) UpdateUserAuthenticatorApp(ctx context.Context, arg UpdateUserAuthenticatorAppParams) (User, error) {
 	row := q.db.QueryRow(ctx, updateUserAuthenticatorApp, arg.AuthenticatorAppSecretCiphertext, arg.AuthenticatorAppBackupCodeBcrypts, arg.ID)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.PasswordBcrypt,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+		&i.Email,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.DeactivateTime,
+		&i.IsOwner,
+		&i.FailedPasswordAttempts,
+		&i.PasswordLockoutExpireTime,
+		&i.AuthenticatorAppSecretCiphertext,
+		&i.AuthenticatorAppBackupCodeBcrypts,
+		&i.FailedAuthenticatorAppBackupCodeAttempts,
+		&i.AuthenticatorAppBackupCodeLockoutExpireTime,
+	)
+	return i, err
+}
+
+const updateUserAuthenticatorAppBackupCodeLockoutExpireTime = `-- name: UpdateUserAuthenticatorAppBackupCodeLockoutExpireTime :one
+UPDATE
+    users
+SET
+    authenticator_app_backup_code_lockout_expire_time = $1
+WHERE
+    id = $2
+RETURNING
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_backup_code_bcrypts, failed_authenticator_app_backup_code_attempts, authenticator_app_backup_code_lockout_expire_time
+`
+
+type UpdateUserAuthenticatorAppBackupCodeLockoutExpireTimeParams struct {
+	AuthenticatorAppBackupCodeLockoutExpireTime *time.Time
+	ID                                          uuid.UUID
+}
+
+func (q *Queries) UpdateUserAuthenticatorAppBackupCodeLockoutExpireTime(ctx context.Context, arg UpdateUserAuthenticatorAppBackupCodeLockoutExpireTimeParams) (User, error) {
+	row := q.db.QueryRow(ctx, updateUserAuthenticatorAppBackupCodeLockoutExpireTime, arg.AuthenticatorAppBackupCodeLockoutExpireTime, arg.ID)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.PasswordBcrypt,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+		&i.Email,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.DeactivateTime,
+		&i.IsOwner,
+		&i.FailedPasswordAttempts,
+		&i.PasswordLockoutExpireTime,
+		&i.AuthenticatorAppSecretCiphertext,
+		&i.AuthenticatorAppBackupCodeBcrypts,
+		&i.FailedAuthenticatorAppBackupCodeAttempts,
+		&i.AuthenticatorAppBackupCodeLockoutExpireTime,
+	)
+	return i, err
+}
+
+const updateUserFailedAuthenticatorAppBackupCodeAttempts = `-- name: UpdateUserFailedAuthenticatorAppBackupCodeAttempts :one
+UPDATE
+    users
+SET
+    failed_authenticator_app_backup_code_attempts = $1
+WHERE
+    id = $2
+RETURNING
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_backup_code_bcrypts, failed_authenticator_app_backup_code_attempts, authenticator_app_backup_code_lockout_expire_time
+`
+
+type UpdateUserFailedAuthenticatorAppBackupCodeAttemptsParams struct {
+	FailedAuthenticatorAppBackupCodeAttempts *int32
+	ID                                       uuid.UUID
+}
+
+func (q *Queries) UpdateUserFailedAuthenticatorAppBackupCodeAttempts(ctx context.Context, arg UpdateUserFailedAuthenticatorAppBackupCodeAttemptsParams) (User, error) {
+	row := q.db.QueryRow(ctx, updateUserFailedAuthenticatorAppBackupCodeAttempts, arg.FailedAuthenticatorAppBackupCodeAttempts, arg.ID)
 	var i User
 	err := row.Scan(
 		&i.ID,
