@@ -17,7 +17,16 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-const backupCodeCount = 10
+const (
+	// how many recovery codes to generate for an authenticator app
+	recoveryCodeCount = 10
+
+	// after this many failed attempts, lock out a user
+	backupCodeLockoutAttempts = 5
+
+	// how long to lock users out
+	backupCodeLockoutDuration = time.Minute * 10
+)
 
 func (s *Store) GetAuthenticatorAppOptions(ctx context.Context, req *intermediatev1.GetAuthenticatorAppOptionsRequest) (*intermediatev1.GetAuthenticatorAppOptionsResponse, error) {
 	if err := s.checkShouldRegisterAuthenticatorApp(ctx); err != nil {
@@ -82,8 +91,8 @@ func (s *Store) RegisterAuthenticatorApp(ctx context.Context, req *intermediatev
 	defer rollback()
 
 	var backupCodes []string
-	var backupCodeBcrypts [][]byte
-	for i := 0; i < backupCodeCount; i++ {
+	var recoveryCodeBcrypts [][]byte
+	for i := 0; i < recoveryCodeCount; i++ {
 		var code [8]byte
 		if _, err := rand.Read(code[:]); err != nil {
 			return nil, fmt.Errorf("read random bytes: %w", err)
@@ -97,14 +106,18 @@ func (s *Store) RegisterAuthenticatorApp(ctx context.Context, req *intermediatev
 		}
 
 		backupCodes = append(backupCodes, codeFormatted)
-		backupCodeBcrypts = append(backupCodeBcrypts, codeBcrypt)
+		recoveryCodeBcrypts = append(recoveryCodeBcrypts, codeBcrypt)
 	}
 
-	if _, err := q.UpdateIntermediateSessionAuthenticatorAppVerified(ctx, queries.UpdateIntermediateSessionAuthenticatorAppVerifiedParams{
-		ID:                                authn.IntermediateSessionID(ctx),
-		AuthenticatorAppBackupCodeBcrypts: backupCodeBcrypts,
-	}); err != nil {
+	if _, err := q.UpdateIntermediateSessionAuthenticatorAppVerified(ctx, authn.IntermediateSessionID(ctx)); err != nil {
 		return nil, fmt.Errorf("update intermediate session authenticator app verified: %w", err)
+	}
+
+	if _, err := q.UpdateIntermediateSessionAuthenticatorAppBackupCodeBcrypts(ctx, queries.UpdateIntermediateSessionAuthenticatorAppBackupCodeBcryptsParams{
+		ID:                                  authn.IntermediateSessionID(ctx),
+		AuthenticatorAppRecoveryCodeBcrypts: recoveryCodeBcrypts,
+	}); err != nil {
+		return nil, fmt.Errorf("update intermediate session authenticator app backup code bcrypts: %w", err)
 	}
 
 	if err := commit(); err != nil {
@@ -114,6 +127,230 @@ func (s *Store) RegisterAuthenticatorApp(ctx context.Context, req *intermediatev
 	return &intermediatev1.RegisterAuthenticatorAppResponse{
 		RecoveryCodes: backupCodes,
 	}, nil
+}
+
+func (s *Store) VerifyAuthenticatorApp(ctx context.Context, req *intermediatev1.VerifyAuthenticatorAppRequest) (*intermediatev1.VerifyAuthenticatorAppResponse, error) {
+	if err := s.checkAuthenticatorAppLockedOut(ctx); err != nil {
+		return nil, fmt.Errorf("check authenticator app not locked out: %w", err)
+	}
+
+	if req.RecoveryCode != "" {
+		if err := s.verifyAuthenticatorAppByBackupCode(ctx, req.RecoveryCode); err != nil {
+			return nil, fmt.Errorf("verify authenticator app by backup code: %w", err)
+		}
+	} else {
+		if err := s.verifyAuthenticatorAppByTOTPCode(ctx, req.TotpCode); err != nil {
+			return nil, fmt.Errorf("verify authenticator app by totp code: %w", err)
+		}
+	}
+
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	if _, err := q.UpdateIntermediateSessionAuthenticatorAppVerified(ctx, authn.IntermediateSessionID(ctx)); err != nil {
+		return nil, fmt.Errorf("update intermediate session authenticator app verified: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
+	}
+
+	return &intermediatev1.VerifyAuthenticatorAppResponse{}, nil
+}
+
+func (s *Store) verifyAuthenticatorAppByTOTPCode(ctx context.Context, totpCode string) error {
+	secret, err := s.getAuthenticatorAppSecret(ctx)
+	if err != nil {
+		return fmt.Errorf("get authenticator app secret: %w", err)
+	}
+
+	key := totp.Key{Secret: secret}
+	if err := key.Validate(time.Now(), totpCode); err != nil {
+		if err := s.updateUserAuthenticatorAppLockoutState(ctx, false); err != nil {
+			return fmt.Errorf("update user authenticator app lockout state: %w", err)
+		}
+
+		return apierror.NewInvalidArgumentError("invalid totp code", err)
+	}
+
+	if err := s.updateUserAuthenticatorAppLockoutState(ctx, true); err != nil {
+		return fmt.Errorf("update user authenticator app lockout state: %w", err)
+	}
+
+	return nil
+}
+
+func (s *Store) verifyAuthenticatorAppByBackupCode(ctx context.Context, backupCode string) error {
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return err
+	}
+	defer rollback()
+
+	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))
+	if err != nil {
+		return fmt.Errorf("get intermediate session by id: %w", err)
+	}
+
+	qOrg, err := q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
+		ProjectID: authn.ProjectID(ctx),
+		ID:        *qIntermediateSession.OrganizationID,
+	})
+	if err != nil {
+		return fmt.Errorf("get organization by id: %w", err)
+	}
+
+	qMatchingUser, err := s.matchUser(ctx, q, qOrg, qIntermediateSession)
+	if err != nil {
+		return fmt.Errorf("match user: %w", err)
+	}
+
+	var ok bool
+	var recoveryCodeBcrypts [][]byte
+	for _, b := range qMatchingUser.AuthenticatorAppRecoveryCodeBcrypts {
+		if bcrypt.CompareHashAndPassword(b, []byte(backupCode)) == nil {
+			ok = true
+			continue // do not keep this bcrypt around; the code is used
+		}
+
+		recoveryCodeBcrypts = append(recoveryCodeBcrypts, b)
+	}
+
+	if !ok {
+		if err := s.updateUserAuthenticatorAppLockoutState(ctx, false); err != nil {
+			return fmt.Errorf("update user authenticator app lockout state: %w", err)
+		}
+
+		return apierror.NewInvalidArgumentError("invalid backup code", nil)
+	}
+
+	// write back the remaining backup codes to the user
+	if _, err := q.UpdateUserAuthenticatorAppRecoveryCodeBcrypts(ctx, queries.UpdateUserAuthenticatorAppRecoveryCodeBcryptsParams{
+		ID:                                  authn.IntermediateSessionID(ctx),
+		AuthenticatorAppRecoveryCodeBcrypts: recoveryCodeBcrypts,
+	}); err != nil {
+		return fmt.Errorf("update intermediate session authenticator app backup code bcrypts: %w", err)
+	}
+
+	if err := s.updateUserAuthenticatorAppLockoutState(ctx, true); err != nil {
+		return fmt.Errorf("update user authenticator app lockout state: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return fmt.Errorf("commit: %w", err)
+	}
+
+	return nil
+}
+
+func (s *Store) checkAuthenticatorAppLockedOut(ctx context.Context) error {
+	_, q, _, rollback, err := s.tx(ctx)
+	if err != nil {
+		return err
+	}
+	defer rollback()
+
+	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))
+	if err != nil {
+		return fmt.Errorf("get intermediate session by id: %w", err)
+	}
+
+	qOrg, err := q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
+		ProjectID: authn.ProjectID(ctx),
+		ID:        *qIntermediateSession.OrganizationID,
+	})
+	if err != nil {
+		return fmt.Errorf("get organization by id: %w", err)
+	}
+
+	qMatchingUser, err := s.matchUser(ctx, q, qOrg, qIntermediateSession)
+	if err != nil {
+		return fmt.Errorf("match user: %w", err)
+	}
+
+	if qMatchingUser.AuthenticatorAppLockoutExpireTime != nil && qMatchingUser.AuthenticatorAppLockoutExpireTime.After(time.Now()) {
+		return apierror.NewFailedPreconditionError("too many authenticator app attempts; user is temporarily locked out", nil)
+	}
+	return nil
+}
+
+func (s *Store) updateUserAuthenticatorAppLockoutState(ctx context.Context, lastAttemptSuccessful bool) error {
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return err
+	}
+	defer rollback()
+
+	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))
+	if err != nil {
+		return fmt.Errorf("get intermediate session by id: %w", err)
+	}
+
+	qOrg, err := q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
+		ProjectID: authn.ProjectID(ctx),
+		ID:        *qIntermediateSession.OrganizationID,
+	})
+	if err != nil {
+		return fmt.Errorf("get organization by id: %w", err)
+	}
+
+	qMatchingUser, err := s.matchUser(ctx, q, qOrg, qIntermediateSession)
+	if err != nil {
+		return fmt.Errorf("match user: %w", err)
+	}
+
+	if lastAttemptSuccessful {
+		if _, err := q.UpdateUserFailedAuthenticatorAppAttempts(ctx, queries.UpdateUserFailedAuthenticatorAppAttemptsParams{
+			ID:                             qMatchingUser.ID,
+			FailedAuthenticatorAppAttempts: 0,
+		}); err != nil {
+			return fmt.Errorf("update user failed authenticator app attempts: %w", err)
+		}
+
+		if err := commit(); err != nil {
+			return fmt.Errorf("commit: %w", err)
+		}
+
+		return nil
+	}
+
+	attempts := qMatchingUser.FailedAuthenticatorAppAttempts + 1
+	if attempts >= backupCodeLockoutAttempts {
+		// lock the user out
+		expireTime := time.Now().Add(backupCodeLockoutDuration)
+		if _, err := q.UpdateUserAuthenticatorAppLockoutExpireTime(ctx, queries.UpdateUserAuthenticatorAppLockoutExpireTimeParams{
+			ID:                                qMatchingUser.ID,
+			AuthenticatorAppLockoutExpireTime: &expireTime,
+		}); err != nil {
+			return fmt.Errorf("update user authenticator app lockout expire time: %w", err)
+		}
+
+		// reset fail count
+		if _, err := q.UpdateUserFailedAuthenticatorAppAttempts(ctx, queries.UpdateUserFailedAuthenticatorAppAttemptsParams{
+			ID:                             qMatchingUser.ID,
+			FailedAuthenticatorAppAttempts: 0,
+		}); err != nil {
+			return fmt.Errorf("update user failed authenticator app attempts: %w", err)
+		}
+
+		if err := commit(); err != nil {
+			return fmt.Errorf("commit: %w", err)
+		}
+
+		return apierror.NewFailedPreconditionError("too many authenticator app attempts; user is temporarily locked out", nil)
+	}
+
+	// bump attempt count
+	if _, err := q.UpdateUserFailedAuthenticatorAppAttempts(ctx, queries.UpdateUserFailedAuthenticatorAppAttemptsParams{
+		ID:                             qMatchingUser.ID,
+		FailedAuthenticatorAppAttempts: attempts,
+	}); err != nil {
+		return fmt.Errorf("update user failed authenticator app attempts: %w", err)
+	}
+	return nil
 }
 
 func (s *Store) getAuthenticatorAppSecret(ctx context.Context) ([]byte, error) {

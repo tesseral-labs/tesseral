@@ -124,7 +124,7 @@ type IntermediateSession struct {
 	PasskeyVerified                     bool
 	AuthenticatorAppSecretCiphertext    []byte
 	AuthenticatorAppVerified            bool
-	AuthenticatorAppBackupCodeBcrypts   [][]byte
+	AuthenticatorAppRecoveryCodeBcrypts [][]byte
 }
 
 type OauthVerifiedEmail struct {
@@ -269,22 +269,22 @@ type SessionSigningKey struct {
 }
 
 type User struct {
-	ID                                          uuid.UUID
-	OrganizationID                              uuid.UUID
-	PasswordBcrypt                              *string
-	GoogleUserID                                *string
-	MicrosoftUserID                             *string
-	Email                                       string
-	CreateTime                                  *time.Time
-	UpdateTime                                  *time.Time
-	DeactivateTime                              *time.Time
-	IsOwner                                     bool
-	FailedPasswordAttempts                      int32
-	PasswordLockoutExpireTime                   *time.Time
-	AuthenticatorAppSecretCiphertext            []byte
-	AuthenticatorAppBackupCodeBcrypts           [][]byte
-	FailedAuthenticatorAppBackupCodeAttempts    *int32
-	AuthenticatorAppBackupCodeLockoutExpireTime *time.Time
+	ID                                  uuid.UUID
+	OrganizationID                      uuid.UUID
+	PasswordBcrypt                      *string
+	GoogleUserID                        *string
+	MicrosoftUserID                     *string
+	Email                               string
+	CreateTime                          *time.Time
+	UpdateTime                          *time.Time
+	DeactivateTime                      *time.Time
+	IsOwner                             bool
+	FailedPasswordAttempts              int32
+	PasswordLockoutExpireTime           *time.Time
+	AuthenticatorAppSecretCiphertext    []byte
+	AuthenticatorAppRecoveryCodeBcrypts [][]byte
+	FailedAuthenticatorAppAttempts      int32
+	AuthenticatorAppLockoutExpireTime   *time.Time
 }
 
 type UserImpersonationToken struct {
