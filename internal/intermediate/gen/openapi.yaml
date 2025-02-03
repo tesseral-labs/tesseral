@@ -636,8 +636,6 @@ components:
             properties:
                 id:
                     type: string
-                projectId:
-                    type: string
                 displayName:
                     type: string
                 logInWithGoogle:
