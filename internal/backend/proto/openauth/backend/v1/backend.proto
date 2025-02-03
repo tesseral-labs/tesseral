@@ -541,8 +541,9 @@ message UpdateProjectRedirectURIResponse {
 }
 
 message UpdateProjectUISettingsRequest {
-  optional string primary_color = 1;
-  bool detect_dark_mode_enabled = 2;
+  string log_in_layout = 1;
+  optional string primary_color = 2;
+  bool detect_dark_mode_enabled = 3;
   optional string dark_mode_primary_color = 4;
 }
 
@@ -557,6 +558,7 @@ message UpdateProjectUISettingsResponse {
   string dark_mode_primary_color = 8;
   bool detect_dark_mode_enabled = 9;
   string primary_color = 10;
+  string log_in_layout = 11;
 }
 
 message DisableOrganizationLoginsRequest {
@@ -624,6 +626,7 @@ message ProjectUISettings {
   bool detect_dark_mode_enabled = 8;
   string dark_mode_logo_url = 9;
   string dark_mode_primary_color = 10;
+  string log_in_layout = 11;
 }
 
 message Organization {
