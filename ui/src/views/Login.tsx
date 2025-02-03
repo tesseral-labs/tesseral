@@ -1,4 +1,4 @@
-import React, { Dispatch, FC, SetStateAction, useEffect } from 'react'
+import React, { Dispatch, FC, SetStateAction, useState } from 'react'
 
 import EmailForm from '@/components/EmailForm'
 import OAuthButton, { OAuthMethods } from '@/components/OAuthButton'
@@ -10,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import TextDivider from '@/components/ui/TextDivider'
+import TextDivider from '@/components/ui/test-divider'
 import { useMutation } from '@connectrpc/connect-query'
 
 import {
@@ -18,15 +18,18 @@ import {
   getGoogleOAuthRedirectURL,
   getMicrosoftOAuthRedirectURL,
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
-import { LoginViews } from '@/lib/views'
-import { useProject } from '@/lib/auth'
-import useSettings from '@/lib/settings'
+import { LoginLayouts, LoginViews } from '@/lib/views'
+import useSettings, { useLayout } from '@/lib/settings'
+import { cn } from '@/lib/utils'
+import { parseErrorMessage } from '@/lib/errors'
+import { toast } from 'sonner'
 
 interface LoginProps {
   setView: Dispatch<SetStateAction<LoginViews>>
 }
 
 const Login: FC<LoginProps> = ({ setView }) => {
+  const layout = useLayout()
   const settings = useSettings()
 
   const createIntermediateSessionMutation = useMutation(
@@ -45,8 +48,11 @@ const Login: FC<LoginProps> = ({ setView }) => {
       // this sets a cookie that subsequent requests use
       await createIntermediateSessionMutation.mutateAsync({})
     } catch (error) {
-      // TODO: Handle errors on screen once an error handling strategy is in place.
-      console.error(error)
+      const message = parseErrorMessage(error)
+
+      toast.error('Could not initialize new session', {
+        description: message,
+      })
     }
 
     try {
@@ -56,8 +62,11 @@ const Login: FC<LoginProps> = ({ setView }) => {
 
       window.location.href = url
     } catch (error) {
-      // TODO: Handle errors on screen once an error handling strategy is in place.
-      console.error(error)
+      const message = parseErrorMessage(error)
+
+      toast.error('Could not get Google OAuth redirect URL', {
+        description: message,
+      })
     }
   }
 
@@ -69,8 +78,11 @@ const Login: FC<LoginProps> = ({ setView }) => {
       // this sets a cookie that subsequent requests use
       await createIntermediateSessionMutation.mutateAsync({})
     } catch (error) {
-      // TODO: Handle errors on screen once an error handling strategy is in place.
-      console.error(error)
+      const message = parseErrorMessage(error)
+
+      toast.error('Could not initialize new session', {
+        description: message,
+      })
     }
 
     try {
@@ -80,8 +92,11 @@ const Login: FC<LoginProps> = ({ setView }) => {
 
       window.location.href = url
     } catch (error) {
-      // TODO: Handle errors on screen once an error handling strategy is in place.
-      console.error(error)
+      const message = parseErrorMessage(error)
+
+      toast.error('Could not get Microsoft OAuth redirect URL', {
+        description: message,
+      })
     }
   }
 
@@ -89,40 +104,57 @@ const Login: FC<LoginProps> = ({ setView }) => {
     <>
       <Title title="Login" />
 
-      <Card className="w-[clamp(320px,50%,420px)]">
+      <Card
+        className={cn(
+          'w-full max-w-sm',
+          layout !== LoginLayouts.Centered && 'shadow-none border-0',
+        )}
+      >
         <CardHeader>
           {(settings?.logInWithGoogleEnabled ||
             settings?.logInWithMicrosoftEnabled) && (
-            <CardTitle className="text-center uppercase text-foreground font-semibold text-sm tracking-wide mt-2">
-              Log In with oAuth
-            </CardTitle>
+            <CardTitle className="text-center">Continue with OAuth</CardTitle>
           )}
         </CardHeader>
 
         <CardContent className="flex flex-col items-center w-full">
-          {settings?.logInWithGoogleEnabled && (
-            <OAuthButton
-              className="mb-4 w-[clamp(240px,50%,100%)]"
-              method={OAuthMethods.google}
-              onClick={handleGoogleOAuthLogin}
-              variant="outline"
-            />
-          )}
-          {settings?.logInWithMicrosoftEnabled && (
-            <OAuthButton
-              className="w-[clamp(240px,50%,100%)]"
-              method={OAuthMethods.microsoft}
-              onClick={handleMicrosoftOAuthLogin}
-              variant="outline"
-            />
-          )}
+          <div
+            className={cn(
+              'w-full grid gap-6',
+              settings?.logInWithGoogleEnabled &&
+                settings?.logInWithMicrosoftEnabled
+                ? 'grid-cols-2'
+                : 'grid-cols-1',
+            )}
+          >
+            {settings?.logInWithGoogleEnabled && (
+              <OAuthButton
+                method={OAuthMethods.google}
+                onClick={handleGoogleOAuthLogin}
+                variant="outline"
+              />
+            )}
+            {settings?.logInWithMicrosoftEnabled && (
+              <OAuthButton
+                method={OAuthMethods.microsoft}
+                onClick={handleMicrosoftOAuthLogin}
+                variant="outline"
+              />
+            )}
+          </div>
 
           {(settings?.logInWithGoogleEnabled ||
-            settings?.logInWithMicrosoftEnabled) && <TextDivider text="or" />}
+            settings?.logInWithMicrosoftEnabled) && (
+            <TextDivider
+              affects={layout !== LoginLayouts.Centered ? 'muted' : 'default'}
+              variant={layout !== LoginLayouts.Centered ? 'wider' : 'wide'}
+            >
+              or continue with email
+            </TextDivider>
+          )}
 
           <EmailForm setView={setView} />
         </CardContent>
-        <CardFooter></CardFooter>
       </Card>
     </>
   )

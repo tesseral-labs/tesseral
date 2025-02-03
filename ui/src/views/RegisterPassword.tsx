@@ -1,19 +1,30 @@
-import React, { useState } from 'react'
+import React, { FC, useState } from 'react'
 import { Title } from '@/components/Title'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import {
   exchangeIntermediateSessionForSession,
   registerPassword,
-  verifyPassword,
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
 import { useMutation } from '@connectrpc/connect-query'
-import { useLocation, useNavigate, useParams } from 'react-router'
+import { useNavigate } from 'react-router'
 import { setAccessToken, setRefreshToken } from '@/auth'
+import { Input } from '@/components/ui/input'
+import { useLayout } from '@/lib/settings'
+import { cn } from '@/lib/utils'
+import { LoginLayouts, LoginViews } from '@/lib/views'
+import { parseErrorMessage } from '@/lib/errors'
+import { toast } from 'sonner'
+import { useIntermediateOrganization } from '@/lib/auth'
 
-const RegisterPassword = () => {
+interface RegisterPasswordProps {
+  setView: React.Dispatch<React.SetStateAction<LoginViews>>
+}
+
+const RegisterPassword: FC<RegisterPasswordProps> = ({ setView }) => {
+  const organization = useIntermediateOrganization()
+  const layout = useLayout()
   const navigate = useNavigate()
-  const { state } = useLocation()
   const [password, setPassword] = useState<string>('')
 
   const exchangeIntermediateSessionForSessionMutation = useMutation(
@@ -29,6 +40,11 @@ const RegisterPassword = () => {
         password,
       })
 
+      if (organization?.requireMfa) {
+        setView(LoginViews.ChooseAdditionalFactor)
+        return
+      }
+
       const { accessToken, refreshToken } =
         await exchangeIntermediateSessionForSessionMutation.mutateAsync({})
 
@@ -37,8 +53,11 @@ const RegisterPassword = () => {
 
       navigate('/settings')
     } catch (error) {
-      // TODO: Show an error message to the user
-      console.error(error)
+      const message = parseErrorMessage(error)
+
+      toast.error('Could not set password', {
+        description: message,
+      })
     }
   }
 
@@ -46,19 +65,25 @@ const RegisterPassword = () => {
     <>
       <Title title="Set your password" />
 
-      <Card className="w-[clamp(320px,50%,420px)]">
+      <Card
+        className={cn(
+          'w-full max-w-sm',
+          layout !== LoginLayouts.Centered && 'shadow-none border-0',
+        )}
+      >
         <CardHeader>
-          <CardTitle className="text-center uppercase text-foreground font-semibold text-sm tracking-wide mt-2">
-            Set your password
-          </CardTitle>
+          <CardTitle className="text-center">Set your password</CardTitle>
           <p className="text-sm text-center mt-2 text-gray-500">
             Please set your password to continue signing up.
           </p>
         </CardHeader>
         <CardContent className="flex flex-col items-center justify-center w-full">
-          <form className="flex flex-col items-center" onSubmit={handleSubmit}>
-            <input
-              className="text-sm bg-input rounded border border-border focus:border-primary w-[clamp(240px,50%,100%)] mb-2"
+          <form
+            className="flex flex-col items-center w-full"
+            onSubmit={handleSubmit}
+          >
+            <Input
+              className="w-full"
               id="password"
               placeholder="Enter your password"
               type="password"
@@ -66,7 +91,8 @@ const RegisterPassword = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
             <Button
-              className="text-sm rounded border border-border focus:border-primary w-[clamp(240px,50%,100%)] mb-2"
+              className="w-full mt-4"
+              disabled={password.length < 1}
               type="submit"
             >
               Set password

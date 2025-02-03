@@ -1,6 +1,24 @@
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
+const base32Alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'
+
+export const base32Encode = (buffer: Uint8Array): string => {
+  let binaryString = ''
+  for (let byte of buffer) {
+    binaryString += byte.toString(2).padStart(8, '0')
+  }
+
+  let base32String = ''
+  for (let i = 0; i < binaryString.length; i += 5) {
+    const segment = binaryString.substring(i, i + 5).padEnd(5, '0')
+    const index = parseInt(segment, 2)
+    base32String += base32Alphabet[index]
+  }
+
+  return base32String
+}
+
 export const base64Decode = (s: string): string => {
   const binaryString = atob(s)
 
@@ -12,8 +30,61 @@ export const base64Decode = (s: string): string => {
   return new TextDecoder().decode(bytes)
 }
 
+export const base64urlEncode = (buffer: ArrayBuffer): string => {
+  let binary = ''
+  let bytes = new Uint8Array(buffer)
+  for (let i = 0; i < bytes.byteLength; i++) {
+    binary += String.fromCharCode(bytes[i])
+  }
+  return btoa(binary)
+    .replace(/\+/g, '-') // Replace '+' with '-'
+    .replace(/\//g, '_') // Replace '/' with '_'
+    .replace(/=+$/, '') // Remove padding '='
+}
+
 export const cn = (...inputs: ClassValue[]) => {
   return twMerge(clsx(inputs))
+}
+
+export const hexToHSL = (hex: string): string => {
+  // Remove the "#" if present
+  hex = hex.replace(/^#/, '')
+
+  // Convert to RGB
+  const r = parseInt(hex.substring(0, 2), 16) / 255
+  const g = parseInt(hex.substring(2, 4), 16) / 255
+  const b = parseInt(hex.substring(4, 6), 16) / 255
+
+  // Get max and min values
+  const max = Math.max(r, g, b)
+  const min = Math.min(r, g, b)
+
+  let h: number = 0
+  let s: number = 0
+  let l: number = (max + min) / 2
+
+  if (max === min) {
+    h = s = 0 // Achromatic (gray)
+  } else {
+    let d = max - min
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
+
+    switch (max) {
+      case r:
+        h = (g - b) / d + (g < b ? 6 : 0)
+        break
+      case g:
+        h = (b - r) / d + 2
+        break
+      case b:
+        h = (r - g) / d + 4
+        break
+    }
+
+    h *= 60
+  }
+
+  return `${Math.round(h)} ${Math.round(s * 100)}% ${Math.round(l * 100)}%`
 }
 
 export const isColorDark = (hex: string) => {

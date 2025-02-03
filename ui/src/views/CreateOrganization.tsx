@@ -17,13 +17,20 @@ import { useMutation, useQuery } from '@connectrpc/connect-query'
 import React, { Dispatch, FC, SetStateAction, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { refresh } from '@/gen/openauth/frontend/v1/frontend-FrontendService_connectquery'
-import { LoginViews } from '@/lib/views'
+import { LoginLayouts, LoginViews } from '@/lib/views'
+import { Input } from '@/components/ui/input'
+import { Organization } from '@/gen/openauth/intermediate/v1/intermediate_pb'
+import { useLayout } from '@/lib/settings'
+import { cn } from '@/lib/utils'
+import { parseErrorMessage } from '@/lib/errors'
+import { toast } from 'sonner'
 
 interface CreateOrganizationProps {
   setView: Dispatch<SetStateAction<LoginViews>>
 }
 
 const CreateOrganization: FC<CreateOrganizationProps> = ({ setView }) => {
+  const layout = useLayout()
   const navigate = useNavigate()
   const { data: whoamiRes } = useQuery(whoami)
 
@@ -62,7 +69,11 @@ const CreateOrganization: FC<CreateOrganizationProps> = ({ setView }) => {
 
       navigate('/settings')
     } catch (error) {
-      console.error(error)
+      const message = parseErrorMessage(error)
+
+      toast.error('Could not create organization', {
+        description: message,
+      })
     }
   }
 
@@ -70,25 +81,30 @@ const CreateOrganization: FC<CreateOrganizationProps> = ({ setView }) => {
     <>
       <Title title="Create a new Organization" />
 
-      <Card className="w-[clamp(320px,50%,420px)]">
+      <Card
+        className={cn(
+          'w-full max-w-sm',
+          layout !== LoginLayouts.Centered && 'shadow-none border-0',
+        )}
+      >
         <CardHeader>
-          <CardTitle className="text-center uppercase text-foreground font-semibold text-sm tracking-wide mt-2">
+          <CardTitle className="text-center">
             Create a new Organization
           </CardTitle>
         </CardHeader>
-        <CardContent className="flex flex-col items-center justify-center w-full">
-          <form className="flex flex-col items-center" onSubmit={handleSubmit}>
-            <input
-              className="text-sm rounded border border-border focus:border-primary w-[clamp(240px,50%,100%)] mb-2"
+        <CardContent>
+          <form
+            className="flex flex-col items-center w-full"
+            onSubmit={handleSubmit}
+          >
+            <Input
+              className="w-full mb-2"
               id="displayName"
               placeholder="Acme, Inc."
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
             />
-            <Button
-              className="text-sm rounded border border-border focus:border-primary w-[clamp(240px,50%,100%)] mb-2"
-              type="submit"
-            >
+            <Button className="w-full" type="submit">
               Create Organization
             </Button>
           </form>

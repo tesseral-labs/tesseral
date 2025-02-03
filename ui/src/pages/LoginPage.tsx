@@ -1,31 +1,52 @@
 import React, { useState } from 'react'
 
 import { LoginViews } from '@/lib/views'
-import { useLocation } from 'react-router'
 import CreateOrganization from '@/views/CreateOrganization'
-import Organizations from '@/views/Organizations'
-import EmailVerification from '@/views/EmailVerification'
+import ChooseOrganization from '@/views/ChooseOrganization'
 import Login from '@/views/Login'
-import PasswordVerification from '@/views/PasswordVerification'
 import RegisterPassword from '@/views/RegisterPassword'
+import VerifyEmail from '@/views/VerifyEmail'
+import VerifyPassword from '@/views/VerifyPassword'
+import RegisterAuthenticatorApp from '@/views/RegisterAuthenticatorApp'
+import RegisterPasskey from '@/views/RegisterPasskey'
+import VerifyAuthenticatorApp from '@/views/VerifyAuthenticatorApp'
+import VerifyPasskey from '@/views/VerifyPasskey'
+import ChooseAdditionalFactor from '@/views/ChooseAdditionalFactor'
+import { Organization } from '@/gen/openauth/intermediate/v1/intermediate_pb'
+import { IntermediateOrganizationContextProvider } from '@/lib/auth'
 
 const LoginPage = () => {
-  const location = useLocation()
+  const [intermediateOrganization, setIntermediateOrganization] =
+    useState<Organization>()
   const [view, setView] = useState<LoginViews>(LoginViews.Login)
 
   return (
-    <>
+    <IntermediateOrganizationContextProvider value={intermediateOrganization}>
+      {view === LoginViews.ChooseAdditionalFactor && (
+        <ChooseAdditionalFactor setView={setView} />
+      )}
+      {view === LoginViews.ChooseOrganization && (
+        <ChooseOrganization
+          setIntermediateOrganization={setIntermediateOrganization}
+          setView={setView}
+        />
+      )}
       {view === LoginViews.CreateOrganization && (
         <CreateOrganization setView={setView} />
       )}
-      {view === LoginViews.EmailVerification && (
-        <EmailVerification setView={setView} />
-      )}
       {view === LoginViews.Login && <Login setView={setView} />}
-      {view === LoginViews.Organizations && <Organizations setView={setView} />}
-      {view === LoginViews.PasswordVerification && <PasswordVerification />}
       {view === LoginViews.RegisterPassword && <RegisterPassword />}
-    </>
+      {view === LoginViews.RegisterAuthenticatorApp && (
+        <RegisterAuthenticatorApp />
+      )}
+      {view === LoginViews.RegisterPasskey && <RegisterPasskey />}
+      {view === LoginViews.VerifyEmail && <VerifyEmail setView={setView} />}
+      {view === LoginViews.VerifyPassword && (
+        <VerifyPassword setView={setView} />
+      )}
+      {view === LoginViews.VerifyAuthenticatorApp && <VerifyAuthenticatorApp />}
+      {view === LoginViews.VerifyPasskey && <VerifyPasskey />}
+    </IntermediateOrganizationContextProvider>
   )
 }
 

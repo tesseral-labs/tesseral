@@ -1,29 +1,16 @@
-import forms from '@tailwindcss/forms'
-import typography from '@tailwindcss/typography'
-
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ['./src/**/*.{ts,tsx}', './public/index.html'],
-  darkMode: 'class',
-  plugins: [forms, typography],
-  prefix: '',
+  darkMode: ['class'],
+  plugins: [require('@tailwindcss-animate')],
   theme: {
     extend: {
       colors: {
-        // Brand colors
-        dark: '#01090B',
-        light: '#F6F7F7',
-        primary: '#5046E1',
-        white: '#FFFFFF',
-
-        // Custom colors
-        body: 'hsl(var(--body))',
         border: 'hsl(var(--border))',
+        input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
-
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
-
         primary: {
           DEFAULT: 'hsl(var(--primary))',
           foreground: 'hsl(var(--primary-foreground))',
@@ -52,10 +39,11 @@ module.exports = {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
-        input: {
-          DEFAULT: 'hsl(var(--input))',
-          foreground: 'hsl(var(--input-foreground))',
-        },
+      },
+      borderRadius: {
+        lg: `var(--radius)`,
+        md: `calc(var(--radius) - 2px)`,
+        sm: 'calc(var(--radius) - 4px)',
       },
     },
     fontFamily: {
