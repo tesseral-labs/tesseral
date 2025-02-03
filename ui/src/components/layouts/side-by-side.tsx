@@ -13,7 +13,7 @@ const SideBySideLayout: FC = () => {
       <div className="bg-primary" />
       <div className="flex flex-col justify-center items-center p-4">
         <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 flex justify-center">
-          <div className="mb-8">
+          <div className="mb-4">
             {/* TODO: Make this conditionally load an Organizations configured logo */}
             {isDarkMode && settings?.detectDarkModeEnabled ? (
               <img
