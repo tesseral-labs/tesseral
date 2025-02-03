@@ -18,8 +18,8 @@ import (
 )
 
 const (
-	// how many backup codes to generate for an authenticator app
-	backupCodeCount = 10
+	// how many recovery codes to generate for an authenticator app
+	recoveryCodeCount = 10
 
 	// after this many failed attempts, lock out a user
 	backupCodeLockoutAttempts = 5
@@ -91,8 +91,8 @@ func (s *Store) RegisterAuthenticatorApp(ctx context.Context, req *intermediatev
 	defer rollback()
 
 	var backupCodes []string
-	var backupCodeBcrypts [][]byte
-	for i := 0; i < backupCodeCount; i++ {
+	var recoveryCodeBcrypts [][]byte
+	for i := 0; i < recoveryCodeCount; i++ {
 		var code [8]byte
 		if _, err := rand.Read(code[:]); err != nil {
 			return nil, fmt.Errorf("read random bytes: %w", err)
@@ -106,7 +106,7 @@ func (s *Store) RegisterAuthenticatorApp(ctx context.Context, req *intermediatev
 		}
 
 		backupCodes = append(backupCodes, codeFormatted)
-		backupCodeBcrypts = append(backupCodeBcrypts, codeBcrypt)
+		recoveryCodeBcrypts = append(recoveryCodeBcrypts, codeBcrypt)
 	}
 
 	if _, err := q.UpdateIntermediateSessionAuthenticatorAppVerified(ctx, authn.IntermediateSessionID(ctx)); err != nil {
@@ -114,8 +114,8 @@ func (s *Store) RegisterAuthenticatorApp(ctx context.Context, req *intermediatev
 	}
 
 	if _, err := q.UpdateIntermediateSessionAuthenticatorAppBackupCodeBcrypts(ctx, queries.UpdateIntermediateSessionAuthenticatorAppBackupCodeBcryptsParams{
-		ID:                                authn.IntermediateSessionID(ctx),
-		AuthenticatorAppBackupCodeBcrypts: backupCodeBcrypts,
+		ID:                                  authn.IntermediateSessionID(ctx),
+		AuthenticatorAppRecoveryCodeBcrypts: recoveryCodeBcrypts,
 	}); err != nil {
 		return nil, fmt.Errorf("update intermediate session authenticator app backup code bcrypts: %w", err)
 	}

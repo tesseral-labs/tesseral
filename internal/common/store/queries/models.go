@@ -82,7 +82,7 @@ type IntermediateSession struct {
 	PasskeyVerified                     bool
 	AuthenticatorAppSecretCiphertext    []byte
 	AuthenticatorAppVerified            bool
-	AuthenticatorAppBackupCodeBcrypts   [][]byte
+	AuthenticatorAppRecoveryCodeBcrypts [][]byte
 }
 
 type OauthVerifiedEmail struct {

@@ -403,7 +403,7 @@ RETURNING
 UPDATE
     intermediate_sessions
 SET
-    authenticator_app_backup_code_bcrypts = $1,
+    authenticator_app_recovery_code_bcrypts = $1,
     update_time = now()
 WHERE
     id = $2
