@@ -44,9 +44,11 @@ func parseProject(qProject *queries.Project) *frontendv1.Project {
 		CreateTime:                timestamppb.New(*qProject.CreateTime),
 		UpdateTime:                timestamppb.New(*qProject.UpdateTime),
 		DisplayName:               qProject.DisplayName,
-		LogInWithPasswordEnabled:  qProject.LogInWithPasswordEnabled,
-		LogInWithGoogleEnabled:    qProject.LogInWithGoogleEnabled,
-		LogInWithMicrosoftEnabled: qProject.LogInWithMicrosoftEnabled,
+		LogInWithPassword:         qProject.LogInWithPassword,
+		LogInWithGoogle:           qProject.LogInWithGoogle,
+		LogInWithMicrosoft:        qProject.LogInWithMicrosoft,
+		LogInWithAuthenticatorApp: qProject.LogInWithAuthenticatorApp,
+		LogInWithPasskey:          qProject.LogInWithPasskey,
 		AuthDomain:                authDomain,
 	}
 }

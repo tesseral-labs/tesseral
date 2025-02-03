@@ -83,7 +83,7 @@ const ChooseOrganization: FC<ChooseOrganizationProps> = ({
         }
 
         return LoginViews.ChooseAdditionalFactor
-      } else if (organization.logInWithPasswordEnabled) {
+      } else if (organization.logInWithPassword) {
         if (organization.userHasPassword) {
           return LoginViews.VerifyPassword
         }
@@ -92,21 +92,21 @@ const ChooseOrganization: FC<ChooseOrganizationProps> = ({
       }
     } else {
       if (
-        organization.logInWithAuthenticatorAppEnabled &&
+        organization.logInWithAuthenticatorApp &&
         organization.userHasAuthenticatorApp &&
         !organization.userHasPasskey &&
         !organization.userHasPassword
       ) {
         return LoginViews.VerifyAuthenticatorApp
       } else if (
-        organization.logInWithPasskeyEnabled &&
+        organization.logInWithPasskey &&
         organization.userHasPasskey &&
         !organization.userHasAuthenticatorApp &&
         !organization.userHasPassword
       ) {
         return LoginViews.VerifyPasskey
       } else if (
-        organization.logInWithPasswordEnabled &&
+        organization.logInWithPassword &&
         organization.userHasPassword &&
         !organization.userHasAuthenticatorApp &&
         !organization.userHasPasskey
@@ -121,9 +121,6 @@ const ChooseOrganization: FC<ChooseOrganizationProps> = ({
   const handleOrganizationClick = async (organization: Organization) => {
     const intermediateOrganization = {
       ...organization,
-      requireMfa: true,
-      logInWithPasskeyEnabled: true,
-      logInWithAuthenticatorAppEnabled: true,
     }
     try {
       if (!whoamiRes?.intermediateSession) {

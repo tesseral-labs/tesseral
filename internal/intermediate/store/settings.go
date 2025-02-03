@@ -44,16 +44,16 @@ func (s *Store) parseSettings(qProject queries.Project, qProjectUISettings queri
 	projectID := idformat.Project.Format(qProject.ID)
 
 	return &intermediatev1.Settings{
-		Id:                        idformat.ProjectUISettings.Format(qProjectUISettings.ID),
-		ProjectId:                 projectID,
-		DarkModeLogoUrl:           fmt.Sprintf("%s/dark_mode_logos_v1/%s/dark_mode_logo", s.userContentBaseUrl, projectID),
-		DetectDarkModeEnabled:     qProjectUISettings.DetectDarkModeEnabled,
-		DarkModePrimaryColor:      derefOrEmpty(qProjectUISettings.DarkModePrimaryColor),
-		FaviconUrl:                fmt.Sprintf("%s/faviconss_v1/%s/favicon", s.userContentBaseUrl, projectID),
-		LogoUrl:                   fmt.Sprintf("%s/logos_v1/%s/logo", s.userContentBaseUrl, projectID),
-		PrimaryColor:              derefOrEmpty(qProjectUISettings.PrimaryColor),
-		LogInWithGoogleEnabled:    qProject.LogInWithGoogleEnabled,
-		LogInWithMicrosoftEnabled: qProject.LogInWithMicrosoftEnabled,
-		LogInWithPasswordEnabled:  qProject.LogInWithPasswordEnabled,
+		Id:                    idformat.ProjectUISettings.Format(qProjectUISettings.ID),
+		ProjectId:             projectID,
+		LogoUrl:               fmt.Sprintf("%s/logos_v1/%s/logo", s.userContentBaseUrl, projectID),
+		FaviconUrl:            fmt.Sprintf("%s/faviconss_v1/%s/favicon", s.userContentBaseUrl, projectID),
+		PrimaryColor:          derefOrEmpty(qProjectUISettings.PrimaryColor),
+		DetectDarkModeEnabled: qProjectUISettings.DetectDarkModeEnabled,
+		DarkModeLogoUrl:       fmt.Sprintf("%s/dark_mode_logos_v1/%s/dark_mode_logo", s.userContentBaseUrl, projectID),
+		DarkModePrimaryColor:  derefOrEmpty(qProjectUISettings.DarkModePrimaryColor),
+		LogInWithGoogle:       qProject.LogInWithGoogle,
+		LogInWithMicrosoft:    qProject.LogInWithMicrosoft,
+		LogInWithPassword:     qProject.LogInWithPassword,
 	}
 }

@@ -38,11 +38,7 @@ const VerifyPassword: FC<VerifyPasswordProps> = ({ setView }) => {
   const deriveNextView = (): LoginViews | undefined => {
     console.log(`organization`, organization)
 
-    if (
-      organization?.requireMfa &&
-      !whoamiRes?.intermediateSession?.googleUserId &&
-      !whoamiRes?.intermediateSession?.microsoftUserId
-    ) {
+    if (organization?.requireMfa) {
       return LoginViews.ChooseAdditionalFactor
     }
   }
