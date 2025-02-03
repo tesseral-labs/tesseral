@@ -18,6 +18,8 @@ const ChooseAdditionalFactor: FC<ChooseAdditionalFactorProps> = ({
   const org = useIntermediateOrganization()
   const layout = useLayout()
 
+  const hasSecondFactor = org?.userHasPasskey || org?.userHasAuthenticatorApp
+
   return (
     <Card
       className={cn(
@@ -29,22 +31,36 @@ const ChooseAdditionalFactor: FC<ChooseAdditionalFactorProps> = ({
         <CardTitle className="text-center">Choose additional factor</CardTitle>
       </CardHeader>
       <CardContent className="grid gap-2">
-        {org?.logInWithPasskeyEnabled && (
-          <Button
-            className="w-full"
-            onClick={() => setView(LoginViews.RegisterPasskey)}
-          >
-            Continue with Passkey
-          </Button>
-        )}
-        {org?.logInWithAuthenticatorAppEnabled && (
-          <Button
-            className="w-full"
-            onClick={() => setView(LoginViews.RegisterAuthenticatorApp)}
-          >
-            Continue with Authenticator app
-          </Button>
-        )}
+        {org?.logInWithPasskeyEnabled &&
+          (!hasSecondFactor || org.userHasPasskey) && (
+            <Button
+              className="w-full"
+              onClick={() =>
+                setView(
+                  org.userHasPasskey
+                    ? LoginViews.VerifyPasskey
+                    : LoginViews.RegisterPasskey,
+                )
+              }
+            >
+              Continue with Passkey
+            </Button>
+          )}
+        {org?.logInWithAuthenticatorAppEnabled &&
+          (!hasSecondFactor || org.userHasAuthenticatorApp) && (
+            <Button
+              className="w-full"
+              onClick={() =>
+                setView(
+                  org.userHasAuthenticatorApp
+                    ? LoginViews.VerifyAuthenticatorApp
+                    : LoginViews.RegisterAuthenticatorApp,
+                )
+              }
+            >
+              Continue with Authenticator app
+            </Button>
+          )}
       </CardContent>
     </Card>
   )
