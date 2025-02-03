@@ -1124,7 +1124,6 @@ const updateIntermediateSessionAuthenticatorAppVerified = `-- name: UpdateInterm
 UPDATE
     intermediate_sessions
 SET
-    authenticator_app_secret_ciphertext = NULL,
     authenticator_app_verified = TRUE,
     authenticator_app_backup_code_bcrypts = $1,
     update_time = now()
@@ -1686,6 +1685,48 @@ func (q *Queries) UpdateIntermediateSessionPasswordVerified(ctx context.Context,
 		&i.AuthenticatorAppSecretCiphertext,
 		&i.AuthenticatorAppVerified,
 		&i.AuthenticatorAppBackupCodeBcrypts,
+	)
+	return i, err
+}
+
+const updateUserAuthenticatorApp = `-- name: UpdateUserAuthenticatorApp :one
+UPDATE
+    users
+SET
+    authenticator_app_secret_ciphertext = $1,
+    authenticator_app_backup_code_bcrypts = $2
+WHERE
+    id = $3
+RETURNING
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_backup_code_bcrypts, failed_authenticator_app_backup_code_attempts, authenticator_app_backup_code_lockout_expire_time
+`
+
+type UpdateUserAuthenticatorAppParams struct {
+	AuthenticatorAppSecretCiphertext  []byte
+	AuthenticatorAppBackupCodeBcrypts [][]byte
+	ID                                uuid.UUID
+}
+
+func (q *Queries) UpdateUserAuthenticatorApp(ctx context.Context, arg UpdateUserAuthenticatorAppParams) (User, error) {
+	row := q.db.QueryRow(ctx, updateUserAuthenticatorApp, arg.AuthenticatorAppSecretCiphertext, arg.AuthenticatorAppBackupCodeBcrypts, arg.ID)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.PasswordBcrypt,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+		&i.Email,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.DeactivateTime,
+		&i.IsOwner,
+		&i.FailedPasswordAttempts,
+		&i.PasswordLockoutExpireTime,
+		&i.AuthenticatorAppSecretCiphertext,
+		&i.AuthenticatorAppBackupCodeBcrypts,
+		&i.FailedAuthenticatorAppBackupCodeAttempts,
+		&i.AuthenticatorAppBackupCodeLockoutExpireTime,
 	)
 	return i, err
 }

@@ -108,3 +108,8 @@ export const getAuthenticatorAppOptions = IntermediateService.method.getAuthenti
  * @generated from rpc openauth.intermediate.v1.IntermediateService.RegisterAuthenticatorApp
  */
 export const registerAuthenticatorApp = IntermediateService.method.registerAuthenticatorApp;
+
+/**
+ * @generated from rpc openauth.intermediate.v1.IntermediateService.VerifyAuthenticatorApp
+ */
+export const verifyAuthenticatorApp = IntermediateService.method.verifyAuthenticatorApp;
