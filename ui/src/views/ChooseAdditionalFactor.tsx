@@ -1,4 +1,4 @@
-import React, { Dispatch, FC, SetStateAction, useEffect } from 'react'
+import React, { Dispatch, FC, SetStateAction } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -15,8 +15,8 @@ interface ChooseAdditionalFactorProps {
 const ChooseAdditionalFactor: FC<ChooseAdditionalFactorProps> = ({
   setView,
 }) => {
-  const org = useIntermediateOrganization()
   const layout = useLayout()
+  const org = useIntermediateOrganization()
 
   const hasSecondFactor = org?.userHasPasskey || org?.userHasAuthenticatorApp
 
@@ -31,22 +31,21 @@ const ChooseAdditionalFactor: FC<ChooseAdditionalFactorProps> = ({
         <CardTitle className="text-center">Choose additional factor</CardTitle>
       </CardHeader>
       <CardContent className="grid gap-2">
-        {org?.logInWithPasskeyEnabled &&
-          (!hasSecondFactor || org.userHasPasskey) && (
-            <Button
-              className="w-full"
-              onClick={() =>
-                setView(
-                  org.userHasPasskey
-                    ? LoginViews.VerifyPasskey
-                    : LoginViews.RegisterPasskey,
-                )
-              }
-            >
-              Continue with Passkey
-            </Button>
-          )}
-        {org?.logInWithAuthenticatorAppEnabled &&
+        {org?.logInWithPasskey && (!hasSecondFactor || org.userHasPasskey) && (
+          <Button
+            className="w-full"
+            onClick={() =>
+              setView(
+                org.userHasPasskey
+                  ? LoginViews.VerifyPasskey
+                  : LoginViews.RegisterPasskey,
+              )
+            }
+          >
+            Continue with Passkey
+          </Button>
+        )}
+        {org?.logInWithAuthenticatorApp &&
           (!hasSecondFactor || org.userHasAuthenticatorApp) && (
             <Button
               className="w-full"

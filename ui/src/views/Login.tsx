@@ -143,7 +143,6 @@ const Login: FC<LoginProps> = ({ setView }) => {
 
           {(settings?.logInWithGoogle || settings?.logInWithMicrosoft) && (
             <TextDivider
-              affects={layout !== LoginLayouts.Centered ? 'muted' : 'default'}
               variant={layout !== LoginLayouts.Centered ? 'wider' : 'wide'}
             >
               or continue with email
