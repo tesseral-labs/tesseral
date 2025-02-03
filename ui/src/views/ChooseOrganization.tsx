@@ -180,9 +180,7 @@ const ChooseOrganization: FC<ChooseOrganizationProps> = ({
         )}
       >
         <CardHeader>
-          <CardTitle className="text-center uppercase text-foreground font-semibold text-sm tracking-wide mt-2">
-            Choose an Organization
-          </CardTitle>
+          <CardTitle className="text-center">Choose an Organization</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col items-center justify-center w-full">
           <ul className="w-full p-0 border border-b-0 rounded-md">

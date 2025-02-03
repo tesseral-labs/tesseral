@@ -113,7 +113,7 @@ const Login: FC<LoginProps> = ({ setView }) => {
         <CardHeader>
           {(settings?.logInWithGoogleEnabled ||
             settings?.logInWithMicrosoftEnabled) && (
-            <CardTitle className="text-center">Continue with OAuth</CardTitle>
+            <CardTitle className="text-center">Log in with</CardTitle>
           )}
         </CardHeader>
 

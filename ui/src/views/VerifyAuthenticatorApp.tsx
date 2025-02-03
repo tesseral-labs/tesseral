@@ -66,7 +66,9 @@ const VerifyAuthenticatorApp: FC = () => {
         )}
       >
         <CardHeader>
-          <CardTitle>Verify Authenticator App</CardTitle>
+          <CardTitle className="text-center">
+            Verify Authenticator App
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <p className="mt-4 text-sm text-center text-muted-foreground">
