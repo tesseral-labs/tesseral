@@ -110,6 +110,56 @@ WHERE
 RETURNING
     *;
 
+-- name: DisableProjectOrganizationsLogInWithPassword :one
+UPDATE
+    organizations
+SET
+    log_in_with_password = FALSE
+WHERE
+    project_id = $1
+RETURNING
+    *;
+
+-- name: DisableProjectOrganizationsLogInWithGoogle :one
+UPDATE
+    organizations
+SET
+    log_in_with_google = FALSE
+WHERE
+    project_id = $1
+RETURNING
+    *;
+
+-- name: DisableProjectOrganizationsLogInWithMicrosoft :one
+UPDATE
+    organizations
+SET
+    log_in_with_microsoft = FALSE
+WHERE
+    project_id = $1
+RETURNING
+    *;
+
+-- name: DisableProjectOrganizationsLogInWithAuthenticatorApp :one
+UPDATE
+    organizations
+SET
+    log_in_with_authenticator_app = FALSE
+WHERE
+    project_id = $1
+RETURNING
+    *;
+
+-- name: DisableProjectOrganizationsLogInWithPasskey :one
+UPDATE
+    organizations
+SET
+    log_in_with_passkey = FALSE
+WHERE
+    project_id = $1
+RETURNING
+    *;
+
 -- name: UpdateProjectOrganizationID :one
 UPDATE
     projects

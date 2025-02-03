@@ -190,6 +190,36 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 		return nil, fmt.Errorf("update project: %w", err)
 	}
 
+	if !qUpdatedProject.LogInWithPassword {
+		if _, err := q.DisableProjectOrganizationsLogInWithPassword(ctx, authn.ProjectID(ctx)); err != nil {
+			return nil, fmt.Errorf("disable project organizations log in with password: %w", err)
+		}
+	}
+
+	if !qUpdatedProject.LogInWithGoogle {
+		if _, err := q.DisableProjectOrganizationsLogInWithGoogle(ctx, authn.ProjectID(ctx)); err != nil {
+			return nil, fmt.Errorf("disable project organizations log in with Google: %w", err)
+		}
+	}
+
+	if !qUpdatedProject.LogInWithMicrosoft {
+		if _, err := q.DisableProjectOrganizationsLogInWithMicrosoft(ctx, authn.ProjectID(ctx)); err != nil {
+			return nil, fmt.Errorf("disable project organizations log in with Microsoft: %w", err)
+		}
+	}
+
+	if !qUpdatedProject.LogInWithAuthenticatorApp {
+		if _, err := q.DisableProjectOrganizationsLogInWithAuthenticatorApp(ctx, authn.ProjectID(ctx)); err != nil {
+			return nil, fmt.Errorf("disable project organizations log in with authenticator app: %w", err)
+		}
+	}
+
+	if !qUpdatedProject.LogInWithPasskey {
+		if _, err := q.DisableProjectOrganizationsLogInWithPasskey(ctx, authn.ProjectID(ctx)); err != nil {
+			return nil, fmt.Errorf("disable project organizations log in with passkey: %w", err)
+		}
+	}
+
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
 	}
