@@ -426,9 +426,19 @@ UPDATE
     users
 SET
     authenticator_app_secret_ciphertext = $1,
-    authenticator_app_backup_code_bcrypts = $2
+    authenticator_app_recovery_code_bcrypts = $2
 WHERE
     id = $3
+RETURNING
+    *;
+
+-- name: UpdateUserAuthenticatorAppRecoveryCodeBcrypts :one
+UPDATE
+    users
+SET
+    authenticator_app_recovery_code_bcrypts = $1
+WHERE
+    id = $2
 RETURNING
     *;
 

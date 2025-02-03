@@ -226,22 +226,22 @@ type SessionSigningKey struct {
 }
 
 type User struct {
-	ID                                uuid.UUID
-	OrganizationID                    uuid.UUID
-	PasswordBcrypt                    *string
-	GoogleUserID                      *string
-	MicrosoftUserID                   *string
-	Email                             string
-	CreateTime                        *time.Time
-	UpdateTime                        *time.Time
-	DeactivateTime                    *time.Time
-	IsOwner                           bool
-	FailedPasswordAttempts            int32
-	PasswordLockoutExpireTime         *time.Time
-	AuthenticatorAppSecretCiphertext  []byte
-	AuthenticatorAppBackupCodeBcrypts [][]byte
-	FailedAuthenticatorAppAttempts    int32
-	AuthenticatorAppLockoutExpireTime *time.Time
+	ID                                  uuid.UUID
+	OrganizationID                      uuid.UUID
+	PasswordBcrypt                      *string
+	GoogleUserID                        *string
+	MicrosoftUserID                     *string
+	Email                               string
+	CreateTime                          *time.Time
+	UpdateTime                          *time.Time
+	DeactivateTime                      *time.Time
+	IsOwner                             bool
+	FailedPasswordAttempts              int32
+	PasswordLockoutExpireTime           *time.Time
+	AuthenticatorAppSecretCiphertext    []byte
+	AuthenticatorAppRecoveryCodeBcrypts [][]byte
+	FailedAuthenticatorAppAttempts      int32
+	AuthenticatorAppLockoutExpireTime   *time.Time
 }
 
 type UserImpersonationToken struct {

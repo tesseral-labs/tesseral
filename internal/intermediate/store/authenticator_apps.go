@@ -195,15 +195,28 @@ func (s *Store) verifyAuthenticatorAppByBackupCode(ctx context.Context, backupCo
 		return fmt.Errorf("get intermediate session by id: %w", err)
 	}
 
+	qOrg, err := q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
+		ProjectID: authn.ProjectID(ctx),
+		ID:        *qIntermediateSession.OrganizationID,
+	})
+	if err != nil {
+		return fmt.Errorf("get organization by id: %w", err)
+	}
+
+	qMatchingUser, err := s.matchUser(ctx, q, qOrg, qIntermediateSession)
+	if err != nil {
+		return fmt.Errorf("match user: %w", err)
+	}
+
 	var ok bool
-	var backupCodeBcrypts [][]byte
-	for _, b := range qIntermediateSession.AuthenticatorAppBackupCodeBcrypts {
+	var recoveryCodeBcrypts [][]byte
+	for _, b := range qMatchingUser.AuthenticatorAppRecoveryCodeBcrypts {
 		if bcrypt.CompareHashAndPassword(b, []byte(backupCode)) == nil {
 			ok = true
 			continue // do not keep this bcrypt around; the code is used
 		}
 
-		backupCodeBcrypts = append(backupCodeBcrypts, b)
+		recoveryCodeBcrypts = append(recoveryCodeBcrypts, b)
 	}
 
 	if !ok {
@@ -215,9 +228,9 @@ func (s *Store) verifyAuthenticatorAppByBackupCode(ctx context.Context, backupCo
 	}
 
 	// write back the remaining backup codes to the user
-	if _, err := q.UpdateIntermediateSessionAuthenticatorAppBackupCodeBcrypts(ctx, queries.UpdateIntermediateSessionAuthenticatorAppBackupCodeBcryptsParams{
-		ID:                                authn.IntermediateSessionID(ctx),
-		AuthenticatorAppBackupCodeBcrypts: backupCodeBcrypts,
+	if _, err := q.UpdateUserAuthenticatorAppRecoveryCodeBcrypts(ctx, queries.UpdateUserAuthenticatorAppRecoveryCodeBcryptsParams{
+		ID:                                  authn.IntermediateSessionID(ctx),
+		AuthenticatorAppRecoveryCodeBcrypts: recoveryCodeBcrypts,
 	}); err != nil {
 		return fmt.Errorf("update intermediate session authenticator app backup code bcrypts: %w", err)
 	}

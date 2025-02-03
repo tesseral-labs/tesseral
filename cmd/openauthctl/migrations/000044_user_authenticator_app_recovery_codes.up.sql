@@ -1,0 +1,1 @@
+alter table users rename column authenticator_app_backup_code_bcrypts to authenticator_app_recovery_code_bcrypts;
