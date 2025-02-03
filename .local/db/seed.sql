@@ -62,7 +62,7 @@ values ('24ba0dd5-e178-460e-8f7a-f3f72cf6a1e7'::uuid, true, false, false, 'Custo
 
 -- Create customer1's project's backing organization
 INSERT INTO organizations (id, display_name, project_id, saml_enabled, scim_enabled, log_in_with_password)
-VALUES ('8b5972b6-c878-4c6c-a351-9e01da20f776'::uuid, 'project_269wse1l6u0jnvs8afpq44f6v Backing Organization', '56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2', false, false, false);
+VALUES ('8b5972b6-c878-4c6c-a351-9e01da20f776'::uuid, 'project_269wse1l6u0jnvs8afpq44f6v Backing Organization', '56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2', false, false, true);
 
 update projects set organization_id = '8b5972b6-c878-4c6c-a351-9e01da20f776'::uuid where id = '24ba0dd5-e178-460e-8f7a-f3f72cf6a1e7'::uuid;
 

@@ -111,8 +111,8 @@ const Login: FC<LoginProps> = ({ setView }) => {
         )}
       >
         <CardHeader>
-          {(settings?.logInWithGoogleEnabled ||
-            settings?.logInWithMicrosoftEnabled) && (
+          {(settings?.logInWithGoogle ||
+            settings?.logInWithMicrosoft) && (
             <CardTitle className="text-center">Continue with OAuth</CardTitle>
           )}
         </CardHeader>
@@ -121,20 +121,20 @@ const Login: FC<LoginProps> = ({ setView }) => {
           <div
             className={cn(
               'w-full grid gap-6',
-              settings?.logInWithGoogleEnabled &&
-                settings?.logInWithMicrosoftEnabled
+              settings?.logInWithGoogle &&
+                settings?.logInWithMicrosoft
                 ? 'grid-cols-2'
                 : 'grid-cols-1',
             )}
           >
-            {settings?.logInWithGoogleEnabled && (
+            {settings?.logInWithGoogle && (
               <OAuthButton
                 method={OAuthMethods.google}
                 onClick={handleGoogleOAuthLogin}
                 variant="outline"
               />
             )}
-            {settings?.logInWithMicrosoftEnabled && (
+            {settings?.logInWithMicrosoft && (
               <OAuthButton
                 method={OAuthMethods.microsoft}
                 onClick={handleMicrosoftOAuthLogin}
@@ -143,8 +143,8 @@ const Login: FC<LoginProps> = ({ setView }) => {
             )}
           </div>
 
-          {(settings?.logInWithGoogleEnabled ||
-            settings?.logInWithMicrosoftEnabled) && (
+          {(settings?.logInWithGoogle ||
+            settings?.logInWithMicrosoft) && (
             <TextDivider
               affects={layout !== LoginLayouts.Centered ? 'muted' : 'default'}
               variant={layout !== LoginLayouts.Centered ? 'wider' : 'wide'}
