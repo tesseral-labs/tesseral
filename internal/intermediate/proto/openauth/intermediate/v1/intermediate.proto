@@ -182,9 +182,10 @@ message Settings {
   bool detect_dark_mode_enabled = 8;
   string dark_mode_logo_url = 9;
   string dark_mode_primary_color = 10;
-  bool log_in_with_google = 11;
-  bool log_in_with_microsoft = 12;
-  bool log_in_with_password = 13;
+  string log_in_layout = 11;
+  bool log_in_with_google = 12;
+  bool log_in_with_microsoft = 13;
+  bool log_in_with_password = 14;
 }
 
 message CreateIntermediateSessionRequest {

@@ -10,9 +10,7 @@ export const useLayout = () => {
   const [layout, setLayout] = useState<LoginLayouts>()
 
   useEffect(() => {
-    setLayout(
-      ((settingsRes?.settings as any) || {}).layout || LoginLayouts.SideBySide,
-    )
+    setLayout(((settingsRes?.settings as any) || {}).logInLayout)
   }, [settingsRes])
 
   return layout
