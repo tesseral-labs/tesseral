@@ -262,6 +262,9 @@ func (s *Store) checkAuthenticatorAppLockedOut(ctx context.Context) error {
 		ProjectID: authn.ProjectID(ctx),
 		ID:        *qIntermediateSession.OrganizationID,
 	})
+	if err != nil {
+		return fmt.Errorf("get organization by id: %w", err)
+	}
 
 	qMatchingUser, err := s.matchUser(ctx, q, qOrg, qIntermediateSession)
 	if err != nil {
