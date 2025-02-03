@@ -63,8 +63,6 @@ const VerifyPassword: FC<VerifyPasswordProps> = ({ setView }) => {
 
       const nextView = deriveNextView()
 
-      console.log(`nextView: ${nextView}`)
-
       if (!!nextView) {
         setView(nextView)
         return
