@@ -50,6 +50,7 @@ func (s *Store) parseSettings(qProject queries.Project, qProjectUISettings queri
 		DetectDarkModeEnabled:     qProjectUISettings.DetectDarkModeEnabled,
 		DarkModePrimaryColor:      derefOrEmpty(qProjectUISettings.DarkModePrimaryColor),
 		FaviconUrl:                fmt.Sprintf("%s/faviconss_v1/%s/favicon", s.userContentBaseUrl, projectID),
+		LogInLayout:               string(qProjectUISettings.LogInLayout),
 		LogoUrl:                   fmt.Sprintf("%s/logos_v1/%s/logo", s.userContentBaseUrl, projectID),
 		PrimaryColor:              derefOrEmpty(qProjectUISettings.PrimaryColor),
 		LogInWithGoogleEnabled:    qProject.LogInWithGoogleEnabled,

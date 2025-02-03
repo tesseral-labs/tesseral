@@ -2,7 +2,7 @@ import { createContext } from 'react'
 
 export enum LoginLayouts {
   Centered = 'centered',
-  SideBySide = 'side-by-side',
+  SideBySide = 'side_by_side',
 }
 
 export enum LoginViews {

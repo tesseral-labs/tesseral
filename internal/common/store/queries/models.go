@@ -56,6 +56,48 @@ func (ns NullAuthMethod) Value() (driver.Value, error) {
 	return string(ns.AuthMethod), nil
 }
 
+type LogInLayout string
+
+const (
+	LogInLayoutCentered   LogInLayout = "centered"
+	LogInLayoutSideBySide LogInLayout = "side_by_side"
+)
+
+func (e *LogInLayout) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = LogInLayout(s)
+	case string:
+		*e = LogInLayout(s)
+	default:
+		return fmt.Errorf("unsupported scan type for LogInLayout: %T", src)
+	}
+	return nil
+}
+
+type NullLogInLayout struct {
+	LogInLayout LogInLayout
+	Valid       bool // Valid is true if LogInLayout is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullLogInLayout) Scan(value interface{}) error {
+	if value == nil {
+		ns.LogInLayout, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.LogInLayout.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullLogInLayout) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.LogInLayout), nil
+}
+
 type IntermediateSession struct {
 	ID                                  uuid.UUID
 	ProjectID                           uuid.UUID
@@ -181,6 +223,7 @@ type ProjectUiSetting struct {
 	DarkModePrimaryColor  *string
 	CreateTime            *time.Time
 	UpdateTime            *time.Time
+	LogInLayout           LogInLayout
 }
 
 type SamlConnection struct {
