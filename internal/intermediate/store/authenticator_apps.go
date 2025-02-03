@@ -264,6 +264,10 @@ func (s *Store) verifyAuthenticatorAppByBackupCode(ctx context.Context, backupCo
 		return fmt.Errorf("update intermediate session authenticator app backup code bcrypts: %w", err)
 	}
 
+	if err := commit(); err != nil {
+		return fmt.Errorf("commit: %w", err)
+	}
+
 	return nil
 }
 
