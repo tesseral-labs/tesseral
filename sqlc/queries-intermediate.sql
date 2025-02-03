@@ -399,15 +399,25 @@ WHERE
 RETURNING
     *;
 
+-- name: UpdateIntermediateSessionAuthenticatorAppBackupCodeBcrypts :one
+UPDATE
+    intermediate_sessions
+SET
+    authenticator_app_recovery_code_bcrypts = $1,
+    update_time = now()
+WHERE
+    id = $2
+RETURNING
+    *;
+
 -- name: UpdateIntermediateSessionAuthenticatorAppVerified :one
 UPDATE
     intermediate_sessions
 SET
     authenticator_app_verified = TRUE,
-    authenticator_app_backup_code_bcrypts = $1,
     update_time = now()
 WHERE
-    id = $2
+    id = $1
 RETURNING
     *;
 
@@ -416,9 +426,39 @@ UPDATE
     users
 SET
     authenticator_app_secret_ciphertext = $1,
-    authenticator_app_backup_code_bcrypts = $2
+    authenticator_app_recovery_code_bcrypts = $2
 WHERE
     id = $3
+RETURNING
+    *;
+
+-- name: UpdateUserAuthenticatorAppRecoveryCodeBcrypts :one
+UPDATE
+    users
+SET
+    authenticator_app_recovery_code_bcrypts = $1
+WHERE
+    id = $2
+RETURNING
+    *;
+
+-- name: UpdateUserFailedAuthenticatorAppAttempts :one
+UPDATE
+    users
+SET
+    failed_authenticator_app_attempts = $1
+WHERE
+    id = $2
+RETURNING
+    *;
+
+-- name: UpdateUserAuthenticatorAppLockoutExpireTime :one
+UPDATE
+    users
+SET
+    authenticator_app_lockout_expire_time = $1
+WHERE
+    id = $2
 RETURNING
     *;
 

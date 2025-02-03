@@ -51,7 +51,7 @@ const createIntermediateSession = `-- name: CreateIntermediateSession :one
 INSERT INTO intermediate_sessions (id, project_id, expire_time, email, google_user_id, microsoft_user_id, secret_token_sha256)
     VALUES ($1, $2, $3, $4, $5, $6, $7)
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_backup_code_bcrypts
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_recovery_code_bcrypts
 `
 
 type CreateIntermediateSessionParams struct {
@@ -101,7 +101,7 @@ func (q *Queries) CreateIntermediateSession(ctx context.Context, arg CreateInter
 		&i.PasskeyVerified,
 		&i.AuthenticatorAppSecretCiphertext,
 		&i.AuthenticatorAppVerified,
-		&i.AuthenticatorAppBackupCodeBcrypts,
+		&i.AuthenticatorAppRecoveryCodeBcrypts,
 	)
 	return i, err
 }
@@ -232,7 +232,7 @@ const createUser = `-- name: CreateUser :one
 INSERT INTO users (id, organization_id, email, google_user_id, microsoft_user_id, is_owner, password_bcrypt)
     VALUES ($1, $2, $3, $4, $5, $6, $7)
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_backup_code_bcrypts, failed_authenticator_app_backup_code_attempts, authenticator_app_backup_code_lockout_expire_time
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_recovery_code_bcrypts, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time
 `
 
 type CreateUserParams struct {
@@ -270,9 +270,9 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.FailedPasswordAttempts,
 		&i.PasswordLockoutExpireTime,
 		&i.AuthenticatorAppSecretCiphertext,
-		&i.AuthenticatorAppBackupCodeBcrypts,
-		&i.FailedAuthenticatorAppBackupCodeAttempts,
-		&i.AuthenticatorAppBackupCodeLockoutExpireTime,
+		&i.AuthenticatorAppRecoveryCodeBcrypts,
+		&i.FailedAuthenticatorAppAttempts,
+		&i.AuthenticatorAppLockoutExpireTime,
 	)
 	return i, err
 }
@@ -366,7 +366,7 @@ func (q *Queries) GetEmailVerifiedByMicrosoftUserID(ctx context.Context, arg Get
 
 const getIntermediateSessionByID = `-- name: GetIntermediateSessionByID :one
 SELECT
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_backup_code_bcrypts
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_recovery_code_bcrypts
 FROM
     intermediate_sessions
 WHERE
@@ -402,14 +402,14 @@ func (q *Queries) GetIntermediateSessionByID(ctx context.Context, id uuid.UUID) 
 		&i.PasskeyVerified,
 		&i.AuthenticatorAppSecretCiphertext,
 		&i.AuthenticatorAppVerified,
-		&i.AuthenticatorAppBackupCodeBcrypts,
+		&i.AuthenticatorAppRecoveryCodeBcrypts,
 	)
 	return i, err
 }
 
 const getIntermediateSessionByTokenSHA256AndProjectID = `-- name: GetIntermediateSessionByTokenSHA256AndProjectID :one
 SELECT
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_backup_code_bcrypts
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_recovery_code_bcrypts
 FROM
     intermediate_sessions
 WHERE
@@ -451,7 +451,7 @@ func (q *Queries) GetIntermediateSessionByTokenSHA256AndProjectID(ctx context.Co
 		&i.PasskeyVerified,
 		&i.AuthenticatorAppSecretCiphertext,
 		&i.AuthenticatorAppVerified,
-		&i.AuthenticatorAppBackupCodeBcrypts,
+		&i.AuthenticatorAppRecoveryCodeBcrypts,
 	)
 	return i, err
 }
@@ -485,7 +485,7 @@ func (q *Queries) GetOrganizationPrimarySAMLConnection(ctx context.Context, orga
 
 const getOrganizationUserByEmail = `-- name: GetOrganizationUserByEmail :one
 SELECT
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_backup_code_bcrypts, failed_authenticator_app_backup_code_attempts, authenticator_app_backup_code_lockout_expire_time
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_recovery_code_bcrypts, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time
 FROM
     users
 WHERE
@@ -515,16 +515,16 @@ func (q *Queries) GetOrganizationUserByEmail(ctx context.Context, arg GetOrganiz
 		&i.FailedPasswordAttempts,
 		&i.PasswordLockoutExpireTime,
 		&i.AuthenticatorAppSecretCiphertext,
-		&i.AuthenticatorAppBackupCodeBcrypts,
-		&i.FailedAuthenticatorAppBackupCodeAttempts,
-		&i.AuthenticatorAppBackupCodeLockoutExpireTime,
+		&i.AuthenticatorAppRecoveryCodeBcrypts,
+		&i.FailedAuthenticatorAppAttempts,
+		&i.AuthenticatorAppLockoutExpireTime,
 	)
 	return i, err
 }
 
 const getOrganizationUserByGoogleUserID = `-- name: GetOrganizationUserByGoogleUserID :one
 SELECT
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_backup_code_bcrypts, failed_authenticator_app_backup_code_attempts, authenticator_app_backup_code_lockout_expire_time
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_recovery_code_bcrypts, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time
 FROM
     users
 WHERE
@@ -554,16 +554,16 @@ func (q *Queries) GetOrganizationUserByGoogleUserID(ctx context.Context, arg Get
 		&i.FailedPasswordAttempts,
 		&i.PasswordLockoutExpireTime,
 		&i.AuthenticatorAppSecretCiphertext,
-		&i.AuthenticatorAppBackupCodeBcrypts,
-		&i.FailedAuthenticatorAppBackupCodeAttempts,
-		&i.AuthenticatorAppBackupCodeLockoutExpireTime,
+		&i.AuthenticatorAppRecoveryCodeBcrypts,
+		&i.FailedAuthenticatorAppAttempts,
+		&i.AuthenticatorAppLockoutExpireTime,
 	)
 	return i, err
 }
 
 const getOrganizationUserByMicrosoftUserID = `-- name: GetOrganizationUserByMicrosoftUserID :one
 SELECT
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_backup_code_bcrypts, failed_authenticator_app_backup_code_attempts, authenticator_app_backup_code_lockout_expire_time
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_recovery_code_bcrypts, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time
 FROM
     users
 WHERE
@@ -593,9 +593,9 @@ func (q *Queries) GetOrganizationUserByMicrosoftUserID(ctx context.Context, arg 
 		&i.FailedPasswordAttempts,
 		&i.PasswordLockoutExpireTime,
 		&i.AuthenticatorAppSecretCiphertext,
-		&i.AuthenticatorAppBackupCodeBcrypts,
-		&i.FailedAuthenticatorAppBackupCodeAttempts,
-		&i.AuthenticatorAppBackupCodeLockoutExpireTime,
+		&i.AuthenticatorAppRecoveryCodeBcrypts,
+		&i.FailedAuthenticatorAppAttempts,
+		&i.AuthenticatorAppLockoutExpireTime,
 	)
 	return i, err
 }
@@ -969,7 +969,7 @@ SET
 WHERE
     id = $4
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_backup_code_bcrypts
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_recovery_code_bcrypts
 `
 
 type RegisterPasskeyParams struct {
@@ -1013,7 +1013,7 @@ func (q *Queries) RegisterPasskey(ctx context.Context, arg RegisterPasskeyParams
 		&i.PasskeyVerified,
 		&i.AuthenticatorAppSecretCiphertext,
 		&i.AuthenticatorAppVerified,
-		&i.AuthenticatorAppBackupCodeBcrypts,
+		&i.AuthenticatorAppRecoveryCodeBcrypts,
 	)
 	return i, err
 }
@@ -1026,7 +1026,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_backup_code_bcrypts
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_recovery_code_bcrypts
 `
 
 func (q *Queries) RevokeIntermediateSession(ctx context.Context, id uuid.UUID) (IntermediateSession, error) {
@@ -1058,7 +1058,7 @@ func (q *Queries) RevokeIntermediateSession(ctx context.Context, id uuid.UUID) (
 		&i.PasskeyVerified,
 		&i.AuthenticatorAppSecretCiphertext,
 		&i.AuthenticatorAppVerified,
-		&i.AuthenticatorAppBackupCodeBcrypts,
+		&i.AuthenticatorAppRecoveryCodeBcrypts,
 	)
 	return i, err
 }
@@ -1088,6 +1088,57 @@ func (q *Queries) RevokeUserImpersonationToken(ctx context.Context, id uuid.UUID
 	return i, err
 }
 
+const updateIntermediateSessionAuthenticatorAppBackupCodeBcrypts = `-- name: UpdateIntermediateSessionAuthenticatorAppBackupCodeBcrypts :one
+UPDATE
+    intermediate_sessions
+SET
+    authenticator_app_recovery_code_bcrypts = $1,
+    update_time = now()
+WHERE
+    id = $2
+RETURNING
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_recovery_code_bcrypts
+`
+
+type UpdateIntermediateSessionAuthenticatorAppBackupCodeBcryptsParams struct {
+	AuthenticatorAppRecoveryCodeBcrypts [][]byte
+	ID                                  uuid.UUID
+}
+
+func (q *Queries) UpdateIntermediateSessionAuthenticatorAppBackupCodeBcrypts(ctx context.Context, arg UpdateIntermediateSessionAuthenticatorAppBackupCodeBcryptsParams) (IntermediateSession, error) {
+	row := q.db.QueryRow(ctx, updateIntermediateSessionAuthenticatorAppBackupCodeBcrypts, arg.AuthenticatorAppRecoveryCodeBcrypts, arg.ID)
+	var i IntermediateSession
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.CreateTime,
+		&i.ExpireTime,
+		&i.Email,
+		&i.GoogleOauthStateSha256,
+		&i.MicrosoftOauthStateSha256,
+		&i.GoogleHostedDomain,
+		&i.GoogleUserID,
+		&i.MicrosoftTenantID,
+		&i.MicrosoftUserID,
+		&i.PasswordVerified,
+		&i.OrganizationID,
+		&i.UpdateTime,
+		&i.SecretTokenSha256,
+		&i.NewUserPasswordBcrypt,
+		&i.EmailVerificationChallengeSha256,
+		&i.EmailVerificationChallengeCompleted,
+		&i.PasskeyCredentialID,
+		&i.PasskeyPublicKey,
+		&i.PasskeyAaguid,
+		&i.PasskeyVerifyChallengeSha256,
+		&i.PasskeyVerified,
+		&i.AuthenticatorAppSecretCiphertext,
+		&i.AuthenticatorAppVerified,
+		&i.AuthenticatorAppRecoveryCodeBcrypts,
+	)
+	return i, err
+}
+
 const updateIntermediateSessionAuthenticatorAppSecretCiphertext = `-- name: UpdateIntermediateSessionAuthenticatorAppSecretCiphertext :one
 UPDATE
     intermediate_sessions
@@ -1097,7 +1148,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_backup_code_bcrypts
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_recovery_code_bcrypts
 `
 
 type UpdateIntermediateSessionAuthenticatorAppSecretCiphertextParams struct {
@@ -1134,7 +1185,7 @@ func (q *Queries) UpdateIntermediateSessionAuthenticatorAppSecretCiphertext(ctx 
 		&i.PasskeyVerified,
 		&i.AuthenticatorAppSecretCiphertext,
 		&i.AuthenticatorAppVerified,
-		&i.AuthenticatorAppBackupCodeBcrypts,
+		&i.AuthenticatorAppRecoveryCodeBcrypts,
 	)
 	return i, err
 }
@@ -1144,21 +1195,15 @@ UPDATE
     intermediate_sessions
 SET
     authenticator_app_verified = TRUE,
-    authenticator_app_backup_code_bcrypts = $1,
     update_time = now()
 WHERE
-    id = $2
+    id = $1
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_backup_code_bcrypts
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_recovery_code_bcrypts
 `
 
-type UpdateIntermediateSessionAuthenticatorAppVerifiedParams struct {
-	AuthenticatorAppBackupCodeBcrypts [][]byte
-	ID                                uuid.UUID
-}
-
-func (q *Queries) UpdateIntermediateSessionAuthenticatorAppVerified(ctx context.Context, arg UpdateIntermediateSessionAuthenticatorAppVerifiedParams) (IntermediateSession, error) {
-	row := q.db.QueryRow(ctx, updateIntermediateSessionAuthenticatorAppVerified, arg.AuthenticatorAppBackupCodeBcrypts, arg.ID)
+func (q *Queries) UpdateIntermediateSessionAuthenticatorAppVerified(ctx context.Context, id uuid.UUID) (IntermediateSession, error) {
+	row := q.db.QueryRow(ctx, updateIntermediateSessionAuthenticatorAppVerified, id)
 	var i IntermediateSession
 	err := row.Scan(
 		&i.ID,
@@ -1186,7 +1231,7 @@ func (q *Queries) UpdateIntermediateSessionAuthenticatorAppVerified(ctx context.
 		&i.PasskeyVerified,
 		&i.AuthenticatorAppSecretCiphertext,
 		&i.AuthenticatorAppVerified,
-		&i.AuthenticatorAppBackupCodeBcrypts,
+		&i.AuthenticatorAppRecoveryCodeBcrypts,
 	)
 	return i, err
 }
@@ -1201,7 +1246,7 @@ WHERE
     AND (email IS NULL
         OR email = $1)
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_backup_code_bcrypts
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_recovery_code_bcrypts
 `
 
 type UpdateIntermediateSessionEmailParams struct {
@@ -1238,7 +1283,7 @@ func (q *Queries) UpdateIntermediateSessionEmail(ctx context.Context, arg Update
 		&i.PasskeyVerified,
 		&i.AuthenticatorAppSecretCiphertext,
 		&i.AuthenticatorAppVerified,
-		&i.AuthenticatorAppBackupCodeBcrypts,
+		&i.AuthenticatorAppRecoveryCodeBcrypts,
 	)
 	return i, err
 }
@@ -1251,7 +1296,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_backup_code_bcrypts
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_recovery_code_bcrypts
 `
 
 func (q *Queries) UpdateIntermediateSessionEmailVerificationChallengeCompleted(ctx context.Context, id uuid.UUID) (IntermediateSession, error) {
@@ -1283,7 +1328,7 @@ func (q *Queries) UpdateIntermediateSessionEmailVerificationChallengeCompleted(c
 		&i.PasskeyVerified,
 		&i.AuthenticatorAppSecretCiphertext,
 		&i.AuthenticatorAppVerified,
-		&i.AuthenticatorAppBackupCodeBcrypts,
+		&i.AuthenticatorAppRecoveryCodeBcrypts,
 	)
 	return i, err
 }
@@ -1296,7 +1341,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_backup_code_bcrypts
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_recovery_code_bcrypts
 `
 
 type UpdateIntermediateSessionEmailVerificationChallengeSha256Params struct {
@@ -1333,7 +1378,7 @@ func (q *Queries) UpdateIntermediateSessionEmailVerificationChallengeSha256(ctx 
 		&i.PasskeyVerified,
 		&i.AuthenticatorAppSecretCiphertext,
 		&i.AuthenticatorAppVerified,
-		&i.AuthenticatorAppBackupCodeBcrypts,
+		&i.AuthenticatorAppRecoveryCodeBcrypts,
 	)
 	return i, err
 }
@@ -1348,7 +1393,7 @@ SET
 WHERE
     id = $4
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_backup_code_bcrypts
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_recovery_code_bcrypts
 `
 
 type UpdateIntermediateSessionGoogleDetailsParams struct {
@@ -1392,7 +1437,7 @@ func (q *Queries) UpdateIntermediateSessionGoogleDetails(ctx context.Context, ar
 		&i.PasskeyVerified,
 		&i.AuthenticatorAppSecretCiphertext,
 		&i.AuthenticatorAppVerified,
-		&i.AuthenticatorAppBackupCodeBcrypts,
+		&i.AuthenticatorAppRecoveryCodeBcrypts,
 	)
 	return i, err
 }
@@ -1405,7 +1450,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_backup_code_bcrypts
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_recovery_code_bcrypts
 `
 
 type UpdateIntermediateSessionGoogleOAuthStateSHA256Params struct {
@@ -1442,7 +1487,7 @@ func (q *Queries) UpdateIntermediateSessionGoogleOAuthStateSHA256(ctx context.Co
 		&i.PasskeyVerified,
 		&i.AuthenticatorAppSecretCiphertext,
 		&i.AuthenticatorAppVerified,
-		&i.AuthenticatorAppBackupCodeBcrypts,
+		&i.AuthenticatorAppRecoveryCodeBcrypts,
 	)
 	return i, err
 }
@@ -1457,7 +1502,7 @@ SET
 WHERE
     id = $4
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_backup_code_bcrypts
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_recovery_code_bcrypts
 `
 
 type UpdateIntermediateSessionMicrosoftDetailsParams struct {
@@ -1501,7 +1546,7 @@ func (q *Queries) UpdateIntermediateSessionMicrosoftDetails(ctx context.Context,
 		&i.PasskeyVerified,
 		&i.AuthenticatorAppSecretCiphertext,
 		&i.AuthenticatorAppVerified,
-		&i.AuthenticatorAppBackupCodeBcrypts,
+		&i.AuthenticatorAppRecoveryCodeBcrypts,
 	)
 	return i, err
 }
@@ -1514,7 +1559,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_backup_code_bcrypts
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_recovery_code_bcrypts
 `
 
 type UpdateIntermediateSessionMicrosoftOAuthStateSHA256Params struct {
@@ -1551,7 +1596,7 @@ func (q *Queries) UpdateIntermediateSessionMicrosoftOAuthStateSHA256(ctx context
 		&i.PasskeyVerified,
 		&i.AuthenticatorAppSecretCiphertext,
 		&i.AuthenticatorAppVerified,
-		&i.AuthenticatorAppBackupCodeBcrypts,
+		&i.AuthenticatorAppRecoveryCodeBcrypts,
 	)
 	return i, err
 }
@@ -1565,7 +1610,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_backup_code_bcrypts
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_recovery_code_bcrypts
 `
 
 type UpdateIntermediateSessionNewUserPasswordBcryptParams struct {
@@ -1602,7 +1647,7 @@ func (q *Queries) UpdateIntermediateSessionNewUserPasswordBcrypt(ctx context.Con
 		&i.PasskeyVerified,
 		&i.AuthenticatorAppSecretCiphertext,
 		&i.AuthenticatorAppVerified,
-		&i.AuthenticatorAppBackupCodeBcrypts,
+		&i.AuthenticatorAppRecoveryCodeBcrypts,
 	)
 	return i, err
 }
@@ -1615,7 +1660,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_backup_code_bcrypts
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_recovery_code_bcrypts
 `
 
 type UpdateIntermediateSessionOrganizationIDParams struct {
@@ -1652,7 +1697,7 @@ func (q *Queries) UpdateIntermediateSessionOrganizationID(ctx context.Context, a
 		&i.PasskeyVerified,
 		&i.AuthenticatorAppSecretCiphertext,
 		&i.AuthenticatorAppVerified,
-		&i.AuthenticatorAppBackupCodeBcrypts,
+		&i.AuthenticatorAppRecoveryCodeBcrypts,
 	)
 	return i, err
 }
@@ -1666,7 +1711,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_backup_code_bcrypts
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_recovery_code_bcrypts
 `
 
 type UpdateIntermediateSessionPasswordVerifiedParams struct {
@@ -1703,7 +1748,7 @@ func (q *Queries) UpdateIntermediateSessionPasswordVerified(ctx context.Context,
 		&i.PasskeyVerified,
 		&i.AuthenticatorAppSecretCiphertext,
 		&i.AuthenticatorAppVerified,
-		&i.AuthenticatorAppBackupCodeBcrypts,
+		&i.AuthenticatorAppRecoveryCodeBcrypts,
 	)
 	return i, err
 }
@@ -1713,21 +1758,21 @@ UPDATE
     users
 SET
     authenticator_app_secret_ciphertext = $1,
-    authenticator_app_backup_code_bcrypts = $2
+    authenticator_app_recovery_code_bcrypts = $2
 WHERE
     id = $3
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_backup_code_bcrypts, failed_authenticator_app_backup_code_attempts, authenticator_app_backup_code_lockout_expire_time
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_recovery_code_bcrypts, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time
 `
 
 type UpdateUserAuthenticatorAppParams struct {
-	AuthenticatorAppSecretCiphertext  []byte
-	AuthenticatorAppBackupCodeBcrypts [][]byte
-	ID                                uuid.UUID
+	AuthenticatorAppSecretCiphertext    []byte
+	AuthenticatorAppRecoveryCodeBcrypts [][]byte
+	ID                                  uuid.UUID
 }
 
 func (q *Queries) UpdateUserAuthenticatorApp(ctx context.Context, arg UpdateUserAuthenticatorAppParams) (User, error) {
-	row := q.db.QueryRow(ctx, updateUserAuthenticatorApp, arg.AuthenticatorAppSecretCiphertext, arg.AuthenticatorAppBackupCodeBcrypts, arg.ID)
+	row := q.db.QueryRow(ctx, updateUserAuthenticatorApp, arg.AuthenticatorAppSecretCiphertext, arg.AuthenticatorAppRecoveryCodeBcrypts, arg.ID)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -1743,9 +1788,129 @@ func (q *Queries) UpdateUserAuthenticatorApp(ctx context.Context, arg UpdateUser
 		&i.FailedPasswordAttempts,
 		&i.PasswordLockoutExpireTime,
 		&i.AuthenticatorAppSecretCiphertext,
-		&i.AuthenticatorAppBackupCodeBcrypts,
-		&i.FailedAuthenticatorAppBackupCodeAttempts,
-		&i.AuthenticatorAppBackupCodeLockoutExpireTime,
+		&i.AuthenticatorAppRecoveryCodeBcrypts,
+		&i.FailedAuthenticatorAppAttempts,
+		&i.AuthenticatorAppLockoutExpireTime,
+	)
+	return i, err
+}
+
+const updateUserAuthenticatorAppLockoutExpireTime = `-- name: UpdateUserAuthenticatorAppLockoutExpireTime :one
+UPDATE
+    users
+SET
+    authenticator_app_lockout_expire_time = $1
+WHERE
+    id = $2
+RETURNING
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_recovery_code_bcrypts, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time
+`
+
+type UpdateUserAuthenticatorAppLockoutExpireTimeParams struct {
+	AuthenticatorAppLockoutExpireTime *time.Time
+	ID                                uuid.UUID
+}
+
+func (q *Queries) UpdateUserAuthenticatorAppLockoutExpireTime(ctx context.Context, arg UpdateUserAuthenticatorAppLockoutExpireTimeParams) (User, error) {
+	row := q.db.QueryRow(ctx, updateUserAuthenticatorAppLockoutExpireTime, arg.AuthenticatorAppLockoutExpireTime, arg.ID)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.PasswordBcrypt,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+		&i.Email,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.DeactivateTime,
+		&i.IsOwner,
+		&i.FailedPasswordAttempts,
+		&i.PasswordLockoutExpireTime,
+		&i.AuthenticatorAppSecretCiphertext,
+		&i.AuthenticatorAppRecoveryCodeBcrypts,
+		&i.FailedAuthenticatorAppAttempts,
+		&i.AuthenticatorAppLockoutExpireTime,
+	)
+	return i, err
+}
+
+const updateUserAuthenticatorAppRecoveryCodeBcrypts = `-- name: UpdateUserAuthenticatorAppRecoveryCodeBcrypts :one
+UPDATE
+    users
+SET
+    authenticator_app_recovery_code_bcrypts = $1
+WHERE
+    id = $2
+RETURNING
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_recovery_code_bcrypts, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time
+`
+
+type UpdateUserAuthenticatorAppRecoveryCodeBcryptsParams struct {
+	AuthenticatorAppRecoveryCodeBcrypts [][]byte
+	ID                                  uuid.UUID
+}
+
+func (q *Queries) UpdateUserAuthenticatorAppRecoveryCodeBcrypts(ctx context.Context, arg UpdateUserAuthenticatorAppRecoveryCodeBcryptsParams) (User, error) {
+	row := q.db.QueryRow(ctx, updateUserAuthenticatorAppRecoveryCodeBcrypts, arg.AuthenticatorAppRecoveryCodeBcrypts, arg.ID)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.PasswordBcrypt,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+		&i.Email,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.DeactivateTime,
+		&i.IsOwner,
+		&i.FailedPasswordAttempts,
+		&i.PasswordLockoutExpireTime,
+		&i.AuthenticatorAppSecretCiphertext,
+		&i.AuthenticatorAppRecoveryCodeBcrypts,
+		&i.FailedAuthenticatorAppAttempts,
+		&i.AuthenticatorAppLockoutExpireTime,
+	)
+	return i, err
+}
+
+const updateUserFailedAuthenticatorAppAttempts = `-- name: UpdateUserFailedAuthenticatorAppAttempts :one
+UPDATE
+    users
+SET
+    failed_authenticator_app_attempts = $1
+WHERE
+    id = $2
+RETURNING
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_recovery_code_bcrypts, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time
+`
+
+type UpdateUserFailedAuthenticatorAppAttemptsParams struct {
+	FailedAuthenticatorAppAttempts int32
+	ID                             uuid.UUID
+}
+
+func (q *Queries) UpdateUserFailedAuthenticatorAppAttempts(ctx context.Context, arg UpdateUserFailedAuthenticatorAppAttemptsParams) (User, error) {
+	row := q.db.QueryRow(ctx, updateUserFailedAuthenticatorAppAttempts, arg.FailedAuthenticatorAppAttempts, arg.ID)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.PasswordBcrypt,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+		&i.Email,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.DeactivateTime,
+		&i.IsOwner,
+		&i.FailedPasswordAttempts,
+		&i.PasswordLockoutExpireTime,
+		&i.AuthenticatorAppSecretCiphertext,
+		&i.AuthenticatorAppRecoveryCodeBcrypts,
+		&i.FailedAuthenticatorAppAttempts,
+		&i.AuthenticatorAppLockoutExpireTime,
 	)
 	return i, err
 }
@@ -1758,7 +1923,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_backup_code_bcrypts, failed_authenticator_app_backup_code_attempts, authenticator_app_backup_code_lockout_expire_time
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_recovery_code_bcrypts, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time
 `
 
 type UpdateUserFailedPasswordAttemptsParams struct {
@@ -1783,9 +1948,9 @@ func (q *Queries) UpdateUserFailedPasswordAttempts(ctx context.Context, arg Upda
 		&i.FailedPasswordAttempts,
 		&i.PasswordLockoutExpireTime,
 		&i.AuthenticatorAppSecretCiphertext,
-		&i.AuthenticatorAppBackupCodeBcrypts,
-		&i.FailedAuthenticatorAppBackupCodeAttempts,
-		&i.AuthenticatorAppBackupCodeLockoutExpireTime,
+		&i.AuthenticatorAppRecoveryCodeBcrypts,
+		&i.FailedAuthenticatorAppAttempts,
+		&i.AuthenticatorAppLockoutExpireTime,
 	)
 	return i, err
 }
@@ -1798,7 +1963,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_backup_code_bcrypts, failed_authenticator_app_backup_code_attempts, authenticator_app_backup_code_lockout_expire_time
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_recovery_code_bcrypts, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time
 `
 
 type UpdateUserPasswordBcryptParams struct {
@@ -1823,9 +1988,9 @@ func (q *Queries) UpdateUserPasswordBcrypt(ctx context.Context, arg UpdateUserPa
 		&i.FailedPasswordAttempts,
 		&i.PasswordLockoutExpireTime,
 		&i.AuthenticatorAppSecretCiphertext,
-		&i.AuthenticatorAppBackupCodeBcrypts,
-		&i.FailedAuthenticatorAppBackupCodeAttempts,
-		&i.AuthenticatorAppBackupCodeLockoutExpireTime,
+		&i.AuthenticatorAppRecoveryCodeBcrypts,
+		&i.FailedAuthenticatorAppAttempts,
+		&i.AuthenticatorAppLockoutExpireTime,
 	)
 	return i, err
 }
@@ -1838,7 +2003,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_backup_code_bcrypts, failed_authenticator_app_backup_code_attempts, authenticator_app_backup_code_lockout_expire_time
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_recovery_code_bcrypts, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time
 `
 
 type UpdateUserPasswordLockoutExpireTimeParams struct {
@@ -1863,9 +2028,9 @@ func (q *Queries) UpdateUserPasswordLockoutExpireTime(ctx context.Context, arg U
 		&i.FailedPasswordAttempts,
 		&i.PasswordLockoutExpireTime,
 		&i.AuthenticatorAppSecretCiphertext,
-		&i.AuthenticatorAppBackupCodeBcrypts,
-		&i.FailedAuthenticatorAppBackupCodeAttempts,
-		&i.AuthenticatorAppBackupCodeLockoutExpireTime,
+		&i.AuthenticatorAppRecoveryCodeBcrypts,
+		&i.FailedAuthenticatorAppAttempts,
+		&i.AuthenticatorAppLockoutExpireTime,
 	)
 	return i, err
 }

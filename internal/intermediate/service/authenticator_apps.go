@@ -23,3 +23,11 @@ func (s *Service) RegisterAuthenticatorApp(ctx context.Context, req *connect.Req
 	}
 	return connect.NewResponse(res), nil
 }
+
+func (s *Service) VerifyAuthenticatorApp(ctx context.Context, req *connect.Request[intermediatev1.VerifyAuthenticatorAppRequest]) (*connect.Response[intermediatev1.VerifyAuthenticatorAppResponse], error) {
+	res, err := s.Store.VerifyAuthenticatorApp(ctx, req.Msg)
+	if err != nil {
+		return nil, fmt.Errorf("store: %w", err)
+	}
+	return connect.NewResponse(res), nil
+}
