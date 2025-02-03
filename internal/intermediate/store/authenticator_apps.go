@@ -365,10 +365,23 @@ func (s *Store) getAuthenticatorAppSecret(ctx context.Context) ([]byte, error) {
 		return nil, fmt.Errorf("get intermediate session by id: %w", err)
 	}
 
+	qOrg, err := q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
+		ProjectID: authn.ProjectID(ctx),
+		ID:        *qIntermediateSession.OrganizationID,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("get organization by id: %w", err)
+	}
+
+	qMatchingUser, err := s.matchUser(ctx, q, qOrg, qIntermediateSession)
+	if err != nil {
+		return nil, fmt.Errorf("match user: %w", err)
+	}
+
 	decryptRes, err := s.kms.Decrypt(ctx, &kms.DecryptInput{
 		KeyId:               &s.authenticatorAppSecretsKMSKeyID,
 		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
-		CiphertextBlob:      qIntermediateSession.AuthenticatorAppSecretCiphertext,
+		CiphertextBlob:      qMatchingUser.AuthenticatorAppSecretCiphertext,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("decrypt authenticator app secret ciphertext: %w", err)
