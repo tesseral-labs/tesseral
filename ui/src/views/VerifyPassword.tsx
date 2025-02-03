@@ -36,18 +36,12 @@ const VerifyPassword: FC<VerifyPasswordProps> = ({ setView }) => {
   const verifyPasswordMutation = useMutation(verifyPassword)
 
   const deriveNextView = (): LoginViews | undefined => {
-    console.log(`organization`, organization)
-
     const hasMultipleSecondFactors =
       organization?.userHasAuthenticatorApp && organization?.userHasPasskey
     const hasSecondFactor =
       organization?.userHasAuthenticatorApp || organization?.userHasPasskey
 
-    if (
-      organization?.requireMfa &&
-      !whoamiRes?.intermediateSession?.googleUserId &&
-      !whoamiRes?.intermediateSession?.microsoftUserId
-    ) {
+    if (organization?.requireMfa) {
       if (hasMultipleSecondFactors || !hasSecondFactor) {
         return LoginViews.ChooseAdditionalFactor
       } else if (organization?.userHasPasskey) {

@@ -13,7 +13,6 @@ func TestStore_validateAuthRequirementsSatisfiedInner(t *testing.T) {
 		name                 string
 		qIntermediateSession queries.IntermediateSession
 		emailVerified        bool
-		qProject             queries.Project
 		qOrg                 queries.Organization
 		wantErr              bool
 	}{
@@ -23,9 +22,8 @@ func TestStore_validateAuthRequirementsSatisfiedInner(t *testing.T) {
 				GoogleUserID: aws.String("foo"),
 			},
 			emailVerified: true,
-			qOrg:          queries.Organization{},
-			qProject: queries.Project{
-				LogInWithGoogleEnabled: true,
+			qOrg: queries.Organization{
+				LogInWithGoogle: true,
 			},
 			wantErr: false,
 		},
@@ -35,39 +33,19 @@ func TestStore_validateAuthRequirementsSatisfiedInner(t *testing.T) {
 				GoogleUserID: aws.String("foo"),
 			},
 			emailVerified: false,
-			qOrg:          queries.Organization{},
-			qProject: queries.Project{
-				LogInWithGoogleEnabled: true,
+			qOrg: queries.Organization{
+				LogInWithGoogle: true,
 			},
 			wantErr: true,
 		},
 		{
-			name: "google project not enabled",
+			name: "google not enabled",
 			qIntermediateSession: queries.IntermediateSession{
 				GoogleUserID: aws.String("foo"),
 			},
 			emailVerified: true,
 			qOrg: queries.Organization{
-				OverrideLogInMethods:   true,
-				DisableLogInWithGoogle: aws.Bool(false), // this shouldn't matter
-			},
-			qProject: queries.Project{
-				LogInWithGoogleEnabled: false,
-			},
-			wantErr: true,
-		},
-		{
-			name: "google org not enabled",
-			qIntermediateSession: queries.IntermediateSession{
-				GoogleUserID: aws.String("foo"),
-			},
-			emailVerified: true,
-			qOrg: queries.Organization{
-				OverrideLogInMethods:   true,
-				DisableLogInWithGoogle: aws.Bool(true),
-			},
-			qProject: queries.Project{
-				LogInWithGoogleEnabled: true,
+				LogInWithGoogle: false,
 			},
 			wantErr: true,
 		},
@@ -78,9 +56,8 @@ func TestStore_validateAuthRequirementsSatisfiedInner(t *testing.T) {
 				MicrosoftUserID: aws.String("foo"),
 			},
 			emailVerified: true,
-			qOrg:          queries.Organization{},
-			qProject: queries.Project{
-				LogInWithMicrosoftEnabled: true,
+			qOrg: queries.Organization{
+				LogInWithMicrosoft: true,
 			},
 			wantErr: false,
 		},
@@ -90,39 +67,19 @@ func TestStore_validateAuthRequirementsSatisfiedInner(t *testing.T) {
 				MicrosoftUserID: aws.String("foo"),
 			},
 			emailVerified: false,
-			qOrg:          queries.Organization{},
-			qProject: queries.Project{
-				LogInWithMicrosoftEnabled: true,
+			qOrg: queries.Organization{
+				LogInWithMicrosoft: true,
 			},
 			wantErr: true,
 		},
 		{
-			name: "microsoft project not enabled",
+			name: "microsoft not enabled",
 			qIntermediateSession: queries.IntermediateSession{
 				MicrosoftUserID: aws.String("foo"),
 			},
 			emailVerified: true,
 			qOrg: queries.Organization{
-				OverrideLogInMethods:      true,
-				DisableLogInWithMicrosoft: aws.Bool(false), // this shouldn't matter
-			},
-			qProject: queries.Project{
-				LogInWithMicrosoftEnabled: false,
-			},
-			wantErr: true,
-		},
-		{
-			name: "microsoft org not enabled",
-			qIntermediateSession: queries.IntermediateSession{
-				MicrosoftUserID: aws.String("foo"),
-			},
-			emailVerified: true,
-			qOrg: queries.Organization{
-				OverrideLogInMethods:      true,
-				DisableLogInWithMicrosoft: aws.Bool(true),
-			},
-			qProject: queries.Project{
-				LogInWithMicrosoftEnabled: true,
+				LogInWithMicrosoft: false,
 			},
 			wantErr: true,
 		},
@@ -133,9 +90,8 @@ func TestStore_validateAuthRequirementsSatisfiedInner(t *testing.T) {
 				PasswordVerified: true,
 			},
 			emailVerified: true,
-			qOrg:          queries.Organization{},
-			qProject: queries.Project{
-				LogInWithPasswordEnabled: true,
+			qOrg: queries.Organization{
+				LogInWithPassword: true,
 			},
 			wantErr: false,
 		},
@@ -145,9 +101,8 @@ func TestStore_validateAuthRequirementsSatisfiedInner(t *testing.T) {
 				PasswordVerified: true,
 			},
 			emailVerified: false,
-			qOrg:          queries.Organization{},
-			qProject: queries.Project{
-				LogInWithPasswordEnabled: true,
+			qOrg: queries.Organization{
+				LogInWithPassword: true,
 			},
 			wantErr: true,
 		},
@@ -157,21 +112,8 @@ func TestStore_validateAuthRequirementsSatisfiedInner(t *testing.T) {
 				PasswordVerified: false,
 			},
 			emailVerified: true,
-			qOrg:          queries.Organization{},
-			qProject: queries.Project{
-				LogInWithPasswordEnabled: true,
-			},
-			wantErr: true,
-		},
-		{
-			name: "password project not enabled",
-			qIntermediateSession: queries.IntermediateSession{
-				PasswordVerified: true,
-			},
-			emailVerified: true,
-			qOrg:          queries.Organization{},
-			qProject: queries.Project{
-				LogInWithPasswordEnabled: false,
+			qOrg: queries.Organization{
+				LogInWithPassword: true,
 			},
 			wantErr: true,
 		},
@@ -182,11 +124,7 @@ func TestStore_validateAuthRequirementsSatisfiedInner(t *testing.T) {
 			},
 			emailVerified: true,
 			qOrg: queries.Organization{
-				OverrideLogInMethods:     true,
-				DisableLogInWithPassword: aws.Bool(true),
-			},
-			qProject: queries.Project{
-				LogInWithPasswordEnabled: true,
+				LogInWithPassword: false,
 			},
 			wantErr: true,
 		},
@@ -194,7 +132,7 @@ func TestStore_validateAuthRequirementsSatisfiedInner(t *testing.T) {
 
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
-			err := validateAuthRequirementsSatisfiedInner(tt.qIntermediateSession, tt.emailVerified, tt.qProject, tt.qOrg)
+			err := validateAuthRequirementsSatisfiedInner(tt.qIntermediateSession, tt.emailVerified, tt.qOrg)
 			if tt.wantErr {
 				assert.Error(t, err)
 			} else {

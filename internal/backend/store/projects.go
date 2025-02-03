@@ -146,21 +146,31 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 		updates.MicrosoftOauthClientSecretCiphertext = encryptRes.CiphertextBlob
 	}
 
-	updates.LogInWithGoogleEnabled = qProject.LogInWithGoogleEnabled
-	if req.Project.LogInWithGoogleEnabled != nil {
+	updates.LogInWithGoogle = qProject.LogInWithGoogle
+	if req.Project.LogInWithGoogle != nil {
 		// todo: validate that google is configured?
-		updates.LogInWithGoogleEnabled = *req.Project.LogInWithGoogleEnabled
+		updates.LogInWithGoogle = *req.Project.LogInWithGoogle
 	}
 
-	updates.LogInWithMicrosoftEnabled = qProject.LogInWithMicrosoftEnabled
-	if req.Project.LogInWithMicrosoftEnabled != nil {
+	updates.LogInWithMicrosoft = qProject.LogInWithMicrosoft
+	if req.Project.LogInWithMicrosoft != nil {
 		// todo: validate that microsoft is configured?
-		updates.LogInWithMicrosoftEnabled = *req.Project.LogInWithMicrosoftEnabled
+		updates.LogInWithMicrosoft = *req.Project.LogInWithMicrosoft
 	}
 
-	updates.LogInWithPasswordEnabled = qProject.LogInWithPasswordEnabled
-	if req.Project.LogInWithPasswordEnabled != nil {
-		updates.LogInWithPasswordEnabled = *req.Project.LogInWithPasswordEnabled
+	updates.LogInWithPassword = qProject.LogInWithPassword
+	if req.Project.LogInWithPassword != nil {
+		updates.LogInWithPassword = *req.Project.LogInWithPassword
+	}
+
+	updates.LogInWithAuthenticatorApp = qProject.LogInWithAuthenticatorApp
+	if req.Project.LogInWithAuthenticatorApp != nil {
+		updates.LogInWithAuthenticatorApp = *req.Project.LogInWithAuthenticatorApp
+	}
+
+	updates.LogInWithPasskey = qProject.LogInWithPasskey
+	if req.Project.LogInWithPasskey != nil {
+		updates.LogInWithPasskey = *req.Project.LogInWithPasskey
 	}
 
 	updates.CustomAuthDomain = qProject.CustomAuthDomain
@@ -178,6 +188,36 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 	qUpdatedProject, err := q.UpdateProject(ctx, updates)
 	if err != nil {
 		return nil, fmt.Errorf("update project: %w", err)
+	}
+
+	if !qUpdatedProject.LogInWithPassword {
+		if _, err := q.DisableProjectOrganizationsLogInWithPassword(ctx, authn.ProjectID(ctx)); err != nil {
+			return nil, fmt.Errorf("disable project organizations log in with password: %w", err)
+		}
+	}
+
+	if !qUpdatedProject.LogInWithGoogle {
+		if _, err := q.DisableProjectOrganizationsLogInWithGoogle(ctx, authn.ProjectID(ctx)); err != nil {
+			return nil, fmt.Errorf("disable project organizations log in with Google: %w", err)
+		}
+	}
+
+	if !qUpdatedProject.LogInWithMicrosoft {
+		if _, err := q.DisableProjectOrganizationsLogInWithMicrosoft(ctx, authn.ProjectID(ctx)); err != nil {
+			return nil, fmt.Errorf("disable project organizations log in with Microsoft: %w", err)
+		}
+	}
+
+	if !qUpdatedProject.LogInWithAuthenticatorApp {
+		if _, err := q.DisableProjectOrganizationsLogInWithAuthenticatorApp(ctx, authn.ProjectID(ctx)); err != nil {
+			return nil, fmt.Errorf("disable project organizations log in with authenticator app: %w", err)
+		}
+	}
+
+	if !qUpdatedProject.LogInWithPasskey {
+		if _, err := q.DisableProjectOrganizationsLogInWithPasskey(ctx, authn.ProjectID(ctx)); err != nil {
+			return nil, fmt.Errorf("disable project organizations log in with passkey: %w", err)
+		}
 	}
 
 	if err := commit(); err != nil {
@@ -198,9 +238,11 @@ func parseProject(qProject *queries.Project) *backendv1.Project {
 		DisplayName:               qProject.DisplayName,
 		CreateTime:                timestamppb.New(*qProject.CreateTime),
 		UpdateTime:                timestamppb.New(*qProject.UpdateTime),
-		LogInWithPasswordEnabled:  &qProject.LogInWithPasswordEnabled,
-		LogInWithGoogleEnabled:    &qProject.LogInWithGoogleEnabled,
-		LogInWithMicrosoftEnabled: &qProject.LogInWithMicrosoftEnabled,
+		LogInWithPassword:         &qProject.LogInWithPassword,
+		LogInWithGoogle:           &qProject.LogInWithMicrosoft,
+		LogInWithMicrosoft:        &qProject.LogInWithMicrosoft,
+		LogInWithAuthenticatorApp: &qProject.LogInWithAuthenticatorApp,
+		LogInWithPasskey:          &qProject.LogInWithPasskey,
 		GoogleOauthClientId:       derefOrEmpty(qProject.GoogleOauthClientID),
 		MicrosoftOauthClientId:    derefOrEmpty(qProject.MicrosoftOauthClientID),
 		AuthDomain:                &authDomain,

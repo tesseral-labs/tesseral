@@ -1,11 +1,11 @@
 -- name: CreateOrganization :one
-INSERT INTO organizations (id, project_id, display_name, override_log_in_methods, saml_enabled, scim_enabled)
-    VALUES ($1, $2, $3, $4, $5, $6)
+INSERT INTO organizations (id, project_id, display_name, saml_enabled, scim_enabled)
+    VALUES ($1, $2, $3, $4, $5)
 RETURNING
     *;
 
 -- name: CreateProject :one
-INSERT INTO projects (id, organization_id, display_name, log_in_with_password_enabled, log_in_with_google_enabled, log_in_with_microsoft_enabled, auth_domain, custom_auth_domain)
+INSERT INTO projects (id, organization_id, display_name, log_in_with_password, log_in_with_google, log_in_with_microsoft, auth_domain, custom_auth_domain)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 RETURNING
     *;
