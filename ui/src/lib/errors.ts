@@ -7,9 +7,11 @@ interface ApiError {
 }
 
 export const parseErrorMessage = (error: any): string => {
-  let message = error
+  console.log(error)
 
-  if (error.details) {
+  let message = !!error.message ? error.message : error
+
+  if (!!error.details && error.details.length > 0) {
     const err = error as ApiError
     message = `${err.details[0].debug.description}`
   }
