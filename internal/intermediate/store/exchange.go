@@ -154,6 +154,15 @@ func validateAuthRequirementsSatisfiedInner(qIntermediateSession queries.Interme
 		return apierror.NewFailedPreconditionError("email not verified", nil)
 	}
 
+	if qOrg.RequireMfa {
+		hasPasskey := qOrg.LogInWithPasskey && qIntermediateSession.PasskeyVerified
+		hasAuthenticatorApp := qOrg.LogInWithAuthenticatorApp && qIntermediateSession.AuthenticatorAppVerified
+
+		if !hasPasskey && !hasAuthenticatorApp {
+			return apierror.NewFailedPreconditionError("mfa required", nil)
+		}
+	}
+
 	if qOrg.LogInWithGoogle && qIntermediateSession.GoogleUserID != nil {
 		return nil
 	}
