@@ -122,7 +122,7 @@ const EmailForm: FC<EmailFormProps> = ({ setView }) => {
           />
         </div>
 
-        <Button type="submit" disabled={!emailIsValid}>
+        <Button type="submit" disabled={!emailIsValid || submitting}>
           {submitting && <Loader />}
           Sign In
         </Button>

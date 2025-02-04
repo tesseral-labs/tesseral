@@ -97,7 +97,7 @@ const RegisterPassword: FC<RegisterPasswordProps> = ({ setView }) => {
             />
             <Button
               className="w-full mt-4"
-              disabled={password.length < 1}
+              disabled={password.length < 1 || submitting}
               type="submit"
             >
               {submitting && <Loader />}

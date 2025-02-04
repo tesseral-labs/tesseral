@@ -120,7 +120,7 @@ const VerifyPassword: FC<VerifyPasswordProps> = ({ setView }) => {
             />
             <Button
               className="w-full"
-              disabled={password.length < 1}
+              disabled={password.length < 1 || submitting}
               type="submit"
             >
               {submitting && <Loader />}

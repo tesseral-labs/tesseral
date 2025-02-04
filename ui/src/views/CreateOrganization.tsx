@@ -24,6 +24,7 @@ import { useLayout } from '@/lib/settings'
 import { cn } from '@/lib/utils'
 import { parseErrorMessage } from '@/lib/errors'
 import { toast } from 'sonner'
+import Loader from '@/components/ui/loader'
 
 interface CreateOrganizationProps {
   setView: Dispatch<SetStateAction<LoginViews>>
@@ -108,7 +109,8 @@ const CreateOrganization: FC<CreateOrganizationProps> = ({ setView }) => {
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
             />
-            <Button className="w-full" type="submit">
+            <Button className="w-full" disabled={submitting} type="submit">
+              {submitting && <Loader />}
               Create Organization
             </Button>
           </form>

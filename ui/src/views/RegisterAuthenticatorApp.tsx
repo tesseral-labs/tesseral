@@ -134,7 +134,11 @@ const RegisterAuthenticatorApp: FC = () => {
               </InputOTPGroup>
             </InputOTP>
 
-            <Button className="mt-4" disabled={code.length < 6} type="submit">
+            <Button
+              className="mt-4"
+              disabled={code.length < 6 || submitting}
+              type="submit"
+            >
               {submitting && <Loader />}
               Submit
             </Button>
