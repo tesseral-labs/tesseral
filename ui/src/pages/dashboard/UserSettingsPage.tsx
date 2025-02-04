@@ -45,6 +45,7 @@ const UserSettingsPage: FC = () => {
   const user = useUser()
 
   const { data: whoamiRes } = useQuery(whoAmI)
+  // const deletePasskeyMutation = useMutation(deletedPasskey)
   const setPasswordMutation = useMutation(setUserPassword)
   // const getAuthenticatorAppOptionsMutation = useMutation(getAuthenticatorAppOptions)
   const getPasskeyOptionsMutation = useMutation(getPasskeyOptions)
@@ -59,6 +60,8 @@ const UserSettingsPage: FC = () => {
   const [qrImage, setQRImage] = useState<string | null>(null)
   const [registeringAuthenticatorApp, setRegisteringAuthenticatorApp] =
     useState(false)
+
+  const handleDeletePasskey = async (id: string) => {}
 
   const handleEmailSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -437,8 +440,9 @@ const UserSettingsPage: FC = () => {
                         <DialogFooter>
                           <Button
                             className="mr-2"
-                            onClick={() => {
-                              // handleDeletePasskey(passkey.id)
+                            onClick={(e: MouseEvent<HTMLButtonElement>) => {
+                              e.preventDefault()
+                              handleDeletePasskey(passkey.id)
                             }}
                             variant="destructive"
                           >
