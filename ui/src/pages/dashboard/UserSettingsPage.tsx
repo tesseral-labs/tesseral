@@ -6,11 +6,13 @@ import { Button } from '@/components/ui/button'
 import { useMutation, useQuery } from '@connectrpc/connect-query'
 import {
   deleteMyPasskey,
+  getAuthenticatorAppOptions,
   getPasskeyOptions,
   listMyPasskeys,
+  registerAuthenticatorApp,
   registerPasskey,
   setPassword as setUserPassword,
-  whoAmI,
+  whoami,
 } from '@/gen/openauth/frontend/v1/frontend-FrontendService_connectquery'
 import { Input } from '@/components/ui/input'
 import {
@@ -29,7 +31,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { base32Encode, base64urlEncode } from '@/lib/utils'
+import { base64urlEncode } from '@/lib/utils'
 import { parseErrorMessage } from '@/lib/errors'
 import { toast } from 'sonner'
 import {
@@ -45,19 +47,22 @@ const UserSettingsPage: FC = () => {
   const encoder = new TextEncoder()
   const user = useUser()
 
-  const { data: whoamiRes } = useQuery(whoAmI)
+  const { data: whoamiRes } = useQuery(whoami)
   const deleteMyPasskeyMutation = useMutation(deleteMyPasskey)
   const setPasswordMutation = useMutation(setUserPassword)
-  // const getAuthenticatorAppOptionsMutation = useMutation(getAuthenticatorAppOptions)
+  const getAuthenticatorAppOptionsMutation = useMutation(
+    getAuthenticatorAppOptions,
+  )
   const getPasskeyOptionsMutation = useMutation(getPasskeyOptions)
   const { data: listMyPasskeysRes, refetch: refetchMyPasskeys } =
     useQuery(listMyPasskeys)
-  // const registerAuthenticatorAppMutation = useMutation(registerAuthenticatorApp)
+  const registerAuthenticatorAppMutation = useMutation(registerAuthenticatorApp)
   const registerPasskeyMutation = useMutation(registerPasskey)
 
+  const [authenticatorAppCode, setAuthenticatorAppCode] = useState('')
   const [editingEmail, setEditingEmail] = useState(false)
   const [editingPassword, setEditingPassword] = useState(false)
-  const [email, setEmail] = useState(whoamiRes?.email || '')
+  const [email, setEmail] = useState(whoamiRes?.user?.email || '')
   const [password, setPassword] = useState('')
   const [qrImage, setQRImage] = useState<string | null>(null)
   const [registeringAuthenticatorApp, setRegisteringAuthenticatorApp] =
@@ -109,11 +114,9 @@ const UserSettingsPage: FC = () => {
   ) => {
     e.stopPropagation()
 
-    // const authenticatorAppOptions = await getAuthenticatorAppOptionsMutation.mutateAsync()
-    // const secret = base32Encode(authenticatorAppOptions.secret)
-    // const url = `otpauth://totp/${organization?.displayName}:${whoamiRes?.intermediateSession?.email}?secret=${secret}&issuer=${organization?.displayName}`
-    const url = 'supersecreturl'
-    const qrImage = await QRCode.toDataURL(url, {
+    const authenticatorAppOptions =
+      await getAuthenticatorAppOptionsMutation.mutateAsync({})
+    const qrImage = await QRCode.toDataURL(authenticatorAppOptions.otpauthUri, {
       errorCorrectionLevel: 'H',
     })
     setQRImage(qrImage)
@@ -128,14 +131,9 @@ const UserSettingsPage: FC = () => {
     setRegisteringAuthenticatorApp(true)
 
     try {
-      //   await registerAuthenticatorAppMutation.mutateAsync({
-      //     totpCode: code,
-      //   })
-      // } catch (error) {
-      //   const message = parseErrorMessage(error)
-      //   toast.error('Could not register authenticator app', {
-      //     description: message,
-      //   })
+      await registerAuthenticatorAppMutation.mutateAsync({
+        totpCode: authenticatorAppCode,
+      })
       setRegisteringAuthenticatorApp(true)
     } catch (error) {
       setRegisteringAuthenticatorApp(false)
@@ -195,8 +193,8 @@ const UserSettingsPage: FC = () => {
   }
 
   useEffect(() => {
-    if (whoamiRes && whoamiRes.email) {
-      setEmail(whoamiRes.email || '')
+    if (whoamiRes && whoamiRes.user?.email) {
+      setEmail(whoamiRes.user.email)
     }
   }, [whoamiRes])
 
@@ -212,7 +210,7 @@ const UserSettingsPage: FC = () => {
           <div className="grid grid-cols-1 gap-x-2 text-sm md:grid-cols-2 lg:grid-cols-3">
             <div className="pr-8 dark:border-gray-700 md:border-r">
               <div className="text-sm font-semibold mb-2">User ID</div>
-              <div className="text-sm text-gray-500">{whoamiRes?.id}</div>
+              <div className="text-sm text-gray-500">{whoamiRes?.user?.id}</div>
             </div>
             <div className="pr-8 mt-8 dark:border-gray-700 lg:border-r lg:px-8 md:mt-0">
               <div className="text-sm font-semibold mb-2">Google User ID</div>
@@ -368,7 +366,10 @@ const UserSettingsPage: FC = () => {
                         className="mt-8 flex flex-col items-center w-full"
                         onSubmit={handleRegisterAuthenticatorApp}
                       >
-                        <InputOTP maxLength={6}>
+                        <InputOTP
+                          maxLength={6}
+                          onChange={(value) => setAuthenticatorAppCode(value)}
+                        >
                           <InputOTPGroup>
                             <InputOTPSlot index={0} />
                             <InputOTPSlot index={1} />
