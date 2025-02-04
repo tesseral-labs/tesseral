@@ -42,6 +42,7 @@ import {
 } from '@/components/ui/input-otp'
 import Loader from '@/components/ui/loader'
 import { CheckCircle, PlusCircle } from 'lucide-react'
+import { set } from 'react-hook-form'
 
 const UserSettingsPage: FC = () => {
   const encoder = new TextEncoder()
@@ -60,6 +61,8 @@ const UserSettingsPage: FC = () => {
   const registerPasskeyMutation = useMutation(registerPasskey)
 
   const [authenticatorAppCode, setAuthenticatorAppCode] = useState('')
+  const [authenticatorAppDialogOpen, setAuthenticatorAppDialogOpen] =
+    useState(false)
   const [editingEmail, setEditingEmail] = useState(false)
   const [editingPassword, setEditingPassword] = useState(false)
   const [email, setEmail] = useState(whoamiRes?.user?.email || '')
@@ -134,7 +137,10 @@ const UserSettingsPage: FC = () => {
       await registerAuthenticatorAppMutation.mutateAsync({
         totpCode: authenticatorAppCode,
       })
-      setRegisteringAuthenticatorApp(true)
+      setRegisteringAuthenticatorApp(false)
+      setAuthenticatorAppDialogOpen(false)
+      setAuthenticatorAppCode('')
+      setQRImage(null)
     } catch (error) {
       setRegisteringAuthenticatorApp(false)
       const message = parseErrorMessage(error)
@@ -336,7 +342,10 @@ const UserSettingsPage: FC = () => {
             <div className="grid grid-cols-2 gap-4">
               <span>Authenticator App</span>
               <div className="flex flex-row items-end justify-end">
-                <Dialog>
+                <Dialog
+                  open={authenticatorAppDialogOpen}
+                  onOpenChange={setAuthenticatorAppDialogOpen}
+                >
                   <DialogTrigger asChild>
                     <Button
                       onClick={handleAuthenticatorAppClick}
@@ -404,16 +413,16 @@ const UserSettingsPage: FC = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <span className="text-sm">
+          <div className="text-sm flex flex-row items-center">
             {whoamiRes?.user?.hasAuthenticatorApp ? (
               <>
                 <CheckCircle />
-                Registered
+                <span className="ml-2">Registered</span>
               </>
             ) : (
               'Not registered'
             )}
-          </span>
+          </div>
         </CardContent>
       </Card>
       <Card className="mt-4">
