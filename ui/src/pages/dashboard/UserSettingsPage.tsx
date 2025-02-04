@@ -41,7 +41,7 @@ import {
   InputOTPSlot,
 } from '@/components/ui/input-otp'
 import Loader from '@/components/ui/loader'
-import { PlusCircle } from 'lucide-react'
+import { CheckCircle, PlusCircle } from 'lucide-react'
 
 const UserSettingsPage: FC = () => {
   const encoder = new TextEncoder()
@@ -400,23 +400,16 @@ const UserSettingsPage: FC = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          {/* <Table>
-            <TableHeader>
-              <TableRow className="font-bold">
-                <TableCell>ID</TableCell>
-                <TableCell>Type</TableCell>
-                <TableCell className="flex flex-col items-end"></TableCell>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
-                <TableCell>—</TableCell>
-                <TableCell>Authenticator App</TableCell>
-                <TableCell className="text-right"></TableCell>
-              </TableRow>
-            </TableBody>
-          </Table> */}
-          <span className="text-sm">None registered</span>
+          <span className="text-sm">
+            {whoamiRes?.user?.hasAuthenticatorApp ? (
+              <>
+                <CheckCircle />
+                Registered
+              </>
+            ) : (
+              'Not registered'
+            )}
+          </span>
         </CardContent>
       </Card>
       <Card className="mt-4">
