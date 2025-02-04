@@ -4,38 +4,71 @@ import { useMutation } from '@connectrpc/connect-query'
 import { toast } from 'sonner'
 
 import { useLayout } from '@/lib/settings'
-import { cn } from '@/lib/utils'
+import { base64urlEncode, cn } from '@/lib/utils'
 import { LoginLayouts } from '@/lib/views'
 import { parseErrorMessage } from '@/lib/errors'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  exchangeIntermediateSessionForSession,
+  issuePasskeyChallenge,
+  verifyPasskey,
+} from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
+import { setAccessToken, setRefreshToken } from '@/auth'
 
 const VerifyPasskey: FC = () => {
   const encoder = new TextEncoder()
   const layout = useLayout()
   const navigate = useNavigate()
 
-  // const issuePasskeyChallengeMutation = useMutation(issuePasskeyChallenge)
-  // const verifyPasskeyMutation = useMutation(verifyPasskeyChallenge)
+  const exchangeIntermediateSessionForSessionMutation = useMutation(
+    exchangeIntermediateSessionForSession,
+  )
+  const issuePasskeyChallengeMutation = useMutation(issuePasskeyChallenge)
+  const verifyPasskeyMutation = useMutation(verifyPasskey)
 
   const authenticateWithPasskey = async () => {
     try {
-      // const challengeResponse = await issuePasskeyChallengeMutation.mutateAsync({})
-      // const requestOptions: PublicKeyCredentialRequestOptions = {
-      //   challenge: encoder.encode(challengeResponse.challenge).buffer,
-      //   allowCredentials: [],
-      //   userVerification: 'preferred',
-      //   rpId: challengeResponse.rpId,
-      //   timeout: 60000,
-      // }
-      // const credential = await navigator.credentials.get({
-      //   publicKey: requestOptions,
-      // })
-      // console.log(credential)
-      // await verifyPasskeyMutation.mutateAsync({
-      // })
-      // const { accessToken, refreshToken } = await exchangeIntermediateSessionForSessionMutation.mutateAsync({})
-      // navigate('/settings')
+      const challengeResponse = await issuePasskeyChallengeMutation.mutateAsync(
+        {},
+      )
+
+      const allowCredentials = challengeResponse.credentialIds.map(
+        (id) =>
+          ({
+            id: new Uint8Array(id).buffer,
+            type: 'public-key',
+            transports: ['hybrid', 'internal', 'nfc', 'usb'],
+          }) as PublicKeyCredentialDescriptor,
+      )
+
+      const requestOptions: PublicKeyCredentialRequestOptions = {
+        challenge: new Uint8Array(challengeResponse.challenge).buffer,
+        allowCredentials,
+        userVerification: 'preferred',
+        rpId: challengeResponse.rpId,
+        timeout: 60000,
+      }
+      const credential = (await navigator.credentials.get({
+        publicKey: requestOptions,
+      })) as PublicKeyCredential
+
+      const response = credential.response as AuthenticatorAssertionResponse
+
+      await verifyPasskeyMutation.mutateAsync({
+        authenticatorData: base64urlEncode(response.authenticatorData),
+        clientDataJson: base64urlEncode(response.clientDataJSON),
+        credentialId: new Uint8Array(credential.rawId),
+        signature: base64urlEncode(response.signature),
+      })
+
+      const { accessToken, refreshToken } =
+        await exchangeIntermediateSessionForSessionMutation.mutateAsync({})
+
+      setAccessToken(accessToken)
+      setRefreshToken(refreshToken)
+
+      navigate('/settings')
     } catch (error) {
       const message = parseErrorMessage(error)
 
@@ -43,7 +76,11 @@ const VerifyPasskey: FC = () => {
     }
   }
 
-  useEffect(() => {}, [])
+  useEffect(() => {
+    ;(async () => {
+      await authenticateWithPasskey()
+    })()
+  }, [])
 
   return (
     <Card
