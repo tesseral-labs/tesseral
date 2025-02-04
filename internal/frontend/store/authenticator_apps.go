@@ -1,0 +1,157 @@
+package store
+
+import (
+	"context"
+	"crypto/rand"
+	"fmt"
+	"time"
+
+	"github.com/aws/aws-sdk-go-v2/service/kms"
+	"github.com/aws/aws-sdk-go-v2/service/kms/types"
+	"github.com/openauth/openauth/internal/bcryptcost"
+	"github.com/openauth/openauth/internal/common/apierror"
+	"github.com/openauth/openauth/internal/frontend/authn"
+	frontendv1 "github.com/openauth/openauth/internal/frontend/gen/openauth/frontend/v1"
+	"github.com/openauth/openauth/internal/frontend/store/queries"
+	"github.com/openauth/openauth/internal/totp"
+	"golang.org/x/crypto/bcrypt"
+)
+
+// how many recovery codes to generate for an authenticator app
+//
+// keep in sync with intermediate/store/authenticator_apps.go
+const recoveryCodeCount = 10
+
+func (s *Store) GetAuthenticatorAppOptions(ctx context.Context) (*frontendv1.GetAuthenticatorAppOptionsResponse, error) {
+	var secret [32]byte
+	if _, err := rand.Read(secret[:]); err != nil {
+		return nil, fmt.Errorf("read random bytes: %w", err)
+	}
+
+	encryptRes, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
+		KeyId:               &s.authenticatorAppSecretsKMSKeyID,
+		Plaintext:           secret[:],
+		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("encrypt authenticator app secret: %w", err)
+	}
+
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	if _, err := q.CreateUserAuthenticatorAppChallenge(ctx, queries.CreateUserAuthenticatorAppChallengeParams{
+		UserID:                           authn.UserID(ctx),
+		AuthenticatorAppSecretCiphertext: encryptRes.CiphertextBlob,
+	}); err != nil {
+		return nil, fmt.Errorf("create user authenticator app challenge: %w", err)
+	}
+
+	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get project by id: %w", err)
+	}
+
+	qUser, err := q.GetUserByID(ctx, authn.UserID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get user by id: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
+	}
+
+	key := totp.Key{Secret: secret[:]}
+	return &frontendv1.GetAuthenticatorAppOptionsResponse{
+		OtpauthUri: key.OTPAuthURI(qProject.DisplayName, qUser.Email),
+	}, nil
+}
+
+func (s *Store) RegisterAuthenticatorApp(ctx context.Context, req *frontendv1.RegisterAuthenticatorAppRequest) (*frontendv1.RegisterAuthenticatorAppResponse, error) {
+	secret, err := s.getAuthenticatorAppSecret(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("get authenticator app secret: %w", err)
+	}
+
+	key := totp.Key{Secret: secret}
+	if err := key.Validate(time.Now(), req.TotpCode); err != nil {
+		return nil, apierror.NewInvalidArgumentError("invalid totp code", err)
+	}
+
+	var backupCodes []string
+	var recoveryCodeBcrypts [][]byte
+	for i := 0; i < recoveryCodeCount; i++ {
+		var code [8]byte
+		if _, err := rand.Read(code[:]); err != nil {
+			return nil, fmt.Errorf("read random bytes: %w", err)
+		}
+
+		codeFormatted := fmt.Sprintf("%x-%x-%x-%x", code[:2], code[2:4], code[4:6], code[6:])
+
+		codeBcrypt, err := bcrypt.GenerateFromPassword([]byte(codeFormatted), bcryptcost.Cost)
+		if err != nil {
+			return nil, fmt.Errorf("generate bcrypt hash: %w", err)
+		}
+
+		backupCodes = append(backupCodes, codeFormatted)
+		recoveryCodeBcrypts = append(recoveryCodeBcrypts, codeBcrypt)
+	}
+
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	qUserAuthenticatorAppChallenge, err := q.GetUserAuthenticatorAppChallenge(ctx, authn.UserID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get user authenticator app challenge: %w", err)
+	}
+
+	if err := q.DeleteUserAuthenticatorAppChallenge(ctx, authn.UserID(ctx)); err != nil {
+		return nil, fmt.Errorf("delete user authenticator app challenge: %w", err)
+	}
+
+	if _, err := q.UpdateUserAuthenticatorApp(ctx, queries.UpdateUserAuthenticatorAppParams{
+		ID:                                  authn.UserID(ctx),
+		AuthenticatorAppSecretCiphertext:    qUserAuthenticatorAppChallenge.AuthenticatorAppSecretCiphertext,
+		AuthenticatorAppRecoveryCodeBcrypts: recoveryCodeBcrypts,
+	}); err != nil {
+		return nil, fmt.Errorf("update user authenticator app: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
+	}
+
+	return &frontendv1.RegisterAuthenticatorAppResponse{
+		RecoveryCodes: backupCodes,
+	}, nil
+}
+
+func (s *Store) getAuthenticatorAppSecret(ctx context.Context) ([]byte, error) {
+	_, q, _, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	qUser, err := q.GetUserByID(ctx, authn.UserID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get user by id: %w", err)
+	}
+
+	decryptRes, err := s.kms.Decrypt(ctx, &kms.DecryptInput{
+		KeyId:               &s.authenticatorAppSecretsKMSKeyID,
+		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
+		CiphertextBlob:      qUser.AuthenticatorAppSecretCiphertext,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("decrypt authenticator app secret ciphertext: %w", err)
+	}
+
+	return decryptRes.Plaintext, nil
+}

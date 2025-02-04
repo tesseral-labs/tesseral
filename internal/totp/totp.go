@@ -3,13 +3,29 @@ package totp
 import (
 	"crypto/hmac"
 	"crypto/sha1"
+	"encoding/base32"
 	"encoding/binary"
 	"fmt"
+	"net/url"
 	"time"
 )
 
 type Key struct {
 	Secret []byte
+}
+
+func (k *Key) OTPAuthURI(issuer, user string) string {
+	uri := url.URL{
+		Scheme: "otpauth",
+		Host:   "totp",
+		Path:   fmt.Sprintf("%s:%s", issuer, user),
+		RawQuery: url.Values{
+			"secret": {base32.StdEncoding.WithPadding(base32.NoPadding).EncodeToString(k.Secret)},
+			"digits": {"6"},
+			"period": {"30"},
+		}.Encode(),
+	}
+	return uri.String()
 }
 
 func (k *Key) Validate(now time.Time, code string) error {

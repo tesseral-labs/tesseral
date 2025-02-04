@@ -170,6 +170,7 @@ func main() {
 		KMS:                                   kms_,
 		PageEncoder:                           pagetoken.Encoder{Secret: pageEncodingValue},
 		SessionSigningKeyKmsKeyID:             config.SessionKMSKeyID,
+		AuthenticatorAppSecretsKMSKeyID:       config.AuthenticatorAppSecretsKMSKeyID,
 	})
 	frontendConnectPath, frontendConnectHandler := frontendv1connect.NewFrontendServiceHandler(
 		&frontendservice.Service{

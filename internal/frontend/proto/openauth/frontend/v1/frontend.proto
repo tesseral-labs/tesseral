@@ -76,13 +76,6 @@ service FrontendService {
     };
   }
 
-  // Who am I?
-  rpc WhoAmI(WhoAmIRequest) returns (WhoAmIResponse) {
-    option (google.api.http) = {
-      get: "/frontend/v1/whoami"
-    };
-  }
-
   rpc ListSAMLConnections(ListSAMLConnectionsRequest) returns (ListSAMLConnectionsResponse) {
     option (google.api.http) = {
       get: "/frontend/v1/saml-connections",
@@ -153,15 +146,21 @@ service FrontendService {
     };
   }
 
-  rpc DeleteMyPasskey(DeleteMyPasskeyRequest) returns (DeleteMyPasskeyResponse) {
+  rpc Whoami(WhoamiRequest) returns (WhoamiResponse) {
     option (google.api.http) = {
-      delete: "/frontend/v1/me/passkeys/{id}"
+      get: "/frontend/v1/me"
     };
   }
 
   rpc ListMyPasskeys(ListMyPasskeysRequest) returns (ListMyPasskeysResponse) {
     option (google.api.http) = {
       get: "/frontend/v1/me/passkeys"
+    };
+  }
+
+  rpc DeleteMyPasskey(DeleteMyPasskeyRequest) returns (DeleteMyPasskeyResponse) {
+    option (google.api.http) = {
+      delete: "/frontend/v1/me/passkeys/{id}"
     };
   }
 
@@ -174,6 +173,19 @@ service FrontendService {
   rpc RegisterPasskey(RegisterPasskeyRequest) returns (RegisterPasskeyResponse) {
     option (google.api.http) = {
       post: "/frontend/v1/me/passkeys/register",
+      body: "*"
+    };
+  }
+
+  rpc GetAuthenticatorAppOptions(GetAuthenticatorAppOptionsRequest) returns (GetAuthenticatorAppOptionsResponse) {
+    option (google.api.http) = {
+      post: "/frontend/v1/me/authenticator-app/options",
+    };
+  }
+
+  rpc RegisterAuthenticatorApp(RegisterAuthenticatorAppRequest) returns (RegisterAuthenticatorAppResponse) {
+    option (google.api.http) = {
+      post: "/frontend/v1/me/authenticator-app/register",
       body: "*"
     };
   }
@@ -256,20 +268,6 @@ message UpdateUserRequest {
 
 message UpdateUserResponse {
   User user = 1;
-}
-
-message WhoAmIRequest {
-}
-
-message WhoAmIResponse {
-  // The user ID that is currently authenticated.
-  string id = 1;
-  // The email address for the user.
-  string email = 2;
-  // The organization ID for the user.
-  string organization_id = 3;
-  // The organization for the user.
-  Organization organization = 4;
 }
 
 message ListSAMLConnectionsRequest {
@@ -362,6 +360,13 @@ message RevokeSCIMAPIKeyResponse {
   SCIMAPIKey scim_api_key = 1;
 }
 
+message WhoamiRequest {
+}
+
+message WhoamiResponse {
+  User user = 1;
+}
+
 message ListMyPasskeysRequest {
   string page_token = 1;
 }
@@ -394,6 +399,21 @@ message RegisterPasskeyRequest {
 
 message RegisterPasskeyResponse {
   Passkey passkey = 1;
+}
+
+message GetAuthenticatorAppOptionsRequest {
+}
+
+message GetAuthenticatorAppOptionsResponse {
+  string otpauth_uri = 1;
+}
+
+message RegisterAuthenticatorAppRequest {
+  string totp_code = 1;
+}
+
+message RegisterAuthenticatorAppResponse {
+  repeated string recovery_codes = 1;
 }
 
 message Project {
@@ -447,6 +467,7 @@ message User {
   optional bool owner = 5;
   string google_user_id = 6;
   string microsoft_user_id = 7;
+  bool has_authenticator_app = 8;
 }
 
 message Session {

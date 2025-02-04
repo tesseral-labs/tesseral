@@ -23,6 +23,7 @@ type Store struct {
 	pageEncoder                           pagetoken.Encoder
 	q                                     *queries.Queries
 	sessionSigningKeyKmsKeyID             string
+	authenticatorAppSecretsKMSKeyID       string
 }
 
 type NewStoreParams struct {
@@ -32,6 +33,7 @@ type NewStoreParams struct {
 	KMS                                   *kms.Client
 	PageEncoder                           pagetoken.Encoder
 	SessionSigningKeyKmsKeyID             string
+	AuthenticatorAppSecretsKMSKeyID       string
 }
 
 func New(p NewStoreParams) *Store {
@@ -46,6 +48,7 @@ func New(p NewStoreParams) *Store {
 		pageEncoder:                           p.PageEncoder,
 		q:                                     queries.New(p.DB),
 		sessionSigningKeyKmsKeyID:             p.SessionSigningKeyKmsKeyID,
+		authenticatorAppSecretsKMSKeyID:       p.AuthenticatorAppSecretsKMSKeyID,
 	}
 
 	return store

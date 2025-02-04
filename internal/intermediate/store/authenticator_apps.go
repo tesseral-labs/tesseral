@@ -53,6 +53,29 @@ func (s *Store) GetAuthenticatorAppOptions(ctx context.Context, req *intermediat
 	}
 	defer rollback()
 
+	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get project by id: %w", err)
+	}
+
+	qOrg, err := q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
+		ProjectID: authn.ProjectID(ctx),
+		ID:        *qProject.OrganizationID,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("get organization by id: %w", err)
+	}
+
+	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get intermediate session by id: %w", err)
+	}
+
+	qMatchingUser, err := s.matchUser(ctx, q, qOrg, qIntermediateSession)
+	if err != nil {
+		return nil, fmt.Errorf("match user: %w", err)
+	}
+
 	if _, err := q.UpdateIntermediateSessionAuthenticatorAppSecretCiphertext(ctx, queries.UpdateIntermediateSessionAuthenticatorAppSecretCiphertextParams{
 		ID:                               authn.IntermediateSessionID(ctx),
 		AuthenticatorAppSecretCiphertext: encryptRes.CiphertextBlob,
@@ -64,8 +87,9 @@ func (s *Store) GetAuthenticatorAppOptions(ctx context.Context, req *intermediat
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
+	key := totp.Key{Secret: secret[:]}
 	return &intermediatev1.GetAuthenticatorAppOptionsResponse{
-		Secret: secret[:],
+		OtpauthUri: key.OTPAuthURI(qProject.DisplayName, qMatchingUser.Email),
 	}, nil
 }
 

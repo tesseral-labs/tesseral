@@ -287,6 +287,11 @@ type User struct {
 	AuthenticatorAppLockoutExpireTime   *time.Time
 }
 
+type UserAuthenticatorAppChallenge struct {
+	UserID                           uuid.UUID
+	AuthenticatorAppSecretCiphertext []byte
+}
+
 type UserImpersonationToken struct {
 	ID                uuid.UUID
 	ImpersonatorID    uuid.UUID
