@@ -58,7 +58,7 @@ const DashboardPage: FC<PropsWithChildren> = ({ children }) => {
                 <SidebarTrigger />
                 <div className="bg-body mx-auto items-center">
                   <div className="mx-auto sm:px-6 lg:px-8">
-                    <div className="py-8">{children}</div>
+                    <div className="pb-8">{children}</div>
                   </div>
                 </div>
               </main>
