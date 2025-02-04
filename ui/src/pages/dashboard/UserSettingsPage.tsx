@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { useMutation, useQuery } from '@connectrpc/connect-query'
 import {
   getPasskeyOptions,
+  listMyPasskeys,
   registerPasskey,
   setPassword as setUserPassword,
   whoAmI,
@@ -22,6 +23,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -36,6 +38,7 @@ import {
   InputOTPSlot,
 } from '@/components/ui/input-otp'
 import Loader from '@/components/ui/loader'
+import { PlusCircle } from 'lucide-react'
 
 const UserSettingsPage: FC = () => {
   const encoder = new TextEncoder()
@@ -45,6 +48,7 @@ const UserSettingsPage: FC = () => {
   const setPasswordMutation = useMutation(setUserPassword)
   // const getAuthenticatorAppOptionsMutation = useMutation(getAuthenticatorAppOptions)
   const getPasskeyOptionsMutation = useMutation(getPasskeyOptions)
+  const { data: listMyPasskeysRes } = useQuery(listMyPasskeys)
   // const registerAuthenticatorAppMutation = useMutation(registerAuthenticatorApp)
   const registerPasskeyMutation = useMutation(registerPasskey)
 
@@ -305,45 +309,34 @@ const UserSettingsPage: FC = () => {
       </Card>
       <Card className="mt-4">
         <CardHeader>
-          <CardTitle>MFA</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow className="font-bold">
-                <TableCell>Method</TableCell>
-                <TableCell>Registered</TableCell>
-                <TableCell></TableCell>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
-                <TableCell>Authenticator App</TableCell>
-                <TableCell>Yes</TableCell>
-                <TableCell className="text-right">
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button
-                        className="text-sm rounded border border-border focus:border-primary"
-                        onClick={handleAuthenticatorAppClick}
-                        variant="outline"
-                      >
-                        Register
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Register Authenticator App</DialogTitle>
-                        <DialogDescription>
-                          Scan the QR code below using your authenticator app
-                          and enter the resulting 6-digit code.
-                        </DialogDescription>
-                      </DialogHeader>
+          <CardTitle>
+            <div className="grid grid-cols-2 gap-4">
+              <span>Authenticator App</span>
+              <div className="flex flex-row items-end justify-end">
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button
+                      onClick={handleAuthenticatorAppClick}
+                      variant="outline"
+                    >
+                      <PlusCircle />
+                      Register Authenticator App
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Register Authenticator App</DialogTitle>
+                      <DialogDescription>
+                        Scan the QR code with your authenticator app to
+                        register.
+                      </DialogDescription>
 
-                      {qrImage && (
-                        <div className="border rounded-lg w-full mr-auto">
+                      {qrImage ? (
+                        <div className="border rounded-lg w-full">
                           <img className="w-full" src={qrImage} />
                         </div>
+                      ) : (
+                        <Loader />
                       )}
 
                       <form
@@ -364,28 +357,99 @@ const UserSettingsPage: FC = () => {
                           </InputOTPGroup>
                         </InputOTP>
 
-                        <Button className="mt-4" type="submit">
+                        <Button
+                          className="mt-4"
+                          disabled={registeringAuthenticatorApp}
+                          type="submit"
+                        >
                           {registeringAuthenticatorApp && <Loader />}
                           Submit
                         </Button>
                       </form>
-                    </DialogContent>
-                  </Dialog>
-                </TableCell>
+                    </DialogHeader>
+                  </DialogContent>
+                </Dialog>
+              </div>
+            </div>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {/* <Table>
+            <TableHeader>
+              <TableRow className="font-bold">
+                <TableCell>ID</TableCell>
+                <TableCell>Type</TableCell>
+                <TableCell className="flex flex-col items-end"></TableCell>
               </TableRow>
+            </TableHeader>
+            <TableBody>
               <TableRow>
-                <TableCell>Passkey</TableCell>
-                <TableCell>No</TableCell>
-                <TableCell className="text-right">
-                  <Button
-                    className="text-sm rounded border border-border focus:border-primary"
-                    onClick={handleRegisterPasskeyClick}
-                    variant="outline"
-                  >
-                    Register
-                  </Button>
-                </TableCell>
+                <TableCell>—</TableCell>
+                <TableCell>Authenticator App</TableCell>
+                <TableCell className="text-right"></TableCell>
               </TableRow>
+            </TableBody>
+          </Table> */}
+          <span className="text-sm">None registered</span>
+        </CardContent>
+      </Card>
+      <Card className="mt-4">
+        <CardHeader>
+          <CardTitle>
+            <div className="grid grid-cols-2 gap-4">
+              <span>Passkeys</span>
+              <div className="flex flex-row items-end justify-end">
+                <Button onClick={handleRegisterPasskeyClick} variant="outline">
+                  <PlusCircle />
+                  Register Passkey
+                </Button>
+              </div>
+            </div>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow className="font-bold">
+                <TableCell>ID</TableCell>
+                <TableCell>Type</TableCell>
+                <TableCell className="flex flex-col items-end"></TableCell>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {listMyPasskeysRes?.passkeys.map((passkey) => (
+                <TableRow key={passkey.id}>
+                  <TableCell className="text-sm">{passkey.id}</TableCell>
+                  <TableCell>Passkey</TableCell>
+                  <TableCell className="text-right">
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="destructive">Delete</Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Are you sure?</DialogTitle>
+                          <DialogDescription>
+                            Once deleted, you'll no longer be able to log in
+                            with this passkey.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <DialogFooter>
+                          <Button
+                            className="mr-2"
+                            onClick={() => {
+                              // handleDeletePasskey(passkey.id)
+                            }}
+                            variant="destructive"
+                          >
+                            Delete
+                          </Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </CardContent>
