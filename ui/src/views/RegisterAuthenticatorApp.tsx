@@ -11,7 +11,6 @@ import {
   registerAuthenticatorApp,
   whoami,
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
-import { base32Encode, cn } from '@/lib/utils'
 import { useIntermediateOrganization } from '@/lib/auth'
 import {
   InputOTP,
@@ -26,6 +25,7 @@ import { LoginLayouts } from '@/lib/views'
 import { parseErrorMessage } from '@/lib/errors'
 import { toast } from 'sonner'
 import Loader from '@/components/ui/loader'
+import { cn } from '@/lib/utils'
 
 const RegisterAuthenticatorApp: FC = () => {
   const layout = useLayout()
@@ -48,10 +48,8 @@ const RegisterAuthenticatorApp: FC = () => {
   const generateQRCode = async (): Promise<string> => {
     const authenticatorAppOptions =
       await getAuthenticatorAppOptionsMutation.mutateAsync({})
-    const secret = base32Encode(authenticatorAppOptions.secret)
-    const url = `otpauth://totp/${organization?.displayName}:${whoamiRes?.intermediateSession?.email}?secret=${secret}&issuer=${organization?.displayName}`
 
-    return QRCode.toDataURL(url, {
+    return QRCode.toDataURL(authenticatorAppOptions.otpauthUri, {
       errorCorrectionLevel: 'H',
     })
   }

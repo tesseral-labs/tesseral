@@ -1,24 +1,6 @@
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
-const base32Alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'
-
-export const base32Encode = (buffer: Uint8Array): string => {
-  let binaryString = ''
-  for (let byte of buffer) {
-    binaryString += byte.toString(2).padStart(8, '0')
-  }
-
-  let base32String = ''
-  for (let i = 0; i < binaryString.length; i += 5) {
-    const segment = binaryString.substring(i, i + 5).padEnd(5, '0')
-    const index = parseInt(segment, 2)
-    base32String += base32Alphabet[index]
-  }
-
-  return base32String
-}
-
 export const base64Decode = (s: string): string => {
   const binaryString = atob(s)
 
