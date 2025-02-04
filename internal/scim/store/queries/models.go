@@ -257,6 +257,7 @@ type Session struct {
 	ExpireTime         *time.Time
 	RefreshTokenSha256 []byte
 	ImpersonatorUserID *uuid.UUID
+	LastActiveTime     *time.Time
 }
 
 type SessionSigningKey struct {

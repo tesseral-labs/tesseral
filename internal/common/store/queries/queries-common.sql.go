@@ -11,6 +11,20 @@ import (
 	"github.com/google/uuid"
 )
 
+const bumpSessionLastActiveTime = `-- name: BumpSessionLastActiveTime :exec
+UPDATE
+    sessions
+SET
+    last_active_time = now()
+WHERE
+    id = $1
+`
+
+func (q *Queries) BumpSessionLastActiveTime(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, bumpSessionLastActiveTime, id)
+	return err
+}
+
 const getCurrentSessionSigningKeyByProjectID = `-- name: GetCurrentSessionSigningKeyByProjectID :one
 SELECT
     id, project_id, public_key, private_key_cipher_text, create_time, expire_time

@@ -431,9 +431,9 @@ FROM
     sessions
 WHERE
     user_id = $1
-    AND id >= $2
+    AND id <= $2
 ORDER BY
-    id
+    id DESC
 LIMIT $3;
 
 -- name: GetSession :one

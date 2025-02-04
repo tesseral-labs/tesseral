@@ -27,7 +27,7 @@ export function useAccessToken(): string | undefined {
     mutationKey: ['refresh'],
     mutationFn: async () => {
       const response = await fetch(
-        `https://auth.app.tesseral.example.com/api/frontend/v1/refresh`,
+        `https://auth.console.tesseral.example.com/api/frontend/v1/refresh`,
         {
           credentials: 'include',
           method: 'POST',

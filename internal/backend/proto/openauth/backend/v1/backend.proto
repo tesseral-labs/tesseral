@@ -701,8 +701,9 @@ message Session {
   string id = 1;
   string user_id = 2;
   bool revoked = 3;
-
-  // TODO(ucarion): add session metadata like auth factors, etc here
+  google.protobuf.Timestamp create_time = 4;
+  google.protobuf.Timestamp last_active_time = 5;
+  google.protobuf.Timestamp expire_time = 6;
 }
 
 message Passkey {

@@ -102,6 +102,10 @@ func (s *Store) IssueAccessToken(ctx context.Context, refreshToken string) (stri
 		panic(fmt.Errorf("private key from bytes: %w", err))
 	}
 
+	if err := s.q.BumpSessionLastActiveTime(ctx, qDetails.SessionID); err != nil {
+		return "", fmt.Errorf("bump session last active time: %w", err)
+	}
+
 	accessToken := ujwt.Sign(idformat.SessionSigningKey.Format(qSessionSigningKey.ID), priv, json.RawMessage(encodedClaims))
 	return accessToken, nil
 }

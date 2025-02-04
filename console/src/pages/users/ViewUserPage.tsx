@@ -170,23 +170,35 @@ export function ViewUserPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>ID</TableHead>
-                <TableHead>Created At</TableHead>
-                <TableHead>Updated At</TableHead>
+                <TableHead>Created</TableHead>
+                <TableHead>Last Active</TableHead>
+                <TableHead>Expiration</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {listSessionsResponse?.sessions?.map((session) => (
                 <TableRow key={session.id}>
                   <TableCell className="font-medium font-mono">
-                    <Link
-                      className="font-medium underline underline-offset-2 decoration-muted-foreground/40"
-                      to={`/organizations/${organizationId}/users/${userId}/sessions/${session.id}`}
-                    >
-                      {session.id}
-                    </Link>
+                    {session.id}
                   </TableCell>
-                  <TableCell>TODO</TableCell>
-                  <TableCell>TODO</TableCell>
+                  <TableCell>
+                    {session?.createTime &&
+                      DateTime.fromJSDate(
+                        timestampDate(session.createTime),
+                      ).toRelative()}
+                  </TableCell>
+                  <TableCell>
+                    {session?.lastActiveTime &&
+                      DateTime.fromJSDate(
+                        timestampDate(session.lastActiveTime),
+                      ).toRelative()}
+                  </TableCell>
+                  <TableCell>
+                    {session?.expireTime &&
+                      DateTime.fromJSDate(
+                        timestampDate(session.expireTime),
+                      ).toRelative()}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
