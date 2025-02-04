@@ -95,6 +95,9 @@ const (
 	// FrontendServiceRevokeSCIMAPIKeyProcedure is the fully-qualified name of the FrontendService's
 	// RevokeSCIMAPIKey RPC.
 	FrontendServiceRevokeSCIMAPIKeyProcedure = "/openauth.frontend.v1.FrontendService/RevokeSCIMAPIKey"
+	// FrontendServiceListMyPasskeysProcedure is the fully-qualified name of the FrontendService's
+	// ListMyPasskeys RPC.
+	FrontendServiceListMyPasskeysProcedure = "/openauth.frontend.v1.FrontendService/ListMyPasskeys"
 	// FrontendServiceGetPasskeyOptionsProcedure is the fully-qualified name of the FrontendService's
 	// GetPasskeyOptions RPC.
 	FrontendServiceGetPasskeyOptionsProcedure = "/openauth.frontend.v1.FrontendService/GetPasskeyOptions"
@@ -130,6 +133,7 @@ type FrontendServiceClient interface {
 	UpdateSCIMAPIKey(context.Context, *connect.Request[v1.UpdateSCIMAPIKeyRequest]) (*connect.Response[v1.UpdateSCIMAPIKeyResponse], error)
 	DeleteSCIMAPIKey(context.Context, *connect.Request[v1.DeleteSCIMAPIKeyRequest]) (*connect.Response[v1.DeleteSCIMAPIKeyResponse], error)
 	RevokeSCIMAPIKey(context.Context, *connect.Request[v1.RevokeSCIMAPIKeyRequest]) (*connect.Response[v1.RevokeSCIMAPIKeyResponse], error)
+	ListMyPasskeys(context.Context, *connect.Request[v1.ListMyPasskeysRequest]) (*connect.Response[v1.ListMyPasskeysResponse], error)
 	GetPasskeyOptions(context.Context, *connect.Request[v1.GetPasskeyOptionsRequest]) (*connect.Response[v1.GetPasskeyOptionsResponse], error)
 	RegisterPasskey(context.Context, *connect.Request[v1.RegisterPasskeyRequest]) (*connect.Response[v1.RegisterPasskeyResponse], error)
 }
@@ -277,6 +281,12 @@ func NewFrontendServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			connect.WithSchema(frontendServiceMethods.ByName("RevokeSCIMAPIKey")),
 			connect.WithClientOptions(opts...),
 		),
+		listMyPasskeys: connect.NewClient[v1.ListMyPasskeysRequest, v1.ListMyPasskeysResponse](
+			httpClient,
+			baseURL+FrontendServiceListMyPasskeysProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("ListMyPasskeys")),
+			connect.WithClientOptions(opts...),
+		),
 		getPasskeyOptions: connect.NewClient[v1.GetPasskeyOptionsRequest, v1.GetPasskeyOptionsResponse](
 			httpClient,
 			baseURL+FrontendServiceGetPasskeyOptionsProcedure,
@@ -316,6 +326,7 @@ type frontendServiceClient struct {
 	updateSCIMAPIKey     *connect.Client[v1.UpdateSCIMAPIKeyRequest, v1.UpdateSCIMAPIKeyResponse]
 	deleteSCIMAPIKey     *connect.Client[v1.DeleteSCIMAPIKeyRequest, v1.DeleteSCIMAPIKeyResponse]
 	revokeSCIMAPIKey     *connect.Client[v1.RevokeSCIMAPIKeyRequest, v1.RevokeSCIMAPIKeyResponse]
+	listMyPasskeys       *connect.Client[v1.ListMyPasskeysRequest, v1.ListMyPasskeysResponse]
 	getPasskeyOptions    *connect.Client[v1.GetPasskeyOptionsRequest, v1.GetPasskeyOptionsResponse]
 	registerPasskey      *connect.Client[v1.RegisterPasskeyRequest, v1.RegisterPasskeyResponse]
 }
@@ -430,6 +441,11 @@ func (c *frontendServiceClient) RevokeSCIMAPIKey(ctx context.Context, req *conne
 	return c.revokeSCIMAPIKey.CallUnary(ctx, req)
 }
 
+// ListMyPasskeys calls openauth.frontend.v1.FrontendService.ListMyPasskeys.
+func (c *frontendServiceClient) ListMyPasskeys(ctx context.Context, req *connect.Request[v1.ListMyPasskeysRequest]) (*connect.Response[v1.ListMyPasskeysResponse], error) {
+	return c.listMyPasskeys.CallUnary(ctx, req)
+}
+
 // GetPasskeyOptions calls openauth.frontend.v1.FrontendService.GetPasskeyOptions.
 func (c *frontendServiceClient) GetPasskeyOptions(ctx context.Context, req *connect.Request[v1.GetPasskeyOptionsRequest]) (*connect.Response[v1.GetPasskeyOptionsResponse], error) {
 	return c.getPasskeyOptions.CallUnary(ctx, req)
@@ -467,6 +483,7 @@ type FrontendServiceHandler interface {
 	UpdateSCIMAPIKey(context.Context, *connect.Request[v1.UpdateSCIMAPIKeyRequest]) (*connect.Response[v1.UpdateSCIMAPIKeyResponse], error)
 	DeleteSCIMAPIKey(context.Context, *connect.Request[v1.DeleteSCIMAPIKeyRequest]) (*connect.Response[v1.DeleteSCIMAPIKeyResponse], error)
 	RevokeSCIMAPIKey(context.Context, *connect.Request[v1.RevokeSCIMAPIKeyRequest]) (*connect.Response[v1.RevokeSCIMAPIKeyResponse], error)
+	ListMyPasskeys(context.Context, *connect.Request[v1.ListMyPasskeysRequest]) (*connect.Response[v1.ListMyPasskeysResponse], error)
 	GetPasskeyOptions(context.Context, *connect.Request[v1.GetPasskeyOptionsRequest]) (*connect.Response[v1.GetPasskeyOptionsResponse], error)
 	RegisterPasskey(context.Context, *connect.Request[v1.RegisterPasskeyRequest]) (*connect.Response[v1.RegisterPasskeyResponse], error)
 }
@@ -610,6 +627,12 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 		connect.WithSchema(frontendServiceMethods.ByName("RevokeSCIMAPIKey")),
 		connect.WithHandlerOptions(opts...),
 	)
+	frontendServiceListMyPasskeysHandler := connect.NewUnaryHandler(
+		FrontendServiceListMyPasskeysProcedure,
+		svc.ListMyPasskeys,
+		connect.WithSchema(frontendServiceMethods.ByName("ListMyPasskeys")),
+		connect.WithHandlerOptions(opts...),
+	)
 	frontendServiceGetPasskeyOptionsHandler := connect.NewUnaryHandler(
 		FrontendServiceGetPasskeyOptionsProcedure,
 		svc.GetPasskeyOptions,
@@ -668,6 +691,8 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 			frontendServiceDeleteSCIMAPIKeyHandler.ServeHTTP(w, r)
 		case FrontendServiceRevokeSCIMAPIKeyProcedure:
 			frontendServiceRevokeSCIMAPIKeyHandler.ServeHTTP(w, r)
+		case FrontendServiceListMyPasskeysProcedure:
+			frontendServiceListMyPasskeysHandler.ServeHTTP(w, r)
 		case FrontendServiceGetPasskeyOptionsProcedure:
 			frontendServiceGetPasskeyOptionsHandler.ServeHTTP(w, r)
 		case FrontendServiceRegisterPasskeyProcedure:
@@ -767,6 +792,10 @@ func (UnimplementedFrontendServiceHandler) DeleteSCIMAPIKey(context.Context, *co
 
 func (UnimplementedFrontendServiceHandler) RevokeSCIMAPIKey(context.Context, *connect.Request[v1.RevokeSCIMAPIKeyRequest]) (*connect.Response[v1.RevokeSCIMAPIKeyResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.RevokeSCIMAPIKey is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) ListMyPasskeys(context.Context, *connect.Request[v1.ListMyPasskeysRequest]) (*connect.Response[v1.ListMyPasskeysResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.ListMyPasskeys is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) GetPasskeyOptions(context.Context, *connect.Request[v1.GetPasskeyOptionsRequest]) (*connect.Response[v1.GetPasskeyOptionsResponse], error) {
