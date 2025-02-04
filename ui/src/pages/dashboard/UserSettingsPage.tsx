@@ -45,11 +45,12 @@ const UserSettingsPage: FC = () => {
   const user = useUser()
 
   const { data: whoamiRes } = useQuery(whoAmI)
-  // const deletePasskeyMutation = useMutation(deletedPasskey)
+  // const deleteMyPasskeyMutation = useMutation(deleteMyPasskey)
   const setPasswordMutation = useMutation(setUserPassword)
   // const getAuthenticatorAppOptionsMutation = useMutation(getAuthenticatorAppOptions)
   const getPasskeyOptionsMutation = useMutation(getPasskeyOptions)
-  const { data: listMyPasskeysRes } = useQuery(listMyPasskeys)
+  const { data: listMyPasskeysRes, refetch: refetchMyPasskeys } =
+    useQuery(listMyPasskeys)
   // const registerAuthenticatorAppMutation = useMutation(registerAuthenticatorApp)
   const registerPasskeyMutation = useMutation(registerPasskey)
 
@@ -61,7 +62,27 @@ const UserSettingsPage: FC = () => {
   const [registeringAuthenticatorApp, setRegisteringAuthenticatorApp] =
     useState(false)
 
-  const handleDeletePasskey = async (id: string) => {}
+  const handleDeletePasskey = async (id: string) => {
+    try {
+      // await deleteMyPasskeyMutation.mutateAsync({
+      //   id,
+      // })
+    } catch (error) {
+      const message = parseErrorMessage(error)
+      toast.error('Could not delete passkey', {
+        description: message,
+      })
+    }
+
+    try {
+      await refetchMyPasskeys()
+    } catch (error) {
+      const message = parseErrorMessage(error)
+      toast.error('Could not fetch updated passkey list', {
+        description: message,
+      })
+    }
+  }
 
   const handleEmailSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
