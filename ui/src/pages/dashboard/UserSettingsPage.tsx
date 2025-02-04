@@ -49,18 +49,18 @@ const UserSettingsPage: FC = () => {
           <CardTitle className="text-xl">Basic information</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-3 gap-x-2 text-sm">
-            <div className="border-r pr-8 dark:border-gray-700">
+          <div className="grid grid-cols-1 gap-x-2 text-sm md:grid-cols-2 lg:grid-cols-3">
+            <div className="pr-8 dark:border-gray-700 md:border-r">
               <div className="text-sm font-semibold mb-2">User ID</div>
               <div className="text-sm text-gray-500">{user?.id}</div>
             </div>
-            <div className="border-r px-8 dark:border-gray-700">
+            <div className="pr-8 mt-8 dark:border-gray-700 lg:border-r lg:px-8 md:mt-0">
               <div className="text-sm font-semibold mb-2">Google User ID</div>
               <div className="text-sm text-gray-500">
                 {user?.googleUserId || '—'}
               </div>
             </div>
-            <div className="px-8">
+            <div className="pr-8 mt-8 lg:px-8 lg:mt-0">
               <div className="text-sm font-semibold mb-2">
                 Microsoft User ID
               </div>
