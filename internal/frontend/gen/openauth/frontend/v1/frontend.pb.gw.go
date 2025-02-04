@@ -703,6 +703,38 @@ func local_request_FrontendService_RevokeSCIMAPIKey_0(ctx context.Context, marsh
 	return msg, metadata, err
 }
 
+var filter_FrontendService_ListMyPasskeys_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+
+func request_FrontendService_ListMyPasskeys_0(ctx context.Context, marshaler runtime.Marshaler, client FrontendServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq ListMyPasskeysRequest
+		metadata runtime.ServerMetadata
+	)
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FrontendService_ListMyPasskeys_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := client.ListMyPasskeys(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_FrontendService_ListMyPasskeys_0(ctx context.Context, marshaler runtime.Marshaler, server FrontendServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq ListMyPasskeysRequest
+		metadata runtime.ServerMetadata
+	)
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FrontendService_ListMyPasskeys_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := server.ListMyPasskeys(ctx, &protoReq)
+	return msg, metadata, err
+}
+
 func request_FrontendService_GetPasskeyOptions_0(ctx context.Context, marshaler runtime.Marshaler, client FrontendServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
 		protoReq GetPasskeyOptionsRequest
@@ -721,17 +753,12 @@ func local_request_FrontendService_GetPasskeyOptions_0(ctx context.Context, mars
 	return msg, metadata, err
 }
 
-var filter_FrontendService_RegisterPasskey_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
-
 func request_FrontendService_RegisterPasskey_0(ctx context.Context, marshaler runtime.Marshaler, client FrontendServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
 		protoReq RegisterPasskeyRequest
 		metadata runtime.ServerMetadata
 	)
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FrontendService_RegisterPasskey_0); err != nil {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := client.RegisterPasskey(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -743,10 +770,7 @@ func local_request_FrontendService_RegisterPasskey_0(ctx context.Context, marsha
 		protoReq RegisterPasskeyRequest
 		metadata runtime.ServerMetadata
 	)
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FrontendService_RegisterPasskey_0); err != nil {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := server.RegisterPasskey(ctx, &protoReq)
@@ -1199,13 +1223,33 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		}
 		forward_FrontendService_RevokeSCIMAPIKey_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
+	mux.Handle(http.MethodGet, pattern_FrontendService_ListMyPasskeys_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/ListMyPasskeys", runtime.WithHTTPPathPattern("/frontend/v1/me/passkeys"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_FrontendService_ListMyPasskeys_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_FrontendService_ListMyPasskeys_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
 	mux.Handle(http.MethodPost, pattern_FrontendService_GetPasskeyOptions_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/GetPasskeyOptions", runtime.WithHTTPPathPattern("/frontend/v1/passkeys/options"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/GetPasskeyOptions", runtime.WithHTTPPathPattern("/frontend/v1/me/passkeys/options"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1225,7 +1269,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/RegisterPasskey", runtime.WithHTTPPathPattern("/frontend/v1/passkeys/register"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/RegisterPasskey", runtime.WithHTTPPathPattern("/frontend/v1/me/passkeys/register"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1653,11 +1697,28 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		}
 		forward_FrontendService_RevokeSCIMAPIKey_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
+	mux.Handle(http.MethodGet, pattern_FrontendService_ListMyPasskeys_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/ListMyPasskeys", runtime.WithHTTPPathPattern("/frontend/v1/me/passkeys"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_FrontendService_ListMyPasskeys_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_FrontendService_ListMyPasskeys_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
 	mux.Handle(http.MethodPost, pattern_FrontendService_GetPasskeyOptions_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/GetPasskeyOptions", runtime.WithHTTPPathPattern("/frontend/v1/passkeys/options"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/GetPasskeyOptions", runtime.WithHTTPPathPattern("/frontend/v1/me/passkeys/options"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1674,7 +1735,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/RegisterPasskey", runtime.WithHTTPPathPattern("/frontend/v1/passkeys/register"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/RegisterPasskey", runtime.WithHTTPPathPattern("/frontend/v1/me/passkeys/register"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1713,8 +1774,9 @@ var (
 	pattern_FrontendService_UpdateSCIMAPIKey_0     = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"frontend", "v1", "scim-api-keys", "id"}, ""))
 	pattern_FrontendService_DeleteSCIMAPIKey_0     = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"frontend", "v1", "scim-api-keys", "id"}, ""))
 	pattern_FrontendService_RevokeSCIMAPIKey_0     = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"frontend", "v1", "scim-api-keys", "id", "revoke"}, ""))
-	pattern_FrontendService_GetPasskeyOptions_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"frontend", "v1", "passkeys", "options"}, ""))
-	pattern_FrontendService_RegisterPasskey_0      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"frontend", "v1", "passkeys", "register"}, ""))
+	pattern_FrontendService_ListMyPasskeys_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"frontend", "v1", "me", "passkeys"}, ""))
+	pattern_FrontendService_GetPasskeyOptions_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4}, []string{"frontend", "v1", "me", "passkeys", "options"}, ""))
+	pattern_FrontendService_RegisterPasskey_0      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4}, []string{"frontend", "v1", "me", "passkeys", "register"}, ""))
 )
 
 var (
@@ -1740,6 +1802,7 @@ var (
 	forward_FrontendService_UpdateSCIMAPIKey_0     = runtime.ForwardResponseMessage
 	forward_FrontendService_DeleteSCIMAPIKey_0     = runtime.ForwardResponseMessage
 	forward_FrontendService_RevokeSCIMAPIKey_0     = runtime.ForwardResponseMessage
+	forward_FrontendService_ListMyPasskeys_0       = runtime.ForwardResponseMessage
 	forward_FrontendService_GetPasskeyOptions_0    = runtime.ForwardResponseMessage
 	forward_FrontendService_RegisterPasskey_0      = runtime.ForwardResponseMessage
 )

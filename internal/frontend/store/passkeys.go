@@ -15,6 +15,45 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
+func (s *Store) ListMyPasskeys(ctx context.Context, req *frontendv1.ListMyPasskeysRequest) (*frontendv1.ListMyPasskeysResponse, error) {
+	_, q, _, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	var startID uuid.UUID
+	if err := s.pageEncoder.Unmarshal(req.PageToken, &startID); err != nil {
+		return nil, fmt.Errorf("unmarshal page token: %w", err)
+	}
+
+	limit := 10
+	qPasskeys, err := q.ListPasskeys(ctx, queries.ListPasskeysParams{
+		UserID: authn.UserID(ctx),
+		ID:     startID,
+		Limit:  int32(limit + 1),
+	})
+	if err != nil {
+		return nil, fmt.Errorf("list passkeys: %w", err)
+	}
+
+	var passkeys []*frontendv1.Passkey
+	for _, qPasskey := range qPasskeys {
+		passkeys = append(passkeys, parsePasskey(qPasskey))
+	}
+
+	var nextPageToken string
+	if len(passkeys) == limit+1 {
+		nextPageToken = s.pageEncoder.Marshal(qPasskeys[limit].ID)
+		passkeys = passkeys[:limit]
+	}
+
+	return &frontendv1.ListMyPasskeysResponse{
+		Passkeys:      passkeys,
+		NextPageToken: nextPageToken,
+	}, nil
+}
+
 func (s *Store) GetPasskeyOptions(ctx context.Context, req *frontendv1.GetPasskeyOptionsRequest) (*frontendv1.GetPasskeyOptionsResponse, error) {
 	_, q, _, rollback, err := s.tx(ctx)
 	if err != nil {
