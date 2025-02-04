@@ -5,10 +5,9 @@ import { Button } from '@/components/ui/button'
 import {
   exchangeIntermediateSessionForSession,
   verifyPassword,
-  whoami,
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
-import { useMutation, useQuery } from '@connectrpc/connect-query'
-import { useLocation, useNavigate, useParams } from 'react-router'
+import { useMutation } from '@connectrpc/connect-query'
+import { useNavigate } from 'react-router'
 import { setAccessToken, setRefreshToken } from '@/auth'
 import { Input } from '@/components/ui/input'
 import { useIntermediateOrganization } from '@/lib/auth'
@@ -17,6 +16,8 @@ import { useLayout } from '@/lib/settings'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
 import { parseErrorMessage } from '@/lib/errors'
+import Loader from '@/components/ui/loader'
+import { set } from 'react-hook-form'
 
 interface VerifyPasswordProps {
   setView: Dispatch<SetStateAction<LoginViews>>
@@ -26,9 +27,9 @@ const VerifyPassword: FC<VerifyPasswordProps> = ({ setView }) => {
   const layout = useLayout()
   const organization = useIntermediateOrganization()
   const navigate = useNavigate()
-  const [password, setPassword] = useState<string>('')
 
-  const { data: whoamiRes } = useQuery(whoami)
+  const [password, setPassword] = useState<string>('')
+  const [submitting, setSubmitting] = useState<boolean>(false)
 
   const exchangeIntermediateSessionForSessionMutation = useMutation(
     exchangeIntermediateSessionForSession,
@@ -54,6 +55,7 @@ const VerifyPassword: FC<VerifyPasswordProps> = ({ setView }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setSubmitting(true)
 
     try {
       await verifyPasswordMutation.mutateAsync({
@@ -77,9 +79,10 @@ const VerifyPassword: FC<VerifyPasswordProps> = ({ setView }) => {
       setRefreshToken(refreshToken)
 
       navigate('/settings')
+      setSubmitting(false)
     } catch (error) {
+      setSubmitting(false)
       const message = parseErrorMessage(error)
-
       toast.error('Could not verify password', {
         description: message,
       })
@@ -117,9 +120,10 @@ const VerifyPassword: FC<VerifyPasswordProps> = ({ setView }) => {
             />
             <Button
               className="w-full"
-              disabled={password.length < 1}
+              disabled={password.length < 1 || submitting}
               type="submit"
             >
+              {submitting && <Loader />}
               Log In
             </Button>
           </form>

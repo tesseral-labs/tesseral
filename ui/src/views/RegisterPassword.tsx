@@ -16,6 +16,7 @@ import { LoginLayouts, LoginViews } from '@/lib/views'
 import { parseErrorMessage } from '@/lib/errors'
 import { toast } from 'sonner'
 import { useIntermediateOrganization } from '@/lib/auth'
+import Loader from '@/components/ui/loader'
 
 interface RegisterPasswordProps {
   setView: React.Dispatch<React.SetStateAction<LoginViews>>
@@ -25,7 +26,9 @@ const RegisterPassword: FC<RegisterPasswordProps> = ({ setView }) => {
   const organization = useIntermediateOrganization()
   const layout = useLayout()
   const navigate = useNavigate()
+
   const [password, setPassword] = useState<string>('')
+  const [submitting, setSubmitting] = useState<boolean>(false)
 
   const exchangeIntermediateSessionForSessionMutation = useMutation(
     exchangeIntermediateSessionForSession,
@@ -34,6 +37,7 @@ const RegisterPassword: FC<RegisterPasswordProps> = ({ setView }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setSubmitting(true)
 
     try {
       await registerPasswordMutation.mutateAsync({
@@ -50,11 +54,12 @@ const RegisterPassword: FC<RegisterPasswordProps> = ({ setView }) => {
 
       setAccessToken(accessToken)
       setRefreshToken(refreshToken)
+      setSubmitting(false)
 
       navigate('/settings')
     } catch (error) {
+      setSubmitting(false)
       const message = parseErrorMessage(error)
-
       toast.error('Could not set password', {
         description: message,
       })
@@ -92,9 +97,10 @@ const RegisterPassword: FC<RegisterPasswordProps> = ({ setView }) => {
             />
             <Button
               className="w-full mt-4"
-              disabled={password.length < 1}
+              disabled={password.length < 1 || submitting}
               type="submit"
             >
+              {submitting && <Loader />}
               Set password
             </Button>
           </form>

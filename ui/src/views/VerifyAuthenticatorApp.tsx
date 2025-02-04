@@ -9,6 +9,7 @@ import {
   InputOTPSeparator,
   InputOTPSlot,
 } from '@/components/ui/input-otp'
+import Loader from '@/components/ui/loader'
 import {
   exchangeIntermediateSessionForSession,
   verifyAuthenticatorApp,
@@ -32,9 +33,11 @@ const VerifyAuthenticatorApp: FC = () => {
   const verifyAuthenticatorAppMutation = useMutation(verifyAuthenticatorApp)
 
   const [code, setCode] = useState('')
+  const [submitting, setSubmitting] = useState<boolean>(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setSubmitting(true)
 
     try {
       await verifyAuthenticatorAppMutation.mutateAsync({
@@ -46,11 +49,12 @@ const VerifyAuthenticatorApp: FC = () => {
 
       setAccessToken(accessToken)
       setRefreshToken(refreshToken)
+      setSubmitting(false)
 
       navigate('/settings')
     } catch (error) {
+      setSubmitting(false)
       const message = parseErrorMessage(error)
-
       toast.error(message)
     }
   }
@@ -93,7 +97,12 @@ const VerifyAuthenticatorApp: FC = () => {
               </InputOTPGroup>
             </InputOTP>
 
-            <Button className="mt-4" type="submit">
+            <Button
+              className="mt-4"
+              disabled={code.length < 6 || submitting}
+              type="submit"
+            >
+              {submitting && <Loader />}
               Submit
             </Button>
           </form>
