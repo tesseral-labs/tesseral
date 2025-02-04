@@ -77,6 +77,14 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		qUser = &qNewUser
 	}
 
+	// if a passkey is registered on the intermediate session, copy it onto the
+	// user
+	if qIntermediateSession.PasskeyCredentialID != nil {
+		if err := s.copyRegisteredPasskeySettings(ctx, q, qIntermediateSession, *qUser); err != nil {
+			return nil, fmt.Errorf("copy registered passkey settings: %w", err)
+		}
+	}
+
 	// if an authenticator app is registered on the intermediate session, copy
 	// it onto the user
 	if qIntermediateSession.AuthenticatorAppSecretCiphertext != nil {
@@ -238,6 +246,29 @@ func (s *Store) matchEmailUser(ctx context.Context, q *queries.Queries, qOrg que
 	}
 
 	return &qUser, nil
+}
+
+func (s *Store) copyRegisteredPasskeySettings(ctx context.Context, q *queries.Queries, qIntermediateSession queries.IntermediateSession, qUser queries.User) error {
+	userHasPasskey, err := q.GetUserHasPasskey(ctx, qUser.ID)
+	if err != nil {
+		return fmt.Errorf("get user has passkey: %w", err)
+	}
+
+	if userHasPasskey {
+		return fmt.Errorf("user already has a passkey")
+	}
+
+	if _, err := q.CreatePasskey(ctx, queries.CreatePasskeyParams{
+		ID:           uuid.New(),
+		UserID:       qUser.ID,
+		CredentialID: qIntermediateSession.PasskeyCredentialID,
+		PublicKey:    qIntermediateSession.PasskeyPublicKey,
+		Aaguid:       *qIntermediateSession.PasskeyAaguid,
+	}); err != nil {
+		return fmt.Errorf("create passkey: %w", err)
+	}
+
+	return nil
 }
 
 func (s *Store) copyRegisteredAuthenticatorAppSettings(ctx context.Context, q *queries.Queries, qIntermediateSession queries.IntermediateSession, qUser queries.User) error {

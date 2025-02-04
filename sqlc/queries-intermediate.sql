@@ -374,7 +374,7 @@ SELECT
         WHERE
             user_id = $1);
 
--- name: RegisterPasskey :one
+-- name: UpdateIntermediateSessionRegisterPasskey :one
 UPDATE
     intermediate_sessions
 SET
@@ -385,6 +385,12 @@ SET
     update_time = now()
 WHERE
     id = $4
+RETURNING
+    *;
+
+-- name: CreatePasskey :one
+INSERT INTO passkeys (id, user_id, credential_id, public_key, aaguid)
+    VALUES ($1, $2, $3, $4, $5)
 RETURNING
     *;
 
