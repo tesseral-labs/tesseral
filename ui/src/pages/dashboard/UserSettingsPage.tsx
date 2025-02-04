@@ -48,7 +48,7 @@ const UserSettingsPage: FC = () => {
   const encoder = new TextEncoder()
   const user = useUser()
 
-  const { data: whoamiRes } = useQuery(whoami)
+  const { data: whoamiRes, refetch: refetchMe } = useQuery(whoami)
   const deleteMyPasskeyMutation = useMutation(deleteMyPasskey)
   const setPasswordMutation = useMutation(setUserPassword)
   const getAuthenticatorAppOptionsMutation = useMutation(
@@ -137,6 +137,9 @@ const UserSettingsPage: FC = () => {
       await registerAuthenticatorAppMutation.mutateAsync({
         totpCode: authenticatorAppCode,
       })
+
+      await refetchMe()
+
       setRegisteringAuthenticatorApp(false)
       setAuthenticatorAppDialogOpen(false)
       setAuthenticatorAppCode('')
