@@ -668,6 +668,11 @@ components:
             properties:
                 rpId:
                     type: string
+                credentialIds:
+                    type: array
+                    items:
+                        type: string
+                        format: bytes
                 challenge:
                     type: string
                     format: bytes

@@ -411,6 +411,14 @@ WHERE
 RETURNING
     *;
 
+-- name: GetUserPasskeyCredentialIDs :many
+SELECT
+    credential_id
+FROM
+    passkeys
+WHERE
+    user_id = $1;
+
 -- name: GetPasskeyByCredentialID :one
 SELECT
     *

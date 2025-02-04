@@ -100,6 +100,29 @@ func (s *Store) IssuePasskeyChallenge(ctx context.Context, req *intermediatev1.I
 		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 
+	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get intermediate session by id: %w", err)
+	}
+
+	qOrg, err := q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
+		ProjectID: authn.ProjectID(ctx),
+		ID:        *qIntermediateSession.OrganizationID,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("get organization by id: %w", err)
+	}
+
+	qMatchingUser, err := s.matchUser(ctx, q, qOrg, qIntermediateSession)
+	if err != nil {
+		return nil, fmt.Errorf("match user: %w", err)
+	}
+
+	credentialIDs, err := q.GetUserPasskeyCredentialIDs(ctx, qMatchingUser.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get user passkey credential ids: %w", err)
+	}
+
 	var challenge [32]byte
 	if _, err := rand.Read(challenge[:]); err != nil {
 		return nil, fmt.Errorf("read random bytes: %w", err)
@@ -118,8 +141,9 @@ func (s *Store) IssuePasskeyChallenge(ctx context.Context, req *intermediatev1.I
 	}
 
 	return &intermediatev1.IssuePasskeyChallengeResponse{
-		RpId:      *qProject.AuthDomain,
-		Challenge: challenge[:],
+		RpId:          *qProject.AuthDomain,
+		CredentialIds: credentialIDs,
+		Challenge:     challenge[:],
 	}, nil
 }
 

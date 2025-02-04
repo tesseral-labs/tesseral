@@ -392,7 +392,8 @@ message IssuePasskeyChallengeRequest {
 
 message IssuePasskeyChallengeResponse {
   string rp_id = 1;
-  bytes challenge = 2;
+  repeated bytes credential_ids = 2;
+  bytes challenge = 3;
 }
 
 message VerifyPasskeyRequest {

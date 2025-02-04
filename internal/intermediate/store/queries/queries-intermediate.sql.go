@@ -768,6 +768,35 @@ func (q *Queries) GetUserImpersonationTokenBySecretTokenSHA256(ctx context.Conte
 	return i, err
 }
 
+const getUserPasskeyCredentialIDs = `-- name: GetUserPasskeyCredentialIDs :many
+SELECT
+    credential_id
+FROM
+    passkeys
+WHERE
+    user_id = $1
+`
+
+func (q *Queries) GetUserPasskeyCredentialIDs(ctx context.Context, userID uuid.UUID) ([][]byte, error) {
+	rows, err := q.db.Query(ctx, getUserPasskeyCredentialIDs, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items [][]byte
+	for rows.Next() {
+		var credential_id []byte
+		if err := rows.Scan(&credential_id); err != nil {
+			return nil, err
+		}
+		items = append(items, credential_id)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listOrganizationsByGoogleHostedDomain = `-- name: ListOrganizationsByGoogleHostedDomain :many
 SELECT
     organizations.id, organizations.project_id, organizations.display_name, organizations.saml_enabled, organizations.scim_enabled, organizations.create_time, organizations.update_time, organizations.logins_disabled, organizations.log_in_with_google, organizations.log_in_with_microsoft, organizations.log_in_with_password, organizations.log_in_with_authenticator_app, organizations.log_in_with_passkey, organizations.require_mfa
