@@ -271,7 +271,7 @@ FROM
     passkeys
 WHERE
     id = $1
-  AND user_id = $2;
+    AND user_id = $2;
 
 -- name: DeletePasskey :exec
 DELETE FROM passkeys
@@ -308,3 +308,4 @@ WHERE
     id = $3
 RETURNING
     *;
+

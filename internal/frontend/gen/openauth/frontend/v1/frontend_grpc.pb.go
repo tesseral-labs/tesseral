@@ -19,32 +19,34 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	FrontendService_Logout_FullMethodName               = "/openauth.frontend.v1.FrontendService/Logout"
-	FrontendService_Refresh_FullMethodName              = "/openauth.frontend.v1.FrontendService/Refresh"
-	FrontendService_GetProject_FullMethodName           = "/openauth.frontend.v1.FrontendService/GetProject"
-	FrontendService_GetOrganization_FullMethodName      = "/openauth.frontend.v1.FrontendService/GetOrganization"
-	FrontendService_UpdateOrganization_FullMethodName   = "/openauth.frontend.v1.FrontendService/UpdateOrganization"
-	FrontendService_ListUsers_FullMethodName            = "/openauth.frontend.v1.FrontendService/ListUsers"
-	FrontendService_GetUser_FullMethodName              = "/openauth.frontend.v1.FrontendService/GetUser"
-	FrontendService_UpdateUser_FullMethodName           = "/openauth.frontend.v1.FrontendService/UpdateUser"
-	FrontendService_ListOrganizations_FullMethodName    = "/openauth.frontend.v1.FrontendService/ListOrganizations"
-	FrontendService_SetPassword_FullMethodName          = "/openauth.frontend.v1.FrontendService/SetPassword"
-	FrontendService_WhoAmI_FullMethodName               = "/openauth.frontend.v1.FrontendService/WhoAmI"
-	FrontendService_ListSAMLConnections_FullMethodName  = "/openauth.frontend.v1.FrontendService/ListSAMLConnections"
-	FrontendService_GetSAMLConnection_FullMethodName    = "/openauth.frontend.v1.FrontendService/GetSAMLConnection"
-	FrontendService_CreateSAMLConnection_FullMethodName = "/openauth.frontend.v1.FrontendService/CreateSAMLConnection"
-	FrontendService_UpdateSAMLConnection_FullMethodName = "/openauth.frontend.v1.FrontendService/UpdateSAMLConnection"
-	FrontendService_DeleteSAMLConnection_FullMethodName = "/openauth.frontend.v1.FrontendService/DeleteSAMLConnection"
-	FrontendService_ListSCIMAPIKeys_FullMethodName      = "/openauth.frontend.v1.FrontendService/ListSCIMAPIKeys"
-	FrontendService_GetSCIMAPIKey_FullMethodName        = "/openauth.frontend.v1.FrontendService/GetSCIMAPIKey"
-	FrontendService_CreateSCIMAPIKey_FullMethodName     = "/openauth.frontend.v1.FrontendService/CreateSCIMAPIKey"
-	FrontendService_UpdateSCIMAPIKey_FullMethodName     = "/openauth.frontend.v1.FrontendService/UpdateSCIMAPIKey"
-	FrontendService_DeleteSCIMAPIKey_FullMethodName     = "/openauth.frontend.v1.FrontendService/DeleteSCIMAPIKey"
-	FrontendService_RevokeSCIMAPIKey_FullMethodName     = "/openauth.frontend.v1.FrontendService/RevokeSCIMAPIKey"
-	FrontendService_DeleteMyPasskey_FullMethodName      = "/openauth.frontend.v1.FrontendService/DeleteMyPasskey"
-	FrontendService_ListMyPasskeys_FullMethodName       = "/openauth.frontend.v1.FrontendService/ListMyPasskeys"
-	FrontendService_GetPasskeyOptions_FullMethodName    = "/openauth.frontend.v1.FrontendService/GetPasskeyOptions"
-	FrontendService_RegisterPasskey_FullMethodName      = "/openauth.frontend.v1.FrontendService/RegisterPasskey"
+	FrontendService_Logout_FullMethodName                     = "/openauth.frontend.v1.FrontendService/Logout"
+	FrontendService_Refresh_FullMethodName                    = "/openauth.frontend.v1.FrontendService/Refresh"
+	FrontendService_GetProject_FullMethodName                 = "/openauth.frontend.v1.FrontendService/GetProject"
+	FrontendService_GetOrganization_FullMethodName            = "/openauth.frontend.v1.FrontendService/GetOrganization"
+	FrontendService_UpdateOrganization_FullMethodName         = "/openauth.frontend.v1.FrontendService/UpdateOrganization"
+	FrontendService_ListUsers_FullMethodName                  = "/openauth.frontend.v1.FrontendService/ListUsers"
+	FrontendService_GetUser_FullMethodName                    = "/openauth.frontend.v1.FrontendService/GetUser"
+	FrontendService_UpdateUser_FullMethodName                 = "/openauth.frontend.v1.FrontendService/UpdateUser"
+	FrontendService_ListOrganizations_FullMethodName          = "/openauth.frontend.v1.FrontendService/ListOrganizations"
+	FrontendService_SetPassword_FullMethodName                = "/openauth.frontend.v1.FrontendService/SetPassword"
+	FrontendService_ListSAMLConnections_FullMethodName        = "/openauth.frontend.v1.FrontendService/ListSAMLConnections"
+	FrontendService_GetSAMLConnection_FullMethodName          = "/openauth.frontend.v1.FrontendService/GetSAMLConnection"
+	FrontendService_CreateSAMLConnection_FullMethodName       = "/openauth.frontend.v1.FrontendService/CreateSAMLConnection"
+	FrontendService_UpdateSAMLConnection_FullMethodName       = "/openauth.frontend.v1.FrontendService/UpdateSAMLConnection"
+	FrontendService_DeleteSAMLConnection_FullMethodName       = "/openauth.frontend.v1.FrontendService/DeleteSAMLConnection"
+	FrontendService_ListSCIMAPIKeys_FullMethodName            = "/openauth.frontend.v1.FrontendService/ListSCIMAPIKeys"
+	FrontendService_GetSCIMAPIKey_FullMethodName              = "/openauth.frontend.v1.FrontendService/GetSCIMAPIKey"
+	FrontendService_CreateSCIMAPIKey_FullMethodName           = "/openauth.frontend.v1.FrontendService/CreateSCIMAPIKey"
+	FrontendService_UpdateSCIMAPIKey_FullMethodName           = "/openauth.frontend.v1.FrontendService/UpdateSCIMAPIKey"
+	FrontendService_DeleteSCIMAPIKey_FullMethodName           = "/openauth.frontend.v1.FrontendService/DeleteSCIMAPIKey"
+	FrontendService_RevokeSCIMAPIKey_FullMethodName           = "/openauth.frontend.v1.FrontendService/RevokeSCIMAPIKey"
+	FrontendService_Whoami_FullMethodName                     = "/openauth.frontend.v1.FrontendService/Whoami"
+	FrontendService_ListMyPasskeys_FullMethodName             = "/openauth.frontend.v1.FrontendService/ListMyPasskeys"
+	FrontendService_DeleteMyPasskey_FullMethodName            = "/openauth.frontend.v1.FrontendService/DeleteMyPasskey"
+	FrontendService_GetPasskeyOptions_FullMethodName          = "/openauth.frontend.v1.FrontendService/GetPasskeyOptions"
+	FrontendService_RegisterPasskey_FullMethodName            = "/openauth.frontend.v1.FrontendService/RegisterPasskey"
+	FrontendService_GetAuthenticatorAppOptions_FullMethodName = "/openauth.frontend.v1.FrontendService/GetAuthenticatorAppOptions"
+	FrontendService_RegisterAuthenticatorApp_FullMethodName   = "/openauth.frontend.v1.FrontendService/RegisterAuthenticatorApp"
 )
 
 // FrontendServiceClient is the client API for FrontendService service.
@@ -63,8 +65,6 @@ type FrontendServiceClient interface {
 	ListOrganizations(ctx context.Context, in *ListOrganizationsRequest, opts ...grpc.CallOption) (*ListOrganizationsResponse, error)
 	// Sets a user's password.
 	SetPassword(ctx context.Context, in *SetPasswordRequest, opts ...grpc.CallOption) (*SetPasswordResponse, error)
-	// Who am I?
-	WhoAmI(ctx context.Context, in *WhoAmIRequest, opts ...grpc.CallOption) (*WhoAmIResponse, error)
 	ListSAMLConnections(ctx context.Context, in *ListSAMLConnectionsRequest, opts ...grpc.CallOption) (*ListSAMLConnectionsResponse, error)
 	GetSAMLConnection(ctx context.Context, in *GetSAMLConnectionRequest, opts ...grpc.CallOption) (*GetSAMLConnectionResponse, error)
 	CreateSAMLConnection(ctx context.Context, in *CreateSAMLConnectionRequest, opts ...grpc.CallOption) (*CreateSAMLConnectionResponse, error)
@@ -76,10 +76,13 @@ type FrontendServiceClient interface {
 	UpdateSCIMAPIKey(ctx context.Context, in *UpdateSCIMAPIKeyRequest, opts ...grpc.CallOption) (*UpdateSCIMAPIKeyResponse, error)
 	DeleteSCIMAPIKey(ctx context.Context, in *DeleteSCIMAPIKeyRequest, opts ...grpc.CallOption) (*DeleteSCIMAPIKeyResponse, error)
 	RevokeSCIMAPIKey(ctx context.Context, in *RevokeSCIMAPIKeyRequest, opts ...grpc.CallOption) (*RevokeSCIMAPIKeyResponse, error)
-	DeleteMyPasskey(ctx context.Context, in *DeleteMyPasskeyRequest, opts ...grpc.CallOption) (*DeleteMyPasskeyResponse, error)
+	Whoami(ctx context.Context, in *WhoamiRequest, opts ...grpc.CallOption) (*WhoamiResponse, error)
 	ListMyPasskeys(ctx context.Context, in *ListMyPasskeysRequest, opts ...grpc.CallOption) (*ListMyPasskeysResponse, error)
+	DeleteMyPasskey(ctx context.Context, in *DeleteMyPasskeyRequest, opts ...grpc.CallOption) (*DeleteMyPasskeyResponse, error)
 	GetPasskeyOptions(ctx context.Context, in *GetPasskeyOptionsRequest, opts ...grpc.CallOption) (*GetPasskeyOptionsResponse, error)
 	RegisterPasskey(ctx context.Context, in *RegisterPasskeyRequest, opts ...grpc.CallOption) (*RegisterPasskeyResponse, error)
+	GetAuthenticatorAppOptions(ctx context.Context, in *GetAuthenticatorAppOptionsRequest, opts ...grpc.CallOption) (*GetAuthenticatorAppOptionsResponse, error)
+	RegisterAuthenticatorApp(ctx context.Context, in *RegisterAuthenticatorAppRequest, opts ...grpc.CallOption) (*RegisterAuthenticatorAppResponse, error)
 }
 
 type frontendServiceClient struct {
@@ -184,16 +187,6 @@ func (c *frontendServiceClient) SetPassword(ctx context.Context, in *SetPassword
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(SetPasswordResponse)
 	err := c.cc.Invoke(ctx, FrontendService_SetPassword_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *frontendServiceClient) WhoAmI(ctx context.Context, in *WhoAmIRequest, opts ...grpc.CallOption) (*WhoAmIResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(WhoAmIResponse)
-	err := c.cc.Invoke(ctx, FrontendService_WhoAmI_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -310,10 +303,10 @@ func (c *frontendServiceClient) RevokeSCIMAPIKey(ctx context.Context, in *Revoke
 	return out, nil
 }
 
-func (c *frontendServiceClient) DeleteMyPasskey(ctx context.Context, in *DeleteMyPasskeyRequest, opts ...grpc.CallOption) (*DeleteMyPasskeyResponse, error) {
+func (c *frontendServiceClient) Whoami(ctx context.Context, in *WhoamiRequest, opts ...grpc.CallOption) (*WhoamiResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(DeleteMyPasskeyResponse)
-	err := c.cc.Invoke(ctx, FrontendService_DeleteMyPasskey_FullMethodName, in, out, cOpts...)
+	out := new(WhoamiResponse)
+	err := c.cc.Invoke(ctx, FrontendService_Whoami_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -324,6 +317,16 @@ func (c *frontendServiceClient) ListMyPasskeys(ctx context.Context, in *ListMyPa
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListMyPasskeysResponse)
 	err := c.cc.Invoke(ctx, FrontendService_ListMyPasskeys_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *frontendServiceClient) DeleteMyPasskey(ctx context.Context, in *DeleteMyPasskeyRequest, opts ...grpc.CallOption) (*DeleteMyPasskeyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteMyPasskeyResponse)
+	err := c.cc.Invoke(ctx, FrontendService_DeleteMyPasskey_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -350,6 +353,26 @@ func (c *frontendServiceClient) RegisterPasskey(ctx context.Context, in *Registe
 	return out, nil
 }
 
+func (c *frontendServiceClient) GetAuthenticatorAppOptions(ctx context.Context, in *GetAuthenticatorAppOptionsRequest, opts ...grpc.CallOption) (*GetAuthenticatorAppOptionsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetAuthenticatorAppOptionsResponse)
+	err := c.cc.Invoke(ctx, FrontendService_GetAuthenticatorAppOptions_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *frontendServiceClient) RegisterAuthenticatorApp(ctx context.Context, in *RegisterAuthenticatorAppRequest, opts ...grpc.CallOption) (*RegisterAuthenticatorAppResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RegisterAuthenticatorAppResponse)
+	err := c.cc.Invoke(ctx, FrontendService_RegisterAuthenticatorApp_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // FrontendServiceServer is the server API for FrontendService service.
 // All implementations must embed UnimplementedFrontendServiceServer
 // for forward compatibility.
@@ -366,8 +389,6 @@ type FrontendServiceServer interface {
 	ListOrganizations(context.Context, *ListOrganizationsRequest) (*ListOrganizationsResponse, error)
 	// Sets a user's password.
 	SetPassword(context.Context, *SetPasswordRequest) (*SetPasswordResponse, error)
-	// Who am I?
-	WhoAmI(context.Context, *WhoAmIRequest) (*WhoAmIResponse, error)
 	ListSAMLConnections(context.Context, *ListSAMLConnectionsRequest) (*ListSAMLConnectionsResponse, error)
 	GetSAMLConnection(context.Context, *GetSAMLConnectionRequest) (*GetSAMLConnectionResponse, error)
 	CreateSAMLConnection(context.Context, *CreateSAMLConnectionRequest) (*CreateSAMLConnectionResponse, error)
@@ -379,10 +400,13 @@ type FrontendServiceServer interface {
 	UpdateSCIMAPIKey(context.Context, *UpdateSCIMAPIKeyRequest) (*UpdateSCIMAPIKeyResponse, error)
 	DeleteSCIMAPIKey(context.Context, *DeleteSCIMAPIKeyRequest) (*DeleteSCIMAPIKeyResponse, error)
 	RevokeSCIMAPIKey(context.Context, *RevokeSCIMAPIKeyRequest) (*RevokeSCIMAPIKeyResponse, error)
-	DeleteMyPasskey(context.Context, *DeleteMyPasskeyRequest) (*DeleteMyPasskeyResponse, error)
+	Whoami(context.Context, *WhoamiRequest) (*WhoamiResponse, error)
 	ListMyPasskeys(context.Context, *ListMyPasskeysRequest) (*ListMyPasskeysResponse, error)
+	DeleteMyPasskey(context.Context, *DeleteMyPasskeyRequest) (*DeleteMyPasskeyResponse, error)
 	GetPasskeyOptions(context.Context, *GetPasskeyOptionsRequest) (*GetPasskeyOptionsResponse, error)
 	RegisterPasskey(context.Context, *RegisterPasskeyRequest) (*RegisterPasskeyResponse, error)
+	GetAuthenticatorAppOptions(context.Context, *GetAuthenticatorAppOptionsRequest) (*GetAuthenticatorAppOptionsResponse, error)
+	RegisterAuthenticatorApp(context.Context, *RegisterAuthenticatorAppRequest) (*RegisterAuthenticatorAppResponse, error)
 	mustEmbedUnimplementedFrontendServiceServer()
 }
 
@@ -423,9 +447,6 @@ func (UnimplementedFrontendServiceServer) ListOrganizations(context.Context, *Li
 func (UnimplementedFrontendServiceServer) SetPassword(context.Context, *SetPasswordRequest) (*SetPasswordResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetPassword not implemented")
 }
-func (UnimplementedFrontendServiceServer) WhoAmI(context.Context, *WhoAmIRequest) (*WhoAmIResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method WhoAmI not implemented")
-}
 func (UnimplementedFrontendServiceServer) ListSAMLConnections(context.Context, *ListSAMLConnectionsRequest) (*ListSAMLConnectionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListSAMLConnections not implemented")
 }
@@ -459,17 +480,26 @@ func (UnimplementedFrontendServiceServer) DeleteSCIMAPIKey(context.Context, *Del
 func (UnimplementedFrontendServiceServer) RevokeSCIMAPIKey(context.Context, *RevokeSCIMAPIKeyRequest) (*RevokeSCIMAPIKeyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RevokeSCIMAPIKey not implemented")
 }
-func (UnimplementedFrontendServiceServer) DeleteMyPasskey(context.Context, *DeleteMyPasskeyRequest) (*DeleteMyPasskeyResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteMyPasskey not implemented")
+func (UnimplementedFrontendServiceServer) Whoami(context.Context, *WhoamiRequest) (*WhoamiResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Whoami not implemented")
 }
 func (UnimplementedFrontendServiceServer) ListMyPasskeys(context.Context, *ListMyPasskeysRequest) (*ListMyPasskeysResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListMyPasskeys not implemented")
+}
+func (UnimplementedFrontendServiceServer) DeleteMyPasskey(context.Context, *DeleteMyPasskeyRequest) (*DeleteMyPasskeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteMyPasskey not implemented")
 }
 func (UnimplementedFrontendServiceServer) GetPasskeyOptions(context.Context, *GetPasskeyOptionsRequest) (*GetPasskeyOptionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPasskeyOptions not implemented")
 }
 func (UnimplementedFrontendServiceServer) RegisterPasskey(context.Context, *RegisterPasskeyRequest) (*RegisterPasskeyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterPasskey not implemented")
+}
+func (UnimplementedFrontendServiceServer) GetAuthenticatorAppOptions(context.Context, *GetAuthenticatorAppOptionsRequest) (*GetAuthenticatorAppOptionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAuthenticatorAppOptions not implemented")
+}
+func (UnimplementedFrontendServiceServer) RegisterAuthenticatorApp(context.Context, *RegisterAuthenticatorAppRequest) (*RegisterAuthenticatorAppResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterAuthenticatorApp not implemented")
 }
 func (UnimplementedFrontendServiceServer) mustEmbedUnimplementedFrontendServiceServer() {}
 func (UnimplementedFrontendServiceServer) testEmbeddedByValue()                         {}
@@ -672,24 +702,6 @@ func _FrontendService_SetPassword_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _FrontendService_WhoAmI_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(WhoAmIRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(FrontendServiceServer).WhoAmI(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: FrontendService_WhoAmI_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(FrontendServiceServer).WhoAmI(ctx, req.(*WhoAmIRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _FrontendService_ListSAMLConnections_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListSAMLConnectionsRequest)
 	if err := dec(in); err != nil {
@@ -888,20 +900,20 @@ func _FrontendService_RevokeSCIMAPIKey_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
-func _FrontendService_DeleteMyPasskey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteMyPasskeyRequest)
+func _FrontendService_Whoami_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WhoamiRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(FrontendServiceServer).DeleteMyPasskey(ctx, in)
+		return srv.(FrontendServiceServer).Whoami(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: FrontendService_DeleteMyPasskey_FullMethodName,
+		FullMethod: FrontendService_Whoami_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(FrontendServiceServer).DeleteMyPasskey(ctx, req.(*DeleteMyPasskeyRequest))
+		return srv.(FrontendServiceServer).Whoami(ctx, req.(*WhoamiRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -920,6 +932,24 @@ func _FrontendService_ListMyPasskeys_Handler(srv interface{}, ctx context.Contex
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(FrontendServiceServer).ListMyPasskeys(ctx, req.(*ListMyPasskeysRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FrontendService_DeleteMyPasskey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteMyPasskeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).DeleteMyPasskey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_DeleteMyPasskey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).DeleteMyPasskey(ctx, req.(*DeleteMyPasskeyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -956,6 +986,42 @@ func _FrontendService_RegisterPasskey_Handler(srv interface{}, ctx context.Conte
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(FrontendServiceServer).RegisterPasskey(ctx, req.(*RegisterPasskeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FrontendService_GetAuthenticatorAppOptions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAuthenticatorAppOptionsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).GetAuthenticatorAppOptions(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_GetAuthenticatorAppOptions_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).GetAuthenticatorAppOptions(ctx, req.(*GetAuthenticatorAppOptionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FrontendService_RegisterAuthenticatorApp_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RegisterAuthenticatorAppRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).RegisterAuthenticatorApp(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_RegisterAuthenticatorApp_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).RegisterAuthenticatorApp(ctx, req.(*RegisterAuthenticatorAppRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1008,10 +1074,6 @@ var FrontendService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _FrontendService_SetPassword_Handler,
 		},
 		{
-			MethodName: "WhoAmI",
-			Handler:    _FrontendService_WhoAmI_Handler,
-		},
-		{
 			MethodName: "ListSAMLConnections",
 			Handler:    _FrontendService_ListSAMLConnections_Handler,
 		},
@@ -1056,12 +1118,16 @@ var FrontendService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _FrontendService_RevokeSCIMAPIKey_Handler,
 		},
 		{
-			MethodName: "DeleteMyPasskey",
-			Handler:    _FrontendService_DeleteMyPasskey_Handler,
+			MethodName: "Whoami",
+			Handler:    _FrontendService_Whoami_Handler,
 		},
 		{
 			MethodName: "ListMyPasskeys",
 			Handler:    _FrontendService_ListMyPasskeys_Handler,
+		},
+		{
+			MethodName: "DeleteMyPasskey",
+			Handler:    _FrontendService_DeleteMyPasskey_Handler,
 		},
 		{
 			MethodName: "GetPasskeyOptions",
@@ -1070,6 +1136,14 @@ var FrontendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RegisterPasskey",
 			Handler:    _FrontendService_RegisterPasskey_Handler,
+		},
+		{
+			MethodName: "GetAuthenticatorAppOptions",
+			Handler:    _FrontendService_GetAuthenticatorAppOptions_Handler,
+		},
+		{
+			MethodName: "RegisterAuthenticatorApp",
+			Handler:    _FrontendService_RegisterAuthenticatorApp_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
