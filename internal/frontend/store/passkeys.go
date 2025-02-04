@@ -4,9 +4,12 @@ import (
 	"context"
 	"crypto/x509"
 	"encoding/pem"
+	"errors"
 	"fmt"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
+	"github.com/openauth/openauth/internal/common/apierror"
 	"github.com/openauth/openauth/internal/frontend/authn"
 	frontendv1 "github.com/openauth/openauth/internal/frontend/gen/openauth/frontend/v1"
 	"github.com/openauth/openauth/internal/frontend/store/queries"
@@ -14,6 +17,40 @@ import (
 	"github.com/openauth/openauth/internal/webauthn"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
+
+func (s *Store) DeleteMyPasskey(ctx context.Context, req *frontendv1.DeleteMyPasskeyRequest) (*frontendv1.DeleteMyPasskeyResponse, error) {
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	passkeyID, err := idformat.Passkey.Parse(req.Id)
+	if err != nil {
+		return nil, fmt.Errorf("parse passkey id: %w", err)
+	}
+
+	if _, err := q.GetUserPasskey(ctx, queries.GetUserPasskeyParams{
+		UserID: authn.UserID(ctx),
+		ID:     passkeyID,
+	}); err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("passkey not found", fmt.Errorf("get user passkey: %w", err))
+		}
+
+		return nil, fmt.Errorf("get user passkey: %w", err)
+	}
+
+	if err := q.DeletePasskey(ctx, passkeyID); err != nil {
+		return nil, fmt.Errorf("delete passkey: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
+	}
+
+	return &frontendv1.DeleteMyPasskeyResponse{}, nil
+}
 
 func (s *Store) ListMyPasskeys(ctx context.Context, req *frontendv1.ListMyPasskeysRequest) (*frontendv1.ListMyPasskeysResponse, error) {
 	_, q, _, rollback, err := s.tx(ctx)
