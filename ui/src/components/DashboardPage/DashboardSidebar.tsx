@@ -37,7 +37,7 @@ const DashboardSidebar: FC = () => {
         <div>
           {isDarkMode && settings?.detectDarkModeEnabled ? (
             <img
-              className="max-h-[30px] max-w-[150px]"
+              className="max-h-[20px] max-w-[150px]"
               src={
                 settings?.darkModeLogoUrl || '/images/tesseral-logo-white.svg'
               }
@@ -49,7 +49,7 @@ const DashboardSidebar: FC = () => {
             />
           ) : (
             <img
-              className="max-h-[30px] max-w-[150px]"
+              className="max-h-[20px] max-w-[150px]"
               src={settings?.logoUrl || '/images/tesseral-logo-black.svg'}
               onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
                 const target = e.target as HTMLImageElement
