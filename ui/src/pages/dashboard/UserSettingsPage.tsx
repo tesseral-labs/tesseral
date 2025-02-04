@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { useMutation, useQuery } from '@connectrpc/connect-query'
 import {
+  deleteMyPasskey,
   getPasskeyOptions,
   listMyPasskeys,
   registerPasskey,
@@ -45,7 +46,7 @@ const UserSettingsPage: FC = () => {
   const user = useUser()
 
   const { data: whoamiRes } = useQuery(whoAmI)
-  // const deleteMyPasskeyMutation = useMutation(deleteMyPasskey)
+  const deleteMyPasskeyMutation = useMutation(deleteMyPasskey)
   const setPasswordMutation = useMutation(setUserPassword)
   // const getAuthenticatorAppOptionsMutation = useMutation(getAuthenticatorAppOptions)
   const getPasskeyOptionsMutation = useMutation(getPasskeyOptions)
@@ -64,9 +65,9 @@ const UserSettingsPage: FC = () => {
 
   const handleDeletePasskey = async (id: string) => {
     try {
-      // await deleteMyPasskeyMutation.mutateAsync({
-      //   id,
-      // })
+      await deleteMyPasskeyMutation.mutateAsync({
+        id,
+      })
     } catch (error) {
       const message = parseErrorMessage(error)
       toast.error('Could not delete passkey', {
