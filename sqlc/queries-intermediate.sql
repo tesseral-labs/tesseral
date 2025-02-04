@@ -388,6 +388,46 @@ WHERE
 RETURNING
     *;
 
+-- name: UpdateIntermediateSessionPasskeyVerifyChallengeSHA256 :one
+UPDATE
+    intermediate_sessions
+SET
+    passkey_verify_challenge_sha256 = $1,
+    update_time = now()
+WHERE
+    id = $2
+RETURNING
+    *;
+
+-- name: UpdateIntermediateSessionPasskeyVerified :one
+UPDATE
+    intermediate_sessions
+SET
+    passkey_verify_challenge_sha256 = NULL,
+    passkey_verified = TRUE,
+    update_time = now()
+WHERE
+    id = $1
+RETURNING
+    *;
+
+-- name: GetUserPasskeyCredentialIDs :many
+SELECT
+    credential_id
+FROM
+    passkeys
+WHERE
+    user_id = $1;
+
+-- name: GetPasskeyByCredentialID :one
+SELECT
+    *
+FROM
+    passkeys
+WHERE
+    credential_id = $1
+    AND user_id = $2;
+
 -- name: UpdateIntermediateSessionAuthenticatorAppSecretCiphertext :one
 UPDATE
     intermediate_sessions

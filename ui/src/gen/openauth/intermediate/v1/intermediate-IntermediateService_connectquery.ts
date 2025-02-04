@@ -100,6 +100,16 @@ export const getPasskeyOptions = IntermediateService.method.getPasskeyOptions;
 export const registerPasskey = IntermediateService.method.registerPasskey;
 
 /**
+ * @generated from rpc openauth.intermediate.v1.IntermediateService.IssuePasskeyChallenge
+ */
+export const issuePasskeyChallenge = IntermediateService.method.issuePasskeyChallenge;
+
+/**
+ * @generated from rpc openauth.intermediate.v1.IntermediateService.VerifyPasskey
+ */
+export const verifyPasskey = IntermediateService.method.verifyPasskey;
+
+/**
  * @generated from rpc openauth.intermediate.v1.IntermediateService.GetAuthenticatorAppOptions
  */
 export const getAuthenticatorAppOptions = IntermediateService.method.getAuthenticatorAppOptions;

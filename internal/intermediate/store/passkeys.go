@@ -2,6 +2,8 @@ package store
 
 import (
 	"context"
+	"crypto/rand"
+	"crypto/sha256"
 	"crypto/x509"
 	"fmt"
 
@@ -84,6 +86,134 @@ func (s *Store) RegisterPasskey(ctx context.Context, req *intermediatev1.Registe
 	}
 
 	return &intermediatev1.RegisterPasskeyResponse{}, nil
+}
+
+func (s *Store) IssuePasskeyChallenge(ctx context.Context, req *intermediatev1.IssuePasskeyChallengeRequest) (*intermediatev1.IssuePasskeyChallengeResponse, error) {
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get project by id: %w", err)
+	}
+
+	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get intermediate session by id: %w", err)
+	}
+
+	qOrg, err := q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
+		ProjectID: authn.ProjectID(ctx),
+		ID:        *qIntermediateSession.OrganizationID,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("get organization by id: %w", err)
+	}
+
+	qMatchingUser, err := s.matchUser(ctx, q, qOrg, qIntermediateSession)
+	if err != nil {
+		return nil, fmt.Errorf("match user: %w", err)
+	}
+
+	credentialIDs, err := q.GetUserPasskeyCredentialIDs(ctx, qMatchingUser.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get user passkey credential ids: %w", err)
+	}
+
+	var challenge [32]byte
+	if _, err := rand.Read(challenge[:]); err != nil {
+		return nil, fmt.Errorf("read random bytes: %w", err)
+	}
+
+	challengeSHA256 := sha256.Sum256(challenge[:])
+	if _, err := q.UpdateIntermediateSessionPasskeyVerifyChallengeSHA256(ctx, queries.UpdateIntermediateSessionPasskeyVerifyChallengeSHA256Params{
+		ID:                           authn.IntermediateSessionID(ctx),
+		PasskeyVerifyChallengeSha256: challengeSHA256[:],
+	}); err != nil {
+		return nil, fmt.Errorf("update intermediate session passkey verify challenge: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
+	}
+
+	return &intermediatev1.IssuePasskeyChallengeResponse{
+		RpId:          *qProject.AuthDomain,
+		CredentialIds: credentialIDs,
+		Challenge:     challenge[:],
+	}, nil
+}
+
+func (s *Store) VerifyPasskey(ctx context.Context, req *intermediatev1.VerifyPasskeyRequest) (*intermediatev1.VerifyPasskeyResponse, error) {
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get project by id: %w", err)
+	}
+
+	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get intermediate session by id: %w", err)
+	}
+
+	qOrg, err := q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
+		ProjectID: authn.ProjectID(ctx),
+		ID:        *qIntermediateSession.OrganizationID,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("get organization by id: %w", err)
+	}
+
+	qMatchingUser, err := s.matchUser(ctx, q, qOrg, qIntermediateSession)
+	if err != nil {
+		return nil, fmt.Errorf("match user: %w", err)
+	}
+
+	qPasskey, err := q.GetPasskeyByCredentialID(ctx, queries.GetPasskeyByCredentialIDParams{
+		CredentialID: req.CredentialId,
+		UserID:       qMatchingUser.ID,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("get passkey by credential id: %w", err)
+	}
+
+	publicKey, err := x509.ParsePKIXPublicKey(qPasskey.PublicKey)
+	if err != nil {
+		return nil, fmt.Errorf("marshal public key: %w", err)
+	}
+
+	credential := webauthn.Credential{
+		PublicKey: publicKey,
+	}
+
+	if err := credential.Verify(&webauthn.VerifyRequest{
+		RPID:              *qProject.AuthDomain,
+		Origin:            fmt.Sprintf("https://%s", *qProject.AuthDomain),
+		ChallengeSHA256:   qIntermediateSession.PasskeyVerifyChallengeSha256,
+		ClientDataJSON:    req.ClientDataJson,
+		AuthenticatorData: req.AuthenticatorData,
+		Signature:         req.Signature,
+	}); err != nil {
+		return nil, apierror.NewInvalidArgumentError("invalid passkey verification", fmt.Errorf("verify passkey: %w", err))
+	}
+
+	if _, err := q.UpdateIntermediateSessionPasskeyVerified(ctx, authn.IntermediateSessionID(ctx)); err != nil {
+		return nil, fmt.Errorf("update intermediate session passkey verified: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
+	}
+
+	return &intermediatev1.VerifyPasskeyResponse{}, nil
 }
 
 func (s *Store) checkShouldRegisterPasskey(ctx context.Context, q *queries.Queries) error {
