@@ -4,7 +4,6 @@ import { cn } from '@/lib/utils'
 
 import useDarkMode from '@/lib/dark-mode'
 import useSettings from '@/lib/settings'
-import { Outlet } from 'react-router'
 import {
   OrganizationContextProvider,
   ProjectContextProvider,
@@ -12,6 +11,8 @@ import {
   useSession,
 } from '@/lib/auth'
 import Header from './Header'
+import { SidebarProvider, SidebarTrigger } from '../ui/sidebar'
+import DashboardSidebar from './DashboardSidebar'
 
 const DashboardPage: FC<PropsWithChildren> = ({ children }) => {
   const isDarkMode = useDarkMode()
@@ -46,19 +47,22 @@ const DashboardPage: FC<PropsWithChildren> = ({ children }) => {
       <ProjectContextProvider value={session?.project}>
         <OrganizationContextProvider value={session?.organization}>
           <UserContextProvider value={session?.user}>
-            <div
-              className={cn(
-                'min-h-screen w-screen',
-                isDarkMode && settings.detectDarkModeEnabled ? 'dark' : '',
-              )}
-            >
-              <div className="bg-body w-screen min-h-screen mx-auto items-center">
-                <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                  <Header />
-                  <div className="py-8">{children}</div>
+            <SidebarProvider>
+              <DashboardSidebar />
+              <main
+                className={cn(
+                  'min-h-screen w-screen',
+                  isDarkMode && settings?.detectDarkModeEnabled ? 'dark' : '',
+                )}
+              >
+                <SidebarTrigger />
+                <div className="bg-body mx-auto items-center">
+                  <div className="mx-auto px-6 lg:px-8">
+                    <div className="pb-8">{children}</div>
+                  </div>
                 </div>
-              </div>
-            </div>
+              </main>
+            </SidebarProvider>
           </UserContextProvider>
         </OrganizationContextProvider>
       </ProjectContextProvider>

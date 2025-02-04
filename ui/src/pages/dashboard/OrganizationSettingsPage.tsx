@@ -4,6 +4,7 @@ import { useOrganization, useProject, useUser } from '@/lib/auth'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useMutation, useQuery } from '@connectrpc/connect-query'
 import {
+  getOrganization,
   listSAMLConnections,
   listUsers,
   updateUser,
@@ -19,11 +20,11 @@ import { Button } from '@/components/ui/button'
 import { Link } from 'react-router-dom'
 
 const OrganizationSettingsPage: FC = () => {
-  const organization = useOrganization()
-  const project = useProject()
   const user = useUser()
 
   const { data: usersData, refetch: refetchUsers } = useQuery(listUsers)
+  const { data: organizationRes, refetch: refetchOrganization } =
+    useQuery(getOrganization)
   const { data: samlConnectionsData, refetch: refetchSAMLConnections } =
     useQuery(listSAMLConnections)
   const updateUserMutation = useMutation(updateUser)
@@ -42,9 +43,11 @@ const OrganizationSettingsPage: FC = () => {
   return (
     <div className="dark:text-foreground">
       <div className="mb-4">
-        <h1 className="text-2xl font-bold mb-2">{organization?.displayName}</h1>
+        <h1 className="text-2xl font-bold mb-2">
+          {organizationRes?.organization?.displayName}
+        </h1>
         <span className="text-xs border px-2 py-1 rounded text-gray-400 dark:text-gray-700 bg-gray-200 dark:bg-gray-900 dark:border-gray-800">
-          {organization?.id}
+          {organizationRes?.organization?.id}
         </span>
       </div>
 
@@ -53,29 +56,34 @@ const OrganizationSettingsPage: FC = () => {
           <CardTitle className="text-xl">General configuration</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-3 gap-x-2 text-sm">
-            <div className="border-r border-gray-200 pr-8 dark:border-gray-700">
+          <div className="grid grid-cols-1 gap-x-2 text-sm md:grid-cols-2 lg:grid-cols-3">
+            <div className="border-gray-200 pr-8 dark:border-gray-700 lg:border-r">
               <div className="font-semibold mb-2">Display Name</div>
               <div className="text-sm text-gray-500">
-                {organization?.displayName}
+                {organizationRes?.organization?.displayName}
               </div>
             </div>
-            <div className="border-r border-gray-200 pl-8 pr-8 dark:border-gray-700">
+            <div className=" border-gray-200 mt-8 pr-8 dark:border-gray-700 lg:px-8 lg:border-r md:mt-0">
               <div className="font-semibold mb-2">Created</div>
               <div className="text-sm text-gray-500">
-                {organization?.createTime &&
-                  DateTime.fromJSDate(
-                    new Date(organization.updateTime),
+                {organizationRes?.organization?.createTime &&
+                  DateTime.fromSeconds(
+                    parseInt(
+                      `${organizationRes?.organization?.createTime.seconds}`,
+                    ),
                   ).toRelative()}
               </div>
             </div>
-            <div className="px-8">
+            <div className="pr-8 mt-8 lg:px-8 lg:mt-0">
               <div className="font-semibold mb-2">Last updated</div>
               <div className="text-sm text-gray-500">
-                {organization?.updateTime &&
-                  DateTime.fromJSDate(
-                    new Date(organization.updateTime),
-                  ).toRelative()}
+                {organizationRes?.organization?.updateTime
+                  ? DateTime.fromSeconds(
+                      parseInt(
+                        `${organizationRes.organization.updateTime.seconds}`,
+                      ),
+                    ).toRelative()
+                  : '—'}
               </div>
             </div>
           </div>

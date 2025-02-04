@@ -61,16 +61,23 @@ export const useSession = (): SessionAccessTokenClaims | undefined => {
   const refresh = useMutation({
     mutationKey: ['refresh'],
     mutationFn: async () => {
-      const response = await fetch('/api/frontend/v1/refresh', {
-        credentials: 'include',
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: '{}',
-      })
+      try {
+        const response = await fetch('/api/frontend/v1/refresh', {
+          credentials: 'include',
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: '{}',
+        })
 
-      return (await response.json()).accessToken
+        if (response.status >= 400) {
+          throw new Error(`Failed to refresh access token: ${response.status}`)
+        }
+        return (await response.json()).accessToken
+      } catch (error) {
+        navigate('/login')
+      }
     },
   })
 

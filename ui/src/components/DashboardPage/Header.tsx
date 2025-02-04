@@ -12,7 +12,7 @@ const Header: FC = () => {
   return (
     <header className="flex flex-row justify-between text-foreground py-4 mb-4 border-b dark:border-gray-800">
       <div>
-        {isDarkMode && settings.detectDarkModeEnabled ? (
+        {isDarkMode && settings?.detectDarkModeEnabled ? (
           <img
             className="max-h-[30px] max-w-[150px]"
             src={settings?.darkModeLogoUrl || '/images/tesseral-logo-white.svg'}
