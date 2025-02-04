@@ -30,6 +30,71 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /frontend/v1/me/passkeys:
+        get:
+            tags:
+                - FrontendService
+            operationId: FrontendService_ListMyPasskeys
+            parameters:
+                - name: pageToken
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListMyPasskeysResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /frontend/v1/me/passkeys/options:
+        post:
+            tags:
+                - FrontendService
+            operationId: FrontendService_GetPasskeyOptions
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetPasskeyOptionsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /frontend/v1/me/passkeys/register:
+        post:
+            tags:
+                - FrontendService
+            operationId: FrontendService_RegisterPasskey
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/RegisterPasskeyRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/RegisterPasskeyResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /frontend/v1/organization:
         get:
             tags:
@@ -100,47 +165,6 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ListOrganizationsResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-    /frontend/v1/passkeys/options:
-        post:
-            tags:
-                - FrontendService
-            operationId: FrontendService_GetPasskeyOptions
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/GetPasskeyOptionsResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-    /frontend/v1/passkeys/register:
-        post:
-            tags:
-                - FrontendService
-            operationId: FrontendService_RegisterPasskey
-            parameters:
-                - name: attestationObject
-                  in: query
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/RegisterPasskeyResponse'
                 default:
                     description: Default error response
                     content:
@@ -643,6 +667,15 @@ components:
                     description: The type of the serialized message.
             additionalProperties: true
             description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+        ListMyPasskeysResponse:
+            type: object
+            properties:
+                passkeys:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Passkey'
+                nextPageToken:
+                    type: string
         ListOrganizationsResponse:
             type: object
             properties:
@@ -778,6 +811,11 @@ components:
             type: object
             properties:
                 accessToken:
+                    type: string
+        RegisterPasskeyRequest:
+            type: object
+            properties:
+                attestationObject:
                     type: string
         RegisterPasskeyResponse:
             type: object

@@ -507,6 +507,53 @@ func (q *Queries) InvalidateSession(ctx context.Context, id uuid.UUID) error {
 	return err
 }
 
+const listPasskeys = `-- name: ListPasskeys :many
+SELECT
+    id, user_id, create_time, update_time, credential_id, public_key, aaguid
+FROM
+    passkeys
+WHERE
+    user_id = $1
+    AND id >= $2
+ORDER BY
+    id
+LIMIT $3
+`
+
+type ListPasskeysParams struct {
+	UserID uuid.UUID
+	ID     uuid.UUID
+	Limit  int32
+}
+
+func (q *Queries) ListPasskeys(ctx context.Context, arg ListPasskeysParams) ([]Passkey, error) {
+	rows, err := q.db.Query(ctx, listPasskeys, arg.UserID, arg.ID, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Passkey
+	for rows.Next() {
+		var i Passkey
+		if err := rows.Scan(
+			&i.ID,
+			&i.UserID,
+			&i.CreateTime,
+			&i.UpdateTime,
+			&i.CredentialID,
+			&i.PublicKey,
+			&i.Aaguid,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listSAMLConnections = `-- name: ListSAMLConnections :many
 SELECT
     id, organization_id, create_time, is_primary, idp_redirect_url, idp_x509_certificate, idp_entity_id, update_time

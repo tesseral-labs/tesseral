@@ -153,15 +153,22 @@ service FrontendService {
     };
   }
 
+  rpc ListMyPasskeys(ListMyPasskeysRequest) returns (ListMyPasskeysResponse) {
+    option (google.api.http) = {
+      get: "/frontend/v1/me/passkeys"
+    };
+  }
+
   rpc GetPasskeyOptions(GetPasskeyOptionsRequest) returns (GetPasskeyOptionsResponse) {
     option (google.api.http) = {
-      post: "/frontend/v1/passkeys/options",
+      post: "/frontend/v1/me/passkeys/options",
     };
   }
 
   rpc RegisterPasskey(RegisterPasskeyRequest) returns (RegisterPasskeyResponse) {
     option (google.api.http) = {
-      post: "/frontend/v1/passkeys/register",
+      post: "/frontend/v1/me/passkeys/register",
+      body: "*"
     };
   }
 }
@@ -347,6 +354,15 @@ message RevokeSCIMAPIKeyRequest {
 
 message RevokeSCIMAPIKeyResponse {
   SCIMAPIKey scim_api_key = 1;
+}
+
+message ListMyPasskeysRequest {
+  string page_token = 1;
+}
+
+message ListMyPasskeysResponse {
+  repeated Passkey passkeys = 1;
+  string next_page_token = 2;
 }
 
 message GetPasskeyOptionsRequest {
