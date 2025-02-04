@@ -167,6 +167,28 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 	return i, err
 }
 
+const createUserAuthenticatorAppChallenge = `-- name: CreateUserAuthenticatorAppChallenge :one
+INSERT INTO user_authenticator_app_challenges (user_id, authenticator_app_secret_ciphertext)
+    VALUES ($1, $2)
+ON CONFLICT (user_id)
+    DO UPDATE SET
+        authenticator_app_secret_ciphertext = excluded.authenticator_app_secret_ciphertext
+    RETURNING
+        user_id, authenticator_app_secret_ciphertext
+`
+
+type CreateUserAuthenticatorAppChallengeParams struct {
+	UserID                           uuid.UUID
+	AuthenticatorAppSecretCiphertext []byte
+}
+
+func (q *Queries) CreateUserAuthenticatorAppChallenge(ctx context.Context, arg CreateUserAuthenticatorAppChallengeParams) (UserAuthenticatorAppChallenge, error) {
+	row := q.db.QueryRow(ctx, createUserAuthenticatorAppChallenge, arg.UserID, arg.AuthenticatorAppSecretCiphertext)
+	var i UserAuthenticatorAppChallenge
+	err := row.Scan(&i.UserID, &i.AuthenticatorAppSecretCiphertext)
+	return i, err
+}
+
 const deletePasskey = `-- name: DeletePasskey :exec
 DELETE FROM passkeys
 WHERE id = $1
@@ -194,6 +216,16 @@ WHERE id = $1
 
 func (q *Queries) DeleteSCIMAPIKey(ctx context.Context, id uuid.UUID) error {
 	_, err := q.db.Exec(ctx, deleteSCIMAPIKey, id)
+	return err
+}
+
+const deleteUserAuthenticatorAppChallenge = `-- name: DeleteUserAuthenticatorAppChallenge :exec
+DELETE FROM user_authenticator_app_challenges
+WHERE user_id = $1
+`
+
+func (q *Queries) DeleteUserAuthenticatorAppChallenge(ctx context.Context, userID uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteUserAuthenticatorAppChallenge, userID)
 	return err
 }
 
@@ -466,6 +498,22 @@ func (q *Queries) GetUser(ctx context.Context, arg GetUserParams) (User, error) 
 		&i.FailedAuthenticatorAppAttempts,
 		&i.AuthenticatorAppLockoutExpireTime,
 	)
+	return i, err
+}
+
+const getUserAuthenticatorAppChallenge = `-- name: GetUserAuthenticatorAppChallenge :one
+SELECT
+    user_id, authenticator_app_secret_ciphertext
+FROM
+    user_authenticator_app_challenges
+WHERE
+    user_id = $1
+`
+
+func (q *Queries) GetUserAuthenticatorAppChallenge(ctx context.Context, userID uuid.UUID) (UserAuthenticatorAppChallenge, error) {
+	row := q.db.QueryRow(ctx, getUserAuthenticatorAppChallenge, userID)
+	var i UserAuthenticatorAppChallenge
+	err := row.Scan(&i.UserID, &i.AuthenticatorAppSecretCiphertext)
 	return i, err
 }
 
@@ -982,6 +1030,48 @@ type UpdateUserParams struct {
 
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
 	row := q.db.QueryRow(ctx, updateUser, arg.IsOwner, arg.ID)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.PasswordBcrypt,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+		&i.Email,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.DeactivateTime,
+		&i.IsOwner,
+		&i.FailedPasswordAttempts,
+		&i.PasswordLockoutExpireTime,
+		&i.AuthenticatorAppSecretCiphertext,
+		&i.AuthenticatorAppRecoveryCodeBcrypts,
+		&i.FailedAuthenticatorAppAttempts,
+		&i.AuthenticatorAppLockoutExpireTime,
+	)
+	return i, err
+}
+
+const updateUserAuthenticatorApp = `-- name: UpdateUserAuthenticatorApp :one
+UPDATE
+    users
+SET
+    authenticator_app_secret_ciphertext = $1,
+    authenticator_app_recovery_code_bcrypts = $2
+WHERE
+    id = $3
+RETURNING
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_recovery_code_bcrypts, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time
+`
+
+type UpdateUserAuthenticatorAppParams struct {
+	AuthenticatorAppSecretCiphertext    []byte
+	AuthenticatorAppRecoveryCodeBcrypts [][]byte
+	ID                                  uuid.UUID
+}
+
+func (q *Queries) UpdateUserAuthenticatorApp(ctx context.Context, arg UpdateUserAuthenticatorAppParams) (User, error) {
+	row := q.db.QueryRow(ctx, updateUserAuthenticatorApp, arg.AuthenticatorAppSecretCiphertext, arg.AuthenticatorAppRecoveryCodeBcrypts, arg.ID)
 	var i User
 	err := row.Scan(
 		&i.ID,

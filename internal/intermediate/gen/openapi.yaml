@@ -580,9 +580,8 @@ components:
         GetAuthenticatorAppOptionsResponse:
             type: object
             properties:
-                secret:
+                otpauthUri:
                     type: string
-                    format: bytes
         GetGoogleOAuthRedirectURLRequest:
             type: object
             properties:

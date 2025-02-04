@@ -30,6 +30,66 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /frontend/v1/me:
+        get:
+            tags:
+                - FrontendService
+            operationId: FrontendService_Whoami
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/WhoamiResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /frontend/v1/me/authenticator-app/options:
+        post:
+            tags:
+                - FrontendService
+            operationId: FrontendService_GetAuthenticatorAppOptions
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetAuthenticatorAppOptionsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /frontend/v1/me/authenticator-app/register:
+        post:
+            tags:
+                - FrontendService
+            operationId: FrontendService_RegisterAuthenticatorApp
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/RegisterAuthenticatorAppRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/RegisterAuthenticatorAppResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /frontend/v1/me/passkeys:
         get:
             tags:
@@ -610,25 +670,6 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /frontend/v1/whoami:
-        get:
-            tags:
-                - FrontendService
-            description: Who am I?
-            operationId: FrontendService_WhoAmI
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/WhoAmIResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
 components:
     schemas:
         CreateSAMLConnectionResponse:
@@ -650,6 +691,11 @@ components:
         DeleteSCIMAPIKeyResponse:
             type: object
             properties: {}
+        GetAuthenticatorAppOptionsResponse:
+            type: object
+            properties:
+                otpauthUri:
+                    type: string
         GetOrganizationResponse:
             type: object
             properties:
@@ -839,6 +885,18 @@ components:
             properties:
                 accessToken:
                     type: string
+        RegisterAuthenticatorAppRequest:
+            type: object
+            properties:
+                totpCode:
+                    type: string
+        RegisterAuthenticatorAppResponse:
+            type: object
+            properties:
+                recoveryCodes:
+                    type: array
+                    items:
+                        type: string
         RegisterPasskeyRequest:
             type: object
             properties:
@@ -958,21 +1016,12 @@ components:
                     type: string
                 microsoftUserId:
                     type: string
-        WhoAmIResponse:
+                hasAuthenticatorApp:
+                    type: boolean
+        WhoamiResponse:
             type: object
             properties:
-                id:
-                    type: string
-                    description: The user ID that is currently authenticated.
-                email:
-                    type: string
-                    description: The email address for the user.
-                organizationId:
-                    type: string
-                    description: The organization ID for the user.
-                organization:
-                    allOf:
-                        - $ref: '#/components/schemas/Organization'
-                    description: The organization for the user.
+                user:
+                    $ref: '#/components/schemas/User'
 tags:
     - name: FrontendService

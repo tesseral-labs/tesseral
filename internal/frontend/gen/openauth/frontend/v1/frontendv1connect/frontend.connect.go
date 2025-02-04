@@ -60,8 +60,6 @@ const (
 	// FrontendServiceSetPasswordProcedure is the fully-qualified name of the FrontendService's
 	// SetPassword RPC.
 	FrontendServiceSetPasswordProcedure = "/openauth.frontend.v1.FrontendService/SetPassword"
-	// FrontendServiceWhoAmIProcedure is the fully-qualified name of the FrontendService's WhoAmI RPC.
-	FrontendServiceWhoAmIProcedure = "/openauth.frontend.v1.FrontendService/WhoAmI"
 	// FrontendServiceListSAMLConnectionsProcedure is the fully-qualified name of the FrontendService's
 	// ListSAMLConnections RPC.
 	FrontendServiceListSAMLConnectionsProcedure = "/openauth.frontend.v1.FrontendService/ListSAMLConnections"
@@ -95,18 +93,26 @@ const (
 	// FrontendServiceRevokeSCIMAPIKeyProcedure is the fully-qualified name of the FrontendService's
 	// RevokeSCIMAPIKey RPC.
 	FrontendServiceRevokeSCIMAPIKeyProcedure = "/openauth.frontend.v1.FrontendService/RevokeSCIMAPIKey"
-	// FrontendServiceDeleteMyPasskeyProcedure is the fully-qualified name of the FrontendService's
-	// DeleteMyPasskey RPC.
-	FrontendServiceDeleteMyPasskeyProcedure = "/openauth.frontend.v1.FrontendService/DeleteMyPasskey"
+	// FrontendServiceWhoamiProcedure is the fully-qualified name of the FrontendService's Whoami RPC.
+	FrontendServiceWhoamiProcedure = "/openauth.frontend.v1.FrontendService/Whoami"
 	// FrontendServiceListMyPasskeysProcedure is the fully-qualified name of the FrontendService's
 	// ListMyPasskeys RPC.
 	FrontendServiceListMyPasskeysProcedure = "/openauth.frontend.v1.FrontendService/ListMyPasskeys"
+	// FrontendServiceDeleteMyPasskeyProcedure is the fully-qualified name of the FrontendService's
+	// DeleteMyPasskey RPC.
+	FrontendServiceDeleteMyPasskeyProcedure = "/openauth.frontend.v1.FrontendService/DeleteMyPasskey"
 	// FrontendServiceGetPasskeyOptionsProcedure is the fully-qualified name of the FrontendService's
 	// GetPasskeyOptions RPC.
 	FrontendServiceGetPasskeyOptionsProcedure = "/openauth.frontend.v1.FrontendService/GetPasskeyOptions"
 	// FrontendServiceRegisterPasskeyProcedure is the fully-qualified name of the FrontendService's
 	// RegisterPasskey RPC.
 	FrontendServiceRegisterPasskeyProcedure = "/openauth.frontend.v1.FrontendService/RegisterPasskey"
+	// FrontendServiceGetAuthenticatorAppOptionsProcedure is the fully-qualified name of the
+	// FrontendService's GetAuthenticatorAppOptions RPC.
+	FrontendServiceGetAuthenticatorAppOptionsProcedure = "/openauth.frontend.v1.FrontendService/GetAuthenticatorAppOptions"
+	// FrontendServiceRegisterAuthenticatorAppProcedure is the fully-qualified name of the
+	// FrontendService's RegisterAuthenticatorApp RPC.
+	FrontendServiceRegisterAuthenticatorAppProcedure = "/openauth.frontend.v1.FrontendService/RegisterAuthenticatorApp"
 )
 
 // FrontendServiceClient is a client for the openauth.frontend.v1.FrontendService service.
@@ -123,8 +129,6 @@ type FrontendServiceClient interface {
 	ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error)
 	// Sets a user's password.
 	SetPassword(context.Context, *connect.Request[v1.SetPasswordRequest]) (*connect.Response[v1.SetPasswordResponse], error)
-	// Who am I?
-	WhoAmI(context.Context, *connect.Request[v1.WhoAmIRequest]) (*connect.Response[v1.WhoAmIResponse], error)
 	ListSAMLConnections(context.Context, *connect.Request[v1.ListSAMLConnectionsRequest]) (*connect.Response[v1.ListSAMLConnectionsResponse], error)
 	GetSAMLConnection(context.Context, *connect.Request[v1.GetSAMLConnectionRequest]) (*connect.Response[v1.GetSAMLConnectionResponse], error)
 	CreateSAMLConnection(context.Context, *connect.Request[v1.CreateSAMLConnectionRequest]) (*connect.Response[v1.CreateSAMLConnectionResponse], error)
@@ -136,10 +140,13 @@ type FrontendServiceClient interface {
 	UpdateSCIMAPIKey(context.Context, *connect.Request[v1.UpdateSCIMAPIKeyRequest]) (*connect.Response[v1.UpdateSCIMAPIKeyResponse], error)
 	DeleteSCIMAPIKey(context.Context, *connect.Request[v1.DeleteSCIMAPIKeyRequest]) (*connect.Response[v1.DeleteSCIMAPIKeyResponse], error)
 	RevokeSCIMAPIKey(context.Context, *connect.Request[v1.RevokeSCIMAPIKeyRequest]) (*connect.Response[v1.RevokeSCIMAPIKeyResponse], error)
-	DeleteMyPasskey(context.Context, *connect.Request[v1.DeleteMyPasskeyRequest]) (*connect.Response[v1.DeleteMyPasskeyResponse], error)
+	Whoami(context.Context, *connect.Request[v1.WhoamiRequest]) (*connect.Response[v1.WhoamiResponse], error)
 	ListMyPasskeys(context.Context, *connect.Request[v1.ListMyPasskeysRequest]) (*connect.Response[v1.ListMyPasskeysResponse], error)
+	DeleteMyPasskey(context.Context, *connect.Request[v1.DeleteMyPasskeyRequest]) (*connect.Response[v1.DeleteMyPasskeyResponse], error)
 	GetPasskeyOptions(context.Context, *connect.Request[v1.GetPasskeyOptionsRequest]) (*connect.Response[v1.GetPasskeyOptionsResponse], error)
 	RegisterPasskey(context.Context, *connect.Request[v1.RegisterPasskeyRequest]) (*connect.Response[v1.RegisterPasskeyResponse], error)
+	GetAuthenticatorAppOptions(context.Context, *connect.Request[v1.GetAuthenticatorAppOptionsRequest]) (*connect.Response[v1.GetAuthenticatorAppOptionsResponse], error)
+	RegisterAuthenticatorApp(context.Context, *connect.Request[v1.RegisterAuthenticatorAppRequest]) (*connect.Response[v1.RegisterAuthenticatorAppResponse], error)
 }
 
 // NewFrontendServiceClient constructs a client for the openauth.frontend.v1.FrontendService
@@ -213,12 +220,6 @@ func NewFrontendServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			connect.WithSchema(frontendServiceMethods.ByName("SetPassword")),
 			connect.WithClientOptions(opts...),
 		),
-		whoAmI: connect.NewClient[v1.WhoAmIRequest, v1.WhoAmIResponse](
-			httpClient,
-			baseURL+FrontendServiceWhoAmIProcedure,
-			connect.WithSchema(frontendServiceMethods.ByName("WhoAmI")),
-			connect.WithClientOptions(opts...),
-		),
 		listSAMLConnections: connect.NewClient[v1.ListSAMLConnectionsRequest, v1.ListSAMLConnectionsResponse](
 			httpClient,
 			baseURL+FrontendServiceListSAMLConnectionsProcedure,
@@ -285,16 +286,22 @@ func NewFrontendServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			connect.WithSchema(frontendServiceMethods.ByName("RevokeSCIMAPIKey")),
 			connect.WithClientOptions(opts...),
 		),
-		deleteMyPasskey: connect.NewClient[v1.DeleteMyPasskeyRequest, v1.DeleteMyPasskeyResponse](
+		whoami: connect.NewClient[v1.WhoamiRequest, v1.WhoamiResponse](
 			httpClient,
-			baseURL+FrontendServiceDeleteMyPasskeyProcedure,
-			connect.WithSchema(frontendServiceMethods.ByName("DeleteMyPasskey")),
+			baseURL+FrontendServiceWhoamiProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("Whoami")),
 			connect.WithClientOptions(opts...),
 		),
 		listMyPasskeys: connect.NewClient[v1.ListMyPasskeysRequest, v1.ListMyPasskeysResponse](
 			httpClient,
 			baseURL+FrontendServiceListMyPasskeysProcedure,
 			connect.WithSchema(frontendServiceMethods.ByName("ListMyPasskeys")),
+			connect.WithClientOptions(opts...),
+		),
+		deleteMyPasskey: connect.NewClient[v1.DeleteMyPasskeyRequest, v1.DeleteMyPasskeyResponse](
+			httpClient,
+			baseURL+FrontendServiceDeleteMyPasskeyProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("DeleteMyPasskey")),
 			connect.WithClientOptions(opts...),
 		),
 		getPasskeyOptions: connect.NewClient[v1.GetPasskeyOptionsRequest, v1.GetPasskeyOptionsResponse](
@@ -309,37 +316,51 @@ func NewFrontendServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			connect.WithSchema(frontendServiceMethods.ByName("RegisterPasskey")),
 			connect.WithClientOptions(opts...),
 		),
+		getAuthenticatorAppOptions: connect.NewClient[v1.GetAuthenticatorAppOptionsRequest, v1.GetAuthenticatorAppOptionsResponse](
+			httpClient,
+			baseURL+FrontendServiceGetAuthenticatorAppOptionsProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("GetAuthenticatorAppOptions")),
+			connect.WithClientOptions(opts...),
+		),
+		registerAuthenticatorApp: connect.NewClient[v1.RegisterAuthenticatorAppRequest, v1.RegisterAuthenticatorAppResponse](
+			httpClient,
+			baseURL+FrontendServiceRegisterAuthenticatorAppProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("RegisterAuthenticatorApp")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // frontendServiceClient implements FrontendServiceClient.
 type frontendServiceClient struct {
-	logout               *connect.Client[v1.LogoutRequest, v1.LogoutResponse]
-	refresh              *connect.Client[v1.RefreshRequest, v1.RefreshResponse]
-	getProject           *connect.Client[v1.GetProjectRequest, v1.GetProjectResponse]
-	getOrganization      *connect.Client[v1.GetOrganizationRequest, v1.GetOrganizationResponse]
-	updateOrganization   *connect.Client[v1.UpdateOrganizationRequest, v1.UpdateOrganizationResponse]
-	listUsers            *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
-	getUser              *connect.Client[v1.GetUserRequest, v1.GetUserResponse]
-	updateUser           *connect.Client[v1.UpdateUserRequest, v1.UpdateUserResponse]
-	listOrganizations    *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
-	setPassword          *connect.Client[v1.SetPasswordRequest, v1.SetPasswordResponse]
-	whoAmI               *connect.Client[v1.WhoAmIRequest, v1.WhoAmIResponse]
-	listSAMLConnections  *connect.Client[v1.ListSAMLConnectionsRequest, v1.ListSAMLConnectionsResponse]
-	getSAMLConnection    *connect.Client[v1.GetSAMLConnectionRequest, v1.GetSAMLConnectionResponse]
-	createSAMLConnection *connect.Client[v1.CreateSAMLConnectionRequest, v1.CreateSAMLConnectionResponse]
-	updateSAMLConnection *connect.Client[v1.UpdateSAMLConnectionRequest, v1.UpdateSAMLConnectionResponse]
-	deleteSAMLConnection *connect.Client[v1.DeleteSAMLConnectionRequest, v1.DeleteSAMLConnectionResponse]
-	listSCIMAPIKeys      *connect.Client[v1.ListSCIMAPIKeysRequest, v1.ListSCIMAPIKeysResponse]
-	getSCIMAPIKey        *connect.Client[v1.GetSCIMAPIKeyRequest, v1.GetSCIMAPIKeyResponse]
-	createSCIMAPIKey     *connect.Client[v1.CreateSCIMAPIKeyRequest, v1.CreateSCIMAPIKeyResponse]
-	updateSCIMAPIKey     *connect.Client[v1.UpdateSCIMAPIKeyRequest, v1.UpdateSCIMAPIKeyResponse]
-	deleteSCIMAPIKey     *connect.Client[v1.DeleteSCIMAPIKeyRequest, v1.DeleteSCIMAPIKeyResponse]
-	revokeSCIMAPIKey     *connect.Client[v1.RevokeSCIMAPIKeyRequest, v1.RevokeSCIMAPIKeyResponse]
-	deleteMyPasskey      *connect.Client[v1.DeleteMyPasskeyRequest, v1.DeleteMyPasskeyResponse]
-	listMyPasskeys       *connect.Client[v1.ListMyPasskeysRequest, v1.ListMyPasskeysResponse]
-	getPasskeyOptions    *connect.Client[v1.GetPasskeyOptionsRequest, v1.GetPasskeyOptionsResponse]
-	registerPasskey      *connect.Client[v1.RegisterPasskeyRequest, v1.RegisterPasskeyResponse]
+	logout                     *connect.Client[v1.LogoutRequest, v1.LogoutResponse]
+	refresh                    *connect.Client[v1.RefreshRequest, v1.RefreshResponse]
+	getProject                 *connect.Client[v1.GetProjectRequest, v1.GetProjectResponse]
+	getOrganization            *connect.Client[v1.GetOrganizationRequest, v1.GetOrganizationResponse]
+	updateOrganization         *connect.Client[v1.UpdateOrganizationRequest, v1.UpdateOrganizationResponse]
+	listUsers                  *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
+	getUser                    *connect.Client[v1.GetUserRequest, v1.GetUserResponse]
+	updateUser                 *connect.Client[v1.UpdateUserRequest, v1.UpdateUserResponse]
+	listOrganizations          *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
+	setPassword                *connect.Client[v1.SetPasswordRequest, v1.SetPasswordResponse]
+	listSAMLConnections        *connect.Client[v1.ListSAMLConnectionsRequest, v1.ListSAMLConnectionsResponse]
+	getSAMLConnection          *connect.Client[v1.GetSAMLConnectionRequest, v1.GetSAMLConnectionResponse]
+	createSAMLConnection       *connect.Client[v1.CreateSAMLConnectionRequest, v1.CreateSAMLConnectionResponse]
+	updateSAMLConnection       *connect.Client[v1.UpdateSAMLConnectionRequest, v1.UpdateSAMLConnectionResponse]
+	deleteSAMLConnection       *connect.Client[v1.DeleteSAMLConnectionRequest, v1.DeleteSAMLConnectionResponse]
+	listSCIMAPIKeys            *connect.Client[v1.ListSCIMAPIKeysRequest, v1.ListSCIMAPIKeysResponse]
+	getSCIMAPIKey              *connect.Client[v1.GetSCIMAPIKeyRequest, v1.GetSCIMAPIKeyResponse]
+	createSCIMAPIKey           *connect.Client[v1.CreateSCIMAPIKeyRequest, v1.CreateSCIMAPIKeyResponse]
+	updateSCIMAPIKey           *connect.Client[v1.UpdateSCIMAPIKeyRequest, v1.UpdateSCIMAPIKeyResponse]
+	deleteSCIMAPIKey           *connect.Client[v1.DeleteSCIMAPIKeyRequest, v1.DeleteSCIMAPIKeyResponse]
+	revokeSCIMAPIKey           *connect.Client[v1.RevokeSCIMAPIKeyRequest, v1.RevokeSCIMAPIKeyResponse]
+	whoami                     *connect.Client[v1.WhoamiRequest, v1.WhoamiResponse]
+	listMyPasskeys             *connect.Client[v1.ListMyPasskeysRequest, v1.ListMyPasskeysResponse]
+	deleteMyPasskey            *connect.Client[v1.DeleteMyPasskeyRequest, v1.DeleteMyPasskeyResponse]
+	getPasskeyOptions          *connect.Client[v1.GetPasskeyOptionsRequest, v1.GetPasskeyOptionsResponse]
+	registerPasskey            *connect.Client[v1.RegisterPasskeyRequest, v1.RegisterPasskeyResponse]
+	getAuthenticatorAppOptions *connect.Client[v1.GetAuthenticatorAppOptionsRequest, v1.GetAuthenticatorAppOptionsResponse]
+	registerAuthenticatorApp   *connect.Client[v1.RegisterAuthenticatorAppRequest, v1.RegisterAuthenticatorAppResponse]
 }
 
 // Logout calls openauth.frontend.v1.FrontendService.Logout.
@@ -390,11 +411,6 @@ func (c *frontendServiceClient) ListOrganizations(ctx context.Context, req *conn
 // SetPassword calls openauth.frontend.v1.FrontendService.SetPassword.
 func (c *frontendServiceClient) SetPassword(ctx context.Context, req *connect.Request[v1.SetPasswordRequest]) (*connect.Response[v1.SetPasswordResponse], error) {
 	return c.setPassword.CallUnary(ctx, req)
-}
-
-// WhoAmI calls openauth.frontend.v1.FrontendService.WhoAmI.
-func (c *frontendServiceClient) WhoAmI(ctx context.Context, req *connect.Request[v1.WhoAmIRequest]) (*connect.Response[v1.WhoAmIResponse], error) {
-	return c.whoAmI.CallUnary(ctx, req)
 }
 
 // ListSAMLConnections calls openauth.frontend.v1.FrontendService.ListSAMLConnections.
@@ -452,14 +468,19 @@ func (c *frontendServiceClient) RevokeSCIMAPIKey(ctx context.Context, req *conne
 	return c.revokeSCIMAPIKey.CallUnary(ctx, req)
 }
 
-// DeleteMyPasskey calls openauth.frontend.v1.FrontendService.DeleteMyPasskey.
-func (c *frontendServiceClient) DeleteMyPasskey(ctx context.Context, req *connect.Request[v1.DeleteMyPasskeyRequest]) (*connect.Response[v1.DeleteMyPasskeyResponse], error) {
-	return c.deleteMyPasskey.CallUnary(ctx, req)
+// Whoami calls openauth.frontend.v1.FrontendService.Whoami.
+func (c *frontendServiceClient) Whoami(ctx context.Context, req *connect.Request[v1.WhoamiRequest]) (*connect.Response[v1.WhoamiResponse], error) {
+	return c.whoami.CallUnary(ctx, req)
 }
 
 // ListMyPasskeys calls openauth.frontend.v1.FrontendService.ListMyPasskeys.
 func (c *frontendServiceClient) ListMyPasskeys(ctx context.Context, req *connect.Request[v1.ListMyPasskeysRequest]) (*connect.Response[v1.ListMyPasskeysResponse], error) {
 	return c.listMyPasskeys.CallUnary(ctx, req)
+}
+
+// DeleteMyPasskey calls openauth.frontend.v1.FrontendService.DeleteMyPasskey.
+func (c *frontendServiceClient) DeleteMyPasskey(ctx context.Context, req *connect.Request[v1.DeleteMyPasskeyRequest]) (*connect.Response[v1.DeleteMyPasskeyResponse], error) {
+	return c.deleteMyPasskey.CallUnary(ctx, req)
 }
 
 // GetPasskeyOptions calls openauth.frontend.v1.FrontendService.GetPasskeyOptions.
@@ -470,6 +491,16 @@ func (c *frontendServiceClient) GetPasskeyOptions(ctx context.Context, req *conn
 // RegisterPasskey calls openauth.frontend.v1.FrontendService.RegisterPasskey.
 func (c *frontendServiceClient) RegisterPasskey(ctx context.Context, req *connect.Request[v1.RegisterPasskeyRequest]) (*connect.Response[v1.RegisterPasskeyResponse], error) {
 	return c.registerPasskey.CallUnary(ctx, req)
+}
+
+// GetAuthenticatorAppOptions calls openauth.frontend.v1.FrontendService.GetAuthenticatorAppOptions.
+func (c *frontendServiceClient) GetAuthenticatorAppOptions(ctx context.Context, req *connect.Request[v1.GetAuthenticatorAppOptionsRequest]) (*connect.Response[v1.GetAuthenticatorAppOptionsResponse], error) {
+	return c.getAuthenticatorAppOptions.CallUnary(ctx, req)
+}
+
+// RegisterAuthenticatorApp calls openauth.frontend.v1.FrontendService.RegisterAuthenticatorApp.
+func (c *frontendServiceClient) RegisterAuthenticatorApp(ctx context.Context, req *connect.Request[v1.RegisterAuthenticatorAppRequest]) (*connect.Response[v1.RegisterAuthenticatorAppResponse], error) {
+	return c.registerAuthenticatorApp.CallUnary(ctx, req)
 }
 
 // FrontendServiceHandler is an implementation of the openauth.frontend.v1.FrontendService service.
@@ -486,8 +517,6 @@ type FrontendServiceHandler interface {
 	ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error)
 	// Sets a user's password.
 	SetPassword(context.Context, *connect.Request[v1.SetPasswordRequest]) (*connect.Response[v1.SetPasswordResponse], error)
-	// Who am I?
-	WhoAmI(context.Context, *connect.Request[v1.WhoAmIRequest]) (*connect.Response[v1.WhoAmIResponse], error)
 	ListSAMLConnections(context.Context, *connect.Request[v1.ListSAMLConnectionsRequest]) (*connect.Response[v1.ListSAMLConnectionsResponse], error)
 	GetSAMLConnection(context.Context, *connect.Request[v1.GetSAMLConnectionRequest]) (*connect.Response[v1.GetSAMLConnectionResponse], error)
 	CreateSAMLConnection(context.Context, *connect.Request[v1.CreateSAMLConnectionRequest]) (*connect.Response[v1.CreateSAMLConnectionResponse], error)
@@ -499,10 +528,13 @@ type FrontendServiceHandler interface {
 	UpdateSCIMAPIKey(context.Context, *connect.Request[v1.UpdateSCIMAPIKeyRequest]) (*connect.Response[v1.UpdateSCIMAPIKeyResponse], error)
 	DeleteSCIMAPIKey(context.Context, *connect.Request[v1.DeleteSCIMAPIKeyRequest]) (*connect.Response[v1.DeleteSCIMAPIKeyResponse], error)
 	RevokeSCIMAPIKey(context.Context, *connect.Request[v1.RevokeSCIMAPIKeyRequest]) (*connect.Response[v1.RevokeSCIMAPIKeyResponse], error)
-	DeleteMyPasskey(context.Context, *connect.Request[v1.DeleteMyPasskeyRequest]) (*connect.Response[v1.DeleteMyPasskeyResponse], error)
+	Whoami(context.Context, *connect.Request[v1.WhoamiRequest]) (*connect.Response[v1.WhoamiResponse], error)
 	ListMyPasskeys(context.Context, *connect.Request[v1.ListMyPasskeysRequest]) (*connect.Response[v1.ListMyPasskeysResponse], error)
+	DeleteMyPasskey(context.Context, *connect.Request[v1.DeleteMyPasskeyRequest]) (*connect.Response[v1.DeleteMyPasskeyResponse], error)
 	GetPasskeyOptions(context.Context, *connect.Request[v1.GetPasskeyOptionsRequest]) (*connect.Response[v1.GetPasskeyOptionsResponse], error)
 	RegisterPasskey(context.Context, *connect.Request[v1.RegisterPasskeyRequest]) (*connect.Response[v1.RegisterPasskeyResponse], error)
+	GetAuthenticatorAppOptions(context.Context, *connect.Request[v1.GetAuthenticatorAppOptionsRequest]) (*connect.Response[v1.GetAuthenticatorAppOptionsResponse], error)
+	RegisterAuthenticatorApp(context.Context, *connect.Request[v1.RegisterAuthenticatorAppRequest]) (*connect.Response[v1.RegisterAuthenticatorAppResponse], error)
 }
 
 // NewFrontendServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -572,12 +604,6 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 		connect.WithSchema(frontendServiceMethods.ByName("SetPassword")),
 		connect.WithHandlerOptions(opts...),
 	)
-	frontendServiceWhoAmIHandler := connect.NewUnaryHandler(
-		FrontendServiceWhoAmIProcedure,
-		svc.WhoAmI,
-		connect.WithSchema(frontendServiceMethods.ByName("WhoAmI")),
-		connect.WithHandlerOptions(opts...),
-	)
 	frontendServiceListSAMLConnectionsHandler := connect.NewUnaryHandler(
 		FrontendServiceListSAMLConnectionsProcedure,
 		svc.ListSAMLConnections,
@@ -644,16 +670,22 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 		connect.WithSchema(frontendServiceMethods.ByName("RevokeSCIMAPIKey")),
 		connect.WithHandlerOptions(opts...),
 	)
-	frontendServiceDeleteMyPasskeyHandler := connect.NewUnaryHandler(
-		FrontendServiceDeleteMyPasskeyProcedure,
-		svc.DeleteMyPasskey,
-		connect.WithSchema(frontendServiceMethods.ByName("DeleteMyPasskey")),
+	frontendServiceWhoamiHandler := connect.NewUnaryHandler(
+		FrontendServiceWhoamiProcedure,
+		svc.Whoami,
+		connect.WithSchema(frontendServiceMethods.ByName("Whoami")),
 		connect.WithHandlerOptions(opts...),
 	)
 	frontendServiceListMyPasskeysHandler := connect.NewUnaryHandler(
 		FrontendServiceListMyPasskeysProcedure,
 		svc.ListMyPasskeys,
 		connect.WithSchema(frontendServiceMethods.ByName("ListMyPasskeys")),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceDeleteMyPasskeyHandler := connect.NewUnaryHandler(
+		FrontendServiceDeleteMyPasskeyProcedure,
+		svc.DeleteMyPasskey,
+		connect.WithSchema(frontendServiceMethods.ByName("DeleteMyPasskey")),
 		connect.WithHandlerOptions(opts...),
 	)
 	frontendServiceGetPasskeyOptionsHandler := connect.NewUnaryHandler(
@@ -666,6 +698,18 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 		FrontendServiceRegisterPasskeyProcedure,
 		svc.RegisterPasskey,
 		connect.WithSchema(frontendServiceMethods.ByName("RegisterPasskey")),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceGetAuthenticatorAppOptionsHandler := connect.NewUnaryHandler(
+		FrontendServiceGetAuthenticatorAppOptionsProcedure,
+		svc.GetAuthenticatorAppOptions,
+		connect.WithSchema(frontendServiceMethods.ByName("GetAuthenticatorAppOptions")),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceRegisterAuthenticatorAppHandler := connect.NewUnaryHandler(
+		FrontendServiceRegisterAuthenticatorAppProcedure,
+		svc.RegisterAuthenticatorApp,
+		connect.WithSchema(frontendServiceMethods.ByName("RegisterAuthenticatorApp")),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/openauth.frontend.v1.FrontendService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -690,8 +734,6 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 			frontendServiceListOrganizationsHandler.ServeHTTP(w, r)
 		case FrontendServiceSetPasswordProcedure:
 			frontendServiceSetPasswordHandler.ServeHTTP(w, r)
-		case FrontendServiceWhoAmIProcedure:
-			frontendServiceWhoAmIHandler.ServeHTTP(w, r)
 		case FrontendServiceListSAMLConnectionsProcedure:
 			frontendServiceListSAMLConnectionsHandler.ServeHTTP(w, r)
 		case FrontendServiceGetSAMLConnectionProcedure:
@@ -714,14 +756,20 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 			frontendServiceDeleteSCIMAPIKeyHandler.ServeHTTP(w, r)
 		case FrontendServiceRevokeSCIMAPIKeyProcedure:
 			frontendServiceRevokeSCIMAPIKeyHandler.ServeHTTP(w, r)
-		case FrontendServiceDeleteMyPasskeyProcedure:
-			frontendServiceDeleteMyPasskeyHandler.ServeHTTP(w, r)
+		case FrontendServiceWhoamiProcedure:
+			frontendServiceWhoamiHandler.ServeHTTP(w, r)
 		case FrontendServiceListMyPasskeysProcedure:
 			frontendServiceListMyPasskeysHandler.ServeHTTP(w, r)
+		case FrontendServiceDeleteMyPasskeyProcedure:
+			frontendServiceDeleteMyPasskeyHandler.ServeHTTP(w, r)
 		case FrontendServiceGetPasskeyOptionsProcedure:
 			frontendServiceGetPasskeyOptionsHandler.ServeHTTP(w, r)
 		case FrontendServiceRegisterPasskeyProcedure:
 			frontendServiceRegisterPasskeyHandler.ServeHTTP(w, r)
+		case FrontendServiceGetAuthenticatorAppOptionsProcedure:
+			frontendServiceGetAuthenticatorAppOptionsHandler.ServeHTTP(w, r)
+		case FrontendServiceRegisterAuthenticatorAppProcedure:
+			frontendServiceRegisterAuthenticatorAppHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -771,10 +819,6 @@ func (UnimplementedFrontendServiceHandler) SetPassword(context.Context, *connect
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.SetPassword is not implemented"))
 }
 
-func (UnimplementedFrontendServiceHandler) WhoAmI(context.Context, *connect.Request[v1.WhoAmIRequest]) (*connect.Response[v1.WhoAmIResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.WhoAmI is not implemented"))
-}
-
 func (UnimplementedFrontendServiceHandler) ListSAMLConnections(context.Context, *connect.Request[v1.ListSAMLConnectionsRequest]) (*connect.Response[v1.ListSAMLConnectionsResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.ListSAMLConnections is not implemented"))
 }
@@ -819,12 +863,16 @@ func (UnimplementedFrontendServiceHandler) RevokeSCIMAPIKey(context.Context, *co
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.RevokeSCIMAPIKey is not implemented"))
 }
 
-func (UnimplementedFrontendServiceHandler) DeleteMyPasskey(context.Context, *connect.Request[v1.DeleteMyPasskeyRequest]) (*connect.Response[v1.DeleteMyPasskeyResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.DeleteMyPasskey is not implemented"))
+func (UnimplementedFrontendServiceHandler) Whoami(context.Context, *connect.Request[v1.WhoamiRequest]) (*connect.Response[v1.WhoamiResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.Whoami is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) ListMyPasskeys(context.Context, *connect.Request[v1.ListMyPasskeysRequest]) (*connect.Response[v1.ListMyPasskeysResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.ListMyPasskeys is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) DeleteMyPasskey(context.Context, *connect.Request[v1.DeleteMyPasskeyRequest]) (*connect.Response[v1.DeleteMyPasskeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.DeleteMyPasskey is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) GetPasskeyOptions(context.Context, *connect.Request[v1.GetPasskeyOptionsRequest]) (*connect.Response[v1.GetPasskeyOptionsResponse], error) {
@@ -833,4 +881,12 @@ func (UnimplementedFrontendServiceHandler) GetPasskeyOptions(context.Context, *c
 
 func (UnimplementedFrontendServiceHandler) RegisterPasskey(context.Context, *connect.Request[v1.RegisterPasskeyRequest]) (*connect.Response[v1.RegisterPasskeyResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.RegisterPasskey is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) GetAuthenticatorAppOptions(context.Context, *connect.Request[v1.GetAuthenticatorAppOptionsRequest]) (*connect.Response[v1.GetAuthenticatorAppOptionsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.GetAuthenticatorAppOptions is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) RegisterAuthenticatorApp(context.Context, *connect.Request[v1.RegisterAuthenticatorAppRequest]) (*connect.Response[v1.RegisterAuthenticatorAppResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.RegisterAuthenticatorApp is not implemented"))
 }

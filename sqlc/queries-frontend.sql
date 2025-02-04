@@ -277,3 +277,35 @@ WHERE
 DELETE FROM passkeys
 WHERE id = $1;
 
+-- name: CreateUserAuthenticatorAppChallenge :one
+INSERT INTO user_authenticator_app_challenges (user_id, authenticator_app_secret_ciphertext)
+    VALUES ($1, $2)
+ON CONFLICT (user_id)
+    DO UPDATE SET
+        authenticator_app_secret_ciphertext = excluded.authenticator_app_secret_ciphertext
+    RETURNING
+        *;
+
+-- name: GetUserAuthenticatorAppChallenge :one
+SELECT
+    *
+FROM
+    user_authenticator_app_challenges
+WHERE
+    user_id = $1;
+
+-- name: DeleteUserAuthenticatorAppChallenge :exec
+DELETE FROM user_authenticator_app_challenges
+WHERE user_id = $1;
+
+-- name: UpdateUserAuthenticatorApp :one
+UPDATE
+    users
+SET
+    authenticator_app_secret_ciphertext = $1,
+    authenticator_app_recovery_code_bcrypts = $2
+WHERE
+    id = $3
+RETURNING
+    *;
+

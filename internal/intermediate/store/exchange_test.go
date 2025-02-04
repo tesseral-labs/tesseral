@@ -128,6 +128,61 @@ func TestStore_validateAuthRequirementsSatisfiedInner(t *testing.T) {
 			},
 			wantErr: true,
 		},
+
+		{
+			name: "require mfa happy path passkey",
+			qIntermediateSession: queries.IntermediateSession{
+				PasswordVerified: true,
+				PasskeyVerified:  true,
+			},
+			emailVerified: true,
+			qOrg: queries.Organization{
+				LogInWithPassword: true,
+				LogInWithPasskey:  true,
+				RequireMfa:        true,
+			},
+			wantErr: false,
+		},
+		{
+			name: "require mfa happy path authenticator app",
+			qIntermediateSession: queries.IntermediateSession{
+				PasswordVerified:         true,
+				AuthenticatorAppVerified: true,
+			},
+			emailVerified: true,
+			qOrg: queries.Organization{
+				LogInWithPassword:         true,
+				LogInWithAuthenticatorApp: true,
+				RequireMfa:                true,
+			},
+			wantErr: false,
+		},
+		{
+			name: "require mfa no mfa",
+			qIntermediateSession: queries.IntermediateSession{
+				PasswordVerified: true,
+			},
+			emailVerified: true,
+			qOrg: queries.Organization{
+				LogInWithPassword: true,
+				RequireMfa:        true,
+			},
+			wantErr: true,
+		},
+		{
+			name: "require mfa not allowed mfa method",
+			qIntermediateSession: queries.IntermediateSession{
+				PasswordVerified: true,
+				PasskeyVerified:  true,
+			},
+			emailVerified: true,
+			qOrg: queries.Organization{
+				LogInWithPassword:         true,
+				LogInWithAuthenticatorApp: true,
+				RequireMfa:                true,
+			},
+			wantErr: true,
+		},
 	}
 
 	for _, tt := range testCases {
