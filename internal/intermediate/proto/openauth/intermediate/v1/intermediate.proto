@@ -351,7 +351,7 @@ message GetAuthenticatorAppOptionsRequest {
 }
 
 message GetAuthenticatorAppOptionsResponse {
-  bytes secret = 1;
+  string otpauth_uri = 1;
 }
 
 message RegisterAuthenticatorAppRequest {

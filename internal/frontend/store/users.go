@@ -174,12 +174,13 @@ func (s *Store) UpdateUser(ctx context.Context, req *frontendv1.UpdateUserReques
 
 func parseUser(qUser queries.User) *frontendv1.User {
 	return &frontendv1.User{
-		Id:              idformat.User.Format(qUser.ID),
-		CreateTime:      timestamppb.New(*qUser.CreateTime),
-		UpdateTime:      timestamppb.New(*qUser.UpdateTime),
-		Email:           qUser.Email,
-		Owner:           &qUser.IsOwner,
-		GoogleUserId:    derefOrEmpty(qUser.GoogleUserID),
-		MicrosoftUserId: derefOrEmpty(qUser.MicrosoftUserID),
+		Id:                  idformat.User.Format(qUser.ID),
+		CreateTime:          timestamppb.New(*qUser.CreateTime),
+		UpdateTime:          timestamppb.New(*qUser.UpdateTime),
+		Email:               qUser.Email,
+		Owner:               &qUser.IsOwner,
+		GoogleUserId:        derefOrEmpty(qUser.GoogleUserID),
+		MicrosoftUserId:     derefOrEmpty(qUser.MicrosoftUserID),
+		HasAuthenticatorApp: qUser.AuthenticatorAppSecretCiphertext != nil,
 	}
 }

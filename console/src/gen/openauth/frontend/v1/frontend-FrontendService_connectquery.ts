@@ -59,13 +59,6 @@ export const listOrganizations = FrontendService.method.listOrganizations;
 export const setPassword = FrontendService.method.setPassword;
 
 /**
- * Who am I?
- *
- * @generated from rpc openauth.frontend.v1.FrontendService.WhoAmI
- */
-export const whoAmI = FrontendService.method.whoAmI;
-
-/**
  * @generated from rpc openauth.frontend.v1.FrontendService.ListSAMLConnections
  */
 export const listSAMLConnections = FrontendService.method.listSAMLConnections;
@@ -121,14 +114,19 @@ export const deleteSCIMAPIKey = FrontendService.method.deleteSCIMAPIKey;
 export const revokeSCIMAPIKey = FrontendService.method.revokeSCIMAPIKey;
 
 /**
- * @generated from rpc openauth.frontend.v1.FrontendService.DeleteMyPasskey
+ * @generated from rpc openauth.frontend.v1.FrontendService.Whoami
  */
-export const deleteMyPasskey = FrontendService.method.deleteMyPasskey;
+export const whoami = FrontendService.method.whoami;
 
 /**
  * @generated from rpc openauth.frontend.v1.FrontendService.ListMyPasskeys
  */
 export const listMyPasskeys = FrontendService.method.listMyPasskeys;
+
+/**
+ * @generated from rpc openauth.frontend.v1.FrontendService.DeleteMyPasskey
+ */
+export const deleteMyPasskey = FrontendService.method.deleteMyPasskey;
 
 /**
  * @generated from rpc openauth.frontend.v1.FrontendService.GetPasskeyOptions
@@ -139,3 +137,13 @@ export const getPasskeyOptions = FrontendService.method.getPasskeyOptions;
  * @generated from rpc openauth.frontend.v1.FrontendService.RegisterPasskey
  */
 export const registerPasskey = FrontendService.method.registerPasskey;
+
+/**
+ * @generated from rpc openauth.frontend.v1.FrontendService.GetAuthenticatorAppOptions
+ */
+export const getAuthenticatorAppOptions = FrontendService.method.getAuthenticatorAppOptions;
+
+/**
+ * @generated from rpc openauth.frontend.v1.FrontendService.RegisterAuthenticatorApp
+ */
+export const registerAuthenticatorApp = FrontendService.method.registerAuthenticatorApp;

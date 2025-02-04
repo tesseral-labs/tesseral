@@ -28,11 +28,3 @@ func (s *Service) Refresh(ctx context.Context, req *connect.Request[frontendv1.R
 
 	return connectRes, nil
 }
-
-func (s *Service) Whoami(ctx context.Context, req *connect.Request[frontendv1.WhoAmIRequest]) (*connect.Response[frontendv1.WhoAmIResponse], error) {
-	res, err := s.Store.Whoami(ctx, req.Msg)
-	if err != nil {
-		return nil, fmt.Errorf("store: %w", err)
-	}
-	return connect.NewResponse(res), nil
-}
