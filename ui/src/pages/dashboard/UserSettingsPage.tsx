@@ -1,4 +1,5 @@
 import React, { FC, FormEvent, MouseEvent, useEffect, useState } from 'react'
+import QRCode from 'qrcode'
 import { useUser } from '@/lib/auth'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -14,7 +15,7 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableHead,
+  TableHeader,
   TableRow,
 } from '@/components/ui/table'
 import {
@@ -25,9 +26,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { base64urlEncode } from '@/lib/utils'
+import { base32Encode, base64urlEncode } from '@/lib/utils'
 import { parseErrorMessage } from '@/lib/errors'
 import { toast } from 'sonner'
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from '@/components/ui/input-otp'
+import Loader from '@/components/ui/loader'
 
 const UserSettingsPage: FC = () => {
   const encoder = new TextEncoder()
@@ -44,6 +52,9 @@ const UserSettingsPage: FC = () => {
   const [editingPassword, setEditingPassword] = useState(false)
   const [email, setEmail] = useState(whoamiRes?.email || '')
   const [password, setPassword] = useState('')
+  const [qrImage, setQRImage] = useState<string | null>(null)
+  const [registeringAuthenticatorApp, setRegisteringAuthenticatorApp] =
+    useState(false)
 
   const handleEmailSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -69,7 +80,41 @@ const UserSettingsPage: FC = () => {
   ) => {
     e.stopPropagation()
 
+    // const authenticatorAppOptions = await getAuthenticatorAppOptionsMutation.mutateAsync()
+    // const secret = base32Encode(authenticatorAppOptions.secret)
+    // const url = `otpauth://totp/${organization?.displayName}:${whoamiRes?.intermediateSession?.email}?secret=${secret}&issuer=${organization?.displayName}`
+    const url = 'supersecreturl'
+    const qrImage = await QRCode.toDataURL(url, {
+      errorCorrectionLevel: 'H',
+    })
+    setQRImage(qrImage)
+
     return true
+  }
+
+  const handleRegisterAuthenticatorApp = async (
+    e: FormEvent<HTMLFormElement>,
+  ) => {
+    e.preventDefault()
+    setRegisteringAuthenticatorApp(true)
+
+    try {
+      //   await registerAuthenticatorAppMutation.mutateAsync({
+      //     totpCode: code,
+      //   })
+      // } catch (error) {
+      //   const message = parseErrorMessage(error)
+      //   toast.error('Could not register authenticator app', {
+      //     description: message,
+      //   })
+      setRegisteringAuthenticatorApp(true)
+    } catch (error) {
+      setRegisteringAuthenticatorApp(false)
+      const message = parseErrorMessage(error)
+      toast.error('Could not register authenticator app', {
+        description: message,
+      })
+    }
   }
 
   const handleRegisterPasskeyClick = async () => {
@@ -264,13 +309,13 @@ const UserSettingsPage: FC = () => {
         </CardHeader>
         <CardContent>
           <Table>
-            <TableHead>
+            <TableHeader>
               <TableRow className="font-bold">
                 <TableCell>Method</TableCell>
                 <TableCell>Registered</TableCell>
                 <TableCell></TableCell>
               </TableRow>
-            </TableHead>
+            </TableHeader>
             <TableBody>
               <TableRow>
                 <TableCell>Authenticator App</TableCell>
@@ -289,8 +334,41 @@ const UserSettingsPage: FC = () => {
                     <DialogContent>
                       <DialogHeader>
                         <DialogTitle>Register Authenticator App</DialogTitle>
-                        <DialogDescription></DialogDescription>
+                        <DialogDescription>
+                          Scan the QR code below using your authenticator app
+                          and enter the resulting 6-digit code.
+                        </DialogDescription>
                       </DialogHeader>
+
+                      {qrImage && (
+                        <div className="border rounded-lg w-full mr-auto">
+                          <img className="w-full" src={qrImage} />
+                        </div>
+                      )}
+
+                      <form
+                        className="mt-8 flex flex-col items-center w-full"
+                        onSubmit={handleRegisterAuthenticatorApp}
+                      >
+                        <InputOTP maxLength={6}>
+                          <InputOTPGroup>
+                            <InputOTPSlot index={0} />
+                            <InputOTPSlot index={1} />
+                            <InputOTPSlot index={2} />
+                          </InputOTPGroup>
+                          <InputOTPSeparator />
+                          <InputOTPGroup>
+                            <InputOTPSlot index={3} />
+                            <InputOTPSlot index={4} />
+                            <InputOTPSlot index={5} />
+                          </InputOTPGroup>
+                        </InputOTP>
+
+                        <Button className="mt-4" type="submit">
+                          {registeringAuthenticatorApp && <Loader />}
+                          Submit
+                        </Button>
+                      </form>
                     </DialogContent>
                   </Dialog>
                 </TableCell>
