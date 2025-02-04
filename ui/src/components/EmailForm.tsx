@@ -90,8 +90,9 @@ const EmailForm: FC<EmailFormProps> = ({ setView }) => {
     } catch (error) {
       setSubmitting(false)
       const message = parseErrorMessage(error)
-
-      toast.error(message)
+      toast.error('Could not initiate login', {
+        description: message,
+      })
     }
   }
 
