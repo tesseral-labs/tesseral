@@ -195,6 +195,42 @@ func (q *Queries) CreateOrganizationMicrosoftTenantID(ctx context.Context, arg C
 	return i, err
 }
 
+const createPasskey = `-- name: CreatePasskey :one
+INSERT INTO passkeys (id, user_id, credential_id, public_key, aaguid)
+    VALUES ($1, $2, $3, $4, $5)
+RETURNING
+    id, user_id, create_time, update_time, credential_id, public_key, aaguid
+`
+
+type CreatePasskeyParams struct {
+	ID           uuid.UUID
+	UserID       uuid.UUID
+	CredentialID []byte
+	PublicKey    []byte
+	Aaguid       string
+}
+
+func (q *Queries) CreatePasskey(ctx context.Context, arg CreatePasskeyParams) (Passkey, error) {
+	row := q.db.QueryRow(ctx, createPasskey,
+		arg.ID,
+		arg.UserID,
+		arg.CredentialID,
+		arg.PublicKey,
+		arg.Aaguid,
+	)
+	var i Passkey
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.CredentialID,
+		&i.PublicKey,
+		&i.Aaguid,
+	)
+	return i, err
+}
+
 const createSession = `-- name: CreateSession :one
 INSERT INTO sessions (id, user_id, expire_time, refresh_token_sha256)
     VALUES ($1, $2, $3, $4)
@@ -1016,67 +1052,6 @@ func (q *Queries) ListSAMLOrganizations(ctx context.Context, arg ListSAMLOrganiz
 	return items, nil
 }
 
-const registerPasskey = `-- name: RegisterPasskey :one
-UPDATE
-    intermediate_sessions
-SET
-    passkey_credential_id = $1,
-    passkey_public_key = $2,
-    passkey_aaguid = $3,
-    passkey_verified = TRUE,
-    update_time = now()
-WHERE
-    id = $4
-RETURNING
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_recovery_code_bcrypts
-`
-
-type RegisterPasskeyParams struct {
-	PasskeyCredentialID []byte
-	PasskeyPublicKey    []byte
-	PasskeyAaguid       *string
-	ID                  uuid.UUID
-}
-
-func (q *Queries) RegisterPasskey(ctx context.Context, arg RegisterPasskeyParams) (IntermediateSession, error) {
-	row := q.db.QueryRow(ctx, registerPasskey,
-		arg.PasskeyCredentialID,
-		arg.PasskeyPublicKey,
-		arg.PasskeyAaguid,
-		arg.ID,
-	)
-	var i IntermediateSession
-	err := row.Scan(
-		&i.ID,
-		&i.ProjectID,
-		&i.CreateTime,
-		&i.ExpireTime,
-		&i.Email,
-		&i.GoogleOauthStateSha256,
-		&i.MicrosoftOauthStateSha256,
-		&i.GoogleHostedDomain,
-		&i.GoogleUserID,
-		&i.MicrosoftTenantID,
-		&i.MicrosoftUserID,
-		&i.PasswordVerified,
-		&i.OrganizationID,
-		&i.UpdateTime,
-		&i.SecretTokenSha256,
-		&i.NewUserPasswordBcrypt,
-		&i.EmailVerificationChallengeSha256,
-		&i.EmailVerificationChallengeCompleted,
-		&i.PasskeyCredentialID,
-		&i.PasskeyPublicKey,
-		&i.PasskeyAaguid,
-		&i.PasskeyVerifyChallengeSha256,
-		&i.PasskeyVerified,
-		&i.AuthenticatorAppSecretCiphertext,
-		&i.AuthenticatorAppVerified,
-		&i.AuthenticatorAppRecoveryCodeBcrypts,
-	)
-	return i, err
-}
-
 const revokeIntermediateSession = `-- name: RevokeIntermediateSession :one
 UPDATE
     intermediate_sessions
@@ -1878,6 +1853,67 @@ type UpdateIntermediateSessionPasswordVerifiedParams struct {
 
 func (q *Queries) UpdateIntermediateSessionPasswordVerified(ctx context.Context, arg UpdateIntermediateSessionPasswordVerifiedParams) (IntermediateSession, error) {
 	row := q.db.QueryRow(ctx, updateIntermediateSessionPasswordVerified, arg.OrganizationID, arg.ID)
+	var i IntermediateSession
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.CreateTime,
+		&i.ExpireTime,
+		&i.Email,
+		&i.GoogleOauthStateSha256,
+		&i.MicrosoftOauthStateSha256,
+		&i.GoogleHostedDomain,
+		&i.GoogleUserID,
+		&i.MicrosoftTenantID,
+		&i.MicrosoftUserID,
+		&i.PasswordVerified,
+		&i.OrganizationID,
+		&i.UpdateTime,
+		&i.SecretTokenSha256,
+		&i.NewUserPasswordBcrypt,
+		&i.EmailVerificationChallengeSha256,
+		&i.EmailVerificationChallengeCompleted,
+		&i.PasskeyCredentialID,
+		&i.PasskeyPublicKey,
+		&i.PasskeyAaguid,
+		&i.PasskeyVerifyChallengeSha256,
+		&i.PasskeyVerified,
+		&i.AuthenticatorAppSecretCiphertext,
+		&i.AuthenticatorAppVerified,
+		&i.AuthenticatorAppRecoveryCodeBcrypts,
+	)
+	return i, err
+}
+
+const updateIntermediateSessionRegisterPasskey = `-- name: UpdateIntermediateSessionRegisterPasskey :one
+UPDATE
+    intermediate_sessions
+SET
+    passkey_credential_id = $1,
+    passkey_public_key = $2,
+    passkey_aaguid = $3,
+    passkey_verified = TRUE,
+    update_time = now()
+WHERE
+    id = $4
+RETURNING
+    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_recovery_code_bcrypts
+`
+
+type UpdateIntermediateSessionRegisterPasskeyParams struct {
+	PasskeyCredentialID []byte
+	PasskeyPublicKey    []byte
+	PasskeyAaguid       *string
+	ID                  uuid.UUID
+}
+
+func (q *Queries) UpdateIntermediateSessionRegisterPasskey(ctx context.Context, arg UpdateIntermediateSessionRegisterPasskeyParams) (IntermediateSession, error) {
+	row := q.db.QueryRow(ctx, updateIntermediateSessionRegisterPasskey,
+		arg.PasskeyCredentialID,
+		arg.PasskeyPublicKey,
+		arg.PasskeyAaguid,
+		arg.ID,
+	)
 	var i IntermediateSession
 	err := row.Scan(
 		&i.ID,

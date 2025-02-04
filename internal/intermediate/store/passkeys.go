@@ -72,7 +72,7 @@ func (s *Store) RegisterPasskey(ctx context.Context, req *intermediatev1.Registe
 		return nil, fmt.Errorf("marshal public key: %w", err)
 	}
 
-	if _, err := q.RegisterPasskey(ctx, queries.RegisterPasskeyParams{
+	if _, err := q.UpdateIntermediateSessionRegisterPasskey(ctx, queries.UpdateIntermediateSessionRegisterPasskeyParams{
 		ID:                  authn.IntermediateSessionID(ctx),
 		PasskeyCredentialID: cred.ID,
 		PasskeyPublicKey:    publicKey,
