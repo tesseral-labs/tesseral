@@ -123,7 +123,7 @@ const VerifyPassword: FC<VerifyPasswordProps> = ({ setView }) => {
               disabled={password.length < 1}
               type="submit"
             >
-              {submitting && <Loader size="sm" />}
+              {submitting && <Loader />}
               Log In
             </Button>
           </form>
