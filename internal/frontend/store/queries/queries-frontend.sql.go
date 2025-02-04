@@ -167,6 +167,16 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 	return i, err
 }
 
+const deletePasskey = `-- name: DeletePasskey :exec
+DELETE FROM passkeys
+WHERE id = $1
+`
+
+func (q *Queries) DeletePasskey(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deletePasskey, id)
+	return err
+}
+
 const deleteSAMLConnection = `-- name: DeleteSAMLConnection :exec
 DELETE FROM saml_connections
 WHERE id = $1
@@ -488,6 +498,36 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 		&i.AuthenticatorAppRecoveryCodeBcrypts,
 		&i.FailedAuthenticatorAppAttempts,
 		&i.AuthenticatorAppLockoutExpireTime,
+	)
+	return i, err
+}
+
+const getUserPasskey = `-- name: GetUserPasskey :one
+SELECT
+    id, user_id, create_time, update_time, credential_id, public_key, aaguid
+FROM
+    passkeys
+WHERE
+    id = $1
+    AND user_id = $2
+`
+
+type GetUserPasskeyParams struct {
+	ID     uuid.UUID
+	UserID uuid.UUID
+}
+
+func (q *Queries) GetUserPasskey(ctx context.Context, arg GetUserPasskeyParams) (Passkey, error) {
+	row := q.db.QueryRow(ctx, getUserPasskey, arg.ID, arg.UserID)
+	var i Passkey
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.CredentialID,
+		&i.PublicKey,
+		&i.Aaguid,
 	)
 	return i, err
 }

@@ -153,6 +153,12 @@ service FrontendService {
     };
   }
 
+  rpc DeleteMyPasskey(DeleteMyPasskeyRequest) returns (DeleteMyPasskeyResponse) {
+    option (google.api.http) = {
+      delete: "/frontend/v1/me/passkeys/{id}"
+    };
+  }
+
   rpc ListMyPasskeys(ListMyPasskeysRequest) returns (ListMyPasskeysResponse) {
     option (google.api.http) = {
       get: "/frontend/v1/me/passkeys"
@@ -363,6 +369,13 @@ message ListMyPasskeysRequest {
 message ListMyPasskeysResponse {
   repeated Passkey passkeys = 1;
   string next_page_token = 2;
+}
+
+message DeleteMyPasskeyRequest {
+  string id = 1;
+}
+
+message DeleteMyPasskeyResponse {
 }
 
 message GetPasskeyOptionsRequest {
