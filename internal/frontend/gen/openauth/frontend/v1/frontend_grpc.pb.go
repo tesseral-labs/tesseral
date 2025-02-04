@@ -41,6 +41,8 @@ const (
 	FrontendService_UpdateSCIMAPIKey_FullMethodName     = "/openauth.frontend.v1.FrontendService/UpdateSCIMAPIKey"
 	FrontendService_DeleteSCIMAPIKey_FullMethodName     = "/openauth.frontend.v1.FrontendService/DeleteSCIMAPIKey"
 	FrontendService_RevokeSCIMAPIKey_FullMethodName     = "/openauth.frontend.v1.FrontendService/RevokeSCIMAPIKey"
+	FrontendService_GetPasskeyOptions_FullMethodName    = "/openauth.frontend.v1.FrontendService/GetPasskeyOptions"
+	FrontendService_RegisterPasskey_FullMethodName      = "/openauth.frontend.v1.FrontendService/RegisterPasskey"
 )
 
 // FrontendServiceClient is the client API for FrontendService service.
@@ -72,6 +74,8 @@ type FrontendServiceClient interface {
 	UpdateSCIMAPIKey(ctx context.Context, in *UpdateSCIMAPIKeyRequest, opts ...grpc.CallOption) (*UpdateSCIMAPIKeyResponse, error)
 	DeleteSCIMAPIKey(ctx context.Context, in *DeleteSCIMAPIKeyRequest, opts ...grpc.CallOption) (*DeleteSCIMAPIKeyResponse, error)
 	RevokeSCIMAPIKey(ctx context.Context, in *RevokeSCIMAPIKeyRequest, opts ...grpc.CallOption) (*RevokeSCIMAPIKeyResponse, error)
+	GetPasskeyOptions(ctx context.Context, in *GetPasskeyOptionsRequest, opts ...grpc.CallOption) (*GetPasskeyOptionsResponse, error)
+	RegisterPasskey(ctx context.Context, in *RegisterPasskeyRequest, opts ...grpc.CallOption) (*RegisterPasskeyResponse, error)
 }
 
 type frontendServiceClient struct {
@@ -302,6 +306,26 @@ func (c *frontendServiceClient) RevokeSCIMAPIKey(ctx context.Context, in *Revoke
 	return out, nil
 }
 
+func (c *frontendServiceClient) GetPasskeyOptions(ctx context.Context, in *GetPasskeyOptionsRequest, opts ...grpc.CallOption) (*GetPasskeyOptionsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetPasskeyOptionsResponse)
+	err := c.cc.Invoke(ctx, FrontendService_GetPasskeyOptions_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *frontendServiceClient) RegisterPasskey(ctx context.Context, in *RegisterPasskeyRequest, opts ...grpc.CallOption) (*RegisterPasskeyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RegisterPasskeyResponse)
+	err := c.cc.Invoke(ctx, FrontendService_RegisterPasskey_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // FrontendServiceServer is the server API for FrontendService service.
 // All implementations must embed UnimplementedFrontendServiceServer
 // for forward compatibility.
@@ -331,6 +355,8 @@ type FrontendServiceServer interface {
 	UpdateSCIMAPIKey(context.Context, *UpdateSCIMAPIKeyRequest) (*UpdateSCIMAPIKeyResponse, error)
 	DeleteSCIMAPIKey(context.Context, *DeleteSCIMAPIKeyRequest) (*DeleteSCIMAPIKeyResponse, error)
 	RevokeSCIMAPIKey(context.Context, *RevokeSCIMAPIKeyRequest) (*RevokeSCIMAPIKeyResponse, error)
+	GetPasskeyOptions(context.Context, *GetPasskeyOptionsRequest) (*GetPasskeyOptionsResponse, error)
+	RegisterPasskey(context.Context, *RegisterPasskeyRequest) (*RegisterPasskeyResponse, error)
 	mustEmbedUnimplementedFrontendServiceServer()
 }
 
@@ -406,6 +432,12 @@ func (UnimplementedFrontendServiceServer) DeleteSCIMAPIKey(context.Context, *Del
 }
 func (UnimplementedFrontendServiceServer) RevokeSCIMAPIKey(context.Context, *RevokeSCIMAPIKeyRequest) (*RevokeSCIMAPIKeyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RevokeSCIMAPIKey not implemented")
+}
+func (UnimplementedFrontendServiceServer) GetPasskeyOptions(context.Context, *GetPasskeyOptionsRequest) (*GetPasskeyOptionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPasskeyOptions not implemented")
+}
+func (UnimplementedFrontendServiceServer) RegisterPasskey(context.Context, *RegisterPasskeyRequest) (*RegisterPasskeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterPasskey not implemented")
 }
 func (UnimplementedFrontendServiceServer) mustEmbedUnimplementedFrontendServiceServer() {}
 func (UnimplementedFrontendServiceServer) testEmbeddedByValue()                         {}
@@ -824,6 +856,42 @@ func _FrontendService_RevokeSCIMAPIKey_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _FrontendService_GetPasskeyOptions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetPasskeyOptionsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).GetPasskeyOptions(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_GetPasskeyOptions_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).GetPasskeyOptions(ctx, req.(*GetPasskeyOptionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FrontendService_RegisterPasskey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RegisterPasskeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).RegisterPasskey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_RegisterPasskey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).RegisterPasskey(ctx, req.(*RegisterPasskeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // FrontendService_ServiceDesc is the grpc.ServiceDesc for FrontendService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -918,6 +986,14 @@ var FrontendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RevokeSCIMAPIKey",
 			Handler:    _FrontendService_RevokeSCIMAPIKey_Handler,
+		},
+		{
+			MethodName: "GetPasskeyOptions",
+			Handler:    _FrontendService_GetPasskeyOptions_Handler,
+		},
+		{
+			MethodName: "RegisterPasskey",
+			Handler:    _FrontendService_RegisterPasskey_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -246,3 +246,9 @@ SET
 WHERE
     id = $1;
 
+-- name: CreatePasskey :one
+INSERT INTO passkeys (id, user_id, credential_id, public_key, aaguid)
+    VALUES ($1, $2, $3, $4, $5)
+RETURNING
+    *;
+

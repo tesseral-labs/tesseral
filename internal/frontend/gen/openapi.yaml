@@ -106,6 +106,47 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /frontend/v1/passkeys/options:
+        post:
+            tags:
+                - FrontendService
+            operationId: FrontendService_GetPasskeyOptions
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetPasskeyOptionsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /frontend/v1/passkeys/register:
+        post:
+            tags:
+                - FrontendService
+            operationId: FrontendService_RegisterPasskey
+            parameters:
+                - name: attestationObject
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/RegisterPasskeyResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /frontend/v1/project:
         get:
             tags:
@@ -563,6 +604,17 @@ components:
             properties:
                 organization:
                     $ref: '#/components/schemas/Organization'
+        GetPasskeyOptionsResponse:
+            type: object
+            properties:
+                rpId:
+                    type: string
+                rpName:
+                    type: string
+                userId:
+                    type: string
+                userDisplayName:
+                    type: string
         GetProjectResponse:
             type: object
             properties:
@@ -672,6 +724,26 @@ components:
                     type: boolean
                 scimEnabled:
                     type: boolean
+        Passkey:
+            type: object
+            properties:
+                id:
+                    type: string
+                userId:
+                    type: string
+                createTime:
+                    type: string
+                    format: date-time
+                updateTime:
+                    type: string
+                    format: date-time
+                credentialId:
+                    type: string
+                    format: bytes
+                publicKeyPkix:
+                    type: string
+                aaguid:
+                    type: string
         Project:
             type: object
             properties:
@@ -707,6 +779,11 @@ components:
             properties:
                 accessToken:
                     type: string
+        RegisterPasskeyResponse:
+            type: object
+            properties:
+                passkey:
+                    $ref: '#/components/schemas/Passkey'
         RevokeSCIMAPIKeyResponse:
             type: object
             properties:
