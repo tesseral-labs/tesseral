@@ -354,13 +354,17 @@ const UserSettingsPage: FC = () => {
                         register.
                       </DialogDescription>
 
-                      {qrImage ? (
-                        <div className="border rounded-lg w-full">
-                          <img className="w-full" src={qrImage} />
-                        </div>
-                      ) : (
-                        <Loader />
-                      )}
+                      <div className="flex flex-row justify-center w-full">
+                        {qrImage ? (
+                          <div className="border rounded-lg w-full">
+                            <img className="w-full" src={qrImage} />
+                          </div>
+                        ) : (
+                          <div className="my-8">
+                            <Loader />
+                          </div>
+                        )}
+                      </div>
 
                       <form
                         className="mt-8 flex flex-col items-center w-full"
