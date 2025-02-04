@@ -129,11 +129,12 @@ paths:
             tags:
                 - FrontendService
             operationId: FrontendService_RegisterPasskey
-            parameters:
-                - name: attestationObject
-                  in: query
-                  schema:
-                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/RegisterPasskeyRequest'
+                required: true
             responses:
                 "200":
                     description: OK
@@ -778,6 +779,11 @@ components:
             type: object
             properties:
                 accessToken:
+                    type: string
+        RegisterPasskeyRequest:
+            type: object
+            properties:
+                attestationObject:
                     type: string
         RegisterPasskeyResponse:
             type: object

@@ -162,6 +162,7 @@ service FrontendService {
   rpc RegisterPasskey(RegisterPasskeyRequest) returns (RegisterPasskeyResponse) {
     option (google.api.http) = {
       post: "/frontend/v1/passkeys/register",
+      body: "*"
     };
   }
 }
