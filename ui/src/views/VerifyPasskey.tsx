@@ -17,7 +17,6 @@ import {
 import { setAccessToken, setRefreshToken } from '@/auth'
 
 const VerifyPasskey: FC = () => {
-  const encoder = new TextEncoder()
   const layout = useLayout()
   const navigate = useNavigate()
 
@@ -71,8 +70,9 @@ const VerifyPasskey: FC = () => {
       navigate('/settings')
     } catch (error) {
       const message = parseErrorMessage(error)
-
-      toast.error(message)
+      toast.error('Could not verify passkey', {
+        description: message,
+      })
     }
   }
 

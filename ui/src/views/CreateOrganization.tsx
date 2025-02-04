@@ -35,6 +35,7 @@ const CreateOrganization: FC<CreateOrganizationProps> = ({ setView }) => {
   const { data: whoamiRes } = useQuery(whoami)
 
   const [displayName, setDisplayName] = useState<string>('')
+  const [submitting, setSubmitting] = useState<boolean>(false)
 
   const createOrganizationMutation = useMutation(createOrganization)
   const exchangeIntermediateSessionForSessionMutation = useMutation(
@@ -45,6 +46,7 @@ const CreateOrganization: FC<CreateOrganizationProps> = ({ setView }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setSubmitting(true)
 
     try {
       await createOrganizationMutation.mutateAsync({
@@ -55,6 +57,7 @@ const CreateOrganization: FC<CreateOrganizationProps> = ({ setView }) => {
         !whoamiRes?.intermediateSession?.googleUserId &&
         !whoamiRes?.intermediateSession?.microsoftUserId
       ) {
+        setSubmitting(false)
         setView(LoginViews.RegisterPassword)
         return
       }
@@ -66,11 +69,12 @@ const CreateOrganization: FC<CreateOrganizationProps> = ({ setView }) => {
 
       setRefreshToken(refreshToken)
       setAccessToken(accessToken)
+      setSubmitting(false)
 
       navigate('/settings')
     } catch (error) {
+      setSubmitting(false)
       const message = parseErrorMessage(error)
-
       toast.error('Could not create organization', {
         description: message,
       })

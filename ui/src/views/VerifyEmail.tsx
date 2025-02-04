@@ -1,5 +1,11 @@
 import React, { Dispatch, FC, SetStateAction, useState } from 'react'
 import { useMutation, useQuery } from '@connectrpc/connect-query'
+import { toast } from 'sonner'
+
+import { parseErrorMessage } from '@/lib/errors'
+import { useLayout } from '@/lib/settings'
+import { cn } from '@/lib/utils'
+import { LoginLayouts, LoginViews } from '@/lib/views'
 
 import { Title } from '@/components/Title'
 import { Button } from '@/components/ui/button'
@@ -14,18 +20,11 @@ import {
   verifyEmailChallenge,
   whoami,
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
-import { LoginLayouts, LoginViews } from '@/lib/views'
 import {
   InputOTP,
   InputOTPGroup,
-  InputOTPSeparator,
   InputOTPSlot,
 } from '@/components/ui/input-otp'
-import { useLayout } from '@/lib/settings'
-import { cn } from '@/lib/utils'
-import { toast } from 'sonner'
-import { ErrorDetail } from '@/gen/openauth/common/v1/common_pb'
-import { parseErrorMessage } from '@/lib/errors'
 
 interface VerifyEmailProps {
   setView: Dispatch<SetStateAction<LoginViews>>
@@ -35,26 +34,25 @@ const VerifyEmail: FC<VerifyEmailProps> = ({ setView }) => {
   const layout = useLayout()
 
   const [challengeCode, setChallengeCode] = useState<string>('')
+  const [submitting, setSubmitting] = useState<boolean>(false)
 
   const { data: whoamiRes } = useQuery(whoami)
   const verifyEmailChallengeMutation = useMutation(verifyEmailChallenge)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setSubmitting(true)
 
     try {
       await verifyEmailChallengeMutation.mutateAsync({
         code: challengeCode,
       })
 
+      setSubmitting(false)
       setView(LoginViews.ChooseOrganization)
     } catch (error) {
-      console.log(`error`, error)
-
+      setSubmitting(false)
       const message = parseErrorMessage(error)
-
-      console.log(`message`, message)
-
       toast.error('Could not verify email', {
         description: message,
       })

@@ -1,4 +1,4 @@
-import React, { Dispatch, FC, SetStateAction, useEffect } from 'react'
+import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 
 import { Title } from '@/components/Title'
 import { useMutation, useQuery } from '@connectrpc/connect-query'
@@ -23,6 +23,7 @@ import { cn } from '@/lib/utils'
 import { useLayout } from '@/lib/settings'
 import { parseErrorMessage } from '@/lib/errors'
 import { toast } from 'sonner'
+import Loader from '@/components/ui/loader'
 
 interface ChooseOrganizationProps {
   setIntermediateOrganization: Dispatch<
@@ -37,6 +38,8 @@ const ChooseOrganization: FC<ChooseOrganizationProps> = ({
 }) => {
   const layout = useLayout()
   const navigate = useNavigate()
+
+  const [setting, setSetting] = useState<boolean>(false)
 
   const { data: whoamiRes } = useQuery(whoami)
   const { data: listOrganizationsResponse } = useQuery(listOrganizations)
@@ -119,6 +122,7 @@ const ChooseOrganization: FC<ChooseOrganizationProps> = ({
   }
 
   const handleOrganizationClick = async (organization: Organization) => {
+    setSetting(true)
     const intermediateOrganization = {
       ...organization,
     }
@@ -131,10 +135,11 @@ const ChooseOrganization: FC<ChooseOrganizationProps> = ({
         organizationId: organization.id,
       })
 
+      setSetting(false)
       setIntermediateOrganization(intermediateOrganization)
     } catch (error) {
+      setSetting(false)
       const message = parseErrorMessage(error)
-
       toast.error('Could not set organization', {
         description: message,
       })
@@ -155,11 +160,12 @@ const ChooseOrganization: FC<ChooseOrganizationProps> = ({
 
       setAccessToken(accessToken)
       setRefreshToken(refreshToken)
+      setSetting(false)
 
       navigate('/settings')
     } catch (error) {
+      setSetting(false)
       const message = parseErrorMessage(error)
-
       toast.error('Could not set organization', {
         description: message,
       })
@@ -188,6 +194,7 @@ const ChooseOrganization: FC<ChooseOrganizationProps> = ({
                   key={organization.id}
                   onClick={() => handleOrganizationClick(organization)}
                 >
+                  {setting && <Loader />}
                   {organization.displayName}
                 </li>
               ),

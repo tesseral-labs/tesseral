@@ -23,6 +23,9 @@ import { Organization } from '@/gen/openauth/intermediate/v1/intermediate_pb'
 import TextDivider from './ui/test-divider'
 import { Input } from './ui/input'
 import { Label } from './ui/label'
+import Loader from './ui/loader'
+import { parseErrorMessage } from '@/lib/errors'
+import { toast } from 'sonner'
 
 interface EmailFormProps {
   setView: Dispatch<SetStateAction<LoginViews>>
@@ -41,6 +44,7 @@ const EmailForm: FC<EmailFormProps> = ({ setView }) => {
   const [email, setEmail] = useState<string>('')
   const [emailIsValid, setEmailIsValid] = useState<boolean>(false)
   const [samlOrganizations, setSamlOrganizations] = useState<Organization[]>([])
+  const [submitting, setSubmitting] = useState<boolean>(false)
 
   const fetchSamlOrganizations = useCallback(
     debounce(async () => {
@@ -65,6 +69,7 @@ const EmailForm: FC<EmailFormProps> = ({ setView }) => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
+    setSubmitting(true)
 
     try {
       // this sets a cookie that subsequent requests use
@@ -78,10 +83,15 @@ const EmailForm: FC<EmailFormProps> = ({ setView }) => {
         email,
       })
 
+      setSubmitting(false)
+
       // redirect to challenge page
       setView(LoginViews.VerifyEmail)
     } catch (error) {
-      console.error(error)
+      setSubmitting(false)
+      const message = parseErrorMessage(error)
+
+      toast.error(message)
     }
   }
 
@@ -113,6 +123,7 @@ const EmailForm: FC<EmailFormProps> = ({ setView }) => {
         </div>
 
         <Button type="submit" disabled={!emailIsValid}>
+          {submitting && <Loader />}
           Sign In
         </Button>
       </form>

@@ -25,13 +25,16 @@ import { useLayout } from '@/lib/settings'
 import { LoginLayouts } from '@/lib/views'
 import { parseErrorMessage } from '@/lib/errors'
 import { toast } from 'sonner'
+import Loader from '@/components/ui/loader'
 
 const RegisterAuthenticatorApp: FC = () => {
   const layout = useLayout()
   const navigate = useNavigate()
   const organization = useIntermediateOrganization()
-  const [qrcode, setQRCode] = useState<string | null>(null)
+
   const [code, setCode] = useState<string>('')
+  const [qrcode, setQRCode] = useState<string | null>(null)
+  const [submitting, setSubmitting] = useState<boolean>(false)
 
   const exchangeIntermediateSessionForSessionMutation = useMutation(
     exchangeIntermediateSessionForSession,
@@ -55,6 +58,7 @@ const RegisterAuthenticatorApp: FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setSubmitting(true)
 
     try {
       await registerAuthenticatorAppMutation.mutateAsync({
@@ -66,11 +70,12 @@ const RegisterAuthenticatorApp: FC = () => {
 
       setAccessToken(accessToken)
       setRefreshToken(refreshToken)
+      setSubmitting(false)
 
       navigate('/settings')
     } catch (error) {
+      setSubmitting(false)
       const message = parseErrorMessage(error)
-
       toast.error('Could not register authenticator app', {
         description: message,
       })
@@ -130,6 +135,7 @@ const RegisterAuthenticatorApp: FC = () => {
             </InputOTP>
 
             <Button className="mt-4" disabled={code.length < 6} type="submit">
+              {submitting && <Loader />}
               Submit
             </Button>
           </form>
