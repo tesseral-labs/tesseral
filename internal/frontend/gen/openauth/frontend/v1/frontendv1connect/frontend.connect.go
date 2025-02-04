@@ -33,6 +33,8 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
+	// FrontendServiceLogoutProcedure is the fully-qualified name of the FrontendService's Logout RPC.
+	FrontendServiceLogoutProcedure = "/openauth.frontend.v1.FrontendService/Logout"
 	// FrontendServiceRefreshProcedure is the fully-qualified name of the FrontendService's Refresh RPC.
 	FrontendServiceRefreshProcedure = "/openauth.frontend.v1.FrontendService/Refresh"
 	// FrontendServiceGetProjectProcedure is the fully-qualified name of the FrontendService's
@@ -97,6 +99,7 @@ const (
 
 // FrontendServiceClient is a client for the openauth.frontend.v1.FrontendService service.
 type FrontendServiceClient interface {
+	Logout(context.Context, *connect.Request[v1.LogoutRequest]) (*connect.Response[v1.LogoutResponse], error)
 	Refresh(context.Context, *connect.Request[v1.RefreshRequest]) (*connect.Response[v1.RefreshResponse], error)
 	GetProject(context.Context, *connect.Request[v1.GetProjectRequest]) (*connect.Response[v1.GetProjectResponse], error)
 	GetOrganization(context.Context, *connect.Request[v1.GetOrganizationRequest]) (*connect.Response[v1.GetOrganizationResponse], error)
@@ -134,6 +137,12 @@ func NewFrontendServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 	baseURL = strings.TrimRight(baseURL, "/")
 	frontendServiceMethods := v1.File_openauth_frontend_v1_frontend_proto.Services().ByName("FrontendService").Methods()
 	return &frontendServiceClient{
+		logout: connect.NewClient[v1.LogoutRequest, v1.LogoutResponse](
+			httpClient,
+			baseURL+FrontendServiceLogoutProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("Logout")),
+			connect.WithClientOptions(opts...),
+		),
 		refresh: connect.NewClient[v1.RefreshRequest, v1.RefreshResponse](
 			httpClient,
 			baseURL+FrontendServiceRefreshProcedure,
@@ -265,6 +274,7 @@ func NewFrontendServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 
 // frontendServiceClient implements FrontendServiceClient.
 type frontendServiceClient struct {
+	logout               *connect.Client[v1.LogoutRequest, v1.LogoutResponse]
 	refresh              *connect.Client[v1.RefreshRequest, v1.RefreshResponse]
 	getProject           *connect.Client[v1.GetProjectRequest, v1.GetProjectResponse]
 	getOrganization      *connect.Client[v1.GetOrganizationRequest, v1.GetOrganizationResponse]
@@ -286,6 +296,11 @@ type frontendServiceClient struct {
 	updateSCIMAPIKey     *connect.Client[v1.UpdateSCIMAPIKeyRequest, v1.UpdateSCIMAPIKeyResponse]
 	deleteSCIMAPIKey     *connect.Client[v1.DeleteSCIMAPIKeyRequest, v1.DeleteSCIMAPIKeyResponse]
 	revokeSCIMAPIKey     *connect.Client[v1.RevokeSCIMAPIKeyRequest, v1.RevokeSCIMAPIKeyResponse]
+}
+
+// Logout calls openauth.frontend.v1.FrontendService.Logout.
+func (c *frontendServiceClient) Logout(ctx context.Context, req *connect.Request[v1.LogoutRequest]) (*connect.Response[v1.LogoutResponse], error) {
+	return c.logout.CallUnary(ctx, req)
 }
 
 // Refresh calls openauth.frontend.v1.FrontendService.Refresh.
@@ -395,6 +410,7 @@ func (c *frontendServiceClient) RevokeSCIMAPIKey(ctx context.Context, req *conne
 
 // FrontendServiceHandler is an implementation of the openauth.frontend.v1.FrontendService service.
 type FrontendServiceHandler interface {
+	Logout(context.Context, *connect.Request[v1.LogoutRequest]) (*connect.Response[v1.LogoutResponse], error)
 	Refresh(context.Context, *connect.Request[v1.RefreshRequest]) (*connect.Response[v1.RefreshResponse], error)
 	GetProject(context.Context, *connect.Request[v1.GetProjectRequest]) (*connect.Response[v1.GetProjectResponse], error)
 	GetOrganization(context.Context, *connect.Request[v1.GetOrganizationRequest]) (*connect.Response[v1.GetOrganizationResponse], error)
@@ -428,6 +444,12 @@ type FrontendServiceHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
 	frontendServiceMethods := v1.File_openauth_frontend_v1_frontend_proto.Services().ByName("FrontendService").Methods()
+	frontendServiceLogoutHandler := connect.NewUnaryHandler(
+		FrontendServiceLogoutProcedure,
+		svc.Logout,
+		connect.WithSchema(frontendServiceMethods.ByName("Logout")),
+		connect.WithHandlerOptions(opts...),
+	)
 	frontendServiceRefreshHandler := connect.NewUnaryHandler(
 		FrontendServiceRefreshProcedure,
 		svc.Refresh,
@@ -556,6 +578,8 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 	)
 	return "/openauth.frontend.v1.FrontendService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
+		case FrontendServiceLogoutProcedure:
+			frontendServiceLogoutHandler.ServeHTTP(w, r)
 		case FrontendServiceRefreshProcedure:
 			frontendServiceRefreshHandler.ServeHTTP(w, r)
 		case FrontendServiceGetProjectProcedure:
@@ -606,6 +630,10 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 
 // UnimplementedFrontendServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedFrontendServiceHandler struct{}
+
+func (UnimplementedFrontendServiceHandler) Logout(context.Context, *connect.Request[v1.LogoutRequest]) (*connect.Response[v1.LogoutResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.Logout is not implemented"))
+}
 
 func (UnimplementedFrontendServiceHandler) Refresh(context.Context, *connect.Request[v1.RefreshRequest]) (*connect.Response[v1.RefreshResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.Refresh is not implemented"))
