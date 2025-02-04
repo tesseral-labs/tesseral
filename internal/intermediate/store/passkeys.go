@@ -11,6 +11,7 @@ import (
 	"github.com/openauth/openauth/internal/intermediate/authn"
 	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
 	"github.com/openauth/openauth/internal/intermediate/store/queries"
+	"github.com/openauth/openauth/internal/store/idformat"
 	"github.com/openauth/openauth/internal/webauthn"
 )
 
@@ -38,7 +39,7 @@ func (s *Store) GetPasskeyOptions(ctx context.Context, req *intermediatev1.GetPa
 	return &intermediatev1.GetPasskeyOptionsResponse{
 		RpId:            *qProject.AuthDomain,
 		RpName:          qProject.DisplayName,
-		UserId:          fmt.Sprintf("%s|%s", *qIntermediateSession.Email, *qIntermediateSession.OrganizationID),
+		UserId:          fmt.Sprintf("%s|%s", *qIntermediateSession.Email, idformat.Organization.Format(*qIntermediateSession.OrganizationID)),
 		UserDisplayName: *qIntermediateSession.Email,
 	}, nil
 }

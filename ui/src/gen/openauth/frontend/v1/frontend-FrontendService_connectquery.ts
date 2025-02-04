@@ -119,3 +119,13 @@ export const deleteSCIMAPIKey = FrontendService.method.deleteSCIMAPIKey;
  * @generated from rpc openauth.frontend.v1.FrontendService.RevokeSCIMAPIKey
  */
 export const revokeSCIMAPIKey = FrontendService.method.revokeSCIMAPIKey;
+
+/**
+ * @generated from rpc openauth.frontend.v1.FrontendService.GetPasskeyOptions
+ */
+export const getPasskeyOptions = FrontendService.method.getPasskeyOptions;
+
+/**
+ * @generated from rpc openauth.frontend.v1.FrontendService.RegisterPasskey
+ */
+export const registerPasskey = FrontendService.method.registerPasskey;

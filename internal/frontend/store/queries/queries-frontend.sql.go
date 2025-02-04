@@ -12,6 +12,42 @@ import (
 	"github.com/google/uuid"
 )
 
+const createPasskey = `-- name: CreatePasskey :one
+INSERT INTO passkeys (id, user_id, credential_id, public_key, aaguid)
+    VALUES ($1, $2, $3, $4, $5)
+RETURNING
+    id, user_id, create_time, update_time, credential_id, public_key, aaguid
+`
+
+type CreatePasskeyParams struct {
+	ID           uuid.UUID
+	UserID       uuid.UUID
+	CredentialID []byte
+	PublicKey    []byte
+	Aaguid       string
+}
+
+func (q *Queries) CreatePasskey(ctx context.Context, arg CreatePasskeyParams) (Passkey, error) {
+	row := q.db.QueryRow(ctx, createPasskey,
+		arg.ID,
+		arg.UserID,
+		arg.CredentialID,
+		arg.PublicKey,
+		arg.Aaguid,
+	)
+	var i Passkey
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.CredentialID,
+		&i.PublicKey,
+		&i.Aaguid,
+	)
+	return i, err
+}
+
 const createSAMLConnection = `-- name: CreateSAMLConnection :one
 INSERT INTO saml_connections (id, organization_id, is_primary, idp_redirect_url, idp_x509_certificate, idp_entity_id)
     VALUES ($1, $2, $3, $4, $5, $6)

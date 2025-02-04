@@ -152,6 +152,18 @@ service FrontendService {
       post: "/frontend/v1/scim-api-keys/{id}/revoke",
     };
   }
+
+  rpc GetPasskeyOptions(GetPasskeyOptionsRequest) returns (GetPasskeyOptionsResponse) {
+    option (google.api.http) = {
+      post: "/frontend/v1/passkeys/options",
+    };
+  }
+
+  rpc RegisterPasskey(RegisterPasskeyRequest) returns (RegisterPasskeyResponse) {
+    option (google.api.http) = {
+      post: "/frontend/v1/passkeys/register",
+    };
+  }
 }
 
 message LogoutRequest {
@@ -337,6 +349,24 @@ message RevokeSCIMAPIKeyResponse {
   SCIMAPIKey scim_api_key = 1;
 }
 
+message GetPasskeyOptionsRequest {
+}
+
+message GetPasskeyOptionsResponse {
+  string rp_id = 1;
+  string rp_name = 2;
+  string user_id = 3;
+  string user_display_name = 4;
+}
+
+message RegisterPasskeyRequest {
+  string attestation_object = 1;
+}
+
+message RegisterPasskeyResponse {
+  Passkey passkey = 1;
+}
+
 message Project {
   string id = 1;
   string display_name = 2;
@@ -419,4 +449,14 @@ message SCIMAPIKey {
   google.protobuf.Timestamp update_time = 4;
   string secret_token = 5;
   bool revoked = 6;
+}
+
+message Passkey {
+  string id = 1;
+  string user_id = 2;
+  google.protobuf.Timestamp create_time = 3;
+  google.protobuf.Timestamp update_time = 4;
+  bytes credential_id = 5;
+  string public_key_pkix = 6;
+  string aaguid = 7;
 }

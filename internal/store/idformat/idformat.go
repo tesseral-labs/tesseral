@@ -16,6 +16,7 @@ var (
 	User                          = prettyuuid.MustNewFormat("user_", alphabet)
 	VerifiedEmail                 = prettyuuid.MustNewFormat("verified_email_", alphabet)
 	SAMLConnection                = prettyuuid.MustNewFormat("saml_connection_", alphabet)
+	Passkey                       = prettyuuid.MustNewFormat("passkey_", alphabet)
 
 	IntermediateSessionSecretToken = prettyuuid.MustNewFormat("openauth_secret_intermediate_session_token_", alphabet)
 
