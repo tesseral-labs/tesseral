@@ -8,7 +8,7 @@ import (
 	frontendv1 "github.com/openauth/openauth/internal/frontend/gen/openauth/frontend/v1"
 )
 
-func (s *Service) WhoAmI(ctx context.Context, req *connect.Request[frontendv1.WhoamiRequest]) (*connect.Response[frontendv1.WhoamiResponse], error) {
+func (s *Service) Whoami(ctx context.Context, req *connect.Request[frontendv1.WhoamiRequest]) (*connect.Response[frontendv1.WhoamiResponse], error) {
 	res, err := s.Store.Whoami(ctx, req.Msg)
 	if err != nil {
 		return nil, fmt.Errorf("store: %w", err)
