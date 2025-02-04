@@ -237,3 +237,12 @@ WHERE
 RETURNING
     *;
 
+-- name: InvalidateSession :exec
+UPDATE
+    sessions
+SET
+    update_time = now(),
+    refresh_token_sha256 = NULL
+WHERE
+    id = $1;
+

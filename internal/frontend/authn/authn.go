@@ -45,6 +45,18 @@ func ProjectID(ctx context.Context) uuid.UUID {
 	return projectID
 }
 
+func SessionID(ctx context.Context) uuid.UUID {
+	v, ok := ctx.Value(ctxKey{}).(ContextData)
+	if !ok {
+		panic("ctx does not carry authn data")
+	}
+	sessionID, err := idformat.Session.Parse(v.SessionID)
+	if err != nil {
+		panic(fmt.Errorf("parse session id: %w", err))
+	}
+	return sessionID
+}
+
 func UserID(ctx context.Context) uuid.UUID {
 	v, ok := ctx.Value(ctxKey{}).(ContextData)
 	if !ok {
