@@ -101,6 +101,15 @@ const (
 	BackendServiceListUsersProcedure = "/openauth.backend.v1.BackendService/ListUsers"
 	// BackendServiceGetUserProcedure is the fully-qualified name of the BackendService's GetUser RPC.
 	BackendServiceGetUserProcedure = "/openauth.backend.v1.BackendService/GetUser"
+	// BackendServiceListPasskeysProcedure is the fully-qualified name of the BackendService's
+	// ListPasskeys RPC.
+	BackendServiceListPasskeysProcedure = "/openauth.backend.v1.BackendService/ListPasskeys"
+	// BackendServiceGetPasskeyProcedure is the fully-qualified name of the BackendService's GetPasskey
+	// RPC.
+	BackendServiceGetPasskeyProcedure = "/openauth.backend.v1.BackendService/GetPasskey"
+	// BackendServiceDeletePasskeyProcedure is the fully-qualified name of the BackendService's
+	// DeletePasskey RPC.
+	BackendServiceDeletePasskeyProcedure = "/openauth.backend.v1.BackendService/DeletePasskey"
 	// BackendServiceListSessionsProcedure is the fully-qualified name of the BackendService's
 	// ListSessions RPC.
 	BackendServiceListSessionsProcedure = "/openauth.backend.v1.BackendService/ListSessions"
@@ -197,6 +206,9 @@ type BackendServiceClient interface {
 	RevokeSCIMAPIKey(context.Context, *connect.Request[v1.RevokeSCIMAPIKeyRequest]) (*connect.Response[v1.RevokeSCIMAPIKeyResponse], error)
 	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
 	GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error)
+	ListPasskeys(context.Context, *connect.Request[v1.ListPasskeysRequest]) (*connect.Response[v1.ListPasskeysResponse], error)
+	GetPasskey(context.Context, *connect.Request[v1.GetPasskeyRequest]) (*connect.Response[v1.GetPasskeyResponse], error)
+	DeletePasskey(context.Context, *connect.Request[v1.DeletePasskeyRequest]) (*connect.Response[v1.DeletePasskeyResponse], error)
 	ListSessions(context.Context, *connect.Request[v1.ListSessionsRequest]) (*connect.Response[v1.ListSessionsResponse], error)
 	GetSession(context.Context, *connect.Request[v1.GetSessionRequest]) (*connect.Response[v1.GetSessionResponse], error)
 	ListIntermediateSessions(context.Context, *connect.Request[v1.ListIntermediateSessionsRequest]) (*connect.Response[v1.ListIntermediateSessionsResponse], error)
@@ -371,6 +383,24 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(backendServiceMethods.ByName("GetUser")),
 			connect.WithClientOptions(opts...),
 		),
+		listPasskeys: connect.NewClient[v1.ListPasskeysRequest, v1.ListPasskeysResponse](
+			httpClient,
+			baseURL+BackendServiceListPasskeysProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("ListPasskeys")),
+			connect.WithClientOptions(opts...),
+		),
+		getPasskey: connect.NewClient[v1.GetPasskeyRequest, v1.GetPasskeyResponse](
+			httpClient,
+			baseURL+BackendServiceGetPasskeyProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("GetPasskey")),
+			connect.WithClientOptions(opts...),
+		),
+		deletePasskey: connect.NewClient[v1.DeletePasskeyRequest, v1.DeletePasskeyResponse](
+			httpClient,
+			baseURL+BackendServiceDeletePasskeyProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("DeletePasskey")),
+			connect.WithClientOptions(opts...),
+		),
 		listSessions: connect.NewClient[v1.ListSessionsRequest, v1.ListSessionsResponse](
 			httpClient,
 			baseURL+BackendServiceListSessionsProcedure,
@@ -537,6 +567,9 @@ type backendServiceClient struct {
 	revokeSCIMAPIKey                      *connect.Client[v1.RevokeSCIMAPIKeyRequest, v1.RevokeSCIMAPIKeyResponse]
 	listUsers                             *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
 	getUser                               *connect.Client[v1.GetUserRequest, v1.GetUserResponse]
+	listPasskeys                          *connect.Client[v1.ListPasskeysRequest, v1.ListPasskeysResponse]
+	getPasskey                            *connect.Client[v1.GetPasskeyRequest, v1.GetPasskeyResponse]
+	deletePasskey                         *connect.Client[v1.DeletePasskeyRequest, v1.DeletePasskeyResponse]
 	listSessions                          *connect.Client[v1.ListSessionsRequest, v1.ListSessionsResponse]
 	getSession                            *connect.Client[v1.GetSessionRequest, v1.GetSessionResponse]
 	listIntermediateSessions              *connect.Client[v1.ListIntermediateSessionsRequest, v1.ListIntermediateSessionsResponse]
@@ -681,6 +714,21 @@ func (c *backendServiceClient) GetUser(ctx context.Context, req *connect.Request
 	return c.getUser.CallUnary(ctx, req)
 }
 
+// ListPasskeys calls openauth.backend.v1.BackendService.ListPasskeys.
+func (c *backendServiceClient) ListPasskeys(ctx context.Context, req *connect.Request[v1.ListPasskeysRequest]) (*connect.Response[v1.ListPasskeysResponse], error) {
+	return c.listPasskeys.CallUnary(ctx, req)
+}
+
+// GetPasskey calls openauth.backend.v1.BackendService.GetPasskey.
+func (c *backendServiceClient) GetPasskey(ctx context.Context, req *connect.Request[v1.GetPasskeyRequest]) (*connect.Response[v1.GetPasskeyResponse], error) {
+	return c.getPasskey.CallUnary(ctx, req)
+}
+
+// DeletePasskey calls openauth.backend.v1.BackendService.DeletePasskey.
+func (c *backendServiceClient) DeletePasskey(ctx context.Context, req *connect.Request[v1.DeletePasskeyRequest]) (*connect.Response[v1.DeletePasskeyResponse], error) {
+	return c.deletePasskey.CallUnary(ctx, req)
+}
+
 // ListSessions calls openauth.backend.v1.BackendService.ListSessions.
 func (c *backendServiceClient) ListSessions(ctx context.Context, req *connect.Request[v1.ListSessionsRequest]) (*connect.Response[v1.ListSessionsResponse], error) {
 	return c.listSessions.CallUnary(ctx, req)
@@ -822,6 +870,9 @@ type BackendServiceHandler interface {
 	RevokeSCIMAPIKey(context.Context, *connect.Request[v1.RevokeSCIMAPIKeyRequest]) (*connect.Response[v1.RevokeSCIMAPIKeyResponse], error)
 	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
 	GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error)
+	ListPasskeys(context.Context, *connect.Request[v1.ListPasskeysRequest]) (*connect.Response[v1.ListPasskeysResponse], error)
+	GetPasskey(context.Context, *connect.Request[v1.GetPasskeyRequest]) (*connect.Response[v1.GetPasskeyResponse], error)
+	DeletePasskey(context.Context, *connect.Request[v1.DeletePasskeyRequest]) (*connect.Response[v1.DeletePasskeyResponse], error)
 	ListSessions(context.Context, *connect.Request[v1.ListSessionsRequest]) (*connect.Response[v1.ListSessionsResponse], error)
 	GetSession(context.Context, *connect.Request[v1.GetSessionRequest]) (*connect.Response[v1.GetSessionResponse], error)
 	ListIntermediateSessions(context.Context, *connect.Request[v1.ListIntermediateSessionsRequest]) (*connect.Response[v1.ListIntermediateSessionsResponse], error)
@@ -990,6 +1041,24 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		BackendServiceGetUserProcedure,
 		svc.GetUser,
 		connect.WithSchema(backendServiceMethods.ByName("GetUser")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceListPasskeysHandler := connect.NewUnaryHandler(
+		BackendServiceListPasskeysProcedure,
+		svc.ListPasskeys,
+		connect.WithSchema(backendServiceMethods.ByName("ListPasskeys")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceGetPasskeyHandler := connect.NewUnaryHandler(
+		BackendServiceGetPasskeyProcedure,
+		svc.GetPasskey,
+		connect.WithSchema(backendServiceMethods.ByName("GetPasskey")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceDeletePasskeyHandler := connect.NewUnaryHandler(
+		BackendServiceDeletePasskeyProcedure,
+		svc.DeletePasskey,
+		connect.WithSchema(backendServiceMethods.ByName("DeletePasskey")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceListSessionsHandler := connect.NewUnaryHandler(
@@ -1178,6 +1247,12 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceListUsersHandler.ServeHTTP(w, r)
 		case BackendServiceGetUserProcedure:
 			backendServiceGetUserHandler.ServeHTTP(w, r)
+		case BackendServiceListPasskeysProcedure:
+			backendServiceListPasskeysHandler.ServeHTTP(w, r)
+		case BackendServiceGetPasskeyProcedure:
+			backendServiceGetPasskeyHandler.ServeHTTP(w, r)
+		case BackendServiceDeletePasskeyProcedure:
+			backendServiceDeletePasskeyHandler.ServeHTTP(w, r)
 		case BackendServiceListSessionsProcedure:
 			backendServiceListSessionsHandler.ServeHTTP(w, r)
 		case BackendServiceGetSessionProcedure:
@@ -1323,6 +1398,18 @@ func (UnimplementedBackendServiceHandler) ListUsers(context.Context, *connect.Re
 
 func (UnimplementedBackendServiceHandler) GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetUser is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) ListPasskeys(context.Context, *connect.Request[v1.ListPasskeysRequest]) (*connect.Response[v1.ListPasskeysResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.ListPasskeys is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) GetPasskey(context.Context, *connect.Request[v1.GetPasskeyRequest]) (*connect.Response[v1.GetPasskeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetPasskey is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) DeletePasskey(context.Context, *connect.Request[v1.DeletePasskeyRequest]) (*connect.Response[v1.DeletePasskeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.DeletePasskey is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) ListSessions(context.Context, *connect.Request[v1.ListSessionsRequest]) (*connect.Response[v1.ListSessionsResponse], error) {

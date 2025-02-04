@@ -27,6 +27,7 @@ import { HomePage } from '@/pages/home/HomePage'
 import { ProjectDetailsTab } from '@/pages/project/ProjectDetailsTab'
 import LoginPage from './pages/login/LoginPage'
 import { ViewSessionPage } from '@/pages/sessions/ViewSessionPage'
+import { ViewPasskeyPage } from '@/pages/passkeys/ViewPasskeyPage'
 
 const queryClient = new QueryClient()
 
@@ -112,6 +113,10 @@ function AppWithinQueryClient() {
             <Route
               path="organizations/:organizationId/users/:userId"
               element={<ViewUserPage />}
+            />
+            <Route
+              path="organizations/:organizationId/users/:userId/passkeys/:passkeyId"
+              element={<ViewPasskeyPage />}
             />
             <Route
               path="organizations/:organizationId/scim-api-keys/:scimApiKeyId"

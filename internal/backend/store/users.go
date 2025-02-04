@@ -100,13 +100,14 @@ func (s *Store) GetUser(ctx context.Context, req *backendv1.GetUserRequest) (*ba
 
 func parseUser(qUser queries.User) *backendv1.User {
 	return &backendv1.User{
-		Id:              idformat.User.Format(qUser.ID),
-		OrganizationId:  idformat.Organization.Format(qUser.OrganizationID),
-		Email:           qUser.Email,
-		CreateTime:      timestamppb.New(*qUser.CreateTime),
-		UpdateTime:      timestamppb.New(*qUser.UpdateTime),
-		Owner:           &qUser.IsOwner,
-		GoogleUserId:    derefOrEmpty(qUser.GoogleUserID),
-		MicrosoftUserId: derefOrEmpty(qUser.MicrosoftUserID),
+		Id:                  idformat.User.Format(qUser.ID),
+		OrganizationId:      idformat.Organization.Format(qUser.OrganizationID),
+		Email:               qUser.Email,
+		CreateTime:          timestamppb.New(*qUser.CreateTime),
+		UpdateTime:          timestamppb.New(*qUser.UpdateTime),
+		Owner:               &qUser.IsOwner,
+		GoogleUserId:        derefOrEmpty(qUser.GoogleUserID),
+		MicrosoftUserId:     derefOrEmpty(qUser.MicrosoftUserID),
+		HasAuthenticatorApp: qUser.AuthenticatorAppSecretCiphertext != nil,
 	}
 }

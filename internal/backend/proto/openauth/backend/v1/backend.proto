@@ -155,6 +155,24 @@ service BackendService {
     };
   }
 
+  rpc ListPasskeys(ListPasskeysRequest) returns (ListPasskeysResponse) {
+    option (google.api.http) = {
+      get: "/backend/v1/passkeys"
+    };
+  }
+
+  rpc GetPasskey(GetPasskeyRequest) returns (GetPasskeyResponse) {
+    option (google.api.http) = {
+      get: "/backend/v1/passkeys/{id}"
+    };
+  }
+
+  rpc DeletePasskey(DeletePasskeyRequest) returns (DeletePasskeyResponse) {
+    option (google.api.http) = {
+      delete: "/backend/v1/passkeys/{id}"
+    };
+  }
+
   rpc ListSessions(ListSessionsRequest) returns (ListSessionsResponse) {
     option (google.api.http) = {
       get: "/backend/v1/sessions"
@@ -409,6 +427,30 @@ message GetUserResponse {
   User user = 1;
 }
 
+message ListPasskeysRequest {
+  string user_id = 1;
+  string page_token = 2;
+}
+
+message ListPasskeysResponse {
+  repeated Passkey passkeys = 1;
+  string next_page_token = 2;
+}
+
+message GetPasskeyRequest {
+  string id = 1;
+}
+
+message GetPasskeyResponse {
+  Passkey passkey = 1;
+}
+
+message DeletePasskeyRequest {
+  string id = 1;
+}
+
+message DeletePasskeyResponse {
+}
 
 message ListSessionsRequest {
   string user_id = 1;
