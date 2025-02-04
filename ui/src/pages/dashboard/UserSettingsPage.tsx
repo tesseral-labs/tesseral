@@ -1,12 +1,13 @@
 import React, { FC, FormEvent, MouseEvent, useEffect, useState } from 'react'
 import QRCode from 'qrcode'
-import { useUser } from '@/lib/auth'
+import { useOrganization, useUser } from '@/lib/auth'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { useMutation, useQuery } from '@connectrpc/connect-query'
 import {
   deleteMyPasskey,
   getAuthenticatorAppOptions,
+  getOrganization,
   getPasskeyOptions,
   listMyPasskeys,
   registerAuthenticatorApp,
@@ -42,13 +43,13 @@ import {
 } from '@/components/ui/input-otp'
 import Loader from '@/components/ui/loader'
 import { CheckCircle, PlusCircle } from 'lucide-react'
-import { set } from 'react-hook-form'
 
 const UserSettingsPage: FC = () => {
   const encoder = new TextEncoder()
   const user = useUser()
 
   const { data: whoamiRes, refetch: refetchMe } = useQuery(whoami)
+  const { data: organizationRes } = useQuery(getOrganization)
   const deleteMyPasskeyMutation = useMutation(deleteMyPasskey)
   const setPasswordMutation = useMutation(setUserPassword)
   const getAuthenticatorAppOptionsMutation = useMutation(
@@ -288,208 +289,219 @@ const UserSettingsPage: FC = () => {
           </form>
         </CardContent>
       </Card>
-      <Card className="mt-4 pt-4">
-        <CardContent>
-          <form onSubmit={handlePasswordSubmit}>
-            <label className="block w-full font-semibold mb-2">Password</label>
-            <Input
-              className="max-w-xs"
-              disabled={!editingPassword}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="•••••••••••••"
-              type="password"
-              value={password}
-            />
-            <div className="mt-2">
-              {editingPassword ? (
-                <>
+      {organizationRes?.organization?.logInWithPassword && (
+        <Card className="mt-4 pt-4">
+          <CardContent>
+            <form onSubmit={handlePasswordSubmit}>
+              <label className="block w-full font-semibold mb-2">
+                Password
+              </label>
+              <Input
+                className="max-w-xs"
+                disabled={!editingPassword}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="•••••••••••••"
+                type="password"
+                value={password}
+              />
+              <div className="mt-2">
+                {editingPassword ? (
+                  <>
+                    <Button
+                      className="text-sm rounded border border-border focus:border-primary mb-2 mr-2"
+                      onClick={(e: MouseEvent<HTMLButtonElement>) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+
+                        setEditingPassword(false)
+                      }}
+                      variant="outline"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      className="text-sm rounded border border-border focus:border-primary mb-2"
+                      type="submit"
+                    >
+                      Save Password
+                    </Button>
+                  </>
+                ) : (
                   <Button
-                    className="text-sm rounded border border-border focus:border-primary mb-2 mr-2"
+                    className="text-sm rounded border border-border focus:border-primary mb-2"
                     onClick={(e: MouseEvent<HTMLButtonElement>) => {
                       e.preventDefault()
                       e.stopPropagation()
-
-                      setEditingPassword(false)
+                      setEditingPassword(true)
                     }}
                     variant="outline"
                   >
-                    Cancel
+                    Change Password
                   </Button>
-                  <Button
-                    className="text-sm rounded border border-border focus:border-primary mb-2"
-                    type="submit"
+                )}
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      )}
+      {organizationRes?.organization?.logInWithAuthenticatorApp && (
+        <Card className="mt-4">
+          <CardHeader>
+            <CardTitle>
+              <div className="grid grid-cols-2 gap-4">
+                <span>Authenticator App</span>
+                <div className="flex flex-row items-end justify-end">
+                  <Dialog
+                    open={authenticatorAppDialogOpen}
+                    onOpenChange={setAuthenticatorAppDialogOpen}
                   >
-                    Save Password
-                  </Button>
+                    <DialogTrigger asChild>
+                      <Button
+                        onClick={handleAuthenticatorAppClick}
+                        variant="outline"
+                      >
+                        <PlusCircle />
+                        Register Authenticator App
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Register Authenticator App</DialogTitle>
+                        <DialogDescription>
+                          Scan the QR code with your authenticator app to
+                          register.
+                        </DialogDescription>
+
+                        <div className="flex flex-row justify-center w-full">
+                          {qrImage ? (
+                            <div className="border rounded-lg w-full">
+                              <img className="w-full" src={qrImage} />
+                            </div>
+                          ) : (
+                            <div className="my-8">
+                              <Loader />
+                            </div>
+                          )}
+                        </div>
+
+                        <form
+                          className="mt-8 flex flex-col items-center w-full"
+                          onSubmit={handleRegisterAuthenticatorApp}
+                        >
+                          <InputOTP
+                            maxLength={6}
+                            onChange={(value) => setAuthenticatorAppCode(value)}
+                          >
+                            <InputOTPGroup>
+                              <InputOTPSlot index={0} />
+                              <InputOTPSlot index={1} />
+                              <InputOTPSlot index={2} />
+                            </InputOTPGroup>
+                            <InputOTPSeparator />
+                            <InputOTPGroup>
+                              <InputOTPSlot index={3} />
+                              <InputOTPSlot index={4} />
+                              <InputOTPSlot index={5} />
+                            </InputOTPGroup>
+                          </InputOTP>
+
+                          <Button
+                            className="mt-4"
+                            disabled={registeringAuthenticatorApp}
+                            type="submit"
+                          >
+                            {registeringAuthenticatorApp && <Loader />}
+                            Submit
+                          </Button>
+                        </form>
+                      </DialogHeader>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              </div>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-sm flex flex-row items-center">
+              {whoamiRes?.user?.hasAuthenticatorApp ? (
+                <>
+                  <CheckCircle />
+                  <span className="ml-2">Registered</span>
                 </>
               ) : (
-                <Button
-                  className="text-sm rounded border border-border focus:border-primary mb-2"
-                  onClick={(e: MouseEvent<HTMLButtonElement>) => {
-                    e.preventDefault()
-                    e.stopPropagation()
-                    setEditingPassword(true)
-                  }}
-                  variant="outline"
-                >
-                  Change Password
-                </Button>
+                'Not registered'
               )}
             </div>
-          </form>
-        </CardContent>
-      </Card>
-      <Card className="mt-4">
-        <CardHeader>
-          <CardTitle>
-            <div className="grid grid-cols-2 gap-4">
-              <span>Authenticator App</span>
-              <div className="flex flex-row items-end justify-end">
-                <Dialog
-                  open={authenticatorAppDialogOpen}
-                  onOpenChange={setAuthenticatorAppDialogOpen}
-                >
-                  <DialogTrigger asChild>
-                    <Button
-                      onClick={handleAuthenticatorAppClick}
-                      variant="outline"
-                    >
-                      <PlusCircle />
-                      Register Authenticator App
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Register Authenticator App</DialogTitle>
-                      <DialogDescription>
-                        Scan the QR code with your authenticator app to
-                        register.
-                      </DialogDescription>
-
-                      <div className="flex flex-row justify-center w-full">
-                        {qrImage ? (
-                          <div className="border rounded-lg w-full">
-                            <img className="w-full" src={qrImage} />
-                          </div>
-                        ) : (
-                          <div className="my-8">
-                            <Loader />
-                          </div>
-                        )}
-                      </div>
-
-                      <form
-                        className="mt-8 flex flex-col items-center w-full"
-                        onSubmit={handleRegisterAuthenticatorApp}
-                      >
-                        <InputOTP
-                          maxLength={6}
-                          onChange={(value) => setAuthenticatorAppCode(value)}
-                        >
-                          <InputOTPGroup>
-                            <InputOTPSlot index={0} />
-                            <InputOTPSlot index={1} />
-                            <InputOTPSlot index={2} />
-                          </InputOTPGroup>
-                          <InputOTPSeparator />
-                          <InputOTPGroup>
-                            <InputOTPSlot index={3} />
-                            <InputOTPSlot index={4} />
-                            <InputOTPSlot index={5} />
-                          </InputOTPGroup>
-                        </InputOTP>
-
-                        <Button
-                          className="mt-4"
-                          disabled={registeringAuthenticatorApp}
-                          type="submit"
-                        >
-                          {registeringAuthenticatorApp && <Loader />}
-                          Submit
-                        </Button>
-                      </form>
-                    </DialogHeader>
-                  </DialogContent>
-                </Dialog>
+          </CardContent>
+        </Card>
+      )}
+      {organizationRes?.organization?.logInWithPasskey && (
+        <Card className="mt-4">
+          <CardHeader>
+            <CardTitle>
+              <div className="grid grid-cols-2 gap-4">
+                <span>Passkeys</span>
+                <div className="flex flex-row items-end justify-end">
+                  <Button
+                    onClick={handleRegisterPasskeyClick}
+                    variant="outline"
+                  >
+                    <PlusCircle />
+                    Register Passkey
+                  </Button>
+                </div>
               </div>
-            </div>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-sm flex flex-row items-center">
-            {whoamiRes?.user?.hasAuthenticatorApp ? (
-              <>
-                <CheckCircle />
-                <span className="ml-2">Registered</span>
-              </>
-            ) : (
-              'Not registered'
-            )}
-          </div>
-        </CardContent>
-      </Card>
-      <Card className="mt-4">
-        <CardHeader>
-          <CardTitle>
-            <div className="grid grid-cols-2 gap-4">
-              <span>Passkeys</span>
-              <div className="flex flex-row items-end justify-end">
-                <Button onClick={handleRegisterPasskeyClick} variant="outline">
-                  <PlusCircle />
-                  Register Passkey
-                </Button>
-              </div>
-            </div>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow className="font-bold">
-                <TableCell>ID</TableCell>
-                <TableCell>Type</TableCell>
-                <TableCell className="flex flex-col items-end"></TableCell>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {listMyPasskeysRes?.passkeys.map((passkey) => (
-                <TableRow key={passkey.id}>
-                  <TableCell className="text-sm">{passkey.id}</TableCell>
-                  <TableCell>Passkey</TableCell>
-                  <TableCell className="text-right">
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button variant="destructive">Delete</Button>
-                      </DialogTrigger>
-                      <DialogContent>
-                        <DialogHeader>
-                          <DialogTitle>Are you sure?</DialogTitle>
-                          <DialogDescription>
-                            Once deleted, you'll no longer be able to log in
-                            with this passkey.
-                          </DialogDescription>
-                        </DialogHeader>
-                        <DialogFooter>
-                          <Button
-                            className="mr-2"
-                            onClick={(e: MouseEvent<HTMLButtonElement>) => {
-                              e.preventDefault()
-                              handleDeletePasskey(passkey.id)
-                            }}
-                            variant="destructive"
-                          >
-                            Delete
-                          </Button>
-                        </DialogFooter>
-                      </DialogContent>
-                    </Dialog>
-                  </TableCell>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow className="font-bold">
+                  <TableCell>ID</TableCell>
+                  <TableCell>Type</TableCell>
+                  <TableCell className="flex flex-col items-end"></TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+              </TableHeader>
+              <TableBody>
+                {listMyPasskeysRes?.passkeys.map((passkey) => (
+                  <TableRow key={passkey.id}>
+                    <TableCell className="text-sm">{passkey.id}</TableCell>
+                    <TableCell>Passkey</TableCell>
+                    <TableCell className="text-right">
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button variant="destructive">Delete</Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>Are you sure?</DialogTitle>
+                            <DialogDescription>
+                              Once deleted, you'll no longer be able to log in
+                              with this passkey.
+                            </DialogDescription>
+                          </DialogHeader>
+                          <DialogFooter>
+                            <Button
+                              className="mr-2"
+                              onClick={(e: MouseEvent<HTMLButtonElement>) => {
+                                e.preventDefault()
+                                handleDeletePasskey(passkey.id)
+                              }}
+                              variant="destructive"
+                            >
+                              Delete
+                            </Button>
+                          </DialogFooter>
+                        </DialogContent>
+                      </Dialog>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      )}
     </div>
   )
 }
