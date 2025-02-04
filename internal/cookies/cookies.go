@@ -10,6 +10,18 @@ import (
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
+func ExpiredRefreshToken(projectID uuid.UUID) string {
+	return newCookie("refresh_token", -1*time.Second, projectID, "")
+}
+
+func ExpiredAccessToken(projectID uuid.UUID) string {
+	return newCookie("access_token", -1*time.Second, projectID, "")
+}
+
+func ExpiredIntermediateAccessToken(projectID uuid.UUID) string {
+	return newCookie("intermediate_access_token", -1*time.Second, projectID, "")
+}
+
 func NewRefreshToken(projectID uuid.UUID, value string) string {
 	return newCookie("refresh_token", 0, projectID, value)
 }

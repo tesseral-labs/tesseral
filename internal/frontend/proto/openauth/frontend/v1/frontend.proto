@@ -9,6 +9,13 @@ import "google/protobuf/timestamp.proto";
 import "google/protobuf/struct.proto";
 
 service FrontendService {
+  rpc Logout(LogoutRequest) returns (LogoutResponse) {
+    option (google.api.http) = {
+      post: "/frontend/v1/logout",
+      body: "*"
+    };
+  }
+
   rpc Refresh(RefreshRequest) returns (RefreshResponse) {
     option (google.api.http) = {
       post: "/frontend/v1/refresh",
@@ -145,6 +152,12 @@ service FrontendService {
       post: "/frontend/v1/scim-api-keys/{id}/revoke",
     };
   }
+}
+
+message LogoutRequest {
+}
+
+message LogoutResponse {
 }
 
 message RefreshRequest {

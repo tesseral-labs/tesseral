@@ -5,6 +5,11 @@
 import { FrontendService } from "./frontend_pb";
 
 /**
+ * @generated from rpc openauth.frontend.v1.FrontendService.Logout
+ */
+export const logout = FrontendService.method.logout;
+
+/**
  * @generated from rpc openauth.frontend.v1.FrontendService.Refresh
  */
 export const refresh = FrontendService.method.refresh;

@@ -6,6 +6,30 @@ info:
     title: FrontendService API
     version: 0.0.1
 paths:
+    /frontend/v1/logout:
+        post:
+            tags:
+                - FrontendService
+            operationId: FrontendService_Logout
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/LogoutRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/LogoutResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /frontend/v1/organization:
         get:
             tags:
@@ -605,6 +629,12 @@ components:
                         $ref: '#/components/schemas/User'
                 nextPageToken:
                     type: string
+        LogoutRequest:
+            type: object
+            properties: {}
+        LogoutResponse:
+            type: object
+            properties: {}
         Organization:
             type: object
             properties:

@@ -19,6 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
+	FrontendService_Logout_FullMethodName               = "/openauth.frontend.v1.FrontendService/Logout"
 	FrontendService_Refresh_FullMethodName              = "/openauth.frontend.v1.FrontendService/Refresh"
 	FrontendService_GetProject_FullMethodName           = "/openauth.frontend.v1.FrontendService/GetProject"
 	FrontendService_GetOrganization_FullMethodName      = "/openauth.frontend.v1.FrontendService/GetOrganization"
@@ -46,6 +47,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type FrontendServiceClient interface {
+	Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*LogoutResponse, error)
 	Refresh(ctx context.Context, in *RefreshRequest, opts ...grpc.CallOption) (*RefreshResponse, error)
 	GetProject(ctx context.Context, in *GetProjectRequest, opts ...grpc.CallOption) (*GetProjectResponse, error)
 	GetOrganization(ctx context.Context, in *GetOrganizationRequest, opts ...grpc.CallOption) (*GetOrganizationResponse, error)
@@ -78,6 +80,16 @@ type frontendServiceClient struct {
 
 func NewFrontendServiceClient(cc grpc.ClientConnInterface) FrontendServiceClient {
 	return &frontendServiceClient{cc}
+}
+
+func (c *frontendServiceClient) Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*LogoutResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(LogoutResponse)
+	err := c.cc.Invoke(ctx, FrontendService_Logout_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *frontendServiceClient) Refresh(ctx context.Context, in *RefreshRequest, opts ...grpc.CallOption) (*RefreshResponse, error) {
@@ -294,6 +306,7 @@ func (c *frontendServiceClient) RevokeSCIMAPIKey(ctx context.Context, in *Revoke
 // All implementations must embed UnimplementedFrontendServiceServer
 // for forward compatibility.
 type FrontendServiceServer interface {
+	Logout(context.Context, *LogoutRequest) (*LogoutResponse, error)
 	Refresh(context.Context, *RefreshRequest) (*RefreshResponse, error)
 	GetProject(context.Context, *GetProjectRequest) (*GetProjectResponse, error)
 	GetOrganization(context.Context, *GetOrganizationRequest) (*GetOrganizationResponse, error)
@@ -328,6 +341,9 @@ type FrontendServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedFrontendServiceServer struct{}
 
+func (UnimplementedFrontendServiceServer) Logout(context.Context, *LogoutRequest) (*LogoutResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Logout not implemented")
+}
 func (UnimplementedFrontendServiceServer) Refresh(context.Context, *RefreshRequest) (*RefreshResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Refresh not implemented")
 }
@@ -410,6 +426,24 @@ func RegisterFrontendServiceServer(s grpc.ServiceRegistrar, srv FrontendServiceS
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&FrontendService_ServiceDesc, srv)
+}
+
+func _FrontendService_Logout_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LogoutRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).Logout(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_Logout_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).Logout(ctx, req.(*LogoutRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _FrontendService_Refresh_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -797,6 +831,10 @@ var FrontendService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "openauth.frontend.v1.FrontendService",
 	HandlerType: (*FrontendServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Logout",
+			Handler:    _FrontendService_Logout_Handler,
+		},
 		{
 			MethodName: "Refresh",
 			Handler:    _FrontendService_Refresh_Handler,

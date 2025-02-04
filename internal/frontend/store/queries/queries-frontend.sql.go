@@ -456,6 +456,21 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 	return i, err
 }
 
+const invalidateSession = `-- name: InvalidateSession :exec
+UPDATE
+    sessions
+SET
+    update_time = now(),
+    refresh_token_sha256 = NULL
+WHERE
+    id = $1
+`
+
+func (q *Queries) InvalidateSession(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, invalidateSession, id)
+	return err
+}
+
 const listSAMLConnections = `-- name: ListSAMLConnections :many
 SELECT
     id, organization_id, create_time, is_primary, idp_redirect_url, idp_x509_certificate, idp_entity_id, update_time
