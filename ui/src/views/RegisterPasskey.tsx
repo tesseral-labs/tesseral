@@ -16,9 +16,8 @@ import { useLayout } from '@/lib/settings'
 import { base64urlEncode, cn } from '@/lib/utils'
 import { LoginLayouts } from '@/lib/views'
 
-const encoder = new TextEncoder()
-
 const RegisterPasskey: FC = () => {
+  const encoder = new TextEncoder()
   const layout = useLayout()
   const navigate = useNavigate()
 
