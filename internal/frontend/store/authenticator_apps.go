@@ -71,7 +71,7 @@ func (s *Store) GetAuthenticatorAppOptions(ctx context.Context) (*frontendv1.Get
 }
 
 func (s *Store) RegisterAuthenticatorApp(ctx context.Context, req *frontendv1.RegisterAuthenticatorAppRequest) (*frontendv1.RegisterAuthenticatorAppResponse, error) {
-	secret, err := s.getAuthenticatorAppSecret(ctx)
+	secret, err := s.getUserAuthenticatorAppChallengeSecret(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("get authenticator app secret: %w", err)
 	}
@@ -132,22 +132,22 @@ func (s *Store) RegisterAuthenticatorApp(ctx context.Context, req *frontendv1.Re
 	}, nil
 }
 
-func (s *Store) getAuthenticatorAppSecret(ctx context.Context) ([]byte, error) {
+func (s *Store) getUserAuthenticatorAppChallengeSecret(ctx context.Context) ([]byte, error) {
 	_, q, _, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
 	defer rollback()
 
-	qUser, err := q.GetUserByID(ctx, authn.UserID(ctx))
+	qUserAuthenticatorAppChallenge, err := q.GetUserAuthenticatorAppChallenge(ctx, authn.UserID(ctx))
 	if err != nil {
-		return nil, fmt.Errorf("get user by id: %w", err)
+		return nil, fmt.Errorf("get user authenticator app challenge: %w", err)
 	}
 
 	decryptRes, err := s.kms.Decrypt(ctx, &kms.DecryptInput{
 		KeyId:               &s.authenticatorAppSecretsKMSKeyID,
 		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
-		CiphertextBlob:      qUser.AuthenticatorAppSecretCiphertext,
+		CiphertextBlob:      qUserAuthenticatorAppChallenge.AuthenticatorAppSecretCiphertext,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("decrypt authenticator app secret ciphertext: %w", err)
