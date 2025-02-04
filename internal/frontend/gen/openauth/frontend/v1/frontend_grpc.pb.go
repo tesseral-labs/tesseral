@@ -41,6 +41,7 @@ const (
 	FrontendService_UpdateSCIMAPIKey_FullMethodName     = "/openauth.frontend.v1.FrontendService/UpdateSCIMAPIKey"
 	FrontendService_DeleteSCIMAPIKey_FullMethodName     = "/openauth.frontend.v1.FrontendService/DeleteSCIMAPIKey"
 	FrontendService_RevokeSCIMAPIKey_FullMethodName     = "/openauth.frontend.v1.FrontendService/RevokeSCIMAPIKey"
+	FrontendService_DeleteMyPasskey_FullMethodName      = "/openauth.frontend.v1.FrontendService/DeleteMyPasskey"
 	FrontendService_ListMyPasskeys_FullMethodName       = "/openauth.frontend.v1.FrontendService/ListMyPasskeys"
 	FrontendService_GetPasskeyOptions_FullMethodName    = "/openauth.frontend.v1.FrontendService/GetPasskeyOptions"
 	FrontendService_RegisterPasskey_FullMethodName      = "/openauth.frontend.v1.FrontendService/RegisterPasskey"
@@ -75,6 +76,7 @@ type FrontendServiceClient interface {
 	UpdateSCIMAPIKey(ctx context.Context, in *UpdateSCIMAPIKeyRequest, opts ...grpc.CallOption) (*UpdateSCIMAPIKeyResponse, error)
 	DeleteSCIMAPIKey(ctx context.Context, in *DeleteSCIMAPIKeyRequest, opts ...grpc.CallOption) (*DeleteSCIMAPIKeyResponse, error)
 	RevokeSCIMAPIKey(ctx context.Context, in *RevokeSCIMAPIKeyRequest, opts ...grpc.CallOption) (*RevokeSCIMAPIKeyResponse, error)
+	DeleteMyPasskey(ctx context.Context, in *DeleteMyPasskeyRequest, opts ...grpc.CallOption) (*DeleteMyPasskeyResponse, error)
 	ListMyPasskeys(ctx context.Context, in *ListMyPasskeysRequest, opts ...grpc.CallOption) (*ListMyPasskeysResponse, error)
 	GetPasskeyOptions(ctx context.Context, in *GetPasskeyOptionsRequest, opts ...grpc.CallOption) (*GetPasskeyOptionsResponse, error)
 	RegisterPasskey(ctx context.Context, in *RegisterPasskeyRequest, opts ...grpc.CallOption) (*RegisterPasskeyResponse, error)
@@ -308,6 +310,16 @@ func (c *frontendServiceClient) RevokeSCIMAPIKey(ctx context.Context, in *Revoke
 	return out, nil
 }
 
+func (c *frontendServiceClient) DeleteMyPasskey(ctx context.Context, in *DeleteMyPasskeyRequest, opts ...grpc.CallOption) (*DeleteMyPasskeyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteMyPasskeyResponse)
+	err := c.cc.Invoke(ctx, FrontendService_DeleteMyPasskey_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *frontendServiceClient) ListMyPasskeys(ctx context.Context, in *ListMyPasskeysRequest, opts ...grpc.CallOption) (*ListMyPasskeysResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListMyPasskeysResponse)
@@ -367,6 +379,7 @@ type FrontendServiceServer interface {
 	UpdateSCIMAPIKey(context.Context, *UpdateSCIMAPIKeyRequest) (*UpdateSCIMAPIKeyResponse, error)
 	DeleteSCIMAPIKey(context.Context, *DeleteSCIMAPIKeyRequest) (*DeleteSCIMAPIKeyResponse, error)
 	RevokeSCIMAPIKey(context.Context, *RevokeSCIMAPIKeyRequest) (*RevokeSCIMAPIKeyResponse, error)
+	DeleteMyPasskey(context.Context, *DeleteMyPasskeyRequest) (*DeleteMyPasskeyResponse, error)
 	ListMyPasskeys(context.Context, *ListMyPasskeysRequest) (*ListMyPasskeysResponse, error)
 	GetPasskeyOptions(context.Context, *GetPasskeyOptionsRequest) (*GetPasskeyOptionsResponse, error)
 	RegisterPasskey(context.Context, *RegisterPasskeyRequest) (*RegisterPasskeyResponse, error)
@@ -445,6 +458,9 @@ func (UnimplementedFrontendServiceServer) DeleteSCIMAPIKey(context.Context, *Del
 }
 func (UnimplementedFrontendServiceServer) RevokeSCIMAPIKey(context.Context, *RevokeSCIMAPIKeyRequest) (*RevokeSCIMAPIKeyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RevokeSCIMAPIKey not implemented")
+}
+func (UnimplementedFrontendServiceServer) DeleteMyPasskey(context.Context, *DeleteMyPasskeyRequest) (*DeleteMyPasskeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteMyPasskey not implemented")
 }
 func (UnimplementedFrontendServiceServer) ListMyPasskeys(context.Context, *ListMyPasskeysRequest) (*ListMyPasskeysResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListMyPasskeys not implemented")
@@ -872,6 +888,24 @@ func _FrontendService_RevokeSCIMAPIKey_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _FrontendService_DeleteMyPasskey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteMyPasskeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).DeleteMyPasskey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_DeleteMyPasskey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).DeleteMyPasskey(ctx, req.(*DeleteMyPasskeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _FrontendService_ListMyPasskeys_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListMyPasskeysRequest)
 	if err := dec(in); err != nil {
@@ -1020,6 +1054,10 @@ var FrontendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RevokeSCIMAPIKey",
 			Handler:    _FrontendService_RevokeSCIMAPIKey_Handler,
+		},
+		{
+			MethodName: "DeleteMyPasskey",
+			Handler:    _FrontendService_DeleteMyPasskey_Handler,
 		},
 		{
 			MethodName: "ListMyPasskeys",

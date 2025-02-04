@@ -264,3 +264,16 @@ INSERT INTO passkeys (id, user_id, credential_id, public_key, aaguid)
 RETURNING
     *;
 
+-- name: GetUserPasskey :one
+SELECT
+    *
+FROM
+    passkeys
+WHERE
+    id = $1
+    AND user_id = $2;
+
+-- name: DeletePasskey :exec
+DELETE FROM passkeys
+WHERE id = $1;
+
