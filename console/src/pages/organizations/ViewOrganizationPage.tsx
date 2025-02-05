@@ -49,6 +49,10 @@ export function ViewOrganizationPage() {
       url: `/organizations/${organizationId}/users`,
     },
     {
+      name: 'User Invites',
+      url: `/organizations/${organizationId}/user-invites`,
+    },
+    {
       name: 'SAML Connections',
       url: `/organizations/${organizationId}/saml-connections`,
     },

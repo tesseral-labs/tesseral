@@ -27,6 +27,10 @@ import { HomePage } from '@/pages/home/HomePage'
 import { ProjectDetailsTab } from '@/pages/project/ProjectDetailsTab'
 import LoginPage from './pages/login/LoginPage'
 import { ViewPasskeyPage } from '@/pages/passkeys/ViewPasskeyPage'
+import {
+  OrganizationUserInvitesTab
+} from '@/pages/organizations/OrganizationUserInvitesTab'
+import { ViewUserInvitePage } from '@/pages/user-invites/ViewUserInvitePage'
 
 const queryClient = new QueryClient()
 
@@ -87,6 +91,7 @@ function AppWithinQueryClient() {
             >
               <Route path="" element={<OrganizationDetailsTab />} />
               <Route path="users" element={<OrganizationUsersTab />} />
+              <Route path="user-invites" element={<OrganizationUserInvitesTab />} />
               <Route
                 path="saml-connections"
                 element={<OrganizationSAMLConnectionsTab />}
@@ -116,6 +121,10 @@ function AppWithinQueryClient() {
             <Route
               path="organizations/:organizationId/users/:userId/passkeys/:passkeyId"
               element={<ViewPasskeyPage />}
+            />
+            <Route
+              path="organizations/:organizationId/user-invites/:userInviteId"
+              element={<ViewUserInvitePage />}
             />
             <Route
               path="organizations/:organizationId/scim-api-keys/:scimApiKeyId"
