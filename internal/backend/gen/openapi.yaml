@@ -281,6 +281,80 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /backend/v1/passkeys:
+        get:
+            tags:
+                - BackendService
+            operationId: BackendService_ListPasskeys
+            parameters:
+                - name: userId
+                  in: query
+                  schema:
+                    type: string
+                - name: pageToken
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListPasskeysResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /backend/v1/passkeys/{id}:
+        get:
+            tags:
+                - BackendService
+            operationId: BackendService_GetPasskey
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetPasskeyResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        delete:
+            tags:
+                - BackendService
+            operationId: BackendService_DeletePasskey
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DeletePasskeyResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /backend/v1/project:
         get:
             tags:
@@ -697,6 +771,9 @@ components:
         DeleteOrganizationResponse:
             type: object
             properties: {}
+        DeletePasskeyResponse:
+            type: object
+            properties: {}
         DeleteSAMLConnectionResponse:
             type: object
             properties: {}
@@ -723,6 +800,11 @@ components:
             properties:
                 organization:
                     $ref: '#/components/schemas/Organization'
+        GetPasskeyResponse:
+            type: object
+            properties:
+                passkey:
+                    $ref: '#/components/schemas/Passkey'
         GetProjectResponse:
             type: object
             properties:
@@ -789,6 +871,15 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/Organization'
+                nextPageToken:
+                    type: string
+        ListPasskeysResponse:
+            type: object
+            properties:
+                passkeys:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Passkey'
                 nextPageToken:
                     type: string
         ListSAMLConnectionsResponse:
@@ -874,6 +965,26 @@ components:
                     type: array
                     items:
                         type: string
+        Passkey:
+            type: object
+            properties:
+                id:
+                    type: string
+                userId:
+                    type: string
+                createTime:
+                    type: string
+                    format: date-time
+                updateTime:
+                    type: string
+                    format: date-time
+                credentialId:
+                    type: string
+                    format: bytes
+                publicKeyPkix:
+                    type: string
+                aaguid:
+                    type: string
         Project:
             type: object
             properties:

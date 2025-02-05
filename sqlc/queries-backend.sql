@@ -613,3 +613,30 @@ INSERT INTO organization_microsoft_tenant_ids (id, organization_id, microsoft_te
 RETURNING
     *;
 
+-- name: ListPasskeys :many
+SELECT
+    *
+FROM
+    passkeys
+WHERE
+    user_id = $1
+    AND id >= $2
+ORDER BY
+    id
+LIMIT $3;
+
+-- name: GetPasskey :one
+SELECT
+    passkeys.*
+FROM
+    passkeys
+    JOIN users ON passkeys.user_id = users.id
+    JOIN organizations ON users.organization_id = organizations.id
+WHERE
+    passkeys.id = $1
+    AND organizations.project_id = $2;
+
+-- name: DeletePasskey :exec
+DELETE FROM passkeys
+WHERE id = $1;
+

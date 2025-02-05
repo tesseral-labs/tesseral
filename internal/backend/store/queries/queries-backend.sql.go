@@ -307,6 +307,16 @@ func (q *Queries) DeleteOrganizationMicrosoftTenantIDs(ctx context.Context, orga
 	return err
 }
 
+const deletePasskey = `-- name: DeletePasskey :exec
+DELETE FROM passkeys
+WHERE id = $1
+`
+
+func (q *Queries) DeletePasskey(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deletePasskey, id)
+	return err
+}
+
 const deleteProjectAPIKey = `-- name: DeleteProjectAPIKey :exec
 DELETE FROM project_api_keys
 WHERE id = $1
@@ -730,6 +740,38 @@ func (q *Queries) GetOrganizationMicrosoftTenantIDs(ctx context.Context, arg Get
 		return nil, err
 	}
 	return items, nil
+}
+
+const getPasskey = `-- name: GetPasskey :one
+SELECT
+    passkeys.id, passkeys.user_id, passkeys.create_time, passkeys.update_time, passkeys.credential_id, passkeys.public_key, passkeys.aaguid
+FROM
+    passkeys
+    JOIN users ON passkeys.user_id = users.id
+    JOIN organizations ON users.organization_id = organizations.id
+WHERE
+    passkeys.id = $1
+    AND organizations.project_id = $2
+`
+
+type GetPasskeyParams struct {
+	ID        uuid.UUID
+	ProjectID uuid.UUID
+}
+
+func (q *Queries) GetPasskey(ctx context.Context, arg GetPasskeyParams) (Passkey, error) {
+	row := q.db.QueryRow(ctx, getPasskey, arg.ID, arg.ProjectID)
+	var i Passkey
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.CredentialID,
+		&i.PublicKey,
+		&i.Aaguid,
+	)
+	return i, err
 }
 
 const getProjectAPIKey = `-- name: GetProjectAPIKey :one
@@ -1207,6 +1249,53 @@ func (q *Queries) ListOrganizationsByProjectId(ctx context.Context, arg ListOrga
 			&i.LogInWithAuthenticatorApp,
 			&i.LogInWithPasskey,
 			&i.RequireMfa,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listPasskeys = `-- name: ListPasskeys :many
+SELECT
+    id, user_id, create_time, update_time, credential_id, public_key, aaguid
+FROM
+    passkeys
+WHERE
+    user_id = $1
+    AND id >= $2
+ORDER BY
+    id
+LIMIT $3
+`
+
+type ListPasskeysParams struct {
+	UserID uuid.UUID
+	ID     uuid.UUID
+	Limit  int32
+}
+
+func (q *Queries) ListPasskeys(ctx context.Context, arg ListPasskeysParams) ([]Passkey, error) {
+	rows, err := q.db.Query(ctx, listPasskeys, arg.UserID, arg.ID, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Passkey
+	for rows.Next() {
+		var i Passkey
+		if err := rows.Scan(
+			&i.ID,
+			&i.UserID,
+			&i.CreateTime,
+			&i.UpdateTime,
+			&i.CredentialID,
+			&i.PublicKey,
+			&i.Aaguid,
 		); err != nil {
 			return nil, err
 		}

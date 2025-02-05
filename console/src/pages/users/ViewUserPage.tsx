@@ -4,7 +4,7 @@ import {
   createUserImpersonationToken,
   getOrganization,
   getProject,
-  getUser,
+  getUser, listPasskeys,
   listSessions,
 } from '@/gen/openauth/backend/v1/backend-BackendService_connectquery'
 import React from 'react'
@@ -53,6 +53,9 @@ export function ViewUserPage() {
     id: userId,
   })
   const { data: listSessionsResponse } = useQuery(listSessions, {
+    userId,
+  })
+  const { data: listPasskeysResponse } = useQuery(listPasskeys, {
     userId,
   })
 
@@ -157,7 +160,7 @@ export function ViewUserPage() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="my-8">
         <CardHeader>
           <CardTitle>Sessions</CardTitle>
           <CardDescription>
@@ -197,6 +200,52 @@ export function ViewUserPage() {
                     {session?.expireTime &&
                       DateTime.fromJSDate(
                         timestampDate(session.expireTime),
+                      ).toRelative()}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Passkeys</CardTitle>
+          <CardDescription>
+            Lorem ipsum dolor.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>ID</TableHead>
+                <TableHead>Created</TableHead>
+                <TableHead>Updated</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {listPasskeysResponse?.passkeys?.map((passkey) => (
+                <TableRow key={passkey.id}>
+                  <TableCell className="font-medium font-mono">
+                    <Link
+                      className="font-mono font-medium underline underline-offset-2 decoration-muted-foreground/40"
+                      to={`/organizations/${organizationId}/users/${userId}/passkeys/${passkey.id}`}
+                    >
+                      {passkey.id}
+                    </Link>
+                  </TableCell>
+                  <TableCell>
+                    {passkey?.createTime &&
+                      DateTime.fromJSDate(
+                        timestampDate(passkey.createTime),
+                      ).toRelative()}
+                  </TableCell>
+                  <TableCell>
+                    {passkey?.updateTime &&
+                      DateTime.fromJSDate(
+                        timestampDate(passkey.updateTime),
                       ).toRelative()}
                   </TableCell>
                 </TableRow>
