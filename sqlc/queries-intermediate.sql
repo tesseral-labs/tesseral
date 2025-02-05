@@ -156,6 +156,16 @@ WHERE
             AND users.microsoft_user_id = $4))
     AND NOT organizations.logins_disabled;
 
+-- name: ListOrganizationsByMatchingUserInvite :many
+SELECT
+    organizations.*
+FROM
+    organizations
+    JOIN user_invites ON organizations.id = user_invites.organization_id
+WHERE
+    organizations.project_id = $1
+    AND user_invites.email = $2;
+
 -- name: ListSAMLOrganizations :many
 SELECT
     organizations.*

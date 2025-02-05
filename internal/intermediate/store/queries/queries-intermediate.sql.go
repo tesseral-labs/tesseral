@@ -950,6 +950,57 @@ func (q *Queries) ListOrganizationsByMatchingUser(ctx context.Context, arg ListO
 	return items, nil
 }
 
+const listOrganizationsByMatchingUserInvite = `-- name: ListOrganizationsByMatchingUserInvite :many
+SELECT
+    organizations.id, organizations.project_id, organizations.display_name, organizations.saml_enabled, organizations.scim_enabled, organizations.create_time, organizations.update_time, organizations.logins_disabled, organizations.log_in_with_google, organizations.log_in_with_microsoft, organizations.log_in_with_password, organizations.log_in_with_authenticator_app, organizations.log_in_with_passkey, organizations.require_mfa
+FROM
+    organizations
+    JOIN user_invites ON organizations.id = user_invites.organization_id
+WHERE
+    organizations.project_id = $1
+    AND user_invites.email = $2
+`
+
+type ListOrganizationsByMatchingUserInviteParams struct {
+	ProjectID uuid.UUID
+	Email     string
+}
+
+func (q *Queries) ListOrganizationsByMatchingUserInvite(ctx context.Context, arg ListOrganizationsByMatchingUserInviteParams) ([]Organization, error) {
+	rows, err := q.db.Query(ctx, listOrganizationsByMatchingUserInvite, arg.ProjectID, arg.Email)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Organization
+	for rows.Next() {
+		var i Organization
+		if err := rows.Scan(
+			&i.ID,
+			&i.ProjectID,
+			&i.DisplayName,
+			&i.SamlEnabled,
+			&i.ScimEnabled,
+			&i.CreateTime,
+			&i.UpdateTime,
+			&i.LoginsDisabled,
+			&i.LogInWithGoogle,
+			&i.LogInWithMicrosoft,
+			&i.LogInWithPassword,
+			&i.LogInWithAuthenticatorApp,
+			&i.LogInWithPasskey,
+			&i.RequireMfa,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listOrganizationsByMicrosoftTenantID = `-- name: ListOrganizationsByMicrosoftTenantID :many
 SELECT
     organizations.id, organizations.project_id, organizations.display_name, organizations.saml_enabled, organizations.scim_enabled, organizations.create_time, organizations.update_time, organizations.logins_disabled, organizations.log_in_with_google, organizations.log_in_with_microsoft, organizations.log_in_with_password, organizations.log_in_with_authenticator_app, organizations.log_in_with_passkey, organizations.require_mfa

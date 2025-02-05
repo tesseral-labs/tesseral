@@ -590,6 +590,99 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /frontend/v1/user-invites:
+        get:
+            tags:
+                - FrontendService
+            operationId: FrontendService_ListUserInvites
+            parameters:
+                - name: pageToken
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListUserInvitesResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - FrontendService
+            operationId: FrontendService_CreateUserInvite
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UserInvite'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateUserInviteResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /frontend/v1/user-invites/{id}:
+        get:
+            tags:
+                - FrontendService
+            operationId: FrontendService_GetUserInvite
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetUserInviteResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        delete:
+            tags:
+                - FrontendService
+            operationId: FrontendService_DeleteUserInvite
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DeleteUserInviteResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /frontend/v1/users:
         get:
             tags:
@@ -682,6 +775,11 @@ components:
             properties:
                 scimApiKey:
                     $ref: '#/components/schemas/SCIMAPIKey'
+        CreateUserInviteResponse:
+            type: object
+            properties:
+                userInvite:
+                    $ref: '#/components/schemas/UserInvite'
         DeleteMyPasskeyResponse:
             type: object
             properties: {}
@@ -689,6 +787,9 @@ components:
             type: object
             properties: {}
         DeleteSCIMAPIKeyResponse:
+            type: object
+            properties: {}
+        DeleteUserInviteResponse:
             type: object
             properties: {}
         GetAuthenticatorAppOptionsResponse:
@@ -727,6 +828,11 @@ components:
             properties:
                 scimApiKey:
                     $ref: '#/components/schemas/SCIMAPIKey'
+        GetUserInviteResponse:
+            type: object
+            properties:
+                userInvite:
+                    $ref: '#/components/schemas/UserInvite'
         GetUserResponse:
             type: object
             properties:
@@ -776,6 +882,15 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/SCIMAPIKey'
+                nextPageToken:
+                    type: string
+        ListUserInvitesResponse:
+            type: object
+            properties:
+                userInvites:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/UserInvite'
                 nextPageToken:
                     type: string
         ListUsersResponse:
@@ -1018,6 +1133,19 @@ components:
                     type: string
                 hasAuthenticatorApp:
                     type: boolean
+        UserInvite:
+            type: object
+            properties:
+                id:
+                    type: string
+                createTime:
+                    type: string
+                    format: date-time
+                updateTime:
+                    type: string
+                    format: date-time
+                email:
+                    type: string
         WhoamiResponse:
             type: object
             properties:

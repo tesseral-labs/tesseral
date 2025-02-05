@@ -113,6 +113,18 @@ const (
 	// FrontendServiceRegisterAuthenticatorAppProcedure is the fully-qualified name of the
 	// FrontendService's RegisterAuthenticatorApp RPC.
 	FrontendServiceRegisterAuthenticatorAppProcedure = "/openauth.frontend.v1.FrontendService/RegisterAuthenticatorApp"
+	// FrontendServiceListUserInvitesProcedure is the fully-qualified name of the FrontendService's
+	// ListUserInvites RPC.
+	FrontendServiceListUserInvitesProcedure = "/openauth.frontend.v1.FrontendService/ListUserInvites"
+	// FrontendServiceGetUserInviteProcedure is the fully-qualified name of the FrontendService's
+	// GetUserInvite RPC.
+	FrontendServiceGetUserInviteProcedure = "/openauth.frontend.v1.FrontendService/GetUserInvite"
+	// FrontendServiceCreateUserInviteProcedure is the fully-qualified name of the FrontendService's
+	// CreateUserInvite RPC.
+	FrontendServiceCreateUserInviteProcedure = "/openauth.frontend.v1.FrontendService/CreateUserInvite"
+	// FrontendServiceDeleteUserInviteProcedure is the fully-qualified name of the FrontendService's
+	// DeleteUserInvite RPC.
+	FrontendServiceDeleteUserInviteProcedure = "/openauth.frontend.v1.FrontendService/DeleteUserInvite"
 )
 
 // FrontendServiceClient is a client for the openauth.frontend.v1.FrontendService service.
@@ -147,6 +159,10 @@ type FrontendServiceClient interface {
 	RegisterPasskey(context.Context, *connect.Request[v1.RegisterPasskeyRequest]) (*connect.Response[v1.RegisterPasskeyResponse], error)
 	GetAuthenticatorAppOptions(context.Context, *connect.Request[v1.GetAuthenticatorAppOptionsRequest]) (*connect.Response[v1.GetAuthenticatorAppOptionsResponse], error)
 	RegisterAuthenticatorApp(context.Context, *connect.Request[v1.RegisterAuthenticatorAppRequest]) (*connect.Response[v1.RegisterAuthenticatorAppResponse], error)
+	ListUserInvites(context.Context, *connect.Request[v1.ListUserInvitesRequest]) (*connect.Response[v1.ListUserInvitesResponse], error)
+	GetUserInvite(context.Context, *connect.Request[v1.GetUserInviteRequest]) (*connect.Response[v1.GetUserInviteResponse], error)
+	CreateUserInvite(context.Context, *connect.Request[v1.CreateUserInviteRequest]) (*connect.Response[v1.CreateUserInviteResponse], error)
+	DeleteUserInvite(context.Context, *connect.Request[v1.DeleteUserInviteRequest]) (*connect.Response[v1.DeleteUserInviteResponse], error)
 }
 
 // NewFrontendServiceClient constructs a client for the openauth.frontend.v1.FrontendService
@@ -328,6 +344,30 @@ func NewFrontendServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			connect.WithSchema(frontendServiceMethods.ByName("RegisterAuthenticatorApp")),
 			connect.WithClientOptions(opts...),
 		),
+		listUserInvites: connect.NewClient[v1.ListUserInvitesRequest, v1.ListUserInvitesResponse](
+			httpClient,
+			baseURL+FrontendServiceListUserInvitesProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("ListUserInvites")),
+			connect.WithClientOptions(opts...),
+		),
+		getUserInvite: connect.NewClient[v1.GetUserInviteRequest, v1.GetUserInviteResponse](
+			httpClient,
+			baseURL+FrontendServiceGetUserInviteProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("GetUserInvite")),
+			connect.WithClientOptions(opts...),
+		),
+		createUserInvite: connect.NewClient[v1.CreateUserInviteRequest, v1.CreateUserInviteResponse](
+			httpClient,
+			baseURL+FrontendServiceCreateUserInviteProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("CreateUserInvite")),
+			connect.WithClientOptions(opts...),
+		),
+		deleteUserInvite: connect.NewClient[v1.DeleteUserInviteRequest, v1.DeleteUserInviteResponse](
+			httpClient,
+			baseURL+FrontendServiceDeleteUserInviteProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("DeleteUserInvite")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -361,6 +401,10 @@ type frontendServiceClient struct {
 	registerPasskey            *connect.Client[v1.RegisterPasskeyRequest, v1.RegisterPasskeyResponse]
 	getAuthenticatorAppOptions *connect.Client[v1.GetAuthenticatorAppOptionsRequest, v1.GetAuthenticatorAppOptionsResponse]
 	registerAuthenticatorApp   *connect.Client[v1.RegisterAuthenticatorAppRequest, v1.RegisterAuthenticatorAppResponse]
+	listUserInvites            *connect.Client[v1.ListUserInvitesRequest, v1.ListUserInvitesResponse]
+	getUserInvite              *connect.Client[v1.GetUserInviteRequest, v1.GetUserInviteResponse]
+	createUserInvite           *connect.Client[v1.CreateUserInviteRequest, v1.CreateUserInviteResponse]
+	deleteUserInvite           *connect.Client[v1.DeleteUserInviteRequest, v1.DeleteUserInviteResponse]
 }
 
 // Logout calls openauth.frontend.v1.FrontendService.Logout.
@@ -503,6 +547,26 @@ func (c *frontendServiceClient) RegisterAuthenticatorApp(ctx context.Context, re
 	return c.registerAuthenticatorApp.CallUnary(ctx, req)
 }
 
+// ListUserInvites calls openauth.frontend.v1.FrontendService.ListUserInvites.
+func (c *frontendServiceClient) ListUserInvites(ctx context.Context, req *connect.Request[v1.ListUserInvitesRequest]) (*connect.Response[v1.ListUserInvitesResponse], error) {
+	return c.listUserInvites.CallUnary(ctx, req)
+}
+
+// GetUserInvite calls openauth.frontend.v1.FrontendService.GetUserInvite.
+func (c *frontendServiceClient) GetUserInvite(ctx context.Context, req *connect.Request[v1.GetUserInviteRequest]) (*connect.Response[v1.GetUserInviteResponse], error) {
+	return c.getUserInvite.CallUnary(ctx, req)
+}
+
+// CreateUserInvite calls openauth.frontend.v1.FrontendService.CreateUserInvite.
+func (c *frontendServiceClient) CreateUserInvite(ctx context.Context, req *connect.Request[v1.CreateUserInviteRequest]) (*connect.Response[v1.CreateUserInviteResponse], error) {
+	return c.createUserInvite.CallUnary(ctx, req)
+}
+
+// DeleteUserInvite calls openauth.frontend.v1.FrontendService.DeleteUserInvite.
+func (c *frontendServiceClient) DeleteUserInvite(ctx context.Context, req *connect.Request[v1.DeleteUserInviteRequest]) (*connect.Response[v1.DeleteUserInviteResponse], error) {
+	return c.deleteUserInvite.CallUnary(ctx, req)
+}
+
 // FrontendServiceHandler is an implementation of the openauth.frontend.v1.FrontendService service.
 type FrontendServiceHandler interface {
 	Logout(context.Context, *connect.Request[v1.LogoutRequest]) (*connect.Response[v1.LogoutResponse], error)
@@ -535,6 +599,10 @@ type FrontendServiceHandler interface {
 	RegisterPasskey(context.Context, *connect.Request[v1.RegisterPasskeyRequest]) (*connect.Response[v1.RegisterPasskeyResponse], error)
 	GetAuthenticatorAppOptions(context.Context, *connect.Request[v1.GetAuthenticatorAppOptionsRequest]) (*connect.Response[v1.GetAuthenticatorAppOptionsResponse], error)
 	RegisterAuthenticatorApp(context.Context, *connect.Request[v1.RegisterAuthenticatorAppRequest]) (*connect.Response[v1.RegisterAuthenticatorAppResponse], error)
+	ListUserInvites(context.Context, *connect.Request[v1.ListUserInvitesRequest]) (*connect.Response[v1.ListUserInvitesResponse], error)
+	GetUserInvite(context.Context, *connect.Request[v1.GetUserInviteRequest]) (*connect.Response[v1.GetUserInviteResponse], error)
+	CreateUserInvite(context.Context, *connect.Request[v1.CreateUserInviteRequest]) (*connect.Response[v1.CreateUserInviteResponse], error)
+	DeleteUserInvite(context.Context, *connect.Request[v1.DeleteUserInviteRequest]) (*connect.Response[v1.DeleteUserInviteResponse], error)
 }
 
 // NewFrontendServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -712,6 +780,30 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 		connect.WithSchema(frontendServiceMethods.ByName("RegisterAuthenticatorApp")),
 		connect.WithHandlerOptions(opts...),
 	)
+	frontendServiceListUserInvitesHandler := connect.NewUnaryHandler(
+		FrontendServiceListUserInvitesProcedure,
+		svc.ListUserInvites,
+		connect.WithSchema(frontendServiceMethods.ByName("ListUserInvites")),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceGetUserInviteHandler := connect.NewUnaryHandler(
+		FrontendServiceGetUserInviteProcedure,
+		svc.GetUserInvite,
+		connect.WithSchema(frontendServiceMethods.ByName("GetUserInvite")),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceCreateUserInviteHandler := connect.NewUnaryHandler(
+		FrontendServiceCreateUserInviteProcedure,
+		svc.CreateUserInvite,
+		connect.WithSchema(frontendServiceMethods.ByName("CreateUserInvite")),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceDeleteUserInviteHandler := connect.NewUnaryHandler(
+		FrontendServiceDeleteUserInviteProcedure,
+		svc.DeleteUserInvite,
+		connect.WithSchema(frontendServiceMethods.ByName("DeleteUserInvite")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/openauth.frontend.v1.FrontendService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case FrontendServiceLogoutProcedure:
@@ -770,6 +862,14 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 			frontendServiceGetAuthenticatorAppOptionsHandler.ServeHTTP(w, r)
 		case FrontendServiceRegisterAuthenticatorAppProcedure:
 			frontendServiceRegisterAuthenticatorAppHandler.ServeHTTP(w, r)
+		case FrontendServiceListUserInvitesProcedure:
+			frontendServiceListUserInvitesHandler.ServeHTTP(w, r)
+		case FrontendServiceGetUserInviteProcedure:
+			frontendServiceGetUserInviteHandler.ServeHTTP(w, r)
+		case FrontendServiceCreateUserInviteProcedure:
+			frontendServiceCreateUserInviteHandler.ServeHTTP(w, r)
+		case FrontendServiceDeleteUserInviteProcedure:
+			frontendServiceDeleteUserInviteHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -889,4 +989,20 @@ func (UnimplementedFrontendServiceHandler) GetAuthenticatorAppOptions(context.Co
 
 func (UnimplementedFrontendServiceHandler) RegisterAuthenticatorApp(context.Context, *connect.Request[v1.RegisterAuthenticatorAppRequest]) (*connect.Response[v1.RegisterAuthenticatorAppResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.RegisterAuthenticatorApp is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) ListUserInvites(context.Context, *connect.Request[v1.ListUserInvitesRequest]) (*connect.Response[v1.ListUserInvitesResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.ListUserInvites is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) GetUserInvite(context.Context, *connect.Request[v1.GetUserInviteRequest]) (*connect.Response[v1.GetUserInviteResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.GetUserInvite is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) CreateUserInvite(context.Context, *connect.Request[v1.CreateUserInviteRequest]) (*connect.Response[v1.CreateUserInviteResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.CreateUserInvite is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) DeleteUserInvite(context.Context, *connect.Request[v1.DeleteUserInviteRequest]) (*connect.Response[v1.DeleteUserInviteResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.DeleteUserInvite is not implemented"))
 }
