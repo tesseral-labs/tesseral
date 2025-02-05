@@ -16,7 +16,7 @@ const createImpersonatedSession = `-- name: CreateImpersonatedSession :one
 INSERT INTO sessions (id, user_id, expire_time, refresh_token_sha256, impersonator_user_id)
     VALUES ($1, $2, $3, $4, $5)
 RETURNING
-    id, user_id, create_time, expire_time, refresh_token_sha256, impersonator_user_id
+    id, user_id, create_time, expire_time, refresh_token_sha256, impersonator_user_id, last_active_time
 `
 
 type CreateImpersonatedSessionParams struct {
@@ -43,6 +43,7 @@ func (q *Queries) CreateImpersonatedSession(ctx context.Context, arg CreateImper
 		&i.ExpireTime,
 		&i.RefreshTokenSha256,
 		&i.ImpersonatorUserID,
+		&i.LastActiveTime,
 	)
 	return i, err
 }
@@ -235,7 +236,7 @@ const createSession = `-- name: CreateSession :one
 INSERT INTO sessions (id, user_id, expire_time, refresh_token_sha256)
     VALUES ($1, $2, $3, $4)
 RETURNING
-    id, user_id, create_time, expire_time, refresh_token_sha256, impersonator_user_id
+    id, user_id, create_time, expire_time, refresh_token_sha256, impersonator_user_id, last_active_time
 `
 
 type CreateSessionParams struct {
@@ -260,6 +261,7 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (S
 		&i.ExpireTime,
 		&i.RefreshTokenSha256,
 		&i.ImpersonatorUserID,
+		&i.LastActiveTime,
 	)
 	return i, err
 }

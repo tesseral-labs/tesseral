@@ -43,3 +43,11 @@ ORDER BY
     create_time DESC
 LIMIT 1;
 
+-- name: BumpSessionLastActiveTime :exec
+UPDATE
+    sessions
+SET
+    last_active_time = now()
+WHERE
+    id = $1;
+

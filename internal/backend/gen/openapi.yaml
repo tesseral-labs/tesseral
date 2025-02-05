@@ -965,6 +965,15 @@ components:
                     type: string
                 revoked:
                     type: boolean
+                createTime:
+                    type: string
+                    format: date-time
+                lastActiveTime:
+                    type: string
+                    format: date-time
+                expireTime:
+                    type: string
+                    format: date-time
         Status:
             type: object
             properties:

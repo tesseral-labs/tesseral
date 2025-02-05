@@ -26,6 +26,7 @@ import { ViewProjectAPIKeyPage } from '@/pages/project-api-keys/ViewProjectAPIKe
 import { HomePage } from '@/pages/home/HomePage'
 import { ProjectDetailsTab } from '@/pages/project/ProjectDetailsTab'
 import LoginPage from './pages/login/LoginPage'
+import { ViewSessionPage } from '@/pages/sessions/ViewSessionPage'
 
 const queryClient = new QueryClient()
 
@@ -33,7 +34,7 @@ function useTransport(): Transport {
   const accessToken = useAccessToken()
 
   return createConnectTransport({
-    baseUrl: `https://auth.app.tesseral.example.com/api/internal/connect`,
+    baseUrl: `https://auth.console.tesseral.example.com/api/internal/connect`,
     fetch: (input, init) =>
       fetch(input, {
         ...init,

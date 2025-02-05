@@ -12,6 +12,7 @@ import (
 	"github.com/openauth/openauth/internal/backend/store/queries"
 	"github.com/openauth/openauth/internal/common/apierror"
 	"github.com/openauth/openauth/internal/store/idformat"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func (s *Store) ListSessions(ctx context.Context, req *backendv1.ListSessionsRequest) (*backendv1.ListSessionsResponse, error) {
@@ -38,7 +39,7 @@ func (s *Store) ListSessions(ctx context.Context, req *backendv1.ListSessionsReq
 		return nil, fmt.Errorf("get organization: %w", err)
 	}
 
-	var startID uuid.UUID
+	startID := uuid.Max
 	if err := s.pageEncoder.Unmarshal(req.PageToken, &startID); err != nil {
 		return nil, fmt.Errorf("unmarshal page token: %w", err)
 	}
@@ -99,8 +100,11 @@ func (s *Store) GetSession(ctx context.Context, req *backendv1.GetSessionRequest
 
 func parseSession(qSession queries.Session) *backendv1.Session {
 	return &backendv1.Session{
-		Id:      idformat.Session.Format(qSession.ID),
-		UserId:  idformat.User.Format(qSession.UserID),
-		Revoked: qSession.RefreshTokenSha256 == nil,
+		Id:             idformat.Session.Format(qSession.ID),
+		UserId:         idformat.User.Format(qSession.UserID),
+		Revoked:        qSession.RefreshTokenSha256 == nil,
+		CreateTime:     timestamppb.New(*qSession.CreateTime),
+		LastActiveTime: timestamppb.New(*qSession.LastActiveTime),
+		ExpireTime:     timestamppb.New(*qSession.ExpireTime),
 	}
 }
