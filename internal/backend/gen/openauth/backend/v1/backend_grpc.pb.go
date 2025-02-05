@@ -50,6 +50,9 @@ const (
 	BackendService_ListIntermediateSessions_FullMethodName              = "/openauth.backend.v1.BackendService/ListIntermediateSessions"
 	BackendService_GetIntermediateSession_FullMethodName                = "/openauth.backend.v1.BackendService/GetIntermediateSession"
 	BackendService_ListUserInvites_FullMethodName                       = "/openauth.backend.v1.BackendService/ListUserInvites"
+	BackendService_GetUserInvite_FullMethodName                         = "/openauth.backend.v1.BackendService/GetUserInvite"
+	BackendService_CreateUserInvite_FullMethodName                      = "/openauth.backend.v1.BackendService/CreateUserInvite"
+	BackendService_DeleteUserInvite_FullMethodName                      = "/openauth.backend.v1.BackendService/DeleteUserInvite"
 	BackendService_DisableOrganizationLogins_FullMethodName             = "/openauth.backend.v1.BackendService/DisableOrganizationLogins"
 	BackendService_DisableProjectLogins_FullMethodName                  = "/openauth.backend.v1.BackendService/DisableProjectLogins"
 	BackendService_EnableOrganizationLogins_FullMethodName              = "/openauth.backend.v1.BackendService/EnableOrganizationLogins"
@@ -106,6 +109,9 @@ type BackendServiceClient interface {
 	ListIntermediateSessions(ctx context.Context, in *ListIntermediateSessionsRequest, opts ...grpc.CallOption) (*ListIntermediateSessionsResponse, error)
 	GetIntermediateSession(ctx context.Context, in *GetIntermediateSessionRequest, opts ...grpc.CallOption) (*GetIntermediateSessionResponse, error)
 	ListUserInvites(ctx context.Context, in *ListUserInvitesRequest, opts ...grpc.CallOption) (*ListUserInvitesResponse, error)
+	GetUserInvite(ctx context.Context, in *GetUserInviteRequest, opts ...grpc.CallOption) (*GetUserInviteResponse, error)
+	CreateUserInvite(ctx context.Context, in *CreateUserInviteRequest, opts ...grpc.CallOption) (*CreateUserInviteResponse, error)
+	DeleteUserInvite(ctx context.Context, in *DeleteUserInviteRequest, opts ...grpc.CallOption) (*DeleteUserInviteResponse, error)
 	DisableOrganizationLogins(ctx context.Context, in *DisableOrganizationLoginsRequest, opts ...grpc.CallOption) (*DisableOrganizationLoginsResponse, error)
 	DisableProjectLogins(ctx context.Context, in *DisableProjectLoginsRequest, opts ...grpc.CallOption) (*DisableProjectLoginsResponse, error)
 	EnableOrganizationLogins(ctx context.Context, in *EnableOrganizationLoginsRequest, opts ...grpc.CallOption) (*EnableOrganizationLoginsResponse, error)
@@ -445,6 +451,36 @@ func (c *backendServiceClient) ListUserInvites(ctx context.Context, in *ListUser
 	return out, nil
 }
 
+func (c *backendServiceClient) GetUserInvite(ctx context.Context, in *GetUserInviteRequest, opts ...grpc.CallOption) (*GetUserInviteResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetUserInviteResponse)
+	err := c.cc.Invoke(ctx, BackendService_GetUserInvite_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) CreateUserInvite(ctx context.Context, in *CreateUserInviteRequest, opts ...grpc.CallOption) (*CreateUserInviteResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateUserInviteResponse)
+	err := c.cc.Invoke(ctx, BackendService_CreateUserInvite_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) DeleteUserInvite(ctx context.Context, in *DeleteUserInviteRequest, opts ...grpc.CallOption) (*DeleteUserInviteResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteUserInviteResponse)
+	err := c.cc.Invoke(ctx, BackendService_DeleteUserInvite_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *backendServiceClient) DisableOrganizationLogins(ctx context.Context, in *DisableOrganizationLoginsRequest, opts ...grpc.CallOption) (*DisableOrganizationLoginsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(DisableOrganizationLoginsResponse)
@@ -670,6 +706,9 @@ type BackendServiceServer interface {
 	ListIntermediateSessions(context.Context, *ListIntermediateSessionsRequest) (*ListIntermediateSessionsResponse, error)
 	GetIntermediateSession(context.Context, *GetIntermediateSessionRequest) (*GetIntermediateSessionResponse, error)
 	ListUserInvites(context.Context, *ListUserInvitesRequest) (*ListUserInvitesResponse, error)
+	GetUserInvite(context.Context, *GetUserInviteRequest) (*GetUserInviteResponse, error)
+	CreateUserInvite(context.Context, *CreateUserInviteRequest) (*CreateUserInviteResponse, error)
+	DeleteUserInvite(context.Context, *DeleteUserInviteRequest) (*DeleteUserInviteResponse, error)
 	DisableOrganizationLogins(context.Context, *DisableOrganizationLoginsRequest) (*DisableOrganizationLoginsResponse, error)
 	DisableProjectLogins(context.Context, *DisableProjectLoginsRequest) (*DisableProjectLoginsResponse, error)
 	EnableOrganizationLogins(context.Context, *EnableOrganizationLoginsRequest) (*EnableOrganizationLoginsResponse, error)
@@ -791,6 +830,15 @@ func (UnimplementedBackendServiceServer) GetIntermediateSession(context.Context,
 }
 func (UnimplementedBackendServiceServer) ListUserInvites(context.Context, *ListUserInvitesRequest) (*ListUserInvitesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListUserInvites not implemented")
+}
+func (UnimplementedBackendServiceServer) GetUserInvite(context.Context, *GetUserInviteRequest) (*GetUserInviteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserInvite not implemented")
+}
+func (UnimplementedBackendServiceServer) CreateUserInvite(context.Context, *CreateUserInviteRequest) (*CreateUserInviteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateUserInvite not implemented")
+}
+func (UnimplementedBackendServiceServer) DeleteUserInvite(context.Context, *DeleteUserInviteRequest) (*DeleteUserInviteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteUserInvite not implemented")
 }
 func (UnimplementedBackendServiceServer) DisableOrganizationLogins(context.Context, *DisableOrganizationLoginsRequest) (*DisableOrganizationLoginsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DisableOrganizationLogins not implemented")
@@ -1428,6 +1476,60 @@ func _BackendService_ListUserInvites_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BackendService_GetUserInvite_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserInviteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).GetUserInvite(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_GetUserInvite_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).GetUserInvite(ctx, req.(*GetUserInviteRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_CreateUserInvite_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateUserInviteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).CreateUserInvite(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_CreateUserInvite_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).CreateUserInvite(ctx, req.(*CreateUserInviteRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_DeleteUserInvite_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteUserInviteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).DeleteUserInvite(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_DeleteUserInvite_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).DeleteUserInvite(ctx, req.(*DeleteUserInviteRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _BackendService_DisableOrganizationLogins_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DisableOrganizationLoginsRequest)
 	if err := dec(in); err != nil {
@@ -1900,6 +2002,18 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListUserInvites",
 			Handler:    _BackendService_ListUserInvites_Handler,
+		},
+		{
+			MethodName: "GetUserInvite",
+			Handler:    _BackendService_GetUserInvite_Handler,
+		},
+		{
+			MethodName: "CreateUserInvite",
+			Handler:    _BackendService_CreateUserInvite_Handler,
+		},
+		{
+			MethodName: "DeleteUserInvite",
+			Handler:    _BackendService_DeleteUserInvite_Handler,
 		},
 		{
 			MethodName: "DisableOrganizationLogins",

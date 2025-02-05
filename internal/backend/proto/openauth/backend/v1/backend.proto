@@ -202,6 +202,25 @@ service BackendService {
     };
   }
 
+  rpc GetUserInvite(GetUserInviteRequest) returns (GetUserInviteResponse) {
+    option (google.api.http) = {
+      get: "/backend/v1/user-invites/{id}"
+    };
+  }
+
+  rpc CreateUserInvite(CreateUserInviteRequest) returns (CreateUserInviteResponse) {
+    option (google.api.http) = {
+      post: "/backend/v1/user-invites",
+      body: "user_invite"
+    };
+  }
+
+  rpc DeleteUserInvite(DeleteUserInviteRequest) returns (DeleteUserInviteResponse) {
+    option (google.api.http) = {
+      delete: "/backend/v1/user-invites/{id}"
+    };
+  }
+
   rpc DisableOrganizationLogins(DisableOrganizationLoginsRequest) returns (DisableOrganizationLoginsResponse) {}
   rpc DisableProjectLogins(DisableProjectLoginsRequest) returns (DisableProjectLoginsResponse) {}
   rpc EnableOrganizationLogins(EnableOrganizationLoginsRequest) returns (EnableOrganizationLoginsResponse) {}
@@ -494,13 +513,36 @@ message GetIntermediateSessionResponse {
 }
 
 message ListUserInvitesRequest {
-  string page_token = 1;
+  string organization_id = 1;
+  string page_token = 2;
 }
 
 message ListUserInvitesResponse {
   repeated UserInvite user_invites = 1;
   string next_page_token = 2;
 }
+
+message GetUserInviteRequest {
+  string id = 1;
+}
+
+message GetUserInviteResponse {
+  UserInvite user_invite = 1;
+}
+
+message CreateUserInviteRequest {
+  UserInvite user_invite = 1;
+}
+
+message CreateUserInviteResponse {
+  UserInvite user_invite = 1;
+}
+
+message DeleteUserInviteRequest {
+  string id = 1;
+}
+
+message DeleteUserInviteResponse {}
 
 message ListProjectAPIKeysRequest {
   string page_token = 1;

@@ -125,6 +125,15 @@ const (
 	// BackendServiceListUserInvitesProcedure is the fully-qualified name of the BackendService's
 	// ListUserInvites RPC.
 	BackendServiceListUserInvitesProcedure = "/openauth.backend.v1.BackendService/ListUserInvites"
+	// BackendServiceGetUserInviteProcedure is the fully-qualified name of the BackendService's
+	// GetUserInvite RPC.
+	BackendServiceGetUserInviteProcedure = "/openauth.backend.v1.BackendService/GetUserInvite"
+	// BackendServiceCreateUserInviteProcedure is the fully-qualified name of the BackendService's
+	// CreateUserInvite RPC.
+	BackendServiceCreateUserInviteProcedure = "/openauth.backend.v1.BackendService/CreateUserInvite"
+	// BackendServiceDeleteUserInviteProcedure is the fully-qualified name of the BackendService's
+	// DeleteUserInvite RPC.
+	BackendServiceDeleteUserInviteProcedure = "/openauth.backend.v1.BackendService/DeleteUserInvite"
 	// BackendServiceDisableOrganizationLoginsProcedure is the fully-qualified name of the
 	// BackendService's DisableOrganizationLogins RPC.
 	BackendServiceDisableOrganizationLoginsProcedure = "/openauth.backend.v1.BackendService/DisableOrganizationLogins"
@@ -217,6 +226,9 @@ type BackendServiceClient interface {
 	ListIntermediateSessions(context.Context, *connect.Request[v1.ListIntermediateSessionsRequest]) (*connect.Response[v1.ListIntermediateSessionsResponse], error)
 	GetIntermediateSession(context.Context, *connect.Request[v1.GetIntermediateSessionRequest]) (*connect.Response[v1.GetIntermediateSessionResponse], error)
 	ListUserInvites(context.Context, *connect.Request[v1.ListUserInvitesRequest]) (*connect.Response[v1.ListUserInvitesResponse], error)
+	GetUserInvite(context.Context, *connect.Request[v1.GetUserInviteRequest]) (*connect.Response[v1.GetUserInviteResponse], error)
+	CreateUserInvite(context.Context, *connect.Request[v1.CreateUserInviteRequest]) (*connect.Response[v1.CreateUserInviteResponse], error)
+	DeleteUserInvite(context.Context, *connect.Request[v1.DeleteUserInviteRequest]) (*connect.Response[v1.DeleteUserInviteResponse], error)
 	DisableOrganizationLogins(context.Context, *connect.Request[v1.DisableOrganizationLoginsRequest]) (*connect.Response[v1.DisableOrganizationLoginsResponse], error)
 	DisableProjectLogins(context.Context, *connect.Request[v1.DisableProjectLoginsRequest]) (*connect.Response[v1.DisableProjectLoginsResponse], error)
 	EnableOrganizationLogins(context.Context, *connect.Request[v1.EnableOrganizationLoginsRequest]) (*connect.Response[v1.EnableOrganizationLoginsResponse], error)
@@ -435,6 +447,24 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(backendServiceMethods.ByName("ListUserInvites")),
 			connect.WithClientOptions(opts...),
 		),
+		getUserInvite: connect.NewClient[v1.GetUserInviteRequest, v1.GetUserInviteResponse](
+			httpClient,
+			baseURL+BackendServiceGetUserInviteProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("GetUserInvite")),
+			connect.WithClientOptions(opts...),
+		),
+		createUserInvite: connect.NewClient[v1.CreateUserInviteRequest, v1.CreateUserInviteResponse](
+			httpClient,
+			baseURL+BackendServiceCreateUserInviteProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("CreateUserInvite")),
+			connect.WithClientOptions(opts...),
+		),
+		deleteUserInvite: connect.NewClient[v1.DeleteUserInviteRequest, v1.DeleteUserInviteResponse](
+			httpClient,
+			baseURL+BackendServiceDeleteUserInviteProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("DeleteUserInvite")),
+			connect.WithClientOptions(opts...),
+		),
 		disableOrganizationLogins: connect.NewClient[v1.DisableOrganizationLoginsRequest, v1.DisableOrganizationLoginsResponse](
 			httpClient,
 			baseURL+BackendServiceDisableOrganizationLoginsProcedure,
@@ -585,6 +615,9 @@ type backendServiceClient struct {
 	listIntermediateSessions              *connect.Client[v1.ListIntermediateSessionsRequest, v1.ListIntermediateSessionsResponse]
 	getIntermediateSession                *connect.Client[v1.GetIntermediateSessionRequest, v1.GetIntermediateSessionResponse]
 	listUserInvites                       *connect.Client[v1.ListUserInvitesRequest, v1.ListUserInvitesResponse]
+	getUserInvite                         *connect.Client[v1.GetUserInviteRequest, v1.GetUserInviteResponse]
+	createUserInvite                      *connect.Client[v1.CreateUserInviteRequest, v1.CreateUserInviteResponse]
+	deleteUserInvite                      *connect.Client[v1.DeleteUserInviteRequest, v1.DeleteUserInviteResponse]
 	disableOrganizationLogins             *connect.Client[v1.DisableOrganizationLoginsRequest, v1.DisableOrganizationLoginsResponse]
 	disableProjectLogins                  *connect.Client[v1.DisableProjectLoginsRequest, v1.DisableProjectLoginsResponse]
 	enableOrganizationLogins              *connect.Client[v1.EnableOrganizationLoginsRequest, v1.EnableOrganizationLoginsResponse]
@@ -765,6 +798,21 @@ func (c *backendServiceClient) ListUserInvites(ctx context.Context, req *connect
 	return c.listUserInvites.CallUnary(ctx, req)
 }
 
+// GetUserInvite calls openauth.backend.v1.BackendService.GetUserInvite.
+func (c *backendServiceClient) GetUserInvite(ctx context.Context, req *connect.Request[v1.GetUserInviteRequest]) (*connect.Response[v1.GetUserInviteResponse], error) {
+	return c.getUserInvite.CallUnary(ctx, req)
+}
+
+// CreateUserInvite calls openauth.backend.v1.BackendService.CreateUserInvite.
+func (c *backendServiceClient) CreateUserInvite(ctx context.Context, req *connect.Request[v1.CreateUserInviteRequest]) (*connect.Response[v1.CreateUserInviteResponse], error) {
+	return c.createUserInvite.CallUnary(ctx, req)
+}
+
+// DeleteUserInvite calls openauth.backend.v1.BackendService.DeleteUserInvite.
+func (c *backendServiceClient) DeleteUserInvite(ctx context.Context, req *connect.Request[v1.DeleteUserInviteRequest]) (*connect.Response[v1.DeleteUserInviteResponse], error) {
+	return c.deleteUserInvite.CallUnary(ctx, req)
+}
+
 // DisableOrganizationLogins calls openauth.backend.v1.BackendService.DisableOrganizationLogins.
 func (c *backendServiceClient) DisableOrganizationLogins(ctx context.Context, req *connect.Request[v1.DisableOrganizationLoginsRequest]) (*connect.Response[v1.DisableOrganizationLoginsResponse], error) {
 	return c.disableOrganizationLogins.CallUnary(ctx, req)
@@ -894,6 +942,9 @@ type BackendServiceHandler interface {
 	ListIntermediateSessions(context.Context, *connect.Request[v1.ListIntermediateSessionsRequest]) (*connect.Response[v1.ListIntermediateSessionsResponse], error)
 	GetIntermediateSession(context.Context, *connect.Request[v1.GetIntermediateSessionRequest]) (*connect.Response[v1.GetIntermediateSessionResponse], error)
 	ListUserInvites(context.Context, *connect.Request[v1.ListUserInvitesRequest]) (*connect.Response[v1.ListUserInvitesResponse], error)
+	GetUserInvite(context.Context, *connect.Request[v1.GetUserInviteRequest]) (*connect.Response[v1.GetUserInviteResponse], error)
+	CreateUserInvite(context.Context, *connect.Request[v1.CreateUserInviteRequest]) (*connect.Response[v1.CreateUserInviteResponse], error)
+	DeleteUserInvite(context.Context, *connect.Request[v1.DeleteUserInviteRequest]) (*connect.Response[v1.DeleteUserInviteResponse], error)
 	DisableOrganizationLogins(context.Context, *connect.Request[v1.DisableOrganizationLoginsRequest]) (*connect.Response[v1.DisableOrganizationLoginsResponse], error)
 	DisableProjectLogins(context.Context, *connect.Request[v1.DisableProjectLoginsRequest]) (*connect.Response[v1.DisableProjectLoginsResponse], error)
 	EnableOrganizationLogins(context.Context, *connect.Request[v1.EnableOrganizationLoginsRequest]) (*connect.Response[v1.EnableOrganizationLoginsResponse], error)
@@ -1108,6 +1159,24 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		connect.WithSchema(backendServiceMethods.ByName("ListUserInvites")),
 		connect.WithHandlerOptions(opts...),
 	)
+	backendServiceGetUserInviteHandler := connect.NewUnaryHandler(
+		BackendServiceGetUserInviteProcedure,
+		svc.GetUserInvite,
+		connect.WithSchema(backendServiceMethods.ByName("GetUserInvite")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceCreateUserInviteHandler := connect.NewUnaryHandler(
+		BackendServiceCreateUserInviteProcedure,
+		svc.CreateUserInvite,
+		connect.WithSchema(backendServiceMethods.ByName("CreateUserInvite")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceDeleteUserInviteHandler := connect.NewUnaryHandler(
+		BackendServiceDeleteUserInviteProcedure,
+		svc.DeleteUserInvite,
+		connect.WithSchema(backendServiceMethods.ByName("DeleteUserInvite")),
+		connect.WithHandlerOptions(opts...),
+	)
 	backendServiceDisableOrganizationLoginsHandler := connect.NewUnaryHandler(
 		BackendServiceDisableOrganizationLoginsProcedure,
 		svc.DisableOrganizationLogins,
@@ -1286,6 +1355,12 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceGetIntermediateSessionHandler.ServeHTTP(w, r)
 		case BackendServiceListUserInvitesProcedure:
 			backendServiceListUserInvitesHandler.ServeHTTP(w, r)
+		case BackendServiceGetUserInviteProcedure:
+			backendServiceGetUserInviteHandler.ServeHTTP(w, r)
+		case BackendServiceCreateUserInviteProcedure:
+			backendServiceCreateUserInviteHandler.ServeHTTP(w, r)
+		case BackendServiceDeleteUserInviteProcedure:
+			backendServiceDeleteUserInviteHandler.ServeHTTP(w, r)
 		case BackendServiceDisableOrganizationLoginsProcedure:
 			backendServiceDisableOrganizationLoginsHandler.ServeHTTP(w, r)
 		case BackendServiceDisableProjectLoginsProcedure:
@@ -1455,6 +1530,18 @@ func (UnimplementedBackendServiceHandler) GetIntermediateSession(context.Context
 
 func (UnimplementedBackendServiceHandler) ListUserInvites(context.Context, *connect.Request[v1.ListUserInvitesRequest]) (*connect.Response[v1.ListUserInvitesResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.ListUserInvites is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) GetUserInvite(context.Context, *connect.Request[v1.GetUserInviteRequest]) (*connect.Response[v1.GetUserInviteResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetUserInvite is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) CreateUserInvite(context.Context, *connect.Request[v1.CreateUserInviteRequest]) (*connect.Response[v1.CreateUserInviteResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.CreateUserInvite is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) DeleteUserInvite(context.Context, *connect.Request[v1.DeleteUserInviteRequest]) (*connect.Response[v1.DeleteUserInviteResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.DeleteUserInvite is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) DisableOrganizationLogins(context.Context, *connect.Request[v1.DisableOrganizationLoginsRequest]) (*connect.Response[v1.DisableOrganizationLoginsResponse], error) {

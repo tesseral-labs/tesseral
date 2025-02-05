@@ -706,6 +706,10 @@ paths:
                 - BackendService
             operationId: BackendService_ListUserInvites
             parameters:
+                - name: organizationId
+                  in: query
+                  schema:
+                    type: string
                 - name: pageToken
                   in: query
                   schema:
@@ -717,6 +721,76 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ListUserInvitesResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - BackendService
+            operationId: BackendService_CreateUserInvite
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UserInvite'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateUserInviteResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /backend/v1/user-invites/{id}:
+        get:
+            tags:
+                - BackendService
+            operationId: BackendService_GetUserInvite
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetUserInviteResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        delete:
+            tags:
+                - BackendService
+            operationId: BackendService_DeleteUserInvite
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DeleteUserInviteResponse'
                 default:
                     description: Default error response
                     content:
@@ -791,6 +865,11 @@ components:
             properties:
                 scimApiKey:
                     $ref: '#/components/schemas/SCIMAPIKey'
+        CreateUserInviteResponse:
+            type: object
+            properties:
+                userInvite:
+                    $ref: '#/components/schemas/UserInvite'
         DeleteOrganizationResponse:
             type: object
             properties: {}
@@ -801,6 +880,9 @@ components:
             type: object
             properties: {}
         DeleteSCIMAPIKeyResponse:
+            type: object
+            properties: {}
+        DeleteUserInviteResponse:
             type: object
             properties: {}
         GetIntermediateSessionResponse:
@@ -848,6 +930,11 @@ components:
             properties:
                 session:
                     $ref: '#/components/schemas/Session'
+        GetUserInviteResponse:
+            type: object
+            properties:
+                userInvite:
+                    $ref: '#/components/schemas/UserInvite'
         GetUserResponse:
             type: object
             properties:

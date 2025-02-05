@@ -277,6 +277,35 @@ func (q *Queries) CreateUserImpersonationToken(ctx context.Context, arg CreateUs
 	return i, err
 }
 
+const createUserInvite = `-- name: CreateUserInvite :one
+INSERT INTO user_invites (id, organization_id, email)
+    VALUES ($1, $2, $3)
+ON CONFLICT (organization_id, email)
+    DO UPDATE SET
+        email = excluded.email -- no-op write so that returning works
+    RETURNING
+        id, organization_id, create_time, update_time, email
+`
+
+type CreateUserInviteParams struct {
+	ID             uuid.UUID
+	OrganizationID uuid.UUID
+	Email          string
+}
+
+func (q *Queries) CreateUserInvite(ctx context.Context, arg CreateUserInviteParams) (UserInvite, error) {
+	row := q.db.QueryRow(ctx, createUserInvite, arg.ID, arg.OrganizationID, arg.Email)
+	var i UserInvite
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.Email,
+	)
+	return i, err
+}
+
 const deleteOrganization = `-- name: DeleteOrganization :exec
 DELETE FROM organizations
 WHERE id = $1
@@ -360,6 +389,16 @@ WHERE id = $1
 
 func (q *Queries) DeleteSCIMAPIKey(ctx context.Context, id uuid.UUID) error {
 	_, err := q.db.Exec(ctx, deleteSCIMAPIKey, id)
+	return err
+}
+
+const deleteUserInvite = `-- name: DeleteUserInvite :exec
+DELETE FROM user_invites
+WHERE id = $1
+`
+
+func (q *Queries) DeleteUserInvite(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteUserInvite, id)
 	return err
 }
 
@@ -582,6 +621,30 @@ WHERE
 func (q *Queries) EnableProjectLogins(ctx context.Context, id uuid.UUID) error {
 	_, err := q.db.Exec(ctx, enableProjectLogins, id)
 	return err
+}
+
+const existsUserWithEmailInOrganization = `-- name: ExistsUserWithEmailInOrganization :one
+SELECT
+    EXISTS (
+        SELECT
+            id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_recovery_code_bcrypts, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time
+        FROM
+            users
+        WHERE
+            organization_id = $1
+            AND email = $2)
+`
+
+type ExistsUserWithEmailInOrganizationParams struct {
+	OrganizationID uuid.UUID
+	Email          string
+}
+
+func (q *Queries) ExistsUserWithEmailInOrganization(ctx context.Context, arg ExistsUserWithEmailInOrganizationParams) (bool, error) {
+	row := q.db.QueryRow(ctx, existsUserWithEmailInOrganization, arg.OrganizationID, arg.Email)
+	var exists bool
+	err := row.Scan(&exists)
+	return exists, err
 }
 
 const getIntermediateSession = `-- name: GetIntermediateSession :one
@@ -1142,6 +1205,35 @@ func (q *Queries) GetUserForImpersonation(ctx context.Context, arg GetUserForImp
 	return i, err
 }
 
+const getUserInvite = `-- name: GetUserInvite :one
+SELECT
+    user_invites.id, user_invites.organization_id, user_invites.create_time, user_invites.update_time, user_invites.email
+FROM
+    user_invites
+    JOIN organizations ON user_invites.organization_id = organizations.id
+WHERE
+    user_invites.id = $1
+    AND organizations.project_id = $2
+`
+
+type GetUserInviteParams struct {
+	ID        uuid.UUID
+	ProjectID uuid.UUID
+}
+
+func (q *Queries) GetUserInvite(ctx context.Context, arg GetUserInviteParams) (UserInvite, error) {
+	row := q.db.QueryRow(ctx, getUserInvite, arg.ID, arg.ProjectID)
+	var i UserInvite
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.Email,
+	)
+	return i, err
+}
+
 const listIntermediateSessions = `-- name: ListIntermediateSessions :many
 SELECT
     id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_recovery_code_bcrypts
@@ -1567,6 +1659,51 @@ func (q *Queries) ListSessions(ctx context.Context, arg ListSessionsParams) ([]S
 			&i.RefreshTokenSha256,
 			&i.ImpersonatorUserID,
 			&i.LastActiveTime,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listUserInvites = `-- name: ListUserInvites :many
+SELECT
+    id, organization_id, create_time, update_time, email
+FROM
+    user_invites
+WHERE
+    organization_id = $1
+    AND id >= $2
+ORDER BY
+    id
+LIMIT $3
+`
+
+type ListUserInvitesParams struct {
+	OrganizationID uuid.UUID
+	ID             uuid.UUID
+	Limit          int32
+}
+
+func (q *Queries) ListUserInvites(ctx context.Context, arg ListUserInvitesParams) ([]UserInvite, error) {
+	rows, err := q.db.Query(ctx, listUserInvites, arg.OrganizationID, arg.ID, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []UserInvite
+	for rows.Next() {
+		var i UserInvite
+		if err := rows.Scan(
+			&i.ID,
+			&i.OrganizationID,
+			&i.CreateTime,
+			&i.UpdateTime,
+			&i.Email,
 		); err != nil {
 			return nil, err
 		}

@@ -160,6 +160,21 @@ export const getIntermediateSession = BackendService.method.getIntermediateSessi
 export const listUserInvites = BackendService.method.listUserInvites;
 
 /**
+ * @generated from rpc openauth.backend.v1.BackendService.GetUserInvite
+ */
+export const getUserInvite = BackendService.method.getUserInvite;
+
+/**
+ * @generated from rpc openauth.backend.v1.BackendService.CreateUserInvite
+ */
+export const createUserInvite = BackendService.method.createUserInvite;
+
+/**
+ * @generated from rpc openauth.backend.v1.BackendService.DeleteUserInvite
+ */
+export const deleteUserInvite = BackendService.method.deleteUserInvite;
+
+/**
  * @generated from rpc openauth.backend.v1.BackendService.DisableOrganizationLogins
  */
 export const disableOrganizationLogins = BackendService.method.disableOrganizationLogins;
