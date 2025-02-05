@@ -508,3 +508,13 @@ WHERE
 RETURNING
     *;
 
+-- name: UpdateIntermediateSessionPrimaryLoginFactor :one
+UPDATE
+    intermediate_sessions
+SET
+    primary_login_factor = $1
+WHERE
+    id = $2
+RETURNING
+    *;
+

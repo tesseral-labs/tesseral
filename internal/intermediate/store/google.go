@@ -135,6 +135,16 @@ func (s *Store) RedeemGoogleOAuthCode(ctx context.Context, req *intermediatev1.R
 		}
 	}
 
+	if _, err := q.UpdateIntermediateSessionPrimaryLoginFactor(ctx, queries.UpdateIntermediateSessionPrimaryLoginFactorParams{
+		ID: authn.IntermediateSessionID(ctx),
+		PrimaryLoginFactor: queries.NullPrimaryLoginFactor{
+			PrimaryLoginFactor: queries.PrimaryLoginFactorGoogleOauth,
+			Valid:              true,
+		},
+	}); err != nil {
+		return nil, fmt.Errorf("update intermediate session primary login factor: %v", err)
+	}
+
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
 	}

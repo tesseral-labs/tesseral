@@ -124,6 +124,16 @@ func (s *Store) RedeemMicrosoftOAuthCode(ctx context.Context, req *intermediatev
 		return nil, fmt.Errorf("update intermediate session microsoft details: %v", err)
 	}
 
+	if _, err := q.UpdateIntermediateSessionPrimaryLoginFactor(ctx, queries.UpdateIntermediateSessionPrimaryLoginFactorParams{
+		ID: authn.IntermediateSessionID(ctx),
+		PrimaryLoginFactor: queries.NullPrimaryLoginFactor{
+			PrimaryLoginFactor: queries.PrimaryLoginFactorMicrosoftOauth,
+			Valid:              true,
+		},
+	}); err != nil {
+		return nil, fmt.Errorf("update intermediate session primary login factor: %v", err)
+	}
+
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
 	}

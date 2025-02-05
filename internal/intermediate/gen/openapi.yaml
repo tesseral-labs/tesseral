@@ -430,6 +430,30 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /intermediate/v1/set-primary-login-factor:
+        post:
+            tags:
+                - IntermediateService
+            operationId: IntermediateService_SetPrimaryLoginFactor
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/SetPrimaryLoginFactorRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/SetPrimaryLoginFactorResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /intermediate/v1/verify-authenticator-app:
         post:
             tags:
@@ -651,6 +675,8 @@ components:
                     type: boolean
                 emailVerificationChallengeRegistered:
                     type: boolean
+                primaryLoginFactor:
+                    type: string
         IssueEmailVerificationChallengeRequest:
             type: object
             properties:
@@ -788,6 +814,14 @@ components:
             type: object
             properties: {}
         SetOrganizationResponse:
+            type: object
+            properties: {}
+        SetPrimaryLoginFactorRequest:
+            type: object
+            properties:
+                primaryLoginFactor:
+                    type: string
+        SetPrimaryLoginFactorResponse:
             type: object
             properties: {}
         Status:

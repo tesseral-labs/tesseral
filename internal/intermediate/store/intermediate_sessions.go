@@ -12,6 +12,40 @@ import (
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
+func (s *Store) SetPrimaryLoginFactor(ctx context.Context, req *intermediatev1.SetPrimaryLoginFactorRequest) (*intermediatev1.SetPrimaryLoginFactorResponse, error) {
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("begin transaction: %w", err)
+	}
+	defer rollback()
+
+	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get intermediate session by id: %w", err)
+	}
+
+	if req.PrimaryLoginFactor == "" {
+		return nil, apierror.NewInvalidArgumentError("primary login factor is required", fmt.Errorf("primary login factor not provided"))
+	}
+
+	primaryLoginFactor := queries.PrimaryLoginFactor(req.PrimaryLoginFactor)
+	if _, err := q.UpdateIntermediateSessionPrimaryLoginFactor(ctx, queries.UpdateIntermediateSessionPrimaryLoginFactorParams{
+		ID: qIntermediateSession.ID,
+		PrimaryLoginFactor: queries.NullPrimaryLoginFactor{
+			PrimaryLoginFactor: primaryLoginFactor,
+			Valid:              true,
+		},
+	}); err != nil {
+		return nil, fmt.Errorf("update intermediate session primary login factor: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit transaction: %w", err)
+	}
+
+	return &intermediatev1.SetPrimaryLoginFactorResponse{}, nil
+}
+
 func (s *Store) getIntermediateSessionEmailVerified(ctx context.Context, q *queries.Queries, id uuid.UUID) (bool, error) {
 	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, id)
 	if err != nil {
@@ -77,6 +111,11 @@ func parseIntermediateSession(qIntermediateSession queries.IntermediateSession, 
 		organizationID = idformat.Organization.Format(*qIntermediateSession.OrganizationID)
 	}
 
+	var primaryLoginFactor string
+	if qIntermediateSession.PrimaryLoginFactor.Valid {
+		primaryLoginFactor = string(qIntermediateSession.PrimaryLoginFactor.PrimaryLoginFactor)
+	}
+
 	return &intermediatev1.IntermediateSession{
 		Id:                                   idformat.IntermediateSession.Format(qIntermediateSession.ID),
 		ProjectId:                            idformat.Project.Format(qIntermediateSession.ProjectID),
@@ -88,6 +127,7 @@ func parseIntermediateSession(qIntermediateSession queries.IntermediateSession, 
 		MicrosoftUserId:                      derefOrEmpty(qIntermediateSession.MicrosoftUserID),
 		MicrosoftTenantId:                    derefOrEmpty(qIntermediateSession.MicrosoftTenantID),
 		PasswordVerified:                     qIntermediateSession.PasswordVerified,
+		PrimaryLoginFactor:                   primaryLoginFactor,
 		NewUserPasswordRegistered:            qIntermediateSession.NewUserPasswordBcrypt != nil,
 		OrganizationId:                       organizationID,
 	}
