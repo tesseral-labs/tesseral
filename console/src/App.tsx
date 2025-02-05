@@ -26,7 +26,6 @@ import { ViewProjectAPIKeyPage } from '@/pages/project-api-keys/ViewProjectAPIKe
 import { HomePage } from '@/pages/home/HomePage'
 import { ProjectDetailsTab } from '@/pages/project/ProjectDetailsTab'
 import LoginPage from './pages/login/LoginPage'
-import { ViewSessionPage } from '@/pages/sessions/ViewSessionPage'
 import { ViewPasskeyPage } from '@/pages/passkeys/ViewPasskeyPage'
 
 const queryClient = new QueryClient()
