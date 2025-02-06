@@ -38,14 +38,18 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { PageTitle } from '@/components/page'
+import { toast } from 'sonner'
 
 const schema = z.object({
   displayName: z.string(),
-  overrideLogInMethods: z.boolean(),
-  logInWithPasswordEnabled: z.boolean(),
-  logInWithGoogleEnabled: z.boolean(),
-  logInWithMicrosoftEnabled: z.boolean(),
-  samlEnabled: z.boolean(),
+  logInWithGoogle: z.boolean(),
+  logInWithMicrosoft: z.boolean(),
+  logInWithEmail: z.boolean(),
+  logInWithPassword: z.boolean(),
+  logInWithSaml: z.boolean(),
+  logInWithAuthenticatorApp: z.boolean(),
+  logInWithPasskey: z.boolean(),
+  requireMfa: z.boolean(),
   scimEnabled: z.boolean(),
 })
 
@@ -58,10 +62,6 @@ export function EditOrganizationPage() {
   })
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
-    defaultValues: {
-      // form needs to read this to change appearance; just default its value initially
-      overrideLogInMethods: false,
-    },
   })
   const updateOrganizationMutation = useMutation(updateOrganization)
 
@@ -69,15 +69,17 @@ export function EditOrganizationPage() {
     if (getOrganizationResponse?.organization) {
       form.reset({
         displayName: getOrganizationResponse.organization.displayName,
-        overrideLogInMethods:
-          getOrganizationResponse.organization.overrideLogInMethods,
-        logInWithGoogleEnabled:
-          getOrganizationResponse.organization.logInWithGoogleEnabled,
-        logInWithPasswordEnabled:
-          getOrganizationResponse.organization.logInWithPasswordEnabled,
-        logInWithMicrosoftEnabled:
-          getOrganizationResponse.organization.logInWithMicrosoftEnabled,
-        samlEnabled: getOrganizationResponse.organization.samlEnabled,
+        logInWithGoogle: getOrganizationResponse.organization.logInWithGoogle,
+        logInWithMicrosoft:
+          getOrganizationResponse.organization.logInWithMicrosoft,
+        logInWithEmail: getOrganizationResponse.organization.logInWithEmail,
+        logInWithPassword:
+          getOrganizationResponse.organization.logInWithPassword,
+        logInWithSaml: getOrganizationResponse.organization.logInWithSaml,
+        logInWithAuthenticatorApp:
+          getOrganizationResponse.organization.logInWithAuthenticatorApp,
+        logInWithPasskey: getOrganizationResponse.organization.logInWithPasskey,
+        requireMfa: getOrganizationResponse.organization.requireMfa,
         scimEnabled: getOrganizationResponse.organization.scimEnabled,
       })
     }
@@ -88,15 +90,19 @@ export function EditOrganizationPage() {
       id: organizationId,
       organization: {
         displayName: values.displayName,
-        overrideLogInMethods: values.overrideLogInMethods,
-        logInWithGoogleEnabled: values.logInWithGoogleEnabled,
-        logInWithPasswordEnabled: values.logInWithPasswordEnabled,
-        logInWithMicrosoftEnabled: values.logInWithMicrosoftEnabled,
-        samlEnabled: values.samlEnabled,
+        logInWithGoogle: values.logInWithGoogle,
+        logInWithMicrosoft: values.logInWithMicrosoft,
+        logInWithEmail: values.logInWithEmail,
+        logInWithPassword: values.logInWithPassword,
+        logInWithSaml: values.logInWithSaml,
+        logInWithAuthenticatorApp: values.logInWithAuthenticatorApp,
+        logInWithPasskey: values.logInWithPasskey,
+        requireMfa: values.requireMfa,
         scimEnabled: values.scimEnabled,
       },
     })
 
+    toast.success('Organization updated successfully')
     navigate(`/organizations/${organizationId}`)
   }
 
@@ -171,17 +177,159 @@ export function EditOrganizationPage() {
             <CardHeader>
               <CardTitle>Login settings</CardTitle>
               <CardDescription>
-                Configure what login methods users can use to log into this
-                organization.
+                Configure how users can log into this organization.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-8">
+              {getProjectResponse?.project?.logInWithGoogle && (
+                <FormField
+                  control={form.control}
+                  name="logInWithGoogle"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Log in with Google</FormLabel>
+                      <FormControl>
+                        <Switch
+                          className="block"
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+
+              {getProjectResponse?.project?.logInWithMicrosoft && (
+                <FormField
+                  control={form.control}
+                  name="logInWithMicrosoft"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Log in with Microsoft</FormLabel>
+                      <FormControl>
+                        <Switch
+                          className="block"
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+
+              {getProjectResponse?.project?.logInWithEmail && (
+                <FormField
+                  control={form.control}
+                  name="logInWithEmail"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Log in with Email</FormLabel>
+                      <FormControl>
+                        <Switch
+                          className="block"
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+
+              {getProjectResponse?.project?.logInWithPassword && (
+                <FormField
+                  control={form.control}
+                  name="logInWithPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Log in with Password</FormLabel>
+                      <FormControl>
+                        <Switch
+                          className="block"
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+
+              {getProjectResponse?.project?.logInWithPassword && (
+                <FormField
+                  control={form.control}
+                  name="logInWithSaml"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Log in with SAML</FormLabel>
+                      <FormControl>
+                        <Switch
+                          className="block"
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Using SAML also requires configuring a SAML connection.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+
+              {getProjectResponse?.project?.logInWithAuthenticatorApp && (
+                <FormField
+                  control={form.control}
+                  name="logInWithAuthenticatorApp"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Log in with Authenticator App</FormLabel>
+                      <FormControl>
+                        <Switch
+                          className="block"
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+
+              {getProjectResponse?.project?.logInWithPasskey && (
+                <FormField
+                  control={form.control}
+                  name="logInWithPasskey"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Log in with Passkey</FormLabel>
+                      <FormControl>
+                        <Switch
+                          className="block"
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+
               <FormField
                 control={form.control}
-                name="overrideLogInMethods"
+                name="requireMfa"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Override Login Methods</FormLabel>
+                    <FormLabel>Require MFA</FormLabel>
                     <FormControl>
                       <Switch
                         className="block"
@@ -189,140 +337,20 @@ export function EditOrganizationPage() {
                         onCheckedChange={field.onChange}
                       />
                     </FormControl>
-                    <FormDescription>
-                      If your customer wants to restrict their login methods to
-                      a subset of the project-level ones, you can have their
-                      organization override the supported login methods.
-                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-
-              {getProjectResponse?.project?.logInWithGoogleEnabled && (
-                <FormField
-                  control={form.control}
-                  name="logInWithGoogleEnabled"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Log in with Google</FormLabel>
-                      <FormControl>
-                        <Switch
-                          disabled={
-                            !form.getValues('overrideLogInMethods').valueOf()
-                          }
-                          className="block"
-                          checked={
-                            form.getValues('overrideLogInMethods').valueOf()
-                              ? field.value
-                              : true
-                          }
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        You can only modify this if "Override Login Methods" is
-                        enabled for this organization.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              )}
-
-              {getProjectResponse?.project?.logInWithMicrosoftEnabled && (
-                <FormField
-                  control={form.control}
-                  name="logInWithMicrosoftEnabled"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Log in with Microsoft</FormLabel>
-                      <FormControl>
-                        <Switch
-                          disabled={
-                            !form.getValues('overrideLogInMethods').valueOf()
-                          }
-                          className="block"
-                          checked={
-                            form.getValues('overrideLogInMethods').valueOf()
-                              ? field.value
-                              : true
-                          }
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        You can only modify this if "Override Login Methods" is
-                        enabled for this organization.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              )}
-
-              {getProjectResponse?.project?.logInWithPasswordEnabled && (
-                <FormField
-                  control={form.control}
-                  name="logInWithPasswordEnabled"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Log in with Password</FormLabel>
-                      <FormControl>
-                        <Switch
-                          disabled={
-                            !form.getValues('overrideLogInMethods').valueOf()
-                          }
-                          className="block"
-                          checked={
-                            form.getValues('overrideLogInMethods').valueOf()
-                              ? field.value
-                              : true
-                          }
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        You can only modify this if "Override Login Methods" is
-                        enabled for this organization.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              )}
             </CardContent>
           </Card>
           <Card>
             <CardHeader>
               <CardTitle>Enterprise settings</CardTitle>
               <CardDescription>
-                Configure whether this organization can use SAML or SCIM.
+                Configure whether this organization can use SCIM.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-8">
-              <FormField
-                control={form.control}
-                name="samlEnabled"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>SAML Enabled</FormLabel>
-                    <FormControl>
-                      <Switch
-                        className="block"
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Whether this organization can configure SAML ("Enterprise
-                      Single Sign-On").
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
               <FormField
                 control={form.control}
                 name="scimEnabled"
