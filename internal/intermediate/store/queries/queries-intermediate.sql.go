@@ -1969,7 +1969,7 @@ RETURNING
 `
 
 type UpdateIntermediateSessionPrimaryLoginFactorParams struct {
-	PrimaryLoginFactor NullPrimaryLoginFactor
+	PrimaryLoginFactor *PrimaryLoginFactor
 	ID                 uuid.UUID
 }
 

@@ -135,12 +135,10 @@ func (s *Store) RedeemGoogleOAuthCode(ctx context.Context, req *intermediatev1.R
 		}
 	}
 
+	primaryLoginFactor := queries.PrimaryLoginFactor(queries.PrimaryLoginFactorGoogleOauth)
 	if _, err := q.UpdateIntermediateSessionPrimaryLoginFactor(ctx, queries.UpdateIntermediateSessionPrimaryLoginFactorParams{
-		ID: authn.IntermediateSessionID(ctx),
-		PrimaryLoginFactor: queries.NullPrimaryLoginFactor{
-			PrimaryLoginFactor: queries.PrimaryLoginFactorGoogleOauth,
-			Valid:              true,
-		},
+		ID:                 authn.IntermediateSessionID(ctx),
+		PrimaryLoginFactor: &primaryLoginFactor,
 	}); err != nil {
 		return nil, fmt.Errorf("update intermediate session primary login factor: %v", err)
 	}

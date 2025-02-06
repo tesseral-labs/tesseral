@@ -168,7 +168,7 @@ type IntermediateSession struct {
 	AuthenticatorAppSecretCiphertext    []byte
 	AuthenticatorAppVerified            bool
 	AuthenticatorAppRecoveryCodeBcrypts [][]byte
-	PrimaryLoginFactor                  NullPrimaryLoginFactor
+	PrimaryLoginFactor                  *PrimaryLoginFactor
 }
 
 type OauthVerifiedEmail struct {

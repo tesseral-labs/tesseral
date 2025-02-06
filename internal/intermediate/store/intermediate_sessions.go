@@ -24,12 +24,10 @@ func (s *Store) SetEmailAsPrimaryLoginFactor(ctx context.Context, req *intermedi
 		return nil, fmt.Errorf("get intermediate session by id: %w", err)
 	}
 
+	primaryLoginFactor := queries.PrimaryLoginFactor(queries.PrimaryLoginFactorEmail)
 	if _, err := q.UpdateIntermediateSessionPrimaryLoginFactor(ctx, queries.UpdateIntermediateSessionPrimaryLoginFactorParams{
-		ID: qIntermediateSession.ID,
-		PrimaryLoginFactor: queries.NullPrimaryLoginFactor{
-			PrimaryLoginFactor: queries.PrimaryLoginFactorEmail,
-			Valid:              true,
-		},
+		ID:                 qIntermediateSession.ID,
+		PrimaryLoginFactor: &primaryLoginFactor,
 	}); err != nil {
 		return nil, fmt.Errorf("update intermediate session primary login factor: %w", err)
 	}
@@ -107,8 +105,8 @@ func parseIntermediateSession(qIntermediateSession queries.IntermediateSession, 
 	}
 
 	var primaryLoginFactor string
-	if qIntermediateSession.PrimaryLoginFactor.Valid {
-		primaryLoginFactor = string(qIntermediateSession.PrimaryLoginFactor.PrimaryLoginFactor)
+	if qIntermediateSession.PrimaryLoginFactor != nil {
+		primaryLoginFactor = string(*qIntermediateSession.PrimaryLoginFactor)
 	}
 
 	return &intermediatev1.IntermediateSession{
