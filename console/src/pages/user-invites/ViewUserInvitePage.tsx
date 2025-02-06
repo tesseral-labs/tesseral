@@ -115,6 +115,12 @@ export function ViewUserInvitePage() {
                   {getUserInviteResponse?.userInvite?.email}
                 </DetailsGridValue>
               </DetailsGridEntry>
+              <DetailsGridEntry>
+                <DetailsGridKey>Owner</DetailsGridKey>
+                <DetailsGridValue>
+                  {getUserInviteResponse?.userInvite?.owner ? 'Yes' : 'No'}
+                </DetailsGridValue>
+              </DetailsGridEntry>
             </DetailsGridColumn>
             <DetailsGridColumn>
               <DetailsGridEntry>

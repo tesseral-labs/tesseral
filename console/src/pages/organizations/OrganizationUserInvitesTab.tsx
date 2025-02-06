@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { useMutation, useQuery } from '@connectrpc/connect-query'
 import {
-  createSCIMAPIKey, createUserInvite,
+  createSCIMAPIKey,
+  createUserInvite,
   listOrganizations,
   listUserInvites,
   listUsers,
@@ -31,21 +32,26 @@ import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
-  AlertDialog, AlertDialogCancel,
+  AlertDialog,
+  AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription, AlertDialogFooter,
+  AlertDialogDescription,
+  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import {
   Form,
-  FormControl, FormDescription,
+  FormControl,
+  FormDescription,
   FormField,
   FormItem,
-  FormLabel, FormMessage,
+  FormLabel,
+  FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { Switch } from '@/components/ui/switch'
 
 export function OrganizationUserInvitesTab() {
   const { organizationId } = useParams()
@@ -59,7 +65,8 @@ export function OrganizationUserInvitesTab() {
         <div className="flex flex-col space-y-1 5">
           <CardTitle>User Invites</CardTitle>
           <CardDescription>
-            A user invite lets outside collaborators join an organization. Lorem ipsum dolor.
+            A user invite lets outside collaborators join an organization. Lorem
+            ipsum dolor.
           </CardDescription>
         </div>
         <CreateUserInviteButton />
@@ -85,7 +92,7 @@ export function OrganizationUserInvitesTab() {
                     {userInvite.email}
                   </Link>
 
-                  {userInvite.isOwner && (
+                  {userInvite.owner && (
                     <Badge variant="outline" className="ml-2">
                       Owner
                     </Badge>
@@ -113,6 +120,7 @@ export function OrganizationUserInvitesTab() {
 
 const schema = z.object({
   email: z.string().email(),
+  owner: z.boolean(),
 })
 
 function CreateUserInviteButton() {
@@ -122,6 +130,7 @@ function CreateUserInviteButton() {
     resolver: zodResolver(schema),
     defaultValues: {
       email: '',
+      owner: false,
     },
   })
   const navigate = useNavigate()
@@ -131,8 +140,9 @@ function CreateUserInviteButton() {
     const { userInvite } = await createUserInviteMutation.mutateAsync({
       userInvite: {
         organizationId,
-        email: values.email
-      }
+        email: values.email,
+        owner: values.owner,
+      },
     })
 
     navigate(`/organizations/${organizationId}/user-invites/${userInvite!.id}`)
@@ -147,11 +157,15 @@ function CreateUserInviteButton() {
         <AlertDialogHeader>
           <AlertDialogTitle>Create User Invite</AlertDialogTitle>
           <AlertDialogDescription>
-            A user invite lets outside collaborators join an organization. Lorem ipsum dolor.
+            A user invite lets outside collaborators join an organization. Lorem
+            ipsum dolor.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)}>
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-8"
+          >
             <FormField
               control={form.control}
               name="email"
@@ -165,6 +179,26 @@ function CreateUserInviteButton() {
                     The outside collaborator's email. The collaborator will need
                     to verify this email before being able to join the
                     organization.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="owner"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Invite as owner</FormLabel>
+                  <FormControl>
+                    <Switch
+                      className="block"
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Whether the collaborator will join as an owner.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
