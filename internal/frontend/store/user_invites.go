@@ -82,6 +82,10 @@ func (s *Store) GetUserInvite(ctx context.Context, req *frontendv1.GetUserInvite
 }
 
 func (s *Store) CreateUserInvite(ctx context.Context, req *frontendv1.CreateUserInviteRequest) (*frontendv1.CreateUserInviteResponse, error) {
+	if err := s.validateIsOwner(ctx); err != nil {
+		return nil, fmt.Errorf("validate is owner: %w", err)
+	}
+
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -121,6 +125,10 @@ func (s *Store) CreateUserInvite(ctx context.Context, req *frontendv1.CreateUser
 }
 
 func (s *Store) DeleteUserInvite(ctx context.Context, req *frontendv1.DeleteUserInviteRequest) (*frontendv1.DeleteUserInviteResponse, error) {
+	if err := s.validateIsOwner(ctx); err != nil {
+		return nil, fmt.Errorf("validate is owner: %w", err)
+	}
+
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
