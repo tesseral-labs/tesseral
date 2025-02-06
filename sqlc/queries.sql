@@ -1,6 +1,6 @@
 -- name: CreateOrganization :one
-INSERT INTO organizations (id, project_id, display_name, saml_enabled, scim_enabled)
-    VALUES ($1, $2, $3, $4, $5)
+INSERT INTO organizations (id, project_id, display_name, scim_enabled)
+    VALUES ($1, $2, $3, $4)
 RETURNING
     *;
 

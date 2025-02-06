@@ -1050,19 +1050,21 @@ components:
                 updateTime:
                     type: string
                     format: date-time
-                logInWithPassword:
-                    type: boolean
                 logInWithGoogle:
                     type: boolean
                 logInWithMicrosoft:
+                    type: boolean
+                logInWithEmail:
+                    type: boolean
+                logInWithPassword:
+                    type: boolean
+                logInWithSaml:
                     type: boolean
                 logInWithAuthenticatorApp:
                     type: boolean
                 logInWithPasskey:
                     type: boolean
                 requireMfa:
-                    type: boolean
-                samlEnabled:
                     type: boolean
                 scimEnabled:
                     type: boolean
@@ -1117,11 +1119,15 @@ components:
                 updateTime:
                     type: string
                     format: date-time
-                logInWithPassword:
-                    type: boolean
                 logInWithGoogle:
                     type: boolean
                 logInWithMicrosoft:
+                    type: boolean
+                logInWithEmail:
+                    type: boolean
+                logInWithPassword:
+                    type: boolean
+                logInWithSaml:
                     type: boolean
                 logInWithAuthenticatorApp:
                     type: boolean

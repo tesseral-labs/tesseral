@@ -27,17 +27,16 @@ func (q *Queries) CountAllProjects(ctx context.Context) (int64, error) {
 }
 
 const createOrganization = `-- name: CreateOrganization :one
-INSERT INTO organizations (id, project_id, display_name, saml_enabled, scim_enabled)
-    VALUES ($1, $2, $3, $4, $5)
+INSERT INTO organizations (id, project_id, display_name, scim_enabled)
+    VALUES ($1, $2, $3, $4)
 RETURNING
-    id, project_id, display_name, saml_enabled, scim_enabled, create_time, update_time, logins_disabled, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_authenticator_app, log_in_with_passkey, require_mfa
+    id, project_id, display_name, scim_enabled, create_time, update_time, logins_disabled, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_authenticator_app, log_in_with_passkey, require_mfa, log_in_with_email, log_in_with_saml
 `
 
 type CreateOrganizationParams struct {
 	ID          uuid.UUID
 	ProjectID   uuid.UUID
 	DisplayName string
-	SamlEnabled bool
 	ScimEnabled bool
 }
 
@@ -46,7 +45,6 @@ func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganization
 		arg.ID,
 		arg.ProjectID,
 		arg.DisplayName,
-		arg.SamlEnabled,
 		arg.ScimEnabled,
 	)
 	var i Organization
@@ -54,7 +52,6 @@ func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganization
 		&i.ID,
 		&i.ProjectID,
 		&i.DisplayName,
-		&i.SamlEnabled,
 		&i.ScimEnabled,
 		&i.CreateTime,
 		&i.UpdateTime,
@@ -65,6 +62,8 @@ func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganization
 		&i.LogInWithAuthenticatorApp,
 		&i.LogInWithPasskey,
 		&i.RequireMfa,
+		&i.LogInWithEmail,
+		&i.LogInWithSaml,
 	)
 	return i, err
 }
@@ -73,7 +72,7 @@ const createProject = `-- name: CreateProject :one
 INSERT INTO projects (id, organization_id, display_name, log_in_with_password, log_in_with_google, log_in_with_microsoft, auth_domain, custom_auth_domain)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 RETURNING
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml
 `
 
 type CreateProjectParams struct {
@@ -117,6 +116,8 @@ func (q *Queries) CreateProject(ctx context.Context, arg CreateProjectParams) (P
 		&i.LoginsDisabled,
 		&i.LogInWithAuthenticatorApp,
 		&i.LogInWithPasskey,
+		&i.LogInWithEmail,
+		&i.LogInWithSaml,
 	)
 	return i, err
 }
@@ -275,7 +276,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 
 const getOrganizationByID = `-- name: GetOrganizationByID :one
 SELECT
-    id, project_id, display_name, saml_enabled, scim_enabled, create_time, update_time, logins_disabled, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_authenticator_app, log_in_with_passkey, require_mfa
+    id, project_id, display_name, scim_enabled, create_time, update_time, logins_disabled, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_authenticator_app, log_in_with_passkey, require_mfa, log_in_with_email, log_in_with_saml
 FROM
     organizations
 WHERE
@@ -289,7 +290,6 @@ func (q *Queries) GetOrganizationByID(ctx context.Context, id uuid.UUID) (Organi
 		&i.ID,
 		&i.ProjectID,
 		&i.DisplayName,
-		&i.SamlEnabled,
 		&i.ScimEnabled,
 		&i.CreateTime,
 		&i.UpdateTime,
@@ -300,13 +300,15 @@ func (q *Queries) GetOrganizationByID(ctx context.Context, id uuid.UUID) (Organi
 		&i.LogInWithAuthenticatorApp,
 		&i.LogInWithPasskey,
 		&i.RequireMfa,
+		&i.LogInWithEmail,
+		&i.LogInWithSaml,
 	)
 	return i, err
 }
 
 const getOrganizationByProjectIDAndID = `-- name: GetOrganizationByProjectIDAndID :one
 SELECT
-    id, project_id, display_name, saml_enabled, scim_enabled, create_time, update_time, logins_disabled, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_authenticator_app, log_in_with_passkey, require_mfa
+    id, project_id, display_name, scim_enabled, create_time, update_time, logins_disabled, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_authenticator_app, log_in_with_passkey, require_mfa, log_in_with_email, log_in_with_saml
 FROM
     organizations
 WHERE
@@ -326,7 +328,6 @@ func (q *Queries) GetOrganizationByProjectIDAndID(ctx context.Context, arg GetOr
 		&i.ID,
 		&i.ProjectID,
 		&i.DisplayName,
-		&i.SamlEnabled,
 		&i.ScimEnabled,
 		&i.CreateTime,
 		&i.UpdateTime,
@@ -337,6 +338,8 @@ func (q *Queries) GetOrganizationByProjectIDAndID(ctx context.Context, arg GetOr
 		&i.LogInWithAuthenticatorApp,
 		&i.LogInWithPasskey,
 		&i.RequireMfa,
+		&i.LogInWithEmail,
+		&i.LogInWithSaml,
 	)
 	return i, err
 }
@@ -366,7 +369,7 @@ func (q *Queries) GetProjectAPIKeyBySecretTokenSHA256(ctx context.Context, secre
 
 const getProjectByID = `-- name: GetProjectByID :one
 SELECT
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml
 FROM
     projects
 WHERE
@@ -394,6 +397,8 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 		&i.LoginsDisabled,
 		&i.LogInWithAuthenticatorApp,
 		&i.LogInWithPasskey,
+		&i.LogInWithEmail,
+		&i.LogInWithSaml,
 	)
 	return i, err
 }
@@ -510,7 +515,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml
 `
 
 type UpdateProjectOrganizationIDParams struct {
@@ -583,6 +588,8 @@ func (q *Queries) UpdateProjectOrganizationID(ctx context.Context, arg UpdatePro
 		&i.LoginsDisabled,
 		&i.LogInWithAuthenticatorApp,
 		&i.LogInWithPasskey,
+		&i.LogInWithEmail,
+		&i.LogInWithSaml,
 	)
 	return i, err
 }

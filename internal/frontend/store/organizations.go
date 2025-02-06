@@ -146,7 +146,6 @@ func parseOrganization(qProject queries.Project, qOrg queries.Organization) *fro
 		RequireMfa:                &qOrg.RequireMfa,
 		GoogleHostedDomains:       nil, // TODO
 		MicrosoftTenantIds:        nil, // TODO
-		SamlEnabled:               qOrg.SamlEnabled,
 		ScimEnabled:               qOrg.ScimEnabled,
 	}
 }

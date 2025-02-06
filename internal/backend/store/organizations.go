@@ -39,8 +39,16 @@ func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrg
 		return nil, apierror.NewPermissionDeniedError("log in with microsoft is not enabled for this project", fmt.Errorf("log in with microsoft is not enabled for this project"))
 	}
 
+	if derefOrEmpty(req.Organization.LogInWithEmail) && !qProject.LogInWithEmail {
+		return nil, apierror.NewPermissionDeniedError("log in with email is not enabled for this project", fmt.Errorf("log in with email is not enabled for this project"))
+	}
+
 	if derefOrEmpty(req.Organization.LogInWithPassword) && !qProject.LogInWithPassword {
 		return nil, apierror.NewPermissionDeniedError("log in with password is not enabled for this project", fmt.Errorf("log in with password is not enabled for this project"))
+	}
+
+	if derefOrEmpty(req.Organization.LogInWithSaml) && !qProject.LogInWithSaml {
+		return nil, apierror.NewPermissionDeniedError("log in with saml is not enabled for this project", fmt.Errorf("log in with saml is not enabled for this project"))
 	}
 
 	if derefOrEmpty(req.Organization.LogInWithAuthenticatorApp) && !qProject.LogInWithAuthenticatorApp {
@@ -49,11 +57,6 @@ func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrg
 
 	if derefOrEmpty(req.Organization.LogInWithPasskey) && !qProject.LogInWithPasskey {
 		return nil, apierror.NewPermissionDeniedError("log in with passkey is not enabled for this project", fmt.Errorf("log in with passkey is not enabled for this project"))
-	}
-
-	var samlEnabled bool
-	if req.Organization.SamlEnabled != nil {
-		samlEnabled = *req.Organization.SamlEnabled
 	}
 
 	var scimEnabled bool
@@ -67,10 +70,11 @@ func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrg
 		DisplayName:               req.Organization.DisplayName,
 		LogInWithGoogle:           derefOrEmpty(req.Organization.LogInWithGoogle),
 		LogInWithMicrosoft:        derefOrEmpty(req.Organization.LogInWithMicrosoft),
+		LogInWithEmail:            derefOrEmpty(req.Organization.LogInWithEmail),
 		LogInWithPassword:         derefOrEmpty(req.Organization.LogInWithPassword),
+		LogInWithSaml:             derefOrEmpty(req.Organization.LogInWithSaml),
 		LogInWithAuthenticatorApp: derefOrEmpty(req.Organization.LogInWithAuthenticatorApp),
 		LogInWithPasskey:          derefOrEmpty(req.Organization.LogInWithPasskey),
-		SamlEnabled:               samlEnabled,
 		ScimEnabled:               scimEnabled,
 	})
 	if err != nil {
@@ -220,6 +224,15 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *backendv1.UpdateOrg
 		updates.LogInWithMicrosoft = *req.Organization.LogInWithMicrosoft
 	}
 
+	updates.LogInWithEmail = qOrg.LogInWithEmail
+	if req.Organization.LogInWithEmail != nil {
+		if *req.Organization.LogInWithEmail && !qProject.LogInWithEmail {
+			return nil, apierror.NewPermissionDeniedError("log in with email is not enabled for this project", fmt.Errorf("log in with email is not enabled for this project"))
+		}
+
+		updates.LogInWithEmail = *req.Organization.LogInWithEmail
+	}
+
 	updates.LogInWithPassword = qOrg.LogInWithPassword
 	if req.Organization.LogInWithPassword != nil {
 		if *req.Organization.LogInWithPassword && !qProject.LogInWithPassword {
@@ -227,6 +240,15 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *backendv1.UpdateOrg
 		}
 
 		updates.LogInWithPassword = *req.Organization.LogInWithPassword
+	}
+
+	updates.LogInWithSaml = qOrg.LogInWithSaml
+	if req.Organization.LogInWithSaml != nil {
+		if *req.Organization.LogInWithSaml && !qProject.LogInWithSaml {
+			return nil, apierror.NewPermissionDeniedError("log in with saml is not enabled for this project", fmt.Errorf("log in with saml is not enabled for this project"))
+		}
+
+		updates.LogInWithSaml = *req.Organization.LogInWithSaml
 	}
 
 	updates.LogInWithAuthenticatorApp = qOrg.LogInWithAuthenticatorApp
@@ -245,11 +267,6 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *backendv1.UpdateOrg
 		}
 
 		updates.LogInWithPasskey = *req.Organization.LogInWithPasskey
-	}
-
-	updates.SamlEnabled = qOrg.SamlEnabled
-	if req.Organization.SamlEnabled != nil {
-		updates.SamlEnabled = *req.Organization.SamlEnabled
 	}
 
 	updates.ScimEnabled = qOrg.ScimEnabled
@@ -358,13 +375,14 @@ func parseOrganization(qProject queries.Project, qOrg queries.Organization) *bac
 		DisplayName:               qOrg.DisplayName,
 		CreateTime:                timestamppb.New(*qOrg.CreateTime),
 		UpdateTime:                timestamppb.New(*qOrg.UpdateTime),
-		LogInWithPassword:         &qOrg.LogInWithPassword,
 		LogInWithGoogle:           &qOrg.LogInWithGoogle,
 		LogInWithMicrosoft:        &qOrg.LogInWithMicrosoft,
+		LogInWithEmail:            &qOrg.LogInWithEmail,
+		LogInWithPassword:         &qOrg.LogInWithPassword,
+		LogInWithSaml:             &qOrg.LogInWithSaml,
 		LogInWithAuthenticatorApp: &qOrg.LogInWithAuthenticatorApp,
 		LogInWithPasskey:          &qOrg.LogInWithPasskey,
 		RequireMfa:                &qOrg.RequireMfa,
-		SamlEnabled:               &qOrg.SamlEnabled,
 		ScimEnabled:               &qOrg.ScimEnabled,
 	}
 }
