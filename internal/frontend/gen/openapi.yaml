@@ -921,11 +921,15 @@ components:
                 updateTime:
                     type: string
                     format: date-time
-                logInWithPassword:
-                    type: boolean
                 logInWithGoogle:
                     type: boolean
                 logInWithMicrosoft:
+                    type: boolean
+                logInWithEmail:
+                    type: boolean
+                logInWithPassword:
+                    type: boolean
+                logInWithSaml:
                     type: boolean
                 logInWithAuthenticatorApp:
                     type: boolean
@@ -942,8 +946,6 @@ components:
                     items:
                         type: string
                 samlEnabled:
-                    type: boolean
-                scimEnabled:
                     type: boolean
         Passkey:
             type: object
@@ -978,11 +980,15 @@ components:
                 updateTime:
                     type: string
                     format: date-time
-                logInWithPassword:
-                    type: boolean
                 logInWithGoogle:
                     type: boolean
                 logInWithMicrosoft:
+                    type: boolean
+                logInWithEmail:
+                    type: boolean
+                logInWithPassword:
+                    type: boolean
+                logInWithSaml:
                     type: boolean
                 logInWithAuthenticatorApp:
                     type: boolean

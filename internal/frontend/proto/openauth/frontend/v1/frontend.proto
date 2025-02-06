@@ -478,9 +478,11 @@ message Project {
   string display_name = 2;
   google.protobuf.Timestamp create_time = 3;
   google.protobuf.Timestamp update_time = 4;
-  bool log_in_with_password = 5;
   bool log_in_with_google = 6;
   bool log_in_with_microsoft = 7;
+  bool log_in_with_email = 11;
+  bool log_in_with_password = 5;
+  bool log_in_with_saml = 12;
   bool log_in_with_authenticator_app = 9;
   bool log_in_with_passkey = 10;
   string auth_domain = 8;
@@ -491,16 +493,17 @@ message Organization {
   string display_name = 2;
   google.protobuf.Timestamp create_time = 3;
   google.protobuf.Timestamp update_time = 4;
-  optional bool log_in_with_password = 6;
   optional bool log_in_with_google = 7;
   optional bool log_in_with_microsoft = 8;
+  optional bool log_in_with_email = 16;
+  optional bool log_in_with_password = 6;
+  optional bool log_in_with_saml = 12;
   optional bool log_in_with_authenticator_app = 13;
   optional bool log_in_with_passkey = 14;
   optional bool require_mfa = 15;
   repeated string google_hosted_domains = 9;
   repeated string microsoft_tenant_ids = 10;
   bool saml_enabled = 11;
-  bool scim_enabled = 12;
 }
 
 message SessionSigningKey {
