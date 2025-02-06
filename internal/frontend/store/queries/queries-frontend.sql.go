@@ -1005,11 +1005,12 @@ UPDATE
 SET
     update_time = now(),
     display_name = $2,
-    log_in_with_password = $3,
-    log_in_with_google = $4,
-    log_in_with_microsoft = $5,
-    log_in_with_authenticator_app = $6,
-    log_in_with_passkey = $7
+    log_in_with_google = $3,
+    log_in_with_microsoft = $4,
+    log_in_with_email = $5,
+    log_in_with_password = $6,
+    log_in_with_authenticator_app = $7,
+    log_in_with_passkey = $8
 WHERE
     id = $1
 RETURNING
@@ -1019,9 +1020,10 @@ RETURNING
 type UpdateOrganizationParams struct {
 	ID                        uuid.UUID
 	DisplayName               string
-	LogInWithPassword         bool
 	LogInWithGoogle           bool
 	LogInWithMicrosoft        bool
+	LogInWithEmail            bool
+	LogInWithPassword         bool
 	LogInWithAuthenticatorApp bool
 	LogInWithPasskey          bool
 }
@@ -1030,9 +1032,10 @@ func (q *Queries) UpdateOrganization(ctx context.Context, arg UpdateOrganization
 	row := q.db.QueryRow(ctx, updateOrganization,
 		arg.ID,
 		arg.DisplayName,
-		arg.LogInWithPassword,
 		arg.LogInWithGoogle,
 		arg.LogInWithMicrosoft,
+		arg.LogInWithEmail,
+		arg.LogInWithPassword,
 		arg.LogInWithAuthenticatorApp,
 		arg.LogInWithPasskey,
 	)

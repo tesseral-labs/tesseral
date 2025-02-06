@@ -90,6 +90,15 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *frontendv1.UpdateOr
 		updates.LogInWithMicrosoft = *req.Organization.LogInWithMicrosoft
 	}
 
+	updates.LogInWithEmail = qOrg.LogInWithEmail
+	if req.Organization.LogInWithEmail != nil {
+		if *req.Organization.LogInWithEmail && !qProject.LogInWithEmail {
+			return nil, apierror.NewPermissionDeniedError("log in with email is not enabled for this project", fmt.Errorf("log in with email is not enabled for this project"))
+		}
+
+		updates.LogInWithEmail = *req.Organization.LogInWithEmail
+	}
+
 	updates.LogInWithPassword = qOrg.LogInWithPassword
 	if req.Organization.LogInWithPassword != nil {
 		if *req.Organization.LogInWithPassword && !qProject.LogInWithPassword {
@@ -138,15 +147,16 @@ func parseOrganization(qProject queries.Project, qOrg queries.Organization) *fro
 		DisplayName:               qOrg.DisplayName,
 		CreateTime:                timestamppb.New(*qOrg.CreateTime),
 		UpdateTime:                timestamppb.New(*qOrg.UpdateTime),
-		LogInWithPassword:         &qOrg.LogInWithPassword,
 		LogInWithGoogle:           &qOrg.LogInWithGoogle,
 		LogInWithMicrosoft:        &qOrg.LogInWithMicrosoft,
+		LogInWithEmail:            &qOrg.LogInWithEmail,
+		LogInWithPassword:         &qOrg.LogInWithPassword,
+		LogInWithSaml:             &qOrg.LogInWithSaml,
 		LogInWithAuthenticatorApp: &qOrg.LogInWithAuthenticatorApp,
 		LogInWithPasskey:          &qOrg.LogInWithPasskey,
 		RequireMfa:                &qOrg.RequireMfa,
 		GoogleHostedDomains:       nil, // TODO
 		MicrosoftTenantIds:        nil, // TODO
-		ScimEnabled:               qOrg.ScimEnabled,
 	}
 }
 
