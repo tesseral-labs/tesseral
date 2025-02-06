@@ -257,6 +257,10 @@ func (s *Store) ListSAMLOrganizations(ctx context.Context, req *intermediatev1.L
 		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 
+	if !qProject.LogInWithSaml {
+		return nil, apierror.NewFailedPreconditionError("SAML login not enabled", fmt.Errorf("project does not have SAML login enabled"))
+	}
+
 	var organizations []*intermediatev1.Organization
 	for _, qOrg := range qOrganizations {
 		qSamlConnection, err := q.GetOrganizationPrimarySAMLConnection(ctx, qOrg.ID)
