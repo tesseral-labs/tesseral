@@ -113,77 +113,13 @@ func (s *Store) ListOrganizations(ctx context.Context, req *intermediatev1.ListO
 		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 
-	// Intermediate sessions can see an organization if:
-	//
-	// 1. The qOrg's google/microsoft hd/tid match, or
-	// 2. There is a user in the qOrg with the same google/microsoft user id, or
-	// 3. There is a user in the qOrg with the same email
-	//
-	// Options (2) and (3) are not redundant because a user may change their
-	// email. The exchange endpoint will know to log the user in as the one that
-	// has the same OAuth-based ID. It will also update that user's email
-	// address.
-	var qOrgs []queries.Organization
-
-	if qIntermediateSession.GoogleHostedDomain != nil {
-		// orgs with the same google hosted domain
-		qGoogleOrgs, err := q.ListOrganizationsByGoogleHostedDomain(ctx, queries.ListOrganizationsByGoogleHostedDomainParams{
-			ProjectID:          authn.ProjectID(ctx),
-			GoogleHostedDomain: *qIntermediateSession.GoogleHostedDomain,
-		})
-		if err != nil {
-			return nil, fmt.Errorf("list organizations by google hosted domain: %w", err)
-		}
-		qOrgs = append(qOrgs, qGoogleOrgs...)
-	}
-
-	if qIntermediateSession.MicrosoftTenantID != nil {
-		// orgs with the same microsoft tenant ID
-		qMicrosoftOrgs, err := q.ListOrganizationsByMicrosoftTenantID(ctx, queries.ListOrganizationsByMicrosoftTenantIDParams{
-			ProjectID:         authn.ProjectID(ctx),
-			MicrosoftTenantID: *qIntermediateSession.MicrosoftTenantID,
-		})
-		if err != nil {
-			return nil, fmt.Errorf("list organizations by microsoft tenant id: %w", err)
-		}
-		qOrgs = append(qOrgs, qMicrosoftOrgs...)
-	}
-
-	// orgs with a matching user
-	qUserOrgs, err := q.ListOrganizationsByMatchingUser(ctx, queries.ListOrganizationsByMatchingUserParams{
-		ProjectID:       authn.ProjectID(ctx),
-		Email:           *qIntermediateSession.Email,
-		GoogleUserID:    qIntermediateSession.GoogleUserID,
-		MicrosoftUserID: qIntermediateSession.MicrosoftUserID,
-	})
+	qVisibleOrganizations, err := s.getVisibleOrganizations(ctx, q, qIntermediateSession)
 	if err != nil {
-		return nil, fmt.Errorf("list organizations by matching user: %w", err)
-	}
-	qOrgs = append(qOrgs, qUserOrgs...)
-
-	// orgs with a matching user invite
-	qUserInviteOrgs, err := q.ListOrganizationsByMatchingUserInvite(ctx, queries.ListOrganizationsByMatchingUserInviteParams{
-		ProjectID: authn.ProjectID(ctx),
-		Email:     *qIntermediateSession.Email,
-	})
-	if err != nil {
-		return nil, fmt.Errorf("list organizations by matching user invite: %w", err)
-	}
-	qOrgs = append(qOrgs, qUserInviteOrgs...)
-
-	// dedupe qOrgs on ID
-	var qOrgsDeduped []queries.Organization
-	seen := map[uuid.UUID]struct{}{}
-	for _, qOrg := range qOrgs {
-		if _, ok := seen[qOrg.ID]; ok {
-			continue
-		}
-		qOrgsDeduped = append(qOrgsDeduped, qOrg)
-		seen[qOrg.ID] = struct{}{}
+		return nil, fmt.Errorf("get visible organizations: %w", err)
 	}
 
 	var organizations []*intermediatev1.Organization
-	for _, qOrg := range qOrgsDeduped {
+	for _, qOrg := range qVisibleOrganizations {
 		var qSAMLConnection *queries.SamlConnection
 		qPrimarySAMLConnection, err := q.GetOrganizationPrimarySAMLConnection(ctx, qOrg.ID)
 		if err != nil {
@@ -303,20 +239,32 @@ func (s *Store) SetOrganization(ctx context.Context, req *intermediatev1.SetOrga
 	}
 	defer rollback()
 
-	qOrganization, err := q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
-		ID:        organizationID,
-		ProjectID: authn.ProjectID(ctx),
-	})
+	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, intermediateSessionID)
 	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, apierror.NewNotFoundError("organization not found", fmt.Errorf("get organization by id: %w", err))
-		}
-		return nil, fmt.Errorf("get organization by id: %w", err)
+		return nil, fmt.Errorf("get intermediate session by id: %w", err)
 	}
 
+	qVisibleOrganizations, err := s.getVisibleOrganizations(ctx, q, qIntermediateSession)
+	if err != nil {
+		return nil, fmt.Errorf("get visible organizations: %w", err)
+	}
+
+	// ensure given organization is in list of visible organizations
+	var ok bool
+	for _, qOrg := range qVisibleOrganizations {
+		if qOrg.ID == organizationID {
+			ok = true
+		}
+	}
+
+	if !ok {
+		return nil, apierror.NewNotFoundError("organization not found", nil)
+	}
+
+	organizationUUID := uuid.UUID(organizationID)
 	if _, err = q.UpdateIntermediateSessionOrganizationID(ctx, queries.UpdateIntermediateSessionOrganizationIDParams{
 		ID:             intermediateSessionID,
-		OrganizationID: &qOrganization.ID,
+		OrganizationID: &organizationUUID,
 	}); err != nil {
 		return nil, fmt.Errorf("update intermediate session organization ID: %w", err)
 	}
@@ -326,6 +274,79 @@ func (s *Store) SetOrganization(ctx context.Context, req *intermediatev1.SetOrga
 	}
 
 	return &intermediatev1.SetOrganizationResponse{}, nil
+}
+
+func (s *Store) getVisibleOrganizations(ctx context.Context, q *queries.Queries, qIntermediateSession queries.IntermediateSession) ([]queries.Organization, error) {
+	// Intermediate sessions can see an organization if:
+	//
+	// 1. The qOrg's google/microsoft hd/tid match, or
+	// 2. There is a user in the qOrg with the same google/microsoft user id, or
+	// 3. There is a user in the qOrg with the same email
+	//
+	// Options (2) and (3) are not redundant because a user may change their
+	// email. The exchange endpoint will know to log the user in as the one that
+	// has the same OAuth-based ID. It will also update that user's email
+	// address.
+	var qOrgs []queries.Organization
+
+	if qIntermediateSession.GoogleHostedDomain != nil {
+		// orgs with the same google hosted domain
+		qGoogleOrgs, err := q.ListOrganizationsByGoogleHostedDomain(ctx, queries.ListOrganizationsByGoogleHostedDomainParams{
+			ProjectID:          authn.ProjectID(ctx),
+			GoogleHostedDomain: *qIntermediateSession.GoogleHostedDomain,
+		})
+		if err != nil {
+			return nil, fmt.Errorf("list organizations by google hosted domain: %w", err)
+		}
+		qOrgs = append(qOrgs, qGoogleOrgs...)
+	}
+
+	if qIntermediateSession.MicrosoftTenantID != nil {
+		// orgs with the same microsoft tenant ID
+		qMicrosoftOrgs, err := q.ListOrganizationsByMicrosoftTenantID(ctx, queries.ListOrganizationsByMicrosoftTenantIDParams{
+			ProjectID:         authn.ProjectID(ctx),
+			MicrosoftTenantID: *qIntermediateSession.MicrosoftTenantID,
+		})
+		if err != nil {
+			return nil, fmt.Errorf("list organizations by microsoft tenant id: %w", err)
+		}
+		qOrgs = append(qOrgs, qMicrosoftOrgs...)
+	}
+
+	// orgs with a matching user
+	qUserOrgs, err := q.ListOrganizationsByMatchingUser(ctx, queries.ListOrganizationsByMatchingUserParams{
+		ProjectID:       authn.ProjectID(ctx),
+		Email:           *qIntermediateSession.Email,
+		GoogleUserID:    qIntermediateSession.GoogleUserID,
+		MicrosoftUserID: qIntermediateSession.MicrosoftUserID,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("list organizations by matching user: %w", err)
+	}
+	qOrgs = append(qOrgs, qUserOrgs...)
+
+	// orgs with a matching user invite
+	qUserInviteOrgs, err := q.ListOrganizationsByMatchingUserInvite(ctx, queries.ListOrganizationsByMatchingUserInviteParams{
+		ProjectID: authn.ProjectID(ctx),
+		Email:     *qIntermediateSession.Email,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("list organizations by matching user invite: %w", err)
+	}
+	qOrgs = append(qOrgs, qUserInviteOrgs...)
+
+	// dedupe qOrgs on ID
+	var qOrgsDeduped []queries.Organization
+	seen := map[uuid.UUID]struct{}{}
+	for _, qOrg := range qOrgs {
+		if _, ok := seen[qOrg.ID]; ok {
+			continue
+		}
+		qOrgsDeduped = append(qOrgsDeduped, qOrg)
+		seen[qOrg.ID] = struct{}{}
+	}
+
+	return qOrgsDeduped, nil
 }
 
 func parseOrganization(qOrg queries.Organization, qProject queries.Project, qSAMLConnection *queries.SamlConnection) *intermediatev1.Organization {
