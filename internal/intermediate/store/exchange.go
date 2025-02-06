@@ -112,6 +112,29 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		return nil, fmt.Errorf("revoke intermediate session: %w", err)
 	}
 
+	// delete any outstanding invites for this email
+	qUserInvite, err := q.DeleteIntermediateSessionUserInvite(ctx, queries.DeleteIntermediateSessionUserInviteParams{
+		OrganizationID: *qIntermediateSession.OrganizationID,
+		Email:          *qIntermediateSession.Email,
+	})
+	if err != nil {
+		// this error is ok; it just means there's no user invite
+		if !errors.Is(err, pgx.ErrNoRows) {
+			return nil, fmt.Errorf("delete intermediate session user invite: %w", err)
+		}
+	}
+
+	if qUserInvite.ID != uuid.Nil {
+		if qUserInvite.IsOwner {
+			if _, err := q.UpdateUserIsOwner(ctx, queries.UpdateUserIsOwnerParams{
+				ID:      qUser.ID,
+				IsOwner: true,
+			}); err != nil {
+				return nil, fmt.Errorf("update user is owner: %w", err)
+			}
+		}
+	}
+
 	if err := commit(); err != nil {
 		return nil, err
 	}

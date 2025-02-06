@@ -355,4 +355,5 @@ type UserInvite struct {
 	CreateTime     *time.Time
 	UpdateTime     *time.Time
 	Email          string
+	IsOwner        bool
 }
