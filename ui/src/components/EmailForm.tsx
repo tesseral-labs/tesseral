@@ -29,10 +29,16 @@ import { parseErrorMessage } from '@/lib/errors'
 import { toast } from 'sonner'
 
 interface EmailFormProps {
+  skipIntermediateSessionCreation?: boolean
+  skipListSAMLOrganizations?: boolean
   setView: Dispatch<SetStateAction<LoginViews>>
 }
 
-const EmailForm: FC<EmailFormProps> = ({ setView }) => {
+const EmailForm: FC<EmailFormProps> = ({
+  skipListSAMLOrganizations = false,
+  skipIntermediateSessionCreation = false,
+  setView,
+}) => {
   const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/i
   const createIntermediateSessionMutation = useMutation(
     createIntermediateSession,
@@ -76,12 +82,14 @@ const EmailForm: FC<EmailFormProps> = ({ setView }) => {
     setSubmitting(true)
 
     try {
-      // this sets a cookie that subsequent requests use
-      const { intermediateSessionSecretToken } =
-        await createIntermediateSessionMutation.mutateAsync({})
+      if (!skipIntermediateSessionCreation) {
+        // this sets a cookie that subsequent requests use
+        const { intermediateSessionSecretToken } =
+          await createIntermediateSessionMutation.mutateAsync({})
 
-      // set the intermediate sessionToken
-      setIntermediateSessionToken(intermediateSessionSecretToken)
+        // set the intermediate sessionToken
+        setIntermediateSessionToken(intermediateSessionSecretToken)
+      }
 
       await setEmailAsPrimaryLoginFactorMutation.mutateAsync({})
 
@@ -106,7 +114,7 @@ const EmailForm: FC<EmailFormProps> = ({ setView }) => {
     const valid = emailRegex.test(email)
     setEmailIsValid(valid)
 
-    if (valid) {
+    if (valid && !skipListSAMLOrganizations) {
       fetchSamlOrganizations()
     }
   }, [email])
