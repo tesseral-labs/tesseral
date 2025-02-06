@@ -17,6 +17,7 @@ import {
   createIntermediateSession,
   issueEmailVerificationChallenge,
   listSAMLOrganizations,
+  setEmailAsPrimaryLoginFactor,
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
 import { LoginViews } from '@/lib/views'
 import { Organization } from '@/gen/openauth/intermediate/v1/intermediate_pb'
@@ -40,6 +41,9 @@ const EmailForm: FC<EmailFormProps> = ({ setView }) => {
     issueEmailVerificationChallenge,
   )
   const listSAMLOrganizationsMutation = useMutation(listSAMLOrganizations)
+  const setEmailAsPrimaryLoginFactorMutation = useMutation(
+    setEmailAsPrimaryLoginFactor,
+  )
 
   const [email, setEmail] = useState<string>('')
   const [emailIsValid, setEmailIsValid] = useState<boolean>(false)
@@ -78,6 +82,8 @@ const EmailForm: FC<EmailFormProps> = ({ setView }) => {
 
       // set the intermediate sessionToken
       setIntermediateSessionToken(intermediateSessionSecretToken)
+
+      await setEmailAsPrimaryLoginFactorMutation.mutateAsync({})
 
       await issueEmailVerificationChallengeMutation.mutateAsync({
         email,
