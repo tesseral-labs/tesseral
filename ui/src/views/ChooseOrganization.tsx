@@ -55,20 +55,18 @@ const ChooseOrganization: FC<ChooseOrganizationProps> = ({
   // This function is effectively the central routing layer for Organization selection.
   // It determines the next view based on the current organization's settings and the user's current state.
   // If the organization requires MFA
-  // - if this is an OAuth login
-  //   - if the user has not yet set up MFA
-  //   - or the the organization requires multiple MFA factors and user has configured both
-  //     - return the ChooseAdditionalFactor view
-  //   - if the user has set up only one additional factor
-  //     - return the Verify{Factor} view
-  // - if this is an email login
-  //   - return the VerifyPassword view
-  // If the organization does not require MFA
-  // - if the user has not setup MFA or password
-  // - or the user has setup multiple factors (in this context, password included)
-  //   - return the ChooseAdditionalFactor view
-  // - if the user has setup a single MFA factor (in this context, password included)
-  //   - return the Verify{Factor} view
+  // - if the primary login factor is not valid, the user is redirected to the ChooseOrganizationPrimaryLoginFactor view
+  // - if the organization has passwords enabled
+  //   - if the user has a password, they are redirected to the VerifyPassword view
+  //   - if the user does not have a password, they are redirected to the RegisterPassword view
+  // - if the organization's only secondary factor is authenticator apps
+  //   - if the user has an authenticator app registered, they are redirected to the VerifyAuthenticatorApp view
+  //   - if the user does not have an authenticator app registered, they are redirected to the RegisterAuthenticatorApp view
+  // - if the organization's only secondary factor is passkeys
+  //   - if the user has a passkey registered, they are redirected to the VerifyPasskey view
+  //   - if the user does not have a passkey registered, they are redirected to the RegisterPasskey view
+  // - if the organization has multiple secondary factors
+  //   - the user is redirected to the ChooseAdditionalFactor view
   const deriveNextView = (
     organization: Organization,
   ): LoginViews | undefined => {
@@ -83,33 +81,6 @@ const ChooseOrganization: FC<ChooseOrganizationProps> = ({
       )
     ) {
       return LoginViews.ChooseOrganizationPrimaryLoginFactor
-    }
-
-    if (organization.requireMfa) {
-      if (
-        whoamiRes?.intermediateSession?.googleUserId ||
-        whoamiRes?.intermediateSession?.microsoftUserId
-      ) {
-        if (organization.logInWithPassword) {
-          if (organization.userHasPassword) {
-            return LoginViews.VerifyPassword
-          }
-
-          return LoginViews.RegisterPassword
-        } else if (
-          organization.userHasAuthenticatorApp &&
-          !organization.userHasPasskey
-        ) {
-          return LoginViews.VerifyAuthenticatorApp
-        } else if (
-          organization.userHasPasskey &&
-          !organization.userHasAuthenticatorApp
-        ) {
-          return LoginViews.VerifyPasskey
-        }
-
-        return LoginViews.ChooseAdditionalFactor
-      }
     } else {
       if (organization.logInWithPassword) {
         if (organization.userHasPassword) {
@@ -118,20 +89,19 @@ const ChooseOrganization: FC<ChooseOrganizationProps> = ({
 
         return LoginViews.RegisterPassword
       } else if (
-        organization.logInWithAuthenticatorApp &&
         organization.userHasAuthenticatorApp &&
         !organization.userHasPasskey
       ) {
         return LoginViews.VerifyAuthenticatorApp
       } else if (
-        organization.logInWithPasskey &&
         organization.userHasPasskey &&
         !organization.userHasAuthenticatorApp
       ) {
         return LoginViews.VerifyPasskey
+      } else if (organization.requireMfa) {
+        // this is the case where the organization has multiple secondary factors and requires mfa
+        return LoginViews.ChooseAdditionalFactor
       }
-
-      return LoginViews.ChooseAdditionalFactor
     }
   }
 

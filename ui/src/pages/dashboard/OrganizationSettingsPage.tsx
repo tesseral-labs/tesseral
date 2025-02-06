@@ -1,6 +1,6 @@
 import React, { FC, MouseEvent, useEffect, useState } from 'react'
 import { DateTime } from 'luxon'
-import { useOrganization, useProject, useUser } from '@/lib/auth'
+import { useUser } from '@/lib/auth'
 import {
   Card,
   CardContent,
@@ -10,8 +10,10 @@ import {
 } from '@/components/ui/card'
 import { useMutation, useQuery } from '@connectrpc/connect-query'
 import {
+  createUserInvite,
   getOrganization,
   listSAMLConnections,
+  listUserInvites,
   listUsers,
   updateOrganization,
   updateUser,
@@ -29,6 +31,17 @@ import { Switch } from '@/components/ui/switch'
 import { parseErrorMessage } from '@/lib/errors'
 import { toast } from 'sonner'
 import Loader from '@/components/ui/loader'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { DialogHeader } from '@/components/ui/dialog'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 const OrganizationSettingsPage: FC = () => {
   const user = useUser()
@@ -38,10 +51,17 @@ const OrganizationSettingsPage: FC = () => {
     useQuery(getOrganization)
   const { data: samlConnectionsData, refetch: refetchSAMLConnections } =
     useQuery(listSAMLConnections)
+  const createUserInviteMutation = useMutation(createUserInvite)
   const updateOrganizationMutation = useMutation(updateOrganization)
   const updateUserMutation = useMutation(updateUser)
+  const { data: userInvites, refetch: refetchUserInvites } =
+    useQuery(listUserInvites)
 
+  const [creatingUserInvite, setCreatingUserInvite] = useState(false)
   const [editingLoginSettings, setEditingLoginSettings] = useState(false)
+  const [inviteUserVisible, setInviteUserVisible] = useState(false)
+  const [inviteeEmail, setInviteeEmail] = useState('')
+  const [inviteeIsOwner, setInviteeIsOwner] = useState(false)
   const [logInWithAuthenticatorApp, setLogInWithAuthenticatorApp] = useState(
     organizationRes?.organization?.logInWithAuthenticatorApp,
   )
@@ -108,6 +128,30 @@ const OrganizationSettingsPage: FC = () => {
     }
   }
 
+  const submitUserInvite = async () => {
+    setCreatingUserInvite(true)
+    try {
+      await createUserInviteMutation.mutateAsync({
+        userInvite: {
+          email: inviteeEmail,
+          owner: inviteeIsOwner,
+        },
+      })
+
+      await refetchUserInvites()
+
+      setInviteUserVisible(false)
+      setCreatingUserInvite(false)
+      setInviteeEmail('')
+      setInviteeIsOwner(false)
+    } catch (error) {
+      const message = parseErrorMessage(error)
+      toast.error('Could not invite user', {
+        description: message,
+      })
+    }
+  }
+
   useEffect(() => {
     if (organizationRes?.organization) {
       resetLoginSettings()
@@ -125,9 +169,9 @@ const OrganizationSettingsPage: FC = () => {
         </span>
       </div>
 
-      <Card className="my-8">
-        <CardHeader className="py-4">
-          <CardTitle className="text-xl">General configuration</CardTitle>
+      <Card className="mt-8">
+        <CardHeader>
+          <CardTitle>General configuration</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 gap-x-2 text-sm md:grid-cols-2 lg:grid-cols-3">
@@ -164,9 +208,9 @@ const OrganizationSettingsPage: FC = () => {
         </CardContent>
       </Card>
 
-      <Card className="my-8">
-        <CardHeader className="py-4">
-          <CardTitle className="text-xl">
+      <Card className="mt-8">
+        <CardHeader>
+          <CardTitle>
             <div className="flex items-center justify-between w-full ">
               <span>Log in settings</span>
               {editingLoginSettings ? (
@@ -323,51 +367,137 @@ const OrganizationSettingsPage: FC = () => {
         </CardContent>
       </Card>
 
-      <Card className="my-8">
-        <CardHeader className="py-4">
-          <CardTitle className="text-xl">Users</CardTitle>
+      <Card className="mt-8">
+        <CardHeader>
+          <CardTitle>
+            <div className="flex justify-between items-center w-full">
+              <span>Users</span>
+              <div>
+                <Dialog
+                  open={inviteUserVisible}
+                  onOpenChange={setInviteUserVisible}
+                >
+                  <DialogTrigger asChild>
+                    <Button variant="outline">Invite a User</Button>
+                  </DialogTrigger>
+
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Invite a User</DialogTitle>
+                      <DialogDescription></DialogDescription>
+                    </DialogHeader>
+                    <form onSubmit={submitUserInvite}>
+                      <div className="mb-4">
+                        <Label>Email</Label>
+                        <Input
+                          onChange={(e) => setInviteeEmail(e.target.value)}
+                          type="email"
+                          value={inviteeEmail}
+                        />
+                      </div>
+                      <div className="mb-4 flex items-center">
+                        <Label>Owner?</Label>
+                        <Switch
+                          checked={inviteeIsOwner}
+                          className="ml-2"
+                          onCheckedChange={setInviteeIsOwner}
+                        />
+                      </div>
+                      <div className="flex justify-end">
+                        <Button
+                          variant="outline"
+                          onClick={() => {
+                            setInviteUserVisible(false)
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                        <Button className="ml-2">Invite</Button>
+                      </div>
+                    </form>
+                  </DialogContent>
+                </Dialog>
+              </div>
+            </div>
+          </CardTitle>
+          <CardDescription></CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableCell>ID</TableCell>
-                <TableCell>Email</TableCell>
-                <TableCell>Role</TableCell>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {usersData?.users.map((u) => (
-                <TableRow key={u.id}>
-                  <TableCell className="flex items-center">{u.id}</TableCell>
-                  <TableCell className="text-gray-500">{u.email}</TableCell>
-                  <TableCell className="text-gray-500">
-                    {u.owner ? 'Owner' : 'Member'}
+          <Tabs defaultValue="registered">
+            <TabsList className="grid grid-cols-2 max-w-sm">
+              <TabsTrigger value="registered">Registered</TabsTrigger>
+              <TabsTrigger value="invited">Invited</TabsTrigger>
+            </TabsList>
+            <TabsContent value="registered">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableCell>ID</TableCell>
+                    <TableCell>Email</TableCell>
+                    <TableCell>Role</TableCell>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {usersData?.users.map((u) => (
+                    <TableRow key={u.id}>
+                      <TableCell className="flex items-center">
+                        {u.id}
+                      </TableCell>
+                      <TableCell className="text-gray-500">{u.email}</TableCell>
+                      <TableCell className="text-gray-500">
+                        {u.owner ? 'Owner' : 'Member'}
 
-                    {u.owner && u.id !== user?.id && (
-                      <div
-                        className="ml-2 rounded cursor-pointer text-primary border-border px-4 py-2 inline-block"
-                        onClick={async (e: MouseEvent<HTMLSpanElement>) => {
-                          e.stopPropagation()
-                          e.preventDefault()
+                        {u.owner && u.id !== user?.id && (
+                          <div
+                            className="ml-2 rounded cursor-pointer text-primary border-border px-4 py-2 inline-block"
+                            onClick={async (e: MouseEvent<HTMLSpanElement>) => {
+                              e.stopPropagation()
+                              e.preventDefault()
 
-                          await changeUserRole(u.id, !u.owner)
-                        }}
-                      >
-                        Make {u.owner ? 'Member' : 'Owner'}
-                      </div>
-                    )}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+                              await changeUserRole(u.id, !u.owner)
+                            }}
+                          >
+                            Make {u.owner ? 'Member' : 'Owner'}
+                          </div>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TabsContent>
+
+            <TabsContent value="invited">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableCell>Email</TableCell>
+                    <TableCell>Role</TableCell>
+                    <TableCell>Created</TableCell>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {userInvites?.userInvites.map((i) => (
+                    <TableRow key={i.id}>
+                      <TableCell>{i.email}</TableCell>
+                      <TableCell>{i.owner ? 'Owner' : 'Member'}</TableCell>
+                      <TableCell>
+                        {DateTime.fromSeconds(
+                          parseInt(`${i.createTime?.seconds}`),
+                        ).toRelative()}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TabsContent>
+          </Tabs>
         </CardContent>
       </Card>
 
-      <Card className="my-8">
-        <CardHeader className="py-4">
-          <CardTitle className="text-xl">SAML Connections</CardTitle>
+      <Card className="mt-8">
+        <CardHeader>
+          <CardTitle>SAML Connections</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>

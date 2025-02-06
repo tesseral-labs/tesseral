@@ -123,13 +123,15 @@ const ChooseOrganizationPrimaryLoginFactor: FC<
 
           {((settings?.logInWithGoogle && organization?.logInWithGoogle) ||
             (settings?.logInWithMicrosoft &&
-              organization?.logInWithMicrosoft)) && (
-            <TextDivider
-              variant={layout !== LoginLayouts.Centered ? 'wider' : 'wide'}
-            >
-              or continue with email
-            </TextDivider>
-          )}
+              organization?.logInWithMicrosoft)) &&
+            settings?.logInWithEmail &&
+            organization?.logInWithEmail && (
+              <TextDivider
+                variant={layout !== LoginLayouts.Centered ? 'wider' : 'wide'}
+              >
+                or continue with email
+              </TextDivider>
+            )}
 
           {settings?.logInWithEmail && organization?.logInWithEmail && (
             <EmailForm
