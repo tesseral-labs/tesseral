@@ -44,6 +44,10 @@ sql:
             nullable: true
             go_type:
               type: "*int32"
+          - db_type: "primary_login_factor"
+            nullable: true
+            go_type:
+              type: "*PrimaryLoginFactor"
   - engine: "postgresql"
     queries: "queries-backend.sql"
     schema: "../cmd/openauthctl/migrations"

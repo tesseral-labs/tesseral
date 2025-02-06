@@ -12,6 +12,33 @@ import (
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
+func (s *Store) SetEmailAsPrimaryLoginFactor(ctx context.Context, req *intermediatev1.SetEmailAsPrimaryLoginFactorRequest) (*intermediatev1.SetEmailAsPrimaryLoginFactorResponse, error) {
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("begin transaction: %w", err)
+	}
+	defer rollback()
+
+	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get intermediate session by id: %w", err)
+	}
+
+	primaryLoginFactor := queries.PrimaryLoginFactor(queries.PrimaryLoginFactorEmail)
+	if _, err := q.UpdateIntermediateSessionPrimaryLoginFactor(ctx, queries.UpdateIntermediateSessionPrimaryLoginFactorParams{
+		ID:                 qIntermediateSession.ID,
+		PrimaryLoginFactor: &primaryLoginFactor,
+	}); err != nil {
+		return nil, fmt.Errorf("update intermediate session primary login factor: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
+	}
+
+	return &intermediatev1.SetEmailAsPrimaryLoginFactorResponse{}, nil
+}
+
 func (s *Store) getIntermediateSessionEmailVerified(ctx context.Context, q *queries.Queries, id uuid.UUID) (bool, error) {
 	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, id)
 	if err != nil {
@@ -77,6 +104,11 @@ func parseIntermediateSession(qIntermediateSession queries.IntermediateSession, 
 		organizationID = idformat.Organization.Format(*qIntermediateSession.OrganizationID)
 	}
 
+	var primaryLoginFactor string
+	if qIntermediateSession.PrimaryLoginFactor != nil {
+		primaryLoginFactor = string(*qIntermediateSession.PrimaryLoginFactor)
+	}
+
 	return &intermediatev1.IntermediateSession{
 		Id:                                   idformat.IntermediateSession.Format(qIntermediateSession.ID),
 		ProjectId:                            idformat.Project.Format(qIntermediateSession.ProjectID),
@@ -88,6 +120,7 @@ func parseIntermediateSession(qIntermediateSession queries.IntermediateSession, 
 		MicrosoftUserId:                      derefOrEmpty(qIntermediateSession.MicrosoftUserID),
 		MicrosoftTenantId:                    derefOrEmpty(qIntermediateSession.MicrosoftTenantID),
 		PasswordVerified:                     qIntermediateSession.PasswordVerified,
+		PrimaryLoginFactor:                   primaryLoginFactor,
 		NewUserPasswordRegistered:            qIntermediateSession.NewUserPasswordBcrypt != nil,
 		OrganizationId:                       organizationID,
 	}

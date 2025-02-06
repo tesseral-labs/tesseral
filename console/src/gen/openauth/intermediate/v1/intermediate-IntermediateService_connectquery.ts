@@ -123,3 +123,8 @@ export const registerAuthenticatorApp = IntermediateService.method.registerAuthe
  * @generated from rpc openauth.intermediate.v1.IntermediateService.VerifyAuthenticatorApp
  */
 export const verifyAuthenticatorApp = IntermediateService.method.verifyAuthenticatorApp;
+
+/**
+ * @generated from rpc openauth.intermediate.v1.IntermediateService.SetEmailAsPrimaryLoginFactor
+ */
+export const setEmailAsPrimaryLoginFactor = IntermediateService.method.setEmailAsPrimaryLoginFactor;

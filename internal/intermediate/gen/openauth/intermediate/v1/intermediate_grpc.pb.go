@@ -43,6 +43,7 @@ const (
 	IntermediateService_GetAuthenticatorAppOptions_FullMethodName            = "/openauth.intermediate.v1.IntermediateService/GetAuthenticatorAppOptions"
 	IntermediateService_RegisterAuthenticatorApp_FullMethodName              = "/openauth.intermediate.v1.IntermediateService/RegisterAuthenticatorApp"
 	IntermediateService_VerifyAuthenticatorApp_FullMethodName                = "/openauth.intermediate.v1.IntermediateService/VerifyAuthenticatorApp"
+	IntermediateService_SetEmailAsPrimaryLoginFactor_FullMethodName          = "/openauth.intermediate.v1.IntermediateService/SetEmailAsPrimaryLoginFactor"
 )
 
 // IntermediateServiceClient is the client API for IntermediateService service.
@@ -73,6 +74,7 @@ type IntermediateServiceClient interface {
 	GetAuthenticatorAppOptions(ctx context.Context, in *GetAuthenticatorAppOptionsRequest, opts ...grpc.CallOption) (*GetAuthenticatorAppOptionsResponse, error)
 	RegisterAuthenticatorApp(ctx context.Context, in *RegisterAuthenticatorAppRequest, opts ...grpc.CallOption) (*RegisterAuthenticatorAppResponse, error)
 	VerifyAuthenticatorApp(ctx context.Context, in *VerifyAuthenticatorAppRequest, opts ...grpc.CallOption) (*VerifyAuthenticatorAppResponse, error)
+	SetEmailAsPrimaryLoginFactor(ctx context.Context, in *SetEmailAsPrimaryLoginFactorRequest, opts ...grpc.CallOption) (*SetEmailAsPrimaryLoginFactorResponse, error)
 }
 
 type intermediateServiceClient struct {
@@ -323,6 +325,16 @@ func (c *intermediateServiceClient) VerifyAuthenticatorApp(ctx context.Context, 
 	return out, nil
 }
 
+func (c *intermediateServiceClient) SetEmailAsPrimaryLoginFactor(ctx context.Context, in *SetEmailAsPrimaryLoginFactorRequest, opts ...grpc.CallOption) (*SetEmailAsPrimaryLoginFactorResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SetEmailAsPrimaryLoginFactorResponse)
+	err := c.cc.Invoke(ctx, IntermediateService_SetEmailAsPrimaryLoginFactor_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // IntermediateServiceServer is the server API for IntermediateService service.
 // All implementations must embed UnimplementedIntermediateServiceServer
 // for forward compatibility.
@@ -351,6 +363,7 @@ type IntermediateServiceServer interface {
 	GetAuthenticatorAppOptions(context.Context, *GetAuthenticatorAppOptionsRequest) (*GetAuthenticatorAppOptionsResponse, error)
 	RegisterAuthenticatorApp(context.Context, *RegisterAuthenticatorAppRequest) (*RegisterAuthenticatorAppResponse, error)
 	VerifyAuthenticatorApp(context.Context, *VerifyAuthenticatorAppRequest) (*VerifyAuthenticatorAppResponse, error)
+	SetEmailAsPrimaryLoginFactor(context.Context, *SetEmailAsPrimaryLoginFactorRequest) (*SetEmailAsPrimaryLoginFactorResponse, error)
 	mustEmbedUnimplementedIntermediateServiceServer()
 }
 
@@ -432,6 +445,9 @@ func (UnimplementedIntermediateServiceServer) RegisterAuthenticatorApp(context.C
 }
 func (UnimplementedIntermediateServiceServer) VerifyAuthenticatorApp(context.Context, *VerifyAuthenticatorAppRequest) (*VerifyAuthenticatorAppResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifyAuthenticatorApp not implemented")
+}
+func (UnimplementedIntermediateServiceServer) SetEmailAsPrimaryLoginFactor(context.Context, *SetEmailAsPrimaryLoginFactorRequest) (*SetEmailAsPrimaryLoginFactorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetEmailAsPrimaryLoginFactor not implemented")
 }
 func (UnimplementedIntermediateServiceServer) mustEmbedUnimplementedIntermediateServiceServer() {}
 func (UnimplementedIntermediateServiceServer) testEmbeddedByValue()                             {}
@@ -886,6 +902,24 @@ func _IntermediateService_VerifyAuthenticatorApp_Handler(srv interface{}, ctx co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _IntermediateService_SetEmailAsPrimaryLoginFactor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetEmailAsPrimaryLoginFactorRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IntermediateServiceServer).SetEmailAsPrimaryLoginFactor(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IntermediateService_SetEmailAsPrimaryLoginFactor_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IntermediateServiceServer).SetEmailAsPrimaryLoginFactor(ctx, req.(*SetEmailAsPrimaryLoginFactorRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // IntermediateService_ServiceDesc is the grpc.ServiceDesc for IntermediateService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -988,6 +1022,10 @@ var IntermediateService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "VerifyAuthenticatorApp",
 			Handler:    _IntermediateService_VerifyAuthenticatorApp_Handler,
+		},
+		{
+			MethodName: "SetEmailAsPrimaryLoginFactor",
+			Handler:    _IntermediateService_SetEmailAsPrimaryLoginFactor_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

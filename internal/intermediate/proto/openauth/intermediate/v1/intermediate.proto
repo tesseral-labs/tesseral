@@ -168,6 +168,13 @@ service IntermediateService {
       body: "*"
     };
   }
+
+  rpc SetEmailAsPrimaryLoginFactor(SetEmailAsPrimaryLoginFactorRequest) returns (SetEmailAsPrimaryLoginFactorResponse) {
+    option (google.api.http) = {
+      post: "/intermediate/v1/set-email-as-primary-login-factor",
+      body: "*"
+    };
+  }
 }
 
 message IntermediateSession {
@@ -183,6 +190,7 @@ message IntermediateSession {
   bool password_verified = 10;
   bool new_user_password_registered = 11;
   bool email_verification_challenge_registered = 12;
+  string primary_login_factor = 13;
 }
 
 message Settings {
@@ -404,4 +412,10 @@ message VerifyPasskeyRequest {
 }
 
 message VerifyPasskeyResponse {
+}
+
+message SetEmailAsPrimaryLoginFactorRequest {
+}
+
+message SetEmailAsPrimaryLoginFactorResponse {
 }
