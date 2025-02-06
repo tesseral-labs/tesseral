@@ -184,18 +184,21 @@ func (s *Store) ListOrganizations(ctx context.Context, req *intermediatev1.ListO
 
 	var organizations []*intermediatev1.Organization
 	for _, qOrg := range qOrgsDeduped {
-		qSamlConnection, err := q.GetOrganizationPrimarySAMLConnection(ctx, qOrg.ID)
-		if err != nil && !errors.Is(err, pgx.ErrNoRows) {
-			return nil, apierror.NewNotFoundError("primary saml connection not found", fmt.Errorf("get organization primary saml connection: %w", err))
+		var qSAMLConnection *queries.SamlConnection
+		qPrimarySAMLConnection, err := q.GetOrganizationPrimarySAMLConnection(ctx, qOrg.ID)
+		if err != nil {
+			// it's ok if org has no primary saml connection
+			if !errors.Is(err, pgx.ErrNoRows) {
+				return nil, fmt.Errorf("get organization primary saml connection: %w", err)
+			}
 		}
 
-		samlConnectionOrNil := &qSamlConnection
-		if qSamlConnection.ID == uuid.Nil {
-			samlConnectionOrNil = nil
+		if qPrimarySAMLConnection.ID != uuid.Nil {
+			qSAMLConnection = &qPrimarySAMLConnection
 		}
 
 		// Parse the organization before performing additional checks
-		org := parseOrganization(qOrg, qProject, samlConnectionOrNil)
+		org := parseOrganization(qOrg, qProject, qSAMLConnection)
 
 		// Check if the user exists on the organization.
 		existingUser, err := s.matchEmailUser(ctx, q, qOrg, qIntermediateSession)
