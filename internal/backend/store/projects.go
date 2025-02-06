@@ -158,9 +158,19 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 		updates.LogInWithMicrosoft = *req.Project.LogInWithMicrosoft
 	}
 
+	updates.LogInWithEmail = qProject.LogInWithEmail
+	if req.Project.LogInWithEmail != nil {
+		updates.LogInWithEmail = *req.Project.LogInWithEmail
+	}
+
 	updates.LogInWithPassword = qProject.LogInWithPassword
 	if req.Project.LogInWithPassword != nil {
 		updates.LogInWithPassword = *req.Project.LogInWithPassword
+	}
+
+	updates.LogInWithSaml = qProject.LogInWithSaml
+	if req.Project.LogInWithSaml != nil {
+		updates.LogInWithSaml = *req.Project.LogInWithSaml
 	}
 
 	updates.LogInWithAuthenticatorApp = qProject.LogInWithAuthenticatorApp
@@ -190,12 +200,6 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 		return nil, fmt.Errorf("update project: %w", err)
 	}
 
-	if !qUpdatedProject.LogInWithPassword {
-		if _, err := q.DisableProjectOrganizationsLogInWithPassword(ctx, authn.ProjectID(ctx)); err != nil {
-			return nil, fmt.Errorf("disable project organizations log in with password: %w", err)
-		}
-	}
-
 	if !qUpdatedProject.LogInWithGoogle {
 		if _, err := q.DisableProjectOrganizationsLogInWithGoogle(ctx, authn.ProjectID(ctx)); err != nil {
 			return nil, fmt.Errorf("disable project organizations log in with Google: %w", err)
@@ -205,6 +209,24 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 	if !qUpdatedProject.LogInWithMicrosoft {
 		if _, err := q.DisableProjectOrganizationsLogInWithMicrosoft(ctx, authn.ProjectID(ctx)); err != nil {
 			return nil, fmt.Errorf("disable project organizations log in with Microsoft: %w", err)
+		}
+	}
+
+	if !qUpdatedProject.LogInWithEmail {
+		if _, err := q.DisableProjectOrganizationsLogInWithEmail(ctx, authn.ProjectID(ctx)); err != nil {
+			return nil, fmt.Errorf("disable project organizations log in with email: %w", err)
+		}
+	}
+
+	if !qUpdatedProject.LogInWithPassword {
+		if _, err := q.DisableProjectOrganizationsLogInWithPassword(ctx, authn.ProjectID(ctx)); err != nil {
+			return nil, fmt.Errorf("disable project organizations log in with password: %w", err)
+		}
+	}
+
+	if !qUpdatedProject.LogInWithSaml {
+		if _, err := q.DisableProjectOrganizationsLogInWithSAML(ctx, authn.ProjectID(ctx)); err != nil {
+			return nil, fmt.Errorf("disable project organizations log in with SAML: %w", err)
 		}
 	}
 
@@ -238,9 +260,11 @@ func parseProject(qProject *queries.Project) *backendv1.Project {
 		DisplayName:               qProject.DisplayName,
 		CreateTime:                timestamppb.New(*qProject.CreateTime),
 		UpdateTime:                timestamppb.New(*qProject.UpdateTime),
-		LogInWithPassword:         &qProject.LogInWithPassword,
 		LogInWithGoogle:           &qProject.LogInWithMicrosoft,
 		LogInWithMicrosoft:        &qProject.LogInWithMicrosoft,
+		LogInWithEmail:            &qProject.LogInWithEmail,
+		LogInWithPassword:         &qProject.LogInWithPassword,
+		LogInWithSaml:             &qProject.LogInWithSaml,
 		LogInWithAuthenticatorApp: &qProject.LogInWithAuthenticatorApp,
 		LogInWithPasskey:          &qProject.LogInWithPasskey,
 		GoogleOauthClientId:       derefOrEmpty(qProject.GoogleOauthClientID),

@@ -184,7 +184,6 @@ type Organization struct {
 	ID                        uuid.UUID
 	ProjectID                 uuid.UUID
 	DisplayName               string
-	SamlEnabled               bool
 	ScimEnabled               bool
 	CreateTime                *time.Time
 	UpdateTime                *time.Time
@@ -195,6 +194,8 @@ type Organization struct {
 	LogInWithAuthenticatorApp bool
 	LogInWithPasskey          bool
 	RequireMfa                bool
+	LogInWithEmail            bool
+	LogInWithSaml             bool
 }
 
 type OrganizationDomain struct {
@@ -243,6 +244,8 @@ type Project struct {
 	LoginsDisabled                       bool
 	LogInWithAuthenticatorApp            bool
 	LogInWithPasskey                     bool
+	LogInWithEmail                       bool
+	LogInWithSaml                        bool
 }
 
 type ProjectApiKey struct {
