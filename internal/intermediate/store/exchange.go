@@ -123,7 +123,6 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 }
 
 func (s *Store) validateAuthRequirementsSatisfied(ctx context.Context, q *queries.Queries, intermediateSessionID uuid.UUID) error {
-	// TODO update this to check for 2fa
 	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, intermediateSessionID)
 	if err != nil {
 		return fmt.Errorf("get intermediate session by id: %w", err)
@@ -150,8 +149,20 @@ func (s *Store) validateAuthRequirementsSatisfied(ctx context.Context, q *querie
 }
 
 func validateAuthRequirementsSatisfiedInner(qIntermediateSession queries.IntermediateSession, emailVerified bool, qOrg queries.Organization) error {
+	if qIntermediateSession.Email == nil {
+		panic(fmt.Errorf("intermediate session missing email: %v", qIntermediateSession.ID))
+	}
+
+	if qIntermediateSession.PrimaryLoginFactor == nil {
+		return apierror.NewFailedPreconditionError("primary login factor not set", nil)
+	}
+
 	if !emailVerified {
 		return apierror.NewFailedPreconditionError("email not verified", nil)
+	}
+
+	if qOrg.LogInWithPassword && !qIntermediateSession.PasswordVerified {
+		return apierror.NewFailedPreconditionError("password not verified", nil)
 	}
 
 	if qOrg.RequireMfa {
@@ -163,14 +174,27 @@ func validateAuthRequirementsSatisfiedInner(qIntermediateSession queries.Interme
 		}
 	}
 
-	if qOrg.LogInWithGoogle && qIntermediateSession.GoogleUserID != nil {
-		return nil
-	}
-	if qOrg.LogInWithMicrosoft && qIntermediateSession.MicrosoftUserID != nil {
-		return nil
-	}
-	if qOrg.LogInWithPassword && qIntermediateSession.PasswordVerified {
-		return nil
+	switch *qIntermediateSession.PrimaryLoginFactor {
+	case queries.PrimaryLoginFactorGoogleOauth:
+		if qIntermediateSession.GoogleUserID == nil {
+			panic(fmt.Errorf("intermediate session missing google user id: %v", qIntermediateSession.ID))
+		}
+
+		if qOrg.LogInWithGoogle {
+			return nil
+		}
+	case queries.PrimaryLoginFactorMicrosoftOauth:
+		if qIntermediateSession.MicrosoftUserID == nil {
+			panic(fmt.Errorf("intermediate session missing microsoft user id: %v", qIntermediateSession.ID))
+		}
+
+		if qOrg.LogInWithMicrosoft {
+			return nil
+		}
+	case queries.PrimaryLoginFactorEmail:
+		if qOrg.LogInWithEmail {
+			return nil
+		}
 	}
 
 	return apierror.NewFailedPreconditionError("no authentication method satisfied", nil)
