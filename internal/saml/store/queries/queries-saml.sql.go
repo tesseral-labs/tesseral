@@ -48,6 +48,7 @@ FROM
     JOIN organizations ON saml_connections.organization_id = organizations.id
 WHERE
     organizations.project_id = $1
+    AND organizations.log_in_with_saml
     AND saml_connections.id = $2
 `
 
