@@ -108,7 +108,7 @@ func (s *Store) CreateUserInvite(ctx context.Context, req *frontendv1.CreateUser
 		ID:             uuid.New(),
 		OrganizationID: authn.OrganizationID(ctx),
 		Email:          req.UserInvite.Email,
-		IsOwner:        req.UserInvite.IsOwner,
+		IsOwner:        req.UserInvite.Owner,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("create user invite: %w", err)
@@ -161,6 +161,6 @@ func parseUserInvite(qUserInvite queries.UserInvite) *frontendv1.UserInvite {
 		CreateTime: timestamppb.New(*qUserInvite.CreateTime),
 		UpdateTime: timestamppb.New(*qUserInvite.UpdateTime),
 		Email:      qUserInvite.Email,
-		IsOwner:    qUserInvite.IsOwner,
+		Owner:      qUserInvite.IsOwner,
 	}
 }

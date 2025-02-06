@@ -129,7 +129,7 @@ func (s *Store) CreateUserInvite(ctx context.Context, req *backendv1.CreateUserI
 		ID:             uuid.New(),
 		OrganizationID: orgID,
 		Email:          req.UserInvite.Email,
-		IsOwner:        req.UserInvite.IsOwner,
+		IsOwner:        req.UserInvite.Owner,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("create user invite: %w", err)
@@ -183,6 +183,6 @@ func parseUserInvite(qUserInvite queries.UserInvite) *backendv1.UserInvite {
 		CreateTime:     timestamppb.New(*qUserInvite.CreateTime),
 		UpdateTime:     timestamppb.New(*qUserInvite.UpdateTime),
 		Email:          qUserInvite.Email,
-		IsOwner:        qUserInvite.IsOwner,
+		Owner:          qUserInvite.IsOwner,
 	}
 }

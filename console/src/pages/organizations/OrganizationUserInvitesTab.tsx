@@ -84,6 +84,12 @@ export function OrganizationUserInvitesTab() {
                   >
                     {userInvite.email}
                   </Link>
+
+                  {userInvite.isOwner && (
+                    <Badge variant="outline" className="ml-2">
+                      Owner
+                    </Badge>
+                  )}
                 </TableCell>
                 <TableCell className="font-mono">{userInvite.id}</TableCell>
                 <TableCell>
