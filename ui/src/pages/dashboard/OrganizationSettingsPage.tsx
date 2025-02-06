@@ -1,12 +1,19 @@
-import React, { FC, MouseEvent } from 'react'
+import React, { FC, MouseEvent, useEffect, useState } from 'react'
 import { DateTime } from 'luxon'
 import { useOrganization, useProject, useUser } from '@/lib/auth'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { useMutation, useQuery } from '@connectrpc/connect-query'
 import {
   getOrganization,
   listSAMLConnections,
   listUsers,
+  updateOrganization,
   updateUser,
 } from '@/gen/openauth/frontend/v1/frontend-FrontendService_connectquery'
 import {
@@ -18,6 +25,10 @@ import {
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { Link } from 'react-router-dom'
+import { Switch } from '@/components/ui/switch'
+import { parseErrorMessage } from '@/lib/errors'
+import { toast } from 'sonner'
+import Loader from '@/components/ui/loader'
 
 const OrganizationSettingsPage: FC = () => {
   const user = useUser()
@@ -27,7 +38,32 @@ const OrganizationSettingsPage: FC = () => {
     useQuery(getOrganization)
   const { data: samlConnectionsData, refetch: refetchSAMLConnections } =
     useQuery(listSAMLConnections)
+  const updateOrganizationMutation = useMutation(updateOrganization)
   const updateUserMutation = useMutation(updateUser)
+
+  const [editingLoginSettings, setEditingLoginSettings] = useState(false)
+  const [logInWithAuthenticatorApp, setLogInWithAuthenticatorApp] = useState(
+    organizationRes?.organization?.logInWithAuthenticatorApp,
+  )
+  const [logInWithEmail, setLogInWithEmail] = useState(
+    organizationRes?.organization?.logInWithEmail,
+  )
+  const [logInWithGoogle, setLogInWithGoogle] = useState(
+    organizationRes?.organization?.logInWithGoogle,
+  )
+  const [logInWithMicrosoft, setLogInWithMicrosoft] = useState(
+    organizationRes?.organization?.logInWithMicrosoft,
+  )
+  const [logInWithPasskey, setLogInWithPasskey] = useState(
+    organizationRes?.organization?.logInWithPasskey,
+  )
+  const [logInWithPassword, setLogInWithPassword] = useState(
+    organizationRes?.organization?.logInWithPassword,
+  )
+  const [requireMFA, setRequireMFA] = useState(
+    organizationRes?.organization?.requireMfa,
+  )
+  const [submittingLoginSettings, setSubmittingLoginSettings] = useState(false)
 
   const changeUserRole = async (userId: string, isOwner: boolean) => {
     await updateUserMutation.mutateAsync({
@@ -39,6 +75,44 @@ const OrganizationSettingsPage: FC = () => {
 
     refetchUsers()
   }
+
+  const resetLoginSettings = async () => {
+    setLogInWithEmail(organizationRes?.organization?.logInWithEmail)
+    setLogInWithGoogle(organizationRes?.organization?.logInWithGoogle)
+    setLogInWithMicrosoft(organizationRes?.organization?.logInWithMicrosoft)
+    setLogInWithPassword(organizationRes?.organization?.logInWithPassword)
+  }
+
+  const submitLoginSettings = async () => {
+    setSubmittingLoginSettings(true)
+    try {
+      await updateOrganizationMutation.mutateAsync({
+        organization: {
+          logInWithEmail,
+          logInWithGoogle,
+          logInWithMicrosoft,
+          logInWithPassword,
+        },
+      })
+
+      setEditingLoginSettings(false)
+      await refetchOrganization()
+      resetLoginSettings()
+      setSubmittingLoginSettings(false)
+    } catch (error) {
+      setSubmittingLoginSettings(false)
+      const message = parseErrorMessage(error)
+      toast.error('Could not update organization settings', {
+        description: message,
+      })
+    }
+  }
+
+  useEffect(() => {
+    if (organizationRes?.organization) {
+      resetLoginSettings()
+    }
+  }, [organizationRes])
 
   return (
     <div className="dark:text-foreground">
@@ -87,6 +161,165 @@ const OrganizationSettingsPage: FC = () => {
               </div>
             </div>
           </div>
+        </CardContent>
+      </Card>
+
+      <Card className="my-8">
+        <CardHeader className="py-4">
+          <CardTitle className="text-xl">
+            <div className="flex items-center justify-between w-full ">
+              <span>Log in settings</span>
+              {editingLoginSettings ? (
+                <div className="">
+                  <Button
+                    onClick={() => {
+                      setEditingLoginSettings(false)
+                      resetLoginSettings()
+                    }}
+                    variant="outline"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    className="ml-2"
+                    disabled={submittingLoginSettings}
+                    onClick={submitLoginSettings}
+                  >
+                    {submittingLoginSettings && <Loader />}
+                    Save
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  onClick={() => setEditingLoginSettings(true)}
+                  variant="outline"
+                >
+                  Edit
+                </Button>
+              )}
+            </div>
+          </CardTitle>
+          <CardDescription>
+            These settings control how users can log in to your organization.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="font-semibold">Basic log in settings</p>
+          <Table>
+            <TableBody>
+              <TableRow>
+                <TableCell>
+                  <p>Log in with Email</p>
+                  <p className="text-xs text-muted-foreground">
+                    Users can log in with their email address.
+                  </p>
+                </TableCell>
+                <TableCell className="text-right">
+                  <Switch
+                    checked={logInWithEmail}
+                    disabled={!editingLoginSettings}
+                    onCheckedChange={setLogInWithEmail}
+                  />
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>
+                  <p>Log in with Password</p>
+                  <p className="text-xs text-muted-foreground">
+                    Users will be prompted to enter a password during login.
+                  </p>
+                </TableCell>
+                <TableCell className="text-right">
+                  <Switch
+                    checked={logInWithPassword}
+                    disabled={!editingLoginSettings}
+                    onCheckedChange={setLogInWithPassword}
+                  />
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>
+                  <p>Log in with Google</p>
+                  <p className="text-xs text-muted-foreground">
+                    Users can log in with their Google account.
+                  </p>
+                </TableCell>
+                <TableCell className="text-right">
+                  <Switch
+                    checked={logInWithGoogle}
+                    disabled={!editingLoginSettings}
+                    onCheckedChange={setLogInWithGoogle}
+                  />
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>
+                  <p>Log in with Microsoft</p>
+                  <p className="text-xs text-muted-foreground">
+                    Users can log in with their Microsoft account.
+                  </p>
+                </TableCell>
+                <TableCell className="text-right">
+                  <Switch
+                    checked={logInWithMicrosoft}
+                    disabled={!editingLoginSettings}
+                    onCheckedChange={setLogInWithMicrosoft}
+                  />
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+
+          <p className="mt-4 font-semibold">MFA settings</p>
+          <Table>
+            <TableBody>
+              <TableRow>
+                <TableCell>
+                  <p>Require MFA</p>
+                  <p className="text-xs text-muted-foreground">
+                    Require users to set up MFA during login.
+                  </p>
+                </TableCell>
+                <TableCell className="text-right">
+                  <Switch
+                    checked={requireMFA}
+                    disabled={!editingLoginSettings}
+                    onCheckedChange={setRequireMFA}
+                  />
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>
+                  <p>Log in with Authenticator App</p>
+                  <p className="text-xs text-muted-foreground">
+                    Users can log in with an authenticator app.
+                  </p>
+                </TableCell>
+                <TableCell className="text-right">
+                  <Switch
+                    checked={logInWithAuthenticatorApp}
+                    disabled={!editingLoginSettings}
+                    onCheckedChange={setLogInWithAuthenticatorApp}
+                  />
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>
+                  <p>Log in with Passkey</p>
+                  <p className="text-xs text-muted-foreground">
+                    Users can log in with a passkey.
+                  </p>
+                </TableCell>
+                <TableCell className="text-right">
+                  <Switch
+                    checked={logInWithPasskey}
+                    disabled={!editingLoginSettings}
+                    onCheckedChange={setLogInWithPasskey}
+                  />
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
         </CardContent>
       </Card>
 

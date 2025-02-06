@@ -13,6 +13,7 @@ import {
 import Header from './Header'
 import { SidebarProvider, SidebarTrigger } from '../ui/sidebar'
 import DashboardSidebar from './DashboardSidebar'
+import { Toaster } from '../ui/sonner'
 
 const DashboardPage: FC<PropsWithChildren> = ({ children }) => {
   const isDarkMode = useDarkMode()
@@ -62,6 +63,7 @@ const DashboardPage: FC<PropsWithChildren> = ({ children }) => {
                   </div>
                 </div>
               </main>
+              <Toaster position="top-center" />
             </SidebarProvider>
           </UserContextProvider>
         </OrganizationContextProvider>
