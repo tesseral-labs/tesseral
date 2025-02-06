@@ -171,7 +171,7 @@ service IntermediateService {
 
   rpc SetEmailAsPrimaryLoginFactor(SetEmailAsPrimaryLoginFactorRequest) returns (SetEmailAsPrimaryLoginFactorResponse) {
     option (google.api.http) = {
-      post: "/intermediate/v1/set-primary-login-factor",
+      post: "/intermediate/v1/set-email-as-primary-login-factor",
       body: "*"
     };
   }

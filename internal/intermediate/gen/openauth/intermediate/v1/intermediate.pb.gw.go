@@ -1079,7 +1079,7 @@ func RegisterIntermediateServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/SetEmailAsPrimaryLoginFactor", runtime.WithHTTPPathPattern("/intermediate/v1/set-primary-login-factor"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/SetEmailAsPrimaryLoginFactor", runtime.WithHTTPPathPattern("/intermediate/v1/set-email-as-primary-login-factor"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1528,7 +1528,7 @@ func RegisterIntermediateServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/SetEmailAsPrimaryLoginFactor", runtime.WithHTTPPathPattern("/intermediate/v1/set-primary-login-factor"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/SetEmailAsPrimaryLoginFactor", runtime.WithHTTPPathPattern("/intermediate/v1/set-email-as-primary-login-factor"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1568,7 +1568,7 @@ var (
 	pattern_IntermediateService_GetAuthenticatorAppOptions_0            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "get-authenticator-app-options"}, ""))
 	pattern_IntermediateService_RegisterAuthenticatorApp_0              = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "register-authenticator-app"}, ""))
 	pattern_IntermediateService_VerifyAuthenticatorApp_0                = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "verify-authenticator-app"}, ""))
-	pattern_IntermediateService_SetEmailAsPrimaryLoginFactor_0          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "set-primary-login-factor"}, ""))
+	pattern_IntermediateService_SetEmailAsPrimaryLoginFactor_0          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"intermediate", "v1", "set-email-as-primary-login-factor"}, ""))
 )
 
 var (
