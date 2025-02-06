@@ -29,6 +29,8 @@ import {
 } from '@/components/ui/form'
 import { Switch } from '@/components/ui/switch'
 import { Input } from '@/components/ui/input'
+import { parseErrorMessage } from '@/lib/errors'
+import { toast } from 'sonner'
 
 const schema = z.object({
   primary: z.boolean(),
@@ -58,17 +60,24 @@ const EditSAMLConnectionsPage: FC = () => {
   const updateSAMLConnectionMutation = useMutation(updateSAMLConnection)
 
   const handleSubmit = async (values: z.infer<typeof schema>) => {
-    await updateSAMLConnectionMutation.mutateAsync({
-      id: params.samlConnectionId,
-      samlConnection: {
-        primary: values.primary,
-        idpEntityId: values.idpEntityId,
-        idpRedirectUrl: values.idpRedirectUrl,
-        idpX509Certificate: values.idpX509Certificate,
-      },
-    })
+    try {
+      await updateSAMLConnectionMutation.mutateAsync({
+        id: params.samlConnectionId,
+        samlConnection: {
+          primary: values.primary,
+          idpEntityId: values.idpEntityId,
+          idpRedirectUrl: values.idpRedirectUrl,
+          idpX509Certificate: values.idpX509Certificate,
+        },
+      })
 
-    navigate(`/organization`)
+      navigate(`/organization`)
+    } catch (error) {
+      const message = parseErrorMessage(error)
+      toast.error('Could not update SAML connection', {
+        description: message,
+      })
+    }
   }
 
   useEffect(() => {

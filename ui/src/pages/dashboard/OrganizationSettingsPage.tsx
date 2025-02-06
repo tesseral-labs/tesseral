@@ -28,6 +28,7 @@ import { Link } from 'react-router-dom'
 import { Switch } from '@/components/ui/switch'
 import { parseErrorMessage } from '@/lib/errors'
 import { toast } from 'sonner'
+import Loader from '@/components/ui/loader'
 
 const OrganizationSettingsPage: FC = () => {
   const user = useUser()
@@ -62,6 +63,7 @@ const OrganizationSettingsPage: FC = () => {
   const [requireMFA, setRequireMFA] = useState(
     organizationRes?.organization?.requireMfa,
   )
+  const [submittingLoginSettings, setSubmittingLoginSettings] = useState(false)
 
   const changeUserRole = async (userId: string, isOwner: boolean) => {
     await updateUserMutation.mutateAsync({
@@ -82,24 +84,28 @@ const OrganizationSettingsPage: FC = () => {
   }
 
   const submitLoginSettings = async () => {
+    setSubmittingLoginSettings(true)
     try {
-    await updateOrganizationMutation.mutateAsync({
-      organization: {
-        logInWithEmail,
-        logInWithGoogle,
-        logInWithMicrosoft,
-        logInWithPassword,
-      },
-    })
+      await updateOrganizationMutation.mutateAsync({
+        organization: {
+          logInWithEmail,
+          logInWithGoogle,
+          logInWithMicrosoft,
+          logInWithPassword,
+        },
+      })
 
-    setEditingLoginSettings(false)
-    await refetchOrganization()
-    resetLoginSettings()
-  } catch (error) {
-    const message = parseErrorMessage(error)
-    toast.error('Could not update organization settings', {
-      description: message,
-    })
+      setEditingLoginSettings(false)
+      await refetchOrganization()
+      resetLoginSettings()
+      setSubmittingLoginSettings(false)
+    } catch (error) {
+      setSubmittingLoginSettings(false)
+      const message = parseErrorMessage(error)
+      toast.error('Could not update organization settings', {
+        description: message,
+      })
+    }
   }
 
   useEffect(() => {
@@ -174,7 +180,12 @@ const OrganizationSettingsPage: FC = () => {
                   >
                     Cancel
                   </Button>
-                  <Button className="ml-2" onClick={submitLoginSettings}>
+                  <Button
+                    className="ml-2"
+                    disabled={submittingLoginSettings}
+                    onClick={submitLoginSettings}
+                  >
+                    {submittingLoginSettings && <Loader />}
                     Save
                   </Button>
                 </div>
