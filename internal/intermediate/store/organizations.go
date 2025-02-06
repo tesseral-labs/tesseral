@@ -162,6 +162,16 @@ func (s *Store) ListOrganizations(ctx context.Context, req *intermediatev1.ListO
 	}
 	qOrgs = append(qOrgs, qUserOrgs...)
 
+	// orgs with a matching user invite
+	qUserInviteOrgs, err := q.ListOrganizationsByMatchingUserInvite(ctx, queries.ListOrganizationsByMatchingUserInviteParams{
+		ProjectID: authn.ProjectID(ctx),
+		Email:     *qIntermediateSession.Email,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("list organizations by matching user invite: %w", err)
+	}
+	qOrgs = append(qOrgs, qUserInviteOrgs...)
+
 	// dedupe qOrgs on ID
 	var qOrgsDeduped []queries.Organization
 	seen := map[uuid.UUID]struct{}{}

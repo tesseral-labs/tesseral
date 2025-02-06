@@ -309,3 +309,48 @@ WHERE
 RETURNING
     *;
 
+-- name: ListUserInvites :many
+SELECT
+    *
+FROM
+    user_invites
+WHERE
+    organization_id = $1
+    AND id >= $2
+ORDER BY
+    id
+LIMIT $3;
+
+-- name: GetUserInvite :one
+SELECT
+    *
+FROM
+    user_invites
+WHERE
+    id = $1
+    AND organization_id = $2;
+
+-- name: ExistsUserWithEmail :one
+SELECT
+    EXISTS (
+        SELECT
+            *
+        FROM
+            users
+        WHERE
+            organization_id = $1
+            AND email = $2);
+
+-- name: CreateUserInvite :one
+INSERT INTO user_invites (id, organization_id, email)
+    VALUES ($1, $2, $3)
+ON CONFLICT (organization_id, email)
+    DO UPDATE SET
+        email = excluded.email -- no-op write so that returning works
+    RETURNING
+        *;
+
+-- name: DeleteUserInvite :exec
+DELETE FROM user_invites
+WHERE id = $1;
+

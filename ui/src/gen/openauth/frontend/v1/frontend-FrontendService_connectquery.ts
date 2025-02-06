@@ -147,3 +147,23 @@ export const getAuthenticatorAppOptions = FrontendService.method.getAuthenticato
  * @generated from rpc openauth.frontend.v1.FrontendService.RegisterAuthenticatorApp
  */
 export const registerAuthenticatorApp = FrontendService.method.registerAuthenticatorApp;
+
+/**
+ * @generated from rpc openauth.frontend.v1.FrontendService.ListUserInvites
+ */
+export const listUserInvites = FrontendService.method.listUserInvites;
+
+/**
+ * @generated from rpc openauth.frontend.v1.FrontendService.GetUserInvite
+ */
+export const getUserInvite = FrontendService.method.getUserInvite;
+
+/**
+ * @generated from rpc openauth.frontend.v1.FrontendService.CreateUserInvite
+ */
+export const createUserInvite = FrontendService.method.createUserInvite;
+
+/**
+ * @generated from rpc openauth.frontend.v1.FrontendService.DeleteUserInvite
+ */
+export const deleteUserInvite = FrontendService.method.deleteUserInvite;

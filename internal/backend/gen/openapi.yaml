@@ -700,6 +700,29 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /backend/v1/user-invites:
+        get:
+            tags:
+                - BackendService
+            operationId: BackendService_ListUserInvites
+            parameters:
+                - name: pageToken
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListUserInvitesResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /backend/v1/users:
         get:
             tags:
@@ -907,6 +930,15 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/Session'
+                nextPageToken:
+                    type: string
+        ListUserInvitesResponse:
+            type: object
+            properties:
+                userInvites:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/UserInvite'
                 nextPageToken:
                     type: string
         ListUsersResponse:
@@ -1149,5 +1181,20 @@ components:
                     type: string
                 hasAuthenticatorApp:
                     type: boolean
+        UserInvite:
+            type: object
+            properties:
+                id:
+                    type: string
+                organizationId:
+                    type: string
+                createTime:
+                    type: string
+                    format: date-time
+                updateTime:
+                    type: string
+                    format: date-time
+                email:
+                    type: string
 tags:
     - name: BackendService

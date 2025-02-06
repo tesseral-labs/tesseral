@@ -121,6 +121,12 @@ export function ViewUserPage() {
                   {getUserResponse?.user?.owner ? 'Yes' : 'No'}
                 </DetailsGridValue>
               </DetailsGridEntry>
+              <DetailsGridEntry>
+                <DetailsGridKey>Authenticator App</DetailsGridKey>
+                <DetailsGridValue>
+                  {getUserResponse?.user?.hasAuthenticatorApp ? 'Enabled' : 'Not Enabled'}
+                </DetailsGridValue>
+              </DetailsGridEntry>
             </DetailsGridColumn>
             <DetailsGridColumn>
               <DetailsGridEntry>

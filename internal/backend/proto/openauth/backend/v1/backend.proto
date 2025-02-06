@@ -196,6 +196,12 @@ service BackendService {
     };
   }
 
+  rpc ListUserInvites(ListUserInvitesRequest) returns (ListUserInvitesResponse) {
+    option (google.api.http) = {
+      get: "/backend/v1/user-invites"
+    };
+  }
+
   rpc DisableOrganizationLogins(DisableOrganizationLoginsRequest) returns (DisableOrganizationLoginsResponse) {}
   rpc DisableProjectLogins(DisableProjectLoginsRequest) returns (DisableProjectLoginsResponse) {}
   rpc EnableOrganizationLogins(EnableOrganizationLoginsRequest) returns (EnableOrganizationLoginsResponse) {}
@@ -485,6 +491,15 @@ message GetIntermediateSessionRequest {
 
 message GetIntermediateSessionResponse {
   IntermediateSession intermediate_session = 1;
+}
+
+message ListUserInvitesRequest {
+  string page_token = 1;
+}
+
+message ListUserInvitesResponse {
+  repeated UserInvite user_invites = 1;
+  string next_page_token = 2;
 }
 
 message ListProjectAPIKeysRequest {
@@ -788,4 +803,12 @@ message UserImpersonationToken {
   google.protobuf.Timestamp expire_time = 4;
   string secret_token = 5;
   string impersonated_id = 6;
+}
+
+message UserInvite {
+  string id = 1;
+  string organization_id = 2;
+  google.protobuf.Timestamp create_time = 3;
+  google.protobuf.Timestamp update_time = 4;
+  string email = 5;
 }

@@ -189,6 +189,35 @@ func (q *Queries) CreateUserAuthenticatorAppChallenge(ctx context.Context, arg C
 	return i, err
 }
 
+const createUserInvite = `-- name: CreateUserInvite :one
+INSERT INTO user_invites (id, organization_id, email)
+    VALUES ($1, $2, $3)
+ON CONFLICT (organization_id, email)
+    DO UPDATE SET
+        email = excluded.email -- no-op write so that returning works
+    RETURNING
+        id, organization_id, create_time, update_time, email
+`
+
+type CreateUserInviteParams struct {
+	ID             uuid.UUID
+	OrganizationID uuid.UUID
+	Email          string
+}
+
+func (q *Queries) CreateUserInvite(ctx context.Context, arg CreateUserInviteParams) (UserInvite, error) {
+	row := q.db.QueryRow(ctx, createUserInvite, arg.ID, arg.OrganizationID, arg.Email)
+	var i UserInvite
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.Email,
+	)
+	return i, err
+}
+
 const deletePasskey = `-- name: DeletePasskey :exec
 DELETE FROM passkeys
 WHERE id = $1
@@ -227,6 +256,40 @@ WHERE user_id = $1
 func (q *Queries) DeleteUserAuthenticatorAppChallenge(ctx context.Context, userID uuid.UUID) error {
 	_, err := q.db.Exec(ctx, deleteUserAuthenticatorAppChallenge, userID)
 	return err
+}
+
+const deleteUserInvite = `-- name: DeleteUserInvite :exec
+DELETE FROM user_invites
+WHERE id = $1
+`
+
+func (q *Queries) DeleteUserInvite(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteUserInvite, id)
+	return err
+}
+
+const existsUserWithEmail = `-- name: ExistsUserWithEmail :one
+SELECT
+    EXISTS (
+        SELECT
+            id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_recovery_code_bcrypts, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time
+        FROM
+            users
+        WHERE
+            organization_id = $1
+            AND email = $2)
+`
+
+type ExistsUserWithEmailParams struct {
+	OrganizationID uuid.UUID
+	Email          string
+}
+
+func (q *Queries) ExistsUserWithEmail(ctx context.Context, arg ExistsUserWithEmailParams) (bool, error) {
+	row := q.db.QueryRow(ctx, existsUserWithEmail, arg.OrganizationID, arg.Email)
+	var exists bool
+	err := row.Scan(&exists)
+	return exists, err
 }
 
 const getCurrentSessionKeyByProjectID = `-- name: GetCurrentSessionKeyByProjectID :one
@@ -551,6 +614,34 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 	return i, err
 }
 
+const getUserInvite = `-- name: GetUserInvite :one
+SELECT
+    id, organization_id, create_time, update_time, email
+FROM
+    user_invites
+WHERE
+    id = $1
+    AND organization_id = $2
+`
+
+type GetUserInviteParams struct {
+	ID             uuid.UUID
+	OrganizationID uuid.UUID
+}
+
+func (q *Queries) GetUserInvite(ctx context.Context, arg GetUserInviteParams) (UserInvite, error) {
+	row := q.db.QueryRow(ctx, getUserInvite, arg.ID, arg.OrganizationID)
+	var i UserInvite
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.Email,
+	)
+	return i, err
+}
+
 const getUserPasskey = `-- name: GetUserPasskey :one
 SELECT
     id, user_id, create_time, update_time, credential_id, public_key, aaguid
@@ -726,6 +817,51 @@ func (q *Queries) ListSCIMAPIKeys(ctx context.Context, arg ListSCIMAPIKeysParams
 			&i.DisplayName,
 			&i.CreateTime,
 			&i.UpdateTime,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listUserInvites = `-- name: ListUserInvites :many
+SELECT
+    id, organization_id, create_time, update_time, email
+FROM
+    user_invites
+WHERE
+    organization_id = $1
+    AND id >= $2
+ORDER BY
+    id
+LIMIT $3
+`
+
+type ListUserInvitesParams struct {
+	OrganizationID uuid.UUID
+	ID             uuid.UUID
+	Limit          int32
+}
+
+func (q *Queries) ListUserInvites(ctx context.Context, arg ListUserInvitesParams) ([]UserInvite, error) {
+	rows, err := q.db.Query(ctx, listUserInvites, arg.OrganizationID, arg.ID, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []UserInvite
+	for rows.Next() {
+		var i UserInvite
+		if err := rows.Scan(
+			&i.ID,
+			&i.OrganizationID,
+			&i.CreateTime,
+			&i.UpdateTime,
+			&i.Email,
 		); err != nil {
 			return nil, err
 		}
