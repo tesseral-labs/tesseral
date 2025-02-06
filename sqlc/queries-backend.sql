@@ -640,3 +640,49 @@ WHERE
 DELETE FROM passkeys
 WHERE id = $1;
 
+-- name: ListUserInvites :many
+SELECT
+    *
+FROM
+    user_invites
+WHERE
+    organization_id = $1
+    AND id >= $2
+ORDER BY
+    id
+LIMIT $3;
+
+-- name: GetUserInvite :one
+SELECT
+    user_invites.*
+FROM
+    user_invites
+    JOIN organizations ON user_invites.organization_id = organizations.id
+WHERE
+    user_invites.id = $1
+    AND organizations.project_id = $2;
+
+-- name: ExistsUserWithEmailInOrganization :one
+SELECT
+    EXISTS (
+        SELECT
+            *
+        FROM
+            users
+        WHERE
+            organization_id = $1
+            AND email = $2);
+
+-- name: CreateUserInvite :one
+INSERT INTO user_invites (id, organization_id, email)
+    VALUES ($1, $2, $3)
+ON CONFLICT (organization_id, email)
+    DO UPDATE SET
+        email = excluded.email -- no-op write so that returning works
+    RETURNING
+        *;
+
+-- name: DeleteUserInvite :exec
+DELETE FROM user_invites
+WHERE id = $1;
+
