@@ -90,7 +90,13 @@ const ChooseOrganization: FC<ChooseOrganizationProps> = ({
         whoamiRes?.intermediateSession?.googleUserId ||
         whoamiRes?.intermediateSession?.microsoftUserId
       ) {
-        if (
+        if (organization.logInWithPassword) {
+          if (organization.userHasPassword) {
+            return LoginViews.VerifyPassword
+          }
+
+          return LoginViews.RegisterPassword
+        } else if (
           organization.userHasAuthenticatorApp &&
           !organization.userHasPasskey
         ) {
@@ -103,35 +109,26 @@ const ChooseOrganization: FC<ChooseOrganizationProps> = ({
         }
 
         return LoginViews.ChooseAdditionalFactor
-      } else if (organization.logInWithPassword) {
+      }
+    } else {
+      if (organization.logInWithPassword) {
         if (organization.userHasPassword) {
           return LoginViews.VerifyPassword
         }
 
         return LoginViews.RegisterPassword
-      }
-    } else {
-      if (
+      } else if (
         organization.logInWithAuthenticatorApp &&
         organization.userHasAuthenticatorApp &&
-        !organization.userHasPasskey &&
-        !organization.userHasPassword
+        !organization.userHasPasskey
       ) {
         return LoginViews.VerifyAuthenticatorApp
       } else if (
         organization.logInWithPasskey &&
         organization.userHasPasskey &&
-        !organization.userHasAuthenticatorApp &&
-        !organization.userHasPassword
+        !organization.userHasAuthenticatorApp
       ) {
         return LoginViews.VerifyPasskey
-      } else if (
-        organization.logInWithPassword &&
-        organization.userHasPassword &&
-        !organization.userHasAuthenticatorApp &&
-        !organization.userHasPasskey
-      ) {
-        return LoginViews.VerifyPassword
       }
 
       return LoginViews.ChooseAdditionalFactor
