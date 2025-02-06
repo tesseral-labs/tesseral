@@ -190,23 +190,29 @@ func (q *Queries) CreateUserAuthenticatorAppChallenge(ctx context.Context, arg C
 }
 
 const createUserInvite = `-- name: CreateUserInvite :one
-INSERT INTO user_invites (id, organization_id, email)
-    VALUES ($1, $2, $3)
+INSERT INTO user_invites (id, organization_id, email, is_owner)
+    VALUES ($1, $2, $3, $4)
 ON CONFLICT (organization_id, email)
     DO UPDATE SET
-        email = excluded.email -- no-op write so that returning works
+        email = excluded.email, is_owner = excluded.is_owner
     RETURNING
-        id, organization_id, create_time, update_time, email
+        id, organization_id, create_time, update_time, email, is_owner
 `
 
 type CreateUserInviteParams struct {
 	ID             uuid.UUID
 	OrganizationID uuid.UUID
 	Email          string
+	IsOwner        bool
 }
 
 func (q *Queries) CreateUserInvite(ctx context.Context, arg CreateUserInviteParams) (UserInvite, error) {
-	row := q.db.QueryRow(ctx, createUserInvite, arg.ID, arg.OrganizationID, arg.Email)
+	row := q.db.QueryRow(ctx, createUserInvite,
+		arg.ID,
+		arg.OrganizationID,
+		arg.Email,
+		arg.IsOwner,
+	)
 	var i UserInvite
 	err := row.Scan(
 		&i.ID,
@@ -214,6 +220,7 @@ func (q *Queries) CreateUserInvite(ctx context.Context, arg CreateUserInvitePara
 		&i.CreateTime,
 		&i.UpdateTime,
 		&i.Email,
+		&i.IsOwner,
 	)
 	return i, err
 }
@@ -619,7 +626,7 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 
 const getUserInvite = `-- name: GetUserInvite :one
 SELECT
-    id, organization_id, create_time, update_time, email
+    id, organization_id, create_time, update_time, email, is_owner
 FROM
     user_invites
 WHERE
@@ -641,6 +648,7 @@ func (q *Queries) GetUserInvite(ctx context.Context, arg GetUserInviteParams) (U
 		&i.CreateTime,
 		&i.UpdateTime,
 		&i.Email,
+		&i.IsOwner,
 	)
 	return i, err
 }
@@ -833,7 +841,7 @@ func (q *Queries) ListSCIMAPIKeys(ctx context.Context, arg ListSCIMAPIKeysParams
 
 const listUserInvites = `-- name: ListUserInvites :many
 SELECT
-    id, organization_id, create_time, update_time, email
+    id, organization_id, create_time, update_time, email, is_owner
 FROM
     user_invites
 WHERE
@@ -865,6 +873,7 @@ func (q *Queries) ListUserInvites(ctx context.Context, arg ListUserInvitesParams
 			&i.CreateTime,
 			&i.UpdateTime,
 			&i.Email,
+			&i.IsOwner,
 		); err != nil {
 			return nil, err
 		}

@@ -1289,5 +1289,7 @@ components:
                     format: date-time
                 email:
                     type: string
+                owner:
+                    type: boolean
 tags:
     - name: BackendService

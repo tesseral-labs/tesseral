@@ -350,6 +350,33 @@ func (q *Queries) CreateVerifiedEmail(ctx context.Context, arg CreateVerifiedEma
 	return i, err
 }
 
+const deleteIntermediateSessionUserInvite = `-- name: DeleteIntermediateSessionUserInvite :one
+DELETE FROM user_invites
+WHERE organization_id = $1
+    AND email = $2
+RETURNING
+    id, organization_id, create_time, update_time, email, is_owner
+`
+
+type DeleteIntermediateSessionUserInviteParams struct {
+	OrganizationID uuid.UUID
+	Email          string
+}
+
+func (q *Queries) DeleteIntermediateSessionUserInvite(ctx context.Context, arg DeleteIntermediateSessionUserInviteParams) (UserInvite, error) {
+	row := q.db.QueryRow(ctx, deleteIntermediateSessionUserInvite, arg.OrganizationID, arg.Email)
+	var i UserInvite
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.Email,
+		&i.IsOwner,
+	)
+	return i, err
+}
+
 const getEmailVerifiedByGoogleUserID = `-- name: GetEmailVerifiedByGoogleUserID :one
 SELECT
     EXISTS (
@@ -2257,6 +2284,46 @@ type UpdateUserFailedPasswordAttemptsParams struct {
 
 func (q *Queries) UpdateUserFailedPasswordAttempts(ctx context.Context, arg UpdateUserFailedPasswordAttemptsParams) (User, error) {
 	row := q.db.QueryRow(ctx, updateUserFailedPasswordAttempts, arg.FailedPasswordAttempts, arg.ID)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.PasswordBcrypt,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+		&i.Email,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.DeactivateTime,
+		&i.IsOwner,
+		&i.FailedPasswordAttempts,
+		&i.PasswordLockoutExpireTime,
+		&i.AuthenticatorAppSecretCiphertext,
+		&i.AuthenticatorAppRecoveryCodeBcrypts,
+		&i.FailedAuthenticatorAppAttempts,
+		&i.AuthenticatorAppLockoutExpireTime,
+	)
+	return i, err
+}
+
+const updateUserIsOwner = `-- name: UpdateUserIsOwner :one
+UPDATE
+    users
+SET
+    is_owner = $1
+WHERE
+    id = $2
+RETURNING
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_recovery_code_bcrypts, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time
+`
+
+type UpdateUserIsOwnerParams struct {
+	IsOwner bool
+	ID      uuid.UUID
+}
+
+func (q *Queries) UpdateUserIsOwner(ctx context.Context, arg UpdateUserIsOwnerParams) (User, error) {
+	row := q.db.QueryRow(ctx, updateUserIsOwner, arg.IsOwner, arg.ID)
 	var i User
 	err := row.Scan(
 		&i.ID,
