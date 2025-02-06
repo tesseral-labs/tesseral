@@ -134,15 +134,16 @@ const OrganizationSettingsPage: FC = () => {
       await createUserInviteMutation.mutateAsync({
         userInvite: {
           email: inviteeEmail,
-          // isOwner: inviteeIsOwner,
+          owner: inviteeIsOwner,
         },
       })
+
+      await refetchUserInvites()
 
       setInviteUserVisible(false)
       setCreatingUserInvite(false)
       setInviteeEmail('')
       setInviteeIsOwner(false)
-      await refetchUsers()
     } catch (error) {
       const message = parseErrorMessage(error)
       toast.error('Could not invite user', {
@@ -478,12 +479,9 @@ const OrganizationSettingsPage: FC = () => {
                 <TableBody>
                   {userInvites?.userInvites.map((i) => (
                     <TableRow key={i.id}>
-                      <TableCell className="text-gray-500">{i.email}</TableCell>
-                      <TableCell className="text-gray-500">
-                        Member
-                        {/* {i.isOwner ? 'Owner' : 'Member'} */}
-                      </TableCell>
-                      <TableCell className="text-gray-500">
+                      <TableCell>{i.email}</TableCell>
+                      <TableCell>{i.owner ? 'Owner' : 'Member'}</TableCell>
+                      <TableCell>
                         {DateTime.fromSeconds(
                           parseInt(`${i.createTime?.seconds}`),
                         ).toRelative()}
