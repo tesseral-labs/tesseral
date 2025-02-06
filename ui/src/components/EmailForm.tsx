@@ -30,12 +30,14 @@ import { toast } from 'sonner'
 import useSettings from '@/lib/settings'
 
 interface EmailFormProps {
+  disableLogInWithEmail?: boolean
   skipIntermediateSessionCreation?: boolean
   skipListSAMLOrganizations?: boolean
   setView: Dispatch<SetStateAction<LoginViews>>
 }
 
 const EmailForm: FC<EmailFormProps> = ({
+  disableLogInWithEmail = false,
   skipListSAMLOrganizations = false,
   skipIntermediateSessionCreation = false,
   setView,
@@ -82,7 +84,7 @@ const EmailForm: FC<EmailFormProps> = ({
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    if (settings?.logInWithEmail) {
+    if (!disableLogInWithEmail) {
       setSubmitting(true)
 
       try {
@@ -142,7 +144,7 @@ const EmailForm: FC<EmailFormProps> = ({
           />
         </div>
 
-        {settings?.logInWithEmail && (
+        {!disableLogInWithEmail && (
           <Button type="submit" disabled={!emailIsValid || submitting}>
             {submitting && <Loader />}
             Sign In
