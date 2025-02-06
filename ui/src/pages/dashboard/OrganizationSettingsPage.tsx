@@ -26,6 +26,8 @@ import {
 import { Button } from '@/components/ui/button'
 import { Link } from 'react-router-dom'
 import { Switch } from '@/components/ui/switch'
+import { parseErrorMessage } from '@/lib/errors'
+import { toast } from 'sonner'
 
 const OrganizationSettingsPage: FC = () => {
   const user = useUser()
@@ -80,6 +82,7 @@ const OrganizationSettingsPage: FC = () => {
   }
 
   const submitLoginSettings = async () => {
+    try {
     await updateOrganizationMutation.mutateAsync({
       organization: {
         logInWithEmail,
@@ -92,6 +95,11 @@ const OrganizationSettingsPage: FC = () => {
     setEditingLoginSettings(false)
     await refetchOrganization()
     resetLoginSettings()
+  } catch (error) {
+    const message = parseErrorMessage(error)
+    toast.error('Could not update organization settings', {
+      description: message,
+    })
   }
 
   useEffect(() => {
