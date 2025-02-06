@@ -149,7 +149,10 @@ const Login: FC<LoginProps> = ({ setView }) => {
             </TextDivider>
           )}
 
-          <EmailForm setView={setView} />
+          <EmailForm
+            skipListSAMLOrganizations={!settings?.logInWithSaml}
+            setView={setView}
+          />
         </CardContent>
       </Card>
     </>
