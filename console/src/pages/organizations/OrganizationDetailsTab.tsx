@@ -89,45 +89,44 @@ export function OrganizationDetailsTab() {
         <CardContent>
           <DetailsGrid>
             <DetailsGridColumn>
-              <DetailsGridEntry>
-                <DetailsGridKey>Override Login Methods</DetailsGridKey>
-                <DetailsGridValue>
-                  {getOrganizationResponse?.organization?.overrideLogInMethods
-                    ? 'Yes'
-                    : 'No'}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-
-              {getProjectResponse?.project?.logInWithGoogleEnabled && (
+              {getProjectResponse?.project?.logInWithGoogle && (
                 <DetailsGridEntry>
                   <DetailsGridKey>Log in with Google</DetailsGridKey>
                   <DetailsGridValue>
-                    {getOrganizationResponse?.organization
-                      ?.logInWithGoogleEnabled
+                    {getOrganizationResponse?.organization?.logInWithGoogle
                       ? 'Enabled'
                       : 'Disabled'}
                   </DetailsGridValue>
                 </DetailsGridEntry>
               )}
 
-              {getProjectResponse?.project?.logInWithMicrosoftEnabled && (
+              {getProjectResponse?.project?.logInWithMicrosoft && (
                 <DetailsGridEntry>
                   <DetailsGridKey>Log in with Microsoft</DetailsGridKey>
                   <DetailsGridValue>
-                    {getOrganizationResponse?.organization
-                      ?.logInWithMicrosoftEnabled
+                    {getOrganizationResponse?.organization?.logInWithMicrosoft
                       ? 'Enabled'
                       : 'Disabled'}
                   </DetailsGridValue>
                 </DetailsGridEntry>
               )}
 
-              {getProjectResponse?.project?.logInWithPasswordEnabled && (
+              {getProjectResponse?.project?.logInWithEmail && (
+                <DetailsGridEntry>
+                  <DetailsGridKey>Log in with Email</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getOrganizationResponse?.organization?.logInWithEmail
+                      ? 'Enabled'
+                      : 'Disabled'}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+              )}
+
+              {getProjectResponse?.project?.logInWithPassword && (
                 <DetailsGridEntry>
                   <DetailsGridKey>Log in with Password</DetailsGridKey>
                   <DetailsGridValue>
-                    {getOrganizationResponse?.organization
-                      ?.logInWithPasswordEnabled
+                    {getOrganizationResponse?.organization?.logInWithPassword
                       ? 'Enabled'
                       : 'Disabled'}
                   </DetailsGridValue>
@@ -135,16 +134,47 @@ export function OrganizationDetailsTab() {
               )}
             </DetailsGridColumn>
             <DetailsGridColumn>
+              {getProjectResponse?.project?.logInWithAuthenticatorApp && (
+                <DetailsGridEntry>
+                  <DetailsGridKey>Log in with Authenticator App</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getOrganizationResponse?.organization
+                      ?.logInWithAuthenticatorApp
+                      ? 'Enabled'
+                      : 'Disabled'}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+              )}
+              {getProjectResponse?.project?.logInWithPasskey && (
+                <DetailsGridEntry>
+                  <DetailsGridKey>Log in with Passkey</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getOrganizationResponse?.organization?.logInWithPasskey
+                      ? 'Enabled'
+                      : 'Disabled'}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+              )}
               <DetailsGridEntry>
-                <DetailsGridKey>Configuring SAML</DetailsGridKey>
+                <DetailsGridKey>Require MFA</DetailsGridKey>
                 <DetailsGridValue>
-                  {getOrganizationResponse?.organization?.samlEnabled
+                  {getOrganizationResponse?.organization?.requireMfa
+                    ? 'Enabled'
+                    : 'Disabled'}
+                </DetailsGridValue>
+              </DetailsGridEntry>
+            </DetailsGridColumn>
+            <DetailsGridColumn>
+              <DetailsGridEntry>
+                <DetailsGridKey>Log in with SAML</DetailsGridKey>
+                <DetailsGridValue>
+                  {getOrganizationResponse?.organization?.logInWithSaml
                     ? 'Enabled'
                     : 'Disabled'}
                 </DetailsGridValue>
               </DetailsGridEntry>
               <DetailsGridEntry>
-                <DetailsGridKey>Configuring SCIM</DetailsGridKey>
+                <DetailsGridKey>SCIM Directory Syncing</DetailsGridKey>
                 <DetailsGridValue>
                   {getOrganizationResponse?.organization?.scimEnabled
                     ? 'Enabled'
@@ -156,7 +186,7 @@ export function OrganizationDetailsTab() {
         </CardContent>
       </Card>
 
-      {getOrganizationResponse?.organization?.logInWithGoogleEnabled && (
+      {getOrganizationResponse?.organization?.logInWithGoogle && (
         <Card>
           <CardHeader className="flex-row justify-between items-center">
             <div className="flex flex-col space-y-1 5">
@@ -193,7 +223,7 @@ export function OrganizationDetailsTab() {
         </Card>
       )}
 
-      {getOrganizationResponse?.organization?.logInWithMicrosoftEnabled && (
+      {getOrganizationResponse?.organization?.logInWithMicrosoft && (
         <Card>
           <CardHeader className="flex-row justify-between items-center">
             <div className="flex flex-col space-y-1 5">
