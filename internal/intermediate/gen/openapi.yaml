@@ -727,11 +727,15 @@ components:
                     type: string
                 displayName:
                     type: string
+                logInWithEmail:
+                    type: boolean
                 logInWithGoogle:
                     type: boolean
                 logInWithMicrosoft:
                     type: boolean
                 logInWithPassword:
+                    type: boolean
+                logInWithSaml:
                     type: boolean
                 logInWithAuthenticatorApp:
                     type: boolean

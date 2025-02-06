@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { useIntermediateOrganization } from '@/lib/auth'
-import { useLayout } from '@/lib/settings'
+import useSettings, { useLayout } from '@/lib/settings'
 import { cn } from '@/lib/utils'
 import { LoginLayouts, LoginViews } from '@/lib/views'
 import { parseErrorMessage } from '@/lib/errors'
@@ -33,6 +33,7 @@ const ChooseOrganizationPrimaryLoginFactor: FC<
 > = ({ setView }) => {
   const layout = useLayout()
   const organization = useIntermediateOrganization()
+  const settings = useSettings()
 
   const googleOAuthRedirectUrlMutation = useMutation(getGoogleOAuthRedirectURL)
   const microsoftOAuthRedirectUrlMutation = useMutation(
@@ -103,24 +104,26 @@ const ChooseOrganizationPrimaryLoginFactor: FC<
                 : 'grid-cols-1',
             )}
           >
-            {organization?.logInWithGoogle && (
+            {settings?.logInWithGoogle && organization?.logInWithGoogle && (
               <OAuthButton
                 method={OAuthMethods.google}
                 onClick={handleGoogleOAuthLogin}
                 variant="outline"
               />
             )}
-            {organization?.logInWithMicrosoft && (
-              <OAuthButton
-                method={OAuthMethods.microsoft}
-                onClick={handleMicrosoftOAuthLogin}
-                variant="outline"
-              />
-            )}
+            {settings?.logInWithMicrosoft &&
+              organization?.logInWithMicrosoft && (
+                <OAuthButton
+                  method={OAuthMethods.microsoft}
+                  onClick={handleMicrosoftOAuthLogin}
+                  variant="outline"
+                />
+              )}
           </div>
 
-          {(organization?.logInWithGoogle ||
-            organization?.logInWithMicrosoft) && (
+          {((settings?.logInWithGoogle && organization?.logInWithGoogle) ||
+            (settings?.logInWithMicrosoft &&
+              organization?.logInWithMicrosoft)) && (
             <TextDivider
               variant={layout !== LoginLayouts.Centered ? 'wider' : 'wide'}
             >
@@ -128,27 +131,30 @@ const ChooseOrganizationPrimaryLoginFactor: FC<
             </TextDivider>
           )}
 
-          {/** TODO: Add a check for organization?.logInWithEmail once the property is added */}
-          <EmailForm
-            skipIntermediateSessionCreation
-            skipListSAMLOrganizations
-            setView={setView}
-          />
-
-          {organization?.primarySamlConnectionId && (
-            <>
-              <TextDivider>or continue with SAML</TextDivider>
-
-              <div className="flex flex-col items-center">
-                <a
-                  href={`/api/saml/v1/${organization.primarySamlConnectionId}/init`}
-                  className="w-full"
-                >
-                  <Button variant="outline">Continue with SAML</Button>
-                </a>
-              </div>
-            </>
+          {settings?.logInWithEmail && organization?.logInWithEmail && (
+            <EmailForm
+              skipIntermediateSessionCreation
+              skipListSAMLOrganizations
+              setView={setView}
+            />
           )}
+
+          {settings?.logInWithSaml &&
+            organization?.logInWithSaml &&
+            organization?.primarySamlConnectionId && (
+              <>
+                <TextDivider>or continue with SAML</TextDivider>
+
+                <div className="flex flex-col items-center">
+                  <a
+                    href={`/api/saml/v1/${organization.primarySamlConnectionId}/init`}
+                    className="w-full"
+                  >
+                    <Button variant="outline">Continue with SAML</Button>
+                  </a>
+                </div>
+              </>
+            )}
         </CardContent>
       </Card>
     </>

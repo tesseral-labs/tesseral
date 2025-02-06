@@ -330,11 +330,13 @@ func parseOrganization(qOrg queries.Organization, qProject queries.Project, qSAM
 	return &intermediatev1.Organization{
 		Id:                        idformat.Organization.Format(qOrg.ID),
 		DisplayName:               qOrg.DisplayName,
+		LogInWithEmail:            qOrg.LogInWithEmail,
 		LogInWithGoogle:           qOrg.LogInWithGoogle,
 		LogInWithMicrosoft:        qOrg.LogInWithMicrosoft,
 		LogInWithPassword:         qOrg.LogInWithPassword,
 		LogInWithAuthenticatorApp: qOrg.LogInWithAuthenticatorApp,
 		LogInWithPasskey:          qOrg.LogInWithPasskey,
+		LogInWithSaml:             qOrg.LogInWithSaml,
 		RequireMfa:                qOrg.RequireMfa,
 		PrimarySamlConnectionId:   primarySamlConnectionID,
 	}
