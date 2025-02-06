@@ -12,7 +12,7 @@ import (
 	"github.com/openauth/openauth/internal/store/idformat"
 )
 
-func (s *Store) SetPrimaryLoginFactor(ctx context.Context, req *intermediatev1.SetPrimaryLoginFactorRequest) (*intermediatev1.SetPrimaryLoginFactorResponse, error) {
+func (s *Store) SetEmailAsPrimaryLoginFactor(ctx context.Context, req *intermediatev1.SetEmailAsPrimaryLoginFactorRequest) (*intermediatev1.SetEmailAsPrimaryLoginFactorResponse, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("begin transaction: %w", err)
@@ -24,15 +24,10 @@ func (s *Store) SetPrimaryLoginFactor(ctx context.Context, req *intermediatev1.S
 		return nil, fmt.Errorf("get intermediate session by id: %w", err)
 	}
 
-	if req.PrimaryLoginFactor == "" {
-		return nil, apierror.NewInvalidArgumentError("primary login factor is required", fmt.Errorf("primary login factor not provided"))
-	}
-
-	primaryLoginFactor := queries.PrimaryLoginFactor(req.PrimaryLoginFactor)
 	if _, err := q.UpdateIntermediateSessionPrimaryLoginFactor(ctx, queries.UpdateIntermediateSessionPrimaryLoginFactorParams{
 		ID: qIntermediateSession.ID,
 		PrimaryLoginFactor: queries.NullPrimaryLoginFactor{
-			PrimaryLoginFactor: primaryLoginFactor,
+			PrimaryLoginFactor: queries.PrimaryLoginFactorEmail,
 			Valid:              true,
 		},
 	}); err != nil {
@@ -40,10 +35,10 @@ func (s *Store) SetPrimaryLoginFactor(ctx context.Context, req *intermediatev1.S
 	}
 
 	if err := commit(); err != nil {
-		return nil, fmt.Errorf("commit transaction: %w", err)
+		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return &intermediatev1.SetPrimaryLoginFactorResponse{}, nil
+	return &intermediatev1.SetEmailAsPrimaryLoginFactorResponse{}, nil
 }
 
 func (s *Store) getIntermediateSessionEmailVerified(ctx context.Context, q *queries.Queries, id uuid.UUID) (bool, error) {

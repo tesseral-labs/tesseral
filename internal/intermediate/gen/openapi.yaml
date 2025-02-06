@@ -434,12 +434,12 @@ paths:
         post:
             tags:
                 - IntermediateService
-            operationId: IntermediateService_SetPrimaryLoginFactor
+            operationId: IntermediateService_SetEmailAsPrimaryLoginFactor
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/SetPrimaryLoginFactorRequest'
+                            $ref: '#/components/schemas/SetEmailAsPrimaryLoginFactorRequest'
                 required: true
             responses:
                 "200":
@@ -447,7 +447,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/SetPrimaryLoginFactorResponse'
+                                $ref: '#/components/schemas/SetEmailAsPrimaryLoginFactorResponse'
                 default:
                     description: Default error response
                     content:
@@ -813,15 +813,13 @@ components:
         RegisterPasswordResponse:
             type: object
             properties: {}
-        SetOrganizationResponse:
+        SetEmailAsPrimaryLoginFactorRequest:
             type: object
             properties: {}
-        SetPrimaryLoginFactorRequest:
+        SetEmailAsPrimaryLoginFactorResponse:
             type: object
-            properties:
-                primaryLoginFactor:
-                    type: string
-        SetPrimaryLoginFactorResponse:
+            properties: {}
+        SetOrganizationResponse:
             type: object
             properties: {}
         Status:

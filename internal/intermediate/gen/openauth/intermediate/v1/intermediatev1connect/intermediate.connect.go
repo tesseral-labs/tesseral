@@ -105,9 +105,9 @@ const (
 	// IntermediateServiceVerifyAuthenticatorAppProcedure is the fully-qualified name of the
 	// IntermediateService's VerifyAuthenticatorApp RPC.
 	IntermediateServiceVerifyAuthenticatorAppProcedure = "/openauth.intermediate.v1.IntermediateService/VerifyAuthenticatorApp"
-	// IntermediateServiceSetPrimaryLoginFactorProcedure is the fully-qualified name of the
-	// IntermediateService's SetPrimaryLoginFactor RPC.
-	IntermediateServiceSetPrimaryLoginFactorProcedure = "/openauth.intermediate.v1.IntermediateService/SetPrimaryLoginFactor"
+	// IntermediateServiceSetEmailAsPrimaryLoginFactorProcedure is the fully-qualified name of the
+	// IntermediateService's SetEmailAsPrimaryLoginFactor RPC.
+	IntermediateServiceSetEmailAsPrimaryLoginFactorProcedure = "/openauth.intermediate.v1.IntermediateService/SetEmailAsPrimaryLoginFactor"
 )
 
 // IntermediateServiceClient is a client for the openauth.intermediate.v1.IntermediateService
@@ -137,7 +137,7 @@ type IntermediateServiceClient interface {
 	GetAuthenticatorAppOptions(context.Context, *connect.Request[v1.GetAuthenticatorAppOptionsRequest]) (*connect.Response[v1.GetAuthenticatorAppOptionsResponse], error)
 	RegisterAuthenticatorApp(context.Context, *connect.Request[v1.RegisterAuthenticatorAppRequest]) (*connect.Response[v1.RegisterAuthenticatorAppResponse], error)
 	VerifyAuthenticatorApp(context.Context, *connect.Request[v1.VerifyAuthenticatorAppRequest]) (*connect.Response[v1.VerifyAuthenticatorAppResponse], error)
-	SetPrimaryLoginFactor(context.Context, *connect.Request[v1.SetPrimaryLoginFactorRequest]) (*connect.Response[v1.SetPrimaryLoginFactorResponse], error)
+	SetEmailAsPrimaryLoginFactor(context.Context, *connect.Request[v1.SetEmailAsPrimaryLoginFactorRequest]) (*connect.Response[v1.SetEmailAsPrimaryLoginFactorResponse], error)
 }
 
 // NewIntermediateServiceClient constructs a client for the
@@ -296,10 +296,10 @@ func NewIntermediateServiceClient(httpClient connect.HTTPClient, baseURL string,
 			connect.WithSchema(intermediateServiceMethods.ByName("VerifyAuthenticatorApp")),
 			connect.WithClientOptions(opts...),
 		),
-		setPrimaryLoginFactor: connect.NewClient[v1.SetPrimaryLoginFactorRequest, v1.SetPrimaryLoginFactorResponse](
+		setEmailAsPrimaryLoginFactor: connect.NewClient[v1.SetEmailAsPrimaryLoginFactorRequest, v1.SetEmailAsPrimaryLoginFactorResponse](
 			httpClient,
-			baseURL+IntermediateServiceSetPrimaryLoginFactorProcedure,
-			connect.WithSchema(intermediateServiceMethods.ByName("SetPrimaryLoginFactor")),
+			baseURL+IntermediateServiceSetEmailAsPrimaryLoginFactorProcedure,
+			connect.WithSchema(intermediateServiceMethods.ByName("SetEmailAsPrimaryLoginFactor")),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -331,7 +331,7 @@ type intermediateServiceClient struct {
 	getAuthenticatorAppOptions            *connect.Client[v1.GetAuthenticatorAppOptionsRequest, v1.GetAuthenticatorAppOptionsResponse]
 	registerAuthenticatorApp              *connect.Client[v1.RegisterAuthenticatorAppRequest, v1.RegisterAuthenticatorAppResponse]
 	verifyAuthenticatorApp                *connect.Client[v1.VerifyAuthenticatorAppRequest, v1.VerifyAuthenticatorAppResponse]
-	setPrimaryLoginFactor                 *connect.Client[v1.SetPrimaryLoginFactorRequest, v1.SetPrimaryLoginFactorResponse]
+	setEmailAsPrimaryLoginFactor          *connect.Client[v1.SetEmailAsPrimaryLoginFactorRequest, v1.SetEmailAsPrimaryLoginFactorResponse]
 }
 
 // ListSAMLOrganizations calls openauth.intermediate.v1.IntermediateService.ListSAMLOrganizations.
@@ -463,9 +463,10 @@ func (c *intermediateServiceClient) VerifyAuthenticatorApp(ctx context.Context, 
 	return c.verifyAuthenticatorApp.CallUnary(ctx, req)
 }
 
-// SetPrimaryLoginFactor calls openauth.intermediate.v1.IntermediateService.SetPrimaryLoginFactor.
-func (c *intermediateServiceClient) SetPrimaryLoginFactor(ctx context.Context, req *connect.Request[v1.SetPrimaryLoginFactorRequest]) (*connect.Response[v1.SetPrimaryLoginFactorResponse], error) {
-	return c.setPrimaryLoginFactor.CallUnary(ctx, req)
+// SetEmailAsPrimaryLoginFactor calls
+// openauth.intermediate.v1.IntermediateService.SetEmailAsPrimaryLoginFactor.
+func (c *intermediateServiceClient) SetEmailAsPrimaryLoginFactor(ctx context.Context, req *connect.Request[v1.SetEmailAsPrimaryLoginFactorRequest]) (*connect.Response[v1.SetEmailAsPrimaryLoginFactorResponse], error) {
+	return c.setEmailAsPrimaryLoginFactor.CallUnary(ctx, req)
 }
 
 // IntermediateServiceHandler is an implementation of the
@@ -495,7 +496,7 @@ type IntermediateServiceHandler interface {
 	GetAuthenticatorAppOptions(context.Context, *connect.Request[v1.GetAuthenticatorAppOptionsRequest]) (*connect.Response[v1.GetAuthenticatorAppOptionsResponse], error)
 	RegisterAuthenticatorApp(context.Context, *connect.Request[v1.RegisterAuthenticatorAppRequest]) (*connect.Response[v1.RegisterAuthenticatorAppResponse], error)
 	VerifyAuthenticatorApp(context.Context, *connect.Request[v1.VerifyAuthenticatorAppRequest]) (*connect.Response[v1.VerifyAuthenticatorAppResponse], error)
-	SetPrimaryLoginFactor(context.Context, *connect.Request[v1.SetPrimaryLoginFactorRequest]) (*connect.Response[v1.SetPrimaryLoginFactorResponse], error)
+	SetEmailAsPrimaryLoginFactor(context.Context, *connect.Request[v1.SetEmailAsPrimaryLoginFactorRequest]) (*connect.Response[v1.SetEmailAsPrimaryLoginFactorResponse], error)
 }
 
 // NewIntermediateServiceHandler builds an HTTP handler from the service implementation. It returns
@@ -649,10 +650,10 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 		connect.WithSchema(intermediateServiceMethods.ByName("VerifyAuthenticatorApp")),
 		connect.WithHandlerOptions(opts...),
 	)
-	intermediateServiceSetPrimaryLoginFactorHandler := connect.NewUnaryHandler(
-		IntermediateServiceSetPrimaryLoginFactorProcedure,
-		svc.SetPrimaryLoginFactor,
-		connect.WithSchema(intermediateServiceMethods.ByName("SetPrimaryLoginFactor")),
+	intermediateServiceSetEmailAsPrimaryLoginFactorHandler := connect.NewUnaryHandler(
+		IntermediateServiceSetEmailAsPrimaryLoginFactorProcedure,
+		svc.SetEmailAsPrimaryLoginFactor,
+		connect.WithSchema(intermediateServiceMethods.ByName("SetEmailAsPrimaryLoginFactor")),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/openauth.intermediate.v1.IntermediateService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -705,8 +706,8 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 			intermediateServiceRegisterAuthenticatorAppHandler.ServeHTTP(w, r)
 		case IntermediateServiceVerifyAuthenticatorAppProcedure:
 			intermediateServiceVerifyAuthenticatorAppHandler.ServeHTTP(w, r)
-		case IntermediateServiceSetPrimaryLoginFactorProcedure:
-			intermediateServiceSetPrimaryLoginFactorHandler.ServeHTTP(w, r)
+		case IntermediateServiceSetEmailAsPrimaryLoginFactorProcedure:
+			intermediateServiceSetEmailAsPrimaryLoginFactorHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -812,6 +813,6 @@ func (UnimplementedIntermediateServiceHandler) VerifyAuthenticatorApp(context.Co
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.VerifyAuthenticatorApp is not implemented"))
 }
 
-func (UnimplementedIntermediateServiceHandler) SetPrimaryLoginFactor(context.Context, *connect.Request[v1.SetPrimaryLoginFactorRequest]) (*connect.Response[v1.SetPrimaryLoginFactorResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.SetPrimaryLoginFactor is not implemented"))
+func (UnimplementedIntermediateServiceHandler) SetEmailAsPrimaryLoginFactor(context.Context, *connect.Request[v1.SetEmailAsPrimaryLoginFactorRequest]) (*connect.Response[v1.SetEmailAsPrimaryLoginFactorResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.SetEmailAsPrimaryLoginFactor is not implemented"))
 }
