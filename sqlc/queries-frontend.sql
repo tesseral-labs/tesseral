@@ -39,11 +39,12 @@ UPDATE
 SET
     update_time = now(),
     display_name = $2,
-    log_in_with_password = $3,
-    log_in_with_google = $4,
-    log_in_with_microsoft = $5,
-    log_in_with_authenticator_app = $6,
-    log_in_with_passkey = $7
+    log_in_with_google = $3,
+    log_in_with_microsoft = $4,
+    log_in_with_email = $5,
+    log_in_with_password = $6,
+    log_in_with_authenticator_app = $7,
+    log_in_with_passkey = $8
 WHERE
     id = $1
 RETURNING
