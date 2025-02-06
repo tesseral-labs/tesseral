@@ -141,13 +141,14 @@ const Login: FC<LoginProps> = ({ setView }) => {
             )}
           </div>
 
-          {(settings?.logInWithGoogle || settings?.logInWithMicrosoft) && (
-            <TextDivider
-              variant={layout !== LoginLayouts.Centered ? 'wider' : 'wide'}
-            >
-              or continue with email
-            </TextDivider>
-          )}
+          {(settings?.logInWithGoogle || settings?.logInWithMicrosoft) &&
+            settings?.logInWithEmail && (
+              <TextDivider
+                variant={layout !== LoginLayouts.Centered ? 'wider' : 'wide'}
+              >
+                or continue with email
+              </TextDivider>
+            )}
 
           {(settings?.logInWithEmail || settings?.logInWithSaml) && (
             <EmailForm
