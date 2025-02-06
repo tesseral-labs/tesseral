@@ -856,4 +856,5 @@ message UserInvite {
   google.protobuf.Timestamp create_time = 3;
   google.protobuf.Timestamp update_time = 4;
   string email = 5;
+  bool is_owner = 6;
 }

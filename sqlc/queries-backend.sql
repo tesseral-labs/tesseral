@@ -697,11 +697,11 @@ SELECT
             AND email = $2);
 
 -- name: CreateUserInvite :one
-INSERT INTO user_invites (id, organization_id, email)
-    VALUES ($1, $2, $3)
+INSERT INTO user_invites (id, organization_id, email, is_owner)
+    VALUES ($1, $2, $3, $4)
 ON CONFLICT (organization_id, email)
     DO UPDATE SET
-        email = excluded.email -- no-op write so that returning works
+        email = excluded.email, is_owner = excluded.is_owner
     RETURNING
         *;
 

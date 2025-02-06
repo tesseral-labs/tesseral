@@ -1152,6 +1152,8 @@ components:
                     format: date-time
                 email:
                     type: string
+                isOwner:
+                    type: boolean
         WhoamiResponse:
             type: object
             properties:

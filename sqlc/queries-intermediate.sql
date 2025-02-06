@@ -187,6 +187,23 @@ WHERE
 RETURNING
     *;
 
+-- name: DeleteIntermediateSessionUserInvite :one
+DELETE FROM user_invites
+WHERE organization_id = $1
+    AND email = $2
+RETURNING
+    *;
+
+-- name: UpdateUserIsOwner :one
+UPDATE
+    users
+SET
+    is_owner = $1
+WHERE
+    id = $2
+RETURNING
+    *;
+
 -- name: UpdateIntermediateSessionGoogleOAuthStateSHA256 :one
 UPDATE
     intermediate_sessions
