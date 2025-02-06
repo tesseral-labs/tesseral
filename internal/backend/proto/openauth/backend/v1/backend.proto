@@ -702,9 +702,11 @@ message Project {
   string display_name = 2;
   google.protobuf.Timestamp create_time = 3;
   google.protobuf.Timestamp update_time = 4;
-  optional bool log_in_with_password = 5;
   optional bool log_in_with_google = 6;
   optional bool log_in_with_microsoft = 7;
+  optional bool log_in_with_email = 15;
+  optional bool log_in_with_password = 5;
+  optional bool log_in_with_saml = 16;
   optional bool log_in_with_authenticator_app = 13;
   optional bool log_in_with_passkey = 14;
   string google_oauth_client_id = 8;
@@ -733,13 +735,14 @@ message Organization {
   string display_name = 2;
   google.protobuf.Timestamp create_time = 3;
   google.protobuf.Timestamp update_time = 4;
-  optional bool log_in_with_password = 6;
   optional bool log_in_with_google = 7;
   optional bool log_in_with_microsoft = 8;
+  optional bool log_in_with_email = 14;
+  optional bool log_in_with_password = 6;
+  optional bool log_in_with_saml = 9;
   optional bool log_in_with_authenticator_app = 11;
   optional bool log_in_with_passkey = 12;
   optional bool require_mfa = 13;
-  optional bool saml_enabled = 9;
   optional bool scim_enabled = 10;
 }
 

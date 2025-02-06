@@ -44,7 +44,6 @@ func (s *Store) CreateOrganization(ctx context.Context, req *intermediatev1.Crea
 		LogInWithGoogle:    qProject.LogInWithGoogle,
 		LogInWithMicrosoft: qProject.LogInWithMicrosoft,
 		LogInWithPassword:  qProject.LogInWithPassword,
-		SamlEnabled:        false,
 		ScimEnabled:        false,
 	})
 	if err != nil {

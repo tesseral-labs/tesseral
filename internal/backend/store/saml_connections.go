@@ -126,7 +126,7 @@ func (s *Store) CreateSAMLConnection(ctx context.Context, req *backendv1.CreateS
 		return nil, fmt.Errorf("get organization: %w", err)
 	}
 
-	if !qOrg.SamlEnabled {
+	if !qOrg.LogInWithSaml {
 		return nil, apierror.NewFailedPreconditionError("organization does not have SAML enabled", fmt.Errorf("organization does not have SAML enabled"))
 	}
 

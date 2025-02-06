@@ -1,6 +1,6 @@
 -- name: CreateOrganization :one
-INSERT INTO organizations (id, project_id, display_name, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_authenticator_app, log_in_with_passkey, saml_enabled, scim_enabled)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+INSERT INTO organizations (id, project_id, display_name, log_in_with_google, log_in_with_microsoft, log_in_with_email, log_in_with_password, log_in_with_saml, log_in_with_authenticator_app, log_in_with_passkey, scim_enabled)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
 RETURNING
     *;
 
@@ -72,13 +72,14 @@ UPDATE
 SET
     update_time = now(),
     display_name = $2,
-    log_in_with_password = $3,
-    log_in_with_google = $4,
-    log_in_with_microsoft = $5,
-    log_in_with_authenticator_app = $6,
-    log_in_with_passkey = $7,
-    saml_enabled = $8,
-    scim_enabled = $9
+    log_in_with_google = $3,
+    log_in_with_microsoft = $4,
+    log_in_with_email = $5,
+    log_in_with_password = $6,
+    log_in_with_authenticator_app = $7,
+    log_in_with_passkey = $8,
+    log_in_with_saml = $9,
+    scim_enabled = $10
 WHERE
     id = $1
 RETURNING
@@ -94,29 +95,21 @@ UPDATE
 SET
     update_time = now(),
     display_name = $2,
-    log_in_with_password = $3,
-    log_in_with_google = $4,
-    log_in_with_microsoft = $5,
-    log_in_with_authenticator_app = $6,
-    log_in_with_passkey = $7,
-    google_oauth_client_id = $8,
-    google_oauth_client_secret_ciphertext = $9,
-    microsoft_oauth_client_id = $10,
-    microsoft_oauth_client_secret_ciphertext = $11,
-    custom_auth_domain = $12,
-    auth_domain = $13
+    log_in_with_google = $3,
+    log_in_with_microsoft = $4,
+    log_in_with_email = $5,
+    log_in_with_password = $6,
+    log_in_with_saml = $7,
+    log_in_with_authenticator_app = $8,
+    log_in_with_passkey = $9,
+    google_oauth_client_id = $10,
+    google_oauth_client_secret_ciphertext = $11,
+    microsoft_oauth_client_id = $12,
+    microsoft_oauth_client_secret_ciphertext = $13,
+    custom_auth_domain = $14,
+    auth_domain = $15
 WHERE
     id = $1
-RETURNING
-    *;
-
--- name: DisableProjectOrganizationsLogInWithPassword :one
-UPDATE
-    organizations
-SET
-    log_in_with_password = FALSE
-WHERE
-    project_id = $1
 RETURNING
     *;
 
@@ -135,6 +128,36 @@ UPDATE
     organizations
 SET
     log_in_with_microsoft = FALSE
+WHERE
+    project_id = $1
+RETURNING
+    *;
+
+-- name: DisableProjectOrganizationsLogInWithEmail :one
+UPDATE
+    organizations
+SET
+    log_in_with_email = FALSE
+WHERE
+    project_id = $1
+RETURNING
+    *;
+
+-- name: DisableProjectOrganizationsLogInWithPassword :one
+UPDATE
+    organizations
+SET
+    log_in_with_password = FALSE
+WHERE
+    project_id = $1
+RETURNING
+    *;
+
+-- name: DisableProjectOrganizationsLogInWithSAML :one
+UPDATE
+    organizations
+SET
+    log_in_with_saml = FALSE
 WHERE
     project_id = $1
 RETURNING
