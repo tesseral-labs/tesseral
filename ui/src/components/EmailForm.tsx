@@ -27,13 +27,24 @@ import { Label } from './ui/label'
 import Loader from './ui/loader'
 import { parseErrorMessage } from '@/lib/errors'
 import { toast } from 'sonner'
+import useSettings from '@/lib/settings'
 
 interface EmailFormProps {
+  disableLogInWithEmail?: boolean
+  skipIntermediateSessionCreation?: boolean
+  skipListSAMLOrganizations?: boolean
   setView: Dispatch<SetStateAction<LoginViews>>
 }
 
-const EmailForm: FC<EmailFormProps> = ({ setView }) => {
+const EmailForm: FC<EmailFormProps> = ({
+  disableLogInWithEmail = false,
+  skipListSAMLOrganizations = false,
+  skipIntermediateSessionCreation = false,
+  setView,
+}) => {
   const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/i
+  const settings = useSettings()
+
   const createIntermediateSessionMutation = useMutation(
     createIntermediateSession,
   )
@@ -73,32 +84,36 @@ const EmailForm: FC<EmailFormProps> = ({ setView }) => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    setSubmitting(true)
+    if (!disableLogInWithEmail) {
+      setSubmitting(true)
 
-    try {
-      // this sets a cookie that subsequent requests use
-      const { intermediateSessionSecretToken } =
-        await createIntermediateSessionMutation.mutateAsync({})
+      try {
+        if (!skipIntermediateSessionCreation) {
+          // this sets a cookie that subsequent requests use
+          const { intermediateSessionSecretToken } =
+            await createIntermediateSessionMutation.mutateAsync({})
 
-      // set the intermediate sessionToken
-      setIntermediateSessionToken(intermediateSessionSecretToken)
+          // set the intermediate sessionToken
+          setIntermediateSessionToken(intermediateSessionSecretToken)
+        }
 
-      await setEmailAsPrimaryLoginFactorMutation.mutateAsync({})
+        await setEmailAsPrimaryLoginFactorMutation.mutateAsync({})
 
-      await issueEmailVerificationChallengeMutation.mutateAsync({
-        email,
-      })
+        await issueEmailVerificationChallengeMutation.mutateAsync({
+          email,
+        })
 
-      setSubmitting(false)
+        setSubmitting(false)
 
-      // redirect to challenge page
-      setView(LoginViews.VerifyEmail)
-    } catch (error) {
-      setSubmitting(false)
-      const message = parseErrorMessage(error)
-      toast.error('Could not initiate login', {
-        description: message,
-      })
+        // redirect to challenge page
+        setView(LoginViews.VerifyEmail)
+      } catch (error) {
+        setSubmitting(false)
+        const message = parseErrorMessage(error)
+        toast.error('Could not initiate login', {
+          description: message,
+        })
+      }
     }
   }
 
@@ -106,7 +121,7 @@ const EmailForm: FC<EmailFormProps> = ({ setView }) => {
     const valid = emailRegex.test(email)
     setEmailIsValid(valid)
 
-    if (valid) {
+    if (valid && !skipListSAMLOrganizations) {
       fetchSamlOrganizations()
     }
   }, [email])
@@ -129,10 +144,12 @@ const EmailForm: FC<EmailFormProps> = ({ setView }) => {
           />
         </div>
 
-        <Button type="submit" disabled={!emailIsValid || submitting}>
-          {submitting && <Loader />}
-          Sign In
-        </Button>
+        {!disableLogInWithEmail && (
+          <Button type="submit" disabled={!emailIsValid || submitting}>
+            {submitting && <Loader />}
+            Sign In
+          </Button>
+        )}
       </form>
 
       {samlOrganizations && samlOrganizations.length > 0 && (

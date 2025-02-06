@@ -8,6 +8,7 @@ export enum LoginLayouts {
 export enum LoginViews {
   ChooseAdditionalFactor = 'choose-additional-factor',
   ChooseOrganization = 'choose-organization',
+  ChooseOrganizationPrimaryLoginFactor = 'choose-organization-primary-login-factor',
   CreateOrganization = 'create-organization',
   Login = 'login',
   RegisterPassword = 'register-password',

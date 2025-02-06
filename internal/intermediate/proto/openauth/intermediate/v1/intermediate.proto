@@ -205,9 +205,11 @@ message Settings {
   string dark_mode_logo_url = 9;
   string dark_mode_primary_color = 10;
   string log_in_layout = 11;
-  bool log_in_with_google = 12;
-  bool log_in_with_microsoft = 13;
-  bool log_in_with_password = 14;
+  bool log_in_with_email = 12;
+  bool log_in_with_google = 13;
+  bool log_in_with_microsoft = 14;
+  bool log_in_with_password = 15;
+  bool log_in_with_saml = 16;
 }
 
 message CreateIntermediateSessionRequest {
@@ -284,17 +286,19 @@ message RedeemMicrosoftOAuthCodeResponse {
 message Organization {
   string id = 1;
   string display_name = 2;
-  bool log_in_with_google = 3;
-  bool log_in_with_microsoft = 4;
-  bool log_in_with_password = 5;
-  bool log_in_with_authenticator_app = 6;
-  bool log_in_with_passkey = 7;
-  bool require_mfa = 8;
-  string primary_saml_connection_id = 9;
-  bool user_exists = 10;
-  bool user_has_password = 11;
-  bool user_has_authenticator_app = 12;
-  bool user_has_passkey = 13;
+  bool log_in_with_email = 3;
+  bool log_in_with_google = 4;
+  bool log_in_with_microsoft = 5;
+  bool log_in_with_password = 6;
+  bool log_in_with_saml = 7;
+  bool log_in_with_authenticator_app = 8;
+  bool log_in_with_passkey = 9;
+  bool require_mfa = 10;
+  string primary_saml_connection_id = 11;
+  bool user_exists = 12;
+  bool user_has_password = 13;
+  bool user_has_authenticator_app = 14;
+  bool user_has_passkey = 15;
 }
 
 message IssueEmailVerificationChallengeRequest {

@@ -24,6 +24,10 @@ import { useLayout } from '@/lib/settings'
 import { parseErrorMessage } from '@/lib/errors'
 import { toast } from 'sonner'
 import Loader from '@/components/ui/loader'
+import {
+  isValidPrimaryLoginFactor,
+  PrimaryLoginFactor,
+} from '@/lib/login-factors'
 
 interface ChooseOrganizationProps {
   setIntermediateOrganization: Dispatch<
@@ -68,6 +72,19 @@ const ChooseOrganization: FC<ChooseOrganizationProps> = ({
   const deriveNextView = (
     organization: Organization,
   ): LoginViews | undefined => {
+    const primaryLoginFactor =
+      whoamiRes?.intermediateSession?.primaryLoginFactor
+
+    if (
+      primaryLoginFactor &&
+      !isValidPrimaryLoginFactor(
+        primaryLoginFactor as PrimaryLoginFactor,
+        organization,
+      )
+    ) {
+      return LoginViews.ChooseOrganizationPrimaryLoginFactor
+    }
+
     if (organization.requireMfa) {
       if (
         whoamiRes?.intermediateSession?.googleUserId ||

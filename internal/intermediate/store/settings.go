@@ -53,8 +53,10 @@ func (s *Store) parseSettings(qProject queries.Project, qProjectUISettings queri
 		DarkModeLogoUrl:       fmt.Sprintf("%s/dark_mode_logos_v1/%s/dark_mode_logo", s.userContentBaseUrl, projectID),
 		DarkModePrimaryColor:  derefOrEmpty(qProjectUISettings.DarkModePrimaryColor),
 		LogInLayout:           string(qProjectUISettings.LogInLayout),
+		LogInWithEmail:        qProject.LogInWithEmail,
 		LogInWithGoogle:       qProject.LogInWithGoogle,
 		LogInWithMicrosoft:    qProject.LogInWithMicrosoft,
 		LogInWithPassword:     qProject.LogInWithPassword,
+		LogInWithSaml:         qProject.LogInWithSaml,
 	}
 }

@@ -184,13 +184,21 @@ func (s *Store) ListOrganizations(ctx context.Context, req *intermediatev1.ListO
 
 	var organizations []*intermediatev1.Organization
 	for _, qOrg := range qOrgsDeduped {
-		qSamlConnection, err := q.GetOrganizationPrimarySAMLConnection(ctx, qOrg.ID)
-		if err != nil && !errors.Is(err, pgx.ErrNoRows) {
-			return nil, apierror.NewNotFoundError("primary saml connection not found", fmt.Errorf("get organization primary saml connection: %w", err))
+		var qSAMLConnection *queries.SamlConnection
+		qPrimarySAMLConnection, err := q.GetOrganizationPrimarySAMLConnection(ctx, qOrg.ID)
+		if err != nil {
+			// it's ok if org has no primary saml connection
+			if !errors.Is(err, pgx.ErrNoRows) {
+				return nil, fmt.Errorf("get organization primary saml connection: %w", err)
+			}
+		}
+
+		if qPrimarySAMLConnection.ID != uuid.Nil {
+			qSAMLConnection = &qPrimarySAMLConnection
 		}
 
 		// Parse the organization before performing additional checks
-		org := parseOrganization(qOrg, qProject, &qSamlConnection)
+		org := parseOrganization(qOrg, qProject, qSAMLConnection)
 
 		// Check if the user exists on the organization.
 		existingUser, err := s.matchEmailUser(ctx, q, qOrg, qIntermediateSession)
@@ -247,6 +255,10 @@ func (s *Store) ListSAMLOrganizations(ctx context.Context, req *intermediatev1.L
 		}
 
 		return nil, fmt.Errorf("get project by id: %w", err)
+	}
+
+	if !qProject.LogInWithSaml {
+		return nil, apierror.NewFailedPreconditionError("SAML login not enabled", fmt.Errorf("project does not have SAML login enabled"))
 	}
 
 	var organizations []*intermediatev1.Organization
@@ -317,15 +329,22 @@ func (s *Store) SetOrganization(ctx context.Context, req *intermediatev1.SetOrga
 }
 
 func parseOrganization(qOrg queries.Organization, qProject queries.Project, qSAMLConnection *queries.SamlConnection) *intermediatev1.Organization {
+	var primarySamlConnectionID string
+	if qSAMLConnection != nil {
+		primarySamlConnectionID = idformat.SAMLConnection.Format(qSAMLConnection.ID)
+	}
+
 	return &intermediatev1.Organization{
 		Id:                        idformat.Organization.Format(qOrg.ID),
 		DisplayName:               qOrg.DisplayName,
+		LogInWithEmail:            qOrg.LogInWithEmail,
 		LogInWithGoogle:           qOrg.LogInWithGoogle,
 		LogInWithMicrosoft:        qOrg.LogInWithMicrosoft,
 		LogInWithPassword:         qOrg.LogInWithPassword,
 		LogInWithAuthenticatorApp: qOrg.LogInWithAuthenticatorApp,
 		LogInWithPasskey:          qOrg.LogInWithPasskey,
+		LogInWithSaml:             qOrg.LogInWithSaml,
 		RequireMfa:                qOrg.RequireMfa,
-		PrimarySamlConnectionId:   idformat.SAMLConnection.Format(qSAMLConnection.ID),
+		PrimarySamlConnectionId:   primarySamlConnectionID,
 	}
 }

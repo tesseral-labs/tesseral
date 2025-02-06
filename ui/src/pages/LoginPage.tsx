@@ -14,6 +14,7 @@ import VerifyPasskey from '@/views/VerifyPasskey'
 import ChooseAdditionalFactor from '@/views/ChooseAdditionalFactor'
 import { Organization } from '@/gen/openauth/intermediate/v1/intermediate_pb'
 import { IntermediateOrganizationContextProvider } from '@/lib/auth'
+import ChooseOrganizationPrimaryLoginFactor from '@/views/ChooseOrganizationPrimaryLoginFactor'
 
 const LoginPage = () => {
   const [intermediateOrganization, setIntermediateOrganization] =
@@ -31,11 +32,16 @@ const LoginPage = () => {
           setView={setView}
         />
       )}
+      {view === LoginViews.ChooseOrganizationPrimaryLoginFactor && (
+        <ChooseOrganizationPrimaryLoginFactor setView={setView} />
+      )}
       {view === LoginViews.CreateOrganization && (
         <CreateOrganization setView={setView} />
       )}
       {view === LoginViews.Login && <Login setView={setView} />}
-      {view === LoginViews.RegisterPassword && <RegisterPassword />}
+      {view === LoginViews.RegisterPassword && (
+        <RegisterPassword setView={setView} />
+      )}
       {view === LoginViews.RegisterAuthenticatorApp && (
         <RegisterAuthenticatorApp />
       )}
