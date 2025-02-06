@@ -301,3 +301,11 @@ type UserImpersonationToken struct {
 	ImpersonatedID    uuid.UUID
 	SecretTokenSha256 []byte
 }
+
+type UserInvite struct {
+	ID             uuid.UUID
+	OrganizationID uuid.UUID
+	CreateTime     *time.Time
+	UpdateTime     *time.Time
+	Email          string
+}

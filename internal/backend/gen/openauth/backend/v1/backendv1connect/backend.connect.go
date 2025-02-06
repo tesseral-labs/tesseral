@@ -122,6 +122,9 @@ const (
 	// BackendServiceGetIntermediateSessionProcedure is the fully-qualified name of the BackendService's
 	// GetIntermediateSession RPC.
 	BackendServiceGetIntermediateSessionProcedure = "/openauth.backend.v1.BackendService/GetIntermediateSession"
+	// BackendServiceListUserInvitesProcedure is the fully-qualified name of the BackendService's
+	// ListUserInvites RPC.
+	BackendServiceListUserInvitesProcedure = "/openauth.backend.v1.BackendService/ListUserInvites"
 	// BackendServiceDisableOrganizationLoginsProcedure is the fully-qualified name of the
 	// BackendService's DisableOrganizationLogins RPC.
 	BackendServiceDisableOrganizationLoginsProcedure = "/openauth.backend.v1.BackendService/DisableOrganizationLogins"
@@ -213,6 +216,7 @@ type BackendServiceClient interface {
 	GetSession(context.Context, *connect.Request[v1.GetSessionRequest]) (*connect.Response[v1.GetSessionResponse], error)
 	ListIntermediateSessions(context.Context, *connect.Request[v1.ListIntermediateSessionsRequest]) (*connect.Response[v1.ListIntermediateSessionsResponse], error)
 	GetIntermediateSession(context.Context, *connect.Request[v1.GetIntermediateSessionRequest]) (*connect.Response[v1.GetIntermediateSessionResponse], error)
+	ListUserInvites(context.Context, *connect.Request[v1.ListUserInvitesRequest]) (*connect.Response[v1.ListUserInvitesResponse], error)
 	DisableOrganizationLogins(context.Context, *connect.Request[v1.DisableOrganizationLoginsRequest]) (*connect.Response[v1.DisableOrganizationLoginsResponse], error)
 	DisableProjectLogins(context.Context, *connect.Request[v1.DisableProjectLoginsRequest]) (*connect.Response[v1.DisableProjectLoginsResponse], error)
 	EnableOrganizationLogins(context.Context, *connect.Request[v1.EnableOrganizationLoginsRequest]) (*connect.Response[v1.EnableOrganizationLoginsResponse], error)
@@ -425,6 +429,12 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(backendServiceMethods.ByName("GetIntermediateSession")),
 			connect.WithClientOptions(opts...),
 		),
+		listUserInvites: connect.NewClient[v1.ListUserInvitesRequest, v1.ListUserInvitesResponse](
+			httpClient,
+			baseURL+BackendServiceListUserInvitesProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("ListUserInvites")),
+			connect.WithClientOptions(opts...),
+		),
 		disableOrganizationLogins: connect.NewClient[v1.DisableOrganizationLoginsRequest, v1.DisableOrganizationLoginsResponse](
 			httpClient,
 			baseURL+BackendServiceDisableOrganizationLoginsProcedure,
@@ -574,6 +584,7 @@ type backendServiceClient struct {
 	getSession                            *connect.Client[v1.GetSessionRequest, v1.GetSessionResponse]
 	listIntermediateSessions              *connect.Client[v1.ListIntermediateSessionsRequest, v1.ListIntermediateSessionsResponse]
 	getIntermediateSession                *connect.Client[v1.GetIntermediateSessionRequest, v1.GetIntermediateSessionResponse]
+	listUserInvites                       *connect.Client[v1.ListUserInvitesRequest, v1.ListUserInvitesResponse]
 	disableOrganizationLogins             *connect.Client[v1.DisableOrganizationLoginsRequest, v1.DisableOrganizationLoginsResponse]
 	disableProjectLogins                  *connect.Client[v1.DisableProjectLoginsRequest, v1.DisableProjectLoginsResponse]
 	enableOrganizationLogins              *connect.Client[v1.EnableOrganizationLoginsRequest, v1.EnableOrganizationLoginsResponse]
@@ -749,6 +760,11 @@ func (c *backendServiceClient) GetIntermediateSession(ctx context.Context, req *
 	return c.getIntermediateSession.CallUnary(ctx, req)
 }
 
+// ListUserInvites calls openauth.backend.v1.BackendService.ListUserInvites.
+func (c *backendServiceClient) ListUserInvites(ctx context.Context, req *connect.Request[v1.ListUserInvitesRequest]) (*connect.Response[v1.ListUserInvitesResponse], error) {
+	return c.listUserInvites.CallUnary(ctx, req)
+}
+
 // DisableOrganizationLogins calls openauth.backend.v1.BackendService.DisableOrganizationLogins.
 func (c *backendServiceClient) DisableOrganizationLogins(ctx context.Context, req *connect.Request[v1.DisableOrganizationLoginsRequest]) (*connect.Response[v1.DisableOrganizationLoginsResponse], error) {
 	return c.disableOrganizationLogins.CallUnary(ctx, req)
@@ -877,6 +893,7 @@ type BackendServiceHandler interface {
 	GetSession(context.Context, *connect.Request[v1.GetSessionRequest]) (*connect.Response[v1.GetSessionResponse], error)
 	ListIntermediateSessions(context.Context, *connect.Request[v1.ListIntermediateSessionsRequest]) (*connect.Response[v1.ListIntermediateSessionsResponse], error)
 	GetIntermediateSession(context.Context, *connect.Request[v1.GetIntermediateSessionRequest]) (*connect.Response[v1.GetIntermediateSessionResponse], error)
+	ListUserInvites(context.Context, *connect.Request[v1.ListUserInvitesRequest]) (*connect.Response[v1.ListUserInvitesResponse], error)
 	DisableOrganizationLogins(context.Context, *connect.Request[v1.DisableOrganizationLoginsRequest]) (*connect.Response[v1.DisableOrganizationLoginsResponse], error)
 	DisableProjectLogins(context.Context, *connect.Request[v1.DisableProjectLoginsRequest]) (*connect.Response[v1.DisableProjectLoginsResponse], error)
 	EnableOrganizationLogins(context.Context, *connect.Request[v1.EnableOrganizationLoginsRequest]) (*connect.Response[v1.EnableOrganizationLoginsResponse], error)
@@ -1085,6 +1102,12 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		connect.WithSchema(backendServiceMethods.ByName("GetIntermediateSession")),
 		connect.WithHandlerOptions(opts...),
 	)
+	backendServiceListUserInvitesHandler := connect.NewUnaryHandler(
+		BackendServiceListUserInvitesProcedure,
+		svc.ListUserInvites,
+		connect.WithSchema(backendServiceMethods.ByName("ListUserInvites")),
+		connect.WithHandlerOptions(opts...),
+	)
 	backendServiceDisableOrganizationLoginsHandler := connect.NewUnaryHandler(
 		BackendServiceDisableOrganizationLoginsProcedure,
 		svc.DisableOrganizationLogins,
@@ -1261,6 +1284,8 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceListIntermediateSessionsHandler.ServeHTTP(w, r)
 		case BackendServiceGetIntermediateSessionProcedure:
 			backendServiceGetIntermediateSessionHandler.ServeHTTP(w, r)
+		case BackendServiceListUserInvitesProcedure:
+			backendServiceListUserInvitesHandler.ServeHTTP(w, r)
 		case BackendServiceDisableOrganizationLoginsProcedure:
 			backendServiceDisableOrganizationLoginsHandler.ServeHTTP(w, r)
 		case BackendServiceDisableProjectLoginsProcedure:
@@ -1426,6 +1451,10 @@ func (UnimplementedBackendServiceHandler) ListIntermediateSessions(context.Conte
 
 func (UnimplementedBackendServiceHandler) GetIntermediateSession(context.Context, *connect.Request[v1.GetIntermediateSessionRequest]) (*connect.Response[v1.GetIntermediateSessionResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetIntermediateSession is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) ListUserInvites(context.Context, *connect.Request[v1.ListUserInvitesRequest]) (*connect.Response[v1.ListUserInvitesResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.ListUserInvites is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) DisableOrganizationLogins(context.Context, *connect.Request[v1.DisableOrganizationLoginsRequest]) (*connect.Response[v1.DisableOrganizationLoginsResponse], error) {

@@ -189,6 +189,31 @@ service FrontendService {
       body: "*"
     };
   }
+
+  rpc ListUserInvites(ListUserInvitesRequest) returns (ListUserInvitesResponse) {
+    option (google.api.http) = {
+      get: "/frontend/v1/user-invites"
+    };
+  }
+
+  rpc GetUserInvite(GetUserInviteRequest) returns (GetUserInviteResponse) {
+    option (google.api.http) = {
+      get: "/frontend/v1/user-invites/{id}"
+    };
+  }
+
+  rpc CreateUserInvite(CreateUserInviteRequest) returns (CreateUserInviteResponse) {
+    option (google.api.http) = {
+      post: "/frontend/v1/user-invites",
+      body: "user_invite"
+    };
+  }
+
+  rpc DeleteUserInvite(DeleteUserInviteRequest) returns (DeleteUserInviteResponse) {
+    option (google.api.http) = {
+      delete: "/frontend/v1/user-invites/{id}"
+    };
+  }
 }
 
 message LogoutRequest {
@@ -416,6 +441,38 @@ message RegisterAuthenticatorAppResponse {
   repeated string recovery_codes = 1;
 }
 
+message ListUserInvitesRequest {
+  string page_token = 1;
+}
+
+message ListUserInvitesResponse {
+  repeated UserInvite user_invites = 1;
+  string next_page_token = 2;
+}
+
+message GetUserInviteRequest {
+  string id = 1;
+}
+
+message GetUserInviteResponse {
+  UserInvite user_invite = 1;
+}
+
+message CreateUserInviteRequest {
+  UserInvite user_invite = 1;
+}
+
+message CreateUserInviteResponse {
+  UserInvite user_invite = 1;
+}
+
+message DeleteUserInviteRequest {
+  string id = 1;
+}
+
+message DeleteUserInviteResponse {
+}
+
 message Project {
   string id = 1;
   string display_name = 2;
@@ -509,4 +566,11 @@ message Passkey {
   bytes credential_id = 5;
   string public_key_pkix = 6;
   string aaguid = 7;
+}
+
+message UserInvite {
+  string id = 1;
+  google.protobuf.Timestamp create_time = 2;
+  google.protobuf.Timestamp update_time = 3;
+  string email = 4;
 }

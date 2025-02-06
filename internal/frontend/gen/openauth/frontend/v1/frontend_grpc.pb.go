@@ -47,6 +47,10 @@ const (
 	FrontendService_RegisterPasskey_FullMethodName            = "/openauth.frontend.v1.FrontendService/RegisterPasskey"
 	FrontendService_GetAuthenticatorAppOptions_FullMethodName = "/openauth.frontend.v1.FrontendService/GetAuthenticatorAppOptions"
 	FrontendService_RegisterAuthenticatorApp_FullMethodName   = "/openauth.frontend.v1.FrontendService/RegisterAuthenticatorApp"
+	FrontendService_ListUserInvites_FullMethodName            = "/openauth.frontend.v1.FrontendService/ListUserInvites"
+	FrontendService_GetUserInvite_FullMethodName              = "/openauth.frontend.v1.FrontendService/GetUserInvite"
+	FrontendService_CreateUserInvite_FullMethodName           = "/openauth.frontend.v1.FrontendService/CreateUserInvite"
+	FrontendService_DeleteUserInvite_FullMethodName           = "/openauth.frontend.v1.FrontendService/DeleteUserInvite"
 )
 
 // FrontendServiceClient is the client API for FrontendService service.
@@ -83,6 +87,10 @@ type FrontendServiceClient interface {
 	RegisterPasskey(ctx context.Context, in *RegisterPasskeyRequest, opts ...grpc.CallOption) (*RegisterPasskeyResponse, error)
 	GetAuthenticatorAppOptions(ctx context.Context, in *GetAuthenticatorAppOptionsRequest, opts ...grpc.CallOption) (*GetAuthenticatorAppOptionsResponse, error)
 	RegisterAuthenticatorApp(ctx context.Context, in *RegisterAuthenticatorAppRequest, opts ...grpc.CallOption) (*RegisterAuthenticatorAppResponse, error)
+	ListUserInvites(ctx context.Context, in *ListUserInvitesRequest, opts ...grpc.CallOption) (*ListUserInvitesResponse, error)
+	GetUserInvite(ctx context.Context, in *GetUserInviteRequest, opts ...grpc.CallOption) (*GetUserInviteResponse, error)
+	CreateUserInvite(ctx context.Context, in *CreateUserInviteRequest, opts ...grpc.CallOption) (*CreateUserInviteResponse, error)
+	DeleteUserInvite(ctx context.Context, in *DeleteUserInviteRequest, opts ...grpc.CallOption) (*DeleteUserInviteResponse, error)
 }
 
 type frontendServiceClient struct {
@@ -373,6 +381,46 @@ func (c *frontendServiceClient) RegisterAuthenticatorApp(ctx context.Context, in
 	return out, nil
 }
 
+func (c *frontendServiceClient) ListUserInvites(ctx context.Context, in *ListUserInvitesRequest, opts ...grpc.CallOption) (*ListUserInvitesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListUserInvitesResponse)
+	err := c.cc.Invoke(ctx, FrontendService_ListUserInvites_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *frontendServiceClient) GetUserInvite(ctx context.Context, in *GetUserInviteRequest, opts ...grpc.CallOption) (*GetUserInviteResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetUserInviteResponse)
+	err := c.cc.Invoke(ctx, FrontendService_GetUserInvite_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *frontendServiceClient) CreateUserInvite(ctx context.Context, in *CreateUserInviteRequest, opts ...grpc.CallOption) (*CreateUserInviteResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateUserInviteResponse)
+	err := c.cc.Invoke(ctx, FrontendService_CreateUserInvite_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *frontendServiceClient) DeleteUserInvite(ctx context.Context, in *DeleteUserInviteRequest, opts ...grpc.CallOption) (*DeleteUserInviteResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteUserInviteResponse)
+	err := c.cc.Invoke(ctx, FrontendService_DeleteUserInvite_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // FrontendServiceServer is the server API for FrontendService service.
 // All implementations must embed UnimplementedFrontendServiceServer
 // for forward compatibility.
@@ -407,6 +455,10 @@ type FrontendServiceServer interface {
 	RegisterPasskey(context.Context, *RegisterPasskeyRequest) (*RegisterPasskeyResponse, error)
 	GetAuthenticatorAppOptions(context.Context, *GetAuthenticatorAppOptionsRequest) (*GetAuthenticatorAppOptionsResponse, error)
 	RegisterAuthenticatorApp(context.Context, *RegisterAuthenticatorAppRequest) (*RegisterAuthenticatorAppResponse, error)
+	ListUserInvites(context.Context, *ListUserInvitesRequest) (*ListUserInvitesResponse, error)
+	GetUserInvite(context.Context, *GetUserInviteRequest) (*GetUserInviteResponse, error)
+	CreateUserInvite(context.Context, *CreateUserInviteRequest) (*CreateUserInviteResponse, error)
+	DeleteUserInvite(context.Context, *DeleteUserInviteRequest) (*DeleteUserInviteResponse, error)
 	mustEmbedUnimplementedFrontendServiceServer()
 }
 
@@ -500,6 +552,18 @@ func (UnimplementedFrontendServiceServer) GetAuthenticatorAppOptions(context.Con
 }
 func (UnimplementedFrontendServiceServer) RegisterAuthenticatorApp(context.Context, *RegisterAuthenticatorAppRequest) (*RegisterAuthenticatorAppResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterAuthenticatorApp not implemented")
+}
+func (UnimplementedFrontendServiceServer) ListUserInvites(context.Context, *ListUserInvitesRequest) (*ListUserInvitesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListUserInvites not implemented")
+}
+func (UnimplementedFrontendServiceServer) GetUserInvite(context.Context, *GetUserInviteRequest) (*GetUserInviteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserInvite not implemented")
+}
+func (UnimplementedFrontendServiceServer) CreateUserInvite(context.Context, *CreateUserInviteRequest) (*CreateUserInviteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateUserInvite not implemented")
+}
+func (UnimplementedFrontendServiceServer) DeleteUserInvite(context.Context, *DeleteUserInviteRequest) (*DeleteUserInviteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteUserInvite not implemented")
 }
 func (UnimplementedFrontendServiceServer) mustEmbedUnimplementedFrontendServiceServer() {}
 func (UnimplementedFrontendServiceServer) testEmbeddedByValue()                         {}
@@ -1026,6 +1090,78 @@ func _FrontendService_RegisterAuthenticatorApp_Handler(srv interface{}, ctx cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _FrontendService_ListUserInvites_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListUserInvitesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).ListUserInvites(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_ListUserInvites_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).ListUserInvites(ctx, req.(*ListUserInvitesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FrontendService_GetUserInvite_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserInviteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).GetUserInvite(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_GetUserInvite_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).GetUserInvite(ctx, req.(*GetUserInviteRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FrontendService_CreateUserInvite_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateUserInviteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).CreateUserInvite(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_CreateUserInvite_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).CreateUserInvite(ctx, req.(*CreateUserInviteRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FrontendService_DeleteUserInvite_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteUserInviteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).DeleteUserInvite(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_DeleteUserInvite_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).DeleteUserInvite(ctx, req.(*DeleteUserInviteRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // FrontendService_ServiceDesc is the grpc.ServiceDesc for FrontendService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1144,6 +1280,22 @@ var FrontendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RegisterAuthenticatorApp",
 			Handler:    _FrontendService_RegisterAuthenticatorApp_Handler,
+		},
+		{
+			MethodName: "ListUserInvites",
+			Handler:    _FrontendService_ListUserInvites_Handler,
+		},
+		{
+			MethodName: "GetUserInvite",
+			Handler:    _FrontendService_GetUserInvite_Handler,
+		},
+		{
+			MethodName: "CreateUserInvite",
+			Handler:    _FrontendService_CreateUserInvite_Handler,
+		},
+		{
+			MethodName: "DeleteUserInvite",
+			Handler:    _FrontendService_DeleteUserInvite_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
