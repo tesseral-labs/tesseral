@@ -27,6 +27,7 @@ import { Label } from './ui/label'
 import Loader from './ui/loader'
 import { parseErrorMessage } from '@/lib/errors'
 import { toast } from 'sonner'
+import useSettings from '@/lib/settings'
 
 interface EmailFormProps {
   skipIntermediateSessionCreation?: boolean
@@ -40,6 +41,8 @@ const EmailForm: FC<EmailFormProps> = ({
   setView,
 }) => {
   const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/i
+  const settings = useSettings()
+
   const createIntermediateSessionMutation = useMutation(
     createIntermediateSession,
   )
@@ -79,34 +82,36 @@ const EmailForm: FC<EmailFormProps> = ({
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    setSubmitting(true)
+    if (settings?.logInWithEmail) {
+      setSubmitting(true)
 
-    try {
-      if (!skipIntermediateSessionCreation) {
-        // this sets a cookie that subsequent requests use
-        const { intermediateSessionSecretToken } =
-          await createIntermediateSessionMutation.mutateAsync({})
+      try {
+        if (!skipIntermediateSessionCreation) {
+          // this sets a cookie that subsequent requests use
+          const { intermediateSessionSecretToken } =
+            await createIntermediateSessionMutation.mutateAsync({})
 
-        // set the intermediate sessionToken
-        setIntermediateSessionToken(intermediateSessionSecretToken)
+          // set the intermediate sessionToken
+          setIntermediateSessionToken(intermediateSessionSecretToken)
+        }
+
+        await setEmailAsPrimaryLoginFactorMutation.mutateAsync({})
+
+        await issueEmailVerificationChallengeMutation.mutateAsync({
+          email,
+        })
+
+        setSubmitting(false)
+
+        // redirect to challenge page
+        setView(LoginViews.VerifyEmail)
+      } catch (error) {
+        setSubmitting(false)
+        const message = parseErrorMessage(error)
+        toast.error('Could not initiate login', {
+          description: message,
+        })
       }
-
-      await setEmailAsPrimaryLoginFactorMutation.mutateAsync({})
-
-      await issueEmailVerificationChallengeMutation.mutateAsync({
-        email,
-      })
-
-      setSubmitting(false)
-
-      // redirect to challenge page
-      setView(LoginViews.VerifyEmail)
-    } catch (error) {
-      setSubmitting(false)
-      const message = parseErrorMessage(error)
-      toast.error('Could not initiate login', {
-        description: message,
-      })
     }
   }
 
@@ -137,10 +142,12 @@ const EmailForm: FC<EmailFormProps> = ({
           />
         </div>
 
-        <Button type="submit" disabled={!emailIsValid || submitting}>
-          {submitting && <Loader />}
-          Sign In
-        </Button>
+        {settings?.logInWithEmail && (
+          <Button type="submit" disabled={!emailIsValid || submitting}>
+            {submitting && <Loader />}
+            Sign In
+          </Button>
+        )}
       </form>
 
       {samlOrganizations && samlOrganizations.length > 0 && (
