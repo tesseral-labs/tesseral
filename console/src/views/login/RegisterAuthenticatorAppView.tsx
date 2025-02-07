@@ -1,7 +1,13 @@
 import React, { FC, useEffect, useState } from 'react'
 import QRCode from 'qrcode'
 import { Title } from '@/components/Title'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { useMutation, useQuery } from '@connectrpc/connect-query'
 import {
@@ -87,9 +93,11 @@ const RegisterAuthenticatorAppView: FC = () => {
 
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle className="text-center">
-            Register Authenticator App
-          </CardTitle>
+          <CardTitle>Register Authenticator App</CardTitle>
+          <CardDescription>
+            Scan this QR code using your authenticator app and enter the
+            resulting 6-digit code.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           {qrcode && (
@@ -97,11 +105,6 @@ const RegisterAuthenticatorAppView: FC = () => {
               <img className="w-full" src={qrcode} />
             </div>
           )}
-
-          <p className="mt-4 text-sm text-center text-muted-foreground">
-            Scan this QR code using your authenticator app and enter the
-            resulting 6-digit code.
-          </p>
 
           <form
             className="mt-8 flex flex-col items-center w-full"
