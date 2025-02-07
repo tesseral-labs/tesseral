@@ -16,7 +16,7 @@ const createPasskey = `-- name: CreatePasskey :one
 INSERT INTO passkeys (id, user_id, credential_id, public_key, aaguid)
     VALUES ($1, $2, $3, $4, $5)
 RETURNING
-    id, user_id, create_time, update_time, credential_id, public_key, aaguid
+    id, user_id, create_time, update_time, credential_id, public_key, aaguid, disabled, rp_id
 `
 
 type CreatePasskeyParams struct {
@@ -44,6 +44,8 @@ func (q *Queries) CreatePasskey(ctx context.Context, arg CreatePasskeyParams) (P
 		&i.CredentialID,
 		&i.PublicKey,
 		&i.Aaguid,
+		&i.Disabled,
+		&i.RpID,
 	)
 	return i, err
 }
@@ -393,6 +395,35 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 	return i, err
 }
 
+const getProjectPasskeyRPIDs = `-- name: GetProjectPasskeyRPIDs :many
+SELECT
+    project_id, rp_id
+FROM
+    project_passkey_rp_ids
+WHERE
+    project_id = $1
+`
+
+func (q *Queries) GetProjectPasskeyRPIDs(ctx context.Context, projectID uuid.UUID) ([]ProjectPasskeyRpID, error) {
+	rows, err := q.db.Query(ctx, getProjectPasskeyRPIDs, projectID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ProjectPasskeyRpID
+	for rows.Next() {
+		var i ProjectPasskeyRpID
+		if err := rows.Scan(&i.ProjectID, &i.RpID); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getSAMLConnection = `-- name: GetSAMLConnection :one
 SELECT
     id, organization_id, create_time, is_primary, idp_redirect_url, idp_x509_certificate, idp_entity_id, update_time
@@ -655,7 +686,7 @@ func (q *Queries) GetUserInvite(ctx context.Context, arg GetUserInviteParams) (U
 
 const getUserPasskey = `-- name: GetUserPasskey :one
 SELECT
-    id, user_id, create_time, update_time, credential_id, public_key, aaguid
+    id, user_id, create_time, update_time, credential_id, public_key, aaguid, disabled, rp_id
 FROM
     passkeys
 WHERE
@@ -679,6 +710,8 @@ func (q *Queries) GetUserPasskey(ctx context.Context, arg GetUserPasskeyParams) 
 		&i.CredentialID,
 		&i.PublicKey,
 		&i.Aaguid,
+		&i.Disabled,
+		&i.RpID,
 	)
 	return i, err
 }
@@ -700,7 +733,7 @@ func (q *Queries) InvalidateSession(ctx context.Context, id uuid.UUID) error {
 
 const listPasskeys = `-- name: ListPasskeys :many
 SELECT
-    id, user_id, create_time, update_time, credential_id, public_key, aaguid
+    id, user_id, create_time, update_time, credential_id, public_key, aaguid, disabled, rp_id
 FROM
     passkeys
 WHERE
@@ -734,6 +767,8 @@ func (q *Queries) ListPasskeys(ctx context.Context, arg ListPasskeysParams) ([]P
 			&i.CredentialID,
 			&i.PublicKey,
 			&i.Aaguid,
+			&i.Disabled,
+			&i.RpID,
 		); err != nil {
 			return nil, err
 		}

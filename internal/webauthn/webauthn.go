@@ -23,7 +23,7 @@ type Credential struct {
 }
 
 type ParseRequest struct {
-	RPID              string
+	RPIDs             []string
 	AttestationObject string
 }
 
@@ -42,10 +42,18 @@ func Parse(req *ParseRequest) (*Credential, error) {
 
 	b := bytes.NewBuffer(attestationData.AuthData)
 
-	rpIDSHA256 := sha256.Sum256([]byte(req.RPID))
 	rpHash := b.Next(32) // 32-byte rp hash
 
-	if !bytes.Equal(rpHash, rpIDSHA256[:]) {
+	var rpOk bool
+	for _, rpID := range req.RPIDs {
+		rpIDSHA256 := sha256.Sum256([]byte(rpID))
+		if bytes.Equal(rpHash, rpIDSHA256[:]) {
+			rpOk = true
+			break
+		}
+	}
+
+	if !rpOk {
 		return nil, fmt.Errorf("invalid rp id")
 	}
 

@@ -200,7 +200,7 @@ const createPasskey = `-- name: CreatePasskey :one
 INSERT INTO passkeys (id, user_id, credential_id, public_key, aaguid)
     VALUES ($1, $2, $3, $4, $5)
 RETURNING
-    id, user_id, create_time, update_time, credential_id, public_key, aaguid
+    id, user_id, create_time, update_time, credential_id, public_key, aaguid, disabled, rp_id
 `
 
 type CreatePasskeyParams struct {
@@ -228,6 +228,8 @@ func (q *Queries) CreatePasskey(ctx context.Context, arg CreatePasskeyParams) (P
 		&i.CredentialID,
 		&i.PublicKey,
 		&i.Aaguid,
+		&i.Disabled,
+		&i.RpID,
 	)
 	return i, err
 }
@@ -669,7 +671,7 @@ func (q *Queries) GetOrganizationUserByMicrosoftUserID(ctx context.Context, arg 
 
 const getPasskeyByCredentialID = `-- name: GetPasskeyByCredentialID :one
 SELECT
-    id, user_id, create_time, update_time, credential_id, public_key, aaguid
+    id, user_id, create_time, update_time, credential_id, public_key, aaguid, disabled, rp_id
 FROM
     passkeys
 WHERE
@@ -693,6 +695,8 @@ func (q *Queries) GetPasskeyByCredentialID(ctx context.Context, arg GetPasskeyBy
 		&i.CredentialID,
 		&i.PublicKey,
 		&i.Aaguid,
+		&i.Disabled,
+		&i.RpID,
 	)
 	return i, err
 }
@@ -771,6 +775,35 @@ func (q *Queries) GetProjectOrganizationByID(ctx context.Context, arg GetProject
 	return i, err
 }
 
+const getProjectPasskeyRPIDs = `-- name: GetProjectPasskeyRPIDs :many
+SELECT
+    project_id, rp_id
+FROM
+    project_passkey_rp_ids
+WHERE
+    project_id = $1
+`
+
+func (q *Queries) GetProjectPasskeyRPIDs(ctx context.Context, projectID uuid.UUID) ([]ProjectPasskeyRpID, error) {
+	rows, err := q.db.Query(ctx, getProjectPasskeyRPIDs, projectID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ProjectPasskeyRpID
+	for rows.Next() {
+		var i ProjectPasskeyRpID
+		if err := rows.Scan(&i.ProjectID, &i.RpID); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getProjectUISettings = `-- name: GetProjectUISettings :one
 SELECT
     id, project_id, primary_color, detect_dark_mode_enabled, dark_mode_primary_color, create_time, update_time, log_in_layout
@@ -796,19 +829,20 @@ func (q *Queries) GetProjectUISettings(ctx context.Context, projectID uuid.UUID)
 	return i, err
 }
 
-const getUserHasPasskey = `-- name: GetUserHasPasskey :one
+const getUserHasActivePasskey = `-- name: GetUserHasActivePasskey :one
 SELECT
     EXISTS (
         SELECT
-            id, user_id, create_time, update_time, credential_id, public_key, aaguid
+            id, user_id, create_time, update_time, credential_id, public_key, aaguid, disabled, rp_id
         FROM
             passkeys
         WHERE
-            user_id = $1)
+            user_id = $1
+            AND disabled = FALSE)
 `
 
-func (q *Queries) GetUserHasPasskey(ctx context.Context, userID uuid.UUID) (bool, error) {
-	row := q.db.QueryRow(ctx, getUserHasPasskey, userID)
+func (q *Queries) GetUserHasActivePasskey(ctx context.Context, userID uuid.UUID) (bool, error) {
+	row := q.db.QueryRow(ctx, getUserHasActivePasskey, userID)
 	var exists bool
 	err := row.Scan(&exists)
 	return exists, err

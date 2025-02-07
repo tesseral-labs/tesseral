@@ -113,6 +113,47 @@ WHERE
 RETURNING
     *;
 
+-- name: GetProjectPasskeyRPIDs :many
+SELECT
+    *
+FROM
+    project_passkey_rp_ids
+WHERE
+    project_id = $1;
+
+-- name: DeleteProjectPasskeyRPIDs :exec
+DELETE FROM project_passkey_rp_ids
+WHERE project_id = $1;
+
+-- name: CreateProjectPasskeyRPID :one
+INSERT INTO project_passkey_rp_ids (project_id, rp_id)
+    VALUES ($1, $2)
+RETURNING
+    *;
+
+-- name: DisablePasskeysOutsideProjectRPIDs :exec
+UPDATE
+    passkeys
+SET
+    disabled = TRUE,
+    update_time = now()
+WHERE
+    user_id IN (
+        SELECT
+            users.id
+        FROM
+            users
+            JOIN organizations ON users.organization_id = organizations.id
+        WHERE
+            organizations.project_id = $1)
+    AND rp_id NOT IN (
+        SELECT
+            rp_id
+        FROM
+            project_passkey_rp_ids
+        WHERE
+            project_id = $1);
+
 -- name: DisableProjectOrganizationsLogInWithGoogle :one
 UPDATE
     organizations
@@ -708,4 +749,3 @@ ON CONFLICT (organization_id, email)
 -- name: DeleteUserInvite :exec
 DELETE FROM user_invites
 WHERE id = $1;
-

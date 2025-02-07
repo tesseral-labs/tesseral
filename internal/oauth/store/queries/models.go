@@ -224,6 +224,8 @@ type Passkey struct {
 	CredentialID []byte
 	PublicKey    []byte
 	Aaguid       string
+	Disabled     bool
+	RpID         string
 }
 
 type Project struct {
@@ -255,6 +257,11 @@ type ProjectApiKey struct {
 	DisplayName       string
 	CreateTime        *time.Time
 	UpdateTime        *time.Time
+}
+
+type ProjectPasskeyRpID struct {
+	ProjectID uuid.UUID
+	RpID      string
 }
 
 type ProjectRedirectUri struct {
