@@ -305,7 +305,7 @@ func (s *Store) matchEmailUser(ctx context.Context, q *queries.Queries, qOrg que
 }
 
 func (s *Store) copyRegisteredPasskeySettings(ctx context.Context, q *queries.Queries, qIntermediateSession queries.IntermediateSession, qUser queries.User) error {
-	userHasPasskey, err := q.GetUserHasPasskey(ctx, qUser.ID)
+	userHasPasskey, err := q.GetUserHasActivePasskey(ctx, qUser.ID)
 	if err != nil {
 		return fmt.Errorf("get user has passkey: %w", err)
 	}

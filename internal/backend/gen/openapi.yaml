@@ -1099,12 +1099,16 @@ components:
                 updateTime:
                     type: string
                     format: date-time
+                disabled:
+                    type: boolean
                 credentialId:
                     type: string
                     format: bytes
                 publicKeyPkix:
                     type: string
                 aaguid:
+                    type: string
+                rpId:
                     type: string
         Project:
             type: object
@@ -1143,6 +1147,10 @@ components:
                     type: string
                 authDomain:
                     type: string
+                passkeyRpIds:
+                    type: array
+                    items:
+                        type: string
         RevokeSCIMAPIKeyResponse:
             type: object
             properties:

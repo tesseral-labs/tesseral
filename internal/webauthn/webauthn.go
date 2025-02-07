@@ -23,7 +23,7 @@ type Credential struct {
 }
 
 type ParseRequest struct {
-	RPID              string
+	RPIDs             []string
 	AttestationObject string
 }
 
@@ -42,10 +42,18 @@ func Parse(req *ParseRequest) (*Credential, error) {
 
 	b := bytes.NewBuffer(attestationData.AuthData)
 
-	rpIDSHA256 := sha256.Sum256([]byte(req.RPID))
 	rpHash := b.Next(32) // 32-byte rp hash
 
-	if !bytes.Equal(rpHash, rpIDSHA256[:]) {
+	var rpOk bool
+	for _, rpID := range req.RPIDs {
+		rpIDSHA256 := sha256.Sum256([]byte(rpID))
+		if bytes.Equal(rpHash, rpIDSHA256[:]) {
+			rpOk = true
+			break
+		}
+	}
+
+	if !rpOk {
 		return nil, fmt.Errorf("invalid rp id")
 	}
 
@@ -97,8 +105,7 @@ func Parse(req *ParseRequest) (*Credential, error) {
 }
 
 type VerifyRequest struct {
-	RPID              string
-	Origin            string
+	RPIDs             []string
 	ChallengeSHA256   []byte
 	ClientDataJSON    string
 	AuthenticatorData string
@@ -142,9 +149,18 @@ func (c *Credential) Verify(req *VerifyRequest) error {
 
 	// verify rp id hash
 	b := bytes.NewBuffer(authenticatorDataBytes)
-	rpIDSHA256 := sha256.Sum256([]byte(req.RPID))
 	rpHash := b.Next(32) // 32-byte rp hash
-	if !bytes.Equal(rpHash, rpIDSHA256[:]) {
+
+	var rpOk bool
+	for _, rpID := range req.RPIDs {
+		rpIDSHA256 := sha256.Sum256([]byte(rpID))
+		if bytes.Equal(rpHash, rpIDSHA256[:]) {
+			rpOk = true
+			break
+		}
+	}
+
+	if !rpOk {
 		return fmt.Errorf("invalid rp id")
 	}
 
@@ -156,7 +172,6 @@ func (c *Credential) Verify(req *VerifyRequest) error {
 	var clientData struct {
 		Type        string `json:"type"`
 		Challenge   string `json:"challenge"`
-		Origin      string `json:"origin"`
 		CrossOrigin bool   `json:"crossOrigin"`
 	}
 	if err := json.Unmarshal(clientDataBytes, &clientData); err != nil {
@@ -169,10 +184,6 @@ func (c *Credential) Verify(req *VerifyRequest) error {
 
 	if clientData.CrossOrigin {
 		return fmt.Errorf("cross-origin not supported")
-	}
-
-	if clientData.Origin != req.Origin {
-		return fmt.Errorf("invalid origin")
 	}
 
 	challengeBytes, err := base64.RawURLEncoding.DecodeString(clientData.Challenge)

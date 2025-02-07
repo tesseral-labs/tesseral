@@ -58,6 +58,14 @@ FROM
 WHERE
     id = $1;
 
+-- name: GetProjectPasskeyRPIDs :many
+SELECT
+    *
+FROM
+    project_passkey_rp_ids
+WHERE
+    project_id = $1;
+
 -- name: GetSessionByID :one
 SELECT
     *

@@ -123,13 +123,18 @@ func (s *Store) RegisterPasskey(ctx context.Context, req *frontendv1.RegisterPas
 	}
 	defer rollback()
 
-	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	qProjectPasskeyRPIDs, err := q.GetProjectPasskeyRPIDs(ctx, authn.ProjectID(ctx))
 	if err != nil {
-		return nil, fmt.Errorf("get project by id: %w", err)
+		return nil, fmt.Errorf("get project passkey rp ids: %w", err)
+	}
+
+	var rpIDs []string
+	for _, qProjectPasskeyRPID := range qProjectPasskeyRPIDs {
+		rpIDs = append(rpIDs, qProjectPasskeyRPID.RpID)
 	}
 
 	cred, err := webauthn.Parse(&webauthn.ParseRequest{
-		RPID:              *qProject.AuthDomain,
+		RPIDs:             rpIDs,
 		AttestationObject: req.AttestationObject,
 	})
 	if err != nil {
@@ -167,11 +172,13 @@ func parsePasskey(qPasskey queries.Passkey) *frontendv1.Passkey {
 		UserId:       idformat.User.Format(qPasskey.UserID),
 		CreateTime:   timestamppb.New(*qPasskey.CreateTime),
 		UpdateTime:   timestamppb.New(*qPasskey.UpdateTime),
+		Disabled:     qPasskey.Disabled,
 		CredentialId: qPasskey.CredentialID,
 		PublicKeyPkix: string(pem.EncodeToMemory(&pem.Block{
 			Type:  "PUBLIC KEY",
 			Bytes: qPasskey.PublicKey,
 		})),
 		Aaguid: qPasskey.Aaguid,
+		RpId:   qPasskey.RpID,
 	}
 }

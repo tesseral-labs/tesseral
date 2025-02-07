@@ -141,6 +141,25 @@ func (q *Queries) CreateProjectAPIKey(ctx context.Context, arg CreateProjectAPIK
 	return i, err
 }
 
+const createProjectPasskeyRPID = `-- name: CreateProjectPasskeyRPID :one
+INSERT INTO project_passkey_rp_ids (project_id, rp_id)
+    VALUES ($1, $2)
+RETURNING
+    project_id, rp_id
+`
+
+type CreateProjectPasskeyRPIDParams struct {
+	ProjectID uuid.UUID
+	RpID      string
+}
+
+func (q *Queries) CreateProjectPasskeyRPID(ctx context.Context, arg CreateProjectPasskeyRPIDParams) (ProjectPasskeyRpID, error) {
+	row := q.db.QueryRow(ctx, createProjectPasskeyRPID, arg.ProjectID, arg.RpID)
+	var i ProjectPasskeyRpID
+	err := row.Scan(&i.ProjectID, &i.RpID)
+	return i, err
+}
+
 const createProjectRedirectURI = `-- name: CreateProjectRedirectURI :one
 INSERT INTO project_redirect_uris (id, project_id, uri, is_primary)
     VALUES ($1, $2, $3, COALESCE((
@@ -366,6 +385,16 @@ func (q *Queries) DeleteProjectAPIKey(ctx context.Context, id uuid.UUID) error {
 	return err
 }
 
+const deleteProjectPasskeyRPIDs = `-- name: DeleteProjectPasskeyRPIDs :exec
+DELETE FROM project_passkey_rp_ids
+WHERE project_id = $1
+`
+
+func (q *Queries) DeleteProjectPasskeyRPIDs(ctx context.Context, projectID uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteProjectPasskeyRPIDs, projectID)
+	return err
+}
+
 const deleteProjectRedirectURI = `-- name: DeleteProjectRedirectURI :exec
 DELETE FROM project_redirect_uris
 WHERE id = $1
@@ -423,6 +452,35 @@ WHERE
 
 func (q *Queries) DisableOrganizationLogins(ctx context.Context, id uuid.UUID) error {
 	_, err := q.db.Exec(ctx, disableOrganizationLogins, id)
+	return err
+}
+
+const disablePasskeysOutsideProjectRPIDs = `-- name: DisablePasskeysOutsideProjectRPIDs :exec
+UPDATE
+    passkeys
+SET
+    disabled = TRUE,
+    update_time = now()
+WHERE
+    user_id IN (
+        SELECT
+            users.id
+        FROM
+            users
+            JOIN organizations ON users.organization_id = organizations.id
+        WHERE
+            organizations.project_id = $1)
+    AND rp_id NOT IN (
+        SELECT
+            rp_id
+        FROM
+            project_passkey_rp_ids
+        WHERE
+            project_id = $1)
+`
+
+func (q *Queries) DisablePasskeysOutsideProjectRPIDs(ctx context.Context, projectID uuid.UUID) error {
+	_, err := q.db.Exec(ctx, disablePasskeysOutsideProjectRPIDs, projectID)
 	return err
 }
 
@@ -892,7 +950,7 @@ func (q *Queries) GetOrganizationMicrosoftTenantIDs(ctx context.Context, arg Get
 
 const getPasskey = `-- name: GetPasskey :one
 SELECT
-    passkeys.id, passkeys.user_id, passkeys.create_time, passkeys.update_time, passkeys.credential_id, passkeys.public_key, passkeys.aaguid
+    passkeys.id, passkeys.user_id, passkeys.create_time, passkeys.update_time, passkeys.credential_id, passkeys.public_key, passkeys.aaguid, passkeys.disabled, passkeys.rp_id
 FROM
     passkeys
     JOIN users ON passkeys.user_id = users.id
@@ -918,6 +976,8 @@ func (q *Queries) GetPasskey(ctx context.Context, arg GetPasskeyParams) (Passkey
 		&i.CredentialID,
 		&i.PublicKey,
 		&i.Aaguid,
+		&i.Disabled,
+		&i.RpID,
 	)
 	return i, err
 }
@@ -1025,6 +1085,35 @@ func (q *Queries) GetProjectIDOrganizationBacks(ctx context.Context, organizatio
 	var id uuid.UUID
 	err := row.Scan(&id)
 	return id, err
+}
+
+const getProjectPasskeyRPIDs = `-- name: GetProjectPasskeyRPIDs :many
+SELECT
+    project_id, rp_id
+FROM
+    project_passkey_rp_ids
+WHERE
+    project_id = $1
+`
+
+func (q *Queries) GetProjectPasskeyRPIDs(ctx context.Context, projectID uuid.UUID) ([]ProjectPasskeyRpID, error) {
+	rows, err := q.db.Query(ctx, getProjectPasskeyRPIDs, projectID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ProjectPasskeyRpID
+	for rows.Next() {
+		var i ProjectPasskeyRpID
+		if err := rows.Scan(&i.ProjectID, &i.RpID); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const getProjectRedirectURI = `-- name: GetProjectRedirectURI :one
@@ -1444,7 +1533,7 @@ func (q *Queries) ListOrganizationsByProjectId(ctx context.Context, arg ListOrga
 
 const listPasskeys = `-- name: ListPasskeys :many
 SELECT
-    id, user_id, create_time, update_time, credential_id, public_key, aaguid
+    id, user_id, create_time, update_time, credential_id, public_key, aaguid, disabled, rp_id
 FROM
     passkeys
 WHERE
@@ -1478,6 +1567,8 @@ func (q *Queries) ListPasskeys(ctx context.Context, arg ListPasskeysParams) ([]P
 			&i.CredentialID,
 			&i.PublicKey,
 			&i.Aaguid,
+			&i.Disabled,
+			&i.RpID,
 		); err != nil {
 			return nil, err
 		}

@@ -111,6 +111,14 @@ FROM
 WHERE
     id = $1;
 
+-- name: GetProjectPasskeyRPIDs :many
+SELECT
+    *
+FROM
+    project_passkey_rp_ids
+WHERE
+    project_id = $1;
+
 -- name: GetProjectUISettings :one
 SELECT
     *
@@ -391,7 +399,7 @@ WHERE
 RETURNING
     *;
 
--- name: GetUserHasPasskey :one
+-- name: GetUserHasActivePasskey :one
 SELECT
     EXISTS (
         SELECT
@@ -399,7 +407,8 @@ SELECT
         FROM
             passkeys
         WHERE
-            user_id = $1);
+            user_id = $1
+            AND disabled = FALSE);
 
 -- name: UpdateIntermediateSessionRegisterPasskey :one
 UPDATE
