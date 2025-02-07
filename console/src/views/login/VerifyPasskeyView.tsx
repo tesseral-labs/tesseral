@@ -86,7 +86,7 @@ const VerifyPasskeyView: FC = () => {
         <CardTitle className="text-center">Verify Passkey</CardTitle>
       </CardHeader>
       <CardContent>
-        <p className="text-center text-sm text-muted-foreground">
+        <p className="text-sm text-muted-foreground">
           Follow the prompts on your device to continue{' '}
           {authType === AuthType.SignUp ? 'signing up' : 'logging in'} with your
           Passkey.

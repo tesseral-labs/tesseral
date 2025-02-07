@@ -94,7 +94,7 @@ const RegisterPasskeyView: FC = () => {
           <CardTitle>Register a Passkey</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-center text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             Follow the prompts on your device to register a new Passkey.
           </p>
         </CardContent>
