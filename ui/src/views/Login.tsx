@@ -23,12 +23,14 @@ import useSettings, { useLayout } from '@/lib/settings'
 import { cn } from '@/lib/utils'
 import { parseErrorMessage } from '@/lib/errors'
 import { toast } from 'sonner'
+import { AuthType, useAuthType } from '@/lib/auth'
 
 interface LoginProps {
   setView: Dispatch<SetStateAction<LoginViews>>
 }
 
 const Login: FC<LoginProps> = ({ setView }) => {
+  const authType = useAuthType()
   const layout = useLayout()
   const settings = useSettings()
 
@@ -102,7 +104,7 @@ const Login: FC<LoginProps> = ({ setView }) => {
 
   return (
     <>
-      <Title title="Login" />
+      <Title title={authType === AuthType.SignUp ? 'Sign up' : 'Log in'} />
 
       <Card
         className={cn(
@@ -112,7 +114,9 @@ const Login: FC<LoginProps> = ({ setView }) => {
       >
         <CardHeader>
           {(settings?.logInWithGoogle || settings?.logInWithMicrosoft) && (
-            <CardTitle className="text-center">Log in with</CardTitle>
+            <CardTitle className="text-center">
+              {authType === AuthType.SignUp ? 'Sign up' : 'Log in'} with
+            </CardTitle>
           )}
         </CardHeader>
 

@@ -101,7 +101,7 @@ const RegisterPassword: FC<RegisterPasswordProps> = ({ setView }) => {
               type="submit"
             >
               {submitting && <Loader />}
-              Set password
+              Continue
             </Button>
           </form>
         </CardContent>

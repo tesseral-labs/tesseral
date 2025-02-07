@@ -28,6 +28,7 @@ import Loader from './ui/loader'
 import { parseErrorMessage } from '@/lib/errors'
 import { toast } from 'sonner'
 import useSettings from '@/lib/settings'
+import { AuthType, useAuthType } from '@/lib/auth'
 
 interface EmailFormProps {
   disableLogInWithEmail?: boolean
@@ -43,7 +44,8 @@ const EmailForm: FC<EmailFormProps> = ({
   setView,
 }) => {
   const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/i
-  const settings = useSettings()
+
+  const authType = useAuthType()
 
   const createIntermediateSessionMutation = useMutation(
     createIntermediateSession,
@@ -147,7 +149,7 @@ const EmailForm: FC<EmailFormProps> = ({
         {!disableLogInWithEmail && (
           <Button type="submit" disabled={!emailIsValid || submitting}>
             {submitting && <Loader />}
-            Sign In
+            {authType === AuthType.SignUp ? 'Sign up' : 'Log in'}
           </Button>
         )}
       </form>

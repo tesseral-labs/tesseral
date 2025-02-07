@@ -18,6 +18,7 @@ import DashboardPage from './components/DashboardPage'
 import OrganizationSettingsPage from './pages/dashboard/OrganizationSettingsPage'
 import EditSAMLConnectionsPage from './pages/dashboard/EditSAMLConnectionsPage'
 import RegisterPasskey from './views/RegisterPasskey'
+import { AuthType } from './lib/auth'
 
 const queryClient = new QueryClient()
 
@@ -50,6 +51,10 @@ const AppWithRoutes: FC = () => {
                 element={<MicrosoftOAuthCallbackPage />}
               />
               <Route path="login" element={<LoginPage />} />
+              <Route
+                path="/signup"
+                element={<LoginPage authType={AuthType.SignUp} />}
+              />
             </Route>
 
             <Route

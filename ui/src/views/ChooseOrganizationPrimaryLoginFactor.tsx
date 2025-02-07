@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { useIntermediateOrganization } from '@/lib/auth'
+import { AuthType, useAuthType, useIntermediateOrganization } from '@/lib/auth'
 import useSettings, { useLayout } from '@/lib/settings'
 import { cn } from '@/lib/utils'
 import { LoginLayouts, LoginViews } from '@/lib/views'
@@ -31,6 +31,7 @@ interface ChooseOrganizationPrimaryLoginFactorProps {
 const ChooseOrganizationPrimaryLoginFactor: FC<
   ChooseOrganizationPrimaryLoginFactorProps
 > = ({ setView }) => {
+  const authType = useAuthType()
   const layout = useLayout()
   const organization = useIntermediateOrganization()
   const settings = useSettings()
@@ -89,10 +90,15 @@ const ChooseOrganizationPrimaryLoginFactor: FC<
         )}
       >
         <CardHeader>
-          <CardTitle>Choose a different login method</CardTitle>
+          <CardTitle>
+            Choose a different{' '}
+            {authType === AuthType.SignUp ? 'sign up' : 'log in'} method
+          </CardTitle>
           <CardDescription>
             <b>{organization?.displayName ?? 'This organization'}</b> only
-            supports the following login methods. Please select one below.
+            supports the following{' '}
+            {authType === AuthType.SignUp ? 'sign up' : 'log in'} methods.
+            Please select one below.
           </CardDescription>
         </CardHeader>
         <CardContent>
