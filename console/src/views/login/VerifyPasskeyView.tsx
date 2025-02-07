@@ -44,7 +44,6 @@ const VerifyPasskeyView: FC = () => {
         challenge: new Uint8Array(challengeResponse.challenge).buffer,
         allowCredentials,
         userVerification: 'preferred',
-        rpId: challengeResponse.rpId,
         timeout: 60000,
       }
       const credential = (await navigator.credentials.get({
