@@ -13,7 +13,7 @@ import { Input } from '@/components/ui/input'
 import { LoginView } from '@/lib/views'
 import { parseErrorMessage } from '@/lib/errors'
 import { toast } from 'sonner'
-import { useIntermediateOrganization } from '@/lib/auth'
+import { AuthType, useAuthType, useIntermediateOrganization } from '@/lib/auth'
 import Loader from '@/components/ui/loader'
 
 interface RegisterPasswordViewProps {
@@ -21,6 +21,7 @@ interface RegisterPasswordViewProps {
 }
 
 const RegisterPasswordView: FC<RegisterPasswordViewProps> = ({ setView }) => {
+  const authType = useAuthType()
   const organization = useIntermediateOrganization()
   const navigate = useNavigate()
 
@@ -71,7 +72,8 @@ const RegisterPasswordView: FC<RegisterPasswordViewProps> = ({ setView }) => {
         <CardHeader>
           <CardTitle className="text-center">Set your password</CardTitle>
           <p className="text-sm text-center mt-2 text-gray-500">
-            Please set your password to continue signing up.
+            Please set your password to continue{' '}
+            {authType === AuthType.SignUp ? 'signing up' : 'logging in'}.
           </p>
         </CardHeader>
         <CardContent className="flex flex-col items-center justify-center w-full">
@@ -93,7 +95,7 @@ const RegisterPasswordView: FC<RegisterPasswordViewProps> = ({ setView }) => {
               type="submit"
             >
               {submitting && <Loader />}
-              Set password
+              Continue
             </Button>
           </form>
         </CardContent>

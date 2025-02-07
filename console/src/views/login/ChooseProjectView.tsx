@@ -18,6 +18,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import TextDivider from '@/components/ui/text-divider'
 
 interface ChooseProjectViewProps {
   setIntermediateOrganization: Dispatch<
@@ -116,36 +118,34 @@ const ChooseProjectView: FC<ChooseProjectViewProps> = ({
 
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle className="text-center uppercase text-foreground font-semibold text-sm tracking-wide mt-2">
-            Choose a Project
-          </CardTitle>
+          <CardTitle>Choose a Project</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col items-center justify-center w-full">
-          <ul className="w-full p-0 border border-b-0 rounded-md">
-            {listOrganizationsResponse?.organizations?.map(
-              (organization, idx) => (
-                <li
-                  className={`py-2 px-4 border-b ${idx === listOrganizationsResponse?.organizations?.length ? 'rounded-b-md' : ''} hover:bg-gray-50 hover:text-dark cursor-pointer font-semibold`}
-                  key={organization.id}
+          <ul className="w-full p-0">
+            {listOrganizationsResponse?.organizations?.map((organization) => (
+              <li key={organization.id}>
+                <Button
+                  className="w-full"
                   onClick={() => handleOrganizationClick(organization)}
+                  variant="outline"
                 >
                   {organization.displayName}
-                </li>
-              ),
-            )}
+                </Button>
+              </li>
+            ))}
           </ul>
         </CardContent>
         <CardFooter>
-          <p className="text-sm text-center w-full cursor-pointer">
-            Or you can{' '}
-            <span
-              className="text-primary underline"
+          <div className="w-full">
+            <TextDivider className="w-full">Or you can</TextDivider>
+
+            <Button
+              className="w-full"
               onClick={() => setView(LoginView.CreateProject)}
             >
-              create a project
-            </span>
-            .
-          </p>
+              Create a Project
+            </Button>
+          </div>
         </CardFooter>
       </Card>
     </>

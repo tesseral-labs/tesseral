@@ -27,7 +27,7 @@ import { Label } from '../ui/label'
 import Loader from '../ui/loader'
 import { parseErrorMessage } from '@/lib/errors'
 import { toast } from 'sonner'
-import useSettings from '@/lib/settings'
+import { AuthType, useAuthType } from '@/lib/auth'
 
 interface EmailFormProps {
   disableLogInWithEmail?: boolean
@@ -42,6 +42,7 @@ const EmailForm: FC<EmailFormProps> = ({
   skipIntermediateSessionCreation = false,
   setView,
 }) => {
+  const authType = useAuthType()
   const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/i
 
   const createIntermediateSessionMutation = useMutation(
@@ -62,13 +63,14 @@ const EmailForm: FC<EmailFormProps> = ({
 
   const fetchSamlOrganizations = useCallback(
     debounce(async () => {
-      const { organizations } = await listSAMLOrganizationsMutation.mutateAsync(
-        {
-          email,
-        },
-      )
+      if (!skipListSAMLOrganizations) {
+        const { organizations } =
+          await listSAMLOrganizationsMutation.mutateAsync({
+            email,
+          })
 
-      setSamlOrganizations(organizations)
+        setSamlOrganizations(organizations)
+      }
     }, 300),
     [email],
   )
@@ -142,7 +144,7 @@ const EmailForm: FC<EmailFormProps> = ({
         {!disableLogInWithEmail && (
           <Button type="submit" disabled={!emailIsValid || submitting}>
             {submitting && <Loader />}
-            Sign In
+            {authType === AuthType.SignUp ? 'Sign up' : 'Log in'}
           </Button>
         )}
       </form>

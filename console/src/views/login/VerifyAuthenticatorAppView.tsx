@@ -95,7 +95,7 @@ const VerifyAuthenticatorAppView: FC = () => {
               type="submit"
             >
               {submitting && <Loader />}
-              Submit
+              Continue
             </Button>
           </form>
         </CardContent>

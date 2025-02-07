@@ -27,7 +27,7 @@ const ChooseAdditionalFactorView: FC<ChooseAdditionalFactorViewProps> = ({
             onClick={() =>
               setView(
                 org.userHasPasskey
-                  ? LoginView.VerifyPasskey
+                  ? LoginView.RegisterPasskey
                   : LoginView.RegisterPasskey,
               )
             }

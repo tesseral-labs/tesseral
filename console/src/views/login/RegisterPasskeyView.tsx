@@ -12,13 +12,11 @@ import {
   registerPasskey,
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
 import { parseErrorMessage } from '@/lib/errors'
-import { base64urlEncode, cn } from '@/lib/utils'
-import { useIntermediateOrganization } from '@/lib/auth'
+import { base64urlEncode } from '@/lib/utils'
 
 const RegisterPasskeyView: FC = () => {
   const encoder = new TextEncoder()
   const navigate = useNavigate()
-  const organization = useIntermediateOrganization()
 
   const exchangeIntermediateSessionForSessionMutation = useMutation(
     exchangeIntermediateSessionForSession,
@@ -85,7 +83,6 @@ const RegisterPasskeyView: FC = () => {
   useEffect(() => {
     ;(async () => {
       const credential = await registerCredential()
-      console.log(credential)
     })()
   }, [])
 

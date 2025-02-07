@@ -9,6 +9,17 @@ import {
   Organization,
 } from '@/gen/openauth/intermediate/v1/intermediate_pb'
 
+export enum AuthType {
+  LogIn = 'log_in',
+  SignUp = 'sign_up',
+}
+
+const authTypeContext = createContext<AuthType>(AuthType.LogIn)
+export const AuthTypeContextProvider = authTypeContext.Provider
+export const useAuthType = (): AuthType => {
+  return useContext(authTypeContext)
+}
+
 export const useIntermediateSession = (): IntermediateSession | undefined => {
   const { data: whoAmiRes } = useQuery(whoami)
 

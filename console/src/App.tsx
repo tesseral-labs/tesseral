@@ -30,6 +30,7 @@ import { ViewPasskeyPage } from '@/pages/passkeys/ViewPasskeyPage'
 import { OrganizationUserInvitesTab } from '@/pages/organizations/OrganizationUserInvitesTab'
 import { ViewUserInvitePage } from '@/pages/user-invites/ViewUserInvitePage'
 import { API_URL } from './config'
+import { AuthType } from './lib/auth'
 
 const queryClient = new QueryClient()
 
@@ -62,7 +63,10 @@ function AppWithinQueryClient() {
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<LoginPage />} />
+          <Route
+            path="/signup"
+            element={<LoginPage authType={AuthType.SignUp} />}
+          />
 
           <Route path="/" element={<PageShell />}>
             <Route path="" element={<HomePage />} />

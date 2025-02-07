@@ -4,6 +4,17 @@ import { useNavigate } from 'react-router'
 import { createContext, useContext, useState } from 'react'
 import { Organization } from '@/gen/openauth/intermediate/v1/intermediate_pb'
 
+enum AuthType {
+  LogIn = 'log_in',
+  SignUp = 'sign_up',
+}
+
+const authTypeContext = createContext<AuthType>(AuthType.LogIn)
+export const AuthTypeContextProvider = authTypeContext.Provider
+export const useAuthType = (): AuthType => {
+  return useContext(authTypeContext)
+}
+
 // how far in advance of its expiration an access token gets refreshed
 const ACCESS_TOKEN_REFRESH_THRESHOLD_SECONDS = 10
 

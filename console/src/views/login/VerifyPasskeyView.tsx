@@ -13,8 +13,10 @@ import {
   verifyPasskey,
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
 import { setAccessToken, setRefreshToken } from '@/auth'
+import { AuthType, useAuthType } from '@/lib/auth'
 
 const VerifyPasskeyView: FC = () => {
+  const authType = useAuthType()
   const navigate = useNavigate()
 
   const exchangeIntermediateSessionForSessionMutation = useMutation(
@@ -86,7 +88,8 @@ const VerifyPasskeyView: FC = () => {
       </CardHeader>
       <CardContent>
         <p className="text-center text-sm text-muted-foreground">
-          Follow the prompts on your device to continue logging in with your
+          Follow the prompts on your device to continue{' '}
+          {authType === AuthType.SignUp ? 'signing up' : 'logging in'} with your
           Passkey.
         </p>
       </CardContent>

@@ -15,6 +15,9 @@ import { useMutation } from '@connectrpc/connect-query'
 import { refresh } from '@/gen/openauth/frontend/v1/frontend-FrontendService_connectquery'
 import { setAccessToken, setRefreshToken } from '@/auth'
 import { Input } from '@/components/ui/input'
+import { exchangeIntermediateSessionForSession } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
+import { parseErrorMessage } from '@/lib/errors'
+import { toast } from 'sonner'
 
 interface CreateProjectViewProps {
   setView: Dispatch<React.SetStateAction<LoginView>>
@@ -25,31 +28,30 @@ const CreateProjectView: FC<CreateProjectViewProps> = ({ setView }) => {
 
   const [displayName, setDisplayName] = useState<string>('')
 
-  // const exchangeIntermediateSessionForNewOrganizationMutation = useMutation(
-  //   exchangeIntermediateSessionForNewOrganizationSession,
-  // )
-
+  // const createProjectMutation = useMutation(createProject)
+  const exchangeIntermediateSessionForSessionMutation = useMutation(
+    exchangeIntermediateSessionForSession,
+  )
   const refreshMutation = useMutation(refresh)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     try {
-      // const { refreshToken } =
-      //   await exchangeIntermediateSessionForNewProjectSession.mutateAsync(
-      //     {
-      //       displayName,
-      //     },
-      //   )
+      // const projectRes = await createProjectMutation.mutateAsync({ displayName })
 
-      // const { accessToken } = await refreshMutation.mutateAsync({})
+      const { refreshToken } =
+        await exchangeIntermediateSessionForSessionMutation.mutateAsync({})
 
-      // setRefreshToken(refreshToken)
-      // setAccessToken(accessToken)
+      const { accessToken } = await refreshMutation.mutateAsync({})
+
+      setRefreshToken(refreshToken)
+      setAccessToken(accessToken)
 
       navigate('/project-settings')
     } catch (error) {
-      console.error(error)
+      const message = parseErrorMessage(error)
+      toast.error(message)
     }
   }
 
@@ -57,30 +59,23 @@ const CreateProjectView: FC<CreateProjectViewProps> = ({ setView }) => {
     <>
       <Title title="Create a new Project" />
 
-      <Card className="w-[clamp(320px,50%,420px)] mx-auto">
+      <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle className="text-center uppercase text-foreground font-semibold text-sm tracking-wide mt-2">
-            Create a new Project
-          </CardTitle>
+          <CardTitle>Create a new Project</CardTitle>
         </CardHeader>
-        <CardContent className="flex flex-col items-center justify-center w-full">
-          <form className="flex flex-col items-center" onSubmit={handleSubmit}>
+        <CardContent>
+          <form className="w-full" onSubmit={handleSubmit}>
             <Input
-              className="text-sm rounded border border-border focus:border-primary w-[clamp(240px,50%,100%)] mb-2"
               id="displayName"
               placeholder="Acme, Inc."
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
             />
-            <Button
-              className="text-sm rounded border border-border focus:border-primary w-[clamp(240px,50%,100%)] mb-2"
-              type="submit"
-            >
+            <Button className="mt-2 w-full" type="submit">
               Create Project
             </Button>
           </form>
         </CardContent>
-        <CardFooter></CardFooter>
       </Card>
     </>
   )

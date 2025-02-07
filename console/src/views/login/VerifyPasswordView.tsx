@@ -8,16 +8,24 @@ import {
   exchangeIntermediateSessionForSession,
   verifyPassword,
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
-import { useIntermediateOrganization, useIntermediateSession } from '@/lib/auth'
+import {
+  AuthType,
+  useAuthType,
+  useIntermediateOrganization,
+  useIntermediateSession,
+} from '@/lib/auth'
 import { useMutation } from '@connectrpc/connect-query'
 import { setAccessToken, setRefreshToken } from '@/auth'
 import { Input } from '@/components/ui/input'
+import { parseErrorMessage } from '@/lib/errors'
+import { toast } from 'sonner'
 
 interface VerifyPasswordViewProps {
   setView: Dispatch<React.SetStateAction<LoginView>>
 }
 
 const VerifyPasswordView: FC<VerifyPasswordViewProps> = ({ setView }) => {
+  const authType = useAuthType()
   const intermediateSession = useIntermediateSession()
   const organization = useIntermediateOrganization()
 
@@ -78,8 +86,10 @@ const VerifyPasswordView: FC<VerifyPasswordViewProps> = ({ setView }) => {
 
       navigate('/project-settings')
     } catch (error) {
-      // TODO: Show an error message to the user
-      console.error(error)
+      const message = parseErrorMessage(error)
+      toast.error('Could not verify password', {
+        description: message,
+      })
     }
   }
 
@@ -87,13 +97,12 @@ const VerifyPasswordView: FC<VerifyPasswordViewProps> = ({ setView }) => {
     <>
       <Title title="Verify Email Address" />
 
-      <Card className="w-[clamp(320px,50%,420px)] mx-auto">
+      <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle className="text-center uppercase text-foreground font-semibold text-sm tracking-wide mt-2">
-            Password Verification
-          </CardTitle>
+          <CardTitle>Password Verification</CardTitle>
           <p className="text-sm text-center mt-2 text-gray-500">
-            Please enter your password to continue logging in.
+            Please enter your password to continue{' '}
+            {authType === AuthType.SignUp ? 'signing up' : 'logging in'}.
           </p>
         </CardHeader>
         <CardContent>
@@ -107,7 +116,7 @@ const VerifyPasswordView: FC<VerifyPasswordViewProps> = ({ setView }) => {
               onChange={(e) => setPassword(e.target.value)}
             />
             <Button className="mt-2 w-full" type="submit">
-              Log In
+              Continue
             </Button>
           </form>
         </CardContent>
