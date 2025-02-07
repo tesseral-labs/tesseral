@@ -48,7 +48,7 @@ const VerifyAuthenticatorAppView: FC = () => {
       setRefreshToken(refreshToken)
       setSubmitting(false)
 
-      navigate('/settings')
+      navigate('/')
     } catch (error) {
       setSubmitting(false)
       const message = parseErrorMessage(error)

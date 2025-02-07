@@ -19,6 +19,7 @@ import { setAccessToken, setRefreshToken } from '@/auth'
 import { Input } from '@/components/ui/input'
 import { parseErrorMessage } from '@/lib/errors'
 import { toast } from 'sonner'
+import Loader from '@/components/ui/loader'
 
 interface VerifyPasswordViewProps {
   setView: Dispatch<React.SetStateAction<LoginView>>
@@ -33,6 +34,7 @@ const VerifyPasswordView: FC<VerifyPasswordViewProps> = ({ setView }) => {
   const navigate = useNavigate()
 
   const [password, setPassword] = useState<string>('')
+  const [submitting, setSubmitting] = useState<boolean>(false)
 
   const exchangeIntermediateSessionForSessionMutation = useMutation(
     exchangeIntermediateSessionForSession,
@@ -60,6 +62,7 @@ const VerifyPasswordView: FC<VerifyPasswordViewProps> = ({ setView }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setSubmitting(true)
 
     try {
       await verifyPasswordMutation.mutateAsync({
@@ -68,9 +71,6 @@ const VerifyPasswordView: FC<VerifyPasswordViewProps> = ({ setView }) => {
       })
 
       const nextView = deriveNextView()
-
-      console.log('nextView:', nextView)
-
       if (nextView) {
         setView(nextView)
         return
@@ -84,8 +84,10 @@ const VerifyPasswordView: FC<VerifyPasswordViewProps> = ({ setView }) => {
       setAccessToken(accessToken)
       setRefreshToken(refreshToken)
 
-      navigate('/project-settings')
+      setSubmitting(false)
+      navigate('/')
     } catch (error) {
+      setSubmitting(false)
       const message = parseErrorMessage(error)
       toast.error('Could not verify password', {
         description: message,
@@ -100,7 +102,7 @@ const VerifyPasswordView: FC<VerifyPasswordViewProps> = ({ setView }) => {
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle>Password Verification</CardTitle>
-          <p className="text-sm text-center mt-2 text-gray-500">
+          <p className="text-sm mt-2 text-muted-foreground">
             Please enter your password to continue{' '}
             {authType === AuthType.SignUp ? 'signing up' : 'logging in'}.
           </p>
@@ -116,6 +118,7 @@ const VerifyPasswordView: FC<VerifyPasswordViewProps> = ({ setView }) => {
               onChange={(e) => setPassword(e.target.value)}
             />
             <Button className="mt-2 w-full" type="submit">
+              {submitting && <Loader />}
               Continue
             </Button>
           </form>

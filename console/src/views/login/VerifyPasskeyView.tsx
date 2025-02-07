@@ -66,7 +66,7 @@ const VerifyPasskeyView: FC = () => {
       setAccessToken(accessToken)
       setRefreshToken(refreshToken)
 
-      navigate('/settings')
+      navigate('/')
     } catch (error) {
       const message = parseErrorMessage(error)
       toast.error('Could not verify passkey', {

@@ -1,4 +1,4 @@
-import React, { Dispatch, FC, SetStateAction } from 'react'
+import React, { Dispatch, FC, SetStateAction, useState } from 'react'
 import { LoginView } from '@/lib/views'
 import { useNavigate } from 'react-router'
 import {
@@ -20,6 +20,9 @@ import {
 } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import TextDivider from '@/components/ui/text-divider'
+import { parseErrorMessage } from '@/lib/errors'
+import { toast } from 'sonner'
+import Loader from '@/components/ui/loader'
 
 interface ChooseProjectViewProps {
   setIntermediateOrganization: Dispatch<
@@ -33,6 +36,8 @@ const ChooseProjectView: FC<ChooseProjectViewProps> = ({
   setView,
 }) => {
   const navigate = useNavigate()
+
+  const [submitting, setSubmitting] = useState<boolean>(false)
 
   const { data: listOrganizationsResponse } = useQuery(listOrganizations)
   const exchangeIntermediateSessionForSessionMutation = useMutation(
@@ -81,6 +86,7 @@ const ChooseProjectView: FC<ChooseProjectViewProps> = ({
   }
 
   const handleOrganizationClick = async (organization: Organization) => {
+    setSubmitting(true)
     try {
       await setOrganizationMutation.mutateAsync({
         organizationId: organization.id,
@@ -105,10 +111,14 @@ const ChooseProjectView: FC<ChooseProjectViewProps> = ({
       setAccessToken(accessToken)
       setRefreshToken(refreshToken)
 
+      setSubmitting(false)
       navigate('/settings')
-    } catch (e) {
-      // TODO: Display error message to user
-      console.error('Error exchanging session for tokens', e)
+    } catch (error) {
+      setSubmitting(false)
+      const message = parseErrorMessage(error)
+      toast.error('Could not select Project', {
+        description: message,
+      })
     }
   }
 
@@ -129,6 +139,7 @@ const ChooseProjectView: FC<ChooseProjectViewProps> = ({
                   onClick={() => handleOrganizationClick(organization)}
                   variant="outline"
                 >
+                  {submitting && <Loader />}
                   {organization.displayName}
                 </Button>
               </li>

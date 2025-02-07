@@ -12,6 +12,8 @@ import TextDivider from '@/components/ui/text-divider'
 import EmailForm from '@/components/login/EmailForm'
 import { AuthType, useAuthType } from '@/lib/auth'
 import { Title } from '@/components/Title'
+import { parseErrorMessage } from '@/lib/errors'
+import { toast } from 'sonner'
 
 interface StartLoginViewProps {
   setView: Dispatch<React.SetStateAction<LoginView>>
@@ -35,8 +37,10 @@ const StartLoginView: FC<StartLoginViewProps> = ({ setView }) => {
       // this sets a cookie that subsequent requests use
       await createIntermediateSessionMutation.mutateAsync({})
     } catch (error) {
-      // TODO: Handle errors on screen once an error handling strategy is in place.
-      console.error(error)
+      const message = parseErrorMessage(error)
+      toast.error('Could not initiate log in', {
+        description: message,
+      })
     }
 
     try {
@@ -46,8 +50,10 @@ const StartLoginView: FC<StartLoginViewProps> = ({ setView }) => {
 
       window.location.href = url
     } catch (error) {
-      // TODO: Handle errors on screen once an error handling strategy is in place.
-      console.error(error)
+      const message = parseErrorMessage(error)
+      toast.error('Could not log in with Google', {
+        description: message,
+      })
     }
   }
 
@@ -59,8 +65,10 @@ const StartLoginView: FC<StartLoginViewProps> = ({ setView }) => {
       // this sets a cookie that subsequent requests use
       await createIntermediateSessionMutation.mutateAsync({})
     } catch (error) {
-      // TODO: Handle errors on screen once an error handling strategy is in place.
-      console.error(error)
+      const message = parseErrorMessage(error)
+      toast.error('Could not initiate log in', {
+        description: message,
+      })
     }
 
     try {
@@ -70,8 +78,10 @@ const StartLoginView: FC<StartLoginViewProps> = ({ setView }) => {
 
       window.location.href = url
     } catch (error) {
-      // TODO: Handle errors on screen once an error handling strategy is in place.
-      console.error(error)
+      const message = parseErrorMessage(error)
+      toast.error('Could not log in with Microsoft', {
+        description: message,
+      })
     }
   }
 

@@ -17,6 +17,8 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from '@/components/ui/input-otp'
+import { parseErrorMessage } from '@/lib/errors'
+import { toast } from 'sonner'
 
 interface VerifyEmailViewProps {
   setView: Dispatch<React.SetStateAction<LoginView>>
@@ -39,7 +41,10 @@ const VerifyEmailView: FC<VerifyEmailViewProps> = ({ setView }) => {
 
       setView(LoginView.ChooseProject)
     } catch (error) {
-      console.error(error)
+      const message = parseErrorMessage(error)
+      toast.error('Could not verify email address', {
+        description: message,
+      })
     }
   }
 

@@ -25,7 +25,6 @@ import Loader from '@/components/ui/loader'
 
 const RegisterAuthenticatorAppView: FC = () => {
   const navigate = useNavigate()
-  const organization = useIntermediateOrganization()
 
   const [code, setCode] = useState<string>('')
   const [qrcode, setQRCode] = useState<string | null>(null)

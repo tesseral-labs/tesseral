@@ -18,6 +18,7 @@ import { Input } from '@/components/ui/input'
 import { exchangeIntermediateSessionForSession } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
 import { parseErrorMessage } from '@/lib/errors'
 import { toast } from 'sonner'
+import Loader from '@/components/ui/loader'
 
 interface CreateProjectViewProps {
   setView: Dispatch<React.SetStateAction<LoginView>>
@@ -27,6 +28,7 @@ const CreateProjectView: FC<CreateProjectViewProps> = ({ setView }) => {
   const navigate = useNavigate()
 
   const [displayName, setDisplayName] = useState<string>('')
+  const [submitting, setSubmitting] = useState<boolean>(false)
 
   // const createProjectMutation = useMutation(createProject)
   const exchangeIntermediateSessionForSessionMutation = useMutation(
@@ -36,6 +38,7 @@ const CreateProjectView: FC<CreateProjectViewProps> = ({ setView }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setSubmitting(true)
 
     try {
       // const projectRes = await createProjectMutation.mutateAsync({ displayName })
@@ -48,8 +51,10 @@ const CreateProjectView: FC<CreateProjectViewProps> = ({ setView }) => {
       setRefreshToken(refreshToken)
       setAccessToken(accessToken)
 
-      navigate('/project-settings')
+      setSubmitting(false)
+      navigate('/')
     } catch (error) {
+      setSubmitting(false)
       const message = parseErrorMessage(error)
       toast.error(message)
     }
@@ -72,6 +77,7 @@ const CreateProjectView: FC<CreateProjectViewProps> = ({ setView }) => {
               onChange={(e) => setDisplayName(e.target.value)}
             />
             <Button className="mt-2 w-full" type="submit">
+              {submitting && <Loader />}
               Create Project
             </Button>
           </form>
