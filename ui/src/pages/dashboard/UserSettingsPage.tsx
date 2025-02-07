@@ -194,6 +194,8 @@ const UserSettingsPage: FC = () => {
             .attestationObject,
         ),
       })
+
+      await refetchMyPasskeys()
     } catch (error) {
       const message = parseErrorMessage(error)
       toast.error('Could not register passkey', {
