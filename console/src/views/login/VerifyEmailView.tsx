@@ -54,10 +54,8 @@ const VerifyEmailView: FC<VerifyEmailViewProps> = ({ setView }) => {
 
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle className="text-center uppercase text-foreground font-semibold text-sm tracking-wide mt-2">
-            Verify Email Address
-          </CardTitle>
-          <p className="text-sm text-center mt-2 text-gray-500">
+          <CardTitle>Verify Email Address</CardTitle>
+          <p className="text-sm mt-2 text-muted-foreground">
             Please enter the verification code sent to{' '}
             <b>{intermediateSession?.email}</b> below.
           </p>
