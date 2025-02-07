@@ -14,6 +14,7 @@ import { AuthType, useAuthType } from '@/lib/auth'
 import { Title } from '@/components/Title'
 import { parseErrorMessage } from '@/lib/errors'
 import { toast } from 'sonner'
+import useSettings from '@/lib/settings'
 
 interface StartLoginViewProps {
   setView: Dispatch<React.SetStateAction<LoginView>>
@@ -21,6 +22,8 @@ interface StartLoginViewProps {
 
 const StartLoginView: FC<StartLoginViewProps> = ({ setView }) => {
   const authType = useAuthType()
+  const settings = useSettings()
+
   const createIntermediateSessionMutation = useMutation(
     createIntermediateSession,
   )
@@ -97,23 +100,35 @@ const StartLoginView: FC<StartLoginViewProps> = ({ setView }) => {
         </CardHeader>
         <CardContent className="flex flex-col items-center w-full">
           <div className="w-full grid grid-cols-2 gap-6">
-            <OAuthButton
-              className="w-full"
-              method={OAuthMethods.google}
-              onClick={handleGoogleOAuthLogin}
-              variant="outline"
-            />
-            <OAuthButton
-              className="mt-4w-full"
-              method={OAuthMethods.microsoft}
-              onClick={handleMicrosoftOAuthLogin}
-              variant="outline"
-            />
+            {settings?.logInWithGoogle && (
+              <OAuthButton
+                className="w-full"
+                method={OAuthMethods.google}
+                onClick={handleGoogleOAuthLogin}
+                variant="outline"
+              />
+            )}
+            {settings?.logInWithMicrosoft && (
+              <OAuthButton
+                className="mt-4w-full"
+                method={OAuthMethods.microsoft}
+                onClick={handleMicrosoftOAuthLogin}
+                variant="outline"
+              />
+            )}
           </div>
 
-          <TextDivider>Or continue with email</TextDivider>
+          {(settings?.logInWithEmail || settings?.logInWithSaml) && (
+            <>
+              <TextDivider>Or continue with email</TextDivider>
 
-          <EmailForm setView={setView} />
+              <EmailForm
+                disableLogInWithEmail={!settings?.logInWithEmail}
+                skipListSAMLOrganizations={!settings?.logInWithSaml}
+                setView={setView}
+              />
+            </>
+          )}
         </CardContent>
       </Card>
     </>
