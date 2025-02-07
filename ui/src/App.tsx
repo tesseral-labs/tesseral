@@ -52,7 +52,7 @@ const AppWithRoutes: FC = () => {
               />
               <Route path="login" element={<LoginPage />} />
               <Route
-                path="/signup"
+                path="signup"
                 element={<LoginPage authType={AuthType.SignUp} />}
               />
             </Route>

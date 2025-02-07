@@ -147,9 +147,9 @@ func (s *Store) ListOrganizations(ctx context.Context, req *intermediatev1.ListO
 			org.UserHasPassword = existingUser.PasswordBcrypt != nil
 			org.UserHasAuthenticatorApp = existingUser.AuthenticatorAppSecretCiphertext != nil
 
-			hasPasskeys, err := q.GetUserHasPasskey(ctx, existingUser.ID)
+			hasPasskeys, err := q.GetUserHasActivePasskey(ctx, existingUser.ID)
 			if err != nil {
-				return nil, fmt.Errorf("get user has passkey: %w", err)
+				return nil, fmt.Errorf("get user has active passkey: %w", err)
 			}
 
 			org.UserHasPasskey = hasPasskeys

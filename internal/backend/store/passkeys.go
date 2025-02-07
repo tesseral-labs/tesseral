@@ -134,11 +134,13 @@ func parsePasskey(qPasskey queries.Passkey) *backendv1.Passkey {
 		UserId:       idformat.User.Format(qPasskey.UserID),
 		CreateTime:   timestamppb.New(*qPasskey.CreateTime),
 		UpdateTime:   timestamppb.New(*qPasskey.UpdateTime),
+		Disabled:     qPasskey.Disabled,
 		CredentialId: qPasskey.CredentialID,
 		PublicKeyPkix: string(pem.EncodeToMemory(&pem.Block{
 			Type:  "PUBLIC KEY",
 			Bytes: qPasskey.PublicKey,
 		})),
 		Aaguid: qPasskey.Aaguid,
+		RpId:   qPasskey.RpID,
 	}
 }

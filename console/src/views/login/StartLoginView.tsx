@@ -7,7 +7,13 @@ import {
   getGoogleOAuthRedirectURL,
   getMicrosoftOAuthRedirectURL,
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import TextDivider from '@/components/ui/text-divider'
 import EmailForm from '@/components/login/EmailForm'
 import { AuthType, useAuthType } from '@/lib/auth'
@@ -15,6 +21,7 @@ import { Title } from '@/components/Title'
 import { parseErrorMessage } from '@/lib/errors'
 import { toast } from 'sonner'
 import useSettings from '@/lib/settings'
+import { Link } from 'react-router-dom'
 
 interface StartLoginViewProps {
   setView: Dispatch<React.SetStateAction<LoginView>>
@@ -130,6 +137,25 @@ const StartLoginView: FC<StartLoginViewProps> = ({ setView }) => {
             </>
           )}
         </CardContent>
+        <CardFooter>
+          <div className="text-sm text-center text-muted-foreground w-full">
+            {authType === AuthType.SignUp ? (
+              <>
+                Already have an account?{' '}
+                <Link className="underline" to="/login">
+                  Log in
+                </Link>
+              </>
+            ) : (
+              <>
+                Don't have an account?{' '}
+                <Link className="underline" to="/signup">
+                  Sign up
+                </Link>
+              </>
+            )}
+          </div>
+        </CardFooter>
       </Card>
     </>
   )

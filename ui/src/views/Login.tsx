@@ -24,6 +24,7 @@ import { cn } from '@/lib/utils'
 import { parseErrorMessage } from '@/lib/errors'
 import { toast } from 'sonner'
 import { AuthType, useAuthType } from '@/lib/auth'
+import { Link } from 'react-router-dom'
 
 interface LoginProps {
   setView: Dispatch<SetStateAction<LoginViews>>
@@ -156,6 +157,25 @@ const Login: FC<LoginProps> = ({ setView }) => {
             />
           )}
         </CardContent>
+        <CardFooter>
+          <div className="text-sm text-center text-muted-foreground w-full">
+            {authType === AuthType.SignUp ? (
+              <>
+                Already have an account?{' '}
+                <Link className="underline" to="/login">
+                  Log in
+                </Link>
+              </>
+            ) : (
+              <>
+                Don't have an account?{' '}
+                <Link className="underline" to="/signup">
+                  Sign up
+                </Link>
+              </>
+            )}
+          </div>
+        </CardFooter>
       </Card>
     </>
   )

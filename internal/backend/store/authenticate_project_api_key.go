@@ -45,5 +45,10 @@ func (s *Store) AuthenticateProjectAPIKey(ctx context.Context, bearerToken strin
 		return nil, nil, fmt.Errorf("get project by id: %w", err)
 	}
 
-	return parseProjectAPIKey(qProjectAPIKey), parseProject(&qProject), nil
+	qProjectPasskeyRPIDs, err := q.GetProjectPasskeyRPIDs(ctx, qProject.ID)
+	if err != nil {
+		return nil, nil, fmt.Errorf("get project passkey rp ids: %w", err)
+	}
+
+	return parseProjectAPIKey(qProjectAPIKey), parseProject(&qProject, qProjectPasskeyRPIDs), nil
 }

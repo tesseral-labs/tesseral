@@ -5,10 +5,17 @@ INSERT INTO projects (id, display_name, log_in_with_google, log_in_with_microsof
 	VALUES ('56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2'::uuid, 'Tesseral Local Development', true, true, true, 'auth.console.tesseral.example.com', 'auth.console.tesseral.example.com');
 
 -- Create the Dogfood Project's backing organization
-INSERT INTO organizations (id, display_name, project_id, saml_enabled, scim_enabled, log_in_with_password)
+INSERT INTO organizations (id, display_name, project_id, log_in_with_saml, scim_enabled, log_in_with_password)
   VALUES ('7a76decb-6d79-49ce-9449-34fcc53151df'::uuid, 'project_54vwf0clhh0caqe20eujxgpeq Backing Organization', '56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2', false, false, true);
 
 UPDATE projects SET organization_id = '7a76decb-6d79-49ce-9449-34fcc53151df'::uuid where id = '56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2'::uuid;
+
+-- have dogfood project support passkeys from auth.console.tesseral.example.com (vault) and console.tesseral.example.com (self-built login flow)
+insert into
+    project_passkey_rp_ids (project_id, rp_id)
+values
+    ('56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2', 'auth.console.tesseral.example.com'),
+    ('56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2', 'console.tesseral.example.com');
 
 -- Create a user in the dogfood project
 INSERT INTO users (id, email, password_bcrypt, organization_id, is_owner)
@@ -37,10 +44,12 @@ insert into projects (id, log_in_with_password, log_in_with_google, log_in_with_
     values ('7abd6d2e-c314-456e-b9c5-bdbb62f0345f'::uuid, true, false, false, 'Customer One', 'auth.customer1.example.com', 'auth.customer1.example.com');
 
 -- Create customer1's project's backing organization
-INSERT INTO organizations (id, display_name, project_id, saml_enabled, scim_enabled, log_in_with_password)
+INSERT INTO organizations (id, display_name, project_id, log_in_with_saml, scim_enabled, log_in_with_password)
 VALUES ('8648d50b-baa1-4929-be0f-bc7238f685ab'::uuid, 'project_79ldwwwzybn66dxa91udi7mn3 Backing Organization', '56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2', false, false, true);
 
 update projects set organization_id = '8648d50b-baa1-4929-be0f-bc7238f685ab'::uuid where id = '7abd6d2e-c314-456e-b9c5-bdbb62f0345f'::uuid;
+
+insert into project_passkey_rp_ids (project_id, rp_id) values ('7abd6d2e-c314-456e-b9c5-bdbb62f0345f', 'auth.customer1.example.com');
 
 -- Create a user in customer1
 INSERT INTO users (id, email, password_bcrypt, organization_id, is_owner)
@@ -61,10 +70,12 @@ insert into projects (id, log_in_with_password, log_in_with_google, log_in_with_
 values ('24ba0dd5-e178-460e-8f7a-f3f72cf6a1e7'::uuid, true, false, false, 'Customer Two', 'auth.customer2.example.com', 'auth.customer2.example.com');
 
 -- Create customer1's project's backing organization
-INSERT INTO organizations (id, display_name, project_id, saml_enabled, scim_enabled, log_in_with_password)
+INSERT INTO organizations (id, display_name, project_id, log_in_with_saml, scim_enabled, log_in_with_password)
 VALUES ('8b5972b6-c878-4c6c-a351-9e01da20f776'::uuid, 'project_269wse1l6u0jnvs8afpq44f6v Backing Organization', '56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2', false, false, true);
 
 update projects set organization_id = '8b5972b6-c878-4c6c-a351-9e01da20f776'::uuid where id = '24ba0dd5-e178-460e-8f7a-f3f72cf6a1e7'::uuid;
+
+insert into project_passkey_rp_ids (project_id, rp_id) values ('24ba0dd5-e178-460e-8f7a-f3f72cf6a1e7', 'auth.customer2.example.com');
 
 -- Create a user in customer2
 INSERT INTO users (id, email, password_bcrypt, organization_id, is_owner)

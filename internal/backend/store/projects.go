@@ -32,7 +32,12 @@ func (s *Store) GetProject(ctx context.Context, req *backendv1.GetProjectRequest
 		return nil, err
 	}
 
-	return &backendv1.GetProjectResponse{Project: parseProject(&project)}, nil
+	qProjectPasskeyRPIDs, err := q.GetProjectPasskeyRPIDs(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get project passkey rp ids: %w", err)
+	}
+
+	return &backendv1.GetProjectResponse{Project: parseProject(&project, qProjectPasskeyRPIDs)}, nil
 }
 
 func (s *Store) DisableProjectLogins(ctx context.Context, req *backendv1.DisableProjectLoginsRequest) (*backendv1.DisableProjectLoginsResponse, error) {
@@ -242,17 +247,61 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 		}
 	}
 
+	// only update project passkey RP IDs if mentioned in request
+	if len(req.Project.PasskeyRpIds) > 0 {
+		// dedupe RP IDs, and always include the current vault domain in list
+		passkeyRPIDs := map[string]struct{}{*qUpdatedProject.AuthDomain: {}}
+		for _, rpID := range req.Project.PasskeyRpIds {
+			passkeyRPIDs[rpID] = struct{}{}
+		}
+
+		if err := q.DeleteProjectPasskeyRPIDs(ctx, authn.ProjectID(ctx)); err != nil {
+			return nil, fmt.Errorf("delete project passkey rp ids: %w", err)
+		}
+
+		for rpID := range passkeyRPIDs {
+			if _, err := q.CreateProjectPasskeyRPID(ctx, queries.CreateProjectPasskeyRPIDParams{
+				ProjectID: authn.ProjectID(ctx),
+				RpID:      rpID,
+			}); err != nil {
+				return nil, fmt.Errorf("create project passkey rp id: %w", err)
+			}
+		}
+
+		// disable all existing passkeys in project outside new list of RP IDs
+		if err := q.DisablePasskeysOutsideProjectRPIDs(ctx, authn.ProjectID(ctx)); err != nil {
+			return nil, fmt.Errorf("disable passkeys outside project rp ids: %w", err)
+		}
+	}
+
+	qProjectPasskeyRPIDs, err := q.GetProjectPasskeyRPIDs(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get project passkey rp ids: %w", err)
+	}
+
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return &backendv1.UpdateProjectResponse{Project: parseProject(&qUpdatedProject)}, nil
+	return &backendv1.UpdateProjectResponse{Project: parseProject(&qUpdatedProject, qProjectPasskeyRPIDs)}, nil
 }
 
-func parseProject(qProject *queries.Project) *backendv1.Project {
+func parseProject(qProject *queries.Project, qProjectPasskeyRPIDs []queries.ProjectPasskeyRpID) *backendv1.Project {
+	// sanity check
+	for _, qProjectPasskeyRPID := range qProjectPasskeyRPIDs {
+		if qProjectPasskeyRPID.ProjectID != qProject.ID {
+			panic(fmt.Errorf("project passkey rp id project id mismatch: %s != %s", qProjectPasskeyRPID.ProjectID, qProject.ID))
+		}
+	}
+
 	authDomain := derefOrEmpty(qProject.AuthDomain)
 	if qProject.CustomAuthDomain != nil {
 		authDomain = *qProject.CustomAuthDomain
+	}
+
+	var passkeyRPIDs []string
+	for _, qProjectPasskeyRPID := range qProjectPasskeyRPIDs {
+		passkeyRPIDs = append(passkeyRPIDs, qProjectPasskeyRPID.RpID)
 	}
 
 	return &backendv1.Project{
@@ -270,5 +319,6 @@ func parseProject(qProject *queries.Project) *backendv1.Project {
 		GoogleOauthClientId:       derefOrEmpty(qProject.GoogleOauthClientID),
 		MicrosoftOauthClientId:    derefOrEmpty(qProject.MicrosoftOauthClientID),
 		AuthDomain:                &authDomain,
+		PasskeyRpIds:              passkeyRPIDs,
 	}
 }

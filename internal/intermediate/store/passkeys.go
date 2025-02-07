@@ -37,7 +37,6 @@ func (s *Store) GetPasskeyOptions(ctx context.Context, req *intermediatev1.GetPa
 	}
 
 	return &intermediatev1.GetPasskeyOptionsResponse{
-		RpId:            *qProject.AuthDomain,
 		RpName:          qProject.DisplayName,
 		UserId:          fmt.Sprintf("%s|%s", *qIntermediateSession.Email, idformat.Organization.Format(*qIntermediateSession.OrganizationID)),
 		UserDisplayName: *qIntermediateSession.Email,
@@ -55,13 +54,18 @@ func (s *Store) RegisterPasskey(ctx context.Context, req *intermediatev1.Registe
 		return nil, fmt.Errorf("check should register passkey: %w", err)
 	}
 
-	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	qProjectPasskeyRPIDs, err := q.GetProjectPasskeyRPIDs(ctx, authn.ProjectID(ctx))
 	if err != nil {
-		return nil, fmt.Errorf("get project by id: %w", err)
+		return nil, fmt.Errorf("get project passkey rp ids: %w", err)
+	}
+
+	var rpIDs []string
+	for _, qProjectPasskeyRPID := range qProjectPasskeyRPIDs {
+		rpIDs = append(rpIDs, qProjectPasskeyRPID.RpID)
 	}
 
 	cred, err := webauthn.Parse(&webauthn.ParseRequest{
-		RPID:              *qProject.AuthDomain,
+		RPIDs:             rpIDs,
 		AttestationObject: req.AttestationObject,
 	})
 	if err != nil {
@@ -95,11 +99,6 @@ func (s *Store) IssuePasskeyChallenge(ctx context.Context, req *intermediatev1.I
 		return nil, err
 	}
 	defer rollback()
-
-	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
-	if err != nil {
-		return nil, fmt.Errorf("get project by id: %w", err)
-	}
 
 	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))
 	if err != nil {
@@ -142,7 +141,6 @@ func (s *Store) IssuePasskeyChallenge(ctx context.Context, req *intermediatev1.I
 	}
 
 	return &intermediatev1.IssuePasskeyChallengeResponse{
-		RpId:          *qProject.AuthDomain,
 		CredentialIds: credentialIDs,
 		Challenge:     challenge[:],
 	}, nil
@@ -154,11 +152,6 @@ func (s *Store) VerifyPasskey(ctx context.Context, req *intermediatev1.VerifyPas
 		return nil, err
 	}
 	defer rollback()
-
-	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
-	if err != nil {
-		return nil, fmt.Errorf("get project by id: %w", err)
-	}
 
 	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))
 	if err != nil {
@@ -191,13 +184,22 @@ func (s *Store) VerifyPasskey(ctx context.Context, req *intermediatev1.VerifyPas
 		return nil, fmt.Errorf("marshal public key: %w", err)
 	}
 
+	qProjectPasskeyRPIDs, err := q.GetProjectPasskeyRPIDs(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get project passkey rp ids: %w", err)
+	}
+
+	var rpIDs []string
+	for _, qProjectPasskeyRPID := range qProjectPasskeyRPIDs {
+		rpIDs = append(rpIDs, qProjectPasskeyRPID.RpID)
+	}
+
 	credential := webauthn.Credential{
 		PublicKey: publicKey,
 	}
 
 	if err := credential.Verify(&webauthn.VerifyRequest{
-		RPID:              *qProject.AuthDomain,
-		Origin:            fmt.Sprintf("https://%s", *qProject.AuthDomain),
+		RPIDs:             rpIDs,
 		ChallengeSHA256:   qIntermediateSession.PasskeyVerifyChallengeSha256,
 		ClientDataJSON:    req.ClientDataJson,
 		AuthenticatorData: req.AuthenticatorData,
@@ -219,7 +221,7 @@ func (s *Store) VerifyPasskey(ctx context.Context, req *intermediatev1.VerifyPas
 
 func (s *Store) checkShouldRegisterPasskey(ctx context.Context, q *queries.Queries) error {
 	// don't register passkeys if you're already matching a user, and that user
-	// has at least one passkey
+	// has at least one active passkey
 
 	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))
 	if err != nil {
@@ -244,14 +246,14 @@ func (s *Store) checkShouldRegisterPasskey(ctx context.Context, q *queries.Queri
 		return nil
 	}
 
-	// does the matching user have any passkeys?
-	hasPasskeys, err := q.GetUserHasPasskey(ctx, qUser.ID)
+	// does the matching user have any active passkeys?
+	hasPasskeys, err := q.GetUserHasActivePasskey(ctx, qUser.ID)
 	if err != nil {
 		return fmt.Errorf("get user has passkey: %w", err)
 	}
 
 	if hasPasskeys {
-		return apierror.NewFailedPreconditionError("user already has passkeys", nil)
+		return apierror.NewFailedPreconditionError("user already has active passkeys", nil)
 	}
 	return nil
 }
