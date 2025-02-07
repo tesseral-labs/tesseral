@@ -13,8 +13,8 @@ import (
 )
 
 const createPasskey = `-- name: CreatePasskey :one
-INSERT INTO passkeys (id, user_id, credential_id, public_key, aaguid)
-    VALUES ($1, $2, $3, $4, $5)
+INSERT INTO passkeys (id, user_id, credential_id, public_key, aaguid, rp_id)
+    VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING
     id, user_id, create_time, update_time, credential_id, public_key, aaguid, disabled, rp_id
 `
@@ -25,6 +25,7 @@ type CreatePasskeyParams struct {
 	CredentialID []byte
 	PublicKey    []byte
 	Aaguid       string
+	RpID         string
 }
 
 func (q *Queries) CreatePasskey(ctx context.Context, arg CreatePasskeyParams) (Passkey, error) {
@@ -34,6 +35,7 @@ func (q *Queries) CreatePasskey(ctx context.Context, arg CreatePasskeyParams) (P
 		arg.CredentialID,
 		arg.PublicKey,
 		arg.Aaguid,
+		arg.RpID,
 	)
 	var i Passkey
 	err := row.Scan(

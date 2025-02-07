@@ -1,12 +1,12 @@
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 -- Create the Dogfood Project
-INSERT INTO projects (id, display_name, log_in_with_google, log_in_with_microsoft, log_in_with_password, auth_domain, custom_auth_domain)
-	VALUES ('56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2'::uuid, 'Tesseral Local Development', true, true, true, 'auth.console.tesseral.example.com', 'auth.console.tesseral.example.com');
+INSERT INTO projects (id, display_name, log_in_with_google, log_in_with_microsoft, log_in_with_email, log_in_with_password, log_in_with_saml, log_in_with_authenticator_app, log_in_with_passkey, auth_domain, custom_auth_domain)
+	VALUES ('56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2'::uuid, 'Tesseral Local Development', true, true, true, true, true, true, true, 'auth.console.tesseral.example.com', 'auth.console.tesseral.example.com');
 
 -- Create the Dogfood Project's backing organization
-INSERT INTO organizations (id, display_name, project_id, log_in_with_saml, scim_enabled, log_in_with_password)
-  VALUES ('7a76decb-6d79-49ce-9449-34fcc53151df'::uuid, 'project_54vwf0clhh0caqe20eujxgpeq Backing Organization', '56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2', false, false, true);
+INSERT INTO organizations (id, display_name, project_id, log_in_with_google, log_in_with_microsoft, log_in_with_email, log_in_with_password, log_in_with_saml, log_in_with_authenticator_app, log_in_with_passkey, scim_enabled)
+  VALUES ('7a76decb-6d79-49ce-9449-34fcc53151df'::uuid, 'project_54vwf0clhh0caqe20eujxgpeq Backing Organization', '56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2', true, false, true, true, true, true, true, true);
 
 UPDATE projects SET organization_id = '7a76decb-6d79-49ce-9449-34fcc53151df'::uuid where id = '56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2'::uuid;
 

@@ -129,6 +129,14 @@ export function ViewPasskeyPage() {
           <DetailsGrid>
             <DetailsGridColumn>
               <DetailsGridEntry>
+                <DetailsGridKey>Status</DetailsGridKey>
+                <DetailsGridValue>
+                  {getPasskeyResponse?.passkey?.disabled
+                    ? 'Disabled'
+                    : 'Active'}
+                </DetailsGridValue>
+              </DetailsGridEntry>
+              <DetailsGridEntry>
                 <DetailsGridKey>Vendor</DetailsGridKey>
                 <DetailsGridValue>
                   {getPasskeyResponse?.passkey?.aaguid &&
@@ -239,9 +247,7 @@ function DangerZoneCard() {
         <CardContent>
           <div className="flex justify-between items-center">
             <div>
-              <div className="text-sm font-semibold">
-                Delete Passkey
-              </div>
+              <div className="text-sm font-semibold">Delete Passkey</div>
               <p className="text-sm">
                 Delete this passkey. This cannot be undone.
               </p>

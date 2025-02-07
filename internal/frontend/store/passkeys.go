@@ -152,6 +152,7 @@ func (s *Store) RegisterPasskey(ctx context.Context, req *frontendv1.RegisterPas
 		CredentialID: cred.ID,
 		PublicKey:    publicKey,
 		Aaguid:       cred.AAGUID,
+		RpID: cred.
 	})
 	if err != nil {
 		return nil, fmt.Errorf("create passkey: %w", err)
