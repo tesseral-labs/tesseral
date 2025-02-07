@@ -95,11 +95,11 @@ const StartLoginView: FC<StartLoginViewProps> = ({ setView }) => {
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle className="text-center">
-            {authType === AuthType.SignUp ? 'Sign up' : 'Log in'} with
+            {authType === AuthType.SignUp ? 'Sign up' : 'Log in'}
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="w-full grid grid-cols-2 gap-6">
+          <div className="w-full grid grid-cols-1 gap-4">
             {settings?.logInWithGoogle && (
               <OAuthButton
                 className="w-full"

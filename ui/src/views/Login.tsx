@@ -117,14 +117,7 @@ const Login: FC<LoginProps> = ({ setView }) => {
         </CardHeader>
 
         <CardContent className="flex flex-col items-center w-full">
-          <div
-            className={cn(
-              'w-full grid gap-6',
-              settings?.logInWithGoogle && settings?.logInWithMicrosoft
-                ? 'grid-cols-2'
-                : 'grid-cols-1',
-            )}
-          >
+          <div className="w-full grid grid-cols-1 gap-4">
             {settings?.logInWithGoogle && (
               <OAuthButton
                 method={OAuthMethods.google}
