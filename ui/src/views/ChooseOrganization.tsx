@@ -28,7 +28,7 @@ import {
   isValidPrimaryLoginFactor,
   PrimaryLoginFactor,
 } from '@/lib/login-factors'
-import TextDivider from '@/components/ui/test-divider'
+import TextDivider from '@/components/ui/text-divider'
 import { Button } from '@/components/ui/button'
 
 interface ChooseOrganizationProps {
