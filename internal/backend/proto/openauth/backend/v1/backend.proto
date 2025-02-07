@@ -714,6 +714,7 @@ message Project {
   string microsoft_oauth_client_id = 10;
   string microsoft_oauth_client_secret = 11;
   optional string auth_domain = 12;
+  repeated string passkey_rp_ids = 17;
 }
 
 message ProjectUISettings {
@@ -813,9 +814,11 @@ message Passkey {
   string user_id = 2;
   google.protobuf.Timestamp create_time = 3;
   google.protobuf.Timestamp update_time = 4;
+  bool disabled = 8;
   bytes credential_id = 5;
   string public_key_pkix = 6;
   string aaguid = 7;
+  string rp_id = 9;
 }
 
 message SAMLConnection {
