@@ -89,6 +89,7 @@ func (s *Store) RegisterPasskey(ctx context.Context, req *intermediatev1.Registe
 		PasskeyCredentialID: cred.ID,
 		PasskeyPublicKey:    publicKey,
 		PasskeyAaguid:       &cred.AAGUID,
+		PasskeyRpID:         &req.RpId,
 	}); err != nil {
 		return nil, fmt.Errorf("register passkey: %w", err)
 	}
