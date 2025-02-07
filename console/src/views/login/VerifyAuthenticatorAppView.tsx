@@ -1,7 +1,13 @@
 import { setAccessToken, setRefreshToken } from '@/auth'
 import { Title } from '@/components/Title'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import {
   InputOTP,
@@ -62,15 +68,12 @@ const VerifyAuthenticatorAppView: FC = () => {
 
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle className="text-center">
-            Verify Authenticator App
-          </CardTitle>
+          <CardTitle>Verify Authenticator App</CardTitle>
+          <CardDescription>
+            Enter the 6-digit code from your authenticator app.
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="mt-4 text-sm text-center text-muted-foreground">
-            Enter the 6-digit code from your authenticator app
-          </p>
-
           <form
             className="mt-8 flex flex-col items-center w-full"
             onSubmit={handleSubmit}
