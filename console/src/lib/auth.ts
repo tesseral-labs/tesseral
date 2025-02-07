@@ -4,12 +4,24 @@ import { useNavigate } from 'react-router'
 import { createContext, useContext, useState } from 'react'
 import { useQuery } from '@connectrpc/connect-query'
 import { whoami } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
-import { IntermediateSession } from '@/gen/openauth/intermediate/v1/intermediate_pb'
+import {
+  IntermediateSession,
+  Organization,
+} from '@/gen/openauth/intermediate/v1/intermediate_pb'
 
 export const useIntermediateSession = (): IntermediateSession | undefined => {
   const { data: whoAmiRes } = useQuery(whoami)
 
   return whoAmiRes?.intermediateSession
+}
+
+const intermediateOrganizationContext = createContext<Organization | undefined>(
+  undefined,
+)
+export const IntermediateOrganizationContextProvider =
+  intermediateOrganizationContext.Provider
+export const useIntermediateOrganization = (): Organization | undefined => {
+  return useContext(intermediateOrganizationContext)
 }
 
 // how far in advance of its expiration an access token gets refreshed

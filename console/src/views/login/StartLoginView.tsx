@@ -14,7 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import TextDivider from '@/components/login/TextDivider'
+import TextDivider from '@/components/ui/text-divider'
 import EmailForm from '@/components/login/EmailForm'
 
 interface StartLoginViewProps {
@@ -79,31 +79,30 @@ const StartLoginView: FC<StartLoginViewProps> = ({ setView }) => {
   }
 
   return (
-    <Card className="w-[clamp(320px,50%,420px)]">
+    <Card className="w-full max-w-sm">
       <CardHeader>
-        <CardTitle className="text-center uppercase text-foreground font-semibold text-sm tracking-wide mt-2">
-          Log In with oAuth
-        </CardTitle>
+        <CardTitle className="text-center">Log in with</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col items-center w-full">
-        <OAuthButton
-          className="mb-4 w-[clamp(240px,50%,100%)]"
-          method={OAuthMethods.google}
-          onClick={handleGoogleOAuthLogin}
-          variant="outline"
-        />
-        <OAuthButton
-          className="w-[clamp(240px,50%,100%)]"
-          method={OAuthMethods.microsoft}
-          onClick={handleMicrosoftOAuthLogin}
-          variant="outline"
-        />
+        <div className="w-full grid grid-cols-2 gap-6">
+          <OAuthButton
+            className="w-full"
+            method={OAuthMethods.google}
+            onClick={handleGoogleOAuthLogin}
+            variant="outline"
+          />
+          <OAuthButton
+            className="mt-4w-full"
+            method={OAuthMethods.microsoft}
+            onClick={handleMicrosoftOAuthLogin}
+            variant="outline"
+          />
+        </div>
 
-        <TextDivider text="or" />
+        <TextDivider>Or continue with email</TextDivider>
 
         <EmailForm setView={setView} />
       </CardContent>
-      <CardFooter></CardFooter>
     </Card>
   )
 }

@@ -27,10 +27,9 @@ import { HomePage } from '@/pages/home/HomePage'
 import { ProjectDetailsTab } from '@/pages/project/ProjectDetailsTab'
 import LoginPage from './pages/login/LoginPage'
 import { ViewPasskeyPage } from '@/pages/passkeys/ViewPasskeyPage'
-import {
-  OrganizationUserInvitesTab
-} from '@/pages/organizations/OrganizationUserInvitesTab'
+import { OrganizationUserInvitesTab } from '@/pages/organizations/OrganizationUserInvitesTab'
 import { ViewUserInvitePage } from '@/pages/user-invites/ViewUserInvitePage'
+import { API_URL } from './config'
 
 const queryClient = new QueryClient()
 
@@ -38,7 +37,7 @@ function useTransport(): Transport {
   const accessToken = useAccessToken()
 
   return createConnectTransport({
-    baseUrl: `https://auth.console.tesseral.example.com/api/internal/connect`,
+    baseUrl: `${API_URL}/api/internal/connect`,
     fetch: (input, init) =>
       fetch(input, {
         ...init,
@@ -63,6 +62,7 @@ function AppWithinQueryClient() {
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<LoginPage />} />
 
           <Route path="/" element={<PageShell />}>
             <Route path="" element={<HomePage />} />
@@ -91,7 +91,10 @@ function AppWithinQueryClient() {
             >
               <Route path="" element={<OrganizationDetailsTab />} />
               <Route path="users" element={<OrganizationUsersTab />} />
-              <Route path="user-invites" element={<OrganizationUserInvitesTab />} />
+              <Route
+                path="user-invites"
+                element={<OrganizationUserInvitesTab />}
+              />
               <Route
                 path="saml-connections"
                 element={<OrganizationSAMLConnectionsTab />}

@@ -22,6 +22,7 @@ export function useUser(): User | undefined {
 }
 
 export function useAccessToken(): string | undefined {
+  const [hasFailure, setHasFailure] = useState(false)
   const [accessToken, setAccessToken] = useLocalStorage('access_token')
   const refresh = useMutation({
     mutationKey: ['refresh'],
@@ -37,15 +38,25 @@ export function useAccessToken(): string | undefined {
           body: '{}',
         },
       )
+
+      if (!response.ok) {
+        return
+      }
+
       return (await response.json()).accessToken
     },
+    retry: 0,
   })
 
-  if (!accessToken || shouldRefresh(accessToken)) {
+  if (!hasFailure && (!accessToken || shouldRefresh(accessToken))) {
     if (!refresh.isPending) {
       refresh.mutate(undefined, {
+        onError: () => {
+          setHasFailure(true)
+        },
         onSuccess: (accessToken) => {
           if (accessToken) {
+            setHasFailure(false)
             setAccessToken(accessToken)
           }
         },

@@ -8,7 +8,7 @@ import {
   exchangeIntermediateSessionForSession,
   verifyPassword,
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
-import { useIntermediateSession } from '@/lib/auth'
+import { useIntermediateOrganization, useIntermediateSession } from '@/lib/auth'
 import { useMutation } from '@connectrpc/connect-query'
 import { setAccessToken, setRefreshToken } from '@/auth'
 import { Input } from '@/components/ui/input'
@@ -19,6 +19,8 @@ interface VerifyPasswordViewProps {
 
 const VerifyPasswordView: FC<VerifyPasswordViewProps> = ({ setView }) => {
   const intermediateSession = useIntermediateSession()
+  const organization = useIntermediateOrganization()
+
   const { state } = useLocation()
   const navigate = useNavigate()
 
@@ -29,6 +31,25 @@ const VerifyPasswordView: FC<VerifyPasswordViewProps> = ({ setView }) => {
   )
   const verifyPasswordMutation = useMutation(verifyPassword)
 
+  const deriveNextView = (): LoginView | undefined => {
+    console.log(`organization:`, organization)
+
+    const hasMultipleSecondFactors =
+      organization?.userHasAuthenticatorApp && organization?.userHasPasskey
+    const hasSecondFactor =
+      organization?.userHasAuthenticatorApp || organization?.userHasPasskey
+
+    if (organization?.requireMfa) {
+      if (hasMultipleSecondFactors || !hasSecondFactor) {
+        return LoginView.ChooseAdditionalFactor
+      } else if (organization?.userHasPasskey) {
+        return LoginView.VerifyPasskey
+      } else if (organization?.userHasAuthenticatorApp) {
+        return LoginView.VerifyAuthenticatorApp
+      }
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -37,6 +58,15 @@ const VerifyPasswordView: FC<VerifyPasswordViewProps> = ({ setView }) => {
         password,
         organizationId: intermediateSession?.organizationId,
       })
+
+      const nextView = deriveNextView()
+
+      console.log('nextView:', nextView)
+
+      if (nextView) {
+        setView(nextView)
+        return
+      }
 
       const { accessToken, refreshToken } =
         await exchangeIntermediateSessionForSessionMutation.mutateAsync({
@@ -66,20 +96,17 @@ const VerifyPasswordView: FC<VerifyPasswordViewProps> = ({ setView }) => {
             Please enter your password to continue logging in.
           </p>
         </CardHeader>
-        <CardContent className="flex flex-col items-center justify-center w-full">
-          <form className="flex flex-col items-center" onSubmit={handleSubmit}>
+        <CardContent>
+          <form onSubmit={handleSubmit}>
             <Input
-              className="text-sm bg-input rounded border border-border focus:border-primary w-[clamp(240px,50%,100%)] mb-2"
+              className="w-full"
               id="password"
               placeholder="Enter your password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <Button
-              className="text-sm rounded border border-border focus:border-primary w-[clamp(240px,50%,100%)] mb-2"
-              type="submit"
-            >
+            <Button className="mt-2 w-full" type="submit">
               Log In
             </Button>
           </form>

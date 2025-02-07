@@ -10,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import TextDivider from '@/components/ui/test-divider'
+import TextDivider from '@/components/ui/text-divider'
 import { useMutation } from '@connectrpc/connect-query'
 
 import {

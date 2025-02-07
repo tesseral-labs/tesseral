@@ -8,28 +8,42 @@ import React, {
   useEffect,
   useState,
 } from 'react'
-import { useNavigate } from 'react-router'
 import { useMutation } from '@connectrpc/connect-query'
 import debounce from 'lodash.debounce'
 
-// import { setIntermediateSessionToken } from '@/auth'
+import { setIntermediateSessionToken } from '@/auth'
 import { Button } from '../ui/button'
 import {
   createIntermediateSession,
   issueEmailVerificationChallenge,
   listSAMLOrganizations,
+  setEmailAsPrimaryLoginFactor,
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
 import { LoginView } from '@/lib/views'
 import { Organization } from '@/gen/openauth/intermediate/v1/intermediate_pb'
-import TextDivider from './TextDivider'
+import TextDivider from '../ui/text-divider'
 import { Input } from '../ui/input'
+import { Label } from '../ui/label'
+import Loader from '../ui/loader'
+import { parseErrorMessage } from '@/lib/errors'
+import { toast } from 'sonner'
+import useSettings from '@/lib/settings'
 
 interface EmailFormProps {
+  disableLogInWithEmail?: boolean
+  skipIntermediateSessionCreation?: boolean
+  skipListSAMLOrganizations?: boolean
   setView: Dispatch<SetStateAction<LoginView>>
 }
 
-const EmailForm: FC<EmailFormProps> = ({ setView }) => {
+const EmailForm: FC<EmailFormProps> = ({
+  disableLogInWithEmail = false,
+  skipListSAMLOrganizations = false,
+  skipIntermediateSessionCreation = false,
+  setView,
+}) => {
   const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/i
+
   const createIntermediateSessionMutation = useMutation(
     createIntermediateSession,
   )
@@ -37,10 +51,14 @@ const EmailForm: FC<EmailFormProps> = ({ setView }) => {
     issueEmailVerificationChallenge,
   )
   const listSAMLOrganizationsMutation = useMutation(listSAMLOrganizations)
+  const setEmailAsPrimaryLoginFactorMutation = useMutation(
+    setEmailAsPrimaryLoginFactor,
+  )
 
   const [email, setEmail] = useState<string>('')
   const [emailIsValid, setEmailIsValid] = useState<boolean>(false)
   const [samlOrganizations, setSamlOrganizations] = useState<Organization[]>([])
+  const [submitting, setSubmitting] = useState<boolean>(false)
 
   const fetchSamlOrganizations = useCallback(
     debounce(async () => {
@@ -59,26 +77,38 @@ const EmailForm: FC<EmailFormProps> = ({ setView }) => {
     setEmail(e.target.value)
   }
 
-  const handleSAMLLogin = async (samlConnectId: string) => {
-    location.href = `/api/saml/v1/${samlConnectId}/init`
-  }
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
+    if (!disableLogInWithEmail) {
+      setSubmitting(true)
 
-    try {
-      // this sets a cookie that subsequent requests use
-      await createIntermediateSessionMutation.mutateAsync({})
+      try {
+        if (!skipIntermediateSessionCreation) {
+          // this sets a cookie that subsequent requests use
+          const { intermediateSessionSecretToken } =
+            await createIntermediateSessionMutation.mutateAsync({})
 
-      // send email verification challenge
-      await issueEmailVerificationChallengeMutation.mutateAsync({
-        email,
-      })
+          // set the intermediate sessionToken
+          setIntermediateSessionToken(intermediateSessionSecretToken)
+        }
 
-      // redirect to challenge page
-      setView(LoginView.VerifyEmail)
-    } catch (error) {
-      console.error(error)
+        await setEmailAsPrimaryLoginFactorMutation.mutateAsync({})
+
+        await issueEmailVerificationChallengeMutation.mutateAsync({
+          email,
+        })
+
+        setSubmitting(false)
+
+        // redirect to challenge page
+        setView(LoginView.VerifyEmail)
+      } catch (error) {
+        setSubmitting(false)
+        const message = parseErrorMessage(error)
+        toast.error('Could not initiate login', {
+          description: message,
+        })
+      }
     }
   }
 
@@ -86,36 +116,40 @@ const EmailForm: FC<EmailFormProps> = ({ setView }) => {
     const valid = emailRegex.test(email)
     setEmailIsValid(valid)
 
-    if (valid) {
+    if (valid && !skipListSAMLOrganizations) {
       fetchSamlOrganizations()
     }
   }, [email])
 
   return (
     <>
-      <form className="flex flex-col justify-center" onSubmit={handleSubmit}>
-        <label
-          className="text-center uppercase text-foreground font-semibold text-sm mb-6 tracking-wide"
-          htmlFor="email"
-        >
-          Continue with Email
-        </label>
-        <Input
-          className="text-sm bg-input rounded border border-border focus:border-primary w-[clamp(240px,50%,100%)] mb-2"
-          id="email"
-          type="email"
-          onChange={handleEmail}
-          placeholder="jane.doe@email.com"
-          value={email}
-        />
-        <Button type="submit" disabled={!emailIsValid}>
-          Sign In
-        </Button>
+      <form
+        className="flex flex-col justify-center w-full"
+        onSubmit={handleSubmit}
+      >
+        <div className="grid gap-2">
+          <Label htmlFor="email">Email</Label>
+          <Input
+            className="w-full mb-2"
+            id="email"
+            type="email"
+            onChange={handleEmail}
+            placeholder="jane.doe@email.com"
+            value={email}
+          />
+        </div>
+
+        {!disableLogInWithEmail && (
+          <Button type="submit" disabled={!emailIsValid || submitting}>
+            {submitting && <Loader />}
+            Sign In
+          </Button>
+        )}
       </form>
 
       {samlOrganizations && samlOrganizations.length > 0 && (
         <>
-          <TextDivider text="or" />
+          <TextDivider>or continue with SAML</TextDivider>
 
           {samlOrganizations.map((organization) => (
             <div key={organization.id} className="flex flex-col items-center">
@@ -127,7 +161,7 @@ const EmailForm: FC<EmailFormProps> = ({ setView }) => {
               </label>
               <a
                 href={`/api/saml/v1/${organization.primarySamlConnectionId}/init`}
-                className="w-full"
+                className="w-[clamp(240px,50%,100%)]"
               >
                 <Button variant="outline">{organization.displayName}</Button>
               </a>

@@ -64,7 +64,7 @@ const OAuthButton: FC<OAuthButtonProps> = ({ method, ...props }) => {
           </svg>
         ) : null}
       </div>
-      Continue with {method}
+      {method}
     </Button>
   )
 }
