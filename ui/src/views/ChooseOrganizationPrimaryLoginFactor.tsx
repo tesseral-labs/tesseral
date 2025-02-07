@@ -19,7 +19,7 @@ import {
   getGoogleOAuthRedirectURL,
   getMicrosoftOAuthRedirectURL,
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
-import TextDivider from '@/components/ui/test-divider'
+import TextDivider from '@/components/ui/text-divider'
 import EmailForm from '@/components/EmailForm'
 import { Organization } from '@/gen/openauth/intermediate/v1/intermediate_pb'
 import { Button } from '@/components/ui/button'

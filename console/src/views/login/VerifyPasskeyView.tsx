@@ -3,9 +3,7 @@ import { useNavigate } from 'react-router'
 import { useMutation } from '@connectrpc/connect-query'
 import { toast } from 'sonner'
 
-import { useLayout } from '@/lib/settings'
 import { base64urlEncode, cn } from '@/lib/utils'
-import { LoginLayouts } from '@/lib/views'
 import { parseErrorMessage } from '@/lib/errors'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -15,9 +13,10 @@ import {
   verifyPasskey,
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
 import { setAccessToken, setRefreshToken } from '@/auth'
+import { AuthType, useAuthType } from '@/lib/auth'
 
-const VerifyPasskey: FC = () => {
-  const layout = useLayout()
+const VerifyPasskeyView: FC = () => {
+  const authType = useAuthType()
   const navigate = useNavigate()
 
   const exchangeIntermediateSessionForSessionMutation = useMutation(
@@ -66,7 +65,7 @@ const VerifyPasskey: FC = () => {
       setAccessToken(accessToken)
       setRefreshToken(refreshToken)
 
-      navigate('/settings')
+      navigate('/')
     } catch (error) {
       const message = parseErrorMessage(error)
       toast.error('Could not verify passkey', {
@@ -82,18 +81,14 @@ const VerifyPasskey: FC = () => {
   }, [])
 
   return (
-    <Card
-      className={cn(
-        'w-full max-w-sm',
-        layout !== LoginLayouts.Centered && 'shadow-none border-0',
-      )}
-    >
+    <Card className="w-full max-w-sm">
       <CardHeader>
         <CardTitle className="text-center">Verify Passkey</CardTitle>
       </CardHeader>
       <CardContent>
-        <p className="text-center text-sm text-muted-foreground">
-          Follow the prompts on your device to continue logging in with your
+        <p className="text-sm text-muted-foreground">
+          Follow the prompts on your device to continue{' '}
+          {authType === AuthType.SignUp ? 'signing up' : 'logging in'} with your
           Passkey.
         </p>
       </CardContent>
@@ -101,4 +96,4 @@ const VerifyPasskey: FC = () => {
   )
 }
 
-export default VerifyPasskey
+export default VerifyPasskeyView

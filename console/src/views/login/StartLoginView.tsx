@@ -7,21 +7,23 @@ import {
   getGoogleOAuthRedirectURL,
   getMicrosoftOAuthRedirectURL,
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import TextDivider from '@/components/login/TextDivider'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import TextDivider from '@/components/ui/text-divider'
 import EmailForm from '@/components/login/EmailForm'
+import { AuthType, useAuthType } from '@/lib/auth'
+import { Title } from '@/components/Title'
+import { parseErrorMessage } from '@/lib/errors'
+import { toast } from 'sonner'
+import useSettings from '@/lib/settings'
 
 interface StartLoginViewProps {
   setView: Dispatch<React.SetStateAction<LoginView>>
 }
 
 const StartLoginView: FC<StartLoginViewProps> = ({ setView }) => {
+  const authType = useAuthType()
+  const settings = useSettings()
+
   const createIntermediateSessionMutation = useMutation(
     createIntermediateSession,
   )
@@ -38,8 +40,10 @@ const StartLoginView: FC<StartLoginViewProps> = ({ setView }) => {
       // this sets a cookie that subsequent requests use
       await createIntermediateSessionMutation.mutateAsync({})
     } catch (error) {
-      // TODO: Handle errors on screen once an error handling strategy is in place.
-      console.error(error)
+      const message = parseErrorMessage(error)
+      toast.error('Could not initiate log in', {
+        description: message,
+      })
     }
 
     try {
@@ -49,8 +53,10 @@ const StartLoginView: FC<StartLoginViewProps> = ({ setView }) => {
 
       window.location.href = url
     } catch (error) {
-      // TODO: Handle errors on screen once an error handling strategy is in place.
-      console.error(error)
+      const message = parseErrorMessage(error)
+      toast.error('Could not log in with Google', {
+        description: message,
+      })
     }
   }
 
@@ -62,8 +68,10 @@ const StartLoginView: FC<StartLoginViewProps> = ({ setView }) => {
       // this sets a cookie that subsequent requests use
       await createIntermediateSessionMutation.mutateAsync({})
     } catch (error) {
-      // TODO: Handle errors on screen once an error handling strategy is in place.
-      console.error(error)
+      const message = parseErrorMessage(error)
+      toast.error('Could not initiate log in', {
+        description: message,
+      })
     }
 
     try {
@@ -73,38 +81,57 @@ const StartLoginView: FC<StartLoginViewProps> = ({ setView }) => {
 
       window.location.href = url
     } catch (error) {
-      // TODO: Handle errors on screen once an error handling strategy is in place.
-      console.error(error)
+      const message = parseErrorMessage(error)
+      toast.error('Could not log in with Microsoft', {
+        description: message,
+      })
     }
   }
 
   return (
-    <Card className="w-[clamp(320px,50%,420px)]">
-      <CardHeader>
-        <CardTitle className="text-center uppercase text-foreground font-semibold text-sm tracking-wide mt-2">
-          Log In with oAuth
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="flex flex-col items-center w-full">
-        <OAuthButton
-          className="mb-4 w-[clamp(240px,50%,100%)]"
-          method={OAuthMethods.google}
-          onClick={handleGoogleOAuthLogin}
-          variant="outline"
-        />
-        <OAuthButton
-          className="w-[clamp(240px,50%,100%)]"
-          method={OAuthMethods.microsoft}
-          onClick={handleMicrosoftOAuthLogin}
-          variant="outline"
-        />
+    <>
+      <Title title={authType === AuthType.SignUp ? 'Sign up' : 'Log in'} />
 
-        <TextDivider text="or" />
+      <Card className="w-full max-w-sm">
+        <CardHeader>
+          <CardTitle className="text-center">
+            {authType === AuthType.SignUp ? 'Sign up' : 'Log in'}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="w-full grid grid-cols-1 gap-4">
+            {settings?.logInWithGoogle && (
+              <OAuthButton
+                className="w-full"
+                method={OAuthMethods.google}
+                onClick={handleGoogleOAuthLogin}
+                variant="outline"
+              />
+            )}
+            {settings?.logInWithMicrosoft && (
+              <OAuthButton
+                className="mt-4w-full"
+                method={OAuthMethods.microsoft}
+                onClick={handleMicrosoftOAuthLogin}
+                variant="outline"
+              />
+            )}
+          </div>
 
-        <EmailForm setView={setView} />
-      </CardContent>
-      <CardFooter></CardFooter>
-    </Card>
+          {(settings?.logInWithEmail || settings?.logInWithSaml) && (
+            <>
+              <TextDivider>Or continue with email</TextDivider>
+
+              <EmailForm
+                disableLogInWithEmail={!settings?.logInWithEmail}
+                skipListSAMLOrganizations={!settings?.logInWithSaml}
+                setView={setView}
+              />
+            </>
+          )}
+        </CardContent>
+      </Card>
+    </>
   )
 }
 

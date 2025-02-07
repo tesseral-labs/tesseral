@@ -4,16 +4,22 @@ import { Title } from '@/components/Title'
 import {
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { useLocation } from 'react-router'
 import { useIntermediateSession } from '@/lib/auth'
 import { useMutation } from '@connectrpc/connect-query'
 import { verifyEmailChallenge } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
-import { Input } from '@/components/ui/input'
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from '@/components/ui/input-otp'
+import { parseErrorMessage } from '@/lib/errors'
+import { toast } from 'sonner'
 
 interface VerifyEmailViewProps {
   setView: Dispatch<React.SetStateAction<LoginView>>
@@ -21,10 +27,8 @@ interface VerifyEmailViewProps {
 
 const VerifyEmailView: FC<VerifyEmailViewProps> = ({ setView }) => {
   const intermediateSession = useIntermediateSession()
-  const { state } = useLocation()
 
   const [challengeCode, setChallengeCode] = useState<string>('')
-  const [email, setEmail] = useState<string>('')
 
   const verifyEmailChallengeMutation = useMutation(verifyEmailChallenge)
 
@@ -33,50 +37,49 @@ const VerifyEmailView: FC<VerifyEmailViewProps> = ({ setView }) => {
 
     try {
       await verifyEmailChallengeMutation.mutateAsync({
-        emailVerificationChallengeId: state?.challengeId,
         code: challengeCode,
       })
 
       setView(LoginView.ChooseProject)
     } catch (error) {
-      console.error(error)
+      const message = parseErrorMessage(error)
+      toast.error('Could not verify email address', {
+        description: message,
+      })
     }
   }
-
-  // useEffect(() => {
-  //   if (intermediateSession !== null && !intermediateSession) {
-  //     setView(LoginView.StartLogin)
-  //   }
-  // }, [intermediateSession])
 
   return (
     <>
       <Title title="Verify Email Address" />
 
-      <Card className="w-[clamp(320px,50%,420px)] mx-auto">
+      <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle className="text-center uppercase text-foreground font-semibold text-sm tracking-wide mt-2">
-            Verify Email Address
-          </CardTitle>
-          <p className="text-sm text-center mt-2 text-gray-500">
+          <CardTitle>Verify Email Address</CardTitle>
+          <CardDescription>
             Please enter the verification code sent to{' '}
             <b>{intermediateSession?.email}</b> below.
-          </p>
+          </CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-col items-center justify-center w-full">
+        <CardContent>
           <form className="flex flex-col items-center" onSubmit={handleSubmit}>
-            <Input
-              className="text-sm bg-input rounded border border-border focus:border-primary w-[clamp(240px,50%,100%)] mb-2"
-              id="challengeCode"
-              placeholder="Enter your challenge code"
-              value={challengeCode}
-              onChange={(e) => setChallengeCode(e.target.value)}
-            />
+            <InputOTP maxLength={6} onChange={setChallengeCode}>
+              <InputOTPGroup>
+                <InputOTPSlot index={0} />
+                <InputOTPSlot index={1} />
+                <InputOTPSlot index={2} />
+                <InputOTPSlot index={3} />
+                <InputOTPSlot index={4} />
+                <InputOTPSlot index={5} />
+              </InputOTPGroup>
+            </InputOTP>
+
             <Button
-              className="text-sm rounded border border-border focus:border-primary w-[clamp(240px,50%,100%)] mb-2"
+              className="mt-4"
+              disabled={challengeCode.length < 6}
               type="submit"
             >
-              Verify Email Address
+              Continue
             </Button>
           </form>
         </CardContent>

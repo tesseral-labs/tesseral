@@ -12,13 +12,10 @@ import {
   registerPasskey,
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
 import { parseErrorMessage } from '@/lib/errors'
-import { useLayout } from '@/lib/settings'
-import { base64urlEncode, cn } from '@/lib/utils'
-import { LoginLayouts } from '@/lib/views'
+import { base64urlEncode } from '@/lib/utils'
 
-const RegisterPasskey: FC = () => {
+const RegisterPasskeyView: FC = () => {
   const encoder = new TextEncoder()
-  const layout = useLayout()
   const navigate = useNavigate()
 
   const exchangeIntermediateSessionForSessionMutation = useMutation(
@@ -85,7 +82,6 @@ const RegisterPasskey: FC = () => {
   useEffect(() => {
     ;(async () => {
       const credential = await registerCredential()
-      console.log(credential)
     })()
   }, [])
 
@@ -93,17 +89,12 @@ const RegisterPasskey: FC = () => {
     <>
       <Title title="Register a Passkey" />
 
-      <Card
-        className={cn(
-          'w-full max-w-sm',
-          layout !== LoginLayouts.Centered && 'shadow-none border-0',
-        )}
-      >
+      <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle className="text-center">Register a Passkey</CardTitle>
+          <CardTitle>Register a Passkey</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-center text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             Follow the prompts on your device to register a new Passkey.
           </p>
         </CardContent>
@@ -112,4 +103,4 @@ const RegisterPasskey: FC = () => {
   )
 }
 
-export default RegisterPasskey
+export default RegisterPasskeyView
