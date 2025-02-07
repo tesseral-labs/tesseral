@@ -115,22 +115,16 @@ const Login: FC<LoginProps> = ({ setView }) => {
         <CardHeader>
           {(settings?.logInWithGoogle || settings?.logInWithMicrosoft) && (
             <CardTitle className="text-center">
-              {authType === AuthType.SignUp ? 'Sign up' : 'Log in'} with
+              {authType === AuthType.SignUp ? 'Sign up' : 'Log in'}
             </CardTitle>
           )}
         </CardHeader>
 
         <CardContent className="flex flex-col items-center w-full">
-          <div
-            className={cn(
-              'w-full grid gap-6',
-              settings?.logInWithGoogle && settings?.logInWithMicrosoft
-                ? 'grid-cols-2'
-                : 'grid-cols-1',
-            )}
-          >
+          <div className="w-full grid grid-cols-1 gap-4">
             {settings?.logInWithGoogle && (
               <OAuthButton
+                className="w-full"
                 method={OAuthMethods.google}
                 onClick={handleGoogleOAuthLogin}
                 variant="outline"
@@ -138,6 +132,7 @@ const Login: FC<LoginProps> = ({ setView }) => {
             )}
             {settings?.logInWithMicrosoft && (
               <OAuthButton
+                className="w-full"
                 method={OAuthMethods.microsoft}
                 onClick={handleMicrosoftOAuthLogin}
                 variant="outline"
