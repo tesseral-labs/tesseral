@@ -92,7 +92,7 @@ const RegisterPasskeyView: FC = () => {
 
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle className="text-center">Register a Passkey</CardTitle>
+          <CardTitle>Register a Passkey</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-center text-sm text-muted-foreground">

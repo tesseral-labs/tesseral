@@ -1,6 +1,12 @@
 import React, { FC, useState } from 'react'
 import { Title } from '@/components/Title'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import {
   exchangeIntermediateSessionForSession,
@@ -70,13 +76,13 @@ const RegisterPasswordView: FC<RegisterPasswordViewProps> = ({ setView }) => {
 
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle className="text-center">Set your password</CardTitle>
-          <p className="text-sm text-center mt-2 text-gray-500">
+          <CardTitle>Set your password</CardTitle>
+          <CardDescription>
             Please set your password to continue{' '}
             {authType === AuthType.SignUp ? 'signing up' : 'logging in'}.
-          </p>
+          </CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-col items-center justify-center w-full">
+        <CardContent>
           <form
             className="flex flex-col items-center w-full"
             onSubmit={handleSubmit}

@@ -98,7 +98,7 @@ const StartLoginView: FC<StartLoginViewProps> = ({ setView }) => {
             {authType === AuthType.SignUp ? 'Sign up' : 'Log in'} with
           </CardTitle>
         </CardHeader>
-        <CardContent className="flex flex-col items-center w-full">
+        <CardContent>
           <div className="w-full grid grid-cols-2 gap-6">
             {settings?.logInWithGoogle && (
               <OAuthButton

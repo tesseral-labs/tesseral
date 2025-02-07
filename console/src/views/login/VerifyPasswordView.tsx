@@ -1,7 +1,13 @@
 import React, { Dispatch, FC, useState } from 'react'
 import { LoginView } from '@/lib/views'
 import { Title } from '@/components/Title'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Navigate, useLocation, useNavigate } from 'react-router'
 import {
@@ -102,10 +108,10 @@ const VerifyPasswordView: FC<VerifyPasswordViewProps> = ({ setView }) => {
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle>Password Verification</CardTitle>
-          <p className="text-sm mt-2 text-muted-foreground">
+          <CardDescription>
             Please enter your password to continue{' '}
             {authType === AuthType.SignUp ? 'signing up' : 'logging in'}.
-          </p>
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit}>

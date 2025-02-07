@@ -75,7 +75,7 @@ const VerifyAuthenticatorAppView: FC = () => {
         </CardHeader>
         <CardContent>
           <form
-            className="mt-8 flex flex-col items-center w-full"
+            className="flex flex-col items-center w-full"
             onSubmit={handleSubmit}
           >
             <InputOTP maxLength={6} onChange={(value) => setCode(value)}>

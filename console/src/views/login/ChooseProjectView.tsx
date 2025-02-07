@@ -1,4 +1,4 @@
-import React, { Dispatch, FC, SetStateAction, useState } from 'react'
+import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 import { LoginView } from '@/lib/views'
 import { useNavigate } from 'react-router'
 import {
@@ -122,34 +122,46 @@ const ChooseProjectView: FC<ChooseProjectViewProps> = ({
     }
   }
 
+  useEffect(() => {
+    if (listOrganizationsResponse?.organizations?.length === 0) {
+      setView(LoginView.CreateProject)
+    }
+  }, [listOrganizationsResponse])
+
   return (
     <>
       <Title title="Choose an Project" />
 
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle>Choose a Project</CardTitle>
+          <CardTitle>
+            {(listOrganizationsResponse?.organizations?.length || 0) > 0
+              ? 'Choose a Project'
+              : 'Create a Project'}
+          </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col items-center justify-center w-full">
-          <ul className="w-full p-0">
-            {listOrganizationsResponse?.organizations?.map((organization) => (
-              <li key={organization.id}>
-                <Button
-                  className="w-full"
-                  disabled={submitting}
-                  onClick={() => handleOrganizationClick(organization)}
-                  variant="outline"
-                >
-                  {submitting && <Loader />}
-                  {organization.displayName}
-                </Button>
-              </li>
-            ))}
-          </ul>
-        </CardContent>
-        <CardFooter>
+          {(listOrganizationsResponse?.organizations?.length || 0) > 0 && (
+            <ul className="w-full p-0">
+              {listOrganizationsResponse?.organizations?.map((organization) => (
+                <li key={organization.id}>
+                  <Button
+                    className="w-full"
+                    disabled={submitting}
+                    onClick={() => handleOrganizationClick(organization)}
+                    variant="outline"
+                  >
+                    {submitting && <Loader />}
+                    {organization.displayName}
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          )}
           <div className="w-full">
-            <TextDivider className="w-full">Or you can</TextDivider>
+            {(listOrganizationsResponse?.organizations?.length || 0) > 0 && (
+              <TextDivider className="w-full">Or you can</TextDivider>
+            )}
 
             <Button
               className="w-full"
@@ -158,7 +170,7 @@ const ChooseProjectView: FC<ChooseProjectViewProps> = ({
               Create a Project
             </Button>
           </div>
-        </CardFooter>
+        </CardContent>
       </Card>
     </>
   )

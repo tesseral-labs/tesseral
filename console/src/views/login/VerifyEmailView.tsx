@@ -4,6 +4,7 @@ import { Title } from '@/components/Title'
 import {
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -55,12 +56,12 @@ const VerifyEmailView: FC<VerifyEmailViewProps> = ({ setView }) => {
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle>Verify Email Address</CardTitle>
-          <p className="text-sm mt-2 text-muted-foreground">
+          <CardDescription>
             Please enter the verification code sent to{' '}
             <b>{intermediateSession?.email}</b> below.
-          </p>
+          </CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-col items-center justify-center w-full">
+        <CardContent>
           <form className="flex flex-col items-center" onSubmit={handleSubmit}>
             <InputOTP maxLength={6} onChange={setChallengeCode}>
               <InputOTPGroup>
