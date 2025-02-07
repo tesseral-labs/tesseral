@@ -14,9 +14,11 @@ import Header from './Header'
 import { SidebarProvider, SidebarTrigger } from '../ui/sidebar'
 import DashboardSidebar from './DashboardSidebar'
 import { Toaster } from '../ui/sonner'
+import { useIsMobile } from '@/hooks/use-mobile'
 
 const DashboardPage: FC<PropsWithChildren> = ({ children }) => {
   const isDarkMode = useDarkMode()
+  const isMobile = useIsMobile()
   const settings = useSettings()
   const session = useSession()
 
@@ -56,10 +58,10 @@ const DashboardPage: FC<PropsWithChildren> = ({ children }) => {
                   isDarkMode && settings?.detectDarkModeEnabled ? 'dark' : '',
                 )}
               >
-                <SidebarTrigger />
+                {isMobile && <SidebarTrigger />}
                 <div className="bg-body mx-auto items-center">
                   <div className="mx-auto px-6 lg:px-8">
-                    <div className="pb-8">{children}</div>
+                    <div className="py-8">{children}</div>
                   </div>
                 </div>
               </main>
