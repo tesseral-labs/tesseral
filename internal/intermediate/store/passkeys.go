@@ -153,11 +153,6 @@ func (s *Store) VerifyPasskey(ctx context.Context, req *intermediatev1.VerifyPas
 	}
 	defer rollback()
 
-	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
-	if err != nil {
-		return nil, fmt.Errorf("get project by id: %w", err)
-	}
-
 	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))
 	if err != nil {
 		return nil, fmt.Errorf("get intermediate session by id: %w", err)
@@ -189,13 +184,22 @@ func (s *Store) VerifyPasskey(ctx context.Context, req *intermediatev1.VerifyPas
 		return nil, fmt.Errorf("marshal public key: %w", err)
 	}
 
+	qProjectPasskeyRPIDs, err := q.GetProjectPasskeyRPIDs(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get project passkey rp ids: %w", err)
+	}
+
+	var rpIDs []string
+	for _, qProjectPasskeyRPID := range qProjectPasskeyRPIDs {
+		rpIDs = append(rpIDs, qProjectPasskeyRPID.RpID)
+	}
+
 	credential := webauthn.Credential{
 		PublicKey: publicKey,
 	}
 
 	if err := credential.Verify(&webauthn.VerifyRequest{
-		RPID:              *qProject.AuthDomain,
-		Origin:            fmt.Sprintf("https://%s", *qProject.AuthDomain),
+		RPIDs:             rpIDs,
 		ChallengeSHA256:   qIntermediateSession.PasskeyVerifyChallengeSha256,
 		ClientDataJSON:    req.ClientDataJson,
 		AuthenticatorData: req.AuthenticatorData,
