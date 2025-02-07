@@ -136,6 +136,7 @@ const ChooseProjectView: FC<ChooseProjectViewProps> = ({
               <li key={organization.id}>
                 <Button
                   className="w-full"
+                  disabled={submitting}
                   onClick={() => handleOrganizationClick(organization)}
                   variant="outline"
                 >

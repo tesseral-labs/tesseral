@@ -117,7 +117,11 @@ const VerifyPasswordView: FC<VerifyPasswordViewProps> = ({ setView }) => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <Button className="mt-2 w-full" type="submit">
+            <Button
+              className="mt-2 w-full"
+              disabled={password.length < 1 || submitting}
+              type="submit"
+            >
               {submitting && <Loader />}
               Continue
             </Button>

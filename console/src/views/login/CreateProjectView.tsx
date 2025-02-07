@@ -76,7 +76,11 @@ const CreateProjectView: FC<CreateProjectViewProps> = ({ setView }) => {
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
             />
-            <Button className="mt-2 w-full" type="submit">
+            <Button
+              className="mt-2 w-full"
+              disabled={displayName.length < 1 || submitting}
+              type="submit"
+            >
               {submitting && <Loader />}
               Create Project
             </Button>
