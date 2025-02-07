@@ -59,13 +59,20 @@ func (s *Store) RegisterPasskey(ctx context.Context, req *intermediatev1.Registe
 		return nil, fmt.Errorf("get project passkey rp ids: %w", err)
 	}
 
-	var rpIDs []string
+	var rpIDOk bool
 	for _, qProjectPasskeyRPID := range qProjectPasskeyRPIDs {
-		rpIDs = append(rpIDs, qProjectPasskeyRPID.RpID)
+		if qProjectPasskeyRPID.RpID == req.RpId {
+			rpIDOk = true
+			break
+		}
+	}
+
+	if !rpIDOk {
+		return nil, apierror.NewPermissionDeniedError("invalid rp id", fmt.Errorf("invalid rp id"))
 	}
 
 	cred, err := webauthn.Parse(&webauthn.ParseRequest{
-		RPIDs:             rpIDs,
+		RPID:              req.RpId,
 		AttestationObject: req.AttestationObject,
 	})
 	if err != nil {
@@ -184,22 +191,12 @@ func (s *Store) VerifyPasskey(ctx context.Context, req *intermediatev1.VerifyPas
 		return nil, fmt.Errorf("marshal public key: %w", err)
 	}
 
-	qProjectPasskeyRPIDs, err := q.GetProjectPasskeyRPIDs(ctx, authn.ProjectID(ctx))
-	if err != nil {
-		return nil, fmt.Errorf("get project passkey rp ids: %w", err)
-	}
-
-	var rpIDs []string
-	for _, qProjectPasskeyRPID := range qProjectPasskeyRPIDs {
-		rpIDs = append(rpIDs, qProjectPasskeyRPID.RpID)
-	}
-
 	credential := webauthn.Credential{
 		PublicKey: publicKey,
 	}
 
 	if err := credential.Verify(&webauthn.VerifyRequest{
-		RPIDs:             rpIDs,
+		RPID:              qPasskey.RpID,
 		ChallengeSHA256:   qIntermediateSession.PasskeyVerifyChallengeSha256,
 		ClientDataJSON:    req.ClientDataJson,
 		AuthenticatorData: req.AuthenticatorData,

@@ -1027,6 +1027,8 @@ components:
             properties:
                 attestationObject:
                     type: string
+                rpId:
+                    type: string
         RegisterPasskeyResponse:
             type: object
             properties:

@@ -128,13 +128,20 @@ func (s *Store) RegisterPasskey(ctx context.Context, req *frontendv1.RegisterPas
 		return nil, fmt.Errorf("get project passkey rp ids: %w", err)
 	}
 
-	var rpIDs []string
+	var rpIDOk bool
 	for _, qProjectPasskeyRPID := range qProjectPasskeyRPIDs {
-		rpIDs = append(rpIDs, qProjectPasskeyRPID.RpID)
+		if qProjectPasskeyRPID.RpID == req.RpId {
+			rpIDOk = true
+			break
+		}
+	}
+
+	if !rpIDOk {
+		return nil, apierror.NewPermissionDeniedError("invalid rp id", fmt.Errorf("invalid rp id"))
 	}
 
 	cred, err := webauthn.Parse(&webauthn.ParseRequest{
-		RPIDs:             rpIDs,
+		RPID:              req.RpId,
 		AttestationObject: req.AttestationObject,
 	})
 	if err != nil {
@@ -152,7 +159,7 @@ func (s *Store) RegisterPasskey(ctx context.Context, req *frontendv1.RegisterPas
 		CredentialID: cred.ID,
 		PublicKey:    publicKey,
 		Aaguid:       cred.AAGUID,
-		RpID: cred.
+		RpID:         req.RpId,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("create passkey: %w", err)
