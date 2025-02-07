@@ -1,6 +1,7 @@
 import React, { FC } from 'react'
 import { Button, ButtonProps } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { AuthType, useAuthType } from '@/lib/auth'
 
 export enum OAuthMethods {
   google = 'Google',
@@ -12,6 +13,8 @@ interface OAuthButtonProps extends ButtonProps {
 }
 
 const OAuthButton: FC<OAuthButtonProps> = ({ className, method, ...props }) => {
+  const authType = useAuthType()
+
   return (
     <Button
       className={cn(
@@ -68,6 +71,7 @@ const OAuthButton: FC<OAuthButtonProps> = ({ className, method, ...props }) => {
           </defs>
         </svg>
       ) : null}
+      {authType === AuthType.SignUp ? 'Sign up with ' : 'Log in with '}
       {method}
     </Button>
   )

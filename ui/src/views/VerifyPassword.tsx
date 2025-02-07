@@ -10,20 +10,20 @@ import { useMutation } from '@connectrpc/connect-query'
 import { useNavigate } from 'react-router'
 import { setAccessToken, setRefreshToken } from '@/auth'
 import { Input } from '@/components/ui/input'
-import { useIntermediateOrganization } from '@/lib/auth'
+import { AuthType, useAuthType, useIntermediateOrganization } from '@/lib/auth'
 import { LoginLayouts, LoginViews } from '@/lib/views'
 import { useLayout } from '@/lib/settings'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
 import { parseErrorMessage } from '@/lib/errors'
 import Loader from '@/components/ui/loader'
-import { set } from 'react-hook-form'
 
 interface VerifyPasswordProps {
   setView: Dispatch<SetStateAction<LoginViews>>
 }
 
 const VerifyPassword: FC<VerifyPasswordProps> = ({ setView }) => {
+  const authType = useAuthType()
   const layout = useLayout()
   const organization = useIntermediateOrganization()
   const navigate = useNavigate()
@@ -91,7 +91,7 @@ const VerifyPassword: FC<VerifyPasswordProps> = ({ setView }) => {
 
   return (
     <>
-      <Title title="Verify Email Address" />
+      <Title title="Verify password" />
 
       <Card
         className={cn(
@@ -102,7 +102,8 @@ const VerifyPassword: FC<VerifyPasswordProps> = ({ setView }) => {
         <CardHeader>
           <CardTitle className="text-center">Password Verification</CardTitle>
           <p className="text-sm text-center mt-2 text-gray-500">
-            Please enter your password to continue logging in.
+            Please enter your password to continue{' '}
+            {authType === AuthType.SignUp ? 'signing' : 'logging'} in.
           </p>
         </CardHeader>
         <CardContent className="flex flex-col items-center justify-center w-full">
@@ -124,7 +125,7 @@ const VerifyPassword: FC<VerifyPasswordProps> = ({ setView }) => {
               type="submit"
             >
               {submitting && <Loader />}
-              Log In
+              Continue
             </Button>
           </form>
         </CardContent>

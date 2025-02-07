@@ -28,6 +28,8 @@ import {
   isValidPrimaryLoginFactor,
   PrimaryLoginFactor,
 } from '@/lib/login-factors'
+import TextDivider from '@/components/ui/test-divider'
+import { Button } from '@/components/ui/button'
 
 interface ChooseOrganizationProps {
   setIntermediateOrganization: Dispatch<
@@ -170,32 +172,37 @@ const ChooseOrganization: FC<ChooseOrganizationProps> = ({
           <CardTitle className="text-center">Choose an Organization</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col items-center justify-center w-full">
-          <ul className="w-full p-0 border border-b-0 rounded-md">
+          <ul className="w-full p-0">
             {listOrganizationsResponse?.organizations?.map(
               (organization, idx) => (
                 <li
-                  className={`py-2 px-4 border-b ${idx === listOrganizationsResponse?.organizations?.length ? 'rounded-b-md' : ''} hover:bg-gray-50 hover:text-dark cursor-pointer font-semibold`}
                   key={organization.id}
                   onClick={() => handleOrganizationClick(organization)}
                 >
-                  {setting && <Loader />}
-                  {organization.displayName}
+                  <Button
+                    className="w-full"
+                    variant="outline"
+                    onClick={() => handleOrganizationClick(organization)}
+                  >
+                    {setting && <Loader />}
+                    {organization.displayName}
+                  </Button>
                 </li>
               ),
             )}
           </ul>
         </CardContent>
         <CardFooter>
-          <p className="text-sm text-center w-full">
-            Or you can{' '}
-            <span
-              className="text-primary underline cursor-pointer"
+          <div className="flex flex-col w-full">
+            <TextDivider className="w-full">Or you can</TextDivider>
+
+            <Button
+              className="mt-4 w-full"
               onClick={() => setView(LoginViews.CreateOrganization)}
             >
-              create an organization
-            </span>
-            .
-          </p>
+              Create an organization
+            </Button>
+          </div>
         </CardFooter>
       </Card>
     </>

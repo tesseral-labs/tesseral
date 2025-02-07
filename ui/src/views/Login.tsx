@@ -23,12 +23,14 @@ import useSettings, { useLayout } from '@/lib/settings'
 import { cn } from '@/lib/utils'
 import { parseErrorMessage } from '@/lib/errors'
 import { toast } from 'sonner'
+import { AuthType, useAuthType } from '@/lib/auth'
 
 interface LoginProps {
   setView: Dispatch<SetStateAction<LoginViews>>
 }
 
 const Login: FC<LoginProps> = ({ setView }) => {
+  const authType = useAuthType()
   const layout = useLayout()
   const settings = useSettings()
 
@@ -102,7 +104,7 @@ const Login: FC<LoginProps> = ({ setView }) => {
 
   return (
     <>
-      <Title title="Login" />
+      <Title title={authType === AuthType.SignUp ? 'Sign up' : 'Log in'} />
 
       <Card
         className={cn(
@@ -112,21 +114,17 @@ const Login: FC<LoginProps> = ({ setView }) => {
       >
         <CardHeader>
           {(settings?.logInWithGoogle || settings?.logInWithMicrosoft) && (
-            <CardTitle className="text-center">Log in with</CardTitle>
+            <CardTitle className="text-center">
+              {authType === AuthType.SignUp ? 'Sign up' : 'Log in'}
+            </CardTitle>
           )}
         </CardHeader>
 
         <CardContent className="flex flex-col items-center w-full">
-          <div
-            className={cn(
-              'w-full grid gap-6',
-              settings?.logInWithGoogle && settings?.logInWithMicrosoft
-                ? 'grid-cols-2'
-                : 'grid-cols-1',
-            )}
-          >
+          <div className="w-full grid grid-cols-1 gap-4">
             {settings?.logInWithGoogle && (
               <OAuthButton
+                className="w-full"
                 method={OAuthMethods.google}
                 onClick={handleGoogleOAuthLogin}
                 variant="outline"
@@ -134,6 +132,7 @@ const Login: FC<LoginProps> = ({ setView }) => {
             )}
             {settings?.logInWithMicrosoft && (
               <OAuthButton
+                className="w-full"
                 method={OAuthMethods.microsoft}
                 onClick={handleMicrosoftOAuthLogin}
                 variant="outline"

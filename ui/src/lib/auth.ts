@@ -7,6 +7,11 @@ import { Organization } from '@/gen/openauth/intermediate/v1/intermediate_pb'
 // how far in advance of its expiration an access token gets refreshed
 const ACCESS_TOKEN_REFRESH_THRESHOLD_SECONDS = 10
 
+export enum AuthType {
+  LogIn = 'logIn',
+  SignUp = 'signUp',
+}
+
 interface SessionAccessTokenClaims {
   exp: number
   iat: number
@@ -47,6 +52,13 @@ interface SessionUserClaims {
   microsoftUserId?: string
   owner: boolean
   updateTime: string
+}
+
+const AuthTypeContext = createContext<AuthType>(AuthType.LogIn)
+export const AuthTypeContextProvider = AuthTypeContext.Provider
+export const useAuthType = (): AuthType => {
+  const authType = useContext(AuthTypeContext)
+  return authType || AuthType.LogIn
 }
 
 export const useSession = (): SessionAccessTokenClaims | undefined => {
