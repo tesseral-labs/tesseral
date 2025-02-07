@@ -469,7 +469,7 @@ WHERE
             users
             JOIN organizations ON users.organization_id = organizations.id
         WHERE
-            organization_id = $1)
+            organizations.project_id = $1)
     AND rp_id NOT IN (
         SELECT
             rp_id
@@ -479,8 +479,8 @@ WHERE
             project_id = $1)
 `
 
-func (q *Queries) DisablePasskeysOutsideProjectRPIDs(ctx context.Context, organizationID uuid.UUID) error {
-	_, err := q.db.Exec(ctx, disablePasskeysOutsideProjectRPIDs, organizationID)
+func (q *Queries) DisablePasskeysOutsideProjectRPIDs(ctx context.Context, projectID uuid.UUID) error {
+	_, err := q.db.Exec(ctx, disablePasskeysOutsideProjectRPIDs, projectID)
 	return err
 }
 

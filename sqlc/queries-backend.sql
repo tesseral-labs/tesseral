@@ -749,3 +749,4 @@ ON CONFLICT (organization_id, email)
 -- name: DeleteUserInvite :exec
 DELETE FROM user_invites
 WHERE id = $1;
+
