@@ -420,6 +420,7 @@ message GetPasskeyOptionsResponse {
 
 message RegisterPasskeyRequest {
   string attestation_object = 1;
+  string rp_id = 2;
 }
 
 message RegisterPasskeyResponse {

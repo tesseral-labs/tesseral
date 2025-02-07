@@ -169,6 +169,7 @@ type IntermediateSession struct {
 	AuthenticatorAppVerified            bool
 	AuthenticatorAppRecoveryCodeBcrypts [][]byte
 	PrimaryLoginFactor                  *PrimaryLoginFactor
+	PasskeyRpID                         *string
 }
 
 type OauthVerifiedEmail struct {
