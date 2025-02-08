@@ -40,7 +40,9 @@ const DashboardPage: FC<PropsWithChildren> = ({ children }) => {
   }, [settings])
 
   return (
-    <>
+    <div
+      className={isDarkMode && settings?.detectDarkModeEnabled ? 'dark' : ''}
+    >
       <Helmet>
         <link rel="icon" href={favicon} />
         <link rel="apple-touch-icon" href={favicon} />
@@ -52,14 +54,9 @@ const DashboardPage: FC<PropsWithChildren> = ({ children }) => {
           <UserContextProvider value={session?.user}>
             <SidebarProvider>
               <DashboardSidebar />
-              <main
-                className={cn(
-                  'min-h-screen w-screen',
-                  isDarkMode && settings?.detectDarkModeEnabled ? 'dark' : '',
-                )}
-              >
+              <main className="min-h-screen w-screen">
                 {isMobile && <SidebarTrigger />}
-                <div className="bg-body mx-auto items-center">
+                <div className="bg-background min-h-screen mx-auto items-center">
                   <div className="mx-auto px-6 lg:px-8">
                     <div className="py-8">{children}</div>
                   </div>
@@ -70,7 +67,7 @@ const DashboardPage: FC<PropsWithChildren> = ({ children }) => {
           </UserContextProvider>
         </OrganizationContextProvider>
       </ProjectContextProvider>
-    </>
+    </div>
   )
 }
 
