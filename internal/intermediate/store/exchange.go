@@ -320,6 +320,7 @@ func (s *Store) copyRegisteredPasskeySettings(ctx context.Context, q *queries.Qu
 		CredentialID: qIntermediateSession.PasskeyCredentialID,
 		PublicKey:    qIntermediateSession.PasskeyPublicKey,
 		Aaguid:       *qIntermediateSession.PasskeyAaguid,
+		RpID:         *qIntermediateSession.PasskeyRpID,
 	}); err != nil {
 		return fmt.Errorf("create passkey: %w", err)
 	}

@@ -268,8 +268,8 @@ ORDER BY
 LIMIT $3;
 
 -- name: CreatePasskey :one
-INSERT INTO passkeys (id, user_id, credential_id, public_key, aaguid)
-    VALUES ($1, $2, $3, $4, $5)
+INSERT INTO passkeys (id, user_id, credential_id, public_key, aaguid, rp_id)
+    VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING
     *;
 

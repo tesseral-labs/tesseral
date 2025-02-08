@@ -417,16 +417,17 @@ SET
     passkey_credential_id = $1,
     passkey_public_key = $2,
     passkey_aaguid = $3,
+    passkey_rp_id = $4,
     passkey_verified = TRUE,
     update_time = now()
 WHERE
-    id = $4
+    id = $5
 RETURNING
     *;
 
 -- name: CreatePasskey :one
-INSERT INTO passkeys (id, user_id, credential_id, public_key, aaguid)
-    VALUES ($1, $2, $3, $4, $5)
+INSERT INTO passkeys (id, user_id, credential_id, public_key, aaguid, rp_id)
+    VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING
     *;
 
