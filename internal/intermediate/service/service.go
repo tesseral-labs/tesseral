@@ -7,8 +7,7 @@ import (
 )
 
 type Service struct {
-	AuthAppsRootDomain string
-	Store              *store.Store
-	AccessTokenIssuer  *accesstoken.Issuer
+	Store             *store.Store
+	AccessTokenIssuer *accesstoken.Issuer
 	intermediatev1connect.UnimplementedIntermediateServiceHandler
 }
