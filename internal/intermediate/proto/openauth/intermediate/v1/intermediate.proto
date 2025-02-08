@@ -175,6 +175,8 @@ service IntermediateService {
       body: "*"
     };
   }
+
+  rpc CreateProject(CreateProjectRequest) returns (CreateProjectResponse);
 }
 
 message IntermediateSession {
@@ -212,6 +214,13 @@ message Settings {
   bool log_in_with_saml = 16;
 }
 
+message CreateProjectRequest {
+  string display_name = 1;
+}
+message CreateProjectResponse {
+  Project project = 1;
+}
+
 message CreateIntermediateSessionRequest {
 }
 
@@ -231,6 +240,7 @@ message CreateOrganizationRequest {
 }
 
 message CreateOrganizationResponse {
+  string organization_id = 1;
 }
 
 message SetOrganizationRequest {
@@ -299,6 +309,15 @@ message Organization {
   bool user_has_password = 13;
   bool user_has_authenticator_app = 14;
   bool user_has_passkey = 15;
+}
+
+message Project {
+  string id = 1;
+  string organization_id = 2;
+  google.protobuf.Timestamp create_time = 3;
+  google.protobuf.Timestamp update_time = 4;
+  string display_name = 5;
+  optional string auth_domain = 6;
 }
 
 message IssueEmailVerificationChallengeRequest {

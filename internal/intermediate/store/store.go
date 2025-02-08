@@ -18,6 +18,7 @@ import (
 )
 
 type Store struct {
+	authAppsRootDomain                    string
 	db                                    *pgxpool.Pool
 	dogfoodProjectID                      *uuid.UUID
 	hibp                                  *hibp.Client
@@ -36,6 +37,7 @@ type Store struct {
 }
 
 type NewStoreParams struct {
+	AuthAppsRootDomain                    string
 	DB                                    *pgxpool.Pool
 	DogfoodProjectID                      *uuid.UUID
 	IntermediateSessionSigningKeyKMSKeyID string
@@ -53,8 +55,9 @@ type NewStoreParams struct {
 
 func New(p NewStoreParams) *Store {
 	store := &Store{
-		db:               p.DB,
-		dogfoodProjectID: p.DogfoodProjectID,
+		authAppsRootDomain: p.AuthAppsRootDomain,
+		db:                 p.DB,
+		dogfoodProjectID:   p.DogfoodProjectID,
 		hibp: &hibp.Client{
 			HTTPClient: http.DefaultClient,
 		},

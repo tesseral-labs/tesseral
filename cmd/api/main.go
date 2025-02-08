@@ -189,6 +189,7 @@ func main() {
 
 	// Register the intermediate service
 	intermediateStore := intermediatestore.New(intermediatestore.NewStoreParams{
+		AuthAppsRootDomain:                    config.AuthAppsRootDomain,
 		DB:                                    db,
 		DogfoodProjectID:                      &uuidDogfoodProjectID,
 		IntermediateSessionSigningKeyKMSKeyID: config.IntermediateSessionKMSKeyID,

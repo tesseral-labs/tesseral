@@ -11,6 +11,7 @@ import {
 import {
   createOrganization,
   exchangeIntermediateSessionForSession,
+  setOrganization,
   whoami,
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
 import { useMutation, useQuery } from '@connectrpc/connect-query'
@@ -42,6 +43,7 @@ const CreateOrganization: FC<CreateOrganizationProps> = ({ setView }) => {
   const exchangeIntermediateSessionForSessionMutation = useMutation(
     exchangeIntermediateSessionForSession,
   )
+  const setOrganizationMutation = useMutation(setOrganization)
 
   const refreshMutation = useMutation(refresh)
 
@@ -50,8 +52,12 @@ const CreateOrganization: FC<CreateOrganizationProps> = ({ setView }) => {
     setSubmitting(true)
 
     try {
-      await createOrganizationMutation.mutateAsync({
+      const organization = await createOrganizationMutation.mutateAsync({
         displayName,
+      })
+
+      await setOrganizationMutation.mutateAsync({
+        organizationId: organization?.organizationId,
       })
 
       if (

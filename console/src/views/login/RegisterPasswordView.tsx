@@ -11,8 +11,9 @@ import { Button } from '@/components/ui/button'
 import {
   exchangeIntermediateSessionForSession,
   registerPassword,
+  whoami,
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
-import { useMutation } from '@connectrpc/connect-query'
+import { useMutation, useQuery } from '@connectrpc/connect-query'
 import { useNavigate } from 'react-router'
 import { setAccessToken, setRefreshToken } from '@/auth'
 import { Input } from '@/components/ui/input'
@@ -38,6 +39,7 @@ const RegisterPasswordView: FC<RegisterPasswordViewProps> = ({ setView }) => {
     exchangeIntermediateSessionForSession,
   )
   const registerPasswordMutation = useMutation(registerPassword)
+  const { data: whoamiRes, refetch: refetchWhoami } = useQuery(whoami)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -47,6 +49,10 @@ const RegisterPasswordView: FC<RegisterPasswordViewProps> = ({ setView }) => {
       await registerPasswordMutation.mutateAsync({
         password,
       })
+
+      console.log('whoamiRes', whoamiRes)
+      await refetchWhoami()
+      console.log('refetched whoamiRes', whoamiRes)
 
       if (organization?.requireMfa) {
         setView(LoginView.ChooseAdditionalFactor)
