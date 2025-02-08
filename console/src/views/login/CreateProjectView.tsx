@@ -1,16 +1,10 @@
 import React, { Dispatch, FC, useState } from 'react'
 import { LoginView } from '@/lib/views'
 import { Title } from '@/components/Title'
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { useNavigate } from 'react-router'
-import { useMutation, useQuery } from '@connectrpc/connect-query'
+import { useMutation } from '@connectrpc/connect-query'
 // import { exchangeIntermediateSessionForNewOrganizationSession } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
 import { refresh } from '@/gen/openauth/frontend/v1/frontend-FrontendService_connectquery'
 import { setAccessToken, setRefreshToken } from '@/auth'
@@ -19,7 +13,6 @@ import {
   createProject,
   exchangeIntermediateSessionForSession,
   setOrganization,
-  whoami,
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
 import { parseErrorMessage } from '@/lib/errors'
 import { toast } from 'sonner'
@@ -43,7 +36,6 @@ const CreateProjectView: FC<CreateProjectViewProps> = ({ setView }) => {
   )
   const refreshMutation = useMutation(refresh)
   const setOrganizationMutation = useMutation(setOrganization)
-  const { data: whoamiRes, refetch: refetchWhoami } = useQuery(whoami)
 
   const deriveNextView = (): LoginView | undefined => {
     if (settings?.logInWithPassword) {
@@ -63,10 +55,6 @@ const CreateProjectView: FC<CreateProjectViewProps> = ({ setView }) => {
       await setOrganizationMutation.mutateAsync({
         organizationId: projectRes?.project?.organizationId,
       })
-
-      console.log(`whoamiRes`, whoamiRes)
-      await refetchWhoami()
-      console.log(`refetched whoamiRes`, whoamiRes)
 
       const nextView = deriveNextView()
       if (nextView) {

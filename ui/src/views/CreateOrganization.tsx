@@ -21,7 +21,7 @@ import { refresh } from '@/gen/openauth/frontend/v1/frontend-FrontendService_con
 import { LoginLayouts, LoginViews } from '@/lib/views'
 import { Input } from '@/components/ui/input'
 import { Organization } from '@/gen/openauth/intermediate/v1/intermediate_pb'
-import { useLayout } from '@/lib/settings'
+import useSettings, { useLayout } from '@/lib/settings'
 import { cn } from '@/lib/utils'
 import { parseErrorMessage } from '@/lib/errors'
 import { toast } from 'sonner'
@@ -34,6 +34,7 @@ interface CreateOrganizationProps {
 const CreateOrganization: FC<CreateOrganizationProps> = ({ setView }) => {
   const layout = useLayout()
   const navigate = useNavigate()
+  const settings = useSettings()
   const { data: whoamiRes } = useQuery(whoami)
 
   const [displayName, setDisplayName] = useState<string>('')
@@ -47,6 +48,12 @@ const CreateOrganization: FC<CreateOrganizationProps> = ({ setView }) => {
 
   const refreshMutation = useMutation(refresh)
 
+  const deriveNextView = (): LoginViews | undefined => {
+    if (settings?.logInWithPassword) {
+      return LoginViews.RegisterPassword
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setSubmitting(true)
@@ -59,6 +66,13 @@ const CreateOrganization: FC<CreateOrganizationProps> = ({ setView }) => {
       await setOrganizationMutation.mutateAsync({
         organizationId: organization?.organizationId,
       })
+
+      const nextView = deriveNextView()
+      if (nextView) {
+        setSubmitting(false)
+        setView(nextView)
+        return
+      }
 
       if (
         !whoamiRes?.intermediateSession?.googleUserId &&
