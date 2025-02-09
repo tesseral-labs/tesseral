@@ -714,7 +714,7 @@ message Project {
   string microsoft_oauth_client_id = 10;
   string microsoft_oauth_client_secret = 11;
   optional string auth_domain = 12;
-  repeated string passkey_rp_ids = 17;
+  repeated string trusted_domains = 17;
 }
 
 message ProjectUISettings {

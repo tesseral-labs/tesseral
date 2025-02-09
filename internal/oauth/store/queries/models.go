@@ -260,11 +260,6 @@ type ProjectApiKey struct {
 	UpdateTime        *time.Time
 }
 
-type ProjectPasskeyRpID struct {
-	ProjectID uuid.UUID
-	RpID      string
-}
-
 type ProjectRedirectUri struct {
 	ID        uuid.UUID
 	ProjectID uuid.UUID
@@ -272,6 +267,12 @@ type ProjectRedirectUri struct {
 	IsPrimary bool
 	CreatedAt pgtype.Timestamptz
 	UpdatedAt pgtype.Timestamptz
+}
+
+type ProjectTrustedDomain struct {
+	ID        uuid.UUID
+	ProjectID uuid.UUID
+	Domain    string
 }
 
 type ProjectUiSetting struct {
