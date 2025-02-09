@@ -123,14 +123,14 @@ func (s *Store) RegisterPasskey(ctx context.Context, req *frontendv1.RegisterPas
 	}
 	defer rollback()
 
-	qProjectPasskeyRPIDs, err := q.GetProjectPasskeyRPIDs(ctx, authn.ProjectID(ctx))
+	qProjectTrustedDomains, err := q.GetProjectTrustedDomains(ctx, authn.ProjectID(ctx))
 	if err != nil {
-		return nil, fmt.Errorf("get project passkey rp ids: %w", err)
+		return nil, fmt.Errorf("get project trusted domains: %w", err)
 	}
 
 	var rpIDOk bool
-	for _, qProjectPasskeyRPID := range qProjectPasskeyRPIDs {
-		if qProjectPasskeyRPID.RpID == req.RpId {
+	for _, qProjectTrustedDomain := range qProjectTrustedDomains {
+		if qProjectTrustedDomain.Domain == req.RpId {
 			rpIDOk = true
 			break
 		}

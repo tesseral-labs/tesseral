@@ -397,25 +397,25 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 	return i, err
 }
 
-const getProjectPasskeyRPIDs = `-- name: GetProjectPasskeyRPIDs :many
+const getProjectTrustedDomains = `-- name: GetProjectTrustedDomains :many
 SELECT
-    project_id, rp_id
+    id, project_id, domain
 FROM
-    project_passkey_rp_ids
+    project_trusted_domains
 WHERE
     project_id = $1
 `
 
-func (q *Queries) GetProjectPasskeyRPIDs(ctx context.Context, projectID uuid.UUID) ([]ProjectPasskeyRpID, error) {
-	rows, err := q.db.Query(ctx, getProjectPasskeyRPIDs, projectID)
+func (q *Queries) GetProjectTrustedDomains(ctx context.Context, projectID uuid.UUID) ([]ProjectTrustedDomain, error) {
+	rows, err := q.db.Query(ctx, getProjectTrustedDomains, projectID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []ProjectPasskeyRpID
+	var items []ProjectTrustedDomain
 	for rows.Next() {
-		var i ProjectPasskeyRpID
-		if err := rows.Scan(&i.ProjectID, &i.RpID); err != nil {
+		var i ProjectTrustedDomain
+		if err := rows.Scan(&i.ID, &i.ProjectID, &i.Domain); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

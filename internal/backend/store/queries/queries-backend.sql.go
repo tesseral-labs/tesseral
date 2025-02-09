@@ -141,25 +141,6 @@ func (q *Queries) CreateProjectAPIKey(ctx context.Context, arg CreateProjectAPIK
 	return i, err
 }
 
-const createProjectPasskeyRPID = `-- name: CreateProjectPasskeyRPID :one
-INSERT INTO project_passkey_rp_ids (project_id, rp_id)
-    VALUES ($1, $2)
-RETURNING
-    project_id, rp_id
-`
-
-type CreateProjectPasskeyRPIDParams struct {
-	ProjectID uuid.UUID
-	RpID      string
-}
-
-func (q *Queries) CreateProjectPasskeyRPID(ctx context.Context, arg CreateProjectPasskeyRPIDParams) (ProjectPasskeyRpID, error) {
-	row := q.db.QueryRow(ctx, createProjectPasskeyRPID, arg.ProjectID, arg.RpID)
-	var i ProjectPasskeyRpID
-	err := row.Scan(&i.ProjectID, &i.RpID)
-	return i, err
-}
-
 const createProjectRedirectURI = `-- name: CreateProjectRedirectURI :one
 INSERT INTO project_redirect_uris (id, project_id, uri, is_primary)
     VALUES ($1, $2, $3, COALESCE((
@@ -189,6 +170,26 @@ func (q *Queries) CreateProjectRedirectURI(ctx context.Context, arg CreateProjec
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
+	return i, err
+}
+
+const createProjectTrustedDomain = `-- name: CreateProjectTrustedDomain :one
+INSERT INTO project_trusted_domains (id, project_id, DOMAIN)
+    VALUES ($1, $2, $3)
+RETURNING
+    id, project_id, domain
+`
+
+type CreateProjectTrustedDomainParams struct {
+	ID        uuid.UUID
+	ProjectID uuid.UUID
+	Domain    string
+}
+
+func (q *Queries) CreateProjectTrustedDomain(ctx context.Context, arg CreateProjectTrustedDomainParams) (ProjectTrustedDomain, error) {
+	row := q.db.QueryRow(ctx, createProjectTrustedDomain, arg.ID, arg.ProjectID, arg.Domain)
+	var i ProjectTrustedDomain
+	err := row.Scan(&i.ID, &i.ProjectID, &i.Domain)
 	return i, err
 }
 
@@ -385,16 +386,6 @@ func (q *Queries) DeleteProjectAPIKey(ctx context.Context, id uuid.UUID) error {
 	return err
 }
 
-const deleteProjectPasskeyRPIDs = `-- name: DeleteProjectPasskeyRPIDs :exec
-DELETE FROM project_passkey_rp_ids
-WHERE project_id = $1
-`
-
-func (q *Queries) DeleteProjectPasskeyRPIDs(ctx context.Context, projectID uuid.UUID) error {
-	_, err := q.db.Exec(ctx, deleteProjectPasskeyRPIDs, projectID)
-	return err
-}
-
 const deleteProjectRedirectURI = `-- name: DeleteProjectRedirectURI :exec
 DELETE FROM project_redirect_uris
 WHERE id = $1
@@ -408,6 +399,16 @@ type DeleteProjectRedirectURIParams struct {
 
 func (q *Queries) DeleteProjectRedirectURI(ctx context.Context, arg DeleteProjectRedirectURIParams) error {
 	_, err := q.db.Exec(ctx, deleteProjectRedirectURI, arg.ID, arg.ProjectID)
+	return err
+}
+
+const deleteProjectTrustedDomainsByProjectID = `-- name: DeleteProjectTrustedDomainsByProjectID :exec
+DELETE FROM project_trusted_domains
+WHERE project_id = $1
+`
+
+func (q *Queries) DeleteProjectTrustedDomainsByProjectID(ctx context.Context, projectID uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteProjectTrustedDomainsByProjectID, projectID)
 	return err
 }
 
@@ -452,35 +453,6 @@ WHERE
 
 func (q *Queries) DisableOrganizationLogins(ctx context.Context, id uuid.UUID) error {
 	_, err := q.db.Exec(ctx, disableOrganizationLogins, id)
-	return err
-}
-
-const disablePasskeysOutsideProjectRPIDs = `-- name: DisablePasskeysOutsideProjectRPIDs :exec
-UPDATE
-    passkeys
-SET
-    disabled = TRUE,
-    update_time = now()
-WHERE
-    user_id IN (
-        SELECT
-            users.id
-        FROM
-            users
-            JOIN organizations ON users.organization_id = organizations.id
-        WHERE
-            organizations.project_id = $1)
-    AND rp_id NOT IN (
-        SELECT
-            rp_id
-        FROM
-            project_passkey_rp_ids
-        WHERE
-            project_id = $1)
-`
-
-func (q *Queries) DisablePasskeysOutsideProjectRPIDs(ctx context.Context, projectID uuid.UUID) error {
-	_, err := q.db.Exec(ctx, disablePasskeysOutsideProjectRPIDs, projectID)
 	return err
 }
 
@@ -1088,35 +1060,6 @@ func (q *Queries) GetProjectIDOrganizationBacks(ctx context.Context, organizatio
 	return id, err
 }
 
-const getProjectPasskeyRPIDs = `-- name: GetProjectPasskeyRPIDs :many
-SELECT
-    project_id, rp_id
-FROM
-    project_passkey_rp_ids
-WHERE
-    project_id = $1
-`
-
-func (q *Queries) GetProjectPasskeyRPIDs(ctx context.Context, projectID uuid.UUID) ([]ProjectPasskeyRpID, error) {
-	rows, err := q.db.Query(ctx, getProjectPasskeyRPIDs, projectID)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []ProjectPasskeyRpID
-	for rows.Next() {
-		var i ProjectPasskeyRpID
-		if err := rows.Scan(&i.ProjectID, &i.RpID); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
 const getProjectRedirectURI = `-- name: GetProjectRedirectURI :one
 SELECT
     id, project_id, uri, is_primary, created_at, updated_at
@@ -1144,6 +1087,35 @@ func (q *Queries) GetProjectRedirectURI(ctx context.Context, arg GetProjectRedir
 		&i.UpdatedAt,
 	)
 	return i, err
+}
+
+const getProjectTrustedDomains = `-- name: GetProjectTrustedDomains :many
+SELECT
+    id, project_id, domain
+FROM
+    project_trusted_domains
+WHERE
+    project_id = $1
+`
+
+func (q *Queries) GetProjectTrustedDomains(ctx context.Context, projectID uuid.UUID) ([]ProjectTrustedDomain, error) {
+	rows, err := q.db.Query(ctx, getProjectTrustedDomains, projectID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ProjectTrustedDomain
+	for rows.Next() {
+		var i ProjectTrustedDomain
+		if err := rows.Scan(&i.ID, &i.ProjectID, &i.Domain); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const getProjectUISettings = `-- name: GetProjectUISettings :one

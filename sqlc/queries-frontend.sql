@@ -58,11 +58,11 @@ FROM
 WHERE
     id = $1;
 
--- name: GetProjectPasskeyRPIDs :many
+-- name: GetProjectTrustedDomains :many
 SELECT
     *
 FROM
-    project_passkey_rp_ids
+    project_trusted_domains
 WHERE
     project_id = $1;
 

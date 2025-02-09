@@ -4,9 +4,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/openauth/openauth/internal/backend/authn"
 	backendv1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
@@ -32,12 +34,12 @@ func (s *Store) GetProject(ctx context.Context, req *backendv1.GetProjectRequest
 		return nil, err
 	}
 
-	qProjectPasskeyRPIDs, err := q.GetProjectPasskeyRPIDs(ctx, authn.ProjectID(ctx))
+	qProjectTrustedDomains, err := q.GetProjectTrustedDomains(ctx, authn.ProjectID(ctx))
 	if err != nil {
-		return nil, fmt.Errorf("get project passkey rp ids: %w", err)
+		return nil, fmt.Errorf("get project trusted domains: %w", err)
 	}
 
-	return &backendv1.GetProjectResponse{Project: parseProject(&project, qProjectPasskeyRPIDs)}, nil
+	return &backendv1.GetProjectResponse{Project: parseProject(&project, qProjectTrustedDomains)}, nil
 }
 
 func (s *Store) DisableProjectLogins(ctx context.Context, req *backendv1.DisableProjectLoginsRequest) (*backendv1.DisableProjectLoginsResponse, error) {
@@ -188,11 +190,10 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 		updates.LogInWithPasskey = *req.Project.LogInWithPasskey
 	}
 
+	// TODO this is just set up to avoid breaking things; replace with real
+	// domains implementation
 	updates.CustomAuthDomain = qProject.CustomAuthDomain
-	// TODO enable when we have a use for custom domains from app
-	//if req.Project.CustomDomain != nil {
-	//	updates.CustomDomain = req.Project.CustomDomain
-	//}
+	updates.AuthDomain = qProject.AuthDomain
 
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
@@ -247,50 +248,53 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 		}
 	}
 
-	// only update project passkey RP IDs if mentioned in request
-	if len(req.Project.PasskeyRpIds) > 0 {
-		// dedupe RP IDs, and always include the current vault domain in list
-		passkeyRPIDs := map[string]struct{}{*qUpdatedProject.AuthDomain: {}}
-		for _, rpID := range req.Project.PasskeyRpIds {
-			passkeyRPIDs[rpID] = struct{}{}
+	// only update project trusted domains if mentioned in request
+	if len(req.Project.TrustedDomains) > 0 {
+		// always include the default vault domain (project-xxx.tesseral.app)
+		// and the current vault domain (e.g. auth.company.com) in the set of
+		// trusted domains
+		fmt.Printf("%+v\n", qUpdatedProject)
+
+		trustedDomains := map[string]struct{}{
+			*qUpdatedProject.AuthDomain: {},
+			fmt.Sprintf("%s.%s", strings.ReplaceAll(idformat.Project.Format(qUpdatedProject.ID), "_", "-"), s.authAppsRootDomain): {},
+		}
+		for _, domain := range req.Project.TrustedDomains {
+			trustedDomains[domain] = struct{}{}
 		}
 
-		if err := q.DeleteProjectPasskeyRPIDs(ctx, authn.ProjectID(ctx)); err != nil {
-			return nil, fmt.Errorf("delete project passkey rp ids: %w", err)
+		if err := q.DeleteProjectTrustedDomainsByProjectID(ctx, authn.ProjectID(ctx)); err != nil {
+			return nil, fmt.Errorf("delete project trusted domains by project id: %w", err)
 		}
 
-		for rpID := range passkeyRPIDs {
-			if _, err := q.CreateProjectPasskeyRPID(ctx, queries.CreateProjectPasskeyRPIDParams{
+		for domain := range trustedDomains {
+			if _, err := q.CreateProjectTrustedDomain(ctx, queries.CreateProjectTrustedDomainParams{
+				ID:        uuid.New(),
 				ProjectID: authn.ProjectID(ctx),
-				RpID:      rpID,
+				Domain:    domain,
 			}); err != nil {
 				return nil, fmt.Errorf("create project passkey rp id: %w", err)
 			}
 		}
-
-		// disable all existing passkeys in project outside new list of RP IDs
-		if err := q.DisablePasskeysOutsideProjectRPIDs(ctx, authn.ProjectID(ctx)); err != nil {
-			return nil, fmt.Errorf("disable passkeys outside project rp ids: %w", err)
-		}
 	}
 
-	qProjectPasskeyRPIDs, err := q.GetProjectPasskeyRPIDs(ctx, authn.ProjectID(ctx))
+	qProjectTrustedDomains, err := q.GetProjectTrustedDomains(ctx, authn.ProjectID(ctx))
 	if err != nil {
-		return nil, fmt.Errorf("get project passkey rp ids: %w", err)
+		return nil, fmt.Errorf("get project trusted domains: %w", err)
 	}
 
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return &backendv1.UpdateProjectResponse{Project: parseProject(&qUpdatedProject, qProjectPasskeyRPIDs)}, nil
+	return &backendv1.UpdateProjectResponse{Project: parseProject(&qUpdatedProject, qProjectTrustedDomains)}, nil
 }
 
-func parseProject(qProject *queries.Project, qProjectPasskeyRPIDs []queries.ProjectPasskeyRpID) *backendv1.Project {
+func parseProject(qProject *queries.Project, qProjectTrustedDomains []queries.ProjectTrustedDomain) *backendv1.Project {
 	// sanity check
-	for _, qProjectPasskeyRPID := range qProjectPasskeyRPIDs {
-		if qProjectPasskeyRPID.ProjectID != qProject.ID {
-			panic(fmt.Errorf("project passkey rp id project id mismatch: %s != %s", qProjectPasskeyRPID.ProjectID, qProject.ID))
+	for _, qProjectTrustedDomain := range qProjectTrustedDomains {
+		if qProjectTrustedDomain.ProjectID != qProject.ID {
+			panic(fmt.Errorf("project trusted domain project id mismatch: %s != %s", qProjectTrustedDomain.ProjectID, qProject.ID))
 		}
 	}
 
@@ -299,9 +303,9 @@ func parseProject(qProject *queries.Project, qProjectPasskeyRPIDs []queries.Proj
 		authDomain = *qProject.CustomAuthDomain
 	}
 
-	var passkeyRPIDs []string
-	for _, qProjectPasskeyRPID := range qProjectPasskeyRPIDs {
-		passkeyRPIDs = append(passkeyRPIDs, qProjectPasskeyRPID.RpID)
+	var trustedDomains []string
+	for _, qProjectTrustedDomain := range qProjectTrustedDomains {
+		trustedDomains = append(trustedDomains, qProjectTrustedDomain.Domain)
 	}
 
 	return &backendv1.Project{
@@ -319,6 +323,6 @@ func parseProject(qProject *queries.Project, qProjectPasskeyRPIDs []queries.Proj
 		GoogleOauthClientId:       derefOrEmpty(qProject.GoogleOauthClientID),
 		MicrosoftOauthClientId:    derefOrEmpty(qProject.MicrosoftOauthClientID),
 		AuthDomain:                &authDomain,
-		PasskeyRpIds:              passkeyRPIDs,
+		TrustedDomains:            trustedDomains,
 	}
 }
