@@ -456,35 +456,6 @@ func (q *Queries) DisableOrganizationLogins(ctx context.Context, id uuid.UUID) e
 	return err
 }
 
-const disablePasskeysOutsideProjectTrustedDomains = `-- name: DisablePasskeysOutsideProjectTrustedDomains :exec
-UPDATE
-    passkeys
-SET
-    disabled = TRUE,
-    update_time = now()
-WHERE
-    user_id IN (
-        SELECT
-            users.id
-        FROM
-            users
-            JOIN organizations ON users.organization_id = organizations.id
-        WHERE
-            organizations.project_id = $1)
-    AND rp_id NOT IN (
-        SELECT
-            rp_id
-        FROM
-            project_trusted_domains
-        WHERE
-            project_id = $1)
-`
-
-func (q *Queries) DisablePasskeysOutsideProjectTrustedDomains(ctx context.Context, projectID uuid.UUID) error {
-	_, err := q.db.Exec(ctx, disablePasskeysOutsideProjectTrustedDomains, projectID)
-	return err
-}
-
 const disableProjectLogins = `-- name: DisableProjectLogins :exec
 UPDATE
     projects
