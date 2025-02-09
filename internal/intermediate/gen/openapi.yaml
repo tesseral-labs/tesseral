@@ -585,7 +585,9 @@ components:
                     type: string
         CreateOrganizationResponse:
             type: object
-            properties: {}
+            properties:
+                organizationId:
+                    type: string
         ExchangeIntermediateSessionForSessionRequest:
             type: object
             properties:

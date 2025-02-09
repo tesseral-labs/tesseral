@@ -32,8 +32,8 @@ RETURNING
     *;
 
 -- name: CreateOrganization :one
-INSERT INTO organizations (id, project_id, display_name, log_in_with_google, log_in_with_microsoft, log_in_with_password, scim_enabled)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
+INSERT INTO organizations (id, project_id, display_name, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_email, scim_enabled)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 RETURNING
     *;
 
@@ -552,6 +552,18 @@ SET
     primary_login_factor = $1
 WHERE
     id = $2
+RETURNING
+    *;
+
+-- name: CreateProject :one
+INSERT INTO projects (id, organization_id, display_name, auth_domain, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_saml)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+RETURNING
+    *;
+
+-- name: CreateUserInvite :one
+INSERT INTO user_invites (id, organization_id, email, is_owner)
+    VALUES ($1, $2, $3, $4)
 RETURNING
     *;
 

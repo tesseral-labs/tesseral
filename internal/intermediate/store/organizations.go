@@ -16,11 +16,11 @@ import (
 )
 
 func (s *Store) CreateOrganization(ctx context.Context, req *intermediatev1.CreateOrganizationRequest) (*intermediatev1.CreateOrganizationResponse, error) {
-	intermediateSession := authn.IntermediateSession(ctx)
-	intermediateSessionID, err := idformat.IntermediateSession.Parse(intermediateSession.Id)
-	if err != nil {
-		return nil, apierror.NewInvalidArgumentError("invalid intermediate session ID", fmt.Errorf("parse intermediate session ID: %w", err))
+	if authn.ProjectID(ctx) == *s.dogfoodProjectID {
+		return nil, apierror.NewFailedPreconditionError("cannot create organization in this project", fmt.Errorf("dogfood project does not support directo organization creation"))
 	}
+
+	intermediateSession := authn.IntermediateSession(ctx)
 
 	if !intermediateSession.EmailVerified {
 		return nil, apierror.NewPermissionDeniedError("email not verified", nil)
@@ -41,6 +41,7 @@ func (s *Store) CreateOrganization(ctx context.Context, req *intermediatev1.Crea
 		ID:                 uuid.New(),
 		ProjectID:          authn.ProjectID(ctx),
 		DisplayName:        req.DisplayName,
+		LogInWithEmail:     qProject.LogInWithEmail,
 		LogInWithGoogle:    qProject.LogInWithGoogle,
 		LogInWithMicrosoft: qProject.LogInWithMicrosoft,
 		LogInWithPassword:  qProject.LogInWithPassword,
@@ -71,18 +72,23 @@ func (s *Store) CreateOrganization(ctx context.Context, req *intermediatev1.Crea
 		}
 	}
 
-	if _, err = q.UpdateIntermediateSessionOrganizationID(ctx, queries.UpdateIntermediateSessionOrganizationIDParams{
-		ID:             intermediateSessionID,
-		OrganizationID: &qOrganization.ID,
+	// Create a new user invite for the intermediate session user
+	if _, err := q.CreateUserInvite(ctx, queries.CreateUserInviteParams{
+		ID:             uuid.New(),
+		OrganizationID: qOrganization.ID,
+		Email:          intermediateSession.Email,
+		IsOwner:        true,
 	}); err != nil {
-		return nil, fmt.Errorf("update intermediate session organization ID: %w", err)
+		return nil, fmt.Errorf("create user invite: %w", err)
 	}
 
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return &intermediatev1.CreateOrganizationResponse{}, nil
+	return &intermediatev1.CreateOrganizationResponse{
+		OrganizationId: idformat.Organization.Format(qOrganization.ID),
+	}, nil
 }
 
 func (s *Store) ListOrganizations(ctx context.Context, req *intermediatev1.ListOrganizationsRequest) (*intermediatev1.ListOrganizationsResponse, error) {
