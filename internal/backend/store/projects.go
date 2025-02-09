@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
@@ -189,11 +190,10 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 		updates.LogInWithPasskey = *req.Project.LogInWithPasskey
 	}
 
+	// TODO this is just set up to avoid breaking things; replace with real
+	// domains implementation
 	updates.CustomAuthDomain = qProject.CustomAuthDomain
-	// TODO enable when we have a use for custom domains from app
-	//if req.Project.CustomDomain != nil {
-	//	updates.CustomDomain = req.Project.CustomDomain
-	//}
+	updates.AuthDomain = qProject.AuthDomain
 
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
@@ -253,8 +253,11 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 		// always include the default vault domain (project-xxx.tesseral.app)
 		// and the current vault domain (e.g. auth.company.com) in the set of
 		// trusted domains
+		fmt.Printf("%+v\n", qUpdatedProject)
+
 		trustedDomains := map[string]struct{}{
 			*qUpdatedProject.AuthDomain: {},
+			fmt.Sprintf("%s.%s", strings.ReplaceAll(idformat.Project.Format(qUpdatedProject.ID), "_", "-"), s.authAppsRootDomain): {},
 		}
 		for _, domain := range req.Project.TrustedDomains {
 			trustedDomains[domain] = struct{}{}
