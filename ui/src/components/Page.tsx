@@ -77,22 +77,24 @@ const Page = () => {
       className={cn(
         'min-h-screen w-screen',
         isDarkMode && settings?.detectDarkModeEnabled
-          ? 'dark bg-dark'
+          ? 'dark'
           : 'light bg-body',
       )}
     >
-      <Helmet>
-        <link rel="icon" href={favicon} />
-        <link rel="apple-touch-icon" href={favicon} />
-      </Helmet>
+      <div className="bg-background min-h-screen w-full">
+        <Helmet>
+          <link rel="icon" href={favicon} />
+          <link rel="apple-touch-icon" href={favicon} />
+        </Helmet>
 
-      <Layout />
+        <Layout />
 
-      <Toaster
-        position={
-          layout === LoginLayouts.SideBySide ? 'top-right' : 'top-center'
-        }
-      />
+        <Toaster
+          position={
+            layout === LoginLayouts.SideBySide ? 'top-right' : 'top-center'
+          }
+        />
+      </div>
     </div>
   )
 }
