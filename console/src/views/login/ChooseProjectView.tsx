@@ -96,8 +96,6 @@ const ChooseProjectView: FC<ChooseProjectViewProps> = ({
 
       const nextView = deriveNextView(organization)
 
-      console.log(`nextView:`, nextView)
-
       if (nextView) {
         setView(nextView)
         return
