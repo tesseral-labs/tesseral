@@ -634,6 +634,8 @@ components:
         GetPasskeyOptionsResponse:
             type: object
             properties:
+                rpId:
+                    type: string
                 rpName:
                     type: string
                 userId:
@@ -691,6 +693,8 @@ components:
         IssuePasskeyChallengeResponse:
             type: object
             properties:
+                rpId:
+                    type: string
                 credentialIds:
                     type: array
                     items:

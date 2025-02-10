@@ -97,3 +97,10 @@ sql:
       go:
         <<: *go
         out: "../internal/common/store/queries"
+  - engine: "postgresql"
+    queries: "queries-wellknown.sql"
+    schema: "../cmd/openauthctl/migrations"
+    gen:
+      go:
+        <<: *go
+        out: "../internal/wellknown/store/queries"
