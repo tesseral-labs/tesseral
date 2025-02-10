@@ -110,8 +110,8 @@ func (q *Queries) CreateIntermediateSession(ctx context.Context, arg CreateInter
 }
 
 const createOrganization = `-- name: CreateOrganization :one
-INSERT INTO organizations (id, project_id, display_name, log_in_with_google, log_in_with_microsoft, log_in_with_password, scim_enabled)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
+INSERT INTO organizations (id, project_id, display_name, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_email, scim_enabled)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 RETURNING
     id, project_id, display_name, scim_enabled, create_time, update_time, logins_disabled, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_authenticator_app, log_in_with_passkey, require_mfa, log_in_with_email, log_in_with_saml
 `
@@ -123,6 +123,7 @@ type CreateOrganizationParams struct {
 	LogInWithGoogle    bool
 	LogInWithMicrosoft bool
 	LogInWithPassword  bool
+	LogInWithEmail     bool
 	ScimEnabled        bool
 }
 
@@ -134,6 +135,7 @@ func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganization
 		arg.LogInWithGoogle,
 		arg.LogInWithMicrosoft,
 		arg.LogInWithPassword,
+		arg.LogInWithEmail,
 		arg.ScimEnabled,
 	)
 	var i Organization
@@ -237,6 +239,60 @@ func (q *Queries) CreatePasskey(ctx context.Context, arg CreatePasskeyParams) (P
 	return i, err
 }
 
+const createProject = `-- name: CreateProject :one
+INSERT INTO projects (id, organization_id, display_name, auth_domain, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_saml)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+RETURNING
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml
+`
+
+type CreateProjectParams struct {
+	ID                 uuid.UUID
+	OrganizationID     *uuid.UUID
+	DisplayName        string
+	AuthDomain         *string
+	LogInWithGoogle    bool
+	LogInWithMicrosoft bool
+	LogInWithPassword  bool
+	LogInWithSaml      bool
+}
+
+func (q *Queries) CreateProject(ctx context.Context, arg CreateProjectParams) (Project, error) {
+	row := q.db.QueryRow(ctx, createProject,
+		arg.ID,
+		arg.OrganizationID,
+		arg.DisplayName,
+		arg.AuthDomain,
+		arg.LogInWithGoogle,
+		arg.LogInWithMicrosoft,
+		arg.LogInWithPassword,
+		arg.LogInWithSaml,
+	)
+	var i Project
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.LogInWithPassword,
+		&i.LogInWithGoogle,
+		&i.LogInWithMicrosoft,
+		&i.GoogleOauthClientID,
+		&i.MicrosoftOauthClientID,
+		&i.GoogleOauthClientSecretCiphertext,
+		&i.MicrosoftOauthClientSecretCiphertext,
+		&i.DisplayName,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.CustomAuthDomain,
+		&i.AuthDomain,
+		&i.LoginsDisabled,
+		&i.LogInWithAuthenticatorApp,
+		&i.LogInWithPasskey,
+		&i.LogInWithEmail,
+		&i.LogInWithSaml,
+	)
+	return i, err
+}
+
 const createSession = `-- name: CreateSession :one
 INSERT INTO sessions (id, user_id, expire_time, refresh_token_sha256)
     VALUES ($1, $2, $3, $4)
@@ -316,6 +372,39 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.AuthenticatorAppRecoveryCodeBcrypts,
 		&i.FailedAuthenticatorAppAttempts,
 		&i.AuthenticatorAppLockoutExpireTime,
+	)
+	return i, err
+}
+
+const createUserInvite = `-- name: CreateUserInvite :one
+INSERT INTO user_invites (id, organization_id, email, is_owner)
+    VALUES ($1, $2, $3, $4)
+RETURNING
+    id, organization_id, create_time, update_time, email, is_owner
+`
+
+type CreateUserInviteParams struct {
+	ID             uuid.UUID
+	OrganizationID uuid.UUID
+	Email          string
+	IsOwner        bool
+}
+
+func (q *Queries) CreateUserInvite(ctx context.Context, arg CreateUserInviteParams) (UserInvite, error) {
+	row := q.db.QueryRow(ctx, createUserInvite,
+		arg.ID,
+		arg.OrganizationID,
+		arg.Email,
+		arg.IsOwner,
+	)
+	var i UserInvite
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.Email,
+		&i.IsOwner,
 	)
 	return i, err
 }
@@ -780,25 +869,25 @@ func (q *Queries) GetProjectOrganizationByID(ctx context.Context, arg GetProject
 	return i, err
 }
 
-const getProjectPasskeyRPIDs = `-- name: GetProjectPasskeyRPIDs :many
+const getProjectTrustedDomains = `-- name: GetProjectTrustedDomains :many
 SELECT
-    project_id, rp_id
+    id, project_id, domain
 FROM
-    project_passkey_rp_ids
+    project_trusted_domains
 WHERE
     project_id = $1
 `
 
-func (q *Queries) GetProjectPasskeyRPIDs(ctx context.Context, projectID uuid.UUID) ([]ProjectPasskeyRpID, error) {
-	rows, err := q.db.Query(ctx, getProjectPasskeyRPIDs, projectID)
+func (q *Queries) GetProjectTrustedDomains(ctx context.Context, projectID uuid.UUID) ([]ProjectTrustedDomain, error) {
+	rows, err := q.db.Query(ctx, getProjectTrustedDomains, projectID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []ProjectPasskeyRpID
+	var items []ProjectTrustedDomain
 	for rows.Next() {
-		var i ProjectPasskeyRpID
-		if err := rows.Scan(&i.ProjectID, &i.RpID); err != nil {
+		var i ProjectTrustedDomain
+		if err := rows.Scan(&i.ID, &i.ProjectID, &i.Domain); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

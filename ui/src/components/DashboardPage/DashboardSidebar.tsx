@@ -32,7 +32,7 @@ const DashboardSidebar: FC = () => {
   ]
 
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar className={isDarkMode ? 'dark' : ''} collapsible="icon">
       <SidebarHeader>
         <div>
           {isDarkMode && settings?.detectDarkModeEnabled ? (

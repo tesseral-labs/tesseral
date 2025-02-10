@@ -1147,7 +1147,7 @@ components:
                     type: string
                 authDomain:
                     type: string
-                passkeyRpIds:
+                trustedDomains:
                     type: array
                     items:
                         type: string

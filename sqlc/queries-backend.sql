@@ -113,46 +113,23 @@ WHERE
 RETURNING
     *;
 
--- name: GetProjectPasskeyRPIDs :many
+-- name: GetProjectTrustedDomains :many
 SELECT
     *
 FROM
-    project_passkey_rp_ids
+    project_trusted_domains
 WHERE
     project_id = $1;
 
--- name: DeleteProjectPasskeyRPIDs :exec
-DELETE FROM project_passkey_rp_ids
+-- name: DeleteProjectTrustedDomainsByProjectID :exec
+DELETE FROM project_trusted_domains
 WHERE project_id = $1;
 
--- name: CreateProjectPasskeyRPID :one
-INSERT INTO project_passkey_rp_ids (project_id, rp_id)
-    VALUES ($1, $2)
+-- name: CreateProjectTrustedDomain :one
+INSERT INTO project_trusted_domains (id, project_id, DOMAIN)
+    VALUES ($1, $2, $3)
 RETURNING
     *;
-
--- name: DisablePasskeysOutsideProjectRPIDs :exec
-UPDATE
-    passkeys
-SET
-    disabled = TRUE,
-    update_time = now()
-WHERE
-    user_id IN (
-        SELECT
-            users.id
-        FROM
-            users
-            JOIN organizations ON users.organization_id = organizations.id
-        WHERE
-            organizations.project_id = $1)
-    AND rp_id NOT IN (
-        SELECT
-            rp_id
-        FROM
-            project_passkey_rp_ids
-        WHERE
-            project_id = $1);
 
 -- name: DisableProjectOrganizationsLogInWithGoogle :one
 UPDATE

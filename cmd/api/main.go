@@ -147,6 +147,7 @@ func main() {
 		GoogleOAuthClientSecretsKMSKeyID:      config.GoogleOAuthClientSecretsKMSKeyID,
 		MicrosoftOAuthClientSecretsKMSKeyID:   config.MicrosoftOAuthClientSecretsKMSKeyID,
 		UserContentBaseUrl:                    config.UserContentBaseUrl,
+		AuthAppsRootDomain:                    config.AuthAppsRootDomain,
 	})
 	backendConnectPath, backendConnectHandler := backendv1connect.NewBackendServiceHandler(
 		&backendservice.Service{
@@ -189,6 +190,7 @@ func main() {
 
 	// Register the intermediate service
 	intermediateStore := intermediatestore.New(intermediatestore.NewStoreParams{
+		AuthAppsRootDomain:                    config.AuthAppsRootDomain,
 		DB:                                    db,
 		DogfoodProjectID:                      &uuidDogfoodProjectID,
 		IntermediateSessionSigningKeyKMSKeyID: config.IntermediateSessionKMSKeyID,
