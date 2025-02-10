@@ -4,7 +4,7 @@ import typography from '@tailwindcss/typography'
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ['./src/**/*.{ts,tsx}', './public/index.html'],
-  darkMode: ['class', 'class'],
+  darkMode: ['class'],
   plugins: [require('tailwindcss-animate'), forms, typography],
   prefix: '',
   purge: {
