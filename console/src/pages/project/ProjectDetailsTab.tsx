@@ -15,6 +15,8 @@ import {
 } from '@/components/details-grid'
 import { useQuery } from '@connectrpc/connect-query'
 import { getProject } from '@/gen/openauth/backend/v1/backend-BackendService_connectquery'
+import { Button } from '@/components/ui/button'
+import { Link } from 'react-router-dom'
 
 export function ProjectDetailsTab() {
   const { data: getProjectResponse } = useQuery(getProject, {})
@@ -23,7 +25,7 @@ export function ProjectDetailsTab() {
     <div className="space-y-8">
       <Card>
         <CardHeader>
-          <CardTitle>Authentication Settings</CardTitle>
+          <CardTitle>Authentication settings</CardTitle>
           <CardDescription>
             Configure the login methods your customers can use to log in to your
             application.
@@ -35,7 +37,7 @@ export function ProjectDetailsTab() {
               <DetailsGridEntry>
                 <DetailsGridKey>Log in with Password</DetailsGridKey>
                 <DetailsGridValue>
-                  {getProjectResponse?.project?.logInWithPasswordEnabled
+                  {getProjectResponse?.project?.logInWithPassword
                     ? 'Enabled'
                     : 'Disabled'}
                 </DetailsGridValue>
@@ -45,7 +47,7 @@ export function ProjectDetailsTab() {
               <DetailsGridEntry>
                 <DetailsGridKey>Log in with Google</DetailsGridKey>
                 <DetailsGridValue>
-                  {getProjectResponse?.project?.logInWithGoogleEnabled
+                  {getProjectResponse?.project?.logInWithGoogle
                     ? 'Enabled'
                     : 'Disabled'}
                 </DetailsGridValue>
@@ -55,7 +57,7 @@ export function ProjectDetailsTab() {
               <DetailsGridEntry>
                 <DetailsGridKey>Log in with Microsoft</DetailsGridKey>
                 <DetailsGridValue>
-                  {getProjectResponse?.project?.logInWithMicrosoftEnabled
+                  {getProjectResponse?.project?.logInWithMicrosoft
                     ? 'Enabled'
                     : 'Disabled'}
                 </DetailsGridValue>
@@ -67,7 +69,18 @@ export function ProjectDetailsTab() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Google Settings</CardTitle>
+          <CardTitle>
+            <div className="grid grid-cols-2 gap-8">
+              <span>Google settings</span>
+              <div className="text-right">
+                <Link to="/project-settings/log-in-with-google/edit">
+                  <Button variant="outline" size="sm">
+                    Edit
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </CardTitle>
           <CardDescription>
             Settings for "Log in with Google" in your project.
           </CardDescription>
@@ -78,7 +91,7 @@ export function ProjectDetailsTab() {
               <DetailsGridEntry>
                 <DetailsGridKey>Status</DetailsGridKey>
                 <DetailsGridValue>
-                  {getProjectResponse?.project?.logInWithGoogleEnabled
+                  {getProjectResponse?.project?.logInWithGoogle
                     ? 'Enabled'
                     : 'Disabled'}
                 </DetailsGridValue>
@@ -109,7 +122,18 @@ export function ProjectDetailsTab() {
       </Card>
       <Card>
         <CardHeader>
-          <CardTitle>Microsoft Settings</CardTitle>
+          <CardTitle>
+            <div className="grid grid-cols-2 gap-8">
+              <span>Microsoft settings</span>
+              <div className="text-right">
+                <Link to="/project-settings/log-in-with-microsoft/edit">
+                  <Button variant="outline" size="sm">
+                    Edit
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </CardTitle>
           <CardDescription>
             Settings for "Log in with Microsoft" in your project.
           </CardDescription>
@@ -120,7 +144,7 @@ export function ProjectDetailsTab() {
               <DetailsGridEntry>
                 <DetailsGridKey>Status</DetailsGridKey>
                 <DetailsGridValue>
-                  {getProjectResponse?.project?.logInWithMicrosoftEnabled
+                  {getProjectResponse?.project?.logInWithMicrosoft
                     ? 'Enabled'
                     : 'Disabled'}
                 </DetailsGridValue>

@@ -31,6 +31,8 @@ import { OrganizationUserInvitesTab } from '@/pages/organizations/OrganizationUs
 import { ViewUserInvitePage } from '@/pages/user-invites/ViewUserInvitePage'
 import { API_URL } from './config'
 import { AuthType } from './lib/auth'
+import EditProjectGoogleSettingsPage from './pages/project/edit/EditProjectGoogleSettingsPage'
+import EditProjectMicrosoftSettingsPage from './pages/project/edit/EditProjectMicrosoftSettingsPage'
 
 const queryClient = new QueryClient()
 
@@ -76,6 +78,14 @@ function AppWithinQueryClient() {
             >
               <Route path="" element={<ProjectDetailsTab />} />
             </Route>
+            <Route
+              path="project-settings/log-in-with-google/edit"
+              element={<EditProjectGoogleSettingsPage />}
+            />
+            <Route
+              path="project-settings/log-in-with-microsoft/edit"
+              element={<EditProjectMicrosoftSettingsPage />}
+            />
 
             <Route
               path="project-api-keys"
