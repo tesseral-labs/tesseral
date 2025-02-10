@@ -43,7 +43,7 @@ const VerifyPasskeyView: FC = () => {
       const requestOptions: PublicKeyCredentialRequestOptions = {
         challenge: new Uint8Array(challengeResponse.challenge).buffer,
         allowCredentials,
-        // rpId: challengeResponse.rpId,
+        rpId: challengeResponse.rpId,
         userVerification: 'preferred',
         timeout: 60000,
       }
