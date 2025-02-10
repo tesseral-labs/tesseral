@@ -12,10 +12,10 @@ UPDATE projects SET organization_id = '7a76decb-6d79-49ce-9449-34fcc53151df'::uu
 
 -- have dogfood project support passkeys from auth.console.tesseral.example.com (vault) and console.tesseral.example.com (self-built login flow)
 insert into
-    project_passkey_rp_ids (project_id, rp_id)
+    project_trusted_domains (id, project_id, domain)
 values
-    ('56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2', 'auth.console.tesseral.example.com'),
-    ('56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2', 'console.tesseral.example.com');
+    (gen_random_uuid(), '56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2', 'auth.console.tesseral.example.com'),
+    (gen_random_uuid(), '56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2', 'console.tesseral.example.com');
 
 -- Create a user in the dogfood project
 INSERT INTO users (id, email, password_bcrypt, organization_id, is_owner)
@@ -49,7 +49,7 @@ VALUES ('8648d50b-baa1-4929-be0f-bc7238f685ab'::uuid, 'project_79ldwwwzybn66dxa9
 
 update projects set organization_id = '8648d50b-baa1-4929-be0f-bc7238f685ab'::uuid where id = '7abd6d2e-c314-456e-b9c5-bdbb62f0345f'::uuid;
 
-insert into project_passkey_rp_ids (project_id, rp_id) values ('7abd6d2e-c314-456e-b9c5-bdbb62f0345f', 'auth.customer1.example.com');
+insert into project_trusted_domains (id, project_id, domain) values (gen_random_uuid(), '7abd6d2e-c314-456e-b9c5-bdbb62f0345f', 'auth.customer1.example.com');
 
 -- Create a user in customer1
 INSERT INTO users (id, email, password_bcrypt, organization_id, is_owner)
@@ -75,7 +75,7 @@ VALUES ('8b5972b6-c878-4c6c-a351-9e01da20f776'::uuid, 'project_269wse1l6u0jnvs8a
 
 update projects set organization_id = '8b5972b6-c878-4c6c-a351-9e01da20f776'::uuid where id = '24ba0dd5-e178-460e-8f7a-f3f72cf6a1e7'::uuid;
 
-insert into project_passkey_rp_ids (project_id, rp_id) values ('24ba0dd5-e178-460e-8f7a-f3f72cf6a1e7', 'auth.customer2.example.com');
+insert into project_trusted_domains (id, project_id, domain) values (gen_random_uuid(), '24ba0dd5-e178-460e-8f7a-f3f72cf6a1e7', 'auth.customer2.example.com');
 
 -- Create a user in customer2
 INSERT INTO users (id, email, password_bcrypt, organization_id, is_owner)

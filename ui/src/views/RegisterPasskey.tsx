@@ -37,6 +37,7 @@ const RegisterPasskey: FC = () => {
       const credentialOptions: PublicKeyCredentialCreationOptions = {
         challenge: new Uint8Array([0]).buffer,
         rp: {
+          id: passkeyOptions.rpId,
           name: passkeyOptions.rpName,
         },
         user: {

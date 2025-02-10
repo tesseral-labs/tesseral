@@ -15,7 +15,7 @@ func (s *Store) GetWebauthnOrigins(ctx context.Context) ([]string, error) {
 
 	var origins []string
 	for _, qProjectTrustedDomain := range qProjectTrustedDomains {
-		origins = append(origins, qProjectTrustedDomain.Domain)
+		origins = append(origins, fmt.Sprintf("https://%s", qProjectTrustedDomain.Domain))
 	}
 	return origins, nil
 }
