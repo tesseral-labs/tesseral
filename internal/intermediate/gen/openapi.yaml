@@ -693,6 +693,8 @@ components:
         IssuePasskeyChallengeResponse:
             type: object
             properties:
+                rpId:
+                    type: string
                 credentialIds:
                     type: array
                     items:

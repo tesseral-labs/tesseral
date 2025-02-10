@@ -97,6 +97,11 @@ func (s *Store) IssuePasskeyChallenge(ctx context.Context, req *intermediatev1.I
 	}
 	defer rollback()
 
+	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get project by id: %w", err)
+	}
+
 	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))
 	if err != nil {
 		return nil, fmt.Errorf("get intermediate session by id: %w", err)
@@ -138,6 +143,7 @@ func (s *Store) IssuePasskeyChallenge(ctx context.Context, req *intermediatev1.I
 	}
 
 	return &intermediatev1.IssuePasskeyChallengeResponse{
+		RpId:          *qProject.AuthDomain,
 		CredentialIds: credentialIDs,
 		Challenge:     challenge[:],
 	}, nil
