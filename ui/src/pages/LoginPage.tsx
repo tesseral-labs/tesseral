@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 
 import { LoginViews } from '@/lib/views'
 import CreateOrganization from '@/views/CreateOrganization'
@@ -19,15 +19,23 @@ import {
   IntermediateOrganizationContextProvider,
 } from '@/lib/auth'
 import ChooseOrganizationPrimaryLoginFactor from '@/views/ChooseOrganizationPrimaryLoginFactor'
+import { useSearchParams } from 'react-router-dom'
 
 interface LoginPageProps {
   authType?: AuthType
 }
 
 const LoginPage: FC<LoginPageProps> = ({ authType = AuthType.LogIn }) => {
+  const [searchParams] = useSearchParams()
   const [intermediateOrganization, setIntermediateOrganization] =
     useState<Organization>()
   const [view, setView] = useState<LoginViews>(LoginViews.Login)
+
+  useEffect(() => {
+    if (searchParams.get('view')) {
+      setView(searchParams.get('view') as LoginViews)
+    }
+  }, [searchParams])
 
   return (
     <AuthTypeContextProvider value={authType}>
