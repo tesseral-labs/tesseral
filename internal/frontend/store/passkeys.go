@@ -123,25 +123,13 @@ func (s *Store) RegisterPasskey(ctx context.Context, req *frontendv1.RegisterPas
 	}
 	defer rollback()
 
-	qProjectTrustedDomains, err := q.GetProjectTrustedDomains(ctx, authn.ProjectID(ctx))
+	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
-		return nil, fmt.Errorf("get project trusted domains: %w", err)
-	}
-
-	var rpIDOk bool
-	for _, qProjectTrustedDomain := range qProjectTrustedDomains {
-		if qProjectTrustedDomain.Domain == req.RpId {
-			rpIDOk = true
-			break
-		}
-	}
-
-	if !rpIDOk {
-		return nil, apierror.NewPermissionDeniedError("invalid rp id", fmt.Errorf("invalid rp id"))
+		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 
 	cred, err := webauthn.Parse(&webauthn.ParseRequest{
-		RPID:              req.RpId,
+		RPID:              *qProject.AuthDomain,
 		AttestationObject: req.AttestationObject,
 	})
 	if err != nil {
