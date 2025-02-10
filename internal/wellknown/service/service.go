@@ -2,6 +2,7 @@ package service
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 	"log/slog"
@@ -27,6 +28,23 @@ func (s *Service) Handler(p *projectid.Sniffer) http.Handler {
 
 func (s *Service) webauthn(w http.ResponseWriter, r *http.Request) error {
 	ctx := r.Context()
+
+	origins, err := s.Store.GetWebauthnOrigins(ctx)
+	if err != nil {
+		return fmt.Errorf("get webauthn origins: %w", err)
+	}
+
+	body := struct {
+		Origins []string `json:"origins"`
+	}{
+		Origins: origins,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(body); err != nil {
+		return fmt.Errorf("encode json: %w", err)
+	}
+	return nil
 }
 
 func withErr(f func(w http.ResponseWriter, r *http.Request) error) http.Handler {

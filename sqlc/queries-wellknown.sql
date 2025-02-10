@@ -1,8 +1,8 @@
--- name: GetProject :one
+-- name: GetProjectTrustedDomains :many
 SELECT
     *
 FROM
-    projects
+    project_trusted_domains
 WHERE
-    id = $1;
+    project_id = $1;
 

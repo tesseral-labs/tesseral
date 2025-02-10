@@ -8,10 +8,14 @@ import (
 )
 
 func (s *Store) GetWebauthnOrigins(ctx context.Context) ([]string, error) {
-	qProject, err := s.q.GetProject(ctx, authn.ProjectID(ctx))
+	qProjectTrustedDomains, err := s.q.GetProjectTrustedDomains(ctx, authn.ProjectID(ctx))
 	if err != nil {
-		return nil, fmt.Errorf("get project: %w", err)
+		return nil, fmt.Errorf("get project trusted domains: %w", err)
 	}
 
-	qProject.AuthDomain
+	var origins []string
+	for _, qProjectTrustedDomain := range qProjectTrustedDomains {
+		origins = append(origins, qProjectTrustedDomain.Domain)
+	}
+	return origins, nil
 }

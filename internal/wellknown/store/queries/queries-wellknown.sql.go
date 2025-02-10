@@ -11,38 +11,31 @@ import (
 	"github.com/google/uuid"
 )
 
-const getProject = `-- name: GetProject :one
+const getProjectTrustedDomains = `-- name: GetProjectTrustedDomains :many
 SELECT
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml
+    id, project_id, domain
 FROM
-    projects
+    project_trusted_domains
 WHERE
-    id = $1
+    project_id = $1
 `
 
-func (q *Queries) GetProject(ctx context.Context, id uuid.UUID) (Project, error) {
-	row := q.db.QueryRow(ctx, getProject, id)
-	var i Project
-	err := row.Scan(
-		&i.ID,
-		&i.OrganizationID,
-		&i.LogInWithPassword,
-		&i.LogInWithGoogle,
-		&i.LogInWithMicrosoft,
-		&i.GoogleOauthClientID,
-		&i.MicrosoftOauthClientID,
-		&i.GoogleOauthClientSecretCiphertext,
-		&i.MicrosoftOauthClientSecretCiphertext,
-		&i.DisplayName,
-		&i.CreateTime,
-		&i.UpdateTime,
-		&i.CustomAuthDomain,
-		&i.AuthDomain,
-		&i.LoginsDisabled,
-		&i.LogInWithAuthenticatorApp,
-		&i.LogInWithPasskey,
-		&i.LogInWithEmail,
-		&i.LogInWithSaml,
-	)
-	return i, err
+func (q *Queries) GetProjectTrustedDomains(ctx context.Context, projectID uuid.UUID) ([]ProjectTrustedDomain, error) {
+	rows, err := q.db.Query(ctx, getProjectTrustedDomains, projectID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ProjectTrustedDomain
+	for rows.Next() {
+		var i ProjectTrustedDomain
+		if err := rows.Scan(&i.ID, &i.ProjectID, &i.Domain); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
