@@ -37,6 +37,7 @@ func (s *Store) GetPasskeyOptions(ctx context.Context, req *intermediatev1.GetPa
 	}
 
 	return &intermediatev1.GetPasskeyOptionsResponse{
+		RpId:            *qProject.AuthDomain,
 		RpName:          qProject.DisplayName,
 		UserId:          fmt.Sprintf("%s|%s", *qIntermediateSession.Email, idformat.Organization.Format(*qIntermediateSession.OrganizationID)),
 		UserDisplayName: *qIntermediateSession.Email,
@@ -54,25 +55,13 @@ func (s *Store) RegisterPasskey(ctx context.Context, req *intermediatev1.Registe
 		return nil, fmt.Errorf("check should register passkey: %w", err)
 	}
 
-	qProjectTrustedDomains, err := q.GetProjectTrustedDomains(ctx, authn.ProjectID(ctx))
+	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
-		return nil, fmt.Errorf("get project trusted domains: %w", err)
-	}
-
-	var rpIDOk bool
-	for _, qProjectTrustedDomain := range qProjectTrustedDomains {
-		if qProjectTrustedDomain.Domain == req.RpId {
-			rpIDOk = true
-			break
-		}
-	}
-
-	if !rpIDOk {
-		return nil, apierror.NewPermissionDeniedError("invalid rp id", fmt.Errorf("invalid rp id"))
+		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 
 	cred, err := webauthn.Parse(&webauthn.ParseRequest{
-		RPID:              req.RpId,
+		RPID:              *qProject.AuthDomain,
 		AttestationObject: req.AttestationObject,
 	})
 	if err != nil {
