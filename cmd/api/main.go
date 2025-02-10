@@ -46,6 +46,8 @@ import (
 	"github.com/openauth/openauth/internal/secretload"
 	"github.com/openauth/openauth/internal/slogcorrelation"
 	"github.com/openauth/openauth/internal/store/idformat"
+	wellknownservice "github.com/openauth/openauth/internal/wellknown/service"
+	wellknownstore "github.com/openauth/openauth/internal/wellknown/store"
 	"github.com/rs/cors"
 	"github.com/ssoready/conf"
 )
@@ -244,6 +246,14 @@ func main() {
 	}
 	scimServiceHandler := scimService.Handler(projectid.NewSniffer(config.AuthAppsRootDomain, commonStore))
 
+	wellknownStore := wellknownstore.New(wellknownstore.NewStoreParams{
+		DB: db,
+	})
+	wellknownService := wellknownservice.Service{
+		Store: wellknownStore,
+	}
+	wellknownServiceHandler := wellknownService.Handler(projectid.NewSniffer(config.AuthAppsRootDomain, commonStore))
+
 	connectMux := http.NewServeMux()
 	connectMux.Handle(backendConnectPath, backendConnectHandler)
 	connectMux.Handle(frontendConnectPath, frontendConnectHandler)
@@ -272,6 +282,9 @@ func main() {
 
 	// Register scimservice
 	mux.Handle("/scim/", scimServiceHandler)
+
+	// Register wellknownservice
+	mux.Handle("/.well-known/", wellknownServiceHandler)
 
 	// These handlers are registered in a FILO order much like
 	// a Matryoshka doll
