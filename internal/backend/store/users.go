@@ -193,7 +193,7 @@ func (s *Store) UpdateUser(ctx context.Context, req *backendv1.UpdateUserRequest
 	}
 
 	if err := commit(); err != nil {
-		return nil, fmt.Errorf("commit transaction: %w", err)
+		return nil, fmt.Errorf("commit: %w", err)
 	}
 
 	return &backendv1.UpdateUserResponse{User: parseUser(qUpdatedUser)}, nil
@@ -227,7 +227,7 @@ func (s *Store) DeleteUser(ctx context.Context, req *backendv1.DeleteUserRequest
 	}
 
 	if err := commit(); err != nil {
-		return nil, fmt.Errorf("commit transaction: %w", err)
+		return nil, fmt.Errorf("commit: %w", err)
 	}
 
 	return &backendv1.DeleteUserResponse{}, nil
