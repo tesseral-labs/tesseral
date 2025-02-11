@@ -80,6 +80,7 @@ func main() {
 		MicrosoftOAuthClientSecretsKMSKeyID string `conf:"microsoft_oauth_client_secrets_kms_key_id,noredact"`
 		AuthenticatorAppSecretsKMSKeyID     string `conf:"authenticator_app_secrets_kms_key_id,noredact"`
 		UserContentBaseUrl                  string `conf:"user_content_base_url"`
+		TesseralDNSCloudflareZoneID         string `conf:"tesseral_dns_cloudflare_zone_id,noredact"`
 	}{
 		PageEncodingValue: "0000000000000000000000000000000000000000000000000000000000000000",
 	}
@@ -142,6 +143,7 @@ func main() {
 		DogfoodProjectID:                      &uuidDogfoodProjectID,
 		IntermediateSessionSigningKeyKMSKeyID: config.IntermediateSessionKMSKeyID,
 		KMS:                                   kms_,
+		SES:                                   ses_,
 		PageEncoder:                           pagetoken.Encoder{Secret: pageEncodingValue},
 		S3:                                    s3_,
 		S3UserContentBucketName:               config.S3UserContentBucketName,

@@ -747,3 +747,11 @@ ON CONFLICT (organization_id, email)
 DELETE FROM user_invites
 WHERE id = $1;
 
+-- name: GetVaultDomainSettings :one
+SELECT
+    *
+FROM
+    vault_domain_settings
+WHERE
+    project_id = $1;
+

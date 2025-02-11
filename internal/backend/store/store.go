@@ -6,6 +6,8 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/aws/aws-sdk-go-v2/service/sesv2"
+	"github.com/cloudflare/cloudflare-go"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -20,6 +22,8 @@ type Store struct {
 	dogfoodProjectID                      *uuid.UUID
 	intermediateSessionSigningKeyKMSKeyID string
 	kms                                   *kms.Client
+	ses                                   *sesv2.Client
+	cloudflare                            *cloudflare.API
 	pageEncoder                           pagetoken.Encoder
 	q                                     *queries.Queries
 	s3PresignClient                       *s3.PresignClient
@@ -29,6 +33,9 @@ type Store struct {
 	microsoftOAuthClientSecretsKMSKeyID   string
 	userContentBaseUrl                    string
 	authAppsRootDomain                    string
+	tesseralDNSCloudflareZoneID           string
+	tesseralDNSVaultCNAMEValue            string
+	sesSPFMXRecordValue                   string
 }
 
 type NewStoreParams struct {
@@ -36,6 +43,8 @@ type NewStoreParams struct {
 	DogfoodProjectID                      *uuid.UUID
 	IntermediateSessionSigningKeyKMSKeyID string
 	KMS                                   *kms.Client
+	SES                                   *sesv2.Client
+	Cloudflare                            *cloudflare.API
 	PageEncoder                           pagetoken.Encoder
 	S3                                    *s3.Client
 	S3UserContentBucketName               string
@@ -44,6 +53,9 @@ type NewStoreParams struct {
 	MicrosoftOAuthClientSecretsKMSKeyID   string
 	UserContentBaseUrl                    string
 	AuthAppsRootDomain                    string
+	TesseralDNSCloudflareZoneID           string
+	TesseralDNSVaultCNAMEValue            string
+	SESSPFMXRecordValue                   string
 }
 
 func New(p NewStoreParams) *Store {
@@ -52,6 +64,8 @@ func New(p NewStoreParams) *Store {
 		dogfoodProjectID:                      p.DogfoodProjectID,
 		intermediateSessionSigningKeyKMSKeyID: p.IntermediateSessionSigningKeyKMSKeyID,
 		kms:                                   p.KMS,
+		ses:                                   p.SES,
+		cloudflare:                            p.Cloudflare,
 		pageEncoder:                           p.PageEncoder,
 		q:                                     queries.New(p.DB),
 		s3PresignClient:                       s3.NewPresignClient(p.S3),
@@ -61,6 +75,9 @@ func New(p NewStoreParams) *Store {
 		microsoftOAuthClientSecretsKMSKeyID:   p.MicrosoftOAuthClientSecretsKMSKeyID,
 		userContentBaseUrl:                    p.UserContentBaseUrl,
 		authAppsRootDomain:                    p.AuthAppsRootDomain,
+		tesseralDNSCloudflareZoneID:           p.TesseralDNSCloudflareZoneID,
+		tesseralDNSVaultCNAMEValue:            p.TesseralDNSVaultCNAMEValue,
+		sesSPFMXRecordValue:                   p.SESSPFMXRecordValue,
 	}
 
 	return store
