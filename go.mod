@@ -12,6 +12,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.73.0
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.34.5
 	github.com/aws/aws-sdk-go-v2/service/sesv2 v1.41.1
+	github.com/cloudflare/cloudflare-go v0.115.0
 	github.com/cyrusaf/ctxlog v1.3.3
 	github.com/fxamacker/cbor/v2 v2.7.0
 	github.com/golang-migrate/migrate/v4 v4.17.1
@@ -48,9 +49,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.28.4 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sts v1.32.4 // indirect
 	github.com/aws/smithy-go v1.22.1 // indirect
-	github.com/cloudflare/cloudflare-go v0.115.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/fxamacker/cbor/v2 v2.7.0 // indirect
 	github.com/goccy/go-json v0.10.5 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
