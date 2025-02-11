@@ -195,6 +195,21 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 	updates.CustomAuthDomain = qProject.CustomAuthDomain
 	updates.AuthDomain = qProject.AuthDomain
 
+	updates.RedirectUri = qProject.RedirectUri
+	if req.Project.RedirectUri != "" {
+		updates.RedirectUri = &req.Project.RedirectUri
+	}
+
+	updates.AfterLoginRedirectUri = qProject.AfterLoginRedirectUri
+	if req.Project.AfterLoginRedirectUri != "" {
+		updates.AfterLoginRedirectUri = &req.Project.AfterLoginRedirectUri
+	}
+
+	updates.AfterSignupRedirectUri = qProject.AfterSignupRedirectUri
+	if req.Project.AfterSignupRedirectUri != "" {
+		updates.AfterSignupRedirectUri = &req.Project.AfterSignupRedirectUri
+	}
+
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -324,5 +339,8 @@ func parseProject(qProject *queries.Project, qProjectTrustedDomains []queries.Pr
 		MicrosoftOauthClientId:    derefOrEmpty(qProject.MicrosoftOauthClientID),
 		AuthDomain:                &authDomain,
 		TrustedDomains:            trustedDomains,
+		RedirectUri:               derefOrEmpty(qProject.RedirectUri),
+		AfterLoginRedirectUri:     derefOrEmpty(qProject.AfterLoginRedirectUri),
+		AfterSignupRedirectUri:    derefOrEmpty(qProject.AfterSignupRedirectUri),
 	}
 }

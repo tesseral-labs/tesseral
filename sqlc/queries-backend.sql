@@ -107,7 +107,10 @@ SET
     microsoft_oauth_client_id = $12,
     microsoft_oauth_client_secret_ciphertext = $13,
     custom_auth_domain = $14,
-    auth_domain = $15
+    auth_domain = $15,
+    redirect_uri = $16,
+    after_login_redirect_uri = $17,
+    after_signup_redirect_uri = $18
 WHERE
     id = $1
 RETURNING
@@ -380,51 +383,6 @@ SET
     secret_token_sha256 = NULL
 WHERE
     id = $1
-RETURNING
-    *;
-
--- name: CreateProjectRedirectURI :one
-INSERT INTO project_redirect_uris (id, project_id, uri, is_primary)
-    VALUES ($1, $2, $3, COALESCE((
-            SELECT
-                FALSE
-            FROM project_redirect_uris
-            WHERE
-                project_id = $2 LIMIT 1), TRUE))
-RETURNING
-    *;
-
--- name: DeleteProjectRedirectURI :exec
-DELETE FROM project_redirect_uris
-WHERE id = $1
-    AND project_id = $2;
-
--- name: GetProjectRedirectURI :one
-SELECT
-    *
-FROM
-    project_redirect_uris
-WHERE
-    id = $1
-    AND project_id = $2;
-
--- name: ListProjectRedirectURIs :many
-SELECT
-    *
-FROM
-    project_redirect_uris
-WHERE
-    project_id = $1;
-
--- name: UpdateProjectRedirectURI :one
-UPDATE
-    project_redirect_uris
-SET
-    uri = $2,
-    is_primary = $3
-WHERE
-    id = $1
-    AND project_id = $4
 RETURNING
     *;
 
