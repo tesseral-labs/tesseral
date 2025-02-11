@@ -42,6 +42,32 @@ service FrontendService {
     };
   }
 
+  rpc GetOrganizationGoogleHostedDomains(GetOrganizationGoogleHostedDomainsRequest) returns (GetOrganizationGoogleHostedDomainsResponse) {
+    option (google.api.http) = {
+      get: "/frontend/v1/google-hosted-domains",
+    };
+  }
+
+  rpc UpdateOrganizationGoogleHostedDomains(UpdateOrganizationGoogleHostedDomainsRequest) returns (UpdateOrganizationGoogleHostedDomainsResponse) {
+    option (google.api.http) = {
+      patch: "/frontend/v1/google-hosted-domains",
+      body: "organization_google_hosted_domains",
+    };
+  }
+
+  rpc GetOrganizationMicrosoftTenantIDs(GetOrganizationMicrosoftTenantIDsRequest) returns (GetOrganizationMicrosoftTenantIDsResponse) {
+    option (google.api.http) = {
+      get: "/frontend/v1/microsoft-tenant-ids",
+    };
+  }
+
+  rpc UpdateOrganizationMicrosoftTenantIDs(UpdateOrganizationMicrosoftTenantIDsRequest) returns (UpdateOrganizationMicrosoftTenantIDsResponse) {
+    option (google.api.http) = {
+      patch: "/frontend/v1/microsoft-tenant-ids",
+      body: "organization_microsoft_tenant_ids",
+    };
+  }
+
   rpc ListUsers(ListUsersRequest) returns (ListUsersResponse) {
     option (google.api.http) = {
       get: "/frontend/v1/users"
@@ -243,6 +269,40 @@ message UpdateOrganizationRequest {
 
 message UpdateOrganizationResponse {
   Organization organization = 1;
+}
+
+message GetOrganizationGoogleHostedDomainsRequest {
+  string organization_id = 1;
+}
+
+message GetOrganizationGoogleHostedDomainsResponse {
+  OrganizationGoogleHostedDomains organization_google_hosted_domains = 1;
+}
+
+message UpdateOrganizationGoogleHostedDomainsRequest {
+  string organization_id = 1;
+  OrganizationGoogleHostedDomains organization_google_hosted_domains = 2;
+}
+
+message UpdateOrganizationGoogleHostedDomainsResponse {
+  OrganizationGoogleHostedDomains organization_google_hosted_domains = 1;
+}
+
+message GetOrganizationMicrosoftTenantIDsRequest {
+  string organization_id = 1;
+}
+
+message GetOrganizationMicrosoftTenantIDsResponse {
+  OrganizationMicrosoftTenantIDs organization_microsoft_tenant_ids = 1;
+}
+
+message UpdateOrganizationMicrosoftTenantIDsRequest {
+  string organization_id = 1;
+  OrganizationMicrosoftTenantIDs organization_microsoft_tenant_ids = 2;
+}
+
+message UpdateOrganizationMicrosoftTenantIDsResponse {
+  OrganizationMicrosoftTenantIDs organization_microsoft_tenant_ids = 1;
 }
 
 message ListUsersRequest {
@@ -482,6 +542,14 @@ message Organization {
   repeated string google_hosted_domains = 9;
   repeated string microsoft_tenant_ids = 10;
   bool saml_enabled = 11;
+}
+
+message OrganizationGoogleHostedDomains {
+  repeated string google_hosted_domains = 2;
+}
+
+message OrganizationMicrosoftTenantIDs {
+  repeated string microsoft_tenant_ids = 2;
 }
 
 message SessionSigningKey {

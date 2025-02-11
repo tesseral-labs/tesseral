@@ -363,3 +363,39 @@ ON CONFLICT (organization_id, email)
 DELETE FROM user_invites
 WHERE id = $1;
 
+-- name: GetOrganizationGoogleHostedDomains :many
+SELECT
+    *
+FROM
+    organization_google_hosted_domains
+WHERE
+    organization_id = $1;
+
+-- name: DeleteOrganizationGoogleHostedDomains :exec
+DELETE FROM organization_google_hosted_domains
+WHERE organization_id = $1;
+
+-- name: CreateOrganizationGoogleHostedDomain :one
+INSERT INTO organization_google_hosted_domains (id, organization_id, google_hosted_domain)
+    VALUES ($1, $2, $3)
+RETURNING
+    *;
+
+-- name: GetOrganizationMicrosoftTenantIDs :many
+SELECT
+    *
+FROM
+    organization_microsoft_tenant_ids
+WHERE
+    organization_id = $1;
+
+-- name: DeleteOrganizationMicrosoftTenantIDs :exec
+DELETE FROM organization_microsoft_tenant_ids
+WHERE organization_id = $1;
+
+-- name: CreateOrganizationMicrosoftTenantID :one
+INSERT INTO organization_microsoft_tenant_ids (id, organization_id, microsoft_tenant_id)
+    VALUES ($1, $2, $3)
+RETURNING
+    *;
+
