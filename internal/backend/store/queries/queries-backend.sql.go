@@ -2094,6 +2094,40 @@ func (q *Queries) UpdateOrganization(ctx context.Context, arg UpdateOrganization
 	return i, err
 }
 
+const updatePasskey = `-- name: UpdatePasskey :one
+UPDATE
+    passkeys
+SET
+    update_time = now(),
+    disabled = $2
+WHERE
+    id = $1
+RETURNING
+    id, user_id, create_time, update_time, credential_id, public_key, aaguid, disabled, rp_id
+`
+
+type UpdatePasskeyParams struct {
+	ID       uuid.UUID
+	Disabled bool
+}
+
+func (q *Queries) UpdatePasskey(ctx context.Context, arg UpdatePasskeyParams) (Passkey, error) {
+	row := q.db.QueryRow(ctx, updatePasskey, arg.ID, arg.Disabled)
+	var i Passkey
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.CredentialID,
+		&i.PublicKey,
+		&i.Aaguid,
+		&i.Disabled,
+		&i.RpID,
+	)
+	return i, err
+}
+
 const updatePrimarySAMLConnection = `-- name: UpdatePrimarySAMLConnection :exec
 UPDATE
     saml_connections

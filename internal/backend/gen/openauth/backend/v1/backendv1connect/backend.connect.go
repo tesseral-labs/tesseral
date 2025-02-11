@@ -107,6 +107,9 @@ const (
 	// BackendServiceGetPasskeyProcedure is the fully-qualified name of the BackendService's GetPasskey
 	// RPC.
 	BackendServiceGetPasskeyProcedure = "/openauth.backend.v1.BackendService/GetPasskey"
+	// BackendServiceUpdatePasskeyProcedure is the fully-qualified name of the BackendService's
+	// UpdatePasskey RPC.
+	BackendServiceUpdatePasskeyProcedure = "/openauth.backend.v1.BackendService/UpdatePasskey"
 	// BackendServiceDeletePasskeyProcedure is the fully-qualified name of the BackendService's
 	// DeletePasskey RPC.
 	BackendServiceDeletePasskeyProcedure = "/openauth.backend.v1.BackendService/DeletePasskey"
@@ -220,6 +223,7 @@ type BackendServiceClient interface {
 	GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error)
 	ListPasskeys(context.Context, *connect.Request[v1.ListPasskeysRequest]) (*connect.Response[v1.ListPasskeysResponse], error)
 	GetPasskey(context.Context, *connect.Request[v1.GetPasskeyRequest]) (*connect.Response[v1.GetPasskeyResponse], error)
+	UpdatePasskey(context.Context, *connect.Request[v1.UpdatePasskeyRequest]) (*connect.Response[v1.UpdatePasskeyResponse], error)
 	DeletePasskey(context.Context, *connect.Request[v1.DeletePasskeyRequest]) (*connect.Response[v1.DeletePasskeyResponse], error)
 	ListSessions(context.Context, *connect.Request[v1.ListSessionsRequest]) (*connect.Response[v1.ListSessionsResponse], error)
 	GetSession(context.Context, *connect.Request[v1.GetSessionRequest]) (*connect.Response[v1.GetSessionResponse], error)
@@ -409,6 +413,12 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			httpClient,
 			baseURL+BackendServiceGetPasskeyProcedure,
 			connect.WithSchema(backendServiceMethods.ByName("GetPasskey")),
+			connect.WithClientOptions(opts...),
+		),
+		updatePasskey: connect.NewClient[v1.UpdatePasskeyRequest, v1.UpdatePasskeyResponse](
+			httpClient,
+			baseURL+BackendServiceUpdatePasskeyProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("UpdatePasskey")),
 			connect.WithClientOptions(opts...),
 		),
 		deletePasskey: connect.NewClient[v1.DeletePasskeyRequest, v1.DeletePasskeyResponse](
@@ -609,6 +619,7 @@ type backendServiceClient struct {
 	getUser                               *connect.Client[v1.GetUserRequest, v1.GetUserResponse]
 	listPasskeys                          *connect.Client[v1.ListPasskeysRequest, v1.ListPasskeysResponse]
 	getPasskey                            *connect.Client[v1.GetPasskeyRequest, v1.GetPasskeyResponse]
+	updatePasskey                         *connect.Client[v1.UpdatePasskeyRequest, v1.UpdatePasskeyResponse]
 	deletePasskey                         *connect.Client[v1.DeletePasskeyRequest, v1.DeletePasskeyResponse]
 	listSessions                          *connect.Client[v1.ListSessionsRequest, v1.ListSessionsResponse]
 	getSession                            *connect.Client[v1.GetSessionRequest, v1.GetSessionResponse]
@@ -766,6 +777,11 @@ func (c *backendServiceClient) ListPasskeys(ctx context.Context, req *connect.Re
 // GetPasskey calls openauth.backend.v1.BackendService.GetPasskey.
 func (c *backendServiceClient) GetPasskey(ctx context.Context, req *connect.Request[v1.GetPasskeyRequest]) (*connect.Response[v1.GetPasskeyResponse], error) {
 	return c.getPasskey.CallUnary(ctx, req)
+}
+
+// UpdatePasskey calls openauth.backend.v1.BackendService.UpdatePasskey.
+func (c *backendServiceClient) UpdatePasskey(ctx context.Context, req *connect.Request[v1.UpdatePasskeyRequest]) (*connect.Response[v1.UpdatePasskeyResponse], error) {
+	return c.updatePasskey.CallUnary(ctx, req)
 }
 
 // DeletePasskey calls openauth.backend.v1.BackendService.DeletePasskey.
@@ -936,6 +952,7 @@ type BackendServiceHandler interface {
 	GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error)
 	ListPasskeys(context.Context, *connect.Request[v1.ListPasskeysRequest]) (*connect.Response[v1.ListPasskeysResponse], error)
 	GetPasskey(context.Context, *connect.Request[v1.GetPasskeyRequest]) (*connect.Response[v1.GetPasskeyResponse], error)
+	UpdatePasskey(context.Context, *connect.Request[v1.UpdatePasskeyRequest]) (*connect.Response[v1.UpdatePasskeyResponse], error)
 	DeletePasskey(context.Context, *connect.Request[v1.DeletePasskeyRequest]) (*connect.Response[v1.DeletePasskeyResponse], error)
 	ListSessions(context.Context, *connect.Request[v1.ListSessionsRequest]) (*connect.Response[v1.ListSessionsResponse], error)
 	GetSession(context.Context, *connect.Request[v1.GetSessionRequest]) (*connect.Response[v1.GetSessionResponse], error)
@@ -1121,6 +1138,12 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		BackendServiceGetPasskeyProcedure,
 		svc.GetPasskey,
 		connect.WithSchema(backendServiceMethods.ByName("GetPasskey")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceUpdatePasskeyHandler := connect.NewUnaryHandler(
+		BackendServiceUpdatePasskeyProcedure,
+		svc.UpdatePasskey,
+		connect.WithSchema(backendServiceMethods.ByName("UpdatePasskey")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceDeletePasskeyHandler := connect.NewUnaryHandler(
@@ -1343,6 +1366,8 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceListPasskeysHandler.ServeHTTP(w, r)
 		case BackendServiceGetPasskeyProcedure:
 			backendServiceGetPasskeyHandler.ServeHTTP(w, r)
+		case BackendServiceUpdatePasskeyProcedure:
+			backendServiceUpdatePasskeyHandler.ServeHTTP(w, r)
 		case BackendServiceDeletePasskeyProcedure:
 			backendServiceDeletePasskeyHandler.ServeHTTP(w, r)
 		case BackendServiceListSessionsProcedure:
@@ -1506,6 +1531,10 @@ func (UnimplementedBackendServiceHandler) ListPasskeys(context.Context, *connect
 
 func (UnimplementedBackendServiceHandler) GetPasskey(context.Context, *connect.Request[v1.GetPasskeyRequest]) (*connect.Response[v1.GetPasskeyResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetPasskey is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) UpdatePasskey(context.Context, *connect.Request[v1.UpdatePasskeyRequest]) (*connect.Response[v1.UpdatePasskeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.UpdatePasskey is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) DeletePasskey(context.Context, *connect.Request[v1.DeletePasskeyRequest]) (*connect.Response[v1.DeletePasskeyResponse], error) {

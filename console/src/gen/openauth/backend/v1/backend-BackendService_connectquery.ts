@@ -130,6 +130,11 @@ export const listPasskeys = BackendService.method.listPasskeys;
 export const getPasskey = BackendService.method.getPasskey;
 
 /**
+ * @generated from rpc openauth.backend.v1.BackendService.UpdatePasskey
+ */
+export const updatePasskey = BackendService.method.updatePasskey;
+
+/**
  * @generated from rpc openauth.backend.v1.BackendService.DeletePasskey
  */
 export const deletePasskey = BackendService.method.deletePasskey;

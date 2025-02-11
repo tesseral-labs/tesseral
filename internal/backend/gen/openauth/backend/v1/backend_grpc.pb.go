@@ -44,6 +44,7 @@ const (
 	BackendService_GetUser_FullMethodName                               = "/openauth.backend.v1.BackendService/GetUser"
 	BackendService_ListPasskeys_FullMethodName                          = "/openauth.backend.v1.BackendService/ListPasskeys"
 	BackendService_GetPasskey_FullMethodName                            = "/openauth.backend.v1.BackendService/GetPasskey"
+	BackendService_UpdatePasskey_FullMethodName                         = "/openauth.backend.v1.BackendService/UpdatePasskey"
 	BackendService_DeletePasskey_FullMethodName                         = "/openauth.backend.v1.BackendService/DeletePasskey"
 	BackendService_ListSessions_FullMethodName                          = "/openauth.backend.v1.BackendService/ListSessions"
 	BackendService_GetSession_FullMethodName                            = "/openauth.backend.v1.BackendService/GetSession"
@@ -103,6 +104,7 @@ type BackendServiceClient interface {
 	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error)
 	ListPasskeys(ctx context.Context, in *ListPasskeysRequest, opts ...grpc.CallOption) (*ListPasskeysResponse, error)
 	GetPasskey(ctx context.Context, in *GetPasskeyRequest, opts ...grpc.CallOption) (*GetPasskeyResponse, error)
+	UpdatePasskey(ctx context.Context, in *UpdatePasskeyRequest, opts ...grpc.CallOption) (*UpdatePasskeyResponse, error)
 	DeletePasskey(ctx context.Context, in *DeletePasskeyRequest, opts ...grpc.CallOption) (*DeletePasskeyResponse, error)
 	ListSessions(ctx context.Context, in *ListSessionsRequest, opts ...grpc.CallOption) (*ListSessionsResponse, error)
 	GetSession(ctx context.Context, in *GetSessionRequest, opts ...grpc.CallOption) (*GetSessionResponse, error)
@@ -385,6 +387,16 @@ func (c *backendServiceClient) GetPasskey(ctx context.Context, in *GetPasskeyReq
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetPasskeyResponse)
 	err := c.cc.Invoke(ctx, BackendService_GetPasskey_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) UpdatePasskey(ctx context.Context, in *UpdatePasskeyRequest, opts ...grpc.CallOption) (*UpdatePasskeyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdatePasskeyResponse)
+	err := c.cc.Invoke(ctx, BackendService_UpdatePasskey_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -700,6 +712,7 @@ type BackendServiceServer interface {
 	GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error)
 	ListPasskeys(context.Context, *ListPasskeysRequest) (*ListPasskeysResponse, error)
 	GetPasskey(context.Context, *GetPasskeyRequest) (*GetPasskeyResponse, error)
+	UpdatePasskey(context.Context, *UpdatePasskeyRequest) (*UpdatePasskeyResponse, error)
 	DeletePasskey(context.Context, *DeletePasskeyRequest) (*DeletePasskeyResponse, error)
 	ListSessions(context.Context, *ListSessionsRequest) (*ListSessionsResponse, error)
 	GetSession(context.Context, *GetSessionRequest) (*GetSessionResponse, error)
@@ -812,6 +825,9 @@ func (UnimplementedBackendServiceServer) ListPasskeys(context.Context, *ListPass
 }
 func (UnimplementedBackendServiceServer) GetPasskey(context.Context, *GetPasskeyRequest) (*GetPasskeyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPasskey not implemented")
+}
+func (UnimplementedBackendServiceServer) UpdatePasskey(context.Context, *UpdatePasskeyRequest) (*UpdatePasskeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdatePasskey not implemented")
 }
 func (UnimplementedBackendServiceServer) DeletePasskey(context.Context, *DeletePasskeyRequest) (*DeletePasskeyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeletePasskey not implemented")
@@ -1364,6 +1380,24 @@ func _BackendService_GetPasskey_Handler(srv interface{}, ctx context.Context, de
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(BackendServiceServer).GetPasskey(ctx, req.(*GetPasskeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_UpdatePasskey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdatePasskeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).UpdatePasskey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_UpdatePasskey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).UpdatePasskey(ctx, req.(*UpdatePasskeyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1978,6 +2012,10 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetPasskey",
 			Handler:    _BackendService_GetPasskey_Handler,
+		},
+		{
+			MethodName: "UpdatePasskey",
+			Handler:    _BackendService_UpdatePasskey_Handler,
 		},
 		{
 			MethodName: "DeletePasskey",

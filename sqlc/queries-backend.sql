@@ -677,6 +677,17 @@ WHERE
     passkeys.id = $1
     AND organizations.project_id = $2;
 
+-- name: UpdatePasskey :one
+UPDATE
+    passkeys
+SET
+    update_time = now(),
+    disabled = $2
+WHERE
+    id = $1
+RETURNING
+    *;
+
 -- name: DeletePasskey :exec
 DELETE FROM passkeys
 WHERE id = $1;

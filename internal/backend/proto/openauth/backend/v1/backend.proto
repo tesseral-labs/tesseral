@@ -167,6 +167,13 @@ service BackendService {
     };
   }
 
+  rpc UpdatePasskey(UpdatePasskeyRequest) returns (UpdatePasskeyResponse) {
+    option (google.api.http) = {
+      patch: "/backend/v1/passkeys/{id}",
+      body: "passkey"
+    };
+  }
+
   rpc DeletePasskey(DeletePasskeyRequest) returns (DeletePasskeyResponse) {
     option (google.api.http) = {
       delete: "/backend/v1/passkeys/{id}"
@@ -467,6 +474,15 @@ message GetPasskeyRequest {
 }
 
 message GetPasskeyResponse {
+  Passkey passkey = 1;
+}
+
+message UpdatePasskeyRequest {
+  string id = 1;
+  Passkey passkey = 2;
+}
+
+message UpdatePasskeyResponse {
   Passkey passkey = 1;
 }
 
@@ -814,7 +830,7 @@ message Passkey {
   string user_id = 2;
   google.protobuf.Timestamp create_time = 3;
   google.protobuf.Timestamp update_time = 4;
-  bool disabled = 8;
+  optional bool disabled = 8;
   bytes credential_id = 5;
   string public_key_pkix = 6;
   string aaguid = 7;
