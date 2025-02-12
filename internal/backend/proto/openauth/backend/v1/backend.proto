@@ -265,6 +265,12 @@ service BackendService {
   rpc DeleteProjectAPIKey(DeleteProjectAPIKeyRequest) returns (DeleteProjectAPIKeyResponse);
   rpc RevokeProjectAPIKey(RevokeProjectAPIKeyRequest) returns (RevokeProjectAPIKeyResponse);
 
+  rpc ListPublishableKeys(ListPublishableKeysRequest) returns (ListPublishableKeysResponse);
+  rpc GetPublishableKey(GetPublishableKeyRequest) returns (GetPublishableKeyResponse);
+  rpc CreatePublishableKey(CreatePublishableKeyRequest) returns (CreatePublishableKeyResponse);
+  rpc UpdatePublishableKey(UpdatePublishableKeyRequest) returns (UpdatePublishableKeyResponse);
+  rpc DeletePublishableKey(DeletePublishableKeyRequest) returns (DeletePublishableKeyResponse);
+
   rpc CreateUserImpersonationToken(CreateUserImpersonationTokenRequest) returns (CreateUserImpersonationTokenResponse);
 }
 
@@ -642,6 +648,77 @@ message RevokeProjectAPIKeyResponse {
   ProjectAPIKey project_api_key = 1;
 }
 
+message ListPublishableKeysRequest {
+  string page_token = 1;
+}
+
+message ListPublishableKeysResponse {
+  repeated PublishableKey publishable_keys = 1;
+  string next_page_token = 2;
+}
+
+message GetPublishableKeyRequest {
+  string id = 1;
+}
+
+message GetPublishableKeyResponse {
+  PublishableKey publishable_key = 1;
+}
+
+message CreatePublishableKeyRequest {
+  PublishableKey publishable_key = 1;
+}
+
+message CreatePublishableKeyResponse {
+  PublishableKey publishable_key = 1;
+}
+
+message UpdatePublishableKeyRequest {
+  string id = 1;
+  PublishableKey publishable_key = 2;
+}
+
+message UpdatePublishableKeyResponse {
+  PublishableKey publishable_key = 1;
+}
+
+message DeletePublishableKeyRequest {
+  string id = 1;
+}
+
+message DeletePublishableKeyResponse {}
+
+message CreateProjectRedirectURIRequest {
+  ProjectRedirectURI project_redirect_uri = 1;
+}
+
+message CreateProjectRedirectURIResponse {
+  ProjectRedirectURI project_redirect_uri = 1;
+}
+
+message DeleteProjectRedirectURIRequest {
+  string id = 1;
+}
+
+message DeleteProjectRedirectURIResponse {
+}
+
+message GetProjectRedirectURIRequest {
+  string id = 1;
+}
+
+message GetProjectRedirectURIResponse {
+  ProjectRedirectURI project_redirect_uri = 1;
+}
+
+message ListProjectRedirectURIsRequest {
+  string project_id = 1;
+}
+
+message ListProjectRedirectURIsResponse {
+  repeated ProjectRedirectURI project_redirect_uris = 1;
+}
+
 message GetProjectUISettingsRequest {}
 
 message GetProjectUISettingsResponse {
@@ -781,6 +858,13 @@ message ProjectAPIKey {
   google.protobuf.Timestamp update_time = 4;
   string secret_token = 5;
   bool revoked = 6;
+}
+
+message PublishableKey {
+  string id = 1;
+  string display_name = 2;
+  google.protobuf.Timestamp create_time = 3;
+  google.protobuf.Timestamp update_time = 4;
 }
 
 message IntermediateSession {
