@@ -2,18 +2,20 @@ import React, { FC, ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 import { Outlet } from 'react-router'
 import ConsoleSidebar from './ConsoleSidebar'
-import { SidebarProvider } from './ui/sidebar'
+import { SidebarInset, SidebarProvider } from './ui/sidebar'
 
 export function PageShell() {
   return (
     <SidebarProvider>
       <ConsoleSidebar />
-      <main className="bg-body w-full">
-        <div className="bg-indigo-600 pb-64 w-full" />
-        <div className="-mt-64 mx-auto max-w-7xl sm:px-6 lg:px-8 pt-8">
-          <Outlet />
-        </div>
-      </main>
+      <SidebarInset>
+        <main className="bg-body w-full">
+          <div className="bg-indigo-600 pb-64 w-full" />
+          <div className="-mt-64 mx-auto max-w-7xl sm:px-6 lg:px-8 pt-8">
+            <Outlet />
+          </div>
+        </main>
+      </SidebarInset>
     </SidebarProvider>
   )
 }
