@@ -172,6 +172,49 @@ func (s *Store) UpdateUser(ctx context.Context, req *frontendv1.UpdateUserReques
 	return &frontendv1.UpdateUserResponse{User: parseUser(qUpdatedUser)}, nil
 }
 
+func (s *Store) DeleteUser(ctx context.Context, req *frontendv1.DeleteUserRequest) (*frontendv1.DeleteUserResponse, error) {
+	if err := s.validateIsOwner(ctx); err != nil {
+		return nil, fmt.Errorf("validate is owner: %w", err)
+	}
+
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	userID, err := idformat.User.Parse(req.Id)
+	if err != nil {
+		return nil, apierror.NewInvalidArgumentError("invalid user id", fmt.Errorf("parse user id: %w", err))
+	}
+
+	if userID == authn.UserID(ctx) {
+		return nil, apierror.NewFailedPreconditionError("cannot delete self", errors.New("cannot delete self"))
+	}
+
+	// Fetch the user to ensure it exists and belongs to the organization.
+	_, err = q.GetUser(ctx, queries.GetUserParams{
+		ID:             userID,
+		OrganizationID: authn.OrganizationID(ctx),
+	})
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("user not found", fmt.Errorf("get user by id: %w", err))
+		}
+		return nil, fmt.Errorf("get user: %w", err)
+	}
+
+	if err := q.DeleteUser(ctx, userID); err != nil {
+		return nil, fmt.Errorf("delete user: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit transaction: %w", err)
+	}
+
+	return &frontendv1.DeleteUserResponse{}, nil
+}
+
 func parseUser(qUser queries.User) *frontendv1.User {
 	return &frontendv1.User{
 		Id:                  idformat.User.Format(qUser.ID),
