@@ -367,3 +367,8 @@ type UserInvite struct {
 	Email          string
 	IsOwner        bool
 }
+
+type VaultDomainSetting struct {
+	ProjectID     uuid.UUID
+	PendingDomain string
+}

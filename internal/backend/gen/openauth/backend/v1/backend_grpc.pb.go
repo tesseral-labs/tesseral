@@ -62,6 +62,7 @@ const (
 	BackendService_EnableOrganizationLogins_FullMethodName              = "/openauth.backend.v1.BackendService/EnableOrganizationLogins"
 	BackendService_EnableProjectLogins_FullMethodName                   = "/openauth.backend.v1.BackendService/EnableProjectLogins"
 	BackendService_UpdateProject_FullMethodName                         = "/openauth.backend.v1.BackendService/UpdateProject"
+	BackendService_GetVaultDomainSettings_FullMethodName                = "/openauth.backend.v1.BackendService/GetVaultDomainSettings"
 	BackendService_GetProjectUISettings_FullMethodName                  = "/openauth.backend.v1.BackendService/GetProjectUISettings"
 	BackendService_UpdateProjectUISettings_FullMethodName               = "/openauth.backend.v1.BackendService/UpdateProjectUISettings"
 	BackendService_ListProjectAPIKeys_FullMethodName                    = "/openauth.backend.v1.BackendService/ListProjectAPIKeys"
@@ -125,6 +126,7 @@ type BackendServiceClient interface {
 	EnableOrganizationLogins(ctx context.Context, in *EnableOrganizationLoginsRequest, opts ...grpc.CallOption) (*EnableOrganizationLoginsResponse, error)
 	EnableProjectLogins(ctx context.Context, in *EnableProjectLoginsRequest, opts ...grpc.CallOption) (*EnableProjectLoginsResponse, error)
 	UpdateProject(ctx context.Context, in *UpdateProjectRequest, opts ...grpc.CallOption) (*UpdateProjectResponse, error)
+	GetVaultDomainSettings(ctx context.Context, in *GetVaultDomainSettingsRequest, opts ...grpc.CallOption) (*GetVaultDomainSettingsResponse, error)
 	GetProjectUISettings(ctx context.Context, in *GetProjectUISettingsRequest, opts ...grpc.CallOption) (*GetProjectUISettingsResponse, error)
 	UpdateProjectUISettings(ctx context.Context, in *UpdateProjectUISettingsRequest, opts ...grpc.CallOption) (*UpdateProjectUISettingsResponse, error)
 	ListProjectAPIKeys(ctx context.Context, in *ListProjectAPIKeysRequest, opts ...grpc.CallOption) (*ListProjectAPIKeysResponse, error)
@@ -579,6 +581,16 @@ func (c *backendServiceClient) UpdateProject(ctx context.Context, in *UpdateProj
 	return out, nil
 }
 
+func (c *backendServiceClient) GetVaultDomainSettings(ctx context.Context, in *GetVaultDomainSettingsRequest, opts ...grpc.CallOption) (*GetVaultDomainSettingsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetVaultDomainSettingsResponse)
+	err := c.cc.Invoke(ctx, BackendService_GetVaultDomainSettings_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *backendServiceClient) GetProjectUISettings(ctx context.Context, in *GetProjectUISettingsRequest, opts ...grpc.CallOption) (*GetProjectUISettingsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetProjectUISettingsResponse)
@@ -766,6 +778,7 @@ type BackendServiceServer interface {
 	EnableOrganizationLogins(context.Context, *EnableOrganizationLoginsRequest) (*EnableOrganizationLoginsResponse, error)
 	EnableProjectLogins(context.Context, *EnableProjectLoginsRequest) (*EnableProjectLoginsResponse, error)
 	UpdateProject(context.Context, *UpdateProjectRequest) (*UpdateProjectResponse, error)
+	GetVaultDomainSettings(context.Context, *GetVaultDomainSettingsRequest) (*GetVaultDomainSettingsResponse, error)
 	GetProjectUISettings(context.Context, *GetProjectUISettingsRequest) (*GetProjectUISettingsResponse, error)
 	UpdateProjectUISettings(context.Context, *UpdateProjectUISettingsRequest) (*UpdateProjectUISettingsResponse, error)
 	ListProjectAPIKeys(context.Context, *ListProjectAPIKeysRequest) (*ListProjectAPIKeysResponse, error)
@@ -918,6 +931,9 @@ func (UnimplementedBackendServiceServer) EnableProjectLogins(context.Context, *E
 }
 func (UnimplementedBackendServiceServer) UpdateProject(context.Context, *UpdateProjectRequest) (*UpdateProjectResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateProject not implemented")
+}
+func (UnimplementedBackendServiceServer) GetVaultDomainSettings(context.Context, *GetVaultDomainSettingsRequest) (*GetVaultDomainSettingsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetVaultDomainSettings not implemented")
 }
 func (UnimplementedBackendServiceServer) GetProjectUISettings(context.Context, *GetProjectUISettingsRequest) (*GetProjectUISettingsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetProjectUISettings not implemented")
@@ -1756,6 +1772,24 @@ func _BackendService_UpdateProject_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BackendService_GetVaultDomainSettings_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetVaultDomainSettingsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).GetVaultDomainSettings(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_GetVaultDomainSettings_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).GetVaultDomainSettings(ctx, req.(*GetVaultDomainSettingsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _BackendService_GetProjectUISettings_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetProjectUISettingsRequest)
 	if err := dec(in); err != nil {
@@ -2186,6 +2220,10 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateProject",
 			Handler:    _BackendService_UpdateProject_Handler,
+		},
+		{
+			MethodName: "GetVaultDomainSettings",
+			Handler:    _BackendService_GetVaultDomainSettings_Handler,
 		},
 		{
 			MethodName: "GetProjectUISettings",

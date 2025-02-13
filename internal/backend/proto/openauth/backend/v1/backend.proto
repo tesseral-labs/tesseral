@@ -257,12 +257,6 @@ service BackendService {
 
   rpc GetVaultDomainSettings(GetVaultDomainSettingsRequest) returns (GetVaultDomainSettingsResponse);
 
-  rpc CreateProjectRedirectURI(CreateProjectRedirectURIRequest) returns (CreateProjectRedirectURIResponse) {}
-  rpc DeleteProjectRedirectURI(DeleteProjectRedirectURIRequest) returns (DeleteProjectRedirectURIResponse) {}
-  rpc GetProjectRedirectURI(GetProjectRedirectURIRequest) returns (GetProjectRedirectURIResponse) {}
-  rpc ListProjectRedirectURIs(ListProjectRedirectURIsRequest) returns (ListProjectRedirectURIsResponse) {}
-  rpc UpdateProjectRedirectURI(UpdateProjectRedirectURIRequest) returns (UpdateProjectRedirectURIResponse) {}
-
   rpc GetProjectUISettings(GetProjectUISettingsRequest) returns (GetProjectUISettingsResponse) {}
   rpc UpdateProjectUISettings(UpdateProjectUISettingsRequest) returns (UpdateProjectUISettingsResponse) {}
 
