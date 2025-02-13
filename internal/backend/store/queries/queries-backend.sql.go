@@ -1431,6 +1431,22 @@ func (q *Queries) GetUserInvite(ctx context.Context, arg GetUserInviteParams) (U
 	return i, err
 }
 
+const getVaultDomainSettings = `-- name: GetVaultDomainSettings :one
+SELECT
+    project_id, pending_domain
+FROM
+    vault_domain_settings
+WHERE
+    project_id = $1
+`
+
+func (q *Queries) GetVaultDomainSettings(ctx context.Context, projectID uuid.UUID) (VaultDomainSetting, error) {
+	row := q.db.QueryRow(ctx, getVaultDomainSettings, projectID)
+	var i VaultDomainSetting
+	err := row.Scan(&i.ProjectID, &i.PendingDomain)
+	return i, err
+}
+
 const listIntermediateSessions = `-- name: ListIntermediateSessions :many
 SELECT
     id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_recovery_code_bcrypts, primary_login_factor, passkey_rp_id

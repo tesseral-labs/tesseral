@@ -255,6 +255,8 @@ service BackendService {
 
   rpc UpdateProject(UpdateProjectRequest) returns (UpdateProjectResponse);
 
+  rpc GetVaultDomainSettings(GetVaultDomainSettingsRequest) returns (GetVaultDomainSettingsResponse);
+
   rpc GetProjectUISettings(GetProjectUISettingsRequest) returns (GetProjectUISettingsResponse) {}
   rpc UpdateProjectUISettings(UpdateProjectUISettingsRequest) returns (UpdateProjectUISettingsResponse) {}
 
@@ -648,6 +650,13 @@ message RevokeProjectAPIKeyResponse {
   ProjectAPIKey project_api_key = 1;
 }
 
+message GetVaultDomainSettingsRequest {
+}
+
+message GetVaultDomainSettingsResponse {
+  VaultDomainSettings vault_domain_settings = 1;
+}
+
 message ListPublishableKeysRequest {
   string page_token = 1;
 }
@@ -773,6 +782,22 @@ message Project {
   string redirect_uri = 18;
   string after_login_redirect_uri = 19;
   string after_signup_redirect_uri = 20;
+}
+
+message VaultDomainSettings {
+  string pending_domain = 1;
+  VaultDomainSettingsDNSRecord tesseral_cname_record = 2;
+  bool tesseral_cname_record_configured = 3;
+  repeated VaultDomainSettingsDNSRecord dkim_records = 4;
+  bool dkim_configured = 5;
+  repeated VaultDomainSettingsDNSRecord spf_records = 6;
+  bool spf_configured = 7;
+}
+
+message VaultDomainSettingsDNSRecord {
+  string type = 1;
+  string name = 2;
+  string value = 3;
 }
 
 message ProjectUISettings {

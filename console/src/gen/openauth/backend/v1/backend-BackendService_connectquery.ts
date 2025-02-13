@@ -220,6 +220,11 @@ export const enableProjectLogins = BackendService.method.enableProjectLogins;
 export const updateProject = BackendService.method.updateProject;
 
 /**
+ * @generated from rpc openauth.backend.v1.BackendService.GetVaultDomainSettings
+ */
+export const getVaultDomainSettings = BackendService.method.getVaultDomainSettings;
+
+/**
  * @generated from rpc openauth.backend.v1.BackendService.GetProjectUISettings
  */
 export const getProjectUISettings = BackendService.method.getProjectUISettings;
