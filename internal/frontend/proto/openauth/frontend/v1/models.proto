@@ -1,0 +1,114 @@
+syntax = "proto3";
+
+package openauth.frontend.v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+
+message Project {
+  string id = 1;
+  string display_name = 2;
+  google.protobuf.Timestamp create_time = 3;
+  google.protobuf.Timestamp update_time = 4;
+  bool log_in_with_google = 6;
+  bool log_in_with_microsoft = 7;
+  bool log_in_with_email = 11;
+  bool log_in_with_password = 5;
+  bool log_in_with_saml = 12;
+  bool log_in_with_authenticator_app = 9;
+  bool log_in_with_passkey = 10;
+  string auth_domain = 8;
+}
+
+message Organization {
+  string id = 1;
+  string display_name = 2;
+  google.protobuf.Timestamp create_time = 3;
+  google.protobuf.Timestamp update_time = 4;
+  optional bool log_in_with_google = 7;
+  optional bool log_in_with_microsoft = 8;
+  optional bool log_in_with_email = 16;
+  optional bool log_in_with_password = 6;
+  optional bool log_in_with_saml = 12;
+  optional bool log_in_with_authenticator_app = 13;
+  optional bool log_in_with_passkey = 14;
+  optional bool require_mfa = 15;
+  repeated string google_hosted_domains = 9;
+  repeated string microsoft_tenant_ids = 10;
+  bool saml_enabled = 11;
+}
+
+message OrganizationGoogleHostedDomains {
+  repeated string google_hosted_domains = 2;
+}
+
+message OrganizationMicrosoftTenantIDs {
+  repeated string microsoft_tenant_ids = 2;
+}
+
+message SessionSigningKey {
+  string id = 1;
+  google.protobuf.Struct public_key_jwk = 2;
+}
+
+message User {
+  string id = 1;
+  string email = 2;
+  google.protobuf.Timestamp create_time = 3;
+  google.protobuf.Timestamp update_time = 4;
+  optional bool owner = 5;
+  string google_user_id = 6;
+  string microsoft_user_id = 7;
+  bool has_authenticator_app = 8;
+}
+
+message Session {
+  string id = 1;
+  string user_id = 2;
+  google.protobuf.Timestamp create_time = 3;
+  google.protobuf.Timestamp expire_time = 4;
+  bool revoked = 5;
+
+  // TODO(ucarion): add session metadata like auth factors, etc here
+}
+
+message SAMLConnection {
+  string id = 1;
+  google.protobuf.Timestamp create_time = 2;
+  google.protobuf.Timestamp update_time = 3;
+  optional bool primary = 4;
+  string sp_acs_url = 5;
+  string sp_entity_id = 6;
+  string idp_redirect_url = 7;
+  string idp_x509_certificate = 8;
+  string idp_entity_id = 9;
+}
+
+message SCIMAPIKey {
+  string id = 1;
+  string display_name = 2;
+  google.protobuf.Timestamp create_time = 3;
+  google.protobuf.Timestamp update_time = 4;
+  string secret_token = 5;
+  bool revoked = 6;
+}
+
+message Passkey {
+  string id = 1;
+  string user_id = 2;
+  google.protobuf.Timestamp create_time = 3;
+  google.protobuf.Timestamp update_time = 4;
+  bool disabled = 8;
+  bytes credential_id = 5;
+  string public_key_pkix = 6;
+  string aaguid = 7;
+  string rp_id = 9;
+}
+
+message UserInvite {
+  string id = 1;
+  google.protobuf.Timestamp create_time = 2;
+  google.protobuf.Timestamp update_time = 3;
+  string email = 4;
+  bool owner = 5;
+}
