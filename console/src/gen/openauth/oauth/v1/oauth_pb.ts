@@ -4,15 +4,14 @@
 
 import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv1";
 import { fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv1";
-import { file_google_api_annotations } from "../../../google/api/annotations_pb";
-import { file_google_protobuf_empty, file_google_protobuf_field_mask, file_google_protobuf_struct, file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
+import { file_google_protobuf_struct } from "@bufbuild/protobuf/wkt";
 import type { JsonObject, Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file openauth/oauth/v1/oauth.proto.
  */
 export const file_openauth_oauth_v1_oauth: GenFile = /*@__PURE__*/
-  fileDesc("Ch1vcGVuYXV0aC9vYXV0aC92MS9vYXV0aC5wcm90bxIRb3BlbmF1dGgub2F1dGgudjEiZAoRU2Vzc2lvblNpZ25pbmdLZXkSCgoCaWQYASABKAkSEgoKcHJvamVjdF9pZBgCIAEoCRIvCg5wdWJsaWNfa2V5X2p3axgDIAEoCzIXLmdvb2dsZS5wcm90b2J1Zi5TdHJ1Y3RC1AEKFWNvbS5vcGVuYXV0aC5vYXV0aC52MUIKT2F1dGhQcm90b1ABWklnaXRodWIuY29tL29wZW5hdXRoL29wZW5hdXRoL2ludGVybmFsL29hdXRoL2dlbi9vcGVuYXV0aC9vYXV0aC92MTtvYXV0aHYxogIDT09YqgIRT3BlbmF1dGguT2F1dGguVjHKAhFPcGVuYXV0aFxPYXV0aFxWMeICHU9wZW5hdXRoXE9hdXRoXFYxXEdQQk1ldGFkYXRh6gITT3BlbmF1dGg6Ok9hdXRoOjpWMWIGcHJvdG8z", [file_google_api_annotations, file_google_protobuf_empty, file_google_protobuf_field_mask, file_google_protobuf_struct, file_google_protobuf_timestamp]);
+  fileDesc("Ch1vcGVuYXV0aC9vYXV0aC92MS9vYXV0aC5wcm90bxIRb3BlbmF1dGgub2F1dGgudjEiZAoRU2Vzc2lvblNpZ25pbmdLZXkSCgoCaWQYASABKAkSEgoKcHJvamVjdF9pZBgCIAEoCRIvCg5wdWJsaWNfa2V5X2p3axgDIAEoCzIXLmdvb2dsZS5wcm90b2J1Zi5TdHJ1Y3RC1AEKFWNvbS5vcGVuYXV0aC5vYXV0aC52MUIKT2F1dGhQcm90b1ABWklnaXRodWIuY29tL29wZW5hdXRoL29wZW5hdXRoL2ludGVybmFsL29hdXRoL2dlbi9vcGVuYXV0aC9vYXV0aC92MTtvYXV0aHYxogIDT09YqgIRT3BlbmF1dGguT2F1dGguVjHKAhFPcGVuYXV0aFxPYXV0aFxWMeICHU9wZW5hdXRoXE9hdXRoXFYxXEdQQk1ldGFkYXRh6gITT3BlbmF1dGg6Ok9hdXRoOjpWMWIGcHJvdG8z", [file_google_protobuf_struct]);
 
 /**
  * @generated from message openauth.oauth.v1.SessionSigningKey
