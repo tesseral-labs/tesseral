@@ -66,6 +66,9 @@ const (
 	// FrontendServiceUpdateUserProcedure is the fully-qualified name of the FrontendService's
 	// UpdateUser RPC.
 	FrontendServiceUpdateUserProcedure = "/openauth.frontend.v1.FrontendService/UpdateUser"
+	// FrontendServiceDeleteUserProcedure is the fully-qualified name of the FrontendService's
+	// DeleteUser RPC.
+	FrontendServiceDeleteUserProcedure = "/openauth.frontend.v1.FrontendService/DeleteUser"
 	// FrontendServiceSetPasswordProcedure is the fully-qualified name of the FrontendService's
 	// SetPassword RPC.
 	FrontendServiceSetPasswordProcedure = "/openauth.frontend.v1.FrontendService/SetPassword"
@@ -150,6 +153,7 @@ type FrontendServiceClient interface {
 	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
 	GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error)
 	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error)
+	DeleteUser(context.Context, *connect.Request[v1.DeleteUserRequest]) (*connect.Response[v1.DeleteUserResponse], error)
 	// Sets a user's password.
 	SetPassword(context.Context, *connect.Request[v1.SetPasswordRequest]) (*connect.Response[v1.SetPasswordResponse], error)
 	ListSAMLConnections(context.Context, *connect.Request[v1.ListSAMLConnectionsRequest]) (*connect.Response[v1.ListSAMLConnectionsResponse], error)
@@ -257,6 +261,12 @@ func NewFrontendServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			httpClient,
 			baseURL+FrontendServiceUpdateUserProcedure,
 			connect.WithSchema(frontendServiceMethods.ByName("UpdateUser")),
+			connect.WithClientOptions(opts...),
+		),
+		deleteUser: connect.NewClient[v1.DeleteUserRequest, v1.DeleteUserResponse](
+			httpClient,
+			baseURL+FrontendServiceDeleteUserProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("DeleteUser")),
 			connect.WithClientOptions(opts...),
 		),
 		setPassword: connect.NewClient[v1.SetPasswordRequest, v1.SetPasswordResponse](
@@ -414,6 +424,7 @@ type frontendServiceClient struct {
 	listUsers                             *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
 	getUser                               *connect.Client[v1.GetUserRequest, v1.GetUserResponse]
 	updateUser                            *connect.Client[v1.UpdateUserRequest, v1.UpdateUserResponse]
+	deleteUser                            *connect.Client[v1.DeleteUserRequest, v1.DeleteUserResponse]
 	setPassword                           *connect.Client[v1.SetPasswordRequest, v1.SetPasswordResponse]
 	listSAMLConnections                   *connect.Client[v1.ListSAMLConnectionsRequest, v1.ListSAMLConnectionsResponse]
 	getSAMLConnection                     *connect.Client[v1.GetSAMLConnectionRequest, v1.GetSAMLConnectionResponse]
@@ -501,6 +512,11 @@ func (c *frontendServiceClient) GetUser(ctx context.Context, req *connect.Reques
 // UpdateUser calls openauth.frontend.v1.FrontendService.UpdateUser.
 func (c *frontendServiceClient) UpdateUser(ctx context.Context, req *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error) {
 	return c.updateUser.CallUnary(ctx, req)
+}
+
+// DeleteUser calls openauth.frontend.v1.FrontendService.DeleteUser.
+func (c *frontendServiceClient) DeleteUser(ctx context.Context, req *connect.Request[v1.DeleteUserRequest]) (*connect.Response[v1.DeleteUserResponse], error) {
+	return c.deleteUser.CallUnary(ctx, req)
 }
 
 // SetPassword calls openauth.frontend.v1.FrontendService.SetPassword.
@@ -632,6 +648,7 @@ type FrontendServiceHandler interface {
 	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
 	GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error)
 	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error)
+	DeleteUser(context.Context, *connect.Request[v1.DeleteUserRequest]) (*connect.Response[v1.DeleteUserResponse], error)
 	// Sets a user's password.
 	SetPassword(context.Context, *connect.Request[v1.SetPasswordRequest]) (*connect.Response[v1.SetPasswordResponse], error)
 	ListSAMLConnections(context.Context, *connect.Request[v1.ListSAMLConnectionsRequest]) (*connect.Response[v1.ListSAMLConnectionsResponse], error)
@@ -735,6 +752,12 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 		FrontendServiceUpdateUserProcedure,
 		svc.UpdateUser,
 		connect.WithSchema(frontendServiceMethods.ByName("UpdateUser")),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceDeleteUserHandler := connect.NewUnaryHandler(
+		FrontendServiceDeleteUserProcedure,
+		svc.DeleteUser,
+		connect.WithSchema(frontendServiceMethods.ByName("DeleteUser")),
 		connect.WithHandlerOptions(opts...),
 	)
 	frontendServiceSetPasswordHandler := connect.NewUnaryHandler(
@@ -901,6 +924,8 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 			frontendServiceGetUserHandler.ServeHTTP(w, r)
 		case FrontendServiceUpdateUserProcedure:
 			frontendServiceUpdateUserHandler.ServeHTTP(w, r)
+		case FrontendServiceDeleteUserProcedure:
+			frontendServiceDeleteUserHandler.ServeHTTP(w, r)
 		case FrontendServiceSetPasswordProcedure:
 			frontendServiceSetPasswordHandler.ServeHTTP(w, r)
 		case FrontendServiceListSAMLConnectionsProcedure:
@@ -1002,6 +1027,10 @@ func (UnimplementedFrontendServiceHandler) GetUser(context.Context, *connect.Req
 
 func (UnimplementedFrontendServiceHandler) UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.UpdateUser is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) DeleteUser(context.Context, *connect.Request[v1.DeleteUserRequest]) (*connect.Response[v1.DeleteUserResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.DeleteUser is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) SetPassword(context.Context, *connect.Request[v1.SetPasswordRequest]) (*connect.Response[v1.SetPasswordResponse], error) {

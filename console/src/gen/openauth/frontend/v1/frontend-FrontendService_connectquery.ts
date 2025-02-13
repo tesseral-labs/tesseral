@@ -65,6 +65,11 @@ export const getUser = FrontendService.method.getUser;
 export const updateUser = FrontendService.method.updateUser;
 
 /**
+ * @generated from rpc openauth.frontend.v1.FrontendService.DeleteUser
+ */
+export const deleteUser = FrontendService.method.deleteUser;
+
+/**
  * Sets a user's password.
  *
  * @generated from rpc openauth.frontend.v1.FrontendService.SetPassword
