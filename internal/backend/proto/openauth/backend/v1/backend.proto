@@ -688,37 +688,6 @@ message DeletePublishableKeyRequest {
 
 message DeletePublishableKeyResponse {}
 
-message CreateProjectRedirectURIRequest {
-  ProjectRedirectURI project_redirect_uri = 1;
-}
-
-message CreateProjectRedirectURIResponse {
-  ProjectRedirectURI project_redirect_uri = 1;
-}
-
-message DeleteProjectRedirectURIRequest {
-  string id = 1;
-}
-
-message DeleteProjectRedirectURIResponse {
-}
-
-message GetProjectRedirectURIRequest {
-  string id = 1;
-}
-
-message GetProjectRedirectURIResponse {
-  ProjectRedirectURI project_redirect_uri = 1;
-}
-
-message ListProjectRedirectURIsRequest {
-  string project_id = 1;
-}
-
-message ListProjectRedirectURIsResponse {
-  repeated ProjectRedirectURI project_redirect_uris = 1;
-}
-
 message GetProjectUISettingsRequest {}
 
 message GetProjectUISettingsResponse {

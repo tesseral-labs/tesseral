@@ -70,6 +70,11 @@ const (
 	BackendService_UpdateProjectAPIKey_FullMethodName                   = "/openauth.backend.v1.BackendService/UpdateProjectAPIKey"
 	BackendService_DeleteProjectAPIKey_FullMethodName                   = "/openauth.backend.v1.BackendService/DeleteProjectAPIKey"
 	BackendService_RevokeProjectAPIKey_FullMethodName                   = "/openauth.backend.v1.BackendService/RevokeProjectAPIKey"
+	BackendService_ListPublishableKeys_FullMethodName                   = "/openauth.backend.v1.BackendService/ListPublishableKeys"
+	BackendService_GetPublishableKey_FullMethodName                     = "/openauth.backend.v1.BackendService/GetPublishableKey"
+	BackendService_CreatePublishableKey_FullMethodName                  = "/openauth.backend.v1.BackendService/CreatePublishableKey"
+	BackendService_UpdatePublishableKey_FullMethodName                  = "/openauth.backend.v1.BackendService/UpdatePublishableKey"
+	BackendService_DeletePublishableKey_FullMethodName                  = "/openauth.backend.v1.BackendService/DeletePublishableKey"
 	BackendService_CreateUserImpersonationToken_FullMethodName          = "/openauth.backend.v1.BackendService/CreateUserImpersonationToken"
 )
 
@@ -128,6 +133,11 @@ type BackendServiceClient interface {
 	UpdateProjectAPIKey(ctx context.Context, in *UpdateProjectAPIKeyRequest, opts ...grpc.CallOption) (*UpdateProjectAPIKeyResponse, error)
 	DeleteProjectAPIKey(ctx context.Context, in *DeleteProjectAPIKeyRequest, opts ...grpc.CallOption) (*DeleteProjectAPIKeyResponse, error)
 	RevokeProjectAPIKey(ctx context.Context, in *RevokeProjectAPIKeyRequest, opts ...grpc.CallOption) (*RevokeProjectAPIKeyResponse, error)
+	ListPublishableKeys(ctx context.Context, in *ListPublishableKeysRequest, opts ...grpc.CallOption) (*ListPublishableKeysResponse, error)
+	GetPublishableKey(ctx context.Context, in *GetPublishableKeyRequest, opts ...grpc.CallOption) (*GetPublishableKeyResponse, error)
+	CreatePublishableKey(ctx context.Context, in *CreatePublishableKeyRequest, opts ...grpc.CallOption) (*CreatePublishableKeyResponse, error)
+	UpdatePublishableKey(ctx context.Context, in *UpdatePublishableKeyRequest, opts ...grpc.CallOption) (*UpdatePublishableKeyResponse, error)
+	DeletePublishableKey(ctx context.Context, in *DeletePublishableKeyRequest, opts ...grpc.CallOption) (*DeletePublishableKeyResponse, error)
 	CreateUserImpersonationToken(ctx context.Context, in *CreateUserImpersonationTokenRequest, opts ...grpc.CallOption) (*CreateUserImpersonationTokenResponse, error)
 }
 
@@ -649,6 +659,56 @@ func (c *backendServiceClient) RevokeProjectAPIKey(ctx context.Context, in *Revo
 	return out, nil
 }
 
+func (c *backendServiceClient) ListPublishableKeys(ctx context.Context, in *ListPublishableKeysRequest, opts ...grpc.CallOption) (*ListPublishableKeysResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListPublishableKeysResponse)
+	err := c.cc.Invoke(ctx, BackendService_ListPublishableKeys_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) GetPublishableKey(ctx context.Context, in *GetPublishableKeyRequest, opts ...grpc.CallOption) (*GetPublishableKeyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetPublishableKeyResponse)
+	err := c.cc.Invoke(ctx, BackendService_GetPublishableKey_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) CreatePublishableKey(ctx context.Context, in *CreatePublishableKeyRequest, opts ...grpc.CallOption) (*CreatePublishableKeyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreatePublishableKeyResponse)
+	err := c.cc.Invoke(ctx, BackendService_CreatePublishableKey_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) UpdatePublishableKey(ctx context.Context, in *UpdatePublishableKeyRequest, opts ...grpc.CallOption) (*UpdatePublishableKeyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdatePublishableKeyResponse)
+	err := c.cc.Invoke(ctx, BackendService_UpdatePublishableKey_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) DeletePublishableKey(ctx context.Context, in *DeletePublishableKeyRequest, opts ...grpc.CallOption) (*DeletePublishableKeyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeletePublishableKeyResponse)
+	err := c.cc.Invoke(ctx, BackendService_DeletePublishableKey_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *backendServiceClient) CreateUserImpersonationToken(ctx context.Context, in *CreateUserImpersonationTokenRequest, opts ...grpc.CallOption) (*CreateUserImpersonationTokenResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CreateUserImpersonationTokenResponse)
@@ -714,6 +774,11 @@ type BackendServiceServer interface {
 	UpdateProjectAPIKey(context.Context, *UpdateProjectAPIKeyRequest) (*UpdateProjectAPIKeyResponse, error)
 	DeleteProjectAPIKey(context.Context, *DeleteProjectAPIKeyRequest) (*DeleteProjectAPIKeyResponse, error)
 	RevokeProjectAPIKey(context.Context, *RevokeProjectAPIKeyRequest) (*RevokeProjectAPIKeyResponse, error)
+	ListPublishableKeys(context.Context, *ListPublishableKeysRequest) (*ListPublishableKeysResponse, error)
+	GetPublishableKey(context.Context, *GetPublishableKeyRequest) (*GetPublishableKeyResponse, error)
+	CreatePublishableKey(context.Context, *CreatePublishableKeyRequest) (*CreatePublishableKeyResponse, error)
+	UpdatePublishableKey(context.Context, *UpdatePublishableKeyRequest) (*UpdatePublishableKeyResponse, error)
+	DeletePublishableKey(context.Context, *DeletePublishableKeyRequest) (*DeletePublishableKeyResponse, error)
 	CreateUserImpersonationToken(context.Context, *CreateUserImpersonationTokenRequest) (*CreateUserImpersonationTokenResponse, error)
 	mustEmbedUnimplementedBackendServiceServer()
 }
@@ -877,6 +942,21 @@ func (UnimplementedBackendServiceServer) DeleteProjectAPIKey(context.Context, *D
 }
 func (UnimplementedBackendServiceServer) RevokeProjectAPIKey(context.Context, *RevokeProjectAPIKeyRequest) (*RevokeProjectAPIKeyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RevokeProjectAPIKey not implemented")
+}
+func (UnimplementedBackendServiceServer) ListPublishableKeys(context.Context, *ListPublishableKeysRequest) (*ListPublishableKeysResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListPublishableKeys not implemented")
+}
+func (UnimplementedBackendServiceServer) GetPublishableKey(context.Context, *GetPublishableKeyRequest) (*GetPublishableKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPublishableKey not implemented")
+}
+func (UnimplementedBackendServiceServer) CreatePublishableKey(context.Context, *CreatePublishableKeyRequest) (*CreatePublishableKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreatePublishableKey not implemented")
+}
+func (UnimplementedBackendServiceServer) UpdatePublishableKey(context.Context, *UpdatePublishableKeyRequest) (*UpdatePublishableKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdatePublishableKey not implemented")
+}
+func (UnimplementedBackendServiceServer) DeletePublishableKey(context.Context, *DeletePublishableKeyRequest) (*DeletePublishableKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeletePublishableKey not implemented")
 }
 func (UnimplementedBackendServiceServer) CreateUserImpersonationToken(context.Context, *CreateUserImpersonationTokenRequest) (*CreateUserImpersonationTokenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUserImpersonationToken not implemented")
@@ -1820,6 +1900,96 @@ func _BackendService_RevokeProjectAPIKey_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BackendService_ListPublishableKeys_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListPublishableKeysRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).ListPublishableKeys(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_ListPublishableKeys_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).ListPublishableKeys(ctx, req.(*ListPublishableKeysRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_GetPublishableKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetPublishableKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).GetPublishableKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_GetPublishableKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).GetPublishableKey(ctx, req.(*GetPublishableKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_CreatePublishableKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreatePublishableKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).CreatePublishableKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_CreatePublishableKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).CreatePublishableKey(ctx, req.(*CreatePublishableKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_UpdatePublishableKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdatePublishableKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).UpdatePublishableKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_UpdatePublishableKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).UpdatePublishableKey(ctx, req.(*UpdatePublishableKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_DeletePublishableKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeletePublishableKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).DeletePublishableKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_DeletePublishableKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).DeletePublishableKey(ctx, req.(*DeletePublishableKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _BackendService_CreateUserImpersonationToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateUserImpersonationTokenRequest)
 	if err := dec(in); err != nil {
@@ -2048,6 +2218,26 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RevokeProjectAPIKey",
 			Handler:    _BackendService_RevokeProjectAPIKey_Handler,
+		},
+		{
+			MethodName: "ListPublishableKeys",
+			Handler:    _BackendService_ListPublishableKeys_Handler,
+		},
+		{
+			MethodName: "GetPublishableKey",
+			Handler:    _BackendService_GetPublishableKey_Handler,
+		},
+		{
+			MethodName: "CreatePublishableKey",
+			Handler:    _BackendService_CreatePublishableKey_Handler,
+		},
+		{
+			MethodName: "UpdatePublishableKey",
+			Handler:    _BackendService_UpdatePublishableKey_Handler,
+		},
+		{
+			MethodName: "DeletePublishableKey",
+			Handler:    _BackendService_DeletePublishableKey_Handler,
 		},
 		{
 			MethodName: "CreateUserImpersonationToken",
