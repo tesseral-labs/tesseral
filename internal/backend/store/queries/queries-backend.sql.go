@@ -141,38 +141,6 @@ func (q *Queries) CreateProjectAPIKey(ctx context.Context, arg CreateProjectAPIK
 	return i, err
 }
 
-const createProjectRedirectURI = `-- name: CreateProjectRedirectURI :one
-INSERT INTO project_redirect_uris (id, project_id, uri, is_primary)
-    VALUES ($1, $2, $3, COALESCE((
-            SELECT
-                FALSE
-            FROM project_redirect_uris
-            WHERE
-                project_id = $2 LIMIT 1), TRUE))
-RETURNING
-    id, project_id, uri, is_primary, created_at, updated_at
-`
-
-type CreateProjectRedirectURIParams struct {
-	ID        uuid.UUID
-	ProjectID uuid.UUID
-	Uri       string
-}
-
-func (q *Queries) CreateProjectRedirectURI(ctx context.Context, arg CreateProjectRedirectURIParams) (ProjectRedirectUri, error) {
-	row := q.db.QueryRow(ctx, createProjectRedirectURI, arg.ID, arg.ProjectID, arg.Uri)
-	var i ProjectRedirectUri
-	err := row.Scan(
-		&i.ID,
-		&i.ProjectID,
-		&i.Uri,
-		&i.IsPrimary,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
-}
-
 const createProjectTrustedDomain = `-- name: CreateProjectTrustedDomain :one
 INSERT INTO project_trusted_domains (id, project_id, DOMAIN)
     VALUES ($1, $2, $3)
@@ -430,22 +398,6 @@ WHERE id = $1
 
 func (q *Queries) DeleteProjectAPIKey(ctx context.Context, id uuid.UUID) error {
 	_, err := q.db.Exec(ctx, deleteProjectAPIKey, id)
-	return err
-}
-
-const deleteProjectRedirectURI = `-- name: DeleteProjectRedirectURI :exec
-DELETE FROM project_redirect_uris
-WHERE id = $1
-    AND project_id = $2
-`
-
-type DeleteProjectRedirectURIParams struct {
-	ID        uuid.UUID
-	ProjectID uuid.UUID
-}
-
-func (q *Queries) DeleteProjectRedirectURI(ctx context.Context, arg DeleteProjectRedirectURIParams) error {
-	_, err := q.db.Exec(ctx, deleteProjectRedirectURI, arg.ID, arg.ProjectID)
 	return err
 }
 
@@ -1066,7 +1018,7 @@ func (q *Queries) GetProjectAPIKeyBySecretTokenSHA256(ctx context.Context, secre
 
 const getProjectByID = `-- name: GetProjectByID :one
 SELECT
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri
 FROM
     projects
 WHERE
@@ -1096,6 +1048,9 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 		&i.LogInWithPasskey,
 		&i.LogInWithEmail,
 		&i.LogInWithSaml,
+		&i.RedirectUri,
+		&i.AfterLoginRedirectUri,
+		&i.AfterSignupRedirectUri,
 	)
 	return i, err
 }
@@ -1115,35 +1070,6 @@ func (q *Queries) GetProjectIDOrganizationBacks(ctx context.Context, organizatio
 	var id uuid.UUID
 	err := row.Scan(&id)
 	return id, err
-}
-
-const getProjectRedirectURI = `-- name: GetProjectRedirectURI :one
-SELECT
-    id, project_id, uri, is_primary, created_at, updated_at
-FROM
-    project_redirect_uris
-WHERE
-    id = $1
-    AND project_id = $2
-`
-
-type GetProjectRedirectURIParams struct {
-	ID        uuid.UUID
-	ProjectID uuid.UUID
-}
-
-func (q *Queries) GetProjectRedirectURI(ctx context.Context, arg GetProjectRedirectURIParams) (ProjectRedirectUri, error) {
-	row := q.db.QueryRow(ctx, getProjectRedirectURI, arg.ID, arg.ProjectID)
-	var i ProjectRedirectUri
-	err := row.Scan(
-		&i.ID,
-		&i.ProjectID,
-		&i.Uri,
-		&i.IsPrimary,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
 }
 
 const getProjectTrustedDomains = `-- name: GetProjectTrustedDomains :many
@@ -1657,45 +1583,9 @@ func (q *Queries) ListProjectAPIKeys(ctx context.Context, arg ListProjectAPIKeys
 	return items, nil
 }
 
-const listProjectRedirectURIs = `-- name: ListProjectRedirectURIs :many
-SELECT
-    id, project_id, uri, is_primary, created_at, updated_at
-FROM
-    project_redirect_uris
-WHERE
-    project_id = $1
-`
-
-func (q *Queries) ListProjectRedirectURIs(ctx context.Context, projectID uuid.UUID) ([]ProjectRedirectUri, error) {
-	rows, err := q.db.Query(ctx, listProjectRedirectURIs, projectID)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []ProjectRedirectUri
-	for rows.Next() {
-		var i ProjectRedirectUri
-		if err := rows.Scan(
-			&i.ID,
-			&i.ProjectID,
-			&i.Uri,
-			&i.IsPrimary,
-			&i.CreatedAt,
-			&i.UpdatedAt,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
 const listProjects = `-- name: ListProjects :many
 SELECT
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri
 FROM
     projects
 ORDER BY
@@ -1732,6 +1622,9 @@ func (q *Queries) ListProjects(ctx context.Context, limit int32) ([]Project, err
 			&i.LogInWithPasskey,
 			&i.LogInWithEmail,
 			&i.LogInWithSaml,
+			&i.RedirectUri,
+			&i.AfterLoginRedirectUri,
+			&i.AfterSignupRedirectUri,
 		); err != nil {
 			return nil, err
 		}
@@ -2222,11 +2115,14 @@ SET
     microsoft_oauth_client_id = $12,
     microsoft_oauth_client_secret_ciphertext = $13,
     custom_auth_domain = $14,
-    auth_domain = $15
+    auth_domain = $15,
+    redirect_uri = $16,
+    after_login_redirect_uri = $17,
+    after_signup_redirect_uri = $18
 WHERE
     id = $1
 RETURNING
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri
 `
 
 type UpdateProjectParams struct {
@@ -2245,6 +2141,9 @@ type UpdateProjectParams struct {
 	MicrosoftOauthClientSecretCiphertext []byte
 	CustomAuthDomain                     *string
 	AuthDomain                           *string
+	RedirectUri                          *string
+	AfterLoginRedirectUri                *string
+	AfterSignupRedirectUri               *string
 }
 
 func (q *Queries) UpdateProject(ctx context.Context, arg UpdateProjectParams) (Project, error) {
@@ -2264,6 +2163,9 @@ func (q *Queries) UpdateProject(ctx context.Context, arg UpdateProjectParams) (P
 		arg.MicrosoftOauthClientSecretCiphertext,
 		arg.CustomAuthDomain,
 		arg.AuthDomain,
+		arg.RedirectUri,
+		arg.AfterLoginRedirectUri,
+		arg.AfterSignupRedirectUri,
 	)
 	var i Project
 	err := row.Scan(
@@ -2286,6 +2188,9 @@ func (q *Queries) UpdateProject(ctx context.Context, arg UpdateProjectParams) (P
 		&i.LogInWithPasskey,
 		&i.LogInWithEmail,
 		&i.LogInWithSaml,
+		&i.RedirectUri,
+		&i.AfterLoginRedirectUri,
+		&i.AfterSignupRedirectUri,
 	)
 	return i, err
 }
@@ -2329,7 +2234,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri
 `
 
 type UpdateProjectOrganizationIDParams struct {
@@ -2360,45 +2265,9 @@ func (q *Queries) UpdateProjectOrganizationID(ctx context.Context, arg UpdatePro
 		&i.LogInWithPasskey,
 		&i.LogInWithEmail,
 		&i.LogInWithSaml,
-	)
-	return i, err
-}
-
-const updateProjectRedirectURI = `-- name: UpdateProjectRedirectURI :one
-UPDATE
-    project_redirect_uris
-SET
-    uri = $2,
-    is_primary = $3
-WHERE
-    id = $1
-    AND project_id = $4
-RETURNING
-    id, project_id, uri, is_primary, created_at, updated_at
-`
-
-type UpdateProjectRedirectURIParams struct {
-	ID        uuid.UUID
-	Uri       string
-	IsPrimary bool
-	ProjectID uuid.UUID
-}
-
-func (q *Queries) UpdateProjectRedirectURI(ctx context.Context, arg UpdateProjectRedirectURIParams) (ProjectRedirectUri, error) {
-	row := q.db.QueryRow(ctx, updateProjectRedirectURI,
-		arg.ID,
-		arg.Uri,
-		arg.IsPrimary,
-		arg.ProjectID,
-	)
-	var i ProjectRedirectUri
-	err := row.Scan(
-		&i.ID,
-		&i.ProjectID,
-		&i.Uri,
-		&i.IsPrimary,
-		&i.CreatedAt,
-		&i.UpdatedAt,
+		&i.RedirectUri,
+		&i.AfterLoginRedirectUri,
+		&i.AfterSignupRedirectUri,
 	)
 	return i, err
 }

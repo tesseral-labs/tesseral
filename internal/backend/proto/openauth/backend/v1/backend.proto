@@ -255,12 +255,6 @@ service BackendService {
 
   rpc UpdateProject(UpdateProjectRequest) returns (UpdateProjectResponse);
 
-  rpc CreateProjectRedirectURI(CreateProjectRedirectURIRequest) returns (CreateProjectRedirectURIResponse) {}
-  rpc DeleteProjectRedirectURI(DeleteProjectRedirectURIRequest) returns (DeleteProjectRedirectURIResponse) {}
-  rpc GetProjectRedirectURI(GetProjectRedirectURIRequest) returns (GetProjectRedirectURIResponse) {}
-  rpc ListProjectRedirectURIs(ListProjectRedirectURIsRequest) returns (ListProjectRedirectURIsResponse) {}
-  rpc UpdateProjectRedirectURI(UpdateProjectRedirectURIRequest) returns (UpdateProjectRedirectURIResponse) {}
-
   rpc GetProjectUISettings(GetProjectUISettingsRequest) returns (GetProjectUISettingsResponse) {}
   rpc UpdateProjectUISettings(UpdateProjectUISettingsRequest) returns (UpdateProjectUISettingsResponse) {}
 
@@ -648,50 +642,10 @@ message RevokeProjectAPIKeyResponse {
   ProjectAPIKey project_api_key = 1;
 }
 
-message CreateProjectRedirectURIRequest {
-  ProjectRedirectURI project_redirect_uri = 1;
-}
-
-message CreateProjectRedirectURIResponse {
-  ProjectRedirectURI project_redirect_uri = 1;
-}
-
-message DeleteProjectRedirectURIRequest {
-  string id = 1;
-}
-
-message DeleteProjectRedirectURIResponse {
-}
-
-message GetProjectRedirectURIRequest {
-  string id = 1;
-}
-
-message GetProjectRedirectURIResponse {
-  ProjectRedirectURI project_redirect_uri = 1;
-}
-
-message ListProjectRedirectURIsRequest {
-  string project_id = 1;
-}
-
-message ListProjectRedirectURIsResponse {
-  repeated ProjectRedirectURI project_redirect_uris = 1;
-}
-
 message GetProjectUISettingsRequest {}
 
 message GetProjectUISettingsResponse {
   ProjectUISettings project_ui_settings = 1;
-}
-
-message UpdateProjectRedirectURIRequest {
-  string id = 1;
-  ProjectRedirectURI project_redirect_uri = 2;
-}
-
-message UpdateProjectRedirectURIResponse {
-  ProjectRedirectURI project_redirect_uri = 1;
 }
 
 message UpdateProjectUISettingsRequest {
@@ -770,6 +724,9 @@ message Project {
   string microsoft_oauth_client_secret = 11;
   optional string auth_domain = 12;
   repeated string trusted_domains = 17;
+  string redirect_uri = 18;
+  string after_login_redirect_uri = 19;
+  string after_signup_redirect_uri = 20;
 }
 
 message ProjectUISettings {
@@ -824,13 +781,6 @@ message ProjectAPIKey {
   google.protobuf.Timestamp update_time = 4;
   string secret_token = 5;
   bool revoked = 6;
-}
-
-message ProjectRedirectURI {
-  string id = 1;
-  string project_id = 2;
-  string uri = 3;
-  bool is_primary = 4;
 }
 
 message IntermediateSession {
