@@ -19,37 +19,41 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	FrontendService_Logout_FullMethodName                     = "/openauth.frontend.v1.FrontendService/Logout"
-	FrontendService_Refresh_FullMethodName                    = "/openauth.frontend.v1.FrontendService/Refresh"
-	FrontendService_GetProject_FullMethodName                 = "/openauth.frontend.v1.FrontendService/GetProject"
-	FrontendService_GetOrganization_FullMethodName            = "/openauth.frontend.v1.FrontendService/GetOrganization"
-	FrontendService_UpdateOrganization_FullMethodName         = "/openauth.frontend.v1.FrontendService/UpdateOrganization"
-	FrontendService_ListUsers_FullMethodName                  = "/openauth.frontend.v1.FrontendService/ListUsers"
-	FrontendService_GetUser_FullMethodName                    = "/openauth.frontend.v1.FrontendService/GetUser"
-	FrontendService_UpdateUser_FullMethodName                 = "/openauth.frontend.v1.FrontendService/UpdateUser"
-	FrontendService_SetPassword_FullMethodName                = "/openauth.frontend.v1.FrontendService/SetPassword"
-	FrontendService_ListSAMLConnections_FullMethodName        = "/openauth.frontend.v1.FrontendService/ListSAMLConnections"
-	FrontendService_GetSAMLConnection_FullMethodName          = "/openauth.frontend.v1.FrontendService/GetSAMLConnection"
-	FrontendService_CreateSAMLConnection_FullMethodName       = "/openauth.frontend.v1.FrontendService/CreateSAMLConnection"
-	FrontendService_UpdateSAMLConnection_FullMethodName       = "/openauth.frontend.v1.FrontendService/UpdateSAMLConnection"
-	FrontendService_DeleteSAMLConnection_FullMethodName       = "/openauth.frontend.v1.FrontendService/DeleteSAMLConnection"
-	FrontendService_ListSCIMAPIKeys_FullMethodName            = "/openauth.frontend.v1.FrontendService/ListSCIMAPIKeys"
-	FrontendService_GetSCIMAPIKey_FullMethodName              = "/openauth.frontend.v1.FrontendService/GetSCIMAPIKey"
-	FrontendService_CreateSCIMAPIKey_FullMethodName           = "/openauth.frontend.v1.FrontendService/CreateSCIMAPIKey"
-	FrontendService_UpdateSCIMAPIKey_FullMethodName           = "/openauth.frontend.v1.FrontendService/UpdateSCIMAPIKey"
-	FrontendService_DeleteSCIMAPIKey_FullMethodName           = "/openauth.frontend.v1.FrontendService/DeleteSCIMAPIKey"
-	FrontendService_RevokeSCIMAPIKey_FullMethodName           = "/openauth.frontend.v1.FrontendService/RevokeSCIMAPIKey"
-	FrontendService_Whoami_FullMethodName                     = "/openauth.frontend.v1.FrontendService/Whoami"
-	FrontendService_ListMyPasskeys_FullMethodName             = "/openauth.frontend.v1.FrontendService/ListMyPasskeys"
-	FrontendService_DeleteMyPasskey_FullMethodName            = "/openauth.frontend.v1.FrontendService/DeleteMyPasskey"
-	FrontendService_GetPasskeyOptions_FullMethodName          = "/openauth.frontend.v1.FrontendService/GetPasskeyOptions"
-	FrontendService_RegisterPasskey_FullMethodName            = "/openauth.frontend.v1.FrontendService/RegisterPasskey"
-	FrontendService_GetAuthenticatorAppOptions_FullMethodName = "/openauth.frontend.v1.FrontendService/GetAuthenticatorAppOptions"
-	FrontendService_RegisterAuthenticatorApp_FullMethodName   = "/openauth.frontend.v1.FrontendService/RegisterAuthenticatorApp"
-	FrontendService_ListUserInvites_FullMethodName            = "/openauth.frontend.v1.FrontendService/ListUserInvites"
-	FrontendService_GetUserInvite_FullMethodName              = "/openauth.frontend.v1.FrontendService/GetUserInvite"
-	FrontendService_CreateUserInvite_FullMethodName           = "/openauth.frontend.v1.FrontendService/CreateUserInvite"
-	FrontendService_DeleteUserInvite_FullMethodName           = "/openauth.frontend.v1.FrontendService/DeleteUserInvite"
+	FrontendService_Logout_FullMethodName                                = "/openauth.frontend.v1.FrontendService/Logout"
+	FrontendService_Refresh_FullMethodName                               = "/openauth.frontend.v1.FrontendService/Refresh"
+	FrontendService_GetProject_FullMethodName                            = "/openauth.frontend.v1.FrontendService/GetProject"
+	FrontendService_GetOrganization_FullMethodName                       = "/openauth.frontend.v1.FrontendService/GetOrganization"
+	FrontendService_UpdateOrganization_FullMethodName                    = "/openauth.frontend.v1.FrontendService/UpdateOrganization"
+	FrontendService_GetOrganizationGoogleHostedDomains_FullMethodName    = "/openauth.frontend.v1.FrontendService/GetOrganizationGoogleHostedDomains"
+	FrontendService_UpdateOrganizationGoogleHostedDomains_FullMethodName = "/openauth.frontend.v1.FrontendService/UpdateOrganizationGoogleHostedDomains"
+	FrontendService_GetOrganizationMicrosoftTenantIDs_FullMethodName     = "/openauth.frontend.v1.FrontendService/GetOrganizationMicrosoftTenantIDs"
+	FrontendService_UpdateOrganizationMicrosoftTenantIDs_FullMethodName  = "/openauth.frontend.v1.FrontendService/UpdateOrganizationMicrosoftTenantIDs"
+	FrontendService_ListUsers_FullMethodName                             = "/openauth.frontend.v1.FrontendService/ListUsers"
+	FrontendService_GetUser_FullMethodName                               = "/openauth.frontend.v1.FrontendService/GetUser"
+	FrontendService_UpdateUser_FullMethodName                            = "/openauth.frontend.v1.FrontendService/UpdateUser"
+	FrontendService_SetPassword_FullMethodName                           = "/openauth.frontend.v1.FrontendService/SetPassword"
+	FrontendService_ListSAMLConnections_FullMethodName                   = "/openauth.frontend.v1.FrontendService/ListSAMLConnections"
+	FrontendService_GetSAMLConnection_FullMethodName                     = "/openauth.frontend.v1.FrontendService/GetSAMLConnection"
+	FrontendService_CreateSAMLConnection_FullMethodName                  = "/openauth.frontend.v1.FrontendService/CreateSAMLConnection"
+	FrontendService_UpdateSAMLConnection_FullMethodName                  = "/openauth.frontend.v1.FrontendService/UpdateSAMLConnection"
+	FrontendService_DeleteSAMLConnection_FullMethodName                  = "/openauth.frontend.v1.FrontendService/DeleteSAMLConnection"
+	FrontendService_ListSCIMAPIKeys_FullMethodName                       = "/openauth.frontend.v1.FrontendService/ListSCIMAPIKeys"
+	FrontendService_GetSCIMAPIKey_FullMethodName                         = "/openauth.frontend.v1.FrontendService/GetSCIMAPIKey"
+	FrontendService_CreateSCIMAPIKey_FullMethodName                      = "/openauth.frontend.v1.FrontendService/CreateSCIMAPIKey"
+	FrontendService_UpdateSCIMAPIKey_FullMethodName                      = "/openauth.frontend.v1.FrontendService/UpdateSCIMAPIKey"
+	FrontendService_DeleteSCIMAPIKey_FullMethodName                      = "/openauth.frontend.v1.FrontendService/DeleteSCIMAPIKey"
+	FrontendService_RevokeSCIMAPIKey_FullMethodName                      = "/openauth.frontend.v1.FrontendService/RevokeSCIMAPIKey"
+	FrontendService_Whoami_FullMethodName                                = "/openauth.frontend.v1.FrontendService/Whoami"
+	FrontendService_ListMyPasskeys_FullMethodName                        = "/openauth.frontend.v1.FrontendService/ListMyPasskeys"
+	FrontendService_DeleteMyPasskey_FullMethodName                       = "/openauth.frontend.v1.FrontendService/DeleteMyPasskey"
+	FrontendService_GetPasskeyOptions_FullMethodName                     = "/openauth.frontend.v1.FrontendService/GetPasskeyOptions"
+	FrontendService_RegisterPasskey_FullMethodName                       = "/openauth.frontend.v1.FrontendService/RegisterPasskey"
+	FrontendService_GetAuthenticatorAppOptions_FullMethodName            = "/openauth.frontend.v1.FrontendService/GetAuthenticatorAppOptions"
+	FrontendService_RegisterAuthenticatorApp_FullMethodName              = "/openauth.frontend.v1.FrontendService/RegisterAuthenticatorApp"
+	FrontendService_ListUserInvites_FullMethodName                       = "/openauth.frontend.v1.FrontendService/ListUserInvites"
+	FrontendService_GetUserInvite_FullMethodName                         = "/openauth.frontend.v1.FrontendService/GetUserInvite"
+	FrontendService_CreateUserInvite_FullMethodName                      = "/openauth.frontend.v1.FrontendService/CreateUserInvite"
+	FrontendService_DeleteUserInvite_FullMethodName                      = "/openauth.frontend.v1.FrontendService/DeleteUserInvite"
 )
 
 // FrontendServiceClient is the client API for FrontendService service.
@@ -61,6 +65,10 @@ type FrontendServiceClient interface {
 	GetProject(ctx context.Context, in *GetProjectRequest, opts ...grpc.CallOption) (*GetProjectResponse, error)
 	GetOrganization(ctx context.Context, in *GetOrganizationRequest, opts ...grpc.CallOption) (*GetOrganizationResponse, error)
 	UpdateOrganization(ctx context.Context, in *UpdateOrganizationRequest, opts ...grpc.CallOption) (*UpdateOrganizationResponse, error)
+	GetOrganizationGoogleHostedDomains(ctx context.Context, in *GetOrganizationGoogleHostedDomainsRequest, opts ...grpc.CallOption) (*GetOrganizationGoogleHostedDomainsResponse, error)
+	UpdateOrganizationGoogleHostedDomains(ctx context.Context, in *UpdateOrganizationGoogleHostedDomainsRequest, opts ...grpc.CallOption) (*UpdateOrganizationGoogleHostedDomainsResponse, error)
+	GetOrganizationMicrosoftTenantIDs(ctx context.Context, in *GetOrganizationMicrosoftTenantIDsRequest, opts ...grpc.CallOption) (*GetOrganizationMicrosoftTenantIDsResponse, error)
+	UpdateOrganizationMicrosoftTenantIDs(ctx context.Context, in *UpdateOrganizationMicrosoftTenantIDsRequest, opts ...grpc.CallOption) (*UpdateOrganizationMicrosoftTenantIDsResponse, error)
 	ListUsers(ctx context.Context, in *ListUsersRequest, opts ...grpc.CallOption) (*ListUsersResponse, error)
 	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error)
 	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UpdateUserResponse, error)
@@ -142,6 +150,46 @@ func (c *frontendServiceClient) UpdateOrganization(ctx context.Context, in *Upda
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(UpdateOrganizationResponse)
 	err := c.cc.Invoke(ctx, FrontendService_UpdateOrganization_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *frontendServiceClient) GetOrganizationGoogleHostedDomains(ctx context.Context, in *GetOrganizationGoogleHostedDomainsRequest, opts ...grpc.CallOption) (*GetOrganizationGoogleHostedDomainsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetOrganizationGoogleHostedDomainsResponse)
+	err := c.cc.Invoke(ctx, FrontendService_GetOrganizationGoogleHostedDomains_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *frontendServiceClient) UpdateOrganizationGoogleHostedDomains(ctx context.Context, in *UpdateOrganizationGoogleHostedDomainsRequest, opts ...grpc.CallOption) (*UpdateOrganizationGoogleHostedDomainsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateOrganizationGoogleHostedDomainsResponse)
+	err := c.cc.Invoke(ctx, FrontendService_UpdateOrganizationGoogleHostedDomains_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *frontendServiceClient) GetOrganizationMicrosoftTenantIDs(ctx context.Context, in *GetOrganizationMicrosoftTenantIDsRequest, opts ...grpc.CallOption) (*GetOrganizationMicrosoftTenantIDsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetOrganizationMicrosoftTenantIDsResponse)
+	err := c.cc.Invoke(ctx, FrontendService_GetOrganizationMicrosoftTenantIDs_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *frontendServiceClient) UpdateOrganizationMicrosoftTenantIDs(ctx context.Context, in *UpdateOrganizationMicrosoftTenantIDsRequest, opts ...grpc.CallOption) (*UpdateOrganizationMicrosoftTenantIDsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateOrganizationMicrosoftTenantIDsResponse)
+	err := c.cc.Invoke(ctx, FrontendService_UpdateOrganizationMicrosoftTenantIDs_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -417,6 +465,10 @@ type FrontendServiceServer interface {
 	GetProject(context.Context, *GetProjectRequest) (*GetProjectResponse, error)
 	GetOrganization(context.Context, *GetOrganizationRequest) (*GetOrganizationResponse, error)
 	UpdateOrganization(context.Context, *UpdateOrganizationRequest) (*UpdateOrganizationResponse, error)
+	GetOrganizationGoogleHostedDomains(context.Context, *GetOrganizationGoogleHostedDomainsRequest) (*GetOrganizationGoogleHostedDomainsResponse, error)
+	UpdateOrganizationGoogleHostedDomains(context.Context, *UpdateOrganizationGoogleHostedDomainsRequest) (*UpdateOrganizationGoogleHostedDomainsResponse, error)
+	GetOrganizationMicrosoftTenantIDs(context.Context, *GetOrganizationMicrosoftTenantIDsRequest) (*GetOrganizationMicrosoftTenantIDsResponse, error)
+	UpdateOrganizationMicrosoftTenantIDs(context.Context, *UpdateOrganizationMicrosoftTenantIDsRequest) (*UpdateOrganizationMicrosoftTenantIDsResponse, error)
 	ListUsers(context.Context, *ListUsersRequest) (*ListUsersResponse, error)
 	GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error)
 	UpdateUser(context.Context, *UpdateUserRequest) (*UpdateUserResponse, error)
@@ -468,6 +520,18 @@ func (UnimplementedFrontendServiceServer) GetOrganization(context.Context, *GetO
 }
 func (UnimplementedFrontendServiceServer) UpdateOrganization(context.Context, *UpdateOrganizationRequest) (*UpdateOrganizationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateOrganization not implemented")
+}
+func (UnimplementedFrontendServiceServer) GetOrganizationGoogleHostedDomains(context.Context, *GetOrganizationGoogleHostedDomainsRequest) (*GetOrganizationGoogleHostedDomainsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetOrganizationGoogleHostedDomains not implemented")
+}
+func (UnimplementedFrontendServiceServer) UpdateOrganizationGoogleHostedDomains(context.Context, *UpdateOrganizationGoogleHostedDomainsRequest) (*UpdateOrganizationGoogleHostedDomainsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateOrganizationGoogleHostedDomains not implemented")
+}
+func (UnimplementedFrontendServiceServer) GetOrganizationMicrosoftTenantIDs(context.Context, *GetOrganizationMicrosoftTenantIDsRequest) (*GetOrganizationMicrosoftTenantIDsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetOrganizationMicrosoftTenantIDs not implemented")
+}
+func (UnimplementedFrontendServiceServer) UpdateOrganizationMicrosoftTenantIDs(context.Context, *UpdateOrganizationMicrosoftTenantIDsRequest) (*UpdateOrganizationMicrosoftTenantIDsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateOrganizationMicrosoftTenantIDs not implemented")
 }
 func (UnimplementedFrontendServiceServer) ListUsers(context.Context, *ListUsersRequest) (*ListUsersResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListUsers not implemented")
@@ -654,6 +718,78 @@ func _FrontendService_UpdateOrganization_Handler(srv interface{}, ctx context.Co
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(FrontendServiceServer).UpdateOrganization(ctx, req.(*UpdateOrganizationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FrontendService_GetOrganizationGoogleHostedDomains_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetOrganizationGoogleHostedDomainsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).GetOrganizationGoogleHostedDomains(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_GetOrganizationGoogleHostedDomains_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).GetOrganizationGoogleHostedDomains(ctx, req.(*GetOrganizationGoogleHostedDomainsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FrontendService_UpdateOrganizationGoogleHostedDomains_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateOrganizationGoogleHostedDomainsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).UpdateOrganizationGoogleHostedDomains(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_UpdateOrganizationGoogleHostedDomains_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).UpdateOrganizationGoogleHostedDomains(ctx, req.(*UpdateOrganizationGoogleHostedDomainsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FrontendService_GetOrganizationMicrosoftTenantIDs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetOrganizationMicrosoftTenantIDsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).GetOrganizationMicrosoftTenantIDs(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_GetOrganizationMicrosoftTenantIDs_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).GetOrganizationMicrosoftTenantIDs(ctx, req.(*GetOrganizationMicrosoftTenantIDsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FrontendService_UpdateOrganizationMicrosoftTenantIDs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateOrganizationMicrosoftTenantIDsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).UpdateOrganizationMicrosoftTenantIDs(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_UpdateOrganizationMicrosoftTenantIDs_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).UpdateOrganizationMicrosoftTenantIDs(ctx, req.(*UpdateOrganizationMicrosoftTenantIDsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1152,6 +1288,22 @@ var FrontendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateOrganization",
 			Handler:    _FrontendService_UpdateOrganization_Handler,
+		},
+		{
+			MethodName: "GetOrganizationGoogleHostedDomains",
+			Handler:    _FrontendService_GetOrganizationGoogleHostedDomains_Handler,
+		},
+		{
+			MethodName: "UpdateOrganizationGoogleHostedDomains",
+			Handler:    _FrontendService_UpdateOrganizationGoogleHostedDomains_Handler,
+		},
+		{
+			MethodName: "GetOrganizationMicrosoftTenantIDs",
+			Handler:    _FrontendService_GetOrganizationMicrosoftTenantIDs_Handler,
+		},
+		{
+			MethodName: "UpdateOrganizationMicrosoftTenantIDs",
+			Handler:    _FrontendService_UpdateOrganizationMicrosoftTenantIDs_Handler,
 		},
 		{
 			MethodName: "ListUsers",
