@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package openauth.frontend.v1;
 
-import "google/protobuf/timestamp.proto";
 import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
 
 message Project {
   string id = 1;

@@ -8,241 +8,195 @@ import "openauth/frontend/v1/models.proto";
 service FrontendService {
   rpc Logout(LogoutRequest) returns (LogoutResponse) {
     option (google.api.http) = {
-      post: "/frontend/v1/logout",
+      post: "/frontend/v1/logout"
       body: "*"
     };
   }
 
   rpc Refresh(RefreshRequest) returns (RefreshResponse) {
     option (google.api.http) = {
-      post: "/frontend/v1/refresh",
+      post: "/frontend/v1/refresh"
       body: "*"
     };
   }
 
   rpc GetProject(GetProjectRequest) returns (GetProjectResponse) {
-    option (google.api.http) = {
-      get: "/frontend/v1/project",
-    };
+    option (google.api.http) = {get: "/frontend/v1/project"};
   }
 
   rpc GetOrganization(GetOrganizationRequest) returns (GetOrganizationResponse) {
-    option (google.api.http) = {
-      get: "/frontend/v1/organization",
-    };
+    option (google.api.http) = {get: "/frontend/v1/organization"};
   }
 
   rpc UpdateOrganization(UpdateOrganizationRequest) returns (UpdateOrganizationResponse) {
     option (google.api.http) = {
-      patch: "/frontend/v1/organization",
+      patch: "/frontend/v1/organization"
       body: "organization"
     };
   }
 
   rpc GetOrganizationGoogleHostedDomains(GetOrganizationGoogleHostedDomainsRequest) returns (GetOrganizationGoogleHostedDomainsResponse) {
-    option (google.api.http) = {
-      get: "/frontend/v1/google-hosted-domains",
-    };
+    option (google.api.http) = {get: "/frontend/v1/google-hosted-domains"};
   }
 
   rpc UpdateOrganizationGoogleHostedDomains(UpdateOrganizationGoogleHostedDomainsRequest) returns (UpdateOrganizationGoogleHostedDomainsResponse) {
     option (google.api.http) = {
-      patch: "/frontend/v1/google-hosted-domains",
-      body: "organization_google_hosted_domains",
+      patch: "/frontend/v1/google-hosted-domains"
+      body: "organization_google_hosted_domains"
     };
   }
 
   rpc GetOrganizationMicrosoftTenantIDs(GetOrganizationMicrosoftTenantIDsRequest) returns (GetOrganizationMicrosoftTenantIDsResponse) {
-    option (google.api.http) = {
-      get: "/frontend/v1/microsoft-tenant-ids",
-    };
+    option (google.api.http) = {get: "/frontend/v1/microsoft-tenant-ids"};
   }
 
   rpc UpdateOrganizationMicrosoftTenantIDs(UpdateOrganizationMicrosoftTenantIDsRequest) returns (UpdateOrganizationMicrosoftTenantIDsResponse) {
     option (google.api.http) = {
-      patch: "/frontend/v1/microsoft-tenant-ids",
-      body: "organization_microsoft_tenant_ids",
+      patch: "/frontend/v1/microsoft-tenant-ids"
+      body: "organization_microsoft_tenant_ids"
     };
   }
 
   rpc ListUsers(ListUsersRequest) returns (ListUsersResponse) {
-    option (google.api.http) = {
-      get: "/frontend/v1/users"
-    };
+    option (google.api.http) = {get: "/frontend/v1/users"};
   }
 
   rpc GetUser(GetUserRequest) returns (GetUserResponse) {
-    option (google.api.http) = {
-      get: "/frontend/v1/users/{id}"
-    };
+    option (google.api.http) = {get: "/frontend/v1/users/{id}"};
   }
 
   rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {
     option (google.api.http) = {
-      patch: "/frontend/v1/users/{id}",
+      patch: "/frontend/v1/users/{id}"
       body: "user"
     };
   }
 
   rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {
-    option (google.api.http) = {
-      delete: "/frontend/v1/users/{id}"
-    };
+    option (google.api.http) = {delete: "/frontend/v1/users/{id}"};
   }
 
   // Sets a user's password.
   rpc SetPassword(SetPasswordRequest) returns (SetPasswordResponse) {
     option (google.api.http) = {
-      post: "/frontend/v1/set-user-password",
+      post: "/frontend/v1/set-user-password"
       body: "*"
     };
   }
 
   rpc ListSAMLConnections(ListSAMLConnectionsRequest) returns (ListSAMLConnectionsResponse) {
-    option (google.api.http) = {
-      get: "/frontend/v1/saml-connections",
-    };
+    option (google.api.http) = {get: "/frontend/v1/saml-connections"};
   }
 
   rpc GetSAMLConnection(GetSAMLConnectionRequest) returns (GetSAMLConnectionResponse) {
-    option (google.api.http) = {
-      get: "/frontend/v1/saml-connections/{id}"
-    };
+    option (google.api.http) = {get: "/frontend/v1/saml-connections/{id}"};
   }
 
   rpc CreateSAMLConnection(CreateSAMLConnectionRequest) returns (CreateSAMLConnectionResponse) {
     option (google.api.http) = {
-      post: "/frontend/v1/saml-connections",
+      post: "/frontend/v1/saml-connections"
       body: "saml_connection"
     };
   }
 
   rpc UpdateSAMLConnection(UpdateSAMLConnectionRequest) returns (UpdateSAMLConnectionResponse) {
     option (google.api.http) = {
-      patch: "/frontend/v1/saml-connections/{id}",
+      patch: "/frontend/v1/saml-connections/{id}"
       body: "saml_connection"
     };
   }
 
   rpc DeleteSAMLConnection(DeleteSAMLConnectionRequest) returns (DeleteSAMLConnectionResponse) {
-    option (google.api.http) = {
-      delete: "/frontend/v1/saml-connections/{id}"
-    };
+    option (google.api.http) = {delete: "/frontend/v1/saml-connections/{id}"};
   }
 
   rpc ListSCIMAPIKeys(ListSCIMAPIKeysRequest) returns (ListSCIMAPIKeysResponse) {
-    option (google.api.http) = {
-      get: "/frontend/v1/scim-api-keys"
-    };
+    option (google.api.http) = {get: "/frontend/v1/scim-api-keys"};
   }
 
   rpc GetSCIMAPIKey(GetSCIMAPIKeyRequest) returns (GetSCIMAPIKeyResponse) {
-    option (google.api.http) = {
-      get: "/frontend/v1/scim-api-keys/{id}"
-    };
+    option (google.api.http) = {get: "/frontend/v1/scim-api-keys/{id}"};
   }
 
   rpc CreateSCIMAPIKey(CreateSCIMAPIKeyRequest) returns (CreateSCIMAPIKeyResponse) {
     option (google.api.http) = {
-      post: "/frontend/v1/scim-api-keys",
+      post: "/frontend/v1/scim-api-keys"
       body: "scim_api_key"
     };
   }
 
   rpc UpdateSCIMAPIKey(UpdateSCIMAPIKeyRequest) returns (UpdateSCIMAPIKeyResponse) {
     option (google.api.http) = {
-      patch: "/frontend/v1/scim-api-keys/{id}",
+      patch: "/frontend/v1/scim-api-keys/{id}"
       body: "scim_api_key"
     };
   }
 
   rpc DeleteSCIMAPIKey(DeleteSCIMAPIKeyRequest) returns (DeleteSCIMAPIKeyResponse) {
-    option (google.api.http) = {
-      delete: "/frontend/v1/scim-api-keys/{id}"
-    };
+    option (google.api.http) = {delete: "/frontend/v1/scim-api-keys/{id}"};
   }
 
   rpc RevokeSCIMAPIKey(RevokeSCIMAPIKeyRequest) returns (RevokeSCIMAPIKeyResponse) {
-    option (google.api.http) = {
-      post: "/frontend/v1/scim-api-keys/{id}/revoke",
-    };
+    option (google.api.http) = {post: "/frontend/v1/scim-api-keys/{id}/revoke"};
   }
 
   rpc Whoami(WhoamiRequest) returns (WhoamiResponse) {
-    option (google.api.http) = {
-      get: "/frontend/v1/me"
-    };
+    option (google.api.http) = {get: "/frontend/v1/me"};
   }
 
   rpc ListMyPasskeys(ListMyPasskeysRequest) returns (ListMyPasskeysResponse) {
-    option (google.api.http) = {
-      get: "/frontend/v1/me/passkeys"
-    };
+    option (google.api.http) = {get: "/frontend/v1/me/passkeys"};
   }
 
   rpc DeleteMyPasskey(DeleteMyPasskeyRequest) returns (DeleteMyPasskeyResponse) {
-    option (google.api.http) = {
-      delete: "/frontend/v1/me/passkeys/{id}"
-    };
+    option (google.api.http) = {delete: "/frontend/v1/me/passkeys/{id}"};
   }
 
   rpc GetPasskeyOptions(GetPasskeyOptionsRequest) returns (GetPasskeyOptionsResponse) {
-    option (google.api.http) = {
-      post: "/frontend/v1/me/passkeys/options",
-    };
+    option (google.api.http) = {post: "/frontend/v1/me/passkeys/options"};
   }
 
   rpc RegisterPasskey(RegisterPasskeyRequest) returns (RegisterPasskeyResponse) {
     option (google.api.http) = {
-      post: "/frontend/v1/me/passkeys/register",
+      post: "/frontend/v1/me/passkeys/register"
       body: "*"
     };
   }
 
   rpc GetAuthenticatorAppOptions(GetAuthenticatorAppOptionsRequest) returns (GetAuthenticatorAppOptionsResponse) {
-    option (google.api.http) = {
-      post: "/frontend/v1/me/authenticator-app/options",
-    };
+    option (google.api.http) = {post: "/frontend/v1/me/authenticator-app/options"};
   }
 
   rpc RegisterAuthenticatorApp(RegisterAuthenticatorAppRequest) returns (RegisterAuthenticatorAppResponse) {
     option (google.api.http) = {
-      post: "/frontend/v1/me/authenticator-app/register",
+      post: "/frontend/v1/me/authenticator-app/register"
       body: "*"
     };
   }
 
   rpc ListUserInvites(ListUserInvitesRequest) returns (ListUserInvitesResponse) {
-    option (google.api.http) = {
-      get: "/frontend/v1/user-invites"
-    };
+    option (google.api.http) = {get: "/frontend/v1/user-invites"};
   }
 
   rpc GetUserInvite(GetUserInviteRequest) returns (GetUserInviteResponse) {
-    option (google.api.http) = {
-      get: "/frontend/v1/user-invites/{id}"
-    };
+    option (google.api.http) = {get: "/frontend/v1/user-invites/{id}"};
   }
 
   rpc CreateUserInvite(CreateUserInviteRequest) returns (CreateUserInviteResponse) {
     option (google.api.http) = {
-      post: "/frontend/v1/user-invites",
+      post: "/frontend/v1/user-invites"
       body: "user_invite"
     };
   }
 
   rpc DeleteUserInvite(DeleteUserInviteRequest) returns (DeleteUserInviteResponse) {
-    option (google.api.http) = {
-      delete: "/frontend/v1/user-invites/{id}"
-    };
+    option (google.api.http) = {delete: "/frontend/v1/user-invites/{id}"};
   }
 }
 
-message LogoutRequest {
-}
+message LogoutRequest {}
 
-message LogoutResponse {
-}
+message LogoutResponse {}
 
 message RefreshRequest {
   string refresh_token = 1;
@@ -252,15 +206,13 @@ message RefreshResponse {
   string access_token = 2;
 }
 
-message GetProjectRequest {
-}
+message GetProjectRequest {}
 
 message GetProjectResponse {
   Project project = 1;
 }
 
-message GetOrganizationRequest {
-}
+message GetOrganizationRequest {}
 
 message GetOrganizationResponse {
   Organization organization = 1;
@@ -339,8 +291,7 @@ message DeleteUserRequest {
   string id = 1;
 }
 
-message DeleteUserResponse {
-}
+message DeleteUserResponse {}
 
 message ListSAMLConnectionsRequest {
   string page_token = 1;
@@ -380,8 +331,7 @@ message DeleteSAMLConnectionRequest {
   string id = 1;
 }
 
-message DeleteSAMLConnectionResponse {
-}
+message DeleteSAMLConnectionResponse {}
 
 message ListSCIMAPIKeysRequest {
   string page_token = 1;
@@ -421,8 +371,7 @@ message DeleteSCIMAPIKeyRequest {
   string id = 1;
 }
 
-message DeleteSCIMAPIKeyResponse {
-}
+message DeleteSCIMAPIKeyResponse {}
 
 message RevokeSCIMAPIKeyRequest {
   string id = 1;
@@ -432,8 +381,7 @@ message RevokeSCIMAPIKeyResponse {
   SCIMAPIKey scim_api_key = 1;
 }
 
-message WhoamiRequest {
-}
+message WhoamiRequest {}
 
 message WhoamiResponse {
   User user = 1;
@@ -452,11 +400,9 @@ message DeleteMyPasskeyRequest {
   string id = 1;
 }
 
-message DeleteMyPasskeyResponse {
-}
+message DeleteMyPasskeyResponse {}
 
-message GetPasskeyOptionsRequest {
-}
+message GetPasskeyOptionsRequest {}
 
 message GetPasskeyOptionsResponse {
   string rp_id = 1;
@@ -474,8 +420,7 @@ message RegisterPasskeyResponse {
   Passkey passkey = 1;
 }
 
-message GetAuthenticatorAppOptionsRequest {
-}
+message GetAuthenticatorAppOptionsRequest {}
 
 message GetAuthenticatorAppOptionsResponse {
   string otpauth_uri = 1;
@@ -518,13 +463,11 @@ message DeleteUserInviteRequest {
   string id = 1;
 }
 
-message DeleteUserInviteResponse {
-}
+message DeleteUserInviteResponse {}
 
 message SetPasswordRequest {
   // The the user's new password.
   string password = 1;
 }
 
-message SetPasswordResponse {
-}
+message SetPasswordResponse {}

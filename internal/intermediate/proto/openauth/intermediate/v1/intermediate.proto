@@ -5,13 +5,13 @@ package openauth.intermediate.v1;
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/field_mask.proto";
-import "google/protobuf/timestamp.proto";
 import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
 
 service IntermediateService {
   rpc ListSAMLOrganizations(ListSAMLOrganizationsRequest) returns (ListSAMLOrganizationsResponse) {
     option (google.api.http) = {
-      post: "/intermediate/v1/saml-organizations",
+      post: "/intermediate/v1/saml-organizations"
       body: "*"
     };
   }
@@ -20,158 +20,152 @@ service IntermediateService {
 
   rpc RedeemUserImpersonationToken(RedeemUserImpersonationTokenRequest) returns (RedeemUserImpersonationTokenResponse) {
     option (google.api.http) = {
-      post: "/intermediate/v1/redeem-user-impersonation-token",
+      post: "/intermediate/v1/redeem-user-impersonation-token"
       body: "*"
     };
   }
 
   rpc CreateIntermediateSession(CreateIntermediateSessionRequest) returns (CreateIntermediateSessionResponse) {
     option (google.api.http) = {
-      post: "/intermediate/v1/intermediate-session",
+      post: "/intermediate/v1/intermediate-session"
       body: "*"
     };
   }
 
   rpc Whoami(WhoamiRequest) returns (WhoamiResponse) {
-    option (google.api.http) = {
-      get: "/intermediate/v1/whoami"
-    };
+    option (google.api.http) = {get: "/intermediate/v1/whoami"};
   }
 
   rpc CreateOrganization(CreateOrganizationRequest) returns (CreateOrganizationResponse) {
     option (google.api.http) = {
-      post: "/intermediate/v1/organizations",
+      post: "/intermediate/v1/organizations"
       body: "*"
     };
   }
 
   rpc ListOrganizations(ListOrganizationsRequest) returns (ListOrganizationsResponse) {
-    option (google.api.http) = {
-      get: "/intermediate/v1/organizations"
-    };
+    option (google.api.http) = {get: "/intermediate/v1/organizations"};
   }
 
   rpc SetOrganization(SetOrganizationRequest) returns (SetOrganizationResponse) {
-    option (google.api.http) = {
-      post: "/intermediate/v1/set-organization",
-    };
+    option (google.api.http) = {post: "/intermediate/v1/set-organization"};
   }
 
   rpc ExchangeIntermediateSessionForSession(ExchangeIntermediateSessionForSessionRequest) returns (ExchangeIntermediateSessionForSessionResponse) {
     option (google.api.http) = {
-      post: "/intermediate/v1/exchange-intermediate-session-for-session",
+      post: "/intermediate/v1/exchange-intermediate-session-for-session"
       body: "*"
     };
   }
 
   rpc GetGoogleOAuthRedirectURL(GetGoogleOAuthRedirectURLRequest) returns (GetGoogleOAuthRedirectURLResponse) {
     option (google.api.http) = {
-      post: "/intermediate/v1/google-oauth-redirect-url",
+      post: "/intermediate/v1/google-oauth-redirect-url"
       body: "*"
     };
   }
 
   rpc RedeemGoogleOAuthCode(RedeemGoogleOAuthCodeRequest) returns (RedeemGoogleOAuthCodeResponse) {
     option (google.api.http) = {
-      post: "/intermediate/v1/redeem-google-oauth-code",
+      post: "/intermediate/v1/redeem-google-oauth-code"
       body: "*"
     };
   }
 
   rpc GetMicrosoftOAuthRedirectURL(GetMicrosoftOAuthRedirectURLRequest) returns (GetMicrosoftOAuthRedirectURLResponse) {
     option (google.api.http) = {
-      post: "/intermediate/v1/microsoft-oauth-redirect-url",
+      post: "/intermediate/v1/microsoft-oauth-redirect-url"
       body: "*"
     };
   }
 
   rpc RedeemMicrosoftOAuthCode(RedeemMicrosoftOAuthCodeRequest) returns (RedeemMicrosoftOAuthCodeResponse) {
     option (google.api.http) = {
-      post: "/intermediate/v1/redeem-microsoft-oauth-code",
+      post: "/intermediate/v1/redeem-microsoft-oauth-code"
       body: "*"
     };
   }
 
   rpc IssueEmailVerificationChallenge(IssueEmailVerificationChallengeRequest) returns (IssueEmailVerificationChallengeResponse) {
     option (google.api.http) = {
-      post: "/intermediate/v1/issue-email-verification-challenge",
+      post: "/intermediate/v1/issue-email-verification-challenge"
       body: "*"
     };
   }
 
   rpc VerifyEmailChallenge(VerifyEmailChallengeRequest) returns (VerifyEmailChallengeResponse) {
     option (google.api.http) = {
-      post: "/intermediate/v1/verify-email-challenge",
+      post: "/intermediate/v1/verify-email-challenge"
       body: "*"
     };
   }
 
   rpc RegisterPassword(RegisterPasswordRequest) returns (RegisterPasswordResponse) {
     option (google.api.http) = {
-      post: "/intermediate/v1/register-password",
+      post: "/intermediate/v1/register-password"
       body: "*"
     };
   }
 
   rpc VerifyPassword(VerifyPasswordRequest) returns (VerifyPasswordResponse) {
     option (google.api.http) = {
-      post: "/intermediate/v1/verify-password",
+      post: "/intermediate/v1/verify-password"
       body: "*"
     };
   }
 
   rpc GetPasskeyOptions(GetPasskeyOptionsRequest) returns (GetPasskeyOptionsResponse) {
     option (google.api.http) = {
-      post: "/intermediate/v1/get-passkey-options",
+      post: "/intermediate/v1/get-passkey-options"
       body: "*"
     };
   }
 
   rpc RegisterPasskey(RegisterPasskeyRequest) returns (RegisterPasskeyResponse) {
     option (google.api.http) = {
-      post: "/intermediate/v1/register-passkey",
+      post: "/intermediate/v1/register-passkey"
       body: "*"
     };
   }
 
   rpc IssuePasskeyChallenge(IssuePasskeyChallengeRequest) returns (IssuePasskeyChallengeResponse) {
     option (google.api.http) = {
-      post: "/intermediate/v1/issue-passkey-challenge",
+      post: "/intermediate/v1/issue-passkey-challenge"
       body: "*"
     };
   }
 
   rpc VerifyPasskey(VerifyPasskeyRequest) returns (VerifyPasskeyResponse) {
     option (google.api.http) = {
-      post: "/intermediate/v1/verify-passkey",
+      post: "/intermediate/v1/verify-passkey"
       body: "*"
     };
   }
 
   rpc GetAuthenticatorAppOptions(GetAuthenticatorAppOptionsRequest) returns (GetAuthenticatorAppOptionsResponse) {
     option (google.api.http) = {
-      post: "/intermediate/v1/get-authenticator-app-options",
+      post: "/intermediate/v1/get-authenticator-app-options"
       body: "*"
     };
   }
 
   rpc RegisterAuthenticatorApp(RegisterAuthenticatorAppRequest) returns (RegisterAuthenticatorAppResponse) {
     option (google.api.http) = {
-      post: "/intermediate/v1/register-authenticator-app",
+      post: "/intermediate/v1/register-authenticator-app"
       body: "*"
     };
   }
 
   rpc VerifyAuthenticatorApp(VerifyAuthenticatorAppRequest) returns (VerifyAuthenticatorAppResponse) {
     option (google.api.http) = {
-      post: "/intermediate/v1/verify-authenticator-app",
+      post: "/intermediate/v1/verify-authenticator-app"
       body: "*"
     };
   }
 
   rpc SetEmailAsPrimaryLoginFactor(SetEmailAsPrimaryLoginFactorRequest) returns (SetEmailAsPrimaryLoginFactorResponse) {
     option (google.api.http) = {
-      post: "/intermediate/v1/set-email-as-primary-login-factor",
+      post: "/intermediate/v1/set-email-as-primary-login-factor"
       body: "*"
     };
   }
@@ -221,15 +215,13 @@ message CreateProjectResponse {
   Project project = 1;
 }
 
-message CreateIntermediateSessionRequest {
-}
+message CreateIntermediateSessionRequest {}
 
 message CreateIntermediateSessionResponse {
   string intermediate_session_secret_token = 1;
 }
 
-message WhoamiRequest {
-}
+message WhoamiRequest {}
 
 message WhoamiResponse {
   IntermediateSession intermediate_session = 1;
@@ -247,8 +239,7 @@ message SetOrganizationRequest {
   string organization_id = 1;
 }
 
-message SetOrganizationResponse {
-}
+message SetOrganizationResponse {}
 
 message ExchangeIntermediateSessionForSessionRequest {
   string organization_id = 1;
@@ -273,8 +264,7 @@ message RedeemGoogleOAuthCodeRequest {
   string redirect_url = 3;
 }
 
-message RedeemGoogleOAuthCodeResponse {
-}
+message RedeemGoogleOAuthCodeResponse {}
 
 message GetMicrosoftOAuthRedirectURLRequest {
   string redirect_url = 1;
@@ -290,8 +280,7 @@ message RedeemMicrosoftOAuthCodeRequest {
   string redirect_url = 3;
 }
 
-message RedeemMicrosoftOAuthCodeResponse {
-}
+message RedeemMicrosoftOAuthCodeResponse {}
 
 message Organization {
   string id = 1;
@@ -326,8 +315,7 @@ message IssueEmailVerificationChallengeRequest {
 
 message IssueEmailVerificationChallengeResponse {}
 
-message ListOrganizationsRequest {
-}
+message ListOrganizationsRequest {}
 
 message ListOrganizationsResponse {
   repeated Organization organizations = 1;
@@ -351,19 +339,16 @@ message RegisterPasswordRequest {
   string password = 1;
 }
 
-message RegisterPasswordResponse {
-}
+message RegisterPasswordResponse {}
 
 message VerifyPasswordRequest {
   string organization_id = 1;
   string password = 2;
 }
 
-message VerifyPasswordResponse {
-}
+message VerifyPasswordResponse {}
 
-message GetSettingsRequest {
-}
+message GetSettingsRequest {}
 
 message GetSettingsResponse {
   Settings settings = 1;
@@ -378,8 +363,7 @@ message RedeemUserImpersonationTokenResponse {
   string access_token = 2;
 }
 
-message GetAuthenticatorAppOptionsRequest {
-}
+message GetAuthenticatorAppOptionsRequest {}
 
 message GetAuthenticatorAppOptionsResponse {
   string otpauth_uri = 1;
@@ -398,11 +382,9 @@ message VerifyAuthenticatorAppRequest {
   string recovery_code = 2;
 }
 
-message VerifyAuthenticatorAppResponse {
-}
+message VerifyAuthenticatorAppResponse {}
 
-message GetPasskeyOptionsRequest {
-}
+message GetPasskeyOptionsRequest {}
 
 message GetPasskeyOptionsResponse {
   string rp_id = 1;
@@ -416,11 +398,9 @@ message RegisterPasskeyRequest {
   string rp_id = 2;
 }
 
-message RegisterPasskeyResponse {
-}
+message RegisterPasskeyResponse {}
 
-message IssuePasskeyChallengeRequest {
-}
+message IssuePasskeyChallengeRequest {}
 
 message IssuePasskeyChallengeResponse {
   string rp_id = 1;
@@ -435,11 +415,8 @@ message VerifyPasskeyRequest {
   string signature = 4;
 }
 
-message VerifyPasskeyResponse {
-}
+message VerifyPasskeyResponse {}
 
-message SetEmailAsPrimaryLoginFactorRequest {
-}
+message SetEmailAsPrimaryLoginFactorRequest {}
 
-message SetEmailAsPrimaryLoginFactorResponse {
-}
+message SetEmailAsPrimaryLoginFactorResponse {}
