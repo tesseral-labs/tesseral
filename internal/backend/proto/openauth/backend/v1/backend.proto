@@ -635,9 +635,7 @@ message DeletePublishableKeyRequest {
 
 message DeletePublishableKeyResponse {}
 
-message GetProjectUISettingsRequest {
-
-}
+message GetProjectUISettingsRequest {}
 
 message GetProjectUISettingsResponse {
   ProjectUISettings project_ui_settings = 1;
