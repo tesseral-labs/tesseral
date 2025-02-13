@@ -45,13 +45,6 @@ export const getUser = FrontendService.method.getUser;
 export const updateUser = FrontendService.method.updateUser;
 
 /**
- * Gets a list of organizations.
- *
- * @generated from rpc openauth.frontend.v1.FrontendService.ListOrganizations
- */
-export const listOrganizations = FrontendService.method.listOrganizations;
-
-/**
  * Sets a user's password.
  *
  * @generated from rpc openauth.frontend.v1.FrontendService.SetPassword

@@ -220,41 +220,6 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /frontend/v1/organizations:
-        get:
-            tags:
-                - FrontendService
-            description: Gets a list of organizations.
-            operationId: FrontendService_ListOrganizations
-            parameters:
-                - name: projectId
-                  in: query
-                  description: The ID of the project to use for filtering.
-                  schema:
-                    type: string
-                - name: email
-                  in: query
-                  description: The email address to use for filtering.
-                  schema:
-                    type: string
-                - name: pageToken
-                  in: query
-                  description: The page token to use for pagination.
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ListOrganizationsResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
     /frontend/v1/project:
         get:
             tags:
@@ -855,17 +820,6 @@ components:
                         $ref: '#/components/schemas/Passkey'
                 nextPageToken:
                     type: string
-        ListOrganizationsResponse:
-            type: object
-            properties:
-                organizations:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/Organization'
-                    description: The organizations returned by the ListOrganizations request.
-                nextPageToken:
-                    type: string
-                    description: The next page token to use for pagination.
         ListSAMLConnectionsResponse:
             type: object
             properties:

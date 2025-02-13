@@ -61,13 +61,6 @@ service FrontendService {
     };
   }
 
-  // Gets a list of organizations.
-  rpc ListOrganizations(ListOrganizationsRequest) returns (ListOrganizationsResponse) {
-    option (google.api.http) = {
-      get: "/frontend/v1/organizations"
-    };
-  }
-
   // Sets a user's password.
   rpc SetPassword(SetPasswordRequest) returns (SetPasswordResponse) {
     option (google.api.http) = {
@@ -250,22 +243,6 @@ message UpdateOrganizationRequest {
 
 message UpdateOrganizationResponse {
   Organization organization = 1;
-}
-
-message ListOrganizationsRequest {
-  // The ID of the project to use for filtering.
-  string project_id = 1;
-  // The email address to use for filtering.
-  string email = 2;
-  // The page token to use for pagination.
-  string page_token = 3;
-}
-
-message ListOrganizationsResponse {
-  // The organizations returned by the ListOrganizations request.
-  repeated Organization organizations = 1;
-  // The next page token to use for pagination.
-  string next_page_token = 2;
 }
 
 message ListUsersRequest {
