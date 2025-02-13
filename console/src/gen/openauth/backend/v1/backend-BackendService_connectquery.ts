@@ -260,6 +260,31 @@ export const deleteProjectAPIKey = BackendService.method.deleteProjectAPIKey;
 export const revokeProjectAPIKey = BackendService.method.revokeProjectAPIKey;
 
 /**
+ * @generated from rpc openauth.backend.v1.BackendService.ListPublishableKeys
+ */
+export const listPublishableKeys = BackendService.method.listPublishableKeys;
+
+/**
+ * @generated from rpc openauth.backend.v1.BackendService.GetPublishableKey
+ */
+export const getPublishableKey = BackendService.method.getPublishableKey;
+
+/**
+ * @generated from rpc openauth.backend.v1.BackendService.CreatePublishableKey
+ */
+export const createPublishableKey = BackendService.method.createPublishableKey;
+
+/**
+ * @generated from rpc openauth.backend.v1.BackendService.UpdatePublishableKey
+ */
+export const updatePublishableKey = BackendService.method.updatePublishableKey;
+
+/**
+ * @generated from rpc openauth.backend.v1.BackendService.DeletePublishableKey
+ */
+export const deletePublishableKey = BackendService.method.deletePublishableKey;
+
+/**
  * @generated from rpc openauth.backend.v1.BackendService.CreateUserImpersonationToken
  */
 export const createUserImpersonationToken = BackendService.method.createUserImpersonationToken;

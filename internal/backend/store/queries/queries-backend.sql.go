@@ -161,6 +161,32 @@ func (q *Queries) CreateProjectTrustedDomain(ctx context.Context, arg CreateProj
 	return i, err
 }
 
+const createPublishableKey = `-- name: CreatePublishableKey :one
+INSERT INTO publishable_keys (id, project_id, display_name)
+    VALUES ($1, $2, $3)
+RETURNING
+    id, project_id, create_time, update_time, display_name
+`
+
+type CreatePublishableKeyParams struct {
+	ID          uuid.UUID
+	ProjectID   uuid.UUID
+	DisplayName string
+}
+
+func (q *Queries) CreatePublishableKey(ctx context.Context, arg CreatePublishableKeyParams) (PublishableKey, error) {
+	row := q.db.QueryRow(ctx, createPublishableKey, arg.ID, arg.ProjectID, arg.DisplayName)
+	var i PublishableKey
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.DisplayName,
+	)
+	return i, err
+}
+
 const createSAMLConnection = `-- name: CreateSAMLConnection :one
 INSERT INTO saml_connections (id, organization_id, is_primary, idp_redirect_url, idp_x509_certificate, idp_entity_id)
     VALUES ($1, $2, $3, $4, $5, $6)
@@ -408,6 +434,16 @@ WHERE project_id = $1
 
 func (q *Queries) DeleteProjectTrustedDomainsByProjectID(ctx context.Context, projectID uuid.UUID) error {
 	_, err := q.db.Exec(ctx, deleteProjectTrustedDomainsByProjectID, projectID)
+	return err
+}
+
+const deletePublishableKey = `-- name: DeletePublishableKey :exec
+DELETE FROM publishable_keys
+WHERE id = $1
+`
+
+func (q *Queries) DeletePublishableKey(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deletePublishableKey, id)
 	return err
 }
 
@@ -1126,6 +1162,34 @@ func (q *Queries) GetProjectUISettings(ctx context.Context, projectID uuid.UUID)
 	return i, err
 }
 
+const getPublishableKey = `-- name: GetPublishableKey :one
+SELECT
+    id, project_id, create_time, update_time, display_name
+FROM
+    publishable_keys
+WHERE
+    id = $1
+    AND project_id = $2
+`
+
+type GetPublishableKeyParams struct {
+	ID        uuid.UUID
+	ProjectID uuid.UUID
+}
+
+func (q *Queries) GetPublishableKey(ctx context.Context, arg GetPublishableKeyParams) (PublishableKey, error) {
+	row := q.db.QueryRow(ctx, getPublishableKey, arg.ID, arg.ProjectID)
+	var i PublishableKey
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.DisplayName,
+	)
+	return i, err
+}
+
 const getSAMLConnection = `-- name: GetSAMLConnection :one
 SELECT
     saml_connections.id, saml_connections.organization_id, saml_connections.create_time, saml_connections.is_primary, saml_connections.idp_redirect_url, saml_connections.idp_x509_certificate, saml_connections.idp_entity_id, saml_connections.update_time
@@ -1625,6 +1689,51 @@ func (q *Queries) ListProjects(ctx context.Context, limit int32) ([]Project, err
 			&i.RedirectUri,
 			&i.AfterLoginRedirectUri,
 			&i.AfterSignupRedirectUri,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listPublishableKeys = `-- name: ListPublishableKeys :many
+SELECT
+    id, project_id, create_time, update_time, display_name
+FROM
+    publishable_keys
+WHERE
+    project_id = $1
+    AND id >= $2
+ORDER BY
+    id
+LIMIT $3
+`
+
+type ListPublishableKeysParams struct {
+	ProjectID uuid.UUID
+	ID        uuid.UUID
+	Limit     int32
+}
+
+func (q *Queries) ListPublishableKeys(ctx context.Context, arg ListPublishableKeysParams) ([]PublishableKey, error) {
+	rows, err := q.db.Query(ctx, listPublishableKeys, arg.ProjectID, arg.ID, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []PublishableKey
+	for rows.Next() {
+		var i PublishableKey
+		if err := rows.Scan(
+			&i.ID,
+			&i.ProjectID,
+			&i.CreateTime,
+			&i.UpdateTime,
+			&i.DisplayName,
 		); err != nil {
 			return nil, err
 		}
@@ -2313,6 +2422,36 @@ func (q *Queries) UpdateProjectUISettings(ctx context.Context, arg UpdateProject
 		&i.CreateTime,
 		&i.UpdateTime,
 		&i.LogInLayout,
+	)
+	return i, err
+}
+
+const updatePublishableKey = `-- name: UpdatePublishableKey :one
+UPDATE
+    publishable_keys
+SET
+    update_time = now(),
+    display_name = $1
+WHERE
+    id = $2
+RETURNING
+    id, project_id, create_time, update_time, display_name
+`
+
+type UpdatePublishableKeyParams struct {
+	DisplayName string
+	ID          uuid.UUID
+}
+
+func (q *Queries) UpdatePublishableKey(ctx context.Context, arg UpdatePublishableKeyParams) (PublishableKey, error) {
+	row := q.db.QueryRow(ctx, updatePublishableKey, arg.DisplayName, arg.ID)
+	var i PublishableKey
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.DisplayName,
 	)
 	return i, err
 }

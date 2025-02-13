@@ -185,6 +185,21 @@ const (
 	// BackendServiceRevokeProjectAPIKeyProcedure is the fully-qualified name of the BackendService's
 	// RevokeProjectAPIKey RPC.
 	BackendServiceRevokeProjectAPIKeyProcedure = "/openauth.backend.v1.BackendService/RevokeProjectAPIKey"
+	// BackendServiceListPublishableKeysProcedure is the fully-qualified name of the BackendService's
+	// ListPublishableKeys RPC.
+	BackendServiceListPublishableKeysProcedure = "/openauth.backend.v1.BackendService/ListPublishableKeys"
+	// BackendServiceGetPublishableKeyProcedure is the fully-qualified name of the BackendService's
+	// GetPublishableKey RPC.
+	BackendServiceGetPublishableKeyProcedure = "/openauth.backend.v1.BackendService/GetPublishableKey"
+	// BackendServiceCreatePublishableKeyProcedure is the fully-qualified name of the BackendService's
+	// CreatePublishableKey RPC.
+	BackendServiceCreatePublishableKeyProcedure = "/openauth.backend.v1.BackendService/CreatePublishableKey"
+	// BackendServiceUpdatePublishableKeyProcedure is the fully-qualified name of the BackendService's
+	// UpdatePublishableKey RPC.
+	BackendServiceUpdatePublishableKeyProcedure = "/openauth.backend.v1.BackendService/UpdatePublishableKey"
+	// BackendServiceDeletePublishableKeyProcedure is the fully-qualified name of the BackendService's
+	// DeletePublishableKey RPC.
+	BackendServiceDeletePublishableKeyProcedure = "/openauth.backend.v1.BackendService/DeletePublishableKey"
 	// BackendServiceCreateUserImpersonationTokenProcedure is the fully-qualified name of the
 	// BackendService's CreateUserImpersonationToken RPC.
 	BackendServiceCreateUserImpersonationTokenProcedure = "/openauth.backend.v1.BackendService/CreateUserImpersonationToken"
@@ -243,6 +258,11 @@ type BackendServiceClient interface {
 	UpdateProjectAPIKey(context.Context, *connect.Request[v1.UpdateProjectAPIKeyRequest]) (*connect.Response[v1.UpdateProjectAPIKeyResponse], error)
 	DeleteProjectAPIKey(context.Context, *connect.Request[v1.DeleteProjectAPIKeyRequest]) (*connect.Response[v1.DeleteProjectAPIKeyResponse], error)
 	RevokeProjectAPIKey(context.Context, *connect.Request[v1.RevokeProjectAPIKeyRequest]) (*connect.Response[v1.RevokeProjectAPIKeyResponse], error)
+	ListPublishableKeys(context.Context, *connect.Request[v1.ListPublishableKeysRequest]) (*connect.Response[v1.ListPublishableKeysResponse], error)
+	GetPublishableKey(context.Context, *connect.Request[v1.GetPublishableKeyRequest]) (*connect.Response[v1.GetPublishableKeyResponse], error)
+	CreatePublishableKey(context.Context, *connect.Request[v1.CreatePublishableKeyRequest]) (*connect.Response[v1.CreatePublishableKeyResponse], error)
+	UpdatePublishableKey(context.Context, *connect.Request[v1.UpdatePublishableKeyRequest]) (*connect.Response[v1.UpdatePublishableKeyResponse], error)
+	DeletePublishableKey(context.Context, *connect.Request[v1.DeletePublishableKeyRequest]) (*connect.Response[v1.DeletePublishableKeyResponse], error)
 	CreateUserImpersonationToken(context.Context, *connect.Request[v1.CreateUserImpersonationTokenRequest]) (*connect.Response[v1.CreateUserImpersonationTokenResponse], error)
 }
 
@@ -563,6 +583,36 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(backendServiceMethods.ByName("RevokeProjectAPIKey")),
 			connect.WithClientOptions(opts...),
 		),
+		listPublishableKeys: connect.NewClient[v1.ListPublishableKeysRequest, v1.ListPublishableKeysResponse](
+			httpClient,
+			baseURL+BackendServiceListPublishableKeysProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("ListPublishableKeys")),
+			connect.WithClientOptions(opts...),
+		),
+		getPublishableKey: connect.NewClient[v1.GetPublishableKeyRequest, v1.GetPublishableKeyResponse](
+			httpClient,
+			baseURL+BackendServiceGetPublishableKeyProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("GetPublishableKey")),
+			connect.WithClientOptions(opts...),
+		),
+		createPublishableKey: connect.NewClient[v1.CreatePublishableKeyRequest, v1.CreatePublishableKeyResponse](
+			httpClient,
+			baseURL+BackendServiceCreatePublishableKeyProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("CreatePublishableKey")),
+			connect.WithClientOptions(opts...),
+		),
+		updatePublishableKey: connect.NewClient[v1.UpdatePublishableKeyRequest, v1.UpdatePublishableKeyResponse](
+			httpClient,
+			baseURL+BackendServiceUpdatePublishableKeyProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("UpdatePublishableKey")),
+			connect.WithClientOptions(opts...),
+		),
+		deletePublishableKey: connect.NewClient[v1.DeletePublishableKeyRequest, v1.DeletePublishableKeyResponse](
+			httpClient,
+			baseURL+BackendServiceDeletePublishableKeyProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("DeletePublishableKey")),
+			connect.WithClientOptions(opts...),
+		),
 		createUserImpersonationToken: connect.NewClient[v1.CreateUserImpersonationTokenRequest, v1.CreateUserImpersonationTokenResponse](
 			httpClient,
 			baseURL+BackendServiceCreateUserImpersonationTokenProcedure,
@@ -625,6 +675,11 @@ type backendServiceClient struct {
 	updateProjectAPIKey                   *connect.Client[v1.UpdateProjectAPIKeyRequest, v1.UpdateProjectAPIKeyResponse]
 	deleteProjectAPIKey                   *connect.Client[v1.DeleteProjectAPIKeyRequest, v1.DeleteProjectAPIKeyResponse]
 	revokeProjectAPIKey                   *connect.Client[v1.RevokeProjectAPIKeyRequest, v1.RevokeProjectAPIKeyResponse]
+	listPublishableKeys                   *connect.Client[v1.ListPublishableKeysRequest, v1.ListPublishableKeysResponse]
+	getPublishableKey                     *connect.Client[v1.GetPublishableKeyRequest, v1.GetPublishableKeyResponse]
+	createPublishableKey                  *connect.Client[v1.CreatePublishableKeyRequest, v1.CreatePublishableKeyResponse]
+	updatePublishableKey                  *connect.Client[v1.UpdatePublishableKeyRequest, v1.UpdatePublishableKeyResponse]
+	deletePublishableKey                  *connect.Client[v1.DeletePublishableKeyRequest, v1.DeletePublishableKeyResponse]
 	createUserImpersonationToken          *connect.Client[v1.CreateUserImpersonationTokenRequest, v1.CreateUserImpersonationTokenResponse]
 }
 
@@ -887,6 +942,31 @@ func (c *backendServiceClient) RevokeProjectAPIKey(ctx context.Context, req *con
 	return c.revokeProjectAPIKey.CallUnary(ctx, req)
 }
 
+// ListPublishableKeys calls openauth.backend.v1.BackendService.ListPublishableKeys.
+func (c *backendServiceClient) ListPublishableKeys(ctx context.Context, req *connect.Request[v1.ListPublishableKeysRequest]) (*connect.Response[v1.ListPublishableKeysResponse], error) {
+	return c.listPublishableKeys.CallUnary(ctx, req)
+}
+
+// GetPublishableKey calls openauth.backend.v1.BackendService.GetPublishableKey.
+func (c *backendServiceClient) GetPublishableKey(ctx context.Context, req *connect.Request[v1.GetPublishableKeyRequest]) (*connect.Response[v1.GetPublishableKeyResponse], error) {
+	return c.getPublishableKey.CallUnary(ctx, req)
+}
+
+// CreatePublishableKey calls openauth.backend.v1.BackendService.CreatePublishableKey.
+func (c *backendServiceClient) CreatePublishableKey(ctx context.Context, req *connect.Request[v1.CreatePublishableKeyRequest]) (*connect.Response[v1.CreatePublishableKeyResponse], error) {
+	return c.createPublishableKey.CallUnary(ctx, req)
+}
+
+// UpdatePublishableKey calls openauth.backend.v1.BackendService.UpdatePublishableKey.
+func (c *backendServiceClient) UpdatePublishableKey(ctx context.Context, req *connect.Request[v1.UpdatePublishableKeyRequest]) (*connect.Response[v1.UpdatePublishableKeyResponse], error) {
+	return c.updatePublishableKey.CallUnary(ctx, req)
+}
+
+// DeletePublishableKey calls openauth.backend.v1.BackendService.DeletePublishableKey.
+func (c *backendServiceClient) DeletePublishableKey(ctx context.Context, req *connect.Request[v1.DeletePublishableKeyRequest]) (*connect.Response[v1.DeletePublishableKeyResponse], error) {
+	return c.deletePublishableKey.CallUnary(ctx, req)
+}
+
 // CreateUserImpersonationToken calls
 // openauth.backend.v1.BackendService.CreateUserImpersonationToken.
 func (c *backendServiceClient) CreateUserImpersonationToken(ctx context.Context, req *connect.Request[v1.CreateUserImpersonationTokenRequest]) (*connect.Response[v1.CreateUserImpersonationTokenResponse], error) {
@@ -946,6 +1026,11 @@ type BackendServiceHandler interface {
 	UpdateProjectAPIKey(context.Context, *connect.Request[v1.UpdateProjectAPIKeyRequest]) (*connect.Response[v1.UpdateProjectAPIKeyResponse], error)
 	DeleteProjectAPIKey(context.Context, *connect.Request[v1.DeleteProjectAPIKeyRequest]) (*connect.Response[v1.DeleteProjectAPIKeyResponse], error)
 	RevokeProjectAPIKey(context.Context, *connect.Request[v1.RevokeProjectAPIKeyRequest]) (*connect.Response[v1.RevokeProjectAPIKeyResponse], error)
+	ListPublishableKeys(context.Context, *connect.Request[v1.ListPublishableKeysRequest]) (*connect.Response[v1.ListPublishableKeysResponse], error)
+	GetPublishableKey(context.Context, *connect.Request[v1.GetPublishableKeyRequest]) (*connect.Response[v1.GetPublishableKeyResponse], error)
+	CreatePublishableKey(context.Context, *connect.Request[v1.CreatePublishableKeyRequest]) (*connect.Response[v1.CreatePublishableKeyResponse], error)
+	UpdatePublishableKey(context.Context, *connect.Request[v1.UpdatePublishableKeyRequest]) (*connect.Response[v1.UpdatePublishableKeyResponse], error)
+	DeletePublishableKey(context.Context, *connect.Request[v1.DeletePublishableKeyRequest]) (*connect.Response[v1.DeletePublishableKeyResponse], error)
 	CreateUserImpersonationToken(context.Context, *connect.Request[v1.CreateUserImpersonationTokenRequest]) (*connect.Response[v1.CreateUserImpersonationTokenResponse], error)
 }
 
@@ -1262,6 +1347,36 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		connect.WithSchema(backendServiceMethods.ByName("RevokeProjectAPIKey")),
 		connect.WithHandlerOptions(opts...),
 	)
+	backendServiceListPublishableKeysHandler := connect.NewUnaryHandler(
+		BackendServiceListPublishableKeysProcedure,
+		svc.ListPublishableKeys,
+		connect.WithSchema(backendServiceMethods.ByName("ListPublishableKeys")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceGetPublishableKeyHandler := connect.NewUnaryHandler(
+		BackendServiceGetPublishableKeyProcedure,
+		svc.GetPublishableKey,
+		connect.WithSchema(backendServiceMethods.ByName("GetPublishableKey")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceCreatePublishableKeyHandler := connect.NewUnaryHandler(
+		BackendServiceCreatePublishableKeyProcedure,
+		svc.CreatePublishableKey,
+		connect.WithSchema(backendServiceMethods.ByName("CreatePublishableKey")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceUpdatePublishableKeyHandler := connect.NewUnaryHandler(
+		BackendServiceUpdatePublishableKeyProcedure,
+		svc.UpdatePublishableKey,
+		connect.WithSchema(backendServiceMethods.ByName("UpdatePublishableKey")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceDeletePublishableKeyHandler := connect.NewUnaryHandler(
+		BackendServiceDeletePublishableKeyProcedure,
+		svc.DeletePublishableKey,
+		connect.WithSchema(backendServiceMethods.ByName("DeletePublishableKey")),
+		connect.WithHandlerOptions(opts...),
+	)
 	backendServiceCreateUserImpersonationTokenHandler := connect.NewUnaryHandler(
 		BackendServiceCreateUserImpersonationTokenProcedure,
 		svc.CreateUserImpersonationToken,
@@ -1372,6 +1487,16 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceDeleteProjectAPIKeyHandler.ServeHTTP(w, r)
 		case BackendServiceRevokeProjectAPIKeyProcedure:
 			backendServiceRevokeProjectAPIKeyHandler.ServeHTTP(w, r)
+		case BackendServiceListPublishableKeysProcedure:
+			backendServiceListPublishableKeysHandler.ServeHTTP(w, r)
+		case BackendServiceGetPublishableKeyProcedure:
+			backendServiceGetPublishableKeyHandler.ServeHTTP(w, r)
+		case BackendServiceCreatePublishableKeyProcedure:
+			backendServiceCreatePublishableKeyHandler.ServeHTTP(w, r)
+		case BackendServiceUpdatePublishableKeyProcedure:
+			backendServiceUpdatePublishableKeyHandler.ServeHTTP(w, r)
+		case BackendServiceDeletePublishableKeyProcedure:
+			backendServiceDeletePublishableKeyHandler.ServeHTTP(w, r)
 		case BackendServiceCreateUserImpersonationTokenProcedure:
 			backendServiceCreateUserImpersonationTokenHandler.ServeHTTP(w, r)
 		default:
@@ -1585,6 +1710,26 @@ func (UnimplementedBackendServiceHandler) DeleteProjectAPIKey(context.Context, *
 
 func (UnimplementedBackendServiceHandler) RevokeProjectAPIKey(context.Context, *connect.Request[v1.RevokeProjectAPIKeyRequest]) (*connect.Response[v1.RevokeProjectAPIKeyResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.RevokeProjectAPIKey is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) ListPublishableKeys(context.Context, *connect.Request[v1.ListPublishableKeysRequest]) (*connect.Response[v1.ListPublishableKeysResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.ListPublishableKeys is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) GetPublishableKey(context.Context, *connect.Request[v1.GetPublishableKeyRequest]) (*connect.Response[v1.GetPublishableKeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetPublishableKey is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) CreatePublishableKey(context.Context, *connect.Request[v1.CreatePublishableKeyRequest]) (*connect.Response[v1.CreatePublishableKeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.CreatePublishableKey is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) UpdatePublishableKey(context.Context, *connect.Request[v1.UpdatePublishableKeyRequest]) (*connect.Response[v1.UpdatePublishableKeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.UpdatePublishableKey is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) DeletePublishableKey(context.Context, *connect.Request[v1.DeletePublishableKeyRequest]) (*connect.Response[v1.DeletePublishableKeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.DeletePublishableKey is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) CreateUserImpersonationToken(context.Context, *connect.Request[v1.CreateUserImpersonationTokenRequest]) (*connect.Response[v1.CreateUserImpersonationTokenResponse], error) {

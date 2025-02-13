@@ -279,6 +279,14 @@ type ProjectUiSetting struct {
 	LogInLayout           LogInLayout
 }
 
+type PublishableKey struct {
+	ID          uuid.UUID
+	ProjectID   uuid.UUID
+	CreateTime  *time.Time
+	UpdateTime  *time.Time
+	DisplayName string
+}
+
 type SamlConnection struct {
 	ID                 uuid.UUID
 	OrganizationID     uuid.UUID

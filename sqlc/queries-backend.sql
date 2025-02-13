@@ -386,6 +386,48 @@ WHERE
 RETURNING
     *;
 
+-- name: ListPublishableKeys :many
+SELECT
+    *
+FROM
+    publishable_keys
+WHERE
+    project_id = $1
+    AND id >= $2
+ORDER BY
+    id
+LIMIT $3;
+
+-- name: GetPublishableKey :one
+SELECT
+    *
+FROM
+    publishable_keys
+WHERE
+    id = $1
+    AND project_id = $2;
+
+-- name: CreatePublishableKey :one
+INSERT INTO publishable_keys (id, project_id, display_name)
+    VALUES ($1, $2, $3)
+RETURNING
+    *;
+
+-- name: UpdatePublishableKey :one
+UPDATE
+    publishable_keys
+SET
+    update_time = now(),
+    display_name = $1
+WHERE
+    id = $2
+RETURNING
+    *;
+
+-- name: DeletePublishableKey :exec
+DELETE FROM publishable_keys
+WHERE id = $1;
+
 -- name: ListUsers :many
 SELECT
     *
