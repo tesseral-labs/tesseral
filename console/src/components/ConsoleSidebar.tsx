@@ -2,6 +2,7 @@ import React, { FC, SyntheticEvent } from 'react'
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -9,73 +10,94 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+  SidebarRail,
+  useSidebar,
 } from './ui/sidebar'
-import { Building2, FolderGit, KeyRound } from 'lucide-react'
+import {
+  Building2,
+  FolderGit,
+  KeyRound,
+  Settings2Icon,
+  UserIcon,
+} from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { useQuery } from '@connectrpc/connect-query'
+import { whoami } from '@/gen/openauth/frontend/v1/frontend-FrontendService_connectquery'
 
 const ConsoleSidebar: FC = () => {
-  const overviewItems = [
-    {
-      icon: Building2,
-      title: 'Organizations',
-      url: '/organizations',
-    },
-  ]
-  const projectItems = [
-    {
-      icon: FolderGit,
-      title: 'Project Settings',
-      url: '/project-settings',
-    },
-    {
-      icon: KeyRound,
-      title: 'Project API Keys',
-      url: '/project-api-keys',
-    },
-  ]
+  const { data: whoamiResponse } = useQuery(whoami, {})
+  const { state } = useSidebar()
 
   return (
-    <Sidebar className="min-h-screen" collapsible="none" variant="inset">
+    <Sidebar collapsible="icon">
       <SidebarHeader>
-        <div className="px-2 pt-4">
-          <img className="max-h-[24px]" src="/images/tesseral-logo-white.svg" />
-        </div>
+        <Link className="flex flex-col" to="/">
+          {state === 'expanded' ? (
+            <img
+              className="justify-self-start py-2 h-10"
+              src="/images/tesseral-logo-black.svg"
+            />
+          ) : (
+            <img
+              className="justify-self-start py-2 h-10"
+              src="/images/tesseral-icon-black.svg"
+            />
+          )}
+        </Link>
       </SidebarHeader>
       <SidebarContent>
-        <SidebarGroup title="Overview">
-          <SidebarGroupLabel>Overview</SidebarGroupLabel>
+        <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {overviewItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link to="/organizations">
+                    <Building2 />
+                    Organizations
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-        <SidebarGroup title="Project">
-          <SidebarGroupLabel>Project</SidebarGroupLabel>
-          <SidebarGroupContent>
+
             <SidebarMenu>
-              {projectItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link to="/project-settings">
+                    <Settings2Icon />
+                    Project Settings
+                  </Link>
+                </SidebarMenuButton>
+                <SidebarMenuSub>
+                  <SidebarMenuSubItem>
+                    <SidebarMenuSubButton asChild>
+                      <Link to="/project-settings">General</Link>
+                    </SidebarMenuSubButton>
+                  </SidebarMenuSubItem>
+                  <SidebarMenuSubItem>
+                    <SidebarMenuSubButton asChild>
+                      <Link to="/project-api-keys">Project API Keys</Link>
+                    </SidebarMenuSubButton>
+                  </SidebarMenuSubItem>
+                </SidebarMenuSub>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton>
+              <UserIcon />
+              {whoamiResponse?.user?.email}
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
+      <SidebarRail />
     </Sidebar>
   )
 }
