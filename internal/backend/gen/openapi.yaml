@@ -355,6 +355,35 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+        patch:
+            tags:
+                - BackendService
+            operationId: BackendService_UpdatePasskey
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Passkey'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdatePasskeyResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /backend/v1/project:
         get:
             tags:
@@ -1249,6 +1278,11 @@ components:
             properties:
                 organization:
                     $ref: '#/components/schemas/Organization'
+        UpdatePasskeyResponse:
+            type: object
+            properties:
+                passkey:
+                    $ref: '#/components/schemas/Passkey'
         UpdateSAMLConnectionResponse:
             type: object
             properties:

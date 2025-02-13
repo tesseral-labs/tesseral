@@ -33,6 +33,7 @@ import {
   getUser,
   listPasskeys,
   listSessions,
+  updatePasskey,
 } from '@/gen/openauth/backend/v1/backend-BackendService_connectquery'
 import { DateTime } from 'luxon'
 import { timestampDate } from '@bufbuild/protobuf/wkt'
@@ -65,11 +66,9 @@ export function ViewPasskeyPage() {
       return
     }
 
-    let buf = ''
-    for (const byte of getPasskeyResponse.passkey.credentialId) {
-      buf += String.fromCharCode(byte)
-    }
-    return btoa(buf)
+    return Array.from(getPasskeyResponse.passkey.credentialId)
+      .map(byte => byte.toString(16).padStart(2, '0'))
+      .join('');
   }, [getPasskeyResponse?.passkey?.credentialId])
 
   return (
@@ -204,6 +203,37 @@ export function ViewPasskeyPage() {
 function DangerZoneCard() {
   const { organizationId, userId, passkeyId } = useParams()
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
+  const { data: getPasskeyResponse, refetch } = useQuery(getPasskey, {
+    id: passkeyId,
+  })
+  const { data: getUserResponse } = useQuery(getUser, {
+    id: userId,
+  })
+
+  const updatePasskeyMutation = useMutation(updatePasskey)
+  const handleDisable = async () => {
+    await updatePasskeyMutation.mutateAsync({
+      id: passkeyId,
+      passkey: {
+        disabled: true,
+      },
+    })
+
+    await refetch()
+    toast.success("Passkey disabled")
+  }
+
+  const handleEnable = async () => {
+    await updatePasskeyMutation.mutateAsync({
+      id: passkeyId,
+      passkey: {
+        disabled: false,
+      },
+    })
+
+    await refetch()
+    toast.success("Passkey enabled")
+  }
 
   const handleDelete = () => {
     setConfirmDeleteOpen(true)
@@ -244,7 +274,44 @@ function DangerZoneCard() {
           <CardTitle>Danger Zone</CardTitle>
         </CardHeader>
 
-        <CardContent>
+        <CardContent className="space-y-4">
+          {getPasskeyResponse?.passkey?.disabled ? (
+            <div className="flex justify-between items-center">
+              <div>
+                <div className="text-sm font-semibold">Enable Passkey</div>
+                <p className="text-sm">
+                  Enable this passkey.{' '}
+                  <span className="font-medium">
+                    {getUserResponse?.user?.email}
+                  </span>{' '}
+                  will be required to authenticate with this passkey (or another
+                  active passkey) when logging in.
+                </p>
+              </div>
+
+              <Button variant="destructive" onClick={handleEnable}>
+                Enable Passkey
+              </Button>
+            </div>
+          ) : (
+            <div className="flex justify-between items-center">
+              <div>
+                <div className="text-sm font-semibold">Enable Passkey</div>
+                <p className="text-sm">
+                  Disable this passkey.{' '}
+                  <span className="font-medium">
+                    {getUserResponse?.user?.email}
+                  </span>{' '}
+                  will not be required to authenticate with this passkey when
+                  logging in.
+                </p>
+              </div>
+
+              <Button variant="destructive" onClick={handleDisable}>
+                Disable Passkey
+              </Button>
+            </div>
+          )}
           <div className="flex justify-between items-center">
             <div>
               <div className="text-sm font-semibold">Delete Passkey</div>
