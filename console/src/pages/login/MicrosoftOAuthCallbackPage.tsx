@@ -7,7 +7,9 @@ import {
   whoami,
 } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
 import { useMutation, useQuery } from '@connectrpc/connect-query'
-import { LoginViews } from '@/lib/views'
+import { LoginView } from '@/lib/views'
+import { parseErrorMessage } from '@/lib/errors'
+import { toast } from 'sonner'
 
 const MicrosoftOAuthCallbackPage = () => {
   const navigate = useNavigate()
@@ -38,16 +40,18 @@ const MicrosoftOAuthCallbackPage = () => {
           }
 
           if (data?.intermediateSession?.emailVerified) {
-            navigate(`/login?view=${LoginViews.ChooseOrganization}`)
+            navigate(`/login?view=${LoginView.ChooseProject}`)
             return
           }
 
           await issueEmailVerificationChallengeMutation.mutateAsync({})
 
-          navigate(`/login?view=${LoginViews.VerifyEmail}`)
+          navigate(`/login?view=${LoginView.VerifyEmail}`)
         } catch (error) {
-          // TODO: Handle errors on screen once an error handling strategy is in place.
-          console.error(error)
+          const message = parseErrorMessage(error)
+          toast.error('Failed to verify Microsoft log in', {
+            description: message,
+          })
         }
       }
     })()

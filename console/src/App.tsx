@@ -31,6 +31,8 @@ import { OrganizationUserInvitesTab } from '@/pages/organizations/OrganizationUs
 import { ViewUserInvitePage } from '@/pages/user-invites/ViewUserInvitePage'
 import { API_URL } from './config'
 import { AuthType } from './lib/auth'
+import GoogleOAuthCallbackPage from './pages/login/GoogleOAuthCallbackPage'
+import MicrosoftOAuthCallbackPage from './pages/login/MicrosoftOAuthCallbackPage'
 
 const queryClient = new QueryClient()
 
@@ -62,7 +64,15 @@ function AppWithinQueryClient() {
     <TransportProvider transport={transport}>
       <BrowserRouter>
         <Routes>
+          <Route
+            path="/google-oauth-callback"
+            element={<GoogleOAuthCallbackPage />}
+          />
           <Route path="/login" element={<LoginPage />} />
+          <Route
+            path="/microsoft-oauth-callback"
+            element={<MicrosoftOAuthCallbackPage />}
+          />
           <Route
             path="/signup"
             element={<LoginPage authType={AuthType.SignUp} />}

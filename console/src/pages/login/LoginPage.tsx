@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 
 import {
   AuthType,
@@ -19,15 +19,23 @@ import VerifyPasskeyView from '@/views/login/VerifyPasskeyView'
 import RegisterAuthenticatorAppView from '@/views/login/RegisterAuthenticatorAppView'
 import RegisterPasskeyView from '@/views/login/RegisterPasskeyView'
 import RegisterPasswordView from '@/views/login/RegisterPasswordView'
+import { useSearchParams } from 'react-router-dom'
 
 interface LoginPageProps {
   authType?: AuthType
 }
 
 const LoginPage: FC<LoginPageProps> = ({ authType = AuthType.LogIn }) => {
+  const [searchParams] = useSearchParams()
   const [intermediateOrganization, setIntermediateOrganization] =
     useState<Organization>()
   const [view, setView] = useState<LoginView>(LoginView.StartLogin)
+
+  useEffect(() => {
+    if (searchParams.get('view')) {
+      setView(searchParams.get('view') as LoginView)
+    }
+  }, [searchParams])
 
   return (
     <AuthTypeContextProvider value={authType}>
