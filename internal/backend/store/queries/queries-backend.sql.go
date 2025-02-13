@@ -265,6 +265,53 @@ func (q *Queries) CreateSCIMAPIKey(ctx context.Context, arg CreateSCIMAPIKeyPara
 	return i, err
 }
 
+const createUser = `-- name: CreateUser :one
+INSERT INTO users (id, organization_id, google_user_id, microsoft_user_id, email, is_owner)
+    VALUES ($1, $2, $3, $4, $5, $6)
+RETURNING
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_recovery_code_bcrypts, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time
+`
+
+type CreateUserParams struct {
+	ID              uuid.UUID
+	OrganizationID  uuid.UUID
+	GoogleUserID    *string
+	MicrosoftUserID *string
+	Email           string
+	IsOwner         bool
+}
+
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
+	row := q.db.QueryRow(ctx, createUser,
+		arg.ID,
+		arg.OrganizationID,
+		arg.GoogleUserID,
+		arg.MicrosoftUserID,
+		arg.Email,
+		arg.IsOwner,
+	)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.PasswordBcrypt,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+		&i.Email,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.DeactivateTime,
+		&i.IsOwner,
+		&i.FailedPasswordAttempts,
+		&i.PasswordLockoutExpireTime,
+		&i.AuthenticatorAppSecretCiphertext,
+		&i.AuthenticatorAppRecoveryCodeBcrypts,
+		&i.FailedAuthenticatorAppAttempts,
+		&i.AuthenticatorAppLockoutExpireTime,
+	)
+	return i, err
+}
+
 const createUserImpersonationToken = `-- name: CreateUserImpersonationToken :one
 INSERT INTO user_impersonation_tokens (id, impersonator_id, impersonated_id, expire_time, secret_token_sha256)
     VALUES ($1, $2, $3, $4, $5)
@@ -429,6 +476,16 @@ WHERE id = $1
 
 func (q *Queries) DeleteSCIMAPIKey(ctx context.Context, id uuid.UUID) error {
 	_, err := q.db.Exec(ctx, deleteSCIMAPIKey, id)
+	return err
+}
+
+const deleteUser = `-- name: DeleteUser :exec
+DELETE FROM users
+WHERE id = $1
+`
+
+func (q *Queries) DeleteUser(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteUser, id)
 	return err
 }
 
@@ -2472,11 +2529,10 @@ UPDATE
     users
 SET
     update_time = now(),
-    organization_id = $2,
-    email = $3,
-    password_bcrypt = $4,
-    google_user_id = $5,
-    microsoft_user_id = $6
+    email = $2,
+    google_user_id = $3,
+    microsoft_user_id = $4,
+    is_owner = $5
 WHERE
     id = $1
 RETURNING
@@ -2485,21 +2541,19 @@ RETURNING
 
 type UpdateUserParams struct {
 	ID              uuid.UUID
-	OrganizationID  uuid.UUID
 	Email           string
-	PasswordBcrypt  *string
 	GoogleUserID    *string
 	MicrosoftUserID *string
+	IsOwner         bool
 }
 
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
 	row := q.db.QueryRow(ctx, updateUser,
 		arg.ID,
-		arg.OrganizationID,
 		arg.Email,
-		arg.PasswordBcrypt,
 		arg.GoogleUserID,
 		arg.MicrosoftUserID,
+		arg.IsOwner,
 	)
 	var i User
 	err := row.Scan(
