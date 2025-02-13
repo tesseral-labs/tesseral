@@ -11,5 +11,6 @@ jobs:
       - uses: actions/checkout@v4
       - uses: bufbuild/buf-action@v1
         with:
-          pr_comment: false
-          push: false
+          setup_only: true
+      - run: buf format --diff --exit-code
+      - run: buf lint
