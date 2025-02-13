@@ -120,6 +120,21 @@ export const listUsers = BackendService.method.listUsers;
 export const getUser = BackendService.method.getUser;
 
 /**
+ * @generated from rpc openauth.backend.v1.BackendService.CreateUser
+ */
+export const createUser = BackendService.method.createUser;
+
+/**
+ * @generated from rpc openauth.backend.v1.BackendService.UpdateUser
+ */
+export const updateUser = BackendService.method.updateUser;
+
+/**
+ * @generated from rpc openauth.backend.v1.BackendService.DeleteUser
+ */
+export const deleteUser = BackendService.method.deleteUser;
+
+/**
  * @generated from rpc openauth.backend.v1.BackendService.ListPasskeys
  */
 export const listPasskeys = BackendService.method.listPasskeys;

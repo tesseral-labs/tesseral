@@ -101,6 +101,15 @@ const (
 	BackendServiceListUsersProcedure = "/openauth.backend.v1.BackendService/ListUsers"
 	// BackendServiceGetUserProcedure is the fully-qualified name of the BackendService's GetUser RPC.
 	BackendServiceGetUserProcedure = "/openauth.backend.v1.BackendService/GetUser"
+	// BackendServiceCreateUserProcedure is the fully-qualified name of the BackendService's CreateUser
+	// RPC.
+	BackendServiceCreateUserProcedure = "/openauth.backend.v1.BackendService/CreateUser"
+	// BackendServiceUpdateUserProcedure is the fully-qualified name of the BackendService's UpdateUser
+	// RPC.
+	BackendServiceUpdateUserProcedure = "/openauth.backend.v1.BackendService/UpdateUser"
+	// BackendServiceDeleteUserProcedure is the fully-qualified name of the BackendService's DeleteUser
+	// RPC.
+	BackendServiceDeleteUserProcedure = "/openauth.backend.v1.BackendService/DeleteUser"
 	// BackendServiceListPasskeysProcedure is the fully-qualified name of the BackendService's
 	// ListPasskeys RPC.
 	BackendServiceListPasskeysProcedure = "/openauth.backend.v1.BackendService/ListPasskeys"
@@ -221,6 +230,9 @@ type BackendServiceClient interface {
 	RevokeSCIMAPIKey(context.Context, *connect.Request[v1.RevokeSCIMAPIKeyRequest]) (*connect.Response[v1.RevokeSCIMAPIKeyResponse], error)
 	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
 	GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error)
+	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error)
+	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error)
+	DeleteUser(context.Context, *connect.Request[v1.DeleteUserRequest]) (*connect.Response[v1.DeleteUserResponse], error)
 	ListPasskeys(context.Context, *connect.Request[v1.ListPasskeysRequest]) (*connect.Response[v1.ListPasskeysResponse], error)
 	GetPasskey(context.Context, *connect.Request[v1.GetPasskeyRequest]) (*connect.Response[v1.GetPasskeyResponse], error)
 	UpdatePasskey(context.Context, *connect.Request[v1.UpdatePasskeyRequest]) (*connect.Response[v1.UpdatePasskeyResponse], error)
@@ -401,6 +413,24 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			httpClient,
 			baseURL+BackendServiceGetUserProcedure,
 			connect.WithSchema(backendServiceMethods.ByName("GetUser")),
+			connect.WithClientOptions(opts...),
+		),
+		createUser: connect.NewClient[v1.CreateUserRequest, v1.CreateUserResponse](
+			httpClient,
+			baseURL+BackendServiceCreateUserProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("CreateUser")),
+			connect.WithClientOptions(opts...),
+		),
+		updateUser: connect.NewClient[v1.UpdateUserRequest, v1.UpdateUserResponse](
+			httpClient,
+			baseURL+BackendServiceUpdateUserProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("UpdateUser")),
+			connect.WithClientOptions(opts...),
+		),
+		deleteUser: connect.NewClient[v1.DeleteUserRequest, v1.DeleteUserResponse](
+			httpClient,
+			baseURL+BackendServiceDeleteUserProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("DeleteUser")),
 			connect.WithClientOptions(opts...),
 		),
 		listPasskeys: connect.NewClient[v1.ListPasskeysRequest, v1.ListPasskeysResponse](
@@ -617,6 +647,9 @@ type backendServiceClient struct {
 	revokeSCIMAPIKey                      *connect.Client[v1.RevokeSCIMAPIKeyRequest, v1.RevokeSCIMAPIKeyResponse]
 	listUsers                             *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
 	getUser                               *connect.Client[v1.GetUserRequest, v1.GetUserResponse]
+	createUser                            *connect.Client[v1.CreateUserRequest, v1.CreateUserResponse]
+	updateUser                            *connect.Client[v1.UpdateUserRequest, v1.UpdateUserResponse]
+	deleteUser                            *connect.Client[v1.DeleteUserRequest, v1.DeleteUserResponse]
 	listPasskeys                          *connect.Client[v1.ListPasskeysRequest, v1.ListPasskeysResponse]
 	getPasskey                            *connect.Client[v1.GetPasskeyRequest, v1.GetPasskeyResponse]
 	updatePasskey                         *connect.Client[v1.UpdatePasskeyRequest, v1.UpdatePasskeyResponse]
@@ -767,6 +800,21 @@ func (c *backendServiceClient) ListUsers(ctx context.Context, req *connect.Reque
 // GetUser calls openauth.backend.v1.BackendService.GetUser.
 func (c *backendServiceClient) GetUser(ctx context.Context, req *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error) {
 	return c.getUser.CallUnary(ctx, req)
+}
+
+// CreateUser calls openauth.backend.v1.BackendService.CreateUser.
+func (c *backendServiceClient) CreateUser(ctx context.Context, req *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error) {
+	return c.createUser.CallUnary(ctx, req)
+}
+
+// UpdateUser calls openauth.backend.v1.BackendService.UpdateUser.
+func (c *backendServiceClient) UpdateUser(ctx context.Context, req *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error) {
+	return c.updateUser.CallUnary(ctx, req)
+}
+
+// DeleteUser calls openauth.backend.v1.BackendService.DeleteUser.
+func (c *backendServiceClient) DeleteUser(ctx context.Context, req *connect.Request[v1.DeleteUserRequest]) (*connect.Response[v1.DeleteUserResponse], error) {
+	return c.deleteUser.CallUnary(ctx, req)
 }
 
 // ListPasskeys calls openauth.backend.v1.BackendService.ListPasskeys.
@@ -950,6 +998,9 @@ type BackendServiceHandler interface {
 	RevokeSCIMAPIKey(context.Context, *connect.Request[v1.RevokeSCIMAPIKeyRequest]) (*connect.Response[v1.RevokeSCIMAPIKeyResponse], error)
 	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
 	GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error)
+	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error)
+	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error)
+	DeleteUser(context.Context, *connect.Request[v1.DeleteUserRequest]) (*connect.Response[v1.DeleteUserResponse], error)
 	ListPasskeys(context.Context, *connect.Request[v1.ListPasskeysRequest]) (*connect.Response[v1.ListPasskeysResponse], error)
 	GetPasskey(context.Context, *connect.Request[v1.GetPasskeyRequest]) (*connect.Response[v1.GetPasskeyResponse], error)
 	UpdatePasskey(context.Context, *connect.Request[v1.UpdatePasskeyRequest]) (*connect.Response[v1.UpdatePasskeyResponse], error)
@@ -1126,6 +1177,24 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		BackendServiceGetUserProcedure,
 		svc.GetUser,
 		connect.WithSchema(backendServiceMethods.ByName("GetUser")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceCreateUserHandler := connect.NewUnaryHandler(
+		BackendServiceCreateUserProcedure,
+		svc.CreateUser,
+		connect.WithSchema(backendServiceMethods.ByName("CreateUser")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceUpdateUserHandler := connect.NewUnaryHandler(
+		BackendServiceUpdateUserProcedure,
+		svc.UpdateUser,
+		connect.WithSchema(backendServiceMethods.ByName("UpdateUser")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceDeleteUserHandler := connect.NewUnaryHandler(
+		BackendServiceDeleteUserProcedure,
+		svc.DeleteUser,
+		connect.WithSchema(backendServiceMethods.ByName("DeleteUser")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceListPasskeysHandler := connect.NewUnaryHandler(
@@ -1362,6 +1431,12 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceListUsersHandler.ServeHTTP(w, r)
 		case BackendServiceGetUserProcedure:
 			backendServiceGetUserHandler.ServeHTTP(w, r)
+		case BackendServiceCreateUserProcedure:
+			backendServiceCreateUserHandler.ServeHTTP(w, r)
+		case BackendServiceUpdateUserProcedure:
+			backendServiceUpdateUserHandler.ServeHTTP(w, r)
+		case BackendServiceDeleteUserProcedure:
+			backendServiceDeleteUserHandler.ServeHTTP(w, r)
 		case BackendServiceListPasskeysProcedure:
 			backendServiceListPasskeysHandler.ServeHTTP(w, r)
 		case BackendServiceGetPasskeyProcedure:
@@ -1523,6 +1598,18 @@ func (UnimplementedBackendServiceHandler) ListUsers(context.Context, *connect.Re
 
 func (UnimplementedBackendServiceHandler) GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetUser is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.CreateUser is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.UpdateUser is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) DeleteUser(context.Context, *connect.Request[v1.DeleteUserRequest]) (*connect.Response[v1.DeleteUserResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.DeleteUser is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) ListPasskeys(context.Context, *connect.Request[v1.ListPasskeysRequest]) (*connect.Response[v1.ListPasskeysResponse], error) {

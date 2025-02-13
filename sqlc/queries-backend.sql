@@ -211,21 +211,6 @@ WHERE
 RETURNING
     *;
 
--- name: UpdateUser :one
-UPDATE
-    users
-SET
-    update_time = now(),
-    organization_id = $2,
-    email = $3,
-    password_bcrypt = $4,
-    google_user_id = $5,
-    microsoft_user_id = $6
-WHERE
-    id = $1
-RETURNING
-    *;
-
 -- name: UpdateUserPassword :one
 UPDATE
     users
@@ -464,6 +449,30 @@ FROM
 WHERE
     users.id = $1
     AND organizations.project_id = $2;
+
+-- name: CreateUser :one
+INSERT INTO users (id, organization_id, google_user_id, microsoft_user_id, email, is_owner)
+    VALUES ($1, $2, $3, $4, $5, $6)
+RETURNING
+    *;
+
+-- name: UpdateUser :one
+UPDATE
+    users
+SET
+    update_time = now(),
+    email = $2,
+    google_user_id = $3,
+    microsoft_user_id = $4,
+    is_owner = $5
+WHERE
+    id = $1
+RETURNING
+    *;
+
+-- name: DeleteUser :exec
+DELETE FROM users
+WHERE id = $1;
 
 -- name: ListSessions :many
 SELECT

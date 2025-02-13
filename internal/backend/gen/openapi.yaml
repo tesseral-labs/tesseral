@@ -853,6 +853,29 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - BackendService
+            operationId: BackendService_CreateUser
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/User'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateUserResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /backend/v1/users/{id}:
         get:
             tags:
@@ -871,6 +894,58 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/GetUserResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        delete:
+            tags:
+                - BackendService
+            operationId: BackendService_DeleteUser
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DeleteUserResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        patch:
+            tags:
+                - BackendService
+            operationId: BackendService_UpdateUser
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/User'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateUserResponse'
                 default:
                     description: Default error response
                     content:
@@ -899,6 +974,11 @@ components:
             properties:
                 userInvite:
                     $ref: '#/components/schemas/UserInvite'
+        CreateUserResponse:
+            type: object
+            properties:
+                user:
+                    $ref: '#/components/schemas/User'
         DeleteOrganizationResponse:
             type: object
             properties: {}
@@ -912,6 +992,9 @@ components:
             type: object
             properties: {}
         DeleteUserInviteResponse:
+            type: object
+            properties: {}
+        DeleteUserResponse:
             type: object
             properties: {}
         GetIntermediateSessionResponse:
@@ -1293,6 +1376,11 @@ components:
             properties:
                 scimApiKey:
                     $ref: '#/components/schemas/SCIMAPIKey'
+        UpdateUserResponse:
+            type: object
+            properties:
+                user:
+                    $ref: '#/components/schemas/User'
         User:
             type: object
             properties:

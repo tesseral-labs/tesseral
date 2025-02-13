@@ -85,6 +85,14 @@ func derefOrEmpty[T any](t *T) T {
 	return *t
 }
 
+func refOrNil[T comparable](t T) *T {
+	var z T
+	if t == z {
+		return nil
+	}
+	return &t
+}
+
 // validateIsDogfoodSession returns an error if the caller isn't a dogfood
 // session.
 //

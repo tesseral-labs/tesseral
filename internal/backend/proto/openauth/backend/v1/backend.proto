@@ -155,6 +155,26 @@ service BackendService {
     };
   }
 
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {
+    option (google.api.http) = {
+      post: "/backend/v1/users",
+      body: "user"
+    };
+  }
+
+  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {
+    option (google.api.http) = {
+      patch: "/backend/v1/users/{id}",
+      body: "user"
+    };
+  }
+
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {
+    option (google.api.http) = {
+      delete: "/backend/v1/users/{id}"
+    };
+  }
+
   rpc ListPasskeys(ListPasskeysRequest) returns (ListPasskeysResponse) {
     option (google.api.http) = {
       get: "/backend/v1/passkeys"
@@ -252,11 +272,6 @@ service BackendService {
   rpc RevokeProjectAPIKey(RevokeProjectAPIKeyRequest) returns (RevokeProjectAPIKeyResponse);
 
   rpc CreateUserImpersonationToken(CreateUserImpersonationTokenRequest) returns (CreateUserImpersonationTokenResponse);
-}
-
-message CreateUserRequest {
-  // The user to create.
-  User user = 1;
 }
 
 message GetProjectRequest {
@@ -457,6 +472,30 @@ message GetUserRequest {
 
 message GetUserResponse {
   User user = 1;
+}
+
+message CreateUserRequest {
+  User user = 1;
+}
+
+message CreateUserResponse {
+  User user = 1;
+}
+
+message UpdateUserRequest {
+  string id = 1;
+  User user = 2;
+}
+
+message UpdateUserResponse {
+  User user = 1;
+}
+
+message DeleteUserRequest {
+  string id = 1;
+}
+
+message DeleteUserResponse {
 }
 
 message ListPasskeysRequest {
@@ -811,8 +850,8 @@ message User {
   google.protobuf.Timestamp create_time = 4;
   google.protobuf.Timestamp update_time = 5;
   optional bool owner = 6;
-  string google_user_id = 7;
-  string microsoft_user_id = 8;
+  optional string google_user_id = 7;
+  optional string microsoft_user_id = 8;
   bool has_authenticator_app = 9;
 }
 
