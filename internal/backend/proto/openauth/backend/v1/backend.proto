@@ -636,7 +636,7 @@ message DeletePublishableKeyRequest {
 message DeletePublishableKeyResponse {}
 
 message GetProjectUISettingsRequest {
-  
+
 }
 
 message GetProjectUISettingsResponse {

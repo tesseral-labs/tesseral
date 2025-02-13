@@ -1,7 +1,6 @@
 name: buf-ci
 on:
-  pull_request:
-    types: [opened, synchronize, reopened, labeled, unlabeled]
+  push:
 permissions:
   contents: read
 jobs:
