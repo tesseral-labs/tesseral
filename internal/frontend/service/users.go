@@ -41,3 +41,11 @@ func (s *Service) UpdateUser(ctx context.Context, req *connect.Request[frontendv
 
 	return connect.NewResponse(res), nil
 }
+
+func (s *Service) DeleteUser(ctx context.Context, req *connect.Request[frontendv1.DeleteUserRequest]) (*connect.Response[frontendv1.DeleteUserResponse], error) {
+	res, err := s.Store.DeleteUser(ctx, req.Msg)
+	if err != nil {
+		return nil, fmt.Errorf("store: %w", err)
+	}
+	return connect.NewResponse(res), nil
+}

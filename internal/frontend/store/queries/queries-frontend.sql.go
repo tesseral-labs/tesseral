@@ -319,6 +319,16 @@ func (q *Queries) DeleteSCIMAPIKey(ctx context.Context, id uuid.UUID) error {
 	return err
 }
 
+const deleteUser = `-- name: DeleteUser :exec
+DELETE FROM users
+WHERE id = $1
+`
+
+func (q *Queries) DeleteUser(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteUser, id)
+	return err
+}
+
 const deleteUserAuthenticatorAppChallenge = `-- name: DeleteUserAuthenticatorAppChallenge :exec
 DELETE FROM user_authenticator_app_challenges
 WHERE user_id = $1

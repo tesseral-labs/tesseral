@@ -87,6 +87,12 @@ service FrontendService {
     };
   }
 
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {
+    option (google.api.http) = {
+      delete: "/frontend/v1/users/{id}"
+    };
+  }
+
   // Sets a user's password.
   rpc SetPassword(SetPasswordRequest) returns (SetPasswordResponse) {
     option (google.api.http) = {
@@ -330,6 +336,13 @@ message UpdateUserRequest {
 
 message UpdateUserResponse {
   User user = 1;
+}
+
+message DeleteUserRequest {
+  string id = 1;
+}
+
+message DeleteUserResponse {
 }
 
 message ListSAMLConnectionsRequest {
