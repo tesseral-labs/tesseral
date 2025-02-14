@@ -105,16 +105,6 @@ message PublishableKey {
   google.protobuf.Timestamp update_time = 4;
 }
 
-message IntermediateSession {
-  string id = 1;
-  string email = 2;
-  string google_hosted_domain = 3;
-  string google_user_id = 4;
-  string microsoft_tenant_id = 5;
-  string microsoft_user_id = 6;
-  bool revoked = 7;
-}
-
 message User {
   string id = 1;
   string organization_id = 2;

@@ -128,12 +128,6 @@ const (
 	// BackendServiceGetSessionProcedure is the fully-qualified name of the BackendService's GetSession
 	// RPC.
 	BackendServiceGetSessionProcedure = "/openauth.backend.v1.BackendService/GetSession"
-	// BackendServiceListIntermediateSessionsProcedure is the fully-qualified name of the
-	// BackendService's ListIntermediateSessions RPC.
-	BackendServiceListIntermediateSessionsProcedure = "/openauth.backend.v1.BackendService/ListIntermediateSessions"
-	// BackendServiceGetIntermediateSessionProcedure is the fully-qualified name of the BackendService's
-	// GetIntermediateSession RPC.
-	BackendServiceGetIntermediateSessionProcedure = "/openauth.backend.v1.BackendService/GetIntermediateSession"
 	// BackendServiceListUserInvitesProcedure is the fully-qualified name of the BackendService's
 	// ListUserInvites RPC.
 	BackendServiceListUserInvitesProcedure = "/openauth.backend.v1.BackendService/ListUserInvites"
@@ -242,8 +236,6 @@ type BackendServiceClient interface {
 	DeletePasskey(context.Context, *connect.Request[v1.DeletePasskeyRequest]) (*connect.Response[v1.DeletePasskeyResponse], error)
 	ListSessions(context.Context, *connect.Request[v1.ListSessionsRequest]) (*connect.Response[v1.ListSessionsResponse], error)
 	GetSession(context.Context, *connect.Request[v1.GetSessionRequest]) (*connect.Response[v1.GetSessionResponse], error)
-	ListIntermediateSessions(context.Context, *connect.Request[v1.ListIntermediateSessionsRequest]) (*connect.Response[v1.ListIntermediateSessionsResponse], error)
-	GetIntermediateSession(context.Context, *connect.Request[v1.GetIntermediateSessionRequest]) (*connect.Response[v1.GetIntermediateSessionResponse], error)
 	ListUserInvites(context.Context, *connect.Request[v1.ListUserInvitesRequest]) (*connect.Response[v1.ListUserInvitesResponse], error)
 	GetUserInvite(context.Context, *connect.Request[v1.GetUserInviteRequest]) (*connect.Response[v1.GetUserInviteResponse], error)
 	CreateUserInvite(context.Context, *connect.Request[v1.CreateUserInviteRequest]) (*connect.Response[v1.CreateUserInviteResponse], error)
@@ -473,18 +465,6 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(backendServiceMethods.ByName("GetSession")),
 			connect.WithClientOptions(opts...),
 		),
-		listIntermediateSessions: connect.NewClient[v1.ListIntermediateSessionsRequest, v1.ListIntermediateSessionsResponse](
-			httpClient,
-			baseURL+BackendServiceListIntermediateSessionsProcedure,
-			connect.WithSchema(backendServiceMethods.ByName("ListIntermediateSessions")),
-			connect.WithClientOptions(opts...),
-		),
-		getIntermediateSession: connect.NewClient[v1.GetIntermediateSessionRequest, v1.GetIntermediateSessionResponse](
-			httpClient,
-			baseURL+BackendServiceGetIntermediateSessionProcedure,
-			connect.WithSchema(backendServiceMethods.ByName("GetIntermediateSession")),
-			connect.WithClientOptions(opts...),
-		),
 		listUserInvites: connect.NewClient[v1.ListUserInvitesRequest, v1.ListUserInvitesResponse](
 			httpClient,
 			baseURL+BackendServiceListUserInvitesProcedure,
@@ -666,8 +646,6 @@ type backendServiceClient struct {
 	deletePasskey                         *connect.Client[v1.DeletePasskeyRequest, v1.DeletePasskeyResponse]
 	listSessions                          *connect.Client[v1.ListSessionsRequest, v1.ListSessionsResponse]
 	getSession                            *connect.Client[v1.GetSessionRequest, v1.GetSessionResponse]
-	listIntermediateSessions              *connect.Client[v1.ListIntermediateSessionsRequest, v1.ListIntermediateSessionsResponse]
-	getIntermediateSession                *connect.Client[v1.GetIntermediateSessionRequest, v1.GetIntermediateSessionResponse]
 	listUserInvites                       *connect.Client[v1.ListUserInvitesRequest, v1.ListUserInvitesResponse]
 	getUserInvite                         *connect.Client[v1.GetUserInviteRequest, v1.GetUserInviteResponse]
 	createUserInvite                      *connect.Client[v1.CreateUserInviteRequest, v1.CreateUserInviteResponse]
@@ -858,16 +836,6 @@ func (c *backendServiceClient) GetSession(ctx context.Context, req *connect.Requ
 	return c.getSession.CallUnary(ctx, req)
 }
 
-// ListIntermediateSessions calls openauth.backend.v1.BackendService.ListIntermediateSessions.
-func (c *backendServiceClient) ListIntermediateSessions(ctx context.Context, req *connect.Request[v1.ListIntermediateSessionsRequest]) (*connect.Response[v1.ListIntermediateSessionsResponse], error) {
-	return c.listIntermediateSessions.CallUnary(ctx, req)
-}
-
-// GetIntermediateSession calls openauth.backend.v1.BackendService.GetIntermediateSession.
-func (c *backendServiceClient) GetIntermediateSession(ctx context.Context, req *connect.Request[v1.GetIntermediateSessionRequest]) (*connect.Response[v1.GetIntermediateSessionResponse], error) {
-	return c.getIntermediateSession.CallUnary(ctx, req)
-}
-
 // ListUserInvites calls openauth.backend.v1.BackendService.ListUserInvites.
 func (c *backendServiceClient) ListUserInvites(ctx context.Context, req *connect.Request[v1.ListUserInvitesRequest]) (*connect.Response[v1.ListUserInvitesResponse], error) {
 	return c.listUserInvites.CallUnary(ctx, req)
@@ -1023,8 +991,6 @@ type BackendServiceHandler interface {
 	DeletePasskey(context.Context, *connect.Request[v1.DeletePasskeyRequest]) (*connect.Response[v1.DeletePasskeyResponse], error)
 	ListSessions(context.Context, *connect.Request[v1.ListSessionsRequest]) (*connect.Response[v1.ListSessionsResponse], error)
 	GetSession(context.Context, *connect.Request[v1.GetSessionRequest]) (*connect.Response[v1.GetSessionResponse], error)
-	ListIntermediateSessions(context.Context, *connect.Request[v1.ListIntermediateSessionsRequest]) (*connect.Response[v1.ListIntermediateSessionsResponse], error)
-	GetIntermediateSession(context.Context, *connect.Request[v1.GetIntermediateSessionRequest]) (*connect.Response[v1.GetIntermediateSessionResponse], error)
 	ListUserInvites(context.Context, *connect.Request[v1.ListUserInvitesRequest]) (*connect.Response[v1.ListUserInvitesResponse], error)
 	GetUserInvite(context.Context, *connect.Request[v1.GetUserInviteRequest]) (*connect.Response[v1.GetUserInviteResponse], error)
 	CreateUserInvite(context.Context, *connect.Request[v1.CreateUserInviteRequest]) (*connect.Response[v1.CreateUserInviteResponse], error)
@@ -1250,18 +1216,6 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		connect.WithSchema(backendServiceMethods.ByName("GetSession")),
 		connect.WithHandlerOptions(opts...),
 	)
-	backendServiceListIntermediateSessionsHandler := connect.NewUnaryHandler(
-		BackendServiceListIntermediateSessionsProcedure,
-		svc.ListIntermediateSessions,
-		connect.WithSchema(backendServiceMethods.ByName("ListIntermediateSessions")),
-		connect.WithHandlerOptions(opts...),
-	)
-	backendServiceGetIntermediateSessionHandler := connect.NewUnaryHandler(
-		BackendServiceGetIntermediateSessionProcedure,
-		svc.GetIntermediateSession,
-		connect.WithSchema(backendServiceMethods.ByName("GetIntermediateSession")),
-		connect.WithHandlerOptions(opts...),
-	)
 	backendServiceListUserInvitesHandler := connect.NewUnaryHandler(
 		BackendServiceListUserInvitesProcedure,
 		svc.ListUserInvites,
@@ -1472,10 +1426,6 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceListSessionsHandler.ServeHTTP(w, r)
 		case BackendServiceGetSessionProcedure:
 			backendServiceGetSessionHandler.ServeHTTP(w, r)
-		case BackendServiceListIntermediateSessionsProcedure:
-			backendServiceListIntermediateSessionsHandler.ServeHTTP(w, r)
-		case BackendServiceGetIntermediateSessionProcedure:
-			backendServiceGetIntermediateSessionHandler.ServeHTTP(w, r)
 		case BackendServiceListUserInvitesProcedure:
 			backendServiceListUserInvitesHandler.ServeHTTP(w, r)
 		case BackendServiceGetUserInviteProcedure:
@@ -1659,14 +1609,6 @@ func (UnimplementedBackendServiceHandler) ListSessions(context.Context, *connect
 
 func (UnimplementedBackendServiceHandler) GetSession(context.Context, *connect.Request[v1.GetSessionRequest]) (*connect.Response[v1.GetSessionResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetSession is not implemented"))
-}
-
-func (UnimplementedBackendServiceHandler) ListIntermediateSessions(context.Context, *connect.Request[v1.ListIntermediateSessionsRequest]) (*connect.Response[v1.ListIntermediateSessionsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.ListIntermediateSessions is not implemented"))
-}
-
-func (UnimplementedBackendServiceHandler) GetIntermediateSession(context.Context, *connect.Request[v1.GetIntermediateSessionRequest]) (*connect.Response[v1.GetIntermediateSessionResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetIntermediateSession is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) ListUserInvites(context.Context, *connect.Request[v1.ListUserInvitesRequest]) (*connect.Response[v1.ListUserInvitesResponse], error) {

@@ -497,27 +497,6 @@ WHERE
     sessions.id = $1
     AND organizations.project_id = $2;
 
--- name: ListIntermediateSessions :many
-SELECT
-    *
-FROM
-    intermediate_sessions
-WHERE
-    project_id = $1
-    AND id >= $2
-ORDER BY
-    id
-LIMIT $3;
-
--- name: GetIntermediateSession :one
-SELECT
-    intermediate_sessions.*
-FROM
-    intermediate_sessions
-WHERE
-    id = $1
-    AND project_id = $2;
-
 -- name: GetProjectUISettings :one
 SELECT
     *
