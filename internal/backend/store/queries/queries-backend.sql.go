@@ -805,57 +805,6 @@ func (q *Queries) ExistsUserWithEmailInOrganization(ctx context.Context, arg Exi
 	return exists, err
 }
 
-const getIntermediateSession = `-- name: GetIntermediateSession :one
-SELECT
-    intermediate_sessions.id, intermediate_sessions.project_id, intermediate_sessions.create_time, intermediate_sessions.expire_time, intermediate_sessions.email, intermediate_sessions.google_oauth_state_sha256, intermediate_sessions.microsoft_oauth_state_sha256, intermediate_sessions.google_hosted_domain, intermediate_sessions.google_user_id, intermediate_sessions.microsoft_tenant_id, intermediate_sessions.microsoft_user_id, intermediate_sessions.password_verified, intermediate_sessions.organization_id, intermediate_sessions.update_time, intermediate_sessions.secret_token_sha256, intermediate_sessions.new_user_password_bcrypt, intermediate_sessions.email_verification_challenge_sha256, intermediate_sessions.email_verification_challenge_completed, intermediate_sessions.passkey_credential_id, intermediate_sessions.passkey_public_key, intermediate_sessions.passkey_aaguid, intermediate_sessions.passkey_verify_challenge_sha256, intermediate_sessions.passkey_verified, intermediate_sessions.authenticator_app_secret_ciphertext, intermediate_sessions.authenticator_app_verified, intermediate_sessions.authenticator_app_recovery_code_bcrypts, intermediate_sessions.primary_login_factor, intermediate_sessions.passkey_rp_id
-FROM
-    intermediate_sessions
-WHERE
-    id = $1
-    AND project_id = $2
-`
-
-type GetIntermediateSessionParams struct {
-	ID        uuid.UUID
-	ProjectID uuid.UUID
-}
-
-func (q *Queries) GetIntermediateSession(ctx context.Context, arg GetIntermediateSessionParams) (IntermediateSession, error) {
-	row := q.db.QueryRow(ctx, getIntermediateSession, arg.ID, arg.ProjectID)
-	var i IntermediateSession
-	err := row.Scan(
-		&i.ID,
-		&i.ProjectID,
-		&i.CreateTime,
-		&i.ExpireTime,
-		&i.Email,
-		&i.GoogleOauthStateSha256,
-		&i.MicrosoftOauthStateSha256,
-		&i.GoogleHostedDomain,
-		&i.GoogleUserID,
-		&i.MicrosoftTenantID,
-		&i.MicrosoftUserID,
-		&i.PasswordVerified,
-		&i.OrganizationID,
-		&i.UpdateTime,
-		&i.SecretTokenSha256,
-		&i.NewUserPasswordBcrypt,
-		&i.EmailVerificationChallengeSha256,
-		&i.EmailVerificationChallengeCompleted,
-		&i.PasskeyCredentialID,
-		&i.PasskeyPublicKey,
-		&i.PasskeyAaguid,
-		&i.PasskeyVerifyChallengeSha256,
-		&i.PasskeyVerified,
-		&i.AuthenticatorAppSecretCiphertext,
-		&i.AuthenticatorAppVerified,
-		&i.AuthenticatorAppRecoveryCodeBcrypts,
-		&i.PrimaryLoginFactor,
-		&i.PasskeyRpID,
-	)
-	return i, err
-}
-
 const getOrganizationByProjectIDAndID = `-- name: GetOrganizationByProjectIDAndID :one
 SELECT
     id, project_id, display_name, scim_enabled, create_time, update_time, logins_disabled, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_authenticator_app, log_in_with_passkey, require_mfa, log_in_with_email, log_in_with_saml
@@ -1445,74 +1394,6 @@ func (q *Queries) GetVaultDomainSettings(ctx context.Context, projectID uuid.UUI
 	var i VaultDomainSetting
 	err := row.Scan(&i.ProjectID, &i.PendingDomain)
 	return i, err
-}
-
-const listIntermediateSessions = `-- name: ListIntermediateSessions :many
-SELECT
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_recovery_code_bcrypts, primary_login_factor, passkey_rp_id
-FROM
-    intermediate_sessions
-WHERE
-    project_id = $1
-    AND id >= $2
-ORDER BY
-    id
-LIMIT $3
-`
-
-type ListIntermediateSessionsParams struct {
-	ProjectID uuid.UUID
-	ID        uuid.UUID
-	Limit     int32
-}
-
-func (q *Queries) ListIntermediateSessions(ctx context.Context, arg ListIntermediateSessionsParams) ([]IntermediateSession, error) {
-	rows, err := q.db.Query(ctx, listIntermediateSessions, arg.ProjectID, arg.ID, arg.Limit)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []IntermediateSession
-	for rows.Next() {
-		var i IntermediateSession
-		if err := rows.Scan(
-			&i.ID,
-			&i.ProjectID,
-			&i.CreateTime,
-			&i.ExpireTime,
-			&i.Email,
-			&i.GoogleOauthStateSha256,
-			&i.MicrosoftOauthStateSha256,
-			&i.GoogleHostedDomain,
-			&i.GoogleUserID,
-			&i.MicrosoftTenantID,
-			&i.MicrosoftUserID,
-			&i.PasswordVerified,
-			&i.OrganizationID,
-			&i.UpdateTime,
-			&i.SecretTokenSha256,
-			&i.NewUserPasswordBcrypt,
-			&i.EmailVerificationChallengeSha256,
-			&i.EmailVerificationChallengeCompleted,
-			&i.PasskeyCredentialID,
-			&i.PasskeyPublicKey,
-			&i.PasskeyAaguid,
-			&i.PasskeyVerifyChallengeSha256,
-			&i.PasskeyVerified,
-			&i.AuthenticatorAppSecretCiphertext,
-			&i.AuthenticatorAppVerified,
-			&i.AuthenticatorAppRecoveryCodeBcrypts,
-			&i.PrimaryLoginFactor,
-			&i.PasskeyRpID,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
 }
 
 const listOrganizationsByProjectId = `-- name: ListOrganizationsByProjectId :many

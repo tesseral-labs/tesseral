@@ -168,13 +168,6 @@ service BackendService {
     option (google.api.http) = {get: "/backend/v1/sessions/{id}"};
   }
 
-  rpc ListIntermediateSessions(ListIntermediateSessionsRequest) returns (ListIntermediateSessionsResponse) {
-    option (google.api.http) = {get: "/backend/v1/intermediate-sessions"};
-  }
-  rpc GetIntermediateSession(GetIntermediateSessionRequest) returns (GetIntermediateSessionResponse) {
-    option (google.api.http) = {get: "/backend/v1/intermediate-sessions/{id}"};
-  }
-
   rpc ListUserInvites(ListUserInvitesRequest) returns (ListUserInvitesResponse) {
     option (google.api.http) = {get: "/backend/v1/user-invites"};
   }
@@ -490,23 +483,6 @@ message GetSessionRequest {
 
 message GetSessionResponse {
   Session session = 1;
-}
-
-message ListIntermediateSessionsRequest {
-  string page_token = 1;
-}
-
-message ListIntermediateSessionsResponse {
-  repeated IntermediateSession intermediate_sessions = 1;
-  string next_page_token = 2;
-}
-
-message GetIntermediateSessionRequest {
-  string id = 1;
-}
-
-message GetIntermediateSessionResponse {
-  IntermediateSession intermediate_session = 1;
 }
 
 message ListUserInvitesRequest {

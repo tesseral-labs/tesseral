@@ -51,8 +51,6 @@ const (
 	BackendService_DeletePasskey_FullMethodName                         = "/openauth.backend.v1.BackendService/DeletePasskey"
 	BackendService_ListSessions_FullMethodName                          = "/openauth.backend.v1.BackendService/ListSessions"
 	BackendService_GetSession_FullMethodName                            = "/openauth.backend.v1.BackendService/GetSession"
-	BackendService_ListIntermediateSessions_FullMethodName              = "/openauth.backend.v1.BackendService/ListIntermediateSessions"
-	BackendService_GetIntermediateSession_FullMethodName                = "/openauth.backend.v1.BackendService/GetIntermediateSession"
 	BackendService_ListUserInvites_FullMethodName                       = "/openauth.backend.v1.BackendService/ListUserInvites"
 	BackendService_GetUserInvite_FullMethodName                         = "/openauth.backend.v1.BackendService/GetUserInvite"
 	BackendService_CreateUserInvite_FullMethodName                      = "/openauth.backend.v1.BackendService/CreateUserInvite"
@@ -115,8 +113,6 @@ type BackendServiceClient interface {
 	DeletePasskey(ctx context.Context, in *DeletePasskeyRequest, opts ...grpc.CallOption) (*DeletePasskeyResponse, error)
 	ListSessions(ctx context.Context, in *ListSessionsRequest, opts ...grpc.CallOption) (*ListSessionsResponse, error)
 	GetSession(ctx context.Context, in *GetSessionRequest, opts ...grpc.CallOption) (*GetSessionResponse, error)
-	ListIntermediateSessions(ctx context.Context, in *ListIntermediateSessionsRequest, opts ...grpc.CallOption) (*ListIntermediateSessionsResponse, error)
-	GetIntermediateSession(ctx context.Context, in *GetIntermediateSessionRequest, opts ...grpc.CallOption) (*GetIntermediateSessionResponse, error)
 	ListUserInvites(ctx context.Context, in *ListUserInvitesRequest, opts ...grpc.CallOption) (*ListUserInvitesResponse, error)
 	GetUserInvite(ctx context.Context, in *GetUserInviteRequest, opts ...grpc.CallOption) (*GetUserInviteResponse, error)
 	CreateUserInvite(ctx context.Context, in *CreateUserInviteRequest, opts ...grpc.CallOption) (*CreateUserInviteResponse, error)
@@ -471,26 +467,6 @@ func (c *backendServiceClient) GetSession(ctx context.Context, in *GetSessionReq
 	return out, nil
 }
 
-func (c *backendServiceClient) ListIntermediateSessions(ctx context.Context, in *ListIntermediateSessionsRequest, opts ...grpc.CallOption) (*ListIntermediateSessionsResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ListIntermediateSessionsResponse)
-	err := c.cc.Invoke(ctx, BackendService_ListIntermediateSessions_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *backendServiceClient) GetIntermediateSession(ctx context.Context, in *GetIntermediateSessionRequest, opts ...grpc.CallOption) (*GetIntermediateSessionResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetIntermediateSessionResponse)
-	err := c.cc.Invoke(ctx, BackendService_GetIntermediateSession_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *backendServiceClient) ListUserInvites(ctx context.Context, in *ListUserInvitesRequest, opts ...grpc.CallOption) (*ListUserInvitesResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListUserInvitesResponse)
@@ -767,8 +743,6 @@ type BackendServiceServer interface {
 	DeletePasskey(context.Context, *DeletePasskeyRequest) (*DeletePasskeyResponse, error)
 	ListSessions(context.Context, *ListSessionsRequest) (*ListSessionsResponse, error)
 	GetSession(context.Context, *GetSessionRequest) (*GetSessionResponse, error)
-	ListIntermediateSessions(context.Context, *ListIntermediateSessionsRequest) (*ListIntermediateSessionsResponse, error)
-	GetIntermediateSession(context.Context, *GetIntermediateSessionRequest) (*GetIntermediateSessionResponse, error)
 	ListUserInvites(context.Context, *ListUserInvitesRequest) (*ListUserInvitesResponse, error)
 	GetUserInvite(context.Context, *GetUserInviteRequest) (*GetUserInviteResponse, error)
 	CreateUserInvite(context.Context, *CreateUserInviteRequest) (*CreateUserInviteResponse, error)
@@ -898,12 +872,6 @@ func (UnimplementedBackendServiceServer) ListSessions(context.Context, *ListSess
 }
 func (UnimplementedBackendServiceServer) GetSession(context.Context, *GetSessionRequest) (*GetSessionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetSession not implemented")
-}
-func (UnimplementedBackendServiceServer) ListIntermediateSessions(context.Context, *ListIntermediateSessionsRequest) (*ListIntermediateSessionsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListIntermediateSessions not implemented")
-}
-func (UnimplementedBackendServiceServer) GetIntermediateSession(context.Context, *GetIntermediateSessionRequest) (*GetIntermediateSessionResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetIntermediateSession not implemented")
 }
 func (UnimplementedBackendServiceServer) ListUserInvites(context.Context, *ListUserInvitesRequest) (*ListUserInvitesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListUserInvites not implemented")
@@ -1574,42 +1542,6 @@ func _BackendService_GetSession_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BackendService_ListIntermediateSessions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListIntermediateSessionsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(BackendServiceServer).ListIntermediateSessions(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: BackendService_ListIntermediateSessions_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).ListIntermediateSessions(ctx, req.(*ListIntermediateSessionsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _BackendService_GetIntermediateSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetIntermediateSessionRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(BackendServiceServer).GetIntermediateSession(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: BackendService_GetIntermediateSession_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).GetIntermediateSession(ctx, req.(*GetIntermediateSessionRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _BackendService_ListUserInvites_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListUserInvitesRequest)
 	if err := dec(in); err != nil {
@@ -2176,14 +2108,6 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetSession",
 			Handler:    _BackendService_GetSession_Handler,
-		},
-		{
-			MethodName: "ListIntermediateSessions",
-			Handler:    _BackendService_ListIntermediateSessions_Handler,
-		},
-		{
-			MethodName: "GetIntermediateSession",
-			Handler:    _BackendService_GetIntermediateSession_Handler,
 		},
 		{
 			MethodName: "ListUserInvites",

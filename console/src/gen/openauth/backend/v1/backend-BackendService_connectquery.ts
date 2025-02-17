@@ -165,16 +165,6 @@ export const listSessions = BackendService.method.listSessions;
 export const getSession = BackendService.method.getSession;
 
 /**
- * @generated from rpc openauth.backend.v1.BackendService.ListIntermediateSessions
- */
-export const listIntermediateSessions = BackendService.method.listIntermediateSessions;
-
-/**
- * @generated from rpc openauth.backend.v1.BackendService.GetIntermediateSession
- */
-export const getIntermediateSession = BackendService.method.getIntermediateSession;
-
-/**
  * @generated from rpc openauth.backend.v1.BackendService.ListUserInvites
  */
 export const listUserInvites = BackendService.method.listUserInvites;
