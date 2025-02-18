@@ -36,8 +36,8 @@ const MicrosoftOAuthCallbackPage = () => {
             redirectUrl: `${window.location.origin}/microsoft-oauth-callback`,
           });
 
-          const { data: whoamiRes } = await whoamiQuery.refetch();
-          if (!whoamiRes) {
+          const { data } = await whoamiQuery.refetch();
+          if (!data) {
             throw new Error('No data returned from whoami query');
           }
 
