@@ -1,36 +1,36 @@
-import React, { FC, useEffect } from 'react'
-import { useNavigate } from 'react-router'
-import { useMutation } from '@connectrpc/connect-query'
-import { toast } from 'sonner'
+import React, { FC, useEffect } from 'react';
+import { useNavigate } from 'react-router';
+import { useMutation } from '@connectrpc/connect-query';
+import { toast } from 'sonner';
 
-import { useLayout } from '@/lib/settings'
-import { base64urlEncode, cn } from '@/lib/utils'
-import { LoginLayouts } from '@/lib/views'
-import { parseErrorMessage } from '@/lib/errors'
+import { useLayout } from '@/lib/settings';
+import { base64urlEncode, cn } from '@/lib/utils';
+import { LoginLayouts } from '@/lib/views';
+import { parseErrorMessage } from '@/lib/errors';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   exchangeIntermediateSessionForSession,
   issuePasskeyChallenge,
   verifyPasskey,
-} from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
-import { setAccessToken, setRefreshToken } from '@/auth'
+} from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery';
+import { setAccessToken, setRefreshToken } from '@/auth';
 
 const VerifyPasskey: FC = () => {
-  const layout = useLayout()
-  const navigate = useNavigate()
+  const layout = useLayout();
+  const navigate = useNavigate();
 
   const exchangeIntermediateSessionForSessionMutation = useMutation(
     exchangeIntermediateSessionForSession,
-  )
-  const issuePasskeyChallengeMutation = useMutation(issuePasskeyChallenge)
-  const verifyPasskeyMutation = useMutation(verifyPasskey)
+  );
+  const issuePasskeyChallengeMutation = useMutation(issuePasskeyChallenge);
+  const verifyPasskeyMutation = useMutation(verifyPasskey);
 
   const authenticateWithPasskey = async () => {
     try {
       const challengeResponse = await issuePasskeyChallengeMutation.mutateAsync(
         {},
-      )
+      );
 
       const allowCredentials = challengeResponse.credentialIds.map(
         (id) =>
@@ -39,7 +39,7 @@ const VerifyPasskey: FC = () => {
             type: 'public-key',
             transports: ['hybrid', 'internal', 'nfc', 'usb'],
           }) as PublicKeyCredentialDescriptor,
-      )
+      );
 
       const requestOptions: PublicKeyCredentialRequestOptions = {
         challenge: new Uint8Array(challengeResponse.challenge).buffer,
@@ -47,40 +47,40 @@ const VerifyPasskey: FC = () => {
         rpId: challengeResponse.rpId,
         userVerification: 'preferred',
         timeout: 60000,
-      }
+      };
       const credential = (await navigator.credentials.get({
         publicKey: requestOptions,
-      })) as PublicKeyCredential
+      })) as PublicKeyCredential;
 
-      const response = credential.response as AuthenticatorAssertionResponse
+      const response = credential.response as AuthenticatorAssertionResponse;
 
       await verifyPasskeyMutation.mutateAsync({
         authenticatorData: base64urlEncode(response.authenticatorData),
         clientDataJson: base64urlEncode(response.clientDataJSON),
         credentialId: new Uint8Array(credential.rawId),
         signature: base64urlEncode(response.signature),
-      })
+      });
 
       const { accessToken, refreshToken } =
-        await exchangeIntermediateSessionForSessionMutation.mutateAsync({})
+        await exchangeIntermediateSessionForSessionMutation.mutateAsync({});
 
-      setAccessToken(accessToken)
-      setRefreshToken(refreshToken)
+      setAccessToken(accessToken);
+      setRefreshToken(refreshToken);
 
-      navigate('/settings')
+      navigate('/settings');
     } catch (error) {
-      const message = parseErrorMessage(error)
+      const message = parseErrorMessage(error);
       toast.error('Could not verify passkey', {
         description: message,
-      })
+      });
     }
-  }
+  };
 
   useEffect(() => {
-    ;(async () => {
-      await authenticateWithPasskey()
-    })()
-  }, [])
+    void (async () => {
+      await authenticateWithPasskey();
+    })();
+  }, []);
 
   return (
     <Card
@@ -99,7 +99,7 @@ const VerifyPasskey: FC = () => {
         </p>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
-export default VerifyPasskey
+export default VerifyPasskey;

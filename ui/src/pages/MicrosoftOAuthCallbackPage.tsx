@@ -1,28 +1,32 @@
-import React, { useEffect } from 'react'
-import { Title } from '@/components/Title'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import React, { useEffect } from 'react';
+import { Title } from '@/components/Title';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   issueEmailVerificationChallenge,
   redeemMicrosoftOAuthCode,
   whoami,
-} from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
-import { useMutation, useQuery } from '@connectrpc/connect-query'
-import { LoginViews } from '@/lib/views'
+} from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery';
+import { useMutation, useQuery } from '@connectrpc/connect-query';
+import { LoginViews } from '@/lib/views';
+import { parseErrorMessage } from '@/lib/errors';
+import { toast } from 'sonner';
 
 const MicrosoftOAuthCallbackPage = () => {
-  const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const issueEmailVerificationChallengeMutation = useMutation(
     issueEmailVerificationChallenge,
-  )
-  const redeemMicrosoftOAuthCodeMutation = useMutation(redeemMicrosoftOAuthCode)
-  const whoamiQuery = useQuery(whoami)
+  );
+  const redeemMicrosoftOAuthCodeMutation = useMutation(
+    redeemMicrosoftOAuthCode,
+  );
+  const whoamiQuery = useQuery(whoami);
 
   useEffect(() => {
-    ;(async () => {
-      const code = searchParams.get('code')
-      const state = searchParams.get('state')
+    void (async () => {
+      const code = searchParams.get('code');
+      const state = searchParams.get('state');
 
       if (code && state) {
         try {
@@ -30,28 +34,33 @@ const MicrosoftOAuthCallbackPage = () => {
             code,
             state,
             redirectUrl: `${window.location.origin}/microsoft-oauth-callback`,
-          })
+          });
 
-          const { data } = await whoamiQuery.refetch()
+          const { data } = await whoamiQuery.refetch();
           if (!data) {
-            throw new Error('No data returned from whoami query')
+            throw new Error('No data returned from whoami query');
           }
 
           if (data?.intermediateSession?.emailVerified) {
-            navigate(`/login?view=${LoginViews.ChooseOrganization}`)
-            return
+            navigate(`/login?view=${LoginViews.ChooseOrganization}`);
+            return;
           }
 
-          await issueEmailVerificationChallengeMutation.mutateAsync({})
+          await issueEmailVerificationChallengeMutation.mutateAsync({});
 
-          navigate(`/login?view=${LoginViews.VerifyEmail}`)
+          navigate(`/login?view=${LoginViews.VerifyEmail}`);
         } catch (error) {
           // TODO: Handle errors on screen once an error handling strategy is in place.
-          console.error(error)
+          const message = parseErrorMessage(error);
+          toast.error('Failed to verify Microsoft OAuth credentials', {
+            description: message,
+          });
+
+          navigate('/login');
         }
       }
-    })()
-  }, [])
+    })();
+  }, []);
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
@@ -59,7 +68,7 @@ const MicrosoftOAuthCallbackPage = () => {
 
       <div className="space-y-4 text-center"></div>
     </div>
-  )
-}
+  );
+};
 
-export default MicrosoftOAuthCallbackPage
+export default MicrosoftOAuthCallbackPage;

@@ -1,83 +1,82 @@
-import React, { Dispatch, FC, SetStateAction, useEffect } from 'react'
-import OAuthButton, { OAuthMethods } from '@/components/OAuthButton'
-import { Title } from '@/components/Title'
+import React, { Dispatch, FC, SetStateAction } from 'react';
+import OAuthButton, { OAuthMethods } from '@/components/OAuthButton';
+import { Title } from '@/components/Title';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { AuthType, useAuthType, useIntermediateOrganization } from '@/lib/auth'
-import useSettings, { useLayout } from '@/lib/settings'
-import { cn } from '@/lib/utils'
-import { LoginLayouts, LoginViews } from '@/lib/views'
-import { parseErrorMessage } from '@/lib/errors'
-import { toast } from 'sonner'
-import { useMutation, useQuery } from '@connectrpc/connect-query'
+} from '@/components/ui/card';
+import { AuthType, useAuthType, useIntermediateOrganization } from '@/lib/auth';
+import useSettings, { useLayout } from '@/lib/settings';
+import { cn } from '@/lib/utils';
+import { LoginLayouts, LoginViews } from '@/lib/views';
+import { parseErrorMessage } from '@/lib/errors';
+import { toast } from 'sonner';
+import { useMutation } from '@connectrpc/connect-query';
 import {
   getGoogleOAuthRedirectURL,
   getMicrosoftOAuthRedirectURL,
-} from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
-import TextDivider from '@/components/ui/text-divider'
-import EmailForm from '@/components/EmailForm'
-import { Organization } from '@/gen/openauth/intermediate/v1/intermediate_pb'
-import { Button } from '@/components/ui/button'
+} from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery';
+import TextDivider from '@/components/ui/text-divider';
+import EmailForm from '@/components/EmailForm';
+import { Button } from '@/components/ui/button';
 
 interface ChooseOrganizationPrimaryLoginFactorProps {
-  setView: Dispatch<SetStateAction<LoginViews>>
+  setView: Dispatch<SetStateAction<LoginViews>>;
 }
 
 const ChooseOrganizationPrimaryLoginFactor: FC<
   ChooseOrganizationPrimaryLoginFactorProps
 > = ({ setView }) => {
-  const authType = useAuthType()
-  const layout = useLayout()
-  const organization = useIntermediateOrganization()
-  const settings = useSettings()
+  const authType = useAuthType();
+  const layout = useLayout();
+  const organization = useIntermediateOrganization();
+  const settings = useSettings();
 
-  const googleOAuthRedirectUrlMutation = useMutation(getGoogleOAuthRedirectURL)
+  const googleOAuthRedirectUrlMutation = useMutation(getGoogleOAuthRedirectURL);
   const microsoftOAuthRedirectUrlMutation = useMutation(
     getMicrosoftOAuthRedirectURL,
-  )
+  );
 
   const handleGoogleOAuthLogin = async (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
+    e.preventDefault();
+    e.stopPropagation();
 
     try {
       const { url } = await googleOAuthRedirectUrlMutation.mutateAsync({
         redirectUrl: `${window.location.origin}/google-oauth-callback`,
-      })
+      });
 
-      window.location.href = url
+      window.location.href = url;
     } catch (error) {
-      const message = parseErrorMessage(error)
+      const message = parseErrorMessage(error);
 
       toast.error('Could not get Google OAuth redirect URL', {
         description: message,
-      })
+      });
     }
-  }
+  };
 
   const handleMicrosoftOAuthLogin = async (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
+    e.preventDefault();
+    e.stopPropagation();
 
     try {
       const { url } = await microsoftOAuthRedirectUrlMutation.mutateAsync({
         redirectUrl: `${window.location.origin}/microsoft-oauth-callback`,
-      })
+      });
 
-      window.location.href = url
+      window.location.href = url;
     } catch (error) {
-      const message = parseErrorMessage(error)
+      const message = parseErrorMessage(error);
 
       toast.error('Could not get Microsoft OAuth redirect URL', {
         description: message,
-      })
+      });
     }
-  }
+  };
 
   return (
     <>
@@ -166,7 +165,7 @@ const ChooseOrganizationPrimaryLoginFactor: FC<
         </CardContent>
       </Card>
     </>
-  )
-}
+  );
+};
 
-export default ChooseOrganizationPrimaryLoginFactor
+export default ChooseOrganizationPrimaryLoginFactor;

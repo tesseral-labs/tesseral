@@ -1,9 +1,9 @@
-import React, { FC, FormEvent, MouseEvent, useEffect, useState } from 'react'
-import QRCode from 'qrcode'
-import { useOrganization, useUser } from '@/lib/auth'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { useMutation, useQuery } from '@connectrpc/connect-query'
+import React, { FC, FormEvent, MouseEvent, useEffect, useState } from 'react';
+import QRCode from 'qrcode';
+import { useUser } from '@/lib/auth';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { useMutation, useQuery } from '@connectrpc/connect-query';
 import {
   deleteMyPasskey,
   getAuthenticatorAppOptions,
@@ -14,15 +14,15 @@ import {
   registerPasskey,
   setPassword as setUserPassword,
   whoami,
-} from '@/gen/openauth/frontend/v1/frontend-FrontendService_connectquery'
-import { Input } from '@/components/ui/input'
+} from '@/gen/openauth/frontend/v1/frontend-FrontendService_connectquery';
+import { Input } from '@/components/ui/input';
 import {
   Table,
   TableBody,
   TableCell,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
+} from '@/components/ui/table';
 import {
   Dialog,
   DialogContent,
@@ -31,136 +31,138 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import { base64urlEncode } from '@/lib/utils'
-import { parseErrorMessage } from '@/lib/errors'
-import { toast } from 'sonner'
+} from '@/components/ui/dialog';
+import { base64urlEncode } from '@/lib/utils';
+import { parseErrorMessage } from '@/lib/errors';
+import { toast } from 'sonner';
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSeparator,
   InputOTPSlot,
-} from '@/components/ui/input-otp'
-import Loader from '@/components/ui/loader'
-import { CheckCircle, PlusCircle } from 'lucide-react'
+} from '@/components/ui/input-otp';
+import Loader from '@/components/ui/loader';
+import { CheckCircle, PlusCircle } from 'lucide-react';
 
 const UserSettingsPage: FC = () => {
-  const encoder = new TextEncoder()
-  const user = useUser()
+  const encoder = new TextEncoder();
+  const user = useUser();
 
-  const { data: whoamiRes, refetch: refetchMe } = useQuery(whoami)
-  const { data: organizationRes } = useQuery(getOrganization)
-  const deleteMyPasskeyMutation = useMutation(deleteMyPasskey)
-  const setPasswordMutation = useMutation(setUserPassword)
+  const { data: whoamiRes, refetch: refetchMe } = useQuery(whoami);
+  const { data: organizationRes } = useQuery(getOrganization);
+  const deleteMyPasskeyMutation = useMutation(deleteMyPasskey);
+  const setPasswordMutation = useMutation(setUserPassword);
   const getAuthenticatorAppOptionsMutation = useMutation(
     getAuthenticatorAppOptions,
-  )
-  const getPasskeyOptionsMutation = useMutation(getPasskeyOptions)
+  );
+  const getPasskeyOptionsMutation = useMutation(getPasskeyOptions);
   const { data: listMyPasskeysRes, refetch: refetchMyPasskeys } =
-    useQuery(listMyPasskeys)
-  const registerAuthenticatorAppMutation = useMutation(registerAuthenticatorApp)
-  const registerPasskeyMutation = useMutation(registerPasskey)
+    useQuery(listMyPasskeys);
+  const registerAuthenticatorAppMutation = useMutation(
+    registerAuthenticatorApp,
+  );
+  const registerPasskeyMutation = useMutation(registerPasskey);
 
-  const [authenticatorAppCode, setAuthenticatorAppCode] = useState('')
+  const [authenticatorAppCode, setAuthenticatorAppCode] = useState('');
   const [authenticatorAppDialogOpen, setAuthenticatorAppDialogOpen] =
-    useState(false)
-  const [editingEmail, setEditingEmail] = useState(false)
-  const [editingPassword, setEditingPassword] = useState(false)
-  const [email, setEmail] = useState(whoamiRes?.user?.email || '')
-  const [password, setPassword] = useState('')
-  const [qrImage, setQRImage] = useState<string | null>(null)
+    useState(false);
+  const [editingEmail, setEditingEmail] = useState(false);
+  const [editingPassword, setEditingPassword] = useState(false);
+  const [email, setEmail] = useState(whoamiRes?.user?.email || '');
+  const [password, setPassword] = useState('');
+  const [qrImage, setQRImage] = useState<string | null>(null);
   const [registeringAuthenticatorApp, setRegisteringAuthenticatorApp] =
-    useState(false)
+    useState(false);
 
   const handleDeletePasskey = async (id: string) => {
     try {
       await deleteMyPasskeyMutation.mutateAsync({
         id,
-      })
+      });
     } catch (error) {
-      const message = parseErrorMessage(error)
+      const message = parseErrorMessage(error);
       toast.error('Could not delete passkey', {
         description: message,
-      })
+      });
     }
 
     try {
-      await refetchMyPasskeys()
+      await refetchMyPasskeys();
     } catch (error) {
-      const message = parseErrorMessage(error)
+      const message = parseErrorMessage(error);
       toast.error('Could not fetch updated passkey list', {
         description: message,
-      })
+      });
     }
-  }
+  };
 
-  const handleEmailSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  const handleEmailSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
     // TODO: Kick off email validation and show a modal to verify the new email address
-  }
+  };
 
   const handlePasswordSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+    e.preventDefault();
 
     try {
-      setPasswordMutation.mutateAsync({
+      await setPasswordMutation.mutateAsync({
         password,
-      })
-      setEditingPassword(false)
+      });
+      setEditingPassword(false);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
 
   const handleAuthenticatorAppClick = async (
     e: MouseEvent<HTMLButtonElement>,
   ) => {
-    e.stopPropagation()
+    e.stopPropagation();
 
     const authenticatorAppOptions =
-      await getAuthenticatorAppOptionsMutation.mutateAsync({})
+      await getAuthenticatorAppOptionsMutation.mutateAsync({});
     const qrImage = await QRCode.toDataURL(authenticatorAppOptions.otpauthUri, {
       errorCorrectionLevel: 'H',
-    })
-    setQRImage(qrImage)
+    });
+    setQRImage(qrImage);
 
-    return true
-  }
+    return true;
+  };
 
   const handleRegisterAuthenticatorApp = async (
     e: FormEvent<HTMLFormElement>,
   ) => {
-    e.preventDefault()
-    setRegisteringAuthenticatorApp(true)
+    e.preventDefault();
+    setRegisteringAuthenticatorApp(true);
 
     try {
       await registerAuthenticatorAppMutation.mutateAsync({
         totpCode: authenticatorAppCode,
-      })
+      });
 
-      await refetchMe()
+      await refetchMe();
 
-      setRegisteringAuthenticatorApp(false)
-      setAuthenticatorAppDialogOpen(false)
-      setAuthenticatorAppCode('')
-      setQRImage(null)
+      setRegisteringAuthenticatorApp(false);
+      setAuthenticatorAppDialogOpen(false);
+      setAuthenticatorAppCode('');
+      setQRImage(null);
     } catch (error) {
-      setRegisteringAuthenticatorApp(false)
-      const message = parseErrorMessage(error)
+      setRegisteringAuthenticatorApp(false);
+      const message = parseErrorMessage(error);
       toast.error('Could not register authenticator app', {
         description: message,
-      })
+      });
     }
-  }
+  };
 
   const handleRegisterPasskeyClick = async () => {
     try {
       if (!navigator.credentials) {
-        throw new Error('WebAuthn not supported')
+        throw new Error('WebAuthn not supported');
       }
 
-      const passkeyOptions = await getPasskeyOptionsMutation.mutateAsync({})
+      const passkeyOptions = await getPasskeyOptionsMutation.mutateAsync({});
       const credentialOptions: PublicKeyCredentialCreationOptions = {
         challenge: new Uint8Array([0]).buffer,
         rp: {
@@ -177,14 +179,14 @@ const UserSettingsPage: FC = () => {
         ],
         timeout: 60000,
         attestation: 'direct',
-      }
+      };
 
       const credential = (await navigator.credentials.create({
         publicKey: credentialOptions,
-      })) as PublicKeyCredential
+      })) as PublicKeyCredential;
 
       if (!credential) {
-        throw new Error('No credential returned')
+        throw new Error('No credential returned');
       }
 
       await registerPasskeyMutation.mutateAsync({
@@ -192,22 +194,22 @@ const UserSettingsPage: FC = () => {
           (credential.response as AuthenticatorAttestationResponse)
             .attestationObject,
         ),
-      })
+      });
 
-      await refetchMyPasskeys()
+      await refetchMyPasskeys();
     } catch (error) {
-      const message = parseErrorMessage(error)
+      const message = parseErrorMessage(error);
       toast.error('Could not register passkey', {
         description: message,
-      })
+      });
     }
-  }
+  };
 
   useEffect(() => {
     if (whoamiRes && whoamiRes.user?.email) {
-      setEmail(whoamiRes.user.email)
+      setEmail(whoamiRes.user.email);
     }
-  }, [whoamiRes])
+  }, [whoamiRes]);
 
   return (
     <div className="dark:text-foreground">
@@ -258,9 +260,9 @@ const UserSettingsPage: FC = () => {
                   <Button
                     className="text-sm rounded border border-border focus:border-primary mb-2 mr-2"
                     onClick={(e: MouseEvent<HTMLButtonElement>) => {
-                      e.preventDefault()
-                      e.stopPropagation()
-                      setEditingEmail(false)
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setEditingEmail(false);
                     }}
                     variant="outline"
                   >
@@ -277,9 +279,9 @@ const UserSettingsPage: FC = () => {
                 <Button
                   className="text-sm rounded border border-border focus:border-primary mb-2"
                   onClick={(e: MouseEvent<HTMLButtonElement>) => {
-                    e.preventDefault()
-                    e.stopPropagation()
-                    setEditingEmail(true)
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setEditingEmail(true);
                   }}
                   variant="outline"
                 >
@@ -311,10 +313,10 @@ const UserSettingsPage: FC = () => {
                     <Button
                       className="text-sm rounded border border-border focus:border-primary mb-2 mr-2"
                       onClick={(e: MouseEvent<HTMLButtonElement>) => {
-                        e.preventDefault()
-                        e.stopPropagation()
+                        e.preventDefault();
+                        e.stopPropagation();
 
-                        setEditingPassword(false)
+                        setEditingPassword(false);
                       }}
                       variant="outline"
                     >
@@ -331,9 +333,9 @@ const UserSettingsPage: FC = () => {
                   <Button
                     className="text-sm rounded border border-border focus:border-primary mb-2"
                     onClick={(e: MouseEvent<HTMLButtonElement>) => {
-                      e.preventDefault()
-                      e.stopPropagation()
-                      setEditingPassword(true)
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setEditingPassword(true);
                     }}
                     variant="outline"
                   >
@@ -484,9 +486,11 @@ const UserSettingsPage: FC = () => {
                           <DialogFooter>
                             <Button
                               className="mr-2"
-                              onClick={(e: MouseEvent<HTMLButtonElement>) => {
-                                e.preventDefault()
-                                handleDeletePasskey(passkey.id)
+                              onClick={async (
+                                e: MouseEvent<HTMLButtonElement>,
+                              ) => {
+                                e.preventDefault();
+                                await handleDeletePasskey(passkey.id);
                               }}
                               variant="destructive"
                             >
@@ -504,7 +508,7 @@ const UserSettingsPage: FC = () => {
         </Card>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default UserSettingsPage
+export default UserSettingsPage;

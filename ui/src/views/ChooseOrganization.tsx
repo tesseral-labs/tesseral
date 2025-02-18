@@ -1,58 +1,58 @@
-import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
+import React, { Dispatch, FC, SetStateAction, useState } from 'react';
 
-import { Title } from '@/components/Title'
-import { useMutation, useQuery } from '@connectrpc/connect-query'
+import { Title } from '@/components/Title';
+import { useMutation, useQuery } from '@connectrpc/connect-query';
 import {
   exchangeIntermediateSessionForSession,
   listOrganizations,
   setOrganization,
   whoami,
-} from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
-import { Organization } from '@/gen/openauth/intermediate/v1/intermediate_pb'
+} from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery';
+import { Organization } from '@/gen/openauth/intermediate/v1/intermediate_pb';
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { useNavigate } from 'react-router-dom'
-import { setAccessToken, setRefreshToken } from '@/auth'
-import { LoginLayouts, LoginViews } from '@/lib/views'
-import { cn } from '@/lib/utils'
-import { useLayout } from '@/lib/settings'
-import { parseErrorMessage } from '@/lib/errors'
-import { toast } from 'sonner'
-import Loader from '@/components/ui/loader'
+} from '@/components/ui/card';
+import { useNavigate } from 'react-router-dom';
+import { setAccessToken, setRefreshToken } from '@/auth';
+import { LoginLayouts, LoginViews } from '@/lib/views';
+import { cn } from '@/lib/utils';
+import { useLayout } from '@/lib/settings';
+import { parseErrorMessage } from '@/lib/errors';
+import { toast } from 'sonner';
+import Loader from '@/components/ui/loader';
 import {
   isValidPrimaryLoginFactor,
   PrimaryLoginFactor,
-} from '@/lib/login-factors'
-import TextDivider from '@/components/ui/text-divider'
-import { Button } from '@/components/ui/button'
+} from '@/lib/login-factors';
+import TextDivider from '@/components/ui/text-divider';
+import { Button } from '@/components/ui/button';
 
 interface ChooseOrganizationProps {
   setIntermediateOrganization: Dispatch<
     SetStateAction<Organization | undefined>
-  >
-  setView: Dispatch<SetStateAction<LoginViews>>
+  >;
+  setView: Dispatch<SetStateAction<LoginViews>>;
 }
 
 const ChooseOrganization: FC<ChooseOrganizationProps> = ({
   setIntermediateOrganization,
   setView,
 }) => {
-  const layout = useLayout()
-  const navigate = useNavigate()
+  const layout = useLayout();
+  const navigate = useNavigate();
 
-  const [setting, setSetting] = useState<boolean>(false)
+  const [setting, setSetting] = useState<boolean>(false);
 
-  const { data: whoamiRes } = useQuery(whoami)
-  const { data: listOrganizationsResponse } = useQuery(listOrganizations)
+  const { data: whoamiRes } = useQuery(whoami);
+  const { data: listOrganizationsResponse } = useQuery(listOrganizations);
   const exchangeIntermediateSessionForSessionMutation = useMutation(
     exchangeIntermediateSessionForSession,
-  )
-  const setOrganizationMutation = useMutation(setOrganization)
+  );
+  const setOrganizationMutation = useMutation(setOrganization);
 
   // This function is effectively the central routing layer for Organization selection.
   // It determines the next view based on the current organization's settings and the user's current state.
@@ -73,7 +73,7 @@ const ChooseOrganization: FC<ChooseOrganizationProps> = ({
     organization: Organization,
   ): LoginViews | undefined => {
     const primaryLoginFactor =
-      whoamiRes?.intermediateSession?.primaryLoginFactor
+      whoamiRes?.intermediateSession?.primaryLoginFactor;
 
     if (
       primaryLoginFactor &&
@@ -82,81 +82,81 @@ const ChooseOrganization: FC<ChooseOrganizationProps> = ({
         organization,
       )
     ) {
-      return LoginViews.ChooseOrganizationPrimaryLoginFactor
+      return LoginViews.ChooseOrganizationPrimaryLoginFactor;
     } else {
       if (organization.logInWithPassword) {
         if (organization.userHasPassword) {
-          return LoginViews.VerifyPassword
+          return LoginViews.VerifyPassword;
         }
 
-        return LoginViews.RegisterPassword
+        return LoginViews.RegisterPassword;
       } else if (
         organization.userHasAuthenticatorApp &&
         !organization.userHasPasskey
       ) {
-        return LoginViews.VerifyAuthenticatorApp
+        return LoginViews.VerifyAuthenticatorApp;
       } else if (
         organization.userHasPasskey &&
         !organization.userHasAuthenticatorApp
       ) {
-        return LoginViews.VerifyPasskey
+        return LoginViews.VerifyPasskey;
       } else if (organization.requireMfa) {
         // this is the case where the organization has multiple secondary factors and requires mfa
-        return LoginViews.ChooseAdditionalFactor
+        return LoginViews.ChooseAdditionalFactor;
       }
     }
-  }
+  };
 
   const handleOrganizationClick = async (organization: Organization) => {
-    setSetting(true)
+    setSetting(true);
     const intermediateOrganization = {
       ...organization,
-    }
+    };
     try {
       if (!whoamiRes?.intermediateSession) {
-        throw new Error('No intermediate session found')
+        throw new Error('No intermediate session found');
       }
 
       await setOrganizationMutation.mutateAsync({
         organizationId: organization.id,
-      })
+      });
 
-      setSetting(false)
-      setIntermediateOrganization(intermediateOrganization)
+      setSetting(false);
+      setIntermediateOrganization(intermediateOrganization);
     } catch (error) {
-      setSetting(false)
-      const message = parseErrorMessage(error)
+      setSetting(false);
+      const message = parseErrorMessage(error);
       toast.error('Could not set organization', {
         description: message,
-      })
+      });
     }
 
     try {
       // Check if the needs to provide additional factors
-      const nextView = deriveNextView(intermediateOrganization)
-      if (!!nextView) {
-        setView(nextView)
-        return
+      const nextView = deriveNextView(intermediateOrganization);
+      if (nextView) {
+        setView(nextView);
+        return;
       }
 
       const { accessToken, refreshToken } =
         await exchangeIntermediateSessionForSessionMutation.mutateAsync({
           organizationId: organization.id,
-        })
+        });
 
-      setAccessToken(accessToken)
-      setRefreshToken(refreshToken)
-      setSetting(false)
+      setAccessToken(accessToken);
+      setRefreshToken(refreshToken);
+      setSetting(false);
 
-      navigate('/settings')
+      navigate('/settings');
     } catch (error) {
-      setSetting(false)
-      const message = parseErrorMessage(error)
+      setSetting(false);
+      const message = parseErrorMessage(error);
       toast.error('Could not set organization', {
         description: message,
-      })
+      });
     }
-  }
+  };
 
   return (
     <>
@@ -173,23 +173,21 @@ const ChooseOrganization: FC<ChooseOrganizationProps> = ({
         </CardHeader>
         <CardContent className="flex flex-col items-center justify-center w-full">
           <ul className="w-full p-0">
-            {listOrganizationsResponse?.organizations?.map(
-              (organization, idx) => (
-                <li
-                  key={organization.id}
+            {listOrganizationsResponse?.organizations?.map((organization) => (
+              <li
+                key={organization.id}
+                onClick={() => handleOrganizationClick(organization)}
+              >
+                <Button
+                  className="w-full"
+                  variant="outline"
                   onClick={() => handleOrganizationClick(organization)}
                 >
-                  <Button
-                    className="w-full"
-                    variant="outline"
-                    onClick={() => handleOrganizationClick(organization)}
-                  >
-                    {setting && <Loader />}
-                    {organization.displayName}
-                  </Button>
-                </li>
-              ),
-            )}
+                  {setting && <Loader />}
+                  {organization.displayName}
+                </Button>
+              </li>
+            ))}
           </ul>
         </CardContent>
         <CardFooter>
@@ -206,7 +204,7 @@ const ChooseOrganization: FC<ChooseOrganizationProps> = ({
         </CardFooter>
       </Card>
     </>
-  )
-}
+  );
+};
 
-export default ChooseOrganization
+export default ChooseOrganization;

@@ -1,14 +1,14 @@
-import React, { FC, MouseEvent, useEffect, useState } from 'react'
-import { DateTime } from 'luxon'
-import { useUser } from '@/lib/auth'
+import React, { FC, MouseEvent, useEffect, useState } from 'react';
+import { DateTime } from 'luxon';
+import { useUser } from '@/lib/auth';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { useMutation, useQuery } from '@connectrpc/connect-query'
+} from '@/components/ui/card';
+import { useMutation, useQuery } from '@connectrpc/connect-query';
 import {
   createUserInvite,
   getOrganization,
@@ -17,73 +17,71 @@ import {
   listUsers,
   updateOrganization,
   updateUser,
-} from '@/gen/openauth/frontend/v1/frontend-FrontendService_connectquery'
+} from '@/gen/openauth/frontend/v1/frontend-FrontendService_connectquery';
 import {
   Table,
   TableBody,
   TableCell,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
-import { Button } from '@/components/ui/button'
-import { Link } from 'react-router-dom'
-import { Switch } from '@/components/ui/switch'
-import { parseErrorMessage } from '@/lib/errors'
-import { toast } from 'sonner'
-import Loader from '@/components/ui/loader'
+} from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
+import { Switch } from '@/components/ui/switch';
+import { parseErrorMessage } from '@/lib/errors';
+import { toast } from 'sonner';
+import Loader from '@/components/ui/loader';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { DialogHeader } from '@/components/ui/dialog'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+ DialogHeader } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const OrganizationSettingsPage: FC = () => {
-  const user = useUser()
+  const user = useUser();
 
-  const { data: usersData, refetch: refetchUsers } = useQuery(listUsers)
+  const { data: usersData, refetch: refetchUsers } = useQuery(listUsers);
   const { data: organizationRes, refetch: refetchOrganization } =
-    useQuery(getOrganization)
-  const { data: samlConnectionsData, refetch: refetchSAMLConnections } =
-    useQuery(listSAMLConnections)
-  const createUserInviteMutation = useMutation(createUserInvite)
-  const updateOrganizationMutation = useMutation(updateOrganization)
-  const updateUserMutation = useMutation(updateUser)
+    useQuery(getOrganization);
+  const { data: samlConnectionsData } = useQuery(listSAMLConnections);
+  const createUserInviteMutation = useMutation(createUserInvite);
+  const updateOrganizationMutation = useMutation(updateOrganization);
+  const updateUserMutation = useMutation(updateUser);
   const { data: userInvites, refetch: refetchUserInvites } =
-    useQuery(listUserInvites)
+    useQuery(listUserInvites);
 
-  const [creatingUserInvite, setCreatingUserInvite] = useState(false)
-  const [editingLoginSettings, setEditingLoginSettings] = useState(false)
-  const [inviteUserVisible, setInviteUserVisible] = useState(false)
-  const [inviteeEmail, setInviteeEmail] = useState('')
-  const [inviteeIsOwner, setInviteeIsOwner] = useState(false)
+  const [creatingUserInvite, setCreatingUserInvite] = useState(false);
+  const [editingLoginSettings, setEditingLoginSettings] = useState(false);
+  const [inviteUserVisible, setInviteUserVisible] = useState(false);
+  const [inviteeEmail, setInviteeEmail] = useState('');
+  const [inviteeIsOwner, setInviteeIsOwner] = useState(false);
   const [logInWithAuthenticatorApp, setLogInWithAuthenticatorApp] = useState(
     organizationRes?.organization?.logInWithAuthenticatorApp,
-  )
+  );
   const [logInWithEmail, setLogInWithEmail] = useState(
     organizationRes?.organization?.logInWithEmail,
-  )
+  );
   const [logInWithGoogle, setLogInWithGoogle] = useState(
     organizationRes?.organization?.logInWithGoogle,
-  )
+  );
   const [logInWithMicrosoft, setLogInWithMicrosoft] = useState(
     organizationRes?.organization?.logInWithMicrosoft,
-  )
+  );
   const [logInWithPasskey, setLogInWithPasskey] = useState(
     organizationRes?.organization?.logInWithPasskey,
-  )
+  );
   const [logInWithPassword, setLogInWithPassword] = useState(
     organizationRes?.organization?.logInWithPassword,
-  )
+  );
   const [requireMFA, setRequireMFA] = useState(
     organizationRes?.organization?.requireMfa,
-  )
-  const [submittingLoginSettings, setSubmittingLoginSettings] = useState(false)
+  );
+  const [submittingLoginSettings, setSubmittingLoginSettings] = useState(false);
 
   const changeUserRole = async (userId: string, isOwner: boolean) => {
     await updateUserMutation.mutateAsync({
@@ -91,20 +89,20 @@ const OrganizationSettingsPage: FC = () => {
       user: {
         owner: isOwner,
       },
-    })
+    });
 
-    refetchUsers()
-  }
+    await refetchUsers();
+  };
 
-  const resetLoginSettings = async () => {
-    setLogInWithEmail(organizationRes?.organization?.logInWithEmail)
-    setLogInWithGoogle(organizationRes?.organization?.logInWithGoogle)
-    setLogInWithMicrosoft(organizationRes?.organization?.logInWithMicrosoft)
-    setLogInWithPassword(organizationRes?.organization?.logInWithPassword)
-  }
+  const resetLoginSettings = () => {
+    setLogInWithEmail(organizationRes?.organization?.logInWithEmail);
+    setLogInWithGoogle(organizationRes?.organization?.logInWithGoogle);
+    setLogInWithMicrosoft(organizationRes?.organization?.logInWithMicrosoft);
+    setLogInWithPassword(organizationRes?.organization?.logInWithPassword);
+  };
 
   const submitLoginSettings = async () => {
-    setSubmittingLoginSettings(true)
+    setSubmittingLoginSettings(true);
     try {
       await updateOrganizationMutation.mutateAsync({
         organization: {
@@ -113,50 +111,50 @@ const OrganizationSettingsPage: FC = () => {
           logInWithMicrosoft,
           logInWithPassword,
         },
-      })
+      });
 
-      setEditingLoginSettings(false)
-      await refetchOrganization()
-      resetLoginSettings()
-      setSubmittingLoginSettings(false)
+      setEditingLoginSettings(false);
+      await refetchOrganization();
+      resetLoginSettings();
+      setSubmittingLoginSettings(false);
     } catch (error) {
-      setSubmittingLoginSettings(false)
-      const message = parseErrorMessage(error)
+      setSubmittingLoginSettings(false);
+      const message = parseErrorMessage(error);
       toast.error('Could not update organization settings', {
         description: message,
-      })
+      });
     }
-  }
+  };
 
   const submitUserInvite = async () => {
-    setCreatingUserInvite(true)
+    setCreatingUserInvite(true);
     try {
       await createUserInviteMutation.mutateAsync({
         userInvite: {
           email: inviteeEmail,
           owner: inviteeIsOwner,
         },
-      })
+      });
 
-      await refetchUserInvites()
+      await refetchUserInvites();
 
-      setInviteUserVisible(false)
-      setCreatingUserInvite(false)
-      setInviteeEmail('')
-      setInviteeIsOwner(false)
+      setInviteUserVisible(false);
+      setCreatingUserInvite(false);
+      setInviteeEmail('');
+      setInviteeIsOwner(false);
     } catch (error) {
-      const message = parseErrorMessage(error)
+      const message = parseErrorMessage(error);
       toast.error('Could not invite user', {
         description: message,
-      })
+      });
     }
-  }
+  };
 
   useEffect(() => {
     if (organizationRes?.organization) {
-      resetLoginSettings()
+      resetLoginSettings();
     }
-  }, [organizationRes])
+  }, [organizationRes]);
 
   return (
     <div className="dark:text-foreground">
@@ -217,8 +215,8 @@ const OrganizationSettingsPage: FC = () => {
                 <div className="">
                   <Button
                     onClick={() => {
-                      setEditingLoginSettings(false)
-                      resetLoginSettings()
+                      setEditingLoginSettings(false);
+                      resetLoginSettings();
                     }}
                     variant="outline"
                   >
@@ -407,9 +405,10 @@ const OrganizationSettingsPage: FC = () => {
                         <Button
                           variant="outline"
                           onClick={() => {
-                            setInviteUserVisible(false)
+                            setInviteUserVisible(false);
                           }}
                         >
+                          {creatingUserInvite && <Loader />}
                           Cancel
                         </Button>
                         <Button className="ml-2">Invite</Button>
@@ -451,10 +450,10 @@ const OrganizationSettingsPage: FC = () => {
                           <div
                             className="ml-2 rounded cursor-pointer text-primary border-border px-4 py-2 inline-block"
                             onClick={async (e: MouseEvent<HTMLSpanElement>) => {
-                              e.stopPropagation()
-                              e.preventDefault()
+                              e.stopPropagation();
+                              e.preventDefault();
 
-                              await changeUserRole(u.id, !u.owner)
+                              await changeUserRole(u.id, !u.owner);
                             }}
                           >
                             Make {u.owner ? 'Member' : 'Owner'}
@@ -545,7 +544,7 @@ const OrganizationSettingsPage: FC = () => {
         </CardContent>
       </Card>
     </div>
-  )
-}
+  );
+};
 
-export default OrganizationSettingsPage
+export default OrganizationSettingsPage;
