@@ -1,4 +1,5 @@
-import { useMutation } from '@tanstack/react-query'
+import { refresh } from '@/gen/openauth/frontend/v1/frontend-FrontendService_connectquery'
+import { useMutation } from '@connectrpc/connect-query'
 import { useState } from 'react'
 
 interface User {
@@ -24,43 +25,23 @@ export function useUser(): User | undefined {
 export function useAccessToken(): string | undefined {
   const [hasFailure, setHasFailure] = useState(false)
   const [accessToken, setAccessToken] = useLocalStorage('access_token')
-  const refresh = useMutation({
-    mutationKey: ['refresh'],
-    mutationFn: async () => {
-      const response = await fetch(
-        `https://auth.console.tesseral.example.com/api/frontend/v1/refresh`,
-        {
-          credentials: 'include',
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: '{}',
-        },
-      )
 
-      if (!response.ok) {
-        return
-      }
-
-      return (await response.json()).accessToken
-    },
-    retry: 0,
-  })
+  const refreshMutaion = useMutation(refresh)
 
   if (!hasFailure && (!accessToken || shouldRefresh(accessToken))) {
-    if (!refresh.isPending) {
-      refresh.mutate(undefined, {
-        onError: () => {
-          setHasFailure(true)
-        },
-        onSuccess: (accessToken) => {
-          if (accessToken) {
-            setHasFailure(false)
-            setAccessToken(accessToken)
-          }
-        },
-      })
+    if (!refreshMutaion.isPending) {
+      try {
+        refreshMutaion
+          .mutateAsync({})
+          .then((result) => {
+            setAccessToken(result.accessToken)
+          })
+          .catch((e) => {
+            setHasFailure(true)
+          })
+      } catch (e) {
+        setHasFailure(true)
+      }
     }
   }
 
