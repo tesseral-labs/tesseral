@@ -29,7 +29,7 @@ export default tseslint.config(
   {
     rules: {
       'prefer-arrow/prefer-arrow-functions': [
-        'warn',
+        'error',
         {
           disallowPrototype: true,
           singleReturnOnly: false,
