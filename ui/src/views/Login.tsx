@@ -1,107 +1,107 @@
-import React, { Dispatch, FC, SetStateAction, useState } from 'react'
+import React, { Dispatch, FC, SetStateAction } from 'react';
 
-import EmailForm from '@/components/EmailForm'
-import OAuthButton, { OAuthMethods } from '@/components/OAuthButton'
-import { Title } from '@/components/Title'
+import EmailForm from '@/components/EmailForm';
+import OAuthButton, { OAuthMethods } from '@/components/OAuthButton';
+import { Title } from '@/components/Title';
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import TextDivider from '@/components/ui/text-divider'
-import { useMutation } from '@connectrpc/connect-query'
+} from '@/components/ui/card';
+import TextDivider from '@/components/ui/text-divider';
+import { useMutation } from '@connectrpc/connect-query';
 
 import {
   createIntermediateSession,
   getGoogleOAuthRedirectURL,
   getMicrosoftOAuthRedirectURL,
-} from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
-import { LoginLayouts, LoginViews } from '@/lib/views'
-import useSettings, { useLayout } from '@/lib/settings'
-import { cn } from '@/lib/utils'
-import { parseErrorMessage } from '@/lib/errors'
-import { toast } from 'sonner'
-import { AuthType, useAuthType } from '@/lib/auth'
-import { Link } from 'react-router-dom'
+} from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery';
+import { LoginLayouts, LoginViews } from '@/lib/views';
+import useSettings, { useLayout } from '@/lib/settings';
+import { cn } from '@/lib/utils';
+import { parseErrorMessage } from '@/lib/errors';
+import { toast } from 'sonner';
+import { AuthType, useAuthType } from '@/lib/auth';
+import { Link } from 'react-router-dom';
 
 interface LoginProps {
-  setView: Dispatch<SetStateAction<LoginViews>>
+  setView: Dispatch<SetStateAction<LoginViews>>;
 }
 
 const Login: FC<LoginProps> = ({ setView }) => {
-  const authType = useAuthType()
-  const layout = useLayout()
-  const settings = useSettings()
+  const authType = useAuthType();
+  const layout = useLayout();
+  const settings = useSettings();
 
   const createIntermediateSessionMutation = useMutation(
     createIntermediateSession,
-  )
-  const googleOAuthRedirectUrlMutation = useMutation(getGoogleOAuthRedirectURL)
+  );
+  const googleOAuthRedirectUrlMutation = useMutation(getGoogleOAuthRedirectURL);
   const microsoftOAuthRedirectUrlMutation = useMutation(
     getMicrosoftOAuthRedirectURL,
-  )
+  );
 
   const handleGoogleOAuthLogin = async (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
+    e.preventDefault();
+    e.stopPropagation();
 
     try {
       // this sets a cookie that subsequent requests use
-      await createIntermediateSessionMutation.mutateAsync({})
+      await createIntermediateSessionMutation.mutateAsync({});
     } catch (error) {
-      const message = parseErrorMessage(error)
+      const message = parseErrorMessage(error);
 
       toast.error('Could not initialize new session', {
         description: message,
-      })
+      });
     }
 
     try {
       const { url } = await googleOAuthRedirectUrlMutation.mutateAsync({
         redirectUrl: `${window.location.origin}/google-oauth-callback`,
-      })
+      });
 
-      window.location.href = url
+      window.location.href = url;
     } catch (error) {
-      const message = parseErrorMessage(error)
+      const message = parseErrorMessage(error);
 
       toast.error('Could not get Google OAuth redirect URL', {
         description: message,
-      })
+      });
     }
-  }
+  };
 
   const handleMicrosoftOAuthLogin = async (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
+    e.preventDefault();
+    e.stopPropagation();
 
     try {
       // this sets a cookie that subsequent requests use
-      await createIntermediateSessionMutation.mutateAsync({})
+      await createIntermediateSessionMutation.mutateAsync({});
     } catch (error) {
-      const message = parseErrorMessage(error)
+      const message = parseErrorMessage(error);
 
       toast.error('Could not initialize new session', {
         description: message,
-      })
+      });
     }
 
     try {
       const { url } = await microsoftOAuthRedirectUrlMutation.mutateAsync({
         redirectUrl: `${window.location.origin}/microsoft-oauth-callback`,
-      })
+      });
 
-      window.location.href = url
+      window.location.href = url;
     } catch (error) {
-      const message = parseErrorMessage(error)
+      const message = parseErrorMessage(error);
 
       toast.error('Could not get Microsoft OAuth redirect URL', {
         description: message,
-      })
+      });
     }
-  }
+  };
 
   return (
     <>
@@ -178,7 +178,7 @@ const Login: FC<LoginProps> = ({ setView }) => {
         </CardFooter>
       </Card>
     </>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;

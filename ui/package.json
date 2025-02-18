@@ -18,7 +18,7 @@
   },
   "lint-staged": {
     "*.{js,ts,css,md}": "prettier --write",
-    "*.ts": "yarn lint . --quiet"
+    "*.ts": "npm run lint . --fix"
   },
   "dependencies": {
     "@bufbuild/buf": "^1.47.2",
@@ -54,6 +54,7 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@eslint/js": "^9.20.0",
     "@tailwindcss/forms": "^0.5.9",
     "@tailwindcss/typography": "^0.5.15",
     "@types/lodash.debounce": "^4.0.9",
@@ -62,13 +63,12 @@
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@types/react-helmet": "^6.1.11",
-    "@typescript-eslint/eslint-plugin": "^8.14.0",
-    "@typescript-eslint/parser": "^8.14.0",
     "autoprefixer": "^10.4.20",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "esbuild": "^0.24.0",
     "eslint": "^9.14.0",
+    "eslint-plugin-prefer-arrow": "^1.2.3",
     "http-server": "^14.1.1",
     "husky": "^9.1.6",
     "lint-staged": "^15.2.10",
@@ -78,6 +78,7 @@
     "tailwind-merge": "^2.5.4",
     "tailwindcss": "^3.4.14",
     "tailwindcss-animate": "^1.0.7",
-    "typescript": "^5.6.3"
+    "typescript": "^5.6.3",
+    "typescript-eslint": "^8.24.1"
   }
 }

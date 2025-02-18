@@ -1,43 +1,41 @@
-import React, { FC, PropsWithChildren, useEffect, useState } from 'react'
-import { Helmet } from 'react-helmet'
-import { cn } from '@/lib/utils'
+import React, { FC, PropsWithChildren, useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet';
 
-import useDarkMode from '@/lib/dark-mode'
-import useSettings from '@/lib/settings'
+import useDarkMode from '@/lib/dark-mode';
+import useSettings from '@/lib/settings';
 import {
   OrganizationContextProvider,
   ProjectContextProvider,
   UserContextProvider,
   useSession,
-} from '@/lib/auth'
-import Header from './Header'
-import { SidebarProvider, SidebarTrigger } from '../ui/sidebar'
-import DashboardSidebar from './DashboardSidebar'
-import { Toaster } from '../ui/sonner'
-import { useIsMobile } from '@/hooks/use-mobile'
+} from '@/lib/auth';
+import { SidebarProvider, SidebarTrigger } from '../ui/sidebar';
+import DashboardSidebar from './DashboardSidebar';
+import { Toaster } from '../ui/sonner';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const DashboardPage: FC<PropsWithChildren> = ({ children }) => {
-  const isDarkMode = useDarkMode()
-  const isMobile = useIsMobile()
-  const settings = useSettings()
-  const session = useSession()
+  const isDarkMode = useDarkMode();
+  const isMobile = useIsMobile();
+  const settings = useSettings();
+  const session = useSession();
 
-  const [favicon, setFavicon] = useState<string>('/apple-touch-icon.png')
+  const [favicon, setFavicon] = useState<string>('/apple-touch-icon.png');
 
   useEffect(() => {
     if (settings?.faviconUrl) {
-      ;(async () => {
+      void (async () => {
         // Check if the favicon exists before setting it
         const faviconCheck = await fetch(settings.faviconUrl, {
           method: 'HEAD',
-        })
+        });
 
         setFavicon(
           faviconCheck.ok ? settings.faviconUrl : '/apple-touch-icon.png',
-        )
-      })()
+        );
+      })();
     }
-  }, [settings])
+  }, [settings]);
 
   return (
     <div
@@ -68,7 +66,7 @@ const DashboardPage: FC<PropsWithChildren> = ({ children }) => {
         </OrganizationContextProvider>
       </ProjectContextProvider>
     </div>
-  )
-}
+  );
+};
 
-export default DashboardPage
+export default DashboardPage;

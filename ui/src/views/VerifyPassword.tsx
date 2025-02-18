@@ -1,93 +1,93 @@
-import React, { Dispatch, FC, SetStateAction, useState } from 'react'
-import { Title } from '@/components/Title'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import React, { Dispatch, FC, SetStateAction, useState } from 'react';
+import { Title } from '@/components/Title';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import {
   exchangeIntermediateSessionForSession,
   verifyPassword,
-} from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
-import { useMutation } from '@connectrpc/connect-query'
-import { useNavigate } from 'react-router'
-import { setAccessToken, setRefreshToken } from '@/auth'
-import { Input } from '@/components/ui/input'
-import { AuthType, useAuthType, useIntermediateOrganization } from '@/lib/auth'
-import { LoginLayouts, LoginViews } from '@/lib/views'
-import { useLayout } from '@/lib/settings'
-import { cn } from '@/lib/utils'
-import { toast } from 'sonner'
-import { parseErrorMessage } from '@/lib/errors'
-import Loader from '@/components/ui/loader'
+} from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery';
+import { useMutation } from '@connectrpc/connect-query';
+import { useNavigate } from 'react-router';
+import { setAccessToken, setRefreshToken } from '@/auth';
+import { Input } from '@/components/ui/input';
+import { AuthType, useAuthType, useIntermediateOrganization } from '@/lib/auth';
+import { LoginLayouts, LoginViews } from '@/lib/views';
+import { useLayout } from '@/lib/settings';
+import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
+import { parseErrorMessage } from '@/lib/errors';
+import Loader from '@/components/ui/loader';
 
 interface VerifyPasswordProps {
-  setView: Dispatch<SetStateAction<LoginViews>>
+  setView: Dispatch<SetStateAction<LoginViews>>;
 }
 
 const VerifyPassword: FC<VerifyPasswordProps> = ({ setView }) => {
-  const authType = useAuthType()
-  const layout = useLayout()
-  const organization = useIntermediateOrganization()
-  const navigate = useNavigate()
+  const authType = useAuthType();
+  const layout = useLayout();
+  const organization = useIntermediateOrganization();
+  const navigate = useNavigate();
 
-  const [password, setPassword] = useState<string>('')
-  const [submitting, setSubmitting] = useState<boolean>(false)
+  const [password, setPassword] = useState<string>('');
+  const [submitting, setSubmitting] = useState<boolean>(false);
 
   const exchangeIntermediateSessionForSessionMutation = useMutation(
     exchangeIntermediateSessionForSession,
-  )
-  const verifyPasswordMutation = useMutation(verifyPassword)
+  );
+  const verifyPasswordMutation = useMutation(verifyPassword);
 
   const deriveNextView = (): LoginViews | undefined => {
     const hasMultipleSecondFactors =
-      organization?.userHasAuthenticatorApp && organization?.userHasPasskey
+      organization?.userHasAuthenticatorApp && organization?.userHasPasskey;
     const hasSecondFactor =
-      organization?.userHasAuthenticatorApp || organization?.userHasPasskey
+      organization?.userHasAuthenticatorApp || organization?.userHasPasskey;
 
     if (organization?.requireMfa) {
       if (hasMultipleSecondFactors || !hasSecondFactor) {
-        return LoginViews.ChooseAdditionalFactor
+        return LoginViews.ChooseAdditionalFactor;
       } else if (organization?.userHasPasskey) {
-        return LoginViews.VerifyPasskey
+        return LoginViews.VerifyPasskey;
       } else if (organization?.userHasAuthenticatorApp) {
-        return LoginViews.VerifyAuthenticatorApp
+        return LoginViews.VerifyAuthenticatorApp;
       }
     }
-  }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setSubmitting(true)
+    e.preventDefault();
+    setSubmitting(true);
 
     try {
       await verifyPasswordMutation.mutateAsync({
         password,
         organizationId: organization?.id,
-      })
+      });
 
-      const nextView = deriveNextView()
+      const nextView = deriveNextView();
 
-      if (!!nextView) {
-        setView(nextView)
-        return
+      if (nextView) {
+        setView(nextView);
+        return;
       }
 
       const { accessToken, refreshToken } =
         await exchangeIntermediateSessionForSessionMutation.mutateAsync({
           organizationId: organization?.id,
-        })
+        });
 
-      setAccessToken(accessToken)
-      setRefreshToken(refreshToken)
+      setAccessToken(accessToken);
+      setRefreshToken(refreshToken);
 
-      navigate('/settings')
-      setSubmitting(false)
+      navigate('/settings');
+      setSubmitting(false);
     } catch (error) {
-      setSubmitting(false)
-      const message = parseErrorMessage(error)
+      setSubmitting(false);
+      const message = parseErrorMessage(error);
       toast.error('Could not verify password', {
         description: message,
-      })
+      });
     }
-  }
+  };
 
   return (
     <>
@@ -131,7 +131,7 @@ const VerifyPassword: FC<VerifyPasswordProps> = ({ setView }) => {
         </CardContent>
       </Card>
     </>
-  )
-}
+  );
+};
 
-export default VerifyPassword
+export default VerifyPassword;

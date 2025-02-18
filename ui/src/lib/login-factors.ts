@@ -1,4 +1,4 @@
-import { Organization } from '@/gen/openauth/intermediate/v1/intermediate_pb'
+import { Organization } from '@/gen/openauth/intermediate/v1/intermediate_pb';
 
 export enum PrimaryLoginFactor {
   Email = 'email',
@@ -13,18 +13,16 @@ const primaryLoginFactorToOrganizationSettingMap: Record<
   [PrimaryLoginFactor.Email]: 'logInWithEmail',
   [PrimaryLoginFactor.GoogleOAuth]: 'logInWithFoogle',
   [PrimaryLoginFactor.MicrosoftOAuth]: 'logInWithMicrosoft',
-}
+};
 
 export const isValidPrimaryLoginFactor = (
   primaryLoginFactor: PrimaryLoginFactor,
   organization: Organization,
 ) => {
-  console.log(`PrimaryLoginFactor:`, primaryLoginFactor)
-
   const organizationSetting =
-    primaryLoginFactorToOrganizationSettingMap[primaryLoginFactor]
+    primaryLoginFactorToOrganizationSettingMap[primaryLoginFactor];
 
-  console.log('organizationSetting', organizationSetting)
+  console.log('organizationSetting', organizationSetting);
 
-  return !!(organization as Record<string, any>)[organizationSetting]
-}
+  return !!organization[organizationSetting as keyof Organization];
+};
