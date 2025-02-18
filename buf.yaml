@@ -7,3 +7,9 @@ modules:
   - path: internal/intermediate/proto
   - path: internal/oauth/proto
   - path: internal/common/proto
+lint:
+  use:
+    - STANDARD
+breaking:
+  use:
+    - FILE

@@ -1,0 +1,15 @@
+name: buf-ci
+on:
+  push:
+permissions:
+  contents: read
+jobs:
+  buf:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: bufbuild/buf-action@v1
+        with:
+          setup_only: true
+      - run: buf format --diff --exit-code
+      - run: buf lint

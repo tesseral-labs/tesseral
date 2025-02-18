@@ -46,6 +46,18 @@ const (
 	// FrontendServiceUpdateOrganizationProcedure is the fully-qualified name of the FrontendService's
 	// UpdateOrganization RPC.
 	FrontendServiceUpdateOrganizationProcedure = "/openauth.frontend.v1.FrontendService/UpdateOrganization"
+	// FrontendServiceGetOrganizationGoogleHostedDomainsProcedure is the fully-qualified name of the
+	// FrontendService's GetOrganizationGoogleHostedDomains RPC.
+	FrontendServiceGetOrganizationGoogleHostedDomainsProcedure = "/openauth.frontend.v1.FrontendService/GetOrganizationGoogleHostedDomains"
+	// FrontendServiceUpdateOrganizationGoogleHostedDomainsProcedure is the fully-qualified name of the
+	// FrontendService's UpdateOrganizationGoogleHostedDomains RPC.
+	FrontendServiceUpdateOrganizationGoogleHostedDomainsProcedure = "/openauth.frontend.v1.FrontendService/UpdateOrganizationGoogleHostedDomains"
+	// FrontendServiceGetOrganizationMicrosoftTenantIDsProcedure is the fully-qualified name of the
+	// FrontendService's GetOrganizationMicrosoftTenantIDs RPC.
+	FrontendServiceGetOrganizationMicrosoftTenantIDsProcedure = "/openauth.frontend.v1.FrontendService/GetOrganizationMicrosoftTenantIDs"
+	// FrontendServiceUpdateOrganizationMicrosoftTenantIDsProcedure is the fully-qualified name of the
+	// FrontendService's UpdateOrganizationMicrosoftTenantIDs RPC.
+	FrontendServiceUpdateOrganizationMicrosoftTenantIDsProcedure = "/openauth.frontend.v1.FrontendService/UpdateOrganizationMicrosoftTenantIDs"
 	// FrontendServiceListUsersProcedure is the fully-qualified name of the FrontendService's ListUsers
 	// RPC.
 	FrontendServiceListUsersProcedure = "/openauth.frontend.v1.FrontendService/ListUsers"
@@ -54,9 +66,9 @@ const (
 	// FrontendServiceUpdateUserProcedure is the fully-qualified name of the FrontendService's
 	// UpdateUser RPC.
 	FrontendServiceUpdateUserProcedure = "/openauth.frontend.v1.FrontendService/UpdateUser"
-	// FrontendServiceListOrganizationsProcedure is the fully-qualified name of the FrontendService's
-	// ListOrganizations RPC.
-	FrontendServiceListOrganizationsProcedure = "/openauth.frontend.v1.FrontendService/ListOrganizations"
+	// FrontendServiceDeleteUserProcedure is the fully-qualified name of the FrontendService's
+	// DeleteUser RPC.
+	FrontendServiceDeleteUserProcedure = "/openauth.frontend.v1.FrontendService/DeleteUser"
 	// FrontendServiceSetPasswordProcedure is the fully-qualified name of the FrontendService's
 	// SetPassword RPC.
 	FrontendServiceSetPasswordProcedure = "/openauth.frontend.v1.FrontendService/SetPassword"
@@ -134,11 +146,14 @@ type FrontendServiceClient interface {
 	GetProject(context.Context, *connect.Request[v1.GetProjectRequest]) (*connect.Response[v1.GetProjectResponse], error)
 	GetOrganization(context.Context, *connect.Request[v1.GetOrganizationRequest]) (*connect.Response[v1.GetOrganizationResponse], error)
 	UpdateOrganization(context.Context, *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.UpdateOrganizationResponse], error)
+	GetOrganizationGoogleHostedDomains(context.Context, *connect.Request[v1.GetOrganizationGoogleHostedDomainsRequest]) (*connect.Response[v1.GetOrganizationGoogleHostedDomainsResponse], error)
+	UpdateOrganizationGoogleHostedDomains(context.Context, *connect.Request[v1.UpdateOrganizationGoogleHostedDomainsRequest]) (*connect.Response[v1.UpdateOrganizationGoogleHostedDomainsResponse], error)
+	GetOrganizationMicrosoftTenantIDs(context.Context, *connect.Request[v1.GetOrganizationMicrosoftTenantIDsRequest]) (*connect.Response[v1.GetOrganizationMicrosoftTenantIDsResponse], error)
+	UpdateOrganizationMicrosoftTenantIDs(context.Context, *connect.Request[v1.UpdateOrganizationMicrosoftTenantIDsRequest]) (*connect.Response[v1.UpdateOrganizationMicrosoftTenantIDsResponse], error)
 	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
 	GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error)
 	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error)
-	// Gets a list of organizations.
-	ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error)
+	DeleteUser(context.Context, *connect.Request[v1.DeleteUserRequest]) (*connect.Response[v1.DeleteUserResponse], error)
 	// Sets a user's password.
 	SetPassword(context.Context, *connect.Request[v1.SetPasswordRequest]) (*connect.Response[v1.SetPasswordResponse], error)
 	ListSAMLConnections(context.Context, *connect.Request[v1.ListSAMLConnectionsRequest]) (*connect.Response[v1.ListSAMLConnectionsResponse], error)
@@ -206,6 +221,30 @@ func NewFrontendServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			connect.WithSchema(frontendServiceMethods.ByName("UpdateOrganization")),
 			connect.WithClientOptions(opts...),
 		),
+		getOrganizationGoogleHostedDomains: connect.NewClient[v1.GetOrganizationGoogleHostedDomainsRequest, v1.GetOrganizationGoogleHostedDomainsResponse](
+			httpClient,
+			baseURL+FrontendServiceGetOrganizationGoogleHostedDomainsProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("GetOrganizationGoogleHostedDomains")),
+			connect.WithClientOptions(opts...),
+		),
+		updateOrganizationGoogleHostedDomains: connect.NewClient[v1.UpdateOrganizationGoogleHostedDomainsRequest, v1.UpdateOrganizationGoogleHostedDomainsResponse](
+			httpClient,
+			baseURL+FrontendServiceUpdateOrganizationGoogleHostedDomainsProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("UpdateOrganizationGoogleHostedDomains")),
+			connect.WithClientOptions(opts...),
+		),
+		getOrganizationMicrosoftTenantIDs: connect.NewClient[v1.GetOrganizationMicrosoftTenantIDsRequest, v1.GetOrganizationMicrosoftTenantIDsResponse](
+			httpClient,
+			baseURL+FrontendServiceGetOrganizationMicrosoftTenantIDsProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("GetOrganizationMicrosoftTenantIDs")),
+			connect.WithClientOptions(opts...),
+		),
+		updateOrganizationMicrosoftTenantIDs: connect.NewClient[v1.UpdateOrganizationMicrosoftTenantIDsRequest, v1.UpdateOrganizationMicrosoftTenantIDsResponse](
+			httpClient,
+			baseURL+FrontendServiceUpdateOrganizationMicrosoftTenantIDsProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("UpdateOrganizationMicrosoftTenantIDs")),
+			connect.WithClientOptions(opts...),
+		),
 		listUsers: connect.NewClient[v1.ListUsersRequest, v1.ListUsersResponse](
 			httpClient,
 			baseURL+FrontendServiceListUsersProcedure,
@@ -224,10 +263,10 @@ func NewFrontendServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			connect.WithSchema(frontendServiceMethods.ByName("UpdateUser")),
 			connect.WithClientOptions(opts...),
 		),
-		listOrganizations: connect.NewClient[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse](
+		deleteUser: connect.NewClient[v1.DeleteUserRequest, v1.DeleteUserResponse](
 			httpClient,
-			baseURL+FrontendServiceListOrganizationsProcedure,
-			connect.WithSchema(frontendServiceMethods.ByName("ListOrganizations")),
+			baseURL+FrontendServiceDeleteUserProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("DeleteUser")),
 			connect.WithClientOptions(opts...),
 		),
 		setPassword: connect.NewClient[v1.SetPasswordRequest, v1.SetPasswordResponse](
@@ -373,38 +412,42 @@ func NewFrontendServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 
 // frontendServiceClient implements FrontendServiceClient.
 type frontendServiceClient struct {
-	logout                     *connect.Client[v1.LogoutRequest, v1.LogoutResponse]
-	refresh                    *connect.Client[v1.RefreshRequest, v1.RefreshResponse]
-	getProject                 *connect.Client[v1.GetProjectRequest, v1.GetProjectResponse]
-	getOrganization            *connect.Client[v1.GetOrganizationRequest, v1.GetOrganizationResponse]
-	updateOrganization         *connect.Client[v1.UpdateOrganizationRequest, v1.UpdateOrganizationResponse]
-	listUsers                  *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
-	getUser                    *connect.Client[v1.GetUserRequest, v1.GetUserResponse]
-	updateUser                 *connect.Client[v1.UpdateUserRequest, v1.UpdateUserResponse]
-	listOrganizations          *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
-	setPassword                *connect.Client[v1.SetPasswordRequest, v1.SetPasswordResponse]
-	listSAMLConnections        *connect.Client[v1.ListSAMLConnectionsRequest, v1.ListSAMLConnectionsResponse]
-	getSAMLConnection          *connect.Client[v1.GetSAMLConnectionRequest, v1.GetSAMLConnectionResponse]
-	createSAMLConnection       *connect.Client[v1.CreateSAMLConnectionRequest, v1.CreateSAMLConnectionResponse]
-	updateSAMLConnection       *connect.Client[v1.UpdateSAMLConnectionRequest, v1.UpdateSAMLConnectionResponse]
-	deleteSAMLConnection       *connect.Client[v1.DeleteSAMLConnectionRequest, v1.DeleteSAMLConnectionResponse]
-	listSCIMAPIKeys            *connect.Client[v1.ListSCIMAPIKeysRequest, v1.ListSCIMAPIKeysResponse]
-	getSCIMAPIKey              *connect.Client[v1.GetSCIMAPIKeyRequest, v1.GetSCIMAPIKeyResponse]
-	createSCIMAPIKey           *connect.Client[v1.CreateSCIMAPIKeyRequest, v1.CreateSCIMAPIKeyResponse]
-	updateSCIMAPIKey           *connect.Client[v1.UpdateSCIMAPIKeyRequest, v1.UpdateSCIMAPIKeyResponse]
-	deleteSCIMAPIKey           *connect.Client[v1.DeleteSCIMAPIKeyRequest, v1.DeleteSCIMAPIKeyResponse]
-	revokeSCIMAPIKey           *connect.Client[v1.RevokeSCIMAPIKeyRequest, v1.RevokeSCIMAPIKeyResponse]
-	whoami                     *connect.Client[v1.WhoamiRequest, v1.WhoamiResponse]
-	listMyPasskeys             *connect.Client[v1.ListMyPasskeysRequest, v1.ListMyPasskeysResponse]
-	deleteMyPasskey            *connect.Client[v1.DeleteMyPasskeyRequest, v1.DeleteMyPasskeyResponse]
-	getPasskeyOptions          *connect.Client[v1.GetPasskeyOptionsRequest, v1.GetPasskeyOptionsResponse]
-	registerPasskey            *connect.Client[v1.RegisterPasskeyRequest, v1.RegisterPasskeyResponse]
-	getAuthenticatorAppOptions *connect.Client[v1.GetAuthenticatorAppOptionsRequest, v1.GetAuthenticatorAppOptionsResponse]
-	registerAuthenticatorApp   *connect.Client[v1.RegisterAuthenticatorAppRequest, v1.RegisterAuthenticatorAppResponse]
-	listUserInvites            *connect.Client[v1.ListUserInvitesRequest, v1.ListUserInvitesResponse]
-	getUserInvite              *connect.Client[v1.GetUserInviteRequest, v1.GetUserInviteResponse]
-	createUserInvite           *connect.Client[v1.CreateUserInviteRequest, v1.CreateUserInviteResponse]
-	deleteUserInvite           *connect.Client[v1.DeleteUserInviteRequest, v1.DeleteUserInviteResponse]
+	logout                                *connect.Client[v1.LogoutRequest, v1.LogoutResponse]
+	refresh                               *connect.Client[v1.RefreshRequest, v1.RefreshResponse]
+	getProject                            *connect.Client[v1.GetProjectRequest, v1.GetProjectResponse]
+	getOrganization                       *connect.Client[v1.GetOrganizationRequest, v1.GetOrganizationResponse]
+	updateOrganization                    *connect.Client[v1.UpdateOrganizationRequest, v1.UpdateOrganizationResponse]
+	getOrganizationGoogleHostedDomains    *connect.Client[v1.GetOrganizationGoogleHostedDomainsRequest, v1.GetOrganizationGoogleHostedDomainsResponse]
+	updateOrganizationGoogleHostedDomains *connect.Client[v1.UpdateOrganizationGoogleHostedDomainsRequest, v1.UpdateOrganizationGoogleHostedDomainsResponse]
+	getOrganizationMicrosoftTenantIDs     *connect.Client[v1.GetOrganizationMicrosoftTenantIDsRequest, v1.GetOrganizationMicrosoftTenantIDsResponse]
+	updateOrganizationMicrosoftTenantIDs  *connect.Client[v1.UpdateOrganizationMicrosoftTenantIDsRequest, v1.UpdateOrganizationMicrosoftTenantIDsResponse]
+	listUsers                             *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
+	getUser                               *connect.Client[v1.GetUserRequest, v1.GetUserResponse]
+	updateUser                            *connect.Client[v1.UpdateUserRequest, v1.UpdateUserResponse]
+	deleteUser                            *connect.Client[v1.DeleteUserRequest, v1.DeleteUserResponse]
+	setPassword                           *connect.Client[v1.SetPasswordRequest, v1.SetPasswordResponse]
+	listSAMLConnections                   *connect.Client[v1.ListSAMLConnectionsRequest, v1.ListSAMLConnectionsResponse]
+	getSAMLConnection                     *connect.Client[v1.GetSAMLConnectionRequest, v1.GetSAMLConnectionResponse]
+	createSAMLConnection                  *connect.Client[v1.CreateSAMLConnectionRequest, v1.CreateSAMLConnectionResponse]
+	updateSAMLConnection                  *connect.Client[v1.UpdateSAMLConnectionRequest, v1.UpdateSAMLConnectionResponse]
+	deleteSAMLConnection                  *connect.Client[v1.DeleteSAMLConnectionRequest, v1.DeleteSAMLConnectionResponse]
+	listSCIMAPIKeys                       *connect.Client[v1.ListSCIMAPIKeysRequest, v1.ListSCIMAPIKeysResponse]
+	getSCIMAPIKey                         *connect.Client[v1.GetSCIMAPIKeyRequest, v1.GetSCIMAPIKeyResponse]
+	createSCIMAPIKey                      *connect.Client[v1.CreateSCIMAPIKeyRequest, v1.CreateSCIMAPIKeyResponse]
+	updateSCIMAPIKey                      *connect.Client[v1.UpdateSCIMAPIKeyRequest, v1.UpdateSCIMAPIKeyResponse]
+	deleteSCIMAPIKey                      *connect.Client[v1.DeleteSCIMAPIKeyRequest, v1.DeleteSCIMAPIKeyResponse]
+	revokeSCIMAPIKey                      *connect.Client[v1.RevokeSCIMAPIKeyRequest, v1.RevokeSCIMAPIKeyResponse]
+	whoami                                *connect.Client[v1.WhoamiRequest, v1.WhoamiResponse]
+	listMyPasskeys                        *connect.Client[v1.ListMyPasskeysRequest, v1.ListMyPasskeysResponse]
+	deleteMyPasskey                       *connect.Client[v1.DeleteMyPasskeyRequest, v1.DeleteMyPasskeyResponse]
+	getPasskeyOptions                     *connect.Client[v1.GetPasskeyOptionsRequest, v1.GetPasskeyOptionsResponse]
+	registerPasskey                       *connect.Client[v1.RegisterPasskeyRequest, v1.RegisterPasskeyResponse]
+	getAuthenticatorAppOptions            *connect.Client[v1.GetAuthenticatorAppOptionsRequest, v1.GetAuthenticatorAppOptionsResponse]
+	registerAuthenticatorApp              *connect.Client[v1.RegisterAuthenticatorAppRequest, v1.RegisterAuthenticatorAppResponse]
+	listUserInvites                       *connect.Client[v1.ListUserInvitesRequest, v1.ListUserInvitesResponse]
+	getUserInvite                         *connect.Client[v1.GetUserInviteRequest, v1.GetUserInviteResponse]
+	createUserInvite                      *connect.Client[v1.CreateUserInviteRequest, v1.CreateUserInviteResponse]
+	deleteUserInvite                      *connect.Client[v1.DeleteUserInviteRequest, v1.DeleteUserInviteResponse]
 }
 
 // Logout calls openauth.frontend.v1.FrontendService.Logout.
@@ -432,6 +475,30 @@ func (c *frontendServiceClient) UpdateOrganization(ctx context.Context, req *con
 	return c.updateOrganization.CallUnary(ctx, req)
 }
 
+// GetOrganizationGoogleHostedDomains calls
+// openauth.frontend.v1.FrontendService.GetOrganizationGoogleHostedDomains.
+func (c *frontendServiceClient) GetOrganizationGoogleHostedDomains(ctx context.Context, req *connect.Request[v1.GetOrganizationGoogleHostedDomainsRequest]) (*connect.Response[v1.GetOrganizationGoogleHostedDomainsResponse], error) {
+	return c.getOrganizationGoogleHostedDomains.CallUnary(ctx, req)
+}
+
+// UpdateOrganizationGoogleHostedDomains calls
+// openauth.frontend.v1.FrontendService.UpdateOrganizationGoogleHostedDomains.
+func (c *frontendServiceClient) UpdateOrganizationGoogleHostedDomains(ctx context.Context, req *connect.Request[v1.UpdateOrganizationGoogleHostedDomainsRequest]) (*connect.Response[v1.UpdateOrganizationGoogleHostedDomainsResponse], error) {
+	return c.updateOrganizationGoogleHostedDomains.CallUnary(ctx, req)
+}
+
+// GetOrganizationMicrosoftTenantIDs calls
+// openauth.frontend.v1.FrontendService.GetOrganizationMicrosoftTenantIDs.
+func (c *frontendServiceClient) GetOrganizationMicrosoftTenantIDs(ctx context.Context, req *connect.Request[v1.GetOrganizationMicrosoftTenantIDsRequest]) (*connect.Response[v1.GetOrganizationMicrosoftTenantIDsResponse], error) {
+	return c.getOrganizationMicrosoftTenantIDs.CallUnary(ctx, req)
+}
+
+// UpdateOrganizationMicrosoftTenantIDs calls
+// openauth.frontend.v1.FrontendService.UpdateOrganizationMicrosoftTenantIDs.
+func (c *frontendServiceClient) UpdateOrganizationMicrosoftTenantIDs(ctx context.Context, req *connect.Request[v1.UpdateOrganizationMicrosoftTenantIDsRequest]) (*connect.Response[v1.UpdateOrganizationMicrosoftTenantIDsResponse], error) {
+	return c.updateOrganizationMicrosoftTenantIDs.CallUnary(ctx, req)
+}
+
 // ListUsers calls openauth.frontend.v1.FrontendService.ListUsers.
 func (c *frontendServiceClient) ListUsers(ctx context.Context, req *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error) {
 	return c.listUsers.CallUnary(ctx, req)
@@ -447,9 +514,9 @@ func (c *frontendServiceClient) UpdateUser(ctx context.Context, req *connect.Req
 	return c.updateUser.CallUnary(ctx, req)
 }
 
-// ListOrganizations calls openauth.frontend.v1.FrontendService.ListOrganizations.
-func (c *frontendServiceClient) ListOrganizations(ctx context.Context, req *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error) {
-	return c.listOrganizations.CallUnary(ctx, req)
+// DeleteUser calls openauth.frontend.v1.FrontendService.DeleteUser.
+func (c *frontendServiceClient) DeleteUser(ctx context.Context, req *connect.Request[v1.DeleteUserRequest]) (*connect.Response[v1.DeleteUserResponse], error) {
+	return c.deleteUser.CallUnary(ctx, req)
 }
 
 // SetPassword calls openauth.frontend.v1.FrontendService.SetPassword.
@@ -574,11 +641,14 @@ type FrontendServiceHandler interface {
 	GetProject(context.Context, *connect.Request[v1.GetProjectRequest]) (*connect.Response[v1.GetProjectResponse], error)
 	GetOrganization(context.Context, *connect.Request[v1.GetOrganizationRequest]) (*connect.Response[v1.GetOrganizationResponse], error)
 	UpdateOrganization(context.Context, *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.UpdateOrganizationResponse], error)
+	GetOrganizationGoogleHostedDomains(context.Context, *connect.Request[v1.GetOrganizationGoogleHostedDomainsRequest]) (*connect.Response[v1.GetOrganizationGoogleHostedDomainsResponse], error)
+	UpdateOrganizationGoogleHostedDomains(context.Context, *connect.Request[v1.UpdateOrganizationGoogleHostedDomainsRequest]) (*connect.Response[v1.UpdateOrganizationGoogleHostedDomainsResponse], error)
+	GetOrganizationMicrosoftTenantIDs(context.Context, *connect.Request[v1.GetOrganizationMicrosoftTenantIDsRequest]) (*connect.Response[v1.GetOrganizationMicrosoftTenantIDsResponse], error)
+	UpdateOrganizationMicrosoftTenantIDs(context.Context, *connect.Request[v1.UpdateOrganizationMicrosoftTenantIDsRequest]) (*connect.Response[v1.UpdateOrganizationMicrosoftTenantIDsResponse], error)
 	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
 	GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error)
 	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error)
-	// Gets a list of organizations.
-	ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error)
+	DeleteUser(context.Context, *connect.Request[v1.DeleteUserRequest]) (*connect.Response[v1.DeleteUserResponse], error)
 	// Sets a user's password.
 	SetPassword(context.Context, *connect.Request[v1.SetPasswordRequest]) (*connect.Response[v1.SetPasswordResponse], error)
 	ListSAMLConnections(context.Context, *connect.Request[v1.ListSAMLConnectionsRequest]) (*connect.Response[v1.ListSAMLConnectionsResponse], error)
@@ -642,6 +712,30 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 		connect.WithSchema(frontendServiceMethods.ByName("UpdateOrganization")),
 		connect.WithHandlerOptions(opts...),
 	)
+	frontendServiceGetOrganizationGoogleHostedDomainsHandler := connect.NewUnaryHandler(
+		FrontendServiceGetOrganizationGoogleHostedDomainsProcedure,
+		svc.GetOrganizationGoogleHostedDomains,
+		connect.WithSchema(frontendServiceMethods.ByName("GetOrganizationGoogleHostedDomains")),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceUpdateOrganizationGoogleHostedDomainsHandler := connect.NewUnaryHandler(
+		FrontendServiceUpdateOrganizationGoogleHostedDomainsProcedure,
+		svc.UpdateOrganizationGoogleHostedDomains,
+		connect.WithSchema(frontendServiceMethods.ByName("UpdateOrganizationGoogleHostedDomains")),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceGetOrganizationMicrosoftTenantIDsHandler := connect.NewUnaryHandler(
+		FrontendServiceGetOrganizationMicrosoftTenantIDsProcedure,
+		svc.GetOrganizationMicrosoftTenantIDs,
+		connect.WithSchema(frontendServiceMethods.ByName("GetOrganizationMicrosoftTenantIDs")),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceUpdateOrganizationMicrosoftTenantIDsHandler := connect.NewUnaryHandler(
+		FrontendServiceUpdateOrganizationMicrosoftTenantIDsProcedure,
+		svc.UpdateOrganizationMicrosoftTenantIDs,
+		connect.WithSchema(frontendServiceMethods.ByName("UpdateOrganizationMicrosoftTenantIDs")),
+		connect.WithHandlerOptions(opts...),
+	)
 	frontendServiceListUsersHandler := connect.NewUnaryHandler(
 		FrontendServiceListUsersProcedure,
 		svc.ListUsers,
@@ -660,10 +754,10 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 		connect.WithSchema(frontendServiceMethods.ByName("UpdateUser")),
 		connect.WithHandlerOptions(opts...),
 	)
-	frontendServiceListOrganizationsHandler := connect.NewUnaryHandler(
-		FrontendServiceListOrganizationsProcedure,
-		svc.ListOrganizations,
-		connect.WithSchema(frontendServiceMethods.ByName("ListOrganizations")),
+	frontendServiceDeleteUserHandler := connect.NewUnaryHandler(
+		FrontendServiceDeleteUserProcedure,
+		svc.DeleteUser,
+		connect.WithSchema(frontendServiceMethods.ByName("DeleteUser")),
 		connect.WithHandlerOptions(opts...),
 	)
 	frontendServiceSetPasswordHandler := connect.NewUnaryHandler(
@@ -816,14 +910,22 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 			frontendServiceGetOrganizationHandler.ServeHTTP(w, r)
 		case FrontendServiceUpdateOrganizationProcedure:
 			frontendServiceUpdateOrganizationHandler.ServeHTTP(w, r)
+		case FrontendServiceGetOrganizationGoogleHostedDomainsProcedure:
+			frontendServiceGetOrganizationGoogleHostedDomainsHandler.ServeHTTP(w, r)
+		case FrontendServiceUpdateOrganizationGoogleHostedDomainsProcedure:
+			frontendServiceUpdateOrganizationGoogleHostedDomainsHandler.ServeHTTP(w, r)
+		case FrontendServiceGetOrganizationMicrosoftTenantIDsProcedure:
+			frontendServiceGetOrganizationMicrosoftTenantIDsHandler.ServeHTTP(w, r)
+		case FrontendServiceUpdateOrganizationMicrosoftTenantIDsProcedure:
+			frontendServiceUpdateOrganizationMicrosoftTenantIDsHandler.ServeHTTP(w, r)
 		case FrontendServiceListUsersProcedure:
 			frontendServiceListUsersHandler.ServeHTTP(w, r)
 		case FrontendServiceGetUserProcedure:
 			frontendServiceGetUserHandler.ServeHTTP(w, r)
 		case FrontendServiceUpdateUserProcedure:
 			frontendServiceUpdateUserHandler.ServeHTTP(w, r)
-		case FrontendServiceListOrganizationsProcedure:
-			frontendServiceListOrganizationsHandler.ServeHTTP(w, r)
+		case FrontendServiceDeleteUserProcedure:
+			frontendServiceDeleteUserHandler.ServeHTTP(w, r)
 		case FrontendServiceSetPasswordProcedure:
 			frontendServiceSetPasswordHandler.ServeHTTP(w, r)
 		case FrontendServiceListSAMLConnectionsProcedure:
@@ -899,6 +1001,22 @@ func (UnimplementedFrontendServiceHandler) UpdateOrganization(context.Context, *
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.UpdateOrganization is not implemented"))
 }
 
+func (UnimplementedFrontendServiceHandler) GetOrganizationGoogleHostedDomains(context.Context, *connect.Request[v1.GetOrganizationGoogleHostedDomainsRequest]) (*connect.Response[v1.GetOrganizationGoogleHostedDomainsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.GetOrganizationGoogleHostedDomains is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) UpdateOrganizationGoogleHostedDomains(context.Context, *connect.Request[v1.UpdateOrganizationGoogleHostedDomainsRequest]) (*connect.Response[v1.UpdateOrganizationGoogleHostedDomainsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.UpdateOrganizationGoogleHostedDomains is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) GetOrganizationMicrosoftTenantIDs(context.Context, *connect.Request[v1.GetOrganizationMicrosoftTenantIDsRequest]) (*connect.Response[v1.GetOrganizationMicrosoftTenantIDsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.GetOrganizationMicrosoftTenantIDs is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) UpdateOrganizationMicrosoftTenantIDs(context.Context, *connect.Request[v1.UpdateOrganizationMicrosoftTenantIDsRequest]) (*connect.Response[v1.UpdateOrganizationMicrosoftTenantIDsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.UpdateOrganizationMicrosoftTenantIDs is not implemented"))
+}
+
 func (UnimplementedFrontendServiceHandler) ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.ListUsers is not implemented"))
 }
@@ -911,8 +1029,8 @@ func (UnimplementedFrontendServiceHandler) UpdateUser(context.Context, *connect.
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.UpdateUser is not implemented"))
 }
 
-func (UnimplementedFrontendServiceHandler) ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.ListOrganizations is not implemented"))
+func (UnimplementedFrontendServiceHandler) DeleteUser(context.Context, *connect.Request[v1.DeleteUserRequest]) (*connect.Response[v1.DeleteUserResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.DeleteUser is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) SetPassword(context.Context, *connect.Request[v1.SetPasswordRequest]) (*connect.Response[v1.SetPasswordResponse], error) {

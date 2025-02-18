@@ -12,6 +12,46 @@ import (
 	"github.com/google/uuid"
 )
 
+const createOrganizationGoogleHostedDomain = `-- name: CreateOrganizationGoogleHostedDomain :one
+INSERT INTO organization_google_hosted_domains (id, organization_id, google_hosted_domain)
+    VALUES ($1, $2, $3)
+RETURNING
+    id, organization_id, google_hosted_domain
+`
+
+type CreateOrganizationGoogleHostedDomainParams struct {
+	ID                 uuid.UUID
+	OrganizationID     uuid.UUID
+	GoogleHostedDomain string
+}
+
+func (q *Queries) CreateOrganizationGoogleHostedDomain(ctx context.Context, arg CreateOrganizationGoogleHostedDomainParams) (OrganizationGoogleHostedDomain, error) {
+	row := q.db.QueryRow(ctx, createOrganizationGoogleHostedDomain, arg.ID, arg.OrganizationID, arg.GoogleHostedDomain)
+	var i OrganizationGoogleHostedDomain
+	err := row.Scan(&i.ID, &i.OrganizationID, &i.GoogleHostedDomain)
+	return i, err
+}
+
+const createOrganizationMicrosoftTenantID = `-- name: CreateOrganizationMicrosoftTenantID :one
+INSERT INTO organization_microsoft_tenant_ids (id, organization_id, microsoft_tenant_id)
+    VALUES ($1, $2, $3)
+RETURNING
+    id, organization_id, microsoft_tenant_id
+`
+
+type CreateOrganizationMicrosoftTenantIDParams struct {
+	ID                uuid.UUID
+	OrganizationID    uuid.UUID
+	MicrosoftTenantID string
+}
+
+func (q *Queries) CreateOrganizationMicrosoftTenantID(ctx context.Context, arg CreateOrganizationMicrosoftTenantIDParams) (OrganizationMicrosoftTenantID, error) {
+	row := q.db.QueryRow(ctx, createOrganizationMicrosoftTenantID, arg.ID, arg.OrganizationID, arg.MicrosoftTenantID)
+	var i OrganizationMicrosoftTenantID
+	err := row.Scan(&i.ID, &i.OrganizationID, &i.MicrosoftTenantID)
+	return i, err
+}
+
 const createPasskey = `-- name: CreatePasskey :one
 INSERT INTO passkeys (id, user_id, credential_id, public_key, aaguid, rp_id)
     VALUES ($1, $2, $3, $4, $5, $6)
@@ -229,6 +269,26 @@ func (q *Queries) CreateUserInvite(ctx context.Context, arg CreateUserInvitePara
 	return i, err
 }
 
+const deleteOrganizationGoogleHostedDomains = `-- name: DeleteOrganizationGoogleHostedDomains :exec
+DELETE FROM organization_google_hosted_domains
+WHERE organization_id = $1
+`
+
+func (q *Queries) DeleteOrganizationGoogleHostedDomains(ctx context.Context, organizationID uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteOrganizationGoogleHostedDomains, organizationID)
+	return err
+}
+
+const deleteOrganizationMicrosoftTenantIDs = `-- name: DeleteOrganizationMicrosoftTenantIDs :exec
+DELETE FROM organization_microsoft_tenant_ids
+WHERE organization_id = $1
+`
+
+func (q *Queries) DeleteOrganizationMicrosoftTenantIDs(ctx context.Context, organizationID uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteOrganizationMicrosoftTenantIDs, organizationID)
+	return err
+}
+
 const deletePasskey = `-- name: DeletePasskey :exec
 DELETE FROM passkeys
 WHERE id = $1
@@ -256,6 +316,16 @@ WHERE id = $1
 
 func (q *Queries) DeleteSCIMAPIKey(ctx context.Context, id uuid.UUID) error {
 	_, err := q.db.Exec(ctx, deleteSCIMAPIKey, id)
+	return err
+}
+
+const deleteUser = `-- name: DeleteUser :exec
+DELETE FROM users
+WHERE id = $1
+`
+
+func (q *Queries) DeleteUser(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteUser, id)
 	return err
 }
 
@@ -361,9 +431,67 @@ func (q *Queries) GetOrganizationByID(ctx context.Context, id uuid.UUID) (Organi
 	return i, err
 }
 
+const getOrganizationGoogleHostedDomains = `-- name: GetOrganizationGoogleHostedDomains :many
+SELECT
+    id, organization_id, google_hosted_domain
+FROM
+    organization_google_hosted_domains
+WHERE
+    organization_id = $1
+`
+
+func (q *Queries) GetOrganizationGoogleHostedDomains(ctx context.Context, organizationID uuid.UUID) ([]OrganizationGoogleHostedDomain, error) {
+	rows, err := q.db.Query(ctx, getOrganizationGoogleHostedDomains, organizationID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []OrganizationGoogleHostedDomain
+	for rows.Next() {
+		var i OrganizationGoogleHostedDomain
+		if err := rows.Scan(&i.ID, &i.OrganizationID, &i.GoogleHostedDomain); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getOrganizationMicrosoftTenantIDs = `-- name: GetOrganizationMicrosoftTenantIDs :many
+SELECT
+    id, organization_id, microsoft_tenant_id
+FROM
+    organization_microsoft_tenant_ids
+WHERE
+    organization_id = $1
+`
+
+func (q *Queries) GetOrganizationMicrosoftTenantIDs(ctx context.Context, organizationID uuid.UUID) ([]OrganizationMicrosoftTenantID, error) {
+	rows, err := q.db.Query(ctx, getOrganizationMicrosoftTenantIDs, organizationID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []OrganizationMicrosoftTenantID
+	for rows.Next() {
+		var i OrganizationMicrosoftTenantID
+		if err := rows.Scan(&i.ID, &i.OrganizationID, &i.MicrosoftTenantID); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getProjectByID = `-- name: GetProjectByID :one
 SELECT
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri
 FROM
     projects
 WHERE
@@ -393,6 +521,9 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 		&i.LogInWithPasskey,
 		&i.LogInWithEmail,
 		&i.LogInWithSaml,
+		&i.RedirectUri,
+		&i.AfterLoginRedirectUri,
+		&i.AfterSignupRedirectUri,
 	)
 	return i, err
 }

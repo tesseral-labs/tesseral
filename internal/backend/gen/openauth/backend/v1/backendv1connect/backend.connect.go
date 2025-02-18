@@ -101,12 +101,24 @@ const (
 	BackendServiceListUsersProcedure = "/openauth.backend.v1.BackendService/ListUsers"
 	// BackendServiceGetUserProcedure is the fully-qualified name of the BackendService's GetUser RPC.
 	BackendServiceGetUserProcedure = "/openauth.backend.v1.BackendService/GetUser"
+	// BackendServiceCreateUserProcedure is the fully-qualified name of the BackendService's CreateUser
+	// RPC.
+	BackendServiceCreateUserProcedure = "/openauth.backend.v1.BackendService/CreateUser"
+	// BackendServiceUpdateUserProcedure is the fully-qualified name of the BackendService's UpdateUser
+	// RPC.
+	BackendServiceUpdateUserProcedure = "/openauth.backend.v1.BackendService/UpdateUser"
+	// BackendServiceDeleteUserProcedure is the fully-qualified name of the BackendService's DeleteUser
+	// RPC.
+	BackendServiceDeleteUserProcedure = "/openauth.backend.v1.BackendService/DeleteUser"
 	// BackendServiceListPasskeysProcedure is the fully-qualified name of the BackendService's
 	// ListPasskeys RPC.
 	BackendServiceListPasskeysProcedure = "/openauth.backend.v1.BackendService/ListPasskeys"
 	// BackendServiceGetPasskeyProcedure is the fully-qualified name of the BackendService's GetPasskey
 	// RPC.
 	BackendServiceGetPasskeyProcedure = "/openauth.backend.v1.BackendService/GetPasskey"
+	// BackendServiceUpdatePasskeyProcedure is the fully-qualified name of the BackendService's
+	// UpdatePasskey RPC.
+	BackendServiceUpdatePasskeyProcedure = "/openauth.backend.v1.BackendService/UpdatePasskey"
 	// BackendServiceDeletePasskeyProcedure is the fully-qualified name of the BackendService's
 	// DeletePasskey RPC.
 	BackendServiceDeletePasskeyProcedure = "/openauth.backend.v1.BackendService/DeletePasskey"
@@ -116,12 +128,6 @@ const (
 	// BackendServiceGetSessionProcedure is the fully-qualified name of the BackendService's GetSession
 	// RPC.
 	BackendServiceGetSessionProcedure = "/openauth.backend.v1.BackendService/GetSession"
-	// BackendServiceListIntermediateSessionsProcedure is the fully-qualified name of the
-	// BackendService's ListIntermediateSessions RPC.
-	BackendServiceListIntermediateSessionsProcedure = "/openauth.backend.v1.BackendService/ListIntermediateSessions"
-	// BackendServiceGetIntermediateSessionProcedure is the fully-qualified name of the BackendService's
-	// GetIntermediateSession RPC.
-	BackendServiceGetIntermediateSessionProcedure = "/openauth.backend.v1.BackendService/GetIntermediateSession"
 	// BackendServiceListUserInvitesProcedure is the fully-qualified name of the BackendService's
 	// ListUserInvites RPC.
 	BackendServiceListUserInvitesProcedure = "/openauth.backend.v1.BackendService/ListUserInvites"
@@ -149,21 +155,9 @@ const (
 	// BackendServiceUpdateProjectProcedure is the fully-qualified name of the BackendService's
 	// UpdateProject RPC.
 	BackendServiceUpdateProjectProcedure = "/openauth.backend.v1.BackendService/UpdateProject"
-	// BackendServiceCreateProjectRedirectURIProcedure is the fully-qualified name of the
-	// BackendService's CreateProjectRedirectURI RPC.
-	BackendServiceCreateProjectRedirectURIProcedure = "/openauth.backend.v1.BackendService/CreateProjectRedirectURI"
-	// BackendServiceDeleteProjectRedirectURIProcedure is the fully-qualified name of the
-	// BackendService's DeleteProjectRedirectURI RPC.
-	BackendServiceDeleteProjectRedirectURIProcedure = "/openauth.backend.v1.BackendService/DeleteProjectRedirectURI"
-	// BackendServiceGetProjectRedirectURIProcedure is the fully-qualified name of the BackendService's
-	// GetProjectRedirectURI RPC.
-	BackendServiceGetProjectRedirectURIProcedure = "/openauth.backend.v1.BackendService/GetProjectRedirectURI"
-	// BackendServiceListProjectRedirectURIsProcedure is the fully-qualified name of the
-	// BackendService's ListProjectRedirectURIs RPC.
-	BackendServiceListProjectRedirectURIsProcedure = "/openauth.backend.v1.BackendService/ListProjectRedirectURIs"
-	// BackendServiceUpdateProjectRedirectURIProcedure is the fully-qualified name of the
-	// BackendService's UpdateProjectRedirectURI RPC.
-	BackendServiceUpdateProjectRedirectURIProcedure = "/openauth.backend.v1.BackendService/UpdateProjectRedirectURI"
+	// BackendServiceGetVaultDomainSettingsProcedure is the fully-qualified name of the BackendService's
+	// GetVaultDomainSettings RPC.
+	BackendServiceGetVaultDomainSettingsProcedure = "/openauth.backend.v1.BackendService/GetVaultDomainSettings"
 	// BackendServiceGetProjectUISettingsProcedure is the fully-qualified name of the BackendService's
 	// GetProjectUISettings RPC.
 	BackendServiceGetProjectUISettingsProcedure = "/openauth.backend.v1.BackendService/GetProjectUISettings"
@@ -188,6 +182,21 @@ const (
 	// BackendServiceRevokeProjectAPIKeyProcedure is the fully-qualified name of the BackendService's
 	// RevokeProjectAPIKey RPC.
 	BackendServiceRevokeProjectAPIKeyProcedure = "/openauth.backend.v1.BackendService/RevokeProjectAPIKey"
+	// BackendServiceListPublishableKeysProcedure is the fully-qualified name of the BackendService's
+	// ListPublishableKeys RPC.
+	BackendServiceListPublishableKeysProcedure = "/openauth.backend.v1.BackendService/ListPublishableKeys"
+	// BackendServiceGetPublishableKeyProcedure is the fully-qualified name of the BackendService's
+	// GetPublishableKey RPC.
+	BackendServiceGetPublishableKeyProcedure = "/openauth.backend.v1.BackendService/GetPublishableKey"
+	// BackendServiceCreatePublishableKeyProcedure is the fully-qualified name of the BackendService's
+	// CreatePublishableKey RPC.
+	BackendServiceCreatePublishableKeyProcedure = "/openauth.backend.v1.BackendService/CreatePublishableKey"
+	// BackendServiceUpdatePublishableKeyProcedure is the fully-qualified name of the BackendService's
+	// UpdatePublishableKey RPC.
+	BackendServiceUpdatePublishableKeyProcedure = "/openauth.backend.v1.BackendService/UpdatePublishableKey"
+	// BackendServiceDeletePublishableKeyProcedure is the fully-qualified name of the BackendService's
+	// DeletePublishableKey RPC.
+	BackendServiceDeletePublishableKeyProcedure = "/openauth.backend.v1.BackendService/DeletePublishableKey"
 	// BackendServiceCreateUserImpersonationTokenProcedure is the fully-qualified name of the
 	// BackendService's CreateUserImpersonationToken RPC.
 	BackendServiceCreateUserImpersonationTokenProcedure = "/openauth.backend.v1.BackendService/CreateUserImpersonationToken"
@@ -218,13 +227,15 @@ type BackendServiceClient interface {
 	RevokeSCIMAPIKey(context.Context, *connect.Request[v1.RevokeSCIMAPIKeyRequest]) (*connect.Response[v1.RevokeSCIMAPIKeyResponse], error)
 	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
 	GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error)
+	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error)
+	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error)
+	DeleteUser(context.Context, *connect.Request[v1.DeleteUserRequest]) (*connect.Response[v1.DeleteUserResponse], error)
 	ListPasskeys(context.Context, *connect.Request[v1.ListPasskeysRequest]) (*connect.Response[v1.ListPasskeysResponse], error)
 	GetPasskey(context.Context, *connect.Request[v1.GetPasskeyRequest]) (*connect.Response[v1.GetPasskeyResponse], error)
+	UpdatePasskey(context.Context, *connect.Request[v1.UpdatePasskeyRequest]) (*connect.Response[v1.UpdatePasskeyResponse], error)
 	DeletePasskey(context.Context, *connect.Request[v1.DeletePasskeyRequest]) (*connect.Response[v1.DeletePasskeyResponse], error)
 	ListSessions(context.Context, *connect.Request[v1.ListSessionsRequest]) (*connect.Response[v1.ListSessionsResponse], error)
 	GetSession(context.Context, *connect.Request[v1.GetSessionRequest]) (*connect.Response[v1.GetSessionResponse], error)
-	ListIntermediateSessions(context.Context, *connect.Request[v1.ListIntermediateSessionsRequest]) (*connect.Response[v1.ListIntermediateSessionsResponse], error)
-	GetIntermediateSession(context.Context, *connect.Request[v1.GetIntermediateSessionRequest]) (*connect.Response[v1.GetIntermediateSessionResponse], error)
 	ListUserInvites(context.Context, *connect.Request[v1.ListUserInvitesRequest]) (*connect.Response[v1.ListUserInvitesResponse], error)
 	GetUserInvite(context.Context, *connect.Request[v1.GetUserInviteRequest]) (*connect.Response[v1.GetUserInviteResponse], error)
 	CreateUserInvite(context.Context, *connect.Request[v1.CreateUserInviteRequest]) (*connect.Response[v1.CreateUserInviteResponse], error)
@@ -234,11 +245,7 @@ type BackendServiceClient interface {
 	EnableOrganizationLogins(context.Context, *connect.Request[v1.EnableOrganizationLoginsRequest]) (*connect.Response[v1.EnableOrganizationLoginsResponse], error)
 	EnableProjectLogins(context.Context, *connect.Request[v1.EnableProjectLoginsRequest]) (*connect.Response[v1.EnableProjectLoginsResponse], error)
 	UpdateProject(context.Context, *connect.Request[v1.UpdateProjectRequest]) (*connect.Response[v1.UpdateProjectResponse], error)
-	CreateProjectRedirectURI(context.Context, *connect.Request[v1.CreateProjectRedirectURIRequest]) (*connect.Response[v1.CreateProjectRedirectURIResponse], error)
-	DeleteProjectRedirectURI(context.Context, *connect.Request[v1.DeleteProjectRedirectURIRequest]) (*connect.Response[v1.DeleteProjectRedirectURIResponse], error)
-	GetProjectRedirectURI(context.Context, *connect.Request[v1.GetProjectRedirectURIRequest]) (*connect.Response[v1.GetProjectRedirectURIResponse], error)
-	ListProjectRedirectURIs(context.Context, *connect.Request[v1.ListProjectRedirectURIsRequest]) (*connect.Response[v1.ListProjectRedirectURIsResponse], error)
-	UpdateProjectRedirectURI(context.Context, *connect.Request[v1.UpdateProjectRedirectURIRequest]) (*connect.Response[v1.UpdateProjectRedirectURIResponse], error)
+	GetVaultDomainSettings(context.Context, *connect.Request[v1.GetVaultDomainSettingsRequest]) (*connect.Response[v1.GetVaultDomainSettingsResponse], error)
 	GetProjectUISettings(context.Context, *connect.Request[v1.GetProjectUISettingsRequest]) (*connect.Response[v1.GetProjectUISettingsResponse], error)
 	UpdateProjectUISettings(context.Context, *connect.Request[v1.UpdateProjectUISettingsRequest]) (*connect.Response[v1.UpdateProjectUISettingsResponse], error)
 	ListProjectAPIKeys(context.Context, *connect.Request[v1.ListProjectAPIKeysRequest]) (*connect.Response[v1.ListProjectAPIKeysResponse], error)
@@ -247,6 +254,11 @@ type BackendServiceClient interface {
 	UpdateProjectAPIKey(context.Context, *connect.Request[v1.UpdateProjectAPIKeyRequest]) (*connect.Response[v1.UpdateProjectAPIKeyResponse], error)
 	DeleteProjectAPIKey(context.Context, *connect.Request[v1.DeleteProjectAPIKeyRequest]) (*connect.Response[v1.DeleteProjectAPIKeyResponse], error)
 	RevokeProjectAPIKey(context.Context, *connect.Request[v1.RevokeProjectAPIKeyRequest]) (*connect.Response[v1.RevokeProjectAPIKeyResponse], error)
+	ListPublishableKeys(context.Context, *connect.Request[v1.ListPublishableKeysRequest]) (*connect.Response[v1.ListPublishableKeysResponse], error)
+	GetPublishableKey(context.Context, *connect.Request[v1.GetPublishableKeyRequest]) (*connect.Response[v1.GetPublishableKeyResponse], error)
+	CreatePublishableKey(context.Context, *connect.Request[v1.CreatePublishableKeyRequest]) (*connect.Response[v1.CreatePublishableKeyResponse], error)
+	UpdatePublishableKey(context.Context, *connect.Request[v1.UpdatePublishableKeyRequest]) (*connect.Response[v1.UpdatePublishableKeyResponse], error)
+	DeletePublishableKey(context.Context, *connect.Request[v1.DeletePublishableKeyRequest]) (*connect.Response[v1.DeletePublishableKeyResponse], error)
 	CreateUserImpersonationToken(context.Context, *connect.Request[v1.CreateUserImpersonationTokenRequest]) (*connect.Response[v1.CreateUserImpersonationTokenResponse], error)
 }
 
@@ -399,6 +411,24 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(backendServiceMethods.ByName("GetUser")),
 			connect.WithClientOptions(opts...),
 		),
+		createUser: connect.NewClient[v1.CreateUserRequest, v1.CreateUserResponse](
+			httpClient,
+			baseURL+BackendServiceCreateUserProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("CreateUser")),
+			connect.WithClientOptions(opts...),
+		),
+		updateUser: connect.NewClient[v1.UpdateUserRequest, v1.UpdateUserResponse](
+			httpClient,
+			baseURL+BackendServiceUpdateUserProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("UpdateUser")),
+			connect.WithClientOptions(opts...),
+		),
+		deleteUser: connect.NewClient[v1.DeleteUserRequest, v1.DeleteUserResponse](
+			httpClient,
+			baseURL+BackendServiceDeleteUserProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("DeleteUser")),
+			connect.WithClientOptions(opts...),
+		),
 		listPasskeys: connect.NewClient[v1.ListPasskeysRequest, v1.ListPasskeysResponse](
 			httpClient,
 			baseURL+BackendServiceListPasskeysProcedure,
@@ -409,6 +439,12 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			httpClient,
 			baseURL+BackendServiceGetPasskeyProcedure,
 			connect.WithSchema(backendServiceMethods.ByName("GetPasskey")),
+			connect.WithClientOptions(opts...),
+		),
+		updatePasskey: connect.NewClient[v1.UpdatePasskeyRequest, v1.UpdatePasskeyResponse](
+			httpClient,
+			baseURL+BackendServiceUpdatePasskeyProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("UpdatePasskey")),
 			connect.WithClientOptions(opts...),
 		),
 		deletePasskey: connect.NewClient[v1.DeletePasskeyRequest, v1.DeletePasskeyResponse](
@@ -427,18 +463,6 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			httpClient,
 			baseURL+BackendServiceGetSessionProcedure,
 			connect.WithSchema(backendServiceMethods.ByName("GetSession")),
-			connect.WithClientOptions(opts...),
-		),
-		listIntermediateSessions: connect.NewClient[v1.ListIntermediateSessionsRequest, v1.ListIntermediateSessionsResponse](
-			httpClient,
-			baseURL+BackendServiceListIntermediateSessionsProcedure,
-			connect.WithSchema(backendServiceMethods.ByName("ListIntermediateSessions")),
-			connect.WithClientOptions(opts...),
-		),
-		getIntermediateSession: connect.NewClient[v1.GetIntermediateSessionRequest, v1.GetIntermediateSessionResponse](
-			httpClient,
-			baseURL+BackendServiceGetIntermediateSessionProcedure,
-			connect.WithSchema(backendServiceMethods.ByName("GetIntermediateSession")),
 			connect.WithClientOptions(opts...),
 		),
 		listUserInvites: connect.NewClient[v1.ListUserInvitesRequest, v1.ListUserInvitesResponse](
@@ -495,34 +519,10 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(backendServiceMethods.ByName("UpdateProject")),
 			connect.WithClientOptions(opts...),
 		),
-		createProjectRedirectURI: connect.NewClient[v1.CreateProjectRedirectURIRequest, v1.CreateProjectRedirectURIResponse](
+		getVaultDomainSettings: connect.NewClient[v1.GetVaultDomainSettingsRequest, v1.GetVaultDomainSettingsResponse](
 			httpClient,
-			baseURL+BackendServiceCreateProjectRedirectURIProcedure,
-			connect.WithSchema(backendServiceMethods.ByName("CreateProjectRedirectURI")),
-			connect.WithClientOptions(opts...),
-		),
-		deleteProjectRedirectURI: connect.NewClient[v1.DeleteProjectRedirectURIRequest, v1.DeleteProjectRedirectURIResponse](
-			httpClient,
-			baseURL+BackendServiceDeleteProjectRedirectURIProcedure,
-			connect.WithSchema(backendServiceMethods.ByName("DeleteProjectRedirectURI")),
-			connect.WithClientOptions(opts...),
-		),
-		getProjectRedirectURI: connect.NewClient[v1.GetProjectRedirectURIRequest, v1.GetProjectRedirectURIResponse](
-			httpClient,
-			baseURL+BackendServiceGetProjectRedirectURIProcedure,
-			connect.WithSchema(backendServiceMethods.ByName("GetProjectRedirectURI")),
-			connect.WithClientOptions(opts...),
-		),
-		listProjectRedirectURIs: connect.NewClient[v1.ListProjectRedirectURIsRequest, v1.ListProjectRedirectURIsResponse](
-			httpClient,
-			baseURL+BackendServiceListProjectRedirectURIsProcedure,
-			connect.WithSchema(backendServiceMethods.ByName("ListProjectRedirectURIs")),
-			connect.WithClientOptions(opts...),
-		),
-		updateProjectRedirectURI: connect.NewClient[v1.UpdateProjectRedirectURIRequest, v1.UpdateProjectRedirectURIResponse](
-			httpClient,
-			baseURL+BackendServiceUpdateProjectRedirectURIProcedure,
-			connect.WithSchema(backendServiceMethods.ByName("UpdateProjectRedirectURI")),
+			baseURL+BackendServiceGetVaultDomainSettingsProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("GetVaultDomainSettings")),
 			connect.WithClientOptions(opts...),
 		),
 		getProjectUISettings: connect.NewClient[v1.GetProjectUISettingsRequest, v1.GetProjectUISettingsResponse](
@@ -573,6 +573,36 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(backendServiceMethods.ByName("RevokeProjectAPIKey")),
 			connect.WithClientOptions(opts...),
 		),
+		listPublishableKeys: connect.NewClient[v1.ListPublishableKeysRequest, v1.ListPublishableKeysResponse](
+			httpClient,
+			baseURL+BackendServiceListPublishableKeysProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("ListPublishableKeys")),
+			connect.WithClientOptions(opts...),
+		),
+		getPublishableKey: connect.NewClient[v1.GetPublishableKeyRequest, v1.GetPublishableKeyResponse](
+			httpClient,
+			baseURL+BackendServiceGetPublishableKeyProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("GetPublishableKey")),
+			connect.WithClientOptions(opts...),
+		),
+		createPublishableKey: connect.NewClient[v1.CreatePublishableKeyRequest, v1.CreatePublishableKeyResponse](
+			httpClient,
+			baseURL+BackendServiceCreatePublishableKeyProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("CreatePublishableKey")),
+			connect.WithClientOptions(opts...),
+		),
+		updatePublishableKey: connect.NewClient[v1.UpdatePublishableKeyRequest, v1.UpdatePublishableKeyResponse](
+			httpClient,
+			baseURL+BackendServiceUpdatePublishableKeyProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("UpdatePublishableKey")),
+			connect.WithClientOptions(opts...),
+		),
+		deletePublishableKey: connect.NewClient[v1.DeletePublishableKeyRequest, v1.DeletePublishableKeyResponse](
+			httpClient,
+			baseURL+BackendServiceDeletePublishableKeyProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("DeletePublishableKey")),
+			connect.WithClientOptions(opts...),
+		),
 		createUserImpersonationToken: connect.NewClient[v1.CreateUserImpersonationTokenRequest, v1.CreateUserImpersonationTokenResponse](
 			httpClient,
 			baseURL+BackendServiceCreateUserImpersonationTokenProcedure,
@@ -607,13 +637,15 @@ type backendServiceClient struct {
 	revokeSCIMAPIKey                      *connect.Client[v1.RevokeSCIMAPIKeyRequest, v1.RevokeSCIMAPIKeyResponse]
 	listUsers                             *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
 	getUser                               *connect.Client[v1.GetUserRequest, v1.GetUserResponse]
+	createUser                            *connect.Client[v1.CreateUserRequest, v1.CreateUserResponse]
+	updateUser                            *connect.Client[v1.UpdateUserRequest, v1.UpdateUserResponse]
+	deleteUser                            *connect.Client[v1.DeleteUserRequest, v1.DeleteUserResponse]
 	listPasskeys                          *connect.Client[v1.ListPasskeysRequest, v1.ListPasskeysResponse]
 	getPasskey                            *connect.Client[v1.GetPasskeyRequest, v1.GetPasskeyResponse]
+	updatePasskey                         *connect.Client[v1.UpdatePasskeyRequest, v1.UpdatePasskeyResponse]
 	deletePasskey                         *connect.Client[v1.DeletePasskeyRequest, v1.DeletePasskeyResponse]
 	listSessions                          *connect.Client[v1.ListSessionsRequest, v1.ListSessionsResponse]
 	getSession                            *connect.Client[v1.GetSessionRequest, v1.GetSessionResponse]
-	listIntermediateSessions              *connect.Client[v1.ListIntermediateSessionsRequest, v1.ListIntermediateSessionsResponse]
-	getIntermediateSession                *connect.Client[v1.GetIntermediateSessionRequest, v1.GetIntermediateSessionResponse]
 	listUserInvites                       *connect.Client[v1.ListUserInvitesRequest, v1.ListUserInvitesResponse]
 	getUserInvite                         *connect.Client[v1.GetUserInviteRequest, v1.GetUserInviteResponse]
 	createUserInvite                      *connect.Client[v1.CreateUserInviteRequest, v1.CreateUserInviteResponse]
@@ -623,11 +655,7 @@ type backendServiceClient struct {
 	enableOrganizationLogins              *connect.Client[v1.EnableOrganizationLoginsRequest, v1.EnableOrganizationLoginsResponse]
 	enableProjectLogins                   *connect.Client[v1.EnableProjectLoginsRequest, v1.EnableProjectLoginsResponse]
 	updateProject                         *connect.Client[v1.UpdateProjectRequest, v1.UpdateProjectResponse]
-	createProjectRedirectURI              *connect.Client[v1.CreateProjectRedirectURIRequest, v1.CreateProjectRedirectURIResponse]
-	deleteProjectRedirectURI              *connect.Client[v1.DeleteProjectRedirectURIRequest, v1.DeleteProjectRedirectURIResponse]
-	getProjectRedirectURI                 *connect.Client[v1.GetProjectRedirectURIRequest, v1.GetProjectRedirectURIResponse]
-	listProjectRedirectURIs               *connect.Client[v1.ListProjectRedirectURIsRequest, v1.ListProjectRedirectURIsResponse]
-	updateProjectRedirectURI              *connect.Client[v1.UpdateProjectRedirectURIRequest, v1.UpdateProjectRedirectURIResponse]
+	getVaultDomainSettings                *connect.Client[v1.GetVaultDomainSettingsRequest, v1.GetVaultDomainSettingsResponse]
 	getProjectUISettings                  *connect.Client[v1.GetProjectUISettingsRequest, v1.GetProjectUISettingsResponse]
 	updateProjectUISettings               *connect.Client[v1.UpdateProjectUISettingsRequest, v1.UpdateProjectUISettingsResponse]
 	listProjectAPIKeys                    *connect.Client[v1.ListProjectAPIKeysRequest, v1.ListProjectAPIKeysResponse]
@@ -636,6 +664,11 @@ type backendServiceClient struct {
 	updateProjectAPIKey                   *connect.Client[v1.UpdateProjectAPIKeyRequest, v1.UpdateProjectAPIKeyResponse]
 	deleteProjectAPIKey                   *connect.Client[v1.DeleteProjectAPIKeyRequest, v1.DeleteProjectAPIKeyResponse]
 	revokeProjectAPIKey                   *connect.Client[v1.RevokeProjectAPIKeyRequest, v1.RevokeProjectAPIKeyResponse]
+	listPublishableKeys                   *connect.Client[v1.ListPublishableKeysRequest, v1.ListPublishableKeysResponse]
+	getPublishableKey                     *connect.Client[v1.GetPublishableKeyRequest, v1.GetPublishableKeyResponse]
+	createPublishableKey                  *connect.Client[v1.CreatePublishableKeyRequest, v1.CreatePublishableKeyResponse]
+	updatePublishableKey                  *connect.Client[v1.UpdatePublishableKeyRequest, v1.UpdatePublishableKeyResponse]
+	deletePublishableKey                  *connect.Client[v1.DeletePublishableKeyRequest, v1.DeletePublishableKeyResponse]
 	createUserImpersonationToken          *connect.Client[v1.CreateUserImpersonationTokenRequest, v1.CreateUserImpersonationTokenResponse]
 }
 
@@ -758,6 +791,21 @@ func (c *backendServiceClient) GetUser(ctx context.Context, req *connect.Request
 	return c.getUser.CallUnary(ctx, req)
 }
 
+// CreateUser calls openauth.backend.v1.BackendService.CreateUser.
+func (c *backendServiceClient) CreateUser(ctx context.Context, req *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error) {
+	return c.createUser.CallUnary(ctx, req)
+}
+
+// UpdateUser calls openauth.backend.v1.BackendService.UpdateUser.
+func (c *backendServiceClient) UpdateUser(ctx context.Context, req *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error) {
+	return c.updateUser.CallUnary(ctx, req)
+}
+
+// DeleteUser calls openauth.backend.v1.BackendService.DeleteUser.
+func (c *backendServiceClient) DeleteUser(ctx context.Context, req *connect.Request[v1.DeleteUserRequest]) (*connect.Response[v1.DeleteUserResponse], error) {
+	return c.deleteUser.CallUnary(ctx, req)
+}
+
 // ListPasskeys calls openauth.backend.v1.BackendService.ListPasskeys.
 func (c *backendServiceClient) ListPasskeys(ctx context.Context, req *connect.Request[v1.ListPasskeysRequest]) (*connect.Response[v1.ListPasskeysResponse], error) {
 	return c.listPasskeys.CallUnary(ctx, req)
@@ -766,6 +814,11 @@ func (c *backendServiceClient) ListPasskeys(ctx context.Context, req *connect.Re
 // GetPasskey calls openauth.backend.v1.BackendService.GetPasskey.
 func (c *backendServiceClient) GetPasskey(ctx context.Context, req *connect.Request[v1.GetPasskeyRequest]) (*connect.Response[v1.GetPasskeyResponse], error) {
 	return c.getPasskey.CallUnary(ctx, req)
+}
+
+// UpdatePasskey calls openauth.backend.v1.BackendService.UpdatePasskey.
+func (c *backendServiceClient) UpdatePasskey(ctx context.Context, req *connect.Request[v1.UpdatePasskeyRequest]) (*connect.Response[v1.UpdatePasskeyResponse], error) {
+	return c.updatePasskey.CallUnary(ctx, req)
 }
 
 // DeletePasskey calls openauth.backend.v1.BackendService.DeletePasskey.
@@ -781,16 +834,6 @@ func (c *backendServiceClient) ListSessions(ctx context.Context, req *connect.Re
 // GetSession calls openauth.backend.v1.BackendService.GetSession.
 func (c *backendServiceClient) GetSession(ctx context.Context, req *connect.Request[v1.GetSessionRequest]) (*connect.Response[v1.GetSessionResponse], error) {
 	return c.getSession.CallUnary(ctx, req)
-}
-
-// ListIntermediateSessions calls openauth.backend.v1.BackendService.ListIntermediateSessions.
-func (c *backendServiceClient) ListIntermediateSessions(ctx context.Context, req *connect.Request[v1.ListIntermediateSessionsRequest]) (*connect.Response[v1.ListIntermediateSessionsResponse], error) {
-	return c.listIntermediateSessions.CallUnary(ctx, req)
-}
-
-// GetIntermediateSession calls openauth.backend.v1.BackendService.GetIntermediateSession.
-func (c *backendServiceClient) GetIntermediateSession(ctx context.Context, req *connect.Request[v1.GetIntermediateSessionRequest]) (*connect.Response[v1.GetIntermediateSessionResponse], error) {
-	return c.getIntermediateSession.CallUnary(ctx, req)
 }
 
 // ListUserInvites calls openauth.backend.v1.BackendService.ListUserInvites.
@@ -838,29 +881,9 @@ func (c *backendServiceClient) UpdateProject(ctx context.Context, req *connect.R
 	return c.updateProject.CallUnary(ctx, req)
 }
 
-// CreateProjectRedirectURI calls openauth.backend.v1.BackendService.CreateProjectRedirectURI.
-func (c *backendServiceClient) CreateProjectRedirectURI(ctx context.Context, req *connect.Request[v1.CreateProjectRedirectURIRequest]) (*connect.Response[v1.CreateProjectRedirectURIResponse], error) {
-	return c.createProjectRedirectURI.CallUnary(ctx, req)
-}
-
-// DeleteProjectRedirectURI calls openauth.backend.v1.BackendService.DeleteProjectRedirectURI.
-func (c *backendServiceClient) DeleteProjectRedirectURI(ctx context.Context, req *connect.Request[v1.DeleteProjectRedirectURIRequest]) (*connect.Response[v1.DeleteProjectRedirectURIResponse], error) {
-	return c.deleteProjectRedirectURI.CallUnary(ctx, req)
-}
-
-// GetProjectRedirectURI calls openauth.backend.v1.BackendService.GetProjectRedirectURI.
-func (c *backendServiceClient) GetProjectRedirectURI(ctx context.Context, req *connect.Request[v1.GetProjectRedirectURIRequest]) (*connect.Response[v1.GetProjectRedirectURIResponse], error) {
-	return c.getProjectRedirectURI.CallUnary(ctx, req)
-}
-
-// ListProjectRedirectURIs calls openauth.backend.v1.BackendService.ListProjectRedirectURIs.
-func (c *backendServiceClient) ListProjectRedirectURIs(ctx context.Context, req *connect.Request[v1.ListProjectRedirectURIsRequest]) (*connect.Response[v1.ListProjectRedirectURIsResponse], error) {
-	return c.listProjectRedirectURIs.CallUnary(ctx, req)
-}
-
-// UpdateProjectRedirectURI calls openauth.backend.v1.BackendService.UpdateProjectRedirectURI.
-func (c *backendServiceClient) UpdateProjectRedirectURI(ctx context.Context, req *connect.Request[v1.UpdateProjectRedirectURIRequest]) (*connect.Response[v1.UpdateProjectRedirectURIResponse], error) {
-	return c.updateProjectRedirectURI.CallUnary(ctx, req)
+// GetVaultDomainSettings calls openauth.backend.v1.BackendService.GetVaultDomainSettings.
+func (c *backendServiceClient) GetVaultDomainSettings(ctx context.Context, req *connect.Request[v1.GetVaultDomainSettingsRequest]) (*connect.Response[v1.GetVaultDomainSettingsResponse], error) {
+	return c.getVaultDomainSettings.CallUnary(ctx, req)
 }
 
 // GetProjectUISettings calls openauth.backend.v1.BackendService.GetProjectUISettings.
@@ -903,6 +926,31 @@ func (c *backendServiceClient) RevokeProjectAPIKey(ctx context.Context, req *con
 	return c.revokeProjectAPIKey.CallUnary(ctx, req)
 }
 
+// ListPublishableKeys calls openauth.backend.v1.BackendService.ListPublishableKeys.
+func (c *backendServiceClient) ListPublishableKeys(ctx context.Context, req *connect.Request[v1.ListPublishableKeysRequest]) (*connect.Response[v1.ListPublishableKeysResponse], error) {
+	return c.listPublishableKeys.CallUnary(ctx, req)
+}
+
+// GetPublishableKey calls openauth.backend.v1.BackendService.GetPublishableKey.
+func (c *backendServiceClient) GetPublishableKey(ctx context.Context, req *connect.Request[v1.GetPublishableKeyRequest]) (*connect.Response[v1.GetPublishableKeyResponse], error) {
+	return c.getPublishableKey.CallUnary(ctx, req)
+}
+
+// CreatePublishableKey calls openauth.backend.v1.BackendService.CreatePublishableKey.
+func (c *backendServiceClient) CreatePublishableKey(ctx context.Context, req *connect.Request[v1.CreatePublishableKeyRequest]) (*connect.Response[v1.CreatePublishableKeyResponse], error) {
+	return c.createPublishableKey.CallUnary(ctx, req)
+}
+
+// UpdatePublishableKey calls openauth.backend.v1.BackendService.UpdatePublishableKey.
+func (c *backendServiceClient) UpdatePublishableKey(ctx context.Context, req *connect.Request[v1.UpdatePublishableKeyRequest]) (*connect.Response[v1.UpdatePublishableKeyResponse], error) {
+	return c.updatePublishableKey.CallUnary(ctx, req)
+}
+
+// DeletePublishableKey calls openauth.backend.v1.BackendService.DeletePublishableKey.
+func (c *backendServiceClient) DeletePublishableKey(ctx context.Context, req *connect.Request[v1.DeletePublishableKeyRequest]) (*connect.Response[v1.DeletePublishableKeyResponse], error) {
+	return c.deletePublishableKey.CallUnary(ctx, req)
+}
+
 // CreateUserImpersonationToken calls
 // openauth.backend.v1.BackendService.CreateUserImpersonationToken.
 func (c *backendServiceClient) CreateUserImpersonationToken(ctx context.Context, req *connect.Request[v1.CreateUserImpersonationTokenRequest]) (*connect.Response[v1.CreateUserImpersonationTokenResponse], error) {
@@ -934,13 +982,15 @@ type BackendServiceHandler interface {
 	RevokeSCIMAPIKey(context.Context, *connect.Request[v1.RevokeSCIMAPIKeyRequest]) (*connect.Response[v1.RevokeSCIMAPIKeyResponse], error)
 	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
 	GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error)
+	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error)
+	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error)
+	DeleteUser(context.Context, *connect.Request[v1.DeleteUserRequest]) (*connect.Response[v1.DeleteUserResponse], error)
 	ListPasskeys(context.Context, *connect.Request[v1.ListPasskeysRequest]) (*connect.Response[v1.ListPasskeysResponse], error)
 	GetPasskey(context.Context, *connect.Request[v1.GetPasskeyRequest]) (*connect.Response[v1.GetPasskeyResponse], error)
+	UpdatePasskey(context.Context, *connect.Request[v1.UpdatePasskeyRequest]) (*connect.Response[v1.UpdatePasskeyResponse], error)
 	DeletePasskey(context.Context, *connect.Request[v1.DeletePasskeyRequest]) (*connect.Response[v1.DeletePasskeyResponse], error)
 	ListSessions(context.Context, *connect.Request[v1.ListSessionsRequest]) (*connect.Response[v1.ListSessionsResponse], error)
 	GetSession(context.Context, *connect.Request[v1.GetSessionRequest]) (*connect.Response[v1.GetSessionResponse], error)
-	ListIntermediateSessions(context.Context, *connect.Request[v1.ListIntermediateSessionsRequest]) (*connect.Response[v1.ListIntermediateSessionsResponse], error)
-	GetIntermediateSession(context.Context, *connect.Request[v1.GetIntermediateSessionRequest]) (*connect.Response[v1.GetIntermediateSessionResponse], error)
 	ListUserInvites(context.Context, *connect.Request[v1.ListUserInvitesRequest]) (*connect.Response[v1.ListUserInvitesResponse], error)
 	GetUserInvite(context.Context, *connect.Request[v1.GetUserInviteRequest]) (*connect.Response[v1.GetUserInviteResponse], error)
 	CreateUserInvite(context.Context, *connect.Request[v1.CreateUserInviteRequest]) (*connect.Response[v1.CreateUserInviteResponse], error)
@@ -950,11 +1000,7 @@ type BackendServiceHandler interface {
 	EnableOrganizationLogins(context.Context, *connect.Request[v1.EnableOrganizationLoginsRequest]) (*connect.Response[v1.EnableOrganizationLoginsResponse], error)
 	EnableProjectLogins(context.Context, *connect.Request[v1.EnableProjectLoginsRequest]) (*connect.Response[v1.EnableProjectLoginsResponse], error)
 	UpdateProject(context.Context, *connect.Request[v1.UpdateProjectRequest]) (*connect.Response[v1.UpdateProjectResponse], error)
-	CreateProjectRedirectURI(context.Context, *connect.Request[v1.CreateProjectRedirectURIRequest]) (*connect.Response[v1.CreateProjectRedirectURIResponse], error)
-	DeleteProjectRedirectURI(context.Context, *connect.Request[v1.DeleteProjectRedirectURIRequest]) (*connect.Response[v1.DeleteProjectRedirectURIResponse], error)
-	GetProjectRedirectURI(context.Context, *connect.Request[v1.GetProjectRedirectURIRequest]) (*connect.Response[v1.GetProjectRedirectURIResponse], error)
-	ListProjectRedirectURIs(context.Context, *connect.Request[v1.ListProjectRedirectURIsRequest]) (*connect.Response[v1.ListProjectRedirectURIsResponse], error)
-	UpdateProjectRedirectURI(context.Context, *connect.Request[v1.UpdateProjectRedirectURIRequest]) (*connect.Response[v1.UpdateProjectRedirectURIResponse], error)
+	GetVaultDomainSettings(context.Context, *connect.Request[v1.GetVaultDomainSettingsRequest]) (*connect.Response[v1.GetVaultDomainSettingsResponse], error)
 	GetProjectUISettings(context.Context, *connect.Request[v1.GetProjectUISettingsRequest]) (*connect.Response[v1.GetProjectUISettingsResponse], error)
 	UpdateProjectUISettings(context.Context, *connect.Request[v1.UpdateProjectUISettingsRequest]) (*connect.Response[v1.UpdateProjectUISettingsResponse], error)
 	ListProjectAPIKeys(context.Context, *connect.Request[v1.ListProjectAPIKeysRequest]) (*connect.Response[v1.ListProjectAPIKeysResponse], error)
@@ -963,6 +1009,11 @@ type BackendServiceHandler interface {
 	UpdateProjectAPIKey(context.Context, *connect.Request[v1.UpdateProjectAPIKeyRequest]) (*connect.Response[v1.UpdateProjectAPIKeyResponse], error)
 	DeleteProjectAPIKey(context.Context, *connect.Request[v1.DeleteProjectAPIKeyRequest]) (*connect.Response[v1.DeleteProjectAPIKeyResponse], error)
 	RevokeProjectAPIKey(context.Context, *connect.Request[v1.RevokeProjectAPIKeyRequest]) (*connect.Response[v1.RevokeProjectAPIKeyResponse], error)
+	ListPublishableKeys(context.Context, *connect.Request[v1.ListPublishableKeysRequest]) (*connect.Response[v1.ListPublishableKeysResponse], error)
+	GetPublishableKey(context.Context, *connect.Request[v1.GetPublishableKeyRequest]) (*connect.Response[v1.GetPublishableKeyResponse], error)
+	CreatePublishableKey(context.Context, *connect.Request[v1.CreatePublishableKeyRequest]) (*connect.Response[v1.CreatePublishableKeyResponse], error)
+	UpdatePublishableKey(context.Context, *connect.Request[v1.UpdatePublishableKeyRequest]) (*connect.Response[v1.UpdatePublishableKeyResponse], error)
+	DeletePublishableKey(context.Context, *connect.Request[v1.DeletePublishableKeyRequest]) (*connect.Response[v1.DeletePublishableKeyResponse], error)
 	CreateUserImpersonationToken(context.Context, *connect.Request[v1.CreateUserImpersonationTokenRequest]) (*connect.Response[v1.CreateUserImpersonationTokenResponse], error)
 }
 
@@ -1111,6 +1162,24 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		connect.WithSchema(backendServiceMethods.ByName("GetUser")),
 		connect.WithHandlerOptions(opts...),
 	)
+	backendServiceCreateUserHandler := connect.NewUnaryHandler(
+		BackendServiceCreateUserProcedure,
+		svc.CreateUser,
+		connect.WithSchema(backendServiceMethods.ByName("CreateUser")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceUpdateUserHandler := connect.NewUnaryHandler(
+		BackendServiceUpdateUserProcedure,
+		svc.UpdateUser,
+		connect.WithSchema(backendServiceMethods.ByName("UpdateUser")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceDeleteUserHandler := connect.NewUnaryHandler(
+		BackendServiceDeleteUserProcedure,
+		svc.DeleteUser,
+		connect.WithSchema(backendServiceMethods.ByName("DeleteUser")),
+		connect.WithHandlerOptions(opts...),
+	)
 	backendServiceListPasskeysHandler := connect.NewUnaryHandler(
 		BackendServiceListPasskeysProcedure,
 		svc.ListPasskeys,
@@ -1121,6 +1190,12 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		BackendServiceGetPasskeyProcedure,
 		svc.GetPasskey,
 		connect.WithSchema(backendServiceMethods.ByName("GetPasskey")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceUpdatePasskeyHandler := connect.NewUnaryHandler(
+		BackendServiceUpdatePasskeyProcedure,
+		svc.UpdatePasskey,
+		connect.WithSchema(backendServiceMethods.ByName("UpdatePasskey")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceDeletePasskeyHandler := connect.NewUnaryHandler(
@@ -1139,18 +1214,6 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		BackendServiceGetSessionProcedure,
 		svc.GetSession,
 		connect.WithSchema(backendServiceMethods.ByName("GetSession")),
-		connect.WithHandlerOptions(opts...),
-	)
-	backendServiceListIntermediateSessionsHandler := connect.NewUnaryHandler(
-		BackendServiceListIntermediateSessionsProcedure,
-		svc.ListIntermediateSessions,
-		connect.WithSchema(backendServiceMethods.ByName("ListIntermediateSessions")),
-		connect.WithHandlerOptions(opts...),
-	)
-	backendServiceGetIntermediateSessionHandler := connect.NewUnaryHandler(
-		BackendServiceGetIntermediateSessionProcedure,
-		svc.GetIntermediateSession,
-		connect.WithSchema(backendServiceMethods.ByName("GetIntermediateSession")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceListUserInvitesHandler := connect.NewUnaryHandler(
@@ -1207,34 +1270,10 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		connect.WithSchema(backendServiceMethods.ByName("UpdateProject")),
 		connect.WithHandlerOptions(opts...),
 	)
-	backendServiceCreateProjectRedirectURIHandler := connect.NewUnaryHandler(
-		BackendServiceCreateProjectRedirectURIProcedure,
-		svc.CreateProjectRedirectURI,
-		connect.WithSchema(backendServiceMethods.ByName("CreateProjectRedirectURI")),
-		connect.WithHandlerOptions(opts...),
-	)
-	backendServiceDeleteProjectRedirectURIHandler := connect.NewUnaryHandler(
-		BackendServiceDeleteProjectRedirectURIProcedure,
-		svc.DeleteProjectRedirectURI,
-		connect.WithSchema(backendServiceMethods.ByName("DeleteProjectRedirectURI")),
-		connect.WithHandlerOptions(opts...),
-	)
-	backendServiceGetProjectRedirectURIHandler := connect.NewUnaryHandler(
-		BackendServiceGetProjectRedirectURIProcedure,
-		svc.GetProjectRedirectURI,
-		connect.WithSchema(backendServiceMethods.ByName("GetProjectRedirectURI")),
-		connect.WithHandlerOptions(opts...),
-	)
-	backendServiceListProjectRedirectURIsHandler := connect.NewUnaryHandler(
-		BackendServiceListProjectRedirectURIsProcedure,
-		svc.ListProjectRedirectURIs,
-		connect.WithSchema(backendServiceMethods.ByName("ListProjectRedirectURIs")),
-		connect.WithHandlerOptions(opts...),
-	)
-	backendServiceUpdateProjectRedirectURIHandler := connect.NewUnaryHandler(
-		BackendServiceUpdateProjectRedirectURIProcedure,
-		svc.UpdateProjectRedirectURI,
-		connect.WithSchema(backendServiceMethods.ByName("UpdateProjectRedirectURI")),
+	backendServiceGetVaultDomainSettingsHandler := connect.NewUnaryHandler(
+		BackendServiceGetVaultDomainSettingsProcedure,
+		svc.GetVaultDomainSettings,
+		connect.WithSchema(backendServiceMethods.ByName("GetVaultDomainSettings")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceGetProjectUISettingsHandler := connect.NewUnaryHandler(
@@ -1283,6 +1322,36 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		BackendServiceRevokeProjectAPIKeyProcedure,
 		svc.RevokeProjectAPIKey,
 		connect.WithSchema(backendServiceMethods.ByName("RevokeProjectAPIKey")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceListPublishableKeysHandler := connect.NewUnaryHandler(
+		BackendServiceListPublishableKeysProcedure,
+		svc.ListPublishableKeys,
+		connect.WithSchema(backendServiceMethods.ByName("ListPublishableKeys")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceGetPublishableKeyHandler := connect.NewUnaryHandler(
+		BackendServiceGetPublishableKeyProcedure,
+		svc.GetPublishableKey,
+		connect.WithSchema(backendServiceMethods.ByName("GetPublishableKey")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceCreatePublishableKeyHandler := connect.NewUnaryHandler(
+		BackendServiceCreatePublishableKeyProcedure,
+		svc.CreatePublishableKey,
+		connect.WithSchema(backendServiceMethods.ByName("CreatePublishableKey")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceUpdatePublishableKeyHandler := connect.NewUnaryHandler(
+		BackendServiceUpdatePublishableKeyProcedure,
+		svc.UpdatePublishableKey,
+		connect.WithSchema(backendServiceMethods.ByName("UpdatePublishableKey")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceDeletePublishableKeyHandler := connect.NewUnaryHandler(
+		BackendServiceDeletePublishableKeyProcedure,
+		svc.DeletePublishableKey,
+		connect.WithSchema(backendServiceMethods.ByName("DeletePublishableKey")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceCreateUserImpersonationTokenHandler := connect.NewUnaryHandler(
@@ -1339,20 +1408,24 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceListUsersHandler.ServeHTTP(w, r)
 		case BackendServiceGetUserProcedure:
 			backendServiceGetUserHandler.ServeHTTP(w, r)
+		case BackendServiceCreateUserProcedure:
+			backendServiceCreateUserHandler.ServeHTTP(w, r)
+		case BackendServiceUpdateUserProcedure:
+			backendServiceUpdateUserHandler.ServeHTTP(w, r)
+		case BackendServiceDeleteUserProcedure:
+			backendServiceDeleteUserHandler.ServeHTTP(w, r)
 		case BackendServiceListPasskeysProcedure:
 			backendServiceListPasskeysHandler.ServeHTTP(w, r)
 		case BackendServiceGetPasskeyProcedure:
 			backendServiceGetPasskeyHandler.ServeHTTP(w, r)
+		case BackendServiceUpdatePasskeyProcedure:
+			backendServiceUpdatePasskeyHandler.ServeHTTP(w, r)
 		case BackendServiceDeletePasskeyProcedure:
 			backendServiceDeletePasskeyHandler.ServeHTTP(w, r)
 		case BackendServiceListSessionsProcedure:
 			backendServiceListSessionsHandler.ServeHTTP(w, r)
 		case BackendServiceGetSessionProcedure:
 			backendServiceGetSessionHandler.ServeHTTP(w, r)
-		case BackendServiceListIntermediateSessionsProcedure:
-			backendServiceListIntermediateSessionsHandler.ServeHTTP(w, r)
-		case BackendServiceGetIntermediateSessionProcedure:
-			backendServiceGetIntermediateSessionHandler.ServeHTTP(w, r)
 		case BackendServiceListUserInvitesProcedure:
 			backendServiceListUserInvitesHandler.ServeHTTP(w, r)
 		case BackendServiceGetUserInviteProcedure:
@@ -1371,16 +1444,8 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceEnableProjectLoginsHandler.ServeHTTP(w, r)
 		case BackendServiceUpdateProjectProcedure:
 			backendServiceUpdateProjectHandler.ServeHTTP(w, r)
-		case BackendServiceCreateProjectRedirectURIProcedure:
-			backendServiceCreateProjectRedirectURIHandler.ServeHTTP(w, r)
-		case BackendServiceDeleteProjectRedirectURIProcedure:
-			backendServiceDeleteProjectRedirectURIHandler.ServeHTTP(w, r)
-		case BackendServiceGetProjectRedirectURIProcedure:
-			backendServiceGetProjectRedirectURIHandler.ServeHTTP(w, r)
-		case BackendServiceListProjectRedirectURIsProcedure:
-			backendServiceListProjectRedirectURIsHandler.ServeHTTP(w, r)
-		case BackendServiceUpdateProjectRedirectURIProcedure:
-			backendServiceUpdateProjectRedirectURIHandler.ServeHTTP(w, r)
+		case BackendServiceGetVaultDomainSettingsProcedure:
+			backendServiceGetVaultDomainSettingsHandler.ServeHTTP(w, r)
 		case BackendServiceGetProjectUISettingsProcedure:
 			backendServiceGetProjectUISettingsHandler.ServeHTTP(w, r)
 		case BackendServiceUpdateProjectUISettingsProcedure:
@@ -1397,6 +1462,16 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceDeleteProjectAPIKeyHandler.ServeHTTP(w, r)
 		case BackendServiceRevokeProjectAPIKeyProcedure:
 			backendServiceRevokeProjectAPIKeyHandler.ServeHTTP(w, r)
+		case BackendServiceListPublishableKeysProcedure:
+			backendServiceListPublishableKeysHandler.ServeHTTP(w, r)
+		case BackendServiceGetPublishableKeyProcedure:
+			backendServiceGetPublishableKeyHandler.ServeHTTP(w, r)
+		case BackendServiceCreatePublishableKeyProcedure:
+			backendServiceCreatePublishableKeyHandler.ServeHTTP(w, r)
+		case BackendServiceUpdatePublishableKeyProcedure:
+			backendServiceUpdatePublishableKeyHandler.ServeHTTP(w, r)
+		case BackendServiceDeletePublishableKeyProcedure:
+			backendServiceDeletePublishableKeyHandler.ServeHTTP(w, r)
 		case BackendServiceCreateUserImpersonationTokenProcedure:
 			backendServiceCreateUserImpersonationTokenHandler.ServeHTTP(w, r)
 		default:
@@ -1500,12 +1575,28 @@ func (UnimplementedBackendServiceHandler) GetUser(context.Context, *connect.Requ
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetUser is not implemented"))
 }
 
+func (UnimplementedBackendServiceHandler) CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.CreateUser is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.UpdateUser is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) DeleteUser(context.Context, *connect.Request[v1.DeleteUserRequest]) (*connect.Response[v1.DeleteUserResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.DeleteUser is not implemented"))
+}
+
 func (UnimplementedBackendServiceHandler) ListPasskeys(context.Context, *connect.Request[v1.ListPasskeysRequest]) (*connect.Response[v1.ListPasskeysResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.ListPasskeys is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) GetPasskey(context.Context, *connect.Request[v1.GetPasskeyRequest]) (*connect.Response[v1.GetPasskeyResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetPasskey is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) UpdatePasskey(context.Context, *connect.Request[v1.UpdatePasskeyRequest]) (*connect.Response[v1.UpdatePasskeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.UpdatePasskey is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) DeletePasskey(context.Context, *connect.Request[v1.DeletePasskeyRequest]) (*connect.Response[v1.DeletePasskeyResponse], error) {
@@ -1518,14 +1609,6 @@ func (UnimplementedBackendServiceHandler) ListSessions(context.Context, *connect
 
 func (UnimplementedBackendServiceHandler) GetSession(context.Context, *connect.Request[v1.GetSessionRequest]) (*connect.Response[v1.GetSessionResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetSession is not implemented"))
-}
-
-func (UnimplementedBackendServiceHandler) ListIntermediateSessions(context.Context, *connect.Request[v1.ListIntermediateSessionsRequest]) (*connect.Response[v1.ListIntermediateSessionsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.ListIntermediateSessions is not implemented"))
-}
-
-func (UnimplementedBackendServiceHandler) GetIntermediateSession(context.Context, *connect.Request[v1.GetIntermediateSessionRequest]) (*connect.Response[v1.GetIntermediateSessionResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetIntermediateSession is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) ListUserInvites(context.Context, *connect.Request[v1.ListUserInvitesRequest]) (*connect.Response[v1.ListUserInvitesResponse], error) {
@@ -1564,24 +1647,8 @@ func (UnimplementedBackendServiceHandler) UpdateProject(context.Context, *connec
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.UpdateProject is not implemented"))
 }
 
-func (UnimplementedBackendServiceHandler) CreateProjectRedirectURI(context.Context, *connect.Request[v1.CreateProjectRedirectURIRequest]) (*connect.Response[v1.CreateProjectRedirectURIResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.CreateProjectRedirectURI is not implemented"))
-}
-
-func (UnimplementedBackendServiceHandler) DeleteProjectRedirectURI(context.Context, *connect.Request[v1.DeleteProjectRedirectURIRequest]) (*connect.Response[v1.DeleteProjectRedirectURIResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.DeleteProjectRedirectURI is not implemented"))
-}
-
-func (UnimplementedBackendServiceHandler) GetProjectRedirectURI(context.Context, *connect.Request[v1.GetProjectRedirectURIRequest]) (*connect.Response[v1.GetProjectRedirectURIResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetProjectRedirectURI is not implemented"))
-}
-
-func (UnimplementedBackendServiceHandler) ListProjectRedirectURIs(context.Context, *connect.Request[v1.ListProjectRedirectURIsRequest]) (*connect.Response[v1.ListProjectRedirectURIsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.ListProjectRedirectURIs is not implemented"))
-}
-
-func (UnimplementedBackendServiceHandler) UpdateProjectRedirectURI(context.Context, *connect.Request[v1.UpdateProjectRedirectURIRequest]) (*connect.Response[v1.UpdateProjectRedirectURIResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.UpdateProjectRedirectURI is not implemented"))
+func (UnimplementedBackendServiceHandler) GetVaultDomainSettings(context.Context, *connect.Request[v1.GetVaultDomainSettingsRequest]) (*connect.Response[v1.GetVaultDomainSettingsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetVaultDomainSettings is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) GetProjectUISettings(context.Context, *connect.Request[v1.GetProjectUISettingsRequest]) (*connect.Response[v1.GetProjectUISettingsResponse], error) {
@@ -1614,6 +1681,26 @@ func (UnimplementedBackendServiceHandler) DeleteProjectAPIKey(context.Context, *
 
 func (UnimplementedBackendServiceHandler) RevokeProjectAPIKey(context.Context, *connect.Request[v1.RevokeProjectAPIKeyRequest]) (*connect.Response[v1.RevokeProjectAPIKeyResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.RevokeProjectAPIKey is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) ListPublishableKeys(context.Context, *connect.Request[v1.ListPublishableKeysRequest]) (*connect.Response[v1.ListPublishableKeysResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.ListPublishableKeys is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) GetPublishableKey(context.Context, *connect.Request[v1.GetPublishableKeyRequest]) (*connect.Response[v1.GetPublishableKeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetPublishableKey is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) CreatePublishableKey(context.Context, *connect.Request[v1.CreatePublishableKeyRequest]) (*connect.Response[v1.CreatePublishableKeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.CreatePublishableKey is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) UpdatePublishableKey(context.Context, *connect.Request[v1.UpdatePublishableKeyRequest]) (*connect.Response[v1.UpdatePublishableKeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.UpdatePublishableKey is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) DeletePublishableKey(context.Context, *connect.Request[v1.DeletePublishableKeyRequest]) (*connect.Response[v1.DeletePublishableKeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.DeletePublishableKey is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) CreateUserImpersonationToken(context.Context, *connect.Request[v1.CreateUserImpersonationTokenRequest]) (*connect.Response[v1.CreateUserImpersonationTokenResponse], error) {

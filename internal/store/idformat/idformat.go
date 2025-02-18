@@ -24,6 +24,8 @@ var (
 	ProjectAPIKey            = prettyuuid.MustNewFormat("project_api_key_", alphabet)
 	ProjectAPIKeySecretToken = prettyuuid.MustNewFormat("openauth_secret_key_", alphabet)
 
+	PublishableKey = prettyuuid.MustNewFormat("publishable_key_", alphabet)
+
 	SCIMAPIKey            = prettyuuid.MustNewFormat("scim_api_key_", alphabet)
 	SCIMAPIKeySecretToken = prettyuuid.MustNewFormat("openauth_secret_scim_api_key_", alphabet)
 

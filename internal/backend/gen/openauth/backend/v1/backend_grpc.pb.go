@@ -42,13 +42,15 @@ const (
 	BackendService_RevokeSCIMAPIKey_FullMethodName                      = "/openauth.backend.v1.BackendService/RevokeSCIMAPIKey"
 	BackendService_ListUsers_FullMethodName                             = "/openauth.backend.v1.BackendService/ListUsers"
 	BackendService_GetUser_FullMethodName                               = "/openauth.backend.v1.BackendService/GetUser"
+	BackendService_CreateUser_FullMethodName                            = "/openauth.backend.v1.BackendService/CreateUser"
+	BackendService_UpdateUser_FullMethodName                            = "/openauth.backend.v1.BackendService/UpdateUser"
+	BackendService_DeleteUser_FullMethodName                            = "/openauth.backend.v1.BackendService/DeleteUser"
 	BackendService_ListPasskeys_FullMethodName                          = "/openauth.backend.v1.BackendService/ListPasskeys"
 	BackendService_GetPasskey_FullMethodName                            = "/openauth.backend.v1.BackendService/GetPasskey"
+	BackendService_UpdatePasskey_FullMethodName                         = "/openauth.backend.v1.BackendService/UpdatePasskey"
 	BackendService_DeletePasskey_FullMethodName                         = "/openauth.backend.v1.BackendService/DeletePasskey"
 	BackendService_ListSessions_FullMethodName                          = "/openauth.backend.v1.BackendService/ListSessions"
 	BackendService_GetSession_FullMethodName                            = "/openauth.backend.v1.BackendService/GetSession"
-	BackendService_ListIntermediateSessions_FullMethodName              = "/openauth.backend.v1.BackendService/ListIntermediateSessions"
-	BackendService_GetIntermediateSession_FullMethodName                = "/openauth.backend.v1.BackendService/GetIntermediateSession"
 	BackendService_ListUserInvites_FullMethodName                       = "/openauth.backend.v1.BackendService/ListUserInvites"
 	BackendService_GetUserInvite_FullMethodName                         = "/openauth.backend.v1.BackendService/GetUserInvite"
 	BackendService_CreateUserInvite_FullMethodName                      = "/openauth.backend.v1.BackendService/CreateUserInvite"
@@ -58,11 +60,7 @@ const (
 	BackendService_EnableOrganizationLogins_FullMethodName              = "/openauth.backend.v1.BackendService/EnableOrganizationLogins"
 	BackendService_EnableProjectLogins_FullMethodName                   = "/openauth.backend.v1.BackendService/EnableProjectLogins"
 	BackendService_UpdateProject_FullMethodName                         = "/openauth.backend.v1.BackendService/UpdateProject"
-	BackendService_CreateProjectRedirectURI_FullMethodName              = "/openauth.backend.v1.BackendService/CreateProjectRedirectURI"
-	BackendService_DeleteProjectRedirectURI_FullMethodName              = "/openauth.backend.v1.BackendService/DeleteProjectRedirectURI"
-	BackendService_GetProjectRedirectURI_FullMethodName                 = "/openauth.backend.v1.BackendService/GetProjectRedirectURI"
-	BackendService_ListProjectRedirectURIs_FullMethodName               = "/openauth.backend.v1.BackendService/ListProjectRedirectURIs"
-	BackendService_UpdateProjectRedirectURI_FullMethodName              = "/openauth.backend.v1.BackendService/UpdateProjectRedirectURI"
+	BackendService_GetVaultDomainSettings_FullMethodName                = "/openauth.backend.v1.BackendService/GetVaultDomainSettings"
 	BackendService_GetProjectUISettings_FullMethodName                  = "/openauth.backend.v1.BackendService/GetProjectUISettings"
 	BackendService_UpdateProjectUISettings_FullMethodName               = "/openauth.backend.v1.BackendService/UpdateProjectUISettings"
 	BackendService_ListProjectAPIKeys_FullMethodName                    = "/openauth.backend.v1.BackendService/ListProjectAPIKeys"
@@ -71,6 +69,11 @@ const (
 	BackendService_UpdateProjectAPIKey_FullMethodName                   = "/openauth.backend.v1.BackendService/UpdateProjectAPIKey"
 	BackendService_DeleteProjectAPIKey_FullMethodName                   = "/openauth.backend.v1.BackendService/DeleteProjectAPIKey"
 	BackendService_RevokeProjectAPIKey_FullMethodName                   = "/openauth.backend.v1.BackendService/RevokeProjectAPIKey"
+	BackendService_ListPublishableKeys_FullMethodName                   = "/openauth.backend.v1.BackendService/ListPublishableKeys"
+	BackendService_GetPublishableKey_FullMethodName                     = "/openauth.backend.v1.BackendService/GetPublishableKey"
+	BackendService_CreatePublishableKey_FullMethodName                  = "/openauth.backend.v1.BackendService/CreatePublishableKey"
+	BackendService_UpdatePublishableKey_FullMethodName                  = "/openauth.backend.v1.BackendService/UpdatePublishableKey"
+	BackendService_DeletePublishableKey_FullMethodName                  = "/openauth.backend.v1.BackendService/DeletePublishableKey"
 	BackendService_CreateUserImpersonationToken_FullMethodName          = "/openauth.backend.v1.BackendService/CreateUserImpersonationToken"
 )
 
@@ -101,13 +104,15 @@ type BackendServiceClient interface {
 	RevokeSCIMAPIKey(ctx context.Context, in *RevokeSCIMAPIKeyRequest, opts ...grpc.CallOption) (*RevokeSCIMAPIKeyResponse, error)
 	ListUsers(ctx context.Context, in *ListUsersRequest, opts ...grpc.CallOption) (*ListUsersResponse, error)
 	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error)
+	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error)
+	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UpdateUserResponse, error)
+	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*DeleteUserResponse, error)
 	ListPasskeys(ctx context.Context, in *ListPasskeysRequest, opts ...grpc.CallOption) (*ListPasskeysResponse, error)
 	GetPasskey(ctx context.Context, in *GetPasskeyRequest, opts ...grpc.CallOption) (*GetPasskeyResponse, error)
+	UpdatePasskey(ctx context.Context, in *UpdatePasskeyRequest, opts ...grpc.CallOption) (*UpdatePasskeyResponse, error)
 	DeletePasskey(ctx context.Context, in *DeletePasskeyRequest, opts ...grpc.CallOption) (*DeletePasskeyResponse, error)
 	ListSessions(ctx context.Context, in *ListSessionsRequest, opts ...grpc.CallOption) (*ListSessionsResponse, error)
 	GetSession(ctx context.Context, in *GetSessionRequest, opts ...grpc.CallOption) (*GetSessionResponse, error)
-	ListIntermediateSessions(ctx context.Context, in *ListIntermediateSessionsRequest, opts ...grpc.CallOption) (*ListIntermediateSessionsResponse, error)
-	GetIntermediateSession(ctx context.Context, in *GetIntermediateSessionRequest, opts ...grpc.CallOption) (*GetIntermediateSessionResponse, error)
 	ListUserInvites(ctx context.Context, in *ListUserInvitesRequest, opts ...grpc.CallOption) (*ListUserInvitesResponse, error)
 	GetUserInvite(ctx context.Context, in *GetUserInviteRequest, opts ...grpc.CallOption) (*GetUserInviteResponse, error)
 	CreateUserInvite(ctx context.Context, in *CreateUserInviteRequest, opts ...grpc.CallOption) (*CreateUserInviteResponse, error)
@@ -117,11 +122,7 @@ type BackendServiceClient interface {
 	EnableOrganizationLogins(ctx context.Context, in *EnableOrganizationLoginsRequest, opts ...grpc.CallOption) (*EnableOrganizationLoginsResponse, error)
 	EnableProjectLogins(ctx context.Context, in *EnableProjectLoginsRequest, opts ...grpc.CallOption) (*EnableProjectLoginsResponse, error)
 	UpdateProject(ctx context.Context, in *UpdateProjectRequest, opts ...grpc.CallOption) (*UpdateProjectResponse, error)
-	CreateProjectRedirectURI(ctx context.Context, in *CreateProjectRedirectURIRequest, opts ...grpc.CallOption) (*CreateProjectRedirectURIResponse, error)
-	DeleteProjectRedirectURI(ctx context.Context, in *DeleteProjectRedirectURIRequest, opts ...grpc.CallOption) (*DeleteProjectRedirectURIResponse, error)
-	GetProjectRedirectURI(ctx context.Context, in *GetProjectRedirectURIRequest, opts ...grpc.CallOption) (*GetProjectRedirectURIResponse, error)
-	ListProjectRedirectURIs(ctx context.Context, in *ListProjectRedirectURIsRequest, opts ...grpc.CallOption) (*ListProjectRedirectURIsResponse, error)
-	UpdateProjectRedirectURI(ctx context.Context, in *UpdateProjectRedirectURIRequest, opts ...grpc.CallOption) (*UpdateProjectRedirectURIResponse, error)
+	GetVaultDomainSettings(ctx context.Context, in *GetVaultDomainSettingsRequest, opts ...grpc.CallOption) (*GetVaultDomainSettingsResponse, error)
 	GetProjectUISettings(ctx context.Context, in *GetProjectUISettingsRequest, opts ...grpc.CallOption) (*GetProjectUISettingsResponse, error)
 	UpdateProjectUISettings(ctx context.Context, in *UpdateProjectUISettingsRequest, opts ...grpc.CallOption) (*UpdateProjectUISettingsResponse, error)
 	ListProjectAPIKeys(ctx context.Context, in *ListProjectAPIKeysRequest, opts ...grpc.CallOption) (*ListProjectAPIKeysResponse, error)
@@ -130,6 +131,11 @@ type BackendServiceClient interface {
 	UpdateProjectAPIKey(ctx context.Context, in *UpdateProjectAPIKeyRequest, opts ...grpc.CallOption) (*UpdateProjectAPIKeyResponse, error)
 	DeleteProjectAPIKey(ctx context.Context, in *DeleteProjectAPIKeyRequest, opts ...grpc.CallOption) (*DeleteProjectAPIKeyResponse, error)
 	RevokeProjectAPIKey(ctx context.Context, in *RevokeProjectAPIKeyRequest, opts ...grpc.CallOption) (*RevokeProjectAPIKeyResponse, error)
+	ListPublishableKeys(ctx context.Context, in *ListPublishableKeysRequest, opts ...grpc.CallOption) (*ListPublishableKeysResponse, error)
+	GetPublishableKey(ctx context.Context, in *GetPublishableKeyRequest, opts ...grpc.CallOption) (*GetPublishableKeyResponse, error)
+	CreatePublishableKey(ctx context.Context, in *CreatePublishableKeyRequest, opts ...grpc.CallOption) (*CreatePublishableKeyResponse, error)
+	UpdatePublishableKey(ctx context.Context, in *UpdatePublishableKeyRequest, opts ...grpc.CallOption) (*UpdatePublishableKeyResponse, error)
+	DeletePublishableKey(ctx context.Context, in *DeletePublishableKeyRequest, opts ...grpc.CallOption) (*DeletePublishableKeyResponse, error)
 	CreateUserImpersonationToken(ctx context.Context, in *CreateUserImpersonationTokenRequest, opts ...grpc.CallOption) (*CreateUserImpersonationTokenResponse, error)
 }
 
@@ -371,6 +377,36 @@ func (c *backendServiceClient) GetUser(ctx context.Context, in *GetUserRequest, 
 	return out, nil
 }
 
+func (c *backendServiceClient) CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateUserResponse)
+	err := c.cc.Invoke(ctx, BackendService_CreateUser_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UpdateUserResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateUserResponse)
+	err := c.cc.Invoke(ctx, BackendService_UpdateUser_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*DeleteUserResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteUserResponse)
+	err := c.cc.Invoke(ctx, BackendService_DeleteUser_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *backendServiceClient) ListPasskeys(ctx context.Context, in *ListPasskeysRequest, opts ...grpc.CallOption) (*ListPasskeysResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListPasskeysResponse)
@@ -385,6 +421,16 @@ func (c *backendServiceClient) GetPasskey(ctx context.Context, in *GetPasskeyReq
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetPasskeyResponse)
 	err := c.cc.Invoke(ctx, BackendService_GetPasskey_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) UpdatePasskey(ctx context.Context, in *UpdatePasskeyRequest, opts ...grpc.CallOption) (*UpdatePasskeyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdatePasskeyResponse)
+	err := c.cc.Invoke(ctx, BackendService_UpdatePasskey_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -415,26 +461,6 @@ func (c *backendServiceClient) GetSession(ctx context.Context, in *GetSessionReq
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetSessionResponse)
 	err := c.cc.Invoke(ctx, BackendService_GetSession_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *backendServiceClient) ListIntermediateSessions(ctx context.Context, in *ListIntermediateSessionsRequest, opts ...grpc.CallOption) (*ListIntermediateSessionsResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ListIntermediateSessionsResponse)
-	err := c.cc.Invoke(ctx, BackendService_ListIntermediateSessions_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *backendServiceClient) GetIntermediateSession(ctx context.Context, in *GetIntermediateSessionRequest, opts ...grpc.CallOption) (*GetIntermediateSessionResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetIntermediateSessionResponse)
-	err := c.cc.Invoke(ctx, BackendService_GetIntermediateSession_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -531,50 +557,10 @@ func (c *backendServiceClient) UpdateProject(ctx context.Context, in *UpdateProj
 	return out, nil
 }
 
-func (c *backendServiceClient) CreateProjectRedirectURI(ctx context.Context, in *CreateProjectRedirectURIRequest, opts ...grpc.CallOption) (*CreateProjectRedirectURIResponse, error) {
+func (c *backendServiceClient) GetVaultDomainSettings(ctx context.Context, in *GetVaultDomainSettingsRequest, opts ...grpc.CallOption) (*GetVaultDomainSettingsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(CreateProjectRedirectURIResponse)
-	err := c.cc.Invoke(ctx, BackendService_CreateProjectRedirectURI_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *backendServiceClient) DeleteProjectRedirectURI(ctx context.Context, in *DeleteProjectRedirectURIRequest, opts ...grpc.CallOption) (*DeleteProjectRedirectURIResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(DeleteProjectRedirectURIResponse)
-	err := c.cc.Invoke(ctx, BackendService_DeleteProjectRedirectURI_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *backendServiceClient) GetProjectRedirectURI(ctx context.Context, in *GetProjectRedirectURIRequest, opts ...grpc.CallOption) (*GetProjectRedirectURIResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetProjectRedirectURIResponse)
-	err := c.cc.Invoke(ctx, BackendService_GetProjectRedirectURI_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *backendServiceClient) ListProjectRedirectURIs(ctx context.Context, in *ListProjectRedirectURIsRequest, opts ...grpc.CallOption) (*ListProjectRedirectURIsResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ListProjectRedirectURIsResponse)
-	err := c.cc.Invoke(ctx, BackendService_ListProjectRedirectURIs_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *backendServiceClient) UpdateProjectRedirectURI(ctx context.Context, in *UpdateProjectRedirectURIRequest, opts ...grpc.CallOption) (*UpdateProjectRedirectURIResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(UpdateProjectRedirectURIResponse)
-	err := c.cc.Invoke(ctx, BackendService_UpdateProjectRedirectURI_FullMethodName, in, out, cOpts...)
+	out := new(GetVaultDomainSettingsResponse)
+	err := c.cc.Invoke(ctx, BackendService_GetVaultDomainSettings_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -661,6 +647,56 @@ func (c *backendServiceClient) RevokeProjectAPIKey(ctx context.Context, in *Revo
 	return out, nil
 }
 
+func (c *backendServiceClient) ListPublishableKeys(ctx context.Context, in *ListPublishableKeysRequest, opts ...grpc.CallOption) (*ListPublishableKeysResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListPublishableKeysResponse)
+	err := c.cc.Invoke(ctx, BackendService_ListPublishableKeys_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) GetPublishableKey(ctx context.Context, in *GetPublishableKeyRequest, opts ...grpc.CallOption) (*GetPublishableKeyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetPublishableKeyResponse)
+	err := c.cc.Invoke(ctx, BackendService_GetPublishableKey_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) CreatePublishableKey(ctx context.Context, in *CreatePublishableKeyRequest, opts ...grpc.CallOption) (*CreatePublishableKeyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreatePublishableKeyResponse)
+	err := c.cc.Invoke(ctx, BackendService_CreatePublishableKey_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) UpdatePublishableKey(ctx context.Context, in *UpdatePublishableKeyRequest, opts ...grpc.CallOption) (*UpdatePublishableKeyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdatePublishableKeyResponse)
+	err := c.cc.Invoke(ctx, BackendService_UpdatePublishableKey_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) DeletePublishableKey(ctx context.Context, in *DeletePublishableKeyRequest, opts ...grpc.CallOption) (*DeletePublishableKeyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeletePublishableKeyResponse)
+	err := c.cc.Invoke(ctx, BackendService_DeletePublishableKey_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *backendServiceClient) CreateUserImpersonationToken(ctx context.Context, in *CreateUserImpersonationTokenRequest, opts ...grpc.CallOption) (*CreateUserImpersonationTokenResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CreateUserImpersonationTokenResponse)
@@ -698,13 +734,15 @@ type BackendServiceServer interface {
 	RevokeSCIMAPIKey(context.Context, *RevokeSCIMAPIKeyRequest) (*RevokeSCIMAPIKeyResponse, error)
 	ListUsers(context.Context, *ListUsersRequest) (*ListUsersResponse, error)
 	GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error)
+	CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error)
+	UpdateUser(context.Context, *UpdateUserRequest) (*UpdateUserResponse, error)
+	DeleteUser(context.Context, *DeleteUserRequest) (*DeleteUserResponse, error)
 	ListPasskeys(context.Context, *ListPasskeysRequest) (*ListPasskeysResponse, error)
 	GetPasskey(context.Context, *GetPasskeyRequest) (*GetPasskeyResponse, error)
+	UpdatePasskey(context.Context, *UpdatePasskeyRequest) (*UpdatePasskeyResponse, error)
 	DeletePasskey(context.Context, *DeletePasskeyRequest) (*DeletePasskeyResponse, error)
 	ListSessions(context.Context, *ListSessionsRequest) (*ListSessionsResponse, error)
 	GetSession(context.Context, *GetSessionRequest) (*GetSessionResponse, error)
-	ListIntermediateSessions(context.Context, *ListIntermediateSessionsRequest) (*ListIntermediateSessionsResponse, error)
-	GetIntermediateSession(context.Context, *GetIntermediateSessionRequest) (*GetIntermediateSessionResponse, error)
 	ListUserInvites(context.Context, *ListUserInvitesRequest) (*ListUserInvitesResponse, error)
 	GetUserInvite(context.Context, *GetUserInviteRequest) (*GetUserInviteResponse, error)
 	CreateUserInvite(context.Context, *CreateUserInviteRequest) (*CreateUserInviteResponse, error)
@@ -714,11 +752,7 @@ type BackendServiceServer interface {
 	EnableOrganizationLogins(context.Context, *EnableOrganizationLoginsRequest) (*EnableOrganizationLoginsResponse, error)
 	EnableProjectLogins(context.Context, *EnableProjectLoginsRequest) (*EnableProjectLoginsResponse, error)
 	UpdateProject(context.Context, *UpdateProjectRequest) (*UpdateProjectResponse, error)
-	CreateProjectRedirectURI(context.Context, *CreateProjectRedirectURIRequest) (*CreateProjectRedirectURIResponse, error)
-	DeleteProjectRedirectURI(context.Context, *DeleteProjectRedirectURIRequest) (*DeleteProjectRedirectURIResponse, error)
-	GetProjectRedirectURI(context.Context, *GetProjectRedirectURIRequest) (*GetProjectRedirectURIResponse, error)
-	ListProjectRedirectURIs(context.Context, *ListProjectRedirectURIsRequest) (*ListProjectRedirectURIsResponse, error)
-	UpdateProjectRedirectURI(context.Context, *UpdateProjectRedirectURIRequest) (*UpdateProjectRedirectURIResponse, error)
+	GetVaultDomainSettings(context.Context, *GetVaultDomainSettingsRequest) (*GetVaultDomainSettingsResponse, error)
 	GetProjectUISettings(context.Context, *GetProjectUISettingsRequest) (*GetProjectUISettingsResponse, error)
 	UpdateProjectUISettings(context.Context, *UpdateProjectUISettingsRequest) (*UpdateProjectUISettingsResponse, error)
 	ListProjectAPIKeys(context.Context, *ListProjectAPIKeysRequest) (*ListProjectAPIKeysResponse, error)
@@ -727,6 +761,11 @@ type BackendServiceServer interface {
 	UpdateProjectAPIKey(context.Context, *UpdateProjectAPIKeyRequest) (*UpdateProjectAPIKeyResponse, error)
 	DeleteProjectAPIKey(context.Context, *DeleteProjectAPIKeyRequest) (*DeleteProjectAPIKeyResponse, error)
 	RevokeProjectAPIKey(context.Context, *RevokeProjectAPIKeyRequest) (*RevokeProjectAPIKeyResponse, error)
+	ListPublishableKeys(context.Context, *ListPublishableKeysRequest) (*ListPublishableKeysResponse, error)
+	GetPublishableKey(context.Context, *GetPublishableKeyRequest) (*GetPublishableKeyResponse, error)
+	CreatePublishableKey(context.Context, *CreatePublishableKeyRequest) (*CreatePublishableKeyResponse, error)
+	UpdatePublishableKey(context.Context, *UpdatePublishableKeyRequest) (*UpdatePublishableKeyResponse, error)
+	DeletePublishableKey(context.Context, *DeletePublishableKeyRequest) (*DeletePublishableKeyResponse, error)
 	CreateUserImpersonationToken(context.Context, *CreateUserImpersonationTokenRequest) (*CreateUserImpersonationTokenResponse, error)
 	mustEmbedUnimplementedBackendServiceServer()
 }
@@ -807,11 +846,23 @@ func (UnimplementedBackendServiceServer) ListUsers(context.Context, *ListUsersRe
 func (UnimplementedBackendServiceServer) GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
 }
+func (UnimplementedBackendServiceServer) CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
+}
+func (UnimplementedBackendServiceServer) UpdateUser(context.Context, *UpdateUserRequest) (*UpdateUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateUser not implemented")
+}
+func (UnimplementedBackendServiceServer) DeleteUser(context.Context, *DeleteUserRequest) (*DeleteUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteUser not implemented")
+}
 func (UnimplementedBackendServiceServer) ListPasskeys(context.Context, *ListPasskeysRequest) (*ListPasskeysResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListPasskeys not implemented")
 }
 func (UnimplementedBackendServiceServer) GetPasskey(context.Context, *GetPasskeyRequest) (*GetPasskeyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPasskey not implemented")
+}
+func (UnimplementedBackendServiceServer) UpdatePasskey(context.Context, *UpdatePasskeyRequest) (*UpdatePasskeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdatePasskey not implemented")
 }
 func (UnimplementedBackendServiceServer) DeletePasskey(context.Context, *DeletePasskeyRequest) (*DeletePasskeyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeletePasskey not implemented")
@@ -821,12 +872,6 @@ func (UnimplementedBackendServiceServer) ListSessions(context.Context, *ListSess
 }
 func (UnimplementedBackendServiceServer) GetSession(context.Context, *GetSessionRequest) (*GetSessionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetSession not implemented")
-}
-func (UnimplementedBackendServiceServer) ListIntermediateSessions(context.Context, *ListIntermediateSessionsRequest) (*ListIntermediateSessionsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListIntermediateSessions not implemented")
-}
-func (UnimplementedBackendServiceServer) GetIntermediateSession(context.Context, *GetIntermediateSessionRequest) (*GetIntermediateSessionResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetIntermediateSession not implemented")
 }
 func (UnimplementedBackendServiceServer) ListUserInvites(context.Context, *ListUserInvitesRequest) (*ListUserInvitesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListUserInvites not implemented")
@@ -855,20 +900,8 @@ func (UnimplementedBackendServiceServer) EnableProjectLogins(context.Context, *E
 func (UnimplementedBackendServiceServer) UpdateProject(context.Context, *UpdateProjectRequest) (*UpdateProjectResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateProject not implemented")
 }
-func (UnimplementedBackendServiceServer) CreateProjectRedirectURI(context.Context, *CreateProjectRedirectURIRequest) (*CreateProjectRedirectURIResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateProjectRedirectURI not implemented")
-}
-func (UnimplementedBackendServiceServer) DeleteProjectRedirectURI(context.Context, *DeleteProjectRedirectURIRequest) (*DeleteProjectRedirectURIResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteProjectRedirectURI not implemented")
-}
-func (UnimplementedBackendServiceServer) GetProjectRedirectURI(context.Context, *GetProjectRedirectURIRequest) (*GetProjectRedirectURIResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetProjectRedirectURI not implemented")
-}
-func (UnimplementedBackendServiceServer) ListProjectRedirectURIs(context.Context, *ListProjectRedirectURIsRequest) (*ListProjectRedirectURIsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListProjectRedirectURIs not implemented")
-}
-func (UnimplementedBackendServiceServer) UpdateProjectRedirectURI(context.Context, *UpdateProjectRedirectURIRequest) (*UpdateProjectRedirectURIResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateProjectRedirectURI not implemented")
+func (UnimplementedBackendServiceServer) GetVaultDomainSettings(context.Context, *GetVaultDomainSettingsRequest) (*GetVaultDomainSettingsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetVaultDomainSettings not implemented")
 }
 func (UnimplementedBackendServiceServer) GetProjectUISettings(context.Context, *GetProjectUISettingsRequest) (*GetProjectUISettingsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetProjectUISettings not implemented")
@@ -893,6 +926,21 @@ func (UnimplementedBackendServiceServer) DeleteProjectAPIKey(context.Context, *D
 }
 func (UnimplementedBackendServiceServer) RevokeProjectAPIKey(context.Context, *RevokeProjectAPIKeyRequest) (*RevokeProjectAPIKeyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RevokeProjectAPIKey not implemented")
+}
+func (UnimplementedBackendServiceServer) ListPublishableKeys(context.Context, *ListPublishableKeysRequest) (*ListPublishableKeysResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListPublishableKeys not implemented")
+}
+func (UnimplementedBackendServiceServer) GetPublishableKey(context.Context, *GetPublishableKeyRequest) (*GetPublishableKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPublishableKey not implemented")
+}
+func (UnimplementedBackendServiceServer) CreatePublishableKey(context.Context, *CreatePublishableKeyRequest) (*CreatePublishableKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreatePublishableKey not implemented")
+}
+func (UnimplementedBackendServiceServer) UpdatePublishableKey(context.Context, *UpdatePublishableKeyRequest) (*UpdatePublishableKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdatePublishableKey not implemented")
+}
+func (UnimplementedBackendServiceServer) DeletePublishableKey(context.Context, *DeletePublishableKeyRequest) (*DeletePublishableKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeletePublishableKey not implemented")
 }
 func (UnimplementedBackendServiceServer) CreateUserImpersonationToken(context.Context, *CreateUserImpersonationTokenRequest) (*CreateUserImpersonationTokenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUserImpersonationToken not implemented")
@@ -1332,6 +1380,60 @@ func _BackendService_GetUser_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BackendService_CreateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).CreateUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_CreateUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).CreateUser(ctx, req.(*CreateUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_UpdateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).UpdateUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_UpdateUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).UpdateUser(ctx, req.(*UpdateUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_DeleteUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).DeleteUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_DeleteUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).DeleteUser(ctx, req.(*DeleteUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _BackendService_ListPasskeys_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListPasskeysRequest)
 	if err := dec(in); err != nil {
@@ -1364,6 +1466,24 @@ func _BackendService_GetPasskey_Handler(srv interface{}, ctx context.Context, de
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(BackendServiceServer).GetPasskey(ctx, req.(*GetPasskeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_UpdatePasskey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdatePasskeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).UpdatePasskey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_UpdatePasskey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).UpdatePasskey(ctx, req.(*UpdatePasskeyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1418,42 +1538,6 @@ func _BackendService_GetSession_Handler(srv interface{}, ctx context.Context, de
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(BackendServiceServer).GetSession(ctx, req.(*GetSessionRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _BackendService_ListIntermediateSessions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListIntermediateSessionsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(BackendServiceServer).ListIntermediateSessions(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: BackendService_ListIntermediateSessions_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).ListIntermediateSessions(ctx, req.(*ListIntermediateSessionsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _BackendService_GetIntermediateSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetIntermediateSessionRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(BackendServiceServer).GetIntermediateSession(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: BackendService_GetIntermediateSession_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).GetIntermediateSession(ctx, req.(*GetIntermediateSessionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1620,92 +1704,20 @@ func _BackendService_UpdateProject_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BackendService_CreateProjectRedirectURI_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateProjectRedirectURIRequest)
+func _BackendService_GetVaultDomainSettings_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetVaultDomainSettingsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BackendServiceServer).CreateProjectRedirectURI(ctx, in)
+		return srv.(BackendServiceServer).GetVaultDomainSettings(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BackendService_CreateProjectRedirectURI_FullMethodName,
+		FullMethod: BackendService_GetVaultDomainSettings_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).CreateProjectRedirectURI(ctx, req.(*CreateProjectRedirectURIRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _BackendService_DeleteProjectRedirectURI_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteProjectRedirectURIRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(BackendServiceServer).DeleteProjectRedirectURI(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: BackendService_DeleteProjectRedirectURI_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).DeleteProjectRedirectURI(ctx, req.(*DeleteProjectRedirectURIRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _BackendService_GetProjectRedirectURI_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetProjectRedirectURIRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(BackendServiceServer).GetProjectRedirectURI(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: BackendService_GetProjectRedirectURI_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).GetProjectRedirectURI(ctx, req.(*GetProjectRedirectURIRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _BackendService_ListProjectRedirectURIs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListProjectRedirectURIsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(BackendServiceServer).ListProjectRedirectURIs(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: BackendService_ListProjectRedirectURIs_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).ListProjectRedirectURIs(ctx, req.(*ListProjectRedirectURIsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _BackendService_UpdateProjectRedirectURI_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateProjectRedirectURIRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(BackendServiceServer).UpdateProjectRedirectURI(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: BackendService_UpdateProjectRedirectURI_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).UpdateProjectRedirectURI(ctx, req.(*UpdateProjectRedirectURIRequest))
+		return srv.(BackendServiceServer).GetVaultDomainSettings(ctx, req.(*GetVaultDomainSettingsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1854,6 +1866,96 @@ func _BackendService_RevokeProjectAPIKey_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BackendService_ListPublishableKeys_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListPublishableKeysRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).ListPublishableKeys(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_ListPublishableKeys_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).ListPublishableKeys(ctx, req.(*ListPublishableKeysRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_GetPublishableKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetPublishableKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).GetPublishableKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_GetPublishableKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).GetPublishableKey(ctx, req.(*GetPublishableKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_CreatePublishableKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreatePublishableKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).CreatePublishableKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_CreatePublishableKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).CreatePublishableKey(ctx, req.(*CreatePublishableKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_UpdatePublishableKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdatePublishableKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).UpdatePublishableKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_UpdatePublishableKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).UpdatePublishableKey(ctx, req.(*UpdatePublishableKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_DeletePublishableKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeletePublishableKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).DeletePublishableKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_DeletePublishableKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).DeletePublishableKey(ctx, req.(*DeletePublishableKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _BackendService_CreateUserImpersonationToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateUserImpersonationTokenRequest)
 	if err := dec(in); err != nil {
@@ -1972,12 +2074,28 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _BackendService_GetUser_Handler,
 		},
 		{
+			MethodName: "CreateUser",
+			Handler:    _BackendService_CreateUser_Handler,
+		},
+		{
+			MethodName: "UpdateUser",
+			Handler:    _BackendService_UpdateUser_Handler,
+		},
+		{
+			MethodName: "DeleteUser",
+			Handler:    _BackendService_DeleteUser_Handler,
+		},
+		{
 			MethodName: "ListPasskeys",
 			Handler:    _BackendService_ListPasskeys_Handler,
 		},
 		{
 			MethodName: "GetPasskey",
 			Handler:    _BackendService_GetPasskey_Handler,
+		},
+		{
+			MethodName: "UpdatePasskey",
+			Handler:    _BackendService_UpdatePasskey_Handler,
 		},
 		{
 			MethodName: "DeletePasskey",
@@ -1990,14 +2108,6 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetSession",
 			Handler:    _BackendService_GetSession_Handler,
-		},
-		{
-			MethodName: "ListIntermediateSessions",
-			Handler:    _BackendService_ListIntermediateSessions_Handler,
-		},
-		{
-			MethodName: "GetIntermediateSession",
-			Handler:    _BackendService_GetIntermediateSession_Handler,
 		},
 		{
 			MethodName: "ListUserInvites",
@@ -2036,24 +2146,8 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _BackendService_UpdateProject_Handler,
 		},
 		{
-			MethodName: "CreateProjectRedirectURI",
-			Handler:    _BackendService_CreateProjectRedirectURI_Handler,
-		},
-		{
-			MethodName: "DeleteProjectRedirectURI",
-			Handler:    _BackendService_DeleteProjectRedirectURI_Handler,
-		},
-		{
-			MethodName: "GetProjectRedirectURI",
-			Handler:    _BackendService_GetProjectRedirectURI_Handler,
-		},
-		{
-			MethodName: "ListProjectRedirectURIs",
-			Handler:    _BackendService_ListProjectRedirectURIs_Handler,
-		},
-		{
-			MethodName: "UpdateProjectRedirectURI",
-			Handler:    _BackendService_UpdateProjectRedirectURI_Handler,
+			MethodName: "GetVaultDomainSettings",
+			Handler:    _BackendService_GetVaultDomainSettings_Handler,
 		},
 		{
 			MethodName: "GetProjectUISettings",
@@ -2086,6 +2180,26 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RevokeProjectAPIKey",
 			Handler:    _BackendService_RevokeProjectAPIKey_Handler,
+		},
+		{
+			MethodName: "ListPublishableKeys",
+			Handler:    _BackendService_ListPublishableKeys_Handler,
+		},
+		{
+			MethodName: "GetPublishableKey",
+			Handler:    _BackendService_GetPublishableKey_Handler,
+		},
+		{
+			MethodName: "CreatePublishableKey",
+			Handler:    _BackendService_CreatePublishableKey_Handler,
+		},
+		{
+			MethodName: "UpdatePublishableKey",
+			Handler:    _BackendService_UpdatePublishableKey_Handler,
+		},
+		{
+			MethodName: "DeletePublishableKey",
+			Handler:    _BackendService_DeletePublishableKey_Handler,
 		},
 		{
 			MethodName: "CreateUserImpersonationToken",

@@ -107,7 +107,10 @@ SET
     microsoft_oauth_client_id = $12,
     microsoft_oauth_client_secret_ciphertext = $13,
     custom_auth_domain = $14,
-    auth_domain = $15
+    auth_domain = $15,
+    redirect_uri = $16,
+    after_login_redirect_uri = $17,
+    after_signup_redirect_uri = $18
 WHERE
     id = $1
 RETURNING
@@ -206,21 +209,6 @@ UPDATE
     projects
 SET
     organization_id = $2
-WHERE
-    id = $1
-RETURNING
-    *;
-
--- name: UpdateUser :one
-UPDATE
-    users
-SET
-    update_time = now(),
-    organization_id = $2,
-    email = $3,
-    password_bcrypt = $4,
-    google_user_id = $5,
-    microsoft_user_id = $6
 WHERE
     id = $1
 RETURNING
@@ -398,50 +386,47 @@ WHERE
 RETURNING
     *;
 
--- name: CreateProjectRedirectURI :one
-INSERT INTO project_redirect_uris (id, project_id, uri, is_primary)
-    VALUES ($1, $2, $3, COALESCE((
-            SELECT
-                FALSE
-            FROM project_redirect_uris
-            WHERE
-                project_id = $2 LIMIT 1), TRUE))
-RETURNING
-    *;
-
--- name: DeleteProjectRedirectURI :exec
-DELETE FROM project_redirect_uris
-WHERE id = $1
-    AND project_id = $2;
-
--- name: GetProjectRedirectURI :one
+-- name: ListPublishableKeys :many
 SELECT
     *
 FROM
-    project_redirect_uris
+    publishable_keys
+WHERE
+    project_id = $1
+    AND id >= $2
+ORDER BY
+    id
+LIMIT $3;
+
+-- name: GetPublishableKey :one
+SELECT
+    *
+FROM
+    publishable_keys
 WHERE
     id = $1
     AND project_id = $2;
 
--- name: ListProjectRedirectURIs :many
-SELECT
-    *
-FROM
-    project_redirect_uris
-WHERE
-    project_id = $1;
+-- name: CreatePublishableKey :one
+INSERT INTO publishable_keys (id, project_id, display_name)
+    VALUES ($1, $2, $3)
+RETURNING
+    *;
 
--- name: UpdateProjectRedirectURI :one
+-- name: UpdatePublishableKey :one
 UPDATE
-    project_redirect_uris
+    publishable_keys
 SET
-    uri = $2,
-    is_primary = $3
+    update_time = now(),
+    display_name = $1
 WHERE
-    id = $1
-    AND project_id = $4
+    id = $2
 RETURNING
     *;
+
+-- name: DeletePublishableKey :exec
+DELETE FROM publishable_keys
+WHERE id = $1;
 
 -- name: ListUsers :many
 SELECT
@@ -465,6 +450,30 @@ WHERE
     users.id = $1
     AND organizations.project_id = $2;
 
+-- name: CreateUser :one
+INSERT INTO users (id, organization_id, google_user_id, microsoft_user_id, email, is_owner)
+    VALUES ($1, $2, $3, $4, $5, $6)
+RETURNING
+    *;
+
+-- name: UpdateUser :one
+UPDATE
+    users
+SET
+    update_time = now(),
+    email = $2,
+    google_user_id = $3,
+    microsoft_user_id = $4,
+    is_owner = $5
+WHERE
+    id = $1
+RETURNING
+    *;
+
+-- name: DeleteUser :exec
+DELETE FROM users
+WHERE id = $1;
+
 -- name: ListSessions :many
 SELECT
     *
@@ -487,27 +496,6 @@ FROM
 WHERE
     sessions.id = $1
     AND organizations.project_id = $2;
-
--- name: ListIntermediateSessions :many
-SELECT
-    *
-FROM
-    intermediate_sessions
-WHERE
-    project_id = $1
-    AND id >= $2
-ORDER BY
-    id
-LIMIT $3;
-
--- name: GetIntermediateSession :one
-SELECT
-    intermediate_sessions.*
-FROM
-    intermediate_sessions
-WHERE
-    id = $1
-    AND project_id = $2;
 
 -- name: GetProjectUISettings :one
 SELECT
@@ -677,6 +665,17 @@ WHERE
     passkeys.id = $1
     AND organizations.project_id = $2;
 
+-- name: UpdatePasskey :one
+UPDATE
+    passkeys
+SET
+    update_time = now(),
+    disabled = $2
+WHERE
+    id = $1
+RETURNING
+    *;
+
 -- name: DeletePasskey :exec
 DELETE FROM passkeys
 WHERE id = $1;
@@ -726,4 +725,12 @@ ON CONFLICT (organization_id, email)
 -- name: DeleteUserInvite :exec
 DELETE FROM user_invites
 WHERE id = $1;
+
+-- name: GetVaultDomainSettings :one
+SELECT
+    *
+FROM
+    vault_domain_settings
+WHERE
+    project_id = $1;
 

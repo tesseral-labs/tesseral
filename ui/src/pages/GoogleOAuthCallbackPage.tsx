@@ -49,23 +49,15 @@ const GoogleOAuthCallbackPage = () => {
           }
 
           // Issue a new email verification challenge.
-          const emailVerificationChallengeResponse =
-            await issueEmailVerificationChallengeMutation.mutateAsync({});
-          if (!emailVerificationChallengeResponse) {
-            throw new Error(
-              'No data returned from issueEmailVerificationChallenge query',
-            );
-          }
+          await issueEmailVerificationChallengeMutation.mutateAsync({});
 
           // Navigate to the email verification page.
           navigate(`/login?view=${LoginViews.VerifyEmail}`);
         } catch (error) {
           const message = parseErrorMessage(error);
-          toast.error('Failed to verify Google OAuth credentials', {
+          toast.error('Failed to verify Google log in', {
             description: message,
           });
-
-          navigate('/login');
         }
       }
     })();

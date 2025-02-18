@@ -30,6 +30,26 @@ export const getOrganization = FrontendService.method.getOrganization;
 export const updateOrganization = FrontendService.method.updateOrganization;
 
 /**
+ * @generated from rpc openauth.frontend.v1.FrontendService.GetOrganizationGoogleHostedDomains
+ */
+export const getOrganizationGoogleHostedDomains = FrontendService.method.getOrganizationGoogleHostedDomains;
+
+/**
+ * @generated from rpc openauth.frontend.v1.FrontendService.UpdateOrganizationGoogleHostedDomains
+ */
+export const updateOrganizationGoogleHostedDomains = FrontendService.method.updateOrganizationGoogleHostedDomains;
+
+/**
+ * @generated from rpc openauth.frontend.v1.FrontendService.GetOrganizationMicrosoftTenantIDs
+ */
+export const getOrganizationMicrosoftTenantIDs = FrontendService.method.getOrganizationMicrosoftTenantIDs;
+
+/**
+ * @generated from rpc openauth.frontend.v1.FrontendService.UpdateOrganizationMicrosoftTenantIDs
+ */
+export const updateOrganizationMicrosoftTenantIDs = FrontendService.method.updateOrganizationMicrosoftTenantIDs;
+
+/**
  * @generated from rpc openauth.frontend.v1.FrontendService.ListUsers
  */
 export const listUsers = FrontendService.method.listUsers;
@@ -45,11 +65,9 @@ export const getUser = FrontendService.method.getUser;
 export const updateUser = FrontendService.method.updateUser;
 
 /**
- * Gets a list of organizations.
- *
- * @generated from rpc openauth.frontend.v1.FrontendService.ListOrganizations
+ * @generated from rpc openauth.frontend.v1.FrontendService.DeleteUser
  */
-export const listOrganizations = FrontendService.method.listOrganizations;
+export const deleteUser = FrontendService.method.deleteUser;
 
 /**
  * Sets a user's password.

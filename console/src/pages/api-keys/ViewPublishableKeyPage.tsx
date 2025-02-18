@@ -19,6 +19,9 @@ import {
   getProjectAPIKey,
   revokeProjectAPIKey,
   updateProjectAPIKey,
+  getPublishableKey,
+  updatePublishableKey,
+  deletePublishableKey,
 } from '@/gen/openauth/backend/v1/backend-BackendService_connectquery'
 import {
   Card,
@@ -57,13 +60,13 @@ import {
 import { Input } from '@/components/ui/input'
 import { PageCodeSubtitle, PageDescription, PageTitle } from '@/components/page'
 
-export function ViewProjectAPIKeyPage() {
-  const { organizationId, projectApiKeyId } = useParams()
-  const { data: getProjectApiKeyResponse } = useQuery(getProjectAPIKey, {
-    id: projectApiKeyId,
+export function ViewPublishableKeyPage() {
+  const { publishableKeyId } = useParams()
+  const { data: getPublishableKeyResponse } = useQuery(getPublishableKey, {
+    id: publishableKeyId,
   })
+
   return (
-    // TODO remove padding when app shell in place
     <div>
       <Breadcrumb>
         <BreadcrumbList>
@@ -75,25 +78,32 @@ export function ViewProjectAPIKeyPage() {
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <Link to="/project-api-keys">Project API Keys</Link>
+              <Link to="/project-settings">Project Settings</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link to="/project-settings/api-keys">API Keys</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbPage>
-              {getProjectApiKeyResponse?.projectApiKey?.displayName}
+              {getPublishableKeyResponse?.publishableKey?.displayName}
             </BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
 
       <PageTitle>
-        {getProjectApiKeyResponse?.projectApiKey?.displayName}
+        {getPublishableKeyResponse?.publishableKey?.displayName}
       </PageTitle>
-      <PageCodeSubtitle>{projectApiKeyId}</PageCodeSubtitle>
+      <PageCodeSubtitle>{publishableKeyId}</PageCodeSubtitle>
       <PageDescription>
-        A Project API key is how your backend talks to the Tesseral Backend API.
-        Lorem ipsum dolor.
+        Tesseral's client-side SDKs require a publishable key.
+        Publishable keys can be publicly accessible in your web or
+        mobile app's client-side code. Lorem ipsum dolor.
       </PageDescription>
 
       <Card className="my-8">
@@ -102,7 +112,7 @@ export function ViewProjectAPIKeyPage() {
             <CardTitle>Configuration</CardTitle>
             <CardDescription>Lorem ipsum dolor.</CardDescription>
           </div>
-          <EditProjectAPIKeyButton />
+          <EditPublishableKeyButton />
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-3 gap-x-2 text-sm">
@@ -110,15 +120,7 @@ export function ViewProjectAPIKeyPage() {
               <div>
                 <div className="font-semibold">Display Name</div>
                 <div className="truncate">
-                  {getProjectApiKeyResponse?.projectApiKey?.displayName}
-                </div>
-              </div>
-              <div>
-                <div className="font-semibold">Revoked</div>
-                <div className="truncate">
-                  {getProjectApiKeyResponse?.projectApiKey?.revoked
-                    ? 'Yes'
-                    : 'No'}
+                  {getPublishableKeyResponse?.publishableKey?.displayName}
                 </div>
               </div>
             </div>
@@ -126,10 +128,10 @@ export function ViewProjectAPIKeyPage() {
               <div>
                 <div className="font-semibold">Created</div>
                 <div className="truncate">
-                  {getProjectApiKeyResponse?.projectApiKey?.createTime &&
+                  {getPublishableKeyResponse?.publishableKey?.createTime &&
                     DateTime.fromJSDate(
                       timestampDate(
-                        getProjectApiKeyResponse?.projectApiKey?.createTime,
+                        getPublishableKeyResponse?.publishableKey?.createTime,
                       ),
                     ).toRelative()}
                 </div>
@@ -139,10 +141,10 @@ export function ViewProjectAPIKeyPage() {
               <div>
                 <div className="font-semibold">Updated</div>
                 <div className="truncate">
-                  {getProjectApiKeyResponse?.projectApiKey?.updateTime &&
+                  {getPublishableKeyResponse?.publishableKey?.updateTime &&
                     DateTime.fromJSDate(
                       timestampDate(
-                        getProjectApiKeyResponse?.projectApiKey?.updateTime,
+                        getPublishableKeyResponse?.publishableKey?.updateTime,
                       ),
                     ).toRelative()}
                 </div>
@@ -161,15 +163,15 @@ const schema = z.object({
   displayName: z.string(),
 })
 
-function EditProjectAPIKeyButton() {
-  const { projectApiKeyId } = useParams()
-  const { data: getProjectAPIKeyResponse, refetch } = useQuery(
-    getProjectAPIKey,
+function EditPublishableKeyButton() {
+  const { publishableKeyId } = useParams()
+  const { data: getPublishableKeyResponse, refetch } = useQuery(
+    getPublishableKey,
     {
-      id: projectApiKeyId,
+      id: publishableKeyId,
     },
   )
-  const updateProjectAPIKeyMutation = useMutation(updateProjectAPIKey)
+  const updatePublishableKeyMutation = useMutation(updatePublishableKey)
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -177,19 +179,19 @@ function EditProjectAPIKeyButton() {
     },
   })
   useEffect(() => {
-    if (getProjectAPIKeyResponse?.projectApiKey) {
+    if (getPublishableKeyResponse?.publishableKey) {
       form.reset({
-        displayName: getProjectAPIKeyResponse.projectApiKey.displayName,
+        displayName: getPublishableKeyResponse.publishableKey.displayName,
       })
     }
-  }, [getProjectAPIKeyResponse])
+  }, [getPublishableKeyResponse])
 
   const [open, setOpen] = useState(false)
 
   async function handleSubmit(values: z.infer<typeof schema>) {
-    await updateProjectAPIKeyMutation.mutateAsync({
-      id: projectApiKeyId,
-      projectApiKey: {
+    await updatePublishableKeyMutation.mutateAsync({
+      id: publishableKeyId,
+      publishableKey: {
         displayName: values.displayName,
       },
     })
@@ -204,9 +206,9 @@ function EditProjectAPIKeyButton() {
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Edit Project API Key</AlertDialogTitle>
+          <AlertDialogTitle>Edit Publishable Key</AlertDialogTitle>
           <AlertDialogDescription>
-            Edit Project API Key settings.
+            Edit Publishable Key settings.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <Form {...form}>
@@ -221,7 +223,8 @@ function EditProjectAPIKeyButton() {
                     <Input className="max-w-96" {...field} />
                   </FormControl>
                   <FormDescription>
-                    A human-friendly name for the Project API Key.
+                    An internal human-friendly name for the Publishable Key. Not
+                    shown to your customers.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -239,84 +242,46 @@ function EditProjectAPIKeyButton() {
 }
 
 function DangerZoneCard() {
-  const { projectApiKeyId } = useParams()
-  const { data: getProjectApiKeyResponse, refetch } = useQuery(
-    getProjectAPIKey,
+  const { publishableKeyId } = useParams()
+  const { data: getPublishableKeyResponse } = useQuery(
+    getPublishableKey,
     {
-      id: projectApiKeyId,
+      id: publishableKeyId,
     },
   )
 
-  const [confirmRevokeOpen, setConfirmRevokeOpen] = useState(false)
-  function handleRevoke() {
-    setConfirmRevokeOpen(true)
-  }
-
-  const revokeProjectApiKeyMutation = useMutation(revokeProjectAPIKey)
-  async function handleConfirmRevoke() {
-    await revokeProjectApiKeyMutation.mutateAsync({
-      id: projectApiKeyId,
-    })
-
-    await refetch()
-    toast.success('Project API Key revoked')
-    setConfirmRevokeOpen(false)
-  }
-
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
-
   function handleDelete() {
     setConfirmDeleteOpen(true)
   }
 
-  const deleteProjectApiKeyMutation = useMutation(deleteProjectAPIKey)
+  const deletePublishableKeyMutation = useMutation(deletePublishableKey)
   const navigate = useNavigate()
   const handleConfirmDelete = async () => {
-    await deleteProjectApiKeyMutation.mutateAsync({
-      id: projectApiKeyId,
+    await deletePublishableKeyMutation.mutateAsync({
+      id: publishableKeyId,
     })
 
-    toast.success('Project API Key deleted')
-    navigate(`/project-api-keys`)
+    toast.success('Publishable Key deleted')
+    navigate(`/project-settings/api-keys`)
   }
 
   return (
     <>
-      <AlertDialog open={confirmRevokeOpen} onOpenChange={setConfirmRevokeOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              Revoke {getProjectApiKeyResponse?.projectApiKey?.displayName}?
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              Revoking a Project API Key cannot be undone. Backend API calls
-              from {getProjectApiKeyResponse?.projectApiKey?.displayName} will
-              stop working. This cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <Button variant="destructive" onClick={handleConfirmRevoke}>
-              Revoke Project API Key
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
       <AlertDialog open={confirmDeleteOpen} onOpenChange={setConfirmDeleteOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              Delete {getProjectApiKeyResponse?.projectApiKey?.displayName}?
+              Delete {getPublishableKeyResponse?.publishableKey?.displayName}?
             </AlertDialogTitle>
             <AlertDialogDescription>
-              Deleting a Project API Key cannot be undone.
+              Deleting a Publishable Key cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <Button variant="destructive" onClick={handleConfirmDelete}>
-              Delete Project API Key
+              Delete Publishable Key
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -331,40 +296,18 @@ function DangerZoneCard() {
           <div className="flex justify-between items-center">
             <div>
               <div className="text-sm font-semibold">
-                Revoke Project API Key
+                Delete Publishable Key
               </div>
               <p className="text-sm">
-                Revoke this Project API Key. Backend API calls from this key
-                will stop working. This cannot be undone.
+                Delete this Publishable Key.
               </p>
             </div>
 
             <Button
               variant="destructive"
-              disabled={getProjectApiKeyResponse?.projectApiKey?.revoked}
-              onClick={handleRevoke}
-            >
-              Revoke Project API Key
-            </Button>
-          </div>
-
-          <div className="flex justify-between items-center">
-            <div>
-              <div className="text-sm font-semibold">
-                Delete Project API Key
-              </div>
-              <p className="text-sm">
-                Delete this Project API Key. You must revoke this Project API
-                Key first.
-              </p>
-            </div>
-
-            <Button
-              variant="destructive"
-              disabled={!getProjectApiKeyResponse?.projectApiKey?.revoked}
               onClick={handleDelete}
             >
-              Delete Project API Key
+              Delete Publishable Key
             </Button>
           </div>
         </CardContent>

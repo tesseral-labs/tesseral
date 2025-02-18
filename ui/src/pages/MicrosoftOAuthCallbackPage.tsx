@@ -41,10 +41,8 @@ const MicrosoftOAuthCallbackPage = () => {
             throw new Error('No data returned from whoami query');
           }
 
-          if (whoamiRes?.intermediateSession?.emailVerified) {
-            navigate('/login', {
-              state: { view: LoginViews.ChooseOrganization },
-            });
+          if (data?.intermediateSession?.emailVerified) {
+            navigate(`/login?view=${LoginViews.ChooseOrganization}`);
             return;
           }
 

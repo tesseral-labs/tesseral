@@ -120,6 +120,21 @@ export const listUsers = BackendService.method.listUsers;
 export const getUser = BackendService.method.getUser;
 
 /**
+ * @generated from rpc openauth.backend.v1.BackendService.CreateUser
+ */
+export const createUser = BackendService.method.createUser;
+
+/**
+ * @generated from rpc openauth.backend.v1.BackendService.UpdateUser
+ */
+export const updateUser = BackendService.method.updateUser;
+
+/**
+ * @generated from rpc openauth.backend.v1.BackendService.DeleteUser
+ */
+export const deleteUser = BackendService.method.deleteUser;
+
+/**
  * @generated from rpc openauth.backend.v1.BackendService.ListPasskeys
  */
 export const listPasskeys = BackendService.method.listPasskeys;
@@ -128,6 +143,11 @@ export const listPasskeys = BackendService.method.listPasskeys;
  * @generated from rpc openauth.backend.v1.BackendService.GetPasskey
  */
 export const getPasskey = BackendService.method.getPasskey;
+
+/**
+ * @generated from rpc openauth.backend.v1.BackendService.UpdatePasskey
+ */
+export const updatePasskey = BackendService.method.updatePasskey;
 
 /**
  * @generated from rpc openauth.backend.v1.BackendService.DeletePasskey
@@ -143,16 +163,6 @@ export const listSessions = BackendService.method.listSessions;
  * @generated from rpc openauth.backend.v1.BackendService.GetSession
  */
 export const getSession = BackendService.method.getSession;
-
-/**
- * @generated from rpc openauth.backend.v1.BackendService.ListIntermediateSessions
- */
-export const listIntermediateSessions = BackendService.method.listIntermediateSessions;
-
-/**
- * @generated from rpc openauth.backend.v1.BackendService.GetIntermediateSession
- */
-export const getIntermediateSession = BackendService.method.getIntermediateSession;
 
 /**
  * @generated from rpc openauth.backend.v1.BackendService.ListUserInvites
@@ -200,29 +210,9 @@ export const enableProjectLogins = BackendService.method.enableProjectLogins;
 export const updateProject = BackendService.method.updateProject;
 
 /**
- * @generated from rpc openauth.backend.v1.BackendService.CreateProjectRedirectURI
+ * @generated from rpc openauth.backend.v1.BackendService.GetVaultDomainSettings
  */
-export const createProjectRedirectURI = BackendService.method.createProjectRedirectURI;
-
-/**
- * @generated from rpc openauth.backend.v1.BackendService.DeleteProjectRedirectURI
- */
-export const deleteProjectRedirectURI = BackendService.method.deleteProjectRedirectURI;
-
-/**
- * @generated from rpc openauth.backend.v1.BackendService.GetProjectRedirectURI
- */
-export const getProjectRedirectURI = BackendService.method.getProjectRedirectURI;
-
-/**
- * @generated from rpc openauth.backend.v1.BackendService.ListProjectRedirectURIs
- */
-export const listProjectRedirectURIs = BackendService.method.listProjectRedirectURIs;
-
-/**
- * @generated from rpc openauth.backend.v1.BackendService.UpdateProjectRedirectURI
- */
-export const updateProjectRedirectURI = BackendService.method.updateProjectRedirectURI;
+export const getVaultDomainSettings = BackendService.method.getVaultDomainSettings;
 
 /**
  * @generated from rpc openauth.backend.v1.BackendService.GetProjectUISettings
@@ -263,6 +253,31 @@ export const deleteProjectAPIKey = BackendService.method.deleteProjectAPIKey;
  * @generated from rpc openauth.backend.v1.BackendService.RevokeProjectAPIKey
  */
 export const revokeProjectAPIKey = BackendService.method.revokeProjectAPIKey;
+
+/**
+ * @generated from rpc openauth.backend.v1.BackendService.ListPublishableKeys
+ */
+export const listPublishableKeys = BackendService.method.listPublishableKeys;
+
+/**
+ * @generated from rpc openauth.backend.v1.BackendService.GetPublishableKey
+ */
+export const getPublishableKey = BackendService.method.getPublishableKey;
+
+/**
+ * @generated from rpc openauth.backend.v1.BackendService.CreatePublishableKey
+ */
+export const createPublishableKey = BackendService.method.createPublishableKey;
+
+/**
+ * @generated from rpc openauth.backend.v1.BackendService.UpdatePublishableKey
+ */
+export const updatePublishableKey = BackendService.method.updatePublishableKey;
+
+/**
+ * @generated from rpc openauth.backend.v1.BackendService.DeletePublishableKey
+ */
+export const deletePublishableKey = BackendService.method.deletePublishableKey;
 
 /**
  * @generated from rpc openauth.backend.v1.BackendService.CreateUserImpersonationToken

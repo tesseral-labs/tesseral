@@ -10,7 +10,7 @@ import { ListOrganizationsPage } from '@/pages/organizations/ListOrganizationsPa
 import { useAccessToken } from '@/lib/use-access-token'
 import { ViewOrganizationPage } from '@/pages/organizations/ViewOrganizationPage'
 import { ViewUserPage } from '@/pages/users/ViewUserPage'
-import { ListProjectAPIKeysPage } from '@/pages/project-api-keys/ListProjectAPIKeysPage'
+import { ListAPIKeysPage } from '@/pages/api-keys/ListAPIKeysPage'
 import { ViewProjectSettingsPage } from '@/pages/project/ViewProjectSettingsPage'
 import { OrganizationUsersTab } from '@/pages/organizations/OrganizationUsersTab'
 import { OrganizationSAMLConnectionsTab } from '@/pages/organizations/OrganizationSAMLConnectionsTab'
@@ -22,7 +22,7 @@ import { Toaster } from '@/components/ui/sonner'
 import { EditSAMLConnectionPage } from '@/pages/saml-connections/EditSAMLConnectionPage'
 import { PageShell } from '@/components/page'
 import { ViewSCIMAPIKeyPage } from '@/pages/scim-api-keys/ViewSCIMAPIKeyPage'
-import { ViewProjectAPIKeyPage } from '@/pages/project-api-keys/ViewProjectAPIKey'
+import { ViewProjectAPIKeyPage } from '@/pages/api-keys/ViewProjectAPIKey'
 import { HomePage } from '@/pages/home/HomePage'
 import { ProjectDetailsTab } from '@/pages/project/ProjectDetailsTab'
 import LoginPage from './pages/login/LoginPage'
@@ -31,6 +31,9 @@ import { OrganizationUserInvitesTab } from '@/pages/organizations/OrganizationUs
 import { ViewUserInvitePage } from '@/pages/user-invites/ViewUserInvitePage'
 import { API_URL } from './config'
 import { AuthType } from './lib/auth'
+import GoogleOAuthCallbackPage from './pages/login/GoogleOAuthCallbackPage'
+import MicrosoftOAuthCallbackPage from './pages/login/MicrosoftOAuthCallbackPage'
+import { ViewPublishableKeyPage } from '@/pages/api-keys/ViewPublishableKeyPage'
 
 const queryClient = new QueryClient()
 
@@ -62,7 +65,15 @@ function AppWithinQueryClient() {
     <TransportProvider transport={transport}>
       <BrowserRouter>
         <Routes>
+          <Route
+            path="/google-oauth-callback"
+            element={<GoogleOAuthCallbackPage />}
+          />
           <Route path="/login" element={<LoginPage />} />
+          <Route
+            path="/microsoft-oauth-callback"
+            element={<MicrosoftOAuthCallbackPage />}
+          />
           <Route
             path="/signup"
             element={<LoginPage authType={AuthType.SignUp} />}
@@ -78,12 +89,17 @@ function AppWithinQueryClient() {
             </Route>
 
             <Route
-              path="project-api-keys"
-              element={<ListProjectAPIKeysPage />}
+              path="project-settings/api-keys"
+              element={<ListAPIKeysPage />}
             />
 
             <Route
-              path="project-api-keys/:projectApiKeyId"
+              path="project-settings/api-keys/publishable-keys/:publishableKeyId"
+              element={<ViewPublishableKeyPage />}
+            />
+
+            <Route
+              path="project-settings/api-keys/project-api-keys/:projectApiKeyId"
               element={<ViewProjectAPIKeyPage />}
             />
 

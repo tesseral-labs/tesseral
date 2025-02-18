@@ -141,38 +141,6 @@ func (q *Queries) CreateProjectAPIKey(ctx context.Context, arg CreateProjectAPIK
 	return i, err
 }
 
-const createProjectRedirectURI = `-- name: CreateProjectRedirectURI :one
-INSERT INTO project_redirect_uris (id, project_id, uri, is_primary)
-    VALUES ($1, $2, $3, COALESCE((
-            SELECT
-                FALSE
-            FROM project_redirect_uris
-            WHERE
-                project_id = $2 LIMIT 1), TRUE))
-RETURNING
-    id, project_id, uri, is_primary, created_at, updated_at
-`
-
-type CreateProjectRedirectURIParams struct {
-	ID        uuid.UUID
-	ProjectID uuid.UUID
-	Uri       string
-}
-
-func (q *Queries) CreateProjectRedirectURI(ctx context.Context, arg CreateProjectRedirectURIParams) (ProjectRedirectUri, error) {
-	row := q.db.QueryRow(ctx, createProjectRedirectURI, arg.ID, arg.ProjectID, arg.Uri)
-	var i ProjectRedirectUri
-	err := row.Scan(
-		&i.ID,
-		&i.ProjectID,
-		&i.Uri,
-		&i.IsPrimary,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
-}
-
 const createProjectTrustedDomain = `-- name: CreateProjectTrustedDomain :one
 INSERT INTO project_trusted_domains (id, project_id, DOMAIN)
     VALUES ($1, $2, $3)
@@ -190,6 +158,32 @@ func (q *Queries) CreateProjectTrustedDomain(ctx context.Context, arg CreateProj
 	row := q.db.QueryRow(ctx, createProjectTrustedDomain, arg.ID, arg.ProjectID, arg.Domain)
 	var i ProjectTrustedDomain
 	err := row.Scan(&i.ID, &i.ProjectID, &i.Domain)
+	return i, err
+}
+
+const createPublishableKey = `-- name: CreatePublishableKey :one
+INSERT INTO publishable_keys (id, project_id, display_name)
+    VALUES ($1, $2, $3)
+RETURNING
+    id, project_id, create_time, update_time, display_name
+`
+
+type CreatePublishableKeyParams struct {
+	ID          uuid.UUID
+	ProjectID   uuid.UUID
+	DisplayName string
+}
+
+func (q *Queries) CreatePublishableKey(ctx context.Context, arg CreatePublishableKeyParams) (PublishableKey, error) {
+	row := q.db.QueryRow(ctx, createPublishableKey, arg.ID, arg.ProjectID, arg.DisplayName)
+	var i PublishableKey
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.DisplayName,
+	)
 	return i, err
 }
 
@@ -261,6 +255,53 @@ func (q *Queries) CreateSCIMAPIKey(ctx context.Context, arg CreateSCIMAPIKeyPara
 		&i.DisplayName,
 		&i.CreateTime,
 		&i.UpdateTime,
+	)
+	return i, err
+}
+
+const createUser = `-- name: CreateUser :one
+INSERT INTO users (id, organization_id, google_user_id, microsoft_user_id, email, is_owner)
+    VALUES ($1, $2, $3, $4, $5, $6)
+RETURNING
+    id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_recovery_code_bcrypts, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time
+`
+
+type CreateUserParams struct {
+	ID              uuid.UUID
+	OrganizationID  uuid.UUID
+	GoogleUserID    *string
+	MicrosoftUserID *string
+	Email           string
+	IsOwner         bool
+}
+
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
+	row := q.db.QueryRow(ctx, createUser,
+		arg.ID,
+		arg.OrganizationID,
+		arg.GoogleUserID,
+		arg.MicrosoftUserID,
+		arg.Email,
+		arg.IsOwner,
+	)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.PasswordBcrypt,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+		&i.Email,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.DeactivateTime,
+		&i.IsOwner,
+		&i.FailedPasswordAttempts,
+		&i.PasswordLockoutExpireTime,
+		&i.AuthenticatorAppSecretCiphertext,
+		&i.AuthenticatorAppRecoveryCodeBcrypts,
+		&i.FailedAuthenticatorAppAttempts,
+		&i.AuthenticatorAppLockoutExpireTime,
 	)
 	return i, err
 }
@@ -386,22 +427,6 @@ func (q *Queries) DeleteProjectAPIKey(ctx context.Context, id uuid.UUID) error {
 	return err
 }
 
-const deleteProjectRedirectURI = `-- name: DeleteProjectRedirectURI :exec
-DELETE FROM project_redirect_uris
-WHERE id = $1
-    AND project_id = $2
-`
-
-type DeleteProjectRedirectURIParams struct {
-	ID        uuid.UUID
-	ProjectID uuid.UUID
-}
-
-func (q *Queries) DeleteProjectRedirectURI(ctx context.Context, arg DeleteProjectRedirectURIParams) error {
-	_, err := q.db.Exec(ctx, deleteProjectRedirectURI, arg.ID, arg.ProjectID)
-	return err
-}
-
 const deleteProjectTrustedDomainsByProjectID = `-- name: DeleteProjectTrustedDomainsByProjectID :exec
 DELETE FROM project_trusted_domains
 WHERE project_id = $1
@@ -409,6 +434,16 @@ WHERE project_id = $1
 
 func (q *Queries) DeleteProjectTrustedDomainsByProjectID(ctx context.Context, projectID uuid.UUID) error {
 	_, err := q.db.Exec(ctx, deleteProjectTrustedDomainsByProjectID, projectID)
+	return err
+}
+
+const deletePublishableKey = `-- name: DeletePublishableKey :exec
+DELETE FROM publishable_keys
+WHERE id = $1
+`
+
+func (q *Queries) DeletePublishableKey(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deletePublishableKey, id)
 	return err
 }
 
@@ -429,6 +464,16 @@ WHERE id = $1
 
 func (q *Queries) DeleteSCIMAPIKey(ctx context.Context, id uuid.UUID) error {
 	_, err := q.db.Exec(ctx, deleteSCIMAPIKey, id)
+	return err
+}
+
+const deleteUser = `-- name: DeleteUser :exec
+DELETE FROM users
+WHERE id = $1
+`
+
+func (q *Queries) DeleteUser(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteUser, id)
 	return err
 }
 
@@ -760,57 +805,6 @@ func (q *Queries) ExistsUserWithEmailInOrganization(ctx context.Context, arg Exi
 	return exists, err
 }
 
-const getIntermediateSession = `-- name: GetIntermediateSession :one
-SELECT
-    intermediate_sessions.id, intermediate_sessions.project_id, intermediate_sessions.create_time, intermediate_sessions.expire_time, intermediate_sessions.email, intermediate_sessions.google_oauth_state_sha256, intermediate_sessions.microsoft_oauth_state_sha256, intermediate_sessions.google_hosted_domain, intermediate_sessions.google_user_id, intermediate_sessions.microsoft_tenant_id, intermediate_sessions.microsoft_user_id, intermediate_sessions.password_verified, intermediate_sessions.organization_id, intermediate_sessions.update_time, intermediate_sessions.secret_token_sha256, intermediate_sessions.new_user_password_bcrypt, intermediate_sessions.email_verification_challenge_sha256, intermediate_sessions.email_verification_challenge_completed, intermediate_sessions.passkey_credential_id, intermediate_sessions.passkey_public_key, intermediate_sessions.passkey_aaguid, intermediate_sessions.passkey_verify_challenge_sha256, intermediate_sessions.passkey_verified, intermediate_sessions.authenticator_app_secret_ciphertext, intermediate_sessions.authenticator_app_verified, intermediate_sessions.authenticator_app_recovery_code_bcrypts, intermediate_sessions.primary_login_factor, intermediate_sessions.passkey_rp_id
-FROM
-    intermediate_sessions
-WHERE
-    id = $1
-    AND project_id = $2
-`
-
-type GetIntermediateSessionParams struct {
-	ID        uuid.UUID
-	ProjectID uuid.UUID
-}
-
-func (q *Queries) GetIntermediateSession(ctx context.Context, arg GetIntermediateSessionParams) (IntermediateSession, error) {
-	row := q.db.QueryRow(ctx, getIntermediateSession, arg.ID, arg.ProjectID)
-	var i IntermediateSession
-	err := row.Scan(
-		&i.ID,
-		&i.ProjectID,
-		&i.CreateTime,
-		&i.ExpireTime,
-		&i.Email,
-		&i.GoogleOauthStateSha256,
-		&i.MicrosoftOauthStateSha256,
-		&i.GoogleHostedDomain,
-		&i.GoogleUserID,
-		&i.MicrosoftTenantID,
-		&i.MicrosoftUserID,
-		&i.PasswordVerified,
-		&i.OrganizationID,
-		&i.UpdateTime,
-		&i.SecretTokenSha256,
-		&i.NewUserPasswordBcrypt,
-		&i.EmailVerificationChallengeSha256,
-		&i.EmailVerificationChallengeCompleted,
-		&i.PasskeyCredentialID,
-		&i.PasskeyPublicKey,
-		&i.PasskeyAaguid,
-		&i.PasskeyVerifyChallengeSha256,
-		&i.PasskeyVerified,
-		&i.AuthenticatorAppSecretCiphertext,
-		&i.AuthenticatorAppVerified,
-		&i.AuthenticatorAppRecoveryCodeBcrypts,
-		&i.PrimaryLoginFactor,
-		&i.PasskeyRpID,
-	)
-	return i, err
-}
-
 const getOrganizationByProjectIDAndID = `-- name: GetOrganizationByProjectIDAndID :one
 SELECT
     id, project_id, display_name, scim_enabled, create_time, update_time, logins_disabled, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_authenticator_app, log_in_with_passkey, require_mfa, log_in_with_email, log_in_with_saml
@@ -1009,7 +1003,7 @@ func (q *Queries) GetProjectAPIKeyBySecretTokenSHA256(ctx context.Context, secre
 
 const getProjectByID = `-- name: GetProjectByID :one
 SELECT
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri
 FROM
     projects
 WHERE
@@ -1039,6 +1033,9 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 		&i.LogInWithPasskey,
 		&i.LogInWithEmail,
 		&i.LogInWithSaml,
+		&i.RedirectUri,
+		&i.AfterLoginRedirectUri,
+		&i.AfterSignupRedirectUri,
 	)
 	return i, err
 }
@@ -1058,35 +1055,6 @@ func (q *Queries) GetProjectIDOrganizationBacks(ctx context.Context, organizatio
 	var id uuid.UUID
 	err := row.Scan(&id)
 	return id, err
-}
-
-const getProjectRedirectURI = `-- name: GetProjectRedirectURI :one
-SELECT
-    id, project_id, uri, is_primary, created_at, updated_at
-FROM
-    project_redirect_uris
-WHERE
-    id = $1
-    AND project_id = $2
-`
-
-type GetProjectRedirectURIParams struct {
-	ID        uuid.UUID
-	ProjectID uuid.UUID
-}
-
-func (q *Queries) GetProjectRedirectURI(ctx context.Context, arg GetProjectRedirectURIParams) (ProjectRedirectUri, error) {
-	row := q.db.QueryRow(ctx, getProjectRedirectURI, arg.ID, arg.ProjectID)
-	var i ProjectRedirectUri
-	err := row.Scan(
-		&i.ID,
-		&i.ProjectID,
-		&i.Uri,
-		&i.IsPrimary,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
 }
 
 const getProjectTrustedDomains = `-- name: GetProjectTrustedDomains :many
@@ -1139,6 +1107,34 @@ func (q *Queries) GetProjectUISettings(ctx context.Context, projectID uuid.UUID)
 		&i.CreateTime,
 		&i.UpdateTime,
 		&i.LogInLayout,
+	)
+	return i, err
+}
+
+const getPublishableKey = `-- name: GetPublishableKey :one
+SELECT
+    id, project_id, create_time, update_time, display_name
+FROM
+    publishable_keys
+WHERE
+    id = $1
+    AND project_id = $2
+`
+
+type GetPublishableKeyParams struct {
+	ID        uuid.UUID
+	ProjectID uuid.UUID
+}
+
+func (q *Queries) GetPublishableKey(ctx context.Context, arg GetPublishableKeyParams) (PublishableKey, error) {
+	row := q.db.QueryRow(ctx, getPublishableKey, arg.ID, arg.ProjectID)
+	var i PublishableKey
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.DisplayName,
 	)
 	return i, err
 }
@@ -1384,72 +1380,20 @@ func (q *Queries) GetUserInvite(ctx context.Context, arg GetUserInviteParams) (U
 	return i, err
 }
 
-const listIntermediateSessions = `-- name: ListIntermediateSessions :many
+const getVaultDomainSettings = `-- name: GetVaultDomainSettings :one
 SELECT
-    id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_recovery_code_bcrypts, primary_login_factor, passkey_rp_id
+    project_id, pending_domain
 FROM
-    intermediate_sessions
+    vault_domain_settings
 WHERE
     project_id = $1
-    AND id >= $2
-ORDER BY
-    id
-LIMIT $3
 `
 
-type ListIntermediateSessionsParams struct {
-	ProjectID uuid.UUID
-	ID        uuid.UUID
-	Limit     int32
-}
-
-func (q *Queries) ListIntermediateSessions(ctx context.Context, arg ListIntermediateSessionsParams) ([]IntermediateSession, error) {
-	rows, err := q.db.Query(ctx, listIntermediateSessions, arg.ProjectID, arg.ID, arg.Limit)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []IntermediateSession
-	for rows.Next() {
-		var i IntermediateSession
-		if err := rows.Scan(
-			&i.ID,
-			&i.ProjectID,
-			&i.CreateTime,
-			&i.ExpireTime,
-			&i.Email,
-			&i.GoogleOauthStateSha256,
-			&i.MicrosoftOauthStateSha256,
-			&i.GoogleHostedDomain,
-			&i.GoogleUserID,
-			&i.MicrosoftTenantID,
-			&i.MicrosoftUserID,
-			&i.PasswordVerified,
-			&i.OrganizationID,
-			&i.UpdateTime,
-			&i.SecretTokenSha256,
-			&i.NewUserPasswordBcrypt,
-			&i.EmailVerificationChallengeSha256,
-			&i.EmailVerificationChallengeCompleted,
-			&i.PasskeyCredentialID,
-			&i.PasskeyPublicKey,
-			&i.PasskeyAaguid,
-			&i.PasskeyVerifyChallengeSha256,
-			&i.PasskeyVerified,
-			&i.AuthenticatorAppSecretCiphertext,
-			&i.AuthenticatorAppVerified,
-			&i.AuthenticatorAppRecoveryCodeBcrypts,
-			&i.PrimaryLoginFactor,
-			&i.PasskeyRpID,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
+func (q *Queries) GetVaultDomainSettings(ctx context.Context, projectID uuid.UUID) (VaultDomainSetting, error) {
+	row := q.db.QueryRow(ctx, getVaultDomainSettings, projectID)
+	var i VaultDomainSetting
+	err := row.Scan(&i.ProjectID, &i.PendingDomain)
+	return i, err
 }
 
 const listOrganizationsByProjectId = `-- name: ListOrganizationsByProjectId :many
@@ -1600,45 +1544,9 @@ func (q *Queries) ListProjectAPIKeys(ctx context.Context, arg ListProjectAPIKeys
 	return items, nil
 }
 
-const listProjectRedirectURIs = `-- name: ListProjectRedirectURIs :many
-SELECT
-    id, project_id, uri, is_primary, created_at, updated_at
-FROM
-    project_redirect_uris
-WHERE
-    project_id = $1
-`
-
-func (q *Queries) ListProjectRedirectURIs(ctx context.Context, projectID uuid.UUID) ([]ProjectRedirectUri, error) {
-	rows, err := q.db.Query(ctx, listProjectRedirectURIs, projectID)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []ProjectRedirectUri
-	for rows.Next() {
-		var i ProjectRedirectUri
-		if err := rows.Scan(
-			&i.ID,
-			&i.ProjectID,
-			&i.Uri,
-			&i.IsPrimary,
-			&i.CreatedAt,
-			&i.UpdatedAt,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
 const listProjects = `-- name: ListProjects :many
 SELECT
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri
 FROM
     projects
 ORDER BY
@@ -1675,6 +1583,54 @@ func (q *Queries) ListProjects(ctx context.Context, limit int32) ([]Project, err
 			&i.LogInWithPasskey,
 			&i.LogInWithEmail,
 			&i.LogInWithSaml,
+			&i.RedirectUri,
+			&i.AfterLoginRedirectUri,
+			&i.AfterSignupRedirectUri,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listPublishableKeys = `-- name: ListPublishableKeys :many
+SELECT
+    id, project_id, create_time, update_time, display_name
+FROM
+    publishable_keys
+WHERE
+    project_id = $1
+    AND id >= $2
+ORDER BY
+    id
+LIMIT $3
+`
+
+type ListPublishableKeysParams struct {
+	ProjectID uuid.UUID
+	ID        uuid.UUID
+	Limit     int32
+}
+
+func (q *Queries) ListPublishableKeys(ctx context.Context, arg ListPublishableKeysParams) ([]PublishableKey, error) {
+	rows, err := q.db.Query(ctx, listPublishableKeys, arg.ProjectID, arg.ID, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []PublishableKey
+	for rows.Next() {
+		var i PublishableKey
+		if err := rows.Scan(
+			&i.ID,
+			&i.ProjectID,
+			&i.CreateTime,
+			&i.UpdateTime,
+			&i.DisplayName,
 		); err != nil {
 			return nil, err
 		}
@@ -2094,6 +2050,40 @@ func (q *Queries) UpdateOrganization(ctx context.Context, arg UpdateOrganization
 	return i, err
 }
 
+const updatePasskey = `-- name: UpdatePasskey :one
+UPDATE
+    passkeys
+SET
+    update_time = now(),
+    disabled = $2
+WHERE
+    id = $1
+RETURNING
+    id, user_id, create_time, update_time, credential_id, public_key, aaguid, disabled, rp_id
+`
+
+type UpdatePasskeyParams struct {
+	ID       uuid.UUID
+	Disabled bool
+}
+
+func (q *Queries) UpdatePasskey(ctx context.Context, arg UpdatePasskeyParams) (Passkey, error) {
+	row := q.db.QueryRow(ctx, updatePasskey, arg.ID, arg.Disabled)
+	var i Passkey
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.CredentialID,
+		&i.PublicKey,
+		&i.Aaguid,
+		&i.Disabled,
+		&i.RpID,
+	)
+	return i, err
+}
+
 const updatePrimarySAMLConnection = `-- name: UpdatePrimarySAMLConnection :exec
 UPDATE
     saml_connections
@@ -2131,11 +2121,14 @@ SET
     microsoft_oauth_client_id = $12,
     microsoft_oauth_client_secret_ciphertext = $13,
     custom_auth_domain = $14,
-    auth_domain = $15
+    auth_domain = $15,
+    redirect_uri = $16,
+    after_login_redirect_uri = $17,
+    after_signup_redirect_uri = $18
 WHERE
     id = $1
 RETURNING
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri
 `
 
 type UpdateProjectParams struct {
@@ -2154,6 +2147,9 @@ type UpdateProjectParams struct {
 	MicrosoftOauthClientSecretCiphertext []byte
 	CustomAuthDomain                     *string
 	AuthDomain                           *string
+	RedirectUri                          *string
+	AfterLoginRedirectUri                *string
+	AfterSignupRedirectUri               *string
 }
 
 func (q *Queries) UpdateProject(ctx context.Context, arg UpdateProjectParams) (Project, error) {
@@ -2173,6 +2169,9 @@ func (q *Queries) UpdateProject(ctx context.Context, arg UpdateProjectParams) (P
 		arg.MicrosoftOauthClientSecretCiphertext,
 		arg.CustomAuthDomain,
 		arg.AuthDomain,
+		arg.RedirectUri,
+		arg.AfterLoginRedirectUri,
+		arg.AfterSignupRedirectUri,
 	)
 	var i Project
 	err := row.Scan(
@@ -2195,6 +2194,9 @@ func (q *Queries) UpdateProject(ctx context.Context, arg UpdateProjectParams) (P
 		&i.LogInWithPasskey,
 		&i.LogInWithEmail,
 		&i.LogInWithSaml,
+		&i.RedirectUri,
+		&i.AfterLoginRedirectUri,
+		&i.AfterSignupRedirectUri,
 	)
 	return i, err
 }
@@ -2238,7 +2240,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri
 `
 
 type UpdateProjectOrganizationIDParams struct {
@@ -2269,45 +2271,9 @@ func (q *Queries) UpdateProjectOrganizationID(ctx context.Context, arg UpdatePro
 		&i.LogInWithPasskey,
 		&i.LogInWithEmail,
 		&i.LogInWithSaml,
-	)
-	return i, err
-}
-
-const updateProjectRedirectURI = `-- name: UpdateProjectRedirectURI :one
-UPDATE
-    project_redirect_uris
-SET
-    uri = $2,
-    is_primary = $3
-WHERE
-    id = $1
-    AND project_id = $4
-RETURNING
-    id, project_id, uri, is_primary, created_at, updated_at
-`
-
-type UpdateProjectRedirectURIParams struct {
-	ID        uuid.UUID
-	Uri       string
-	IsPrimary bool
-	ProjectID uuid.UUID
-}
-
-func (q *Queries) UpdateProjectRedirectURI(ctx context.Context, arg UpdateProjectRedirectURIParams) (ProjectRedirectUri, error) {
-	row := q.db.QueryRow(ctx, updateProjectRedirectURI,
-		arg.ID,
-		arg.Uri,
-		arg.IsPrimary,
-		arg.ProjectID,
-	)
-	var i ProjectRedirectUri
-	err := row.Scan(
-		&i.ID,
-		&i.ProjectID,
-		&i.Uri,
-		&i.IsPrimary,
-		&i.CreatedAt,
-		&i.UpdatedAt,
+		&i.RedirectUri,
+		&i.AfterLoginRedirectUri,
+		&i.AfterSignupRedirectUri,
 	)
 	return i, err
 }
@@ -2353,6 +2319,36 @@ func (q *Queries) UpdateProjectUISettings(ctx context.Context, arg UpdateProject
 		&i.CreateTime,
 		&i.UpdateTime,
 		&i.LogInLayout,
+	)
+	return i, err
+}
+
+const updatePublishableKey = `-- name: UpdatePublishableKey :one
+UPDATE
+    publishable_keys
+SET
+    update_time = now(),
+    display_name = $1
+WHERE
+    id = $2
+RETURNING
+    id, project_id, create_time, update_time, display_name
+`
+
+type UpdatePublishableKeyParams struct {
+	DisplayName string
+	ID          uuid.UUID
+}
+
+func (q *Queries) UpdatePublishableKey(ctx context.Context, arg UpdatePublishableKeyParams) (PublishableKey, error) {
+	row := q.db.QueryRow(ctx, updatePublishableKey, arg.DisplayName, arg.ID)
+	var i PublishableKey
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.DisplayName,
 	)
 	return i, err
 }
@@ -2438,11 +2434,10 @@ UPDATE
     users
 SET
     update_time = now(),
-    organization_id = $2,
-    email = $3,
-    password_bcrypt = $4,
-    google_user_id = $5,
-    microsoft_user_id = $6
+    email = $2,
+    google_user_id = $3,
+    microsoft_user_id = $4,
+    is_owner = $5
 WHERE
     id = $1
 RETURNING
@@ -2451,21 +2446,19 @@ RETURNING
 
 type UpdateUserParams struct {
 	ID              uuid.UUID
-	OrganizationID  uuid.UUID
 	Email           string
-	PasswordBcrypt  *string
 	GoogleUserID    *string
 	MicrosoftUserID *string
+	IsOwner         bool
 }
 
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
 	row := q.db.QueryRow(ctx, updateUser,
 		arg.ID,
-		arg.OrganizationID,
 		arg.Email,
-		arg.PasswordBcrypt,
 		arg.GoogleUserID,
 		arg.MicrosoftUserID,
+		arg.IsOwner,
 	)
 	var i User
 	err := row.Scan(
