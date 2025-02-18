@@ -1,8 +1,10 @@
-import { useMutation, useQuery } from '@connectrpc/connect-query'
+import { useMutation, useQuery } from '@connectrpc/connect-query';
 import {
-  createProjectAPIKey, createPublishableKey,
-  listProjectAPIKeys, listPublishableKeys,
-} from '@/gen/openauth/backend/v1/backend-BackendService_connectquery'
+  createProjectAPIKey,
+  createPublishableKey,
+  listProjectAPIKeys,
+  listPublishableKeys,
+} from '@/gen/openauth/backend/v1/backend-BackendService_connectquery';
 import {
   Table,
   TableBody,
@@ -10,11 +12,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
-import { Link } from 'react-router-dom'
-import React, { useState } from 'react'
-import { DateTime } from 'luxon'
-import { timestampDate } from '@bufbuild/protobuf/wkt'
+} from '@/components/ui/table';
+import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { DateTime } from 'luxon';
+import { timestampDate } from '@bufbuild/protobuf/wkt';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -22,20 +24,20 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
-import { PageDescription, PageTitle } from '@/components/page'
+} from '@/components/ui/breadcrumb';
+import { PageDescription, PageTitle } from '@/components/page';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { z } from 'zod'
-import { useNavigate, useParams } from 'react-router'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { z } from 'zod';
+import { useNavigate } from 'react-router';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -45,8 +47,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
-import { SecretCopier } from '@/components/SecretCopier'
+} from '@/components/ui/alert-dialog';
+import { SecretCopier } from '@/components/SecretCopier';
 import {
   Form,
   FormControl,
@@ -55,12 +57,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 
-export function ListAPIKeysPage() {
-  const { data: listPublishableKeysResponse } = useQuery(listPublishableKeys, {})
-  const { data: listProjectAPIKeysResponse } = useQuery(listProjectAPIKeys, {})
+export const ListAPIKeysPage = () => {
+  const { data: listPublishableKeysResponse } = useQuery(
+    listPublishableKeys,
+    {},
+  );
+  const { data: listProjectAPIKeysResponse } = useQuery(listProjectAPIKeys, {});
 
   return (
     <div>
@@ -85,9 +90,7 @@ export function ListAPIKeysPage() {
       </Breadcrumb>
 
       <PageTitle>API Keys</PageTitle>
-      <PageDescription className="mt-2">
-        Lorem ipsum dolor.
-      </PageDescription>
+      <PageDescription className="mt-2">Lorem ipsum dolor.</PageDescription>
 
       <div className="mt-8 space-y-8">
         <Card>
@@ -128,14 +131,16 @@ export function ListAPIKeysPage() {
                         {publishableKey.id}
                       </TableCell>
                       <TableCell>
-                        {DateTime.fromJSDate(
-                          timestampDate(publishableKey.createTime!),
-                        ).toRelative()}
+                        {publishableKey.createTime &&
+                          DateTime.fromJSDate(
+                            timestampDate(publishableKey.createTime),
+                          ).toRelative()}
                       </TableCell>
                       <TableCell>
-                        {DateTime.fromJSDate(
-                          timestampDate(publishableKey.updateTime!),
-                        ).toRelative()}
+                        {publishableKey.updateTime &&
+                          DateTime.fromJSDate(
+                            timestampDate(publishableKey.updateTime),
+                          ).toRelative()}
                       </TableCell>
                     </TableRow>
                   ),
@@ -186,14 +191,16 @@ export function ListAPIKeysPage() {
                         {projectAPIKey?.revoked ? 'Revoked' : 'Active'}
                       </TableCell>
                       <TableCell>
-                        {DateTime.fromJSDate(
-                          timestampDate(projectAPIKey.createTime!),
-                        ).toRelative()}
+                        {projectAPIKey.createTime &&
+                          DateTime.fromJSDate(
+                            timestampDate(projectAPIKey.createTime),
+                          ).toRelative()}
                       </TableCell>
                       <TableCell>
-                        {DateTime.fromJSDate(
-                          timestampDate(projectAPIKey.updateTime!),
-                        ).toRelative()}
+                        {projectAPIKey.updateTime &&
+                          DateTime.fromJSDate(
+                            timestampDate(projectAPIKey.updateTime),
+                          ).toRelative()}
                       </TableCell>
                     </TableRow>
                   ),
@@ -204,34 +211,40 @@ export function ListAPIKeysPage() {
         </Card>
       </div>
     </div>
-  )
-}
+  );
+};
 
 const publishableKeySchema = z.object({
   displayName: z.string(),
-})
+});
 
-function CreatePublishableKeyButton() {
-  const createPublishableKeyMutation = useMutation(createPublishableKey)
+const CreatePublishableKeyButton = () => {
+  const createPublishableKeyMutation = useMutation(createPublishableKey);
+  /* eslint-disable @typescript-eslint/no-unsafe-call */
+  // Currently there's an issue with the types of react-hook-form and zod
+  // preventing the compiler from inferring the correct types.
   const form = useForm<z.infer<typeof publishableKeySchema>>({
     resolver: zodResolver(publishableKeySchema),
     defaultValues: {
       displayName: '',
     },
-  })
-  const navigate = useNavigate()
-  const [open, setOpen] = useState(false)
+  });
+  /* eslint-enable @typescript-eslint/no-unsafe-call */
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
 
-  async function handleSubmit(values: z.infer<typeof projectApiKeySchema>) {
+  const handleSubmit = async (values: z.infer<typeof projectApiKeySchema>) => {
     const { publishableKey } = await createPublishableKeyMutation.mutateAsync({
       publishableKey: {
         displayName: values.displayName,
       },
-    })
+    });
 
-    setOpen(false)
-    navigate(`/project-settings/api-keys/publishable-keys/${publishableKey!.id}`)
-  }
+    setOpen(false);
+    navigate(
+      `/project-settings/api-keys/publishable-keys/${publishableKey?.id}`,
+    );
+  };
 
   return (
     <>
@@ -243,17 +256,21 @@ function CreatePublishableKeyButton() {
           <AlertDialogHeader>
             <AlertDialogTitle>Create Publishable Key</AlertDialogTitle>
             <AlertDialogDescription>
-              Tesseral's client-side SDKs require a publishable key.
-              Publishable keys can be publicly accessible in your web or
-              mobile app's client-side code. Lorem ipsum dolor.
+              Tesseral's client-side SDKs require a publishable key. Publishable
+              keys can be publicly accessible in your web or mobile app's
+              client-side code. Lorem ipsum dolor.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <Form {...form}>
+            {/* eslint-disable @typescript-eslint/no-unsafe-call */}
+            {/** Currently there's an issue with the types of react-hook-form and zod
+            preventing the compiler from inferring the correct types.*/}
             <form onSubmit={form.handleSubmit(handleSubmit)}>
+              {/* eslint-enable @typescript-eslint/no-unsafe-call */}
               <FormField
                 control={form.control}
                 name="displayName"
-                render={({ field }) => (
+                render={({ field }: { field: any }) => (
                   <FormItem>
                     <FormLabel>Display Name</FormLabel>
                     <FormControl>
@@ -276,41 +293,50 @@ function CreatePublishableKeyButton() {
         </AlertDialogContent>
       </AlertDialog>
     </>
-  )
-}
+  );
+};
 
 const projectApiKeySchema = z.object({
   displayName: z.string(),
-})
+});
 
-function CreateProjectAPIKeyButton() {
-  const createProjectAPIKeyMutation = useMutation(createProjectAPIKey)
+const CreateProjectAPIKeyButton = () => {
+  const createProjectAPIKeyMutation = useMutation(createProjectAPIKey);
+
+  /* eslint-disable @typescript-eslint/no-unsafe-call */
+  // Currently there's an issue with the types of react-hook-form and zod
+  // preventing the compiler from inferring the correct types.
   const form = useForm<z.infer<typeof projectApiKeySchema>>({
     resolver: zodResolver(projectApiKeySchema),
     defaultValues: {
       displayName: '',
     },
-  })
-  const navigate = useNavigate()
-  const [createOpen, setCreateOpen] = useState(false)
-  const [projectAPIKeyID, setProjectAPIKeyID] = useState('')
-  const [secretToken, setSecretToken] = useState('')
+  });
+  /* eslint-enable @typescript-eslint/no-unsafe-call */
+  const navigate = useNavigate();
+  const [createOpen, setCreateOpen] = useState(false);
+  const [projectAPIKeyID, setProjectAPIKeyID] = useState('');
+  const [secretToken, setSecretToken] = useState('');
 
-  async function handleSubmit(values: z.infer<typeof projectApiKeySchema>) {
+  const handleSubmit = async (values: z.infer<typeof projectApiKeySchema>) => {
     const { projectApiKey } = await createProjectAPIKeyMutation.mutateAsync({
       projectApiKey: {
         displayName: values.displayName,
       },
-    })
+    });
 
-    setCreateOpen(false)
-    setProjectAPIKeyID(projectApiKey!.id)
-    setSecretToken(projectApiKey!.secretToken)
-  }
+    setCreateOpen(false);
+    if (projectApiKey?.id) {
+      setProjectAPIKeyID(projectApiKey.id);
+    }
+    if (projectApiKey?.secretToken) {
+      setSecretToken(projectApiKey.secretToken);
+    }
+  };
 
-  function handleClose() {
-    navigate(`/project-settings/api-keys/project-api-keys/${projectAPIKeyID}`)
-  }
+  const handleClose = () => {
+    navigate(`/project-settings/api-keys/project-api-keys/${projectAPIKeyID}`);
+  };
 
   return (
     <>
@@ -356,11 +382,15 @@ function CreateProjectAPIKeyButton() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <Form {...form}>
+            {/* eslint-disable @typescript-eslint/no-unsafe-call */}
+            {/** Currently there's an issue with the types of react-hook-form and zod
+            preventing the compiler from inferring the correct types.*/}
             <form onSubmit={form.handleSubmit(handleSubmit)}>
+              {/* eslint-enable @typescript-eslint/no-unsafe-call */}
               <FormField
                 control={form.control}
                 name="displayName"
-                render={({ field }) => (
+                render={({ field }: { field: any }) => (
                   <FormItem>
                     <FormLabel>Display Name</FormLabel>
                     <FormControl>
@@ -382,5 +412,5 @@ function CreateProjectAPIKeyButton() {
         </AlertDialogContent>
       </AlertDialog>
     </>
-  )
-}
+  );
+};

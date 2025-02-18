@@ -1,25 +1,25 @@
-const intermediateSessionTokenKey = 'intermediate_session'
+const intermediateSessionTokenKey = 'intermediate_session';
 
-export function getIntermediateSessionToken(): string | null {
-  return localStorage.getItem(intermediateSessionTokenKey)
-}
+export const getIntermediateSessionToken = (): string | null => {
+  return localStorage.getItem(intermediateSessionTokenKey);
+};
 
-export function setIntermediateSessionToken(s: string) {
-  localStorage.setItem(intermediateSessionTokenKey, s)
-}
+export const setIntermediateSessionToken = (s: string) => {
+  localStorage.setItem(intermediateSessionTokenKey, s);
+};
 
-export function setAccessToken(s: string) {
-  localStorage.setItem('access_token', s)
-}
+export const setAccessToken = (s: string) => {
+  localStorage.setItem('access_token', s);
+};
 
-export function getAccessToken(): string | null {
-  return localStorage.getItem('access_token')
-}
+export const getAccessToken = (): string | null => {
+  return localStorage.getItem('access_token');
+};
 
-export function setRefreshToken(s: string) {
-  localStorage.setItem('refresh_token', s)
-}
+export const setRefreshToken = (s: string) => {
+  localStorage.setItem('refresh_token', s);
+};
 
-export function getRefreshToken(): string | null {
-  return localStorage.getItem('refresh_token')
-}
+export const getRefreshToken = (): string | null => {
+  return localStorage.getItem('refresh_token');
+};

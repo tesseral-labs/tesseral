@@ -1,66 +1,64 @@
-import { setAccessToken, setRefreshToken } from '@/auth'
-import { Title } from '@/components/Title'
-import { Button } from '@/components/ui/button'
+import { setAccessToken, setRefreshToken } from '@/auth';
+import { Title } from '@/components/Title';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
+} from '@/components/ui/card';
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSeparator,
   InputOTPSlot,
-} from '@/components/ui/input-otp'
-import Loader from '@/components/ui/loader'
+} from '@/components/ui/input-otp';
+import Loader from '@/components/ui/loader';
 import {
   exchangeIntermediateSessionForSession,
   verifyAuthenticatorApp,
-} from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
-import { parseErrorMessage } from '@/lib/errors'
-import { cn } from '@/lib/utils'
-import { useMutation } from '@connectrpc/connect-query'
-import React, { FC, useState } from 'react'
-import { useNavigate } from 'react-router'
-import { toast } from 'sonner'
+} from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery';
+import { parseErrorMessage } from '@/lib/errors';
+import { useMutation } from '@connectrpc/connect-query';
+import React, { FC, useState } from 'react';
+import { useNavigate } from 'react-router';
+import { toast } from 'sonner';
 
 const VerifyAuthenticatorAppView: FC = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const exchangeIntermediateSessionForSessionMutation = useMutation(
     exchangeIntermediateSessionForSession,
-  )
-  const verifyAuthenticatorAppMutation = useMutation(verifyAuthenticatorApp)
+  );
+  const verifyAuthenticatorAppMutation = useMutation(verifyAuthenticatorApp);
 
-  const [code, setCode] = useState('')
-  const [submitting, setSubmitting] = useState<boolean>(false)
+  const [code, setCode] = useState('');
+  const [submitting, setSubmitting] = useState<boolean>(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setSubmitting(true)
+    e.preventDefault();
+    setSubmitting(true);
 
     try {
       await verifyAuthenticatorAppMutation.mutateAsync({
         totpCode: code,
-      })
+      });
 
       const { accessToken, refreshToken } =
-        await exchangeIntermediateSessionForSessionMutation.mutateAsync({})
+        await exchangeIntermediateSessionForSessionMutation.mutateAsync({});
 
-      setAccessToken(accessToken)
-      setRefreshToken(refreshToken)
-      setSubmitting(false)
+      setAccessToken(accessToken);
+      setRefreshToken(refreshToken);
+      setSubmitting(false);
 
-      navigate('/')
+      navigate('/');
     } catch (error) {
-      setSubmitting(false)
-      const message = parseErrorMessage(error)
-      toast.error(message)
+      setSubmitting(false);
+      const message = parseErrorMessage(error);
+      toast.error(message);
     }
-  }
+  };
 
   return (
     <>
@@ -104,7 +102,7 @@ const VerifyAuthenticatorAppView: FC = () => {
         </CardContent>
       </Card>
     </>
-  )
-}
+  );
+};
 
-export default VerifyAuthenticatorAppView
+export default VerifyAuthenticatorAppView;

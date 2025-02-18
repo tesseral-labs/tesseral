@@ -1,40 +1,40 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { offset, useFloating, useTransitionStyles } from '@floating-ui/react'
-import { CopyIcon } from 'lucide-react'
+import React, { useCallback, useEffect, useState } from 'react';
+import { offset, useFloating, useTransitionStyles } from '@floating-ui/react';
+import { CopyIcon } from 'lucide-react';
 
-export function SecretCopier({
+export const SecretCopier = ({
   placeholder,
   secret,
 }: {
-  placeholder: string
-  secret: string
-}) {
-  const [open, setOpen] = useState(false)
+  placeholder: string;
+  secret: string;
+}) => {
+  const [open, setOpen] = useState(false);
   const { refs, floatingStyles, context } = useFloating({
     open,
     onOpenChange: setOpen,
     placement: 'top',
     middleware: [offset(5)],
-  })
+  });
   const { isMounted, styles } = useTransitionStyles(context, {
     duration: 150,
     initial: { opacity: 0, transform: 'translateY(0)' },
     open: { opacity: 1, transform: 'translateY(-5px)' },
-  })
+  });
 
   useEffect(() => {
     if (open) {
       const timeoutId = setTimeout(() => {
-        setOpen(false)
-      }, 1000)
-      return () => clearTimeout(timeoutId)
+        setOpen(false);
+      }, 1000);
+      return () => clearTimeout(timeoutId);
     }
-  }, [open])
+  }, [open]);
 
   const handleCopy = useCallback(async () => {
-    await navigator.clipboard.writeText(secret)
-    setOpen(true)
-  }, [secret, setOpen])
+    await navigator.clipboard.writeText(secret);
+    setOpen(true);
+  }, [secret, setOpen]);
 
   return (
     <div
@@ -60,5 +60,5 @@ export function SecretCopier({
         </div>
       )}
     </div>
-  )
-}
+  );
+};

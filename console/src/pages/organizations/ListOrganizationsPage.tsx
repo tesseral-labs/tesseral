@@ -1,6 +1,6 @@
-import React from 'react'
-import { useQuery } from '@connectrpc/connect-query'
-import { listOrganizations } from '@/gen/openauth/backend/v1/backend-BackendService_connectquery'
+import React from 'react';
+import { useQuery } from '@connectrpc/connect-query';
+import { listOrganizations } from '@/gen/openauth/backend/v1/backend-BackendService_connectquery';
 import {
   Table,
   TableBody,
@@ -8,17 +8,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
-import { DateTime } from 'luxon'
-import { timestampDate } from '@bufbuild/protobuf/wkt'
-import { Link } from 'react-router-dom'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+} from '@/components/ui/table';
+import { DateTime } from 'luxon';
+import { timestampDate } from '@bufbuild/protobuf/wkt';
+import { Link } from 'react-router-dom';
+import { Card, CardContent } from '@/components/ui/card';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -26,11 +20,11 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
-import { PageDescription, PageTitle } from '@/components/page'
+} from '@/components/ui/breadcrumb';
+import { PageDescription, PageTitle } from '@/components/page';
 
-export function ListOrganizationsPage() {
-  const { data: listOrganizationsResponse } = useQuery(listOrganizations, {})
+export const ListOrganizationsPage = () => {
+  const { data: listOrganizationsResponse } = useQuery(listOrganizations, {});
 
   return (
     <div>
@@ -78,14 +72,16 @@ export function ListOrganizationsPage() {
                   </TableCell>
                   <TableCell className="font-mono">{org.id}</TableCell>
                   <TableCell>
-                    {DateTime.fromJSDate(
-                      timestampDate(org.createTime!),
-                    ).toRelative()}
+                    {org.createTime &&
+                      DateTime.fromJSDate(
+                        timestampDate(org.createTime),
+                      ).toRelative()}
                   </TableCell>
                   <TableCell>
-                    {DateTime.fromJSDate(
-                      timestampDate(org.updateTime!),
-                    ).toRelative()}
+                    {org.updateTime &&
+                      DateTime.fromJSDate(
+                        timestampDate(org.updateTime),
+                      ).toRelative()}
                   </TableCell>
                 </TableRow>
               ))}
@@ -94,5 +90,5 @@ export function ListOrganizationsPage() {
         </CardContent>
       </Card>
     </div>
-  )
-}
+  );
+};

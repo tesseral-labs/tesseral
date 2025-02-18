@@ -1,44 +1,44 @@
-import React, { FC } from 'react'
+import React, { FC } from 'react';
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { createConnectTransport } from '@connectrpc/connect-web'
-import { type Transport } from '@connectrpc/connect'
-import { TransportProvider } from '@connectrpc/connect-query'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import NotFoundPage from './pages/NotFound'
-import { ListOrganizationsPage } from '@/pages/organizations/ListOrganizationsPage'
-import { useAccessToken } from '@/lib/use-access-token'
-import { ViewOrganizationPage } from '@/pages/organizations/ViewOrganizationPage'
-import { ViewUserPage } from '@/pages/users/ViewUserPage'
-import { ListAPIKeysPage } from '@/pages/api-keys/ListAPIKeysPage'
-import { ViewProjectSettingsPage } from '@/pages/project/ViewProjectSettingsPage'
-import { OrganizationUsersTab } from '@/pages/organizations/OrganizationUsersTab'
-import { OrganizationSAMLConnectionsTab } from '@/pages/organizations/OrganizationSAMLConnectionsTab'
-import { OrganizationSCIMAPIKeysTab } from '@/pages/organizations/OrganizationSCIMAPIKeysTab'
-import { OrganizationDetailsTab } from '@/pages/organizations/OrganizationDetailsTab'
-import { EditOrganizationPage } from '@/pages/organizations/EditOrganizationPage'
-import { ViewSAMLConnectionPage } from '@/pages/saml-connections/ViewSAMLConnectionPage'
-import { Toaster } from '@/components/ui/sonner'
-import { EditSAMLConnectionPage } from '@/pages/saml-connections/EditSAMLConnectionPage'
-import { PageShell } from '@/components/page'
-import { ViewSCIMAPIKeyPage } from '@/pages/scim-api-keys/ViewSCIMAPIKeyPage'
-import { ViewProjectAPIKeyPage } from '@/pages/api-keys/ViewProjectAPIKey'
-import { HomePage } from '@/pages/home/HomePage'
-import { ProjectDetailsTab } from '@/pages/project/ProjectDetailsTab'
-import LoginPage from './pages/login/LoginPage'
-import { ViewPasskeyPage } from '@/pages/passkeys/ViewPasskeyPage'
-import { OrganizationUserInvitesTab } from '@/pages/organizations/OrganizationUserInvitesTab'
-import { ViewUserInvitePage } from '@/pages/user-invites/ViewUserInvitePage'
-import { API_URL } from './config'
-import { AuthType } from './lib/auth'
-import GoogleOAuthCallbackPage from './pages/login/GoogleOAuthCallbackPage'
-import MicrosoftOAuthCallbackPage from './pages/login/MicrosoftOAuthCallbackPage'
-import { ViewPublishableKeyPage } from '@/pages/api-keys/ViewPublishableKeyPage'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { createConnectTransport } from '@connectrpc/connect-web';
+import { type Transport } from '@connectrpc/connect';
+import { TransportProvider } from '@connectrpc/connect-query';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import NotFoundPage from './pages/NotFound';
+import { ListOrganizationsPage } from '@/pages/organizations/ListOrganizationsPage';
+import { useAccessToken } from '@/lib/use-access-token';
+import { ViewOrganizationPage } from '@/pages/organizations/ViewOrganizationPage';
+import { ViewUserPage } from '@/pages/users/ViewUserPage';
+import { ListAPIKeysPage } from '@/pages/api-keys/ListAPIKeysPage';
+import { ViewProjectSettingsPage } from '@/pages/project/ViewProjectSettingsPage';
+import { OrganizationUsersTab } from '@/pages/organizations/OrganizationUsersTab';
+import { OrganizationSAMLConnectionsTab } from '@/pages/organizations/OrganizationSAMLConnectionsTab';
+import { OrganizationSCIMAPIKeysTab } from '@/pages/organizations/OrganizationSCIMAPIKeysTab';
+import { OrganizationDetailsTab } from '@/pages/organizations/OrganizationDetailsTab';
+import { EditOrganizationPage } from '@/pages/organizations/EditOrganizationPage';
+import { ViewSAMLConnectionPage } from '@/pages/saml-connections/ViewSAMLConnectionPage';
+import { Toaster } from '@/components/ui/sonner';
+import { EditSAMLConnectionPage } from '@/pages/saml-connections/EditSAMLConnectionPage';
+import { PageShell } from '@/components/page';
+import { ViewSCIMAPIKeyPage } from '@/pages/scim-api-keys/ViewSCIMAPIKeyPage';
+import { ViewProjectAPIKeyPage } from '@/pages/api-keys/ViewProjectAPIKey';
+import { HomePage } from '@/pages/home/HomePage';
+import { ProjectDetailsTab } from '@/pages/project/ProjectDetailsTab';
+import LoginPage from './pages/login/LoginPage';
+import { ViewPasskeyPage } from '@/pages/passkeys/ViewPasskeyPage';
+import { OrganizationUserInvitesTab } from '@/pages/organizations/OrganizationUserInvitesTab';
+import { ViewUserInvitePage } from '@/pages/user-invites/ViewUserInvitePage';
+import { API_URL } from './config';
+import { AuthType } from './lib/auth';
+import GoogleOAuthCallbackPage from './pages/login/GoogleOAuthCallbackPage';
+import MicrosoftOAuthCallbackPage from './pages/login/MicrosoftOAuthCallbackPage';
+import { ViewPublishableKeyPage } from '@/pages/api-keys/ViewPublishableKeyPage';
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
 
-function useTransport(): Transport {
-  const accessToken = useAccessToken()
+const useTransport = (): Transport => {
+  const accessToken = useAccessToken();
 
   return createConnectTransport({
     baseUrl: `${API_URL}/api/internal/connect`,
@@ -53,14 +53,14 @@ function useTransport(): Transport {
       }),
     interceptors: [
       (next) => async (req) => {
-        return next(req)
+        return next(req);
       },
     ],
-  })
-}
+  });
+};
 
-function AppWithinQueryClient() {
-  const transport = useTransport()
+const AppWithinQueryClient = () => {
+  const transport = useTransport();
   return (
     <TransportProvider transport={transport}>
       <BrowserRouter>
@@ -159,8 +159,8 @@ function AppWithinQueryClient() {
         </Routes>
       </BrowserRouter>
     </TransportProvider>
-  )
-}
+  );
+};
 
 const App: FC = () => {
   return (
@@ -168,7 +168,7 @@ const App: FC = () => {
       <AppWithinQueryClient />
       <Toaster />
     </QueryClientProvider>
-  )
-}
+  );
+};
 
-export default App
+export default App;

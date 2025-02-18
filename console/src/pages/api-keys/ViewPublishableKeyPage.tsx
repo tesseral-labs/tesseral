@@ -5,34 +5,26 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
-import { Link } from 'react-router-dom'
-import React, { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router'
-import { useMutation, useQuery } from '@connectrpc/connect-query'
+} from '@/components/ui/breadcrumb';
+import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router';
+import { useMutation, useQuery } from '@connectrpc/connect-query';
 import {
-  createProjectAPIKey,
-  deleteSAMLConnection,
-  deleteProjectAPIKey,
-  getOrganization,
-  getSAMLConnection,
-  getProjectAPIKey,
-  revokeProjectAPIKey,
-  updateProjectAPIKey,
   getPublishableKey,
   updatePublishableKey,
   deletePublishableKey,
-} from '@/gen/openauth/backend/v1/backend-BackendService_connectquery'
+} from '@/gen/openauth/backend/v1/backend-BackendService_connectquery';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { DateTime } from 'luxon'
-import { timestampDate } from '@bufbuild/protobuf/wkt'
-import { toast } from 'sonner'
+} from '@/components/ui/card';
+import { DateTime } from 'luxon';
+import { timestampDate } from '@bufbuild/protobuf/wkt';
+import { toast } from 'sonner';
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -42,12 +34,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
-import { Button } from '@/components/ui/button'
-import { z } from 'zod'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { SecretCopier } from '@/components/SecretCopier'
+} from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Form,
   FormControl,
@@ -56,15 +47,19 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { PageCodeSubtitle, PageDescription, PageTitle } from '@/components/page'
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import {
+  PageCodeSubtitle,
+  PageDescription,
+  PageTitle,
+} from '@/components/page';
 
-export function ViewPublishableKeyPage() {
-  const { publishableKeyId } = useParams()
+export const ViewPublishableKeyPage = () => {
+  const { publishableKeyId } = useParams();
   const { data: getPublishableKeyResponse } = useQuery(getPublishableKey, {
     id: publishableKeyId,
-  })
+  });
 
   return (
     <div>
@@ -101,9 +96,9 @@ export function ViewPublishableKeyPage() {
       </PageTitle>
       <PageCodeSubtitle>{publishableKeyId}</PageCodeSubtitle>
       <PageDescription>
-        Tesseral's client-side SDKs require a publishable key.
-        Publishable keys can be publicly accessible in your web or
-        mobile app's client-side code. Lorem ipsum dolor.
+        Tesseral's client-side SDKs require a publishable key. Publishable keys
+        can be publicly accessible in your web or mobile app's client-side code.
+        Lorem ipsum dolor.
       </PageDescription>
 
       <Card className="my-8">
@@ -156,48 +151,52 @@ export function ViewPublishableKeyPage() {
 
       <DangerZoneCard />
     </div>
-  )
-}
+  );
+};
 
 const schema = z.object({
   displayName: z.string(),
-})
+});
 
-function EditPublishableKeyButton() {
-  const { publishableKeyId } = useParams()
+const EditPublishableKeyButton = () => {
+  const { publishableKeyId } = useParams();
   const { data: getPublishableKeyResponse, refetch } = useQuery(
     getPublishableKey,
     {
       id: publishableKeyId,
     },
-  )
-  const updatePublishableKeyMutation = useMutation(updatePublishableKey)
+  );
+  const updatePublishableKeyMutation = useMutation(updatePublishableKey);
+  /* eslint-disable @typescript-eslint/no-unsafe-call */
+  // Currently there's an issue with the types of react-hook-form and zod
+  // preventing the compiler from inferring the correct types.
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
       displayName: '',
     },
-  })
+  });
   useEffect(() => {
     if (getPublishableKeyResponse?.publishableKey) {
       form.reset({
         displayName: getPublishableKeyResponse.publishableKey.displayName,
-      })
+      });
     }
-  }, [getPublishableKeyResponse])
+  }, [getPublishableKeyResponse]);
+  /* eslint-enable @typescript-eslint/no-unsafe-call */
 
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
 
-  async function handleSubmit(values: z.infer<typeof schema>) {
+  const handleSubmit = async (values: z.infer<typeof schema>) => {
     await updatePublishableKeyMutation.mutateAsync({
       id: publishableKeyId,
       publishableKey: {
         displayName: values.displayName,
       },
-    })
-    await refetch()
-    setOpen(false)
-  }
+    });
+    await refetch();
+    setOpen(false);
+  };
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
@@ -212,11 +211,15 @@ function EditPublishableKeyButton() {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <Form {...form}>
+          {/* eslint-disable @typescript-eslint/no-unsafe-call */}
+          {/**Currently there's an issue with the types of react-hook-form and zod
+          preventing the compiler from inferring the correct types.*/}
           <form onSubmit={form.handleSubmit(handleSubmit)}>
+            {/* eslint-enable @typescript-eslint/no-unsafe-call */}
             <FormField
               control={form.control}
               name="displayName"
-              render={({ field }) => (
+              render={({ field }: { field: any }) => (
                 <FormItem>
                   <FormLabel>Display Name</FormLabel>
                   <FormControl>
@@ -238,33 +241,30 @@ function EditPublishableKeyButton() {
         </Form>
       </AlertDialogContent>
     </AlertDialog>
-  )
-}
+  );
+};
 
-function DangerZoneCard() {
-  const { publishableKeyId } = useParams()
-  const { data: getPublishableKeyResponse } = useQuery(
-    getPublishableKey,
-    {
-      id: publishableKeyId,
-    },
-  )
+const DangerZoneCard = () => {
+  const { publishableKeyId } = useParams();
+  const { data: getPublishableKeyResponse } = useQuery(getPublishableKey, {
+    id: publishableKeyId,
+  });
 
-  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
-  function handleDelete() {
-    setConfirmDeleteOpen(true)
-  }
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const handleDelete = () => {
+    setConfirmDeleteOpen(true);
+  };
 
-  const deletePublishableKeyMutation = useMutation(deletePublishableKey)
-  const navigate = useNavigate()
+  const deletePublishableKeyMutation = useMutation(deletePublishableKey);
+  const navigate = useNavigate();
   const handleConfirmDelete = async () => {
     await deletePublishableKeyMutation.mutateAsync({
       id: publishableKeyId,
-    })
+    });
 
-    toast.success('Publishable Key deleted')
-    navigate(`/project-settings/api-keys`)
-  }
+    toast.success('Publishable Key deleted');
+    navigate(`/project-settings/api-keys`);
+  };
 
   return (
     <>
@@ -298,20 +298,15 @@ function DangerZoneCard() {
               <div className="text-sm font-semibold">
                 Delete Publishable Key
               </div>
-              <p className="text-sm">
-                Delete this Publishable Key.
-              </p>
+              <p className="text-sm">Delete this Publishable Key.</p>
             </div>
 
-            <Button
-              variant="destructive"
-              onClick={handleDelete}
-            >
+            <Button variant="destructive" onClick={handleDelete}>
               Delete Publishable Key
             </Button>
           </div>
         </CardContent>
       </Card>
     </>
-  )
-}
+  );
+};

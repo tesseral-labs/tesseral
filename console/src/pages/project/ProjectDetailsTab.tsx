@@ -1,23 +1,23 @@
-import React from 'react'
+import React from 'react';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
+} from '@/components/ui/card';
 import {
   DetailsGrid,
   DetailsGridColumn,
   DetailsGridEntry,
   DetailsGridKey,
   DetailsGridValue,
-} from '@/components/details-grid'
-import { useQuery } from '@connectrpc/connect-query'
-import { getProject } from '@/gen/openauth/backend/v1/backend-BackendService_connectquery'
+} from '@/components/details-grid';
+import { useQuery } from '@connectrpc/connect-query';
+import { getProject } from '@/gen/openauth/backend/v1/backend-BackendService_connectquery';
 
-export function ProjectDetailsTab() {
-  const { data: getProjectResponse } = useQuery(getProject, {})
+export const ProjectDetailsTab = () => {
+  const { data: getProjectResponse } = useQuery(getProject, {});
 
   return (
     <div className="space-y-8">
@@ -35,7 +35,7 @@ export function ProjectDetailsTab() {
               <DetailsGridEntry>
                 <DetailsGridKey>Log in with Password</DetailsGridKey>
                 <DetailsGridValue>
-                  {getProjectResponse?.project?.logInWithPasswordEnabled
+                  {getProjectResponse?.project?.logInWithPassword
                     ? 'Enabled'
                     : 'Disabled'}
                 </DetailsGridValue>
@@ -45,7 +45,7 @@ export function ProjectDetailsTab() {
               <DetailsGridEntry>
                 <DetailsGridKey>Log in with Google</DetailsGridKey>
                 <DetailsGridValue>
-                  {getProjectResponse?.project?.logInWithGoogleEnabled
+                  {getProjectResponse?.project?.logInWithGoogle
                     ? 'Enabled'
                     : 'Disabled'}
                 </DetailsGridValue>
@@ -55,7 +55,7 @@ export function ProjectDetailsTab() {
               <DetailsGridEntry>
                 <DetailsGridKey>Log in with Microsoft</DetailsGridKey>
                 <DetailsGridValue>
-                  {getProjectResponse?.project?.logInWithMicrosoftEnabled
+                  {getProjectResponse?.project?.logInWithMicrosoft
                     ? 'Enabled'
                     : 'Disabled'}
                 </DetailsGridValue>
@@ -78,7 +78,7 @@ export function ProjectDetailsTab() {
               <DetailsGridEntry>
                 <DetailsGridKey>Status</DetailsGridKey>
                 <DetailsGridValue>
-                  {getProjectResponse?.project?.logInWithGoogleEnabled
+                  {getProjectResponse?.project?.logInWithGoogle
                     ? 'Enabled'
                     : 'Disabled'}
                 </DetailsGridValue>
@@ -120,7 +120,7 @@ export function ProjectDetailsTab() {
               <DetailsGridEntry>
                 <DetailsGridKey>Status</DetailsGridKey>
                 <DetailsGridValue>
-                  {getProjectResponse?.project?.logInWithMicrosoftEnabled
+                  {getProjectResponse?.project?.logInWithMicrosoft
                     ? 'Enabled'
                     : 'Disabled'}
                 </DetailsGridValue>
@@ -150,5 +150,5 @@ export function ProjectDetailsTab() {
         </CardContent>
       </Card>
     </div>
-  )
-}
+  );
+};
