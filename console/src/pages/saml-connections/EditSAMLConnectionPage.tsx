@@ -1,17 +1,15 @@
-import { useNavigate, useParams } from 'react-router'
-import { useMutation, useQuery } from '@connectrpc/connect-query'
+import { useNavigate, useParams } from 'react-router';
+import { useMutation, useQuery } from '@connectrpc/connect-query';
 import {
   getOrganization,
-  getProject,
   getSAMLConnection,
-  updateOrganization,
   updateSAMLConnection,
-} from '@/gen/openauth/backend/v1/backend-BackendService_connectquery'
-import React, { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Button } from '@/components/ui/button'
+} from '@/gen/openauth/backend/v1/backend-BackendService_connectquery';
+import React, { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -20,9 +18,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Switch } from '@/components/ui/switch'
-import { Link } from 'react-router-dom'
+} from '@/components/ui/form';
+import { Switch } from '@/components/ui/switch';
+import { Link } from 'react-router-dom';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -30,16 +28,16 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
+} from '@/components/ui/breadcrumb';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { toast } from 'sonner'
+} from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { toast } from 'sonner';
 
 const schema = z.object({
   primary: z.boolean(),
@@ -52,22 +50,25 @@ const schema = z.object({
   idpX509Certificate: z.string().startsWith('-----BEGIN CERTIFICATE-----', {
     message: 'IDP Certificate must be a PEM-encoded X.509 certificate.',
   }),
-})
+});
 
-export function EditSAMLConnectionPage() {
-  const navigate = useNavigate()
-  const { organizationId, samlConnectionId } = useParams()
+export const EditSAMLConnectionPage = () => {
+  const navigate = useNavigate();
+  const { organizationId, samlConnectionId } = useParams();
   const { data: getOrganizationResponse } = useQuery(getOrganization, {
     id: organizationId,
-  })
+  });
   const { data: getSAMLConnectionResponse } = useQuery(getSAMLConnection, {
     id: samlConnectionId,
-  })
+  });
+  /* eslint-disable @typescript-eslint/no-unsafe-call */
+  // Currently there's an issue with the types of react-hook-form and zod
+  // preventing the compiler from inferring the correct types.
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {},
-  })
-  const updateSAMLConnectionMutation = useMutation(updateSAMLConnection)
+  });
+  const updateSAMLConnectionMutation = useMutation(updateSAMLConnection);
 
   useEffect(() => {
     if (getSAMLConnectionResponse?.samlConnection) {
@@ -77,11 +78,12 @@ export function EditSAMLConnectionPage() {
         idpRedirectUrl: getSAMLConnectionResponse.samlConnection.idpRedirectUrl,
         idpX509Certificate:
           getSAMLConnectionResponse.samlConnection.idpX509Certificate,
-      })
+      });
     }
-  }, [getSAMLConnectionResponse])
+  }, [getSAMLConnectionResponse]);
+  /* eslint-enable @typescript-eslint/no-unsafe-call */
 
-  async function onSubmit(values: z.infer<typeof schema>) {
+  const onSubmit = async (values: z.infer<typeof schema>) => {
     await updateSAMLConnectionMutation.mutateAsync({
       id: samlConnectionId,
       samlConnection: {
@@ -90,13 +92,13 @@ export function EditSAMLConnectionPage() {
         idpRedirectUrl: values.idpRedirectUrl,
         idpX509Certificate: values.idpX509Certificate,
       },
-    })
+    });
 
-    toast.success('SAML Connection updated')
+    toast.success('SAML Connection updated');
     navigate(
       `/organizations/${organizationId}/saml-connections/${samlConnectionId}`,
-    )
-  }
+    );
+  };
 
   return (
     // TODO remove padding when app shell in place
@@ -150,7 +152,11 @@ export function EditSAMLConnectionPage() {
       <h1 className="mt-4 mb-8 font-semibold text-2xl">Edit SAML Connection</h1>
 
       <Form {...form}>
+        {/* eslint-disable @typescript-eslint/no-unsafe-call */}
+        {/** Currently there's an issue with the types of react-hook-form and zod 
+        preventing the compiler from inferring the correct types.*/}
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          {/* eslint-enable @typescript-eslint/no-unsafe-call */}
           <Card>
             <CardHeader>
               <CardTitle>SAML connection settings</CardTitle>
@@ -223,7 +229,7 @@ export function EditSAMLConnectionPage() {
               <FormField
                 control={form.control}
                 name="idpEntityId"
-                render={({ field }) => (
+                render={({ field }: { field: any }) => (
                   <FormItem>
                     <FormLabel>IDP Entity ID</FormLabel>
                     <FormControl>
@@ -236,7 +242,7 @@ export function EditSAMLConnectionPage() {
               <FormField
                 control={form.control}
                 name="idpRedirectUrl"
-                render={({ field }) => (
+                render={({ field }: { field: any }) => (
                   <FormItem>
                     <FormLabel>IDP Redirect URL</FormLabel>
                     <FormControl>
@@ -249,7 +255,11 @@ export function EditSAMLConnectionPage() {
               <FormField
                 control={form.control}
                 name="idpX509Certificate"
-                render={({ field: { onChange } }) => (
+                render={({
+                  field: { onChange },
+                }: {
+                  field: { onChange: (value: string) => void };
+                }) => (
                   <FormItem>
                     <FormLabel>IDP Certificate</FormLabel>
                     <FormControl>
@@ -260,7 +270,7 @@ export function EditSAMLConnectionPage() {
                           // File inputs are special; they are necessarily "uncontrolled", and their value is a FileList.
                           // We just copy over the file's contents to the react-form-hook state manually on input change.
                           if (e.target.files) {
-                            onChange(await e.target.files[0].text())
+                            onChange(await e.target.files[0].text());
                           }
                         }}
                       />
@@ -286,5 +296,5 @@ export function EditSAMLConnectionPage() {
         </form>
       </Form>
     </div>
-  )
-}
+  );
+};

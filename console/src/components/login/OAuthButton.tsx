@@ -1,7 +1,6 @@
-import React, { FC } from 'react'
-import { cn } from '@/lib/utils'
-import { Button, ButtonProps } from '@/components/ui/button'
-import { AuthType, useAuthType } from '@/lib/auth'
+import React, { FC } from 'react';
+import { Button, ButtonProps } from '@/components/ui/button';
+import { AuthType, useAuthType } from '@/lib/auth';
 
 export enum OAuthMethods {
   google = 'Google',
@@ -9,11 +8,11 @@ export enum OAuthMethods {
 }
 
 interface OAuthButtonProps extends ButtonProps {
-  method: OAuthMethods
+  method: OAuthMethods;
 }
 
 const OAuthButton: FC<OAuthButtonProps> = ({ method, ...props }) => {
-  const authType = useAuthType()
+  const authType = useAuthType();
 
   return (
     <Button {...props}>
@@ -70,7 +69,7 @@ const OAuthButton: FC<OAuthButtonProps> = ({ method, ...props }) => {
       {authType === AuthType.SignUp ? 'Sign up with ' : 'Log in with '}
       {method}
     </Button>
-  )
-}
+  );
+};
 
-export default OAuthButton
+export default OAuthButton;

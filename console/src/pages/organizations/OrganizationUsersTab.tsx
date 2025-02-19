@@ -1,16 +1,13 @@
-import React from 'react'
-import { useQuery } from '@connectrpc/connect-query'
-import {
-  listOrganizations,
-  listUsers,
-} from '@/gen/openauth/backend/v1/backend-BackendService_connectquery'
+import React from 'react';
+import { useQuery } from '@connectrpc/connect-query';
+import { listUsers } from '@/gen/openauth/backend/v1/backend-BackendService_connectquery';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
+} from '@/components/ui/card';
 import {
   Table,
   TableBody,
@@ -18,18 +15,18 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
-import { Link } from 'react-router-dom'
-import { DateTime } from 'luxon'
-import { timestampDate } from '@bufbuild/protobuf/wkt'
-import { useParams } from 'react-router'
-import { Badge } from '@/components/ui/badge'
+} from '@/components/ui/table';
+import { Link } from 'react-router-dom';
+import { DateTime } from 'luxon';
+import { timestampDate } from '@bufbuild/protobuf/wkt';
+import { useParams } from 'react-router';
+import { Badge } from '@/components/ui/badge';
 
-export function OrganizationUsersTab() {
-  const { organizationId } = useParams()
+export const OrganizationUsersTab = () => {
+  const { organizationId } = useParams();
   const { data: listUsersResponse } = useQuery(listUsers, {
     organizationId,
-  })
+  });
 
   return (
     <Card>
@@ -68,14 +65,16 @@ export function OrganizationUsersTab() {
                 </TableCell>
                 <TableCell className="font-mono">{user.id}</TableCell>
                 <TableCell>
-                  {DateTime.fromJSDate(
-                    timestampDate(user.createTime!),
-                  ).toRelative()}
+                  {user.createTime &&
+                    DateTime.fromJSDate(
+                      timestampDate(user.createTime),
+                    ).toRelative()}
                 </TableCell>
                 <TableCell>
-                  {DateTime.fromJSDate(
-                    timestampDate(user.updateTime!),
-                  ).toRelative()}
+                  {user.updateTime &&
+                    DateTime.fromJSDate(
+                      timestampDate(user.updateTime),
+                    ).toRelative()}
                 </TableCell>
               </TableRow>
             ))}
@@ -83,5 +82,5 @@ export function OrganizationUsersTab() {
         </Table>
       </CardContent>
     </Card>
-  )
-}
+  );
+};

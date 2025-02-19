@@ -1,15 +1,15 @@
-import { useNavigate, useParams } from 'react-router'
-import { useMutation, useQuery } from '@connectrpc/connect-query'
+import { useNavigate, useParams } from 'react-router';
+import { useMutation, useQuery } from '@connectrpc/connect-query';
 import {
   getOrganization,
   getProject,
   updateOrganization,
-} from '@/gen/openauth/backend/v1/backend-BackendService_connectquery'
-import React, { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Button } from '@/components/ui/button'
+} from '@/gen/openauth/backend/v1/backend-BackendService_connectquery';
+import React, { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -18,9 +18,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Switch } from '@/components/ui/switch'
-import { Link } from 'react-router-dom'
+} from '@/components/ui/form';
+import { Switch } from '@/components/ui/switch';
+import { Link } from 'react-router-dom';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -28,17 +28,17 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
+} from '@/components/ui/breadcrumb';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { PageTitle } from '@/components/page'
-import { toast } from 'sonner'
+} from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { PageTitle } from '@/components/page';
+import { toast } from 'sonner';
 
 const schema = z.object({
   displayName: z.string(),
@@ -51,22 +51,29 @@ const schema = z.object({
   logInWithPasskey: z.boolean(),
   requireMfa: z.boolean(),
   scimEnabled: z.boolean(),
-})
+});
 
-export function EditOrganizationPage() {
-  const navigate = useNavigate()
-  const { organizationId } = useParams()
-  const { data: getProjectResponse } = useQuery(getProject, {})
+export const EditOrganizationPage = () => {
+  const navigate = useNavigate();
+  const { organizationId } = useParams();
+  const { data: getProjectResponse } = useQuery(getProject, {});
   const { data: getOrganizationResponse } = useQuery(getOrganization, {
     id: organizationId,
-  })
+  });
+  /* eslint-disable @typescript-eslint/no-unsafe-call */
+  // Currently there's an issue with the types of react-hook-form and zod
+  // preventing the compiler from inferring the correct types.
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
-  })
-  const updateOrganizationMutation = useMutation(updateOrganization)
+  });
+  /* eslint-enable @typescript-eslint/no-unsafe-call */
+  const updateOrganizationMutation = useMutation(updateOrganization);
 
   useEffect(() => {
     if (getOrganizationResponse?.organization) {
+      /* eslint-disable @typescript-eslint/no-unsafe-call */
+      // Currently there's an issue with the types of react-hook-form and zod
+      // preventing the compiler from inferring the correct types.
       form.reset({
         displayName: getOrganizationResponse.organization.displayName,
         logInWithGoogle: getOrganizationResponse.organization.logInWithGoogle,
@@ -81,11 +88,12 @@ export function EditOrganizationPage() {
         logInWithPasskey: getOrganizationResponse.organization.logInWithPasskey,
         requireMfa: getOrganizationResponse.organization.requireMfa,
         scimEnabled: getOrganizationResponse.organization.scimEnabled,
-      })
+      });
+      /* eslint-enable @typescript-eslint/no-unsafe-call */
     }
-  }, [getOrganizationResponse])
+  }, [getOrganizationResponse]);
 
-  async function onSubmit(values: z.infer<typeof schema>) {
+  const onSubmit = async (values: z.infer<typeof schema>) => {
     await updateOrganizationMutation.mutateAsync({
       id: organizationId,
       organization: {
@@ -100,11 +108,11 @@ export function EditOrganizationPage() {
         requireMfa: values.requireMfa,
         scimEnabled: values.scimEnabled,
       },
-    })
+    });
 
-    toast.success('Organization updated successfully')
-    navigate(`/organizations/${organizationId}`)
-  }
+    toast.success('Organization updated successfully');
+    navigate(`/organizations/${organizationId}`);
+  };
 
   return (
     <div>
@@ -141,7 +149,11 @@ export function EditOrganizationPage() {
       </PageTitle>
 
       <Form {...form}>
+        {/* eslint-disable @typescript-eslint/no-unsafe-call */}
+        {/** There's an issue with the types of react-hook-form and zod
+        preventing the compiler from inferring the correct types.*/}
         <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-8">
+          {/** eslint-enable @typescript-eslint/no-unsafe-call */}
           <Card>
             <CardHeader>
               <CardTitle>Organization settings</CardTitle>
@@ -185,7 +197,7 @@ export function EditOrganizationPage() {
                 <FormField
                   control={form.control}
                   name="logInWithGoogle"
-                  render={({ field }) => (
+                  render={({ field }: { field: any }) => (
                     <FormItem>
                       <FormLabel>Log in with Google</FormLabel>
                       <FormControl>
@@ -205,7 +217,7 @@ export function EditOrganizationPage() {
                 <FormField
                   control={form.control}
                   name="logInWithMicrosoft"
-                  render={({ field }) => (
+                  render={({ field }: { field: any }) => (
                     <FormItem>
                       <FormLabel>Log in with Microsoft</FormLabel>
                       <FormControl>
@@ -225,7 +237,7 @@ export function EditOrganizationPage() {
                 <FormField
                   control={form.control}
                   name="logInWithEmail"
-                  render={({ field }) => (
+                  render={({ field }: { field: any }) => (
                     <FormItem>
                       <FormLabel>Log in with Email</FormLabel>
                       <FormControl>
@@ -245,7 +257,7 @@ export function EditOrganizationPage() {
                 <FormField
                   control={form.control}
                   name="logInWithPassword"
-                  render={({ field }) => (
+                  render={({ field }: { field: any }) => (
                     <FormItem>
                       <FormLabel>Log in with Password</FormLabel>
                       <FormControl>
@@ -265,7 +277,7 @@ export function EditOrganizationPage() {
                 <FormField
                   control={form.control}
                   name="logInWithSaml"
-                  render={({ field }) => (
+                  render={({ field }: { field: any }) => (
                     <FormItem>
                       <FormLabel>Log in with SAML</FormLabel>
                       <FormControl>
@@ -288,7 +300,7 @@ export function EditOrganizationPage() {
                 <FormField
                   control={form.control}
                   name="logInWithAuthenticatorApp"
-                  render={({ field }) => (
+                  render={({ field }: { field: any }) => (
                     <FormItem>
                       <FormLabel>Log in with Authenticator App</FormLabel>
                       <FormControl>
@@ -308,7 +320,7 @@ export function EditOrganizationPage() {
                 <FormField
                   control={form.control}
                   name="logInWithPasskey"
-                  render={({ field }) => (
+                  render={({ field }: { field: any }) => (
                     <FormItem>
                       <FormLabel>Log in with Passkey</FormLabel>
                       <FormControl>
@@ -327,7 +339,7 @@ export function EditOrganizationPage() {
               <FormField
                 control={form.control}
                 name="requireMfa"
-                render={({ field }) => (
+                render={({ field }: { field: any }) => (
                   <FormItem>
                     <FormLabel>Require MFA</FormLabel>
                     <FormControl>
@@ -354,7 +366,7 @@ export function EditOrganizationPage() {
               <FormField
                 control={form.control}
                 name="scimEnabled"
-                render={({ field }) => (
+                render={({ field }: { field: any }) => (
                   <FormItem>
                     <FormLabel>SCIM Enabled</FormLabel>
                     <FormControl>
@@ -384,5 +396,5 @@ export function EditOrganizationPage() {
         </form>
       </Form>
     </div>
-  )
-}
+  );
+};

@@ -7,33 +7,33 @@ import React, {
   useCallback,
   useEffect,
   useState,
-} from 'react'
-import { useMutation } from '@connectrpc/connect-query'
-import debounce from 'lodash.debounce'
+} from 'react';
+import { useMutation } from '@connectrpc/connect-query';
+import debounce from 'lodash.debounce';
 
-import { setIntermediateSessionToken } from '@/auth'
-import { Button } from '../ui/button'
+import { setIntermediateSessionToken } from '@/auth';
+import { Button } from '../ui/button';
 import {
   createIntermediateSession,
   issueEmailVerificationChallenge,
   listSAMLOrganizations,
   setEmailAsPrimaryLoginFactor,
-} from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
-import { LoginView } from '@/lib/views'
-import { Organization } from '@/gen/openauth/intermediate/v1/intermediate_pb'
-import TextDivider from '../ui/text-divider'
-import { Input } from '../ui/input'
-import { Label } from '../ui/label'
-import Loader from '../ui/loader'
-import { parseErrorMessage } from '@/lib/errors'
-import { toast } from 'sonner'
-import { AuthType, useAuthType } from '@/lib/auth'
+} from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery';
+import { LoginView } from '@/lib/views';
+import { Organization } from '@/gen/openauth/intermediate/v1/intermediate_pb';
+import TextDivider from '../ui/text-divider';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
+import Loader from '../ui/loader';
+import { parseErrorMessage } from '@/lib/errors';
+import { toast } from 'sonner';
+import { AuthType, useAuthType } from '@/lib/auth';
 
 interface EmailFormProps {
-  disableLogInWithEmail?: boolean
-  skipIntermediateSessionCreation?: boolean
-  skipListSAMLOrganizations?: boolean
-  setView: Dispatch<SetStateAction<LoginView>>
+  disableLogInWithEmail?: boolean;
+  skipIntermediateSessionCreation?: boolean;
+  skipListSAMLOrganizations?: boolean;
+  setView: Dispatch<SetStateAction<LoginView>>;
 }
 
 const EmailForm: FC<EmailFormProps> = ({
@@ -42,24 +42,26 @@ const EmailForm: FC<EmailFormProps> = ({
   skipIntermediateSessionCreation = false,
   setView,
 }) => {
-  const authType = useAuthType()
-  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/i
+  const authType = useAuthType();
+  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/i;
 
   const createIntermediateSessionMutation = useMutation(
     createIntermediateSession,
-  )
+  );
   const issueEmailVerificationChallengeMutation = useMutation(
     issueEmailVerificationChallenge,
-  )
-  const listSAMLOrganizationsMutation = useMutation(listSAMLOrganizations)
+  );
+  const listSAMLOrganizationsMutation = useMutation(listSAMLOrganizations);
   const setEmailAsPrimaryLoginFactorMutation = useMutation(
     setEmailAsPrimaryLoginFactor,
-  )
+  );
 
-  const [email, setEmail] = useState<string>('')
-  const [emailIsValid, setEmailIsValid] = useState<boolean>(false)
-  const [samlOrganizations, setSamlOrganizations] = useState<Organization[]>([])
-  const [submitting, setSubmitting] = useState<boolean>(false)
+  const [email, setEmail] = useState<string>('');
+  const [emailIsValid, setEmailIsValid] = useState<boolean>(false);
+  const [samlOrganizations, setSamlOrganizations] = useState<Organization[]>(
+    [],
+  );
+  const [submitting, setSubmitting] = useState<boolean>(false);
 
   const fetchSamlOrganizations = useCallback(
     debounce(async () => {
@@ -67,61 +69,63 @@ const EmailForm: FC<EmailFormProps> = ({
         const { organizations } =
           await listSAMLOrganizationsMutation.mutateAsync({
             email,
-          })
+          });
 
-        setSamlOrganizations(organizations)
+        setSamlOrganizations(organizations);
       }
     }, 300),
     [email],
-  )
+  );
 
   const handleEmail = (e: ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value)
-  }
+    setEmail(e.target.value);
+  };
 
   const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (!disableLogInWithEmail) {
-      setSubmitting(true)
+      setSubmitting(true);
 
       try {
         if (!skipIntermediateSessionCreation) {
           // this sets a cookie that subsequent requests use
           const { intermediateSessionSecretToken } =
-            await createIntermediateSessionMutation.mutateAsync({})
+            await createIntermediateSessionMutation.mutateAsync({});
 
           // set the intermediate sessionToken
-          setIntermediateSessionToken(intermediateSessionSecretToken)
+          setIntermediateSessionToken(intermediateSessionSecretToken);
         }
 
-        await setEmailAsPrimaryLoginFactorMutation.mutateAsync({})
+        await setEmailAsPrimaryLoginFactorMutation.mutateAsync({});
 
         await issueEmailVerificationChallengeMutation.mutateAsync({
           email,
-        })
+        });
 
-        setSubmitting(false)
+        setSubmitting(false);
 
         // redirect to challenge page
-        setView(LoginView.VerifyEmail)
+        setView(LoginView.VerifyEmail);
       } catch (error) {
-        setSubmitting(false)
-        const message = parseErrorMessage(error)
+        setSubmitting(false);
+        const message = parseErrorMessage(error);
         toast.error('Could not initiate login', {
           description: message,
-        })
+        });
       }
     }
-  }
+  };
 
   useEffect(() => {
-    const valid = emailRegex.test(email)
-    setEmailIsValid(valid)
+    void (async () => {
+      const valid = emailRegex.test(email);
+      setEmailIsValid(valid);
 
-    if (valid && !skipListSAMLOrganizations) {
-      fetchSamlOrganizations()
-    }
-  }, [email])
+      if (valid && !skipListSAMLOrganizations) {
+        await fetchSamlOrganizations();
+      }
+    })();
+  }, [email]);
 
   return (
     <>
@@ -172,7 +176,7 @@ const EmailForm: FC<EmailFormProps> = ({
         </>
       )}
     </>
-  )
-}
+  );
+};
 
-export default EmailForm
+export default EmailForm;

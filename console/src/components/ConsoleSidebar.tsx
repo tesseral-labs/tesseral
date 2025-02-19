@@ -1,11 +1,10 @@
-import React, { FC, SyntheticEvent } from 'react'
+import React, { FC } from 'react';
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -15,21 +14,15 @@ import {
   SidebarMenuSubItem,
   SidebarRail,
   useSidebar,
-} from './ui/sidebar'
-import {
-  Building2,
-  FolderGit,
-  KeyRound,
-  Settings2Icon,
-  UserIcon,
-} from 'lucide-react'
-import { Link } from 'react-router-dom'
-import { useQuery } from '@connectrpc/connect-query'
-import { whoami } from '@/gen/openauth/frontend/v1/frontend-FrontendService_connectquery'
+} from './ui/sidebar';
+import { Building2, Settings2Icon, UserIcon } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { useQuery } from '@connectrpc/connect-query';
+import { whoami } from '@/gen/openauth/frontend/v1/frontend-FrontendService_connectquery';
 
 const ConsoleSidebar: FC = () => {
-  const { data: whoamiResponse } = useQuery(whoami, {})
-  const { state } = useSidebar()
+  const { data: whoamiResponse } = useQuery(whoami, {});
+  const { state } = useSidebar();
 
   return (
     <Sidebar collapsible="icon">
@@ -101,7 +94,7 @@ const ConsoleSidebar: FC = () => {
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
-  )
-}
+  );
+};
 
-export default ConsoleSidebar
+export default ConsoleSidebar;

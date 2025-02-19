@@ -1,13 +1,14 @@
-import { useNavigate, useParams } from 'react-router'
-import { useMutation, useQuery } from '@connectrpc/connect-query'
+import { useParams } from 'react-router';
+import { useMutation, useQuery } from '@connectrpc/connect-query';
 import {
   createUserImpersonationToken,
   getOrganization,
   getProject,
-  getUser, listPasskeys,
+  getUser,
+  listPasskeys,
   listSessions,
-} from '@/gen/openauth/backend/v1/backend-BackendService_connectquery'
-import React from 'react'
+} from '@/gen/openauth/backend/v1/backend-BackendService_connectquery';
+import React from 'react';
 import {
   Table,
   TableBody,
@@ -15,8 +16,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
-import { Link } from 'react-router-dom'
+} from '@/components/ui/table';
+import { Link } from 'react-router-dom';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -24,40 +25,44 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
-import { PageCodeSubtitle, PageDescription, PageTitle } from '@/components/page'
+} from '@/components/ui/breadcrumb';
+import {
+  PageCodeSubtitle,
+  PageDescription,
+  PageTitle,
+} from '@/components/page';
 import {
   DetailsGrid,
   DetailsGridColumn,
   DetailsGridEntry,
   DetailsGridKey,
   DetailsGridValue,
-} from '@/components/details-grid'
+} from '@/components/details-grid';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { DateTime } from 'luxon'
-import { timestampDate } from '@bufbuild/protobuf/wkt'
-import { Button } from '@/components/ui/button'
+} from '@/components/ui/card';
+import { DateTime } from 'luxon';
+import { timestampDate } from '@bufbuild/protobuf/wkt';
+import { Button } from '@/components/ui/button';
 
-export function ViewUserPage() {
-  const { organizationId, userId } = useParams()
+export const ViewUserPage = () => {
+  const { organizationId, userId } = useParams();
   const { data: getOrganizationResponse } = useQuery(getOrganization, {
     id: organizationId,
-  })
+  });
   const { data: getUserResponse } = useQuery(getUser, {
     id: userId,
-  })
+  });
   const { data: listSessionsResponse } = useQuery(listSessions, {
     userId,
-  })
+  });
   const { data: listPasskeysResponse } = useQuery(listPasskeys, {
     userId,
-  })
+  });
 
   return (
     <div>
@@ -124,7 +129,9 @@ export function ViewUserPage() {
               <DetailsGridEntry>
                 <DetailsGridKey>Authenticator App</DetailsGridKey>
                 <DetailsGridValue>
-                  {getUserResponse?.user?.hasAuthenticatorApp ? 'Enabled' : 'Not Enabled'}
+                  {getUserResponse?.user?.hasAuthenticatorApp
+                    ? 'Enabled'
+                    : 'Not Enabled'}
                 </DetailsGridValue>
               </DetailsGridEntry>
             </DetailsGridColumn>
@@ -218,9 +225,7 @@ export function ViewUserPage() {
       <Card>
         <CardHeader>
           <CardTitle>Passkeys</CardTitle>
-          <CardDescription>
-            Lorem ipsum dolor.
-          </CardDescription>
+          <CardDescription>Lorem ipsum dolor.</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
@@ -263,26 +268,26 @@ export function ViewUserPage() {
 
       <DangerZoneCard />
     </div>
-  )
-}
+  );
+};
 
-function DangerZoneCard() {
-  const { userId } = useParams()
+const DangerZoneCard = () => {
+  const { userId } = useParams();
   const createUserImpersonationTokenMutation = useMutation(
     createUserImpersonationToken,
-  )
-  const { data: project } = useQuery(getProject)
+  );
+  const { data: project } = useQuery(getProject);
 
-  async function handleImpersonate() {
+  const handleImpersonate = async () => {
     const { userImpersonationToken } =
       await createUserImpersonationTokenMutation.mutateAsync({
         userImpersonationToken: {
           impersonatedId: userId,
         },
-      })
+      });
 
-    window.location.href = `https://${project?.project?.authDomain}/impersonate?secret-user-impersonation-token=${userImpersonationToken!.secretToken}`
-  }
+    window.location.href = `https://${project?.project?.authDomain}/impersonate?secret-user-impersonation-token=${userImpersonationToken?.secretToken}`;
+  };
 
   return (
     <Card className="mt-8 border-destructive">
@@ -306,5 +311,5 @@ function DangerZoneCard() {
         </div>
       </CardContent>
     </Card>
-  )
-}
+  );
+};

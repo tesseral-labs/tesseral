@@ -5,31 +5,28 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
-import { Link } from 'react-router-dom'
-import React, { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router'
-import { useMutation, useQuery } from '@connectrpc/connect-query'
+} from '@/components/ui/breadcrumb';
+import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router';
+import { useMutation, useQuery } from '@connectrpc/connect-query';
 import {
-  createSCIMAPIKey,
-  deleteSAMLConnection,
   deleteSCIMAPIKey,
   getOrganization,
-  getSAMLConnection,
   getSCIMAPIKey,
   revokeSCIMAPIKey,
   updateSCIMAPIKey,
-} from '@/gen/openauth/backend/v1/backend-BackendService_connectquery'
+} from '@/gen/openauth/backend/v1/backend-BackendService_connectquery';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { DateTime } from 'luxon'
-import { timestampDate } from '@bufbuild/protobuf/wkt'
-import { toast } from 'sonner'
+} from '@/components/ui/card';
+import { DateTime } from 'luxon';
+import { timestampDate } from '@bufbuild/protobuf/wkt';
+import { toast } from 'sonner';
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -39,12 +36,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
-import { Button } from '@/components/ui/button'
-import { z } from 'zod'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { SecretCopier } from '@/components/SecretCopier'
+} from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Form,
   FormControl,
@@ -53,18 +49,22 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { PageCodeSubtitle, PageDescription, PageTitle } from '@/components/page'
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import {
+  PageCodeSubtitle,
+  PageDescription,
+  PageTitle,
+} from '@/components/page';
 
-export function ViewSCIMAPIKeyPage() {
-  const { organizationId, scimApiKeyId } = useParams()
+export const ViewSCIMAPIKeyPage = () => {
+  const { organizationId, scimApiKeyId } = useParams();
   const { data: getOrganizationResponse } = useQuery(getOrganization, {
     id: organizationId,
-  })
+  });
   const { data: getScimApiKeyResponse } = useQuery(getSCIMAPIKey, {
     id: scimApiKeyId,
-  })
+  });
   return (
     // TODO remove padding when app shell in place
     <div>
@@ -169,45 +169,49 @@ export function ViewSCIMAPIKeyPage() {
 
       <DangerZoneCard />
     </div>
-  )
-}
+  );
+};
 
 const schema = z.object({
   displayName: z.string(),
-})
+});
 
-function EditSCIMAPIKeyButton() {
-  const { scimApiKeyId } = useParams()
+const EditSCIMAPIKeyButton = () => {
+  const { scimApiKeyId } = useParams();
   const { data: getSCIMAPIKeyResponse, refetch } = useQuery(getSCIMAPIKey, {
     id: scimApiKeyId,
-  })
-  const updateSCIMAPIKeyMutation = useMutation(updateSCIMAPIKey)
+  });
+  const updateSCIMAPIKeyMutation = useMutation(updateSCIMAPIKey);
+  /* eslint-disable @typescript-eslint/no-unsafe-call */
+  // Currently there's an issue with the types of react-hook-form and zod
+  // preventing the compiler from inferring the correct types.
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
       displayName: '',
     },
-  })
+  });
   useEffect(() => {
     if (getSCIMAPIKeyResponse?.scimApiKey) {
       form.reset({
         displayName: getSCIMAPIKeyResponse.scimApiKey.displayName,
-      })
+      });
     }
-  }, [getSCIMAPIKeyResponse])
+  }, [getSCIMAPIKeyResponse]);
+  /* eslint-enable @typescript-eslint/no-unsafe-call */
 
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
 
-  async function handleSubmit(values: z.infer<typeof schema>) {
+  const handleSubmit = async (values: z.infer<typeof schema>) => {
     await updateSCIMAPIKeyMutation.mutateAsync({
       id: scimApiKeyId,
       scimApiKey: {
         displayName: values.displayName,
       },
-    })
-    await refetch()
-    setOpen(false)
-  }
+    });
+    await refetch();
+    setOpen(false);
+  };
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
@@ -222,11 +226,15 @@ function EditSCIMAPIKeyButton() {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <Form {...form}>
+          {/* eslint-disable @typescript-eslint/no-unsafe-call */}
+          {/** Currently there's an issue with the types of react-hook-form and zod
+          preventing the compiler from inferring the correct types.*/}
           <form onSubmit={form.handleSubmit(handleSubmit)}>
+            {/* eslint-enable @typescript-eslint/no-unsafe-call */}
             <FormField
               control={form.control}
               name="displayName"
-              render={({ field }) => (
+              render={({ field }: { field: any }) => (
                 <FormItem>
                   <FormLabel>Display Name</FormLabel>
                   <FormControl>
@@ -247,47 +255,47 @@ function EditSCIMAPIKeyButton() {
         </Form>
       </AlertDialogContent>
     </AlertDialog>
-  )
-}
+  );
+};
 
-function DangerZoneCard() {
-  const { organizationId, scimApiKeyId } = useParams()
+const DangerZoneCard = () => {
+  const { organizationId, scimApiKeyId } = useParams();
   const { data: getScimApiKeyResponse, refetch } = useQuery(getSCIMAPIKey, {
     id: scimApiKeyId,
-  })
+  });
 
-  const [confirmRevokeOpen, setConfirmRevokeOpen] = useState(false)
-  function handleRevoke() {
-    setConfirmRevokeOpen(true)
-  }
+  const [confirmRevokeOpen, setConfirmRevokeOpen] = useState(false);
+  const handleRevoke = () => {
+    setConfirmRevokeOpen(true);
+  };
 
-  const revokeScimApiKeyMutation = useMutation(revokeSCIMAPIKey)
-  async function handleConfirmRevoke() {
+  const revokeScimApiKeyMutation = useMutation(revokeSCIMAPIKey);
+  const handleConfirmRevoke = async () => {
     await revokeScimApiKeyMutation.mutateAsync({
       id: scimApiKeyId,
-    })
+    });
 
-    await refetch()
-    toast.success('SCIM API Key revoked')
-    setConfirmRevokeOpen(false)
-  }
+    await refetch();
+    toast.success('SCIM API Key revoked');
+    setConfirmRevokeOpen(false);
+  };
 
-  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
 
-  function handleDelete() {
-    setConfirmDeleteOpen(true)
-  }
+  const handleDelete = () => {
+    setConfirmDeleteOpen(true);
+  };
 
-  const deleteScimApiKeyMutation = useMutation(deleteSCIMAPIKey)
-  const navigate = useNavigate()
+  const deleteScimApiKeyMutation = useMutation(deleteSCIMAPIKey);
+  const navigate = useNavigate();
   const handleConfirmDelete = async () => {
     await deleteScimApiKeyMutation.mutateAsync({
       id: scimApiKeyId,
-    })
+    });
 
-    toast.success('SCIM API Key deleted')
-    navigate(`/organizations/${organizationId}/scim-api-keys`)
-  }
+    toast.success('SCIM API Key deleted');
+    navigate(`/organizations/${organizationId}/scim-api-keys`);
+  };
 
   return (
     <>
@@ -375,5 +383,5 @@ function DangerZoneCard() {
         </CardContent>
       </Card>
     </>
-  )
-}
+  );
+};
