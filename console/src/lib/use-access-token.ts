@@ -1,5 +1,7 @@
+import { API_URL } from '@/config'
 import { refresh } from '@/gen/openauth/frontend/v1/frontend-FrontendService_connectquery'
-import { useMutation } from '@connectrpc/connect-query'
+import { RefreshResponse } from '@/gen/openauth/frontend/v1/frontend_pb'
+import { useMutation } from '@tanstack/react-query'
 import { useState } from 'react'
 
 interface User {
@@ -23,25 +25,37 @@ export function useUser(): User | undefined {
 }
 
 export function useAccessToken(): string | undefined {
-  const [hasFailure, setHasFailure] = useState(false)
   const [accessToken, setAccessToken] = useLocalStorage('access_token')
-
-  const refreshMutaion = useMutation(refresh)
+  const [hasFailure, setHasFailure] = useState(false)
+  const [refreshPending, setRefreshPending] = useState(false)
 
   if (!hasFailure && (!accessToken || shouldRefresh(accessToken))) {
-    if (!refreshMutaion.isPending) {
-      try {
-        refreshMutaion
-          .mutateAsync({})
-          .then((result) => {
-            setAccessToken(result.accessToken)
-          })
-          .catch((e) => {
+    if (!refreshPending) {
+      setRefreshPending(true)
+      fetch(`${API_URL}/api/frontend/v1/refresh`, {
+        body: JSON.stringify({}),
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+      })
+        .then((response) => {
+          if (response.ok) {
+            response.json().then((res: RefreshResponse) => {
+              setAccessToken(res.accessToken)
+              setRefreshPending(false)
+            })
+          } else {
+            setRefreshPending(false)
             setHasFailure(true)
-          })
-      } catch (e) {
-        setHasFailure(true)
-      }
+          }
+        })
+        .catch((error) => {
+          console.error(error)
+          setRefreshPending(false)
+          setHasFailure(true)
+        })
     }
   }
 
