@@ -23,7 +23,7 @@ func ExpiredIntermediateAccessToken(projectID uuid.UUID) string {
 }
 
 func NewRefreshToken(projectID uuid.UUID, value string) string {
-	return newCookie("refresh_token", 0, projectID, value)
+	return newCookie("refresh_token", time.Hour*24*365, projectID, value)
 }
 
 func NewAccessToken(projectID uuid.UUID, value string) string {

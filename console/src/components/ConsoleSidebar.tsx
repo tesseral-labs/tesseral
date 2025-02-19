@@ -71,7 +71,9 @@ const ConsoleSidebar: FC = () => {
                   </SidebarMenuSubItem>
                   <SidebarMenuSubItem>
                     <SidebarMenuSubButton asChild>
-                      <Link to="/project-api-keys">Project API Keys</Link>
+                      <Link to="/project-settings/api-keys">
+                        Project API Keys
+                      </Link>
                     </SidebarMenuSubButton>
                   </SidebarMenuSubItem>
                 </SidebarMenuSub>
