@@ -4,7 +4,7 @@ import {
   getOrganization,
   getSAMLConnection,
   updateSAMLConnection,
-} from '@/gen/openauth/backend/v1/backend-BackendService_connectquery';
+} from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';

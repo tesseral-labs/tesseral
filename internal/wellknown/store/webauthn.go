@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/openauth/openauth/internal/wellknown/authn"
+	"github.com/tesseral-labs/tesseral/internal/wellknown/authn"
 )
 
 func (s *Store) GetWebauthnOrigins(ctx context.Context) ([]string, error) {

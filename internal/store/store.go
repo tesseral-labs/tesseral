@@ -8,8 +8,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/openauth/openauth/internal/pagetoken"
-	"github.com/openauth/openauth/internal/store/queries"
+	"github.com/tesseral-labs/tesseral/internal/pagetoken"
+	"github.com/tesseral-labs/tesseral/internal/store/queries"
 )
 
 type Store struct {

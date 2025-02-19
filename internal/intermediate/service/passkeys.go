@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"connectrpc.com/connect"
-	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
+	intermediatev1 "github.com/tesseral-labs/tesseral/internal/intermediate/gen/tesseral/intermediate/v1"
 )
 
 func (s *Service) GetPasskeyOptions(ctx context.Context, req *connect.Request[intermediatev1.GetPasskeyOptionsRequest]) (*connect.Response[intermediatev1.GetPasskeyOptionsResponse], error) {

@@ -13,9 +13,9 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/openauth/openauth/internal/common/projectid"
-	"github.com/openauth/openauth/internal/scim/authn/authnmiddleware"
-	"github.com/openauth/openauth/internal/scim/store"
+	"github.com/tesseral-labs/tesseral/internal/common/projectid"
+	"github.com/tesseral-labs/tesseral/internal/scim/authn/authnmiddleware"
+	"github.com/tesseral-labs/tesseral/internal/scim/store"
 )
 
 type Service struct {

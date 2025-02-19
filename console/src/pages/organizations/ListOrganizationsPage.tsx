@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery } from '@connectrpc/connect-query';
-import { listOrganizations } from '@/gen/openauth/backend/v1/backend-BackendService_connectquery';
+import { listOrganizations } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import {
   Table,
   TableBody,

@@ -7,12 +7,12 @@ import (
 	"time"
 
 	"connectrpc.com/connect"
-	"github.com/openauth/openauth/internal/common/projectid"
-	"github.com/openauth/openauth/internal/cookies"
-	"github.com/openauth/openauth/internal/frontend/authn"
-	"github.com/openauth/openauth/internal/frontend/store"
-	"github.com/openauth/openauth/internal/store/idformat"
-	"github.com/openauth/openauth/internal/ujwt"
+	"github.com/tesseral-labs/tesseral/internal/common/projectid"
+	"github.com/tesseral-labs/tesseral/internal/cookies"
+	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
+	"github.com/tesseral-labs/tesseral/internal/frontend/store"
+	"github.com/tesseral-labs/tesseral/internal/store/idformat"
+	"github.com/tesseral-labs/tesseral/internal/ujwt"
 )
 
 var skipRPCs = []string{

@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
-	"github.com/openauth/openauth/internal/store/idformat"
+	intermediatev1 "github.com/tesseral-labs/tesseral/internal/intermediate/gen/tesseral/intermediate/v1"
+	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 )
 
 type ctxData struct {

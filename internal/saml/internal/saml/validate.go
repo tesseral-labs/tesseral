@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/openauth/openauth/internal/saml/internal/dsig"
-	"github.com/openauth/openauth/internal/saml/internal/samltypes"
+	"github.com/tesseral-labs/tesseral/internal/saml/internal/dsig"
+	"github.com/tesseral-labs/tesseral/internal/saml/internal/samltypes"
 )
 
 type ValidateRequest struct {

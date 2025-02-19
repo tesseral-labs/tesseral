@@ -1,8 +1,8 @@
 {
-  "name": "openauth",
+  "name": "tesseral",
   "version": "1.0.0",
   "main": "index.js",
-  "repository": "git@github.com:openauth/openauth",
+  "repository": "git@github.com:tesseral-labs/tesseral",
   "author": "Blake Williams <blake.williams@ssoready.com>",
   "license": "MIT",
   "devDependencies": {

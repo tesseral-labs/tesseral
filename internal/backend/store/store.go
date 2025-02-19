@@ -11,10 +11,10 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/openauth/openauth/internal/backend/authn"
-	"github.com/openauth/openauth/internal/backend/store/queries"
-	"github.com/openauth/openauth/internal/common/apierror"
-	"github.com/openauth/openauth/internal/pagetoken"
+	"github.com/tesseral-labs/tesseral/internal/backend/authn"
+	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
+	"github.com/tesseral-labs/tesseral/internal/common/apierror"
+	"github.com/tesseral-labs/tesseral/internal/pagetoken"
 )
 
 type Store struct {

@@ -10,8 +10,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/openauth/openauth/internal/saml/internal/c14n"
-	"github.com/openauth/openauth/internal/saml/internal/uxml"
+	"github.com/tesseral-labs/tesseral/internal/saml/internal/c14n"
+	"github.com/tesseral-labs/tesseral/internal/saml/internal/uxml"
 )
 
 var (

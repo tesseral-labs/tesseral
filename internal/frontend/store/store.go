@@ -9,9 +9,9 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/openauth/openauth/internal/frontend/store/queries"
-	"github.com/openauth/openauth/internal/hibp"
-	"github.com/openauth/openauth/internal/pagetoken"
+	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
+	"github.com/tesseral-labs/tesseral/internal/hibp"
+	"github.com/tesseral-labs/tesseral/internal/pagetoken"
 )
 
 type Store struct {

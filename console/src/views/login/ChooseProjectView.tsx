@@ -11,9 +11,9 @@ import {
   exchangeIntermediateSessionForSession,
   listOrganizations,
   setOrganization,
-} from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery';
+} from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
 import { useMutation, useQuery } from '@connectrpc/connect-query';
-import { Organization } from '@/gen/openauth/intermediate/v1/intermediate_pb';
+import { Organization } from '@/gen/tesseral/intermediate/v1/intermediate_pb';
 import { setAccessToken, setRefreshToken } from '@/auth';
 import { Title } from '@/components/Title';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';

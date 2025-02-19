@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"connectrpc.com/connect"
-	backendv1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
+	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 )
 
 func (s *Service) GetProject(ctx context.Context, req *connect.Request[backendv1.GetProjectRequest]) (*connect.Response[backendv1.GetProjectResponse], error) {

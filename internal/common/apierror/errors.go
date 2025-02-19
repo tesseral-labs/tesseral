@@ -2,7 +2,7 @@ package apierror
 
 import (
 	"connectrpc.com/connect"
-	commonv1 "github.com/openauth/openauth/internal/common/gen/openauth/common/v1"
+	commonv1 "github.com/tesseral-labs/tesseral/internal/common/gen/tesseral/common/v1"
 )
 
 var errAlreadyExists = "already_exists"

@@ -8,8 +8,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/openauth/openauth/internal/loadenv"
-	"github.com/openauth/openauth/internal/store"
+	"github.com/tesseral-labs/tesseral/internal/loadenv"
+	"github.com/tesseral-labs/tesseral/internal/store"
 )
 
 type bootstrapArgs struct {

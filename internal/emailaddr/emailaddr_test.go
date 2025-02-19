@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	"github.com/openauth/openauth/internal/emailaddr"
+	"github.com/tesseral-labs/tesseral/internal/emailaddr"
 )
 
 func TestParse(t *testing.T) {

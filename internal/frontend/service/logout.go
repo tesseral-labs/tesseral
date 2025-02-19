@@ -5,9 +5,9 @@ import (
 	"fmt"
 
 	"connectrpc.com/connect"
-	"github.com/openauth/openauth/internal/backend/authn"
-	"github.com/openauth/openauth/internal/cookies"
-	frontendv1 "github.com/openauth/openauth/internal/frontend/gen/openauth/frontend/v1"
+	"github.com/tesseral-labs/tesseral/internal/backend/authn"
+	"github.com/tesseral-labs/tesseral/internal/cookies"
+	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
 )
 
 func (s *Service) Logout(ctx context.Context, req *connect.Request[frontendv1.LogoutRequest]) (*connect.Response[frontendv1.LogoutResponse], error) {

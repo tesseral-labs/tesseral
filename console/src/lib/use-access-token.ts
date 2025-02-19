@@ -1,4 +1,4 @@
-import { RefreshResponse } from '@/gen/openauth/frontend/v1/frontend_pb';
+import { RefreshResponse } from '@/gen/tesseral/frontend/v1/frontend_pb';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 

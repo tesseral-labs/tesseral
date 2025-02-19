@@ -81,7 +81,7 @@ services:
       - 8005:8005
     volumes:
       - ./.local/ses/output:/output
-  ui:
+  vault-ui:
     command: bash -c "npm i --force && npm run dev"
     environment:
       UI_BUILD_IS_DEV: 1
@@ -92,5 +92,5 @@ services:
       - "3002:3002"
     tty: true
     volumes:
-      - ./ui:/ui:cached
-    working_dir: /ui
+      - ./vault-ui:/vault-ui:cached
+    working_dir: /vault-ui

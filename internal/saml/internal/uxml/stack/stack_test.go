@@ -3,8 +3,8 @@ package stack_test
 import (
 	"testing"
 
-	"github.com/openauth/openauth/internal/saml/internal/uxml/stack"
 	"github.com/stretchr/testify/assert"
+	"github.com/tesseral-labs/tesseral/internal/saml/internal/uxml/stack"
 )
 
 func TestStack(t *testing.T) {

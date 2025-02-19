@@ -11,9 +11,9 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
-	commonv1 "github.com/openauth/openauth/internal/common/gen/openauth/common/v1"
-	"github.com/openauth/openauth/internal/store/idformat"
-	"github.com/openauth/openauth/internal/ujwt"
+	commonv1 "github.com/tesseral-labs/tesseral/internal/common/gen/tesseral/common/v1"
+	"github.com/tesseral-labs/tesseral/internal/store/idformat"
+	"github.com/tesseral-labs/tesseral/internal/ujwt"
 	"google.golang.org/protobuf/encoding/protojson"
 )
 

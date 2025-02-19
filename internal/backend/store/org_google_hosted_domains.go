@@ -5,11 +5,11 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	"github.com/openauth/openauth/internal/backend/authn"
-	backendv1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
-	"github.com/openauth/openauth/internal/backend/store/queries"
-	"github.com/openauth/openauth/internal/common/apierror"
-	"github.com/openauth/openauth/internal/store/idformat"
+	"github.com/tesseral-labs/tesseral/internal/backend/authn"
+	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
+	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
+	"github.com/tesseral-labs/tesseral/internal/common/apierror"
+	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 )
 
 func (s *Store) GetOrganizationGoogleHostedDomains(ctx context.Context, req *backendv1.GetOrganizationGoogleHostedDomainsRequest) (*backendv1.GetOrganizationGoogleHostedDomainsResponse, error) {

@@ -5,11 +5,11 @@ import (
 	"errors"
 
 	"connectrpc.com/connect"
-	"github.com/openauth/openauth/internal/common/projectid"
-	"github.com/openauth/openauth/internal/cookies"
-	"github.com/openauth/openauth/internal/intermediate/authn"
-	"github.com/openauth/openauth/internal/intermediate/store"
-	"github.com/openauth/openauth/internal/store/idformat"
+	"github.com/tesseral-labs/tesseral/internal/common/projectid"
+	"github.com/tesseral-labs/tesseral/internal/cookies"
+	"github.com/tesseral-labs/tesseral/internal/intermediate/authn"
+	"github.com/tesseral-labs/tesseral/internal/intermediate/store"
+	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 )
 
 var ErrAuthorizationHeaderRequired = errors.New("authorization header is required")

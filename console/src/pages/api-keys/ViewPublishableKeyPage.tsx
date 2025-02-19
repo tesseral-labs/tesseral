@@ -14,7 +14,7 @@ import {
   getPublishableKey,
   updatePublishableKey,
   deletePublishableKey,
-} from '@/gen/openauth/backend/v1/backend-BackendService_connectquery';
+} from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import {
   Card,
   CardContent,

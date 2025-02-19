@@ -10,7 +10,7 @@ import {
   exchangeIntermediateSessionForSession,
   getPasskeyOptions,
   registerPasskey,
-} from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery';
+} from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
 import { parseErrorMessage } from '@/lib/errors';
 import { base64urlEncode } from '@/lib/utils';
 

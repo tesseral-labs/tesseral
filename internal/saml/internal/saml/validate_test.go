@@ -8,9 +8,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/openauth/openauth/internal/saml/internal/saml"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/tesseral-labs/tesseral/internal/saml/internal/saml"
 )
 
 func TestValidate(t *testing.T) {

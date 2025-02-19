@@ -3,7 +3,7 @@ import { useMutation, useQuery } from '@connectrpc/connect-query';
 import {
   createUserInvite,
   listUserInvites,
-} from '@/gen/openauth/backend/v1/backend-BackendService_connectquery';
+} from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import {
   Card,
   CardContent,

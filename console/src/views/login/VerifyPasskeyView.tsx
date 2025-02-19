@@ -11,7 +11,7 @@ import {
   exchangeIntermediateSessionForSession,
   issuePasskeyChallenge,
   verifyPasskey,
-} from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery';
+} from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
 import { setAccessToken, setRefreshToken } from '@/auth';
 import { AuthType, useAuthType } from '@/lib/auth';
 

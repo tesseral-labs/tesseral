@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/openauth/openauth/internal/saml/internal/samltypes"
+	"github.com/tesseral-labs/tesseral/internal/saml/internal/samltypes"
 )
 
 type ParseMetadataResponse struct {
