@@ -11,7 +11,7 @@ export function PageShell() {
       <SidebarInset>
         <main className="bg-body w-full">
           <div className="bg-indigo-600 pb-64 w-full" />
-          <div className="-mt-64 mx-auto max-w-7xl sm:px-6 lg:px-8 pt-8">
+          <div className="-mt-64 mx-auto max-w-7xl sm:px-6 lg:px-8 py-8">
             <Outlet />
           </div>
         </main>

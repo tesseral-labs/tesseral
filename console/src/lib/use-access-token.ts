@@ -1,3 +1,6 @@
+import { API_URL } from '@/config'
+import { refresh } from '@/gen/openauth/frontend/v1/frontend-FrontendService_connectquery'
+import { RefreshResponse } from '@/gen/openauth/frontend/v1/frontend_pb'
 import { useMutation } from '@tanstack/react-query'
 import { useState } from 'react'
 
@@ -22,45 +25,37 @@ export function useUser(): User | undefined {
 }
 
 export function useAccessToken(): string | undefined {
-  const [hasFailure, setHasFailure] = useState(false)
   const [accessToken, setAccessToken] = useLocalStorage('access_token')
-  const refresh = useMutation({
-    mutationKey: ['refresh'],
-    mutationFn: async () => {
-      const response = await fetch(
-        `https://auth.console.tesseral.example.com/api/frontend/v1/refresh`,
-        {
-          credentials: 'include',
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: '{}',
-        },
-      )
-
-      if (!response.ok) {
-        return
-      }
-
-      return (await response.json()).accessToken
-    },
-    retry: 0,
-  })
+  const [hasFailure, setHasFailure] = useState(false)
+  const [refreshPending, setRefreshPending] = useState(false)
 
   if (!hasFailure && (!accessToken || shouldRefresh(accessToken))) {
-    if (!refresh.isPending) {
-      refresh.mutate(undefined, {
-        onError: () => {
-          setHasFailure(true)
+    if (!refreshPending) {
+      setRefreshPending(true)
+      fetch(`${API_URL}/api/frontend/v1/refresh`, {
+        body: JSON.stringify({}),
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
         },
-        onSuccess: (accessToken) => {
-          if (accessToken) {
-            setHasFailure(false)
-            setAccessToken(accessToken)
-          }
-        },
+        method: 'POST',
       })
+        .then((response) => {
+          if (response.ok) {
+            response.json().then((res: RefreshResponse) => {
+              setAccessToken(res.accessToken)
+              setRefreshPending(false)
+            })
+          } else {
+            setRefreshPending(false)
+            setHasFailure(true)
+          }
+        })
+        .catch((error) => {
+          console.error(error)
+          setRefreshPending(false)
+          setHasFailure(true)
+        })
     }
   }
 
