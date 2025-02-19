@@ -98,7 +98,7 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 	}
 
 	// create the bootstrap user inside the dogfood organization
-	bootstrapUserEmail := "root@openauth.example.com"
+	bootstrapUserEmail := "root@tesseral.example.com"
 	bootstrapUserPasswordBcrypt := string(bootstrapUserPasswordBcryptBytes)
 	if _, err := q.CreateUser(ctx, queries.CreateUserParams{
 		ID:             uuid.New(),

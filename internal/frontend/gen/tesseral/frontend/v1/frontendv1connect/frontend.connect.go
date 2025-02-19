@@ -22,7 +22,7 @@ const _ = connect.IsAtLeastVersion1_13_0
 
 const (
 	// FrontendServiceName is the fully-qualified name of the FrontendService service.
-	FrontendServiceName = "openauth.frontend.v1.FrontendService"
+	FrontendServiceName = "tesseral.frontend.v1.FrontendService"
 )
 
 // These constants are the fully-qualified names of the RPCs defined in this package. They're
@@ -34,112 +34,112 @@ const (
 // period.
 const (
 	// FrontendServiceLogoutProcedure is the fully-qualified name of the FrontendService's Logout RPC.
-	FrontendServiceLogoutProcedure = "/openauth.frontend.v1.FrontendService/Logout"
+	FrontendServiceLogoutProcedure = "/tesseral.frontend.v1.FrontendService/Logout"
 	// FrontendServiceRefreshProcedure is the fully-qualified name of the FrontendService's Refresh RPC.
-	FrontendServiceRefreshProcedure = "/openauth.frontend.v1.FrontendService/Refresh"
+	FrontendServiceRefreshProcedure = "/tesseral.frontend.v1.FrontendService/Refresh"
 	// FrontendServiceGetProjectProcedure is the fully-qualified name of the FrontendService's
 	// GetProject RPC.
-	FrontendServiceGetProjectProcedure = "/openauth.frontend.v1.FrontendService/GetProject"
+	FrontendServiceGetProjectProcedure = "/tesseral.frontend.v1.FrontendService/GetProject"
 	// FrontendServiceGetOrganizationProcedure is the fully-qualified name of the FrontendService's
 	// GetOrganization RPC.
-	FrontendServiceGetOrganizationProcedure = "/openauth.frontend.v1.FrontendService/GetOrganization"
+	FrontendServiceGetOrganizationProcedure = "/tesseral.frontend.v1.FrontendService/GetOrganization"
 	// FrontendServiceUpdateOrganizationProcedure is the fully-qualified name of the FrontendService's
 	// UpdateOrganization RPC.
-	FrontendServiceUpdateOrganizationProcedure = "/openauth.frontend.v1.FrontendService/UpdateOrganization"
+	FrontendServiceUpdateOrganizationProcedure = "/tesseral.frontend.v1.FrontendService/UpdateOrganization"
 	// FrontendServiceGetOrganizationGoogleHostedDomainsProcedure is the fully-qualified name of the
 	// FrontendService's GetOrganizationGoogleHostedDomains RPC.
-	FrontendServiceGetOrganizationGoogleHostedDomainsProcedure = "/openauth.frontend.v1.FrontendService/GetOrganizationGoogleHostedDomains"
+	FrontendServiceGetOrganizationGoogleHostedDomainsProcedure = "/tesseral.frontend.v1.FrontendService/GetOrganizationGoogleHostedDomains"
 	// FrontendServiceUpdateOrganizationGoogleHostedDomainsProcedure is the fully-qualified name of the
 	// FrontendService's UpdateOrganizationGoogleHostedDomains RPC.
-	FrontendServiceUpdateOrganizationGoogleHostedDomainsProcedure = "/openauth.frontend.v1.FrontendService/UpdateOrganizationGoogleHostedDomains"
+	FrontendServiceUpdateOrganizationGoogleHostedDomainsProcedure = "/tesseral.frontend.v1.FrontendService/UpdateOrganizationGoogleHostedDomains"
 	// FrontendServiceGetOrganizationMicrosoftTenantIDsProcedure is the fully-qualified name of the
 	// FrontendService's GetOrganizationMicrosoftTenantIDs RPC.
-	FrontendServiceGetOrganizationMicrosoftTenantIDsProcedure = "/openauth.frontend.v1.FrontendService/GetOrganizationMicrosoftTenantIDs"
+	FrontendServiceGetOrganizationMicrosoftTenantIDsProcedure = "/tesseral.frontend.v1.FrontendService/GetOrganizationMicrosoftTenantIDs"
 	// FrontendServiceUpdateOrganizationMicrosoftTenantIDsProcedure is the fully-qualified name of the
 	// FrontendService's UpdateOrganizationMicrosoftTenantIDs RPC.
-	FrontendServiceUpdateOrganizationMicrosoftTenantIDsProcedure = "/openauth.frontend.v1.FrontendService/UpdateOrganizationMicrosoftTenantIDs"
+	FrontendServiceUpdateOrganizationMicrosoftTenantIDsProcedure = "/tesseral.frontend.v1.FrontendService/UpdateOrganizationMicrosoftTenantIDs"
 	// FrontendServiceListUsersProcedure is the fully-qualified name of the FrontendService's ListUsers
 	// RPC.
-	FrontendServiceListUsersProcedure = "/openauth.frontend.v1.FrontendService/ListUsers"
+	FrontendServiceListUsersProcedure = "/tesseral.frontend.v1.FrontendService/ListUsers"
 	// FrontendServiceGetUserProcedure is the fully-qualified name of the FrontendService's GetUser RPC.
-	FrontendServiceGetUserProcedure = "/openauth.frontend.v1.FrontendService/GetUser"
+	FrontendServiceGetUserProcedure = "/tesseral.frontend.v1.FrontendService/GetUser"
 	// FrontendServiceUpdateUserProcedure is the fully-qualified name of the FrontendService's
 	// UpdateUser RPC.
-	FrontendServiceUpdateUserProcedure = "/openauth.frontend.v1.FrontendService/UpdateUser"
+	FrontendServiceUpdateUserProcedure = "/tesseral.frontend.v1.FrontendService/UpdateUser"
 	// FrontendServiceDeleteUserProcedure is the fully-qualified name of the FrontendService's
 	// DeleteUser RPC.
-	FrontendServiceDeleteUserProcedure = "/openauth.frontend.v1.FrontendService/DeleteUser"
+	FrontendServiceDeleteUserProcedure = "/tesseral.frontend.v1.FrontendService/DeleteUser"
 	// FrontendServiceSetPasswordProcedure is the fully-qualified name of the FrontendService's
 	// SetPassword RPC.
-	FrontendServiceSetPasswordProcedure = "/openauth.frontend.v1.FrontendService/SetPassword"
+	FrontendServiceSetPasswordProcedure = "/tesseral.frontend.v1.FrontendService/SetPassword"
 	// FrontendServiceListSAMLConnectionsProcedure is the fully-qualified name of the FrontendService's
 	// ListSAMLConnections RPC.
-	FrontendServiceListSAMLConnectionsProcedure = "/openauth.frontend.v1.FrontendService/ListSAMLConnections"
+	FrontendServiceListSAMLConnectionsProcedure = "/tesseral.frontend.v1.FrontendService/ListSAMLConnections"
 	// FrontendServiceGetSAMLConnectionProcedure is the fully-qualified name of the FrontendService's
 	// GetSAMLConnection RPC.
-	FrontendServiceGetSAMLConnectionProcedure = "/openauth.frontend.v1.FrontendService/GetSAMLConnection"
+	FrontendServiceGetSAMLConnectionProcedure = "/tesseral.frontend.v1.FrontendService/GetSAMLConnection"
 	// FrontendServiceCreateSAMLConnectionProcedure is the fully-qualified name of the FrontendService's
 	// CreateSAMLConnection RPC.
-	FrontendServiceCreateSAMLConnectionProcedure = "/openauth.frontend.v1.FrontendService/CreateSAMLConnection"
+	FrontendServiceCreateSAMLConnectionProcedure = "/tesseral.frontend.v1.FrontendService/CreateSAMLConnection"
 	// FrontendServiceUpdateSAMLConnectionProcedure is the fully-qualified name of the FrontendService's
 	// UpdateSAMLConnection RPC.
-	FrontendServiceUpdateSAMLConnectionProcedure = "/openauth.frontend.v1.FrontendService/UpdateSAMLConnection"
+	FrontendServiceUpdateSAMLConnectionProcedure = "/tesseral.frontend.v1.FrontendService/UpdateSAMLConnection"
 	// FrontendServiceDeleteSAMLConnectionProcedure is the fully-qualified name of the FrontendService's
 	// DeleteSAMLConnection RPC.
-	FrontendServiceDeleteSAMLConnectionProcedure = "/openauth.frontend.v1.FrontendService/DeleteSAMLConnection"
+	FrontendServiceDeleteSAMLConnectionProcedure = "/tesseral.frontend.v1.FrontendService/DeleteSAMLConnection"
 	// FrontendServiceListSCIMAPIKeysProcedure is the fully-qualified name of the FrontendService's
 	// ListSCIMAPIKeys RPC.
-	FrontendServiceListSCIMAPIKeysProcedure = "/openauth.frontend.v1.FrontendService/ListSCIMAPIKeys"
+	FrontendServiceListSCIMAPIKeysProcedure = "/tesseral.frontend.v1.FrontendService/ListSCIMAPIKeys"
 	// FrontendServiceGetSCIMAPIKeyProcedure is the fully-qualified name of the FrontendService's
 	// GetSCIMAPIKey RPC.
-	FrontendServiceGetSCIMAPIKeyProcedure = "/openauth.frontend.v1.FrontendService/GetSCIMAPIKey"
+	FrontendServiceGetSCIMAPIKeyProcedure = "/tesseral.frontend.v1.FrontendService/GetSCIMAPIKey"
 	// FrontendServiceCreateSCIMAPIKeyProcedure is the fully-qualified name of the FrontendService's
 	// CreateSCIMAPIKey RPC.
-	FrontendServiceCreateSCIMAPIKeyProcedure = "/openauth.frontend.v1.FrontendService/CreateSCIMAPIKey"
+	FrontendServiceCreateSCIMAPIKeyProcedure = "/tesseral.frontend.v1.FrontendService/CreateSCIMAPIKey"
 	// FrontendServiceUpdateSCIMAPIKeyProcedure is the fully-qualified name of the FrontendService's
 	// UpdateSCIMAPIKey RPC.
-	FrontendServiceUpdateSCIMAPIKeyProcedure = "/openauth.frontend.v1.FrontendService/UpdateSCIMAPIKey"
+	FrontendServiceUpdateSCIMAPIKeyProcedure = "/tesseral.frontend.v1.FrontendService/UpdateSCIMAPIKey"
 	// FrontendServiceDeleteSCIMAPIKeyProcedure is the fully-qualified name of the FrontendService's
 	// DeleteSCIMAPIKey RPC.
-	FrontendServiceDeleteSCIMAPIKeyProcedure = "/openauth.frontend.v1.FrontendService/DeleteSCIMAPIKey"
+	FrontendServiceDeleteSCIMAPIKeyProcedure = "/tesseral.frontend.v1.FrontendService/DeleteSCIMAPIKey"
 	// FrontendServiceRevokeSCIMAPIKeyProcedure is the fully-qualified name of the FrontendService's
 	// RevokeSCIMAPIKey RPC.
-	FrontendServiceRevokeSCIMAPIKeyProcedure = "/openauth.frontend.v1.FrontendService/RevokeSCIMAPIKey"
+	FrontendServiceRevokeSCIMAPIKeyProcedure = "/tesseral.frontend.v1.FrontendService/RevokeSCIMAPIKey"
 	// FrontendServiceWhoamiProcedure is the fully-qualified name of the FrontendService's Whoami RPC.
-	FrontendServiceWhoamiProcedure = "/openauth.frontend.v1.FrontendService/Whoami"
+	FrontendServiceWhoamiProcedure = "/tesseral.frontend.v1.FrontendService/Whoami"
 	// FrontendServiceListMyPasskeysProcedure is the fully-qualified name of the FrontendService's
 	// ListMyPasskeys RPC.
-	FrontendServiceListMyPasskeysProcedure = "/openauth.frontend.v1.FrontendService/ListMyPasskeys"
+	FrontendServiceListMyPasskeysProcedure = "/tesseral.frontend.v1.FrontendService/ListMyPasskeys"
 	// FrontendServiceDeleteMyPasskeyProcedure is the fully-qualified name of the FrontendService's
 	// DeleteMyPasskey RPC.
-	FrontendServiceDeleteMyPasskeyProcedure = "/openauth.frontend.v1.FrontendService/DeleteMyPasskey"
+	FrontendServiceDeleteMyPasskeyProcedure = "/tesseral.frontend.v1.FrontendService/DeleteMyPasskey"
 	// FrontendServiceGetPasskeyOptionsProcedure is the fully-qualified name of the FrontendService's
 	// GetPasskeyOptions RPC.
-	FrontendServiceGetPasskeyOptionsProcedure = "/openauth.frontend.v1.FrontendService/GetPasskeyOptions"
+	FrontendServiceGetPasskeyOptionsProcedure = "/tesseral.frontend.v1.FrontendService/GetPasskeyOptions"
 	// FrontendServiceRegisterPasskeyProcedure is the fully-qualified name of the FrontendService's
 	// RegisterPasskey RPC.
-	FrontendServiceRegisterPasskeyProcedure = "/openauth.frontend.v1.FrontendService/RegisterPasskey"
+	FrontendServiceRegisterPasskeyProcedure = "/tesseral.frontend.v1.FrontendService/RegisterPasskey"
 	// FrontendServiceGetAuthenticatorAppOptionsProcedure is the fully-qualified name of the
 	// FrontendService's GetAuthenticatorAppOptions RPC.
-	FrontendServiceGetAuthenticatorAppOptionsProcedure = "/openauth.frontend.v1.FrontendService/GetAuthenticatorAppOptions"
+	FrontendServiceGetAuthenticatorAppOptionsProcedure = "/tesseral.frontend.v1.FrontendService/GetAuthenticatorAppOptions"
 	// FrontendServiceRegisterAuthenticatorAppProcedure is the fully-qualified name of the
 	// FrontendService's RegisterAuthenticatorApp RPC.
-	FrontendServiceRegisterAuthenticatorAppProcedure = "/openauth.frontend.v1.FrontendService/RegisterAuthenticatorApp"
+	FrontendServiceRegisterAuthenticatorAppProcedure = "/tesseral.frontend.v1.FrontendService/RegisterAuthenticatorApp"
 	// FrontendServiceListUserInvitesProcedure is the fully-qualified name of the FrontendService's
 	// ListUserInvites RPC.
-	FrontendServiceListUserInvitesProcedure = "/openauth.frontend.v1.FrontendService/ListUserInvites"
+	FrontendServiceListUserInvitesProcedure = "/tesseral.frontend.v1.FrontendService/ListUserInvites"
 	// FrontendServiceGetUserInviteProcedure is the fully-qualified name of the FrontendService's
 	// GetUserInvite RPC.
-	FrontendServiceGetUserInviteProcedure = "/openauth.frontend.v1.FrontendService/GetUserInvite"
+	FrontendServiceGetUserInviteProcedure = "/tesseral.frontend.v1.FrontendService/GetUserInvite"
 	// FrontendServiceCreateUserInviteProcedure is the fully-qualified name of the FrontendService's
 	// CreateUserInvite RPC.
-	FrontendServiceCreateUserInviteProcedure = "/openauth.frontend.v1.FrontendService/CreateUserInvite"
+	FrontendServiceCreateUserInviteProcedure = "/tesseral.frontend.v1.FrontendService/CreateUserInvite"
 	// FrontendServiceDeleteUserInviteProcedure is the fully-qualified name of the FrontendService's
 	// DeleteUserInvite RPC.
-	FrontendServiceDeleteUserInviteProcedure = "/openauth.frontend.v1.FrontendService/DeleteUserInvite"
+	FrontendServiceDeleteUserInviteProcedure = "/tesseral.frontend.v1.FrontendService/DeleteUserInvite"
 )
 
-// FrontendServiceClient is a client for the openauth.frontend.v1.FrontendService service.
+// FrontendServiceClient is a client for the tesseral.frontend.v1.FrontendService service.
 type FrontendServiceClient interface {
 	Logout(context.Context, *connect.Request[v1.LogoutRequest]) (*connect.Response[v1.LogoutResponse], error)
 	Refresh(context.Context, *connect.Request[v1.RefreshRequest]) (*connect.Response[v1.RefreshResponse], error)
@@ -180,7 +180,7 @@ type FrontendServiceClient interface {
 	DeleteUserInvite(context.Context, *connect.Request[v1.DeleteUserInviteRequest]) (*connect.Response[v1.DeleteUserInviteResponse], error)
 }
 
-// NewFrontendServiceClient constructs a client for the openauth.frontend.v1.FrontendService
+// NewFrontendServiceClient constructs a client for the tesseral.frontend.v1.FrontendService
 // service. By default, it uses the Connect protocol with the binary Protobuf Codec, asks for
 // gzipped responses, and sends uncompressed requests. To use the gRPC or gRPC-Web protocols, supply
 // the connect.WithGRPC() or connect.WithGRPCWeb() options.
@@ -450,191 +450,191 @@ type frontendServiceClient struct {
 	deleteUserInvite                      *connect.Client[v1.DeleteUserInviteRequest, v1.DeleteUserInviteResponse]
 }
 
-// Logout calls openauth.frontend.v1.FrontendService.Logout.
+// Logout calls tesseral.frontend.v1.FrontendService.Logout.
 func (c *frontendServiceClient) Logout(ctx context.Context, req *connect.Request[v1.LogoutRequest]) (*connect.Response[v1.LogoutResponse], error) {
 	return c.logout.CallUnary(ctx, req)
 }
 
-// Refresh calls openauth.frontend.v1.FrontendService.Refresh.
+// Refresh calls tesseral.frontend.v1.FrontendService.Refresh.
 func (c *frontendServiceClient) Refresh(ctx context.Context, req *connect.Request[v1.RefreshRequest]) (*connect.Response[v1.RefreshResponse], error) {
 	return c.refresh.CallUnary(ctx, req)
 }
 
-// GetProject calls openauth.frontend.v1.FrontendService.GetProject.
+// GetProject calls tesseral.frontend.v1.FrontendService.GetProject.
 func (c *frontendServiceClient) GetProject(ctx context.Context, req *connect.Request[v1.GetProjectRequest]) (*connect.Response[v1.GetProjectResponse], error) {
 	return c.getProject.CallUnary(ctx, req)
 }
 
-// GetOrganization calls openauth.frontend.v1.FrontendService.GetOrganization.
+// GetOrganization calls tesseral.frontend.v1.FrontendService.GetOrganization.
 func (c *frontendServiceClient) GetOrganization(ctx context.Context, req *connect.Request[v1.GetOrganizationRequest]) (*connect.Response[v1.GetOrganizationResponse], error) {
 	return c.getOrganization.CallUnary(ctx, req)
 }
 
-// UpdateOrganization calls openauth.frontend.v1.FrontendService.UpdateOrganization.
+// UpdateOrganization calls tesseral.frontend.v1.FrontendService.UpdateOrganization.
 func (c *frontendServiceClient) UpdateOrganization(ctx context.Context, req *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.UpdateOrganizationResponse], error) {
 	return c.updateOrganization.CallUnary(ctx, req)
 }
 
 // GetOrganizationGoogleHostedDomains calls
-// openauth.frontend.v1.FrontendService.GetOrganizationGoogleHostedDomains.
+// tesseral.frontend.v1.FrontendService.GetOrganizationGoogleHostedDomains.
 func (c *frontendServiceClient) GetOrganizationGoogleHostedDomains(ctx context.Context, req *connect.Request[v1.GetOrganizationGoogleHostedDomainsRequest]) (*connect.Response[v1.GetOrganizationGoogleHostedDomainsResponse], error) {
 	return c.getOrganizationGoogleHostedDomains.CallUnary(ctx, req)
 }
 
 // UpdateOrganizationGoogleHostedDomains calls
-// openauth.frontend.v1.FrontendService.UpdateOrganizationGoogleHostedDomains.
+// tesseral.frontend.v1.FrontendService.UpdateOrganizationGoogleHostedDomains.
 func (c *frontendServiceClient) UpdateOrganizationGoogleHostedDomains(ctx context.Context, req *connect.Request[v1.UpdateOrganizationGoogleHostedDomainsRequest]) (*connect.Response[v1.UpdateOrganizationGoogleHostedDomainsResponse], error) {
 	return c.updateOrganizationGoogleHostedDomains.CallUnary(ctx, req)
 }
 
 // GetOrganizationMicrosoftTenantIDs calls
-// openauth.frontend.v1.FrontendService.GetOrganizationMicrosoftTenantIDs.
+// tesseral.frontend.v1.FrontendService.GetOrganizationMicrosoftTenantIDs.
 func (c *frontendServiceClient) GetOrganizationMicrosoftTenantIDs(ctx context.Context, req *connect.Request[v1.GetOrganizationMicrosoftTenantIDsRequest]) (*connect.Response[v1.GetOrganizationMicrosoftTenantIDsResponse], error) {
 	return c.getOrganizationMicrosoftTenantIDs.CallUnary(ctx, req)
 }
 
 // UpdateOrganizationMicrosoftTenantIDs calls
-// openauth.frontend.v1.FrontendService.UpdateOrganizationMicrosoftTenantIDs.
+// tesseral.frontend.v1.FrontendService.UpdateOrganizationMicrosoftTenantIDs.
 func (c *frontendServiceClient) UpdateOrganizationMicrosoftTenantIDs(ctx context.Context, req *connect.Request[v1.UpdateOrganizationMicrosoftTenantIDsRequest]) (*connect.Response[v1.UpdateOrganizationMicrosoftTenantIDsResponse], error) {
 	return c.updateOrganizationMicrosoftTenantIDs.CallUnary(ctx, req)
 }
 
-// ListUsers calls openauth.frontend.v1.FrontendService.ListUsers.
+// ListUsers calls tesseral.frontend.v1.FrontendService.ListUsers.
 func (c *frontendServiceClient) ListUsers(ctx context.Context, req *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error) {
 	return c.listUsers.CallUnary(ctx, req)
 }
 
-// GetUser calls openauth.frontend.v1.FrontendService.GetUser.
+// GetUser calls tesseral.frontend.v1.FrontendService.GetUser.
 func (c *frontendServiceClient) GetUser(ctx context.Context, req *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error) {
 	return c.getUser.CallUnary(ctx, req)
 }
 
-// UpdateUser calls openauth.frontend.v1.FrontendService.UpdateUser.
+// UpdateUser calls tesseral.frontend.v1.FrontendService.UpdateUser.
 func (c *frontendServiceClient) UpdateUser(ctx context.Context, req *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error) {
 	return c.updateUser.CallUnary(ctx, req)
 }
 
-// DeleteUser calls openauth.frontend.v1.FrontendService.DeleteUser.
+// DeleteUser calls tesseral.frontend.v1.FrontendService.DeleteUser.
 func (c *frontendServiceClient) DeleteUser(ctx context.Context, req *connect.Request[v1.DeleteUserRequest]) (*connect.Response[v1.DeleteUserResponse], error) {
 	return c.deleteUser.CallUnary(ctx, req)
 }
 
-// SetPassword calls openauth.frontend.v1.FrontendService.SetPassword.
+// SetPassword calls tesseral.frontend.v1.FrontendService.SetPassword.
 func (c *frontendServiceClient) SetPassword(ctx context.Context, req *connect.Request[v1.SetPasswordRequest]) (*connect.Response[v1.SetPasswordResponse], error) {
 	return c.setPassword.CallUnary(ctx, req)
 }
 
-// ListSAMLConnections calls openauth.frontend.v1.FrontendService.ListSAMLConnections.
+// ListSAMLConnections calls tesseral.frontend.v1.FrontendService.ListSAMLConnections.
 func (c *frontendServiceClient) ListSAMLConnections(ctx context.Context, req *connect.Request[v1.ListSAMLConnectionsRequest]) (*connect.Response[v1.ListSAMLConnectionsResponse], error) {
 	return c.listSAMLConnections.CallUnary(ctx, req)
 }
 
-// GetSAMLConnection calls openauth.frontend.v1.FrontendService.GetSAMLConnection.
+// GetSAMLConnection calls tesseral.frontend.v1.FrontendService.GetSAMLConnection.
 func (c *frontendServiceClient) GetSAMLConnection(ctx context.Context, req *connect.Request[v1.GetSAMLConnectionRequest]) (*connect.Response[v1.GetSAMLConnectionResponse], error) {
 	return c.getSAMLConnection.CallUnary(ctx, req)
 }
 
-// CreateSAMLConnection calls openauth.frontend.v1.FrontendService.CreateSAMLConnection.
+// CreateSAMLConnection calls tesseral.frontend.v1.FrontendService.CreateSAMLConnection.
 func (c *frontendServiceClient) CreateSAMLConnection(ctx context.Context, req *connect.Request[v1.CreateSAMLConnectionRequest]) (*connect.Response[v1.CreateSAMLConnectionResponse], error) {
 	return c.createSAMLConnection.CallUnary(ctx, req)
 }
 
-// UpdateSAMLConnection calls openauth.frontend.v1.FrontendService.UpdateSAMLConnection.
+// UpdateSAMLConnection calls tesseral.frontend.v1.FrontendService.UpdateSAMLConnection.
 func (c *frontendServiceClient) UpdateSAMLConnection(ctx context.Context, req *connect.Request[v1.UpdateSAMLConnectionRequest]) (*connect.Response[v1.UpdateSAMLConnectionResponse], error) {
 	return c.updateSAMLConnection.CallUnary(ctx, req)
 }
 
-// DeleteSAMLConnection calls openauth.frontend.v1.FrontendService.DeleteSAMLConnection.
+// DeleteSAMLConnection calls tesseral.frontend.v1.FrontendService.DeleteSAMLConnection.
 func (c *frontendServiceClient) DeleteSAMLConnection(ctx context.Context, req *connect.Request[v1.DeleteSAMLConnectionRequest]) (*connect.Response[v1.DeleteSAMLConnectionResponse], error) {
 	return c.deleteSAMLConnection.CallUnary(ctx, req)
 }
 
-// ListSCIMAPIKeys calls openauth.frontend.v1.FrontendService.ListSCIMAPIKeys.
+// ListSCIMAPIKeys calls tesseral.frontend.v1.FrontendService.ListSCIMAPIKeys.
 func (c *frontendServiceClient) ListSCIMAPIKeys(ctx context.Context, req *connect.Request[v1.ListSCIMAPIKeysRequest]) (*connect.Response[v1.ListSCIMAPIKeysResponse], error) {
 	return c.listSCIMAPIKeys.CallUnary(ctx, req)
 }
 
-// GetSCIMAPIKey calls openauth.frontend.v1.FrontendService.GetSCIMAPIKey.
+// GetSCIMAPIKey calls tesseral.frontend.v1.FrontendService.GetSCIMAPIKey.
 func (c *frontendServiceClient) GetSCIMAPIKey(ctx context.Context, req *connect.Request[v1.GetSCIMAPIKeyRequest]) (*connect.Response[v1.GetSCIMAPIKeyResponse], error) {
 	return c.getSCIMAPIKey.CallUnary(ctx, req)
 }
 
-// CreateSCIMAPIKey calls openauth.frontend.v1.FrontendService.CreateSCIMAPIKey.
+// CreateSCIMAPIKey calls tesseral.frontend.v1.FrontendService.CreateSCIMAPIKey.
 func (c *frontendServiceClient) CreateSCIMAPIKey(ctx context.Context, req *connect.Request[v1.CreateSCIMAPIKeyRequest]) (*connect.Response[v1.CreateSCIMAPIKeyResponse], error) {
 	return c.createSCIMAPIKey.CallUnary(ctx, req)
 }
 
-// UpdateSCIMAPIKey calls openauth.frontend.v1.FrontendService.UpdateSCIMAPIKey.
+// UpdateSCIMAPIKey calls tesseral.frontend.v1.FrontendService.UpdateSCIMAPIKey.
 func (c *frontendServiceClient) UpdateSCIMAPIKey(ctx context.Context, req *connect.Request[v1.UpdateSCIMAPIKeyRequest]) (*connect.Response[v1.UpdateSCIMAPIKeyResponse], error) {
 	return c.updateSCIMAPIKey.CallUnary(ctx, req)
 }
 
-// DeleteSCIMAPIKey calls openauth.frontend.v1.FrontendService.DeleteSCIMAPIKey.
+// DeleteSCIMAPIKey calls tesseral.frontend.v1.FrontendService.DeleteSCIMAPIKey.
 func (c *frontendServiceClient) DeleteSCIMAPIKey(ctx context.Context, req *connect.Request[v1.DeleteSCIMAPIKeyRequest]) (*connect.Response[v1.DeleteSCIMAPIKeyResponse], error) {
 	return c.deleteSCIMAPIKey.CallUnary(ctx, req)
 }
 
-// RevokeSCIMAPIKey calls openauth.frontend.v1.FrontendService.RevokeSCIMAPIKey.
+// RevokeSCIMAPIKey calls tesseral.frontend.v1.FrontendService.RevokeSCIMAPIKey.
 func (c *frontendServiceClient) RevokeSCIMAPIKey(ctx context.Context, req *connect.Request[v1.RevokeSCIMAPIKeyRequest]) (*connect.Response[v1.RevokeSCIMAPIKeyResponse], error) {
 	return c.revokeSCIMAPIKey.CallUnary(ctx, req)
 }
 
-// Whoami calls openauth.frontend.v1.FrontendService.Whoami.
+// Whoami calls tesseral.frontend.v1.FrontendService.Whoami.
 func (c *frontendServiceClient) Whoami(ctx context.Context, req *connect.Request[v1.WhoamiRequest]) (*connect.Response[v1.WhoamiResponse], error) {
 	return c.whoami.CallUnary(ctx, req)
 }
 
-// ListMyPasskeys calls openauth.frontend.v1.FrontendService.ListMyPasskeys.
+// ListMyPasskeys calls tesseral.frontend.v1.FrontendService.ListMyPasskeys.
 func (c *frontendServiceClient) ListMyPasskeys(ctx context.Context, req *connect.Request[v1.ListMyPasskeysRequest]) (*connect.Response[v1.ListMyPasskeysResponse], error) {
 	return c.listMyPasskeys.CallUnary(ctx, req)
 }
 
-// DeleteMyPasskey calls openauth.frontend.v1.FrontendService.DeleteMyPasskey.
+// DeleteMyPasskey calls tesseral.frontend.v1.FrontendService.DeleteMyPasskey.
 func (c *frontendServiceClient) DeleteMyPasskey(ctx context.Context, req *connect.Request[v1.DeleteMyPasskeyRequest]) (*connect.Response[v1.DeleteMyPasskeyResponse], error) {
 	return c.deleteMyPasskey.CallUnary(ctx, req)
 }
 
-// GetPasskeyOptions calls openauth.frontend.v1.FrontendService.GetPasskeyOptions.
+// GetPasskeyOptions calls tesseral.frontend.v1.FrontendService.GetPasskeyOptions.
 func (c *frontendServiceClient) GetPasskeyOptions(ctx context.Context, req *connect.Request[v1.GetPasskeyOptionsRequest]) (*connect.Response[v1.GetPasskeyOptionsResponse], error) {
 	return c.getPasskeyOptions.CallUnary(ctx, req)
 }
 
-// RegisterPasskey calls openauth.frontend.v1.FrontendService.RegisterPasskey.
+// RegisterPasskey calls tesseral.frontend.v1.FrontendService.RegisterPasskey.
 func (c *frontendServiceClient) RegisterPasskey(ctx context.Context, req *connect.Request[v1.RegisterPasskeyRequest]) (*connect.Response[v1.RegisterPasskeyResponse], error) {
 	return c.registerPasskey.CallUnary(ctx, req)
 }
 
-// GetAuthenticatorAppOptions calls openauth.frontend.v1.FrontendService.GetAuthenticatorAppOptions.
+// GetAuthenticatorAppOptions calls tesseral.frontend.v1.FrontendService.GetAuthenticatorAppOptions.
 func (c *frontendServiceClient) GetAuthenticatorAppOptions(ctx context.Context, req *connect.Request[v1.GetAuthenticatorAppOptionsRequest]) (*connect.Response[v1.GetAuthenticatorAppOptionsResponse], error) {
 	return c.getAuthenticatorAppOptions.CallUnary(ctx, req)
 }
 
-// RegisterAuthenticatorApp calls openauth.frontend.v1.FrontendService.RegisterAuthenticatorApp.
+// RegisterAuthenticatorApp calls tesseral.frontend.v1.FrontendService.RegisterAuthenticatorApp.
 func (c *frontendServiceClient) RegisterAuthenticatorApp(ctx context.Context, req *connect.Request[v1.RegisterAuthenticatorAppRequest]) (*connect.Response[v1.RegisterAuthenticatorAppResponse], error) {
 	return c.registerAuthenticatorApp.CallUnary(ctx, req)
 }
 
-// ListUserInvites calls openauth.frontend.v1.FrontendService.ListUserInvites.
+// ListUserInvites calls tesseral.frontend.v1.FrontendService.ListUserInvites.
 func (c *frontendServiceClient) ListUserInvites(ctx context.Context, req *connect.Request[v1.ListUserInvitesRequest]) (*connect.Response[v1.ListUserInvitesResponse], error) {
 	return c.listUserInvites.CallUnary(ctx, req)
 }
 
-// GetUserInvite calls openauth.frontend.v1.FrontendService.GetUserInvite.
+// GetUserInvite calls tesseral.frontend.v1.FrontendService.GetUserInvite.
 func (c *frontendServiceClient) GetUserInvite(ctx context.Context, req *connect.Request[v1.GetUserInviteRequest]) (*connect.Response[v1.GetUserInviteResponse], error) {
 	return c.getUserInvite.CallUnary(ctx, req)
 }
 
-// CreateUserInvite calls openauth.frontend.v1.FrontendService.CreateUserInvite.
+// CreateUserInvite calls tesseral.frontend.v1.FrontendService.CreateUserInvite.
 func (c *frontendServiceClient) CreateUserInvite(ctx context.Context, req *connect.Request[v1.CreateUserInviteRequest]) (*connect.Response[v1.CreateUserInviteResponse], error) {
 	return c.createUserInvite.CallUnary(ctx, req)
 }
 
-// DeleteUserInvite calls openauth.frontend.v1.FrontendService.DeleteUserInvite.
+// DeleteUserInvite calls tesseral.frontend.v1.FrontendService.DeleteUserInvite.
 func (c *frontendServiceClient) DeleteUserInvite(ctx context.Context, req *connect.Request[v1.DeleteUserInviteRequest]) (*connect.Response[v1.DeleteUserInviteResponse], error) {
 	return c.deleteUserInvite.CallUnary(ctx, req)
 }
 
-// FrontendServiceHandler is an implementation of the openauth.frontend.v1.FrontendService service.
+// FrontendServiceHandler is an implementation of the tesseral.frontend.v1.FrontendService service.
 type FrontendServiceHandler interface {
 	Logout(context.Context, *connect.Request[v1.LogoutRequest]) (*connect.Response[v1.LogoutResponse], error)
 	Refresh(context.Context, *connect.Request[v1.RefreshRequest]) (*connect.Response[v1.RefreshResponse], error)
@@ -898,7 +898,7 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 		connect.WithSchema(frontendServiceMethods.ByName("DeleteUserInvite")),
 		connect.WithHandlerOptions(opts...),
 	)
-	return "/openauth.frontend.v1.FrontendService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	return "/tesseral.frontend.v1.FrontendService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case FrontendServiceLogoutProcedure:
 			frontendServiceLogoutHandler.ServeHTTP(w, r)
@@ -982,145 +982,145 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 type UnimplementedFrontendServiceHandler struct{}
 
 func (UnimplementedFrontendServiceHandler) Logout(context.Context, *connect.Request[v1.LogoutRequest]) (*connect.Response[v1.LogoutResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.Logout is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.Logout is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) Refresh(context.Context, *connect.Request[v1.RefreshRequest]) (*connect.Response[v1.RefreshResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.Refresh is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.Refresh is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) GetProject(context.Context, *connect.Request[v1.GetProjectRequest]) (*connect.Response[v1.GetProjectResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.GetProject is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.GetProject is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) GetOrganization(context.Context, *connect.Request[v1.GetOrganizationRequest]) (*connect.Response[v1.GetOrganizationResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.GetOrganization is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.GetOrganization is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) UpdateOrganization(context.Context, *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.UpdateOrganizationResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.UpdateOrganization is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.UpdateOrganization is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) GetOrganizationGoogleHostedDomains(context.Context, *connect.Request[v1.GetOrganizationGoogleHostedDomainsRequest]) (*connect.Response[v1.GetOrganizationGoogleHostedDomainsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.GetOrganizationGoogleHostedDomains is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.GetOrganizationGoogleHostedDomains is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) UpdateOrganizationGoogleHostedDomains(context.Context, *connect.Request[v1.UpdateOrganizationGoogleHostedDomainsRequest]) (*connect.Response[v1.UpdateOrganizationGoogleHostedDomainsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.UpdateOrganizationGoogleHostedDomains is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.UpdateOrganizationGoogleHostedDomains is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) GetOrganizationMicrosoftTenantIDs(context.Context, *connect.Request[v1.GetOrganizationMicrosoftTenantIDsRequest]) (*connect.Response[v1.GetOrganizationMicrosoftTenantIDsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.GetOrganizationMicrosoftTenantIDs is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.GetOrganizationMicrosoftTenantIDs is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) UpdateOrganizationMicrosoftTenantIDs(context.Context, *connect.Request[v1.UpdateOrganizationMicrosoftTenantIDsRequest]) (*connect.Response[v1.UpdateOrganizationMicrosoftTenantIDsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.UpdateOrganizationMicrosoftTenantIDs is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.UpdateOrganizationMicrosoftTenantIDs is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.ListUsers is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.ListUsers is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.GetUser is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.GetUser is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.UpdateUser is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.UpdateUser is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) DeleteUser(context.Context, *connect.Request[v1.DeleteUserRequest]) (*connect.Response[v1.DeleteUserResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.DeleteUser is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.DeleteUser is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) SetPassword(context.Context, *connect.Request[v1.SetPasswordRequest]) (*connect.Response[v1.SetPasswordResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.SetPassword is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.SetPassword is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) ListSAMLConnections(context.Context, *connect.Request[v1.ListSAMLConnectionsRequest]) (*connect.Response[v1.ListSAMLConnectionsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.ListSAMLConnections is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.ListSAMLConnections is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) GetSAMLConnection(context.Context, *connect.Request[v1.GetSAMLConnectionRequest]) (*connect.Response[v1.GetSAMLConnectionResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.GetSAMLConnection is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.GetSAMLConnection is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) CreateSAMLConnection(context.Context, *connect.Request[v1.CreateSAMLConnectionRequest]) (*connect.Response[v1.CreateSAMLConnectionResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.CreateSAMLConnection is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.CreateSAMLConnection is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) UpdateSAMLConnection(context.Context, *connect.Request[v1.UpdateSAMLConnectionRequest]) (*connect.Response[v1.UpdateSAMLConnectionResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.UpdateSAMLConnection is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.UpdateSAMLConnection is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) DeleteSAMLConnection(context.Context, *connect.Request[v1.DeleteSAMLConnectionRequest]) (*connect.Response[v1.DeleteSAMLConnectionResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.DeleteSAMLConnection is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.DeleteSAMLConnection is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) ListSCIMAPIKeys(context.Context, *connect.Request[v1.ListSCIMAPIKeysRequest]) (*connect.Response[v1.ListSCIMAPIKeysResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.ListSCIMAPIKeys is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.ListSCIMAPIKeys is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) GetSCIMAPIKey(context.Context, *connect.Request[v1.GetSCIMAPIKeyRequest]) (*connect.Response[v1.GetSCIMAPIKeyResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.GetSCIMAPIKey is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.GetSCIMAPIKey is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) CreateSCIMAPIKey(context.Context, *connect.Request[v1.CreateSCIMAPIKeyRequest]) (*connect.Response[v1.CreateSCIMAPIKeyResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.CreateSCIMAPIKey is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.CreateSCIMAPIKey is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) UpdateSCIMAPIKey(context.Context, *connect.Request[v1.UpdateSCIMAPIKeyRequest]) (*connect.Response[v1.UpdateSCIMAPIKeyResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.UpdateSCIMAPIKey is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.UpdateSCIMAPIKey is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) DeleteSCIMAPIKey(context.Context, *connect.Request[v1.DeleteSCIMAPIKeyRequest]) (*connect.Response[v1.DeleteSCIMAPIKeyResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.DeleteSCIMAPIKey is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.DeleteSCIMAPIKey is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) RevokeSCIMAPIKey(context.Context, *connect.Request[v1.RevokeSCIMAPIKeyRequest]) (*connect.Response[v1.RevokeSCIMAPIKeyResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.RevokeSCIMAPIKey is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.RevokeSCIMAPIKey is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) Whoami(context.Context, *connect.Request[v1.WhoamiRequest]) (*connect.Response[v1.WhoamiResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.Whoami is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.Whoami is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) ListMyPasskeys(context.Context, *connect.Request[v1.ListMyPasskeysRequest]) (*connect.Response[v1.ListMyPasskeysResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.ListMyPasskeys is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.ListMyPasskeys is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) DeleteMyPasskey(context.Context, *connect.Request[v1.DeleteMyPasskeyRequest]) (*connect.Response[v1.DeleteMyPasskeyResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.DeleteMyPasskey is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.DeleteMyPasskey is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) GetPasskeyOptions(context.Context, *connect.Request[v1.GetPasskeyOptionsRequest]) (*connect.Response[v1.GetPasskeyOptionsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.GetPasskeyOptions is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.GetPasskeyOptions is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) RegisterPasskey(context.Context, *connect.Request[v1.RegisterPasskeyRequest]) (*connect.Response[v1.RegisterPasskeyResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.RegisterPasskey is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.RegisterPasskey is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) GetAuthenticatorAppOptions(context.Context, *connect.Request[v1.GetAuthenticatorAppOptionsRequest]) (*connect.Response[v1.GetAuthenticatorAppOptionsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.GetAuthenticatorAppOptions is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.GetAuthenticatorAppOptions is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) RegisterAuthenticatorApp(context.Context, *connect.Request[v1.RegisterAuthenticatorAppRequest]) (*connect.Response[v1.RegisterAuthenticatorAppResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.RegisterAuthenticatorApp is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.RegisterAuthenticatorApp is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) ListUserInvites(context.Context, *connect.Request[v1.ListUserInvitesRequest]) (*connect.Response[v1.ListUserInvitesResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.ListUserInvites is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.ListUserInvites is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) GetUserInvite(context.Context, *connect.Request[v1.GetUserInviteRequest]) (*connect.Response[v1.GetUserInviteResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.GetUserInvite is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.GetUserInvite is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) CreateUserInvite(context.Context, *connect.Request[v1.CreateUserInviteRequest]) (*connect.Response[v1.CreateUserInviteResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.CreateUserInvite is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.CreateUserInvite is not implemented"))
 }
 
 func (UnimplementedFrontendServiceHandler) DeleteUserInvite(context.Context, *connect.Request[v1.DeleteUserInviteRequest]) (*connect.Response[v1.DeleteUserInviteResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.frontend.v1.FrontendService.DeleteUserInvite is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.DeleteUserInvite is not implemented"))
 }

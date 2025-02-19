@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package openauth.common.v1;
+package tesseral.common.v1;
 
 message AccessTokenData {
   string iss = 1;

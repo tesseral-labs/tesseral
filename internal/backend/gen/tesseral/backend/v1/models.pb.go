@@ -2050,56 +2050,56 @@ func file_tesseral_backend_v1_models_proto_rawDescGZIP() []byte {
 
 var file_tesseral_backend_v1_models_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
 var file_tesseral_backend_v1_models_proto_goTypes = []any{
-	(*Project)(nil),                         // 0: openauth.backend.v1.Project
-	(*VaultDomainSettings)(nil),             // 1: openauth.backend.v1.VaultDomainSettings
-	(*VaultDomainSettingsDNSRecord)(nil),    // 2: openauth.backend.v1.VaultDomainSettingsDNSRecord
-	(*ProjectUISettings)(nil),               // 3: openauth.backend.v1.ProjectUISettings
-	(*Organization)(nil),                    // 4: openauth.backend.v1.Organization
-	(*OrganizationGoogleHostedDomains)(nil), // 5: openauth.backend.v1.OrganizationGoogleHostedDomains
-	(*OrganizationMicrosoftTenantIDs)(nil),  // 6: openauth.backend.v1.OrganizationMicrosoftTenantIDs
-	(*SessionSigningKey)(nil),               // 7: openauth.backend.v1.SessionSigningKey
-	(*ProjectAPIKey)(nil),                   // 8: openauth.backend.v1.ProjectAPIKey
-	(*PublishableKey)(nil),                  // 9: openauth.backend.v1.PublishableKey
-	(*User)(nil),                            // 10: openauth.backend.v1.User
-	(*Session)(nil),                         // 11: openauth.backend.v1.Session
-	(*Passkey)(nil),                         // 12: openauth.backend.v1.Passkey
-	(*SAMLConnection)(nil),                  // 13: openauth.backend.v1.SAMLConnection
-	(*SCIMAPIKey)(nil),                      // 14: openauth.backend.v1.SCIMAPIKey
-	(*UserImpersonationToken)(nil),          // 15: openauth.backend.v1.UserImpersonationToken
-	(*UserInvite)(nil),                      // 16: openauth.backend.v1.UserInvite
+	(*Project)(nil),                         // 0: tesseral.backend.v1.Project
+	(*VaultDomainSettings)(nil),             // 1: tesseral.backend.v1.VaultDomainSettings
+	(*VaultDomainSettingsDNSRecord)(nil),    // 2: tesseral.backend.v1.VaultDomainSettingsDNSRecord
+	(*ProjectUISettings)(nil),               // 3: tesseral.backend.v1.ProjectUISettings
+	(*Organization)(nil),                    // 4: tesseral.backend.v1.Organization
+	(*OrganizationGoogleHostedDomains)(nil), // 5: tesseral.backend.v1.OrganizationGoogleHostedDomains
+	(*OrganizationMicrosoftTenantIDs)(nil),  // 6: tesseral.backend.v1.OrganizationMicrosoftTenantIDs
+	(*SessionSigningKey)(nil),               // 7: tesseral.backend.v1.SessionSigningKey
+	(*ProjectAPIKey)(nil),                   // 8: tesseral.backend.v1.ProjectAPIKey
+	(*PublishableKey)(nil),                  // 9: tesseral.backend.v1.PublishableKey
+	(*User)(nil),                            // 10: tesseral.backend.v1.User
+	(*Session)(nil),                         // 11: tesseral.backend.v1.Session
+	(*Passkey)(nil),                         // 12: tesseral.backend.v1.Passkey
+	(*SAMLConnection)(nil),                  // 13: tesseral.backend.v1.SAMLConnection
+	(*SCIMAPIKey)(nil),                      // 14: tesseral.backend.v1.SCIMAPIKey
+	(*UserImpersonationToken)(nil),          // 15: tesseral.backend.v1.UserImpersonationToken
+	(*UserInvite)(nil),                      // 16: tesseral.backend.v1.UserInvite
 	(*timestamppb.Timestamp)(nil),           // 17: google.protobuf.Timestamp
 	(*structpb.Struct)(nil),                 // 18: google.protobuf.Struct
 }
 var file_tesseral_backend_v1_models_proto_depIdxs = []int32{
-	17, // 0: openauth.backend.v1.Project.create_time:type_name -> google.protobuf.Timestamp
-	17, // 1: openauth.backend.v1.Project.update_time:type_name -> google.protobuf.Timestamp
-	2,  // 2: openauth.backend.v1.VaultDomainSettings.tesseral_cname_record:type_name -> openauth.backend.v1.VaultDomainSettingsDNSRecord
-	2,  // 3: openauth.backend.v1.VaultDomainSettings.dkim_records:type_name -> openauth.backend.v1.VaultDomainSettingsDNSRecord
-	2,  // 4: openauth.backend.v1.VaultDomainSettings.spf_records:type_name -> openauth.backend.v1.VaultDomainSettingsDNSRecord
-	17, // 5: openauth.backend.v1.ProjectUISettings.create_time:type_name -> google.protobuf.Timestamp
-	17, // 6: openauth.backend.v1.ProjectUISettings.update_time:type_name -> google.protobuf.Timestamp
-	17, // 7: openauth.backend.v1.Organization.create_time:type_name -> google.protobuf.Timestamp
-	17, // 8: openauth.backend.v1.Organization.update_time:type_name -> google.protobuf.Timestamp
-	18, // 9: openauth.backend.v1.SessionSigningKey.public_key_jwk:type_name -> google.protobuf.Struct
-	17, // 10: openauth.backend.v1.ProjectAPIKey.create_time:type_name -> google.protobuf.Timestamp
-	17, // 11: openauth.backend.v1.ProjectAPIKey.update_time:type_name -> google.protobuf.Timestamp
-	17, // 12: openauth.backend.v1.PublishableKey.create_time:type_name -> google.protobuf.Timestamp
-	17, // 13: openauth.backend.v1.PublishableKey.update_time:type_name -> google.protobuf.Timestamp
-	17, // 14: openauth.backend.v1.User.create_time:type_name -> google.protobuf.Timestamp
-	17, // 15: openauth.backend.v1.User.update_time:type_name -> google.protobuf.Timestamp
-	17, // 16: openauth.backend.v1.Session.create_time:type_name -> google.protobuf.Timestamp
-	17, // 17: openauth.backend.v1.Session.last_active_time:type_name -> google.protobuf.Timestamp
-	17, // 18: openauth.backend.v1.Session.expire_time:type_name -> google.protobuf.Timestamp
-	17, // 19: openauth.backend.v1.Passkey.create_time:type_name -> google.protobuf.Timestamp
-	17, // 20: openauth.backend.v1.Passkey.update_time:type_name -> google.protobuf.Timestamp
-	17, // 21: openauth.backend.v1.SAMLConnection.create_time:type_name -> google.protobuf.Timestamp
-	17, // 22: openauth.backend.v1.SAMLConnection.update_time:type_name -> google.protobuf.Timestamp
-	17, // 23: openauth.backend.v1.SCIMAPIKey.create_time:type_name -> google.protobuf.Timestamp
-	17, // 24: openauth.backend.v1.SCIMAPIKey.update_time:type_name -> google.protobuf.Timestamp
-	17, // 25: openauth.backend.v1.UserImpersonationToken.create_time:type_name -> google.protobuf.Timestamp
-	17, // 26: openauth.backend.v1.UserImpersonationToken.expire_time:type_name -> google.protobuf.Timestamp
-	17, // 27: openauth.backend.v1.UserInvite.create_time:type_name -> google.protobuf.Timestamp
-	17, // 28: openauth.backend.v1.UserInvite.update_time:type_name -> google.protobuf.Timestamp
+	17, // 0: tesseral.backend.v1.Project.create_time:type_name -> google.protobuf.Timestamp
+	17, // 1: tesseral.backend.v1.Project.update_time:type_name -> google.protobuf.Timestamp
+	2,  // 2: tesseral.backend.v1.VaultDomainSettings.tesseral_cname_record:type_name -> tesseral.backend.v1.VaultDomainSettingsDNSRecord
+	2,  // 3: tesseral.backend.v1.VaultDomainSettings.dkim_records:type_name -> tesseral.backend.v1.VaultDomainSettingsDNSRecord
+	2,  // 4: tesseral.backend.v1.VaultDomainSettings.spf_records:type_name -> tesseral.backend.v1.VaultDomainSettingsDNSRecord
+	17, // 5: tesseral.backend.v1.ProjectUISettings.create_time:type_name -> google.protobuf.Timestamp
+	17, // 6: tesseral.backend.v1.ProjectUISettings.update_time:type_name -> google.protobuf.Timestamp
+	17, // 7: tesseral.backend.v1.Organization.create_time:type_name -> google.protobuf.Timestamp
+	17, // 8: tesseral.backend.v1.Organization.update_time:type_name -> google.protobuf.Timestamp
+	18, // 9: tesseral.backend.v1.SessionSigningKey.public_key_jwk:type_name -> google.protobuf.Struct
+	17, // 10: tesseral.backend.v1.ProjectAPIKey.create_time:type_name -> google.protobuf.Timestamp
+	17, // 11: tesseral.backend.v1.ProjectAPIKey.update_time:type_name -> google.protobuf.Timestamp
+	17, // 12: tesseral.backend.v1.PublishableKey.create_time:type_name -> google.protobuf.Timestamp
+	17, // 13: tesseral.backend.v1.PublishableKey.update_time:type_name -> google.protobuf.Timestamp
+	17, // 14: tesseral.backend.v1.User.create_time:type_name -> google.protobuf.Timestamp
+	17, // 15: tesseral.backend.v1.User.update_time:type_name -> google.protobuf.Timestamp
+	17, // 16: tesseral.backend.v1.Session.create_time:type_name -> google.protobuf.Timestamp
+	17, // 17: tesseral.backend.v1.Session.last_active_time:type_name -> google.protobuf.Timestamp
+	17, // 18: tesseral.backend.v1.Session.expire_time:type_name -> google.protobuf.Timestamp
+	17, // 19: tesseral.backend.v1.Passkey.create_time:type_name -> google.protobuf.Timestamp
+	17, // 20: tesseral.backend.v1.Passkey.update_time:type_name -> google.protobuf.Timestamp
+	17, // 21: tesseral.backend.v1.SAMLConnection.create_time:type_name -> google.protobuf.Timestamp
+	17, // 22: tesseral.backend.v1.SAMLConnection.update_time:type_name -> google.protobuf.Timestamp
+	17, // 23: tesseral.backend.v1.SCIMAPIKey.create_time:type_name -> google.protobuf.Timestamp
+	17, // 24: tesseral.backend.v1.SCIMAPIKey.update_time:type_name -> google.protobuf.Timestamp
+	17, // 25: tesseral.backend.v1.UserImpersonationToken.create_time:type_name -> google.protobuf.Timestamp
+	17, // 26: tesseral.backend.v1.UserImpersonationToken.expire_time:type_name -> google.protobuf.Timestamp
+	17, // 27: tesseral.backend.v1.UserInvite.create_time:type_name -> google.protobuf.Timestamp
+	17, // 28: tesseral.backend.v1.UserInvite.update_time:type_name -> google.protobuf.Timestamp
 	29, // [29:29] is the sub-list for method output_type
 	29, // [29:29] is the sub-list for method input_type
 	29, // [29:29] is the sub-list for extension type_name

@@ -3552,126 +3552,126 @@ func file_tesseral_intermediate_v1_intermediate_proto_rawDescGZIP() []byte {
 
 var file_tesseral_intermediate_v1_intermediate_proto_msgTypes = make([]protoimpl.MessageInfo, 56)
 var file_tesseral_intermediate_v1_intermediate_proto_goTypes = []any{
-	(*IntermediateSession)(nil),                           // 0: openauth.intermediate.v1.IntermediateSession
-	(*Settings)(nil),                                      // 1: openauth.intermediate.v1.Settings
-	(*CreateProjectRequest)(nil),                          // 2: openauth.intermediate.v1.CreateProjectRequest
-	(*CreateProjectResponse)(nil),                         // 3: openauth.intermediate.v1.CreateProjectResponse
-	(*CreateIntermediateSessionRequest)(nil),              // 4: openauth.intermediate.v1.CreateIntermediateSessionRequest
-	(*CreateIntermediateSessionResponse)(nil),             // 5: openauth.intermediate.v1.CreateIntermediateSessionResponse
-	(*WhoamiRequest)(nil),                                 // 6: openauth.intermediate.v1.WhoamiRequest
-	(*WhoamiResponse)(nil),                                // 7: openauth.intermediate.v1.WhoamiResponse
-	(*CreateOrganizationRequest)(nil),                     // 8: openauth.intermediate.v1.CreateOrganizationRequest
-	(*CreateOrganizationResponse)(nil),                    // 9: openauth.intermediate.v1.CreateOrganizationResponse
-	(*SetOrganizationRequest)(nil),                        // 10: openauth.intermediate.v1.SetOrganizationRequest
-	(*SetOrganizationResponse)(nil),                       // 11: openauth.intermediate.v1.SetOrganizationResponse
-	(*ExchangeIntermediateSessionForSessionRequest)(nil),  // 12: openauth.intermediate.v1.ExchangeIntermediateSessionForSessionRequest
-	(*ExchangeIntermediateSessionForSessionResponse)(nil), // 13: openauth.intermediate.v1.ExchangeIntermediateSessionForSessionResponse
-	(*GetGoogleOAuthRedirectURLRequest)(nil),              // 14: openauth.intermediate.v1.GetGoogleOAuthRedirectURLRequest
-	(*GetGoogleOAuthRedirectURLResponse)(nil),             // 15: openauth.intermediate.v1.GetGoogleOAuthRedirectURLResponse
-	(*RedeemGoogleOAuthCodeRequest)(nil),                  // 16: openauth.intermediate.v1.RedeemGoogleOAuthCodeRequest
-	(*RedeemGoogleOAuthCodeResponse)(nil),                 // 17: openauth.intermediate.v1.RedeemGoogleOAuthCodeResponse
-	(*GetMicrosoftOAuthRedirectURLRequest)(nil),           // 18: openauth.intermediate.v1.GetMicrosoftOAuthRedirectURLRequest
-	(*GetMicrosoftOAuthRedirectURLResponse)(nil),          // 19: openauth.intermediate.v1.GetMicrosoftOAuthRedirectURLResponse
-	(*RedeemMicrosoftOAuthCodeRequest)(nil),               // 20: openauth.intermediate.v1.RedeemMicrosoftOAuthCodeRequest
-	(*RedeemMicrosoftOAuthCodeResponse)(nil),              // 21: openauth.intermediate.v1.RedeemMicrosoftOAuthCodeResponse
-	(*Organization)(nil),                                  // 22: openauth.intermediate.v1.Organization
-	(*Project)(nil),                                       // 23: openauth.intermediate.v1.Project
-	(*IssueEmailVerificationChallengeRequest)(nil),        // 24: openauth.intermediate.v1.IssueEmailVerificationChallengeRequest
-	(*IssueEmailVerificationChallengeResponse)(nil),       // 25: openauth.intermediate.v1.IssueEmailVerificationChallengeResponse
-	(*ListOrganizationsRequest)(nil),                      // 26: openauth.intermediate.v1.ListOrganizationsRequest
-	(*ListOrganizationsResponse)(nil),                     // 27: openauth.intermediate.v1.ListOrganizationsResponse
-	(*ListSAMLOrganizationsRequest)(nil),                  // 28: openauth.intermediate.v1.ListSAMLOrganizationsRequest
-	(*ListSAMLOrganizationsResponse)(nil),                 // 29: openauth.intermediate.v1.ListSAMLOrganizationsResponse
-	(*VerifyEmailChallengeRequest)(nil),                   // 30: openauth.intermediate.v1.VerifyEmailChallengeRequest
-	(*VerifyEmailChallengeResponse)(nil),                  // 31: openauth.intermediate.v1.VerifyEmailChallengeResponse
-	(*RegisterPasswordRequest)(nil),                       // 32: openauth.intermediate.v1.RegisterPasswordRequest
-	(*RegisterPasswordResponse)(nil),                      // 33: openauth.intermediate.v1.RegisterPasswordResponse
-	(*VerifyPasswordRequest)(nil),                         // 34: openauth.intermediate.v1.VerifyPasswordRequest
-	(*VerifyPasswordResponse)(nil),                        // 35: openauth.intermediate.v1.VerifyPasswordResponse
-	(*GetSettingsRequest)(nil),                            // 36: openauth.intermediate.v1.GetSettingsRequest
-	(*GetSettingsResponse)(nil),                           // 37: openauth.intermediate.v1.GetSettingsResponse
-	(*RedeemUserImpersonationTokenRequest)(nil),           // 38: openauth.intermediate.v1.RedeemUserImpersonationTokenRequest
-	(*RedeemUserImpersonationTokenResponse)(nil),          // 39: openauth.intermediate.v1.RedeemUserImpersonationTokenResponse
-	(*GetAuthenticatorAppOptionsRequest)(nil),             // 40: openauth.intermediate.v1.GetAuthenticatorAppOptionsRequest
-	(*GetAuthenticatorAppOptionsResponse)(nil),            // 41: openauth.intermediate.v1.GetAuthenticatorAppOptionsResponse
-	(*RegisterAuthenticatorAppRequest)(nil),               // 42: openauth.intermediate.v1.RegisterAuthenticatorAppRequest
-	(*RegisterAuthenticatorAppResponse)(nil),              // 43: openauth.intermediate.v1.RegisterAuthenticatorAppResponse
-	(*VerifyAuthenticatorAppRequest)(nil),                 // 44: openauth.intermediate.v1.VerifyAuthenticatorAppRequest
-	(*VerifyAuthenticatorAppResponse)(nil),                // 45: openauth.intermediate.v1.VerifyAuthenticatorAppResponse
-	(*GetPasskeyOptionsRequest)(nil),                      // 46: openauth.intermediate.v1.GetPasskeyOptionsRequest
-	(*GetPasskeyOptionsResponse)(nil),                     // 47: openauth.intermediate.v1.GetPasskeyOptionsResponse
-	(*RegisterPasskeyRequest)(nil),                        // 48: openauth.intermediate.v1.RegisterPasskeyRequest
-	(*RegisterPasskeyResponse)(nil),                       // 49: openauth.intermediate.v1.RegisterPasskeyResponse
-	(*IssuePasskeyChallengeRequest)(nil),                  // 50: openauth.intermediate.v1.IssuePasskeyChallengeRequest
-	(*IssuePasskeyChallengeResponse)(nil),                 // 51: openauth.intermediate.v1.IssuePasskeyChallengeResponse
-	(*VerifyPasskeyRequest)(nil),                          // 52: openauth.intermediate.v1.VerifyPasskeyRequest
-	(*VerifyPasskeyResponse)(nil),                         // 53: openauth.intermediate.v1.VerifyPasskeyResponse
-	(*SetEmailAsPrimaryLoginFactorRequest)(nil),           // 54: openauth.intermediate.v1.SetEmailAsPrimaryLoginFactorRequest
-	(*SetEmailAsPrimaryLoginFactorResponse)(nil),          // 55: openauth.intermediate.v1.SetEmailAsPrimaryLoginFactorResponse
+	(*IntermediateSession)(nil),                           // 0: tesseral.intermediate.v1.IntermediateSession
+	(*Settings)(nil),                                      // 1: tesseral.intermediate.v1.Settings
+	(*CreateProjectRequest)(nil),                          // 2: tesseral.intermediate.v1.CreateProjectRequest
+	(*CreateProjectResponse)(nil),                         // 3: tesseral.intermediate.v1.CreateProjectResponse
+	(*CreateIntermediateSessionRequest)(nil),              // 4: tesseral.intermediate.v1.CreateIntermediateSessionRequest
+	(*CreateIntermediateSessionResponse)(nil),             // 5: tesseral.intermediate.v1.CreateIntermediateSessionResponse
+	(*WhoamiRequest)(nil),                                 // 6: tesseral.intermediate.v1.WhoamiRequest
+	(*WhoamiResponse)(nil),                                // 7: tesseral.intermediate.v1.WhoamiResponse
+	(*CreateOrganizationRequest)(nil),                     // 8: tesseral.intermediate.v1.CreateOrganizationRequest
+	(*CreateOrganizationResponse)(nil),                    // 9: tesseral.intermediate.v1.CreateOrganizationResponse
+	(*SetOrganizationRequest)(nil),                        // 10: tesseral.intermediate.v1.SetOrganizationRequest
+	(*SetOrganizationResponse)(nil),                       // 11: tesseral.intermediate.v1.SetOrganizationResponse
+	(*ExchangeIntermediateSessionForSessionRequest)(nil),  // 12: tesseral.intermediate.v1.ExchangeIntermediateSessionForSessionRequest
+	(*ExchangeIntermediateSessionForSessionResponse)(nil), // 13: tesseral.intermediate.v1.ExchangeIntermediateSessionForSessionResponse
+	(*GetGoogleOAuthRedirectURLRequest)(nil),              // 14: tesseral.intermediate.v1.GetGoogleOAuthRedirectURLRequest
+	(*GetGoogleOAuthRedirectURLResponse)(nil),             // 15: tesseral.intermediate.v1.GetGoogleOAuthRedirectURLResponse
+	(*RedeemGoogleOAuthCodeRequest)(nil),                  // 16: tesseral.intermediate.v1.RedeemGoogleOAuthCodeRequest
+	(*RedeemGoogleOAuthCodeResponse)(nil),                 // 17: tesseral.intermediate.v1.RedeemGoogleOAuthCodeResponse
+	(*GetMicrosoftOAuthRedirectURLRequest)(nil),           // 18: tesseral.intermediate.v1.GetMicrosoftOAuthRedirectURLRequest
+	(*GetMicrosoftOAuthRedirectURLResponse)(nil),          // 19: tesseral.intermediate.v1.GetMicrosoftOAuthRedirectURLResponse
+	(*RedeemMicrosoftOAuthCodeRequest)(nil),               // 20: tesseral.intermediate.v1.RedeemMicrosoftOAuthCodeRequest
+	(*RedeemMicrosoftOAuthCodeResponse)(nil),              // 21: tesseral.intermediate.v1.RedeemMicrosoftOAuthCodeResponse
+	(*Organization)(nil),                                  // 22: tesseral.intermediate.v1.Organization
+	(*Project)(nil),                                       // 23: tesseral.intermediate.v1.Project
+	(*IssueEmailVerificationChallengeRequest)(nil),        // 24: tesseral.intermediate.v1.IssueEmailVerificationChallengeRequest
+	(*IssueEmailVerificationChallengeResponse)(nil),       // 25: tesseral.intermediate.v1.IssueEmailVerificationChallengeResponse
+	(*ListOrganizationsRequest)(nil),                      // 26: tesseral.intermediate.v1.ListOrganizationsRequest
+	(*ListOrganizationsResponse)(nil),                     // 27: tesseral.intermediate.v1.ListOrganizationsResponse
+	(*ListSAMLOrganizationsRequest)(nil),                  // 28: tesseral.intermediate.v1.ListSAMLOrganizationsRequest
+	(*ListSAMLOrganizationsResponse)(nil),                 // 29: tesseral.intermediate.v1.ListSAMLOrganizationsResponse
+	(*VerifyEmailChallengeRequest)(nil),                   // 30: tesseral.intermediate.v1.VerifyEmailChallengeRequest
+	(*VerifyEmailChallengeResponse)(nil),                  // 31: tesseral.intermediate.v1.VerifyEmailChallengeResponse
+	(*RegisterPasswordRequest)(nil),                       // 32: tesseral.intermediate.v1.RegisterPasswordRequest
+	(*RegisterPasswordResponse)(nil),                      // 33: tesseral.intermediate.v1.RegisterPasswordResponse
+	(*VerifyPasswordRequest)(nil),                         // 34: tesseral.intermediate.v1.VerifyPasswordRequest
+	(*VerifyPasswordResponse)(nil),                        // 35: tesseral.intermediate.v1.VerifyPasswordResponse
+	(*GetSettingsRequest)(nil),                            // 36: tesseral.intermediate.v1.GetSettingsRequest
+	(*GetSettingsResponse)(nil),                           // 37: tesseral.intermediate.v1.GetSettingsResponse
+	(*RedeemUserImpersonationTokenRequest)(nil),           // 38: tesseral.intermediate.v1.RedeemUserImpersonationTokenRequest
+	(*RedeemUserImpersonationTokenResponse)(nil),          // 39: tesseral.intermediate.v1.RedeemUserImpersonationTokenResponse
+	(*GetAuthenticatorAppOptionsRequest)(nil),             // 40: tesseral.intermediate.v1.GetAuthenticatorAppOptionsRequest
+	(*GetAuthenticatorAppOptionsResponse)(nil),            // 41: tesseral.intermediate.v1.GetAuthenticatorAppOptionsResponse
+	(*RegisterAuthenticatorAppRequest)(nil),               // 42: tesseral.intermediate.v1.RegisterAuthenticatorAppRequest
+	(*RegisterAuthenticatorAppResponse)(nil),              // 43: tesseral.intermediate.v1.RegisterAuthenticatorAppResponse
+	(*VerifyAuthenticatorAppRequest)(nil),                 // 44: tesseral.intermediate.v1.VerifyAuthenticatorAppRequest
+	(*VerifyAuthenticatorAppResponse)(nil),                // 45: tesseral.intermediate.v1.VerifyAuthenticatorAppResponse
+	(*GetPasskeyOptionsRequest)(nil),                      // 46: tesseral.intermediate.v1.GetPasskeyOptionsRequest
+	(*GetPasskeyOptionsResponse)(nil),                     // 47: tesseral.intermediate.v1.GetPasskeyOptionsResponse
+	(*RegisterPasskeyRequest)(nil),                        // 48: tesseral.intermediate.v1.RegisterPasskeyRequest
+	(*RegisterPasskeyResponse)(nil),                       // 49: tesseral.intermediate.v1.RegisterPasskeyResponse
+	(*IssuePasskeyChallengeRequest)(nil),                  // 50: tesseral.intermediate.v1.IssuePasskeyChallengeRequest
+	(*IssuePasskeyChallengeResponse)(nil),                 // 51: tesseral.intermediate.v1.IssuePasskeyChallengeResponse
+	(*VerifyPasskeyRequest)(nil),                          // 52: tesseral.intermediate.v1.VerifyPasskeyRequest
+	(*VerifyPasskeyResponse)(nil),                         // 53: tesseral.intermediate.v1.VerifyPasskeyResponse
+	(*SetEmailAsPrimaryLoginFactorRequest)(nil),           // 54: tesseral.intermediate.v1.SetEmailAsPrimaryLoginFactorRequest
+	(*SetEmailAsPrimaryLoginFactorResponse)(nil),          // 55: tesseral.intermediate.v1.SetEmailAsPrimaryLoginFactorResponse
 	(*timestamppb.Timestamp)(nil),                         // 56: google.protobuf.Timestamp
 }
 var file_tesseral_intermediate_v1_intermediate_proto_depIdxs = []int32{
-	56, // 0: openauth.intermediate.v1.Settings.create_time:type_name -> google.protobuf.Timestamp
-	56, // 1: openauth.intermediate.v1.Settings.update_time:type_name -> google.protobuf.Timestamp
-	23, // 2: openauth.intermediate.v1.CreateProjectResponse.project:type_name -> openauth.intermediate.v1.Project
-	0,  // 3: openauth.intermediate.v1.WhoamiResponse.intermediate_session:type_name -> openauth.intermediate.v1.IntermediateSession
-	56, // 4: openauth.intermediate.v1.Project.create_time:type_name -> google.protobuf.Timestamp
-	56, // 5: openauth.intermediate.v1.Project.update_time:type_name -> google.protobuf.Timestamp
-	22, // 6: openauth.intermediate.v1.ListOrganizationsResponse.organizations:type_name -> openauth.intermediate.v1.Organization
-	22, // 7: openauth.intermediate.v1.ListSAMLOrganizationsResponse.organizations:type_name -> openauth.intermediate.v1.Organization
-	1,  // 8: openauth.intermediate.v1.GetSettingsResponse.settings:type_name -> openauth.intermediate.v1.Settings
-	28, // 9: openauth.intermediate.v1.IntermediateService.ListSAMLOrganizations:input_type -> openauth.intermediate.v1.ListSAMLOrganizationsRequest
-	36, // 10: openauth.intermediate.v1.IntermediateService.GetSettings:input_type -> openauth.intermediate.v1.GetSettingsRequest
-	38, // 11: openauth.intermediate.v1.IntermediateService.RedeemUserImpersonationToken:input_type -> openauth.intermediate.v1.RedeemUserImpersonationTokenRequest
-	4,  // 12: openauth.intermediate.v1.IntermediateService.CreateIntermediateSession:input_type -> openauth.intermediate.v1.CreateIntermediateSessionRequest
-	6,  // 13: openauth.intermediate.v1.IntermediateService.Whoami:input_type -> openauth.intermediate.v1.WhoamiRequest
-	8,  // 14: openauth.intermediate.v1.IntermediateService.CreateOrganization:input_type -> openauth.intermediate.v1.CreateOrganizationRequest
-	26, // 15: openauth.intermediate.v1.IntermediateService.ListOrganizations:input_type -> openauth.intermediate.v1.ListOrganizationsRequest
-	10, // 16: openauth.intermediate.v1.IntermediateService.SetOrganization:input_type -> openauth.intermediate.v1.SetOrganizationRequest
-	12, // 17: openauth.intermediate.v1.IntermediateService.ExchangeIntermediateSessionForSession:input_type -> openauth.intermediate.v1.ExchangeIntermediateSessionForSessionRequest
-	14, // 18: openauth.intermediate.v1.IntermediateService.GetGoogleOAuthRedirectURL:input_type -> openauth.intermediate.v1.GetGoogleOAuthRedirectURLRequest
-	16, // 19: openauth.intermediate.v1.IntermediateService.RedeemGoogleOAuthCode:input_type -> openauth.intermediate.v1.RedeemGoogleOAuthCodeRequest
-	18, // 20: openauth.intermediate.v1.IntermediateService.GetMicrosoftOAuthRedirectURL:input_type -> openauth.intermediate.v1.GetMicrosoftOAuthRedirectURLRequest
-	20, // 21: openauth.intermediate.v1.IntermediateService.RedeemMicrosoftOAuthCode:input_type -> openauth.intermediate.v1.RedeemMicrosoftOAuthCodeRequest
-	24, // 22: openauth.intermediate.v1.IntermediateService.IssueEmailVerificationChallenge:input_type -> openauth.intermediate.v1.IssueEmailVerificationChallengeRequest
-	30, // 23: openauth.intermediate.v1.IntermediateService.VerifyEmailChallenge:input_type -> openauth.intermediate.v1.VerifyEmailChallengeRequest
-	32, // 24: openauth.intermediate.v1.IntermediateService.RegisterPassword:input_type -> openauth.intermediate.v1.RegisterPasswordRequest
-	34, // 25: openauth.intermediate.v1.IntermediateService.VerifyPassword:input_type -> openauth.intermediate.v1.VerifyPasswordRequest
-	46, // 26: openauth.intermediate.v1.IntermediateService.GetPasskeyOptions:input_type -> openauth.intermediate.v1.GetPasskeyOptionsRequest
-	48, // 27: openauth.intermediate.v1.IntermediateService.RegisterPasskey:input_type -> openauth.intermediate.v1.RegisterPasskeyRequest
-	50, // 28: openauth.intermediate.v1.IntermediateService.IssuePasskeyChallenge:input_type -> openauth.intermediate.v1.IssuePasskeyChallengeRequest
-	52, // 29: openauth.intermediate.v1.IntermediateService.VerifyPasskey:input_type -> openauth.intermediate.v1.VerifyPasskeyRequest
-	40, // 30: openauth.intermediate.v1.IntermediateService.GetAuthenticatorAppOptions:input_type -> openauth.intermediate.v1.GetAuthenticatorAppOptionsRequest
-	42, // 31: openauth.intermediate.v1.IntermediateService.RegisterAuthenticatorApp:input_type -> openauth.intermediate.v1.RegisterAuthenticatorAppRequest
-	44, // 32: openauth.intermediate.v1.IntermediateService.VerifyAuthenticatorApp:input_type -> openauth.intermediate.v1.VerifyAuthenticatorAppRequest
-	54, // 33: openauth.intermediate.v1.IntermediateService.SetEmailAsPrimaryLoginFactor:input_type -> openauth.intermediate.v1.SetEmailAsPrimaryLoginFactorRequest
-	2,  // 34: openauth.intermediate.v1.IntermediateService.CreateProject:input_type -> openauth.intermediate.v1.CreateProjectRequest
-	29, // 35: openauth.intermediate.v1.IntermediateService.ListSAMLOrganizations:output_type -> openauth.intermediate.v1.ListSAMLOrganizationsResponse
-	37, // 36: openauth.intermediate.v1.IntermediateService.GetSettings:output_type -> openauth.intermediate.v1.GetSettingsResponse
-	39, // 37: openauth.intermediate.v1.IntermediateService.RedeemUserImpersonationToken:output_type -> openauth.intermediate.v1.RedeemUserImpersonationTokenResponse
-	5,  // 38: openauth.intermediate.v1.IntermediateService.CreateIntermediateSession:output_type -> openauth.intermediate.v1.CreateIntermediateSessionResponse
-	7,  // 39: openauth.intermediate.v1.IntermediateService.Whoami:output_type -> openauth.intermediate.v1.WhoamiResponse
-	9,  // 40: openauth.intermediate.v1.IntermediateService.CreateOrganization:output_type -> openauth.intermediate.v1.CreateOrganizationResponse
-	27, // 41: openauth.intermediate.v1.IntermediateService.ListOrganizations:output_type -> openauth.intermediate.v1.ListOrganizationsResponse
-	11, // 42: openauth.intermediate.v1.IntermediateService.SetOrganization:output_type -> openauth.intermediate.v1.SetOrganizationResponse
-	13, // 43: openauth.intermediate.v1.IntermediateService.ExchangeIntermediateSessionForSession:output_type -> openauth.intermediate.v1.ExchangeIntermediateSessionForSessionResponse
-	15, // 44: openauth.intermediate.v1.IntermediateService.GetGoogleOAuthRedirectURL:output_type -> openauth.intermediate.v1.GetGoogleOAuthRedirectURLResponse
-	17, // 45: openauth.intermediate.v1.IntermediateService.RedeemGoogleOAuthCode:output_type -> openauth.intermediate.v1.RedeemGoogleOAuthCodeResponse
-	19, // 46: openauth.intermediate.v1.IntermediateService.GetMicrosoftOAuthRedirectURL:output_type -> openauth.intermediate.v1.GetMicrosoftOAuthRedirectURLResponse
-	21, // 47: openauth.intermediate.v1.IntermediateService.RedeemMicrosoftOAuthCode:output_type -> openauth.intermediate.v1.RedeemMicrosoftOAuthCodeResponse
-	25, // 48: openauth.intermediate.v1.IntermediateService.IssueEmailVerificationChallenge:output_type -> openauth.intermediate.v1.IssueEmailVerificationChallengeResponse
-	31, // 49: openauth.intermediate.v1.IntermediateService.VerifyEmailChallenge:output_type -> openauth.intermediate.v1.VerifyEmailChallengeResponse
-	33, // 50: openauth.intermediate.v1.IntermediateService.RegisterPassword:output_type -> openauth.intermediate.v1.RegisterPasswordResponse
-	35, // 51: openauth.intermediate.v1.IntermediateService.VerifyPassword:output_type -> openauth.intermediate.v1.VerifyPasswordResponse
-	47, // 52: openauth.intermediate.v1.IntermediateService.GetPasskeyOptions:output_type -> openauth.intermediate.v1.GetPasskeyOptionsResponse
-	49, // 53: openauth.intermediate.v1.IntermediateService.RegisterPasskey:output_type -> openauth.intermediate.v1.RegisterPasskeyResponse
-	51, // 54: openauth.intermediate.v1.IntermediateService.IssuePasskeyChallenge:output_type -> openauth.intermediate.v1.IssuePasskeyChallengeResponse
-	53, // 55: openauth.intermediate.v1.IntermediateService.VerifyPasskey:output_type -> openauth.intermediate.v1.VerifyPasskeyResponse
-	41, // 56: openauth.intermediate.v1.IntermediateService.GetAuthenticatorAppOptions:output_type -> openauth.intermediate.v1.GetAuthenticatorAppOptionsResponse
-	43, // 57: openauth.intermediate.v1.IntermediateService.RegisterAuthenticatorApp:output_type -> openauth.intermediate.v1.RegisterAuthenticatorAppResponse
-	45, // 58: openauth.intermediate.v1.IntermediateService.VerifyAuthenticatorApp:output_type -> openauth.intermediate.v1.VerifyAuthenticatorAppResponse
-	55, // 59: openauth.intermediate.v1.IntermediateService.SetEmailAsPrimaryLoginFactor:output_type -> openauth.intermediate.v1.SetEmailAsPrimaryLoginFactorResponse
-	3,  // 60: openauth.intermediate.v1.IntermediateService.CreateProject:output_type -> openauth.intermediate.v1.CreateProjectResponse
+	56, // 0: tesseral.intermediate.v1.Settings.create_time:type_name -> google.protobuf.Timestamp
+	56, // 1: tesseral.intermediate.v1.Settings.update_time:type_name -> google.protobuf.Timestamp
+	23, // 2: tesseral.intermediate.v1.CreateProjectResponse.project:type_name -> tesseral.intermediate.v1.Project
+	0,  // 3: tesseral.intermediate.v1.WhoamiResponse.intermediate_session:type_name -> tesseral.intermediate.v1.IntermediateSession
+	56, // 4: tesseral.intermediate.v1.Project.create_time:type_name -> google.protobuf.Timestamp
+	56, // 5: tesseral.intermediate.v1.Project.update_time:type_name -> google.protobuf.Timestamp
+	22, // 6: tesseral.intermediate.v1.ListOrganizationsResponse.organizations:type_name -> tesseral.intermediate.v1.Organization
+	22, // 7: tesseral.intermediate.v1.ListSAMLOrganizationsResponse.organizations:type_name -> tesseral.intermediate.v1.Organization
+	1,  // 8: tesseral.intermediate.v1.GetSettingsResponse.settings:type_name -> tesseral.intermediate.v1.Settings
+	28, // 9: tesseral.intermediate.v1.IntermediateService.ListSAMLOrganizations:input_type -> tesseral.intermediate.v1.ListSAMLOrganizationsRequest
+	36, // 10: tesseral.intermediate.v1.IntermediateService.GetSettings:input_type -> tesseral.intermediate.v1.GetSettingsRequest
+	38, // 11: tesseral.intermediate.v1.IntermediateService.RedeemUserImpersonationToken:input_type -> tesseral.intermediate.v1.RedeemUserImpersonationTokenRequest
+	4,  // 12: tesseral.intermediate.v1.IntermediateService.CreateIntermediateSession:input_type -> tesseral.intermediate.v1.CreateIntermediateSessionRequest
+	6,  // 13: tesseral.intermediate.v1.IntermediateService.Whoami:input_type -> tesseral.intermediate.v1.WhoamiRequest
+	8,  // 14: tesseral.intermediate.v1.IntermediateService.CreateOrganization:input_type -> tesseral.intermediate.v1.CreateOrganizationRequest
+	26, // 15: tesseral.intermediate.v1.IntermediateService.ListOrganizations:input_type -> tesseral.intermediate.v1.ListOrganizationsRequest
+	10, // 16: tesseral.intermediate.v1.IntermediateService.SetOrganization:input_type -> tesseral.intermediate.v1.SetOrganizationRequest
+	12, // 17: tesseral.intermediate.v1.IntermediateService.ExchangeIntermediateSessionForSession:input_type -> tesseral.intermediate.v1.ExchangeIntermediateSessionForSessionRequest
+	14, // 18: tesseral.intermediate.v1.IntermediateService.GetGoogleOAuthRedirectURL:input_type -> tesseral.intermediate.v1.GetGoogleOAuthRedirectURLRequest
+	16, // 19: tesseral.intermediate.v1.IntermediateService.RedeemGoogleOAuthCode:input_type -> tesseral.intermediate.v1.RedeemGoogleOAuthCodeRequest
+	18, // 20: tesseral.intermediate.v1.IntermediateService.GetMicrosoftOAuthRedirectURL:input_type -> tesseral.intermediate.v1.GetMicrosoftOAuthRedirectURLRequest
+	20, // 21: tesseral.intermediate.v1.IntermediateService.RedeemMicrosoftOAuthCode:input_type -> tesseral.intermediate.v1.RedeemMicrosoftOAuthCodeRequest
+	24, // 22: tesseral.intermediate.v1.IntermediateService.IssueEmailVerificationChallenge:input_type -> tesseral.intermediate.v1.IssueEmailVerificationChallengeRequest
+	30, // 23: tesseral.intermediate.v1.IntermediateService.VerifyEmailChallenge:input_type -> tesseral.intermediate.v1.VerifyEmailChallengeRequest
+	32, // 24: tesseral.intermediate.v1.IntermediateService.RegisterPassword:input_type -> tesseral.intermediate.v1.RegisterPasswordRequest
+	34, // 25: tesseral.intermediate.v1.IntermediateService.VerifyPassword:input_type -> tesseral.intermediate.v1.VerifyPasswordRequest
+	46, // 26: tesseral.intermediate.v1.IntermediateService.GetPasskeyOptions:input_type -> tesseral.intermediate.v1.GetPasskeyOptionsRequest
+	48, // 27: tesseral.intermediate.v1.IntermediateService.RegisterPasskey:input_type -> tesseral.intermediate.v1.RegisterPasskeyRequest
+	50, // 28: tesseral.intermediate.v1.IntermediateService.IssuePasskeyChallenge:input_type -> tesseral.intermediate.v1.IssuePasskeyChallengeRequest
+	52, // 29: tesseral.intermediate.v1.IntermediateService.VerifyPasskey:input_type -> tesseral.intermediate.v1.VerifyPasskeyRequest
+	40, // 30: tesseral.intermediate.v1.IntermediateService.GetAuthenticatorAppOptions:input_type -> tesseral.intermediate.v1.GetAuthenticatorAppOptionsRequest
+	42, // 31: tesseral.intermediate.v1.IntermediateService.RegisterAuthenticatorApp:input_type -> tesseral.intermediate.v1.RegisterAuthenticatorAppRequest
+	44, // 32: tesseral.intermediate.v1.IntermediateService.VerifyAuthenticatorApp:input_type -> tesseral.intermediate.v1.VerifyAuthenticatorAppRequest
+	54, // 33: tesseral.intermediate.v1.IntermediateService.SetEmailAsPrimaryLoginFactor:input_type -> tesseral.intermediate.v1.SetEmailAsPrimaryLoginFactorRequest
+	2,  // 34: tesseral.intermediate.v1.IntermediateService.CreateProject:input_type -> tesseral.intermediate.v1.CreateProjectRequest
+	29, // 35: tesseral.intermediate.v1.IntermediateService.ListSAMLOrganizations:output_type -> tesseral.intermediate.v1.ListSAMLOrganizationsResponse
+	37, // 36: tesseral.intermediate.v1.IntermediateService.GetSettings:output_type -> tesseral.intermediate.v1.GetSettingsResponse
+	39, // 37: tesseral.intermediate.v1.IntermediateService.RedeemUserImpersonationToken:output_type -> tesseral.intermediate.v1.RedeemUserImpersonationTokenResponse
+	5,  // 38: tesseral.intermediate.v1.IntermediateService.CreateIntermediateSession:output_type -> tesseral.intermediate.v1.CreateIntermediateSessionResponse
+	7,  // 39: tesseral.intermediate.v1.IntermediateService.Whoami:output_type -> tesseral.intermediate.v1.WhoamiResponse
+	9,  // 40: tesseral.intermediate.v1.IntermediateService.CreateOrganization:output_type -> tesseral.intermediate.v1.CreateOrganizationResponse
+	27, // 41: tesseral.intermediate.v1.IntermediateService.ListOrganizations:output_type -> tesseral.intermediate.v1.ListOrganizationsResponse
+	11, // 42: tesseral.intermediate.v1.IntermediateService.SetOrganization:output_type -> tesseral.intermediate.v1.SetOrganizationResponse
+	13, // 43: tesseral.intermediate.v1.IntermediateService.ExchangeIntermediateSessionForSession:output_type -> tesseral.intermediate.v1.ExchangeIntermediateSessionForSessionResponse
+	15, // 44: tesseral.intermediate.v1.IntermediateService.GetGoogleOAuthRedirectURL:output_type -> tesseral.intermediate.v1.GetGoogleOAuthRedirectURLResponse
+	17, // 45: tesseral.intermediate.v1.IntermediateService.RedeemGoogleOAuthCode:output_type -> tesseral.intermediate.v1.RedeemGoogleOAuthCodeResponse
+	19, // 46: tesseral.intermediate.v1.IntermediateService.GetMicrosoftOAuthRedirectURL:output_type -> tesseral.intermediate.v1.GetMicrosoftOAuthRedirectURLResponse
+	21, // 47: tesseral.intermediate.v1.IntermediateService.RedeemMicrosoftOAuthCode:output_type -> tesseral.intermediate.v1.RedeemMicrosoftOAuthCodeResponse
+	25, // 48: tesseral.intermediate.v1.IntermediateService.IssueEmailVerificationChallenge:output_type -> tesseral.intermediate.v1.IssueEmailVerificationChallengeResponse
+	31, // 49: tesseral.intermediate.v1.IntermediateService.VerifyEmailChallenge:output_type -> tesseral.intermediate.v1.VerifyEmailChallengeResponse
+	33, // 50: tesseral.intermediate.v1.IntermediateService.RegisterPassword:output_type -> tesseral.intermediate.v1.RegisterPasswordResponse
+	35, // 51: tesseral.intermediate.v1.IntermediateService.VerifyPassword:output_type -> tesseral.intermediate.v1.VerifyPasswordResponse
+	47, // 52: tesseral.intermediate.v1.IntermediateService.GetPasskeyOptions:output_type -> tesseral.intermediate.v1.GetPasskeyOptionsResponse
+	49, // 53: tesseral.intermediate.v1.IntermediateService.RegisterPasskey:output_type -> tesseral.intermediate.v1.RegisterPasskeyResponse
+	51, // 54: tesseral.intermediate.v1.IntermediateService.IssuePasskeyChallenge:output_type -> tesseral.intermediate.v1.IssuePasskeyChallengeResponse
+	53, // 55: tesseral.intermediate.v1.IntermediateService.VerifyPasskey:output_type -> tesseral.intermediate.v1.VerifyPasskeyResponse
+	41, // 56: tesseral.intermediate.v1.IntermediateService.GetAuthenticatorAppOptions:output_type -> tesseral.intermediate.v1.GetAuthenticatorAppOptionsResponse
+	43, // 57: tesseral.intermediate.v1.IntermediateService.RegisterAuthenticatorApp:output_type -> tesseral.intermediate.v1.RegisterAuthenticatorAppResponse
+	45, // 58: tesseral.intermediate.v1.IntermediateService.VerifyAuthenticatorApp:output_type -> tesseral.intermediate.v1.VerifyAuthenticatorAppResponse
+	55, // 59: tesseral.intermediate.v1.IntermediateService.SetEmailAsPrimaryLoginFactor:output_type -> tesseral.intermediate.v1.SetEmailAsPrimaryLoginFactorResponse
+	3,  // 60: tesseral.intermediate.v1.IntermediateService.CreateProject:output_type -> tesseral.intermediate.v1.CreateProjectResponse
 	35, // [35:61] is the sub-list for method output_type
 	9,  // [9:35] is the sub-list for method input_type
 	9,  // [9:9] is the sub-list for extension type_name

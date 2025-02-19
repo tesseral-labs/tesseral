@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package openauth.frontend.v1;
+package tesseral.frontend.v1;
 
 import "google/api/annotations.proto";
 import "tesseral/frontend/v1/models.proto";

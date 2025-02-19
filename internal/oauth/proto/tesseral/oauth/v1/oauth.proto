@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package openauth.oauth.v1;
+package tesseral.oauth.v1;
 
 import "google/protobuf/struct.proto";
 

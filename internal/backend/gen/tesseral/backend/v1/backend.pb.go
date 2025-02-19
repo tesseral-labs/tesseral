@@ -6392,312 +6392,312 @@ func file_tesseral_backend_v1_backend_proto_rawDescGZIP() []byte {
 
 var file_tesseral_backend_v1_backend_proto_msgTypes = make([]protoimpl.MessageInfo, 113)
 var file_tesseral_backend_v1_backend_proto_goTypes = []any{
-	(*GetProjectRequest)(nil),                             // 0: openauth.backend.v1.GetProjectRequest
-	(*GetProjectResponse)(nil),                            // 1: openauth.backend.v1.GetProjectResponse
-	(*UpdateProjectRequest)(nil),                          // 2: openauth.backend.v1.UpdateProjectRequest
-	(*UpdateProjectResponse)(nil),                         // 3: openauth.backend.v1.UpdateProjectResponse
-	(*ListOrganizationsRequest)(nil),                      // 4: openauth.backend.v1.ListOrganizationsRequest
-	(*ListOrganizationsResponse)(nil),                     // 5: openauth.backend.v1.ListOrganizationsResponse
-	(*GetOrganizationRequest)(nil),                        // 6: openauth.backend.v1.GetOrganizationRequest
-	(*GetOrganizationResponse)(nil),                       // 7: openauth.backend.v1.GetOrganizationResponse
-	(*CreateOrganizationRequest)(nil),                     // 8: openauth.backend.v1.CreateOrganizationRequest
-	(*CreateOrganizationResponse)(nil),                    // 9: openauth.backend.v1.CreateOrganizationResponse
-	(*UpdateOrganizationRequest)(nil),                     // 10: openauth.backend.v1.UpdateOrganizationRequest
-	(*UpdateOrganizationResponse)(nil),                    // 11: openauth.backend.v1.UpdateOrganizationResponse
-	(*DeleteOrganizationRequest)(nil),                     // 12: openauth.backend.v1.DeleteOrganizationRequest
-	(*DeleteOrganizationResponse)(nil),                    // 13: openauth.backend.v1.DeleteOrganizationResponse
-	(*GetOrganizationGoogleHostedDomainsRequest)(nil),     // 14: openauth.backend.v1.GetOrganizationGoogleHostedDomainsRequest
-	(*GetOrganizationGoogleHostedDomainsResponse)(nil),    // 15: openauth.backend.v1.GetOrganizationGoogleHostedDomainsResponse
-	(*UpdateOrganizationGoogleHostedDomainsRequest)(nil),  // 16: openauth.backend.v1.UpdateOrganizationGoogleHostedDomainsRequest
-	(*UpdateOrganizationGoogleHostedDomainsResponse)(nil), // 17: openauth.backend.v1.UpdateOrganizationGoogleHostedDomainsResponse
-	(*GetOrganizationMicrosoftTenantIDsRequest)(nil),      // 18: openauth.backend.v1.GetOrganizationMicrosoftTenantIDsRequest
-	(*GetOrganizationMicrosoftTenantIDsResponse)(nil),     // 19: openauth.backend.v1.GetOrganizationMicrosoftTenantIDsResponse
-	(*UpdateOrganizationMicrosoftTenantIDsRequest)(nil),   // 20: openauth.backend.v1.UpdateOrganizationMicrosoftTenantIDsRequest
-	(*UpdateOrganizationMicrosoftTenantIDsResponse)(nil),  // 21: openauth.backend.v1.UpdateOrganizationMicrosoftTenantIDsResponse
-	(*CreateSAMLConnectionRequest)(nil),                   // 22: openauth.backend.v1.CreateSAMLConnectionRequest
-	(*CreateSAMLConnectionResponse)(nil),                  // 23: openauth.backend.v1.CreateSAMLConnectionResponse
-	(*GetSAMLConnectionRequest)(nil),                      // 24: openauth.backend.v1.GetSAMLConnectionRequest
-	(*GetSAMLConnectionResponse)(nil),                     // 25: openauth.backend.v1.GetSAMLConnectionResponse
-	(*ListSAMLConnectionsRequest)(nil),                    // 26: openauth.backend.v1.ListSAMLConnectionsRequest
-	(*ListSAMLConnectionsResponse)(nil),                   // 27: openauth.backend.v1.ListSAMLConnectionsResponse
-	(*UpdateSAMLConnectionRequest)(nil),                   // 28: openauth.backend.v1.UpdateSAMLConnectionRequest
-	(*UpdateSAMLConnectionResponse)(nil),                  // 29: openauth.backend.v1.UpdateSAMLConnectionResponse
-	(*DeleteSAMLConnectionRequest)(nil),                   // 30: openauth.backend.v1.DeleteSAMLConnectionRequest
-	(*DeleteSAMLConnectionResponse)(nil),                  // 31: openauth.backend.v1.DeleteSAMLConnectionResponse
-	(*ListSCIMAPIKeysRequest)(nil),                        // 32: openauth.backend.v1.ListSCIMAPIKeysRequest
-	(*ListSCIMAPIKeysResponse)(nil),                       // 33: openauth.backend.v1.ListSCIMAPIKeysResponse
-	(*GetSCIMAPIKeyRequest)(nil),                          // 34: openauth.backend.v1.GetSCIMAPIKeyRequest
-	(*GetSCIMAPIKeyResponse)(nil),                         // 35: openauth.backend.v1.GetSCIMAPIKeyResponse
-	(*CreateSCIMAPIKeyRequest)(nil),                       // 36: openauth.backend.v1.CreateSCIMAPIKeyRequest
-	(*CreateSCIMAPIKeyResponse)(nil),                      // 37: openauth.backend.v1.CreateSCIMAPIKeyResponse
-	(*UpdateSCIMAPIKeyRequest)(nil),                       // 38: openauth.backend.v1.UpdateSCIMAPIKeyRequest
-	(*UpdateSCIMAPIKeyResponse)(nil),                      // 39: openauth.backend.v1.UpdateSCIMAPIKeyResponse
-	(*DeleteSCIMAPIKeyRequest)(nil),                       // 40: openauth.backend.v1.DeleteSCIMAPIKeyRequest
-	(*DeleteSCIMAPIKeyResponse)(nil),                      // 41: openauth.backend.v1.DeleteSCIMAPIKeyResponse
-	(*RevokeSCIMAPIKeyRequest)(nil),                       // 42: openauth.backend.v1.RevokeSCIMAPIKeyRequest
-	(*RevokeSCIMAPIKeyResponse)(nil),                      // 43: openauth.backend.v1.RevokeSCIMAPIKeyResponse
-	(*ListUsersRequest)(nil),                              // 44: openauth.backend.v1.ListUsersRequest
-	(*ListUsersResponse)(nil),                             // 45: openauth.backend.v1.ListUsersResponse
-	(*GetUserRequest)(nil),                                // 46: openauth.backend.v1.GetUserRequest
-	(*GetUserResponse)(nil),                               // 47: openauth.backend.v1.GetUserResponse
-	(*CreateUserRequest)(nil),                             // 48: openauth.backend.v1.CreateUserRequest
-	(*CreateUserResponse)(nil),                            // 49: openauth.backend.v1.CreateUserResponse
-	(*UpdateUserRequest)(nil),                             // 50: openauth.backend.v1.UpdateUserRequest
-	(*UpdateUserResponse)(nil),                            // 51: openauth.backend.v1.UpdateUserResponse
-	(*DeleteUserRequest)(nil),                             // 52: openauth.backend.v1.DeleteUserRequest
-	(*DeleteUserResponse)(nil),                            // 53: openauth.backend.v1.DeleteUserResponse
-	(*ListPasskeysRequest)(nil),                           // 54: openauth.backend.v1.ListPasskeysRequest
-	(*ListPasskeysResponse)(nil),                          // 55: openauth.backend.v1.ListPasskeysResponse
-	(*GetPasskeyRequest)(nil),                             // 56: openauth.backend.v1.GetPasskeyRequest
-	(*GetPasskeyResponse)(nil),                            // 57: openauth.backend.v1.GetPasskeyResponse
-	(*UpdatePasskeyRequest)(nil),                          // 58: openauth.backend.v1.UpdatePasskeyRequest
-	(*UpdatePasskeyResponse)(nil),                         // 59: openauth.backend.v1.UpdatePasskeyResponse
-	(*DeletePasskeyRequest)(nil),                          // 60: openauth.backend.v1.DeletePasskeyRequest
-	(*DeletePasskeyResponse)(nil),                         // 61: openauth.backend.v1.DeletePasskeyResponse
-	(*ListSessionsRequest)(nil),                           // 62: openauth.backend.v1.ListSessionsRequest
-	(*ListSessionsResponse)(nil),                          // 63: openauth.backend.v1.ListSessionsResponse
-	(*GetSessionRequest)(nil),                             // 64: openauth.backend.v1.GetSessionRequest
-	(*GetSessionResponse)(nil),                            // 65: openauth.backend.v1.GetSessionResponse
-	(*ListUserInvitesRequest)(nil),                        // 66: openauth.backend.v1.ListUserInvitesRequest
-	(*ListUserInvitesResponse)(nil),                       // 67: openauth.backend.v1.ListUserInvitesResponse
-	(*GetUserInviteRequest)(nil),                          // 68: openauth.backend.v1.GetUserInviteRequest
-	(*GetUserInviteResponse)(nil),                         // 69: openauth.backend.v1.GetUserInviteResponse
-	(*CreateUserInviteRequest)(nil),                       // 70: openauth.backend.v1.CreateUserInviteRequest
-	(*CreateUserInviteResponse)(nil),                      // 71: openauth.backend.v1.CreateUserInviteResponse
-	(*DeleteUserInviteRequest)(nil),                       // 72: openauth.backend.v1.DeleteUserInviteRequest
-	(*DeleteUserInviteResponse)(nil),                      // 73: openauth.backend.v1.DeleteUserInviteResponse
-	(*ListProjectAPIKeysRequest)(nil),                     // 74: openauth.backend.v1.ListProjectAPIKeysRequest
-	(*ListProjectAPIKeysResponse)(nil),                    // 75: openauth.backend.v1.ListProjectAPIKeysResponse
-	(*GetProjectAPIKeyRequest)(nil),                       // 76: openauth.backend.v1.GetProjectAPIKeyRequest
-	(*GetProjectAPIKeyResponse)(nil),                      // 77: openauth.backend.v1.GetProjectAPIKeyResponse
-	(*CreateProjectAPIKeyRequest)(nil),                    // 78: openauth.backend.v1.CreateProjectAPIKeyRequest
-	(*CreateProjectAPIKeyResponse)(nil),                   // 79: openauth.backend.v1.CreateProjectAPIKeyResponse
-	(*UpdateProjectAPIKeyRequest)(nil),                    // 80: openauth.backend.v1.UpdateProjectAPIKeyRequest
-	(*UpdateProjectAPIKeyResponse)(nil),                   // 81: openauth.backend.v1.UpdateProjectAPIKeyResponse
-	(*DeleteProjectAPIKeyRequest)(nil),                    // 82: openauth.backend.v1.DeleteProjectAPIKeyRequest
-	(*DeleteProjectAPIKeyResponse)(nil),                   // 83: openauth.backend.v1.DeleteProjectAPIKeyResponse
-	(*RevokeProjectAPIKeyRequest)(nil),                    // 84: openauth.backend.v1.RevokeProjectAPIKeyRequest
-	(*RevokeProjectAPIKeyResponse)(nil),                   // 85: openauth.backend.v1.RevokeProjectAPIKeyResponse
-	(*GetVaultDomainSettingsRequest)(nil),                 // 86: openauth.backend.v1.GetVaultDomainSettingsRequest
-	(*GetVaultDomainSettingsResponse)(nil),                // 87: openauth.backend.v1.GetVaultDomainSettingsResponse
-	(*ListPublishableKeysRequest)(nil),                    // 88: openauth.backend.v1.ListPublishableKeysRequest
-	(*ListPublishableKeysResponse)(nil),                   // 89: openauth.backend.v1.ListPublishableKeysResponse
-	(*GetPublishableKeyRequest)(nil),                      // 90: openauth.backend.v1.GetPublishableKeyRequest
-	(*GetPublishableKeyResponse)(nil),                     // 91: openauth.backend.v1.GetPublishableKeyResponse
-	(*CreatePublishableKeyRequest)(nil),                   // 92: openauth.backend.v1.CreatePublishableKeyRequest
-	(*CreatePublishableKeyResponse)(nil),                  // 93: openauth.backend.v1.CreatePublishableKeyResponse
-	(*UpdatePublishableKeyRequest)(nil),                   // 94: openauth.backend.v1.UpdatePublishableKeyRequest
-	(*UpdatePublishableKeyResponse)(nil),                  // 95: openauth.backend.v1.UpdatePublishableKeyResponse
-	(*DeletePublishableKeyRequest)(nil),                   // 96: openauth.backend.v1.DeletePublishableKeyRequest
-	(*DeletePublishableKeyResponse)(nil),                  // 97: openauth.backend.v1.DeletePublishableKeyResponse
-	(*GetProjectUISettingsRequest)(nil),                   // 98: openauth.backend.v1.GetProjectUISettingsRequest
-	(*GetProjectUISettingsResponse)(nil),                  // 99: openauth.backend.v1.GetProjectUISettingsResponse
-	(*UpdateProjectUISettingsRequest)(nil),                // 100: openauth.backend.v1.UpdateProjectUISettingsRequest
-	(*UpdateProjectUISettingsResponse)(nil),               // 101: openauth.backend.v1.UpdateProjectUISettingsResponse
-	(*DisableOrganizationLoginsRequest)(nil),              // 102: openauth.backend.v1.DisableOrganizationLoginsRequest
-	(*DisableOrganizationLoginsResponse)(nil),             // 103: openauth.backend.v1.DisableOrganizationLoginsResponse
-	(*DisableProjectLoginsRequest)(nil),                   // 104: openauth.backend.v1.DisableProjectLoginsRequest
-	(*DisableProjectLoginsResponse)(nil),                  // 105: openauth.backend.v1.DisableProjectLoginsResponse
-	(*EnableOrganizationLoginsRequest)(nil),               // 106: openauth.backend.v1.EnableOrganizationLoginsRequest
-	(*EnableOrganizationLoginsResponse)(nil),              // 107: openauth.backend.v1.EnableOrganizationLoginsResponse
-	(*EnableProjectLoginsRequest)(nil),                    // 108: openauth.backend.v1.EnableProjectLoginsRequest
-	(*EnableProjectLoginsResponse)(nil),                   // 109: openauth.backend.v1.EnableProjectLoginsResponse
-	(*ImageUploadRequest)(nil),                            // 110: openauth.backend.v1.ImageUploadRequest
-	(*CreateUserImpersonationTokenRequest)(nil),           // 111: openauth.backend.v1.CreateUserImpersonationTokenRequest
-	(*CreateUserImpersonationTokenResponse)(nil),          // 112: openauth.backend.v1.CreateUserImpersonationTokenResponse
-	(*Project)(nil),                                       // 113: openauth.backend.v1.Project
-	(*Organization)(nil),                                  // 114: openauth.backend.v1.Organization
-	(*OrganizationGoogleHostedDomains)(nil),               // 115: openauth.backend.v1.OrganizationGoogleHostedDomains
-	(*OrganizationMicrosoftTenantIDs)(nil),                // 116: openauth.backend.v1.OrganizationMicrosoftTenantIDs
-	(*SAMLConnection)(nil),                                // 117: openauth.backend.v1.SAMLConnection
-	(*SCIMAPIKey)(nil),                                    // 118: openauth.backend.v1.SCIMAPIKey
-	(*User)(nil),                                          // 119: openauth.backend.v1.User
-	(*Passkey)(nil),                                       // 120: openauth.backend.v1.Passkey
-	(*Session)(nil),                                       // 121: openauth.backend.v1.Session
-	(*UserInvite)(nil),                                    // 122: openauth.backend.v1.UserInvite
-	(*ProjectAPIKey)(nil),                                 // 123: openauth.backend.v1.ProjectAPIKey
-	(*VaultDomainSettings)(nil),                           // 124: openauth.backend.v1.VaultDomainSettings
-	(*PublishableKey)(nil),                                // 125: openauth.backend.v1.PublishableKey
-	(*ProjectUISettings)(nil),                             // 126: openauth.backend.v1.ProjectUISettings
+	(*GetProjectRequest)(nil),                             // 0: tesseral.backend.v1.GetProjectRequest
+	(*GetProjectResponse)(nil),                            // 1: tesseral.backend.v1.GetProjectResponse
+	(*UpdateProjectRequest)(nil),                          // 2: tesseral.backend.v1.UpdateProjectRequest
+	(*UpdateProjectResponse)(nil),                         // 3: tesseral.backend.v1.UpdateProjectResponse
+	(*ListOrganizationsRequest)(nil),                      // 4: tesseral.backend.v1.ListOrganizationsRequest
+	(*ListOrganizationsResponse)(nil),                     // 5: tesseral.backend.v1.ListOrganizationsResponse
+	(*GetOrganizationRequest)(nil),                        // 6: tesseral.backend.v1.GetOrganizationRequest
+	(*GetOrganizationResponse)(nil),                       // 7: tesseral.backend.v1.GetOrganizationResponse
+	(*CreateOrganizationRequest)(nil),                     // 8: tesseral.backend.v1.CreateOrganizationRequest
+	(*CreateOrganizationResponse)(nil),                    // 9: tesseral.backend.v1.CreateOrganizationResponse
+	(*UpdateOrganizationRequest)(nil),                     // 10: tesseral.backend.v1.UpdateOrganizationRequest
+	(*UpdateOrganizationResponse)(nil),                    // 11: tesseral.backend.v1.UpdateOrganizationResponse
+	(*DeleteOrganizationRequest)(nil),                     // 12: tesseral.backend.v1.DeleteOrganizationRequest
+	(*DeleteOrganizationResponse)(nil),                    // 13: tesseral.backend.v1.DeleteOrganizationResponse
+	(*GetOrganizationGoogleHostedDomainsRequest)(nil),     // 14: tesseral.backend.v1.GetOrganizationGoogleHostedDomainsRequest
+	(*GetOrganizationGoogleHostedDomainsResponse)(nil),    // 15: tesseral.backend.v1.GetOrganizationGoogleHostedDomainsResponse
+	(*UpdateOrganizationGoogleHostedDomainsRequest)(nil),  // 16: tesseral.backend.v1.UpdateOrganizationGoogleHostedDomainsRequest
+	(*UpdateOrganizationGoogleHostedDomainsResponse)(nil), // 17: tesseral.backend.v1.UpdateOrganizationGoogleHostedDomainsResponse
+	(*GetOrganizationMicrosoftTenantIDsRequest)(nil),      // 18: tesseral.backend.v1.GetOrganizationMicrosoftTenantIDsRequest
+	(*GetOrganizationMicrosoftTenantIDsResponse)(nil),     // 19: tesseral.backend.v1.GetOrganizationMicrosoftTenantIDsResponse
+	(*UpdateOrganizationMicrosoftTenantIDsRequest)(nil),   // 20: tesseral.backend.v1.UpdateOrganizationMicrosoftTenantIDsRequest
+	(*UpdateOrganizationMicrosoftTenantIDsResponse)(nil),  // 21: tesseral.backend.v1.UpdateOrganizationMicrosoftTenantIDsResponse
+	(*CreateSAMLConnectionRequest)(nil),                   // 22: tesseral.backend.v1.CreateSAMLConnectionRequest
+	(*CreateSAMLConnectionResponse)(nil),                  // 23: tesseral.backend.v1.CreateSAMLConnectionResponse
+	(*GetSAMLConnectionRequest)(nil),                      // 24: tesseral.backend.v1.GetSAMLConnectionRequest
+	(*GetSAMLConnectionResponse)(nil),                     // 25: tesseral.backend.v1.GetSAMLConnectionResponse
+	(*ListSAMLConnectionsRequest)(nil),                    // 26: tesseral.backend.v1.ListSAMLConnectionsRequest
+	(*ListSAMLConnectionsResponse)(nil),                   // 27: tesseral.backend.v1.ListSAMLConnectionsResponse
+	(*UpdateSAMLConnectionRequest)(nil),                   // 28: tesseral.backend.v1.UpdateSAMLConnectionRequest
+	(*UpdateSAMLConnectionResponse)(nil),                  // 29: tesseral.backend.v1.UpdateSAMLConnectionResponse
+	(*DeleteSAMLConnectionRequest)(nil),                   // 30: tesseral.backend.v1.DeleteSAMLConnectionRequest
+	(*DeleteSAMLConnectionResponse)(nil),                  // 31: tesseral.backend.v1.DeleteSAMLConnectionResponse
+	(*ListSCIMAPIKeysRequest)(nil),                        // 32: tesseral.backend.v1.ListSCIMAPIKeysRequest
+	(*ListSCIMAPIKeysResponse)(nil),                       // 33: tesseral.backend.v1.ListSCIMAPIKeysResponse
+	(*GetSCIMAPIKeyRequest)(nil),                          // 34: tesseral.backend.v1.GetSCIMAPIKeyRequest
+	(*GetSCIMAPIKeyResponse)(nil),                         // 35: tesseral.backend.v1.GetSCIMAPIKeyResponse
+	(*CreateSCIMAPIKeyRequest)(nil),                       // 36: tesseral.backend.v1.CreateSCIMAPIKeyRequest
+	(*CreateSCIMAPIKeyResponse)(nil),                      // 37: tesseral.backend.v1.CreateSCIMAPIKeyResponse
+	(*UpdateSCIMAPIKeyRequest)(nil),                       // 38: tesseral.backend.v1.UpdateSCIMAPIKeyRequest
+	(*UpdateSCIMAPIKeyResponse)(nil),                      // 39: tesseral.backend.v1.UpdateSCIMAPIKeyResponse
+	(*DeleteSCIMAPIKeyRequest)(nil),                       // 40: tesseral.backend.v1.DeleteSCIMAPIKeyRequest
+	(*DeleteSCIMAPIKeyResponse)(nil),                      // 41: tesseral.backend.v1.DeleteSCIMAPIKeyResponse
+	(*RevokeSCIMAPIKeyRequest)(nil),                       // 42: tesseral.backend.v1.RevokeSCIMAPIKeyRequest
+	(*RevokeSCIMAPIKeyResponse)(nil),                      // 43: tesseral.backend.v1.RevokeSCIMAPIKeyResponse
+	(*ListUsersRequest)(nil),                              // 44: tesseral.backend.v1.ListUsersRequest
+	(*ListUsersResponse)(nil),                             // 45: tesseral.backend.v1.ListUsersResponse
+	(*GetUserRequest)(nil),                                // 46: tesseral.backend.v1.GetUserRequest
+	(*GetUserResponse)(nil),                               // 47: tesseral.backend.v1.GetUserResponse
+	(*CreateUserRequest)(nil),                             // 48: tesseral.backend.v1.CreateUserRequest
+	(*CreateUserResponse)(nil),                            // 49: tesseral.backend.v1.CreateUserResponse
+	(*UpdateUserRequest)(nil),                             // 50: tesseral.backend.v1.UpdateUserRequest
+	(*UpdateUserResponse)(nil),                            // 51: tesseral.backend.v1.UpdateUserResponse
+	(*DeleteUserRequest)(nil),                             // 52: tesseral.backend.v1.DeleteUserRequest
+	(*DeleteUserResponse)(nil),                            // 53: tesseral.backend.v1.DeleteUserResponse
+	(*ListPasskeysRequest)(nil),                           // 54: tesseral.backend.v1.ListPasskeysRequest
+	(*ListPasskeysResponse)(nil),                          // 55: tesseral.backend.v1.ListPasskeysResponse
+	(*GetPasskeyRequest)(nil),                             // 56: tesseral.backend.v1.GetPasskeyRequest
+	(*GetPasskeyResponse)(nil),                            // 57: tesseral.backend.v1.GetPasskeyResponse
+	(*UpdatePasskeyRequest)(nil),                          // 58: tesseral.backend.v1.UpdatePasskeyRequest
+	(*UpdatePasskeyResponse)(nil),                         // 59: tesseral.backend.v1.UpdatePasskeyResponse
+	(*DeletePasskeyRequest)(nil),                          // 60: tesseral.backend.v1.DeletePasskeyRequest
+	(*DeletePasskeyResponse)(nil),                         // 61: tesseral.backend.v1.DeletePasskeyResponse
+	(*ListSessionsRequest)(nil),                           // 62: tesseral.backend.v1.ListSessionsRequest
+	(*ListSessionsResponse)(nil),                          // 63: tesseral.backend.v1.ListSessionsResponse
+	(*GetSessionRequest)(nil),                             // 64: tesseral.backend.v1.GetSessionRequest
+	(*GetSessionResponse)(nil),                            // 65: tesseral.backend.v1.GetSessionResponse
+	(*ListUserInvitesRequest)(nil),                        // 66: tesseral.backend.v1.ListUserInvitesRequest
+	(*ListUserInvitesResponse)(nil),                       // 67: tesseral.backend.v1.ListUserInvitesResponse
+	(*GetUserInviteRequest)(nil),                          // 68: tesseral.backend.v1.GetUserInviteRequest
+	(*GetUserInviteResponse)(nil),                         // 69: tesseral.backend.v1.GetUserInviteResponse
+	(*CreateUserInviteRequest)(nil),                       // 70: tesseral.backend.v1.CreateUserInviteRequest
+	(*CreateUserInviteResponse)(nil),                      // 71: tesseral.backend.v1.CreateUserInviteResponse
+	(*DeleteUserInviteRequest)(nil),                       // 72: tesseral.backend.v1.DeleteUserInviteRequest
+	(*DeleteUserInviteResponse)(nil),                      // 73: tesseral.backend.v1.DeleteUserInviteResponse
+	(*ListProjectAPIKeysRequest)(nil),                     // 74: tesseral.backend.v1.ListProjectAPIKeysRequest
+	(*ListProjectAPIKeysResponse)(nil),                    // 75: tesseral.backend.v1.ListProjectAPIKeysResponse
+	(*GetProjectAPIKeyRequest)(nil),                       // 76: tesseral.backend.v1.GetProjectAPIKeyRequest
+	(*GetProjectAPIKeyResponse)(nil),                      // 77: tesseral.backend.v1.GetProjectAPIKeyResponse
+	(*CreateProjectAPIKeyRequest)(nil),                    // 78: tesseral.backend.v1.CreateProjectAPIKeyRequest
+	(*CreateProjectAPIKeyResponse)(nil),                   // 79: tesseral.backend.v1.CreateProjectAPIKeyResponse
+	(*UpdateProjectAPIKeyRequest)(nil),                    // 80: tesseral.backend.v1.UpdateProjectAPIKeyRequest
+	(*UpdateProjectAPIKeyResponse)(nil),                   // 81: tesseral.backend.v1.UpdateProjectAPIKeyResponse
+	(*DeleteProjectAPIKeyRequest)(nil),                    // 82: tesseral.backend.v1.DeleteProjectAPIKeyRequest
+	(*DeleteProjectAPIKeyResponse)(nil),                   // 83: tesseral.backend.v1.DeleteProjectAPIKeyResponse
+	(*RevokeProjectAPIKeyRequest)(nil),                    // 84: tesseral.backend.v1.RevokeProjectAPIKeyRequest
+	(*RevokeProjectAPIKeyResponse)(nil),                   // 85: tesseral.backend.v1.RevokeProjectAPIKeyResponse
+	(*GetVaultDomainSettingsRequest)(nil),                 // 86: tesseral.backend.v1.GetVaultDomainSettingsRequest
+	(*GetVaultDomainSettingsResponse)(nil),                // 87: tesseral.backend.v1.GetVaultDomainSettingsResponse
+	(*ListPublishableKeysRequest)(nil),                    // 88: tesseral.backend.v1.ListPublishableKeysRequest
+	(*ListPublishableKeysResponse)(nil),                   // 89: tesseral.backend.v1.ListPublishableKeysResponse
+	(*GetPublishableKeyRequest)(nil),                      // 90: tesseral.backend.v1.GetPublishableKeyRequest
+	(*GetPublishableKeyResponse)(nil),                     // 91: tesseral.backend.v1.GetPublishableKeyResponse
+	(*CreatePublishableKeyRequest)(nil),                   // 92: tesseral.backend.v1.CreatePublishableKeyRequest
+	(*CreatePublishableKeyResponse)(nil),                  // 93: tesseral.backend.v1.CreatePublishableKeyResponse
+	(*UpdatePublishableKeyRequest)(nil),                   // 94: tesseral.backend.v1.UpdatePublishableKeyRequest
+	(*UpdatePublishableKeyResponse)(nil),                  // 95: tesseral.backend.v1.UpdatePublishableKeyResponse
+	(*DeletePublishableKeyRequest)(nil),                   // 96: tesseral.backend.v1.DeletePublishableKeyRequest
+	(*DeletePublishableKeyResponse)(nil),                  // 97: tesseral.backend.v1.DeletePublishableKeyResponse
+	(*GetProjectUISettingsRequest)(nil),                   // 98: tesseral.backend.v1.GetProjectUISettingsRequest
+	(*GetProjectUISettingsResponse)(nil),                  // 99: tesseral.backend.v1.GetProjectUISettingsResponse
+	(*UpdateProjectUISettingsRequest)(nil),                // 100: tesseral.backend.v1.UpdateProjectUISettingsRequest
+	(*UpdateProjectUISettingsResponse)(nil),               // 101: tesseral.backend.v1.UpdateProjectUISettingsResponse
+	(*DisableOrganizationLoginsRequest)(nil),              // 102: tesseral.backend.v1.DisableOrganizationLoginsRequest
+	(*DisableOrganizationLoginsResponse)(nil),             // 103: tesseral.backend.v1.DisableOrganizationLoginsResponse
+	(*DisableProjectLoginsRequest)(nil),                   // 104: tesseral.backend.v1.DisableProjectLoginsRequest
+	(*DisableProjectLoginsResponse)(nil),                  // 105: tesseral.backend.v1.DisableProjectLoginsResponse
+	(*EnableOrganizationLoginsRequest)(nil),               // 106: tesseral.backend.v1.EnableOrganizationLoginsRequest
+	(*EnableOrganizationLoginsResponse)(nil),              // 107: tesseral.backend.v1.EnableOrganizationLoginsResponse
+	(*EnableProjectLoginsRequest)(nil),                    // 108: tesseral.backend.v1.EnableProjectLoginsRequest
+	(*EnableProjectLoginsResponse)(nil),                   // 109: tesseral.backend.v1.EnableProjectLoginsResponse
+	(*ImageUploadRequest)(nil),                            // 110: tesseral.backend.v1.ImageUploadRequest
+	(*CreateUserImpersonationTokenRequest)(nil),           // 111: tesseral.backend.v1.CreateUserImpersonationTokenRequest
+	(*CreateUserImpersonationTokenResponse)(nil),          // 112: tesseral.backend.v1.CreateUserImpersonationTokenResponse
+	(*Project)(nil),                                       // 113: tesseral.backend.v1.Project
+	(*Organization)(nil),                                  // 114: tesseral.backend.v1.Organization
+	(*OrganizationGoogleHostedDomains)(nil),               // 115: tesseral.backend.v1.OrganizationGoogleHostedDomains
+	(*OrganizationMicrosoftTenantIDs)(nil),                // 116: tesseral.backend.v1.OrganizationMicrosoftTenantIDs
+	(*SAMLConnection)(nil),                                // 117: tesseral.backend.v1.SAMLConnection
+	(*SCIMAPIKey)(nil),                                    // 118: tesseral.backend.v1.SCIMAPIKey
+	(*User)(nil),                                          // 119: tesseral.backend.v1.User
+	(*Passkey)(nil),                                       // 120: tesseral.backend.v1.Passkey
+	(*Session)(nil),                                       // 121: tesseral.backend.v1.Session
+	(*UserInvite)(nil),                                    // 122: tesseral.backend.v1.UserInvite
+	(*ProjectAPIKey)(nil),                                 // 123: tesseral.backend.v1.ProjectAPIKey
+	(*VaultDomainSettings)(nil),                           // 124: tesseral.backend.v1.VaultDomainSettings
+	(*PublishableKey)(nil),                                // 125: tesseral.backend.v1.PublishableKey
+	(*ProjectUISettings)(nil),                             // 126: tesseral.backend.v1.ProjectUISettings
 	(*timestamppb.Timestamp)(nil),                         // 127: google.protobuf.Timestamp
-	(*UserImpersonationToken)(nil),                        // 128: openauth.backend.v1.UserImpersonationToken
+	(*UserImpersonationToken)(nil),                        // 128: tesseral.backend.v1.UserImpersonationToken
 }
 var file_tesseral_backend_v1_backend_proto_depIdxs = []int32{
-	113, // 0: openauth.backend.v1.GetProjectResponse.project:type_name -> openauth.backend.v1.Project
-	113, // 1: openauth.backend.v1.UpdateProjectRequest.project:type_name -> openauth.backend.v1.Project
-	113, // 2: openauth.backend.v1.UpdateProjectResponse.project:type_name -> openauth.backend.v1.Project
-	114, // 3: openauth.backend.v1.ListOrganizationsResponse.organizations:type_name -> openauth.backend.v1.Organization
-	114, // 4: openauth.backend.v1.GetOrganizationResponse.organization:type_name -> openauth.backend.v1.Organization
-	114, // 5: openauth.backend.v1.CreateOrganizationRequest.organization:type_name -> openauth.backend.v1.Organization
-	114, // 6: openauth.backend.v1.CreateOrganizationResponse.organization:type_name -> openauth.backend.v1.Organization
-	114, // 7: openauth.backend.v1.UpdateOrganizationRequest.organization:type_name -> openauth.backend.v1.Organization
-	114, // 8: openauth.backend.v1.UpdateOrganizationResponse.organization:type_name -> openauth.backend.v1.Organization
-	115, // 9: openauth.backend.v1.GetOrganizationGoogleHostedDomainsResponse.organization_google_hosted_domains:type_name -> openauth.backend.v1.OrganizationGoogleHostedDomains
-	115, // 10: openauth.backend.v1.UpdateOrganizationGoogleHostedDomainsRequest.organization_google_hosted_domains:type_name -> openauth.backend.v1.OrganizationGoogleHostedDomains
-	115, // 11: openauth.backend.v1.UpdateOrganizationGoogleHostedDomainsResponse.organization_google_hosted_domains:type_name -> openauth.backend.v1.OrganizationGoogleHostedDomains
-	116, // 12: openauth.backend.v1.GetOrganizationMicrosoftTenantIDsResponse.organization_microsoft_tenant_ids:type_name -> openauth.backend.v1.OrganizationMicrosoftTenantIDs
-	116, // 13: openauth.backend.v1.UpdateOrganizationMicrosoftTenantIDsRequest.organization_microsoft_tenant_ids:type_name -> openauth.backend.v1.OrganizationMicrosoftTenantIDs
-	116, // 14: openauth.backend.v1.UpdateOrganizationMicrosoftTenantIDsResponse.organization_microsoft_tenant_ids:type_name -> openauth.backend.v1.OrganizationMicrosoftTenantIDs
-	117, // 15: openauth.backend.v1.CreateSAMLConnectionRequest.saml_connection:type_name -> openauth.backend.v1.SAMLConnection
-	117, // 16: openauth.backend.v1.CreateSAMLConnectionResponse.saml_connection:type_name -> openauth.backend.v1.SAMLConnection
-	117, // 17: openauth.backend.v1.GetSAMLConnectionResponse.saml_connection:type_name -> openauth.backend.v1.SAMLConnection
-	117, // 18: openauth.backend.v1.ListSAMLConnectionsResponse.saml_connections:type_name -> openauth.backend.v1.SAMLConnection
-	117, // 19: openauth.backend.v1.UpdateSAMLConnectionRequest.saml_connection:type_name -> openauth.backend.v1.SAMLConnection
-	117, // 20: openauth.backend.v1.UpdateSAMLConnectionResponse.saml_connection:type_name -> openauth.backend.v1.SAMLConnection
-	118, // 21: openauth.backend.v1.ListSCIMAPIKeysResponse.scim_api_keys:type_name -> openauth.backend.v1.SCIMAPIKey
-	118, // 22: openauth.backend.v1.GetSCIMAPIKeyResponse.scim_api_key:type_name -> openauth.backend.v1.SCIMAPIKey
-	118, // 23: openauth.backend.v1.CreateSCIMAPIKeyRequest.scim_api_key:type_name -> openauth.backend.v1.SCIMAPIKey
-	118, // 24: openauth.backend.v1.CreateSCIMAPIKeyResponse.scim_api_key:type_name -> openauth.backend.v1.SCIMAPIKey
-	118, // 25: openauth.backend.v1.UpdateSCIMAPIKeyRequest.scim_api_key:type_name -> openauth.backend.v1.SCIMAPIKey
-	118, // 26: openauth.backend.v1.UpdateSCIMAPIKeyResponse.scim_api_key:type_name -> openauth.backend.v1.SCIMAPIKey
-	118, // 27: openauth.backend.v1.RevokeSCIMAPIKeyResponse.scim_api_key:type_name -> openauth.backend.v1.SCIMAPIKey
-	119, // 28: openauth.backend.v1.ListUsersResponse.users:type_name -> openauth.backend.v1.User
-	119, // 29: openauth.backend.v1.GetUserResponse.user:type_name -> openauth.backend.v1.User
-	119, // 30: openauth.backend.v1.CreateUserRequest.user:type_name -> openauth.backend.v1.User
-	119, // 31: openauth.backend.v1.CreateUserResponse.user:type_name -> openauth.backend.v1.User
-	119, // 32: openauth.backend.v1.UpdateUserRequest.user:type_name -> openauth.backend.v1.User
-	119, // 33: openauth.backend.v1.UpdateUserResponse.user:type_name -> openauth.backend.v1.User
-	120, // 34: openauth.backend.v1.ListPasskeysResponse.passkeys:type_name -> openauth.backend.v1.Passkey
-	120, // 35: openauth.backend.v1.GetPasskeyResponse.passkey:type_name -> openauth.backend.v1.Passkey
-	120, // 36: openauth.backend.v1.UpdatePasskeyRequest.passkey:type_name -> openauth.backend.v1.Passkey
-	120, // 37: openauth.backend.v1.UpdatePasskeyResponse.passkey:type_name -> openauth.backend.v1.Passkey
-	121, // 38: openauth.backend.v1.ListSessionsResponse.sessions:type_name -> openauth.backend.v1.Session
-	121, // 39: openauth.backend.v1.GetSessionResponse.session:type_name -> openauth.backend.v1.Session
-	122, // 40: openauth.backend.v1.ListUserInvitesResponse.user_invites:type_name -> openauth.backend.v1.UserInvite
-	122, // 41: openauth.backend.v1.GetUserInviteResponse.user_invite:type_name -> openauth.backend.v1.UserInvite
-	122, // 42: openauth.backend.v1.CreateUserInviteRequest.user_invite:type_name -> openauth.backend.v1.UserInvite
-	122, // 43: openauth.backend.v1.CreateUserInviteResponse.user_invite:type_name -> openauth.backend.v1.UserInvite
-	123, // 44: openauth.backend.v1.ListProjectAPIKeysResponse.project_api_keys:type_name -> openauth.backend.v1.ProjectAPIKey
-	123, // 45: openauth.backend.v1.GetProjectAPIKeyResponse.project_api_key:type_name -> openauth.backend.v1.ProjectAPIKey
-	123, // 46: openauth.backend.v1.CreateProjectAPIKeyRequest.project_api_key:type_name -> openauth.backend.v1.ProjectAPIKey
-	123, // 47: openauth.backend.v1.CreateProjectAPIKeyResponse.project_api_key:type_name -> openauth.backend.v1.ProjectAPIKey
-	123, // 48: openauth.backend.v1.UpdateProjectAPIKeyRequest.project_api_key:type_name -> openauth.backend.v1.ProjectAPIKey
-	123, // 49: openauth.backend.v1.UpdateProjectAPIKeyResponse.project_api_key:type_name -> openauth.backend.v1.ProjectAPIKey
-	123, // 50: openauth.backend.v1.RevokeProjectAPIKeyResponse.project_api_key:type_name -> openauth.backend.v1.ProjectAPIKey
-	124, // 51: openauth.backend.v1.GetVaultDomainSettingsResponse.vault_domain_settings:type_name -> openauth.backend.v1.VaultDomainSettings
-	125, // 52: openauth.backend.v1.ListPublishableKeysResponse.publishable_keys:type_name -> openauth.backend.v1.PublishableKey
-	125, // 53: openauth.backend.v1.GetPublishableKeyResponse.publishable_key:type_name -> openauth.backend.v1.PublishableKey
-	125, // 54: openauth.backend.v1.CreatePublishableKeyRequest.publishable_key:type_name -> openauth.backend.v1.PublishableKey
-	125, // 55: openauth.backend.v1.CreatePublishableKeyResponse.publishable_key:type_name -> openauth.backend.v1.PublishableKey
-	125, // 56: openauth.backend.v1.UpdatePublishableKeyRequest.publishable_key:type_name -> openauth.backend.v1.PublishableKey
-	125, // 57: openauth.backend.v1.UpdatePublishableKeyResponse.publishable_key:type_name -> openauth.backend.v1.PublishableKey
-	126, // 58: openauth.backend.v1.GetProjectUISettingsResponse.project_ui_settings:type_name -> openauth.backend.v1.ProjectUISettings
-	127, // 59: openauth.backend.v1.UpdateProjectUISettingsResponse.create_time:type_name -> google.protobuf.Timestamp
-	127, // 60: openauth.backend.v1.UpdateProjectUISettingsResponse.update_time:type_name -> google.protobuf.Timestamp
-	128, // 61: openauth.backend.v1.CreateUserImpersonationTokenRequest.user_impersonation_token:type_name -> openauth.backend.v1.UserImpersonationToken
-	128, // 62: openauth.backend.v1.CreateUserImpersonationTokenResponse.user_impersonation_token:type_name -> openauth.backend.v1.UserImpersonationToken
-	0,   // 63: openauth.backend.v1.BackendService.GetProject:input_type -> openauth.backend.v1.GetProjectRequest
-	4,   // 64: openauth.backend.v1.BackendService.ListOrganizations:input_type -> openauth.backend.v1.ListOrganizationsRequest
-	6,   // 65: openauth.backend.v1.BackendService.GetOrganization:input_type -> openauth.backend.v1.GetOrganizationRequest
-	8,   // 66: openauth.backend.v1.BackendService.CreateOrganization:input_type -> openauth.backend.v1.CreateOrganizationRequest
-	10,  // 67: openauth.backend.v1.BackendService.UpdateOrganization:input_type -> openauth.backend.v1.UpdateOrganizationRequest
-	12,  // 68: openauth.backend.v1.BackendService.DeleteOrganization:input_type -> openauth.backend.v1.DeleteOrganizationRequest
-	14,  // 69: openauth.backend.v1.BackendService.GetOrganizationGoogleHostedDomains:input_type -> openauth.backend.v1.GetOrganizationGoogleHostedDomainsRequest
-	16,  // 70: openauth.backend.v1.BackendService.UpdateOrganizationGoogleHostedDomains:input_type -> openauth.backend.v1.UpdateOrganizationGoogleHostedDomainsRequest
-	18,  // 71: openauth.backend.v1.BackendService.GetOrganizationMicrosoftTenantIDs:input_type -> openauth.backend.v1.GetOrganizationMicrosoftTenantIDsRequest
-	20,  // 72: openauth.backend.v1.BackendService.UpdateOrganizationMicrosoftTenantIDs:input_type -> openauth.backend.v1.UpdateOrganizationMicrosoftTenantIDsRequest
-	26,  // 73: openauth.backend.v1.BackendService.ListSAMLConnections:input_type -> openauth.backend.v1.ListSAMLConnectionsRequest
-	24,  // 74: openauth.backend.v1.BackendService.GetSAMLConnection:input_type -> openauth.backend.v1.GetSAMLConnectionRequest
-	22,  // 75: openauth.backend.v1.BackendService.CreateSAMLConnection:input_type -> openauth.backend.v1.CreateSAMLConnectionRequest
-	28,  // 76: openauth.backend.v1.BackendService.UpdateSAMLConnection:input_type -> openauth.backend.v1.UpdateSAMLConnectionRequest
-	30,  // 77: openauth.backend.v1.BackendService.DeleteSAMLConnection:input_type -> openauth.backend.v1.DeleteSAMLConnectionRequest
-	32,  // 78: openauth.backend.v1.BackendService.ListSCIMAPIKeys:input_type -> openauth.backend.v1.ListSCIMAPIKeysRequest
-	34,  // 79: openauth.backend.v1.BackendService.GetSCIMAPIKey:input_type -> openauth.backend.v1.GetSCIMAPIKeyRequest
-	36,  // 80: openauth.backend.v1.BackendService.CreateSCIMAPIKey:input_type -> openauth.backend.v1.CreateSCIMAPIKeyRequest
-	38,  // 81: openauth.backend.v1.BackendService.UpdateSCIMAPIKey:input_type -> openauth.backend.v1.UpdateSCIMAPIKeyRequest
-	40,  // 82: openauth.backend.v1.BackendService.DeleteSCIMAPIKey:input_type -> openauth.backend.v1.DeleteSCIMAPIKeyRequest
-	42,  // 83: openauth.backend.v1.BackendService.RevokeSCIMAPIKey:input_type -> openauth.backend.v1.RevokeSCIMAPIKeyRequest
-	44,  // 84: openauth.backend.v1.BackendService.ListUsers:input_type -> openauth.backend.v1.ListUsersRequest
-	46,  // 85: openauth.backend.v1.BackendService.GetUser:input_type -> openauth.backend.v1.GetUserRequest
-	48,  // 86: openauth.backend.v1.BackendService.CreateUser:input_type -> openauth.backend.v1.CreateUserRequest
-	50,  // 87: openauth.backend.v1.BackendService.UpdateUser:input_type -> openauth.backend.v1.UpdateUserRequest
-	52,  // 88: openauth.backend.v1.BackendService.DeleteUser:input_type -> openauth.backend.v1.DeleteUserRequest
-	54,  // 89: openauth.backend.v1.BackendService.ListPasskeys:input_type -> openauth.backend.v1.ListPasskeysRequest
-	56,  // 90: openauth.backend.v1.BackendService.GetPasskey:input_type -> openauth.backend.v1.GetPasskeyRequest
-	58,  // 91: openauth.backend.v1.BackendService.UpdatePasskey:input_type -> openauth.backend.v1.UpdatePasskeyRequest
-	60,  // 92: openauth.backend.v1.BackendService.DeletePasskey:input_type -> openauth.backend.v1.DeletePasskeyRequest
-	62,  // 93: openauth.backend.v1.BackendService.ListSessions:input_type -> openauth.backend.v1.ListSessionsRequest
-	64,  // 94: openauth.backend.v1.BackendService.GetSession:input_type -> openauth.backend.v1.GetSessionRequest
-	66,  // 95: openauth.backend.v1.BackendService.ListUserInvites:input_type -> openauth.backend.v1.ListUserInvitesRequest
-	68,  // 96: openauth.backend.v1.BackendService.GetUserInvite:input_type -> openauth.backend.v1.GetUserInviteRequest
-	70,  // 97: openauth.backend.v1.BackendService.CreateUserInvite:input_type -> openauth.backend.v1.CreateUserInviteRequest
-	72,  // 98: openauth.backend.v1.BackendService.DeleteUserInvite:input_type -> openauth.backend.v1.DeleteUserInviteRequest
-	102, // 99: openauth.backend.v1.BackendService.DisableOrganizationLogins:input_type -> openauth.backend.v1.DisableOrganizationLoginsRequest
-	104, // 100: openauth.backend.v1.BackendService.DisableProjectLogins:input_type -> openauth.backend.v1.DisableProjectLoginsRequest
-	106, // 101: openauth.backend.v1.BackendService.EnableOrganizationLogins:input_type -> openauth.backend.v1.EnableOrganizationLoginsRequest
-	108, // 102: openauth.backend.v1.BackendService.EnableProjectLogins:input_type -> openauth.backend.v1.EnableProjectLoginsRequest
-	2,   // 103: openauth.backend.v1.BackendService.UpdateProject:input_type -> openauth.backend.v1.UpdateProjectRequest
-	86,  // 104: openauth.backend.v1.BackendService.GetVaultDomainSettings:input_type -> openauth.backend.v1.GetVaultDomainSettingsRequest
-	98,  // 105: openauth.backend.v1.BackendService.GetProjectUISettings:input_type -> openauth.backend.v1.GetProjectUISettingsRequest
-	100, // 106: openauth.backend.v1.BackendService.UpdateProjectUISettings:input_type -> openauth.backend.v1.UpdateProjectUISettingsRequest
-	74,  // 107: openauth.backend.v1.BackendService.ListProjectAPIKeys:input_type -> openauth.backend.v1.ListProjectAPIKeysRequest
-	76,  // 108: openauth.backend.v1.BackendService.GetProjectAPIKey:input_type -> openauth.backend.v1.GetProjectAPIKeyRequest
-	78,  // 109: openauth.backend.v1.BackendService.CreateProjectAPIKey:input_type -> openauth.backend.v1.CreateProjectAPIKeyRequest
-	80,  // 110: openauth.backend.v1.BackendService.UpdateProjectAPIKey:input_type -> openauth.backend.v1.UpdateProjectAPIKeyRequest
-	82,  // 111: openauth.backend.v1.BackendService.DeleteProjectAPIKey:input_type -> openauth.backend.v1.DeleteProjectAPIKeyRequest
-	84,  // 112: openauth.backend.v1.BackendService.RevokeProjectAPIKey:input_type -> openauth.backend.v1.RevokeProjectAPIKeyRequest
-	88,  // 113: openauth.backend.v1.BackendService.ListPublishableKeys:input_type -> openauth.backend.v1.ListPublishableKeysRequest
-	90,  // 114: openauth.backend.v1.BackendService.GetPublishableKey:input_type -> openauth.backend.v1.GetPublishableKeyRequest
-	92,  // 115: openauth.backend.v1.BackendService.CreatePublishableKey:input_type -> openauth.backend.v1.CreatePublishableKeyRequest
-	94,  // 116: openauth.backend.v1.BackendService.UpdatePublishableKey:input_type -> openauth.backend.v1.UpdatePublishableKeyRequest
-	96,  // 117: openauth.backend.v1.BackendService.DeletePublishableKey:input_type -> openauth.backend.v1.DeletePublishableKeyRequest
-	111, // 118: openauth.backend.v1.BackendService.CreateUserImpersonationToken:input_type -> openauth.backend.v1.CreateUserImpersonationTokenRequest
-	1,   // 119: openauth.backend.v1.BackendService.GetProject:output_type -> openauth.backend.v1.GetProjectResponse
-	5,   // 120: openauth.backend.v1.BackendService.ListOrganizations:output_type -> openauth.backend.v1.ListOrganizationsResponse
-	7,   // 121: openauth.backend.v1.BackendService.GetOrganization:output_type -> openauth.backend.v1.GetOrganizationResponse
-	9,   // 122: openauth.backend.v1.BackendService.CreateOrganization:output_type -> openauth.backend.v1.CreateOrganizationResponse
-	11,  // 123: openauth.backend.v1.BackendService.UpdateOrganization:output_type -> openauth.backend.v1.UpdateOrganizationResponse
-	13,  // 124: openauth.backend.v1.BackendService.DeleteOrganization:output_type -> openauth.backend.v1.DeleteOrganizationResponse
-	15,  // 125: openauth.backend.v1.BackendService.GetOrganizationGoogleHostedDomains:output_type -> openauth.backend.v1.GetOrganizationGoogleHostedDomainsResponse
-	17,  // 126: openauth.backend.v1.BackendService.UpdateOrganizationGoogleHostedDomains:output_type -> openauth.backend.v1.UpdateOrganizationGoogleHostedDomainsResponse
-	19,  // 127: openauth.backend.v1.BackendService.GetOrganizationMicrosoftTenantIDs:output_type -> openauth.backend.v1.GetOrganizationMicrosoftTenantIDsResponse
-	21,  // 128: openauth.backend.v1.BackendService.UpdateOrganizationMicrosoftTenantIDs:output_type -> openauth.backend.v1.UpdateOrganizationMicrosoftTenantIDsResponse
-	27,  // 129: openauth.backend.v1.BackendService.ListSAMLConnections:output_type -> openauth.backend.v1.ListSAMLConnectionsResponse
-	25,  // 130: openauth.backend.v1.BackendService.GetSAMLConnection:output_type -> openauth.backend.v1.GetSAMLConnectionResponse
-	23,  // 131: openauth.backend.v1.BackendService.CreateSAMLConnection:output_type -> openauth.backend.v1.CreateSAMLConnectionResponse
-	29,  // 132: openauth.backend.v1.BackendService.UpdateSAMLConnection:output_type -> openauth.backend.v1.UpdateSAMLConnectionResponse
-	31,  // 133: openauth.backend.v1.BackendService.DeleteSAMLConnection:output_type -> openauth.backend.v1.DeleteSAMLConnectionResponse
-	33,  // 134: openauth.backend.v1.BackendService.ListSCIMAPIKeys:output_type -> openauth.backend.v1.ListSCIMAPIKeysResponse
-	35,  // 135: openauth.backend.v1.BackendService.GetSCIMAPIKey:output_type -> openauth.backend.v1.GetSCIMAPIKeyResponse
-	37,  // 136: openauth.backend.v1.BackendService.CreateSCIMAPIKey:output_type -> openauth.backend.v1.CreateSCIMAPIKeyResponse
-	39,  // 137: openauth.backend.v1.BackendService.UpdateSCIMAPIKey:output_type -> openauth.backend.v1.UpdateSCIMAPIKeyResponse
-	41,  // 138: openauth.backend.v1.BackendService.DeleteSCIMAPIKey:output_type -> openauth.backend.v1.DeleteSCIMAPIKeyResponse
-	43,  // 139: openauth.backend.v1.BackendService.RevokeSCIMAPIKey:output_type -> openauth.backend.v1.RevokeSCIMAPIKeyResponse
-	45,  // 140: openauth.backend.v1.BackendService.ListUsers:output_type -> openauth.backend.v1.ListUsersResponse
-	47,  // 141: openauth.backend.v1.BackendService.GetUser:output_type -> openauth.backend.v1.GetUserResponse
-	49,  // 142: openauth.backend.v1.BackendService.CreateUser:output_type -> openauth.backend.v1.CreateUserResponse
-	51,  // 143: openauth.backend.v1.BackendService.UpdateUser:output_type -> openauth.backend.v1.UpdateUserResponse
-	53,  // 144: openauth.backend.v1.BackendService.DeleteUser:output_type -> openauth.backend.v1.DeleteUserResponse
-	55,  // 145: openauth.backend.v1.BackendService.ListPasskeys:output_type -> openauth.backend.v1.ListPasskeysResponse
-	57,  // 146: openauth.backend.v1.BackendService.GetPasskey:output_type -> openauth.backend.v1.GetPasskeyResponse
-	59,  // 147: openauth.backend.v1.BackendService.UpdatePasskey:output_type -> openauth.backend.v1.UpdatePasskeyResponse
-	61,  // 148: openauth.backend.v1.BackendService.DeletePasskey:output_type -> openauth.backend.v1.DeletePasskeyResponse
-	63,  // 149: openauth.backend.v1.BackendService.ListSessions:output_type -> openauth.backend.v1.ListSessionsResponse
-	65,  // 150: openauth.backend.v1.BackendService.GetSession:output_type -> openauth.backend.v1.GetSessionResponse
-	67,  // 151: openauth.backend.v1.BackendService.ListUserInvites:output_type -> openauth.backend.v1.ListUserInvitesResponse
-	69,  // 152: openauth.backend.v1.BackendService.GetUserInvite:output_type -> openauth.backend.v1.GetUserInviteResponse
-	71,  // 153: openauth.backend.v1.BackendService.CreateUserInvite:output_type -> openauth.backend.v1.CreateUserInviteResponse
-	73,  // 154: openauth.backend.v1.BackendService.DeleteUserInvite:output_type -> openauth.backend.v1.DeleteUserInviteResponse
-	103, // 155: openauth.backend.v1.BackendService.DisableOrganizationLogins:output_type -> openauth.backend.v1.DisableOrganizationLoginsResponse
-	105, // 156: openauth.backend.v1.BackendService.DisableProjectLogins:output_type -> openauth.backend.v1.DisableProjectLoginsResponse
-	107, // 157: openauth.backend.v1.BackendService.EnableOrganizationLogins:output_type -> openauth.backend.v1.EnableOrganizationLoginsResponse
-	109, // 158: openauth.backend.v1.BackendService.EnableProjectLogins:output_type -> openauth.backend.v1.EnableProjectLoginsResponse
-	3,   // 159: openauth.backend.v1.BackendService.UpdateProject:output_type -> openauth.backend.v1.UpdateProjectResponse
-	87,  // 160: openauth.backend.v1.BackendService.GetVaultDomainSettings:output_type -> openauth.backend.v1.GetVaultDomainSettingsResponse
-	99,  // 161: openauth.backend.v1.BackendService.GetProjectUISettings:output_type -> openauth.backend.v1.GetProjectUISettingsResponse
-	101, // 162: openauth.backend.v1.BackendService.UpdateProjectUISettings:output_type -> openauth.backend.v1.UpdateProjectUISettingsResponse
-	75,  // 163: openauth.backend.v1.BackendService.ListProjectAPIKeys:output_type -> openauth.backend.v1.ListProjectAPIKeysResponse
-	77,  // 164: openauth.backend.v1.BackendService.GetProjectAPIKey:output_type -> openauth.backend.v1.GetProjectAPIKeyResponse
-	79,  // 165: openauth.backend.v1.BackendService.CreateProjectAPIKey:output_type -> openauth.backend.v1.CreateProjectAPIKeyResponse
-	81,  // 166: openauth.backend.v1.BackendService.UpdateProjectAPIKey:output_type -> openauth.backend.v1.UpdateProjectAPIKeyResponse
-	83,  // 167: openauth.backend.v1.BackendService.DeleteProjectAPIKey:output_type -> openauth.backend.v1.DeleteProjectAPIKeyResponse
-	85,  // 168: openauth.backend.v1.BackendService.RevokeProjectAPIKey:output_type -> openauth.backend.v1.RevokeProjectAPIKeyResponse
-	89,  // 169: openauth.backend.v1.BackendService.ListPublishableKeys:output_type -> openauth.backend.v1.ListPublishableKeysResponse
-	91,  // 170: openauth.backend.v1.BackendService.GetPublishableKey:output_type -> openauth.backend.v1.GetPublishableKeyResponse
-	93,  // 171: openauth.backend.v1.BackendService.CreatePublishableKey:output_type -> openauth.backend.v1.CreatePublishableKeyResponse
-	95,  // 172: openauth.backend.v1.BackendService.UpdatePublishableKey:output_type -> openauth.backend.v1.UpdatePublishableKeyResponse
-	97,  // 173: openauth.backend.v1.BackendService.DeletePublishableKey:output_type -> openauth.backend.v1.DeletePublishableKeyResponse
-	112, // 174: openauth.backend.v1.BackendService.CreateUserImpersonationToken:output_type -> openauth.backend.v1.CreateUserImpersonationTokenResponse
+	113, // 0: tesseral.backend.v1.GetProjectResponse.project:type_name -> tesseral.backend.v1.Project
+	113, // 1: tesseral.backend.v1.UpdateProjectRequest.project:type_name -> tesseral.backend.v1.Project
+	113, // 2: tesseral.backend.v1.UpdateProjectResponse.project:type_name -> tesseral.backend.v1.Project
+	114, // 3: tesseral.backend.v1.ListOrganizationsResponse.organizations:type_name -> tesseral.backend.v1.Organization
+	114, // 4: tesseral.backend.v1.GetOrganizationResponse.organization:type_name -> tesseral.backend.v1.Organization
+	114, // 5: tesseral.backend.v1.CreateOrganizationRequest.organization:type_name -> tesseral.backend.v1.Organization
+	114, // 6: tesseral.backend.v1.CreateOrganizationResponse.organization:type_name -> tesseral.backend.v1.Organization
+	114, // 7: tesseral.backend.v1.UpdateOrganizationRequest.organization:type_name -> tesseral.backend.v1.Organization
+	114, // 8: tesseral.backend.v1.UpdateOrganizationResponse.organization:type_name -> tesseral.backend.v1.Organization
+	115, // 9: tesseral.backend.v1.GetOrganizationGoogleHostedDomainsResponse.organization_google_hosted_domains:type_name -> tesseral.backend.v1.OrganizationGoogleHostedDomains
+	115, // 10: tesseral.backend.v1.UpdateOrganizationGoogleHostedDomainsRequest.organization_google_hosted_domains:type_name -> tesseral.backend.v1.OrganizationGoogleHostedDomains
+	115, // 11: tesseral.backend.v1.UpdateOrganizationGoogleHostedDomainsResponse.organization_google_hosted_domains:type_name -> tesseral.backend.v1.OrganizationGoogleHostedDomains
+	116, // 12: tesseral.backend.v1.GetOrganizationMicrosoftTenantIDsResponse.organization_microsoft_tenant_ids:type_name -> tesseral.backend.v1.OrganizationMicrosoftTenantIDs
+	116, // 13: tesseral.backend.v1.UpdateOrganizationMicrosoftTenantIDsRequest.organization_microsoft_tenant_ids:type_name -> tesseral.backend.v1.OrganizationMicrosoftTenantIDs
+	116, // 14: tesseral.backend.v1.UpdateOrganizationMicrosoftTenantIDsResponse.organization_microsoft_tenant_ids:type_name -> tesseral.backend.v1.OrganizationMicrosoftTenantIDs
+	117, // 15: tesseral.backend.v1.CreateSAMLConnectionRequest.saml_connection:type_name -> tesseral.backend.v1.SAMLConnection
+	117, // 16: tesseral.backend.v1.CreateSAMLConnectionResponse.saml_connection:type_name -> tesseral.backend.v1.SAMLConnection
+	117, // 17: tesseral.backend.v1.GetSAMLConnectionResponse.saml_connection:type_name -> tesseral.backend.v1.SAMLConnection
+	117, // 18: tesseral.backend.v1.ListSAMLConnectionsResponse.saml_connections:type_name -> tesseral.backend.v1.SAMLConnection
+	117, // 19: tesseral.backend.v1.UpdateSAMLConnectionRequest.saml_connection:type_name -> tesseral.backend.v1.SAMLConnection
+	117, // 20: tesseral.backend.v1.UpdateSAMLConnectionResponse.saml_connection:type_name -> tesseral.backend.v1.SAMLConnection
+	118, // 21: tesseral.backend.v1.ListSCIMAPIKeysResponse.scim_api_keys:type_name -> tesseral.backend.v1.SCIMAPIKey
+	118, // 22: tesseral.backend.v1.GetSCIMAPIKeyResponse.scim_api_key:type_name -> tesseral.backend.v1.SCIMAPIKey
+	118, // 23: tesseral.backend.v1.CreateSCIMAPIKeyRequest.scim_api_key:type_name -> tesseral.backend.v1.SCIMAPIKey
+	118, // 24: tesseral.backend.v1.CreateSCIMAPIKeyResponse.scim_api_key:type_name -> tesseral.backend.v1.SCIMAPIKey
+	118, // 25: tesseral.backend.v1.UpdateSCIMAPIKeyRequest.scim_api_key:type_name -> tesseral.backend.v1.SCIMAPIKey
+	118, // 26: tesseral.backend.v1.UpdateSCIMAPIKeyResponse.scim_api_key:type_name -> tesseral.backend.v1.SCIMAPIKey
+	118, // 27: tesseral.backend.v1.RevokeSCIMAPIKeyResponse.scim_api_key:type_name -> tesseral.backend.v1.SCIMAPIKey
+	119, // 28: tesseral.backend.v1.ListUsersResponse.users:type_name -> tesseral.backend.v1.User
+	119, // 29: tesseral.backend.v1.GetUserResponse.user:type_name -> tesseral.backend.v1.User
+	119, // 30: tesseral.backend.v1.CreateUserRequest.user:type_name -> tesseral.backend.v1.User
+	119, // 31: tesseral.backend.v1.CreateUserResponse.user:type_name -> tesseral.backend.v1.User
+	119, // 32: tesseral.backend.v1.UpdateUserRequest.user:type_name -> tesseral.backend.v1.User
+	119, // 33: tesseral.backend.v1.UpdateUserResponse.user:type_name -> tesseral.backend.v1.User
+	120, // 34: tesseral.backend.v1.ListPasskeysResponse.passkeys:type_name -> tesseral.backend.v1.Passkey
+	120, // 35: tesseral.backend.v1.GetPasskeyResponse.passkey:type_name -> tesseral.backend.v1.Passkey
+	120, // 36: tesseral.backend.v1.UpdatePasskeyRequest.passkey:type_name -> tesseral.backend.v1.Passkey
+	120, // 37: tesseral.backend.v1.UpdatePasskeyResponse.passkey:type_name -> tesseral.backend.v1.Passkey
+	121, // 38: tesseral.backend.v1.ListSessionsResponse.sessions:type_name -> tesseral.backend.v1.Session
+	121, // 39: tesseral.backend.v1.GetSessionResponse.session:type_name -> tesseral.backend.v1.Session
+	122, // 40: tesseral.backend.v1.ListUserInvitesResponse.user_invites:type_name -> tesseral.backend.v1.UserInvite
+	122, // 41: tesseral.backend.v1.GetUserInviteResponse.user_invite:type_name -> tesseral.backend.v1.UserInvite
+	122, // 42: tesseral.backend.v1.CreateUserInviteRequest.user_invite:type_name -> tesseral.backend.v1.UserInvite
+	122, // 43: tesseral.backend.v1.CreateUserInviteResponse.user_invite:type_name -> tesseral.backend.v1.UserInvite
+	123, // 44: tesseral.backend.v1.ListProjectAPIKeysResponse.project_api_keys:type_name -> tesseral.backend.v1.ProjectAPIKey
+	123, // 45: tesseral.backend.v1.GetProjectAPIKeyResponse.project_api_key:type_name -> tesseral.backend.v1.ProjectAPIKey
+	123, // 46: tesseral.backend.v1.CreateProjectAPIKeyRequest.project_api_key:type_name -> tesseral.backend.v1.ProjectAPIKey
+	123, // 47: tesseral.backend.v1.CreateProjectAPIKeyResponse.project_api_key:type_name -> tesseral.backend.v1.ProjectAPIKey
+	123, // 48: tesseral.backend.v1.UpdateProjectAPIKeyRequest.project_api_key:type_name -> tesseral.backend.v1.ProjectAPIKey
+	123, // 49: tesseral.backend.v1.UpdateProjectAPIKeyResponse.project_api_key:type_name -> tesseral.backend.v1.ProjectAPIKey
+	123, // 50: tesseral.backend.v1.RevokeProjectAPIKeyResponse.project_api_key:type_name -> tesseral.backend.v1.ProjectAPIKey
+	124, // 51: tesseral.backend.v1.GetVaultDomainSettingsResponse.vault_domain_settings:type_name -> tesseral.backend.v1.VaultDomainSettings
+	125, // 52: tesseral.backend.v1.ListPublishableKeysResponse.publishable_keys:type_name -> tesseral.backend.v1.PublishableKey
+	125, // 53: tesseral.backend.v1.GetPublishableKeyResponse.publishable_key:type_name -> tesseral.backend.v1.PublishableKey
+	125, // 54: tesseral.backend.v1.CreatePublishableKeyRequest.publishable_key:type_name -> tesseral.backend.v1.PublishableKey
+	125, // 55: tesseral.backend.v1.CreatePublishableKeyResponse.publishable_key:type_name -> tesseral.backend.v1.PublishableKey
+	125, // 56: tesseral.backend.v1.UpdatePublishableKeyRequest.publishable_key:type_name -> tesseral.backend.v1.PublishableKey
+	125, // 57: tesseral.backend.v1.UpdatePublishableKeyResponse.publishable_key:type_name -> tesseral.backend.v1.PublishableKey
+	126, // 58: tesseral.backend.v1.GetProjectUISettingsResponse.project_ui_settings:type_name -> tesseral.backend.v1.ProjectUISettings
+	127, // 59: tesseral.backend.v1.UpdateProjectUISettingsResponse.create_time:type_name -> google.protobuf.Timestamp
+	127, // 60: tesseral.backend.v1.UpdateProjectUISettingsResponse.update_time:type_name -> google.protobuf.Timestamp
+	128, // 61: tesseral.backend.v1.CreateUserImpersonationTokenRequest.user_impersonation_token:type_name -> tesseral.backend.v1.UserImpersonationToken
+	128, // 62: tesseral.backend.v1.CreateUserImpersonationTokenResponse.user_impersonation_token:type_name -> tesseral.backend.v1.UserImpersonationToken
+	0,   // 63: tesseral.backend.v1.BackendService.GetProject:input_type -> tesseral.backend.v1.GetProjectRequest
+	4,   // 64: tesseral.backend.v1.BackendService.ListOrganizations:input_type -> tesseral.backend.v1.ListOrganizationsRequest
+	6,   // 65: tesseral.backend.v1.BackendService.GetOrganization:input_type -> tesseral.backend.v1.GetOrganizationRequest
+	8,   // 66: tesseral.backend.v1.BackendService.CreateOrganization:input_type -> tesseral.backend.v1.CreateOrganizationRequest
+	10,  // 67: tesseral.backend.v1.BackendService.UpdateOrganization:input_type -> tesseral.backend.v1.UpdateOrganizationRequest
+	12,  // 68: tesseral.backend.v1.BackendService.DeleteOrganization:input_type -> tesseral.backend.v1.DeleteOrganizationRequest
+	14,  // 69: tesseral.backend.v1.BackendService.GetOrganizationGoogleHostedDomains:input_type -> tesseral.backend.v1.GetOrganizationGoogleHostedDomainsRequest
+	16,  // 70: tesseral.backend.v1.BackendService.UpdateOrganizationGoogleHostedDomains:input_type -> tesseral.backend.v1.UpdateOrganizationGoogleHostedDomainsRequest
+	18,  // 71: tesseral.backend.v1.BackendService.GetOrganizationMicrosoftTenantIDs:input_type -> tesseral.backend.v1.GetOrganizationMicrosoftTenantIDsRequest
+	20,  // 72: tesseral.backend.v1.BackendService.UpdateOrganizationMicrosoftTenantIDs:input_type -> tesseral.backend.v1.UpdateOrganizationMicrosoftTenantIDsRequest
+	26,  // 73: tesseral.backend.v1.BackendService.ListSAMLConnections:input_type -> tesseral.backend.v1.ListSAMLConnectionsRequest
+	24,  // 74: tesseral.backend.v1.BackendService.GetSAMLConnection:input_type -> tesseral.backend.v1.GetSAMLConnectionRequest
+	22,  // 75: tesseral.backend.v1.BackendService.CreateSAMLConnection:input_type -> tesseral.backend.v1.CreateSAMLConnectionRequest
+	28,  // 76: tesseral.backend.v1.BackendService.UpdateSAMLConnection:input_type -> tesseral.backend.v1.UpdateSAMLConnectionRequest
+	30,  // 77: tesseral.backend.v1.BackendService.DeleteSAMLConnection:input_type -> tesseral.backend.v1.DeleteSAMLConnectionRequest
+	32,  // 78: tesseral.backend.v1.BackendService.ListSCIMAPIKeys:input_type -> tesseral.backend.v1.ListSCIMAPIKeysRequest
+	34,  // 79: tesseral.backend.v1.BackendService.GetSCIMAPIKey:input_type -> tesseral.backend.v1.GetSCIMAPIKeyRequest
+	36,  // 80: tesseral.backend.v1.BackendService.CreateSCIMAPIKey:input_type -> tesseral.backend.v1.CreateSCIMAPIKeyRequest
+	38,  // 81: tesseral.backend.v1.BackendService.UpdateSCIMAPIKey:input_type -> tesseral.backend.v1.UpdateSCIMAPIKeyRequest
+	40,  // 82: tesseral.backend.v1.BackendService.DeleteSCIMAPIKey:input_type -> tesseral.backend.v1.DeleteSCIMAPIKeyRequest
+	42,  // 83: tesseral.backend.v1.BackendService.RevokeSCIMAPIKey:input_type -> tesseral.backend.v1.RevokeSCIMAPIKeyRequest
+	44,  // 84: tesseral.backend.v1.BackendService.ListUsers:input_type -> tesseral.backend.v1.ListUsersRequest
+	46,  // 85: tesseral.backend.v1.BackendService.GetUser:input_type -> tesseral.backend.v1.GetUserRequest
+	48,  // 86: tesseral.backend.v1.BackendService.CreateUser:input_type -> tesseral.backend.v1.CreateUserRequest
+	50,  // 87: tesseral.backend.v1.BackendService.UpdateUser:input_type -> tesseral.backend.v1.UpdateUserRequest
+	52,  // 88: tesseral.backend.v1.BackendService.DeleteUser:input_type -> tesseral.backend.v1.DeleteUserRequest
+	54,  // 89: tesseral.backend.v1.BackendService.ListPasskeys:input_type -> tesseral.backend.v1.ListPasskeysRequest
+	56,  // 90: tesseral.backend.v1.BackendService.GetPasskey:input_type -> tesseral.backend.v1.GetPasskeyRequest
+	58,  // 91: tesseral.backend.v1.BackendService.UpdatePasskey:input_type -> tesseral.backend.v1.UpdatePasskeyRequest
+	60,  // 92: tesseral.backend.v1.BackendService.DeletePasskey:input_type -> tesseral.backend.v1.DeletePasskeyRequest
+	62,  // 93: tesseral.backend.v1.BackendService.ListSessions:input_type -> tesseral.backend.v1.ListSessionsRequest
+	64,  // 94: tesseral.backend.v1.BackendService.GetSession:input_type -> tesseral.backend.v1.GetSessionRequest
+	66,  // 95: tesseral.backend.v1.BackendService.ListUserInvites:input_type -> tesseral.backend.v1.ListUserInvitesRequest
+	68,  // 96: tesseral.backend.v1.BackendService.GetUserInvite:input_type -> tesseral.backend.v1.GetUserInviteRequest
+	70,  // 97: tesseral.backend.v1.BackendService.CreateUserInvite:input_type -> tesseral.backend.v1.CreateUserInviteRequest
+	72,  // 98: tesseral.backend.v1.BackendService.DeleteUserInvite:input_type -> tesseral.backend.v1.DeleteUserInviteRequest
+	102, // 99: tesseral.backend.v1.BackendService.DisableOrganizationLogins:input_type -> tesseral.backend.v1.DisableOrganizationLoginsRequest
+	104, // 100: tesseral.backend.v1.BackendService.DisableProjectLogins:input_type -> tesseral.backend.v1.DisableProjectLoginsRequest
+	106, // 101: tesseral.backend.v1.BackendService.EnableOrganizationLogins:input_type -> tesseral.backend.v1.EnableOrganizationLoginsRequest
+	108, // 102: tesseral.backend.v1.BackendService.EnableProjectLogins:input_type -> tesseral.backend.v1.EnableProjectLoginsRequest
+	2,   // 103: tesseral.backend.v1.BackendService.UpdateProject:input_type -> tesseral.backend.v1.UpdateProjectRequest
+	86,  // 104: tesseral.backend.v1.BackendService.GetVaultDomainSettings:input_type -> tesseral.backend.v1.GetVaultDomainSettingsRequest
+	98,  // 105: tesseral.backend.v1.BackendService.GetProjectUISettings:input_type -> tesseral.backend.v1.GetProjectUISettingsRequest
+	100, // 106: tesseral.backend.v1.BackendService.UpdateProjectUISettings:input_type -> tesseral.backend.v1.UpdateProjectUISettingsRequest
+	74,  // 107: tesseral.backend.v1.BackendService.ListProjectAPIKeys:input_type -> tesseral.backend.v1.ListProjectAPIKeysRequest
+	76,  // 108: tesseral.backend.v1.BackendService.GetProjectAPIKey:input_type -> tesseral.backend.v1.GetProjectAPIKeyRequest
+	78,  // 109: tesseral.backend.v1.BackendService.CreateProjectAPIKey:input_type -> tesseral.backend.v1.CreateProjectAPIKeyRequest
+	80,  // 110: tesseral.backend.v1.BackendService.UpdateProjectAPIKey:input_type -> tesseral.backend.v1.UpdateProjectAPIKeyRequest
+	82,  // 111: tesseral.backend.v1.BackendService.DeleteProjectAPIKey:input_type -> tesseral.backend.v1.DeleteProjectAPIKeyRequest
+	84,  // 112: tesseral.backend.v1.BackendService.RevokeProjectAPIKey:input_type -> tesseral.backend.v1.RevokeProjectAPIKeyRequest
+	88,  // 113: tesseral.backend.v1.BackendService.ListPublishableKeys:input_type -> tesseral.backend.v1.ListPublishableKeysRequest
+	90,  // 114: tesseral.backend.v1.BackendService.GetPublishableKey:input_type -> tesseral.backend.v1.GetPublishableKeyRequest
+	92,  // 115: tesseral.backend.v1.BackendService.CreatePublishableKey:input_type -> tesseral.backend.v1.CreatePublishableKeyRequest
+	94,  // 116: tesseral.backend.v1.BackendService.UpdatePublishableKey:input_type -> tesseral.backend.v1.UpdatePublishableKeyRequest
+	96,  // 117: tesseral.backend.v1.BackendService.DeletePublishableKey:input_type -> tesseral.backend.v1.DeletePublishableKeyRequest
+	111, // 118: tesseral.backend.v1.BackendService.CreateUserImpersonationToken:input_type -> tesseral.backend.v1.CreateUserImpersonationTokenRequest
+	1,   // 119: tesseral.backend.v1.BackendService.GetProject:output_type -> tesseral.backend.v1.GetProjectResponse
+	5,   // 120: tesseral.backend.v1.BackendService.ListOrganizations:output_type -> tesseral.backend.v1.ListOrganizationsResponse
+	7,   // 121: tesseral.backend.v1.BackendService.GetOrganization:output_type -> tesseral.backend.v1.GetOrganizationResponse
+	9,   // 122: tesseral.backend.v1.BackendService.CreateOrganization:output_type -> tesseral.backend.v1.CreateOrganizationResponse
+	11,  // 123: tesseral.backend.v1.BackendService.UpdateOrganization:output_type -> tesseral.backend.v1.UpdateOrganizationResponse
+	13,  // 124: tesseral.backend.v1.BackendService.DeleteOrganization:output_type -> tesseral.backend.v1.DeleteOrganizationResponse
+	15,  // 125: tesseral.backend.v1.BackendService.GetOrganizationGoogleHostedDomains:output_type -> tesseral.backend.v1.GetOrganizationGoogleHostedDomainsResponse
+	17,  // 126: tesseral.backend.v1.BackendService.UpdateOrganizationGoogleHostedDomains:output_type -> tesseral.backend.v1.UpdateOrganizationGoogleHostedDomainsResponse
+	19,  // 127: tesseral.backend.v1.BackendService.GetOrganizationMicrosoftTenantIDs:output_type -> tesseral.backend.v1.GetOrganizationMicrosoftTenantIDsResponse
+	21,  // 128: tesseral.backend.v1.BackendService.UpdateOrganizationMicrosoftTenantIDs:output_type -> tesseral.backend.v1.UpdateOrganizationMicrosoftTenantIDsResponse
+	27,  // 129: tesseral.backend.v1.BackendService.ListSAMLConnections:output_type -> tesseral.backend.v1.ListSAMLConnectionsResponse
+	25,  // 130: tesseral.backend.v1.BackendService.GetSAMLConnection:output_type -> tesseral.backend.v1.GetSAMLConnectionResponse
+	23,  // 131: tesseral.backend.v1.BackendService.CreateSAMLConnection:output_type -> tesseral.backend.v1.CreateSAMLConnectionResponse
+	29,  // 132: tesseral.backend.v1.BackendService.UpdateSAMLConnection:output_type -> tesseral.backend.v1.UpdateSAMLConnectionResponse
+	31,  // 133: tesseral.backend.v1.BackendService.DeleteSAMLConnection:output_type -> tesseral.backend.v1.DeleteSAMLConnectionResponse
+	33,  // 134: tesseral.backend.v1.BackendService.ListSCIMAPIKeys:output_type -> tesseral.backend.v1.ListSCIMAPIKeysResponse
+	35,  // 135: tesseral.backend.v1.BackendService.GetSCIMAPIKey:output_type -> tesseral.backend.v1.GetSCIMAPIKeyResponse
+	37,  // 136: tesseral.backend.v1.BackendService.CreateSCIMAPIKey:output_type -> tesseral.backend.v1.CreateSCIMAPIKeyResponse
+	39,  // 137: tesseral.backend.v1.BackendService.UpdateSCIMAPIKey:output_type -> tesseral.backend.v1.UpdateSCIMAPIKeyResponse
+	41,  // 138: tesseral.backend.v1.BackendService.DeleteSCIMAPIKey:output_type -> tesseral.backend.v1.DeleteSCIMAPIKeyResponse
+	43,  // 139: tesseral.backend.v1.BackendService.RevokeSCIMAPIKey:output_type -> tesseral.backend.v1.RevokeSCIMAPIKeyResponse
+	45,  // 140: tesseral.backend.v1.BackendService.ListUsers:output_type -> tesseral.backend.v1.ListUsersResponse
+	47,  // 141: tesseral.backend.v1.BackendService.GetUser:output_type -> tesseral.backend.v1.GetUserResponse
+	49,  // 142: tesseral.backend.v1.BackendService.CreateUser:output_type -> tesseral.backend.v1.CreateUserResponse
+	51,  // 143: tesseral.backend.v1.BackendService.UpdateUser:output_type -> tesseral.backend.v1.UpdateUserResponse
+	53,  // 144: tesseral.backend.v1.BackendService.DeleteUser:output_type -> tesseral.backend.v1.DeleteUserResponse
+	55,  // 145: tesseral.backend.v1.BackendService.ListPasskeys:output_type -> tesseral.backend.v1.ListPasskeysResponse
+	57,  // 146: tesseral.backend.v1.BackendService.GetPasskey:output_type -> tesseral.backend.v1.GetPasskeyResponse
+	59,  // 147: tesseral.backend.v1.BackendService.UpdatePasskey:output_type -> tesseral.backend.v1.UpdatePasskeyResponse
+	61,  // 148: tesseral.backend.v1.BackendService.DeletePasskey:output_type -> tesseral.backend.v1.DeletePasskeyResponse
+	63,  // 149: tesseral.backend.v1.BackendService.ListSessions:output_type -> tesseral.backend.v1.ListSessionsResponse
+	65,  // 150: tesseral.backend.v1.BackendService.GetSession:output_type -> tesseral.backend.v1.GetSessionResponse
+	67,  // 151: tesseral.backend.v1.BackendService.ListUserInvites:output_type -> tesseral.backend.v1.ListUserInvitesResponse
+	69,  // 152: tesseral.backend.v1.BackendService.GetUserInvite:output_type -> tesseral.backend.v1.GetUserInviteResponse
+	71,  // 153: tesseral.backend.v1.BackendService.CreateUserInvite:output_type -> tesseral.backend.v1.CreateUserInviteResponse
+	73,  // 154: tesseral.backend.v1.BackendService.DeleteUserInvite:output_type -> tesseral.backend.v1.DeleteUserInviteResponse
+	103, // 155: tesseral.backend.v1.BackendService.DisableOrganizationLogins:output_type -> tesseral.backend.v1.DisableOrganizationLoginsResponse
+	105, // 156: tesseral.backend.v1.BackendService.DisableProjectLogins:output_type -> tesseral.backend.v1.DisableProjectLoginsResponse
+	107, // 157: tesseral.backend.v1.BackendService.EnableOrganizationLogins:output_type -> tesseral.backend.v1.EnableOrganizationLoginsResponse
+	109, // 158: tesseral.backend.v1.BackendService.EnableProjectLogins:output_type -> tesseral.backend.v1.EnableProjectLoginsResponse
+	3,   // 159: tesseral.backend.v1.BackendService.UpdateProject:output_type -> tesseral.backend.v1.UpdateProjectResponse
+	87,  // 160: tesseral.backend.v1.BackendService.GetVaultDomainSettings:output_type -> tesseral.backend.v1.GetVaultDomainSettingsResponse
+	99,  // 161: tesseral.backend.v1.BackendService.GetProjectUISettings:output_type -> tesseral.backend.v1.GetProjectUISettingsResponse
+	101, // 162: tesseral.backend.v1.BackendService.UpdateProjectUISettings:output_type -> tesseral.backend.v1.UpdateProjectUISettingsResponse
+	75,  // 163: tesseral.backend.v1.BackendService.ListProjectAPIKeys:output_type -> tesseral.backend.v1.ListProjectAPIKeysResponse
+	77,  // 164: tesseral.backend.v1.BackendService.GetProjectAPIKey:output_type -> tesseral.backend.v1.GetProjectAPIKeyResponse
+	79,  // 165: tesseral.backend.v1.BackendService.CreateProjectAPIKey:output_type -> tesseral.backend.v1.CreateProjectAPIKeyResponse
+	81,  // 166: tesseral.backend.v1.BackendService.UpdateProjectAPIKey:output_type -> tesseral.backend.v1.UpdateProjectAPIKeyResponse
+	83,  // 167: tesseral.backend.v1.BackendService.DeleteProjectAPIKey:output_type -> tesseral.backend.v1.DeleteProjectAPIKeyResponse
+	85,  // 168: tesseral.backend.v1.BackendService.RevokeProjectAPIKey:output_type -> tesseral.backend.v1.RevokeProjectAPIKeyResponse
+	89,  // 169: tesseral.backend.v1.BackendService.ListPublishableKeys:output_type -> tesseral.backend.v1.ListPublishableKeysResponse
+	91,  // 170: tesseral.backend.v1.BackendService.GetPublishableKey:output_type -> tesseral.backend.v1.GetPublishableKeyResponse
+	93,  // 171: tesseral.backend.v1.BackendService.CreatePublishableKey:output_type -> tesseral.backend.v1.CreatePublishableKeyResponse
+	95,  // 172: tesseral.backend.v1.BackendService.UpdatePublishableKey:output_type -> tesseral.backend.v1.UpdatePublishableKeyResponse
+	97,  // 173: tesseral.backend.v1.BackendService.DeletePublishableKey:output_type -> tesseral.backend.v1.DeletePublishableKeyResponse
+	112, // 174: tesseral.backend.v1.BackendService.CreateUserImpersonationToken:output_type -> tesseral.backend.v1.CreateUserImpersonationTokenResponse
 	119, // [119:175] is the sub-list for method output_type
 	63,  // [63:119] is the sub-list for method input_type
 	63,  // [63:63] is the sub-list for extension type_name

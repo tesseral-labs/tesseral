@@ -474,18 +474,18 @@ func file_tesseral_common_v1_common_proto_rawDescGZIP() []byte {
 
 var file_tesseral_common_v1_common_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_tesseral_common_v1_common_proto_goTypes = []any{
-	(*AccessTokenData)(nil),         // 0: openauth.common.v1.AccessTokenData
-	(*AccessTokenSession)(nil),      // 1: openauth.common.v1.AccessTokenSession
-	(*AccessTokenUser)(nil),         // 2: openauth.common.v1.AccessTokenUser
-	(*AccessTokenOrganization)(nil), // 3: openauth.common.v1.AccessTokenOrganization
-	(*AccessTokenImpersonator)(nil), // 4: openauth.common.v1.AccessTokenImpersonator
-	(*ErrorDetail)(nil),             // 5: openauth.common.v1.ErrorDetail
+	(*AccessTokenData)(nil),         // 0: tesseral.common.v1.AccessTokenData
+	(*AccessTokenSession)(nil),      // 1: tesseral.common.v1.AccessTokenSession
+	(*AccessTokenUser)(nil),         // 2: tesseral.common.v1.AccessTokenUser
+	(*AccessTokenOrganization)(nil), // 3: tesseral.common.v1.AccessTokenOrganization
+	(*AccessTokenImpersonator)(nil), // 4: tesseral.common.v1.AccessTokenImpersonator
+	(*ErrorDetail)(nil),             // 5: tesseral.common.v1.ErrorDetail
 }
 var file_tesseral_common_v1_common_proto_depIdxs = []int32{
-	1, // 0: openauth.common.v1.AccessTokenData.session:type_name -> openauth.common.v1.AccessTokenSession
-	2, // 1: openauth.common.v1.AccessTokenData.user:type_name -> openauth.common.v1.AccessTokenUser
-	3, // 2: openauth.common.v1.AccessTokenData.organization:type_name -> openauth.common.v1.AccessTokenOrganization
-	4, // 3: openauth.common.v1.AccessTokenData.impersonator:type_name -> openauth.common.v1.AccessTokenImpersonator
+	1, // 0: tesseral.common.v1.AccessTokenData.session:type_name -> tesseral.common.v1.AccessTokenSession
+	2, // 1: tesseral.common.v1.AccessTokenData.user:type_name -> tesseral.common.v1.AccessTokenUser
+	3, // 2: tesseral.common.v1.AccessTokenData.organization:type_name -> tesseral.common.v1.AccessTokenOrganization
+	4, // 3: tesseral.common.v1.AccessTokenData.impersonator:type_name -> tesseral.common.v1.AccessTokenImpersonator
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

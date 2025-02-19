@@ -22,7 +22,7 @@ const _ = connect.IsAtLeastVersion1_13_0
 
 const (
 	// IntermediateServiceName is the fully-qualified name of the IntermediateService service.
-	IntermediateServiceName = "openauth.intermediate.v1.IntermediateService"
+	IntermediateServiceName = "tesseral.intermediate.v1.IntermediateService"
 )
 
 // These constants are the fully-qualified names of the RPCs defined in this package. They're
@@ -35,85 +35,85 @@ const (
 const (
 	// IntermediateServiceListSAMLOrganizationsProcedure is the fully-qualified name of the
 	// IntermediateService's ListSAMLOrganizations RPC.
-	IntermediateServiceListSAMLOrganizationsProcedure = "/openauth.intermediate.v1.IntermediateService/ListSAMLOrganizations"
+	IntermediateServiceListSAMLOrganizationsProcedure = "/tesseral.intermediate.v1.IntermediateService/ListSAMLOrganizations"
 	// IntermediateServiceGetSettingsProcedure is the fully-qualified name of the IntermediateService's
 	// GetSettings RPC.
-	IntermediateServiceGetSettingsProcedure = "/openauth.intermediate.v1.IntermediateService/GetSettings"
+	IntermediateServiceGetSettingsProcedure = "/tesseral.intermediate.v1.IntermediateService/GetSettings"
 	// IntermediateServiceRedeemUserImpersonationTokenProcedure is the fully-qualified name of the
 	// IntermediateService's RedeemUserImpersonationToken RPC.
-	IntermediateServiceRedeemUserImpersonationTokenProcedure = "/openauth.intermediate.v1.IntermediateService/RedeemUserImpersonationToken"
+	IntermediateServiceRedeemUserImpersonationTokenProcedure = "/tesseral.intermediate.v1.IntermediateService/RedeemUserImpersonationToken"
 	// IntermediateServiceCreateIntermediateSessionProcedure is the fully-qualified name of the
 	// IntermediateService's CreateIntermediateSession RPC.
-	IntermediateServiceCreateIntermediateSessionProcedure = "/openauth.intermediate.v1.IntermediateService/CreateIntermediateSession"
+	IntermediateServiceCreateIntermediateSessionProcedure = "/tesseral.intermediate.v1.IntermediateService/CreateIntermediateSession"
 	// IntermediateServiceWhoamiProcedure is the fully-qualified name of the IntermediateService's
 	// Whoami RPC.
-	IntermediateServiceWhoamiProcedure = "/openauth.intermediate.v1.IntermediateService/Whoami"
+	IntermediateServiceWhoamiProcedure = "/tesseral.intermediate.v1.IntermediateService/Whoami"
 	// IntermediateServiceCreateOrganizationProcedure is the fully-qualified name of the
 	// IntermediateService's CreateOrganization RPC.
-	IntermediateServiceCreateOrganizationProcedure = "/openauth.intermediate.v1.IntermediateService/CreateOrganization"
+	IntermediateServiceCreateOrganizationProcedure = "/tesseral.intermediate.v1.IntermediateService/CreateOrganization"
 	// IntermediateServiceListOrganizationsProcedure is the fully-qualified name of the
 	// IntermediateService's ListOrganizations RPC.
-	IntermediateServiceListOrganizationsProcedure = "/openauth.intermediate.v1.IntermediateService/ListOrganizations"
+	IntermediateServiceListOrganizationsProcedure = "/tesseral.intermediate.v1.IntermediateService/ListOrganizations"
 	// IntermediateServiceSetOrganizationProcedure is the fully-qualified name of the
 	// IntermediateService's SetOrganization RPC.
-	IntermediateServiceSetOrganizationProcedure = "/openauth.intermediate.v1.IntermediateService/SetOrganization"
+	IntermediateServiceSetOrganizationProcedure = "/tesseral.intermediate.v1.IntermediateService/SetOrganization"
 	// IntermediateServiceExchangeIntermediateSessionForSessionProcedure is the fully-qualified name of
 	// the IntermediateService's ExchangeIntermediateSessionForSession RPC.
-	IntermediateServiceExchangeIntermediateSessionForSessionProcedure = "/openauth.intermediate.v1.IntermediateService/ExchangeIntermediateSessionForSession"
+	IntermediateServiceExchangeIntermediateSessionForSessionProcedure = "/tesseral.intermediate.v1.IntermediateService/ExchangeIntermediateSessionForSession"
 	// IntermediateServiceGetGoogleOAuthRedirectURLProcedure is the fully-qualified name of the
 	// IntermediateService's GetGoogleOAuthRedirectURL RPC.
-	IntermediateServiceGetGoogleOAuthRedirectURLProcedure = "/openauth.intermediate.v1.IntermediateService/GetGoogleOAuthRedirectURL"
+	IntermediateServiceGetGoogleOAuthRedirectURLProcedure = "/tesseral.intermediate.v1.IntermediateService/GetGoogleOAuthRedirectURL"
 	// IntermediateServiceRedeemGoogleOAuthCodeProcedure is the fully-qualified name of the
 	// IntermediateService's RedeemGoogleOAuthCode RPC.
-	IntermediateServiceRedeemGoogleOAuthCodeProcedure = "/openauth.intermediate.v1.IntermediateService/RedeemGoogleOAuthCode"
+	IntermediateServiceRedeemGoogleOAuthCodeProcedure = "/tesseral.intermediate.v1.IntermediateService/RedeemGoogleOAuthCode"
 	// IntermediateServiceGetMicrosoftOAuthRedirectURLProcedure is the fully-qualified name of the
 	// IntermediateService's GetMicrosoftOAuthRedirectURL RPC.
-	IntermediateServiceGetMicrosoftOAuthRedirectURLProcedure = "/openauth.intermediate.v1.IntermediateService/GetMicrosoftOAuthRedirectURL"
+	IntermediateServiceGetMicrosoftOAuthRedirectURLProcedure = "/tesseral.intermediate.v1.IntermediateService/GetMicrosoftOAuthRedirectURL"
 	// IntermediateServiceRedeemMicrosoftOAuthCodeProcedure is the fully-qualified name of the
 	// IntermediateService's RedeemMicrosoftOAuthCode RPC.
-	IntermediateServiceRedeemMicrosoftOAuthCodeProcedure = "/openauth.intermediate.v1.IntermediateService/RedeemMicrosoftOAuthCode"
+	IntermediateServiceRedeemMicrosoftOAuthCodeProcedure = "/tesseral.intermediate.v1.IntermediateService/RedeemMicrosoftOAuthCode"
 	// IntermediateServiceIssueEmailVerificationChallengeProcedure is the fully-qualified name of the
 	// IntermediateService's IssueEmailVerificationChallenge RPC.
-	IntermediateServiceIssueEmailVerificationChallengeProcedure = "/openauth.intermediate.v1.IntermediateService/IssueEmailVerificationChallenge"
+	IntermediateServiceIssueEmailVerificationChallengeProcedure = "/tesseral.intermediate.v1.IntermediateService/IssueEmailVerificationChallenge"
 	// IntermediateServiceVerifyEmailChallengeProcedure is the fully-qualified name of the
 	// IntermediateService's VerifyEmailChallenge RPC.
-	IntermediateServiceVerifyEmailChallengeProcedure = "/openauth.intermediate.v1.IntermediateService/VerifyEmailChallenge"
+	IntermediateServiceVerifyEmailChallengeProcedure = "/tesseral.intermediate.v1.IntermediateService/VerifyEmailChallenge"
 	// IntermediateServiceRegisterPasswordProcedure is the fully-qualified name of the
 	// IntermediateService's RegisterPassword RPC.
-	IntermediateServiceRegisterPasswordProcedure = "/openauth.intermediate.v1.IntermediateService/RegisterPassword"
+	IntermediateServiceRegisterPasswordProcedure = "/tesseral.intermediate.v1.IntermediateService/RegisterPassword"
 	// IntermediateServiceVerifyPasswordProcedure is the fully-qualified name of the
 	// IntermediateService's VerifyPassword RPC.
-	IntermediateServiceVerifyPasswordProcedure = "/openauth.intermediate.v1.IntermediateService/VerifyPassword"
+	IntermediateServiceVerifyPasswordProcedure = "/tesseral.intermediate.v1.IntermediateService/VerifyPassword"
 	// IntermediateServiceGetPasskeyOptionsProcedure is the fully-qualified name of the
 	// IntermediateService's GetPasskeyOptions RPC.
-	IntermediateServiceGetPasskeyOptionsProcedure = "/openauth.intermediate.v1.IntermediateService/GetPasskeyOptions"
+	IntermediateServiceGetPasskeyOptionsProcedure = "/tesseral.intermediate.v1.IntermediateService/GetPasskeyOptions"
 	// IntermediateServiceRegisterPasskeyProcedure is the fully-qualified name of the
 	// IntermediateService's RegisterPasskey RPC.
-	IntermediateServiceRegisterPasskeyProcedure = "/openauth.intermediate.v1.IntermediateService/RegisterPasskey"
+	IntermediateServiceRegisterPasskeyProcedure = "/tesseral.intermediate.v1.IntermediateService/RegisterPasskey"
 	// IntermediateServiceIssuePasskeyChallengeProcedure is the fully-qualified name of the
 	// IntermediateService's IssuePasskeyChallenge RPC.
-	IntermediateServiceIssuePasskeyChallengeProcedure = "/openauth.intermediate.v1.IntermediateService/IssuePasskeyChallenge"
+	IntermediateServiceIssuePasskeyChallengeProcedure = "/tesseral.intermediate.v1.IntermediateService/IssuePasskeyChallenge"
 	// IntermediateServiceVerifyPasskeyProcedure is the fully-qualified name of the
 	// IntermediateService's VerifyPasskey RPC.
-	IntermediateServiceVerifyPasskeyProcedure = "/openauth.intermediate.v1.IntermediateService/VerifyPasskey"
+	IntermediateServiceVerifyPasskeyProcedure = "/tesseral.intermediate.v1.IntermediateService/VerifyPasskey"
 	// IntermediateServiceGetAuthenticatorAppOptionsProcedure is the fully-qualified name of the
 	// IntermediateService's GetAuthenticatorAppOptions RPC.
-	IntermediateServiceGetAuthenticatorAppOptionsProcedure = "/openauth.intermediate.v1.IntermediateService/GetAuthenticatorAppOptions"
+	IntermediateServiceGetAuthenticatorAppOptionsProcedure = "/tesseral.intermediate.v1.IntermediateService/GetAuthenticatorAppOptions"
 	// IntermediateServiceRegisterAuthenticatorAppProcedure is the fully-qualified name of the
 	// IntermediateService's RegisterAuthenticatorApp RPC.
-	IntermediateServiceRegisterAuthenticatorAppProcedure = "/openauth.intermediate.v1.IntermediateService/RegisterAuthenticatorApp"
+	IntermediateServiceRegisterAuthenticatorAppProcedure = "/tesseral.intermediate.v1.IntermediateService/RegisterAuthenticatorApp"
 	// IntermediateServiceVerifyAuthenticatorAppProcedure is the fully-qualified name of the
 	// IntermediateService's VerifyAuthenticatorApp RPC.
-	IntermediateServiceVerifyAuthenticatorAppProcedure = "/openauth.intermediate.v1.IntermediateService/VerifyAuthenticatorApp"
+	IntermediateServiceVerifyAuthenticatorAppProcedure = "/tesseral.intermediate.v1.IntermediateService/VerifyAuthenticatorApp"
 	// IntermediateServiceSetEmailAsPrimaryLoginFactorProcedure is the fully-qualified name of the
 	// IntermediateService's SetEmailAsPrimaryLoginFactor RPC.
-	IntermediateServiceSetEmailAsPrimaryLoginFactorProcedure = "/openauth.intermediate.v1.IntermediateService/SetEmailAsPrimaryLoginFactor"
+	IntermediateServiceSetEmailAsPrimaryLoginFactorProcedure = "/tesseral.intermediate.v1.IntermediateService/SetEmailAsPrimaryLoginFactor"
 	// IntermediateServiceCreateProjectProcedure is the fully-qualified name of the
 	// IntermediateService's CreateProject RPC.
-	IntermediateServiceCreateProjectProcedure = "/openauth.intermediate.v1.IntermediateService/CreateProject"
+	IntermediateServiceCreateProjectProcedure = "/tesseral.intermediate.v1.IntermediateService/CreateProject"
 )
 
-// IntermediateServiceClient is a client for the openauth.intermediate.v1.IntermediateService
+// IntermediateServiceClient is a client for the tesseral.intermediate.v1.IntermediateService
 // service.
 type IntermediateServiceClient interface {
 	ListSAMLOrganizations(context.Context, *connect.Request[v1.ListSAMLOrganizationsRequest]) (*connect.Response[v1.ListSAMLOrganizationsResponse], error)
@@ -145,7 +145,7 @@ type IntermediateServiceClient interface {
 }
 
 // NewIntermediateServiceClient constructs a client for the
-// openauth.intermediate.v1.IntermediateService service. By default, it uses the Connect protocol
+// tesseral.intermediate.v1.IntermediateService service. By default, it uses the Connect protocol
 // with the binary Protobuf Codec, asks for gzipped responses, and sends uncompressed requests. To
 // use the gRPC or gRPC-Web protocols, supply the connect.WithGRPC() or connect.WithGRPCWeb()
 // options.
@@ -345,148 +345,148 @@ type intermediateServiceClient struct {
 	createProject                         *connect.Client[v1.CreateProjectRequest, v1.CreateProjectResponse]
 }
 
-// ListSAMLOrganizations calls openauth.intermediate.v1.IntermediateService.ListSAMLOrganizations.
+// ListSAMLOrganizations calls tesseral.intermediate.v1.IntermediateService.ListSAMLOrganizations.
 func (c *intermediateServiceClient) ListSAMLOrganizations(ctx context.Context, req *connect.Request[v1.ListSAMLOrganizationsRequest]) (*connect.Response[v1.ListSAMLOrganizationsResponse], error) {
 	return c.listSAMLOrganizations.CallUnary(ctx, req)
 }
 
-// GetSettings calls openauth.intermediate.v1.IntermediateService.GetSettings.
+// GetSettings calls tesseral.intermediate.v1.IntermediateService.GetSettings.
 func (c *intermediateServiceClient) GetSettings(ctx context.Context, req *connect.Request[v1.GetSettingsRequest]) (*connect.Response[v1.GetSettingsResponse], error) {
 	return c.getSettings.CallUnary(ctx, req)
 }
 
 // RedeemUserImpersonationToken calls
-// openauth.intermediate.v1.IntermediateService.RedeemUserImpersonationToken.
+// tesseral.intermediate.v1.IntermediateService.RedeemUserImpersonationToken.
 func (c *intermediateServiceClient) RedeemUserImpersonationToken(ctx context.Context, req *connect.Request[v1.RedeemUserImpersonationTokenRequest]) (*connect.Response[v1.RedeemUserImpersonationTokenResponse], error) {
 	return c.redeemUserImpersonationToken.CallUnary(ctx, req)
 }
 
 // CreateIntermediateSession calls
-// openauth.intermediate.v1.IntermediateService.CreateIntermediateSession.
+// tesseral.intermediate.v1.IntermediateService.CreateIntermediateSession.
 func (c *intermediateServiceClient) CreateIntermediateSession(ctx context.Context, req *connect.Request[v1.CreateIntermediateSessionRequest]) (*connect.Response[v1.CreateIntermediateSessionResponse], error) {
 	return c.createIntermediateSession.CallUnary(ctx, req)
 }
 
-// Whoami calls openauth.intermediate.v1.IntermediateService.Whoami.
+// Whoami calls tesseral.intermediate.v1.IntermediateService.Whoami.
 func (c *intermediateServiceClient) Whoami(ctx context.Context, req *connect.Request[v1.WhoamiRequest]) (*connect.Response[v1.WhoamiResponse], error) {
 	return c.whoami.CallUnary(ctx, req)
 }
 
-// CreateOrganization calls openauth.intermediate.v1.IntermediateService.CreateOrganization.
+// CreateOrganization calls tesseral.intermediate.v1.IntermediateService.CreateOrganization.
 func (c *intermediateServiceClient) CreateOrganization(ctx context.Context, req *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.CreateOrganizationResponse], error) {
 	return c.createOrganization.CallUnary(ctx, req)
 }
 
-// ListOrganizations calls openauth.intermediate.v1.IntermediateService.ListOrganizations.
+// ListOrganizations calls tesseral.intermediate.v1.IntermediateService.ListOrganizations.
 func (c *intermediateServiceClient) ListOrganizations(ctx context.Context, req *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error) {
 	return c.listOrganizations.CallUnary(ctx, req)
 }
 
-// SetOrganization calls openauth.intermediate.v1.IntermediateService.SetOrganization.
+// SetOrganization calls tesseral.intermediate.v1.IntermediateService.SetOrganization.
 func (c *intermediateServiceClient) SetOrganization(ctx context.Context, req *connect.Request[v1.SetOrganizationRequest]) (*connect.Response[v1.SetOrganizationResponse], error) {
 	return c.setOrganization.CallUnary(ctx, req)
 }
 
 // ExchangeIntermediateSessionForSession calls
-// openauth.intermediate.v1.IntermediateService.ExchangeIntermediateSessionForSession.
+// tesseral.intermediate.v1.IntermediateService.ExchangeIntermediateSessionForSession.
 func (c *intermediateServiceClient) ExchangeIntermediateSessionForSession(ctx context.Context, req *connect.Request[v1.ExchangeIntermediateSessionForSessionRequest]) (*connect.Response[v1.ExchangeIntermediateSessionForSessionResponse], error) {
 	return c.exchangeIntermediateSessionForSession.CallUnary(ctx, req)
 }
 
 // GetGoogleOAuthRedirectURL calls
-// openauth.intermediate.v1.IntermediateService.GetGoogleOAuthRedirectURL.
+// tesseral.intermediate.v1.IntermediateService.GetGoogleOAuthRedirectURL.
 func (c *intermediateServiceClient) GetGoogleOAuthRedirectURL(ctx context.Context, req *connect.Request[v1.GetGoogleOAuthRedirectURLRequest]) (*connect.Response[v1.GetGoogleOAuthRedirectURLResponse], error) {
 	return c.getGoogleOAuthRedirectURL.CallUnary(ctx, req)
 }
 
-// RedeemGoogleOAuthCode calls openauth.intermediate.v1.IntermediateService.RedeemGoogleOAuthCode.
+// RedeemGoogleOAuthCode calls tesseral.intermediate.v1.IntermediateService.RedeemGoogleOAuthCode.
 func (c *intermediateServiceClient) RedeemGoogleOAuthCode(ctx context.Context, req *connect.Request[v1.RedeemGoogleOAuthCodeRequest]) (*connect.Response[v1.RedeemGoogleOAuthCodeResponse], error) {
 	return c.redeemGoogleOAuthCode.CallUnary(ctx, req)
 }
 
 // GetMicrosoftOAuthRedirectURL calls
-// openauth.intermediate.v1.IntermediateService.GetMicrosoftOAuthRedirectURL.
+// tesseral.intermediate.v1.IntermediateService.GetMicrosoftOAuthRedirectURL.
 func (c *intermediateServiceClient) GetMicrosoftOAuthRedirectURL(ctx context.Context, req *connect.Request[v1.GetMicrosoftOAuthRedirectURLRequest]) (*connect.Response[v1.GetMicrosoftOAuthRedirectURLResponse], error) {
 	return c.getMicrosoftOAuthRedirectURL.CallUnary(ctx, req)
 }
 
 // RedeemMicrosoftOAuthCode calls
-// openauth.intermediate.v1.IntermediateService.RedeemMicrosoftOAuthCode.
+// tesseral.intermediate.v1.IntermediateService.RedeemMicrosoftOAuthCode.
 func (c *intermediateServiceClient) RedeemMicrosoftOAuthCode(ctx context.Context, req *connect.Request[v1.RedeemMicrosoftOAuthCodeRequest]) (*connect.Response[v1.RedeemMicrosoftOAuthCodeResponse], error) {
 	return c.redeemMicrosoftOAuthCode.CallUnary(ctx, req)
 }
 
 // IssueEmailVerificationChallenge calls
-// openauth.intermediate.v1.IntermediateService.IssueEmailVerificationChallenge.
+// tesseral.intermediate.v1.IntermediateService.IssueEmailVerificationChallenge.
 func (c *intermediateServiceClient) IssueEmailVerificationChallenge(ctx context.Context, req *connect.Request[v1.IssueEmailVerificationChallengeRequest]) (*connect.Response[v1.IssueEmailVerificationChallengeResponse], error) {
 	return c.issueEmailVerificationChallenge.CallUnary(ctx, req)
 }
 
-// VerifyEmailChallenge calls openauth.intermediate.v1.IntermediateService.VerifyEmailChallenge.
+// VerifyEmailChallenge calls tesseral.intermediate.v1.IntermediateService.VerifyEmailChallenge.
 func (c *intermediateServiceClient) VerifyEmailChallenge(ctx context.Context, req *connect.Request[v1.VerifyEmailChallengeRequest]) (*connect.Response[v1.VerifyEmailChallengeResponse], error) {
 	return c.verifyEmailChallenge.CallUnary(ctx, req)
 }
 
-// RegisterPassword calls openauth.intermediate.v1.IntermediateService.RegisterPassword.
+// RegisterPassword calls tesseral.intermediate.v1.IntermediateService.RegisterPassword.
 func (c *intermediateServiceClient) RegisterPassword(ctx context.Context, req *connect.Request[v1.RegisterPasswordRequest]) (*connect.Response[v1.RegisterPasswordResponse], error) {
 	return c.registerPassword.CallUnary(ctx, req)
 }
 
-// VerifyPassword calls openauth.intermediate.v1.IntermediateService.VerifyPassword.
+// VerifyPassword calls tesseral.intermediate.v1.IntermediateService.VerifyPassword.
 func (c *intermediateServiceClient) VerifyPassword(ctx context.Context, req *connect.Request[v1.VerifyPasswordRequest]) (*connect.Response[v1.VerifyPasswordResponse], error) {
 	return c.verifyPassword.CallUnary(ctx, req)
 }
 
-// GetPasskeyOptions calls openauth.intermediate.v1.IntermediateService.GetPasskeyOptions.
+// GetPasskeyOptions calls tesseral.intermediate.v1.IntermediateService.GetPasskeyOptions.
 func (c *intermediateServiceClient) GetPasskeyOptions(ctx context.Context, req *connect.Request[v1.GetPasskeyOptionsRequest]) (*connect.Response[v1.GetPasskeyOptionsResponse], error) {
 	return c.getPasskeyOptions.CallUnary(ctx, req)
 }
 
-// RegisterPasskey calls openauth.intermediate.v1.IntermediateService.RegisterPasskey.
+// RegisterPasskey calls tesseral.intermediate.v1.IntermediateService.RegisterPasskey.
 func (c *intermediateServiceClient) RegisterPasskey(ctx context.Context, req *connect.Request[v1.RegisterPasskeyRequest]) (*connect.Response[v1.RegisterPasskeyResponse], error) {
 	return c.registerPasskey.CallUnary(ctx, req)
 }
 
-// IssuePasskeyChallenge calls openauth.intermediate.v1.IntermediateService.IssuePasskeyChallenge.
+// IssuePasskeyChallenge calls tesseral.intermediate.v1.IntermediateService.IssuePasskeyChallenge.
 func (c *intermediateServiceClient) IssuePasskeyChallenge(ctx context.Context, req *connect.Request[v1.IssuePasskeyChallengeRequest]) (*connect.Response[v1.IssuePasskeyChallengeResponse], error) {
 	return c.issuePasskeyChallenge.CallUnary(ctx, req)
 }
 
-// VerifyPasskey calls openauth.intermediate.v1.IntermediateService.VerifyPasskey.
+// VerifyPasskey calls tesseral.intermediate.v1.IntermediateService.VerifyPasskey.
 func (c *intermediateServiceClient) VerifyPasskey(ctx context.Context, req *connect.Request[v1.VerifyPasskeyRequest]) (*connect.Response[v1.VerifyPasskeyResponse], error) {
 	return c.verifyPasskey.CallUnary(ctx, req)
 }
 
 // GetAuthenticatorAppOptions calls
-// openauth.intermediate.v1.IntermediateService.GetAuthenticatorAppOptions.
+// tesseral.intermediate.v1.IntermediateService.GetAuthenticatorAppOptions.
 func (c *intermediateServiceClient) GetAuthenticatorAppOptions(ctx context.Context, req *connect.Request[v1.GetAuthenticatorAppOptionsRequest]) (*connect.Response[v1.GetAuthenticatorAppOptionsResponse], error) {
 	return c.getAuthenticatorAppOptions.CallUnary(ctx, req)
 }
 
 // RegisterAuthenticatorApp calls
-// openauth.intermediate.v1.IntermediateService.RegisterAuthenticatorApp.
+// tesseral.intermediate.v1.IntermediateService.RegisterAuthenticatorApp.
 func (c *intermediateServiceClient) RegisterAuthenticatorApp(ctx context.Context, req *connect.Request[v1.RegisterAuthenticatorAppRequest]) (*connect.Response[v1.RegisterAuthenticatorAppResponse], error) {
 	return c.registerAuthenticatorApp.CallUnary(ctx, req)
 }
 
-// VerifyAuthenticatorApp calls openauth.intermediate.v1.IntermediateService.VerifyAuthenticatorApp.
+// VerifyAuthenticatorApp calls tesseral.intermediate.v1.IntermediateService.VerifyAuthenticatorApp.
 func (c *intermediateServiceClient) VerifyAuthenticatorApp(ctx context.Context, req *connect.Request[v1.VerifyAuthenticatorAppRequest]) (*connect.Response[v1.VerifyAuthenticatorAppResponse], error) {
 	return c.verifyAuthenticatorApp.CallUnary(ctx, req)
 }
 
 // SetEmailAsPrimaryLoginFactor calls
-// openauth.intermediate.v1.IntermediateService.SetEmailAsPrimaryLoginFactor.
+// tesseral.intermediate.v1.IntermediateService.SetEmailAsPrimaryLoginFactor.
 func (c *intermediateServiceClient) SetEmailAsPrimaryLoginFactor(ctx context.Context, req *connect.Request[v1.SetEmailAsPrimaryLoginFactorRequest]) (*connect.Response[v1.SetEmailAsPrimaryLoginFactorResponse], error) {
 	return c.setEmailAsPrimaryLoginFactor.CallUnary(ctx, req)
 }
 
-// CreateProject calls openauth.intermediate.v1.IntermediateService.CreateProject.
+// CreateProject calls tesseral.intermediate.v1.IntermediateService.CreateProject.
 func (c *intermediateServiceClient) CreateProject(ctx context.Context, req *connect.Request[v1.CreateProjectRequest]) (*connect.Response[v1.CreateProjectResponse], error) {
 	return c.createProject.CallUnary(ctx, req)
 }
 
 // IntermediateServiceHandler is an implementation of the
-// openauth.intermediate.v1.IntermediateService service.
+// tesseral.intermediate.v1.IntermediateService service.
 type IntermediateServiceHandler interface {
 	ListSAMLOrganizations(context.Context, *connect.Request[v1.ListSAMLOrganizationsRequest]) (*connect.Response[v1.ListSAMLOrganizationsResponse], error)
 	GetSettings(context.Context, *connect.Request[v1.GetSettingsRequest]) (*connect.Response[v1.GetSettingsResponse], error)
@@ -679,7 +679,7 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 		connect.WithSchema(intermediateServiceMethods.ByName("CreateProject")),
 		connect.WithHandlerOptions(opts...),
 	)
-	return "/openauth.intermediate.v1.IntermediateService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	return "/tesseral.intermediate.v1.IntermediateService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case IntermediateServiceListSAMLOrganizationsProcedure:
 			intermediateServiceListSAMLOrganizationsHandler.ServeHTTP(w, r)
@@ -743,105 +743,105 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 type UnimplementedIntermediateServiceHandler struct{}
 
 func (UnimplementedIntermediateServiceHandler) ListSAMLOrganizations(context.Context, *connect.Request[v1.ListSAMLOrganizationsRequest]) (*connect.Response[v1.ListSAMLOrganizationsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.ListSAMLOrganizations is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.ListSAMLOrganizations is not implemented"))
 }
 
 func (UnimplementedIntermediateServiceHandler) GetSettings(context.Context, *connect.Request[v1.GetSettingsRequest]) (*connect.Response[v1.GetSettingsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.GetSettings is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.GetSettings is not implemented"))
 }
 
 func (UnimplementedIntermediateServiceHandler) RedeemUserImpersonationToken(context.Context, *connect.Request[v1.RedeemUserImpersonationTokenRequest]) (*connect.Response[v1.RedeemUserImpersonationTokenResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.RedeemUserImpersonationToken is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.RedeemUserImpersonationToken is not implemented"))
 }
 
 func (UnimplementedIntermediateServiceHandler) CreateIntermediateSession(context.Context, *connect.Request[v1.CreateIntermediateSessionRequest]) (*connect.Response[v1.CreateIntermediateSessionResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.CreateIntermediateSession is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.CreateIntermediateSession is not implemented"))
 }
 
 func (UnimplementedIntermediateServiceHandler) Whoami(context.Context, *connect.Request[v1.WhoamiRequest]) (*connect.Response[v1.WhoamiResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.Whoami is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.Whoami is not implemented"))
 }
 
 func (UnimplementedIntermediateServiceHandler) CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.CreateOrganizationResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.CreateOrganization is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.CreateOrganization is not implemented"))
 }
 
 func (UnimplementedIntermediateServiceHandler) ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.ListOrganizations is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.ListOrganizations is not implemented"))
 }
 
 func (UnimplementedIntermediateServiceHandler) SetOrganization(context.Context, *connect.Request[v1.SetOrganizationRequest]) (*connect.Response[v1.SetOrganizationResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.SetOrganization is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.SetOrganization is not implemented"))
 }
 
 func (UnimplementedIntermediateServiceHandler) ExchangeIntermediateSessionForSession(context.Context, *connect.Request[v1.ExchangeIntermediateSessionForSessionRequest]) (*connect.Response[v1.ExchangeIntermediateSessionForSessionResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.ExchangeIntermediateSessionForSession is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.ExchangeIntermediateSessionForSession is not implemented"))
 }
 
 func (UnimplementedIntermediateServiceHandler) GetGoogleOAuthRedirectURL(context.Context, *connect.Request[v1.GetGoogleOAuthRedirectURLRequest]) (*connect.Response[v1.GetGoogleOAuthRedirectURLResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.GetGoogleOAuthRedirectURL is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.GetGoogleOAuthRedirectURL is not implemented"))
 }
 
 func (UnimplementedIntermediateServiceHandler) RedeemGoogleOAuthCode(context.Context, *connect.Request[v1.RedeemGoogleOAuthCodeRequest]) (*connect.Response[v1.RedeemGoogleOAuthCodeResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.RedeemGoogleOAuthCode is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.RedeemGoogleOAuthCode is not implemented"))
 }
 
 func (UnimplementedIntermediateServiceHandler) GetMicrosoftOAuthRedirectURL(context.Context, *connect.Request[v1.GetMicrosoftOAuthRedirectURLRequest]) (*connect.Response[v1.GetMicrosoftOAuthRedirectURLResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.GetMicrosoftOAuthRedirectURL is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.GetMicrosoftOAuthRedirectURL is not implemented"))
 }
 
 func (UnimplementedIntermediateServiceHandler) RedeemMicrosoftOAuthCode(context.Context, *connect.Request[v1.RedeemMicrosoftOAuthCodeRequest]) (*connect.Response[v1.RedeemMicrosoftOAuthCodeResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.RedeemMicrosoftOAuthCode is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.RedeemMicrosoftOAuthCode is not implemented"))
 }
 
 func (UnimplementedIntermediateServiceHandler) IssueEmailVerificationChallenge(context.Context, *connect.Request[v1.IssueEmailVerificationChallengeRequest]) (*connect.Response[v1.IssueEmailVerificationChallengeResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.IssueEmailVerificationChallenge is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.IssueEmailVerificationChallenge is not implemented"))
 }
 
 func (UnimplementedIntermediateServiceHandler) VerifyEmailChallenge(context.Context, *connect.Request[v1.VerifyEmailChallengeRequest]) (*connect.Response[v1.VerifyEmailChallengeResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.VerifyEmailChallenge is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.VerifyEmailChallenge is not implemented"))
 }
 
 func (UnimplementedIntermediateServiceHandler) RegisterPassword(context.Context, *connect.Request[v1.RegisterPasswordRequest]) (*connect.Response[v1.RegisterPasswordResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.RegisterPassword is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.RegisterPassword is not implemented"))
 }
 
 func (UnimplementedIntermediateServiceHandler) VerifyPassword(context.Context, *connect.Request[v1.VerifyPasswordRequest]) (*connect.Response[v1.VerifyPasswordResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.VerifyPassword is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.VerifyPassword is not implemented"))
 }
 
 func (UnimplementedIntermediateServiceHandler) GetPasskeyOptions(context.Context, *connect.Request[v1.GetPasskeyOptionsRequest]) (*connect.Response[v1.GetPasskeyOptionsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.GetPasskeyOptions is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.GetPasskeyOptions is not implemented"))
 }
 
 func (UnimplementedIntermediateServiceHandler) RegisterPasskey(context.Context, *connect.Request[v1.RegisterPasskeyRequest]) (*connect.Response[v1.RegisterPasskeyResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.RegisterPasskey is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.RegisterPasskey is not implemented"))
 }
 
 func (UnimplementedIntermediateServiceHandler) IssuePasskeyChallenge(context.Context, *connect.Request[v1.IssuePasskeyChallengeRequest]) (*connect.Response[v1.IssuePasskeyChallengeResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.IssuePasskeyChallenge is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.IssuePasskeyChallenge is not implemented"))
 }
 
 func (UnimplementedIntermediateServiceHandler) VerifyPasskey(context.Context, *connect.Request[v1.VerifyPasskeyRequest]) (*connect.Response[v1.VerifyPasskeyResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.VerifyPasskey is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.VerifyPasskey is not implemented"))
 }
 
 func (UnimplementedIntermediateServiceHandler) GetAuthenticatorAppOptions(context.Context, *connect.Request[v1.GetAuthenticatorAppOptionsRequest]) (*connect.Response[v1.GetAuthenticatorAppOptionsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.GetAuthenticatorAppOptions is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.GetAuthenticatorAppOptions is not implemented"))
 }
 
 func (UnimplementedIntermediateServiceHandler) RegisterAuthenticatorApp(context.Context, *connect.Request[v1.RegisterAuthenticatorAppRequest]) (*connect.Response[v1.RegisterAuthenticatorAppResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.RegisterAuthenticatorApp is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.RegisterAuthenticatorApp is not implemented"))
 }
 
 func (UnimplementedIntermediateServiceHandler) VerifyAuthenticatorApp(context.Context, *connect.Request[v1.VerifyAuthenticatorAppRequest]) (*connect.Response[v1.VerifyAuthenticatorAppResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.VerifyAuthenticatorApp is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.VerifyAuthenticatorApp is not implemented"))
 }
 
 func (UnimplementedIntermediateServiceHandler) SetEmailAsPrimaryLoginFactor(context.Context, *connect.Request[v1.SetEmailAsPrimaryLoginFactorRequest]) (*connect.Response[v1.SetEmailAsPrimaryLoginFactorResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.SetEmailAsPrimaryLoginFactor is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.SetEmailAsPrimaryLoginFactor is not implemented"))
 }
 
 func (UnimplementedIntermediateServiceHandler) CreateProject(context.Context, *connect.Request[v1.CreateProjectRequest]) (*connect.Response[v1.CreateProjectResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.intermediate.v1.IntermediateService.CreateProject is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.CreateProject is not implemented"))
 }

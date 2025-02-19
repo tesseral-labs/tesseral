@@ -22,7 +22,7 @@ const _ = connect.IsAtLeastVersion1_13_0
 
 const (
 	// BackendServiceName is the fully-qualified name of the BackendService service.
-	BackendServiceName = "openauth.backend.v1.BackendService"
+	BackendServiceName = "tesseral.backend.v1.BackendService"
 )
 
 // These constants are the fully-qualified names of the RPCs defined in this package. They're
@@ -35,174 +35,174 @@ const (
 const (
 	// BackendServiceGetProjectProcedure is the fully-qualified name of the BackendService's GetProject
 	// RPC.
-	BackendServiceGetProjectProcedure = "/openauth.backend.v1.BackendService/GetProject"
+	BackendServiceGetProjectProcedure = "/tesseral.backend.v1.BackendService/GetProject"
 	// BackendServiceListOrganizationsProcedure is the fully-qualified name of the BackendService's
 	// ListOrganizations RPC.
-	BackendServiceListOrganizationsProcedure = "/openauth.backend.v1.BackendService/ListOrganizations"
+	BackendServiceListOrganizationsProcedure = "/tesseral.backend.v1.BackendService/ListOrganizations"
 	// BackendServiceGetOrganizationProcedure is the fully-qualified name of the BackendService's
 	// GetOrganization RPC.
-	BackendServiceGetOrganizationProcedure = "/openauth.backend.v1.BackendService/GetOrganization"
+	BackendServiceGetOrganizationProcedure = "/tesseral.backend.v1.BackendService/GetOrganization"
 	// BackendServiceCreateOrganizationProcedure is the fully-qualified name of the BackendService's
 	// CreateOrganization RPC.
-	BackendServiceCreateOrganizationProcedure = "/openauth.backend.v1.BackendService/CreateOrganization"
+	BackendServiceCreateOrganizationProcedure = "/tesseral.backend.v1.BackendService/CreateOrganization"
 	// BackendServiceUpdateOrganizationProcedure is the fully-qualified name of the BackendService's
 	// UpdateOrganization RPC.
-	BackendServiceUpdateOrganizationProcedure = "/openauth.backend.v1.BackendService/UpdateOrganization"
+	BackendServiceUpdateOrganizationProcedure = "/tesseral.backend.v1.BackendService/UpdateOrganization"
 	// BackendServiceDeleteOrganizationProcedure is the fully-qualified name of the BackendService's
 	// DeleteOrganization RPC.
-	BackendServiceDeleteOrganizationProcedure = "/openauth.backend.v1.BackendService/DeleteOrganization"
+	BackendServiceDeleteOrganizationProcedure = "/tesseral.backend.v1.BackendService/DeleteOrganization"
 	// BackendServiceGetOrganizationGoogleHostedDomainsProcedure is the fully-qualified name of the
 	// BackendService's GetOrganizationGoogleHostedDomains RPC.
-	BackendServiceGetOrganizationGoogleHostedDomainsProcedure = "/openauth.backend.v1.BackendService/GetOrganizationGoogleHostedDomains"
+	BackendServiceGetOrganizationGoogleHostedDomainsProcedure = "/tesseral.backend.v1.BackendService/GetOrganizationGoogleHostedDomains"
 	// BackendServiceUpdateOrganizationGoogleHostedDomainsProcedure is the fully-qualified name of the
 	// BackendService's UpdateOrganizationGoogleHostedDomains RPC.
-	BackendServiceUpdateOrganizationGoogleHostedDomainsProcedure = "/openauth.backend.v1.BackendService/UpdateOrganizationGoogleHostedDomains"
+	BackendServiceUpdateOrganizationGoogleHostedDomainsProcedure = "/tesseral.backend.v1.BackendService/UpdateOrganizationGoogleHostedDomains"
 	// BackendServiceGetOrganizationMicrosoftTenantIDsProcedure is the fully-qualified name of the
 	// BackendService's GetOrganizationMicrosoftTenantIDs RPC.
-	BackendServiceGetOrganizationMicrosoftTenantIDsProcedure = "/openauth.backend.v1.BackendService/GetOrganizationMicrosoftTenantIDs"
+	BackendServiceGetOrganizationMicrosoftTenantIDsProcedure = "/tesseral.backend.v1.BackendService/GetOrganizationMicrosoftTenantIDs"
 	// BackendServiceUpdateOrganizationMicrosoftTenantIDsProcedure is the fully-qualified name of the
 	// BackendService's UpdateOrganizationMicrosoftTenantIDs RPC.
-	BackendServiceUpdateOrganizationMicrosoftTenantIDsProcedure = "/openauth.backend.v1.BackendService/UpdateOrganizationMicrosoftTenantIDs"
+	BackendServiceUpdateOrganizationMicrosoftTenantIDsProcedure = "/tesseral.backend.v1.BackendService/UpdateOrganizationMicrosoftTenantIDs"
 	// BackendServiceListSAMLConnectionsProcedure is the fully-qualified name of the BackendService's
 	// ListSAMLConnections RPC.
-	BackendServiceListSAMLConnectionsProcedure = "/openauth.backend.v1.BackendService/ListSAMLConnections"
+	BackendServiceListSAMLConnectionsProcedure = "/tesseral.backend.v1.BackendService/ListSAMLConnections"
 	// BackendServiceGetSAMLConnectionProcedure is the fully-qualified name of the BackendService's
 	// GetSAMLConnection RPC.
-	BackendServiceGetSAMLConnectionProcedure = "/openauth.backend.v1.BackendService/GetSAMLConnection"
+	BackendServiceGetSAMLConnectionProcedure = "/tesseral.backend.v1.BackendService/GetSAMLConnection"
 	// BackendServiceCreateSAMLConnectionProcedure is the fully-qualified name of the BackendService's
 	// CreateSAMLConnection RPC.
-	BackendServiceCreateSAMLConnectionProcedure = "/openauth.backend.v1.BackendService/CreateSAMLConnection"
+	BackendServiceCreateSAMLConnectionProcedure = "/tesseral.backend.v1.BackendService/CreateSAMLConnection"
 	// BackendServiceUpdateSAMLConnectionProcedure is the fully-qualified name of the BackendService's
 	// UpdateSAMLConnection RPC.
-	BackendServiceUpdateSAMLConnectionProcedure = "/openauth.backend.v1.BackendService/UpdateSAMLConnection"
+	BackendServiceUpdateSAMLConnectionProcedure = "/tesseral.backend.v1.BackendService/UpdateSAMLConnection"
 	// BackendServiceDeleteSAMLConnectionProcedure is the fully-qualified name of the BackendService's
 	// DeleteSAMLConnection RPC.
-	BackendServiceDeleteSAMLConnectionProcedure = "/openauth.backend.v1.BackendService/DeleteSAMLConnection"
+	BackendServiceDeleteSAMLConnectionProcedure = "/tesseral.backend.v1.BackendService/DeleteSAMLConnection"
 	// BackendServiceListSCIMAPIKeysProcedure is the fully-qualified name of the BackendService's
 	// ListSCIMAPIKeys RPC.
-	BackendServiceListSCIMAPIKeysProcedure = "/openauth.backend.v1.BackendService/ListSCIMAPIKeys"
+	BackendServiceListSCIMAPIKeysProcedure = "/tesseral.backend.v1.BackendService/ListSCIMAPIKeys"
 	// BackendServiceGetSCIMAPIKeyProcedure is the fully-qualified name of the BackendService's
 	// GetSCIMAPIKey RPC.
-	BackendServiceGetSCIMAPIKeyProcedure = "/openauth.backend.v1.BackendService/GetSCIMAPIKey"
+	BackendServiceGetSCIMAPIKeyProcedure = "/tesseral.backend.v1.BackendService/GetSCIMAPIKey"
 	// BackendServiceCreateSCIMAPIKeyProcedure is the fully-qualified name of the BackendService's
 	// CreateSCIMAPIKey RPC.
-	BackendServiceCreateSCIMAPIKeyProcedure = "/openauth.backend.v1.BackendService/CreateSCIMAPIKey"
+	BackendServiceCreateSCIMAPIKeyProcedure = "/tesseral.backend.v1.BackendService/CreateSCIMAPIKey"
 	// BackendServiceUpdateSCIMAPIKeyProcedure is the fully-qualified name of the BackendService's
 	// UpdateSCIMAPIKey RPC.
-	BackendServiceUpdateSCIMAPIKeyProcedure = "/openauth.backend.v1.BackendService/UpdateSCIMAPIKey"
+	BackendServiceUpdateSCIMAPIKeyProcedure = "/tesseral.backend.v1.BackendService/UpdateSCIMAPIKey"
 	// BackendServiceDeleteSCIMAPIKeyProcedure is the fully-qualified name of the BackendService's
 	// DeleteSCIMAPIKey RPC.
-	BackendServiceDeleteSCIMAPIKeyProcedure = "/openauth.backend.v1.BackendService/DeleteSCIMAPIKey"
+	BackendServiceDeleteSCIMAPIKeyProcedure = "/tesseral.backend.v1.BackendService/DeleteSCIMAPIKey"
 	// BackendServiceRevokeSCIMAPIKeyProcedure is the fully-qualified name of the BackendService's
 	// RevokeSCIMAPIKey RPC.
-	BackendServiceRevokeSCIMAPIKeyProcedure = "/openauth.backend.v1.BackendService/RevokeSCIMAPIKey"
+	BackendServiceRevokeSCIMAPIKeyProcedure = "/tesseral.backend.v1.BackendService/RevokeSCIMAPIKey"
 	// BackendServiceListUsersProcedure is the fully-qualified name of the BackendService's ListUsers
 	// RPC.
-	BackendServiceListUsersProcedure = "/openauth.backend.v1.BackendService/ListUsers"
+	BackendServiceListUsersProcedure = "/tesseral.backend.v1.BackendService/ListUsers"
 	// BackendServiceGetUserProcedure is the fully-qualified name of the BackendService's GetUser RPC.
-	BackendServiceGetUserProcedure = "/openauth.backend.v1.BackendService/GetUser"
+	BackendServiceGetUserProcedure = "/tesseral.backend.v1.BackendService/GetUser"
 	// BackendServiceCreateUserProcedure is the fully-qualified name of the BackendService's CreateUser
 	// RPC.
-	BackendServiceCreateUserProcedure = "/openauth.backend.v1.BackendService/CreateUser"
+	BackendServiceCreateUserProcedure = "/tesseral.backend.v1.BackendService/CreateUser"
 	// BackendServiceUpdateUserProcedure is the fully-qualified name of the BackendService's UpdateUser
 	// RPC.
-	BackendServiceUpdateUserProcedure = "/openauth.backend.v1.BackendService/UpdateUser"
+	BackendServiceUpdateUserProcedure = "/tesseral.backend.v1.BackendService/UpdateUser"
 	// BackendServiceDeleteUserProcedure is the fully-qualified name of the BackendService's DeleteUser
 	// RPC.
-	BackendServiceDeleteUserProcedure = "/openauth.backend.v1.BackendService/DeleteUser"
+	BackendServiceDeleteUserProcedure = "/tesseral.backend.v1.BackendService/DeleteUser"
 	// BackendServiceListPasskeysProcedure is the fully-qualified name of the BackendService's
 	// ListPasskeys RPC.
-	BackendServiceListPasskeysProcedure = "/openauth.backend.v1.BackendService/ListPasskeys"
+	BackendServiceListPasskeysProcedure = "/tesseral.backend.v1.BackendService/ListPasskeys"
 	// BackendServiceGetPasskeyProcedure is the fully-qualified name of the BackendService's GetPasskey
 	// RPC.
-	BackendServiceGetPasskeyProcedure = "/openauth.backend.v1.BackendService/GetPasskey"
+	BackendServiceGetPasskeyProcedure = "/tesseral.backend.v1.BackendService/GetPasskey"
 	// BackendServiceUpdatePasskeyProcedure is the fully-qualified name of the BackendService's
 	// UpdatePasskey RPC.
-	BackendServiceUpdatePasskeyProcedure = "/openauth.backend.v1.BackendService/UpdatePasskey"
+	BackendServiceUpdatePasskeyProcedure = "/tesseral.backend.v1.BackendService/UpdatePasskey"
 	// BackendServiceDeletePasskeyProcedure is the fully-qualified name of the BackendService's
 	// DeletePasskey RPC.
-	BackendServiceDeletePasskeyProcedure = "/openauth.backend.v1.BackendService/DeletePasskey"
+	BackendServiceDeletePasskeyProcedure = "/tesseral.backend.v1.BackendService/DeletePasskey"
 	// BackendServiceListSessionsProcedure is the fully-qualified name of the BackendService's
 	// ListSessions RPC.
-	BackendServiceListSessionsProcedure = "/openauth.backend.v1.BackendService/ListSessions"
+	BackendServiceListSessionsProcedure = "/tesseral.backend.v1.BackendService/ListSessions"
 	// BackendServiceGetSessionProcedure is the fully-qualified name of the BackendService's GetSession
 	// RPC.
-	BackendServiceGetSessionProcedure = "/openauth.backend.v1.BackendService/GetSession"
+	BackendServiceGetSessionProcedure = "/tesseral.backend.v1.BackendService/GetSession"
 	// BackendServiceListUserInvitesProcedure is the fully-qualified name of the BackendService's
 	// ListUserInvites RPC.
-	BackendServiceListUserInvitesProcedure = "/openauth.backend.v1.BackendService/ListUserInvites"
+	BackendServiceListUserInvitesProcedure = "/tesseral.backend.v1.BackendService/ListUserInvites"
 	// BackendServiceGetUserInviteProcedure is the fully-qualified name of the BackendService's
 	// GetUserInvite RPC.
-	BackendServiceGetUserInviteProcedure = "/openauth.backend.v1.BackendService/GetUserInvite"
+	BackendServiceGetUserInviteProcedure = "/tesseral.backend.v1.BackendService/GetUserInvite"
 	// BackendServiceCreateUserInviteProcedure is the fully-qualified name of the BackendService's
 	// CreateUserInvite RPC.
-	BackendServiceCreateUserInviteProcedure = "/openauth.backend.v1.BackendService/CreateUserInvite"
+	BackendServiceCreateUserInviteProcedure = "/tesseral.backend.v1.BackendService/CreateUserInvite"
 	// BackendServiceDeleteUserInviteProcedure is the fully-qualified name of the BackendService's
 	// DeleteUserInvite RPC.
-	BackendServiceDeleteUserInviteProcedure = "/openauth.backend.v1.BackendService/DeleteUserInvite"
+	BackendServiceDeleteUserInviteProcedure = "/tesseral.backend.v1.BackendService/DeleteUserInvite"
 	// BackendServiceDisableOrganizationLoginsProcedure is the fully-qualified name of the
 	// BackendService's DisableOrganizationLogins RPC.
-	BackendServiceDisableOrganizationLoginsProcedure = "/openauth.backend.v1.BackendService/DisableOrganizationLogins"
+	BackendServiceDisableOrganizationLoginsProcedure = "/tesseral.backend.v1.BackendService/DisableOrganizationLogins"
 	// BackendServiceDisableProjectLoginsProcedure is the fully-qualified name of the BackendService's
 	// DisableProjectLogins RPC.
-	BackendServiceDisableProjectLoginsProcedure = "/openauth.backend.v1.BackendService/DisableProjectLogins"
+	BackendServiceDisableProjectLoginsProcedure = "/tesseral.backend.v1.BackendService/DisableProjectLogins"
 	// BackendServiceEnableOrganizationLoginsProcedure is the fully-qualified name of the
 	// BackendService's EnableOrganizationLogins RPC.
-	BackendServiceEnableOrganizationLoginsProcedure = "/openauth.backend.v1.BackendService/EnableOrganizationLogins"
+	BackendServiceEnableOrganizationLoginsProcedure = "/tesseral.backend.v1.BackendService/EnableOrganizationLogins"
 	// BackendServiceEnableProjectLoginsProcedure is the fully-qualified name of the BackendService's
 	// EnableProjectLogins RPC.
-	BackendServiceEnableProjectLoginsProcedure = "/openauth.backend.v1.BackendService/EnableProjectLogins"
+	BackendServiceEnableProjectLoginsProcedure = "/tesseral.backend.v1.BackendService/EnableProjectLogins"
 	// BackendServiceUpdateProjectProcedure is the fully-qualified name of the BackendService's
 	// UpdateProject RPC.
-	BackendServiceUpdateProjectProcedure = "/openauth.backend.v1.BackendService/UpdateProject"
+	BackendServiceUpdateProjectProcedure = "/tesseral.backend.v1.BackendService/UpdateProject"
 	// BackendServiceGetVaultDomainSettingsProcedure is the fully-qualified name of the BackendService's
 	// GetVaultDomainSettings RPC.
-	BackendServiceGetVaultDomainSettingsProcedure = "/openauth.backend.v1.BackendService/GetVaultDomainSettings"
+	BackendServiceGetVaultDomainSettingsProcedure = "/tesseral.backend.v1.BackendService/GetVaultDomainSettings"
 	// BackendServiceGetProjectUISettingsProcedure is the fully-qualified name of the BackendService's
 	// GetProjectUISettings RPC.
-	BackendServiceGetProjectUISettingsProcedure = "/openauth.backend.v1.BackendService/GetProjectUISettings"
+	BackendServiceGetProjectUISettingsProcedure = "/tesseral.backend.v1.BackendService/GetProjectUISettings"
 	// BackendServiceUpdateProjectUISettingsProcedure is the fully-qualified name of the
 	// BackendService's UpdateProjectUISettings RPC.
-	BackendServiceUpdateProjectUISettingsProcedure = "/openauth.backend.v1.BackendService/UpdateProjectUISettings"
+	BackendServiceUpdateProjectUISettingsProcedure = "/tesseral.backend.v1.BackendService/UpdateProjectUISettings"
 	// BackendServiceListProjectAPIKeysProcedure is the fully-qualified name of the BackendService's
 	// ListProjectAPIKeys RPC.
-	BackendServiceListProjectAPIKeysProcedure = "/openauth.backend.v1.BackendService/ListProjectAPIKeys"
+	BackendServiceListProjectAPIKeysProcedure = "/tesseral.backend.v1.BackendService/ListProjectAPIKeys"
 	// BackendServiceGetProjectAPIKeyProcedure is the fully-qualified name of the BackendService's
 	// GetProjectAPIKey RPC.
-	BackendServiceGetProjectAPIKeyProcedure = "/openauth.backend.v1.BackendService/GetProjectAPIKey"
+	BackendServiceGetProjectAPIKeyProcedure = "/tesseral.backend.v1.BackendService/GetProjectAPIKey"
 	// BackendServiceCreateProjectAPIKeyProcedure is the fully-qualified name of the BackendService's
 	// CreateProjectAPIKey RPC.
-	BackendServiceCreateProjectAPIKeyProcedure = "/openauth.backend.v1.BackendService/CreateProjectAPIKey"
+	BackendServiceCreateProjectAPIKeyProcedure = "/tesseral.backend.v1.BackendService/CreateProjectAPIKey"
 	// BackendServiceUpdateProjectAPIKeyProcedure is the fully-qualified name of the BackendService's
 	// UpdateProjectAPIKey RPC.
-	BackendServiceUpdateProjectAPIKeyProcedure = "/openauth.backend.v1.BackendService/UpdateProjectAPIKey"
+	BackendServiceUpdateProjectAPIKeyProcedure = "/tesseral.backend.v1.BackendService/UpdateProjectAPIKey"
 	// BackendServiceDeleteProjectAPIKeyProcedure is the fully-qualified name of the BackendService's
 	// DeleteProjectAPIKey RPC.
-	BackendServiceDeleteProjectAPIKeyProcedure = "/openauth.backend.v1.BackendService/DeleteProjectAPIKey"
+	BackendServiceDeleteProjectAPIKeyProcedure = "/tesseral.backend.v1.BackendService/DeleteProjectAPIKey"
 	// BackendServiceRevokeProjectAPIKeyProcedure is the fully-qualified name of the BackendService's
 	// RevokeProjectAPIKey RPC.
-	BackendServiceRevokeProjectAPIKeyProcedure = "/openauth.backend.v1.BackendService/RevokeProjectAPIKey"
+	BackendServiceRevokeProjectAPIKeyProcedure = "/tesseral.backend.v1.BackendService/RevokeProjectAPIKey"
 	// BackendServiceListPublishableKeysProcedure is the fully-qualified name of the BackendService's
 	// ListPublishableKeys RPC.
-	BackendServiceListPublishableKeysProcedure = "/openauth.backend.v1.BackendService/ListPublishableKeys"
+	BackendServiceListPublishableKeysProcedure = "/tesseral.backend.v1.BackendService/ListPublishableKeys"
 	// BackendServiceGetPublishableKeyProcedure is the fully-qualified name of the BackendService's
 	// GetPublishableKey RPC.
-	BackendServiceGetPublishableKeyProcedure = "/openauth.backend.v1.BackendService/GetPublishableKey"
+	BackendServiceGetPublishableKeyProcedure = "/tesseral.backend.v1.BackendService/GetPublishableKey"
 	// BackendServiceCreatePublishableKeyProcedure is the fully-qualified name of the BackendService's
 	// CreatePublishableKey RPC.
-	BackendServiceCreatePublishableKeyProcedure = "/openauth.backend.v1.BackendService/CreatePublishableKey"
+	BackendServiceCreatePublishableKeyProcedure = "/tesseral.backend.v1.BackendService/CreatePublishableKey"
 	// BackendServiceUpdatePublishableKeyProcedure is the fully-qualified name of the BackendService's
 	// UpdatePublishableKey RPC.
-	BackendServiceUpdatePublishableKeyProcedure = "/openauth.backend.v1.BackendService/UpdatePublishableKey"
+	BackendServiceUpdatePublishableKeyProcedure = "/tesseral.backend.v1.BackendService/UpdatePublishableKey"
 	// BackendServiceDeletePublishableKeyProcedure is the fully-qualified name of the BackendService's
 	// DeletePublishableKey RPC.
-	BackendServiceDeletePublishableKeyProcedure = "/openauth.backend.v1.BackendService/DeletePublishableKey"
+	BackendServiceDeletePublishableKeyProcedure = "/tesseral.backend.v1.BackendService/DeletePublishableKey"
 	// BackendServiceCreateUserImpersonationTokenProcedure is the fully-qualified name of the
 	// BackendService's CreateUserImpersonationToken RPC.
-	BackendServiceCreateUserImpersonationTokenProcedure = "/openauth.backend.v1.BackendService/CreateUserImpersonationToken"
+	BackendServiceCreateUserImpersonationTokenProcedure = "/tesseral.backend.v1.BackendService/CreateUserImpersonationToken"
 )
 
-// BackendServiceClient is a client for the openauth.backend.v1.BackendService service.
+// BackendServiceClient is a client for the tesseral.backend.v1.BackendService service.
 type BackendServiceClient interface {
 	GetProject(context.Context, *connect.Request[v1.GetProjectRequest]) (*connect.Response[v1.GetProjectResponse], error)
 	ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error)
@@ -262,7 +262,7 @@ type BackendServiceClient interface {
 	CreateUserImpersonationToken(context.Context, *connect.Request[v1.CreateUserImpersonationTokenRequest]) (*connect.Response[v1.CreateUserImpersonationTokenResponse], error)
 }
 
-// NewBackendServiceClient constructs a client for the openauth.backend.v1.BackendService service.
+// NewBackendServiceClient constructs a client for the tesseral.backend.v1.BackendService service.
 // By default, it uses the Connect protocol with the binary Protobuf Codec, asks for gzipped
 // responses, and sends uncompressed requests. To use the gRPC or gRPC-Web protocols, supply the
 // connect.WithGRPC() or connect.WithGRPCWeb() options.
@@ -672,292 +672,292 @@ type backendServiceClient struct {
 	createUserImpersonationToken          *connect.Client[v1.CreateUserImpersonationTokenRequest, v1.CreateUserImpersonationTokenResponse]
 }
 
-// GetProject calls openauth.backend.v1.BackendService.GetProject.
+// GetProject calls tesseral.backend.v1.BackendService.GetProject.
 func (c *backendServiceClient) GetProject(ctx context.Context, req *connect.Request[v1.GetProjectRequest]) (*connect.Response[v1.GetProjectResponse], error) {
 	return c.getProject.CallUnary(ctx, req)
 }
 
-// ListOrganizations calls openauth.backend.v1.BackendService.ListOrganizations.
+// ListOrganizations calls tesseral.backend.v1.BackendService.ListOrganizations.
 func (c *backendServiceClient) ListOrganizations(ctx context.Context, req *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error) {
 	return c.listOrganizations.CallUnary(ctx, req)
 }
 
-// GetOrganization calls openauth.backend.v1.BackendService.GetOrganization.
+// GetOrganization calls tesseral.backend.v1.BackendService.GetOrganization.
 func (c *backendServiceClient) GetOrganization(ctx context.Context, req *connect.Request[v1.GetOrganizationRequest]) (*connect.Response[v1.GetOrganizationResponse], error) {
 	return c.getOrganization.CallUnary(ctx, req)
 }
 
-// CreateOrganization calls openauth.backend.v1.BackendService.CreateOrganization.
+// CreateOrganization calls tesseral.backend.v1.BackendService.CreateOrganization.
 func (c *backendServiceClient) CreateOrganization(ctx context.Context, req *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.CreateOrganizationResponse], error) {
 	return c.createOrganization.CallUnary(ctx, req)
 }
 
-// UpdateOrganization calls openauth.backend.v1.BackendService.UpdateOrganization.
+// UpdateOrganization calls tesseral.backend.v1.BackendService.UpdateOrganization.
 func (c *backendServiceClient) UpdateOrganization(ctx context.Context, req *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.UpdateOrganizationResponse], error) {
 	return c.updateOrganization.CallUnary(ctx, req)
 }
 
-// DeleteOrganization calls openauth.backend.v1.BackendService.DeleteOrganization.
+// DeleteOrganization calls tesseral.backend.v1.BackendService.DeleteOrganization.
 func (c *backendServiceClient) DeleteOrganization(ctx context.Context, req *connect.Request[v1.DeleteOrganizationRequest]) (*connect.Response[v1.DeleteOrganizationResponse], error) {
 	return c.deleteOrganization.CallUnary(ctx, req)
 }
 
 // GetOrganizationGoogleHostedDomains calls
-// openauth.backend.v1.BackendService.GetOrganizationGoogleHostedDomains.
+// tesseral.backend.v1.BackendService.GetOrganizationGoogleHostedDomains.
 func (c *backendServiceClient) GetOrganizationGoogleHostedDomains(ctx context.Context, req *connect.Request[v1.GetOrganizationGoogleHostedDomainsRequest]) (*connect.Response[v1.GetOrganizationGoogleHostedDomainsResponse], error) {
 	return c.getOrganizationGoogleHostedDomains.CallUnary(ctx, req)
 }
 
 // UpdateOrganizationGoogleHostedDomains calls
-// openauth.backend.v1.BackendService.UpdateOrganizationGoogleHostedDomains.
+// tesseral.backend.v1.BackendService.UpdateOrganizationGoogleHostedDomains.
 func (c *backendServiceClient) UpdateOrganizationGoogleHostedDomains(ctx context.Context, req *connect.Request[v1.UpdateOrganizationGoogleHostedDomainsRequest]) (*connect.Response[v1.UpdateOrganizationGoogleHostedDomainsResponse], error) {
 	return c.updateOrganizationGoogleHostedDomains.CallUnary(ctx, req)
 }
 
 // GetOrganizationMicrosoftTenantIDs calls
-// openauth.backend.v1.BackendService.GetOrganizationMicrosoftTenantIDs.
+// tesseral.backend.v1.BackendService.GetOrganizationMicrosoftTenantIDs.
 func (c *backendServiceClient) GetOrganizationMicrosoftTenantIDs(ctx context.Context, req *connect.Request[v1.GetOrganizationMicrosoftTenantIDsRequest]) (*connect.Response[v1.GetOrganizationMicrosoftTenantIDsResponse], error) {
 	return c.getOrganizationMicrosoftTenantIDs.CallUnary(ctx, req)
 }
 
 // UpdateOrganizationMicrosoftTenantIDs calls
-// openauth.backend.v1.BackendService.UpdateOrganizationMicrosoftTenantIDs.
+// tesseral.backend.v1.BackendService.UpdateOrganizationMicrosoftTenantIDs.
 func (c *backendServiceClient) UpdateOrganizationMicrosoftTenantIDs(ctx context.Context, req *connect.Request[v1.UpdateOrganizationMicrosoftTenantIDsRequest]) (*connect.Response[v1.UpdateOrganizationMicrosoftTenantIDsResponse], error) {
 	return c.updateOrganizationMicrosoftTenantIDs.CallUnary(ctx, req)
 }
 
-// ListSAMLConnections calls openauth.backend.v1.BackendService.ListSAMLConnections.
+// ListSAMLConnections calls tesseral.backend.v1.BackendService.ListSAMLConnections.
 func (c *backendServiceClient) ListSAMLConnections(ctx context.Context, req *connect.Request[v1.ListSAMLConnectionsRequest]) (*connect.Response[v1.ListSAMLConnectionsResponse], error) {
 	return c.listSAMLConnections.CallUnary(ctx, req)
 }
 
-// GetSAMLConnection calls openauth.backend.v1.BackendService.GetSAMLConnection.
+// GetSAMLConnection calls tesseral.backend.v1.BackendService.GetSAMLConnection.
 func (c *backendServiceClient) GetSAMLConnection(ctx context.Context, req *connect.Request[v1.GetSAMLConnectionRequest]) (*connect.Response[v1.GetSAMLConnectionResponse], error) {
 	return c.getSAMLConnection.CallUnary(ctx, req)
 }
 
-// CreateSAMLConnection calls openauth.backend.v1.BackendService.CreateSAMLConnection.
+// CreateSAMLConnection calls tesseral.backend.v1.BackendService.CreateSAMLConnection.
 func (c *backendServiceClient) CreateSAMLConnection(ctx context.Context, req *connect.Request[v1.CreateSAMLConnectionRequest]) (*connect.Response[v1.CreateSAMLConnectionResponse], error) {
 	return c.createSAMLConnection.CallUnary(ctx, req)
 }
 
-// UpdateSAMLConnection calls openauth.backend.v1.BackendService.UpdateSAMLConnection.
+// UpdateSAMLConnection calls tesseral.backend.v1.BackendService.UpdateSAMLConnection.
 func (c *backendServiceClient) UpdateSAMLConnection(ctx context.Context, req *connect.Request[v1.UpdateSAMLConnectionRequest]) (*connect.Response[v1.UpdateSAMLConnectionResponse], error) {
 	return c.updateSAMLConnection.CallUnary(ctx, req)
 }
 
-// DeleteSAMLConnection calls openauth.backend.v1.BackendService.DeleteSAMLConnection.
+// DeleteSAMLConnection calls tesseral.backend.v1.BackendService.DeleteSAMLConnection.
 func (c *backendServiceClient) DeleteSAMLConnection(ctx context.Context, req *connect.Request[v1.DeleteSAMLConnectionRequest]) (*connect.Response[v1.DeleteSAMLConnectionResponse], error) {
 	return c.deleteSAMLConnection.CallUnary(ctx, req)
 }
 
-// ListSCIMAPIKeys calls openauth.backend.v1.BackendService.ListSCIMAPIKeys.
+// ListSCIMAPIKeys calls tesseral.backend.v1.BackendService.ListSCIMAPIKeys.
 func (c *backendServiceClient) ListSCIMAPIKeys(ctx context.Context, req *connect.Request[v1.ListSCIMAPIKeysRequest]) (*connect.Response[v1.ListSCIMAPIKeysResponse], error) {
 	return c.listSCIMAPIKeys.CallUnary(ctx, req)
 }
 
-// GetSCIMAPIKey calls openauth.backend.v1.BackendService.GetSCIMAPIKey.
+// GetSCIMAPIKey calls tesseral.backend.v1.BackendService.GetSCIMAPIKey.
 func (c *backendServiceClient) GetSCIMAPIKey(ctx context.Context, req *connect.Request[v1.GetSCIMAPIKeyRequest]) (*connect.Response[v1.GetSCIMAPIKeyResponse], error) {
 	return c.getSCIMAPIKey.CallUnary(ctx, req)
 }
 
-// CreateSCIMAPIKey calls openauth.backend.v1.BackendService.CreateSCIMAPIKey.
+// CreateSCIMAPIKey calls tesseral.backend.v1.BackendService.CreateSCIMAPIKey.
 func (c *backendServiceClient) CreateSCIMAPIKey(ctx context.Context, req *connect.Request[v1.CreateSCIMAPIKeyRequest]) (*connect.Response[v1.CreateSCIMAPIKeyResponse], error) {
 	return c.createSCIMAPIKey.CallUnary(ctx, req)
 }
 
-// UpdateSCIMAPIKey calls openauth.backend.v1.BackendService.UpdateSCIMAPIKey.
+// UpdateSCIMAPIKey calls tesseral.backend.v1.BackendService.UpdateSCIMAPIKey.
 func (c *backendServiceClient) UpdateSCIMAPIKey(ctx context.Context, req *connect.Request[v1.UpdateSCIMAPIKeyRequest]) (*connect.Response[v1.UpdateSCIMAPIKeyResponse], error) {
 	return c.updateSCIMAPIKey.CallUnary(ctx, req)
 }
 
-// DeleteSCIMAPIKey calls openauth.backend.v1.BackendService.DeleteSCIMAPIKey.
+// DeleteSCIMAPIKey calls tesseral.backend.v1.BackendService.DeleteSCIMAPIKey.
 func (c *backendServiceClient) DeleteSCIMAPIKey(ctx context.Context, req *connect.Request[v1.DeleteSCIMAPIKeyRequest]) (*connect.Response[v1.DeleteSCIMAPIKeyResponse], error) {
 	return c.deleteSCIMAPIKey.CallUnary(ctx, req)
 }
 
-// RevokeSCIMAPIKey calls openauth.backend.v1.BackendService.RevokeSCIMAPIKey.
+// RevokeSCIMAPIKey calls tesseral.backend.v1.BackendService.RevokeSCIMAPIKey.
 func (c *backendServiceClient) RevokeSCIMAPIKey(ctx context.Context, req *connect.Request[v1.RevokeSCIMAPIKeyRequest]) (*connect.Response[v1.RevokeSCIMAPIKeyResponse], error) {
 	return c.revokeSCIMAPIKey.CallUnary(ctx, req)
 }
 
-// ListUsers calls openauth.backend.v1.BackendService.ListUsers.
+// ListUsers calls tesseral.backend.v1.BackendService.ListUsers.
 func (c *backendServiceClient) ListUsers(ctx context.Context, req *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error) {
 	return c.listUsers.CallUnary(ctx, req)
 }
 
-// GetUser calls openauth.backend.v1.BackendService.GetUser.
+// GetUser calls tesseral.backend.v1.BackendService.GetUser.
 func (c *backendServiceClient) GetUser(ctx context.Context, req *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error) {
 	return c.getUser.CallUnary(ctx, req)
 }
 
-// CreateUser calls openauth.backend.v1.BackendService.CreateUser.
+// CreateUser calls tesseral.backend.v1.BackendService.CreateUser.
 func (c *backendServiceClient) CreateUser(ctx context.Context, req *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error) {
 	return c.createUser.CallUnary(ctx, req)
 }
 
-// UpdateUser calls openauth.backend.v1.BackendService.UpdateUser.
+// UpdateUser calls tesseral.backend.v1.BackendService.UpdateUser.
 func (c *backendServiceClient) UpdateUser(ctx context.Context, req *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error) {
 	return c.updateUser.CallUnary(ctx, req)
 }
 
-// DeleteUser calls openauth.backend.v1.BackendService.DeleteUser.
+// DeleteUser calls tesseral.backend.v1.BackendService.DeleteUser.
 func (c *backendServiceClient) DeleteUser(ctx context.Context, req *connect.Request[v1.DeleteUserRequest]) (*connect.Response[v1.DeleteUserResponse], error) {
 	return c.deleteUser.CallUnary(ctx, req)
 }
 
-// ListPasskeys calls openauth.backend.v1.BackendService.ListPasskeys.
+// ListPasskeys calls tesseral.backend.v1.BackendService.ListPasskeys.
 func (c *backendServiceClient) ListPasskeys(ctx context.Context, req *connect.Request[v1.ListPasskeysRequest]) (*connect.Response[v1.ListPasskeysResponse], error) {
 	return c.listPasskeys.CallUnary(ctx, req)
 }
 
-// GetPasskey calls openauth.backend.v1.BackendService.GetPasskey.
+// GetPasskey calls tesseral.backend.v1.BackendService.GetPasskey.
 func (c *backendServiceClient) GetPasskey(ctx context.Context, req *connect.Request[v1.GetPasskeyRequest]) (*connect.Response[v1.GetPasskeyResponse], error) {
 	return c.getPasskey.CallUnary(ctx, req)
 }
 
-// UpdatePasskey calls openauth.backend.v1.BackendService.UpdatePasskey.
+// UpdatePasskey calls tesseral.backend.v1.BackendService.UpdatePasskey.
 func (c *backendServiceClient) UpdatePasskey(ctx context.Context, req *connect.Request[v1.UpdatePasskeyRequest]) (*connect.Response[v1.UpdatePasskeyResponse], error) {
 	return c.updatePasskey.CallUnary(ctx, req)
 }
 
-// DeletePasskey calls openauth.backend.v1.BackendService.DeletePasskey.
+// DeletePasskey calls tesseral.backend.v1.BackendService.DeletePasskey.
 func (c *backendServiceClient) DeletePasskey(ctx context.Context, req *connect.Request[v1.DeletePasskeyRequest]) (*connect.Response[v1.DeletePasskeyResponse], error) {
 	return c.deletePasskey.CallUnary(ctx, req)
 }
 
-// ListSessions calls openauth.backend.v1.BackendService.ListSessions.
+// ListSessions calls tesseral.backend.v1.BackendService.ListSessions.
 func (c *backendServiceClient) ListSessions(ctx context.Context, req *connect.Request[v1.ListSessionsRequest]) (*connect.Response[v1.ListSessionsResponse], error) {
 	return c.listSessions.CallUnary(ctx, req)
 }
 
-// GetSession calls openauth.backend.v1.BackendService.GetSession.
+// GetSession calls tesseral.backend.v1.BackendService.GetSession.
 func (c *backendServiceClient) GetSession(ctx context.Context, req *connect.Request[v1.GetSessionRequest]) (*connect.Response[v1.GetSessionResponse], error) {
 	return c.getSession.CallUnary(ctx, req)
 }
 
-// ListUserInvites calls openauth.backend.v1.BackendService.ListUserInvites.
+// ListUserInvites calls tesseral.backend.v1.BackendService.ListUserInvites.
 func (c *backendServiceClient) ListUserInvites(ctx context.Context, req *connect.Request[v1.ListUserInvitesRequest]) (*connect.Response[v1.ListUserInvitesResponse], error) {
 	return c.listUserInvites.CallUnary(ctx, req)
 }
 
-// GetUserInvite calls openauth.backend.v1.BackendService.GetUserInvite.
+// GetUserInvite calls tesseral.backend.v1.BackendService.GetUserInvite.
 func (c *backendServiceClient) GetUserInvite(ctx context.Context, req *connect.Request[v1.GetUserInviteRequest]) (*connect.Response[v1.GetUserInviteResponse], error) {
 	return c.getUserInvite.CallUnary(ctx, req)
 }
 
-// CreateUserInvite calls openauth.backend.v1.BackendService.CreateUserInvite.
+// CreateUserInvite calls tesseral.backend.v1.BackendService.CreateUserInvite.
 func (c *backendServiceClient) CreateUserInvite(ctx context.Context, req *connect.Request[v1.CreateUserInviteRequest]) (*connect.Response[v1.CreateUserInviteResponse], error) {
 	return c.createUserInvite.CallUnary(ctx, req)
 }
 
-// DeleteUserInvite calls openauth.backend.v1.BackendService.DeleteUserInvite.
+// DeleteUserInvite calls tesseral.backend.v1.BackendService.DeleteUserInvite.
 func (c *backendServiceClient) DeleteUserInvite(ctx context.Context, req *connect.Request[v1.DeleteUserInviteRequest]) (*connect.Response[v1.DeleteUserInviteResponse], error) {
 	return c.deleteUserInvite.CallUnary(ctx, req)
 }
 
-// DisableOrganizationLogins calls openauth.backend.v1.BackendService.DisableOrganizationLogins.
+// DisableOrganizationLogins calls tesseral.backend.v1.BackendService.DisableOrganizationLogins.
 func (c *backendServiceClient) DisableOrganizationLogins(ctx context.Context, req *connect.Request[v1.DisableOrganizationLoginsRequest]) (*connect.Response[v1.DisableOrganizationLoginsResponse], error) {
 	return c.disableOrganizationLogins.CallUnary(ctx, req)
 }
 
-// DisableProjectLogins calls openauth.backend.v1.BackendService.DisableProjectLogins.
+// DisableProjectLogins calls tesseral.backend.v1.BackendService.DisableProjectLogins.
 func (c *backendServiceClient) DisableProjectLogins(ctx context.Context, req *connect.Request[v1.DisableProjectLoginsRequest]) (*connect.Response[v1.DisableProjectLoginsResponse], error) {
 	return c.disableProjectLogins.CallUnary(ctx, req)
 }
 
-// EnableOrganizationLogins calls openauth.backend.v1.BackendService.EnableOrganizationLogins.
+// EnableOrganizationLogins calls tesseral.backend.v1.BackendService.EnableOrganizationLogins.
 func (c *backendServiceClient) EnableOrganizationLogins(ctx context.Context, req *connect.Request[v1.EnableOrganizationLoginsRequest]) (*connect.Response[v1.EnableOrganizationLoginsResponse], error) {
 	return c.enableOrganizationLogins.CallUnary(ctx, req)
 }
 
-// EnableProjectLogins calls openauth.backend.v1.BackendService.EnableProjectLogins.
+// EnableProjectLogins calls tesseral.backend.v1.BackendService.EnableProjectLogins.
 func (c *backendServiceClient) EnableProjectLogins(ctx context.Context, req *connect.Request[v1.EnableProjectLoginsRequest]) (*connect.Response[v1.EnableProjectLoginsResponse], error) {
 	return c.enableProjectLogins.CallUnary(ctx, req)
 }
 
-// UpdateProject calls openauth.backend.v1.BackendService.UpdateProject.
+// UpdateProject calls tesseral.backend.v1.BackendService.UpdateProject.
 func (c *backendServiceClient) UpdateProject(ctx context.Context, req *connect.Request[v1.UpdateProjectRequest]) (*connect.Response[v1.UpdateProjectResponse], error) {
 	return c.updateProject.CallUnary(ctx, req)
 }
 
-// GetVaultDomainSettings calls openauth.backend.v1.BackendService.GetVaultDomainSettings.
+// GetVaultDomainSettings calls tesseral.backend.v1.BackendService.GetVaultDomainSettings.
 func (c *backendServiceClient) GetVaultDomainSettings(ctx context.Context, req *connect.Request[v1.GetVaultDomainSettingsRequest]) (*connect.Response[v1.GetVaultDomainSettingsResponse], error) {
 	return c.getVaultDomainSettings.CallUnary(ctx, req)
 }
 
-// GetProjectUISettings calls openauth.backend.v1.BackendService.GetProjectUISettings.
+// GetProjectUISettings calls tesseral.backend.v1.BackendService.GetProjectUISettings.
 func (c *backendServiceClient) GetProjectUISettings(ctx context.Context, req *connect.Request[v1.GetProjectUISettingsRequest]) (*connect.Response[v1.GetProjectUISettingsResponse], error) {
 	return c.getProjectUISettings.CallUnary(ctx, req)
 }
 
-// UpdateProjectUISettings calls openauth.backend.v1.BackendService.UpdateProjectUISettings.
+// UpdateProjectUISettings calls tesseral.backend.v1.BackendService.UpdateProjectUISettings.
 func (c *backendServiceClient) UpdateProjectUISettings(ctx context.Context, req *connect.Request[v1.UpdateProjectUISettingsRequest]) (*connect.Response[v1.UpdateProjectUISettingsResponse], error) {
 	return c.updateProjectUISettings.CallUnary(ctx, req)
 }
 
-// ListProjectAPIKeys calls openauth.backend.v1.BackendService.ListProjectAPIKeys.
+// ListProjectAPIKeys calls tesseral.backend.v1.BackendService.ListProjectAPIKeys.
 func (c *backendServiceClient) ListProjectAPIKeys(ctx context.Context, req *connect.Request[v1.ListProjectAPIKeysRequest]) (*connect.Response[v1.ListProjectAPIKeysResponse], error) {
 	return c.listProjectAPIKeys.CallUnary(ctx, req)
 }
 
-// GetProjectAPIKey calls openauth.backend.v1.BackendService.GetProjectAPIKey.
+// GetProjectAPIKey calls tesseral.backend.v1.BackendService.GetProjectAPIKey.
 func (c *backendServiceClient) GetProjectAPIKey(ctx context.Context, req *connect.Request[v1.GetProjectAPIKeyRequest]) (*connect.Response[v1.GetProjectAPIKeyResponse], error) {
 	return c.getProjectAPIKey.CallUnary(ctx, req)
 }
 
-// CreateProjectAPIKey calls openauth.backend.v1.BackendService.CreateProjectAPIKey.
+// CreateProjectAPIKey calls tesseral.backend.v1.BackendService.CreateProjectAPIKey.
 func (c *backendServiceClient) CreateProjectAPIKey(ctx context.Context, req *connect.Request[v1.CreateProjectAPIKeyRequest]) (*connect.Response[v1.CreateProjectAPIKeyResponse], error) {
 	return c.createProjectAPIKey.CallUnary(ctx, req)
 }
 
-// UpdateProjectAPIKey calls openauth.backend.v1.BackendService.UpdateProjectAPIKey.
+// UpdateProjectAPIKey calls tesseral.backend.v1.BackendService.UpdateProjectAPIKey.
 func (c *backendServiceClient) UpdateProjectAPIKey(ctx context.Context, req *connect.Request[v1.UpdateProjectAPIKeyRequest]) (*connect.Response[v1.UpdateProjectAPIKeyResponse], error) {
 	return c.updateProjectAPIKey.CallUnary(ctx, req)
 }
 
-// DeleteProjectAPIKey calls openauth.backend.v1.BackendService.DeleteProjectAPIKey.
+// DeleteProjectAPIKey calls tesseral.backend.v1.BackendService.DeleteProjectAPIKey.
 func (c *backendServiceClient) DeleteProjectAPIKey(ctx context.Context, req *connect.Request[v1.DeleteProjectAPIKeyRequest]) (*connect.Response[v1.DeleteProjectAPIKeyResponse], error) {
 	return c.deleteProjectAPIKey.CallUnary(ctx, req)
 }
 
-// RevokeProjectAPIKey calls openauth.backend.v1.BackendService.RevokeProjectAPIKey.
+// RevokeProjectAPIKey calls tesseral.backend.v1.BackendService.RevokeProjectAPIKey.
 func (c *backendServiceClient) RevokeProjectAPIKey(ctx context.Context, req *connect.Request[v1.RevokeProjectAPIKeyRequest]) (*connect.Response[v1.RevokeProjectAPIKeyResponse], error) {
 	return c.revokeProjectAPIKey.CallUnary(ctx, req)
 }
 
-// ListPublishableKeys calls openauth.backend.v1.BackendService.ListPublishableKeys.
+// ListPublishableKeys calls tesseral.backend.v1.BackendService.ListPublishableKeys.
 func (c *backendServiceClient) ListPublishableKeys(ctx context.Context, req *connect.Request[v1.ListPublishableKeysRequest]) (*connect.Response[v1.ListPublishableKeysResponse], error) {
 	return c.listPublishableKeys.CallUnary(ctx, req)
 }
 
-// GetPublishableKey calls openauth.backend.v1.BackendService.GetPublishableKey.
+// GetPublishableKey calls tesseral.backend.v1.BackendService.GetPublishableKey.
 func (c *backendServiceClient) GetPublishableKey(ctx context.Context, req *connect.Request[v1.GetPublishableKeyRequest]) (*connect.Response[v1.GetPublishableKeyResponse], error) {
 	return c.getPublishableKey.CallUnary(ctx, req)
 }
 
-// CreatePublishableKey calls openauth.backend.v1.BackendService.CreatePublishableKey.
+// CreatePublishableKey calls tesseral.backend.v1.BackendService.CreatePublishableKey.
 func (c *backendServiceClient) CreatePublishableKey(ctx context.Context, req *connect.Request[v1.CreatePublishableKeyRequest]) (*connect.Response[v1.CreatePublishableKeyResponse], error) {
 	return c.createPublishableKey.CallUnary(ctx, req)
 }
 
-// UpdatePublishableKey calls openauth.backend.v1.BackendService.UpdatePublishableKey.
+// UpdatePublishableKey calls tesseral.backend.v1.BackendService.UpdatePublishableKey.
 func (c *backendServiceClient) UpdatePublishableKey(ctx context.Context, req *connect.Request[v1.UpdatePublishableKeyRequest]) (*connect.Response[v1.UpdatePublishableKeyResponse], error) {
 	return c.updatePublishableKey.CallUnary(ctx, req)
 }
 
-// DeletePublishableKey calls openauth.backend.v1.BackendService.DeletePublishableKey.
+// DeletePublishableKey calls tesseral.backend.v1.BackendService.DeletePublishableKey.
 func (c *backendServiceClient) DeletePublishableKey(ctx context.Context, req *connect.Request[v1.DeletePublishableKeyRequest]) (*connect.Response[v1.DeletePublishableKeyResponse], error) {
 	return c.deletePublishableKey.CallUnary(ctx, req)
 }
 
 // CreateUserImpersonationToken calls
-// openauth.backend.v1.BackendService.CreateUserImpersonationToken.
+// tesseral.backend.v1.BackendService.CreateUserImpersonationToken.
 func (c *backendServiceClient) CreateUserImpersonationToken(ctx context.Context, req *connect.Request[v1.CreateUserImpersonationTokenRequest]) (*connect.Response[v1.CreateUserImpersonationTokenResponse], error) {
 	return c.createUserImpersonationToken.CallUnary(ctx, req)
 }
 
-// BackendServiceHandler is an implementation of the openauth.backend.v1.BackendService service.
+// BackendServiceHandler is an implementation of the tesseral.backend.v1.BackendService service.
 type BackendServiceHandler interface {
 	GetProject(context.Context, *connect.Request[v1.GetProjectRequest]) (*connect.Response[v1.GetProjectResponse], error)
 	ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error)
@@ -1360,7 +1360,7 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		connect.WithSchema(backendServiceMethods.ByName("CreateUserImpersonationToken")),
 		connect.WithHandlerOptions(opts...),
 	)
-	return "/openauth.backend.v1.BackendService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	return "/tesseral.backend.v1.BackendService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case BackendServiceGetProjectProcedure:
 			backendServiceGetProjectHandler.ServeHTTP(w, r)
@@ -1484,225 +1484,225 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 type UnimplementedBackendServiceHandler struct{}
 
 func (UnimplementedBackendServiceHandler) GetProject(context.Context, *connect.Request[v1.GetProjectRequest]) (*connect.Response[v1.GetProjectResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetProject is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.GetProject is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.ListOrganizations is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.ListOrganizations is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) GetOrganization(context.Context, *connect.Request[v1.GetOrganizationRequest]) (*connect.Response[v1.GetOrganizationResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetOrganization is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.GetOrganization is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.CreateOrganizationResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.CreateOrganization is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.CreateOrganization is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) UpdateOrganization(context.Context, *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.UpdateOrganizationResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.UpdateOrganization is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.UpdateOrganization is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) DeleteOrganization(context.Context, *connect.Request[v1.DeleteOrganizationRequest]) (*connect.Response[v1.DeleteOrganizationResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.DeleteOrganization is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.DeleteOrganization is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) GetOrganizationGoogleHostedDomains(context.Context, *connect.Request[v1.GetOrganizationGoogleHostedDomainsRequest]) (*connect.Response[v1.GetOrganizationGoogleHostedDomainsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetOrganizationGoogleHostedDomains is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.GetOrganizationGoogleHostedDomains is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) UpdateOrganizationGoogleHostedDomains(context.Context, *connect.Request[v1.UpdateOrganizationGoogleHostedDomainsRequest]) (*connect.Response[v1.UpdateOrganizationGoogleHostedDomainsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.UpdateOrganizationGoogleHostedDomains is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.UpdateOrganizationGoogleHostedDomains is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) GetOrganizationMicrosoftTenantIDs(context.Context, *connect.Request[v1.GetOrganizationMicrosoftTenantIDsRequest]) (*connect.Response[v1.GetOrganizationMicrosoftTenantIDsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetOrganizationMicrosoftTenantIDs is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.GetOrganizationMicrosoftTenantIDs is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) UpdateOrganizationMicrosoftTenantIDs(context.Context, *connect.Request[v1.UpdateOrganizationMicrosoftTenantIDsRequest]) (*connect.Response[v1.UpdateOrganizationMicrosoftTenantIDsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.UpdateOrganizationMicrosoftTenantIDs is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.UpdateOrganizationMicrosoftTenantIDs is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) ListSAMLConnections(context.Context, *connect.Request[v1.ListSAMLConnectionsRequest]) (*connect.Response[v1.ListSAMLConnectionsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.ListSAMLConnections is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.ListSAMLConnections is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) GetSAMLConnection(context.Context, *connect.Request[v1.GetSAMLConnectionRequest]) (*connect.Response[v1.GetSAMLConnectionResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetSAMLConnection is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.GetSAMLConnection is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) CreateSAMLConnection(context.Context, *connect.Request[v1.CreateSAMLConnectionRequest]) (*connect.Response[v1.CreateSAMLConnectionResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.CreateSAMLConnection is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.CreateSAMLConnection is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) UpdateSAMLConnection(context.Context, *connect.Request[v1.UpdateSAMLConnectionRequest]) (*connect.Response[v1.UpdateSAMLConnectionResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.UpdateSAMLConnection is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.UpdateSAMLConnection is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) DeleteSAMLConnection(context.Context, *connect.Request[v1.DeleteSAMLConnectionRequest]) (*connect.Response[v1.DeleteSAMLConnectionResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.DeleteSAMLConnection is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.DeleteSAMLConnection is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) ListSCIMAPIKeys(context.Context, *connect.Request[v1.ListSCIMAPIKeysRequest]) (*connect.Response[v1.ListSCIMAPIKeysResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.ListSCIMAPIKeys is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.ListSCIMAPIKeys is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) GetSCIMAPIKey(context.Context, *connect.Request[v1.GetSCIMAPIKeyRequest]) (*connect.Response[v1.GetSCIMAPIKeyResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetSCIMAPIKey is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.GetSCIMAPIKey is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) CreateSCIMAPIKey(context.Context, *connect.Request[v1.CreateSCIMAPIKeyRequest]) (*connect.Response[v1.CreateSCIMAPIKeyResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.CreateSCIMAPIKey is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.CreateSCIMAPIKey is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) UpdateSCIMAPIKey(context.Context, *connect.Request[v1.UpdateSCIMAPIKeyRequest]) (*connect.Response[v1.UpdateSCIMAPIKeyResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.UpdateSCIMAPIKey is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.UpdateSCIMAPIKey is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) DeleteSCIMAPIKey(context.Context, *connect.Request[v1.DeleteSCIMAPIKeyRequest]) (*connect.Response[v1.DeleteSCIMAPIKeyResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.DeleteSCIMAPIKey is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.DeleteSCIMAPIKey is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) RevokeSCIMAPIKey(context.Context, *connect.Request[v1.RevokeSCIMAPIKeyRequest]) (*connect.Response[v1.RevokeSCIMAPIKeyResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.RevokeSCIMAPIKey is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.RevokeSCIMAPIKey is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.ListUsers is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.ListUsers is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetUser is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.GetUser is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.CreateUser is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.CreateUser is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.UpdateUser is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.UpdateUser is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) DeleteUser(context.Context, *connect.Request[v1.DeleteUserRequest]) (*connect.Response[v1.DeleteUserResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.DeleteUser is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.DeleteUser is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) ListPasskeys(context.Context, *connect.Request[v1.ListPasskeysRequest]) (*connect.Response[v1.ListPasskeysResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.ListPasskeys is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.ListPasskeys is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) GetPasskey(context.Context, *connect.Request[v1.GetPasskeyRequest]) (*connect.Response[v1.GetPasskeyResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetPasskey is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.GetPasskey is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) UpdatePasskey(context.Context, *connect.Request[v1.UpdatePasskeyRequest]) (*connect.Response[v1.UpdatePasskeyResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.UpdatePasskey is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.UpdatePasskey is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) DeletePasskey(context.Context, *connect.Request[v1.DeletePasskeyRequest]) (*connect.Response[v1.DeletePasskeyResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.DeletePasskey is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.DeletePasskey is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) ListSessions(context.Context, *connect.Request[v1.ListSessionsRequest]) (*connect.Response[v1.ListSessionsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.ListSessions is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.ListSessions is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) GetSession(context.Context, *connect.Request[v1.GetSessionRequest]) (*connect.Response[v1.GetSessionResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetSession is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.GetSession is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) ListUserInvites(context.Context, *connect.Request[v1.ListUserInvitesRequest]) (*connect.Response[v1.ListUserInvitesResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.ListUserInvites is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.ListUserInvites is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) GetUserInvite(context.Context, *connect.Request[v1.GetUserInviteRequest]) (*connect.Response[v1.GetUserInviteResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetUserInvite is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.GetUserInvite is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) CreateUserInvite(context.Context, *connect.Request[v1.CreateUserInviteRequest]) (*connect.Response[v1.CreateUserInviteResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.CreateUserInvite is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.CreateUserInvite is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) DeleteUserInvite(context.Context, *connect.Request[v1.DeleteUserInviteRequest]) (*connect.Response[v1.DeleteUserInviteResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.DeleteUserInvite is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.DeleteUserInvite is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) DisableOrganizationLogins(context.Context, *connect.Request[v1.DisableOrganizationLoginsRequest]) (*connect.Response[v1.DisableOrganizationLoginsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.DisableOrganizationLogins is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.DisableOrganizationLogins is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) DisableProjectLogins(context.Context, *connect.Request[v1.DisableProjectLoginsRequest]) (*connect.Response[v1.DisableProjectLoginsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.DisableProjectLogins is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.DisableProjectLogins is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) EnableOrganizationLogins(context.Context, *connect.Request[v1.EnableOrganizationLoginsRequest]) (*connect.Response[v1.EnableOrganizationLoginsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.EnableOrganizationLogins is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.EnableOrganizationLogins is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) EnableProjectLogins(context.Context, *connect.Request[v1.EnableProjectLoginsRequest]) (*connect.Response[v1.EnableProjectLoginsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.EnableProjectLogins is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.EnableProjectLogins is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) UpdateProject(context.Context, *connect.Request[v1.UpdateProjectRequest]) (*connect.Response[v1.UpdateProjectResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.UpdateProject is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.UpdateProject is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) GetVaultDomainSettings(context.Context, *connect.Request[v1.GetVaultDomainSettingsRequest]) (*connect.Response[v1.GetVaultDomainSettingsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetVaultDomainSettings is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.GetVaultDomainSettings is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) GetProjectUISettings(context.Context, *connect.Request[v1.GetProjectUISettingsRequest]) (*connect.Response[v1.GetProjectUISettingsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetProjectUISettings is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.GetProjectUISettings is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) UpdateProjectUISettings(context.Context, *connect.Request[v1.UpdateProjectUISettingsRequest]) (*connect.Response[v1.UpdateProjectUISettingsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.UpdateProjectUISettings is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.UpdateProjectUISettings is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) ListProjectAPIKeys(context.Context, *connect.Request[v1.ListProjectAPIKeysRequest]) (*connect.Response[v1.ListProjectAPIKeysResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.ListProjectAPIKeys is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.ListProjectAPIKeys is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) GetProjectAPIKey(context.Context, *connect.Request[v1.GetProjectAPIKeyRequest]) (*connect.Response[v1.GetProjectAPIKeyResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetProjectAPIKey is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.GetProjectAPIKey is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) CreateProjectAPIKey(context.Context, *connect.Request[v1.CreateProjectAPIKeyRequest]) (*connect.Response[v1.CreateProjectAPIKeyResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.CreateProjectAPIKey is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.CreateProjectAPIKey is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) UpdateProjectAPIKey(context.Context, *connect.Request[v1.UpdateProjectAPIKeyRequest]) (*connect.Response[v1.UpdateProjectAPIKeyResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.UpdateProjectAPIKey is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.UpdateProjectAPIKey is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) DeleteProjectAPIKey(context.Context, *connect.Request[v1.DeleteProjectAPIKeyRequest]) (*connect.Response[v1.DeleteProjectAPIKeyResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.DeleteProjectAPIKey is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.DeleteProjectAPIKey is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) RevokeProjectAPIKey(context.Context, *connect.Request[v1.RevokeProjectAPIKeyRequest]) (*connect.Response[v1.RevokeProjectAPIKeyResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.RevokeProjectAPIKey is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.RevokeProjectAPIKey is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) ListPublishableKeys(context.Context, *connect.Request[v1.ListPublishableKeysRequest]) (*connect.Response[v1.ListPublishableKeysResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.ListPublishableKeys is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.ListPublishableKeys is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) GetPublishableKey(context.Context, *connect.Request[v1.GetPublishableKeyRequest]) (*connect.Response[v1.GetPublishableKeyResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.GetPublishableKey is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.GetPublishableKey is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) CreatePublishableKey(context.Context, *connect.Request[v1.CreatePublishableKeyRequest]) (*connect.Response[v1.CreatePublishableKeyResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.CreatePublishableKey is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.CreatePublishableKey is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) UpdatePublishableKey(context.Context, *connect.Request[v1.UpdatePublishableKeyRequest]) (*connect.Response[v1.UpdatePublishableKeyResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.UpdatePublishableKey is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.UpdatePublishableKey is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) DeletePublishableKey(context.Context, *connect.Request[v1.DeletePublishableKeyRequest]) (*connect.Response[v1.DeletePublishableKeyResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.DeletePublishableKey is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.DeletePublishableKey is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) CreateUserImpersonationToken(context.Context, *connect.Request[v1.CreateUserImpersonationTokenRequest]) (*connect.Response[v1.CreateUserImpersonationTokenResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openauth.backend.v1.BackendService.CreateUserImpersonationToken is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.CreateUserImpersonationToken is not implemented"))
 }

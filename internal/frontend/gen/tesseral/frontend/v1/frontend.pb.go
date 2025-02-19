@@ -3982,195 +3982,195 @@ func file_tesseral_frontend_v1_frontend_proto_rawDescGZIP() []byte {
 
 var file_tesseral_frontend_v1_frontend_proto_msgTypes = make([]protoimpl.MessageInfo, 72)
 var file_tesseral_frontend_v1_frontend_proto_goTypes = []any{
-	(*LogoutRequest)(nil),                                 // 0: openauth.frontend.v1.LogoutRequest
-	(*LogoutResponse)(nil),                                // 1: openauth.frontend.v1.LogoutResponse
-	(*RefreshRequest)(nil),                                // 2: openauth.frontend.v1.RefreshRequest
-	(*RefreshResponse)(nil),                               // 3: openauth.frontend.v1.RefreshResponse
-	(*GetProjectRequest)(nil),                             // 4: openauth.frontend.v1.GetProjectRequest
-	(*GetProjectResponse)(nil),                            // 5: openauth.frontend.v1.GetProjectResponse
-	(*GetOrganizationRequest)(nil),                        // 6: openauth.frontend.v1.GetOrganizationRequest
-	(*GetOrganizationResponse)(nil),                       // 7: openauth.frontend.v1.GetOrganizationResponse
-	(*UpdateOrganizationRequest)(nil),                     // 8: openauth.frontend.v1.UpdateOrganizationRequest
-	(*UpdateOrganizationResponse)(nil),                    // 9: openauth.frontend.v1.UpdateOrganizationResponse
-	(*GetOrganizationGoogleHostedDomainsRequest)(nil),     // 10: openauth.frontend.v1.GetOrganizationGoogleHostedDomainsRequest
-	(*GetOrganizationGoogleHostedDomainsResponse)(nil),    // 11: openauth.frontend.v1.GetOrganizationGoogleHostedDomainsResponse
-	(*UpdateOrganizationGoogleHostedDomainsRequest)(nil),  // 12: openauth.frontend.v1.UpdateOrganizationGoogleHostedDomainsRequest
-	(*UpdateOrganizationGoogleHostedDomainsResponse)(nil), // 13: openauth.frontend.v1.UpdateOrganizationGoogleHostedDomainsResponse
-	(*GetOrganizationMicrosoftTenantIDsRequest)(nil),      // 14: openauth.frontend.v1.GetOrganizationMicrosoftTenantIDsRequest
-	(*GetOrganizationMicrosoftTenantIDsResponse)(nil),     // 15: openauth.frontend.v1.GetOrganizationMicrosoftTenantIDsResponse
-	(*UpdateOrganizationMicrosoftTenantIDsRequest)(nil),   // 16: openauth.frontend.v1.UpdateOrganizationMicrosoftTenantIDsRequest
-	(*UpdateOrganizationMicrosoftTenantIDsResponse)(nil),  // 17: openauth.frontend.v1.UpdateOrganizationMicrosoftTenantIDsResponse
-	(*ListUsersRequest)(nil),                              // 18: openauth.frontend.v1.ListUsersRequest
-	(*ListUsersResponse)(nil),                             // 19: openauth.frontend.v1.ListUsersResponse
-	(*GetUserRequest)(nil),                                // 20: openauth.frontend.v1.GetUserRequest
-	(*GetUserResponse)(nil),                               // 21: openauth.frontend.v1.GetUserResponse
-	(*UpdateUserRequest)(nil),                             // 22: openauth.frontend.v1.UpdateUserRequest
-	(*UpdateUserResponse)(nil),                            // 23: openauth.frontend.v1.UpdateUserResponse
-	(*DeleteUserRequest)(nil),                             // 24: openauth.frontend.v1.DeleteUserRequest
-	(*DeleteUserResponse)(nil),                            // 25: openauth.frontend.v1.DeleteUserResponse
-	(*ListSAMLConnectionsRequest)(nil),                    // 26: openauth.frontend.v1.ListSAMLConnectionsRequest
-	(*ListSAMLConnectionsResponse)(nil),                   // 27: openauth.frontend.v1.ListSAMLConnectionsResponse
-	(*GetSAMLConnectionRequest)(nil),                      // 28: openauth.frontend.v1.GetSAMLConnectionRequest
-	(*GetSAMLConnectionResponse)(nil),                     // 29: openauth.frontend.v1.GetSAMLConnectionResponse
-	(*CreateSAMLConnectionRequest)(nil),                   // 30: openauth.frontend.v1.CreateSAMLConnectionRequest
-	(*CreateSAMLConnectionResponse)(nil),                  // 31: openauth.frontend.v1.CreateSAMLConnectionResponse
-	(*UpdateSAMLConnectionRequest)(nil),                   // 32: openauth.frontend.v1.UpdateSAMLConnectionRequest
-	(*UpdateSAMLConnectionResponse)(nil),                  // 33: openauth.frontend.v1.UpdateSAMLConnectionResponse
-	(*DeleteSAMLConnectionRequest)(nil),                   // 34: openauth.frontend.v1.DeleteSAMLConnectionRequest
-	(*DeleteSAMLConnectionResponse)(nil),                  // 35: openauth.frontend.v1.DeleteSAMLConnectionResponse
-	(*ListSCIMAPIKeysRequest)(nil),                        // 36: openauth.frontend.v1.ListSCIMAPIKeysRequest
-	(*ListSCIMAPIKeysResponse)(nil),                       // 37: openauth.frontend.v1.ListSCIMAPIKeysResponse
-	(*GetSCIMAPIKeyRequest)(nil),                          // 38: openauth.frontend.v1.GetSCIMAPIKeyRequest
-	(*GetSCIMAPIKeyResponse)(nil),                         // 39: openauth.frontend.v1.GetSCIMAPIKeyResponse
-	(*CreateSCIMAPIKeyRequest)(nil),                       // 40: openauth.frontend.v1.CreateSCIMAPIKeyRequest
-	(*CreateSCIMAPIKeyResponse)(nil),                      // 41: openauth.frontend.v1.CreateSCIMAPIKeyResponse
-	(*UpdateSCIMAPIKeyRequest)(nil),                       // 42: openauth.frontend.v1.UpdateSCIMAPIKeyRequest
-	(*UpdateSCIMAPIKeyResponse)(nil),                      // 43: openauth.frontend.v1.UpdateSCIMAPIKeyResponse
-	(*DeleteSCIMAPIKeyRequest)(nil),                       // 44: openauth.frontend.v1.DeleteSCIMAPIKeyRequest
-	(*DeleteSCIMAPIKeyResponse)(nil),                      // 45: openauth.frontend.v1.DeleteSCIMAPIKeyResponse
-	(*RevokeSCIMAPIKeyRequest)(nil),                       // 46: openauth.frontend.v1.RevokeSCIMAPIKeyRequest
-	(*RevokeSCIMAPIKeyResponse)(nil),                      // 47: openauth.frontend.v1.RevokeSCIMAPIKeyResponse
-	(*WhoamiRequest)(nil),                                 // 48: openauth.frontend.v1.WhoamiRequest
-	(*WhoamiResponse)(nil),                                // 49: openauth.frontend.v1.WhoamiResponse
-	(*ListMyPasskeysRequest)(nil),                         // 50: openauth.frontend.v1.ListMyPasskeysRequest
-	(*ListMyPasskeysResponse)(nil),                        // 51: openauth.frontend.v1.ListMyPasskeysResponse
-	(*DeleteMyPasskeyRequest)(nil),                        // 52: openauth.frontend.v1.DeleteMyPasskeyRequest
-	(*DeleteMyPasskeyResponse)(nil),                       // 53: openauth.frontend.v1.DeleteMyPasskeyResponse
-	(*GetPasskeyOptionsRequest)(nil),                      // 54: openauth.frontend.v1.GetPasskeyOptionsRequest
-	(*GetPasskeyOptionsResponse)(nil),                     // 55: openauth.frontend.v1.GetPasskeyOptionsResponse
-	(*RegisterPasskeyRequest)(nil),                        // 56: openauth.frontend.v1.RegisterPasskeyRequest
-	(*RegisterPasskeyResponse)(nil),                       // 57: openauth.frontend.v1.RegisterPasskeyResponse
-	(*GetAuthenticatorAppOptionsRequest)(nil),             // 58: openauth.frontend.v1.GetAuthenticatorAppOptionsRequest
-	(*GetAuthenticatorAppOptionsResponse)(nil),            // 59: openauth.frontend.v1.GetAuthenticatorAppOptionsResponse
-	(*RegisterAuthenticatorAppRequest)(nil),               // 60: openauth.frontend.v1.RegisterAuthenticatorAppRequest
-	(*RegisterAuthenticatorAppResponse)(nil),              // 61: openauth.frontend.v1.RegisterAuthenticatorAppResponse
-	(*ListUserInvitesRequest)(nil),                        // 62: openauth.frontend.v1.ListUserInvitesRequest
-	(*ListUserInvitesResponse)(nil),                       // 63: openauth.frontend.v1.ListUserInvitesResponse
-	(*GetUserInviteRequest)(nil),                          // 64: openauth.frontend.v1.GetUserInviteRequest
-	(*GetUserInviteResponse)(nil),                         // 65: openauth.frontend.v1.GetUserInviteResponse
-	(*CreateUserInviteRequest)(nil),                       // 66: openauth.frontend.v1.CreateUserInviteRequest
-	(*CreateUserInviteResponse)(nil),                      // 67: openauth.frontend.v1.CreateUserInviteResponse
-	(*DeleteUserInviteRequest)(nil),                       // 68: openauth.frontend.v1.DeleteUserInviteRequest
-	(*DeleteUserInviteResponse)(nil),                      // 69: openauth.frontend.v1.DeleteUserInviteResponse
-	(*SetPasswordRequest)(nil),                            // 70: openauth.frontend.v1.SetPasswordRequest
-	(*SetPasswordResponse)(nil),                           // 71: openauth.frontend.v1.SetPasswordResponse
-	(*Project)(nil),                                       // 72: openauth.frontend.v1.Project
-	(*Organization)(nil),                                  // 73: openauth.frontend.v1.Organization
-	(*OrganizationGoogleHostedDomains)(nil),               // 74: openauth.frontend.v1.OrganizationGoogleHostedDomains
-	(*OrganizationMicrosoftTenantIDs)(nil),                // 75: openauth.frontend.v1.OrganizationMicrosoftTenantIDs
-	(*User)(nil),                                          // 76: openauth.frontend.v1.User
-	(*SAMLConnection)(nil),                                // 77: openauth.frontend.v1.SAMLConnection
-	(*SCIMAPIKey)(nil),                                    // 78: openauth.frontend.v1.SCIMAPIKey
-	(*Passkey)(nil),                                       // 79: openauth.frontend.v1.Passkey
-	(*UserInvite)(nil),                                    // 80: openauth.frontend.v1.UserInvite
+	(*LogoutRequest)(nil),                                 // 0: tesseral.frontend.v1.LogoutRequest
+	(*LogoutResponse)(nil),                                // 1: tesseral.frontend.v1.LogoutResponse
+	(*RefreshRequest)(nil),                                // 2: tesseral.frontend.v1.RefreshRequest
+	(*RefreshResponse)(nil),                               // 3: tesseral.frontend.v1.RefreshResponse
+	(*GetProjectRequest)(nil),                             // 4: tesseral.frontend.v1.GetProjectRequest
+	(*GetProjectResponse)(nil),                            // 5: tesseral.frontend.v1.GetProjectResponse
+	(*GetOrganizationRequest)(nil),                        // 6: tesseral.frontend.v1.GetOrganizationRequest
+	(*GetOrganizationResponse)(nil),                       // 7: tesseral.frontend.v1.GetOrganizationResponse
+	(*UpdateOrganizationRequest)(nil),                     // 8: tesseral.frontend.v1.UpdateOrganizationRequest
+	(*UpdateOrganizationResponse)(nil),                    // 9: tesseral.frontend.v1.UpdateOrganizationResponse
+	(*GetOrganizationGoogleHostedDomainsRequest)(nil),     // 10: tesseral.frontend.v1.GetOrganizationGoogleHostedDomainsRequest
+	(*GetOrganizationGoogleHostedDomainsResponse)(nil),    // 11: tesseral.frontend.v1.GetOrganizationGoogleHostedDomainsResponse
+	(*UpdateOrganizationGoogleHostedDomainsRequest)(nil),  // 12: tesseral.frontend.v1.UpdateOrganizationGoogleHostedDomainsRequest
+	(*UpdateOrganizationGoogleHostedDomainsResponse)(nil), // 13: tesseral.frontend.v1.UpdateOrganizationGoogleHostedDomainsResponse
+	(*GetOrganizationMicrosoftTenantIDsRequest)(nil),      // 14: tesseral.frontend.v1.GetOrganizationMicrosoftTenantIDsRequest
+	(*GetOrganizationMicrosoftTenantIDsResponse)(nil),     // 15: tesseral.frontend.v1.GetOrganizationMicrosoftTenantIDsResponse
+	(*UpdateOrganizationMicrosoftTenantIDsRequest)(nil),   // 16: tesseral.frontend.v1.UpdateOrganizationMicrosoftTenantIDsRequest
+	(*UpdateOrganizationMicrosoftTenantIDsResponse)(nil),  // 17: tesseral.frontend.v1.UpdateOrganizationMicrosoftTenantIDsResponse
+	(*ListUsersRequest)(nil),                              // 18: tesseral.frontend.v1.ListUsersRequest
+	(*ListUsersResponse)(nil),                             // 19: tesseral.frontend.v1.ListUsersResponse
+	(*GetUserRequest)(nil),                                // 20: tesseral.frontend.v1.GetUserRequest
+	(*GetUserResponse)(nil),                               // 21: tesseral.frontend.v1.GetUserResponse
+	(*UpdateUserRequest)(nil),                             // 22: tesseral.frontend.v1.UpdateUserRequest
+	(*UpdateUserResponse)(nil),                            // 23: tesseral.frontend.v1.UpdateUserResponse
+	(*DeleteUserRequest)(nil),                             // 24: tesseral.frontend.v1.DeleteUserRequest
+	(*DeleteUserResponse)(nil),                            // 25: tesseral.frontend.v1.DeleteUserResponse
+	(*ListSAMLConnectionsRequest)(nil),                    // 26: tesseral.frontend.v1.ListSAMLConnectionsRequest
+	(*ListSAMLConnectionsResponse)(nil),                   // 27: tesseral.frontend.v1.ListSAMLConnectionsResponse
+	(*GetSAMLConnectionRequest)(nil),                      // 28: tesseral.frontend.v1.GetSAMLConnectionRequest
+	(*GetSAMLConnectionResponse)(nil),                     // 29: tesseral.frontend.v1.GetSAMLConnectionResponse
+	(*CreateSAMLConnectionRequest)(nil),                   // 30: tesseral.frontend.v1.CreateSAMLConnectionRequest
+	(*CreateSAMLConnectionResponse)(nil),                  // 31: tesseral.frontend.v1.CreateSAMLConnectionResponse
+	(*UpdateSAMLConnectionRequest)(nil),                   // 32: tesseral.frontend.v1.UpdateSAMLConnectionRequest
+	(*UpdateSAMLConnectionResponse)(nil),                  // 33: tesseral.frontend.v1.UpdateSAMLConnectionResponse
+	(*DeleteSAMLConnectionRequest)(nil),                   // 34: tesseral.frontend.v1.DeleteSAMLConnectionRequest
+	(*DeleteSAMLConnectionResponse)(nil),                  // 35: tesseral.frontend.v1.DeleteSAMLConnectionResponse
+	(*ListSCIMAPIKeysRequest)(nil),                        // 36: tesseral.frontend.v1.ListSCIMAPIKeysRequest
+	(*ListSCIMAPIKeysResponse)(nil),                       // 37: tesseral.frontend.v1.ListSCIMAPIKeysResponse
+	(*GetSCIMAPIKeyRequest)(nil),                          // 38: tesseral.frontend.v1.GetSCIMAPIKeyRequest
+	(*GetSCIMAPIKeyResponse)(nil),                         // 39: tesseral.frontend.v1.GetSCIMAPIKeyResponse
+	(*CreateSCIMAPIKeyRequest)(nil),                       // 40: tesseral.frontend.v1.CreateSCIMAPIKeyRequest
+	(*CreateSCIMAPIKeyResponse)(nil),                      // 41: tesseral.frontend.v1.CreateSCIMAPIKeyResponse
+	(*UpdateSCIMAPIKeyRequest)(nil),                       // 42: tesseral.frontend.v1.UpdateSCIMAPIKeyRequest
+	(*UpdateSCIMAPIKeyResponse)(nil),                      // 43: tesseral.frontend.v1.UpdateSCIMAPIKeyResponse
+	(*DeleteSCIMAPIKeyRequest)(nil),                       // 44: tesseral.frontend.v1.DeleteSCIMAPIKeyRequest
+	(*DeleteSCIMAPIKeyResponse)(nil),                      // 45: tesseral.frontend.v1.DeleteSCIMAPIKeyResponse
+	(*RevokeSCIMAPIKeyRequest)(nil),                       // 46: tesseral.frontend.v1.RevokeSCIMAPIKeyRequest
+	(*RevokeSCIMAPIKeyResponse)(nil),                      // 47: tesseral.frontend.v1.RevokeSCIMAPIKeyResponse
+	(*WhoamiRequest)(nil),                                 // 48: tesseral.frontend.v1.WhoamiRequest
+	(*WhoamiResponse)(nil),                                // 49: tesseral.frontend.v1.WhoamiResponse
+	(*ListMyPasskeysRequest)(nil),                         // 50: tesseral.frontend.v1.ListMyPasskeysRequest
+	(*ListMyPasskeysResponse)(nil),                        // 51: tesseral.frontend.v1.ListMyPasskeysResponse
+	(*DeleteMyPasskeyRequest)(nil),                        // 52: tesseral.frontend.v1.DeleteMyPasskeyRequest
+	(*DeleteMyPasskeyResponse)(nil),                       // 53: tesseral.frontend.v1.DeleteMyPasskeyResponse
+	(*GetPasskeyOptionsRequest)(nil),                      // 54: tesseral.frontend.v1.GetPasskeyOptionsRequest
+	(*GetPasskeyOptionsResponse)(nil),                     // 55: tesseral.frontend.v1.GetPasskeyOptionsResponse
+	(*RegisterPasskeyRequest)(nil),                        // 56: tesseral.frontend.v1.RegisterPasskeyRequest
+	(*RegisterPasskeyResponse)(nil),                       // 57: tesseral.frontend.v1.RegisterPasskeyResponse
+	(*GetAuthenticatorAppOptionsRequest)(nil),             // 58: tesseral.frontend.v1.GetAuthenticatorAppOptionsRequest
+	(*GetAuthenticatorAppOptionsResponse)(nil),            // 59: tesseral.frontend.v1.GetAuthenticatorAppOptionsResponse
+	(*RegisterAuthenticatorAppRequest)(nil),               // 60: tesseral.frontend.v1.RegisterAuthenticatorAppRequest
+	(*RegisterAuthenticatorAppResponse)(nil),              // 61: tesseral.frontend.v1.RegisterAuthenticatorAppResponse
+	(*ListUserInvitesRequest)(nil),                        // 62: tesseral.frontend.v1.ListUserInvitesRequest
+	(*ListUserInvitesResponse)(nil),                       // 63: tesseral.frontend.v1.ListUserInvitesResponse
+	(*GetUserInviteRequest)(nil),                          // 64: tesseral.frontend.v1.GetUserInviteRequest
+	(*GetUserInviteResponse)(nil),                         // 65: tesseral.frontend.v1.GetUserInviteResponse
+	(*CreateUserInviteRequest)(nil),                       // 66: tesseral.frontend.v1.CreateUserInviteRequest
+	(*CreateUserInviteResponse)(nil),                      // 67: tesseral.frontend.v1.CreateUserInviteResponse
+	(*DeleteUserInviteRequest)(nil),                       // 68: tesseral.frontend.v1.DeleteUserInviteRequest
+	(*DeleteUserInviteResponse)(nil),                      // 69: tesseral.frontend.v1.DeleteUserInviteResponse
+	(*SetPasswordRequest)(nil),                            // 70: tesseral.frontend.v1.SetPasswordRequest
+	(*SetPasswordResponse)(nil),                           // 71: tesseral.frontend.v1.SetPasswordResponse
+	(*Project)(nil),                                       // 72: tesseral.frontend.v1.Project
+	(*Organization)(nil),                                  // 73: tesseral.frontend.v1.Organization
+	(*OrganizationGoogleHostedDomains)(nil),               // 74: tesseral.frontend.v1.OrganizationGoogleHostedDomains
+	(*OrganizationMicrosoftTenantIDs)(nil),                // 75: tesseral.frontend.v1.OrganizationMicrosoftTenantIDs
+	(*User)(nil),                                          // 76: tesseral.frontend.v1.User
+	(*SAMLConnection)(nil),                                // 77: tesseral.frontend.v1.SAMLConnection
+	(*SCIMAPIKey)(nil),                                    // 78: tesseral.frontend.v1.SCIMAPIKey
+	(*Passkey)(nil),                                       // 79: tesseral.frontend.v1.Passkey
+	(*UserInvite)(nil),                                    // 80: tesseral.frontend.v1.UserInvite
 }
 var file_tesseral_frontend_v1_frontend_proto_depIdxs = []int32{
-	72, // 0: openauth.frontend.v1.GetProjectResponse.project:type_name -> openauth.frontend.v1.Project
-	73, // 1: openauth.frontend.v1.GetOrganizationResponse.organization:type_name -> openauth.frontend.v1.Organization
-	73, // 2: openauth.frontend.v1.UpdateOrganizationRequest.organization:type_name -> openauth.frontend.v1.Organization
-	73, // 3: openauth.frontend.v1.UpdateOrganizationResponse.organization:type_name -> openauth.frontend.v1.Organization
-	74, // 4: openauth.frontend.v1.GetOrganizationGoogleHostedDomainsResponse.organization_google_hosted_domains:type_name -> openauth.frontend.v1.OrganizationGoogleHostedDomains
-	74, // 5: openauth.frontend.v1.UpdateOrganizationGoogleHostedDomainsRequest.organization_google_hosted_domains:type_name -> openauth.frontend.v1.OrganizationGoogleHostedDomains
-	74, // 6: openauth.frontend.v1.UpdateOrganizationGoogleHostedDomainsResponse.organization_google_hosted_domains:type_name -> openauth.frontend.v1.OrganizationGoogleHostedDomains
-	75, // 7: openauth.frontend.v1.GetOrganizationMicrosoftTenantIDsResponse.organization_microsoft_tenant_ids:type_name -> openauth.frontend.v1.OrganizationMicrosoftTenantIDs
-	75, // 8: openauth.frontend.v1.UpdateOrganizationMicrosoftTenantIDsRequest.organization_microsoft_tenant_ids:type_name -> openauth.frontend.v1.OrganizationMicrosoftTenantIDs
-	75, // 9: openauth.frontend.v1.UpdateOrganizationMicrosoftTenantIDsResponse.organization_microsoft_tenant_ids:type_name -> openauth.frontend.v1.OrganizationMicrosoftTenantIDs
-	76, // 10: openauth.frontend.v1.ListUsersResponse.users:type_name -> openauth.frontend.v1.User
-	76, // 11: openauth.frontend.v1.GetUserResponse.user:type_name -> openauth.frontend.v1.User
-	76, // 12: openauth.frontend.v1.UpdateUserRequest.user:type_name -> openauth.frontend.v1.User
-	76, // 13: openauth.frontend.v1.UpdateUserResponse.user:type_name -> openauth.frontend.v1.User
-	77, // 14: openauth.frontend.v1.ListSAMLConnectionsResponse.saml_connections:type_name -> openauth.frontend.v1.SAMLConnection
-	77, // 15: openauth.frontend.v1.GetSAMLConnectionResponse.saml_connection:type_name -> openauth.frontend.v1.SAMLConnection
-	77, // 16: openauth.frontend.v1.CreateSAMLConnectionRequest.saml_connection:type_name -> openauth.frontend.v1.SAMLConnection
-	77, // 17: openauth.frontend.v1.CreateSAMLConnectionResponse.saml_connection:type_name -> openauth.frontend.v1.SAMLConnection
-	77, // 18: openauth.frontend.v1.UpdateSAMLConnectionRequest.saml_connection:type_name -> openauth.frontend.v1.SAMLConnection
-	77, // 19: openauth.frontend.v1.UpdateSAMLConnectionResponse.saml_connection:type_name -> openauth.frontend.v1.SAMLConnection
-	78, // 20: openauth.frontend.v1.ListSCIMAPIKeysResponse.scim_api_keys:type_name -> openauth.frontend.v1.SCIMAPIKey
-	78, // 21: openauth.frontend.v1.GetSCIMAPIKeyResponse.scim_api_key:type_name -> openauth.frontend.v1.SCIMAPIKey
-	78, // 22: openauth.frontend.v1.CreateSCIMAPIKeyRequest.scim_api_key:type_name -> openauth.frontend.v1.SCIMAPIKey
-	78, // 23: openauth.frontend.v1.CreateSCIMAPIKeyResponse.scim_api_key:type_name -> openauth.frontend.v1.SCIMAPIKey
-	78, // 24: openauth.frontend.v1.UpdateSCIMAPIKeyRequest.scim_api_key:type_name -> openauth.frontend.v1.SCIMAPIKey
-	78, // 25: openauth.frontend.v1.UpdateSCIMAPIKeyResponse.scim_api_key:type_name -> openauth.frontend.v1.SCIMAPIKey
-	78, // 26: openauth.frontend.v1.RevokeSCIMAPIKeyResponse.scim_api_key:type_name -> openauth.frontend.v1.SCIMAPIKey
-	76, // 27: openauth.frontend.v1.WhoamiResponse.user:type_name -> openauth.frontend.v1.User
-	79, // 28: openauth.frontend.v1.ListMyPasskeysResponse.passkeys:type_name -> openauth.frontend.v1.Passkey
-	79, // 29: openauth.frontend.v1.RegisterPasskeyResponse.passkey:type_name -> openauth.frontend.v1.Passkey
-	80, // 30: openauth.frontend.v1.ListUserInvitesResponse.user_invites:type_name -> openauth.frontend.v1.UserInvite
-	80, // 31: openauth.frontend.v1.GetUserInviteResponse.user_invite:type_name -> openauth.frontend.v1.UserInvite
-	80, // 32: openauth.frontend.v1.CreateUserInviteRequest.user_invite:type_name -> openauth.frontend.v1.UserInvite
-	80, // 33: openauth.frontend.v1.CreateUserInviteResponse.user_invite:type_name -> openauth.frontend.v1.UserInvite
-	0,  // 34: openauth.frontend.v1.FrontendService.Logout:input_type -> openauth.frontend.v1.LogoutRequest
-	2,  // 35: openauth.frontend.v1.FrontendService.Refresh:input_type -> openauth.frontend.v1.RefreshRequest
-	4,  // 36: openauth.frontend.v1.FrontendService.GetProject:input_type -> openauth.frontend.v1.GetProjectRequest
-	6,  // 37: openauth.frontend.v1.FrontendService.GetOrganization:input_type -> openauth.frontend.v1.GetOrganizationRequest
-	8,  // 38: openauth.frontend.v1.FrontendService.UpdateOrganization:input_type -> openauth.frontend.v1.UpdateOrganizationRequest
-	10, // 39: openauth.frontend.v1.FrontendService.GetOrganizationGoogleHostedDomains:input_type -> openauth.frontend.v1.GetOrganizationGoogleHostedDomainsRequest
-	12, // 40: openauth.frontend.v1.FrontendService.UpdateOrganizationGoogleHostedDomains:input_type -> openauth.frontend.v1.UpdateOrganizationGoogleHostedDomainsRequest
-	14, // 41: openauth.frontend.v1.FrontendService.GetOrganizationMicrosoftTenantIDs:input_type -> openauth.frontend.v1.GetOrganizationMicrosoftTenantIDsRequest
-	16, // 42: openauth.frontend.v1.FrontendService.UpdateOrganizationMicrosoftTenantIDs:input_type -> openauth.frontend.v1.UpdateOrganizationMicrosoftTenantIDsRequest
-	18, // 43: openauth.frontend.v1.FrontendService.ListUsers:input_type -> openauth.frontend.v1.ListUsersRequest
-	20, // 44: openauth.frontend.v1.FrontendService.GetUser:input_type -> openauth.frontend.v1.GetUserRequest
-	22, // 45: openauth.frontend.v1.FrontendService.UpdateUser:input_type -> openauth.frontend.v1.UpdateUserRequest
-	24, // 46: openauth.frontend.v1.FrontendService.DeleteUser:input_type -> openauth.frontend.v1.DeleteUserRequest
-	70, // 47: openauth.frontend.v1.FrontendService.SetPassword:input_type -> openauth.frontend.v1.SetPasswordRequest
-	26, // 48: openauth.frontend.v1.FrontendService.ListSAMLConnections:input_type -> openauth.frontend.v1.ListSAMLConnectionsRequest
-	28, // 49: openauth.frontend.v1.FrontendService.GetSAMLConnection:input_type -> openauth.frontend.v1.GetSAMLConnectionRequest
-	30, // 50: openauth.frontend.v1.FrontendService.CreateSAMLConnection:input_type -> openauth.frontend.v1.CreateSAMLConnectionRequest
-	32, // 51: openauth.frontend.v1.FrontendService.UpdateSAMLConnection:input_type -> openauth.frontend.v1.UpdateSAMLConnectionRequest
-	34, // 52: openauth.frontend.v1.FrontendService.DeleteSAMLConnection:input_type -> openauth.frontend.v1.DeleteSAMLConnectionRequest
-	36, // 53: openauth.frontend.v1.FrontendService.ListSCIMAPIKeys:input_type -> openauth.frontend.v1.ListSCIMAPIKeysRequest
-	38, // 54: openauth.frontend.v1.FrontendService.GetSCIMAPIKey:input_type -> openauth.frontend.v1.GetSCIMAPIKeyRequest
-	40, // 55: openauth.frontend.v1.FrontendService.CreateSCIMAPIKey:input_type -> openauth.frontend.v1.CreateSCIMAPIKeyRequest
-	42, // 56: openauth.frontend.v1.FrontendService.UpdateSCIMAPIKey:input_type -> openauth.frontend.v1.UpdateSCIMAPIKeyRequest
-	44, // 57: openauth.frontend.v1.FrontendService.DeleteSCIMAPIKey:input_type -> openauth.frontend.v1.DeleteSCIMAPIKeyRequest
-	46, // 58: openauth.frontend.v1.FrontendService.RevokeSCIMAPIKey:input_type -> openauth.frontend.v1.RevokeSCIMAPIKeyRequest
-	48, // 59: openauth.frontend.v1.FrontendService.Whoami:input_type -> openauth.frontend.v1.WhoamiRequest
-	50, // 60: openauth.frontend.v1.FrontendService.ListMyPasskeys:input_type -> openauth.frontend.v1.ListMyPasskeysRequest
-	52, // 61: openauth.frontend.v1.FrontendService.DeleteMyPasskey:input_type -> openauth.frontend.v1.DeleteMyPasskeyRequest
-	54, // 62: openauth.frontend.v1.FrontendService.GetPasskeyOptions:input_type -> openauth.frontend.v1.GetPasskeyOptionsRequest
-	56, // 63: openauth.frontend.v1.FrontendService.RegisterPasskey:input_type -> openauth.frontend.v1.RegisterPasskeyRequest
-	58, // 64: openauth.frontend.v1.FrontendService.GetAuthenticatorAppOptions:input_type -> openauth.frontend.v1.GetAuthenticatorAppOptionsRequest
-	60, // 65: openauth.frontend.v1.FrontendService.RegisterAuthenticatorApp:input_type -> openauth.frontend.v1.RegisterAuthenticatorAppRequest
-	62, // 66: openauth.frontend.v1.FrontendService.ListUserInvites:input_type -> openauth.frontend.v1.ListUserInvitesRequest
-	64, // 67: openauth.frontend.v1.FrontendService.GetUserInvite:input_type -> openauth.frontend.v1.GetUserInviteRequest
-	66, // 68: openauth.frontend.v1.FrontendService.CreateUserInvite:input_type -> openauth.frontend.v1.CreateUserInviteRequest
-	68, // 69: openauth.frontend.v1.FrontendService.DeleteUserInvite:input_type -> openauth.frontend.v1.DeleteUserInviteRequest
-	1,  // 70: openauth.frontend.v1.FrontendService.Logout:output_type -> openauth.frontend.v1.LogoutResponse
-	3,  // 71: openauth.frontend.v1.FrontendService.Refresh:output_type -> openauth.frontend.v1.RefreshResponse
-	5,  // 72: openauth.frontend.v1.FrontendService.GetProject:output_type -> openauth.frontend.v1.GetProjectResponse
-	7,  // 73: openauth.frontend.v1.FrontendService.GetOrganization:output_type -> openauth.frontend.v1.GetOrganizationResponse
-	9,  // 74: openauth.frontend.v1.FrontendService.UpdateOrganization:output_type -> openauth.frontend.v1.UpdateOrganizationResponse
-	11, // 75: openauth.frontend.v1.FrontendService.GetOrganizationGoogleHostedDomains:output_type -> openauth.frontend.v1.GetOrganizationGoogleHostedDomainsResponse
-	13, // 76: openauth.frontend.v1.FrontendService.UpdateOrganizationGoogleHostedDomains:output_type -> openauth.frontend.v1.UpdateOrganizationGoogleHostedDomainsResponse
-	15, // 77: openauth.frontend.v1.FrontendService.GetOrganizationMicrosoftTenantIDs:output_type -> openauth.frontend.v1.GetOrganizationMicrosoftTenantIDsResponse
-	17, // 78: openauth.frontend.v1.FrontendService.UpdateOrganizationMicrosoftTenantIDs:output_type -> openauth.frontend.v1.UpdateOrganizationMicrosoftTenantIDsResponse
-	19, // 79: openauth.frontend.v1.FrontendService.ListUsers:output_type -> openauth.frontend.v1.ListUsersResponse
-	21, // 80: openauth.frontend.v1.FrontendService.GetUser:output_type -> openauth.frontend.v1.GetUserResponse
-	23, // 81: openauth.frontend.v1.FrontendService.UpdateUser:output_type -> openauth.frontend.v1.UpdateUserResponse
-	25, // 82: openauth.frontend.v1.FrontendService.DeleteUser:output_type -> openauth.frontend.v1.DeleteUserResponse
-	71, // 83: openauth.frontend.v1.FrontendService.SetPassword:output_type -> openauth.frontend.v1.SetPasswordResponse
-	27, // 84: openauth.frontend.v1.FrontendService.ListSAMLConnections:output_type -> openauth.frontend.v1.ListSAMLConnectionsResponse
-	29, // 85: openauth.frontend.v1.FrontendService.GetSAMLConnection:output_type -> openauth.frontend.v1.GetSAMLConnectionResponse
-	31, // 86: openauth.frontend.v1.FrontendService.CreateSAMLConnection:output_type -> openauth.frontend.v1.CreateSAMLConnectionResponse
-	33, // 87: openauth.frontend.v1.FrontendService.UpdateSAMLConnection:output_type -> openauth.frontend.v1.UpdateSAMLConnectionResponse
-	35, // 88: openauth.frontend.v1.FrontendService.DeleteSAMLConnection:output_type -> openauth.frontend.v1.DeleteSAMLConnectionResponse
-	37, // 89: openauth.frontend.v1.FrontendService.ListSCIMAPIKeys:output_type -> openauth.frontend.v1.ListSCIMAPIKeysResponse
-	39, // 90: openauth.frontend.v1.FrontendService.GetSCIMAPIKey:output_type -> openauth.frontend.v1.GetSCIMAPIKeyResponse
-	41, // 91: openauth.frontend.v1.FrontendService.CreateSCIMAPIKey:output_type -> openauth.frontend.v1.CreateSCIMAPIKeyResponse
-	43, // 92: openauth.frontend.v1.FrontendService.UpdateSCIMAPIKey:output_type -> openauth.frontend.v1.UpdateSCIMAPIKeyResponse
-	45, // 93: openauth.frontend.v1.FrontendService.DeleteSCIMAPIKey:output_type -> openauth.frontend.v1.DeleteSCIMAPIKeyResponse
-	47, // 94: openauth.frontend.v1.FrontendService.RevokeSCIMAPIKey:output_type -> openauth.frontend.v1.RevokeSCIMAPIKeyResponse
-	49, // 95: openauth.frontend.v1.FrontendService.Whoami:output_type -> openauth.frontend.v1.WhoamiResponse
-	51, // 96: openauth.frontend.v1.FrontendService.ListMyPasskeys:output_type -> openauth.frontend.v1.ListMyPasskeysResponse
-	53, // 97: openauth.frontend.v1.FrontendService.DeleteMyPasskey:output_type -> openauth.frontend.v1.DeleteMyPasskeyResponse
-	55, // 98: openauth.frontend.v1.FrontendService.GetPasskeyOptions:output_type -> openauth.frontend.v1.GetPasskeyOptionsResponse
-	57, // 99: openauth.frontend.v1.FrontendService.RegisterPasskey:output_type -> openauth.frontend.v1.RegisterPasskeyResponse
-	59, // 100: openauth.frontend.v1.FrontendService.GetAuthenticatorAppOptions:output_type -> openauth.frontend.v1.GetAuthenticatorAppOptionsResponse
-	61, // 101: openauth.frontend.v1.FrontendService.RegisterAuthenticatorApp:output_type -> openauth.frontend.v1.RegisterAuthenticatorAppResponse
-	63, // 102: openauth.frontend.v1.FrontendService.ListUserInvites:output_type -> openauth.frontend.v1.ListUserInvitesResponse
-	65, // 103: openauth.frontend.v1.FrontendService.GetUserInvite:output_type -> openauth.frontend.v1.GetUserInviteResponse
-	67, // 104: openauth.frontend.v1.FrontendService.CreateUserInvite:output_type -> openauth.frontend.v1.CreateUserInviteResponse
-	69, // 105: openauth.frontend.v1.FrontendService.DeleteUserInvite:output_type -> openauth.frontend.v1.DeleteUserInviteResponse
+	72, // 0: tesseral.frontend.v1.GetProjectResponse.project:type_name -> tesseral.frontend.v1.Project
+	73, // 1: tesseral.frontend.v1.GetOrganizationResponse.organization:type_name -> tesseral.frontend.v1.Organization
+	73, // 2: tesseral.frontend.v1.UpdateOrganizationRequest.organization:type_name -> tesseral.frontend.v1.Organization
+	73, // 3: tesseral.frontend.v1.UpdateOrganizationResponse.organization:type_name -> tesseral.frontend.v1.Organization
+	74, // 4: tesseral.frontend.v1.GetOrganizationGoogleHostedDomainsResponse.organization_google_hosted_domains:type_name -> tesseral.frontend.v1.OrganizationGoogleHostedDomains
+	74, // 5: tesseral.frontend.v1.UpdateOrganizationGoogleHostedDomainsRequest.organization_google_hosted_domains:type_name -> tesseral.frontend.v1.OrganizationGoogleHostedDomains
+	74, // 6: tesseral.frontend.v1.UpdateOrganizationGoogleHostedDomainsResponse.organization_google_hosted_domains:type_name -> tesseral.frontend.v1.OrganizationGoogleHostedDomains
+	75, // 7: tesseral.frontend.v1.GetOrganizationMicrosoftTenantIDsResponse.organization_microsoft_tenant_ids:type_name -> tesseral.frontend.v1.OrganizationMicrosoftTenantIDs
+	75, // 8: tesseral.frontend.v1.UpdateOrganizationMicrosoftTenantIDsRequest.organization_microsoft_tenant_ids:type_name -> tesseral.frontend.v1.OrganizationMicrosoftTenantIDs
+	75, // 9: tesseral.frontend.v1.UpdateOrganizationMicrosoftTenantIDsResponse.organization_microsoft_tenant_ids:type_name -> tesseral.frontend.v1.OrganizationMicrosoftTenantIDs
+	76, // 10: tesseral.frontend.v1.ListUsersResponse.users:type_name -> tesseral.frontend.v1.User
+	76, // 11: tesseral.frontend.v1.GetUserResponse.user:type_name -> tesseral.frontend.v1.User
+	76, // 12: tesseral.frontend.v1.UpdateUserRequest.user:type_name -> tesseral.frontend.v1.User
+	76, // 13: tesseral.frontend.v1.UpdateUserResponse.user:type_name -> tesseral.frontend.v1.User
+	77, // 14: tesseral.frontend.v1.ListSAMLConnectionsResponse.saml_connections:type_name -> tesseral.frontend.v1.SAMLConnection
+	77, // 15: tesseral.frontend.v1.GetSAMLConnectionResponse.saml_connection:type_name -> tesseral.frontend.v1.SAMLConnection
+	77, // 16: tesseral.frontend.v1.CreateSAMLConnectionRequest.saml_connection:type_name -> tesseral.frontend.v1.SAMLConnection
+	77, // 17: tesseral.frontend.v1.CreateSAMLConnectionResponse.saml_connection:type_name -> tesseral.frontend.v1.SAMLConnection
+	77, // 18: tesseral.frontend.v1.UpdateSAMLConnectionRequest.saml_connection:type_name -> tesseral.frontend.v1.SAMLConnection
+	77, // 19: tesseral.frontend.v1.UpdateSAMLConnectionResponse.saml_connection:type_name -> tesseral.frontend.v1.SAMLConnection
+	78, // 20: tesseral.frontend.v1.ListSCIMAPIKeysResponse.scim_api_keys:type_name -> tesseral.frontend.v1.SCIMAPIKey
+	78, // 21: tesseral.frontend.v1.GetSCIMAPIKeyResponse.scim_api_key:type_name -> tesseral.frontend.v1.SCIMAPIKey
+	78, // 22: tesseral.frontend.v1.CreateSCIMAPIKeyRequest.scim_api_key:type_name -> tesseral.frontend.v1.SCIMAPIKey
+	78, // 23: tesseral.frontend.v1.CreateSCIMAPIKeyResponse.scim_api_key:type_name -> tesseral.frontend.v1.SCIMAPIKey
+	78, // 24: tesseral.frontend.v1.UpdateSCIMAPIKeyRequest.scim_api_key:type_name -> tesseral.frontend.v1.SCIMAPIKey
+	78, // 25: tesseral.frontend.v1.UpdateSCIMAPIKeyResponse.scim_api_key:type_name -> tesseral.frontend.v1.SCIMAPIKey
+	78, // 26: tesseral.frontend.v1.RevokeSCIMAPIKeyResponse.scim_api_key:type_name -> tesseral.frontend.v1.SCIMAPIKey
+	76, // 27: tesseral.frontend.v1.WhoamiResponse.user:type_name -> tesseral.frontend.v1.User
+	79, // 28: tesseral.frontend.v1.ListMyPasskeysResponse.passkeys:type_name -> tesseral.frontend.v1.Passkey
+	79, // 29: tesseral.frontend.v1.RegisterPasskeyResponse.passkey:type_name -> tesseral.frontend.v1.Passkey
+	80, // 30: tesseral.frontend.v1.ListUserInvitesResponse.user_invites:type_name -> tesseral.frontend.v1.UserInvite
+	80, // 31: tesseral.frontend.v1.GetUserInviteResponse.user_invite:type_name -> tesseral.frontend.v1.UserInvite
+	80, // 32: tesseral.frontend.v1.CreateUserInviteRequest.user_invite:type_name -> tesseral.frontend.v1.UserInvite
+	80, // 33: tesseral.frontend.v1.CreateUserInviteResponse.user_invite:type_name -> tesseral.frontend.v1.UserInvite
+	0,  // 34: tesseral.frontend.v1.FrontendService.Logout:input_type -> tesseral.frontend.v1.LogoutRequest
+	2,  // 35: tesseral.frontend.v1.FrontendService.Refresh:input_type -> tesseral.frontend.v1.RefreshRequest
+	4,  // 36: tesseral.frontend.v1.FrontendService.GetProject:input_type -> tesseral.frontend.v1.GetProjectRequest
+	6,  // 37: tesseral.frontend.v1.FrontendService.GetOrganization:input_type -> tesseral.frontend.v1.GetOrganizationRequest
+	8,  // 38: tesseral.frontend.v1.FrontendService.UpdateOrganization:input_type -> tesseral.frontend.v1.UpdateOrganizationRequest
+	10, // 39: tesseral.frontend.v1.FrontendService.GetOrganizationGoogleHostedDomains:input_type -> tesseral.frontend.v1.GetOrganizationGoogleHostedDomainsRequest
+	12, // 40: tesseral.frontend.v1.FrontendService.UpdateOrganizationGoogleHostedDomains:input_type -> tesseral.frontend.v1.UpdateOrganizationGoogleHostedDomainsRequest
+	14, // 41: tesseral.frontend.v1.FrontendService.GetOrganizationMicrosoftTenantIDs:input_type -> tesseral.frontend.v1.GetOrganizationMicrosoftTenantIDsRequest
+	16, // 42: tesseral.frontend.v1.FrontendService.UpdateOrganizationMicrosoftTenantIDs:input_type -> tesseral.frontend.v1.UpdateOrganizationMicrosoftTenantIDsRequest
+	18, // 43: tesseral.frontend.v1.FrontendService.ListUsers:input_type -> tesseral.frontend.v1.ListUsersRequest
+	20, // 44: tesseral.frontend.v1.FrontendService.GetUser:input_type -> tesseral.frontend.v1.GetUserRequest
+	22, // 45: tesseral.frontend.v1.FrontendService.UpdateUser:input_type -> tesseral.frontend.v1.UpdateUserRequest
+	24, // 46: tesseral.frontend.v1.FrontendService.DeleteUser:input_type -> tesseral.frontend.v1.DeleteUserRequest
+	70, // 47: tesseral.frontend.v1.FrontendService.SetPassword:input_type -> tesseral.frontend.v1.SetPasswordRequest
+	26, // 48: tesseral.frontend.v1.FrontendService.ListSAMLConnections:input_type -> tesseral.frontend.v1.ListSAMLConnectionsRequest
+	28, // 49: tesseral.frontend.v1.FrontendService.GetSAMLConnection:input_type -> tesseral.frontend.v1.GetSAMLConnectionRequest
+	30, // 50: tesseral.frontend.v1.FrontendService.CreateSAMLConnection:input_type -> tesseral.frontend.v1.CreateSAMLConnectionRequest
+	32, // 51: tesseral.frontend.v1.FrontendService.UpdateSAMLConnection:input_type -> tesseral.frontend.v1.UpdateSAMLConnectionRequest
+	34, // 52: tesseral.frontend.v1.FrontendService.DeleteSAMLConnection:input_type -> tesseral.frontend.v1.DeleteSAMLConnectionRequest
+	36, // 53: tesseral.frontend.v1.FrontendService.ListSCIMAPIKeys:input_type -> tesseral.frontend.v1.ListSCIMAPIKeysRequest
+	38, // 54: tesseral.frontend.v1.FrontendService.GetSCIMAPIKey:input_type -> tesseral.frontend.v1.GetSCIMAPIKeyRequest
+	40, // 55: tesseral.frontend.v1.FrontendService.CreateSCIMAPIKey:input_type -> tesseral.frontend.v1.CreateSCIMAPIKeyRequest
+	42, // 56: tesseral.frontend.v1.FrontendService.UpdateSCIMAPIKey:input_type -> tesseral.frontend.v1.UpdateSCIMAPIKeyRequest
+	44, // 57: tesseral.frontend.v1.FrontendService.DeleteSCIMAPIKey:input_type -> tesseral.frontend.v1.DeleteSCIMAPIKeyRequest
+	46, // 58: tesseral.frontend.v1.FrontendService.RevokeSCIMAPIKey:input_type -> tesseral.frontend.v1.RevokeSCIMAPIKeyRequest
+	48, // 59: tesseral.frontend.v1.FrontendService.Whoami:input_type -> tesseral.frontend.v1.WhoamiRequest
+	50, // 60: tesseral.frontend.v1.FrontendService.ListMyPasskeys:input_type -> tesseral.frontend.v1.ListMyPasskeysRequest
+	52, // 61: tesseral.frontend.v1.FrontendService.DeleteMyPasskey:input_type -> tesseral.frontend.v1.DeleteMyPasskeyRequest
+	54, // 62: tesseral.frontend.v1.FrontendService.GetPasskeyOptions:input_type -> tesseral.frontend.v1.GetPasskeyOptionsRequest
+	56, // 63: tesseral.frontend.v1.FrontendService.RegisterPasskey:input_type -> tesseral.frontend.v1.RegisterPasskeyRequest
+	58, // 64: tesseral.frontend.v1.FrontendService.GetAuthenticatorAppOptions:input_type -> tesseral.frontend.v1.GetAuthenticatorAppOptionsRequest
+	60, // 65: tesseral.frontend.v1.FrontendService.RegisterAuthenticatorApp:input_type -> tesseral.frontend.v1.RegisterAuthenticatorAppRequest
+	62, // 66: tesseral.frontend.v1.FrontendService.ListUserInvites:input_type -> tesseral.frontend.v1.ListUserInvitesRequest
+	64, // 67: tesseral.frontend.v1.FrontendService.GetUserInvite:input_type -> tesseral.frontend.v1.GetUserInviteRequest
+	66, // 68: tesseral.frontend.v1.FrontendService.CreateUserInvite:input_type -> tesseral.frontend.v1.CreateUserInviteRequest
+	68, // 69: tesseral.frontend.v1.FrontendService.DeleteUserInvite:input_type -> tesseral.frontend.v1.DeleteUserInviteRequest
+	1,  // 70: tesseral.frontend.v1.FrontendService.Logout:output_type -> tesseral.frontend.v1.LogoutResponse
+	3,  // 71: tesseral.frontend.v1.FrontendService.Refresh:output_type -> tesseral.frontend.v1.RefreshResponse
+	5,  // 72: tesseral.frontend.v1.FrontendService.GetProject:output_type -> tesseral.frontend.v1.GetProjectResponse
+	7,  // 73: tesseral.frontend.v1.FrontendService.GetOrganization:output_type -> tesseral.frontend.v1.GetOrganizationResponse
+	9,  // 74: tesseral.frontend.v1.FrontendService.UpdateOrganization:output_type -> tesseral.frontend.v1.UpdateOrganizationResponse
+	11, // 75: tesseral.frontend.v1.FrontendService.GetOrganizationGoogleHostedDomains:output_type -> tesseral.frontend.v1.GetOrganizationGoogleHostedDomainsResponse
+	13, // 76: tesseral.frontend.v1.FrontendService.UpdateOrganizationGoogleHostedDomains:output_type -> tesseral.frontend.v1.UpdateOrganizationGoogleHostedDomainsResponse
+	15, // 77: tesseral.frontend.v1.FrontendService.GetOrganizationMicrosoftTenantIDs:output_type -> tesseral.frontend.v1.GetOrganizationMicrosoftTenantIDsResponse
+	17, // 78: tesseral.frontend.v1.FrontendService.UpdateOrganizationMicrosoftTenantIDs:output_type -> tesseral.frontend.v1.UpdateOrganizationMicrosoftTenantIDsResponse
+	19, // 79: tesseral.frontend.v1.FrontendService.ListUsers:output_type -> tesseral.frontend.v1.ListUsersResponse
+	21, // 80: tesseral.frontend.v1.FrontendService.GetUser:output_type -> tesseral.frontend.v1.GetUserResponse
+	23, // 81: tesseral.frontend.v1.FrontendService.UpdateUser:output_type -> tesseral.frontend.v1.UpdateUserResponse
+	25, // 82: tesseral.frontend.v1.FrontendService.DeleteUser:output_type -> tesseral.frontend.v1.DeleteUserResponse
+	71, // 83: tesseral.frontend.v1.FrontendService.SetPassword:output_type -> tesseral.frontend.v1.SetPasswordResponse
+	27, // 84: tesseral.frontend.v1.FrontendService.ListSAMLConnections:output_type -> tesseral.frontend.v1.ListSAMLConnectionsResponse
+	29, // 85: tesseral.frontend.v1.FrontendService.GetSAMLConnection:output_type -> tesseral.frontend.v1.GetSAMLConnectionResponse
+	31, // 86: tesseral.frontend.v1.FrontendService.CreateSAMLConnection:output_type -> tesseral.frontend.v1.CreateSAMLConnectionResponse
+	33, // 87: tesseral.frontend.v1.FrontendService.UpdateSAMLConnection:output_type -> tesseral.frontend.v1.UpdateSAMLConnectionResponse
+	35, // 88: tesseral.frontend.v1.FrontendService.DeleteSAMLConnection:output_type -> tesseral.frontend.v1.DeleteSAMLConnectionResponse
+	37, // 89: tesseral.frontend.v1.FrontendService.ListSCIMAPIKeys:output_type -> tesseral.frontend.v1.ListSCIMAPIKeysResponse
+	39, // 90: tesseral.frontend.v1.FrontendService.GetSCIMAPIKey:output_type -> tesseral.frontend.v1.GetSCIMAPIKeyResponse
+	41, // 91: tesseral.frontend.v1.FrontendService.CreateSCIMAPIKey:output_type -> tesseral.frontend.v1.CreateSCIMAPIKeyResponse
+	43, // 92: tesseral.frontend.v1.FrontendService.UpdateSCIMAPIKey:output_type -> tesseral.frontend.v1.UpdateSCIMAPIKeyResponse
+	45, // 93: tesseral.frontend.v1.FrontendService.DeleteSCIMAPIKey:output_type -> tesseral.frontend.v1.DeleteSCIMAPIKeyResponse
+	47, // 94: tesseral.frontend.v1.FrontendService.RevokeSCIMAPIKey:output_type -> tesseral.frontend.v1.RevokeSCIMAPIKeyResponse
+	49, // 95: tesseral.frontend.v1.FrontendService.Whoami:output_type -> tesseral.frontend.v1.WhoamiResponse
+	51, // 96: tesseral.frontend.v1.FrontendService.ListMyPasskeys:output_type -> tesseral.frontend.v1.ListMyPasskeysResponse
+	53, // 97: tesseral.frontend.v1.FrontendService.DeleteMyPasskey:output_type -> tesseral.frontend.v1.DeleteMyPasskeyResponse
+	55, // 98: tesseral.frontend.v1.FrontendService.GetPasskeyOptions:output_type -> tesseral.frontend.v1.GetPasskeyOptionsResponse
+	57, // 99: tesseral.frontend.v1.FrontendService.RegisterPasskey:output_type -> tesseral.frontend.v1.RegisterPasskeyResponse
+	59, // 100: tesseral.frontend.v1.FrontendService.GetAuthenticatorAppOptions:output_type -> tesseral.frontend.v1.GetAuthenticatorAppOptionsResponse
+	61, // 101: tesseral.frontend.v1.FrontendService.RegisterAuthenticatorApp:output_type -> tesseral.frontend.v1.RegisterAuthenticatorAppResponse
+	63, // 102: tesseral.frontend.v1.FrontendService.ListUserInvites:output_type -> tesseral.frontend.v1.ListUserInvitesResponse
+	65, // 103: tesseral.frontend.v1.FrontendService.GetUserInvite:output_type -> tesseral.frontend.v1.GetUserInviteResponse
+	67, // 104: tesseral.frontend.v1.FrontendService.CreateUserInvite:output_type -> tesseral.frontend.v1.CreateUserInviteResponse
+	69, // 105: tesseral.frontend.v1.FrontendService.DeleteUserInvite:output_type -> tesseral.frontend.v1.DeleteUserInviteResponse
 	70, // [70:106] is the sub-list for method output_type
 	34, // [34:70] is the sub-list for method input_type
 	34, // [34:34] is the sub-list for extension type_name

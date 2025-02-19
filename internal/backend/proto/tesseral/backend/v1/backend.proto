@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package openauth.backend.v1;
+package tesseral.backend.v1;
 
 import "google/api/annotations.proto";
 import "google/protobuf/timestamp.proto";

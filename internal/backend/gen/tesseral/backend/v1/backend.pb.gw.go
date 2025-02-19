@@ -1279,7 +1279,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/GetProject", runtime.WithHTTPPathPattern("/backend/v1/project"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/GetProject", runtime.WithHTTPPathPattern("/backend/v1/project"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1299,7 +1299,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/ListOrganizations", runtime.WithHTTPPathPattern("/backend/v1/organizations"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/ListOrganizations", runtime.WithHTTPPathPattern("/backend/v1/organizations"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1319,7 +1319,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/GetOrganization", runtime.WithHTTPPathPattern("/backend/v1/organizations/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/GetOrganization", runtime.WithHTTPPathPattern("/backend/v1/organizations/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1339,7 +1339,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/CreateOrganization", runtime.WithHTTPPathPattern("/backend/v1/organizations"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/CreateOrganization", runtime.WithHTTPPathPattern("/backend/v1/organizations"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1359,7 +1359,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/UpdateOrganization", runtime.WithHTTPPathPattern("/backend/v1/organizations/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/UpdateOrganization", runtime.WithHTTPPathPattern("/backend/v1/organizations/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1379,7 +1379,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/DeleteOrganization", runtime.WithHTTPPathPattern("/backend/v1/organizations/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/DeleteOrganization", runtime.WithHTTPPathPattern("/backend/v1/organizations/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1399,7 +1399,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/GetOrganizationGoogleHostedDomains", runtime.WithHTTPPathPattern("/backend/v1/organizations/{organization_id}/google-hosted-domains"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/GetOrganizationGoogleHostedDomains", runtime.WithHTTPPathPattern("/backend/v1/organizations/{organization_id}/google-hosted-domains"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1419,7 +1419,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/UpdateOrganizationGoogleHostedDomains", runtime.WithHTTPPathPattern("/backend/v1/organizations/{organization_id}/google-hosted-domains"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/UpdateOrganizationGoogleHostedDomains", runtime.WithHTTPPathPattern("/backend/v1/organizations/{organization_id}/google-hosted-domains"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1439,7 +1439,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/GetOrganizationMicrosoftTenantIDs", runtime.WithHTTPPathPattern("/backend/v1/organizations/{organization_id}/microsoft-tenant-ids"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/GetOrganizationMicrosoftTenantIDs", runtime.WithHTTPPathPattern("/backend/v1/organizations/{organization_id}/microsoft-tenant-ids"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1459,7 +1459,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/UpdateOrganizationMicrosoftTenantIDs", runtime.WithHTTPPathPattern("/backend/v1/organizations/{organization_id}/microsoft-tenant-ids"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/UpdateOrganizationMicrosoftTenantIDs", runtime.WithHTTPPathPattern("/backend/v1/organizations/{organization_id}/microsoft-tenant-ids"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1479,7 +1479,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/ListSAMLConnections", runtime.WithHTTPPathPattern("/backend/v1/saml-connections"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/ListSAMLConnections", runtime.WithHTTPPathPattern("/backend/v1/saml-connections"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1499,7 +1499,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/GetSAMLConnection", runtime.WithHTTPPathPattern("/backend/v1/saml-connections/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/GetSAMLConnection", runtime.WithHTTPPathPattern("/backend/v1/saml-connections/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1519,7 +1519,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/CreateSAMLConnection", runtime.WithHTTPPathPattern("/backend/v1/saml-connections"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/CreateSAMLConnection", runtime.WithHTTPPathPattern("/backend/v1/saml-connections"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1539,7 +1539,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/UpdateSAMLConnection", runtime.WithHTTPPathPattern("/backend/v1/saml-connections/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/UpdateSAMLConnection", runtime.WithHTTPPathPattern("/backend/v1/saml-connections/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1559,7 +1559,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/DeleteSAMLConnection", runtime.WithHTTPPathPattern("/backend/v1/saml-connections/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/DeleteSAMLConnection", runtime.WithHTTPPathPattern("/backend/v1/saml-connections/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1579,7 +1579,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/ListSCIMAPIKeys", runtime.WithHTTPPathPattern("/backend/v1/scim-api-keys"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/ListSCIMAPIKeys", runtime.WithHTTPPathPattern("/backend/v1/scim-api-keys"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1599,7 +1599,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/GetSCIMAPIKey", runtime.WithHTTPPathPattern("/backend/v1/scim-api-keys/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/GetSCIMAPIKey", runtime.WithHTTPPathPattern("/backend/v1/scim-api-keys/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1619,7 +1619,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/CreateSCIMAPIKey", runtime.WithHTTPPathPattern("/backend/v1/scim-api-keys"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/CreateSCIMAPIKey", runtime.WithHTTPPathPattern("/backend/v1/scim-api-keys"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1639,7 +1639,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/UpdateSCIMAPIKey", runtime.WithHTTPPathPattern("/backend/v1/scim-api-keys/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/UpdateSCIMAPIKey", runtime.WithHTTPPathPattern("/backend/v1/scim-api-keys/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1659,7 +1659,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/DeleteSCIMAPIKey", runtime.WithHTTPPathPattern("/backend/v1/scim-api-keys/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/DeleteSCIMAPIKey", runtime.WithHTTPPathPattern("/backend/v1/scim-api-keys/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1679,7 +1679,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/RevokeSCIMAPIKey", runtime.WithHTTPPathPattern("/backend/v1/scim-api-keys/{id}/revoke"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/RevokeSCIMAPIKey", runtime.WithHTTPPathPattern("/backend/v1/scim-api-keys/{id}/revoke"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1699,7 +1699,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/ListUsers", runtime.WithHTTPPathPattern("/backend/v1/users"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/ListUsers", runtime.WithHTTPPathPattern("/backend/v1/users"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1719,7 +1719,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/GetUser", runtime.WithHTTPPathPattern("/backend/v1/users/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/GetUser", runtime.WithHTTPPathPattern("/backend/v1/users/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1739,7 +1739,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/CreateUser", runtime.WithHTTPPathPattern("/backend/v1/users"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/CreateUser", runtime.WithHTTPPathPattern("/backend/v1/users"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1759,7 +1759,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/UpdateUser", runtime.WithHTTPPathPattern("/backend/v1/users/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/UpdateUser", runtime.WithHTTPPathPattern("/backend/v1/users/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1779,7 +1779,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/DeleteUser", runtime.WithHTTPPathPattern("/backend/v1/users/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/DeleteUser", runtime.WithHTTPPathPattern("/backend/v1/users/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1799,7 +1799,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/ListPasskeys", runtime.WithHTTPPathPattern("/backend/v1/passkeys"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/ListPasskeys", runtime.WithHTTPPathPattern("/backend/v1/passkeys"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1819,7 +1819,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/GetPasskey", runtime.WithHTTPPathPattern("/backend/v1/passkeys/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/GetPasskey", runtime.WithHTTPPathPattern("/backend/v1/passkeys/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1839,7 +1839,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/UpdatePasskey", runtime.WithHTTPPathPattern("/backend/v1/passkeys/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/UpdatePasskey", runtime.WithHTTPPathPattern("/backend/v1/passkeys/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1859,7 +1859,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/DeletePasskey", runtime.WithHTTPPathPattern("/backend/v1/passkeys/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/DeletePasskey", runtime.WithHTTPPathPattern("/backend/v1/passkeys/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1879,7 +1879,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/ListSessions", runtime.WithHTTPPathPattern("/backend/v1/sessions"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/ListSessions", runtime.WithHTTPPathPattern("/backend/v1/sessions"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1899,7 +1899,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/GetSession", runtime.WithHTTPPathPattern("/backend/v1/sessions/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/GetSession", runtime.WithHTTPPathPattern("/backend/v1/sessions/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1919,7 +1919,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/ListUserInvites", runtime.WithHTTPPathPattern("/backend/v1/user-invites"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/ListUserInvites", runtime.WithHTTPPathPattern("/backend/v1/user-invites"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1939,7 +1939,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/GetUserInvite", runtime.WithHTTPPathPattern("/backend/v1/user-invites/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/GetUserInvite", runtime.WithHTTPPathPattern("/backend/v1/user-invites/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1959,7 +1959,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/CreateUserInvite", runtime.WithHTTPPathPattern("/backend/v1/user-invites"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/CreateUserInvite", runtime.WithHTTPPathPattern("/backend/v1/user-invites"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1979,7 +1979,7 @@ func RegisterBackendServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.backend.v1.BackendService/DeleteUserInvite", runtime.WithHTTPPathPattern("/backend/v1/user-invites/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/DeleteUserInvite", runtime.WithHTTPPathPattern("/backend/v1/user-invites/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2037,7 +2037,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/GetProject", runtime.WithHTTPPathPattern("/backend/v1/project"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/GetProject", runtime.WithHTTPPathPattern("/backend/v1/project"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2054,7 +2054,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/ListOrganizations", runtime.WithHTTPPathPattern("/backend/v1/organizations"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/ListOrganizations", runtime.WithHTTPPathPattern("/backend/v1/organizations"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2071,7 +2071,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/GetOrganization", runtime.WithHTTPPathPattern("/backend/v1/organizations/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/GetOrganization", runtime.WithHTTPPathPattern("/backend/v1/organizations/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2088,7 +2088,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/CreateOrganization", runtime.WithHTTPPathPattern("/backend/v1/organizations"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/CreateOrganization", runtime.WithHTTPPathPattern("/backend/v1/organizations"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2105,7 +2105,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/UpdateOrganization", runtime.WithHTTPPathPattern("/backend/v1/organizations/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/UpdateOrganization", runtime.WithHTTPPathPattern("/backend/v1/organizations/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2122,7 +2122,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/DeleteOrganization", runtime.WithHTTPPathPattern("/backend/v1/organizations/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/DeleteOrganization", runtime.WithHTTPPathPattern("/backend/v1/organizations/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2139,7 +2139,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/GetOrganizationGoogleHostedDomains", runtime.WithHTTPPathPattern("/backend/v1/organizations/{organization_id}/google-hosted-domains"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/GetOrganizationGoogleHostedDomains", runtime.WithHTTPPathPattern("/backend/v1/organizations/{organization_id}/google-hosted-domains"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2156,7 +2156,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/UpdateOrganizationGoogleHostedDomains", runtime.WithHTTPPathPattern("/backend/v1/organizations/{organization_id}/google-hosted-domains"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/UpdateOrganizationGoogleHostedDomains", runtime.WithHTTPPathPattern("/backend/v1/organizations/{organization_id}/google-hosted-domains"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2173,7 +2173,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/GetOrganizationMicrosoftTenantIDs", runtime.WithHTTPPathPattern("/backend/v1/organizations/{organization_id}/microsoft-tenant-ids"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/GetOrganizationMicrosoftTenantIDs", runtime.WithHTTPPathPattern("/backend/v1/organizations/{organization_id}/microsoft-tenant-ids"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2190,7 +2190,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/UpdateOrganizationMicrosoftTenantIDs", runtime.WithHTTPPathPattern("/backend/v1/organizations/{organization_id}/microsoft-tenant-ids"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/UpdateOrganizationMicrosoftTenantIDs", runtime.WithHTTPPathPattern("/backend/v1/organizations/{organization_id}/microsoft-tenant-ids"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2207,7 +2207,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/ListSAMLConnections", runtime.WithHTTPPathPattern("/backend/v1/saml-connections"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/ListSAMLConnections", runtime.WithHTTPPathPattern("/backend/v1/saml-connections"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2224,7 +2224,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/GetSAMLConnection", runtime.WithHTTPPathPattern("/backend/v1/saml-connections/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/GetSAMLConnection", runtime.WithHTTPPathPattern("/backend/v1/saml-connections/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2241,7 +2241,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/CreateSAMLConnection", runtime.WithHTTPPathPattern("/backend/v1/saml-connections"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/CreateSAMLConnection", runtime.WithHTTPPathPattern("/backend/v1/saml-connections"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2258,7 +2258,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/UpdateSAMLConnection", runtime.WithHTTPPathPattern("/backend/v1/saml-connections/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/UpdateSAMLConnection", runtime.WithHTTPPathPattern("/backend/v1/saml-connections/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2275,7 +2275,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/DeleteSAMLConnection", runtime.WithHTTPPathPattern("/backend/v1/saml-connections/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/DeleteSAMLConnection", runtime.WithHTTPPathPattern("/backend/v1/saml-connections/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2292,7 +2292,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/ListSCIMAPIKeys", runtime.WithHTTPPathPattern("/backend/v1/scim-api-keys"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/ListSCIMAPIKeys", runtime.WithHTTPPathPattern("/backend/v1/scim-api-keys"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2309,7 +2309,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/GetSCIMAPIKey", runtime.WithHTTPPathPattern("/backend/v1/scim-api-keys/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/GetSCIMAPIKey", runtime.WithHTTPPathPattern("/backend/v1/scim-api-keys/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2326,7 +2326,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/CreateSCIMAPIKey", runtime.WithHTTPPathPattern("/backend/v1/scim-api-keys"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/CreateSCIMAPIKey", runtime.WithHTTPPathPattern("/backend/v1/scim-api-keys"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2343,7 +2343,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/UpdateSCIMAPIKey", runtime.WithHTTPPathPattern("/backend/v1/scim-api-keys/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/UpdateSCIMAPIKey", runtime.WithHTTPPathPattern("/backend/v1/scim-api-keys/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2360,7 +2360,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/DeleteSCIMAPIKey", runtime.WithHTTPPathPattern("/backend/v1/scim-api-keys/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/DeleteSCIMAPIKey", runtime.WithHTTPPathPattern("/backend/v1/scim-api-keys/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2377,7 +2377,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/RevokeSCIMAPIKey", runtime.WithHTTPPathPattern("/backend/v1/scim-api-keys/{id}/revoke"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/RevokeSCIMAPIKey", runtime.WithHTTPPathPattern("/backend/v1/scim-api-keys/{id}/revoke"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2394,7 +2394,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/ListUsers", runtime.WithHTTPPathPattern("/backend/v1/users"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/ListUsers", runtime.WithHTTPPathPattern("/backend/v1/users"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2411,7 +2411,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/GetUser", runtime.WithHTTPPathPattern("/backend/v1/users/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/GetUser", runtime.WithHTTPPathPattern("/backend/v1/users/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2428,7 +2428,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/CreateUser", runtime.WithHTTPPathPattern("/backend/v1/users"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/CreateUser", runtime.WithHTTPPathPattern("/backend/v1/users"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2445,7 +2445,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/UpdateUser", runtime.WithHTTPPathPattern("/backend/v1/users/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/UpdateUser", runtime.WithHTTPPathPattern("/backend/v1/users/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2462,7 +2462,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/DeleteUser", runtime.WithHTTPPathPattern("/backend/v1/users/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/DeleteUser", runtime.WithHTTPPathPattern("/backend/v1/users/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2479,7 +2479,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/ListPasskeys", runtime.WithHTTPPathPattern("/backend/v1/passkeys"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/ListPasskeys", runtime.WithHTTPPathPattern("/backend/v1/passkeys"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2496,7 +2496,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/GetPasskey", runtime.WithHTTPPathPattern("/backend/v1/passkeys/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/GetPasskey", runtime.WithHTTPPathPattern("/backend/v1/passkeys/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2513,7 +2513,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/UpdatePasskey", runtime.WithHTTPPathPattern("/backend/v1/passkeys/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/UpdatePasskey", runtime.WithHTTPPathPattern("/backend/v1/passkeys/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2530,7 +2530,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/DeletePasskey", runtime.WithHTTPPathPattern("/backend/v1/passkeys/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/DeletePasskey", runtime.WithHTTPPathPattern("/backend/v1/passkeys/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2547,7 +2547,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/ListSessions", runtime.WithHTTPPathPattern("/backend/v1/sessions"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/ListSessions", runtime.WithHTTPPathPattern("/backend/v1/sessions"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2564,7 +2564,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/GetSession", runtime.WithHTTPPathPattern("/backend/v1/sessions/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/GetSession", runtime.WithHTTPPathPattern("/backend/v1/sessions/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2581,7 +2581,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/ListUserInvites", runtime.WithHTTPPathPattern("/backend/v1/user-invites"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/ListUserInvites", runtime.WithHTTPPathPattern("/backend/v1/user-invites"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2598,7 +2598,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/GetUserInvite", runtime.WithHTTPPathPattern("/backend/v1/user-invites/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/GetUserInvite", runtime.WithHTTPPathPattern("/backend/v1/user-invites/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2615,7 +2615,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/CreateUserInvite", runtime.WithHTTPPathPattern("/backend/v1/user-invites"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/CreateUserInvite", runtime.WithHTTPPathPattern("/backend/v1/user-invites"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2632,7 +2632,7 @@ func RegisterBackendServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.backend.v1.BackendService/DeleteUserInvite", runtime.WithHTTPPathPattern("/backend/v1/user-invites/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.backend.v1.BackendService/DeleteUserInvite", runtime.WithHTTPPathPattern("/backend/v1/user-invites/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return

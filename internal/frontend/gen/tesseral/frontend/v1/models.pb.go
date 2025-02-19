@@ -1263,38 +1263,38 @@ func file_tesseral_frontend_v1_models_proto_rawDescGZIP() []byte {
 
 var file_tesseral_frontend_v1_models_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
 var file_tesseral_frontend_v1_models_proto_goTypes = []any{
-	(*Project)(nil),                         // 0: openauth.frontend.v1.Project
-	(*Organization)(nil),                    // 1: openauth.frontend.v1.Organization
-	(*OrganizationGoogleHostedDomains)(nil), // 2: openauth.frontend.v1.OrganizationGoogleHostedDomains
-	(*OrganizationMicrosoftTenantIDs)(nil),  // 3: openauth.frontend.v1.OrganizationMicrosoftTenantIDs
-	(*SessionSigningKey)(nil),               // 4: openauth.frontend.v1.SessionSigningKey
-	(*User)(nil),                            // 5: openauth.frontend.v1.User
-	(*Session)(nil),                         // 6: openauth.frontend.v1.Session
-	(*SAMLConnection)(nil),                  // 7: openauth.frontend.v1.SAMLConnection
-	(*SCIMAPIKey)(nil),                      // 8: openauth.frontend.v1.SCIMAPIKey
-	(*Passkey)(nil),                         // 9: openauth.frontend.v1.Passkey
-	(*UserInvite)(nil),                      // 10: openauth.frontend.v1.UserInvite
+	(*Project)(nil),                         // 0: tesseral.frontend.v1.Project
+	(*Organization)(nil),                    // 1: tesseral.frontend.v1.Organization
+	(*OrganizationGoogleHostedDomains)(nil), // 2: tesseral.frontend.v1.OrganizationGoogleHostedDomains
+	(*OrganizationMicrosoftTenantIDs)(nil),  // 3: tesseral.frontend.v1.OrganizationMicrosoftTenantIDs
+	(*SessionSigningKey)(nil),               // 4: tesseral.frontend.v1.SessionSigningKey
+	(*User)(nil),                            // 5: tesseral.frontend.v1.User
+	(*Session)(nil),                         // 6: tesseral.frontend.v1.Session
+	(*SAMLConnection)(nil),                  // 7: tesseral.frontend.v1.SAMLConnection
+	(*SCIMAPIKey)(nil),                      // 8: tesseral.frontend.v1.SCIMAPIKey
+	(*Passkey)(nil),                         // 9: tesseral.frontend.v1.Passkey
+	(*UserInvite)(nil),                      // 10: tesseral.frontend.v1.UserInvite
 	(*timestamppb.Timestamp)(nil),           // 11: google.protobuf.Timestamp
 	(*structpb.Struct)(nil),                 // 12: google.protobuf.Struct
 }
 var file_tesseral_frontend_v1_models_proto_depIdxs = []int32{
-	11, // 0: openauth.frontend.v1.Project.create_time:type_name -> google.protobuf.Timestamp
-	11, // 1: openauth.frontend.v1.Project.update_time:type_name -> google.protobuf.Timestamp
-	11, // 2: openauth.frontend.v1.Organization.create_time:type_name -> google.protobuf.Timestamp
-	11, // 3: openauth.frontend.v1.Organization.update_time:type_name -> google.protobuf.Timestamp
-	12, // 4: openauth.frontend.v1.SessionSigningKey.public_key_jwk:type_name -> google.protobuf.Struct
-	11, // 5: openauth.frontend.v1.User.create_time:type_name -> google.protobuf.Timestamp
-	11, // 6: openauth.frontend.v1.User.update_time:type_name -> google.protobuf.Timestamp
-	11, // 7: openauth.frontend.v1.Session.create_time:type_name -> google.protobuf.Timestamp
-	11, // 8: openauth.frontend.v1.Session.expire_time:type_name -> google.protobuf.Timestamp
-	11, // 9: openauth.frontend.v1.SAMLConnection.create_time:type_name -> google.protobuf.Timestamp
-	11, // 10: openauth.frontend.v1.SAMLConnection.update_time:type_name -> google.protobuf.Timestamp
-	11, // 11: openauth.frontend.v1.SCIMAPIKey.create_time:type_name -> google.protobuf.Timestamp
-	11, // 12: openauth.frontend.v1.SCIMAPIKey.update_time:type_name -> google.protobuf.Timestamp
-	11, // 13: openauth.frontend.v1.Passkey.create_time:type_name -> google.protobuf.Timestamp
-	11, // 14: openauth.frontend.v1.Passkey.update_time:type_name -> google.protobuf.Timestamp
-	11, // 15: openauth.frontend.v1.UserInvite.create_time:type_name -> google.protobuf.Timestamp
-	11, // 16: openauth.frontend.v1.UserInvite.update_time:type_name -> google.protobuf.Timestamp
+	11, // 0: tesseral.frontend.v1.Project.create_time:type_name -> google.protobuf.Timestamp
+	11, // 1: tesseral.frontend.v1.Project.update_time:type_name -> google.protobuf.Timestamp
+	11, // 2: tesseral.frontend.v1.Organization.create_time:type_name -> google.protobuf.Timestamp
+	11, // 3: tesseral.frontend.v1.Organization.update_time:type_name -> google.protobuf.Timestamp
+	12, // 4: tesseral.frontend.v1.SessionSigningKey.public_key_jwk:type_name -> google.protobuf.Struct
+	11, // 5: tesseral.frontend.v1.User.create_time:type_name -> google.protobuf.Timestamp
+	11, // 6: tesseral.frontend.v1.User.update_time:type_name -> google.protobuf.Timestamp
+	11, // 7: tesseral.frontend.v1.Session.create_time:type_name -> google.protobuf.Timestamp
+	11, // 8: tesseral.frontend.v1.Session.expire_time:type_name -> google.protobuf.Timestamp
+	11, // 9: tesseral.frontend.v1.SAMLConnection.create_time:type_name -> google.protobuf.Timestamp
+	11, // 10: tesseral.frontend.v1.SAMLConnection.update_time:type_name -> google.protobuf.Timestamp
+	11, // 11: tesseral.frontend.v1.SCIMAPIKey.create_time:type_name -> google.protobuf.Timestamp
+	11, // 12: tesseral.frontend.v1.SCIMAPIKey.update_time:type_name -> google.protobuf.Timestamp
+	11, // 13: tesseral.frontend.v1.Passkey.create_time:type_name -> google.protobuf.Timestamp
+	11, // 14: tesseral.frontend.v1.Passkey.update_time:type_name -> google.protobuf.Timestamp
+	11, // 15: tesseral.frontend.v1.UserInvite.create_time:type_name -> google.protobuf.Timestamp
+	11, // 16: tesseral.frontend.v1.UserInvite.update_time:type_name -> google.protobuf.Timestamp
 	17, // [17:17] is the sub-list for method output_type
 	17, // [17:17] is the sub-list for method input_type
 	17, // [17:17] is the sub-list for extension type_name

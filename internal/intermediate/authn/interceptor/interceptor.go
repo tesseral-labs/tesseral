@@ -15,10 +15,10 @@ import (
 var ErrAuthorizationHeaderRequired = errors.New("authorization header is required")
 
 var skipRPCs = []string{
-	"/openauth.intermediate.v1.IntermediateService/CreateIntermediateSession",
-	"/openauth.intermediate.v1.IntermediateService/GetSettings",
-	"/openauth.intermediate.v1.IntermediateService/ListSAMLOrganizations",
-	"/openauth.intermediate.v1.IntermediateService/RedeemUserImpersonationToken",
+	"/tesseral.intermediate.v1.IntermediateService/CreateIntermediateSession",
+	"/tesseral.intermediate.v1.IntermediateService/GetSettings",
+	"/tesseral.intermediate.v1.IntermediateService/ListSAMLOrganizations",
+	"/tesseral.intermediate.v1.IntermediateService/RedeemUserImpersonationToken",
 }
 
 func New(s *store.Store, p *projectid.Sniffer, authAppsRootDomain string) connect.UnaryInterceptorFunc {

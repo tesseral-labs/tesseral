@@ -619,7 +619,7 @@ func RegisterIntermediateServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/ListSAMLOrganizations", runtime.WithHTTPPathPattern("/intermediate/v1/saml-organizations"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/ListSAMLOrganizations", runtime.WithHTTPPathPattern("/intermediate/v1/saml-organizations"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -639,7 +639,7 @@ func RegisterIntermediateServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/RedeemUserImpersonationToken", runtime.WithHTTPPathPattern("/intermediate/v1/redeem-user-impersonation-token"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/RedeemUserImpersonationToken", runtime.WithHTTPPathPattern("/intermediate/v1/redeem-user-impersonation-token"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -659,7 +659,7 @@ func RegisterIntermediateServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/CreateIntermediateSession", runtime.WithHTTPPathPattern("/intermediate/v1/intermediate-session"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/CreateIntermediateSession", runtime.WithHTTPPathPattern("/intermediate/v1/intermediate-session"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -679,7 +679,7 @@ func RegisterIntermediateServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/Whoami", runtime.WithHTTPPathPattern("/intermediate/v1/whoami"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/Whoami", runtime.WithHTTPPathPattern("/intermediate/v1/whoami"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -699,7 +699,7 @@ func RegisterIntermediateServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/CreateOrganization", runtime.WithHTTPPathPattern("/intermediate/v1/organizations"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/CreateOrganization", runtime.WithHTTPPathPattern("/intermediate/v1/organizations"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -719,7 +719,7 @@ func RegisterIntermediateServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/ListOrganizations", runtime.WithHTTPPathPattern("/intermediate/v1/organizations"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/ListOrganizations", runtime.WithHTTPPathPattern("/intermediate/v1/organizations"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -739,7 +739,7 @@ func RegisterIntermediateServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/SetOrganization", runtime.WithHTTPPathPattern("/intermediate/v1/set-organization"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/SetOrganization", runtime.WithHTTPPathPattern("/intermediate/v1/set-organization"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -759,7 +759,7 @@ func RegisterIntermediateServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/ExchangeIntermediateSessionForSession", runtime.WithHTTPPathPattern("/intermediate/v1/exchange-intermediate-session-for-session"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/ExchangeIntermediateSessionForSession", runtime.WithHTTPPathPattern("/intermediate/v1/exchange-intermediate-session-for-session"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -779,7 +779,7 @@ func RegisterIntermediateServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/GetGoogleOAuthRedirectURL", runtime.WithHTTPPathPattern("/intermediate/v1/google-oauth-redirect-url"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/GetGoogleOAuthRedirectURL", runtime.WithHTTPPathPattern("/intermediate/v1/google-oauth-redirect-url"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -799,7 +799,7 @@ func RegisterIntermediateServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/RedeemGoogleOAuthCode", runtime.WithHTTPPathPattern("/intermediate/v1/redeem-google-oauth-code"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/RedeemGoogleOAuthCode", runtime.WithHTTPPathPattern("/intermediate/v1/redeem-google-oauth-code"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -819,7 +819,7 @@ func RegisterIntermediateServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/GetMicrosoftOAuthRedirectURL", runtime.WithHTTPPathPattern("/intermediate/v1/microsoft-oauth-redirect-url"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/GetMicrosoftOAuthRedirectURL", runtime.WithHTTPPathPattern("/intermediate/v1/microsoft-oauth-redirect-url"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -839,7 +839,7 @@ func RegisterIntermediateServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/RedeemMicrosoftOAuthCode", runtime.WithHTTPPathPattern("/intermediate/v1/redeem-microsoft-oauth-code"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/RedeemMicrosoftOAuthCode", runtime.WithHTTPPathPattern("/intermediate/v1/redeem-microsoft-oauth-code"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -859,7 +859,7 @@ func RegisterIntermediateServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/IssueEmailVerificationChallenge", runtime.WithHTTPPathPattern("/intermediate/v1/issue-email-verification-challenge"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/IssueEmailVerificationChallenge", runtime.WithHTTPPathPattern("/intermediate/v1/issue-email-verification-challenge"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -879,7 +879,7 @@ func RegisterIntermediateServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/VerifyEmailChallenge", runtime.WithHTTPPathPattern("/intermediate/v1/verify-email-challenge"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/VerifyEmailChallenge", runtime.WithHTTPPathPattern("/intermediate/v1/verify-email-challenge"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -899,7 +899,7 @@ func RegisterIntermediateServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/RegisterPassword", runtime.WithHTTPPathPattern("/intermediate/v1/register-password"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/RegisterPassword", runtime.WithHTTPPathPattern("/intermediate/v1/register-password"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -919,7 +919,7 @@ func RegisterIntermediateServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/VerifyPassword", runtime.WithHTTPPathPattern("/intermediate/v1/verify-password"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/VerifyPassword", runtime.WithHTTPPathPattern("/intermediate/v1/verify-password"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -939,7 +939,7 @@ func RegisterIntermediateServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/GetPasskeyOptions", runtime.WithHTTPPathPattern("/intermediate/v1/get-passkey-options"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/GetPasskeyOptions", runtime.WithHTTPPathPattern("/intermediate/v1/get-passkey-options"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -959,7 +959,7 @@ func RegisterIntermediateServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/RegisterPasskey", runtime.WithHTTPPathPattern("/intermediate/v1/register-passkey"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/RegisterPasskey", runtime.WithHTTPPathPattern("/intermediate/v1/register-passkey"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -979,7 +979,7 @@ func RegisterIntermediateServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/IssuePasskeyChallenge", runtime.WithHTTPPathPattern("/intermediate/v1/issue-passkey-challenge"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/IssuePasskeyChallenge", runtime.WithHTTPPathPattern("/intermediate/v1/issue-passkey-challenge"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -999,7 +999,7 @@ func RegisterIntermediateServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/VerifyPasskey", runtime.WithHTTPPathPattern("/intermediate/v1/verify-passkey"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/VerifyPasskey", runtime.WithHTTPPathPattern("/intermediate/v1/verify-passkey"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1019,7 +1019,7 @@ func RegisterIntermediateServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/GetAuthenticatorAppOptions", runtime.WithHTTPPathPattern("/intermediate/v1/get-authenticator-app-options"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/GetAuthenticatorAppOptions", runtime.WithHTTPPathPattern("/intermediate/v1/get-authenticator-app-options"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1039,7 +1039,7 @@ func RegisterIntermediateServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/RegisterAuthenticatorApp", runtime.WithHTTPPathPattern("/intermediate/v1/register-authenticator-app"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/RegisterAuthenticatorApp", runtime.WithHTTPPathPattern("/intermediate/v1/register-authenticator-app"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1059,7 +1059,7 @@ func RegisterIntermediateServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/VerifyAuthenticatorApp", runtime.WithHTTPPathPattern("/intermediate/v1/verify-authenticator-app"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/VerifyAuthenticatorApp", runtime.WithHTTPPathPattern("/intermediate/v1/verify-authenticator-app"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1079,7 +1079,7 @@ func RegisterIntermediateServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/SetEmailAsPrimaryLoginFactor", runtime.WithHTTPPathPattern("/intermediate/v1/set-email-as-primary-login-factor"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/SetEmailAsPrimaryLoginFactor", runtime.WithHTTPPathPattern("/intermediate/v1/set-email-as-primary-login-factor"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1137,7 +1137,7 @@ func RegisterIntermediateServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/ListSAMLOrganizations", runtime.WithHTTPPathPattern("/intermediate/v1/saml-organizations"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/ListSAMLOrganizations", runtime.WithHTTPPathPattern("/intermediate/v1/saml-organizations"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1154,7 +1154,7 @@ func RegisterIntermediateServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/RedeemUserImpersonationToken", runtime.WithHTTPPathPattern("/intermediate/v1/redeem-user-impersonation-token"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/RedeemUserImpersonationToken", runtime.WithHTTPPathPattern("/intermediate/v1/redeem-user-impersonation-token"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1171,7 +1171,7 @@ func RegisterIntermediateServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/CreateIntermediateSession", runtime.WithHTTPPathPattern("/intermediate/v1/intermediate-session"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/CreateIntermediateSession", runtime.WithHTTPPathPattern("/intermediate/v1/intermediate-session"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1188,7 +1188,7 @@ func RegisterIntermediateServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/Whoami", runtime.WithHTTPPathPattern("/intermediate/v1/whoami"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/Whoami", runtime.WithHTTPPathPattern("/intermediate/v1/whoami"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1205,7 +1205,7 @@ func RegisterIntermediateServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/CreateOrganization", runtime.WithHTTPPathPattern("/intermediate/v1/organizations"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/CreateOrganization", runtime.WithHTTPPathPattern("/intermediate/v1/organizations"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1222,7 +1222,7 @@ func RegisterIntermediateServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/ListOrganizations", runtime.WithHTTPPathPattern("/intermediate/v1/organizations"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/ListOrganizations", runtime.WithHTTPPathPattern("/intermediate/v1/organizations"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1239,7 +1239,7 @@ func RegisterIntermediateServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/SetOrganization", runtime.WithHTTPPathPattern("/intermediate/v1/set-organization"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/SetOrganization", runtime.WithHTTPPathPattern("/intermediate/v1/set-organization"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1256,7 +1256,7 @@ func RegisterIntermediateServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/ExchangeIntermediateSessionForSession", runtime.WithHTTPPathPattern("/intermediate/v1/exchange-intermediate-session-for-session"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/ExchangeIntermediateSessionForSession", runtime.WithHTTPPathPattern("/intermediate/v1/exchange-intermediate-session-for-session"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1273,7 +1273,7 @@ func RegisterIntermediateServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/GetGoogleOAuthRedirectURL", runtime.WithHTTPPathPattern("/intermediate/v1/google-oauth-redirect-url"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/GetGoogleOAuthRedirectURL", runtime.WithHTTPPathPattern("/intermediate/v1/google-oauth-redirect-url"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1290,7 +1290,7 @@ func RegisterIntermediateServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/RedeemGoogleOAuthCode", runtime.WithHTTPPathPattern("/intermediate/v1/redeem-google-oauth-code"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/RedeemGoogleOAuthCode", runtime.WithHTTPPathPattern("/intermediate/v1/redeem-google-oauth-code"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1307,7 +1307,7 @@ func RegisterIntermediateServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/GetMicrosoftOAuthRedirectURL", runtime.WithHTTPPathPattern("/intermediate/v1/microsoft-oauth-redirect-url"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/GetMicrosoftOAuthRedirectURL", runtime.WithHTTPPathPattern("/intermediate/v1/microsoft-oauth-redirect-url"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1324,7 +1324,7 @@ func RegisterIntermediateServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/RedeemMicrosoftOAuthCode", runtime.WithHTTPPathPattern("/intermediate/v1/redeem-microsoft-oauth-code"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/RedeemMicrosoftOAuthCode", runtime.WithHTTPPathPattern("/intermediate/v1/redeem-microsoft-oauth-code"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1341,7 +1341,7 @@ func RegisterIntermediateServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/IssueEmailVerificationChallenge", runtime.WithHTTPPathPattern("/intermediate/v1/issue-email-verification-challenge"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/IssueEmailVerificationChallenge", runtime.WithHTTPPathPattern("/intermediate/v1/issue-email-verification-challenge"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1358,7 +1358,7 @@ func RegisterIntermediateServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/VerifyEmailChallenge", runtime.WithHTTPPathPattern("/intermediate/v1/verify-email-challenge"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/VerifyEmailChallenge", runtime.WithHTTPPathPattern("/intermediate/v1/verify-email-challenge"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1375,7 +1375,7 @@ func RegisterIntermediateServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/RegisterPassword", runtime.WithHTTPPathPattern("/intermediate/v1/register-password"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/RegisterPassword", runtime.WithHTTPPathPattern("/intermediate/v1/register-password"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1392,7 +1392,7 @@ func RegisterIntermediateServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/VerifyPassword", runtime.WithHTTPPathPattern("/intermediate/v1/verify-password"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/VerifyPassword", runtime.WithHTTPPathPattern("/intermediate/v1/verify-password"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1409,7 +1409,7 @@ func RegisterIntermediateServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/GetPasskeyOptions", runtime.WithHTTPPathPattern("/intermediate/v1/get-passkey-options"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/GetPasskeyOptions", runtime.WithHTTPPathPattern("/intermediate/v1/get-passkey-options"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1426,7 +1426,7 @@ func RegisterIntermediateServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/RegisterPasskey", runtime.WithHTTPPathPattern("/intermediate/v1/register-passkey"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/RegisterPasskey", runtime.WithHTTPPathPattern("/intermediate/v1/register-passkey"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1443,7 +1443,7 @@ func RegisterIntermediateServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/IssuePasskeyChallenge", runtime.WithHTTPPathPattern("/intermediate/v1/issue-passkey-challenge"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/IssuePasskeyChallenge", runtime.WithHTTPPathPattern("/intermediate/v1/issue-passkey-challenge"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1460,7 +1460,7 @@ func RegisterIntermediateServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/VerifyPasskey", runtime.WithHTTPPathPattern("/intermediate/v1/verify-passkey"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/VerifyPasskey", runtime.WithHTTPPathPattern("/intermediate/v1/verify-passkey"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1477,7 +1477,7 @@ func RegisterIntermediateServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/GetAuthenticatorAppOptions", runtime.WithHTTPPathPattern("/intermediate/v1/get-authenticator-app-options"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/GetAuthenticatorAppOptions", runtime.WithHTTPPathPattern("/intermediate/v1/get-authenticator-app-options"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1494,7 +1494,7 @@ func RegisterIntermediateServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/RegisterAuthenticatorApp", runtime.WithHTTPPathPattern("/intermediate/v1/register-authenticator-app"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/RegisterAuthenticatorApp", runtime.WithHTTPPathPattern("/intermediate/v1/register-authenticator-app"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1511,7 +1511,7 @@ func RegisterIntermediateServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/VerifyAuthenticatorApp", runtime.WithHTTPPathPattern("/intermediate/v1/verify-authenticator-app"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/VerifyAuthenticatorApp", runtime.WithHTTPPathPattern("/intermediate/v1/verify-authenticator-app"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1528,7 +1528,7 @@ func RegisterIntermediateServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.intermediate.v1.IntermediateService/SetEmailAsPrimaryLoginFactor", runtime.WithHTTPPathPattern("/intermediate/v1/set-email-as-primary-login-factor"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.intermediate.v1.IntermediateService/SetEmailAsPrimaryLoginFactor", runtime.WithHTTPPathPattern("/intermediate/v1/set-email-as-primary-login-factor"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return

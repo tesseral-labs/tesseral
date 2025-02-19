@@ -19,32 +19,32 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	IntermediateService_ListSAMLOrganizations_FullMethodName                 = "/openauth.intermediate.v1.IntermediateService/ListSAMLOrganizations"
-	IntermediateService_GetSettings_FullMethodName                           = "/openauth.intermediate.v1.IntermediateService/GetSettings"
-	IntermediateService_RedeemUserImpersonationToken_FullMethodName          = "/openauth.intermediate.v1.IntermediateService/RedeemUserImpersonationToken"
-	IntermediateService_CreateIntermediateSession_FullMethodName             = "/openauth.intermediate.v1.IntermediateService/CreateIntermediateSession"
-	IntermediateService_Whoami_FullMethodName                                = "/openauth.intermediate.v1.IntermediateService/Whoami"
-	IntermediateService_CreateOrganization_FullMethodName                    = "/openauth.intermediate.v1.IntermediateService/CreateOrganization"
-	IntermediateService_ListOrganizations_FullMethodName                     = "/openauth.intermediate.v1.IntermediateService/ListOrganizations"
-	IntermediateService_SetOrganization_FullMethodName                       = "/openauth.intermediate.v1.IntermediateService/SetOrganization"
-	IntermediateService_ExchangeIntermediateSessionForSession_FullMethodName = "/openauth.intermediate.v1.IntermediateService/ExchangeIntermediateSessionForSession"
-	IntermediateService_GetGoogleOAuthRedirectURL_FullMethodName             = "/openauth.intermediate.v1.IntermediateService/GetGoogleOAuthRedirectURL"
-	IntermediateService_RedeemGoogleOAuthCode_FullMethodName                 = "/openauth.intermediate.v1.IntermediateService/RedeemGoogleOAuthCode"
-	IntermediateService_GetMicrosoftOAuthRedirectURL_FullMethodName          = "/openauth.intermediate.v1.IntermediateService/GetMicrosoftOAuthRedirectURL"
-	IntermediateService_RedeemMicrosoftOAuthCode_FullMethodName              = "/openauth.intermediate.v1.IntermediateService/RedeemMicrosoftOAuthCode"
-	IntermediateService_IssueEmailVerificationChallenge_FullMethodName       = "/openauth.intermediate.v1.IntermediateService/IssueEmailVerificationChallenge"
-	IntermediateService_VerifyEmailChallenge_FullMethodName                  = "/openauth.intermediate.v1.IntermediateService/VerifyEmailChallenge"
-	IntermediateService_RegisterPassword_FullMethodName                      = "/openauth.intermediate.v1.IntermediateService/RegisterPassword"
-	IntermediateService_VerifyPassword_FullMethodName                        = "/openauth.intermediate.v1.IntermediateService/VerifyPassword"
-	IntermediateService_GetPasskeyOptions_FullMethodName                     = "/openauth.intermediate.v1.IntermediateService/GetPasskeyOptions"
-	IntermediateService_RegisterPasskey_FullMethodName                       = "/openauth.intermediate.v1.IntermediateService/RegisterPasskey"
-	IntermediateService_IssuePasskeyChallenge_FullMethodName                 = "/openauth.intermediate.v1.IntermediateService/IssuePasskeyChallenge"
-	IntermediateService_VerifyPasskey_FullMethodName                         = "/openauth.intermediate.v1.IntermediateService/VerifyPasskey"
-	IntermediateService_GetAuthenticatorAppOptions_FullMethodName            = "/openauth.intermediate.v1.IntermediateService/GetAuthenticatorAppOptions"
-	IntermediateService_RegisterAuthenticatorApp_FullMethodName              = "/openauth.intermediate.v1.IntermediateService/RegisterAuthenticatorApp"
-	IntermediateService_VerifyAuthenticatorApp_FullMethodName                = "/openauth.intermediate.v1.IntermediateService/VerifyAuthenticatorApp"
-	IntermediateService_SetEmailAsPrimaryLoginFactor_FullMethodName          = "/openauth.intermediate.v1.IntermediateService/SetEmailAsPrimaryLoginFactor"
-	IntermediateService_CreateProject_FullMethodName                         = "/openauth.intermediate.v1.IntermediateService/CreateProject"
+	IntermediateService_ListSAMLOrganizations_FullMethodName                 = "/tesseral.intermediate.v1.IntermediateService/ListSAMLOrganizations"
+	IntermediateService_GetSettings_FullMethodName                           = "/tesseral.intermediate.v1.IntermediateService/GetSettings"
+	IntermediateService_RedeemUserImpersonationToken_FullMethodName          = "/tesseral.intermediate.v1.IntermediateService/RedeemUserImpersonationToken"
+	IntermediateService_CreateIntermediateSession_FullMethodName             = "/tesseral.intermediate.v1.IntermediateService/CreateIntermediateSession"
+	IntermediateService_Whoami_FullMethodName                                = "/tesseral.intermediate.v1.IntermediateService/Whoami"
+	IntermediateService_CreateOrganization_FullMethodName                    = "/tesseral.intermediate.v1.IntermediateService/CreateOrganization"
+	IntermediateService_ListOrganizations_FullMethodName                     = "/tesseral.intermediate.v1.IntermediateService/ListOrganizations"
+	IntermediateService_SetOrganization_FullMethodName                       = "/tesseral.intermediate.v1.IntermediateService/SetOrganization"
+	IntermediateService_ExchangeIntermediateSessionForSession_FullMethodName = "/tesseral.intermediate.v1.IntermediateService/ExchangeIntermediateSessionForSession"
+	IntermediateService_GetGoogleOAuthRedirectURL_FullMethodName             = "/tesseral.intermediate.v1.IntermediateService/GetGoogleOAuthRedirectURL"
+	IntermediateService_RedeemGoogleOAuthCode_FullMethodName                 = "/tesseral.intermediate.v1.IntermediateService/RedeemGoogleOAuthCode"
+	IntermediateService_GetMicrosoftOAuthRedirectURL_FullMethodName          = "/tesseral.intermediate.v1.IntermediateService/GetMicrosoftOAuthRedirectURL"
+	IntermediateService_RedeemMicrosoftOAuthCode_FullMethodName              = "/tesseral.intermediate.v1.IntermediateService/RedeemMicrosoftOAuthCode"
+	IntermediateService_IssueEmailVerificationChallenge_FullMethodName       = "/tesseral.intermediate.v1.IntermediateService/IssueEmailVerificationChallenge"
+	IntermediateService_VerifyEmailChallenge_FullMethodName                  = "/tesseral.intermediate.v1.IntermediateService/VerifyEmailChallenge"
+	IntermediateService_RegisterPassword_FullMethodName                      = "/tesseral.intermediate.v1.IntermediateService/RegisterPassword"
+	IntermediateService_VerifyPassword_FullMethodName                        = "/tesseral.intermediate.v1.IntermediateService/VerifyPassword"
+	IntermediateService_GetPasskeyOptions_FullMethodName                     = "/tesseral.intermediate.v1.IntermediateService/GetPasskeyOptions"
+	IntermediateService_RegisterPasskey_FullMethodName                       = "/tesseral.intermediate.v1.IntermediateService/RegisterPasskey"
+	IntermediateService_IssuePasskeyChallenge_FullMethodName                 = "/tesseral.intermediate.v1.IntermediateService/IssuePasskeyChallenge"
+	IntermediateService_VerifyPasskey_FullMethodName                         = "/tesseral.intermediate.v1.IntermediateService/VerifyPasskey"
+	IntermediateService_GetAuthenticatorAppOptions_FullMethodName            = "/tesseral.intermediate.v1.IntermediateService/GetAuthenticatorAppOptions"
+	IntermediateService_RegisterAuthenticatorApp_FullMethodName              = "/tesseral.intermediate.v1.IntermediateService/RegisterAuthenticatorApp"
+	IntermediateService_VerifyAuthenticatorApp_FullMethodName                = "/tesseral.intermediate.v1.IntermediateService/VerifyAuthenticatorApp"
+	IntermediateService_SetEmailAsPrimaryLoginFactor_FullMethodName          = "/tesseral.intermediate.v1.IntermediateService/SetEmailAsPrimaryLoginFactor"
+	IntermediateService_CreateProject_FullMethodName                         = "/tesseral.intermediate.v1.IntermediateService/CreateProject"
 )
 
 // IntermediateServiceClient is the client API for IntermediateService service.
@@ -958,7 +958,7 @@ func _IntermediateService_CreateProject_Handler(srv interface{}, ctx context.Con
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var IntermediateService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "openauth.intermediate.v1.IntermediateService",
+	ServiceName: "tesseral.intermediate.v1.IntermediateService",
 	HandlerType: (*IntermediateServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

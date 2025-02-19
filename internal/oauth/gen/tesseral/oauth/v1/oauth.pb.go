@@ -129,11 +129,11 @@ func file_tesseral_oauth_v1_oauth_proto_rawDescGZIP() []byte {
 
 var file_tesseral_oauth_v1_oauth_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_tesseral_oauth_v1_oauth_proto_goTypes = []any{
-	(*SessionSigningKey)(nil), // 0: openauth.oauth.v1.SessionSigningKey
+	(*SessionSigningKey)(nil), // 0: tesseral.oauth.v1.SessionSigningKey
 	(*structpb.Struct)(nil),   // 1: google.protobuf.Struct
 }
 var file_tesseral_oauth_v1_oauth_proto_depIdxs = []int32{
-	1, // 0: openauth.oauth.v1.SessionSigningKey.public_key_jwk:type_name -> google.protobuf.Struct
+	1, // 0: tesseral.oauth.v1.SessionSigningKey.public_key_jwk:type_name -> google.protobuf.Struct
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

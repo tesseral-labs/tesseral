@@ -1139,7 +1139,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/Logout", runtime.WithHTTPPathPattern("/frontend/v1/logout"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/Logout", runtime.WithHTTPPathPattern("/frontend/v1/logout"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1159,7 +1159,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/Refresh", runtime.WithHTTPPathPattern("/frontend/v1/refresh"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/Refresh", runtime.WithHTTPPathPattern("/frontend/v1/refresh"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1179,7 +1179,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/GetProject", runtime.WithHTTPPathPattern("/frontend/v1/project"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/GetProject", runtime.WithHTTPPathPattern("/frontend/v1/project"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1199,7 +1199,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/GetOrganization", runtime.WithHTTPPathPattern("/frontend/v1/organization"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/GetOrganization", runtime.WithHTTPPathPattern("/frontend/v1/organization"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1219,7 +1219,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/UpdateOrganization", runtime.WithHTTPPathPattern("/frontend/v1/organization"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/UpdateOrganization", runtime.WithHTTPPathPattern("/frontend/v1/organization"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1239,7 +1239,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/GetOrganizationGoogleHostedDomains", runtime.WithHTTPPathPattern("/frontend/v1/google-hosted-domains"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/GetOrganizationGoogleHostedDomains", runtime.WithHTTPPathPattern("/frontend/v1/google-hosted-domains"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1259,7 +1259,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/UpdateOrganizationGoogleHostedDomains", runtime.WithHTTPPathPattern("/frontend/v1/google-hosted-domains"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/UpdateOrganizationGoogleHostedDomains", runtime.WithHTTPPathPattern("/frontend/v1/google-hosted-domains"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1279,7 +1279,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/GetOrganizationMicrosoftTenantIDs", runtime.WithHTTPPathPattern("/frontend/v1/microsoft-tenant-ids"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/GetOrganizationMicrosoftTenantIDs", runtime.WithHTTPPathPattern("/frontend/v1/microsoft-tenant-ids"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1299,7 +1299,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/UpdateOrganizationMicrosoftTenantIDs", runtime.WithHTTPPathPattern("/frontend/v1/microsoft-tenant-ids"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/UpdateOrganizationMicrosoftTenantIDs", runtime.WithHTTPPathPattern("/frontend/v1/microsoft-tenant-ids"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1319,7 +1319,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/ListUsers", runtime.WithHTTPPathPattern("/frontend/v1/users"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/ListUsers", runtime.WithHTTPPathPattern("/frontend/v1/users"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1339,7 +1339,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/GetUser", runtime.WithHTTPPathPattern("/frontend/v1/users/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/GetUser", runtime.WithHTTPPathPattern("/frontend/v1/users/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1359,7 +1359,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/UpdateUser", runtime.WithHTTPPathPattern("/frontend/v1/users/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/UpdateUser", runtime.WithHTTPPathPattern("/frontend/v1/users/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1379,7 +1379,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/DeleteUser", runtime.WithHTTPPathPattern("/frontend/v1/users/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/DeleteUser", runtime.WithHTTPPathPattern("/frontend/v1/users/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1399,7 +1399,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/SetPassword", runtime.WithHTTPPathPattern("/frontend/v1/set-user-password"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/SetPassword", runtime.WithHTTPPathPattern("/frontend/v1/set-user-password"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1419,7 +1419,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/ListSAMLConnections", runtime.WithHTTPPathPattern("/frontend/v1/saml-connections"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/ListSAMLConnections", runtime.WithHTTPPathPattern("/frontend/v1/saml-connections"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1439,7 +1439,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/GetSAMLConnection", runtime.WithHTTPPathPattern("/frontend/v1/saml-connections/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/GetSAMLConnection", runtime.WithHTTPPathPattern("/frontend/v1/saml-connections/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1459,7 +1459,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/CreateSAMLConnection", runtime.WithHTTPPathPattern("/frontend/v1/saml-connections"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/CreateSAMLConnection", runtime.WithHTTPPathPattern("/frontend/v1/saml-connections"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1479,7 +1479,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/UpdateSAMLConnection", runtime.WithHTTPPathPattern("/frontend/v1/saml-connections/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/UpdateSAMLConnection", runtime.WithHTTPPathPattern("/frontend/v1/saml-connections/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1499,7 +1499,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/DeleteSAMLConnection", runtime.WithHTTPPathPattern("/frontend/v1/saml-connections/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/DeleteSAMLConnection", runtime.WithHTTPPathPattern("/frontend/v1/saml-connections/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1519,7 +1519,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/ListSCIMAPIKeys", runtime.WithHTTPPathPattern("/frontend/v1/scim-api-keys"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/ListSCIMAPIKeys", runtime.WithHTTPPathPattern("/frontend/v1/scim-api-keys"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1539,7 +1539,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/GetSCIMAPIKey", runtime.WithHTTPPathPattern("/frontend/v1/scim-api-keys/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/GetSCIMAPIKey", runtime.WithHTTPPathPattern("/frontend/v1/scim-api-keys/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1559,7 +1559,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/CreateSCIMAPIKey", runtime.WithHTTPPathPattern("/frontend/v1/scim-api-keys"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/CreateSCIMAPIKey", runtime.WithHTTPPathPattern("/frontend/v1/scim-api-keys"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1579,7 +1579,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/UpdateSCIMAPIKey", runtime.WithHTTPPathPattern("/frontend/v1/scim-api-keys/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/UpdateSCIMAPIKey", runtime.WithHTTPPathPattern("/frontend/v1/scim-api-keys/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1599,7 +1599,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/DeleteSCIMAPIKey", runtime.WithHTTPPathPattern("/frontend/v1/scim-api-keys/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/DeleteSCIMAPIKey", runtime.WithHTTPPathPattern("/frontend/v1/scim-api-keys/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1619,7 +1619,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/RevokeSCIMAPIKey", runtime.WithHTTPPathPattern("/frontend/v1/scim-api-keys/{id}/revoke"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/RevokeSCIMAPIKey", runtime.WithHTTPPathPattern("/frontend/v1/scim-api-keys/{id}/revoke"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1639,7 +1639,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/Whoami", runtime.WithHTTPPathPattern("/frontend/v1/me"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/Whoami", runtime.WithHTTPPathPattern("/frontend/v1/me"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1659,7 +1659,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/ListMyPasskeys", runtime.WithHTTPPathPattern("/frontend/v1/me/passkeys"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/ListMyPasskeys", runtime.WithHTTPPathPattern("/frontend/v1/me/passkeys"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1679,7 +1679,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/DeleteMyPasskey", runtime.WithHTTPPathPattern("/frontend/v1/me/passkeys/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/DeleteMyPasskey", runtime.WithHTTPPathPattern("/frontend/v1/me/passkeys/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1699,7 +1699,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/GetPasskeyOptions", runtime.WithHTTPPathPattern("/frontend/v1/me/passkeys/options"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/GetPasskeyOptions", runtime.WithHTTPPathPattern("/frontend/v1/me/passkeys/options"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1719,7 +1719,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/RegisterPasskey", runtime.WithHTTPPathPattern("/frontend/v1/me/passkeys/register"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/RegisterPasskey", runtime.WithHTTPPathPattern("/frontend/v1/me/passkeys/register"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1739,7 +1739,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/GetAuthenticatorAppOptions", runtime.WithHTTPPathPattern("/frontend/v1/me/authenticator-app/options"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/GetAuthenticatorAppOptions", runtime.WithHTTPPathPattern("/frontend/v1/me/authenticator-app/options"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1759,7 +1759,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/RegisterAuthenticatorApp", runtime.WithHTTPPathPattern("/frontend/v1/me/authenticator-app/register"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/RegisterAuthenticatorApp", runtime.WithHTTPPathPattern("/frontend/v1/me/authenticator-app/register"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1779,7 +1779,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/ListUserInvites", runtime.WithHTTPPathPattern("/frontend/v1/user-invites"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/ListUserInvites", runtime.WithHTTPPathPattern("/frontend/v1/user-invites"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1799,7 +1799,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/GetUserInvite", runtime.WithHTTPPathPattern("/frontend/v1/user-invites/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/GetUserInvite", runtime.WithHTTPPathPattern("/frontend/v1/user-invites/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1819,7 +1819,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/CreateUserInvite", runtime.WithHTTPPathPattern("/frontend/v1/user-invites"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/CreateUserInvite", runtime.WithHTTPPathPattern("/frontend/v1/user-invites"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1839,7 +1839,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/DeleteUserInvite", runtime.WithHTTPPathPattern("/frontend/v1/user-invites/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/DeleteUserInvite", runtime.WithHTTPPathPattern("/frontend/v1/user-invites/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1897,7 +1897,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/Logout", runtime.WithHTTPPathPattern("/frontend/v1/logout"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/Logout", runtime.WithHTTPPathPattern("/frontend/v1/logout"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1914,7 +1914,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/Refresh", runtime.WithHTTPPathPattern("/frontend/v1/refresh"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/Refresh", runtime.WithHTTPPathPattern("/frontend/v1/refresh"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1931,7 +1931,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/GetProject", runtime.WithHTTPPathPattern("/frontend/v1/project"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/GetProject", runtime.WithHTTPPathPattern("/frontend/v1/project"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1948,7 +1948,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/GetOrganization", runtime.WithHTTPPathPattern("/frontend/v1/organization"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/GetOrganization", runtime.WithHTTPPathPattern("/frontend/v1/organization"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1965,7 +1965,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/UpdateOrganization", runtime.WithHTTPPathPattern("/frontend/v1/organization"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/UpdateOrganization", runtime.WithHTTPPathPattern("/frontend/v1/organization"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1982,7 +1982,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/GetOrganizationGoogleHostedDomains", runtime.WithHTTPPathPattern("/frontend/v1/google-hosted-domains"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/GetOrganizationGoogleHostedDomains", runtime.WithHTTPPathPattern("/frontend/v1/google-hosted-domains"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1999,7 +1999,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/UpdateOrganizationGoogleHostedDomains", runtime.WithHTTPPathPattern("/frontend/v1/google-hosted-domains"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/UpdateOrganizationGoogleHostedDomains", runtime.WithHTTPPathPattern("/frontend/v1/google-hosted-domains"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2016,7 +2016,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/GetOrganizationMicrosoftTenantIDs", runtime.WithHTTPPathPattern("/frontend/v1/microsoft-tenant-ids"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/GetOrganizationMicrosoftTenantIDs", runtime.WithHTTPPathPattern("/frontend/v1/microsoft-tenant-ids"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2033,7 +2033,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/UpdateOrganizationMicrosoftTenantIDs", runtime.WithHTTPPathPattern("/frontend/v1/microsoft-tenant-ids"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/UpdateOrganizationMicrosoftTenantIDs", runtime.WithHTTPPathPattern("/frontend/v1/microsoft-tenant-ids"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2050,7 +2050,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/ListUsers", runtime.WithHTTPPathPattern("/frontend/v1/users"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/ListUsers", runtime.WithHTTPPathPattern("/frontend/v1/users"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2067,7 +2067,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/GetUser", runtime.WithHTTPPathPattern("/frontend/v1/users/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/GetUser", runtime.WithHTTPPathPattern("/frontend/v1/users/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2084,7 +2084,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/UpdateUser", runtime.WithHTTPPathPattern("/frontend/v1/users/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/UpdateUser", runtime.WithHTTPPathPattern("/frontend/v1/users/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2101,7 +2101,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/DeleteUser", runtime.WithHTTPPathPattern("/frontend/v1/users/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/DeleteUser", runtime.WithHTTPPathPattern("/frontend/v1/users/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2118,7 +2118,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/SetPassword", runtime.WithHTTPPathPattern("/frontend/v1/set-user-password"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/SetPassword", runtime.WithHTTPPathPattern("/frontend/v1/set-user-password"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2135,7 +2135,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/ListSAMLConnections", runtime.WithHTTPPathPattern("/frontend/v1/saml-connections"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/ListSAMLConnections", runtime.WithHTTPPathPattern("/frontend/v1/saml-connections"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2152,7 +2152,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/GetSAMLConnection", runtime.WithHTTPPathPattern("/frontend/v1/saml-connections/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/GetSAMLConnection", runtime.WithHTTPPathPattern("/frontend/v1/saml-connections/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2169,7 +2169,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/CreateSAMLConnection", runtime.WithHTTPPathPattern("/frontend/v1/saml-connections"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/CreateSAMLConnection", runtime.WithHTTPPathPattern("/frontend/v1/saml-connections"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2186,7 +2186,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/UpdateSAMLConnection", runtime.WithHTTPPathPattern("/frontend/v1/saml-connections/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/UpdateSAMLConnection", runtime.WithHTTPPathPattern("/frontend/v1/saml-connections/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2203,7 +2203,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/DeleteSAMLConnection", runtime.WithHTTPPathPattern("/frontend/v1/saml-connections/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/DeleteSAMLConnection", runtime.WithHTTPPathPattern("/frontend/v1/saml-connections/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2220,7 +2220,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/ListSCIMAPIKeys", runtime.WithHTTPPathPattern("/frontend/v1/scim-api-keys"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/ListSCIMAPIKeys", runtime.WithHTTPPathPattern("/frontend/v1/scim-api-keys"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2237,7 +2237,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/GetSCIMAPIKey", runtime.WithHTTPPathPattern("/frontend/v1/scim-api-keys/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/GetSCIMAPIKey", runtime.WithHTTPPathPattern("/frontend/v1/scim-api-keys/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2254,7 +2254,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/CreateSCIMAPIKey", runtime.WithHTTPPathPattern("/frontend/v1/scim-api-keys"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/CreateSCIMAPIKey", runtime.WithHTTPPathPattern("/frontend/v1/scim-api-keys"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2271,7 +2271,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/UpdateSCIMAPIKey", runtime.WithHTTPPathPattern("/frontend/v1/scim-api-keys/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/UpdateSCIMAPIKey", runtime.WithHTTPPathPattern("/frontend/v1/scim-api-keys/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2288,7 +2288,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/DeleteSCIMAPIKey", runtime.WithHTTPPathPattern("/frontend/v1/scim-api-keys/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/DeleteSCIMAPIKey", runtime.WithHTTPPathPattern("/frontend/v1/scim-api-keys/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2305,7 +2305,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/RevokeSCIMAPIKey", runtime.WithHTTPPathPattern("/frontend/v1/scim-api-keys/{id}/revoke"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/RevokeSCIMAPIKey", runtime.WithHTTPPathPattern("/frontend/v1/scim-api-keys/{id}/revoke"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2322,7 +2322,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/Whoami", runtime.WithHTTPPathPattern("/frontend/v1/me"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/Whoami", runtime.WithHTTPPathPattern("/frontend/v1/me"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2339,7 +2339,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/ListMyPasskeys", runtime.WithHTTPPathPattern("/frontend/v1/me/passkeys"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/ListMyPasskeys", runtime.WithHTTPPathPattern("/frontend/v1/me/passkeys"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2356,7 +2356,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/DeleteMyPasskey", runtime.WithHTTPPathPattern("/frontend/v1/me/passkeys/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/DeleteMyPasskey", runtime.WithHTTPPathPattern("/frontend/v1/me/passkeys/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2373,7 +2373,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/GetPasskeyOptions", runtime.WithHTTPPathPattern("/frontend/v1/me/passkeys/options"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/GetPasskeyOptions", runtime.WithHTTPPathPattern("/frontend/v1/me/passkeys/options"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2390,7 +2390,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/RegisterPasskey", runtime.WithHTTPPathPattern("/frontend/v1/me/passkeys/register"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/RegisterPasskey", runtime.WithHTTPPathPattern("/frontend/v1/me/passkeys/register"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2407,7 +2407,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/GetAuthenticatorAppOptions", runtime.WithHTTPPathPattern("/frontend/v1/me/authenticator-app/options"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/GetAuthenticatorAppOptions", runtime.WithHTTPPathPattern("/frontend/v1/me/authenticator-app/options"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2424,7 +2424,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/RegisterAuthenticatorApp", runtime.WithHTTPPathPattern("/frontend/v1/me/authenticator-app/register"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/RegisterAuthenticatorApp", runtime.WithHTTPPathPattern("/frontend/v1/me/authenticator-app/register"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2441,7 +2441,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/ListUserInvites", runtime.WithHTTPPathPattern("/frontend/v1/user-invites"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/ListUserInvites", runtime.WithHTTPPathPattern("/frontend/v1/user-invites"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2458,7 +2458,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/GetUserInvite", runtime.WithHTTPPathPattern("/frontend/v1/user-invites/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/GetUserInvite", runtime.WithHTTPPathPattern("/frontend/v1/user-invites/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2475,7 +2475,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/CreateUserInvite", runtime.WithHTTPPathPattern("/frontend/v1/user-invites"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/CreateUserInvite", runtime.WithHTTPPathPattern("/frontend/v1/user-invites"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2492,7 +2492,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/openauth.frontend.v1.FrontendService/DeleteUserInvite", runtime.WithHTTPPathPattern("/frontend/v1/user-invites/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/DeleteUserInvite", runtime.WithHTTPPathPattern("/frontend/v1/user-invites/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
