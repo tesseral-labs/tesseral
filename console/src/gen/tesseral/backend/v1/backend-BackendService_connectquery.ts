@@ -2,7 +2,7 @@
 // @generated from file tesseral/backend/v1/backend.proto (package tesseral.backend.v1, syntax proto3)
 /* eslint-disable */
 
-import { BackendService } from './backend_pb';
+import { BackendService } from "./backend_pb";
 
 /**
  * @generated from rpc tesseral.backend.v1.BackendService.GetProject
@@ -37,26 +37,22 @@ export const deleteOrganization = BackendService.method.deleteOrganization;
 /**
  * @generated from rpc tesseral.backend.v1.BackendService.GetOrganizationGoogleHostedDomains
  */
-export const getOrganizationGoogleHostedDomains =
-  BackendService.method.getOrganizationGoogleHostedDomains;
+export const getOrganizationGoogleHostedDomains = BackendService.method.getOrganizationGoogleHostedDomains;
 
 /**
  * @generated from rpc tesseral.backend.v1.BackendService.UpdateOrganizationGoogleHostedDomains
  */
-export const updateOrganizationGoogleHostedDomains =
-  BackendService.method.updateOrganizationGoogleHostedDomains;
+export const updateOrganizationGoogleHostedDomains = BackendService.method.updateOrganizationGoogleHostedDomains;
 
 /**
  * @generated from rpc tesseral.backend.v1.BackendService.GetOrganizationMicrosoftTenantIDs
  */
-export const getOrganizationMicrosoftTenantIDs =
-  BackendService.method.getOrganizationMicrosoftTenantIDs;
+export const getOrganizationMicrosoftTenantIDs = BackendService.method.getOrganizationMicrosoftTenantIDs;
 
 /**
  * @generated from rpc tesseral.backend.v1.BackendService.UpdateOrganizationMicrosoftTenantIDs
  */
-export const updateOrganizationMicrosoftTenantIDs =
-  BackendService.method.updateOrganizationMicrosoftTenantIDs;
+export const updateOrganizationMicrosoftTenantIDs = BackendService.method.updateOrganizationMicrosoftTenantIDs;
 
 /**
  * @generated from rpc tesseral.backend.v1.BackendService.ListSAMLConnections
@@ -191,8 +187,7 @@ export const deleteUserInvite = BackendService.method.deleteUserInvite;
 /**
  * @generated from rpc tesseral.backend.v1.BackendService.DisableOrganizationLogins
  */
-export const disableOrganizationLogins =
-  BackendService.method.disableOrganizationLogins;
+export const disableOrganizationLogins = BackendService.method.disableOrganizationLogins;
 
 /**
  * @generated from rpc tesseral.backend.v1.BackendService.DisableProjectLogins
@@ -202,8 +197,7 @@ export const disableProjectLogins = BackendService.method.disableProjectLogins;
 /**
  * @generated from rpc tesseral.backend.v1.BackendService.EnableOrganizationLogins
  */
-export const enableOrganizationLogins =
-  BackendService.method.enableOrganizationLogins;
+export const enableOrganizationLogins = BackendService.method.enableOrganizationLogins;
 
 /**
  * @generated from rpc tesseral.backend.v1.BackendService.EnableProjectLogins
@@ -218,8 +212,7 @@ export const updateProject = BackendService.method.updateProject;
 /**
  * @generated from rpc tesseral.backend.v1.BackendService.GetVaultDomainSettings
  */
-export const getVaultDomainSettings =
-  BackendService.method.getVaultDomainSettings;
+export const getVaultDomainSettings = BackendService.method.getVaultDomainSettings;
 
 /**
  * @generated from rpc tesseral.backend.v1.BackendService.GetProjectUISettings
@@ -229,8 +222,7 @@ export const getProjectUISettings = BackendService.method.getProjectUISettings;
 /**
  * @generated from rpc tesseral.backend.v1.BackendService.UpdateProjectUISettings
  */
-export const updateProjectUISettings =
-  BackendService.method.updateProjectUISettings;
+export const updateProjectUISettings = BackendService.method.updateProjectUISettings;
 
 /**
  * @generated from rpc tesseral.backend.v1.BackendService.ListProjectAPIKeys
@@ -290,5 +282,4 @@ export const deletePublishableKey = BackendService.method.deletePublishableKey;
 /**
  * @generated from rpc tesseral.backend.v1.BackendService.CreateUserImpersonationToken
  */
-export const createUserImpersonationToken =
-  BackendService.method.createUserImpersonationToken;
+export const createUserImpersonationToken = BackendService.method.createUserImpersonationToken;
