@@ -56,7 +56,7 @@ export function useAccessToken(): string | undefined {
     }
   }
 
-  return accessToken || undefined;
+  return accessToken ?? undefined;
 }
 
 // how far in advance of its expiration an access token gets refreshed
