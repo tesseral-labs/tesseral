@@ -96,7 +96,7 @@ func main() {
 
 	connString := config.DB
 	if connString == "" {
-		slog.Info("connect_iam_db_auth", config.IAMDB)
+		slog.Info("connect_iam_db_auth")
 
 		s, err := iamdbauth.BuildConnectionString(context.Background(), config.IAMDB)
 		if err != nil {
