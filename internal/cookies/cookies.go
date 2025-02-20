@@ -7,7 +7,7 @@ import (
 
 	"connectrpc.com/connect"
 	"github.com/google/uuid"
-	"github.com/openauth/openauth/internal/store/idformat"
+	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 )
 
 func ExpiredRefreshToken(projectID uuid.UUID) string {

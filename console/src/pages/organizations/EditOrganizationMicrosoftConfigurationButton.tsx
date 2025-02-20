@@ -4,7 +4,7 @@ import { useMutation, useQuery } from '@connectrpc/connect-query';
 import {
   getOrganizationMicrosoftTenantIDs,
   updateOrganizationMicrosoftTenantIDs,
-} from '@/gen/openauth/backend/v1/backend-BackendService_connectquery';
+} from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React, { useEffect, useState } from 'react';

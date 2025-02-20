@@ -7,8 +7,8 @@ import (
 	"encoding/base64"
 	"fmt"
 
-	oauthv1 "github.com/openauth/openauth/internal/oauth/gen/openauth/oauth/v1"
-	"github.com/openauth/openauth/internal/store/idformat"
+	oauthv1 "github.com/tesseral-labs/tesseral/internal/oauth/gen/tesseral/oauth/v1"
+	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/structpb"
 )
 

@@ -5,9 +5,9 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	"github.com/openauth/openauth/internal/frontend/authn"
-	frontendv1 "github.com/openauth/openauth/internal/frontend/gen/openauth/frontend/v1"
-	"github.com/openauth/openauth/internal/frontend/store/queries"
+	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
+	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
+	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
 )
 
 func (s *Store) GetOrganizationMicrosoftTenantIDs(ctx context.Context, req *frontendv1.GetOrganizationMicrosoftTenantIDsRequest) (*frontendv1.GetOrganizationMicrosoftTenantIDsResponse, error) {

@@ -6,7 +6,7 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/openauth/openauth/internal/scim/store/queries"
+	"github.com/tesseral-labs/tesseral/internal/scim/store/queries"
 )
 
 type Store struct {

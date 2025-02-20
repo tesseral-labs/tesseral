@@ -3,11 +3,11 @@ import { base64Decode } from './utils';
 import { useNavigate } from 'react-router';
 import { createContext, useContext, useState } from 'react';
 import { useQuery } from '@connectrpc/connect-query';
-import { whoami } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery';
+import { whoami } from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
 import {
   IntermediateSession,
   Organization,
-} from '@/gen/openauth/intermediate/v1/intermediate_pb';
+} from '@/gen/tesseral/intermediate/v1/intermediate_pb';
 
 export enum AuthType {
   LogIn = 'log_in',

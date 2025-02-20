@@ -13,7 +13,7 @@ import { useLocation, useNavigate } from 'react-router';
 import {
   exchangeIntermediateSessionForSession,
   verifyPassword,
-} from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery';
+} from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
 import {
   AuthType,
   useAuthType,

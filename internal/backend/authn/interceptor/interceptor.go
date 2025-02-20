@@ -9,9 +9,9 @@ import (
 	"time"
 
 	"connectrpc.com/connect"
-	"github.com/openauth/openauth/internal/backend/authn"
-	"github.com/openauth/openauth/internal/backend/store"
-	"github.com/openauth/openauth/internal/ujwt"
+	"github.com/tesseral-labs/tesseral/internal/backend/authn"
+	"github.com/tesseral-labs/tesseral/internal/backend/store"
+	"github.com/tesseral-labs/tesseral/internal/ujwt"
 )
 
 var errUnknownHost = errors.New("unknown host")

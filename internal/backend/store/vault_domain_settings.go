@@ -7,8 +7,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/sesv2"
 	"github.com/aws/aws-sdk-go-v2/service/sesv2/types"
 	"github.com/cloudflare/cloudflare-go"
-	"github.com/openauth/openauth/internal/backend/authn"
-	backendv1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
+	"github.com/tesseral-labs/tesseral/internal/backend/authn"
+	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 )
 
 func (s *Store) GetVaultDomainSettings(ctx context.Context, req *backendv1.GetVaultDomainSettingsRequest) (*backendv1.GetVaultDomainSettingsResponse, error) {

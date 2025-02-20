@@ -18,9 +18,9 @@ import {
   issueEmailVerificationChallenge,
   listSAMLOrganizations,
   setEmailAsPrimaryLoginFactor,
-} from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery';
+} from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
 import { LoginView } from '@/lib/views';
-import { Organization } from '@/gen/openauth/intermediate/v1/intermediate_pb';
+import { Organization } from '@/gen/tesseral/intermediate/v1/intermediate_pb';
 import TextDivider from '../ui/text-divider';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';

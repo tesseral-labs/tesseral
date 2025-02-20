@@ -5,20 +5,20 @@ import (
 	"errors"
 
 	"connectrpc.com/connect"
-	"github.com/openauth/openauth/internal/common/projectid"
-	"github.com/openauth/openauth/internal/cookies"
-	"github.com/openauth/openauth/internal/intermediate/authn"
-	"github.com/openauth/openauth/internal/intermediate/store"
-	"github.com/openauth/openauth/internal/store/idformat"
+	"github.com/tesseral-labs/tesseral/internal/common/projectid"
+	"github.com/tesseral-labs/tesseral/internal/cookies"
+	"github.com/tesseral-labs/tesseral/internal/intermediate/authn"
+	"github.com/tesseral-labs/tesseral/internal/intermediate/store"
+	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 )
 
 var ErrAuthorizationHeaderRequired = errors.New("authorization header is required")
 
 var skipRPCs = []string{
-	"/openauth.intermediate.v1.IntermediateService/CreateIntermediateSession",
-	"/openauth.intermediate.v1.IntermediateService/GetSettings",
-	"/openauth.intermediate.v1.IntermediateService/ListSAMLOrganizations",
-	"/openauth.intermediate.v1.IntermediateService/RedeemUserImpersonationToken",
+	"/tesseral.intermediate.v1.IntermediateService/CreateIntermediateSession",
+	"/tesseral.intermediate.v1.IntermediateService/GetSettings",
+	"/tesseral.intermediate.v1.IntermediateService/ListSAMLOrganizations",
+	"/tesseral.intermediate.v1.IntermediateService/RedeemUserImpersonationToken",
 }
 
 func New(s *store.Store, p *projectid.Sniffer, authAppsRootDomain string) connect.UnaryInterceptorFunc {

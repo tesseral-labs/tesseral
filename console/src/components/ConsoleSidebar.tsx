@@ -18,7 +18,7 @@ import {
 import { Building2, Settings2Icon, UserIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@connectrpc/connect-query';
-import { whoami } from '@/gen/openauth/frontend/v1/frontend-FrontendService_connectquery';
+import { whoami } from '@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery';
 
 const ConsoleSidebar: FC = () => {
   const { data: whoamiResponse } = useQuery(whoami, {});

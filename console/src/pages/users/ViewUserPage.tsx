@@ -7,7 +7,7 @@ import {
   getUser,
   listPasskeys,
   listSessions,
-} from '@/gen/openauth/backend/v1/backend-BackendService_connectquery';
+} from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import React from 'react';
 import {
   Table,

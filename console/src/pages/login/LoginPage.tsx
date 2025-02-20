@@ -1,41 +1,41 @@
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react';
 
 import {
   AuthType,
   AuthTypeContextProvider,
   IntermediateOrganizationContextProvider,
-} from '@/lib/auth'
-import { LoginView } from '@/lib/views'
+} from '@/lib/auth';
+import { LoginView } from '@/lib/views';
 
-import ChooseProjectView from '@/views/login/ChooseProjectView'
-import CreateProjectView from '@/views/login/CreateProjectView'
-import StartLoginView from '@/views/login/StartLoginView'
-import VerifyEmailView from '@/views/login/VerifyEmailView'
-import VerifyPasswordView from '@/views/login/VerifyPasswordView'
-import { Organization } from '@/gen/openauth/intermediate/v1/intermediate_pb'
-import ChooseAdditionalFactorView from '@/views/login/ChooseAdditionalFactorView'
-import VerifyAuthenticatorAppView from '@/views/login/VerifyAuthenticatorAppView'
-import VerifyPasskeyView from '@/views/login/VerifyPasskeyView'
-import RegisterAuthenticatorAppView from '@/views/login/RegisterAuthenticatorAppView'
-import RegisterPasskeyView from '@/views/login/RegisterPasskeyView'
-import RegisterPasswordView from '@/views/login/RegisterPasswordView'
-import { useSearchParams } from 'react-router-dom'
+import ChooseProjectView from '@/views/login/ChooseProjectView';
+import CreateProjectView from '@/views/login/CreateProjectView';
+import StartLoginView from '@/views/login/StartLoginView';
+import VerifyEmailView from '@/views/login/VerifyEmailView';
+import VerifyPasswordView from '@/views/login/VerifyPasswordView';
+import { Organization } from '@/gen/tesseral/intermediate/v1/intermediate_pb';
+import ChooseAdditionalFactorView from '@/views/login/ChooseAdditionalFactorView';
+import VerifyAuthenticatorAppView from '@/views/login/VerifyAuthenticatorAppView';
+import VerifyPasskeyView from '@/views/login/VerifyPasskeyView';
+import RegisterAuthenticatorAppView from '@/views/login/RegisterAuthenticatorAppView';
+import RegisterPasskeyView from '@/views/login/RegisterPasskeyView';
+import RegisterPasswordView from '@/views/login/RegisterPasswordView';
+import { useSearchParams } from 'react-router-dom';
 
 interface LoginPageProps {
-  authType?: AuthType
+  authType?: AuthType;
 }
 
 const LoginPage: FC<LoginPageProps> = ({ authType = AuthType.LogIn }) => {
-  const [searchParams] = useSearchParams()
+  const [searchParams] = useSearchParams();
   const [intermediateOrganization, setIntermediateOrganization] =
-    useState<Organization>()
-  const [view, setView] = useState<LoginView>(LoginView.StartLogin)
+    useState<Organization>();
+  const [view, setView] = useState<LoginView>(LoginView.StartLogin);
 
   useEffect(() => {
     if (searchParams.get('view')) {
-      setView(searchParams.get('view') as LoginView)
+      setView(searchParams.get('view') as LoginView);
     }
-  }, [searchParams])
+  }, [searchParams]);
 
   return (
     <AuthTypeContextProvider value={authType}>
@@ -89,7 +89,7 @@ const LoginPage: FC<LoginPageProps> = ({ authType = AuthType.LogIn }) => {
         </div>
       </IntermediateOrganizationContextProvider>
     </AuthTypeContextProvider>
-  )
-}
+  );
+};
 
-export default LoginPage
+export default LoginPage;

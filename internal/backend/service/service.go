@@ -1,8 +1,8 @@
 package service
 
 import (
-	"github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1/backendv1connect"
-	"github.com/openauth/openauth/internal/backend/store"
+	"github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1/backendv1connect"
+	"github.com/tesseral-labs/tesseral/internal/backend/store"
 )
 
 type Service struct {

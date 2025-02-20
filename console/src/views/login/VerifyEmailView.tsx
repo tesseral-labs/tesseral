@@ -12,7 +12,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { useIntermediateSession } from '@/lib/auth';
 import { useMutation } from '@connectrpc/connect-query';
-import { verifyEmailChallenge } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery';
+import { verifyEmailChallenge } from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
 import {
   InputOTP,
   InputOTPGroup,

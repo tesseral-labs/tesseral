@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/openauth/openauth/internal/intermediate/store/queries"
 	"github.com/stretchr/testify/assert"
+	"github.com/tesseral-labs/tesseral/internal/intermediate/store/queries"
 )
 
 func TestStore_validateAuthRequirementsSatisfiedInner(t *testing.T) {

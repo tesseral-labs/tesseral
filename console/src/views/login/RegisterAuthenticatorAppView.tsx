@@ -14,7 +14,7 @@ import {
   exchangeIntermediateSessionForSession,
   getAuthenticatorAppOptions,
   registerAuthenticatorApp,
-} from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery';
+} from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
 import {
   InputOTP,
   InputOTPGroup,

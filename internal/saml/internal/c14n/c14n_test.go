@@ -5,9 +5,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/openauth/openauth/internal/saml/internal/c14n"
-	"github.com/openauth/openauth/internal/saml/internal/uxml"
 	"github.com/stretchr/testify/assert"
+	"github.com/tesseral-labs/tesseral/internal/saml/internal/c14n"
+	"github.com/tesseral-labs/tesseral/internal/saml/internal/uxml"
 )
 
 func ExampleCanonicalize() {

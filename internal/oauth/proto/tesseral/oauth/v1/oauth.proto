@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package tesseral.oauth.v1;
+
+import "google/protobuf/struct.proto";
+
+message SessionSigningKey {
+  string id = 1;
+  string project_id = 2;
+  google.protobuf.Struct public_key_jwk = 3;
+}

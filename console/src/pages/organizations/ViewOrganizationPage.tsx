@@ -1,5 +1,5 @@
 import { useQuery } from '@connectrpc/connect-query';
-import { getOrganization } from '@/gen/openauth/backend/v1/backend-BackendService_connectquery';
+import { getOrganization } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import { Outlet, useLocation, useParams } from 'react-router';
 import React from 'react';
 import { Link } from 'react-router-dom';

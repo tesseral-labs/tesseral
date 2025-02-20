@@ -6,7 +6,7 @@ managed:
       module: buf.build/googleapis/googleapis
   override:
     - file_option: go_package_prefix
-      value: "github.com/openauth/openauth/internal/frontend/gen"
+      value: "github.com/tesseral-labs/tesseral/internal/frontend/gen"
 plugins:
   - remote: buf.build/protocolbuffers/go
     out: internal/frontend/gen

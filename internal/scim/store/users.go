@@ -12,11 +12,11 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
-	"github.com/openauth/openauth/internal/emailaddr"
-	"github.com/openauth/openauth/internal/scim/authn"
-	"github.com/openauth/openauth/internal/scim/internal/scimpatch"
-	"github.com/openauth/openauth/internal/scim/store/queries"
-	"github.com/openauth/openauth/internal/store/idformat"
+	"github.com/tesseral-labs/tesseral/internal/emailaddr"
+	"github.com/tesseral-labs/tesseral/internal/scim/authn"
+	"github.com/tesseral-labs/tesseral/internal/scim/internal/scimpatch"
+	"github.com/tesseral-labs/tesseral/internal/scim/store/queries"
+	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 )
 
 type ListUsersRequest struct {

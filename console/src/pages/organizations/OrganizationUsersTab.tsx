@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery } from '@connectrpc/connect-query';
-import { listUsers } from '@/gen/openauth/backend/v1/backend-BackendService_connectquery';
+import { listUsers } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import {
   Card,
   CardContent,

@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/openauth/openauth/internal/frontend/authn"
-	frontendv1 "github.com/openauth/openauth/internal/frontend/gen/openauth/frontend/v1"
+	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
+	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
 )
 
 func (s *Store) Whoami(ctx context.Context, req *frontendv1.WhoamiRequest) (*frontendv1.WhoamiResponse, error) {

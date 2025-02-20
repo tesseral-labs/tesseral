@@ -18,7 +18,7 @@ import Loader from '@/components/ui/loader';
 import {
   exchangeIntermediateSessionForSession,
   verifyAuthenticatorApp,
-} from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery';
+} from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
 import { parseErrorMessage } from '@/lib/errors';
 import { useMutation } from '@connectrpc/connect-query';
 import React, { FC, useState } from 'react';

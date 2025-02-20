@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/openauth/openauth/internal/pagetoken"
+	"github.com/tesseral-labs/tesseral/internal/pagetoken"
 )
 
 func TestEncoder(t *testing.T) {

@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	"github.com/openauth/openauth/internal/common/store"
+	"github.com/tesseral-labs/tesseral/internal/common/store"
 )
 
 type Sniffer struct {

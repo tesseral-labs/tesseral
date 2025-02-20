@@ -3,8 +3,8 @@ package scimpatch_test
 import (
 	"testing"
 
-	"github.com/openauth/openauth/internal/scim/internal/scimpatch"
 	"github.com/stretchr/testify/assert"
+	"github.com/tesseral-labs/tesseral/internal/scim/internal/scimpatch"
 )
 
 func TestPatch(t *testing.T) {

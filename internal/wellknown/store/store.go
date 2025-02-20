@@ -2,7 +2,7 @@ package store
 
 import (
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/openauth/openauth/internal/wellknown/store/queries"
+	"github.com/tesseral-labs/tesseral/internal/wellknown/store/queries"
 )
 
 type Store struct {

@@ -1,5 +1,5 @@
 import { useQuery } from '@connectrpc/connect-query';
-import { getProject } from '@/gen/openauth/backend/v1/backend-BackendService_connectquery';
+import { getProject } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import React from 'react';
 import { DateTime } from 'luxon';
 import { timestampDate } from '@bufbuild/protobuf/wkt';

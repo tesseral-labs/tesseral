@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/openauth/openauth/internal/saml/internal/sortattr"
-	"github.com/openauth/openauth/internal/saml/internal/uxml"
-	"github.com/openauth/openauth/internal/saml/internal/uxml/stack"
+	"github.com/tesseral-labs/tesseral/internal/saml/internal/sortattr"
+	"github.com/tesseral-labs/tesseral/internal/saml/internal/uxml"
+	"github.com/tesseral-labs/tesseral/internal/saml/internal/uxml/stack"
 )
 
 func Canonicalize(n uxml.Node, inclusiveNamespaces []string) ([]byte, error) {

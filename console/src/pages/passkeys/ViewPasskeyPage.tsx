@@ -35,7 +35,7 @@ import {
   getPasskey,
   getUser,
   updatePasskey,
-} from '@/gen/openauth/backend/v1/backend-BackendService_connectquery';
+} from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import { DateTime } from 'luxon';
 import { timestampDate } from '@bufbuild/protobuf/wkt';
 import { toast } from 'sonner';

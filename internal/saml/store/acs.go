@@ -5,9 +5,9 @@ import (
 	"crypto/x509"
 	"fmt"
 
-	"github.com/openauth/openauth/internal/saml/authn"
-	"github.com/openauth/openauth/internal/saml/store/queries"
-	"github.com/openauth/openauth/internal/store/idformat"
+	"github.com/tesseral-labs/tesseral/internal/saml/authn"
+	"github.com/tesseral-labs/tesseral/internal/saml/store/queries"
+	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 )
 
 type SAMLConnectionACSData struct {

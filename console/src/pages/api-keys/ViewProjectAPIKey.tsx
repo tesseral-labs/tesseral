@@ -15,7 +15,7 @@ import {
   getProjectAPIKey,
   revokeProjectAPIKey,
   updateProjectAPIKey,
-} from '@/gen/openauth/backend/v1/backend-BackendService_connectquery';
+} from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import {
   Card,
   CardContent,

@@ -13,7 +13,7 @@ import {
   getOrganizationGoogleHostedDomains,
   getOrganizationMicrosoftTenantIDs,
   getProject,
-} from '@/gen/openauth/backend/v1/backend-BackendService_connectquery';
+} from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import {

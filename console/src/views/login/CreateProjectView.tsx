@@ -1,82 +1,82 @@
-import React, { Dispatch, FC, useState } from 'react'
-import { LoginView } from '@/lib/views'
-import { Title } from '@/components/Title'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { useNavigate } from 'react-router'
-import { useMutation } from '@connectrpc/connect-query'
-import { refresh } from '@/gen/openauth/frontend/v1/frontend-FrontendService_connectquery'
-import { setAccessToken, setRefreshToken } from '@/auth'
-import { Input } from '@/components/ui/input'
+import React, { Dispatch, FC, useState } from 'react';
+import { LoginView } from '@/lib/views';
+import { Title } from '@/components/Title';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router';
+import { useMutation } from '@connectrpc/connect-query';
+import { refresh } from '@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery';
+import { setAccessToken, setRefreshToken } from '@/auth';
+import { Input } from '@/components/ui/input';
 import {
   createProject,
   exchangeIntermediateSessionForSession,
   setOrganization,
-} from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
-import { parseErrorMessage } from '@/lib/errors'
-import { toast } from 'sonner'
-import Loader from '@/components/ui/loader'
-import useSettings from '@/lib/settings'
+} from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
+import { parseErrorMessage } from '@/lib/errors';
+import { toast } from 'sonner';
+import Loader from '@/components/ui/loader';
+import useSettings from '@/lib/settings';
 
 interface CreateProjectViewProps {
-  setView: Dispatch<React.SetStateAction<LoginView>>
+  setView: Dispatch<React.SetStateAction<LoginView>>;
 }
 
 const CreateProjectView: FC<CreateProjectViewProps> = ({ setView }) => {
-  const navigate = useNavigate()
-  const settings = useSettings()
+  const navigate = useNavigate();
+  const settings = useSettings();
 
-  const [displayName, setDisplayName] = useState<string>('')
-  const [submitting, setSubmitting] = useState<boolean>(false)
+  const [displayName, setDisplayName] = useState<string>('');
+  const [submitting, setSubmitting] = useState<boolean>(false);
 
-  const createProjectMutation = useMutation(createProject)
+  const createProjectMutation = useMutation(createProject);
   const exchangeIntermediateSessionForSessionMutation = useMutation(
     exchangeIntermediateSessionForSession,
-  )
-  const refreshMutation = useMutation(refresh)
-  const setOrganizationMutation = useMutation(setOrganization)
+  );
+  const refreshMutation = useMutation(refresh);
+  const setOrganizationMutation = useMutation(setOrganization);
 
   const deriveNextView = (): LoginView | undefined => {
     if (settings?.logInWithPassword) {
-      return LoginView.RegisterPassword
+      return LoginView.RegisterPassword;
     }
-  }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setSubmitting(true)
+    e.preventDefault();
+    setSubmitting(true);
 
     try {
       const projectRes = await createProjectMutation.mutateAsync({
         displayName,
-      })
+      });
 
       await setOrganizationMutation.mutateAsync({
         organizationId: projectRes?.project?.organizationId,
-      })
+      });
 
-      const nextView = deriveNextView()
+      const nextView = deriveNextView();
       if (nextView) {
-        setView(nextView)
-        return
+        setView(nextView);
+        return;
       }
 
       const { refreshToken } =
-        await exchangeIntermediateSessionForSessionMutation.mutateAsync({})
+        await exchangeIntermediateSessionForSessionMutation.mutateAsync({});
 
-      const { accessToken } = await refreshMutation.mutateAsync({})
+      const { accessToken } = await refreshMutation.mutateAsync({});
 
-      setRefreshToken(refreshToken)
-      setAccessToken(accessToken)
+      setRefreshToken(refreshToken);
+      setAccessToken(accessToken);
 
-      setSubmitting(false)
-      navigate('/')
+      setSubmitting(false);
+      navigate('/');
     } catch (error) {
-      setSubmitting(false)
-      const message = parseErrorMessage(error)
-      toast.error(message)
+      setSubmitting(false);
+      const message = parseErrorMessage(error);
+      toast.error(message);
     }
-  }
+  };
 
   return (
     <>
@@ -106,7 +106,7 @@ const CreateProjectView: FC<CreateProjectViewProps> = ({ setView }) => {
         </CardContent>
       </Card>
     </>
-  )
-}
+  );
+};
 
-export default CreateProjectView
+export default CreateProjectView;

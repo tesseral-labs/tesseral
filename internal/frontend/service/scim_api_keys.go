@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"connectrpc.com/connect"
-	"github.com/openauth/openauth/internal/frontend/gen/openauth/frontend/v1"
+	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
 )
 
 func (s *Service) ListSCIMAPIKeys(ctx context.Context, req *connect.Request[frontendv1.ListSCIMAPIKeysRequest]) (*connect.Response[frontendv1.ListSCIMAPIKeysResponse], error) {

@@ -1,4 +1,4 @@
-module github.com/openauth/openauth
+module github.com/tesseral-labs/tesseral
 
 go 1.23.2
 

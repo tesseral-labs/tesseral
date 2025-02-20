@@ -5,9 +5,9 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/openauth/openauth/internal/saml/internal/sortattr"
-	"github.com/openauth/openauth/internal/saml/internal/uxml"
 	"github.com/stretchr/testify/assert"
+	"github.com/tesseral-labs/tesseral/internal/saml/internal/sortattr"
+	"github.com/tesseral-labs/tesseral/internal/saml/internal/uxml"
 )
 
 func TestSortAttr(t *testing.T) {

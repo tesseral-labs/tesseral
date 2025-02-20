@@ -13,9 +13,9 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
-	"github.com/openauth/openauth/internal/bcryptcost"
-	"github.com/openauth/openauth/internal/store/idformat"
-	"github.com/openauth/openauth/internal/store/queries"
+	"github.com/tesseral-labs/tesseral/internal/bcryptcost"
+	"github.com/tesseral-labs/tesseral/internal/store/idformat"
+	"github.com/tesseral-labs/tesseral/internal/store/queries"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -98,7 +98,7 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 	}
 
 	// create the bootstrap user inside the dogfood organization
-	bootstrapUserEmail := "root@openauth.example.com"
+	bootstrapUserEmail := "root@tesseral.example.com"
 	bootstrapUserPasswordBcrypt := string(bootstrapUserPasswordBcryptBytes)
 	if _, err := q.CreateUser(ctx, queries.CreateUserParams{
 		ID:             uuid.New(),
