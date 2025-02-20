@@ -14,7 +14,7 @@ func New(s *store.Store, p *projectid.Sniffer, h http.Handler) http.Handler {
 		ctx := r.Context()
 
 		// project id sniffing
-		projectID, err := p.GetProjectID(r.Host)
+		projectID, err := p.GetProjectID(r.Header.Get("X-Tesseral-Host"))
 		if err != nil {
 			w.WriteHeader(http.StatusNotFound)
 			return
