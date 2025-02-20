@@ -9,6 +9,7 @@ import (
 
 	"connectrpc.com/connect"
 	"connectrpc.com/vanguard"
+	"github.com/aws/aws-lambda-go/lambdaurl"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
@@ -63,6 +64,7 @@ func main() {
 	loadenv.LoadEnv()
 
 	config := struct {
+		RunAsLambda                         bool   `conf:"run_as_lambda,noredact"`
 		Host                                string `conf:"host"`
 		AuthAppsRootDomain                  string `conf:"auth_apps_root_domain"`
 		DB                                  string `conf:"db"`
@@ -266,6 +268,7 @@ func main() {
 	mux.Handle("/internal/health", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		slog.InfoContext(r.Context(), "health")
 		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte("ok"))
 	}))
 
 	// Register the connect service
@@ -311,9 +314,12 @@ func main() {
 		ExposedHeaders:   []string{"*"},
 	}).Handler(serve)
 
-	// Serve the services
 	slog.Info("serve")
-	if err := http.ListenAndServe(config.ServeAddr, serve); err != nil {
-		panic(err)
+	if config.RunAsLambda {
+		lambdaurl.Start(serve)
+	} else {
+		if err := http.ListenAndServe(config.ServeAddr, serve); err != nil {
+			panic(err)
+		}
 	}
 }
