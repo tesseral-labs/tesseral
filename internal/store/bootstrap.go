@@ -128,11 +128,11 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 	// Encrypt the symmetric key with the KMS
 	sskEncryptOutput, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
 		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
-		KeyId:               &s.intermediateSessionSigningKeyKMSKeyID,
+		KeyId:               &s.sessionSigningKeyKmsKeyID,
 		Plaintext:           privateKeyBytes,
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("encrypt session signing key: %w", err)
 	}
 
 	publicKeyBytes, err := x509.MarshalPKIXPublicKey(privateKey.Public())

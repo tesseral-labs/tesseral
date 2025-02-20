@@ -13,11 +13,10 @@ import (
 )
 
 type bootstrapArgs struct {
-	Args                               args   `cli:"bootstrap,subcmd"`
-	Database                           string `cli:"-d,--database"`
-	KMSEndpoint                        string `cli:"-k,--kms-endpoint"`
-	IntermediateSessionSigningKMSKeyID string `cli:"-i,--intermediate-session-kms-key-id"`
-	SessionSigningKMSKeyID             string `cli:"-s,--session-kms-key-id"`
+	Args                   args   `cli:"bootstrap,subcmd"`
+	Database               string `cli:"-d,--database"`
+	KMSEndpoint            string `cli:"-k,--kms-endpoint"`
+	SessionSigningKMSKeyID string `cli:"-s,--session-kms-key-id"`
 }
 
 func (_ bootstrapArgs) Description() string {
@@ -43,8 +42,6 @@ func bootstrap(ctx context.Context, args bootstrapArgs) error {
 		panic(err)
 	}
 
-	loadenv.LoadEnv()
-
 	awsConf, err := config.LoadDefaultConfig(context.TODO())
 	if err != nil {
 		panic(fmt.Errorf("load aws config: %w", err))
@@ -57,10 +54,9 @@ func bootstrap(ctx context.Context, args bootstrapArgs) error {
 	})
 
 	s := store.New(store.NewStoreParams{
-		DB:                                    db,
-		IntermediateSessionSigningKeyKMSKeyID: args.IntermediateSessionSigningKMSKeyID,
-		KMS:                                   kms_,
-		SessionSigningKeyKmsKeyID:             args.SessionSigningKMSKeyID,
+		DB:                        db,
+		KMS:                       kms_,
+		SessionSigningKeyKmsKeyID: args.SessionSigningKMSKeyID,
 	})
 
 	res, err := s.CreateDogfoodProject(ctx)
