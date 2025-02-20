@@ -2,13 +2,12 @@
 // @generated from file tesseral/intermediate/v1/intermediate.proto (package tesseral.intermediate.v1, syntax proto3)
 /* eslint-disable */
 
-import { IntermediateService } from './intermediate_pb';
+import { IntermediateService } from "./intermediate_pb";
 
 /**
  * @generated from rpc tesseral.intermediate.v1.IntermediateService.ListSAMLOrganizations
  */
-export const listSAMLOrganizations =
-  IntermediateService.method.listSAMLOrganizations;
+export const listSAMLOrganizations = IntermediateService.method.listSAMLOrganizations;
 
 /**
  * @generated from rpc tesseral.intermediate.v1.IntermediateService.GetSettings
@@ -18,14 +17,12 @@ export const getSettings = IntermediateService.method.getSettings;
 /**
  * @generated from rpc tesseral.intermediate.v1.IntermediateService.RedeemUserImpersonationToken
  */
-export const redeemUserImpersonationToken =
-  IntermediateService.method.redeemUserImpersonationToken;
+export const redeemUserImpersonationToken = IntermediateService.method.redeemUserImpersonationToken;
 
 /**
  * @generated from rpc tesseral.intermediate.v1.IntermediateService.CreateIntermediateSession
  */
-export const createIntermediateSession =
-  IntermediateService.method.createIntermediateSession;
+export const createIntermediateSession = IntermediateService.method.createIntermediateSession;
 
 /**
  * @generated from rpc tesseral.intermediate.v1.IntermediateService.Whoami
@@ -50,44 +47,37 @@ export const setOrganization = IntermediateService.method.setOrganization;
 /**
  * @generated from rpc tesseral.intermediate.v1.IntermediateService.ExchangeIntermediateSessionForSession
  */
-export const exchangeIntermediateSessionForSession =
-  IntermediateService.method.exchangeIntermediateSessionForSession;
+export const exchangeIntermediateSessionForSession = IntermediateService.method.exchangeIntermediateSessionForSession;
 
 /**
  * @generated from rpc tesseral.intermediate.v1.IntermediateService.GetGoogleOAuthRedirectURL
  */
-export const getGoogleOAuthRedirectURL =
-  IntermediateService.method.getGoogleOAuthRedirectURL;
+export const getGoogleOAuthRedirectURL = IntermediateService.method.getGoogleOAuthRedirectURL;
 
 /**
  * @generated from rpc tesseral.intermediate.v1.IntermediateService.RedeemGoogleOAuthCode
  */
-export const redeemGoogleOAuthCode =
-  IntermediateService.method.redeemGoogleOAuthCode;
+export const redeemGoogleOAuthCode = IntermediateService.method.redeemGoogleOAuthCode;
 
 /**
  * @generated from rpc tesseral.intermediate.v1.IntermediateService.GetMicrosoftOAuthRedirectURL
  */
-export const getMicrosoftOAuthRedirectURL =
-  IntermediateService.method.getMicrosoftOAuthRedirectURL;
+export const getMicrosoftOAuthRedirectURL = IntermediateService.method.getMicrosoftOAuthRedirectURL;
 
 /**
  * @generated from rpc tesseral.intermediate.v1.IntermediateService.RedeemMicrosoftOAuthCode
  */
-export const redeemMicrosoftOAuthCode =
-  IntermediateService.method.redeemMicrosoftOAuthCode;
+export const redeemMicrosoftOAuthCode = IntermediateService.method.redeemMicrosoftOAuthCode;
 
 /**
  * @generated from rpc tesseral.intermediate.v1.IntermediateService.IssueEmailVerificationChallenge
  */
-export const issueEmailVerificationChallenge =
-  IntermediateService.method.issueEmailVerificationChallenge;
+export const issueEmailVerificationChallenge = IntermediateService.method.issueEmailVerificationChallenge;
 
 /**
  * @generated from rpc tesseral.intermediate.v1.IntermediateService.VerifyEmailChallenge
  */
-export const verifyEmailChallenge =
-  IntermediateService.method.verifyEmailChallenge;
+export const verifyEmailChallenge = IntermediateService.method.verifyEmailChallenge;
 
 /**
  * @generated from rpc tesseral.intermediate.v1.IntermediateService.RegisterPassword
@@ -112,8 +102,7 @@ export const registerPasskey = IntermediateService.method.registerPasskey;
 /**
  * @generated from rpc tesseral.intermediate.v1.IntermediateService.IssuePasskeyChallenge
  */
-export const issuePasskeyChallenge =
-  IntermediateService.method.issuePasskeyChallenge;
+export const issuePasskeyChallenge = IntermediateService.method.issuePasskeyChallenge;
 
 /**
  * @generated from rpc tesseral.intermediate.v1.IntermediateService.VerifyPasskey
@@ -123,26 +112,22 @@ export const verifyPasskey = IntermediateService.method.verifyPasskey;
 /**
  * @generated from rpc tesseral.intermediate.v1.IntermediateService.GetAuthenticatorAppOptions
  */
-export const getAuthenticatorAppOptions =
-  IntermediateService.method.getAuthenticatorAppOptions;
+export const getAuthenticatorAppOptions = IntermediateService.method.getAuthenticatorAppOptions;
 
 /**
  * @generated from rpc tesseral.intermediate.v1.IntermediateService.RegisterAuthenticatorApp
  */
-export const registerAuthenticatorApp =
-  IntermediateService.method.registerAuthenticatorApp;
+export const registerAuthenticatorApp = IntermediateService.method.registerAuthenticatorApp;
 
 /**
  * @generated from rpc tesseral.intermediate.v1.IntermediateService.VerifyAuthenticatorApp
  */
-export const verifyAuthenticatorApp =
-  IntermediateService.method.verifyAuthenticatorApp;
+export const verifyAuthenticatorApp = IntermediateService.method.verifyAuthenticatorApp;
 
 /**
  * @generated from rpc tesseral.intermediate.v1.IntermediateService.SetEmailAsPrimaryLoginFactor
  */
-export const setEmailAsPrimaryLoginFactor =
-  IntermediateService.method.setEmailAsPrimaryLoginFactor;
+export const setEmailAsPrimaryLoginFactor = IntermediateService.method.setEmailAsPrimaryLoginFactor;
 
 /**
  * @generated from rpc tesseral.intermediate.v1.IntermediateService.CreateProject

@@ -29,10 +29,10 @@ plugins:
     opt: target=ts
   - local: protoc-gen-es
     include_imports: true
-    out: ui/src/gen
+    out: vault-ui/src/gen
     opt: target=ts
   - local: protoc-gen-connect-query
-    out: ui/src/gen
+    out: vault-ui/src/gen
     opt: target=ts
   - remote: buf.build/community/google-gnostic-openapi
     out: internal/oauth/gen

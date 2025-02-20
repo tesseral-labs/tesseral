@@ -2,29 +2,22 @@
 // @generated from file tesseral/frontend/v1/models.proto (package tesseral.frontend.v1, syntax proto3)
 /* eslint-disable */
 
-import type { GenFile, GenMessage } from '@bufbuild/protobuf/codegenv1';
-import { fileDesc, messageDesc } from '@bufbuild/protobuf/codegenv1';
-import type { Timestamp } from '@bufbuild/protobuf/wkt';
-import {
-  file_google_protobuf_struct,
-  file_google_protobuf_timestamp,
-} from '@bufbuild/protobuf/wkt';
-import type { JsonObject, Message } from '@bufbuild/protobuf';
+import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv1";
+import { fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv1";
+import type { Timestamp } from "@bufbuild/protobuf/wkt";
+import { file_google_protobuf_struct, file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
+import type { JsonObject, Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file tesseral/frontend/v1/models.proto.
  */
-export const file_tesseral_frontend_v1_models: GenFile =
-  /*@__PURE__*/
-  fileDesc(
-    'CiF0ZXNzZXJhbC9mcm9udGVuZC92MS9tb2RlbHMucHJvdG8SFG9wZW5hdXRoLmZyb250ZW5kLnYxIvQCCgdQcm9qZWN0EgoKAmlkGAEgASgJEhQKDGRpc3BsYXlfbmFtZRgCIAEoCRIvCgtjcmVhdGVfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLwoLdXBkYXRlX3RpbWUYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhoKEmxvZ19pbl93aXRoX2dvb2dsZRgGIAEoCBIdChVsb2dfaW5fd2l0aF9taWNyb3NvZnQYByABKAgSGQoRbG9nX2luX3dpdGhfZW1haWwYCyABKAgSHAoUbG9nX2luX3dpdGhfcGFzc3dvcmQYBSABKAgSGAoQbG9nX2luX3dpdGhfc2FtbBgMIAEoCBIlCh1sb2dfaW5fd2l0aF9hdXRoZW50aWNhdG9yX2FwcBgJIAEoCBIbChNsb2dfaW5fd2l0aF9wYXNza2V5GAogASgIEhMKC2F1dGhfZG9tYWluGAggASgJIrMFCgxPcmdhbml6YXRpb24SCgoCaWQYASABKAkSFAoMZGlzcGxheV9uYW1lGAIgASgJEi8KC2NyZWF0ZV90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIvCgt1cGRhdGVfdGltZRgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASHwoSbG9nX2luX3dpdGhfZ29vZ2xlGAcgASgISACIAQESIgoVbG9nX2luX3dpdGhfbWljcm9zb2Z0GAggASgISAGIAQESHgoRbG9nX2luX3dpdGhfZW1haWwYECABKAhIAogBARIhChRsb2dfaW5fd2l0aF9wYXNzd29yZBgGIAEoCEgDiAEBEh0KEGxvZ19pbl93aXRoX3NhbWwYDCABKAhIBIgBARIqCh1sb2dfaW5fd2l0aF9hdXRoZW50aWNhdG9yX2FwcBgNIAEoCEgFiAEBEiAKE2xvZ19pbl93aXRoX3Bhc3NrZXkYDiABKAhIBogBARIYCgtyZXF1aXJlX21mYRgPIAEoCEgHiAEBEh0KFWdvb2dsZV9ob3N0ZWRfZG9tYWlucxgJIAMoCRIcChRtaWNyb3NvZnRfdGVuYW50X2lkcxgKIAMoCRIUCgxzYW1sX2VuYWJsZWQYCyABKAhCFQoTX2xvZ19pbl93aXRoX2dvb2dsZUIYChZfbG9nX2luX3dpdGhfbWljcm9zb2Z0QhQKEl9sb2dfaW5fd2l0aF9lbWFpbEIXChVfbG9nX2luX3dpdGhfcGFzc3dvcmRCEwoRX2xvZ19pbl93aXRoX3NhbWxCIAoeX2xvZ19pbl93aXRoX2F1dGhlbnRpY2F0b3JfYXBwQhYKFF9sb2dfaW5fd2l0aF9wYXNza2V5Qg4KDF9yZXF1aXJlX21mYSJACh9Pcmdhbml6YXRpb25Hb29nbGVIb3N0ZWREb21haW5zEh0KFWdvb2dsZV9ob3N0ZWRfZG9tYWlucxgCIAMoCSI+Ch5Pcmdhbml6YXRpb25NaWNyb3NvZnRUZW5hbnRJRHMSHAoUbWljcm9zb2Z0X3RlbmFudF9pZHMYAiADKAkiUAoRU2Vzc2lvblNpZ25pbmdLZXkSCgoCaWQYASABKAkSLwoOcHVibGljX2tleV9qd2sYAiABKAsyFy5nb29nbGUucHJvdG9idWYuU3RydWN0IvMBCgRVc2VyEgoKAmlkGAEgASgJEg0KBWVtYWlsGAIgASgJEi8KC2NyZWF0ZV90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIvCgt1cGRhdGVfdGltZRgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASEgoFb3duZXIYBSABKAhIAIgBARIWCg5nb29nbGVfdXNlcl9pZBgGIAEoCRIZChFtaWNyb3NvZnRfdXNlcl9pZBgHIAEoCRIdChVoYXNfYXV0aGVudGljYXRvcl9hcHAYCCABKAhCCAoGX293bmVyIpkBCgdTZXNzaW9uEgoKAmlkGAEgASgJEg8KB3VzZXJfaWQYAiABKAkSLwoLY3JlYXRlX3RpbWUYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi8KC2V4cGlyZV90aW1lGAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIPCgdyZXZva2VkGAUgASgIIpkCCg5TQU1MQ29ubmVjdGlvbhIKCgJpZBgBIAEoCRIvCgtjcmVhdGVfdGltZRgCIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLwoLdXBkYXRlX3RpbWUYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhQKB3ByaW1hcnkYBCABKAhIAIgBARISCgpzcF9hY3NfdXJsGAUgASgJEhQKDHNwX2VudGl0eV9pZBgGIAEoCRIYChBpZHBfcmVkaXJlY3RfdXJsGAcgASgJEhwKFGlkcF94NTA5X2NlcnRpZmljYXRlGAggASgJEhUKDWlkcF9lbnRpdHlfaWQYCSABKAlCCgoIX3ByaW1hcnkitwEKClNDSU1BUElLZXkSCgoCaWQYASABKAkSFAoMZGlzcGxheV9uYW1lGAIgASgJEi8KC2NyZWF0ZV90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIvCgt1cGRhdGVfdGltZRgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASFAoMc2VjcmV0X3Rva2VuGAUgASgJEg8KB3Jldm9rZWQYBiABKAgi6QEKB1Bhc3NrZXkSCgoCaWQYASABKAkSDwoHdXNlcl9pZBgCIAEoCRIvCgtjcmVhdGVfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLwoLdXBkYXRlX3RpbWUYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhAKCGRpc2FibGVkGAggASgIEhUKDWNyZWRlbnRpYWxfaWQYBSABKAwSFwoPcHVibGljX2tleV9wa2l4GAYgASgJEg4KBmFhZ3VpZBgHIAEoCRINCgVycF9pZBgJIAEoCSKYAQoKVXNlckludml0ZRIKCgJpZBgBIAEoCRIvCgtjcmVhdGVfdGltZRgCIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLwoLdXBkYXRlX3RpbWUYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEg0KBWVtYWlsGAQgASgJEg0KBW93bmVyGAUgASgIQvIBChhjb20ub3BlbmF1dGguZnJvbnRlbmQudjFCC01vZGVsc1Byb3RvUAFaV2dpdGh1Yi5jb20vdGVzc2VyYWwtbGFicy90ZXNzZXJhbC9pbnRlcm5hbC9mcm9udGVuZC9nZW4vdGVzc2VyYWwvZnJvbnRlbmQvdjE7ZnJvbnRlbmR2MaICA09GWKoCFE9wZW5hdXRoLkZyb250ZW5kLlYxygIUT3BlbmF1dGhcRnJvbnRlbmRcVjHiAiBPcGVuYXV0aFxGcm9udGVuZFxWMVxHUEJNZXRhZGF0YeoCFk9wZW5hdXRoOjpGcm9udGVuZDo6VjFiBnByb3RvMw',
-    [file_google_protobuf_struct, file_google_protobuf_timestamp],
-  );
+export const file_tesseral_frontend_v1_models: GenFile = /*@__PURE__*/
+  fileDesc("CiF0ZXNzZXJhbC9mcm9udGVuZC92MS9tb2RlbHMucHJvdG8SFHRlc3NlcmFsLmZyb250ZW5kLnYxIvQCCgdQcm9qZWN0EgoKAmlkGAEgASgJEhQKDGRpc3BsYXlfbmFtZRgCIAEoCRIvCgtjcmVhdGVfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLwoLdXBkYXRlX3RpbWUYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhoKEmxvZ19pbl93aXRoX2dvb2dsZRgGIAEoCBIdChVsb2dfaW5fd2l0aF9taWNyb3NvZnQYByABKAgSGQoRbG9nX2luX3dpdGhfZW1haWwYCyABKAgSHAoUbG9nX2luX3dpdGhfcGFzc3dvcmQYBSABKAgSGAoQbG9nX2luX3dpdGhfc2FtbBgMIAEoCBIlCh1sb2dfaW5fd2l0aF9hdXRoZW50aWNhdG9yX2FwcBgJIAEoCBIbChNsb2dfaW5fd2l0aF9wYXNza2V5GAogASgIEhMKC2F1dGhfZG9tYWluGAggASgJIrMFCgxPcmdhbml6YXRpb24SCgoCaWQYASABKAkSFAoMZGlzcGxheV9uYW1lGAIgASgJEi8KC2NyZWF0ZV90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIvCgt1cGRhdGVfdGltZRgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASHwoSbG9nX2luX3dpdGhfZ29vZ2xlGAcgASgISACIAQESIgoVbG9nX2luX3dpdGhfbWljcm9zb2Z0GAggASgISAGIAQESHgoRbG9nX2luX3dpdGhfZW1haWwYECABKAhIAogBARIhChRsb2dfaW5fd2l0aF9wYXNzd29yZBgGIAEoCEgDiAEBEh0KEGxvZ19pbl93aXRoX3NhbWwYDCABKAhIBIgBARIqCh1sb2dfaW5fd2l0aF9hdXRoZW50aWNhdG9yX2FwcBgNIAEoCEgFiAEBEiAKE2xvZ19pbl93aXRoX3Bhc3NrZXkYDiABKAhIBogBARIYCgtyZXF1aXJlX21mYRgPIAEoCEgHiAEBEh0KFWdvb2dsZV9ob3N0ZWRfZG9tYWlucxgJIAMoCRIcChRtaWNyb3NvZnRfdGVuYW50X2lkcxgKIAMoCRIUCgxzYW1sX2VuYWJsZWQYCyABKAhCFQoTX2xvZ19pbl93aXRoX2dvb2dsZUIYChZfbG9nX2luX3dpdGhfbWljcm9zb2Z0QhQKEl9sb2dfaW5fd2l0aF9lbWFpbEIXChVfbG9nX2luX3dpdGhfcGFzc3dvcmRCEwoRX2xvZ19pbl93aXRoX3NhbWxCIAoeX2xvZ19pbl93aXRoX2F1dGhlbnRpY2F0b3JfYXBwQhYKFF9sb2dfaW5fd2l0aF9wYXNza2V5Qg4KDF9yZXF1aXJlX21mYSJACh9Pcmdhbml6YXRpb25Hb29nbGVIb3N0ZWREb21haW5zEh0KFWdvb2dsZV9ob3N0ZWRfZG9tYWlucxgCIAMoCSI+Ch5Pcmdhbml6YXRpb25NaWNyb3NvZnRUZW5hbnRJRHMSHAoUbWljcm9zb2Z0X3RlbmFudF9pZHMYAiADKAkiUAoRU2Vzc2lvblNpZ25pbmdLZXkSCgoCaWQYASABKAkSLwoOcHVibGljX2tleV9qd2sYAiABKAsyFy5nb29nbGUucHJvdG9idWYuU3RydWN0IvMBCgRVc2VyEgoKAmlkGAEgASgJEg0KBWVtYWlsGAIgASgJEi8KC2NyZWF0ZV90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIvCgt1cGRhdGVfdGltZRgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASEgoFb3duZXIYBSABKAhIAIgBARIWCg5nb29nbGVfdXNlcl9pZBgGIAEoCRIZChFtaWNyb3NvZnRfdXNlcl9pZBgHIAEoCRIdChVoYXNfYXV0aGVudGljYXRvcl9hcHAYCCABKAhCCAoGX293bmVyIpkBCgdTZXNzaW9uEgoKAmlkGAEgASgJEg8KB3VzZXJfaWQYAiABKAkSLwoLY3JlYXRlX3RpbWUYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi8KC2V4cGlyZV90aW1lGAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIPCgdyZXZva2VkGAUgASgIIpkCCg5TQU1MQ29ubmVjdGlvbhIKCgJpZBgBIAEoCRIvCgtjcmVhdGVfdGltZRgCIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLwoLdXBkYXRlX3RpbWUYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhQKB3ByaW1hcnkYBCABKAhIAIgBARISCgpzcF9hY3NfdXJsGAUgASgJEhQKDHNwX2VudGl0eV9pZBgGIAEoCRIYChBpZHBfcmVkaXJlY3RfdXJsGAcgASgJEhwKFGlkcF94NTA5X2NlcnRpZmljYXRlGAggASgJEhUKDWlkcF9lbnRpdHlfaWQYCSABKAlCCgoIX3ByaW1hcnkitwEKClNDSU1BUElLZXkSCgoCaWQYASABKAkSFAoMZGlzcGxheV9uYW1lGAIgASgJEi8KC2NyZWF0ZV90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIvCgt1cGRhdGVfdGltZRgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASFAoMc2VjcmV0X3Rva2VuGAUgASgJEg8KB3Jldm9rZWQYBiABKAgi6QEKB1Bhc3NrZXkSCgoCaWQYASABKAkSDwoHdXNlcl9pZBgCIAEoCRIvCgtjcmVhdGVfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLwoLdXBkYXRlX3RpbWUYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhAKCGRpc2FibGVkGAggASgIEhUKDWNyZWRlbnRpYWxfaWQYBSABKAwSFwoPcHVibGljX2tleV9wa2l4GAYgASgJEg4KBmFhZ3VpZBgHIAEoCRINCgVycF9pZBgJIAEoCSKYAQoKVXNlckludml0ZRIKCgJpZBgBIAEoCRIvCgtjcmVhdGVfdGltZRgCIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLwoLdXBkYXRlX3RpbWUYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEg0KBWVtYWlsGAQgASgJEg0KBW93bmVyGAUgASgIQvIBChhjb20udGVzc2VyYWwuZnJvbnRlbmQudjFCC01vZGVsc1Byb3RvUAFaV2dpdGh1Yi5jb20vdGVzc2VyYWwtbGFicy90ZXNzZXJhbC9pbnRlcm5hbC9mcm9udGVuZC9nZW4vdGVzc2VyYWwvZnJvbnRlbmQvdjE7ZnJvbnRlbmR2MaICA1RGWKoCFFRlc3NlcmFsLkZyb250ZW5kLlYxygIUVGVzc2VyYWxcRnJvbnRlbmRcVjHiAiBUZXNzZXJhbFxGcm9udGVuZFxWMVxHUEJNZXRhZGF0YeoCFlRlc3NlcmFsOjpGcm9udGVuZDo6VjFiBnByb3RvMw", [file_google_protobuf_struct, file_google_protobuf_timestamp]);
 
 /**
  * @generated from message tesseral.frontend.v1.Project
  */
-export type Project = Message<'tesseral.frontend.v1.Project'> & {
+export type Project = Message<"tesseral.frontend.v1.Project"> & {
   /**
    * @generated from field: string id = 1;
    */
@@ -90,14 +83,13 @@ export type Project = Message<'tesseral.frontend.v1.Project'> & {
  * Describes the message tesseral.frontend.v1.Project.
  * Use `create(ProjectSchema)` to create a new message.
  */
-export const ProjectSchema: GenMessage<Project> =
-  /*@__PURE__*/
+export const ProjectSchema: GenMessage<Project> = /*@__PURE__*/
   messageDesc(file_tesseral_frontend_v1_models, 0);
 
 /**
  * @generated from message tesseral.frontend.v1.Organization
  */
-export type Organization = Message<'tesseral.frontend.v1.Organization'> & {
+export type Organization = Message<"tesseral.frontend.v1.Organization"> & {
   /**
    * @generated from field: string id = 1;
    */
@@ -178,76 +170,69 @@ export type Organization = Message<'tesseral.frontend.v1.Organization'> & {
  * Describes the message tesseral.frontend.v1.Organization.
  * Use `create(OrganizationSchema)` to create a new message.
  */
-export const OrganizationSchema: GenMessage<Organization> =
-  /*@__PURE__*/
+export const OrganizationSchema: GenMessage<Organization> = /*@__PURE__*/
   messageDesc(file_tesseral_frontend_v1_models, 1);
 
 /**
  * @generated from message tesseral.frontend.v1.OrganizationGoogleHostedDomains
  */
-export type OrganizationGoogleHostedDomains =
-  Message<'tesseral.frontend.v1.OrganizationGoogleHostedDomains'> & {
-    /**
-     * @generated from field: repeated string google_hosted_domains = 2;
-     */
-    googleHostedDomains: string[];
-  };
+export type OrganizationGoogleHostedDomains = Message<"tesseral.frontend.v1.OrganizationGoogleHostedDomains"> & {
+  /**
+   * @generated from field: repeated string google_hosted_domains = 2;
+   */
+  googleHostedDomains: string[];
+};
 
 /**
  * Describes the message tesseral.frontend.v1.OrganizationGoogleHostedDomains.
  * Use `create(OrganizationGoogleHostedDomainsSchema)` to create a new message.
  */
-export const OrganizationGoogleHostedDomainsSchema: GenMessage<OrganizationGoogleHostedDomains> =
-  /*@__PURE__*/
+export const OrganizationGoogleHostedDomainsSchema: GenMessage<OrganizationGoogleHostedDomains> = /*@__PURE__*/
   messageDesc(file_tesseral_frontend_v1_models, 2);
 
 /**
  * @generated from message tesseral.frontend.v1.OrganizationMicrosoftTenantIDs
  */
-export type OrganizationMicrosoftTenantIDs =
-  Message<'tesseral.frontend.v1.OrganizationMicrosoftTenantIDs'> & {
-    /**
-     * @generated from field: repeated string microsoft_tenant_ids = 2;
-     */
-    microsoftTenantIds: string[];
-  };
+export type OrganizationMicrosoftTenantIDs = Message<"tesseral.frontend.v1.OrganizationMicrosoftTenantIDs"> & {
+  /**
+   * @generated from field: repeated string microsoft_tenant_ids = 2;
+   */
+  microsoftTenantIds: string[];
+};
 
 /**
  * Describes the message tesseral.frontend.v1.OrganizationMicrosoftTenantIDs.
  * Use `create(OrganizationMicrosoftTenantIDsSchema)` to create a new message.
  */
-export const OrganizationMicrosoftTenantIDsSchema: GenMessage<OrganizationMicrosoftTenantIDs> =
-  /*@__PURE__*/
+export const OrganizationMicrosoftTenantIDsSchema: GenMessage<OrganizationMicrosoftTenantIDs> = /*@__PURE__*/
   messageDesc(file_tesseral_frontend_v1_models, 3);
 
 /**
  * @generated from message tesseral.frontend.v1.SessionSigningKey
  */
-export type SessionSigningKey =
-  Message<'tesseral.frontend.v1.SessionSigningKey'> & {
-    /**
-     * @generated from field: string id = 1;
-     */
-    id: string;
+export type SessionSigningKey = Message<"tesseral.frontend.v1.SessionSigningKey"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
 
-    /**
-     * @generated from field: google.protobuf.Struct public_key_jwk = 2;
-     */
-    publicKeyJwk?: JsonObject;
-  };
+  /**
+   * @generated from field: google.protobuf.Struct public_key_jwk = 2;
+   */
+  publicKeyJwk?: JsonObject;
+};
 
 /**
  * Describes the message tesseral.frontend.v1.SessionSigningKey.
  * Use `create(SessionSigningKeySchema)` to create a new message.
  */
-export const SessionSigningKeySchema: GenMessage<SessionSigningKey> =
-  /*@__PURE__*/
+export const SessionSigningKeySchema: GenMessage<SessionSigningKey> = /*@__PURE__*/
   messageDesc(file_tesseral_frontend_v1_models, 4);
 
 /**
  * @generated from message tesseral.frontend.v1.User
  */
-export type User = Message<'tesseral.frontend.v1.User'> & {
+export type User = Message<"tesseral.frontend.v1.User"> & {
   /**
    * @generated from field: string id = 1;
    */
@@ -293,14 +278,13 @@ export type User = Message<'tesseral.frontend.v1.User'> & {
  * Describes the message tesseral.frontend.v1.User.
  * Use `create(UserSchema)` to create a new message.
  */
-export const UserSchema: GenMessage<User> =
-  /*@__PURE__*/
+export const UserSchema: GenMessage<User> = /*@__PURE__*/
   messageDesc(file_tesseral_frontend_v1_models, 5);
 
 /**
  * @generated from message tesseral.frontend.v1.Session
  */
-export type Session = Message<'tesseral.frontend.v1.Session'> & {
+export type Session = Message<"tesseral.frontend.v1.Session"> & {
   /**
    * @generated from field: string id = 1;
    */
@@ -331,14 +315,13 @@ export type Session = Message<'tesseral.frontend.v1.Session'> & {
  * Describes the message tesseral.frontend.v1.Session.
  * Use `create(SessionSchema)` to create a new message.
  */
-export const SessionSchema: GenMessage<Session> =
-  /*@__PURE__*/
+export const SessionSchema: GenMessage<Session> = /*@__PURE__*/
   messageDesc(file_tesseral_frontend_v1_models, 6);
 
 /**
  * @generated from message tesseral.frontend.v1.SAMLConnection
  */
-export type SAMLConnection = Message<'tesseral.frontend.v1.SAMLConnection'> & {
+export type SAMLConnection = Message<"tesseral.frontend.v1.SAMLConnection"> & {
   /**
    * @generated from field: string id = 1;
    */
@@ -389,14 +372,13 @@ export type SAMLConnection = Message<'tesseral.frontend.v1.SAMLConnection'> & {
  * Describes the message tesseral.frontend.v1.SAMLConnection.
  * Use `create(SAMLConnectionSchema)` to create a new message.
  */
-export const SAMLConnectionSchema: GenMessage<SAMLConnection> =
-  /*@__PURE__*/
+export const SAMLConnectionSchema: GenMessage<SAMLConnection> = /*@__PURE__*/
   messageDesc(file_tesseral_frontend_v1_models, 7);
 
 /**
  * @generated from message tesseral.frontend.v1.SCIMAPIKey
  */
-export type SCIMAPIKey = Message<'tesseral.frontend.v1.SCIMAPIKey'> & {
+export type SCIMAPIKey = Message<"tesseral.frontend.v1.SCIMAPIKey"> & {
   /**
    * @generated from field: string id = 1;
    */
@@ -432,14 +414,13 @@ export type SCIMAPIKey = Message<'tesseral.frontend.v1.SCIMAPIKey'> & {
  * Describes the message tesseral.frontend.v1.SCIMAPIKey.
  * Use `create(SCIMAPIKeySchema)` to create a new message.
  */
-export const SCIMAPIKeySchema: GenMessage<SCIMAPIKey> =
-  /*@__PURE__*/
+export const SCIMAPIKeySchema: GenMessage<SCIMAPIKey> = /*@__PURE__*/
   messageDesc(file_tesseral_frontend_v1_models, 8);
 
 /**
  * @generated from message tesseral.frontend.v1.Passkey
  */
-export type Passkey = Message<'tesseral.frontend.v1.Passkey'> & {
+export type Passkey = Message<"tesseral.frontend.v1.Passkey"> & {
   /**
    * @generated from field: string id = 1;
    */
@@ -490,14 +471,13 @@ export type Passkey = Message<'tesseral.frontend.v1.Passkey'> & {
  * Describes the message tesseral.frontend.v1.Passkey.
  * Use `create(PasskeySchema)` to create a new message.
  */
-export const PasskeySchema: GenMessage<Passkey> =
-  /*@__PURE__*/
+export const PasskeySchema: GenMessage<Passkey> = /*@__PURE__*/
   messageDesc(file_tesseral_frontend_v1_models, 9);
 
 /**
  * @generated from message tesseral.frontend.v1.UserInvite
  */
-export type UserInvite = Message<'tesseral.frontend.v1.UserInvite'> & {
+export type UserInvite = Message<"tesseral.frontend.v1.UserInvite"> & {
   /**
    * @generated from field: string id = 1;
    */
@@ -528,6 +508,6 @@ export type UserInvite = Message<'tesseral.frontend.v1.UserInvite'> & {
  * Describes the message tesseral.frontend.v1.UserInvite.
  * Use `create(UserInviteSchema)` to create a new message.
  */
-export const UserInviteSchema: GenMessage<UserInvite> =
-  /*@__PURE__*/
+export const UserInviteSchema: GenMessage<UserInvite> = /*@__PURE__*/
   messageDesc(file_tesseral_frontend_v1_models, 10);
+

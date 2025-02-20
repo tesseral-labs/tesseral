@@ -2,7 +2,7 @@
 // @generated from file tesseral/frontend/v1/frontend.proto (package tesseral.frontend.v1, syntax proto3)
 /* eslint-disable */
 
-import { FrontendService } from './frontend_pb';
+import { FrontendService } from "./frontend_pb";
 
 /**
  * @generated from rpc tesseral.frontend.v1.FrontendService.Logout
@@ -32,26 +32,22 @@ export const updateOrganization = FrontendService.method.updateOrganization;
 /**
  * @generated from rpc tesseral.frontend.v1.FrontendService.GetOrganizationGoogleHostedDomains
  */
-export const getOrganizationGoogleHostedDomains =
-  FrontendService.method.getOrganizationGoogleHostedDomains;
+export const getOrganizationGoogleHostedDomains = FrontendService.method.getOrganizationGoogleHostedDomains;
 
 /**
  * @generated from rpc tesseral.frontend.v1.FrontendService.UpdateOrganizationGoogleHostedDomains
  */
-export const updateOrganizationGoogleHostedDomains =
-  FrontendService.method.updateOrganizationGoogleHostedDomains;
+export const updateOrganizationGoogleHostedDomains = FrontendService.method.updateOrganizationGoogleHostedDomains;
 
 /**
  * @generated from rpc tesseral.frontend.v1.FrontendService.GetOrganizationMicrosoftTenantIDs
  */
-export const getOrganizationMicrosoftTenantIDs =
-  FrontendService.method.getOrganizationMicrosoftTenantIDs;
+export const getOrganizationMicrosoftTenantIDs = FrontendService.method.getOrganizationMicrosoftTenantIDs;
 
 /**
  * @generated from rpc tesseral.frontend.v1.FrontendService.UpdateOrganizationMicrosoftTenantIDs
  */
-export const updateOrganizationMicrosoftTenantIDs =
-  FrontendService.method.updateOrganizationMicrosoftTenantIDs;
+export const updateOrganizationMicrosoftTenantIDs = FrontendService.method.updateOrganizationMicrosoftTenantIDs;
 
 /**
  * @generated from rpc tesseral.frontend.v1.FrontendService.ListUsers
@@ -163,14 +159,12 @@ export const registerPasskey = FrontendService.method.registerPasskey;
 /**
  * @generated from rpc tesseral.frontend.v1.FrontendService.GetAuthenticatorAppOptions
  */
-export const getAuthenticatorAppOptions =
-  FrontendService.method.getAuthenticatorAppOptions;
+export const getAuthenticatorAppOptions = FrontendService.method.getAuthenticatorAppOptions;
 
 /**
  * @generated from rpc tesseral.frontend.v1.FrontendService.RegisterAuthenticatorApp
  */
-export const registerAuthenticatorApp =
-  FrontendService.method.registerAuthenticatorApp;
+export const registerAuthenticatorApp = FrontendService.method.registerAuthenticatorApp;
 
 /**
  * @generated from rpc tesseral.frontend.v1.FrontendService.ListUserInvites
