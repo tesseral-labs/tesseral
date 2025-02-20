@@ -9,6 +9,7 @@ import (
 
 	"connectrpc.com/connect"
 	"connectrpc.com/vanguard"
+	"github.com/aws/aws-lambda-go/lambdaurl"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
@@ -31,6 +32,7 @@ import (
 	frontendstore "github.com/tesseral-labs/tesseral/internal/frontend/store"
 	"github.com/tesseral-labs/tesseral/internal/googleoauth"
 	"github.com/tesseral-labs/tesseral/internal/hexkey"
+	"github.com/tesseral-labs/tesseral/internal/iamdbauth"
 	intermediateinterceptor "github.com/tesseral-labs/tesseral/internal/intermediate/authn/interceptor"
 	"github.com/tesseral-labs/tesseral/internal/intermediate/gen/tesseral/intermediate/v1/intermediatev1connect"
 	intermediateservice "github.com/tesseral-labs/tesseral/internal/intermediate/service"
@@ -63,24 +65,26 @@ func main() {
 	loadenv.LoadEnv()
 
 	config := struct {
-		Host                                string `conf:"host"`
-		AuthAppsRootDomain                  string `conf:"auth_apps_root_domain"`
-		DB                                  string `conf:"db"`
-		DogfoodAuthDomain                   string `conf:"dogfood_auth_domain"`
-		DogfoodProjectID                    string `conf:"dogfood_project_id"`
-		IntermediateSessionKMSKeyID         string `conf:"intermediate_session_kms_key_id"`
-		KMSEndpoint                         string `conf:"kms_endpoint_resolver_url,noredact"`
-		PageEncodingValue                   string `conf:"page-encoding-value"`
-		S3UserContentBucketName             string `conf:"s3_user_content_bucket_name,noredact"`
-		S3Endpoint                          string `conf:"s3_endpoint_resolver_url,noredact"`
-		SESEndpoint                         string `conf:"ses_endpoint_resolver_url,noredact"`
-		ServeAddr                           string `conf:"serve_addr,noredact"`
-		SessionKMSKeyID                     string `conf:"session_kms_key_id"`
-		GoogleOAuthClientSecretsKMSKeyID    string `conf:"google_oauth_client_secrets_kms_key_id,noredact"`
-		MicrosoftOAuthClientSecretsKMSKeyID string `conf:"microsoft_oauth_client_secrets_kms_key_id,noredact"`
-		AuthenticatorAppSecretsKMSKeyID     string `conf:"authenticator_app_secrets_kms_key_id,noredact"`
-		UserContentBaseUrl                  string `conf:"user_content_base_url"`
-		TesseralDNSCloudflareZoneID         string `conf:"tesseral_dns_cloudflare_zone_id,noredact"`
+		RunAsLambda                         bool             `conf:"run_as_lambda,noredact"`
+		Host                                string           `conf:"host"`
+		AuthAppsRootDomain                  string           `conf:"auth_apps_root_domain"`
+		DB                                  string           `conf:"db"`
+		IAMDB                               iamdbauth.Config `conf:"iamdb"`
+		DogfoodAuthDomain                   string           `conf:"dogfood_auth_domain"`
+		DogfoodProjectID                    string           `conf:"dogfood_project_id"`
+		IntermediateSessionKMSKeyID         string           `conf:"intermediate_session_kms_key_id"`
+		KMSEndpoint                         string           `conf:"kms_endpoint_resolver_url,noredact"`
+		PageEncodingValue                   string           `conf:"page-encoding-value"`
+		S3UserContentBucketName             string           `conf:"s3_user_content_bucket_name,noredact"`
+		S3Endpoint                          string           `conf:"s3_endpoint_resolver_url,noredact"`
+		SESEndpoint                         string           `conf:"ses_endpoint_resolver_url,noredact"`
+		ServeAddr                           string           `conf:"serve_addr,noredact"`
+		SessionKMSKeyID                     string           `conf:"session_kms_key_id"`
+		GoogleOAuthClientSecretsKMSKeyID    string           `conf:"google_oauth_client_secrets_kms_key_id,noredact"`
+		MicrosoftOAuthClientSecretsKMSKeyID string           `conf:"microsoft_oauth_client_secrets_kms_key_id,noredact"`
+		AuthenticatorAppSecretsKMSKeyID     string           `conf:"authenticator_app_secrets_kms_key_id,noredact"`
+		UserContentBaseUrl                  string           `conf:"user_content_base_url"`
+		TesseralDNSCloudflareZoneID         string           `conf:"tesseral_dns_cloudflare_zone_id,noredact"`
 	}{
 		PageEncodingValue: "0000000000000000000000000000000000000000000000000000000000000000",
 	}
@@ -90,7 +94,18 @@ func main() {
 
 	// TODO: Set up Sentry apps and error handling
 
-	db, err := pgxpool.New(context.Background(), config.DB)
+	connString := config.DB
+	if connString == "" {
+		slog.Info("connect_iam_db_auth")
+
+		s, err := iamdbauth.BuildConnectionString(context.Background(), config.IAMDB)
+		if err != nil {
+			panic(fmt.Errorf("iamdbauth: build connection string: %w", err))
+		}
+		connString = s
+	}
+
+	db, err := pgxpool.New(context.Background(), connString)
 	if err != nil {
 		panic(err)
 	}
@@ -266,6 +281,7 @@ func main() {
 	mux.Handle("/internal/health", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		slog.InfoContext(r.Context(), "health")
 		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte("ok"))
 	}))
 
 	// Register the connect service
@@ -311,9 +327,12 @@ func main() {
 		ExposedHeaders:   []string{"*"},
 	}).Handler(serve)
 
-	// Serve the services
 	slog.Info("serve")
-	if err := http.ListenAndServe(config.ServeAddr, serve); err != nil {
-		panic(err)
+	if config.RunAsLambda {
+		lambdaurl.Start(serve)
+	} else {
+		if err := http.ListenAndServe(config.ServeAddr, serve); err != nil {
+			panic(err)
+		}
 	}
 }
