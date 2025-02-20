@@ -32,6 +32,7 @@ import (
 	frontendstore "github.com/tesseral-labs/tesseral/internal/frontend/store"
 	"github.com/tesseral-labs/tesseral/internal/googleoauth"
 	"github.com/tesseral-labs/tesseral/internal/hexkey"
+	"github.com/tesseral-labs/tesseral/internal/iamdbauth"
 	intermediateinterceptor "github.com/tesseral-labs/tesseral/internal/intermediate/authn/interceptor"
 	"github.com/tesseral-labs/tesseral/internal/intermediate/gen/tesseral/intermediate/v1/intermediatev1connect"
 	intermediateservice "github.com/tesseral-labs/tesseral/internal/intermediate/service"
