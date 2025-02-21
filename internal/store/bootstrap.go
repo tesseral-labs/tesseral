@@ -22,6 +22,7 @@ import (
 
 type CreateDogfoodProjectRequest struct {
 	AuthAppsRootDomain string
+	RootUserEmail      string
 }
 
 type CreateDogfoodProjectResponse struct {
@@ -103,7 +104,7 @@ func (s *Store) CreateDogfoodProject(ctx context.Context, req *CreateDogfoodProj
 	}
 
 	// create the bootstrap user inside the dogfood organization
-	bootstrapUserEmail := "root@tesseral.example.com"
+	bootstrapUserEmail := req.RootUserEmail
 	bootstrapUserPasswordBcrypt := string(bootstrapUserPasswordBcryptBytes)
 	if _, err := q.CreateUser(ctx, queries.CreateUserParams{
 		ID:             uuid.New(),
