@@ -18,10 +18,10 @@ import (
 // Handler converts an http.Handler into a lambda.Handler that supports
 // APIGatewayV2 HTTP requests in BUFFERED mode.
 func Handler(h http.Handler) lambda.Handler {
-	return lambda.NewHandler(func(ctx context.Context, e events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
+	return lambda.NewHandler(func(ctx context.Context, e events.LambdaFunctionURLRequest) (events.LambdaFunctionURLResponse, error) {
 		req, err := httpRequest(ctx, e)
 		if err != nil {
-			return events.APIGatewayV2HTTPResponse{}, fmt.Errorf("http request from event: %w", err)
+			return events.LambdaFunctionURLResponse{}, fmt.Errorf("http request from event: %w", err)
 		}
 
 		slog.InfoContext(ctx, "lambda", "request_event", e)
@@ -34,7 +34,7 @@ func Handler(h http.Handler) lambda.Handler {
 	})
 }
 
-func httpRequest(ctx context.Context, e events.APIGatewayV2HTTPRequest) (*http.Request, error) {
+func httpRequest(ctx context.Context, e events.LambdaFunctionURLRequest) (*http.Request, error) {
 	u := url.URL{
 		Scheme:   "https",
 		Host:     e.Headers["Host"],
@@ -60,7 +60,7 @@ func httpRequest(ctx context.Context, e events.APIGatewayV2HTTPRequest) (*http.R
 	return req, nil
 }
 
-func httpResponseEvent(w *httptest.ResponseRecorder) events.APIGatewayV2HTTPResponse {
+func httpResponseEvent(w *httptest.ResponseRecorder) events.LambdaFunctionURLResponse {
 	res := w.Result()
 
 	var cookies []string           // handled separately
@@ -75,13 +75,13 @@ func httpResponseEvent(w *httptest.ResponseRecorder) events.APIGatewayV2HTTPResp
 	}
 
 	body, _ := io.ReadAll(res.Body)
+	slog.InfoContext(context.Background(), "lambda", "response_body", string(body), "response_body_base64", base64.StdEncoding.EncodeToString(body))
 
-	return events.APIGatewayV2HTTPResponse{
-		StatusCode:        res.StatusCode,
-		Cookies:           cookies,
-		Headers:           headers,
-		Body:              base64.StdEncoding.EncodeToString(body),
-		IsBase64Encoded:   true,
-		MultiValueHeaders: nil, // not supported by AWS
+	return events.LambdaFunctionURLResponse{
+		StatusCode:      res.StatusCode,
+		Cookies:         cookies,
+		Headers:         headers,
+		Body:            string(body),
+		IsBase64Encoded: false,
 	}
 }

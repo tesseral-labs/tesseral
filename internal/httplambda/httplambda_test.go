@@ -17,14 +17,14 @@ import (
 func TestHTTPRequest(t *testing.T) {
 	testCases := []struct {
 		name  string
-		event events.APIGatewayV2HTTPRequest
+		event events.LambdaFunctionURLRequest
 		want  *http.Request
 	}{
 		{
 			name: "simple GET request",
-			event: events.APIGatewayV2HTTPRequest{
-				RequestContext: events.APIGatewayV2HTTPRequestContext{
-					HTTP: events.APIGatewayV2HTTPRequestContextHTTPDescription{
+			event: events.LambdaFunctionURLRequest{
+				RequestContext: events.LambdaFunctionURLRequestContext{
+					HTTP: events.LambdaFunctionURLRequestContextHTTPDescription{
 						Method: "GET",
 					},
 				},
@@ -49,9 +49,9 @@ func TestHTTPRequest(t *testing.T) {
 
 		{
 			name: "simple POST request with body",
-			event: events.APIGatewayV2HTTPRequest{
-				RequestContext: events.APIGatewayV2HTTPRequestContext{
-					HTTP: events.APIGatewayV2HTTPRequestContextHTTPDescription{
+			event: events.LambdaFunctionURLRequest{
+				RequestContext: events.LambdaFunctionURLRequestContext{
+					HTTP: events.LambdaFunctionURLRequestContextHTTPDescription{
 						Method: "POST",
 					},
 				},
@@ -79,9 +79,9 @@ func TestHTTPRequest(t *testing.T) {
 		},
 		{
 			name: "POST request with cookies",
-			event: events.APIGatewayV2HTTPRequest{
-				RequestContext: events.APIGatewayV2HTTPRequestContext{
-					HTTP: events.APIGatewayV2HTTPRequestContextHTTPDescription{
+			event: events.LambdaFunctionURLRequest{
+				RequestContext: events.LambdaFunctionURLRequestContext{
+					HTTP: events.LambdaFunctionURLRequestContextHTTPDescription{
 						Method: "POST",
 					},
 				},
@@ -111,9 +111,9 @@ func TestHTTPRequest(t *testing.T) {
 		},
 		{
 			name: "POST request with base64-encoded body",
-			event: events.APIGatewayV2HTTPRequest{
-				RequestContext: events.APIGatewayV2HTTPRequestContext{
-					HTTP: events.APIGatewayV2HTTPRequestContextHTTPDescription{
+			event: events.LambdaFunctionURLRequest{
+				RequestContext: events.LambdaFunctionURLRequestContext{
+					HTTP: events.LambdaFunctionURLRequestContextHTTPDescription{
 						Method: "POST",
 					},
 				},
@@ -171,7 +171,7 @@ func TestHTTPResponseEvent(t *testing.T) {
 	testCases := []struct {
 		name string
 		w    *httptest.ResponseRecorder
-		want events.APIGatewayV2HTTPResponse
+		want events.LambdaFunctionURLResponse
 	}{
 		{
 			name: "empty 200 OK",
@@ -180,7 +180,7 @@ func TestHTTPResponseEvent(t *testing.T) {
 				rec.WriteHeader(http.StatusOK)
 				return rec
 			}(),
-			want: events.APIGatewayV2HTTPResponse{
+			want: events.LambdaFunctionURLResponse{
 				StatusCode: http.StatusOK,
 				Headers:    map[string]string{},
 				Body:       "",
@@ -194,7 +194,7 @@ func TestHTTPResponseEvent(t *testing.T) {
 				_, _ = rec.Write([]byte(`{"message":"success"}`)) // Writing response body
 				return rec
 			}(),
-			want: events.APIGatewayV2HTTPResponse{
+			want: events.LambdaFunctionURLResponse{
 				StatusCode: http.StatusOK,
 				Headers:    map[string]string{},
 				Body:       `{"message":"success"}`, // Expected response body
@@ -208,7 +208,7 @@ func TestHTTPResponseEvent(t *testing.T) {
 				_, _ = rec.Write([]byte(`{"error":"resource not found"}`)) // Writing response body
 				return rec
 			}(),
-			want: events.APIGatewayV2HTTPResponse{
+			want: events.LambdaFunctionURLResponse{
 				StatusCode: http.StatusNotFound,
 				Headers:    map[string]string{},
 				Body:       `{"error":"resource not found"}`, // Expected response body
@@ -226,7 +226,7 @@ func TestHTTPResponseEvent(t *testing.T) {
 				_, _ = rec.Write([]byte(`{"message":"success"}`)) // Writing response body
 				return rec
 			}(),
-			want: events.APIGatewayV2HTTPResponse{
+			want: events.LambdaFunctionURLResponse{
 				StatusCode: http.StatusOK,
 				Cookies: []string{
 					"session_id=abc123; Path=/; HttpOnly",
