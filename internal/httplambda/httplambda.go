@@ -5,7 +5,6 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
-	"log/slog"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -24,13 +23,9 @@ func Handler(h http.Handler) lambda.Handler {
 			return events.LambdaFunctionURLResponse{}, fmt.Errorf("http request from event: %w", err)
 		}
 
-		slog.InfoContext(ctx, "lambda", "request_event", e)
 		w := httptest.NewRecorder()
 		h.ServeHTTP(w, req)
-
-		resEvent := httpResponseEvent(w)
-		slog.InfoContext(ctx, "lambda", "response_event", resEvent)
-		return resEvent, nil
+		return httpResponseEvent(w), nil
 	})
 }
 
@@ -75,8 +70,6 @@ func httpResponseEvent(w *httptest.ResponseRecorder) events.LambdaFunctionURLRes
 	}
 
 	body, _ := io.ReadAll(res.Body)
-	slog.InfoContext(context.Background(), "lambda", "response_body", string(body), "response_body_base64", base64.StdEncoding.EncodeToString(body))
-
 	return events.LambdaFunctionURLResponse{
 		StatusCode:      res.StatusCode,
 		Cookies:         cookies,
