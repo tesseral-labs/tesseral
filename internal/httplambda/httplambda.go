@@ -80,8 +80,8 @@ func httpResponseEvent(w *httptest.ResponseRecorder) events.APIGatewayV2HTTPResp
 		StatusCode:        res.StatusCode,
 		Cookies:           cookies,
 		Headers:           headers,
-		Body:              string(body),
-		MultiValueHeaders: nil,   // not supported by AWS
-		IsBase64Encoded:   false, // we're returning mostly ASCII, so base64 isn't worthwhile
+		Body:              base64.StdEncoding.EncodeToString(body),
+		IsBase64Encoded:   true,
+		MultiValueHeaders: nil, // not supported by AWS
 	}
 }
