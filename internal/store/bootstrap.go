@@ -8,6 +8,7 @@ import (
 	"crypto/x509"
 	"encoding/hex"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
@@ -19,6 +20,11 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+type CreateDogfoodProjectRequest struct {
+	AuthAppsRootDomain string
+	RootUserEmail      string
+}
+
 type CreateDogfoodProjectResponse struct {
 	DogfoodProjectID                   string
 	BootstrapUserEmail                 string
@@ -26,7 +32,7 @@ type CreateDogfoodProjectResponse struct {
 }
 
 // CreateDogfoodProject creates the dogfood project.
-func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProjectResponse, error) {
+func (s *Store) CreateDogfoodProject(ctx context.Context, req *CreateDogfoodProjectRequest) (*CreateDogfoodProjectResponse, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -47,17 +53,17 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 	// other
 	dogfoodProjectID := uuid.New()
 	dogfoodOrganizationID := uuid.New()
-	authDomain := fmt.Sprintf("%s.%s", idformat.Project.Format(dogfoodProjectID), "tesseral.example.app")
-	customAuthDomain := "auth.app.tesseral.example.com"
+	authDomain := fmt.Sprintf("%s.%s", strings.ReplaceAll(idformat.Project.Format(dogfoodProjectID), "_", "-"), req.AuthAppsRootDomain)
 
-	if _, err := q.CreateProject(ctx, queries.CreateProjectParams{
-		ID:                dogfoodProjectID,
-		DisplayName:       "OpenAuth Dogfood",
-		OrganizationID:    nil, // will populate after creating org
-		LogInWithPassword: true,
-		LogInWithGoogle:   true,
-		AuthDomain:        &authDomain,
-		CustomAuthDomain:  &customAuthDomain,
+	if _, err := q.CreateDogfoodProject(ctx, queries.CreateDogfoodProjectParams{
+		ID:                 dogfoodProjectID,
+		DisplayName:        "Tesseral Dogfood",
+		LogInWithGoogle:    false,
+		LogInWithMicrosoft: false,
+		LogInWithEmail:     true,
+		LogInWithPassword:  true,
+		AuthDomain:         &authDomain,
+		CustomAuthDomain:   &authDomain, // todo sort this config out
 	}); err != nil {
 		return nil, fmt.Errorf("create dogfood project: %w", err)
 	}
@@ -98,7 +104,7 @@ func (s *Store) CreateDogfoodProject(ctx context.Context) (*CreateDogfoodProject
 	}
 
 	// create the bootstrap user inside the dogfood organization
-	bootstrapUserEmail := "root@tesseral.example.com"
+	bootstrapUserEmail := req.RootUserEmail
 	bootstrapUserPasswordBcrypt := string(bootstrapUserPasswordBcryptBytes)
 	if _, err := q.CreateUser(ctx, queries.CreateUserParams{
 		ID:             uuid.New(),

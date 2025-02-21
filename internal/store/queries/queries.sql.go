@@ -26,6 +26,63 @@ func (q *Queries) CountAllProjects(ctx context.Context) (int64, error) {
 	return count, err
 }
 
+const createDogfoodProject = `-- name: CreateDogfoodProject :one
+INSERT INTO projects (id, display_name, log_in_with_google, log_in_with_microsoft, log_in_with_email, log_in_with_password, auth_domain, custom_auth_domain)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+RETURNING
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri
+`
+
+type CreateDogfoodProjectParams struct {
+	ID                 uuid.UUID
+	DisplayName        string
+	LogInWithGoogle    bool
+	LogInWithMicrosoft bool
+	LogInWithEmail     bool
+	LogInWithPassword  bool
+	AuthDomain         *string
+	CustomAuthDomain   *string
+}
+
+func (q *Queries) CreateDogfoodProject(ctx context.Context, arg CreateDogfoodProjectParams) (Project, error) {
+	row := q.db.QueryRow(ctx, createDogfoodProject,
+		arg.ID,
+		arg.DisplayName,
+		arg.LogInWithGoogle,
+		arg.LogInWithMicrosoft,
+		arg.LogInWithEmail,
+		arg.LogInWithPassword,
+		arg.AuthDomain,
+		arg.CustomAuthDomain,
+	)
+	var i Project
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.LogInWithPassword,
+		&i.LogInWithGoogle,
+		&i.LogInWithMicrosoft,
+		&i.GoogleOauthClientID,
+		&i.MicrosoftOauthClientID,
+		&i.GoogleOauthClientSecretCiphertext,
+		&i.MicrosoftOauthClientSecretCiphertext,
+		&i.DisplayName,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.CustomAuthDomain,
+		&i.AuthDomain,
+		&i.LoginsDisabled,
+		&i.LogInWithAuthenticatorApp,
+		&i.LogInWithPasskey,
+		&i.LogInWithEmail,
+		&i.LogInWithSaml,
+		&i.RedirectUri,
+		&i.AfterLoginRedirectUri,
+		&i.AfterSignupRedirectUri,
+	)
+	return i, err
+}
+
 const createOrganization = `-- name: CreateOrganization :one
 INSERT INTO organizations (id, project_id, display_name, scim_enabled)
     VALUES ($1, $2, $3, $4)
@@ -64,63 +121,6 @@ func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganization
 		&i.RequireMfa,
 		&i.LogInWithEmail,
 		&i.LogInWithSaml,
-	)
-	return i, err
-}
-
-const createProject = `-- name: CreateProject :one
-INSERT INTO projects (id, organization_id, display_name, log_in_with_password, log_in_with_google, log_in_with_microsoft, auth_domain, custom_auth_domain)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-RETURNING
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri
-`
-
-type CreateProjectParams struct {
-	ID                 uuid.UUID
-	OrganizationID     *uuid.UUID
-	DisplayName        string
-	LogInWithPassword  bool
-	LogInWithGoogle    bool
-	LogInWithMicrosoft bool
-	AuthDomain         *string
-	CustomAuthDomain   *string
-}
-
-func (q *Queries) CreateProject(ctx context.Context, arg CreateProjectParams) (Project, error) {
-	row := q.db.QueryRow(ctx, createProject,
-		arg.ID,
-		arg.OrganizationID,
-		arg.DisplayName,
-		arg.LogInWithPassword,
-		arg.LogInWithGoogle,
-		arg.LogInWithMicrosoft,
-		arg.AuthDomain,
-		arg.CustomAuthDomain,
-	)
-	var i Project
-	err := row.Scan(
-		&i.ID,
-		&i.OrganizationID,
-		&i.LogInWithPassword,
-		&i.LogInWithGoogle,
-		&i.LogInWithMicrosoft,
-		&i.GoogleOauthClientID,
-		&i.MicrosoftOauthClientID,
-		&i.GoogleOauthClientSecretCiphertext,
-		&i.MicrosoftOauthClientSecretCiphertext,
-		&i.DisplayName,
-		&i.CreateTime,
-		&i.UpdateTime,
-		&i.CustomAuthDomain,
-		&i.AuthDomain,
-		&i.LoginsDisabled,
-		&i.LogInWithAuthenticatorApp,
-		&i.LogInWithPasskey,
-		&i.LogInWithEmail,
-		&i.LogInWithSaml,
-		&i.RedirectUri,
-		&i.AfterLoginRedirectUri,
-		&i.AfterSignupRedirectUri,
 	)
 	return i, err
 }
