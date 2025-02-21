@@ -167,7 +167,7 @@ func (s *Store) sendEmailVerificationChallenge(ctx context.Context, email string
 		Destination: &types.Destination{
 			ToAddresses: []string{email},
 		},
-		FromEmailAddress: aws.String("noreply@mail.laresset-dev1.com"), // TODO: Replace with a real email address once verification is in place
+		FromEmailAddress: aws.String("noreply@mail.laresset-dev1.app"), // TODO: Replace with a real email address once verification is in place
 	})
 	if err != nil {
 		return fmt.Errorf("send email: %w", err)
