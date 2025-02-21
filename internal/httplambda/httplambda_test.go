@@ -191,7 +191,7 @@ func TestHTTPResponseEvent(t *testing.T) {
 			w: func() *httptest.ResponseRecorder {
 				rec := httptest.NewRecorder()
 				rec.WriteHeader(http.StatusOK)
-				rec.Write([]byte(`{"message":"success"}`)) // Writing response body
+				_, _ = rec.Write([]byte(`{"message":"success"}`)) // Writing response body
 				return rec
 			}(),
 			want: events.APIGatewayV2HTTPResponse{
@@ -205,7 +205,7 @@ func TestHTTPResponseEvent(t *testing.T) {
 			w: func() *httptest.ResponseRecorder {
 				rec := httptest.NewRecorder()
 				rec.WriteHeader(http.StatusNotFound)
-				rec.Write([]byte(`{"error":"resource not found"}`)) // Writing response body
+				_, _ = rec.Write([]byte(`{"error":"resource not found"}`)) // Writing response body
 				return rec
 			}(),
 			want: events.APIGatewayV2HTTPResponse{
@@ -223,7 +223,7 @@ func TestHTTPResponseEvent(t *testing.T) {
 				rec.Header().Add("Set-Cookie", "session_id=abc123; Path=/; HttpOnly")
 				rec.Header().Add("Set-Cookie", "user_id=42; Path=/; HttpOnly")
 				rec.WriteHeader(http.StatusOK)
-				rec.Write([]byte(`{"message":"success"}`)) // Writing response body
+				_, _ = rec.Write([]byte(`{"message":"success"}`)) // Writing response body
 				return rec
 			}(),
 			want: events.APIGatewayV2HTTPResponse{
