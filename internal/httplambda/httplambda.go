@@ -14,6 +14,8 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 )
 
+// Handler converts an http.Handler into a lambda.Handler that supports
+// APIGatewayV2 HTTP requests in BUFFERED mode.
 func Handler(h http.Handler) lambda.Handler {
 	return lambda.NewHandler(func(ctx context.Context, e events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
 		req, err := httpRequest(ctx, e)
