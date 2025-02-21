@@ -7,6 +7,6 @@ node_modules
 /console/public/index.css
 /console/public/index.js
 /console/public/index.js.map
-/ui/public/index.css
-/ui/public/index.js
-/ui/public/index.js.map
+/vault-ui/public/index.css
+/vault-ui/public/index.js
+/vault-ui/public/index.js.map
