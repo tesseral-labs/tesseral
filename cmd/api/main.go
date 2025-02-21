@@ -9,7 +9,7 @@ import (
 
 	"connectrpc.com/connect"
 	"connectrpc.com/vanguard"
-	"github.com/aws/aws-lambda-go/lambdaurl"
+	"github.com/aws/aws-lambda-go/lambda"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
@@ -32,6 +32,7 @@ import (
 	frontendstore "github.com/tesseral-labs/tesseral/internal/frontend/store"
 	"github.com/tesseral-labs/tesseral/internal/googleoauth"
 	"github.com/tesseral-labs/tesseral/internal/hexkey"
+	"github.com/tesseral-labs/tesseral/internal/httplambda"
 	"github.com/tesseral-labs/tesseral/internal/iamdbauth"
 	intermediateinterceptor "github.com/tesseral-labs/tesseral/internal/intermediate/authn/interceptor"
 	"github.com/tesseral-labs/tesseral/internal/intermediate/gen/tesseral/intermediate/v1/intermediatev1connect"
@@ -329,7 +330,7 @@ func main() {
 
 	slog.Info("serve")
 	if config.RunAsLambda {
-		lambdaurl.Start(serve)
+		lambda.Start(httplambda.Handler(serve))
 	} else {
 		if err := http.ListenAndServe(config.ServeAddr, serve); err != nil {
 			panic(err)
