@@ -22,7 +22,7 @@ var skipRPCs = []string{
 func New(s *store.Store, p *projectid.Sniffer, authAppsRootDomain string) connect.UnaryInterceptorFunc {
 	return func(next connect.UnaryFunc) connect.UnaryFunc {
 		return func(ctx context.Context, req connect.AnyRequest) (connect.AnyResponse, error) {
-			projectID, err := p.GetProjectID(req.Header().Get("Host"))
+			projectID, err := p.GetProjectID(req.Header().Get("X-Tesseral-Host"))
 			if err != nil {
 				return nil, connect.NewError(connect.CodeNotFound, err)
 			}
