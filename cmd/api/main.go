@@ -278,7 +278,7 @@ func main() {
 
 	// Register health checks
 	mux := http.NewServeMux()
-	mux.Handle("/internal/health", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	mux.Handle("/api/internal/health", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		slog.InfoContext(r.Context(), "health")
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte("ok"))
@@ -293,13 +293,13 @@ func main() {
 	mux.Handle("/api/intermediate/v1/", intermediateTranscoder)
 
 	// Register oauthservice
-	mux.Handle("/oauth/", oauthService.Handler())
+	mux.Handle("/api/oauth/", oauthService.Handler())
 
 	// Register samlservice
-	mux.Handle("/saml/", samlServiceHandler)
+	mux.Handle("/api/saml/", samlServiceHandler)
 
 	// Register scimservice
-	mux.Handle("/scim/", scimServiceHandler)
+	mux.Handle("/api/scim/", scimServiceHandler)
 
 	// Register wellknownservice
 	mux.Handle("/.well-known/", wellknownServiceHandler)
