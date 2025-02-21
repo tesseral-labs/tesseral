@@ -285,12 +285,12 @@ func main() {
 	}))
 
 	// Register the connect service
-	mux.Handle("/internal/connect/", http.StripPrefix("/internal/connect", connectMux))
+	mux.Handle("/api/internal/connect/", http.StripPrefix("/api/internal/connect", connectMux))
 
 	// Register service transcoders
-	mux.Handle("/backend/v1/", backendTranscoder)
-	mux.Handle("/frontend/v1/", frontendTranscoder)
-	mux.Handle("/intermediate/v1/", intermediateTranscoder)
+	mux.Handle("/api/backend/v1/", backendTranscoder)
+	mux.Handle("/api/frontend/v1/", frontendTranscoder)
+	mux.Handle("/api/intermediate/v1/", intermediateTranscoder)
 
 	// Register oauthservice
 	mux.Handle("/oauth/", oauthService.Handler())
