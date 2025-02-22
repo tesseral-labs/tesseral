@@ -40,6 +40,7 @@ func newCookie(name string, maxAge time.Duration, projectID uuid.UUID, value str
 		Value:    value,
 		MaxAge:   int(maxAge.Seconds()),
 		Path:     "/",
+		SameSite: http.SameSiteNoneMode,
 		Secure:   true,
 		HttpOnly: true,
 	}
