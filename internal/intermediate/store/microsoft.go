@@ -11,11 +11,11 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/openauth/openauth/internal/common/apierror"
-	"github.com/openauth/openauth/internal/intermediate/authn"
-	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
-	"github.com/openauth/openauth/internal/intermediate/store/queries"
-	"github.com/openauth/openauth/internal/microsoftoauth"
+	"github.com/tesseral-labs/tesseral/internal/common/apierror"
+	"github.com/tesseral-labs/tesseral/internal/intermediate/authn"
+	intermediatev1 "github.com/tesseral-labs/tesseral/internal/intermediate/gen/tesseral/intermediate/v1"
+	"github.com/tesseral-labs/tesseral/internal/intermediate/store/queries"
+	"github.com/tesseral-labs/tesseral/internal/microsoftoauth"
 )
 
 func (s *Store) GetMicrosoftOAuthRedirectURL(ctx context.Context, req *intermediatev1.GetMicrosoftOAuthRedirectURLRequest) (*intermediatev1.GetMicrosoftOAuthRedirectURLResponse, error) {

@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/openauth/openauth/internal/ujwt"
+	"github.com/tesseral-labs/tesseral/internal/ujwt"
 )
 
 func TestKeyID(t *testing.T) {

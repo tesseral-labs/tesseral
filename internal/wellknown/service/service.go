@@ -9,9 +9,9 @@ import (
 	"net/http"
 	"net/http/httptest"
 
-	"github.com/openauth/openauth/internal/common/projectid"
-	"github.com/openauth/openauth/internal/wellknown/authn/authnmiddleware"
-	"github.com/openauth/openauth/internal/wellknown/store"
+	"github.com/tesseral-labs/tesseral/internal/common/projectid"
+	"github.com/tesseral-labs/tesseral/internal/wellknown/authn/authnmiddleware"
+	"github.com/tesseral-labs/tesseral/internal/wellknown/store"
 )
 
 type Service struct {

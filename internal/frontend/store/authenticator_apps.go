@@ -8,12 +8,12 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
-	"github.com/openauth/openauth/internal/bcryptcost"
-	"github.com/openauth/openauth/internal/common/apierror"
-	"github.com/openauth/openauth/internal/frontend/authn"
-	frontendv1 "github.com/openauth/openauth/internal/frontend/gen/openauth/frontend/v1"
-	"github.com/openauth/openauth/internal/frontend/store/queries"
-	"github.com/openauth/openauth/internal/totp"
+	"github.com/tesseral-labs/tesseral/internal/bcryptcost"
+	"github.com/tesseral-labs/tesseral/internal/common/apierror"
+	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
+	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
+	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
+	"github.com/tesseral-labs/tesseral/internal/totp"
 	"golang.org/x/crypto/bcrypt"
 )
 

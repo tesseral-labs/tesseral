@@ -1,76 +1,49 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { useParams } from 'react-router'
-import { useMutation, useQuery } from '@connectrpc/connect-query'
+} from '@/components/ui/card';
+import { useParams } from 'react-router';
+import { useQuery } from '@connectrpc/connect-query';
 import {
   getOrganization,
   getOrganizationGoogleHostedDomains,
   getOrganizationMicrosoftTenantIDs,
   getProject,
-  getProjectAPIKey,
-  updateOrganizationGoogleHostedDomains,
-  updateProjectAPIKey,
-} from '@/gen/openauth/backend/v1/backend-BackendService_connectquery'
-import { Button } from '@/components/ui/button'
-import { Link } from 'react-router-dom'
+} from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
+import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 import {
   DetailsGrid,
   DetailsGridColumn,
   DetailsGridEntry,
   DetailsGridKey,
   DetailsGridValue,
-} from '@/components/details-grid'
-import { z } from 'zod'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  AlertDialog,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { InputTags } from '@/components/input-tags'
-import { EditOrganizationGoogleConfigurationButton } from '@/pages/organizations/EditOrganizationGoogleConfigurationButton'
-import { EditOrganizationMicrosoftConfigurationButton } from '@/pages/organizations/EditOrganizationMicrosoftConfigurationButton'
+} from '@/components/details-grid';
+import { EditOrganizationGoogleConfigurationButton } from '@/pages/organizations/EditOrganizationGoogleConfigurationButton';
+import { EditOrganizationMicrosoftConfigurationButton } from '@/pages/organizations/EditOrganizationMicrosoftConfigurationButton';
 
-export function OrganizationDetailsTab() {
-  const { organizationId } = useParams()
+export const OrganizationDetailsTab = () => {
+  const { organizationId } = useParams();
   const { data: getOrganizationResponse } = useQuery(getOrganization, {
     id: organizationId,
-  })
-  const { data: getProjectResponse } = useQuery(getProject, {})
+  });
+  const { data: getProjectResponse } = useQuery(getProject, {});
   const { data: getOrganizationGoogleHostedDomainsResponse } = useQuery(
     getOrganizationGoogleHostedDomains,
     {
       organizationId,
     },
-  )
+  );
   const { data: getOrganizationMicrosoftTenantIdsResponse } = useQuery(
     getOrganizationMicrosoftTenantIDs,
     {
       organizationId,
     },
-  )
+  );
 
   return (
     <div className="space-y-8">
@@ -261,5 +234,5 @@ export function OrganizationDetailsTab() {
         </Card>
       )}
     </div>
-  )
-}
+  );
+};

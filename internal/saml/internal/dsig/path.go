@@ -1,8 +1,8 @@
 package dsig
 
 import (
-	"github.com/openauth/openauth/internal/saml/internal/uxml"
-	"github.com/openauth/openauth/internal/saml/internal/uxml/stack"
+	"github.com/tesseral-labs/tesseral/internal/saml/internal/uxml"
+	"github.com/tesseral-labs/tesseral/internal/saml/internal/uxml/stack"
 )
 
 type path []segment

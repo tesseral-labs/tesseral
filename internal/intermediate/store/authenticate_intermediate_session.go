@@ -5,10 +5,10 @@ import (
 	"crypto/sha256"
 	"fmt"
 
-	"github.com/openauth/openauth/internal/common/apierror"
-	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
-	"github.com/openauth/openauth/internal/intermediate/store/queries"
-	"github.com/openauth/openauth/internal/store/idformat"
+	"github.com/tesseral-labs/tesseral/internal/common/apierror"
+	intermediatev1 "github.com/tesseral-labs/tesseral/internal/intermediate/gen/tesseral/intermediate/v1"
+	"github.com/tesseral-labs/tesseral/internal/intermediate/store/queries"
+	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 )
 
 func (s *Store) AuthenticateIntermediateSession(ctx context.Context, projectID, secretToken string) (*intermediatev1.IntermediateSession, error) {

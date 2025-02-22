@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/openauth/openauth/internal/oauth/store"
+	"github.com/tesseral-labs/tesseral/internal/oauth/store"
 )
 
 type Service struct {

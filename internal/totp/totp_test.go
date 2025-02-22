@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/openauth/openauth/internal/totp"
 	"github.com/stretchr/testify/assert"
+	"github.com/tesseral-labs/tesseral/internal/totp"
 )
 
 func TestKey_Validate(t *testing.T) {

@@ -9,6 +9,7 @@ import (
 
 	"connectrpc.com/connect"
 	"connectrpc.com/vanguard"
+	"github.com/aws/aws-lambda-go/lambda"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
@@ -16,40 +17,42 @@ import (
 	"github.com/cyrusaf/ctxlog"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
-	backendinterceptor "github.com/openauth/openauth/internal/backend/authn/interceptor"
-	"github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1/backendv1connect"
-	backendservice "github.com/openauth/openauth/internal/backend/service"
-	backendstore "github.com/openauth/openauth/internal/backend/store"
-	"github.com/openauth/openauth/internal/common/accesstoken"
-	"github.com/openauth/openauth/internal/common/projectid"
-	commonstore "github.com/openauth/openauth/internal/common/store"
-	frontendinterceptor "github.com/openauth/openauth/internal/frontend/authn/interceptor"
-	"github.com/openauth/openauth/internal/frontend/gen/openauth/frontend/v1/frontendv1connect"
-	frontendservice "github.com/openauth/openauth/internal/frontend/service"
-	frontendstore "github.com/openauth/openauth/internal/frontend/store"
-	"github.com/openauth/openauth/internal/googleoauth"
-	"github.com/openauth/openauth/internal/hexkey"
-	intermediateinterceptor "github.com/openauth/openauth/internal/intermediate/authn/interceptor"
-	"github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1/intermediatev1connect"
-	intermediateservice "github.com/openauth/openauth/internal/intermediate/service"
-	intermediatestore "github.com/openauth/openauth/internal/intermediate/store"
-	"github.com/openauth/openauth/internal/loadenv"
-	"github.com/openauth/openauth/internal/microsoftoauth"
-	oauthservice "github.com/openauth/openauth/internal/oauth/service"
-	oauthstore "github.com/openauth/openauth/internal/oauth/store"
-	"github.com/openauth/openauth/internal/pagetoken"
-	samlinterceptor "github.com/openauth/openauth/internal/saml/authn/interceptor"
-	samlservice "github.com/openauth/openauth/internal/saml/service"
-	samlstore "github.com/openauth/openauth/internal/saml/store"
-	scimservice "github.com/openauth/openauth/internal/scim/service"
-	scimstore "github.com/openauth/openauth/internal/scim/store"
-	"github.com/openauth/openauth/internal/secretload"
-	"github.com/openauth/openauth/internal/slogcorrelation"
-	"github.com/openauth/openauth/internal/store/idformat"
-	wellknownservice "github.com/openauth/openauth/internal/wellknown/service"
-	wellknownstore "github.com/openauth/openauth/internal/wellknown/store"
 	"github.com/rs/cors"
 	"github.com/ssoready/conf"
+	backendinterceptor "github.com/tesseral-labs/tesseral/internal/backend/authn/interceptor"
+	"github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1/backendv1connect"
+	backendservice "github.com/tesseral-labs/tesseral/internal/backend/service"
+	backendstore "github.com/tesseral-labs/tesseral/internal/backend/store"
+	"github.com/tesseral-labs/tesseral/internal/common/accesstoken"
+	"github.com/tesseral-labs/tesseral/internal/common/projectid"
+	commonstore "github.com/tesseral-labs/tesseral/internal/common/store"
+	frontendinterceptor "github.com/tesseral-labs/tesseral/internal/frontend/authn/interceptor"
+	"github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1/frontendv1connect"
+	frontendservice "github.com/tesseral-labs/tesseral/internal/frontend/service"
+	frontendstore "github.com/tesseral-labs/tesseral/internal/frontend/store"
+	"github.com/tesseral-labs/tesseral/internal/googleoauth"
+	"github.com/tesseral-labs/tesseral/internal/hexkey"
+	"github.com/tesseral-labs/tesseral/internal/httplambda"
+	"github.com/tesseral-labs/tesseral/internal/iamdbauth"
+	intermediateinterceptor "github.com/tesseral-labs/tesseral/internal/intermediate/authn/interceptor"
+	"github.com/tesseral-labs/tesseral/internal/intermediate/gen/tesseral/intermediate/v1/intermediatev1connect"
+	intermediateservice "github.com/tesseral-labs/tesseral/internal/intermediate/service"
+	intermediatestore "github.com/tesseral-labs/tesseral/internal/intermediate/store"
+	"github.com/tesseral-labs/tesseral/internal/loadenv"
+	"github.com/tesseral-labs/tesseral/internal/microsoftoauth"
+	oauthservice "github.com/tesseral-labs/tesseral/internal/oauth/service"
+	oauthstore "github.com/tesseral-labs/tesseral/internal/oauth/store"
+	"github.com/tesseral-labs/tesseral/internal/pagetoken"
+	samlinterceptor "github.com/tesseral-labs/tesseral/internal/saml/authn/interceptor"
+	samlservice "github.com/tesseral-labs/tesseral/internal/saml/service"
+	samlstore "github.com/tesseral-labs/tesseral/internal/saml/store"
+	scimservice "github.com/tesseral-labs/tesseral/internal/scim/service"
+	scimstore "github.com/tesseral-labs/tesseral/internal/scim/store"
+	"github.com/tesseral-labs/tesseral/internal/secretload"
+	"github.com/tesseral-labs/tesseral/internal/slogcorrelation"
+	"github.com/tesseral-labs/tesseral/internal/store/idformat"
+	wellknownservice "github.com/tesseral-labs/tesseral/internal/wellknown/service"
+	wellknownstore "github.com/tesseral-labs/tesseral/internal/wellknown/store"
 )
 
 func main() {
@@ -63,23 +66,26 @@ func main() {
 	loadenv.LoadEnv()
 
 	config := struct {
-		Host                                string `conf:"host"`
-		AuthAppsRootDomain                  string `conf:"auth_apps_root_domain"`
-		DB                                  string `conf:"db"`
-		DogfoodAuthDomain                   string `conf:"dogfood_auth_domain"`
-		DogfoodProjectID                    string `conf:"dogfood_project_id"`
-		IntermediateSessionKMSKeyID         string `conf:"intermediate_session_kms_key_id"`
-		KMSEndpoint                         string `conf:"kms_endpoint_resolver_url,noredact"`
-		PageEncodingValue                   string `conf:"page-encoding-value"`
-		S3UserContentBucketName             string `conf:"s3_user_content_bucket_name,noredact"`
-		S3Endpoint                          string `conf:"s3_endpoint_resolver_url,noredact"`
-		SESEndpoint                         string `conf:"ses_endpoint_resolver_url,noredact"`
-		ServeAddr                           string `conf:"serve_addr,noredact"`
-		SessionKMSKeyID                     string `conf:"session_kms_key_id"`
-		GoogleOAuthClientSecretsKMSKeyID    string `conf:"google_oauth_client_secrets_kms_key_id,noredact"`
-		MicrosoftOAuthClientSecretsKMSKeyID string `conf:"microsoft_oauth_client_secrets_kms_key_id,noredact"`
-		AuthenticatorAppSecretsKMSKeyID     string `conf:"authenticator_app_secrets_kms_key_id,noredact"`
-		UserContentBaseUrl                  string `conf:"user_content_base_url"`
+		RunAsLambda                         bool             `conf:"run_as_lambda,noredact"`
+		Host                                string           `conf:"host"`
+		AuthAppsRootDomain                  string           `conf:"auth_apps_root_domain"`
+		DB                                  string           `conf:"db"`
+		IAMDB                               iamdbauth.Config `conf:"iamdb"`
+		DogfoodAuthDomain                   string           `conf:"dogfood_auth_domain"`
+		DogfoodProjectID                    string           `conf:"dogfood_project_id"`
+		IntermediateSessionKMSKeyID         string           `conf:"intermediate_session_kms_key_id"`
+		KMSEndpoint                         string           `conf:"kms_endpoint_resolver_url,noredact"`
+		PageEncodingValue                   string           `conf:"page-encoding-value"`
+		S3UserContentBucketName             string           `conf:"s3_user_content_bucket_name,noredact"`
+		S3Endpoint                          string           `conf:"s3_endpoint_resolver_url,noredact"`
+		SESEndpoint                         string           `conf:"ses_endpoint_resolver_url,noredact"`
+		ServeAddr                           string           `conf:"serve_addr,noredact"`
+		SessionKMSKeyID                     string           `conf:"session_kms_key_id"`
+		GoogleOAuthClientSecretsKMSKeyID    string           `conf:"google_oauth_client_secrets_kms_key_id,noredact"`
+		MicrosoftOAuthClientSecretsKMSKeyID string           `conf:"microsoft_oauth_client_secrets_kms_key_id,noredact"`
+		AuthenticatorAppSecretsKMSKeyID     string           `conf:"authenticator_app_secrets_kms_key_id,noredact"`
+		UserContentBaseUrl                  string           `conf:"user_content_base_url"`
+		TesseralDNSCloudflareZoneID         string           `conf:"tesseral_dns_cloudflare_zone_id,noredact"`
 	}{
 		PageEncodingValue: "0000000000000000000000000000000000000000000000000000000000000000",
 	}
@@ -89,7 +95,18 @@ func main() {
 
 	// TODO: Set up Sentry apps and error handling
 
-	db, err := pgxpool.New(context.Background(), config.DB)
+	connString := config.DB
+	if connString == "" {
+		slog.Info("connect_iam_db_auth")
+
+		s, err := iamdbauth.BuildConnectionString(context.Background(), config.IAMDB)
+		if err != nil {
+			panic(fmt.Errorf("iamdbauth: build connection string: %w", err))
+		}
+		connString = s
+	}
+
+	db, err := pgxpool.New(context.Background(), connString)
 	if err != nil {
 		panic(err)
 	}
@@ -142,6 +159,7 @@ func main() {
 		DogfoodProjectID:                      &uuidDogfoodProjectID,
 		IntermediateSessionSigningKeyKMSKeyID: config.IntermediateSessionKMSKeyID,
 		KMS:                                   kms_,
+		SES:                                   ses_,
 		PageEncoder:                           pagetoken.Encoder{Secret: pageEncodingValue},
 		S3:                                    s3_,
 		S3UserContentBucketName:               config.S3UserContentBucketName,
@@ -261,27 +279,28 @@ func main() {
 
 	// Register health checks
 	mux := http.NewServeMux()
-	mux.Handle("/internal/health", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	mux.Handle("/api/internal/health", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		slog.InfoContext(r.Context(), "health")
 		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte("ok"))
 	}))
 
 	// Register the connect service
-	mux.Handle("/internal/connect/", http.StripPrefix("/internal/connect", connectMux))
+	mux.Handle("/api/internal/connect/", http.StripPrefix("/api/internal/connect", connectMux))
 
 	// Register service transcoders
-	mux.Handle("/backend/v1/", backendTranscoder)
-	mux.Handle("/frontend/v1/", frontendTranscoder)
-	mux.Handle("/intermediate/v1/", intermediateTranscoder)
+	mux.Handle("/api/backend/v1/", http.StripPrefix("/api", backendTranscoder))
+	mux.Handle("/api/frontend/v1/", http.StripPrefix("/api", frontendTranscoder))
+	mux.Handle("/api/intermediate/v1/", http.StripPrefix("/api", intermediateTranscoder))
 
 	// Register oauthservice
-	mux.Handle("/oauth/", oauthService.Handler())
+	mux.Handle("/api/oauth/", oauthService.Handler())
 
 	// Register samlservice
-	mux.Handle("/saml/", samlServiceHandler)
+	mux.Handle("/api/saml/", samlServiceHandler)
 
 	// Register scimservice
-	mux.Handle("/scim/", scimServiceHandler)
+	mux.Handle("/api/scim/", scimServiceHandler)
 
 	// Register wellknownservice
 	mux.Handle("/.well-known/", wellknownServiceHandler)
@@ -309,9 +328,12 @@ func main() {
 		ExposedHeaders:   []string{"*"},
 	}).Handler(serve)
 
-	// Serve the services
 	slog.Info("serve")
-	if err := http.ListenAndServe(config.ServeAddr, serve); err != nil {
-		panic(err)
+	if config.RunAsLambda {
+		lambda.Start(httplambda.Handler(serve))
+	} else {
+		if err := http.ListenAndServe(config.ServeAddr, serve); err != nil {
+			panic(err)
+		}
 	}
 }

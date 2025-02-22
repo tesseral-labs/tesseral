@@ -6,6 +6,57 @@ info:
     title: FrontendService API
     version: 0.0.1
 paths:
+    /frontend/v1/google-hosted-domains:
+        get:
+            tags:
+                - FrontendService
+            operationId: FrontendService_GetOrganizationGoogleHostedDomains
+            parameters:
+                - name: organizationId
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetOrganizationGoogleHostedDomainsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        patch:
+            tags:
+                - FrontendService
+            operationId: FrontendService_UpdateOrganizationGoogleHostedDomains
+            parameters:
+                - name: organizationId
+                  in: query
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/OrganizationGoogleHostedDomains'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateOrganizationGoogleHostedDomainsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /frontend/v1/logout:
         post:
             tags:
@@ -179,6 +230,57 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /frontend/v1/microsoft-tenant-ids:
+        get:
+            tags:
+                - FrontendService
+            operationId: FrontendService_GetOrganizationMicrosoftTenantIDs
+            parameters:
+                - name: organizationId
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetOrganizationMicrosoftTenantIDsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        patch:
+            tags:
+                - FrontendService
+            operationId: FrontendService_UpdateOrganizationMicrosoftTenantIDs
+            parameters:
+                - name: organizationId
+                  in: query
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/OrganizationMicrosoftTenantIDs'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateOrganizationMicrosoftTenantIDsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /frontend/v1/organization:
         get:
             tags:
@@ -214,41 +316,6 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/UpdateOrganizationResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-    /frontend/v1/organizations:
-        get:
-            tags:
-                - FrontendService
-            description: Gets a list of organizations.
-            operationId: FrontendService_ListOrganizations
-            parameters:
-                - name: projectId
-                  in: query
-                  description: The ID of the project to use for filtering.
-                  schema:
-                    type: string
-                - name: email
-                  in: query
-                  description: The email address to use for filtering.
-                  schema:
-                    type: string
-                - name: pageToken
-                  in: query
-                  description: The page token to use for pagination.
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ListOrganizationsResponse'
                 default:
                     description: Default error response
                     content:
@@ -734,6 +801,29 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+        delete:
+            tags:
+                - FrontendService
+            operationId: FrontendService_DeleteUser
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DeleteUserResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
         patch:
             tags:
                 - FrontendService
@@ -792,11 +882,24 @@ components:
         DeleteUserInviteResponse:
             type: object
             properties: {}
+        DeleteUserResponse:
+            type: object
+            properties: {}
         GetAuthenticatorAppOptionsResponse:
             type: object
             properties:
                 otpauthUri:
                     type: string
+        GetOrganizationGoogleHostedDomainsResponse:
+            type: object
+            properties:
+                organizationGoogleHostedDomains:
+                    $ref: '#/components/schemas/OrganizationGoogleHostedDomains'
+        GetOrganizationMicrosoftTenantIDsResponse:
+            type: object
+            properties:
+                organizationMicrosoftTenantIds:
+                    $ref: '#/components/schemas/OrganizationMicrosoftTenantIDs'
         GetOrganizationResponse:
             type: object
             properties:
@@ -855,17 +958,6 @@ components:
                         $ref: '#/components/schemas/Passkey'
                 nextPageToken:
                     type: string
-        ListOrganizationsResponse:
-            type: object
-            properties:
-                organizations:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/Organization'
-                    description: The organizations returned by the ListOrganizations request.
-                nextPageToken:
-                    type: string
-                    description: The next page token to use for pagination.
         ListSAMLConnectionsResponse:
             type: object
             properties:
@@ -947,6 +1039,20 @@ components:
                         type: string
                 samlEnabled:
                     type: boolean
+        OrganizationGoogleHostedDomains:
+            type: object
+            properties:
+                googleHostedDomains:
+                    type: array
+                    items:
+                        type: string
+        OrganizationMicrosoftTenantIDs:
+            type: object
+            properties:
+                microsoftTenantIds:
+                    type: array
+                    items:
+                        type: string
         Passkey:
             type: object
             properties:
@@ -1104,6 +1210,16 @@ components:
                         $ref: '#/components/schemas/GoogleProtobufAny'
                     description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
             description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
+        UpdateOrganizationGoogleHostedDomainsResponse:
+            type: object
+            properties:
+                organizationGoogleHostedDomains:
+                    $ref: '#/components/schemas/OrganizationGoogleHostedDomains'
+        UpdateOrganizationMicrosoftTenantIDsResponse:
+            type: object
+            properties:
+                organizationMicrosoftTenantIds:
+                    $ref: '#/components/schemas/OrganizationMicrosoftTenantIDs'
         UpdateOrganizationResponse:
             type: object
             properties:

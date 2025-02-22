@@ -1,49 +1,48 @@
-import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
-import { LoginView } from '@/lib/views'
-import { useNavigate } from 'react-router'
+import React, {
+  Dispatch,
+  FC,
+  SetStateAction,
+  useEffect,
+  useState,
+} from 'react';
+import { LoginView } from '@/lib/views';
+import { useNavigate } from 'react-router';
 import {
   exchangeIntermediateSessionForSession,
   listOrganizations,
   setOrganization,
-  whoami,
-} from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
-import { useMutation, useQuery } from '@connectrpc/connect-query'
-import { Organization } from '@/gen/openauth/intermediate/v1/intermediate_pb'
-import { setAccessToken, setRefreshToken } from '@/auth'
-import { Title } from '@/components/Title'
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import TextDivider from '@/components/ui/text-divider'
-import { parseErrorMessage } from '@/lib/errors'
-import { toast } from 'sonner'
-import Loader from '@/components/ui/loader'
+} from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
+import { useMutation, useQuery } from '@connectrpc/connect-query';
+import { Organization } from '@/gen/tesseral/intermediate/v1/intermediate_pb';
+import { setAccessToken, setRefreshToken } from '@/auth';
+import { Title } from '@/components/Title';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import TextDivider from '@/components/ui/text-divider';
+import { parseErrorMessage } from '@/lib/errors';
+import { toast } from 'sonner';
+import Loader from '@/components/ui/loader';
 
 interface ChooseProjectViewProps {
   setIntermediateOrganization: Dispatch<
     SetStateAction<Organization | undefined>
-  >
-  setView: Dispatch<SetStateAction<LoginView>>
+  >;
+  setView: Dispatch<SetStateAction<LoginView>>;
 }
 
 const ChooseProjectView: FC<ChooseProjectViewProps> = ({
   setIntermediateOrganization,
   setView,
 }) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const [submitting, setSubmitting] = useState<boolean>(false)
+  const [submitting, setSubmitting] = useState<boolean>(false);
 
-  const { data: listOrganizationsResponse } = useQuery(listOrganizations)
+  const { data: listOrganizationsResponse } = useQuery(listOrganizations);
   const exchangeIntermediateSessionForSessionMutation = useMutation(
     exchangeIntermediateSessionForSession,
-  )
-  const setOrganizationMutation = useMutation(setOrganization)
+  );
+  const setOrganizationMutation = useMutation(setOrganization);
 
   // This function is effectively the central routing layer for Organization selection.
   // It determines the next view based on the current organization's settings and the user's current state.
@@ -65,66 +64,66 @@ const ChooseProjectView: FC<ChooseProjectViewProps> = ({
   ): LoginView | undefined => {
     if (organization.logInWithPassword) {
       if (organization.userHasPassword) {
-        return LoginView.VerifyPassword
+        return LoginView.VerifyPassword;
       }
 
-      return LoginView.RegisterPassword
+      return LoginView.RegisterPassword;
     } else if (
       organization.userHasAuthenticatorApp &&
       !organization.userHasPasskey
     ) {
-      return LoginView.VerifyAuthenticatorApp
+      return LoginView.VerifyAuthenticatorApp;
     } else if (
       organization.userHasPasskey &&
       !organization.userHasAuthenticatorApp
     ) {
-      return LoginView.VerifyPasskey
+      return LoginView.VerifyPasskey;
     } else if (organization.requireMfa) {
       // this is the case where the organization has multiple secondary factors and requires mfa
-      return LoginView.ChooseAdditionalFactor
+      return LoginView.ChooseAdditionalFactor;
     }
-  }
+  };
 
   const handleOrganizationClick = async (organization: Organization) => {
-    setSubmitting(true)
+    setSubmitting(true);
     try {
       await setOrganizationMutation.mutateAsync({
         organizationId: organization.id,
-      })
+      });
 
-      setIntermediateOrganization(organization)
+      setIntermediateOrganization(organization);
 
-      const nextView = deriveNextView(organization)
+      const nextView = deriveNextView(organization);
 
       if (nextView) {
-        setView(nextView)
-        return
+        setView(nextView);
+        return;
       }
 
       const { accessToken, refreshToken } =
         await exchangeIntermediateSessionForSessionMutation.mutateAsync({
           organizationId: organization.id,
-        })
+        });
 
-      setAccessToken(accessToken)
-      setRefreshToken(refreshToken)
+      setAccessToken(accessToken);
+      setRefreshToken(refreshToken);
 
-      setSubmitting(false)
-      navigate('/settings')
+      setSubmitting(false);
+      navigate('/settings');
     } catch (error) {
-      setSubmitting(false)
-      const message = parseErrorMessage(error)
+      setSubmitting(false);
+      const message = parseErrorMessage(error);
       toast.error('Could not select Project', {
         description: message,
-      })
+      });
     }
-  }
+  };
 
   useEffect(() => {
     if (listOrganizationsResponse?.organizations?.length === 0) {
-      setView(LoginView.CreateProject)
+      setView(LoginView.CreateProject);
     }
-  }, [listOrganizationsResponse])
+  }, [listOrganizationsResponse]);
 
   return (
     <>
@@ -171,7 +170,7 @@ const ChooseProjectView: FC<ChooseProjectViewProps> = ({
         </CardContent>
       </Card>
     </>
-  )
-}
+  );
+};
 
-export default ChooseProjectView
+export default ChooseProjectView;

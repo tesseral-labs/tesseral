@@ -5,38 +5,40 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
-import { Link } from 'react-router-dom'
-import { PageCodeSubtitle, PageDescription, PageTitle } from '@/components/page'
+} from '@/components/ui/breadcrumb';
+import { Link } from 'react-router-dom';
+import {
+  PageCodeSubtitle,
+  PageDescription,
+  PageTitle,
+} from '@/components/page';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
+} from '@/components/ui/card';
 import {
   DetailsGrid,
   DetailsGridColumn,
   DetailsGridEntry,
   DetailsGridKey,
   DetailsGridValue,
-} from '@/components/details-grid'
-import React, { useMemo, useState } from 'react'
-import { useNavigate, useParams } from 'react-router'
-import { useMutation, useQuery } from '@connectrpc/connect-query'
+} from '@/components/details-grid';
+import React, { useMemo, useState } from 'react';
+import { useNavigate, useParams } from 'react-router';
+import { useMutation, useQuery } from '@connectrpc/connect-query';
 import {
   deletePasskey,
-  deleteSAMLConnection,
   getOrganization,
   getPasskey,
   getUser,
-  listPasskeys,
-  listSessions,
-} from '@/gen/openauth/backend/v1/backend-BackendService_connectquery'
-import { DateTime } from 'luxon'
-import { timestampDate } from '@bufbuild/protobuf/wkt'
-import { toast } from 'sonner'
+  updatePasskey,
+} from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
+import { DateTime } from 'luxon';
+import { timestampDate } from '@bufbuild/protobuf/wkt';
+import { toast } from 'sonner';
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -45,32 +47,30 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog'
-import { Button } from '@/components/ui/button'
+} from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
 
-export function ViewPasskeyPage() {
-  const { organizationId, userId, passkeyId } = useParams()
+export const ViewPasskeyPage = () => {
+  const { organizationId, userId, passkeyId } = useParams();
   const { data: getOrganizationResponse } = useQuery(getOrganization, {
     id: organizationId,
-  })
+  });
   const { data: getUserResponse } = useQuery(getUser, {
     id: userId,
-  })
+  });
   const { data: getPasskeyResponse } = useQuery(getPasskey, {
     id: passkeyId,
-  })
+  });
 
   const credentialId = useMemo(() => {
     if (!getPasskeyResponse?.passkey?.credentialId) {
-      return
+      return;
     }
 
-    let buf = ''
-    for (const byte of getPasskeyResponse.passkey.credentialId) {
-      buf += String.fromCharCode(byte)
-    }
-    return btoa(buf)
-  }, [getPasskeyResponse?.passkey?.credentialId])
+    return Array.from(getPasskeyResponse.passkey.credentialId)
+      .map((byte) => byte.toString(16).padStart(2, '0'))
+      .join('');
+  }, [getPasskeyResponse?.passkey?.credentialId]);
 
   return (
     <div>
@@ -198,27 +198,58 @@ export function ViewPasskeyPage() {
 
       <DangerZoneCard />
     </div>
-  )
-}
+  );
+};
 
-function DangerZoneCard() {
-  const { organizationId, userId, passkeyId } = useParams()
-  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
+const DangerZoneCard = () => {
+  const { organizationId, userId, passkeyId } = useParams();
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const { data: getPasskeyResponse, refetch } = useQuery(getPasskey, {
+    id: passkeyId,
+  });
+  const { data: getUserResponse } = useQuery(getUser, {
+    id: userId,
+  });
+
+  const updatePasskeyMutation = useMutation(updatePasskey);
+  const handleDisable = async () => {
+    await updatePasskeyMutation.mutateAsync({
+      id: passkeyId,
+      passkey: {
+        disabled: true,
+      },
+    });
+
+    await refetch();
+    toast.success('Passkey disabled');
+  };
+
+  const handleEnable = async () => {
+    await updatePasskeyMutation.mutateAsync({
+      id: passkeyId,
+      passkey: {
+        disabled: false,
+      },
+    });
+
+    await refetch();
+    toast.success('Passkey enabled');
+  };
 
   const handleDelete = () => {
-    setConfirmDeleteOpen(true)
-  }
+    setConfirmDeleteOpen(true);
+  };
 
-  const deletePasskeyMutation = useMutation(deletePasskey)
-  const navigate = useNavigate()
+  const deletePasskeyMutation = useMutation(deletePasskey);
+  const navigate = useNavigate();
   const handleConfirmDelete = async () => {
     await deletePasskeyMutation.mutateAsync({
       id: passkeyId,
-    })
+    });
 
-    toast.success('Passkey deleted')
-    navigate(`/organizations/${organizationId}/users/${userId}`)
-  }
+    toast.success('Passkey deleted');
+    navigate(`/organizations/${organizationId}/users/${userId}`);
+  };
 
   return (
     <>
@@ -244,7 +275,44 @@ function DangerZoneCard() {
           <CardTitle>Danger Zone</CardTitle>
         </CardHeader>
 
-        <CardContent>
+        <CardContent className="space-y-4">
+          {getPasskeyResponse?.passkey?.disabled ? (
+            <div className="flex justify-between items-center">
+              <div>
+                <div className="text-sm font-semibold">Enable Passkey</div>
+                <p className="text-sm">
+                  Enable this passkey.{' '}
+                  <span className="font-medium">
+                    {getUserResponse?.user?.email}
+                  </span>{' '}
+                  will be required to authenticate with this passkey (or another
+                  active passkey) when logging in.
+                </p>
+              </div>
+
+              <Button variant="destructive" onClick={handleEnable}>
+                Enable Passkey
+              </Button>
+            </div>
+          ) : (
+            <div className="flex justify-between items-center">
+              <div>
+                <div className="text-sm font-semibold">Enable Passkey</div>
+                <p className="text-sm">
+                  Disable this passkey.{' '}
+                  <span className="font-medium">
+                    {getUserResponse?.user?.email}
+                  </span>{' '}
+                  will not be required to authenticate with this passkey when
+                  logging in.
+                </p>
+              </div>
+
+              <Button variant="destructive" onClick={handleDisable}>
+                Disable Passkey
+              </Button>
+            </div>
+          )}
           <div className="flex justify-between items-center">
             <div>
               <div className="text-sm font-semibold">Delete Passkey</div>
@@ -260,8 +328,8 @@ function DangerZoneCard() {
         </CardContent>
       </Card>
     </>
-  )
-}
+  );
+};
 
 // curl https://raw.githubusercontent.com/passkeydeveloper/passkey-authenticator-aaguids/refs/heads/main/aaguid.json | jq 'map_values(.name)'
 const AAGUIDS: Record<string, string> = {
@@ -295,4 +363,4 @@ const AAGUIDS: Record<string, string> = {
   'b78a0a55-6ef8-d246-a042-ba0f6d55050c': 'LastPass',
   'de503f9c-21a4-4f76-b4b7-558eb55c6f89': 'Devolutions',
   '22248c4c-7a12-46e2-9a41-44291b373a4d': 'LogMeOnce',
-}
+};

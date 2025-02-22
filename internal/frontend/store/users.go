@@ -7,12 +7,12 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/openauth/openauth/internal/bcryptcost"
-	"github.com/openauth/openauth/internal/common/apierror"
-	"github.com/openauth/openauth/internal/frontend/authn"
-	frontendv1 "github.com/openauth/openauth/internal/frontend/gen/openauth/frontend/v1"
-	"github.com/openauth/openauth/internal/frontend/store/queries"
-	"github.com/openauth/openauth/internal/store/idformat"
+	"github.com/tesseral-labs/tesseral/internal/bcryptcost"
+	"github.com/tesseral-labs/tesseral/internal/common/apierror"
+	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
+	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
+	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
+	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -170,6 +170,49 @@ func (s *Store) UpdateUser(ctx context.Context, req *frontendv1.UpdateUserReques
 	}
 
 	return &frontendv1.UpdateUserResponse{User: parseUser(qUpdatedUser)}, nil
+}
+
+func (s *Store) DeleteUser(ctx context.Context, req *frontendv1.DeleteUserRequest) (*frontendv1.DeleteUserResponse, error) {
+	if err := s.validateIsOwner(ctx); err != nil {
+		return nil, fmt.Errorf("validate is owner: %w", err)
+	}
+
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	userID, err := idformat.User.Parse(req.Id)
+	if err != nil {
+		return nil, apierror.NewInvalidArgumentError("invalid user id", fmt.Errorf("parse user id: %w", err))
+	}
+
+	if userID == authn.UserID(ctx) {
+		return nil, apierror.NewFailedPreconditionError("cannot delete self", errors.New("cannot delete self"))
+	}
+
+	// Fetch the user to ensure it exists and belongs to the organization.
+	_, err = q.GetUser(ctx, queries.GetUserParams{
+		ID:             userID,
+		OrganizationID: authn.OrganizationID(ctx),
+	})
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("user not found", fmt.Errorf("get user by id: %w", err))
+		}
+		return nil, fmt.Errorf("get user: %w", err)
+	}
+
+	if err := q.DeleteUser(ctx, userID); err != nil {
+		return nil, fmt.Errorf("delete user: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit transaction: %w", err)
+	}
+
+	return &frontendv1.DeleteUserResponse{}, nil
 }
 
 func parseUser(qUser queries.User) *frontendv1.User {

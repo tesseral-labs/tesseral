@@ -1,25 +1,25 @@
-import React from 'react'
+import React from 'react';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
+} from '@/components/ui/card';
 import {
   DetailsGrid,
   DetailsGridColumn,
   DetailsGridEntry,
   DetailsGridKey,
   DetailsGridValue,
-} from '@/components/details-grid'
-import { useQuery } from '@connectrpc/connect-query'
-import { getProject } from '@/gen/openauth/backend/v1/backend-BackendService_connectquery'
-import { Button } from '@/components/ui/button'
-import { Link } from 'react-router-dom'
+} from '@/components/details-grid';
+import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
+import { useQuery } from '@connectrpc/connect-query';
+import { getProject } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 
-export function ProjectDetailsTab() {
-  const { data: getProjectResponse } = useQuery(getProject, {})
+export const ProjectDetailsTab = () => {
+  const { data: getProjectResponse } = useQuery(getProject, {});
 
   return (
     <div className="space-y-8">
@@ -174,5 +174,5 @@ export function ProjectDetailsTab() {
         </CardContent>
       </Card>
     </div>
-  )
-}
+  );
+};

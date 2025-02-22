@@ -5,7 +5,7 @@
 [attr]generated linguist-generated=true -diff -merge
 
 console/src/gen/** generated
-ui/src/gen/** generated
+vault-ui/src/gen/** generated
 
 internal/gen/** generated
 internal/store/queries/** generated

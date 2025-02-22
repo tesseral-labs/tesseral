@@ -1,22 +1,24 @@
-import React, { FC, ReactNode } from 'react'
-import { cn } from '@/lib/utils'
-import { Outlet } from 'react-router'
-import ConsoleSidebar from './ConsoleSidebar'
-import { SidebarProvider } from './ui/sidebar'
+import React from 'react';
+import { cn } from '@/lib/utils';
+import { Outlet } from 'react-router';
+import ConsoleSidebar from './ConsoleSidebar';
+import { SidebarInset, SidebarProvider } from './ui/sidebar';
 
-export function PageShell() {
+export const PageShell = () => {
   return (
     <SidebarProvider>
       <ConsoleSidebar />
-      <main className="bg-body w-full">
-        <div className="bg-indigo-600 pb-64 w-full" />
-        <div className="-mt-64 mx-auto max-w-7xl sm:px-6 lg:px-8 pt-8">
-          <Outlet />
-        </div>
-      </main>
+      <SidebarInset>
+        <main className="bg-body w-full">
+          <div className="bg-indigo-600 pb-64 w-full" />
+          <div className="-mt-64 mx-auto max-w-7xl sm:px-6 lg:px-8 py-8">
+            <Outlet />
+          </div>
+        </main>
+      </SidebarInset>
     </SidebarProvider>
-  )
-}
+  );
+};
 
 export const PageTitle = ({
   className,
@@ -26,8 +28,8 @@ export const PageTitle = ({
     className={cn('mt-4 font-semibold text-3xl text-white', className)}
     {...props}
   />
-)
-PageTitle.displayName = 'PageTitle'
+);
+PageTitle.displayName = 'PageTitle';
 
 export const PageCodeSubtitle = ({
   className,
@@ -40,13 +42,13 @@ export const PageCodeSubtitle = ({
     )}
     {...props}
   />
-)
-PageCodeSubtitle.displayName = 'PageCodeSubtitle'
+);
+PageCodeSubtitle.displayName = 'PageCodeSubtitle';
 
 export const PageDescription = ({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div className={cn('mt-4 text-white', className)} {...props} />
-)
-PageDescription.displayName = 'PageDescription'
+);
+PageDescription.displayName = 'PageDescription';

@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"connectrpc.com/connect"
-	frontendv1 "github.com/openauth/openauth/internal/frontend/gen/openauth/frontend/v1"
+	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
 )
 
 func (s *Service) SetPassword(ctx context.Context, req *connect.Request[frontendv1.SetPasswordRequest]) (*connect.Response[frontendv1.SetPasswordResponse], error) {
@@ -39,5 +39,13 @@ func (s *Service) UpdateUser(ctx context.Context, req *connect.Request[frontendv
 		return nil, fmt.Errorf("store: %w", err)
 	}
 
+	return connect.NewResponse(res), nil
+}
+
+func (s *Service) DeleteUser(ctx context.Context, req *connect.Request[frontendv1.DeleteUserRequest]) (*connect.Response[frontendv1.DeleteUserResponse], error) {
+	res, err := s.Store.DeleteUser(ctx, req.Msg)
+	if err != nil {
+		return nil, fmt.Errorf("store: %w", err)
+	}
 	return connect.NewResponse(res), nil
 }

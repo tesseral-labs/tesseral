@@ -10,11 +10,11 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/openauth/openauth/internal/backend/authn"
-	backendv1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
-	"github.com/openauth/openauth/internal/backend/store/queries"
-	"github.com/openauth/openauth/internal/common/apierror"
-	"github.com/openauth/openauth/internal/store/idformat"
+	"github.com/tesseral-labs/tesseral/internal/backend/authn"
+	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
+	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
+	"github.com/tesseral-labs/tesseral/internal/common/apierror"
+	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -195,6 +195,21 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 	updates.CustomAuthDomain = qProject.CustomAuthDomain
 	updates.AuthDomain = qProject.AuthDomain
 
+	updates.RedirectUri = qProject.RedirectUri
+	if req.Project.RedirectUri != "" {
+		updates.RedirectUri = &req.Project.RedirectUri
+	}
+
+	updates.AfterLoginRedirectUri = qProject.AfterLoginRedirectUri
+	if req.Project.AfterLoginRedirectUri != "" {
+		updates.AfterLoginRedirectUri = &req.Project.AfterLoginRedirectUri
+	}
+
+	updates.AfterSignupRedirectUri = qProject.AfterSignupRedirectUri
+	if req.Project.AfterSignupRedirectUri != "" {
+		updates.AfterSignupRedirectUri = &req.Project.AfterSignupRedirectUri
+	}
+
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -324,5 +339,8 @@ func parseProject(qProject *queries.Project, qProjectTrustedDomains []queries.Pr
 		MicrosoftOauthClientId:    derefOrEmpty(qProject.MicrosoftOauthClientID),
 		AuthDomain:                &authDomain,
 		TrustedDomains:            trustedDomains,
+		RedirectUri:               derefOrEmpty(qProject.RedirectUri),
+		AfterLoginRedirectUri:     derefOrEmpty(qProject.AfterLoginRedirectUri),
+		AfterSignupRedirectUri:    derefOrEmpty(qProject.AfterSignupRedirectUri),
 	}
 }

@@ -7,7 +7,7 @@ import (
 
 	"connectrpc.com/connect"
 	"github.com/google/uuid"
-	"github.com/openauth/openauth/internal/store/idformat"
+	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 )
 
 func ExpiredRefreshToken(projectID uuid.UUID) string {
@@ -23,7 +23,7 @@ func ExpiredIntermediateAccessToken(projectID uuid.UUID) string {
 }
 
 func NewRefreshToken(projectID uuid.UUID, value string) string {
-	return newCookie("refresh_token", 0, projectID, value)
+	return newCookie("refresh_token", time.Hour*24*365, projectID, value)
 }
 
 func NewAccessToken(projectID uuid.UUID, value string) string {
@@ -40,6 +40,7 @@ func newCookie(name string, maxAge time.Duration, projectID uuid.UUID, value str
 		Value:    value,
 		MaxAge:   int(maxAge.Seconds()),
 		Path:     "/",
+		SameSite: http.SameSiteNoneMode,
 		Secure:   true,
 		HttpOnly: true,
 	}

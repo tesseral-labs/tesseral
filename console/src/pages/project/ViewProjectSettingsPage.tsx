@@ -1,8 +1,8 @@
-import { useQuery } from '@connectrpc/connect-query'
-import { getProject } from '@/gen/openauth/backend/v1/backend-BackendService_connectquery'
-import React from 'react'
-import { DateTime } from 'luxon'
-import { timestampDate } from '@bufbuild/protobuf/wkt'
+import { useQuery } from '@connectrpc/connect-query';
+import { getProject } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
+import React from 'react';
+import { DateTime } from 'luxon';
+import { timestampDate } from '@bufbuild/protobuf/wkt';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -10,29 +10,27 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
-import { Link } from 'react-router-dom'
-import { PageCodeSubtitle, PageDescription, PageTitle } from '@/components/page'
+} from '@/components/ui/breadcrumb';
+import { Link } from 'react-router-dom';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+  PageCodeSubtitle,
+  PageDescription,
+  PageTitle,
+} from '@/components/page';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   DetailsGrid,
   DetailsGridColumn,
   DetailsGridEntry,
   DetailsGridKey,
   DetailsGridValue,
-} from '@/components/details-grid'
-import { clsx } from 'clsx'
-import { Outlet, useLocation } from 'react-router'
+} from '@/components/details-grid';
+import { clsx } from 'clsx';
+import { Outlet, useLocation } from 'react-router';
 
-export function ViewProjectSettingsPage() {
-  const { data: getProjectResponse } = useQuery(getProject, {})
-  const { pathname } = useLocation()
+export const ViewProjectSettingsPage = () => {
+  const { data: getProjectResponse } = useQuery(getProject, {});
+  const { pathname } = useLocation();
 
   const tabs = [
     {
@@ -44,9 +42,9 @@ export function ViewProjectSettingsPage() {
       name: 'Hosted Portal Settings',
       url: `/project-settings/hosted-portal`,
     },
-  ]
+  ];
 
-  const currentTab = tabs.find((tab) => tab.url === pathname)!
+  const currentTab = tabs.find((tab) => tab.url === pathname);
 
   return (
     <div>
@@ -118,7 +116,7 @@ export function ViewProjectSettingsPage() {
               key={tab.name}
               to={tab.url}
               className={clsx(
-                tab.url === currentTab.url
+                tab.url === currentTab?.url
                   ? 'border-indigo-500 text-indigo-600'
                   : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
                 'whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium',
@@ -134,5 +132,5 @@ export function ViewProjectSettingsPage() {
         <Outlet />
       </div>
     </div>
-  )
-}
+  );
+};

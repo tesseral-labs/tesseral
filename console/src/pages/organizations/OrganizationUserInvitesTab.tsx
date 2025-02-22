@@ -1,19 +1,16 @@
-import React, { useState } from 'react'
-import { useMutation, useQuery } from '@connectrpc/connect-query'
+import React, { useState } from 'react';
+import { useMutation, useQuery } from '@connectrpc/connect-query';
 import {
-  createSCIMAPIKey,
   createUserInvite,
-  listOrganizations,
   listUserInvites,
-  listUsers,
-} from '@/gen/openauth/backend/v1/backend-BackendService_connectquery'
+} from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
+} from '@/components/ui/card';
 import {
   Table,
   TableBody,
@@ -21,16 +18,16 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
-import { Link } from 'react-router-dom'
-import { DateTime } from 'luxon'
-import { timestampDate } from '@bufbuild/protobuf/wkt'
-import { useNavigate, useParams } from 'react-router'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { z } from 'zod'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
+} from '@/components/ui/table';
+import { Link } from 'react-router-dom';
+import { DateTime } from 'luxon';
+import { timestampDate } from '@bufbuild/protobuf/wkt';
+import { useNavigate, useParams } from 'react-router';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -40,7 +37,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
+} from '@/components/ui/alert-dialog';
 import {
   Form,
   FormControl,
@@ -49,15 +46,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Switch } from '@/components/ui/switch'
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Switch } from '@/components/ui/switch';
 
-export function OrganizationUserInvitesTab() {
-  const { organizationId } = useParams()
+export const OrganizationUserInvitesTab = () => {
+  const { organizationId } = useParams();
   const { data: listUserInvitesResponse } = useQuery(listUserInvites, {
     organizationId,
-  })
+  });
 
   return (
     <Card>
@@ -100,14 +97,16 @@ export function OrganizationUserInvitesTab() {
                 </TableCell>
                 <TableCell className="font-mono">{userInvite.id}</TableCell>
                 <TableCell>
-                  {DateTime.fromJSDate(
-                    timestampDate(userInvite.createTime!),
-                  ).toRelative()}
+                  {userInvite.createTime &&
+                    DateTime.fromJSDate(
+                      timestampDate(userInvite.createTime),
+                    ).toRelative()}
                 </TableCell>
                 <TableCell>
-                  {DateTime.fromJSDate(
-                    timestampDate(userInvite.updateTime!),
-                  ).toRelative()}
+                  {userInvite.updateTime &&
+                    DateTime.fromJSDate(
+                      timestampDate(userInvite.updateTime),
+                    ).toRelative()}
                 </TableCell>
               </TableRow>
             ))}
@@ -115,38 +114,42 @@ export function OrganizationUserInvitesTab() {
         </Table>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
 const schema = z.object({
   email: z.string().email(),
   owner: z.boolean(),
-})
+});
 
-function CreateUserInviteButton() {
-  const { organizationId } = useParams()
-  const createUserInviteMutation = useMutation(createUserInvite)
+const CreateUserInviteButton = () => {
+  const { organizationId } = useParams();
+  const createUserInviteMutation = useMutation(createUserInvite);
+  /* eslint-disable @typescript-eslint/no-unsafe-call */
+  // Currently there's an issue with the types of react-hook-form and zod
+  // preventing the compiler from inferring the correct types.
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
       email: '',
       owner: false,
     },
-  })
-  const navigate = useNavigate()
-  const [open, setOpen] = useState(false)
+  });
+  /* eslint-enable @typescript-eslint/no-unsafe-call */
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
 
-  async function handleSubmit(values: z.infer<typeof schema>) {
+  const handleSubmit = async (values: z.infer<typeof schema>) => {
     const { userInvite } = await createUserInviteMutation.mutateAsync({
       userInvite: {
         organizationId,
         email: values.email,
         owner: values.owner,
       },
-    })
+    });
 
-    navigate(`/organizations/${organizationId}/user-invites/${userInvite!.id}`)
-  }
+    navigate(`/organizations/${organizationId}/user-invites/${userInvite?.id}`);
+  };
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
@@ -162,14 +165,18 @@ function CreateUserInviteButton() {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <Form {...form}>
+          {/* eslint-disable @typescript-eslint/no-unsafe-call */}
+          {/* Currently there's an issue with the types of react-hook-form and zod 
+          preventing the compiler from inferring the correct types.*/}
           <form
             onSubmit={form.handleSubmit(handleSubmit)}
             className="space-y-8"
           >
+            {/* eslint-enable @typescript-eslint/no-unsafe-call */}
             <FormField
               control={form.control}
               name="email"
-              render={({ field }) => (
+              render={({ field }: { field: any }) => (
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
@@ -187,7 +194,7 @@ function CreateUserInviteButton() {
             <FormField
               control={form.control}
               name="owner"
-              render={({ field }) => (
+              render={({ field }: { field: any }) => (
                 <FormItem>
                   <FormLabel>Invite as owner</FormLabel>
                   <FormControl>
@@ -212,5 +219,5 @@ function CreateUserInviteButton() {
         </Form>
       </AlertDialogContent>
     </AlertDialog>
-  )
-}
+  );
+};

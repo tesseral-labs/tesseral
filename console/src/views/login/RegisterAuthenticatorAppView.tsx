@@ -1,91 +1,90 @@
-import React, { FC, useEffect, useState } from 'react'
-import QRCode from 'qrcode'
-import { Title } from '@/components/Title'
+import React, { FC, useEffect, useState } from 'react';
+import QRCode from 'qrcode';
+import { Title } from '@/components/Title';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { useMutation, useQuery } from '@connectrpc/connect-query'
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { useMutation } from '@connectrpc/connect-query';
 import {
   exchangeIntermediateSessionForSession,
   getAuthenticatorAppOptions,
   registerAuthenticatorApp,
-  whoami,
-} from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
-import { useIntermediateOrganization } from '@/lib/auth'
+} from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSeparator,
   InputOTPSlot,
-} from '@/components/ui/input-otp'
-import { setAccessToken, setRefreshToken } from '@/auth'
-import { useNavigate } from 'react-router'
-import { parseErrorMessage } from '@/lib/errors'
-import { toast } from 'sonner'
-import Loader from '@/components/ui/loader'
+} from '@/components/ui/input-otp';
+import { setAccessToken, setRefreshToken } from '@/auth';
+import { useNavigate } from 'react-router';
+import { parseErrorMessage } from '@/lib/errors';
+import { toast } from 'sonner';
+import Loader from '@/components/ui/loader';
 
 const RegisterAuthenticatorAppView: FC = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const [code, setCode] = useState<string>('')
-  const [qrcode, setQRCode] = useState<string | null>(null)
-  const [submitting, setSubmitting] = useState<boolean>(false)
+  const [code, setCode] = useState<string>('');
+  const [qrcode, setQRCode] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState<boolean>(false);
 
   const exchangeIntermediateSessionForSessionMutation = useMutation(
     exchangeIntermediateSessionForSession,
-  )
+  );
   const getAuthenticatorAppOptionsMutation = useMutation(
     getAuthenticatorAppOptions,
-  )
-  const registerAuthenticatorAppMutation = useMutation(registerAuthenticatorApp)
-  const { data: whoamiRes } = useQuery(whoami)
+  );
+  const registerAuthenticatorAppMutation = useMutation(
+    registerAuthenticatorApp,
+  );
 
   const generateQRCode = async (): Promise<string> => {
     const authenticatorAppOptions =
-      await getAuthenticatorAppOptionsMutation.mutateAsync({})
+      await getAuthenticatorAppOptionsMutation.mutateAsync({});
 
     return QRCode.toDataURL(authenticatorAppOptions.otpauthUri, {
       errorCorrectionLevel: 'H',
-    })
-  }
+    });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setSubmitting(true)
+    e.preventDefault();
+    setSubmitting(true);
 
     try {
       await registerAuthenticatorAppMutation.mutateAsync({
         totpCode: code,
-      })
+      });
 
       const { accessToken, refreshToken } =
-        await exchangeIntermediateSessionForSessionMutation.mutateAsync({})
+        await exchangeIntermediateSessionForSessionMutation.mutateAsync({});
 
-      setAccessToken(accessToken)
-      setRefreshToken(refreshToken)
-      setSubmitting(false)
+      setAccessToken(accessToken);
+      setRefreshToken(refreshToken);
+      setSubmitting(false);
 
-      navigate('/settings')
+      navigate('/settings');
     } catch (error) {
-      setSubmitting(false)
-      const message = parseErrorMessage(error)
+      setSubmitting(false);
+      const message = parseErrorMessage(error);
       toast.error('Could not register authenticator app', {
         description: message,
-      })
+      });
     }
-  }
+  };
 
   useEffect(() => {
-    ;(async () => {
-      const qrcode = await generateQRCode()
-      setQRCode(qrcode)
-    })()
-  }, [])
+    void (async () => {
+      const qrcode = await generateQRCode();
+      setQRCode(qrcode);
+    })();
+  }, []);
 
   return (
     <>
@@ -136,7 +135,7 @@ const RegisterAuthenticatorAppView: FC = () => {
         </CardContent>
       </Card>
     </>
-  )
-}
+  );
+};
 
-export default RegisterAuthenticatorAppView
+export default RegisterAuthenticatorAppView;

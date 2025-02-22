@@ -1,6 +1,6 @@
-import React, { Dispatch, FC, useEffect, useState } from 'react'
-import { LoginView } from '@/lib/views'
-import { Title } from '@/components/Title'
+import React, { Dispatch, FC, useState } from 'react';
+import { LoginView } from '@/lib/views';
+import { Title } from '@/components/Title';
 import {
   Card,
   CardContent,
@@ -8,46 +8,46 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { useIntermediateSession } from '@/lib/auth'
-import { useMutation } from '@connectrpc/connect-query'
-import { verifyEmailChallenge } from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { useIntermediateSession } from '@/lib/auth';
+import { useMutation } from '@connectrpc/connect-query';
+import { verifyEmailChallenge } from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
-} from '@/components/ui/input-otp'
-import { parseErrorMessage } from '@/lib/errors'
-import { toast } from 'sonner'
+} from '@/components/ui/input-otp';
+import { parseErrorMessage } from '@/lib/errors';
+import { toast } from 'sonner';
 
 interface VerifyEmailViewProps {
-  setView: Dispatch<React.SetStateAction<LoginView>>
+  setView: Dispatch<React.SetStateAction<LoginView>>;
 }
 
 const VerifyEmailView: FC<VerifyEmailViewProps> = ({ setView }) => {
-  const intermediateSession = useIntermediateSession()
+  const intermediateSession = useIntermediateSession();
 
-  const [challengeCode, setChallengeCode] = useState<string>('')
+  const [challengeCode, setChallengeCode] = useState<string>('');
 
-  const verifyEmailChallengeMutation = useMutation(verifyEmailChallenge)
+  const verifyEmailChallengeMutation = useMutation(verifyEmailChallenge);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     try {
       await verifyEmailChallengeMutation.mutateAsync({
         code: challengeCode,
-      })
+      });
 
-      setView(LoginView.ChooseProject)
+      setView(LoginView.ChooseProject);
     } catch (error) {
-      const message = parseErrorMessage(error)
+      const message = parseErrorMessage(error);
       toast.error('Could not verify email address', {
         description: message,
-      })
+      });
     }
-  }
+  };
 
   return (
     <>
@@ -86,7 +86,7 @@ const VerifyEmailView: FC<VerifyEmailViewProps> = ({ setView }) => {
         <CardFooter></CardFooter>
       </Card>
     </>
-  )
-}
+  );
+};
 
-export default VerifyEmailView
+export default VerifyEmailView;

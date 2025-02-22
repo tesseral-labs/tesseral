@@ -8,11 +8,11 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/openauth/openauth/internal/backend/authn"
-	backendv1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
-	"github.com/openauth/openauth/internal/backend/store/queries"
-	"github.com/openauth/openauth/internal/common/apierror"
-	"github.com/openauth/openauth/internal/store/idformat"
+	"github.com/tesseral-labs/tesseral/internal/backend/authn"
+	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
+	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
+	"github.com/tesseral-labs/tesseral/internal/common/apierror"
+	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -94,6 +94,49 @@ func (s *Store) GetPasskey(ctx context.Context, req *backendv1.GetPasskeyRequest
 	return &backendv1.GetPasskeyResponse{Passkey: parsePasskey(qPasskey)}, nil
 }
 
+func (s *Store) UpdatePasskey(ctx context.Context, req *backendv1.UpdatePasskeyRequest) (*backendv1.UpdatePasskeyResponse, error) {
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	passkeyID, err := idformat.Passkey.Parse(req.Id)
+	if err != nil {
+		return nil, fmt.Errorf("parse passkey id: %w", err)
+	}
+
+	qPasskey, err := q.GetPasskey(ctx, queries.GetPasskeyParams{
+		ID:        passkeyID,
+		ProjectID: authn.ProjectID(ctx),
+	})
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("passkey not found", fmt.Errorf("get passkey: %w", err))
+		}
+
+		return nil, fmt.Errorf("get passkey: %w", err)
+	}
+
+	var updates queries.UpdatePasskeyParams
+	updates.ID = qPasskey.ID
+
+	if req.Passkey.Disabled != nil {
+		updates.Disabled = *req.Passkey.Disabled
+	}
+
+	qUpdatedPasskey, err := q.UpdatePasskey(ctx, updates)
+	if err != nil {
+		return nil, fmt.Errorf("update passkey: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
+	}
+
+	return &backendv1.UpdatePasskeyResponse{Passkey: parsePasskey(qUpdatedPasskey)}, nil
+}
+
 func (s *Store) DeletePasskey(ctx context.Context, req *backendv1.DeletePasskeyRequest) (*backendv1.DeletePasskeyResponse, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
@@ -134,7 +177,7 @@ func parsePasskey(qPasskey queries.Passkey) *backendv1.Passkey {
 		UserId:       idformat.User.Format(qPasskey.UserID),
 		CreateTime:   timestamppb.New(*qPasskey.CreateTime),
 		UpdateTime:   timestamppb.New(*qPasskey.UpdateTime),
-		Disabled:     qPasskey.Disabled,
+		Disabled:     &qPasskey.Disabled,
 		CredentialId: qPasskey.CredentialID,
 		PublicKeyPkix: string(pem.EncodeToMemory(&pem.Block{
 			Type:  "PUBLIC KEY",

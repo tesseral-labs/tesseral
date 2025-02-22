@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/openauth/openauth/internal/common/store"
+	"github.com/tesseral-labs/tesseral/internal/common/store"
 )
 
 type Issuer struct {

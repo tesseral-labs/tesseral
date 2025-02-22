@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"connectrpc.com/connect"
-	backendv1 "github.com/openauth/openauth/internal/backend/gen/openauth/backend/v1"
+	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 )
 
 func (s *Service) ListPasskeys(ctx context.Context, req *connect.Request[backendv1.ListPasskeysRequest]) (*connect.Response[backendv1.ListPasskeysResponse], error) {
@@ -18,6 +18,14 @@ func (s *Service) ListPasskeys(ctx context.Context, req *connect.Request[backend
 
 func (s *Service) GetPasskey(ctx context.Context, req *connect.Request[backendv1.GetPasskeyRequest]) (*connect.Response[backendv1.GetPasskeyResponse], error) {
 	res, err := s.Store.GetPasskey(ctx, req.Msg)
+	if err != nil {
+		return nil, fmt.Errorf("store: %w", err)
+	}
+	return connect.NewResponse(res), nil
+}
+
+func (s *Service) UpdatePasskey(ctx context.Context, req *connect.Request[backendv1.UpdatePasskeyRequest]) (*connect.Response[backendv1.UpdatePasskeyResponse], error) {
+	res, err := s.Store.UpdatePasskey(ctx, req.Msg)
 	if err != nil {
 		return nil, fmt.Errorf("store: %w", err)
 	}

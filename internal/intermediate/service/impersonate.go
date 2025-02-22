@@ -5,9 +5,9 @@ import (
 	"fmt"
 
 	"connectrpc.com/connect"
-	"github.com/openauth/openauth/internal/cookies"
-	"github.com/openauth/openauth/internal/intermediate/authn"
-	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
+	"github.com/tesseral-labs/tesseral/internal/cookies"
+	"github.com/tesseral-labs/tesseral/internal/intermediate/authn"
+	intermediatev1 "github.com/tesseral-labs/tesseral/internal/intermediate/gen/tesseral/intermediate/v1"
 )
 
 func (s *Service) RedeemUserImpersonationToken(ctx context.Context, req *connect.Request[intermediatev1.RedeemUserImpersonationTokenRequest]) (*connect.Response[intermediatev1.RedeemUserImpersonationTokenResponse], error) {

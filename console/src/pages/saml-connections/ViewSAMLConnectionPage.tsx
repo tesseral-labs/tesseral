@@ -5,26 +5,26 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
-import { Link } from 'react-router-dom'
-import React, { useState } from 'react'
-import { useNavigate, useParams } from 'react-router'
-import { useMutation, useQuery } from '@connectrpc/connect-query'
+} from '@/components/ui/breadcrumb';
+import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate, useParams } from 'react-router';
+import { useMutation, useQuery } from '@connectrpc/connect-query';
 import {
   deleteSAMLConnection,
   getOrganization,
   getSAMLConnection,
-} from '@/gen/openauth/backend/v1/backend-BackendService_connectquery'
+} from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { DateTime } from 'luxon'
-import { timestampDate } from '@bufbuild/protobuf/wkt'
-import { toast } from 'sonner'
+} from '@/components/ui/card';
+import { DateTime } from 'luxon';
+import { timestampDate } from '@bufbuild/protobuf/wkt';
+import { toast } from 'sonner';
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -33,25 +33,29 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog'
-import { Button } from '@/components/ui/button'
+} from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
 import {
   DetailsGrid,
   DetailsGridColumn,
   DetailsGridEntry,
   DetailsGridKey,
   DetailsGridValue,
-} from '@/components/details-grid'
-import { PageCodeSubtitle, PageDescription, PageTitle } from '@/components/page'
+} from '@/components/details-grid';
+import {
+  PageCodeSubtitle,
+  PageDescription,
+  PageTitle,
+} from '@/components/page';
 
-export function ViewSAMLConnectionPage() {
-  const { organizationId, samlConnectionId } = useParams()
+export const ViewSAMLConnectionPage = () => {
+  const { organizationId, samlConnectionId } = useParams();
   const { data: getOrganizationResponse } = useQuery(getOrganization, {
     id: organizationId,
-  })
+  });
   const { data: getSAMLConnectionResponse } = useQuery(getSAMLConnection, {
     id: samlConnectionId,
-  })
+  });
   return (
     <div>
       <Breadcrumb>
@@ -203,27 +207,27 @@ export function ViewSAMLConnectionPage() {
 
       <DangerZoneCard />
     </div>
-  )
-}
+  );
+};
 
-function DangerZoneCard() {
-  const { organizationId, samlConnectionId } = useParams()
-  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
+const DangerZoneCard = () => {
+  const { organizationId, samlConnectionId } = useParams();
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
 
   const handleDelete = () => {
-    setConfirmDeleteOpen(true)
-  }
+    setConfirmDeleteOpen(true);
+  };
 
-  const deleteSAMLConnectionMutation = useMutation(deleteSAMLConnection)
-  const navigate = useNavigate()
+  const deleteSAMLConnectionMutation = useMutation(deleteSAMLConnection);
+  const navigate = useNavigate();
   const handleConfirmDelete = async () => {
     await deleteSAMLConnectionMutation.mutateAsync({
       id: samlConnectionId,
-    })
+    });
 
-    toast.success('SAML connection deleted')
-    navigate(`/organizations/${organizationId}/saml-connections`)
-  }
+    toast.success('SAML connection deleted');
+    navigate(`/organizations/${organizationId}/saml-connections`);
+  };
 
   return (
     <>
@@ -267,5 +271,5 @@ function DangerZoneCard() {
         </CardContent>
       </Card>
     </>
-  )
-}
+  );
+};

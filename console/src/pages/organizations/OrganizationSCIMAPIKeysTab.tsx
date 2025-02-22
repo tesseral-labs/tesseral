@@ -1,20 +1,17 @@
-import React, { useState } from 'react'
-import { useNavigate, useParams } from 'react-router'
-import { useMutation, useQuery } from '@connectrpc/connect-query'
+import React, { useState } from 'react';
+import { useNavigate, useParams } from 'react-router';
+import { useMutation, useQuery } from '@connectrpc/connect-query';
 import {
   createSCIMAPIKey,
-  deleteSAMLConnection,
-  listSAMLConnections,
   listSCIMAPIKeys,
-  listUsers,
-} from '@/gen/openauth/backend/v1/backend-BackendService_connectquery'
+} from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
+} from '@/components/ui/card';
 import {
   Table,
   TableBody,
@@ -22,13 +19,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
-import { Link } from 'react-router-dom'
-import { DateTime } from 'luxon'
-import { timestampDate } from '@bufbuild/protobuf/wkt'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { toast } from 'sonner'
+} from '@/components/ui/table';
+import { Link } from 'react-router-dom';
+import { DateTime } from 'luxon';
+import { timestampDate } from '@bufbuild/protobuf/wkt';
+import { Button } from '@/components/ui/button';
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -38,10 +33,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
-import { z } from 'zod'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
+} from '@/components/ui/alert-dialog';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Form,
   FormControl,
@@ -50,17 +45,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { CircleAlert } from 'lucide-react'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { SecretCopier } from '@/components/SecretCopier'
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { SecretCopier } from '@/components/SecretCopier';
 
-export function OrganizationSCIMAPIKeysTab() {
-  const { organizationId } = useParams()
+export const OrganizationSCIMAPIKeysTab = () => {
+  const { organizationId } = useParams();
   const { data: listSCIMAPIKeysResponse } = useQuery(listSCIMAPIKeys, {
     organizationId,
-  })
+  });
 
   return (
     <Card>
@@ -97,14 +90,16 @@ export function OrganizationSCIMAPIKeysTab() {
                 </TableCell>
                 <TableCell className="font-mono">{scimAPIKey.id}</TableCell>
                 <TableCell>
-                  {DateTime.fromJSDate(
-                    timestampDate(scimAPIKey.createTime!),
-                  ).toRelative()}
+                  {scimAPIKey.createTime &&
+                    DateTime.fromJSDate(
+                      timestampDate(scimAPIKey.createTime),
+                    ).toRelative()}
                 </TableCell>
                 <TableCell>
-                  {DateTime.fromJSDate(
-                    timestampDate(scimAPIKey.updateTime!),
-                  ).toRelative()}
+                  {scimAPIKey.updateTime &&
+                    DateTime.fromJSDate(
+                      timestampDate(scimAPIKey.updateTime),
+                    ).toRelative()}
                 </TableCell>
               </TableRow>
             ))}
@@ -112,43 +107,53 @@ export function OrganizationSCIMAPIKeysTab() {
         </Table>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
 const schema = z.object({
   displayName: z.string(),
-})
+});
 
-function CreateSCIMAPIKeyButton() {
-  const { organizationId } = useParams()
-  const createSCIMAPIKeyMutation = useMutation(createSCIMAPIKey)
+const CreateSCIMAPIKeyButton = () => {
+  const { organizationId } = useParams();
+  const createSCIMAPIKeyMutation = useMutation(createSCIMAPIKey);
+
+  /* eslint-disable @typescript-eslint/no-unsafe-call */
+  // Currently there's an issue with the types of react-hook-form and zod
+  // preventing the compiler from inferring the correct types.
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
       displayName: '',
     },
-  })
-  const navigate = useNavigate()
-  const [createOpen, setCreateOpen] = useState(false)
-  const [scimAPIKeyID, setScimAPIKeyID] = useState('')
-  const [secretToken, setSecretToken] = useState('')
+  });
+  /* eslint-enable @typescript-eslint/no-unsafe-call */
 
-  async function handleSubmit(values: z.infer<typeof schema>) {
+  const navigate = useNavigate();
+  const [createOpen, setCreateOpen] = useState(false);
+  const [scimAPIKeyID, setScimAPIKeyID] = useState('');
+  const [secretToken, setSecretToken] = useState('');
+
+  const handleSubmit = async (values: z.infer<typeof schema>) => {
     const { scimApiKey } = await createSCIMAPIKeyMutation.mutateAsync({
       scimApiKey: {
         organizationId,
         displayName: values.displayName,
       },
-    })
+    });
 
-    setCreateOpen(false)
-    setScimAPIKeyID(scimApiKey!.id)
-    setSecretToken(scimApiKey!.secretToken)
-  }
+    setCreateOpen(false);
+    if (scimApiKey?.id) {
+      setScimAPIKeyID(scimApiKey.id);
+    }
+    if (scimApiKey?.secretToken) {
+      setSecretToken(scimApiKey.secretToken);
+    }
+  };
 
-  function handleClose() {
-    navigate(`/organizations/${organizationId}/scim-api-keys/${scimAPIKeyID}`)
-  }
+  const handleClose = () => {
+    navigate(`/organizations/${organizationId}/scim-api-keys/${scimAPIKeyID}`);
+  };
 
   return (
     <>
@@ -195,11 +200,17 @@ function CreateSCIMAPIKeyButton() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <Form {...form}>
+            {/* eslint-disable @typescript-eslint/no-unsafe-call */}
+            {/** Currently
+            there's an issue with the types of react-hook-form and zod
+            preventing the compiler from inferring the correct types.
+            */}
             <form onSubmit={form.handleSubmit(handleSubmit)}>
+              {/** eslint-enable @typescript-eslint/no-unsafe-call */}
               <FormField
                 control={form.control}
                 name="displayName"
-                render={({ field }) => (
+                render={({ field }: { field: any }) => (
                   <FormItem>
                     <FormLabel>Display Name</FormLabel>
                     <FormControl>
@@ -221,5 +232,5 @@ function CreateSCIMAPIKeyButton() {
         </AlertDialogContent>
       </AlertDialog>
     </>
-  )
-}
+  );
+};

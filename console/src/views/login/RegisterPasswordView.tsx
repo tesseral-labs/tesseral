@@ -1,74 +1,74 @@
-import React, { FC, useState } from 'react'
-import { Title } from '@/components/Title'
+import React, { FC, useState } from 'react';
+import { Title } from '@/components/Title';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import {
   exchangeIntermediateSessionForSession,
   registerPassword,
-} from '@/gen/openauth/intermediate/v1/intermediate-IntermediateService_connectquery'
-import { useMutation } from '@connectrpc/connect-query'
-import { useNavigate } from 'react-router'
-import { setAccessToken, setRefreshToken } from '@/auth'
-import { Input } from '@/components/ui/input'
-import { LoginView } from '@/lib/views'
-import { parseErrorMessage } from '@/lib/errors'
-import { toast } from 'sonner'
-import { AuthType, useAuthType, useIntermediateOrganization } from '@/lib/auth'
-import Loader from '@/components/ui/loader'
+} from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
+import { useMutation } from '@connectrpc/connect-query';
+import { useNavigate } from 'react-router';
+import { setAccessToken, setRefreshToken } from '@/auth';
+import { Input } from '@/components/ui/input';
+import { LoginView } from '@/lib/views';
+import { parseErrorMessage } from '@/lib/errors';
+import { toast } from 'sonner';
+import { AuthType, useAuthType, useIntermediateOrganization } from '@/lib/auth';
+import Loader from '@/components/ui/loader';
 
 interface RegisterPasswordViewProps {
-  setView: React.Dispatch<React.SetStateAction<LoginView>>
+  setView: React.Dispatch<React.SetStateAction<LoginView>>;
 }
 
 const RegisterPasswordView: FC<RegisterPasswordViewProps> = ({ setView }) => {
-  const authType = useAuthType()
-  const organization = useIntermediateOrganization()
-  const navigate = useNavigate()
+  const authType = useAuthType();
+  const organization = useIntermediateOrganization();
+  const navigate = useNavigate();
 
-  const [password, setPassword] = useState<string>('')
-  const [submitting, setSubmitting] = useState<boolean>(false)
+  const [password, setPassword] = useState<string>('');
+  const [submitting, setSubmitting] = useState<boolean>(false);
 
   const exchangeIntermediateSessionForSessionMutation = useMutation(
     exchangeIntermediateSessionForSession,
-  )
-  const registerPasswordMutation = useMutation(registerPassword)
+  );
+  const registerPasswordMutation = useMutation(registerPassword);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setSubmitting(true)
+    e.preventDefault();
+    setSubmitting(true);
 
     try {
       await registerPasswordMutation.mutateAsync({
         password,
-      })
+      });
 
       if (organization?.requireMfa) {
-        setView(LoginView.ChooseAdditionalFactor)
-        return
+        setView(LoginView.ChooseAdditionalFactor);
+        return;
       }
 
       const { accessToken, refreshToken } =
-        await exchangeIntermediateSessionForSessionMutation.mutateAsync({})
+        await exchangeIntermediateSessionForSessionMutation.mutateAsync({});
 
-      setAccessToken(accessToken)
-      setRefreshToken(refreshToken)
-      setSubmitting(false)
+      setAccessToken(accessToken);
+      setRefreshToken(refreshToken);
+      setSubmitting(false);
 
-      navigate('/settings')
+      navigate('/settings');
     } catch (error) {
-      setSubmitting(false)
-      const message = parseErrorMessage(error)
+      setSubmitting(false);
+      const message = parseErrorMessage(error);
       toast.error('Could not set password', {
         description: message,
-      })
+      });
     }
-  }
+  };
 
   return (
     <>
@@ -107,7 +107,7 @@ const RegisterPasswordView: FC<RegisterPasswordViewProps> = ({ setView }) => {
         </CardContent>
       </Card>
     </>
-  )
-}
+  );
+};
 
-export default RegisterPasswordView
+export default RegisterPasswordView;

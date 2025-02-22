@@ -3,8 +3,8 @@ package uxml_test
 import (
 	"testing"
 
-	"github.com/openauth/openauth/internal/saml/internal/uxml"
 	"github.com/stretchr/testify/assert"
+	"github.com/tesseral-labs/tesseral/internal/saml/internal/uxml"
 )
 
 func textNode(s string) uxml.Node {

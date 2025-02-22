@@ -15,10 +15,10 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/sesv2/types"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/openauth/openauth/internal/common/apierror"
-	"github.com/openauth/openauth/internal/intermediate/authn"
-	intermediatev1 "github.com/openauth/openauth/internal/intermediate/gen/openauth/intermediate/v1"
-	"github.com/openauth/openauth/internal/intermediate/store/queries"
+	"github.com/tesseral-labs/tesseral/internal/common/apierror"
+	"github.com/tesseral-labs/tesseral/internal/intermediate/authn"
+	intermediatev1 "github.com/tesseral-labs/tesseral/internal/intermediate/gen/tesseral/intermediate/v1"
+	"github.com/tesseral-labs/tesseral/internal/intermediate/store/queries"
 )
 
 func (s *Store) IssueEmailVerificationChallenge(ctx context.Context, req *intermediatev1.IssueEmailVerificationChallengeRequest) (*intermediatev1.IssueEmailVerificationChallengeResponse, error) {
@@ -74,8 +74,7 @@ func (s *Store) IssueEmailVerificationChallenge(ctx context.Context, req *interm
 		return nil, err
 	}
 
-	err = s.sendEmailVerificationChallenge(ctx, authn.IntermediateSession(ctx).Email, secretToken)
-	if err != nil {
+	if err := s.sendEmailVerificationChallenge(ctx, req.Email, secretToken); err != nil {
 		return nil, fmt.Errorf("send email verification challenge: %w", err)
 	}
 
@@ -167,7 +166,7 @@ func (s *Store) sendEmailVerificationChallenge(ctx context.Context, email string
 		Destination: &types.Destination{
 			ToAddresses: []string{email},
 		},
-		FromEmailAddress: aws.String("replace-me@tesseral.app"), // TODO: Replace with a real email address once verification is in place
+		FromEmailAddress: aws.String("noreply@mail.laresset-dev1.app"), // TODO: Replace with a real email address once verification is in place
 	})
 	if err != nil {
 		return fmt.Errorf("send email: %w", err)

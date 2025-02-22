@@ -3,8 +3,8 @@ package webauthn_test
 import (
 	"testing"
 
-	"github.com/openauth/openauth/internal/webauthn"
 	"github.com/stretchr/testify/require"
+	"github.com/tesseral-labs/tesseral/internal/webauthn"
 )
 
 func TestParse(t *testing.T) {

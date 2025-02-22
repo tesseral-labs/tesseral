@@ -3,10 +3,10 @@ package authnmiddleware
 import (
 	"net/http"
 
-	"github.com/openauth/openauth/internal/common/projectid"
-	"github.com/openauth/openauth/internal/store/idformat"
-	"github.com/openauth/openauth/internal/wellknown/authn"
-	"github.com/openauth/openauth/internal/wellknown/store"
+	"github.com/tesseral-labs/tesseral/internal/common/projectid"
+	"github.com/tesseral-labs/tesseral/internal/store/idformat"
+	"github.com/tesseral-labs/tesseral/internal/wellknown/authn"
+	"github.com/tesseral-labs/tesseral/internal/wellknown/store"
 )
 
 func New(s *store.Store, p *projectid.Sniffer, h http.Handler) http.Handler {
@@ -14,7 +14,7 @@ func New(s *store.Store, p *projectid.Sniffer, h http.Handler) http.Handler {
 		ctx := r.Context()
 
 		// project id sniffing
-		projectID, err := p.GetProjectID(r.Host)
+		projectID, err := p.GetProjectID(r.Header.Get("X-Tesseral-Host"))
 		if err != nil {
 			w.WriteHeader(http.StatusNotFound)
 			return

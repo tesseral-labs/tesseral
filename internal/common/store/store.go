@@ -7,7 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/openauth/openauth/internal/common/store/queries"
+	"github.com/tesseral-labs/tesseral/internal/common/store/queries"
 )
 
 type Store struct {

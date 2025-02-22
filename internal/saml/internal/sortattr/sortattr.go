@@ -3,7 +3,7 @@ package sortattr
 // todo this might be better named "sortattrname"
 
 import (
-	"github.com/openauth/openauth/internal/saml/internal/uxml"
+	"github.com/tesseral-labs/tesseral/internal/saml/internal/uxml"
 )
 
 // SortAttr can sort attributes in compliance with the c14n specification.

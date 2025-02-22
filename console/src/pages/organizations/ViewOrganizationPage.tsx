@@ -1,25 +1,11 @@
-import { useQuery } from '@connectrpc/connect-query'
-import {
-  getOrganization,
-  listSAMLConnections,
-  listSCIMAPIKeys,
-  listUsers,
-} from '@/gen/openauth/backend/v1/backend-BackendService_connectquery'
-import { Outlet, useLocation, useParams } from 'react-router'
-import React from 'react'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
-import { Link } from 'react-router-dom'
-import { DateTime } from 'luxon'
-import { timestampDate } from '@bufbuild/protobuf/wkt'
-import { ChevronDownIcon } from 'lucide-react'
-import { clsx } from 'clsx'
+import { useQuery } from '@connectrpc/connect-query';
+import { getOrganization } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
+import { Outlet, useLocation, useParams } from 'react-router';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { DateTime } from 'luxon';
+import { timestampDate } from '@bufbuild/protobuf/wkt';
+import { clsx } from 'clsx';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -27,16 +13,20 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { PageCodeSubtitle, PageDescription, PageTitle } from '@/components/page'
+} from '@/components/ui/breadcrumb';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  PageCodeSubtitle,
+  PageDescription,
+  PageTitle,
+} from '@/components/page';
 
-export function ViewOrganizationPage() {
-  const { organizationId } = useParams()
+export const ViewOrganizationPage = () => {
+  const { organizationId } = useParams();
   const { data: getOrganizationResponse } = useQuery(getOrganization, {
     id: organizationId,
-  })
-  const { pathname } = useLocation()
+  });
+  const { pathname } = useLocation();
 
   const tabs = [
     {
@@ -60,9 +50,9 @@ export function ViewOrganizationPage() {
       name: 'SCIM API Keys',
       url: `/organizations/${organizationId}/scim-api-keys`,
     },
-  ]
+  ];
 
-  const currentTab = tabs.find((tab) => tab.url === pathname)!
+  const currentTab = tabs.find((tab) => tab.url === pathname);
 
   return (
     // TODO remove padding when app shell in place
@@ -81,7 +71,7 @@ export function ViewOrganizationPage() {
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
-          {currentTab.root ? (
+          {currentTab?.root ? (
             <BreadcrumbItem>
               <BreadcrumbPage>
                 {getOrganizationResponse?.organization?.displayName}
@@ -98,7 +88,7 @@ export function ViewOrganizationPage() {
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage>{currentTab.name}</BreadcrumbPage>
+                <BreadcrumbPage>{currentTab?.name}</BreadcrumbPage>
               </BreadcrumbItem>
             </>
           )}
@@ -157,7 +147,7 @@ export function ViewOrganizationPage() {
               key={tab.name}
               to={tab.url}
               className={clsx(
-                tab.url === currentTab.url
+                tab.url === currentTab?.url
                   ? 'border-indigo-500 text-indigo-600'
                   : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
                 'whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium',
@@ -173,5 +163,5 @@ export function ViewOrganizationPage() {
         <Outlet />
       </div>
     </div>
-  )
-}
+  );
+};
