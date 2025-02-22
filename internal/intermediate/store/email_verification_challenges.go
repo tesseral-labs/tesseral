@@ -74,8 +74,7 @@ func (s *Store) IssueEmailVerificationChallenge(ctx context.Context, req *interm
 		return nil, err
 	}
 
-	err = s.sendEmailVerificationChallenge(ctx, authn.IntermediateSession(ctx).Email, secretToken)
-	if err != nil {
+	if err := s.sendEmailVerificationChallenge(ctx, *qIntermediateSession.Email, secretToken); err != nil {
 		return nil, fmt.Errorf("send email verification challenge: %w", err)
 	}
 
