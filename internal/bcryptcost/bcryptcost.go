@@ -1,3 +1,3 @@
 package bcryptcost
 
-const Cost = 14
+const Cost = 11
