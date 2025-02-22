@@ -84,17 +84,21 @@ func (q *Queries) CreateDogfoodProject(ctx context.Context, arg CreateDogfoodPro
 }
 
 const createOrganization = `-- name: CreateOrganization :one
-INSERT INTO organizations (id, project_id, display_name, scim_enabled)
-    VALUES ($1, $2, $3, $4)
+INSERT INTO organizations (id, project_id, display_name, scim_enabled, log_in_with_email, log_in_with_password, log_in_with_google, log_in_with_microsoft)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 RETURNING
     id, project_id, display_name, scim_enabled, create_time, update_time, logins_disabled, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_authenticator_app, log_in_with_passkey, require_mfa, log_in_with_email, log_in_with_saml
 `
 
 type CreateOrganizationParams struct {
-	ID          uuid.UUID
-	ProjectID   uuid.UUID
-	DisplayName string
-	ScimEnabled bool
+	ID                 uuid.UUID
+	ProjectID          uuid.UUID
+	DisplayName        string
+	ScimEnabled        bool
+	LogInWithEmail     bool
+	LogInWithPassword  bool
+	LogInWithGoogle    bool
+	LogInWithMicrosoft bool
 }
 
 func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganizationParams) (Organization, error) {
@@ -103,6 +107,10 @@ func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganization
 		arg.ProjectID,
 		arg.DisplayName,
 		arg.ScimEnabled,
+		arg.LogInWithEmail,
+		arg.LogInWithPassword,
+		arg.LogInWithGoogle,
+		arg.LogInWithMicrosoft,
 	)
 	var i Organization
 	err := row.Scan(
