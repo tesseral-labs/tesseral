@@ -195,6 +195,7 @@ service BackendService {
   rpc UpdateProject(UpdateProjectRequest) returns (UpdateProjectResponse);
 
   rpc GetVaultDomainSettings(GetVaultDomainSettingsRequest) returns (GetVaultDomainSettingsResponse);
+  rpc UpdateVaultDomainSettings(UpdateVaultDomainSettingsRequest) returns (UpdateVaultDomainSettingsResponse);
 
   rpc GetProjectUISettings(GetProjectUISettingsRequest) returns (GetProjectUISettingsResponse) {}
   rpc UpdateProjectUISettings(UpdateProjectUISettingsRequest) returns (UpdateProjectUISettingsResponse) {}
@@ -568,6 +569,14 @@ message RevokeProjectAPIKeyResponse {
 message GetVaultDomainSettingsRequest {}
 
 message GetVaultDomainSettingsResponse {
+  VaultDomainSettings vault_domain_settings = 1;
+}
+
+message UpdateVaultDomainSettingsRequest {
+  VaultDomainSettings vault_domain_settings = 1;
+}
+
+message UpdateVaultDomainSettingsResponse {
   VaultDomainSettings vault_domain_settings = 1;
 }
 

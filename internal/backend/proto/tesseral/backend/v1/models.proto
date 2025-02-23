@@ -30,12 +30,14 @@ message Project {
 
 message VaultDomainSettings {
   string pending_domain = 1;
-  VaultDomainSettingsDNSRecord tesseral_cname_record = 2;
-  bool tesseral_cname_record_configured = 3;
+  VaultDomainSettingsDNSRecord main_record = 2;
+  bool main_record_configured = 3;
   repeated VaultDomainSettingsDNSRecord dkim_records = 4;
   bool dkim_configured = 5;
   repeated VaultDomainSettingsDNSRecord spf_records = 6;
   bool spf_configured = 7;
+  VaultDomainSettingsDNSRecord project_verification_record = 8;
+  bool project_verification_record_configured = 9;
 }
 
 message VaultDomainSettingsDNSRecord {

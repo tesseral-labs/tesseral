@@ -14,6 +14,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/sesv2"
+	"github.com/cloudflare/cloudflare-go/v4"
+	"github.com/cloudflare/cloudflare-go/v4/option"
 	"github.com/cyrusaf/ctxlog"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -23,6 +25,7 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1/backendv1connect"
 	backendservice "github.com/tesseral-labs/tesseral/internal/backend/service"
 	backendstore "github.com/tesseral-labs/tesseral/internal/backend/store"
+	"github.com/tesseral-labs/tesseral/internal/cloudflaredoh"
 	"github.com/tesseral-labs/tesseral/internal/common/accesstoken"
 	"github.com/tesseral-labs/tesseral/internal/common/projectid"
 	commonstore "github.com/tesseral-labs/tesseral/internal/common/store"
@@ -71,6 +74,7 @@ func main() {
 		AuthAppsRootDomain                  string           `conf:"auth_apps_root_domain"`
 		DB                                  string           `conf:"db"`
 		IAMDB                               iamdbauth.Config `conf:"iamdb"`
+		CloudflareAPIToken                  string           `conf:"cloudflare_api_token"`
 		DogfoodAuthDomain                   string           `conf:"dogfood_auth_domain"`
 		DogfoodProjectID                    string           `conf:"dogfood_project_id"`
 		IntermediateSessionKMSKeyID         string           `conf:"intermediate_session_kms_key_id"`
@@ -168,6 +172,8 @@ func main() {
 		MicrosoftOAuthClientSecretsKMSKeyID:   config.MicrosoftOAuthClientSecretsKMSKeyID,
 		UserContentBaseUrl:                    config.UserContentBaseUrl,
 		AuthAppsRootDomain:                    config.AuthAppsRootDomain,
+		Cloudflare:                            cloudflare.NewClient(option.WithAPIToken(config.CloudflareAPIToken)),
+		CloudflareDOH:                         &cloudflaredoh.Client{HTTPClient: &http.Client{}},
 	})
 	backendConnectPath, backendConnectHandler := backendv1connect.NewBackendServiceHandler(
 		&backendservice.Service{

@@ -7,12 +7,13 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/sesv2"
-	"github.com/cloudflare/cloudflare-go"
+	"github.com/cloudflare/cloudflare-go/v4"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/tesseral-labs/tesseral/internal/backend/authn"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
+	"github.com/tesseral-labs/tesseral/internal/cloudflaredoh"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/pagetoken"
 )
@@ -23,7 +24,8 @@ type Store struct {
 	intermediateSessionSigningKeyKMSKeyID string
 	kms                                   *kms.Client
 	ses                                   *sesv2.Client
-	cloudflare                            *cloudflare.API
+	cloudflare                            *cloudflare.Client
+	cloudflareDOH                         *cloudflaredoh.Client
 	pageEncoder                           pagetoken.Encoder
 	q                                     *queries.Queries
 	s3PresignClient                       *s3.PresignClient
@@ -44,7 +46,8 @@ type NewStoreParams struct {
 	IntermediateSessionSigningKeyKMSKeyID string
 	KMS                                   *kms.Client
 	SES                                   *sesv2.Client
-	Cloudflare                            *cloudflare.API
+	Cloudflare                            *cloudflare.Client
+	CloudflareDOH                         *cloudflaredoh.Client
 	PageEncoder                           pagetoken.Encoder
 	S3                                    *s3.Client
 	S3UserContentBucketName               string

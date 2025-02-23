@@ -734,3 +734,29 @@ FROM
 WHERE
     project_id = $1;
 
+-- name: UpsertVaultDomainSettings :one
+INSERT INTO vault_domain_settings (project_id, pending_domain)
+    VALUES ($1, $2)
+ON CONFLICT (project_id)
+    DO UPDATE SET
+        pending_domain = excluded.pending_domain
+    RETURNING
+        *;
+
+-- name: GetVaultDomainInActiveOrPendingUse :one
+SELECT
+    EXISTS (
+        SELECT
+            1
+        FROM
+            projects
+        WHERE
+            custom_auth_domain = $1) -- todo: vault_domain
+    OR EXISTS (
+        SELECT
+            1
+        FROM
+            vault_domain_settings
+        WHERE
+            pending_domain = $1);
+

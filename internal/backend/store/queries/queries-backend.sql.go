@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const createOrganization = `-- name: CreateOrganization :one
@@ -1380,6 +1381,31 @@ func (q *Queries) GetUserInvite(ctx context.Context, arg GetUserInviteParams) (U
 	return i, err
 }
 
+const getVaultDomainInActiveOrPendingUse = `-- name: GetVaultDomainInActiveOrPendingUse :one
+SELECT
+    EXISTS (
+        SELECT
+            1
+        FROM
+            projects
+        WHERE
+            custom_auth_domain = $1) -- todo: vault_domain
+    OR EXISTS (
+        SELECT
+            1
+        FROM
+            vault_domain_settings
+        WHERE
+            pending_domain = $1)
+`
+
+func (q *Queries) GetVaultDomainInActiveOrPendingUse(ctx context.Context, customAuthDomain *string) (pgtype.Bool, error) {
+	row := q.db.QueryRow(ctx, getVaultDomainInActiveOrPendingUse, customAuthDomain)
+	var column_1 pgtype.Bool
+	err := row.Scan(&column_1)
+	return column_1, err
+}
+
 const getVaultDomainSettings = `-- name: GetVaultDomainSettings :one
 SELECT
     project_id, pending_domain
@@ -2520,5 +2546,27 @@ func (q *Queries) UpdateUserPassword(ctx context.Context, arg UpdateUserPassword
 		&i.FailedAuthenticatorAppAttempts,
 		&i.AuthenticatorAppLockoutExpireTime,
 	)
+	return i, err
+}
+
+const upsertVaultDomainSettings = `-- name: UpsertVaultDomainSettings :one
+INSERT INTO vault_domain_settings (project_id, pending_domain)
+    VALUES ($1, $2)
+ON CONFLICT (project_id)
+    DO UPDATE SET
+        pending_domain = excluded.pending_domain
+    RETURNING
+        project_id, pending_domain
+`
+
+type UpsertVaultDomainSettingsParams struct {
+	ProjectID     uuid.UUID
+	PendingDomain string
+}
+
+func (q *Queries) UpsertVaultDomainSettings(ctx context.Context, arg UpsertVaultDomainSettingsParams) (VaultDomainSetting, error) {
+	row := q.db.QueryRow(ctx, upsertVaultDomainSettings, arg.ProjectID, arg.PendingDomain)
+	var i VaultDomainSetting
+	err := row.Scan(&i.ProjectID, &i.PendingDomain)
 	return i, err
 }
