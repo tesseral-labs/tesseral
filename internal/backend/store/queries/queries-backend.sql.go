@@ -526,242 +526,102 @@ func (q *Queries) DisableProjectLogins(ctx context.Context, id uuid.UUID) error 
 	return err
 }
 
-const disableProjectOrganizationsLogInWithAuthenticatorApp = `-- name: DisableProjectOrganizationsLogInWithAuthenticatorApp :one
+const disableProjectOrganizationsLogInWithAuthenticatorApp = `-- name: DisableProjectOrganizationsLogInWithAuthenticatorApp :exec
 UPDATE
     organizations
 SET
     log_in_with_authenticator_app = FALSE
 WHERE
     project_id = $1
-RETURNING
-    id, project_id, display_name, scim_enabled, create_time, update_time, logins_disabled, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_authenticator_app, log_in_with_passkey, require_mfa, log_in_with_email, log_in_with_saml
 `
 
-func (q *Queries) DisableProjectOrganizationsLogInWithAuthenticatorApp(ctx context.Context, projectID uuid.UUID) (Organization, error) {
-	row := q.db.QueryRow(ctx, disableProjectOrganizationsLogInWithAuthenticatorApp, projectID)
-	var i Organization
-	err := row.Scan(
-		&i.ID,
-		&i.ProjectID,
-		&i.DisplayName,
-		&i.ScimEnabled,
-		&i.CreateTime,
-		&i.UpdateTime,
-		&i.LoginsDisabled,
-		&i.LogInWithGoogle,
-		&i.LogInWithMicrosoft,
-		&i.LogInWithPassword,
-		&i.LogInWithAuthenticatorApp,
-		&i.LogInWithPasskey,
-		&i.RequireMfa,
-		&i.LogInWithEmail,
-		&i.LogInWithSaml,
-	)
-	return i, err
+func (q *Queries) DisableProjectOrganizationsLogInWithAuthenticatorApp(ctx context.Context, projectID uuid.UUID) error {
+	_, err := q.db.Exec(ctx, disableProjectOrganizationsLogInWithAuthenticatorApp, projectID)
+	return err
 }
 
-const disableProjectOrganizationsLogInWithEmail = `-- name: DisableProjectOrganizationsLogInWithEmail :one
+const disableProjectOrganizationsLogInWithEmail = `-- name: DisableProjectOrganizationsLogInWithEmail :exec
 UPDATE
     organizations
 SET
     log_in_with_email = FALSE
 WHERE
     project_id = $1
-RETURNING
-    id, project_id, display_name, scim_enabled, create_time, update_time, logins_disabled, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_authenticator_app, log_in_with_passkey, require_mfa, log_in_with_email, log_in_with_saml
 `
 
-func (q *Queries) DisableProjectOrganizationsLogInWithEmail(ctx context.Context, projectID uuid.UUID) (Organization, error) {
-	row := q.db.QueryRow(ctx, disableProjectOrganizationsLogInWithEmail, projectID)
-	var i Organization
-	err := row.Scan(
-		&i.ID,
-		&i.ProjectID,
-		&i.DisplayName,
-		&i.ScimEnabled,
-		&i.CreateTime,
-		&i.UpdateTime,
-		&i.LoginsDisabled,
-		&i.LogInWithGoogle,
-		&i.LogInWithMicrosoft,
-		&i.LogInWithPassword,
-		&i.LogInWithAuthenticatorApp,
-		&i.LogInWithPasskey,
-		&i.RequireMfa,
-		&i.LogInWithEmail,
-		&i.LogInWithSaml,
-	)
-	return i, err
+func (q *Queries) DisableProjectOrganizationsLogInWithEmail(ctx context.Context, projectID uuid.UUID) error {
+	_, err := q.db.Exec(ctx, disableProjectOrganizationsLogInWithEmail, projectID)
+	return err
 }
 
-const disableProjectOrganizationsLogInWithGoogle = `-- name: DisableProjectOrganizationsLogInWithGoogle :one
+const disableProjectOrganizationsLogInWithGoogle = `-- name: DisableProjectOrganizationsLogInWithGoogle :exec
 UPDATE
     organizations
 SET
     log_in_with_google = FALSE
 WHERE
     project_id = $1
-RETURNING
-    id, project_id, display_name, scim_enabled, create_time, update_time, logins_disabled, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_authenticator_app, log_in_with_passkey, require_mfa, log_in_with_email, log_in_with_saml
 `
 
-func (q *Queries) DisableProjectOrganizationsLogInWithGoogle(ctx context.Context, projectID uuid.UUID) (Organization, error) {
-	row := q.db.QueryRow(ctx, disableProjectOrganizationsLogInWithGoogle, projectID)
-	var i Organization
-	err := row.Scan(
-		&i.ID,
-		&i.ProjectID,
-		&i.DisplayName,
-		&i.ScimEnabled,
-		&i.CreateTime,
-		&i.UpdateTime,
-		&i.LoginsDisabled,
-		&i.LogInWithGoogle,
-		&i.LogInWithMicrosoft,
-		&i.LogInWithPassword,
-		&i.LogInWithAuthenticatorApp,
-		&i.LogInWithPasskey,
-		&i.RequireMfa,
-		&i.LogInWithEmail,
-		&i.LogInWithSaml,
-	)
-	return i, err
+func (q *Queries) DisableProjectOrganizationsLogInWithGoogle(ctx context.Context, projectID uuid.UUID) error {
+	_, err := q.db.Exec(ctx, disableProjectOrganizationsLogInWithGoogle, projectID)
+	return err
 }
 
-const disableProjectOrganizationsLogInWithMicrosoft = `-- name: DisableProjectOrganizationsLogInWithMicrosoft :one
+const disableProjectOrganizationsLogInWithMicrosoft = `-- name: DisableProjectOrganizationsLogInWithMicrosoft :exec
 UPDATE
     organizations
 SET
     log_in_with_microsoft = FALSE
 WHERE
     project_id = $1
-RETURNING
-    id, project_id, display_name, scim_enabled, create_time, update_time, logins_disabled, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_authenticator_app, log_in_with_passkey, require_mfa, log_in_with_email, log_in_with_saml
 `
 
-func (q *Queries) DisableProjectOrganizationsLogInWithMicrosoft(ctx context.Context, projectID uuid.UUID) (Organization, error) {
-	row := q.db.QueryRow(ctx, disableProjectOrganizationsLogInWithMicrosoft, projectID)
-	var i Organization
-	err := row.Scan(
-		&i.ID,
-		&i.ProjectID,
-		&i.DisplayName,
-		&i.ScimEnabled,
-		&i.CreateTime,
-		&i.UpdateTime,
-		&i.LoginsDisabled,
-		&i.LogInWithGoogle,
-		&i.LogInWithMicrosoft,
-		&i.LogInWithPassword,
-		&i.LogInWithAuthenticatorApp,
-		&i.LogInWithPasskey,
-		&i.RequireMfa,
-		&i.LogInWithEmail,
-		&i.LogInWithSaml,
-	)
-	return i, err
+func (q *Queries) DisableProjectOrganizationsLogInWithMicrosoft(ctx context.Context, projectID uuid.UUID) error {
+	_, err := q.db.Exec(ctx, disableProjectOrganizationsLogInWithMicrosoft, projectID)
+	return err
 }
 
-const disableProjectOrganizationsLogInWithPasskey = `-- name: DisableProjectOrganizationsLogInWithPasskey :one
+const disableProjectOrganizationsLogInWithPasskey = `-- name: DisableProjectOrganizationsLogInWithPasskey :exec
 UPDATE
     organizations
 SET
     log_in_with_passkey = FALSE
 WHERE
     project_id = $1
-RETURNING
-    id, project_id, display_name, scim_enabled, create_time, update_time, logins_disabled, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_authenticator_app, log_in_with_passkey, require_mfa, log_in_with_email, log_in_with_saml
 `
 
-func (q *Queries) DisableProjectOrganizationsLogInWithPasskey(ctx context.Context, projectID uuid.UUID) (Organization, error) {
-	row := q.db.QueryRow(ctx, disableProjectOrganizationsLogInWithPasskey, projectID)
-	var i Organization
-	err := row.Scan(
-		&i.ID,
-		&i.ProjectID,
-		&i.DisplayName,
-		&i.ScimEnabled,
-		&i.CreateTime,
-		&i.UpdateTime,
-		&i.LoginsDisabled,
-		&i.LogInWithGoogle,
-		&i.LogInWithMicrosoft,
-		&i.LogInWithPassword,
-		&i.LogInWithAuthenticatorApp,
-		&i.LogInWithPasskey,
-		&i.RequireMfa,
-		&i.LogInWithEmail,
-		&i.LogInWithSaml,
-	)
-	return i, err
+func (q *Queries) DisableProjectOrganizationsLogInWithPasskey(ctx context.Context, projectID uuid.UUID) error {
+	_, err := q.db.Exec(ctx, disableProjectOrganizationsLogInWithPasskey, projectID)
+	return err
 }
 
-const disableProjectOrganizationsLogInWithPassword = `-- name: DisableProjectOrganizationsLogInWithPassword :one
+const disableProjectOrganizationsLogInWithPassword = `-- name: DisableProjectOrganizationsLogInWithPassword :exec
 UPDATE
     organizations
 SET
     log_in_with_password = FALSE
 WHERE
     project_id = $1
-RETURNING
-    id, project_id, display_name, scim_enabled, create_time, update_time, logins_disabled, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_authenticator_app, log_in_with_passkey, require_mfa, log_in_with_email, log_in_with_saml
 `
 
-func (q *Queries) DisableProjectOrganizationsLogInWithPassword(ctx context.Context, projectID uuid.UUID) (Organization, error) {
-	row := q.db.QueryRow(ctx, disableProjectOrganizationsLogInWithPassword, projectID)
-	var i Organization
-	err := row.Scan(
-		&i.ID,
-		&i.ProjectID,
-		&i.DisplayName,
-		&i.ScimEnabled,
-		&i.CreateTime,
-		&i.UpdateTime,
-		&i.LoginsDisabled,
-		&i.LogInWithGoogle,
-		&i.LogInWithMicrosoft,
-		&i.LogInWithPassword,
-		&i.LogInWithAuthenticatorApp,
-		&i.LogInWithPasskey,
-		&i.RequireMfa,
-		&i.LogInWithEmail,
-		&i.LogInWithSaml,
-	)
-	return i, err
+func (q *Queries) DisableProjectOrganizationsLogInWithPassword(ctx context.Context, projectID uuid.UUID) error {
+	_, err := q.db.Exec(ctx, disableProjectOrganizationsLogInWithPassword, projectID)
+	return err
 }
 
-const disableProjectOrganizationsLogInWithSAML = `-- name: DisableProjectOrganizationsLogInWithSAML :one
+const disableProjectOrganizationsLogInWithSAML = `-- name: DisableProjectOrganizationsLogInWithSAML :exec
 UPDATE
     organizations
 SET
     log_in_with_saml = FALSE
 WHERE
     project_id = $1
-RETURNING
-    id, project_id, display_name, scim_enabled, create_time, update_time, logins_disabled, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_authenticator_app, log_in_with_passkey, require_mfa, log_in_with_email, log_in_with_saml
 `
 
-func (q *Queries) DisableProjectOrganizationsLogInWithSAML(ctx context.Context, projectID uuid.UUID) (Organization, error) {
-	row := q.db.QueryRow(ctx, disableProjectOrganizationsLogInWithSAML, projectID)
-	var i Organization
-	err := row.Scan(
-		&i.ID,
-		&i.ProjectID,
-		&i.DisplayName,
-		&i.ScimEnabled,
-		&i.CreateTime,
-		&i.UpdateTime,
-		&i.LoginsDisabled,
-		&i.LogInWithGoogle,
-		&i.LogInWithMicrosoft,
-		&i.LogInWithPassword,
-		&i.LogInWithAuthenticatorApp,
-		&i.LogInWithPasskey,
-		&i.RequireMfa,
-		&i.LogInWithEmail,
-		&i.LogInWithSaml,
-	)
-	return i, err
+func (q *Queries) DisableProjectOrganizationsLogInWithSAML(ctx context.Context, projectID uuid.UUID) error {
+	_, err := q.db.Exec(ctx, disableProjectOrganizationsLogInWithSAML, projectID)
+	return err
 }
 
 const enableOrganizationLogins = `-- name: EnableOrganizationLogins :exec
@@ -2179,7 +2039,7 @@ type UpdateProjectParams struct {
 	GoogleOauthClientSecretCiphertext    []byte
 	MicrosoftOauthClientID               *string
 	MicrosoftOauthClientSecretCiphertext []byte
-	RedirectUri                          *string
+	RedirectUri                          string
 	AfterLoginRedirectUri                *string
 	AfterSignupRedirectUri               *string
 }

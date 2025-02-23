@@ -10,7 +10,7 @@
     "sourceMap": true,
     "jsx": "react",
     "allowSyntheticDefaultImports": true,
-    "lib": ["es2017", "dom"],
+    "lib": ["es2021", "dom"],
     "strict": true
   },
   "exclude": ["node_modules"]

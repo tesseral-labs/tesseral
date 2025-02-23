@@ -132,75 +132,61 @@ INSERT INTO project_trusted_domains (id, project_id, DOMAIN)
 RETURNING
     *;
 
--- name: DisableProjectOrganizationsLogInWithGoogle :one
+-- name: DisableProjectOrganizationsLogInWithGoogle :exec
 UPDATE
     organizations
 SET
     log_in_with_google = FALSE
 WHERE
-    project_id = $1
-RETURNING
-    *;
+    project_id = $1;
 
--- name: DisableProjectOrganizationsLogInWithMicrosoft :one
+-- name: DisableProjectOrganizationsLogInWithMicrosoft :exec
 UPDATE
     organizations
 SET
     log_in_with_microsoft = FALSE
 WHERE
-    project_id = $1
-RETURNING
-    *;
+    project_id = $1;
 
--- name: DisableProjectOrganizationsLogInWithEmail :one
+-- name: DisableProjectOrganizationsLogInWithEmail :exec
 UPDATE
     organizations
 SET
     log_in_with_email = FALSE
 WHERE
-    project_id = $1
-RETURNING
-    *;
+    project_id = $1;
 
--- name: DisableProjectOrganizationsLogInWithPassword :one
+-- name: DisableProjectOrganizationsLogInWithPassword :exec
 UPDATE
     organizations
 SET
     log_in_with_password = FALSE
 WHERE
-    project_id = $1
-RETURNING
-    *;
+    project_id = $1;
 
--- name: DisableProjectOrganizationsLogInWithSAML :one
+-- name: DisableProjectOrganizationsLogInWithSAML :exec
 UPDATE
     organizations
 SET
     log_in_with_saml = FALSE
 WHERE
-    project_id = $1
-RETURNING
-    *;
+    project_id = $1;
 
--- name: DisableProjectOrganizationsLogInWithAuthenticatorApp :one
+-- name: DisableProjectOrganizationsLogInWithAuthenticatorApp :exec
 UPDATE
     organizations
 SET
     log_in_with_authenticator_app = FALSE
 WHERE
-    project_id = $1
-RETURNING
-    *;
+    project_id = $1;
 
--- name: DisableProjectOrganizationsLogInWithPasskey :one
+-- name: DisableProjectOrganizationsLogInWithPasskey :exec
 UPDATE
     organizations
 SET
     log_in_with_passkey = FALSE
 WHERE
-    project_id = $1
-RETURNING
-    *;
+    project_id = $1;
 
 -- name: UpdateProjectOrganizationID :one
 UPDATE

@@ -192,17 +192,17 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 
 	updates.RedirectUri = qProject.RedirectUri
 	if req.Project.RedirectUri != "" {
-		updates.RedirectUri = &req.Project.RedirectUri
+		updates.RedirectUri = req.Project.RedirectUri
 	}
 
 	updates.AfterLoginRedirectUri = qProject.AfterLoginRedirectUri
-	if req.Project.AfterLoginRedirectUri != "" {
-		updates.AfterLoginRedirectUri = &req.Project.AfterLoginRedirectUri
+	if req.Project.AfterLoginRedirectUri != nil {
+		updates.AfterLoginRedirectUri = req.Project.AfterLoginRedirectUri
 	}
 
 	updates.AfterSignupRedirectUri = qProject.AfterSignupRedirectUri
-	if req.Project.AfterSignupRedirectUri != "" {
-		updates.AfterSignupRedirectUri = &req.Project.AfterSignupRedirectUri
+	if req.Project.AfterSignupRedirectUri != nil {
+		updates.AfterSignupRedirectUri = req.Project.AfterSignupRedirectUri
 	}
 
 	_, q, commit, rollback, err := s.tx(ctx)
@@ -217,43 +217,43 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 	}
 
 	if !qUpdatedProject.LogInWithGoogle {
-		if _, err := q.DisableProjectOrganizationsLogInWithGoogle(ctx, authn.ProjectID(ctx)); err != nil {
+		if err := q.DisableProjectOrganizationsLogInWithGoogle(ctx, authn.ProjectID(ctx)); err != nil {
 			return nil, fmt.Errorf("disable project organizations log in with Google: %w", err)
 		}
 	}
 
 	if !qUpdatedProject.LogInWithMicrosoft {
-		if _, err := q.DisableProjectOrganizationsLogInWithMicrosoft(ctx, authn.ProjectID(ctx)); err != nil {
+		if err := q.DisableProjectOrganizationsLogInWithMicrosoft(ctx, authn.ProjectID(ctx)); err != nil {
 			return nil, fmt.Errorf("disable project organizations log in with Microsoft: %w", err)
 		}
 	}
 
 	if !qUpdatedProject.LogInWithEmail {
-		if _, err := q.DisableProjectOrganizationsLogInWithEmail(ctx, authn.ProjectID(ctx)); err != nil {
+		if err := q.DisableProjectOrganizationsLogInWithEmail(ctx, authn.ProjectID(ctx)); err != nil {
 			return nil, fmt.Errorf("disable project organizations log in with email: %w", err)
 		}
 	}
 
 	if !qUpdatedProject.LogInWithPassword {
-		if _, err := q.DisableProjectOrganizationsLogInWithPassword(ctx, authn.ProjectID(ctx)); err != nil {
+		if err := q.DisableProjectOrganizationsLogInWithPassword(ctx, authn.ProjectID(ctx)); err != nil {
 			return nil, fmt.Errorf("disable project organizations log in with password: %w", err)
 		}
 	}
 
 	if !qUpdatedProject.LogInWithSaml {
-		if _, err := q.DisableProjectOrganizationsLogInWithSAML(ctx, authn.ProjectID(ctx)); err != nil {
+		if err := q.DisableProjectOrganizationsLogInWithSAML(ctx, authn.ProjectID(ctx)); err != nil {
 			return nil, fmt.Errorf("disable project organizations log in with SAML: %w", err)
 		}
 	}
 
 	if !qUpdatedProject.LogInWithAuthenticatorApp {
-		if _, err := q.DisableProjectOrganizationsLogInWithAuthenticatorApp(ctx, authn.ProjectID(ctx)); err != nil {
+		if err := q.DisableProjectOrganizationsLogInWithAuthenticatorApp(ctx, authn.ProjectID(ctx)); err != nil {
 			return nil, fmt.Errorf("disable project organizations log in with authenticator app: %w", err)
 		}
 	}
 
 	if !qUpdatedProject.LogInWithPasskey {
-		if _, err := q.DisableProjectOrganizationsLogInWithPasskey(ctx, authn.ProjectID(ctx)); err != nil {
+		if err := q.DisableProjectOrganizationsLogInWithPasskey(ctx, authn.ProjectID(ctx)); err != nil {
 			return nil, fmt.Errorf("disable project organizations log in with passkey: %w", err)
 		}
 	}
@@ -331,9 +331,10 @@ func parseProject(qProject *queries.Project, qProjectTrustedDomains []queries.Pr
 		MicrosoftOauthClientSecret: "", // intentionally left blank
 		VaultDomain:                qProject.VaultDomain,
 		TrustedDomains:             trustedDomains,
-		RedirectUri:                derefOrEmpty(qProject.RedirectUri),
-		AfterLoginRedirectUri:      derefOrEmpty(qProject.AfterLoginRedirectUri),
-		AfterSignupRedirectUri:     derefOrEmpty(qProject.AfterSignupRedirectUri),
+		RedirectUri:                qProject.RedirectUri,
+		AfterLoginRedirectUri:      qProject.AfterLoginRedirectUri,
+		AfterSignupRedirectUri:     qProject.AfterSignupRedirectUri,
+		EmailSendFromDomain:        qProject.EmailSendFromDomain,
 		EmailSendFromDomain:        qProject.EmailSendFromDomain,
 	}
 }
