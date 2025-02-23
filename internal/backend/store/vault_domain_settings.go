@@ -83,32 +83,34 @@ func (s *Store) UpdateVaultDomainSettings(ctx context.Context, req *backendv1.Up
 		return nil, fmt.Errorf("upsert vault domain settings: %w", err)
 	}
 
-	// delete resources associated with previous pending domain, if not in use
-	previousDomainInUse, err := s.q.GetVaultDomainInActiveOrPendingUse(ctx, &previousPendingDomain)
-	if err != nil {
-		return nil, fmt.Errorf("get vault domain in active or pending use: %w", err)
-	}
-
-	if !previousDomainInUse.Valid {
-		panic("null from GetVaultDomainInActiveOrPendingUse")
-	}
-
-	if !previousDomainInUse.Bool {
-		if _, err := s.ses.DeleteEmailIdentity(ctx, &sesv2.DeleteEmailIdentityInput{
-			EmailIdentity: &previousPendingDomain,
-		}); err != nil {
-			return nil, fmt.Errorf("delete email identity: %w", err)
-		}
-
-		previousCustomHostname, err := s.getCloudflareCustomHostname(ctx, previousPendingDomain)
+	if previousPendingDomain != "" {
+		// delete resources associated with previous pending domain, if not in use
+		previousDomainInUse, err := s.q.GetVaultDomainInActiveOrPendingUse(ctx, &previousPendingDomain)
 		if err != nil {
-			return nil, fmt.Errorf("get cloudflare custom hostname: %w", err)
+			return nil, fmt.Errorf("get vault domain in active or pending use: %w", err)
 		}
 
-		if _, err := s.cloudflare.CustomHostnames.Delete(ctx, previousCustomHostname.ID, custom_hostnames.CustomHostnameDeleteParams{
-			ZoneID: cloudflare.F(s.tesseralDNSCloudflareZoneID),
-		}); err != nil {
-			return nil, fmt.Errorf("delete cloudflare custom hostname: %w", err)
+		if !previousDomainInUse.Valid {
+			panic("null from GetVaultDomainInActiveOrPendingUse")
+		}
+
+		if !previousDomainInUse.Bool {
+			if _, err := s.ses.DeleteEmailIdentity(ctx, &sesv2.DeleteEmailIdentityInput{
+				EmailIdentity: &previousPendingDomain,
+			}); err != nil {
+				return nil, fmt.Errorf("delete email identity: %w", err)
+			}
+
+			previousCustomHostname, err := s.getCloudflareCustomHostname(ctx, previousPendingDomain)
+			if err != nil {
+				return nil, fmt.Errorf("get cloudflare custom hostname: %w", err)
+			}
+
+			if _, err := s.cloudflare.CustomHostnames.Delete(ctx, previousCustomHostname.ID, custom_hostnames.CustomHostnameDeleteParams{
+				ZoneID: cloudflare.F(s.tesseralDNSCloudflareZoneID),
+			}); err != nil {
+				return nil, fmt.Errorf("delete cloudflare custom hostname: %w", err)
+			}
 		}
 	}
 
