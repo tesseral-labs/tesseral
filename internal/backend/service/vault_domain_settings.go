@@ -15,3 +15,11 @@ func (s *Service) GetVaultDomainSettings(ctx context.Context, req *connect.Reque
 	}
 	return connect.NewResponse(res), nil
 }
+
+func (s *Service) UpdateVaultDomainSettings(ctx context.Context, req *connect.Request[backendv1.UpdateVaultDomainSettingsRequest]) (*connect.Response[backendv1.UpdateVaultDomainSettingsResponse], error) {
+	res, err := s.Store.UpdateVaultDomainSettings(ctx, req.Msg)
+	if err != nil {
+		return nil, fmt.Errorf("store: %w", err)
+	}
+	return connect.NewResponse(res), nil
+}
