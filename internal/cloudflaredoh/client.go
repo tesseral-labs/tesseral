@@ -43,6 +43,8 @@ func (c *Client) DNSQuery(ctx context.Context, req *DNSQueryRequest) (*DNSQueryR
 		return nil, fmt.Errorf("new http request: %w", err)
 	}
 
+	httpReq.Header.Set("Accept", "application/dns-json")
+
 	httpRes, err := c.HTTPClient.Do(httpReq)
 	if err != nil {
 		return nil, fmt.Errorf("send http request: %w", err)
@@ -50,6 +52,8 @@ func (c *Client) DNSQuery(ctx context.Context, req *DNSQueryRequest) (*DNSQueryR
 	defer func() { _ = httpRes.Body.Close() }()
 
 	if httpRes.StatusCode != http.StatusOK {
+		buf, _ := io.ReadAll(httpRes.Body)
+		fmt.Println(string(buf))
 		return nil, fmt.Errorf("bad response status code: %s", httpRes.Status)
 	}
 
