@@ -69,6 +69,7 @@ func New(p NewStoreParams) *Store {
 		kms:                                   p.KMS,
 		ses:                                   p.SES,
 		cloudflare:                            p.Cloudflare,
+		cloudflareDOH:                         p.CloudflareDOH,
 		pageEncoder:                           p.PageEncoder,
 		q:                                     queries.New(p.DB),
 		s3PresignClient:                       s3.NewPresignClient(p.S3),
