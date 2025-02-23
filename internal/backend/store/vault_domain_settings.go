@@ -150,7 +150,7 @@ func (s *Store) upsertSESEmailIdentity(ctx context.Context, emailIdentity string
 	return getEmailIdentityRes, nil
 }
 
-func (s *Store) getCloudflareCustomHostname(ctx context.Context, hostname string) (*custom_hostnames.CustomHostnameListResponse, error) {
+func (s *Store) getCloudflareCustomHostname(ctx context.Context, hostname string) (*cloudflareCustomHostname, error) {
 	res, err := s.cloudflare.CustomHostnames.List(ctx, custom_hostnames.CustomHostnameListParams{
 		ZoneID:   cloudflare.F(s.tesseralDNSCloudflareZoneID),
 		Hostname: cloudflare.F(hostname),
@@ -163,10 +163,13 @@ func (s *Store) getCloudflareCustomHostname(ctx context.Context, hostname string
 		panic(fmt.Errorf("exactly one custom hostname expected"))
 	}
 
-	return &res.Result[0], nil
+	return &cloudflareCustomHostname{
+		ID:     res.Result[0].ID,
+		Status: string(res.Result[0].Status),
+	}, nil
 }
 
-func (s *Store) upsertCloudflareCustomHostname(ctx context.Context, hostname string) (*custom_hostnames.CustomHostnameListResponse, error) {
+func (s *Store) upsertCloudflareCustomHostname(ctx context.Context, hostname string) (*cloudflareCustomHostname, error) {
 	listRes, err := s.cloudflare.CustomHostnames.List(ctx, custom_hostnames.CustomHostnameListParams{
 		ZoneID:   cloudflare.F(s.tesseralDNSCloudflareZoneID),
 		Hostname: cloudflare.F(hostname),
@@ -176,21 +179,28 @@ func (s *Store) upsertCloudflareCustomHostname(ctx context.Context, hostname str
 	}
 
 	if len(listRes.Result) != 0 {
-		return &listRes.Result[0], nil
+		return &cloudflareCustomHostname{
+			ID:     listRes.Result[0].ID,
+			Status: string(listRes.Result[0].Status),
+		}, nil
 	}
 
-	if _, err := s.cloudflare.CustomHostnames.New(ctx, custom_hostnames.CustomHostnameNewParams{
+	customHostname, err := s.cloudflare.CustomHostnames.New(ctx, custom_hostnames.CustomHostnameNewParams{
 		ZoneID:   cloudflare.F(s.tesseralDNSCloudflareZoneID),
 		Hostname: cloudflare.F(hostname),
 		SSL: cloudflare.F(custom_hostnames.CustomHostnameNewParamsSSL{
 			Method: cloudflare.F(custom_hostnames.DCVMethodHTTP),
 			Type:   cloudflare.F(custom_hostnames.DomainValidationTypeDv),
 		}),
-	}); err != nil {
+	})
+	if err != nil {
 		return nil, fmt.Errorf("create cloudflare custom hostname: %w", err)
 	}
 
-	return s.getCloudflareCustomHostname(ctx, hostname)
+	return &cloudflareCustomHostname{
+		ID:     customHostname.ID,
+		Status: string(customHostname.Status),
+	}, nil
 }
 
 func (s *Store) getProjectVerificationRecordConfigured(ctx context.Context, pendingDomain string, projectID uuid.UUID) (bool, error) {
@@ -209,7 +219,14 @@ func (s *Store) getProjectVerificationRecordConfigured(ctx context.Context, pend
 	return res.Answer[0].Data == idformat.Project.Format(projectID), nil
 }
 
-func (s *Store) parseVaultDomainSettings(qVaultDomainSettings queries.VaultDomainSetting, emailIdentity *sesv2.GetEmailIdentityOutput, customHostname *custom_hostnames.CustomHostnameListResponse, projectVerificationRecordConfigured bool) *backendv1.VaultDomainSettings {
+// cloudflareCustomHostname exists to unify Cloudflare's SDK return types for
+// List/New on custom hostnames.
+type cloudflareCustomHostname struct {
+	ID     string
+	Status string
+}
+
+func (s *Store) parseVaultDomainSettings(qVaultDomainSettings queries.VaultDomainSetting, emailIdentity *sesv2.GetEmailIdentityOutput, customHostname *cloudflareCustomHostname, projectVerificationRecordConfigured bool) *backendv1.VaultDomainSettings {
 	var dkimRecords []*backendv1.VaultDomainSettingsDNSRecord
 	for _, token := range emailIdentity.DkimAttributes.Tokens {
 		dkimRecords = append(dkimRecords, &backendv1.VaultDomainSettingsDNSRecord{
@@ -226,7 +243,7 @@ func (s *Store) parseVaultDomainSettings(qVaultDomainSettings queries.VaultDomai
 			Name:  qVaultDomainSettings.PendingDomain,
 			Value: s.tesseralDNSVaultCNAMEValue,
 		},
-		MainRecordConfigured: customHostname.Status == custom_hostnames.CustomHostnameListResponseStatusActive,
+		MainRecordConfigured: customHostname.Status == string(custom_hostnames.CustomHostnameListResponseStatusActive),
 		DkimRecords:          dkimRecords,
 		DkimConfigured:       emailIdentity.DkimAttributes.Status == types.DkimStatusSuccess,
 		SpfRecords: []*backendv1.VaultDomainSettingsDNSRecord{
