@@ -172,6 +172,7 @@ func main() {
 		MicrosoftOAuthClientSecretsKMSKeyID:   config.MicrosoftOAuthClientSecretsKMSKeyID,
 		UserContentBaseUrl:                    config.UserContentBaseUrl,
 		AuthAppsRootDomain:                    config.AuthAppsRootDomain,
+		TesseralDNSCloudflareZoneID:           config.TesseralDNSCloudflareZoneID,
 		Cloudflare:                            cloudflare.NewClient(option.WithAPIToken(config.CloudflareAPIToken)),
 		CloudflareDOH:                         &cloudflaredoh.Client{HTTPClient: &http.Client{}},
 	})
