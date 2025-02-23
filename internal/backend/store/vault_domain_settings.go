@@ -184,6 +184,7 @@ func (s *Store) upsertCloudflareCustomHostname(ctx context.Context, hostname str
 		Hostname: cloudflare.F(hostname),
 		SSL: cloudflare.F(custom_hostnames.CustomHostnameNewParamsSSL{
 			Method: cloudflare.F(custom_hostnames.DCVMethodHTTP),
+			Type:   cloudflare.F(custom_hostnames.DomainValidationTypeDv),
 		}),
 	}); err != nil {
 		return nil, fmt.Errorf("create cloudflare custom hostname: %w", err)
