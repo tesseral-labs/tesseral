@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import {
   getProject,
-  getVaultDomainSettings, updateVaultDomainSettings,
+  getVaultDomainSettings,
+  updateVaultDomainSettings,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import {
   Card,
@@ -33,27 +34,33 @@ import { Button } from '@/components/ui/button';
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider, TooltipTrigger,
+  TooltipProvider,
+  TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
-  AlertDialog, AlertDialogCancel,
+  AlertDialog,
+  AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription, AlertDialogFooter,
+  AlertDialogDescription,
+  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import {
   Form,
-  FormControl, FormDescription,
+  FormControl,
+  FormDescription,
   FormField,
   FormItem,
-  FormLabel, FormMessage,
+  FormLabel,
+  FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import Loader from '@/components/ui/loader';
 
 export const VaultDomainSettingsTab = () => {
   const { data: getProjectResponse } = useQuery(getProject, {});
@@ -65,10 +72,11 @@ export const VaultDomainSettingsTab = () => {
     <div className="space-y-8">
       <Card>
         <CardHeader className="flex-row justify-between items-center">
-          <div className="flex flex-col space-y-1 5">          <CardTitle>Vault Domain Settings</CardTitle>
-          <CardDescription>
-            Configure a custom domain for your Vault.
-          </CardDescription>
+          <div className="flex flex-col space-y-1 5">
+            <CardTitle>Vault Domain Settings</CardTitle>
+            <CardDescription>
+              Configure a custom domain for your Vault.
+            </CardDescription>
           </div>
           <EditCustomAuthDomainButton />
         </CardHeader>
@@ -121,14 +129,16 @@ export const VaultDomainSettingsTab = () => {
 
               {getVaultDomainSettingsResponse?.vaultDomainSettings
                 ?.pendingSendFromDomainReady ? (
-                <Button variant="outline">
-                  Enable Custom Vault Domain
-                </Button>
+                <Button variant="outline">Enable Custom Vault Domain</Button>
               ) : (
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button className="disabled:pointer-events-auto" variant="outline" disabled>
+                      <Button
+                        className="disabled:pointer-events-auto"
+                        variant="outline"
+                        disabled
+                      >
                         Enable Custom Vault Domain
                       </Button>
                     </TooltipTrigger>
@@ -186,7 +196,11 @@ export const VaultDomainSettingsTab = () => {
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button className="disabled:pointer-events-auto" variant="outline" disabled>
+                      <Button
+                        className="disabled:pointer-events-auto"
+                        variant="outline"
+                        disabled
+                      >
                         Enable Custom Email Send-From Domain
                       </Button>
                     </TooltipTrigger>
@@ -308,12 +322,15 @@ const EditCustomAuthDomainButton = () => {
   useEffect(() => {
     if (getVaultDomainSettingsResponse?.vaultDomainSettings) {
       form.reset({
-        pendingDomain: getVaultDomainSettingsResponse?.vaultDomainSettings?.pendingDomain,
+        pendingDomain:
+          getVaultDomainSettingsResponse?.vaultDomainSettings?.pendingDomain,
       });
     }
   }, [getVaultDomainSettingsResponse]);
 
-  const updateVaultDomainSettingsMutation = useMutation(updateVaultDomainSettings)
+  const updateVaultDomainSettingsMutation = useMutation(
+    updateVaultDomainSettings,
+  );
   const [open, setOpen] = useState(false);
   const handleSubmit = async (values: z.infer<typeof schema>) => {
     await updateVaultDomainSettingsMutation.mutateAsync({
@@ -338,11 +355,11 @@ const EditCustomAuthDomainButton = () => {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <Form {...form}>
-          { }
+          {}
           {/** Currently there's an issue with the types of react-hook-form and zod
            preventing the compiler from inferring the correct types.*/}
           <form onSubmit={form.handleSubmit(handleSubmit)}>
-            { }
+            {}
             <FormField
               control={form.control}
               name="pendingDomain"
@@ -350,7 +367,11 @@ const EditCustomAuthDomainButton = () => {
                 <FormItem>
                   <FormLabel>Custom Vault Domain</FormLabel>
                   <FormControl>
-                    <Input className="max-w-96" placeholder="vault.company.com" {...field} />
+                    <Input
+                      className="max-w-96"
+                      placeholder="vault.company.com"
+                      {...field}
+                    />
                   </FormControl>
                   <FormDescription>
                     A custom domain for your Vault. Typically, you'll use
@@ -363,11 +384,17 @@ const EditCustomAuthDomainButton = () => {
             />
             <AlertDialogFooter className="mt-8">
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <Button type="submit">Save</Button>
+              <Button
+                type="submit"
+                disabled={updateVaultDomainSettingsMutation.isPending}
+              >
+                {updateVaultDomainSettingsMutation.isPending && <Loader />}
+                Save
+              </Button>
             </AlertDialogFooter>
           </form>
         </Form>
       </AlertDialogContent>
     </AlertDialog>
-  )
-}
+  );
+};
