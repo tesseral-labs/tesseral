@@ -316,7 +316,7 @@ func (s *Store) parseVaultDomainSettings(ctx context.Context, qProject queries.P
 		dnsRecords = append(dnsRecords, &backendv1.VaultDomainSettingsDNSRecord{
 			Type:      "CNAME",
 			Name:      fmt.Sprintf("%s._domainkey.%s", token, qVaultDomainSettings.PendingDomain),
-			WantValue: fmt.Sprintf("%s.dkim.amazonses.com", token),
+			WantValue: fmt.Sprintf("%s.dkim.amazonses.com.", token),
 		})
 	}
 
