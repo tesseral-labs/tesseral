@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
-
+import EditProjectGoogleSettingsPage from './pages/project/edit/EditProjectGoogleSettingsPage';
+import EditProjectMicrosoftSettingsPage from './pages/project/edit/EditProjectMicrosoftSettingsPage';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createConnectTransport } from '@connectrpc/connect-web';
 import { type Transport } from '@connectrpc/connect';
@@ -87,6 +88,14 @@ const AppWithinQueryClient = () => {
             >
               <Route path="" element={<ProjectDetailsTab />} />
             </Route>
+            <Route
+              path="project-settings/log-in-with-google/edit"
+              element={<EditProjectGoogleSettingsPage />}
+            />
+            <Route
+              path="project-settings/log-in-with-microsoft/edit"
+              element={<EditProjectMicrosoftSettingsPage />}
+            />
 
             <Route
               path="project-settings/api-keys"

@@ -57,15 +57,15 @@ export const ViewProjectSettingsPage = () => {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage>Project Settings</BreadcrumbPage>
+            <BreadcrumbPage>Project settings</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
 
-      <PageTitle>Project Settings</PageTitle>
+      <PageTitle>Project settings</PageTitle>
       <PageCodeSubtitle>{getProjectResponse?.project?.id}</PageCodeSubtitle>
       <PageDescription>
-        Everything you do in Tesseral happens inside a project.
+        Everything you do in Tesseral happens inside a Project.
       </PageDescription>
 
       <Card className="my-8">
@@ -77,7 +77,7 @@ export const ViewProjectSettingsPage = () => {
           <DetailsGrid>
             <DetailsGridColumn>
               <DetailsGridEntry>
-                <DetailsGridKey>Display Name</DetailsGridKey>
+                <DetailsGridKey>Display name</DetailsGridKey>
                 <DetailsGridValue>
                   {getProjectResponse?.project?.displayName}
                 </DetailsGridValue>

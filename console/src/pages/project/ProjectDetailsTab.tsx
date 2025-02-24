@@ -13,6 +13,8 @@ import {
   DetailsGridKey,
   DetailsGridValue,
 } from '@/components/details-grid';
+import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 import { useQuery } from '@connectrpc/connect-query';
 import { getProject } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 
@@ -23,7 +25,7 @@ export const ProjectDetailsTab = () => {
     <div className="space-y-8">
       <Card>
         <CardHeader>
-          <CardTitle>Authentication Settings</CardTitle>
+          <CardTitle>Authentication settings</CardTitle>
           <CardDescription>
             Configure the login methods your customers can use to log in to your
             application.
@@ -67,7 +69,18 @@ export const ProjectDetailsTab = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Google Settings</CardTitle>
+          <CardTitle>
+            <div className="grid grid-cols-2 gap-8">
+              <span>Google settings</span>
+              <div className="text-right">
+                <Link to="/project-settings/log-in-with-google/edit">
+                  <Button variant="outline" size="sm">
+                    Edit
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </CardTitle>
           <CardDescription>
             Settings for "Log in with Google" in your project.
           </CardDescription>
@@ -109,7 +122,18 @@ export const ProjectDetailsTab = () => {
       </Card>
       <Card>
         <CardHeader>
-          <CardTitle>Microsoft Settings</CardTitle>
+          <CardTitle>
+            <div className="grid grid-cols-2 gap-8">
+              <span>Microsoft settings</span>
+              <div className="text-right">
+                <Link to="/project-settings/log-in-with-microsoft/edit">
+                  <Button variant="outline" size="sm">
+                    Edit
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </CardTitle>
           <CardDescription>
             Settings for "Log in with Microsoft" in your project.
           </CardDescription>
