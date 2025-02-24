@@ -30,9 +30,10 @@ message Project {
 
 message VaultDomainSettings {
   string pending_domain = 1;
-  string current_domain = 2;
-  repeated VaultDomainSettingsDNSRecord dns_records = 3;
-  bool pending_domain_ready_to_promote = 4;
+  bool pending_vault_domain_ready = 2;
+  bool pending_send_from_domain_ready = 3;
+  repeated VaultDomainSettingsDNSRecord vault_domain_records = 4;
+  repeated VaultDomainSettingsDNSRecord email_send_from_records = 5;
 }
 
 message VaultDomainSettingsDNSRecord {

@@ -31,11 +31,7 @@ func (s *Store) GetVaultDomainSettings(ctx context.Context, req *backendv1.GetVa
 	qVaultDomainSettings, err := s.q.GetVaultDomainSettings(ctx, authn.ProjectID(ctx))
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return &backendv1.GetVaultDomainSettingsResponse{
-				VaultDomainSettings: &backendv1.VaultDomainSettings{
-					CurrentDomain: qProject.VaultDomain,
-				},
-			}, nil
+			return &backendv1.GetVaultDomainSettingsResponse{}, nil
 		}
 
 		return nil, fmt.Errorf("get vault domain settings: %w", err)
@@ -289,7 +285,7 @@ func (s *Store) addActualValuesToDNSRecord(ctx context.Context, dnsRecord *backe
 }
 
 func (s *Store) parseVaultDomainSettings(ctx context.Context, qProject queries.Project, qVaultDomainSettings queries.VaultDomainSetting, emailIdentity *sesv2.GetEmailIdentityOutput, customHostname *cloudflareCustomHostname) (*backendv1.VaultDomainSettings, error) {
-	dnsRecords := []*backendv1.VaultDomainSettingsDNSRecord{
+	vaultDomainRecords := []*backendv1.VaultDomainSettingsDNSRecord{
 		{
 			Type:      "CNAME",
 			Name:      qVaultDomainSettings.PendingDomain,
@@ -300,6 +296,9 @@ func (s *Store) parseVaultDomainSettings(ctx context.Context, qProject queries.P
 			Name:      fmt.Sprintf("_tesseral_project_verification.%s", qVaultDomainSettings.PendingDomain),
 			WantValue: idformat.Project.Format(qVaultDomainSettings.ProjectID),
 		},
+	}
+
+	emailSendFromRecords := []*backendv1.VaultDomainSettingsDNSRecord{
 		{
 			Type:      "MX",
 			Name:      fmt.Sprintf("mail.%s", qVaultDomainSettings.PendingDomain),
@@ -313,26 +312,26 @@ func (s *Store) parseVaultDomainSettings(ctx context.Context, qProject queries.P
 	}
 
 	for _, token := range emailIdentity.DkimAttributes.Tokens {
-		dnsRecords = append(dnsRecords, &backendv1.VaultDomainSettingsDNSRecord{
+		emailSendFromRecords = append(emailSendFromRecords, &backendv1.VaultDomainSettingsDNSRecord{
 			Type:      "CNAME",
 			Name:      fmt.Sprintf("%s._domainkey.%s", token, qVaultDomainSettings.PendingDomain),
 			WantValue: fmt.Sprintf("%s.dkim.amazonses.com.", token),
 		})
 	}
 
-	for i := range dnsRecords {
+	for i := range vaultDomainRecords {
 		var err error
-		dnsRecords[i], err = s.addActualValuesToDNSRecord(ctx, dnsRecords[i])
+		vaultDomainRecords[i], err = s.addActualValuesToDNSRecord(ctx, vaultDomainRecords[i])
 		if err != nil {
 			return nil, fmt.Errorf("add actual values to dns record: %w", err)
 		}
 	}
 
-	allRecordsCorrect := true
-	for _, record := range dnsRecords {
-		if !record.Correct {
-			allRecordsCorrect = false
-			break
+	for i := range emailSendFromRecords {
+		var err error
+		emailSendFromRecords[i], err = s.addActualValuesToDNSRecord(ctx, emailSendFromRecords[i])
+		if err != nil {
+			return nil, fmt.Errorf("add actual values to dns record: %w", err)
 		}
 	}
 
@@ -341,9 +340,10 @@ func (s *Store) parseVaultDomainSettings(ctx context.Context, qProject queries.P
 	dkimOK := emailIdentity.DkimAttributes.Status == types.DkimStatusSuccess
 
 	return &backendv1.VaultDomainSettings{
-		PendingDomain:               qVaultDomainSettings.PendingDomain,
-		CurrentDomain:               qProject.VaultDomain,
-		DnsRecords:                  dnsRecords,
-		PendingDomainReadyToPromote: allRecordsCorrect && cloudflareOK && emailIdentityOK && dkimOK,
+		PendingDomain:              qVaultDomainSettings.PendingDomain,
+		PendingVaultDomainReady:    cloudflareOK,
+		PendingSendFromDomainReady: emailIdentityOK && dkimOK,
+		VaultDomainRecords:         vaultDomainRecords,
+		EmailSendFromRecords:       emailSendFromRecords,
 	}, nil
 }
