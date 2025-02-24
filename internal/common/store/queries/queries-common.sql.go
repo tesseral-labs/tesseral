@@ -73,18 +73,17 @@ func (q *Queries) GetImpersonatorUserByID(ctx context.Context, id uuid.UUID) (Ge
 	return i, err
 }
 
-const getProjectIDByCustomAuthDomain = `-- name: GetProjectIDByCustomAuthDomain :one
+const getProjectIDByVaultDomain = `-- name: GetProjectIDByVaultDomain :one
 SELECT
     id
 FROM
     projects
 WHERE
-    custom_auth_domain = $1
-    OR auth_domain = $1
+    vault_domain = $1
 `
 
-func (q *Queries) GetProjectIDByCustomAuthDomain(ctx context.Context, customAuthDomain *string) (uuid.UUID, error) {
-	row := q.db.QueryRow(ctx, getProjectIDByCustomAuthDomain, customAuthDomain)
+func (q *Queries) GetProjectIDByVaultDomain(ctx context.Context, vaultDomain string) (uuid.UUID, error) {
+	row := q.db.QueryRow(ctx, getProjectIDByVaultDomain, vaultDomain)
 	var id uuid.UUID
 	err := row.Scan(&id)
 	return id, err

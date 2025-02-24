@@ -38,7 +38,7 @@ func (s *Store) CreateProject(ctx context.Context, req *intermediatev1.CreatePro
 	// create this ahead of time so we can use it in the display name and auth domain
 	newProjectID := uuid.New()
 	formattedNewProjectID := idformat.Project.Format(newProjectID)
-	newProjectAuthDomain := fmt.Sprintf("%s.%s", formattedNewProjectID, s.authAppsRootDomain)
+	newProjectVaultDomain := fmt.Sprintf("%s.%s", formattedNewProjectID, s.authAppsRootDomain)
 
 	// create a new organization under the dogfood project
 	qOrganization, err := q.CreateOrganization(ctx, queries.CreateOrganizationParams{
@@ -88,7 +88,7 @@ func (s *Store) CreateProject(ctx context.Context, req *intermediatev1.CreatePro
 	qProject, err := q.CreateProject(ctx, queries.CreateProjectParams{
 		ID:                 newProjectID,
 		OrganizationID:     &qOrganization.ID,
-		AuthDomain:         &newProjectAuthDomain,
+		VaultDomain:        newProjectVaultDomain,
 		DisplayName:        req.DisplayName,
 		LogInWithGoogle:    false,
 		LogInWithMicrosoft: false,
@@ -108,13 +108,13 @@ func (s *Store) CreateProject(ctx context.Context, req *intermediatev1.CreatePro
 	}, nil
 }
 
-func parseProject(p queries.Project) *intermediatev1.Project {
+func parseProject(qProject queries.Project) *intermediatev1.Project {
 	return &intermediatev1.Project{
-		Id:             p.ID.String(),
-		OrganizationId: idformat.Organization.Format(*p.OrganizationID),
-		CreateTime:     timestamppb.New(*p.CreateTime),
-		UpdateTime:     timestamppb.New(*p.UpdateTime),
-		DisplayName:    p.DisplayName,
-		AuthDomain:     p.AuthDomain,
+		Id:             qProject.ID.String(),
+		OrganizationId: idformat.Organization.Format(*qProject.OrganizationID),
+		CreateTime:     timestamppb.New(*qProject.CreateTime),
+		UpdateTime:     timestamppb.New(*qProject.UpdateTime),
+		DisplayName:    qProject.DisplayName,
+		VaultDomain:    qProject.VaultDomain,
 	}
 }

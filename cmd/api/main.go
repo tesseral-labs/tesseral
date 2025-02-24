@@ -70,25 +70,25 @@ func main() {
 
 	config := struct {
 		RunAsLambda                         bool             `conf:"run_as_lambda,noredact"`
-		Host                                string           `conf:"host"`
-		AuthAppsRootDomain                  string           `conf:"auth_apps_root_domain"`
+		Host                                string           `conf:"host,noredact"`
+		AuthAppsRootDomain                  string           `conf:"auth_apps_root_domain,noredact"`
 		DB                                  string           `conf:"db"`
 		IAMDB                               iamdbauth.Config `conf:"iamdb"`
 		CloudflareAPIToken                  string           `conf:"cloudflare_api_token"`
-		DogfoodAuthDomain                   string           `conf:"dogfood_auth_domain"`
-		DogfoodProjectID                    string           `conf:"dogfood_project_id"`
-		IntermediateSessionKMSKeyID         string           `conf:"intermediate_session_kms_key_id"`
+		DogfoodAuthDomain                   string           `conf:"dogfood_auth_domain,noredact"`
+		DogfoodProjectID                    string           `conf:"dogfood_project_id,noredact"`
+		IntermediateSessionKMSKeyID         string           `conf:"intermediate_session_kms_key_id,noredact"`
 		KMSEndpoint                         string           `conf:"kms_endpoint_resolver_url,noredact"`
 		PageEncodingValue                   string           `conf:"page-encoding-value"`
 		S3UserContentBucketName             string           `conf:"s3_user_content_bucket_name,noredact"`
 		S3Endpoint                          string           `conf:"s3_endpoint_resolver_url,noredact"`
 		SESEndpoint                         string           `conf:"ses_endpoint_resolver_url,noredact"`
 		ServeAddr                           string           `conf:"serve_addr,noredact"`
-		SessionKMSKeyID                     string           `conf:"session_kms_key_id"`
+		SessionKMSKeyID                     string           `conf:"session_kms_key_id,noredact"`
 		GoogleOAuthClientSecretsKMSKeyID    string           `conf:"google_oauth_client_secrets_kms_key_id,noredact"`
 		MicrosoftOAuthClientSecretsKMSKeyID string           `conf:"microsoft_oauth_client_secrets_kms_key_id,noredact"`
 		AuthenticatorAppSecretsKMSKeyID     string           `conf:"authenticator_app_secrets_kms_key_id,noredact"`
-		UserContentBaseUrl                  string           `conf:"user_content_base_url"`
+		UserContentBaseUrl                  string           `conf:"user_content_base_url,redact"`
 		TesseralDNSCloudflareZoneID         string           `conf:"tesseral_dns_cloudflare_zone_id,noredact"`
 	}{
 		PageEncodingValue: "0000000000000000000000000000000000000000000000000000000000000000",

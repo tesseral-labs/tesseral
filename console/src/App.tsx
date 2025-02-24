@@ -34,6 +34,7 @@ import { AuthType } from './lib/auth';
 import GoogleOAuthCallbackPage from './pages/login/GoogleOAuthCallbackPage';
 import MicrosoftOAuthCallbackPage from './pages/login/MicrosoftOAuthCallbackPage';
 import { ViewPublishableKeyPage } from '@/pages/api-keys/ViewPublishableKeyPage';
+import { VaultDomainSettingsTab } from '@/pages/project/VaultDomainSettingsTab';
 
 const queryClient = new QueryClient();
 
@@ -86,6 +87,7 @@ const AppWithinQueryClient = () => {
               element={<ViewProjectSettingsPage />}
             >
               <Route path="" element={<ProjectDetailsTab />} />
+              <Route path="vault-domain-settings" element={<VaultDomainSettingsTab />} />
             </Route>
 
             <Route

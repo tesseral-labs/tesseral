@@ -109,7 +109,7 @@ func (s *Store) GetPasskeyOptions(ctx context.Context, req *frontendv1.GetPasske
 	}
 
 	return &frontendv1.GetPasskeyOptionsResponse{
-		RpId:            *qProject.AuthDomain,
+		RpId:            qProject.VaultDomain,
 		RpName:          qProject.DisplayName,
 		UserId:          fmt.Sprintf("%s|%s", qUser.Email, idformat.Organization.Format(qUser.OrganizationID)),
 		UserDisplayName: qUser.Email,
@@ -129,7 +129,7 @@ func (s *Store) RegisterPasskey(ctx context.Context, req *frontendv1.RegisterPas
 	}
 
 	cred, err := webauthn.Parse(&webauthn.ParseRequest{
-		RPID:              *qProject.AuthDomain,
+		RPID:              qProject.VaultDomain,
 		AttestationObject: req.AttestationObject,
 	})
 	if err != nil {

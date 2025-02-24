@@ -24,7 +24,9 @@ type DNSQueryResponse struct {
 
 type DNSQueryResponseAnswer struct {
 	Name string
+	Type int32
 	Data string
+	TTL  uint32
 }
 
 func (c *Client) DNSQuery(ctx context.Context, req *DNSQueryRequest) (*DNSQueryResponse, error) {

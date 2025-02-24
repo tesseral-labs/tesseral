@@ -303,7 +303,7 @@ message Project {
   google.protobuf.Timestamp create_time = 3;
   google.protobuf.Timestamp update_time = 4;
   string display_name = 5;
-  optional string auth_domain = 6;
+  string vault_domain = 6;
 }
 
 message IssueEmailVerificationChallengeRequest {

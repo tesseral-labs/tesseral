@@ -240,17 +240,17 @@ func (q *Queries) CreatePasskey(ctx context.Context, arg CreatePasskeyParams) (P
 }
 
 const createProject = `-- name: CreateProject :one
-INSERT INTO projects (id, organization_id, display_name, auth_domain, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_saml)
+INSERT INTO projects (id, organization_id, display_name, vault_domain, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_saml)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 RETURNING
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain
 `
 
 type CreateProjectParams struct {
 	ID                 uuid.UUID
 	OrganizationID     *uuid.UUID
 	DisplayName        string
-	AuthDomain         *string
+	VaultDomain        string
 	LogInWithGoogle    bool
 	LogInWithMicrosoft bool
 	LogInWithPassword  bool
@@ -262,7 +262,7 @@ func (q *Queries) CreateProject(ctx context.Context, arg CreateProjectParams) (P
 		arg.ID,
 		arg.OrganizationID,
 		arg.DisplayName,
-		arg.AuthDomain,
+		arg.VaultDomain,
 		arg.LogInWithGoogle,
 		arg.LogInWithMicrosoft,
 		arg.LogInWithPassword,
@@ -282,8 +282,6 @@ func (q *Queries) CreateProject(ctx context.Context, arg CreateProjectParams) (P
 		&i.DisplayName,
 		&i.CreateTime,
 		&i.UpdateTime,
-		&i.CustomAuthDomain,
-		&i.AuthDomain,
 		&i.LoginsDisabled,
 		&i.LogInWithAuthenticatorApp,
 		&i.LogInWithPasskey,
@@ -292,6 +290,7 @@ func (q *Queries) CreateProject(ctx context.Context, arg CreateProjectParams) (P
 		&i.RedirectUri,
 		&i.AfterLoginRedirectUri,
 		&i.AfterSignupRedirectUri,
+		&i.VaultDomain,
 	)
 	return i, err
 }
@@ -800,7 +799,7 @@ func (q *Queries) GetPasskeyByCredentialID(ctx context.Context, arg GetPasskeyBy
 
 const getProjectByID = `-- name: GetProjectByID :one
 SELECT
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain
 FROM
     projects
 WHERE
@@ -823,8 +822,6 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 		&i.DisplayName,
 		&i.CreateTime,
 		&i.UpdateTime,
-		&i.CustomAuthDomain,
-		&i.AuthDomain,
 		&i.LoginsDisabled,
 		&i.LogInWithAuthenticatorApp,
 		&i.LogInWithPasskey,
@@ -833,6 +830,7 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 		&i.RedirectUri,
 		&i.AfterLoginRedirectUri,
 		&i.AfterSignupRedirectUri,
+		&i.VaultDomain,
 	)
 	return i, err
 }

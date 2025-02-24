@@ -1104,7 +1104,7 @@ components:
                     type: boolean
                 logInWithPasskey:
                     type: boolean
-                authDomain:
+                vaultDomain:
                     type: string
         RefreshRequest:
             type: object

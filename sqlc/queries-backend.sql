@@ -106,11 +106,9 @@ SET
     google_oauth_client_secret_ciphertext = $11,
     microsoft_oauth_client_id = $12,
     microsoft_oauth_client_secret_ciphertext = $13,
-    custom_auth_domain = $14,
-    auth_domain = $15,
-    redirect_uri = $16,
-    after_login_redirect_uri = $17,
-    after_signup_redirect_uri = $18
+    redirect_uri = $14,
+    after_login_redirect_uri = $15,
+    after_signup_redirect_uri = $16
 WHERE
     id = $1
 RETURNING
@@ -751,7 +749,7 @@ SELECT
         FROM
             projects
         WHERE
-            custom_auth_domain = $1) -- todo: vault_domain
+            vault_domain = $1)
     OR EXISTS (
         SELECT
             1

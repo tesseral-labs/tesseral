@@ -241,8 +241,6 @@ type Project struct {
 	DisplayName                          string
 	CreateTime                           *time.Time
 	UpdateTime                           *time.Time
-	CustomAuthDomain                     *string
-	AuthDomain                           *string
 	LoginsDisabled                       bool
 	LogInWithAuthenticatorApp            bool
 	LogInWithPasskey                     bool
@@ -251,6 +249,7 @@ type Project struct {
 	RedirectUri                          *string
 	AfterLoginRedirectUri                *string
 	AfterSignupRedirectUri               *string
+	VaultDomain                          string
 }
 
 type ProjectApiKey struct {

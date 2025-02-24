@@ -42,6 +42,10 @@ export const ViewProjectSettingsPage = () => {
       name: 'Hosted Portal Settings',
       url: `/project-settings/hosted-portal`,
     },
+    {
+      name: 'Vault Domain Settings',
+      url: `/project-settings/vault-domain-settings`,
+    }
   ];
 
   const currentTab = tabs.find((tab) => tab.url === pathname);

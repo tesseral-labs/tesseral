@@ -34,11 +34,6 @@ func (s *Store) GetProject(ctx context.Context, req *frontendv1.GetProjectReques
 }
 
 func parseProject(qProject *queries.Project) *frontendv1.Project {
-	authDomain := derefOrEmpty(qProject.AuthDomain)
-	if qProject.CustomAuthDomain != nil {
-		authDomain = *qProject.CustomAuthDomain
-	}
-
 	return &frontendv1.Project{
 		Id:                        idformat.Project.Format(qProject.ID),
 		CreateTime:                timestamppb.New(*qProject.CreateTime),
@@ -49,6 +44,6 @@ func parseProject(qProject *queries.Project) *frontendv1.Project {
 		LogInWithMicrosoft:        qProject.LogInWithMicrosoft,
 		LogInWithAuthenticatorApp: qProject.LogInWithAuthenticatorApp,
 		LogInWithPasskey:          qProject.LogInWithPasskey,
-		AuthDomain:                authDomain,
+		VaultDomain:               qProject.VaultDomain,
 	}
 }

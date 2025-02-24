@@ -1179,7 +1179,7 @@ components:
                     type: string
                 microsoftOauthClientSecret:
                     type: string
-                authDomain:
+                vaultDomain:
                     type: string
                 trustedDomains:
                     type: array

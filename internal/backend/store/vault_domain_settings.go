@@ -23,8 +23,21 @@ func (s *Store) GetVaultDomainSettings(ctx context.Context, req *backendv1.GetVa
 		return nil, fmt.Errorf("validate is dogfood session: %w", err)
 	}
 
+	qProject, err := s.q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get project by id: %w", err)
+	}
+
 	qVaultDomainSettings, err := s.q.GetVaultDomainSettings(ctx, authn.ProjectID(ctx))
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return &backendv1.GetVaultDomainSettingsResponse{
+				VaultDomainSettings: &backendv1.VaultDomainSettings{
+					CurrentDomain: qProject.VaultDomain,
+				},
+			}, nil
+		}
+
 		return nil, fmt.Errorf("get vault domain settings: %w", err)
 	}
 
@@ -40,19 +53,24 @@ func (s *Store) GetVaultDomainSettings(ctx context.Context, req *backendv1.GetVa
 		return nil, fmt.Errorf("get cloudflare custom hostname: %w", err)
 	}
 
-	projectVerificationRecordConfigured, err := s.getProjectVerificationRecordConfigured(ctx, qVaultDomainSettings.PendingDomain, authn.ProjectID(ctx))
+	vaultDomainSettings, err := s.parseVaultDomainSettings(ctx, qProject, qVaultDomainSettings, emailIdentity, customHostname)
 	if err != nil {
-		return nil, fmt.Errorf("get project verification record configured: %w", err)
+		return nil, fmt.Errorf("parse vault domain settings: %w", err)
 	}
 
 	return &backendv1.GetVaultDomainSettingsResponse{
-		VaultDomainSettings: s.parseVaultDomainSettings(qVaultDomainSettings, emailIdentity, customHostname, projectVerificationRecordConfigured),
+		VaultDomainSettings: vaultDomainSettings,
 	}, nil
 }
 
 func (s *Store) UpdateVaultDomainSettings(ctx context.Context, req *backendv1.UpdateVaultDomainSettingsRequest) (*backendv1.UpdateVaultDomainSettingsResponse, error) {
 	if err := validateIsDogfoodSession(ctx); err != nil {
 		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	}
+
+	qProject, err := s.q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 
 	previousPendingDomain, err := s.getCurrentPendingDomain(ctx)
@@ -70,11 +88,6 @@ func (s *Store) UpdateVaultDomainSettings(ctx context.Context, req *backendv1.Up
 		return nil, fmt.Errorf("upsert cloudflare custom hostname: %w", err)
 	}
 
-	projectVerificationRecordConfigured, err := s.getProjectVerificationRecordConfigured(ctx, req.VaultDomainSettings.PendingDomain, authn.ProjectID(ctx))
-	if err != nil {
-		return nil, fmt.Errorf("get project verification record configured: %w", err)
-	}
-
 	qVaultDomainSettings, err := s.q.UpsertVaultDomainSettings(ctx, queries.UpsertVaultDomainSettingsParams{
 		ProjectID:     authn.ProjectID(ctx),
 		PendingDomain: req.VaultDomainSettings.PendingDomain,
@@ -85,7 +98,7 @@ func (s *Store) UpdateVaultDomainSettings(ctx context.Context, req *backendv1.Up
 
 	if previousPendingDomain != "" {
 		// delete resources associated with previous pending domain, if not in use
-		previousDomainInUse, err := s.q.GetVaultDomainInActiveOrPendingUse(ctx, &previousPendingDomain)
+		previousDomainInUse, err := s.q.GetVaultDomainInActiveOrPendingUse(ctx, previousPendingDomain)
 		if err != nil {
 			return nil, fmt.Errorf("get vault domain in active or pending use: %w", err)
 		}
@@ -114,8 +127,13 @@ func (s *Store) UpdateVaultDomainSettings(ctx context.Context, req *backendv1.Up
 		}
 	}
 
+	vaultDomainSettings, err := s.parseVaultDomainSettings(ctx, qProject, qVaultDomainSettings, emailIdentity, customHostname)
+	if err != nil {
+		return nil, fmt.Errorf("parse vault domain settings: %w", err)
+	}
+
 	return &backendv1.UpdateVaultDomainSettingsResponse{
-		VaultDomainSettings: s.parseVaultDomainSettings(qVaultDomainSettings, emailIdentity, customHostname, projectVerificationRecordConfigured),
+		VaultDomainSettings: vaultDomainSettings,
 	}, nil
 }
 
@@ -228,44 +246,104 @@ type cloudflareCustomHostname struct {
 	Status string
 }
 
-func (s *Store) parseVaultDomainSettings(qVaultDomainSettings queries.VaultDomainSetting, emailIdentity *sesv2.GetEmailIdentityOutput, customHostname *cloudflareCustomHostname, projectVerificationRecordConfigured bool) *backendv1.VaultDomainSettings {
-	var dkimRecords []*backendv1.VaultDomainSettingsDNSRecord
+func (s *Store) addActualValuesToDNSRecord(ctx context.Context, dnsRecord *backendv1.VaultDomainSettingsDNSRecord) (*backendv1.VaultDomainSettingsDNSRecord, error) {
+	res, err := s.cloudflareDOH.DNSQuery(ctx, &cloudflaredoh.DNSQueryRequest{
+		Name: dnsRecord.Name,
+		Type: dnsRecord.Type,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("dns query: %w", err)
+	}
+
+	var recordType int32
+	switch dnsRecord.Type {
+	case "CNAME":
+		recordType = 5
+	case "MX":
+		recordType = 15
+	case "TXT":
+		recordType = 16
+	}
+
+	var values []string
+	var ttl uint32
+	for _, answer := range res.Answer {
+		if answer.Name != dnsRecord.Name || answer.Type != recordType {
+			continue // this is just a related record
+		}
+
+		values = append(values, answer.Data)
+		if answer.TTL > ttl {
+			ttl = answer.TTL
+		}
+	}
+
+	return &backendv1.VaultDomainSettingsDNSRecord{
+		Type:             dnsRecord.Type,
+		Name:             dnsRecord.Name,
+		WantValue:        dnsRecord.WantValue,
+		ActualValues:     values,
+		ActualTtlSeconds: ttl,
+		Correct:          len(values) == 1 && values[0] == dnsRecord.WantValue,
+	}, nil
+}
+
+func (s *Store) parseVaultDomainSettings(ctx context.Context, qProject queries.Project, qVaultDomainSettings queries.VaultDomainSetting, emailIdentity *sesv2.GetEmailIdentityOutput, customHostname *cloudflareCustomHostname) (*backendv1.VaultDomainSettings, error) {
+	dnsRecords := []*backendv1.VaultDomainSettingsDNSRecord{
+		{
+			Type:      "CNAME",
+			Name:      qVaultDomainSettings.PendingDomain,
+			WantValue: s.tesseralDNSVaultCNAMEValue,
+		},
+		{
+			Type:      "TXT",
+			Name:      fmt.Sprintf("_tesseral_project_verification.%s", qVaultDomainSettings.PendingDomain),
+			WantValue: idformat.Project.Format(qVaultDomainSettings.ProjectID),
+		},
+		{
+			Type:      "MX",
+			Name:      fmt.Sprintf("mail.%s", qVaultDomainSettings.PendingDomain),
+			WantValue: s.sesSPFMXRecordValue,
+		},
+		{
+			Type:      "TXT",
+			Name:      fmt.Sprintf("mail.%s", qVaultDomainSettings.PendingDomain),
+			WantValue: "v=spf1 include:amazonses.com ~all",
+		},
+	}
+
 	for _, token := range emailIdentity.DkimAttributes.Tokens {
-		dkimRecords = append(dkimRecords, &backendv1.VaultDomainSettingsDNSRecord{
-			Type:  "CNAME",
-			Name:  fmt.Sprintf("%s._domainkey.%s", token, qVaultDomainSettings.PendingDomain),
-			Value: fmt.Sprintf("%s.dkim.amazonses.com", token),
+		dnsRecords = append(dnsRecords, &backendv1.VaultDomainSettingsDNSRecord{
+			Type:      "CNAME",
+			Name:      fmt.Sprintf("%s._domainkey.%s", token, qVaultDomainSettings.PendingDomain),
+			WantValue: fmt.Sprintf("%s.dkim.amazonses.com", token),
 		})
 	}
 
-	return &backendv1.VaultDomainSettings{
-		PendingDomain: qVaultDomainSettings.PendingDomain,
-		MainRecord: &backendv1.VaultDomainSettingsDNSRecord{
-			Type:  "CNAME",
-			Name:  qVaultDomainSettings.PendingDomain,
-			Value: s.tesseralDNSVaultCNAMEValue,
-		},
-		MainRecordConfigured: customHostname.Status == string(custom_hostnames.CustomHostnameListResponseStatusActive),
-		DkimRecords:          dkimRecords,
-		DkimConfigured:       emailIdentity.DkimAttributes.Status == types.DkimStatusSuccess,
-		SpfRecords: []*backendv1.VaultDomainSettingsDNSRecord{
-			{
-				Type:  "MX",
-				Name:  fmt.Sprintf("mail.%s", qVaultDomainSettings.PendingDomain),
-				Value: s.sesSPFMXRecordValue,
-			},
-			{
-				Type:  "TXT",
-				Name:  fmt.Sprintf("mail.%s", qVaultDomainSettings.PendingDomain),
-				Value: "v=spf1 include:amazonses.com ~all",
-			},
-		},
-		SpfConfigured: emailIdentity.MailFromAttributes.MailFromDomainStatus == types.MailFromDomainStatusSuccess,
-		ProjectVerificationRecord: &backendv1.VaultDomainSettingsDNSRecord{
-			Type:  "TXT",
-			Name:  fmt.Sprintf("_tesseral_project_verification.%s", qVaultDomainSettings.PendingDomain),
-			Value: idformat.Project.Format(qVaultDomainSettings.ProjectID),
-		},
-		ProjectVerificationRecordConfigured: projectVerificationRecordConfigured,
+	for i := range dnsRecords {
+		var err error
+		dnsRecords[i], err = s.addActualValuesToDNSRecord(ctx, dnsRecords[i])
+		if err != nil {
+			return nil, fmt.Errorf("add actual values to dns record: %w", err)
+		}
 	}
+
+	allRecordsCorrect := true
+	for _, record := range dnsRecords {
+		if !record.Correct {
+			allRecordsCorrect = false
+			break
+		}
+	}
+
+	cloudflareOK := customHostname.Status == "ACTIVE"
+	emailIdentityOK := emailIdentity.VerificationStatus == types.VerificationStatusSuccess
+	dkimOK := emailIdentity.DkimAttributes.Status == types.DkimStatusSuccess
+
+	return &backendv1.VaultDomainSettings{
+		PendingDomain:               qVaultDomainSettings.PendingDomain,
+		CurrentDomain:               qProject.VaultDomain,
+		DnsRecords:                  dnsRecords,
+		PendingDomainReadyToPromote: allRecordsCorrect && cloudflareOK && emailIdentityOK && dkimOK,
+	}, nil
 }
