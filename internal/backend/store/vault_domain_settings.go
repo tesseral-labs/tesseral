@@ -280,7 +280,7 @@ func (s *Store) addActualValuesToDNSRecord(ctx context.Context, dnsRecord *backe
 		WantValue:        dnsRecord.WantValue,
 		ActualValues:     values,
 		ActualTtlSeconds: ttl,
-		Correct:          true, // len(values) == 1 && values[0] == dnsRecord.WantValue,
+		Correct:          len(values) == 1 && values[0] == dnsRecord.WantValue,
 	}, nil
 }
 
