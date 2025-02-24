@@ -72,6 +72,7 @@ func main() {
 		RunAsLambda                         bool             `conf:"run_as_lambda,noredact"`
 		Host                                string           `conf:"host,noredact"`
 		AuthAppsRootDomain                  string           `conf:"auth_apps_root_domain,noredact"`
+		TesseralDNSVaultCNAMEValue          string           `conf:"tesseral_dns_vault_cname_value,noredact"`
 		DB                                  string           `conf:"db"`
 		IAMDB                               iamdbauth.Config `conf:"iamdb"`
 		CloudflareAPIToken                  string           `conf:"cloudflare_api_token"`
@@ -172,6 +173,7 @@ func main() {
 		MicrosoftOAuthClientSecretsKMSKeyID:   config.MicrosoftOAuthClientSecretsKMSKeyID,
 		UserContentBaseUrl:                    config.UserContentBaseUrl,
 		AuthAppsRootDomain:                    config.AuthAppsRootDomain,
+		TesseralDNSVaultCNAMEValue:            config.TesseralDNSVaultCNAMEValue,
 		TesseralDNSCloudflareZoneID:           config.TesseralDNSCloudflareZoneID,
 		Cloudflare:                            cloudflare.NewClient(option.WithAPIToken(config.CloudflareAPIToken)),
 		CloudflareDOH:                         &cloudflaredoh.Client{HTTPClient: &http.Client{}},
