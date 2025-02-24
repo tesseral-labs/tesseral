@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   getProject,
-  getVaultDomainSettings,
+  getVaultDomainSettings, updateVaultDomainSettings,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import {
   Card,
@@ -18,7 +18,7 @@ import {
   TableHead,
   TableBody,
 } from '@/components/ui/table';
-import { useQuery } from '@connectrpc/connect-query';
+import { useMutation, useQuery } from '@connectrpc/connect-query';
 import {
   DetailsGrid,
   DetailsGridColumn,
@@ -35,6 +35,25 @@ import {
   TooltipContent,
   TooltipProvider, TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import {
+  AlertDialog, AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import {
+  Form,
+  FormControl, FormDescription,
+  FormField,
+  FormItem,
+  FormLabel, FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 
 export const VaultDomainSettingsTab = () => {
   const { data: getProjectResponse } = useQuery(getProject, {});
@@ -45,11 +64,13 @@ export const VaultDomainSettingsTab = () => {
   return (
     <div className="space-y-8">
       <Card>
-        <CardHeader>
-          <CardTitle>Vault Domain Settings</CardTitle>
+        <CardHeader className="flex-row justify-between items-center">
+          <div className="flex flex-col space-y-1 5">          <CardTitle>Vault Domain Settings</CardTitle>
           <CardDescription>
             Configure a custom domain for your Vault.
           </CardDescription>
+          </div>
+          <EditCustomAuthDomainButton />
         </CardHeader>
         <CardContent>
           <DetailsGrid>
@@ -268,3 +289,85 @@ const DNSRecordRows = ({
     </>
   );
 };
+
+const schema = z.object({
+  pendingDomain: z.string(),
+});
+
+const EditCustomAuthDomainButton = () => {
+  const form = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      pendingDomain: '',
+    },
+  });
+
+  const { data: getVaultDomainSettingsResponse, refetch } = useQuery(
+    getVaultDomainSettings,
+  );
+  useEffect(() => {
+    if (getVaultDomainSettingsResponse?.vaultDomainSettings) {
+      form.reset({
+        pendingDomain: getVaultDomainSettingsResponse?.vaultDomainSettings?.pendingDomain,
+      });
+    }
+  }, [getVaultDomainSettingsResponse]);
+
+  const updateVaultDomainSettingsMutation = useMutation(updateVaultDomainSettings)
+  const [open, setOpen] = useState(false);
+  const handleSubmit = async (values: z.infer<typeof schema>) => {
+    await updateVaultDomainSettingsMutation.mutateAsync({
+      vaultDomainSettings: {
+        pendingDomain: values.pendingDomain,
+      },
+    });
+    await refetch();
+    setOpen(false);
+  };
+
+  return (
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogTrigger>
+        <Button variant="outline">Edit</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Edit Vault Domain</AlertDialogTitle>
+          <AlertDialogDescription>
+            Configure a custom domain for your Vault.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <Form {...form}>
+          { }
+          {/** Currently there's an issue with the types of react-hook-form and zod
+           preventing the compiler from inferring the correct types.*/}
+          <form onSubmit={form.handleSubmit(handleSubmit)}>
+            { }
+            <FormField
+              control={form.control}
+              name="pendingDomain"
+              render={({ field }: { field: any }) => (
+                <FormItem>
+                  <FormLabel>Custom Vault Domain</FormLabel>
+                  <FormControl>
+                    <Input className="max-w-96" placeholder="vault.company.com" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    A custom domain for your Vault. Typically, you'll use
+                    "vault.company.com", where "company.com" is your company
+                    domain.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <AlertDialogFooter className="mt-8">
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <Button type="submit">Save</Button>
+            </AlertDialogFooter>
+          </form>
+        </Form>
+      </AlertDialogContent>
+    </AlertDialog>
+  )
+}
