@@ -179,7 +179,7 @@ func (s *Store) getCloudflareCustomHostname(ctx context.Context, hostname string
 		return nil, fmt.Errorf("list cloudflare custom hostnames: %w", err)
 	}
 
-	if len(res.Result) != 0 {
+	if len(res.Result) != 1 {
 		panic(fmt.Errorf("exactly one custom hostname expected"))
 	}
 
