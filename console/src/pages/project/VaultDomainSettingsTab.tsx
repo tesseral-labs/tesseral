@@ -1,5 +1,8 @@
 import React from 'react';
-import { getVaultDomainSettings } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
+import {
+  getProject,
+  getVaultDomainSettings,
+} from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import {
   Card,
   CardContent,
@@ -26,58 +29,18 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { CheckIcon, XIcon } from 'lucide-react';
 import { VaultDomainSettingsDNSRecord } from '@/gen/tesseral/backend/v1/models_pb';
+import { Button } from '@/components/ui/button';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider, TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 export const VaultDomainSettingsTab = () => {
-  let { data: getVaultDomainSettingsResponse } = useQuery(
+  const { data: getProjectResponse } = useQuery(getProject, {});
+  const { data: getVaultDomainSettingsResponse } = useQuery(
     getVaultDomainSettings,
   );
-  getVaultDomainSettingsResponse = {
-    vaultDomainSettings: {
-      pendingDomain: 'vault1337.ucarion.com',
-      currentDomain: 'project-4st5ccpz7bb29ho1hxeln03rx.laresset-dev1.app',
-      dnsRecords: [
-        {
-          type: 'CNAME',
-          name: 'vault1337.ucarion.com',
-          wantValue: 'vault-cname.laresset-dns-dev1.com',
-        },
-        {
-          type: 'TXT',
-          name: '_tesseral_project_verification.vault1337.ucarion.com',
-          wantValue: 'project_4st5ccpz7bb29ho1hxeln03rx',
-        },
-        {
-          type: 'MX',
-          name: 'mail.vault1337.ucarion.com',
-          wantValue: '10 feedback-smtp.us-west-2.amazonses.com',
-        },
-        {
-          type: 'TXT',
-          name: 'mail.vault1337.ucarion.com',
-          wantValue: 'v=spf1 include:amazonses.com ~all',
-        },
-        {
-          type: 'CNAME',
-          name: 'lmi5bww65bbdqt3zl3uppvaeqsm2hjit._domainkey.vault1337.ucarion.com',
-          wantValue: 'lmi5bww65bbdqt3zl3uppvaeqsm2hjit.dkim.amazonses.com',
-          actualValues: [
-            'lmi5bww65bbdqt3zl3uppvaeqsm2hjit.dkim.amazonses.com.',
-          ],
-          actualTtlSeconds: 300,
-        },
-        {
-          type: 'CNAME',
-          name: 'kfvmppssbf3ttbjbfnqwoypn5ergkctl._domainkey.vault1337.ucarion.com',
-          wantValue: 'kfvmppssbf3ttbjbfnqwoypn5ergkctl.dkim.amazonses.com',
-        },
-        {
-          type: 'CNAME',
-          name: 'f2ije72pbotsduhxniq2hkm3ujvvpetx._domainkey.vault1337.ucarion.com',
-          wantValue: 'f2ije72pbotsduhxniq2hkm3ujvvpetx.dkim.amazonses.com',
-        },
-      ],
-    },
-  } as any;
 
   return (
     <div className="space-y-8">
@@ -92,12 +55,15 @@ export const VaultDomainSettingsTab = () => {
           <DetailsGrid>
             <DetailsGridColumn>
               <DetailsGridEntry>
-                <DetailsGridKey>Current Domain</DetailsGridKey>
+                <DetailsGridKey>Current Vault Domain</DetailsGridKey>
                 <DetailsGridValue>
-                  {
-                    getVaultDomainSettingsResponse?.vaultDomainSettings
-                      ?.currentDomain
-                  }
+                  {getProjectResponse?.project?.vaultDomain}
+                </DetailsGridValue>
+              </DetailsGridEntry>
+              <DetailsGridEntry>
+                <DetailsGridKey>Current Email Send-From Domain</DetailsGridKey>
+                <DetailsGridValue>
+                  {getProjectResponse?.project?.emailSendFromDomain}
                 </DetailsGridValue>
               </DetailsGridEntry>
             </DetailsGridColumn>
@@ -115,37 +81,121 @@ export const VaultDomainSettingsTab = () => {
       </Card>
 
       {getVaultDomainSettingsResponse?.vaultDomainSettings?.pendingDomain && (
-        <Card>
-          <CardHeader>
-            <CardTitle>DNS Records</CardTitle>
-            <CardDescription>
-              You need to add the following DNS records before you can use{' '}
-              <span className="font-medium">
-                {
-                  getVaultDomainSettingsResponse?.vaultDomainSettings
-                    ?.pendingDomain
-                }
-              </span>{' '}
-              as your custom Vault domain.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Value</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {getVaultDomainSettingsResponse?.vaultDomainSettings?.dnsRecords?.map(
-                  (record, i) => <DNSRecordRows key={i} record={record} />,
-                )}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
+        <>
+          <Card>
+            <CardHeader className="flex-row justify-between items-center">
+              <div className="flex flex-col space-y-1 5">
+                <CardTitle>Vault Domain Records</CardTitle>
+                <CardDescription>
+                  You need to add the following DNS records before you can use{' '}
+                  <span className="font-medium">
+                    {
+                      getVaultDomainSettingsResponse?.vaultDomainSettings
+                        ?.pendingDomain
+                    }
+                  </span>{' '}
+                  as your Vault domain.
+                </CardDescription>
+              </div>
+
+              {getVaultDomainSettingsResponse?.vaultDomainSettings
+                ?.pendingSendFromDomainReady ? (
+                <Button variant="outline">
+                  Enable Custom Vault Domain
+                </Button>
+              ) : (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button className="disabled:pointer-events-auto" variant="outline" disabled>
+                        Enable Custom Vault Domain
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-96">
+                      Your DNS records need to be correct and widely propagated
+                      before you can enable this.
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Value</TableHead>
+                    <TableHead>Status</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {getVaultDomainSettingsResponse?.vaultDomainSettings?.vaultDomainRecords?.map(
+                    (record, i) => <DNSRecordRows key={i} record={record} />,
+                  )}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+          <Card className="mt-8">
+            <CardHeader className="flex-row justify-between items-center">
+              <div className="flex flex-col space-y-1 5">
+                <CardTitle>
+                  Email Send-From Records
+                  <Badge className="ml-4" variant="outline">
+                    Optional
+                  </Badge>
+                </CardTitle>
+                <CardDescription>
+                  You can optionally configure the emails Tesseral sends to your
+                  end users to come from{' '}
+                  <span className="font-medium">{`noreply@mail.${getVaultDomainSettingsResponse?.vaultDomainSettings?.pendingDomain}`}</span>
+                  , instead of the Tesseral-provided{' '}
+                  <span className="font-medium">noreply@mail.tesseral.app</span>
+                  .
+                </CardDescription>
+              </div>
+
+              {getVaultDomainSettingsResponse?.vaultDomainSettings
+                ?.pendingSendFromDomainReady ? (
+                <Button variant="outline">
+                  Enable Custom Email Send-From Domain
+                </Button>
+              ) : (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button className="disabled:pointer-events-auto" variant="outline" disabled>
+                        Enable Custom Email Send-From Domain
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-96">
+                      Your DNS records need to be correct and widely propagated
+                      before you can enable this.
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Value</TableHead>
+                    <TableHead>Status</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {getVaultDomainSettingsResponse?.vaultDomainSettings?.emailSendFromRecords?.map(
+                    (record, i) => <DNSRecordRows key={i} record={record} />,
+                  )}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </>
       )}
     </div>
   );
@@ -168,6 +218,17 @@ const DNSRecordRows = ({
         <TableCell>{record.type}</TableCell>
         <TableCell>{record.name}</TableCell>
         <TableCell>{record.wantValue}</TableCell>
+        <TableCell>
+          {record.correct ? (
+            <Badge variant="default">
+              <CheckIcon className="w-4 h-4" />
+            </Badge>
+          ) : (
+            <Badge variant="destructive">
+              <XIcon className="w-4 h-4" />
+            </Badge>
+          )}
+        </TableCell>
       </TableRow>
 
       {/*{!record.correct && noValue && (*/}

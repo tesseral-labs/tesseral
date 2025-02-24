@@ -26,6 +26,7 @@ message Project {
   string redirect_uri = 18;
   string after_login_redirect_uri = 19;
   string after_signup_redirect_uri = 20;
+  string email_send_from_domain = 21;
 }
 
 message VaultDomainSettings {

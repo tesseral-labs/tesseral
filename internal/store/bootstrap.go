@@ -56,13 +56,14 @@ func (s *Store) CreateDogfoodProject(ctx context.Context, req *CreateDogfoodProj
 	vaultDomain := fmt.Sprintf("%s.%s", strings.ReplaceAll(idformat.Project.Format(dogfoodProjectID), "_", "-"), req.AuthAppsRootDomain)
 
 	if _, err := q.CreateDogfoodProject(ctx, queries.CreateDogfoodProjectParams{
-		ID:                 dogfoodProjectID,
-		DisplayName:        "Tesseral Dogfood",
-		LogInWithGoogle:    false,
-		LogInWithMicrosoft: false,
-		LogInWithEmail:     true,
-		LogInWithPassword:  true,
-		VaultDomain:        vaultDomain,
+		ID:                  dogfoodProjectID,
+		DisplayName:         "Tesseral Dogfood",
+		LogInWithGoogle:     false,
+		LogInWithMicrosoft:  false,
+		LogInWithEmail:      true,
+		LogInWithPassword:   true,
+		VaultDomain:         vaultDomain,
+		EmailSendFromDomain: fmt.Sprintf("mail.%s", req.AuthAppsRootDomain),
 	}); err != nil {
 		return nil, fmt.Errorf("create dogfood project: %w", err)
 	}

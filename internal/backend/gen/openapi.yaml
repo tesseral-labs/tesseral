@@ -1191,6 +1191,8 @@ components:
                     type: string
                 afterSignupRedirectUri:
                     type: string
+                emailSendFromDomain:
+                    type: string
         RevokeSCIMAPIKeyResponse:
             type: object
             properties:

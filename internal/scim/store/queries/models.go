@@ -250,6 +250,7 @@ type Project struct {
 	AfterLoginRedirectUri                *string
 	AfterSignupRedirectUri               *string
 	VaultDomain                          string
+	EmailSendFromDomain                  string
 }
 
 type ProjectApiKey struct {

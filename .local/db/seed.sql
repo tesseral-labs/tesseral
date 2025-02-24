@@ -1,8 +1,8 @@
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 -- Create the Dogfood Project
-INSERT INTO projects (id, display_name, log_in_with_google, log_in_with_microsoft, log_in_with_email, log_in_with_password, log_in_with_saml, log_in_with_authenticator_app, log_in_with_passkey, vault_domain)
-	VALUES ('56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2'::uuid, 'Tesseral Local Development', true, true, true, true, true, true, true, 'auth.console.tesseral.example.com');
+INSERT INTO projects (id, display_name, log_in_with_google, log_in_with_microsoft, log_in_with_email, log_in_with_password, log_in_with_saml, log_in_with_authenticator_app, log_in_with_passkey, vault_domain, email_send_from_domain)
+	VALUES ('56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2'::uuid, 'Tesseral Local Development', true, true, true, true, true, true, true, 'auth.console.tesseral.example.com', 'auth.console.tesseral.example.com');
 
 -- Create the Dogfood Project's backing organization
 INSERT INTO organizations (id, display_name, project_id, log_in_with_google, log_in_with_microsoft, log_in_with_email, log_in_with_password, log_in_with_saml, log_in_with_authenticator_app, log_in_with_passkey, scim_enabled)
@@ -40,8 +40,8 @@ INSERT INTO session_signing_keys (id, project_id, public_key, private_key_cipher
   );
 
 -- Create customer1's project
-insert into projects (id, log_in_with_password, log_in_with_google, log_in_with_microsoft, display_name, vault_domain)
-    values ('7abd6d2e-c314-456e-b9c5-bdbb62f0345f'::uuid, true, false, false, 'Customer One', 'auth.customer1.example.com');
+insert into projects (id, log_in_with_password, log_in_with_google, log_in_with_microsoft, display_name, vault_domain, email_send_from_domain)
+    values ('7abd6d2e-c314-456e-b9c5-bdbb62f0345f'::uuid, true, false, false, 'Customer One', 'auth.customer1.example.com', 'auth.customer1.example.com');
 
 -- Create customer1's project's backing organization
 INSERT INTO organizations (id, display_name, project_id, log_in_with_saml, scim_enabled, log_in_with_password)
@@ -66,8 +66,8 @@ values (
        );
 
 -- Create customer2's project
-insert into projects (id, log_in_with_password, log_in_with_google, log_in_with_microsoft, display_name, vault_domain)
-values ('24ba0dd5-e178-460e-8f7a-f3f72cf6a1e7'::uuid, true, false, false, 'Customer Two', 'auth.customer2.example.com');
+insert into projects (id, log_in_with_password, log_in_with_google, log_in_with_microsoft, display_name, vault_domain, email_send_from_domain)
+values ('24ba0dd5-e178-460e-8f7a-f3f72cf6a1e7'::uuid, true, false, false, 'Customer Two', 'auth.customer2.example.com', 'auth.customer2.example.com');
 
 -- Create customer1's project's backing organization
 INSERT INTO organizations (id, display_name, project_id, log_in_with_saml, scim_enabled, log_in_with_password)
