@@ -73,6 +73,7 @@ func main() {
 		Host                                string           `conf:"host,noredact"`
 		AuthAppsRootDomain                  string           `conf:"auth_apps_root_domain,noredact"`
 		TesseralDNSVaultCNAMEValue          string           `conf:"tesseral_dns_vault_cname_value,noredact"`
+		SESSPFMXRecordValue                 string           `conf:"ses_spf_mx_record_value,noredact"`
 		DB                                  string           `conf:"db"`
 		IAMDB                               iamdbauth.Config `conf:"iamdb"`
 		CloudflareAPIToken                  string           `conf:"cloudflare_api_token"`
@@ -174,6 +175,7 @@ func main() {
 		UserContentBaseUrl:                    config.UserContentBaseUrl,
 		AuthAppsRootDomain:                    config.AuthAppsRootDomain,
 		TesseralDNSVaultCNAMEValue:            config.TesseralDNSVaultCNAMEValue,
+		SESSPFMXRecordValue:                   config.SESSPFMXRecordValue,
 		TesseralDNSCloudflareZoneID:           config.TesseralDNSCloudflareZoneID,
 		Cloudflare:                            cloudflare.NewClient(option.WithAPIToken(config.CloudflareAPIToken)),
 		CloudflareDOH:                         &cloudflaredoh.Client{HTTPClient: &http.Client{}},
