@@ -1,5 +1,9 @@
-import { PageCodeSubtitle, PageDescription, PageTitle } from '@/components/page'
-import { Title } from '@/components/Title'
+import {
+  PageCodeSubtitle,
+  PageDescription,
+  PageTitle,
+} from '@/components/page';
+import { Title } from '@/components/Title';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -7,67 +11,67 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
-import { Button } from '@/components/ui/button'
+} from '@/components/ui/breadcrumb';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Switch } from '@/components/ui/switch'
+} from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
 import {
   getProject,
   updateProject,
-} from '@/gen/openauth/backend/v1/backend-BackendService_connectquery'
-import { parseErrorMessage } from '@/lib/errors'
-import { useMutation, useQuery } from '@connectrpc/connect-query'
-import React, { FC, FormEvent, useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { toast } from 'sonner'
+} from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
+import { parseErrorMessage } from '@/lib/errors';
+import { useMutation, useQuery } from '@connectrpc/connect-query';
+import React, { FC, FormEvent, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { toast } from 'sonner';
 
 const EditProjectMicrosoftSettingsPage: FC = () => {
   const { data: getProjectResponse, refetch: refetchProject } = useQuery(
     getProject,
     {},
-  )
-  const updateProjectMutation = useMutation(updateProject)
+  );
+  const updateProjectMutation = useMutation(updateProject);
 
   const [logInWithMicrosoft, setLogInWithMicrosoft] = useState(
     getProjectResponse?.project?.logInWithMicrosoft,
-  )
-  const [microsoftOauthClientId, setMicrosoftOauthClientId] = useState('')
+  );
+  const [microsoftOauthClientId, setMicrosoftOauthClientId] = useState('');
   const [microsoftOauthClientSecret, setMicrosoftOauthClientSecret] =
-    useState('')
+    useState('');
 
   const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     try {
       await updateProjectMutation.mutateAsync({
         project: {
           logInWithMicrosoft: true,
         },
-      })
-      const { data: refetchedProjectResponse } = await refetchProject()
+      });
+      const { data: refetchedProjectResponse } = await refetchProject();
       setLogInWithMicrosoft(
         refetchedProjectResponse?.project?.logInWithMicrosoft,
-      )
-      toast.success('Microsoft settings saved')
+      );
+      toast.success('Microsoft settings saved');
     } catch (error) {
-      const message = parseErrorMessage(error)
+      const message = parseErrorMessage(error);
       toast.error('Failed to update Microsoft settings', {
         description: message,
-      })
+      });
     }
-  }
+  };
 
   useEffect(() => {
-    setLogInWithMicrosoft(getProjectResponse?.project?.logInWithMicrosoft)
-  }, [getProjectResponse])
+    setLogInWithMicrosoft(getProjectResponse?.project?.logInWithMicrosoft);
+  }, [getProjectResponse]);
 
   return (
     <div>
@@ -106,57 +110,46 @@ const EditProjectMicrosoftSettingsPage: FC = () => {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit}>
-            <div className="grid grid-cols-2 gap-8">
-              <div>
-                <Label>Log in with Microsoft</Label>
-                <p className="text-sm text-muted-foreground">
-                  Enable or disable log in with Microsoft within your Project.
-                </p>
-              </div>
-              <div className="text-right">
-                <Switch
-                  checked={logInWithMicrosoft}
-                  onCheckedChange={setLogInWithMicrosoft}
-                />
-              </div>
+            <div>
+              <Label>Log in with Microsoft</Label>
+              <p className="text-sm text-muted-foreground">
+                Enable or disable log in with Microsoft within your Project.
+              </p>
+              <Switch
+                checked={logInWithMicrosoft}
+                className="mt-2"
+                onCheckedChange={setLogInWithMicrosoft}
+              />
             </div>
-            <div className="grid grid-cols-2 gap-8 mt-4 pt-4 border-t">
-              <div>
-                <Label>Microsoft OAuth Client ID</Label>
-                <p className="text-sm text-muted-foreground">
-                  The OAuth Client ID for your Microsoft application.
-                </p>
-              </div>
-              <div className="text-right">
-                <Input
-                  onChange={(e) => setMicrosoftOauthClientId(e.target.value)}
-                  placeholder={
-                    getProjectResponse?.project?.microsoftOauthClientId
-                  }
-                  value={microsoftOauthClientId}
-                />
-              </div>
+            <div className="mt-4 pt-4 border-t">
+              <Label>Microsoft OAuth Client ID</Label>
+              <p className="text-sm text-muted-foreground">
+                The OAuth Client ID for your Microsoft application.
+              </p>
+              <Input
+                className="max-w-xl mt-2"
+                onChange={(e) => setMicrosoftOauthClientId(e.target.value)}
+                placeholder={
+                  getProjectResponse?.project?.microsoftOauthClientId
+                }
+                value={microsoftOauthClientId}
+              />
             </div>
-            <div className="grid grid-cols-2 gap-8 mt-4 pt-4 border-t">
-              <div>
-                <Label>Microsoft OAuth Client Secret</Label>
-                <p className="text-sm text-muted-foreground">
-                  The OAuth Client Secret for your Microsoft application.
-                </p>
-              </div>
-              <div className="text-right">
-                <Input
-                  onChange={(e) =>
-                    setMicrosoftOauthClientSecret(e.target.value)
-                  }
-                  placeholder={
-                    getProjectResponse?.project?.microsoftOauthClientId
-                      ? '<encrypted>'
-                      : ''
-                  }
-                  value={microsoftOauthClientSecret}
-                />
-              </div>
+            <div className="mt-4 pt-4 border-t">
+              <Label>Microsoft OAuth Client Secret</Label>
+              <p className="text-sm text-muted-foreground">
+                The OAuth Client Secret for your Microsoft application.
+              </p>
+              <Input
+                className="max-w-xl mt-2"
+                onChange={(e) => setMicrosoftOauthClientSecret(e.target.value)}
+                placeholder={
+                  getProjectResponse?.project?.microsoftOauthClientId
+                    ? '<encrypted>'
+                    : ''
+                }
+                value={microsoftOauthClientSecret}
+              />
             </div>
             <div className="text-right mt-8">
               <Link to="/project-settings">
@@ -170,7 +163,7 @@ const EditProjectMicrosoftSettingsPage: FC = () => {
         </CardContent>
       </Card>
     </div>
-  )
-}
+  );
+};
 
-export default EditProjectMicrosoftSettingsPage
+export default EditProjectMicrosoftSettingsPage;
