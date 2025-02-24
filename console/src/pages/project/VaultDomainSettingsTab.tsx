@@ -1,9 +1,8 @@
-import React from "react";
+import React from 'react';
+import { getVaultDomainSettings } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import {
-  getVaultDomainSettings
-} from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
-import {
-  Card, CardContent,
+  Card,
+  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
@@ -20,62 +19,64 @@ import { useQuery } from '@connectrpc/connect-query';
 import {
   DetailsGrid,
   DetailsGridColumn,
-  DetailsGridEntry, DetailsGridKey, DetailsGridValue,
+  DetailsGridEntry,
+  DetailsGridKey,
+  DetailsGridValue,
 } from '@/components/details-grid';
 import { Badge } from '@/components/ui/badge';
 import { CheckIcon, XIcon } from 'lucide-react';
-import {
-  VaultDomainSettingsDNSRecord
-} from '@/gen/tesseral/backend/v1/models_pb';
+import { VaultDomainSettingsDNSRecord } from '@/gen/tesseral/backend/v1/models_pb';
 
 export const VaultDomainSettingsTab = () => {
-  let { data: getVaultDomainSettingsResponse } = useQuery(getVaultDomainSettings);
+  let { data: getVaultDomainSettingsResponse } = useQuery(
+    getVaultDomainSettings,
+  );
   getVaultDomainSettingsResponse = {
-    "vaultDomainSettings": {
-      "pendingDomain": "vault1337.ucarion.com",
-      "currentDomain": "project-4st5ccpz7bb29ho1hxeln03rx.laresset-dev1.app",
-      "dnsRecords": [
+    vaultDomainSettings: {
+      pendingDomain: 'vault1337.ucarion.com',
+      currentDomain: 'project-4st5ccpz7bb29ho1hxeln03rx.laresset-dev1.app',
+      dnsRecords: [
         {
-          "type": "CNAME",
-          "name": "vault1337.ucarion.com",
-          "wantValue": "vault-cname.laresset-dns-dev1.com"
+          type: 'CNAME',
+          name: 'vault1337.ucarion.com',
+          wantValue: 'vault-cname.laresset-dns-dev1.com',
         },
         {
-          "type": "TXT",
-          "name": "_tesseral_project_verification.vault1337.ucarion.com",
-          "wantValue": "project_4st5ccpz7bb29ho1hxeln03rx"
+          type: 'TXT',
+          name: '_tesseral_project_verification.vault1337.ucarion.com',
+          wantValue: 'project_4st5ccpz7bb29ho1hxeln03rx',
         },
         {
-          "type": "MX",
-          "name": "mail.vault1337.ucarion.com",
-          "wantValue": "10 feedback-smtp.us-west-2.amazonses.com"
+          type: 'MX',
+          name: 'mail.vault1337.ucarion.com',
+          wantValue: '10 feedback-smtp.us-west-2.amazonses.com',
         },
         {
-          "type": "TXT",
-          "name": "mail.vault1337.ucarion.com",
-          "wantValue": "v=spf1 include:amazonses.com ~all"
+          type: 'TXT',
+          name: 'mail.vault1337.ucarion.com',
+          wantValue: 'v=spf1 include:amazonses.com ~all',
         },
         {
-          "type": "CNAME",
-          "name": "lmi5bww65bbdqt3zl3uppvaeqsm2hjit._domainkey.vault1337.ucarion.com",
-          "wantValue": "lmi5bww65bbdqt3zl3uppvaeqsm2hjit.dkim.amazonses.com",
-          "actualValues": [
-            "lmi5bww65bbdqt3zl3uppvaeqsm2hjit.dkim.amazonses.com."
+          type: 'CNAME',
+          name: 'lmi5bww65bbdqt3zl3uppvaeqsm2hjit._domainkey.vault1337.ucarion.com',
+          wantValue: 'lmi5bww65bbdqt3zl3uppvaeqsm2hjit.dkim.amazonses.com',
+          actualValues: [
+            'lmi5bww65bbdqt3zl3uppvaeqsm2hjit.dkim.amazonses.com.',
           ],
-          "actualTtlSeconds": 300
+          actualTtlSeconds: 300,
         },
         {
-          "type": "CNAME",
-          "name": "kfvmppssbf3ttbjbfnqwoypn5ergkctl._domainkey.vault1337.ucarion.com",
-          "wantValue": "kfvmppssbf3ttbjbfnqwoypn5ergkctl.dkim.amazonses.com"
+          type: 'CNAME',
+          name: 'kfvmppssbf3ttbjbfnqwoypn5ergkctl._domainkey.vault1337.ucarion.com',
+          wantValue: 'kfvmppssbf3ttbjbfnqwoypn5ergkctl.dkim.amazonses.com',
         },
         {
-          "type": "CNAME",
-          "name": "f2ije72pbotsduhxniq2hkm3ujvvpetx._domainkey.vault1337.ucarion.com",
-          "wantValue": "f2ije72pbotsduhxniq2hkm3ujvvpetx.dkim.amazonses.com"
-        }
-      ]
-    }
+          type: 'CNAME',
+          name: 'f2ije72pbotsduhxniq2hkm3ujvvpetx._domainkey.vault1337.ucarion.com',
+          wantValue: 'f2ije72pbotsduhxniq2hkm3ujvvpetx.dkim.amazonses.com',
+        },
+      ],
+    },
   } as any;
 
   return (
@@ -93,7 +94,10 @@ export const VaultDomainSettingsTab = () => {
               <DetailsGridEntry>
                 <DetailsGridKey>Current Domain</DetailsGridKey>
                 <DetailsGridValue>
-                  {getVaultDomainSettingsResponse?.vaultDomainSettings?.currentDomain}
+                  {
+                    getVaultDomainSettingsResponse?.vaultDomainSettings
+                      ?.currentDomain
+                  }
                 </DetailsGridValue>
               </DetailsGridEntry>
             </DetailsGridColumn>
@@ -101,7 +105,8 @@ export const VaultDomainSettingsTab = () => {
               <DetailsGridEntry>
                 <DetailsGridKey>Pending Custom Domain</DetailsGridKey>
                 <DetailsGridValue>
-                  {getVaultDomainSettingsResponse?.vaultDomainSettings?.pendingDomain || '-'}
+                  {getVaultDomainSettingsResponse?.vaultDomainSettings
+                    ?.pendingDomain || '-'}
                 </DetailsGridValue>
               </DetailsGridEntry>
             </DetailsGridColumn>
@@ -114,8 +119,13 @@ export const VaultDomainSettingsTab = () => {
           <CardHeader>
             <CardTitle>DNS Records</CardTitle>
             <CardDescription>
-              You need to add the following DNS records before you can use <span
-              className="font-medium">{getVaultDomainSettingsResponse?.vaultDomainSettings?.pendingDomain}</span>{" "}
+              You need to add the following DNS records before you can use{' '}
+              <span className="font-medium">
+                {
+                  getVaultDomainSettingsResponse?.vaultDomainSettings
+                    ?.pendingDomain
+                }
+              </span>{' '}
               as your custom Vault domain.
             </CardDescription>
           </CardHeader>
@@ -129,41 +139,71 @@ export const VaultDomainSettingsTab = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {getVaultDomainSettingsResponse?.vaultDomainSettings?.dnsRecords?.map((record, i) => (
-                  <DNSRecordRows key={i} record={record} />
-                ))}
+                {getVaultDomainSettingsResponse?.vaultDomainSettings?.dnsRecords?.map(
+                  (record, i) => <DNSRecordRows key={i} record={record} />,
+                )}
               </TableBody>
             </Table>
           </CardContent>
         </Card>
       )}
     </div>
-  )
+  );
 };
 
-const DNSRecordRows = ({ record }: { record: VaultDomainSettingsDNSRecord })=> {
+const DNSRecordRows = ({
+  record,
+}: {
+  record: VaultDomainSettingsDNSRecord;
+}) => {
+  const noValue = (record.actualValues ?? []).length === 0;
+  const tooManyValues = record.actualValues?.length > 1;
+  const incorrectValue =
+    record.actualValues?.length === 1 &&
+    record.actualValues[0] !== record.wantValue;
+
   return (
     <>
       <TableRow>
         <TableCell>{record.type}</TableCell>
         <TableCell>{record.name}</TableCell>
-        <TableCell>
-          {record.wantValue}
-        </TableCell>
+        <TableCell>{record.wantValue}</TableCell>
       </TableRow>
 
-      <TableRow>
-        <TableCell colSpan={3} className="bg-red-100 text-red-500">
-          <div className="mx-4">
-            {record.actualTtlSeconds}
-            {record.actualValues?.map((value, i) => (
-              <Badge key={i} variant="outline" className="ml-2">
-                {value}
-              </Badge>
-            ))}
-          </div>
-        </TableCell>
-      </TableRow>
+      {/*{!record.correct && noValue && (*/}
+      {/*  <TableRow>*/}
+      {/*    <TableCell colSpan={3} className="bg-red-100 text-red-500 text-xs">*/}
+      {/*      <div className="mx-4">*/}
+      {/*        You haven't configured a{' '}*/}
+      {/*        <span className="font-medium">{record.type}</span> record with the*/}
+      {/*        name <span className="font-medium">{record.name}</span>. If you*/}
+      {/*        recently created that record, it may still be propagating.*/}
+      {/*      </div>*/}
+      {/*    </TableCell>*/}
+      {/*  </TableRow>*/}
+      {/*)}*/}
+
+      {/*{!record.correct && incorrectValue && (*/}
+      {/*  <TableRow>*/}
+      {/*    <TableCell colSpan={3} className="bg-red-100 text-red-500 text-xs">*/}
+      {/*      <div className="mx-4">*/}
+      {/*        <p>You created this record, but it has the wrong value.</p>*/}
+      {/*        <p>*/}
+      {/*          Your record has the value: <span className="font-medium">{record.actualValues[0]}</span>*/}
+      {/*        </p>*/}
+      {/*        <p>*/}
+      {/*          But the correct value is: <span className="font-medium">{record.wantValue}</span>*/}
+      {/*        </p>*/}
+      {/*        <p>*/}
+      {/*          Once you fix this, it will take at least{" "}*/}
+      {/*          {record.actualTtlSeconds} seconds for the change to propagate,*/}
+      {/*          because that's the time-to-live (TTL) you configured on the*/}
+      {/*          incorrect record.*/}
+      {/*        </p>*/}
+      {/*      </div>*/}
+      {/*    </TableCell>*/}
+      {/*  </TableRow>*/}
+      {/*)}*/}
     </>
-  )
-}
+  );
+};
