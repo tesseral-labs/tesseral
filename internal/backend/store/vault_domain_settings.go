@@ -23,11 +23,6 @@ func (s *Store) GetVaultDomainSettings(ctx context.Context, req *backendv1.GetVa
 		return nil, fmt.Errorf("validate is dogfood session: %w", err)
 	}
 
-	qProject, err := s.q.GetProjectByID(ctx, authn.ProjectID(ctx))
-	if err != nil {
-		return nil, fmt.Errorf("get project by id: %w", err)
-	}
-
 	qVaultDomainSettings, err := s.q.GetVaultDomainSettings(ctx, authn.ProjectID(ctx))
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
@@ -44,12 +39,24 @@ func (s *Store) GetVaultDomainSettings(ctx context.Context, req *backendv1.GetVa
 		return nil, fmt.Errorf("get email identity: %w", err)
 	}
 
-	customHostname, err := s.getCloudflareCustomHostname(ctx, qVaultDomainSettings.PendingDomain)
+	currentCustomHostname, err := s.getCloudflareCustomHostnameByHostname(ctx, qVaultDomainSettings.PendingDomain)
 	if err != nil {
 		return nil, fmt.Errorf("get cloudflare custom hostname: %w", err)
 	}
 
-	vaultDomainSettings, err := s.parseVaultDomainSettings(ctx, qProject, qVaultDomainSettings, emailIdentity, customHostname)
+	// issue a no-op edit on the custom hostname, to get cloudflare to check if
+	// the customer's CNAME is in place
+	refreshedCustomHostname, err := s.cloudflare.CustomHostnames.Edit(ctx, currentCustomHostname.ID, custom_hostnames.CustomHostnameEditParams{
+		ZoneID: cloudflare.F(s.tesseralDNSCloudflareZoneID),
+	})
+	if err != nil {
+		return nil, fmt.Errorf("edit cloudflare custom hostname: %w", err)
+	}
+
+	vaultDomainSettings, err := s.parseVaultDomainSettings(ctx, qVaultDomainSettings, emailIdentity, &cloudflareCustomHostname{
+		ID:     refreshedCustomHostname.ID,
+		Status: string(refreshedCustomHostname.Status),
+	})
 	if err != nil {
 		return nil, fmt.Errorf("parse vault domain settings: %w", err)
 	}
@@ -62,11 +69,6 @@ func (s *Store) GetVaultDomainSettings(ctx context.Context, req *backendv1.GetVa
 func (s *Store) UpdateVaultDomainSettings(ctx context.Context, req *backendv1.UpdateVaultDomainSettingsRequest) (*backendv1.UpdateVaultDomainSettingsResponse, error) {
 	if err := validateIsDogfoodSession(ctx); err != nil {
 		return nil, fmt.Errorf("validate is dogfood session: %w", err)
-	}
-
-	qProject, err := s.q.GetProjectByID(ctx, authn.ProjectID(ctx))
-	if err != nil {
-		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 
 	previousPendingDomain, err := s.getCurrentPendingDomain(ctx)
@@ -110,7 +112,7 @@ func (s *Store) UpdateVaultDomainSettings(ctx context.Context, req *backendv1.Up
 				return nil, fmt.Errorf("delete email identity: %w", err)
 			}
 
-			previousCustomHostname, err := s.getCloudflareCustomHostname(ctx, previousPendingDomain)
+			previousCustomHostname, err := s.getCloudflareCustomHostnameByHostname(ctx, previousPendingDomain)
 			if err != nil {
 				return nil, fmt.Errorf("get cloudflare custom hostname: %w", err)
 			}
@@ -123,7 +125,7 @@ func (s *Store) UpdateVaultDomainSettings(ctx context.Context, req *backendv1.Up
 		}
 	}
 
-	vaultDomainSettings, err := s.parseVaultDomainSettings(ctx, qProject, qVaultDomainSettings, emailIdentity, customHostname)
+	vaultDomainSettings, err := s.parseVaultDomainSettings(ctx, qVaultDomainSettings, emailIdentity, customHostname)
 	if err != nil {
 		return nil, fmt.Errorf("parse vault domain settings: %w", err)
 	}
@@ -166,7 +168,7 @@ func (s *Store) upsertSESEmailIdentity(ctx context.Context, emailIdentity string
 	return getEmailIdentityRes, nil
 }
 
-func (s *Store) getCloudflareCustomHostname(ctx context.Context, hostname string) (*cloudflareCustomHostname, error) {
+func (s *Store) getCloudflareCustomHostnameByHostname(ctx context.Context, hostname string) (*custom_hostnames.CustomHostnameListResponse, error) {
 	res, err := s.cloudflare.CustomHostnames.List(ctx, custom_hostnames.CustomHostnameListParams{
 		ZoneID:   cloudflare.F(s.tesseralDNSCloudflareZoneID),
 		Hostname: cloudflare.F(hostname),
@@ -179,10 +181,7 @@ func (s *Store) getCloudflareCustomHostname(ctx context.Context, hostname string
 		panic(fmt.Errorf("exactly one custom hostname expected"))
 	}
 
-	return &cloudflareCustomHostname{
-		ID:     res.Result[0].ID,
-		Status: string(res.Result[0].Status),
-	}, nil
+	return &res.Result[0], nil
 }
 
 func (s *Store) upsertCloudflareCustomHostname(ctx context.Context, hostname string) (*cloudflareCustomHostname, error) {
@@ -284,7 +283,7 @@ func (s *Store) addActualValuesToDNSRecord(ctx context.Context, dnsRecord *backe
 	}, nil
 }
 
-func (s *Store) parseVaultDomainSettings(ctx context.Context, qProject queries.Project, qVaultDomainSettings queries.VaultDomainSetting, emailIdentity *sesv2.GetEmailIdentityOutput, customHostname *cloudflareCustomHostname) (*backendv1.VaultDomainSettings, error) {
+func (s *Store) parseVaultDomainSettings(ctx context.Context, qVaultDomainSettings queries.VaultDomainSetting, emailIdentity *sesv2.GetEmailIdentityOutput, customHostname *cloudflareCustomHostname) (*backendv1.VaultDomainSettings, error) {
 	vaultDomainRecords := []*backendv1.VaultDomainSettingsDNSRecord{
 		{
 			Type:      "CNAME",
