@@ -383,7 +383,7 @@ func (s *Store) parseVaultDomainSettings(ctx context.Context, qVaultDomainSettin
 		{
 			Type:      "TXT",
 			Name:      fmt.Sprintf("mail.%s", qVaultDomainSettings.PendingDomain),
-			WantValue: "v=spf1 include:amazonses.com ~all",
+			WantValue: "\"v=spf1 include:amazonses.com ~all\"",
 		},
 	}
 
