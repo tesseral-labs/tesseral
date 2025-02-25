@@ -3,6 +3,7 @@ package store
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/google/uuid"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
@@ -38,7 +39,7 @@ func (s *Store) CreateProject(ctx context.Context, req *intermediatev1.CreatePro
 	// create this ahead of time so we can use it in the display name and auth domain
 	newProjectID := uuid.New()
 	formattedNewProjectID := idformat.Project.Format(newProjectID)
-	newProjectVaultDomain := fmt.Sprintf("%s.%s", formattedNewProjectID, s.authAppsRootDomain)
+	newProjectVaultDomain := fmt.Sprintf("%s.%s", strings.ReplaceAll(formattedNewProjectID, "_", "-"), s.authAppsRootDomain)
 
 	// create a new organization under the dogfood project
 	qOrganization, err := q.CreateOrganization(ctx, queries.CreateOrganizationParams{
