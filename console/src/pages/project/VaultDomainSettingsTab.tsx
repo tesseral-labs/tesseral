@@ -61,71 +61,14 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import Loader from '@/components/ui/loader';
-import { toast } from 'sonner';
 import { StatusIndicator } from '@/components/status-indicator';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 export const VaultDomainSettingsTab = () => {
   const { data: getProjectResponse } = useQuery(getProject, {});
-  let { data: getVaultDomainSettingsResponse } = useQuery(
+  const { data: getVaultDomainSettingsResponse } = useQuery(
     getVaultDomainSettings,
   );
-  getVaultDomainSettingsResponse = {
-    vaultDomainSettings: {
-      pendingDomain: 'vault-dev1.ucarion.com',
-      vaultDomainRecords: [
-        {
-          type: 'CNAME',
-          name: 'vault-dev1.ucarion.com',
-          wantValue: 'vault-cname.laresset-dns-dev1.com.',
-          actualValues: ['vault-cname.laresset-dns-dev1.com.'],
-          actualTtlSeconds: 300,
-          correct: true,
-        },
-        {
-          type: 'TXT',
-          name: '_tesseral_project_verification.vault-dev1.ucarion.com',
-          wantValue: 'project_ckj5oyq84h2g24yuai3smmq0w',
-          actualValues: [
-            '"project_ckj5oyq84h2g24yuai3smmq0w"',
-            '"project_54vwf0clhh0caqe20eujxgpeq"',
-          ],
-          actualTtlSeconds: 300,
-        },
-      ],
-      emailSendFromRecords: [
-        {
-          type: 'MX',
-          name: 'mail.vault-dev1.ucarion.com',
-          wantValue: '10 feedback-smtp.us-west-2.amazonses.com',
-        },
-        {
-          type: 'TXT',
-          name: 'mail.vault-dev1.ucarion.com',
-          wantValue: 'v=spf1 include:amazonses.com ~all',
-        },
-        {
-          type: 'CNAME',
-          name: 'fpekpmjbb43k45fbf54zdukrmn2ggzgj._domainkey.vault-dev1.ucarion.com',
-          wantValue: 'fpekpmjbb43k45fbf54zdukrmn2ggzgj.dkim.amazonses.com.',
-          actualValues: [
-            'fpekpmjbb43k45fbf54zdukrmn2ggzgj.dkim.amazonses.com.ucarion.com.',
-          ],
-          actualTtlSeconds: 300,
-        },
-        {
-          type: 'CNAME',
-          name: 'hifprqeghkxm4qdmxluukci6usbnffo6._domainkey.vault-dev1.ucarion.com',
-          wantValue: 'hifprqeghkxm4qdmxluukci6usbnffo6.dkim.amazonses.com.',
-        },
-        {
-          type: 'CNAME',
-          name: 'z7vr3fi6llxmj6nec5hdi3whzuteaxli._domainkey.vault-dev1.ucarion.com',
-          wantValue: 'z7vr3fi6llxmj6nec5hdi3whzuteaxli.dkim.amazonses.com.',
-        },
-      ],
-    },
-  } as any;
 
   return (
     <div className="space-y-8">
