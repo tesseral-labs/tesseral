@@ -23,3 +23,11 @@ func (s *Service) UpdateVaultDomainSettings(ctx context.Context, req *connect.Re
 	}
 	return connect.NewResponse(res), nil
 }
+
+func (s *Service) EnableCustomVaultDomain(ctx context.Context, req *connect.Request[backendv1.EnableCustomVaultDomainRequest]) (*connect.Response[backendv1.EnableCustomVaultDomainResponse], error) {
+	res, err := s.Store.EnableCustomVaultDomain(ctx, req.Msg)
+	if err != nil {
+		return nil, fmt.Errorf("store: %w", err)
+	}
+	return connect.NewResponse(res), nil
+}

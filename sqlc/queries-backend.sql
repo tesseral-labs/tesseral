@@ -741,6 +741,20 @@ ON CONFLICT (project_id)
     RETURNING
         *;
 
+-- name: DeleteVaultDomainSettings :exec
+DELETE FROM vault_domain_settings
+WHERE project_id = $1;
+
+-- name: UpdateProjectVaultDomain :one
+UPDATE
+    projects
+SET
+    vault_domain = $2
+WHERE
+    id = $1
+RETURNING
+    *;
+
 -- name: GetVaultDomainInActiveOrPendingUse :one
 SELECT
     EXISTS (

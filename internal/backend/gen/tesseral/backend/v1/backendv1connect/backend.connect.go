@@ -161,6 +161,9 @@ const (
 	// BackendServiceUpdateVaultDomainSettingsProcedure is the fully-qualified name of the
 	// BackendService's UpdateVaultDomainSettings RPC.
 	BackendServiceUpdateVaultDomainSettingsProcedure = "/tesseral.backend.v1.BackendService/UpdateVaultDomainSettings"
+	// BackendServiceEnableCustomVaultDomainProcedure is the fully-qualified name of the
+	// BackendService's EnableCustomVaultDomain RPC.
+	BackendServiceEnableCustomVaultDomainProcedure = "/tesseral.backend.v1.BackendService/EnableCustomVaultDomain"
 	// BackendServiceGetProjectUISettingsProcedure is the fully-qualified name of the BackendService's
 	// GetProjectUISettings RPC.
 	BackendServiceGetProjectUISettingsProcedure = "/tesseral.backend.v1.BackendService/GetProjectUISettings"
@@ -250,6 +253,7 @@ type BackendServiceClient interface {
 	UpdateProject(context.Context, *connect.Request[v1.UpdateProjectRequest]) (*connect.Response[v1.UpdateProjectResponse], error)
 	GetVaultDomainSettings(context.Context, *connect.Request[v1.GetVaultDomainSettingsRequest]) (*connect.Response[v1.GetVaultDomainSettingsResponse], error)
 	UpdateVaultDomainSettings(context.Context, *connect.Request[v1.UpdateVaultDomainSettingsRequest]) (*connect.Response[v1.UpdateVaultDomainSettingsResponse], error)
+	EnableCustomVaultDomain(context.Context, *connect.Request[v1.EnableCustomVaultDomainRequest]) (*connect.Response[v1.EnableCustomVaultDomainResponse], error)
 	GetProjectUISettings(context.Context, *connect.Request[v1.GetProjectUISettingsRequest]) (*connect.Response[v1.GetProjectUISettingsResponse], error)
 	UpdateProjectUISettings(context.Context, *connect.Request[v1.UpdateProjectUISettingsRequest]) (*connect.Response[v1.UpdateProjectUISettingsResponse], error)
 	ListProjectAPIKeys(context.Context, *connect.Request[v1.ListProjectAPIKeysRequest]) (*connect.Response[v1.ListProjectAPIKeysResponse], error)
@@ -535,6 +539,12 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(backendServiceMethods.ByName("UpdateVaultDomainSettings")),
 			connect.WithClientOptions(opts...),
 		),
+		enableCustomVaultDomain: connect.NewClient[v1.EnableCustomVaultDomainRequest, v1.EnableCustomVaultDomainResponse](
+			httpClient,
+			baseURL+BackendServiceEnableCustomVaultDomainProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("EnableCustomVaultDomain")),
+			connect.WithClientOptions(opts...),
+		),
 		getProjectUISettings: connect.NewClient[v1.GetProjectUISettingsRequest, v1.GetProjectUISettingsResponse](
 			httpClient,
 			baseURL+BackendServiceGetProjectUISettingsProcedure,
@@ -667,6 +677,7 @@ type backendServiceClient struct {
 	updateProject                         *connect.Client[v1.UpdateProjectRequest, v1.UpdateProjectResponse]
 	getVaultDomainSettings                *connect.Client[v1.GetVaultDomainSettingsRequest, v1.GetVaultDomainSettingsResponse]
 	updateVaultDomainSettings             *connect.Client[v1.UpdateVaultDomainSettingsRequest, v1.UpdateVaultDomainSettingsResponse]
+	enableCustomVaultDomain               *connect.Client[v1.EnableCustomVaultDomainRequest, v1.EnableCustomVaultDomainResponse]
 	getProjectUISettings                  *connect.Client[v1.GetProjectUISettingsRequest, v1.GetProjectUISettingsResponse]
 	updateProjectUISettings               *connect.Client[v1.UpdateProjectUISettingsRequest, v1.UpdateProjectUISettingsResponse]
 	listProjectAPIKeys                    *connect.Client[v1.ListProjectAPIKeysRequest, v1.ListProjectAPIKeysResponse]
@@ -902,6 +913,11 @@ func (c *backendServiceClient) UpdateVaultDomainSettings(ctx context.Context, re
 	return c.updateVaultDomainSettings.CallUnary(ctx, req)
 }
 
+// EnableCustomVaultDomain calls tesseral.backend.v1.BackendService.EnableCustomVaultDomain.
+func (c *backendServiceClient) EnableCustomVaultDomain(ctx context.Context, req *connect.Request[v1.EnableCustomVaultDomainRequest]) (*connect.Response[v1.EnableCustomVaultDomainResponse], error) {
+	return c.enableCustomVaultDomain.CallUnary(ctx, req)
+}
+
 // GetProjectUISettings calls tesseral.backend.v1.BackendService.GetProjectUISettings.
 func (c *backendServiceClient) GetProjectUISettings(ctx context.Context, req *connect.Request[v1.GetProjectUISettingsRequest]) (*connect.Response[v1.GetProjectUISettingsResponse], error) {
 	return c.getProjectUISettings.CallUnary(ctx, req)
@@ -1018,6 +1034,7 @@ type BackendServiceHandler interface {
 	UpdateProject(context.Context, *connect.Request[v1.UpdateProjectRequest]) (*connect.Response[v1.UpdateProjectResponse], error)
 	GetVaultDomainSettings(context.Context, *connect.Request[v1.GetVaultDomainSettingsRequest]) (*connect.Response[v1.GetVaultDomainSettingsResponse], error)
 	UpdateVaultDomainSettings(context.Context, *connect.Request[v1.UpdateVaultDomainSettingsRequest]) (*connect.Response[v1.UpdateVaultDomainSettingsResponse], error)
+	EnableCustomVaultDomain(context.Context, *connect.Request[v1.EnableCustomVaultDomainRequest]) (*connect.Response[v1.EnableCustomVaultDomainResponse], error)
 	GetProjectUISettings(context.Context, *connect.Request[v1.GetProjectUISettingsRequest]) (*connect.Response[v1.GetProjectUISettingsResponse], error)
 	UpdateProjectUISettings(context.Context, *connect.Request[v1.UpdateProjectUISettingsRequest]) (*connect.Response[v1.UpdateProjectUISettingsResponse], error)
 	ListProjectAPIKeys(context.Context, *connect.Request[v1.ListProjectAPIKeysRequest]) (*connect.Response[v1.ListProjectAPIKeysResponse], error)
@@ -1299,6 +1316,12 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		connect.WithSchema(backendServiceMethods.ByName("UpdateVaultDomainSettings")),
 		connect.WithHandlerOptions(opts...),
 	)
+	backendServiceEnableCustomVaultDomainHandler := connect.NewUnaryHandler(
+		BackendServiceEnableCustomVaultDomainProcedure,
+		svc.EnableCustomVaultDomain,
+		connect.WithSchema(backendServiceMethods.ByName("EnableCustomVaultDomain")),
+		connect.WithHandlerOptions(opts...),
+	)
 	backendServiceGetProjectUISettingsHandler := connect.NewUnaryHandler(
 		BackendServiceGetProjectUISettingsProcedure,
 		svc.GetProjectUISettings,
@@ -1471,6 +1494,8 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceGetVaultDomainSettingsHandler.ServeHTTP(w, r)
 		case BackendServiceUpdateVaultDomainSettingsProcedure:
 			backendServiceUpdateVaultDomainSettingsHandler.ServeHTTP(w, r)
+		case BackendServiceEnableCustomVaultDomainProcedure:
+			backendServiceEnableCustomVaultDomainHandler.ServeHTTP(w, r)
 		case BackendServiceGetProjectUISettingsProcedure:
 			backendServiceGetProjectUISettingsHandler.ServeHTTP(w, r)
 		case BackendServiceUpdateProjectUISettingsProcedure:
@@ -1678,6 +1703,10 @@ func (UnimplementedBackendServiceHandler) GetVaultDomainSettings(context.Context
 
 func (UnimplementedBackendServiceHandler) UpdateVaultDomainSettings(context.Context, *connect.Request[v1.UpdateVaultDomainSettingsRequest]) (*connect.Response[v1.UpdateVaultDomainSettingsResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.UpdateVaultDomainSettings is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) EnableCustomVaultDomain(context.Context, *connect.Request[v1.EnableCustomVaultDomainRequest]) (*connect.Response[v1.EnableCustomVaultDomainResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.EnableCustomVaultDomain is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) GetProjectUISettings(context.Context, *connect.Request[v1.GetProjectUISettingsRequest]) (*connect.Response[v1.GetProjectUISettingsResponse], error) {

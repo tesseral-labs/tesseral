@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
+  enableCustomVaultDomain,
   getProject,
   getVaultDomainSettings,
   updateVaultDomainSettings,
@@ -63,6 +64,7 @@ import { Input } from '@/components/ui/input';
 import Loader from '@/components/ui/loader';
 import { StatusIndicator } from '@/components/status-indicator';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { toast } from 'sonner';
 
 export const VaultDomainSettingsTab = () => {
   const { data: getProjectResponse } = useQuery(getProject, {});
@@ -129,28 +131,7 @@ export const VaultDomainSettingsTab = () => {
                 </CardDescription>
               </div>
 
-              {getVaultDomainSettingsResponse?.vaultDomainSettings
-                ?.pendingVaultDomainReady ? (
-                <Button variant="outline">Enable Custom Vault Domain</Button>
-              ) : (
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        className="disabled:pointer-events-auto"
-                        variant="outline"
-                        disabled
-                      >
-                        Enable Custom Vault Domain
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-96">
-                      Your DNS records need to be correct and widely propagated
-                      before you can enable this.
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              )}
+              <EnableCustomVaultDomainButton />
             </CardHeader>
             <CardContent>
               <Table>
@@ -354,44 +335,50 @@ const DNSRecordRows = ({
           </TableCell>
         </TableRow>
       )}
-
-      {/*{!record.correct && noValue && (*/}
-      {/*  <TableRow>*/}
-      {/*    <TableCell colSpan={3} className="bg-red-100 text-red-500 text-xs">*/}
-      {/*      <div className="mx-4">*/}
-      {/*        You haven't configured a{' '}*/}
-      {/*        <span className="font-medium">{record.type}</span> record with the*/}
-      {/*        name <span className="font-medium">{record.name}</span>. If you*/}
-      {/*        recently created that record, it may still be propagating.*/}
-      {/*      </div>*/}
-      {/*    </TableCell>*/}
-      {/*  </TableRow>*/}
-      {/*)}*/}
-
-      {/*{!record.correct && incorrectValue && (*/}
-      {/*  <TableRow>*/}
-      {/*    <TableCell colSpan={3} className="bg-red-100 text-red-500 text-xs">*/}
-      {/*      <div className="mx-4">*/}
-      {/*        <p>You created this record, but it has the wrong value.</p>*/}
-      {/*        <p>*/}
-      {/*          Your record has the value: <span className="font-medium">{record.actualValues[0]}</span>*/}
-      {/*        </p>*/}
-      {/*        <p>*/}
-      {/*          But the correct value is: <span className="font-medium">{record.wantValue}</span>*/}
-      {/*        </p>*/}
-      {/*        <p>*/}
-      {/*          Once you fix this, it will take at least{" "}*/}
-      {/*          {record.actualTtlSeconds} seconds for the change to propagate,*/}
-      {/*          because that's the time-to-live (TTL) you configured on the*/}
-      {/*          incorrect record.*/}
-      {/*        </p>*/}
-      {/*      </div>*/}
-      {/*    </TableCell>*/}
-      {/*  </TableRow>*/}
-      {/*)}*/}
     </>
   );
 };
+
+const EnableCustomVaultDomainButton = () => {
+  const { refetch } = useQuery(getProject, {});
+  const { data: getVaultDomainSettingsResponse } = useQuery(
+    getVaultDomainSettings,
+  );
+
+  const enableCustomVaultDomainMutation = useMutation(enableCustomVaultDomain)
+  const handleSubmit = async () => {
+    await enableCustomVaultDomainMutation.mutateAsync({})
+    await refetch()
+    toast.success('Custom Vault Domain enabled')
+  }
+
+  return (
+    <>
+      {getVaultDomainSettingsResponse?.vaultDomainSettings
+        ?.pendingVaultDomainReady ? (
+        <Button variant="outline" onClick={handleSubmit}>Enable Custom Vault Domain</Button>
+      ) : (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                className="disabled:pointer-events-auto"
+                variant="outline"
+                disabled
+              >
+                Enable Custom Vault Domain
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent className="max-w-96">
+              Your DNS records need to be correct and widely propagated
+              before you can enable this.
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      )}
+    </>
+  )
+}
 
 const schema = z.object({
   pendingDomain: z.string(),

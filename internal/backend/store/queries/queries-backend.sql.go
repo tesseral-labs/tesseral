@@ -488,6 +488,16 @@ func (q *Queries) DeleteUserInvite(ctx context.Context, id uuid.UUID) error {
 	return err
 }
 
+const deleteVaultDomainSettings = `-- name: DeleteVaultDomainSettings :exec
+DELETE FROM vault_domain_settings
+WHERE project_id = $1
+`
+
+func (q *Queries) DeleteVaultDomainSettings(ctx context.Context, projectID uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteVaultDomainSettings, projectID)
+	return err
+}
+
 const disableOrganizationLogins = `-- name: DisableOrganizationLogins :exec
 UPDATE
     organizations
@@ -2339,6 +2349,52 @@ func (q *Queries) UpdateProjectUISettings(ctx context.Context, arg UpdateProject
 		&i.CreateTime,
 		&i.UpdateTime,
 		&i.LogInLayout,
+	)
+	return i, err
+}
+
+const updateProjectVaultDomain = `-- name: UpdateProjectVaultDomain :one
+UPDATE
+    projects
+SET
+    vault_domain = $2
+WHERE
+    id = $1
+RETURNING
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain
+`
+
+type UpdateProjectVaultDomainParams struct {
+	ID          uuid.UUID
+	VaultDomain string
+}
+
+func (q *Queries) UpdateProjectVaultDomain(ctx context.Context, arg UpdateProjectVaultDomainParams) (Project, error) {
+	row := q.db.QueryRow(ctx, updateProjectVaultDomain, arg.ID, arg.VaultDomain)
+	var i Project
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.LogInWithPassword,
+		&i.LogInWithGoogle,
+		&i.LogInWithMicrosoft,
+		&i.GoogleOauthClientID,
+		&i.MicrosoftOauthClientID,
+		&i.GoogleOauthClientSecretCiphertext,
+		&i.MicrosoftOauthClientSecretCiphertext,
+		&i.DisplayName,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.LoginsDisabled,
+		&i.LogInWithAuthenticatorApp,
+		&i.LogInWithPasskey,
+		&i.LogInWithEmail,
+		&i.LogInWithSaml,
+		&i.RedirectUri,
+		&i.AfterLoginRedirectUri,
+		&i.AfterSignupRedirectUri,
+		&i.VaultDomain,
+		&i.EmailSendFromDomain,
 	)
 	return i, err
 }
