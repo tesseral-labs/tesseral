@@ -86,14 +86,15 @@ func (s *Store) CreateProject(ctx context.Context, req *intermediatev1.CreatePro
 
 	// create a new project backed by the new organization
 	qProject, err := q.CreateProject(ctx, queries.CreateProjectParams{
-		ID:                 newProjectID,
-		OrganizationID:     &qOrganization.ID,
-		VaultDomain:        newProjectVaultDomain,
-		DisplayName:        req.DisplayName,
-		LogInWithGoogle:    false,
-		LogInWithMicrosoft: false,
-		LogInWithPassword:  false,
-		LogInWithSaml:      false,
+		ID:                  newProjectID,
+		OrganizationID:      &qOrganization.ID,
+		VaultDomain:         newProjectVaultDomain,
+		EmailSendFromDomain: fmt.Sprintf("mail.%s", s.authAppsRootDomain),
+		DisplayName:         req.DisplayName,
+		LogInWithGoogle:     false,
+		LogInWithMicrosoft:  false,
+		LogInWithPassword:   false,
+		LogInWithSaml:       false,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("create project: %w", err)
