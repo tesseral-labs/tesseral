@@ -294,7 +294,7 @@ func (s *Store) parseVaultDomainSettings(ctx context.Context, qProject queries.P
 		{
 			Type:      "TXT",
 			Name:      fmt.Sprintf("_tesseral_project_verification.%s", qVaultDomainSettings.PendingDomain),
-			WantValue: idformat.Project.Format(qVaultDomainSettings.ProjectID),
+			WantValue: fmt.Sprintf("\"%s\"", idformat.Project.Format(qVaultDomainSettings.ProjectID)),
 		},
 	}
 
