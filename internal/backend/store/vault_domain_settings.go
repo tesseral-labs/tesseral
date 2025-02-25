@@ -334,7 +334,7 @@ func (s *Store) parseVaultDomainSettings(ctx context.Context, qVaultDomainSettin
 		}
 	}
 
-	cloudflareOK := customHostname.Status == "ACTIVE"
+	cloudflareOK := customHostname.Status == string(custom_hostnames.CustomHostnameListResponseStatusActive)
 	emailIdentityOK := emailIdentity.VerificationStatus == types.VerificationStatusSuccess
 	dkimOK := emailIdentity.DkimAttributes.Status == types.DkimStatusSuccess
 
