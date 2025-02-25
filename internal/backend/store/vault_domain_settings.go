@@ -423,11 +423,12 @@ func (s *Store) parseVaultDomainSettings(ctx context.Context, qVaultDomainSettin
 	cloudflareOK := customHostname.Status == string(custom_hostnames.CustomHostnameListResponseStatusActive)
 	emailIdentityOK := emailIdentity.VerificationStatus == types.VerificationStatusSuccess
 	dkimOK := emailIdentity.DkimAttributes.Status == types.DkimStatusSuccess
+	mailFromOK := emailIdentity.MailFromAttributes.MailFromDomainStatus == types.MailFromDomainStatusSuccess
 
 	return &backendv1.VaultDomainSettings{
 		PendingDomain:              qVaultDomainSettings.PendingDomain,
 		PendingVaultDomainReady:    cloudflareOK,
-		PendingSendFromDomainReady: emailIdentityOK && dkimOK,
+		PendingSendFromDomainReady: emailIdentityOK && dkimOK && mailFromOK,
 		VaultDomainRecords:         vaultDomainRecords,
 		EmailSendFromRecords:       emailSendFromRecords,
 	}, nil
