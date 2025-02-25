@@ -72,6 +72,10 @@ export const VaultDomainSettingsTab = () => {
     getVaultDomainSettings,
   );
 
+  const customVaultDomainActive =
+    getProjectResponse?.project?.vaultDomain ===
+    getVaultDomainSettingsResponse?.vaultDomainSettings?.pendingDomain;
+
   return (
     <div className="space-y-8">
       <Card>
@@ -118,20 +122,39 @@ export const VaultDomainSettingsTab = () => {
           <Card>
             <CardHeader className="flex-row justify-between items-center">
               <div className="flex flex-col space-y-1 5">
-                <CardTitle>Vault Domain Records</CardTitle>
+                <CardTitle className="flex items-center">
+                  <span>Vault Domain Records</span>
+                  {customVaultDomainActive && (
+                    <Badge variant="outline" className="ml-4 bg-green-50 text-green-700 border-green-200">
+                      <span className="mr-1 h-2 w-2 rounded-full bg-green-500 inline-block" />
+                      Live
+                    </Badge>
+                  )}
+                </CardTitle>
                 <CardDescription>
-                  You need to add the following DNS records before you can use{' '}
-                  <span className="font-medium">
-                    {
-                      getVaultDomainSettingsResponse?.vaultDomainSettings
-                        ?.pendingDomain
-                    }
-                  </span>{' '}
-                  as your Vault domain.
+                  {customVaultDomainActive ? (
+                    <p>
+                      You need to keep these DNS records in place so that <span
+                      className="font-medium">{getProjectResponse?.project?.vaultDomain}</span>{" "}
+                      continues to work as your Vault domain.
+                    </p>
+                  ) : (
+                    <p>
+                      You need to add the following DNS records before you can
+                      use{' '}
+                      <span className="font-medium">
+                        {
+                          getVaultDomainSettingsResponse?.vaultDomainSettings
+                            ?.pendingDomain
+                        }
+                      </span>{' '}
+                      as your Vault domain.
+                    </p>
+                  )}
                 </CardDescription>
               </div>
 
-              <EnableCustomVaultDomainButton />
+              {!customVaultDomainActive && <EnableCustomVaultDomainButton />}
             </CardHeader>
             <CardContent>
               <Table>
@@ -212,6 +235,7 @@ export const VaultDomainSettingsTab = () => {
                 </TableBody>
               </Table>
             </CardContent>
+            ;
           </Card>
         </>
       )}
@@ -345,18 +369,20 @@ const EnableCustomVaultDomainButton = () => {
     getVaultDomainSettings,
   );
 
-  const enableCustomVaultDomainMutation = useMutation(enableCustomVaultDomain)
+  const enableCustomVaultDomainMutation = useMutation(enableCustomVaultDomain);
   const handleSubmit = async () => {
-    await enableCustomVaultDomainMutation.mutateAsync({})
-    await refetch()
-    toast.success('Custom Vault Domain enabled')
-  }
+    await enableCustomVaultDomainMutation.mutateAsync({});
+    await refetch();
+    toast.success('Custom Vault Domain enabled');
+  };
 
   return (
     <>
       {getVaultDomainSettingsResponse?.vaultDomainSettings
         ?.pendingVaultDomainReady ? (
-        <Button variant="outline" onClick={handleSubmit}>Enable Custom Vault Domain</Button>
+        <Button variant="outline" onClick={handleSubmit}>
+          Enable Custom Vault Domain
+        </Button>
       ) : (
         <TooltipProvider>
           <Tooltip>
@@ -370,15 +396,15 @@ const EnableCustomVaultDomainButton = () => {
               </Button>
             </TooltipTrigger>
             <TooltipContent className="max-w-96">
-              Your DNS records need to be correct and widely propagated
-              before you can enable this.
+              Your DNS records need to be correct and widely propagated before
+              you can enable this.
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
       )}
     </>
-  )
-}
+  );
+};
 
 const schema = z.object({
   pendingDomain: z.string(),
