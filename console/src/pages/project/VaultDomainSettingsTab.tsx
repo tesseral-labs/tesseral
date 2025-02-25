@@ -130,7 +130,7 @@ export const VaultDomainSettingsTab = () => {
               </div>
 
               {getVaultDomainSettingsResponse?.vaultDomainSettings
-                ?.pendingSendFromDomainReady ? (
+                ?.pendingVaultDomainReady ? (
                 <Button variant="outline">Enable Custom Vault Domain</Button>
               ) : (
                 <TooltipProvider>
