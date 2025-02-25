@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/sesv2"
 	"github.com/aws/aws-sdk-go-v2/service/sesv2/types"
 	"github.com/cloudflare/cloudflare-go/v4"
@@ -234,6 +235,14 @@ func (s *Store) upsertSESEmailIdentity(ctx context.Context, emailIdentity string
 			return nil, fmt.Errorf("create email identity: %w", err)
 		}
 		// deliberate fallthrough if already exists
+	}
+
+	if _, err := s.ses.PutEmailIdentityMailFromAttributes(ctx, &sesv2.PutEmailIdentityMailFromAttributesInput{
+		EmailIdentity:       &emailIdentity,
+		BehaviorOnMxFailure: types.BehaviorOnMxFailureUseDefaultValue,
+		MailFromDomain:      aws.String(fmt.Sprintf("mail.%s", emailIdentity)),
+	}); err != nil {
+		return nil, fmt.Errorf("put email identity mail from attributes: %w", err)
 	}
 
 	getEmailIdentityRes, err := s.ses.GetEmailIdentity(ctx, &sesv2.GetEmailIdentityInput{
