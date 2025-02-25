@@ -755,6 +755,16 @@ WHERE
 RETURNING
     *;
 
+-- name: UpdateProjectEmailSendFromDomain :one
+UPDATE
+    projects
+SET
+    email_send_from_domain = $2
+WHERE
+    id = $1
+RETURNING
+    *;
+
 -- name: GetVaultDomainInActiveOrPendingUse :one
 SELECT
     EXISTS (

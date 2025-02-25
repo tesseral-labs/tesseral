@@ -225,6 +225,11 @@ export const updateVaultDomainSettings = BackendService.method.updateVaultDomain
 export const enableCustomVaultDomain = BackendService.method.enableCustomVaultDomain;
 
 /**
+ * @generated from rpc tesseral.backend.v1.BackendService.EnableEmailSendFromDomain
+ */
+export const enableEmailSendFromDomain = BackendService.method.enableEmailSendFromDomain;
+
+/**
  * @generated from rpc tesseral.backend.v1.BackendService.GetProjectUISettings
  */
 export const getProjectUISettings = BackendService.method.getProjectUISettings;

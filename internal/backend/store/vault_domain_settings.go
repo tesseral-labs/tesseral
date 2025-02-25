@@ -136,6 +136,40 @@ func (s *Store) EnableCustomVaultDomain(ctx context.Context, req *backendv1.Enab
 	return &backendv1.EnableCustomVaultDomainResponse{}, nil
 }
 
+func (s *Store) EnableEmailSendFromDomain(ctx context.Context, req *backendv1.EnableEmailSendFromDomainRequest) (*backendv1.EnableEmailSendFromDomainResponse, error) {
+	if err := validateIsDogfoodSession(ctx); err != nil {
+		return nil, fmt.Errorf("validate is dogfood session: %w", err)
+	}
+
+	vaultDomainSettings, err := s.getVaultDomainSettings(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("get vault domain settings: %w", err)
+	}
+
+	if !vaultDomainSettings.PendingSendFromDomainReady {
+		return nil, fmt.Errorf("email send-from domain not ready")
+	}
+
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	if _, err := q.UpdateProjectEmailSendFromDomain(ctx, queries.UpdateProjectEmailSendFromDomainParams{
+		ID:                  authn.ProjectID(ctx),
+		EmailSendFromDomain: fmt.Sprintf("mail.%s", vaultDomainSettings.PendingDomain),
+	}); err != nil {
+		return nil, fmt.Errorf("update project email send-from domain: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
+	}
+
+	return &backendv1.EnableEmailSendFromDomainResponse{}, nil
+}
+
 func (s *Store) getVaultDomainSettings(ctx context.Context) (*backendv1.VaultDomainSettings, error) {
 	qVaultDomainSettings, err := s.q.GetVaultDomainSettings(ctx, authn.ProjectID(ctx))
 	if err != nil {

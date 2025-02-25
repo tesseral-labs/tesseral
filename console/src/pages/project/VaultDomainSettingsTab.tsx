@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   enableCustomVaultDomain,
+  enableEmailSendFromDomain,
   getProject,
   getVaultDomainSettings,
   updateVaultDomainSettings,
@@ -75,6 +76,9 @@ export const VaultDomainSettingsTab = () => {
   const customVaultDomainActive =
     getProjectResponse?.project?.vaultDomain ===
     getVaultDomainSettingsResponse?.vaultDomainSettings?.pendingDomain;
+  const customEmailSendFromDomainActive =
+    getProjectResponse?.project?.emailSendFromDomain ===
+    `mail.${getVaultDomainSettingsResponse?.vaultDomainSettings?.pendingDomain}`;
 
   return (
     <div className="space-y-8">
@@ -125,7 +129,10 @@ export const VaultDomainSettingsTab = () => {
                 <CardTitle className="flex items-center">
                   <span>Vault Domain Records</span>
                   {customVaultDomainActive && (
-                    <Badge variant="outline" className="ml-4 bg-green-50 text-green-700 border-green-200">
+                    <Badge
+                      variant="outline"
+                      className="ml-4 bg-green-50 text-green-700 border-green-200"
+                    >
                       <span className="mr-1 h-2 w-2 rounded-full bg-green-500 inline-block" />
                       Live
                     </Badge>
@@ -134,8 +141,10 @@ export const VaultDomainSettingsTab = () => {
                 <CardDescription>
                   {customVaultDomainActive ? (
                     <p>
-                      You need to keep these DNS records in place so that <span
-                      className="font-medium">{getProjectResponse?.project?.vaultDomain}</span>{" "}
+                      You need to keep these DNS records in place so that{' '}
+                      <span className="font-medium">
+                        {getProjectResponse?.project?.vaultDomain}
+                      </span>{' '}
                       continues to work as your Vault domain.
                     </p>
                   ) : (
@@ -177,45 +186,48 @@ export const VaultDomainSettingsTab = () => {
           <Card className="mt-8">
             <CardHeader className="flex-row justify-between items-center">
               <div className="flex flex-col space-y-1 5">
-                <CardTitle>
-                  Email Send-From Records
-                  <Badge className="ml-4" variant="outline">
-                    Optional
-                  </Badge>
+                <CardTitle className="flex items-center">
+                  <span>Email Send-From Records</span>
+
+                  {customEmailSendFromDomainActive ? (
+                    <Badge
+                      variant="outline"
+                      className="ml-4 bg-green-50 text-green-700 border-green-200"
+                    >
+                      <span className="mr-1 h-2 w-2 rounded-full bg-green-500 inline-block" />
+                      Live
+                    </Badge>
+                  ) : (
+                    <Badge className="ml-4" variant="outline">
+                      Optional
+                    </Badge>
+                  )}
                 </CardTitle>
                 <CardDescription>
-                  You can optionally configure the emails Tesseral sends to your
-                  end users to come from{' '}
-                  <span className="font-medium">{`noreply@mail.${getVaultDomainSettingsResponse?.vaultDomainSettings?.pendingDomain}`}</span>
-                  , instead of the Tesseral-provided{' '}
-                  <span className="font-medium">noreply@mail.tesseral.app</span>
-                  .
+                  {customEmailSendFromDomainActive ? (
+                    <p>
+                      You need to keep these DNS records in place so that
+                      Tesseral can continue to send emails from{' '}
+                      <span className="font-medium">{`noreply@mail.${getVaultDomainSettingsResponse?.vaultDomainSettings?.pendingDomain}`}</span>
+                      .
+                    </p>
+                  ) : (
+                    <p>
+                      You can optionally configure the emails Tesseral sends to
+                      your end users to come from{' '}
+                      <span className="font-medium">{`noreply@mail.${getVaultDomainSettingsResponse?.vaultDomainSettings?.pendingDomain}`}</span>
+                      , instead of the Tesseral-provided{' '}
+                      <span className="font-medium">
+                        noreply@mail.tesseral.app
+                      </span>
+                      .
+                    </p>
+                  )}
                 </CardDescription>
               </div>
 
-              {getVaultDomainSettingsResponse?.vaultDomainSettings
-                ?.pendingSendFromDomainReady ? (
-                <Button variant="outline">
-                  Enable Custom Email Send-From Domain
-                </Button>
-              ) : (
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        className="disabled:pointer-events-auto"
-                        variant="outline"
-                        disabled
-                      >
-                        Enable Custom Email Send-From Domain
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-96">
-                      Your DNS records need to be correct and widely propagated
-                      before you can enable this.
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+              {!customEmailSendFromDomainActive && (
+                <EnableEmailSendFromDomainButton />
               )}
             </CardHeader>
             <CardContent>
@@ -393,6 +405,51 @@ const EnableCustomVaultDomainButton = () => {
                 disabled
               >
                 Enable Custom Vault Domain
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent className="max-w-96">
+              Your DNS records need to be correct and widely propagated before
+              you can enable this.
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      )}
+    </>
+  );
+};
+
+const EnableEmailSendFromDomainButton = () => {
+  const { refetch } = useQuery(getProject, {});
+  const { data: getVaultDomainSettingsResponse } = useQuery(
+    getVaultDomainSettings,
+  );
+
+  const enableEmailSendFromDomainMutation = useMutation(
+    enableEmailSendFromDomain,
+  );
+  const handleSubmit = async () => {
+    await enableEmailSendFromDomainMutation.mutateAsync({});
+    await refetch();
+    toast.success('Custom Email Send-From Domain enabled');
+  };
+
+  return (
+    <>
+      {getVaultDomainSettingsResponse?.vaultDomainSettings
+        ?.pendingSendFromDomainReady ? (
+        <Button variant="outline" onClick={handleSubmit}>
+          Enable Custom Email Send-From Domain
+        </Button>
+      ) : (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                className="disabled:pointer-events-auto"
+                variant="outline"
+                disabled
+              >
+                Enable Custom Email Send-From Domain
               </Button>
             </TooltipTrigger>
             <TooltipContent className="max-w-96">

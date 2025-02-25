@@ -63,6 +63,7 @@ const (
 	BackendService_GetVaultDomainSettings_FullMethodName                = "/tesseral.backend.v1.BackendService/GetVaultDomainSettings"
 	BackendService_UpdateVaultDomainSettings_FullMethodName             = "/tesseral.backend.v1.BackendService/UpdateVaultDomainSettings"
 	BackendService_EnableCustomVaultDomain_FullMethodName               = "/tesseral.backend.v1.BackendService/EnableCustomVaultDomain"
+	BackendService_EnableEmailSendFromDomain_FullMethodName             = "/tesseral.backend.v1.BackendService/EnableEmailSendFromDomain"
 	BackendService_GetProjectUISettings_FullMethodName                  = "/tesseral.backend.v1.BackendService/GetProjectUISettings"
 	BackendService_UpdateProjectUISettings_FullMethodName               = "/tesseral.backend.v1.BackendService/UpdateProjectUISettings"
 	BackendService_ListProjectAPIKeys_FullMethodName                    = "/tesseral.backend.v1.BackendService/ListProjectAPIKeys"
@@ -127,6 +128,7 @@ type BackendServiceClient interface {
 	GetVaultDomainSettings(ctx context.Context, in *GetVaultDomainSettingsRequest, opts ...grpc.CallOption) (*GetVaultDomainSettingsResponse, error)
 	UpdateVaultDomainSettings(ctx context.Context, in *UpdateVaultDomainSettingsRequest, opts ...grpc.CallOption) (*UpdateVaultDomainSettingsResponse, error)
 	EnableCustomVaultDomain(ctx context.Context, in *EnableCustomVaultDomainRequest, opts ...grpc.CallOption) (*EnableCustomVaultDomainResponse, error)
+	EnableEmailSendFromDomain(ctx context.Context, in *EnableEmailSendFromDomainRequest, opts ...grpc.CallOption) (*EnableEmailSendFromDomainResponse, error)
 	GetProjectUISettings(ctx context.Context, in *GetProjectUISettingsRequest, opts ...grpc.CallOption) (*GetProjectUISettingsResponse, error)
 	UpdateProjectUISettings(ctx context.Context, in *UpdateProjectUISettingsRequest, opts ...grpc.CallOption) (*UpdateProjectUISettingsResponse, error)
 	ListProjectAPIKeys(ctx context.Context, in *ListProjectAPIKeysRequest, opts ...grpc.CallOption) (*ListProjectAPIKeysResponse, error)
@@ -591,6 +593,16 @@ func (c *backendServiceClient) EnableCustomVaultDomain(ctx context.Context, in *
 	return out, nil
 }
 
+func (c *backendServiceClient) EnableEmailSendFromDomain(ctx context.Context, in *EnableEmailSendFromDomainRequest, opts ...grpc.CallOption) (*EnableEmailSendFromDomainResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(EnableEmailSendFromDomainResponse)
+	err := c.cc.Invoke(ctx, BackendService_EnableEmailSendFromDomain_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *backendServiceClient) GetProjectUISettings(ctx context.Context, in *GetProjectUISettingsRequest, opts ...grpc.CallOption) (*GetProjectUISettingsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetProjectUISettingsResponse)
@@ -779,6 +791,7 @@ type BackendServiceServer interface {
 	GetVaultDomainSettings(context.Context, *GetVaultDomainSettingsRequest) (*GetVaultDomainSettingsResponse, error)
 	UpdateVaultDomainSettings(context.Context, *UpdateVaultDomainSettingsRequest) (*UpdateVaultDomainSettingsResponse, error)
 	EnableCustomVaultDomain(context.Context, *EnableCustomVaultDomainRequest) (*EnableCustomVaultDomainResponse, error)
+	EnableEmailSendFromDomain(context.Context, *EnableEmailSendFromDomainRequest) (*EnableEmailSendFromDomainResponse, error)
 	GetProjectUISettings(context.Context, *GetProjectUISettingsRequest) (*GetProjectUISettingsResponse, error)
 	UpdateProjectUISettings(context.Context, *UpdateProjectUISettingsRequest) (*UpdateProjectUISettingsResponse, error)
 	ListProjectAPIKeys(context.Context, *ListProjectAPIKeysRequest) (*ListProjectAPIKeysResponse, error)
@@ -934,6 +947,9 @@ func (UnimplementedBackendServiceServer) UpdateVaultDomainSettings(context.Conte
 }
 func (UnimplementedBackendServiceServer) EnableCustomVaultDomain(context.Context, *EnableCustomVaultDomainRequest) (*EnableCustomVaultDomainResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EnableCustomVaultDomain not implemented")
+}
+func (UnimplementedBackendServiceServer) EnableEmailSendFromDomain(context.Context, *EnableEmailSendFromDomainRequest) (*EnableEmailSendFromDomainResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EnableEmailSendFromDomain not implemented")
 }
 func (UnimplementedBackendServiceServer) GetProjectUISettings(context.Context, *GetProjectUISettingsRequest) (*GetProjectUISettingsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetProjectUISettings not implemented")
@@ -1790,6 +1806,24 @@ func _BackendService_EnableCustomVaultDomain_Handler(srv interface{}, ctx contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BackendService_EnableEmailSendFromDomain_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EnableEmailSendFromDomainRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).EnableEmailSendFromDomain(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_EnableEmailSendFromDomain_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).EnableEmailSendFromDomain(ctx, req.(*EnableEmailSendFromDomainRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _BackendService_GetProjectUISettings_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetProjectUISettingsRequest)
 	if err := dec(in); err != nil {
@@ -2224,6 +2258,10 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "EnableCustomVaultDomain",
 			Handler:    _BackendService_EnableCustomVaultDomain_Handler,
+		},
+		{
+			MethodName: "EnableEmailSendFromDomain",
+			Handler:    _BackendService_EnableEmailSendFromDomain_Handler,
 		},
 		{
 			MethodName: "GetProjectUISettings",

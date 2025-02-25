@@ -31,3 +31,11 @@ func (s *Service) EnableCustomVaultDomain(ctx context.Context, req *connect.Requ
 	}
 	return connect.NewResponse(res), nil
 }
+
+func (s *Service) EnableEmailSendFromDomain(ctx context.Context, req *connect.Request[backendv1.EnableEmailSendFromDomainRequest]) (*connect.Response[backendv1.EnableEmailSendFromDomainResponse], error) {
+	res, err := s.Store.EnableEmailSendFromDomain(ctx, req.Msg)
+	if err != nil {
+		return nil, fmt.Errorf("store: %w", err)
+	}
+	return connect.NewResponse(res), nil
+}
