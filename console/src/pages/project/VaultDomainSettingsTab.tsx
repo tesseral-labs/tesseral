@@ -247,7 +247,6 @@ export const VaultDomainSettingsTab = () => {
                 </TableBody>
               </Table>
             </CardContent>
-            ;
           </Card>
         </>
       )}
