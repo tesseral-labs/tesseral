@@ -1,6 +1,6 @@
 module github.com/tesseral-labs/tesseral
 
-go 1.23.2
+go 1.24
 
 require (
 	connectrpc.com/connect v1.17.0
@@ -14,7 +14,6 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.73.0
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.34.5
 	github.com/aws/aws-sdk-go-v2/service/sesv2 v1.41.1
-	github.com/cloudflare/cloudflare-go v0.115.0
 	github.com/cloudflare/cloudflare-go/v4 v4.1.0
 	github.com/cyrusaf/ctxlog v1.3.3
 	github.com/fxamacker/cbor/v2 v2.7.0
@@ -53,8 +52,6 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sts v1.32.4 // indirect
 	github.com/aws/smithy-go v1.22.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/goccy/go-json v0.10.5 // indirect
-	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
@@ -75,7 +72,6 @@ require (
 	golang.org/x/sync v0.10.0 // indirect
 	golang.org/x/sys v0.29.0 // indirect
 	golang.org/x/text v0.21.0 // indirect
-	golang.org/x/time v0.9.0 // indirect
 	golang.org/x/tools v0.25.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
