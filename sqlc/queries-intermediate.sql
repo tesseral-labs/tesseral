@@ -111,6 +111,14 @@ FROM
 WHERE
     id = $1;
 
+-- name: GetProjectByBackingOrganizationID :one
+SELECT
+    *
+FROM
+    projects
+WHERE
+    organization_id = $1;
+
 -- name: GetProjectTrustedDomains :many
 SELECT
     *

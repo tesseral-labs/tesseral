@@ -161,6 +161,17 @@ func (s *Store) ListOrganizations(ctx context.Context, req *intermediatev1.ListO
 			org.UserHasPasskey = hasPasskeys
 		}
 
+		// if we're servicing the dogfood project, then show the display name of
+		// the project this organization backs
+		if authn.ProjectID(ctx) == *s.dogfoodProjectID {
+			qBackedProject, err := q.GetProjectByBackingOrganizationID(ctx, &qOrg.ID)
+			if err != nil {
+				return nil, fmt.Errorf("get project by backing organization id: %w", err)
+			}
+
+			org.DisplayName = qBackedProject.DisplayName
+		}
+
 		// Append the parsed organization to the list of organizations.
 		organizations = append(organizations, org)
 	}
