@@ -21,27 +21,29 @@ message Project {
   string google_oauth_client_secret = 9;
   string microsoft_oauth_client_id = 10;
   string microsoft_oauth_client_secret = 11;
-  optional string auth_domain = 12;
+  string vault_domain = 12;
   repeated string trusted_domains = 17;
   string redirect_uri = 18;
   string after_login_redirect_uri = 19;
   string after_signup_redirect_uri = 20;
+  string email_send_from_domain = 21;
 }
 
 message VaultDomainSettings {
   string pending_domain = 1;
-  VaultDomainSettingsDNSRecord tesseral_cname_record = 2;
-  bool tesseral_cname_record_configured = 3;
-  repeated VaultDomainSettingsDNSRecord dkim_records = 4;
-  bool dkim_configured = 5;
-  repeated VaultDomainSettingsDNSRecord spf_records = 6;
-  bool spf_configured = 7;
+  bool pending_vault_domain_ready = 2;
+  bool pending_send_from_domain_ready = 3;
+  repeated VaultDomainSettingsDNSRecord vault_domain_records = 4;
+  repeated VaultDomainSettingsDNSRecord email_send_from_records = 5;
 }
 
 message VaultDomainSettingsDNSRecord {
   string type = 1;
   string name = 2;
-  string value = 3;
+  string want_value = 3;
+  repeated string actual_values = 4;
+  uint32 actual_ttl_seconds = 5;
+  bool correct = 6;
 }
 
 message ProjectUISettings {

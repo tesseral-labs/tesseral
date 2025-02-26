@@ -17,7 +17,7 @@ func (s *Store) GetProjectIDByDomain(ctx context.Context, domain string) (*uuid.
 	}
 	defer rollback()
 
-	qProjectID, err := q.GetProjectIDByCustomAuthDomain(ctx, &domain)
+	qProjectID, err := q.GetProjectIDByVaultDomain(ctx, domain)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, apierror.NewNotFoundError("project id not found", fmt.Errorf("project id not found: %w", err))

@@ -1179,7 +1179,7 @@ components:
                     type: string
                 microsoftOauthClientSecret:
                     type: string
-                authDomain:
+                vaultDomain:
                     type: string
                 trustedDomains:
                     type: array
@@ -1190,6 +1190,8 @@ components:
                 afterLoginRedirectUri:
                     type: string
                 afterSignupRedirectUri:
+                    type: string
+                emailSendFromDomain:
                     type: string
         RevokeSCIMAPIKeyResponse:
             type: object

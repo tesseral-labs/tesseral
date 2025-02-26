@@ -5,7 +5,7 @@ RETURNING
     *;
 
 -- name: CreateDogfoodProject :one
-INSERT INTO projects (id, display_name, log_in_with_google, log_in_with_microsoft, log_in_with_email, log_in_with_password, auth_domain, custom_auth_domain)
+INSERT INTO projects (id, display_name, log_in_with_google, log_in_with_microsoft, log_in_with_email, log_in_with_password, vault_domain, email_send_from_domain)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 RETURNING
     *;
@@ -161,6 +161,5 @@ FROM
     JOIN organizations ON users.organization_id = organizations.id
     JOIN projects ON organizations.id = projects.organization_id
 WHERE
-    revoked = FALSE
-    AND refresh_token_sha256 = $1;
+    refresh_token_sha256 = $1;
 

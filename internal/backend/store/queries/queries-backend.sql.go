@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const createOrganization = `-- name: CreateOrganization :one
@@ -484,6 +485,16 @@ WHERE id = $1
 
 func (q *Queries) DeleteUserInvite(ctx context.Context, id uuid.UUID) error {
 	_, err := q.db.Exec(ctx, deleteUserInvite, id)
+	return err
+}
+
+const deleteVaultDomainSettings = `-- name: DeleteVaultDomainSettings :exec
+DELETE FROM vault_domain_settings
+WHERE project_id = $1
+`
+
+func (q *Queries) DeleteVaultDomainSettings(ctx context.Context, projectID uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteVaultDomainSettings, projectID)
 	return err
 }
 
@@ -1003,7 +1014,7 @@ func (q *Queries) GetProjectAPIKeyBySecretTokenSHA256(ctx context.Context, secre
 
 const getProjectByID = `-- name: GetProjectByID :one
 SELECT
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain
 FROM
     projects
 WHERE
@@ -1026,8 +1037,6 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 		&i.DisplayName,
 		&i.CreateTime,
 		&i.UpdateTime,
-		&i.CustomAuthDomain,
-		&i.AuthDomain,
 		&i.LoginsDisabled,
 		&i.LogInWithAuthenticatorApp,
 		&i.LogInWithPasskey,
@@ -1036,6 +1045,8 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 		&i.RedirectUri,
 		&i.AfterLoginRedirectUri,
 		&i.AfterSignupRedirectUri,
+		&i.VaultDomain,
+		&i.EmailSendFromDomain,
 	)
 	return i, err
 }
@@ -1380,6 +1391,31 @@ func (q *Queries) GetUserInvite(ctx context.Context, arg GetUserInviteParams) (U
 	return i, err
 }
 
+const getVaultDomainInActiveOrPendingUse = `-- name: GetVaultDomainInActiveOrPendingUse :one
+SELECT
+    EXISTS (
+        SELECT
+            1
+        FROM
+            projects
+        WHERE
+            vault_domain = $1)
+    OR EXISTS (
+        SELECT
+            1
+        FROM
+            vault_domain_settings
+        WHERE
+            pending_domain = $1)
+`
+
+func (q *Queries) GetVaultDomainInActiveOrPendingUse(ctx context.Context, vaultDomain string) (pgtype.Bool, error) {
+	row := q.db.QueryRow(ctx, getVaultDomainInActiveOrPendingUse, vaultDomain)
+	var column_1 pgtype.Bool
+	err := row.Scan(&column_1)
+	return column_1, err
+}
+
 const getVaultDomainSettings = `-- name: GetVaultDomainSettings :one
 SELECT
     project_id, pending_domain
@@ -1546,7 +1582,7 @@ func (q *Queries) ListProjectAPIKeys(ctx context.Context, arg ListProjectAPIKeys
 
 const listProjects = `-- name: ListProjects :many
 SELECT
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain
 FROM
     projects
 ORDER BY
@@ -1576,8 +1612,6 @@ func (q *Queries) ListProjects(ctx context.Context, limit int32) ([]Project, err
 			&i.DisplayName,
 			&i.CreateTime,
 			&i.UpdateTime,
-			&i.CustomAuthDomain,
-			&i.AuthDomain,
 			&i.LoginsDisabled,
 			&i.LogInWithAuthenticatorApp,
 			&i.LogInWithPasskey,
@@ -1586,6 +1620,8 @@ func (q *Queries) ListProjects(ctx context.Context, limit int32) ([]Project, err
 			&i.RedirectUri,
 			&i.AfterLoginRedirectUri,
 			&i.AfterSignupRedirectUri,
+			&i.VaultDomain,
+			&i.EmailSendFromDomain,
 		); err != nil {
 			return nil, err
 		}
@@ -2120,15 +2156,13 @@ SET
     google_oauth_client_secret_ciphertext = $11,
     microsoft_oauth_client_id = $12,
     microsoft_oauth_client_secret_ciphertext = $13,
-    custom_auth_domain = $14,
-    auth_domain = $15,
-    redirect_uri = $16,
-    after_login_redirect_uri = $17,
-    after_signup_redirect_uri = $18
+    redirect_uri = $14,
+    after_login_redirect_uri = $15,
+    after_signup_redirect_uri = $16
 WHERE
     id = $1
 RETURNING
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain
 `
 
 type UpdateProjectParams struct {
@@ -2145,8 +2179,6 @@ type UpdateProjectParams struct {
 	GoogleOauthClientSecretCiphertext    []byte
 	MicrosoftOauthClientID               *string
 	MicrosoftOauthClientSecretCiphertext []byte
-	CustomAuthDomain                     *string
-	AuthDomain                           *string
 	RedirectUri                          *string
 	AfterLoginRedirectUri                *string
 	AfterSignupRedirectUri               *string
@@ -2167,8 +2199,6 @@ func (q *Queries) UpdateProject(ctx context.Context, arg UpdateProjectParams) (P
 		arg.GoogleOauthClientSecretCiphertext,
 		arg.MicrosoftOauthClientID,
 		arg.MicrosoftOauthClientSecretCiphertext,
-		arg.CustomAuthDomain,
-		arg.AuthDomain,
 		arg.RedirectUri,
 		arg.AfterLoginRedirectUri,
 		arg.AfterSignupRedirectUri,
@@ -2187,8 +2217,6 @@ func (q *Queries) UpdateProject(ctx context.Context, arg UpdateProjectParams) (P
 		&i.DisplayName,
 		&i.CreateTime,
 		&i.UpdateTime,
-		&i.CustomAuthDomain,
-		&i.AuthDomain,
 		&i.LoginsDisabled,
 		&i.LogInWithAuthenticatorApp,
 		&i.LogInWithPasskey,
@@ -2197,6 +2225,8 @@ func (q *Queries) UpdateProject(ctx context.Context, arg UpdateProjectParams) (P
 		&i.RedirectUri,
 		&i.AfterLoginRedirectUri,
 		&i.AfterSignupRedirectUri,
+		&i.VaultDomain,
+		&i.EmailSendFromDomain,
 	)
 	return i, err
 }
@@ -2232,6 +2262,52 @@ func (q *Queries) UpdateProjectAPIKey(ctx context.Context, arg UpdateProjectAPIK
 	return i, err
 }
 
+const updateProjectEmailSendFromDomain = `-- name: UpdateProjectEmailSendFromDomain :one
+UPDATE
+    projects
+SET
+    email_send_from_domain = $2
+WHERE
+    id = $1
+RETURNING
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain
+`
+
+type UpdateProjectEmailSendFromDomainParams struct {
+	ID                  uuid.UUID
+	EmailSendFromDomain string
+}
+
+func (q *Queries) UpdateProjectEmailSendFromDomain(ctx context.Context, arg UpdateProjectEmailSendFromDomainParams) (Project, error) {
+	row := q.db.QueryRow(ctx, updateProjectEmailSendFromDomain, arg.ID, arg.EmailSendFromDomain)
+	var i Project
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.LogInWithPassword,
+		&i.LogInWithGoogle,
+		&i.LogInWithMicrosoft,
+		&i.GoogleOauthClientID,
+		&i.MicrosoftOauthClientID,
+		&i.GoogleOauthClientSecretCiphertext,
+		&i.MicrosoftOauthClientSecretCiphertext,
+		&i.DisplayName,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.LoginsDisabled,
+		&i.LogInWithAuthenticatorApp,
+		&i.LogInWithPasskey,
+		&i.LogInWithEmail,
+		&i.LogInWithSaml,
+		&i.RedirectUri,
+		&i.AfterLoginRedirectUri,
+		&i.AfterSignupRedirectUri,
+		&i.VaultDomain,
+		&i.EmailSendFromDomain,
+	)
+	return i, err
+}
+
 const updateProjectOrganizationID = `-- name: UpdateProjectOrganizationID :one
 UPDATE
     projects
@@ -2240,7 +2316,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain
 `
 
 type UpdateProjectOrganizationIDParams struct {
@@ -2264,8 +2340,6 @@ func (q *Queries) UpdateProjectOrganizationID(ctx context.Context, arg UpdatePro
 		&i.DisplayName,
 		&i.CreateTime,
 		&i.UpdateTime,
-		&i.CustomAuthDomain,
-		&i.AuthDomain,
 		&i.LoginsDisabled,
 		&i.LogInWithAuthenticatorApp,
 		&i.LogInWithPasskey,
@@ -2274,6 +2348,8 @@ func (q *Queries) UpdateProjectOrganizationID(ctx context.Context, arg UpdatePro
 		&i.RedirectUri,
 		&i.AfterLoginRedirectUri,
 		&i.AfterSignupRedirectUri,
+		&i.VaultDomain,
+		&i.EmailSendFromDomain,
 	)
 	return i, err
 }
@@ -2319,6 +2395,52 @@ func (q *Queries) UpdateProjectUISettings(ctx context.Context, arg UpdateProject
 		&i.CreateTime,
 		&i.UpdateTime,
 		&i.LogInLayout,
+	)
+	return i, err
+}
+
+const updateProjectVaultDomain = `-- name: UpdateProjectVaultDomain :one
+UPDATE
+    projects
+SET
+    vault_domain = $2
+WHERE
+    id = $1
+RETURNING
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain
+`
+
+type UpdateProjectVaultDomainParams struct {
+	ID          uuid.UUID
+	VaultDomain string
+}
+
+func (q *Queries) UpdateProjectVaultDomain(ctx context.Context, arg UpdateProjectVaultDomainParams) (Project, error) {
+	row := q.db.QueryRow(ctx, updateProjectVaultDomain, arg.ID, arg.VaultDomain)
+	var i Project
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.LogInWithPassword,
+		&i.LogInWithGoogle,
+		&i.LogInWithMicrosoft,
+		&i.GoogleOauthClientID,
+		&i.MicrosoftOauthClientID,
+		&i.GoogleOauthClientSecretCiphertext,
+		&i.MicrosoftOauthClientSecretCiphertext,
+		&i.DisplayName,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.LoginsDisabled,
+		&i.LogInWithAuthenticatorApp,
+		&i.LogInWithPasskey,
+		&i.LogInWithEmail,
+		&i.LogInWithSaml,
+		&i.RedirectUri,
+		&i.AfterLoginRedirectUri,
+		&i.AfterSignupRedirectUri,
+		&i.VaultDomain,
+		&i.EmailSendFromDomain,
 	)
 	return i, err
 }
@@ -2520,5 +2642,27 @@ func (q *Queries) UpdateUserPassword(ctx context.Context, arg UpdateUserPassword
 		&i.FailedAuthenticatorAppAttempts,
 		&i.AuthenticatorAppLockoutExpireTime,
 	)
+	return i, err
+}
+
+const upsertVaultDomainSettings = `-- name: UpsertVaultDomainSettings :one
+INSERT INTO vault_domain_settings (project_id, pending_domain)
+    VALUES ($1, $2)
+ON CONFLICT (project_id)
+    DO UPDATE SET
+        pending_domain = excluded.pending_domain
+    RETURNING
+        project_id, pending_domain
+`
+
+type UpsertVaultDomainSettingsParams struct {
+	ProjectID     uuid.UUID
+	PendingDomain string
+}
+
+func (q *Queries) UpsertVaultDomainSettings(ctx context.Context, arg UpsertVaultDomainSettingsParams) (VaultDomainSetting, error) {
+	row := q.db.QueryRow(ctx, upsertVaultDomainSettings, arg.ProjectID, arg.PendingDomain)
+	var i VaultDomainSetting
+	err := row.Scan(&i.ProjectID, &i.PendingDomain)
 	return i, err
 }

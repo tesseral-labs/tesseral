@@ -1,9 +1,12 @@
 .PHONY: bootstrap
 bootstrap:
+	@# Shut down and clear out any local postgres state
+	docker compose stop postgres
+	rm -rf .local/postgres
 	@# Install the required ssl certs
 	./bin/create-localhost-certs
-	@# Start the docker containers
-	docker compose up -d --wait
+	@# Start the database docker container
+	docker compose up -d --wait postgres
 	@# Wait for the database to be ready
 	@until PGPASSWORD=password psql "postgres://postgres:password@localhost:5432?sslmode=disable" -c "SELECT 1" >/dev/null 2>&1; do \
 		echo "PostgreSQL is unavailable - retrying..."; \
@@ -14,7 +17,7 @@ bootstrap:
 	@# Seed the database
 	psql "postgres://postgres:password@localhost:5432?sslmode=disable" -f .local/db/seed.sql
 	@# Stop the docker containers
-	docker compose stop
+	docker compose stop postgres
 
 .PHONY: dev
 dev:

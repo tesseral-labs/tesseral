@@ -190,11 +190,6 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 		updates.LogInWithPasskey = *req.Project.LogInWithPasskey
 	}
 
-	// TODO this is just set up to avoid breaking things; replace with real
-	// domains implementation
-	updates.CustomAuthDomain = qProject.CustomAuthDomain
-	updates.AuthDomain = qProject.AuthDomain
-
 	updates.RedirectUri = qProject.RedirectUri
 	if req.Project.RedirectUri != "" {
 		updates.RedirectUri = &req.Project.RedirectUri
@@ -271,7 +266,7 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 		fmt.Printf("%+v\n", qUpdatedProject)
 
 		trustedDomains := map[string]struct{}{
-			*qUpdatedProject.AuthDomain: {},
+			qUpdatedProject.VaultDomain: {},
 			fmt.Sprintf("%s.%s", strings.ReplaceAll(idformat.Project.Format(qUpdatedProject.ID), "_", "-"), s.authAppsRootDomain): {},
 		}
 		for _, domain := range req.Project.TrustedDomains {
@@ -313,34 +308,32 @@ func parseProject(qProject *queries.Project, qProjectTrustedDomains []queries.Pr
 		}
 	}
 
-	authDomain := derefOrEmpty(qProject.AuthDomain)
-	if qProject.CustomAuthDomain != nil {
-		authDomain = *qProject.CustomAuthDomain
-	}
-
 	var trustedDomains []string
 	for _, qProjectTrustedDomain := range qProjectTrustedDomains {
 		trustedDomains = append(trustedDomains, qProjectTrustedDomain.Domain)
 	}
 
 	return &backendv1.Project{
-		Id:                        idformat.Project.Format(qProject.ID),
-		DisplayName:               qProject.DisplayName,
-		CreateTime:                timestamppb.New(*qProject.CreateTime),
-		UpdateTime:                timestamppb.New(*qProject.UpdateTime),
-		LogInWithGoogle:           &qProject.LogInWithMicrosoft,
-		LogInWithMicrosoft:        &qProject.LogInWithMicrosoft,
-		LogInWithEmail:            &qProject.LogInWithEmail,
-		LogInWithPassword:         &qProject.LogInWithPassword,
-		LogInWithSaml:             &qProject.LogInWithSaml,
-		LogInWithAuthenticatorApp: &qProject.LogInWithAuthenticatorApp,
-		LogInWithPasskey:          &qProject.LogInWithPasskey,
-		GoogleOauthClientId:       derefOrEmpty(qProject.GoogleOauthClientID),
-		MicrosoftOauthClientId:    derefOrEmpty(qProject.MicrosoftOauthClientID),
-		AuthDomain:                &authDomain,
-		TrustedDomains:            trustedDomains,
-		RedirectUri:               derefOrEmpty(qProject.RedirectUri),
-		AfterLoginRedirectUri:     derefOrEmpty(qProject.AfterLoginRedirectUri),
-		AfterSignupRedirectUri:    derefOrEmpty(qProject.AfterSignupRedirectUri),
+		Id:                         idformat.Project.Format(qProject.ID),
+		DisplayName:                qProject.DisplayName,
+		CreateTime:                 timestamppb.New(*qProject.CreateTime),
+		UpdateTime:                 timestamppb.New(*qProject.UpdateTime),
+		LogInWithGoogle:            &qProject.LogInWithMicrosoft,
+		LogInWithMicrosoft:         &qProject.LogInWithMicrosoft,
+		LogInWithEmail:             &qProject.LogInWithEmail,
+		LogInWithPassword:          &qProject.LogInWithPassword,
+		LogInWithSaml:              &qProject.LogInWithSaml,
+		LogInWithAuthenticatorApp:  &qProject.LogInWithAuthenticatorApp,
+		LogInWithPasskey:           &qProject.LogInWithPasskey,
+		GoogleOauthClientId:        derefOrEmpty(qProject.GoogleOauthClientID),
+		GoogleOauthClientSecret:    "", // intentionally left blank
+		MicrosoftOauthClientId:     derefOrEmpty(qProject.MicrosoftOauthClientID),
+		MicrosoftOauthClientSecret: "", // intentionally left blank
+		VaultDomain:                qProject.VaultDomain,
+		TrustedDomains:             trustedDomains,
+		RedirectUri:                derefOrEmpty(qProject.RedirectUri),
+		AfterLoginRedirectUri:      derefOrEmpty(qProject.AfterLoginRedirectUri),
+		AfterSignupRedirectUri:     derefOrEmpty(qProject.AfterSignupRedirectUri),
+		EmailSendFromDomain:        qProject.EmailSendFromDomain,
 	}
 }

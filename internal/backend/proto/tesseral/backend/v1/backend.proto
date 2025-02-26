@@ -195,6 +195,9 @@ service BackendService {
   rpc UpdateProject(UpdateProjectRequest) returns (UpdateProjectResponse);
 
   rpc GetVaultDomainSettings(GetVaultDomainSettingsRequest) returns (GetVaultDomainSettingsResponse);
+  rpc UpdateVaultDomainSettings(UpdateVaultDomainSettingsRequest) returns (UpdateVaultDomainSettingsResponse);
+  rpc EnableCustomVaultDomain(EnableCustomVaultDomainRequest) returns (EnableCustomVaultDomainResponse);
+  rpc EnableEmailSendFromDomain(EnableEmailSendFromDomainRequest) returns (EnableEmailSendFromDomainResponse);
 
   rpc GetProjectUISettings(GetProjectUISettingsRequest) returns (GetProjectUISettingsResponse) {}
   rpc UpdateProjectUISettings(UpdateProjectUISettingsRequest) returns (UpdateProjectUISettingsResponse) {}
@@ -570,6 +573,22 @@ message GetVaultDomainSettingsRequest {}
 message GetVaultDomainSettingsResponse {
   VaultDomainSettings vault_domain_settings = 1;
 }
+
+message UpdateVaultDomainSettingsRequest {
+  VaultDomainSettings vault_domain_settings = 1;
+}
+
+message UpdateVaultDomainSettingsResponse {
+  VaultDomainSettings vault_domain_settings = 1;
+}
+
+message EnableCustomVaultDomainRequest {}
+
+message EnableCustomVaultDomainResponse {}
+
+message EnableEmailSendFromDomainRequest {}
+
+message EnableEmailSendFromDomainResponse {}
 
 message ListPublishableKeysRequest {
   string page_token = 1;

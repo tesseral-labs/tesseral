@@ -1,11 +1,10 @@
--- name: GetProjectIDByCustomAuthDomain :one
+-- name: GetProjectIDByVaultDomain :one
 SELECT
     id
 FROM
     projects
 WHERE
-    custom_auth_domain = $1
-    OR auth_domain = $1;
+    vault_domain = $1;
 
 -- name: GetSessionDetailsByRefreshTokenSHA256 :one
 SELECT

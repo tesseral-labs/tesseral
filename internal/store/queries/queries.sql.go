@@ -27,21 +27,21 @@ func (q *Queries) CountAllProjects(ctx context.Context) (int64, error) {
 }
 
 const createDogfoodProject = `-- name: CreateDogfoodProject :one
-INSERT INTO projects (id, display_name, log_in_with_google, log_in_with_microsoft, log_in_with_email, log_in_with_password, auth_domain, custom_auth_domain)
+INSERT INTO projects (id, display_name, log_in_with_google, log_in_with_microsoft, log_in_with_email, log_in_with_password, vault_domain, email_send_from_domain)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 RETURNING
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain
 `
 
 type CreateDogfoodProjectParams struct {
-	ID                 uuid.UUID
-	DisplayName        string
-	LogInWithGoogle    bool
-	LogInWithMicrosoft bool
-	LogInWithEmail     bool
-	LogInWithPassword  bool
-	AuthDomain         *string
-	CustomAuthDomain   *string
+	ID                  uuid.UUID
+	DisplayName         string
+	LogInWithGoogle     bool
+	LogInWithMicrosoft  bool
+	LogInWithEmail      bool
+	LogInWithPassword   bool
+	VaultDomain         string
+	EmailSendFromDomain string
 }
 
 func (q *Queries) CreateDogfoodProject(ctx context.Context, arg CreateDogfoodProjectParams) (Project, error) {
@@ -52,8 +52,8 @@ func (q *Queries) CreateDogfoodProject(ctx context.Context, arg CreateDogfoodPro
 		arg.LogInWithMicrosoft,
 		arg.LogInWithEmail,
 		arg.LogInWithPassword,
-		arg.AuthDomain,
-		arg.CustomAuthDomain,
+		arg.VaultDomain,
+		arg.EmailSendFromDomain,
 	)
 	var i Project
 	err := row.Scan(
@@ -69,8 +69,6 @@ func (q *Queries) CreateDogfoodProject(ctx context.Context, arg CreateDogfoodPro
 		&i.DisplayName,
 		&i.CreateTime,
 		&i.UpdateTime,
-		&i.CustomAuthDomain,
-		&i.AuthDomain,
 		&i.LoginsDisabled,
 		&i.LogInWithAuthenticatorApp,
 		&i.LogInWithPasskey,
@@ -79,6 +77,8 @@ func (q *Queries) CreateDogfoodProject(ctx context.Context, arg CreateDogfoodPro
 		&i.RedirectUri,
 		&i.AfterLoginRedirectUri,
 		&i.AfterSignupRedirectUri,
+		&i.VaultDomain,
+		&i.EmailSendFromDomain,
 	)
 	return i, err
 }
@@ -380,7 +380,7 @@ func (q *Queries) GetProjectAPIKeyBySecretTokenSHA256(ctx context.Context, secre
 
 const getProjectByID = `-- name: GetProjectByID :one
 SELECT
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain
 FROM
     projects
 WHERE
@@ -403,8 +403,6 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 		&i.DisplayName,
 		&i.CreateTime,
 		&i.UpdateTime,
-		&i.CustomAuthDomain,
-		&i.AuthDomain,
 		&i.LoginsDisabled,
 		&i.LogInWithAuthenticatorApp,
 		&i.LogInWithPasskey,
@@ -413,6 +411,8 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 		&i.RedirectUri,
 		&i.AfterLoginRedirectUri,
 		&i.AfterSignupRedirectUri,
+		&i.VaultDomain,
+		&i.EmailSendFromDomain,
 	)
 	return i, err
 }
@@ -453,8 +453,7 @@ FROM
     JOIN organizations ON users.organization_id = organizations.id
     JOIN projects ON organizations.id = projects.organization_id
 WHERE
-    revoked = FALSE
-    AND refresh_token_sha256 = $1
+    refresh_token_sha256 = $1
 `
 
 type GetSessionDetailsByRefreshTokenSHA256Row struct {
@@ -529,7 +528,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, custom_auth_domain, auth_domain, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain
 `
 
 type UpdateProjectOrganizationIDParams struct {
@@ -597,8 +596,6 @@ func (q *Queries) UpdateProjectOrganizationID(ctx context.Context, arg UpdatePro
 		&i.DisplayName,
 		&i.CreateTime,
 		&i.UpdateTime,
-		&i.CustomAuthDomain,
-		&i.AuthDomain,
 		&i.LoginsDisabled,
 		&i.LogInWithAuthenticatorApp,
 		&i.LogInWithPasskey,
@@ -607,6 +604,8 @@ func (q *Queries) UpdateProjectOrganizationID(ctx context.Context, arg UpdatePro
 		&i.RedirectUri,
 		&i.AfterLoginRedirectUri,
 		&i.AfterSignupRedirectUri,
+		&i.VaultDomain,
+		&i.EmailSendFromDomain,
 	)
 	return i, err
 }

@@ -106,11 +106,9 @@ SET
     google_oauth_client_secret_ciphertext = $11,
     microsoft_oauth_client_id = $12,
     microsoft_oauth_client_secret_ciphertext = $13,
-    custom_auth_domain = $14,
-    auth_domain = $15,
-    redirect_uri = $16,
-    after_login_redirect_uri = $17,
-    after_signup_redirect_uri = $18
+    redirect_uri = $14,
+    after_login_redirect_uri = $15,
+    after_signup_redirect_uri = $16
 WHERE
     id = $1
 RETURNING
@@ -733,4 +731,54 @@ FROM
     vault_domain_settings
 WHERE
     project_id = $1;
+
+-- name: UpsertVaultDomainSettings :one
+INSERT INTO vault_domain_settings (project_id, pending_domain)
+    VALUES ($1, $2)
+ON CONFLICT (project_id)
+    DO UPDATE SET
+        pending_domain = excluded.pending_domain
+    RETURNING
+        *;
+
+-- name: DeleteVaultDomainSettings :exec
+DELETE FROM vault_domain_settings
+WHERE project_id = $1;
+
+-- name: UpdateProjectVaultDomain :one
+UPDATE
+    projects
+SET
+    vault_domain = $2
+WHERE
+    id = $1
+RETURNING
+    *;
+
+-- name: UpdateProjectEmailSendFromDomain :one
+UPDATE
+    projects
+SET
+    email_send_from_domain = $2
+WHERE
+    id = $1
+RETURNING
+    *;
+
+-- name: GetVaultDomainInActiveOrPendingUse :one
+SELECT
+    EXISTS (
+        SELECT
+            1
+        FROM
+            projects
+        WHERE
+            vault_domain = $1)
+    OR EXISTS (
+        SELECT
+            1
+        FROM
+            vault_domain_settings
+        WHERE
+            pending_domain = $1);
 

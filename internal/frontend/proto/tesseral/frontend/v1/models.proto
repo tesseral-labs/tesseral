@@ -17,7 +17,7 @@ message Project {
   bool log_in_with_saml = 12;
   bool log_in_with_authenticator_app = 9;
   bool log_in_with_passkey = 10;
-  string auth_domain = 8;
+  string vault_domain = 8;
 }
 
 message Organization {
