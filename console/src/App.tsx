@@ -35,6 +35,7 @@ import { AuthType } from './lib/auth';
 import GoogleOAuthCallbackPage from './pages/login/GoogleOAuthCallbackPage';
 import MicrosoftOAuthCallbackPage from './pages/login/MicrosoftOAuthCallbackPage';
 import { ViewPublishableKeyPage } from '@/pages/api-keys/ViewPublishableKeyPage';
+import ProjectUISettingsPage from './pages/project/project-ui-settings/ProjectUISettings';
 import { VaultDomainSettingsTab } from '@/pages/project/VaultDomainSettingsTab';
 
 const queryClient = new QueryClient();
@@ -112,6 +113,11 @@ const AppWithinQueryClient = () => {
             <Route
               path="project-settings/api-keys/project-api-keys/:projectApiKeyId"
               element={<ViewProjectAPIKeyPage />}
+            />
+
+            <Route
+              path="project-settings/vault-ui-settings"
+              element={<ProjectUISettingsPage />}
             />
 
             <Route path="organizations" element={<ListOrganizationsPage />} />

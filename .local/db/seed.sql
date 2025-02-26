@@ -49,6 +49,10 @@ VALUES ('8648d50b-baa1-4929-be0f-bc7238f685ab'::uuid, 'project_79ldwwwzybn66dxa9
 
 update projects set organization_id = '8648d50b-baa1-4929-be0f-bc7238f685ab'::uuid where id = '7abd6d2e-c314-456e-b9c5-bdbb62f0345f'::uuid;
 
+-- Create project UI settings for customer1's project
+INSERT INTO project_ui_settings (id, project_id)
+  VALUES (gen_random_uuid(), '7abd6d2e-c314-456e-b9c5-bdbb62f0345f'::uuid);
+
 insert into project_trusted_domains (id, project_id, domain) values (gen_random_uuid(), '7abd6d2e-c314-456e-b9c5-bdbb62f0345f', 'auth.customer1.example.com');
 
 -- Create a user in customer1
@@ -74,6 +78,10 @@ INSERT INTO organizations (id, display_name, project_id, log_in_with_saml, scim_
 VALUES ('8b5972b6-c878-4c6c-a351-9e01da20f776'::uuid, 'project_269wse1l6u0jnvs8afpq44f6v Backing Organization', '56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2', false, false, true);
 
 update projects set organization_id = '8b5972b6-c878-4c6c-a351-9e01da20f776'::uuid where id = '24ba0dd5-e178-460e-8f7a-f3f72cf6a1e7'::uuid;
+
+-- Create project UI settings for customer2's project
+INSERT INTO project_ui_settings (id, project_id)
+  VALUES (gen_random_uuid(), '24ba0dd5-e178-460e-8f7a-f3f72cf6a1e7'::uuid);
 
 insert into project_trusted_domains (id, project_id, domain) values (gen_random_uuid(), '24ba0dd5-e178-460e-8f7a-f3f72cf6a1e7', 'auth.customer2.example.com');
 
