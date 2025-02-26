@@ -108,7 +108,7 @@ func TestSign(t *testing.T) {
 
 	jwt := ujwt.Sign("aaa", priv, map[string]any{"aud": "aud1", "nbf": 1, "exp": 3})
 
-	wantJWT := "eyJraWQiOiJhYWEiLCJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJhdWQxIiwiZXhwIjozLCJuYmYiOjF9.zGUJGj1SBoNmi9A1MmJd-QSA4ri8Fnr4Y1oOEMl2D6XDvdSXb2SVdmGmO3kdJHwn90dEDyFACdL1F3-wy2G0Gg"
+	wantJWT := "eyJraWQiOiJhYWEiLCJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJhdWQxIiwiZXhwIjozLCJuYmYiOjF9.xxNtS1rvzqh-f9dh5d5IWzoL4qYA71Mk3b6iVAzlmG2QbXntJxCG6itV97eo43J5Gy_dk5_fFivReSOHGX9vzQ"
 	if jwt != wantJWT {
 		t.Errorf("ujwt.Sign() = %v, want %v", jwt, wantJWT)
 	}
