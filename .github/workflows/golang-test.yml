@@ -8,17 +8,14 @@ permissions:
   actions: read
 
 jobs:
-  workflow-telemetry-action:
-    runs-on: ubuntu-latest
+  gotest:
+    name: go test
+    runs-on: ubuntu-latest-m
     steps:
       - name: Collect Workflow Telemetry
         uses: catchpoint/workflow-telemetry-action@v2
         with:
           comment_on_pr: 'false'
-  gotest:
-    name: go test
-    runs-on: ubuntu-latest-m
-    steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
