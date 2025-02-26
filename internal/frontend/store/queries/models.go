@@ -246,7 +246,7 @@ type Project struct {
 	LogInWithPasskey                     bool
 	LogInWithEmail                       bool
 	LogInWithSaml                        bool
-	RedirectUri                          *string
+	RedirectUri                          string
 	AfterLoginRedirectUri                *string
 	AfterSignupRedirectUri               *string
 	VaultDomain                          string
