@@ -18,3 +18,10 @@ jobs:
       - name: go test
         run: |
           go test -v ./...
+  workflow-telemetry-action:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Collect Workflow Telemetry
+        uses: catchpoint/workflow-telemetry-action@v2
+        with:
+          comment_on_pr: 'false'

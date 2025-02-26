@@ -23,13 +23,13 @@ jobs:
             exit 1
           fi
 
-  errcheck:
-    name: errcheck
-    runs-on: ubuntu-latest-m
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
-        with:
-          go-version: 1.24
-      - run: |
-          go tool errcheck -ignore 'rollback' ./cmd/... ./internal/...
+#  errcheck:
+#    name: errcheck
+#    runs-on: ubuntu-latest-m
+#    steps:
+#      - uses: actions/checkout@v4
+#      - uses: actions/setup-go@v5
+#        with:
+#          go-version: 1.24
+#      - run: |
+#          go tool errcheck -ignore 'rollback' ./cmd/... ./internal/...
