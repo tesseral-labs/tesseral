@@ -32,5 +32,4 @@ jobs:
         with:
           go-version: 1.23
       - run: |
-          go install github.com/kisielk/errcheck@v1.8.0
           errcheck -ignore 'rollback' ./cmd/... ./internal/...
