@@ -335,6 +335,5 @@ func parseProject(qProject *queries.Project, qProjectTrustedDomains []queries.Pr
 		AfterLoginRedirectUri:      qProject.AfterLoginRedirectUri,
 		AfterSignupRedirectUri:     qProject.AfterSignupRedirectUri,
 		EmailSendFromDomain:        qProject.EmailSendFromDomain,
-		EmailSendFromDomain:        qProject.EmailSendFromDomain,
 	}
 }
