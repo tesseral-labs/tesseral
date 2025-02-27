@@ -5,12 +5,15 @@ import (
 	"crypto/sha256"
 	"crypto/x509"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"strings"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
+	"github.com/jackc/pgx/v5"
+	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	commonv1 "github.com/tesseral-labs/tesseral/internal/common/gen/tesseral/common/v1"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"github.com/tesseral-labs/tesseral/internal/ujwt"
@@ -28,6 +31,10 @@ func (s *Store) IssueAccessToken(ctx context.Context, refreshToken string) (stri
 	refreshTokenSHA := sha256.Sum256(refreshTokenUUID[:])
 	qDetails, err := s.q.GetSessionDetailsByRefreshTokenSHA256(ctx, refreshTokenSHA[:])
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return "", apierror.NewUnauthenticatedError("invalid refresh token", fmt.Errorf("invalid refresh token"))
+		}
+
 		return "", fmt.Errorf("get session details by refresh token sha256: %w", err)
 	}
 

@@ -653,8 +653,7 @@ FROM
     JOIN organizations ON users.organization_id = organizations.id
     JOIN projects ON projects.id = organizations.project_id
 WHERE
-    revoked = FALSE
-    AND refresh_token_sha256 = $1
+    refresh_token_sha256 = $1
 `
 
 type GetSessionDetailsByRefreshTokenSHA256Row struct {
@@ -853,7 +852,7 @@ const invalidateSession = `-- name: InvalidateSession :exec
 UPDATE
     sessions
 SET
-    update_time = now(),
+    expire_time = now(),
     refresh_token_sha256 = NULL
 WHERE
     id = $1

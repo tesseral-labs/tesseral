@@ -86,8 +86,7 @@ FROM
     JOIN organizations ON users.organization_id = organizations.id
     JOIN projects ON projects.id = organizations.project_id
 WHERE
-    revoked = FALSE
-    AND refresh_token_sha256 = $1;
+    refresh_token_sha256 = $1;
 
 -- name: GetUserByID :one
 SELECT
@@ -254,7 +253,7 @@ WHERE id = $1;
 UPDATE
     sessions
 SET
-    update_time = now(),
+    expire_time = now(),
     refresh_token_sha256 = NULL
 WHERE
     id = $1;
