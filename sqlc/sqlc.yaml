@@ -104,3 +104,10 @@ sql:
       go:
         <<: *go
         out: "../internal/wellknown/store/queries"
+  - engine: "postgresql"
+    queries: "queries-configapi.sql"
+    schema: "../cmd/openauthctl/migrations"
+    gen:
+      go:
+        <<: *go
+        out: "../internal/configapi/store/queries"

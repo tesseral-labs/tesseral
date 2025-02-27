@@ -1,6 +1,7 @@
 # Tesseral Local Dev Entries
 
 127.0.0.1 api.tesseral.example.com
+127.0.0.1 config.tesseral.example.com
 127.0.0.1 auth.tesseral.example.com
 127.0.0.1 auth.console.tesseral.example.com
 127.0.0.1 console.tesseral.example.com
