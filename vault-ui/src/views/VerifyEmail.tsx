@@ -75,8 +75,19 @@ const VerifyEmail: FC<VerifyEmailProps> = () => {
   const verifyEmailChallengeMutation = useMutation(verifyEmailChallenge);
   const navigate = useNavigate();
   const handleManualVerification = async () => {
+    let code = verificationCode
+    if (!code.startsWith("email_verification_challenge_code_")) {
+      // This code is definitely incorrect. The user may have copy-pasted the
+      // URL instead. Try to fall back to that.
+      try {
+        code = new URL(code).searchParams.get("code") ?? '';
+      } catch {
+        // ignore
+      }
+    }
+
     await verifyEmailChallengeMutation.mutateAsync({
-      code: verificationCode,
+      code,
     });
 
     toast.success('Email verified');
