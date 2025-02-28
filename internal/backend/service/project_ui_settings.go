@@ -8,6 +8,15 @@ import (
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 )
 
+func (s *Service) GetProjectUISettings(ctx context.Context, req *connect.Request[backendv1.GetProjectUISettingsRequest]) (*connect.Response[backendv1.GetProjectUISettingsResponse], error) {
+	res, err := s.Store.GetProjectUISettings(ctx, req.Msg)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get project UI settings: %w", err)
+	}
+
+	return connect.NewResponse(res), nil
+}
+
 func (s *Service) UpdateProjectUISettings(ctx context.Context, req *connect.Request[backendv1.UpdateProjectUISettingsRequest]) (*connect.Response[backendv1.UpdateProjectUISettingsResponse], error) {
 	res, err := s.Store.UpdateProjectUISettings(ctx, req.Msg)
 	if err != nil {
