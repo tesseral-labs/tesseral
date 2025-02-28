@@ -161,14 +161,6 @@ const VerifyEmail: FC<VerifyEmailProps> = () => {
           </div>
         )}
       </CardContent>
-      <CardFooter className="flex justify-center border-t p-4">
-        <p className="text-xs text-muted-foreground">
-          Need help?{' '}
-          <a href="#" className="text-primary underline">
-            Contact support
-          </a>
-        </p>
-      </CardFooter>
     </Card>
   );
 };
