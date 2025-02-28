@@ -10,7 +10,6 @@ import {
 } from '@/components/ui/input-otp';
 import Loader from '@/components/ui/loader';
 import {
-  exchangeIntermediateSessionForSession,
   verifyAuthenticatorApp,
 } from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
 import { parseErrorMessage } from '@/lib/errors';
@@ -21,18 +20,19 @@ import { useMutation } from '@connectrpc/connect-query';
 import React, { FC, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
+import {
+  useIntermediateExchangeAndRedirect
+} from '@/hooks/use-intermediate-exchange-and-redirect';
 
 const VerifyAuthenticatorApp: FC = () => {
   const layout = useLayout();
   const navigate = useNavigate();
 
-  const exchangeIntermediateSessionForSessionMutation = useMutation(
-    exchangeIntermediateSessionForSession,
-  );
   const verifyAuthenticatorAppMutation = useMutation(verifyAuthenticatorApp);
 
   const [code, setCode] = useState('');
   const [submitting, setSubmitting] = useState<boolean>(false);
+  const intermediateExchangeAndRedirect = useIntermediateExchangeAndRedirect()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,14 +43,7 @@ const VerifyAuthenticatorApp: FC = () => {
         totpCode: code,
       });
 
-      const { accessToken, refreshToken } =
-        await exchangeIntermediateSessionForSessionMutation.mutateAsync({});
-
-      setAccessToken(accessToken);
-      setRefreshToken(refreshToken);
-      setSubmitting(false);
-
-      navigate('/settings');
+      intermediateExchangeAndRedirect();
     } catch (error) {
       setSubmitting(false);
       const message = parseErrorMessage(error);

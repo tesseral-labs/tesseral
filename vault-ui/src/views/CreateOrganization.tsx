@@ -10,7 +10,6 @@ import {
 } from '@/components/ui/card';
 import {
   createOrganization,
-  exchangeIntermediateSessionForSession,
   setOrganization,
   whoami,
 } from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
@@ -25,6 +24,10 @@ import { cn } from '@/lib/utils';
 import { parseErrorMessage } from '@/lib/errors';
 import { toast } from 'sonner';
 import Loader from '@/components/ui/loader';
+import { useRedirectToProjectAfterSignup } from '@/hooks/use-project-redirect';
+import {
+  useIntermediateExchangeAndRedirect
+} from '@/hooks/use-intermediate-exchange-and-redirect';
 
 interface CreateOrganizationProps {
   setView: Dispatch<SetStateAction<LoginViews>>;
@@ -32,7 +35,6 @@ interface CreateOrganizationProps {
 
 const CreateOrganization: FC<CreateOrganizationProps> = ({ setView }) => {
   const layout = useLayout();
-  const navigate = useNavigate();
   const settings = useSettings();
   const { data: whoamiRes } = useQuery(whoami);
 
@@ -40,12 +42,8 @@ const CreateOrganization: FC<CreateOrganizationProps> = ({ setView }) => {
   const [submitting, setSubmitting] = useState<boolean>(false);
 
   const createOrganizationMutation = useMutation(createOrganization);
-  const exchangeIntermediateSessionForSessionMutation = useMutation(
-    exchangeIntermediateSessionForSession,
-  );
   const setOrganizationMutation = useMutation(setOrganization);
-
-  const refreshMutation = useMutation(refresh);
+  const intermediateExchangeAndRedirect = useIntermediateExchangeAndRedirect()
 
   const deriveNextView = (): LoginViews | undefined => {
     if (settings?.logInWithPassword) {
@@ -82,16 +80,7 @@ const CreateOrganization: FC<CreateOrganizationProps> = ({ setView }) => {
         return;
       }
 
-      const { refreshToken } =
-        await exchangeIntermediateSessionForSessionMutation.mutateAsync({});
-
-      const { accessToken } = await refreshMutation.mutateAsync({});
-
-      setRefreshToken(refreshToken);
-      setAccessToken(accessToken);
-      setSubmitting(false);
-
-      navigate('/settings');
+      intermediateExchangeAndRedirect();
     } catch (error) {
       setSubmitting(false);
       const message = parseErrorMessage(error);

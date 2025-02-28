@@ -3,7 +3,6 @@ import { Title } from '@/components/Title';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
-  exchangeIntermediateSessionForSession,
   registerPassword,
 } from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
 import { useMutation } from '@connectrpc/connect-query';
@@ -17,6 +16,9 @@ import { parseErrorMessage } from '@/lib/errors';
 import { toast } from 'sonner';
 import { useIntermediateOrganization } from '@/lib/auth';
 import Loader from '@/components/ui/loader';
+import {
+  useIntermediateExchangeAndRedirect
+} from '@/hooks/use-intermediate-exchange-and-redirect';
 
 interface RegisterPasswordProps {
   setView: React.Dispatch<React.SetStateAction<LoginViews>>;
@@ -30,10 +32,8 @@ const RegisterPassword: FC<RegisterPasswordProps> = ({ setView }) => {
   const [password, setPassword] = useState<string>('');
   const [submitting, setSubmitting] = useState<boolean>(false);
 
-  const exchangeIntermediateSessionForSessionMutation = useMutation(
-    exchangeIntermediateSessionForSession,
-  );
   const registerPasswordMutation = useMutation(registerPassword);
+  const intermediateExchangeAndRedirect = useIntermediateExchangeAndRedirect()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,14 +49,7 @@ const RegisterPassword: FC<RegisterPasswordProps> = ({ setView }) => {
         return;
       }
 
-      const { accessToken, refreshToken } =
-        await exchangeIntermediateSessionForSessionMutation.mutateAsync({});
-
-      setAccessToken(accessToken);
-      setRefreshToken(refreshToken);
-      setSubmitting(false);
-
-      navigate('/settings');
+      intermediateExchangeAndRedirect();
     } catch (error) {
       setSubmitting(false);
       const message = parseErrorMessage(error);

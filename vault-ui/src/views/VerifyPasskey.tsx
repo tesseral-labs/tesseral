@@ -10,21 +10,21 @@ import { parseErrorMessage } from '@/lib/errors';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
-  exchangeIntermediateSessionForSession,
   issuePasskeyChallenge,
   verifyPasskey,
 } from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
 import { setAccessToken, setRefreshToken } from '@/auth';
+import {
+  useIntermediateExchangeAndRedirect
+} from '@/hooks/use-intermediate-exchange-and-redirect';
 
 const VerifyPasskey: FC = () => {
   const layout = useLayout();
   const navigate = useNavigate();
 
-  const exchangeIntermediateSessionForSessionMutation = useMutation(
-    exchangeIntermediateSessionForSession,
-  );
   const issuePasskeyChallengeMutation = useMutation(issuePasskeyChallenge);
   const verifyPasskeyMutation = useMutation(verifyPasskey);
+  const intermediateExchangeAndRedirect = useIntermediateExchangeAndRedirect()
 
   const authenticateWithPasskey = async () => {
     try {
@@ -61,13 +61,7 @@ const VerifyPasskey: FC = () => {
         signature: base64urlEncode(response.signature),
       });
 
-      const { accessToken, refreshToken } =
-        await exchangeIntermediateSessionForSessionMutation.mutateAsync({});
-
-      setAccessToken(accessToken);
-      setRefreshToken(refreshToken);
-
-      navigate('/settings');
+      intermediateExchangeAndRedirect();
     } catch (error) {
       const message = parseErrorMessage(error);
       toast.error('Could not verify passkey', {

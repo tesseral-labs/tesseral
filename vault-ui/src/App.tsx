@@ -20,6 +20,7 @@ import EditSAMLConnectionsPage from './pages/dashboard/EditSAMLConnectionsPage';
 import RegisterPasskey from './views/RegisterPasskey';
 import { AuthType } from './lib/auth';
 import { VerifyEmailPage } from '@/pages/VerifyEmailPage';
+import { ImpersonatePage } from '@/pages/ImpersonatePage';
 
 const queryClient = new QueryClient();
 
@@ -40,6 +41,7 @@ const AppWithRoutes: FC = () => {
           <Routes>
             <Route path="/" element={<Page />}>
               <Route index element={<Navigate to="login" replace />} />
+              <Route path="impersonate" element={<ImpersonatePage />} />
 
               <Route path="passkey-test" element={<RegisterPasskey />} />
 

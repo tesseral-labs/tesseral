@@ -7,7 +7,6 @@ import { setAccessToken, setRefreshToken } from '@/auth';
 import { Title } from '@/components/Title';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
-  exchangeIntermediateSessionForSession,
   getPasskeyOptions,
   registerPasskey,
 } from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
@@ -15,17 +14,18 @@ import { parseErrorMessage } from '@/lib/errors';
 import { useLayout } from '@/lib/settings';
 import { base64urlEncode, cn } from '@/lib/utils';
 import { LoginLayouts } from '@/lib/views';
+import {
+  useIntermediateExchangeAndRedirect
+} from '@/hooks/use-intermediate-exchange-and-redirect';
 
 const RegisterPasskey: FC = () => {
   const encoder = new TextEncoder();
   const layout = useLayout();
   const navigate = useNavigate();
 
-  const exchangeIntermediateSessionForSessionMutation = useMutation(
-    exchangeIntermediateSessionForSession,
-  );
   const getPasskeyOptionsMutation = useMutation(getPasskeyOptions);
   const registerPasskeyMutation = useMutation(registerPasskey);
+  const intermediateExchangeAndRedirect = useIntermediateExchangeAndRedirect()
 
   const registerCredential = async () => {
     try {
@@ -68,13 +68,7 @@ const RegisterPasskey: FC = () => {
         ),
       });
 
-      const { accessToken, refreshToken } =
-        await exchangeIntermediateSessionForSessionMutation.mutateAsync({});
-
-      setAccessToken(accessToken);
-      setRefreshToken(refreshToken);
-
-      navigate('/settings');
+      intermediateExchangeAndRedirect();
     } catch (error) {
       const message = parseErrorMessage(error);
       toast.error('Could not register passkey', {

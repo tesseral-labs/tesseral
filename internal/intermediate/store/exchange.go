@@ -60,6 +60,8 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		return nil, fmt.Errorf("match user: %w", err)
 	}
 
+	newUser := qUser == nil
+
 	// if no matching user, create a new one
 	if qUser == nil {
 		qNewUser, err := q.CreateUser(ctx, queries.CreateUserParams{
@@ -142,6 +144,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 	return &intermediatev1.ExchangeIntermediateSessionForSessionResponse{
 		AccessToken:  "", // populated in service
 		RefreshToken: idformat.SessionRefreshToken.Format(refreshToken),
+		NewUser:      newUser,
 	}, nil
 }
 
