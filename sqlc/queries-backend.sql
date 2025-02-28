@@ -741,6 +741,23 @@ WHERE
 RETURNING
     *;
 
+-- name: DisablePasskeysWithOldRPID :exec
+UPDATE
+    passkeys
+SET
+    disabled = TRUE,
+    update_time = now()
+FROM
+    users,
+    organizations,
+    projects
+WHERE
+    passkeys.rp_id != projects.vault_domain
+    AND passkeys.user_id = users.id
+    AND users.organization_id = organizations.id
+    AND organizations.project_id = projects.id
+    AND projects.id = $1;
+
 -- name: UpdateProjectEmailSendFromDomain :one
 UPDATE
     projects
