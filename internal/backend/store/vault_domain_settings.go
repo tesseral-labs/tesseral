@@ -130,6 +130,10 @@ func (s *Store) EnableCustomVaultDomain(ctx context.Context, req *backendv1.Enab
 		return nil, fmt.Errorf("update project vault domain: %w", err)
 	}
 
+	if err := q.DisablePasskeysWithOldRPID(ctx, authn.ProjectID(ctx)); err != nil {
+		return nil, fmt.Errorf("disable passkeys with old rpid: %w", err)
+	}
+
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
 	}

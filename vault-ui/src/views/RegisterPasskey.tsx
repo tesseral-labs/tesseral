@@ -62,6 +62,7 @@ const RegisterPasskey: FC = () => {
       }
 
       await registerPasskeyMutation.mutateAsync({
+        rpId: passkeyOptions.rpId,
         attestationObject: base64urlEncode(
           (credential.response as AuthenticatorAttestationResponse)
             .attestationObject,

@@ -512,6 +512,29 @@ func (q *Queries) DisableOrganizationLogins(ctx context.Context, id uuid.UUID) e
 	return err
 }
 
+const disablePasskeysWithOldRPID = `-- name: DisablePasskeysWithOldRPID :exec
+UPDATE
+    passkeys
+SET
+    passkeys.disabled = TRUE,
+    passkeys.update_time = now()
+FROM
+    users,
+    organizations,
+    projects
+WHERE
+    passkeys.rp_id != projects.vault_domain
+    AND passkeys.user_id = users.id
+    AND users.organization_id = organizations.id
+    AND organizations.project_id = projects.id
+    AND projects.id = $1
+`
+
+func (q *Queries) DisablePasskeysWithOldRPID(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, disablePasskeysWithOldRPID, id)
+	return err
+}
+
 const disableProjectLogins = `-- name: DisableProjectLogins :exec
 UPDATE
     projects
