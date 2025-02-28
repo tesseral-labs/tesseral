@@ -5,7 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useMutation } from '@connectrpc/connect-query';
 import {
-  exchangeIntermediateSessionForSession,
   getAuthenticatorAppOptions,
   registerAuthenticatorApp,
 } from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
@@ -23,6 +22,9 @@ import { parseErrorMessage } from '@/lib/errors';
 import { toast } from 'sonner';
 import Loader from '@/components/ui/loader';
 import { cn } from '@/lib/utils';
+import {
+  useIntermediateExchangeAndRedirect
+} from '@/hooks/use-intermediate-exchange-and-redirect';
 
 const RegisterAuthenticatorApp: FC = () => {
   const layout = useLayout();
@@ -31,10 +33,8 @@ const RegisterAuthenticatorApp: FC = () => {
   const [code, setCode] = useState<string>('');
   const [qrcode, setQRCode] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState<boolean>(false);
+  const intermediateExchangeAndRedirect = useIntermediateExchangeAndRedirect()
 
-  const exchangeIntermediateSessionForSessionMutation = useMutation(
-    exchangeIntermediateSessionForSession,
-  );
   const getAuthenticatorAppOptionsMutation = useMutation(
     getAuthenticatorAppOptions,
   );
@@ -60,14 +60,7 @@ const RegisterAuthenticatorApp: FC = () => {
         totpCode: code,
       });
 
-      const { accessToken, refreshToken } =
-        await exchangeIntermediateSessionForSessionMutation.mutateAsync({});
-
-      setAccessToken(accessToken);
-      setRefreshToken(refreshToken);
-      setSubmitting(false);
-
-      navigate('/settings');
+      intermediateExchangeAndRedirect()
     } catch (error) {
       setSubmitting(false);
       const message = parseErrorMessage(error);

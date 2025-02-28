@@ -590,9 +590,7 @@ components:
                     type: string
         ExchangeIntermediateSessionForSessionRequest:
             type: object
-            properties:
-                organizationId:
-                    type: string
+            properties: {}
         ExchangeIntermediateSessionForSessionResponse:
             type: object
             properties:
@@ -600,6 +598,8 @@ components:
                     type: string
                 accessToken:
                     type: string
+                newUser:
+                    type: boolean
         GetAuthenticatorAppOptionsRequest:
             type: object
             properties: {}

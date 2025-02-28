@@ -286,7 +286,7 @@ const DangerZoneCard = () => {
         },
       });
 
-    window.location.href = `https://${project?.project?.authDomain}/impersonate?secret-user-impersonation-token=${userImpersonationToken?.secretToken}`;
+    window.location.href = `https://${project?.project?.vaultDomain}/impersonate?secret-user-impersonation-token=${userImpersonationToken?.secretToken}`;
   };
 
   return (

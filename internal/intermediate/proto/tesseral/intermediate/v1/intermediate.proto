@@ -189,8 +189,6 @@ message IntermediateSession {
 message Settings {
   string id = 1;
   string project_id = 2;
-  google.protobuf.Timestamp create_time = 3;
-  google.protobuf.Timestamp update_time = 4;
   string logo_url = 5;
   string favicon_url = 6;
   string primary_color = 7;
@@ -203,6 +201,9 @@ message Settings {
   bool log_in_with_microsoft = 14;
   bool log_in_with_password = 15;
   bool log_in_with_saml = 16;
+  string redirect_uri = 17;
+  optional string after_login_redirect_uri = 18;
+  optional string after_signup_redirect_uri = 19;
 }
 
 message CreateProjectRequest {
@@ -239,13 +240,12 @@ message SetOrganizationRequest {
 
 message SetOrganizationResponse {}
 
-message ExchangeIntermediateSessionForSessionRequest {
-  string organization_id = 1;
-}
+message ExchangeIntermediateSessionForSessionRequest {}
 
 message ExchangeIntermediateSessionForSessionResponse {
   string refresh_token = 1;
   string access_token = 2;
+  bool new_user = 3;
 }
 
 message GetGoogleOAuthRedirectURLRequest {

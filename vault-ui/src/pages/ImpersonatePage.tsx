@@ -1,8 +1,12 @@
-import { useMutation } from '@connectrpc/connect-query';
-import { redeemUserImpersonationToken } from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
+import { useMutation, useQuery } from '@connectrpc/connect-query';
+import {
+  getSettings,
+  redeemUserImpersonationToken,
+} from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
 import React, { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { setAccessToken, setRefreshToken } from '@/auth';
+import { useIntermediateExchangeAndRedirect } from '@/hooks/use-intermediate-exchange-and-redirect';
 
 export const ImpersonatePage = () => {
   const redeemUserImpersonationTokenMutation = useMutation(
@@ -12,7 +16,7 @@ export const ImpersonatePage = () => {
   const secretUserImpersonationToken = searchParams.get(
     'secret-user-impersonation-token',
   );
-  const navigate = useNavigate();
+  const { refetch: refetchProjectSettings } = useQuery(getSettings);
 
   useEffect(() => {
     if (!secretUserImpersonationToken) {
@@ -27,13 +31,13 @@ export const ImpersonatePage = () => {
 
       setAccessToken(accessToken);
       setRefreshToken(refreshToken);
-      navigate('/settings');
+
+      const { data: getSettingsResponse } = await refetchProjectSettings();
+      window.location.href =
+        getSettingsResponse!.settings!.afterLoginRedirectUri ||
+        getSettingsResponse!.settings!.redirectUri;
     })();
-  }, [
-    secretUserImpersonationToken,
-    redeemUserImpersonationTokenMutation,
-    navigate,
-  ]);
+  }, [secretUserImpersonationToken]);
 
   return <></>;
 };

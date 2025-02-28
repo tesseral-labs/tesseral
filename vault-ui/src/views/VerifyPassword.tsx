@@ -3,7 +3,6 @@ import { Title } from '@/components/Title';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
-  exchangeIntermediateSessionForSession,
   verifyPassword,
 } from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
 import { useMutation } from '@connectrpc/connect-query';
@@ -17,6 +16,9 @@ import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { parseErrorMessage } from '@/lib/errors';
 import Loader from '@/components/ui/loader';
+import {
+  useIntermediateExchangeAndRedirect
+} from '@/hooks/use-intermediate-exchange-and-redirect';
 
 interface VerifyPasswordProps {
   setView: Dispatch<SetStateAction<LoginViews>>;
@@ -31,10 +33,8 @@ const VerifyPassword: FC<VerifyPasswordProps> = ({ setView }) => {
   const [password, setPassword] = useState<string>('');
   const [submitting, setSubmitting] = useState<boolean>(false);
 
-  const exchangeIntermediateSessionForSessionMutation = useMutation(
-    exchangeIntermediateSessionForSession,
-  );
   const verifyPasswordMutation = useMutation(verifyPassword);
+  const intermediateExchangeAndRedirect = useIntermediateExchangeAndRedirect()
 
   const deriveNextView = (): LoginViews | undefined => {
     const hasMultipleSecondFactors =
@@ -70,16 +70,7 @@ const VerifyPassword: FC<VerifyPasswordProps> = ({ setView }) => {
         return;
       }
 
-      const { accessToken, refreshToken } =
-        await exchangeIntermediateSessionForSessionMutation.mutateAsync({
-          organizationId: organization?.id,
-        });
-
-      setAccessToken(accessToken);
-      setRefreshToken(refreshToken);
-
-      navigate('/settings');
-      setSubmitting(false);
+      intermediateExchangeAndRedirect();
     } catch (error) {
       setSubmitting(false);
       const message = parseErrorMessage(error);

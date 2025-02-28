@@ -3,7 +3,6 @@ import React, { Dispatch, FC, SetStateAction, useState } from 'react';
 import { Title } from '@/components/Title';
 import { useMutation, useQuery } from '@connectrpc/connect-query';
 import {
-  exchangeIntermediateSessionForSession,
   listOrganizations,
   setOrganization,
   whoami,
@@ -30,6 +29,9 @@ import {
 } from '@/lib/login-factors';
 import TextDivider from '@/components/ui/text-divider';
 import { Button } from '@/components/ui/button';
+import {
+  useIntermediateExchangeAndRedirect
+} from '@/hooks/use-intermediate-exchange-and-redirect';
 
 interface ChooseOrganizationProps {
   setIntermediateOrganization: Dispatch<
@@ -49,10 +51,8 @@ const ChooseOrganization: FC<ChooseOrganizationProps> = ({
 
   const { data: whoamiRes } = useQuery(whoami);
   const { data: listOrganizationsResponse } = useQuery(listOrganizations);
-  const exchangeIntermediateSessionForSessionMutation = useMutation(
-    exchangeIntermediateSessionForSession,
-  );
   const setOrganizationMutation = useMutation(setOrganization);
+  const intermediateExchangeAndRedirect = useIntermediateExchangeAndRedirect()
 
   // This function is effectively the central routing layer for Organization selection.
   // It determines the next view based on the current organization's settings and the user's current state.
@@ -139,16 +139,7 @@ const ChooseOrganization: FC<ChooseOrganizationProps> = ({
         return;
       }
 
-      const { accessToken, refreshToken } =
-        await exchangeIntermediateSessionForSessionMutation.mutateAsync({
-          organizationId: organization.id,
-        });
-
-      setAccessToken(accessToken);
-      setRefreshToken(refreshToken);
-      setSetting(false);
-
-      navigate('/settings');
+      intermediateExchangeAndRedirect();
     } catch (error) {
       setSetting(false);
       const message = parseErrorMessage(error);
