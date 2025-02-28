@@ -12,12 +12,13 @@ import (
 )
 
 type bootstrapArgs struct {
-	Args                   args   `cli:"bootstrap,subcmd"`
-	Database               string `cli:"--database"`
-	KMSEndpoint            string `cli:"--kms-endpoint"`
-	SessionSigningKMSKeyID string `cli:"--session-kms-key-id"`
-	AuthAppsRootDomain     string `cli:"--auth-apps-root-domain"`
-	RootUserEmail          string `cli:"--root-user-email"`
+	Args                      args   `cli:"bootstrap,subcmd"`
+	Database                  string `cli:"--database"`
+	KMSEndpoint               string `cli:"--kms-endpoint"`
+	SessionSigningKMSKeyID    string `cli:"--session-kms-key-id"`
+	AuthAppsRootDomain        string `cli:"--auth-apps-root-domain"`
+	RootUserEmail             string `cli:"--root-user-email"`
+	DogfoodProjectRedirectURI string `cli:"--dogfood-project-redirect-uri"`
 }
 
 func (_ bootstrapArgs) Description() string {
@@ -63,6 +64,7 @@ func bootstrap(ctx context.Context, args bootstrapArgs) error {
 	res, err := s.CreateDogfoodProject(ctx, &store.CreateDogfoodProjectRequest{
 		AuthAppsRootDomain: args.AuthAppsRootDomain,
 		RootUserEmail:      args.RootUserEmail,
+		RedirectURI:        args.DogfoodProjectRedirectURI,
 	})
 	if err != nil {
 		return fmt.Errorf("create dogfood project: %w", err)

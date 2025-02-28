@@ -23,6 +23,7 @@ import (
 type CreateDogfoodProjectRequest struct {
 	AuthAppsRootDomain string
 	RootUserEmail      string
+	RedirectURI        string
 }
 
 type CreateDogfoodProjectResponse struct {
@@ -58,6 +59,7 @@ func (s *Store) CreateDogfoodProject(ctx context.Context, req *CreateDogfoodProj
 	if _, err := q.CreateDogfoodProject(ctx, queries.CreateDogfoodProjectParams{
 		ID:                  dogfoodProjectID,
 		DisplayName:         "Tesseral Dogfood",
+		RedirectUri:         req.RedirectURI,
 		LogInWithGoogle:     false,
 		LogInWithMicrosoft:  false,
 		LogInWithEmail:      true,
