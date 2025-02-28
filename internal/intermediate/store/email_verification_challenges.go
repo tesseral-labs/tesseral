@@ -6,9 +6,7 @@ import (
 	"crypto/sha256"
 	"errors"
 	"fmt"
-	"log/slog"
-	"math/rand/v2"
-	"strconv"
+	"html/template"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/sesv2"
@@ -19,6 +17,7 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/intermediate/authn"
 	intermediatev1 "github.com/tesseral-labs/tesseral/internal/intermediate/gen/tesseral/intermediate/v1"
 	"github.com/tesseral-labs/tesseral/internal/intermediate/store/queries"
+	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 )
 
 func (s *Store) IssueEmailVerificationChallenge(ctx context.Context, req *intermediatev1.IssueEmailVerificationChallengeRequest) (*intermediatev1.IssueEmailVerificationChallengeResponse, error) {
@@ -59,8 +58,8 @@ func (s *Store) IssueEmailVerificationChallenge(ctx context.Context, req *interm
 		}
 	}
 
-	secretToken := generateSecretToken()
-	secretTokenSHA256 := sha256.Sum256([]byte(secretToken))
+	emailVerificationChallengeCode := uuid.New()
+	secretTokenSHA256 := sha256.Sum256(emailVerificationChallengeCode[:])
 
 	_, err = q.UpdateIntermediateSessionEmailVerificationChallengeSha256(ctx, queries.UpdateIntermediateSessionEmailVerificationChallengeSha256Params{
 		ID:                               authn.IntermediateSessionID(ctx),
@@ -74,7 +73,7 @@ func (s *Store) IssueEmailVerificationChallenge(ctx context.Context, req *interm
 		return nil, err
 	}
 
-	if err := s.sendEmailVerificationChallenge(ctx, req.Email, secretToken); err != nil {
+	if err := s.sendEmailVerificationChallenge(ctx, req.Email, idformat.EmailVerificationChallengeCode.Format(emailVerificationChallengeCode)); err != nil {
 		return nil, fmt.Errorf("send email verification challenge: %w", err)
 	}
 
@@ -110,7 +109,12 @@ func (s *Store) VerifyEmailChallenge(ctx context.Context, req *intermediatev1.Ve
 		return nil, fmt.Errorf("enforce project login enabled: %w", err)
 	}
 
-	challengeSHA256 := sha256.Sum256([]byte(req.Code))
+	emailVerificationChallengeCodeUUID, err := idformat.EmailVerificationChallengeCode.Parse(req.Code)
+	if err != nil {
+		return nil, apierror.NewInvalidArgumentError("invalid email verification code", fmt.Errorf("invalid email verification code"))
+	}
+
+	challengeSHA256 := sha256.Sum256(emailVerificationChallengeCodeUUID[:])
 	if !bytes.Equal(qIntermediateSession.EmailVerificationChallengeSha256, challengeSHA256[:]) {
 		return nil, apierror.NewInvalidArgumentError("invalid email verification code", fmt.Errorf("invalid email verification code"))
 	}
@@ -138,41 +142,61 @@ func (s *Store) VerifyEmailChallenge(ctx context.Context, req *intermediatev1.Ve
 	return &intermediatev1.VerifyEmailChallengeResponse{}, nil
 }
 
-func generateSecretToken() string {
-	// Define the range for a 6-digit number: [100000, 999999]
-	min := 100000
-	max := 999999
+var emailVerificationEmailBodyTmpl = template.Must(template.New("emailVerificationEmailBody").Parse(`
+Hi,
 
-	// Generate a secure random number
-	randomNumber := rand.IntN(max-min+1) + min
+To continue logging in to {{ .ProjectDisplayName }}, please verify your email address by visiting the link below.
 
-	return strconv.Itoa(randomNumber)
-}
+{{ .EmailVerificationLink }}
 
-func (s *Store) sendEmailVerificationChallenge(ctx context.Context, email string, secretToken string) error {
-	output, err := s.ses.SendEmail(ctx, &sesv2.SendEmailInput{
+You can also go back to the "Check your email" page and enter this verification code manually:
+
+{{ .EmailVerificationCode }}
+
+If you did not request this verification, please ignore this email.
+`))
+
+func (s *Store) sendEmailVerificationChallenge(ctx context.Context, toAddress string, secretToken string) error {
+	qProject, err := s.q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return fmt.Errorf("get project by id: %w", err)
+	}
+
+	subject := fmt.Sprintf("%s - Verify your email address", qProject.DisplayName)
+
+	var body bytes.Buffer
+	if err := emailVerificationEmailBodyTmpl.Execute(&body, struct {
+		ProjectDisplayName    string
+		EmailVerificationLink string
+		EmailVerificationCode string
+	}{
+		ProjectDisplayName:    qProject.DisplayName,
+		EmailVerificationLink: fmt.Sprintf("https://%s/verify-email?code=%s", qProject.VaultDomain, secretToken),
+		EmailVerificationCode: secretToken,
+	}); err != nil {
+		return fmt.Errorf("execute email verification email body template: %w", err)
+	}
+
+	if _, err := s.ses.SendEmail(ctx, &sesv2.SendEmailInput{
 		Content: &types.EmailContent{
 			Simple: &types.Message{
-				Body: &types.Body{
-					Html: &types.Content{
-						Data: aws.String(fmt.Sprintf("<h2>Please verifiy your email address to continue logging in</h2><p>Your email verification code is: %s</p>", secretToken)),
-					},
-				},
 				Subject: &types.Content{
-					Data: aws.String("Verify your email address"),
+					Data: &subject,
+				},
+				Body: &types.Body{
+					Text: &types.Content{
+						Data: aws.String(body.String()),
+					},
 				},
 			},
 		},
 		Destination: &types.Destination{
-			ToAddresses: []string{email},
+			ToAddresses: []string{toAddress},
 		},
-		FromEmailAddress: aws.String("noreply@mail.laresset-dev1.app"), // TODO: Replace with a real email address once verification is in place
-	})
-	if err != nil {
+		FromEmailAddress: aws.String(fmt.Sprintf("noreply@%s", qProject.EmailSendFromDomain)),
+	}); err != nil {
 		return fmt.Errorf("send email: %w", err)
 	}
-
-	slog.InfoContext(ctx, "sendEmailVerificationChallenge", "output", output)
 
 	return nil
 }

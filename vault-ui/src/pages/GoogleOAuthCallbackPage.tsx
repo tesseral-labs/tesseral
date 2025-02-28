@@ -44,7 +44,9 @@ const GoogleOAuthCallbackPage = () => {
 
           // If the user has verified their email, navigate to the organizations page.
           if (whoamiRes.intermediateSession?.emailVerified) {
-            navigate(`/login?view=${LoginViews.ChooseOrganization}`);
+            navigate(`/login?view=${LoginViews.ChooseOrganization}`, {
+              replace: true,
+            });
             return;
           }
 
@@ -52,7 +54,9 @@ const GoogleOAuthCallbackPage = () => {
           await issueEmailVerificationChallengeMutation.mutateAsync({});
 
           // Navigate to the email verification page.
-          navigate(`/login?view=${LoginViews.VerifyEmail}`);
+          navigate(`/login?view=${LoginViews.VerifyEmail}`, {
+            replace: true,
+          });
         } catch (error) {
           const message = parseErrorMessage(error);
           toast.error('Failed to verify Google log in', {
