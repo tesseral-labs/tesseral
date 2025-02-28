@@ -21,6 +21,8 @@ var (
 
 	IntermediateSessionSecretToken = prettyuuid.MustNewFormat("openauth_secret_intermediate_session_token_", alphabet)
 
+	EmailVerificationChallengeCode = prettyuuid.MustNewFormat("email_verification_challenge_code_", alphabet)
+
 	ProjectAPIKey            = prettyuuid.MustNewFormat("project_api_key_", alphabet)
 	ProjectAPIKeySecretToken = prettyuuid.MustNewFormat("openauth_secret_key_", alphabet)
 

@@ -19,6 +19,7 @@ import OrganizationSettingsPage from './pages/dashboard/OrganizationSettingsPage
 import EditSAMLConnectionsPage from './pages/dashboard/EditSAMLConnectionsPage';
 import RegisterPasskey from './views/RegisterPasskey';
 import { AuthType } from './lib/auth';
+import { VerifyEmailPage } from '@/pages/VerifyEmailPage';
 
 const queryClient = new QueryClient();
 
@@ -50,6 +51,7 @@ const AppWithRoutes: FC = () => {
                 path="microsoft-oauth-callback"
                 element={<MicrosoftOAuthCallbackPage />}
               />
+              <Route path="/verify-email" element={<VerifyEmailPage />} />
               <Route path="login" element={<LoginPage />} />
               <Route
                 path="signup"
