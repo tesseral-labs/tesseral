@@ -29,6 +29,8 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/common/accesstoken"
 	"github.com/tesseral-labs/tesseral/internal/common/projectid"
 	commonstore "github.com/tesseral-labs/tesseral/internal/common/store"
+	configapiservice "github.com/tesseral-labs/tesseral/internal/configapi/service"
+	configapistore "github.com/tesseral-labs/tesseral/internal/configapi/store"
 	frontendinterceptor "github.com/tesseral-labs/tesseral/internal/frontend/authn/interceptor"
 	"github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1/frontendv1connect"
 	frontendservice "github.com/tesseral-labs/tesseral/internal/frontend/service"
@@ -283,6 +285,14 @@ func main() {
 	}
 	wellknownServiceHandler := wellknownService.Handler(projectid.NewSniffer(config.AuthAppsRootDomain, commonStore))
 
+	configapiStore := configapistore.New(configapistore.NewStoreParams{
+		DB: db,
+	})
+	configapiService := configapiservice.Service{
+		Store: configapiStore,
+	}
+	configapiServiceHandler := configapiService.Handler()
+
 	connectMux := http.NewServeMux()
 	connectMux.Handle(backendConnectPath, backendConnectHandler)
 	connectMux.Handle(frontendConnectPath, frontendConnectHandler)
@@ -315,6 +325,9 @@ func main() {
 
 	// Register wellknownservice
 	mux.Handle("/.well-known/", wellknownServiceHandler)
+
+	// Register configapiservice
+	mux.Handle("/api/config-api/", http.StripPrefix("/api/config-api", configapiServiceHandler))
 
 	// These handlers are registered in a FILO order much like
 	// a Matryoshka doll

@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"connectrpc.com/connect"
+	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/cookies"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
@@ -14,6 +15,10 @@ func (s *Service) Refresh(ctx context.Context, req *connect.Request[frontendv1.R
 	refreshToken, _ := cookies.GetRefreshToken(authn.ProjectID(ctx), req)
 	if refreshToken != "" {
 		req.Msg.RefreshToken = refreshToken
+	}
+
+	if refreshToken == "" {
+		return nil, apierror.NewUnauthenticatedError("no refresh token provided", nil)
 	}
 
 	accessToken, err := s.AccessTokenIssuer.NewAccessToken(ctx, refreshToken)
