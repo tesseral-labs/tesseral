@@ -1,4 +1,10 @@
-import React, { Dispatch, FC, SetStateAction, useState } from 'react';
+import React, {
+  Dispatch,
+  FC,
+  SetStateAction,
+  useEffect,
+  useState,
+} from 'react';
 import { useMutation, useQuery } from '@connectrpc/connect-query';
 import { toast } from 'sonner';
 
@@ -12,11 +18,13 @@ import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
 import {
+  issueEmailVerificationChallenge,
   verifyEmailChallenge,
   whoami,
 } from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
@@ -25,87 +33,143 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from '@/components/ui/input-otp';
+import {
+  ArrowRightIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
+  MailIcon,
+} from 'lucide-react';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { useNavigate } from 'react-router';
 
 interface VerifyEmailProps {
   setView: Dispatch<SetStateAction<LoginViews>>;
 }
 
-const VerifyEmail: FC<VerifyEmailProps> = ({ setView }) => {
-  const layout = useLayout();
-
-  const [challengeCode, setChallengeCode] = useState<string>('');
-  const [submitting, setSubmitting] = useState<boolean>(false);
-
+const VerifyEmail: FC<VerifyEmailProps> = () => {
   const { data: whoamiRes } = useQuery(whoami);
+
+  const issueEmailVerificationChallengeMutation = useMutation(
+    issueEmailVerificationChallenge,
+  );
+  const [hasResent, setHasResent] = useState(false);
+  const handleResend = async () => {
+    await issueEmailVerificationChallengeMutation.mutateAsync({
+      email: whoamiRes?.intermediateSession?.email,
+    });
+
+    toast.success('New verification link sent');
+    setHasResent(true);
+  };
+
+  useEffect(() => {
+    // allow another send after 10 seconds
+    setTimeout(() => {
+      setHasResent(false);
+    }, 10000);
+  }, [hasResent]);
+
+  const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
+  const [verificationCode, setVerificationCode] = useState('');
   const verifyEmailChallengeMutation = useMutation(verifyEmailChallenge);
+  const navigate = useNavigate();
+  const handleManualVerification = async () => {
+    await verifyEmailChallengeMutation.mutateAsync({
+      code: verificationCode,
+    });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitting(true);
+    toast.success('Email verified');
 
-    try {
-      await verifyEmailChallengeMutation.mutateAsync({
-        code: challengeCode,
-      });
-
-      setSubmitting(false);
-      setView(LoginViews.ChooseOrganization);
-    } catch (error) {
-      setSubmitting(false);
-      const message = parseErrorMessage(error);
-      toast.error('Could not verify email', {
-        description: message,
-      });
-    }
+    navigate(`/login?view=${LoginViews.ChooseOrganization}`, {
+      replace: true,
+    });
   };
 
   return (
-    <>
-      <Title title="Verify Email Address" />
+    <Card className="w-full max-w-md">
+      <CardHeader className="space-y-1">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+          <MailIcon className="h-6 w-6 text-primary" />
+        </div>
+        <CardTitle className="text-center text-2xl font-bold">
+          Check your email
+        </CardTitle>
+        <CardDescription className="text-center">
+          We've sent a verification link to{' '}
+          <span className="font-medium">
+            {whoamiRes?.intermediateSession?.email}
+          </span>
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="text-center text-sm text-muted-foreground">
+          <p>Didn't receive an email? Check your spam folder or</p>
+        </div>
 
-      <Card
-        className={cn(
-          'w-full max-w-sm',
-          layout !== LoginLayouts.Centered && 'shadow-none border-0',
-        )}
-      >
-        <CardHeader>
-          <CardTitle className="text-center">Verify Email Address</CardTitle>
+        <Button
+          variant="outline"
+          className="w-full"
+          onClick={handleResend}
+          disabled={hasResent}
+        >
+          {hasResent
+            ? 'Email verification resent!'
+            : 'Resend verification link'}
+        </Button>
 
-          <p className="text-sm mt-2 text-muted-foreground text-center">
-            Please enter the verification code sent to{' '}
-            <b>{whoamiRes?.intermediateSession?.email}</b> below.
-          </p>
-        </CardHeader>
-        <CardContent className="flex flex-col items-center justify-center w-full">
-          <form className="flex flex-col items-center" onSubmit={handleSubmit}>
-            <InputOTP
-              maxLength={6}
-              id="challengeCode"
-              value={challengeCode}
-              onChange={(value) => setChallengeCode(value)}
-            >
-              <InputOTPGroup>
-                <InputOTPSlot index={0} />
-                <InputOTPSlot index={1} />
-                <InputOTPSlot index={2} />
-                <InputOTPSlot index={3} />
-                <InputOTPSlot index={4} />
-                <InputOTPSlot index={5} />
-              </InputOTPGroup>
-            </InputOTP>
-            <Button
-              className="w-full mt-4"
-              disabled={challengeCode.length < 6 || submitting}
-              type="submit"
-            >
-              Verify Email Address
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-card px-2 text-muted-foreground">Or</span>
+          </div>
+        </div>
+
+        <Button
+          variant="ghost"
+          className="w-full justify-between"
+          onClick={() => setIsAdvancedOpen(!isAdvancedOpen)}
+        >
+          <span>Enter verification code manually</span>
+          {isAdvancedOpen ? (
+            <ChevronUpIcon className="h-4 w-4" />
+          ) : (
+            <ChevronDownIcon className="h-4 w-4" />
+          )}
+        </Button>
+
+        {isAdvancedOpen && (
+          <div className="space-y-3">
+            <div className="space-y-2">
+              <Label htmlFor="verification-code">Verification Code</Label>
+              <Input
+                id="verification-code"
+                placeholder="email_verification_challenge_code_..."
+                value={verificationCode}
+                onChange={(e) => setVerificationCode(e.target.value)}
+                className="font-mono"
+              />
+              <p className="text-xs text-muted-foreground">
+                Paste the full verification code from the email.
+              </p>
+            </div>
+            <Button onClick={handleManualVerification} className="w-full">
+              Verify <ArrowRightIcon className="ml-2 h-4 w-4" />
             </Button>
-          </form>
-        </CardContent>
-        <CardFooter></CardFooter>
-      </Card>
-    </>
+          </div>
+        )}
+      </CardContent>
+      <CardFooter className="flex justify-center border-t p-4">
+        <p className="text-xs text-muted-foreground">
+          Need help?{' '}
+          <a href="#" className="text-primary underline">
+            Contact support
+          </a>
+        </p>
+      </CardFooter>
+    </Card>
   );
 };
 

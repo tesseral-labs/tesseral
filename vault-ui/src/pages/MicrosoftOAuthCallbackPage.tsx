@@ -42,13 +42,17 @@ const MicrosoftOAuthCallbackPage = () => {
           }
 
           if (data?.intermediateSession?.emailVerified) {
-            navigate(`/login?view=${LoginViews.ChooseOrganization}`);
+            navigate(`/login?view=${LoginViews.ChooseOrganization}`, {
+              replace: true,
+            });
             return;
           }
 
           await issueEmailVerificationChallengeMutation.mutateAsync({});
 
-          navigate(`/login?view=${LoginViews.VerifyEmail}`);
+          navigate(`/login?view=${LoginViews.VerifyEmail}`, {
+            replace: true,
+          });
         } catch (error) {
           // TODO: Handle errors on screen once an error handling strategy is in place.
           const message = parseErrorMessage(error);

@@ -16,7 +16,6 @@ export const VerifyEmailPage = () => {
   const [searchParams] = useSearchParams();
 
   const verifyEmailChallengeMutation = useMutation(verifyEmailChallenge);
-  const whoamiQuery = useQuery(whoami);
 
   useEffect(() => {
     void (async () => {
@@ -29,13 +28,11 @@ export const VerifyEmailPage = () => {
             code,
           });
 
-          // Fetch the whoami query to determine if the user has verified their email.
-          const { data: whoamiRes } = await whoamiQuery.refetch();
-          if (!whoamiRes) {
-            throw new Error('No data returned from whoami query');
-          }
+          toast.success('Email verified');
 
-          navigate(`/login?view=${LoginViews.ChooseOrganization}`);
+          navigate(`/login?view=${LoginViews.ChooseOrganization}`, {
+            replace: true,
+          });
         } catch (error) {
           const message = parseErrorMessage(error);
           toast.error('Failed to verify email', {

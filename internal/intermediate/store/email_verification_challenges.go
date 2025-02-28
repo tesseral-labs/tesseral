@@ -149,6 +149,10 @@ To continue logging in to {{ .ProjectDisplayName }}, please verify your email ad
 
 {{ .EmailVerificationLink }}
 
+You can also go back to the "Check your email" page and enter this verification code manually:
+
+{{ .EmailVerificationCode }}
+
 If you did not request this verification, please ignore this email.
 `))
 
@@ -161,13 +165,17 @@ func (s *Store) sendEmailVerificationChallenge(ctx context.Context, toAddress st
 	subject := fmt.Sprintf("%s - Verify your email address", qProject.DisplayName)
 
 	var body bytes.Buffer
-	emailVerificationEmailBodyTmpl.Execute(&body, struct {
+	if err := emailVerificationEmailBodyTmpl.Execute(&body, struct {
 		ProjectDisplayName    string
 		EmailVerificationLink string
+		EmailVerificationCode string
 	}{
 		ProjectDisplayName:    qProject.DisplayName,
 		EmailVerificationLink: fmt.Sprintf("https://%s/verify-email?code=%s", qProject.VaultDomain, secretToken),
-	})
+		EmailVerificationCode: secretToken,
+	}); err != nil {
+		return fmt.Errorf("execute email verification email body template: %w", err)
+	}
 
 	if _, err := s.ses.SendEmail(ctx, &sesv2.SendEmailInput{
 		Content: &types.EmailContent{
