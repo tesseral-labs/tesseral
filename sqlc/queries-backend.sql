@@ -745,8 +745,8 @@ RETURNING
 UPDATE
     passkeys
 SET
-    passkeys.disabled = TRUE,
-    passkeys.update_time = now()
+    disabled = TRUE,
+    update_time = now()
 FROM
     users,
     organizations,
