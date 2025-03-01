@@ -88,6 +88,7 @@ func (s *Store) CreateProject(ctx context.Context, req *intermediatev1.CreatePro
 	// create a new project backed by the new organization
 	qProject, err := q.CreateProject(ctx, queries.CreateProjectParams{
 		ID:                  newProjectID,
+		RedirectUri:         req.RedirectUri,
 		OrganizationID:      &qOrganization.ID,
 		VaultDomain:         newProjectVaultDomain,
 		EmailSendFromDomain: fmt.Sprintf("mail.%s", s.authAppsRootDomain),
