@@ -27,6 +27,7 @@ const CreateProjectView: FC<CreateProjectViewProps> = ({ setView }) => {
   const settings = useSettings();
 
   const [displayName, setDisplayName] = useState<string>('');
+  const [redirectUri, setRedirectUri] = useState<string>('');
   const [submitting, setSubmitting] = useState<boolean>(false);
 
   const createProjectMutation = useMutation(createProject);
@@ -49,6 +50,7 @@ const CreateProjectView: FC<CreateProjectViewProps> = ({ setView }) => {
     try {
       const projectRes = await createProjectMutation.mutateAsync({
         displayName,
+        redirectUri,
       });
 
       await setOrganizationMutation.mutateAsync({
@@ -93,6 +95,12 @@ const CreateProjectView: FC<CreateProjectViewProps> = ({ setView }) => {
               placeholder="Acme, Inc."
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
+            />
+            <Input
+              id="redirectUri"
+              placeholder="https://app.company.com/"
+              value={redirectUri}
+              onChange={(e) => setRedirectUri(e.target.value)}
             />
             <Button
               className="mt-2 w-full"
