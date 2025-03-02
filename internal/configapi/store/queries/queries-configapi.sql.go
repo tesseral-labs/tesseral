@@ -42,6 +42,8 @@ FROM
     publishable_keys
     JOIN projects ON publishable_keys.project_id = projects.id
     JOIN session_signing_keys ON projects.id = session_signing_keys.project_id
+WHERE
+    publishable_keys.id = $1
 `
 
 type GetPublishableKeySessionSigningPublicKeysRow struct {
@@ -49,8 +51,8 @@ type GetPublishableKeySessionSigningPublicKeysRow struct {
 	PublicKey []byte
 }
 
-func (q *Queries) GetPublishableKeySessionSigningPublicKeys(ctx context.Context) ([]GetPublishableKeySessionSigningPublicKeysRow, error) {
-	rows, err := q.db.Query(ctx, getPublishableKeySessionSigningPublicKeys)
+func (q *Queries) GetPublishableKeySessionSigningPublicKeys(ctx context.Context, id uuid.UUID) ([]GetPublishableKeySessionSigningPublicKeysRow, error) {
+	rows, err := q.db.Query(ctx, getPublishableKeySessionSigningPublicKeys, id)
 	if err != nil {
 		return nil, err
 	}

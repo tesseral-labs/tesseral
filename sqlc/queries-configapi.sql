@@ -15,5 +15,7 @@ SELECT
 FROM
     publishable_keys
     JOIN projects ON publishable_keys.project_id = projects.id
-    JOIN session_signing_keys ON projects.id = session_signing_keys.project_id;
+    JOIN session_signing_keys ON projects.id = session_signing_keys.project_id
+WHERE
+    publishable_keys.id = $1;
 
