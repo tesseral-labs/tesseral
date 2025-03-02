@@ -2,6 +2,9 @@ package store
 
 import (
 	"context"
+	"crypto/ecdsa"
+	"crypto/x509"
+	"encoding/base64"
 	"errors"
 	"fmt"
 
@@ -11,8 +14,9 @@ import (
 )
 
 type GetPublishableKeyConfigurationResponse struct {
-	ProjectID   string `json:"projectId"`
-	VaultDomain string `json:"vaultDomain"`
+	ProjectID   string           `json:"projectId"`
+	VaultDomain string           `json:"vaultDomain"`
+	Keys        []map[string]any `json:"keys"`
 }
 
 func (s *Store) GetPublishableKeyConfiguration(ctx context.Context, publishableKey string) (*GetPublishableKeyConfigurationResponse, error) {
@@ -29,8 +33,30 @@ func (s *Store) GetPublishableKeyConfiguration(ctx context.Context, publishableK
 		return nil, fmt.Errorf("get publishable key configuration: %w", err)
 	}
 
+	qSessionSigningKeys, err := s.q.GetPublishableKeySessionSigningPublicKeys(ctx, id)
+	if err != nil {
+		return nil, fmt.Errorf("get publishable key session signing public keys: %w", err)
+	}
+
+	var keys []map[string]any
+	for _, qSessionSigningKey := range qSessionSigningKeys {
+		pub, err := x509.ParsePKIXPublicKey(qSessionSigningKey.PublicKey)
+		if err != nil {
+			panic(fmt.Errorf("public key from bytes: %w", err))
+		}
+
+		keys = append(keys, map[string]any{
+			"kid": idformat.SessionSigningKey.Format(qSessionSigningKey.ID),
+			"kty": "EC",
+			"crv": "P-256",
+			"x":   base64.RawURLEncoding.EncodeToString(pub.(*ecdsa.PublicKey).X.Bytes()),
+			"y":   base64.RawURLEncoding.EncodeToString(pub.(*ecdsa.PublicKey).Y.Bytes()),
+		})
+	}
+
 	return &GetPublishableKeyConfigurationResponse{
 		ProjectID:   idformat.Project.Format(qConfig.ProjectID),
 		VaultDomain: qConfig.VaultDomain,
+		Keys:        keys,
 	}, nil
 }
