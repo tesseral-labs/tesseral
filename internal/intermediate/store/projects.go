@@ -2,9 +2,16 @@ package store
 
 import (
 	"context"
+	"crypto/ecdsa"
+	"crypto/elliptic"
+	"crypto/rand"
+	"crypto/x509"
 	"fmt"
 	"strings"
+	"time"
 
+	"github.com/aws/aws-sdk-go-v2/service/kms"
+	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/intermediate/authn"
@@ -93,6 +100,7 @@ func (s *Store) CreateProject(ctx context.Context, req *intermediatev1.CreatePro
 		VaultDomain:         newProjectVaultDomain,
 		EmailSendFromDomain: fmt.Sprintf("mail.%s", s.authAppsRootDomain),
 		DisplayName:         req.DisplayName,
+		LogInWithEmail:      true,
 		LogInWithGoogle:     false,
 		LogInWithMicrosoft:  false,
 		LogInWithPassword:   false,
@@ -100,6 +108,49 @@ func (s *Store) CreateProject(ctx context.Context, req *intermediatev1.CreatePro
 	})
 	if err != nil {
 		return nil, fmt.Errorf("create project: %w", err)
+	}
+
+	if _, err := q.CreateProjectUISettings(ctx, qProject.ID); err != nil {
+		return nil, fmt.Errorf("create project ui settings: %w", err)
+	}
+
+	privateKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+	if err != nil {
+		return nil, err
+	}
+
+	privateKeyBytes, err := x509.MarshalECPrivateKey(privateKey)
+	if err != nil {
+		return nil, err
+	}
+
+	// Encrypt the symmetric key with the KMS
+	sskEncryptOutput, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
+		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
+		KeyId:               &s.sessionSigningKeyKmsKeyID,
+		Plaintext:           privateKeyBytes,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("encrypt session signing key: %w", err)
+	}
+
+	publicKeyBytes, err := x509.MarshalPKIXPublicKey(privateKey.Public())
+	if err != nil {
+		return nil, fmt.Errorf("marshal public key: %w", err)
+	}
+
+	createTime := time.Now()
+	expireTime := createTime.Add(time.Hour * 24 * 7)
+
+	if _, err := q.CreateSessionSigningKey(ctx, queries.CreateSessionSigningKeyParams{
+		ID:                   uuid.New(),
+		ProjectID:            qProject.ID,
+		PublicKey:            publicKeyBytes,
+		PrivateKeyCipherText: sskEncryptOutput.CiphertextBlob,
+		CreateTime:           &createTime,
+		ExpireTime:           &expireTime,
+	}); err != nil {
+		return nil, fmt.Errorf("create session signing key: %w", err)
 	}
 
 	if err = commit(); err != nil {

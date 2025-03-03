@@ -564,8 +564,20 @@ RETURNING
     *;
 
 -- name: CreateProject :one
-INSERT INTO projects (id, organization_id, display_name, redirect_uri, vault_domain, email_send_from_domain, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_saml)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+INSERT INTO projects (id, organization_id, display_name, redirect_uri, vault_domain, email_send_from_domain, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_saml, log_in_with_email)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+RETURNING
+    *;
+
+-- name: CreateProjectUISettings :one
+INSERT INTO project_ui_settings (id, project_id)
+    VALUES (gen_random_uuid (), $1)
+RETURNING
+    *;
+
+-- name: CreateSessionSigningKey :one
+INSERT INTO session_signing_keys (id, project_id, public_key, private_key_cipher_text, create_time, expire_time)
+    VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING
     *;
 
