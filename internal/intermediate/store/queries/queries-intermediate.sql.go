@@ -240,8 +240,8 @@ func (q *Queries) CreatePasskey(ctx context.Context, arg CreatePasskeyParams) (P
 }
 
 const createProject = `-- name: CreateProject :one
-INSERT INTO projects (id, organization_id, display_name, redirect_uri, vault_domain, email_send_from_domain, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_saml)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+INSERT INTO projects (id, organization_id, display_name, redirect_uri, vault_domain, email_send_from_domain, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_saml, log_in_with_email)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
 RETURNING
     id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain
 `
@@ -257,6 +257,7 @@ type CreateProjectParams struct {
 	LogInWithMicrosoft  bool
 	LogInWithPassword   bool
 	LogInWithSaml       bool
+	LogInWithEmail      bool
 }
 
 func (q *Queries) CreateProject(ctx context.Context, arg CreateProjectParams) (Project, error) {
@@ -271,6 +272,7 @@ func (q *Queries) CreateProject(ctx context.Context, arg CreateProjectParams) (P
 		arg.LogInWithMicrosoft,
 		arg.LogInWithPassword,
 		arg.LogInWithSaml,
+		arg.LogInWithEmail,
 	)
 	var i Project
 	err := row.Scan(
@@ -296,6 +298,29 @@ func (q *Queries) CreateProject(ctx context.Context, arg CreateProjectParams) (P
 		&i.AfterSignupRedirectUri,
 		&i.VaultDomain,
 		&i.EmailSendFromDomain,
+	)
+	return i, err
+}
+
+const createProjectUISettings = `-- name: CreateProjectUISettings :one
+INSERT INTO project_ui_settings (id, project_id)
+    VALUES (gen_random_uuid (), $1)
+RETURNING
+    id, project_id, primary_color, detect_dark_mode_enabled, dark_mode_primary_color, create_time, update_time, log_in_layout
+`
+
+func (q *Queries) CreateProjectUISettings(ctx context.Context, projectID uuid.UUID) (ProjectUiSetting, error) {
+	row := q.db.QueryRow(ctx, createProjectUISettings, projectID)
+	var i ProjectUiSetting
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.PrimaryColor,
+		&i.DetectDarkModeEnabled,
+		&i.DarkModePrimaryColor,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.LogInLayout,
 	)
 	return i, err
 }
@@ -330,6 +355,43 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (S
 		&i.RefreshTokenSha256,
 		&i.ImpersonatorUserID,
 		&i.LastActiveTime,
+	)
+	return i, err
+}
+
+const createSessionSigningKey = `-- name: CreateSessionSigningKey :one
+INSERT INTO session_signing_keys (id, project_id, public_key, private_key_cipher_text, create_time, expire_time)
+    VALUES ($1, $2, $3, $4, $5, $6)
+RETURNING
+    id, project_id, public_key, private_key_cipher_text, create_time, expire_time
+`
+
+type CreateSessionSigningKeyParams struct {
+	ID                   uuid.UUID
+	ProjectID            uuid.UUID
+	PublicKey            []byte
+	PrivateKeyCipherText []byte
+	CreateTime           *time.Time
+	ExpireTime           *time.Time
+}
+
+func (q *Queries) CreateSessionSigningKey(ctx context.Context, arg CreateSessionSigningKeyParams) (SessionSigningKey, error) {
+	row := q.db.QueryRow(ctx, createSessionSigningKey,
+		arg.ID,
+		arg.ProjectID,
+		arg.PublicKey,
+		arg.PrivateKeyCipherText,
+		arg.CreateTime,
+		arg.ExpireTime,
+	)
+	var i SessionSigningKey
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.PublicKey,
+		&i.PrivateKeyCipherText,
+		&i.CreateTime,
+		&i.ExpireTime,
 	)
 	return i, err
 }

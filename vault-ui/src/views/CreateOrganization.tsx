@@ -71,15 +71,6 @@ const CreateOrganization: FC<CreateOrganizationProps> = ({ setView }) => {
         return;
       }
 
-      if (
-        !whoamiRes?.intermediateSession?.googleUserId &&
-        !whoamiRes?.intermediateSession?.microsoftUserId
-      ) {
-        setSubmitting(false);
-        setView(LoginViews.RegisterPassword);
-        return;
-      }
-
       intermediateExchangeAndRedirect();
     } catch (error) {
       setSubmitting(false);

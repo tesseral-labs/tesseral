@@ -1,11 +1,12 @@
 #!/bin/bash
 
 create_cert() {
-  mkcert -cert-file .local/nginx/$1.pem -key-file .local/nginx/$1-key.pem $1
+  mkcert -cert-file .local/nginx/${1//\*/wildcard}.pem -key-file .local/nginx/${1//\*/wildcard}-key.pem $1
 }
 
 create_cert "api.tesseral.example.com"
 create_cert "config.tesseral.example.com"
 create_cert "console.tesseral.example.com"
 create_cert "auth.console.tesseral.example.com"
+create_cert "*.tesseral.example.app"
 create_cert "tesseralusercontent.example.com"
