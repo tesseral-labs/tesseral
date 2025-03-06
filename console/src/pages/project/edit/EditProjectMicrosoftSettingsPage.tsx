@@ -54,6 +54,8 @@ const EditProjectMicrosoftSettingsPage: FC = () => {
       await updateProjectMutation.mutateAsync({
         project: {
           logInWithMicrosoft: true,
+          microsoftOauthClientId,
+          microsoftOauthClientSecret,
         },
       });
       const { data: refetchedProjectResponse } = await refetchProject();
