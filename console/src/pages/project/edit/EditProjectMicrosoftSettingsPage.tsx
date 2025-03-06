@@ -53,7 +53,7 @@ const EditProjectMicrosoftSettingsPage: FC = () => {
     try {
       await updateProjectMutation.mutateAsync({
         project: {
-          logInWithMicrosoft: true,
+          logInWithMicrosoft,
           microsoftOauthClientId,
           microsoftOauthClientSecret,
         },
