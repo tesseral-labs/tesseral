@@ -112,6 +112,7 @@ func request_IntermediateService_Whoami_0(ctx context.Context, marshaler runtime
 		protoReq WhoamiRequest
 		metadata runtime.ServerMetadata
 	)
+	io.Copy(io.Discard, req.Body)
 	msg, err := client.Whoami(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 }
@@ -154,6 +155,7 @@ func request_IntermediateService_ListOrganizations_0(ctx context.Context, marsha
 		protoReq ListOrganizationsRequest
 		metadata runtime.ServerMetadata
 	)
+	io.Copy(io.Discard, req.Body)
 	msg, err := client.ListOrganizations(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 }
@@ -174,6 +176,7 @@ func request_IntermediateService_SetOrganization_0(ctx context.Context, marshale
 		protoReq SetOrganizationRequest
 		metadata runtime.ServerMetadata
 	)
+	io.Copy(io.Discard, req.Body)
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
