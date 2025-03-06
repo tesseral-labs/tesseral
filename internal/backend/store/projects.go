@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
@@ -217,42 +218,49 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 	}
 
 	if !qUpdatedProject.LogInWithGoogle {
+		slog.InfoContext(ctx, "disable_project_organizations_log_in_with_google")
 		if err := q.DisableProjectOrganizationsLogInWithGoogle(ctx, authn.ProjectID(ctx)); err != nil {
 			return nil, fmt.Errorf("disable project organizations log in with Google: %w", err)
 		}
 	}
 
 	if !qUpdatedProject.LogInWithMicrosoft {
+		slog.InfoContext(ctx, "disable_project_organizations_log_in_with_microsoft")
 		if err := q.DisableProjectOrganizationsLogInWithMicrosoft(ctx, authn.ProjectID(ctx)); err != nil {
 			return nil, fmt.Errorf("disable project organizations log in with Microsoft: %w", err)
 		}
 	}
 
 	if !qUpdatedProject.LogInWithEmail {
+		slog.InfoContext(ctx, "disable_project_organizations_log_in_with_email")
 		if err := q.DisableProjectOrganizationsLogInWithEmail(ctx, authn.ProjectID(ctx)); err != nil {
 			return nil, fmt.Errorf("disable project organizations log in with email: %w", err)
 		}
 	}
 
 	if !qUpdatedProject.LogInWithPassword {
+		slog.InfoContext(ctx, "disable_project_organizations_log_in_with_password")
 		if err := q.DisableProjectOrganizationsLogInWithPassword(ctx, authn.ProjectID(ctx)); err != nil {
 			return nil, fmt.Errorf("disable project organizations log in with password: %w", err)
 		}
 	}
 
 	if !qUpdatedProject.LogInWithSaml {
+		slog.InfoContext(ctx, "disable_project_organizations_log_in_with_saml")
 		if err := q.DisableProjectOrganizationsLogInWithSAML(ctx, authn.ProjectID(ctx)); err != nil {
 			return nil, fmt.Errorf("disable project organizations log in with SAML: %w", err)
 		}
 	}
 
 	if !qUpdatedProject.LogInWithAuthenticatorApp {
+		slog.InfoContext(ctx, "disable_project_organizations_log_in_with_authenticator_app")
 		if err := q.DisableProjectOrganizationsLogInWithAuthenticatorApp(ctx, authn.ProjectID(ctx)); err != nil {
 			return nil, fmt.Errorf("disable project organizations log in with authenticator app: %w", err)
 		}
 	}
 
 	if !qUpdatedProject.LogInWithPasskey {
+		slog.InfoContext(ctx, "disable_project_organizations_log_in_with_passkey")
 		if err := q.DisableProjectOrganizationsLogInWithPasskey(ctx, authn.ProjectID(ctx)); err != nil {
 			return nil, fmt.Errorf("disable project organizations log in with passkey: %w", err)
 		}
@@ -263,8 +271,6 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 		// always include the default vault domain (project-xxx.tesseral.app)
 		// and the current vault domain (e.g. auth.company.com) in the set of
 		// trusted domains
-		fmt.Printf("%+v\n", qUpdatedProject)
-
 		trustedDomains := map[string]struct{}{
 			qUpdatedProject.VaultDomain: {},
 			fmt.Sprintf("%s.%s", strings.ReplaceAll(idformat.Project.Format(qUpdatedProject.ID), "_", "-"), s.authAppsRootDomain): {},
@@ -318,7 +324,7 @@ func parseProject(qProject *queries.Project, qProjectTrustedDomains []queries.Pr
 		DisplayName:                qProject.DisplayName,
 		CreateTime:                 timestamppb.New(*qProject.CreateTime),
 		UpdateTime:                 timestamppb.New(*qProject.UpdateTime),
-		LogInWithGoogle:            &qProject.LogInWithMicrosoft,
+		LogInWithGoogle:            &qProject.LogInWithGoogle,
 		LogInWithMicrosoft:         &qProject.LogInWithMicrosoft,
 		LogInWithEmail:             &qProject.LogInWithEmail,
 		LogInWithPassword:          &qProject.LogInWithPassword,
