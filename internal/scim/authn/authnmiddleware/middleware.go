@@ -14,16 +14,11 @@ func New(s *store.Store, p *projectid.Sniffer, h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 
-		// Project ID sniffing
 		projectID, err := p.GetProjectID(r.Header.Get("X-Tesseral-Host"))
 		if err != nil {
 			w.WriteHeader(http.StatusNotFound)
 			return
 		}
-		requestProjectID := idformat.Project.Format(*projectID)
-		ctx = authn.NewContext(ctx, nil, requestProjectID)
-
-		// Authentication
 
 		bearerToken := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
 		if bearerToken == "" {
@@ -31,7 +26,7 @@ func New(s *store.Store, p *projectid.Sniffer, h http.Handler) http.Handler {
 			return
 		}
 
-		scimAPIKey, err := s.GetSCIMAPIKeyByToken(ctx, bearerToken)
+		scimAPIKey, err := s.GetSCIMAPIKeyByToken(ctx, *projectID, bearerToken)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
@@ -40,7 +35,7 @@ func New(s *store.Store, p *projectid.Sniffer, h http.Handler) http.Handler {
 		ctx = authn.NewContext(ctx, &authn.SCIMAPIKey{
 			ID:             scimAPIKey.ID,
 			OrganizationID: scimAPIKey.OrganizationID,
-		}, requestProjectID)
+		}, idformat.Project.Format(*projectID))
 		h.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
