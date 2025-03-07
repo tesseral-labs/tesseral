@@ -7,13 +7,17 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/tesseral-labs/tesseral/internal/common/accesstoken"
+	"github.com/tesseral-labs/tesseral/internal/cookies"
 	"github.com/tesseral-labs/tesseral/internal/emailaddr"
+	"github.com/tesseral-labs/tesseral/internal/saml/authn"
 	"github.com/tesseral-labs/tesseral/internal/saml/internal/saml"
 	"github.com/tesseral-labs/tesseral/internal/saml/store"
 )
 
 type Service struct {
-	Store *store.Store
+	AccessTokenIssuer *accesstoken.Issuer
+	Store             *store.Store
 }
 
 func (s *Service) Handler() http.Handler {
@@ -84,7 +88,7 @@ func (s *Service) acs(w http.ResponseWriter, r *http.Request) error {
 		return nil
 	}
 
-	validateRes, validateProblems, err := saml.Validate(&saml.ValidateRequest{
+	validateRes, err := saml.Validate(&saml.ValidateRequest{
 		SAMLResponse:   r.Form.Get("SAMLResponse"),
 		IDPCertificate: samlConnectionACSData.IDPX509Certificate,
 		IDPEntityID:    samlConnectionACSData.IDPEntityID,
@@ -95,13 +99,8 @@ func (s *Service) acs(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	// todo visual treatment here
-	if validateProblems != nil {
-		http.Error(w, fmt.Sprintf("%#v", validateProblems), http.StatusBadRequest)
-		return nil
-	}
-
-	domain, err := emailaddr.Parse(validateRes.SubjectID)
+	email := validateRes.SubjectID
+	domain, err := emailaddr.Parse(email)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return nil
@@ -116,18 +115,27 @@ func (s *Service) acs(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	if !domainOk {
-		// todo visual treatment
 		http.Error(w, "bad domain", http.StatusBadRequest)
 	}
 
-	// todo issue session
-	// todo redirect
-
-	// just to prove the concept
-	if _, err := fmt.Fprintf(w, "hi %s in organization %s!", validateRes.SubjectID, samlConnectionACSData.OrganizationID); err != nil {
-		return err
+	createSessionRes, err := s.Store.CreateSession(ctx, &store.CreateSessionRequest{
+		SAMLConnectionID: samlConnectionID,
+		Email:            email,
+	})
+	if err != nil {
+		return fmt.Errorf("create session: %w", err)
 	}
 
+	accessToken, err := s.AccessTokenIssuer.NewAccessToken(ctx, createSessionRes.RefreshToken)
+	if err != nil {
+		return fmt.Errorf("issue access token: %w", err)
+	}
+
+	w.Header().Add("Set-Cookie", cookies.NewRefreshToken(authn.ProjectID(ctx), createSessionRes.RefreshToken))
+	w.Header().Add("Set-Cookie", cookies.NewAccessToken(authn.ProjectID(ctx), accessToken))
+
+	w.Header().Add("Location", createSessionRes.RedirectURI)
+	w.WriteHeader(http.StatusFound)
 	return nil
 }
 
