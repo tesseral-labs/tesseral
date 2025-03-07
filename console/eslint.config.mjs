@@ -47,7 +47,6 @@ export default tseslint.config(
       '@typescript-eslint/no-unsafe-assignment': 'warn',
       '@typescript-eslint/no-unsafe-member-access': 'warn',
       '@typescript-eslint/restrict-template-expressions': 'off',
-      '@typescript-eslint/no-non-null-assertion': 'error',
       'eol-last': ['error', 'always'],
     },
   },

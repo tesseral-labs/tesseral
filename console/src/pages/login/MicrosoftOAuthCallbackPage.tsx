@@ -46,7 +46,9 @@ const MicrosoftOAuthCallbackPage = () => {
             return;
           }
 
-          await issueEmailVerificationChallengeMutation.mutateAsync({});
+          await issueEmailVerificationChallengeMutation.mutateAsync({
+            email: data.intermediateSession!.email,
+          });
 
           navigate(`/login?view=${LoginView.VerifyEmail}`);
         } catch (error) {

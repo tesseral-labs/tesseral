@@ -37,26 +37,20 @@ func (s *Store) CreateProject(ctx context.Context, req *intermediatev1.CreatePro
 		return nil, apierror.NewPermissionDeniedError("email not verified", nil)
 	}
 
-	// verify that the dogfood project exists
-	qDogfoodProject, err := q.GetProjectByID(ctx, *s.dogfoodProjectID)
-	if err != nil {
-		return nil, fmt.Errorf("get dogfood project: %w", err)
-	}
-
 	// create this ahead of time so we can use it in the display name and auth domain
 	newProjectID := uuid.New()
 	formattedNewProjectID := idformat.Project.Format(newProjectID)
 	newProjectVaultDomain := fmt.Sprintf("%s.%s", strings.ReplaceAll(formattedNewProjectID, "_", "-"), s.authAppsRootDomain)
 
-	// create a new organization under the dogfood project
+	// create a new organization under the dogfood project, accepting the same
+	// primary login method used to get to this point
 	qOrganization, err := q.CreateOrganization(ctx, queries.CreateOrganizationParams{
 		ID:                 uuid.New(),
 		DisplayName:        fmt.Sprintf("%s Backing Organization", formattedNewProjectID),
 		ProjectID:          *s.dogfoodProjectID,
-		LogInWithEmail:     qDogfoodProject.LogInWithEmail,
-		LogInWithGoogle:    qDogfoodProject.LogInWithGoogle,
-		LogInWithMicrosoft: qDogfoodProject.LogInWithMicrosoft,
-		LogInWithPassword:  qDogfoodProject.LogInWithPassword,
+		LogInWithEmail:     intermediateSession.PrimaryLoginFactor == string(queries.PrimaryLoginFactorEmail),
+		LogInWithGoogle:    intermediateSession.PrimaryLoginFactor == string(queries.PrimaryLoginFactorGoogleOauth),
+		LogInWithMicrosoft: intermediateSession.PrimaryLoginFactor == string(queries.PrimaryLoginFactorMicrosoftOauth),
 	})
 	if err != nil {
 		return nil, fmt.Errorf("create organization: %w", err)
@@ -65,6 +59,7 @@ func (s *Store) CreateProject(ctx context.Context, req *intermediatev1.CreatePro
 	// reflect the google hosted domain from the intermediate session if it exists
 	if intermediateSession.GoogleHostedDomain != "" {
 		if _, err := q.CreateOrganizationGoogleHostedDomain(ctx, queries.CreateOrganizationGoogleHostedDomainParams{
+			ID:                 uuid.New(),
 			OrganizationID:     qOrganization.ID,
 			GoogleHostedDomain: intermediateSession.GoogleHostedDomain,
 		}); err != nil {
@@ -75,6 +70,7 @@ func (s *Store) CreateProject(ctx context.Context, req *intermediatev1.CreatePro
 	// reflect the microsoft tenant id from the intermediate session if it exists
 	if intermediateSession.MicrosoftTenantId != "" {
 		if _, err := q.CreateOrganizationMicrosoftTenantID(ctx, queries.CreateOrganizationMicrosoftTenantIDParams{
+			ID:                uuid.New(),
 			OrganizationID:    qOrganization.ID,
 			MicrosoftTenantID: intermediateSession.MicrosoftTenantId,
 		}); err != nil {
@@ -92,7 +88,9 @@ func (s *Store) CreateProject(ctx context.Context, req *intermediatev1.CreatePro
 		return nil, fmt.Errorf("create user invite: %w", err)
 	}
 
-	// create a new project backed by the new organization
+	// create a new project backed by the new organization; the login methods
+	// here are only those that can work out of the box, without further
+	// configuration by the user
 	qProject, err := q.CreateProject(ctx, queries.CreateProjectParams{
 		ID:                  newProjectID,
 		RedirectUri:         req.RedirectUri,

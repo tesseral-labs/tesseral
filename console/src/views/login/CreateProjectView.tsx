@@ -24,7 +24,6 @@ interface CreateProjectViewProps {
 
 const CreateProjectView: FC<CreateProjectViewProps> = ({ setView }) => {
   const navigate = useNavigate();
-  const settings = useSettings();
 
   const [displayName, setDisplayName] = useState<string>('');
   const [redirectUri, setRedirectUri] = useState<string>('');
@@ -36,12 +35,6 @@ const CreateProjectView: FC<CreateProjectViewProps> = ({ setView }) => {
   );
   const refreshMutation = useMutation(refresh);
   const setOrganizationMutation = useMutation(setOrganization);
-
-  const deriveNextView = (): LoginView | undefined => {
-    if (settings?.logInWithPassword) {
-      return LoginView.RegisterPassword;
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,12 +49,6 @@ const CreateProjectView: FC<CreateProjectViewProps> = ({ setView }) => {
       await setOrganizationMutation.mutateAsync({
         organizationId: projectRes?.project?.organizationId,
       });
-
-      const nextView = deriveNextView();
-      if (nextView) {
-        setView(nextView);
-        return;
-      }
 
       const { refreshToken } =
         await exchangeIntermediateSessionForSessionMutation.mutateAsync({});
