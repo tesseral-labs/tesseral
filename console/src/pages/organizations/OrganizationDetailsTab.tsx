@@ -10,6 +10,7 @@ import { useParams } from 'react-router';
 import { useQuery } from '@connectrpc/connect-query';
 import {
   getOrganization,
+  getOrganizationDomains,
   getOrganizationGoogleHostedDomains,
   getOrganizationMicrosoftTenantIDs,
   getProject,
@@ -32,6 +33,12 @@ export const OrganizationDetailsTab = () => {
     id: organizationId,
   });
   const { data: getProjectResponse } = useQuery(getProject, {});
+  const { data: getOrganizationDomainsResponse } = useQuery(
+    getOrganizationDomains,
+    {
+      organizationId,
+    },
+  );
   const { data: getOrganizationGoogleHostedDomainsResponse } = useQuery(
     getOrganizationGoogleHostedDomains,
     {
@@ -152,6 +159,17 @@ export const OrganizationDetailsTab = () => {
                   {getOrganizationResponse?.organization?.scimEnabled
                     ? 'Enabled'
                     : 'Disabled'}
+                </DetailsGridValue>
+              </DetailsGridEntry>
+              <DetailsGridEntry>
+                <DetailsGridKey>SAML / SCIM Domains</DetailsGridKey>
+                <DetailsGridValue>
+                  {getOrganizationDomainsResponse
+                    ?.organizationDomains?.domains
+                    ? getOrganizationDomainsResponse.organizationDomains.domains.map(
+                      (s) => <div key={s}>{s}</div>,
+                    )
+                    : '-'}
                 </DetailsGridValue>
               </DetailsGridEntry>
             </DetailsGridColumn>

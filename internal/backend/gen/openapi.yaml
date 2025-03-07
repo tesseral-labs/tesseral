@@ -128,6 +128,59 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /backend/v1/organizations/{organizationId}/domains:
+        get:
+            tags:
+                - BackendService
+            operationId: BackendService_GetOrganizationDomains
+            parameters:
+                - name: organizationId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetOrganizationDomainsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        patch:
+            tags:
+                - BackendService
+            operationId: BackendService_UpdateOrganizationDomains
+            parameters:
+                - name: organizationId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/OrganizationDomains'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateOrganizationDomainsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /backend/v1/organizations/{organizationId}/google-hosted-domains:
         get:
             tags:
@@ -950,6 +1003,11 @@ components:
         DeleteUserResponse:
             type: object
             properties: {}
+        GetOrganizationDomainsResponse:
+            type: object
+            properties:
+                organizationDomains:
+                    $ref: '#/components/schemas/OrganizationDomains'
         GetOrganizationGoogleHostedDomainsResponse:
             type: object
             properties:
@@ -1102,6 +1160,15 @@ components:
                     type: boolean
                 scimEnabled:
                     type: boolean
+        OrganizationDomains:
+            type: object
+            properties:
+                organizationId:
+                    type: string
+                domains:
+                    type: array
+                    items:
+                        type: string
         OrganizationGoogleHostedDomains:
             type: object
             properties:
@@ -1276,6 +1343,11 @@ components:
                         $ref: '#/components/schemas/GoogleProtobufAny'
                     description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
             description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
+        UpdateOrganizationDomainsResponse:
+            type: object
+            properties:
+                organizationDomains:
+                    $ref: '#/components/schemas/OrganizationDomains'
         UpdateOrganizationGoogleHostedDomainsResponse:
             type: object
             properties:

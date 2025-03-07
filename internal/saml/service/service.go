@@ -19,8 +19,8 @@ type Service struct {
 func (s *Service) Handler() http.Handler {
 	mux := http.NewServeMux()
 
-	mux.Handle("GET /saml/v1/{samlConnectionID}/init", withErr(s.init))
-	mux.Handle("POST /saml/v1/{samlConnectionID}/acs", withErr(s.acs))
+	mux.Handle("GET /api/saml/v1/{samlConnectionID}/init", withErr(s.init))
+	mux.Handle("POST /api/saml/v1/{samlConnectionID}/acs", withErr(s.acs))
 
 	return mux
 }

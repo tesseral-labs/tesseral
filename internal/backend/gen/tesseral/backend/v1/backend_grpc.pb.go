@@ -25,6 +25,8 @@ const (
 	BackendService_CreateOrganization_FullMethodName                    = "/tesseral.backend.v1.BackendService/CreateOrganization"
 	BackendService_UpdateOrganization_FullMethodName                    = "/tesseral.backend.v1.BackendService/UpdateOrganization"
 	BackendService_DeleteOrganization_FullMethodName                    = "/tesseral.backend.v1.BackendService/DeleteOrganization"
+	BackendService_GetOrganizationDomains_FullMethodName                = "/tesseral.backend.v1.BackendService/GetOrganizationDomains"
+	BackendService_UpdateOrganizationDomains_FullMethodName             = "/tesseral.backend.v1.BackendService/UpdateOrganizationDomains"
 	BackendService_GetOrganizationGoogleHostedDomains_FullMethodName    = "/tesseral.backend.v1.BackendService/GetOrganizationGoogleHostedDomains"
 	BackendService_UpdateOrganizationGoogleHostedDomains_FullMethodName = "/tesseral.backend.v1.BackendService/UpdateOrganizationGoogleHostedDomains"
 	BackendService_GetOrganizationMicrosoftTenantIDs_FullMethodName     = "/tesseral.backend.v1.BackendService/GetOrganizationMicrosoftTenantIDs"
@@ -90,6 +92,8 @@ type BackendServiceClient interface {
 	CreateOrganization(ctx context.Context, in *CreateOrganizationRequest, opts ...grpc.CallOption) (*CreateOrganizationResponse, error)
 	UpdateOrganization(ctx context.Context, in *UpdateOrganizationRequest, opts ...grpc.CallOption) (*UpdateOrganizationResponse, error)
 	DeleteOrganization(ctx context.Context, in *DeleteOrganizationRequest, opts ...grpc.CallOption) (*DeleteOrganizationResponse, error)
+	GetOrganizationDomains(ctx context.Context, in *GetOrganizationDomainsRequest, opts ...grpc.CallOption) (*GetOrganizationDomainsResponse, error)
+	UpdateOrganizationDomains(ctx context.Context, in *UpdateOrganizationDomainsRequest, opts ...grpc.CallOption) (*UpdateOrganizationDomainsResponse, error)
 	GetOrganizationGoogleHostedDomains(ctx context.Context, in *GetOrganizationGoogleHostedDomainsRequest, opts ...grpc.CallOption) (*GetOrganizationGoogleHostedDomainsResponse, error)
 	UpdateOrganizationGoogleHostedDomains(ctx context.Context, in *UpdateOrganizationGoogleHostedDomainsRequest, opts ...grpc.CallOption) (*UpdateOrganizationGoogleHostedDomainsResponse, error)
 	GetOrganizationMicrosoftTenantIDs(ctx context.Context, in *GetOrganizationMicrosoftTenantIDsRequest, opts ...grpc.CallOption) (*GetOrganizationMicrosoftTenantIDsResponse, error)
@@ -207,6 +211,26 @@ func (c *backendServiceClient) DeleteOrganization(ctx context.Context, in *Delet
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(DeleteOrganizationResponse)
 	err := c.cc.Invoke(ctx, BackendService_DeleteOrganization_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) GetOrganizationDomains(ctx context.Context, in *GetOrganizationDomainsRequest, opts ...grpc.CallOption) (*GetOrganizationDomainsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetOrganizationDomainsResponse)
+	err := c.cc.Invoke(ctx, BackendService_GetOrganizationDomains_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) UpdateOrganizationDomains(ctx context.Context, in *UpdateOrganizationDomainsRequest, opts ...grpc.CallOption) (*UpdateOrganizationDomainsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateOrganizationDomainsResponse)
+	err := c.cc.Invoke(ctx, BackendService_UpdateOrganizationDomains_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -753,6 +777,8 @@ type BackendServiceServer interface {
 	CreateOrganization(context.Context, *CreateOrganizationRequest) (*CreateOrganizationResponse, error)
 	UpdateOrganization(context.Context, *UpdateOrganizationRequest) (*UpdateOrganizationResponse, error)
 	DeleteOrganization(context.Context, *DeleteOrganizationRequest) (*DeleteOrganizationResponse, error)
+	GetOrganizationDomains(context.Context, *GetOrganizationDomainsRequest) (*GetOrganizationDomainsResponse, error)
+	UpdateOrganizationDomains(context.Context, *UpdateOrganizationDomainsRequest) (*UpdateOrganizationDomainsResponse, error)
 	GetOrganizationGoogleHostedDomains(context.Context, *GetOrganizationGoogleHostedDomainsRequest) (*GetOrganizationGoogleHostedDomainsResponse, error)
 	UpdateOrganizationGoogleHostedDomains(context.Context, *UpdateOrganizationGoogleHostedDomainsRequest) (*UpdateOrganizationGoogleHostedDomainsResponse, error)
 	GetOrganizationMicrosoftTenantIDs(context.Context, *GetOrganizationMicrosoftTenantIDsRequest) (*GetOrganizationMicrosoftTenantIDsResponse, error)
@@ -833,6 +859,12 @@ func (UnimplementedBackendServiceServer) UpdateOrganization(context.Context, *Up
 }
 func (UnimplementedBackendServiceServer) DeleteOrganization(context.Context, *DeleteOrganizationRequest) (*DeleteOrganizationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteOrganization not implemented")
+}
+func (UnimplementedBackendServiceServer) GetOrganizationDomains(context.Context, *GetOrganizationDomainsRequest) (*GetOrganizationDomainsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetOrganizationDomains not implemented")
+}
+func (UnimplementedBackendServiceServer) UpdateOrganizationDomains(context.Context, *UpdateOrganizationDomainsRequest) (*UpdateOrganizationDomainsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateOrganizationDomains not implemented")
 }
 func (UnimplementedBackendServiceServer) GetOrganizationGoogleHostedDomains(context.Context, *GetOrganizationGoogleHostedDomainsRequest) (*GetOrganizationGoogleHostedDomainsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetOrganizationGoogleHostedDomains not implemented")
@@ -1118,6 +1150,42 @@ func _BackendService_DeleteOrganization_Handler(srv interface{}, ctx context.Con
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(BackendServiceServer).DeleteOrganization(ctx, req.(*DeleteOrganizationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_GetOrganizationDomains_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetOrganizationDomainsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).GetOrganizationDomains(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_GetOrganizationDomains_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).GetOrganizationDomains(ctx, req.(*GetOrganizationDomainsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_UpdateOrganizationDomains_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateOrganizationDomainsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).UpdateOrganizationDomains(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_UpdateOrganizationDomains_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).UpdateOrganizationDomains(ctx, req.(*UpdateOrganizationDomainsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2106,6 +2174,14 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteOrganization",
 			Handler:    _BackendService_DeleteOrganization_Handler,
+		},
+		{
+			MethodName: "GetOrganizationDomains",
+			Handler:    _BackendService_GetOrganizationDomains_Handler,
+		},
+		{
+			MethodName: "UpdateOrganizationDomains",
+			Handler:    _BackendService_UpdateOrganizationDomains_Handler,
 		},
 		{
 			MethodName: "GetOrganizationGoogleHostedDomains",

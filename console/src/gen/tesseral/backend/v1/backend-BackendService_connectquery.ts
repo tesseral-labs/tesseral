@@ -35,6 +35,16 @@ export const updateOrganization = BackendService.method.updateOrganization;
 export const deleteOrganization = BackendService.method.deleteOrganization;
 
 /**
+ * @generated from rpc tesseral.backend.v1.BackendService.GetOrganizationDomains
+ */
+export const getOrganizationDomains = BackendService.method.getOrganizationDomains;
+
+/**
+ * @generated from rpc tesseral.backend.v1.BackendService.UpdateOrganizationDomains
+ */
+export const updateOrganizationDomains = BackendService.method.updateOrganizationDomains;
+
+/**
  * @generated from rpc tesseral.backend.v1.BackendService.GetOrganizationGoogleHostedDomains
  */
 export const getOrganizationGoogleHostedDomains = BackendService.method.getOrganizationGoogleHostedDomains;

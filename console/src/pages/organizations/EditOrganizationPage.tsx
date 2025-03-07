@@ -1,9 +1,9 @@
 import { useNavigate, useParams } from 'react-router';
 import { useMutation, useQuery } from '@connectrpc/connect-query';
 import {
-  getOrganization,
+  getOrganization, getOrganizationDomains,
   getProject,
-  updateOrganization,
+  updateOrganization, updateOrganizationDomains,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -39,6 +39,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { PageTitle } from '@/components/page';
 import { toast } from 'sonner';
+import { InputTags } from '@/components/input-tags';
 
 const schema = z.object({
   displayName: z.string(),
@@ -51,6 +52,7 @@ const schema = z.object({
   logInWithPasskey: z.boolean(),
   requireMfa: z.boolean(),
   scimEnabled: z.boolean(),
+  domains: z.array(z.string()),
 });
 
 export const EditOrganizationPage = () => {
@@ -60,21 +62,25 @@ export const EditOrganizationPage = () => {
   const { data: getOrganizationResponse } = useQuery(getOrganization, {
     id: organizationId,
   });
-  /* eslint-disable @typescript-eslint/no-unsafe-call */
+  const { data: getOrganizationDomainsResponse } = useQuery(getOrganizationDomains, {
+    organizationId,
+  })
+   
   // Currently there's an issue with the types of react-hook-form and zod
   // preventing the compiler from inferring the correct types.
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
   });
-  /* eslint-enable @typescript-eslint/no-unsafe-call */
+   
   const updateOrganizationMutation = useMutation(updateOrganization);
+  const updateOrganizationDomainsMutation = useMutation(updateOrganizationDomains);
 
   useEffect(() => {
     if (getOrganizationResponse?.organization) {
-      /* eslint-disable @typescript-eslint/no-unsafe-call */
       // Currently there's an issue with the types of react-hook-form and zod
       // preventing the compiler from inferring the correct types.
       form.reset({
+        ...form.getValues(),
         displayName: getOrganizationResponse.organization.displayName,
         logInWithGoogle: getOrganizationResponse.organization.logInWithGoogle,
         logInWithMicrosoft:
@@ -89,9 +95,15 @@ export const EditOrganizationPage = () => {
         requireMfa: getOrganizationResponse.organization.requireMfa,
         scimEnabled: getOrganizationResponse.organization.scimEnabled,
       });
-      /* eslint-enable @typescript-eslint/no-unsafe-call */
     }
-  }, [getOrganizationResponse]);
+
+    if (getOrganizationDomainsResponse?.organizationDomains) {
+      form.reset({
+        ...form.getValues(),
+        domains: getOrganizationDomainsResponse.organizationDomains.domains,
+      })
+    }
+  }, [getOrganizationResponse, getOrganizationDomainsResponse]);
 
   const onSubmit = async (values: z.infer<typeof schema>) => {
     await updateOrganizationMutation.mutateAsync({
@@ -109,6 +121,13 @@ export const EditOrganizationPage = () => {
         scimEnabled: values.scimEnabled,
       },
     });
+
+    await updateOrganizationDomainsMutation.mutateAsync({
+      organizationId,
+      organizationDomains: {
+        domains: values.domains,
+      },
+    })
 
     toast.success('Organization updated successfully');
     navigate(`/organizations/${organizationId}`);
@@ -149,7 +168,7 @@ export const EditOrganizationPage = () => {
       </PageTitle>
 
       <Form {...form}>
-        {/* eslint-disable @typescript-eslint/no-unsafe-call */}
+        { }
         {/** There's an issue with the types of react-hook-form and zod
         preventing the compiler from inferring the correct types.*/}
         <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-8">
@@ -273,29 +292,6 @@ export const EditOrganizationPage = () => {
                 />
               )}
 
-              {getProjectResponse?.project?.logInWithPassword && (
-                <FormField
-                  control={form.control}
-                  name="logInWithSaml"
-                  render={({ field }: { field: any }) => (
-                    <FormItem>
-                      <FormLabel>Log in with SAML</FormLabel>
-                      <FormControl>
-                        <Switch
-                          className="block"
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        Using SAML also requires configuring a SAML connection.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              )}
-
               {getProjectResponse?.project?.logInWithAuthenticatorApp && (
                 <FormField
                   control={form.control}
@@ -363,6 +359,30 @@ export const EditOrganizationPage = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-8">
+              {getProjectResponse?.project?.logInWithSaml && (
+                <FormField
+                  control={form.control}
+                  name="logInWithSaml"
+                  render={({ field }: { field: any }) => (
+                    <FormItem>
+                      <FormLabel>Log in with SAML</FormLabel>
+                      <FormControl>
+                        <Switch
+                          className="block"
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Whether this organization can configure SAML Connections
+                        and use them to log in with SAML.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+
               <FormField
                 control={form.control}
                 name="scimEnabled"
@@ -379,6 +399,29 @@ export const EditOrganizationPage = () => {
                     <FormDescription>
                       Whether this organization can configure SCIM ("Enterprise
                       Directory Sync").
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="domains"
+                render={({ field }: { field: any }) => (
+                  <FormItem>
+                    <FormLabel>SAML / SCIM Domains</FormLabel>
+                    <FormControl>
+                      <InputTags
+                        className="max-w-96"
+                        placeholder="example.com"
+                        {...field}
+                        value={field.value || []}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      SAML and SCIM users must have emails from this list of
+                      domains.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>

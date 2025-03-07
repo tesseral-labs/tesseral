@@ -51,6 +51,12 @@ const (
 	// BackendServiceDeleteOrganizationProcedure is the fully-qualified name of the BackendService's
 	// DeleteOrganization RPC.
 	BackendServiceDeleteOrganizationProcedure = "/tesseral.backend.v1.BackendService/DeleteOrganization"
+	// BackendServiceGetOrganizationDomainsProcedure is the fully-qualified name of the BackendService's
+	// GetOrganizationDomains RPC.
+	BackendServiceGetOrganizationDomainsProcedure = "/tesseral.backend.v1.BackendService/GetOrganizationDomains"
+	// BackendServiceUpdateOrganizationDomainsProcedure is the fully-qualified name of the
+	// BackendService's UpdateOrganizationDomains RPC.
+	BackendServiceUpdateOrganizationDomainsProcedure = "/tesseral.backend.v1.BackendService/UpdateOrganizationDomains"
 	// BackendServiceGetOrganizationGoogleHostedDomainsProcedure is the fully-qualified name of the
 	// BackendService's GetOrganizationGoogleHostedDomains RPC.
 	BackendServiceGetOrganizationGoogleHostedDomainsProcedure = "/tesseral.backend.v1.BackendService/GetOrganizationGoogleHostedDomains"
@@ -219,6 +225,8 @@ type BackendServiceClient interface {
 	CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.CreateOrganizationResponse], error)
 	UpdateOrganization(context.Context, *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.UpdateOrganizationResponse], error)
 	DeleteOrganization(context.Context, *connect.Request[v1.DeleteOrganizationRequest]) (*connect.Response[v1.DeleteOrganizationResponse], error)
+	GetOrganizationDomains(context.Context, *connect.Request[v1.GetOrganizationDomainsRequest]) (*connect.Response[v1.GetOrganizationDomainsResponse], error)
+	UpdateOrganizationDomains(context.Context, *connect.Request[v1.UpdateOrganizationDomainsRequest]) (*connect.Response[v1.UpdateOrganizationDomainsResponse], error)
 	GetOrganizationGoogleHostedDomains(context.Context, *connect.Request[v1.GetOrganizationGoogleHostedDomainsRequest]) (*connect.Response[v1.GetOrganizationGoogleHostedDomainsResponse], error)
 	UpdateOrganizationGoogleHostedDomains(context.Context, *connect.Request[v1.UpdateOrganizationGoogleHostedDomainsRequest]) (*connect.Response[v1.UpdateOrganizationGoogleHostedDomainsResponse], error)
 	GetOrganizationMicrosoftTenantIDs(context.Context, *connect.Request[v1.GetOrganizationMicrosoftTenantIDsRequest]) (*connect.Response[v1.GetOrganizationMicrosoftTenantIDsResponse], error)
@@ -319,6 +327,18 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			httpClient,
 			baseURL+BackendServiceDeleteOrganizationProcedure,
 			connect.WithSchema(backendServiceMethods.ByName("DeleteOrganization")),
+			connect.WithClientOptions(opts...),
+		),
+		getOrganizationDomains: connect.NewClient[v1.GetOrganizationDomainsRequest, v1.GetOrganizationDomainsResponse](
+			httpClient,
+			baseURL+BackendServiceGetOrganizationDomainsProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("GetOrganizationDomains")),
+			connect.WithClientOptions(opts...),
+		),
+		updateOrganizationDomains: connect.NewClient[v1.UpdateOrganizationDomainsRequest, v1.UpdateOrganizationDomainsResponse](
+			httpClient,
+			baseURL+BackendServiceUpdateOrganizationDomainsProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("UpdateOrganizationDomains")),
 			connect.WithClientOptions(opts...),
 		),
 		getOrganizationGoogleHostedDomains: connect.NewClient[v1.GetOrganizationGoogleHostedDomainsRequest, v1.GetOrganizationGoogleHostedDomainsResponse](
@@ -650,6 +670,8 @@ type backendServiceClient struct {
 	createOrganization                    *connect.Client[v1.CreateOrganizationRequest, v1.CreateOrganizationResponse]
 	updateOrganization                    *connect.Client[v1.UpdateOrganizationRequest, v1.UpdateOrganizationResponse]
 	deleteOrganization                    *connect.Client[v1.DeleteOrganizationRequest, v1.DeleteOrganizationResponse]
+	getOrganizationDomains                *connect.Client[v1.GetOrganizationDomainsRequest, v1.GetOrganizationDomainsResponse]
+	updateOrganizationDomains             *connect.Client[v1.UpdateOrganizationDomainsRequest, v1.UpdateOrganizationDomainsResponse]
 	getOrganizationGoogleHostedDomains    *connect.Client[v1.GetOrganizationGoogleHostedDomainsRequest, v1.GetOrganizationGoogleHostedDomainsResponse]
 	updateOrganizationGoogleHostedDomains *connect.Client[v1.UpdateOrganizationGoogleHostedDomainsRequest, v1.UpdateOrganizationGoogleHostedDomainsResponse]
 	getOrganizationMicrosoftTenantIDs     *connect.Client[v1.GetOrganizationMicrosoftTenantIDsRequest, v1.GetOrganizationMicrosoftTenantIDsResponse]
@@ -733,6 +755,16 @@ func (c *backendServiceClient) UpdateOrganization(ctx context.Context, req *conn
 // DeleteOrganization calls tesseral.backend.v1.BackendService.DeleteOrganization.
 func (c *backendServiceClient) DeleteOrganization(ctx context.Context, req *connect.Request[v1.DeleteOrganizationRequest]) (*connect.Response[v1.DeleteOrganizationResponse], error) {
 	return c.deleteOrganization.CallUnary(ctx, req)
+}
+
+// GetOrganizationDomains calls tesseral.backend.v1.BackendService.GetOrganizationDomains.
+func (c *backendServiceClient) GetOrganizationDomains(ctx context.Context, req *connect.Request[v1.GetOrganizationDomainsRequest]) (*connect.Response[v1.GetOrganizationDomainsResponse], error) {
+	return c.getOrganizationDomains.CallUnary(ctx, req)
+}
+
+// UpdateOrganizationDomains calls tesseral.backend.v1.BackendService.UpdateOrganizationDomains.
+func (c *backendServiceClient) UpdateOrganizationDomains(ctx context.Context, req *connect.Request[v1.UpdateOrganizationDomainsRequest]) (*connect.Response[v1.UpdateOrganizationDomainsResponse], error) {
+	return c.updateOrganizationDomains.CallUnary(ctx, req)
 }
 
 // GetOrganizationGoogleHostedDomains calls
@@ -1013,6 +1045,8 @@ type BackendServiceHandler interface {
 	CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.CreateOrganizationResponse], error)
 	UpdateOrganization(context.Context, *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.UpdateOrganizationResponse], error)
 	DeleteOrganization(context.Context, *connect.Request[v1.DeleteOrganizationRequest]) (*connect.Response[v1.DeleteOrganizationResponse], error)
+	GetOrganizationDomains(context.Context, *connect.Request[v1.GetOrganizationDomainsRequest]) (*connect.Response[v1.GetOrganizationDomainsResponse], error)
+	UpdateOrganizationDomains(context.Context, *connect.Request[v1.UpdateOrganizationDomainsRequest]) (*connect.Response[v1.UpdateOrganizationDomainsResponse], error)
 	GetOrganizationGoogleHostedDomains(context.Context, *connect.Request[v1.GetOrganizationGoogleHostedDomainsRequest]) (*connect.Response[v1.GetOrganizationGoogleHostedDomainsResponse], error)
 	UpdateOrganizationGoogleHostedDomains(context.Context, *connect.Request[v1.UpdateOrganizationGoogleHostedDomainsRequest]) (*connect.Response[v1.UpdateOrganizationGoogleHostedDomainsResponse], error)
 	GetOrganizationMicrosoftTenantIDs(context.Context, *connect.Request[v1.GetOrganizationMicrosoftTenantIDsRequest]) (*connect.Response[v1.GetOrganizationMicrosoftTenantIDsResponse], error)
@@ -1109,6 +1143,18 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		BackendServiceDeleteOrganizationProcedure,
 		svc.DeleteOrganization,
 		connect.WithSchema(backendServiceMethods.ByName("DeleteOrganization")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceGetOrganizationDomainsHandler := connect.NewUnaryHandler(
+		BackendServiceGetOrganizationDomainsProcedure,
+		svc.GetOrganizationDomains,
+		connect.WithSchema(backendServiceMethods.ByName("GetOrganizationDomains")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceUpdateOrganizationDomainsHandler := connect.NewUnaryHandler(
+		BackendServiceUpdateOrganizationDomainsProcedure,
+		svc.UpdateOrganizationDomains,
+		connect.WithSchema(backendServiceMethods.ByName("UpdateOrganizationDomains")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceGetOrganizationGoogleHostedDomainsHandler := connect.NewUnaryHandler(
@@ -1443,6 +1489,10 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceUpdateOrganizationHandler.ServeHTTP(w, r)
 		case BackendServiceDeleteOrganizationProcedure:
 			backendServiceDeleteOrganizationHandler.ServeHTTP(w, r)
+		case BackendServiceGetOrganizationDomainsProcedure:
+			backendServiceGetOrganizationDomainsHandler.ServeHTTP(w, r)
+		case BackendServiceUpdateOrganizationDomainsProcedure:
+			backendServiceUpdateOrganizationDomainsHandler.ServeHTTP(w, r)
 		case BackendServiceGetOrganizationGoogleHostedDomainsProcedure:
 			backendServiceGetOrganizationGoogleHostedDomainsHandler.ServeHTTP(w, r)
 		case BackendServiceUpdateOrganizationGoogleHostedDomainsProcedure:
@@ -1580,6 +1630,14 @@ func (UnimplementedBackendServiceHandler) UpdateOrganization(context.Context, *c
 
 func (UnimplementedBackendServiceHandler) DeleteOrganization(context.Context, *connect.Request[v1.DeleteOrganizationRequest]) (*connect.Response[v1.DeleteOrganizationResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.DeleteOrganization is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) GetOrganizationDomains(context.Context, *connect.Request[v1.GetOrganizationDomainsRequest]) (*connect.Response[v1.GetOrganizationDomainsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.GetOrganizationDomains is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) UpdateOrganizationDomains(context.Context, *connect.Request[v1.UpdateOrganizationDomainsRequest]) (*connect.Response[v1.UpdateOrganizationDomainsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.UpdateOrganizationDomains is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) GetOrganizationGoogleHostedDomains(context.Context, *connect.Request[v1.GetOrganizationGoogleHostedDomainsRequest]) (*connect.Response[v1.GetOrganizationGoogleHostedDomainsResponse], error) {

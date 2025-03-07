@@ -25,6 +25,11 @@ func (s *Store) GetSAMLConnectionACSData(ctx context.Context, samlConnectionID s
 	}
 	defer rollback()
 
+	qProject, err := q.GetProject(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get project: %w", err)
+	}
+
 	samlConnectionUUID, err := idformat.SAMLConnection.Parse(samlConnectionID)
 	if err != nil {
 		return nil, fmt.Errorf("parse saml connection id: %w", err)
@@ -43,7 +48,7 @@ func (s *Store) GetSAMLConnectionACSData(ctx context.Context, samlConnectionID s
 		panic(fmt.Errorf("parse idp x509 certificate: %w", err))
 	}
 
-	spEntityID := fmt.Sprintf("http://localhost:3001/saml/v1/%s", samlConnectionID) // todo
+	spEntityID := fmt.Sprintf("https://%s/api/saml/v1/%s", qProject.VaultDomain, samlConnectionID) // todo
 
 	organizationDomains, err := q.GetOrganizationDomains(ctx, qSAMLConnection.OrganizationID)
 	if err != nil {

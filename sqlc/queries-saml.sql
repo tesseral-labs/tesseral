@@ -1,3 +1,11 @@
+-- name: GetProject :one
+SELECT
+    *
+FROM
+    projects
+WHERE
+    id = $1;
+
 -- name: GetSAMLConnection :one
 SELECT
     saml_connections.*
