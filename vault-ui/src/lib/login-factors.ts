@@ -11,7 +11,7 @@ const primaryLoginFactorToOrganizationSettingMap: Record<
   string
 > = {
   [PrimaryLoginFactor.Email]: 'logInWithEmail',
-  [PrimaryLoginFactor.GoogleOAuth]: 'logInWithFoogle',
+  [PrimaryLoginFactor.GoogleOAuth]: 'logInWithGoogle',
   [PrimaryLoginFactor.MicrosoftOAuth]: 'logInWithMicrosoft',
 };
 
