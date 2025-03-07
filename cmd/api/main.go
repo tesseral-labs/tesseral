@@ -264,7 +264,8 @@ func main() {
 		DB: db,
 	})
 	samlService := samlservice.Service{
-		Store: samlStore,
+		Store:             samlStore,
+		AccessTokenIssuer: accesstoken.NewIssuer(commonStore),
 	}
 	samlServiceHandler := samlService.Handler()
 	samlServiceHandler = samlinterceptor.New(projectid.NewSniffer(config.AuthAppsRootDomain, commonStore), samlServiceHandler)

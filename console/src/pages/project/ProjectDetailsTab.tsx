@@ -47,6 +47,7 @@ import {
 import { Input } from '@/components/ui/input';
 import Loader from '@/components/ui/loader';
 import { toast } from 'sonner';
+import { Switch } from '@/components/ui/switch';
 
 export const ProjectDetailsTab = () => {
   const { data: getProjectResponse } = useQuery(getProject, {});
@@ -130,12 +131,20 @@ export const ProjectDetailsTab = () => {
                     : 'Disabled'}
                 </DetailsGridValue>
               </DetailsGridEntry>
-            </DetailsGridColumn>
-            <DetailsGridColumn>
               <DetailsGridEntry>
                 <DetailsGridKey>Log in with Microsoft</DetailsGridKey>
                 <DetailsGridValue>
                   {getProjectResponse?.project?.logInWithMicrosoft
+                    ? 'Enabled'
+                    : 'Disabled'}
+                </DetailsGridValue>
+              </DetailsGridEntry>
+            </DetailsGridColumn>
+            <DetailsGridColumn>
+              <DetailsGridEntry>
+                <DetailsGridKey>Log in with SAML</DetailsGridKey>
+                <DetailsGridValue>
+                  {getProjectResponse?.project?.logInWithSaml
                     ? 'Enabled'
                     : 'Disabled'}
                 </DetailsGridValue>
@@ -251,19 +260,44 @@ export const ProjectDetailsTab = () => {
           </DetailsGrid>
         </CardContent>
       </Card>
+      <Card>
+        <CardHeader className="flex-row justify-between items-center">
+          <div className="flex flex-col space-y-1 5">
+            <CardTitle>SAML Settings</CardTitle>
+            <CardDescription>
+              Settings for "Log in with SAML" in your Project.
+            </CardDescription>
+          </div>
+          <EditProjectSAMLSettingsButton />
+        </CardHeader>
+        <CardContent>
+          <DetailsGrid>
+            <DetailsGridColumn>
+              <DetailsGridEntry>
+                <DetailsGridKey>Status</DetailsGridKey>
+                <DetailsGridValue>
+                  {getProjectResponse?.project?.logInWithSaml
+                    ? 'Enabled'
+                    : 'Disabled'}
+                </DetailsGridValue>
+              </DetailsGridEntry>
+            </DetailsGridColumn>
+          </DetailsGrid>
+        </CardContent>
+      </Card>
     </div>
   );
 };
 
-const schema = z.object({
+const redirectURIsSchema = z.object({
   redirectUri: z.string().url(),
   afterLoginRedirectUri: z.string().url().or(z.literal('')).optional(),
   afterSignupRedirectUri: z.string().url().or(z.literal('')).optional(),
 });
 
 const EditProjectRedirectURIsButton = () => {
-  const form = useForm<z.infer<typeof schema>>({
-    resolver: zodResolver(schema),
+  const form = useForm<z.infer<typeof redirectURIsSchema>>({
+    resolver: zodResolver(redirectURIsSchema),
     defaultValues: {
       redirectUri: '',
       afterLoginRedirectUri: '',
@@ -286,7 +320,7 @@ const EditProjectRedirectURIsButton = () => {
 
   const updateProjectMutation = useMutation(updateProject);
   const [open, setOpen] = useState(false);
-  const handleSubmit = async (values: z.infer<typeof schema>) => {
+  const handleSubmit = async (values: z.infer<typeof redirectURIsSchema>) => {
     await updateProjectMutation.mutateAsync({
       project: {
         redirectUri: values.redirectUri,
@@ -369,6 +403,88 @@ const EditProjectRedirectURIsButton = () => {
                   <FormDescription>
                     Where users will be redirected after signing up. If blank,
                     uses the default redirect URI.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <AlertDialogFooter className="mt-8">
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <Button type="submit">Save</Button>
+            </AlertDialogFooter>
+          </form>
+        </Form>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+};
+
+const samlSchema = z.object({
+  logInWithSaml: z.boolean(),
+});
+
+const EditProjectSAMLSettingsButton = () => {
+  const form = useForm<z.infer<typeof samlSchema>>({
+    resolver: zodResolver(samlSchema),
+    defaultValues: {
+      logInWithSaml: false,
+    },
+  });
+
+  const { data: getProjectResponse, refetch } = useQuery(getProject);
+  useEffect(() => {
+    if (getProjectResponse?.project) {
+      form.reset({
+        logInWithSaml: getProjectResponse?.project?.logInWithSaml || false,
+      });
+    }
+  }, [getProjectResponse]);
+
+  const updateProjectMutation = useMutation(updateProject);
+  const [open, setOpen] = useState(false);
+  const handleSubmit = async (values: z.infer<typeof samlSchema>) => {
+    await updateProjectMutation.mutateAsync({
+      project: {
+        logInWithSaml: values.logInWithSaml,
+      },
+    });
+    await refetch();
+    toast.success('SAML Settings updated');
+    setOpen(false);
+  };
+
+  return (
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogTrigger>
+        <Button variant="outline">Edit</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Edit SAML Settings</AlertDialogTitle>
+          <AlertDialogDescription>
+            Enable or disable "Log in with SAML" for your project.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <Form {...form}>
+          <form
+            className="space-y-4"
+            onSubmit={form.handleSubmit(handleSubmit)}
+          >
+            <FormField
+              control={form.control}
+              name="logInWithSaml"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Status</FormLabel>
+                  <FormControl>
+                    <Switch
+                      className="block"
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Whether Organizations in this Project can enable SAML.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

@@ -586,6 +586,26 @@ SET
 WHERE
     id = $1;
 
+-- name: GetOrganizationDomains :many
+SELECT
+    organization_domains.*
+FROM
+    organization_domains
+    JOIN organizations ON organization_domains.organization_id = organizations.id
+WHERE
+    public.organization_domains.organization_id = $1
+    AND organizations.project_id = $2;
+
+-- name: DeleteOrganizationDomains :exec
+DELETE FROM organization_domains
+WHERE organization_id = $1;
+
+-- name: CreateOrganizationDomain :one
+INSERT INTO organization_domains (id, organization_id, DOMAIN)
+    VALUES ($1, $2, $3)
+RETURNING
+    *;
+
 -- name: GetOrganizationGoogleHostedDomains :many
 SELECT
     organization_google_hosted_domains.*

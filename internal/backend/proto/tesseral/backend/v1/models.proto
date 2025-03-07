@@ -76,6 +76,11 @@ message Organization {
   optional bool scim_enabled = 10;
 }
 
+message OrganizationDomains {
+  string organization_id = 1;
+  repeated string domains = 2;
+}
+
 message OrganizationGoogleHostedDomains {
   string organization_id = 1;
   repeated string google_hosted_domains = 2;

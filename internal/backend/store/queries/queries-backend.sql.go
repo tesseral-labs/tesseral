@@ -69,6 +69,26 @@ func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganization
 	return i, err
 }
 
+const createOrganizationDomain = `-- name: CreateOrganizationDomain :one
+INSERT INTO organization_domains (id, organization_id, DOMAIN)
+    VALUES ($1, $2, $3)
+RETURNING
+    id, organization_id, domain
+`
+
+type CreateOrganizationDomainParams struct {
+	ID             uuid.UUID
+	OrganizationID uuid.UUID
+	Domain         string
+}
+
+func (q *Queries) CreateOrganizationDomain(ctx context.Context, arg CreateOrganizationDomainParams) (OrganizationDomain, error) {
+	row := q.db.QueryRow(ctx, createOrganizationDomain, arg.ID, arg.OrganizationID, arg.Domain)
+	var i OrganizationDomain
+	err := row.Scan(&i.ID, &i.OrganizationID, &i.Domain)
+	return i, err
+}
+
 const createOrganizationGoogleHostedDomain = `-- name: CreateOrganizationGoogleHostedDomain :one
 INSERT INTO organization_google_hosted_domains (id, organization_id, google_hosted_domain)
     VALUES ($1, $2, $3)
@@ -385,6 +405,16 @@ WHERE id = $1
 
 func (q *Queries) DeleteOrganization(ctx context.Context, id uuid.UUID) error {
 	_, err := q.db.Exec(ctx, deleteOrganization, id)
+	return err
+}
+
+const deleteOrganizationDomains = `-- name: DeleteOrganizationDomains :exec
+DELETE FROM organization_domains
+WHERE organization_id = $1
+`
+
+func (q *Queries) DeleteOrganizationDomains(ctx context.Context, organizationID uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteOrganizationDomains, organizationID)
 	return err
 }
 
@@ -735,6 +765,42 @@ func (q *Queries) GetOrganizationByProjectIDAndID(ctx context.Context, arg GetOr
 		&i.LogInWithSaml,
 	)
 	return i, err
+}
+
+const getOrganizationDomains = `-- name: GetOrganizationDomains :many
+SELECT
+    organization_domains.id, organization_domains.organization_id, organization_domains.domain
+FROM
+    organization_domains
+    JOIN organizations ON organization_domains.organization_id = organizations.id
+WHERE
+    public.organization_domains.organization_id = $1
+    AND organizations.project_id = $2
+`
+
+type GetOrganizationDomainsParams struct {
+	OrganizationID uuid.UUID
+	ProjectID      uuid.UUID
+}
+
+func (q *Queries) GetOrganizationDomains(ctx context.Context, arg GetOrganizationDomainsParams) ([]OrganizationDomain, error) {
+	rows, err := q.db.Query(ctx, getOrganizationDomains, arg.OrganizationID, arg.ProjectID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []OrganizationDomain
+	for rows.Next() {
+		var i OrganizationDomain
+		if err := rows.Scan(&i.ID, &i.OrganizationID, &i.Domain); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const getOrganizationGoogleHostedDomains = `-- name: GetOrganizationGoogleHostedDomains :many

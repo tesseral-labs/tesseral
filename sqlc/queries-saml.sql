@@ -1,3 +1,11 @@
+-- name: GetProject :one
+SELECT
+    *
+FROM
+    projects
+WHERE
+    id = $1;
+
 -- name: GetSAMLConnection :one
 SELECT
     saml_connections.*
@@ -16,4 +24,25 @@ FROM
     organization_domains
 WHERE
     organization_id = $1;
+
+-- name: GetUserByEmail :one
+SELECT
+    *
+FROM
+    users
+WHERE
+    organization_id = $1
+    AND email = $2;
+
+-- name: CreateUser :one
+INSERT INTO users (id, organization_id, email, is_owner)
+    VALUES ($1, $2, $3, $4)
+RETURNING
+    *;
+
+-- name: CreateSession :one
+INSERT INTO sessions (id, user_id, expire_time, refresh_token_sha256)
+    VALUES ($1, $2, $3, $4)
+RETURNING
+    *;
 

@@ -37,6 +37,17 @@ service BackendService {
     option (google.api.http) = {delete: "/backend/v1/organizations/{id}"};
   }
 
+  rpc GetOrganizationDomains(GetOrganizationDomainsRequest) returns (GetOrganizationDomainsResponse) {
+    option (google.api.http) = {get: "/backend/v1/organizations/{organization_id}/domains"};
+  }
+
+  rpc UpdateOrganizationDomains(UpdateOrganizationDomainsRequest) returns (UpdateOrganizationDomainsResponse) {
+    option (google.api.http) = {
+      patch: "/backend/v1/organizations/{organization_id}/domains"
+      body: "organization_domains"
+    };
+  }
+
   rpc GetOrganizationGoogleHostedDomains(GetOrganizationGoogleHostedDomainsRequest) returns (GetOrganizationGoogleHostedDomainsResponse) {
     option (google.api.http) = {get: "/backend/v1/organizations/{organization_id}/google-hosted-domains"};
   }
@@ -271,6 +282,23 @@ message DeleteOrganizationRequest {
 }
 
 message DeleteOrganizationResponse {}
+
+message GetOrganizationDomainsRequest {
+  string organization_id = 1;
+}
+
+message GetOrganizationDomainsResponse {
+  OrganizationDomains organization_domains = 1;
+}
+
+message UpdateOrganizationDomainsRequest {
+  string organization_id = 1;
+  OrganizationDomains organization_domains = 2;
+}
+
+message UpdateOrganizationDomainsResponse {
+  OrganizationDomains organization_domains = 1;
+}
 
 message GetOrganizationGoogleHostedDomainsRequest {
   string organization_id = 1;
