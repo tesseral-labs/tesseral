@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ssoready/ssoready/internal/saml"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/tesseral-labs/tesseral/internal/saml/internal/saml"
 )
 
 func TestValidate_KnownGoodAssertions(t *testing.T) {
