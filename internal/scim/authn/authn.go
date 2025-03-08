@@ -37,7 +37,7 @@ func OrganizationID(ctx context.Context) uuid.UUID {
 		panic(fmt.Errorf("ctx does not carry scimAPIKey"))
 	}
 
-	id, err := idformat.Organization.Parse(v.scimAPIKey.ID)
+	id, err := idformat.Organization.Parse(v.scimAPIKey.OrganizationID)
 	if err != nil {
 		panic(fmt.Errorf("parse organization id: %w", err))
 	}
