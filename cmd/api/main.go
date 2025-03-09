@@ -353,13 +353,14 @@ func main() {
 
 	noEncoding := func(h http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Del("Content-Encoding")
+			r.Header.Del("Accept-Encoding")
+			r.Header.Set("Accept-Encoding", "identity")
 			h.ServeHTTP(w, r)
 		})
 	}
 
-	serve = noEncoding(serve)
 	serve = slogcorrelation.NewHandler(serve)
+	serve = noEncoding(serve)
 
 	slog.Info("serve")
 	if config.RunAsLambda {
