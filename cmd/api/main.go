@@ -333,7 +333,9 @@ func main() {
 	// These handlers are registered in a FILO order much like
 	// a Matryoshka doll
 
-	var serve http.Handler = mux
+	// Use the slogcorrelation.NewHandler to add correlation IDs to the request
+	serve := slogcorrelation.NewHandler(mux)
+	// Add CORS headers
 	serve = cors.New(cors.Options{
 		AllowOriginFunc: func(origin string) bool {
 			return true
@@ -350,17 +352,6 @@ func main() {
 		AllowCredentials: true,
 		ExposedHeaders:   []string{"*"},
 	}).Handler(serve)
-	//
-	//noEncoding := func(h http.Handler) http.Handler {
-	//	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	//		r.Header.Del("Accept-Encoding")
-	//		r.Header.Set("Accept-Encoding", "identity")
-	//		h.ServeHTTP(w, r)
-	//	})
-	//}
-
-	serve = slogcorrelation.NewHandler(serve)
-	//serve = noEncoding(serve)
 
 	slog.Info("serve")
 	if config.RunAsLambda {
