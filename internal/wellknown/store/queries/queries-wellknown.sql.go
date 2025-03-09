@@ -11,7 +11,7 @@ import (
 	"github.com/google/uuid"
 )
 
-const getProjectTrustedDomains = `-- name: GetProjectTrustedDomains :many
+const getProjectTrustedDomains = `-- name: GetProjectTrustedOrigins :many
 SELECT
     id, project_id, domain
 FROM

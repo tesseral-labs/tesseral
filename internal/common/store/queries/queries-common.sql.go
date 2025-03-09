@@ -89,6 +89,35 @@ func (q *Queries) GetProjectIDByVaultDomain(ctx context.Context, vaultDomain str
 	return id, err
 }
 
+const getProjectTrustedDomains = `-- name: GetProjectTrustedOrigins :many
+SELECT
+    project_trusted_domains.domain
+FROM
+    project_trusted_domains
+WHERE
+    project_id = $1
+`
+
+func (q *Queries) GetProjectTrustedDomains(ctx context.Context, projectID uuid.UUID) ([]string, error) {
+	rows, err := q.db.Query(ctx, getProjectTrustedDomains, projectID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []string
+	for rows.Next() {
+		var domain string
+		if err := rows.Scan(&domain); err != nil {
+			return nil, err
+		}
+		items = append(items, domain)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getSessionDetailsByRefreshTokenSHA256 = `-- name: GetSessionDetailsByRefreshTokenSHA256 :one
 SELECT
     sessions.id AS session_id,

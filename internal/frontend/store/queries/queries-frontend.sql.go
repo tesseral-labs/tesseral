@@ -528,7 +528,7 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 	return i, err
 }
 
-const getProjectTrustedDomains = `-- name: GetProjectTrustedDomains :many
+const getProjectTrustedDomains = `-- name: GetProjectTrustedOrigins :many
 SELECT
     id, project_id, domain
 FROM
