@@ -350,17 +350,17 @@ func main() {
 		AllowCredentials: true,
 		ExposedHeaders:   []string{"*"},
 	}).Handler(serve)
-
-	noEncoding := func(h http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			r.Header.Del("Accept-Encoding")
-			r.Header.Set("Accept-Encoding", "identity")
-			h.ServeHTTP(w, r)
-		})
-	}
+	//
+	//noEncoding := func(h http.Handler) http.Handler {
+	//	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	//		r.Header.Del("Accept-Encoding")
+	//		r.Header.Set("Accept-Encoding", "identity")
+	//		h.ServeHTTP(w, r)
+	//	})
+	//}
 
 	serve = slogcorrelation.NewHandler(serve)
-	serve = noEncoding(serve)
+	//serve = noEncoding(serve)
 
 	slog.Info("serve")
 	if config.RunAsLambda {
