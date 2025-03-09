@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -25,7 +26,11 @@ func Handler(h http.Handler) lambda.Handler {
 
 		w := httptest.NewRecorder()
 		h.ServeHTTP(w, req)
-		return httpResponseEvent(w), nil
+		res := httpResponseEvent(w)
+
+		slog.Info("http_req_lambda", "req", req, "res", res)
+
+		return res, nil
 	})
 }
 
