@@ -195,9 +195,10 @@ func TestHTTPResponseEvent(t *testing.T) {
 				return rec
 			}(),
 			want: events.LambdaFunctionURLResponse{
-				StatusCode: http.StatusOK,
-				Headers:    map[string]string{},
-				Body:       `{"message":"success"}`, // Expected response body
+				StatusCode:      http.StatusOK,
+				Headers:         map[string]string{},
+				Body:            `eyJtZXNzYWdlIjoic3VjY2VzcyJ9`, // Expected response body
+				IsBase64Encoded: true,
 			},
 		},
 		{
@@ -209,9 +210,10 @@ func TestHTTPResponseEvent(t *testing.T) {
 				return rec
 			}(),
 			want: events.LambdaFunctionURLResponse{
-				StatusCode: http.StatusNotFound,
-				Headers:    map[string]string{},
-				Body:       `{"error":"resource not found"}`, // Expected response body
+				StatusCode:      http.StatusNotFound,
+				Headers:         map[string]string{},
+				Body:            `eyJlcnJvciI6InJlc291cmNlIG5vdCBmb3VuZCJ9`, // Expected response body
+				IsBase64Encoded: true,
 			},
 		},
 		{
@@ -235,7 +237,8 @@ func TestHTTPResponseEvent(t *testing.T) {
 				Headers: map[string]string{
 					"X-Custom-Header": "value1,value2",
 				},
-				Body: `{"message":"success"}`, // Expected response body
+				Body:            `eyJtZXNzYWdlIjoic3VjY2VzcyJ9`, // Expected response body
+				IsBase64Encoded: true,
 			},
 		},
 	}
