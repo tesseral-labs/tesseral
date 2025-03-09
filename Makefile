@@ -32,26 +32,23 @@ migrate:
 
 .PHONY: proto
 proto:
-	rm -rf internal/backend/gen internal/frontend/gen internal/intermediate/gen internal/oauth/gen internal/common/gen console/src/gen vault-ui/src/gen
+	rm -rf internal/backend/gen internal/frontend/gen internal/intermediate/gen internal/common/gen console/src/gen vault-ui/src/gen
 	buf format internal/backend/proto -w
 	buf format internal/frontend/proto -w
 	buf format internal/intermediate/proto -w
-	buf format internal/oauth/proto -w
 	buf format internal/common/proto -w
 	npx buf generate --template buf/buf.gen-backend.yaml
 	npx buf generate --template buf/buf.gen-frontend.yaml
 	npx buf generate --template buf/buf.gen-intermediate.yaml
-	npx buf generate --template buf/buf.gen-oauth.yaml
 	npx buf generate --template buf/buf.gen-common.yaml
 
 .PHONY: queries
 queries:
-	rm -rf internal/store/queries internal/backend/store/queries internal/frontend/store/queries internal/intermediate/store/queries internal/oauth/store/queries internal/saml/store/queries internal/scim/store/queries internal/common/store/queries internal/wellknown/store/queries internal/configapi/store/queries
+	rm -rf internal/store/queries internal/backend/store/queries internal/frontend/store/queries internal/intermediate/store/queries internal/saml/store/queries internal/scim/store/queries internal/common/store/queries internal/wellknown/store/queries internal/configapi/store/queries
 	docker run --rm --volume "$$(pwd)/sqlc/queries.sql:/work/queries.sql" backplane/pgformatter -i queries.sql
 	docker run --rm --volume "$$(pwd)/sqlc/queries-backend.sql:/work/queries.sql" backplane/pgformatter -i queries.sql
 	docker run --rm --volume "$$(pwd)/sqlc/queries-frontend.sql:/work/queries.sql" backplane/pgformatter -i queries.sql
 	docker run --rm --volume "$$(pwd)/sqlc/queries-intermediate.sql:/work/queries.sql" backplane/pgformatter -i queries.sql
-	docker run --rm --volume "$$(pwd)/sqlc/queries-oauth.sql:/work/queries.sql" backplane/pgformatter -i queries.sql
 	docker run --rm --volume "$$(pwd)/sqlc/queries-saml.sql:/work/queries.sql" backplane/pgformatter -i queries.sql
 	docker run --rm --volume "$$(pwd)/sqlc/queries-scim.sql:/work/queries.sql" backplane/pgformatter -i queries.sql
 	docker run --rm --volume "$$(pwd)/sqlc/queries-common.sql:/work/queries.sql" backplane/pgformatter -i queries.sql

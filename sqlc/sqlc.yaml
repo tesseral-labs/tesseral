@@ -70,13 +70,6 @@ sql:
         <<: *go
         out: "../internal/intermediate/store/queries"
   - engine: "postgresql"
-    queries: "queries-oauth.sql"
-    schema: "../cmd/openauthctl/migrations"
-    gen:
-      go:
-        <<: *go
-        out: "../internal/oauth/store/queries"
-  - engine: "postgresql"
     queries: "queries-saml.sql"
     schema: "../cmd/openauthctl/migrations"
     gen:

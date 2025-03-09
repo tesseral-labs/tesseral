@@ -45,8 +45,6 @@ import (
 	intermediatestore "github.com/tesseral-labs/tesseral/internal/intermediate/store"
 	"github.com/tesseral-labs/tesseral/internal/loadenv"
 	"github.com/tesseral-labs/tesseral/internal/microsoftoauth"
-	oauthservice "github.com/tesseral-labs/tesseral/internal/oauth/service"
-	oauthstore "github.com/tesseral-labs/tesseral/internal/oauth/store"
 	"github.com/tesseral-labs/tesseral/internal/pagetoken"
 	samlinterceptor "github.com/tesseral-labs/tesseral/internal/saml/authn/interceptor"
 	samlservice "github.com/tesseral-labs/tesseral/internal/saml/service"
@@ -253,13 +251,6 @@ func main() {
 		panic(err)
 	}
 
-	oauthStore := oauthstore.New(oauthstore.NewStoreParams{
-		DB: db,
-	})
-	oauthService := oauthservice.Service{
-		Store: oauthStore,
-	}
-
 	samlStore := samlstore.New(samlstore.NewStoreParams{
 		DB: db,
 	})
@@ -314,9 +305,6 @@ func main() {
 	mux.Handle("/api/backend/v1/", http.StripPrefix("/api", backendTranscoder))
 	mux.Handle("/api/frontend/v1/", http.StripPrefix("/api", frontendTranscoder))
 	mux.Handle("/api/intermediate/v1/", http.StripPrefix("/api", intermediateTranscoder))
-
-	// Register oauthservice
-	mux.Handle("/api/oauth/", oauthService.Handler())
 
 	// Register samlservice
 	mux.Handle("/api/saml/", samlServiceHandler)
