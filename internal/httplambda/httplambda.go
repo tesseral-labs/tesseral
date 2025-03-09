@@ -74,7 +74,7 @@ func httpResponseEvent(w *httptest.ResponseRecorder) events.LambdaFunctionURLRes
 		StatusCode:      res.StatusCode,
 		Cookies:         cookies,
 		Headers:         headers,
-		Body:            string(body),
-		IsBase64Encoded: false,
+		Body:            base64.StdEncoding.EncodeToString(body),
+		IsBase64Encoded: true,
 	}
 }

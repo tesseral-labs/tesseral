@@ -25,12 +25,12 @@ type Service struct {
 func (s *Service) Handler(p *projectid.Sniffer) http.Handler {
 	mux := http.NewServeMux()
 
-	mux.Handle("GET /scim/v1/Users", withErr(s.listUsers))
-	mux.Handle("GET /scim/v1/Users/{userID}", withErr(s.getUser))
-	mux.Handle("POST /scim/v1/Users", withErr(s.createUser))
-	mux.Handle("PUT /scim/v1/Users/{userID}", withErr(s.updateUser))
-	mux.Handle("PATCH /scim/v1/Users/{userID}", withErr(s.patchUser))
-	mux.Handle("DELETE /scim/v1/Users/{userID}", withErr(s.deleteUser))
+	mux.Handle("GET /api/scim/v1/Users", withErr(s.listUsers))
+	mux.Handle("GET /api/scim/v1/Users/{userID}", withErr(s.getUser))
+	mux.Handle("POST /api/scim/v1/Users", withErr(s.createUser))
+	mux.Handle("PUT /api/scim/v1/Users/{userID}", withErr(s.updateUser))
+	mux.Handle("PATCH /api/scim/v1/Users/{userID}", withErr(s.patchUser))
+	mux.Handle("DELETE /api/scim/v1/Users/{userID}", withErr(s.deleteUser))
 
 	return logHTTP(authnmiddleware.New(s.Store, p, mux))
 }

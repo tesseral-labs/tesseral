@@ -29,8 +29,8 @@ func (q *Queries) CountUsers(ctx context.Context, organizationID uuid.UUID) (int
 }
 
 const createUser = `-- name: CreateUser :one
-INSERT INTO users (id, organization_id, email)
-    VALUES ($1, $2, $3)
+INSERT INTO users (id, organization_id, email, is_owner)
+    VALUES ($1, $2, $3, $4)
 RETURNING
     id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_recovery_code_bcrypts, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time
 `
@@ -39,10 +39,16 @@ type CreateUserParams struct {
 	ID             uuid.UUID
 	OrganizationID uuid.UUID
 	Email          string
+	IsOwner        bool
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
-	row := q.db.QueryRow(ctx, createUser, arg.ID, arg.OrganizationID, arg.Email)
+	row := q.db.QueryRow(ctx, createUser,
+		arg.ID,
+		arg.OrganizationID,
+		arg.Email,
+		arg.IsOwner,
+	)
 	var i User
 	err := row.Scan(
 		&i.ID,

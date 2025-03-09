@@ -54,8 +54,8 @@ WHERE
     AND email = $2;
 
 -- name: CreateUser :one
-INSERT INTO users (id, organization_id, email)
-    VALUES ($1, $2, $3)
+INSERT INTO users (id, organization_id, email, is_owner)
+    VALUES ($1, $2, $3, $4)
 RETURNING
     *;
 

@@ -5,7 +5,7 @@ import (
 	"crypto/sha256"
 	"fmt"
 
-	"github.com/tesseral-labs/tesseral/internal/saml/authn"
+	"github.com/google/uuid"
 	"github.com/tesseral-labs/tesseral/internal/scim/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 )
@@ -15,7 +15,7 @@ type SCIMAPIKey struct {
 	OrganizationID string
 }
 
-func (s *Store) GetSCIMAPIKeyByToken(ctx context.Context, token string) (*SCIMAPIKey, error) {
+func (s *Store) GetSCIMAPIKeyByToken(ctx context.Context, projectID uuid.UUID, token string) (*SCIMAPIKey, error) {
 	_, q, _, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -29,7 +29,7 @@ func (s *Store) GetSCIMAPIKeyByToken(ctx context.Context, token string) (*SCIMAP
 
 	tokenSHA := sha256.Sum256(tokenUUID[:])
 	qSCIMAPIKey, err := q.GetSCIMAPIKeyByTokenSHA256(ctx, queries.GetSCIMAPIKeyByTokenSHA256Params{
-		ProjectID:         authn.ProjectID(ctx),
+		ProjectID:         projectID,
 		SecretTokenSha256: tokenSHA[:],
 	})
 	if err != nil {
