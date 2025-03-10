@@ -39,8 +39,8 @@ export const ViewProjectSettingsPage = () => {
       url: `/project-settings`,
     },
     {
-      name: 'Hosted Portal Settings',
-      url: `/project-settings/hosted-portal`,
+      name: 'Vault UI Settings',
+      url: `/project-settings/vault-ui-settings`,
     },
     {
       name: 'Vault Domain Settings',
