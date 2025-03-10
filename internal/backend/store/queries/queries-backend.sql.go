@@ -1017,7 +1017,7 @@ func (q *Queries) GetProjectIDOrganizationBacks(ctx context.Context, organizatio
 	return id, err
 }
 
-const getProjectTrustedDomains = `-- name: GetProjectTrustedOrigins :many
+const getProjectTrustedDomains = `-- name: GetProjectTrustedDomains :many
 SELECT
     id, project_id, domain
 FROM

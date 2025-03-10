@@ -89,7 +89,7 @@ func (q *Queries) GetProjectIDByVaultDomain(ctx context.Context, vaultDomain str
 	return id, err
 }
 
-const getProjectTrustedDomains = `-- name: GetProjectTrustedOrigins :many
+const getProjectTrustedDomains = `-- name: GetProjectTrustedDomains :many
 SELECT
     project_trusted_domains.domain
 FROM
