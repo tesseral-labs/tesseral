@@ -48,6 +48,7 @@ import { Input } from '@/components/ui/input';
 import Loader from '@/components/ui/loader';
 import { toast } from 'sonner';
 import { Switch } from '@/components/ui/switch';
+import { InputTags } from '@/components/input-tags';
 
 export const ProjectDetailsTab = () => {
   const { data: getProjectResponse } = useQuery(getProject, {});
@@ -94,6 +95,33 @@ export const ProjectDetailsTab = () => {
                     <span className="text-muted-foreground">
                       (Use Default Redirect URI)
                     </span>
+                  )}
+                </DetailsGridValue>
+              </DetailsGridEntry>
+            </DetailsGridColumn>
+          </DetailsGrid>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="flex-row justify-between items-center">
+          <div className="flex flex-col space-y-1 5">
+            <CardTitle>Trusted Domains</CardTitle>
+            <CardDescription>
+              Client-side JavaScript on these domains can take actions on your
+              user's behalf once they're logged in.
+            </CardDescription>
+          </div>
+          <EditProjectTrustedDomainsButton />
+        </CardHeader>
+        <CardContent>
+          <DetailsGrid>
+            <DetailsGridColumn>
+              <DetailsGridEntry>
+                <DetailsGridKey>Trusted Domains</DetailsGridKey>
+                <DetailsGridValue>
+                  {getProjectResponse?.project?.trustedDomains?.map(
+                    (domain) => <div key={domain}>{domain}</div>,
                   )}
                 </DetailsGridValue>
               </DetailsGridEntry>
@@ -321,11 +349,34 @@ const EditProjectRedirectURIsButton = () => {
   const updateProjectMutation = useMutation(updateProject);
   const [open, setOpen] = useState(false);
   const handleSubmit = async (values: z.infer<typeof redirectURIsSchema>) => {
+    // if any of the redirect URIs have the scheme `http` or `https`,
+    // automatically add those to the set of trusted domains.
+    const trustedDomains = new Set(getProjectResponse!.project!.trustedDomains);
+    if (
+      values.redirectUri.startsWith('http://') ||
+      values.redirectUri.startsWith('https://')
+    ) {
+      trustedDomains.add(new URL(values.redirectUri).host);
+    }
+    if (
+      values.afterLoginRedirectUri?.startsWith('http://') ||
+      values.afterLoginRedirectUri?.startsWith('https://')
+    ) {
+      trustedDomains.add(new URL(values.afterLoginRedirectUri).host);
+    }
+    if (
+      values.afterSignupRedirectUri?.startsWith('http://') ||
+      values.afterSignupRedirectUri?.startsWith('https://')
+    ) {
+      trustedDomains.add(new URL(values.afterSignupRedirectUri).host);
+    }
+
     await updateProjectMutation.mutateAsync({
       project: {
         redirectUri: values.redirectUri,
         afterLoginRedirectUri: values.afterLoginRedirectUri,
         afterSignupRedirectUri: values.afterSignupRedirectUri,
+        trustedDomains: Array.from(trustedDomains),
       },
     });
     await refetch();
@@ -403,6 +454,95 @@ const EditProjectRedirectURIsButton = () => {
                   <FormDescription>
                     Where users will be redirected after signing up. If blank,
                     uses the default redirect URI.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <AlertDialogFooter className="mt-8">
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <Button type="submit">Save</Button>
+            </AlertDialogFooter>
+          </form>
+        </Form>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+};
+
+const trustedDomainsSchema = z.object({
+  trustedDomains: z.array(
+    z.string().regex(/^([a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+(:\d+)?$/),
+  ),
+});
+
+const EditProjectTrustedDomainsButton = () => {
+  const form = useForm<z.infer<typeof trustedDomainsSchema>>({
+    resolver: zodResolver(trustedDomainsSchema),
+    defaultValues: {
+      trustedDomains: [],
+    },
+  });
+
+  const { data: getProjectResponse, refetch } = useQuery(getProject);
+  useEffect(() => {
+    if (getProjectResponse?.project) {
+      form.reset({
+        trustedDomains: getProjectResponse?.project?.trustedDomains || [],
+      });
+    }
+  }, [getProjectResponse]);
+
+  const updateProjectMutation = useMutation(updateProject);
+  const [open, setOpen] = useState(false);
+  const handleSubmit = async (values: z.infer<typeof trustedDomainsSchema>) => {
+    await updateProjectMutation.mutateAsync({
+      project: {
+        trustedDomains: values.trustedDomains,
+      },
+    });
+    await refetch();
+    toast.success('Trusted Domains updated');
+    setOpen(false);
+  };
+
+  return (
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogTrigger>
+        <Button variant="outline">Edit</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Edit Trusted Domains</AlertDialogTitle>
+          <AlertDialogDescription>
+            Edit the trusted domains for your project.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <Form {...form}>
+          <form
+            className="space-y-4"
+            onSubmit={form.handleSubmit(handleSubmit)}
+          >
+            <FormField
+              control={form.control}
+              name="trustedDomains"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Trusted Domains</FormLabel>
+                  <FormControl>
+                    <InputTags
+                      placeholder="app.company.com, localhost:3000"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Add the domains that your app runs on, e.g.
+                    "app.company.com". If{' '}
+                    <span className="font-medium">
+                      {getProjectResponse?.project?.displayName}
+                    </span>{' '}
+                    is a non-production project, you can also add localhost
+                    here. Your vault domains are always trusted domains.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

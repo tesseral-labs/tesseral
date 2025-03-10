@@ -35,7 +35,6 @@ func Handler(s *store.Store, p *projectid.Sniffer, h http.Handler) http.Handler 
 				http.MethodPut,
 				http.MethodPatch,
 				http.MethodDelete,
-				http.MethodOptions,
 			},
 		}).Handler(h).ServeHTTP(w, r)
 	})
