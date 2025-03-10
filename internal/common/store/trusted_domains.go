@@ -21,7 +21,7 @@ func (s *Store) GetProjectTrustedOrigins(ctx context.Context, projectID uuid.UUI
 		// then its HTTP (not S) variant is also a trusted origin.
 		origin := url.URL{Scheme: "https", Host: domain}
 		if origin.Hostname() == "localhost" {
-			originHTTP := url.URL{Scheme: "originHTTP", Host: domain}
+			originHTTP := url.URL{Scheme: "http", Host: domain}
 			origins = append(origins, originHTTP.String())
 		}
 
