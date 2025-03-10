@@ -5,191 +5,267 @@
 import { BackendService } from "./backend_pb";
 
 /**
+ * Get the current project.
+ *
  * @generated from rpc tesseral.backend.v1.BackendService.GetProject
  */
 export const getProject = BackendService.method.getProject;
 
 /**
+ * List Organizations.
+ *
  * @generated from rpc tesseral.backend.v1.BackendService.ListOrganizations
  */
 export const listOrganizations = BackendService.method.listOrganizations;
 
 /**
+ * Get an Organization.
+ *
  * @generated from rpc tesseral.backend.v1.BackendService.GetOrganization
  */
 export const getOrganization = BackendService.method.getOrganization;
 
 /**
+ * Create an Organization.
+ *
  * @generated from rpc tesseral.backend.v1.BackendService.CreateOrganization
  */
 export const createOrganization = BackendService.method.createOrganization;
 
 /**
+ * Update an Organization.
+ *
  * @generated from rpc tesseral.backend.v1.BackendService.UpdateOrganization
  */
 export const updateOrganization = BackendService.method.updateOrganization;
 
 /**
+ * Delete an Organization.
+ *
  * @generated from rpc tesseral.backend.v1.BackendService.DeleteOrganization
  */
 export const deleteOrganization = BackendService.method.deleteOrganization;
 
 /**
+ * Get Organization Domains.
+ *
  * @generated from rpc tesseral.backend.v1.BackendService.GetOrganizationDomains
  */
 export const getOrganizationDomains = BackendService.method.getOrganizationDomains;
 
 /**
+ * Update Organization Domains.
+ *
  * @generated from rpc tesseral.backend.v1.BackendService.UpdateOrganizationDomains
  */
 export const updateOrganizationDomains = BackendService.method.updateOrganizationDomains;
 
 /**
+ * Get Organization Google Hosted Domains.
+ *
  * @generated from rpc tesseral.backend.v1.BackendService.GetOrganizationGoogleHostedDomains
  */
 export const getOrganizationGoogleHostedDomains = BackendService.method.getOrganizationGoogleHostedDomains;
 
 /**
+ * Update Organization Google Hosted Domains.
+ *
  * @generated from rpc tesseral.backend.v1.BackendService.UpdateOrganizationGoogleHostedDomains
  */
 export const updateOrganizationGoogleHostedDomains = BackendService.method.updateOrganizationGoogleHostedDomains;
 
 /**
+ * Get Organization Microsoft Tenant IDs.
+ *
  * @generated from rpc tesseral.backend.v1.BackendService.GetOrganizationMicrosoftTenantIDs
  */
 export const getOrganizationMicrosoftTenantIDs = BackendService.method.getOrganizationMicrosoftTenantIDs;
 
 /**
+ * Update Organization Microsoft Tenant IDs.
+ *
  * @generated from rpc tesseral.backend.v1.BackendService.UpdateOrganizationMicrosoftTenantIDs
  */
 export const updateOrganizationMicrosoftTenantIDs = BackendService.method.updateOrganizationMicrosoftTenantIDs;
 
 /**
+ * List SAML Connections.
+ *
  * @generated from rpc tesseral.backend.v1.BackendService.ListSAMLConnections
  */
 export const listSAMLConnections = BackendService.method.listSAMLConnections;
 
 /**
+ * Get a SAML Connection.
+ *
  * @generated from rpc tesseral.backend.v1.BackendService.GetSAMLConnection
  */
 export const getSAMLConnection = BackendService.method.getSAMLConnection;
 
 /**
+ * Create a SAML Connection.
+ *
  * @generated from rpc tesseral.backend.v1.BackendService.CreateSAMLConnection
  */
 export const createSAMLConnection = BackendService.method.createSAMLConnection;
 
 /**
+ * Update a SAML Connection.
+ *
  * @generated from rpc tesseral.backend.v1.BackendService.UpdateSAMLConnection
  */
 export const updateSAMLConnection = BackendService.method.updateSAMLConnection;
 
 /**
+ * Delete a SAML Connection.
+ *
  * @generated from rpc tesseral.backend.v1.BackendService.DeleteSAMLConnection
  */
 export const deleteSAMLConnection = BackendService.method.deleteSAMLConnection;
 
 /**
+ * List SCIM API Keys.
+ *
  * @generated from rpc tesseral.backend.v1.BackendService.ListSCIMAPIKeys
  */
 export const listSCIMAPIKeys = BackendService.method.listSCIMAPIKeys;
 
 /**
+ * Get a SCIM API Key.
+ *
  * @generated from rpc tesseral.backend.v1.BackendService.GetSCIMAPIKey
  */
 export const getSCIMAPIKey = BackendService.method.getSCIMAPIKey;
 
 /**
+ * Create a SCIM API Key.
+ *
  * @generated from rpc tesseral.backend.v1.BackendService.CreateSCIMAPIKey
  */
 export const createSCIMAPIKey = BackendService.method.createSCIMAPIKey;
 
 /**
+ * Update a SCIM API Key.
+ *
  * @generated from rpc tesseral.backend.v1.BackendService.UpdateSCIMAPIKey
  */
 export const updateSCIMAPIKey = BackendService.method.updateSCIMAPIKey;
 
 /**
+ * Delete a SCIM API Key.
+ *
  * @generated from rpc tesseral.backend.v1.BackendService.DeleteSCIMAPIKey
  */
 export const deleteSCIMAPIKey = BackendService.method.deleteSCIMAPIKey;
 
 /**
+ * Revoke a SCIM API Key.
+ *
  * @generated from rpc tesseral.backend.v1.BackendService.RevokeSCIMAPIKey
  */
 export const revokeSCIMAPIKey = BackendService.method.revokeSCIMAPIKey;
 
 /**
+ * List Users.
+ *
  * @generated from rpc tesseral.backend.v1.BackendService.ListUsers
  */
 export const listUsers = BackendService.method.listUsers;
 
 /**
+ * Get a User.
+ *
  * @generated from rpc tesseral.backend.v1.BackendService.GetUser
  */
 export const getUser = BackendService.method.getUser;
 
 /**
+ * Create a User.
+ *
  * @generated from rpc tesseral.backend.v1.BackendService.CreateUser
  */
 export const createUser = BackendService.method.createUser;
 
 /**
+ * Update a User.
+ *
  * @generated from rpc tesseral.backend.v1.BackendService.UpdateUser
  */
 export const updateUser = BackendService.method.updateUser;
 
 /**
+ * Delete a User.
+ *
  * @generated from rpc tesseral.backend.v1.BackendService.DeleteUser
  */
 export const deleteUser = BackendService.method.deleteUser;
 
 /**
+ * List Passkeys.
+ *
  * @generated from rpc tesseral.backend.v1.BackendService.ListPasskeys
  */
 export const listPasskeys = BackendService.method.listPasskeys;
 
 /**
+ * Get a Passkey.
+ *
  * @generated from rpc tesseral.backend.v1.BackendService.GetPasskey
  */
 export const getPasskey = BackendService.method.getPasskey;
 
 /**
+ * Update a Passkey.
+ *
  * @generated from rpc tesseral.backend.v1.BackendService.UpdatePasskey
  */
 export const updatePasskey = BackendService.method.updatePasskey;
 
 /**
+ * Delete a Passkey.
+ *
  * @generated from rpc tesseral.backend.v1.BackendService.DeletePasskey
  */
 export const deletePasskey = BackendService.method.deletePasskey;
 
 /**
+ * List Sessions.
+ *
  * @generated from rpc tesseral.backend.v1.BackendService.ListSessions
  */
 export const listSessions = BackendService.method.listSessions;
 
 /**
+ * Get a Session.
+ *
  * @generated from rpc tesseral.backend.v1.BackendService.GetSession
  */
 export const getSession = BackendService.method.getSession;
 
 /**
+ * List User Invites.
+ *
  * @generated from rpc tesseral.backend.v1.BackendService.ListUserInvites
  */
 export const listUserInvites = BackendService.method.listUserInvites;
 
 /**
+ * Get a User Invite.
+ *
  * @generated from rpc tesseral.backend.v1.BackendService.GetUserInvite
  */
 export const getUserInvite = BackendService.method.getUserInvite;
 
 /**
+ * Create a User Invite.
+ *
  * @generated from rpc tesseral.backend.v1.BackendService.CreateUserInvite
  */
 export const createUserInvite = BackendService.method.createUserInvite;
 
 /**
+ * Delete a User Invite.
+ *
  * @generated from rpc tesseral.backend.v1.BackendService.DeleteUserInvite
  */
 export const deleteUserInvite = BackendService.method.deleteUserInvite;

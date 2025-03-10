@@ -219,43 +219,81 @@ const (
 
 // BackendServiceClient is a client for the tesseral.backend.v1.BackendService service.
 type BackendServiceClient interface {
+	// Get the current project.
 	GetProject(context.Context, *connect.Request[v1.GetProjectRequest]) (*connect.Response[v1.GetProjectResponse], error)
+	// List Organizations.
 	ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error)
+	// Get an Organization.
 	GetOrganization(context.Context, *connect.Request[v1.GetOrganizationRequest]) (*connect.Response[v1.GetOrganizationResponse], error)
+	// Create an Organization.
 	CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.CreateOrganizationResponse], error)
+	// Update an Organization.
 	UpdateOrganization(context.Context, *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.UpdateOrganizationResponse], error)
+	// Delete an Organization.
 	DeleteOrganization(context.Context, *connect.Request[v1.DeleteOrganizationRequest]) (*connect.Response[v1.DeleteOrganizationResponse], error)
+	// Get Organization Domains.
 	GetOrganizationDomains(context.Context, *connect.Request[v1.GetOrganizationDomainsRequest]) (*connect.Response[v1.GetOrganizationDomainsResponse], error)
+	// Update Organization Domains.
 	UpdateOrganizationDomains(context.Context, *connect.Request[v1.UpdateOrganizationDomainsRequest]) (*connect.Response[v1.UpdateOrganizationDomainsResponse], error)
+	// Get Organization Google Hosted Domains.
 	GetOrganizationGoogleHostedDomains(context.Context, *connect.Request[v1.GetOrganizationGoogleHostedDomainsRequest]) (*connect.Response[v1.GetOrganizationGoogleHostedDomainsResponse], error)
+	// Update Organization Google Hosted Domains.
 	UpdateOrganizationGoogleHostedDomains(context.Context, *connect.Request[v1.UpdateOrganizationGoogleHostedDomainsRequest]) (*connect.Response[v1.UpdateOrganizationGoogleHostedDomainsResponse], error)
+	// Get Organization Microsoft Tenant IDs.
 	GetOrganizationMicrosoftTenantIDs(context.Context, *connect.Request[v1.GetOrganizationMicrosoftTenantIDsRequest]) (*connect.Response[v1.GetOrganizationMicrosoftTenantIDsResponse], error)
+	// Update Organization Microsoft Tenant IDs.
 	UpdateOrganizationMicrosoftTenantIDs(context.Context, *connect.Request[v1.UpdateOrganizationMicrosoftTenantIDsRequest]) (*connect.Response[v1.UpdateOrganizationMicrosoftTenantIDsResponse], error)
+	// List SAML Connections.
 	ListSAMLConnections(context.Context, *connect.Request[v1.ListSAMLConnectionsRequest]) (*connect.Response[v1.ListSAMLConnectionsResponse], error)
+	// Get a SAML Connection.
 	GetSAMLConnection(context.Context, *connect.Request[v1.GetSAMLConnectionRequest]) (*connect.Response[v1.GetSAMLConnectionResponse], error)
+	// Create a SAML Connection.
 	CreateSAMLConnection(context.Context, *connect.Request[v1.CreateSAMLConnectionRequest]) (*connect.Response[v1.CreateSAMLConnectionResponse], error)
+	// Update a SAML Connection.
 	UpdateSAMLConnection(context.Context, *connect.Request[v1.UpdateSAMLConnectionRequest]) (*connect.Response[v1.UpdateSAMLConnectionResponse], error)
+	// Delete a SAML Connection.
 	DeleteSAMLConnection(context.Context, *connect.Request[v1.DeleteSAMLConnectionRequest]) (*connect.Response[v1.DeleteSAMLConnectionResponse], error)
+	// List SCIM API Keys.
 	ListSCIMAPIKeys(context.Context, *connect.Request[v1.ListSCIMAPIKeysRequest]) (*connect.Response[v1.ListSCIMAPIKeysResponse], error)
+	// Get a SCIM API Key.
 	GetSCIMAPIKey(context.Context, *connect.Request[v1.GetSCIMAPIKeyRequest]) (*connect.Response[v1.GetSCIMAPIKeyResponse], error)
+	// Create a SCIM API Key.
 	CreateSCIMAPIKey(context.Context, *connect.Request[v1.CreateSCIMAPIKeyRequest]) (*connect.Response[v1.CreateSCIMAPIKeyResponse], error)
+	// Update a SCIM API Key.
 	UpdateSCIMAPIKey(context.Context, *connect.Request[v1.UpdateSCIMAPIKeyRequest]) (*connect.Response[v1.UpdateSCIMAPIKeyResponse], error)
+	// Delete a SCIM API Key.
 	DeleteSCIMAPIKey(context.Context, *connect.Request[v1.DeleteSCIMAPIKeyRequest]) (*connect.Response[v1.DeleteSCIMAPIKeyResponse], error)
+	// Revoke a SCIM API Key.
 	RevokeSCIMAPIKey(context.Context, *connect.Request[v1.RevokeSCIMAPIKeyRequest]) (*connect.Response[v1.RevokeSCIMAPIKeyResponse], error)
+	// List Users.
 	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
+	// Get a User.
 	GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error)
+	// Create a User.
 	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error)
+	// Update a User.
 	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error)
+	// Delete a User.
 	DeleteUser(context.Context, *connect.Request[v1.DeleteUserRequest]) (*connect.Response[v1.DeleteUserResponse], error)
+	// List Passkeys.
 	ListPasskeys(context.Context, *connect.Request[v1.ListPasskeysRequest]) (*connect.Response[v1.ListPasskeysResponse], error)
+	// Get a Passkey.
 	GetPasskey(context.Context, *connect.Request[v1.GetPasskeyRequest]) (*connect.Response[v1.GetPasskeyResponse], error)
+	// Update a Passkey.
 	UpdatePasskey(context.Context, *connect.Request[v1.UpdatePasskeyRequest]) (*connect.Response[v1.UpdatePasskeyResponse], error)
+	// Delete a Passkey.
 	DeletePasskey(context.Context, *connect.Request[v1.DeletePasskeyRequest]) (*connect.Response[v1.DeletePasskeyResponse], error)
+	// List Sessions.
 	ListSessions(context.Context, *connect.Request[v1.ListSessionsRequest]) (*connect.Response[v1.ListSessionsResponse], error)
+	// Get a Session.
 	GetSession(context.Context, *connect.Request[v1.GetSessionRequest]) (*connect.Response[v1.GetSessionResponse], error)
+	// List User Invites.
 	ListUserInvites(context.Context, *connect.Request[v1.ListUserInvitesRequest]) (*connect.Response[v1.ListUserInvitesResponse], error)
+	// Get a User Invite.
 	GetUserInvite(context.Context, *connect.Request[v1.GetUserInviteRequest]) (*connect.Response[v1.GetUserInviteResponse], error)
+	// Create a User Invite.
 	CreateUserInvite(context.Context, *connect.Request[v1.CreateUserInviteRequest]) (*connect.Response[v1.CreateUserInviteResponse], error)
+	// Delete a User Invite.
 	DeleteUserInvite(context.Context, *connect.Request[v1.DeleteUserInviteRequest]) (*connect.Response[v1.DeleteUserInviteResponse], error)
 	DisableOrganizationLogins(context.Context, *connect.Request[v1.DisableOrganizationLoginsRequest]) (*connect.Response[v1.DisableOrganizationLoginsResponse], error)
 	DisableProjectLogins(context.Context, *connect.Request[v1.DisableProjectLoginsRequest]) (*connect.Response[v1.DisableProjectLoginsResponse], error)
@@ -1039,43 +1077,81 @@ func (c *backendServiceClient) CreateUserImpersonationToken(ctx context.Context,
 
 // BackendServiceHandler is an implementation of the tesseral.backend.v1.BackendService service.
 type BackendServiceHandler interface {
+	// Get the current project.
 	GetProject(context.Context, *connect.Request[v1.GetProjectRequest]) (*connect.Response[v1.GetProjectResponse], error)
+	// List Organizations.
 	ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error)
+	// Get an Organization.
 	GetOrganization(context.Context, *connect.Request[v1.GetOrganizationRequest]) (*connect.Response[v1.GetOrganizationResponse], error)
+	// Create an Organization.
 	CreateOrganization(context.Context, *connect.Request[v1.CreateOrganizationRequest]) (*connect.Response[v1.CreateOrganizationResponse], error)
+	// Update an Organization.
 	UpdateOrganization(context.Context, *connect.Request[v1.UpdateOrganizationRequest]) (*connect.Response[v1.UpdateOrganizationResponse], error)
+	// Delete an Organization.
 	DeleteOrganization(context.Context, *connect.Request[v1.DeleteOrganizationRequest]) (*connect.Response[v1.DeleteOrganizationResponse], error)
+	// Get Organization Domains.
 	GetOrganizationDomains(context.Context, *connect.Request[v1.GetOrganizationDomainsRequest]) (*connect.Response[v1.GetOrganizationDomainsResponse], error)
+	// Update Organization Domains.
 	UpdateOrganizationDomains(context.Context, *connect.Request[v1.UpdateOrganizationDomainsRequest]) (*connect.Response[v1.UpdateOrganizationDomainsResponse], error)
+	// Get Organization Google Hosted Domains.
 	GetOrganizationGoogleHostedDomains(context.Context, *connect.Request[v1.GetOrganizationGoogleHostedDomainsRequest]) (*connect.Response[v1.GetOrganizationGoogleHostedDomainsResponse], error)
+	// Update Organization Google Hosted Domains.
 	UpdateOrganizationGoogleHostedDomains(context.Context, *connect.Request[v1.UpdateOrganizationGoogleHostedDomainsRequest]) (*connect.Response[v1.UpdateOrganizationGoogleHostedDomainsResponse], error)
+	// Get Organization Microsoft Tenant IDs.
 	GetOrganizationMicrosoftTenantIDs(context.Context, *connect.Request[v1.GetOrganizationMicrosoftTenantIDsRequest]) (*connect.Response[v1.GetOrganizationMicrosoftTenantIDsResponse], error)
+	// Update Organization Microsoft Tenant IDs.
 	UpdateOrganizationMicrosoftTenantIDs(context.Context, *connect.Request[v1.UpdateOrganizationMicrosoftTenantIDsRequest]) (*connect.Response[v1.UpdateOrganizationMicrosoftTenantIDsResponse], error)
+	// List SAML Connections.
 	ListSAMLConnections(context.Context, *connect.Request[v1.ListSAMLConnectionsRequest]) (*connect.Response[v1.ListSAMLConnectionsResponse], error)
+	// Get a SAML Connection.
 	GetSAMLConnection(context.Context, *connect.Request[v1.GetSAMLConnectionRequest]) (*connect.Response[v1.GetSAMLConnectionResponse], error)
+	// Create a SAML Connection.
 	CreateSAMLConnection(context.Context, *connect.Request[v1.CreateSAMLConnectionRequest]) (*connect.Response[v1.CreateSAMLConnectionResponse], error)
+	// Update a SAML Connection.
 	UpdateSAMLConnection(context.Context, *connect.Request[v1.UpdateSAMLConnectionRequest]) (*connect.Response[v1.UpdateSAMLConnectionResponse], error)
+	// Delete a SAML Connection.
 	DeleteSAMLConnection(context.Context, *connect.Request[v1.DeleteSAMLConnectionRequest]) (*connect.Response[v1.DeleteSAMLConnectionResponse], error)
+	// List SCIM API Keys.
 	ListSCIMAPIKeys(context.Context, *connect.Request[v1.ListSCIMAPIKeysRequest]) (*connect.Response[v1.ListSCIMAPIKeysResponse], error)
+	// Get a SCIM API Key.
 	GetSCIMAPIKey(context.Context, *connect.Request[v1.GetSCIMAPIKeyRequest]) (*connect.Response[v1.GetSCIMAPIKeyResponse], error)
+	// Create a SCIM API Key.
 	CreateSCIMAPIKey(context.Context, *connect.Request[v1.CreateSCIMAPIKeyRequest]) (*connect.Response[v1.CreateSCIMAPIKeyResponse], error)
+	// Update a SCIM API Key.
 	UpdateSCIMAPIKey(context.Context, *connect.Request[v1.UpdateSCIMAPIKeyRequest]) (*connect.Response[v1.UpdateSCIMAPIKeyResponse], error)
+	// Delete a SCIM API Key.
 	DeleteSCIMAPIKey(context.Context, *connect.Request[v1.DeleteSCIMAPIKeyRequest]) (*connect.Response[v1.DeleteSCIMAPIKeyResponse], error)
+	// Revoke a SCIM API Key.
 	RevokeSCIMAPIKey(context.Context, *connect.Request[v1.RevokeSCIMAPIKeyRequest]) (*connect.Response[v1.RevokeSCIMAPIKeyResponse], error)
+	// List Users.
 	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
+	// Get a User.
 	GetUser(context.Context, *connect.Request[v1.GetUserRequest]) (*connect.Response[v1.GetUserResponse], error)
+	// Create a User.
 	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error)
+	// Update a User.
 	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error)
+	// Delete a User.
 	DeleteUser(context.Context, *connect.Request[v1.DeleteUserRequest]) (*connect.Response[v1.DeleteUserResponse], error)
+	// List Passkeys.
 	ListPasskeys(context.Context, *connect.Request[v1.ListPasskeysRequest]) (*connect.Response[v1.ListPasskeysResponse], error)
+	// Get a Passkey.
 	GetPasskey(context.Context, *connect.Request[v1.GetPasskeyRequest]) (*connect.Response[v1.GetPasskeyResponse], error)
+	// Update a Passkey.
 	UpdatePasskey(context.Context, *connect.Request[v1.UpdatePasskeyRequest]) (*connect.Response[v1.UpdatePasskeyResponse], error)
+	// Delete a Passkey.
 	DeletePasskey(context.Context, *connect.Request[v1.DeletePasskeyRequest]) (*connect.Response[v1.DeletePasskeyResponse], error)
+	// List Sessions.
 	ListSessions(context.Context, *connect.Request[v1.ListSessionsRequest]) (*connect.Response[v1.ListSessionsResponse], error)
+	// Get a Session.
 	GetSession(context.Context, *connect.Request[v1.GetSessionRequest]) (*connect.Response[v1.GetSessionResponse], error)
+	// List User Invites.
 	ListUserInvites(context.Context, *connect.Request[v1.ListUserInvitesRequest]) (*connect.Response[v1.ListUserInvitesResponse], error)
+	// Get a User Invite.
 	GetUserInvite(context.Context, *connect.Request[v1.GetUserInviteRequest]) (*connect.Response[v1.GetUserInviteResponse], error)
+	// Create a User Invite.
 	CreateUserInvite(context.Context, *connect.Request[v1.CreateUserInviteRequest]) (*connect.Response[v1.CreateUserInviteResponse], error)
+	// Delete a User Invite.
 	DeleteUserInvite(context.Context, *connect.Request[v1.DeleteUserInviteRequest]) (*connect.Response[v1.DeleteUserInviteResponse], error)
 	DisableOrganizationLogins(context.Context, *connect.Request[v1.DisableOrganizationLoginsRequest]) (*connect.Response[v1.DisableOrganizationLoginsResponse], error)
 	DisableProjectLogins(context.Context, *connect.Request[v1.DisableProjectLoginsRequest]) (*connect.Response[v1.DisableProjectLoginsResponse], error)
