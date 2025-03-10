@@ -131,26 +131,28 @@ export const ProjectDetailsTab = () => {
       </Card>
 
       <Card>
-        <CardHeader>
-          <CardTitle>Authentication settings</CardTitle>
-          <CardDescription>
-            Configure the login methods your customers can use to log in to your
-            application.
-          </CardDescription>
+        <CardHeader className="flex-row justify-between items-center">
+          <div className="flex flex-col space-y-1 5">
+            <CardTitle>Login Methods</CardTitle>
+            <CardDescription>
+              Primary and secondary authentication methods your users can use.
+              Organizations can take this list and restrict it further, but they
+              can't add to it.
+            </CardDescription>
+          </div>
+          <EditLoginMethodsButton />
         </CardHeader>
         <CardContent>
           <DetailsGrid>
             <DetailsGridColumn>
               <DetailsGridEntry>
-                <DetailsGridKey>Log in with Password</DetailsGridKey>
+                <DetailsGridKey>Log in with Email (Magic Links)</DetailsGridKey>
                 <DetailsGridValue>
-                  {getProjectResponse?.project?.logInWithPassword
+                  {getProjectResponse?.project?.logInWithEmail
                     ? 'Enabled'
                     : 'Disabled'}
                 </DetailsGridValue>
               </DetailsGridEntry>
-            </DetailsGridColumn>
-            <DetailsGridColumn>
               <DetailsGridEntry>
                 <DetailsGridKey>Log in with Google</DetailsGridKey>
                 <DetailsGridValue>
@@ -163,6 +165,36 @@ export const ProjectDetailsTab = () => {
                 <DetailsGridKey>Log in with Microsoft</DetailsGridKey>
                 <DetailsGridValue>
                   {getProjectResponse?.project?.logInWithMicrosoft
+                    ? 'Enabled'
+                    : 'Disabled'}
+                </DetailsGridValue>
+              </DetailsGridEntry>
+            </DetailsGridColumn>
+            <DetailsGridColumn>
+              <DetailsGridEntry>
+                <DetailsGridKey>Log in with Password</DetailsGridKey>
+                <DetailsGridValue>
+                  {getProjectResponse?.project?.logInWithPassword
+                    ? 'Enabled'
+                    : 'Disabled'}
+                </DetailsGridValue>
+              </DetailsGridEntry>
+              <DetailsGridEntry>
+                <DetailsGridKey>
+                  Log in with Passkey (Secondary Factor)
+                </DetailsGridKey>
+                <DetailsGridValue>
+                  {getProjectResponse?.project?.logInWithPasskey
+                    ? 'Enabled'
+                    : 'Disabled'}
+                </DetailsGridValue>
+              </DetailsGridEntry>
+              <DetailsGridEntry>
+                <DetailsGridKey>
+                  Log in with Authenticator App (Secondary Factor)
+                </DetailsGridKey>
+                <DetailsGridValue>
+                  {getProjectResponse?.project?.logInWithAuthenticatorApp
                     ? 'Enabled'
                     : 'Disabled'}
                 </DetailsGridValue>
@@ -282,31 +314,6 @@ export const ProjectDetailsTab = () => {
                   ) : (
                     '-'
                   )}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-            </DetailsGridColumn>
-          </DetailsGrid>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader className="flex-row justify-between items-center">
-          <div className="flex flex-col space-y-1 5">
-            <CardTitle>SAML Settings</CardTitle>
-            <CardDescription>
-              Settings for "Log in with SAML" in your Project.
-            </CardDescription>
-          </div>
-          <EditProjectSAMLSettingsButton />
-        </CardHeader>
-        <CardContent>
-          <DetailsGrid>
-            <DetailsGridColumn>
-              <DetailsGridEntry>
-                <DetailsGridKey>Status</DetailsGridKey>
-                <DetailsGridValue>
-                  {getProjectResponse?.project?.logInWithSaml
-                    ? 'Enabled'
-                    : 'Disabled'}
                 </DetailsGridValue>
               </DetailsGridEntry>
             </DetailsGridColumn>
@@ -559,22 +566,38 @@ const EditProjectTrustedDomainsButton = () => {
   );
 };
 
-const samlSchema = z.object({
+const loginMethodsSchema = z.object({
+  logInWithEmail: z.boolean(),
+  logInWithPassword: z.boolean(),
+  logInWithPasskey: z.boolean(),
+  logInWithAuthenticatorApp: z.boolean(),
   logInWithSaml: z.boolean(),
 });
 
-const EditProjectSAMLSettingsButton = () => {
-  const form = useForm<z.infer<typeof samlSchema>>({
-    resolver: zodResolver(samlSchema),
+const EditLoginMethodsButton = () => {
+  const form = useForm<z.infer<typeof loginMethodsSchema>>({
+    resolver: zodResolver(loginMethodsSchema),
     defaultValues: {
+      logInWithEmail: false,
+      logInWithPassword: false,
+      logInWithPasskey: false,
+      logInWithAuthenticatorApp: false,
       logInWithSaml: false,
     },
   });
 
   const { data: getProjectResponse, refetch } = useQuery(getProject);
+
   useEffect(() => {
     if (getProjectResponse?.project) {
       form.reset({
+        logInWithEmail: getProjectResponse?.project?.logInWithEmail || false,
+        logInWithPassword:
+          getProjectResponse?.project?.logInWithPassword || false,
+        logInWithPasskey:
+          getProjectResponse?.project?.logInWithPasskey || false,
+        logInWithAuthenticatorApp:
+          getProjectResponse?.project?.logInWithAuthenticatorApp || false,
         logInWithSaml: getProjectResponse?.project?.logInWithSaml || false,
       });
     }
@@ -582,14 +605,14 @@ const EditProjectSAMLSettingsButton = () => {
 
   const updateProjectMutation = useMutation(updateProject);
   const [open, setOpen] = useState(false);
-  const handleSubmit = async (values: z.infer<typeof samlSchema>) => {
+  const handleSubmit = async (values: z.infer<typeof loginMethodsSchema>) => {
     await updateProjectMutation.mutateAsync({
       project: {
-        logInWithSaml: values.logInWithSaml,
+        ...values,
       },
     });
     await refetch();
-    toast.success('SAML Settings updated');
+    toast.success('Login methods updated');
     setOpen(false);
   };
 
@@ -600,11 +623,13 @@ const EditProjectSAMLSettingsButton = () => {
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Edit SAML Settings</AlertDialogTitle>
+          <AlertDialogTitle>Edit Login Methods</AlertDialogTitle>
           <AlertDialogDescription>
-            Enable or disable "Log in with SAML" for your project.
+            To enable Google or Microsoft, go to their respective settings
+            section.
           </AlertDialogDescription>
         </AlertDialogHeader>
+
         <Form {...form}>
           <form
             className="space-y-4"
@@ -612,10 +637,93 @@ const EditProjectSAMLSettingsButton = () => {
           >
             <FormField
               control={form.control}
+              name="logInWithEmail"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Log in with Email</FormLabel>
+                  <FormControl>
+                    <Switch
+                      className="block"
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Whether Users can log in with a Magic Link sent to their
+                    email address.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="logInWithPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Log in with Password</FormLabel>
+                  <FormControl>
+                    <Switch
+                      className="block"
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Whether Users can log in using a password.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="logInWithPasskey"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Log in with Passkey</FormLabel>
+                  <FormControl>
+                    <Switch
+                      className="block"
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Whether Users can register a passkey as a secondary
+                    authentication factor.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="logInWithAuthenticatorApp"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Log in with Authenticator App</FormLabel>
+                  <FormControl>
+                    <Switch
+                      className="block"
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Whether Users can register an authenticator app as a
+                    secondary authentication factor.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="logInWithSaml"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Status</FormLabel>
+                  <FormLabel>Log in with SAML</FormLabel>
                   <FormControl>
                     <Switch
                       className="block"
