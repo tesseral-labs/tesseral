@@ -60,8 +60,9 @@ func (*GetProjectRequest) Descriptor() ([]byte, []int) {
 }
 
 type GetProjectResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Project       *Project               `protobuf:"bytes,1,opt,name=project,proto3" json:"project,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The requested Project.
+	Project       *Project `protobuf:"bytes,1,opt,name=project,proto3" json:"project,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -104,8 +105,11 @@ func (x *GetProjectResponse) GetProject() *Project {
 }
 
 type UpdateProjectRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Project       *Project               `protobuf:"bytes,1,opt,name=project,proto3" json:"project,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// An updated Project.
+	//
+	// Only non-null fields will be updated.
+	Project       *Project `protobuf:"bytes,1,opt,name=project,proto3" json:"project,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -148,8 +152,9 @@ func (x *UpdateProjectRequest) GetProject() *Project {
 }
 
 type UpdateProjectResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Project       *Project               `protobuf:"bytes,1,opt,name=project,proto3" json:"project,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The updated Project.
+	Project       *Project `protobuf:"bytes,1,opt,name=project,proto3" json:"project,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -192,8 +197,9 @@ func (x *UpdateProjectResponse) GetProject() *Project {
 }
 
 type ListOrganizationsRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	PageToken     string                 `protobuf:"bytes,1,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// A pagination token. Leave empty to get the first page of results.
+	PageToken     string `protobuf:"bytes,1,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -236,9 +242,12 @@ func (x *ListOrganizationsRequest) GetPageToken() string {
 }
 
 type ListOrganizationsResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Organizations []*Organization        `protobuf:"bytes,1,rep,name=organizations,proto3" json:"organizations,omitempty"`
-	NextPageToken string                 `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// A list of Organizations.
+	Organizations []*Organization `protobuf:"bytes,1,rep,name=organizations,proto3" json:"organizations,omitempty"`
+	// The pagination token for the next page of results. Empty if there is no
+	// next page.
+	NextPageToken string `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -288,8 +297,9 @@ func (x *ListOrganizationsResponse) GetNextPageToken() string {
 }
 
 type GetOrganizationRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The Organization ID.
+	Id            string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -332,8 +342,9 @@ func (x *GetOrganizationRequest) GetId() string {
 }
 
 type GetOrganizationResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Organization  *Organization          `protobuf:"bytes,1,opt,name=organization,proto3" json:"organization,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The requested Organization.
+	Organization  *Organization `protobuf:"bytes,1,opt,name=organization,proto3" json:"organization,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -420,8 +431,9 @@ func (x *CreateOrganizationRequest) GetOrganization() *Organization {
 }
 
 type CreateOrganizationResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Organization  *Organization          `protobuf:"bytes,1,opt,name=organization,proto3" json:"organization,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The Organization to create.
+	Organization  *Organization `protobuf:"bytes,1,opt,name=organization,proto3" json:"organization,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -464,9 +476,13 @@ func (x *CreateOrganizationResponse) GetOrganization() *Organization {
 }
 
 type UpdateOrganizationRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Organization  *Organization          `protobuf:"bytes,2,opt,name=organization,proto3" json:"organization,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The Organization ID.
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// An updated Organization.
+	//
+	// Only non-null fields will be updated.
+	Organization  *Organization `protobuf:"bytes,2,opt,name=organization,proto3" json:"organization,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -516,8 +532,9 @@ func (x *UpdateOrganizationRequest) GetOrganization() *Organization {
 }
 
 type UpdateOrganizationResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Organization  *Organization          `protobuf:"bytes,1,opt,name=organization,proto3" json:"organization,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The updated Organization.
+	Organization  *Organization `protobuf:"bytes,1,opt,name=organization,proto3" json:"organization,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -560,8 +577,9 @@ func (x *UpdateOrganizationResponse) GetOrganization() *Organization {
 }
 
 type DeleteOrganizationRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The Organization ID.
+	Id            string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -640,8 +658,9 @@ func (*DeleteOrganizationResponse) Descriptor() ([]byte, []int) {
 }
 
 type GetOrganizationDomainsRequest struct {
-	state          protoimpl.MessageState `protogen:"open.v1"`
-	OrganizationId string                 `protobuf:"bytes,1,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The Organization ID.
+	OrganizationId string `protobuf:"bytes,1,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -684,8 +703,9 @@ func (x *GetOrganizationDomainsRequest) GetOrganizationId() string {
 }
 
 type GetOrganizationDomainsResponse struct {
-	state               protoimpl.MessageState `protogen:"open.v1"`
-	OrganizationDomains *OrganizationDomains   `protobuf:"bytes,1,opt,name=organization_domains,json=organizationDomains,proto3" json:"organization_domains,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The requested Organization Domains.
+	OrganizationDomains *OrganizationDomains `protobuf:"bytes,1,opt,name=organization_domains,json=organizationDomains,proto3" json:"organization_domains,omitempty"`
 	unknownFields       protoimpl.UnknownFields
 	sizeCache           protoimpl.SizeCache
 }
@@ -728,9 +748,11 @@ func (x *GetOrganizationDomainsResponse) GetOrganizationDomains() *OrganizationD
 }
 
 type UpdateOrganizationDomainsRequest struct {
-	state               protoimpl.MessageState `protogen:"open.v1"`
-	OrganizationId      string                 `protobuf:"bytes,1,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
-	OrganizationDomains *OrganizationDomains   `protobuf:"bytes,2,opt,name=organization_domains,json=organizationDomains,proto3" json:"organization_domains,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The Organization ID.
+	OrganizationId string `protobuf:"bytes,1,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
+	// The updated Organization Domains.
+	OrganizationDomains *OrganizationDomains `protobuf:"bytes,2,opt,name=organization_domains,json=organizationDomains,proto3" json:"organization_domains,omitempty"`
 	unknownFields       protoimpl.UnknownFields
 	sizeCache           protoimpl.SizeCache
 }
@@ -780,8 +802,9 @@ func (x *UpdateOrganizationDomainsRequest) GetOrganizationDomains() *Organizatio
 }
 
 type UpdateOrganizationDomainsResponse struct {
-	state               protoimpl.MessageState `protogen:"open.v1"`
-	OrganizationDomains *OrganizationDomains   `protobuf:"bytes,1,opt,name=organization_domains,json=organizationDomains,proto3" json:"organization_domains,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The updated Organization Domains.
+	OrganizationDomains *OrganizationDomains `protobuf:"bytes,1,opt,name=organization_domains,json=organizationDomains,proto3" json:"organization_domains,omitempty"`
 	unknownFields       protoimpl.UnknownFields
 	sizeCache           protoimpl.SizeCache
 }
@@ -824,8 +847,9 @@ func (x *UpdateOrganizationDomainsResponse) GetOrganizationDomains() *Organizati
 }
 
 type GetOrganizationGoogleHostedDomainsRequest struct {
-	state          protoimpl.MessageState `protogen:"open.v1"`
-	OrganizationId string                 `protobuf:"bytes,1,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The ID of the Organization.
+	OrganizationId string `protobuf:"bytes,1,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -868,7 +892,8 @@ func (x *GetOrganizationGoogleHostedDomainsRequest) GetOrganizationId() string {
 }
 
 type GetOrganizationGoogleHostedDomainsResponse struct {
-	state                           protoimpl.MessageState           `protogen:"open.v1"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The Organization's Google Hosted Domains.
 	OrganizationGoogleHostedDomains *OrganizationGoogleHostedDomains `protobuf:"bytes,1,opt,name=organization_google_hosted_domains,json=organizationGoogleHostedDomains,proto3" json:"organization_google_hosted_domains,omitempty"`
 	unknownFields                   protoimpl.UnknownFields
 	sizeCache                       protoimpl.SizeCache
@@ -912,8 +937,10 @@ func (x *GetOrganizationGoogleHostedDomainsResponse) GetOrganizationGoogleHosted
 }
 
 type UpdateOrganizationGoogleHostedDomainsRequest struct {
-	state                           protoimpl.MessageState           `protogen:"open.v1"`
-	OrganizationId                  string                           `protobuf:"bytes,1,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The ID of the Organization.
+	OrganizationId string `protobuf:"bytes,1,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
+	// The updated Google Hosted Domains for the Organization.
 	OrganizationGoogleHostedDomains *OrganizationGoogleHostedDomains `protobuf:"bytes,2,opt,name=organization_google_hosted_domains,json=organizationGoogleHostedDomains,proto3" json:"organization_google_hosted_domains,omitempty"`
 	unknownFields                   protoimpl.UnknownFields
 	sizeCache                       protoimpl.SizeCache
@@ -964,7 +991,8 @@ func (x *UpdateOrganizationGoogleHostedDomainsRequest) GetOrganizationGoogleHost
 }
 
 type UpdateOrganizationGoogleHostedDomainsResponse struct {
-	state                           protoimpl.MessageState           `protogen:"open.v1"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The updated Google Hosted Domains for the Organization.
 	OrganizationGoogleHostedDomains *OrganizationGoogleHostedDomains `protobuf:"bytes,1,opt,name=organization_google_hosted_domains,json=organizationGoogleHostedDomains,proto3" json:"organization_google_hosted_domains,omitempty"`
 	unknownFields                   protoimpl.UnknownFields
 	sizeCache                       protoimpl.SizeCache
@@ -1008,8 +1036,9 @@ func (x *UpdateOrganizationGoogleHostedDomainsResponse) GetOrganizationGoogleHos
 }
 
 type GetOrganizationMicrosoftTenantIDsRequest struct {
-	state          protoimpl.MessageState `protogen:"open.v1"`
-	OrganizationId string                 `protobuf:"bytes,1,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The ID of the Organization.
+	OrganizationId string `protobuf:"bytes,1,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -1052,7 +1081,8 @@ func (x *GetOrganizationMicrosoftTenantIDsRequest) GetOrganizationId() string {
 }
 
 type GetOrganizationMicrosoftTenantIDsResponse struct {
-	state                          protoimpl.MessageState          `protogen:"open.v1"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The Organization's Microsoft Tenant IDs.
 	OrganizationMicrosoftTenantIds *OrganizationMicrosoftTenantIDs `protobuf:"bytes,1,opt,name=organization_microsoft_tenant_ids,json=organizationMicrosoftTenantIds,proto3" json:"organization_microsoft_tenant_ids,omitempty"`
 	unknownFields                  protoimpl.UnknownFields
 	sizeCache                      protoimpl.SizeCache
@@ -1096,8 +1126,10 @@ func (x *GetOrganizationMicrosoftTenantIDsResponse) GetOrganizationMicrosoftTena
 }
 
 type UpdateOrganizationMicrosoftTenantIDsRequest struct {
-	state                          protoimpl.MessageState          `protogen:"open.v1"`
-	OrganizationId                 string                          `protobuf:"bytes,1,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The ID of the Organization.
+	OrganizationId string `protobuf:"bytes,1,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
+	// The updated Microsoft Tenant IDs for the Organization.
 	OrganizationMicrosoftTenantIds *OrganizationMicrosoftTenantIDs `protobuf:"bytes,2,opt,name=organization_microsoft_tenant_ids,json=organizationMicrosoftTenantIds,proto3" json:"organization_microsoft_tenant_ids,omitempty"`
 	unknownFields                  protoimpl.UnknownFields
 	sizeCache                      protoimpl.SizeCache
@@ -1148,7 +1180,8 @@ func (x *UpdateOrganizationMicrosoftTenantIDsRequest) GetOrganizationMicrosoftTe
 }
 
 type UpdateOrganizationMicrosoftTenantIDsResponse struct {
-	state                          protoimpl.MessageState          `protogen:"open.v1"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The updated Microsoft Tenant IDs for the Organization.
 	OrganizationMicrosoftTenantIds *OrganizationMicrosoftTenantIDs `protobuf:"bytes,1,opt,name=organization_microsoft_tenant_ids,json=organizationMicrosoftTenantIds,proto3" json:"organization_microsoft_tenant_ids,omitempty"`
 	unknownFields                  protoimpl.UnknownFields
 	sizeCache                      protoimpl.SizeCache
@@ -1191,27 +1224,30 @@ func (x *UpdateOrganizationMicrosoftTenantIDsResponse) GetOrganizationMicrosoftT
 	return nil
 }
 
-type CreateSAMLConnectionRequest struct {
-	state          protoimpl.MessageState `protogen:"open.v1"`
-	SamlConnection *SAMLConnection        `protobuf:"bytes,1,opt,name=saml_connection,json=samlConnection,proto3" json:"saml_connection,omitempty"`
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
+type ListSAMLConnectionsRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The Organization ID.
+	OrganizationId string `protobuf:"bytes,1,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
+	// A pagination token. Leave empty to get the first page of results.
+	PageToken     string `protobuf:"bytes,2,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CreateSAMLConnectionRequest) Reset() {
-	*x = CreateSAMLConnectionRequest{}
+func (x *ListSAMLConnectionsRequest) Reset() {
+	*x = ListSAMLConnectionsRequest{}
 	mi := &file_tesseral_backend_v1_backend_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CreateSAMLConnectionRequest) String() string {
+func (x *ListSAMLConnectionsRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CreateSAMLConnectionRequest) ProtoMessage() {}
+func (*ListSAMLConnectionsRequest) ProtoMessage() {}
 
-func (x *CreateSAMLConnectionRequest) ProtoReflect() protoreflect.Message {
+func (x *ListSAMLConnectionsRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_tesseral_backend_v1_backend_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1223,39 +1259,50 @@ func (x *CreateSAMLConnectionRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CreateSAMLConnectionRequest.ProtoReflect.Descriptor instead.
-func (*CreateSAMLConnectionRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use ListSAMLConnectionsRequest.ProtoReflect.Descriptor instead.
+func (*ListSAMLConnectionsRequest) Descriptor() ([]byte, []int) {
 	return file_tesseral_backend_v1_backend_proto_rawDescGZIP(), []int{26}
 }
 
-func (x *CreateSAMLConnectionRequest) GetSamlConnection() *SAMLConnection {
+func (x *ListSAMLConnectionsRequest) GetOrganizationId() string {
 	if x != nil {
-		return x.SamlConnection
+		return x.OrganizationId
 	}
-	return nil
+	return ""
 }
 
-type CreateSAMLConnectionResponse struct {
-	state          protoimpl.MessageState `protogen:"open.v1"`
-	SamlConnection *SAMLConnection        `protobuf:"bytes,1,opt,name=saml_connection,json=samlConnection,proto3" json:"saml_connection,omitempty"`
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
+func (x *ListSAMLConnectionsRequest) GetPageToken() string {
+	if x != nil {
+		return x.PageToken
+	}
+	return ""
 }
 
-func (x *CreateSAMLConnectionResponse) Reset() {
-	*x = CreateSAMLConnectionResponse{}
+type ListSAMLConnectionsResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// A list of SAML Connections.
+	SamlConnections []*SAMLConnection `protobuf:"bytes,1,rep,name=saml_connections,json=samlConnections,proto3" json:"saml_connections,omitempty"`
+	// The pagination token for the next page of results. Empty if there is no
+	// next page.
+	NextPageToken string `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListSAMLConnectionsResponse) Reset() {
+	*x = ListSAMLConnectionsResponse{}
 	mi := &file_tesseral_backend_v1_backend_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CreateSAMLConnectionResponse) String() string {
+func (x *ListSAMLConnectionsResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CreateSAMLConnectionResponse) ProtoMessage() {}
+func (*ListSAMLConnectionsResponse) ProtoMessage() {}
 
-func (x *CreateSAMLConnectionResponse) ProtoReflect() protoreflect.Message {
+func (x *ListSAMLConnectionsResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_tesseral_backend_v1_backend_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1267,21 +1314,29 @@ func (x *CreateSAMLConnectionResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CreateSAMLConnectionResponse.ProtoReflect.Descriptor instead.
-func (*CreateSAMLConnectionResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use ListSAMLConnectionsResponse.ProtoReflect.Descriptor instead.
+func (*ListSAMLConnectionsResponse) Descriptor() ([]byte, []int) {
 	return file_tesseral_backend_v1_backend_proto_rawDescGZIP(), []int{27}
 }
 
-func (x *CreateSAMLConnectionResponse) GetSamlConnection() *SAMLConnection {
+func (x *ListSAMLConnectionsResponse) GetSamlConnections() []*SAMLConnection {
 	if x != nil {
-		return x.SamlConnection
+		return x.SamlConnections
 	}
 	return nil
 }
 
+func (x *ListSAMLConnectionsResponse) GetNextPageToken() string {
+	if x != nil {
+		return x.NextPageToken
+	}
+	return ""
+}
+
 type GetSAMLConnectionRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The SAML Connection ID.
+	Id            string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1324,8 +1379,9 @@ func (x *GetSAMLConnectionRequest) GetId() string {
 }
 
 type GetSAMLConnectionResponse struct {
-	state          protoimpl.MessageState `protogen:"open.v1"`
-	SamlConnection *SAMLConnection        `protobuf:"bytes,1,opt,name=saml_connection,json=samlConnection,proto3" json:"saml_connection,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The requested SAML Connection.
+	SamlConnection *SAMLConnection `protobuf:"bytes,1,opt,name=saml_connection,json=samlConnection,proto3" json:"saml_connection,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -1367,28 +1423,28 @@ func (x *GetSAMLConnectionResponse) GetSamlConnection() *SAMLConnection {
 	return nil
 }
 
-type ListSAMLConnectionsRequest struct {
-	state          protoimpl.MessageState `protogen:"open.v1"`
-	OrganizationId string                 `protobuf:"bytes,1,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
-	PageToken      string                 `protobuf:"bytes,2,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
+type CreateSAMLConnectionRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The SAML Connection to create.
+	SamlConnection *SAMLConnection `protobuf:"bytes,1,opt,name=saml_connection,json=samlConnection,proto3" json:"saml_connection,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *ListSAMLConnectionsRequest) Reset() {
-	*x = ListSAMLConnectionsRequest{}
+func (x *CreateSAMLConnectionRequest) Reset() {
+	*x = CreateSAMLConnectionRequest{}
 	mi := &file_tesseral_backend_v1_backend_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ListSAMLConnectionsRequest) String() string {
+func (x *CreateSAMLConnectionRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ListSAMLConnectionsRequest) ProtoMessage() {}
+func (*CreateSAMLConnectionRequest) ProtoMessage() {}
 
-func (x *ListSAMLConnectionsRequest) ProtoReflect() protoreflect.Message {
+func (x *CreateSAMLConnectionRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_tesseral_backend_v1_backend_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1400,81 +1456,69 @@ func (x *ListSAMLConnectionsRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ListSAMLConnectionsRequest.ProtoReflect.Descriptor instead.
-func (*ListSAMLConnectionsRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use CreateSAMLConnectionRequest.ProtoReflect.Descriptor instead.
+func (*CreateSAMLConnectionRequest) Descriptor() ([]byte, []int) {
 	return file_tesseral_backend_v1_backend_proto_rawDescGZIP(), []int{30}
 }
 
-func (x *ListSAMLConnectionsRequest) GetOrganizationId() string {
+func (x *CreateSAMLConnectionRequest) GetSamlConnection() *SAMLConnection {
 	if x != nil {
-		return x.OrganizationId
-	}
-	return ""
-}
-
-func (x *ListSAMLConnectionsRequest) GetPageToken() string {
-	if x != nil {
-		return x.PageToken
-	}
-	return ""
-}
-
-type ListSAMLConnectionsResponse struct {
-	state           protoimpl.MessageState `protogen:"open.v1"`
-	SamlConnections []*SAMLConnection      `protobuf:"bytes,1,rep,name=saml_connections,json=samlConnections,proto3" json:"saml_connections,omitempty"`
-	NextPageToken   string                 `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
-}
-
-func (x *ListSAMLConnectionsResponse) Reset() {
-	*x = ListSAMLConnectionsResponse{}
-	mi := &file_tesseral_backend_v1_backend_proto_msgTypes[31]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ListSAMLConnectionsResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ListSAMLConnectionsResponse) ProtoMessage() {}
-
-func (x *ListSAMLConnectionsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_tesseral_backend_v1_backend_proto_msgTypes[31]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ListSAMLConnectionsResponse.ProtoReflect.Descriptor instead.
-func (*ListSAMLConnectionsResponse) Descriptor() ([]byte, []int) {
-	return file_tesseral_backend_v1_backend_proto_rawDescGZIP(), []int{31}
-}
-
-func (x *ListSAMLConnectionsResponse) GetSamlConnections() []*SAMLConnection {
-	if x != nil {
-		return x.SamlConnections
+		return x.SamlConnection
 	}
 	return nil
 }
 
-func (x *ListSAMLConnectionsResponse) GetNextPageToken() string {
+type CreateSAMLConnectionResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The created SAML Connection.
+	SamlConnection *SAMLConnection `protobuf:"bytes,1,opt,name=saml_connection,json=samlConnection,proto3" json:"saml_connection,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *CreateSAMLConnectionResponse) Reset() {
+	*x = CreateSAMLConnectionResponse{}
+	mi := &file_tesseral_backend_v1_backend_proto_msgTypes[31]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateSAMLConnectionResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateSAMLConnectionResponse) ProtoMessage() {}
+
+func (x *CreateSAMLConnectionResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_tesseral_backend_v1_backend_proto_msgTypes[31]
 	if x != nil {
-		return x.NextPageToken
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
 	}
-	return ""
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateSAMLConnectionResponse.ProtoReflect.Descriptor instead.
+func (*CreateSAMLConnectionResponse) Descriptor() ([]byte, []int) {
+	return file_tesseral_backend_v1_backend_proto_rawDescGZIP(), []int{31}
+}
+
+func (x *CreateSAMLConnectionResponse) GetSamlConnection() *SAMLConnection {
+	if x != nil {
+		return x.SamlConnection
+	}
+	return nil
 }
 
 type UpdateSAMLConnectionRequest struct {
-	state          protoimpl.MessageState `protogen:"open.v1"`
-	Id             string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	SamlConnection *SAMLConnection        `protobuf:"bytes,2,opt,name=saml_connection,json=samlConnection,proto3" json:"saml_connection,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The SAML Connection ID.
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// The updated SAML Connection.
+	SamlConnection *SAMLConnection `protobuf:"bytes,2,opt,name=saml_connection,json=samlConnection,proto3" json:"saml_connection,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -1524,8 +1568,9 @@ func (x *UpdateSAMLConnectionRequest) GetSamlConnection() *SAMLConnection {
 }
 
 type UpdateSAMLConnectionResponse struct {
-	state          protoimpl.MessageState `protogen:"open.v1"`
-	SamlConnection *SAMLConnection        `protobuf:"bytes,1,opt,name=saml_connection,json=samlConnection,proto3" json:"saml_connection,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The updated SAML Connection.
+	SamlConnection *SAMLConnection `protobuf:"bytes,1,opt,name=saml_connection,json=samlConnection,proto3" json:"saml_connection,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -1568,8 +1613,9 @@ func (x *UpdateSAMLConnectionResponse) GetSamlConnection() *SAMLConnection {
 }
 
 type DeleteSAMLConnectionRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The SAML Connection ID.
+	Id            string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1648,11 +1694,13 @@ func (*DeleteSAMLConnectionResponse) Descriptor() ([]byte, []int) {
 }
 
 type ListSCIMAPIKeysRequest struct {
-	state          protoimpl.MessageState `protogen:"open.v1"`
-	OrganizationId string                 `protobuf:"bytes,1,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
-	PageToken      string                 `protobuf:"bytes,2,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The ID of the Organization.
+	OrganizationId string `protobuf:"bytes,1,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
+	// A pagination token. Leave empty to get the first page of results.
+	PageToken     string `protobuf:"bytes,2,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *ListSCIMAPIKeysRequest) Reset() {
@@ -1700,9 +1748,12 @@ func (x *ListSCIMAPIKeysRequest) GetPageToken() string {
 }
 
 type ListSCIMAPIKeysResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	ScimApiKeys   []*SCIMAPIKey          `protobuf:"bytes,1,rep,name=scim_api_keys,json=scimApiKeys,proto3" json:"scim_api_keys,omitempty"`
-	NextPageToken string                 `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// A list of SCIM API Keys.
+	ScimApiKeys []*SCIMAPIKey `protobuf:"bytes,1,rep,name=scim_api_keys,json=scimApiKeys,proto3" json:"scim_api_keys,omitempty"`
+	// The pagination token for the next page of results. Empty if there is no
+	// next page.
+	NextPageToken string `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1752,8 +1803,9 @@ func (x *ListSCIMAPIKeysResponse) GetNextPageToken() string {
 }
 
 type GetSCIMAPIKeyRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The SCIM API Key ID.
+	Id            string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1796,8 +1848,9 @@ func (x *GetSCIMAPIKeyRequest) GetId() string {
 }
 
 type GetSCIMAPIKeyResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	ScimApiKey    *SCIMAPIKey            `protobuf:"bytes,1,opt,name=scim_api_key,json=scimApiKey,proto3" json:"scim_api_key,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The requested SCIM API Key.
+	ScimApiKey    *SCIMAPIKey `protobuf:"bytes,1,opt,name=scim_api_key,json=scimApiKey,proto3" json:"scim_api_key,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1840,8 +1893,9 @@ func (x *GetSCIMAPIKeyResponse) GetScimApiKey() *SCIMAPIKey {
 }
 
 type CreateSCIMAPIKeyRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	ScimApiKey    *SCIMAPIKey            `protobuf:"bytes,1,opt,name=scim_api_key,json=scimApiKey,proto3" json:"scim_api_key,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The SCIM API Key to create.
+	ScimApiKey    *SCIMAPIKey `protobuf:"bytes,1,opt,name=scim_api_key,json=scimApiKey,proto3" json:"scim_api_key,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1884,8 +1938,9 @@ func (x *CreateSCIMAPIKeyRequest) GetScimApiKey() *SCIMAPIKey {
 }
 
 type CreateSCIMAPIKeyResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	ScimApiKey    *SCIMAPIKey            `protobuf:"bytes,1,opt,name=scim_api_key,json=scimApiKey,proto3" json:"scim_api_key,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The created SCIM API Key.
+	ScimApiKey    *SCIMAPIKey `protobuf:"bytes,1,opt,name=scim_api_key,json=scimApiKey,proto3" json:"scim_api_key,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1928,9 +1983,11 @@ func (x *CreateSCIMAPIKeyResponse) GetScimApiKey() *SCIMAPIKey {
 }
 
 type UpdateSCIMAPIKeyRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	ScimApiKey    *SCIMAPIKey            `protobuf:"bytes,2,opt,name=scim_api_key,json=scimApiKey,proto3" json:"scim_api_key,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The SCIM API Key ID.
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// The updated SCIM API Key.
+	ScimApiKey    *SCIMAPIKey `protobuf:"bytes,2,opt,name=scim_api_key,json=scimApiKey,proto3" json:"scim_api_key,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1980,8 +2037,9 @@ func (x *UpdateSCIMAPIKeyRequest) GetScimApiKey() *SCIMAPIKey {
 }
 
 type UpdateSCIMAPIKeyResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	ScimApiKey    *SCIMAPIKey            `protobuf:"bytes,1,opt,name=scim_api_key,json=scimApiKey,proto3" json:"scim_api_key,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The updated SCIM API Key.
+	ScimApiKey    *SCIMAPIKey `protobuf:"bytes,1,opt,name=scim_api_key,json=scimApiKey,proto3" json:"scim_api_key,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2024,8 +2082,9 @@ func (x *UpdateSCIMAPIKeyResponse) GetScimApiKey() *SCIMAPIKey {
 }
 
 type DeleteSCIMAPIKeyRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The SCIM API Key ID.
+	Id            string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2104,8 +2163,9 @@ func (*DeleteSCIMAPIKeyResponse) Descriptor() ([]byte, []int) {
 }
 
 type RevokeSCIMAPIKeyRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The SCIM API Key ID.
+	Id            string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2148,8 +2208,9 @@ func (x *RevokeSCIMAPIKeyRequest) GetId() string {
 }
 
 type RevokeSCIMAPIKeyResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	ScimApiKey    *SCIMAPIKey            `protobuf:"bytes,1,opt,name=scim_api_key,json=scimApiKey,proto3" json:"scim_api_key,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The revoked SCIM API Key.
+	ScimApiKey    *SCIMAPIKey `protobuf:"bytes,1,opt,name=scim_api_key,json=scimApiKey,proto3" json:"scim_api_key,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2192,11 +2253,13 @@ func (x *RevokeSCIMAPIKeyResponse) GetScimApiKey() *SCIMAPIKey {
 }
 
 type ListUsersRequest struct {
-	state          protoimpl.MessageState `protogen:"open.v1"`
-	OrganizationId string                 `protobuf:"bytes,1,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
-	PageToken      string                 `protobuf:"bytes,2,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The Organization ID.
+	OrganizationId string `protobuf:"bytes,1,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
+	// A pagination token. Leave empty to get the first page of results.
+	PageToken     string `protobuf:"bytes,2,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *ListUsersRequest) Reset() {
@@ -2244,9 +2307,11 @@ func (x *ListUsersRequest) GetPageToken() string {
 }
 
 type ListUsersResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Users         []*User                `protobuf:"bytes,1,rep,name=users,proto3" json:"users,omitempty"`
-	NextPageToken string                 `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// A list of Users.
+	Users []*User `protobuf:"bytes,1,rep,name=users,proto3" json:"users,omitempty"`
+	// The pagination token for the next page of results. Empty if there is no next page.
+	NextPageToken string `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2296,8 +2361,9 @@ func (x *ListUsersResponse) GetNextPageToken() string {
 }
 
 type GetUserRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The User ID.
+	Id            string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2340,8 +2406,9 @@ func (x *GetUserRequest) GetId() string {
 }
 
 type GetUserResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	User          *User                  `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The requested User.
+	User          *User `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2384,8 +2451,9 @@ func (x *GetUserResponse) GetUser() *User {
 }
 
 type CreateUserRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	User          *User                  `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The User to create.
+	User          *User `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2428,8 +2496,9 @@ func (x *CreateUserRequest) GetUser() *User {
 }
 
 type CreateUserResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	User          *User                  `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The created User.
+	User          *User `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2472,9 +2541,11 @@ func (x *CreateUserResponse) GetUser() *User {
 }
 
 type UpdateUserRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	User          *User                  `protobuf:"bytes,2,opt,name=user,proto3" json:"user,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The User ID.
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// The updated User.
+	User          *User `protobuf:"bytes,2,opt,name=user,proto3" json:"user,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2524,8 +2595,9 @@ func (x *UpdateUserRequest) GetUser() *User {
 }
 
 type UpdateUserResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	User          *User                  `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The updated User.
+	User          *User `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2568,8 +2640,9 @@ func (x *UpdateUserResponse) GetUser() *User {
 }
 
 type DeleteUserRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The User ID.
+	Id            string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2648,9 +2721,11 @@ func (*DeleteUserResponse) Descriptor() ([]byte, []int) {
 }
 
 type ListPasskeysRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	PageToken     string                 `protobuf:"bytes,2,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The ID of the User.
+	UserId string `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	// A pagination token. Leave empty to get the first page of results.
+	PageToken     string `protobuf:"bytes,2,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2700,9 +2775,11 @@ func (x *ListPasskeysRequest) GetPageToken() string {
 }
 
 type ListPasskeysResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Passkeys      []*Passkey             `protobuf:"bytes,1,rep,name=passkeys,proto3" json:"passkeys,omitempty"`
-	NextPageToken string                 `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// A list of Passkeys.
+	Passkeys []*Passkey `protobuf:"bytes,1,rep,name=passkeys,proto3" json:"passkeys,omitempty"`
+	// The pagination token for the next page of results. Empty if there is no next page.
+	NextPageToken string `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2752,8 +2829,9 @@ func (x *ListPasskeysResponse) GetNextPageToken() string {
 }
 
 type GetPasskeyRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The Passkey ID.
+	Id            string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2796,8 +2874,9 @@ func (x *GetPasskeyRequest) GetId() string {
 }
 
 type GetPasskeyResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Passkey       *Passkey               `protobuf:"bytes,1,opt,name=passkey,proto3" json:"passkey,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The requested Passkey.
+	Passkey       *Passkey `protobuf:"bytes,1,opt,name=passkey,proto3" json:"passkey,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2840,9 +2919,11 @@ func (x *GetPasskeyResponse) GetPasskey() *Passkey {
 }
 
 type UpdatePasskeyRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Passkey       *Passkey               `protobuf:"bytes,2,opt,name=passkey,proto3" json:"passkey,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The Passkey ID.
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// The updated Passkey.
+	Passkey       *Passkey `protobuf:"bytes,2,opt,name=passkey,proto3" json:"passkey,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2892,8 +2973,9 @@ func (x *UpdatePasskeyRequest) GetPasskey() *Passkey {
 }
 
 type UpdatePasskeyResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Passkey       *Passkey               `protobuf:"bytes,1,opt,name=passkey,proto3" json:"passkey,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The updated Passkey.
+	Passkey       *Passkey `protobuf:"bytes,1,opt,name=passkey,proto3" json:"passkey,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2936,8 +3018,9 @@ func (x *UpdatePasskeyResponse) GetPasskey() *Passkey {
 }
 
 type DeletePasskeyRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The Passkey ID.
+	Id            string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -3016,9 +3099,11 @@ func (*DeletePasskeyResponse) Descriptor() ([]byte, []int) {
 }
 
 type ListSessionsRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	PageToken     string                 `protobuf:"bytes,2,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The User ID.
+	UserId string `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	// A pagination token. Leave empty to get the first page of results.
+	PageToken     string `protobuf:"bytes,2,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -3068,9 +3153,11 @@ func (x *ListSessionsRequest) GetPageToken() string {
 }
 
 type ListSessionsResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Sessions      []*Session             `protobuf:"bytes,1,rep,name=sessions,proto3" json:"sessions,omitempty"`
-	NextPageToken string                 `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// A list of Sessions.
+	Sessions []*Session `protobuf:"bytes,1,rep,name=sessions,proto3" json:"sessions,omitempty"`
+	// The pagination token for the next page of results. Empty if there is no next page.
+	NextPageToken string `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -3120,8 +3207,9 @@ func (x *ListSessionsResponse) GetNextPageToken() string {
 }
 
 type GetSessionRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The Session ID.
+	Id            string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -3164,8 +3252,9 @@ func (x *GetSessionRequest) GetId() string {
 }
 
 type GetSessionResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Session       *Session               `protobuf:"bytes,1,opt,name=session,proto3" json:"session,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The requested Session.
+	Session       *Session `protobuf:"bytes,1,opt,name=session,proto3" json:"session,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -3208,11 +3297,13 @@ func (x *GetSessionResponse) GetSession() *Session {
 }
 
 type ListUserInvitesRequest struct {
-	state          protoimpl.MessageState `protogen:"open.v1"`
-	OrganizationId string                 `protobuf:"bytes,1,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
-	PageToken      string                 `protobuf:"bytes,2,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The Organization ID.
+	OrganizationId string `protobuf:"bytes,1,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
+	// A pagination token. Leave empty to get the first page of results.
+	PageToken     string `protobuf:"bytes,2,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *ListUserInvitesRequest) Reset() {
@@ -3260,9 +3351,11 @@ func (x *ListUserInvitesRequest) GetPageToken() string {
 }
 
 type ListUserInvitesResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserInvites   []*UserInvite          `protobuf:"bytes,1,rep,name=user_invites,json=userInvites,proto3" json:"user_invites,omitempty"`
-	NextPageToken string                 `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// A list of User Invites.
+	UserInvites []*UserInvite `protobuf:"bytes,1,rep,name=user_invites,json=userInvites,proto3" json:"user_invites,omitempty"`
+	// The pagination token for the next page of results. Empty if there is no next page.
+	NextPageToken string `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -3312,8 +3405,9 @@ func (x *ListUserInvitesResponse) GetNextPageToken() string {
 }
 
 type GetUserInviteRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The User Invite ID.
+	Id            string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -3356,8 +3450,9 @@ func (x *GetUserInviteRequest) GetId() string {
 }
 
 type GetUserInviteResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserInvite    *UserInvite            `protobuf:"bytes,1,opt,name=user_invite,json=userInvite,proto3" json:"user_invite,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The requested User Invite.
+	UserInvite    *UserInvite `protobuf:"bytes,1,opt,name=user_invite,json=userInvite,proto3" json:"user_invite,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -3400,8 +3495,9 @@ func (x *GetUserInviteResponse) GetUserInvite() *UserInvite {
 }
 
 type CreateUserInviteRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserInvite    *UserInvite            `protobuf:"bytes,1,opt,name=user_invite,json=userInvite,proto3" json:"user_invite,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The User Invite to create.
+	UserInvite    *UserInvite `protobuf:"bytes,1,opt,name=user_invite,json=userInvite,proto3" json:"user_invite,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -3444,8 +3540,9 @@ func (x *CreateUserInviteRequest) GetUserInvite() *UserInvite {
 }
 
 type CreateUserInviteResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserInvite    *UserInvite            `protobuf:"bytes,1,opt,name=user_invite,json=userInvite,proto3" json:"user_invite,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The created User Invite.
+	UserInvite    *UserInvite `protobuf:"bytes,1,opt,name=user_invite,json=userInvite,proto3" json:"user_invite,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -3488,8 +3585,9 @@ func (x *CreateUserInviteResponse) GetUserInvite() *UserInvite {
 }
 
 type DeleteUserInviteRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The User Invite ID.
+	Id            string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -5790,45 +5888,45 @@ var file_tesseral_backend_v1_backend_proto_rawDesc = string([]byte{
 	0x69, 0x63, 0x72, 0x6f, 0x73, 0x6f, 0x66, 0x74, 0x54, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x49, 0x44,
 	0x73, 0x52, 0x1e, 0x6f, 0x72, 0x67, 0x61, 0x6e, 0x69, 0x7a, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x4d,
 	0x69, 0x63, 0x72, 0x6f, 0x73, 0x6f, 0x66, 0x74, 0x54, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x49, 0x64,
-	0x73, 0x22, 0x6b, 0x0a, 0x1b, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x53, 0x41, 0x4d, 0x4c, 0x43,
-	0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x12, 0x4c, 0x0a, 0x0f, 0x73, 0x61, 0x6d, 0x6c, 0x5f, 0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74,
-	0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x23, 0x2e, 0x74, 0x65, 0x73, 0x73,
-	0x65, 0x72, 0x61, 0x6c, 0x2e, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x76, 0x31, 0x2e,
-	0x53, 0x41, 0x4d, 0x4c, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x0e,
-	0x73, 0x61, 0x6d, 0x6c, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x6c,
-	0x0a, 0x1c, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x53, 0x41, 0x4d, 0x4c, 0x43, 0x6f, 0x6e, 0x6e,
-	0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x4c,
-	0x0a, 0x0f, 0x73, 0x61, 0x6d, 0x6c, 0x5f, 0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f,
-	0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x23, 0x2e, 0x74, 0x65, 0x73, 0x73, 0x65, 0x72,
-	0x61, 0x6c, 0x2e, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x53, 0x41,
-	0x4d, 0x4c, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x0e, 0x73, 0x61,
-	0x6d, 0x6c, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x2a, 0x0a, 0x18,
-	0x47, 0x65, 0x74, 0x53, 0x41, 0x4d, 0x4c, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f,
-	0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22, 0x69, 0x0a, 0x19, 0x47, 0x65, 0x74, 0x53,
-	0x41, 0x4d, 0x4c, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x4c, 0x0a, 0x0f, 0x73, 0x61, 0x6d, 0x6c, 0x5f, 0x63, 0x6f,
+	0x73, 0x22, 0x64, 0x0a, 0x1a, 0x4c, 0x69, 0x73, 0x74, 0x53, 0x41, 0x4d, 0x4c, 0x43, 0x6f, 0x6e,
+	0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
+	0x27, 0x0a, 0x0f, 0x6f, 0x72, 0x67, 0x61, 0x6e, 0x69, 0x7a, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f,
+	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0e, 0x6f, 0x72, 0x67, 0x61, 0x6e, 0x69,
+	0x7a, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x64, 0x12, 0x1d, 0x0a, 0x0a, 0x70, 0x61, 0x67, 0x65,
+	0x5f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x70, 0x61,
+	0x67, 0x65, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x22, 0x95, 0x01, 0x0a, 0x1b, 0x4c, 0x69, 0x73, 0x74,
+	0x53, 0x41, 0x4d, 0x4c, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x4e, 0x0a, 0x10, 0x73, 0x61, 0x6d, 0x6c, 0x5f,
+	0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28,
+	0x0b, 0x32, 0x23, 0x2e, 0x74, 0x65, 0x73, 0x73, 0x65, 0x72, 0x61, 0x6c, 0x2e, 0x62, 0x61, 0x63,
+	0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x53, 0x41, 0x4d, 0x4c, 0x43, 0x6f, 0x6e, 0x6e,
+	0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x0f, 0x73, 0x61, 0x6d, 0x6c, 0x43, 0x6f, 0x6e, 0x6e,
+	0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x26, 0x0a, 0x0f, 0x6e, 0x65, 0x78, 0x74, 0x5f,
+	0x70, 0x61, 0x67, 0x65, 0x5f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x0d, 0x6e, 0x65, 0x78, 0x74, 0x50, 0x61, 0x67, 0x65, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x22,
+	0x2a, 0x0a, 0x18, 0x47, 0x65, 0x74, 0x53, 0x41, 0x4d, 0x4c, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63,
+	0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69,
+	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22, 0x69, 0x0a, 0x19, 0x47,
+	0x65, 0x74, 0x53, 0x41, 0x4d, 0x4c, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x4c, 0x0a, 0x0f, 0x73, 0x61, 0x6d, 0x6c,
+	0x5f, 0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x0b, 0x32, 0x23, 0x2e, 0x74, 0x65, 0x73, 0x73, 0x65, 0x72, 0x61, 0x6c, 0x2e, 0x62, 0x61, 0x63,
+	0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x53, 0x41, 0x4d, 0x4c, 0x43, 0x6f, 0x6e, 0x6e,
+	0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x0e, 0x73, 0x61, 0x6d, 0x6c, 0x43, 0x6f, 0x6e, 0x6e,
+	0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x6b, 0x0a, 0x1b, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65,
+	0x53, 0x41, 0x4d, 0x4c, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x4c, 0x0a, 0x0f, 0x73, 0x61, 0x6d, 0x6c, 0x5f, 0x63, 0x6f,
 	0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x23,
 	0x2e, 0x74, 0x65, 0x73, 0x73, 0x65, 0x72, 0x61, 0x6c, 0x2e, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e,
 	0x64, 0x2e, 0x76, 0x31, 0x2e, 0x53, 0x41, 0x4d, 0x4c, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74,
 	0x69, 0x6f, 0x6e, 0x52, 0x0e, 0x73, 0x61, 0x6d, 0x6c, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74,
-	0x69, 0x6f, 0x6e, 0x22, 0x64, 0x0a, 0x1a, 0x4c, 0x69, 0x73, 0x74, 0x53, 0x41, 0x4d, 0x4c, 0x43,
-	0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x12, 0x27, 0x0a, 0x0f, 0x6f, 0x72, 0x67, 0x61, 0x6e, 0x69, 0x7a, 0x61, 0x74, 0x69, 0x6f,
-	0x6e, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0e, 0x6f, 0x72, 0x67, 0x61,
-	0x6e, 0x69, 0x7a, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x64, 0x12, 0x1d, 0x0a, 0x0a, 0x70, 0x61,
-	0x67, 0x65, 0x5f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09,
-	0x70, 0x61, 0x67, 0x65, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x22, 0x95, 0x01, 0x0a, 0x1b, 0x4c, 0x69,
-	0x73, 0x74, 0x53, 0x41, 0x4d, 0x4c, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e,
-	0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x4e, 0x0a, 0x10, 0x73, 0x61, 0x6d,
-	0x6c, 0x5f, 0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x01, 0x20,
-	0x03, 0x28, 0x0b, 0x32, 0x23, 0x2e, 0x74, 0x65, 0x73, 0x73, 0x65, 0x72, 0x61, 0x6c, 0x2e, 0x62,
-	0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x53, 0x41, 0x4d, 0x4c, 0x43, 0x6f,
-	0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x0f, 0x73, 0x61, 0x6d, 0x6c, 0x43, 0x6f,
-	0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x26, 0x0a, 0x0f, 0x6e, 0x65, 0x78,
-	0x74, 0x5f, 0x70, 0x61, 0x67, 0x65, 0x5f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x18, 0x02, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x0d, 0x6e, 0x65, 0x78, 0x74, 0x50, 0x61, 0x67, 0x65, 0x54, 0x6f, 0x6b, 0x65,
+	0x69, 0x6f, 0x6e, 0x22, 0x6c, 0x0a, 0x1c, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x53, 0x41, 0x4d,
+	0x4c, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x12, 0x4c, 0x0a, 0x0f, 0x73, 0x61, 0x6d, 0x6c, 0x5f, 0x63, 0x6f, 0x6e, 0x6e,
+	0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x23, 0x2e, 0x74,
+	0x65, 0x73, 0x73, 0x65, 0x72, 0x61, 0x6c, 0x2e, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2e,
+	0x76, 0x31, 0x2e, 0x53, 0x41, 0x4d, 0x4c, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f,
+	0x6e, 0x52, 0x0e, 0x73, 0x61, 0x6d, 0x6c, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f,
 	0x6e, 0x22, 0x7b, 0x0a, 0x1b, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x53, 0x41, 0x4d, 0x4c, 0x43,
 	0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
 	0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64,
@@ -6943,12 +7041,12 @@ var file_tesseral_backend_v1_backend_proto_goTypes = []any{
 	(*GetOrganizationMicrosoftTenantIDsResponse)(nil),     // 23: tesseral.backend.v1.GetOrganizationMicrosoftTenantIDsResponse
 	(*UpdateOrganizationMicrosoftTenantIDsRequest)(nil),   // 24: tesseral.backend.v1.UpdateOrganizationMicrosoftTenantIDsRequest
 	(*UpdateOrganizationMicrosoftTenantIDsResponse)(nil),  // 25: tesseral.backend.v1.UpdateOrganizationMicrosoftTenantIDsResponse
-	(*CreateSAMLConnectionRequest)(nil),                   // 26: tesseral.backend.v1.CreateSAMLConnectionRequest
-	(*CreateSAMLConnectionResponse)(nil),                  // 27: tesseral.backend.v1.CreateSAMLConnectionResponse
+	(*ListSAMLConnectionsRequest)(nil),                    // 26: tesseral.backend.v1.ListSAMLConnectionsRequest
+	(*ListSAMLConnectionsResponse)(nil),                   // 27: tesseral.backend.v1.ListSAMLConnectionsResponse
 	(*GetSAMLConnectionRequest)(nil),                      // 28: tesseral.backend.v1.GetSAMLConnectionRequest
 	(*GetSAMLConnectionResponse)(nil),                     // 29: tesseral.backend.v1.GetSAMLConnectionResponse
-	(*ListSAMLConnectionsRequest)(nil),                    // 30: tesseral.backend.v1.ListSAMLConnectionsRequest
-	(*ListSAMLConnectionsResponse)(nil),                   // 31: tesseral.backend.v1.ListSAMLConnectionsResponse
+	(*CreateSAMLConnectionRequest)(nil),                   // 30: tesseral.backend.v1.CreateSAMLConnectionRequest
+	(*CreateSAMLConnectionResponse)(nil),                  // 31: tesseral.backend.v1.CreateSAMLConnectionResponse
 	(*UpdateSAMLConnectionRequest)(nil),                   // 32: tesseral.backend.v1.UpdateSAMLConnectionRequest
 	(*UpdateSAMLConnectionResponse)(nil),                  // 33: tesseral.backend.v1.UpdateSAMLConnectionResponse
 	(*DeleteSAMLConnectionRequest)(nil),                   // 34: tesseral.backend.v1.DeleteSAMLConnectionRequest
@@ -7077,10 +7175,10 @@ var file_tesseral_backend_v1_backend_proto_depIdxs = []int32{
 	127, // 15: tesseral.backend.v1.GetOrganizationMicrosoftTenantIDsResponse.organization_microsoft_tenant_ids:type_name -> tesseral.backend.v1.OrganizationMicrosoftTenantIDs
 	127, // 16: tesseral.backend.v1.UpdateOrganizationMicrosoftTenantIDsRequest.organization_microsoft_tenant_ids:type_name -> tesseral.backend.v1.OrganizationMicrosoftTenantIDs
 	127, // 17: tesseral.backend.v1.UpdateOrganizationMicrosoftTenantIDsResponse.organization_microsoft_tenant_ids:type_name -> tesseral.backend.v1.OrganizationMicrosoftTenantIDs
-	128, // 18: tesseral.backend.v1.CreateSAMLConnectionRequest.saml_connection:type_name -> tesseral.backend.v1.SAMLConnection
-	128, // 19: tesseral.backend.v1.CreateSAMLConnectionResponse.saml_connection:type_name -> tesseral.backend.v1.SAMLConnection
-	128, // 20: tesseral.backend.v1.GetSAMLConnectionResponse.saml_connection:type_name -> tesseral.backend.v1.SAMLConnection
-	128, // 21: tesseral.backend.v1.ListSAMLConnectionsResponse.saml_connections:type_name -> tesseral.backend.v1.SAMLConnection
+	128, // 18: tesseral.backend.v1.ListSAMLConnectionsResponse.saml_connections:type_name -> tesseral.backend.v1.SAMLConnection
+	128, // 19: tesseral.backend.v1.GetSAMLConnectionResponse.saml_connection:type_name -> tesseral.backend.v1.SAMLConnection
+	128, // 20: tesseral.backend.v1.CreateSAMLConnectionRequest.saml_connection:type_name -> tesseral.backend.v1.SAMLConnection
+	128, // 21: tesseral.backend.v1.CreateSAMLConnectionResponse.saml_connection:type_name -> tesseral.backend.v1.SAMLConnection
 	128, // 22: tesseral.backend.v1.UpdateSAMLConnectionRequest.saml_connection:type_name -> tesseral.backend.v1.SAMLConnection
 	128, // 23: tesseral.backend.v1.UpdateSAMLConnectionResponse.saml_connection:type_name -> tesseral.backend.v1.SAMLConnection
 	129, // 24: tesseral.backend.v1.ListSCIMAPIKeysResponse.scim_api_keys:type_name -> tesseral.backend.v1.SCIMAPIKey
@@ -7139,9 +7237,9 @@ var file_tesseral_backend_v1_backend_proto_depIdxs = []int32{
 	20,  // 77: tesseral.backend.v1.BackendService.UpdateOrganizationGoogleHostedDomains:input_type -> tesseral.backend.v1.UpdateOrganizationGoogleHostedDomainsRequest
 	22,  // 78: tesseral.backend.v1.BackendService.GetOrganizationMicrosoftTenantIDs:input_type -> tesseral.backend.v1.GetOrganizationMicrosoftTenantIDsRequest
 	24,  // 79: tesseral.backend.v1.BackendService.UpdateOrganizationMicrosoftTenantIDs:input_type -> tesseral.backend.v1.UpdateOrganizationMicrosoftTenantIDsRequest
-	30,  // 80: tesseral.backend.v1.BackendService.ListSAMLConnections:input_type -> tesseral.backend.v1.ListSAMLConnectionsRequest
+	26,  // 80: tesseral.backend.v1.BackendService.ListSAMLConnections:input_type -> tesseral.backend.v1.ListSAMLConnectionsRequest
 	28,  // 81: tesseral.backend.v1.BackendService.GetSAMLConnection:input_type -> tesseral.backend.v1.GetSAMLConnectionRequest
-	26,  // 82: tesseral.backend.v1.BackendService.CreateSAMLConnection:input_type -> tesseral.backend.v1.CreateSAMLConnectionRequest
+	30,  // 82: tesseral.backend.v1.BackendService.CreateSAMLConnection:input_type -> tesseral.backend.v1.CreateSAMLConnectionRequest
 	32,  // 83: tesseral.backend.v1.BackendService.UpdateSAMLConnection:input_type -> tesseral.backend.v1.UpdateSAMLConnectionRequest
 	34,  // 84: tesseral.backend.v1.BackendService.DeleteSAMLConnection:input_type -> tesseral.backend.v1.DeleteSAMLConnectionRequest
 	36,  // 85: tesseral.backend.v1.BackendService.ListSCIMAPIKeys:input_type -> tesseral.backend.v1.ListSCIMAPIKeysRequest
@@ -7200,9 +7298,9 @@ var file_tesseral_backend_v1_backend_proto_depIdxs = []int32{
 	21,  // 138: tesseral.backend.v1.BackendService.UpdateOrganizationGoogleHostedDomains:output_type -> tesseral.backend.v1.UpdateOrganizationGoogleHostedDomainsResponse
 	23,  // 139: tesseral.backend.v1.BackendService.GetOrganizationMicrosoftTenantIDs:output_type -> tesseral.backend.v1.GetOrganizationMicrosoftTenantIDsResponse
 	25,  // 140: tesseral.backend.v1.BackendService.UpdateOrganizationMicrosoftTenantIDs:output_type -> tesseral.backend.v1.UpdateOrganizationMicrosoftTenantIDsResponse
-	31,  // 141: tesseral.backend.v1.BackendService.ListSAMLConnections:output_type -> tesseral.backend.v1.ListSAMLConnectionsResponse
+	27,  // 141: tesseral.backend.v1.BackendService.ListSAMLConnections:output_type -> tesseral.backend.v1.ListSAMLConnectionsResponse
 	29,  // 142: tesseral.backend.v1.BackendService.GetSAMLConnection:output_type -> tesseral.backend.v1.GetSAMLConnectionResponse
-	27,  // 143: tesseral.backend.v1.BackendService.CreateSAMLConnection:output_type -> tesseral.backend.v1.CreateSAMLConnectionResponse
+	31,  // 143: tesseral.backend.v1.BackendService.CreateSAMLConnection:output_type -> tesseral.backend.v1.CreateSAMLConnectionResponse
 	33,  // 144: tesseral.backend.v1.BackendService.UpdateSAMLConnection:output_type -> tesseral.backend.v1.UpdateSAMLConnectionResponse
 	35,  // 145: tesseral.backend.v1.BackendService.DeleteSAMLConnection:output_type -> tesseral.backend.v1.DeleteSAMLConnectionResponse
 	37,  // 146: tesseral.backend.v1.BackendService.ListSCIMAPIKeys:output_type -> tesseral.backend.v1.ListSCIMAPIKeysResponse

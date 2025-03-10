@@ -6,119 +6,172 @@ import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv1";
 import { fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv1";
 import type { Timestamp } from "@bufbuild/protobuf/wkt";
 import { file_google_protobuf_struct, file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
-import type { JsonObject, Message } from "@bufbuild/protobuf";
+import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file tesseral/backend/v1/models.proto.
  */
 export const file_tesseral_backend_v1_models: GenFile = /*@__PURE__*/
-  fileDesc("CiB0ZXNzZXJhbC9iYWNrZW5kL3YxL21vZGVscy5wcm90bxITdGVzc2VyYWwuYmFja2VuZC52MSKuBwoHUHJvamVjdBIKCgJpZBgBIAEoCRIUCgxkaXNwbGF5X25hbWUYAiABKAkSLwoLY3JlYXRlX3RpbWUYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi8KC3VwZGF0ZV90aW1lGAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIfChJsb2dfaW5fd2l0aF9nb29nbGUYBiABKAhIAIgBARIiChVsb2dfaW5fd2l0aF9taWNyb3NvZnQYByABKAhIAYgBARIeChFsb2dfaW5fd2l0aF9lbWFpbBgPIAEoCEgCiAEBEiEKFGxvZ19pbl93aXRoX3Bhc3N3b3JkGAUgASgISAOIAQESHQoQbG9nX2luX3dpdGhfc2FtbBgQIAEoCEgEiAEBEioKHWxvZ19pbl93aXRoX2F1dGhlbnRpY2F0b3JfYXBwGA0gASgISAWIAQESIAoTbG9nX2luX3dpdGhfcGFzc2tleRgOIAEoCEgGiAEBEh4KFmdvb2dsZV9vYXV0aF9jbGllbnRfaWQYCCABKAkSIgoaZ29vZ2xlX29hdXRoX2NsaWVudF9zZWNyZXQYCSABKAkSIQoZbWljcm9zb2Z0X29hdXRoX2NsaWVudF9pZBgKIAEoCRIlCh1taWNyb3NvZnRfb2F1dGhfY2xpZW50X3NlY3JldBgLIAEoCRIUCgx2YXVsdF9kb21haW4YDCABKAkSFwoPdHJ1c3RlZF9kb21haW5zGBEgAygJEhQKDHJlZGlyZWN0X3VyaRgSIAEoCRIlChhhZnRlcl9sb2dpbl9yZWRpcmVjdF91cmkYEyABKAlIB4gBARImChlhZnRlcl9zaWdudXBfcmVkaXJlY3RfdXJpGBQgASgJSAiIAQESHgoWZW1haWxfc2VuZF9mcm9tX2RvbWFpbhgVIAEoCUIVChNfbG9nX2luX3dpdGhfZ29vZ2xlQhgKFl9sb2dfaW5fd2l0aF9taWNyb3NvZnRCFAoSX2xvZ19pbl93aXRoX2VtYWlsQhcKFV9sb2dfaW5fd2l0aF9wYXNzd29yZEITChFfbG9nX2luX3dpdGhfc2FtbEIgCh5fbG9nX2luX3dpdGhfYXV0aGVudGljYXRvcl9hcHBCFgoUX2xvZ19pbl93aXRoX3Bhc3NrZXlCGwoZX2FmdGVyX2xvZ2luX3JlZGlyZWN0X3VyaUIcChpfYWZ0ZXJfc2lnbnVwX3JlZGlyZWN0X3VyaSKeAgoTVmF1bHREb21haW5TZXR0aW5ncxIWCg5wZW5kaW5nX2RvbWFpbhgBIAEoCRIiChpwZW5kaW5nX3ZhdWx0X2RvbWFpbl9yZWFkeRgCIAEoCBImCh5wZW5kaW5nX3NlbmRfZnJvbV9kb21haW5fcmVhZHkYAyABKAgSTwoUdmF1bHRfZG9tYWluX3JlY29yZHMYBCADKAsyMS50ZXNzZXJhbC5iYWNrZW5kLnYxLlZhdWx0RG9tYWluU2V0dGluZ3NETlNSZWNvcmQSUgoXZW1haWxfc2VuZF9mcm9tX3JlY29yZHMYBSADKAsyMS50ZXNzZXJhbC5iYWNrZW5kLnYxLlZhdWx0RG9tYWluU2V0dGluZ3NETlNSZWNvcmQikgEKHFZhdWx0RG9tYWluU2V0dGluZ3NETlNSZWNvcmQSDAoEdHlwZRgBIAEoCRIMCgRuYW1lGAIgASgJEhIKCndhbnRfdmFsdWUYAyABKAkSFQoNYWN0dWFsX3ZhbHVlcxgEIAMoCRIaChJhY3R1YWxfdHRsX3NlY29uZHMYBSABKA0SDwoHY29ycmVjdBgGIAEoCCLJAgoRUHJvamVjdFVJU2V0dGluZ3MSCgoCaWQYASABKAkSEgoKcHJvamVjdF9pZBgCIAEoCRIvCgtjcmVhdGVfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLwoLdXBkYXRlX3RpbWUYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhAKCGxvZ29fdXJsGAUgASgJEhMKC2Zhdmljb25fdXJsGAYgASgJEhUKDXByaW1hcnlfY29sb3IYByABKAkSIAoYZGV0ZWN0X2RhcmtfbW9kZV9lbmFibGVkGAggASgIEhoKEmRhcmtfbW9kZV9sb2dvX3VybBgJIAEoCRIfChdkYXJrX21vZGVfcHJpbWFyeV9jb2xvchgKIAEoCRIVCg1sb2dfaW5fbGF5b3V0GAsgASgJIowFCgxPcmdhbml6YXRpb24SCgoCaWQYASABKAkSFAoMZGlzcGxheV9uYW1lGAIgASgJEi8KC2NyZWF0ZV90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIvCgt1cGRhdGVfdGltZRgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASHwoSbG9nX2luX3dpdGhfZ29vZ2xlGAcgASgISACIAQESIgoVbG9nX2luX3dpdGhfbWljcm9zb2Z0GAggASgISAGIAQESHgoRbG9nX2luX3dpdGhfZW1haWwYDiABKAhIAogBARIhChRsb2dfaW5fd2l0aF9wYXNzd29yZBgGIAEoCEgDiAEBEh0KEGxvZ19pbl93aXRoX3NhbWwYCSABKAhIBIgBARIqCh1sb2dfaW5fd2l0aF9hdXRoZW50aWNhdG9yX2FwcBgLIAEoCEgFiAEBEiAKE2xvZ19pbl93aXRoX3Bhc3NrZXkYDCABKAhIBogBARIYCgtyZXF1aXJlX21mYRgNIAEoCEgHiAEBEhkKDHNjaW1fZW5hYmxlZBgKIAEoCEgIiAEBQhUKE19sb2dfaW5fd2l0aF9nb29nbGVCGAoWX2xvZ19pbl93aXRoX21pY3Jvc29mdEIUChJfbG9nX2luX3dpdGhfZW1haWxCFwoVX2xvZ19pbl93aXRoX3Bhc3N3b3JkQhMKEV9sb2dfaW5fd2l0aF9zYW1sQiAKHl9sb2dfaW5fd2l0aF9hdXRoZW50aWNhdG9yX2FwcEIWChRfbG9nX2luX3dpdGhfcGFzc2tleUIOCgxfcmVxdWlyZV9tZmFCDwoNX3NjaW1fZW5hYmxlZCI/ChNPcmdhbml6YXRpb25Eb21haW5zEhcKD29yZ2FuaXphdGlvbl9pZBgBIAEoCRIPCgdkb21haW5zGAIgAygJIlkKH09yZ2FuaXphdGlvbkdvb2dsZUhvc3RlZERvbWFpbnMSFwoPb3JnYW5pemF0aW9uX2lkGAEgASgJEh0KFWdvb2dsZV9ob3N0ZWRfZG9tYWlucxgCIAMoCSJXCh5Pcmdhbml6YXRpb25NaWNyb3NvZnRUZW5hbnRJRHMSFwoPb3JnYW5pemF0aW9uX2lkGAEgASgJEhwKFG1pY3Jvc29mdF90ZW5hbnRfaWRzGAIgAygJIlAKEVNlc3Npb25TaWduaW5nS2V5EgoKAmlkGAEgASgJEi8KDnB1YmxpY19rZXlfandrGAIgASgLMhcuZ29vZ2xlLnByb3RvYnVmLlN0cnVjdCK6AQoNUHJvamVjdEFQSUtleRIKCgJpZBgBIAEoCRIUCgxkaXNwbGF5X25hbWUYAiABKAkSLwoLY3JlYXRlX3RpbWUYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi8KC3VwZGF0ZV90aW1lGAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIUCgxzZWNyZXRfdG9rZW4YBSABKAkSDwoHcmV2b2tlZBgGIAEoCCKUAQoOUHVibGlzaGFibGVLZXkSCgoCaWQYASABKAkSFAoMZGlzcGxheV9uYW1lGAIgASgJEi8KC2NyZWF0ZV90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIvCgt1cGRhdGVfdGltZRgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAivwIKBFVzZXISCgoCaWQYASABKAkSFwoPb3JnYW5pemF0aW9uX2lkGAIgASgJEg0KBWVtYWlsGAMgASgJEi8KC2NyZWF0ZV90aW1lGAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIvCgt1cGRhdGVfdGltZRgFIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASEgoFb3duZXIYBiABKAhIAIgBARIbCg5nb29nbGVfdXNlcl9pZBgHIAEoCUgBiAEBEh4KEW1pY3Jvc29mdF91c2VyX2lkGAggASgJSAKIAQESHQoVaGFzX2F1dGhlbnRpY2F0b3JfYXBwGAkgASgIQggKBl9vd25lckIRCg9fZ29vZ2xlX3VzZXJfaWRCFAoSX21pY3Jvc29mdF91c2VyX2lkIs8BCgdTZXNzaW9uEgoKAmlkGAEgASgJEg8KB3VzZXJfaWQYAiABKAkSDwoHcmV2b2tlZBgDIAEoCBIvCgtjcmVhdGVfdGltZRgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASNAoQbGFzdF9hY3RpdmVfdGltZRgFIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLwoLZXhwaXJlX3RpbWUYBiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wIvsBCgdQYXNza2V5EgoKAmlkGAEgASgJEg8KB3VzZXJfaWQYAiABKAkSLwoLY3JlYXRlX3RpbWUYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi8KC3VwZGF0ZV90aW1lGAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIVCghkaXNhYmxlZBgIIAEoCEgAiAEBEhUKDWNyZWRlbnRpYWxfaWQYBSABKAwSFwoPcHVibGljX2tleV9wa2l4GAYgASgJEg4KBmFhZ3VpZBgHIAEoCRINCgVycF9pZBgJIAEoCUILCglfZGlzYWJsZWQisgIKDlNBTUxDb25uZWN0aW9uEgoKAmlkGAEgASgJEhcKD29yZ2FuaXphdGlvbl9pZBgCIAEoCRIvCgtjcmVhdGVfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLwoLdXBkYXRlX3RpbWUYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhQKB3ByaW1hcnkYBSABKAhIAIgBARISCgpzcF9hY3NfdXJsGAYgASgJEhQKDHNwX2VudGl0eV9pZBgHIAEoCRIYChBpZHBfcmVkaXJlY3RfdXJsGAggASgJEhwKFGlkcF94NTA5X2NlcnRpZmljYXRlGAkgASgJEhUKDWlkcF9lbnRpdHlfaWQYCiABKAlCCgoIX3ByaW1hcnki0AEKClNDSU1BUElLZXkSCgoCaWQYASABKAkSFwoPb3JnYW5pemF0aW9uX2lkGAIgASgJEi8KC2NyZWF0ZV90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIvCgt1cGRhdGVfdGltZRgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASFAoMZGlzcGxheV9uYW1lGAUgASgJEhQKDHNlY3JldF90b2tlbhgGIAEoCRIPCgdyZXZva2VkGAcgASgIIs4BChZVc2VySW1wZXJzb25hdGlvblRva2VuEgoKAmlkGAEgASgJEhcKD2ltcGVyc29uYXRvcl9pZBgCIAEoCRIvCgtjcmVhdGVfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLwoLZXhwaXJlX3RpbWUYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhQKDHNlY3JldF90b2tlbhgFIAEoCRIXCg9pbXBlcnNvbmF0ZWRfaWQYBiABKAkisQEKClVzZXJJbnZpdGUSCgoCaWQYASABKAkSFwoPb3JnYW5pemF0aW9uX2lkGAIgASgJEi8KC2NyZWF0ZV90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIvCgt1cGRhdGVfdGltZRgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASDQoFZW1haWwYBSABKAkSDQoFb3duZXIYBiABKAhC6gEKF2NvbS50ZXNzZXJhbC5iYWNrZW5kLnYxQgtNb2RlbHNQcm90b1ABWlRnaXRodWIuY29tL3Rlc3NlcmFsLWxhYnMvdGVzc2VyYWwvaW50ZXJuYWwvYmFja2VuZC9nZW4vdGVzc2VyYWwvYmFja2VuZC92MTtiYWNrZW5kdjGiAgNUQliqAhNUZXNzZXJhbC5CYWNrZW5kLlYxygITVGVzc2VyYWxcQmFja2VuZFxWMeICH1Rlc3NlcmFsXEJhY2tlbmRcVjFcR1BCTWV0YWRhdGHqAhVUZXNzZXJhbDo6QmFja2VuZDo6VjFiBnByb3RvMw", [file_google_protobuf_struct, file_google_protobuf_timestamp]);
+  fileDesc("CiB0ZXNzZXJhbC9iYWNrZW5kL3YxL21vZGVscy5wcm90bxITdGVzc2VyYWwuYmFja2VuZC52MSKuBwoHUHJvamVjdBIKCgJpZBgBIAEoCRIUCgxkaXNwbGF5X25hbWUYAiABKAkSLwoLY3JlYXRlX3RpbWUYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi8KC3VwZGF0ZV90aW1lGAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIfChJsb2dfaW5fd2l0aF9nb29nbGUYBiABKAhIAIgBARIiChVsb2dfaW5fd2l0aF9taWNyb3NvZnQYByABKAhIAYgBARIeChFsb2dfaW5fd2l0aF9lbWFpbBgPIAEoCEgCiAEBEiEKFGxvZ19pbl93aXRoX3Bhc3N3b3JkGAUgASgISAOIAQESHQoQbG9nX2luX3dpdGhfc2FtbBgQIAEoCEgEiAEBEioKHWxvZ19pbl93aXRoX2F1dGhlbnRpY2F0b3JfYXBwGA0gASgISAWIAQESIAoTbG9nX2luX3dpdGhfcGFzc2tleRgOIAEoCEgGiAEBEh4KFmdvb2dsZV9vYXV0aF9jbGllbnRfaWQYCCABKAkSIgoaZ29vZ2xlX29hdXRoX2NsaWVudF9zZWNyZXQYCSABKAkSIQoZbWljcm9zb2Z0X29hdXRoX2NsaWVudF9pZBgKIAEoCRIlCh1taWNyb3NvZnRfb2F1dGhfY2xpZW50X3NlY3JldBgLIAEoCRIUCgx2YXVsdF9kb21haW4YDCABKAkSFwoPdHJ1c3RlZF9kb21haW5zGBEgAygJEhQKDHJlZGlyZWN0X3VyaRgSIAEoCRIlChhhZnRlcl9sb2dpbl9yZWRpcmVjdF91cmkYEyABKAlIB4gBARImChlhZnRlcl9zaWdudXBfcmVkaXJlY3RfdXJpGBQgASgJSAiIAQESHgoWZW1haWxfc2VuZF9mcm9tX2RvbWFpbhgVIAEoCUIVChNfbG9nX2luX3dpdGhfZ29vZ2xlQhgKFl9sb2dfaW5fd2l0aF9taWNyb3NvZnRCFAoSX2xvZ19pbl93aXRoX2VtYWlsQhcKFV9sb2dfaW5fd2l0aF9wYXNzd29yZEITChFfbG9nX2luX3dpdGhfc2FtbEIgCh5fbG9nX2luX3dpdGhfYXV0aGVudGljYXRvcl9hcHBCFgoUX2xvZ19pbl93aXRoX3Bhc3NrZXlCGwoZX2FmdGVyX2xvZ2luX3JlZGlyZWN0X3VyaUIcChpfYWZ0ZXJfc2lnbnVwX3JlZGlyZWN0X3VyaSKeAgoTVmF1bHREb21haW5TZXR0aW5ncxIWCg5wZW5kaW5nX2RvbWFpbhgBIAEoCRIiChpwZW5kaW5nX3ZhdWx0X2RvbWFpbl9yZWFkeRgCIAEoCBImCh5wZW5kaW5nX3NlbmRfZnJvbV9kb21haW5fcmVhZHkYAyABKAgSTwoUdmF1bHRfZG9tYWluX3JlY29yZHMYBCADKAsyMS50ZXNzZXJhbC5iYWNrZW5kLnYxLlZhdWx0RG9tYWluU2V0dGluZ3NETlNSZWNvcmQSUgoXZW1haWxfc2VuZF9mcm9tX3JlY29yZHMYBSADKAsyMS50ZXNzZXJhbC5iYWNrZW5kLnYxLlZhdWx0RG9tYWluU2V0dGluZ3NETlNSZWNvcmQikgEKHFZhdWx0RG9tYWluU2V0dGluZ3NETlNSZWNvcmQSDAoEdHlwZRgBIAEoCRIMCgRuYW1lGAIgASgJEhIKCndhbnRfdmFsdWUYAyABKAkSFQoNYWN0dWFsX3ZhbHVlcxgEIAMoCRIaChJhY3R1YWxfdHRsX3NlY29uZHMYBSABKA0SDwoHY29ycmVjdBgGIAEoCCLJAgoRUHJvamVjdFVJU2V0dGluZ3MSCgoCaWQYASABKAkSEgoKcHJvamVjdF9pZBgCIAEoCRIvCgtjcmVhdGVfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLwoLdXBkYXRlX3RpbWUYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhAKCGxvZ29fdXJsGAUgASgJEhMKC2Zhdmljb25fdXJsGAYgASgJEhUKDXByaW1hcnlfY29sb3IYByABKAkSIAoYZGV0ZWN0X2RhcmtfbW9kZV9lbmFibGVkGAggASgIEhoKEmRhcmtfbW9kZV9sb2dvX3VybBgJIAEoCRIfChdkYXJrX21vZGVfcHJpbWFyeV9jb2xvchgKIAEoCRIVCg1sb2dfaW5fbGF5b3V0GAsgASgJIowFCgxPcmdhbml6YXRpb24SCgoCaWQYASABKAkSFAoMZGlzcGxheV9uYW1lGAIgASgJEi8KC2NyZWF0ZV90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIvCgt1cGRhdGVfdGltZRgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASHwoSbG9nX2luX3dpdGhfZ29vZ2xlGAcgASgISACIAQESIgoVbG9nX2luX3dpdGhfbWljcm9zb2Z0GAggASgISAGIAQESHgoRbG9nX2luX3dpdGhfZW1haWwYDiABKAhIAogBARIhChRsb2dfaW5fd2l0aF9wYXNzd29yZBgGIAEoCEgDiAEBEh0KEGxvZ19pbl93aXRoX3NhbWwYCSABKAhIBIgBARIqCh1sb2dfaW5fd2l0aF9hdXRoZW50aWNhdG9yX2FwcBgLIAEoCEgFiAEBEiAKE2xvZ19pbl93aXRoX3Bhc3NrZXkYDCABKAhIBogBARIYCgtyZXF1aXJlX21mYRgNIAEoCEgHiAEBEhkKDHNjaW1fZW5hYmxlZBgKIAEoCEgIiAEBQhUKE19sb2dfaW5fd2l0aF9nb29nbGVCGAoWX2xvZ19pbl93aXRoX21pY3Jvc29mdEIUChJfbG9nX2luX3dpdGhfZW1haWxCFwoVX2xvZ19pbl93aXRoX3Bhc3N3b3JkQhMKEV9sb2dfaW5fd2l0aF9zYW1sQiAKHl9sb2dfaW5fd2l0aF9hdXRoZW50aWNhdG9yX2FwcEIWChRfbG9nX2luX3dpdGhfcGFzc2tleUIOCgxfcmVxdWlyZV9tZmFCDwoNX3NjaW1fZW5hYmxlZCI/ChNPcmdhbml6YXRpb25Eb21haW5zEhcKD29yZ2FuaXphdGlvbl9pZBgBIAEoCRIPCgdkb21haW5zGAIgAygJIlkKH09yZ2FuaXphdGlvbkdvb2dsZUhvc3RlZERvbWFpbnMSFwoPb3JnYW5pemF0aW9uX2lkGAEgASgJEh0KFWdvb2dsZV9ob3N0ZWRfZG9tYWlucxgCIAMoCSJXCh5Pcmdhbml6YXRpb25NaWNyb3NvZnRUZW5hbnRJRHMSFwoPb3JnYW5pemF0aW9uX2lkGAEgASgJEhwKFG1pY3Jvc29mdF90ZW5hbnRfaWRzGAIgAygJIroBCg1Qcm9qZWN0QVBJS2V5EgoKAmlkGAEgASgJEhQKDGRpc3BsYXlfbmFtZRgCIAEoCRIvCgtjcmVhdGVfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLwoLdXBkYXRlX3RpbWUYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhQKDHNlY3JldF90b2tlbhgFIAEoCRIPCgdyZXZva2VkGAYgASgIIpQBCg5QdWJsaXNoYWJsZUtleRIKCgJpZBgBIAEoCRIUCgxkaXNwbGF5X25hbWUYAiABKAkSLwoLY3JlYXRlX3RpbWUYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi8KC3VwZGF0ZV90aW1lGAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCK/AgoEVXNlchIKCgJpZBgBIAEoCRIXCg9vcmdhbml6YXRpb25faWQYAiABKAkSDQoFZW1haWwYAyABKAkSLwoLY3JlYXRlX3RpbWUYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi8KC3VwZGF0ZV90aW1lGAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBISCgVvd25lchgGIAEoCEgAiAEBEhsKDmdvb2dsZV91c2VyX2lkGAcgASgJSAGIAQESHgoRbWljcm9zb2Z0X3VzZXJfaWQYCCABKAlIAogBARIdChVoYXNfYXV0aGVudGljYXRvcl9hcHAYCSABKAhCCAoGX293bmVyQhEKD19nb29nbGVfdXNlcl9pZEIUChJfbWljcm9zb2Z0X3VzZXJfaWQizwEKB1Nlc3Npb24SCgoCaWQYASABKAkSDwoHdXNlcl9pZBgCIAEoCRIPCgdyZXZva2VkGAMgASgIEi8KC2NyZWF0ZV90aW1lGAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBI0ChBsYXN0X2FjdGl2ZV90aW1lGAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIvCgtleHBpcmVfdGltZRgGIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAi+wEKB1Bhc3NrZXkSCgoCaWQYASABKAkSDwoHdXNlcl9pZBgCIAEoCRIvCgtjcmVhdGVfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLwoLdXBkYXRlX3RpbWUYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhUKCGRpc2FibGVkGAggASgISACIAQESFQoNY3JlZGVudGlhbF9pZBgFIAEoDBIXCg9wdWJsaWNfa2V5X3BraXgYBiABKAkSDgoGYWFndWlkGAcgASgJEg0KBXJwX2lkGAkgASgJQgsKCV9kaXNhYmxlZCKyAgoOU0FNTENvbm5lY3Rpb24SCgoCaWQYASABKAkSFwoPb3JnYW5pemF0aW9uX2lkGAIgASgJEi8KC2NyZWF0ZV90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIvCgt1cGRhdGVfdGltZRgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASFAoHcHJpbWFyeRgFIAEoCEgAiAEBEhIKCnNwX2Fjc191cmwYBiABKAkSFAoMc3BfZW50aXR5X2lkGAcgASgJEhgKEGlkcF9yZWRpcmVjdF91cmwYCCABKAkSHAoUaWRwX3g1MDlfY2VydGlmaWNhdGUYCSABKAkSFQoNaWRwX2VudGl0eV9pZBgKIAEoCUIKCghfcHJpbWFyeSLQAQoKU0NJTUFQSUtleRIKCgJpZBgBIAEoCRIXCg9vcmdhbml6YXRpb25faWQYAiABKAkSLwoLY3JlYXRlX3RpbWUYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi8KC3VwZGF0ZV90aW1lGAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIUCgxkaXNwbGF5X25hbWUYBSABKAkSFAoMc2VjcmV0X3Rva2VuGAYgASgJEg8KB3Jldm9rZWQYByABKAgizgEKFlVzZXJJbXBlcnNvbmF0aW9uVG9rZW4SCgoCaWQYASABKAkSFwoPaW1wZXJzb25hdG9yX2lkGAIgASgJEi8KC2NyZWF0ZV90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIvCgtleHBpcmVfdGltZRgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASFAoMc2VjcmV0X3Rva2VuGAUgASgJEhcKD2ltcGVyc29uYXRlZF9pZBgGIAEoCSKxAQoKVXNlckludml0ZRIKCgJpZBgBIAEoCRIXCg9vcmdhbml6YXRpb25faWQYAiABKAkSLwoLY3JlYXRlX3RpbWUYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi8KC3VwZGF0ZV90aW1lGAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBINCgVlbWFpbBgFIAEoCRINCgVvd25lchgGIAEoCELqAQoXY29tLnRlc3NlcmFsLmJhY2tlbmQudjFCC01vZGVsc1Byb3RvUAFaVGdpdGh1Yi5jb20vdGVzc2VyYWwtbGFicy90ZXNzZXJhbC9pbnRlcm5hbC9iYWNrZW5kL2dlbi90ZXNzZXJhbC9iYWNrZW5kL3YxO2JhY2tlbmR2MaICA1RCWKoCE1Rlc3NlcmFsLkJhY2tlbmQuVjHKAhNUZXNzZXJhbFxCYWNrZW5kXFYx4gIfVGVzc2VyYWxcQmFja2VuZFxWMVxHUEJNZXRhZGF0YeoCFVRlc3NlcmFsOjpCYWNrZW5kOjpWMWIGcHJvdG8z", [file_google_protobuf_struct, file_google_protobuf_timestamp]);
 
 /**
+ * Projects are the top-level object in Tesseral.
+ *
+ * Everything in Tesseral happens within the context of a Project.
+ *
  * @generated from message tesseral.backend.v1.Project
  */
 export type Project = Message<"tesseral.backend.v1.Project"> & {
   /**
+   * The Project ID. Starts with `project_...`.
+   *
    * @generated from field: string id = 1;
    */
   id: string;
 
   /**
+   * A human-friendly name for the Project.
+   *
    * @generated from field: string display_name = 2;
    */
   displayName: string;
 
   /**
+   * When the Project was created.
+   *
    * @generated from field: google.protobuf.Timestamp create_time = 3;
    */
   createTime?: Timestamp;
 
   /**
+   * When the Project was last modified.
+   *
    * @generated from field: google.protobuf.Timestamp update_time = 4;
    */
   updateTime?: Timestamp;
 
   /**
+   * Whether the Project supports "Log in with Google".
+   *
    * @generated from field: optional bool log_in_with_google = 6;
    */
   logInWithGoogle?: boolean;
 
   /**
+   * Whether the Project supports "Log in with Microsoft".
+   *
    * @generated from field: optional bool log_in_with_microsoft = 7;
    */
   logInWithMicrosoft?: boolean;
 
   /**
+   * Whether the Project supports "Log in with email".
+   *
    * @generated from field: optional bool log_in_with_email = 15;
    */
   logInWithEmail?: boolean;
 
   /**
+   * Whether the Project supports "Log in with password".
+   *
    * @generated from field: optional bool log_in_with_password = 5;
    */
   logInWithPassword?: boolean;
 
   /**
+   * Whether the Project supports "Log in with SAML".
+   *
    * @generated from field: optional bool log_in_with_saml = 16;
    */
   logInWithSaml?: boolean;
 
   /**
+   * Whether the Project supports authenticator apps as a secondary auth factor.
+   *
    * @generated from field: optional bool log_in_with_authenticator_app = 13;
    */
   logInWithAuthenticatorApp?: boolean;
 
   /**
+   * Whether the Project supports passkeys as a secondary auth factor.
+   *
    * @generated from field: optional bool log_in_with_passkey = 14;
    */
   logInWithPasskey?: boolean;
 
   /**
+   * The OAuth Client ID to use for "Log in with Google".
+   *
    * @generated from field: string google_oauth_client_id = 8;
    */
   googleOauthClientId: string;
 
   /**
+   * The OAuth Client Secret to use for "Log in with Google".
+   *
+   * This field is write-only.
+   *
    * @generated from field: string google_oauth_client_secret = 9;
    */
   googleOauthClientSecret: string;
 
   /**
+   * The OAuth Client ID to use for "Log in with Microsoft".
+   *
    * @generated from field: string microsoft_oauth_client_id = 10;
    */
   microsoftOauthClientId: string;
 
   /**
+   * The OAuth Client Secret to use for "Log in with Microsoft".
+   *
+   * This field is write-only.
+   *
    * @generated from field: string microsoft_oauth_client_secret = 11;
    */
   microsoftOauthClientSecret: string;
 
   /**
+   * The domain where the Project's Vault lives.
+   *
    * @generated from field: string vault_domain = 12;
    */
   vaultDomain: string;
 
   /**
+   * The set of domains the Project trusts.
+   *
+   * Client-side JavaScript on these domains can take actions on behalf of
+   * logged-in Users.
+   *
    * @generated from field: repeated string trusted_domains = 17;
    */
   trustedDomains: string[];
 
   /**
+   * Where Users are redirected after returning from the Vault.
+   *
    * @generated from field: string redirect_uri = 18;
    */
   redirectUri: string;
 
   /**
+   * Where Users are redirected after logging in.
+   *
    * @generated from field: optional string after_login_redirect_uri = 19;
    */
   afterLoginRedirectUri?: string;
 
   /**
+   * Where Users are redirected after signing up.
+   *
    * @generated from field: optional string after_signup_redirect_uri = 20;
    */
   afterSignupRedirectUri?: string;
 
   /**
+   * Emails sent to Users come from this domain.
+   *
    * @generated from field: string email_send_from_domain = 21;
    */
   emailSendFromDomain: string;
@@ -278,70 +331,98 @@ export const ProjectUISettingsSchema: GenMessage<ProjectUISettings> = /*@__PURE_
   messageDesc(file_tesseral_backend_v1_models, 3);
 
 /**
+ * An Organization represents one of your corporate customers.
+ *
  * @generated from message tesseral.backend.v1.Organization
  */
 export type Organization = Message<"tesseral.backend.v1.Organization"> & {
   /**
+   * The Organization ID. Starts with `org_...`.
+   *
    * @generated from field: string id = 1;
    */
   id: string;
 
   /**
+   * A human-friendly name for the Organization.
+   *
    * @generated from field: string display_name = 2;
    */
   displayName: string;
 
   /**
+   * When the Organization was created.
+   *
    * @generated from field: google.protobuf.Timestamp create_time = 3;
    */
   createTime?: Timestamp;
 
   /**
+   * When the Organization was last updated.
+   *
    * @generated from field: google.protobuf.Timestamp update_time = 4;
    */
   updateTime?: Timestamp;
 
   /**
+   * Whether the Organization supports "Log in with Google".
+   *
    * @generated from field: optional bool log_in_with_google = 7;
    */
   logInWithGoogle?: boolean;
 
   /**
+   * Whether the Organization supports "Log in with Microsoft".
+   *
    * @generated from field: optional bool log_in_with_microsoft = 8;
    */
   logInWithMicrosoft?: boolean;
 
   /**
+   * Whether the Organization supports "Log in with email".
+   *
    * @generated from field: optional bool log_in_with_email = 14;
    */
   logInWithEmail?: boolean;
 
   /**
+   * Whether the Organization supports "Log in with password".
+   *
    * @generated from field: optional bool log_in_with_password = 6;
    */
   logInWithPassword?: boolean;
 
   /**
+   * Whether the Organization supports "Log in with SAML".
+   *
    * @generated from field: optional bool log_in_with_saml = 9;
    */
   logInWithSaml?: boolean;
 
   /**
+   * Whether the Organization supports authenticator apps as a secondary auth factor.
+   *
    * @generated from field: optional bool log_in_with_authenticator_app = 11;
    */
   logInWithAuthenticatorApp?: boolean;
 
   /**
+   * Whether the Organization supports passkeys as a secondary auth factor.
+   *
    * @generated from field: optional bool log_in_with_passkey = 12;
    */
   logInWithPasskey?: boolean;
 
   /**
+   * Whether the Organization requires a secondary auth factor.
+   *
    * @generated from field: optional bool require_mfa = 13;
    */
   requireMfa?: boolean;
 
   /**
+   * Whether the Organization has SCIM enabled.
+   *
    * @generated from field: optional bool scim_enabled = 10;
    */
   scimEnabled?: boolean;
@@ -355,15 +436,24 @@ export const OrganizationSchema: GenMessage<Organization> = /*@__PURE__*/
   messageDesc(file_tesseral_backend_v1_models, 4);
 
 /**
+ * OrganizationDomains defines the domains associated with an Organization.
+ *
  * @generated from message tesseral.backend.v1.OrganizationDomains
  */
 export type OrganizationDomains = Message<"tesseral.backend.v1.OrganizationDomains"> & {
   /**
+   * The ID of the Organization.
+   *
    * @generated from field: string organization_id = 1;
    */
   organizationId: string;
 
   /**
+   * A list of domains associated with the organization.
+   *
+   * When an Organization uses SAML or SCIM, only emails from this list are
+   * permitted.
+   *
    * @generated from field: repeated string domains = 2;
    */
   domains: string[];
@@ -377,15 +467,26 @@ export const OrganizationDomainsSchema: GenMessage<OrganizationDomains> = /*@__P
   messageDesc(file_tesseral_backend_v1_models, 5);
 
 /**
+ * OrganizationGoogleHostedDomains represents the Google Hosted Domains ("HDs")
+ * associated with an Organization.
+ *
  * @generated from message tesseral.backend.v1.OrganizationGoogleHostedDomains
  */
 export type OrganizationGoogleHostedDomains = Message<"tesseral.backend.v1.OrganizationGoogleHostedDomains"> & {
   /**
+   * The ID of the Organization.
+   *
    * @generated from field: string organization_id = 1;
    */
   organizationId: string;
 
   /**
+   * A list of Google-hosted domains associated with the organization.
+   *
+   * These values correspond to Google OAuth `hd` claims:
+   *
+   * https://developers.google.com/identity/openid-connect/openid-connect#obtainuserinfo
+   *
    * @generated from field: repeated string google_hosted_domains = 2;
    */
   googleHostedDomains: string[];
@@ -399,15 +500,26 @@ export const OrganizationGoogleHostedDomainsSchema: GenMessage<OrganizationGoogl
   messageDesc(file_tesseral_backend_v1_models, 6);
 
 /**
+ * OrganizationMicrosoftTenantIDs represents the Microsoft Tenant IDs ("TIDs")
+ * associated with an Organization.
+ *
  * @generated from message tesseral.backend.v1.OrganizationMicrosoftTenantIDs
  */
 export type OrganizationMicrosoftTenantIDs = Message<"tesseral.backend.v1.OrganizationMicrosoftTenantIDs"> & {
   /**
+   * The ID of the Organization.
+   *
    * @generated from field: string organization_id = 1;
    */
   organizationId: string;
 
   /**
+   * A list of Microsoft Tenant IDs associated with the organization.
+   *
+   * These values correspond to Microsoft OAuth `tid` claims:
+   *
+   * https://learn.microsoft.com/en-us/entra/identity-platform/id-token-claims-reference
+   *
    * @generated from field: repeated string microsoft_tenant_ids = 2;
    */
   microsoftTenantIds: string[];
@@ -419,28 +531,6 @@ export type OrganizationMicrosoftTenantIDs = Message<"tesseral.backend.v1.Organi
  */
 export const OrganizationMicrosoftTenantIDsSchema: GenMessage<OrganizationMicrosoftTenantIDs> = /*@__PURE__*/
   messageDesc(file_tesseral_backend_v1_models, 7);
-
-/**
- * @generated from message tesseral.backend.v1.SessionSigningKey
- */
-export type SessionSigningKey = Message<"tesseral.backend.v1.SessionSigningKey"> & {
-  /**
-   * @generated from field: string id = 1;
-   */
-  id: string;
-
-  /**
-   * @generated from field: google.protobuf.Struct public_key_jwk = 2;
-   */
-  publicKeyJwk?: JsonObject;
-};
-
-/**
- * Describes the message tesseral.backend.v1.SessionSigningKey.
- * Use `create(SessionSigningKeySchema)` to create a new message.
- */
-export const SessionSigningKeySchema: GenMessage<SessionSigningKey> = /*@__PURE__*/
-  messageDesc(file_tesseral_backend_v1_models, 8);
 
 /**
  * @generated from message tesseral.backend.v1.ProjectAPIKey
@@ -482,7 +572,7 @@ export type ProjectAPIKey = Message<"tesseral.backend.v1.ProjectAPIKey"> & {
  * Use `create(ProjectAPIKeySchema)` to create a new message.
  */
 export const ProjectAPIKeySchema: GenMessage<ProjectAPIKey> = /*@__PURE__*/
-  messageDesc(file_tesseral_backend_v1_models, 9);
+  messageDesc(file_tesseral_backend_v1_models, 8);
 
 /**
  * @generated from message tesseral.backend.v1.PublishableKey
@@ -514,53 +604,76 @@ export type PublishableKey = Message<"tesseral.backend.v1.PublishableKey"> & {
  * Use `create(PublishableKeySchema)` to create a new message.
  */
 export const PublishableKeySchema: GenMessage<PublishableKey> = /*@__PURE__*/
-  messageDesc(file_tesseral_backend_v1_models, 10);
+  messageDesc(file_tesseral_backend_v1_models, 9);
 
 /**
+ * A User represents an individual working for one of your corporate customers.
+ *
  * @generated from message tesseral.backend.v1.User
  */
 export type User = Message<"tesseral.backend.v1.User"> & {
   /**
+   * The User ID. Starts with `user_...`.
+   *
    * @generated from field: string id = 1;
    */
   id: string;
 
   /**
+   * The Organization this User belongs to.
+   *
    * @generated from field: string organization_id = 2;
    */
   organizationId: string;
 
   /**
+   * The User's email address.
+   *
+   * This email is verified and unique within the Organization. Two Users in
+   * different Organizations may have the same email.
+   *
    * @generated from field: string email = 3;
    */
   email: string;
 
   /**
+   * When the User was created.
+   *
    * @generated from field: google.protobuf.Timestamp create_time = 4;
    */
   createTime?: Timestamp;
 
   /**
+   * When the User was last updated.
+   *
    * @generated from field: google.protobuf.Timestamp update_time = 5;
    */
   updateTime?: Timestamp;
 
   /**
+   * Whether the User is an owner of their Organization.
+   *
    * @generated from field: optional bool owner = 6;
    */
   owner?: boolean;
 
   /**
+   * The Google User ID, if the User has ever logged in with Google.
+   *
    * @generated from field: optional string google_user_id = 7;
    */
   googleUserId?: string;
 
   /**
+   * The Microsoft User ID, if the User has ever logged in with Microsoft.
+   *
    * @generated from field: optional string microsoft_user_id = 8;
    */
   microsoftUserId?: string;
 
   /**
+   * Whether the User has an authenticator app set up.
+   *
    * @generated from field: bool has_authenticator_app = 9;
    */
   hasAuthenticatorApp: boolean;
@@ -571,38 +684,52 @@ export type User = Message<"tesseral.backend.v1.User"> & {
  * Use `create(UserSchema)` to create a new message.
  */
 export const UserSchema: GenMessage<User> = /*@__PURE__*/
-  messageDesc(file_tesseral_backend_v1_models, 11);
+  messageDesc(file_tesseral_backend_v1_models, 10);
 
 /**
+ * Represents a Session for a logged-in User.
+ *
  * @generated from message tesseral.backend.v1.Session
  */
 export type Session = Message<"tesseral.backend.v1.Session"> & {
   /**
+   * The Session ID. Starts with `session_...`.
+   *
    * @generated from field: string id = 1;
    */
   id: string;
 
   /**
+   * The User this Session belongs to.
+   *
    * @generated from field: string user_id = 2;
    */
   userId: string;
 
   /**
+   * Whether the Session is revoked.
+   *
    * @generated from field: bool revoked = 3;
    */
   revoked: boolean;
 
   /**
+   * When the Session was created.
+   *
    * @generated from field: google.protobuf.Timestamp create_time = 4;
    */
   createTime?: Timestamp;
 
   /**
+   * When the Session was last active.
+   *
    * @generated from field: google.protobuf.Timestamp last_active_time = 5;
    */
   lastActiveTime?: Timestamp;
 
   /**
+   * When the Session expires.
+   *
    * @generated from field: google.protobuf.Timestamp expire_time = 6;
    */
   expireTime?: Timestamp;
@@ -613,53 +740,75 @@ export type Session = Message<"tesseral.backend.v1.Session"> & {
  * Use `create(SessionSchema)` to create a new message.
  */
 export const SessionSchema: GenMessage<Session> = /*@__PURE__*/
-  messageDesc(file_tesseral_backend_v1_models, 12);
+  messageDesc(file_tesseral_backend_v1_models, 11);
 
 /**
+ * Passkey represents a WebAuthn public key credential registered by a User.
+ *
  * @generated from message tesseral.backend.v1.Passkey
  */
 export type Passkey = Message<"tesseral.backend.v1.Passkey"> & {
   /**
+   * The Passkey ID. Starts with `passkey_...`.
+   *
    * @generated from field: string id = 1;
    */
   id: string;
 
   /**
+   * The User this Passkey belongs to.
+   *
    * @generated from field: string user_id = 2;
    */
   userId: string;
 
   /**
+   * The timestamp of when the Passkey was created.
+   *
    * @generated from field: google.protobuf.Timestamp create_time = 3;
    */
   createTime?: Timestamp;
 
   /**
+   * The timestamp of when the Passkey was last updated.
+   *
    * @generated from field: google.protobuf.Timestamp update_time = 4;
    */
   updateTime?: Timestamp;
 
   /**
+   * Indicates whether the Passkey is disabled.
+   *
    * @generated from field: optional bool disabled = 8;
    */
   disabled?: boolean;
 
   /**
+   * The unique credential ID for the Passkey, as a binary value.
+   *
    * @generated from field: bytes credential_id = 5;
    */
   credentialId: Uint8Array;
 
   /**
+   * The public key associated with the Passkey, in PEM-encoded PKIX format.
+   *
+   * Starts with `-----BEGIN PUBLIC KEY-----`.
+   *
    * @generated from field: string public_key_pkix = 6;
    */
   publicKeyPkix: string;
 
   /**
+   * The Authenticator Attestation GUID (AAGUID) for the Passkey.
+   *
    * @generated from field: string aaguid = 7;
    */
   aaguid: string;
 
   /**
+   * The relying party ID associated with the Passkey.
+   *
    * @generated from field: string rp_id = 9;
    */
   rpId: string;
@@ -670,58 +819,82 @@ export type Passkey = Message<"tesseral.backend.v1.Passkey"> & {
  * Use `create(PasskeySchema)` to create a new message.
  */
 export const PasskeySchema: GenMessage<Passkey> = /*@__PURE__*/
-  messageDesc(file_tesseral_backend_v1_models, 13);
+  messageDesc(file_tesseral_backend_v1_models, 12);
 
 /**
+ * SAMLConnection represents a SAML configuration for an Organization.
+ *
  * @generated from message tesseral.backend.v1.SAMLConnection
  */
 export type SAMLConnection = Message<"tesseral.backend.v1.SAMLConnection"> & {
   /**
+   * The SAML Connection ID. Starts with `saml_connection_...`.
+   *
    * @generated from field: string id = 1;
    */
   id: string;
 
   /**
+   * The Organization this SAML Connection belongs to.
+   *
    * @generated from field: string organization_id = 2;
    */
   organizationId: string;
 
   /**
+   * When the SAML Connection was created.
+   *
    * @generated from field: google.protobuf.Timestamp create_time = 3;
    */
   createTime?: Timestamp;
 
   /**
+   * When the SAML Connection was last updated.
+   *
    * @generated from field: google.protobuf.Timestamp update_time = 4;
    */
   updateTime?: Timestamp;
 
   /**
+   * Whether this is the primary SAML Connection for the Organization.
+   *
    * @generated from field: optional bool primary = 5;
    */
   primary?: boolean;
 
   /**
+   * The Service Provider Assertion Consumer Service (ACS) URL.
+   *
    * @generated from field: string sp_acs_url = 6;
    */
   spAcsUrl: string;
 
   /**
+   * The Service Provider Entity ID.
+   *
    * @generated from field: string sp_entity_id = 7;
    */
   spEntityId: string;
 
   /**
+   * The Identity Provider Redirect URL.
+   *
    * @generated from field: string idp_redirect_url = 8;
    */
   idpRedirectUrl: string;
 
   /**
+   * The Identity Provider certificate, in PEM-encoded X.509 format.
+   *
+   * Starts with `----BEGIN CERTIFICATE----`.
+   *
    * @generated from field: string idp_x509_certificate = 9;
    */
   idpX509Certificate: string;
 
   /**
+   * The Identity Provider Entity ID.
+   *
    * @generated from field: string idp_entity_id = 10;
    */
   idpEntityId: string;
@@ -732,43 +905,59 @@ export type SAMLConnection = Message<"tesseral.backend.v1.SAMLConnection"> & {
  * Use `create(SAMLConnectionSchema)` to create a new message.
  */
 export const SAMLConnectionSchema: GenMessage<SAMLConnection> = /*@__PURE__*/
-  messageDesc(file_tesseral_backend_v1_models, 14);
+  messageDesc(file_tesseral_backend_v1_models, 13);
 
 /**
+ * SCIMAPIKey represents an API key for SCIM operations.
+ *
  * @generated from message tesseral.backend.v1.SCIMAPIKey
  */
 export type SCIMAPIKey = Message<"tesseral.backend.v1.SCIMAPIKey"> & {
   /**
+   * The SCIM API Key ID. Starts with `scim_api_key_...`.
+   *
    * @generated from field: string id = 1;
    */
   id: string;
 
   /**
+   * The Organization this SCIM API Key belongs to.
+   *
    * @generated from field: string organization_id = 2;
    */
   organizationId: string;
 
   /**
+   * When the SCIM API Key was created.
+   *
    * @generated from field: google.protobuf.Timestamp create_time = 3;
    */
   createTime?: Timestamp;
 
   /**
+   * When the SCIM API Key was last updated.
+   *
    * @generated from field: google.protobuf.Timestamp update_time = 4;
    */
   updateTime?: Timestamp;
 
   /**
+   * A human-readable display name for this SCIM API Key.
+   *
    * @generated from field: string display_name = 5;
    */
   displayName: string;
 
   /**
+   * The secret token for this SCIM API Key.
+   *
    * @generated from field: string secret_token = 6;
    */
   secretToken: string;
 
   /**
+   * Whether this SCIM API Key is revoked.
+   *
    * @generated from field: bool revoked = 7;
    */
   revoked: boolean;
@@ -779,7 +968,7 @@ export type SCIMAPIKey = Message<"tesseral.backend.v1.SCIMAPIKey"> & {
  * Use `create(SCIMAPIKeySchema)` to create a new message.
  */
 export const SCIMAPIKeySchema: GenMessage<SCIMAPIKey> = /*@__PURE__*/
-  messageDesc(file_tesseral_backend_v1_models, 15);
+  messageDesc(file_tesseral_backend_v1_models, 14);
 
 /**
  * @generated from message tesseral.backend.v1.UserImpersonationToken
@@ -821,38 +1010,53 @@ export type UserImpersonationToken = Message<"tesseral.backend.v1.UserImpersonat
  * Use `create(UserImpersonationTokenSchema)` to create a new message.
  */
 export const UserImpersonationTokenSchema: GenMessage<UserImpersonationToken> = /*@__PURE__*/
-  messageDesc(file_tesseral_backend_v1_models, 16);
+  messageDesc(file_tesseral_backend_v1_models, 15);
 
 /**
+ * UserInvite represents an invitation for a User to join an Organization.
+ *
  * @generated from message tesseral.backend.v1.UserInvite
  */
 export type UserInvite = Message<"tesseral.backend.v1.UserInvite"> & {
   /**
+   * The User Invite ID. Starts with `user_invite_...`.
+   *
    * @generated from field: string id = 1;
    */
   id: string;
 
   /**
+   * The Organization this User Invite belongs to.
+   *
    * @generated from field: string organization_id = 2;
    */
   organizationId: string;
 
   /**
+   * When the User Invite was created.
+   *
    * @generated from field: google.protobuf.Timestamp create_time = 3;
    */
   createTime?: Timestamp;
 
   /**
+   * When the User Invite was last updated.
+   *
    * @generated from field: google.protobuf.Timestamp update_time = 4;
    */
   updateTime?: Timestamp;
 
   /**
+   * The invitee's email address.
+   *
    * @generated from field: string email = 5;
    */
   email: string;
 
   /**
+   * Indicates whether the invited User will have owner privileges in the
+   * Organization.
+   *
    * @generated from field: bool owner = 6;
    */
   owner: boolean;
@@ -863,5 +1067,5 @@ export type UserInvite = Message<"tesseral.backend.v1.UserInvite"> & {
  * Use `create(UserInviteSchema)` to create a new message.
  */
 export const UserInviteSchema: GenMessage<UserInvite> = /*@__PURE__*/
-  messageDesc(file_tesseral_backend_v1_models, 17);
+  messageDesc(file_tesseral_backend_v1_models, 16);
 

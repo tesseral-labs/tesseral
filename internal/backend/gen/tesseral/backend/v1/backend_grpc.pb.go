@@ -86,43 +86,81 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type BackendServiceClient interface {
+	// Get the current project.
 	GetProject(ctx context.Context, in *GetProjectRequest, opts ...grpc.CallOption) (*GetProjectResponse, error)
+	// List Organizations.
 	ListOrganizations(ctx context.Context, in *ListOrganizationsRequest, opts ...grpc.CallOption) (*ListOrganizationsResponse, error)
+	// Get an Organization.
 	GetOrganization(ctx context.Context, in *GetOrganizationRequest, opts ...grpc.CallOption) (*GetOrganizationResponse, error)
+	// Create an Organization.
 	CreateOrganization(ctx context.Context, in *CreateOrganizationRequest, opts ...grpc.CallOption) (*CreateOrganizationResponse, error)
+	// Update an Organization.
 	UpdateOrganization(ctx context.Context, in *UpdateOrganizationRequest, opts ...grpc.CallOption) (*UpdateOrganizationResponse, error)
+	// Delete an Organization.
 	DeleteOrganization(ctx context.Context, in *DeleteOrganizationRequest, opts ...grpc.CallOption) (*DeleteOrganizationResponse, error)
+	// Get Organization Domains.
 	GetOrganizationDomains(ctx context.Context, in *GetOrganizationDomainsRequest, opts ...grpc.CallOption) (*GetOrganizationDomainsResponse, error)
+	// Update Organization Domains.
 	UpdateOrganizationDomains(ctx context.Context, in *UpdateOrganizationDomainsRequest, opts ...grpc.CallOption) (*UpdateOrganizationDomainsResponse, error)
+	// Get Organization Google Hosted Domains.
 	GetOrganizationGoogleHostedDomains(ctx context.Context, in *GetOrganizationGoogleHostedDomainsRequest, opts ...grpc.CallOption) (*GetOrganizationGoogleHostedDomainsResponse, error)
+	// Update Organization Google Hosted Domains.
 	UpdateOrganizationGoogleHostedDomains(ctx context.Context, in *UpdateOrganizationGoogleHostedDomainsRequest, opts ...grpc.CallOption) (*UpdateOrganizationGoogleHostedDomainsResponse, error)
+	// Get Organization Microsoft Tenant IDs.
 	GetOrganizationMicrosoftTenantIDs(ctx context.Context, in *GetOrganizationMicrosoftTenantIDsRequest, opts ...grpc.CallOption) (*GetOrganizationMicrosoftTenantIDsResponse, error)
+	// Update Organization Microsoft Tenant IDs.
 	UpdateOrganizationMicrosoftTenantIDs(ctx context.Context, in *UpdateOrganizationMicrosoftTenantIDsRequest, opts ...grpc.CallOption) (*UpdateOrganizationMicrosoftTenantIDsResponse, error)
+	// List SAML Connections.
 	ListSAMLConnections(ctx context.Context, in *ListSAMLConnectionsRequest, opts ...grpc.CallOption) (*ListSAMLConnectionsResponse, error)
+	// Get a SAML Connection.
 	GetSAMLConnection(ctx context.Context, in *GetSAMLConnectionRequest, opts ...grpc.CallOption) (*GetSAMLConnectionResponse, error)
+	// Create a SAML Connection.
 	CreateSAMLConnection(ctx context.Context, in *CreateSAMLConnectionRequest, opts ...grpc.CallOption) (*CreateSAMLConnectionResponse, error)
+	// Update a SAML Connection.
 	UpdateSAMLConnection(ctx context.Context, in *UpdateSAMLConnectionRequest, opts ...grpc.CallOption) (*UpdateSAMLConnectionResponse, error)
+	// Delete a SAML Connection.
 	DeleteSAMLConnection(ctx context.Context, in *DeleteSAMLConnectionRequest, opts ...grpc.CallOption) (*DeleteSAMLConnectionResponse, error)
+	// List SCIM API Keys.
 	ListSCIMAPIKeys(ctx context.Context, in *ListSCIMAPIKeysRequest, opts ...grpc.CallOption) (*ListSCIMAPIKeysResponse, error)
+	// Get a SCIM API Key.
 	GetSCIMAPIKey(ctx context.Context, in *GetSCIMAPIKeyRequest, opts ...grpc.CallOption) (*GetSCIMAPIKeyResponse, error)
+	// Create a SCIM API Key.
 	CreateSCIMAPIKey(ctx context.Context, in *CreateSCIMAPIKeyRequest, opts ...grpc.CallOption) (*CreateSCIMAPIKeyResponse, error)
+	// Update a SCIM API Key.
 	UpdateSCIMAPIKey(ctx context.Context, in *UpdateSCIMAPIKeyRequest, opts ...grpc.CallOption) (*UpdateSCIMAPIKeyResponse, error)
+	// Delete a SCIM API Key.
 	DeleteSCIMAPIKey(ctx context.Context, in *DeleteSCIMAPIKeyRequest, opts ...grpc.CallOption) (*DeleteSCIMAPIKeyResponse, error)
+	// Revoke a SCIM API Key.
 	RevokeSCIMAPIKey(ctx context.Context, in *RevokeSCIMAPIKeyRequest, opts ...grpc.CallOption) (*RevokeSCIMAPIKeyResponse, error)
+	// List Users.
 	ListUsers(ctx context.Context, in *ListUsersRequest, opts ...grpc.CallOption) (*ListUsersResponse, error)
+	// Get a User.
 	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error)
+	// Create a User.
 	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error)
+	// Update a User.
 	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UpdateUserResponse, error)
+	// Delete a User.
 	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*DeleteUserResponse, error)
+	// List Passkeys.
 	ListPasskeys(ctx context.Context, in *ListPasskeysRequest, opts ...grpc.CallOption) (*ListPasskeysResponse, error)
+	// Get a Passkey.
 	GetPasskey(ctx context.Context, in *GetPasskeyRequest, opts ...grpc.CallOption) (*GetPasskeyResponse, error)
+	// Update a Passkey.
 	UpdatePasskey(ctx context.Context, in *UpdatePasskeyRequest, opts ...grpc.CallOption) (*UpdatePasskeyResponse, error)
+	// Delete a Passkey.
 	DeletePasskey(ctx context.Context, in *DeletePasskeyRequest, opts ...grpc.CallOption) (*DeletePasskeyResponse, error)
+	// List Sessions.
 	ListSessions(ctx context.Context, in *ListSessionsRequest, opts ...grpc.CallOption) (*ListSessionsResponse, error)
+	// Get a Session.
 	GetSession(ctx context.Context, in *GetSessionRequest, opts ...grpc.CallOption) (*GetSessionResponse, error)
+	// List User Invites.
 	ListUserInvites(ctx context.Context, in *ListUserInvitesRequest, opts ...grpc.CallOption) (*ListUserInvitesResponse, error)
+	// Get a User Invite.
 	GetUserInvite(ctx context.Context, in *GetUserInviteRequest, opts ...grpc.CallOption) (*GetUserInviteResponse, error)
+	// Create a User Invite.
 	CreateUserInvite(ctx context.Context, in *CreateUserInviteRequest, opts ...grpc.CallOption) (*CreateUserInviteResponse, error)
+	// Delete a User Invite.
 	DeleteUserInvite(ctx context.Context, in *DeleteUserInviteRequest, opts ...grpc.CallOption) (*DeleteUserInviteResponse, error)
 	DisableOrganizationLogins(ctx context.Context, in *DisableOrganizationLoginsRequest, opts ...grpc.CallOption) (*DisableOrganizationLoginsResponse, error)
 	DisableProjectLogins(ctx context.Context, in *DisableProjectLoginsRequest, opts ...grpc.CallOption) (*DisableProjectLoginsResponse, error)
@@ -771,43 +809,81 @@ func (c *backendServiceClient) CreateUserImpersonationToken(ctx context.Context,
 // All implementations must embed UnimplementedBackendServiceServer
 // for forward compatibility.
 type BackendServiceServer interface {
+	// Get the current project.
 	GetProject(context.Context, *GetProjectRequest) (*GetProjectResponse, error)
+	// List Organizations.
 	ListOrganizations(context.Context, *ListOrganizationsRequest) (*ListOrganizationsResponse, error)
+	// Get an Organization.
 	GetOrganization(context.Context, *GetOrganizationRequest) (*GetOrganizationResponse, error)
+	// Create an Organization.
 	CreateOrganization(context.Context, *CreateOrganizationRequest) (*CreateOrganizationResponse, error)
+	// Update an Organization.
 	UpdateOrganization(context.Context, *UpdateOrganizationRequest) (*UpdateOrganizationResponse, error)
+	// Delete an Organization.
 	DeleteOrganization(context.Context, *DeleteOrganizationRequest) (*DeleteOrganizationResponse, error)
+	// Get Organization Domains.
 	GetOrganizationDomains(context.Context, *GetOrganizationDomainsRequest) (*GetOrganizationDomainsResponse, error)
+	// Update Organization Domains.
 	UpdateOrganizationDomains(context.Context, *UpdateOrganizationDomainsRequest) (*UpdateOrganizationDomainsResponse, error)
+	// Get Organization Google Hosted Domains.
 	GetOrganizationGoogleHostedDomains(context.Context, *GetOrganizationGoogleHostedDomainsRequest) (*GetOrganizationGoogleHostedDomainsResponse, error)
+	// Update Organization Google Hosted Domains.
 	UpdateOrganizationGoogleHostedDomains(context.Context, *UpdateOrganizationGoogleHostedDomainsRequest) (*UpdateOrganizationGoogleHostedDomainsResponse, error)
+	// Get Organization Microsoft Tenant IDs.
 	GetOrganizationMicrosoftTenantIDs(context.Context, *GetOrganizationMicrosoftTenantIDsRequest) (*GetOrganizationMicrosoftTenantIDsResponse, error)
+	// Update Organization Microsoft Tenant IDs.
 	UpdateOrganizationMicrosoftTenantIDs(context.Context, *UpdateOrganizationMicrosoftTenantIDsRequest) (*UpdateOrganizationMicrosoftTenantIDsResponse, error)
+	// List SAML Connections.
 	ListSAMLConnections(context.Context, *ListSAMLConnectionsRequest) (*ListSAMLConnectionsResponse, error)
+	// Get a SAML Connection.
 	GetSAMLConnection(context.Context, *GetSAMLConnectionRequest) (*GetSAMLConnectionResponse, error)
+	// Create a SAML Connection.
 	CreateSAMLConnection(context.Context, *CreateSAMLConnectionRequest) (*CreateSAMLConnectionResponse, error)
+	// Update a SAML Connection.
 	UpdateSAMLConnection(context.Context, *UpdateSAMLConnectionRequest) (*UpdateSAMLConnectionResponse, error)
+	// Delete a SAML Connection.
 	DeleteSAMLConnection(context.Context, *DeleteSAMLConnectionRequest) (*DeleteSAMLConnectionResponse, error)
+	// List SCIM API Keys.
 	ListSCIMAPIKeys(context.Context, *ListSCIMAPIKeysRequest) (*ListSCIMAPIKeysResponse, error)
+	// Get a SCIM API Key.
 	GetSCIMAPIKey(context.Context, *GetSCIMAPIKeyRequest) (*GetSCIMAPIKeyResponse, error)
+	// Create a SCIM API Key.
 	CreateSCIMAPIKey(context.Context, *CreateSCIMAPIKeyRequest) (*CreateSCIMAPIKeyResponse, error)
+	// Update a SCIM API Key.
 	UpdateSCIMAPIKey(context.Context, *UpdateSCIMAPIKeyRequest) (*UpdateSCIMAPIKeyResponse, error)
+	// Delete a SCIM API Key.
 	DeleteSCIMAPIKey(context.Context, *DeleteSCIMAPIKeyRequest) (*DeleteSCIMAPIKeyResponse, error)
+	// Revoke a SCIM API Key.
 	RevokeSCIMAPIKey(context.Context, *RevokeSCIMAPIKeyRequest) (*RevokeSCIMAPIKeyResponse, error)
+	// List Users.
 	ListUsers(context.Context, *ListUsersRequest) (*ListUsersResponse, error)
+	// Get a User.
 	GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error)
+	// Create a User.
 	CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error)
+	// Update a User.
 	UpdateUser(context.Context, *UpdateUserRequest) (*UpdateUserResponse, error)
+	// Delete a User.
 	DeleteUser(context.Context, *DeleteUserRequest) (*DeleteUserResponse, error)
+	// List Passkeys.
 	ListPasskeys(context.Context, *ListPasskeysRequest) (*ListPasskeysResponse, error)
+	// Get a Passkey.
 	GetPasskey(context.Context, *GetPasskeyRequest) (*GetPasskeyResponse, error)
+	// Update a Passkey.
 	UpdatePasskey(context.Context, *UpdatePasskeyRequest) (*UpdatePasskeyResponse, error)
+	// Delete a Passkey.
 	DeletePasskey(context.Context, *DeletePasskeyRequest) (*DeletePasskeyResponse, error)
+	// List Sessions.
 	ListSessions(context.Context, *ListSessionsRequest) (*ListSessionsResponse, error)
+	// Get a Session.
 	GetSession(context.Context, *GetSessionRequest) (*GetSessionResponse, error)
+	// List User Invites.
 	ListUserInvites(context.Context, *ListUserInvitesRequest) (*ListUserInvitesResponse, error)
+	// Get a User Invite.
 	GetUserInvite(context.Context, *GetUserInviteRequest) (*GetUserInviteResponse, error)
+	// Create a User Invite.
 	CreateUserInvite(context.Context, *CreateUserInviteRequest) (*CreateUserInviteResponse, error)
+	// Delete a User Invite.
 	DeleteUserInvite(context.Context, *DeleteUserInviteRequest) (*DeleteUserInviteResponse, error)
 	DisableOrganizationLogins(context.Context, *DisableOrganizationLoginsRequest) (*DisableOrganizationLoginsResponse, error)
 	DisableProjectLogins(context.Context, *DisableProjectLoginsRequest) (*DisableProjectLoginsResponse, error)
