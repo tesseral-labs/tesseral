@@ -19,7 +19,6 @@ import (
 	"github.com/cyrusaf/ctxlog"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/rs/cors"
 	"github.com/ssoready/conf"
 	backendinterceptor "github.com/tesseral-labs/tesseral/internal/backend/authn/interceptor"
 	"github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1/backendv1connect"
@@ -27,6 +26,7 @@ import (
 	backendstore "github.com/tesseral-labs/tesseral/internal/backend/store"
 	"github.com/tesseral-labs/tesseral/internal/cloudflaredoh"
 	"github.com/tesseral-labs/tesseral/internal/common/accesstoken"
+	"github.com/tesseral-labs/tesseral/internal/common/corstrusteddomains"
 	"github.com/tesseral-labs/tesseral/internal/common/projectid"
 	commonstore "github.com/tesseral-labs/tesseral/internal/common/store"
 	configapiservice "github.com/tesseral-labs/tesseral/internal/configapi/service"
@@ -45,8 +45,6 @@ import (
 	intermediatestore "github.com/tesseral-labs/tesseral/internal/intermediate/store"
 	"github.com/tesseral-labs/tesseral/internal/loadenv"
 	"github.com/tesseral-labs/tesseral/internal/microsoftoauth"
-	oauthservice "github.com/tesseral-labs/tesseral/internal/oauth/service"
-	oauthstore "github.com/tesseral-labs/tesseral/internal/oauth/store"
 	"github.com/tesseral-labs/tesseral/internal/pagetoken"
 	samlinterceptor "github.com/tesseral-labs/tesseral/internal/saml/authn/interceptor"
 	samlservice "github.com/tesseral-labs/tesseral/internal/saml/service"
@@ -253,13 +251,6 @@ func main() {
 		panic(err)
 	}
 
-	oauthStore := oauthstore.New(oauthstore.NewStoreParams{
-		DB: db,
-	})
-	oauthService := oauthservice.Service{
-		Store: oauthStore,
-	}
-
 	samlStore := samlstore.New(samlstore.NewStoreParams{
 		DB: db,
 	})
@@ -308,15 +299,12 @@ func main() {
 	}))
 
 	// Register the connect service
-	mux.Handle("/api/internal/connect/", http.StripPrefix("/api/internal/connect", connectMux))
+	mux.Handle("/api/internal/connect/", corstrusteddomains.Handler(commonStore, projectid.NewSniffer(config.AuthAppsRootDomain, commonStore), http.StripPrefix("/api/internal/connect", connectMux)))
 
 	// Register service transcoders
 	mux.Handle("/api/backend/v1/", http.StripPrefix("/api", backendTranscoder))
-	mux.Handle("/api/frontend/v1/", http.StripPrefix("/api", frontendTranscoder))
-	mux.Handle("/api/intermediate/v1/", http.StripPrefix("/api", intermediateTranscoder))
-
-	// Register oauthservice
-	mux.Handle("/api/oauth/", oauthService.Handler())
+	mux.Handle("/api/frontend/v1/", corstrusteddomains.Handler(commonStore, projectid.NewSniffer(config.AuthAppsRootDomain, commonStore), http.StripPrefix("/api", frontendTranscoder)))
+	mux.Handle("/api/intermediate/v1/", corstrusteddomains.Handler(commonStore, projectid.NewSniffer(config.AuthAppsRootDomain, commonStore), http.StripPrefix("/api", intermediateTranscoder)))
 
 	// Register samlservice
 	mux.Handle("/api/saml/", samlServiceHandler)
@@ -335,23 +323,6 @@ func main() {
 
 	// Use the slogcorrelation.NewHandler to add correlation IDs to the request
 	serve := slogcorrelation.NewHandler(mux)
-	// Add CORS headers
-	serve = cors.New(cors.Options{
-		AllowOriginFunc: func(origin string) bool {
-			return true
-		},
-		AllowedMethods: []string{
-			http.MethodHead,
-			http.MethodGet,
-			http.MethodPost,
-			http.MethodPut,
-			http.MethodPatch,
-			http.MethodDelete,
-		},
-		AllowedHeaders:   []string{"*"},
-		AllowCredentials: true,
-		ExposedHeaders:   []string{"*"},
-	}).Handler(serve)
 
 	slog.Info("serve")
 	if config.RunAsLambda {

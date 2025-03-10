@@ -6,6 +6,14 @@ FROM
 WHERE
     vault_domain = $1;
 
+-- name: GetProjectTrustedDomains :many
+SELECT
+    project_trusted_domains.domain
+FROM
+    project_trusted_domains
+WHERE
+    project_id = $1;
+
 -- name: GetSessionDetailsByRefreshTokenSHA256 :one
 SELECT
     sessions.id AS session_id,

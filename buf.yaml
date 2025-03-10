@@ -5,7 +5,6 @@ modules:
   - path: internal/backend/proto
   - path: internal/frontend/proto
   - path: internal/intermediate/proto
-  - path: internal/oauth/proto
   - path: internal/common/proto
 lint:
   use:

@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"connectrpc.com/connect"
+	"github.com/rs/cors"
 	"github.com/tesseral-labs/tesseral/internal/configapi/store"
 	"google.golang.org/protobuf/encoding/protojson"
 )
@@ -20,7 +21,7 @@ func (s *Service) Handler() http.Handler {
 
 	mux.Handle("GET /v1/config/{publishableKey}", withErr(s.config))
 
-	return mux
+	return cors.AllowAll().Handler(mux)
 }
 
 func (s *Service) config(w http.ResponseWriter, r *http.Request) error {

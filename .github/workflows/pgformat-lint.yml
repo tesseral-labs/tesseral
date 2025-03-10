@@ -21,6 +21,5 @@ jobs:
           diff sqlc/queries-backend.sql <(docker run --quiet --rm --volume "$(pwd)/sqlc/queries-backend.sql:/work/queries.sql" backplane/pgformatter queries.sql)
           diff sqlc/queries-frontend.sql <(docker run --quiet --rm --volume "$(pwd)/sqlc/queries-frontend.sql:/work/queries.sql" backplane/pgformatter queries.sql)
           diff sqlc/queries-intermediate.sql <(docker run --quiet --rm --volume "$(pwd)/sqlc/queries-intermediate.sql:/work/queries.sql" backplane/pgformatter queries.sql)
-          diff sqlc/queries-oauth.sql <(docker run --quiet --rm --volume "$(pwd)/sqlc/queries-oauth.sql:/work/queries.sql" backplane/pgformatter queries.sql)
           diff sqlc/queries-saml.sql <(docker run --quiet --rm --volume "$(pwd)/sqlc/queries-saml.sql:/work/queries.sql" backplane/pgformatter queries.sql)
           diff sqlc/queries-scim.sql <(docker run --quiet --rm --volume "$(pwd)/sqlc/queries-scim.sql:/work/queries.sql" backplane/pgformatter queries.sql)

@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 
+	"github.com/rs/cors"
 	"github.com/tesseral-labs/tesseral/internal/common/projectid"
 	"github.com/tesseral-labs/tesseral/internal/wellknown/authn/authnmiddleware"
 	"github.com/tesseral-labs/tesseral/internal/wellknown/store"
@@ -23,7 +24,7 @@ func (s *Service) Handler(p *projectid.Sniffer) http.Handler {
 
 	mux.Handle("GET /.well-known/webauthn", withErr(s.webauthn))
 
-	return logHTTP(authnmiddleware.New(s.Store, p, mux))
+	return logHTTP(cors.AllowAll().Handler(authnmiddleware.New(s.Store, p, mux)))
 }
 
 func (s *Service) webauthn(w http.ResponseWriter, r *http.Request) error {
