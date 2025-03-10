@@ -7,18 +7,22 @@ import "google/protobuf/timestamp.proto";
 import "tesseral/backend/v1/models.proto";
 
 service BackendService {
+  // Get the current project.
   rpc GetProject(GetProjectRequest) returns (GetProjectResponse) {
     option (google.api.http) = {get: "/backend/v1/project"};
   }
 
+  // List Organizations.
   rpc ListOrganizations(ListOrganizationsRequest) returns (ListOrganizationsResponse) {
     option (google.api.http) = {get: "/backend/v1/organizations"};
   }
 
+  // Get an Organization.
   rpc GetOrganization(GetOrganizationRequest) returns (GetOrganizationResponse) {
     option (google.api.http) = {get: "/backend/v1/organizations/{id}"};
   }
 
+  // Create an Organization.
   rpc CreateOrganization(CreateOrganizationRequest) returns (CreateOrganizationResponse) {
     option (google.api.http) = {
       post: "/backend/v1/organizations"
@@ -26,6 +30,7 @@ service BackendService {
     };
   }
 
+  // Update an Organization.
   rpc UpdateOrganization(UpdateOrganizationRequest) returns (UpdateOrganizationResponse) {
     option (google.api.http) = {
       patch: "/backend/v1/organizations/{id}"
@@ -33,14 +38,17 @@ service BackendService {
     };
   }
 
+  // Delete an Organization.
   rpc DeleteOrganization(DeleteOrganizationRequest) returns (DeleteOrganizationResponse) {
     option (google.api.http) = {delete: "/backend/v1/organizations/{id}"};
   }
 
+  // Get Organization Domains.
   rpc GetOrganizationDomains(GetOrganizationDomainsRequest) returns (GetOrganizationDomainsResponse) {
     option (google.api.http) = {get: "/backend/v1/organizations/{organization_id}/domains"};
   }
 
+  // Update Organization Domains.
   rpc UpdateOrganizationDomains(UpdateOrganizationDomainsRequest) returns (UpdateOrganizationDomainsResponse) {
     option (google.api.http) = {
       patch: "/backend/v1/organizations/{organization_id}/domains"
@@ -48,10 +56,12 @@ service BackendService {
     };
   }
 
+  // Get Organization Google Hosted Domains.
   rpc GetOrganizationGoogleHostedDomains(GetOrganizationGoogleHostedDomainsRequest) returns (GetOrganizationGoogleHostedDomainsResponse) {
     option (google.api.http) = {get: "/backend/v1/organizations/{organization_id}/google-hosted-domains"};
   }
 
+  // Update Organization Google Hosted Domains.
   rpc UpdateOrganizationGoogleHostedDomains(UpdateOrganizationGoogleHostedDomainsRequest) returns (UpdateOrganizationGoogleHostedDomainsResponse) {
     option (google.api.http) = {
       patch: "/backend/v1/organizations/{organization_id}/google-hosted-domains"
@@ -59,10 +69,12 @@ service BackendService {
     };
   }
 
+  // Get Organization Microsoft Tenant IDs.
   rpc GetOrganizationMicrosoftTenantIDs(GetOrganizationMicrosoftTenantIDsRequest) returns (GetOrganizationMicrosoftTenantIDsResponse) {
     option (google.api.http) = {get: "/backend/v1/organizations/{organization_id}/microsoft-tenant-ids"};
   }
 
+  // Update Organization Microsoft Tenant IDs.
   rpc UpdateOrganizationMicrosoftTenantIDs(UpdateOrganizationMicrosoftTenantIDsRequest) returns (UpdateOrganizationMicrosoftTenantIDsResponse) {
     option (google.api.http) = {
       patch: "/backend/v1/organizations/{organization_id}/microsoft-tenant-ids"
@@ -70,14 +82,17 @@ service BackendService {
     };
   }
 
+  // List SAML Connections.
   rpc ListSAMLConnections(ListSAMLConnectionsRequest) returns (ListSAMLConnectionsResponse) {
     option (google.api.http) = {get: "/backend/v1/saml-connections"};
   }
 
+  // Get a SAML Connection.
   rpc GetSAMLConnection(GetSAMLConnectionRequest) returns (GetSAMLConnectionResponse) {
     option (google.api.http) = {get: "/backend/v1/saml-connections/{id}"};
   }
 
+  // Create a SAML Connection.
   rpc CreateSAMLConnection(CreateSAMLConnectionRequest) returns (CreateSAMLConnectionResponse) {
     option (google.api.http) = {
       post: "/backend/v1/saml-connections"
@@ -85,6 +100,7 @@ service BackendService {
     };
   }
 
+  // Update a SAML Connection.
   rpc UpdateSAMLConnection(UpdateSAMLConnectionRequest) returns (UpdateSAMLConnectionResponse) {
     option (google.api.http) = {
       patch: "/backend/v1/saml-connections/{id}"
@@ -92,18 +108,22 @@ service BackendService {
     };
   }
 
+  // Delete a SAML Connection.
   rpc DeleteSAMLConnection(DeleteSAMLConnectionRequest) returns (DeleteSAMLConnectionResponse) {
     option (google.api.http) = {delete: "/backend/v1/saml-connections/{id}"};
   }
 
+  // List SCIM API Keys.
   rpc ListSCIMAPIKeys(ListSCIMAPIKeysRequest) returns (ListSCIMAPIKeysResponse) {
     option (google.api.http) = {get: "/backend/v1/scim-api-keys"};
   }
 
+  // Get a SCIM API Key.
   rpc GetSCIMAPIKey(GetSCIMAPIKeyRequest) returns (GetSCIMAPIKeyResponse) {
     option (google.api.http) = {get: "/backend/v1/scim-api-keys/{id}"};
   }
 
+  // Create a SCIM API Key.
   rpc CreateSCIMAPIKey(CreateSCIMAPIKeyRequest) returns (CreateSCIMAPIKeyResponse) {
     option (google.api.http) = {
       post: "/backend/v1/scim-api-keys"
@@ -111,6 +131,7 @@ service BackendService {
     };
   }
 
+  // Update a SCIM API Key.
   rpc UpdateSCIMAPIKey(UpdateSCIMAPIKeyRequest) returns (UpdateSCIMAPIKeyResponse) {
     option (google.api.http) = {
       patch: "/backend/v1/scim-api-keys/{id}"
@@ -118,22 +139,27 @@ service BackendService {
     };
   }
 
+  // Delete a SCIM API Key.
   rpc DeleteSCIMAPIKey(DeleteSCIMAPIKeyRequest) returns (DeleteSCIMAPIKeyResponse) {
     option (google.api.http) = {delete: "/backend/v1/scim-api-keys/{id}"};
   }
 
+  // Revoke a SCIM API Key.
   rpc RevokeSCIMAPIKey(RevokeSCIMAPIKeyRequest) returns (RevokeSCIMAPIKeyResponse) {
     option (google.api.http) = {post: "/backend/v1/scim-api-keys/{id}/revoke"};
   }
 
+  // List Users.
   rpc ListUsers(ListUsersRequest) returns (ListUsersResponse) {
     option (google.api.http) = {get: "/backend/v1/users"};
   }
 
+  // Get a User.
   rpc GetUser(GetUserRequest) returns (GetUserResponse) {
     option (google.api.http) = {get: "/backend/v1/users/{id}"};
   }
 
+  // Create a User.
   rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {
     option (google.api.http) = {
       post: "/backend/v1/users"
@@ -141,6 +167,7 @@ service BackendService {
     };
   }
 
+  // Update a User.
   rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {
     option (google.api.http) = {
       patch: "/backend/v1/users/{id}"
@@ -148,18 +175,22 @@ service BackendService {
     };
   }
 
+  // Delete a User.
   rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {
     option (google.api.http) = {delete: "/backend/v1/users/{id}"};
   }
 
+  // List Passkeys.
   rpc ListPasskeys(ListPasskeysRequest) returns (ListPasskeysResponse) {
     option (google.api.http) = {get: "/backend/v1/passkeys"};
   }
 
+  // Get a Passkey.
   rpc GetPasskey(GetPasskeyRequest) returns (GetPasskeyResponse) {
     option (google.api.http) = {get: "/backend/v1/passkeys/{id}"};
   }
 
+  // Update a Passkey.
   rpc UpdatePasskey(UpdatePasskeyRequest) returns (UpdatePasskeyResponse) {
     option (google.api.http) = {
       patch: "/backend/v1/passkeys/{id}"
@@ -167,26 +198,32 @@ service BackendService {
     };
   }
 
+  // Delete a Passkey.
   rpc DeletePasskey(DeletePasskeyRequest) returns (DeletePasskeyResponse) {
     option (google.api.http) = {delete: "/backend/v1/passkeys/{id}"};
   }
 
+  // List Sessions.
   rpc ListSessions(ListSessionsRequest) returns (ListSessionsResponse) {
     option (google.api.http) = {get: "/backend/v1/sessions"};
   }
 
+  // Get a Session.
   rpc GetSession(GetSessionRequest) returns (GetSessionResponse) {
     option (google.api.http) = {get: "/backend/v1/sessions/{id}"};
   }
 
+  // List User Invites.
   rpc ListUserInvites(ListUserInvitesRequest) returns (ListUserInvitesResponse) {
     option (google.api.http) = {get: "/backend/v1/user-invites"};
   }
 
+  // Get a User Invite.
   rpc GetUserInvite(GetUserInviteRequest) returns (GetUserInviteResponse) {
     option (google.api.http) = {get: "/backend/v1/user-invites/{id}"};
   }
 
+  // Create a User Invite.
   rpc CreateUserInvite(CreateUserInviteRequest) returns (CreateUserInviteResponse) {
     option (google.api.http) = {
       post: "/backend/v1/user-invites"
@@ -194,6 +231,7 @@ service BackendService {
     };
   }
 
+  // Delete a User Invite.
   rpc DeleteUserInvite(DeleteUserInviteRequest) returns (DeleteUserInviteResponse) {
     option (google.api.http) = {delete: "/backend/v1/user-invites/{id}"};
   }
@@ -232,31 +270,43 @@ service BackendService {
 message GetProjectRequest {}
 
 message GetProjectResponse {
+  // The requested Project.
   Project project = 1;
 }
 
 message UpdateProjectRequest {
+  // An updated Project.
+  //
+  // Only non-null fields will be updated.
   Project project = 1;
 }
 
 message UpdateProjectResponse {
+  // The updated Project.
   Project project = 1;
 }
 
 message ListOrganizationsRequest {
+  // A pagination token. Leave empty to get the first page of results.
   string page_token = 1;
 }
 
 message ListOrganizationsResponse {
+  // A list of Organizations.
   repeated Organization organizations = 1;
+
+  // The pagination token for the next page of results. Empty if there is no
+  // next page.
   string next_page_token = 2;
 }
 
 message GetOrganizationRequest {
+  // The Organization ID.
   string id = 1;
 }
 
 message GetOrganizationResponse {
+  // The requested Organization.
   Organization organization = 1;
 }
 
@@ -265,284 +315,391 @@ message CreateOrganizationRequest {
 }
 
 message CreateOrganizationResponse {
+  // The Organization to create.
   Organization organization = 1;
 }
 
 message UpdateOrganizationRequest {
+  // The Organization ID.
   string id = 1;
+
+  // An updated Organization.
+  //
+  // Only non-null fields will be updated.
   Organization organization = 2;
 }
 
 message UpdateOrganizationResponse {
+  // The updated Organization.
   Organization organization = 1;
 }
 
 message DeleteOrganizationRequest {
+  // The Organization ID.
   string id = 1;
 }
 
 message DeleteOrganizationResponse {}
 
 message GetOrganizationDomainsRequest {
+  // The Organization ID.
   string organization_id = 1;
 }
 
 message GetOrganizationDomainsResponse {
+  // The requested Organization Domains.
   OrganizationDomains organization_domains = 1;
 }
 
 message UpdateOrganizationDomainsRequest {
+  // The Organization ID.
   string organization_id = 1;
+
+  // The updated Organization Domains.
   OrganizationDomains organization_domains = 2;
 }
 
 message UpdateOrganizationDomainsResponse {
+  // The updated Organization Domains.
   OrganizationDomains organization_domains = 1;
 }
 
 message GetOrganizationGoogleHostedDomainsRequest {
+  // The ID of the Organization.
   string organization_id = 1;
 }
 
 message GetOrganizationGoogleHostedDomainsResponse {
+  // The Organization's Google Hosted Domains.
   OrganizationGoogleHostedDomains organization_google_hosted_domains = 1;
 }
 
 message UpdateOrganizationGoogleHostedDomainsRequest {
+  // The ID of the Organization.
   string organization_id = 1;
+
+  // The updated Google Hosted Domains for the Organization.
   OrganizationGoogleHostedDomains organization_google_hosted_domains = 2;
 }
 
 message UpdateOrganizationGoogleHostedDomainsResponse {
+  // The updated Google Hosted Domains for the Organization.
   OrganizationGoogleHostedDomains organization_google_hosted_domains = 1;
 }
 
 message GetOrganizationMicrosoftTenantIDsRequest {
+  // The ID of the Organization.
   string organization_id = 1;
 }
 
 message GetOrganizationMicrosoftTenantIDsResponse {
+  // The Organization's Microsoft Tenant IDs.
   OrganizationMicrosoftTenantIDs organization_microsoft_tenant_ids = 1;
 }
 
 message UpdateOrganizationMicrosoftTenantIDsRequest {
+  // The ID of the Organization.
   string organization_id = 1;
+
+  // The updated Microsoft Tenant IDs for the Organization.
   OrganizationMicrosoftTenantIDs organization_microsoft_tenant_ids = 2;
 }
 
 message UpdateOrganizationMicrosoftTenantIDsResponse {
+  // The updated Microsoft Tenant IDs for the Organization.
   OrganizationMicrosoftTenantIDs organization_microsoft_tenant_ids = 1;
 }
 
-message CreateSAMLConnectionRequest {
-  SAMLConnection saml_connection = 1;
-}
-
-message CreateSAMLConnectionResponse {
-  SAMLConnection saml_connection = 1;
-}
-
-message GetSAMLConnectionRequest {
-  string id = 1;
-}
-
-message GetSAMLConnectionResponse {
-  SAMLConnection saml_connection = 1;
-}
-
 message ListSAMLConnectionsRequest {
+  // The Organization ID.
   string organization_id = 1;
+
+  // A pagination token. Leave empty to get the first page of results.
   string page_token = 2;
 }
 
 message ListSAMLConnectionsResponse {
+  // A list of SAML Connections.
   repeated SAMLConnection saml_connections = 1;
+
+  // The pagination token for the next page of results. Empty if there is no
+  // next page.
   string next_page_token = 2;
 }
 
-message UpdateSAMLConnectionRequest {
+message GetSAMLConnectionRequest {
+  // The SAML Connection ID.
   string id = 1;
+}
+
+message GetSAMLConnectionResponse {
+  // The requested SAML Connection.
+  SAMLConnection saml_connection = 1;
+}
+
+message CreateSAMLConnectionRequest {
+  // The SAML Connection to create.
+  SAMLConnection saml_connection = 1;
+}
+
+message CreateSAMLConnectionResponse {
+  // The created SAML Connection.
+  SAMLConnection saml_connection = 1;
+}
+
+message UpdateSAMLConnectionRequest {
+  // The SAML Connection ID.
+  string id = 1;
+
+  // The updated SAML Connection.
   SAMLConnection saml_connection = 2;
 }
 
 message UpdateSAMLConnectionResponse {
+  // The updated SAML Connection.
   SAMLConnection saml_connection = 1;
 }
 
 message DeleteSAMLConnectionRequest {
+  // The SAML Connection ID.
   string id = 1;
 }
 
 message DeleteSAMLConnectionResponse {}
 
 message ListSCIMAPIKeysRequest {
+  // The ID of the Organization.
   string organization_id = 1;
+
+  // A pagination token. Leave empty to get the first page of results.
   string page_token = 2;
 }
 
 message ListSCIMAPIKeysResponse {
+  // A list of SCIM API Keys.
   repeated SCIMAPIKey scim_api_keys = 1;
+
+  // The pagination token for the next page of results. Empty if there is no
+  // next page.
   string next_page_token = 2;
 }
 
 message GetSCIMAPIKeyRequest {
+  // The SCIM API Key ID.
   string id = 1;
 }
 
 message GetSCIMAPIKeyResponse {
+  // The requested SCIM API Key.
   SCIMAPIKey scim_api_key = 1;
 }
 
 message CreateSCIMAPIKeyRequest {
+  // The SCIM API Key to create.
   SCIMAPIKey scim_api_key = 1;
 }
 
 message CreateSCIMAPIKeyResponse {
+  // The created SCIM API Key.
   SCIMAPIKey scim_api_key = 1;
 }
 
 message UpdateSCIMAPIKeyRequest {
+  // The SCIM API Key ID.
   string id = 1;
+
+  // The updated SCIM API Key.
   SCIMAPIKey scim_api_key = 2;
 }
 
 message UpdateSCIMAPIKeyResponse {
+  // The updated SCIM API Key.
   SCIMAPIKey scim_api_key = 1;
 }
 
 message DeleteSCIMAPIKeyRequest {
+  // The SCIM API Key ID.
   string id = 1;
 }
 
 message DeleteSCIMAPIKeyResponse {}
 
 message RevokeSCIMAPIKeyRequest {
+  // The SCIM API Key ID.
   string id = 1;
 }
 
 message RevokeSCIMAPIKeyResponse {
+  // The revoked SCIM API Key.
   SCIMAPIKey scim_api_key = 1;
 }
 
 message ListUsersRequest {
+  // The Organization ID.
   string organization_id = 1;
+
+  // A pagination token. Leave empty to get the first page of results.
   string page_token = 2;
 }
 
 message ListUsersResponse {
+  // A list of Users.
   repeated User users = 1;
+
+  // The pagination token for the next page of results. Empty if there is no next page.
   string next_page_token = 2;
 }
 
 message GetUserRequest {
+  // The User ID.
   string id = 1;
 }
 
 message GetUserResponse {
+  // The requested User.
   User user = 1;
 }
 
 message CreateUserRequest {
+  // The User to create.
   User user = 1;
 }
 
 message CreateUserResponse {
+  // The created User.
   User user = 1;
 }
 
 message UpdateUserRequest {
+  // The User ID.
   string id = 1;
+
+  // The updated User.
   User user = 2;
 }
 
 message UpdateUserResponse {
+  // The updated User.
   User user = 1;
 }
 
 message DeleteUserRequest {
+  // The User ID.
   string id = 1;
 }
 
 message DeleteUserResponse {}
 
 message ListPasskeysRequest {
+  // The ID of the User.
   string user_id = 1;
+
+  // A pagination token. Leave empty to get the first page of results.
   string page_token = 2;
 }
 
 message ListPasskeysResponse {
+  // A list of Passkeys.
   repeated Passkey passkeys = 1;
+
+  // The pagination token for the next page of results. Empty if there is no next page.
   string next_page_token = 2;
 }
 
 message GetPasskeyRequest {
+  // The Passkey ID.
   string id = 1;
 }
 
 message GetPasskeyResponse {
+  // The requested Passkey.
   Passkey passkey = 1;
 }
 
 message UpdatePasskeyRequest {
+  // The Passkey ID.
   string id = 1;
+
+  // The updated Passkey.
   Passkey passkey = 2;
 }
 
 message UpdatePasskeyResponse {
+  // The updated Passkey.
   Passkey passkey = 1;
 }
 
 message DeletePasskeyRequest {
+  // The Passkey ID.
   string id = 1;
 }
 
 message DeletePasskeyResponse {}
 
 message ListSessionsRequest {
+  // The User ID.
   string user_id = 1;
+
+  // A pagination token. Leave empty to get the first page of results.
   string page_token = 2;
 }
 
 message ListSessionsResponse {
+  // A list of Sessions.
   repeated Session sessions = 1;
+
+  // The pagination token for the next page of results. Empty if there is no next page.
   string next_page_token = 2;
 }
 
 message GetSessionRequest {
+  // The Session ID.
   string id = 1;
 }
 
 message GetSessionResponse {
+  // The requested Session.
   Session session = 1;
 }
 
 message ListUserInvitesRequest {
+  // The Organization ID.
   string organization_id = 1;
+
+  // A pagination token. Leave empty to get the first page of results.
   string page_token = 2;
 }
 
 message ListUserInvitesResponse {
+  // A list of User Invites.
   repeated UserInvite user_invites = 1;
+
+  // The pagination token for the next page of results. Empty if there is no next page.
   string next_page_token = 2;
 }
 
 message GetUserInviteRequest {
+  // The User Invite ID.
   string id = 1;
 }
 
 message GetUserInviteResponse {
+  // The requested User Invite.
   UserInvite user_invite = 1;
 }
 
 message CreateUserInviteRequest {
+  // The User Invite to create.
   UserInvite user_invite = 1;
 }
 
 message CreateUserInviteResponse {
+  // The created User Invite.
   UserInvite user_invite = 1;
 }
 
 message DeleteUserInviteRequest {
+  // The User Invite ID.
   string id = 1;
 }
 
