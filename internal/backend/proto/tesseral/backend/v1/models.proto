@@ -5,27 +5,78 @@ package tesseral.backend.v1;
 import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
 
+// Projects are the top-level object in Tesseral.
+//
+// Everything in Tesseral happens within the context of a Project.
 message Project {
+  // The Project ID. Starts with `project_...`.
   string id = 1;
+
+  // A human-friendly name for the Project.
   string display_name = 2;
+
+  // When the Project was created.
   google.protobuf.Timestamp create_time = 3;
+
+  // When the Project was last modified.
   google.protobuf.Timestamp update_time = 4;
+
+  // Whether the Project supports "Log in with Google".
   optional bool log_in_with_google = 6;
+
+  // Whether the Project supports "Log in with Microsoft".
   optional bool log_in_with_microsoft = 7;
+
+  // Whether the Project supports "Log in with email".
   optional bool log_in_with_email = 15;
+
+  // Whether the Project supports "Log in with password".
   optional bool log_in_with_password = 5;
+
+  // Whether the Project supports "Log in with SAML".
   optional bool log_in_with_saml = 16;
+
+  // Whether the Project supports authenticator apps as a secondary auth factor.
   optional bool log_in_with_authenticator_app = 13;
+
+  // Whether the Project supports passkeys as a secondary auth factor.
   optional bool log_in_with_passkey = 14;
+
+  // The OAuth Client ID to use for "Log in with Google".
   string google_oauth_client_id = 8;
+
+  // The OAuth Client Secret to use for "Log in with Google".
+  //
+  // This field is write-only.
   string google_oauth_client_secret = 9;
+
+  // The OAuth Client ID to use for "Log in with Microsoft".
   string microsoft_oauth_client_id = 10;
+
+  // The OAuth Client Secret to use for "Log in with Microsoft".
+  //
+  // This field is write-only.
   string microsoft_oauth_client_secret = 11;
+
+  // The domain where the Project's Vault lives.
   string vault_domain = 12;
+
+  // The set of domains the Project trusts.
+  //
+  // Client-side JavaScript on these domains can take actions on behalf of
+  // logged-in Users.
   repeated string trusted_domains = 17;
+
+  // Where Users are redirected after returning from the Vault.
   string redirect_uri = 18;
+
+  // Where Users are redirected after logging in.
   optional string after_login_redirect_uri = 19;
+
+  // Where Users are redirected after signing up.
   optional string after_signup_redirect_uri = 20;
+
+  // Emails sent to Users come from this domain.
   string email_send_from_domain = 21;
 }
 
@@ -60,40 +111,86 @@ message ProjectUISettings {
   string log_in_layout = 11;
 }
 
+// An Organization represents one of your corporate customers.
 message Organization {
+  // The Organization ID. Starts with `org_...`.
   string id = 1;
+
+  // A human-friendly name for the Organization.
   string display_name = 2;
+
+  // When the Organization was created.
   google.protobuf.Timestamp create_time = 3;
+
+  // When the Organization was last updated.
   google.protobuf.Timestamp update_time = 4;
+
+  // Whether the Organization supports "Log in with Google".
   optional bool log_in_with_google = 7;
+
+  // Whether the Organization supports "Log in with Microsoft".
   optional bool log_in_with_microsoft = 8;
+
+  // Whether the Organization supports "Log in with email".
   optional bool log_in_with_email = 14;
+
+  // Whether the Organization supports "Log in with password".
   optional bool log_in_with_password = 6;
+
+  // Whether the Organization supports "Log in with SAML".
   optional bool log_in_with_saml = 9;
+
+  // Whether the Organization supports authenticator apps as a secondary auth factor.
   optional bool log_in_with_authenticator_app = 11;
+
+  // Whether the Organization supports passkeys as a secondary auth factor.
   optional bool log_in_with_passkey = 12;
+
+  // Whether the Organization requires a secondary auth factor.
   optional bool require_mfa = 13;
+
+  // Whether the Organization has SCIM enabled.
   optional bool scim_enabled = 10;
 }
 
+// OrganizationDomains defines the domains associated with an Organization.
 message OrganizationDomains {
+  // The ID of the Organization.
   string organization_id = 1;
+
+  // A list of domains associated with the organization.
+  //
+  // When an Organization uses SAML or SCIM, only emails from this list are
+  // permitted.
   repeated string domains = 2;
 }
 
+// OrganizationGoogleHostedDomains represents the Google Hosted Domains ("HDs")
+// associated with an Organization.
 message OrganizationGoogleHostedDomains {
+  // The ID of the Organization.
   string organization_id = 1;
+
+  // A list of Google-hosted domains associated with the organization.
+  //
+  // These values correspond to Google OAuth `hd` claims:
+  //
+  // https://developers.google.com/identity/openid-connect/openid-connect#obtainuserinfo
   repeated string google_hosted_domains = 2;
 }
 
+// OrganizationMicrosoftTenantIDs represents the Microsoft Tenant IDs ("TIDs")
+// associated with an Organization.
 message OrganizationMicrosoftTenantIDs {
+  // The ID of the Organization.
   string organization_id = 1;
-  repeated string microsoft_tenant_ids = 2;
-}
 
-message SessionSigningKey {
-  string id = 1;
-  google.protobuf.Struct public_key_jwk = 2;
+  // A list of Microsoft Tenant IDs associated with the organization.
+  //
+  // These values correspond to Microsoft OAuth `tid` claims:
+  //
+  // https://learn.microsoft.com/en-us/entra/identity-platform/id-token-claims-reference
+  repeated string microsoft_tenant_ids = 2;
 }
 
 message ProjectAPIKey {
@@ -112,59 +209,149 @@ message PublishableKey {
   google.protobuf.Timestamp update_time = 4;
 }
 
+// A User represents an individual working for one of your corporate customers.
 message User {
+  // The User ID. Starts with `user_...`.
   string id = 1;
+
+  // The Organization this User belongs to.
   string organization_id = 2;
+
+  // The User's email address.
+  //
+  // This email is verified and unique within the Organization. Two Users in
+  // different Organizations may have the same email.
   string email = 3;
+
+  // When the User was created.
   google.protobuf.Timestamp create_time = 4;
+
+  // When the User was last updated.
   google.protobuf.Timestamp update_time = 5;
+
+  // Whether the User is an owner of their Organization.
   optional bool owner = 6;
+
+  // The Google User ID, if the User has ever logged in with Google.
   optional string google_user_id = 7;
+
+  // The Microsoft User ID, if the User has ever logged in with Microsoft.
   optional string microsoft_user_id = 8;
+
+  // Whether the User has an authenticator app set up.
   bool has_authenticator_app = 9;
 }
 
+// Represents a Session for a logged-in User.
 message Session {
+  // The Session ID. Starts with `session_...`.
   string id = 1;
+
+  // The User this Session belongs to.
   string user_id = 2;
+
+  // Whether the Session is revoked.
   bool revoked = 3;
+
+  // When the Session was created.
   google.protobuf.Timestamp create_time = 4;
+
+  // When the Session was last active.
   google.protobuf.Timestamp last_active_time = 5;
+
+  // When the Session expires.
   google.protobuf.Timestamp expire_time = 6;
 }
 
+// Passkey represents a WebAuthn public key credential registered by a User.
 message Passkey {
+  // The unique identifier for the Passkey. Starts with `passkey_...`.
   string id = 1;
+
+  // The User this Passkey belongs to.
   string user_id = 2;
+
+  // The timestamp of when the Passkey was created.
   google.protobuf.Timestamp create_time = 3;
+
+  // The timestamp of when the Passkey was last updated.
   google.protobuf.Timestamp update_time = 4;
+
+  // Indicates whether the Passkey is disabled.
   optional bool disabled = 8;
+
+  // The unique credential ID for the Passkey, as a binary value.
   bytes credential_id = 5;
+
+  // The public key associated with the Passkey, in PEM-encoded PKIX format.
+  //
+  // Starts with `-----BEGIN PUBLIC KEY-----`.
   string public_key_pkix = 6;
+
+  // The Authenticator Attestation GUID (AAGUID) for the Passkey.
   string aaguid = 7;
+
+  // The relying party ID associated with the Passkey.
   string rp_id = 9;
 }
 
+// SAMLConnection represents a SAML configuration for an Organization.
 message SAMLConnection {
+  // The unique identifier for this SAML Connection. Starts with
+  // `saml_connection_...`.
   string id = 1;
+
+  // The Organization this SAML Connection belongs to.
   string organization_id = 2;
+
+  // When the SAML Connection was created.
   google.protobuf.Timestamp create_time = 3;
+
+  // When the SAML Connection was last updated.
   google.protobuf.Timestamp update_time = 4;
+
+  // Whether this is the primary SAML Connection for the Organization.
   optional bool primary = 5;
+
+  // The Service Provider Assertion Consumer Service (ACS) URL.
   string sp_acs_url = 6;
+
+  // The Service Provider Entity ID.
   string sp_entity_id = 7;
+
+  // The Identity Provider Redirect URL.
   string idp_redirect_url = 8;
+
+  // The Identity Provider certificate, in PEM-encoded X.509 format.
+  //
+  // Starts with `----BEGIN CERTIFICATE----`.
   string idp_x509_certificate = 9;
+
+  // The Identity Provider Entity ID.
   string idp_entity_id = 10;
 }
 
+// SCIMAPIKey represents an API key for SCIM operations.
 message SCIMAPIKey {
+  // The unique identifier for this SCIM API Key.
   string id = 1;
+
+  // The Organization this SCIM API Key belongs to.
   string organization_id = 2;
+
+  // When the SCIM API Key was created.
   google.protobuf.Timestamp create_time = 3;
+
+  // When the SCIM API Key was last updated.
   google.protobuf.Timestamp update_time = 4;
+
+  // A human-readable display name for this SCIM API Key.
   string display_name = 5;
+
+  // The secret token for this SCIM API Key.
   string secret_token = 6;
+
+  // Whether this SCIM API Key is revoked.
   bool revoked = 7;
 }
 
@@ -177,11 +364,24 @@ message UserImpersonationToken {
   string impersonated_id = 6;
 }
 
+// UserInvite represents an invitation for a User to join an Organization.
 message UserInvite {
+  // The unique identifier for the User Invite. Starts with `user_invite_...`.
   string id = 1;
+
+  // The Organization this User Invite belongs to.
   string organization_id = 2;
+
+  // When the User Invite was created.
   google.protobuf.Timestamp create_time = 3;
+
+  // When the User Invite was last updated.
   google.protobuf.Timestamp update_time = 4;
+
+  // The invitee's email address.
   string email = 5;
+
+  // Indicates whether the invited User will have owner privileges in the
+  // Organization.
   bool owner = 6;
 }
