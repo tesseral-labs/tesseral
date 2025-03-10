@@ -265,7 +265,7 @@ message Session {
 
 // Passkey represents a WebAuthn public key credential registered by a User.
 message Passkey {
-  // The unique identifier for the Passkey. Starts with `passkey_...`.
+  // The Passkey ID. Starts with `passkey_...`.
   string id = 1;
 
   // The User this Passkey belongs to.
@@ -297,8 +297,7 @@ message Passkey {
 
 // SAMLConnection represents a SAML configuration for an Organization.
 message SAMLConnection {
-  // The unique identifier for this SAML Connection. Starts with
-  // `saml_connection_...`.
+  // The SAML Connection ID. Starts with `saml_connection_...`.
   string id = 1;
 
   // The Organization this SAML Connection belongs to.
@@ -333,7 +332,7 @@ message SAMLConnection {
 
 // SCIMAPIKey represents an API key for SCIM operations.
 message SCIMAPIKey {
-  // The unique identifier for this SCIM API Key.
+  // The SCIM API Key ID. Starts with `scim_api_key_...`.
   string id = 1;
 
   // The Organization this SCIM API Key belongs to.
@@ -366,7 +365,7 @@ message UserImpersonationToken {
 
 // UserInvite represents an invitation for a User to join an Organization.
 message UserInvite {
-  // The unique identifier for the User Invite. Starts with `user_invite_...`.
+  // The User Invite ID. Starts with `user_invite_...`.
   string id = 1;
 
   // The Organization this User Invite belongs to.
