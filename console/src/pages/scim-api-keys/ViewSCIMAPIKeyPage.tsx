@@ -13,6 +13,7 @@ import { useMutation, useQuery } from '@connectrpc/connect-query';
 import {
   deleteSCIMAPIKey,
   getOrganization,
+  getProject,
   getSCIMAPIKey,
   revokeSCIMAPIKey,
   updateSCIMAPIKey,
@@ -59,6 +60,7 @@ import {
 
 export const ViewSCIMAPIKeyPage = () => {
   const { organizationId, scimApiKeyId } = useParams();
+  const { data: getProjectResponse } = useQuery(getProject, {});
   const { data: getOrganizationResponse } = useQuery(getOrganization, {
     id: organizationId,
   });
@@ -122,12 +124,18 @@ export const ViewSCIMAPIKeyPage = () => {
           <EditSCIMAPIKeyButton />
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-3 gap-x-2 text-sm">
+          <div className="grid grid-cols-2 gap-x-2 text-sm">
             <div className="border-r border-gray-200 pr-8 flex flex-col gap-4">
               <div>
                 <div className="font-semibold">Display Name</div>
                 <div className="truncate">
                   {getScimApiKeyResponse?.scimApiKey?.displayName}
+                </div>
+              </div>
+              <div>
+                <div className="font-semibold">SCIM Base URL</div>
+                <div className="truncate">
+                  {`https://${getProjectResponse?.project?.vaultDomain}/api/scim/v1`}
                 </div>
               </div>
               <div>
@@ -137,7 +145,7 @@ export const ViewSCIMAPIKeyPage = () => {
                 </div>
               </div>
             </div>
-            <div className="border-r border-gray-200 pr-8 pl-8 flex flex-col gap-4">
+            <div className="border-gray-200 pl-8 flex flex-col gap-4">
               <div>
                 <div className="font-semibold">Created</div>
                 <div className="truncate">
@@ -149,8 +157,6 @@ export const ViewSCIMAPIKeyPage = () => {
                     ).toRelative()}
                 </div>
               </div>
-            </div>
-            <div className="border-gray-200 pl-8 flex flex-col gap-4">
               <div>
                 <div className="font-semibold">Updated</div>
                 <div className="truncate">
@@ -182,7 +188,7 @@ const EditSCIMAPIKeyButton = () => {
     id: scimApiKeyId,
   });
   const updateSCIMAPIKeyMutation = useMutation(updateSCIMAPIKey);
-  /* eslint-disable @typescript-eslint/no-unsafe-call */
+
   // Currently there's an issue with the types of react-hook-form and zod
   // preventing the compiler from inferring the correct types.
   const form = useForm<z.infer<typeof schema>>({
@@ -198,7 +204,6 @@ const EditSCIMAPIKeyButton = () => {
       });
     }
   }, [getSCIMAPIKeyResponse]);
-  /* eslint-enable @typescript-eslint/no-unsafe-call */
 
   const [open, setOpen] = useState(false);
 
@@ -226,11 +231,9 @@ const EditSCIMAPIKeyButton = () => {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <Form {...form}>
-          {/* eslint-disable @typescript-eslint/no-unsafe-call */}
           {/** Currently there's an issue with the types of react-hook-form and zod
-          preventing the compiler from inferring the correct types.*/}
+           preventing the compiler from inferring the correct types.*/}
           <form onSubmit={form.handleSubmit(handleSubmit)}>
-            {/* eslint-enable @typescript-eslint/no-unsafe-call */}
             <FormField
               control={form.control}
               name="displayName"
