@@ -9,23 +9,23 @@ import "tesseral/backend/v1/models.proto";
 service BackendService {
   // Get the current project.
   rpc GetProject(GetProjectRequest) returns (GetProjectResponse) {
-    option (google.api.http) = {get: "/backend/v1/project"};
+    option (google.api.http) = {get: "/v1/project"};
   }
 
   // List Organizations.
   rpc ListOrganizations(ListOrganizationsRequest) returns (ListOrganizationsResponse) {
-    option (google.api.http) = {get: "/backend/v1/organizations"};
+    option (google.api.http) = {get: "/v1/organizations"};
   }
 
   // Get an Organization.
   rpc GetOrganization(GetOrganizationRequest) returns (GetOrganizationResponse) {
-    option (google.api.http) = {get: "/backend/v1/organizations/{id}"};
+    option (google.api.http) = {get: "/v1/organizations/{id}"};
   }
 
   // Create an Organization.
   rpc CreateOrganization(CreateOrganizationRequest) returns (CreateOrganizationResponse) {
     option (google.api.http) = {
-      post: "/backend/v1/organizations"
+      post: "/v1/organizations"
       body: "organization"
     };
   }
@@ -33,69 +33,69 @@ service BackendService {
   // Update an Organization.
   rpc UpdateOrganization(UpdateOrganizationRequest) returns (UpdateOrganizationResponse) {
     option (google.api.http) = {
-      patch: "/backend/v1/organizations/{id}"
+      patch: "/v1/organizations/{id}"
       body: "organization"
     };
   }
 
   // Delete an Organization.
   rpc DeleteOrganization(DeleteOrganizationRequest) returns (DeleteOrganizationResponse) {
-    option (google.api.http) = {delete: "/backend/v1/organizations/{id}"};
+    option (google.api.http) = {delete: "/v1/organizations/{id}"};
   }
 
   // Get Organization Domains.
   rpc GetOrganizationDomains(GetOrganizationDomainsRequest) returns (GetOrganizationDomainsResponse) {
-    option (google.api.http) = {get: "/backend/v1/organizations/{organization_id}/domains"};
+    option (google.api.http) = {get: "/v1/organizations/{organization_id}/domains"};
   }
 
   // Update Organization Domains.
   rpc UpdateOrganizationDomains(UpdateOrganizationDomainsRequest) returns (UpdateOrganizationDomainsResponse) {
     option (google.api.http) = {
-      patch: "/backend/v1/organizations/{organization_id}/domains"
+      patch: "/v1/organizations/{organization_id}/domains"
       body: "organization_domains"
     };
   }
 
   // Get Organization Google Hosted Domains.
   rpc GetOrganizationGoogleHostedDomains(GetOrganizationGoogleHostedDomainsRequest) returns (GetOrganizationGoogleHostedDomainsResponse) {
-    option (google.api.http) = {get: "/backend/v1/organizations/{organization_id}/google-hosted-domains"};
+    option (google.api.http) = {get: "/v1/organizations/{organization_id}/google-hosted-domains"};
   }
 
   // Update Organization Google Hosted Domains.
   rpc UpdateOrganizationGoogleHostedDomains(UpdateOrganizationGoogleHostedDomainsRequest) returns (UpdateOrganizationGoogleHostedDomainsResponse) {
     option (google.api.http) = {
-      patch: "/backend/v1/organizations/{organization_id}/google-hosted-domains"
+      patch: "/v1/organizations/{organization_id}/google-hosted-domains"
       body: "organization_google_hosted_domains"
     };
   }
 
   // Get Organization Microsoft Tenant IDs.
   rpc GetOrganizationMicrosoftTenantIDs(GetOrganizationMicrosoftTenantIDsRequest) returns (GetOrganizationMicrosoftTenantIDsResponse) {
-    option (google.api.http) = {get: "/backend/v1/organizations/{organization_id}/microsoft-tenant-ids"};
+    option (google.api.http) = {get: "/v1/organizations/{organization_id}/microsoft-tenant-ids"};
   }
 
   // Update Organization Microsoft Tenant IDs.
   rpc UpdateOrganizationMicrosoftTenantIDs(UpdateOrganizationMicrosoftTenantIDsRequest) returns (UpdateOrganizationMicrosoftTenantIDsResponse) {
     option (google.api.http) = {
-      patch: "/backend/v1/organizations/{organization_id}/microsoft-tenant-ids"
+      patch: "/v1/organizations/{organization_id}/microsoft-tenant-ids"
       body: "organization_microsoft_tenant_ids"
     };
   }
 
   // List SAML Connections.
   rpc ListSAMLConnections(ListSAMLConnectionsRequest) returns (ListSAMLConnectionsResponse) {
-    option (google.api.http) = {get: "/backend/v1/saml-connections"};
+    option (google.api.http) = {get: "/v1/saml-connections"};
   }
 
   // Get a SAML Connection.
   rpc GetSAMLConnection(GetSAMLConnectionRequest) returns (GetSAMLConnectionResponse) {
-    option (google.api.http) = {get: "/backend/v1/saml-connections/{id}"};
+    option (google.api.http) = {get: "/v1/saml-connections/{id}"};
   }
 
   // Create a SAML Connection.
   rpc CreateSAMLConnection(CreateSAMLConnectionRequest) returns (CreateSAMLConnectionResponse) {
     option (google.api.http) = {
-      post: "/backend/v1/saml-connections"
+      post: "/v1/saml-connections"
       body: "saml_connection"
     };
   }
@@ -103,30 +103,30 @@ service BackendService {
   // Update a SAML Connection.
   rpc UpdateSAMLConnection(UpdateSAMLConnectionRequest) returns (UpdateSAMLConnectionResponse) {
     option (google.api.http) = {
-      patch: "/backend/v1/saml-connections/{id}"
+      patch: "/v1/saml-connections/{id}"
       body: "saml_connection"
     };
   }
 
   // Delete a SAML Connection.
   rpc DeleteSAMLConnection(DeleteSAMLConnectionRequest) returns (DeleteSAMLConnectionResponse) {
-    option (google.api.http) = {delete: "/backend/v1/saml-connections/{id}"};
+    option (google.api.http) = {delete: "/v1/saml-connections/{id}"};
   }
 
   // List SCIM API Keys.
   rpc ListSCIMAPIKeys(ListSCIMAPIKeysRequest) returns (ListSCIMAPIKeysResponse) {
-    option (google.api.http) = {get: "/backend/v1/scim-api-keys"};
+    option (google.api.http) = {get: "/v1/scim-api-keys"};
   }
 
   // Get a SCIM API Key.
   rpc GetSCIMAPIKey(GetSCIMAPIKeyRequest) returns (GetSCIMAPIKeyResponse) {
-    option (google.api.http) = {get: "/backend/v1/scim-api-keys/{id}"};
+    option (google.api.http) = {get: "/v1/scim-api-keys/{id}"};
   }
 
   // Create a SCIM API Key.
   rpc CreateSCIMAPIKey(CreateSCIMAPIKeyRequest) returns (CreateSCIMAPIKeyResponse) {
     option (google.api.http) = {
-      post: "/backend/v1/scim-api-keys"
+      post: "/v1/scim-api-keys"
       body: "scim_api_key"
     };
   }
@@ -134,35 +134,35 @@ service BackendService {
   // Update a SCIM API Key.
   rpc UpdateSCIMAPIKey(UpdateSCIMAPIKeyRequest) returns (UpdateSCIMAPIKeyResponse) {
     option (google.api.http) = {
-      patch: "/backend/v1/scim-api-keys/{id}"
+      patch: "/v1/scim-api-keys/{id}"
       body: "scim_api_key"
     };
   }
 
   // Delete a SCIM API Key.
   rpc DeleteSCIMAPIKey(DeleteSCIMAPIKeyRequest) returns (DeleteSCIMAPIKeyResponse) {
-    option (google.api.http) = {delete: "/backend/v1/scim-api-keys/{id}"};
+    option (google.api.http) = {delete: "/v1/scim-api-keys/{id}"};
   }
 
   // Revoke a SCIM API Key.
   rpc RevokeSCIMAPIKey(RevokeSCIMAPIKeyRequest) returns (RevokeSCIMAPIKeyResponse) {
-    option (google.api.http) = {post: "/backend/v1/scim-api-keys/{id}/revoke"};
+    option (google.api.http) = {post: "/v1/scim-api-keys/{id}/revoke"};
   }
 
   // List Users.
   rpc ListUsers(ListUsersRequest) returns (ListUsersResponse) {
-    option (google.api.http) = {get: "/backend/v1/users"};
+    option (google.api.http) = {get: "/v1/users"};
   }
 
   // Get a User.
   rpc GetUser(GetUserRequest) returns (GetUserResponse) {
-    option (google.api.http) = {get: "/backend/v1/users/{id}"};
+    option (google.api.http) = {get: "/v1/users/{id}"};
   }
 
   // Create a User.
   rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {
     option (google.api.http) = {
-      post: "/backend/v1/users"
+      post: "/v1/users"
       body: "user"
     };
   }
@@ -170,70 +170,70 @@ service BackendService {
   // Update a User.
   rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {
     option (google.api.http) = {
-      patch: "/backend/v1/users/{id}"
+      patch: "/v1/users/{id}"
       body: "user"
     };
   }
 
   // Delete a User.
   rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {
-    option (google.api.http) = {delete: "/backend/v1/users/{id}"};
+    option (google.api.http) = {delete: "/v1/users/{id}"};
   }
 
   // List Passkeys.
   rpc ListPasskeys(ListPasskeysRequest) returns (ListPasskeysResponse) {
-    option (google.api.http) = {get: "/backend/v1/passkeys"};
+    option (google.api.http) = {get: "/v1/passkeys"};
   }
 
   // Get a Passkey.
   rpc GetPasskey(GetPasskeyRequest) returns (GetPasskeyResponse) {
-    option (google.api.http) = {get: "/backend/v1/passkeys/{id}"};
+    option (google.api.http) = {get: "/v1/passkeys/{id}"};
   }
 
   // Update a Passkey.
   rpc UpdatePasskey(UpdatePasskeyRequest) returns (UpdatePasskeyResponse) {
     option (google.api.http) = {
-      patch: "/backend/v1/passkeys/{id}"
+      patch: "/v1/passkeys/{id}"
       body: "passkey"
     };
   }
 
   // Delete a Passkey.
   rpc DeletePasskey(DeletePasskeyRequest) returns (DeletePasskeyResponse) {
-    option (google.api.http) = {delete: "/backend/v1/passkeys/{id}"};
+    option (google.api.http) = {delete: "/v1/passkeys/{id}"};
   }
 
   // List Sessions.
   rpc ListSessions(ListSessionsRequest) returns (ListSessionsResponse) {
-    option (google.api.http) = {get: "/backend/v1/sessions"};
+    option (google.api.http) = {get: "/v1/sessions"};
   }
 
   // Get a Session.
   rpc GetSession(GetSessionRequest) returns (GetSessionResponse) {
-    option (google.api.http) = {get: "/backend/v1/sessions/{id}"};
+    option (google.api.http) = {get: "/v1/sessions/{id}"};
   }
 
   // List User Invites.
   rpc ListUserInvites(ListUserInvitesRequest) returns (ListUserInvitesResponse) {
-    option (google.api.http) = {get: "/backend/v1/user-invites"};
+    option (google.api.http) = {get: "/v1/user-invites"};
   }
 
   // Get a User Invite.
   rpc GetUserInvite(GetUserInviteRequest) returns (GetUserInviteResponse) {
-    option (google.api.http) = {get: "/backend/v1/user-invites/{id}"};
+    option (google.api.http) = {get: "/v1/user-invites/{id}"};
   }
 
   // Create a User Invite.
   rpc CreateUserInvite(CreateUserInviteRequest) returns (CreateUserInviteResponse) {
     option (google.api.http) = {
-      post: "/backend/v1/user-invites"
+      post: "/v1/user-invites"
       body: "user_invite"
     };
   }
 
   // Delete a User Invite.
   rpc DeleteUserInvite(DeleteUserInviteRequest) returns (DeleteUserInviteResponse) {
-    option (google.api.http) = {delete: "/backend/v1/user-invites/{id}"};
+    option (google.api.http) = {delete: "/v1/user-invites/{id}"};
   }
 
   rpc DisableOrganizationLogins(DisableOrganizationLoginsRequest) returns (DisableOrganizationLoginsResponse) {}

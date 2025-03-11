@@ -302,7 +302,7 @@ func main() {
 	mux.Handle("/api/internal/connect/", corstrusteddomains.Handler(commonStore, projectid.NewSniffer(config.AuthAppsRootDomain, commonStore), http.StripPrefix("/api/internal/connect", connectMux)))
 
 	// Register service transcoders
-	mux.Handle("/api/backend/v1/", http.StripPrefix("/api", backendTranscoder))
+	mux.Handle("/api/backend/v1/", http.StripPrefix("/api/backend", backendTranscoder))
 	mux.Handle("/api/frontend/v1/", corstrusteddomains.Handler(commonStore, projectid.NewSniffer(config.AuthAppsRootDomain, commonStore), http.StripPrefix("/api", frontendTranscoder)))
 	mux.Handle("/api/intermediate/v1/", corstrusteddomains.Handler(commonStore, projectid.NewSniffer(config.AuthAppsRootDomain, commonStore), http.StripPrefix("/api", intermediateTranscoder)))
 
