@@ -4,6 +4,11 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 INSERT INTO projects (id, display_name, log_in_with_google, log_in_with_microsoft, log_in_with_email, log_in_with_password, log_in_with_saml, log_in_with_authenticator_app, log_in_with_passkey, vault_domain, email_send_from_domain, redirect_uri)
 	VALUES ('56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2'::uuid, 'Tesseral Local Development', true, true, true, true, true, true, true, 'auth.console.tesseral.example.com', 'auth.console.tesseral.example.com', 'https://console.tesseral.example.com');
 
+insert into project_trusted_domains (id, project_id, domain)
+VALUES
+    (gen_random_uuid(), '56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2', 'auth.console.tesseral.example.com'),
+    (gen_random_uuid(), '56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2', 'console.tesseral.example.com');
+
 -- Create the Dogfood Project's backing organization
 INSERT INTO organizations (id, display_name, project_id, log_in_with_google, log_in_with_microsoft, log_in_with_email, log_in_with_password, log_in_with_saml, log_in_with_authenticator_app, log_in_with_passkey, scim_enabled)
   VALUES ('7a76decb-6d79-49ce-9449-34fcc53151df'::uuid, 'project_54vwf0clhh0caqe20eujxgpeq Backing Organization', '56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2', true, false, true, true, true, true, true, true);
