@@ -6,7 +6,7 @@ info:
     title: BackendService API
     version: 0.0.1
 paths:
-    /backend/v1/organizations:
+    /v1/organizations:
         get:
             tags:
                 - BackendService
@@ -55,7 +55,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /backend/v1/organizations/{id}:
+    /v1/organizations/{id}:
         get:
             tags:
                 - BackendService
@@ -137,7 +137,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /backend/v1/organizations/{organizationId}/domains:
+    /v1/organizations/{organizationId}/domains:
         get:
             tags:
                 - BackendService
@@ -194,7 +194,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /backend/v1/organizations/{organizationId}/google-hosted-domains:
+    /v1/organizations/{organizationId}/google-hosted-domains:
         get:
             tags:
                 - BackendService
@@ -251,7 +251,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /backend/v1/organizations/{organizationId}/microsoft-tenant-ids:
+    /v1/organizations/{organizationId}/microsoft-tenant-ids:
         get:
             tags:
                 - BackendService
@@ -308,7 +308,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /backend/v1/passkeys:
+    /v1/passkeys:
         get:
             tags:
                 - BackendService
@@ -338,7 +338,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /backend/v1/passkeys/{id}:
+    /v1/passkeys/{id}:
         get:
             tags:
                 - BackendService
@@ -420,7 +420,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /backend/v1/project:
+    /v1/project:
         get:
             tags:
                 - BackendService
@@ -439,7 +439,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /backend/v1/saml-connections:
+    /v1/saml-connections:
         get:
             tags:
                 - BackendService
@@ -493,7 +493,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /backend/v1/saml-connections/{id}:
+    /v1/saml-connections/{id}:
         get:
             tags:
                 - BackendService
@@ -575,7 +575,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /backend/v1/scim-api-keys:
+    /v1/scim-api-keys:
         get:
             tags:
                 - BackendService
@@ -629,7 +629,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /backend/v1/scim-api-keys/{id}:
+    /v1/scim-api-keys/{id}:
         get:
             tags:
                 - BackendService
@@ -711,7 +711,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /backend/v1/scim-api-keys/{id}/revoke:
+    /v1/scim-api-keys/{id}/revoke:
         post:
             tags:
                 - BackendService
@@ -737,7 +737,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /backend/v1/sessions:
+    /v1/sessions:
         get:
             tags:
                 - BackendService
@@ -767,7 +767,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /backend/v1/sessions/{id}:
+    /v1/sessions/{id}:
         get:
             tags:
                 - BackendService
@@ -793,7 +793,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /backend/v1/user-invites:
+    /v1/user-invites:
         get:
             tags:
                 - BackendService
@@ -847,7 +847,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /backend/v1/user-invites/{id}:
+    /v1/user-invites/{id}:
         get:
             tags:
                 - BackendService
@@ -898,7 +898,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /backend/v1/users:
+    /v1/users:
         get:
             tags:
                 - BackendService
@@ -952,7 +952,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /backend/v1/users/{id}:
+    /v1/users/{id}:
         get:
             tags:
                 - BackendService
