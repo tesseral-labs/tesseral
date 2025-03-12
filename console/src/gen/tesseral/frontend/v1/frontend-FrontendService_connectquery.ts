@@ -185,3 +185,8 @@ export const createUserInvite = FrontendService.method.createUserInvite;
  * @generated from rpc tesseral.frontend.v1.FrontendService.DeleteUserInvite
  */
 export const deleteUserInvite = FrontendService.method.deleteUserInvite;
+
+/**
+ * @generated from rpc tesseral.frontend.v1.FrontendService.ListSwitchableOrganizations
+ */
+export const listSwitchableOrganizations = FrontendService.method.listSwitchableOrganizations;

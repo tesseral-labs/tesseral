@@ -112,3 +112,8 @@ message UserInvite {
   string email = 4;
   bool owner = 5;
 }
+
+message SwitchableOrganization {
+  string id = 1;
+  string display_name = 2;
+}

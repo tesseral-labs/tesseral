@@ -137,6 +137,9 @@ const (
 	// FrontendServiceDeleteUserInviteProcedure is the fully-qualified name of the FrontendService's
 	// DeleteUserInvite RPC.
 	FrontendServiceDeleteUserInviteProcedure = "/tesseral.frontend.v1.FrontendService/DeleteUserInvite"
+	// FrontendServiceListSwitchableOrganizationsProcedure is the fully-qualified name of the
+	// FrontendService's ListSwitchableOrganizations RPC.
+	FrontendServiceListSwitchableOrganizationsProcedure = "/tesseral.frontend.v1.FrontendService/ListSwitchableOrganizations"
 )
 
 // FrontendServiceClient is a client for the tesseral.frontend.v1.FrontendService service.
@@ -178,6 +181,7 @@ type FrontendServiceClient interface {
 	GetUserInvite(context.Context, *connect.Request[v1.GetUserInviteRequest]) (*connect.Response[v1.GetUserInviteResponse], error)
 	CreateUserInvite(context.Context, *connect.Request[v1.CreateUserInviteRequest]) (*connect.Response[v1.CreateUserInviteResponse], error)
 	DeleteUserInvite(context.Context, *connect.Request[v1.DeleteUserInviteRequest]) (*connect.Response[v1.DeleteUserInviteResponse], error)
+	ListSwitchableOrganizations(context.Context, *connect.Request[v1.ListSwitchableOrganizationsRequest]) (*connect.Response[v1.ListSwitchableOrganizationsResponse], error)
 }
 
 // NewFrontendServiceClient constructs a client for the tesseral.frontend.v1.FrontendService
@@ -407,6 +411,12 @@ func NewFrontendServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			connect.WithSchema(frontendServiceMethods.ByName("DeleteUserInvite")),
 			connect.WithClientOptions(opts...),
 		),
+		listSwitchableOrganizations: connect.NewClient[v1.ListSwitchableOrganizationsRequest, v1.ListSwitchableOrganizationsResponse](
+			httpClient,
+			baseURL+FrontendServiceListSwitchableOrganizationsProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("ListSwitchableOrganizations")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -448,6 +458,7 @@ type frontendServiceClient struct {
 	getUserInvite                         *connect.Client[v1.GetUserInviteRequest, v1.GetUserInviteResponse]
 	createUserInvite                      *connect.Client[v1.CreateUserInviteRequest, v1.CreateUserInviteResponse]
 	deleteUserInvite                      *connect.Client[v1.DeleteUserInviteRequest, v1.DeleteUserInviteResponse]
+	listSwitchableOrganizations           *connect.Client[v1.ListSwitchableOrganizationsRequest, v1.ListSwitchableOrganizationsResponse]
 }
 
 // Logout calls tesseral.frontend.v1.FrontendService.Logout.
@@ -634,6 +645,12 @@ func (c *frontendServiceClient) DeleteUserInvite(ctx context.Context, req *conne
 	return c.deleteUserInvite.CallUnary(ctx, req)
 }
 
+// ListSwitchableOrganizations calls
+// tesseral.frontend.v1.FrontendService.ListSwitchableOrganizations.
+func (c *frontendServiceClient) ListSwitchableOrganizations(ctx context.Context, req *connect.Request[v1.ListSwitchableOrganizationsRequest]) (*connect.Response[v1.ListSwitchableOrganizationsResponse], error) {
+	return c.listSwitchableOrganizations.CallUnary(ctx, req)
+}
+
 // FrontendServiceHandler is an implementation of the tesseral.frontend.v1.FrontendService service.
 type FrontendServiceHandler interface {
 	Logout(context.Context, *connect.Request[v1.LogoutRequest]) (*connect.Response[v1.LogoutResponse], error)
@@ -673,6 +690,7 @@ type FrontendServiceHandler interface {
 	GetUserInvite(context.Context, *connect.Request[v1.GetUserInviteRequest]) (*connect.Response[v1.GetUserInviteResponse], error)
 	CreateUserInvite(context.Context, *connect.Request[v1.CreateUserInviteRequest]) (*connect.Response[v1.CreateUserInviteResponse], error)
 	DeleteUserInvite(context.Context, *connect.Request[v1.DeleteUserInviteRequest]) (*connect.Response[v1.DeleteUserInviteResponse], error)
+	ListSwitchableOrganizations(context.Context, *connect.Request[v1.ListSwitchableOrganizationsRequest]) (*connect.Response[v1.ListSwitchableOrganizationsResponse], error)
 }
 
 // NewFrontendServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -898,6 +916,12 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 		connect.WithSchema(frontendServiceMethods.ByName("DeleteUserInvite")),
 		connect.WithHandlerOptions(opts...),
 	)
+	frontendServiceListSwitchableOrganizationsHandler := connect.NewUnaryHandler(
+		FrontendServiceListSwitchableOrganizationsProcedure,
+		svc.ListSwitchableOrganizations,
+		connect.WithSchema(frontendServiceMethods.ByName("ListSwitchableOrganizations")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/tesseral.frontend.v1.FrontendService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case FrontendServiceLogoutProcedure:
@@ -972,6 +996,8 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 			frontendServiceCreateUserInviteHandler.ServeHTTP(w, r)
 		case FrontendServiceDeleteUserInviteProcedure:
 			frontendServiceDeleteUserInviteHandler.ServeHTTP(w, r)
+		case FrontendServiceListSwitchableOrganizationsProcedure:
+			frontendServiceListSwitchableOrganizationsHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -1123,4 +1149,8 @@ func (UnimplementedFrontendServiceHandler) CreateUserInvite(context.Context, *co
 
 func (UnimplementedFrontendServiceHandler) DeleteUserInvite(context.Context, *connect.Request[v1.DeleteUserInviteRequest]) (*connect.Response[v1.DeleteUserInviteResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.DeleteUserInvite is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) ListSwitchableOrganizations(context.Context, *connect.Request[v1.ListSwitchableOrganizationsRequest]) (*connect.Response[v1.ListSwitchableOrganizationsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.ListSwitchableOrganizations is not implemented"))
 }
