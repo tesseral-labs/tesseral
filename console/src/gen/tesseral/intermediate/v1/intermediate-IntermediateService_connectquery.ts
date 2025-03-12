@@ -130,6 +130,11 @@ export const verifyAuthenticatorApp = IntermediateService.method.verifyAuthentic
 export const setEmailAsPrimaryLoginFactor = IntermediateService.method.setEmailAsPrimaryLoginFactor;
 
 /**
+ * @generated from rpc tesseral.intermediate.v1.IntermediateService.ExchangeSessionForIntermediateSession
+ */
+export const exchangeSessionForIntermediateSession = IntermediateService.method.exchangeSessionForIntermediateSession;
+
+/**
  * @generated from rpc tesseral.intermediate.v1.IntermediateService.CreateProject
  */
 export const createProject = IntermediateService.method.createProject;

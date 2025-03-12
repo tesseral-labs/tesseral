@@ -30,6 +30,30 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /intermediate/v1/exchange-session-for-intermediate-session:
+        post:
+            tags:
+                - IntermediateService
+            operationId: IntermediateService_ExchangeSessionForIntermediateSession
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/ExchangeSessionForIntermediateSessionRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ExchangeSessionForIntermediateSessionResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /intermediate/v1/get-authenticator-app-options:
         post:
             tags:
@@ -600,6 +624,16 @@ components:
                     type: string
                 newUser:
                     type: boolean
+        ExchangeSessionForIntermediateSessionRequest:
+            type: object
+            properties:
+                refreshToken:
+                    type: string
+        ExchangeSessionForIntermediateSessionResponse:
+            type: object
+            properties:
+                intermediateSessionSecretToken:
+                    type: string
         GetAuthenticatorAppOptionsRequest:
             type: object
             properties: {}

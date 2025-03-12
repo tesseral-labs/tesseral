@@ -108,6 +108,9 @@ const (
 	// IntermediateServiceSetEmailAsPrimaryLoginFactorProcedure is the fully-qualified name of the
 	// IntermediateService's SetEmailAsPrimaryLoginFactor RPC.
 	IntermediateServiceSetEmailAsPrimaryLoginFactorProcedure = "/tesseral.intermediate.v1.IntermediateService/SetEmailAsPrimaryLoginFactor"
+	// IntermediateServiceExchangeSessionForIntermediateSessionProcedure is the fully-qualified name of
+	// the IntermediateService's ExchangeSessionForIntermediateSession RPC.
+	IntermediateServiceExchangeSessionForIntermediateSessionProcedure = "/tesseral.intermediate.v1.IntermediateService/ExchangeSessionForIntermediateSession"
 	// IntermediateServiceCreateProjectProcedure is the fully-qualified name of the
 	// IntermediateService's CreateProject RPC.
 	IntermediateServiceCreateProjectProcedure = "/tesseral.intermediate.v1.IntermediateService/CreateProject"
@@ -141,6 +144,7 @@ type IntermediateServiceClient interface {
 	RegisterAuthenticatorApp(context.Context, *connect.Request[v1.RegisterAuthenticatorAppRequest]) (*connect.Response[v1.RegisterAuthenticatorAppResponse], error)
 	VerifyAuthenticatorApp(context.Context, *connect.Request[v1.VerifyAuthenticatorAppRequest]) (*connect.Response[v1.VerifyAuthenticatorAppResponse], error)
 	SetEmailAsPrimaryLoginFactor(context.Context, *connect.Request[v1.SetEmailAsPrimaryLoginFactorRequest]) (*connect.Response[v1.SetEmailAsPrimaryLoginFactorResponse], error)
+	ExchangeSessionForIntermediateSession(context.Context, *connect.Request[v1.ExchangeSessionForIntermediateSessionRequest]) (*connect.Response[v1.ExchangeSessionForIntermediateSessionResponse], error)
 	CreateProject(context.Context, *connect.Request[v1.CreateProjectRequest]) (*connect.Response[v1.CreateProjectResponse], error)
 }
 
@@ -306,6 +310,12 @@ func NewIntermediateServiceClient(httpClient connect.HTTPClient, baseURL string,
 			connect.WithSchema(intermediateServiceMethods.ByName("SetEmailAsPrimaryLoginFactor")),
 			connect.WithClientOptions(opts...),
 		),
+		exchangeSessionForIntermediateSession: connect.NewClient[v1.ExchangeSessionForIntermediateSessionRequest, v1.ExchangeSessionForIntermediateSessionResponse](
+			httpClient,
+			baseURL+IntermediateServiceExchangeSessionForIntermediateSessionProcedure,
+			connect.WithSchema(intermediateServiceMethods.ByName("ExchangeSessionForIntermediateSession")),
+			connect.WithClientOptions(opts...),
+		),
 		createProject: connect.NewClient[v1.CreateProjectRequest, v1.CreateProjectResponse](
 			httpClient,
 			baseURL+IntermediateServiceCreateProjectProcedure,
@@ -342,6 +352,7 @@ type intermediateServiceClient struct {
 	registerAuthenticatorApp              *connect.Client[v1.RegisterAuthenticatorAppRequest, v1.RegisterAuthenticatorAppResponse]
 	verifyAuthenticatorApp                *connect.Client[v1.VerifyAuthenticatorAppRequest, v1.VerifyAuthenticatorAppResponse]
 	setEmailAsPrimaryLoginFactor          *connect.Client[v1.SetEmailAsPrimaryLoginFactorRequest, v1.SetEmailAsPrimaryLoginFactorResponse]
+	exchangeSessionForIntermediateSession *connect.Client[v1.ExchangeSessionForIntermediateSessionRequest, v1.ExchangeSessionForIntermediateSessionResponse]
 	createProject                         *connect.Client[v1.CreateProjectRequest, v1.CreateProjectResponse]
 }
 
@@ -480,6 +491,12 @@ func (c *intermediateServiceClient) SetEmailAsPrimaryLoginFactor(ctx context.Con
 	return c.setEmailAsPrimaryLoginFactor.CallUnary(ctx, req)
 }
 
+// ExchangeSessionForIntermediateSession calls
+// tesseral.intermediate.v1.IntermediateService.ExchangeSessionForIntermediateSession.
+func (c *intermediateServiceClient) ExchangeSessionForIntermediateSession(ctx context.Context, req *connect.Request[v1.ExchangeSessionForIntermediateSessionRequest]) (*connect.Response[v1.ExchangeSessionForIntermediateSessionResponse], error) {
+	return c.exchangeSessionForIntermediateSession.CallUnary(ctx, req)
+}
+
 // CreateProject calls tesseral.intermediate.v1.IntermediateService.CreateProject.
 func (c *intermediateServiceClient) CreateProject(ctx context.Context, req *connect.Request[v1.CreateProjectRequest]) (*connect.Response[v1.CreateProjectResponse], error) {
 	return c.createProject.CallUnary(ctx, req)
@@ -513,6 +530,7 @@ type IntermediateServiceHandler interface {
 	RegisterAuthenticatorApp(context.Context, *connect.Request[v1.RegisterAuthenticatorAppRequest]) (*connect.Response[v1.RegisterAuthenticatorAppResponse], error)
 	VerifyAuthenticatorApp(context.Context, *connect.Request[v1.VerifyAuthenticatorAppRequest]) (*connect.Response[v1.VerifyAuthenticatorAppResponse], error)
 	SetEmailAsPrimaryLoginFactor(context.Context, *connect.Request[v1.SetEmailAsPrimaryLoginFactorRequest]) (*connect.Response[v1.SetEmailAsPrimaryLoginFactorResponse], error)
+	ExchangeSessionForIntermediateSession(context.Context, *connect.Request[v1.ExchangeSessionForIntermediateSessionRequest]) (*connect.Response[v1.ExchangeSessionForIntermediateSessionResponse], error)
 	CreateProject(context.Context, *connect.Request[v1.CreateProjectRequest]) (*connect.Response[v1.CreateProjectResponse], error)
 }
 
@@ -673,6 +691,12 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 		connect.WithSchema(intermediateServiceMethods.ByName("SetEmailAsPrimaryLoginFactor")),
 		connect.WithHandlerOptions(opts...),
 	)
+	intermediateServiceExchangeSessionForIntermediateSessionHandler := connect.NewUnaryHandler(
+		IntermediateServiceExchangeSessionForIntermediateSessionProcedure,
+		svc.ExchangeSessionForIntermediateSession,
+		connect.WithSchema(intermediateServiceMethods.ByName("ExchangeSessionForIntermediateSession")),
+		connect.WithHandlerOptions(opts...),
+	)
 	intermediateServiceCreateProjectHandler := connect.NewUnaryHandler(
 		IntermediateServiceCreateProjectProcedure,
 		svc.CreateProject,
@@ -731,6 +755,8 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 			intermediateServiceVerifyAuthenticatorAppHandler.ServeHTTP(w, r)
 		case IntermediateServiceSetEmailAsPrimaryLoginFactorProcedure:
 			intermediateServiceSetEmailAsPrimaryLoginFactorHandler.ServeHTTP(w, r)
+		case IntermediateServiceExchangeSessionForIntermediateSessionProcedure:
+			intermediateServiceExchangeSessionForIntermediateSessionHandler.ServeHTTP(w, r)
 		case IntermediateServiceCreateProjectProcedure:
 			intermediateServiceCreateProjectHandler.ServeHTTP(w, r)
 		default:
@@ -840,6 +866,10 @@ func (UnimplementedIntermediateServiceHandler) VerifyAuthenticatorApp(context.Co
 
 func (UnimplementedIntermediateServiceHandler) SetEmailAsPrimaryLoginFactor(context.Context, *connect.Request[v1.SetEmailAsPrimaryLoginFactorRequest]) (*connect.Response[v1.SetEmailAsPrimaryLoginFactorResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.SetEmailAsPrimaryLoginFactor is not implemented"))
+}
+
+func (UnimplementedIntermediateServiceHandler) ExchangeSessionForIntermediateSession(context.Context, *connect.Request[v1.ExchangeSessionForIntermediateSessionRequest]) (*connect.Response[v1.ExchangeSessionForIntermediateSessionResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.ExchangeSessionForIntermediateSession is not implemented"))
 }
 
 func (UnimplementedIntermediateServiceHandler) CreateProject(context.Context, *connect.Request[v1.CreateProjectRequest]) (*connect.Response[v1.CreateProjectResponse], error) {
