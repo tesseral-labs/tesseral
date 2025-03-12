@@ -16,7 +16,7 @@ const createSession = `-- name: CreateSession :one
 INSERT INTO sessions (id, user_id, expire_time, refresh_token_sha256)
     VALUES ($1, $2, $3, $4)
 RETURNING
-    id, user_id, create_time, expire_time, refresh_token_sha256, impersonator_user_id, last_active_time
+    id, user_id, create_time, expire_time, refresh_token_sha256, impersonator_user_id, last_active_time, primary_auth_factor
 `
 
 type CreateSessionParams struct {
@@ -42,6 +42,7 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (S
 		&i.RefreshTokenSha256,
 		&i.ImpersonatorUserID,
 		&i.LastActiveTime,
+		&i.PrimaryAuthFactor,
 	)
 	return i, err
 }

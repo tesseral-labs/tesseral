@@ -711,8 +711,9 @@ components:
                     type: boolean
                 emailVerificationChallengeRegistered:
                     type: boolean
-                primaryLoginFactor:
-                    type: string
+                primaryAuthFactor:
+                    type: integer
+                    format: enum
         IssueEmailVerificationChallengeRequest:
             type: object
             properties:

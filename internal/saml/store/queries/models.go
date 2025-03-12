@@ -97,47 +97,49 @@ func (ns NullLogInLayout) Value() (driver.Value, error) {
 	return string(ns.LogInLayout), nil
 }
 
-type PrimaryLoginFactor string
+type PrimaryAuthFactor string
 
 const (
-	PrimaryLoginFactorEmail          PrimaryLoginFactor = "email"
-	PrimaryLoginFactorGoogleOauth    PrimaryLoginFactor = "google_oauth"
-	PrimaryLoginFactorMicrosoftOauth PrimaryLoginFactor = "microsoft_oauth"
+	PrimaryAuthFactorEmail         PrimaryAuthFactor = "email"
+	PrimaryAuthFactorGoogle        PrimaryAuthFactor = "google"
+	PrimaryAuthFactorMicrosoft     PrimaryAuthFactor = "microsoft"
+	PrimaryAuthFactorSaml          PrimaryAuthFactor = "saml"
+	PrimaryAuthFactorImpersonation PrimaryAuthFactor = "impersonation"
 )
 
-func (e *PrimaryLoginFactor) Scan(src interface{}) error {
+func (e *PrimaryAuthFactor) Scan(src interface{}) error {
 	switch s := src.(type) {
 	case []byte:
-		*e = PrimaryLoginFactor(s)
+		*e = PrimaryAuthFactor(s)
 	case string:
-		*e = PrimaryLoginFactor(s)
+		*e = PrimaryAuthFactor(s)
 	default:
-		return fmt.Errorf("unsupported scan type for PrimaryLoginFactor: %T", src)
+		return fmt.Errorf("unsupported scan type for PrimaryAuthFactor: %T", src)
 	}
 	return nil
 }
 
-type NullPrimaryLoginFactor struct {
-	PrimaryLoginFactor PrimaryLoginFactor
-	Valid              bool // Valid is true if PrimaryLoginFactor is not NULL
+type NullPrimaryAuthFactor struct {
+	PrimaryAuthFactor PrimaryAuthFactor
+	Valid             bool // Valid is true if PrimaryAuthFactor is not NULL
 }
 
 // Scan implements the Scanner interface.
-func (ns *NullPrimaryLoginFactor) Scan(value interface{}) error {
+func (ns *NullPrimaryAuthFactor) Scan(value interface{}) error {
 	if value == nil {
-		ns.PrimaryLoginFactor, ns.Valid = "", false
+		ns.PrimaryAuthFactor, ns.Valid = "", false
 		return nil
 	}
 	ns.Valid = true
-	return ns.PrimaryLoginFactor.Scan(value)
+	return ns.PrimaryAuthFactor.Scan(value)
 }
 
 // Value implements the driver Valuer interface.
-func (ns NullPrimaryLoginFactor) Value() (driver.Value, error) {
+func (ns NullPrimaryAuthFactor) Value() (driver.Value, error) {
 	if !ns.Valid {
 		return nil, nil
 	}
-	return string(ns.PrimaryLoginFactor), nil
+	return string(ns.PrimaryAuthFactor), nil
 }
 
 type IntermediateSession struct {
@@ -167,8 +169,8 @@ type IntermediateSession struct {
 	AuthenticatorAppSecretCiphertext    []byte
 	AuthenticatorAppVerified            bool
 	AuthenticatorAppRecoveryCodeBcrypts [][]byte
-	PrimaryLoginFactor                  *PrimaryLoginFactor
 	PasskeyRpID                         *string
+	PrimaryAuthFactor                   *PrimaryAuthFactor
 }
 
 type OauthVerifiedEmail struct {
@@ -315,6 +317,7 @@ type Session struct {
 	RefreshTokenSha256 []byte
 	ImpersonatorUserID *uuid.UUID
 	LastActiveTime     *time.Time
+	PrimaryAuthFactor  PrimaryAuthFactor
 }
 
 type SessionSigningKey struct {

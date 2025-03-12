@@ -38,8 +38,8 @@ RETURNING
     *;
 
 -- name: CreateSession :one
-INSERT INTO sessions (id, user_id, expire_time, refresh_token_sha256)
-    VALUES ($1, $2, $3, $4)
+INSERT INTO sessions (id, user_id, expire_time, refresh_token_sha256, primary_auth_factor)
+    VALUES ($1, $2, $3, $4, $5)
 RETURNING
     *;
 
@@ -392,8 +392,8 @@ WHERE
     AND expire_time > now();
 
 -- name: CreateImpersonatedSession :one
-INSERT INTO sessions (id, user_id, expire_time, refresh_token_sha256, impersonator_user_id)
-    VALUES ($1, $2, $3, $4, $5)
+INSERT INTO sessions (id, user_id, expire_time, refresh_token_sha256, impersonator_user_id, primary_auth_factor)
+    VALUES ($1, $2, $3, $4, $5, 'impersonation')
 RETURNING
     *;
 
@@ -553,11 +553,11 @@ WHERE
 RETURNING
     *;
 
--- name: UpdateIntermediateSessionPrimaryLoginFactor :one
+-- name: UpdateIntermediateSessionPrimaryAuthFactor :one
 UPDATE
     intermediate_sessions
 SET
-    primary_login_factor = $1
+    primary_auth_factor = $1
 WHERE
     id = $2
 RETURNING
