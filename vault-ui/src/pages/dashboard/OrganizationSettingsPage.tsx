@@ -156,7 +156,7 @@ const OrganizationSettingsPage: FC = () => {
     if (organizationRes?.organization) {
       resetLoginSettings();
     }
-  }, [organizationRes]);
+  }, [organizationRes]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="dark:text-foreground">

@@ -68,11 +68,11 @@ const Page = () => {
         }
       })();
     }
-  }, [settings]);
+  }, [settings]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     applyTheme();
-  }, [isDarkMode]);
+  }, [isDarkMode]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div

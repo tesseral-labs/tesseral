@@ -23,5 +23,5 @@ export function useIntermediateExchangeAndRedirect(): () => void {
 
     window.location.href =
       preferredRedirect ?? getSettingsResponse!.settings!.redirectUri;
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 }

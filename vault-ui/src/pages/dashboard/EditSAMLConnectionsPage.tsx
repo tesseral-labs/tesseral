@@ -89,7 +89,7 @@ const EditSAMLConnectionsPage: FC = () => {
         idpX509Certificate: data.samlConnection.idpX509Certificate,
       });
     }
-  }, [data]);
+  }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="dark:text-foreground">

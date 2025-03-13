@@ -65,6 +65,7 @@ const EmailForm: FC<EmailFormProps> = ({
   );
   const [submitting, setSubmitting] = useState<boolean>(false);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchSamlOrganizations = useCallback(
     debounce(async () => {
       const { organizations } = await listSAMLOrganizationsMutation.mutateAsync(
@@ -126,7 +127,7 @@ const EmailForm: FC<EmailFormProps> = ({
         await fetchSamlOrganizations();
       }
     })();
-  }, [email]);
+  }, [email]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>
