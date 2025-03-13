@@ -402,3 +402,28 @@ INSERT INTO organization_microsoft_tenant_ids (id, organization_id, microsoft_te
 RETURNING
     *;
 
+-- name: ListSwitchableOrganizations :many
+SELECT
+    id,
+    display_name
+FROM
+    organizations
+WHERE
+    project_id = $1
+    AND EXISTS (
+        SELECT
+            *
+        FROM
+            users
+        WHERE
+            organization_id = organizations.id
+            AND users.email = $2);
+
+-- name: GetProjectByBackingOrganizationID :one
+SELECT
+    *
+FROM
+    projects
+WHERE
+    organization_id = $1;
+

@@ -260,6 +260,29 @@ message Session {
 
   // When the Session expires.
   google.protobuf.Timestamp expire_time = 6;
+
+  // The primary authentication factor the end user used to log in.
+  PrimaryAuthFactor primary_auth_factor = 7;
+}
+
+// Represents a primary authentication factor.
+enum PrimaryAuthFactor {
+  PRIMARY_AUTH_FACTOR_UNSPECIFIED = 0;
+
+  // Log in with Email ("Magic Link").
+  PRIMARY_AUTH_FACTOR_EMAIL = 1;
+
+  // Log in with Google.
+  PRIMARY_AUTH_FACTOR_GOOGLE = 2;
+
+  // Log in with Microsoft.
+  PRIMARY_AUTH_FACTOR_MICROSOFT = 3;
+
+  // Log in with SAML.
+  PRIMARY_AUTH_FACTOR_SAML = 4;
+
+  // Impersonated sessions use this special primary authentication factor.
+  PRIMARY_AUTH_FACTOR_IMPERSONATION = 5;
 }
 
 // Passkey represents a WebAuthn public key credential registered by a User.

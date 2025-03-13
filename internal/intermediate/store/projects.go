@@ -48,9 +48,9 @@ func (s *Store) CreateProject(ctx context.Context, req *intermediatev1.CreatePro
 		ID:                 uuid.New(),
 		DisplayName:        fmt.Sprintf("%s Backing Organization", formattedNewProjectID),
 		ProjectID:          *s.dogfoodProjectID,
-		LogInWithEmail:     intermediateSession.PrimaryLoginFactor == string(queries.PrimaryLoginFactorEmail),
-		LogInWithGoogle:    intermediateSession.PrimaryLoginFactor == string(queries.PrimaryLoginFactorGoogleOauth),
-		LogInWithMicrosoft: intermediateSession.PrimaryLoginFactor == string(queries.PrimaryLoginFactorMicrosoftOauth),
+		LogInWithEmail:     intermediateSession.PrimaryAuthFactor == intermediatev1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_EMAIL,
+		LogInWithGoogle:    intermediateSession.PrimaryAuthFactor == intermediatev1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_GOOGLE,
+		LogInWithMicrosoft: intermediateSession.PrimaryAuthFactor == intermediatev1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_MICROSOFT,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("create organization: %w", err)

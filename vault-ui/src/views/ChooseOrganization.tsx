@@ -24,9 +24,8 @@ import { parseErrorMessage } from '@/lib/errors';
 import { toast } from 'sonner';
 import Loader from '@/components/ui/loader';
 import {
-  isValidPrimaryLoginFactor,
-  PrimaryLoginFactor,
-} from '@/lib/login-factors';
+  isValidPrimaryAuthFactor,
+} from '@/lib/auth-factors';
 import TextDivider from '@/components/ui/text-divider';
 import { Button } from '@/components/ui/button';
 import {
@@ -72,13 +71,13 @@ const ChooseOrganization: FC<ChooseOrganizationProps> = ({
   const deriveNextView = (
     organization: Organization,
   ): LoginViews | undefined => {
-    const primaryLoginFactor =
-      whoamiRes?.intermediateSession?.primaryLoginFactor;
+    const primaryAuthFactor =
+      whoamiRes?.intermediateSession?.primaryAuthFactor;
 
     if (
-      primaryLoginFactor &&
-      !isValidPrimaryLoginFactor(
-        primaryLoginFactor as PrimaryLoginFactor,
+      primaryAuthFactor &&
+      !isValidPrimaryAuthFactor(
+        primaryAuthFactor,
         organization,
       )
     ) {

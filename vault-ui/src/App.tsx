@@ -21,6 +21,7 @@ import RegisterPasskey from './views/RegisterPasskey';
 import { AuthType } from './lib/auth';
 import { VerifyEmailPage } from '@/pages/VerifyEmailPage';
 import { ImpersonatePage } from '@/pages/ImpersonatePage';
+import { SwitchOrganizationsPage } from '@/pages/SwitchOrganizationsPage';
 
 const queryClient = new QueryClient();
 
@@ -42,7 +43,7 @@ const AppWithRoutes: FC = () => {
             <Route path="/" element={<Page />}>
               <Route index element={<Navigate to="login" replace />} />
               <Route path="impersonate" element={<ImpersonatePage />} />
-
+              <Route path="switch-organizations/:organizationId" element={<SwitchOrganizationsPage />} />
               <Route path="passkey-test" element={<RegisterPasskey />} />
 
               <Route

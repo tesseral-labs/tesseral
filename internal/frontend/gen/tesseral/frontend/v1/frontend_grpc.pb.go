@@ -55,6 +55,7 @@ const (
 	FrontendService_GetUserInvite_FullMethodName                         = "/tesseral.frontend.v1.FrontendService/GetUserInvite"
 	FrontendService_CreateUserInvite_FullMethodName                      = "/tesseral.frontend.v1.FrontendService/CreateUserInvite"
 	FrontendService_DeleteUserInvite_FullMethodName                      = "/tesseral.frontend.v1.FrontendService/DeleteUserInvite"
+	FrontendService_ListSwitchableOrganizations_FullMethodName           = "/tesseral.frontend.v1.FrontendService/ListSwitchableOrganizations"
 )
 
 // FrontendServiceClient is the client API for FrontendService service.
@@ -98,6 +99,7 @@ type FrontendServiceClient interface {
 	GetUserInvite(ctx context.Context, in *GetUserInviteRequest, opts ...grpc.CallOption) (*GetUserInviteResponse, error)
 	CreateUserInvite(ctx context.Context, in *CreateUserInviteRequest, opts ...grpc.CallOption) (*CreateUserInviteResponse, error)
 	DeleteUserInvite(ctx context.Context, in *DeleteUserInviteRequest, opts ...grpc.CallOption) (*DeleteUserInviteResponse, error)
+	ListSwitchableOrganizations(ctx context.Context, in *ListSwitchableOrganizationsRequest, opts ...grpc.CallOption) (*ListSwitchableOrganizationsResponse, error)
 }
 
 type frontendServiceClient struct {
@@ -468,6 +470,16 @@ func (c *frontendServiceClient) DeleteUserInvite(ctx context.Context, in *Delete
 	return out, nil
 }
 
+func (c *frontendServiceClient) ListSwitchableOrganizations(ctx context.Context, in *ListSwitchableOrganizationsRequest, opts ...grpc.CallOption) (*ListSwitchableOrganizationsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListSwitchableOrganizationsResponse)
+	err := c.cc.Invoke(ctx, FrontendService_ListSwitchableOrganizations_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // FrontendServiceServer is the server API for FrontendService service.
 // All implementations must embed UnimplementedFrontendServiceServer
 // for forward compatibility.
@@ -509,6 +521,7 @@ type FrontendServiceServer interface {
 	GetUserInvite(context.Context, *GetUserInviteRequest) (*GetUserInviteResponse, error)
 	CreateUserInvite(context.Context, *CreateUserInviteRequest) (*CreateUserInviteResponse, error)
 	DeleteUserInvite(context.Context, *DeleteUserInviteRequest) (*DeleteUserInviteResponse, error)
+	ListSwitchableOrganizations(context.Context, *ListSwitchableOrganizationsRequest) (*ListSwitchableOrganizationsResponse, error)
 	mustEmbedUnimplementedFrontendServiceServer()
 }
 
@@ -626,6 +639,9 @@ func (UnimplementedFrontendServiceServer) CreateUserInvite(context.Context, *Cre
 }
 func (UnimplementedFrontendServiceServer) DeleteUserInvite(context.Context, *DeleteUserInviteRequest) (*DeleteUserInviteResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteUserInvite not implemented")
+}
+func (UnimplementedFrontendServiceServer) ListSwitchableOrganizations(context.Context, *ListSwitchableOrganizationsRequest) (*ListSwitchableOrganizationsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListSwitchableOrganizations not implemented")
 }
 func (UnimplementedFrontendServiceServer) mustEmbedUnimplementedFrontendServiceServer() {}
 func (UnimplementedFrontendServiceServer) testEmbeddedByValue()                         {}
@@ -1296,6 +1312,24 @@ func _FrontendService_DeleteUserInvite_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _FrontendService_ListSwitchableOrganizations_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListSwitchableOrganizationsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FrontendServiceServer).ListSwitchableOrganizations(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FrontendService_ListSwitchableOrganizations_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FrontendServiceServer).ListSwitchableOrganizations(ctx, req.(*ListSwitchableOrganizationsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // FrontendService_ServiceDesc is the grpc.ServiceDesc for FrontendService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1446,6 +1480,10 @@ var FrontendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteUserInvite",
 			Handler:    _FrontendService_DeleteUserInvite_Handler,
+		},
+		{
+			MethodName: "ListSwitchableOrganizations",
+			Handler:    _FrontendService_ListSwitchableOrganizations_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

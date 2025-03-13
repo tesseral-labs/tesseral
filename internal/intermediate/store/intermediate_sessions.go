@@ -24,12 +24,12 @@ func (s *Store) SetEmailAsPrimaryLoginFactor(ctx context.Context, req *intermedi
 		return nil, fmt.Errorf("get intermediate session by id: %w", err)
 	}
 
-	primaryLoginFactor := queries.PrimaryLoginFactor(queries.PrimaryLoginFactorEmail)
-	if _, err := q.UpdateIntermediateSessionPrimaryLoginFactor(ctx, queries.UpdateIntermediateSessionPrimaryLoginFactorParams{
-		ID:                 qIntermediateSession.ID,
-		PrimaryLoginFactor: &primaryLoginFactor,
+	primaryAuthFactor := queries.PrimaryAuthFactorEmail
+	if _, err := q.UpdateIntermediateSessionPrimaryAuthFactor(ctx, queries.UpdateIntermediateSessionPrimaryAuthFactorParams{
+		ID:                qIntermediateSession.ID,
+		PrimaryAuthFactor: &primaryAuthFactor,
 	}); err != nil {
-		return nil, fmt.Errorf("update intermediate session primary login factor: %w", err)
+		return nil, fmt.Errorf("update intermediate session primary auth factor: %w", err)
 	}
 
 	if err := commit(); err != nil {
@@ -77,7 +77,7 @@ func (s *Store) getIntermediateSessionEmailVerified(ctx context.Context, q *quer
 		}
 	}
 
-	if qIntermediateSession.EmailVerificationChallengeSha256 != nil && qIntermediateSession.EmailVerificationChallengeCompleted {
+	if qIntermediateSession.EmailVerificationChallengeCompleted {
 		return true, nil
 	}
 
@@ -104,9 +104,16 @@ func parseIntermediateSession(qIntermediateSession queries.IntermediateSession, 
 		organizationID = idformat.Organization.Format(*qIntermediateSession.OrganizationID)
 	}
 
-	var primaryLoginFactor string
-	if qIntermediateSession.PrimaryLoginFactor != nil {
-		primaryLoginFactor = string(*qIntermediateSession.PrimaryLoginFactor)
+	var primaryAuthFactor intermediatev1.PrimaryAuthFactor
+	if qIntermediateSession.PrimaryAuthFactor != nil {
+		switch *qIntermediateSession.PrimaryAuthFactor {
+		case queries.PrimaryAuthFactorEmail:
+			primaryAuthFactor = intermediatev1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_EMAIL
+		case queries.PrimaryAuthFactorGoogle:
+			primaryAuthFactor = intermediatev1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_GOOGLE
+		case queries.PrimaryAuthFactorMicrosoft:
+			primaryAuthFactor = intermediatev1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_MICROSOFT
+		}
 	}
 
 	return &intermediatev1.IntermediateSession{
@@ -120,7 +127,7 @@ func parseIntermediateSession(qIntermediateSession queries.IntermediateSession, 
 		MicrosoftUserId:                      derefOrEmpty(qIntermediateSession.MicrosoftUserID),
 		MicrosoftTenantId:                    derefOrEmpty(qIntermediateSession.MicrosoftTenantID),
 		PasswordVerified:                     qIntermediateSession.PasswordVerified,
-		PrimaryLoginFactor:                   primaryLoginFactor,
+		PrimaryAuthFactor:                    primaryAuthFactor,
 		NewUserPasswordRegistered:            qIntermediateSession.NewUserPasswordBcrypt != nil,
 		OrganizationId:                       organizationID,
 	}

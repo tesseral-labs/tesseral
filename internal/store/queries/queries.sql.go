@@ -421,7 +421,7 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 
 const getSessionByID = `-- name: GetSessionByID :one
 SELECT
-    id, user_id, create_time, expire_time, refresh_token_sha256, impersonator_user_id, last_active_time
+    id, user_id, create_time, expire_time, refresh_token_sha256, impersonator_user_id, last_active_time, primary_auth_factor
 FROM
     sessions
 WHERE
@@ -439,6 +439,7 @@ func (q *Queries) GetSessionByID(ctx context.Context, id uuid.UUID) (Session, er
 		&i.RefreshTokenSha256,
 		&i.ImpersonatorUserID,
 		&i.LastActiveTime,
+		&i.PrimaryAuthFactor,
 	)
 	return i, err
 }

@@ -167,6 +167,13 @@ service IntermediateService {
     };
   }
 
+  rpc ExchangeSessionForIntermediateSession(ExchangeSessionForIntermediateSessionRequest) returns (ExchangeSessionForIntermediateSessionResponse) {
+    option (google.api.http) = {
+      post: "/intermediate/v1/exchange-session-for-intermediate-session"
+      body: "*"
+    };
+  }
+
   rpc CreateProject(CreateProjectRequest) returns (CreateProjectResponse);
 }
 
@@ -183,7 +190,14 @@ message IntermediateSession {
   bool password_verified = 10;
   bool new_user_password_registered = 11;
   bool email_verification_challenge_registered = 12;
-  string primary_login_factor = 13;
+  PrimaryAuthFactor primary_auth_factor = 13;
+}
+
+enum PrimaryAuthFactor {
+  PRIMARY_AUTH_FACTOR_UNSPECIFIED = 0;
+  PRIMARY_AUTH_FACTOR_EMAIL = 1;
+  PRIMARY_AUTH_FACTOR_GOOGLE = 2;
+  PRIMARY_AUTH_FACTOR_MICROSOFT = 3;
 }
 
 message Settings {
@@ -419,3 +433,11 @@ message VerifyPasskeyResponse {}
 message SetEmailAsPrimaryLoginFactorRequest {}
 
 message SetEmailAsPrimaryLoginFactorResponse {}
+
+message ExchangeSessionForIntermediateSessionRequest {
+  string refresh_token = 1;
+}
+
+message ExchangeSessionForIntermediateSessionResponse {
+  string intermediate_session_secret_token = 1;
+}

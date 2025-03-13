@@ -105,6 +105,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		ExpireTime:         &expireTime,
 		RefreshTokenSha256: refreshTokenSHA256[:],
 		UserID:             qUser.ID,
+		PrimaryAuthFactor:  *qIntermediateSession.PrimaryAuthFactor,
 	}); err != nil {
 		return nil, err
 	}
@@ -179,8 +180,8 @@ func validateAuthRequirementsSatisfiedInner(qIntermediateSession queries.Interme
 		panic(fmt.Errorf("intermediate session missing email: %v", qIntermediateSession.ID))
 	}
 
-	if qIntermediateSession.PrimaryLoginFactor == nil {
-		return apierror.NewFailedPreconditionError("primary login factor not set", nil)
+	if qIntermediateSession.PrimaryAuthFactor == nil {
+		return apierror.NewFailedPreconditionError("primary auth factor not set", nil)
 	}
 
 	if !emailVerified {
@@ -200,8 +201,12 @@ func validateAuthRequirementsSatisfiedInner(qIntermediateSession queries.Interme
 		}
 	}
 
-	switch *qIntermediateSession.PrimaryLoginFactor {
-	case queries.PrimaryLoginFactorGoogleOauth:
+	switch *qIntermediateSession.PrimaryAuthFactor {
+	case queries.PrimaryAuthFactorEmail:
+		if qOrg.LogInWithEmail {
+			return nil
+		}
+	case queries.PrimaryAuthFactorGoogle:
 		if qIntermediateSession.GoogleUserID == nil {
 			panic(fmt.Errorf("intermediate session missing google user id: %v", qIntermediateSession.ID))
 		}
@@ -209,16 +214,12 @@ func validateAuthRequirementsSatisfiedInner(qIntermediateSession queries.Interme
 		if qOrg.LogInWithGoogle {
 			return nil
 		}
-	case queries.PrimaryLoginFactorMicrosoftOauth:
+	case queries.PrimaryAuthFactorMicrosoft:
 		if qIntermediateSession.MicrosoftUserID == nil {
 			panic(fmt.Errorf("intermediate session missing microsoft user id: %v", qIntermediateSession.ID))
 		}
 
 		if qOrg.LogInWithMicrosoft {
-			return nil
-		}
-	case queries.PrimaryLoginFactorEmail:
-		if qOrg.LogInWithEmail {
 			return nil
 		}
 	}

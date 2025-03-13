@@ -68,8 +68,16 @@ message Session {
   google.protobuf.Timestamp create_time = 3;
   google.protobuf.Timestamp expire_time = 4;
   bool revoked = 5;
+  PrimaryAuthFactor primary_auth_factor = 6;
+}
 
-  // TODO(ucarion): add session metadata like auth factors, etc here
+enum PrimaryAuthFactor {
+  PRIMARY_AUTH_FACTOR_UNSPECIFIED = 0;
+  PRIMARY_AUTH_FACTOR_EMAIL = 1;
+  PRIMARY_AUTH_FACTOR_GOOGLE = 2;
+  PRIMARY_AUTH_FACTOR_MICROSOFT = 3;
+  PRIMARY_AUTH_FACTOR_SAML = 4;
+  PRIMARY_AUTH_FACTOR_IMPERSONATION = 5;
 }
 
 message SAMLConnection {
@@ -111,4 +119,9 @@ message UserInvite {
   google.protobuf.Timestamp update_time = 3;
   string email = 4;
   bool owner = 5;
+}
+
+message SwitchableOrganization {
+  string id = 1;
+  string display_name = 2;
 }

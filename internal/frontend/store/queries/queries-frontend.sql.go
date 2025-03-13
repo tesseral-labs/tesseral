@@ -489,6 +489,45 @@ func (q *Queries) GetOrganizationMicrosoftTenantIDs(ctx context.Context, organiz
 	return items, nil
 }
 
+const getProjectByBackingOrganizationID = `-- name: GetProjectByBackingOrganizationID :one
+SELECT
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain
+FROM
+    projects
+WHERE
+    organization_id = $1
+`
+
+func (q *Queries) GetProjectByBackingOrganizationID(ctx context.Context, organizationID *uuid.UUID) (Project, error) {
+	row := q.db.QueryRow(ctx, getProjectByBackingOrganizationID, organizationID)
+	var i Project
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.LogInWithPassword,
+		&i.LogInWithGoogle,
+		&i.LogInWithMicrosoft,
+		&i.GoogleOauthClientID,
+		&i.MicrosoftOauthClientID,
+		&i.GoogleOauthClientSecretCiphertext,
+		&i.MicrosoftOauthClientSecretCiphertext,
+		&i.DisplayName,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.LoginsDisabled,
+		&i.LogInWithAuthenticatorApp,
+		&i.LogInWithPasskey,
+		&i.LogInWithEmail,
+		&i.LogInWithSaml,
+		&i.RedirectUri,
+		&i.AfterLoginRedirectUri,
+		&i.AfterSignupRedirectUri,
+		&i.VaultDomain,
+		&i.EmailSendFromDomain,
+	)
+	return i, err
+}
+
 const getProjectByID = `-- name: GetProjectByID :one
 SELECT
     id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain
@@ -619,7 +658,7 @@ func (q *Queries) GetSCIMAPIKey(ctx context.Context, arg GetSCIMAPIKeyParams) (S
 
 const getSessionByID = `-- name: GetSessionByID :one
 SELECT
-    id, user_id, create_time, expire_time, refresh_token_sha256, impersonator_user_id, last_active_time
+    id, user_id, create_time, expire_time, refresh_token_sha256, impersonator_user_id, last_active_time, primary_auth_factor
 FROM
     sessions
 WHERE
@@ -637,6 +676,7 @@ func (q *Queries) GetSessionByID(ctx context.Context, id uuid.UUID) (Session, er
 		&i.RefreshTokenSha256,
 		&i.ImpersonatorUserID,
 		&i.LastActiveTime,
+		&i.PrimaryAuthFactor,
 	)
 	return i, err
 }
@@ -996,6 +1036,54 @@ func (q *Queries) ListSCIMAPIKeys(ctx context.Context, arg ListSCIMAPIKeysParams
 			&i.CreateTime,
 			&i.UpdateTime,
 		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listSwitchableOrganizations = `-- name: ListSwitchableOrganizations :many
+SELECT
+    id,
+    display_name
+FROM
+    organizations
+WHERE
+    project_id = $1
+    AND EXISTS (
+        SELECT
+            id, organization_id, password_bcrypt, google_user_id, microsoft_user_id, email, create_time, update_time, deactivate_time, is_owner, failed_password_attempts, password_lockout_expire_time, authenticator_app_secret_ciphertext, authenticator_app_recovery_code_bcrypts, failed_authenticator_app_attempts, authenticator_app_lockout_expire_time
+        FROM
+            users
+        WHERE
+            organization_id = organizations.id
+            AND users.email = $2)
+`
+
+type ListSwitchableOrganizationsParams struct {
+	ProjectID uuid.UUID
+	Email     string
+}
+
+type ListSwitchableOrganizationsRow struct {
+	ID          uuid.UUID
+	DisplayName string
+}
+
+func (q *Queries) ListSwitchableOrganizations(ctx context.Context, arg ListSwitchableOrganizationsParams) ([]ListSwitchableOrganizationsRow, error) {
+	rows, err := q.db.Query(ctx, listSwitchableOrganizations, arg.ProjectID, arg.Email)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListSwitchableOrganizationsRow
+	for rows.Next() {
+		var i ListSwitchableOrganizationsRow
+		if err := rows.Scan(&i.ID, &i.DisplayName); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

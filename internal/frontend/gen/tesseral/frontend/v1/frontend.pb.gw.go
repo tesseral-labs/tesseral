@@ -1127,6 +1127,24 @@ func local_request_FrontendService_DeleteUserInvite_0(ctx context.Context, marsh
 	return msg, metadata, err
 }
 
+func request_FrontendService_ListSwitchableOrganizations_0(ctx context.Context, marshaler runtime.Marshaler, client FrontendServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq ListSwitchableOrganizationsRequest
+		metadata runtime.ServerMetadata
+	)
+	msg, err := client.ListSwitchableOrganizations(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_FrontendService_ListSwitchableOrganizations_0(ctx context.Context, marshaler runtime.Marshaler, server FrontendServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq ListSwitchableOrganizationsRequest
+		metadata runtime.ServerMetadata
+	)
+	msg, err := server.ListSwitchableOrganizations(ctx, &protoReq)
+	return msg, metadata, err
+}
+
 // RegisterFrontendServiceHandlerServer registers the http handlers for service FrontendService to "mux".
 // UnaryRPC     :call FrontendServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
@@ -1853,6 +1871,26 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		}
 		forward_FrontendService_DeleteUserInvite_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
+	mux.Handle(http.MethodGet, pattern_FrontendService_ListSwitchableOrganizations_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/ListSwitchableOrganizations", runtime.WithHTTPPathPattern("/frontend/v1/switch-organizations/organizations"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_FrontendService_ListSwitchableOrganizations_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_FrontendService_ListSwitchableOrganizations_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
 
 	return nil
 }
@@ -2505,6 +2543,23 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		}
 		forward_FrontendService_DeleteUserInvite_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
+	mux.Handle(http.MethodGet, pattern_FrontendService_ListSwitchableOrganizations_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/ListSwitchableOrganizations", runtime.WithHTTPPathPattern("/frontend/v1/switch-organizations/organizations"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_FrontendService_ListSwitchableOrganizations_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_FrontendService_ListSwitchableOrganizations_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
 	return nil
 }
 
@@ -2545,6 +2600,7 @@ var (
 	pattern_FrontendService_GetUserInvite_0                         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"frontend", "v1", "user-invites", "id"}, ""))
 	pattern_FrontendService_CreateUserInvite_0                      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"frontend", "v1", "user-invites"}, ""))
 	pattern_FrontendService_DeleteUserInvite_0                      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"frontend", "v1", "user-invites", "id"}, ""))
+	pattern_FrontendService_ListSwitchableOrganizations_0           = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"frontend", "v1", "switch-organizations", "organizations"}, ""))
 )
 
 var (
@@ -2584,4 +2640,5 @@ var (
 	forward_FrontendService_GetUserInvite_0                         = runtime.ForwardResponseMessage
 	forward_FrontendService_CreateUserInvite_0                      = runtime.ForwardResponseMessage
 	forward_FrontendService_DeleteUserInvite_0                      = runtime.ForwardResponseMessage
+	forward_FrontendService_ListSwitchableOrganizations_0           = runtime.ForwardResponseMessage
 )
