@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Navigate, Route, Routes } from 'react-router';
+import { Route, Routes } from 'react-router';
 import { BrowserRouter } from 'react-router-dom';
 
 import { Transport } from '@connectrpc/connect';
