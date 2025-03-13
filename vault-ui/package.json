@@ -10,15 +10,11 @@
     "esbuild": "node ./build.mjs",
     "esbuild:watch": "UI_BUILD_IS_DEV=1 node ./build.mjs --watch=forever",
     "lint": "eslint",
-    "prepare": "husky",
+    "tsc-check": "tsc --noEmit",
     "serve": "http-server -c-1 -p 3002 -P http://localhost:3002?",
     "serve:docker": "./bin/serve-public",
     "tailwind": "tailwindcss -i ./src/index.css -o ./public/index.css",
     "tailwind:watch": "tailwindcss -i ./src/index.css -o ./public/index.css --watch"
-  },
-  "lint-staged": {
-    "*.{js,ts,css,md}": "prettier --write",
-    "*.ts": "npm run lint . --fix"
   },
   "dependencies": {
     "@bufbuild/buf": "^1.47.2",
