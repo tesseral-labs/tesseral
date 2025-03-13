@@ -1,10 +1,10 @@
-import React from 'react'
+import React from "react";
 
-import { useUser } from '@/lib/auth'
-import { Title } from '@/components/Title'
+import { Title } from "@/components/Title";
+import { useUser } from "@/lib/auth";
 
 const SessionInfoPage = () => {
-  const user = useUser()
+  const user = useUser();
 
   return (
     <>
@@ -13,7 +13,7 @@ const SessionInfoPage = () => {
         <h1 className="text-foreground">Hello, {user?.email}</h1>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default SessionInfoPage
+export default SessionInfoPage;

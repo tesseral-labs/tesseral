@@ -1,24 +1,25 @@
-import React, { FC } from 'react'
-import { Button, ButtonProps } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
-import { AuthType, useAuthType } from '@/lib/auth'
+import React, { FC } from "react";
+
+import { Button, ButtonProps } from "@/components/ui/button";
+import { AuthType, useAuthType } from "@/lib/auth";
+import { cn } from "@/lib/utils";
 
 export enum OAuthMethods {
-  google = 'Google',
-  microsoft = 'Microsoft',
+  google = "Google",
+  microsoft = "Microsoft",
 }
 
 interface OAuthButtonProps extends ButtonProps {
-  method: OAuthMethods
+  method: OAuthMethods;
 }
 
 const OAuthButton: FC<OAuthButtonProps> = ({ className, method, ...props }) => {
-  const authType = useAuthType()
+  const authType = useAuthType();
 
   return (
     <Button
       className={cn(
-        'w-full [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
+        "w-full [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
         className,
       )}
       {...props}
@@ -71,10 +72,10 @@ const OAuthButton: FC<OAuthButtonProps> = ({ className, method, ...props }) => {
           </defs>
         </svg>
       ) : null}
-      {authType === AuthType.SignUp ? 'Sign up with ' : 'Log in with '}
+      {authType === AuthType.SignUp ? "Sign up with " : "Log in with "}
       {method}
     </Button>
-  )
-}
+  );
+};
 
-export default OAuthButton
+export default OAuthButton;

@@ -1,9 +1,35 @@
-import React, { FC, FormEvent, MouseEvent, useEffect, useState } from 'react';
-import QRCode from 'qrcode';
-import { useUser } from '@/lib/auth';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { useMutation, useQuery } from '@connectrpc/connect-query';
+import { useMutation, useQuery } from "@connectrpc/connect-query";
+import { CheckCircle, PlusCircle } from "lucide-react";
+import QRCode from "qrcode";
+import React, { FC, FormEvent, MouseEvent, useEffect, useState } from "react";
+import { toast } from "sonner";
+
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+import Loader from "@/components/ui/loader";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import {
   deleteMyPasskey,
   getAuthenticatorAppOptions,
@@ -14,35 +40,10 @@ import {
   registerPasskey,
   setPassword as setUserPassword,
   whoami,
-} from '@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery';
-import { Input } from '@/components/ui/input';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
-import { base64urlEncode } from '@/lib/utils';
-import { parseErrorMessage } from '@/lib/errors';
-import { toast } from 'sonner';
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSeparator,
-  InputOTPSlot,
-} from '@/components/ui/input-otp';
-import Loader from '@/components/ui/loader';
-import { CheckCircle, PlusCircle } from 'lucide-react';
+} from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
+import { useUser } from "@/lib/auth";
+import { parseErrorMessage } from "@/lib/errors";
+import { base64urlEncode } from "@/lib/utils";
 
 const UserSettingsPage: FC = () => {
   const encoder = new TextEncoder();
@@ -63,13 +64,13 @@ const UserSettingsPage: FC = () => {
   );
   const registerPasskeyMutation = useMutation(registerPasskey);
 
-  const [authenticatorAppCode, setAuthenticatorAppCode] = useState('');
+  const [authenticatorAppCode, setAuthenticatorAppCode] = useState("");
   const [authenticatorAppDialogOpen, setAuthenticatorAppDialogOpen] =
     useState(false);
   const [editingEmail, setEditingEmail] = useState(false);
   const [editingPassword, setEditingPassword] = useState(false);
-  const [email, setEmail] = useState(whoamiRes?.user?.email || '');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState(whoamiRes?.user?.email || "");
+  const [password, setPassword] = useState("");
   const [qrImage, setQRImage] = useState<string | null>(null);
   const [registeringAuthenticatorApp, setRegisteringAuthenticatorApp] =
     useState(false);
@@ -81,7 +82,7 @@ const UserSettingsPage: FC = () => {
       });
     } catch (error) {
       const message = parseErrorMessage(error);
-      toast.error('Could not delete passkey', {
+      toast.error("Could not delete passkey", {
         description: message,
       });
     }
@@ -90,7 +91,7 @@ const UserSettingsPage: FC = () => {
       await refetchMyPasskeys();
     } catch (error) {
       const message = parseErrorMessage(error);
-      toast.error('Could not fetch updated passkey list', {
+      toast.error("Could not fetch updated passkey list", {
         description: message,
       });
     }
@@ -123,7 +124,7 @@ const UserSettingsPage: FC = () => {
     const authenticatorAppOptions =
       await getAuthenticatorAppOptionsMutation.mutateAsync({});
     const qrImage = await QRCode.toDataURL(authenticatorAppOptions.otpauthUri, {
-      errorCorrectionLevel: 'H',
+      errorCorrectionLevel: "H",
     });
     setQRImage(qrImage);
 
@@ -145,12 +146,12 @@ const UserSettingsPage: FC = () => {
 
       setRegisteringAuthenticatorApp(false);
       setAuthenticatorAppDialogOpen(false);
-      setAuthenticatorAppCode('');
+      setAuthenticatorAppCode("");
       setQRImage(null);
     } catch (error) {
       setRegisteringAuthenticatorApp(false);
       const message = parseErrorMessage(error);
-      toast.error('Could not register authenticator app', {
+      toast.error("Could not register authenticator app", {
         description: message,
       });
     }
@@ -159,7 +160,7 @@ const UserSettingsPage: FC = () => {
   const handleRegisterPasskeyClick = async () => {
     try {
       if (!navigator.credentials) {
-        throw new Error('WebAuthn not supported');
+        throw new Error("WebAuthn not supported");
       }
 
       const passkeyOptions = await getPasskeyOptionsMutation.mutateAsync({});
@@ -174,11 +175,11 @@ const UserSettingsPage: FC = () => {
           displayName: passkeyOptions.userDisplayName,
         },
         pubKeyCredParams: [
-          { type: 'public-key', alg: -7 }, // ECDSA with SHA-256
-          { type: 'public-key', alg: -257 }, // RSA with SHA-256
+          { type: "public-key", alg: -7 }, // ECDSA with SHA-256
+          { type: "public-key", alg: -257 }, // RSA with SHA-256
         ],
         timeout: 60000,
-        attestation: 'direct',
+        attestation: "direct",
       };
 
       const credential = (await navigator.credentials.create({
@@ -186,7 +187,7 @@ const UserSettingsPage: FC = () => {
       })) as PublicKeyCredential;
 
       if (!credential) {
-        throw new Error('No credential returned');
+        throw new Error("No credential returned");
       }
 
       await registerPasskeyMutation.mutateAsync({
@@ -200,7 +201,7 @@ const UserSettingsPage: FC = () => {
       await refetchMyPasskeys();
     } catch (error) {
       const message = parseErrorMessage(error);
-      toast.error('Could not register passkey', {
+      toast.error("Could not register passkey", {
         description: message,
       });
     }
@@ -229,7 +230,7 @@ const UserSettingsPage: FC = () => {
             <div className="pr-8 mt-8 dark:border-gray-700 lg:border-r lg:px-8 md:mt-0">
               <div className="text-sm font-semibold mb-2">Google User ID</div>
               <div className="text-sm text-gray-500">
-                {user?.googleUserId || '—'}
+                {user?.googleUserId || "—"}
               </div>
             </div>
             <div className="pr-8 mt-8 lg:px-8 lg:mt-0">
@@ -237,7 +238,7 @@ const UserSettingsPage: FC = () => {
                 Microsoft User ID
               </div>
               <div className="text-sm text-gray-500">
-                {user?.microsoftUserId || '—'}
+                {user?.microsoftUserId || "—"}
               </div>
             </div>
           </div>
@@ -433,7 +434,7 @@ const UserSettingsPage: FC = () => {
                   <span className="ml-2">Registered</span>
                 </>
               ) : (
-                'Not registered'
+                "Not registered"
               )}
             </div>
           </CardContent>

@@ -1,12 +1,12 @@
-import React, { FC, SyntheticEvent } from 'react'
-import { Outlet } from 'react-router'
+import React, { FC, SyntheticEvent } from "react";
+import { Outlet } from "react-router";
 
-import useDarkMode from '@/lib/dark-mode'
-import useSettings from '@/lib/settings'
+import useDarkMode from "@/lib/dark-mode";
+import useSettings from "@/lib/settings";
 
 const CenteredLayout: FC = () => {
-  const isDarkMode = useDarkMode()
-  const settings = useSettings()
+  const isDarkMode = useDarkMode();
+  const settings = useSettings();
 
   return (
     <div className="bg-body w-screen min-h-screen mx-auto flex flex-col justify-center items-center py-8">
@@ -17,22 +17,22 @@ const CenteredLayout: FC = () => {
             <img
               className="max-w-[180px]"
               src={
-                settings?.darkModeLogoUrl || '/images/tesseral-logo-white.svg'
+                settings?.darkModeLogoUrl || "/images/tesseral-logo-white.svg"
               }
               onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
-                const target = e.target as HTMLImageElement
-                target.onerror = null
-                target.src = '/images/tesseral-logo-white.svg'
+                const target = e.target as HTMLImageElement;
+                target.onerror = null;
+                target.src = "/images/tesseral-logo-white.svg";
               }}
             />
           ) : (
             <img
               className="max-w-[180px]"
-              src={settings?.logoUrl || '/images/tesseral-logo-black.svg'}
+              src={settings?.logoUrl || "/images/tesseral-logo-black.svg"}
               onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
-                const target = e.target as HTMLImageElement
-                target.onerror = null
-                target.src = '/images/tesseral-logo-black.svg'
+                const target = e.target as HTMLImageElement;
+                target.onerror = null;
+                target.src = "/images/tesseral-logo-black.svg";
               }}
             />
           )}
@@ -40,7 +40,7 @@ const CenteredLayout: FC = () => {
       </div>
       <Outlet />
     </div>
-  )
-}
+  );
+};
 
-export default CenteredLayout
+export default CenteredLayout;

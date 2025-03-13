@@ -1,5 +1,5 @@
-import { type ClassValue, clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export const base64Decode = (s: string): string => {
   const binaryString = atob(s);
@@ -13,15 +13,15 @@ export const base64Decode = (s: string): string => {
 };
 
 export const base64urlEncode = (buffer: ArrayBuffer): string => {
-  let binary = '';
+  let binary = "";
   const bytes = new Uint8Array(buffer);
   for (let i = 0; i < bytes.byteLength; i++) {
     binary += String.fromCharCode(bytes[i]);
   }
   return btoa(binary)
-    .replace(/\+/g, '-') // Replace '+' with '-'
-    .replace(/\//g, '_') // Replace '/' with '_'
-    .replace(/=+$/, ''); // Remove padding '='
+    .replace(/\+/g, "-") // Replace '+' with '-'
+    .replace(/\//g, "_") // Replace '/' with '_'
+    .replace(/=+$/, ""); // Remove padding '='
 };
 
 export const cn = (...inputs: ClassValue[]) => {
@@ -30,7 +30,7 @@ export const cn = (...inputs: ClassValue[]) => {
 
 export const hexToHSL = (hex: string): string => {
   // Remove the "#" if present
-  hex = hex.replace(/^#/, '');
+  hex = hex.replace(/^#/, "");
 
   // Convert to RGB
   const r = parseInt(hex.substring(0, 2), 16) / 255;
@@ -72,12 +72,12 @@ export const hexToHSL = (hex: string): string => {
 export const isColorDark = (hex: string) => {
   // Ensure hex is valid
   if (!/^#([0-9A-F]{3}|[0-9A-F]{6})$/i.test(hex)) {
-    throw new Error('Invalid hex color');
+    throw new Error("Invalid hex color");
   }
 
   // Normalize shorthand hex (e.g., #abc -> #aabbcc)
   if (hex.length === 4) {
-    hex = '#' + [...hex.slice(1)].map((char) => char + char).join('');
+    hex = "#" + [...hex.slice(1)].map((char) => char + char).join("");
   }
 
   // Convert hex to RGB

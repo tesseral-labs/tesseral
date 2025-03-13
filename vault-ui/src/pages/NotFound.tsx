@@ -1,6 +1,7 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { Title } from '@/components/Title'
+import React from "react";
+import { Link } from "react-router-dom";
+
+import { Title } from "@/components/Title";
 
 const NotFoundPage = () => {
   return (
@@ -18,7 +19,7 @@ const NotFoundPage = () => {
         </Link>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default NotFoundPage
+export default NotFoundPage;

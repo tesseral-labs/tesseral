@@ -1,3 +1,5 @@
+import { useMutation } from "@connectrpc/connect-query";
+import debounce from "lodash.debounce";
 import React, {
   ChangeEvent,
   Dispatch,
@@ -7,27 +9,26 @@ import React, {
   useCallback,
   useEffect,
   useState,
-} from 'react';
-import { useMutation } from '@connectrpc/connect-query';
-import debounce from 'lodash.debounce';
+} from "react";
+import { toast } from "sonner";
 
-import { setIntermediateSessionToken } from '@/auth';
-import { Button } from './ui/button';
+import { setIntermediateSessionToken } from "@/auth";
 import {
   createIntermediateSession,
   issueEmailVerificationChallenge,
   listSAMLOrganizations,
   setEmailAsPrimaryLoginFactor,
-} from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
-import { LoginViews } from '@/lib/views';
-import { Organization } from '@/gen/tesseral/intermediate/v1/intermediate_pb';
-import TextDivider from './ui/text-divider';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
-import Loader from './ui/loader';
-import { parseErrorMessage } from '@/lib/errors';
-import { toast } from 'sonner';
-import { AuthType, useAuthType } from '@/lib/auth';
+} from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
+import { Organization } from "@/gen/tesseral/intermediate/v1/intermediate_pb";
+import { AuthType, useAuthType } from "@/lib/auth";
+import { parseErrorMessage } from "@/lib/errors";
+import { LoginViews } from "@/lib/views";
+
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+import Loader from "./ui/loader";
+import TextDivider from "./ui/text-divider";
 
 interface EmailFormProps {
   disableLogInWithEmail?: boolean;
@@ -57,7 +58,7 @@ const EmailForm: FC<EmailFormProps> = ({
     setEmailAsPrimaryLoginFactor,
   );
 
-  const [email, setEmail] = useState<string>('');
+  const [email, setEmail] = useState<string>("");
   const [emailIsValid, setEmailIsValid] = useState<boolean>(false);
   const [samlOrganizations, setSamlOrganizations] = useState<Organization[]>(
     [],
@@ -109,7 +110,7 @@ const EmailForm: FC<EmailFormProps> = ({
       } catch (error) {
         setSubmitting(false);
         const message = parseErrorMessage(error);
-        toast.error('Could not initiate login', {
+        toast.error("Could not initiate login", {
           description: message,
         });
       }
@@ -148,7 +149,7 @@ const EmailForm: FC<EmailFormProps> = ({
         {!disableLogInWithEmail && (
           <Button type="submit" disabled={!emailIsValid || submitting}>
             {submitting && <Loader />}
-            {authType === AuthType.SignUp ? 'Sign up' : 'Log in'}
+            {authType === AuthType.SignUp ? "Sign up" : "Log in"}
           </Button>
         )}
       </form>

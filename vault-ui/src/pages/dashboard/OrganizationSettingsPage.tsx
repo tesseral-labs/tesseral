@@ -1,14 +1,37 @@
-import React, { FC, MouseEvent, useEffect, useState } from 'react';
-import { DateTime } from 'luxon';
-import { useUser } from '@/lib/auth';
+import { useMutation, useQuery } from "@connectrpc/connect-query";
+import { DateTime } from "luxon";
+import React, { FC, MouseEvent, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { toast } from "sonner";
+
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { useMutation, useQuery } from '@connectrpc/connect-query';
+} from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import Loader from "@/components/ui/loader";
+import { Switch } from "@/components/ui/switch";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   createUserInvite,
   getOrganization,
@@ -17,31 +40,9 @@ import {
   listUsers,
   updateOrganization,
   updateUser,
-} from '@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
-import { Switch } from '@/components/ui/switch';
-import { parseErrorMessage } from '@/lib/errors';
-import { toast } from 'sonner';
-import Loader from '@/components/ui/loader';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-  DialogTrigger,
-  DialogHeader,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+} from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
+import { useUser } from "@/lib/auth";
+import { parseErrorMessage } from "@/lib/errors";
 
 const OrganizationSettingsPage: FC = () => {
   const user = useUser();
@@ -59,7 +60,7 @@ const OrganizationSettingsPage: FC = () => {
   const [creatingUserInvite, setCreatingUserInvite] = useState(false);
   const [editingLoginSettings, setEditingLoginSettings] = useState(false);
   const [inviteUserVisible, setInviteUserVisible] = useState(false);
-  const [inviteeEmail, setInviteeEmail] = useState('');
+  const [inviteeEmail, setInviteeEmail] = useState("");
   const [inviteeIsOwner, setInviteeIsOwner] = useState(false);
   const [logInWithAuthenticatorApp, setLogInWithAuthenticatorApp] = useState(
     organizationRes?.organization?.logInWithAuthenticatorApp,
@@ -121,7 +122,7 @@ const OrganizationSettingsPage: FC = () => {
     } catch (error) {
       setSubmittingLoginSettings(false);
       const message = parseErrorMessage(error);
-      toast.error('Could not update organization settings', {
+      toast.error("Could not update organization settings", {
         description: message,
       });
     }
@@ -141,11 +142,11 @@ const OrganizationSettingsPage: FC = () => {
 
       setInviteUserVisible(false);
       setCreatingUserInvite(false);
-      setInviteeEmail('');
+      setInviteeEmail("");
       setInviteeIsOwner(false);
     } catch (error) {
       const message = parseErrorMessage(error);
-      toast.error('Could not invite user', {
+      toast.error("Could not invite user", {
         description: message,
       });
     }
@@ -200,7 +201,7 @@ const OrganizationSettingsPage: FC = () => {
                         `${organizationRes.organization.updateTime.seconds}`,
                       ),
                     ).toRelative()
-                  : '—'}
+                  : "—"}
               </div>
             </div>
           </div>
@@ -445,7 +446,7 @@ const OrganizationSettingsPage: FC = () => {
                       </TableCell>
                       <TableCell className="text-gray-500">{u.email}</TableCell>
                       <TableCell className="text-gray-500">
-                        {u.owner ? 'Owner' : 'Member'}
+                        {u.owner ? "Owner" : "Member"}
 
                         {u.owner && u.id !== user?.id && (
                           <div
@@ -457,7 +458,7 @@ const OrganizationSettingsPage: FC = () => {
                               await changeUserRole(u.id, !u.owner);
                             }}
                           >
-                            Make {u.owner ? 'Member' : 'Owner'}
+                            Make {u.owner ? "Member" : "Owner"}
                           </div>
                         )}
                       </TableCell>
@@ -480,7 +481,7 @@ const OrganizationSettingsPage: FC = () => {
                   {userInvites?.userInvites.map((i) => (
                     <TableRow key={i.id}>
                       <TableCell>{i.email}</TableCell>
-                      <TableCell>{i.owner ? 'Owner' : 'Member'}</TableCell>
+                      <TableCell>{i.owner ? "Owner" : "Member"}</TableCell>
                       <TableCell>
                         {DateTime.fromSeconds(
                           parseInt(`${i.createTime?.seconds}`),
@@ -530,7 +531,7 @@ const OrganizationSettingsPage: FC = () => {
                         Download (.crt)
                       </a>
                     ) : (
-                      '-'
+                      "-"
                     )}
                   </TableCell>
                   <TableCell>

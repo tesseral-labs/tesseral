@@ -1,5 +1,5 @@
-import { Helmet } from 'react-helmet';
-import React from 'react';
+import React from "react";
+import { Helmet } from "react-helmet";
 
 export const Title = ({ title }: { title?: string }) => {
   return (

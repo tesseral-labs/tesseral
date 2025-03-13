@@ -1,13 +1,15 @@
-import { useMutation } from '@tanstack/react-query';
-import { base64Decode } from './utils';
-import { useNavigate } from 'react-router';
-import { createContext, useContext, useState } from 'react';
-import { Organization } from '@/gen/tesseral/intermediate/v1/intermediate_pb';
-import { RefreshResponse } from '@/gen/tesseral/frontend/v1/frontend_pb';
+import { useMutation } from "@tanstack/react-query";
+import { createContext, useContext, useState } from "react";
+import { useNavigate } from "react-router";
+
+import { RefreshResponse } from "@/gen/tesseral/frontend/v1/frontend_pb";
+import { Organization } from "@/gen/tesseral/intermediate/v1/intermediate_pb";
+
+import { base64Decode } from "./utils";
 
 export enum AuthType {
-  LogIn = 'log_in',
-  SignUp = 'sign_up',
+  LogIn = "log_in",
+  SignUp = "sign_up",
 }
 
 // how far in advance of its expiration an access token gets refreshed
@@ -72,16 +74,16 @@ export const useSession = (): SessionAccessTokenClaims | undefined => {
 
   // mutation for refreshing the user's access token if necessary
   const refresh = useMutation({
-    mutationKey: ['refresh'],
+    mutationKey: ["refresh"],
     mutationFn: async () => {
       try {
-        const response = await fetch('/api/frontend/v1/refresh', {
-          credentials: 'include',
-          method: 'POST',
+        const response = await fetch("/api/frontend/v1/refresh", {
+          credentials: "include",
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
-          body: '{}',
+          body: "{}",
         });
 
         if (response.status >= 400) {
@@ -90,7 +92,7 @@ export const useSession = (): SessionAccessTokenClaims | undefined => {
         return ((await response.json()) as RefreshResponse).accessToken;
       } catch (error) {
         console.error(error);
-        navigate('/login');
+        navigate("/login");
       }
     },
   });
@@ -111,20 +113,20 @@ export const useSession = (): SessionAccessTokenClaims | undefined => {
 
   if (refresh.isError) {
     console.error(refresh.error);
-    navigate('/login');
+    navigate("/login");
     return;
   }
 
   if (accessToken) {
     // Check if the access token is expired
     if (isAccessTokenExpired(accessToken) && !refresh.isPending) {
-      navigate('/login');
+      navigate("/login");
       return;
     }
 
     // parse the access token and return the user claims
     const claims = JSON.parse(
-      base64Decode(accessToken.split('.')[1]),
+      base64Decode(accessToken.split(".")[1]),
     ) as SessionAccessTokenClaims;
 
     return claims;
@@ -173,7 +175,7 @@ const isAccessTokenExpired = (accessToken: string): boolean => {
 
 const parseAccessTokenExpiration = (accessToken: string): number => {
   const claims = JSON.parse(
-    base64Decode(accessToken.split('.')[1]),
+    base64Decode(accessToken.split(".")[1]),
   ) as SessionAccessTokenClaims;
   return claims.exp;
 };

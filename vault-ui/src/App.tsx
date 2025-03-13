@@ -1,26 +1,25 @@
-import React, { FC } from 'react';
-import { Route, Routes } from 'react-router';
-import { BrowserRouter } from 'react-router-dom';
+import { Transport } from "@connectrpc/connect";
+import { TransportProvider } from "@connectrpc/connect-query";
+import { createConnectTransport } from "@connectrpc/connect-web";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import React, { FC } from "react";
+import { Route, Routes } from "react-router";
+import { BrowserRouter } from "react-router-dom";
 
-import { Transport } from '@connectrpc/connect';
-import { TransportProvider } from '@connectrpc/connect-query';
-import { createConnectTransport } from '@connectrpc/connect-web';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import Page from "@/components/Page";
+import NotFoundPage from "@/pages/NotFound";
 
-import NotFoundPage from '@/pages/NotFound';
-
-import Page from '@/components/Page';
-import UserSettingsPage from './pages/dashboard/UserSettingsPage';
-import DashboardPage from './components/DashboardPage';
-import OrganizationSettingsPage from './pages/dashboard/OrganizationSettingsPage';
-import EditSAMLConnectionsPage from './pages/dashboard/EditSAMLConnectionsPage';
+import DashboardPage from "./components/DashboardPage";
+import EditSAMLConnectionsPage from "./pages/dashboard/EditSAMLConnectionsPage";
+import OrganizationSettingsPage from "./pages/dashboard/OrganizationSettingsPage";
+import UserSettingsPage from "./pages/dashboard/UserSettingsPage";
 
 const queryClient = new QueryClient();
 
 const useTransport = (): Transport => {
   return createConnectTransport({
     baseUrl: `/api/internal/connect`,
-    fetch: (input, init) => fetch(input, { ...init, credentials: 'include' }),
+    fetch: (input, init) => fetch(input, { ...init, credentials: "include" }),
   });
 };
 
@@ -32,8 +31,7 @@ const AppWithRoutes: FC = () => {
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
           <Routes>
-            <Route path="" element={<Page />}>
-            </Route>
+            <Route path="" element={<Page />}></Route>
 
             <Route
               path="/organization"
