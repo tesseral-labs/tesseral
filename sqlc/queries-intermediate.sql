@@ -26,8 +26,8 @@ RETURNING
     *;
 
 -- name: CreateIntermediateSession :one
-INSERT INTO intermediate_sessions (id, project_id, expire_time, email, google_user_id, microsoft_user_id, secret_token_sha256)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
+INSERT INTO intermediate_sessions (id, project_id, expire_time, email, google_user_id, microsoft_user_id, secret_token_sha256, primary_auth_factor, email_verification_challenge_completed)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 RETURNING
     *;
 
@@ -586,4 +586,26 @@ INSERT INTO user_invites (id, organization_id, email, is_owner)
     VALUES ($1, $2, $3, $4)
 RETURNING
     *;
+
+-- name: GetSessionDetailsByRefreshTokenSHA256 :one
+SELECT
+    sessions.id AS session_id,
+    sessions.primary_auth_factor,
+    users.email,
+    users.google_user_id,
+    users.microsoft_user_id
+FROM
+    sessions
+    JOIN users ON sessions.user_id = users.id
+WHERE
+    refresh_token_sha256 = $1;
+
+-- name: InvalidateSession :exec
+UPDATE
+    sessions
+SET
+    expire_time = now(),
+    refresh_token_sha256 = NULL
+WHERE
+    id = $1;
 

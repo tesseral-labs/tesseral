@@ -77,7 +77,7 @@ func (s *Store) getIntermediateSessionEmailVerified(ctx context.Context, q *quer
 		}
 	}
 
-	if qIntermediateSession.EmailVerificationChallengeSha256 != nil && qIntermediateSession.EmailVerificationChallengeCompleted {
+	if qIntermediateSession.EmailVerificationChallengeCompleted {
 		return true, nil
 	}
 

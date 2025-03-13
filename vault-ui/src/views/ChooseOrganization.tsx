@@ -74,8 +74,6 @@ const ChooseOrganization: FC<ChooseOrganizationProps> = ({
     const primaryAuthFactor =
       whoamiRes?.intermediateSession?.primaryAuthFactor;
 
-    console.log("deriveNextView", organization, primaryAuthFactor)
-
     if (
       primaryAuthFactor &&
       !isValidPrimaryAuthFactor(

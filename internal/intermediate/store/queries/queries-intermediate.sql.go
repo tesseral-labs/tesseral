@@ -50,20 +50,22 @@ func (q *Queries) CreateImpersonatedSession(ctx context.Context, arg CreateImper
 }
 
 const createIntermediateSession = `-- name: CreateIntermediateSession :one
-INSERT INTO intermediate_sessions (id, project_id, expire_time, email, google_user_id, microsoft_user_id, secret_token_sha256)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
+INSERT INTO intermediate_sessions (id, project_id, expire_time, email, google_user_id, microsoft_user_id, secret_token_sha256, primary_auth_factor, email_verification_challenge_completed)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 RETURNING
     id, project_id, create_time, expire_time, email, google_oauth_state_sha256, microsoft_oauth_state_sha256, google_hosted_domain, google_user_id, microsoft_tenant_id, microsoft_user_id, password_verified, organization_id, update_time, secret_token_sha256, new_user_password_bcrypt, email_verification_challenge_sha256, email_verification_challenge_completed, passkey_credential_id, passkey_public_key, passkey_aaguid, passkey_verify_challenge_sha256, passkey_verified, authenticator_app_secret_ciphertext, authenticator_app_verified, authenticator_app_recovery_code_bcrypts, passkey_rp_id, primary_auth_factor
 `
 
 type CreateIntermediateSessionParams struct {
-	ID                uuid.UUID
-	ProjectID         uuid.UUID
-	ExpireTime        *time.Time
-	Email             *string
-	GoogleUserID      *string
-	MicrosoftUserID   *string
-	SecretTokenSha256 []byte
+	ID                                  uuid.UUID
+	ProjectID                           uuid.UUID
+	ExpireTime                          *time.Time
+	Email                               *string
+	GoogleUserID                        *string
+	MicrosoftUserID                     *string
+	SecretTokenSha256                   []byte
+	PrimaryAuthFactor                   *PrimaryAuthFactor
+	EmailVerificationChallengeCompleted bool
 }
 
 func (q *Queries) CreateIntermediateSession(ctx context.Context, arg CreateIntermediateSessionParams) (IntermediateSession, error) {
@@ -75,6 +77,8 @@ func (q *Queries) CreateIntermediateSession(ctx context.Context, arg CreateInter
 		arg.GoogleUserID,
 		arg.MicrosoftUserID,
 		arg.SecretTokenSha256,
+		arg.PrimaryAuthFactor,
+		arg.EmailVerificationChallengeCompleted,
 	)
 	var i IntermediateSession
 	err := row.Scan(
@@ -1038,6 +1042,41 @@ func (q *Queries) GetProjectUISettings(ctx context.Context, projectID uuid.UUID)
 	return i, err
 }
 
+const getSessionDetailsByRefreshTokenSHA256 = `-- name: GetSessionDetailsByRefreshTokenSHA256 :one
+SELECT
+    sessions.id AS session_id,
+    sessions.primary_auth_factor,
+    users.email,
+    users.google_user_id,
+    users.microsoft_user_id
+FROM
+    sessions
+    JOIN users ON sessions.user_id = users.id
+WHERE
+    refresh_token_sha256 = $1
+`
+
+type GetSessionDetailsByRefreshTokenSHA256Row struct {
+	SessionID         uuid.UUID
+	PrimaryAuthFactor PrimaryAuthFactor
+	Email             string
+	GoogleUserID      *string
+	MicrosoftUserID   *string
+}
+
+func (q *Queries) GetSessionDetailsByRefreshTokenSHA256(ctx context.Context, refreshTokenSha256 []byte) (GetSessionDetailsByRefreshTokenSHA256Row, error) {
+	row := q.db.QueryRow(ctx, getSessionDetailsByRefreshTokenSHA256, refreshTokenSha256)
+	var i GetSessionDetailsByRefreshTokenSHA256Row
+	err := row.Scan(
+		&i.SessionID,
+		&i.PrimaryAuthFactor,
+		&i.Email,
+		&i.GoogleUserID,
+		&i.MicrosoftUserID,
+	)
+	return i, err
+}
+
 const getUserHasActivePasskey = `-- name: GetUserHasActivePasskey :one
 SELECT
     EXISTS (
@@ -1108,6 +1147,21 @@ func (q *Queries) GetUserPasskeyCredentialIDs(ctx context.Context, userID uuid.U
 		return nil, err
 	}
 	return items, nil
+}
+
+const invalidateSession = `-- name: InvalidateSession :exec
+UPDATE
+    sessions
+SET
+    expire_time = now(),
+    refresh_token_sha256 = NULL
+WHERE
+    id = $1
+`
+
+func (q *Queries) InvalidateSession(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, invalidateSession, id)
+	return err
 }
 
 const listOrganizationsByGoogleHostedDomain = `-- name: ListOrganizationsByGoogleHostedDomain :many
