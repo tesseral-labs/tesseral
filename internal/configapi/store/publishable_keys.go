@@ -14,9 +14,10 @@ import (
 )
 
 type GetPublishableKeyConfigurationResponse struct {
-	ProjectID   string           `json:"projectId"`
-	VaultDomain string           `json:"vaultDomain"`
-	Keys        []map[string]any `json:"keys"`
+	ProjectID      string           `json:"projectId"`
+	VaultDomain    string           `json:"vaultDomain"`
+	TrustedDomains []string         `json:"trustedDomains"`
+	Keys           []map[string]any `json:"keys"`
 }
 
 func (s *Store) GetPublishableKeyConfiguration(ctx context.Context, publishableKey string) (*GetPublishableKeyConfigurationResponse, error) {
@@ -31,6 +32,11 @@ func (s *Store) GetPublishableKeyConfiguration(ctx context.Context, publishableK
 			return nil, apierror.NewNotFoundError("publishable key not found", fmt.Errorf("get publishable key configuration: %w", err))
 		}
 		return nil, fmt.Errorf("get publishable key configuration: %w", err)
+	}
+
+	trustedDomains, err := s.q.GetPublishableKeyTrustedDomains(ctx, id)
+	if err != nil {
+		return nil, fmt.Errorf("get publishable key trusted domains: %w", err)
 	}
 
 	qSessionSigningKeys, err := s.q.GetPublishableKeySessionSigningPublicKeys(ctx, id)
@@ -55,8 +61,9 @@ func (s *Store) GetPublishableKeyConfiguration(ctx context.Context, publishableK
 	}
 
 	return &GetPublishableKeyConfigurationResponse{
-		ProjectID:   idformat.Project.Format(qConfig.ProjectID),
-		VaultDomain: qConfig.VaultDomain,
-		Keys:        keys,
+		ProjectID:      idformat.Project.Format(qConfig.ProjectID),
+		VaultDomain:    qConfig.VaultDomain,
+		TrustedDomains: trustedDomains,
+		Keys:           keys,
 	}, nil
 }

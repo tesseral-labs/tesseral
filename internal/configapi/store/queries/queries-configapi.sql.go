@@ -70,3 +70,34 @@ func (q *Queries) GetPublishableKeySessionSigningPublicKeys(ctx context.Context,
 	}
 	return items, nil
 }
+
+const getPublishableKeyTrustedDomains = `-- name: GetPublishableKeyTrustedDomains :many
+SELECT
+    project_trusted_domains.domain
+FROM
+    publishable_keys
+    JOIN projects ON publishable_keys.project_id = projects.id
+    JOIN project_trusted_domains ON projects.id = project_trusted_domains.project_id
+WHERE
+    publishable_keys.id = $1
+`
+
+func (q *Queries) GetPublishableKeyTrustedDomains(ctx context.Context, id uuid.UUID) ([]string, error) {
+	rows, err := q.db.Query(ctx, getPublishableKeyTrustedDomains, id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []string
+	for rows.Next() {
+		var domain string
+		if err := rows.Scan(&domain); err != nil {
+			return nil, err
+		}
+		items = append(items, domain)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
