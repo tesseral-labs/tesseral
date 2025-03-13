@@ -19,9 +19,9 @@ func TestStore_validateAuthRequirementsSatisfiedInner(t *testing.T) {
 		{
 			name: "google happy path",
 			qIntermediateSession: queries.IntermediateSession{
-				PrimaryLoginFactor: primaryLoginFactor(queries.PrimaryLoginFactorGoogleOauth),
-				GoogleUserID:       aws.String("foo"),
-				Email:              aws.String("foo@bar.com"),
+				PrimaryAuthFactor: primaryAuthFactor(queries.PrimaryAuthFactorGoogle),
+				GoogleUserID:      aws.String("foo"),
+				Email:             aws.String("foo@bar.com"),
 			},
 			emailVerified: true,
 			qOrg: queries.Organization{
@@ -32,9 +32,9 @@ func TestStore_validateAuthRequirementsSatisfiedInner(t *testing.T) {
 		{
 			name: "google email not verified",
 			qIntermediateSession: queries.IntermediateSession{
-				PrimaryLoginFactor: primaryLoginFactor(queries.PrimaryLoginFactorGoogleOauth),
-				GoogleUserID:       aws.String("foo"),
-				Email:              aws.String("foo@bar.com"),
+				PrimaryAuthFactor: primaryAuthFactor(queries.PrimaryAuthFactorGoogle),
+				GoogleUserID:      aws.String("foo"),
+				Email:             aws.String("foo@bar.com"),
 			},
 			emailVerified: false,
 			qOrg: queries.Organization{
@@ -45,9 +45,9 @@ func TestStore_validateAuthRequirementsSatisfiedInner(t *testing.T) {
 		{
 			name: "google not enabled",
 			qIntermediateSession: queries.IntermediateSession{
-				PrimaryLoginFactor: primaryLoginFactor(queries.PrimaryLoginFactorGoogleOauth),
-				GoogleUserID:       aws.String("foo"),
-				Email:              aws.String("foo@bar.com"),
+				PrimaryAuthFactor: primaryAuthFactor(queries.PrimaryAuthFactorGoogle),
+				GoogleUserID:      aws.String("foo"),
+				Email:             aws.String("foo@bar.com"),
 			},
 			emailVerified: true,
 			qOrg: queries.Organization{
@@ -59,9 +59,9 @@ func TestStore_validateAuthRequirementsSatisfiedInner(t *testing.T) {
 		{
 			name: "microsoft happy path",
 			qIntermediateSession: queries.IntermediateSession{
-				PrimaryLoginFactor: primaryLoginFactor(queries.PrimaryLoginFactorMicrosoftOauth),
-				MicrosoftUserID:    aws.String("foo"),
-				Email:              aws.String("foo@bar.com"),
+				PrimaryAuthFactor: primaryAuthFactor(queries.PrimaryAuthFactorMicrosoft),
+				MicrosoftUserID:   aws.String("foo"),
+				Email:             aws.String("foo@bar.com"),
 			},
 			emailVerified: true,
 			qOrg: queries.Organization{
@@ -72,9 +72,9 @@ func TestStore_validateAuthRequirementsSatisfiedInner(t *testing.T) {
 		{
 			name: "microsoft email not verified",
 			qIntermediateSession: queries.IntermediateSession{
-				PrimaryLoginFactor: primaryLoginFactor(queries.PrimaryLoginFactorMicrosoftOauth),
-				MicrosoftUserID:    aws.String("foo"),
-				Email:              aws.String("foo@bar.com"),
+				PrimaryAuthFactor: primaryAuthFactor(queries.PrimaryAuthFactorMicrosoft),
+				MicrosoftUserID:   aws.String("foo"),
+				Email:             aws.String("foo@bar.com"),
 			},
 			emailVerified: false,
 			qOrg: queries.Organization{
@@ -85,9 +85,9 @@ func TestStore_validateAuthRequirementsSatisfiedInner(t *testing.T) {
 		{
 			name: "microsoft not enabled",
 			qIntermediateSession: queries.IntermediateSession{
-				PrimaryLoginFactor: primaryLoginFactor(queries.PrimaryLoginFactorMicrosoftOauth),
-				MicrosoftUserID:    aws.String("foo"),
-				Email:              aws.String("foo@bar.com"),
+				PrimaryAuthFactor: primaryAuthFactor(queries.PrimaryAuthFactorMicrosoft),
+				MicrosoftUserID:   aws.String("foo"),
+				Email:             aws.String("foo@bar.com"),
 			},
 			emailVerified: true,
 			qOrg: queries.Organization{
@@ -99,9 +99,9 @@ func TestStore_validateAuthRequirementsSatisfiedInner(t *testing.T) {
 		{
 			name: "password happy path",
 			qIntermediateSession: queries.IntermediateSession{
-				PrimaryLoginFactor: primaryLoginFactor(queries.PrimaryLoginFactorEmail),
-				PasswordVerified:   true,
-				Email:              aws.String("foo@bar.com"),
+				PrimaryAuthFactor: primaryAuthFactor(queries.PrimaryAuthFactorEmail),
+				PasswordVerified:  true,
+				Email:             aws.String("foo@bar.com"),
 			},
 			emailVerified: true,
 			qOrg: queries.Organization{
@@ -113,9 +113,9 @@ func TestStore_validateAuthRequirementsSatisfiedInner(t *testing.T) {
 		{
 			name: "password email not verified",
 			qIntermediateSession: queries.IntermediateSession{
-				PrimaryLoginFactor: primaryLoginFactor(queries.PrimaryLoginFactorEmail),
-				PasswordVerified:   true,
-				Email:              aws.String("foo@bar.com"),
+				PrimaryAuthFactor: primaryAuthFactor(queries.PrimaryAuthFactorEmail),
+				PasswordVerified:  true,
+				Email:             aws.String("foo@bar.com"),
 			},
 			emailVerified: false,
 			qOrg: queries.Organization{
@@ -127,9 +127,9 @@ func TestStore_validateAuthRequirementsSatisfiedInner(t *testing.T) {
 		{
 			name: "password not verified",
 			qIntermediateSession: queries.IntermediateSession{
-				PrimaryLoginFactor: primaryLoginFactor(queries.PrimaryLoginFactorEmail),
-				PasswordVerified:   false,
-				Email:              aws.String("foo@bar.com"),
+				PrimaryAuthFactor: primaryAuthFactor(queries.PrimaryAuthFactorEmail),
+				PasswordVerified:  false,
+				Email:             aws.String("foo@bar.com"),
 			},
 			emailVerified: true,
 			qOrg: queries.Organization{
@@ -142,10 +142,10 @@ func TestStore_validateAuthRequirementsSatisfiedInner(t *testing.T) {
 		{
 			name: "require mfa happy path passkey",
 			qIntermediateSession: queries.IntermediateSession{
-				PrimaryLoginFactor: primaryLoginFactor(queries.PrimaryLoginFactorEmail),
-				PasswordVerified:   true,
-				PasskeyVerified:    true,
-				Email:              aws.String("foo@bar.com"),
+				PrimaryAuthFactor: primaryAuthFactor(queries.PrimaryAuthFactorEmail),
+				PasswordVerified:  true,
+				PasskeyVerified:   true,
+				Email:             aws.String("foo@bar.com"),
 			},
 			emailVerified: true,
 			qOrg: queries.Organization{
@@ -159,7 +159,7 @@ func TestStore_validateAuthRequirementsSatisfiedInner(t *testing.T) {
 		{
 			name: "require mfa happy path authenticator app",
 			qIntermediateSession: queries.IntermediateSession{
-				PrimaryLoginFactor:       primaryLoginFactor(queries.PrimaryLoginFactorEmail),
+				PrimaryAuthFactor:        primaryAuthFactor(queries.PrimaryAuthFactorEmail),
 				PasswordVerified:         true,
 				AuthenticatorAppVerified: true,
 				Email:                    aws.String("foo@bar.com"),
@@ -176,9 +176,9 @@ func TestStore_validateAuthRequirementsSatisfiedInner(t *testing.T) {
 		{
 			name: "require mfa no mfa",
 			qIntermediateSession: queries.IntermediateSession{
-				PrimaryLoginFactor: primaryLoginFactor(queries.PrimaryLoginFactorEmail),
-				PasswordVerified:   true,
-				Email:              aws.String("foo@bar.com"),
+				PrimaryAuthFactor: primaryAuthFactor(queries.PrimaryAuthFactorEmail),
+				PasswordVerified:  true,
+				Email:             aws.String("foo@bar.com"),
 			},
 			emailVerified: true,
 			qOrg: queries.Organization{
@@ -191,10 +191,10 @@ func TestStore_validateAuthRequirementsSatisfiedInner(t *testing.T) {
 		{
 			name: "require mfa not allowed mfa method",
 			qIntermediateSession: queries.IntermediateSession{
-				PrimaryLoginFactor: primaryLoginFactor(queries.PrimaryLoginFactorEmail),
-				PasswordVerified:   true,
-				PasskeyVerified:    true,
-				Email:              aws.String("foo@bar.com"),
+				PrimaryAuthFactor: primaryAuthFactor(queries.PrimaryAuthFactorEmail),
+				PasswordVerified:  true,
+				PasskeyVerified:   true,
+				Email:             aws.String("foo@bar.com"),
 			},
 			emailVerified: true,
 			qOrg: queries.Organization{
@@ -219,6 +219,6 @@ func TestStore_validateAuthRequirementsSatisfiedInner(t *testing.T) {
 	}
 }
 
-func primaryLoginFactor(v queries.PrimaryLoginFactor) *queries.PrimaryLoginFactor {
+func primaryAuthFactor(v queries.PrimaryAuthFactor) *queries.PrimaryAuthFactor {
 	return &v
 }
