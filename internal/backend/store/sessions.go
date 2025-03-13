@@ -99,12 +99,27 @@ func (s *Store) GetSession(ctx context.Context, req *backendv1.GetSessionRequest
 }
 
 func parseSession(qSession queries.Session) *backendv1.Session {
+	var primaryAuthFactor backendv1.PrimaryAuthFactor
+	switch qSession.PrimaryAuthFactor {
+	case "email":
+		primaryAuthFactor = backendv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_EMAIL
+	case "google":
+		primaryAuthFactor = backendv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_GOOGLE
+	case "microsoft":
+		primaryAuthFactor = backendv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_MICROSOFT
+	case "saml":
+		primaryAuthFactor = backendv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_SAML
+	case "impersonation":
+		primaryAuthFactor = backendv1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_IMPERSONATION
+	}
+
 	return &backendv1.Session{
-		Id:             idformat.Session.Format(qSession.ID),
-		UserId:         idformat.User.Format(qSession.UserID),
-		Revoked:        qSession.RefreshTokenSha256 == nil,
-		CreateTime:     timestamppb.New(*qSession.CreateTime),
-		LastActiveTime: timestamppb.New(*qSession.LastActiveTime),
-		ExpireTime:     timestamppb.New(*qSession.ExpireTime),
+		Id:                idformat.Session.Format(qSession.ID),
+		UserId:            idformat.User.Format(qSession.UserID),
+		Revoked:           qSession.RefreshTokenSha256 == nil,
+		CreateTime:        timestamppb.New(*qSession.CreateTime),
+		LastActiveTime:    timestamppb.New(*qSession.LastActiveTime),
+		ExpireTime:        timestamppb.New(*qSession.ExpireTime),
+		PrimaryAuthFactor: primaryAuthFactor,
 	}
 }

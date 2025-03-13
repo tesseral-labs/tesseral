@@ -1574,6 +1574,10 @@ components:
                     type: string
                     description: When the Session expires.
                     format: date-time
+                primaryAuthFactor:
+                    type: integer
+                    description: The primary authentication factor the end user used to log in.
+                    format: enum
             description: Represents a Session for a logged-in User.
         Status:
             type: object
