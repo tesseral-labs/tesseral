@@ -10,7 +10,6 @@
     "esbuild": "node ./build.mjs",
     "esbuild:watch": "UI_BUILD_IS_DEV=1 node ./build.mjs --watch=forever",
     "fmt": "prettier --write .",
-    "lint": "eslint",
     "tsc-check": "tsc --noEmit",
     "serve": "http-server -c-1 -p 3002 -P http://localhost:3002?",
     "serve:docker": "./bin/serve-public",
@@ -48,10 +47,7 @@
     "react-router": "^6.28.0",
     "react-router-dom": "^6.28.0",
     "sonner": "^1.7.4",
-    "zod": "^3.24.1"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.20.0",
+    "zod": "^3.24.1",
     "@tailwindcss/forms": "^0.5.9",
     "@tailwindcss/typography": "^0.5.15",
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
@@ -65,8 +61,6 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "esbuild": "^0.24.0",
-    "eslint": "^9.14.0",
-    "eslint-plugin-prefer-arrow": "^1.2.3",
     "http-server": "^14.1.1",
     "husky": "^9.1.6",
     "lint-staged": "^15.2.10",
@@ -76,7 +70,6 @@
     "tailwind-merge": "^2.5.4",
     "tailwindcss": "^3.4.14",
     "tailwindcss-animate": "^1.0.7",
-    "typescript": "^5.6.3",
-    "typescript-eslint": "^8.24.1"
+    "typescript": "^5.6.3"
   }
 }
