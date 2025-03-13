@@ -7,9 +7,6 @@ import { TransportProvider } from '@connectrpc/connect-query';
 import { createConnectTransport } from '@connectrpc/connect-web';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-import GoogleOAuthCallbackPage from '@/pages/GoogleOAuthCallbackPage';
-import LoginPage from '@/pages/LoginPage';
-import MicrosoftOAuthCallbackPage from '@/pages/MicrosoftOAuthCallbackPage';
 import NotFoundPage from '@/pages/NotFound';
 
 import Page from '@/components/Page';
@@ -17,11 +14,6 @@ import UserSettingsPage from './pages/dashboard/UserSettingsPage';
 import DashboardPage from './components/DashboardPage';
 import OrganizationSettingsPage from './pages/dashboard/OrganizationSettingsPage';
 import EditSAMLConnectionsPage from './pages/dashboard/EditSAMLConnectionsPage';
-import RegisterPasskey from './views/RegisterPasskey';
-import { AuthType } from './lib/auth';
-import { VerifyEmailPage } from '@/pages/VerifyEmailPage';
-import { ImpersonatePage } from '@/pages/ImpersonatePage';
-import { SwitchOrganizationsPage } from '@/pages/SwitchOrganizationsPage';
 
 const queryClient = new QueryClient();
 
@@ -40,26 +32,7 @@ const AppWithRoutes: FC = () => {
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Page />}>
-              <Route index element={<Navigate to="login" replace />} />
-              <Route path="impersonate" element={<ImpersonatePage />} />
-              <Route path="switch-organizations/:organizationId" element={<SwitchOrganizationsPage />} />
-              <Route path="passkey-test" element={<RegisterPasskey />} />
-
-              <Route
-                path="google-oauth-callback"
-                element={<GoogleOAuthCallbackPage />}
-              />
-              <Route
-                path="microsoft-oauth-callback"
-                element={<MicrosoftOAuthCallbackPage />}
-              />
-              <Route path="/verify-email" element={<VerifyEmailPage />} />
-              <Route path="login" element={<LoginPage />} />
-              <Route
-                path="signup"
-                element={<LoginPage authType={AuthType.SignUp} />}
-              />
+            <Route path="" element={<Page />}>
             </Route>
 
             <Route
