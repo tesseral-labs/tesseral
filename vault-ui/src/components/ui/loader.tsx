@@ -33,5 +33,6 @@ const Loader = forwardRef<SVGElement, LoaderProps>(
     );
   },
 );
+Loader.displayName = "Loader";
 
 export default Loader;
