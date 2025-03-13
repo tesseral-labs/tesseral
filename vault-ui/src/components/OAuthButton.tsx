@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React from "react";
 
 import { Button, ButtonProps } from "@/components/ui/button";
 import { AuthType, useAuthType } from "@/lib/auth";
@@ -13,7 +13,7 @@ interface OAuthButtonProps extends ButtonProps {
   method: OAuthMethods;
 }
 
-const OAuthButton: FC<OAuthButtonProps> = ({ className, method, ...props }) => {
+export function OAuthButton({ className, method, ...props }: OAuthButtonProps) {
   const authType = useAuthType();
 
   return (
@@ -76,6 +76,4 @@ const OAuthButton: FC<OAuthButtonProps> = ({ className, method, ...props }) => {
       {method}
     </Button>
   );
-};
-
-export default OAuthButton;
+}

@@ -1,10 +1,10 @@
-import React, { FC, SyntheticEvent } from "react";
+import React, { SyntheticEvent } from "react";
 import { Outlet } from "react-router";
 
-import useDarkMode from "@/lib/dark-mode";
-import useSettings from "@/lib/settings";
+import { useDarkMode } from "@/lib/dark-mode";
+import { useSettings } from "@/lib/settings";
 
-const CenteredLayout: FC = () => {
+export function CenteredLayout() {
   const isDarkMode = useDarkMode();
   const settings = useSettings();
 
@@ -41,6 +41,4 @@ const CenteredLayout: FC = () => {
       <Outlet />
     </div>
   );
-};
-
-export default CenteredLayout;
+}

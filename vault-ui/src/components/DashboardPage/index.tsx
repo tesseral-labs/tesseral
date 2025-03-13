@@ -1,4 +1,4 @@
-import React, { FC, PropsWithChildren, useEffect, useState } from "react";
+import React, { PropsWithChildren, useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -8,14 +8,14 @@ import {
   UserContextProvider,
   useSession,
 } from "@/lib/auth";
-import useDarkMode from "@/lib/dark-mode";
-import useSettings from "@/lib/settings";
+import { useDarkMode } from "@/lib/dark-mode";
+import { useSettings } from "@/lib/settings";
 
 import { SidebarProvider, SidebarTrigger } from "../ui/sidebar";
 import { Toaster } from "../ui/sonner";
-import DashboardSidebar from "./DashboardSidebar";
+import { DashboardSidebar } from "./DashboardSidebar";
 
-const DashboardPage: FC<PropsWithChildren> = ({ children }) => {
+export function DashboardPage({ children }: PropsWithChildren) {
   const isDarkMode = useDarkMode();
   const isMobile = useIsMobile();
   const settings = useSettings();
@@ -68,6 +68,4 @@ const DashboardPage: FC<PropsWithChildren> = ({ children }) => {
       </ProjectContextProvider>
     </div>
   );
-};
-
-export default DashboardPage;
+}

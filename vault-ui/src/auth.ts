@@ -1,25 +1,25 @@
 const intermediateSessionTokenKey = "intermediate_session";
 
-export const getIntermediateSessionToken = (): string | null => {
+export function getIntermediateSessionToken(): string | null {
   return localStorage.getItem(intermediateSessionTokenKey);
-};
+}
 
-export const setIntermediateSessionToken = (s: string) => {
+export function setIntermediateSessionToken(s: string) {
   localStorage.setItem(intermediateSessionTokenKey, s);
-};
+}
 
-export const setAccessToken = (s: string) => {
+export function setAccessToken(s: string) {
   localStorage.setItem("access_token", s);
-};
+}
 
-export const getAccessToken = (): string | null => {
+export function getAccessToken(): string | null {
   return localStorage.getItem("access_token");
-};
+}
 
-export const setRefreshToken = (s: string) => {
+export function setRefreshToken(s: string) {
   localStorage.setItem("refresh_token", s);
-};
+}
 
-export const getRefreshToken = (): string | null => {
+export function getRefreshToken(): string | null {
   return localStorage.getItem("refresh_token");
-};
+}

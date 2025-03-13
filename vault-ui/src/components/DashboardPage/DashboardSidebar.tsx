@@ -1,8 +1,8 @@
 import { Building2, UserCog } from "lucide-react";
-import React, { FC, SyntheticEvent } from "react";
+import React, { SyntheticEvent } from "react";
 
-import useDarkMode from "@/lib/dark-mode";
-import useSettings from "@/lib/settings";
+import { useDarkMode } from "@/lib/dark-mode";
+import { useSettings } from "@/lib/settings";
 
 import {
   Sidebar,
@@ -16,7 +16,7 @@ import {
   SidebarMenuItem,
 } from "../ui/sidebar";
 
-const DashboardSidebar: FC = () => {
+export function DashboardSidebar() {
   const settings = useSettings();
   const isDarkMode = useDarkMode();
 
@@ -83,6 +83,4 @@ const DashboardSidebar: FC = () => {
       </SidebarContent>
     </Sidebar>
   );
-};
-
-export default DashboardSidebar;
+}

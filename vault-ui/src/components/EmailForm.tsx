@@ -3,7 +3,6 @@ import debounce from "lodash.debounce";
 import React, {
   ChangeEvent,
   Dispatch,
-  FC,
   FormEvent,
   SetStateAction,
   useCallback,
@@ -37,12 +36,12 @@ interface EmailFormProps {
   setView: Dispatch<SetStateAction<LoginViews>>;
 }
 
-const EmailForm: FC<EmailFormProps> = ({
+export function EmailForm({
   disableLogInWithEmail = false,
   skipListSAMLOrganizations = false,
   skipIntermediateSessionCreation = false,
   setView,
-}) => {
+}: EmailFormProps) {
   const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/i;
 
   const authType = useAuthType();
@@ -79,11 +78,11 @@ const EmailForm: FC<EmailFormProps> = ({
     [email],
   );
 
-  const handleEmail = (e: ChangeEvent<HTMLInputElement>) => {
+  function handleEmail(e: ChangeEvent<HTMLInputElement>) {
     setEmail(e.target.value);
-  };
+  }
 
-  const handleSubmit = async (e: FormEvent) => {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     if (!disableLogInWithEmail) {
       setSubmitting(true);
@@ -116,7 +115,7 @@ const EmailForm: FC<EmailFormProps> = ({
         });
       }
     }
-  };
+  }
 
   useEffect(() => {
     void (async () => {
@@ -179,6 +178,4 @@ const EmailForm: FC<EmailFormProps> = ({
       )}
     </>
   );
-};
-
-export default EmailForm;
+}

@@ -3,7 +3,7 @@ import React from "react";
 import { Title } from "@/components/Title";
 import { useUser } from "@/lib/auth";
 
-const SessionInfoPage = () => {
+export function SessionInfoPage() {
   const user = useUser();
 
   return (
@@ -14,6 +14,4 @@ const SessionInfoPage = () => {
       </div>
     </>
   );
-};
-
-export default SessionInfoPage;
+}

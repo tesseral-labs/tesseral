@@ -1,11 +1,11 @@
-import React, { FC, SyntheticEvent } from "react";
+import React, { SyntheticEvent } from "react";
 import { Link, useLocation } from "react-router-dom";
 
-import useDarkMode from "@/lib/dark-mode";
-import useSettings from "@/lib/settings";
+import { useDarkMode } from "@/lib/dark-mode";
+import { useSettings } from "@/lib/settings";
 import { cn } from "@/lib/utils";
 
-const Header: FC = () => {
+export function Header() {
   const isDarkMode = useDarkMode();
   const location = useLocation();
   const settings = useSettings();
@@ -57,6 +57,4 @@ const Header: FC = () => {
       </div>
     </header>
   );
-};
-
-export default Header;
+}

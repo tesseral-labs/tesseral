@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { FC, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router";
 import { Link } from "react-router-dom";
@@ -45,7 +45,7 @@ const schema = z.object({
   }),
 });
 
-const EditSAMLConnectionsPage: FC = () => {
+export function EditSAMLConnectionsPage () {
   const navigate = useNavigate();
   const params = useParams();
 
@@ -59,7 +59,7 @@ const EditSAMLConnectionsPage: FC = () => {
   });
   const updateSAMLConnectionMutation = useMutation(updateSAMLConnection);
 
-  const handleSubmit = async (values: z.infer<typeof schema>) => {
+  async function handleSubmit (values: z.infer<typeof schema>) {
     try {
       await updateSAMLConnectionMutation.mutateAsync({
         id: params.samlConnectionId,
@@ -229,5 +229,3 @@ const EditSAMLConnectionsPage: FC = () => {
     </div>
   );
 };
-
-export default EditSAMLConnectionsPage;

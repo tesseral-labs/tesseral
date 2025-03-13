@@ -7,6 +7,9 @@ import { Organization } from "@/gen/tesseral/intermediate/v1/intermediate_pb";
 
 import { base64Decode } from "./utils";
 
+// this file has too many things to change, skipped
+/* eslint func-style: off */
+
 export enum AuthType {
   LogIn = "log_in",
   SignUp = "sign_up",

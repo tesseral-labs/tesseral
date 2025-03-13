@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const useDarkMode = () => {
+export function useDarkMode ()  {
   const [isDarkMode, setIsDarkMode] = useState(() => {
     // Get the initial dark mode state
     const matcher =
@@ -13,6 +13,7 @@ const useDarkMode = () => {
       window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)");
 
     if (matcher) {
+      // eslint-disable-next-line func-style
       const handleDarkModeChange = (event: MediaQueryListEvent) => {
         setIsDarkMode(event.matches);
       };
@@ -27,6 +28,4 @@ const useDarkMode = () => {
   }, []);
 
   return isDarkMode;
-};
-
-export default useDarkMode;
+}

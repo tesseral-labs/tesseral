@@ -1,13 +1,13 @@
 import React, { FC, useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 
-import useDarkMode from "@/lib/dark-mode";
-import useSettings, { useLayout } from "@/lib/settings";
+import { useDarkMode } from "@/lib/dark-mode";
+import { useLayout, useSettings } from "@/lib/settings";
 import { cn, hexToHSL, isColorDark } from "@/lib/utils";
 import { LoginLayouts } from "@/lib/views";
 
-import CenteredLayout from "./layouts/centered";
-import SideBySideLayout from "./layouts/side-by-side";
+import { CenteredLayout } from "./layouts/centered";
+import { SideBySideLayout } from "./layouts/side-by-side";
 import { Toaster } from "./ui/sonner";
 
 const layoutMap: Record<string, FC> = {
@@ -15,7 +15,7 @@ const layoutMap: Record<string, FC> = {
   [`${LoginLayouts.SideBySide}`]: SideBySideLayout,
 };
 
-const Page = () => {
+export function Page() {
   const isDarkMode = useDarkMode();
   const layout = useLayout();
   const settings = useSettings();
@@ -24,6 +24,7 @@ const Page = () => {
   const Layout =
     layout && layoutMap[layout] ? layoutMap[layout] : CenteredLayout;
 
+  // eslint-disable-next-line func-style
   const applyTheme = () => {
     const root = document.documentElement;
     const darkRoot = document.querySelector(".dark");
@@ -99,6 +100,4 @@ const Page = () => {
       </div>
     </div>
   );
-};
-
-export default Page;
+}

@@ -1,10 +1,10 @@
-import React, { FC, SyntheticEvent } from "react";
+import React, { SyntheticEvent } from "react";
 import { Outlet } from "react-router";
 
-import useDarkMode from "@/lib/dark-mode";
-import useSettings from "@/lib/settings";
+import { useDarkMode } from "@/lib/dark-mode";
+import { useSettings } from "@/lib/settings";
 
-const SideBySideLayout: FC = () => {
+export function SideBySideLayout() {
   const isDarkMode = useDarkMode();
   const settings = useSettings();
 
@@ -44,6 +44,4 @@ const SideBySideLayout: FC = () => {
       </div>
     </div>
   );
-};
-
-export default SideBySideLayout;
+}

@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { CheckCircle, PlusCircle } from "lucide-react";
 import QRCode from "qrcode";
-import React, { FC, FormEvent, MouseEvent, useEffect, useState } from "react";
+import React, { FormEvent, MouseEvent, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -45,7 +45,7 @@ import { useUser } from "@/lib/auth";
 import { parseErrorMessage } from "@/lib/errors";
 import { base64urlEncode } from "@/lib/utils";
 
-const UserSettingsPage: FC = () => {
+export function UserSettingsPage() {
   const encoder = new TextEncoder();
   const user = useUser();
 
@@ -75,7 +75,7 @@ const UserSettingsPage: FC = () => {
   const [registeringAuthenticatorApp, setRegisteringAuthenticatorApp] =
     useState(false);
 
-  const handleDeletePasskey = async (id: string) => {
+  async function handleDeletePasskey(id: string) {
     try {
       await deleteMyPasskeyMutation.mutateAsync({
         id,
@@ -97,13 +97,13 @@ const UserSettingsPage: FC = () => {
     }
   };
 
-  const handleEmailSubmit = (e: FormEvent<HTMLFormElement>) => {
+  function handleEmailSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     // TODO: Kick off email validation and show a modal to verify the new email address
-  };
+  }
 
-  const handlePasswordSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  async function handlePasswordSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     try {
@@ -114,11 +114,9 @@ const UserSettingsPage: FC = () => {
     } catch (error) {
       console.error(error);
     }
-  };
+  }
 
-  const handleAuthenticatorAppClick = async (
-    e: MouseEvent<HTMLButtonElement>,
-  ) => {
+  async function handleAuthenticatorAppClick(e: MouseEvent<HTMLButtonElement>) {
     e.stopPropagation();
 
     const authenticatorAppOptions =
@@ -129,11 +127,9 @@ const UserSettingsPage: FC = () => {
     setQRImage(qrImage);
 
     return true;
-  };
+  }
 
-  const handleRegisterAuthenticatorApp = async (
-    e: FormEvent<HTMLFormElement>,
-  ) => {
+  async function handleRegisterAuthenticatorApp(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setRegisteringAuthenticatorApp(true);
 
@@ -155,9 +151,9 @@ const UserSettingsPage: FC = () => {
         description: message,
       });
     }
-  };
+  }
 
-  const handleRegisterPasskeyClick = async () => {
+  async function handleRegisterPasskeyClick() {
     try {
       if (!navigator.credentials) {
         throw new Error("WebAuthn not supported");
@@ -511,6 +507,4 @@ const UserSettingsPage: FC = () => {
       )}
     </div>
   );
-};
-
-export default UserSettingsPage;
+}

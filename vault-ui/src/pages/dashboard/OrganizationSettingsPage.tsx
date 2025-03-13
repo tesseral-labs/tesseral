@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { DateTime } from "luxon";
-import React, { FC, MouseEvent, useEffect, useState } from "react";
+import React, { MouseEvent, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -44,7 +44,7 @@ import {
 import { useUser } from "@/lib/auth";
 import { parseErrorMessage } from "@/lib/errors";
 
-const OrganizationSettingsPage: FC = () => {
+export function OrganizationSettingsPage() {
   const user = useUser();
 
   const { data: usersData, refetch: refetchUsers } = useQuery(listUsers);
@@ -85,7 +85,7 @@ const OrganizationSettingsPage: FC = () => {
   );
   const [submittingLoginSettings, setSubmittingLoginSettings] = useState(false);
 
-  const changeUserRole = async (userId: string, isOwner: boolean) => {
+  async function changeUserRole(userId: string, isOwner: boolean) {
     await updateUserMutation.mutateAsync({
       id: userId,
       user: {
@@ -94,16 +94,16 @@ const OrganizationSettingsPage: FC = () => {
     });
 
     await refetchUsers();
-  };
+  }
 
-  const resetLoginSettings = () => {
+  function resetLoginSettings() {
     setLogInWithEmail(organizationRes?.organization?.logInWithEmail);
     setLogInWithGoogle(organizationRes?.organization?.logInWithGoogle);
     setLogInWithMicrosoft(organizationRes?.organization?.logInWithMicrosoft);
     setLogInWithPassword(organizationRes?.organization?.logInWithPassword);
-  };
+  }
 
-  const submitLoginSettings = async () => {
+  async function submitLoginSettings() {
     setSubmittingLoginSettings(true);
     try {
       await updateOrganizationMutation.mutateAsync({
@@ -126,9 +126,9 @@ const OrganizationSettingsPage: FC = () => {
         description: message,
       });
     }
-  };
+  }
 
-  const submitUserInvite = async () => {
+  async function submitUserInvite() {
     setCreatingUserInvite(true);
     try {
       await createUserInviteMutation.mutateAsync({
@@ -150,7 +150,7 @@ const OrganizationSettingsPage: FC = () => {
         description: message,
       });
     }
-  };
+  }
 
   useEffect(() => {
     if (organizationRes?.organization) {
@@ -547,6 +547,4 @@ const OrganizationSettingsPage: FC = () => {
       </Card>
     </div>
   );
-};
-
-export default OrganizationSettingsPage;
+}
