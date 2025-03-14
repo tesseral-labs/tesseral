@@ -16,6 +16,7 @@ import { EditSAMLConnectionsPage } from "./pages/dashboard/EditSAMLConnectionsPa
 import { OrganizationSettingsPage } from "./pages/dashboard/OrganizationSettingsPage";
 import { UserSettingsPage } from "./pages/dashboard/UserSettingsPage";
 import { ChooseOrganizationPage } from "@/pages/login/ChooseOrganizationPage";
+import { OrganizationLoginPage } from "@/pages/login/OrganizationLoginPage";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +39,7 @@ function AppWithRoutes() {
             <Route path="" element={<LoginFlowLayout />}>
               <Route path="verify-email" element={<VerifyEmailPage />} />
               <Route path="choose-organization" element={<ChooseOrganizationPage />} />
+              <Route path="organizations/:organizationId/login" element={<OrganizationLoginPage />} />
             </Route>
 
             <Route
