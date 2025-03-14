@@ -6,8 +6,8 @@ import React from "react";
 import { Route, Routes } from "react-router";
 import { BrowserRouter } from "react-router-dom";
 
-import { Page } from "@/components/Page";
 import { NotFoundPage } from "@/pages/NotFoundPage";
+import { LoginPage } from "@/pages/login/LoginPage";
 
 import { DashboardPage } from "./components/DashboardPage";
 import { EditSAMLConnectionsPage } from "./pages/dashboard/EditSAMLConnectionsPage";
@@ -31,7 +31,7 @@ function AppWithRoutes() {
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
           <Routes>
-            <Route path="" element={<Page />}></Route>
+            <Route path="login" element={<LoginPage />} />
 
             <Route
               path="/organization"

@@ -46,6 +46,7 @@ func (s *Store) parseSettings(qProject queries.Project, qProjectUISettings queri
 	return &intermediatev1.Settings{
 		Id:                     idformat.ProjectUISettings.Format(qProjectUISettings.ID),
 		ProjectId:              projectID,
+		ProjectDisplayName:     qProject.DisplayName,
 		LogoUrl:                fmt.Sprintf("%s/logos_v1/%s/logo", s.userContentBaseUrl, projectID),
 		FaviconUrl:             fmt.Sprintf("%s/faviconss_v1/%s/favicon", s.userContentBaseUrl, projectID),
 		PrimaryColor:           derefOrEmpty(qProjectUISettings.PrimaryColor),
