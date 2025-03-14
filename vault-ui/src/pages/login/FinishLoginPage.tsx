@@ -1,0 +1,28 @@
+import { useMutation } from "@connectrpc/connect-query";
+import { LoaderCircleIcon } from "lucide-react";
+import React, { useEffect } from "react";
+
+import { exchangeIntermediateSessionForSession } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
+import { useProjectSettings } from "@/lib/project-settings";
+
+export function FinishLoginPage() {
+  const settings = useProjectSettings();
+  const { mutateAsync: exchangeIntermediateSessionForSessionAsync } =
+    useMutation(exchangeIntermediateSessionForSession);
+
+  useEffect(() => {
+    (async () => {
+      const { newUser } = await exchangeIntermediateSessionForSessionAsync({});
+
+      const preferredRedirect = newUser
+        ? settings.afterSignupRedirectUri
+        : settings.afterLoginRedirectUri;
+
+      window.location.href = preferredRedirect ?? settings.redirectUri;
+    })();
+  }, [settings, exchangeIntermediateSessionForSessionAsync]);
+
+  return (
+    <LoaderCircleIcon className="mx-auto text-muted-foreground h-4 w-4 animate-spin" />
+  );
+}
