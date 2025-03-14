@@ -26,6 +26,7 @@
     "@eslint/js": "^9.22.0",
     "@hookform/resolvers": "^3.10.0",
     "@icons-pack/react-simple-icons": "^10.1.0",
+    "@radix-ui/react-accordion": "^1.2.3",
     "@radix-ui/react-dialog": "^1.1.5",
     "@radix-ui/react-label": "^2.1.1",
     "@radix-ui/react-separator": "^1.1.1",

@@ -7,7 +7,9 @@ import { Route, Routes } from "react-router";
 import { BrowserRouter } from "react-router-dom";
 
 import { NotFoundPage } from "@/pages/NotFoundPage";
+import { LoginFlowLayout } from "@/pages/login/LoginFlowLayout";
 import { LoginPage } from "@/pages/login/LoginPage";
+import { VerifyEmailPage } from "@/pages/login/VerifyEmailPage";
 
 import { DashboardPage } from "./components/DashboardPage";
 import { EditSAMLConnectionsPage } from "./pages/dashboard/EditSAMLConnectionsPage";
@@ -32,6 +34,9 @@ function AppWithRoutes() {
         <BrowserRouter>
           <Routes>
             <Route path="login" element={<LoginPage />} />
+            <Route path="" element={<LoginFlowLayout />}>
+              <Route path="verify-email" element={<VerifyEmailPage />} />
+            </Route>
 
             <Route
               path="/organization"

@@ -204,6 +204,7 @@ message Settings {
   string id = 1;
   string project_id = 2;
   string project_display_name = 20;
+  string project_email_send_from_domain = 21;
   string logo_url = 5;
   string favicon_url = 6;
   string primary_color = 7;
