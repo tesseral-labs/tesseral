@@ -19,6 +19,7 @@ import { ChooseOrganizationPage } from "@/pages/login/ChooseOrganizationPage";
 import { OrganizationLoginPage } from "@/pages/login/OrganizationLoginPage";
 import { VerifyPasswordPage } from "@/pages/login/VerifyPasswordPage";
 import { FinishLoginPage } from "@/pages/login/FinishLoginPage";
+import { CreateOrganizationPage } from "@/pages/login/CreateOrganizationPage";
 
 const queryClient = new QueryClient();
 
@@ -41,6 +42,7 @@ function AppWithRoutes() {
             <Route path="" element={<LoginFlowLayout />}>
               <Route path="verify-email" element={<VerifyEmailPage />} />
               <Route path="choose-organization" element={<ChooseOrganizationPage />} />
+              <Route path="create-organization" element={<CreateOrganizationPage />} />
               <Route path="organizations/:organizationId/login" element={<OrganizationLoginPage />} />
               <Route path="verify-password" element={<VerifyPasswordPage />} />
               <Route path="finish-login" element={<FinishLoginPage />} />

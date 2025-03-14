@@ -1,18 +1,31 @@
 import { useMutation } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { LoaderCircleIcon } from "lucide-react";
 import React, { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
 import { z } from "zod";
-
-
 
 import { OAuthButton, OAuthMethods } from "@/components/OAuthButton";
 import { GoogleIcon } from "@/components/login/GoogleIcon";
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
 import { MicrosoftIcon } from "@/components/login/MicrosoftIcon";
 import { Button } from "@/components/ui/button";
-import { CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -21,13 +34,10 @@ import {
   setEmailAsPrimaryLoginFactor,
 } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
 import { useDarkMode } from "@/lib/dark-mode";
-import { ProjectSettingsProvider, useProjectSettings } from "@/lib/project-settings";
-import { LoaderCircleIcon } from "lucide-react";
-import { useNavigate } from "react-router";
-
-
-
-
+import {
+  ProjectSettingsProvider,
+  useProjectSettings,
+} from "@/lib/project-settings";
 
 export function LoginPage() {
   return (
@@ -112,12 +122,19 @@ function LoginPageContents() {
   });
 
   const [submitting, setSubmitting] = useState(false);
-  const createIntermediateSessionMutation = useMutation(createIntermediateSession)
-  const setEmailAsPrimaryLoginFactorMutation = useMutation(setEmailAsPrimaryLoginFactor)
-  const issueEmailVerificationChallengeMutation = useMutation(issueEmailVerificationChallenge)
-  const navigate = useNavigate()
+  const createIntermediateSessionMutation = useMutation(
+    createIntermediateSession,
+  );
+  const setEmailAsPrimaryLoginFactorMutation = useMutation(
+    setEmailAsPrimaryLoginFactor,
+  );
+  const issueEmailVerificationChallengeMutation = useMutation(
+    issueEmailVerificationChallenge,
+  );
+  const navigate = useNavigate();
+
   async function handleSubmit(values: z.infer<typeof schema>) {
-    setSubmitting(true)
+    setSubmitting(true);
     await createIntermediateSessionMutation.mutateAsync({});
     await setEmailAsPrimaryLoginFactorMutation.mutateAsync({});
     await issueEmailVerificationChallengeMutation.mutateAsync({
@@ -126,6 +143,10 @@ function LoginPageContents() {
 
     navigate("/verify-email");
   }
+
+  const hasAboveFoldMethod =
+    settings.logInWithGoogle || settings.logInWithMicrosoft;
+  const hasBelowFoldMethod = settings.logInWithEmail || settings.logInWithSaml;
 
   return (
     <LoginFlowCard>
@@ -155,47 +176,47 @@ function LoginPageContents() {
           )}
         </div>
 
-        {(settings.logInWithEmail || settings.logInWithSaml) && (
-          <>
-            <div className="block relative w-full cursor-default my-2 mt-6">
-              <div className="absolute inset-0 flex items-center border-muted-foreground">
-                <span className="w-full border-t"></span>
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-card px-2 text-muted-foreground">or</span>
-              </div>
+        {hasAboveFoldMethod && hasBelowFoldMethod && (
+          <div className="block relative w-full cursor-default my-2 mt-6">
+            <div className="absolute inset-0 flex items-center border-muted-foreground">
+              <span className="w-full border-t"></span>
             </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-card px-2 text-muted-foreground">or</span>
+            </div>
+          </div>
+        )}
 
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(handleSubmit)}>
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input placeholder="john.doe@example.com" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+        {hasBelowFoldMethod && (
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleSubmit)}>
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input placeholder="john.doe@example.com" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-                <Button
-                  type="submit"
-                  className="mt-4 w-full"
-                  variant={darkMode ? "outline" : "default"}
-                  disabled={submitting}
-                >
-                  {submitting && (
-                    <LoaderCircleIcon className="h-4 w-4 animate-spin" />
-                  )}
-                  Log in
-                </Button>
-              </form>
-            </Form>
-          </>
+              <Button
+                type="submit"
+                className="mt-4 w-full"
+                variant={darkMode ? "outline" : "default"}
+                disabled={submitting}
+              >
+                {submitting && (
+                  <LoaderCircleIcon className="h-4 w-4 animate-spin" />
+                )}
+                Log in
+              </Button>
+            </form>
+          </Form>
         )}
       </CardContent>
     </LoginFlowCard>

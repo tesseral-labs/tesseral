@@ -28,18 +28,20 @@ export function ChooseOrganizationPage() {
         <CardTitle>Choose an organization</CardTitle>
       </CardHeader>
       <CardContent>
-        {listOrganizationsResponse?.organizations?.map((org) => (
-          <Button
-            key={org.id}
-            className="w-full"
-            variant={darkMode ? "default" : "outline"}
-            asChild
-          >
-            <Link to={`/organizations/${org.id}/login`}>
-              {org.displayName}
-            </Link>
-          </Button>
-        ))}
+        <div className="space-y-2">
+          {listOrganizationsResponse?.organizations?.map((org) => (
+            <Button
+              key={org.id}
+              className="w-full"
+              variant={darkMode ? "default" : "outline"}
+              asChild
+            >
+              <Link to={`/organizations/${org.id}/login`}>
+                {org.displayName}
+              </Link>
+            </Button>
+          ))}
+        </div>
 
         <div className="block relative w-full cursor-default my-6">
           <div className="absolute inset-0 flex items-center border-muted-foreground">
