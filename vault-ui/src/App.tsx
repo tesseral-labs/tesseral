@@ -6,35 +6,37 @@ import React from "react";
 import { Route, Routes } from "react-router";
 import { BrowserRouter } from "react-router-dom";
 
+
+
+import { Toaster } from "@/components/ui/sonner";
 import { NotFoundPage } from "@/pages/NotFoundPage";
+import { ChooseOrganizationPage } from "@/pages/login/ChooseOrganizationPage";
+import { CreateOrganizationPage } from "@/pages/login/CreateOrganizationPage";
+import { FinishLoginPage } from "@/pages/login/FinishLoginPage";
 import { LoginFlowLayout } from "@/pages/login/LoginFlowLayout";
 import { LoginPage } from "@/pages/login/LoginPage";
+import { OrganizationLoginPage } from "@/pages/login/OrganizationLoginPage";
+import { RegisterAuthenticatorAppPage } from "@/pages/login/RegisterAuthenticatorAppPage";
+import { RegisterPasskeyPage } from "@/pages/login/RegisterPasskeyPage";
+import { RegisterSecondaryFactorPage } from "@/pages/login/RegisterSecondaryFactorPage";
+import { VerifyAuthenticatorAppPage } from "@/pages/login/VerifyAuthenticatorAppPage";
+import { VerifyAuthenticatorAppRecoveryCodePage } from "@/pages/login/VerifyAuthenticatorAppRecoveryCodePage";
 import { VerifyEmailPage } from "@/pages/login/VerifyEmailPage";
+import { VerifyPasskeyPage } from "@/pages/login/VerifyPasskeyPage";
+import { VerifyPasswordPage } from "@/pages/login/VerifyPasswordPage";
+
+
 
 import { DashboardPage } from "./components/DashboardPage";
+import { DashboardLayout } from "./pages/dashboard/DashboardLayout";
 import { EditSAMLConnectionsPage } from "./pages/dashboard/EditSAMLConnectionsPage";
 import { OrganizationSettingsPage } from "./pages/dashboard/OrganizationSettingsPage";
 import { UserSettingsPage } from "./pages/dashboard/UserSettingsPage";
-import { ChooseOrganizationPage } from "@/pages/login/ChooseOrganizationPage";
-import { OrganizationLoginPage } from "@/pages/login/OrganizationLoginPage";
-import { VerifyPasswordPage } from "@/pages/login/VerifyPasswordPage";
-import { FinishLoginPage } from "@/pages/login/FinishLoginPage";
-import { CreateOrganizationPage } from "@/pages/login/CreateOrganizationPage";
-import {
-  RegisterSecondaryFactorPage
-} from "@/pages/login/RegisterSecondaryFactorPage";
-import {
-  RegisterAuthenticatorAppPage
-} from "@/pages/login/RegisterAuthenticatorAppPage";
-import { RegisterPasskeyPage } from "@/pages/login/RegisterPasskeyPage";
-import { VerifyPasskeyPage } from "@/pages/login/VerifyPasskeyPage";
-import {
-  VerifyAuthenticatorAppPage
-} from "@/pages/login/VerifyAuthenticatorAppPage";
-import { Toaster } from "@/components/ui/sonner";
-import {
-  VerifyAuthenticatorAppRecoveryCodePage
-} from "@/pages/login/VerifyAuthenticatorAppRecoveryCodePage";
+import { LoggedInGate } from "@/pages/dashboard/LoggedInGate";
+
+
+
+
 
 const queryClient = new QueryClient();
 
@@ -69,30 +71,12 @@ function AppWithRoutes() {
               <Route path="finish-login" element={<FinishLoginPage />} />
             </Route>
 
-            <Route
-              path="/organization"
-              element={
-                <DashboardPage>
-                  <OrganizationSettingsPage />
-                </DashboardPage>
-              }
-            />
-            <Route
-              path="/organization/saml-connections/:samlConnectionId"
-              element={
-                <DashboardPage>
-                  <EditSAMLConnectionsPage />
-                </DashboardPage>
-              }
-            />
-            <Route
-              path="/settings"
-              element={
-                <DashboardPage>
-                  <UserSettingsPage />
-                </DashboardPage>
-              }
-            />
+            <Route path="" element={<LoggedInGate />}>
+              <Route path="" element={<DashboardLayout />}>
+                <Route path="user-settings" element={<UserSettingsPage />} />
+              </Route>
+            </Route>
+
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </BrowserRouter>
