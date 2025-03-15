@@ -33,6 +33,9 @@ import { EditSAMLConnectionsPage } from "./pages/dashboard/EditSAMLConnectionsPa
 import { OrganizationSettingsPage } from "./pages/dashboard/OrganizationSettingsPage";
 import { UserSettingsPage } from "./pages/dashboard/UserSettingsPage";
 import { LoggedInGate } from "@/pages/dashboard/LoggedInGate";
+import {
+  VerifySecondaryFactorPage
+} from "@/pages/login/VerifySecondaryFactorPage";
 
 
 
@@ -62,6 +65,7 @@ function AppWithRoutes() {
               <Route path="create-organization" element={<CreateOrganizationPage />} />
               <Route path="organizations/:organizationId/login" element={<OrganizationLoginPage />} />
               <Route path="verify-password" element={<VerifyPasswordPage />} />
+              <Route path="verify-secondary-factor" element={<VerifySecondaryFactorPage />} />
               <Route path="verify-authenticator-app" element={<VerifyAuthenticatorAppPage />} />
               <Route path="verify-authenticator-app-recovery-code" element={<VerifyAuthenticatorAppRecoveryCodePage />} />
               <Route path="verify-passkey" element={<VerifyPasskeyPage />} />
