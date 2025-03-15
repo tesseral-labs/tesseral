@@ -26,6 +26,7 @@ import {
 import {
   RegisterAuthenticatorAppPage
 } from "@/pages/login/RegisterAuthenticatorAppPage";
+import { RegisterPasskeyPage } from "@/pages/login/RegisterPasskeyPage";
 
 const queryClient = new QueryClient();
 
@@ -52,6 +53,7 @@ function AppWithRoutes() {
               <Route path="organizations/:organizationId/login" element={<OrganizationLoginPage />} />
               <Route path="verify-password" element={<VerifyPasswordPage />} />
               <Route path="register-secondary-factor" element={<RegisterSecondaryFactorPage />} />
+              <Route path="register-passkey" element={<RegisterPasskeyPage />} />
               <Route path="register-authenticator-app" element={<RegisterAuthenticatorAppPage />} />
               <Route path="finish-login" element={<FinishLoginPage />} />
             </Route>
