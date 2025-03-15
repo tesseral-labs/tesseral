@@ -20,6 +20,12 @@ import { OrganizationLoginPage } from "@/pages/login/OrganizationLoginPage";
 import { VerifyPasswordPage } from "@/pages/login/VerifyPasswordPage";
 import { FinishLoginPage } from "@/pages/login/FinishLoginPage";
 import { CreateOrganizationPage } from "@/pages/login/CreateOrganizationPage";
+import {
+  RegisterSecondaryFactorPage
+} from "@/pages/login/RegisterSecondaryFactorPage";
+import {
+  RegisterAuthenticatorAppPage
+} from "@/pages/login/RegisterAuthenticatorAppPage";
 
 const queryClient = new QueryClient();
 
@@ -45,6 +51,8 @@ function AppWithRoutes() {
               <Route path="create-organization" element={<CreateOrganizationPage />} />
               <Route path="organizations/:organizationId/login" element={<OrganizationLoginPage />} />
               <Route path="verify-password" element={<VerifyPasswordPage />} />
+              <Route path="register-secondary-factor" element={<RegisterSecondaryFactorPage />} />
+              <Route path="register-authenticator-app" element={<RegisterAuthenticatorAppPage />} />
               <Route path="finish-login" element={<FinishLoginPage />} />
             </Route>
 

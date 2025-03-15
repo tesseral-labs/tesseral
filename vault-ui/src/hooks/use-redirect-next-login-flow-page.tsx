@@ -40,29 +40,37 @@ export function useRedirectNextLoginFlowPage(): () => void {
       return;
     }
 
-    console.log("asdf1");
-
     // verify password if there is one registered, and it's not already verified
     if (organization.userHasPassword && !intermediateSession.passwordVerified) {
       navigate(`/verify-password`);
       return;
     }
 
-    console.log("asdf2");
+    // Check if we may need to verify a secondary factor. If a user has a
+    // secondary factor registered, they must always verify it.
+    //
+    // We can skip verifying secondary factors if one is already verified.
+    if (!intermediateSession.passkeyVerified && !intermediateSession.authenticatorAppVerified) {
+      // if a user has both a passkey and an authenticator app, let them choose
+      // which one to verify
+      if (organization.userHasPasskey && organization.userHasAuthenticatorApp) {
+        navigate(`/verify-secondary-factor`);
+        return;
+      }
 
-    // verify a secondary factor if there is one registered but not verified
-    const needsVerifyAuthenticatorApp =
-      organization.userHasAuthenticatorApp &&
-      !intermediateSession.authenticatorAppVerified;
-    const needsVerifyPasskey =
-      organization.userHasPasskey &&
-      !intermediateSession.authenticatorAppVerified;
-    if (needsVerifyAuthenticatorApp || needsVerifyPasskey) {
-      navigate(`/verify-secondary-factor`);
-      return;
+      if (organization.userHasPasskey) {
+        navigate(`/verify-passkey`);
+        return;
+      }
+
+      if (organization.userHasAuthenticatorApp) {
+        navigate(`/verify-authenticator-app`);
+        return;
+      }
+
+      // falling through here because the user does not have a registered
+      // secondary factor
     }
-
-    console.log("asdf3");
 
     // register a password if the org uses them and the user doesn't have one
     // registered
@@ -71,21 +79,31 @@ export function useRedirectNextLoginFlowPage(): () => void {
       return;
     }
 
-    console.log("asdf4");
+    // Check for needing to register a secondary factor. Users only need to
+    // register these if the organization requires MFA.
+    //
+    // We can also skip registering secondary factors if one is already
+    // verified.
+    if (organization.requireMfa && !intermediateSession.passkeyVerified && !intermediateSession.authenticatorAppVerified) {
+      // if only one of passkey or authenticator app is configured, redirect
+      // directly to that setup page
+      if (organization.logInWithPasskey && !organization.logInWithAuthenticatorApp) {
+        navigate(`/register-passkey`)
+        return;
+      }
 
-    // register a secondary factor if the org requires their registration (i.e.
-    // requires MFA) and the user doesn't have one registered
-    if (organization.requireMfa && !(organization.userHasPasskey || organization.userHasAuthenticatorApp)) {
+      if (organization.logInWithAuthenticatorApp && !organization.logInWithPasskey) {
+        navigate(`/register-authenticator-app`)
+        return;
+      }
+
+      // let the user choose which one to register
       navigate(`/register-secondary-factor`);
       return;
     }
 
-    console.log("asdf5");
-
     // we have everything we need, finish login flow
     navigate(`/finish-login`);
-
-    console.log("asdf6");
   }, [navigate, refetchListOrganizations, refetchWhoami]);
 }
 

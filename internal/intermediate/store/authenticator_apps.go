@@ -98,7 +98,7 @@ func (s *Store) RegisterAuthenticatorApp(ctx context.Context, req *intermediatev
 		return nil, fmt.Errorf("check should register authenticator app: %w", err)
 	}
 
-	secret, err := s.getAuthenticatorAppSecret(ctx)
+	secret, err := s.getIntermediateSessionPendingAuthenticatorAppSecret(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("get authenticator app secret: %w", err)
 	}
@@ -377,6 +377,35 @@ func (s *Store) updateUserAuthenticatorAppLockoutState(ctx context.Context, last
 	return nil
 }
 
+func (s *Store) getIntermediateSessionPendingAuthenticatorAppSecret(ctx context.Context) ([]byte, error) {
+	_, q, _, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get intermediate session by id: %w", err)
+	}
+
+	// close tx before calling kms
+	if err := rollback(); err != nil {
+		return nil, fmt.Errorf("rollback: %w", err)
+	}
+
+	decryptRes, err := s.kms.Decrypt(ctx, &kms.DecryptInput{
+		KeyId:               &s.authenticatorAppSecretsKMSKeyID,
+		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
+		CiphertextBlob:      qIntermediateSession.AuthenticatorAppSecretCiphertext,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("decrypt authenticator app secret ciphertext: %w", err)
+	}
+
+	return decryptRes.Plaintext, nil
+}
+
 func (s *Store) getAuthenticatorAppSecret(ctx context.Context) ([]byte, error) {
 	_, q, _, rollback, err := s.tx(ctx)
 	if err != nil {
@@ -400,6 +429,11 @@ func (s *Store) getAuthenticatorAppSecret(ctx context.Context) ([]byte, error) {
 	qMatchingUser, err := s.matchUser(ctx, q, qOrg, qIntermediateSession)
 	if err != nil {
 		return nil, fmt.Errorf("match user: %w", err)
+	}
+
+	// close tx before calling kms
+	if err := rollback(); err != nil {
+		return nil, fmt.Errorf("rollback: %w", err)
 	}
 
 	decryptRes, err := s.kms.Decrypt(ctx, &kms.DecryptInput{

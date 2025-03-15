@@ -79,7 +79,8 @@ SET
     log_in_with_authenticator_app = $7,
     log_in_with_passkey = $8,
     log_in_with_saml = $9,
-    scim_enabled = $10
+    scim_enabled = $10,
+    require_mfa = $11
 WHERE
     id = $1
 RETURNING

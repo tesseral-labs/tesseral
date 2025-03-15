@@ -7,7 +7,12 @@ import { z } from "zod";
 
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
 import { Button } from "@/components/ui/button";
-import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -53,6 +58,9 @@ export function VerifyPasswordPage() {
     <LoginFlowCard>
       <CardHeader>
         <CardTitle>Verify your password</CardTitle>
+        <CardDescription>
+          Enter your password below to continue logging in.
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
