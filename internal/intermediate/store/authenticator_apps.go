@@ -243,6 +243,20 @@ func (s *Store) verifyAuthenticatorAppByBackupCode(ctx context.Context, backupCo
 		recoveryCodeBcrypts = append(recoveryCodeBcrypts, b)
 	}
 
+	// write back the remaining backup codes to the user
+	if _, err := q.UpdateUserAuthenticatorAppRecoveryCodeBcrypts(ctx, queries.UpdateUserAuthenticatorAppRecoveryCodeBcryptsParams{
+		ID:                                  qMatchingUser.ID,
+		AuthenticatorAppRecoveryCodeBcrypts: recoveryCodeBcrypts,
+	}); err != nil {
+		return fmt.Errorf("update intermediate session authenticator app backup code bcrypts: %w", err)
+	}
+
+	// commit; our writes conflict with those from
+	// updateUserAuthenticatorAppLockoutState
+	if err := commit(); err != nil {
+		return fmt.Errorf("commit: %w", err)
+	}
+
 	if !ok {
 		if err := s.updateUserAuthenticatorAppLockoutState(ctx, false); err != nil {
 			return fmt.Errorf("update user authenticator app lockout state: %w", err)
@@ -251,20 +265,8 @@ func (s *Store) verifyAuthenticatorAppByBackupCode(ctx context.Context, backupCo
 		return apierror.NewInvalidArgumentError("invalid backup code", nil)
 	}
 
-	// write back the remaining backup codes to the user
-	if _, err := q.UpdateUserAuthenticatorAppRecoveryCodeBcrypts(ctx, queries.UpdateUserAuthenticatorAppRecoveryCodeBcryptsParams{
-		ID:                                  authn.IntermediateSessionID(ctx),
-		AuthenticatorAppRecoveryCodeBcrypts: recoveryCodeBcrypts,
-	}); err != nil {
-		return fmt.Errorf("update intermediate session authenticator app backup code bcrypts: %w", err)
-	}
-
 	if err := s.updateUserAuthenticatorAppLockoutState(ctx, true); err != nil {
 		return fmt.Errorf("update user authenticator app lockout state: %w", err)
-	}
-
-	if err := commit(); err != nil {
-		return fmt.Errorf("commit: %w", err)
 	}
 
 	return nil

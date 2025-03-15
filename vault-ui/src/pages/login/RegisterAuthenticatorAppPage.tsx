@@ -37,6 +37,7 @@ import {
 } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
 import { useRedirectNextLoginFlowPage } from "@/hooks/use-redirect-next-login-flow-page";
 import { useDarkMode } from "@/lib/dark-mode";
+import { toast } from "sonner";
 
 const schema = z.object({
   totpCode: z.string().length(6),
@@ -81,6 +82,7 @@ export function RegisterAuthenticatorAppPage() {
 
   async function handleCopy() {
     await navigator.clipboard.writeText(recoveryCodes!.join("\n"))
+    toast.success("Copied recovery codes to clipboard");
   }
 
   const redirectNextLoginFlowPage = useRedirectNextLoginFlowPage();
@@ -91,9 +93,9 @@ export function RegisterAuthenticatorAppPage() {
   return recoveryCodes ? (
     <LoginFlowCard>
       <CardHeader>
-        <CardTitle>Authenticator app backup codes</CardTitle>
+        <CardTitle>Authenticator app recovery codes</CardTitle>
         <CardDescription>
-          Keep these backup codes in a private place.
+          Keep these recovery codes in a private place.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -110,7 +112,7 @@ export function RegisterAuthenticatorAppPage() {
           authenticator app.
         </p>
 
-        <Button variant="outline" onClick={handleCopy} className="mt-4 w-full">Copy backup codes</Button>
+        <Button variant="outline" onClick={handleCopy} className="mt-4 w-full">Copy recovery codes</Button>
         <Button className="mt-2 w-full" onClick={handleFinish}>
           Finish logging in
         </Button>
