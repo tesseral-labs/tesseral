@@ -16,7 +16,7 @@ func TestParse(t *testing.T) {
 
 	require.NoError(t, c.Verify(&webauthn.VerifyRequest{
 		RPID:              "localhost",
-		Origin:            "http://localhost:3002",
+		Origins:           []string{"http://localhost:3002"},
 		ChallengeSHA256:   []byte{132, 143, 185, 51, 158, 98, 37, 12, 23, 156, 66, 204, 255, 170, 216, 93, 168, 10, 69, 31, 108, 79, 71, 89, 15, 138, 213, 219, 29, 51, 128, 200},
 		ClientDataJSON:    "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiZVZCb2NkcnU3cm1VdzhJVloyVW1JdVB6cXp0NEx0VnZnU2JpcGdGOWRGQSIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzAwMiIsImNyb3NzT3JpZ2luIjpmYWxzZSwib3RoZXJfa2V5c19jYW5fYmVfYWRkZWRfaGVyZSI6ImRvIG5vdCBjb21wYXJlIGNsaWVudERhdGFKU09OIGFnYWluc3QgYSB0ZW1wbGF0ZS4gU2VlIGh0dHBzOi8vZ29vLmdsL3lhYlBleCJ9",
 		AuthenticatorData: "SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2MdAAAAAA",
