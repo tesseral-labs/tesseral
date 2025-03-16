@@ -37,6 +37,7 @@ import {
   VerifySecondaryFactorPage
 } from "@/pages/login/VerifySecondaryFactorPage";
 import { SwitchOrganizationsPage } from "@/pages/login/SwitchOrganizationsPage";
+import { ImpersonatePage } from "@/pages/login/ImpersonatePage";
 
 
 
@@ -74,9 +75,10 @@ function AppWithRoutes() {
               <Route path="register-passkey" element={<RegisterPasskeyPage />} />
               <Route path="register-authenticator-app" element={<RegisterAuthenticatorAppPage />} />
               <Route path="finish-login" element={<FinishLoginPage />} />
-            </Route>
 
-            <Route path="switch-organizations/:organizationId" element={<SwitchOrganizationsPage />} />
+              <Route path="impersonate" element={<ImpersonatePage />} />
+              <Route path="switch-organizations/:organizationId" element={<SwitchOrganizationsPage />} />
+            </Route>
 
             <Route path="" element={<LoggedInGate />}>
               <Route path="" element={<DashboardLayout />}>
