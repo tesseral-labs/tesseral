@@ -20,6 +20,10 @@ export function LoggedInGate() {
   return <Outlet />;
 }
 
+export function clearAccessToken() {
+  localStorage.removeItem("access_token");
+}
+
 // the below is adapted from tesseral-sdk-react
 
 function useAccessTokenInternal(): string | undefined {

@@ -77,17 +77,17 @@ export function DashboardSidebar() {
                 <DropdownMenuLabel className="text-xs text-muted-foreground">
                   Organizations
                 </DropdownMenuLabel>
-                {listSwitchableOrganizationsResponse?.switchableOrganizations
-                  ?.filter(
-                    (org) =>
-                      org.id !== getOrganizationResponse?.organization?.id,
-                  )
-                  .map((org) => (
+                {listSwitchableOrganizationsResponse?.switchableOrganizations?.map(
+                  (org) => (
                     <DropdownMenuItem
                       key={org.id}
                       className="gap-2 p-2"
                       onClick={() => {
-                        navigate(`/switch-organizations/${org.id}`);
+                        if (
+                          org.id !== getOrganizationResponse?.organization?.id
+                        ) {
+                          navigate(`/switch-organizations/${org.id}`);
+                        }
                       }}
                     >
                       <div className="flex size-6 items-center justify-center rounded-sm border">
@@ -95,7 +95,8 @@ export function DashboardSidebar() {
                       </div>
                       {org.displayName}
                     </DropdownMenuItem>
-                  ))}
+                  ),
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </SidebarMenuItem>
