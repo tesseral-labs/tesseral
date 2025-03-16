@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
-  createIntermediateSession,
+  createIntermediateSession, getGoogleOAuthRedirectURL,
   issueEmailVerificationChallenge,
   setEmailAsPrimaryLoginFactor,
 } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
@@ -111,6 +111,19 @@ function LoginPageContents() {
   const settings = useProjectSettings();
   const darkMode = useDarkMode();
 
+  const createIntermediateSessionMutation = useMutation(
+    createIntermediateSession,
+  );
+
+  const { mutateAsync: getGoogleOAuthRedirectURLAsync } = useMutation(getGoogleOAuthRedirectURL)
+  async function handleLogInWithGoogle() {
+    await createIntermediateSessionMutation.mutateAsync({});
+    const { url } = await getGoogleOAuthRedirectURLAsync({
+      redirectUrl: `${window.location.origin}/google-oauth-callback`,
+    });
+    window.location.href = url;
+  }
+
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -119,9 +132,6 @@ function LoginPageContents() {
   });
 
   const [submitting, setSubmitting] = useState(false);
-  const createIntermediateSessionMutation = useMutation(
-    createIntermediateSession,
-  );
   const setEmailAsPrimaryLoginFactorMutation = useMutation(
     setEmailAsPrimaryLoginFactor,
   );
@@ -156,7 +166,8 @@ function LoginPageContents() {
           {settings.logInWithGoogle && (
             <Button
               className="w-full"
-              variant={darkMode ? "default" : "outline"}
+              variant="outline"
+              onClick={handleLogInWithGoogle}
             >
               <GoogleIcon />
               Log in with Google

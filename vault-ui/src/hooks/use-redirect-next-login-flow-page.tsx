@@ -1,8 +1,9 @@
-import { useQuery } from "@connectrpc/connect-query";
+import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { useCallback } from "react";
 import { useNavigate } from "react-router";
 
 import {
+  issueEmailVerificationChallenge,
   listOrganizations,
   whoami,
 } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
@@ -13,17 +14,44 @@ import {
 import { Organization } from "@/gen/tesseral/intermediate/v1/intermediate_pb";
 
 export function useRedirectNextLoginFlowPage(): () => void {
-  const { refetch: refetchWhoami } = useQuery(whoami);
-  const { refetch: refetchListOrganizations } = useQuery(listOrganizations);
+  // don't eagerly fetch; we won't use their initial values
+  const { refetch: refetchWhoami } = useQuery(whoami, undefined, {
+    enabled: false,
+  });
+  const { refetch: refetchListOrganizations } = useQuery(
+    listOrganizations,
+    undefined,
+    {
+      enabled: false,
+    },
+  );
+  const { mutateAsync: issueEmailVerificationChallengeMutationAsync } =
+    useMutation(issueEmailVerificationChallenge);
+
   const navigate = useNavigate();
 
   return useCallback(async () => {
+    const { data: whoamiResponse } = await refetchWhoami();
+    const intermediateSession = whoamiResponse!.intermediateSession!;
+
+    if (!intermediateSession.emailVerified) {
+      await issueEmailVerificationChallengeMutationAsync({
+        email: whoamiResponse?.intermediateSession?.email,
+      });
+
+      navigate(`/verify-email`);
+      return;
+    }
+
+    if (!intermediateSession.organizationId) {
+      navigate(`/choose-organization`);
+      return;
+    }
+
     // get the latest state of the intermediate session and its organizations
     const { data: listOrganizationsResponse } =
       await refetchListOrganizations();
-    const { data: whoamiResponse } = await refetchWhoami();
 
-    const intermediateSession = whoamiResponse!.intermediateSession!;
     const organization = listOrganizationsResponse!.organizations.find(
       (org) => org.id === intermediateSession.organizationId,
     )!;
