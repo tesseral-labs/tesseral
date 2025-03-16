@@ -36,6 +36,7 @@ import { LoggedInGate } from "@/pages/dashboard/LoggedInGate";
 import {
   VerifySecondaryFactorPage
 } from "@/pages/login/VerifySecondaryFactorPage";
+import { SwitchOrganizationsPage } from "@/pages/login/SwitchOrganizationsPage";
 
 
 
@@ -74,6 +75,8 @@ function AppWithRoutes() {
               <Route path="register-authenticator-app" element={<RegisterAuthenticatorAppPage />} />
               <Route path="finish-login" element={<FinishLoginPage />} />
             </Route>
+
+            <Route path="switch-organizations/:organizationId" element={<SwitchOrganizationsPage />} />
 
             <Route path="" element={<LoggedInGate />}>
               <Route path="" element={<DashboardLayout />}>

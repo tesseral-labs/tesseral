@@ -22,6 +22,8 @@ func (s *Store) ListSwitchableOrganizations(ctx context.Context, req *frontendv1
 		return nil, fmt.Errorf("get user by id: %w", err)
 	}
 
+	fmt.Println("list switchable organizations", qUser.Email)
+
 	qOrgs, err := q.ListSwitchableOrganizations(ctx, queries.ListSwitchableOrganizationsParams{
 		ProjectID: authn.ProjectID(ctx),
 		Email:     qUser.Email,
@@ -29,6 +31,8 @@ func (s *Store) ListSwitchableOrganizations(ctx context.Context, req *frontendv1
 	if err != nil {
 		return nil, fmt.Errorf("list switchable organizations: %w", err)
 	}
+
+	fmt.Println("list switchable organizations", qOrgs)
 
 	var orgs []*frontendv1.SwitchableOrganization
 	for _, qOrg := range qOrgs {

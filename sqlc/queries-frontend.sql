@@ -412,7 +412,7 @@ WHERE
     project_id = $1
     AND EXISTS (
         SELECT
-            *
+            1
         FROM
             users
         WHERE
