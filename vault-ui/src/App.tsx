@@ -9,6 +9,7 @@ import { BrowserRouter } from "react-router-dom";
 import { Toaster } from "@/components/ui/sonner";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 import { LoggedInGate } from "@/pages/dashboard/LoggedInGate";
+import { OrganizationSettingsPage } from "@/pages/dashboard/OrganizationSettingsPage";
 import { ChooseOrganizationPage } from "@/pages/login/ChooseOrganizationPage";
 import { CreateOrganizationPage } from "@/pages/login/CreateOrganizationPage";
 import { FinishLoginPage } from "@/pages/login/FinishLoginPage";
@@ -29,9 +30,6 @@ import { VerifySecondaryFactorPage } from "@/pages/login/VerifySecondaryFactorPa
 
 import { DashboardLayout } from "./pages/dashboard/DashboardLayout";
 import { UserSettingsPage } from "./pages/dashboard/UserSettingsPage";
-import {
-  OrganizationSettingsPage
-} from "@/pages/dashboard/OrganizationSettingsPage";
 
 const queryClient = new QueryClient();
 
@@ -103,7 +101,10 @@ function AppWithRoutes() {
             <Route path="" element={<LoggedInGate />}>
               <Route path="" element={<DashboardLayout />}>
                 <Route path="user-settings" element={<UserSettingsPage />} />
-                <Route path="organization-settings" element={<OrganizationSettingsPage />} />
+                <Route
+                  path="organization-settings"
+                  element={<OrganizationSettingsPage />}
+                />
               </Route>
             </Route>
 
