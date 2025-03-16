@@ -1,4 +1,4 @@
-name: buf-ci
+name: vaultui-ci
 on:
   push:
 permissions:
@@ -11,8 +11,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-      - run: npm ci
-      - run: npm run fmt
+      - run: |
+          cd vaultui
+          npm ci
+          npm run fmt
   lint:
     runs-on: ubuntu-latest
     steps:
@@ -20,8 +22,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-      - run: npm ci
-      - run: npm run lint
+      - run: |
+          cd vaultui
+          npm ci
+          npm run lint
   tsc-check:
     runs-on: ubuntu-latest
     steps:
@@ -29,5 +33,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-      - run: npm ci
-      - run: npm run tsc-check
+      - run: |
+          cd vaultui
+          npm ci
+          npm run tsc-check
