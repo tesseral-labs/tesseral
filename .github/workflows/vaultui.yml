@@ -14,7 +14,7 @@ jobs:
       - run: |
           cd vault-ui
           npm ci
-          npm run fmt
+          npm run fmt-check
   lint:
     runs-on: ubuntu-latest
     steps:

@@ -10,6 +10,7 @@
     "esbuild": "node ./build.mjs",
     "esbuild:watch": "UI_BUILD_IS_DEV=1 node ./build.mjs --watch=forever",
     "fmt": "prettier --write .",
+    "fmt-check": "prettier --check .",
     "lint": "eslint src",
     "tsc-check": "tsc --noEmit",
     "serve": "http-server -c-1 -p 3002 -P http://localhost:3002?",
