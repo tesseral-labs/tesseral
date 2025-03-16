@@ -12,7 +12,7 @@ jobs:
         with:
           node-version-file: .nvmrc
       - run: |
-          cd vaultui
+          cd vault-ui
           npm ci
           npm run fmt
   lint:
@@ -23,7 +23,7 @@ jobs:
         with:
           node-version-file: .nvmrc
       - run: |
-          cd vaultui
+          cd vault-ui
           npm ci
           npm run lint
   tsc-check:
@@ -34,6 +34,6 @@ jobs:
         with:
           node-version-file: .nvmrc
       - run: |
-          cd vaultui
+          cd vault-ui
           npm ci
           npm run tsc-check
