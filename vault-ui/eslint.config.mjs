@@ -1,52 +1,36 @@
-import eslint from '@eslint/js';
-import tseslint from 'typescript-eslint';
-import preferArrow from 'eslint-plugin-prefer-arrow';
+import * as reactHooks from "eslint-plugin-react-hooks";
+import pluginJs from "@eslint/js";
+import pluginReact from "eslint-plugin-react";
+import globals from "globals";
+import tseslint from "typescript-eslint";
 
-export default tseslint.config(
+/** @type {import("eslint").Linter.Config[]} */
+// eslint-disable-next-line no-restricted-exports
+export default [
+  { files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"] },
+  { languageOptions: { globals: globals.browser } },
+  pluginJs.configs.recommended,
+  ...tseslint.configs.recommended,
+  pluginReact.configs.flat.recommended,
+  reactHooks.configs["recommended-latest"],
   {
-    languageOptions: {
-      parserOptions: {
-        tsconfigRootDir: process.cwd(),
-        project: ['./tsconfig.json'],
+    ignores: ["src/gen/**/*", "src/components/ui/*"],
+  },
+  {
+    settings: {
+      react: {
+        version: "detect",
       },
     },
-    plugins: {
-      'prefer-arrow': preferArrow,
-    },
-  },
-  {
-    ignores: [
-      'node_modules',
-      'src/gen',
-      'src/components/ui',
-      'src/hooks',
-      '**/*.{js,mjs,jsx}',
-    ],
-  },
-  eslint.configs.recommended,
-  tseslint.configs.recommended,
-  tseslint.configs.recommendedTypeChecked,
-  {
     rules: {
-      'prefer-arrow/prefer-arrow-functions': [
-        'error',
-        {
-          disallowPrototype: true,
-          singleReturnOnly: false,
-          classPropertiesAllowed: false,
-        },
+      "react/prop-types": "off",
+      "react/no-unescaped-entities": "off",
+      "react-hooks/exhaustive-deps": "error",
+      "func-style": ["error", "declaration"],
+      "no-restricted-exports": [
+        "error",
+        { restrictDefaultExports: { direct: true } },
       ],
-      '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-unsafe-return': 'warn',
-      '@typescript-eslint/no-misused-promises': [
-        'error',
-        {
-          checksVoidReturn: false,
-        },
-      ],
-      '@typescript-eslint/no-unsafe-assignment': 'warn',
-      '@typescript-eslint/no-unsafe-member-access': 'warn',
-      '@typescript-eslint/restrict-template-expressions': 'off',
     },
   },
-);
+];

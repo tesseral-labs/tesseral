@@ -274,6 +274,11 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *backendv1.UpdateOrg
 		updates.ScimEnabled = *req.Organization.ScimEnabled
 	}
 
+	updates.RequireMfa = qOrg.RequireMfa
+	if req.Organization.RequireMfa != nil {
+		updates.RequireMfa = *req.Organization.RequireMfa
+	}
+
 	qUpdatedOrg, err := q.UpdateOrganization(ctx, updates)
 	if err != nil {
 		return nil, fmt.Errorf("update organization: %w", err)

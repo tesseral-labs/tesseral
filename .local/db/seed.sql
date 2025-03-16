@@ -15,13 +15,6 @@ INSERT INTO organizations (id, display_name, project_id, log_in_with_google, log
 
 UPDATE projects SET organization_id = '7a76decb-6d79-49ce-9449-34fcc53151df'::uuid where id = '56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2'::uuid;
 
--- have dogfood project support passkeys from auth.console.tesseral.example.com (vault) and console.tesseral.example.com (self-built login flow)
-insert into
-    project_trusted_domains (id, project_id, domain)
-values
-    (gen_random_uuid(), '56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2', 'auth.console.tesseral.example.com'),
-    (gen_random_uuid(), '56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2', 'console.tesseral.example.com');
-
 -- Create a user in the dogfood project
 INSERT INTO users (id, email, password_bcrypt, organization_id, is_owner)
   VALUES (gen_random_uuid(), 'root@app.tesseral.example.com', crypt('testpassword', gen_salt('bf', 14)), '7a76decb-6d79-49ce-9449-34fcc53151df', true);
@@ -45,8 +38,8 @@ INSERT INTO session_signing_keys (id, project_id, public_key, private_key_cipher
   );
 
 -- Create customer1's project
-insert into projects (id, log_in_with_password, log_in_with_google, log_in_with_microsoft, display_name, vault_domain, email_send_from_domain, redirect_uri)
-    values ('7abd6d2e-c314-456e-b9c5-bdbb62f0345f'::uuid, true, false, false, 'Customer One', 'auth.customer1.example.com', 'auth.customer1.example.com', 'http://localhost:4000');
+insert into projects (id, log_in_with_email, log_in_with_password, log_in_with_google, log_in_with_microsoft, display_name, vault_domain, email_send_from_domain, redirect_uri)
+    values ('7abd6d2e-c314-456e-b9c5-bdbb62f0345f'::uuid, true, false, false, false, 'Customer One', 'project-79ldwwwzybn66dxa91udi7mn3.tesseral.example.app', 'tesseral.example.com', 'http://localhost:4000');
 
 -- Create customer1's project's backing organization
 INSERT INTO organizations (id, display_name, project_id, log_in_with_saml, scim_enabled, log_in_with_password)

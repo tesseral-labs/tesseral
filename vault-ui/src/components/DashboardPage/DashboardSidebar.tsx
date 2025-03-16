@@ -1,4 +1,9 @@
-import React, { FC, SyntheticEvent } from 'react'
+import { Building2, UserCog } from "lucide-react";
+import React, { SyntheticEvent } from "react";
+
+import { useDarkMode } from "@/lib/dark-mode";
+import { useSettings } from "@/lib/settings";
+
 import {
   Sidebar,
   SidebarContent,
@@ -9,52 +14,49 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from '../ui/sidebar'
-import useSettings from '@/lib/settings'
-import useDarkMode from '@/lib/dark-mode'
-import { Building2, UserCog } from 'lucide-react'
+} from "../ui/sidebar";
 
-const DashboardSidebar: FC = () => {
-  const settings = useSettings()
-  const isDarkMode = useDarkMode()
+export function DashboardSidebar() {
+  const settings = useSettings();
+  const isDarkMode = useDarkMode();
 
   const items = [
     {
       icon: UserCog,
-      title: 'User Settings',
-      url: '/settings',
+      title: "User Settings",
+      url: "/settings",
     },
     {
       icon: Building2,
-      title: 'Organization Settings',
-      url: '/organization',
+      title: "Organization Settings",
+      url: "/organization",
     },
-  ]
+  ];
 
   return (
-    <Sidebar className={isDarkMode ? 'dark' : ''} collapsible="icon">
+    <Sidebar className={isDarkMode ? "dark" : ""} collapsible="icon">
       <SidebarHeader>
         <div>
           {isDarkMode && settings?.detectDarkModeEnabled ? (
             <img
               className="max-h-[20px] max-w-[150px]"
               src={
-                settings?.darkModeLogoUrl || '/images/tesseral-logo-white.svg'
+                settings?.darkModeLogoUrl || "/images/tesseral-logo-white.svg"
               }
               onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
-                const target = e.target as HTMLImageElement
-                target.onerror = null
-                target.src = '/images/tesseral-logo-white.svg'
+                const target = e.target as HTMLImageElement;
+                target.onerror = null;
+                target.src = "/images/tesseral-logo-white.svg";
               }}
             />
           ) : (
             <img
               className="max-h-[20px] max-w-[150px]"
-              src={settings?.logoUrl || '/images/tesseral-logo-black.svg'}
+              src={settings?.logoUrl || "/images/tesseral-logo-black.svg"}
               onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
-                const target = e.target as HTMLImageElement
-                target.onerror = null
-                target.src = '/images/tesseral-logo-black.svg'
+                const target = e.target as HTMLImageElement;
+                target.onerror = null;
+                target.src = "/images/tesseral-logo-black.svg";
               }}
             />
           )}
@@ -80,7 +82,5 @@ const DashboardSidebar: FC = () => {
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
-  )
+  );
 }
-
-export default DashboardSidebar

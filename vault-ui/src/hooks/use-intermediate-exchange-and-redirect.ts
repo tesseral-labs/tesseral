@@ -1,9 +1,10 @@
+import { useMutation, useQuery } from "@connectrpc/connect-query";
+import { useCallback } from "react";
+
 import {
   exchangeIntermediateSessionForSession,
   getSettings,
-} from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
-import { useMutation, useQuery } from '@connectrpc/connect-query';
-import { useCallback } from 'react';
+} from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
 
 export function useIntermediateExchangeAndRedirect(): () => void {
   const { refetch } = useQuery(getSettings);
@@ -22,5 +23,5 @@ export function useIntermediateExchangeAndRedirect(): () => void {
 
     window.location.href =
       preferredRedirect ?? getSettingsResponse!.settings!.redirectUri;
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 }

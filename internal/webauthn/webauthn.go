@@ -98,7 +98,7 @@ func Parse(req *ParseRequest) (*Credential, error) {
 
 type VerifyRequest struct {
 	RPID              string
-	Origin            string
+	Origins           []string
 	ChallengeSHA256   []byte
 	ClientDataJSON    string
 	AuthenticatorData string
@@ -171,7 +171,15 @@ func (c *Credential) Verify(req *VerifyRequest) error {
 		return fmt.Errorf("cross-origin not supported")
 	}
 
-	if clientData.Origin != req.Origin {
+	var originOK bool
+	for _, o := range req.Origins {
+		if o == clientData.Origin {
+			originOK = true
+			break
+		}
+	}
+
+	if !originOK {
 		return fmt.Errorf("invalid origin")
 	}
 

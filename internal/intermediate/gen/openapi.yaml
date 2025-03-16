@@ -707,6 +707,10 @@ components:
                     type: string
                 passwordVerified:
                     type: boolean
+                authenticatorAppVerified:
+                    type: boolean
+                passkeyVerified:
+                    type: boolean
                 newUserPasswordRegistered:
                     type: boolean
                 emailVerificationChallengeRegistered:

@@ -1,38 +1,45 @@
-import React, { FC } from 'react';
-import { Navigate, Route, Routes } from 'react-router';
-import { BrowserRouter } from 'react-router-dom';
+import { Transport } from "@connectrpc/connect";
+import { TransportProvider } from "@connectrpc/connect-query";
+import { createConnectTransport } from "@connectrpc/connect-web";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import React from "react";
+import { Route, Routes } from "react-router";
+import { BrowserRouter } from "react-router-dom";
 
-import { Transport } from '@connectrpc/connect';
-import { TransportProvider } from '@connectrpc/connect-query';
-import { createConnectTransport } from '@connectrpc/connect-web';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Toaster } from "@/components/ui/sonner";
+import { NotFoundPage } from "@/pages/NotFoundPage";
+import { LoggedInGate } from "@/pages/dashboard/LoggedInGate";
+import { ChooseOrganizationPage } from "@/pages/login/ChooseOrganizationPage";
+import { CreateOrganizationPage } from "@/pages/login/CreateOrganizationPage";
+import { FinishLoginPage } from "@/pages/login/FinishLoginPage";
+import { ImpersonatePage } from "@/pages/login/ImpersonatePage";
+import { LoginFlowLayout } from "@/pages/login/LoginFlowLayout";
+import { LoginPage } from "@/pages/login/LoginPage";
+import { OrganizationLoginPage } from "@/pages/login/OrganizationLoginPage";
+import { RegisterAuthenticatorAppPage } from "@/pages/login/RegisterAuthenticatorAppPage";
+import { RegisterPasskeyPage } from "@/pages/login/RegisterPasskeyPage";
+import { RegisterSecondaryFactorPage } from "@/pages/login/RegisterSecondaryFactorPage";
+import { SwitchOrganizationsPage } from "@/pages/login/SwitchOrganizationsPage";
+import { VerifyAuthenticatorAppPage } from "@/pages/login/VerifyAuthenticatorAppPage";
+import { VerifyAuthenticatorAppRecoveryCodePage } from "@/pages/login/VerifyAuthenticatorAppRecoveryCodePage";
+import { VerifyEmailPage } from "@/pages/login/VerifyEmailPage";
+import { VerifyPasskeyPage } from "@/pages/login/VerifyPasskeyPage";
+import { VerifyPasswordPage } from "@/pages/login/VerifyPasswordPage";
+import { VerifySecondaryFactorPage } from "@/pages/login/VerifySecondaryFactorPage";
 
-import GoogleOAuthCallbackPage from '@/pages/GoogleOAuthCallbackPage';
-import LoginPage from '@/pages/LoginPage';
-import MicrosoftOAuthCallbackPage from '@/pages/MicrosoftOAuthCallbackPage';
-import NotFoundPage from '@/pages/NotFound';
-
-import Page from '@/components/Page';
-import UserSettingsPage from './pages/dashboard/UserSettingsPage';
-import DashboardPage from './components/DashboardPage';
-import OrganizationSettingsPage from './pages/dashboard/OrganizationSettingsPage';
-import EditSAMLConnectionsPage from './pages/dashboard/EditSAMLConnectionsPage';
-import RegisterPasskey from './views/RegisterPasskey';
-import { AuthType } from './lib/auth';
-import { VerifyEmailPage } from '@/pages/VerifyEmailPage';
-import { ImpersonatePage } from '@/pages/ImpersonatePage';
-import { SwitchOrganizationsPage } from '@/pages/SwitchOrganizationsPage';
+import { DashboardLayout } from "./pages/dashboard/DashboardLayout";
+import { UserSettingsPage } from "./pages/dashboard/UserSettingsPage";
 
 const queryClient = new QueryClient();
 
-const useTransport = (): Transport => {
+function useTransport(): Transport {
   return createConnectTransport({
     baseUrl: `/api/internal/connect`,
-    fetch: (input, init) => fetch(input, { ...init, credentials: 'include' }),
+    fetch: (input, init) => fetch(input, { ...init, credentials: "include" }),
   });
-};
+}
 
-const AppWithRoutes: FC = () => {
+function AppWithRoutes() {
   const transport = useTransport();
 
   return (
@@ -40,62 +47,72 @@ const AppWithRoutes: FC = () => {
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Page />}>
-              <Route index element={<Navigate to="login" replace />} />
-              <Route path="impersonate" element={<ImpersonatePage />} />
-              <Route path="switch-organizations/:organizationId" element={<SwitchOrganizationsPage />} />
-              <Route path="passkey-test" element={<RegisterPasskey />} />
+            <Route path="login" element={<LoginPage />} />
+            <Route path="" element={<LoginFlowLayout />}>
+              <Route path="verify-email" element={<VerifyEmailPage />} />
+              <Route
+                path="choose-organization"
+                element={<ChooseOrganizationPage />}
+              />
+              <Route
+                path="create-organization"
+                element={<CreateOrganizationPage />}
+              />
+              <Route
+                path="organizations/:organizationId/login"
+                element={<OrganizationLoginPage />}
+              />
+              <Route path="verify-password" element={<VerifyPasswordPage />} />
+              <Route
+                path="verify-secondary-factor"
+                element={<VerifySecondaryFactorPage />}
+              />
+              <Route
+                path="verify-authenticator-app"
+                element={<VerifyAuthenticatorAppPage />}
+              />
+              <Route
+                path="verify-authenticator-app-recovery-code"
+                element={<VerifyAuthenticatorAppRecoveryCodePage />}
+              />
+              <Route path="verify-passkey" element={<VerifyPasskeyPage />} />
+              <Route
+                path="register-secondary-factor"
+                element={<RegisterSecondaryFactorPage />}
+              />
+              <Route
+                path="register-passkey"
+                element={<RegisterPasskeyPage />}
+              />
+              <Route
+                path="register-authenticator-app"
+                element={<RegisterAuthenticatorAppPage />}
+              />
+              <Route path="finish-login" element={<FinishLoginPage />} />
 
+              <Route path="impersonate" element={<ImpersonatePage />} />
               <Route
-                path="google-oauth-callback"
-                element={<GoogleOAuthCallbackPage />}
-              />
-              <Route
-                path="microsoft-oauth-callback"
-                element={<MicrosoftOAuthCallbackPage />}
-              />
-              <Route path="/verify-email" element={<VerifyEmailPage />} />
-              <Route path="login" element={<LoginPage />} />
-              <Route
-                path="signup"
-                element={<LoginPage authType={AuthType.SignUp} />}
+                path="switch-organizations/:organizationId"
+                element={<SwitchOrganizationsPage />}
               />
             </Route>
 
-            <Route
-              path="/organization"
-              element={
-                <DashboardPage>
-                  <OrganizationSettingsPage />
-                </DashboardPage>
-              }
-            />
-            <Route
-              path="/organization/saml-connections/:samlConnectionId"
-              element={
-                <DashboardPage>
-                  <EditSAMLConnectionsPage />
-                </DashboardPage>
-              }
-            />
-            <Route
-              path="/settings"
-              element={
-                <DashboardPage>
-                  <UserSettingsPage />
-                </DashboardPage>
-              }
-            />
+            <Route path="" element={<LoggedInGate />}>
+              <Route path="" element={<DashboardLayout />}>
+                <Route path="user-settings" element={<UserSettingsPage />} />
+              </Route>
+            </Route>
+
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </BrowserRouter>
+
+        <Toaster />
       </QueryClientProvider>
     </TransportProvider>
   );
-};
+}
 
-const App: FC = () => {
+export function App() {
   return <AppWithRoutes />;
-};
-
-export default App;
+}

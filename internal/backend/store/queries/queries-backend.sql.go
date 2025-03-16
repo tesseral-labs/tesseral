@@ -1983,7 +1983,8 @@ SET
     log_in_with_authenticator_app = $7,
     log_in_with_passkey = $8,
     log_in_with_saml = $9,
-    scim_enabled = $10
+    scim_enabled = $10,
+    require_mfa = $11
 WHERE
     id = $1
 RETURNING
@@ -2001,6 +2002,7 @@ type UpdateOrganizationParams struct {
 	LogInWithPasskey          bool
 	LogInWithSaml             bool
 	ScimEnabled               bool
+	RequireMfa                bool
 }
 
 func (q *Queries) UpdateOrganization(ctx context.Context, arg UpdateOrganizationParams) (Organization, error) {
@@ -2015,6 +2017,7 @@ func (q *Queries) UpdateOrganization(ctx context.Context, arg UpdateOrganization
 		arg.LogInWithPasskey,
 		arg.LogInWithSaml,
 		arg.ScimEnabled,
+		arg.RequireMfa,
 	)
 	var i Organization
 	err := row.Scan(

@@ -26,6 +26,10 @@ func (s *Store) CreateOrganization(ctx context.Context, req *intermediatev1.Crea
 		return nil, apierror.NewPermissionDeniedError("email not verified", nil)
 	}
 
+	if intermediateSession.OrganizationId != "" {
+		return nil, apierror.NewFailedPreconditionError("organization already set", fmt.Errorf("organization already set"))
+	}
+
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -80,6 +84,14 @@ func (s *Store) CreateOrganization(ctx context.Context, req *intermediatev1.Crea
 		IsOwner:        true,
 	}); err != nil {
 		return nil, fmt.Errorf("create user invite: %w", err)
+	}
+
+	// Associate intermediate session with newly-created organization.
+	if _, err = q.UpdateIntermediateSessionOrganizationID(ctx, queries.UpdateIntermediateSessionOrganizationIDParams{
+		ID:             authn.IntermediateSessionID(ctx),
+		OrganizationID: &qOrganization.ID,
+	}); err != nil {
+		return nil, fmt.Errorf("update intermediate session organization ID: %w", err)
 	}
 
 	if err := commit(); err != nil {

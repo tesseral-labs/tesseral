@@ -182,6 +182,17 @@ func (s *Store) VerifyPasskey(ctx context.Context, req *intermediatev1.VerifyPas
 		return nil, fmt.Errorf("get passkey by credential id: %w", err)
 	}
 
+	qTrustedDomains, err := q.GetProjectTrustedDomains(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get project trusted domains: %w", err)
+	}
+
+	// the set of origins we expect passkeys to be using
+	var origins []string
+	for _, qProjectTrustedDomain := range qTrustedDomains {
+		origins = append(origins, fmt.Sprintf("https://%s", qProjectTrustedDomain.Domain))
+	}
+
 	publicKey, err := x509.ParsePKIXPublicKey(qPasskey.PublicKey)
 	if err != nil {
 		return nil, fmt.Errorf("marshal public key: %w", err)
@@ -197,6 +208,7 @@ func (s *Store) VerifyPasskey(ctx context.Context, req *intermediatev1.VerifyPas
 		ClientDataJSON:    req.ClientDataJson,
 		AuthenticatorData: req.AuthenticatorData,
 		Signature:         req.Signature,
+		Origins:           origins,
 	}); err != nil {
 		return nil, apierror.NewInvalidArgumentError("invalid passkey verification", fmt.Errorf("verify passkey: %w", err))
 	}

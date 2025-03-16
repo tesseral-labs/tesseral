@@ -1,23 +1,20 @@
-import React, { FC, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router';
-import { Link } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation, useQuery } from '@connectrpc/connect-query';
-import {
-  getSAMLConnection,
-  updateSAMLConnection,
-} from '@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery';
+import { useMutation, useQuery } from "@connectrpc/connect-query";
+import { zodResolver } from "@hookform/resolvers/zod";
+import React, { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate, useParams } from "react-router";
+import { Link } from "react-router-dom";
+import { toast } from "sonner";
+import { z } from "zod";
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -26,26 +23,29 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Switch } from '@/components/ui/switch';
-import { Input } from '@/components/ui/input';
-import { parseErrorMessage } from '@/lib/errors';
-import { toast } from 'sonner';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
+import {
+  getSAMLConnection,
+  updateSAMLConnection,
+} from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
+import { parseErrorMessage } from "@/lib/errors";
 
 const schema = z.object({
   primary: z.boolean(),
   idpEntityId: z.string().min(1, {
-    message: 'IDP Entity ID must be non-empty.',
+    message: "IDP Entity ID must be non-empty.",
   }),
   idpRedirectUrl: z.string().url({
-    message: 'IDP Redirect URL must be a valid URL.',
+    message: "IDP Redirect URL must be a valid URL.",
   }),
-  idpX509Certificate: z.string().startsWith('-----BEGIN CERTIFICATE-----', {
-    message: 'IDP Certificate must be a PEM-encoded X.509 certificate.',
+  idpX509Certificate: z.string().startsWith("-----BEGIN CERTIFICATE-----", {
+    message: "IDP Certificate must be a PEM-encoded X.509 certificate.",
   }),
 });
 
-const EditSAMLConnectionsPage: FC = () => {
+export function EditSAMLConnectionsPage() {
   const navigate = useNavigate();
   const params = useParams();
 
@@ -59,7 +59,7 @@ const EditSAMLConnectionsPage: FC = () => {
   });
   const updateSAMLConnectionMutation = useMutation(updateSAMLConnection);
 
-  const handleSubmit = async (values: z.infer<typeof schema>) => {
+  async function handleSubmit(values: z.infer<typeof schema>) {
     try {
       await updateSAMLConnectionMutation.mutateAsync({
         id: params.samlConnectionId,
@@ -74,11 +74,11 @@ const EditSAMLConnectionsPage: FC = () => {
       navigate(`/organization`);
     } catch (error) {
       const message = parseErrorMessage(error);
-      toast.error('Could not update SAML connection', {
+      toast.error("Could not update SAML connection", {
         description: message,
       });
     }
-  };
+  }
 
   useEffect(() => {
     if (data?.samlConnection) {
@@ -89,7 +89,7 @@ const EditSAMLConnectionsPage: FC = () => {
         idpX509Certificate: data.samlConnection.idpX509Certificate,
       });
     }
-  }, [data]);
+  }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="dark:text-foreground">
@@ -228,6 +228,4 @@ const EditSAMLConnectionsPage: FC = () => {
       </Form>
     </div>
   );
-};
-
-export default EditSAMLConnectionsPage;
+}

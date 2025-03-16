@@ -1,37 +1,38 @@
-import React, { FC, PropsWithChildren, useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet';
+import React, { PropsWithChildren, useEffect, useState } from "react";
+import { Helmet } from "react-helmet";
 
-import useDarkMode from '@/lib/dark-mode';
-import useSettings from '@/lib/settings';
+import { useIsMobile } from "@/hooks/use-mobile";
 import {
   OrganizationContextProvider,
   ProjectContextProvider,
   UserContextProvider,
   useSession,
-} from '@/lib/auth';
-import { SidebarProvider, SidebarTrigger } from '../ui/sidebar';
-import DashboardSidebar from './DashboardSidebar';
-import { Toaster } from '../ui/sonner';
-import { useIsMobile } from '@/hooks/use-mobile';
+} from "@/lib/auth";
+import { useDarkMode } from "@/lib/dark-mode";
+import { useSettings } from "@/lib/settings";
 
-const DashboardPage: FC<PropsWithChildren> = ({ children }) => {
+import { SidebarProvider, SidebarTrigger } from "../ui/sidebar";
+import { Toaster } from "../ui/sonner";
+import { DashboardSidebar } from "./DashboardSidebar";
+
+export function DashboardPage({ children }: PropsWithChildren) {
   const isDarkMode = useDarkMode();
   const isMobile = useIsMobile();
   const settings = useSettings();
   const session = useSession();
 
-  const [favicon, setFavicon] = useState<string>('/apple-touch-icon.png');
+  const [favicon, setFavicon] = useState<string>("/apple-touch-icon.png");
 
   useEffect(() => {
     if (settings?.faviconUrl) {
       void (async () => {
         // Check if the favicon exists before setting it
         const faviconCheck = await fetch(settings.faviconUrl, {
-          method: 'HEAD',
+          method: "HEAD",
         });
 
         setFavicon(
-          faviconCheck.ok ? settings.faviconUrl : '/apple-touch-icon.png',
+          faviconCheck.ok ? settings.faviconUrl : "/apple-touch-icon.png",
         );
       })();
     }
@@ -39,12 +40,12 @@ const DashboardPage: FC<PropsWithChildren> = ({ children }) => {
 
   return (
     <div
-      className={isDarkMode && settings?.detectDarkModeEnabled ? 'dark' : ''}
+      className={isDarkMode && settings?.detectDarkModeEnabled ? "dark" : ""}
     >
       <Helmet>
         <link rel="icon" href={favicon} />
         <link rel="apple-touch-icon" href={favicon} />
-        <title>{session?.organization?.displayName || 'Dashboard'}</title>
+        <title>{session?.organization?.displayName || "Dashboard"}</title>
       </Helmet>
 
       <ProjectContextProvider value={session?.project}>
@@ -67,6 +68,4 @@ const DashboardPage: FC<PropsWithChildren> = ({ children }) => {
       </ProjectContextProvider>
     </div>
   );
-};
-
-export default DashboardPage;
+}

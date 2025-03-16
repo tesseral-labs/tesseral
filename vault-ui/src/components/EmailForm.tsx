@@ -1,33 +1,33 @@
+import { useMutation } from "@connectrpc/connect-query";
+import debounce from "lodash.debounce";
 import React, {
   ChangeEvent,
   Dispatch,
-  FC,
   FormEvent,
   SetStateAction,
   useCallback,
   useEffect,
   useState,
-} from 'react';
-import { useMutation } from '@connectrpc/connect-query';
-import debounce from 'lodash.debounce';
+} from "react";
+import { toast } from "sonner";
 
-import { setIntermediateSessionToken } from '@/auth';
-import { Button } from './ui/button';
+import { setIntermediateSessionToken } from "@/auth";
 import {
   createIntermediateSession,
   issueEmailVerificationChallenge,
   listSAMLOrganizations,
   setEmailAsPrimaryLoginFactor,
-} from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
-import { LoginViews } from '@/lib/views';
-import { Organization } from '@/gen/tesseral/intermediate/v1/intermediate_pb';
-import TextDivider from './ui/text-divider';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
-import Loader from './ui/loader';
-import { parseErrorMessage } from '@/lib/errors';
-import { toast } from 'sonner';
-import { AuthType, useAuthType } from '@/lib/auth';
+} from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
+import { Organization } from "@/gen/tesseral/intermediate/v1/intermediate_pb";
+import { AuthType, useAuthType } from "@/lib/auth";
+import { parseErrorMessage } from "@/lib/errors";
+import { LoginViews } from "@/lib/views";
+
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+import Loader from "./ui/loader";
+import TextDivider from "./ui/text-divider";
 
 interface EmailFormProps {
   disableLogInWithEmail?: boolean;
@@ -36,12 +36,12 @@ interface EmailFormProps {
   setView: Dispatch<SetStateAction<LoginViews>>;
 }
 
-const EmailForm: FC<EmailFormProps> = ({
+export function EmailForm({
   disableLogInWithEmail = false,
   skipListSAMLOrganizations = false,
   skipIntermediateSessionCreation = false,
   setView,
-}) => {
+}: EmailFormProps) {
   const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/i;
 
   const authType = useAuthType();
@@ -57,13 +57,14 @@ const EmailForm: FC<EmailFormProps> = ({
     setEmailAsPrimaryLoginFactor,
   );
 
-  const [email, setEmail] = useState<string>('');
+  const [email, setEmail] = useState<string>("");
   const [emailIsValid, setEmailIsValid] = useState<boolean>(false);
   const [samlOrganizations, setSamlOrganizations] = useState<Organization[]>(
     [],
   );
   const [submitting, setSubmitting] = useState<boolean>(false);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchSamlOrganizations = useCallback(
     debounce(async () => {
       const { organizations } = await listSAMLOrganizationsMutation.mutateAsync(
@@ -77,11 +78,11 @@ const EmailForm: FC<EmailFormProps> = ({
     [email],
   );
 
-  const handleEmail = (e: ChangeEvent<HTMLInputElement>) => {
+  function handleEmail(e: ChangeEvent<HTMLInputElement>) {
     setEmail(e.target.value);
-  };
+  }
 
-  const handleSubmit = async (e: FormEvent) => {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     if (!disableLogInWithEmail) {
       setSubmitting(true);
@@ -109,12 +110,12 @@ const EmailForm: FC<EmailFormProps> = ({
       } catch (error) {
         setSubmitting(false);
         const message = parseErrorMessage(error);
-        toast.error('Could not initiate login', {
+        toast.error("Could not initiate login", {
           description: message,
         });
       }
     }
-  };
+  }
 
   useEffect(() => {
     void (async () => {
@@ -125,7 +126,7 @@ const EmailForm: FC<EmailFormProps> = ({
         await fetchSamlOrganizations();
       }
     })();
-  }, [email]);
+  }, [email]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>
@@ -148,7 +149,7 @@ const EmailForm: FC<EmailFormProps> = ({
         {!disableLogInWithEmail && (
           <Button type="submit" disabled={!emailIsValid || submitting}>
             {submitting && <Loader />}
-            {authType === AuthType.SignUp ? 'Sign up' : 'Log in'}
+            {authType === AuthType.SignUp ? "Sign up" : "Log in"}
           </Button>
         )}
       </form>
@@ -177,6 +178,4 @@ const EmailForm: FC<EmailFormProps> = ({
       )}
     </>
   );
-};
-
-export default EmailForm;
+}

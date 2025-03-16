@@ -1,12 +1,12 @@
-import React, { FC, SyntheticEvent } from 'react'
+import React, { SyntheticEvent } from "react";
+import { Outlet } from "react-router";
 
-import useDarkMode from '@/lib/dark-mode'
-import useSettings from '@/lib/settings'
-import { Outlet } from 'react-router'
+import { useDarkMode } from "@/lib/dark-mode";
+import { useSettings } from "@/lib/settings";
 
-const SideBySideLayout: FC = () => {
-  const isDarkMode = useDarkMode()
-  const settings = useSettings()
+export function SideBySideLayout() {
+  const isDarkMode = useDarkMode();
+  const settings = useSettings();
 
   return (
     <div className="bg-body w-screen min-h-screen grid grid-cols-2 gap-0">
@@ -19,22 +19,22 @@ const SideBySideLayout: FC = () => {
               <img
                 className="max-w-[180px]"
                 src={
-                  settings?.darkModeLogoUrl || '/images/tesseral-logo-white.svg'
+                  settings?.darkModeLogoUrl || "/images/tesseral-logo-white.svg"
                 }
                 onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
-                  const target = e.target as HTMLImageElement
-                  target.onerror = null
-                  target.src = '/images/tesseral-logo-white.svg'
+                  const target = e.target as HTMLImageElement;
+                  target.onerror = null;
+                  target.src = "/images/tesseral-logo-white.svg";
                 }}
               />
             ) : (
               <img
                 className="max-w-[180px]"
-                src={settings?.logoUrl || '/images/tesseral-logo-black.svg'}
+                src={settings?.logoUrl || "/images/tesseral-logo-black.svg"}
                 onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
-                  const target = e.target as HTMLImageElement
-                  target.onerror = null
-                  target.src = '/images/tesseral-logo-black.svg'
+                  const target = e.target as HTMLImageElement;
+                  target.onerror = null;
+                  target.src = "/images/tesseral-logo-black.svg";
                 }}
               />
             )}
@@ -43,7 +43,5 @@ const SideBySideLayout: FC = () => {
         <Outlet />
       </div>
     </div>
-  )
+  );
 }
-
-export default SideBySideLayout

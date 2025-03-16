@@ -1,47 +1,50 @@
-import React, { FC, useEffect, useState } from 'react';
-import useDarkMode from '@/lib/dark-mode';
-import { cn, hexToHSL, isColorDark } from '@/lib/utils';
-import useSettings, { useLayout } from '@/lib/settings';
-import { Helmet } from 'react-helmet';
-import { LoginLayouts } from '@/lib/views';
-import CenteredLayout from './layouts/centered';
-import SideBySideLayout from './layouts/side-by-side';
-import { Toaster } from './ui/sonner';
+import React, { FC, useEffect, useState } from "react";
+import { Helmet } from "react-helmet";
+
+import { useDarkMode } from "@/lib/dark-mode";
+import { useLayout, useSettings } from "@/lib/settings";
+import { cn, hexToHSL, isColorDark } from "@/lib/utils";
+import { LoginLayouts } from "@/lib/views";
+
+import { CenteredLayout } from "./layouts/centered";
+import { SideBySideLayout } from "./layouts/side-by-side";
+import { Toaster } from "./ui/sonner";
 
 const layoutMap: Record<string, FC> = {
   [`${LoginLayouts.Centered}`]: CenteredLayout,
   [`${LoginLayouts.SideBySide}`]: SideBySideLayout,
 };
 
-const Page = () => {
+export function Page() {
   const isDarkMode = useDarkMode();
   const layout = useLayout();
   const settings = useSettings();
 
-  const [favicon, setFavicon] = useState<string>('/apple-touch-icon.png');
+  const [favicon, setFavicon] = useState<string>("/apple-touch-icon.png");
   const Layout =
     layout && layoutMap[layout] ? layoutMap[layout] : CenteredLayout;
 
+  // eslint-disable-next-line func-style
   const applyTheme = () => {
     const root = document.documentElement;
-    const darkRoot = document.querySelector('.dark');
+    const darkRoot = document.querySelector(".dark");
 
     const primary = settings?.primaryColor;
     const darkPrimary = settings?.darkModePrimaryColor;
 
     if (primary) {
-      const foreground = isColorDark(primary) ? '0 0% 100%' : '0 0% 0%';
+      const foreground = isColorDark(primary) ? "0 0% 100%" : "0 0% 0%";
 
-      root.style.setProperty('--primary', hexToHSL(primary));
-      root.style.setProperty('--primary-foreground', foreground);
+      root.style.setProperty("--primary", hexToHSL(primary));
+      root.style.setProperty("--primary-foreground", foreground);
     }
 
     if (darkPrimary && darkRoot) {
       const root = darkRoot as HTMLElement;
-      const darkForeground = isColorDark(darkPrimary) ? '0 0% 100%' : '0 0% 0%';
+      const darkForeground = isColorDark(darkPrimary) ? "0 0% 100%" : "0 0% 0%";
 
-      root.style.setProperty('--primary', hexToHSL(darkPrimary));
-      root.style.setProperty('--primary-foreground', darkForeground);
+      root.style.setProperty("--primary", hexToHSL(darkPrimary));
+      root.style.setProperty("--primary-foreground", darkForeground);
     }
   };
 
@@ -55,30 +58,30 @@ const Page = () => {
         try {
           // Check if the favicon exists before setting it
           const faviconCheck = await fetch(settings?.faviconUrl, {
-            method: 'HEAD',
+            method: "HEAD",
           });
 
           setFavicon(
-            faviconCheck.ok ? settings?.faviconUrl : '/apple-touch-icon.png',
+            faviconCheck.ok ? settings?.faviconUrl : "/apple-touch-icon.png",
           );
         } catch {
-          setFavicon('/apple-touch-icon.png');
+          setFavicon("/apple-touch-icon.png");
         }
       })();
     }
-  }, [settings]);
+  }, [settings]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     applyTheme();
-  }, [isDarkMode]);
+  }, [isDarkMode]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div
       className={cn(
-        'min-h-screen w-screen',
+        "min-h-screen w-screen",
         isDarkMode && settings?.detectDarkModeEnabled
-          ? 'dark'
-          : 'light bg-body',
+          ? "dark"
+          : "light bg-body",
       )}
     >
       <div className="bg-background min-h-screen w-full">
@@ -91,12 +94,10 @@ const Page = () => {
 
         <Toaster
           position={
-            layout === LoginLayouts.SideBySide ? 'top-right' : 'top-center'
+            layout === LoginLayouts.SideBySide ? "top-right" : "top-center"
           }
         />
       </div>
     </div>
   );
-};
-
-export default Page;
+}

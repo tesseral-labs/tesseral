@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react';
-import { useQuery } from '@connectrpc/connect-query';
-import { getSettings } from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
-import { Settings } from '@/gen/tesseral/intermediate/v1/intermediate_pb';
-import { LoginLayouts } from './views';
+import { useQuery } from "@connectrpc/connect-query";
+import { useEffect, useState } from "react";
 
-export const useLayout = () => {
+import { getSettings } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
+import { Settings } from "@/gen/tesseral/intermediate/v1/intermediate_pb";
+
+import { LoginLayouts } from "./views";
+
+export function useLayout() {
   const { data: settingsRes } = useQuery(getSettings);
 
   const [layout, setLayout] = useState<LoginLayouts>();
@@ -16,9 +18,9 @@ export const useLayout = () => {
   }, [settingsRes]);
 
   return layout;
-};
+}
 
-const useSettings = () => {
+export function useSettings() {
   const { data: settingsRes } = useQuery(getSettings);
 
   const [settings, setSettings] = useState<Settings | undefined>(
@@ -30,6 +32,4 @@ const useSettings = () => {
   }, [settingsRes]);
 
   return settings;
-};
-
-export default useSettings;
+}
