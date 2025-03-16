@@ -8,6 +8,7 @@ import {
   setOrganization,
 } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
 import { useRedirectNextLoginFlowPage } from "@/hooks/use-redirect-next-login-flow-page";
+import { clearAccessToken } from "@/pages/dashboard/LoggedInGate";
 
 export function SwitchOrganizationsPage() {
   const { organizationId } = useParams();
@@ -18,6 +19,9 @@ export function SwitchOrganizationsPage() {
 
   useEffect(() => {
     (async () => {
+      // clear our cached access token
+      clearAccessToken();
+
       await exchangeSessionForIntermediateSessionAsync({});
       await setOrganizationAsync({ organizationId });
 

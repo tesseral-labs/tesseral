@@ -16,6 +16,7 @@ import { FinishLoginPage } from "@/pages/login/FinishLoginPage";
 import { ImpersonatePage } from "@/pages/login/ImpersonatePage";
 import { LoginFlowLayout } from "@/pages/login/LoginFlowLayout";
 import { LoginPage } from "@/pages/login/LoginPage";
+import { LogoutPage } from "@/pages/login/LogoutPage";
 import { OrganizationLoginPage } from "@/pages/login/OrganizationLoginPage";
 import { RegisterAuthenticatorAppPage } from "@/pages/login/RegisterAuthenticatorAppPage";
 import { RegisterPasskeyPage } from "@/pages/login/RegisterPasskeyPage";
@@ -96,6 +97,8 @@ function AppWithRoutes() {
                 path="switch-organizations/:organizationId"
                 element={<SwitchOrganizationsPage />}
               />
+
+              <Route path="logout" element={<LogoutPage />} />
             </Route>
 
             <Route path="" element={<LoggedInGate />}>
