@@ -3,8 +3,7 @@ import {
   Building2Icon,
   ChevronsUpDownIcon,
   LayoutGridIcon,
-  PlusIcon,
-  Settings2Icon, UserIcon,
+  UserIcon,
 } from "lucide-react";
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -15,7 +14,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -28,9 +26,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
 import {
@@ -38,10 +33,8 @@ import {
   listSwitchableOrganizations,
   whoami,
 } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
-import { useProjectSettings } from "@/lib/project-settings";
 
 export function DashboardSidebar() {
-  const settings = useProjectSettings();
   const { data: getOrganizationResponse } = useQuery(getOrganization);
   const { data: listSwitchableOrganizationsResponse } = useQuery(
     listSwitchableOrganizations,
@@ -82,7 +75,7 @@ export function DashboardSidebar() {
                 sideOffset={4}
               >
                 <DropdownMenuLabel className="text-xs text-muted-foreground">
-                  Projects
+                  Organizations
                 </DropdownMenuLabel>
                 {listSwitchableOrganizationsResponse?.switchableOrganizations
                   ?.filter(
