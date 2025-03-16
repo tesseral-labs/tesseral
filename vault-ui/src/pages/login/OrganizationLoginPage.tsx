@@ -3,9 +3,7 @@ import { LoaderCircleIcon } from "lucide-react";
 import React, { useEffect } from "react";
 import { useParams } from "react-router";
 
-import {
-  setOrganization,
-} from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
+import { setOrganization } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
 import { useRedirectNextLoginFlowPage } from "@/hooks/use-redirect-next-login-flow-page";
 
 export function OrganizationLoginPage() {

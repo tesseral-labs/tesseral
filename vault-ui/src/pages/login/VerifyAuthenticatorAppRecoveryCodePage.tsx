@@ -1,9 +1,7 @@
 import { useMutation } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { REGEXP_ONLY_DIGITS } from "input-otp";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
 import { z } from "zod";
 
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
@@ -24,11 +22,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
 import { verifyAuthenticatorApp } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
 import { useRedirectNextLoginFlowPage } from "@/hooks/use-redirect-next-login-flow-page";
 

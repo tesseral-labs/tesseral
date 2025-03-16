@@ -8,4 +8,4 @@ export function Title({ title }: { title?: string }) {
       {title ? <title>{title} | Tesseral</title> : <title>Tesseral</title>}
     </Helmet>
   );
-};
+}

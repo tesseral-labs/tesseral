@@ -50,7 +50,10 @@ export function useRedirectNextLoginFlowPage(): () => void {
     // secondary factor registered, they must always verify it.
     //
     // We can skip verifying secondary factors if one is already verified.
-    if (!intermediateSession.passkeyVerified && !intermediateSession.authenticatorAppVerified) {
+    if (
+      !intermediateSession.passkeyVerified &&
+      !intermediateSession.authenticatorAppVerified
+    ) {
       // if a user has both a passkey and an authenticator app, let them choose
       // which one to verify
       if (organization.userHasPasskey && organization.userHasAuthenticatorApp) {
@@ -84,16 +87,26 @@ export function useRedirectNextLoginFlowPage(): () => void {
     //
     // We can also skip registering secondary factors if one is already
     // verified.
-    if (organization.requireMfa && !intermediateSession.passkeyVerified && !intermediateSession.authenticatorAppVerified) {
+    if (
+      organization.requireMfa &&
+      !intermediateSession.passkeyVerified &&
+      !intermediateSession.authenticatorAppVerified
+    ) {
       // if only one of passkey or authenticator app is configured, redirect
       // directly to that setup page
-      if (organization.logInWithPasskey && !organization.logInWithAuthenticatorApp) {
-        navigate(`/register-passkey`)
+      if (
+        organization.logInWithPasskey &&
+        !organization.logInWithAuthenticatorApp
+      ) {
+        navigate(`/register-passkey`);
         return;
       }
 
-      if (organization.logInWithAuthenticatorApp && !organization.logInWithPasskey) {
-        navigate(`/register-authenticator-app`)
+      if (
+        organization.logInWithAuthenticatorApp &&
+        !organization.logInWithPasskey
+      ) {
+        navigate(`/register-authenticator-app`);
         return;
       }
 

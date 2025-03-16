@@ -8,21 +8,36 @@ import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { z } from "zod";
 
-
-
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { issueEmailVerificationChallenge, verifyEmailChallenge, whoami } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
+import {
+  issueEmailVerificationChallenge,
+  verifyEmailChallenge,
+  whoami,
+} from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
 import { useDarkMode } from "@/lib/dark-mode";
-import { useProjectSettings } from "@/lib/project-settings";
-
-
-
-
 
 const schema = z.object({
   emailVerificationChallengeCode: z
@@ -32,13 +47,13 @@ const schema = z.object({
 
 export function VerifyEmailPage() {
   const { data: whoamiResponse } = useQuery(whoami);
-  const settings = useProjectSettings();
   const darkMode = useDarkMode();
 
   const issueEmailVerificationChallengeMutation = useMutation(
     issueEmailVerificationChallenge,
   );
   const [hasResent, setHasResent] = useState(false);
+
   async function handleResend() {
     await issueEmailVerificationChallengeMutation.mutateAsync({
       email: whoamiResponse?.intermediateSession?.email,
@@ -46,7 +61,7 @@ export function VerifyEmailPage() {
 
     toast.success("New verification link sent");
     setHasResent(true);
-  };
+  }
 
   useEffect(() => {
     // allow another send after 10 seconds
@@ -63,7 +78,8 @@ export function VerifyEmailPage() {
   });
 
   const [submitting, setSubmitting] = useState(false);
-  const { mutateAsync: verifyEmailChallengeAsync } = useMutation(verifyEmailChallenge);
+  const { mutateAsync: verifyEmailChallengeAsync } =
+    useMutation(verifyEmailChallenge);
   const navigate = useNavigate();
 
   async function handleSubmit(values: z.infer<typeof schema>) {
@@ -76,10 +92,10 @@ export function VerifyEmailPage() {
     navigate("/choose-organization");
   }
 
-  const [searchParams] = useSearchParams()
+  const [searchParams] = useSearchParams();
   useEffect(() => {
-    ;(async () => {
-      const code = searchParams.get("code")
+    (async () => {
+      const code = searchParams.get("code");
       if (code) {
         await verifyEmailChallengeAsync({
           code,
@@ -87,7 +103,7 @@ export function VerifyEmailPage() {
 
         navigate("/choose-organization");
       }
-    })()
+    })();
   }, [searchParams, verifyEmailChallengeAsync, navigate]);
 
   return (
@@ -115,8 +131,8 @@ export function VerifyEmailPage() {
           onClick={handleResend}
         >
           {hasResent
-            ? 'Email verification resent!'
-            : 'Resend verification link'}
+            ? "Email verification resent!"
+            : "Resend verification link"}
         </Button>
 
         <div className="block relative w-full cursor-default my-2 mt-4">

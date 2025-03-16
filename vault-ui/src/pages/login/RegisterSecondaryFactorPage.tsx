@@ -1,18 +1,18 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
+import { Button } from "@/components/ui/button";
 import {
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
 import { useDarkMode } from "@/lib/dark-mode";
 
 export function RegisterSecondaryFactorPage() {
-  const darkMode = useDarkMode()
+  const darkMode = useDarkMode();
   return (
     <LoginFlowCard>
       <CardHeader>
@@ -37,7 +37,9 @@ export function RegisterSecondaryFactorPage() {
             variant={darkMode ? "default" : "outline"}
             asChild
           >
-            <Link to="/register-authenticator-app">Set up an authenticator app</Link>
+            <Link to="/register-authenticator-app">
+              Set up an authenticator app
+            </Link>
           </Button>
         </div>
       </CardContent>

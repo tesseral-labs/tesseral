@@ -1,5 +1,6 @@
 import React from "react";
 import { Outlet } from "react-router";
+
 import { ProjectSettingsProvider } from "@/lib/project-settings";
 
 export function LoginFlowLayout() {

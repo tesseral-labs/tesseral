@@ -13,10 +13,8 @@ import {
   getPasskeyOptions,
   registerPasskey,
 } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
+import { useRedirectNextLoginFlowPage } from "@/hooks/use-redirect-next-login-flow-page";
 import { base64urlEncode } from "@/lib/utils";
-import {
-  useRedirectNextLoginFlowPage
-} from "@/hooks/use-redirect-next-login-flow-page";
 
 export function RegisterPasskeyPage() {
   const { mutateAsync: getPasskeyOptionsAsync } =
@@ -61,8 +59,8 @@ export function RegisterPasskeyPage() {
       ),
     });
 
-    redirectNextLoginFlowPage()
-  }, [getPasskeyOptionsAsync, registerPasskeyAsync, redirectNextLoginFlowPage])
+    redirectNextLoginFlowPage();
+  }, [getPasskeyOptionsAsync, registerPasskeyAsync, redirectNextLoginFlowPage]);
 
   useEffect(() => {
     void handleRegisterPasskey();

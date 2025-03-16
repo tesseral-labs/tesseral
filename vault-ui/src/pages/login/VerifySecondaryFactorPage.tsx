@@ -9,10 +9,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useDarkMode } from "@/lib/dark-mode";
 
 export function VerifySecondaryFactorPage() {
-  const darkMode = useDarkMode();
   return (
     <LoginFlowCard>
       <CardHeader>

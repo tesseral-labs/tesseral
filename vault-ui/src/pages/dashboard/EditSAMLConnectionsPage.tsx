@@ -45,7 +45,7 @@ const schema = z.object({
   }),
 });
 
-export function EditSAMLConnectionsPage () {
+export function EditSAMLConnectionsPage() {
   const navigate = useNavigate();
   const params = useParams();
 
@@ -59,7 +59,7 @@ export function EditSAMLConnectionsPage () {
   });
   const updateSAMLConnectionMutation = useMutation(updateSAMLConnection);
 
-  async function handleSubmit (values: z.infer<typeof schema>) {
+  async function handleSubmit(values: z.infer<typeof schema>) {
     try {
       await updateSAMLConnectionMutation.mutateAsync({
         id: params.samlConnectionId,
@@ -78,7 +78,7 @@ export function EditSAMLConnectionsPage () {
         description: message,
       });
     }
-  };
+  }
 
   useEffect(() => {
     if (data?.samlConnection) {
@@ -228,4 +228,4 @@ export function EditSAMLConnectionsPage () {
       </Form>
     </div>
   );
-};
+}

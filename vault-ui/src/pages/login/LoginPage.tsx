@@ -1,12 +1,11 @@
 import { useMutation } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoaderCircleIcon } from "lucide-react";
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { z } from "zod";
 
-import { OAuthButton, OAuthMethods } from "@/components/OAuthButton";
 import { GoogleIcon } from "@/components/login/GoogleIcon";
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
 import { MicrosoftIcon } from "@/components/login/MicrosoftIcon";
@@ -20,14 +19,12 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   createIntermediateSession,
   issueEmailVerificationChallenge,

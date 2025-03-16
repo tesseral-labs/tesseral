@@ -1,10 +1,10 @@
 import { useMutation } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
-import { LoaderCircleIcon } from "lucide-react";
 import QRCode from "qrcode";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
@@ -24,11 +24,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import {
   InputOTP,
   InputOTPGroup,
-  InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import {
@@ -37,7 +35,6 @@ import {
 } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
 import { useRedirectNextLoginFlowPage } from "@/hooks/use-redirect-next-login-flow-page";
 import { useDarkMode } from "@/lib/dark-mode";
-import { toast } from "sonner";
 
 const schema = z.object({
   totpCode: z.string().length(6),
@@ -81,11 +78,12 @@ export function RegisterAuthenticatorAppPage() {
   }
 
   async function handleCopy() {
-    await navigator.clipboard.writeText(recoveryCodes!.join("\n"))
+    await navigator.clipboard.writeText(recoveryCodes!.join("\n"));
     toast.success("Copied recovery codes to clipboard");
   }
 
   const redirectNextLoginFlowPage = useRedirectNextLoginFlowPage();
+
   async function handleFinish() {
     redirectNextLoginFlowPage();
   }
@@ -112,7 +110,9 @@ export function RegisterAuthenticatorAppPage() {
           authenticator app.
         </p>
 
-        <Button variant="outline" onClick={handleCopy} className="mt-4 w-full">Copy recovery codes</Button>
+        <Button variant="outline" onClick={handleCopy} className="mt-4 w-full">
+          Copy recovery codes
+        </Button>
         <Button className="mt-2 w-full" onClick={handleFinish}>
           Finish logging in
         </Button>

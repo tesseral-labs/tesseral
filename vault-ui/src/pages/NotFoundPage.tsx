@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 import { Title } from "@/components/Title";
 
-export function NotFoundPage  () {
+export function NotFoundPage() {
   return (
     <div className="flex flex-col items-center justify-center h-screen">
       <Title title="Not Found" />
@@ -20,4 +20,4 @@ export function NotFoundPage  () {
       </div>
     </div>
   );
-};
+}

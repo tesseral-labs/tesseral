@@ -26,7 +26,9 @@ export function ProjectSettingsProvider({
 export function useProjectSettings(): Settings {
   const settings = React.useContext(Context);
   if (!settings) {
-    throw new Error("useProjectSettings must be used within a ProjectSettingsProvider");
+    throw new Error(
+      "useProjectSettings must be used within a ProjectSettingsProvider",
+    );
   }
   return settings;
 }

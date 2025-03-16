@@ -26,5 +26,5 @@ export function GoogleIcon() {
         fill="#EA4335"
       />
     </svg>
-  )
+  );
 }

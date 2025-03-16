@@ -2,6 +2,7 @@ import { useMutation } from "@connectrpc/connect-query";
 import React, { useCallback, useEffect } from "react";
 
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
+import { Button } from "@/components/ui/button";
 import {
   CardContent,
   CardDescription,
@@ -12,11 +13,8 @@ import {
   issuePasskeyChallenge,
   verifyPasskey,
 } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
+import { useRedirectNextLoginFlowPage } from "@/hooks/use-redirect-next-login-flow-page";
 import { base64urlEncode } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import {
-  useRedirectNextLoginFlowPage
-} from "@/hooks/use-redirect-next-login-flow-page";
 
 export function VerifyPasskeyPage() {
   const { mutateAsync: issuePasskeyChallengeAsync } = useMutation(
@@ -58,11 +56,15 @@ export function VerifyPasskeyPage() {
     });
 
     redirectNextLoginFlowPage();
-  }, [issuePasskeyChallengeAsync, redirectNextLoginFlowPage, verifyPasskeyAsync]);
+  }, [
+    issuePasskeyChallengeAsync,
+    redirectNextLoginFlowPage,
+    verifyPasskeyAsync,
+  ]);
 
   useEffect(() => {
     void handleVerifyPasskey();
-  }, [handleVerifyPasskey])
+  }, [handleVerifyPasskey]);
 
   return (
     <LoginFlowCard>

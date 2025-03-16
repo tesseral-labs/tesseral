@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
+
 import { useProjectSettings } from "@/lib/project-settings";
 
-export function useDarkMode ()  {
-  const settings = useProjectSettings()
+export function useDarkMode() {
+  const settings = useProjectSettings();
 
   const [isDarkMode, setIsDarkMode] = useState(() => {
     // Get the initial dark mode state
