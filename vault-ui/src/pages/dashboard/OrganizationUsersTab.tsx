@@ -9,9 +9,19 @@ import { DateTime } from "luxon";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 import { z } from "zod";
 
-
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -23,13 +33,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
-  Form, FormControl, FormDescription,
-  FormItem, FormDescription, FormMessage,
+  Form,
+  FormControl,
+  FormDescription,
   FormField,
-  FormLabel,
   FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import {
   createUserInvite,
   deleteUserInvite,
@@ -38,67 +51,20 @@ import {
   whoami,
 } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
 import { User, UserInvite } from "@/gen/tesseral/frontend/v1/models_pb";
-import {
-  AlertDialog,
-  AlertDialog,
-  AlertDialogHeaderContent,
-  AlertDialog,
-  AlertDialogTitle,
-  AlertDialogDescription,
-  AlertDialogHeader,
-  AlertDialogTrigger,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogFooter,
-  AlertDialogCancel,
-} from "@/components/ui/alert-dialog";
-import { toast } from "sonner";
-import { Switch } from "@/components/ui/switch";
-
 
 export function OrganizationUsersTab() {
-  const {
-    data: listUsersResponses,
-    fetchNextPage,
-    hasNextPage,
-  } = useInfiniteQuery(
-    listUsers,
-    {
-      pageToken: "",
-    },
-    {
-      pageParamKey: "pageToken",
-      getNextPageParam: (page) => page.nextPageToken || undefined,
-    },
-  );
-
   return (
     <div className="space-y-4">
       <InvitesCard />
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Users</CardTitle>
-          <CardDescription>List of users in your organization.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {listUsersResponses?.pages
-              .flatMap((page) => page.users)
-              .map((user) => <UserRow key={user.id} user={user} />)}
-          </div>
-        </CardContent>
-      </Card>
+      <UsersCard />
     </div>
   );
 }
 
 function InvitesCard() {
-  const {
-    data: listUserInvitesResponses,
-    fetchNextPage,
-    hasNextPage,
-  } = useInfiniteQuery(
+  const { data: whoamiResponse } = useQuery(whoami);
+
+  const { data: listUserInvitesResponses } = useInfiniteQuery(
     listUserInvites,
     {
       pageToken: "",
@@ -124,7 +90,7 @@ function InvitesCard() {
         </CardHeader>
 
         <div className="pr-6">
-          <CreateUserInviteButton />
+          {whoamiResponse?.user?.owner && <CreateUserInviteButton />}
         </div>
       </div>
 
@@ -139,7 +105,7 @@ function InvitesCard() {
           <div className="flex justify-center">
             <div className="flex flex-col items-center gap-y-2">
               <div className="text-sm">No pending user invites.</div>
-              <CreateUserInviteButton />
+              {whoamiResponse?.user?.owner && <CreateUserInviteButton />}
             </div>
           </div>
         )}
@@ -203,8 +169,10 @@ function CreateUserInviteButton() {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)}
-                className="space-y-8">
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-8"
+          >
             <FormField
               control={form.control}
               name="email"
@@ -297,8 +265,39 @@ function UserInviteRow({ userInvite }: { userInvite: UserInvite }) {
         </div>
       </div>
 
-      <Button onClick={handleRevoke} variant="outline">Revoke</Button>
+      <Button onClick={handleRevoke} variant="outline">
+        Revoke
+      </Button>
     </div>
+  );
+}
+
+function UsersCard() {
+  const { data: listUsersResponses } = useInfiniteQuery(
+    listUsers,
+    {
+      pageToken: "",
+    },
+    {
+      pageParamKey: "pageToken",
+      getNextPageParam: (page) => page.nextPageToken || undefined,
+    },
+  );
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Users</CardTitle>
+        <CardDescription>List of users in your organization.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          {listUsersResponses?.pages
+            .flatMap((page) => page.users)
+            .map((user) => <UserRow key={user.id} user={user} />)}
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -323,6 +322,7 @@ function UserRow({ user }: { user: User }) {
             {user.email}
           </Link>
           {isYou && <Badge variant="outline">You</Badge>}
+          {user.owner && <Badge variant="outline">Owner</Badge>}
         </div>
         <div className="text-sm">{user.email}</div>
       </div>

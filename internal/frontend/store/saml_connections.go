@@ -25,6 +25,11 @@ func (s *Store) ListSAMLConnections(ctx context.Context, req *frontendv1.ListSAM
 	}
 	defer rollback()
 
+	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get project by id: %w", err)
+	}
+
 	var startID uuid.UUID
 	if err := s.pageEncoder.Unmarshal(req.PageToken, &startID); err != nil {
 		return nil, fmt.Errorf("unmarshal page token: %w", err)
@@ -42,7 +47,7 @@ func (s *Store) ListSAMLConnections(ctx context.Context, req *frontendv1.ListSAM
 
 	var samlConnections []*frontendv1.SAMLConnection
 	for _, qSAMLConn := range qSAMLConnections {
-		samlConnections = append(samlConnections, parseSAMLConnection(qSAMLConn))
+		samlConnections = append(samlConnections, parseSAMLConnection(qProject, qSAMLConn))
 	}
 
 	var nextPageToken string
@@ -69,6 +74,11 @@ func (s *Store) GetSAMLConnection(ctx context.Context, req *frontendv1.GetSAMLCo
 		return nil, apierror.NewInvalidArgumentError("invalid saml connection id", fmt.Errorf("parse saml connection id: %w", err))
 	}
 
+	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get project by id: %w", err)
+	}
+
 	qSAMLConnection, err := q.GetSAMLConnection(ctx, queries.GetSAMLConnectionParams{
 		OrganizationID: authn.OrganizationID(ctx),
 		ID:             samlConnectionID,
@@ -81,7 +91,7 @@ func (s *Store) GetSAMLConnection(ctx context.Context, req *frontendv1.GetSAMLCo
 		return nil, fmt.Errorf("get saml connection: %w", err)
 	}
 
-	return &frontendv1.GetSAMLConnectionResponse{SamlConnection: parseSAMLConnection(qSAMLConnection)}, nil
+	return &frontendv1.GetSAMLConnectionResponse{SamlConnection: parseSAMLConnection(qProject, qSAMLConnection)}, nil
 }
 
 func (s *Store) CreateSAMLConnection(ctx context.Context, req *frontendv1.CreateSAMLConnectionRequest) (*frontendv1.CreateSAMLConnectionResponse, error) {
@@ -94,6 +104,11 @@ func (s *Store) CreateSAMLConnection(ctx context.Context, req *frontendv1.Create
 		return nil, err
 	}
 	defer rollback()
+
+	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get project by id: %w", err)
+	}
 
 	qOrg, err := q.GetOrganizationByID(ctx, authn.OrganizationID(ctx))
 	if err != nil {
@@ -159,7 +174,7 @@ func (s *Store) CreateSAMLConnection(ctx context.Context, req *frontendv1.Create
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return &frontendv1.CreateSAMLConnectionResponse{SamlConnection: parseSAMLConnection(qSAMLConnection)}, nil
+	return &frontendv1.CreateSAMLConnectionResponse{SamlConnection: parseSAMLConnection(qProject, qSAMLConnection)}, nil
 }
 
 func (s *Store) UpdateSAMLConnection(ctx context.Context, req *frontendv1.UpdateSAMLConnectionRequest) (*frontendv1.UpdateSAMLConnectionResponse, error) {
@@ -172,6 +187,11 @@ func (s *Store) UpdateSAMLConnection(ctx context.Context, req *frontendv1.Update
 		return nil, err
 	}
 	defer rollback()
+
+	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get project by id: %w", err)
+	}
 
 	samlConnectionID, err := idformat.SAMLConnection.Parse(req.Id)
 	if err != nil {
@@ -252,7 +272,7 @@ func (s *Store) UpdateSAMLConnection(ctx context.Context, req *frontendv1.Update
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return &frontendv1.UpdateSAMLConnectionResponse{SamlConnection: parseSAMLConnection(qUpdatedSAMLConnection)}, nil
+	return &frontendv1.UpdateSAMLConnectionResponse{SamlConnection: parseSAMLConnection(qProject, qUpdatedSAMLConnection)}, nil
 }
 
 func (s *Store) DeleteSAMLConnection(ctx context.Context, req *frontendv1.DeleteSAMLConnectionRequest) (*frontendv1.DeleteSAMLConnectionResponse, error) {
@@ -294,7 +314,7 @@ func (s *Store) DeleteSAMLConnection(ctx context.Context, req *frontendv1.Delete
 	return &frontendv1.DeleteSAMLConnectionResponse{}, nil
 }
 
-func parseSAMLConnection(qSAMLConnection queries.SamlConnection) *frontendv1.SAMLConnection {
+func parseSAMLConnection(qProject queries.Project, qSAMLConnection queries.SamlConnection) *frontendv1.SAMLConnection {
 	var certPEM string
 	if len(qSAMLConnection.IdpX509Certificate) != 0 {
 		cert, err := x509.ParseCertificate(qSAMLConnection.IdpX509Certificate)
@@ -308,8 +328,8 @@ func parseSAMLConnection(qSAMLConnection queries.SamlConnection) *frontendv1.SAM
 		}))
 	}
 
-	spACSURL := fmt.Sprintf("http://localhost:3001/saml/v1/%s", idformat.SAMLConnection.Format(qSAMLConnection.ID))   // todo
-	spEntityID := fmt.Sprintf("http://localhost:3001/saml/v1/%s", idformat.SAMLConnection.Format(qSAMLConnection.ID)) // todo
+	spACSURL := fmt.Sprintf("https://%s/api/saml/v1/%s/acs", qProject.VaultDomain, idformat.SAMLConnection.Format(qSAMLConnection.ID))
+	spEntityID := fmt.Sprintf("https://%s/api/saml/v1/%s", qProject.VaultDomain, idformat.SAMLConnection.Format(qSAMLConnection.ID))
 
 	return &frontendv1.SAMLConnection{
 		Id:                 idformat.SAMLConnection.Format(qSAMLConnection.ID),

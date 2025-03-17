@@ -126,7 +126,7 @@ function EditOrganizationNameButton() {
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger>
+      <AlertDialogTrigger asChild>
         <Button variant="outline">Edit</Button>
       </AlertDialogTrigger>
       <AlertDialogContent>

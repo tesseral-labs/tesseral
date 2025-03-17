@@ -34,6 +34,9 @@ import { VerifySecondaryFactorPage } from "@/pages/login/VerifySecondaryFactorPa
 import { DashboardLayout } from "./pages/dashboard/DashboardLayout";
 import { UserSettingsPage } from "./pages/dashboard/UserSettingsPage";
 import { OrganizationUsersTab } from "@/pages/dashboard/OrganizationUsersTab";
+import {
+  OrganizationAdvancedTab
+} from "@/pages/dashboard/OrganizationAdvancedTab";
 
 const queryClient = new QueryClient();
 
@@ -120,6 +123,7 @@ function AppWithRoutes() {
                   element={<OrganizationSettingsPage />}
                 >
                   <Route path="" element={<OrganizationUsersTab />} />
+                  <Route path="advanced" element={<OrganizationAdvancedTab />} />
                 </Route>
               </Route>
             </Route>
