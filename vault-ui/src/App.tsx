@@ -12,6 +12,7 @@ import { LoggedInGate } from "@/pages/dashboard/LoggedInGate";
 import { OrganizationAdvancedTab } from "@/pages/dashboard/OrganizationAdvancedTab";
 import { OrganizationSettingsPage } from "@/pages/dashboard/OrganizationSettingsPage";
 import { OrganizationUsersTab } from "@/pages/dashboard/OrganizationUsersTab";
+import { AuthenticateAnotherWayPage } from "@/pages/login/AuthenticateAnotherWayPage";
 import { ChooseOrganizationPage } from "@/pages/login/ChooseOrganizationPage";
 import { CreateOrganizationPage } from "@/pages/login/CreateOrganizationPage";
 import { FinishLoginPage } from "@/pages/login/FinishLoginPage";
@@ -75,6 +76,10 @@ function AppWithRoutes() {
               <Route
                 path="organizations/:organizationId/login"
                 element={<OrganizationLoginPage />}
+              />
+              <Route
+                path="authenticate-another-way"
+                element={<AuthenticateAnotherWayPage />}
               />
               <Route path="verify-password" element={<VerifyPasswordPage />} />
               <Route
