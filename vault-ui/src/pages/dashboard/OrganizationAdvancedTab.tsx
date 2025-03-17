@@ -52,6 +52,12 @@ import {
   whoami,
 } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
 import { SAMLConnection } from "@/gen/tesseral/frontend/v1/models_pb";
+import {
+  EditAuthenticationMethodsButton
+} from "@/pages/dashboard/EditAuthenticationMethodsButton";
+import {
+  EditSecondaryAuthenticationSettingsButton
+} from "@/pages/dashboard/EditSecondaryAuthenticationSettingsButton";
 
 export function OrganizationAdvancedTab() {
   return (
@@ -69,12 +75,18 @@ function AuthenticationMethodsCard() {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Authentication settings</CardTitle>
-        <CardDescription>
-          How users in this organization can authenticate.
-        </CardDescription>
-      </CardHeader>
+      <div className="flex items-center justify-between">
+        <CardHeader>
+          <CardTitle>Authentication settings</CardTitle>
+          <CardDescription>
+            How users in this organization can authenticate.
+          </CardDescription>
+        </CardHeader>
+
+        <div className="pr-6">
+          <EditAuthenticationMethodsButton />
+        </div>
+      </div>
       <CardContent>
         <div className="space-y-4">
           {getProjectResponse?.project?.logInWithGoogle && (
@@ -143,12 +155,18 @@ function SecondaryAuthenticationMethodsCard() {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Multi-factor authentication settings</CardTitle>
-        <CardDescription>
-          Settings related to multi-factor authentication.
-        </CardDescription>
-      </CardHeader>
+      <div className="flex items-center justify-between">
+        <CardHeader>
+          <CardTitle>Multi-factor authentication settings</CardTitle>
+          <CardDescription>
+            Settings related to multi-factor authentication.
+          </CardDescription>
+        </CardHeader>
+
+        <div className="pr-6">
+          <EditSecondaryAuthenticationSettingsButton />
+        </div>
+      </div>
       <CardContent>
         <div className="space-y-4">
           <div>
@@ -160,19 +178,6 @@ function SecondaryAuthenticationMethodsCard() {
             </div>
           </div>
 
-          {getProjectResponse?.project?.logInWithPasskey && (
-            <div>
-              <div className="text-sm font-medium">
-                Log in with Passkey (Secondary Factor)
-              </div>
-              <div className="text-sm">
-                {getOrganizationResponse?.organization?.logInWithPasskey
-                  ? "Enabled"
-                  : "Disabled"}
-              </div>
-            </div>
-          )}
-
           {getProjectResponse?.project?.logInWithAuthenticatorApp && (
             <div>
               <div className="text-sm font-medium">
@@ -181,6 +186,19 @@ function SecondaryAuthenticationMethodsCard() {
               <div className="text-sm">
                 {getOrganizationResponse?.organization
                   ?.logInWithAuthenticatorApp
+                  ? "Enabled"
+                  : "Disabled"}
+              </div>
+            </div>
+          )}
+
+          {getProjectResponse?.project?.logInWithPasskey && (
+            <div>
+              <div className="text-sm font-medium">
+                Log in with Passkey (Secondary Factor)
+              </div>
+              <div className="text-sm">
+                {getOrganizationResponse?.organization?.logInWithPasskey
                   ? "Enabled"
                   : "Disabled"}
               </div>

@@ -126,6 +126,11 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *frontendv1.UpdateOr
 		updates.LogInWithPasskey = *req.Organization.LogInWithPasskey
 	}
 
+	updates.RequireMfa = qOrg.RequireMfa
+	if req.Organization.RequireMfa != nil {
+		updates.RequireMfa = *req.Organization.RequireMfa
+	}
+
 	qUpdatedOrg, err := q.UpdateOrganization(ctx, updates)
 	if err != nil {
 		return nil, fmt.Errorf("update organization: %w", fmt.Errorf("update organization: %w", err))

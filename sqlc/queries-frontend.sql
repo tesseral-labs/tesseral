@@ -44,7 +44,8 @@ SET
     log_in_with_email = $5,
     log_in_with_password = $6,
     log_in_with_authenticator_app = $7,
-    log_in_with_passkey = $8
+    log_in_with_passkey = $8,
+    require_mfa = $9
 WHERE
     id = $1
 RETURNING
