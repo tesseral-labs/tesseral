@@ -42,7 +42,7 @@ insert into projects (id, log_in_with_email, log_in_with_password, log_in_with_g
     values ('7abd6d2e-c314-456e-b9c5-bdbb62f0345f'::uuid, true, false, false, false, 'Customer One', 'project-79ldwwwzybn66dxa91udi7mn3.tesseral.example.app', 'tesseral.example.com', 'http://localhost:4000');
 
 -- Create customer1's project's backing organization
-INSERT INTO organizations (id, display_name, project_id, log_in_with_saml, scim_enabled, log_in_with_password)
+INSERT INTO organizations (id, display_name, project_id, log_in_with_saml, scim_enabled, log_in_with_email)
 VALUES ('8648d50b-baa1-4929-be0f-bc7238f685ab'::uuid, 'project_79ldwwwzybn66dxa91udi7mn3 Backing Organization', '56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2', false, false, true);
 
 update projects set organization_id = '8648d50b-baa1-4929-be0f-bc7238f685ab'::uuid where id = '7abd6d2e-c314-456e-b9c5-bdbb62f0345f'::uuid;
@@ -68,11 +68,11 @@ values (
        );
 
 -- Create customer2's project
-insert into projects (id, log_in_with_password, log_in_with_google, log_in_with_microsoft, display_name, vault_domain, email_send_from_domain, redirect_uri)
-values ('24ba0dd5-e178-460e-8f7a-f3f72cf6a1e7'::uuid, true, false, false, 'Customer Two', 'auth.customer2.example.com', 'auth.customer2.example.com', 'http://localhost:4000');
+insert into projects (id, log_in_with_email, log_in_with_password, log_in_with_google, log_in_with_microsoft, display_name, vault_domain, email_send_from_domain, redirect_uri)
+values ('24ba0dd5-e178-460e-8f7a-f3f72cf6a1e7'::uuid, true, false, false, false, 'Customer Two', 'auth.customer2.example.com', 'auth.customer2.example.com', 'http://localhost:4000');
 
 -- Create customer1's project's backing organization
-INSERT INTO organizations (id, display_name, project_id, log_in_with_saml, scim_enabled, log_in_with_password)
+INSERT INTO organizations (id, display_name, project_id, log_in_with_saml, scim_enabled, log_in_with_email)
 VALUES ('8b5972b6-c878-4c6c-a351-9e01da20f776'::uuid, 'project_269wse1l6u0jnvs8afpq44f6v Backing Organization', '56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2', false, false, true);
 
 update projects set organization_id = '8b5972b6-c878-4c6c-a351-9e01da20f776'::uuid where id = '24ba0dd5-e178-460e-8f7a-f3f72cf6a1e7'::uuid;

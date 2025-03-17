@@ -13,10 +13,12 @@ import { OrganizationSettingsPage } from "@/pages/dashboard/OrganizationSettings
 import { ChooseOrganizationPage } from "@/pages/login/ChooseOrganizationPage";
 import { CreateOrganizationPage } from "@/pages/login/CreateOrganizationPage";
 import { FinishLoginPage } from "@/pages/login/FinishLoginPage";
+import { GoogleOAuthCallbackPage } from "@/pages/login/GoogleOAuthCallbackPage";
 import { ImpersonatePage } from "@/pages/login/ImpersonatePage";
 import { LoginFlowLayout } from "@/pages/login/LoginFlowLayout";
 import { LoginPage } from "@/pages/login/LoginPage";
 import { LogoutPage } from "@/pages/login/LogoutPage";
+import { MicrosoftOAuthCallbackPage } from "@/pages/login/MicrosoftOAuthCallbackPage";
 import { OrganizationLoginPage } from "@/pages/login/OrganizationLoginPage";
 import { RegisterAuthenticatorAppPage } from "@/pages/login/RegisterAuthenticatorAppPage";
 import { RegisterPasskeyPage } from "@/pages/login/RegisterPasskeyPage";
@@ -52,6 +54,14 @@ function AppWithRoutes() {
             <Route path="login" element={<LoginPage />} />
             <Route path="" element={<LoginFlowLayout />}>
               <Route path="verify-email" element={<VerifyEmailPage />} />
+              <Route
+                path="google-oauth-callback"
+                element={<GoogleOAuthCallbackPage />}
+              />
+              <Route
+                path="microsoft-oauth-callback"
+                element={<MicrosoftOAuthCallbackPage />}
+              />
               <Route
                 path="choose-organization"
                 element={<ChooseOrganizationPage />}
