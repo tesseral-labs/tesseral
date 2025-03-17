@@ -145,7 +145,12 @@ export function useRedirectNextLoginFlowPage(): () => void {
 
     // we have everything we need, finish login flow
     navigate(`/finish-login`);
-  }, [navigate, refetchListOrganizations, refetchWhoami]);
+  }, [
+    issueEmailVerificationChallengeMutationAsync,
+    navigate,
+    refetchListOrganizations,
+    refetchWhoami,
+  ]);
 }
 
 function isPrimaryAuthFactorAcceptable(
