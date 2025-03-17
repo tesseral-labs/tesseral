@@ -2,6 +2,7 @@ import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 import {
@@ -30,7 +31,6 @@ import {
   getProject,
   updateOrganization,
 } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
-import { toast } from "sonner";
 
 const schema = z.object({
   logInWithGoogle: z.boolean(),

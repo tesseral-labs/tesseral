@@ -5,7 +5,7 @@ import {
   useQuery,
 } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChevronDownIcon, CopyIcon } from "lucide-react";
+import { CopyIcon } from "lucide-react";
 import { DateTime } from "luxon";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -52,12 +52,8 @@ import {
   whoami,
 } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
 import { SAMLConnection } from "@/gen/tesseral/frontend/v1/models_pb";
-import {
-  EditAuthenticationMethodsButton
-} from "@/pages/dashboard/EditAuthenticationMethodsButton";
-import {
-  EditSecondaryAuthenticationSettingsButton
-} from "@/pages/dashboard/EditSecondaryAuthenticationSettingsButton";
+import { EditAuthenticationMethodsButton } from "@/pages/dashboard/EditAuthenticationMethodsButton";
+import { EditSecondaryAuthenticationSettingsButton } from "@/pages/dashboard/EditSecondaryAuthenticationSettingsButton";
 
 export function OrganizationAdvancedTab() {
   return (

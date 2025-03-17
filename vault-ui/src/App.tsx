@@ -9,7 +9,9 @@ import { BrowserRouter } from "react-router-dom";
 import { Toaster } from "@/components/ui/sonner";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 import { LoggedInGate } from "@/pages/dashboard/LoggedInGate";
+import { OrganizationAdvancedTab } from "@/pages/dashboard/OrganizationAdvancedTab";
 import { OrganizationSettingsPage } from "@/pages/dashboard/OrganizationSettingsPage";
+import { OrganizationUsersTab } from "@/pages/dashboard/OrganizationUsersTab";
 import { ChooseOrganizationPage } from "@/pages/login/ChooseOrganizationPage";
 import { CreateOrganizationPage } from "@/pages/login/CreateOrganizationPage";
 import { FinishLoginPage } from "@/pages/login/FinishLoginPage";
@@ -33,10 +35,6 @@ import { VerifySecondaryFactorPage } from "@/pages/login/VerifySecondaryFactorPa
 
 import { DashboardLayout } from "./pages/dashboard/DashboardLayout";
 import { UserSettingsPage } from "./pages/dashboard/UserSettingsPage";
-import { OrganizationUsersTab } from "@/pages/dashboard/OrganizationUsersTab";
-import {
-  OrganizationAdvancedTab
-} from "@/pages/dashboard/OrganizationAdvancedTab";
 
 const queryClient = new QueryClient();
 
@@ -123,7 +121,10 @@ function AppWithRoutes() {
                   element={<OrganizationSettingsPage />}
                 >
                   <Route path="" element={<OrganizationUsersTab />} />
-                  <Route path="advanced" element={<OrganizationAdvancedTab />} />
+                  <Route
+                    path="advanced"
+                    element={<OrganizationAdvancedTab />}
+                  />
                 </Route>
               </Route>
             </Route>

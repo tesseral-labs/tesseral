@@ -1,4 +1,4 @@
-import { useInfiniteQuery, useMutation, useQuery } from "@connectrpc/connect-query";
+import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { clsx } from "clsx";
 import React, { useEffect, useState } from "react";
@@ -8,22 +8,38 @@ import { Link, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { z } from "zod";
 
-
-
-import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
 import {
   getOrganization,
   updateOrganization,
 } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
-
-
-
-
 
 export function OrganizationSettingsPage() {
   const { data: getOrganizationResponse } = useQuery(getOrganization);
@@ -93,13 +109,14 @@ const schema = z.object({
 });
 
 function EditOrganizationNameButton() {
-  const { data: getOrganizationResponse, refetch: refetchOrganization } = useQuery(getOrganization);
+  const { data: getOrganizationResponse, refetch: refetchOrganization } =
+    useQuery(getOrganization);
 
   const [open, setOpen] = useState(false);
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
-      displayName: ""
+      displayName: "",
     },
   });
 
@@ -107,17 +124,18 @@ function EditOrganizationNameButton() {
     if (getOrganizationResponse?.organization) {
       form.reset({
         displayName: getOrganizationResponse.organization.displayName,
-      })
+      });
     }
   }, [form, getOrganizationResponse]);
 
-  const { mutateAsync: updateOrganizationAsync } = useMutation(updateOrganization);
+  const { mutateAsync: updateOrganizationAsync } =
+    useMutation(updateOrganization);
 
   async function handleSubmit(values: z.infer<typeof schema>) {
     await updateOrganizationAsync({
       organization: {
         displayName: values.displayName,
-      }
+      },
     });
     await refetchOrganization();
     setOpen(false);

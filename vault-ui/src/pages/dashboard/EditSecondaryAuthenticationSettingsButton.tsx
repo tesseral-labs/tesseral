@@ -5,17 +5,32 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-
-
-import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
-import { getOrganization, getProject, updateOrganization } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
-
-
-
-
+import {
+  getOrganization,
+  getProject,
+  updateOrganization,
+} from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
 
 const schema = z.object({
   logInWithAuthenticatorApp: z.boolean(),
@@ -42,8 +57,7 @@ export function EditSecondaryAuthenticationSettingsButton() {
       form.reset({
         logInWithAuthenticatorApp:
           getOrganizationResponse.organization.logInWithAuthenticatorApp,
-        logInWithPasskey:
-          getOrganizationResponse.organization.logInWithPasskey,
+        logInWithPasskey: getOrganizationResponse.organization.logInWithPasskey,
         requireMfa: getOrganizationResponse.organization.requireMfa,
       });
     }
@@ -74,7 +88,9 @@ export function EditSecondaryAuthenticationSettingsButton() {
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Edit secondary authentication settings</AlertDialogTitle>
+          <AlertDialogTitle>
+            Edit secondary authentication settings
+          </AlertDialogTitle>
           <AlertDialogDescription>
             Configure multi-factor authentication.
           </AlertDialogDescription>
