@@ -9,7 +9,9 @@ import { BrowserRouter } from "react-router-dom";
 import { Toaster } from "@/components/ui/sonner";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 import { LoggedInGate } from "@/pages/dashboard/LoggedInGate";
+import { OrganizationAdvancedTab } from "@/pages/dashboard/OrganizationAdvancedTab";
 import { OrganizationSettingsPage } from "@/pages/dashboard/OrganizationSettingsPage";
+import { OrganizationUsersTab } from "@/pages/dashboard/OrganizationUsersTab";
 import { ChooseOrganizationPage } from "@/pages/login/ChooseOrganizationPage";
 import { CreateOrganizationPage } from "@/pages/login/CreateOrganizationPage";
 import { FinishLoginPage } from "@/pages/login/FinishLoginPage";
@@ -117,7 +119,13 @@ function AppWithRoutes() {
                 <Route
                   path="organization-settings"
                   element={<OrganizationSettingsPage />}
-                />
+                >
+                  <Route path="" element={<OrganizationUsersTab />} />
+                  <Route
+                    path="advanced"
+                    element={<OrganizationAdvancedTab />}
+                  />
+                </Route>
               </Route>
             </Route>
 

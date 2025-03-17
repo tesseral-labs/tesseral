@@ -13,8 +13,8 @@ import (
 )
 
 const createSession = `-- name: CreateSession :one
-INSERT INTO sessions (id, user_id, expire_time, refresh_token_sha256)
-    VALUES ($1, $2, $3, $4)
+INSERT INTO sessions (id, user_id, expire_time, refresh_token_sha256, primary_auth_factor)
+    VALUES ($1, $2, $3, $4, 'saml')
 RETURNING
     id, user_id, create_time, expire_time, refresh_token_sha256, impersonator_user_id, last_active_time, primary_auth_factor
 `
