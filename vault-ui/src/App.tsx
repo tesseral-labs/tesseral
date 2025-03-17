@@ -35,6 +35,9 @@ import { VerifySecondaryFactorPage } from "@/pages/login/VerifySecondaryFactorPa
 
 import { DashboardLayout } from "./pages/dashboard/DashboardLayout";
 import { UserSettingsPage } from "./pages/dashboard/UserSettingsPage";
+import {
+  AuthenticateAnotherWayPage
+} from "@/pages/login/AuthenticateAnotherWayPage";
 
 const queryClient = new QueryClient();
 
@@ -76,6 +79,7 @@ function AppWithRoutes() {
                 path="organizations/:organizationId/login"
                 element={<OrganizationLoginPage />}
               />
+              <Route path="authenticate-another-way" element={<AuthenticateAnotherWayPage />} />
               <Route path="verify-password" element={<VerifyPasswordPage />} />
               <Route
                 path="verify-secondary-factor"
