@@ -6,20 +6,20 @@ import { useSearchParams } from "react-router-dom";
 
 import {
   issueEmailVerificationChallenge,
-  redeemGoogleOAuthCode,
+  redeemMicrosoftOAuthCode,
   whoami,
 } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
 import { useRedirectNextLoginFlowPage } from "@/hooks/use-redirect-next-login-flow-page";
 
-export function GoogleOAuthCallbackPage() {
+export function MicrosoftOAuthCallbackPage() {
   const [searchParams] = useSearchParams();
   const code = searchParams.get("code");
   const state = searchParams.get("state");
   const { refetch: refetchWhoami } = useQuery(whoami);
   const navigate = useNavigate();
 
-  const { mutateAsync: redeemGoogleOAuthCodeAsync } = useMutation(
-    redeemGoogleOAuthCode,
+  const { mutateAsync: redeemMicrosoftOAuthCodeAsync } = useMutation(
+    redeemMicrosoftOAuthCode,
   );
 
   const { mutateAsync: issueEmailVerificationChallengeMutationAsync } =
@@ -29,10 +29,10 @@ export function GoogleOAuthCallbackPage() {
 
   useEffect(() => {
     (async () => {
-      await redeemGoogleOAuthCodeAsync({
+      await redeemMicrosoftOAuthCodeAsync({
         code: code!,
         state: state!,
-        redirectUrl: `${window.location.origin}/google-oauth-callback`,
+        redirectUrl: `${window.location.origin}/microsoft-oauth-callback`,
       });
 
       redirectNextLoginFlowPage();
@@ -41,7 +41,7 @@ export function GoogleOAuthCallbackPage() {
     code,
     issueEmailVerificationChallengeMutationAsync,
     navigate,
-    redeemGoogleOAuthCodeAsync,
+    redeemMicrosoftOAuthCodeAsync,
     redirectNextLoginFlowPage,
     refetchWhoami,
     state,

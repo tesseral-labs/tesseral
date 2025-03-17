@@ -6,35 +6,28 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { z } from "zod";
 
+
+
 import { GoogleIcon } from "@/components/login/GoogleIcon";
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
 import { MicrosoftIcon } from "@/components/login/MicrosoftIcon";
 import { Button } from "@/components/ui/button";
-import {
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
-  createIntermediateSession, getGoogleOAuthRedirectURL,
+  createIntermediateSession,
+  getGoogleOAuthRedirectURL,
+  getMicrosoftOAuthRedirectURL,
   issueEmailVerificationChallenge,
   setEmailAsPrimaryLoginFactor,
 } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
 import { useDarkMode } from "@/lib/dark-mode";
-import {
-  ProjectSettingsProvider,
-  useProjectSettings,
-} from "@/lib/project-settings";
+import { ProjectSettingsProvider, useProjectSettings } from "@/lib/project-settings";
+
+
+
+
 
 export function LoginPage() {
   return (
@@ -124,6 +117,15 @@ function LoginPageContents() {
     window.location.href = url;
   }
 
+  const { mutateAsync: getMicrosoftOAuthRedirectURLAsync } = useMutation(getMicrosoftOAuthRedirectURL)
+  async function handleLogInWithMicrosoft() {
+    await createIntermediateSessionMutation.mutateAsync({});
+    const { url } = await getMicrosoftOAuthRedirectURLAsync({
+      redirectUrl: `${window.location.origin}/microsoft-oauth-callback`,
+    });
+    window.location.href = url;
+  }
+
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -176,7 +178,8 @@ function LoginPageContents() {
           {settings.logInWithMicrosoft && (
             <Button
               className="w-full"
-              variant={darkMode ? "default" : "outline"}
+              variant="outline"
+              onClick={handleLogInWithMicrosoft}
             >
               <MicrosoftIcon />
               Log in with Microsoft

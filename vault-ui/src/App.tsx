@@ -32,6 +32,9 @@ import { VerifySecondaryFactorPage } from "@/pages/login/VerifySecondaryFactorPa
 import { DashboardLayout } from "./pages/dashboard/DashboardLayout";
 import { UserSettingsPage } from "./pages/dashboard/UserSettingsPage";
 import { GoogleOAuthCallbackPage } from "@/pages/login/GoogleOAuthCallbackPage";
+import {
+  MicrosoftOAuthCallbackPage
+} from "@/pages/login/MicrosoftOAuthCallbackPage";
 
 const queryClient = new QueryClient();
 
@@ -56,6 +59,10 @@ function AppWithRoutes() {
               <Route
                 path="google-oauth-callback"
                 element={<GoogleOAuthCallbackPage />}
+              />
+              <Route
+                path="microsoft-oauth-callback"
+                element={<MicrosoftOAuthCallbackPage />}
               />
               <Route
                 path="choose-organization"
