@@ -1,23 +1,22 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import React from "react";
 
-
-
 import { GoogleIcon } from "@/components/login/GoogleIcon";
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
 import { MicrosoftIcon } from "@/components/login/MicrosoftIcon";
 import { Button } from "@/components/ui/button";
-import { CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   getGoogleOAuthRedirectURL,
   getMicrosoftOAuthRedirectURL,
   listOrganizations,
   whoami,
 } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
-
-
-
-
 
 export function AuthenticateAnotherWayPage() {
   const { data: whoamiResponse } = useQuery(whoami);
@@ -30,6 +29,7 @@ export function AuthenticateAnotherWayPage() {
   const { mutateAsync: getGoogleOAuthRedirectURLAsync } = useMutation(
     getGoogleOAuthRedirectURL,
   );
+
   async function handleLogInWithGoogle() {
     const { url } = await getGoogleOAuthRedirectURLAsync({
       redirectUrl: `${window.location.origin}/google-oauth-callback`,
@@ -40,6 +40,7 @@ export function AuthenticateAnotherWayPage() {
   const { mutateAsync: getMicrosoftOAuthRedirectURLAsync } = useMutation(
     getMicrosoftOAuthRedirectURL,
   );
+
   async function handleLogInWithMicrosoft() {
     const { url } = await getMicrosoftOAuthRedirectURLAsync({
       redirectUrl: `${window.location.origin}/microsoft-oauth-callback`,
