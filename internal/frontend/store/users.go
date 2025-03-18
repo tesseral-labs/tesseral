@@ -24,7 +24,7 @@ func (s *Store) SetUserPassword(ctx context.Context, req *frontendv1.SetPassword
 		return nil, fmt.Errorf("check password against HIBP: %w", err)
 	}
 	if pwned {
-		return nil, apierror.NewFailedPreconditionError("password is compromised", errors.New("password is compromised"))
+		return nil, apierror.NewPasswordCompromisedError("password is compromised", errors.New("password is compromised"))
 	}
 
 	_, q, commit, rollback, err := s.tx(ctx)

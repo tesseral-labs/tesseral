@@ -25,6 +25,7 @@ import { MicrosoftOAuthCallbackPage } from "@/pages/login/MicrosoftOAuthCallback
 import { OrganizationLoginPage } from "@/pages/login/OrganizationLoginPage";
 import { RegisterAuthenticatorAppPage } from "@/pages/login/RegisterAuthenticatorAppPage";
 import { RegisterPasskeyPage } from "@/pages/login/RegisterPasskeyPage";
+import { RegisterPasswordPage } from "@/pages/login/RegisterPasswordPage";
 import { RegisterSecondaryFactorPage } from "@/pages/login/RegisterSecondaryFactorPage";
 import { SwitchOrganizationsPage } from "@/pages/login/SwitchOrganizationsPage";
 import { VerifyAuthenticatorAppPage } from "@/pages/login/VerifyAuthenticatorAppPage";
@@ -95,6 +96,10 @@ function AppWithRoutes() {
                 element={<VerifyAuthenticatorAppRecoveryCodePage />}
               />
               <Route path="verify-passkey" element={<VerifyPasskeyPage />} />
+              <Route
+                path="register-password"
+                element={<RegisterPasswordPage />}
+              />
               <Route
                 path="register-secondary-factor"
                 element={<RegisterSecondaryFactorPage />}
