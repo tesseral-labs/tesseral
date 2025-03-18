@@ -35,7 +35,7 @@ func (s *Store) RegisterPassword(ctx context.Context, req *intermediatev1.Regist
 		return nil, fmt.Errorf("check password against HIBP: %w", err)
 	}
 	if pwned {
-		return nil, apierror.NewFailedPreconditionError("password is compromised", errors.New("password is compromised"))
+		return nil, apierror.NewPasswordCompromisedError("password is compromised", errors.New("password is compromised"))
 	}
 
 	orgID, err := idformat.Organization.Parse(intermediateSession.OrganizationId)

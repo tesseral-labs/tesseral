@@ -103,9 +103,13 @@ export function useRedirectNextLoginFlowPage(): () => void {
       // secondary factor
     }
 
-    // register a password if the org uses them and the user doesn't have one
-    // registered
-    if (organization.logInWithPassword && !organization.userHasPassword) {
+    // register a password if the org uses them and the user + intermediate
+    // session doesn't have one registered
+    if (
+      organization.logInWithPassword &&
+      !organization.userHasPassword &&
+      !intermediateSession.passwordVerified
+    ) {
       navigate(`/register-password`);
       return;
     }
