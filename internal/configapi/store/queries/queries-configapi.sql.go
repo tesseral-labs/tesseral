@@ -14,7 +14,8 @@ import (
 const getPublishableKeyConfiguration = `-- name: GetPublishableKeyConfiguration :one
 SELECT
     projects.id AS project_id,
-    projects.vault_domain
+    projects.vault_domain,
+    publishable_keys.support_relayed_sessions
 FROM
     publishable_keys
     JOIN projects ON publishable_keys.project_id = projects.id
@@ -23,14 +24,15 @@ WHERE
 `
 
 type GetPublishableKeyConfigurationRow struct {
-	ProjectID   uuid.UUID
-	VaultDomain string
+	ProjectID              uuid.UUID
+	VaultDomain            string
+	SupportRelayedSessions bool
 }
 
 func (q *Queries) GetPublishableKeyConfiguration(ctx context.Context, id uuid.UUID) (GetPublishableKeyConfigurationRow, error) {
 	row := q.db.QueryRow(ctx, getPublishableKeyConfiguration, id)
 	var i GetPublishableKeyConfigurationRow
-	err := row.Scan(&i.ProjectID, &i.VaultDomain)
+	err := row.Scan(&i.ProjectID, &i.VaultDomain, &i.SupportRelayedSessions)
 	return i, err
 }
 

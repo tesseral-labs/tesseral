@@ -283,11 +283,12 @@ type ProjectUiSetting struct {
 }
 
 type PublishableKey struct {
-	ID          uuid.UUID
-	ProjectID   uuid.UUID
-	CreateTime  *time.Time
-	UpdateTime  *time.Time
-	DisplayName string
+	ID                     uuid.UUID
+	ProjectID              uuid.UUID
+	CreateTime             *time.Time
+	UpdateTime             *time.Time
+	DisplayName            string
+	SupportRelayedSessions bool
 }
 
 type RelayedSession struct {

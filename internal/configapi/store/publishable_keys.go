@@ -14,10 +14,11 @@ import (
 )
 
 type GetPublishableKeyConfigurationResponse struct {
-	ProjectID      string           `json:"projectId"`
-	VaultDomain    string           `json:"vaultDomain"`
-	TrustedDomains []string         `json:"trustedDomains"`
-	Keys           []map[string]any `json:"keys"`
+	ProjectID              string           `json:"projectId"`
+	VaultDomain            string           `json:"vaultDomain"`
+	SupportRelayedSessions bool             `json:"supportRelayedSessions"`
+	TrustedDomains         []string         `json:"trustedDomains"`
+	Keys                   []map[string]any `json:"keys"`
 }
 
 func (s *Store) GetPublishableKeyConfiguration(ctx context.Context, publishableKey string) (*GetPublishableKeyConfigurationResponse, error) {
@@ -61,9 +62,10 @@ func (s *Store) GetPublishableKeyConfiguration(ctx context.Context, publishableK
 	}
 
 	return &GetPublishableKeyConfigurationResponse{
-		ProjectID:      idformat.Project.Format(qConfig.ProjectID),
-		VaultDomain:    qConfig.VaultDomain,
-		TrustedDomains: trustedDomains,
-		Keys:           keys,
+		ProjectID:              idformat.Project.Format(qConfig.ProjectID),
+		VaultDomain:            qConfig.VaultDomain,
+		SupportRelayedSessions: qConfig.SupportRelayedSessions,
+		TrustedDomains:         trustedDomains,
+		Keys:                   keys,
 	}, nil
 }
