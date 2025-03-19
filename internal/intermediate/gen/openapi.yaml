@@ -30,6 +30,30 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /intermediate/v1/exchange-relayed-session-token-for-session:
+        post:
+            tags:
+                - IntermediateService
+            operationId: IntermediateService_ExchangeRelayedSessionTokenForSession
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/ExchangeRelayedSessionTokenForSessionRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ExchangeRelayedSessionTokenForSessionResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /intermediate/v1/exchange-session-for-intermediate-session:
         post:
             tags:
@@ -596,7 +620,9 @@ components:
     schemas:
         CreateIntermediateSessionRequest:
             type: object
-            properties: {}
+            properties:
+                relayedSessionState:
+                    type: string
         CreateIntermediateSessionResponse:
             type: object
             properties:
@@ -624,6 +650,22 @@ components:
                     type: string
                 newUser:
                     type: boolean
+                relayedSessionToken:
+                    type: string
+        ExchangeRelayedSessionTokenForSessionRequest:
+            type: object
+            properties:
+                relayedSessionToken:
+                    type: string
+        ExchangeRelayedSessionTokenForSessionResponse:
+            type: object
+            properties:
+                refreshToken:
+                    type: string
+                accessToken:
+                    type: string
+                relayedSessionState:
+                    type: string
         ExchangeSessionForIntermediateSessionRequest:
             type: object
             properties:

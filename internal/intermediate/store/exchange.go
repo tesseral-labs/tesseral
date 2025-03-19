@@ -17,6 +17,7 @@ import (
 )
 
 const sessionDuration = time.Hour * 24 * 7
+const relayedSessionTokenDuration = time.Minute
 
 func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *intermediatev1.ExchangeIntermediateSessionForSessionRequest) (*intermediatev1.ExchangeIntermediateSessionForSessionResponse, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
@@ -100,14 +101,15 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 	// Create a new session for the user
 	refreshToken := uuid.New()
 	refreshTokenSHA256 := sha256.Sum256(refreshToken[:])
-	if _, err := q.CreateSession(ctx, queries.CreateSessionParams{
+	qSession, err := q.CreateSession(ctx, queries.CreateSessionParams{
 		ID:                 uuid.Must(uuid.NewV7()),
 		ExpireTime:         &expireTime,
 		RefreshTokenSha256: refreshTokenSHA256[:],
 		UserID:             qUser.ID,
 		PrimaryAuthFactor:  *qIntermediateSession.PrimaryAuthFactor,
-	}); err != nil {
-		return nil, err
+	})
+	if err != nil {
+		return nil, fmt.Errorf("create session: %w", err)
 	}
 
 	// revoke the intermediate session
@@ -138,14 +140,36 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		}
 	}
 
+	// if the intermediate session has a relayed session state, create a relayed
+	// session
+	var relayedSessionToken string
+	if qIntermediateSession.RelayedSessionState != nil {
+		relayedSessionTokenUUID := uuid.New()
+		relayedSessionTokenSHA256 := sha256.Sum256(relayedSessionTokenUUID[:])
+		relayedSessionTokenExpireTime := time.Now().Add(relayedSessionTokenDuration)
+
+		if _, err := q.CreateRelayedSession(ctx, queries.CreateRelayedSessionParams{
+			SessionID:                     qSession.ID,
+			RelayedSessionTokenExpireTime: &relayedSessionTokenExpireTime,
+			RelayedSessionTokenSha256:     relayedSessionTokenSHA256[:],
+			RelayedRefreshTokenSha256:     nil, // assigned in ExchangeRelayedSessionTokenForSession
+			State:                         qIntermediateSession.RelayedSessionState,
+		}); err != nil {
+			return nil, fmt.Errorf("create relayed session: %w", err)
+		}
+
+		relayedSessionToken = idformat.RelayedSessionToken.Format(relayedSessionTokenUUID)
+	}
+
 	if err := commit(); err != nil {
 		return nil, err
 	}
 
 	return &intermediatev1.ExchangeIntermediateSessionForSessionResponse{
-		AccessToken:  "", // populated in service
-		RefreshToken: idformat.SessionRefreshToken.Format(refreshToken),
-		NewUser:      newUser,
+		AccessToken:         "", // populated in service
+		RefreshToken:        idformat.SessionRefreshToken.Format(refreshToken),
+		NewUser:             newUser,
+		RelayedSessionToken: relayedSessionToken,
 	}, nil
 }
 

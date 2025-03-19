@@ -28,6 +28,7 @@ const (
 	IntermediateService_ListOrganizations_FullMethodName                     = "/tesseral.intermediate.v1.IntermediateService/ListOrganizations"
 	IntermediateService_SetOrganization_FullMethodName                       = "/tesseral.intermediate.v1.IntermediateService/SetOrganization"
 	IntermediateService_ExchangeIntermediateSessionForSession_FullMethodName = "/tesseral.intermediate.v1.IntermediateService/ExchangeIntermediateSessionForSession"
+	IntermediateService_ExchangeRelayedSessionTokenForSession_FullMethodName = "/tesseral.intermediate.v1.IntermediateService/ExchangeRelayedSessionTokenForSession"
 	IntermediateService_GetGoogleOAuthRedirectURL_FullMethodName             = "/tesseral.intermediate.v1.IntermediateService/GetGoogleOAuthRedirectURL"
 	IntermediateService_RedeemGoogleOAuthCode_FullMethodName                 = "/tesseral.intermediate.v1.IntermediateService/RedeemGoogleOAuthCode"
 	IntermediateService_GetMicrosoftOAuthRedirectURL_FullMethodName          = "/tesseral.intermediate.v1.IntermediateService/GetMicrosoftOAuthRedirectURL"
@@ -61,6 +62,7 @@ type IntermediateServiceClient interface {
 	ListOrganizations(ctx context.Context, in *ListOrganizationsRequest, opts ...grpc.CallOption) (*ListOrganizationsResponse, error)
 	SetOrganization(ctx context.Context, in *SetOrganizationRequest, opts ...grpc.CallOption) (*SetOrganizationResponse, error)
 	ExchangeIntermediateSessionForSession(ctx context.Context, in *ExchangeIntermediateSessionForSessionRequest, opts ...grpc.CallOption) (*ExchangeIntermediateSessionForSessionResponse, error)
+	ExchangeRelayedSessionTokenForSession(ctx context.Context, in *ExchangeRelayedSessionTokenForSessionRequest, opts ...grpc.CallOption) (*ExchangeRelayedSessionTokenForSessionResponse, error)
 	GetGoogleOAuthRedirectURL(ctx context.Context, in *GetGoogleOAuthRedirectURLRequest, opts ...grpc.CallOption) (*GetGoogleOAuthRedirectURLResponse, error)
 	RedeemGoogleOAuthCode(ctx context.Context, in *RedeemGoogleOAuthCodeRequest, opts ...grpc.CallOption) (*RedeemGoogleOAuthCodeResponse, error)
 	GetMicrosoftOAuthRedirectURL(ctx context.Context, in *GetMicrosoftOAuthRedirectURLRequest, opts ...grpc.CallOption) (*GetMicrosoftOAuthRedirectURLResponse, error)
@@ -173,6 +175,16 @@ func (c *intermediateServiceClient) ExchangeIntermediateSessionForSession(ctx co
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ExchangeIntermediateSessionForSessionResponse)
 	err := c.cc.Invoke(ctx, IntermediateService_ExchangeIntermediateSessionForSession_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *intermediateServiceClient) ExchangeRelayedSessionTokenForSession(ctx context.Context, in *ExchangeRelayedSessionTokenForSessionRequest, opts ...grpc.CallOption) (*ExchangeRelayedSessionTokenForSessionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ExchangeRelayedSessionTokenForSessionResponse)
+	err := c.cc.Invoke(ctx, IntermediateService_ExchangeRelayedSessionTokenForSession_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -372,6 +384,7 @@ type IntermediateServiceServer interface {
 	ListOrganizations(context.Context, *ListOrganizationsRequest) (*ListOrganizationsResponse, error)
 	SetOrganization(context.Context, *SetOrganizationRequest) (*SetOrganizationResponse, error)
 	ExchangeIntermediateSessionForSession(context.Context, *ExchangeIntermediateSessionForSessionRequest) (*ExchangeIntermediateSessionForSessionResponse, error)
+	ExchangeRelayedSessionTokenForSession(context.Context, *ExchangeRelayedSessionTokenForSessionRequest) (*ExchangeRelayedSessionTokenForSessionResponse, error)
 	GetGoogleOAuthRedirectURL(context.Context, *GetGoogleOAuthRedirectURLRequest) (*GetGoogleOAuthRedirectURLResponse, error)
 	RedeemGoogleOAuthCode(context.Context, *RedeemGoogleOAuthCodeRequest) (*RedeemGoogleOAuthCodeResponse, error)
 	GetMicrosoftOAuthRedirectURL(context.Context, *GetMicrosoftOAuthRedirectURLRequest) (*GetMicrosoftOAuthRedirectURLResponse, error)
@@ -426,6 +439,9 @@ func (UnimplementedIntermediateServiceServer) SetOrganization(context.Context, *
 }
 func (UnimplementedIntermediateServiceServer) ExchangeIntermediateSessionForSession(context.Context, *ExchangeIntermediateSessionForSessionRequest) (*ExchangeIntermediateSessionForSessionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ExchangeIntermediateSessionForSession not implemented")
+}
+func (UnimplementedIntermediateServiceServer) ExchangeRelayedSessionTokenForSession(context.Context, *ExchangeRelayedSessionTokenForSessionRequest) (*ExchangeRelayedSessionTokenForSessionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ExchangeRelayedSessionTokenForSession not implemented")
 }
 func (UnimplementedIntermediateServiceServer) GetGoogleOAuthRedirectURL(context.Context, *GetGoogleOAuthRedirectURLRequest) (*GetGoogleOAuthRedirectURLResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetGoogleOAuthRedirectURL not implemented")
@@ -660,6 +676,24 @@ func _IntermediateService_ExchangeIntermediateSessionForSession_Handler(srv inte
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(IntermediateServiceServer).ExchangeIntermediateSessionForSession(ctx, req.(*ExchangeIntermediateSessionForSessionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IntermediateService_ExchangeRelayedSessionTokenForSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ExchangeRelayedSessionTokenForSessionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IntermediateServiceServer).ExchangeRelayedSessionTokenForSession(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IntermediateService_ExchangeRelayedSessionTokenForSession_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IntermediateServiceServer).ExchangeRelayedSessionTokenForSession(ctx, req.(*ExchangeRelayedSessionTokenForSessionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1030,6 +1064,10 @@ var IntermediateService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ExchangeIntermediateSessionForSession",
 			Handler:    _IntermediateService_ExchangeIntermediateSessionForSession_Handler,
+		},
+		{
+			MethodName: "ExchangeRelayedSessionTokenForSession",
+			Handler:    _IntermediateService_ExchangeRelayedSessionTokenForSession_Handler,
 		},
 		{
 			MethodName: "GetGoogleOAuthRedirectURL",

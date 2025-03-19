@@ -50,6 +50,11 @@ export const setOrganization = IntermediateService.method.setOrganization;
 export const exchangeIntermediateSessionForSession = IntermediateService.method.exchangeIntermediateSessionForSession;
 
 /**
+ * @generated from rpc tesseral.intermediate.v1.IntermediateService.ExchangeRelayedSessionTokenForSession
+ */
+export const exchangeRelayedSessionTokenForSession = IntermediateService.method.exchangeRelayedSessionTokenForSession;
+
+/**
  * @generated from rpc tesseral.intermediate.v1.IntermediateService.GetGoogleOAuthRedirectURL
  */
 export const getGoogleOAuthRedirectURL = IntermediateService.method.getGoogleOAuthRedirectURL;

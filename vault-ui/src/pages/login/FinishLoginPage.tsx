@@ -12,13 +12,19 @@ export function FinishLoginPage() {
 
   useEffect(() => {
     (async () => {
-      const { newUser } = await exchangeIntermediateSessionForSessionAsync({});
+      const { newUser, relayedSessionToken } = await exchangeIntermediateSessionForSessionAsync({});
 
       const preferredRedirect = newUser
         ? settings.afterSignupRedirectUri
         : settings.afterLoginRedirectUri;
 
-      window.location.href = preferredRedirect ?? settings.redirectUri;
+      const url = new URL(preferredRedirect ?? settings.redirectUri);
+
+      if (relayedSessionToken) {
+        url.hash = `__tesseral_relayed_session_token=${relayedSessionToken}`;
+      }
+
+      window.location.href = url.toString();
     })();
   }, [settings, exchangeIntermediateSessionForSessionAsync]);
 

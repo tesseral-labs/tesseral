@@ -11,7 +11,9 @@ var (
 	Organization                  = prettyuuid.MustNewFormat("org_", alphabet)
 	Project                       = prettyuuid.MustNewFormat("project_", alphabet)
 	Session                       = prettyuuid.MustNewFormat("session_", alphabet)
-	SessionRefreshToken           = prettyuuid.MustNewFormat("openauth_secret_session_refresh_token_", alphabet)
+	SessionRefreshToken           = prettyuuid.MustNewFormat("tesseral_secret_session_refresh_token_", alphabet)
+	RelayedSessionToken           = prettyuuid.MustNewFormat("tesseral_secret_relayed_session_token_", alphabet)
+	RelayedSessionRefreshToken    = prettyuuid.MustNewFormat("tesseral_secret_relayed_session_refresh_token_", alphabet)
 	SessionSigningKey             = prettyuuid.MustNewFormat("session_signing_key_", alphabet)
 	User                          = prettyuuid.MustNewFormat("user_", alphabet)
 	VerifiedEmail                 = prettyuuid.MustNewFormat("verified_email_", alphabet)
@@ -19,20 +21,20 @@ var (
 	Passkey                       = prettyuuid.MustNewFormat("passkey_", alphabet)
 	UserInvite                    = prettyuuid.MustNewFormat("user_invite_", alphabet)
 
-	IntermediateSessionSecretToken = prettyuuid.MustNewFormat("openauth_secret_intermediate_session_token_", alphabet)
+	IntermediateSessionSecretToken = prettyuuid.MustNewFormat("tesseral_secret_intermediate_session_token_", alphabet)
 
 	EmailVerificationChallengeCode = prettyuuid.MustNewFormat("email_verification_challenge_code_", alphabet)
 
 	ProjectAPIKey            = prettyuuid.MustNewFormat("project_api_key_", alphabet)
-	ProjectAPIKeySecretToken = prettyuuid.MustNewFormat("openauth_secret_key_", alphabet)
+	ProjectAPIKeySecretToken = prettyuuid.MustNewFormat("tesseral_secret_key_", alphabet)
 
 	PublishableKey = prettyuuid.MustNewFormat("publishable_key_", alphabet)
 
 	SCIMAPIKey            = prettyuuid.MustNewFormat("scim_api_key_", alphabet)
-	SCIMAPIKeySecretToken = prettyuuid.MustNewFormat("openauth_secret_scim_api_key_", alphabet)
+	SCIMAPIKeySecretToken = prettyuuid.MustNewFormat("tesseral_secret_scim_api_key_", alphabet)
 
 	UserImpersonationToken       = prettyuuid.MustNewFormat("user_impersonation_token_", alphabet)
-	UserImpersonationSecretToken = prettyuuid.MustNewFormat("openauth_secret_user_impersonation_token_", alphabet)
+	UserImpersonationSecretToken = prettyuuid.MustNewFormat("tesseral_secret_user_impersonation_token_", alphabet)
 
 	ProjectRedirectURI = prettyuuid.MustNewFormat("project_redirect_uri_", alphabet)
 	ProjectUISettings  = prettyuuid.MustNewFormat("project_ui_settings_", alphabet)

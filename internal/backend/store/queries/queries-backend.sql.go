@@ -186,7 +186,7 @@ const createPublishableKey = `-- name: CreatePublishableKey :one
 INSERT INTO publishable_keys (id, project_id, display_name)
     VALUES ($1, $2, $3)
 RETURNING
-    id, project_id, create_time, update_time, display_name
+    id, project_id, create_time, update_time, display_name, dev_mode
 `
 
 type CreatePublishableKeyParams struct {
@@ -204,6 +204,7 @@ func (q *Queries) CreatePublishableKey(ctx context.Context, arg CreatePublishabl
 		&i.CreateTime,
 		&i.UpdateTime,
 		&i.DisplayName,
+		&i.DevMode,
 	)
 	return i, err
 }
@@ -1074,7 +1075,7 @@ func (q *Queries) GetProjectUISettings(ctx context.Context, projectID uuid.UUID)
 
 const getPublishableKey = `-- name: GetPublishableKey :one
 SELECT
-    id, project_id, create_time, update_time, display_name
+    id, project_id, create_time, update_time, display_name, dev_mode
 FROM
     publishable_keys
 WHERE
@@ -1096,6 +1097,7 @@ func (q *Queries) GetPublishableKey(ctx context.Context, arg GetPublishableKeyPa
 		&i.CreateTime,
 		&i.UpdateTime,
 		&i.DisplayName,
+		&i.DevMode,
 	)
 	return i, err
 }
@@ -1586,7 +1588,7 @@ func (q *Queries) ListProjects(ctx context.Context, limit int32) ([]Project, err
 
 const listPublishableKeys = `-- name: ListPublishableKeys :many
 SELECT
-    id, project_id, create_time, update_time, display_name
+    id, project_id, create_time, update_time, display_name, dev_mode
 FROM
     publishable_keys
 WHERE
@@ -1618,6 +1620,7 @@ func (q *Queries) ListPublishableKeys(ctx context.Context, arg ListPublishableKe
 			&i.CreateTime,
 			&i.UpdateTime,
 			&i.DisplayName,
+			&i.DevMode,
 		); err != nil {
 			return nil, err
 		}
@@ -2409,7 +2412,7 @@ SET
 WHERE
     id = $2
 RETURNING
-    id, project_id, create_time, update_time, display_name
+    id, project_id, create_time, update_time, display_name, dev_mode
 `
 
 type UpdatePublishableKeyParams struct {
@@ -2426,6 +2429,7 @@ func (q *Queries) UpdatePublishableKey(ctx context.Context, arg UpdatePublishabl
 		&i.CreateTime,
 		&i.UpdateTime,
 		&i.DisplayName,
+		&i.DevMode,
 	)
 	return i, err
 }
