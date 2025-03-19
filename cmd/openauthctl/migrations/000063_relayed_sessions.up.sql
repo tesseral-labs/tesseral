@@ -7,8 +7,5 @@ create table relayed_sessions
     relayed_refresh_token_sha256      bytea unique
 );
 
-alter table publishable_keys
-    add column dev_mode boolean not null default false;
-
 alter table intermediate_sessions
     add column relayed_session_state varchar;
