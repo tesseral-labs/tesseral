@@ -12,7 +12,8 @@ export function FinishLoginPage() {
 
   useEffect(() => {
     (async () => {
-      const { newUser, relayedSessionToken } = await exchangeIntermediateSessionForSessionAsync({});
+      const { newUser, relayedSessionToken } =
+        await exchangeIntermediateSessionForSessionAsync({});
 
       const preferredRedirect = newUser
         ? settings.afterSignupRedirectUri
