@@ -299,14 +299,6 @@ type RelayedSession struct {
 	RelayedRefreshTokenSha256     []byte
 }
 
-type RelayedSession struct {
-	SessionID                     uuid.UUID
-	RelayedSessionTokenExpireTime *time.Time
-	RelayedSessionTokenSha256     []byte
-	State                         *string
-	RelayedRefreshTokenSha256     []byte
-}
-
 type SamlConnection struct {
 	ID                 uuid.UUID
 	OrganizationID     uuid.UUID
