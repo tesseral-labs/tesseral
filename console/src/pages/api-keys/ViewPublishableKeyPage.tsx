@@ -118,6 +118,15 @@ export const ViewPublishableKeyPage = () => {
                   {getPublishableKeyResponse?.publishableKey?.displayName}
                 </div>
               </div>
+              <div>
+                <div className="font-semibold">Support Relayed Sessions</div>
+                <div className="truncate">
+                  {getPublishableKeyResponse?.publishableKey
+                    ?.supportRelayedSessions
+                    ? 'Enabled'
+                    : 'Disabled'}
+                </div>
+              </div>
             </div>
             <div className="border-r border-gray-200 pr-8 pl-8 flex flex-col gap-4">
               <div>
@@ -167,7 +176,7 @@ const EditPublishableKeyButton = () => {
     },
   );
   const updatePublishableKeyMutation = useMutation(updatePublishableKey);
-  /* eslint-disable @typescript-eslint/no-unsafe-call */
+
   // Currently there's an issue with the types of react-hook-form and zod
   // preventing the compiler from inferring the correct types.
   const form = useForm<z.infer<typeof schema>>({
@@ -183,7 +192,6 @@ const EditPublishableKeyButton = () => {
       });
     }
   }, [getPublishableKeyResponse]);
-  /* eslint-enable @typescript-eslint/no-unsafe-call */
 
   const [open, setOpen] = useState(false);
 
@@ -211,11 +219,11 @@ const EditPublishableKeyButton = () => {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <Form {...form}>
-          {/* eslint-disable @typescript-eslint/no-unsafe-call */}
+          {}
           {/**Currently there's an issue with the types of react-hook-form and zod
-          preventing the compiler from inferring the correct types.*/}
+           preventing the compiler from inferring the correct types.*/}
           <form onSubmit={form.handleSubmit(handleSubmit)}>
-            {/* eslint-enable @typescript-eslint/no-unsafe-call */}
+            {}
             <FormField
               control={form.control}
               name="displayName"

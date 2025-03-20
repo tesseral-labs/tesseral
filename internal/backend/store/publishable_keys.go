@@ -94,9 +94,10 @@ func (s *Store) CreatePublishableKey(ctx context.Context, req *backendv1.CreateP
 	defer rollback()
 
 	qPublishableKey, err := q.CreatePublishableKey(ctx, queries.CreatePublishableKeyParams{
-		ID:          uuid.New(),
-		ProjectID:   authn.ProjectID(ctx),
-		DisplayName: req.PublishableKey.DisplayName,
+		ID:                     uuid.New(),
+		ProjectID:              authn.ProjectID(ctx),
+		DisplayName:            req.PublishableKey.DisplayName,
+		SupportRelayedSessions: derefOrEmpty(req.PublishableKey.SupportRelayedSessions),
 	})
 	if err != nil {
 		return nil, fmt.Errorf("create publishable key: %w", err)
@@ -144,6 +145,10 @@ func (s *Store) UpdatePublishableKey(ctx context.Context, req *backendv1.UpdateP
 
 	if req.PublishableKey.DisplayName != "" {
 		updates.DisplayName = req.PublishableKey.DisplayName
+	}
+
+	if req.PublishableKey.SupportRelayedSessions != nil {
+		updates.SupportRelayedSessions = *req.PublishableKey.SupportRelayedSessions
 	}
 
 	qUpdatedPublishableKey, err := q.UpdatePublishableKey(ctx, updates)
@@ -198,9 +203,10 @@ func (s *Store) DeletePublishableKey(ctx context.Context, req *backendv1.DeleteP
 
 func parsePublishableKey(qPublishableKey queries.PublishableKey) *backendv1.PublishableKey {
 	return &backendv1.PublishableKey{
-		Id:          idformat.PublishableKey.Format(qPublishableKey.ID),
-		DisplayName: qPublishableKey.DisplayName,
-		CreateTime:  timestamppb.New(*qPublishableKey.CreateTime),
-		UpdateTime:  timestamppb.New(*qPublishableKey.UpdateTime),
+		Id:                     idformat.PublishableKey.Format(qPublishableKey.ID),
+		DisplayName:            qPublishableKey.DisplayName,
+		CreateTime:             timestamppb.New(*qPublishableKey.CreateTime),
+		UpdateTime:             timestamppb.New(*qPublishableKey.UpdateTime),
+		SupportRelayedSessions: &qPublishableKey.SupportRelayedSessions,
 	}
 }

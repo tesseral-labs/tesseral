@@ -183,20 +183,26 @@ func (q *Queries) CreateProjectTrustedDomain(ctx context.Context, arg CreateProj
 }
 
 const createPublishableKey = `-- name: CreatePublishableKey :one
-INSERT INTO publishable_keys (id, project_id, display_name)
-    VALUES ($1, $2, $3)
+INSERT INTO publishable_keys (id, project_id, display_name, support_relayed_sessions)
+    VALUES ($1, $2, $3, $4)
 RETURNING
     id, project_id, create_time, update_time, display_name, support_relayed_sessions
 `
 
 type CreatePublishableKeyParams struct {
-	ID          uuid.UUID
-	ProjectID   uuid.UUID
-	DisplayName string
+	ID                     uuid.UUID
+	ProjectID              uuid.UUID
+	DisplayName            string
+	SupportRelayedSessions bool
 }
 
 func (q *Queries) CreatePublishableKey(ctx context.Context, arg CreatePublishableKeyParams) (PublishableKey, error) {
-	row := q.db.QueryRow(ctx, createPublishableKey, arg.ID, arg.ProjectID, arg.DisplayName)
+	row := q.db.QueryRow(ctx, createPublishableKey,
+		arg.ID,
+		arg.ProjectID,
+		arg.DisplayName,
+		arg.SupportRelayedSessions,
+	)
 	var i PublishableKey
 	err := row.Scan(
 		&i.ID,
@@ -2408,20 +2414,22 @@ UPDATE
     publishable_keys
 SET
     update_time = now(),
-    display_name = $1
+    display_name = $2,
+    support_relayed_sessions = $3
 WHERE
-    id = $2
+    id = $1
 RETURNING
     id, project_id, create_time, update_time, display_name, support_relayed_sessions
 `
 
 type UpdatePublishableKeyParams struct {
-	DisplayName string
-	ID          uuid.UUID
+	ID                     uuid.UUID
+	DisplayName            string
+	SupportRelayedSessions bool
 }
 
 func (q *Queries) UpdatePublishableKey(ctx context.Context, arg UpdatePublishableKeyParams) (PublishableKey, error) {
-	row := q.db.QueryRow(ctx, updatePublishableKey, arg.DisplayName, arg.ID)
+	row := q.db.QueryRow(ctx, updatePublishableKey, arg.ID, arg.DisplayName, arg.SupportRelayedSessions)
 	var i PublishableKey
 	err := row.Scan(
 		&i.ID,

@@ -393,8 +393,8 @@ WHERE
     AND project_id = $2;
 
 -- name: CreatePublishableKey :one
-INSERT INTO publishable_keys (id, project_id, display_name)
-    VALUES ($1, $2, $3)
+INSERT INTO publishable_keys (id, project_id, display_name, support_relayed_sessions)
+    VALUES ($1, $2, $3, $4)
 RETURNING
     *;
 
@@ -403,9 +403,10 @@ UPDATE
     publishable_keys
 SET
     update_time = now(),
-    display_name = $1
+    display_name = $2,
+    support_relayed_sessions = $3
 WHERE
-    id = $2
+    id = $1
 RETURNING
     *;
 
