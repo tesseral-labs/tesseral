@@ -12,6 +12,7 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	commonv1 "github.com/tesseral-labs/tesseral/internal/common/gen/tesseral/common/v1"
@@ -23,19 +24,65 @@ import (
 const accessTokenDuration = time.Minute * 5
 
 func (s *Store) IssueAccessToken(ctx context.Context, refreshToken string) (string, error) {
-	refreshTokenUUID, err := idformat.SessionRefreshToken.Parse(refreshToken)
-	if err != nil {
-		return "", fmt.Errorf("parse refresh token: %w", err)
+	// this type exists to unify the datatypes we get from refresh tokens that
+	// belong to sessions vs relayed sessions
+	var qDetails struct {
+		SessionID               uuid.UUID
+		UserID                  uuid.UUID
+		OrganizationID          uuid.UUID
+		UserEmail               string
+		OrganizationDisplayName string
+		ImpersonatorUserID      *uuid.UUID
+		ProjectID               uuid.UUID
 	}
 
-	refreshTokenSHA := sha256.Sum256(refreshTokenUUID[:])
-	qDetails, err := s.q.GetSessionDetailsByRefreshTokenSHA256(ctx, refreshTokenSHA[:])
-	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return "", apierror.NewUnauthenticatedError("invalid refresh token", fmt.Errorf("invalid refresh token"))
+	switch {
+	case strings.HasPrefix(refreshToken, "tesseral_secret_session_refresh_token_"):
+		refreshTokenUUID, err := idformat.SessionRefreshToken.Parse(refreshToken)
+		if err != nil {
+			return "", fmt.Errorf("parse refresh token: %w", err)
 		}
 
-		return "", fmt.Errorf("get session details by refresh token sha256: %w", err)
+		refreshTokenSHA := sha256.Sum256(refreshTokenUUID[:])
+		qSessionDetails, err := s.q.GetSessionDetailsByRefreshTokenSHA256(ctx, refreshTokenSHA[:])
+		if err != nil {
+			if errors.Is(err, pgx.ErrNoRows) {
+				return "", apierror.NewUnauthenticatedError("invalid refresh token", fmt.Errorf("invalid refresh token"))
+			}
+
+			return "", fmt.Errorf("get session details by refresh token sha256: %w", err)
+		}
+
+		qDetails.SessionID = qSessionDetails.SessionID
+		qDetails.UserID = qSessionDetails.UserID
+		qDetails.OrganizationID = qSessionDetails.OrganizationID
+		qDetails.UserEmail = qSessionDetails.UserEmail
+		qDetails.OrganizationDisplayName = qSessionDetails.OrganizationDisplayName
+		qDetails.ImpersonatorUserID = qSessionDetails.ImpersonatorUserID
+		qDetails.ProjectID = qSessionDetails.ProjectID
+	case strings.HasPrefix(refreshToken, "tesseral_secret_relayed_session_refresh_token_"):
+		relayedRefreshTokenUUID, err := idformat.RelayedSessionRefreshToken.Parse(refreshToken)
+		if err != nil {
+			return "", fmt.Errorf("parse refresh token: %w", err)
+		}
+
+		relayedRefreshTokenSHA := sha256.Sum256(relayedRefreshTokenUUID[:])
+		qSessionDetails, err := s.q.GetSessionDetailsByRelayedSessionRefreshTokenSHA256(ctx, relayedRefreshTokenSHA[:])
+		if err != nil {
+			if errors.Is(err, pgx.ErrNoRows) {
+				return "", apierror.NewUnauthenticatedError("invalid refresh token", fmt.Errorf("invalid refresh token"))
+			}
+
+			return "", fmt.Errorf("get session details by refresh token sha256: %w", err)
+		}
+
+		qDetails.SessionID = qSessionDetails.SessionID
+		qDetails.UserID = qSessionDetails.UserID
+		qDetails.OrganizationID = qSessionDetails.OrganizationID
+		qDetails.UserEmail = qSessionDetails.UserEmail
+		qDetails.OrganizationDisplayName = qSessionDetails.OrganizationDisplayName
+		qDetails.ImpersonatorUserID = qSessionDetails.ImpersonatorUserID
+		qDetails.ProjectID = qSessionDetails.ProjectID
 	}
 
 	issAndAud := fmt.Sprintf("https://%s.tesseral.app", strings.ReplaceAll(idformat.Project.Format(qDetails.ProjectID), "_", "-"))

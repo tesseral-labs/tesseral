@@ -159,3 +159,46 @@ func (q *Queries) GetSessionDetailsByRefreshTokenSHA256(ctx context.Context, ref
 	)
 	return i, err
 }
+
+const getSessionDetailsByRelayedSessionRefreshTokenSHA256 = `-- name: GetSessionDetailsByRelayedSessionRefreshTokenSHA256 :one
+SELECT
+    sessions.id AS session_id,
+    users.id AS user_id,
+    users.email AS user_email,
+    organizations.id AS organization_id,
+    organizations.display_name AS organization_display_name,
+    organizations.project_id AS project_id,
+    sessions.impersonator_user_id
+FROM
+    relayed_sessions
+    JOIN sessions ON relayed_sessions.session_id = sessions.id
+    JOIN users ON sessions.user_id = users.id
+    JOIN organizations ON users.organization_id = organizations.id
+WHERE
+    relayed_sessions.relayed_refresh_token_sha256 = $1
+`
+
+type GetSessionDetailsByRelayedSessionRefreshTokenSHA256Row struct {
+	SessionID               uuid.UUID
+	UserID                  uuid.UUID
+	UserEmail               string
+	OrganizationID          uuid.UUID
+	OrganizationDisplayName string
+	ProjectID               uuid.UUID
+	ImpersonatorUserID      *uuid.UUID
+}
+
+func (q *Queries) GetSessionDetailsByRelayedSessionRefreshTokenSHA256(ctx context.Context, relayedRefreshTokenSha256 []byte) (GetSessionDetailsByRelayedSessionRefreshTokenSHA256Row, error) {
+	row := q.db.QueryRow(ctx, getSessionDetailsByRelayedSessionRefreshTokenSHA256, relayedRefreshTokenSha256)
+	var i GetSessionDetailsByRelayedSessionRefreshTokenSHA256Row
+	err := row.Scan(
+		&i.SessionID,
+		&i.UserID,
+		&i.UserEmail,
+		&i.OrganizationID,
+		&i.OrganizationDisplayName,
+		&i.ProjectID,
+		&i.ImpersonatorUserID,
+	)
+	return i, err
+}

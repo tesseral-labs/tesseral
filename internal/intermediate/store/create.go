@@ -43,10 +43,11 @@ func (s *Store) CreateIntermediateSession(ctx context.Context, req *intermediate
 	secretToken := uuid.New()
 	secretTokenSHA256 := sha256.Sum256(secretToken[:])
 	if _, err := q.CreateIntermediateSession(ctx, queries.CreateIntermediateSessionParams{
-		ID:                uuid.Must(uuid.NewV7()),
-		ProjectID:         authn.ProjectID(ctx),
-		ExpireTime:        &expireTime,
-		SecretTokenSha256: secretTokenSHA256[:],
+		ID:                  uuid.Must(uuid.NewV7()),
+		ProjectID:           authn.ProjectID(ctx),
+		ExpireTime:          &expireTime,
+		SecretTokenSha256:   secretTokenSHA256[:],
+		RelayedSessionState: refOrNil(req.RelayedSessionState),
 	}); err != nil {
 		return nil, fmt.Errorf("create intermediate session: %w", err)
 	}

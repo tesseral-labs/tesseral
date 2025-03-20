@@ -55,6 +55,13 @@ service IntermediateService {
     };
   }
 
+  rpc ExchangeRelayedSessionTokenForSession(ExchangeRelayedSessionTokenForSessionRequest) returns (ExchangeRelayedSessionTokenForSessionResponse) {
+    option (google.api.http) = {
+      post: "/intermediate/v1/exchange-relayed-session-token-for-session"
+      body: "*"
+    };
+  }
+
   rpc GetGoogleOAuthRedirectURL(GetGoogleOAuthRedirectURLRequest) returns (GetGoogleOAuthRedirectURLResponse) {
     option (google.api.http) = {
       post: "/intermediate/v1/google-oauth-redirect-url"
@@ -233,7 +240,9 @@ message CreateProjectResponse {
   Project project = 1;
 }
 
-message CreateIntermediateSessionRequest {}
+message CreateIntermediateSessionRequest {
+  string relayed_session_state = 1;
+}
 
 message CreateIntermediateSessionResponse {
   string intermediate_session_secret_token = 1;
@@ -265,6 +274,17 @@ message ExchangeIntermediateSessionForSessionResponse {
   string refresh_token = 1;
   string access_token = 2;
   bool new_user = 3;
+  string relayed_session_token = 4;
+}
+
+message ExchangeRelayedSessionTokenForSessionRequest {
+  string relayed_session_token = 1;
+}
+
+message ExchangeRelayedSessionTokenForSessionResponse {
+  string refresh_token = 1;
+  string access_token = 2;
+  string relayed_session_state = 3;
 }
 
 message GetGoogleOAuthRedirectURLRequest {

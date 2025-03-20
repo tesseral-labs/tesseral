@@ -60,6 +60,9 @@ const (
 	// IntermediateServiceExchangeIntermediateSessionForSessionProcedure is the fully-qualified name of
 	// the IntermediateService's ExchangeIntermediateSessionForSession RPC.
 	IntermediateServiceExchangeIntermediateSessionForSessionProcedure = "/tesseral.intermediate.v1.IntermediateService/ExchangeIntermediateSessionForSession"
+	// IntermediateServiceExchangeRelayedSessionTokenForSessionProcedure is the fully-qualified name of
+	// the IntermediateService's ExchangeRelayedSessionTokenForSession RPC.
+	IntermediateServiceExchangeRelayedSessionTokenForSessionProcedure = "/tesseral.intermediate.v1.IntermediateService/ExchangeRelayedSessionTokenForSession"
 	// IntermediateServiceGetGoogleOAuthRedirectURLProcedure is the fully-qualified name of the
 	// IntermediateService's GetGoogleOAuthRedirectURL RPC.
 	IntermediateServiceGetGoogleOAuthRedirectURLProcedure = "/tesseral.intermediate.v1.IntermediateService/GetGoogleOAuthRedirectURL"
@@ -128,6 +131,7 @@ type IntermediateServiceClient interface {
 	ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error)
 	SetOrganization(context.Context, *connect.Request[v1.SetOrganizationRequest]) (*connect.Response[v1.SetOrganizationResponse], error)
 	ExchangeIntermediateSessionForSession(context.Context, *connect.Request[v1.ExchangeIntermediateSessionForSessionRequest]) (*connect.Response[v1.ExchangeIntermediateSessionForSessionResponse], error)
+	ExchangeRelayedSessionTokenForSession(context.Context, *connect.Request[v1.ExchangeRelayedSessionTokenForSessionRequest]) (*connect.Response[v1.ExchangeRelayedSessionTokenForSessionResponse], error)
 	GetGoogleOAuthRedirectURL(context.Context, *connect.Request[v1.GetGoogleOAuthRedirectURLRequest]) (*connect.Response[v1.GetGoogleOAuthRedirectURLResponse], error)
 	RedeemGoogleOAuthCode(context.Context, *connect.Request[v1.RedeemGoogleOAuthCodeRequest]) (*connect.Response[v1.RedeemGoogleOAuthCodeResponse], error)
 	GetMicrosoftOAuthRedirectURL(context.Context, *connect.Request[v1.GetMicrosoftOAuthRedirectURLRequest]) (*connect.Response[v1.GetMicrosoftOAuthRedirectURLResponse], error)
@@ -212,6 +216,12 @@ func NewIntermediateServiceClient(httpClient connect.HTTPClient, baseURL string,
 			httpClient,
 			baseURL+IntermediateServiceExchangeIntermediateSessionForSessionProcedure,
 			connect.WithSchema(intermediateServiceMethods.ByName("ExchangeIntermediateSessionForSession")),
+			connect.WithClientOptions(opts...),
+		),
+		exchangeRelayedSessionTokenForSession: connect.NewClient[v1.ExchangeRelayedSessionTokenForSessionRequest, v1.ExchangeRelayedSessionTokenForSessionResponse](
+			httpClient,
+			baseURL+IntermediateServiceExchangeRelayedSessionTokenForSessionProcedure,
+			connect.WithSchema(intermediateServiceMethods.ByName("ExchangeRelayedSessionTokenForSession")),
 			connect.WithClientOptions(opts...),
 		),
 		getGoogleOAuthRedirectURL: connect.NewClient[v1.GetGoogleOAuthRedirectURLRequest, v1.GetGoogleOAuthRedirectURLResponse](
@@ -336,6 +346,7 @@ type intermediateServiceClient struct {
 	listOrganizations                     *connect.Client[v1.ListOrganizationsRequest, v1.ListOrganizationsResponse]
 	setOrganization                       *connect.Client[v1.SetOrganizationRequest, v1.SetOrganizationResponse]
 	exchangeIntermediateSessionForSession *connect.Client[v1.ExchangeIntermediateSessionForSessionRequest, v1.ExchangeIntermediateSessionForSessionResponse]
+	exchangeRelayedSessionTokenForSession *connect.Client[v1.ExchangeRelayedSessionTokenForSessionRequest, v1.ExchangeRelayedSessionTokenForSessionResponse]
 	getGoogleOAuthRedirectURL             *connect.Client[v1.GetGoogleOAuthRedirectURLRequest, v1.GetGoogleOAuthRedirectURLResponse]
 	redeemGoogleOAuthCode                 *connect.Client[v1.RedeemGoogleOAuthCodeRequest, v1.RedeemGoogleOAuthCodeResponse]
 	getMicrosoftOAuthRedirectURL          *connect.Client[v1.GetMicrosoftOAuthRedirectURLRequest, v1.GetMicrosoftOAuthRedirectURLResponse]
@@ -402,6 +413,12 @@ func (c *intermediateServiceClient) SetOrganization(ctx context.Context, req *co
 // tesseral.intermediate.v1.IntermediateService.ExchangeIntermediateSessionForSession.
 func (c *intermediateServiceClient) ExchangeIntermediateSessionForSession(ctx context.Context, req *connect.Request[v1.ExchangeIntermediateSessionForSessionRequest]) (*connect.Response[v1.ExchangeIntermediateSessionForSessionResponse], error) {
 	return c.exchangeIntermediateSessionForSession.CallUnary(ctx, req)
+}
+
+// ExchangeRelayedSessionTokenForSession calls
+// tesseral.intermediate.v1.IntermediateService.ExchangeRelayedSessionTokenForSession.
+func (c *intermediateServiceClient) ExchangeRelayedSessionTokenForSession(ctx context.Context, req *connect.Request[v1.ExchangeRelayedSessionTokenForSessionRequest]) (*connect.Response[v1.ExchangeRelayedSessionTokenForSessionResponse], error) {
+	return c.exchangeRelayedSessionTokenForSession.CallUnary(ctx, req)
 }
 
 // GetGoogleOAuthRedirectURL calls
@@ -514,6 +531,7 @@ type IntermediateServiceHandler interface {
 	ListOrganizations(context.Context, *connect.Request[v1.ListOrganizationsRequest]) (*connect.Response[v1.ListOrganizationsResponse], error)
 	SetOrganization(context.Context, *connect.Request[v1.SetOrganizationRequest]) (*connect.Response[v1.SetOrganizationResponse], error)
 	ExchangeIntermediateSessionForSession(context.Context, *connect.Request[v1.ExchangeIntermediateSessionForSessionRequest]) (*connect.Response[v1.ExchangeIntermediateSessionForSessionResponse], error)
+	ExchangeRelayedSessionTokenForSession(context.Context, *connect.Request[v1.ExchangeRelayedSessionTokenForSessionRequest]) (*connect.Response[v1.ExchangeRelayedSessionTokenForSessionResponse], error)
 	GetGoogleOAuthRedirectURL(context.Context, *connect.Request[v1.GetGoogleOAuthRedirectURLRequest]) (*connect.Response[v1.GetGoogleOAuthRedirectURLResponse], error)
 	RedeemGoogleOAuthCode(context.Context, *connect.Request[v1.RedeemGoogleOAuthCodeRequest]) (*connect.Response[v1.RedeemGoogleOAuthCodeResponse], error)
 	GetMicrosoftOAuthRedirectURL(context.Context, *connect.Request[v1.GetMicrosoftOAuthRedirectURLRequest]) (*connect.Response[v1.GetMicrosoftOAuthRedirectURLResponse], error)
@@ -593,6 +611,12 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 		IntermediateServiceExchangeIntermediateSessionForSessionProcedure,
 		svc.ExchangeIntermediateSessionForSession,
 		connect.WithSchema(intermediateServiceMethods.ByName("ExchangeIntermediateSessionForSession")),
+		connect.WithHandlerOptions(opts...),
+	)
+	intermediateServiceExchangeRelayedSessionTokenForSessionHandler := connect.NewUnaryHandler(
+		IntermediateServiceExchangeRelayedSessionTokenForSessionProcedure,
+		svc.ExchangeRelayedSessionTokenForSession,
+		connect.WithSchema(intermediateServiceMethods.ByName("ExchangeRelayedSessionTokenForSession")),
 		connect.WithHandlerOptions(opts...),
 	)
 	intermediateServiceGetGoogleOAuthRedirectURLHandler := connect.NewUnaryHandler(
@@ -723,6 +747,8 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 			intermediateServiceSetOrganizationHandler.ServeHTTP(w, r)
 		case IntermediateServiceExchangeIntermediateSessionForSessionProcedure:
 			intermediateServiceExchangeIntermediateSessionForSessionHandler.ServeHTTP(w, r)
+		case IntermediateServiceExchangeRelayedSessionTokenForSessionProcedure:
+			intermediateServiceExchangeRelayedSessionTokenForSessionHandler.ServeHTTP(w, r)
 		case IntermediateServiceGetGoogleOAuthRedirectURLProcedure:
 			intermediateServiceGetGoogleOAuthRedirectURLHandler.ServeHTTP(w, r)
 		case IntermediateServiceRedeemGoogleOAuthCodeProcedure:
@@ -802,6 +828,10 @@ func (UnimplementedIntermediateServiceHandler) SetOrganization(context.Context, 
 
 func (UnimplementedIntermediateServiceHandler) ExchangeIntermediateSessionForSession(context.Context, *connect.Request[v1.ExchangeIntermediateSessionForSessionRequest]) (*connect.Response[v1.ExchangeIntermediateSessionForSessionResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.ExchangeIntermediateSessionForSession is not implemented"))
+}
+
+func (UnimplementedIntermediateServiceHandler) ExchangeRelayedSessionTokenForSession(context.Context, *connect.Request[v1.ExchangeRelayedSessionTokenForSessionRequest]) (*connect.Response[v1.ExchangeRelayedSessionTokenForSessionResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.ExchangeRelayedSessionTokenForSession is not implemented"))
 }
 
 func (UnimplementedIntermediateServiceHandler) GetGoogleOAuthRedirectURL(context.Context, *connect.Request[v1.GetGoogleOAuthRedirectURLRequest]) (*connect.Response[v1.GetGoogleOAuthRedirectURLResponse], error) {

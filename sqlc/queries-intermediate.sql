@@ -26,8 +26,34 @@ RETURNING
     *;
 
 -- name: CreateIntermediateSession :one
-INSERT INTO intermediate_sessions (id, project_id, expire_time, email, google_user_id, microsoft_user_id, secret_token_sha256, primary_auth_factor, email_verification_challenge_completed)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+INSERT INTO intermediate_sessions (id, project_id, expire_time, email, google_user_id, microsoft_user_id, secret_token_sha256, primary_auth_factor, email_verification_challenge_completed, relayed_session_state)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+RETURNING
+    *;
+
+-- name: CreateRelayedSession :one
+INSERT INTO relayed_sessions (session_id, relayed_session_token_expire_time, relayed_session_token_sha256, relayed_refresh_token_sha256, state)
+    VALUES ($1, $2, $3, $4, $5)
+RETURNING
+    *;
+
+-- name: GetRelayedSessionByTokenSHA256 :one
+SELECT
+    *
+FROM
+    relayed_sessions
+WHERE
+    relayed_session_token_sha256 = $1
+    AND relayed_session_token_expire_time > now();
+
+-- name: UpdateRelayedSessionRefreshTokenSHA256 :one
+UPDATE
+    relayed_sessions
+SET
+    relayed_refresh_token_sha256 = $2,
+    relayed_session_token_sha256 = NULL
+WHERE
+    session_id = $1
 RETURNING
     *;
 

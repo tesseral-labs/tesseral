@@ -20,6 +20,7 @@ var skipRPCs = []string{
 	"/tesseral.intermediate.v1.IntermediateService/ListSAMLOrganizations",
 	"/tesseral.intermediate.v1.IntermediateService/RedeemUserImpersonationToken",
 	"/tesseral.intermediate.v1.IntermediateService/ExchangeSessionForIntermediateSession",
+	"/tesseral.intermediate.v1.IntermediateService/ExchangeRelayedSessionTokenForSession",
 }
 
 func New(s *store.Store, p *projectid.Sniffer, authAppsRootDomain string) connect.UnaryInterceptorFunc {

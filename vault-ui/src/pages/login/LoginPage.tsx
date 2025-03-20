@@ -4,6 +4,7 @@ import { LoaderCircleIcon } from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
+import { useSearchParams } from "react-router-dom";
 import { z } from "zod";
 
 import { GoogleIcon } from "@/components/login/GoogleIcon";
@@ -116,12 +117,21 @@ function LoginPageContents() {
   const createIntermediateSessionMutation = useMutation(
     createIntermediateSession,
   );
+  const [searchParams] = useSearchParams();
+
+  async function createIntermediateSessionWithRelayedSessionState() {
+    await createIntermediateSessionMutation.mutateAsync({
+      relayedSessionState:
+        searchParams.get("relayed-session-state") ?? undefined,
+    });
+  }
 
   const { mutateAsync: getGoogleOAuthRedirectURLAsync } = useMutation(
     getGoogleOAuthRedirectURL,
   );
+
   async function handleLogInWithGoogle() {
-    await createIntermediateSessionMutation.mutateAsync({});
+    await createIntermediateSessionWithRelayedSessionState();
     const { url } = await getGoogleOAuthRedirectURLAsync({
       redirectUrl: `${window.location.origin}/google-oauth-callback`,
     });
@@ -131,8 +141,9 @@ function LoginPageContents() {
   const { mutateAsync: getMicrosoftOAuthRedirectURLAsync } = useMutation(
     getMicrosoftOAuthRedirectURL,
   );
+
   async function handleLogInWithMicrosoft() {
-    await createIntermediateSessionMutation.mutateAsync({});
+    await createIntermediateSessionWithRelayedSessionState();
     const { url } = await getMicrosoftOAuthRedirectURLAsync({
       redirectUrl: `${window.location.origin}/microsoft-oauth-callback`,
     });
@@ -157,7 +168,7 @@ function LoginPageContents() {
 
   async function handleSubmit(values: z.infer<typeof schema>) {
     setSubmitting(true);
-    await createIntermediateSessionMutation.mutateAsync({});
+    await createIntermediateSessionWithRelayedSessionState();
     await setEmailAsPrimaryLoginFactorMutation.mutateAsync({});
     await issueEmailVerificationChallengeMutation.mutateAsync({
       email: values.email,

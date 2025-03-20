@@ -171,6 +171,7 @@ type IntermediateSession struct {
 	AuthenticatorAppRecoveryCodeBcrypts [][]byte
 	PasskeyRpID                         *string
 	PrimaryAuthFactor                   *PrimaryAuthFactor
+	RelayedSessionState                 *string
 }
 
 type OauthVerifiedEmail struct {
@@ -287,6 +288,14 @@ type PublishableKey struct {
 	CreateTime  *time.Time
 	UpdateTime  *time.Time
 	DisplayName string
+}
+
+type RelayedSession struct {
+	SessionID                     uuid.UUID
+	RelayedSessionTokenExpireTime *time.Time
+	RelayedSessionTokenSha256     []byte
+	State                         *string
+	RelayedRefreshTokenSha256     []byte
 }
 
 type SamlConnection struct {
