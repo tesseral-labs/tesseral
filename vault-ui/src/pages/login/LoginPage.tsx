@@ -134,7 +134,7 @@ function LoginPageContents() {
     const searchParamsCopy = new URLSearchParams(searchParams);
     searchParamsCopy.delete("relayed-session-state");
     setSearchParams(searchParamsCopy);
-  }, [searchParams, setSearchParams]);
+  }, [relayedSessionState, searchParams, setSearchParams]);
 
   async function createIntermediateSessionWithRelayedSessionState() {
     await createIntermediateSessionMutation.mutateAsync({
