@@ -22,7 +22,7 @@ export function FinishLoginPage() {
       const url = new URL(preferredRedirect ?? settings.redirectUri);
 
       if (relayedSessionToken) {
-        url.hash = `__tesseral_relayed_session_token=${relayedSessionToken}`;
+        url.hash = `__tesseral_${settings.projectId}_relayed_session_token=${relayedSessionToken}`;
       }
 
       window.location.href = url.toString();

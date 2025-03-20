@@ -206,7 +206,7 @@ message PublishableKey {
   string display_name = 2;
   google.protobuf.Timestamp create_time = 3;
   google.protobuf.Timestamp update_time = 4;
-  optional bool support_relayed_sessions = 5;
+  optional bool dev_mode = 5;
 }
 
 // A User represents an individual working for one of your corporate customers.

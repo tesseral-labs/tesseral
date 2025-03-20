@@ -11,30 +11,30 @@ import (
 )
 
 func ExpiredRefreshToken(projectID uuid.UUID) string {
-	return newCookie("refresh_token", -1*time.Second, projectID, "")
+	return newCookie("refresh_token", -1*time.Second, projectID, "", true)
 }
 
 func ExpiredAccessToken(projectID uuid.UUID) string {
-	return newCookie("access_token", -1*time.Second, projectID, "")
+	return newCookie("access_token", -1*time.Second, projectID, "", false)
 }
 
 func ExpiredIntermediateAccessToken(projectID uuid.UUID) string {
-	return newCookie("intermediate_access_token", -1*time.Second, projectID, "")
+	return newCookie("intermediate_access_token", -1*time.Second, projectID, "", true)
 }
 
 func NewRefreshToken(projectID uuid.UUID, value string) string {
-	return newCookie("refresh_token", time.Hour*24*365, projectID, value)
+	return newCookie("refresh_token", time.Hour*24*365, projectID, value, true)
 }
 
 func NewAccessToken(projectID uuid.UUID, value string) string {
-	return newCookie("access_token", 5*time.Minute, projectID, value)
+	return newCookie("access_token", 5*time.Minute, projectID, value, false)
 }
 
 func NewIntermediateAccessToken(projectID uuid.UUID, value string) string {
-	return newCookie("intermediate_access_token", 15*time.Minute, projectID, value)
+	return newCookie("intermediate_access_token", 15*time.Minute, projectID, value, true)
 }
 
-func newCookie(name string, maxAge time.Duration, projectID uuid.UUID, value string) string {
+func newCookie(name string, maxAge time.Duration, projectID uuid.UUID, value string, httpOnly bool) string {
 	c := http.Cookie{
 		Name:     fmt.Sprintf("tesseral_%s_%s", idformat.Project.Format(projectID), name),
 		Value:    value,
@@ -42,7 +42,7 @@ func newCookie(name string, maxAge time.Duration, projectID uuid.UUID, value str
 		Path:     "/",
 		SameSite: http.SameSiteNoneMode,
 		Secure:   true,
-		HttpOnly: true,
+		HttpOnly: httpOnly,
 	}
 	return c.String()
 }

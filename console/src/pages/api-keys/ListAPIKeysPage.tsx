@@ -217,7 +217,7 @@ export const ListAPIKeysPage = () => {
 
 const publishableKeySchema = z.object({
   displayName: z.string().nonempty(),
-  supportRelayedSessions: z.boolean(),
+  devMode: z.boolean(),
 });
 
 const CreatePublishableKeyButton = () => {
@@ -240,7 +240,7 @@ const CreatePublishableKeyButton = () => {
     const { publishableKey } = await createPublishableKeyMutation.mutateAsync({
       publishableKey: {
         displayName: values.displayName,
-        supportRelayedSessions: values.supportRelayedSessions,
+        devMode: values.devMode,
       },
     });
 
@@ -293,10 +293,10 @@ const CreatePublishableKeyButton = () => {
 
               <FormField
                 control={form.control}
-                name="supportRelayedSessions"
+                name="devMode"
                 render={({ field }: { field: any }) => (
                   <FormItem>
-                    <FormLabel>Support Relayed Sessions</FormLabel>
+                    <FormLabel>Dev Mode</FormLabel>
                     <FormControl>
                       <Switch
                         className="block"
@@ -305,9 +305,8 @@ const CreatePublishableKeyButton = () => {
                       />
                     </FormControl>
                     <FormDescription>
-                      Enable this in development environments, or any other
-                      situation where your web app is hosted on a different
-                      domain than your Tesseral Vault.
+                      Enable this if you want to use this publishable key from
+                      localhost.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
