@@ -97,6 +97,7 @@ func (s *Store) CreatePublishableKey(ctx context.Context, req *backendv1.CreateP
 		ID:          uuid.New(),
 		ProjectID:   authn.ProjectID(ctx),
 		DisplayName: req.PublishableKey.DisplayName,
+		DevMode:     derefOrEmpty(req.PublishableKey.DevMode),
 	})
 	if err != nil {
 		return nil, fmt.Errorf("create publishable key: %w", err)
@@ -144,6 +145,10 @@ func (s *Store) UpdatePublishableKey(ctx context.Context, req *backendv1.UpdateP
 
 	if req.PublishableKey.DisplayName != "" {
 		updates.DisplayName = req.PublishableKey.DisplayName
+	}
+
+	if req.PublishableKey.DevMode != nil {
+		updates.DevMode = *req.PublishableKey.DevMode
 	}
 
 	qUpdatedPublishableKey, err := q.UpdatePublishableKey(ctx, updates)
@@ -202,5 +207,6 @@ func parsePublishableKey(qPublishableKey queries.PublishableKey) *backendv1.Publ
 		DisplayName: qPublishableKey.DisplayName,
 		CreateTime:  timestamppb.New(*qPublishableKey.CreateTime),
 		UpdateTime:  timestamppb.New(*qPublishableKey.UpdateTime),
+		DevMode:     &qPublishableKey.DevMode,
 	}
 }

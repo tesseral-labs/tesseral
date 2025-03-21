@@ -24,6 +24,7 @@ func (s *Service) ExchangeIntermediateSessionForSession(ctx context.Context, req
 	res.AccessToken = accessToken
 
 	connectRes := connect.NewResponse(res)
+	connectRes.Header().Add("Set-Cookie", cookies.ExpiredIntermediateAccessToken(authn.ProjectID(ctx)))
 	connectRes.Header().Add("Set-Cookie", cookies.NewRefreshToken(authn.ProjectID(ctx), res.RefreshToken))
 	connectRes.Header().Add("Set-Cookie", cookies.NewAccessToken(authn.ProjectID(ctx), res.AccessToken))
 	return connectRes, nil

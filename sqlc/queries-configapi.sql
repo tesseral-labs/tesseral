@@ -1,7 +1,8 @@
 -- name: GetPublishableKeyConfiguration :one
 SELECT
     projects.id AS project_id,
-    projects.vault_domain
+    projects.vault_domain,
+    publishable_keys.dev_mode
 FROM
     publishable_keys
     JOIN projects ON publishable_keys.project_id = projects.id

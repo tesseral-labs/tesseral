@@ -1,7 +1,7 @@
 import { useMutation } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoaderCircleIcon } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { useSearchParams } from "react-router-dom";
@@ -117,12 +117,28 @@ function LoginPageContents() {
   const createIntermediateSessionMutation = useMutation(
     createIntermediateSession,
   );
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const [relayedSessionState, setRelayedSessionState] = useState<
+    string | undefined
+  >();
+  useEffect(() => {
+    if (relayedSessionState !== undefined) {
+      return;
+    }
+
+    setRelayedSessionState(
+      searchParams.get("relayed-session-state") ?? undefined,
+    );
+
+    const searchParamsCopy = new URLSearchParams(searchParams);
+    searchParamsCopy.delete("relayed-session-state");
+    setSearchParams(searchParamsCopy);
+  }, [relayedSessionState, searchParams, setSearchParams]);
 
   async function createIntermediateSessionWithRelayedSessionState() {
     await createIntermediateSessionMutation.mutateAsync({
-      relayedSessionState:
-        searchParams.get("relayed-session-state") ?? undefined,
+      relayedSessionState,
     });
   }
 

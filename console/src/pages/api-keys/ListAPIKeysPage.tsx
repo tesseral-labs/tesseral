@@ -59,6 +59,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Switch } from '@/components/ui/switch';
 
 export const ListAPIKeysPage = () => {
   const { data: listPublishableKeysResponse } = useQuery(
@@ -215,28 +216,31 @@ export const ListAPIKeysPage = () => {
 };
 
 const publishableKeySchema = z.object({
-  displayName: z.string(),
+  displayName: z.string().nonempty(),
+  devMode: z.boolean(),
 });
 
 const CreatePublishableKeyButton = () => {
   const createPublishableKeyMutation = useMutation(createPublishableKey);
-  /* eslint-disable @typescript-eslint/no-unsafe-call */
+
   // Currently there's an issue with the types of react-hook-form and zod
   // preventing the compiler from inferring the correct types.
   const form = useForm<z.infer<typeof publishableKeySchema>>({
     resolver: zodResolver(publishableKeySchema),
     defaultValues: {
       displayName: '',
+      supportRelayedSessions: false,
     },
   });
-  /* eslint-enable @typescript-eslint/no-unsafe-call */
+
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
-  const handleSubmit = async (values: z.infer<typeof projectApiKeySchema>) => {
+  const handleSubmit = async (values: z.infer<typeof publishableKeySchema>) => {
     const { publishableKey } = await createPublishableKeyMutation.mutateAsync({
       publishableKey: {
         displayName: values.displayName,
+        devMode: values.devMode,
       },
     });
 
@@ -262,11 +266,13 @@ const CreatePublishableKeyButton = () => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <Form {...form}>
-            {/* eslint-disable @typescript-eslint/no-unsafe-call */}
+            {}
             {/** Currently there's an issue with the types of react-hook-form and zod
-            preventing the compiler from inferring the correct types.*/}
-            <form onSubmit={form.handleSubmit(handleSubmit)}>
-              {/* eslint-enable @typescript-eslint/no-unsafe-call */}
+             preventing the compiler from inferring the correct types.*/}
+            <form
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="space-y-8"
+            >
               <FormField
                 control={form.control}
                 name="displayName"
@@ -284,6 +290,29 @@ const CreatePublishableKeyButton = () => {
                   </FormItem>
                 )}
               />
+
+              <FormField
+                control={form.control}
+                name="devMode"
+                render={({ field }: { field: any }) => (
+                  <FormItem>
+                    <FormLabel>Dev Mode</FormLabel>
+                    <FormControl>
+                      <Switch
+                        className="block"
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Enable this if you want to use this publishable key from
+                      localhost.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
               <AlertDialogFooter className="mt-8">
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <Button type="submit">Create Publishable Key</Button>
@@ -303,7 +332,6 @@ const projectApiKeySchema = z.object({
 const CreateProjectAPIKeyButton = () => {
   const createProjectAPIKeyMutation = useMutation(createProjectAPIKey);
 
-  /* eslint-disable @typescript-eslint/no-unsafe-call */
   // Currently there's an issue with the types of react-hook-form and zod
   // preventing the compiler from inferring the correct types.
   const form = useForm<z.infer<typeof projectApiKeySchema>>({
@@ -312,7 +340,7 @@ const CreateProjectAPIKeyButton = () => {
       displayName: '',
     },
   });
-  /* eslint-enable @typescript-eslint/no-unsafe-call */
+
   const navigate = useNavigate();
   const [createOpen, setCreateOpen] = useState(false);
   const [projectAPIKeyID, setProjectAPIKeyID] = useState('');
@@ -382,11 +410,11 @@ const CreateProjectAPIKeyButton = () => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <Form {...form}>
-            {/* eslint-disable @typescript-eslint/no-unsafe-call */}
+            {}
             {/** Currently there's an issue with the types of react-hook-form and zod
-            preventing the compiler from inferring the correct types.*/}
+             preventing the compiler from inferring the correct types.*/}
             <form onSubmit={form.handleSubmit(handleSubmit)}>
-              {/* eslint-enable @typescript-eslint/no-unsafe-call */}
+              {}
               <FormField
                 control={form.control}
                 name="displayName"

@@ -69,7 +69,11 @@ export function useRedirectNextLoginFlowPage(): () => void {
     }
 
     // verify password if there is one registered, and it's not already verified
-    if (organization.userHasPassword && !intermediateSession.passwordVerified) {
+    if (
+      organization.logInWithPassword &&
+      organization.userHasPassword &&
+      !intermediateSession.passwordVerified
+    ) {
       navigate(`/verify-password`);
       return;
     }

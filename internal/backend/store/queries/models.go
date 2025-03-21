@@ -288,6 +288,7 @@ type PublishableKey struct {
 	CreateTime  *time.Time
 	UpdateTime  *time.Time
 	DisplayName string
+	DevMode     bool
 }
 
 type RelayedSession struct {

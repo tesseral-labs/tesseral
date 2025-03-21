@@ -183,20 +183,26 @@ func (q *Queries) CreateProjectTrustedDomain(ctx context.Context, arg CreateProj
 }
 
 const createPublishableKey = `-- name: CreatePublishableKey :one
-INSERT INTO publishable_keys (id, project_id, display_name)
-    VALUES ($1, $2, $3)
+INSERT INTO publishable_keys (id, project_id, display_name, dev_mode)
+    VALUES ($1, $2, $3, $4)
 RETURNING
-    id, project_id, create_time, update_time, display_name
+    id, project_id, create_time, update_time, display_name, dev_mode
 `
 
 type CreatePublishableKeyParams struct {
 	ID          uuid.UUID
 	ProjectID   uuid.UUID
 	DisplayName string
+	DevMode     bool
 }
 
 func (q *Queries) CreatePublishableKey(ctx context.Context, arg CreatePublishableKeyParams) (PublishableKey, error) {
-	row := q.db.QueryRow(ctx, createPublishableKey, arg.ID, arg.ProjectID, arg.DisplayName)
+	row := q.db.QueryRow(ctx, createPublishableKey,
+		arg.ID,
+		arg.ProjectID,
+		arg.DisplayName,
+		arg.DevMode,
+	)
 	var i PublishableKey
 	err := row.Scan(
 		&i.ID,
@@ -204,6 +210,7 @@ func (q *Queries) CreatePublishableKey(ctx context.Context, arg CreatePublishabl
 		&i.CreateTime,
 		&i.UpdateTime,
 		&i.DisplayName,
+		&i.DevMode,
 	)
 	return i, err
 }
@@ -1074,7 +1081,7 @@ func (q *Queries) GetProjectUISettings(ctx context.Context, projectID uuid.UUID)
 
 const getPublishableKey = `-- name: GetPublishableKey :one
 SELECT
-    id, project_id, create_time, update_time, display_name
+    id, project_id, create_time, update_time, display_name, dev_mode
 FROM
     publishable_keys
 WHERE
@@ -1096,6 +1103,7 @@ func (q *Queries) GetPublishableKey(ctx context.Context, arg GetPublishableKeyPa
 		&i.CreateTime,
 		&i.UpdateTime,
 		&i.DisplayName,
+		&i.DevMode,
 	)
 	return i, err
 }
@@ -1586,7 +1594,7 @@ func (q *Queries) ListProjects(ctx context.Context, limit int32) ([]Project, err
 
 const listPublishableKeys = `-- name: ListPublishableKeys :many
 SELECT
-    id, project_id, create_time, update_time, display_name
+    id, project_id, create_time, update_time, display_name, dev_mode
 FROM
     publishable_keys
 WHERE
@@ -1618,6 +1626,7 @@ func (q *Queries) ListPublishableKeys(ctx context.Context, arg ListPublishableKe
 			&i.CreateTime,
 			&i.UpdateTime,
 			&i.DisplayName,
+			&i.DevMode,
 		); err != nil {
 			return nil, err
 		}
@@ -2405,20 +2414,22 @@ UPDATE
     publishable_keys
 SET
     update_time = now(),
-    display_name = $1
+    display_name = $2,
+    dev_mode = $3
 WHERE
-    id = $2
+    id = $1
 RETURNING
-    id, project_id, create_time, update_time, display_name
+    id, project_id, create_time, update_time, display_name, dev_mode
 `
 
 type UpdatePublishableKeyParams struct {
-	DisplayName string
 	ID          uuid.UUID
+	DisplayName string
+	DevMode     bool
 }
 
 func (q *Queries) UpdatePublishableKey(ctx context.Context, arg UpdatePublishableKeyParams) (PublishableKey, error) {
-	row := q.db.QueryRow(ctx, updatePublishableKey, arg.DisplayName, arg.ID)
+	row := q.db.QueryRow(ctx, updatePublishableKey, arg.ID, arg.DisplayName, arg.DevMode)
 	var i PublishableKey
 	err := row.Scan(
 		&i.ID,
@@ -2426,6 +2437,7 @@ func (q *Queries) UpdatePublishableKey(ctx context.Context, arg UpdatePublishabl
 		&i.CreateTime,
 		&i.UpdateTime,
 		&i.DisplayName,
+		&i.DevMode,
 	)
 	return i, err
 }
