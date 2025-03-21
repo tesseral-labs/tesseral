@@ -7,48 +7,41 @@ import (
 	"fmt"
 
 	"github.com/jackc/pgx/v5"
-	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 )
 
 var ErrBadProjectAPIKey = fmt.Errorf("bad project api key")
 
-func (s *Store) AuthenticateProjectAPIKey(ctx context.Context, bearerToken string) (*backendv1.ProjectAPIKey, *backendv1.Project, error) {
+type AuthenticateProjectAPIKeyResponse struct {
+	ProjectAPIKeyID string
+	ProjectID       string
+}
+
+func (s *Store) AuthenticateProjectAPIKey(ctx context.Context, bearerToken string) (*AuthenticateProjectAPIKeyResponse, error) {
 	_, q, _, rollback, err := s.tx(ctx)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 	defer rollback()
 
 	secretToken, err := idformat.ProjectAPIKeySecretToken.Parse(bearerToken)
 	if err != nil {
-		return nil, nil, apierror.NewInvalidArgumentError("invalid project api key secret token", fmt.Errorf("parse project api key secret token: %w", err))
+		return nil, apierror.NewInvalidArgumentError("invalid project api key secret token", fmt.Errorf("parse project api key secret token: %w", err))
 	}
 
 	secretTokenSHA := sha256.Sum256(secretToken[:])
 	qProjectAPIKey, err := q.GetProjectAPIKeyBySecretTokenSHA256(ctx, secretTokenSHA[:])
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, nil, apierror.NewNotFoundError("project api key not found", fmt.Errorf("project api key not found"))
+			return nil, apierror.NewNotFoundError("project api key not found", fmt.Errorf("project api key not found"))
 		}
 
-		return nil, nil, fmt.Errorf("get project api key by secret token sha256: %w", err)
+		return nil, fmt.Errorf("get project api key by secret token sha256: %w", err)
 	}
 
-	qProject, err := q.GetProjectByID(ctx, qProjectAPIKey.ProjectID)
-	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, nil, apierror.NewNotFoundError("project not found", fmt.Errorf("get project by id: %w", err))
-		}
-
-		return nil, nil, fmt.Errorf("get project by id: %w", err)
-	}
-
-	qProjectTrustedDomains, err := q.GetProjectTrustedDomains(ctx, qProject.ID)
-	if err != nil {
-		return nil, nil, fmt.Errorf("get project trusted domains: %w", err)
-	}
-
-	return parseProjectAPIKey(qProjectAPIKey), parseProject(&qProject, qProjectTrustedDomains), nil
+	return &AuthenticateProjectAPIKeyResponse{
+		ProjectAPIKeyID: idformat.ProjectAPIKey.Format(qProjectAPIKey.ID),
+		ProjectID:       idformat.Project.Format(qProjectAPIKey.ProjectID),
+	}, nil
 }

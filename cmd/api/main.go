@@ -31,6 +31,7 @@ import (
 	commonstore "github.com/tesseral-labs/tesseral/internal/common/store"
 	configapiservice "github.com/tesseral-labs/tesseral/internal/configapi/service"
 	configapistore "github.com/tesseral-labs/tesseral/internal/configapi/store"
+	"github.com/tesseral-labs/tesseral/internal/cookies"
 	frontendinterceptor "github.com/tesseral-labs/tesseral/internal/frontend/authn/interceptor"
 	"github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1/frontendv1connect"
 	frontendservice "github.com/tesseral-labs/tesseral/internal/frontend/service"
@@ -159,6 +160,8 @@ func main() {
 		SessionSigningKeyKMSKeyID: config.SessionKMSKeyID,
 	})
 
+	cookier := cookies.Cookier{Store: commonStore}
+
 	// Register the backend service
 	backendStore := backendstore.New(backendstore.NewStoreParams{
 		DB:                                    db,
@@ -208,9 +211,10 @@ func main() {
 		&frontendservice.Service{
 			Store:             frontendStore,
 			AccessTokenIssuer: accesstoken.NewIssuer(commonStore),
+			Cookier:           &cookier,
 		},
 		connect.WithInterceptors(
-			frontendinterceptor.New(frontendStore, projectid.NewSniffer(config.AuthAppsRootDomain, commonStore), config.AuthAppsRootDomain),
+			frontendinterceptor.New(frontendStore, projectid.NewSniffer(config.AuthAppsRootDomain, commonStore), &cookier),
 		),
 	)
 	frontend := vanguard.NewService(frontendConnectPath, frontendConnectHandler)
@@ -240,9 +244,10 @@ func main() {
 		&intermediateservice.Service{
 			Store:             intermediateStore,
 			AccessTokenIssuer: accesstoken.NewIssuer(commonStore),
+			Cookier:           &cookier,
 		},
 		connect.WithInterceptors(
-			intermediateinterceptor.New(intermediateStore, projectid.NewSniffer(config.AuthAppsRootDomain, commonStore), config.AuthAppsRootDomain),
+			intermediateinterceptor.New(intermediateStore, projectid.NewSniffer(config.AuthAppsRootDomain, commonStore), &cookier),
 		),
 	)
 	intermediate := vanguard.NewService(intermediateConnectPath, intermediateConnectHandler)

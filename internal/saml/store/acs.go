@@ -77,8 +77,9 @@ type CreateSessionRequest struct {
 }
 
 type CreateSessionResponse struct {
-	RedirectURI  string
-	RefreshToken string
+	ProjectCookieDomain string
+	RedirectURI         string
+	RefreshToken        string
 }
 
 func (s *Store) CreateSession(ctx context.Context, req *CreateSessionRequest) (*CreateSessionResponse, error) {
@@ -134,8 +135,9 @@ func (s *Store) CreateSession(ctx context.Context, req *CreateSessionRequest) (*
 	}
 
 	return &CreateSessionResponse{
-		RedirectURI:  redirectURI,
-		RefreshToken: idformat.SessionRefreshToken.Format(refreshToken),
+		ProjectCookieDomain: qProject.CookieDomain,
+		RedirectURI:         redirectURI,
+		RefreshToken:        idformat.SessionRefreshToken.Format(refreshToken),
 	}, nil
 }
 

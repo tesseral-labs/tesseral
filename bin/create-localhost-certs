@@ -7,6 +7,6 @@ create_cert() {
 create_cert "api.tesseral.example.com"
 create_cert "config.tesseral.example.com"
 create_cert "console.tesseral.example.com"
-create_cert "auth.console.tesseral.example.com"
+create_cert "vault.console.tesseral.example.com"
 create_cert "*.tesseral.example.app"
 create_cert "tesseralusercontent.example.com"

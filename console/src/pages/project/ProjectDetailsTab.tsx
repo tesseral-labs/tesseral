@@ -106,16 +106,23 @@ export const ProjectDetailsTab = () => {
       <Card>
         <CardHeader className="flex-row justify-between items-center">
           <div className="flex flex-col space-y-1 5">
-            <CardTitle>Trusted Domains</CardTitle>
+            <CardTitle>Domains settings</CardTitle>
             <CardDescription>
-              Client-side JavaScript on these domains can take actions on your
-              user's behalf once they're logged in.
+              Settings related to domains that your project runs on.
             </CardDescription>
           </div>
-          <EditProjectTrustedDomainsButton />
+          <EditProjectDomainSettingsButton />
         </CardHeader>
         <CardContent>
           <DetailsGrid>
+            <DetailsGridColumn>
+              <DetailsGridEntry>
+                <DetailsGridKey>Cookie Domain</DetailsGridKey>
+                <DetailsGridValue>
+                  {getProjectResponse?.project?.cookieDomain}
+                </DetailsGridValue>
+              </DetailsGridEntry>
+            </DetailsGridColumn>
             <DetailsGridColumn>
               <DetailsGridEntry>
                 <DetailsGridKey>Trusted Domains</DetailsGridKey>
@@ -477,16 +484,18 @@ const EditProjectRedirectURIsButton = () => {
   );
 };
 
-const trustedDomainsSchema = z.object({
+const domainSettingsSchema = z.object({
+  cookieDomain: z.string(),
   trustedDomains: z.array(
     z.string().regex(/^([a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+(:\d+)?$/),
   ),
 });
 
-const EditProjectTrustedDomainsButton = () => {
-  const form = useForm<z.infer<typeof trustedDomainsSchema>>({
-    resolver: zodResolver(trustedDomainsSchema),
+const EditProjectDomainSettingsButton = () => {
+  const form = useForm<z.infer<typeof domainSettingsSchema>>({
+    resolver: zodResolver(domainSettingsSchema),
     defaultValues: {
+      cookieDomain: '',
       trustedDomains: [],
     },
   });
@@ -495,6 +504,7 @@ const EditProjectTrustedDomainsButton = () => {
   useEffect(() => {
     if (getProjectResponse?.project) {
       form.reset({
+        cookieDomain: getProjectResponse?.project?.cookieDomain,
         trustedDomains: getProjectResponse?.project?.trustedDomains || [],
       });
     }
@@ -502,9 +512,10 @@ const EditProjectTrustedDomainsButton = () => {
 
   const updateProjectMutation = useMutation(updateProject);
   const [open, setOpen] = useState(false);
-  const handleSubmit = async (values: z.infer<typeof trustedDomainsSchema>) => {
+  const handleSubmit = async (values: z.infer<typeof domainSettingsSchema>) => {
     await updateProjectMutation.mutateAsync({
       project: {
+        cookieDomain: values.cookieDomain,
         trustedDomains: values.trustedDomains,
       },
     });
@@ -532,6 +543,29 @@ const EditProjectTrustedDomainsButton = () => {
           >
             <FormField
               control={form.control}
+              name="cookieDomain"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Cookie Domain</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="app.company.com"
+                      {...field}
+                      disabled={!getProjectResponse?.project?.vaultDomainCustom}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Client-side JavaScript on this domain and its subdomains
+                    will have access to User access tokens. You cannot modify
+                    this field until you have configured a custom Vault domain.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="trustedDomains"
               render={({ field }) => (
                 <FormItem>
@@ -544,12 +578,8 @@ const EditProjectTrustedDomainsButton = () => {
                   </FormControl>
                   <FormDescription>
                     Add the domains that your app runs on, e.g.
-                    "app.company.com". If{' '}
-                    <span className="font-medium">
-                      {getProjectResponse?.project?.displayName}
-                    </span>{' '}
-                    is a non-production project, you can also add localhost
-                    here. Your vault domains are always trusted domains.
+                    "app.company.com". The Vault domain is always a trusted
+                    domain.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

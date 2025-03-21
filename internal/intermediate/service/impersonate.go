@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"connectrpc.com/connect"
-	"github.com/tesseral-labs/tesseral/internal/cookies"
 	"github.com/tesseral-labs/tesseral/internal/intermediate/authn"
 	intermediatev1 "github.com/tesseral-labs/tesseral/internal/intermediate/gen/tesseral/intermediate/v1"
 )
@@ -23,8 +22,18 @@ func (s *Service) RedeemUserImpersonationToken(ctx context.Context, req *connect
 
 	res.AccessToken = accessToken
 
+	refreshTokenCookie, err := s.Cookier.NewRefreshToken(ctx, authn.ProjectID(ctx), res.RefreshToken)
+	if err != nil {
+		return nil, fmt.Errorf("issue refresh token cookie: %w", err)
+	}
+
+	accessTokenCookie, err := s.Cookier.NewAccessToken(ctx, authn.ProjectID(ctx), accessToken)
+	if err != nil {
+		return nil, fmt.Errorf("issue access token cookie: %w", err)
+	}
+
 	connectRes := connect.NewResponse(res)
-	connectRes.Header().Add("Set-Cookie", cookies.NewRefreshToken(authn.ProjectID(ctx), res.RefreshToken))
-	connectRes.Header().Add("Set-Cookie", cookies.NewAccessToken(authn.ProjectID(ctx), res.AccessToken))
+	connectRes.Header().Add("Set-Cookie", refreshTokenCookie)
+	connectRes.Header().Add("Set-Cookie", accessTokenCookie)
 	return connectRes, nil
 }

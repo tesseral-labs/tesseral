@@ -1452,6 +1452,9 @@ components:
                 vaultDomain:
                     type: string
                     description: The domain where the Project's Vault lives.
+                vaultDomainCustom:
+                    type: boolean
+                    description: Whether vault_domain is different from the automatically-assigned one.
                 trustedDomains:
                     type: array
                     items:
@@ -1461,6 +1464,9 @@ components:
 
                          Client-side JavaScript on these domains can take actions on behalf of
                          logged-in Users.
+                cookieDomain:
+                    type: string
+                    description: The domain that authentication cookies are stored on.
                 redirectUri:
                     type: string
                     description: Where Users are redirected after returning from the Vault.

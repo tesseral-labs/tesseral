@@ -19,7 +19,7 @@ var skipRPCs = []string{
 	"/tesseral.frontend.v1.FrontendService/Refresh",
 }
 
-func New(s *store.Store, p *projectid.Sniffer, authAppsRootDomain string) connect.UnaryInterceptorFunc {
+func New(s *store.Store, p *projectid.Sniffer, cookier *cookies.Cookier) connect.UnaryInterceptorFunc {
 	return func(next connect.UnaryFunc) connect.UnaryFunc {
 		return func(ctx context.Context, req connect.AnyRequest) (connect.AnyResponse, error) {
 			projectID, err := p.GetProjectID(req.Header().Get("X-Tesseral-Host"))
@@ -40,7 +40,7 @@ func New(s *store.Store, p *projectid.Sniffer, authAppsRootDomain string) connec
 			}
 
 			// get the access token from the cookie to enforce authentication
-			accessToken, err := cookies.GetAccessToken(*projectID, req)
+			accessToken, err := cookier.GetAccessToken(*projectID, req)
 			if err != nil {
 				return nil, connect.NewError(connect.CodeUnauthenticated, err)
 			}

@@ -40,7 +40,7 @@ func (s *Store) GetProject(ctx context.Context, req *backendv1.GetProjectRequest
 		return nil, fmt.Errorf("get project trusted domains: %w", err)
 	}
 
-	return &backendv1.GetProjectResponse{Project: parseProject(&project, qProjectTrustedDomains)}, nil
+	return &backendv1.GetProjectResponse{Project: s.parseProject(&project, qProjectTrustedDomains)}, nil
 }
 
 func (s *Store) DisableProjectLogins(ctx context.Context, req *backendv1.DisableProjectLoginsRequest) (*backendv1.DisableProjectLoginsResponse, error) {
@@ -303,10 +303,10 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return &backendv1.UpdateProjectResponse{Project: parseProject(&qUpdatedProject, qProjectTrustedDomains)}, nil
+	return &backendv1.UpdateProjectResponse{Project: s.parseProject(&qUpdatedProject, qProjectTrustedDomains)}, nil
 }
 
-func parseProject(qProject *queries.Project, qProjectTrustedDomains []queries.ProjectTrustedDomain) *backendv1.Project {
+func (s *Store) parseProject(qProject *queries.Project, qProjectTrustedDomains []queries.ProjectTrustedDomain) *backendv1.Project {
 	// sanity check
 	for _, qProjectTrustedDomain := range qProjectTrustedDomains {
 		if qProjectTrustedDomain.ProjectID != qProject.ID {
@@ -336,7 +336,9 @@ func parseProject(qProject *queries.Project, qProjectTrustedDomains []queries.Pr
 		MicrosoftOauthClientId:     derefOrEmpty(qProject.MicrosoftOauthClientID),
 		MicrosoftOauthClientSecret: "", // intentionally left blank
 		VaultDomain:                qProject.VaultDomain,
+		VaultDomainCustom:          qProject.VaultDomain != fmt.Sprintf("%s.%s", strings.ReplaceAll(idformat.Project.Format(qProject.ID), "_", "-"), s.authAppsRootDomain),
 		TrustedDomains:             trustedDomains,
+		CookieDomain:               qProject.CookieDomain,
 		RedirectUri:                qProject.RedirectUri,
 		AfterLoginRedirectUri:      qProject.AfterLoginRedirectUri,
 		AfterSignupRedirectUri:     qProject.AfterSignupRedirectUri,

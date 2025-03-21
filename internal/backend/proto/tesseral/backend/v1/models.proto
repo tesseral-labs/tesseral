@@ -60,11 +60,17 @@ message Project {
   // The domain where the Project's Vault lives.
   string vault_domain = 12;
 
+  // Whether vault_domain is different from the automatically-assigned one.
+  bool vault_domain_custom = 23;
+
   // The set of domains the Project trusts.
   //
   // Client-side JavaScript on these domains can take actions on behalf of
   // logged-in Users.
   repeated string trusted_domains = 17;
+
+  // The domain that authentication cookies are stored on.
+  string cookie_domain = 22;
 
   // Where Users are redirected after returning from the Vault.
   string redirect_uri = 18;

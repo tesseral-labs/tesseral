@@ -53,7 +53,7 @@ func New(s *store.Store, host string, dogfoodProjectID string, dogfoodAuthDomain
 			}
 
 			if strings.HasPrefix(secretValue, "openauth_secret_key_") {
-				projectAPIKey, project, err := s.AuthenticateProjectAPIKey(ctx, secretValue)
+				res, err := s.AuthenticateProjectAPIKey(ctx, secretValue)
 				if err != nil {
 					if errors.Is(err, store.ErrBadProjectAPIKey) {
 						return nil, connect.NewError(connect.CodeUnauthenticated, err)
@@ -62,8 +62,8 @@ func New(s *store.Store, host string, dogfoodProjectID string, dogfoodAuthDomain
 				}
 
 				ctx = authn.NewProjectAPIKeyContext(ctx, &authn.ProjectAPIKeyContextData{
-					ProjectAPIKeyID: projectAPIKey.Id,
-					ProjectID:       project.Id,
+					ProjectAPIKeyID: res.ProjectAPIKeyID,
+					ProjectID:       res.ProjectID,
 				})
 			} else {
 				sessionCtxData, err := authenticateAccessToken(ctx, s, dogfoodProjectID, secretValue)

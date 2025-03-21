@@ -73,6 +73,22 @@ func (q *Queries) GetImpersonatorUserByID(ctx context.Context, id uuid.UUID) (Ge
 	return i, err
 }
 
+const getProjectCookieDomainByProjectID = `-- name: GetProjectCookieDomainByProjectID :one
+SELECT
+    cookie_domain
+FROM
+    projects
+WHERE
+    id = $1
+`
+
+func (q *Queries) GetProjectCookieDomainByProjectID(ctx context.Context, id uuid.UUID) (string, error) {
+	row := q.db.QueryRow(ctx, getProjectCookieDomainByProjectID, id)
+	var cookie_domain string
+	err := row.Scan(&cookie_domain)
+	return cookie_domain, err
+}
+
 const getProjectIDByVaultDomain = `-- name: GetProjectIDByVaultDomain :one
 SELECT
     id

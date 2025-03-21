@@ -18,6 +18,7 @@ import (
 type Service struct {
 	AccessTokenIssuer *accesstoken.Issuer
 	Store             *store.Store
+	Cookier           *cookies.Cookier
 }
 
 func (s *Service) Handler() http.Handler {
@@ -131,8 +132,18 @@ func (s *Service) acs(w http.ResponseWriter, r *http.Request) error {
 		return fmt.Errorf("issue access token: %w", err)
 	}
 
-	w.Header().Add("Set-Cookie", cookies.NewRefreshToken(authn.ProjectID(ctx), createSessionRes.RefreshToken))
-	w.Header().Add("Set-Cookie", cookies.NewAccessToken(authn.ProjectID(ctx), accessToken))
+	refreshTokenCookie, err := s.Cookier.NewRefreshToken(ctx, authn.ProjectID(ctx), createSessionRes.RefreshToken)
+	if err != nil {
+		return fmt.Errorf("issue refresh token cookie: %w", err)
+	}
+
+	accessTokenCookie, err := s.Cookier.NewAccessToken(ctx, authn.ProjectID(ctx), accessToken)
+	if err != nil {
+		return fmt.Errorf("issue access token cookie: %w", err)
+	}
+
+	w.Header().Add("Set-Cookie", refreshTokenCookie)
+	w.Header().Add("Set-Cookie", accessTokenCookie)
 
 	w.Header().Add("Location", createSessionRes.RedirectURI)
 	w.WriteHeader(http.StatusFound)
