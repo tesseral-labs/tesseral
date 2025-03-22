@@ -16,6 +16,7 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
+	"golang.org/x/net/publicsuffix"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -204,6 +205,29 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 	updates.AfterSignupRedirectUri = qProject.AfterSignupRedirectUri
 	if req.Project.AfterSignupRedirectUri != nil {
 		updates.AfterSignupRedirectUri = req.Project.AfterSignupRedirectUri
+	}
+
+	updates.CookieDomain = qProject.CookieDomain
+	if req.Project.CookieDomain != "" {
+		// only allow updates to cookie domain if the vault domain is custom
+		defaultVaultDomain := fmt.Sprintf("%s.%s", strings.ReplaceAll(idformat.Project.Format(qProject.ID), "_", "-"), s.authAppsRootDomain)
+		if qProject.VaultDomain == defaultVaultDomain {
+			return nil, apierror.NewFailedPreconditionError("cannot update cookie domain unless vault domain is custom", nil)
+		}
+
+		// do not allow leading "." in cookie domain; we will automatically add
+		// it in Set-Cookie headers
+		if strings.HasPrefix(req.Project.CookieDomain, ".") {
+			return nil, apierror.NewFailedPreconditionError("cookie domain must not start with '.'", nil)
+		}
+
+		// do not allow cookie domain to be from the public suffix list
+		publicSuffix, _ := publicsuffix.PublicSuffix(req.Project.CookieDomain)
+		if publicSuffix == req.Project.CookieDomain {
+			return nil, apierror.NewFailedPreconditionError("cookie domain must not be public suffix", nil)
+		}
+
+		updates.CookieDomain = req.Project.CookieDomain
 	}
 
 	_, q, commit, rollback, err := s.tx(ctx)

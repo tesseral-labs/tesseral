@@ -2124,7 +2124,8 @@ SET
     microsoft_oauth_client_secret_ciphertext = $13,
     redirect_uri = $14,
     after_login_redirect_uri = $15,
-    after_signup_redirect_uri = $16
+    after_signup_redirect_uri = $16,
+    cookie_domain = $17
 WHERE
     id = $1
 RETURNING
@@ -2148,6 +2149,7 @@ type UpdateProjectParams struct {
 	RedirectUri                          string
 	AfterLoginRedirectUri                *string
 	AfterSignupRedirectUri               *string
+	CookieDomain                         string
 }
 
 func (q *Queries) UpdateProject(ctx context.Context, arg UpdateProjectParams) (Project, error) {
@@ -2168,6 +2170,7 @@ func (q *Queries) UpdateProject(ctx context.Context, arg UpdateProjectParams) (P
 		arg.RedirectUri,
 		arg.AfterLoginRedirectUri,
 		arg.AfterSignupRedirectUri,
+		arg.CookieDomain,
 	)
 	var i Project
 	err := row.Scan(

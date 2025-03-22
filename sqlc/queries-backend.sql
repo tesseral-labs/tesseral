@@ -109,7 +109,8 @@ SET
     microsoft_oauth_client_secret_ciphertext = $13,
     redirect_uri = $14,
     after_login_redirect_uri = $15,
-    after_signup_redirect_uri = $16
+    after_signup_redirect_uri = $16,
+    cookie_domain = $17
 WHERE
     id = $1
 RETURNING

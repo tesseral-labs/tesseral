@@ -485,7 +485,9 @@ const EditProjectRedirectURIsButton = () => {
 };
 
 const domainSettingsSchema = z.object({
-  cookieDomain: z.string(),
+  cookieDomain: z.string().regex(/^[^.]/, {
+    message: "Cookie domain must not start with a dot ('.')."
+  }),
   trustedDomains: z.array(
     z.string().regex(/^([a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+(:\d+)?$/),
   ),
@@ -513,6 +515,13 @@ const EditProjectDomainSettingsButton = () => {
   const updateProjectMutation = useMutation(updateProject);
   const [open, setOpen] = useState(false);
   const handleSubmit = async (values: z.infer<typeof domainSettingsSchema>) => {
+    if (!getProjectResponse?.project?.vaultDomain?.endsWith(values.cookieDomain)) {
+      form.setError('cookieDomain', {
+        message: `Cookie Domain must be a parent domain of the Vault domain (${getProjectResponse?.project?.vaultDomain}).`,
+      });
+      return;
+    }
+
     await updateProjectMutation.mutateAsync({
       project: {
         cookieDomain: values.cookieDomain,

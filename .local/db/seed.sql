@@ -134,7 +134,7 @@ VALUES (gen_random_uuid(), 'user1@company3.example.com', crypt('password', gen_s
 insert into session_signing_keys (id, project_id, public_key, private_key_cipher_text, expire_time)
 values (
            gen_random_uuid(),
-           '24ba0dd5-e178-460e-8f7a-f3f72cf6a1e7'::uuid,
+           '8d274edd-bca0-4bc2-862c-ecd3f22669f0'::uuid,
            decode('3059301306072a8648ce3d020106082a8648ce3d0301070342000473bbd17732bc07085a24ad9385edb16eb6e882deb60efb140dc32790f0a37f8dfd9631f2f60f345c84611ecf1a055748c4b786d84e28f1b91a4b1dfe34742aec', 'hex'),
            decode('16b4dfd43beccde193bba4a02392fc2ac18ad45521caf94e55ee61e3957ba5d4e060c9cf2493597b2aa5d61642007f6d190b64fc3cfef43ec7aa8e3735276912424a6e6795a53a3516e2527f16a938f733346ab96db4aa1f8312026c666e5cb34e80803a09cee1ed52da411451b6d19230105ae0ef6bc9c2cc8ed02c30ae3d59abf67e4b33949353ceb35572dde287d4a197b63c69dbce3cb19177111fccb4e36de68fb1b9f4c60dfe9661026bca72c932f47e05b2dff6767eb3a38d62398ae62d56432e1079f621adc819ee5d93c526ce6ff1484c288103f6a2136c8892a43b33f2c4b386d17a1da81cb6f0d2476867d9d7829818ef0535afc4910eb53541f3', 'hex'),
            (select now() + interval '1 year')
