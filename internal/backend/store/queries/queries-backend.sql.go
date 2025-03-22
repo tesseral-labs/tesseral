@@ -2375,7 +2375,8 @@ const updateProjectVaultDomain = `-- name: UpdateProjectVaultDomain :one
 UPDATE
     projects
 SET
-    vault_domain = $2
+    vault_domain = $2,
+    cookie_domain = $3
 WHERE
     id = $1
 RETURNING
@@ -2383,12 +2384,13 @@ RETURNING
 `
 
 type UpdateProjectVaultDomainParams struct {
-	ID          uuid.UUID
-	VaultDomain string
+	ID           uuid.UUID
+	VaultDomain  string
+	CookieDomain string
 }
 
 func (q *Queries) UpdateProjectVaultDomain(ctx context.Context, arg UpdateProjectVaultDomainParams) (Project, error) {
-	row := q.db.QueryRow(ctx, updateProjectVaultDomain, arg.ID, arg.VaultDomain)
+	row := q.db.QueryRow(ctx, updateProjectVaultDomain, arg.ID, arg.VaultDomain, arg.CookieDomain)
 	var i Project
 	err := row.Scan(
 		&i.ID,

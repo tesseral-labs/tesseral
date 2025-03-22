@@ -759,7 +759,8 @@ WHERE project_id = $1;
 UPDATE
     projects
 SET
-    vault_domain = $2
+    vault_domain = $2,
+    cookie_domain = $3
 WHERE
     id = $1
 RETURNING

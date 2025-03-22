@@ -124,8 +124,9 @@ func (s *Store) EnableCustomVaultDomain(ctx context.Context, req *backendv1.Enab
 	defer rollback()
 
 	if _, err := q.UpdateProjectVaultDomain(ctx, queries.UpdateProjectVaultDomainParams{
-		ID:          authn.ProjectID(ctx),
-		VaultDomain: vaultDomainSettings.PendingDomain,
+		ID:           authn.ProjectID(ctx),
+		VaultDomain:  vaultDomainSettings.PendingDomain,
+		CookieDomain: vaultDomainSettings.PendingDomain,
 	}); err != nil {
 		return nil, fmt.Errorf("update project vault domain: %w", err)
 	}
