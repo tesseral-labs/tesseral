@@ -134,6 +134,12 @@ INSERT INTO project_trusted_domains (id, project_id, DOMAIN)
 RETURNING
     *;
 
+-- name: UpsertProjectTrustedDomain :exec
+INSERT INTO project_trusted_domains (id, project_id, DOMAIN)
+    VALUES ($1, $2, $3)
+ON CONFLICT (project_id, domain)
+    DO NOTHING;
+
 -- name: DisableProjectOrganizationsLogInWithGoogle :exec
 UPDATE
     organizations

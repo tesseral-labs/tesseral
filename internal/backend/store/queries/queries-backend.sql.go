@@ -2623,6 +2623,24 @@ func (q *Queries) UpdateUserPassword(ctx context.Context, arg UpdateUserPassword
 	return i, err
 }
 
+const upsertProjectTrustedDomain = `-- name: UpsertProjectTrustedDomain :exec
+INSERT INTO project_trusted_domains (id, project_id, DOMAIN)
+    VALUES ($1, $2, $3)
+ON CONFLICT (project_id, domain)
+    DO NOTHING
+`
+
+type UpsertProjectTrustedDomainParams struct {
+	ID        uuid.UUID
+	ProjectID uuid.UUID
+	Domain    string
+}
+
+func (q *Queries) UpsertProjectTrustedDomain(ctx context.Context, arg UpsertProjectTrustedDomainParams) error {
+	_, err := q.db.Exec(ctx, upsertProjectTrustedDomain, arg.ID, arg.ProjectID, arg.Domain)
+	return err
+}
+
 const upsertVaultDomainSettings = `-- name: UpsertVaultDomainSettings :one
 INSERT INTO vault_domain_settings (project_id, pending_domain)
     VALUES ($1, $2)
