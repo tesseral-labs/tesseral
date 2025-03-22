@@ -124,10 +124,21 @@ func (s *Store) EnableCustomVaultDomain(ctx context.Context, req *backendv1.Enab
 	defer rollback()
 
 	if _, err := q.UpdateProjectVaultDomain(ctx, queries.UpdateProjectVaultDomainParams{
-		ID:          authn.ProjectID(ctx),
-		VaultDomain: vaultDomainSettings.PendingDomain,
+		ID:           authn.ProjectID(ctx),
+		VaultDomain:  vaultDomainSettings.PendingDomain,
+		CookieDomain: vaultDomainSettings.PendingDomain,
 	}); err != nil {
 		return nil, fmt.Errorf("update project vault domain: %w", err)
+	}
+
+	// maintain the invariant that the current vault domain is always a trusted
+	// domain
+	if err := q.UpsertProjectTrustedDomain(ctx, queries.UpsertProjectTrustedDomainParams{
+		ID:        uuid.New(),
+		ProjectID: authn.ProjectID(ctx),
+		Domain:    vaultDomainSettings.PendingDomain,
+	}); err != nil {
+		return nil, fmt.Errorf("upsert project trusted domain: %w", err)
 	}
 
 	if err := q.DisablePasskeysWithOldRPID(ctx, authn.ProjectID(ctx)); err != nil {

@@ -75,3 +75,11 @@ SET
 WHERE
     id = $1;
 
+-- name: GetProjectCookieDomainByProjectID :one
+SELECT
+    cookie_domain
+FROM
+    projects
+WHERE
+    id = $1;
+

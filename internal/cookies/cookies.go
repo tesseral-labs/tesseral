@@ -1,66 +1,35 @@
 package cookies
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"time"
 
 	"connectrpc.com/connect"
 	"github.com/google/uuid"
+	commonstore "github.com/tesseral-labs/tesseral/internal/common/store"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 )
 
-func ExpiredRefreshToken(projectID uuid.UUID) string {
-	return newCookie("refresh_token", -1*time.Second, projectID, "", true)
+type Cookier struct {
+	Store *commonstore.Store
 }
 
-func ExpiredAccessToken(projectID uuid.UUID) string {
-	return newCookie("access_token", -1*time.Second, projectID, "", false)
+func (c *Cookier) GetRefreshToken(projectID uuid.UUID, req connect.AnyRequest) (string, error) {
+	return c.getCookie("refresh_token", projectID, req)
 }
 
-func ExpiredIntermediateAccessToken(projectID uuid.UUID) string {
-	return newCookie("intermediate_access_token", -1*time.Second, projectID, "", true)
+func (c *Cookier) GetAccessToken(projectID uuid.UUID, req connect.AnyRequest) (string, error) {
+	return c.getCookie("access_token", projectID, req)
 }
 
-func NewRefreshToken(projectID uuid.UUID, value string) string {
-	return newCookie("refresh_token", time.Hour*24*365, projectID, value, true)
+func (c *Cookier) GetIntermediateAccessToken(projectID uuid.UUID, req connect.AnyRequest) (string, error) {
+	return c.getCookie("intermediate_access_token", projectID, req)
 }
 
-func NewAccessToken(projectID uuid.UUID, value string) string {
-	return newCookie("access_token", 5*time.Minute, projectID, value, false)
-}
-
-func NewIntermediateAccessToken(projectID uuid.UUID, value string) string {
-	return newCookie("intermediate_access_token", 15*time.Minute, projectID, value, true)
-}
-
-func newCookie(name string, maxAge time.Duration, projectID uuid.UUID, value string, httpOnly bool) string {
-	c := http.Cookie{
-		Name:     fmt.Sprintf("tesseral_%s_%s", idformat.Project.Format(projectID), name),
-		Value:    value,
-		MaxAge:   int(maxAge.Seconds()),
-		Path:     "/",
-		SameSite: http.SameSiteNoneMode,
-		Secure:   true,
-		HttpOnly: httpOnly,
-	}
-	return c.String()
-}
-
-func GetRefreshToken(projectID uuid.UUID, req connect.AnyRequest) (string, error) {
-	return getCookie("refresh_token", projectID, req)
-}
-
-func GetAccessToken(projectID uuid.UUID, req connect.AnyRequest) (string, error) {
-	return getCookie("access_token", projectID, req)
-}
-
-func GetIntermediateAccessToken(projectID uuid.UUID, req connect.AnyRequest) (string, error) {
-	return getCookie("intermediate_access_token", projectID, req)
-}
-
-func getCookie(name string, projectID uuid.UUID, req connect.AnyRequest) (string, error) {
-	cookieName := fmt.Sprintf("tesseral_%s_%s", idformat.Project.Format(projectID), name)
+func (c *Cookier) getCookie(name string, projectID uuid.UUID, req connect.AnyRequest) (string, error) {
+	cookieName := c.cookieName(name, projectID)
 
 	var value string
 	for _, h := range req.Header().Values("Cookie") {
@@ -78,4 +47,55 @@ func getCookie(name string, projectID uuid.UUID, req connect.AnyRequest) (string
 	}
 
 	return value, nil
+}
+
+func (c *Cookier) ExpiredRefreshToken(ctx context.Context, projectID uuid.UUID) (string, error) {
+	return c.expiredCookie(ctx, "refresh_token", projectID)
+}
+
+func (c *Cookier) ExpiredAccessToken(ctx context.Context, projectID uuid.UUID) (string, error) {
+	return c.expiredCookie(ctx, "access_token", projectID)
+}
+
+func (c *Cookier) ExpiredIntermediateAccessToken(ctx context.Context, projectID uuid.UUID) (string, error) {
+	return c.expiredCookie(ctx, "intermediate_access_token", projectID)
+}
+
+func (c *Cookier) expiredCookie(ctx context.Context, name string, projectID uuid.UUID) (string, error) {
+	return c.newCookie(ctx, name, projectID, -1*time.Second, "", false)
+}
+
+func (c *Cookier) NewRefreshToken(ctx context.Context, projectID uuid.UUID, value string) (string, error) {
+	return c.newCookie(ctx, "refresh_token", projectID, time.Hour*24*365, value, true)
+}
+
+func (c *Cookier) NewAccessToken(ctx context.Context, projectID uuid.UUID, value string) (string, error) {
+	return c.newCookie(ctx, "access_token", projectID, 5*time.Minute, value, false)
+}
+
+func (c *Cookier) NewIntermediateAccessToken(ctx context.Context, projectID uuid.UUID, value string) (string, error) {
+	return c.newCookie(ctx, "intermediate_access_token", projectID, 15*time.Minute, value, true)
+}
+
+func (c *Cookier) newCookie(ctx context.Context, name string, projectID uuid.UUID, maxAge time.Duration, value string, httpOnly bool) (string, error) {
+	cookieDomain, err := c.Store.GetProjectCookieDomain(ctx, projectID)
+	if err != nil {
+		return "", fmt.Errorf("get project cookie domain: %w", err)
+	}
+
+	cookie := http.Cookie{
+		Name:     c.cookieName(name, projectID),
+		Value:    value,
+		MaxAge:   int(maxAge.Seconds()),
+		Path:     "/",
+		SameSite: http.SameSiteLaxMode,
+		Secure:   true,
+		HttpOnly: httpOnly,
+		Domain:   fmt.Sprintf(".%s", cookieDomain),
+	}
+	return cookie.String(), nil
+}
+
+func (c *Cookier) cookieName(name string, projectID uuid.UUID) string {
+	return fmt.Sprintf("tesseral_%s_%s", idformat.Project.Format(projectID), name)
 }

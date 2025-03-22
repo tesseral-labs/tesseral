@@ -16,6 +16,7 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
+	"golang.org/x/net/publicsuffix"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -40,7 +41,7 @@ func (s *Store) GetProject(ctx context.Context, req *backendv1.GetProjectRequest
 		return nil, fmt.Errorf("get project trusted domains: %w", err)
 	}
 
-	return &backendv1.GetProjectResponse{Project: parseProject(&project, qProjectTrustedDomains)}, nil
+	return &backendv1.GetProjectResponse{Project: s.parseProject(&project, qProjectTrustedDomains)}, nil
 }
 
 func (s *Store) DisableProjectLogins(ctx context.Context, req *backendv1.DisableProjectLoginsRequest) (*backendv1.DisableProjectLoginsResponse, error) {
@@ -206,6 +207,29 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 		updates.AfterSignupRedirectUri = req.Project.AfterSignupRedirectUri
 	}
 
+	updates.CookieDomain = qProject.CookieDomain
+	if req.Project.CookieDomain != "" {
+		// only allow updates to cookie domain if the vault domain is custom
+		defaultVaultDomain := fmt.Sprintf("%s.%s", strings.ReplaceAll(idformat.Project.Format(qProject.ID), "_", "-"), s.authAppsRootDomain)
+		if qProject.VaultDomain == defaultVaultDomain {
+			return nil, apierror.NewFailedPreconditionError("cannot update cookie domain unless vault domain is custom", nil)
+		}
+
+		// do not allow leading "." in cookie domain; we will automatically add
+		// it in Set-Cookie headers
+		if strings.HasPrefix(req.Project.CookieDomain, ".") {
+			return nil, apierror.NewFailedPreconditionError("cookie domain must not start with '.'", nil)
+		}
+
+		// do not allow cookie domain to be from the public suffix list
+		publicSuffix, _ := publicsuffix.PublicSuffix(req.Project.CookieDomain)
+		if publicSuffix == req.Project.CookieDomain {
+			return nil, apierror.NewFailedPreconditionError("cookie domain must not be public suffix", nil)
+		}
+
+		updates.CookieDomain = req.Project.CookieDomain
+	}
+
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -303,10 +327,10 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	return &backendv1.UpdateProjectResponse{Project: parseProject(&qUpdatedProject, qProjectTrustedDomains)}, nil
+	return &backendv1.UpdateProjectResponse{Project: s.parseProject(&qUpdatedProject, qProjectTrustedDomains)}, nil
 }
 
-func parseProject(qProject *queries.Project, qProjectTrustedDomains []queries.ProjectTrustedDomain) *backendv1.Project {
+func (s *Store) parseProject(qProject *queries.Project, qProjectTrustedDomains []queries.ProjectTrustedDomain) *backendv1.Project {
 	// sanity check
 	for _, qProjectTrustedDomain := range qProjectTrustedDomains {
 		if qProjectTrustedDomain.ProjectID != qProject.ID {
@@ -336,7 +360,9 @@ func parseProject(qProject *queries.Project, qProjectTrustedDomains []queries.Pr
 		MicrosoftOauthClientId:     derefOrEmpty(qProject.MicrosoftOauthClientID),
 		MicrosoftOauthClientSecret: "", // intentionally left blank
 		VaultDomain:                qProject.VaultDomain,
+		VaultDomainCustom:          qProject.VaultDomain != fmt.Sprintf("%s.%s", strings.ReplaceAll(idformat.Project.Format(qProject.ID), "_", "-"), s.authAppsRootDomain),
 		TrustedDomains:             trustedDomains,
+		CookieDomain:               qProject.CookieDomain,
 		RedirectUri:                qProject.RedirectUri,
 		AfterLoginRedirectUri:      qProject.AfterLoginRedirectUri,
 		AfterSignupRedirectUri:     qProject.AfterSignupRedirectUri,

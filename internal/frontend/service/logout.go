@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"connectrpc.com/connect"
-	"github.com/tesseral-labs/tesseral/internal/cookies"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
 )
@@ -18,9 +17,24 @@ func (s *Service) Logout(ctx context.Context, req *connect.Request[frontendv1.Lo
 
 	connectRes := connect.NewResponse(res)
 
-	connectRes.Header().Add("Set-Cookie", cookies.ExpiredAccessToken(authn.ProjectID(ctx)))
-	connectRes.Header().Add("Set-Cookie", cookies.ExpiredIntermediateAccessToken(authn.ProjectID(ctx)))
-	connectRes.Header().Add("Set-Cookie", cookies.ExpiredRefreshToken(authn.ProjectID(ctx)))
+	accessTokenCookie, err := s.Cookier.ExpiredAccessToken(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("create expired access token cookie: %w", err)
+	}
+
+	intermediateAccessTokenCookie, err := s.Cookier.ExpiredIntermediateAccessToken(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("create expired intermediate access token cookie: %w", err)
+	}
+
+	refreshTokenCookie, err := s.Cookier.ExpiredRefreshToken(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("create expired refresh token cookie: %w", err)
+	}
+
+	connectRes.Header().Add("Set-Cookie", accessTokenCookie)
+	connectRes.Header().Add("Set-Cookie", intermediateAccessTokenCookie)
+	connectRes.Header().Add("Set-Cookie", refreshTokenCookie)
 
 	return connectRes, nil
 }

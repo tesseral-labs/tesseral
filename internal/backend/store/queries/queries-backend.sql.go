@@ -971,7 +971,7 @@ func (q *Queries) GetProjectAPIKeyBySecretTokenSHA256(ctx context.Context, secre
 
 const getProjectByID = `-- name: GetProjectByID :one
 SELECT
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain, cookie_domain
 FROM
     projects
 WHERE
@@ -1004,6 +1004,7 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 		&i.AfterSignupRedirectUri,
 		&i.VaultDomain,
 		&i.EmailSendFromDomain,
+		&i.CookieDomain,
 	)
 	return i, err
 }
@@ -1541,7 +1542,7 @@ func (q *Queries) ListProjectAPIKeys(ctx context.Context, arg ListProjectAPIKeys
 
 const listProjects = `-- name: ListProjects :many
 SELECT
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain, cookie_domain
 FROM
     projects
 ORDER BY
@@ -1581,6 +1582,7 @@ func (q *Queries) ListProjects(ctx context.Context, limit int32) ([]Project, err
 			&i.AfterSignupRedirectUri,
 			&i.VaultDomain,
 			&i.EmailSendFromDomain,
+			&i.CookieDomain,
 		); err != nil {
 			return nil, err
 		}
@@ -2122,11 +2124,12 @@ SET
     microsoft_oauth_client_secret_ciphertext = $13,
     redirect_uri = $14,
     after_login_redirect_uri = $15,
-    after_signup_redirect_uri = $16
+    after_signup_redirect_uri = $16,
+    cookie_domain = $17
 WHERE
     id = $1
 RETURNING
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain, cookie_domain
 `
 
 type UpdateProjectParams struct {
@@ -2146,6 +2149,7 @@ type UpdateProjectParams struct {
 	RedirectUri                          string
 	AfterLoginRedirectUri                *string
 	AfterSignupRedirectUri               *string
+	CookieDomain                         string
 }
 
 func (q *Queries) UpdateProject(ctx context.Context, arg UpdateProjectParams) (Project, error) {
@@ -2166,6 +2170,7 @@ func (q *Queries) UpdateProject(ctx context.Context, arg UpdateProjectParams) (P
 		arg.RedirectUri,
 		arg.AfterLoginRedirectUri,
 		arg.AfterSignupRedirectUri,
+		arg.CookieDomain,
 	)
 	var i Project
 	err := row.Scan(
@@ -2191,6 +2196,7 @@ func (q *Queries) UpdateProject(ctx context.Context, arg UpdateProjectParams) (P
 		&i.AfterSignupRedirectUri,
 		&i.VaultDomain,
 		&i.EmailSendFromDomain,
+		&i.CookieDomain,
 	)
 	return i, err
 }
@@ -2234,7 +2240,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain, cookie_domain
 `
 
 type UpdateProjectEmailSendFromDomainParams struct {
@@ -2268,6 +2274,7 @@ func (q *Queries) UpdateProjectEmailSendFromDomain(ctx context.Context, arg Upda
 		&i.AfterSignupRedirectUri,
 		&i.VaultDomain,
 		&i.EmailSendFromDomain,
+		&i.CookieDomain,
 	)
 	return i, err
 }
@@ -2280,7 +2287,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain, cookie_domain
 `
 
 type UpdateProjectOrganizationIDParams struct {
@@ -2314,6 +2321,7 @@ func (q *Queries) UpdateProjectOrganizationID(ctx context.Context, arg UpdatePro
 		&i.AfterSignupRedirectUri,
 		&i.VaultDomain,
 		&i.EmailSendFromDomain,
+		&i.CookieDomain,
 	)
 	return i, err
 }
@@ -2367,20 +2375,22 @@ const updateProjectVaultDomain = `-- name: UpdateProjectVaultDomain :one
 UPDATE
     projects
 SET
-    vault_domain = $2
+    vault_domain = $2,
+    cookie_domain = $3
 WHERE
     id = $1
 RETURNING
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain, cookie_domain
 `
 
 type UpdateProjectVaultDomainParams struct {
-	ID          uuid.UUID
-	VaultDomain string
+	ID           uuid.UUID
+	VaultDomain  string
+	CookieDomain string
 }
 
 func (q *Queries) UpdateProjectVaultDomain(ctx context.Context, arg UpdateProjectVaultDomainParams) (Project, error) {
-	row := q.db.QueryRow(ctx, updateProjectVaultDomain, arg.ID, arg.VaultDomain)
+	row := q.db.QueryRow(ctx, updateProjectVaultDomain, arg.ID, arg.VaultDomain, arg.CookieDomain)
 	var i Project
 	err := row.Scan(
 		&i.ID,
@@ -2405,6 +2415,7 @@ func (q *Queries) UpdateProjectVaultDomain(ctx context.Context, arg UpdateProjec
 		&i.AfterSignupRedirectUri,
 		&i.VaultDomain,
 		&i.EmailSendFromDomain,
+		&i.CookieDomain,
 	)
 	return i, err
 }
@@ -2610,6 +2621,24 @@ func (q *Queries) UpdateUserPassword(ctx context.Context, arg UpdateUserPassword
 		&i.AuthenticatorAppLockoutExpireTime,
 	)
 	return i, err
+}
+
+const upsertProjectTrustedDomain = `-- name: UpsertProjectTrustedDomain :exec
+INSERT INTO project_trusted_domains (id, project_id, DOMAIN)
+    VALUES ($1, $2, $3)
+ON CONFLICT (project_id, domain)
+    DO NOTHING
+`
+
+type UpsertProjectTrustedDomainParams struct {
+	ID        uuid.UUID
+	ProjectID uuid.UUID
+	Domain    string
+}
+
+func (q *Queries) UpsertProjectTrustedDomain(ctx context.Context, arg UpsertProjectTrustedDomainParams) error {
+	_, err := q.db.Exec(ctx, upsertProjectTrustedDomain, arg.ID, arg.ProjectID, arg.Domain)
+	return err
 }
 
 const upsertVaultDomainSettings = `-- name: UpsertVaultDomainSettings :one
