@@ -40,7 +40,7 @@ INSERT INTO session_signing_keys (id, project_id, public_key, private_key_cipher
 
 -- Create company1's project
 insert into projects (id, log_in_with_email, log_in_with_password, log_in_with_google, log_in_with_microsoft, display_name, vault_domain, email_send_from_domain, redirect_uri, cookie_domain)
-    values ('7abd6d2e-c314-456e-b9c5-bdbb62f0345f'::uuid, true, false, false, false, 'Company One', 'vault.app.company1.example.com', 'vault.app.company1.example.com', 'http://app.company1.example.com', 'app.company1.com');
+    values ('7abd6d2e-c314-456e-b9c5-bdbb62f0345f'::uuid, true, false, false, false, 'Company One', 'vault.app.company1.example.com', 'vault.app.company1.example.com', 'http://app.company1.example.com', 'app.company1.example.com');
 
 insert into project_trusted_domains (id, project_id, domain)
 VALUES

@@ -10,3 +10,11 @@ create_cert "console.tesseral.example.com"
 create_cert "vault.console.tesseral.example.com"
 create_cert "*.tesseral.example.app"
 create_cert "tesseralusercontent.example.com"
+
+create_cert "app.company1.example.com"
+create_cert "vault.app.company1.example.com"
+
+create_cert "company2.example.com"
+create_cert "vault.company2.example.com"
+
+create_cert "app.company3.example.com"

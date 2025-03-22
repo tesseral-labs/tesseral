@@ -10,3 +10,9 @@
 127.0.0.1 project-79ldwwwzybn66dxa91udi7mn3.tesseral.example.app
 127.0.0.1 project-269wse1l6u0jnvs8afpq44f6v.tesseral.example.app
 127.0.0.1 project-8cu705zczqtcndc3c1mvgnoxc.tesseral.example.app
+
+127.0.0.1 app.company1.example.com
+127.0.0.1 vault.app.company1.example.com
+127.0.0.1 company2.example.com
+127.0.0.1 vault.company2.example.com
+127.0.0.1 app.company3.example.com
