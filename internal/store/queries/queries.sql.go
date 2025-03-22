@@ -412,27 +412,6 @@ type GetSessionDetailsByRefreshTokenSHA256Row struct {
 	ProjectID      uuid.UUID
 }
 
-// -- name: CreateProjectAPIKey :one
-// INSERT INTO project_api_keys (id, project_id, secret_token_sha256, display_name)
-//
-//	VALUES ($1, $2, $3, $4)
-//
-// RETURNING
-//
-//	*;
-//
-// -- name: GetProjectAPIKeyBySecretTokenSHA256 :one
-// SELECT
-//
-//	*
-//
-// FROM
-//
-//	project_api_keys
-//
-// WHERE
-//
-//	secret_token_sha256 = $1;
 func (q *Queries) GetSessionDetailsByRefreshTokenSHA256(ctx context.Context, refreshTokenSha256 []byte) (GetSessionDetailsByRefreshTokenSHA256Row, error) {
 	row := q.db.QueryRow(ctx, getSessionDetailsByRefreshTokenSHA256, refreshTokenSha256)
 	var i GetSessionDetailsByRefreshTokenSHA256Row

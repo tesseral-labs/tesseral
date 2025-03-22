@@ -148,3 +148,4 @@ FROM
     JOIN projects ON organizations.id = projects.organization_id
 WHERE
     refresh_token_sha256 = $1;
+
