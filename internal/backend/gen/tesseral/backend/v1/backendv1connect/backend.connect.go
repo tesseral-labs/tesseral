@@ -179,24 +179,24 @@ const (
 	// BackendServiceUpdateProjectUISettingsProcedure is the fully-qualified name of the
 	// BackendService's UpdateProjectUISettings RPC.
 	BackendServiceUpdateProjectUISettingsProcedure = "/tesseral.backend.v1.BackendService/UpdateProjectUISettings"
-	// BackendServiceListProjectAPIKeysProcedure is the fully-qualified name of the BackendService's
-	// ListProjectAPIKeys RPC.
-	BackendServiceListProjectAPIKeysProcedure = "/tesseral.backend.v1.BackendService/ListProjectAPIKeys"
-	// BackendServiceGetProjectAPIKeyProcedure is the fully-qualified name of the BackendService's
-	// GetProjectAPIKey RPC.
-	BackendServiceGetProjectAPIKeyProcedure = "/tesseral.backend.v1.BackendService/GetProjectAPIKey"
-	// BackendServiceCreateProjectAPIKeyProcedure is the fully-qualified name of the BackendService's
-	// CreateProjectAPIKey RPC.
-	BackendServiceCreateProjectAPIKeyProcedure = "/tesseral.backend.v1.BackendService/CreateProjectAPIKey"
-	// BackendServiceUpdateProjectAPIKeyProcedure is the fully-qualified name of the BackendService's
-	// UpdateProjectAPIKey RPC.
-	BackendServiceUpdateProjectAPIKeyProcedure = "/tesseral.backend.v1.BackendService/UpdateProjectAPIKey"
-	// BackendServiceDeleteProjectAPIKeyProcedure is the fully-qualified name of the BackendService's
-	// DeleteProjectAPIKey RPC.
-	BackendServiceDeleteProjectAPIKeyProcedure = "/tesseral.backend.v1.BackendService/DeleteProjectAPIKey"
-	// BackendServiceRevokeProjectAPIKeyProcedure is the fully-qualified name of the BackendService's
-	// RevokeProjectAPIKey RPC.
-	BackendServiceRevokeProjectAPIKeyProcedure = "/tesseral.backend.v1.BackendService/RevokeProjectAPIKey"
+	// BackendServiceListBackendAPIKeysProcedure is the fully-qualified name of the BackendService's
+	// ListBackendAPIKeys RPC.
+	BackendServiceListBackendAPIKeysProcedure = "/tesseral.backend.v1.BackendService/ListBackendAPIKeys"
+	// BackendServiceGetBackendAPIKeyProcedure is the fully-qualified name of the BackendService's
+	// GetBackendAPIKey RPC.
+	BackendServiceGetBackendAPIKeyProcedure = "/tesseral.backend.v1.BackendService/GetBackendAPIKey"
+	// BackendServiceCreateBackendAPIKeyProcedure is the fully-qualified name of the BackendService's
+	// CreateBackendAPIKey RPC.
+	BackendServiceCreateBackendAPIKeyProcedure = "/tesseral.backend.v1.BackendService/CreateBackendAPIKey"
+	// BackendServiceUpdateBackendAPIKeyProcedure is the fully-qualified name of the BackendService's
+	// UpdateBackendAPIKey RPC.
+	BackendServiceUpdateBackendAPIKeyProcedure = "/tesseral.backend.v1.BackendService/UpdateBackendAPIKey"
+	// BackendServiceDeleteBackendAPIKeyProcedure is the fully-qualified name of the BackendService's
+	// DeleteBackendAPIKey RPC.
+	BackendServiceDeleteBackendAPIKeyProcedure = "/tesseral.backend.v1.BackendService/DeleteBackendAPIKey"
+	// BackendServiceRevokeBackendAPIKeyProcedure is the fully-qualified name of the BackendService's
+	// RevokeBackendAPIKey RPC.
+	BackendServiceRevokeBackendAPIKeyProcedure = "/tesseral.backend.v1.BackendService/RevokeBackendAPIKey"
 	// BackendServiceListPublishableKeysProcedure is the fully-qualified name of the BackendService's
 	// ListPublishableKeys RPC.
 	BackendServiceListPublishableKeysProcedure = "/tesseral.backend.v1.BackendService/ListPublishableKeys"
@@ -306,12 +306,12 @@ type BackendServiceClient interface {
 	EnableEmailSendFromDomain(context.Context, *connect.Request[v1.EnableEmailSendFromDomainRequest]) (*connect.Response[v1.EnableEmailSendFromDomainResponse], error)
 	GetProjectUISettings(context.Context, *connect.Request[v1.GetProjectUISettingsRequest]) (*connect.Response[v1.GetProjectUISettingsResponse], error)
 	UpdateProjectUISettings(context.Context, *connect.Request[v1.UpdateProjectUISettingsRequest]) (*connect.Response[v1.UpdateProjectUISettingsResponse], error)
-	ListProjectAPIKeys(context.Context, *connect.Request[v1.ListProjectAPIKeysRequest]) (*connect.Response[v1.ListProjectAPIKeysResponse], error)
-	GetProjectAPIKey(context.Context, *connect.Request[v1.GetProjectAPIKeyRequest]) (*connect.Response[v1.GetProjectAPIKeyResponse], error)
-	CreateProjectAPIKey(context.Context, *connect.Request[v1.CreateProjectAPIKeyRequest]) (*connect.Response[v1.CreateProjectAPIKeyResponse], error)
-	UpdateProjectAPIKey(context.Context, *connect.Request[v1.UpdateProjectAPIKeyRequest]) (*connect.Response[v1.UpdateProjectAPIKeyResponse], error)
-	DeleteProjectAPIKey(context.Context, *connect.Request[v1.DeleteProjectAPIKeyRequest]) (*connect.Response[v1.DeleteProjectAPIKeyResponse], error)
-	RevokeProjectAPIKey(context.Context, *connect.Request[v1.RevokeProjectAPIKeyRequest]) (*connect.Response[v1.RevokeProjectAPIKeyResponse], error)
+	ListBackendAPIKeys(context.Context, *connect.Request[v1.ListBackendAPIKeysRequest]) (*connect.Response[v1.ListBackendAPIKeysResponse], error)
+	GetBackendAPIKey(context.Context, *connect.Request[v1.GetBackendAPIKeyRequest]) (*connect.Response[v1.GetBackendAPIKeyResponse], error)
+	CreateBackendAPIKey(context.Context, *connect.Request[v1.CreateBackendAPIKeyRequest]) (*connect.Response[v1.CreateBackendAPIKeyResponse], error)
+	UpdateBackendAPIKey(context.Context, *connect.Request[v1.UpdateBackendAPIKeyRequest]) (*connect.Response[v1.UpdateBackendAPIKeyResponse], error)
+	DeleteBackendAPIKey(context.Context, *connect.Request[v1.DeleteBackendAPIKeyRequest]) (*connect.Response[v1.DeleteBackendAPIKeyResponse], error)
+	RevokeBackendAPIKey(context.Context, *connect.Request[v1.RevokeBackendAPIKeyRequest]) (*connect.Response[v1.RevokeBackendAPIKeyResponse], error)
 	ListPublishableKeys(context.Context, *connect.Request[v1.ListPublishableKeysRequest]) (*connect.Response[v1.ListPublishableKeysResponse], error)
 	GetPublishableKey(context.Context, *connect.Request[v1.GetPublishableKeyRequest]) (*connect.Response[v1.GetPublishableKeyResponse], error)
 	CreatePublishableKey(context.Context, *connect.Request[v1.CreatePublishableKeyRequest]) (*connect.Response[v1.CreatePublishableKeyResponse], error)
@@ -625,40 +625,40 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(backendServiceMethods.ByName("UpdateProjectUISettings")),
 			connect.WithClientOptions(opts...),
 		),
-		listProjectAPIKeys: connect.NewClient[v1.ListProjectAPIKeysRequest, v1.ListProjectAPIKeysResponse](
+		listBackendAPIKeys: connect.NewClient[v1.ListBackendAPIKeysRequest, v1.ListBackendAPIKeysResponse](
 			httpClient,
-			baseURL+BackendServiceListProjectAPIKeysProcedure,
-			connect.WithSchema(backendServiceMethods.ByName("ListProjectAPIKeys")),
+			baseURL+BackendServiceListBackendAPIKeysProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("ListBackendAPIKeys")),
 			connect.WithClientOptions(opts...),
 		),
-		getProjectAPIKey: connect.NewClient[v1.GetProjectAPIKeyRequest, v1.GetProjectAPIKeyResponse](
+		getBackendAPIKey: connect.NewClient[v1.GetBackendAPIKeyRequest, v1.GetBackendAPIKeyResponse](
 			httpClient,
-			baseURL+BackendServiceGetProjectAPIKeyProcedure,
-			connect.WithSchema(backendServiceMethods.ByName("GetProjectAPIKey")),
+			baseURL+BackendServiceGetBackendAPIKeyProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("GetBackendAPIKey")),
 			connect.WithClientOptions(opts...),
 		),
-		createProjectAPIKey: connect.NewClient[v1.CreateProjectAPIKeyRequest, v1.CreateProjectAPIKeyResponse](
+		createBackendAPIKey: connect.NewClient[v1.CreateBackendAPIKeyRequest, v1.CreateBackendAPIKeyResponse](
 			httpClient,
-			baseURL+BackendServiceCreateProjectAPIKeyProcedure,
-			connect.WithSchema(backendServiceMethods.ByName("CreateProjectAPIKey")),
+			baseURL+BackendServiceCreateBackendAPIKeyProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("CreateBackendAPIKey")),
 			connect.WithClientOptions(opts...),
 		),
-		updateProjectAPIKey: connect.NewClient[v1.UpdateProjectAPIKeyRequest, v1.UpdateProjectAPIKeyResponse](
+		updateBackendAPIKey: connect.NewClient[v1.UpdateBackendAPIKeyRequest, v1.UpdateBackendAPIKeyResponse](
 			httpClient,
-			baseURL+BackendServiceUpdateProjectAPIKeyProcedure,
-			connect.WithSchema(backendServiceMethods.ByName("UpdateProjectAPIKey")),
+			baseURL+BackendServiceUpdateBackendAPIKeyProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("UpdateBackendAPIKey")),
 			connect.WithClientOptions(opts...),
 		),
-		deleteProjectAPIKey: connect.NewClient[v1.DeleteProjectAPIKeyRequest, v1.DeleteProjectAPIKeyResponse](
+		deleteBackendAPIKey: connect.NewClient[v1.DeleteBackendAPIKeyRequest, v1.DeleteBackendAPIKeyResponse](
 			httpClient,
-			baseURL+BackendServiceDeleteProjectAPIKeyProcedure,
-			connect.WithSchema(backendServiceMethods.ByName("DeleteProjectAPIKey")),
+			baseURL+BackendServiceDeleteBackendAPIKeyProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("DeleteBackendAPIKey")),
 			connect.WithClientOptions(opts...),
 		),
-		revokeProjectAPIKey: connect.NewClient[v1.RevokeProjectAPIKeyRequest, v1.RevokeProjectAPIKeyResponse](
+		revokeBackendAPIKey: connect.NewClient[v1.RevokeBackendAPIKeyRequest, v1.RevokeBackendAPIKeyResponse](
 			httpClient,
-			baseURL+BackendServiceRevokeProjectAPIKeyProcedure,
-			connect.WithSchema(backendServiceMethods.ByName("RevokeProjectAPIKey")),
+			baseURL+BackendServiceRevokeBackendAPIKeyProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("RevokeBackendAPIKey")),
 			connect.WithClientOptions(opts...),
 		),
 		listPublishableKeys: connect.NewClient[v1.ListPublishableKeysRequest, v1.ListPublishableKeysResponse](
@@ -751,12 +751,12 @@ type backendServiceClient struct {
 	enableEmailSendFromDomain             *connect.Client[v1.EnableEmailSendFromDomainRequest, v1.EnableEmailSendFromDomainResponse]
 	getProjectUISettings                  *connect.Client[v1.GetProjectUISettingsRequest, v1.GetProjectUISettingsResponse]
 	updateProjectUISettings               *connect.Client[v1.UpdateProjectUISettingsRequest, v1.UpdateProjectUISettingsResponse]
-	listProjectAPIKeys                    *connect.Client[v1.ListProjectAPIKeysRequest, v1.ListProjectAPIKeysResponse]
-	getProjectAPIKey                      *connect.Client[v1.GetProjectAPIKeyRequest, v1.GetProjectAPIKeyResponse]
-	createProjectAPIKey                   *connect.Client[v1.CreateProjectAPIKeyRequest, v1.CreateProjectAPIKeyResponse]
-	updateProjectAPIKey                   *connect.Client[v1.UpdateProjectAPIKeyRequest, v1.UpdateProjectAPIKeyResponse]
-	deleteProjectAPIKey                   *connect.Client[v1.DeleteProjectAPIKeyRequest, v1.DeleteProjectAPIKeyResponse]
-	revokeProjectAPIKey                   *connect.Client[v1.RevokeProjectAPIKeyRequest, v1.RevokeProjectAPIKeyResponse]
+	listBackendAPIKeys                    *connect.Client[v1.ListBackendAPIKeysRequest, v1.ListBackendAPIKeysResponse]
+	getBackendAPIKey                      *connect.Client[v1.GetBackendAPIKeyRequest, v1.GetBackendAPIKeyResponse]
+	createBackendAPIKey                   *connect.Client[v1.CreateBackendAPIKeyRequest, v1.CreateBackendAPIKeyResponse]
+	updateBackendAPIKey                   *connect.Client[v1.UpdateBackendAPIKeyRequest, v1.UpdateBackendAPIKeyResponse]
+	deleteBackendAPIKey                   *connect.Client[v1.DeleteBackendAPIKeyRequest, v1.DeleteBackendAPIKeyResponse]
+	revokeBackendAPIKey                   *connect.Client[v1.RevokeBackendAPIKeyRequest, v1.RevokeBackendAPIKeyResponse]
 	listPublishableKeys                   *connect.Client[v1.ListPublishableKeysRequest, v1.ListPublishableKeysResponse]
 	getPublishableKey                     *connect.Client[v1.GetPublishableKeyRequest, v1.GetPublishableKeyResponse]
 	createPublishableKey                  *connect.Client[v1.CreatePublishableKeyRequest, v1.CreatePublishableKeyResponse]
@@ -1014,34 +1014,34 @@ func (c *backendServiceClient) UpdateProjectUISettings(ctx context.Context, req 
 	return c.updateProjectUISettings.CallUnary(ctx, req)
 }
 
-// ListProjectAPIKeys calls tesseral.backend.v1.BackendService.ListProjectAPIKeys.
-func (c *backendServiceClient) ListProjectAPIKeys(ctx context.Context, req *connect.Request[v1.ListProjectAPIKeysRequest]) (*connect.Response[v1.ListProjectAPIKeysResponse], error) {
-	return c.listProjectAPIKeys.CallUnary(ctx, req)
+// ListBackendAPIKeys calls tesseral.backend.v1.BackendService.ListBackendAPIKeys.
+func (c *backendServiceClient) ListBackendAPIKeys(ctx context.Context, req *connect.Request[v1.ListBackendAPIKeysRequest]) (*connect.Response[v1.ListBackendAPIKeysResponse], error) {
+	return c.listBackendAPIKeys.CallUnary(ctx, req)
 }
 
-// GetProjectAPIKey calls tesseral.backend.v1.BackendService.GetProjectAPIKey.
-func (c *backendServiceClient) GetProjectAPIKey(ctx context.Context, req *connect.Request[v1.GetProjectAPIKeyRequest]) (*connect.Response[v1.GetProjectAPIKeyResponse], error) {
-	return c.getProjectAPIKey.CallUnary(ctx, req)
+// GetBackendAPIKey calls tesseral.backend.v1.BackendService.GetBackendAPIKey.
+func (c *backendServiceClient) GetBackendAPIKey(ctx context.Context, req *connect.Request[v1.GetBackendAPIKeyRequest]) (*connect.Response[v1.GetBackendAPIKeyResponse], error) {
+	return c.getBackendAPIKey.CallUnary(ctx, req)
 }
 
-// CreateProjectAPIKey calls tesseral.backend.v1.BackendService.CreateProjectAPIKey.
-func (c *backendServiceClient) CreateProjectAPIKey(ctx context.Context, req *connect.Request[v1.CreateProjectAPIKeyRequest]) (*connect.Response[v1.CreateProjectAPIKeyResponse], error) {
-	return c.createProjectAPIKey.CallUnary(ctx, req)
+// CreateBackendAPIKey calls tesseral.backend.v1.BackendService.CreateBackendAPIKey.
+func (c *backendServiceClient) CreateBackendAPIKey(ctx context.Context, req *connect.Request[v1.CreateBackendAPIKeyRequest]) (*connect.Response[v1.CreateBackendAPIKeyResponse], error) {
+	return c.createBackendAPIKey.CallUnary(ctx, req)
 }
 
-// UpdateProjectAPIKey calls tesseral.backend.v1.BackendService.UpdateProjectAPIKey.
-func (c *backendServiceClient) UpdateProjectAPIKey(ctx context.Context, req *connect.Request[v1.UpdateProjectAPIKeyRequest]) (*connect.Response[v1.UpdateProjectAPIKeyResponse], error) {
-	return c.updateProjectAPIKey.CallUnary(ctx, req)
+// UpdateBackendAPIKey calls tesseral.backend.v1.BackendService.UpdateBackendAPIKey.
+func (c *backendServiceClient) UpdateBackendAPIKey(ctx context.Context, req *connect.Request[v1.UpdateBackendAPIKeyRequest]) (*connect.Response[v1.UpdateBackendAPIKeyResponse], error) {
+	return c.updateBackendAPIKey.CallUnary(ctx, req)
 }
 
-// DeleteProjectAPIKey calls tesseral.backend.v1.BackendService.DeleteProjectAPIKey.
-func (c *backendServiceClient) DeleteProjectAPIKey(ctx context.Context, req *connect.Request[v1.DeleteProjectAPIKeyRequest]) (*connect.Response[v1.DeleteProjectAPIKeyResponse], error) {
-	return c.deleteProjectAPIKey.CallUnary(ctx, req)
+// DeleteBackendAPIKey calls tesseral.backend.v1.BackendService.DeleteBackendAPIKey.
+func (c *backendServiceClient) DeleteBackendAPIKey(ctx context.Context, req *connect.Request[v1.DeleteBackendAPIKeyRequest]) (*connect.Response[v1.DeleteBackendAPIKeyResponse], error) {
+	return c.deleteBackendAPIKey.CallUnary(ctx, req)
 }
 
-// RevokeProjectAPIKey calls tesseral.backend.v1.BackendService.RevokeProjectAPIKey.
-func (c *backendServiceClient) RevokeProjectAPIKey(ctx context.Context, req *connect.Request[v1.RevokeProjectAPIKeyRequest]) (*connect.Response[v1.RevokeProjectAPIKeyResponse], error) {
-	return c.revokeProjectAPIKey.CallUnary(ctx, req)
+// RevokeBackendAPIKey calls tesseral.backend.v1.BackendService.RevokeBackendAPIKey.
+func (c *backendServiceClient) RevokeBackendAPIKey(ctx context.Context, req *connect.Request[v1.RevokeBackendAPIKeyRequest]) (*connect.Response[v1.RevokeBackendAPIKeyResponse], error) {
+	return c.revokeBackendAPIKey.CallUnary(ctx, req)
 }
 
 // ListPublishableKeys calls tesseral.backend.v1.BackendService.ListPublishableKeys.
@@ -1164,12 +1164,12 @@ type BackendServiceHandler interface {
 	EnableEmailSendFromDomain(context.Context, *connect.Request[v1.EnableEmailSendFromDomainRequest]) (*connect.Response[v1.EnableEmailSendFromDomainResponse], error)
 	GetProjectUISettings(context.Context, *connect.Request[v1.GetProjectUISettingsRequest]) (*connect.Response[v1.GetProjectUISettingsResponse], error)
 	UpdateProjectUISettings(context.Context, *connect.Request[v1.UpdateProjectUISettingsRequest]) (*connect.Response[v1.UpdateProjectUISettingsResponse], error)
-	ListProjectAPIKeys(context.Context, *connect.Request[v1.ListProjectAPIKeysRequest]) (*connect.Response[v1.ListProjectAPIKeysResponse], error)
-	GetProjectAPIKey(context.Context, *connect.Request[v1.GetProjectAPIKeyRequest]) (*connect.Response[v1.GetProjectAPIKeyResponse], error)
-	CreateProjectAPIKey(context.Context, *connect.Request[v1.CreateProjectAPIKeyRequest]) (*connect.Response[v1.CreateProjectAPIKeyResponse], error)
-	UpdateProjectAPIKey(context.Context, *connect.Request[v1.UpdateProjectAPIKeyRequest]) (*connect.Response[v1.UpdateProjectAPIKeyResponse], error)
-	DeleteProjectAPIKey(context.Context, *connect.Request[v1.DeleteProjectAPIKeyRequest]) (*connect.Response[v1.DeleteProjectAPIKeyResponse], error)
-	RevokeProjectAPIKey(context.Context, *connect.Request[v1.RevokeProjectAPIKeyRequest]) (*connect.Response[v1.RevokeProjectAPIKeyResponse], error)
+	ListBackendAPIKeys(context.Context, *connect.Request[v1.ListBackendAPIKeysRequest]) (*connect.Response[v1.ListBackendAPIKeysResponse], error)
+	GetBackendAPIKey(context.Context, *connect.Request[v1.GetBackendAPIKeyRequest]) (*connect.Response[v1.GetBackendAPIKeyResponse], error)
+	CreateBackendAPIKey(context.Context, *connect.Request[v1.CreateBackendAPIKeyRequest]) (*connect.Response[v1.CreateBackendAPIKeyResponse], error)
+	UpdateBackendAPIKey(context.Context, *connect.Request[v1.UpdateBackendAPIKeyRequest]) (*connect.Response[v1.UpdateBackendAPIKeyResponse], error)
+	DeleteBackendAPIKey(context.Context, *connect.Request[v1.DeleteBackendAPIKeyRequest]) (*connect.Response[v1.DeleteBackendAPIKeyResponse], error)
+	RevokeBackendAPIKey(context.Context, *connect.Request[v1.RevokeBackendAPIKeyRequest]) (*connect.Response[v1.RevokeBackendAPIKeyResponse], error)
 	ListPublishableKeys(context.Context, *connect.Request[v1.ListPublishableKeysRequest]) (*connect.Response[v1.ListPublishableKeysResponse], error)
 	GetPublishableKey(context.Context, *connect.Request[v1.GetPublishableKeyRequest]) (*connect.Response[v1.GetPublishableKeyResponse], error)
 	CreatePublishableKey(context.Context, *connect.Request[v1.CreatePublishableKeyRequest]) (*connect.Response[v1.CreatePublishableKeyResponse], error)
@@ -1479,40 +1479,40 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		connect.WithSchema(backendServiceMethods.ByName("UpdateProjectUISettings")),
 		connect.WithHandlerOptions(opts...),
 	)
-	backendServiceListProjectAPIKeysHandler := connect.NewUnaryHandler(
-		BackendServiceListProjectAPIKeysProcedure,
-		svc.ListProjectAPIKeys,
-		connect.WithSchema(backendServiceMethods.ByName("ListProjectAPIKeys")),
+	backendServiceListBackendAPIKeysHandler := connect.NewUnaryHandler(
+		BackendServiceListBackendAPIKeysProcedure,
+		svc.ListBackendAPIKeys,
+		connect.WithSchema(backendServiceMethods.ByName("ListBackendAPIKeys")),
 		connect.WithHandlerOptions(opts...),
 	)
-	backendServiceGetProjectAPIKeyHandler := connect.NewUnaryHandler(
-		BackendServiceGetProjectAPIKeyProcedure,
-		svc.GetProjectAPIKey,
-		connect.WithSchema(backendServiceMethods.ByName("GetProjectAPIKey")),
+	backendServiceGetBackendAPIKeyHandler := connect.NewUnaryHandler(
+		BackendServiceGetBackendAPIKeyProcedure,
+		svc.GetBackendAPIKey,
+		connect.WithSchema(backendServiceMethods.ByName("GetBackendAPIKey")),
 		connect.WithHandlerOptions(opts...),
 	)
-	backendServiceCreateProjectAPIKeyHandler := connect.NewUnaryHandler(
-		BackendServiceCreateProjectAPIKeyProcedure,
-		svc.CreateProjectAPIKey,
-		connect.WithSchema(backendServiceMethods.ByName("CreateProjectAPIKey")),
+	backendServiceCreateBackendAPIKeyHandler := connect.NewUnaryHandler(
+		BackendServiceCreateBackendAPIKeyProcedure,
+		svc.CreateBackendAPIKey,
+		connect.WithSchema(backendServiceMethods.ByName("CreateBackendAPIKey")),
 		connect.WithHandlerOptions(opts...),
 	)
-	backendServiceUpdateProjectAPIKeyHandler := connect.NewUnaryHandler(
-		BackendServiceUpdateProjectAPIKeyProcedure,
-		svc.UpdateProjectAPIKey,
-		connect.WithSchema(backendServiceMethods.ByName("UpdateProjectAPIKey")),
+	backendServiceUpdateBackendAPIKeyHandler := connect.NewUnaryHandler(
+		BackendServiceUpdateBackendAPIKeyProcedure,
+		svc.UpdateBackendAPIKey,
+		connect.WithSchema(backendServiceMethods.ByName("UpdateBackendAPIKey")),
 		connect.WithHandlerOptions(opts...),
 	)
-	backendServiceDeleteProjectAPIKeyHandler := connect.NewUnaryHandler(
-		BackendServiceDeleteProjectAPIKeyProcedure,
-		svc.DeleteProjectAPIKey,
-		connect.WithSchema(backendServiceMethods.ByName("DeleteProjectAPIKey")),
+	backendServiceDeleteBackendAPIKeyHandler := connect.NewUnaryHandler(
+		BackendServiceDeleteBackendAPIKeyProcedure,
+		svc.DeleteBackendAPIKey,
+		connect.WithSchema(backendServiceMethods.ByName("DeleteBackendAPIKey")),
 		connect.WithHandlerOptions(opts...),
 	)
-	backendServiceRevokeProjectAPIKeyHandler := connect.NewUnaryHandler(
-		BackendServiceRevokeProjectAPIKeyProcedure,
-		svc.RevokeProjectAPIKey,
-		connect.WithSchema(backendServiceMethods.ByName("RevokeProjectAPIKey")),
+	backendServiceRevokeBackendAPIKeyHandler := connect.NewUnaryHandler(
+		BackendServiceRevokeBackendAPIKeyProcedure,
+		svc.RevokeBackendAPIKey,
+		connect.WithSchema(backendServiceMethods.ByName("RevokeBackendAPIKey")),
 		connect.WithHandlerOptions(opts...),
 	)
 	backendServiceListPublishableKeysHandler := connect.NewUnaryHandler(
@@ -1651,18 +1651,18 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceGetProjectUISettingsHandler.ServeHTTP(w, r)
 		case BackendServiceUpdateProjectUISettingsProcedure:
 			backendServiceUpdateProjectUISettingsHandler.ServeHTTP(w, r)
-		case BackendServiceListProjectAPIKeysProcedure:
-			backendServiceListProjectAPIKeysHandler.ServeHTTP(w, r)
-		case BackendServiceGetProjectAPIKeyProcedure:
-			backendServiceGetProjectAPIKeyHandler.ServeHTTP(w, r)
-		case BackendServiceCreateProjectAPIKeyProcedure:
-			backendServiceCreateProjectAPIKeyHandler.ServeHTTP(w, r)
-		case BackendServiceUpdateProjectAPIKeyProcedure:
-			backendServiceUpdateProjectAPIKeyHandler.ServeHTTP(w, r)
-		case BackendServiceDeleteProjectAPIKeyProcedure:
-			backendServiceDeleteProjectAPIKeyHandler.ServeHTTP(w, r)
-		case BackendServiceRevokeProjectAPIKeyProcedure:
-			backendServiceRevokeProjectAPIKeyHandler.ServeHTTP(w, r)
+		case BackendServiceListBackendAPIKeysProcedure:
+			backendServiceListBackendAPIKeysHandler.ServeHTTP(w, r)
+		case BackendServiceGetBackendAPIKeyProcedure:
+			backendServiceGetBackendAPIKeyHandler.ServeHTTP(w, r)
+		case BackendServiceCreateBackendAPIKeyProcedure:
+			backendServiceCreateBackendAPIKeyHandler.ServeHTTP(w, r)
+		case BackendServiceUpdateBackendAPIKeyProcedure:
+			backendServiceUpdateBackendAPIKeyHandler.ServeHTTP(w, r)
+		case BackendServiceDeleteBackendAPIKeyProcedure:
+			backendServiceDeleteBackendAPIKeyHandler.ServeHTTP(w, r)
+		case BackendServiceRevokeBackendAPIKeyProcedure:
+			backendServiceRevokeBackendAPIKeyHandler.ServeHTTP(w, r)
 		case BackendServiceListPublishableKeysProcedure:
 			backendServiceListPublishableKeysHandler.ServeHTTP(w, r)
 		case BackendServiceGetPublishableKeyProcedure:
@@ -1880,28 +1880,28 @@ func (UnimplementedBackendServiceHandler) UpdateProjectUISettings(context.Contex
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.UpdateProjectUISettings is not implemented"))
 }
 
-func (UnimplementedBackendServiceHandler) ListProjectAPIKeys(context.Context, *connect.Request[v1.ListProjectAPIKeysRequest]) (*connect.Response[v1.ListProjectAPIKeysResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.ListProjectAPIKeys is not implemented"))
+func (UnimplementedBackendServiceHandler) ListBackendAPIKeys(context.Context, *connect.Request[v1.ListBackendAPIKeysRequest]) (*connect.Response[v1.ListBackendAPIKeysResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.ListBackendAPIKeys is not implemented"))
 }
 
-func (UnimplementedBackendServiceHandler) GetProjectAPIKey(context.Context, *connect.Request[v1.GetProjectAPIKeyRequest]) (*connect.Response[v1.GetProjectAPIKeyResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.GetProjectAPIKey is not implemented"))
+func (UnimplementedBackendServiceHandler) GetBackendAPIKey(context.Context, *connect.Request[v1.GetBackendAPIKeyRequest]) (*connect.Response[v1.GetBackendAPIKeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.GetBackendAPIKey is not implemented"))
 }
 
-func (UnimplementedBackendServiceHandler) CreateProjectAPIKey(context.Context, *connect.Request[v1.CreateProjectAPIKeyRequest]) (*connect.Response[v1.CreateProjectAPIKeyResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.CreateProjectAPIKey is not implemented"))
+func (UnimplementedBackendServiceHandler) CreateBackendAPIKey(context.Context, *connect.Request[v1.CreateBackendAPIKeyRequest]) (*connect.Response[v1.CreateBackendAPIKeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.CreateBackendAPIKey is not implemented"))
 }
 
-func (UnimplementedBackendServiceHandler) UpdateProjectAPIKey(context.Context, *connect.Request[v1.UpdateProjectAPIKeyRequest]) (*connect.Response[v1.UpdateProjectAPIKeyResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.UpdateProjectAPIKey is not implemented"))
+func (UnimplementedBackendServiceHandler) UpdateBackendAPIKey(context.Context, *connect.Request[v1.UpdateBackendAPIKeyRequest]) (*connect.Response[v1.UpdateBackendAPIKeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.UpdateBackendAPIKey is not implemented"))
 }
 
-func (UnimplementedBackendServiceHandler) DeleteProjectAPIKey(context.Context, *connect.Request[v1.DeleteProjectAPIKeyRequest]) (*connect.Response[v1.DeleteProjectAPIKeyResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.DeleteProjectAPIKey is not implemented"))
+func (UnimplementedBackendServiceHandler) DeleteBackendAPIKey(context.Context, *connect.Request[v1.DeleteBackendAPIKeyRequest]) (*connect.Response[v1.DeleteBackendAPIKeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.DeleteBackendAPIKey is not implemented"))
 }
 
-func (UnimplementedBackendServiceHandler) RevokeProjectAPIKey(context.Context, *connect.Request[v1.RevokeProjectAPIKeyRequest]) (*connect.Response[v1.RevokeProjectAPIKeyResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.RevokeProjectAPIKey is not implemented"))
+func (UnimplementedBackendServiceHandler) RevokeBackendAPIKey(context.Context, *connect.Request[v1.RevokeBackendAPIKeyRequest]) (*connect.Response[v1.RevokeBackendAPIKeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.RevokeBackendAPIKey is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) ListPublishableKeys(context.Context, *connect.Request[v1.ListPublishableKeysRequest]) (*connect.Response[v1.ListPublishableKeysResponse], error) {

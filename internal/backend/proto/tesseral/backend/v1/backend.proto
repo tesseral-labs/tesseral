@@ -251,12 +251,12 @@ service BackendService {
   rpc GetProjectUISettings(GetProjectUISettingsRequest) returns (GetProjectUISettingsResponse) {}
   rpc UpdateProjectUISettings(UpdateProjectUISettingsRequest) returns (UpdateProjectUISettingsResponse) {}
 
-  rpc ListProjectAPIKeys(ListProjectAPIKeysRequest) returns (ListProjectAPIKeysResponse);
-  rpc GetProjectAPIKey(GetProjectAPIKeyRequest) returns (GetProjectAPIKeyResponse);
-  rpc CreateProjectAPIKey(CreateProjectAPIKeyRequest) returns (CreateProjectAPIKeyResponse);
-  rpc UpdateProjectAPIKey(UpdateProjectAPIKeyRequest) returns (UpdateProjectAPIKeyResponse);
-  rpc DeleteProjectAPIKey(DeleteProjectAPIKeyRequest) returns (DeleteProjectAPIKeyResponse);
-  rpc RevokeProjectAPIKey(RevokeProjectAPIKeyRequest) returns (RevokeProjectAPIKeyResponse);
+  rpc ListBackendAPIKeys(ListBackendAPIKeysRequest) returns (ListBackendAPIKeysResponse);
+  rpc GetBackendAPIKey(GetBackendAPIKeyRequest) returns (GetBackendAPIKeyResponse);
+  rpc CreateBackendAPIKey(CreateBackendAPIKeyRequest) returns (CreateBackendAPIKeyResponse);
+  rpc UpdateBackendAPIKey(UpdateBackendAPIKeyRequest) returns (UpdateBackendAPIKeyResponse);
+  rpc DeleteBackendAPIKey(DeleteBackendAPIKeyRequest) returns (DeleteBackendAPIKeyResponse);
+  rpc RevokeBackendAPIKey(RevokeBackendAPIKeyRequest) returns (RevokeBackendAPIKeyResponse);
 
   rpc ListPublishableKeys(ListPublishableKeysRequest) returns (ListPublishableKeysResponse);
   rpc GetPublishableKey(GetPublishableKeyRequest) returns (GetPublishableKeyResponse);
@@ -705,52 +705,52 @@ message DeleteUserInviteRequest {
 
 message DeleteUserInviteResponse {}
 
-message ListProjectAPIKeysRequest {
+message ListBackendAPIKeysRequest {
   string page_token = 1;
 }
 
-message ListProjectAPIKeysResponse {
-  repeated ProjectAPIKey project_api_keys = 1;
+message ListBackendAPIKeysResponse {
+  repeated BackendAPIKey backend_api_keys = 1;
   string next_page_token = 2;
 }
 
-message GetProjectAPIKeyRequest {
+message GetBackendAPIKeyRequest {
   string id = 1;
 }
 
-message GetProjectAPIKeyResponse {
-  ProjectAPIKey project_api_key = 1;
+message GetBackendAPIKeyResponse {
+  BackendAPIKey backend_api_key = 1;
 }
 
-message CreateProjectAPIKeyRequest {
-  ProjectAPIKey project_api_key = 1;
+message CreateBackendAPIKeyRequest {
+  BackendAPIKey backend_api_key = 1;
 }
 
-message CreateProjectAPIKeyResponse {
-  ProjectAPIKey project_api_key = 1;
+message CreateBackendAPIKeyResponse {
+  BackendAPIKey backend_api_key = 1;
 }
 
-message UpdateProjectAPIKeyRequest {
+message UpdateBackendAPIKeyRequest {
   string id = 1;
-  ProjectAPIKey project_api_key = 2;
+  BackendAPIKey backend_api_key = 2;
 }
 
-message UpdateProjectAPIKeyResponse {
-  ProjectAPIKey project_api_key = 1;
+message UpdateBackendAPIKeyResponse {
+  BackendAPIKey backend_api_key = 1;
 }
 
-message DeleteProjectAPIKeyRequest {
-  string id = 1;
-}
-
-message DeleteProjectAPIKeyResponse {}
-
-message RevokeProjectAPIKeyRequest {
+message DeleteBackendAPIKeyRequest {
   string id = 1;
 }
 
-message RevokeProjectAPIKeyResponse {
-  ProjectAPIKey project_api_key = 1;
+message DeleteBackendAPIKeyResponse {}
+
+message RevokeBackendAPIKeyRequest {
+  string id = 1;
+}
+
+message RevokeBackendAPIKeyResponse {
+  BackendAPIKey backend_api_key = 1;
 }
 
 message GetVaultDomainSettingsRequest {}

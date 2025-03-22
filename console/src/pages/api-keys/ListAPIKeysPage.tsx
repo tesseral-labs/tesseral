@@ -1,8 +1,8 @@
 import { useMutation, useQuery } from '@connectrpc/connect-query';
 import {
-  createProjectAPIKey,
+  createBackendAPIKey,
   createPublishableKey,
-  listProjectAPIKeys,
+  listBackendAPIKeys,
   listPublishableKeys,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import {
@@ -66,7 +66,7 @@ export const ListAPIKeysPage = () => {
     listPublishableKeys,
     {},
   );
-  const { data: listProjectAPIKeysResponse } = useQuery(listProjectAPIKeys, {});
+  const { data: listBackendAPIKeysResponse } = useQuery(listBackendAPIKeys, {});
 
   return (
     <div>
@@ -154,13 +154,13 @@ export const ListAPIKeysPage = () => {
         <Card>
           <CardHeader className="flex-row justify-between items-center">
             <div className="flex flex-col space-y-1 5">
-              <CardTitle>Project API Keys</CardTitle>
+              <CardTitle>Backend API Keys</CardTitle>
               <CardDescription>
-                Project API keys are how your backend can automate operations in
-                Tesseral. Lorem ipsum dolor.
+                Backend API keys are how your backend can automate operations in
+                Tesseral using the Tesseral Backend API.
               </CardDescription>
             </div>
-            <CreateProjectAPIKeyButton />
+            <CreateBackendAPIKeyButton />
           </CardHeader>
           <CardContent>
             <Table>
@@ -174,33 +174,33 @@ export const ListAPIKeysPage = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {listProjectAPIKeysResponse?.projectApiKeys?.map(
-                  (projectAPIKey) => (
-                    <TableRow key={projectAPIKey.id}>
+                {listBackendAPIKeysResponse?.backendApiKeys?.map(
+                  (backendApiKey) => (
+                    <TableRow key={backendApiKey.id}>
                       <TableCell className="font-medium">
                         <Link
                           className="font-medium underline underline-offset-2 decoration-muted-foreground/40"
-                          to={`/project-settings/api-keys/project-api-keys/${projectAPIKey.id}`}
+                          to={`/project-settings/api-keys/backend-api-keys/${backendApiKey.id}`}
                         >
-                          {projectAPIKey.displayName}
+                          {backendApiKey.displayName}
                         </Link>
                       </TableCell>
                       <TableCell className="font-mono">
-                        {projectAPIKey.id}
+                        {backendApiKey.id}
                       </TableCell>
                       <TableCell>
-                        {projectAPIKey?.revoked ? 'Revoked' : 'Active'}
+                        {backendApiKey?.revoked ? 'Revoked' : 'Active'}
                       </TableCell>
                       <TableCell>
-                        {projectAPIKey.createTime &&
+                        {backendApiKey.createTime &&
                           DateTime.fromJSDate(
-                            timestampDate(projectAPIKey.createTime),
+                            timestampDate(backendApiKey.createTime),
                           ).toRelative()}
                       </TableCell>
                       <TableCell>
-                        {projectAPIKey.updateTime &&
+                        {backendApiKey.updateTime &&
                           DateTime.fromJSDate(
-                            timestampDate(projectAPIKey.updateTime),
+                            timestampDate(backendApiKey.updateTime),
                           ).toRelative()}
                       </TableCell>
                     </TableRow>
@@ -229,7 +229,7 @@ const CreatePublishableKeyButton = () => {
     resolver: zodResolver(publishableKeySchema),
     defaultValues: {
       displayName: '',
-      supportRelayedSessions: false,
+      devMode: false,
     },
   });
 
@@ -325,17 +325,17 @@ const CreatePublishableKeyButton = () => {
   );
 };
 
-const projectApiKeySchema = z.object({
+const backendAPIKeySchema = z.object({
   displayName: z.string(),
 });
 
-const CreateProjectAPIKeyButton = () => {
-  const createProjectAPIKeyMutation = useMutation(createProjectAPIKey);
+const CreateBackendAPIKeyButton = () => {
+  const createBackendAPIKeyMutation = useMutation(createBackendAPIKey);
 
   // Currently there's an issue with the types of react-hook-form and zod
   // preventing the compiler from inferring the correct types.
-  const form = useForm<z.infer<typeof projectApiKeySchema>>({
-    resolver: zodResolver(projectApiKeySchema),
+  const form = useForm<z.infer<typeof backendAPIKeySchema>>({
+    resolver: zodResolver(backendAPIKeySchema),
     defaultValues: {
       displayName: '',
     },
@@ -343,27 +343,23 @@ const CreateProjectAPIKeyButton = () => {
 
   const navigate = useNavigate();
   const [createOpen, setCreateOpen] = useState(false);
-  const [projectAPIKeyID, setProjectAPIKeyID] = useState('');
+  const [backendAPIKeyID, setBackendAPIKeyID] = useState('');
   const [secretToken, setSecretToken] = useState('');
 
-  const handleSubmit = async (values: z.infer<typeof projectApiKeySchema>) => {
-    const { projectApiKey } = await createProjectAPIKeyMutation.mutateAsync({
-      projectApiKey: {
+  const handleSubmit = async (values: z.infer<typeof backendAPIKeySchema>) => {
+    const { backendApiKey } = await createBackendAPIKeyMutation.mutateAsync({
+      backendApiKey: {
         displayName: values.displayName,
       },
     });
 
     setCreateOpen(false);
-    if (projectApiKey?.id) {
-      setProjectAPIKeyID(projectApiKey.id);
-    }
-    if (projectApiKey?.secretToken) {
-      setSecretToken(projectApiKey.secretToken);
-    }
+    setBackendAPIKeyID(backendApiKey!.id);
+    setSecretToken(backendApiKey!.secretToken);
   };
 
   const handleClose = () => {
-    navigate(`/project-settings/api-keys/project-api-keys/${projectAPIKeyID}`);
+    navigate(`/project-settings/api-keys/backend-api-keys/${backendAPIKeyID}`);
   };
 
   return (
@@ -371,14 +367,14 @@ const CreateProjectAPIKeyButton = () => {
       <AlertDialog open={!!secretToken}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Project API Key Created</AlertDialogTitle>
+            <AlertDialogTitle>Backend API Key Created</AlertDialogTitle>
             <AlertDialogDescription>
-              Project API Key was created successfully.
+              Backend API Key was created successfully.
             </AlertDialogDescription>
           </AlertDialogHeader>
 
           <div className="text-sm font-medium leading-none">
-            Project Secret Token
+            Backend API Key Secret Token
           </div>
 
           <SecretCopier
@@ -403,10 +399,10 @@ const CreateProjectAPIKeyButton = () => {
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Create Project API Key</AlertDialogTitle>
+            <AlertDialogTitle>Create Backend API Key</AlertDialogTitle>
             <AlertDialogDescription>
-              A Project API key is how your backend talks to the Tesseral
-              Backend API. Lorem ipsum dolor.
+              Backend API keys are how your backend can automate operations in
+              Tesseral using the Tesseral Backend API.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <Form {...form}>
@@ -425,7 +421,7 @@ const CreateProjectAPIKeyButton = () => {
                       <Input className="max-w-96" {...field} />
                     </FormControl>
                     <FormDescription>
-                      A human-friendly name for the Project API Key.
+                      A human-friendly name for the Backend API Key.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -433,7 +429,7 @@ const CreateProjectAPIKeyButton = () => {
               />
               <AlertDialogFooter className="mt-8">
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <Button type="submit">Create Project API Key</Button>
+                <Button type="submit">Create Backend API Key</Button>
               </AlertDialogFooter>
             </form>
           </Form>

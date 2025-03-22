@@ -198,7 +198,7 @@ message OrganizationMicrosoftTenantIDs {
   repeated string microsoft_tenant_ids = 2;
 }
 
-message ProjectAPIKey {
+message BackendAPIKey {
   string id = 1;
   string display_name = 2;
   google.protobuf.Timestamp create_time = 3;

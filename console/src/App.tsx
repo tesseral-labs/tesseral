@@ -23,7 +23,6 @@ import { Toaster } from '@/components/ui/sonner';
 import { EditSAMLConnectionPage } from '@/pages/saml-connections/EditSAMLConnectionPage';
 import { PageShell } from '@/components/page';
 import { ViewSCIMAPIKeyPage } from '@/pages/scim-api-keys/ViewSCIMAPIKeyPage';
-import { ViewProjectAPIKeyPage } from '@/pages/api-keys/ViewProjectAPIKey';
 import { HomePage } from '@/pages/home/HomePage';
 import { ProjectDetailsTab } from '@/pages/project/ProjectDetailsTab';
 import LoginPage from './pages/login/LoginPage';
@@ -37,6 +36,7 @@ import MicrosoftOAuthCallbackPage from './pages/login/MicrosoftOAuthCallbackPage
 import { ViewPublishableKeyPage } from '@/pages/api-keys/ViewPublishableKeyPage';
 import ProjectUISettingsPage from './pages/project/project-ui-settings/ProjectUISettings';
 import { VaultDomainSettingsTab } from '@/pages/project/VaultDomainSettingsTab';
+import { ViewBackendAPIKeyPage } from '@/pages/api-keys/ViewBackendAPIKeyPage';
 
 const queryClient = new QueryClient();
 
@@ -111,8 +111,8 @@ const AppWithinQueryClient = () => {
             />
 
             <Route
-              path="project-settings/api-keys/project-api-keys/:projectApiKeyId"
-              element={<ViewProjectAPIKeyPage />}
+              path="project-settings/api-keys/backend-api-keys/:backendApiKeyId"
+              element={<ViewBackendAPIKeyPage />}
             />
 
             <Route

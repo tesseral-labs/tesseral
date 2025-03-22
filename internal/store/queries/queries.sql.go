@@ -136,39 +136,6 @@ func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganization
 	return i, err
 }
 
-const createProjectAPIKey = `-- name: CreateProjectAPIKey :one
-INSERT INTO project_api_keys (id, project_id, secret_token_sha256, display_name)
-    VALUES ($1, $2, $3, $4)
-RETURNING
-    id, project_id, secret_token_sha256, display_name, create_time, update_time
-`
-
-type CreateProjectAPIKeyParams struct {
-	ID                uuid.UUID
-	ProjectID         uuid.UUID
-	SecretTokenSha256 []byte
-	DisplayName       string
-}
-
-func (q *Queries) CreateProjectAPIKey(ctx context.Context, arg CreateProjectAPIKeyParams) (ProjectApiKey, error) {
-	row := q.db.QueryRow(ctx, createProjectAPIKey,
-		arg.ID,
-		arg.ProjectID,
-		arg.SecretTokenSha256,
-		arg.DisplayName,
-	)
-	var i ProjectApiKey
-	err := row.Scan(
-		&i.ID,
-		&i.ProjectID,
-		&i.SecretTokenSha256,
-		&i.DisplayName,
-		&i.CreateTime,
-		&i.UpdateTime,
-	)
-	return i, err
-}
-
 const createProjectUISettings = `-- name: CreateProjectUISettings :one
 INSERT INTO project_ui_settings (id, project_id, primary_color, detect_dark_mode_enabled)
     VALUES ($1, $2, $3, $4)
@@ -358,29 +325,6 @@ func (q *Queries) GetOrganizationByProjectIDAndID(ctx context.Context, arg GetOr
 	return i, err
 }
 
-const getProjectAPIKeyBySecretTokenSHA256 = `-- name: GetProjectAPIKeyBySecretTokenSHA256 :one
-SELECT
-    id, project_id, secret_token_sha256, display_name, create_time, update_time
-FROM
-    project_api_keys
-WHERE
-    secret_token_sha256 = $1
-`
-
-func (q *Queries) GetProjectAPIKeyBySecretTokenSHA256(ctx context.Context, secretTokenSha256 []byte) (ProjectApiKey, error) {
-	row := q.db.QueryRow(ctx, getProjectAPIKeyBySecretTokenSHA256, secretTokenSha256)
-	var i ProjectApiKey
-	err := row.Scan(
-		&i.ID,
-		&i.ProjectID,
-		&i.SecretTokenSha256,
-		&i.DisplayName,
-		&i.CreateTime,
-		&i.UpdateTime,
-	)
-	return i, err
-}
-
 const getProjectByID = `-- name: GetProjectByID :one
 SELECT
     id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain, cookie_domain
@@ -468,6 +412,27 @@ type GetSessionDetailsByRefreshTokenSHA256Row struct {
 	ProjectID      uuid.UUID
 }
 
+// -- name: CreateProjectAPIKey :one
+// INSERT INTO project_api_keys (id, project_id, secret_token_sha256, display_name)
+//
+//	VALUES ($1, $2, $3, $4)
+//
+// RETURNING
+//
+//	*;
+//
+// -- name: GetProjectAPIKeyBySecretTokenSHA256 :one
+// SELECT
+//
+//	*
+//
+// FROM
+//
+//	project_api_keys
+//
+// WHERE
+//
+//	secret_token_sha256 = $1;
 func (q *Queries) GetSessionDetailsByRefreshTokenSHA256(ctx context.Context, refreshTokenSha256 []byte) (GetSessionDetailsByRefreshTokenSHA256Row, error) {
 	row := q.db.QueryRow(ctx, getSessionDetailsByRefreshTokenSHA256, refreshTokenSha256)
 	var i GetSessionDetailsByRefreshTokenSHA256Row

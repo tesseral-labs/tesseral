@@ -955,7 +955,7 @@ func (x *OrganizationMicrosoftTenantIDs) GetMicrosoftTenantIds() []string {
 	return nil
 }
 
-type ProjectAPIKey struct {
+type BackendAPIKey struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	DisplayName   string                 `protobuf:"bytes,2,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
@@ -967,20 +967,20 @@ type ProjectAPIKey struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *ProjectAPIKey) Reset() {
-	*x = ProjectAPIKey{}
+func (x *BackendAPIKey) Reset() {
+	*x = BackendAPIKey{}
 	mi := &file_tesseral_backend_v1_models_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ProjectAPIKey) String() string {
+func (x *BackendAPIKey) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ProjectAPIKey) ProtoMessage() {}
+func (*BackendAPIKey) ProtoMessage() {}
 
-func (x *ProjectAPIKey) ProtoReflect() protoreflect.Message {
+func (x *BackendAPIKey) ProtoReflect() protoreflect.Message {
 	mi := &file_tesseral_backend_v1_models_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -992,47 +992,47 @@ func (x *ProjectAPIKey) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ProjectAPIKey.ProtoReflect.Descriptor instead.
-func (*ProjectAPIKey) Descriptor() ([]byte, []int) {
+// Deprecated: Use BackendAPIKey.ProtoReflect.Descriptor instead.
+func (*BackendAPIKey) Descriptor() ([]byte, []int) {
 	return file_tesseral_backend_v1_models_proto_rawDescGZIP(), []int{8}
 }
 
-func (x *ProjectAPIKey) GetId() string {
+func (x *BackendAPIKey) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *ProjectAPIKey) GetDisplayName() string {
+func (x *BackendAPIKey) GetDisplayName() string {
 	if x != nil {
 		return x.DisplayName
 	}
 	return ""
 }
 
-func (x *ProjectAPIKey) GetCreateTime() *timestamppb.Timestamp {
+func (x *BackendAPIKey) GetCreateTime() *timestamppb.Timestamp {
 	if x != nil {
 		return x.CreateTime
 	}
 	return nil
 }
 
-func (x *ProjectAPIKey) GetUpdateTime() *timestamppb.Timestamp {
+func (x *BackendAPIKey) GetUpdateTime() *timestamppb.Timestamp {
 	if x != nil {
 		return x.UpdateTime
 	}
 	return nil
 }
 
-func (x *ProjectAPIKey) GetSecretToken() string {
+func (x *BackendAPIKey) GetSecretToken() string {
 	if x != nil {
 		return x.SecretToken
 	}
 	return ""
 }
 
-func (x *ProjectAPIKey) GetRevoked() bool {
+func (x *BackendAPIKey) GetRevoked() bool {
 	if x != nil {
 		return x.Revoked
 	}
@@ -2101,7 +2101,7 @@ var file_tesseral_backend_v1_models_proto_rawDesc = string([]byte{
 	0x63, 0x72, 0x6f, 0x73, 0x6f, 0x66, 0x74, 0x5f, 0x74, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x5f, 0x69,
 	0x64, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x09, 0x52, 0x12, 0x6d, 0x69, 0x63, 0x72, 0x6f, 0x73,
 	0x6f, 0x66, 0x74, 0x54, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x49, 0x64, 0x73, 0x22, 0xf9, 0x01, 0x0a,
-	0x0d, 0x50, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x41, 0x50, 0x49, 0x4b, 0x65, 0x79, 0x12, 0x0e,
+	0x0d, 0x42, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x41, 0x50, 0x49, 0x4b, 0x65, 0x79, 0x12, 0x0e,
 	0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x21,
 	0x0a, 0x0c, 0x64, 0x69, 0x73, 0x70, 0x6c, 0x61, 0x79, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02,
 	0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x64, 0x69, 0x73, 0x70, 0x6c, 0x61, 0x79, 0x4e, 0x61, 0x6d,
@@ -2336,7 +2336,7 @@ var file_tesseral_backend_v1_models_proto_goTypes = []any{
 	(*OrganizationDomains)(nil),             // 6: tesseral.backend.v1.OrganizationDomains
 	(*OrganizationGoogleHostedDomains)(nil), // 7: tesseral.backend.v1.OrganizationGoogleHostedDomains
 	(*OrganizationMicrosoftTenantIDs)(nil),  // 8: tesseral.backend.v1.OrganizationMicrosoftTenantIDs
-	(*ProjectAPIKey)(nil),                   // 9: tesseral.backend.v1.ProjectAPIKey
+	(*BackendAPIKey)(nil),                   // 9: tesseral.backend.v1.BackendAPIKey
 	(*PublishableKey)(nil),                  // 10: tesseral.backend.v1.PublishableKey
 	(*User)(nil),                            // 11: tesseral.backend.v1.User
 	(*Session)(nil),                         // 12: tesseral.backend.v1.Session
@@ -2356,8 +2356,8 @@ var file_tesseral_backend_v1_models_proto_depIdxs = []int32{
 	18, // 5: tesseral.backend.v1.ProjectUISettings.update_time:type_name -> google.protobuf.Timestamp
 	18, // 6: tesseral.backend.v1.Organization.create_time:type_name -> google.protobuf.Timestamp
 	18, // 7: tesseral.backend.v1.Organization.update_time:type_name -> google.protobuf.Timestamp
-	18, // 8: tesseral.backend.v1.ProjectAPIKey.create_time:type_name -> google.protobuf.Timestamp
-	18, // 9: tesseral.backend.v1.ProjectAPIKey.update_time:type_name -> google.protobuf.Timestamp
+	18, // 8: tesseral.backend.v1.BackendAPIKey.create_time:type_name -> google.protobuf.Timestamp
+	18, // 9: tesseral.backend.v1.BackendAPIKey.update_time:type_name -> google.protobuf.Timestamp
 	18, // 10: tesseral.backend.v1.PublishableKey.create_time:type_name -> google.protobuf.Timestamp
 	18, // 11: tesseral.backend.v1.PublishableKey.update_time:type_name -> google.protobuf.Timestamp
 	18, // 12: tesseral.backend.v1.User.create_time:type_name -> google.protobuf.Timestamp
