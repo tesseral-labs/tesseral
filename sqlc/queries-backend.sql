@@ -21,11 +21,11 @@ FROM
 WHERE
     id = $1;
 
--- name: GetProjectAPIKeyBySecretTokenSHA256 :one
+-- name: GetBackendAPIKeyBySecretTokenSHA256 :one
 SELECT
     *
 FROM
-    project_api_keys
+    backend_api_keys
 WHERE
     secret_token_sha256 = $1;
 
@@ -325,11 +325,11 @@ WHERE
 RETURNING
     *;
 
--- name: ListProjectAPIKeys :many
+-- name: ListBackendAPIKeys :many
 SELECT
     *
 FROM
-    project_api_keys
+    backend_api_keys
 WHERE
     project_id = $1
     AND id >= $2
@@ -337,24 +337,24 @@ ORDER BY
     id
 LIMIT $3;
 
--- name: GetProjectAPIKey :one
+-- name: GetBackendAPIKey :one
 SELECT
     *
 FROM
-    project_api_keys
+    backend_api_keys
 WHERE
     id = $1
     AND project_id = $2;
 
--- name: CreateProjectAPIKey :one
-INSERT INTO project_api_keys (id, project_id, display_name, secret_token_sha256)
+-- name: CreateBackendAPIKey :one
+INSERT INTO backend_api_keys (id, project_id, display_name, secret_token_sha256)
     VALUES ($1, $2, $3, $4)
 RETURNING
     *;
 
--- name: UpdateProjectAPIKey :one
+-- name: UpdateBackendAPIKey :one
 UPDATE
-    project_api_keys
+    backend_api_keys
 SET
     update_time = now(),
     display_name = $1
@@ -363,13 +363,13 @@ WHERE
 RETURNING
     *;
 
--- name: DeleteProjectAPIKey :exec
-DELETE FROM project_api_keys
+-- name: DeleteBackendAPIKey :exec
+DELETE FROM backend_api_keys
 WHERE id = $1;
 
--- name: RevokeProjectAPIKey :one
+-- name: RevokeBackendAPIKey :one
 UPDATE
-    project_api_keys
+    backend_api_keys
 SET
     update_time = now(),
     secret_token_sha256 = NULL

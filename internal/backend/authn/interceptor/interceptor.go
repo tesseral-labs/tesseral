@@ -52,17 +52,17 @@ func New(s *store.Store, host string, dogfoodProjectID string, dogfoodAuthDomain
 				return nil, connect.NewError(connect.CodeUnauthenticated, nil)
 			}
 
-			if strings.HasPrefix(secretValue, "openauth_secret_key_") {
-				res, err := s.AuthenticateProjectAPIKey(ctx, secretValue)
+			if strings.HasPrefix(secretValue, "tesseral_secret_key_") {
+				res, err := s.AuthenticateBackendAPIKey(ctx, secretValue)
 				if err != nil {
-					if errors.Is(err, store.ErrBadProjectAPIKey) {
+					if errors.Is(err, store.ErrBadBackendAPIKey) {
 						return nil, connect.NewError(connect.CodeUnauthenticated, err)
 					}
 					return nil, fmt.Errorf("authenticate project api key: %w", err)
 				}
 
-				ctx = authn.NewProjectAPIKeyContext(ctx, &authn.ProjectAPIKeyContextData{
-					ProjectAPIKeyID: res.ProjectAPIKeyID,
+				ctx = authn.NewBackendAPIKeyContext(ctx, &authn.BackendAPIKeyContextData{
+					BackendAPIKeyID: res.BackendAPIKeyID,
 					ProjectID:       res.ProjectID,
 				})
 			} else {

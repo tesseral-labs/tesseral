@@ -11,10 +11,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { useMutation, useQuery } from '@connectrpc/connect-query';
 import {
-  deleteProjectAPIKey,
-  getProjectAPIKey,
-  revokeProjectAPIKey,
-  updateProjectAPIKey,
+  deleteBackendAPIKey,
+  getBackendAPIKey, revokeBackendAPIKey, updateBackendAPIKey,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import {
   Card,
@@ -56,10 +54,10 @@ import {
   PageTitle,
 } from '@/components/page';
 
-export const ViewProjectAPIKeyPage = () => {
-  const { projectApiKeyId } = useParams();
-  const { data: getProjectApiKeyResponse } = useQuery(getProjectAPIKey, {
-    id: projectApiKeyId,
+export const ViewBackendAPIKeyPage = () => {
+  const { backendApiKeyId } = useParams();
+  const { data: getBackendApiKeyResponse } = useQuery(getBackendAPIKey, {
+    id: backendApiKeyId,
   });
   return (
     <div>
@@ -85,19 +83,19 @@ export const ViewProjectAPIKeyPage = () => {
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbPage>
-              {getProjectApiKeyResponse?.projectApiKey?.displayName}
+              {getBackendApiKeyResponse?.backendApiKey?.displayName}
             </BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
 
       <PageTitle>
-        {getProjectApiKeyResponse?.projectApiKey?.displayName}
+        {getBackendApiKeyResponse?.backendApiKey?.displayName}
       </PageTitle>
-      <PageCodeSubtitle>{projectApiKeyId}</PageCodeSubtitle>
+      <PageCodeSubtitle>{backendApiKeyId}</PageCodeSubtitle>
       <PageDescription>
-        A Project API key is how your backend talks to the Tesseral Backend API.
-        Lorem ipsum dolor.
+        Backend API keys are how your backend can automate operations in
+        Tesseral using the Tesseral Backend API.
       </PageDescription>
 
       <Card className="my-8">
@@ -106,7 +104,7 @@ export const ViewProjectAPIKeyPage = () => {
             <CardTitle>Configuration</CardTitle>
             <CardDescription>Lorem ipsum dolor.</CardDescription>
           </div>
-          <EditProjectAPIKeyButton />
+          <EditBackendAPIKeyButton />
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-3 gap-x-2 text-sm">
@@ -114,13 +112,13 @@ export const ViewProjectAPIKeyPage = () => {
               <div>
                 <div className="font-semibold">Display Name</div>
                 <div className="truncate">
-                  {getProjectApiKeyResponse?.projectApiKey?.displayName}
+                  {getBackendApiKeyResponse?.backendApiKey?.displayName}
                 </div>
               </div>
               <div>
                 <div className="font-semibold">Revoked</div>
                 <div className="truncate">
-                  {getProjectApiKeyResponse?.projectApiKey?.revoked
+                  {getBackendApiKeyResponse?.backendApiKey?.revoked
                     ? 'Yes'
                     : 'No'}
                 </div>
@@ -130,10 +128,10 @@ export const ViewProjectAPIKeyPage = () => {
               <div>
                 <div className="font-semibold">Created</div>
                 <div className="truncate">
-                  {getProjectApiKeyResponse?.projectApiKey?.createTime &&
+                  {getBackendApiKeyResponse?.backendApiKey?.createTime &&
                     DateTime.fromJSDate(
                       timestampDate(
-                        getProjectApiKeyResponse?.projectApiKey?.createTime,
+                        getBackendApiKeyResponse?.backendApiKey?.createTime,
                       ),
                     ).toRelative()}
                 </div>
@@ -143,10 +141,10 @@ export const ViewProjectAPIKeyPage = () => {
               <div>
                 <div className="font-semibold">Updated</div>
                 <div className="truncate">
-                  {getProjectApiKeyResponse?.projectApiKey?.updateTime &&
+                  {getBackendApiKeyResponse?.backendApiKey?.updateTime &&
                     DateTime.fromJSDate(
                       timestampDate(
-                        getProjectApiKeyResponse?.projectApiKey?.updateTime,
+                        getBackendApiKeyResponse?.backendApiKey?.updateTime,
                       ),
                     ).toRelative()}
                 </div>
@@ -165,16 +163,16 @@ const schema = z.object({
   displayName: z.string(),
 });
 
-const EditProjectAPIKeyButton = () => {
-  const { projectApiKeyId } = useParams();
-  const { data: getProjectAPIKeyResponse, refetch } = useQuery(
-    getProjectAPIKey,
+const EditBackendAPIKeyButton = () => {
+  const { backendApiKeyId } = useParams();
+  const { data: getBackendAPIKeyResponse, refetch } = useQuery(
+    getBackendAPIKey,
     {
-      id: projectApiKeyId,
+      id: backendApiKeyId,
     },
   );
-  const updateProjectAPIKeyMutation = useMutation(updateProjectAPIKey);
-  /* eslint-disable @typescript-eslint/no-unsafe-call */
+  const updateBackendAPIKeyMutation = useMutation(updateBackendAPIKey);
+   
   // Currently there's an issue with the types of react-hook-form and zod
   // preventing the compiler from inferring the correct types.
   const form = useForm<z.infer<typeof schema>>({
@@ -184,20 +182,20 @@ const EditProjectAPIKeyButton = () => {
     },
   });
   useEffect(() => {
-    if (getProjectAPIKeyResponse?.projectApiKey) {
+    if (getBackendAPIKeyResponse?.backendApiKey) {
       form.reset({
-        displayName: getProjectAPIKeyResponse.projectApiKey.displayName,
+        displayName: getBackendAPIKeyResponse.backendApiKey.displayName,
       });
     }
-  }, [getProjectAPIKeyResponse]);
-  /* eslint-enable @typescript-eslint/no-unsafe-call */
+  }, [getBackendAPIKeyResponse]);
+   
 
   const [open, setOpen] = useState(false);
 
   const handleSubmit = async (values: z.infer<typeof schema>) => {
-    await updateProjectAPIKeyMutation.mutateAsync({
-      id: projectApiKeyId,
-      projectApiKey: {
+    await updateBackendAPIKeyMutation.mutateAsync({
+      id: backendApiKeyId,
+      backendApiKey: {
         displayName: values.displayName,
       },
     });
@@ -212,17 +210,17 @@ const EditProjectAPIKeyButton = () => {
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Edit Project API Key</AlertDialogTitle>
+          <AlertDialogTitle>Edit Backend API Key</AlertDialogTitle>
           <AlertDialogDescription>
-            Edit Project API Key settings.
+            Edit Backend API Key settings.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <Form {...form}>
-          {/* eslint-disable @typescript-eslint/no-unsafe-call */}
+          { }
           {/** Currently there's an issue with the types of react-hook-form and zod
           preventing the compiler from inferring the correct types.*/}
           <form onSubmit={form.handleSubmit(handleSubmit)}>
-            {/* eslint-enable @typescript-eslint/no-unsafe-call */}
+            { }
             <FormField
               control={form.control}
               name="displayName"
@@ -233,7 +231,7 @@ const EditProjectAPIKeyButton = () => {
                     <Input className="max-w-96" {...field} />
                   </FormControl>
                   <FormDescription>
-                    A human-friendly name for the Project API Key.
+                    A human-friendly name for the Backend API Key.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -251,11 +249,11 @@ const EditProjectAPIKeyButton = () => {
 };
 
 const DangerZoneCard = () => {
-  const { projectApiKeyId } = useParams();
-  const { data: getProjectApiKeyResponse, refetch } = useQuery(
-    getProjectAPIKey,
+  const { backendApiKeyId } = useParams();
+  const { data: getBackendApiKeyResponse, refetch } = useQuery(
+    getBackendAPIKey,
     {
-      id: projectApiKeyId,
+      id: backendApiKeyId,
     },
   );
 
@@ -264,14 +262,14 @@ const DangerZoneCard = () => {
     setConfirmRevokeOpen(true);
   };
 
-  const revokeProjectApiKeyMutation = useMutation(revokeProjectAPIKey);
+  const revokeBackendApiKeyMutation = useMutation(revokeBackendAPIKey);
   const handleConfirmRevoke = async () => {
-    await revokeProjectApiKeyMutation.mutateAsync({
-      id: projectApiKeyId,
+    await revokeBackendApiKeyMutation.mutateAsync({
+      id: backendApiKeyId,
     });
 
     await refetch();
-    toast.success('Project API Key revoked');
+    toast.success('Backend API Key revoked');
     setConfirmRevokeOpen(false);
   };
 
@@ -281,14 +279,14 @@ const DangerZoneCard = () => {
     setConfirmDeleteOpen(true);
   };
 
-  const deleteProjectApiKeyMutation = useMutation(deleteProjectAPIKey);
+  const deleteBackendApiKeyMutation = useMutation(deleteBackendAPIKey);
   const navigate = useNavigate();
   const handleConfirmDelete = async () => {
-    await deleteProjectApiKeyMutation.mutateAsync({
-      id: projectApiKeyId,
+    await deleteBackendApiKeyMutation.mutateAsync({
+      id: backendApiKeyId,
     });
 
-    toast.success('Project API Key deleted');
+    toast.success('Backend API Key deleted');
     navigate(`/project-settings/api-keys`);
   };
 
@@ -298,18 +296,18 @@ const DangerZoneCard = () => {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              Revoke {getProjectApiKeyResponse?.projectApiKey?.displayName}?
+              Revoke {getBackendApiKeyResponse?.backendApiKey?.displayName}?
             </AlertDialogTitle>
             <AlertDialogDescription>
-              Revoking a Project API Key cannot be undone. Backend API calls
-              from {getProjectApiKeyResponse?.projectApiKey?.displayName} will
-              stop working. This cannot be undone.
+              Backend API calls from
+              {getBackendApiKeyResponse?.backendApiKey?.displayName} will stop
+              working. This cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <Button variant="destructive" onClick={handleConfirmRevoke}>
-              Revoke Project API Key
+              Revoke Backend API Key
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -319,16 +317,16 @@ const DangerZoneCard = () => {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              Delete {getProjectApiKeyResponse?.projectApiKey?.displayName}?
+              Delete {getBackendApiKeyResponse?.backendApiKey?.displayName}?
             </AlertDialogTitle>
             <AlertDialogDescription>
-              Deleting a Project API Key cannot be undone.
+              Deleting a Backend API Key cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <Button variant="destructive" onClick={handleConfirmDelete}>
-              Delete Project API Key
+              Delete Backend API Key
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -343,40 +341,40 @@ const DangerZoneCard = () => {
           <div className="flex justify-between items-center">
             <div>
               <div className="text-sm font-semibold">
-                Revoke Project API Key
+                Revoke Backend API Key
               </div>
               <p className="text-sm">
-                Revoke this Project API Key. Backend API calls from this key
+                Revoke this Backend API Key. Backend API calls from this key
                 will stop working. This cannot be undone.
               </p>
             </div>
 
             <Button
               variant="destructive"
-              disabled={getProjectApiKeyResponse?.projectApiKey?.revoked}
+              disabled={getBackendApiKeyResponse?.backendApiKey?.revoked}
               onClick={handleRevoke}
             >
-              Revoke Project API Key
+              Revoke Backend API Key
             </Button>
           </div>
 
           <div className="flex justify-between items-center">
             <div>
               <div className="text-sm font-semibold">
-                Delete Project API Key
+                Delete Backend API Key
               </div>
               <p className="text-sm">
-                Delete this Project API Key. You must revoke this Project API
+                Delete this Backend API Key. You must revoke this Backend API
                 Key first.
               </p>
             </div>
 
             <Button
               variant="destructive"
-              disabled={!getProjectApiKeyResponse?.projectApiKey?.revoked}
+              disabled={!getBackendApiKeyResponse?.backendApiKey?.revoked}
               onClick={handleDelete}
             >
-              Delete Project API Key
+              Delete Backend API Key
             </Button>
           </div>
         </CardContent>

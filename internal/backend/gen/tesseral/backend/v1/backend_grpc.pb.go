@@ -68,12 +68,12 @@ const (
 	BackendService_EnableEmailSendFromDomain_FullMethodName             = "/tesseral.backend.v1.BackendService/EnableEmailSendFromDomain"
 	BackendService_GetProjectUISettings_FullMethodName                  = "/tesseral.backend.v1.BackendService/GetProjectUISettings"
 	BackendService_UpdateProjectUISettings_FullMethodName               = "/tesseral.backend.v1.BackendService/UpdateProjectUISettings"
-	BackendService_ListProjectAPIKeys_FullMethodName                    = "/tesseral.backend.v1.BackendService/ListProjectAPIKeys"
-	BackendService_GetProjectAPIKey_FullMethodName                      = "/tesseral.backend.v1.BackendService/GetProjectAPIKey"
-	BackendService_CreateProjectAPIKey_FullMethodName                   = "/tesseral.backend.v1.BackendService/CreateProjectAPIKey"
-	BackendService_UpdateProjectAPIKey_FullMethodName                   = "/tesseral.backend.v1.BackendService/UpdateProjectAPIKey"
-	BackendService_DeleteProjectAPIKey_FullMethodName                   = "/tesseral.backend.v1.BackendService/DeleteProjectAPIKey"
-	BackendService_RevokeProjectAPIKey_FullMethodName                   = "/tesseral.backend.v1.BackendService/RevokeProjectAPIKey"
+	BackendService_ListBackendAPIKeys_FullMethodName                    = "/tesseral.backend.v1.BackendService/ListBackendAPIKeys"
+	BackendService_GetBackendAPIKey_FullMethodName                      = "/tesseral.backend.v1.BackendService/GetBackendAPIKey"
+	BackendService_CreateBackendAPIKey_FullMethodName                   = "/tesseral.backend.v1.BackendService/CreateBackendAPIKey"
+	BackendService_UpdateBackendAPIKey_FullMethodName                   = "/tesseral.backend.v1.BackendService/UpdateBackendAPIKey"
+	BackendService_DeleteBackendAPIKey_FullMethodName                   = "/tesseral.backend.v1.BackendService/DeleteBackendAPIKey"
+	BackendService_RevokeBackendAPIKey_FullMethodName                   = "/tesseral.backend.v1.BackendService/RevokeBackendAPIKey"
 	BackendService_ListPublishableKeys_FullMethodName                   = "/tesseral.backend.v1.BackendService/ListPublishableKeys"
 	BackendService_GetPublishableKey_FullMethodName                     = "/tesseral.backend.v1.BackendService/GetPublishableKey"
 	BackendService_CreatePublishableKey_FullMethodName                  = "/tesseral.backend.v1.BackendService/CreatePublishableKey"
@@ -173,12 +173,12 @@ type BackendServiceClient interface {
 	EnableEmailSendFromDomain(ctx context.Context, in *EnableEmailSendFromDomainRequest, opts ...grpc.CallOption) (*EnableEmailSendFromDomainResponse, error)
 	GetProjectUISettings(ctx context.Context, in *GetProjectUISettingsRequest, opts ...grpc.CallOption) (*GetProjectUISettingsResponse, error)
 	UpdateProjectUISettings(ctx context.Context, in *UpdateProjectUISettingsRequest, opts ...grpc.CallOption) (*UpdateProjectUISettingsResponse, error)
-	ListProjectAPIKeys(ctx context.Context, in *ListProjectAPIKeysRequest, opts ...grpc.CallOption) (*ListProjectAPIKeysResponse, error)
-	GetProjectAPIKey(ctx context.Context, in *GetProjectAPIKeyRequest, opts ...grpc.CallOption) (*GetProjectAPIKeyResponse, error)
-	CreateProjectAPIKey(ctx context.Context, in *CreateProjectAPIKeyRequest, opts ...grpc.CallOption) (*CreateProjectAPIKeyResponse, error)
-	UpdateProjectAPIKey(ctx context.Context, in *UpdateProjectAPIKeyRequest, opts ...grpc.CallOption) (*UpdateProjectAPIKeyResponse, error)
-	DeleteProjectAPIKey(ctx context.Context, in *DeleteProjectAPIKeyRequest, opts ...grpc.CallOption) (*DeleteProjectAPIKeyResponse, error)
-	RevokeProjectAPIKey(ctx context.Context, in *RevokeProjectAPIKeyRequest, opts ...grpc.CallOption) (*RevokeProjectAPIKeyResponse, error)
+	ListBackendAPIKeys(ctx context.Context, in *ListBackendAPIKeysRequest, opts ...grpc.CallOption) (*ListBackendAPIKeysResponse, error)
+	GetBackendAPIKey(ctx context.Context, in *GetBackendAPIKeyRequest, opts ...grpc.CallOption) (*GetBackendAPIKeyResponse, error)
+	CreateBackendAPIKey(ctx context.Context, in *CreateBackendAPIKeyRequest, opts ...grpc.CallOption) (*CreateBackendAPIKeyResponse, error)
+	UpdateBackendAPIKey(ctx context.Context, in *UpdateBackendAPIKeyRequest, opts ...grpc.CallOption) (*UpdateBackendAPIKeyResponse, error)
+	DeleteBackendAPIKey(ctx context.Context, in *DeleteBackendAPIKeyRequest, opts ...grpc.CallOption) (*DeleteBackendAPIKeyResponse, error)
+	RevokeBackendAPIKey(ctx context.Context, in *RevokeBackendAPIKeyRequest, opts ...grpc.CallOption) (*RevokeBackendAPIKeyResponse, error)
 	ListPublishableKeys(ctx context.Context, in *ListPublishableKeysRequest, opts ...grpc.CallOption) (*ListPublishableKeysResponse, error)
 	GetPublishableKey(ctx context.Context, in *GetPublishableKeyRequest, opts ...grpc.CallOption) (*GetPublishableKeyResponse, error)
 	CreatePublishableKey(ctx context.Context, in *CreatePublishableKeyRequest, opts ...grpc.CallOption) (*CreatePublishableKeyResponse, error)
@@ -685,60 +685,60 @@ func (c *backendServiceClient) UpdateProjectUISettings(ctx context.Context, in *
 	return out, nil
 }
 
-func (c *backendServiceClient) ListProjectAPIKeys(ctx context.Context, in *ListProjectAPIKeysRequest, opts ...grpc.CallOption) (*ListProjectAPIKeysResponse, error) {
+func (c *backendServiceClient) ListBackendAPIKeys(ctx context.Context, in *ListBackendAPIKeysRequest, opts ...grpc.CallOption) (*ListBackendAPIKeysResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ListProjectAPIKeysResponse)
-	err := c.cc.Invoke(ctx, BackendService_ListProjectAPIKeys_FullMethodName, in, out, cOpts...)
+	out := new(ListBackendAPIKeysResponse)
+	err := c.cc.Invoke(ctx, BackendService_ListBackendAPIKeys_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *backendServiceClient) GetProjectAPIKey(ctx context.Context, in *GetProjectAPIKeyRequest, opts ...grpc.CallOption) (*GetProjectAPIKeyResponse, error) {
+func (c *backendServiceClient) GetBackendAPIKey(ctx context.Context, in *GetBackendAPIKeyRequest, opts ...grpc.CallOption) (*GetBackendAPIKeyResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetProjectAPIKeyResponse)
-	err := c.cc.Invoke(ctx, BackendService_GetProjectAPIKey_FullMethodName, in, out, cOpts...)
+	out := new(GetBackendAPIKeyResponse)
+	err := c.cc.Invoke(ctx, BackendService_GetBackendAPIKey_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *backendServiceClient) CreateProjectAPIKey(ctx context.Context, in *CreateProjectAPIKeyRequest, opts ...grpc.CallOption) (*CreateProjectAPIKeyResponse, error) {
+func (c *backendServiceClient) CreateBackendAPIKey(ctx context.Context, in *CreateBackendAPIKeyRequest, opts ...grpc.CallOption) (*CreateBackendAPIKeyResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(CreateProjectAPIKeyResponse)
-	err := c.cc.Invoke(ctx, BackendService_CreateProjectAPIKey_FullMethodName, in, out, cOpts...)
+	out := new(CreateBackendAPIKeyResponse)
+	err := c.cc.Invoke(ctx, BackendService_CreateBackendAPIKey_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *backendServiceClient) UpdateProjectAPIKey(ctx context.Context, in *UpdateProjectAPIKeyRequest, opts ...grpc.CallOption) (*UpdateProjectAPIKeyResponse, error) {
+func (c *backendServiceClient) UpdateBackendAPIKey(ctx context.Context, in *UpdateBackendAPIKeyRequest, opts ...grpc.CallOption) (*UpdateBackendAPIKeyResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(UpdateProjectAPIKeyResponse)
-	err := c.cc.Invoke(ctx, BackendService_UpdateProjectAPIKey_FullMethodName, in, out, cOpts...)
+	out := new(UpdateBackendAPIKeyResponse)
+	err := c.cc.Invoke(ctx, BackendService_UpdateBackendAPIKey_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *backendServiceClient) DeleteProjectAPIKey(ctx context.Context, in *DeleteProjectAPIKeyRequest, opts ...grpc.CallOption) (*DeleteProjectAPIKeyResponse, error) {
+func (c *backendServiceClient) DeleteBackendAPIKey(ctx context.Context, in *DeleteBackendAPIKeyRequest, opts ...grpc.CallOption) (*DeleteBackendAPIKeyResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(DeleteProjectAPIKeyResponse)
-	err := c.cc.Invoke(ctx, BackendService_DeleteProjectAPIKey_FullMethodName, in, out, cOpts...)
+	out := new(DeleteBackendAPIKeyResponse)
+	err := c.cc.Invoke(ctx, BackendService_DeleteBackendAPIKey_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *backendServiceClient) RevokeProjectAPIKey(ctx context.Context, in *RevokeProjectAPIKeyRequest, opts ...grpc.CallOption) (*RevokeProjectAPIKeyResponse, error) {
+func (c *backendServiceClient) RevokeBackendAPIKey(ctx context.Context, in *RevokeBackendAPIKeyRequest, opts ...grpc.CallOption) (*RevokeBackendAPIKeyResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(RevokeProjectAPIKeyResponse)
-	err := c.cc.Invoke(ctx, BackendService_RevokeProjectAPIKey_FullMethodName, in, out, cOpts...)
+	out := new(RevokeBackendAPIKeyResponse)
+	err := c.cc.Invoke(ctx, BackendService_RevokeBackendAPIKey_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -896,12 +896,12 @@ type BackendServiceServer interface {
 	EnableEmailSendFromDomain(context.Context, *EnableEmailSendFromDomainRequest) (*EnableEmailSendFromDomainResponse, error)
 	GetProjectUISettings(context.Context, *GetProjectUISettingsRequest) (*GetProjectUISettingsResponse, error)
 	UpdateProjectUISettings(context.Context, *UpdateProjectUISettingsRequest) (*UpdateProjectUISettingsResponse, error)
-	ListProjectAPIKeys(context.Context, *ListProjectAPIKeysRequest) (*ListProjectAPIKeysResponse, error)
-	GetProjectAPIKey(context.Context, *GetProjectAPIKeyRequest) (*GetProjectAPIKeyResponse, error)
-	CreateProjectAPIKey(context.Context, *CreateProjectAPIKeyRequest) (*CreateProjectAPIKeyResponse, error)
-	UpdateProjectAPIKey(context.Context, *UpdateProjectAPIKeyRequest) (*UpdateProjectAPIKeyResponse, error)
-	DeleteProjectAPIKey(context.Context, *DeleteProjectAPIKeyRequest) (*DeleteProjectAPIKeyResponse, error)
-	RevokeProjectAPIKey(context.Context, *RevokeProjectAPIKeyRequest) (*RevokeProjectAPIKeyResponse, error)
+	ListBackendAPIKeys(context.Context, *ListBackendAPIKeysRequest) (*ListBackendAPIKeysResponse, error)
+	GetBackendAPIKey(context.Context, *GetBackendAPIKeyRequest) (*GetBackendAPIKeyResponse, error)
+	CreateBackendAPIKey(context.Context, *CreateBackendAPIKeyRequest) (*CreateBackendAPIKeyResponse, error)
+	UpdateBackendAPIKey(context.Context, *UpdateBackendAPIKeyRequest) (*UpdateBackendAPIKeyResponse, error)
+	DeleteBackendAPIKey(context.Context, *DeleteBackendAPIKeyRequest) (*DeleteBackendAPIKeyResponse, error)
+	RevokeBackendAPIKey(context.Context, *RevokeBackendAPIKeyRequest) (*RevokeBackendAPIKeyResponse, error)
 	ListPublishableKeys(context.Context, *ListPublishableKeysRequest) (*ListPublishableKeysResponse, error)
 	GetPublishableKey(context.Context, *GetPublishableKeyRequest) (*GetPublishableKeyResponse, error)
 	CreatePublishableKey(context.Context, *CreatePublishableKeyRequest) (*CreatePublishableKeyResponse, error)
@@ -1065,23 +1065,23 @@ func (UnimplementedBackendServiceServer) GetProjectUISettings(context.Context, *
 func (UnimplementedBackendServiceServer) UpdateProjectUISettings(context.Context, *UpdateProjectUISettingsRequest) (*UpdateProjectUISettingsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateProjectUISettings not implemented")
 }
-func (UnimplementedBackendServiceServer) ListProjectAPIKeys(context.Context, *ListProjectAPIKeysRequest) (*ListProjectAPIKeysResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListProjectAPIKeys not implemented")
+func (UnimplementedBackendServiceServer) ListBackendAPIKeys(context.Context, *ListBackendAPIKeysRequest) (*ListBackendAPIKeysResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListBackendAPIKeys not implemented")
 }
-func (UnimplementedBackendServiceServer) GetProjectAPIKey(context.Context, *GetProjectAPIKeyRequest) (*GetProjectAPIKeyResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetProjectAPIKey not implemented")
+func (UnimplementedBackendServiceServer) GetBackendAPIKey(context.Context, *GetBackendAPIKeyRequest) (*GetBackendAPIKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetBackendAPIKey not implemented")
 }
-func (UnimplementedBackendServiceServer) CreateProjectAPIKey(context.Context, *CreateProjectAPIKeyRequest) (*CreateProjectAPIKeyResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateProjectAPIKey not implemented")
+func (UnimplementedBackendServiceServer) CreateBackendAPIKey(context.Context, *CreateBackendAPIKeyRequest) (*CreateBackendAPIKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateBackendAPIKey not implemented")
 }
-func (UnimplementedBackendServiceServer) UpdateProjectAPIKey(context.Context, *UpdateProjectAPIKeyRequest) (*UpdateProjectAPIKeyResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateProjectAPIKey not implemented")
+func (UnimplementedBackendServiceServer) UpdateBackendAPIKey(context.Context, *UpdateBackendAPIKeyRequest) (*UpdateBackendAPIKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateBackendAPIKey not implemented")
 }
-func (UnimplementedBackendServiceServer) DeleteProjectAPIKey(context.Context, *DeleteProjectAPIKeyRequest) (*DeleteProjectAPIKeyResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteProjectAPIKey not implemented")
+func (UnimplementedBackendServiceServer) DeleteBackendAPIKey(context.Context, *DeleteBackendAPIKeyRequest) (*DeleteBackendAPIKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteBackendAPIKey not implemented")
 }
-func (UnimplementedBackendServiceServer) RevokeProjectAPIKey(context.Context, *RevokeProjectAPIKeyRequest) (*RevokeProjectAPIKeyResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RevokeProjectAPIKey not implemented")
+func (UnimplementedBackendServiceServer) RevokeBackendAPIKey(context.Context, *RevokeBackendAPIKeyRequest) (*RevokeBackendAPIKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RevokeBackendAPIKey not implemented")
 }
 func (UnimplementedBackendServiceServer) ListPublishableKeys(context.Context, *ListPublishableKeysRequest) (*ListPublishableKeysResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListPublishableKeys not implemented")
@@ -2004,110 +2004,110 @@ func _BackendService_UpdateProjectUISettings_Handler(srv interface{}, ctx contex
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BackendService_ListProjectAPIKeys_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListProjectAPIKeysRequest)
+func _BackendService_ListBackendAPIKeys_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListBackendAPIKeysRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BackendServiceServer).ListProjectAPIKeys(ctx, in)
+		return srv.(BackendServiceServer).ListBackendAPIKeys(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BackendService_ListProjectAPIKeys_FullMethodName,
+		FullMethod: BackendService_ListBackendAPIKeys_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).ListProjectAPIKeys(ctx, req.(*ListProjectAPIKeysRequest))
+		return srv.(BackendServiceServer).ListBackendAPIKeys(ctx, req.(*ListBackendAPIKeysRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BackendService_GetProjectAPIKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetProjectAPIKeyRequest)
+func _BackendService_GetBackendAPIKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetBackendAPIKeyRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BackendServiceServer).GetProjectAPIKey(ctx, in)
+		return srv.(BackendServiceServer).GetBackendAPIKey(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BackendService_GetProjectAPIKey_FullMethodName,
+		FullMethod: BackendService_GetBackendAPIKey_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).GetProjectAPIKey(ctx, req.(*GetProjectAPIKeyRequest))
+		return srv.(BackendServiceServer).GetBackendAPIKey(ctx, req.(*GetBackendAPIKeyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BackendService_CreateProjectAPIKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateProjectAPIKeyRequest)
+func _BackendService_CreateBackendAPIKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateBackendAPIKeyRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BackendServiceServer).CreateProjectAPIKey(ctx, in)
+		return srv.(BackendServiceServer).CreateBackendAPIKey(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BackendService_CreateProjectAPIKey_FullMethodName,
+		FullMethod: BackendService_CreateBackendAPIKey_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).CreateProjectAPIKey(ctx, req.(*CreateProjectAPIKeyRequest))
+		return srv.(BackendServiceServer).CreateBackendAPIKey(ctx, req.(*CreateBackendAPIKeyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BackendService_UpdateProjectAPIKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateProjectAPIKeyRequest)
+func _BackendService_UpdateBackendAPIKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateBackendAPIKeyRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BackendServiceServer).UpdateProjectAPIKey(ctx, in)
+		return srv.(BackendServiceServer).UpdateBackendAPIKey(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BackendService_UpdateProjectAPIKey_FullMethodName,
+		FullMethod: BackendService_UpdateBackendAPIKey_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).UpdateProjectAPIKey(ctx, req.(*UpdateProjectAPIKeyRequest))
+		return srv.(BackendServiceServer).UpdateBackendAPIKey(ctx, req.(*UpdateBackendAPIKeyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BackendService_DeleteProjectAPIKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteProjectAPIKeyRequest)
+func _BackendService_DeleteBackendAPIKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteBackendAPIKeyRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BackendServiceServer).DeleteProjectAPIKey(ctx, in)
+		return srv.(BackendServiceServer).DeleteBackendAPIKey(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BackendService_DeleteProjectAPIKey_FullMethodName,
+		FullMethod: BackendService_DeleteBackendAPIKey_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).DeleteProjectAPIKey(ctx, req.(*DeleteProjectAPIKeyRequest))
+		return srv.(BackendServiceServer).DeleteBackendAPIKey(ctx, req.(*DeleteBackendAPIKeyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BackendService_RevokeProjectAPIKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RevokeProjectAPIKeyRequest)
+func _BackendService_RevokeBackendAPIKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RevokeBackendAPIKeyRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BackendServiceServer).RevokeProjectAPIKey(ctx, in)
+		return srv.(BackendServiceServer).RevokeBackendAPIKey(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BackendService_RevokeProjectAPIKey_FullMethodName,
+		FullMethod: BackendService_RevokeBackendAPIKey_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).RevokeProjectAPIKey(ctx, req.(*RevokeProjectAPIKeyRequest))
+		return srv.(BackendServiceServer).RevokeBackendAPIKey(ctx, req.(*RevokeBackendAPIKeyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2424,28 +2424,28 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _BackendService_UpdateProjectUISettings_Handler,
 		},
 		{
-			MethodName: "ListProjectAPIKeys",
-			Handler:    _BackendService_ListProjectAPIKeys_Handler,
+			MethodName: "ListBackendAPIKeys",
+			Handler:    _BackendService_ListBackendAPIKeys_Handler,
 		},
 		{
-			MethodName: "GetProjectAPIKey",
-			Handler:    _BackendService_GetProjectAPIKey_Handler,
+			MethodName: "GetBackendAPIKey",
+			Handler:    _BackendService_GetBackendAPIKey_Handler,
 		},
 		{
-			MethodName: "CreateProjectAPIKey",
-			Handler:    _BackendService_CreateProjectAPIKey_Handler,
+			MethodName: "CreateBackendAPIKey",
+			Handler:    _BackendService_CreateBackendAPIKey_Handler,
 		},
 		{
-			MethodName: "UpdateProjectAPIKey",
-			Handler:    _BackendService_UpdateProjectAPIKey_Handler,
+			MethodName: "UpdateBackendAPIKey",
+			Handler:    _BackendService_UpdateBackendAPIKey_Handler,
 		},
 		{
-			MethodName: "DeleteProjectAPIKey",
-			Handler:    _BackendService_DeleteProjectAPIKey_Handler,
+			MethodName: "DeleteBackendAPIKey",
+			Handler:    _BackendService_DeleteBackendAPIKey_Handler,
 		},
 		{
-			MethodName: "RevokeProjectAPIKey",
-			Handler:    _BackendService_RevokeProjectAPIKey_Handler,
+			MethodName: "RevokeBackendAPIKey",
+			Handler:    _BackendService_RevokeBackendAPIKey_Handler,
 		},
 		{
 			MethodName: "ListPublishableKeys",

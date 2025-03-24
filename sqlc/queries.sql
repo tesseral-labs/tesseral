@@ -135,20 +135,6 @@ SELECT
 FROM
     projects;
 
--- name: CreateProjectAPIKey :one
-INSERT INTO project_api_keys (id, project_id, secret_token_sha256, display_name)
-    VALUES ($1, $2, $3, $4)
-RETURNING
-    *;
-
--- name: GetProjectAPIKeyBySecretTokenSHA256 :one
-SELECT
-    *
-FROM
-    project_api_keys
-WHERE
-    secret_token_sha256 = $1;
-
 -- name: GetSessionDetailsByRefreshTokenSHA256 :one
 SELECT
     sessions.id AS session_id,

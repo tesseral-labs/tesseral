@@ -142,6 +142,15 @@ func (ns NullPrimaryAuthFactor) Value() (driver.Value, error) {
 	return string(ns.PrimaryAuthFactor), nil
 }
 
+type BackendApiKey struct {
+	ID                uuid.UUID
+	ProjectID         uuid.UUID
+	SecretTokenSha256 []byte
+	DisplayName       string
+	CreateTime        *time.Time
+	UpdateTime        *time.Time
+}
+
 type IntermediateSession struct {
 	ID                                  uuid.UUID
 	ProjectID                           uuid.UUID
@@ -255,15 +264,6 @@ type Project struct {
 	VaultDomain                          string
 	EmailSendFromDomain                  string
 	CookieDomain                         string
-}
-
-type ProjectApiKey struct {
-	ID                uuid.UUID
-	ProjectID         uuid.UUID
-	SecretTokenSha256 []byte
-	DisplayName       string
-	CreateTime        *time.Time
-	UpdateTime        *time.Time
 }
 
 type ProjectTrustedDomain struct {

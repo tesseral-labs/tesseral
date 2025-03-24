@@ -9,12 +9,12 @@ import (
 )
 
 type ContextData struct {
-	ProjectAPIKey  *ProjectAPIKeyContextData
+	ProjectAPIKey  *BackendAPIKeyContextData
 	DogfoodSession *DogfoodSessionContextData
 }
 
-type ProjectAPIKeyContextData struct {
-	ProjectAPIKeyID string
+type BackendAPIKeyContextData struct {
+	BackendAPIKeyID string
 	ProjectID       string
 }
 
@@ -30,7 +30,7 @@ type DogfoodSessionContextData struct {
 
 type ctxKey struct{}
 
-func NewProjectAPIKeyContext(ctx context.Context, projectAPIKey *ProjectAPIKeyContextData) context.Context {
+func NewBackendAPIKeyContext(ctx context.Context, projectAPIKey *BackendAPIKeyContextData) context.Context {
 	return context.WithValue(ctx, ctxKey{}, ContextData{ProjectAPIKey: projectAPIKey})
 }
 

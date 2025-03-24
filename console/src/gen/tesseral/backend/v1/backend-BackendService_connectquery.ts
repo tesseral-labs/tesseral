@@ -326,34 +326,34 @@ export const getProjectUISettings = BackendService.method.getProjectUISettings;
 export const updateProjectUISettings = BackendService.method.updateProjectUISettings;
 
 /**
- * @generated from rpc tesseral.backend.v1.BackendService.ListProjectAPIKeys
+ * @generated from rpc tesseral.backend.v1.BackendService.ListBackendAPIKeys
  */
-export const listProjectAPIKeys = BackendService.method.listProjectAPIKeys;
+export const listBackendAPIKeys = BackendService.method.listBackendAPIKeys;
 
 /**
- * @generated from rpc tesseral.backend.v1.BackendService.GetProjectAPIKey
+ * @generated from rpc tesseral.backend.v1.BackendService.GetBackendAPIKey
  */
-export const getProjectAPIKey = BackendService.method.getProjectAPIKey;
+export const getBackendAPIKey = BackendService.method.getBackendAPIKey;
 
 /**
- * @generated from rpc tesseral.backend.v1.BackendService.CreateProjectAPIKey
+ * @generated from rpc tesseral.backend.v1.BackendService.CreateBackendAPIKey
  */
-export const createProjectAPIKey = BackendService.method.createProjectAPIKey;
+export const createBackendAPIKey = BackendService.method.createBackendAPIKey;
 
 /**
- * @generated from rpc tesseral.backend.v1.BackendService.UpdateProjectAPIKey
+ * @generated from rpc tesseral.backend.v1.BackendService.UpdateBackendAPIKey
  */
-export const updateProjectAPIKey = BackendService.method.updateProjectAPIKey;
+export const updateBackendAPIKey = BackendService.method.updateBackendAPIKey;
 
 /**
- * @generated from rpc tesseral.backend.v1.BackendService.DeleteProjectAPIKey
+ * @generated from rpc tesseral.backend.v1.BackendService.DeleteBackendAPIKey
  */
-export const deleteProjectAPIKey = BackendService.method.deleteProjectAPIKey;
+export const deleteBackendAPIKey = BackendService.method.deleteBackendAPIKey;
 
 /**
- * @generated from rpc tesseral.backend.v1.BackendService.RevokeProjectAPIKey
+ * @generated from rpc tesseral.backend.v1.BackendService.RevokeBackendAPIKey
  */
-export const revokeProjectAPIKey = BackendService.method.revokeProjectAPIKey;
+export const revokeBackendAPIKey = BackendService.method.revokeBackendAPIKey;
 
 /**
  * @generated from rpc tesseral.backend.v1.BackendService.ListPublishableKeys

@@ -25,8 +25,8 @@ var (
 
 	EmailVerificationChallengeCode = prettyuuid.MustNewFormat("email_verification_challenge_code_", alphabet)
 
-	ProjectAPIKey            = prettyuuid.MustNewFormat("project_api_key_", alphabet)
-	ProjectAPIKeySecretToken = prettyuuid.MustNewFormat("tesseral_secret_key_", alphabet)
+	BackendAPIKey            = prettyuuid.MustNewFormat("backend_api_key_", alphabet)
+	BackendAPIKeySecretToken = prettyuuid.MustNewFormat("tesseral_secret_key_", alphabet)
 
 	PublishableKey = prettyuuid.MustNewFormat("publishable_key_", alphabet)
 
