@@ -5,8 +5,8 @@ RETURNING
     *;
 
 -- name: CreateDogfoodProject :one
-INSERT INTO projects (id, display_name, redirect_uri, log_in_with_google, log_in_with_microsoft, log_in_with_email, log_in_with_password, vault_domain, email_send_from_domain)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+INSERT INTO projects (id, display_name, redirect_uri, log_in_with_google, log_in_with_microsoft, log_in_with_email, log_in_with_password, vault_domain, email_send_from_domain, cookie_domain)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
 RETURNING
     *;
 
