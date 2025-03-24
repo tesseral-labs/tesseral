@@ -24,7 +24,6 @@ type CreateDogfoodProjectRequest struct {
 	AuthAppsRootDomain string
 	RootUserEmail      string
 	RedirectURI        string
-	CookieDomain       string
 }
 
 type CreateDogfoodProjectResponse struct {
@@ -67,7 +66,7 @@ func (s *Store) CreateDogfoodProject(ctx context.Context, req *CreateDogfoodProj
 		LogInWithPassword:   true,
 		VaultDomain:         vaultDomain,
 		EmailSendFromDomain: fmt.Sprintf("mail.%s", req.AuthAppsRootDomain),
-		CookieDomain:        req.CookieDomain,
+		CookieDomain:        vaultDomain,
 	}); err != nil {
 		return nil, fmt.Errorf("create dogfood project: %w", err)
 	}
