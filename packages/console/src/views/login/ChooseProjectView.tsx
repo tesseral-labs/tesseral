@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { LoginView } from '@/lib/views';
+import { LoginView } from '@/lib/login-pages';
 import { useNavigate } from 'react-router';
 import {
   exchangeIntermediateSessionForSession,

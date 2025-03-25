@@ -7,16 +7,16 @@ import { useNavigate } from "react-router";
 import { useSearchParams } from "react-router-dom";
 import { z } from "zod";
 
-import { GoogleIcon } from "@/components/login/GoogleIcon";
-import { LoginFlowCard } from "@/components/login/LoginFlowCard";
-import { MicrosoftIcon } from "@/components/login/MicrosoftIcon";
-import { Button } from "@/components/ui/button";
+import { GoogleIcon } from "../../components/login/GoogleIcon";
+import { LoginFlowCard } from "../../components/login/LoginFlowCard";
+import { MicrosoftIcon } from "../../components/login/MicrosoftIcon";
+import { Button } from "../../components/ui/button";
 import {
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "../../components/ui/card";
 import {
   Form,
   FormControl,
@@ -24,20 +24,20 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from "../../components/ui/form";
+import { Input } from "../../components/ui/input";
 import {
   createIntermediateSession,
   getGoogleOAuthRedirectURL,
   getMicrosoftOAuthRedirectURL,
   issueEmailVerificationChallenge,
   setEmailAsPrimaryLoginFactor,
-} from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
-import { useDarkMode } from "@/lib/dark-mode";
+} from "../../gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
+import { useDarkMode } from "../../lib/dark-mode";
 import {
   ProjectSettingsProvider,
   useProjectSettings,
-} from "@/lib/project-settings";
+} from "../../lib/project-settings";
 
 export function LoginPage() {
   return (
@@ -115,7 +115,7 @@ function LoginPageContents() {
   const darkMode = useDarkMode();
 
   const createIntermediateSessionMutation = useMutation(
-    createIntermediateSession,
+    createIntermediateSession
   );
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -128,7 +128,7 @@ function LoginPageContents() {
     }
 
     setRelayedSessionState(
-      searchParams.get("relayed-session-state") ?? undefined,
+      searchParams.get("relayed-session-state") ?? undefined
     );
 
     const searchParamsCopy = new URLSearchParams(searchParams);
@@ -143,7 +143,7 @@ function LoginPageContents() {
   }
 
   const { mutateAsync: getGoogleOAuthRedirectURLAsync } = useMutation(
-    getGoogleOAuthRedirectURL,
+    getGoogleOAuthRedirectURL
   );
 
   async function handleLogInWithGoogle() {
@@ -155,7 +155,7 @@ function LoginPageContents() {
   }
 
   const { mutateAsync: getMicrosoftOAuthRedirectURLAsync } = useMutation(
-    getMicrosoftOAuthRedirectURL,
+    getMicrosoftOAuthRedirectURL
   );
 
   async function handleLogInWithMicrosoft() {
@@ -175,10 +175,10 @@ function LoginPageContents() {
 
   const [submitting, setSubmitting] = useState(false);
   const setEmailAsPrimaryLoginFactorMutation = useMutation(
-    setEmailAsPrimaryLoginFactor,
+    setEmailAsPrimaryLoginFactor
   );
   const issueEmailVerificationChallengeMutation = useMutation(
-    issueEmailVerificationChallenge,
+    issueEmailVerificationChallenge
   );
   const navigate = useNavigate();
 

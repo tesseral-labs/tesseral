@@ -6,9 +6,9 @@ import { useParams } from "react-router";
 import {
   exchangeSessionForIntermediateSession,
   setOrganization,
-} from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
-import { useRedirectNextLoginFlowPage } from "@/hooks/use-redirect-next-login-flow-page";
-import { clearAccessToken } from "@/lib/access-token";
+} from "../../gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
+import { useRedirectNextLoginFlowPage } from "../../hooks/use-redirect-next-login-flow-page";
+import { clearAccessToken } from "../../lib/access-token";
 
 export function SwitchOrganizationsPage() {
   const { organizationId } = useParams();

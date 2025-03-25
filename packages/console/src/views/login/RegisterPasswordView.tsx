@@ -16,7 +16,7 @@ import { useMutation } from '@connectrpc/connect-query';
 import { useNavigate } from 'react-router';
 import { setAccessToken, setRefreshToken } from '@/auth';
 import { Input } from '@/components/ui/input';
-import { LoginView } from '@/lib/views';
+import { LoginView } from '@/lib/login-pages';
 import { parseErrorMessage } from '@/lib/errors';
 import { toast } from 'sonner';
 import { AuthType, useAuthType, useIntermediateOrganization } from '@/lib/auth';

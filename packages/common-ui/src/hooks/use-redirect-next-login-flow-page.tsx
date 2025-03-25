@@ -6,12 +6,12 @@ import {
   issueEmailVerificationChallenge,
   listOrganizations,
   whoami,
-} from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
+} from "../gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
 import {
   IntermediateSession,
   PrimaryAuthFactor,
-} from "@/gen/tesseral/intermediate/v1/intermediate_pb";
-import { Organization } from "@/gen/tesseral/intermediate/v1/intermediate_pb";
+} from "../gen/tesseral/intermediate/v1/intermediate_pb";
+import { Organization } from "../gen/tesseral/intermediate/v1/intermediate_pb";
 
 export function useRedirectNextLoginFlowPage(): () => void {
   // don't eagerly fetch; we won't use their initial values
@@ -23,7 +23,7 @@ export function useRedirectNextLoginFlowPage(): () => void {
     undefined,
     {
       enabled: false,
-    },
+    }
   );
   const { mutateAsync: issueEmailVerificationChallengeMutationAsync } =
     useMutation(issueEmailVerificationChallenge);
@@ -53,7 +53,7 @@ export function useRedirectNextLoginFlowPage(): () => void {
       await refetchListOrganizations();
 
     const organization = listOrganizationsResponse!.organizations.find(
-      (org) => org.id === intermediateSession.organizationId,
+      (org) => org.id === intermediateSession.organizationId
     )!;
 
     // authenticate another way if our current primary auth factor is
@@ -61,7 +61,7 @@ export function useRedirectNextLoginFlowPage(): () => void {
     if (
       !isPrimaryAuthFactorAcceptable(
         whoamiResponse!.intermediateSession!,
-        organization,
+        organization
       )
     ) {
       navigate(`/authenticate-another-way`);
@@ -163,7 +163,7 @@ export function useRedirectNextLoginFlowPage(): () => void {
 
 function isPrimaryAuthFactorAcceptable(
   intermediateSession: IntermediateSession,
-  organization: Organization,
+  organization: Organization
 ): boolean {
   switch (intermediateSession.primaryAuthFactor) {
     case PrimaryAuthFactor.EMAIL:

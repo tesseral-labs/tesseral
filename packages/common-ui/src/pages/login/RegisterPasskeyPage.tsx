@@ -1,20 +1,20 @@
 import { useMutation } from "@connectrpc/connect-query";
 import React, { useCallback, useEffect } from "react";
 
-import { LoginFlowCard } from "@/components/login/LoginFlowCard";
-import { Button } from "@/components/ui/button";
+import { LoginFlowCard } from "../../components/login/LoginFlowCard";
+import { Button } from "../../components/ui/button";
 import {
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "../../components/ui/card";
 import {
   getPasskeyOptions,
   registerPasskey,
-} from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
-import { useRedirectNextLoginFlowPage } from "@/hooks/use-redirect-next-login-flow-page";
-import { base64urlEncode } from "@/lib/utils";
+} from "../../gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
+import { useRedirectNextLoginFlowPage } from "../../hooks/use-redirect-next-login-flow-page";
+import { base64urlEncode } from "../../lib/utils";
 
 export function RegisterPasskeyPage() {
   const { mutateAsync: getPasskeyOptionsAsync } =
@@ -55,7 +55,7 @@ export function RegisterPasskeyPage() {
       rpId: passkeyOptions.rpId,
       attestationObject: base64urlEncode(
         (credential.response as AuthenticatorAttestationResponse)
-          .attestationObject,
+          .attestationObject
       ),
     });
 

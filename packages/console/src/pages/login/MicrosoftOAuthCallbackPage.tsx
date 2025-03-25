@@ -7,7 +7,7 @@ import {
   whoami,
 } from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
 import { useMutation, useQuery } from '@connectrpc/connect-query';
-import { LoginView } from '@/lib/views';
+import { LoginView } from '@/lib/login-pages';
 import { parseErrorMessage } from '@/lib/errors';
 import { toast } from 'sonner';
 

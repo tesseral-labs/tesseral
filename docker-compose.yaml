@@ -17,7 +17,7 @@ services:
       - "3001:3001"
     tty: true
   console:
-    command: bash -c "yarn install && yarn workspace @tesseral/console run dev"
+    command: bash -c "yarn workspace @tesseral/console run dev"
     env_file:
       - .env
     expose:
@@ -27,10 +27,10 @@ services:
       - "3000:3000"
     tty: true
     volumes:
-      - ./node_modules:/node_modules:cached
-      - ./packages:/packages:cached
-      - ./package.json:/package.json:cached
-    working_dir: /
+      - ./node_modules:/console/node_modules:cached
+      - ./packages:/console/packages:cached
+      - ./package.json:/console/package.json:cached
+    working_dir: /console
   kms:
     environment:
       KMS_REGION: ${AWS_DEFAULT_REGION}
@@ -84,7 +84,7 @@ services:
     volumes:
       - ./.local/ses/output:/output
   vault-ui:
-    command: bash -c "yarn install && yarn workspace @tesseral/vault-ui run dev"
+    command: bash -c "yarn workspace @tesseral/vault-ui run dev"
     environment:
       UI_BUILD_IS_DEV: 1
     expose:
@@ -94,7 +94,7 @@ services:
       - "3002:3002"
     tty: true
     volumes:
-      - ./node_modules:/node_modules:cached
-      - ./packages:/packages:cached
-      - ./package.json:/package.json:cached
+      - ./node_modules:/vault-ui/node_modules:cached
+      - ./packages:/vault-ui/packages:cached
+      - ./package.json:/vault-ui/package.json:cached
     working_dir: /vault-ui

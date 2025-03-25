@@ -1,5 +1,5 @@
 import React, { Dispatch, FC, useState } from 'react';
-import { LoginView } from '@/lib/views';
+import { LoginView } from '@/lib/login-pages';
 import { Title } from '@/components/Title';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';

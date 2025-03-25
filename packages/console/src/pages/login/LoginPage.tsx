@@ -5,7 +5,7 @@ import {
   AuthTypeContextProvider,
   IntermediateOrganizationContextProvider,
 } from '@/lib/auth';
-import { LoginView } from '@/lib/views';
+import { LoginView } from '@/lib/login-pages';
 
 import ChooseProjectView from '@/views/login/ChooseProjectView';
 import CreateProjectView from '@/views/login/CreateProjectView';

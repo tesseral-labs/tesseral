@@ -8,8 +8,8 @@ import {
   issueEmailVerificationChallenge,
   redeemGoogleOAuthCode,
   whoami,
-} from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
-import { useRedirectNextLoginFlowPage } from "@/hooks/use-redirect-next-login-flow-page";
+} from "../../gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
+import { useRedirectNextLoginFlowPage } from "../../hooks/use-redirect-next-login-flow-page";
 
 export function GoogleOAuthCallbackPage() {
   const [searchParams] = useSearchParams();
@@ -19,7 +19,7 @@ export function GoogleOAuthCallbackPage() {
   const navigate = useNavigate();
 
   const { mutateAsync: redeemGoogleOAuthCodeAsync } = useMutation(
-    redeemGoogleOAuthCode,
+    redeemGoogleOAuthCode
   );
 
   const { mutateAsync: issueEmailVerificationChallengeMutationAsync } =

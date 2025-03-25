@@ -2,8 +2,8 @@ import { useMutation } from "@connectrpc/connect-query";
 import { LoaderCircleIcon } from "lucide-react";
 import React, { useEffect } from "react";
 
-import { exchangeIntermediateSessionForSession } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
-import { useProjectSettings } from "@/lib/project-settings";
+import { exchangeIntermediateSessionForSession } from "../../gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
+import { useProjectSettings } from "../../lib/project-settings";
 
 export function FinishLoginPage() {
   const settings = useProjectSettings();

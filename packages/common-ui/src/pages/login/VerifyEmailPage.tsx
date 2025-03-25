@@ -8,20 +8,20 @@ import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import { LoginFlowCard } from "@/components/login/LoginFlowCard";
+import { LoginFlowCard } from "../../components/login/LoginFlowCard";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
+} from "../../components/ui/accordion";
+import { Button } from "../../components/ui/button";
 import {
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "../../components/ui/card";
 import {
   Form,
   FormControl,
@@ -30,14 +30,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from "../../components/ui/form";
+import { Input } from "../../components/ui/input";
 import {
   issueEmailVerificationChallenge,
   verifyEmailChallenge,
   whoami,
-} from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
-import { useDarkMode } from "@/lib/dark-mode";
+} from "../../gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
+import { useDarkMode } from "../../lib/dark-mode";
 
 const schema = z.object({
   emailVerificationChallengeCode: z
@@ -50,7 +50,7 @@ export function VerifyEmailPage() {
   const darkMode = useDarkMode();
 
   const issueEmailVerificationChallengeMutation = useMutation(
-    issueEmailVerificationChallenge,
+    issueEmailVerificationChallenge
   );
   const [hasResent, setHasResent] = useState(false);
 

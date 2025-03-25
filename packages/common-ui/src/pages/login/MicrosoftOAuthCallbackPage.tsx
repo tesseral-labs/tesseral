@@ -8,8 +8,8 @@ import {
   issueEmailVerificationChallenge,
   redeemMicrosoftOAuthCode,
   whoami,
-} from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
-import { useRedirectNextLoginFlowPage } from "@/hooks/use-redirect-next-login-flow-page";
+} from "../../gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
+import { useRedirectNextLoginFlowPage } from "../../hooks/use-redirect-next-login-flow-page";
 
 export function MicrosoftOAuthCallbackPage() {
   const [searchParams] = useSearchParams();
@@ -19,7 +19,7 @@ export function MicrosoftOAuthCallbackPage() {
   const navigate = useNavigate();
 
   const { mutateAsync: redeemMicrosoftOAuthCodeAsync } = useMutation(
-    redeemMicrosoftOAuthCode,
+    redeemMicrosoftOAuthCode
   );
 
   const { mutateAsync: issueEmailVerificationChallengeMutationAsync } =

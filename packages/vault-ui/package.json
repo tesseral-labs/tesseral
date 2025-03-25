@@ -6,9 +6,7 @@
   "scripts": {
     "build": "npm-run-all tailwind esbuild",
     "build:docker": "npm-run-all tailwind esbuild",
-    "common": "yarn workspace @tesseral/common-ui esbuild",
-    "common:watch": "yarn workspace @tesseral/common-ui esbuild:watch",
-    "dev": "npm-run-all -l -p serve common:watch tailwind:watch esbuild:watch",
+    "dev": "npm-run-all -l -p serve tailwind:watch esbuild:watch",
     "esbuild": "node ./build.mjs",
     "esbuild:watch": "UI_BUILD_IS_DEV=1 node ./build.mjs --watch=forever",
     "fmt": "prettier --write .",

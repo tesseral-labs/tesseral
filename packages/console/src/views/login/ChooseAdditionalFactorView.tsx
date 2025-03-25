@@ -1,19 +1,19 @@
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { useIntermediateOrganization } from '@/lib/auth'
-import { LoginView } from '@/lib/views'
-import React, { Dispatch, FC, SetStateAction } from 'react'
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useIntermediateOrganization } from '@/lib/auth';
+import { LoginView } from '@/lib/login-pages';
+import React, { Dispatch, FC, SetStateAction } from 'react';
 
 interface ChooseAdditionalFactorViewProps {
-  setView: Dispatch<SetStateAction<LoginView>>
+  setView: Dispatch<SetStateAction<LoginView>>;
 }
 
 const ChooseAdditionalFactorView: FC<ChooseAdditionalFactorViewProps> = ({
   setView,
 }) => {
-  const org = useIntermediateOrganization()
+  const org = useIntermediateOrganization();
 
-  const hasSecondFactor = org?.userHasPasskey || org?.userHasAuthenticatorApp
+  const hasSecondFactor = org?.userHasPasskey || org?.userHasAuthenticatorApp;
 
   return (
     <Card className="w-full max-w-sm">
@@ -52,7 +52,7 @@ const ChooseAdditionalFactorView: FC<ChooseAdditionalFactorViewProps> = ({
           )}
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
-export default ChooseAdditionalFactorView
+export default ChooseAdditionalFactorView;

@@ -1,24 +1,24 @@
 import { useMutation } from "@connectrpc/connect-query";
 import React, { useCallback, useEffect } from "react";
 
-import { LoginFlowCard } from "@/components/login/LoginFlowCard";
-import { Button } from "@/components/ui/button";
+import { LoginFlowCard } from "../../components/login/LoginFlowCard";
+import { Button } from "../../components/ui/button";
 import {
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "../../components/ui/card";
 import {
   issuePasskeyChallenge,
   verifyPasskey,
-} from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
-import { useRedirectNextLoginFlowPage } from "@/hooks/use-redirect-next-login-flow-page";
-import { base64urlEncode } from "@/lib/utils";
+} from "../../gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
+import { useRedirectNextLoginFlowPage } from "../../hooks/use-redirect-next-login-flow-page";
+import { base64urlEncode } from "../../lib/utils";
 
 export function VerifyPasskeyPage() {
   const { mutateAsync: issuePasskeyChallengeAsync } = useMutation(
-    issuePasskeyChallenge,
+    issuePasskeyChallenge
   );
   const { mutateAsync: verifyPasskeyAsync } = useMutation(verifyPasskey);
   const redirectNextLoginFlowPage = useRedirectNextLoginFlowPage();
@@ -32,7 +32,7 @@ export function VerifyPasskeyPage() {
           id: new Uint8Array(id).buffer,
           type: "public-key",
           transports: ["hybrid", "internal", "nfc", "usb"],
-        }) as PublicKeyCredentialDescriptor,
+        }) as PublicKeyCredentialDescriptor
     );
 
     const requestOptions: PublicKeyCredentialRequestOptions = {

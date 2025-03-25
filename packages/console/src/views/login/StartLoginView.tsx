@@ -1,5 +1,5 @@
 import React, { Dispatch, FC } from 'react';
-import { LoginView } from '@/lib/views';
+import { LoginView } from '@/lib/login-pages';
 import OAuthButton, { OAuthMethods } from '@/components/login/OAuthButton';
 import { useMutation } from '@connectrpc/connect-query';
 import {

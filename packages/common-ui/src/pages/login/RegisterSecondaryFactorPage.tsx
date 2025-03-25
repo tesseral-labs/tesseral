@@ -1,15 +1,15 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-import { LoginFlowCard } from "@/components/login/LoginFlowCard";
-import { Button } from "@/components/ui/button";
+import { LoginFlowCard } from "../../components/login/LoginFlowCard";
+import { Button } from "../../components/ui/button";
 import {
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { useDarkMode } from "@/lib/dark-mode";
+} from "../../components/ui/card";
+import { useDarkMode } from "../../lib/dark-mode";
 
 export function RegisterSecondaryFactorPage() {
   const darkMode = useDarkMode();

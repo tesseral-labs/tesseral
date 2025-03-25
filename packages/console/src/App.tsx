@@ -5,10 +5,15 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createConnectTransport } from '@connectrpc/connect-web';
 import { type Transport } from '@connectrpc/connect';
 import { TransportProvider } from '@connectrpc/connect-query';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import NotFoundPage from './pages/NotFound';
-import { ListOrganizationsPage } from '@/pages/organizations/ListOrganizationsPage';
+
 import { useAccessToken } from '@/lib/use-access-token';
+import { Toaster } from '@/components/ui/sonner';
+import { PageShell } from '@/components/page';
+import { API_URL } from './config';
+
+import { ListOrganizationsPage } from '@/pages/organizations/ListOrganizationsPage';
 import { ViewOrganizationPage } from '@/pages/organizations/ViewOrganizationPage';
 import { ViewUserPage } from '@/pages/users/ViewUserPage';
 import { ListAPIKeysPage } from '@/pages/api-keys/ListAPIKeysPage';
@@ -19,24 +24,42 @@ import { OrganizationSCIMAPIKeysTab } from '@/pages/organizations/OrganizationSC
 import { OrganizationDetailsTab } from '@/pages/organizations/OrganizationDetailsTab';
 import { EditOrganizationPage } from '@/pages/organizations/EditOrganizationPage';
 import { ViewSAMLConnectionPage } from '@/pages/saml-connections/ViewSAMLConnectionPage';
-import { Toaster } from '@/components/ui/sonner';
 import { EditSAMLConnectionPage } from '@/pages/saml-connections/EditSAMLConnectionPage';
-import { PageShell } from '@/components/page';
 import { ViewSCIMAPIKeyPage } from '@/pages/scim-api-keys/ViewSCIMAPIKeyPage';
 import { HomePage } from '@/pages/home/HomePage';
 import { ProjectDetailsTab } from '@/pages/project/ProjectDetailsTab';
-import LoginPage from './pages/login/LoginPage';
 import { ViewPasskeyPage } from '@/pages/passkeys/ViewPasskeyPage';
 import { OrganizationUserInvitesTab } from '@/pages/organizations/OrganizationUserInvitesTab';
 import { ViewUserInvitePage } from '@/pages/user-invites/ViewUserInvitePage';
-import { API_URL } from './config';
-import { AuthType } from './lib/auth';
-import GoogleOAuthCallbackPage from './pages/login/GoogleOAuthCallbackPage';
-import MicrosoftOAuthCallbackPage from './pages/login/MicrosoftOAuthCallbackPage';
-import { ViewPublishableKeyPage } from '@/pages/api-keys/ViewPublishableKeyPage';
 import ProjectUISettingsPage from './pages/project/project-ui-settings/ProjectUISettings';
+import { ViewPublishableKeyPage } from '@/pages/api-keys/ViewPublishableKeyPage';
 import { VaultDomainSettingsTab } from '@/pages/project/VaultDomainSettingsTab';
 import { ViewBackendAPIKeyPage } from '@/pages/api-keys/ViewBackendAPIKeyPage';
+
+import {
+  AuthenticateAnotherWayPage,
+  FinishLoginPage,
+  GoogleOAuthCallbackPage,
+  ImpersonatePage,
+  LoginFlowLayout,
+  LoginPage,
+  LogoutPage,
+  MicrosoftOAuthCallbackPage,
+  OrganizationLoginPage,
+  RegisterAuthenticatorAppPage,
+  RegisterPasskeyPage,
+  RegisterPasswordPage,
+  RegisterSecondaryFactorPage,
+  SwitchOrganizationsPage,
+  VerifyAuthenticatorAppPage,
+  VerifyAuthenticatorAppRecoveryCodePage,
+  VerifyEmailPage,
+  VerifyPasskeyPage,
+  VerifyPasswordPage,
+  VerifySecondaryFactorPage,
+} from '@tesseral/common-ui';
+import ChooseProjectPage from '@/pages/login/ChooseProjectPage';
+import CreateProjectPage from '@/pages/login/CreateProjectPage';
 
 const queryClient = new QueryClient();
 
@@ -68,19 +91,68 @@ const AppWithinQueryClient = () => {
     <TransportProvider transport={transport}>
       <BrowserRouter>
         <Routes>
-          <Route
-            path="/google-oauth-callback"
-            element={<GoogleOAuthCallbackPage />}
-          />
-          <Route path="/login" element={<LoginPage />} />
-          <Route
-            path="/microsoft-oauth-callback"
-            element={<MicrosoftOAuthCallbackPage />}
-          />
-          <Route
-            path="/signup"
-            element={<LoginPage authType={AuthType.SignUp} />}
-          />
+          <Route path="login" element={<LoginPage />} />
+          <Route path="" element={<LoginFlowLayout />}>
+            <Route
+              path="choose-organization"
+              element={<Navigate to="/choose-project" />}
+            />
+            <Route path="verify-email" element={<VerifyEmailPage />} />
+            <Route
+              path="google-oauth-callback"
+              element={<GoogleOAuthCallbackPage />}
+            />
+            <Route
+              path="microsoft-oauth-callback"
+              element={<MicrosoftOAuthCallbackPage />}
+            />
+            <Route path="choose-project" element={<ChooseProjectPage />} />
+            <Route path="create-project" element={<CreateProjectPage />} />
+            <Route
+              path="organizations/:organizationId/login"
+              element={<OrganizationLoginPage />}
+            />
+            <Route
+              path="authenticate-another-way"
+              element={<AuthenticateAnotherWayPage />}
+            />
+            <Route path="verify-password" element={<VerifyPasswordPage />} />
+            <Route
+              path="verify-secondary-factor"
+              element={<VerifySecondaryFactorPage />}
+            />
+            <Route
+              path="verify-authenticator-app"
+              element={<VerifyAuthenticatorAppPage />}
+            />
+            <Route
+              path="verify-authenticator-app-recovery-code"
+              element={<VerifyAuthenticatorAppRecoveryCodePage />}
+            />
+            <Route path="verify-passkey" element={<VerifyPasskeyPage />} />
+            <Route
+              path="register-password"
+              element={<RegisterPasswordPage />}
+            />
+            <Route
+              path="register-secondary-factor"
+              element={<RegisterSecondaryFactorPage />}
+            />
+            <Route path="register-passkey" element={<RegisterPasskeyPage />} />
+            <Route
+              path="register-authenticator-app"
+              element={<RegisterAuthenticatorAppPage />}
+            />
+            <Route path="finish-login" element={<FinishLoginPage />} />
+
+            <Route path="impersonate" element={<ImpersonatePage />} />
+            <Route
+              path="switch-organizations/:organizationId"
+              element={<SwitchOrganizationsPage />}
+            />
+
+            <Route path="logout" element={<LogoutPage />} />
+          </Route>
 
           <Route path="/" element={<PageShell />}>
             <Route path="" element={<HomePage />} />
@@ -89,7 +161,10 @@ const AppWithinQueryClient = () => {
               element={<ViewProjectSettingsPage />}
             >
               <Route path="" element={<ProjectDetailsTab />} />
-              <Route path="vault-domain-settings" element={<VaultDomainSettingsTab />} />
+              <Route
+                path="vault-domain-settings"
+                element={<VaultDomainSettingsTab />}
+              />
             </Route>
             <Route
               path="project-settings/log-in-with-google/edit"

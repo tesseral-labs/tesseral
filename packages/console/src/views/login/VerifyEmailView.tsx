@@ -1,5 +1,5 @@
 import React, { Dispatch, FC, useEffect, useState } from 'react';
-import { LoginView } from '@/lib/views';
+import { LoginView } from '@/lib/login-pages';
 import { Title } from '@/components/Title';
 import {
   Card,
@@ -63,12 +63,12 @@ const VerifyEmailView: FC<VerifyEmailViewProps> = ({ setView }) => {
   const [verificationCode, setVerificationCode] = useState('');
   const verifyEmailChallengeMutation = useMutation(verifyEmailChallenge);
   const handleManualVerification = async () => {
-    let code = verificationCode
-    if (!code.startsWith("email_verification_challenge_code_")) {
+    let code = verificationCode;
+    if (!code.startsWith('email_verification_challenge_code_')) {
       // This code is definitely incorrect. The user may have copy-pasted the
       // URL instead. Try to fall back to that.
       try {
-        code = new URL(code).searchParams.get("code") ?? '';
+        code = new URL(code).searchParams.get('code') ?? '';
       } catch {
         // ignore
       }
@@ -80,7 +80,7 @@ const VerifyEmailView: FC<VerifyEmailViewProps> = ({ setView }) => {
 
     toast.success('Email verified');
 
-    setView(LoginView.ChooseProject)
+    setView(LoginView.ChooseProject);
   };
 
   return (
@@ -94,9 +94,7 @@ const VerifyEmailView: FC<VerifyEmailViewProps> = ({ setView }) => {
         </CardTitle>
         <CardDescription className="text-center">
           We've sent a verification link to{' '}
-          <span className="font-medium">
-            {intermediateSession?.email}
-          </span>
+          <span className="font-medium">{intermediateSession?.email}</span>
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">

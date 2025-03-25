@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { useProjectSettings } from "@/lib/project-settings";
+import { useProjectSettings } from "./project-settings";
 
 export function useDarkMode() {
   const settings = useProjectSettings();

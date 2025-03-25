@@ -19,7 +19,7 @@ import {
   listSAMLOrganizations,
   setEmailAsPrimaryLoginFactor,
 } from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
-import { LoginView } from '@/lib/views';
+import { LoginView } from '@/lib/login-pages';
 import { Organization } from '@/gen/tesseral/intermediate/v1/intermediate_pb';
 import TextDivider from '../ui/text-divider';
 import { Input } from '../ui/input';
