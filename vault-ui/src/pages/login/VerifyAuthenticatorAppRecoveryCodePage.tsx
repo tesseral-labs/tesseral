@@ -69,7 +69,10 @@ export function VerifyAuthenticatorAppRecoveryCodePage() {
                 <FormItem>
                   <FormLabel>Recovery Code</FormLabel>
                   <FormControl>
-                    <Input placeholder="authenticator_app_recovery_code_..." {...field} />
+                    <Input
+                      placeholder="authenticator_app_recovery_code_..."
+                      {...field}
+                    />
                   </FormControl>
                   <FormDescription>
                     When you registered an authenticator app, you received a

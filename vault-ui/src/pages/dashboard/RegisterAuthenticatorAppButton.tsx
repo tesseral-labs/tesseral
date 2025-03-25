@@ -7,21 +7,36 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-
-
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
 import {
   getAuthenticatorAppOptions,
   registerAuthenticatorApp,
   whoami,
 } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
-
-
-
-
 
 const schema = z.object({
   totpCode: z.string().length(6),
@@ -126,9 +141,7 @@ export function RegisterAuthenticatorAppButton() {
 
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <Button type="submit">
-                  Set up authenticator app
-                </Button>
+                <Button type="submit">Set up authenticator app</Button>
               </AlertDialogFooter>
             </form>
           </Form>
@@ -138,7 +151,9 @@ export function RegisterAuthenticatorAppButton() {
       <AlertDialog open={recoveryOpen} onOpenChange={setRecoveryOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Authenticator app recovery codes</AlertDialogTitle>
+            <AlertDialogTitle>
+              Authenticator app recovery codes
+            </AlertDialogTitle>
             <AlertDialogDescription>
               Keep these recovery codes in a private place.
             </AlertDialogDescription>
@@ -153,11 +168,15 @@ export function RegisterAuthenticatorAppButton() {
           </div>
 
           <p className="mt-2 text-sm text-muted-foreground">
-            Each code can only be used once to sign in if you lose access to your
-            authenticator app.
+            Each code can only be used once to sign in if you lose access to
+            your authenticator app.
           </p>
 
-          <Button variant="outline" onClick={handleCopy} className="mt-4 w-full">
+          <Button
+            variant="outline"
+            onClick={handleCopy}
+            className="mt-4 w-full"
+          >
             Copy recovery codes
           </Button>
 
