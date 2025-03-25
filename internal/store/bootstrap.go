@@ -21,9 +21,9 @@ import (
 )
 
 type CreateDogfoodProjectRequest struct {
-	AuthAppsRootDomain string
-	RootUserEmail      string
-	RedirectURI        string
+	RootUserEmail string
+	ConsoleDomain string
+	VaultDomain   string
 }
 
 type CreateDogfoodProjectResponse struct {
@@ -50,24 +50,38 @@ func (s *Store) CreateDogfoodProject(ctx context.Context, req *CreateDogfoodProj
 		return nil, fmt.Errorf("project count is not zero: %d", projectCount)
 	}
 
+	if !strings.HasSuffix(req.VaultDomain, req.ConsoleDomain) {
+		return nil, fmt.Errorf("vault domain must be subdomain of console domain")
+	}
+
 	// directly create project and organization that cyclically refer to each
 	// other
 	dogfoodProjectID := uuid.New()
 	dogfoodOrganizationID := uuid.New()
-	vaultDomain := fmt.Sprintf("%s.%s", strings.ReplaceAll(idformat.Project.Format(dogfoodProjectID), "_", "-"), req.AuthAppsRootDomain)
 
 	if _, err := q.CreateDogfoodProject(ctx, queries.CreateDogfoodProjectParams{
 		ID:                  dogfoodProjectID,
 		DisplayName:         "Tesseral Dogfood",
-		RedirectUri:         req.RedirectURI,
+		RedirectUri:         fmt.Sprintf("https://%s", req.ConsoleDomain),
 		LogInWithGoogle:     false,
 		LogInWithMicrosoft:  false,
 		LogInWithEmail:      true,
 		LogInWithPassword:   true,
-		VaultDomain:         vaultDomain,
-		EmailSendFromDomain: fmt.Sprintf("mail.%s", req.AuthAppsRootDomain),
+		VaultDomain:         req.VaultDomain,
+		EmailSendFromDomain: fmt.Sprintf("mail.%s", req.VaultDomain),
+		CookieDomain:        req.ConsoleDomain,
 	}); err != nil {
 		return nil, fmt.Errorf("create dogfood project: %w", err)
+	}
+
+	for _, domain := range []string{req.ConsoleDomain, req.VaultDomain} {
+		if _, err := q.CreateProjectTrustedDomain(ctx, queries.CreateProjectTrustedDomainParams{
+			ID:        uuid.New(),
+			ProjectID: dogfoodProjectID,
+			Domain:    domain,
+		}); err != nil {
+			return nil, fmt.Errorf("create dogfood project trusted domain: %w", err)
+		}
 	}
 
 	if _, err := q.CreateProjectUISettings(ctx, queries.CreateProjectUISettingsParams{

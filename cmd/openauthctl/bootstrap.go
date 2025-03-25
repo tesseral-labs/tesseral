@@ -12,29 +12,35 @@ import (
 )
 
 type bootstrapArgs struct {
-	Args                      args   `cli:"bootstrap,subcmd"`
-	Database                  string `cli:"--database"`
-	KMSEndpoint               string `cli:"--kms-endpoint"`
-	SessionSigningKMSKeyID    string `cli:"--session-kms-key-id"`
-	AuthAppsRootDomain        string `cli:"--auth-apps-root-domain"`
-	RootUserEmail             string `cli:"--root-user-email"`
-	DogfoodProjectRedirectURI string `cli:"--dogfood-project-redirect-uri"`
+	Args                   args   `cli:"bootstrap,subcmd"`
+	Database               string `cli:"--database"`
+	KMSEndpoint            string `cli:"--kms-endpoint"`
+	SessionSigningKMSKeyID string `cli:"--session-kms-key-id"`
+	RootUserEmail          string `cli:"--root-user-email"`
+	ConsoleDomain          string `cli:"--console-domain"`
+	VaultDomain            string `cli:"--vault-domain"`
 }
 
 func (_ bootstrapArgs) Description() string {
-	return "Bootstrap an OpenAuth database"
+	return "Bootstrap a Tesseral database"
 }
 
 func (_ bootstrapArgs) ExtendedDescription() string {
 	return strings.TrimSpace(`
-Bootstrap an OpenAuth database.
+Bootstrap a Tesseral database.
 
 Outputs, tab-separated, a project ID, an email, and a very sensitive password.
 
 The project ID is the bootstrap ("dogfood") project ID. The email and password
 are a login method for an admin user in that project.
 
-Delete this admin user before deploying this OpenAuth instance in production.
+Delete this admin user before deploying this Tesseral instance in production.
+
+This command does not provision an AWS SES email identity. You must create and
+verify an AWS SES email identity for the domain mail.VAULT_DOMAIN, where
+VAULT_DOMAIN is the value you provided for --vault-domain.
+
+You must also create DNS records for --vault-domain to CNAME to a vault proxy.
 `)
 }
 
@@ -62,9 +68,9 @@ func bootstrap(ctx context.Context, args bootstrapArgs) error {
 	})
 
 	res, err := s.CreateDogfoodProject(ctx, &store.CreateDogfoodProjectRequest{
-		AuthAppsRootDomain: args.AuthAppsRootDomain,
-		RootUserEmail:      args.RootUserEmail,
-		RedirectURI:        args.DogfoodProjectRedirectURI,
+		RootUserEmail: args.RootUserEmail,
+		ConsoleDomain: args.ConsoleDomain,
+		VaultDomain:   args.VaultDomain,
 	})
 	if err != nil {
 		return fmt.Errorf("create dogfood project: %w", err)
