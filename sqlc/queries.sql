@@ -10,6 +10,12 @@ INSERT INTO projects (id, display_name, redirect_uri, log_in_with_google, log_in
 RETURNING
     *;
 
+-- name: CreateProjectTrustedDomain :one
+INSERT INTO project_trusted_domains (id, project_id, domain)
+    VALUES ($1, $2, $3)
+RETURNING
+    *;
+
 -- name: CreateProjectUISettings :one
 INSERT INTO project_ui_settings (id, project_id, primary_color, detect_dark_mode_enabled)
     VALUES ($1, $2, $3, $4)
