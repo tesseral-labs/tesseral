@@ -60,17 +60,17 @@ func (s *Store) GetAuthenticatorAppOptions(ctx context.Context, req *intermediat
 		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 
-	qOrg, err := q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
-		ProjectID: authn.ProjectID(ctx),
-		ID:        *qProject.OrganizationID,
-	})
-	if err != nil {
-		return nil, fmt.Errorf("get organization by id: %w", err)
-	}
-
 	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))
 	if err != nil {
 		return nil, fmt.Errorf("get intermediate session by id: %w", err)
+	}
+
+	qOrg, err := q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
+		ProjectID: authn.ProjectID(ctx),
+		ID:        *qIntermediateSession.OrganizationID,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("get organization by id: %w", err)
 	}
 
 	qMatchingUser, err := s.matchUser(ctx, q, qOrg, qIntermediateSession)
@@ -130,7 +130,7 @@ func (s *Store) RegisterAuthenticatorApp(ctx context.Context, req *intermediatev
 		return nil, fmt.Errorf("update intermediate session authenticator app verified: %w", err)
 	}
 
-	if _, err := q.UpdateUserAuthenticatorAppRecoveryCodeSHA256s(ctx, queries.UpdateUserAuthenticatorAppRecoveryCodeSHA256sParams{
+	if _, err := q.UpdateIntermediateSessionAuthenticatorAppBackupCodeSHA256s(ctx, queries.UpdateIntermediateSessionAuthenticatorAppBackupCodeSHA256sParams{
 		ID:                                  authn.IntermediateSessionID(ctx),
 		AuthenticatorAppRecoveryCodeSha256s: recoveryCodeSHA256s,
 	}); err != nil {
