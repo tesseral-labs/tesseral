@@ -1,0 +1,34 @@
+{
+  "name": "@tesseral/common-ui",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "license": "MIT",
+  "source": "src/index",
+  "types": "src/index",
+  "scripts": {
+    "esbuild": "node ./build.mjs",
+    "esbuild:watch": "UI_BUILD_IS_DEV=1 node ./build.mjs --watch=forever"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^4.1.3",
+    "@radix-ui/react-accordion": "^1.2.3",
+    "@radix-ui/react-label": "^2.1.2",
+    "@radix-ui/react-slot": "^1.1.2",
+    "class-variance-authority": "^0.7.1",
+    "esbuild": "^0.25.1",
+    "input-otp": "^1.4.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-helmet": "^6.1.0",
+    "react-hook-form": "^7.54.2",
+    "react-router-dom": "^7.4.0",
+    "sonner": "^2.0.1",
+    "tailwind-merge": "^3.0.2",
+    "tailwindcss": "^4.0.16",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.1",
+    "typescript": "^5.8.2"
+  }
+}

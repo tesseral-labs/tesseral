@@ -5,6 +5,10 @@
   "repository": "git@github.com:tesseral-labs/tesseral",
   "author": "Blake Williams <blake.williams@ssoready.com>",
   "license": "MIT",
+  "private": "true",
+  "workspaces": [
+    "packages/*"
+  ],
   "devDependencies": {
     "@bufbuild/buf": "^1.47.2",
     "@bufbuild/protoc-gen-es": "^2.2.3",

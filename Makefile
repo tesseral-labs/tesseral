@@ -32,7 +32,7 @@ migrate:
 
 .PHONY: proto
 proto:
-	rm -rf internal/backend/gen internal/frontend/gen internal/intermediate/gen internal/common/gen console/src/gen vault-ui/src/gen
+	rm -rf internal/backend/gen internal/frontend/gen internal/intermediate/gen internal/common/gen packages/common-ui/src/gen packages/console/src/gen packages/vault-ui/src/gen
 	buf format internal/backend/proto -w
 	buf format internal/frontend/proto -w
 	buf format internal/intermediate/proto -w
