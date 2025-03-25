@@ -18,6 +18,8 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import {
   Form,
   FormControl,
@@ -37,6 +39,10 @@ import {
   registerAuthenticatorApp,
   whoami,
 } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
+
+
+
+
 
 const schema = z.object({
   totpCode: z.string().length(6),
