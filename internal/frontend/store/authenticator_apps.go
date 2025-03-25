@@ -3,18 +3,19 @@ package store
 import (
 	"context"
 	"crypto/rand"
+	"crypto/sha256"
 	"fmt"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
-	"github.com/tesseral-labs/tesseral/internal/bcryptcost"
+	"github.com/google/uuid"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
+	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"github.com/tesseral-labs/tesseral/internal/totp"
-	"golang.org/x/crypto/bcrypt"
 )
 
 // how many recovery codes to generate for an authenticator app
@@ -81,23 +82,14 @@ func (s *Store) RegisterAuthenticatorApp(ctx context.Context, req *frontendv1.Re
 		return nil, apierror.NewInvalidArgumentError("invalid totp code", err)
 	}
 
-	var backupCodes []string
-	var recoveryCodeBcrypts [][]byte
+	var recoveryCodes []string
+	var recoveryCodeSHA256s [][]byte
 	for i := 0; i < recoveryCodeCount; i++ {
-		var code [8]byte
-		if _, err := rand.Read(code[:]); err != nil {
-			return nil, fmt.Errorf("read random bytes: %w", err)
-		}
+		recoveryCode := uuid.New()
+		recoveryCodeSHA := sha256.Sum256(recoveryCode[:])
 
-		codeFormatted := fmt.Sprintf("%x-%x-%x-%x", code[:2], code[2:4], code[4:6], code[6:])
-
-		codeBcrypt, err := bcrypt.GenerateFromPassword([]byte(codeFormatted), bcryptcost.Cost)
-		if err != nil {
-			return nil, fmt.Errorf("generate bcrypt hash: %w", err)
-		}
-
-		backupCodes = append(backupCodes, codeFormatted)
-		recoveryCodeBcrypts = append(recoveryCodeBcrypts, codeBcrypt)
+		recoveryCodes = append(recoveryCodes, idformat.AuthenticatorAppRecoveryCode.Format(recoveryCode))
+		recoveryCodeSHA256s = append(recoveryCodeSHA256s, recoveryCodeSHA[:])
 	}
 
 	_, q, commit, rollback, err := s.tx(ctx)
@@ -118,7 +110,7 @@ func (s *Store) RegisterAuthenticatorApp(ctx context.Context, req *frontendv1.Re
 	if _, err := q.UpdateUserAuthenticatorApp(ctx, queries.UpdateUserAuthenticatorAppParams{
 		ID:                                  authn.UserID(ctx),
 		AuthenticatorAppSecretCiphertext:    qUserAuthenticatorAppChallenge.AuthenticatorAppSecretCiphertext,
-		AuthenticatorAppRecoveryCodeBcrypts: recoveryCodeBcrypts,
+		AuthenticatorAppRecoveryCodeSha256s: recoveryCodeSHA256s,
 	}); err != nil {
 		return nil, fmt.Errorf("update user authenticator app: %w", err)
 	}
@@ -128,7 +120,7 @@ func (s *Store) RegisterAuthenticatorApp(ctx context.Context, req *frontendv1.Re
 	}
 
 	return &frontendv1.RegisterAuthenticatorAppResponse{
-		RecoveryCodes: backupCodes,
+		RecoveryCodes: recoveryCodes,
 	}, nil
 }
 

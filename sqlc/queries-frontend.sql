@@ -316,7 +316,7 @@ UPDATE
     users
 SET
     authenticator_app_secret_ciphertext = $1,
-    authenticator_app_recovery_code_bcrypts = $2
+    authenticator_app_recovery_code_sha256s = $2
 WHERE
     id = $3
 RETURNING

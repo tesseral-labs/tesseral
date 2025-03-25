@@ -537,11 +537,11 @@ WHERE
 RETURNING
     *;
 
--- name: UpdateIntermediateSessionAuthenticatorAppBackupCodeBcrypts :one
+-- name: UpdateIntermediateSessionAuthenticatorAppBackupCodeSHA256s :one
 UPDATE
     intermediate_sessions
 SET
-    authenticator_app_recovery_code_bcrypts = $1,
+    authenticator_app_recovery_code_sha256s = $1,
     update_time = now()
 WHERE
     id = $2
@@ -564,17 +564,17 @@ UPDATE
     users
 SET
     authenticator_app_secret_ciphertext = $1,
-    authenticator_app_recovery_code_bcrypts = $2
+    authenticator_app_recovery_code_sha256s = $2
 WHERE
     id = $3
 RETURNING
     *;
 
--- name: UpdateUserAuthenticatorAppRecoveryCodeBcrypts :one
+-- name: UpdateUserAuthenticatorAppRecoveryCodeSHA256s :one
 UPDATE
     users
 SET
-    authenticator_app_recovery_code_bcrypts = $1
+    authenticator_app_recovery_code_sha256s = $1
 WHERE
     id = $2
 RETURNING
