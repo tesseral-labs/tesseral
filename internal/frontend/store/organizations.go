@@ -128,6 +128,12 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *frontendv1.UpdateOr
 
 	updates.RequireMfa = qOrg.RequireMfa
 	if req.Organization.RequireMfa != nil {
+		if *req.Organization.RequireMfa {
+			if !updates.LogInWithAuthenticatorApp && !updates.LogInWithPasskey {
+				return nil, apierror.NewInvalidArgumentError("require mfa requires log in with authenticator app or passkey to be enabled", fmt.Errorf("require mfa requires log in with authenticator app or passkey to be enabled"))
+			}
+		}
+
 		updates.RequireMfa = *req.Organization.RequireMfa
 	}
 
