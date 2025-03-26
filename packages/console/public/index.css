@@ -1242,10 +1242,6 @@ body {
   height: 100svh;
 }
 
-.max-h-10 {
-  max-height: 2.5rem;
-}
-
 .max-h-8 {
   max-height: 2rem;
 }
@@ -1374,10 +1370,6 @@ body {
   min-width: 14rem;
 }
 
-.min-w-\[320px\] {
-  min-width: 320px;
-}
-
 .min-w-\[8rem\] {
   min-width: 8rem;
 }
@@ -1404,10 +1396,6 @@ body {
 
 .max-w-\[120px\] {
   max-width: 120px;
-}
-
-.max-w-\[576px\] {
-  max-width: 576px;
 }
 
 .max-w-lg {
