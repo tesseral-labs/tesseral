@@ -1,10 +1,8 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoaderCircleIcon } from "lucide-react";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
-import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -65,6 +63,7 @@ export function ForgotPasswordPage() {
     verifyPasswordResetCode,
   );
   const navigate = useNavigate();
+
   async function handleSubmit(values: z.infer<typeof schema>) {
     await verifyPasswordResetCodeAsync({
       passwordResetCode: values.passwordResetCode,
