@@ -21,8 +21,8 @@ INSERT INTO users (id, email, password_bcrypt, organization_id, is_owner)
   VALUES (gen_random_uuid(), 'root@app.tesseral.example.com', crypt('password', gen_salt('bf', 14)), '7a76decb-6d79-49ce-9449-34fcc53151df', true);
 
 -- Create project UI settings for the dogfood project
-INSERT INTO project_ui_settings (id, project_id)
-  VALUES (gen_random_uuid(), '56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2'::uuid);
+INSERT INTO project_ui_settings (id, project_id, primary_color)
+  VALUES (gen_random_uuid(), '56bfa2b3-4f5a-4c68-8fc5-db3bf20731a2'::uuid, false);
 
 -- Create a backend API key in the dogfood project
 INSERT INTO backend_api_keys (id, project_id, secret_token_sha256, display_name)

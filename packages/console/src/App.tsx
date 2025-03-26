@@ -60,6 +60,7 @@ import {
 } from '@tesseral/common-ui';
 import ChooseProjectPage from '@/pages/login/ChooseProjectPage';
 import CreateProjectPage from '@/pages/login/CreateProjectPage';
+import { LoginPageWrapper } from './components/login-page';
 
 const queryClient = new QueryClient();
 
@@ -91,8 +92,8 @@ const AppWithinQueryClient = () => {
     <TransportProvider transport={transport}>
       <BrowserRouter>
         <Routes>
-          <Route path="login" element={<LoginPage />} />
           <Route path="" element={<LoginFlowLayout />}>
+            <Route path="login" element={<LoginPage />} />
             <Route
               path="choose-organization"
               element={<Navigate to="/choose-project" />}

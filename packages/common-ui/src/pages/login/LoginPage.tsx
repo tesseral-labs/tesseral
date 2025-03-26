@@ -68,7 +68,7 @@ function CenteredLoginPage({ children }: { children?: React.ReactNode }) {
   const isDarkMode = useDarkMode();
 
   return (
-    <div className="bg-body w-screen min-h-screen mx-auto flex flex-col justify-center items-center py-8">
+    <div className="bg-body w-full min-h-screen mx-auto flex flex-col justify-center items-center py-8">
       <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 flex justify-center">
         <div className="mb-8">
           <object
@@ -91,7 +91,7 @@ function SideBySideLoginPage({ children }: { children?: React.ReactNode }) {
     <div className="bg-body w-screen min-h-screen grid grid-cols-2 gap-0">
       <div className="bg-primary" />
       <div className="flex flex-col justify-center items-center p-4">
-        <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 flex justify-center">
+        <div className="mx-auto max-w-sm sm:px-6 lg:px-8 flex justify-center">
           <div className="mb-4">
             <object
               className="max-w-[180px]"

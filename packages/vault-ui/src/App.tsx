@@ -57,8 +57,8 @@ function AppWithRoutes() {
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
           <Routes>
-            <Route path="login" element={<LoginPage />} />
             <Route path="" element={<LoginFlowLayout />}>
+              <Route path="login" element={<LoginPage />} />
               <Route path="verify-email" element={<VerifyEmailPage />} />
               <Route
                 path="google-oauth-callback"

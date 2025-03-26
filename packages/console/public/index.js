@@ -69260,8 +69260,8 @@
 
   // ../common-ui/src/pages/login/LoginFlowLayout.tsx
   var import_react68 = __toESM(require_react());
-  function LoginFlowLayout() {
-    return /* @__PURE__ */ import_react68.default.createElement("div", { className: "bg-body w-screen min-h-screen mx-auto flex flex-col justify-center items-center py-8" }, /* @__PURE__ */ import_react68.default.createElement("div", { className: "max-w-sm w-full mx-auto" }, /* @__PURE__ */ import_react68.default.createElement(ProjectSettingsProvider, null, /* @__PURE__ */ import_react68.default.createElement(Outlet, null))));
+  function LoginFlowLayout({ background }) {
+    return /* @__PURE__ */ import_react68.default.createElement("div", { className: "bg-body w-screen min-h-screen mx-auto flex flex-col justify-center items-center py-8" }, /* @__PURE__ */ import_react68.default.createElement("div", { className: "max-w-sm w-sm mx-auto" }, /* @__PURE__ */ import_react68.default.createElement(ProjectSettingsProvider, null, /* @__PURE__ */ import_react68.default.createElement(Outlet, null))));
   }
 
   // ../common-ui/node_modules/@hookform/resolvers/dist/resolvers.mjs
@@ -69512,7 +69512,7 @@
   function CenteredLoginPage({ children }) {
     const settings = useProjectSettings();
     const isDarkMode = useDarkMode();
-    return /* @__PURE__ */ import_react70.default.createElement("div", { className: "bg-body w-screen min-h-screen mx-auto flex flex-col justify-center items-center py-8" }, /* @__PURE__ */ import_react70.default.createElement("div", { className: "mx-auto max-w-7xl sm:px-6 lg:px-8 flex justify-center" }, /* @__PURE__ */ import_react70.default.createElement("div", { className: "mb-8" }, /* @__PURE__ */ import_react70.default.createElement(
+    return /* @__PURE__ */ import_react70.default.createElement("div", { className: "bg-body w-full min-h-screen mx-auto flex flex-col justify-center items-center py-8" }, /* @__PURE__ */ import_react70.default.createElement("div", { className: "mx-auto max-w-7xl sm:px-6 lg:px-8 flex justify-center" }, /* @__PURE__ */ import_react70.default.createElement("div", { className: "mb-8" }, /* @__PURE__ */ import_react70.default.createElement(
       "object",
       {
         className: "max-w-[180px]",
@@ -69523,7 +69523,7 @@
   function SideBySideLoginPage({ children }) {
     const settings = useProjectSettings();
     const isDarkMode = useDarkMode();
-    return /* @__PURE__ */ import_react70.default.createElement("div", { className: "bg-body w-screen min-h-screen grid grid-cols-2 gap-0" }, /* @__PURE__ */ import_react70.default.createElement("div", { className: "bg-primary" }), /* @__PURE__ */ import_react70.default.createElement("div", { className: "flex flex-col justify-center items-center p-4" }, /* @__PURE__ */ import_react70.default.createElement("div", { className: "mx-auto max-w-7xl sm:px-6 lg:px-8 flex justify-center" }, /* @__PURE__ */ import_react70.default.createElement("div", { className: "mb-4" }, /* @__PURE__ */ import_react70.default.createElement(
+    return /* @__PURE__ */ import_react70.default.createElement("div", { className: "bg-body w-screen min-h-screen grid grid-cols-2 gap-0" }, /* @__PURE__ */ import_react70.default.createElement("div", { className: "bg-primary" }), /* @__PURE__ */ import_react70.default.createElement("div", { className: "flex flex-col justify-center items-center p-4" }, /* @__PURE__ */ import_react70.default.createElement("div", { className: "mx-auto max-w-sm sm:px-6 lg:px-8 flex justify-center" }, /* @__PURE__ */ import_react70.default.createElement("div", { className: "mb-4" }, /* @__PURE__ */ import_react70.default.createElement(
       "object",
       {
         className: "max-w-[180px]",
@@ -71230,7 +71230,7 @@
   };
   var AppWithinQueryClient = () => {
     const transport = useTransport2();
-    return /* @__PURE__ */ import_react89.default.createElement(TransportProvider, { transport }, /* @__PURE__ */ import_react89.default.createElement(BrowserRouter, null, /* @__PURE__ */ import_react89.default.createElement(Routes, null, /* @__PURE__ */ import_react89.default.createElement(Route, { path: "login", element: /* @__PURE__ */ import_react89.default.createElement(LoginPage, null) }), /* @__PURE__ */ import_react89.default.createElement(Route, { path: "", element: /* @__PURE__ */ import_react89.default.createElement(LoginFlowLayout, null) }, /* @__PURE__ */ import_react89.default.createElement(
+    return /* @__PURE__ */ import_react89.default.createElement(TransportProvider, { transport }, /* @__PURE__ */ import_react89.default.createElement(BrowserRouter, null, /* @__PURE__ */ import_react89.default.createElement(Routes, null, /* @__PURE__ */ import_react89.default.createElement(Route, { path: "", element: /* @__PURE__ */ import_react89.default.createElement(LoginFlowLayout, null) }, /* @__PURE__ */ import_react89.default.createElement(Route, { path: "login", element: /* @__PURE__ */ import_react89.default.createElement(LoginPage, null) }), /* @__PURE__ */ import_react89.default.createElement(
       Route,
       {
         path: "choose-organization",
