@@ -27,7 +27,6 @@ services:
       - "3000:3000"
     tty: true
     volumes:
-      - ./node_modules:/console/node_modules:cached
       - ./packages:/console/packages:cached
       - ./package.json:/console/package.json:cached
     working_dir: /console
@@ -94,7 +93,6 @@ services:
       - "3002:3002"
     tty: true
     volumes:
-      - ./node_modules:/vault-ui/node_modules:cached
       - ./packages:/vault-ui/packages:cached
       - ./package.json:/vault-ui/package.json:cached
     working_dir: /vault-ui
