@@ -112,7 +112,6 @@ const schema = z.object({
 
 function LoginPageContents() {
   const settings = useProjectSettings();
-  const darkMode = useDarkMode();
 
   const createIntermediateSessionMutation = useMutation(
     createIntermediateSession,
@@ -258,7 +257,6 @@ function LoginPageContents() {
               <Button
                 type="submit"
                 className="mt-4 w-full"
-                variant={darkMode ? "outline" : "default"}
                 disabled={submitting}
               >
                 {submitting && (
