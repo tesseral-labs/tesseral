@@ -144,7 +144,7 @@ export function VerifyEmailPage() {
 
         <Accordion type="single" collapsible>
           <AccordionItem className="border-b-0" value="advanced">
-            <AccordionTrigger>
+            <AccordionTrigger className="text-sm">
               Enter verification code manually
             </AccordionTrigger>
             <AccordionContent>

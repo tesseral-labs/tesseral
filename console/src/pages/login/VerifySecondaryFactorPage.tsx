@@ -10,25 +10,25 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-export function RegisterSecondaryFactorPage() {
+export function VerifySecondaryFactorPage() {
   return (
     <LoginFlowCard>
       <CardHeader>
-        <CardTitle>Set up secondary authentication factor</CardTitle>
+        <CardTitle>Verify secondary authentication factor</CardTitle>
         <CardDescription>
-          To continue logging in, you must set up a secondary authentication
-          factor.
+          To continue logging in, you must verify your identity using a
+          secondary authentication factor.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-2">
-          <Button className="w-full" variant="outline" asChild>
-            <Link to="/register-passkey">Set up a passkey</Link>
+          <Button className="w-full" variant={"outline"} asChild>
+            <Link to="/verify-passkey">Verify using a passkey</Link>
           </Button>
 
-          <Button className="w-full" variant="outline" asChild>
-            <Link to="/register-authenticator-app">
-              Set up an authenticator app
+          <Button className="w-full" variant={"outline"} asChild>
+            <Link to="/verify-authenticator-app">
+              Verify using an authenticator app
             </Link>
           </Button>
         </div>

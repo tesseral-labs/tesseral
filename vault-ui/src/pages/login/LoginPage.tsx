@@ -4,7 +4,7 @@ import { LoaderCircleIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { z } from "zod";
 
 import { GoogleIcon } from "@/components/login/GoogleIcon";
@@ -112,7 +112,6 @@ const schema = z.object({
 
 function LoginPageContents() {
   const settings = useProjectSettings();
-  const darkMode = useDarkMode();
 
   const createIntermediateSessionMutation = useMutation(
     createIntermediateSession,
@@ -258,7 +257,6 @@ function LoginPageContents() {
               <Button
                 type="submit"
                 className="mt-4 w-full"
-                variant={darkMode ? "outline" : "default"}
                 disabled={submitting}
               >
                 {submitting && (
@@ -269,6 +267,16 @@ function LoginPageContents() {
             </form>
           </Form>
         )}
+
+        <p className="mt-4 text-xs text-muted-foreground">
+          Don't have an account?{" "}
+          <Link
+            to="/signup"
+            className="cursor-pointer text-foreground underline underline-offset-2 decoration-muted-foreground"
+          >
+            Sign up.
+          </Link>
+        </p>
       </CardContent>
     </LoginFlowCard>
   );

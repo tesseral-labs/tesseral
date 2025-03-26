@@ -38,26 +38,24 @@ import {
   useProjectSettings,
 } from '@/lib/project-settings';
 
-export function LoginPage() {
+export function SignupPage() {
   return (
     <ProjectSettingsProvider>
-      <CenteredLoginPage>
-        <LoginPageContents />
-      </CenteredLoginPage>
+      <CenteredSignupPage>
+        <SignupPageContents />
+      </CenteredSignupPage>
     </ProjectSettingsProvider>
   );
 }
 
-function CenteredLoginPage({ children }: { children?: React.ReactNode }) {
+function CenteredSignupPage({ children }: { children?: React.ReactNode }) {
   return (
-    <div
-      className="bg-indigo-600 w-screen min-h-screen mx-auto flex flex-col justify-center items-center py-8">
+    <div className="bg-indigo-600 w-screen min-h-screen mx-auto flex flex-col justify-center items-center py-8">
       <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 flex justify-center">
         <div className="mb-8">
           <img
             className="max-w-[180px]"
             src="/images/tesseral-logo-white.svg"
-            alt="Tesseral"
           />
         </div>
       </div>
@@ -71,7 +69,7 @@ const schema = z.object({
   email: z.string().email(),
 });
 
-function LoginPageContents() {
+function SignupPageContents() {
   const settings = useProjectSettings();
 
   const createIntermediateSessionMutation = useMutation(
@@ -88,11 +86,11 @@ function LoginPageContents() {
     }
 
     setRelayedSessionState(
-      searchParams.get('relayed-session-state') ?? undefined,
+      searchParams.get("relayed-session-state") ?? undefined,
     );
 
     const searchParamsCopy = new URLSearchParams(searchParams);
-    searchParamsCopy.delete('relayed-session-state');
+    searchParamsCopy.delete("relayed-session-state");
     setSearchParams(searchParamsCopy);
   }, [relayedSessionState, searchParams, setSearchParams]);
 
@@ -129,7 +127,7 @@ function LoginPageContents() {
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
-      email: '',
+      email: "",
     },
   });
 
@@ -150,7 +148,7 @@ function LoginPageContents() {
       email: values.email,
     });
 
-    navigate('/verify-email');
+    navigate("/verify-email");
   }
 
   const hasAboveFoldMethod =
@@ -160,8 +158,8 @@ function LoginPageContents() {
   return (
     <LoginFlowCard>
       <CardHeader>
-        <CardTitle>Log in to Tesseral</CardTitle>
-        <CardDescription>Please sign in to continue.</CardDescription>
+        <CardTitle>Sign up for Tesseral</CardTitle>
+        <CardDescription>Please sign up to continue.</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-2">
@@ -172,7 +170,7 @@ function LoginPageContents() {
               onClick={handleLogInWithGoogle}
             >
               <GoogleIcon />
-              Log in with Google
+              Sign up with Google
             </Button>
           )}
           {settings.logInWithMicrosoft && (
@@ -182,15 +180,14 @@ function LoginPageContents() {
               onClick={handleLogInWithMicrosoft}
             >
               <MicrosoftIcon />
-              Log in with Microsoft
+              Sign up with Microsoft
             </Button>
           )}
         </div>
 
         {hasAboveFoldMethod && hasBelowFoldMethod && (
           <div className="block relative w-full cursor-default my-2 mt-6">
-            <div
-              className="absolute inset-0 flex items-center border-muted-foreground">
+            <div className="absolute inset-0 flex items-center border-muted-foreground">
               <span className="w-full border-t"></span>
             </div>
             <div className="relative flex justify-center text-xs uppercase">
@@ -224,19 +221,19 @@ function LoginPageContents() {
                 {submitting && (
                   <LoaderCircleIcon className="h-4 w-4 animate-spin" />
                 )}
-                Log in
+                Sign up
               </Button>
             </form>
           </Form>
         )}
 
         <p className="mt-4 text-xs text-muted-foreground">
-          Don't have an account?{' '}
+          Already have an account?{" "}
           <Link
-            to="/signup"
+            to="/login"
             className="cursor-pointer text-foreground underline underline-offset-2 decoration-muted-foreground"
           >
-            Sign up.
+            Log in.
           </Link>
         </p>
       </CardContent>

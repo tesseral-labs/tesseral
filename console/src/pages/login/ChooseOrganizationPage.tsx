@@ -23,7 +23,7 @@ export function ChooseOrganizationPage() {
   return (
     <LoginFlowCard>
       <CardHeader>
-        <CardTitle>Choose an organization</CardTitle>
+        <CardTitle>Choose a project</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-2">
@@ -46,7 +46,7 @@ export function ChooseOrganizationPage() {
         </div>
 
         <Button className="w-full" variant="outline" asChild>
-          <Link to="/create-organization">Create a new organization</Link>
+          <Link to="/create-organization">Create a new project</Link>
         </Button>
       </CardContent>
     </LoginFlowCard>

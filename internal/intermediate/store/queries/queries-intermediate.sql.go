@@ -250,8 +250,8 @@ func (q *Queries) CreatePasskey(ctx context.Context, arg CreatePasskeyParams) (P
 }
 
 const createProject = `-- name: CreateProject :one
-INSERT INTO projects (id, organization_id, display_name, redirect_uri, vault_domain, email_send_from_domain, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_saml, log_in_with_email)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+INSERT INTO projects (id, organization_id, display_name, redirect_uri, vault_domain, email_send_from_domain, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_saml, log_in_with_email, cookie_domain)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
 RETURNING
     id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain, cookie_domain
 `
@@ -268,6 +268,7 @@ type CreateProjectParams struct {
 	LogInWithPassword   bool
 	LogInWithSaml       bool
 	LogInWithEmail      bool
+	CookieDomain        string
 }
 
 func (q *Queries) CreateProject(ctx context.Context, arg CreateProjectParams) (Project, error) {
@@ -283,6 +284,7 @@ func (q *Queries) CreateProject(ctx context.Context, arg CreateProjectParams) (P
 		arg.LogInWithPassword,
 		arg.LogInWithSaml,
 		arg.LogInWithEmail,
+		arg.CookieDomain,
 	)
 	var i Project
 	err := row.Scan(
@@ -310,6 +312,26 @@ func (q *Queries) CreateProject(ctx context.Context, arg CreateProjectParams) (P
 		&i.EmailSendFromDomain,
 		&i.CookieDomain,
 	)
+	return i, err
+}
+
+const createProjectTrustedDomain = `-- name: CreateProjectTrustedDomain :one
+INSERT INTO project_trusted_domains (id, project_id, domain)
+    VALUES ($1, $2, $3)
+RETURNING
+    id, project_id, domain
+`
+
+type CreateProjectTrustedDomainParams struct {
+	ID        uuid.UUID
+	ProjectID uuid.UUID
+	Domain    string
+}
+
+func (q *Queries) CreateProjectTrustedDomain(ctx context.Context, arg CreateProjectTrustedDomainParams) (ProjectTrustedDomain, error) {
+	row := q.db.QueryRow(ctx, createProjectTrustedDomain, arg.ID, arg.ProjectID, arg.Domain)
+	var i ProjectTrustedDomain
+	err := row.Scan(&i.ID, &i.ProjectID, &i.Domain)
 	return i, err
 }
 

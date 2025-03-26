@@ -153,3 +153,8 @@ export const exchangeSessionForIntermediateSession = IntermediateService.method.
  * @generated from rpc tesseral.intermediate.v1.IntermediateService.CreateProject
  */
 export const createProject = IntermediateService.method.createProject;
+
+/**
+ * @generated from rpc tesseral.intermediate.v1.IntermediateService.OnboardingCreateProjects
+ */
+export const onboardingCreateProjects = IntermediateService.method.onboardingCreateProjects;

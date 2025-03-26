@@ -1,9 +1,7 @@
 import { useMutation } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoaderCircleIcon } from "lucide-react";
-import React, { useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
 import { z } from "zod";
 
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
@@ -17,36 +15,36 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { verifyPassword } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
+import { verifyAuthenticatorApp } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
 import { useRedirectNextLoginFlowPage } from "@/hooks/use-redirect-next-login-flow-page";
 
 const schema = z.object({
-  password: z.string().nonempty(),
+  recoveryCode: z.string().startsWith("authenticator_app_recovery_code_"),
 });
 
-export function VerifyPasswordPage() {
+export function VerifyAuthenticatorAppRecoveryCodePage() {
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
-      password: "",
+      recoveryCode: "",
     },
   });
 
-  const [submitting, setSubmitting] = useState(false);
-  const { mutateAsync: verifyPasswordAsync } = useMutation(verifyPassword);
+  const { mutateAsync: verifyAuthenticatorAppAsync } = useMutation(
+    verifyAuthenticatorApp,
+  );
   const redirectNextLoginFlowPage = useRedirectNextLoginFlowPage();
 
   async function handleSubmit(values: z.infer<typeof schema>) {
-    setSubmitting(true);
-
-    await verifyPasswordAsync({
-      password: values.password,
+    await verifyAuthenticatorAppAsync({
+      recoveryCode: values.recoveryCode,
     });
 
     redirectNextLoginFlowPage();
@@ -55,45 +53,42 @@ export function VerifyPasswordPage() {
   return (
     <LoginFlowCard>
       <CardHeader>
-        <CardTitle>Verify your password</CardTitle>
+        <CardTitle>Verify authenticator app recovery code</CardTitle>
         <CardDescription>
-          Enter your password below to continue logging in.
+          To continue logging in, input one of the recovery codes for your
+          authenticator app.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form className="mt-2" onSubmit={form.handleSubmit(handleSubmit)}>
+          <form onSubmit={form.handleSubmit(handleSubmit)}>
             <FormField
               control={form.control}
-              name="password"
+              name="recoveryCode"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>Recovery Code</FormLabel>
                   <FormControl>
-                    <Input type="password" {...field} />
+                    <Input
+                      placeholder="authenticator_app_recovery_code_..."
+                      {...field}
+                    />
                   </FormControl>
+                  <FormDescription>
+                    When you registered an authenticator app, you received a
+                    list of recovery codes. Input one of those recovery codes
+                    here.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <Button type="submit" className="mt-4 w-full" disabled={submitting}>
-              {submitting && (
-                <LoaderCircleIcon className="h-4 w-4 animate-spin" />
-              )}
-              Verify Password
+            <Button type="submit" className="mt-4 w-full">
+              Verify authenticator app recovery code
             </Button>
           </form>
         </Form>
-
-        <p className="mt-4 text-xs text-muted-foreground">
-          <Link
-            to="/forgot-password"
-            className="text-foreground underline underline-offset-2 decoration-muted-foreground"
-          >
-            Forgot your password?
-          </Link>
-        </p>
       </CardContent>
     </LoginFlowCard>
   );

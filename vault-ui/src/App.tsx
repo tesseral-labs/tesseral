@@ -28,6 +28,7 @@ import { RegisterAuthenticatorAppPage } from "@/pages/login/RegisterAuthenticato
 import { RegisterPasskeyPage } from "@/pages/login/RegisterPasskeyPage";
 import { RegisterPasswordPage } from "@/pages/login/RegisterPasswordPage";
 import { RegisterSecondaryFactorPage } from "@/pages/login/RegisterSecondaryFactorPage";
+import { SignupPage } from "@/pages/login/SignupPage";
 import { SwitchOrganizationsPage } from "@/pages/login/SwitchOrganizationsPage";
 import { VerifyAuthenticatorAppPage } from "@/pages/login/VerifyAuthenticatorAppPage";
 import { VerifyAuthenticatorAppRecoveryCodePage } from "@/pages/login/VerifyAuthenticatorAppRecoveryCodePage";
@@ -57,6 +58,8 @@ function AppWithRoutes() {
         <BrowserRouter>
           <Routes>
             <Route path="login" element={<LoginPage />} />
+            <Route path="signup" element={<SignupPage />} />
+
             <Route path="" element={<LoginFlowLayout />}>
               <Route path="verify-email" element={<VerifyEmailPage />} />
               <Route

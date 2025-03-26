@@ -196,6 +196,7 @@ service IntermediateService {
   }
 
   rpc CreateProject(CreateProjectRequest) returns (CreateProjectResponse);
+  rpc OnboardingCreateProjects(OnboardingCreateProjectsRequest) returns (OnboardingCreateProjectsResponse);
 }
 
 message IntermediateSession {
@@ -252,6 +253,17 @@ message CreateProjectRequest {
 
 message CreateProjectResponse {
   Project project = 1;
+}
+
+message OnboardingCreateProjectsRequest {
+  string display_name = 1;
+  string prod_url = 2;
+  string dev_url = 3;
+}
+
+message OnboardingCreateProjectsResponse {
+  string refresh_token = 1;
+  string access_token = 2;
 }
 
 message CreateIntermediateSessionRequest {

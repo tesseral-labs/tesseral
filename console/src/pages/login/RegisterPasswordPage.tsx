@@ -1,9 +1,9 @@
+import { Code, ConnectError } from "@connectrpc/connect";
 import { useMutation } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoaderCircleIcon } from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
 import { z } from "zod";
 
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
@@ -17,20 +17,21 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { verifyPassword } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
+import { registerPassword } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
 import { useRedirectNextLoginFlowPage } from "@/hooks/use-redirect-next-login-flow-page";
 
 const schema = z.object({
   password: z.string().nonempty(),
 });
 
-export function VerifyPasswordPage() {
+export function RegisterPasswordPage() {
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -39,15 +40,34 @@ export function VerifyPasswordPage() {
   });
 
   const [submitting, setSubmitting] = useState(false);
-  const { mutateAsync: verifyPasswordAsync } = useMutation(verifyPassword);
+  const { mutateAsync: registerPasswordAsync } = useMutation(registerPassword);
   const redirectNextLoginFlowPage = useRedirectNextLoginFlowPage();
 
   async function handleSubmit(values: z.infer<typeof schema>) {
     setSubmitting(true);
 
-    await verifyPasswordAsync({
-      password: values.password,
-    });
+    try {
+      await registerPasswordAsync({
+        password: values.password,
+      });
+    } catch (e) {
+      if (
+        e instanceof ConnectError &&
+        e.code === Code.FailedPrecondition &&
+        e.rawMessage === "password_compromised"
+      ) {
+        form.setError("password", {
+          type: "manual",
+          message:
+            "This password has been reported as compromised. Please choose a different password.",
+        });
+        return;
+      }
+
+      throw e;
+    } finally {
+      setSubmitting(false);
+    }
 
     redirectNextLoginFlowPage();
   }
@@ -55,9 +75,9 @@ export function VerifyPasswordPage() {
   return (
     <LoginFlowCard>
       <CardHeader>
-        <CardTitle>Verify your password</CardTitle>
+        <CardTitle>Register password</CardTitle>
         <CardDescription>
-          Enter your password below to continue logging in.
+          Register a password to continue logging in.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -73,6 +93,9 @@ export function VerifyPasswordPage() {
                     <Input type="password" {...field} />
                   </FormControl>
                   <FormMessage />
+                  <FormDescription>
+                    Choose a unique password you haven't used for anything else.
+                  </FormDescription>
                 </FormItem>
               )}
             />
@@ -81,19 +104,10 @@ export function VerifyPasswordPage() {
               {submitting && (
                 <LoaderCircleIcon className="h-4 w-4 animate-spin" />
               )}
-              Verify Password
+              Register Password
             </Button>
           </form>
         </Form>
-
-        <p className="mt-4 text-xs text-muted-foreground">
-          <Link
-            to="/forgot-password"
-            className="text-foreground underline underline-offset-2 decoration-muted-foreground"
-          >
-            Forgot your password?
-          </Link>
-        </p>
       </CardContent>
     </LoginFlowCard>
   );

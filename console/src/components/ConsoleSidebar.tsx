@@ -37,6 +37,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { getProject } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { useNavigate } from 'react-router';
 
 const ConsoleSidebar: FC = () => {
   const { data: whoamiResponse } = useQuery(whoami, {});
@@ -45,6 +46,8 @@ const ConsoleSidebar: FC = () => {
     listSwitchableOrganizations,
     {},
   );
+
+  const navigate = useNavigate()
 
   return (
     <Sidebar collapsible="icon">
@@ -82,7 +85,9 @@ const ConsoleSidebar: FC = () => {
                 </DropdownMenuLabel>
                 {listSwitchableOrganizationsResponse?.switchableOrganizations?.map(
                   (org) => (
-                    <DropdownMenuItem key={org.id} className="gap-2 p-2">
+                    <DropdownMenuItem key={org.id} className="gap-2 p-2" onClick={() => {
+                      navigate(`/switch-organizations/${org.id}`)
+                    }}>
                       <div className="flex size-6 items-center justify-center rounded-sm border">
                         <LayoutGridIcon className="size-4 shrink-0" />
                       </div>

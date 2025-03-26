@@ -1,73 +1,53 @@
-import React, { useEffect } from 'react';
-import { Title } from '@/components/Title';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useMutation, useQuery } from "@connectrpc/connect-query";
+import { LoaderCircleIcon } from "lucide-react";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router";
+import { useSearchParams } from "react-router-dom";
+
 import {
   issueEmailVerificationChallenge,
   redeemMicrosoftOAuthCode,
   whoami,
-} from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
-import { useMutation, useQuery } from '@connectrpc/connect-query';
-import { LoginView } from '@/lib/views';
-import { parseErrorMessage } from '@/lib/errors';
-import { toast } from 'sonner';
+} from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
+import { useRedirectNextLoginFlowPage } from "@/hooks/use-redirect-next-login-flow-page";
 
-const MicrosoftOAuthCallbackPage = () => {
-  const navigate = useNavigate();
+export function MicrosoftOAuthCallbackPage() {
   const [searchParams] = useSearchParams();
+  const code = searchParams.get("code");
+  const state = searchParams.get("state");
+  const { refetch: refetchWhoami } = useQuery(whoami);
+  const navigate = useNavigate();
 
-  const issueEmailVerificationChallengeMutation = useMutation(
-    issueEmailVerificationChallenge,
-  );
-  const redeemMicrosoftOAuthCodeMutation = useMutation(
+  const { mutateAsync: redeemMicrosoftOAuthCodeAsync } = useMutation(
     redeemMicrosoftOAuthCode,
   );
-  const whoamiQuery = useQuery(whoami);
+
+  const { mutateAsync: issueEmailVerificationChallengeMutationAsync } =
+    useMutation(issueEmailVerificationChallenge);
+
+  const redirectNextLoginFlowPage = useRedirectNextLoginFlowPage();
 
   useEffect(() => {
-    void (async () => {
-      const code = searchParams.get('code');
-      const state = searchParams.get('state');
+    (async () => {
+      await redeemMicrosoftOAuthCodeAsync({
+        code: code!,
+        state: state!,
+        redirectUrl: `${window.location.origin}/microsoft-oauth-callback`,
+      });
 
-      if (code && state) {
-        try {
-          await redeemMicrosoftOAuthCodeMutation.mutateAsync({
-            code,
-            state,
-            redirectUrl: `${window.location.origin}/microsoft-oauth-callback`,
-          });
-
-          const { data } = await whoamiQuery.refetch();
-          if (!data) {
-            throw new Error('No data returned from whoami query');
-          }
-
-          if (data?.intermediateSession?.emailVerified) {
-            navigate(`/login?view=${LoginView.ChooseProject}`);
-            return;
-          }
-
-          await issueEmailVerificationChallengeMutation.mutateAsync({
-            email: data.intermediateSession!.email,
-          });
-
-          navigate(`/login?view=${LoginView.VerifyEmail}`);
-        } catch (error) {
-          const message = parseErrorMessage(error);
-          toast.error('Failed to verify Microsoft log in', {
-            description: message,
-          });
-        }
-      }
+      redirectNextLoginFlowPage();
     })();
-  }, []);
+  }, [
+    code,
+    issueEmailVerificationChallengeMutationAsync,
+    navigate,
+    redeemMicrosoftOAuthCodeAsync,
+    redirectNextLoginFlowPage,
+    refetchWhoami,
+    state,
+  ]);
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <Title title="Verifying Microsoft OAuth Credentials..." />
-
-      <div className="space-y-4 text-center"></div>
-    </div>
+    <LoaderCircleIcon className="mx-auto text-muted-foreground h-4 w-4 animate-spin" />
   );
-};
-
-export default MicrosoftOAuthCallbackPage;
+}
