@@ -1,38 +1,103 @@
 import React, { FC } from 'react';
-import EditProjectGoogleSettingsPage from './pages/project/edit/EditProjectGoogleSettingsPage';
-import EditProjectMicrosoftSettingsPage from './pages/project/edit/EditProjectMicrosoftSettingsPage';
+import EditProjectGoogleSettingsPage
+  from './pages/project/edit/EditProjectGoogleSettingsPage';
+import EditProjectMicrosoftSettingsPage
+  from './pages/project/edit/EditProjectMicrosoftSettingsPage';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createConnectTransport } from '@connectrpc/connect-web';
 import { type Transport } from '@connectrpc/connect';
 import { TransportProvider } from '@connectrpc/connect-query';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import NotFoundPage from './pages/NotFound';
-import { ListOrganizationsPage } from '@/pages/organizations/ListOrganizationsPage';
+import {
+  ListOrganizationsPage,
+} from '@/pages/organizations/ListOrganizationsPage';
 import { useAccessToken } from '@/lib/use-access-token';
-import { ViewOrganizationPage } from '@/pages/organizations/ViewOrganizationPage';
+import {
+  ViewOrganizationPage,
+} from '@/pages/organizations/ViewOrganizationPage';
 import { ViewUserPage } from '@/pages/users/ViewUserPage';
 import { ListAPIKeysPage } from '@/pages/api-keys/ListAPIKeysPage';
-import { ViewProjectSettingsPage } from '@/pages/project/ViewProjectSettingsPage';
-import { OrganizationUsersTab } from '@/pages/organizations/OrganizationUsersTab';
-import { OrganizationSAMLConnectionsTab } from '@/pages/organizations/OrganizationSAMLConnectionsTab';
-import { OrganizationSCIMAPIKeysTab } from '@/pages/organizations/OrganizationSCIMAPIKeysTab';
-import { OrganizationDetailsTab } from '@/pages/organizations/OrganizationDetailsTab';
-import { EditOrganizationPage } from '@/pages/organizations/EditOrganizationPage';
-import { ViewSAMLConnectionPage } from '@/pages/saml-connections/ViewSAMLConnectionPage';
+import {
+  ViewProjectSettingsPage,
+} from '@/pages/project/ViewProjectSettingsPage';
+import {
+  OrganizationUsersTab,
+} from '@/pages/organizations/OrganizationUsersTab';
+import {
+  OrganizationSAMLConnectionsTab,
+} from '@/pages/organizations/OrganizationSAMLConnectionsTab';
+import {
+  OrganizationSCIMAPIKeysTab,
+} from '@/pages/organizations/OrganizationSCIMAPIKeysTab';
+import {
+  OrganizationDetailsTab,
+} from '@/pages/organizations/OrganizationDetailsTab';
+import {
+  EditOrganizationPage,
+} from '@/pages/organizations/EditOrganizationPage';
+import {
+  ViewSAMLConnectionPage,
+} from '@/pages/saml-connections/ViewSAMLConnectionPage';
 import { Toaster } from '@/components/ui/sonner';
-import { EditSAMLConnectionPage } from '@/pages/saml-connections/EditSAMLConnectionPage';
+import {
+  EditSAMLConnectionPage,
+} from '@/pages/saml-connections/EditSAMLConnectionPage';
 import { PageShell } from '@/components/page';
 import { ViewSCIMAPIKeyPage } from '@/pages/scim-api-keys/ViewSCIMAPIKeyPage';
 import { HomePage } from '@/pages/home/HomePage';
 import { ProjectDetailsTab } from '@/pages/project/ProjectDetailsTab';
 import { ViewPasskeyPage } from '@/pages/passkeys/ViewPasskeyPage';
-import { OrganizationUserInvitesTab } from '@/pages/organizations/OrganizationUserInvitesTab';
+import {
+  OrganizationUserInvitesTab,
+} from '@/pages/organizations/OrganizationUserInvitesTab';
 import { ViewUserInvitePage } from '@/pages/user-invites/ViewUserInvitePage';
 import { API_URL } from './config';
-import { ViewPublishableKeyPage } from '@/pages/api-keys/ViewPublishableKeyPage';
-import ProjectUISettingsPage from './pages/project/project-ui-settings/ProjectUISettings';
+import {
+  ViewPublishableKeyPage,
+} from '@/pages/api-keys/ViewPublishableKeyPage';
+import ProjectUISettingsPage
+  from './pages/project/project-ui-settings/ProjectUISettings';
 import { VaultDomainSettingsTab } from '@/pages/project/VaultDomainSettingsTab';
 import { ViewBackendAPIKeyPage } from '@/pages/api-keys/ViewBackendAPIKeyPage';
+import { LoginPage } from '@/pages/login/LoginPage';
+import { SignupPage } from '@/pages/login/SignupPage';
+import { LoginFlowLayout } from '@/pages/login/LoginFlowLayout';
+import { VerifyEmailPage } from '@/pages/login/VerifyEmailPage';
+import { GoogleOAuthCallbackPage } from '@/pages/login/GoogleOAuthCallbackPage';
+import {
+  MicrosoftOAuthCallbackPage,
+} from '@/pages/login/MicrosoftOAuthCallbackPage';
+import { ChooseOrganizationPage } from '@/pages/login/ChooseOrganizationPage';
+import { CreateOrganizationPage } from '@/pages/login/CreateOrganizationPage';
+import { OrganizationLoginPage } from '@/pages/login/OrganizationLoginPage';
+import {
+  AuthenticateAnotherWayPage,
+} from '@/pages/login/AuthenticateAnotherWayPage';
+import { VerifyPasswordPage } from '@/pages/login/VerifyPasswordPage';
+import { ForgotPasswordPage } from '@/pages/login/ForgotPasswordPage';
+import {
+  VerifySecondaryFactorPage,
+} from '@/pages/login/VerifySecondaryFactorPage';
+import {
+  VerifyAuthenticatorAppPage,
+} from '@/pages/login/VerifyAuthenticatorAppPage';
+import {
+  VerifyAuthenticatorAppRecoveryCodePage,
+} from '@/pages/login/VerifyAuthenticatorAppRecoveryCodePage';
+import { VerifyPasskeyPage } from '@/pages/login/VerifyPasskeyPage';
+import { RegisterPasswordPage } from '@/pages/login/RegisterPasswordPage';
+import {
+  RegisterSecondaryFactorPage,
+} from '@/pages/login/RegisterSecondaryFactorPage';
+import { RegisterPasskeyPage } from '@/pages/login/RegisterPasskeyPage';
+import {
+  RegisterAuthenticatorAppPage,
+} from '@/pages/login/RegisterAuthenticatorAppPage';
+import { FinishLoginPage } from '@/pages/login/FinishLoginPage';
+import { ImpersonatePage } from '@/pages/login/ImpersonatePage';
+import { SwitchOrganizationsPage } from '@/pages/login/SwitchOrganizationsPage';
+import { LogoutPage } from '@/pages/login/LogoutPage';
 
 const queryClient = new QueryClient();
 
@@ -64,15 +129,89 @@ const AppWithinQueryClient = () => {
     <TransportProvider transport={transport}>
       <BrowserRouter>
         <Routes>
-
           <Route path="/" element={<PageShell />}>
             <Route path="" element={<HomePage />} />
+          </Route>
+
+          <Route path="login" element={<LoginPage />} />
+          <Route path="signup" element={<SignupPage />} />
+
+          <Route path="" element={<LoginFlowLayout />}>
+            <Route path="verify-email" element={<VerifyEmailPage />} />
+            <Route
+              path="google-oauth-callback"
+              element={<GoogleOAuthCallbackPage />}
+            />
+            <Route
+              path="microsoft-oauth-callback"
+              element={<MicrosoftOAuthCallbackPage />}
+            />
+            <Route
+              path="choose-organization"
+              element={<ChooseOrganizationPage />}
+            />
+            <Route
+              path="create-organization"
+              element={<CreateOrganizationPage />}
+            />
+            <Route
+              path="organizations/:organizationId/login"
+              element={<OrganizationLoginPage />}
+            />
+            <Route
+              path="authenticate-another-way"
+              element={<AuthenticateAnotherWayPage />}
+            />
+            <Route path="verify-password" element={<VerifyPasswordPage />} />
+            <Route path="forgot-password" element={<ForgotPasswordPage />} />
+            <Route
+              path="verify-secondary-factor"
+              element={<VerifySecondaryFactorPage />}
+            />
+            <Route
+              path="verify-authenticator-app"
+              element={<VerifyAuthenticatorAppPage />}
+            />
+            <Route
+              path="verify-authenticator-app-recovery-code"
+              element={<VerifyAuthenticatorAppRecoveryCodePage />}
+            />
+            <Route path="verify-passkey" element={<VerifyPasskeyPage />} />
+            <Route
+              path="register-password"
+              element={<RegisterPasswordPage />}
+            />
+            <Route
+              path="register-secondary-factor"
+              element={<RegisterSecondaryFactorPage />}
+            />
+            <Route
+              path="register-passkey"
+              element={<RegisterPasskeyPage />}
+            />
+            <Route
+              path="register-authenticator-app"
+              element={<RegisterAuthenticatorAppPage />}
+            />
+            <Route path="finish-login" element={<FinishLoginPage />} />
+
+            <Route path="impersonate" element={<ImpersonatePage />} />
+            <Route
+              path="switch-organizations/:organizationId"
+              element={<SwitchOrganizationsPage />}
+            />
+
+            <Route path="logout" element={<LogoutPage />} />
+          </Route>
+
+          <Route path="" element={<PageShell />}>
             <Route
               path="project-settings"
               element={<ViewProjectSettingsPage />}
             >
               <Route path="" element={<ProjectDetailsTab />} />
-              <Route path="vault-domain-settings" element={<VaultDomainSettingsTab />} />
+              <Route path="vault-domain-settings"
+                     element={<VaultDomainSettingsTab />} />
             </Route>
             <Route
               path="project-settings/log-in-with-google/edit"
