@@ -322,6 +322,27 @@ WHERE
 RETURNING
     *;
 
+-- name: UpdateIntermediateSessionPasswordResetCodeSHA256 :one
+UPDATE
+    intermediate_sessions
+SET
+    password_reset_code_sha256 = $2
+WHERE
+    id = $1
+RETURNING
+    *;
+
+-- name: UpdateIntermediateSessionPasswordResetCodeVerified :one
+UPDATE
+    intermediate_sessions
+SET
+    password_reset_code_verified = TRUE,
+    email_verification_challenge_sha256 = NULL
+WHERE
+    id = $1
+RETURNING
+    *;
+
 -- name: UpdateIntermediateSessionEmailVerificationChallengeSha256 :one
 UPDATE
     intermediate_sessions

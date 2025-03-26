@@ -118,6 +118,20 @@ service IntermediateService {
     };
   }
 
+  rpc IssuePasswordResetCode(IssuePasswordResetCodeRequest) returns (IssuePasswordResetCodeResponse) {
+    option (google.api.http) = {
+      post: "/intermediate/v1/issue-password-reset-code"
+      body: "*"
+    };
+  }
+
+  rpc VerifyPasswordResetCode(VerifyPasswordResetCodeRequest) returns (VerifyPasswordResetCodeResponse) {
+    option (google.api.http) = {
+      post: "/intermediate/v1/verify-password-reset-code"
+      body: "*"
+    };
+  }
+
   rpc GetPasskeyOptions(GetPasskeyOptionsRequest) returns (GetPasskeyOptionsResponse) {
     option (google.api.http) = {
       post: "/intermediate/v1/get-passkey-options"
@@ -384,6 +398,16 @@ message VerifyPasswordRequest {
 }
 
 message VerifyPasswordResponse {}
+
+message IssuePasswordResetCodeRequest {}
+
+message IssuePasswordResetCodeResponse {}
+
+message VerifyPasswordResetCodeRequest {
+  string password_reset_code = 1;
+}
+
+message VerifyPasswordResetCodeResponse {}
 
 message GetSettingsRequest {}
 

@@ -222,6 +222,30 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /intermediate/v1/issue-password-reset-code:
+        post:
+            tags:
+                - IntermediateService
+            operationId: IntermediateService_IssuePasswordResetCode
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/IssuePasswordResetCodeRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/IssuePasswordResetCodeResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /intermediate/v1/microsoft-oauth-redirect-url:
         post:
             tags:
@@ -598,6 +622,30 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /intermediate/v1/verify-password-reset-code:
+        post:
+            tags:
+                - IntermediateService
+            operationId: IntermediateService_VerifyPasswordResetCode
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/VerifyPasswordResetCodeRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/VerifyPasswordResetCodeResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /intermediate/v1/whoami:
         get:
             tags:
@@ -784,6 +832,12 @@ components:
                 challenge:
                     type: string
                     format: bytes
+        IssuePasswordResetCodeRequest:
+            type: object
+            properties: {}
+        IssuePasswordResetCodeResponse:
+            type: object
+            properties: {}
         ListOrganizationsResponse:
             type: object
             properties:
@@ -967,6 +1021,14 @@ components:
                     type: string
                 password:
                     type: string
+        VerifyPasswordResetCodeRequest:
+            type: object
+            properties:
+                passwordResetCode:
+                    type: string
+        VerifyPasswordResetCodeResponse:
+            type: object
+            properties: {}
         VerifyPasswordResponse:
             type: object
             properties: {}

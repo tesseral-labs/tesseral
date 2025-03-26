@@ -37,6 +37,7 @@ import { VerifySecondaryFactorPage } from "@/pages/login/VerifySecondaryFactorPa
 
 import { DashboardLayout } from "./pages/dashboard/DashboardLayout";
 import { UserSettingsPage } from "./pages/dashboard/UserSettingsPage";
+import { ForgotPasswordPage } from "@/pages/login/ForgotPasswordPage";
 
 const queryClient = new QueryClient();
 
@@ -83,6 +84,7 @@ function AppWithRoutes() {
                 element={<AuthenticateAnotherWayPage />}
               />
               <Route path="verify-password" element={<VerifyPasswordPage />} />
+              <Route path="forgot-password" element={<ForgotPasswordPage />} />
               <Route
                 path="verify-secondary-factor"
                 element={<VerifySecondaryFactorPage />}

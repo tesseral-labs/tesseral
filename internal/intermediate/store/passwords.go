@@ -1,11 +1,18 @@
 package store
 
 import (
+	"bytes"
 	"context"
+	"crypto/sha256"
 	"errors"
 	"fmt"
+	"html/template"
 	"time"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/sesv2"
+	"github.com/aws/aws-sdk-go-v2/service/sesv2/types"
+	"github.com/google/uuid"
 	"github.com/tesseral-labs/tesseral/internal/bcryptcost"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/intermediate/authn"
@@ -23,12 +30,6 @@ const (
 )
 
 func (s *Store) RegisterPassword(ctx context.Context, req *intermediatev1.RegisterPasswordRequest) (*intermediatev1.RegisterPasswordResponse, error) {
-	intermediateSession := authn.IntermediateSession(ctx)
-
-	if intermediateSession.PasswordVerified {
-		return nil, apierror.NewFailedPreconditionError("user already verified for intermediate session", fmt.Errorf("user already verified for intermediate session"))
-	}
-
 	// Check if the password is compromised.
 	pwned, err := s.hibp.Pwned(ctx, req.Password)
 	if err != nil {
@@ -38,16 +39,20 @@ func (s *Store) RegisterPassword(ctx context.Context, req *intermediatev1.Regist
 		return nil, apierror.NewPasswordCompromisedError("password is compromised", errors.New("password is compromised"))
 	}
 
-	orgID, err := idformat.Organization.Parse(intermediateSession.OrganizationId)
-	if err != nil {
-		return nil, apierror.NewInvalidArgumentError("invalid organization id", fmt.Errorf("parse organization id: %w", err))
-	}
-
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
 	}
 	defer rollback()
+
+	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))
+	if err != nil {
+		return nil, err
+	}
+
+	if qIntermediateSession.PasswordVerified {
+		return nil, apierror.NewFailedPreconditionError("password already verified", fmt.Errorf("password already verified"))
+	}
 
 	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
@@ -60,7 +65,7 @@ func (s *Store) RegisterPassword(ctx context.Context, req *intermediatev1.Regist
 
 	qOrg, err := q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
 		ProjectID: authn.ProjectID(ctx),
-		ID:        orgID,
+		ID:        *qIntermediateSession.OrganizationID,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("get organization by id: %w", err)
@@ -81,6 +86,18 @@ func (s *Store) RegisterPassword(ctx context.Context, req *intermediatev1.Regist
 	}
 	if !emailVerified {
 		return nil, apierror.NewFailedPreconditionError("email not verified", fmt.Errorf("email not verified"))
+	}
+
+	// only allow password registration if the matching user doesn't already
+	// have one, or if the intermediate session has verified a password reset
+	// code
+	qUser, err := s.matchUser(ctx, q, qOrg, qIntermediateSession)
+	if err != nil {
+		return nil, fmt.Errorf("match user: %w", err)
+	}
+
+	if qUser != nil && qUser.PasswordBcrypt != nil && !qIntermediateSession.PasswordResetCodeVerified {
+		return nil, apierror.NewFailedPreconditionError("user already has password configured", fmt.Errorf("user already has password configured"))
 	}
 
 	passwordBcryptBytes, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcryptcost.Cost)
@@ -257,4 +274,136 @@ func (s *Store) VerifyPassword(ctx context.Context, req *intermediatev1.VerifyPa
 	}
 
 	return &intermediatev1.VerifyPasswordResponse{}, nil
+}
+
+func (s *Store) IssuePasswordResetCode(ctx context.Context, req *intermediatev1.IssuePasswordResetCodeRequest) (*intermediatev1.IssuePasswordResetCodeResponse, error) {
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get intermediate session by id: %w", err)
+	}
+
+	// we don't expect to issue these codes until after the initial email
+	// verification process, so enforce that expectation here
+
+	emailVerified, err := s.getIntermediateSessionEmailVerified(ctx, q, qIntermediateSession.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get intermediate session email verified: %w", err)
+	}
+
+	if !emailVerified {
+		return nil, apierror.NewFailedPreconditionError("email not verified", fmt.Errorf("email not verified"))
+	}
+
+	passwordResetCodeUUID := uuid.New()
+	passwordResetCodeSHA256 := sha256.Sum256(passwordResetCodeUUID[:])
+
+	if _, err := q.UpdateIntermediateSessionPasswordResetCodeSHA256(ctx, queries.UpdateIntermediateSessionPasswordResetCodeSHA256Params{
+		ID:                      qIntermediateSession.ID,
+		PasswordResetCodeSha256: passwordResetCodeSHA256[:],
+	}); err != nil {
+		return nil, fmt.Errorf("update intermediate session password reset code sha256: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
+	}
+
+	if err := s.sendPasswordResetCode(ctx, *qIntermediateSession.Email, idformat.PasswordResetCode.Format(passwordResetCodeUUID)); err != nil {
+		return nil, fmt.Errorf("send password reset code: %w", err)
+	}
+
+	return &intermediatev1.IssuePasswordResetCodeResponse{}, nil
+}
+
+var passwordResetEmailBodyTmpl = template.Must(template.New("emailVerificationEmailBody").Parse(`Hello,
+
+Someone has requested a password reset for your {{ .ProjectDisplayName }} account. If you did not request this, please ignore this email.
+
+To continue logging in to {{ .ProjectDisplayName }}, please go back to the "Forgot password" page and enter this verification code:
+
+{{ .PasswordResetCode }}
+
+If you did not request this verification, please ignore this email.
+`))
+
+func (s *Store) sendPasswordResetCode(ctx context.Context, toAddress string, passwordResetCode string) error {
+	qProject, err := s.q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return fmt.Errorf("get project by id: %w", err)
+	}
+
+	subject := fmt.Sprintf("%s - Reset password", qProject.DisplayName)
+
+	var body bytes.Buffer
+	if err := passwordResetEmailBodyTmpl.Execute(&body, struct {
+		ProjectDisplayName string
+		PasswordResetCode  string
+	}{
+		ProjectDisplayName: qProject.DisplayName,
+		PasswordResetCode:  passwordResetCode,
+	}); err != nil {
+		return fmt.Errorf("execute password reset email body template: %w", err)
+	}
+
+	if _, err := s.ses.SendEmail(ctx, &sesv2.SendEmailInput{
+		Content: &types.EmailContent{
+			Simple: &types.Message{
+				Subject: &types.Content{
+					Data: &subject,
+				},
+				Body: &types.Body{
+					Text: &types.Content{
+						Data: aws.String(body.String()),
+					},
+				},
+			},
+		},
+		Destination: &types.Destination{
+			ToAddresses: []string{toAddress},
+		},
+		FromEmailAddress: aws.String(fmt.Sprintf("noreply@%s", qProject.EmailSendFromDomain)),
+	}); err != nil {
+		return fmt.Errorf("send email: %w", err)
+	}
+
+	return nil
+}
+
+func (s *Store) VerifyPasswordResetCode(ctx context.Context, req *intermediatev1.VerifyPasswordResetCodeRequest) (*intermediatev1.VerifyPasswordResetCodeResponse, error) {
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get intermediate session by id: %w", err)
+	}
+
+	passwordResetCodeUUID, err := idformat.PasswordResetCode.Parse(req.PasswordResetCode)
+	if err != nil {
+		return nil, apierror.NewInvalidArgumentError("invalid password reset code", fmt.Errorf("parse password reset code: %w", err))
+	}
+
+	passwordResetCodeSHA256 := sha256.Sum256(passwordResetCodeUUID[:])
+	if !bytes.Equal(passwordResetCodeSHA256[:], qIntermediateSession.PasswordResetCodeSha256) {
+		return nil, apierror.NewFailedPreconditionError("invalid password reset code", fmt.Errorf("invalid password reset code"))
+	}
+
+	if _, err := q.UpdateIntermediateSessionPasswordResetCodeVerified(ctx, authn.IntermediateSessionID(ctx)); err != nil {
+		return nil, fmt.Errorf("update intermediate session password reset code verified: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
+	}
+
+	return &intermediatev1.VerifyPasswordResetCodeResponse{}, nil
 }

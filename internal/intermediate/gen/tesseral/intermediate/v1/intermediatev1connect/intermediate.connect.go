@@ -87,6 +87,12 @@ const (
 	// IntermediateServiceVerifyPasswordProcedure is the fully-qualified name of the
 	// IntermediateService's VerifyPassword RPC.
 	IntermediateServiceVerifyPasswordProcedure = "/tesseral.intermediate.v1.IntermediateService/VerifyPassword"
+	// IntermediateServiceIssuePasswordResetCodeProcedure is the fully-qualified name of the
+	// IntermediateService's IssuePasswordResetCode RPC.
+	IntermediateServiceIssuePasswordResetCodeProcedure = "/tesseral.intermediate.v1.IntermediateService/IssuePasswordResetCode"
+	// IntermediateServiceVerifyPasswordResetCodeProcedure is the fully-qualified name of the
+	// IntermediateService's VerifyPasswordResetCode RPC.
+	IntermediateServiceVerifyPasswordResetCodeProcedure = "/tesseral.intermediate.v1.IntermediateService/VerifyPasswordResetCode"
 	// IntermediateServiceGetPasskeyOptionsProcedure is the fully-qualified name of the
 	// IntermediateService's GetPasskeyOptions RPC.
 	IntermediateServiceGetPasskeyOptionsProcedure = "/tesseral.intermediate.v1.IntermediateService/GetPasskeyOptions"
@@ -140,6 +146,8 @@ type IntermediateServiceClient interface {
 	VerifyEmailChallenge(context.Context, *connect.Request[v1.VerifyEmailChallengeRequest]) (*connect.Response[v1.VerifyEmailChallengeResponse], error)
 	RegisterPassword(context.Context, *connect.Request[v1.RegisterPasswordRequest]) (*connect.Response[v1.RegisterPasswordResponse], error)
 	VerifyPassword(context.Context, *connect.Request[v1.VerifyPasswordRequest]) (*connect.Response[v1.VerifyPasswordResponse], error)
+	IssuePasswordResetCode(context.Context, *connect.Request[v1.IssuePasswordResetCodeRequest]) (*connect.Response[v1.IssuePasswordResetCodeResponse], error)
+	VerifyPasswordResetCode(context.Context, *connect.Request[v1.VerifyPasswordResetCodeRequest]) (*connect.Response[v1.VerifyPasswordResetCodeResponse], error)
 	GetPasskeyOptions(context.Context, *connect.Request[v1.GetPasskeyOptionsRequest]) (*connect.Response[v1.GetPasskeyOptionsResponse], error)
 	RegisterPasskey(context.Context, *connect.Request[v1.RegisterPasskeyRequest]) (*connect.Response[v1.RegisterPasskeyResponse], error)
 	IssuePasskeyChallenge(context.Context, *connect.Request[v1.IssuePasskeyChallengeRequest]) (*connect.Response[v1.IssuePasskeyChallengeResponse], error)
@@ -272,6 +280,18 @@ func NewIntermediateServiceClient(httpClient connect.HTTPClient, baseURL string,
 			connect.WithSchema(intermediateServiceMethods.ByName("VerifyPassword")),
 			connect.WithClientOptions(opts...),
 		),
+		issuePasswordResetCode: connect.NewClient[v1.IssuePasswordResetCodeRequest, v1.IssuePasswordResetCodeResponse](
+			httpClient,
+			baseURL+IntermediateServiceIssuePasswordResetCodeProcedure,
+			connect.WithSchema(intermediateServiceMethods.ByName("IssuePasswordResetCode")),
+			connect.WithClientOptions(opts...),
+		),
+		verifyPasswordResetCode: connect.NewClient[v1.VerifyPasswordResetCodeRequest, v1.VerifyPasswordResetCodeResponse](
+			httpClient,
+			baseURL+IntermediateServiceVerifyPasswordResetCodeProcedure,
+			connect.WithSchema(intermediateServiceMethods.ByName("VerifyPasswordResetCode")),
+			connect.WithClientOptions(opts...),
+		),
 		getPasskeyOptions: connect.NewClient[v1.GetPasskeyOptionsRequest, v1.GetPasskeyOptionsResponse](
 			httpClient,
 			baseURL+IntermediateServiceGetPasskeyOptionsProcedure,
@@ -355,6 +375,8 @@ type intermediateServiceClient struct {
 	verifyEmailChallenge                  *connect.Client[v1.VerifyEmailChallengeRequest, v1.VerifyEmailChallengeResponse]
 	registerPassword                      *connect.Client[v1.RegisterPasswordRequest, v1.RegisterPasswordResponse]
 	verifyPassword                        *connect.Client[v1.VerifyPasswordRequest, v1.VerifyPasswordResponse]
+	issuePasswordResetCode                *connect.Client[v1.IssuePasswordResetCodeRequest, v1.IssuePasswordResetCodeResponse]
+	verifyPasswordResetCode               *connect.Client[v1.VerifyPasswordResetCodeRequest, v1.VerifyPasswordResetCodeResponse]
 	getPasskeyOptions                     *connect.Client[v1.GetPasskeyOptionsRequest, v1.GetPasskeyOptionsResponse]
 	registerPasskey                       *connect.Client[v1.RegisterPasskeyRequest, v1.RegisterPasskeyResponse]
 	issuePasskeyChallenge                 *connect.Client[v1.IssuePasskeyChallengeRequest, v1.IssuePasskeyChallengeResponse]
@@ -465,6 +487,17 @@ func (c *intermediateServiceClient) VerifyPassword(ctx context.Context, req *con
 	return c.verifyPassword.CallUnary(ctx, req)
 }
 
+// IssuePasswordResetCode calls tesseral.intermediate.v1.IntermediateService.IssuePasswordResetCode.
+func (c *intermediateServiceClient) IssuePasswordResetCode(ctx context.Context, req *connect.Request[v1.IssuePasswordResetCodeRequest]) (*connect.Response[v1.IssuePasswordResetCodeResponse], error) {
+	return c.issuePasswordResetCode.CallUnary(ctx, req)
+}
+
+// VerifyPasswordResetCode calls
+// tesseral.intermediate.v1.IntermediateService.VerifyPasswordResetCode.
+func (c *intermediateServiceClient) VerifyPasswordResetCode(ctx context.Context, req *connect.Request[v1.VerifyPasswordResetCodeRequest]) (*connect.Response[v1.VerifyPasswordResetCodeResponse], error) {
+	return c.verifyPasswordResetCode.CallUnary(ctx, req)
+}
+
 // GetPasskeyOptions calls tesseral.intermediate.v1.IntermediateService.GetPasskeyOptions.
 func (c *intermediateServiceClient) GetPasskeyOptions(ctx context.Context, req *connect.Request[v1.GetPasskeyOptionsRequest]) (*connect.Response[v1.GetPasskeyOptionsResponse], error) {
 	return c.getPasskeyOptions.CallUnary(ctx, req)
@@ -540,6 +573,8 @@ type IntermediateServiceHandler interface {
 	VerifyEmailChallenge(context.Context, *connect.Request[v1.VerifyEmailChallengeRequest]) (*connect.Response[v1.VerifyEmailChallengeResponse], error)
 	RegisterPassword(context.Context, *connect.Request[v1.RegisterPasswordRequest]) (*connect.Response[v1.RegisterPasswordResponse], error)
 	VerifyPassword(context.Context, *connect.Request[v1.VerifyPasswordRequest]) (*connect.Response[v1.VerifyPasswordResponse], error)
+	IssuePasswordResetCode(context.Context, *connect.Request[v1.IssuePasswordResetCodeRequest]) (*connect.Response[v1.IssuePasswordResetCodeResponse], error)
+	VerifyPasswordResetCode(context.Context, *connect.Request[v1.VerifyPasswordResetCodeRequest]) (*connect.Response[v1.VerifyPasswordResetCodeResponse], error)
 	GetPasskeyOptions(context.Context, *connect.Request[v1.GetPasskeyOptionsRequest]) (*connect.Response[v1.GetPasskeyOptionsResponse], error)
 	RegisterPasskey(context.Context, *connect.Request[v1.RegisterPasskeyRequest]) (*connect.Response[v1.RegisterPasskeyResponse], error)
 	IssuePasskeyChallenge(context.Context, *connect.Request[v1.IssuePasskeyChallengeRequest]) (*connect.Response[v1.IssuePasskeyChallengeResponse], error)
@@ -667,6 +702,18 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 		connect.WithSchema(intermediateServiceMethods.ByName("VerifyPassword")),
 		connect.WithHandlerOptions(opts...),
 	)
+	intermediateServiceIssuePasswordResetCodeHandler := connect.NewUnaryHandler(
+		IntermediateServiceIssuePasswordResetCodeProcedure,
+		svc.IssuePasswordResetCode,
+		connect.WithSchema(intermediateServiceMethods.ByName("IssuePasswordResetCode")),
+		connect.WithHandlerOptions(opts...),
+	)
+	intermediateServiceVerifyPasswordResetCodeHandler := connect.NewUnaryHandler(
+		IntermediateServiceVerifyPasswordResetCodeProcedure,
+		svc.VerifyPasswordResetCode,
+		connect.WithSchema(intermediateServiceMethods.ByName("VerifyPasswordResetCode")),
+		connect.WithHandlerOptions(opts...),
+	)
 	intermediateServiceGetPasskeyOptionsHandler := connect.NewUnaryHandler(
 		IntermediateServiceGetPasskeyOptionsProcedure,
 		svc.GetPasskeyOptions,
@@ -765,6 +812,10 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 			intermediateServiceRegisterPasswordHandler.ServeHTTP(w, r)
 		case IntermediateServiceVerifyPasswordProcedure:
 			intermediateServiceVerifyPasswordHandler.ServeHTTP(w, r)
+		case IntermediateServiceIssuePasswordResetCodeProcedure:
+			intermediateServiceIssuePasswordResetCodeHandler.ServeHTTP(w, r)
+		case IntermediateServiceVerifyPasswordResetCodeProcedure:
+			intermediateServiceVerifyPasswordResetCodeHandler.ServeHTTP(w, r)
 		case IntermediateServiceGetPasskeyOptionsProcedure:
 			intermediateServiceGetPasskeyOptionsHandler.ServeHTTP(w, r)
 		case IntermediateServiceRegisterPasskeyProcedure:
@@ -864,6 +915,14 @@ func (UnimplementedIntermediateServiceHandler) RegisterPassword(context.Context,
 
 func (UnimplementedIntermediateServiceHandler) VerifyPassword(context.Context, *connect.Request[v1.VerifyPasswordRequest]) (*connect.Response[v1.VerifyPasswordResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.VerifyPassword is not implemented"))
+}
+
+func (UnimplementedIntermediateServiceHandler) IssuePasswordResetCode(context.Context, *connect.Request[v1.IssuePasswordResetCodeRequest]) (*connect.Response[v1.IssuePasswordResetCodeResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.IssuePasswordResetCode is not implemented"))
+}
+
+func (UnimplementedIntermediateServiceHandler) VerifyPasswordResetCode(context.Context, *connect.Request[v1.VerifyPasswordResetCodeRequest]) (*connect.Response[v1.VerifyPasswordResetCodeResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.VerifyPasswordResetCode is not implemented"))
 }
 
 func (UnimplementedIntermediateServiceHandler) GetPasskeyOptions(context.Context, *connect.Request[v1.GetPasskeyOptionsRequest]) (*connect.Response[v1.GetPasskeyOptionsResponse], error) {

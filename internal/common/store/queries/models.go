@@ -181,6 +181,8 @@ type IntermediateSession struct {
 	PasskeyRpID                         *string
 	PrimaryAuthFactor                   *PrimaryAuthFactor
 	RelayedSessionState                 *string
+	PasswordResetCodeSha256             []byte
+	PasswordResetCodeVerified           bool
 }
 
 type OauthVerifiedEmail struct {

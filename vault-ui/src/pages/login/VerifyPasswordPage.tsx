@@ -3,6 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { LoaderCircleIcon } from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
 import { z } from "zod";
 
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
@@ -91,6 +92,15 @@ export function VerifyPasswordPage() {
             </Button>
           </form>
         </Form>
+
+        <p className="mt-4 text-xs text-muted-foreground">
+          <Link
+            to="/forgot-password"
+            className="text-foreground underline underline-offset-2 decoration-muted-foreground"
+          >
+            Forgot your password?
+          </Link>
+        </p>
       </CardContent>
     </LoginFlowCard>
   );
