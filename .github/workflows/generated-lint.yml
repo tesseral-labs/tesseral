@@ -23,7 +23,7 @@ jobs:
           setup_only: true
       - name: make proto
         run: |
-          npm install
+          yarn
           make proto
       - name: check if index is dirty
         run: git diff --exit-code
@@ -34,7 +34,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: sqlc-dev/setup-sqlc@v4
         with:
-          sqlc-version: '1.27.0'
+          sqlc-version: "1.27.0"
       - name: sqlc
         run: |
           rm -r internal/store/queries internal/backend/store/queries internal/frontend/store/queries internal/intermediate/store/queries internal/saml/store/queries internal/scim/store/queries

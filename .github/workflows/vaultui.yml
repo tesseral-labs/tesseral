@@ -12,9 +12,8 @@ jobs:
         with:
           node-version-file: .nvmrc
       - run: |
-          cd vault-ui
-          npm ci
-          npm run fmt-check
+          yarn workspace @tesseral/vault-ui run ci
+          yarn workspace @tesseral/vault-ui run fmt-check
   lint:
     runs-on: ubuntu-latest
     steps:
@@ -23,9 +22,8 @@ jobs:
         with:
           node-version-file: .nvmrc
       - run: |
-          cd vault-ui
-          npm ci
-          npm run lint
+          yarn workspace @tesseral/vault-ui run ci
+          yarn workspace @tesseral/vault-ui run lint
   tsc-check:
     runs-on: ubuntu-latest
     steps:
@@ -34,6 +32,5 @@ jobs:
         with:
           node-version-file: .nvmrc
       - run: |
-          cd vault-ui
-          npm ci
-          npm run tsc-check
+          yarn workpsace @tesseral/vault-ui run ci
+          yarn workspace @tesseral/vault-ui run tsc-check
