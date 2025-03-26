@@ -106,6 +106,15 @@ export const EditOrganizationPage = () => {
   }, [getOrganizationResponse, getOrganizationDomainsResponse]);
 
   const onSubmit = async (values: z.infer<typeof schema>) => {
+    if (values.requireMfa) {
+      if (!values.logInWithAuthenticatorApp && !values.logInWithPasskey) {
+        form.setError('requireMfa', {
+          message: 'To require MFA, you must enable either Log in with Authenticator App or Log in with Passkey.',
+        })
+        return;
+      }
+    }
+
     await updateOrganizationMutation.mutateAsync({
       id: organizationId,
       organization: {
