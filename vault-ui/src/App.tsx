@@ -38,6 +38,7 @@ import { VerifySecondaryFactorPage } from "@/pages/login/VerifySecondaryFactorPa
 
 import { DashboardLayout } from "./pages/dashboard/DashboardLayout";
 import { UserSettingsPage } from "./pages/dashboard/UserSettingsPage";
+import { SignupPage } from "@/pages/login/SignupPage";
 
 const queryClient = new QueryClient();
 
@@ -57,6 +58,8 @@ function AppWithRoutes() {
         <BrowserRouter>
           <Routes>
             <Route path="login" element={<LoginPage />} />
+            <Route path="signup" element={<SignupPage />} />
+
             <Route path="" element={<LoginFlowLayout />}>
               <Route path="verify-email" element={<VerifyEmailPage />} />
               <Route

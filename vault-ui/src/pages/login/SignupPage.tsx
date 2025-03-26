@@ -39,31 +39,31 @@ import {
   useProjectSettings,
 } from "@/lib/project-settings";
 
-export function LoginPage() {
+export function SignupPage() {
   return (
     <ProjectSettingsProvider>
-      <LoginPageInner>
-        <LoginPageContents />
-      </LoginPageInner>
+      <SignupPageInner>
+        <SignupPageContents />
+      </SignupPageInner>
     </ProjectSettingsProvider>
   );
 }
 
-function LoginPageInner({ children }: { children?: React.ReactNode }) {
+function SignupPageInner({ children }: { children?: React.ReactNode }) {
   const { logInLayout } = useProjectSettings();
 
   return (
     <>
       {logInLayout === "centered" ? (
-        <CenteredLoginPage>{children}</CenteredLoginPage>
+        <CenteredSignupPage>{children}</CenteredSignupPage>
       ) : (
-        <SideBySideLoginPage>{children}</SideBySideLoginPage>
+        <SideBySideSignupPage>{children}</SideBySideSignupPage>
       )}
     </>
   );
 }
 
-function CenteredLoginPage({ children }: { children?: React.ReactNode }) {
+function CenteredSignupPage({ children }: { children?: React.ReactNode }) {
   const settings = useProjectSettings();
   const isDarkMode = useDarkMode();
 
@@ -83,7 +83,7 @@ function CenteredLoginPage({ children }: { children?: React.ReactNode }) {
   );
 }
 
-function SideBySideLoginPage({ children }: { children?: React.ReactNode }) {
+function SideBySideSignupPage({ children }: { children?: React.ReactNode }) {
   const settings = useProjectSettings();
   const isDarkMode = useDarkMode();
 
@@ -110,7 +110,7 @@ const schema = z.object({
   email: z.string().email(),
 });
 
-function LoginPageContents() {
+function SignupPageContents() {
   const settings = useProjectSettings();
   const darkMode = useDarkMode();
 
@@ -200,8 +200,8 @@ function LoginPageContents() {
   return (
     <LoginFlowCard>
       <CardHeader>
-        <CardTitle>Log in to {settings.projectDisplayName}</CardTitle>
-        <CardDescription>Please sign in to continue.</CardDescription>
+        <CardTitle>Sign up for {settings.projectDisplayName}</CardTitle>
+        <CardDescription>Please sign up to continue.</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-2">
@@ -212,7 +212,7 @@ function LoginPageContents() {
               onClick={handleLogInWithGoogle}
             >
               <GoogleIcon />
-              Log in with Google
+              Sign up with Google
             </Button>
           )}
           {settings.logInWithMicrosoft && (
@@ -222,7 +222,7 @@ function LoginPageContents() {
               onClick={handleLogInWithMicrosoft}
             >
               <MicrosoftIcon />
-              Log in with Microsoft
+              Sign up with Microsoft
             </Button>
           )}
         </div>
@@ -264,19 +264,19 @@ function LoginPageContents() {
                 {submitting && (
                   <LoaderCircleIcon className="h-4 w-4 animate-spin" />
                 )}
-                Log in
+                Sign up
               </Button>
             </form>
           </Form>
         )}
 
         <p className="mt-4 text-xs text-muted-foreground">
-          Don't have an account?{" "}
+          Already have an account?{" "}
           <Link
-            to="/signup"
+            to="/login"
             className="cursor-pointer text-foreground underline underline-offset-2 decoration-muted-foreground"
           >
-            Sign up.
+            Log in.
           </Link>
         </p>
       </CardContent>
