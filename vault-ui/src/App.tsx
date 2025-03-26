@@ -28,6 +28,7 @@ import { RegisterAuthenticatorAppPage } from "@/pages/login/RegisterAuthenticato
 import { RegisterPasskeyPage } from "@/pages/login/RegisterPasskeyPage";
 import { RegisterPasswordPage } from "@/pages/login/RegisterPasswordPage";
 import { RegisterSecondaryFactorPage } from "@/pages/login/RegisterSecondaryFactorPage";
+import { SignupPage } from "@/pages/login/SignupPage";
 import { SwitchOrganizationsPage } from "@/pages/login/SwitchOrganizationsPage";
 import { VerifyAuthenticatorAppPage } from "@/pages/login/VerifyAuthenticatorAppPage";
 import { VerifyAuthenticatorAppRecoveryCodePage } from "@/pages/login/VerifyAuthenticatorAppRecoveryCodePage";
@@ -38,7 +39,6 @@ import { VerifySecondaryFactorPage } from "@/pages/login/VerifySecondaryFactorPa
 
 import { DashboardLayout } from "./pages/dashboard/DashboardLayout";
 import { UserSettingsPage } from "./pages/dashboard/UserSettingsPage";
-import { SignupPage } from "@/pages/login/SignupPage";
 
 const queryClient = new QueryClient();
 
