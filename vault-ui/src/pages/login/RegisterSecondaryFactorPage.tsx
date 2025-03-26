@@ -9,10 +9,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useDarkMode } from "@/lib/dark-mode";
 
 export function RegisterSecondaryFactorPage() {
-  const darkMode = useDarkMode();
   return (
     <LoginFlowCard>
       <CardHeader>
@@ -24,19 +22,11 @@ export function RegisterSecondaryFactorPage() {
       </CardHeader>
       <CardContent>
         <div className="space-y-2">
-          <Button
-            className="w-full"
-            variant={darkMode ? "default" : "outline"}
-            asChild
-          >
+          <Button className="w-full" variant="outline" asChild>
             <Link to="/register-passkey">Set up a passkey</Link>
           </Button>
 
-          <Button
-            className="w-full"
-            variant={darkMode ? "default" : "outline"}
-            asChild
-          >
+          <Button className="w-full" variant="outline" asChild>
             <Link to="/register-authenticator-app">
               Set up an authenticator app
             </Link>

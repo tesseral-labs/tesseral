@@ -34,14 +34,12 @@ import {
   registerAuthenticatorApp,
 } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
 import { useRedirectNextLoginFlowPage } from "@/hooks/use-redirect-next-login-flow-page";
-import { useDarkMode } from "@/lib/dark-mode";
 
 const schema = z.object({
   totpCode: z.string().length(6),
 });
 
 export function RegisterAuthenticatorAppPage() {
-  const darkMode = useDarkMode();
   const { mutateAsync: getAuthenticatorAppOptionsAsync } = useMutation(
     getAuthenticatorAppOptions,
   );
@@ -163,11 +161,7 @@ export function RegisterAuthenticatorAppPage() {
               )}
             />
 
-            <Button
-              type="submit"
-              className="mt-4 w-full"
-              variant={darkMode ? "outline" : "default"}
-            >
+            <Button type="submit" className="mt-4 w-full">
               Set up authenticator app
             </Button>
           </form>

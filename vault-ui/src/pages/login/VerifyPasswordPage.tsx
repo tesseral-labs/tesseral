@@ -25,14 +25,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { verifyPassword } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
 import { useRedirectNextLoginFlowPage } from "@/hooks/use-redirect-next-login-flow-page";
-import { useDarkMode } from "@/lib/dark-mode";
 
 const schema = z.object({
   password: z.string().nonempty(),
 });
 
 export function VerifyPasswordPage() {
-  const darkMode = useDarkMode();
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -79,12 +77,7 @@ export function VerifyPasswordPage() {
               )}
             />
 
-            <Button
-              type="submit"
-              className="mt-4 w-full"
-              variant={darkMode ? "outline" : "default"}
-              disabled={submitting}
-            >
+            <Button type="submit" className="mt-4 w-full" disabled={submitting}>
               {submitting && (
                 <LoaderCircleIcon className="h-4 w-4 animate-spin" />
               )}

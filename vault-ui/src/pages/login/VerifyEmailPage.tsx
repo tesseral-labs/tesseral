@@ -37,7 +37,6 @@ import {
   verifyEmailChallenge,
   whoami,
 } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
-import { useDarkMode } from "@/lib/dark-mode";
 
 const schema = z.object({
   emailVerificationChallengeCode: z
@@ -47,7 +46,6 @@ const schema = z.object({
 
 export function VerifyEmailPage() {
   const { data: whoamiResponse } = useQuery(whoami);
-  const darkMode = useDarkMode();
 
   const issueEmailVerificationChallengeMutation = useMutation(
     issueEmailVerificationChallenge,
@@ -126,7 +124,7 @@ export function VerifyEmailPage() {
 
         <Button
           className="mt-4 w-full"
-          variant={darkMode ? "default" : "outline"}
+          variant="outline"
           disabled={hasResent}
           onClick={handleResend}
         >
@@ -179,7 +177,6 @@ export function VerifyEmailPage() {
                   <Button
                     type="submit"
                     className="mt-4 w-full"
-                    variant={darkMode ? "outline" : "default"}
                     disabled={submitting}
                   >
                     {submitting && (
