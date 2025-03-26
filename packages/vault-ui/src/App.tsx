@@ -4,6 +4,8 @@ import { createConnectTransport } from "@connectrpc/connect-web";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   AuthenticateAnotherWayPage,
+  ChooseOrganizationPage,
+  CreateOrganizationPage,
   FinishLoginPage,
   GoogleOAuthCallbackPage,
   ImpersonatePage,
@@ -37,8 +39,6 @@ import { OrganizationUsersTab } from "@/pages/dashboard/OrganizationUsersTab";
 
 import { DashboardLayout } from "./pages/dashboard/DashboardLayout";
 import { UserSettingsPage } from "./pages/dashboard/UserSettingsPage";
-import { ChooseOrganizationPage } from "./pages/login/ChooseOrganizationPage";
-import { CreateOrganizationPage } from "./pages/login/CreateOrganizationPage";
 
 const queryClient = new QueryClient();
 

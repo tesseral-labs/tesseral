@@ -1050,7 +1050,7 @@
             }
             return lazyType2;
           }
-          function forwardRef58(render) {
+          function forwardRef59(render) {
             {
               if (render != null && render.$$typeof === REACT_MEMO_TYPE) {
                 error2("forwardRef requires a render function but received a `memo` component. Instead of forwardRef(memo(...)), use memo(forwardRef(...)).");
@@ -1163,7 +1163,7 @@
             }
             return dispatcher.useContext(Context2);
           }
-          function useState58(initialState) {
+          function useState59(initialState) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useState(initialState);
           }
@@ -1175,7 +1175,7 @@
             var dispatcher = resolveDispatcher();
             return dispatcher.useRef(initialValue);
           }
-          function useEffect65(create2, deps) {
+          function useEffect66(create2, deps) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useEffect(create2, deps);
           }
@@ -1948,7 +1948,7 @@
           exports.createElement = createElement$1;
           exports.createFactory = createFactory;
           exports.createRef = createRef2;
-          exports.forwardRef = forwardRef58;
+          exports.forwardRef = forwardRef59;
           exports.isValidElement = isValidElement3;
           exports.lazy = lazy;
           exports.memo = memo3;
@@ -1958,7 +1958,7 @@
           exports.useContext = useContext16;
           exports.useDebugValue = useDebugValue;
           exports.useDeferredValue = useDeferredValue;
-          exports.useEffect = useEffect65;
+          exports.useEffect = useEffect66;
           exports.useId = useId5;
           exports.useImperativeHandle = useImperativeHandle2;
           exports.useInsertionEffect = useInsertionEffect2;
@@ -1966,7 +1966,7 @@
           exports.useMemo = useMemo17;
           exports.useReducer = useReducer3;
           exports.useRef = useRef27;
-          exports.useState = useState58;
+          exports.useState = useState59;
           exports.useSyncExternalStore = useSyncExternalStore3;
           exports.useTransition = useTransition;
           exports.version = ReactVersion;
@@ -2462,9 +2462,9 @@
           if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
             __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
           }
-          var React154 = require_react();
+          var React158 = require_react();
           var Scheduler = require_scheduler();
-          var ReactSharedInternals = React154.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+          var ReactSharedInternals = React158.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
           var suppressWarning = false;
           function setSuppressWarning(newSuppressWarning) {
             {
@@ -4071,7 +4071,7 @@
             {
               if (props.value == null) {
                 if (typeof props.children === "object" && props.children !== null) {
-                  React154.Children.forEach(props.children, function(child) {
+                  React158.Children.forEach(props.children, function(child) {
                     if (child == null) {
                       return;
                     }
@@ -23667,7 +23667,7 @@
       if (true) {
         (function() {
           "use strict";
-          var React154 = require_react();
+          var React158 = require_react();
           var REACT_ELEMENT_TYPE = Symbol.for("react.element");
           var REACT_PORTAL_TYPE = Symbol.for("react.portal");
           var REACT_FRAGMENT_TYPE = Symbol.for("react.fragment");
@@ -23693,7 +23693,7 @@
             }
             return null;
           }
-          var ReactSharedInternals = React154.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+          var ReactSharedInternals = React158.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
           function error2(format) {
             {
               {
@@ -25349,8 +25349,8 @@
       function _interopDefault(ex) {
         return ex && typeof ex === "object" && "default" in ex ? ex["default"] : ex;
       }
-      var React154 = require_react();
-      var React__default = _interopDefault(React154);
+      var React158 = require_react();
+      var React__default = _interopDefault(React158);
       function _defineProperty(obj, key, value) {
         if (key in obj) {
           Object.defineProperty(obj, key, {
@@ -25433,7 +25433,7 @@
               return React__default.createElement(WrappedComponent, this.props);
             };
             return SideEffect2;
-          }(React154.PureComponent);
+          }(React158.PureComponent);
           _defineProperty(SideEffect, "displayName", "SideEffect(" + getDisplayName(WrappedComponent) + ")");
           _defineProperty(SideEffect, "canUseDOM", canUseDOM);
           return SideEffect;
@@ -27599,11 +27599,11 @@
   });
 
   // src/index.tsx
-  var import_react90 = __toESM(require_react());
+  var import_react94 = __toESM(require_react());
   var import_client = __toESM(require_client());
 
   // src/App.tsx
-  var import_react89 = __toESM(require_react());
+  var import_react93 = __toESM(require_react());
 
   // src/components/page.tsx
   var import_react9 = __toESM(require_react());
@@ -38066,15 +38066,15 @@
   }
 
   // ../../node_modules/@bufbuild/protobuf/dist/esm/is-message.js
-  function isMessage(arg, schema18) {
+  function isMessage(arg, schema19) {
     const isMessage3 = arg !== null && typeof arg == "object" && "$typeName" in arg && typeof arg.$typeName == "string";
     if (!isMessage3) {
       return false;
     }
-    if (schema18 === void 0) {
+    if (schema19 === void 0) {
       return true;
     }
-    return schema18.typeName === arg.$typeName;
+    return schema19.typeName === arg.$typeName;
   }
 
   // ../../node_modules/@bufbuild/protobuf/dist/esm/descriptors.js
@@ -38594,13 +38594,13 @@
   var EDITION_PROTO3 = 999;
   var EDITION_PROTO2 = 998;
   var IMPLICIT2 = 2;
-  function create(schema18, init) {
-    if (isMessage(init, schema18)) {
+  function create(schema19, init) {
+    if (isMessage(init, schema19)) {
       return init;
     }
-    const message = createZeroMessage(schema18);
+    const message = createZeroMessage(schema19);
     if (init !== void 0) {
-      initMessage(schema18, message, init);
+      initMessage(schema19, message, init);
     }
     return message;
   }
@@ -41138,8 +41138,8 @@
   function makeReadOptions(options) {
     return options ? Object.assign(Object.assign({}, readDefaults), options) : readDefaults;
   }
-  function fromBinary(schema18, bytes, options) {
-    const msg = reflect(schema18, void 0, false);
+  function fromBinary(schema19, bytes, options) {
+    const msg = reflect(schema19, void 0, false);
     readMessage(msg, new BinaryReader(bytes), makeReadOptions(options), false, bytes.byteLength);
     return msg.message;
   }
@@ -41326,8 +41326,8 @@
   function makeWriteOptions(options) {
     return options ? Object.assign(Object.assign({}, writeDefaults), options) : writeDefaults;
   }
-  function toBinary(schema18, message, options) {
-    return writeFields(new BinaryWriter(), makeWriteOptions(options), reflect(schema18, message)).finish();
+  function toBinary(schema19, message, options) {
+    return writeFields(new BinaryWriter(), makeWriteOptions(options), reflect(schema19, message)).finish();
   }
   function writeFields(writer, opts, msg) {
     var _a10;
@@ -41491,13 +41491,13 @@
   }
 
   // ../../node_modules/@bufbuild/protobuf/dist/esm/wkt/any.js
-  function anyPack(schema18, message, into) {
+  function anyPack(schema19, message, into) {
     let ret = false;
     if (!into) {
       into = create(AnySchema);
       ret = true;
     }
-    into.value = toBinary(schema18, message);
+    into.value = toBinary(schema19, message);
     into.typeUrl = typeNameToUrl(message.$typeName);
     return ret ? into : void 0;
   }
@@ -41609,14 +41609,14 @@
   }
 
   // ../../node_modules/@bufbuild/protobuf/dist/esm/equals.js
-  function equals(schema18, a2, b2, options) {
-    if (a2.$typeName != schema18.typeName || b2.$typeName != schema18.typeName) {
+  function equals(schema19, a2, b2, options) {
+    if (a2.$typeName != schema19.typeName || b2.$typeName != schema19.typeName) {
       return false;
     }
     if (a2 === b2) {
       return true;
     }
-    return reflectEquals(reflect(schema18, a2), reflect(schema18, b2), options);
+    return reflectEquals(reflect(schema19, a2), reflect(schema19, b2), options);
   }
   function reflectEquals(a2, b2, opts) {
     if (a2.desc.typeName === "google.protobuf.Any" && (opts === null || opts === void 0 ? void 0 : opts.unpackAny) == true) {
@@ -41726,9 +41726,9 @@
     const unpackedA = anyUnpack(a2, opts.registry);
     const unpackedB = anyUnpack(b2, opts.registry);
     if (unpackedA && unpackedB) {
-      const schema18 = opts.registry.getMessage(unpackedA.$typeName);
-      if (schema18) {
-        return equals(schema18, unpackedA, unpackedB, opts);
+      const schema19 = opts.registry.getMessage(unpackedA.$typeName);
+      if (schema19) {
+        return equals(schema19, unpackedA, unpackedB, opts);
       }
     }
     return scalarEquals(ScalarType.BYTES, a2.value, b2.value);
@@ -41789,12 +41789,12 @@
   function makeWriteOptions2(options) {
     return options ? Object.assign(Object.assign({}, jsonWriteDefaults), options) : jsonWriteDefaults;
   }
-  function toJson(schema18, message, options) {
-    return reflectToJson(reflect(schema18, message), makeWriteOptions2(options));
+  function toJson(schema19, message, options) {
+    return reflectToJson(reflect(schema19, message), makeWriteOptions2(options));
   }
-  function toJsonString(schema18, message, options) {
+  function toJsonString(schema19, message, options) {
     var _a10;
-    const jsonValue = toJson(schema18, message, options);
+    const jsonValue = toJson(schema19, message, options);
     return JSON.stringify(jsonValue, null, (_a10 = options === null || options === void 0 ? void 0 : options.prettySpaces) !== null && _a10 !== void 0 ? _a10 : 0);
   }
   function reflectToJson(msg, opts) {
@@ -42108,11 +42108,11 @@
   function makeReadOptions2(options) {
     return options ? Object.assign(Object.assign({}, jsonReadDefaults), options) : jsonReadDefaults;
   }
-  function fromJsonString(schema18, json2, options) {
-    return fromJson(schema18, parseJsonString(json2, schema18.typeName), options);
+  function fromJsonString(schema19, json2, options) {
+    return fromJson(schema19, parseJsonString(json2, schema19.typeName), options);
   }
-  function fromJson(schema18, json2, options) {
-    const msg = reflect(schema18);
+  function fromJson(schema19, json2, options) {
+    const msg = reflect(schema19);
     try {
       readMessage2(msg, json2, makeReadOptions2(options));
     } catch (e2) {
@@ -42596,8 +42596,8 @@
   }
 
   // ../../node_modules/@connectrpc/connect-query-core/dist/esm/message-key.js
-  function createMessageKey(schema18, value, pageParamKey) {
-    return messageKey(reflect(schema18, create(schema18, value)), pageParamKey == null ? void 0 : pageParamKey.toString());
+  function createMessageKey(schema19, value, pageParamKey) {
+    return messageKey(reflect(schema19, create(schema19, value)), pageParamKey == null ? void 0 : pageParamKey.toString());
   }
   function scalarKey(value) {
     if (typeof value == "bigint") {
@@ -42709,8 +42709,8 @@
   }
 
   // ../../node_modules/@connectrpc/connect-query-core/dist/esm/call-unary-method.js
-  async function callUnaryMethod(transport, schema18, input, options) {
-    const result = await transport.unary(schema18, options == null ? void 0 : options.signal, void 0, void 0, input != null ? input : create(schema18.input), void 0);
+  async function callUnaryMethod(transport, schema19, input, options) {
+    const result = await transport.unary(schema19, options == null ? void 0 : options.signal, void 0, void 0, input != null ? input : create(schema19.input), void 0);
     return result.message;
   }
 
@@ -45112,12 +45112,12 @@
   }, _a9);
 
   // ../../node_modules/@connectrpc/connect-query-core/dist/esm/structural-sharing.js
-  function createStructuralSharing(schema18) {
+  function createStructuralSharing(schema19) {
     return function(oldData, newData) {
       if (!isMessage(oldData) || !isMessage(newData)) {
         return newData;
       }
-      if (!equals(schema18, oldData, newData)) {
+      if (!equals(schema19, oldData, newData)) {
         return newData;
       }
       return oldData;
@@ -45125,22 +45125,22 @@
   }
 
   // ../../node_modules/@connectrpc/connect-query-core/dist/esm/create-query-options.js
-  function createUnaryQueryFn(transport, schema18, input) {
+  function createUnaryQueryFn(transport, schema19, input) {
     return async (context) => {
-      return callUnaryMethod(transport, schema18, input, {
+      return callUnaryMethod(transport, schema19, input, {
         signal: context.signal
       });
     };
   }
-  function createQueryOptions(schema18, input, { transport }) {
+  function createQueryOptions(schema19, input, { transport }) {
     const queryKey = createConnectQueryKey({
-      schema: schema18,
-      input: input != null ? input : create(schema18.input),
+      schema: schema19,
+      input: input != null ? input : create(schema19.input),
       transport,
       cardinality: "finite"
     });
-    const structuralSharing = createStructuralSharing(schema18.output);
-    const queryFn = input === skipToken ? skipToken : createUnaryQueryFn(transport, schema18, input);
+    const structuralSharing = createStructuralSharing(schema19.output);
+    const queryFn = input === skipToken ? skipToken : createUnaryQueryFn(transport, schema19, input);
     return {
       queryKey,
       queryFn,
@@ -46043,10 +46043,10 @@
   }
 
   // ../../node_modules/@connectrpc/connect-query/dist/esm/use-query.js
-  function useQuery2(schema18, input, _a10 = {}) {
+  function useQuery2(schema19, input, _a10 = {}) {
     var _b2 = _a10, { transport } = _b2, queryOptions = __objRest(_b2, ["transport"]);
     const transportFromCtx = useTransport();
-    const baseOptions = createQueryOptions(schema18, input, {
+    const baseOptions = createQueryOptions(schema19, input, {
       transport: transport != null ? transport : transportFromCtx
     });
     return useQuery(__spreadValues(__spreadValues({}, baseOptions), queryOptions));
@@ -46054,11 +46054,11 @@
 
   // ../../node_modules/@connectrpc/connect-query/dist/esm/use-mutation.js
   var import_react6 = __toESM(require_react(), 1);
-  function useMutation2(schema18, _a10 = {}) {
+  function useMutation2(schema19, _a10 = {}) {
     var _b2 = _a10, { transport } = _b2, queryOptions = __objRest(_b2, ["transport"]);
     const transportFromCtx = useTransport();
     const transportToUse = transport != null ? transport : transportFromCtx;
-    const mutationFn = (0, import_react6.useCallback)(async (input) => callUnaryMethod(transportToUse, schema18, input), [transportToUse, schema18]);
+    const mutationFn = (0, import_react6.useCallback)(async (input) => callUnaryMethod(transportToUse, schema19, input), [transportToUse, schema19]);
     return useMutation(__spreadProps(__spreadValues({}, queryOptions), {
       mutationFn
     }));
@@ -58691,37 +58691,37 @@
       return this.min(1, message);
     }
   };
-  ZodArray.create = (schema18, params) => {
+  ZodArray.create = (schema19, params) => {
     return new ZodArray(__spreadValues({
-      type: schema18,
+      type: schema19,
       minLength: null,
       maxLength: null,
       exactLength: null,
       typeName: ZodFirstPartyTypeKind.ZodArray
     }, processCreateParams(params)));
   };
-  function deepPartialify(schema18) {
-    if (schema18 instanceof ZodObject) {
+  function deepPartialify(schema19) {
+    if (schema19 instanceof ZodObject) {
       const newShape = {};
-      for (const key in schema18.shape) {
-        const fieldSchema = schema18.shape[key];
+      for (const key in schema19.shape) {
+        const fieldSchema = schema19.shape[key];
         newShape[key] = ZodOptional.create(deepPartialify(fieldSchema));
       }
-      return new ZodObject(__spreadProps(__spreadValues({}, schema18._def), {
+      return new ZodObject(__spreadProps(__spreadValues({}, schema19._def), {
         shape: () => newShape
       }));
-    } else if (schema18 instanceof ZodArray) {
-      return new ZodArray(__spreadProps(__spreadValues({}, schema18._def), {
-        type: deepPartialify(schema18.element)
+    } else if (schema19 instanceof ZodArray) {
+      return new ZodArray(__spreadProps(__spreadValues({}, schema19._def), {
+        type: deepPartialify(schema19.element)
       }));
-    } else if (schema18 instanceof ZodOptional) {
-      return ZodOptional.create(deepPartialify(schema18.unwrap()));
-    } else if (schema18 instanceof ZodNullable) {
-      return ZodNullable.create(deepPartialify(schema18.unwrap()));
-    } else if (schema18 instanceof ZodTuple) {
-      return ZodTuple.create(schema18.items.map((item) => deepPartialify(item)));
+    } else if (schema19 instanceof ZodOptional) {
+      return ZodOptional.create(deepPartialify(schema19.unwrap()));
+    } else if (schema19 instanceof ZodNullable) {
+      return ZodNullable.create(deepPartialify(schema19.unwrap()));
+    } else if (schema19 instanceof ZodTuple) {
+      return ZodTuple.create(schema19.items.map((item) => deepPartialify(item)));
     } else {
-      return schema18;
+      return schema19;
     }
   }
   var ZodObject = class _ZodObject extends ZodType {
@@ -58926,8 +58926,8 @@
     //   }) as any;
     //   return merged;
     // }
-    setKey(key, schema18) {
-      return this.augment({ [key]: schema18 });
+    setKey(key, schema19) {
+      return this.augment({ [key]: schema19 });
     }
     // merge<Incoming extends AnyZodObject>(
     //   merging: Incoming
@@ -59358,10 +59358,10 @@
         status.dirty();
       }
       const items = [...ctx.data].map((item, itemIndex) => {
-        const schema18 = this._def.items[itemIndex] || this._def.rest;
-        if (!schema18)
+        const schema19 = this._def.items[itemIndex] || this._def.rest;
+        if (!schema19)
           return null;
-        return schema18._parse(new ParseInputLazyPath(ctx, item, ctx.path, itemIndex));
+        return schema19._parse(new ParseInputLazyPath(ctx, item, ctx.path, itemIndex));
       }).filter((x3) => !!x3);
       if (ctx.common.async) {
         return Promise.all(items).then((results) => {
@@ -59874,9 +59874,9 @@
       }));
     }
   };
-  ZodPromise.create = (schema18, params) => {
+  ZodPromise.create = (schema19, params) => {
     return new ZodPromise(__spreadValues({
-      type: schema18,
+      type: schema19,
       typeName: ZodFirstPartyTypeKind.ZodPromise
     }, processCreateParams(params)));
   };
@@ -60000,16 +60000,16 @@
       util.assertNever(effect);
     }
   };
-  ZodEffects.create = (schema18, effect, params) => {
+  ZodEffects.create = (schema19, effect, params) => {
     return new ZodEffects(__spreadValues({
-      schema: schema18,
+      schema: schema19,
       typeName: ZodFirstPartyTypeKind.ZodEffects,
       effect
     }, processCreateParams(params)));
   };
-  ZodEffects.createWithPreprocess = (preprocess, schema18, params) => {
+  ZodEffects.createWithPreprocess = (preprocess, schema19, params) => {
     return new ZodEffects(__spreadValues({
-      schema: schema18,
+      schema: schema19,
       effect: { type: "preprocess", transform: preprocess },
       typeName: ZodFirstPartyTypeKind.ZodEffects
     }, processCreateParams(params)));
@@ -69057,7 +69057,10 @@
     ))));
   }
 
-  // ../common-ui/src/pages/login/FinishLoginPage.tsx
+  // ../common-ui/src/pages/login/ChooseOrganizationPage.tsx
+  var import_react65 = __toESM(require_react());
+
+  // ../common-ui/src/lib/dark-mode.ts
   var import_react64 = __toESM(require_react());
 
   // ../common-ui/src/lib/project-settings.tsx
@@ -69082,29 +69085,407 @@
     return settings;
   }
 
-  // ../common-ui/src/pages/login/FinishLoginPage.tsx
-  function FinishLoginPage() {
+  // ../common-ui/src/lib/dark-mode.ts
+  function useDarkMode() {
     const settings = useProjectSettings();
-    const { mutateAsync: exchangeIntermediateSessionForSessionAsync } = useMutation2(exchangeIntermediateSessionForSession);
+    const [isDarkMode, setIsDarkMode] = (0, import_react64.useState)(() => {
+      const matcher = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)");
+      return matcher ? matcher.matches : false;
+    });
     (0, import_react64.useEffect)(() => {
-      (async () => {
-        const { newUser, relayedSessionToken } = await exchangeIntermediateSessionForSessionAsync({});
-        const preferredRedirect = newUser ? settings.afterSignupRedirectUri : settings.afterLoginRedirectUri;
-        const url = new URL(preferredRedirect != null ? preferredRedirect : settings.redirectUri);
-        if (relayedSessionToken) {
-          url.hash = "__tesseral_".concat(settings.projectId, "_relayed_session_token=").concat(relayedSessionToken);
-        }
-        window.location.href = url.toString();
-      })();
-    }, [settings, exchangeIntermediateSessionForSessionAsync]);
-    return /* @__PURE__ */ import_react64.default.createElement(LoaderCircle, { className: "mx-auto text-muted-foreground h-4 w-4 animate-spin" });
+      const matcher = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)");
+      if (matcher) {
+        const handleDarkModeChange = (event) => {
+          setIsDarkMode(event.matches);
+        };
+        matcher.addEventListener("change", handleDarkModeChange);
+        return () => {
+          matcher.removeEventListener("change", handleDarkModeChange);
+        };
+      }
+    }, []);
+    return settings.detectDarkModeEnabled ? isDarkMode : false;
   }
 
-  // ../common-ui/src/pages/login/GoogleOAuthCallbackPage.tsx
+  // ../common-ui/src/pages/login/ChooseProjectPage.tsx
+  var import_react69 = __toESM(require_react());
+
+  // ../common-ui/src/components/Title.tsx
   var import_react66 = __toESM(require_react());
+  var Title3 = ({ title }) => {
+    return /* @__PURE__ */ import_react66.default.createElement(HelmetExport, null, title ? /* @__PURE__ */ import_react66.default.createElement("title", null, title, " | Tesseral") : /* @__PURE__ */ import_react66.default.createElement("title", null, "Tesseral"));
+  };
+
+  // ../common-ui/src/components/ui/text-divider.tsx
+  var import_react67 = __toESM(require_react());
+  var textDividerVariants = cva("block relative w-full", {
+    variants: {
+      variant: {
+        default: "my-4",
+        tight: "my-2",
+        tighter: "my-1",
+        wide: "my-6",
+        wider: "my-8",
+        widest: "my-12"
+      },
+      affects: {
+        default: "[&>div.absolute>span]:border-muted-foreground [&>div.relative>span]:text-muted-foreground",
+        muted: "[&>div.absolute>span]:border-muted [&>div.relative>span]:text-muted"
+      }
+    },
+    defaultVariants: {
+      variant: "default",
+      affects: "default"
+    }
+  });
+  var TextDivider = import_react67.default.forwardRef(
+    (_a10, ref) => {
+      var _b2 = _a10, { affects, children, className, variant } = _b2, props = __objRest(_b2, ["affects", "children", "className", "variant"]);
+      return /* @__PURE__ */ import_react67.default.createElement(
+        "div",
+        __spreadProps(__spreadValues({
+          className: cn2(textDividerVariants({ affects, variant, className }))
+        }, props), {
+          ref
+        }),
+        /* @__PURE__ */ import_react67.default.createElement("div", { className: "absolute inset-0 flex items-center" }, /* @__PURE__ */ import_react67.default.createElement("span", { className: "w-full border-t" })),
+        /* @__PURE__ */ import_react67.default.createElement("div", { className: "relative flex justify-center text-xs uppercase" }, /* @__PURE__ */ import_react67.default.createElement("span", { className: "bg-card px-2" }, children))
+      );
+    }
+  );
+  TextDivider.displayName = "TextDivider";
+  var text_divider_default = TextDivider;
+
+  // ../common-ui/src/lib/errors.ts
+  var parseErrorMessage2 = (error2) => {
+    let message = !!error2.message ? error2.message : error2;
+    if (!!error2.details && error2.details.length > 0) {
+      const err = error2;
+      message = "".concat(err.details[0].debug.description);
+    }
+    return message;
+  };
+
+  // ../common-ui/src/components/ui/loader.tsx
+  var import_react68 = __toESM(require_react());
+  var loaderVariants2 = cva("animate-spin", {
+    variants: {
+      variant: {
+        default: "text-foreground",
+        primary: "text-primary"
+      },
+      size: {
+        default: "w-6 h-6",
+        sm: "w-4 h-4",
+        lg: "w-8 h-8"
+      }
+    }
+  });
+  var Loader2 = (0, import_react68.forwardRef)(
+    ({ className, size: size4, variant }) => {
+      return /* @__PURE__ */ import_react68.default.createElement(
+        LoaderCircle,
+        {
+          className: cn2(loaderVariants2({ variant, size: size4, className }))
+        }
+      );
+    }
+  );
+  var loader_default2 = Loader2;
+
+  // ../common-ui/src/pages/login/ChooseProjectPage.tsx
+  var ChooseProjectPage = ({
+    setAccessToken: setAccessToken2,
+    setRefreshToken: setRefreshToken2
+  }) => {
+    var _a10, _b2, _c, _d;
+    const navigate = useNavigate();
+    const [submitting, setSubmitting] = (0, import_react69.useState)(false);
+    const { data: listOrganizationsResponse } = useQuery2(listOrganizations2);
+    const exchangeIntermediateSessionForSessionMutation = useMutation2(
+      exchangeIntermediateSessionForSession
+    );
+    const setOrganizationMutation = useMutation2(setOrganization);
+    const deriveNextPage = (organization) => {
+      if (organization.logInWithPassword) {
+        if (organization.userHasPassword) {
+          return "/verify-password";
+        }
+        return "/register-password";
+      } else if (organization.userHasAuthenticatorApp && !organization.userHasPasskey) {
+        return "/verify-authenticator-app";
+      } else if (organization.userHasPasskey && !organization.userHasAuthenticatorApp) {
+        return "/verify-passkey";
+      } else if (organization.requireMfa) {
+        return "/authenticate-another-way";
+      }
+    };
+    const handleOrganizationClick = async (organization) => {
+      setSubmitting(true);
+      try {
+        await setOrganizationMutation.mutateAsync({
+          organizationId: organization.id
+        });
+        const nextPage = deriveNextPage(organization);
+        if (nextPage) {
+          navigate(nextPage);
+          return;
+        }
+        const { accessToken, refreshToken } = await exchangeIntermediateSessionForSessionMutation.mutateAsync({});
+        setAccessToken2(accessToken);
+        setRefreshToken2(refreshToken);
+        setSubmitting(false);
+        navigate("/settings");
+      } catch (error2) {
+        setSubmitting(false);
+        const message = parseErrorMessage2(error2);
+        ue.error("Could not select Project", {
+          description: message
+        });
+      }
+    };
+    (0, import_react69.useEffect)(() => {
+      var _a11;
+      if (((_a11 = listOrganizationsResponse == null ? void 0 : listOrganizationsResponse.organizations) == null ? void 0 : _a11.length) === 0) {
+        navigate("/create-project");
+      }
+    }, [listOrganizationsResponse]);
+    return /* @__PURE__ */ import_react69.default.createElement(import_react69.default.Fragment, null, /* @__PURE__ */ import_react69.default.createElement(Title3, { title: "Choose an Project" }), /* @__PURE__ */ import_react69.default.createElement(Card2, { className: "w-full max-w-sm" }, /* @__PURE__ */ import_react69.default.createElement(CardHeader2, null, /* @__PURE__ */ import_react69.default.createElement(CardTitle2, null, (((_a10 = listOrganizationsResponse == null ? void 0 : listOrganizationsResponse.organizations) == null ? void 0 : _a10.length) || 0) > 0 ? "Choose a Project" : "Create a Project")), /* @__PURE__ */ import_react69.default.createElement(CardContent2, { className: "flex flex-col items-center justify-center w-full" }, (((_b2 = listOrganizationsResponse == null ? void 0 : listOrganizationsResponse.organizations) == null ? void 0 : _b2.length) || 0) > 0 && /* @__PURE__ */ import_react69.default.createElement("ul", { className: "w-full p-0" }, (_c = listOrganizationsResponse == null ? void 0 : listOrganizationsResponse.organizations) == null ? void 0 : _c.map((organization) => /* @__PURE__ */ import_react69.default.createElement("li", { key: organization.id }, /* @__PURE__ */ import_react69.default.createElement(
+      Button2,
+      {
+        className: "w-full",
+        disabled: submitting,
+        onClick: () => handleOrganizationClick(organization),
+        variant: "outline"
+      },
+      submitting && /* @__PURE__ */ import_react69.default.createElement(loader_default2, null),
+      organization.displayName
+    )))), /* @__PURE__ */ import_react69.default.createElement("div", { className: "w-full" }, (((_d = listOrganizationsResponse == null ? void 0 : listOrganizationsResponse.organizations) == null ? void 0 : _d.length) || 0) > 0 && /* @__PURE__ */ import_react69.default.createElement(text_divider_default, { className: "w-full" }, "Or you can"), /* @__PURE__ */ import_react69.default.createElement(
+      Button2,
+      {
+        className: "w-full",
+        onClick: () => navigate("/create-project")
+      },
+      "Create a Project"
+    )))));
+  };
+
+  // ../common-ui/node_modules/@hookform/resolvers/dist/resolvers.mjs
+  var r4 = (t4, r5, o5) => {
+    if (t4 && "reportValidity" in t4) {
+      const s6 = get(o5, r5);
+      t4.setCustomValidity(s6 && s6.message || ""), t4.reportValidity();
+    }
+  };
+  var o4 = (e2, t4) => {
+    for (const o5 in t4.fields) {
+      const s6 = t4.fields[o5];
+      s6 && s6.ref && "reportValidity" in s6.ref ? r4(s6.ref, o5, e2) : s6 && s6.refs && s6.refs.forEach((t5) => r4(t5, o5, e2));
+    }
+  };
+  var s4 = (r5, s6) => {
+    s6.shouldUseNativeValidation && o4(r5, s6);
+    const n7 = {};
+    for (const o5 in r5) {
+      const f2 = get(s6.fields, o5), c2 = Object.assign(r5[o5] || {}, { ref: f2 && f2.ref });
+      if (i3(s6.names || Object.keys(r5), o5)) {
+        const r6 = Object.assign({}, get(n7, o5));
+        set(r6, "root", c2), set(n7, o5, r6);
+      } else set(n7, o5, c2);
+    }
+    return n7;
+  };
+  var i3 = (e2, t4) => {
+    const r5 = n4(t4);
+    return e2.some((e3) => n4(e3).match("^".concat(r5, "\\.\\d+")));
+  };
+  function n4(e2) {
+    return e2.replace(/\]|\[/g, "");
+  }
+
+  // ../common-ui/node_modules/@hookform/resolvers/zod/dist/zod.mjs
+  function n5(r5, e2) {
+    for (var n7 = {}; r5.length; ) {
+      var s6 = r5[0], t4 = s6.code, i4 = s6.message, a2 = s6.path.join(".");
+      if (!n7[a2]) if ("unionErrors" in s6) {
+        var u2 = s6.unionErrors[0].errors[0];
+        n7[a2] = { message: u2.message, type: u2.code };
+      } else n7[a2] = { message: i4, type: t4 };
+      if ("unionErrors" in s6 && s6.unionErrors.forEach(function(e3) {
+        return e3.errors.forEach(function(e4) {
+          return r5.push(e4);
+        });
+      }), e2) {
+        var c2 = n7[a2].types, f2 = c2 && c2[s6.code];
+        n7[a2] = appendErrors(a2, e2, n7, t4, f2 ? [].concat(f2, s6.message) : s6.message);
+      }
+      r5.shift();
+    }
+    return n7;
+  }
+  function s5(o5, s6, t4) {
+    return void 0 === t4 && (t4 = {}), function(i4, a2, u2) {
+      try {
+        return Promise.resolve(function(e2, n7) {
+          try {
+            var a3 = Promise.resolve(o5["sync" === t4.mode ? "parse" : "parseAsync"](i4, s6)).then(function(e3) {
+              return u2.shouldUseNativeValidation && o4({}, u2), { errors: {}, values: t4.raw ? Object.assign({}, i4) : e3 };
+            });
+          } catch (r5) {
+            return n7(r5);
+          }
+          return a3 && a3.then ? a3.then(void 0, n7) : a3;
+        }(0, function(r5) {
+          if (function(r6) {
+            return Array.isArray(null == r6 ? void 0 : r6.errors);
+          }(r5)) return { values: {}, errors: s4(n5(r5.errors, !u2.shouldUseNativeValidation && "all" === u2.criteriaMode), u2) };
+          throw r5;
+        }));
+      } catch (r5) {
+        return Promise.reject(r5);
+      }
+    };
+  }
+
+  // ../common-ui/src/pages/login/CreateOrganizationPage.tsx
+  var import_react71 = __toESM(require_react());
+
+  // ../common-ui/src/components/ui/form.tsx
+  var React129 = __toESM(require_react());
+
+  // ../common-ui/src/components/ui/label.tsx
+  var React128 = __toESM(require_react());
+  var labelVariants2 = cva(
+    "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+  );
+  var Label5 = React128.forwardRef((_a10, ref) => {
+    var _b2 = _a10, { className } = _b2, props = __objRest(_b2, ["className"]);
+    return /* @__PURE__ */ React128.createElement(
+      Root7,
+      __spreadValues({
+        ref,
+        className: cn2(labelVariants2(), className)
+      }, props)
+    );
+  });
+  Label5.displayName = Root7.displayName;
+
+  // ../common-ui/src/components/ui/form.tsx
+  var Form3 = FormProvider;
+  var FormFieldContext2 = React129.createContext(
+    {}
+  );
+  var FormField2 = (_a10) => {
+    var props = __objRest(_a10, []);
+    return /* @__PURE__ */ React129.createElement(FormFieldContext2.Provider, { value: { name: props.name } }, /* @__PURE__ */ React129.createElement(Controller, __spreadValues({}, props)));
+  };
+  var useFormField2 = () => {
+    const fieldContext = React129.useContext(FormFieldContext2);
+    const itemContext = React129.useContext(FormItemContext2);
+    const { getFieldState, formState } = useFormContext();
+    const fieldState = getFieldState(fieldContext.name, formState);
+    if (!fieldContext) {
+      throw new Error("useFormField should be used within <FormField>");
+    }
+    const { id } = itemContext;
+    return __spreadValues({
+      id,
+      name: fieldContext.name,
+      formItemId: "".concat(id, "-form-item"),
+      formDescriptionId: "".concat(id, "-form-item-description"),
+      formMessageId: "".concat(id, "-form-item-message")
+    }, fieldState);
+  };
+  var FormItemContext2 = React129.createContext(
+    {}
+  );
+  var FormItem2 = React129.forwardRef((_a10, ref) => {
+    var _b2 = _a10, { className } = _b2, props = __objRest(_b2, ["className"]);
+    const id = React129.useId();
+    return /* @__PURE__ */ React129.createElement(FormItemContext2.Provider, { value: { id } }, /* @__PURE__ */ React129.createElement("div", __spreadValues({ ref, className: cn2("space-y-2", className) }, props)));
+  });
+  FormItem2.displayName = "FormItem";
+  var FormLabel2 = React129.forwardRef((_a10, ref) => {
+    var _b2 = _a10, { className } = _b2, props = __objRest(_b2, ["className"]);
+    const { error: error2, formItemId } = useFormField2();
+    return /* @__PURE__ */ React129.createElement(
+      Label5,
+      __spreadValues({
+        ref,
+        className: cn2(error2 && "text-destructive", className),
+        htmlFor: formItemId
+      }, props)
+    );
+  });
+  FormLabel2.displayName = "FormLabel";
+  var FormControl2 = React129.forwardRef((_a10, ref) => {
+    var props = __objRest(_a10, []);
+    const { error: error2, formItemId, formDescriptionId, formMessageId } = useFormField2();
+    return /* @__PURE__ */ React129.createElement(
+      Slot,
+      __spreadValues({
+        ref,
+        id: formItemId,
+        "aria-describedby": !error2 ? "".concat(formDescriptionId) : "".concat(formDescriptionId, " ").concat(formMessageId),
+        "aria-invalid": !!error2
+      }, props)
+    );
+  });
+  FormControl2.displayName = "FormControl";
+  var FormDescription2 = React129.forwardRef((_a10, ref) => {
+    var _b2 = _a10, { className } = _b2, props = __objRest(_b2, ["className"]);
+    const { formDescriptionId } = useFormField2();
+    return /* @__PURE__ */ React129.createElement(
+      "p",
+      __spreadValues({
+        ref,
+        id: formDescriptionId,
+        className: cn2("text-[0.8rem] text-muted-foreground", className)
+      }, props)
+    );
+  });
+  FormDescription2.displayName = "FormDescription";
+  var FormMessage2 = React129.forwardRef((_a10, ref) => {
+    var _b2 = _a10, { className, children } = _b2, props = __objRest(_b2, ["className", "children"]);
+    const { error: error2, formMessageId } = useFormField2();
+    const body = error2 ? String(error2 == null ? void 0 : error2.message) : children;
+    if (!body) {
+      return null;
+    }
+    return /* @__PURE__ */ React129.createElement(
+      "p",
+      __spreadValues({
+        ref,
+        id: formMessageId,
+        className: cn2("text-[0.8rem] font-medium text-destructive", className)
+      }, props),
+      body
+    );
+  });
+  FormMessage2.displayName = "FormMessage";
+
+  // ../common-ui/src/components/ui/input.tsx
+  var React130 = __toESM(require_react());
+  var Input2 = React130.forwardRef(
+    (_a10, ref) => {
+      var _b2 = _a10, { className, type } = _b2, props = __objRest(_b2, ["className", "type"]);
+      return /* @__PURE__ */ React130.createElement(
+        "input",
+        __spreadValues({
+          type,
+          className: cn2(
+            "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+            className
+          ),
+          ref
+        }, props)
+      );
+    }
+  );
+  Input2.displayName = "Input";
 
   // ../common-ui/src/hooks/use-redirect-next-login-flow-page.tsx
-  var import_react65 = __toESM(require_react());
+  var import_react70 = __toESM(require_react());
   function useRedirectNextLoginFlowPage() {
     const { refetch: refetchWhoami } = useQuery2(whoami2, void 0, {
       enabled: false
@@ -69118,7 +69499,7 @@
     );
     const { mutateAsync: issueEmailVerificationChallengeMutationAsync } = useMutation2(issueEmailVerificationChallenge);
     const navigate = useNavigate();
-    return (0, import_react65.useCallback)(async () => {
+    return (0, import_react70.useCallback)(async () => {
       var _a10;
       const { data: whoamiResponse } = await refetchWhoami();
       const intermediateSession = whoamiResponse.intermediateSession;
@@ -69199,451 +69580,13 @@
     }
   }
 
-  // ../common-ui/src/pages/login/GoogleOAuthCallbackPage.tsx
-  function GoogleOAuthCallbackPage() {
-    const [searchParams] = useSearchParams();
-    const code = searchParams.get("code");
-    const state = searchParams.get("state");
-    const { refetch: refetchWhoami } = useQuery2(whoami2);
-    const navigate = useNavigate();
-    const { mutateAsync: redeemGoogleOAuthCodeAsync } = useMutation2(
-      redeemGoogleOAuthCode
-    );
-    const { mutateAsync: issueEmailVerificationChallengeMutationAsync } = useMutation2(issueEmailVerificationChallenge);
-    const redirectNextLoginFlowPage = useRedirectNextLoginFlowPage();
-    (0, import_react66.useEffect)(() => {
-      (async () => {
-        await redeemGoogleOAuthCodeAsync({
-          code,
-          state,
-          redirectUrl: "".concat(window.location.origin, "/google-oauth-callback")
-        });
-        redirectNextLoginFlowPage();
-      })();
-    }, [
-      code,
-      issueEmailVerificationChallengeMutationAsync,
-      navigate,
-      redeemGoogleOAuthCodeAsync,
-      redirectNextLoginFlowPage,
-      refetchWhoami,
-      state
-    ]);
-    return /* @__PURE__ */ import_react66.default.createElement(LoaderCircle, { className: "mx-auto text-muted-foreground h-4 w-4 animate-spin" });
-  }
-
-  // ../common-ui/src/pages/login/ImpersonatePage.tsx
-  var import_react67 = __toESM(require_react());
-  function ImpersonatePage() {
-    const settings = useProjectSettings();
-    const [searchParams] = useSearchParams();
-    const secretUserImpersonationToken = searchParams.get(
-      "secret-user-impersonation-token"
-    );
-    const { mutateAsync: redeemUserImpersonationTokenAsync } = useMutation2(
-      redeemUserImpersonationToken
-    );
-    (0, import_react67.useEffect)(() => {
-      (async () => {
-        await redeemUserImpersonationTokenAsync({
-          secretUserImpersonationToken
-        });
-        window.location.href = settings.redirectUri;
-      })();
-    }, [
-      redeemUserImpersonationTokenAsync,
-      secretUserImpersonationToken,
-      settings.redirectUri
-    ]);
-    return /* @__PURE__ */ import_react67.default.createElement(LoaderCircle, { className: "mx-auto text-muted-foreground h-4 w-4 animate-spin" });
-  }
-
-  // ../common-ui/src/pages/login/LoginFlowLayout.tsx
-  var import_react68 = __toESM(require_react());
-  function LoginFlowLayout({ background }) {
-    return /* @__PURE__ */ import_react68.default.createElement("div", { className: "bg-body w-screen min-h-screen mx-auto flex flex-col justify-center items-center py-8" }, /* @__PURE__ */ import_react68.default.createElement("div", { className: "max-w-sm w-sm mx-auto" }, /* @__PURE__ */ import_react68.default.createElement(ProjectSettingsProvider, null, /* @__PURE__ */ import_react68.default.createElement(Outlet, null))));
-  }
-
-  // ../common-ui/node_modules/@hookform/resolvers/dist/resolvers.mjs
-  var r4 = (t4, r5, o5) => {
-    if (t4 && "reportValidity" in t4) {
-      const s6 = get(o5, r5);
-      t4.setCustomValidity(s6 && s6.message || ""), t4.reportValidity();
-    }
-  };
-  var o4 = (e2, t4) => {
-    for (const o5 in t4.fields) {
-      const s6 = t4.fields[o5];
-      s6 && s6.ref && "reportValidity" in s6.ref ? r4(s6.ref, o5, e2) : s6 && s6.refs && s6.refs.forEach((t5) => r4(t5, o5, e2));
-    }
-  };
-  var s4 = (r5, s6) => {
-    s6.shouldUseNativeValidation && o4(r5, s6);
-    const n7 = {};
-    for (const o5 in r5) {
-      const f2 = get(s6.fields, o5), c2 = Object.assign(r5[o5] || {}, { ref: f2 && f2.ref });
-      if (i3(s6.names || Object.keys(r5), o5)) {
-        const r6 = Object.assign({}, get(n7, o5));
-        set(r6, "root", c2), set(n7, o5, r6);
-      } else set(n7, o5, c2);
-    }
-    return n7;
-  };
-  var i3 = (e2, t4) => {
-    const r5 = n4(t4);
-    return e2.some((e3) => n4(e3).match("^".concat(r5, "\\.\\d+")));
-  };
-  function n4(e2) {
-    return e2.replace(/\]|\[/g, "");
-  }
-
-  // ../common-ui/node_modules/@hookform/resolvers/zod/dist/zod.mjs
-  function n5(r5, e2) {
-    for (var n7 = {}; r5.length; ) {
-      var s6 = r5[0], t4 = s6.code, i4 = s6.message, a2 = s6.path.join(".");
-      if (!n7[a2]) if ("unionErrors" in s6) {
-        var u2 = s6.unionErrors[0].errors[0];
-        n7[a2] = { message: u2.message, type: u2.code };
-      } else n7[a2] = { message: i4, type: t4 };
-      if ("unionErrors" in s6 && s6.unionErrors.forEach(function(e3) {
-        return e3.errors.forEach(function(e4) {
-          return r5.push(e4);
-        });
-      }), e2) {
-        var c2 = n7[a2].types, f2 = c2 && c2[s6.code];
-        n7[a2] = appendErrors(a2, e2, n7, t4, f2 ? [].concat(f2, s6.message) : s6.message);
-      }
-      r5.shift();
-    }
-    return n7;
-  }
-  function s5(o5, s6, t4) {
-    return void 0 === t4 && (t4 = {}), function(i4, a2, u2) {
-      try {
-        return Promise.resolve(function(e2, n7) {
-          try {
-            var a3 = Promise.resolve(o5["sync" === t4.mode ? "parse" : "parseAsync"](i4, s6)).then(function(e3) {
-              return u2.shouldUseNativeValidation && o4({}, u2), { errors: {}, values: t4.raw ? Object.assign({}, i4) : e3 };
-            });
-          } catch (r5) {
-            return n7(r5);
-          }
-          return a3 && a3.then ? a3.then(void 0, n7) : a3;
-        }(0, function(r5) {
-          if (function(r6) {
-            return Array.isArray(null == r6 ? void 0 : r6.errors);
-          }(r5)) return { values: {}, errors: s4(n5(r5.errors, !u2.shouldUseNativeValidation && "all" === u2.criteriaMode), u2) };
-          throw r5;
-        }));
-      } catch (r5) {
-        return Promise.reject(r5);
-      }
-    };
-  }
-
-  // ../common-ui/src/pages/login/LoginPage.tsx
-  var import_react70 = __toESM(require_react());
-
-  // ../common-ui/src/components/ui/form.tsx
-  var React128 = __toESM(require_react());
-
-  // ../common-ui/src/components/ui/label.tsx
-  var React127 = __toESM(require_react());
-  var labelVariants2 = cva(
-    "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-  );
-  var Label5 = React127.forwardRef((_a10, ref) => {
-    var _b2 = _a10, { className } = _b2, props = __objRest(_b2, ["className"]);
-    return /* @__PURE__ */ React127.createElement(
-      Root7,
-      __spreadValues({
-        ref,
-        className: cn2(labelVariants2(), className)
-      }, props)
-    );
-  });
-  Label5.displayName = Root7.displayName;
-
-  // ../common-ui/src/components/ui/form.tsx
-  var Form3 = FormProvider;
-  var FormFieldContext2 = React128.createContext(
-    {}
-  );
-  var FormField2 = (_a10) => {
-    var props = __objRest(_a10, []);
-    return /* @__PURE__ */ React128.createElement(FormFieldContext2.Provider, { value: { name: props.name } }, /* @__PURE__ */ React128.createElement(Controller, __spreadValues({}, props)));
-  };
-  var useFormField2 = () => {
-    const fieldContext = React128.useContext(FormFieldContext2);
-    const itemContext = React128.useContext(FormItemContext2);
-    const { getFieldState, formState } = useFormContext();
-    const fieldState = getFieldState(fieldContext.name, formState);
-    if (!fieldContext) {
-      throw new Error("useFormField should be used within <FormField>");
-    }
-    const { id } = itemContext;
-    return __spreadValues({
-      id,
-      name: fieldContext.name,
-      formItemId: "".concat(id, "-form-item"),
-      formDescriptionId: "".concat(id, "-form-item-description"),
-      formMessageId: "".concat(id, "-form-item-message")
-    }, fieldState);
-  };
-  var FormItemContext2 = React128.createContext(
-    {}
-  );
-  var FormItem2 = React128.forwardRef((_a10, ref) => {
-    var _b2 = _a10, { className } = _b2, props = __objRest(_b2, ["className"]);
-    const id = React128.useId();
-    return /* @__PURE__ */ React128.createElement(FormItemContext2.Provider, { value: { id } }, /* @__PURE__ */ React128.createElement("div", __spreadValues({ ref, className: cn2("space-y-2", className) }, props)));
-  });
-  FormItem2.displayName = "FormItem";
-  var FormLabel2 = React128.forwardRef((_a10, ref) => {
-    var _b2 = _a10, { className } = _b2, props = __objRest(_b2, ["className"]);
-    const { error: error2, formItemId } = useFormField2();
-    return /* @__PURE__ */ React128.createElement(
-      Label5,
-      __spreadValues({
-        ref,
-        className: cn2(error2 && "text-destructive", className),
-        htmlFor: formItemId
-      }, props)
-    );
-  });
-  FormLabel2.displayName = "FormLabel";
-  var FormControl2 = React128.forwardRef((_a10, ref) => {
-    var props = __objRest(_a10, []);
-    const { error: error2, formItemId, formDescriptionId, formMessageId } = useFormField2();
-    return /* @__PURE__ */ React128.createElement(
-      Slot,
-      __spreadValues({
-        ref,
-        id: formItemId,
-        "aria-describedby": !error2 ? "".concat(formDescriptionId) : "".concat(formDescriptionId, " ").concat(formMessageId),
-        "aria-invalid": !!error2
-      }, props)
-    );
-  });
-  FormControl2.displayName = "FormControl";
-  var FormDescription2 = React128.forwardRef((_a10, ref) => {
-    var _b2 = _a10, { className } = _b2, props = __objRest(_b2, ["className"]);
-    const { formDescriptionId } = useFormField2();
-    return /* @__PURE__ */ React128.createElement(
-      "p",
-      __spreadValues({
-        ref,
-        id: formDescriptionId,
-        className: cn2("text-[0.8rem] text-muted-foreground", className)
-      }, props)
-    );
-  });
-  FormDescription2.displayName = "FormDescription";
-  var FormMessage2 = React128.forwardRef((_a10, ref) => {
-    var _b2 = _a10, { className, children } = _b2, props = __objRest(_b2, ["className", "children"]);
-    const { error: error2, formMessageId } = useFormField2();
-    const body = error2 ? String(error2 == null ? void 0 : error2.message) : children;
-    if (!body) {
-      return null;
-    }
-    return /* @__PURE__ */ React128.createElement(
-      "p",
-      __spreadValues({
-        ref,
-        id: formMessageId,
-        className: cn2("text-[0.8rem] font-medium text-destructive", className)
-      }, props),
-      body
-    );
-  });
-  FormMessage2.displayName = "FormMessage";
-
-  // ../common-ui/src/components/ui/input.tsx
-  var React129 = __toESM(require_react());
-  var Input2 = React129.forwardRef(
-    (_a10, ref) => {
-      var _b2 = _a10, { className, type } = _b2, props = __objRest(_b2, ["className", "type"]);
-      return /* @__PURE__ */ React129.createElement(
-        "input",
-        __spreadValues({
-          type,
-          className: cn2(
-            "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
-            className
-          ),
-          ref
-        }, props)
-      );
-    }
-  );
-  Input2.displayName = "Input";
-
-  // ../common-ui/src/lib/dark-mode.ts
-  var import_react69 = __toESM(require_react());
-  function useDarkMode() {
-    const settings = useProjectSettings();
-    const [isDarkMode, setIsDarkMode] = (0, import_react69.useState)(() => {
-      const matcher = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)");
-      return matcher ? matcher.matches : false;
-    });
-    (0, import_react69.useEffect)(() => {
-      const matcher = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)");
-      if (matcher) {
-        const handleDarkModeChange = (event) => {
-          setIsDarkMode(event.matches);
-        };
-        matcher.addEventListener("change", handleDarkModeChange);
-        return () => {
-          matcher.removeEventListener("change", handleDarkModeChange);
-        };
-      }
-    }, []);
-    return settings.detectDarkModeEnabled ? isDarkMode : false;
-  }
-
-  // ../common-ui/src/pages/login/LoginPage.tsx
-  function LoginPage() {
-    return /* @__PURE__ */ import_react70.default.createElement(ProjectSettingsProvider, null, /* @__PURE__ */ import_react70.default.createElement(LoginPageInner, null, /* @__PURE__ */ import_react70.default.createElement(LoginPageContents, null)));
-  }
-  function LoginPageInner({ children }) {
-    const { logInLayout } = useProjectSettings();
-    return /* @__PURE__ */ import_react70.default.createElement(import_react70.default.Fragment, null, logInLayout === "centered" ? /* @__PURE__ */ import_react70.default.createElement(CenteredLoginPage, null, children) : /* @__PURE__ */ import_react70.default.createElement(SideBySideLoginPage, null, children));
-  }
-  function CenteredLoginPage({ children }) {
-    const settings = useProjectSettings();
-    const isDarkMode = useDarkMode();
-    return /* @__PURE__ */ import_react70.default.createElement("div", { className: "bg-body w-full min-h-screen mx-auto flex flex-col justify-center items-center py-8" }, /* @__PURE__ */ import_react70.default.createElement("div", { className: "mx-auto max-w-7xl sm:px-6 lg:px-8 flex justify-center" }, /* @__PURE__ */ import_react70.default.createElement("div", { className: "mb-8" }, /* @__PURE__ */ import_react70.default.createElement(
-      "object",
-      {
-        className: "max-w-[180px]",
-        data: isDarkMode ? settings == null ? void 0 : settings.darkModeLogoUrl : settings == null ? void 0 : settings.logoUrl
-      }
-    ))), /* @__PURE__ */ import_react70.default.createElement("div", { className: "max-w-sm w-full mx-auto" }, children));
-  }
-  function SideBySideLoginPage({ children }) {
-    const settings = useProjectSettings();
-    const isDarkMode = useDarkMode();
-    return /* @__PURE__ */ import_react70.default.createElement("div", { className: "bg-body w-screen min-h-screen grid grid-cols-2 gap-0" }, /* @__PURE__ */ import_react70.default.createElement("div", { className: "bg-primary" }), /* @__PURE__ */ import_react70.default.createElement("div", { className: "flex flex-col justify-center items-center p-4" }, /* @__PURE__ */ import_react70.default.createElement("div", { className: "mx-auto max-w-sm sm:px-6 lg:px-8 flex justify-center" }, /* @__PURE__ */ import_react70.default.createElement("div", { className: "mb-4" }, /* @__PURE__ */ import_react70.default.createElement(
-      "object",
-      {
-        className: "max-w-[180px]",
-        data: isDarkMode ? settings == null ? void 0 : settings.darkModeLogoUrl : settings == null ? void 0 : settings.logoUrl
-      }
-    ))), children));
-  }
+  // ../common-ui/src/pages/login/CreateOrganizationPage.tsx
   var schema11 = z2.object({
-    email: z2.string().email()
+    displayName: z2.string().nonempty()
   });
-  function LoginPageContents() {
-    const settings = useProjectSettings();
-    const darkMode = useDarkMode();
-    const createIntermediateSessionMutation = useMutation2(
-      createIntermediateSession
-    );
-    const [searchParams, setSearchParams] = useSearchParams();
-    const [relayedSessionState, setRelayedSessionState] = (0, import_react70.useState)();
-    (0, import_react70.useEffect)(() => {
-      var _a10;
-      if (relayedSessionState !== void 0) {
-        return;
-      }
-      setRelayedSessionState(
-        (_a10 = searchParams.get("relayed-session-state")) != null ? _a10 : void 0
-      );
-      const searchParamsCopy = new URLSearchParams(searchParams);
-      searchParamsCopy.delete("relayed-session-state");
-      setSearchParams(searchParamsCopy);
-    }, [relayedSessionState, searchParams, setSearchParams]);
-    async function createIntermediateSessionWithRelayedSessionState() {
-      await createIntermediateSessionMutation.mutateAsync({
-        relayedSessionState
-      });
-    }
-    const { mutateAsync: getGoogleOAuthRedirectURLAsync } = useMutation2(
-      getGoogleOAuthRedirectURL
-    );
-    async function handleLogInWithGoogle() {
-      await createIntermediateSessionWithRelayedSessionState();
-      const { url } = await getGoogleOAuthRedirectURLAsync({
-        redirectUrl: "".concat(window.location.origin, "/google-oauth-callback")
-      });
-      window.location.href = url;
-    }
-    const { mutateAsync: getMicrosoftOAuthRedirectURLAsync } = useMutation2(
-      getMicrosoftOAuthRedirectURL
-    );
-    async function handleLogInWithMicrosoft() {
-      await createIntermediateSessionWithRelayedSessionState();
-      const { url } = await getMicrosoftOAuthRedirectURLAsync({
-        redirectUrl: "".concat(window.location.origin, "/microsoft-oauth-callback")
-      });
-      window.location.href = url;
-    }
-    const form = useForm({
-      resolver: s5(schema11),
-      defaultValues: {
-        email: ""
-      }
-    });
-    const [submitting, setSubmitting] = (0, import_react70.useState)(false);
-    const setEmailAsPrimaryLoginFactorMutation = useMutation2(
-      setEmailAsPrimaryLoginFactor
-    );
-    const issueEmailVerificationChallengeMutation = useMutation2(
-      issueEmailVerificationChallenge
-    );
-    const navigate = useNavigate();
-    async function handleSubmit(values) {
-      setSubmitting(true);
-      await createIntermediateSessionWithRelayedSessionState();
-      await setEmailAsPrimaryLoginFactorMutation.mutateAsync({});
-      await issueEmailVerificationChallengeMutation.mutateAsync({
-        email: values.email
-      });
-      navigate("/verify-email");
-    }
-    const hasAboveFoldMethod = settings.logInWithGoogle || settings.logInWithMicrosoft;
-    const hasBelowFoldMethod = settings.logInWithEmail || settings.logInWithSaml;
-    return /* @__PURE__ */ import_react70.default.createElement(LoginFlowCard, null, /* @__PURE__ */ import_react70.default.createElement(CardHeader2, null, /* @__PURE__ */ import_react70.default.createElement(CardTitle2, null, "Log in to ", settings.projectDisplayName), /* @__PURE__ */ import_react70.default.createElement(CardDescription2, null, "Please sign in to continue.")), /* @__PURE__ */ import_react70.default.createElement(CardContent2, null, /* @__PURE__ */ import_react70.default.createElement("div", { className: "space-y-2" }, settings.logInWithGoogle && /* @__PURE__ */ import_react70.default.createElement(
-      Button2,
-      {
-        className: "w-full",
-        variant: "outline",
-        onClick: handleLogInWithGoogle
-      },
-      /* @__PURE__ */ import_react70.default.createElement(GoogleIcon, null),
-      "Log in with Google"
-    ), settings.logInWithMicrosoft && /* @__PURE__ */ import_react70.default.createElement(
-      Button2,
-      {
-        className: "w-full",
-        variant: "outline",
-        onClick: handleLogInWithMicrosoft
-      },
-      /* @__PURE__ */ import_react70.default.createElement(MicrosoftIcon, null),
-      "Log in with Microsoft"
-    )), hasAboveFoldMethod && hasBelowFoldMethod && /* @__PURE__ */ import_react70.default.createElement("div", { className: "block relative w-full cursor-default my-2 mt-6" }, /* @__PURE__ */ import_react70.default.createElement("div", { className: "absolute inset-0 flex items-center border-muted-foreground" }, /* @__PURE__ */ import_react70.default.createElement("span", { className: "w-full border-t" })), /* @__PURE__ */ import_react70.default.createElement("div", { className: "relative flex justify-center text-xs uppercase" }, /* @__PURE__ */ import_react70.default.createElement("span", { className: "bg-card px-2 text-muted-foreground" }, "or"))), hasBelowFoldMethod && /* @__PURE__ */ import_react70.default.createElement(Form3, __spreadValues({}, form), /* @__PURE__ */ import_react70.default.createElement("form", { onSubmit: form.handleSubmit(handleSubmit) }, /* @__PURE__ */ import_react70.default.createElement(
-      FormField2,
-      {
-        control: form.control,
-        name: "email",
-        render: ({ field }) => /* @__PURE__ */ import_react70.default.createElement(FormItem2, null, /* @__PURE__ */ import_react70.default.createElement(FormLabel2, null, "Email"), /* @__PURE__ */ import_react70.default.createElement(FormControl2, null, /* @__PURE__ */ import_react70.default.createElement(Input2, __spreadValues({ placeholder: "john.doe@example.com" }, field))), /* @__PURE__ */ import_react70.default.createElement(FormMessage2, null))
-      }
-    ), /* @__PURE__ */ import_react70.default.createElement(
-      Button2,
-      {
-        type: "submit",
-        className: "mt-4 w-full",
-        variant: darkMode ? "outline" : "default",
-        disabled: submitting
-      },
-      submitting && /* @__PURE__ */ import_react70.default.createElement(LoaderCircle, { className: "h-4 w-4 animate-spin" }),
-      "Log in"
-    )))));
-  }
 
-  // ../common-ui/src/pages/login/LogoutPage.tsx
-  var import_react71 = __toESM(require_react());
+  // ../common-ui/src/pages/login/CreateProjectPage.tsx
+  var import_react72 = __toESM(require_react());
 
   // ../common-ui/src/gen/tesseral/frontend/v1/models_pb.ts
   var file_tesseral_frontend_v1_models2 = /* @__PURE__ */ fileDesc("CiF0ZXNzZXJhbC9mcm9udGVuZC92MS9tb2RlbHMucHJvdG8SFHRlc3NlcmFsLmZyb250ZW5kLnYxIvUCCgdQcm9qZWN0EgoKAmlkGAEgASgJEhQKDGRpc3BsYXlfbmFtZRgCIAEoCRIvCgtjcmVhdGVfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLwoLdXBkYXRlX3RpbWUYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhoKEmxvZ19pbl93aXRoX2dvb2dsZRgGIAEoCBIdChVsb2dfaW5fd2l0aF9taWNyb3NvZnQYByABKAgSGQoRbG9nX2luX3dpdGhfZW1haWwYCyABKAgSHAoUbG9nX2luX3dpdGhfcGFzc3dvcmQYBSABKAgSGAoQbG9nX2luX3dpdGhfc2FtbBgMIAEoCBIlCh1sb2dfaW5fd2l0aF9hdXRoZW50aWNhdG9yX2FwcBgJIAEoCBIbChNsb2dfaW5fd2l0aF9wYXNza2V5GAogASgIEhQKDHZhdWx0X2RvbWFpbhgIIAEoCSKzBQoMT3JnYW5pemF0aW9uEgoKAmlkGAEgASgJEhQKDGRpc3BsYXlfbmFtZRgCIAEoCRIvCgtjcmVhdGVfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLwoLdXBkYXRlX3RpbWUYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEh8KEmxvZ19pbl93aXRoX2dvb2dsZRgHIAEoCEgAiAEBEiIKFWxvZ19pbl93aXRoX21pY3Jvc29mdBgIIAEoCEgBiAEBEh4KEWxvZ19pbl93aXRoX2VtYWlsGBAgASgISAKIAQESIQoUbG9nX2luX3dpdGhfcGFzc3dvcmQYBiABKAhIA4gBARIdChBsb2dfaW5fd2l0aF9zYW1sGAwgASgISASIAQESKgodbG9nX2luX3dpdGhfYXV0aGVudGljYXRvcl9hcHAYDSABKAhIBYgBARIgChNsb2dfaW5fd2l0aF9wYXNza2V5GA4gASgISAaIAQESGAoLcmVxdWlyZV9tZmEYDyABKAhIB4gBARIdChVnb29nbGVfaG9zdGVkX2RvbWFpbnMYCSADKAkSHAoUbWljcm9zb2Z0X3RlbmFudF9pZHMYCiADKAkSFAoMc2FtbF9lbmFibGVkGAsgASgIQhUKE19sb2dfaW5fd2l0aF9nb29nbGVCGAoWX2xvZ19pbl93aXRoX21pY3Jvc29mdEIUChJfbG9nX2luX3dpdGhfZW1haWxCFwoVX2xvZ19pbl93aXRoX3Bhc3N3b3JkQhMKEV9sb2dfaW5fd2l0aF9zYW1sQiAKHl9sb2dfaW5fd2l0aF9hdXRoZW50aWNhdG9yX2FwcEIWChRfbG9nX2luX3dpdGhfcGFzc2tleUIOCgxfcmVxdWlyZV9tZmEiQAofT3JnYW5pemF0aW9uR29vZ2xlSG9zdGVkRG9tYWlucxIdChVnb29nbGVfaG9zdGVkX2RvbWFpbnMYAiADKAkiPgoeT3JnYW5pemF0aW9uTWljcm9zb2Z0VGVuYW50SURzEhwKFG1pY3Jvc29mdF90ZW5hbnRfaWRzGAIgAygJIlAKEVNlc3Npb25TaWduaW5nS2V5EgoKAmlkGAEgASgJEi8KDnB1YmxpY19rZXlfandrGAIgASgLMhcuZ29vZ2xlLnByb3RvYnVmLlN0cnVjdCLzAQoEVXNlchIKCgJpZBgBIAEoCRINCgVlbWFpbBgCIAEoCRIvCgtjcmVhdGVfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLwoLdXBkYXRlX3RpbWUYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhIKBW93bmVyGAUgASgISACIAQESFgoOZ29vZ2xlX3VzZXJfaWQYBiABKAkSGQoRbWljcm9zb2Z0X3VzZXJfaWQYByABKAkSHQoVaGFzX2F1dGhlbnRpY2F0b3JfYXBwGAggASgIQggKBl9vd25lciLfAQoHU2Vzc2lvbhIKCgJpZBgBIAEoCRIPCgd1c2VyX2lkGAIgASgJEi8KC2NyZWF0ZV90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIvCgtleHBpcmVfdGltZRgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASDwoHcmV2b2tlZBgFIAEoCBJEChNwcmltYXJ5X2F1dGhfZmFjdG9yGAYgASgOMicudGVzc2VyYWwuZnJvbnRlbmQudjEuUHJpbWFyeUF1dGhGYWN0b3IimQIKDlNBTUxDb25uZWN0aW9uEgoKAmlkGAEgASgJEi8KC2NyZWF0ZV90aW1lGAIgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIvCgt1cGRhdGVfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASFAoHcHJpbWFyeRgEIAEoCEgAiAEBEhIKCnNwX2Fjc191cmwYBSABKAkSFAoMc3BfZW50aXR5X2lkGAYgASgJEhgKEGlkcF9yZWRpcmVjdF91cmwYByABKAkSHAoUaWRwX3g1MDlfY2VydGlmaWNhdGUYCCABKAkSFQoNaWRwX2VudGl0eV9pZBgJIAEoCUIKCghfcHJpbWFyeSK3AQoKU0NJTUFQSUtleRIKCgJpZBgBIAEoCRIUCgxkaXNwbGF5X25hbWUYAiABKAkSLwoLY3JlYXRlX3RpbWUYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi8KC3VwZGF0ZV90aW1lGAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIUCgxzZWNyZXRfdG9rZW4YBSABKAkSDwoHcmV2b2tlZBgGIAEoCCLpAQoHUGFzc2tleRIKCgJpZBgBIAEoCRIPCgd1c2VyX2lkGAIgASgJEi8KC2NyZWF0ZV90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIvCgt1cGRhdGVfdGltZRgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASEAoIZGlzYWJsZWQYCCABKAgSFQoNY3JlZGVudGlhbF9pZBgFIAEoDBIXCg9wdWJsaWNfa2V5X3BraXgYBiABKAkSDgoGYWFndWlkGAcgASgJEg0KBXJwX2lkGAkgASgJIpgBCgpVc2VySW52aXRlEgoKAmlkGAEgASgJEi8KC2NyZWF0ZV90aW1lGAIgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIvCgt1cGRhdGVfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASDQoFZW1haWwYBCABKAkSDQoFb3duZXIYBSABKAgiOgoWU3dpdGNoYWJsZU9yZ2FuaXphdGlvbhIKCgJpZBgBIAEoCRIUCgxkaXNwbGF5X25hbWUYAiABKAkq3wEKEVByaW1hcnlBdXRoRmFjdG9yEiMKH1BSSU1BUllfQVVUSF9GQUNUT1JfVU5TUEVDSUZJRUQQABIdChlQUklNQVJZX0FVVEhfRkFDVE9SX0VNQUlMEAESHgoaUFJJTUFSWV9BVVRIX0ZBQ1RPUl9HT09HTEUQAhIhCh1QUklNQVJZX0FVVEhfRkFDVE9SX01JQ1JPU09GVBADEhwKGFBSSU1BUllfQVVUSF9GQUNUT1JfU0FNTBAEEiUKIVBSSU1BUllfQVVUSF9GQUNUT1JfSU1QRVJTT05BVElPThAFQvIBChhjb20udGVzc2VyYWwuZnJvbnRlbmQudjFCC01vZGVsc1Byb3RvUAFaV2dpdGh1Yi5jb20vdGVzc2VyYWwtbGFicy90ZXNzZXJhbC9pbnRlcm5hbC9mcm9udGVuZC9nZW4vdGVzc2VyYWwvZnJvbnRlbmQvdjE7ZnJvbnRlbmR2MaICA1RGWKoCFFRlc3NlcmFsLkZyb250ZW5kLlYxygIUVGVzc2VyYWxcRnJvbnRlbmRcVjHiAiBUZXNzZXJhbFxGcm9udGVuZFxWMVxHUEJNZXRhZGF0YeoCFlRlc3NlcmFsOjpGcm9udGVuZDo6VjFiBnByb3RvMw", [file_google_protobuf_struct, file_google_protobuf_timestamp]);
@@ -69691,6 +69634,303 @@
   var deleteUserInvite3 = FrontendService2.method.deleteUserInvite;
   var listSwitchableOrganizations2 = FrontendService2.method.listSwitchableOrganizations;
 
+  // ../common-ui/src/pages/login/CreateProjectPage.tsx
+  var CreateProjectPage = ({
+    setAccessToken: setAccessToken2,
+    setRefreshToken: setRefreshToken2
+  }) => {
+    const navigate = useNavigate();
+    const [displayName, setDisplayName] = (0, import_react72.useState)("");
+    const [redirectUri, setRedirectUri] = (0, import_react72.useState)("");
+    const [submitting, setSubmitting] = (0, import_react72.useState)(false);
+    const createProjectMutation = useMutation2(createProject);
+    const exchangeIntermediateSessionForSessionMutation = useMutation2(
+      exchangeIntermediateSessionForSession
+    );
+    const refreshMutation = useMutation2(refresh2);
+    const setOrganizationMutation = useMutation2(setOrganization);
+    const handleSubmit = async (e2) => {
+      var _a10;
+      e2.preventDefault();
+      setSubmitting(true);
+      try {
+        const projectRes = await createProjectMutation.mutateAsync({
+          displayName,
+          redirectUri
+        });
+        await setOrganizationMutation.mutateAsync({
+          organizationId: (_a10 = projectRes == null ? void 0 : projectRes.project) == null ? void 0 : _a10.organizationId
+        });
+        const { refreshToken } = await exchangeIntermediateSessionForSessionMutation.mutateAsync({});
+        const { accessToken } = await refreshMutation.mutateAsync({});
+        setRefreshToken2(refreshToken);
+        setAccessToken2(accessToken);
+        setSubmitting(false);
+        navigate("/");
+      } catch (error2) {
+        setSubmitting(false);
+        const message = parseErrorMessage2(error2);
+        ue.error(message);
+      }
+    };
+    return /* @__PURE__ */ import_react72.default.createElement(import_react72.default.Fragment, null, /* @__PURE__ */ import_react72.default.createElement(Title3, { title: "Create a new Project" }), /* @__PURE__ */ import_react72.default.createElement(Card2, { className: "w-full max-w-sm" }, /* @__PURE__ */ import_react72.default.createElement(CardHeader2, null, /* @__PURE__ */ import_react72.default.createElement(CardTitle2, null, "Create a new Project")), /* @__PURE__ */ import_react72.default.createElement(CardContent2, null, /* @__PURE__ */ import_react72.default.createElement("form", { className: "w-full", onSubmit: handleSubmit }, /* @__PURE__ */ import_react72.default.createElement(
+      Input2,
+      {
+        id: "displayName",
+        placeholder: "Acme, Inc.",
+        value: displayName,
+        onChange: (e2) => setDisplayName(e2.target.value)
+      }
+    ), /* @__PURE__ */ import_react72.default.createElement(
+      Input2,
+      {
+        id: "redirectUri",
+        placeholder: "https://app.company.com/",
+        value: redirectUri,
+        onChange: (e2) => setRedirectUri(e2.target.value)
+      }
+    ), /* @__PURE__ */ import_react72.default.createElement(
+      Button2,
+      {
+        className: "mt-2 w-full",
+        disabled: displayName.length < 1 || submitting,
+        type: "submit"
+      },
+      submitting && /* @__PURE__ */ import_react72.default.createElement(loader_default2, null),
+      "Create Project"
+    )))));
+  };
+
+  // ../common-ui/src/pages/login/FinishLoginPage.tsx
+  var import_react73 = __toESM(require_react());
+  function FinishLoginPage() {
+    const settings = useProjectSettings();
+    const { mutateAsync: exchangeIntermediateSessionForSessionAsync } = useMutation2(exchangeIntermediateSessionForSession);
+    (0, import_react73.useEffect)(() => {
+      (async () => {
+        const { newUser, relayedSessionToken } = await exchangeIntermediateSessionForSessionAsync({});
+        const preferredRedirect = newUser ? settings.afterSignupRedirectUri : settings.afterLoginRedirectUri;
+        const url = new URL(preferredRedirect != null ? preferredRedirect : settings.redirectUri);
+        if (relayedSessionToken) {
+          url.hash = "__tesseral_".concat(settings.projectId, "_relayed_session_token=").concat(relayedSessionToken);
+        }
+        window.location.href = url.toString();
+      })();
+    }, [settings, exchangeIntermediateSessionForSessionAsync]);
+    return /* @__PURE__ */ import_react73.default.createElement(LoaderCircle, { className: "mx-auto text-muted-foreground h-4 w-4 animate-spin" });
+  }
+
+  // ../common-ui/src/pages/login/GoogleOAuthCallbackPage.tsx
+  var import_react74 = __toESM(require_react());
+  function GoogleOAuthCallbackPage() {
+    const [searchParams] = useSearchParams();
+    const code = searchParams.get("code");
+    const state = searchParams.get("state");
+    const { refetch: refetchWhoami } = useQuery2(whoami2);
+    const navigate = useNavigate();
+    const { mutateAsync: redeemGoogleOAuthCodeAsync } = useMutation2(
+      redeemGoogleOAuthCode
+    );
+    const { mutateAsync: issueEmailVerificationChallengeMutationAsync } = useMutation2(issueEmailVerificationChallenge);
+    const redirectNextLoginFlowPage = useRedirectNextLoginFlowPage();
+    (0, import_react74.useEffect)(() => {
+      (async () => {
+        await redeemGoogleOAuthCodeAsync({
+          code,
+          state,
+          redirectUrl: "".concat(window.location.origin, "/google-oauth-callback")
+        });
+        redirectNextLoginFlowPage();
+      })();
+    }, [
+      code,
+      issueEmailVerificationChallengeMutationAsync,
+      navigate,
+      redeemGoogleOAuthCodeAsync,
+      redirectNextLoginFlowPage,
+      refetchWhoami,
+      state
+    ]);
+    return /* @__PURE__ */ import_react74.default.createElement(LoaderCircle, { className: "mx-auto text-muted-foreground h-4 w-4 animate-spin" });
+  }
+
+  // ../common-ui/src/pages/login/ImpersonatePage.tsx
+  var import_react75 = __toESM(require_react());
+  function ImpersonatePage() {
+    const settings = useProjectSettings();
+    const [searchParams] = useSearchParams();
+    const secretUserImpersonationToken = searchParams.get(
+      "secret-user-impersonation-token"
+    );
+    const { mutateAsync: redeemUserImpersonationTokenAsync } = useMutation2(
+      redeemUserImpersonationToken
+    );
+    (0, import_react75.useEffect)(() => {
+      (async () => {
+        await redeemUserImpersonationTokenAsync({
+          secretUserImpersonationToken
+        });
+        window.location.href = settings.redirectUri;
+      })();
+    }, [
+      redeemUserImpersonationTokenAsync,
+      secretUserImpersonationToken,
+      settings.redirectUri
+    ]);
+    return /* @__PURE__ */ import_react75.default.createElement(LoaderCircle, { className: "mx-auto text-muted-foreground h-4 w-4 animate-spin" });
+  }
+
+  // ../common-ui/src/pages/login/LoginFlowLayout.tsx
+  var import_react76 = __toESM(require_react());
+  function LoginFlowLayout({ background }) {
+    return /* @__PURE__ */ import_react76.default.createElement("div", { className: "bg-body w-screen min-h-screen mx-auto flex flex-col justify-center items-center py-8" }, /* @__PURE__ */ import_react76.default.createElement("div", { className: "max-w-sm w-sm mx-auto" }, /* @__PURE__ */ import_react76.default.createElement(ProjectSettingsProvider, null, /* @__PURE__ */ import_react76.default.createElement(Outlet, null))));
+  }
+
+  // ../common-ui/src/pages/login/LoginPage.tsx
+  var import_react77 = __toESM(require_react());
+  function LoginPage() {
+    return /* @__PURE__ */ import_react77.default.createElement(ProjectSettingsProvider, null, /* @__PURE__ */ import_react77.default.createElement(LoginPageInner, null, /* @__PURE__ */ import_react77.default.createElement(LoginPageContents, null)));
+  }
+  function LoginPageInner({ children }) {
+    const { logInLayout } = useProjectSettings();
+    return /* @__PURE__ */ import_react77.default.createElement(import_react77.default.Fragment, null, logInLayout === "centered" ? /* @__PURE__ */ import_react77.default.createElement(CenteredLoginPage, null, children) : /* @__PURE__ */ import_react77.default.createElement(SideBySideLoginPage, null, children));
+  }
+  function CenteredLoginPage({ children }) {
+    const settings = useProjectSettings();
+    const isDarkMode = useDarkMode();
+    return /* @__PURE__ */ import_react77.default.createElement("div", { className: "bg-body w-full min-h-screen mx-auto flex flex-col justify-center items-center py-8" }, /* @__PURE__ */ import_react77.default.createElement("div", { className: "mx-auto max-w-7xl sm:px-6 lg:px-8 flex justify-center" }, /* @__PURE__ */ import_react77.default.createElement("div", { className: "mb-8" }, /* @__PURE__ */ import_react77.default.createElement(
+      "object",
+      {
+        className: "max-w-[180px]",
+        data: isDarkMode ? settings == null ? void 0 : settings.darkModeLogoUrl : settings == null ? void 0 : settings.logoUrl
+      }
+    ))), /* @__PURE__ */ import_react77.default.createElement("div", { className: "max-w-sm w-full mx-auto" }, children));
+  }
+  function SideBySideLoginPage({ children }) {
+    const settings = useProjectSettings();
+    const isDarkMode = useDarkMode();
+    return /* @__PURE__ */ import_react77.default.createElement("div", { className: "bg-body w-screen min-h-screen grid grid-cols-2 gap-0" }, /* @__PURE__ */ import_react77.default.createElement("div", { className: "bg-primary" }), /* @__PURE__ */ import_react77.default.createElement("div", { className: "flex flex-col justify-center items-center p-4" }, /* @__PURE__ */ import_react77.default.createElement("div", { className: "mx-auto max-w-sm sm:px-6 lg:px-8 flex justify-center" }, /* @__PURE__ */ import_react77.default.createElement("div", { className: "mb-4" }, /* @__PURE__ */ import_react77.default.createElement(
+      "object",
+      {
+        className: "max-w-[180px]",
+        data: isDarkMode ? settings == null ? void 0 : settings.darkModeLogoUrl : settings == null ? void 0 : settings.logoUrl
+      }
+    ))), children));
+  }
+  var schema12 = z2.object({
+    email: z2.string().email()
+  });
+  function LoginPageContents() {
+    const settings = useProjectSettings();
+    const darkMode = useDarkMode();
+    const createIntermediateSessionMutation = useMutation2(
+      createIntermediateSession
+    );
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [relayedSessionState, setRelayedSessionState] = (0, import_react77.useState)();
+    (0, import_react77.useEffect)(() => {
+      var _a10;
+      if (relayedSessionState !== void 0) {
+        return;
+      }
+      setRelayedSessionState(
+        (_a10 = searchParams.get("relayed-session-state")) != null ? _a10 : void 0
+      );
+      const searchParamsCopy = new URLSearchParams(searchParams);
+      searchParamsCopy.delete("relayed-session-state");
+      setSearchParams(searchParamsCopy);
+    }, [relayedSessionState, searchParams, setSearchParams]);
+    async function createIntermediateSessionWithRelayedSessionState() {
+      await createIntermediateSessionMutation.mutateAsync({
+        relayedSessionState
+      });
+    }
+    const { mutateAsync: getGoogleOAuthRedirectURLAsync } = useMutation2(
+      getGoogleOAuthRedirectURL
+    );
+    async function handleLogInWithGoogle() {
+      await createIntermediateSessionWithRelayedSessionState();
+      const { url } = await getGoogleOAuthRedirectURLAsync({
+        redirectUrl: "".concat(window.location.origin, "/google-oauth-callback")
+      });
+      window.location.href = url;
+    }
+    const { mutateAsync: getMicrosoftOAuthRedirectURLAsync } = useMutation2(
+      getMicrosoftOAuthRedirectURL
+    );
+    async function handleLogInWithMicrosoft() {
+      await createIntermediateSessionWithRelayedSessionState();
+      const { url } = await getMicrosoftOAuthRedirectURLAsync({
+        redirectUrl: "".concat(window.location.origin, "/microsoft-oauth-callback")
+      });
+      window.location.href = url;
+    }
+    const form = useForm({
+      resolver: s5(schema12),
+      defaultValues: {
+        email: ""
+      }
+    });
+    const [submitting, setSubmitting] = (0, import_react77.useState)(false);
+    const setEmailAsPrimaryLoginFactorMutation = useMutation2(
+      setEmailAsPrimaryLoginFactor
+    );
+    const issueEmailVerificationChallengeMutation = useMutation2(
+      issueEmailVerificationChallenge
+    );
+    const navigate = useNavigate();
+    async function handleSubmit(values) {
+      setSubmitting(true);
+      await createIntermediateSessionWithRelayedSessionState();
+      await setEmailAsPrimaryLoginFactorMutation.mutateAsync({});
+      await issueEmailVerificationChallengeMutation.mutateAsync({
+        email: values.email
+      });
+      navigate("/verify-email");
+    }
+    const hasAboveFoldMethod = settings.logInWithGoogle || settings.logInWithMicrosoft;
+    const hasBelowFoldMethod = settings.logInWithEmail || settings.logInWithSaml;
+    return /* @__PURE__ */ import_react77.default.createElement(LoginFlowCard, null, /* @__PURE__ */ import_react77.default.createElement(CardHeader2, null, /* @__PURE__ */ import_react77.default.createElement(CardTitle2, null, "Log in to ", settings.projectDisplayName), /* @__PURE__ */ import_react77.default.createElement(CardDescription2, null, "Please sign in to continue.")), /* @__PURE__ */ import_react77.default.createElement(CardContent2, null, /* @__PURE__ */ import_react77.default.createElement("div", { className: "space-y-2" }, settings.logInWithGoogle && /* @__PURE__ */ import_react77.default.createElement(
+      Button2,
+      {
+        className: "w-full",
+        variant: "outline",
+        onClick: handleLogInWithGoogle
+      },
+      /* @__PURE__ */ import_react77.default.createElement(GoogleIcon, null),
+      "Log in with Google"
+    ), settings.logInWithMicrosoft && /* @__PURE__ */ import_react77.default.createElement(
+      Button2,
+      {
+        className: "w-full",
+        variant: "outline",
+        onClick: handleLogInWithMicrosoft
+      },
+      /* @__PURE__ */ import_react77.default.createElement(MicrosoftIcon, null),
+      "Log in with Microsoft"
+    )), hasAboveFoldMethod && hasBelowFoldMethod && /* @__PURE__ */ import_react77.default.createElement("div", { className: "block relative w-full cursor-default my-2 mt-6" }, /* @__PURE__ */ import_react77.default.createElement("div", { className: "absolute inset-0 flex items-center border-muted-foreground" }, /* @__PURE__ */ import_react77.default.createElement("span", { className: "w-full border-t" })), /* @__PURE__ */ import_react77.default.createElement("div", { className: "relative flex justify-center text-xs uppercase" }, /* @__PURE__ */ import_react77.default.createElement("span", { className: "bg-card px-2 text-muted-foreground" }, "or"))), hasBelowFoldMethod && /* @__PURE__ */ import_react77.default.createElement(Form3, __spreadValues({}, form), /* @__PURE__ */ import_react77.default.createElement("form", { onSubmit: form.handleSubmit(handleSubmit) }, /* @__PURE__ */ import_react77.default.createElement(
+      FormField2,
+      {
+        control: form.control,
+        name: "email",
+        render: ({ field }) => /* @__PURE__ */ import_react77.default.createElement(FormItem2, null, /* @__PURE__ */ import_react77.default.createElement(FormLabel2, null, "Email"), /* @__PURE__ */ import_react77.default.createElement(FormControl2, null, /* @__PURE__ */ import_react77.default.createElement(Input2, __spreadValues({ placeholder: "john.doe@example.com" }, field))), /* @__PURE__ */ import_react77.default.createElement(FormMessage2, null))
+      }
+    ), /* @__PURE__ */ import_react77.default.createElement(
+      Button2,
+      {
+        type: "submit",
+        className: "mt-4 w-full",
+        variant: darkMode ? "outline" : "default",
+        disabled: submitting
+      },
+      submitting && /* @__PURE__ */ import_react77.default.createElement(LoaderCircle, { className: "h-4 w-4 animate-spin" }),
+      "Log in"
+    )))));
+  }
+
+  // ../common-ui/src/pages/login/LogoutPage.tsx
+  var import_react78 = __toESM(require_react());
+
   // ../common-ui/src/lib/access-token.ts
   function clearAccessToken() {
     localStorage.removeItem("access_token");
@@ -69700,7 +69940,7 @@
   function LogoutPage() {
     const { mutateAsync: logoutAsync } = useMutation2(logout2);
     const navigate = useNavigate();
-    (0, import_react71.useEffect)(() => {
+    (0, import_react78.useEffect)(() => {
       (async () => {
         await logoutAsync({});
         clearAccessToken();
@@ -69708,11 +69948,11 @@
         navigate("/login");
       })();
     }, [logoutAsync, navigate]);
-    return /* @__PURE__ */ import_react71.default.createElement(LoaderCircle, { className: "mx-auto text-muted-foreground h-4 w-4 animate-spin" });
+    return /* @__PURE__ */ import_react78.default.createElement(LoaderCircle, { className: "mx-auto text-muted-foreground h-4 w-4 animate-spin" });
   }
 
   // ../common-ui/src/pages/login/MicrosoftOAuthCallbackPage.tsx
-  var import_react72 = __toESM(require_react());
+  var import_react79 = __toESM(require_react());
   function MicrosoftOAuthCallbackPage() {
     const [searchParams] = useSearchParams();
     const code = searchParams.get("code");
@@ -69724,7 +69964,7 @@
     );
     const { mutateAsync: issueEmailVerificationChallengeMutationAsync } = useMutation2(issueEmailVerificationChallenge);
     const redirectNextLoginFlowPage = useRedirectNextLoginFlowPage();
-    (0, import_react72.useEffect)(() => {
+    (0, import_react79.useEffect)(() => {
       (async () => {
         await redeemMicrosoftOAuthCodeAsync({
           code,
@@ -69742,16 +69982,16 @@
       refetchWhoami,
       state
     ]);
-    return /* @__PURE__ */ import_react72.default.createElement(LoaderCircle, { className: "mx-auto text-muted-foreground h-4 w-4 animate-spin" });
+    return /* @__PURE__ */ import_react79.default.createElement(LoaderCircle, { className: "mx-auto text-muted-foreground h-4 w-4 animate-spin" });
   }
 
   // ../common-ui/src/pages/login/OrganizationLoginPage.tsx
-  var import_react73 = __toESM(require_react());
+  var import_react80 = __toESM(require_react());
   function OrganizationLoginPage() {
     const { organizationId } = useParams();
     const { mutateAsync: setOrganizationMutationAsync } = useMutation2(setOrganization);
     const redirectNextLoginFlowPage = useRedirectNextLoginFlowPage();
-    (0, import_react73.useEffect)(() => {
+    (0, import_react80.useEffect)(() => {
       (async () => {
         await setOrganizationMutationAsync({
           organizationId
@@ -69759,7 +69999,7 @@
         redirectNextLoginFlowPage();
       })();
     }, [organizationId, redirectNextLoginFlowPage, setOrganizationMutationAsync]);
-    return /* @__PURE__ */ import_react73.default.createElement(LoaderCircle, { className: "mx-auto text-muted-foreground h-4 w-4 animate-spin" });
+    return /* @__PURE__ */ import_react80.default.createElement(LoaderCircle, { className: "mx-auto text-muted-foreground h-4 w-4 animate-spin" });
   }
 
   // ../../node_modules/input-otp/dist/index.mjs
@@ -69954,13 +70194,13 @@
 
   // ../common-ui/src/pages/login/RegisterAuthenticatorAppPage.tsx
   var import_qrcode = __toESM(require_browser());
-  var import_react74 = __toESM(require_react());
+  var import_react81 = __toESM(require_react());
 
   // ../common-ui/src/components/ui/input-otp.tsx
-  var React134 = __toESM(require_react());
-  var InputOTP = React134.forwardRef((_a10, ref) => {
+  var React141 = __toESM(require_react());
+  var InputOTP = React141.forwardRef((_a10, ref) => {
     var _b2 = _a10, { className, containerClassName } = _b2, props = __objRest(_b2, ["className", "containerClassName"]);
-    return /* @__PURE__ */ React134.createElement(
+    return /* @__PURE__ */ React141.createElement(
       Lt,
       __spreadValues({
         ref,
@@ -69973,16 +70213,16 @@
     );
   });
   InputOTP.displayName = "InputOTP";
-  var InputOTPGroup = React134.forwardRef((_a10, ref) => {
+  var InputOTPGroup = React141.forwardRef((_a10, ref) => {
     var _b2 = _a10, { className } = _b2, props = __objRest(_b2, ["className"]);
-    return /* @__PURE__ */ React134.createElement("div", __spreadValues({ ref, className: cn2("flex items-center", className) }, props));
+    return /* @__PURE__ */ React141.createElement("div", __spreadValues({ ref, className: cn2("flex items-center", className) }, props));
   });
   InputOTPGroup.displayName = "InputOTPGroup";
-  var InputOTPSlot = React134.forwardRef((_a10, ref) => {
+  var InputOTPSlot = React141.forwardRef((_a10, ref) => {
     var _b2 = _a10, { index: index3, className } = _b2, props = __objRest(_b2, ["index", "className"]);
-    const inputOTPContext = React134.useContext(jt2);
+    const inputOTPContext = React141.useContext(jt2);
     const { char, hasFakeCaret, isActive } = inputOTPContext.slots[index3];
-    return /* @__PURE__ */ React134.createElement(
+    return /* @__PURE__ */ React141.createElement(
       "div",
       __spreadValues({
         ref,
@@ -69993,18 +70233,18 @@
         )
       }, props),
       char,
-      hasFakeCaret && /* @__PURE__ */ React134.createElement("div", { className: "pointer-events-none absolute inset-0 flex items-center justify-center" }, /* @__PURE__ */ React134.createElement("div", { className: "h-4 w-px animate-caret-blink bg-foreground duration-1000" }))
+      hasFakeCaret && /* @__PURE__ */ React141.createElement("div", { className: "pointer-events-none absolute inset-0 flex items-center justify-center" }, /* @__PURE__ */ React141.createElement("div", { className: "h-4 w-px animate-caret-blink bg-foreground duration-1000" }))
     );
   });
   InputOTPSlot.displayName = "InputOTPSlot";
-  var InputOTPSeparator = React134.forwardRef((_a10, ref) => {
+  var InputOTPSeparator = React141.forwardRef((_a10, ref) => {
     var props = __objRest(_a10, []);
-    return /* @__PURE__ */ React134.createElement("div", __spreadValues({ ref, role: "separator" }, props), /* @__PURE__ */ React134.createElement(Dot, null));
+    return /* @__PURE__ */ React141.createElement("div", __spreadValues({ ref, role: "separator" }, props), /* @__PURE__ */ React141.createElement(Dot, null));
   });
   InputOTPSeparator.displayName = "InputOTPSeparator";
 
   // ../common-ui/src/pages/login/RegisterAuthenticatorAppPage.tsx
-  var schema12 = z2.object({
+  var schema13 = z2.object({
     totpCode: z2.string().length(6)
   });
   function RegisterAuthenticatorAppPage() {
@@ -70012,8 +70252,8 @@
     const { mutateAsync: getAuthenticatorAppOptionsAsync } = useMutation2(
       getAuthenticatorAppOptions2
     );
-    const [qrCode, setQRCode] = (0, import_react74.useState)("");
-    (0, import_react74.useEffect)(() => {
+    const [qrCode, setQRCode] = (0, import_react81.useState)("");
+    (0, import_react81.useEffect)(() => {
       (async () => {
         const { otpauthUri } = await getAuthenticatorAppOptionsAsync({});
         setQRCode(
@@ -70024,12 +70264,12 @@
       })();
     }, [getAuthenticatorAppOptionsAsync]);
     const form = useForm({
-      resolver: s5(schema12),
+      resolver: s5(schema13),
       defaultValues: {
         totpCode: ""
       }
     });
-    const [recoveryCodes, setRecoveryCodes] = (0, import_react74.useState)();
+    const [recoveryCodes, setRecoveryCodes] = (0, import_react81.useState)();
     const { mutateAsync: registerAuthenticatorAppAsync } = useMutation2(
       registerAuthenticatorApp2
     );
@@ -70047,21 +70287,21 @@
     async function handleFinish() {
       redirectNextLoginFlowPage();
     }
-    return recoveryCodes ? /* @__PURE__ */ import_react74.default.createElement(LoginFlowCard, null, /* @__PURE__ */ import_react74.default.createElement(CardHeader2, null, /* @__PURE__ */ import_react74.default.createElement(CardTitle2, null, "Authenticator app recovery codes"), /* @__PURE__ */ import_react74.default.createElement(CardDescription2, null, "Keep these recovery codes in a private place.")), /* @__PURE__ */ import_react74.default.createElement(CardContent2, null, /* @__PURE__ */ import_react74.default.createElement("div", { className: "flex justify-center" }, /* @__PURE__ */ import_react74.default.createElement("div", { className: "p-2 bg-muted rounded-md font-mono text-sm" }, recoveryCodes.map((recoveryCode, i4) => /* @__PURE__ */ import_react74.default.createElement("div", { key: i4 }, recoveryCode)))), /* @__PURE__ */ import_react74.default.createElement("p", { className: "mt-2 text-sm text-muted-foreground" }, "Each code can only be used once to sign in if you lose access to your authenticator app."), /* @__PURE__ */ import_react74.default.createElement(Button2, { variant: "outline", onClick: handleCopy, className: "mt-4 w-full" }, "Copy recovery codes"), /* @__PURE__ */ import_react74.default.createElement(Button2, { className: "mt-2 w-full", onClick: handleFinish }, "Finish logging in"))) : /* @__PURE__ */ import_react74.default.createElement(LoginFlowCard, null, /* @__PURE__ */ import_react74.default.createElement(CardHeader2, null, /* @__PURE__ */ import_react74.default.createElement(CardTitle2, null, "Set up authenticator app"), /* @__PURE__ */ import_react74.default.createElement(CardDescription2, null, "Scan the QR Code below with your authenticator app to continue logging in.")), /* @__PURE__ */ import_react74.default.createElement(CardContent2, null, /* @__PURE__ */ import_react74.default.createElement("img", { src: qrCode, className: "w-full" }), /* @__PURE__ */ import_react74.default.createElement(Form3, __spreadValues({}, form), /* @__PURE__ */ import_react74.default.createElement("form", { className: "mt-4", onSubmit: form.handleSubmit(handleSubmit) }, /* @__PURE__ */ import_react74.default.createElement(
+    return recoveryCodes ? /* @__PURE__ */ import_react81.default.createElement(LoginFlowCard, null, /* @__PURE__ */ import_react81.default.createElement(CardHeader2, null, /* @__PURE__ */ import_react81.default.createElement(CardTitle2, null, "Authenticator app recovery codes"), /* @__PURE__ */ import_react81.default.createElement(CardDescription2, null, "Keep these recovery codes in a private place.")), /* @__PURE__ */ import_react81.default.createElement(CardContent2, null, /* @__PURE__ */ import_react81.default.createElement("div", { className: "flex justify-center" }, /* @__PURE__ */ import_react81.default.createElement("div", { className: "p-2 bg-muted rounded-md font-mono text-sm" }, recoveryCodes.map((recoveryCode, i4) => /* @__PURE__ */ import_react81.default.createElement("div", { key: i4 }, recoveryCode)))), /* @__PURE__ */ import_react81.default.createElement("p", { className: "mt-2 text-sm text-muted-foreground" }, "Each code can only be used once to sign in if you lose access to your authenticator app."), /* @__PURE__ */ import_react81.default.createElement(Button2, { variant: "outline", onClick: handleCopy, className: "mt-4 w-full" }, "Copy recovery codes"), /* @__PURE__ */ import_react81.default.createElement(Button2, { className: "mt-2 w-full", onClick: handleFinish }, "Finish logging in"))) : /* @__PURE__ */ import_react81.default.createElement(LoginFlowCard, null, /* @__PURE__ */ import_react81.default.createElement(CardHeader2, null, /* @__PURE__ */ import_react81.default.createElement(CardTitle2, null, "Set up authenticator app"), /* @__PURE__ */ import_react81.default.createElement(CardDescription2, null, "Scan the QR Code below with your authenticator app to continue logging in.")), /* @__PURE__ */ import_react81.default.createElement(CardContent2, null, /* @__PURE__ */ import_react81.default.createElement("img", { src: qrCode, className: "w-full" }), /* @__PURE__ */ import_react81.default.createElement(Form3, __spreadValues({}, form), /* @__PURE__ */ import_react81.default.createElement("form", { className: "mt-4", onSubmit: form.handleSubmit(handleSubmit) }, /* @__PURE__ */ import_react81.default.createElement(
       FormField2,
       {
         control: form.control,
         name: "totpCode",
-        render: ({ field }) => /* @__PURE__ */ import_react74.default.createElement(FormItem2, null, /* @__PURE__ */ import_react74.default.createElement(FormLabel2, null, "One-Time Password"), /* @__PURE__ */ import_react74.default.createElement(FormControl2, null, /* @__PURE__ */ import_react74.default.createElement(
+        render: ({ field }) => /* @__PURE__ */ import_react81.default.createElement(FormItem2, null, /* @__PURE__ */ import_react81.default.createElement(FormLabel2, null, "One-Time Password"), /* @__PURE__ */ import_react81.default.createElement(FormControl2, null, /* @__PURE__ */ import_react81.default.createElement(
           InputOTP,
           __spreadValues({
             pattern: Kt,
             maxLength: 6
           }, field),
-          /* @__PURE__ */ import_react74.default.createElement(InputOTPGroup, null, /* @__PURE__ */ import_react74.default.createElement(InputOTPSlot, { index: 0 }), /* @__PURE__ */ import_react74.default.createElement(InputOTPSlot, { index: 1 }), /* @__PURE__ */ import_react74.default.createElement(InputOTPSlot, { index: 2 }), /* @__PURE__ */ import_react74.default.createElement(InputOTPSlot, { index: 3 }), /* @__PURE__ */ import_react74.default.createElement(InputOTPSlot, { index: 4 }), /* @__PURE__ */ import_react74.default.createElement(InputOTPSlot, { index: 5 }))
-        )), /* @__PURE__ */ import_react74.default.createElement(FormDescription2, null, "After you've scanned the QR Code, enter a six-digit code from your authenticator app."), /* @__PURE__ */ import_react74.default.createElement(FormMessage2, null))
+          /* @__PURE__ */ import_react81.default.createElement(InputOTPGroup, null, /* @__PURE__ */ import_react81.default.createElement(InputOTPSlot, { index: 0 }), /* @__PURE__ */ import_react81.default.createElement(InputOTPSlot, { index: 1 }), /* @__PURE__ */ import_react81.default.createElement(InputOTPSlot, { index: 2 }), /* @__PURE__ */ import_react81.default.createElement(InputOTPSlot, { index: 3 }), /* @__PURE__ */ import_react81.default.createElement(InputOTPSlot, { index: 4 }), /* @__PURE__ */ import_react81.default.createElement(InputOTPSlot, { index: 5 }))
+        )), /* @__PURE__ */ import_react81.default.createElement(FormDescription2, null, "After you've scanned the QR Code, enter a six-digit code from your authenticator app."), /* @__PURE__ */ import_react81.default.createElement(FormMessage2, null))
       }
-    ), /* @__PURE__ */ import_react74.default.createElement(
+    ), /* @__PURE__ */ import_react81.default.createElement(
       Button2,
       {
         type: "submit",
@@ -70073,12 +70313,12 @@
   }
 
   // ../common-ui/src/pages/login/RegisterPasskeyPage.tsx
-  var import_react75 = __toESM(require_react());
+  var import_react82 = __toESM(require_react());
   function RegisterPasskeyPage() {
     const { mutateAsync: getPasskeyOptionsAsync } = useMutation2(getPasskeyOptions2);
     const { mutateAsync: registerPasskeyAsync } = useMutation2(registerPasskey2);
     const redirectNextLoginFlowPage = useRedirectNextLoginFlowPage();
-    const handleRegisterPasskey = (0, import_react75.useCallback)(async () => {
+    const handleRegisterPasskey = (0, import_react82.useCallback)(async () => {
       const passkeyOptions = await getPasskeyOptionsAsync({});
       const credentialOptions = {
         challenge: new Uint8Array([0]).buffer,
@@ -70114,25 +70354,25 @@
       });
       redirectNextLoginFlowPage();
     }, [getPasskeyOptionsAsync, registerPasskeyAsync, redirectNextLoginFlowPage]);
-    (0, import_react75.useEffect)(() => {
+    (0, import_react82.useEffect)(() => {
       void handleRegisterPasskey();
     }, [handleRegisterPasskey]);
-    return /* @__PURE__ */ import_react75.default.createElement(LoginFlowCard, null, /* @__PURE__ */ import_react75.default.createElement(CardHeader2, null, /* @__PURE__ */ import_react75.default.createElement(CardTitle2, null, "Register a passkey"), /* @__PURE__ */ import_react75.default.createElement(CardDescription2, null, "Follow the instructions on your authenticator to create a new passkey.")), /* @__PURE__ */ import_react75.default.createElement(CardContent2, null, /* @__PURE__ */ import_react75.default.createElement(Button2, { onClick: handleRegisterPasskey }, "Register passkey")));
+    return /* @__PURE__ */ import_react82.default.createElement(LoginFlowCard, null, /* @__PURE__ */ import_react82.default.createElement(CardHeader2, null, /* @__PURE__ */ import_react82.default.createElement(CardTitle2, null, "Register a passkey"), /* @__PURE__ */ import_react82.default.createElement(CardDescription2, null, "Follow the instructions on your authenticator to create a new passkey.")), /* @__PURE__ */ import_react82.default.createElement(CardContent2, null, /* @__PURE__ */ import_react82.default.createElement(Button2, { onClick: handleRegisterPasskey }, "Register passkey")));
   }
 
   // ../common-ui/src/pages/login/RegisterPasswordPage.tsx
-  var import_react76 = __toESM(require_react());
-  var schema13 = z2.object({
+  var import_react83 = __toESM(require_react());
+  var schema14 = z2.object({
     password: z2.string().nonempty()
   });
   function RegisterPasswordPage() {
     const form = useForm({
-      resolver: s5(schema13),
+      resolver: s5(schema14),
       defaultValues: {
         password: ""
       }
     });
-    const [submitting, setSubmitting] = (0, import_react76.useState)(false);
+    const [submitting, setSubmitting] = (0, import_react83.useState)(false);
     const { mutateAsync: registerPasswordAsync } = useMutation2(registerPassword);
     const redirectNextLoginFlowPage = useRedirectNextLoginFlowPage();
     async function handleSubmit(values) {
@@ -70155,47 +70395,47 @@
       }
       redirectNextLoginFlowPage();
     }
-    return /* @__PURE__ */ import_react76.default.createElement(LoginFlowCard, null, /* @__PURE__ */ import_react76.default.createElement(CardHeader2, null, /* @__PURE__ */ import_react76.default.createElement(CardTitle2, null, "Register password"), /* @__PURE__ */ import_react76.default.createElement(CardDescription2, null, "Register a password to continue logging in.")), /* @__PURE__ */ import_react76.default.createElement(CardContent2, null, /* @__PURE__ */ import_react76.default.createElement(Form3, __spreadValues({}, form), /* @__PURE__ */ import_react76.default.createElement("form", { className: "mt-2", onSubmit: form.handleSubmit(handleSubmit) }, /* @__PURE__ */ import_react76.default.createElement(
+    return /* @__PURE__ */ import_react83.default.createElement(LoginFlowCard, null, /* @__PURE__ */ import_react83.default.createElement(CardHeader2, null, /* @__PURE__ */ import_react83.default.createElement(CardTitle2, null, "Register password"), /* @__PURE__ */ import_react83.default.createElement(CardDescription2, null, "Register a password to continue logging in.")), /* @__PURE__ */ import_react83.default.createElement(CardContent2, null, /* @__PURE__ */ import_react83.default.createElement(Form3, __spreadValues({}, form), /* @__PURE__ */ import_react83.default.createElement("form", { className: "mt-2", onSubmit: form.handleSubmit(handleSubmit) }, /* @__PURE__ */ import_react83.default.createElement(
       FormField2,
       {
         control: form.control,
         name: "password",
-        render: ({ field }) => /* @__PURE__ */ import_react76.default.createElement(FormItem2, null, /* @__PURE__ */ import_react76.default.createElement(FormLabel2, null, "Password"), /* @__PURE__ */ import_react76.default.createElement(FormControl2, null, /* @__PURE__ */ import_react76.default.createElement(Input2, __spreadValues({ type: "password" }, field))), /* @__PURE__ */ import_react76.default.createElement(FormMessage2, null), /* @__PURE__ */ import_react76.default.createElement(FormDescription2, null, "Choose a unique password you haven't used for anything else."))
+        render: ({ field }) => /* @__PURE__ */ import_react83.default.createElement(FormItem2, null, /* @__PURE__ */ import_react83.default.createElement(FormLabel2, null, "Password"), /* @__PURE__ */ import_react83.default.createElement(FormControl2, null, /* @__PURE__ */ import_react83.default.createElement(Input2, __spreadValues({ type: "password" }, field))), /* @__PURE__ */ import_react83.default.createElement(FormMessage2, null), /* @__PURE__ */ import_react83.default.createElement(FormDescription2, null, "Choose a unique password you haven't used for anything else."))
       }
-    ), /* @__PURE__ */ import_react76.default.createElement(Button2, { type: "submit", className: "mt-4 w-full", disabled: submitting }, submitting && /* @__PURE__ */ import_react76.default.createElement(LoaderCircle, { className: "h-4 w-4 animate-spin" }), "Register Password")))));
+    ), /* @__PURE__ */ import_react83.default.createElement(Button2, { type: "submit", className: "mt-4 w-full", disabled: submitting }, submitting && /* @__PURE__ */ import_react83.default.createElement(LoaderCircle, { className: "h-4 w-4 animate-spin" }), "Register Password")))));
   }
 
   // ../common-ui/src/pages/login/RegisterSecondaryFactorPage.tsx
-  var import_react77 = __toESM(require_react());
+  var import_react84 = __toESM(require_react());
   function RegisterSecondaryFactorPage() {
     const darkMode = useDarkMode();
-    return /* @__PURE__ */ import_react77.default.createElement(LoginFlowCard, null, /* @__PURE__ */ import_react77.default.createElement(CardHeader2, null, /* @__PURE__ */ import_react77.default.createElement(CardTitle2, null, "Set up secondary authentication factor"), /* @__PURE__ */ import_react77.default.createElement(CardDescription2, null, "To continue logging in, you must set up a secondary authentication factor.")), /* @__PURE__ */ import_react77.default.createElement(CardContent2, null, /* @__PURE__ */ import_react77.default.createElement("div", { className: "space-y-2" }, /* @__PURE__ */ import_react77.default.createElement(
+    return /* @__PURE__ */ import_react84.default.createElement(LoginFlowCard, null, /* @__PURE__ */ import_react84.default.createElement(CardHeader2, null, /* @__PURE__ */ import_react84.default.createElement(CardTitle2, null, "Set up secondary authentication factor"), /* @__PURE__ */ import_react84.default.createElement(CardDescription2, null, "To continue logging in, you must set up a secondary authentication factor.")), /* @__PURE__ */ import_react84.default.createElement(CardContent2, null, /* @__PURE__ */ import_react84.default.createElement("div", { className: "space-y-2" }, /* @__PURE__ */ import_react84.default.createElement(
       Button2,
       {
         className: "w-full",
         variant: darkMode ? "default" : "outline",
         asChild: true
       },
-      /* @__PURE__ */ import_react77.default.createElement(Link, { to: "/register-passkey" }, "Set up a passkey")
-    ), /* @__PURE__ */ import_react77.default.createElement(
+      /* @__PURE__ */ import_react84.default.createElement(Link, { to: "/register-passkey" }, "Set up a passkey")
+    ), /* @__PURE__ */ import_react84.default.createElement(
       Button2,
       {
         className: "w-full",
         variant: darkMode ? "default" : "outline",
         asChild: true
       },
-      /* @__PURE__ */ import_react77.default.createElement(Link, { to: "/register-authenticator-app" }, "Set up an authenticator app")
+      /* @__PURE__ */ import_react84.default.createElement(Link, { to: "/register-authenticator-app" }, "Set up an authenticator app")
     ))));
   }
 
   // ../common-ui/src/pages/login/SwitchOrganizationsPage.tsx
-  var import_react78 = __toESM(require_react());
+  var import_react85 = __toESM(require_react());
   function SwitchOrganizationsPage() {
     const { organizationId } = useParams();
     const { mutateAsync: exchangeSessionForIntermediateSessionAsync } = useMutation2(exchangeSessionForIntermediateSession);
     const { mutateAsync: setOrganizationAsync } = useMutation2(setOrganization);
     const redirectNextLoginFlowPage = useRedirectNextLoginFlowPage();
-    (0, import_react78.useEffect)(() => {
+    (0, import_react85.useEffect)(() => {
       (async () => {
         clearAccessToken();
         await exchangeSessionForIntermediateSessionAsync({});
@@ -70208,17 +70448,17 @@
       redirectNextLoginFlowPage,
       setOrganizationAsync
     ]);
-    return /* @__PURE__ */ import_react78.default.createElement(LoaderCircle, { className: "mx-auto text-muted-foreground h-4 w-4 animate-spin" });
+    return /* @__PURE__ */ import_react85.default.createElement(LoaderCircle, { className: "mx-auto text-muted-foreground h-4 w-4 animate-spin" });
   }
 
   // ../common-ui/src/pages/login/VerifyAuthenticatorAppPage.tsx
-  var import_react79 = __toESM(require_react());
-  var schema14 = z2.object({
+  var import_react86 = __toESM(require_react());
+  var schema15 = z2.object({
     totpCode: z2.string().length(6)
   });
   function VerifyAuthenticatorAppPage() {
     const form = useForm({
-      resolver: s5(schema14),
+      resolver: s5(schema15),
       defaultValues: {
         totpCode: ""
       }
@@ -70233,21 +70473,21 @@
       });
       redirectNextLoginFlowPage();
     }
-    return /* @__PURE__ */ import_react79.default.createElement(LoginFlowCard, null, /* @__PURE__ */ import_react79.default.createElement(CardHeader2, null, /* @__PURE__ */ import_react79.default.createElement(CardTitle2, null, "Verify authenticator app"), /* @__PURE__ */ import_react79.default.createElement(CardDescription2, null, "To continue logging in, input a one-time password from your authenticator app.")), /* @__PURE__ */ import_react79.default.createElement(CardContent2, null, /* @__PURE__ */ import_react79.default.createElement(Form3, __spreadValues({}, form), /* @__PURE__ */ import_react79.default.createElement("form", { onSubmit: form.handleSubmit(handleSubmit) }, /* @__PURE__ */ import_react79.default.createElement(
+    return /* @__PURE__ */ import_react86.default.createElement(LoginFlowCard, null, /* @__PURE__ */ import_react86.default.createElement(CardHeader2, null, /* @__PURE__ */ import_react86.default.createElement(CardTitle2, null, "Verify authenticator app"), /* @__PURE__ */ import_react86.default.createElement(CardDescription2, null, "To continue logging in, input a one-time password from your authenticator app.")), /* @__PURE__ */ import_react86.default.createElement(CardContent2, null, /* @__PURE__ */ import_react86.default.createElement(Form3, __spreadValues({}, form), /* @__PURE__ */ import_react86.default.createElement("form", { onSubmit: form.handleSubmit(handleSubmit) }, /* @__PURE__ */ import_react86.default.createElement(
       FormField2,
       {
         control: form.control,
         name: "totpCode",
-        render: ({ field }) => /* @__PURE__ */ import_react79.default.createElement(FormItem2, null, /* @__PURE__ */ import_react79.default.createElement(FormLabel2, null, "One-Time Password"), /* @__PURE__ */ import_react79.default.createElement(FormControl2, null, /* @__PURE__ */ import_react79.default.createElement(
+        render: ({ field }) => /* @__PURE__ */ import_react86.default.createElement(FormItem2, null, /* @__PURE__ */ import_react86.default.createElement(FormLabel2, null, "One-Time Password"), /* @__PURE__ */ import_react86.default.createElement(FormControl2, null, /* @__PURE__ */ import_react86.default.createElement(
           InputOTP,
           __spreadValues({
             pattern: Kt,
             maxLength: 6
           }, field),
-          /* @__PURE__ */ import_react79.default.createElement(InputOTPGroup, null, /* @__PURE__ */ import_react79.default.createElement(InputOTPSlot, { index: 0 }), /* @__PURE__ */ import_react79.default.createElement(InputOTPSlot, { index: 1 }), /* @__PURE__ */ import_react79.default.createElement(InputOTPSlot, { index: 2 }), /* @__PURE__ */ import_react79.default.createElement(InputOTPSlot, { index: 3 }), /* @__PURE__ */ import_react79.default.createElement(InputOTPSlot, { index: 4 }), /* @__PURE__ */ import_react79.default.createElement(InputOTPSlot, { index: 5 }))
-        )), /* @__PURE__ */ import_react79.default.createElement(FormDescription2, null, "Enter a six-digit code from your authenticator app."), /* @__PURE__ */ import_react79.default.createElement(FormMessage2, null))
+          /* @__PURE__ */ import_react86.default.createElement(InputOTPGroup, null, /* @__PURE__ */ import_react86.default.createElement(InputOTPSlot, { index: 0 }), /* @__PURE__ */ import_react86.default.createElement(InputOTPSlot, { index: 1 }), /* @__PURE__ */ import_react86.default.createElement(InputOTPSlot, { index: 2 }), /* @__PURE__ */ import_react86.default.createElement(InputOTPSlot, { index: 3 }), /* @__PURE__ */ import_react86.default.createElement(InputOTPSlot, { index: 4 }), /* @__PURE__ */ import_react86.default.createElement(InputOTPSlot, { index: 5 }))
+        )), /* @__PURE__ */ import_react86.default.createElement(FormDescription2, null, "Enter a six-digit code from your authenticator app."), /* @__PURE__ */ import_react86.default.createElement(FormMessage2, null))
       }
-    ), /* @__PURE__ */ import_react79.default.createElement(Button2, { type: "submit", className: "mt-4 w-full" }, "Verify authenticator app"))), /* @__PURE__ */ import_react79.default.createElement("p", { className: "mt-4 text-xs text-muted-foreground" }, "Lost your authenticator app?", " ", /* @__PURE__ */ import_react79.default.createElement(
+    ), /* @__PURE__ */ import_react86.default.createElement(Button2, { type: "submit", className: "mt-4 w-full" }, "Verify authenticator app"))), /* @__PURE__ */ import_react86.default.createElement("p", { className: "mt-4 text-xs text-muted-foreground" }, "Lost your authenticator app?", " ", /* @__PURE__ */ import_react86.default.createElement(
       Link,
       {
         to: "/verify-authenticator-app-recovery-code",
@@ -70258,15 +70498,15 @@
   }
 
   // ../common-ui/src/pages/login/VerifyAuthenticatorAppRecoveryCodePage.tsx
-  var import_react80 = __toESM(require_react());
-  var schema15 = z2.object({
+  var import_react87 = __toESM(require_react());
+  var schema16 = z2.object({
     recoveryCode: z2.string().regex(/[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}/, {
       message: "Invalid recovery code"
     })
   });
   function VerifyAuthenticatorAppRecoveryCodePage() {
     const form = useForm({
-      resolver: s5(schema15),
+      resolver: s5(schema16),
       defaultValues: {
         recoveryCode: ""
       }
@@ -70281,29 +70521,29 @@
       });
       redirectNextLoginFlowPage();
     }
-    return /* @__PURE__ */ import_react80.default.createElement(LoginFlowCard, null, /* @__PURE__ */ import_react80.default.createElement(CardHeader2, null, /* @__PURE__ */ import_react80.default.createElement(CardTitle2, null, "Verify authenticator app recovery code"), /* @__PURE__ */ import_react80.default.createElement(CardDescription2, null, "To continue logging in, input one of the recovery codes for your authenticator app.")), /* @__PURE__ */ import_react80.default.createElement(CardContent2, null, /* @__PURE__ */ import_react80.default.createElement(Form3, __spreadValues({}, form), /* @__PURE__ */ import_react80.default.createElement("form", { onSubmit: form.handleSubmit(handleSubmit) }, /* @__PURE__ */ import_react80.default.createElement(
+    return /* @__PURE__ */ import_react87.default.createElement(LoginFlowCard, null, /* @__PURE__ */ import_react87.default.createElement(CardHeader2, null, /* @__PURE__ */ import_react87.default.createElement(CardTitle2, null, "Verify authenticator app recovery code"), /* @__PURE__ */ import_react87.default.createElement(CardDescription2, null, "To continue logging in, input one of the recovery codes for your authenticator app.")), /* @__PURE__ */ import_react87.default.createElement(CardContent2, null, /* @__PURE__ */ import_react87.default.createElement(Form3, __spreadValues({}, form), /* @__PURE__ */ import_react87.default.createElement("form", { onSubmit: form.handleSubmit(handleSubmit) }, /* @__PURE__ */ import_react87.default.createElement(
       FormField2,
       {
         control: form.control,
         name: "recoveryCode",
-        render: ({ field }) => /* @__PURE__ */ import_react80.default.createElement(FormItem2, null, /* @__PURE__ */ import_react80.default.createElement(FormLabel2, null, "Recovery Code"), /* @__PURE__ */ import_react80.default.createElement(FormControl2, null, /* @__PURE__ */ import_react80.default.createElement(Input2, __spreadValues({ placeholder: "0123-4567-89ab-cdef" }, field))), /* @__PURE__ */ import_react80.default.createElement(FormDescription2, null, "When you registered an authenticator app, you received a list of recovery codes. Input one of those recovery codes here."), /* @__PURE__ */ import_react80.default.createElement(FormMessage2, null))
+        render: ({ field }) => /* @__PURE__ */ import_react87.default.createElement(FormItem2, null, /* @__PURE__ */ import_react87.default.createElement(FormLabel2, null, "Recovery Code"), /* @__PURE__ */ import_react87.default.createElement(FormControl2, null, /* @__PURE__ */ import_react87.default.createElement(Input2, __spreadValues({ placeholder: "0123-4567-89ab-cdef" }, field))), /* @__PURE__ */ import_react87.default.createElement(FormDescription2, null, "When you registered an authenticator app, you received a list of recovery codes. Input one of those recovery codes here."), /* @__PURE__ */ import_react87.default.createElement(FormMessage2, null))
       }
-    ), /* @__PURE__ */ import_react80.default.createElement(Button2, { type: "submit", className: "mt-4 w-full" }, "Verify authenticator app recovery code")))));
+    ), /* @__PURE__ */ import_react87.default.createElement(Button2, { type: "submit", className: "mt-4 w-full" }, "Verify authenticator app recovery code")))));
   }
 
   // ../common-ui/src/pages/login/VerifyEmailPage.tsx
-  var import_react82 = __toESM(require_react());
+  var import_react89 = __toESM(require_react());
 
   // ../../node_modules/@radix-ui/react-accordion/dist/index.mjs
-  var import_react81 = __toESM(require_react(), 1);
+  var import_react88 = __toESM(require_react(), 1);
 
   // ../../node_modules/@radix-ui/react-collapsible/dist/index.mjs
-  var React142 = __toESM(require_react(), 1);
+  var React149 = __toESM(require_react(), 1);
   var import_jsx_runtime27 = __toESM(require_jsx_runtime(), 1);
   var COLLAPSIBLE_NAME = "Collapsible";
   var [createCollapsibleContext, createCollapsibleScope] = createContextScope(COLLAPSIBLE_NAME);
   var [CollapsibleProvider, useCollapsibleContext] = createCollapsibleContext(COLLAPSIBLE_NAME);
-  var Collapsible = React142.forwardRef(
+  var Collapsible = React149.forwardRef(
     (props, forwardedRef) => {
       const _a10 = props, {
         __scopeCollapsible,
@@ -70330,7 +70570,7 @@
           disabled,
           contentId: useId(),
           open,
-          onOpenToggle: React142.useCallback(() => setOpen((prevOpen) => !prevOpen), [setOpen]),
+          onOpenToggle: React149.useCallback(() => setOpen((prevOpen) => !prevOpen), [setOpen]),
           children: /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(
             Primitive.div,
             __spreadProps(__spreadValues({
@@ -70346,7 +70586,7 @@
   );
   Collapsible.displayName = COLLAPSIBLE_NAME;
   var TRIGGER_NAME6 = "CollapsibleTrigger";
-  var CollapsibleTrigger = React142.forwardRef(
+  var CollapsibleTrigger = React149.forwardRef(
     (props, forwardedRef) => {
       const _a10 = props, { __scopeCollapsible } = _a10, triggerProps = __objRest(_a10, ["__scopeCollapsible"]);
       const context = useCollapsibleContext(TRIGGER_NAME6, __scopeCollapsible);
@@ -70368,7 +70608,7 @@
   );
   CollapsibleTrigger.displayName = TRIGGER_NAME6;
   var CONTENT_NAME8 = "CollapsibleContent";
-  var CollapsibleContent = React142.forwardRef(
+  var CollapsibleContent = React149.forwardRef(
     (props, forwardedRef) => {
       const _a10 = props, { forceMount } = _a10, contentProps = __objRest(_a10, ["forceMount"]);
       const context = useCollapsibleContext(CONTENT_NAME8, props.__scopeCollapsible);
@@ -70376,20 +70616,20 @@
     }
   );
   CollapsibleContent.displayName = CONTENT_NAME8;
-  var CollapsibleContentImpl = React142.forwardRef((props, forwardedRef) => {
+  var CollapsibleContentImpl = React149.forwardRef((props, forwardedRef) => {
     const _a10 = props, { __scopeCollapsible, present, children } = _a10, contentProps = __objRest(_a10, ["__scopeCollapsible", "present", "children"]);
     const context = useCollapsibleContext(CONTENT_NAME8, __scopeCollapsible);
-    const [isPresent, setIsPresent] = React142.useState(present);
-    const ref = React142.useRef(null);
+    const [isPresent, setIsPresent] = React149.useState(present);
+    const ref = React149.useRef(null);
     const composedRefs = useComposedRefs(forwardedRef, ref);
-    const heightRef = React142.useRef(0);
+    const heightRef = React149.useRef(0);
     const height = heightRef.current;
-    const widthRef = React142.useRef(0);
+    const widthRef = React149.useRef(0);
     const width = widthRef.current;
     const isOpen = context.open || isPresent;
-    const isMountAnimationPreventedRef = React142.useRef(isOpen);
-    const originalStylesRef = React142.useRef(void 0);
-    React142.useEffect(() => {
+    const isMountAnimationPreventedRef = React149.useRef(isOpen);
+    const originalStylesRef = React149.useRef(void 0);
+    React149.useEffect(() => {
       const rAF = requestAnimationFrame(() => isMountAnimationPreventedRef.current = false);
       return () => cancelAnimationFrame(rAF);
     }, []);
@@ -70446,7 +70686,7 @@
     createCollapsibleScope
   ]);
   var useCollapsibleScope = createCollapsibleScope();
-  var Accordion = import_react81.default.forwardRef(
+  var Accordion = import_react88.default.forwardRef(
     (props, forwardedRef) => {
       const _a10 = props, { type } = _a10, accordionProps = __objRest(_a10, ["type"]);
       const singleProps = accordionProps;
@@ -70460,7 +70700,7 @@
     ACCORDION_NAME,
     { collapsible: false }
   );
-  var AccordionImplSingle = import_react81.default.forwardRef(
+  var AccordionImplSingle = import_react88.default.forwardRef(
     (props, forwardedRef) => {
       const _a10 = props, {
         value: valueProp,
@@ -70485,13 +70725,13 @@
           scope: props.__scopeAccordion,
           value: value ? [value] : [],
           onItemOpen: setValue,
-          onItemClose: import_react81.default.useCallback(() => collapsible && setValue(""), [collapsible, setValue]),
+          onItemClose: import_react88.default.useCallback(() => collapsible && setValue(""), [collapsible, setValue]),
           children: /* @__PURE__ */ (0, import_jsx_runtime28.jsx)(AccordionCollapsibleProvider, { scope: props.__scopeAccordion, collapsible, children: /* @__PURE__ */ (0, import_jsx_runtime28.jsx)(AccordionImpl, __spreadProps(__spreadValues({}, accordionSingleProps), { ref: forwardedRef })) })
         }
       );
     }
   );
-  var AccordionImplMultiple = import_react81.default.forwardRef((props, forwardedRef) => {
+  var AccordionImplMultiple = import_react88.default.forwardRef((props, forwardedRef) => {
     const _a10 = props, {
       value: valueProp,
       defaultValue,
@@ -70507,11 +70747,11 @@
       defaultProp: defaultValue,
       onChange: onValueChange
     });
-    const handleItemOpen = import_react81.default.useCallback(
+    const handleItemOpen = import_react88.default.useCallback(
       (itemValue) => setValue((prevValue = []) => [...prevValue, itemValue]),
       [setValue]
     );
-    const handleItemClose = import_react81.default.useCallback(
+    const handleItemClose = import_react88.default.useCallback(
       (itemValue) => setValue((prevValue = []) => prevValue.filter((value2) => value2 !== itemValue)),
       [setValue]
     );
@@ -70527,10 +70767,10 @@
     );
   });
   var [AccordionImplProvider, useAccordionContext] = createAccordionContext(ACCORDION_NAME);
-  var AccordionImpl = import_react81.default.forwardRef(
+  var AccordionImpl = import_react88.default.forwardRef(
     (props, forwardedRef) => {
       const _a10 = props, { __scopeAccordion, disabled, dir, orientation = "vertical" } = _a10, accordionProps = __objRest(_a10, ["__scopeAccordion", "disabled", "dir", "orientation"]);
-      const accordionRef = import_react81.default.useRef(null);
+      const accordionRef = import_react88.default.useRef(null);
       const composedRefs = useComposedRefs(accordionRef, forwardedRef);
       const getItems = useCollection3(__scopeAccordion);
       const direction = useDirection(dir);
@@ -70622,7 +70862,7 @@
   );
   var ITEM_NAME4 = "AccordionItem";
   var [AccordionItemProvider, useAccordionItemContext] = createAccordionContext(ITEM_NAME4);
-  var AccordionItem = import_react81.default.forwardRef(
+  var AccordionItem = import_react88.default.forwardRef(
     (props, forwardedRef) => {
       const _a10 = props, { __scopeAccordion, value } = _a10, accordionItemProps = __objRest(_a10, ["__scopeAccordion", "value"]);
       const accordionContext = useAccordionContext(ITEM_NAME4, __scopeAccordion);
@@ -70662,7 +70902,7 @@
   );
   AccordionItem.displayName = ITEM_NAME4;
   var HEADER_NAME = "AccordionHeader";
-  var AccordionHeader = import_react81.default.forwardRef(
+  var AccordionHeader = import_react88.default.forwardRef(
     (props, forwardedRef) => {
       const _a10 = props, { __scopeAccordion } = _a10, headerProps = __objRest(_a10, ["__scopeAccordion"]);
       const accordionContext = useAccordionContext(ACCORDION_NAME, __scopeAccordion);
@@ -70681,7 +70921,7 @@
   );
   AccordionHeader.displayName = HEADER_NAME;
   var TRIGGER_NAME7 = "AccordionTrigger";
-  var AccordionTrigger = import_react81.default.forwardRef(
+  var AccordionTrigger = import_react88.default.forwardRef(
     (props, forwardedRef) => {
       const _a10 = props, { __scopeAccordion } = _a10, triggerProps = __objRest(_a10, ["__scopeAccordion"]);
       const accordionContext = useAccordionContext(ACCORDION_NAME, __scopeAccordion);
@@ -70702,7 +70942,7 @@
   );
   AccordionTrigger.displayName = TRIGGER_NAME7;
   var CONTENT_NAME9 = "AccordionContent";
-  var AccordionContent = import_react81.default.forwardRef(
+  var AccordionContent = import_react88.default.forwardRef(
     (props, forwardedRef) => {
       const _a10 = props, { __scopeAccordion } = _a10, contentProps = __objRest(_a10, ["__scopeAccordion"]);
       const accordionContext = useAccordionContext(ACCORDION_NAME, __scopeAccordion);
@@ -70735,11 +70975,11 @@
   var Content27 = AccordionContent;
 
   // ../common-ui/src/components/ui/accordion.tsx
-  var React144 = __toESM(require_react());
+  var React151 = __toESM(require_react());
   var Accordion2 = Root26;
-  var AccordionItem2 = React144.forwardRef((_a10, ref) => {
+  var AccordionItem2 = React151.forwardRef((_a10, ref) => {
     var _b2 = _a10, { className } = _b2, props = __objRest(_b2, ["className"]);
-    return /* @__PURE__ */ React144.createElement(
+    return /* @__PURE__ */ React151.createElement(
       Item3,
       __spreadValues({
         ref,
@@ -70748,9 +70988,9 @@
     );
   });
   AccordionItem2.displayName = "AccordionItem";
-  var AccordionTrigger2 = React144.forwardRef((_a10, ref) => {
+  var AccordionTrigger2 = React151.forwardRef((_a10, ref) => {
     var _b2 = _a10, { className, children } = _b2, props = __objRest(_b2, ["className", "children"]);
-    return /* @__PURE__ */ React144.createElement(Header, { className: "flex" }, /* @__PURE__ */ React144.createElement(
+    return /* @__PURE__ */ React151.createElement(Header, { className: "flex" }, /* @__PURE__ */ React151.createElement(
       Trigger23,
       __spreadValues({
         ref,
@@ -70760,25 +71000,25 @@
         )
       }, props),
       children,
-      /* @__PURE__ */ React144.createElement(ChevronDown, { className: "h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200" })
+      /* @__PURE__ */ React151.createElement(ChevronDown, { className: "h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200" })
     ));
   });
   AccordionTrigger2.displayName = Trigger23.displayName;
-  var AccordionContent2 = React144.forwardRef((_a10, ref) => {
+  var AccordionContent2 = React151.forwardRef((_a10, ref) => {
     var _b2 = _a10, { className, children } = _b2, props = __objRest(_b2, ["className", "children"]);
-    return /* @__PURE__ */ React144.createElement(
+    return /* @__PURE__ */ React151.createElement(
       Content27,
       __spreadValues({
         ref,
         className: "overflow-hidden text-sm data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down"
       }, props),
-      /* @__PURE__ */ React144.createElement("div", { className: cn2("pb-4 pt-0", className) }, children)
+      /* @__PURE__ */ React151.createElement("div", { className: cn2("pb-4 pt-0", className) }, children)
     );
   });
   AccordionContent2.displayName = Content27.displayName;
 
   // ../common-ui/src/pages/login/VerifyEmailPage.tsx
-  var schema16 = z2.object({
+  var schema17 = z2.object({
     emailVerificationChallengeCode: z2.string().startsWith("email_verification_challenge_code_")
   });
   function VerifyEmailPage() {
@@ -70788,7 +71028,7 @@
     const issueEmailVerificationChallengeMutation = useMutation2(
       issueEmailVerificationChallenge
     );
-    const [hasResent, setHasResent] = (0, import_react82.useState)(false);
+    const [hasResent, setHasResent] = (0, import_react89.useState)(false);
     async function handleResend() {
       var _a11;
       await issueEmailVerificationChallengeMutation.mutateAsync({
@@ -70797,18 +71037,18 @@
       ue.success("New verification link sent");
       setHasResent(true);
     }
-    (0, import_react82.useEffect)(() => {
+    (0, import_react89.useEffect)(() => {
       setTimeout(() => {
         setHasResent(false);
       }, 1e4);
     }, [hasResent]);
     const form = useForm({
-      resolver: s5(schema16),
+      resolver: s5(schema17),
       defaultValues: {
         emailVerificationChallengeCode: ""
       }
     });
-    const [submitting, setSubmitting] = (0, import_react82.useState)(false);
+    const [submitting, setSubmitting] = (0, import_react89.useState)(false);
     const { mutateAsync: verifyEmailChallengeAsync } = useMutation2(verifyEmailChallenge);
     const navigate = useNavigate();
     async function handleSubmit(values) {
@@ -70819,7 +71059,7 @@
       navigate("/choose-organization");
     }
     const [searchParams] = useSearchParams();
-    (0, import_react82.useEffect)(() => {
+    (0, import_react89.useEffect)(() => {
       (async () => {
         const code = searchParams.get("code");
         if (code) {
@@ -70830,7 +71070,7 @@
         }
       })();
     }, [searchParams, verifyEmailChallengeAsync, navigate]);
-    return /* @__PURE__ */ import_react82.default.createElement(LoginFlowCard, null, /* @__PURE__ */ import_react82.default.createElement(CardHeader2, null, /* @__PURE__ */ import_react82.default.createElement(CardTitle2, null, "Check your email"), /* @__PURE__ */ import_react82.default.createElement(CardDescription2, null, "We've sent an email verification link to", " ", /* @__PURE__ */ import_react82.default.createElement("span", { className: "font-medium" }, (_a10 = whoamiResponse == null ? void 0 : whoamiResponse.intermediateSession) == null ? void 0 : _a10.email), ".")), /* @__PURE__ */ import_react82.default.createElement(CardContent2, null, /* @__PURE__ */ import_react82.default.createElement("p", { className: "text-sm text-muted-foreground" }, "Didn't receive an email?"), /* @__PURE__ */ import_react82.default.createElement(
+    return /* @__PURE__ */ import_react89.default.createElement(LoginFlowCard, null, /* @__PURE__ */ import_react89.default.createElement(CardHeader2, null, /* @__PURE__ */ import_react89.default.createElement(CardTitle2, null, "Check your email"), /* @__PURE__ */ import_react89.default.createElement(CardDescription2, null, "We've sent an email verification link to", " ", /* @__PURE__ */ import_react89.default.createElement("span", { className: "font-medium" }, (_a10 = whoamiResponse == null ? void 0 : whoamiResponse.intermediateSession) == null ? void 0 : _a10.email), ".")), /* @__PURE__ */ import_react89.default.createElement(CardContent2, null, /* @__PURE__ */ import_react89.default.createElement("p", { className: "text-sm text-muted-foreground" }, "Didn't receive an email?"), /* @__PURE__ */ import_react89.default.createElement(
       Button2,
       {
         className: "mt-4 w-full",
@@ -70839,26 +71079,26 @@
         onClick: handleResend
       },
       hasResent ? "Email verification resent!" : "Resend verification link"
-    ), /* @__PURE__ */ import_react82.default.createElement("div", { className: "block relative w-full cursor-default my-2 mt-4" }, /* @__PURE__ */ import_react82.default.createElement("div", { className: "absolute inset-0 flex items-center border-muted-foreground" }, /* @__PURE__ */ import_react82.default.createElement("span", { className: "w-full border-t" })), /* @__PURE__ */ import_react82.default.createElement("div", { className: "relative flex justify-center text-xs uppercase" }, /* @__PURE__ */ import_react82.default.createElement("span", { className: "bg-card px-2 text-muted-foreground" }, "or"))), /* @__PURE__ */ import_react82.default.createElement(Accordion2, { type: "single", collapsible: true }, /* @__PURE__ */ import_react82.default.createElement(AccordionItem2, { className: "border-b-0", value: "advanced" }, /* @__PURE__ */ import_react82.default.createElement(AccordionTrigger2, null, "Enter verification code manually"), /* @__PURE__ */ import_react82.default.createElement(AccordionContent2, null, /* @__PURE__ */ import_react82.default.createElement(Form3, __spreadValues({}, form), /* @__PURE__ */ import_react82.default.createElement(
+    ), /* @__PURE__ */ import_react89.default.createElement("div", { className: "block relative w-full cursor-default my-2 mt-4" }, /* @__PURE__ */ import_react89.default.createElement("div", { className: "absolute inset-0 flex items-center border-muted-foreground" }, /* @__PURE__ */ import_react89.default.createElement("span", { className: "w-full border-t" })), /* @__PURE__ */ import_react89.default.createElement("div", { className: "relative flex justify-center text-xs uppercase" }, /* @__PURE__ */ import_react89.default.createElement("span", { className: "bg-card px-2 text-muted-foreground" }, "or"))), /* @__PURE__ */ import_react89.default.createElement(Accordion2, { type: "single", collapsible: true }, /* @__PURE__ */ import_react89.default.createElement(AccordionItem2, { className: "border-b-0", value: "advanced" }, /* @__PURE__ */ import_react89.default.createElement(AccordionTrigger2, null, "Enter verification code manually"), /* @__PURE__ */ import_react89.default.createElement(AccordionContent2, null, /* @__PURE__ */ import_react89.default.createElement(Form3, __spreadValues({}, form), /* @__PURE__ */ import_react89.default.createElement(
       "form",
       {
         className: "mt-2",
         onSubmit: form.handleSubmit(handleSubmit)
       },
-      /* @__PURE__ */ import_react82.default.createElement(
+      /* @__PURE__ */ import_react89.default.createElement(
         FormField2,
         {
           control: form.control,
           name: "emailVerificationChallengeCode",
-          render: ({ field }) => /* @__PURE__ */ import_react82.default.createElement(FormItem2, { className: "px-1" }, /* @__PURE__ */ import_react82.default.createElement(FormLabel2, null, "Email Verification Challenge Code"), /* @__PURE__ */ import_react82.default.createElement(FormControl2, null, /* @__PURE__ */ import_react82.default.createElement(
+          render: ({ field }) => /* @__PURE__ */ import_react89.default.createElement(FormItem2, { className: "px-1" }, /* @__PURE__ */ import_react89.default.createElement(FormLabel2, null, "Email Verification Challenge Code"), /* @__PURE__ */ import_react89.default.createElement(FormControl2, null, /* @__PURE__ */ import_react89.default.createElement(
             Input2,
             __spreadValues({
               placeholder: "email_verification_challenge_code_..."
             }, field)
-          )), /* @__PURE__ */ import_react82.default.createElement(FormDescription2, null, "Paste the full verification code from the email you received."), /* @__PURE__ */ import_react82.default.createElement(FormMessage2, null))
+          )), /* @__PURE__ */ import_react89.default.createElement(FormDescription2, null, "Paste the full verification code from the email you received."), /* @__PURE__ */ import_react89.default.createElement(FormMessage2, null))
         }
       ),
-      /* @__PURE__ */ import_react82.default.createElement(
+      /* @__PURE__ */ import_react89.default.createElement(
         Button2,
         {
           type: "submit",
@@ -70866,21 +71106,21 @@
           variant: darkMode ? "outline" : "default",
           disabled: submitting
         },
-        submitting && /* @__PURE__ */ import_react82.default.createElement(LoaderCircle, { className: "h-4 w-4 animate-spin" }),
+        submitting && /* @__PURE__ */ import_react89.default.createElement(LoaderCircle, { className: "h-4 w-4 animate-spin" }),
         "Verify Email"
       )
     )))))));
   }
 
   // ../common-ui/src/pages/login/VerifyPasskeyPage.tsx
-  var import_react83 = __toESM(require_react());
+  var import_react90 = __toESM(require_react());
   function VerifyPasskeyPage() {
     const { mutateAsync: issuePasskeyChallengeAsync } = useMutation2(
       issuePasskeyChallenge
     );
     const { mutateAsync: verifyPasskeyAsync } = useMutation2(verifyPasskey);
     const redirectNextLoginFlowPage = useRedirectNextLoginFlowPage();
-    const handleVerifyPasskey = (0, import_react83.useCallback)(async () => {
+    const handleVerifyPasskey = (0, import_react90.useCallback)(async () => {
       const challengeResponse = await issuePasskeyChallengeAsync({});
       const allowCredentials = challengeResponse.credentialIds.map(
         (id) => ({
@@ -70912,26 +71152,26 @@
       redirectNextLoginFlowPage,
       verifyPasskeyAsync
     ]);
-    (0, import_react83.useEffect)(() => {
+    (0, import_react90.useEffect)(() => {
       void handleVerifyPasskey();
     }, [handleVerifyPasskey]);
-    return /* @__PURE__ */ import_react83.default.createElement(LoginFlowCard, null, /* @__PURE__ */ import_react83.default.createElement(CardHeader2, null, /* @__PURE__ */ import_react83.default.createElement(CardTitle2, null, "Verify passkey"), /* @__PURE__ */ import_react83.default.createElement(CardDescription2, null, "To continue logging in, follow the instructions on your authenticator.")), /* @__PURE__ */ import_react83.default.createElement(CardContent2, null, /* @__PURE__ */ import_react83.default.createElement(Button2, { onClick: handleVerifyPasskey }, "Verify passkey")));
+    return /* @__PURE__ */ import_react90.default.createElement(LoginFlowCard, null, /* @__PURE__ */ import_react90.default.createElement(CardHeader2, null, /* @__PURE__ */ import_react90.default.createElement(CardTitle2, null, "Verify passkey"), /* @__PURE__ */ import_react90.default.createElement(CardDescription2, null, "To continue logging in, follow the instructions on your authenticator.")), /* @__PURE__ */ import_react90.default.createElement(CardContent2, null, /* @__PURE__ */ import_react90.default.createElement(Button2, { onClick: handleVerifyPasskey }, "Verify passkey")));
   }
 
   // ../common-ui/src/pages/login/VerifyPasswordPage.tsx
-  var import_react84 = __toESM(require_react());
-  var schema17 = z2.object({
+  var import_react91 = __toESM(require_react());
+  var schema18 = z2.object({
     password: z2.string().nonempty()
   });
   function VerifyPasswordPage() {
     const darkMode = useDarkMode();
     const form = useForm({
-      resolver: s5(schema17),
+      resolver: s5(schema18),
       defaultValues: {
         password: ""
       }
     });
-    const [submitting, setSubmitting] = (0, import_react84.useState)(false);
+    const [submitting, setSubmitting] = (0, import_react91.useState)(false);
     const { mutateAsync: verifyPasswordAsync } = useMutation2(verifyPassword);
     const redirectNextLoginFlowPage = useRedirectNextLoginFlowPage();
     async function handleSubmit(values) {
@@ -70941,14 +71181,14 @@
       });
       redirectNextLoginFlowPage();
     }
-    return /* @__PURE__ */ import_react84.default.createElement(LoginFlowCard, null, /* @__PURE__ */ import_react84.default.createElement(CardHeader2, null, /* @__PURE__ */ import_react84.default.createElement(CardTitle2, null, "Verify your password"), /* @__PURE__ */ import_react84.default.createElement(CardDescription2, null, "Enter your password below to continue logging in.")), /* @__PURE__ */ import_react84.default.createElement(CardContent2, null, /* @__PURE__ */ import_react84.default.createElement(Form3, __spreadValues({}, form), /* @__PURE__ */ import_react84.default.createElement("form", { className: "mt-2", onSubmit: form.handleSubmit(handleSubmit) }, /* @__PURE__ */ import_react84.default.createElement(
+    return /* @__PURE__ */ import_react91.default.createElement(LoginFlowCard, null, /* @__PURE__ */ import_react91.default.createElement(CardHeader2, null, /* @__PURE__ */ import_react91.default.createElement(CardTitle2, null, "Verify your password"), /* @__PURE__ */ import_react91.default.createElement(CardDescription2, null, "Enter your password below to continue logging in.")), /* @__PURE__ */ import_react91.default.createElement(CardContent2, null, /* @__PURE__ */ import_react91.default.createElement(Form3, __spreadValues({}, form), /* @__PURE__ */ import_react91.default.createElement("form", { className: "mt-2", onSubmit: form.handleSubmit(handleSubmit) }, /* @__PURE__ */ import_react91.default.createElement(
       FormField2,
       {
         control: form.control,
         name: "password",
-        render: ({ field }) => /* @__PURE__ */ import_react84.default.createElement(FormItem2, null, /* @__PURE__ */ import_react84.default.createElement(FormLabel2, null, "Password"), /* @__PURE__ */ import_react84.default.createElement(FormControl2, null, /* @__PURE__ */ import_react84.default.createElement(Input2, __spreadValues({ type: "password" }, field))), /* @__PURE__ */ import_react84.default.createElement(FormMessage2, null))
+        render: ({ field }) => /* @__PURE__ */ import_react91.default.createElement(FormItem2, null, /* @__PURE__ */ import_react91.default.createElement(FormLabel2, null, "Password"), /* @__PURE__ */ import_react91.default.createElement(FormControl2, null, /* @__PURE__ */ import_react91.default.createElement(Input2, __spreadValues({ type: "password" }, field))), /* @__PURE__ */ import_react91.default.createElement(FormMessage2, null))
       }
-    ), /* @__PURE__ */ import_react84.default.createElement(
+    ), /* @__PURE__ */ import_react91.default.createElement(
       Button2,
       {
         type: "submit",
@@ -70956,68 +71196,16 @@
         variant: darkMode ? "outline" : "default",
         disabled: submitting
       },
-      submitting && /* @__PURE__ */ import_react84.default.createElement(LoaderCircle, { className: "h-4 w-4 animate-spin" }),
+      submitting && /* @__PURE__ */ import_react91.default.createElement(LoaderCircle, { className: "h-4 w-4 animate-spin" }),
       "Verify Password"
     )))));
   }
 
   // ../common-ui/src/pages/login/VerifySecondaryFactorPage.tsx
-  var import_react85 = __toESM(require_react());
+  var import_react92 = __toESM(require_react());
   function VerifySecondaryFactorPage() {
-    return /* @__PURE__ */ import_react85.default.createElement(LoginFlowCard, null, /* @__PURE__ */ import_react85.default.createElement(CardHeader2, null, /* @__PURE__ */ import_react85.default.createElement(CardTitle2, null, "Verify secondary authentication factor"), /* @__PURE__ */ import_react85.default.createElement(CardDescription2, null, "To continue logging in, you must verify your identity using a secondary authentication factor.")), /* @__PURE__ */ import_react85.default.createElement(CardContent2, null, /* @__PURE__ */ import_react85.default.createElement("div", { className: "space-y-2" }, /* @__PURE__ */ import_react85.default.createElement(Button2, { className: "w-full", variant: "outline", asChild: true }, /* @__PURE__ */ import_react85.default.createElement(Link, { to: "/verify-passkey" }, "Verify using a passkey")), /* @__PURE__ */ import_react85.default.createElement(Button2, { className: "w-full", variant: "outline", asChild: true }, /* @__PURE__ */ import_react85.default.createElement(Link, { to: "/verify-authenticator-app" }, "Verify using an authenticator app")))));
+    return /* @__PURE__ */ import_react92.default.createElement(LoginFlowCard, null, /* @__PURE__ */ import_react92.default.createElement(CardHeader2, null, /* @__PURE__ */ import_react92.default.createElement(CardTitle2, null, "Verify secondary authentication factor"), /* @__PURE__ */ import_react92.default.createElement(CardDescription2, null, "To continue logging in, you must verify your identity using a secondary authentication factor.")), /* @__PURE__ */ import_react92.default.createElement(CardContent2, null, /* @__PURE__ */ import_react92.default.createElement("div", { className: "space-y-2" }, /* @__PURE__ */ import_react92.default.createElement(Button2, { className: "w-full", variant: "outline", asChild: true }, /* @__PURE__ */ import_react92.default.createElement(Link, { to: "/verify-passkey" }, "Verify using a passkey")), /* @__PURE__ */ import_react92.default.createElement(Button2, { className: "w-full", variant: "outline", asChild: true }, /* @__PURE__ */ import_react92.default.createElement(Link, { to: "/verify-authenticator-app" }, "Verify using an authenticator app")))));
   }
-
-  // src/pages/login/ChooseProjectPage.tsx
-  var import_react87 = __toESM(require_react());
-
-  // src/lib/login-pages.ts
-  var LoginPageMap = {
-    ["choose_additional_factor" /* ChooseAdditionalFactor */]: "/choose-additional-factor",
-    ["choose_project" /* ChooseProject */]: "/choose-project",
-    ["create_project" /* CreateProject */]: "/create-project",
-    ["register_authenticator_app" /* RegisterAuthenticatorApp */]: "/register-authenticator-app",
-    ["register_passkey" /* RegisterPasskey */]: "/register-passkey",
-    ["register_password" /* RegisterPassword */]: "/register-password",
-    ["start_login" /* StartLogin */]: "/start-login",
-    ["verify_authenticator_app" /* VerifyAuthenticatorApp */]: "/verify-authenticator-app",
-    ["verify_email" /* VerifyEmail */]: "/verify-email",
-    ["verify_passkey" /* VerifyPasskey */]: "/verify-passkey",
-    ["verify_password" /* VerifyPassword */]: "/verify-password"
-  };
-
-  // src/gen/tesseral/intermediate/v1/intermediate_pb.ts
-  var file_tesseral_intermediate_v1_intermediate2 = /* @__PURE__ */ fileDesc("Cit0ZXNzZXJhbC9pbnRlcm1lZGlhdGUvdjEvaW50ZXJtZWRpYXRlLnByb3RvEhh0ZXNzZXJhbC5pbnRlcm1lZGlhdGUudjEi3QMKE0ludGVybWVkaWF0ZVNlc3Npb24SCgoCaWQYASABKAkSEgoKcHJvamVjdF9pZBgCIAEoCRINCgVlbWFpbBgDIAEoCRIWCg5lbWFpbF92ZXJpZmllZBgEIAEoCBIWCg5nb29nbGVfdXNlcl9pZBgFIAEoCRIcChRnb29nbGVfaG9zdGVkX2RvbWFpbhgGIAEoCRIZChFtaWNyb3NvZnRfdXNlcl9pZBgHIAEoCRIbChNtaWNyb3NvZnRfdGVuYW50X2lkGAggASgJEhcKD29yZ2FuaXphdGlvbl9pZBgJIAEoCRIZChFwYXNzd29yZF92ZXJpZmllZBgKIAEoCBIiChphdXRoZW50aWNhdG9yX2FwcF92ZXJpZmllZBgOIAEoCBIYChBwYXNza2V5X3ZlcmlmaWVkGA8gASgIEiQKHG5ld191c2VyX3Bhc3N3b3JkX3JlZ2lzdGVyZWQYCyABKAgSLwonZW1haWxfdmVyaWZpY2F0aW9uX2NoYWxsZW5nZV9yZWdpc3RlcmVkGAwgASgIEkgKE3ByaW1hcnlfYXV0aF9mYWN0b3IYDSABKA4yKy50ZXNzZXJhbC5pbnRlcm1lZGlhdGUudjEuUHJpbWFyeUF1dGhGYWN0b3Ii0gQKCFNldHRpbmdzEgoKAmlkGAEgASgJEhIKCnByb2plY3RfaWQYAiABKAkSHAoUcHJvamVjdF9kaXNwbGF5X25hbWUYFCABKAkSJgoecHJvamVjdF9lbWFpbF9zZW5kX2Zyb21fZG9tYWluGBUgASgJEhAKCGxvZ29fdXJsGAUgASgJEhMKC2Zhdmljb25fdXJsGAYgASgJEhUKDXByaW1hcnlfY29sb3IYByABKAkSIAoYZGV0ZWN0X2RhcmtfbW9kZV9lbmFibGVkGAggASgIEhoKEmRhcmtfbW9kZV9sb2dvX3VybBgJIAEoCRIfChdkYXJrX21vZGVfcHJpbWFyeV9jb2xvchgKIAEoCRIVCg1sb2dfaW5fbGF5b3V0GAsgASgJEhkKEWxvZ19pbl93aXRoX2VtYWlsGAwgASgIEhoKEmxvZ19pbl93aXRoX2dvb2dsZRgNIAEoCBIdChVsb2dfaW5fd2l0aF9taWNyb3NvZnQYDiABKAgSHAoUbG9nX2luX3dpdGhfcGFzc3dvcmQYDyABKAgSGAoQbG9nX2luX3dpdGhfc2FtbBgQIAEoCBIUCgxyZWRpcmVjdF91cmkYESABKAkSJQoYYWZ0ZXJfbG9naW5fcmVkaXJlY3RfdXJpGBIgASgJSACIAQESJgoZYWZ0ZXJfc2lnbnVwX3JlZGlyZWN0X3VyaRgTIAEoCUgBiAEBQhsKGV9hZnRlcl9sb2dpbl9yZWRpcmVjdF91cmlCHAoaX2FmdGVyX3NpZ251cF9yZWRpcmVjdF91cmkiQgoUQ3JlYXRlUHJvamVjdFJlcXVlc3QSFAoMZGlzcGxheV9uYW1lGAEgASgJEhQKDHJlZGlyZWN0X3VyaRgCIAEoCSJLChVDcmVhdGVQcm9qZWN0UmVzcG9uc2USMgoHcHJvamVjdBgBIAEoCzIhLnRlc3NlcmFsLmludGVybWVkaWF0ZS52MS5Qcm9qZWN0IkEKIENyZWF0ZUludGVybWVkaWF0ZVNlc3Npb25SZXF1ZXN0Eh0KFXJlbGF5ZWRfc2Vzc2lvbl9zdGF0ZRgBIAEoCSJOCiFDcmVhdGVJbnRlcm1lZGlhdGVTZXNzaW9uUmVzcG9uc2USKQohaW50ZXJtZWRpYXRlX3Nlc3Npb25fc2VjcmV0X3Rva2VuGAEgASgJIg8KDVdob2FtaVJlcXVlc3QiXQoOV2hvYW1pUmVzcG9uc2USSwoUaW50ZXJtZWRpYXRlX3Nlc3Npb24YASABKAsyLS50ZXNzZXJhbC5pbnRlcm1lZGlhdGUudjEuSW50ZXJtZWRpYXRlU2Vzc2lvbiIxChlDcmVhdGVPcmdhbml6YXRpb25SZXF1ZXN0EhQKDGRpc3BsYXlfbmFtZRgBIAEoCSI1ChpDcmVhdGVPcmdhbml6YXRpb25SZXNwb25zZRIXCg9vcmdhbml6YXRpb25faWQYASABKAkiMQoWU2V0T3JnYW5pemF0aW9uUmVxdWVzdBIXCg9vcmdhbml6YXRpb25faWQYASABKAkiGQoXU2V0T3JnYW5pemF0aW9uUmVzcG9uc2UiLgosRXhjaGFuZ2VJbnRlcm1lZGlhdGVTZXNzaW9uRm9yU2Vzc2lvblJlcXVlc3QijQEKLUV4Y2hhbmdlSW50ZXJtZWRpYXRlU2Vzc2lvbkZvclNlc3Npb25SZXNwb25zZRIVCg1yZWZyZXNoX3Rva2VuGAEgASgJEhQKDGFjY2Vzc190b2tlbhgCIAEoCRIQCghuZXdfdXNlchgDIAEoCBIdChVyZWxheWVkX3Nlc3Npb25fdG9rZW4YBCABKAkiTQosRXhjaGFuZ2VSZWxheWVkU2Vzc2lvblRva2VuRm9yU2Vzc2lvblJlcXVlc3QSHQoVcmVsYXllZF9zZXNzaW9uX3Rva2VuGAEgASgJInsKLUV4Y2hhbmdlUmVsYXllZFNlc3Npb25Ub2tlbkZvclNlc3Npb25SZXNwb25zZRIVCg1yZWZyZXNoX3Rva2VuGAEgASgJEhQKDGFjY2Vzc190b2tlbhgCIAEoCRIdChVyZWxheWVkX3Nlc3Npb25fc3RhdGUYAyABKAkiOAogR2V0R29vZ2xlT0F1dGhSZWRpcmVjdFVSTFJlcXVlc3QSFAoMcmVkaXJlY3RfdXJsGAEgASgJIjAKIUdldEdvb2dsZU9BdXRoUmVkaXJlY3RVUkxSZXNwb25zZRILCgN1cmwYASABKAkiUQocUmVkZWVtR29vZ2xlT0F1dGhDb2RlUmVxdWVzdBIMCgRjb2RlGAEgASgJEg0KBXN0YXRlGAIgASgJEhQKDHJlZGlyZWN0X3VybBgDIAEoCSIfCh1SZWRlZW1Hb29nbGVPQXV0aENvZGVSZXNwb25zZSI7CiNHZXRNaWNyb3NvZnRPQXV0aFJlZGlyZWN0VVJMUmVxdWVzdBIUCgxyZWRpcmVjdF91cmwYASABKAkiMwokR2V0TWljcm9zb2Z0T0F1dGhSZWRpcmVjdFVSTFJlc3BvbnNlEgsKA3VybBgBIAEoCSJUCh9SZWRlZW1NaWNyb3NvZnRPQXV0aENvZGVSZXF1ZXN0EgwKBGNvZGUYASABKAkSDQoFc3RhdGUYAiABKAkSFAoMcmVkaXJlY3RfdXJsGAMgASgJIiIKIFJlZGVlbU1pY3Jvc29mdE9BdXRoQ29kZVJlc3BvbnNlIqkDCgxPcmdhbml6YXRpb24SCgoCaWQYASABKAkSFAoMZGlzcGxheV9uYW1lGAIgASgJEhkKEWxvZ19pbl93aXRoX2VtYWlsGAMgASgIEhoKEmxvZ19pbl93aXRoX2dvb2dsZRgEIAEoCBIdChVsb2dfaW5fd2l0aF9taWNyb3NvZnQYBSABKAgSHAoUbG9nX2luX3dpdGhfcGFzc3dvcmQYBiABKAgSGAoQbG9nX2luX3dpdGhfc2FtbBgHIAEoCBIlCh1sb2dfaW5fd2l0aF9hdXRoZW50aWNhdG9yX2FwcBgIIAEoCBIbChNsb2dfaW5fd2l0aF9wYXNza2V5GAkgASgIEhMKC3JlcXVpcmVfbWZhGAogASgIEiIKGnByaW1hcnlfc2FtbF9jb25uZWN0aW9uX2lkGAsgASgJEhMKC3VzZXJfZXhpc3RzGAwgASgIEhkKEXVzZXJfaGFzX3Bhc3N3b3JkGA0gASgIEiIKGnVzZXJfaGFzX2F1dGhlbnRpY2F0b3JfYXBwGA4gASgIEhgKEHVzZXJfaGFzX3Bhc3NrZXkYDyABKAgivAEKB1Byb2plY3QSCgoCaWQYASABKAkSFwoPb3JnYW5pemF0aW9uX2lkGAIgASgJEi8KC2NyZWF0ZV90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIvCgt1cGRhdGVfdGltZRgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASFAoMZGlzcGxheV9uYW1lGAUgASgJEhQKDHZhdWx0X2RvbWFpbhgGIAEoCSI3CiZJc3N1ZUVtYWlsVmVyaWZpY2F0aW9uQ2hhbGxlbmdlUmVxdWVzdBINCgVlbWFpbBgBIAEoCSIpCidJc3N1ZUVtYWlsVmVyaWZpY2F0aW9uQ2hhbGxlbmdlUmVzcG9uc2UiGgoYTGlzdE9yZ2FuaXphdGlvbnNSZXF1ZXN0IloKGUxpc3RPcmdhbml6YXRpb25zUmVzcG9uc2USPQoNb3JnYW5pemF0aW9ucxgBIAMoCzImLnRlc3NlcmFsLmludGVybWVkaWF0ZS52MS5Pcmdhbml6YXRpb24iLQocTGlzdFNBTUxPcmdhbml6YXRpb25zUmVxdWVzdBINCgVlbWFpbBgBIAEoCSJeCh1MaXN0U0FNTE9yZ2FuaXphdGlvbnNSZXNwb25zZRI9Cg1vcmdhbml6YXRpb25zGAEgAygLMiYudGVzc2VyYWwuaW50ZXJtZWRpYXRlLnYxLk9yZ2FuaXphdGlvbiIrChtWZXJpZnlFbWFpbENoYWxsZW5nZVJlcXVlc3QSDAoEY29kZRgCIAEoCSIeChxWZXJpZnlFbWFpbENoYWxsZW5nZVJlc3BvbnNlIisKF1JlZ2lzdGVyUGFzc3dvcmRSZXF1ZXN0EhAKCHBhc3N3b3JkGAEgASgJIhoKGFJlZ2lzdGVyUGFzc3dvcmRSZXNwb25zZSJCChVWZXJpZnlQYXNzd29yZFJlcXVlc3QSFwoPb3JnYW5pemF0aW9uX2lkGAEgASgJEhAKCHBhc3N3b3JkGAIgASgJIhgKFlZlcmlmeVBhc3N3b3JkUmVzcG9uc2UiFAoSR2V0U2V0dGluZ3NSZXF1ZXN0IksKE0dldFNldHRpbmdzUmVzcG9uc2USNAoIc2V0dGluZ3MYASABKAsyIi50ZXNzZXJhbC5pbnRlcm1lZGlhdGUudjEuU2V0dGluZ3MiTgojUmVkZWVtVXNlckltcGVyc29uYXRpb25Ub2tlblJlcXVlc3QSJwofc2VjcmV0X3VzZXJfaW1wZXJzb25hdGlvbl90b2tlbhgBIAEoCSJTCiRSZWRlZW1Vc2VySW1wZXJzb25hdGlvblRva2VuUmVzcG9uc2USFQoNcmVmcmVzaF90b2tlbhgBIAEoCRIUCgxhY2Nlc3NfdG9rZW4YAiABKAkiIwohR2V0QXV0aGVudGljYXRvckFwcE9wdGlvbnNSZXF1ZXN0IjkKIkdldEF1dGhlbnRpY2F0b3JBcHBPcHRpb25zUmVzcG9uc2USEwoLb3RwYXV0aF91cmkYASABKAkiNAofUmVnaXN0ZXJBdXRoZW50aWNhdG9yQXBwUmVxdWVzdBIRCgl0b3RwX2NvZGUYASABKAkiOgogUmVnaXN0ZXJBdXRoZW50aWNhdG9yQXBwUmVzcG9uc2USFgoOcmVjb3ZlcnlfY29kZXMYASADKAkiSQodVmVyaWZ5QXV0aGVudGljYXRvckFwcFJlcXVlc3QSEQoJdG90cF9jb2RlGAEgASgJEhUKDXJlY292ZXJ5X2NvZGUYAiABKAkiIAoeVmVyaWZ5QXV0aGVudGljYXRvckFwcFJlc3BvbnNlIhoKGEdldFBhc3NrZXlPcHRpb25zUmVxdWVzdCJnChlHZXRQYXNza2V5T3B0aW9uc1Jlc3BvbnNlEg0KBXJwX2lkGAEgASgJEg8KB3JwX25hbWUYAiABKAkSDwoHdXNlcl9pZBgDIAEoCRIZChF1c2VyX2Rpc3BsYXlfbmFtZRgEIAEoCSJDChZSZWdpc3RlclBhc3NrZXlSZXF1ZXN0EhoKEmF0dGVzdGF0aW9uX29iamVjdBgBIAEoCRINCgVycF9pZBgCIAEoCSIZChdSZWdpc3RlclBhc3NrZXlSZXNwb25zZSIeChxJc3N1ZVBhc3NrZXlDaGFsbGVuZ2VSZXF1ZXN0IlkKHUlzc3VlUGFzc2tleUNoYWxsZW5nZVJlc3BvbnNlEg0KBXJwX2lkGAEgASgJEhYKDmNyZWRlbnRpYWxfaWRzGAIgAygMEhEKCWNoYWxsZW5nZRgDIAEoDCJ2ChRWZXJpZnlQYXNza2V5UmVxdWVzdBIVCg1jcmVkZW50aWFsX2lkGAEgASgMEhgKEGNsaWVudF9kYXRhX2pzb24YAiABKAkSGgoSYXV0aGVudGljYXRvcl9kYXRhGAMgASgJEhEKCXNpZ25hdHVyZRgEIAEoCSIXChVWZXJpZnlQYXNza2V5UmVzcG9uc2UiJQojU2V0RW1haWxBc1ByaW1hcnlMb2dpbkZhY3RvclJlcXVlc3QiJgokU2V0RW1haWxBc1ByaW1hcnlMb2dpbkZhY3RvclJlc3BvbnNlIkUKLEV4Y2hhbmdlU2Vzc2lvbkZvckludGVybWVkaWF0ZVNlc3Npb25SZXF1ZXN0EhUKDXJlZnJlc2hfdG9rZW4YASABKAkiWgotRXhjaGFuZ2VTZXNzaW9uRm9ySW50ZXJtZWRpYXRlU2Vzc2lvblJlc3BvbnNlEikKIWludGVybWVkaWF0ZV9zZXNzaW9uX3NlY3JldF90b2tlbhgBIAEoCSqaAQoRUHJpbWFyeUF1dGhGYWN0b3ISIwofUFJJTUFSWV9BVVRIX0ZBQ1RPUl9VTlNQRUNJRklFRBAAEh0KGVBSSU1BUllfQVVUSF9GQUNUT1JfRU1BSUwQARIeChpQUklNQVJZX0FVVEhfRkFDVE9SX0dPT0dMRRACEiEKHVBSSU1BUllfQVVUSF9GQUNUT1JfTUlDUk9TT0ZUEAMy9CkKE0ludGVybWVkaWF0ZVNlcnZpY2USuAEKFUxpc3RTQU1MT3JnYW5pemF0aW9ucxI2LnRlc3NlcmFsLmludGVybWVkaWF0ZS52MS5MaXN0U0FNTE9yZ2FuaXphdGlvbnNSZXF1ZXN0GjcudGVzc2VyYWwuaW50ZXJtZWRpYXRlLnYxLkxpc3RTQU1MT3JnYW5pemF0aW9uc1Jlc3BvbnNlIi6C0+STAig6ASoiIy9pbnRlcm1lZGlhdGUvdjEvc2FtbC1vcmdhbml6YXRpb25zEmoKC0dldFNldHRpbmdzEiwudGVzc2VyYWwuaW50ZXJtZWRpYXRlLnYxLkdldFNldHRpbmdzUmVxdWVzdBotLnRlc3NlcmFsLmludGVybWVkaWF0ZS52MS5HZXRTZXR0aW5nc1Jlc3BvbnNlEtoBChxSZWRlZW1Vc2VySW1wZXJzb25hdGlvblRva2VuEj0udGVzc2VyYWwuaW50ZXJtZWRpYXRlLnYxLlJlZGVlbVVzZXJJbXBlcnNvbmF0aW9uVG9rZW5SZXF1ZXN0Gj4udGVzc2VyYWwuaW50ZXJtZWRpYXRlLnYxLlJlZGVlbVVzZXJJbXBlcnNvbmF0aW9uVG9rZW5SZXNwb25zZSI7gtPkkwI1OgEqIjAvaW50ZXJtZWRpYXRlL3YxL3JlZGVlbS11c2VyLWltcGVyc29uYXRpb24tdG9rZW4SxgEKGUNyZWF0ZUludGVybWVkaWF0ZVNlc3Npb24SOi50ZXNzZXJhbC5pbnRlcm1lZGlhdGUudjEuQ3JlYXRlSW50ZXJtZWRpYXRlU2Vzc2lvblJlcXVlc3QaOy50ZXNzZXJhbC5pbnRlcm1lZGlhdGUudjEuQ3JlYXRlSW50ZXJtZWRpYXRlU2Vzc2lvblJlc3BvbnNlIjCC0+STAio6ASoiJS9pbnRlcm1lZGlhdGUvdjEvaW50ZXJtZWRpYXRlLXNlc3Npb24SfAoGV2hvYW1pEicudGVzc2VyYWwuaW50ZXJtZWRpYXRlLnYxLldob2FtaVJlcXVlc3QaKC50ZXNzZXJhbC5pbnRlcm1lZGlhdGUudjEuV2hvYW1pUmVzcG9uc2UiH4LT5JMCGRIXL2ludGVybWVkaWF0ZS92MS93aG9hbWkSqgEKEkNyZWF0ZU9yZ2FuaXphdGlvbhIzLnRlc3NlcmFsLmludGVybWVkaWF0ZS52MS5DcmVhdGVPcmdhbml6YXRpb25SZXF1ZXN0GjQudGVzc2VyYWwuaW50ZXJtZWRpYXRlLnYxLkNyZWF0ZU9yZ2FuaXphdGlvblJlc3BvbnNlIimC0+STAiM6ASoiHi9pbnRlcm1lZGlhdGUvdjEvb3JnYW5pemF0aW9ucxKkAQoRTGlzdE9yZ2FuaXphdGlvbnMSMi50ZXNzZXJhbC5pbnRlcm1lZGlhdGUudjEuTGlzdE9yZ2FuaXphdGlvbnNSZXF1ZXN0GjMudGVzc2VyYWwuaW50ZXJtZWRpYXRlLnYxLkxpc3RPcmdhbml6YXRpb25zUmVzcG9uc2UiJoLT5JMCIBIeL2ludGVybWVkaWF0ZS92MS9vcmdhbml6YXRpb25zEqEBCg9TZXRPcmdhbml6YXRpb24SMC50ZXNzZXJhbC5pbnRlcm1lZGlhdGUudjEuU2V0T3JnYW5pemF0aW9uUmVxdWVzdBoxLnRlc3NlcmFsLmludGVybWVkaWF0ZS52MS5TZXRPcmdhbml6YXRpb25SZXNwb25zZSIpgtPkkwIjIiEvaW50ZXJtZWRpYXRlL3YxL3NldC1vcmdhbml6YXRpb24S/wEKJUV4Y2hhbmdlSW50ZXJtZWRpYXRlU2Vzc2lvbkZvclNlc3Npb24SRi50ZXNzZXJhbC5pbnRlcm1lZGlhdGUudjEuRXhjaGFuZ2VJbnRlcm1lZGlhdGVTZXNzaW9uRm9yU2Vzc2lvblJlcXVlc3QaRy50ZXNzZXJhbC5pbnRlcm1lZGlhdGUudjEuRXhjaGFuZ2VJbnRlcm1lZGlhdGVTZXNzaW9uRm9yU2Vzc2lvblJlc3BvbnNlIkWC0+STAj86ASoiOi9pbnRlcm1lZGlhdGUvdjEvZXhjaGFuZ2UtaW50ZXJtZWRpYXRlLXNlc3Npb24tZm9yLXNlc3Npb24SgAIKJUV4Y2hhbmdlUmVsYXllZFNlc3Npb25Ub2tlbkZvclNlc3Npb24SRi50ZXNzZXJhbC5pbnRlcm1lZGlhdGUudjEuRXhjaGFuZ2VSZWxheWVkU2Vzc2lvblRva2VuRm9yU2Vzc2lvblJlcXVlc3QaRy50ZXNzZXJhbC5pbnRlcm1lZGlhdGUudjEuRXhjaGFuZ2VSZWxheWVkU2Vzc2lvblRva2VuRm9yU2Vzc2lvblJlc3BvbnNlIkaC0+STAkA6ASoiOy9pbnRlcm1lZGlhdGUvdjEvZXhjaGFuZ2UtcmVsYXllZC1zZXNzaW9uLXRva2VuLWZvci1zZXNzaW9uEssBChlHZXRHb29nbGVPQXV0aFJlZGlyZWN0VVJMEjoudGVzc2VyYWwuaW50ZXJtZWRpYXRlLnYxLkdldEdvb2dsZU9BdXRoUmVkaXJlY3RVUkxSZXF1ZXN0GjsudGVzc2VyYWwuaW50ZXJtZWRpYXRlLnYxLkdldEdvb2dsZU9BdXRoUmVkaXJlY3RVUkxSZXNwb25zZSI1gtPkkwIvOgEqIiovaW50ZXJtZWRpYXRlL3YxL2dvb2dsZS1vYXV0aC1yZWRpcmVjdC11cmwSvgEKFVJlZGVlbUdvb2dsZU9BdXRoQ29kZRI2LnRlc3NlcmFsLmludGVybWVkaWF0ZS52MS5SZWRlZW1Hb29nbGVPQXV0aENvZGVSZXF1ZXN0GjcudGVzc2VyYWwuaW50ZXJtZWRpYXRlLnYxLlJlZGVlbUdvb2dsZU9BdXRoQ29kZVJlc3BvbnNlIjSC0+STAi46ASoiKS9pbnRlcm1lZGlhdGUvdjEvcmVkZWVtLWdvb2dsZS1vYXV0aC1jb2RlEtcBChxHZXRNaWNyb3NvZnRPQXV0aFJlZGlyZWN0VVJMEj0udGVzc2VyYWwuaW50ZXJtZWRpYXRlLnYxLkdldE1pY3Jvc29mdE9BdXRoUmVkaXJlY3RVUkxSZXF1ZXN0Gj4udGVzc2VyYWwuaW50ZXJtZWRpYXRlLnYxLkdldE1pY3Jvc29mdE9BdXRoUmVkaXJlY3RVUkxSZXNwb25zZSI4gtPkkwIyOgEqIi0vaW50ZXJtZWRpYXRlL3YxL21pY3Jvc29mdC1vYXV0aC1yZWRpcmVjdC11cmwSygEKGFJlZGVlbU1pY3Jvc29mdE9BdXRoQ29kZRI5LnRlc3NlcmFsLmludGVybWVkaWF0ZS52MS5SZWRlZW1NaWNyb3NvZnRPQXV0aENvZGVSZXF1ZXN0GjoudGVzc2VyYWwuaW50ZXJtZWRpYXRlLnYxLlJlZGVlbU1pY3Jvc29mdE9BdXRoQ29kZVJlc3BvbnNlIjeC0+STAjE6ASoiLC9pbnRlcm1lZGlhdGUvdjEvcmVkZWVtLW1pY3Jvc29mdC1vYXV0aC1jb2RlEuYBCh9Jc3N1ZUVtYWlsVmVyaWZpY2F0aW9uQ2hhbGxlbmdlEkAudGVzc2VyYWwuaW50ZXJtZWRpYXRlLnYxLklzc3VlRW1haWxWZXJpZmljYXRpb25DaGFsbGVuZ2VSZXF1ZXN0GkEudGVzc2VyYWwuaW50ZXJtZWRpYXRlLnYxLklzc3VlRW1haWxWZXJpZmljYXRpb25DaGFsbGVuZ2VSZXNwb25zZSI+gtPkkwI4OgEqIjMvaW50ZXJtZWRpYXRlL3YxL2lzc3VlLWVtYWlsLXZlcmlmaWNhdGlvbi1jaGFsbGVuZ2USuQEKFFZlcmlmeUVtYWlsQ2hhbGxlbmdlEjUudGVzc2VyYWwuaW50ZXJtZWRpYXRlLnYxLlZlcmlmeUVtYWlsQ2hhbGxlbmdlUmVxdWVzdBo2LnRlc3NlcmFsLmludGVybWVkaWF0ZS52MS5WZXJpZnlFbWFpbENoYWxsZW5nZVJlc3BvbnNlIjKC0+STAiw6ASoiJy9pbnRlcm1lZGlhdGUvdjEvdmVyaWZ5LWVtYWlsLWNoYWxsZW5nZRKoAQoQUmVnaXN0ZXJQYXNzd29yZBIxLnRlc3NlcmFsLmludGVybWVkaWF0ZS52MS5SZWdpc3RlclBhc3N3b3JkUmVxdWVzdBoyLnRlc3NlcmFsLmludGVybWVkaWF0ZS52MS5SZWdpc3RlclBhc3N3b3JkUmVzcG9uc2UiLYLT5JMCJzoBKiIiL2ludGVybWVkaWF0ZS92MS9yZWdpc3Rlci1wYXNzd29yZBKgAQoOVmVyaWZ5UGFzc3dvcmQSLy50ZXNzZXJhbC5pbnRlcm1lZGlhdGUudjEuVmVyaWZ5UGFzc3dvcmRSZXF1ZXN0GjAudGVzc2VyYWwuaW50ZXJtZWRpYXRlLnYxLlZlcmlmeVBhc3N3b3JkUmVzcG9uc2UiK4LT5JMCJToBKiIgL2ludGVybWVkaWF0ZS92MS92ZXJpZnktcGFzc3dvcmQSrQEKEUdldFBhc3NrZXlPcHRpb25zEjIudGVzc2VyYWwuaW50ZXJtZWRpYXRlLnYxLkdldFBhc3NrZXlPcHRpb25zUmVxdWVzdBozLnRlc3NlcmFsLmludGVybWVkaWF0ZS52MS5HZXRQYXNza2V5T3B0aW9uc1Jlc3BvbnNlIi+C0+STAik6ASoiJC9pbnRlcm1lZGlhdGUvdjEvZ2V0LXBhc3NrZXktb3B0aW9ucxKkAQoPUmVnaXN0ZXJQYXNza2V5EjAudGVzc2VyYWwuaW50ZXJtZWRpYXRlLnYxLlJlZ2lzdGVyUGFzc2tleVJlcXVlc3QaMS50ZXNzZXJhbC5pbnRlcm1lZGlhdGUudjEuUmVnaXN0ZXJQYXNza2V5UmVzcG9uc2UiLILT5JMCJjoBKiIhL2ludGVybWVkaWF0ZS92MS9yZWdpc3Rlci1wYXNza2V5Er0BChVJc3N1ZVBhc3NrZXlDaGFsbGVuZ2USNi50ZXNzZXJhbC5pbnRlcm1lZGlhdGUudjEuSXNzdWVQYXNza2V5Q2hhbGxlbmdlUmVxdWVzdBo3LnRlc3NlcmFsLmludGVybWVkaWF0ZS52MS5Jc3N1ZVBhc3NrZXlDaGFsbGVuZ2VSZXNwb25zZSIzgtPkkwItOgEqIigvaW50ZXJtZWRpYXRlL3YxL2lzc3VlLXBhc3NrZXktY2hhbGxlbmdlEpwBCg1WZXJpZnlQYXNza2V5Ei4udGVzc2VyYWwuaW50ZXJtZWRpYXRlLnYxLlZlcmlmeVBhc3NrZXlSZXF1ZXN0Gi8udGVzc2VyYWwuaW50ZXJtZWRpYXRlLnYxLlZlcmlmeVBhc3NrZXlSZXNwb25zZSIqgtPkkwIkOgEqIh8vaW50ZXJtZWRpYXRlL3YxL3ZlcmlmeS1wYXNza2V5EtIBChpHZXRBdXRoZW50aWNhdG9yQXBwT3B0aW9ucxI7LnRlc3NlcmFsLmludGVybWVkaWF0ZS52MS5HZXRBdXRoZW50aWNhdG9yQXBwT3B0aW9uc1JlcXVlc3QaPC50ZXNzZXJhbC5pbnRlcm1lZGlhdGUudjEuR2V0QXV0aGVudGljYXRvckFwcE9wdGlvbnNSZXNwb25zZSI5gtPkkwIzOgEqIi4vaW50ZXJtZWRpYXRlL3YxL2dldC1hdXRoZW50aWNhdG9yLWFwcC1vcHRpb25zEskBChhSZWdpc3RlckF1dGhlbnRpY2F0b3JBcHASOS50ZXNzZXJhbC5pbnRlcm1lZGlhdGUudjEuUmVnaXN0ZXJBdXRoZW50aWNhdG9yQXBwUmVxdWVzdBo6LnRlc3NlcmFsLmludGVybWVkaWF0ZS52MS5SZWdpc3RlckF1dGhlbnRpY2F0b3JBcHBSZXNwb25zZSI2gtPkkwIwOgEqIisvaW50ZXJtZWRpYXRlL3YxL3JlZ2lzdGVyLWF1dGhlbnRpY2F0b3ItYXBwEsEBChZWZXJpZnlBdXRoZW50aWNhdG9yQXBwEjcudGVzc2VyYWwuaW50ZXJtZWRpYXRlLnYxLlZlcmlmeUF1dGhlbnRpY2F0b3JBcHBSZXF1ZXN0GjgudGVzc2VyYWwuaW50ZXJtZWRpYXRlLnYxLlZlcmlmeUF1dGhlbnRpY2F0b3JBcHBSZXNwb25zZSI0gtPkkwIuOgEqIikvaW50ZXJtZWRpYXRlL3YxL3ZlcmlmeS1hdXRoZW50aWNhdG9yLWFwcBLcAQocU2V0RW1haWxBc1ByaW1hcnlMb2dpbkZhY3RvchI9LnRlc3NlcmFsLmludGVybWVkaWF0ZS52MS5TZXRFbWFpbEFzUHJpbWFyeUxvZ2luRmFjdG9yUmVxdWVzdBo+LnRlc3NlcmFsLmludGVybWVkaWF0ZS52MS5TZXRFbWFpbEFzUHJpbWFyeUxvZ2luRmFjdG9yUmVzcG9uc2UiPYLT5JMCNzoBKiIyL2ludGVybWVkaWF0ZS92MS9zZXQtZW1haWwtYXMtcHJpbWFyeS1sb2dpbi1mYWN0b3IS/wEKJUV4Y2hhbmdlU2Vzc2lvbkZvckludGVybWVkaWF0ZVNlc3Npb24SRi50ZXNzZXJhbC5pbnRlcm1lZGlhdGUudjEuRXhjaGFuZ2VTZXNzaW9uRm9ySW50ZXJtZWRpYXRlU2Vzc2lvblJlcXVlc3QaRy50ZXNzZXJhbC5pbnRlcm1lZGlhdGUudjEuRXhjaGFuZ2VTZXNzaW9uRm9ySW50ZXJtZWRpYXRlU2Vzc2lvblJlc3BvbnNlIkWC0+STAj86ASoiOi9pbnRlcm1lZGlhdGUvdjEvZXhjaGFuZ2Utc2Vzc2lvbi1mb3ItaW50ZXJtZWRpYXRlLXNlc3Npb24ScAoNQ3JlYXRlUHJvamVjdBIuLnRlc3NlcmFsLmludGVybWVkaWF0ZS52MS5DcmVhdGVQcm9qZWN0UmVxdWVzdBovLnRlc3NlcmFsLmludGVybWVkaWF0ZS52MS5DcmVhdGVQcm9qZWN0UmVzcG9uc2VCmAIKHGNvbS50ZXNzZXJhbC5pbnRlcm1lZGlhdGUudjFCEUludGVybWVkaWF0ZVByb3RvUAFaY2dpdGh1Yi5jb20vdGVzc2VyYWwtbGFicy90ZXNzZXJhbC9pbnRlcm5hbC9pbnRlcm1lZGlhdGUvZ2VuL3Rlc3NlcmFsL2ludGVybWVkaWF0ZS92MTtpbnRlcm1lZGlhdGV2MaICA1RJWKoCGFRlc3NlcmFsLkludGVybWVkaWF0ZS5WMcoCGFRlc3NlcmFsXEludGVybWVkaWF0ZVxWMeICJFRlc3NlcmFsXEludGVybWVkaWF0ZVxWMVxHUEJNZXRhZGF0YeoCGlRlc3NlcmFsOjpJbnRlcm1lZGlhdGU6OlYxYgZwcm90bzM", [file_google_api_annotations, file_google_protobuf_timestamp]);
-  var IntermediateService2 = /* @__PURE__ */ serviceDesc(file_tesseral_intermediate_v1_intermediate2, 0);
-
-  // src/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery.ts
-  var listSAMLOrganizations2 = IntermediateService2.method.listSAMLOrganizations;
-  var getSettings2 = IntermediateService2.method.getSettings;
-  var redeemUserImpersonationToken2 = IntermediateService2.method.redeemUserImpersonationToken;
-  var createIntermediateSession2 = IntermediateService2.method.createIntermediateSession;
-  var whoami4 = IntermediateService2.method.whoami;
-  var createOrganization3 = IntermediateService2.method.createOrganization;
-  var listOrganizations3 = IntermediateService2.method.listOrganizations;
-  var setOrganization2 = IntermediateService2.method.setOrganization;
-  var exchangeIntermediateSessionForSession2 = IntermediateService2.method.exchangeIntermediateSessionForSession;
-  var exchangeRelayedSessionTokenForSession2 = IntermediateService2.method.exchangeRelayedSessionTokenForSession;
-  var getGoogleOAuthRedirectURL2 = IntermediateService2.method.getGoogleOAuthRedirectURL;
-  var redeemGoogleOAuthCode2 = IntermediateService2.method.redeemGoogleOAuthCode;
-  var getMicrosoftOAuthRedirectURL2 = IntermediateService2.method.getMicrosoftOAuthRedirectURL;
-  var redeemMicrosoftOAuthCode2 = IntermediateService2.method.redeemMicrosoftOAuthCode;
-  var issueEmailVerificationChallenge2 = IntermediateService2.method.issueEmailVerificationChallenge;
-  var verifyEmailChallenge2 = IntermediateService2.method.verifyEmailChallenge;
-  var registerPassword2 = IntermediateService2.method.registerPassword;
-  var verifyPassword2 = IntermediateService2.method.verifyPassword;
-  var getPasskeyOptions4 = IntermediateService2.method.getPasskeyOptions;
-  var registerPasskey4 = IntermediateService2.method.registerPasskey;
-  var issuePasskeyChallenge2 = IntermediateService2.method.issuePasskeyChallenge;
-  var verifyPasskey2 = IntermediateService2.method.verifyPasskey;
-  var getAuthenticatorAppOptions4 = IntermediateService2.method.getAuthenticatorAppOptions;
-  var registerAuthenticatorApp4 = IntermediateService2.method.registerAuthenticatorApp;
-  var verifyAuthenticatorApp2 = IntermediateService2.method.verifyAuthenticatorApp;
-  var setEmailAsPrimaryLoginFactor2 = IntermediateService2.method.setEmailAsPrimaryLoginFactor;
-  var exchangeSessionForIntermediateSession2 = IntermediateService2.method.exchangeSessionForIntermediateSession;
-  var createProject2 = IntermediateService2.method.createProject;
 
   // src/auth.ts
   var setAccessToken = (s6) => {
@@ -71026,187 +71214,6 @@
   var setRefreshToken = (s6) => {
     localStorage.setItem("refresh_token", s6);
   };
-
-  // src/components/ui/text-divider.tsx
-  var import_react86 = __toESM(require_react());
-  var textDividerVariants = cva("block relative w-full", {
-    variants: {
-      variant: {
-        default: "my-4",
-        tight: "my-2",
-        tighter: "my-1",
-        wide: "my-6",
-        wider: "my-8",
-        widest: "my-12"
-      },
-      affects: {
-        default: "[&>div.absolute>span]:border-muted-foreground [&>div.relative>span]:text-muted-foreground",
-        muted: "[&>div.absolute>span]:border-muted [&>div.relative>span]:text-muted"
-      }
-    },
-    defaultVariants: {
-      variant: "default",
-      affects: "default"
-    }
-  });
-  var TextDivider = import_react86.default.forwardRef(
-    (_a10, ref) => {
-      var _b2 = _a10, { affects, children, className, variant } = _b2, props = __objRest(_b2, ["affects", "children", "className", "variant"]);
-      return /* @__PURE__ */ import_react86.default.createElement(
-        "div",
-        __spreadProps(__spreadValues({
-          className: cn(textDividerVariants({ affects, variant, className }))
-        }, props), {
-          ref
-        }),
-        /* @__PURE__ */ import_react86.default.createElement("div", { className: "absolute inset-0 flex items-center" }, /* @__PURE__ */ import_react86.default.createElement("span", { className: "w-full border-t" })),
-        /* @__PURE__ */ import_react86.default.createElement("div", { className: "relative flex justify-center text-xs uppercase" }, /* @__PURE__ */ import_react86.default.createElement("span", { className: "bg-card px-2" }, children))
-      );
-    }
-  );
-  TextDivider.displayName = "TextDivider";
-  var text_divider_default = TextDivider;
-
-  // src/pages/login/ChooseProjectPage.tsx
-  var ChooseProjectPage = () => {
-    var _a10, _b2, _c, _d;
-    const navigate = useNavigate();
-    const [submitting, setSubmitting] = (0, import_react87.useState)(false);
-    const { data: listOrganizationsResponse } = useQuery2(listOrganizations3);
-    const exchangeIntermediateSessionForSessionMutation = useMutation2(
-      exchangeIntermediateSessionForSession2
-    );
-    const setOrganizationMutation = useMutation2(setOrganization2);
-    const deriveNextPage = (organization) => {
-      if (organization.logInWithPassword) {
-        if (organization.userHasPassword) {
-          return LoginPageMap["verify_password" /* VerifyPassword */];
-        }
-        return LoginPageMap["register_password" /* RegisterPassword */];
-      } else if (organization.userHasAuthenticatorApp && !organization.userHasPasskey) {
-        return LoginPageMap["verify_authenticator_app" /* VerifyAuthenticatorApp */];
-      } else if (organization.userHasPasskey && !organization.userHasAuthenticatorApp) {
-        return LoginPageMap["verify_passkey" /* VerifyPasskey */];
-      } else if (organization.requireMfa) {
-        return LoginPageMap["choose_additional_factor" /* ChooseAdditionalFactor */];
-      }
-    };
-    const handleOrganizationClick = async (organization) => {
-      setSubmitting(true);
-      try {
-        await setOrganizationMutation.mutateAsync({
-          organizationId: organization.id
-        });
-        const nextPage = deriveNextPage(organization);
-        if (nextPage) {
-          navigate(nextPage);
-          return;
-        }
-        const { accessToken, refreshToken } = await exchangeIntermediateSessionForSessionMutation.mutateAsync({});
-        setAccessToken(accessToken);
-        setRefreshToken(refreshToken);
-        setSubmitting(false);
-        navigate("/settings");
-      } catch (error2) {
-        setSubmitting(false);
-        const message = parseErrorMessage(error2);
-        ue.error("Could not select Project", {
-          description: message
-        });
-      }
-    };
-    (0, import_react87.useEffect)(() => {
-      var _a11;
-      if (((_a11 = listOrganizationsResponse == null ? void 0 : listOrganizationsResponse.organizations) == null ? void 0 : _a11.length) === 0) {
-        navigate(LoginPageMap["create_project" /* CreateProject */]);
-      }
-    }, [listOrganizationsResponse]);
-    return /* @__PURE__ */ import_react87.default.createElement(import_react87.default.Fragment, null, /* @__PURE__ */ import_react87.default.createElement(Title2, { title: "Choose an Project" }), /* @__PURE__ */ import_react87.default.createElement(Card, { className: "w-full max-w-sm" }, /* @__PURE__ */ import_react87.default.createElement(CardHeader, null, /* @__PURE__ */ import_react87.default.createElement(CardTitle, null, (((_a10 = listOrganizationsResponse == null ? void 0 : listOrganizationsResponse.organizations) == null ? void 0 : _a10.length) || 0) > 0 ? "Choose a Project" : "Create a Project")), /* @__PURE__ */ import_react87.default.createElement(CardContent, { className: "flex flex-col items-center justify-center w-full" }, (((_b2 = listOrganizationsResponse == null ? void 0 : listOrganizationsResponse.organizations) == null ? void 0 : _b2.length) || 0) > 0 && /* @__PURE__ */ import_react87.default.createElement("ul", { className: "w-full p-0" }, (_c = listOrganizationsResponse == null ? void 0 : listOrganizationsResponse.organizations) == null ? void 0 : _c.map((organization) => /* @__PURE__ */ import_react87.default.createElement("li", { key: organization.id }, /* @__PURE__ */ import_react87.default.createElement(
-      Button,
-      {
-        className: "w-full",
-        disabled: submitting,
-        onClick: () => handleOrganizationClick(organization),
-        variant: "outline"
-      },
-      submitting && /* @__PURE__ */ import_react87.default.createElement(loader_default, null),
-      organization.displayName
-    )))), /* @__PURE__ */ import_react87.default.createElement("div", { className: "w-full" }, (((_d = listOrganizationsResponse == null ? void 0 : listOrganizationsResponse.organizations) == null ? void 0 : _d.length) || 0) > 0 && /* @__PURE__ */ import_react87.default.createElement(text_divider_default, { className: "w-full" }, "Or you can"), /* @__PURE__ */ import_react87.default.createElement(
-      Button,
-      {
-        className: "w-full",
-        onClick: () => navigate(LoginPageMap["create_project" /* CreateProject */])
-      },
-      "Create a Project"
-    )))));
-  };
-  var ChooseProjectPage_default = ChooseProjectPage;
-
-  // src/pages/login/CreateProjectPage.tsx
-  var import_react88 = __toESM(require_react());
-  var CreateProjectPage = () => {
-    const navigate = useNavigate();
-    const [displayName, setDisplayName] = (0, import_react88.useState)("");
-    const [redirectUri, setRedirectUri] = (0, import_react88.useState)("");
-    const [submitting, setSubmitting] = (0, import_react88.useState)(false);
-    const createProjectMutation = useMutation2(createProject2);
-    const exchangeIntermediateSessionForSessionMutation = useMutation2(
-      exchangeIntermediateSessionForSession2
-    );
-    const refreshMutation = useMutation2(refresh);
-    const setOrganizationMutation = useMutation2(setOrganization2);
-    const handleSubmit = async (e2) => {
-      var _a10;
-      e2.preventDefault();
-      setSubmitting(true);
-      try {
-        const projectRes = await createProjectMutation.mutateAsync({
-          displayName,
-          redirectUri
-        });
-        await setOrganizationMutation.mutateAsync({
-          organizationId: (_a10 = projectRes == null ? void 0 : projectRes.project) == null ? void 0 : _a10.organizationId
-        });
-        const { refreshToken } = await exchangeIntermediateSessionForSessionMutation.mutateAsync({});
-        const { accessToken } = await refreshMutation.mutateAsync({});
-        setRefreshToken(refreshToken);
-        setAccessToken(accessToken);
-        setSubmitting(false);
-        navigate("/");
-      } catch (error2) {
-        setSubmitting(false);
-        const message = parseErrorMessage(error2);
-        ue.error(message);
-      }
-    };
-    return /* @__PURE__ */ import_react88.default.createElement(import_react88.default.Fragment, null, /* @__PURE__ */ import_react88.default.createElement(Title2, { title: "Create a new Project" }), /* @__PURE__ */ import_react88.default.createElement(Card, { className: "w-full max-w-sm" }, /* @__PURE__ */ import_react88.default.createElement(CardHeader, null, /* @__PURE__ */ import_react88.default.createElement(CardTitle, null, "Create a new Project")), /* @__PURE__ */ import_react88.default.createElement(CardContent, null, /* @__PURE__ */ import_react88.default.createElement("form", { className: "w-full", onSubmit: handleSubmit }, /* @__PURE__ */ import_react88.default.createElement(
-      Input,
-      {
-        id: "displayName",
-        placeholder: "Acme, Inc.",
-        value: displayName,
-        onChange: (e2) => setDisplayName(e2.target.value)
-      }
-    ), /* @__PURE__ */ import_react88.default.createElement(
-      Input,
-      {
-        id: "redirectUri",
-        placeholder: "https://app.company.com/",
-        value: redirectUri,
-        onChange: (e2) => setRedirectUri(e2.target.value)
-      }
-    ), /* @__PURE__ */ import_react88.default.createElement(
-      Button,
-      {
-        className: "mt-2 w-full",
-        disabled: displayName.length < 1 || submitting,
-        type: "submit"
-      },
-      submitting && /* @__PURE__ */ import_react88.default.createElement(loader_default, null),
-      "Create Project"
-    )))));
-  };
-  var CreateProjectPage_default = CreateProjectPage;
 
   // src/App.tsx
   var queryClient = new QueryClient();
@@ -71230,209 +71237,233 @@
   };
   var AppWithinQueryClient = () => {
     const transport = useTransport2();
-    return /* @__PURE__ */ import_react89.default.createElement(TransportProvider, { transport }, /* @__PURE__ */ import_react89.default.createElement(BrowserRouter, null, /* @__PURE__ */ import_react89.default.createElement(Routes, null, /* @__PURE__ */ import_react89.default.createElement(Route, { path: "", element: /* @__PURE__ */ import_react89.default.createElement(LoginFlowLayout, null) }, /* @__PURE__ */ import_react89.default.createElement(Route, { path: "login", element: /* @__PURE__ */ import_react89.default.createElement(LoginPage, null) }), /* @__PURE__ */ import_react89.default.createElement(
+    return /* @__PURE__ */ import_react93.default.createElement(TransportProvider, { transport }, /* @__PURE__ */ import_react93.default.createElement(BrowserRouter, null, /* @__PURE__ */ import_react93.default.createElement(Routes, null, /* @__PURE__ */ import_react93.default.createElement(Route, { path: "", element: /* @__PURE__ */ import_react93.default.createElement(LoginFlowLayout, null) }, /* @__PURE__ */ import_react93.default.createElement(Route, { path: "login", element: /* @__PURE__ */ import_react93.default.createElement(LoginPage, null) }), /* @__PURE__ */ import_react93.default.createElement(
       Route,
       {
         path: "choose-organization",
-        element: /* @__PURE__ */ import_react89.default.createElement(Navigate, { to: "/choose-project" })
+        element: /* @__PURE__ */ import_react93.default.createElement(Navigate, { to: "/choose-project" })
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(Route, { path: "verify-email", element: /* @__PURE__ */ import_react89.default.createElement(VerifyEmailPage, null) }), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react93.default.createElement(Route, { path: "verify-email", element: /* @__PURE__ */ import_react93.default.createElement(VerifyEmailPage, null) }), /* @__PURE__ */ import_react93.default.createElement(
       Route,
       {
         path: "google-oauth-callback",
-        element: /* @__PURE__ */ import_react89.default.createElement(GoogleOAuthCallbackPage, null)
+        element: /* @__PURE__ */ import_react93.default.createElement(GoogleOAuthCallbackPage, null)
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react93.default.createElement(
       Route,
       {
         path: "microsoft-oauth-callback",
-        element: /* @__PURE__ */ import_react89.default.createElement(MicrosoftOAuthCallbackPage, null)
+        element: /* @__PURE__ */ import_react93.default.createElement(MicrosoftOAuthCallbackPage, null)
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(Route, { path: "choose-project", element: /* @__PURE__ */ import_react89.default.createElement(ChooseProjectPage_default, null) }), /* @__PURE__ */ import_react89.default.createElement(Route, { path: "create-project", element: /* @__PURE__ */ import_react89.default.createElement(CreateProjectPage_default, null) }), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react93.default.createElement(
+      Route,
+      {
+        path: "choose-project",
+        element: /* @__PURE__ */ import_react93.default.createElement(
+          ChooseProjectPage,
+          {
+            setAccessToken,
+            setRefreshToken
+          }
+        )
+      }
+    ), /* @__PURE__ */ import_react93.default.createElement(
+      Route,
+      {
+        path: "create-project",
+        element: /* @__PURE__ */ import_react93.default.createElement(
+          CreateProjectPage,
+          {
+            setAccessToken,
+            setRefreshToken
+          }
+        )
+      }
+    ), /* @__PURE__ */ import_react93.default.createElement(
       Route,
       {
         path: "organizations/:organizationId/login",
-        element: /* @__PURE__ */ import_react89.default.createElement(OrganizationLoginPage, null)
+        element: /* @__PURE__ */ import_react93.default.createElement(OrganizationLoginPage, null)
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react93.default.createElement(
       Route,
       {
         path: "authenticate-another-way",
-        element: /* @__PURE__ */ import_react89.default.createElement(AuthenticateAnotherWayPage, null)
+        element: /* @__PURE__ */ import_react93.default.createElement(AuthenticateAnotherWayPage, null)
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(Route, { path: "verify-password", element: /* @__PURE__ */ import_react89.default.createElement(VerifyPasswordPage, null) }), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react93.default.createElement(Route, { path: "verify-password", element: /* @__PURE__ */ import_react93.default.createElement(VerifyPasswordPage, null) }), /* @__PURE__ */ import_react93.default.createElement(
       Route,
       {
         path: "verify-secondary-factor",
-        element: /* @__PURE__ */ import_react89.default.createElement(VerifySecondaryFactorPage, null)
+        element: /* @__PURE__ */ import_react93.default.createElement(VerifySecondaryFactorPage, null)
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react93.default.createElement(
       Route,
       {
         path: "verify-authenticator-app",
-        element: /* @__PURE__ */ import_react89.default.createElement(VerifyAuthenticatorAppPage, null)
+        element: /* @__PURE__ */ import_react93.default.createElement(VerifyAuthenticatorAppPage, null)
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react93.default.createElement(
       Route,
       {
         path: "verify-authenticator-app-recovery-code",
-        element: /* @__PURE__ */ import_react89.default.createElement(VerifyAuthenticatorAppRecoveryCodePage, null)
+        element: /* @__PURE__ */ import_react93.default.createElement(VerifyAuthenticatorAppRecoveryCodePage, null)
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(Route, { path: "verify-passkey", element: /* @__PURE__ */ import_react89.default.createElement(VerifyPasskeyPage, null) }), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react93.default.createElement(Route, { path: "verify-passkey", element: /* @__PURE__ */ import_react93.default.createElement(VerifyPasskeyPage, null) }), /* @__PURE__ */ import_react93.default.createElement(
       Route,
       {
         path: "register-password",
-        element: /* @__PURE__ */ import_react89.default.createElement(RegisterPasswordPage, null)
+        element: /* @__PURE__ */ import_react93.default.createElement(RegisterPasswordPage, null)
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react93.default.createElement(
       Route,
       {
         path: "register-secondary-factor",
-        element: /* @__PURE__ */ import_react89.default.createElement(RegisterSecondaryFactorPage, null)
+        element: /* @__PURE__ */ import_react93.default.createElement(RegisterSecondaryFactorPage, null)
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(Route, { path: "register-passkey", element: /* @__PURE__ */ import_react89.default.createElement(RegisterPasskeyPage, null) }), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react93.default.createElement(Route, { path: "register-passkey", element: /* @__PURE__ */ import_react93.default.createElement(RegisterPasskeyPage, null) }), /* @__PURE__ */ import_react93.default.createElement(
       Route,
       {
         path: "register-authenticator-app",
-        element: /* @__PURE__ */ import_react89.default.createElement(RegisterAuthenticatorAppPage, null)
+        element: /* @__PURE__ */ import_react93.default.createElement(RegisterAuthenticatorAppPage, null)
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(Route, { path: "finish-login", element: /* @__PURE__ */ import_react89.default.createElement(FinishLoginPage, null) }), /* @__PURE__ */ import_react89.default.createElement(Route, { path: "impersonate", element: /* @__PURE__ */ import_react89.default.createElement(ImpersonatePage, null) }), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react93.default.createElement(Route, { path: "finish-login", element: /* @__PURE__ */ import_react93.default.createElement(FinishLoginPage, null) }), /* @__PURE__ */ import_react93.default.createElement(Route, { path: "impersonate", element: /* @__PURE__ */ import_react93.default.createElement(ImpersonatePage, null) }), /* @__PURE__ */ import_react93.default.createElement(
       Route,
       {
         path: "switch-organizations/:organizationId",
-        element: /* @__PURE__ */ import_react89.default.createElement(SwitchOrganizationsPage, null)
+        element: /* @__PURE__ */ import_react93.default.createElement(SwitchOrganizationsPage, null)
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(Route, { path: "logout", element: /* @__PURE__ */ import_react89.default.createElement(LogoutPage, null) })), /* @__PURE__ */ import_react89.default.createElement(Route, { path: "/", element: /* @__PURE__ */ import_react89.default.createElement(PageShell, null) }, /* @__PURE__ */ import_react89.default.createElement(Route, { path: "", element: /* @__PURE__ */ import_react89.default.createElement(HomePage, null) }), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react93.default.createElement(Route, { path: "logout", element: /* @__PURE__ */ import_react93.default.createElement(LogoutPage, null) })), /* @__PURE__ */ import_react93.default.createElement(Route, { path: "/", element: /* @__PURE__ */ import_react93.default.createElement(PageShell, null) }, /* @__PURE__ */ import_react93.default.createElement(Route, { path: "", element: /* @__PURE__ */ import_react93.default.createElement(HomePage, null) }), /* @__PURE__ */ import_react93.default.createElement(
       Route,
       {
         path: "project-settings",
-        element: /* @__PURE__ */ import_react89.default.createElement(ViewProjectSettingsPage, null)
+        element: /* @__PURE__ */ import_react93.default.createElement(ViewProjectSettingsPage, null)
       },
-      /* @__PURE__ */ import_react89.default.createElement(Route, { path: "", element: /* @__PURE__ */ import_react89.default.createElement(ProjectDetailsTab, null) }),
-      /* @__PURE__ */ import_react89.default.createElement(
+      /* @__PURE__ */ import_react93.default.createElement(Route, { path: "", element: /* @__PURE__ */ import_react93.default.createElement(ProjectDetailsTab, null) }),
+      /* @__PURE__ */ import_react93.default.createElement(
         Route,
         {
           path: "vault-domain-settings",
-          element: /* @__PURE__ */ import_react89.default.createElement(VaultDomainSettingsTab, null)
+          element: /* @__PURE__ */ import_react93.default.createElement(VaultDomainSettingsTab, null)
         }
       )
-    ), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react93.default.createElement(
       Route,
       {
         path: "project-settings/log-in-with-google/edit",
-        element: /* @__PURE__ */ import_react89.default.createElement(EditProjectGoogleSettingsPage_default, null)
+        element: /* @__PURE__ */ import_react93.default.createElement(EditProjectGoogleSettingsPage_default, null)
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react93.default.createElement(
       Route,
       {
         path: "project-settings/log-in-with-microsoft/edit",
-        element: /* @__PURE__ */ import_react89.default.createElement(EditProjectMicrosoftSettingsPage_default, null)
+        element: /* @__PURE__ */ import_react93.default.createElement(EditProjectMicrosoftSettingsPage_default, null)
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react93.default.createElement(
       Route,
       {
         path: "project-settings/api-keys",
-        element: /* @__PURE__ */ import_react89.default.createElement(ListAPIKeysPage, null)
+        element: /* @__PURE__ */ import_react93.default.createElement(ListAPIKeysPage, null)
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react93.default.createElement(
       Route,
       {
         path: "project-settings/api-keys/publishable-keys/:publishableKeyId",
-        element: /* @__PURE__ */ import_react89.default.createElement(ViewPublishableKeyPage, null)
+        element: /* @__PURE__ */ import_react93.default.createElement(ViewPublishableKeyPage, null)
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react93.default.createElement(
       Route,
       {
         path: "project-settings/api-keys/backend-api-keys/:backendApiKeyId",
-        element: /* @__PURE__ */ import_react89.default.createElement(ViewBackendAPIKeyPage, null)
+        element: /* @__PURE__ */ import_react93.default.createElement(ViewBackendAPIKeyPage, null)
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react93.default.createElement(
       Route,
       {
         path: "project-settings/vault-ui-settings",
-        element: /* @__PURE__ */ import_react89.default.createElement(ProjectUISettings_default, null)
+        element: /* @__PURE__ */ import_react93.default.createElement(ProjectUISettings_default, null)
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(Route, { path: "organizations", element: /* @__PURE__ */ import_react89.default.createElement(ListOrganizationsPage, null) }), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react93.default.createElement(Route, { path: "organizations", element: /* @__PURE__ */ import_react93.default.createElement(ListOrganizationsPage, null) }), /* @__PURE__ */ import_react93.default.createElement(
       Route,
       {
         path: "organizations/:organizationId",
-        element: /* @__PURE__ */ import_react89.default.createElement(ViewOrganizationPage, null)
+        element: /* @__PURE__ */ import_react93.default.createElement(ViewOrganizationPage, null)
       },
-      /* @__PURE__ */ import_react89.default.createElement(Route, { path: "", element: /* @__PURE__ */ import_react89.default.createElement(OrganizationDetailsTab, null) }),
-      /* @__PURE__ */ import_react89.default.createElement(Route, { path: "users", element: /* @__PURE__ */ import_react89.default.createElement(OrganizationUsersTab, null) }),
-      /* @__PURE__ */ import_react89.default.createElement(
+      /* @__PURE__ */ import_react93.default.createElement(Route, { path: "", element: /* @__PURE__ */ import_react93.default.createElement(OrganizationDetailsTab, null) }),
+      /* @__PURE__ */ import_react93.default.createElement(Route, { path: "users", element: /* @__PURE__ */ import_react93.default.createElement(OrganizationUsersTab, null) }),
+      /* @__PURE__ */ import_react93.default.createElement(
         Route,
         {
           path: "user-invites",
-          element: /* @__PURE__ */ import_react89.default.createElement(OrganizationUserInvitesTab, null)
+          element: /* @__PURE__ */ import_react93.default.createElement(OrganizationUserInvitesTab, null)
         }
       ),
-      /* @__PURE__ */ import_react89.default.createElement(
+      /* @__PURE__ */ import_react93.default.createElement(
         Route,
         {
           path: "saml-connections",
-          element: /* @__PURE__ */ import_react89.default.createElement(OrganizationSAMLConnectionsTab, null)
+          element: /* @__PURE__ */ import_react93.default.createElement(OrganizationSAMLConnectionsTab, null)
         }
       ),
-      /* @__PURE__ */ import_react89.default.createElement(
+      /* @__PURE__ */ import_react93.default.createElement(
         Route,
         {
           path: "scim-api-keys",
-          element: /* @__PURE__ */ import_react89.default.createElement(OrganizationSCIMAPIKeysTab, null)
+          element: /* @__PURE__ */ import_react93.default.createElement(OrganizationSCIMAPIKeysTab, null)
         }
       )
-    ), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react93.default.createElement(
       Route,
       {
         path: "organizations/:organizationId/edit",
-        element: /* @__PURE__ */ import_react89.default.createElement(EditOrganizationPage, null)
+        element: /* @__PURE__ */ import_react93.default.createElement(EditOrganizationPage, null)
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react93.default.createElement(
       Route,
       {
         path: "organizations/:organizationId/saml-connections/:samlConnectionId",
-        element: /* @__PURE__ */ import_react89.default.createElement(ViewSAMLConnectionPage, null)
+        element: /* @__PURE__ */ import_react93.default.createElement(ViewSAMLConnectionPage, null)
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react93.default.createElement(
       Route,
       {
         path: "organizations/:organizationId/saml-connections/:samlConnectionId/edit",
-        element: /* @__PURE__ */ import_react89.default.createElement(EditSAMLConnectionPage, null)
+        element: /* @__PURE__ */ import_react93.default.createElement(EditSAMLConnectionPage, null)
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react93.default.createElement(
       Route,
       {
         path: "organizations/:organizationId/users/:userId",
-        element: /* @__PURE__ */ import_react89.default.createElement(ViewUserPage, null)
+        element: /* @__PURE__ */ import_react93.default.createElement(ViewUserPage, null)
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react93.default.createElement(
       Route,
       {
         path: "organizations/:organizationId/users/:userId/passkeys/:passkeyId",
-        element: /* @__PURE__ */ import_react89.default.createElement(ViewPasskeyPage, null)
+        element: /* @__PURE__ */ import_react93.default.createElement(ViewPasskeyPage, null)
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react93.default.createElement(
       Route,
       {
         path: "organizations/:organizationId/user-invites/:userInviteId",
-        element: /* @__PURE__ */ import_react89.default.createElement(ViewUserInvitePage, null)
+        element: /* @__PURE__ */ import_react93.default.createElement(ViewUserInvitePage, null)
       }
-    ), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react93.default.createElement(
       Route,
       {
         path: "organizations/:organizationId/scim-api-keys/:scimApiKeyId",
-        element: /* @__PURE__ */ import_react89.default.createElement(ViewSCIMAPIKeyPage, null)
+        element: /* @__PURE__ */ import_react93.default.createElement(ViewSCIMAPIKeyPage, null)
       }
-    )), /* @__PURE__ */ import_react89.default.createElement(Route, { path: "*", element: /* @__PURE__ */ import_react89.default.createElement(NotFound_default, null) }))));
+    )), /* @__PURE__ */ import_react93.default.createElement(Route, { path: "*", element: /* @__PURE__ */ import_react93.default.createElement(NotFound_default, null) }))));
   };
   var App = () => {
-    return /* @__PURE__ */ import_react89.default.createElement(QueryClientProvider, { client: queryClient }, /* @__PURE__ */ import_react89.default.createElement(AppWithinQueryClient, null), /* @__PURE__ */ import_react89.default.createElement(Toaster, null));
+    return /* @__PURE__ */ import_react93.default.createElement(QueryClientProvider, { client: queryClient }, /* @__PURE__ */ import_react93.default.createElement(AppWithinQueryClient, null), /* @__PURE__ */ import_react93.default.createElement(Toaster, null));
   };
   var App_default = App;
 
   // src/index.tsx
   var root = (0, import_client.createRoot)(document.getElementById("react-root"));
-  root.render(/* @__PURE__ */ import_react90.default.createElement(App_default, null));
+  root.render(/* @__PURE__ */ import_react94.default.createElement(App_default, null));
 })();
 /*! Bundled license information:
 

@@ -1,6 +1,10 @@
 import React from "react";
 
 export { AuthenticateAnotherWayPage } from "./pages/login/AuthenticateAnotherWayPage";
+export { ChooseOrganizationPage } from "./pages/login/ChooseOrganizationPage";
+export { ChooseProjectPage } from "./pages/login/ChooseProjectPage";
+export { CreateOrganizationPage } from "./pages/login/CreateOrganizationPage";
+export { CreateProjectPage } from "./pages/login/CreateProjectPage";
 export { FinishLoginPage } from "./pages/login/FinishLoginPage";
 export { GoogleOAuthCallbackPage } from "./pages/login/GoogleOAuthCallbackPage";
 export { ImpersonatePage } from "./pages/login/ImpersonatePage";

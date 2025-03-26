@@ -38,6 +38,8 @@ import { ViewBackendAPIKeyPage } from '@/pages/api-keys/ViewBackendAPIKeyPage';
 
 import {
   AuthenticateAnotherWayPage,
+  ChooseProjectPage,
+  CreateProjectPage,
   FinishLoginPage,
   GoogleOAuthCallbackPage,
   ImpersonatePage,
@@ -58,9 +60,7 @@ import {
   VerifyPasswordPage,
   VerifySecondaryFactorPage,
 } from '@tesseral/common-ui';
-import ChooseProjectPage from '@/pages/login/ChooseProjectPage';
-import CreateProjectPage from '@/pages/login/CreateProjectPage';
-import { LoginPageWrapper } from './components/login-page';
+import { setAccessToken, setRefreshToken } from './auth';
 
 const queryClient = new QueryClient();
 
@@ -107,8 +107,24 @@ const AppWithinQueryClient = () => {
               path="microsoft-oauth-callback"
               element={<MicrosoftOAuthCallbackPage />}
             />
-            <Route path="choose-project" element={<ChooseProjectPage />} />
-            <Route path="create-project" element={<CreateProjectPage />} />
+            <Route
+              path="choose-project"
+              element={
+                <ChooseProjectPage
+                  setAccessToken={setAccessToken}
+                  setRefreshToken={setRefreshToken}
+                />
+              }
+            />
+            <Route
+              path="create-project"
+              element={
+                <CreateProjectPage
+                  setAccessToken={setAccessToken}
+                  setRefreshToken={setRefreshToken}
+                />
+              }
+            />
             <Route
               path="organizations/:organizationId/login"
               element={<OrganizationLoginPage />}
