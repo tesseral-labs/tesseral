@@ -657,7 +657,7 @@
             var newElement = ReactElement(oldElement.type, newKey, oldElement.ref, oldElement._self, oldElement._source, oldElement._owner, oldElement.props);
             return newElement;
           }
-          function cloneElement5(element, config, children) {
+          function cloneElement6(element, config, children) {
             if (element === null || element === void 0) {
               throw new Error("React.cloneElement(...): The argument must be a React element, but you passed " + element + ".");
             }
@@ -705,7 +705,7 @@
             }
             return ReactElement(element.type, key, ref, self2, source, owner, props);
           }
-          function isValidElement3(object) {
+          function isValidElement4(object) {
             return typeof object === "object" && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
           }
           var SEPARATOR = ".";
@@ -770,7 +770,7 @@
                   return c2;
                 });
               } else if (mappedChild != null) {
-                if (isValidElement3(mappedChild)) {
+                if (isValidElement4(mappedChild)) {
                   {
                     if (mappedChild.key && (!_child || _child.key !== mappedChild.key)) {
                       checkKeyStringCoercion(mappedChild.key);
@@ -834,9 +834,9 @@
               return children;
             }
             var result = [];
-            var count4 = 0;
+            var count5 = 0;
             mapIntoArray(children, result, "", "", function(child) {
-              return func.call(context, child, count4++);
+              return func.call(context, child, count5++);
             });
             return result;
           }
@@ -858,12 +858,12 @@
             }) || [];
           }
           function onlyChild(children) {
-            if (!isValidElement3(children)) {
+            if (!isValidElement4(children)) {
               throw new Error("React.Children.only expected to receive a single React element child.");
             }
             return children;
           }
-          function createContext17(defaultValue) {
+          function createContext19(defaultValue) {
             var context = {
               $$typeof: REACT_CONTEXT_TYPE,
               // As a workaround to support multiple concurrent renderers, we categorize
@@ -1050,7 +1050,7 @@
             }
             return lazyType2;
           }
-          function forwardRef59(render) {
+          function forwardRef61(render) {
             {
               if (render != null && render.$$typeof === REACT_MEMO_TYPE) {
                 error2("forwardRef requires a render function but received a `memo` component. Instead of forwardRef(memo(...)), use memo(forwardRef(...)).");
@@ -1149,7 +1149,7 @@
             }
             return dispatcher;
           }
-          function useContext16(Context2) {
+          function useContext18(Context2) {
             var dispatcher = resolveDispatcher();
             {
               if (Context2._context !== void 0) {
@@ -1163,7 +1163,7 @@
             }
             return dispatcher.useContext(Context2);
           }
-          function useState59(initialState) {
+          function useState61(initialState) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useState(initialState);
           }
@@ -1171,11 +1171,11 @@
             var dispatcher = resolveDispatcher();
             return dispatcher.useReducer(reducer, initialArg, init);
           }
-          function useRef27(initialValue) {
+          function useRef28(initialValue) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useRef(initialValue);
           }
-          function useEffect66(create2, deps) {
+          function useEffect67(create2, deps) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useEffect(create2, deps);
           }
@@ -1187,11 +1187,11 @@
             var dispatcher = resolveDispatcher();
             return dispatcher.useLayoutEffect(create2, deps);
           }
-          function useCallback28(callback, deps) {
+          function useCallback30(callback, deps) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useCallback(callback, deps);
           }
-          function useMemo17(create2, deps) {
+          function useMemo18(create2, deps) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useMemo(create2, deps);
           }
@@ -1213,7 +1213,7 @@
             var dispatcher = resolveDispatcher();
             return dispatcher.useDeferredValue(value);
           }
-          function useId5() {
+          function useId6() {
             var dispatcher = resolveDispatcher();
             return dispatcher.useId();
           }
@@ -1589,11 +1589,11 @@
             if (isArray(node)) {
               for (var i4 = 0; i4 < node.length; i4++) {
                 var child = node[i4];
-                if (isValidElement3(child)) {
+                if (isValidElement4(child)) {
                   validateExplicitKey(child, parentType);
                 }
               }
-            } else if (isValidElement3(node)) {
+            } else if (isValidElement4(node)) {
               if (node._store) {
                 node._store.validated = true;
               }
@@ -1604,7 +1604,7 @@
                   var iterator = iteratorFn.call(node);
                   var step;
                   while (!(step = iterator.next()).done) {
-                    if (isValidElement3(step.value)) {
+                    if (isValidElement4(step.value)) {
                       validateExplicitKey(step.value, parentType);
                     }
                   }
@@ -1727,7 +1727,7 @@
             return validatedFactory;
           }
           function cloneElementWithValidation(element, props, children) {
-            var newElement = cloneElement5.apply(this, arguments);
+            var newElement = cloneElement6.apply(this, arguments);
             for (var i4 = 2; i4 < arguments.length; i4++) {
               validateChildKeys(arguments[i4], newElement.type);
             }
@@ -1927,14 +1927,14 @@
           var createElement$1 = createElementWithValidation;
           var cloneElement$1 = cloneElementWithValidation;
           var createFactory = createFactoryWithValidation;
-          var Children6 = {
+          var Children7 = {
             map: mapChildren,
             forEach: forEachChildren,
             count: countChildren,
             toArray,
             only: onlyChild
           };
-          exports.Children = Children6;
+          exports.Children = Children7;
           exports.Component = Component2;
           exports.Fragment = REACT_FRAGMENT_TYPE;
           exports.Profiler = REACT_PROFILER_TYPE;
@@ -1944,29 +1944,29 @@
           exports.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED = ReactSharedInternals;
           exports.act = act;
           exports.cloneElement = cloneElement$1;
-          exports.createContext = createContext17;
+          exports.createContext = createContext19;
           exports.createElement = createElement$1;
           exports.createFactory = createFactory;
           exports.createRef = createRef2;
-          exports.forwardRef = forwardRef59;
-          exports.isValidElement = isValidElement3;
+          exports.forwardRef = forwardRef61;
+          exports.isValidElement = isValidElement4;
           exports.lazy = lazy;
           exports.memo = memo3;
           exports.startTransition = startTransition;
           exports.unstable_act = act;
-          exports.useCallback = useCallback28;
-          exports.useContext = useContext16;
+          exports.useCallback = useCallback30;
+          exports.useContext = useContext18;
           exports.useDebugValue = useDebugValue;
           exports.useDeferredValue = useDeferredValue;
-          exports.useEffect = useEffect66;
-          exports.useId = useId5;
+          exports.useEffect = useEffect67;
+          exports.useId = useId6;
           exports.useImperativeHandle = useImperativeHandle2;
           exports.useInsertionEffect = useInsertionEffect2;
           exports.useLayoutEffect = useLayoutEffect7;
-          exports.useMemo = useMemo17;
+          exports.useMemo = useMemo18;
           exports.useReducer = useReducer3;
-          exports.useRef = useRef27;
-          exports.useState = useState59;
+          exports.useRef = useRef28;
+          exports.useState = useState61;
           exports.useSyncExternalStore = useSyncExternalStore3;
           exports.useTransition = useTransition;
           exports.version = ReactVersion;
@@ -2462,9 +2462,9 @@
           if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
             __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
           }
-          var React158 = require_react();
+          var React166 = require_react();
           var Scheduler = require_scheduler();
-          var ReactSharedInternals = React158.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+          var ReactSharedInternals = React166.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
           var suppressWarning = false;
           function setSuppressWarning(newSuppressWarning) {
             {
@@ -2513,7 +2513,7 @@
           var HostPortal = 4;
           var HostComponent = 5;
           var HostText = 6;
-          var Fragment11 = 7;
+          var Fragment12 = 7;
           var Mode = 8;
           var ContextConsumer = 9;
           var ContextProvider = 10;
@@ -3670,7 +3670,7 @@
                 return "DehydratedFragment";
               case ForwardRef:
                 return getWrappedName$1(type, type.render, "ForwardRef");
-              case Fragment11:
+              case Fragment12:
                 return "Fragment";
               case HostComponent:
                 return type;
@@ -4071,7 +4071,7 @@
             {
               if (props.value == null) {
                 if (typeof props.children === "object" && props.children !== null) {
-                  React158.Children.forEach(props.children, function(child) {
+                  React166.Children.forEach(props.children, function(child) {
                     if (child == null) {
                       return;
                     }
@@ -12099,7 +12099,7 @@
               }
             }
             function updateFragment2(returnFiber, current2, fragment, lanes, key) {
-              if (current2 === null || current2.tag !== Fragment11) {
+              if (current2 === null || current2.tag !== Fragment12) {
                 var created = createFiberFromFragment(fragment, returnFiber.mode, lanes, key);
                 created.return = returnFiber;
                 return created;
@@ -12502,7 +12502,7 @@
                 if (child.key === key) {
                   var elementType = element.type;
                   if (elementType === REACT_FRAGMENT_TYPE) {
-                    if (child.tag === Fragment11) {
+                    if (child.tag === Fragment12) {
                       deleteRemainingChildren(returnFiber, child.sibling);
                       var existing = useFiber(child, element.props.children);
                       existing.return = returnFiber;
@@ -17978,7 +17978,7 @@
                 var _resolvedProps2 = workInProgress2.elementType === type ? _unresolvedProps2 : resolveDefaultProps(type, _unresolvedProps2);
                 return updateForwardRef(current2, workInProgress2, type, _resolvedProps2, renderLanes2);
               }
-              case Fragment11:
+              case Fragment12:
                 return updateFragment(current2, workInProgress2, renderLanes2);
               case Mode:
                 return updateMode(current2, workInProgress2, renderLanes2);
@@ -18250,7 +18250,7 @@
               case SimpleMemoComponent:
               case FunctionComponent:
               case ForwardRef:
-              case Fragment11:
+              case Fragment12:
               case Mode:
               case Profiler:
               case ContextConsumer:
@@ -20973,7 +20973,7 @@
               }
             }
           }
-          function flushSync4(fn) {
+          function flushSync5(fn) {
             if (rootWithPendingPassiveEffects !== null && rootWithPendingPassiveEffects.tag === LegacyRoot && (executionContext & (RenderContext | CommitContext)) === NoContext) {
               flushPassiveEffects();
             }
@@ -22039,7 +22039,7 @@
               }
               var staleFamilies = update.staleFamilies, updatedFamilies = update.updatedFamilies;
               flushPassiveEffects();
-              flushSync4(function() {
+              flushSync5(function() {
                 scheduleFibersWithFamiliesRecursively(root3.current, updatedFamilies, staleFamilies);
               });
             }
@@ -22050,7 +22050,7 @@
                 return;
               }
               flushPassiveEffects();
-              flushSync4(function() {
+              flushSync5(function() {
                 updateContainer(element, root3, null, null);
               });
             }
@@ -22511,7 +22511,7 @@
             return fiber;
           }
           function createFiberFromFragment(elements, mode, lanes, key) {
-            var fiber = createFiber(Fragment11, elements, key, mode);
+            var fiber = createFiber(Fragment12, elements, key, mode);
             fiber.lanes = lanes;
             return fiber;
           }
@@ -22844,7 +22844,7 @@
                 break;
               }
               case SuspenseComponent: {
-                flushSync4(function() {
+                flushSync5(function() {
                   var root4 = enqueueConcurrentRenderForLane(fiber, SyncLane);
                   if (root4 !== null) {
                     var eventTime = requestEventTime();
@@ -23173,7 +23173,7 @@
                   error2("Attempted to synchronously unmount a root while React was already rendering. React cannot finish unmounting the root until the current render has completed, which may lead to a race condition.");
                 }
               }
-              flushSync4(function() {
+              flushSync5(function() {
                 updateContainer(null, root3, null, null);
               });
               unmarkContainerAsRoot(container);
@@ -23348,7 +23348,7 @@
               markContainerAsRoot(root3.current, container);
               var rootContainerElement = container.nodeType === COMMENT_NODE ? container.parentNode : container;
               listenToAllSupportedEvents(rootContainerElement);
-              flushSync4();
+              flushSync5();
               return root3;
             } else {
               var rootSibling;
@@ -23379,7 +23379,7 @@
               markContainerAsRoot(_root.current, container);
               var _rootContainerElement = container.nodeType === COMMENT_NODE ? container.parentNode : container;
               listenToAllSupportedEvents(_rootContainerElement);
-              flushSync4(function() {
+              flushSync5(function() {
                 updateContainer(initialChildren, _root, parentComponent, callback);
               });
               return _root;
@@ -23507,7 +23507,7 @@
                   error2("unmountComponentAtNode(): The node you're attempting to unmount was rendered by another copy of React.");
                 }
               }
-              flushSync4(function() {
+              flushSync5(function() {
                 legacyRenderSubtreeIntoContainer(null, null, container, false, function() {
                   container._reactRootContainer = null;
                   unmarkContainerAsRoot(container);
@@ -23539,7 +23539,7 @@
             }
           }
           setRestoreImplementation(restoreControlledState$3);
-          setBatchingImplementation(batchedUpdates$1, discreteUpdates, flushSync4);
+          setBatchingImplementation(batchedUpdates$1, discreteUpdates, flushSync5);
           function createPortal$1(children, container) {
             var key = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : null;
             if (!isValidContainer(container)) {
@@ -23578,7 +23578,7 @@
                 error2("flushSync was called from inside a lifecycle method. React cannot flush when React is already rendering. Consider moving this call to a scheduler task or micro task.");
               }
             }
-            return flushSync4(fn);
+            return flushSync5(fn);
           }
           var foundDevTools = injectIntoDevTools({
             findFiberByHostInstance: getClosestInstanceFromNode,
@@ -23667,7 +23667,7 @@
       if (true) {
         (function() {
           "use strict";
-          var React158 = require_react();
+          var React166 = require_react();
           var REACT_ELEMENT_TYPE = Symbol.for("react.element");
           var REACT_PORTAL_TYPE = Symbol.for("react.portal");
           var REACT_FRAGMENT_TYPE = Symbol.for("react.fragment");
@@ -23693,7 +23693,7 @@
             }
             return null;
           }
-          var ReactSharedInternals = React158.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+          var ReactSharedInternals = React166.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
           function error2(format) {
             {
               {
@@ -24321,7 +24321,7 @@
           {
             propTypesMisspellWarningShown = false;
           }
-          function isValidElement3(object) {
+          function isValidElement4(object) {
             {
               return typeof object === "object" && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
             }
@@ -24388,11 +24388,11 @@
               if (isArray(node)) {
                 for (var i4 = 0; i4 < node.length; i4++) {
                   var child = node[i4];
-                  if (isValidElement3(child)) {
+                  if (isValidElement4(child)) {
                     validateExplicitKey(child, parentType);
                   }
                 }
-              } else if (isValidElement3(node)) {
+              } else if (isValidElement4(node)) {
                 if (node._store) {
                   node._store.validated = true;
                 }
@@ -24403,7 +24403,7 @@
                     var iterator = iteratorFn.call(node);
                     var step;
                     while (!(step = iterator.next()).done) {
-                      if (isValidElement3(step.value)) {
+                      if (isValidElement4(step.value)) {
                         validateExplicitKey(step.value, parentType);
                       }
                     }
@@ -24543,10 +24543,10 @@
               return jsxWithValidation(type, props, key, false);
             }
           }
-          var jsx28 = jsxWithValidationDynamic;
+          var jsx33 = jsxWithValidationDynamic;
           var jsxs6 = jsxWithValidationStatic;
           exports.Fragment = REACT_FRAGMENT_TYPE;
-          exports.jsx = jsx28;
+          exports.jsx = jsx33;
           exports.jsxs = jsxs6;
         })();
       }
@@ -24634,7 +24634,7 @@
           var ContextProvider = REACT_PROVIDER_TYPE;
           var Element2 = REACT_ELEMENT_TYPE;
           var ForwardRef = REACT_FORWARD_REF_TYPE;
-          var Fragment11 = REACT_FRAGMENT_TYPE;
+          var Fragment12 = REACT_FRAGMENT_TYPE;
           var Lazy = REACT_LAZY_TYPE;
           var Memo = REACT_MEMO_TYPE;
           var Portal5 = REACT_PORTAL_TYPE;
@@ -24693,7 +24693,7 @@
           exports.ContextProvider = ContextProvider;
           exports.Element = Element2;
           exports.ForwardRef = ForwardRef;
-          exports.Fragment = Fragment11;
+          exports.Fragment = Fragment12;
           exports.Lazy = Lazy;
           exports.Memo = Memo;
           exports.Portal = Portal5;
@@ -24910,7 +24910,7 @@
       function emptyFunctionThatReturnsNull() {
         return null;
       }
-      module.exports = function(isValidElement3, throwOnDirectAccess) {
+      module.exports = function(isValidElement4, throwOnDirectAccess) {
         var ITERATOR_SYMBOL = typeof Symbol === "function" && Symbol.iterator;
         var FAUX_ITERATOR_SYMBOL = "@@iterator";
         function getIteratorFn(maybeIterable) {
@@ -25038,7 +25038,7 @@
         function createElementTypeChecker() {
           function validate(props, propName, componentName, location, propFullName) {
             var propValue = props[propName];
-            if (!isValidElement3(propValue)) {
+            if (!isValidElement4(propValue)) {
               var propType = getPropType(propValue);
               return new PropTypeError("Invalid " + location + " `" + propFullName + "` of type " + ("`" + propType + "` supplied to `" + componentName + "`, expected a single ReactElement."));
             }
@@ -25226,7 +25226,7 @@
               if (Array.isArray(propValue)) {
                 return propValue.every(isNode2);
               }
-              if (propValue === null || isValidElement3(propValue)) {
+              if (propValue === null || isValidElement4(propValue)) {
                 return true;
               }
               var iteratorFn = getIteratorFn(propValue);
@@ -25349,8 +25349,8 @@
       function _interopDefault(ex) {
         return ex && typeof ex === "object" && "default" in ex ? ex["default"] : ex;
       }
-      var React158 = require_react();
-      var React__default = _interopDefault(React158);
+      var React166 = require_react();
+      var React__default = _interopDefault(React166);
       function _defineProperty(obj, key, value) {
         if (key in obj) {
           Object.defineProperty(obj, key, {
@@ -25433,7 +25433,7 @@
               return React__default.createElement(WrappedComponent, this.props);
             };
             return SideEffect2;
-          }(React158.PureComponent);
+          }(React166.PureComponent);
           _defineProperty(SideEffect, "displayName", "SideEffect(" + getDisplayName(WrappedComponent) + ")");
           _defineProperty(SideEffect, "canUseDOM", canUseDOM);
           return SideEffect;
@@ -27599,11 +27599,11 @@
   });
 
   // src/index.tsx
-  var import_react94 = __toESM(require_react());
+  var import_react95 = __toESM(require_react());
   var import_client = __toESM(require_client());
 
   // src/App.tsx
-  var import_react93 = __toESM(require_react());
+  var import_react94 = __toESM(require_react());
 
   // src/components/page.tsx
   var import_react9 = __toESM(require_react());
@@ -50647,16 +50647,16 @@
         this.rtf = getCachedRTF(intl, opts);
       }
     }
-    format(count4, unit) {
+    format(count5, unit) {
       if (this.rtf) {
-        return this.rtf.format(count4, unit);
+        return this.rtf.format(count5, unit);
       } else {
-        return formatRelativeTime(unit, count4, this.opts.numeric, this.opts.style !== "long");
+        return formatRelativeTime(unit, count5, this.opts.numeric, this.opts.style !== "long");
       }
     }
-    formatToParts(count4, unit) {
+    formatToParts(count5, unit) {
       if (this.rtf) {
-        return this.rtf.formatToParts(count4, unit);
+        return this.rtf.formatToParts(count5, unit);
       } else {
         return [];
       }
@@ -51725,7 +51725,7 @@
   function eraForDateTime(dt, length) {
     return eras(length)[dt.year < 0 ? 0 : 1];
   }
-  function formatRelativeTime(unit, count4, numeric = "always", narrow = false) {
+  function formatRelativeTime(unit, count5, numeric = "always", narrow = false) {
     const units = {
       years: ["year", "yr."],
       quarters: ["quarter", "qtr."],
@@ -51739,7 +51739,7 @@
     const lastable = ["hours", "minutes", "seconds"].indexOf(unit) === -1;
     if (numeric === "auto" && lastable) {
       const isDay = unit === "days";
-      switch (count4) {
+      switch (count5) {
         case 1:
           return isDay ? "tomorrow" : "next ".concat(units[unit][0]);
         case -1:
@@ -51749,7 +51749,7 @@
         default:
       }
     }
-    const isInPast = Object.is(count4, -0) || count4 < 0, fmtValue = Math.abs(count4), singular = fmtValue === 1, lilUnits = units[unit], fmtUnit = narrow ? singular ? lilUnits[1] : lilUnits[2] || lilUnits[1] : singular ? units[unit][0] : unit;
+    const isInPast = Object.is(count5, -0) || count5 < 0, fmtValue = Math.abs(count5), singular = fmtValue === 1, lilUnits = units[unit], fmtUnit = narrow ? singular ? lilUnits[1] : lilUnits[2] || lilUnits[1] : singular ? units[unit][0] : unit;
     return isInPast ? "".concat(fmtValue, " ").concat(fmtUnit, " ago") : "in ".concat(fmtValue, " ").concat(fmtUnit);
   }
 
@@ -52469,8 +52469,8 @@
      * @param {string} [opts.conversionAccuracy='casual'] - the conversion system to use
      * @return {Duration}
      */
-    static fromMillis(count4, opts) {
-      return _Duration.fromObject({ milliseconds: count4 }, opts);
+    static fromMillis(count5, opts) {
+      return _Duration.fromObject({ milliseconds: count5 }, opts);
     }
     /**
      * Create a Duration from a JavaScript object with keys like 'years' and 'hours'.
@@ -54589,9 +54589,9 @@
       return format(differ(opts.unit), opts.unit);
     }
     for (const unit of opts.units) {
-      const count4 = differ(unit);
-      if (Math.abs(count4) >= 1) {
-        return format(count4, unit);
+      const count5 = differ(unit);
+      if (Math.abs(count5) >= 1) {
+        return format(count5, unit);
       }
     }
     return format(start > end ? -0 : 0, opts.units[opts.units.length - 1]);
@@ -68926,7 +68926,127 @@
   }
 
   // ../common-ui/src/components/ui/button.tsx
-  var React120 = __toESM(require_react());
+  var React122 = __toESM(require_react());
+
+  // ../common-ui/node_modules/@radix-ui/react-slot/dist/index.mjs
+  var React121 = __toESM(require_react(), 1);
+
+  // ../common-ui/node_modules/@radix-ui/react-compose-refs/dist/index.mjs
+  var React120 = __toESM(require_react(), 1);
+  function setRef2(ref, value) {
+    if (typeof ref === "function") {
+      return ref(value);
+    } else if (ref !== null && ref !== void 0) {
+      ref.current = value;
+    }
+  }
+  function composeRefs2(...refs) {
+    return (node) => {
+      let hasCleanup = false;
+      const cleanups = refs.map((ref) => {
+        const cleanup = setRef2(ref, node);
+        if (!hasCleanup && typeof cleanup == "function") {
+          hasCleanup = true;
+        }
+        return cleanup;
+      });
+      if (hasCleanup) {
+        return () => {
+          for (let i4 = 0; i4 < cleanups.length; i4++) {
+            const cleanup = cleanups[i4];
+            if (typeof cleanup == "function") {
+              cleanup();
+            } else {
+              setRef2(refs[i4], null);
+            }
+          }
+        };
+      }
+    };
+  }
+  function useComposedRefs2(...refs) {
+    return React120.useCallback(composeRefs2(...refs), refs);
+  }
+
+  // ../common-ui/node_modules/@radix-ui/react-slot/dist/index.mjs
+  var import_jsx_runtime27 = __toESM(require_jsx_runtime(), 1);
+  var Slot2 = React121.forwardRef((props, forwardedRef) => {
+    const _a10 = props, { children } = _a10, slotProps = __objRest(_a10, ["children"]);
+    const childrenArray = React121.Children.toArray(children);
+    const slottable = childrenArray.find(isSlottable2);
+    if (slottable) {
+      const newElement = slottable.props.children;
+      const newChildren = childrenArray.map((child) => {
+        if (child === slottable) {
+          if (React121.Children.count(newElement) > 1) return React121.Children.only(null);
+          return React121.isValidElement(newElement) ? newElement.props.children : null;
+        } else {
+          return child;
+        }
+      });
+      return /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(SlotClone2, __spreadProps(__spreadValues({}, slotProps), { ref: forwardedRef, children: React121.isValidElement(newElement) ? React121.cloneElement(newElement, void 0, newChildren) : null }));
+    }
+    return /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(SlotClone2, __spreadProps(__spreadValues({}, slotProps), { ref: forwardedRef, children }));
+  });
+  Slot2.displayName = "Slot";
+  var SlotClone2 = React121.forwardRef((props, forwardedRef) => {
+    const _a10 = props, { children } = _a10, slotProps = __objRest(_a10, ["children"]);
+    if (React121.isValidElement(children)) {
+      const childrenRef = getElementRef3(children);
+      const props2 = mergeProps2(slotProps, children.props);
+      if (children.type !== React121.Fragment) {
+        props2.ref = forwardedRef ? composeRefs2(forwardedRef, childrenRef) : childrenRef;
+      }
+      return React121.cloneElement(children, props2);
+    }
+    return React121.Children.count(children) > 1 ? React121.Children.only(null) : null;
+  });
+  SlotClone2.displayName = "SlotClone";
+  var Slottable2 = ({ children }) => {
+    return /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(import_jsx_runtime27.Fragment, { children });
+  };
+  function isSlottable2(child) {
+    return React121.isValidElement(child) && child.type === Slottable2;
+  }
+  function mergeProps2(slotProps, childProps) {
+    const overrideProps = __spreadValues({}, childProps);
+    for (const propName in childProps) {
+      const slotPropValue = slotProps[propName];
+      const childPropValue = childProps[propName];
+      const isHandler = /^on[A-Z]/.test(propName);
+      if (isHandler) {
+        if (slotPropValue && childPropValue) {
+          overrideProps[propName] = (...args) => {
+            childPropValue(...args);
+            slotPropValue(...args);
+          };
+        } else if (slotPropValue) {
+          overrideProps[propName] = slotPropValue;
+        }
+      } else if (propName === "style") {
+        overrideProps[propName] = __spreadValues(__spreadValues({}, slotPropValue), childPropValue);
+      } else if (propName === "className") {
+        overrideProps[propName] = [slotPropValue, childPropValue].filter(Boolean).join(" ");
+      }
+    }
+    return __spreadValues(__spreadValues({}, slotProps), overrideProps);
+  }
+  function getElementRef3(element) {
+    var _a10, _b2;
+    let getter = (_a10 = Object.getOwnPropertyDescriptor(element.props, "ref")) == null ? void 0 : _a10.get;
+    let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
+    if (mayWarn) {
+      return element.ref;
+    }
+    getter = (_b2 = Object.getOwnPropertyDescriptor(element, "ref")) == null ? void 0 : _b2.get;
+    mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
+    if (mayWarn) {
+      return element.props.ref;
+    }
+    return element.props.ref || element.ref;
+  }
+
+  // ../common-ui/src/components/ui/button.tsx
   var buttonVariants2 = cva(
     "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
     {
@@ -68952,11 +69072,11 @@
       }
     }
   );
-  var Button2 = React120.forwardRef(
+  var Button2 = React122.forwardRef(
     (_a10, ref) => {
       var _b2 = _a10, { className, variant, size: size4, asChild = false } = _b2, props = __objRest(_b2, ["className", "variant", "size", "asChild"]);
-      const Comp = asChild ? Slot : "button";
-      return /* @__PURE__ */ React120.createElement(
+      const Comp = asChild ? Slot2 : "button";
+      return /* @__PURE__ */ React122.createElement(
         Comp,
         __spreadValues({
           className: cn2(buttonVariants2({ variant, size: size4, className })),
@@ -69113,7 +69233,7 @@
   // ../common-ui/src/components/Title.tsx
   var import_react66 = __toESM(require_react());
   var Title3 = ({ title }) => {
-    return /* @__PURE__ */ import_react66.default.createElement(HelmetExport, null, title ? /* @__PURE__ */ import_react66.default.createElement("title", null, title, " | Tesseral") : /* @__PURE__ */ import_react66.default.createElement("title", null, "Tesseral"));
+    return /* @__PURE__ */ import_react66.default.createElement(import_react66.default.Fragment, null, /* @__PURE__ */ import_react66.default.createElement(HelmetExport, null, title ? /* @__PURE__ */ import_react66.default.createElement("title", null, title, " | Tesseral") : /* @__PURE__ */ import_react66.default.createElement("title", null, "Tesseral")));
   };
 
   // ../common-ui/src/components/ui/text-divider.tsx
@@ -69351,16 +69471,16 @@
   var import_react71 = __toESM(require_react());
 
   // ../common-ui/src/components/ui/form.tsx
-  var React129 = __toESM(require_react());
+  var React131 = __toESM(require_react());
 
   // ../common-ui/src/components/ui/label.tsx
-  var React128 = __toESM(require_react());
+  var React130 = __toESM(require_react());
   var labelVariants2 = cva(
     "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
   );
-  var Label5 = React128.forwardRef((_a10, ref) => {
+  var Label5 = React130.forwardRef((_a10, ref) => {
     var _b2 = _a10, { className } = _b2, props = __objRest(_b2, ["className"]);
-    return /* @__PURE__ */ React128.createElement(
+    return /* @__PURE__ */ React130.createElement(
       Root7,
       __spreadValues({
         ref,
@@ -69372,16 +69492,16 @@
 
   // ../common-ui/src/components/ui/form.tsx
   var Form3 = FormProvider;
-  var FormFieldContext2 = React129.createContext(
+  var FormFieldContext2 = React131.createContext(
     {}
   );
   var FormField2 = (_a10) => {
     var props = __objRest(_a10, []);
-    return /* @__PURE__ */ React129.createElement(FormFieldContext2.Provider, { value: { name: props.name } }, /* @__PURE__ */ React129.createElement(Controller, __spreadValues({}, props)));
+    return /* @__PURE__ */ React131.createElement(FormFieldContext2.Provider, { value: { name: props.name } }, /* @__PURE__ */ React131.createElement(Controller, __spreadValues({}, props)));
   };
   var useFormField2 = () => {
-    const fieldContext = React129.useContext(FormFieldContext2);
-    const itemContext = React129.useContext(FormItemContext2);
+    const fieldContext = React131.useContext(FormFieldContext2);
+    const itemContext = React131.useContext(FormItemContext2);
     const { getFieldState, formState } = useFormContext();
     const fieldState = getFieldState(fieldContext.name, formState);
     if (!fieldContext) {
@@ -69396,19 +69516,19 @@
       formMessageId: "".concat(id, "-form-item-message")
     }, fieldState);
   };
-  var FormItemContext2 = React129.createContext(
+  var FormItemContext2 = React131.createContext(
     {}
   );
-  var FormItem2 = React129.forwardRef((_a10, ref) => {
+  var FormItem2 = React131.forwardRef((_a10, ref) => {
     var _b2 = _a10, { className } = _b2, props = __objRest(_b2, ["className"]);
-    const id = React129.useId();
-    return /* @__PURE__ */ React129.createElement(FormItemContext2.Provider, { value: { id } }, /* @__PURE__ */ React129.createElement("div", __spreadValues({ ref, className: cn2("space-y-2", className) }, props)));
+    const id = React131.useId();
+    return /* @__PURE__ */ React131.createElement(FormItemContext2.Provider, { value: { id } }, /* @__PURE__ */ React131.createElement("div", __spreadValues({ ref, className: cn2("space-y-2", className) }, props)));
   });
   FormItem2.displayName = "FormItem";
-  var FormLabel2 = React129.forwardRef((_a10, ref) => {
+  var FormLabel2 = React131.forwardRef((_a10, ref) => {
     var _b2 = _a10, { className } = _b2, props = __objRest(_b2, ["className"]);
     const { error: error2, formItemId } = useFormField2();
-    return /* @__PURE__ */ React129.createElement(
+    return /* @__PURE__ */ React131.createElement(
       Label5,
       __spreadValues({
         ref,
@@ -69418,11 +69538,11 @@
     );
   });
   FormLabel2.displayName = "FormLabel";
-  var FormControl2 = React129.forwardRef((_a10, ref) => {
+  var FormControl2 = React131.forwardRef((_a10, ref) => {
     var props = __objRest(_a10, []);
     const { error: error2, formItemId, formDescriptionId, formMessageId } = useFormField2();
-    return /* @__PURE__ */ React129.createElement(
-      Slot,
+    return /* @__PURE__ */ React131.createElement(
+      Slot2,
       __spreadValues({
         ref,
         id: formItemId,
@@ -69432,10 +69552,10 @@
     );
   });
   FormControl2.displayName = "FormControl";
-  var FormDescription2 = React129.forwardRef((_a10, ref) => {
+  var FormDescription2 = React131.forwardRef((_a10, ref) => {
     var _b2 = _a10, { className } = _b2, props = __objRest(_b2, ["className"]);
     const { formDescriptionId } = useFormField2();
-    return /* @__PURE__ */ React129.createElement(
+    return /* @__PURE__ */ React131.createElement(
       "p",
       __spreadValues({
         ref,
@@ -69445,14 +69565,14 @@
     );
   });
   FormDescription2.displayName = "FormDescription";
-  var FormMessage2 = React129.forwardRef((_a10, ref) => {
+  var FormMessage2 = React131.forwardRef((_a10, ref) => {
     var _b2 = _a10, { className, children } = _b2, props = __objRest(_b2, ["className", "children"]);
     const { error: error2, formMessageId } = useFormField2();
     const body = error2 ? String(error2 == null ? void 0 : error2.message) : children;
     if (!body) {
       return null;
     }
-    return /* @__PURE__ */ React129.createElement(
+    return /* @__PURE__ */ React131.createElement(
       "p",
       __spreadValues({
         ref,
@@ -69465,11 +69585,11 @@
   FormMessage2.displayName = "FormMessage";
 
   // ../common-ui/src/components/ui/input.tsx
-  var React130 = __toESM(require_react());
-  var Input2 = React130.forwardRef(
+  var React132 = __toESM(require_react());
+  var Input2 = React132.forwardRef(
     (_a10, ref) => {
       var _b2 = _a10, { className, type } = _b2, props = __objRest(_b2, ["className", "type"]);
-      return /* @__PURE__ */ React130.createElement(
+      return /* @__PURE__ */ React132.createElement(
         "input",
         __spreadValues({
           type,
@@ -70197,10 +70317,10 @@
   var import_react81 = __toESM(require_react());
 
   // ../common-ui/src/components/ui/input-otp.tsx
-  var React141 = __toESM(require_react());
-  var InputOTP = React141.forwardRef((_a10, ref) => {
+  var React143 = __toESM(require_react());
+  var InputOTP = React143.forwardRef((_a10, ref) => {
     var _b2 = _a10, { className, containerClassName } = _b2, props = __objRest(_b2, ["className", "containerClassName"]);
-    return /* @__PURE__ */ React141.createElement(
+    return /* @__PURE__ */ React143.createElement(
       Lt,
       __spreadValues({
         ref,
@@ -70213,16 +70333,16 @@
     );
   });
   InputOTP.displayName = "InputOTP";
-  var InputOTPGroup = React141.forwardRef((_a10, ref) => {
+  var InputOTPGroup = React143.forwardRef((_a10, ref) => {
     var _b2 = _a10, { className } = _b2, props = __objRest(_b2, ["className"]);
-    return /* @__PURE__ */ React141.createElement("div", __spreadValues({ ref, className: cn2("flex items-center", className) }, props));
+    return /* @__PURE__ */ React143.createElement("div", __spreadValues({ ref, className: cn2("flex items-center", className) }, props));
   });
   InputOTPGroup.displayName = "InputOTPGroup";
-  var InputOTPSlot = React141.forwardRef((_a10, ref) => {
+  var InputOTPSlot = React143.forwardRef((_a10, ref) => {
     var _b2 = _a10, { index: index3, className } = _b2, props = __objRest(_b2, ["index", "className"]);
-    const inputOTPContext = React141.useContext(jt2);
+    const inputOTPContext = React143.useContext(jt2);
     const { char, hasFakeCaret, isActive } = inputOTPContext.slots[index3];
-    return /* @__PURE__ */ React141.createElement(
+    return /* @__PURE__ */ React143.createElement(
       "div",
       __spreadValues({
         ref,
@@ -70233,13 +70353,13 @@
         )
       }, props),
       char,
-      hasFakeCaret && /* @__PURE__ */ React141.createElement("div", { className: "pointer-events-none absolute inset-0 flex items-center justify-center" }, /* @__PURE__ */ React141.createElement("div", { className: "h-4 w-px animate-caret-blink bg-foreground duration-1000" }))
+      hasFakeCaret && /* @__PURE__ */ React143.createElement("div", { className: "pointer-events-none absolute inset-0 flex items-center justify-center" }, /* @__PURE__ */ React143.createElement("div", { className: "h-4 w-px animate-caret-blink bg-foreground duration-1000" }))
     );
   });
   InputOTPSlot.displayName = "InputOTPSlot";
-  var InputOTPSeparator = React141.forwardRef((_a10, ref) => {
+  var InputOTPSeparator = React143.forwardRef((_a10, ref) => {
     var props = __objRest(_a10, []);
-    return /* @__PURE__ */ React141.createElement("div", __spreadValues({ ref, role: "separator" }, props), /* @__PURE__ */ React141.createElement(Dot, null));
+    return /* @__PURE__ */ React143.createElement("div", __spreadValues({ ref, role: "separator" }, props), /* @__PURE__ */ React143.createElement(Dot, null));
   });
   InputOTPSeparator.displayName = "InputOTPSeparator";
 
@@ -70532,18 +70652,237 @@
   }
 
   // ../common-ui/src/pages/login/VerifyEmailPage.tsx
-  var import_react89 = __toESM(require_react());
+  var import_react90 = __toESM(require_react());
 
-  // ../../node_modules/@radix-ui/react-accordion/dist/index.mjs
+  // ../common-ui/node_modules/@radix-ui/react-accordion/dist/index.mjs
+  var import_react89 = __toESM(require_react(), 1);
+
+  // ../common-ui/node_modules/@radix-ui/react-context/dist/index.mjs
+  var React151 = __toESM(require_react(), 1);
+  var import_jsx_runtime28 = __toESM(require_jsx_runtime(), 1);
+  function createContextScope2(scopeName, createContextScopeDeps = []) {
+    let defaultContexts = [];
+    function createContext32(rootComponentName, defaultContext) {
+      const BaseContext = React151.createContext(defaultContext);
+      const index3 = defaultContexts.length;
+      defaultContexts = [...defaultContexts, defaultContext];
+      const Provider2 = (props) => {
+        var _b2;
+        const _a10 = props, { scope, children } = _a10, context = __objRest(_a10, ["scope", "children"]);
+        const Context2 = ((_b2 = scope == null ? void 0 : scope[scopeName]) == null ? void 0 : _b2[index3]) || BaseContext;
+        const value = React151.useMemo(() => context, Object.values(context));
+        return /* @__PURE__ */ (0, import_jsx_runtime28.jsx)(Context2.Provider, { value, children });
+      };
+      Provider2.displayName = rootComponentName + "Provider";
+      function useContext22(consumerName, scope) {
+        var _a10;
+        const Context2 = ((_a10 = scope == null ? void 0 : scope[scopeName]) == null ? void 0 : _a10[index3]) || BaseContext;
+        const context = React151.useContext(Context2);
+        if (context) return context;
+        if (defaultContext !== void 0) return defaultContext;
+        throw new Error("`".concat(consumerName, "` must be used within `").concat(rootComponentName, "`"));
+      }
+      return [Provider2, useContext22];
+    }
+    const createScope = () => {
+      const scopeContexts = defaultContexts.map((defaultContext) => {
+        return React151.createContext(defaultContext);
+      });
+      return function useScope(scope) {
+        const contexts = (scope == null ? void 0 : scope[scopeName]) || scopeContexts;
+        return React151.useMemo(
+          () => ({ ["__scope".concat(scopeName)]: __spreadProps(__spreadValues({}, scope), { [scopeName]: contexts }) }),
+          [scope, contexts]
+        );
+      };
+    };
+    createScope.scopeName = scopeName;
+    return [createContext32, composeContextScopes2(createScope, ...createContextScopeDeps)];
+  }
+  function composeContextScopes2(...scopes) {
+    const baseScope = scopes[0];
+    if (scopes.length === 1) return baseScope;
+    const createScope = () => {
+      const scopeHooks = scopes.map((createScope2) => ({
+        useScope: createScope2(),
+        scopeName: createScope2.scopeName
+      }));
+      return function useComposedScopes(overrideScopes) {
+        const nextScopes = scopeHooks.reduce((nextScopes2, { useScope, scopeName }) => {
+          const scopeProps = useScope(overrideScopes);
+          const currentScope = scopeProps["__scope".concat(scopeName)];
+          return __spreadValues(__spreadValues({}, nextScopes2), currentScope);
+        }, {});
+        return React151.useMemo(() => ({ ["__scope".concat(baseScope.scopeName)]: nextScopes }), [nextScopes]);
+      };
+    };
+    createScope.scopeName = baseScope.scopeName;
+    return createScope;
+  }
+
+  // ../common-ui/node_modules/@radix-ui/react-collection/dist/index.mjs
   var import_react88 = __toESM(require_react(), 1);
+  var import_jsx_runtime29 = __toESM(require_jsx_runtime(), 1);
+  function createCollection2(name) {
+    const PROVIDER_NAME2 = name + "CollectionProvider";
+    const [createCollectionContext, createCollectionScope4] = createContextScope2(PROVIDER_NAME2);
+    const [CollectionProviderImpl, useCollectionContext] = createCollectionContext(
+      PROVIDER_NAME2,
+      { collectionRef: { current: null }, itemMap: /* @__PURE__ */ new Map() }
+    );
+    const CollectionProvider = (props) => {
+      const { scope, children } = props;
+      const ref = import_react88.default.useRef(null);
+      const itemMap = import_react88.default.useRef(/* @__PURE__ */ new Map()).current;
+      return /* @__PURE__ */ (0, import_jsx_runtime29.jsx)(CollectionProviderImpl, { scope, itemMap, collectionRef: ref, children });
+    };
+    CollectionProvider.displayName = PROVIDER_NAME2;
+    const COLLECTION_SLOT_NAME = name + "CollectionSlot";
+    const CollectionSlot = import_react88.default.forwardRef(
+      (props, forwardedRef) => {
+        const { scope, children } = props;
+        const context = useCollectionContext(COLLECTION_SLOT_NAME, scope);
+        const composedRefs = useComposedRefs2(forwardedRef, context.collectionRef);
+        return /* @__PURE__ */ (0, import_jsx_runtime29.jsx)(Slot2, { ref: composedRefs, children });
+      }
+    );
+    CollectionSlot.displayName = COLLECTION_SLOT_NAME;
+    const ITEM_SLOT_NAME = name + "CollectionItemSlot";
+    const ITEM_DATA_ATTR = "data-radix-collection-item";
+    const CollectionItemSlot = import_react88.default.forwardRef(
+      (props, forwardedRef) => {
+        const _a10 = props, { scope, children } = _a10, itemData = __objRest(_a10, ["scope", "children"]);
+        const ref = import_react88.default.useRef(null);
+        const composedRefs = useComposedRefs2(forwardedRef, ref);
+        const context = useCollectionContext(ITEM_SLOT_NAME, scope);
+        import_react88.default.useEffect(() => {
+          context.itemMap.set(ref, __spreadValues({ ref }, itemData));
+          return () => void context.itemMap.delete(ref);
+        });
+        return /* @__PURE__ */ (0, import_jsx_runtime29.jsx)(Slot2, __spreadProps(__spreadValues({}, { [ITEM_DATA_ATTR]: "" }), { ref: composedRefs, children }));
+      }
+    );
+    CollectionItemSlot.displayName = ITEM_SLOT_NAME;
+    function useCollection4(scope) {
+      const context = useCollectionContext(name + "CollectionConsumer", scope);
+      const getItems = import_react88.default.useCallback(() => {
+        const collectionNode = context.collectionRef.current;
+        if (!collectionNode) return [];
+        const orderedNodes = Array.from(collectionNode.querySelectorAll("[".concat(ITEM_DATA_ATTR, "]")));
+        const items = Array.from(context.itemMap.values());
+        const orderedItems = items.sort(
+          (a2, b2) => orderedNodes.indexOf(a2.ref.current) - orderedNodes.indexOf(b2.ref.current)
+        );
+        return orderedItems;
+      }, [context.collectionRef, context.itemMap]);
+      return getItems;
+    }
+    return [
+      { Provider: CollectionProvider, Slot: CollectionSlot, ItemSlot: CollectionItemSlot },
+      useCollection4,
+      createCollectionScope4
+    ];
+  }
 
-  // ../../node_modules/@radix-ui/react-collapsible/dist/index.mjs
-  var React149 = __toESM(require_react(), 1);
-  var import_jsx_runtime27 = __toESM(require_jsx_runtime(), 1);
+  // ../common-ui/node_modules/@radix-ui/react-use-controllable-state/dist/index.mjs
+  var React153 = __toESM(require_react(), 1);
+  function useControllableState2({
+    prop,
+    defaultProp,
+    onChange = () => {
+    }
+  }) {
+    const [uncontrolledProp, setUncontrolledProp] = useUncontrolledState2({ defaultProp, onChange });
+    const isControlled = prop !== void 0;
+    const value = isControlled ? prop : uncontrolledProp;
+    const handleChange = useCallbackRef(onChange);
+    const setValue = React153.useCallback(
+      (nextValue) => {
+        if (isControlled) {
+          const setter = nextValue;
+          const value2 = typeof nextValue === "function" ? setter(prop) : nextValue;
+          if (value2 !== prop) handleChange(value2);
+        } else {
+          setUncontrolledProp(nextValue);
+        }
+      },
+      [isControlled, prop, setUncontrolledProp, handleChange]
+    );
+    return [value, setValue];
+  }
+  function useUncontrolledState2({
+    defaultProp,
+    onChange
+  }) {
+    const uncontrolledState = React153.useState(defaultProp);
+    const [value] = uncontrolledState;
+    const prevValueRef = React153.useRef(value);
+    const handleChange = useCallbackRef(onChange);
+    React153.useEffect(() => {
+      if (prevValueRef.current !== value) {
+        handleChange(value);
+        prevValueRef.current = value;
+      }
+    }, [value, prevValueRef, handleChange]);
+    return uncontrolledState;
+  }
+
+  // ../common-ui/node_modules/@radix-ui/react-primitive/dist/index.mjs
+  var React154 = __toESM(require_react(), 1);
+  var ReactDOM6 = __toESM(require_react_dom(), 1);
+  var import_jsx_runtime30 = __toESM(require_jsx_runtime(), 1);
+  var NODES2 = [
+    "a",
+    "button",
+    "div",
+    "form",
+    "h2",
+    "h3",
+    "img",
+    "input",
+    "label",
+    "li",
+    "nav",
+    "ol",
+    "p",
+    "span",
+    "svg",
+    "ul"
+  ];
+  var Primitive2 = NODES2.reduce((primitive, node) => {
+    const Node2 = React154.forwardRef((props, forwardedRef) => {
+      const _a10 = props, { asChild } = _a10, primitiveProps = __objRest(_a10, ["asChild"]);
+      const Comp = asChild ? Slot2 : node;
+      if (typeof window !== "undefined") {
+        window[Symbol.for("radix-ui")] = true;
+      }
+      return /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(Comp, __spreadProps(__spreadValues({}, primitiveProps), { ref: forwardedRef }));
+    });
+    Node2.displayName = "Primitive.".concat(node);
+    return __spreadProps(__spreadValues({}, primitive), { [node]: Node2 });
+  }, {});
+
+  // ../common-ui/node_modules/@radix-ui/react-collapsible/dist/index.mjs
+  var React156 = __toESM(require_react(), 1);
+
+  // ../common-ui/node_modules/@radix-ui/react-id/dist/index.mjs
+  var React155 = __toESM(require_react(), 1);
+  var useReactId3 = React155["useId".toString()] || (() => void 0);
+  var count4 = 0;
+  function useId5(deterministicId) {
+    const [id, setId] = React155.useState(useReactId3());
+    useLayoutEffect22(() => {
+      if (!deterministicId) setId((reactId) => reactId != null ? reactId : String(count4++));
+    }, [deterministicId]);
+    return deterministicId || (id ? "radix-".concat(id) : "");
+  }
+
+  // ../common-ui/node_modules/@radix-ui/react-collapsible/dist/index.mjs
+  var import_jsx_runtime31 = __toESM(require_jsx_runtime(), 1);
   var COLLAPSIBLE_NAME = "Collapsible";
-  var [createCollapsibleContext, createCollapsibleScope] = createContextScope(COLLAPSIBLE_NAME);
+  var [createCollapsibleContext, createCollapsibleScope] = createContextScope2(COLLAPSIBLE_NAME);
   var [CollapsibleProvider, useCollapsibleContext] = createCollapsibleContext(COLLAPSIBLE_NAME);
-  var Collapsible = React149.forwardRef(
+  var Collapsible = React156.forwardRef(
     (props, forwardedRef) => {
       const _a10 = props, {
         __scopeCollapsible,
@@ -70558,21 +70897,21 @@
         "disabled",
         "onOpenChange"
       ]);
-      const [open = false, setOpen] = useControllableState({
+      const [open = false, setOpen] = useControllableState2({
         prop: openProp,
         defaultProp: defaultOpen,
         onChange: onOpenChange
       });
-      return /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(
+      return /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(
         CollapsibleProvider,
         {
           scope: __scopeCollapsible,
           disabled,
-          contentId: useId(),
+          contentId: useId5(),
           open,
-          onOpenToggle: React149.useCallback(() => setOpen((prevOpen) => !prevOpen), [setOpen]),
-          children: /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(
-            Primitive.div,
+          onOpenToggle: React156.useCallback(() => setOpen((prevOpen) => !prevOpen), [setOpen]),
+          children: /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(
+            Primitive2.div,
             __spreadProps(__spreadValues({
               "data-state": getState4(open),
               "data-disabled": disabled ? "" : void 0
@@ -70586,12 +70925,12 @@
   );
   Collapsible.displayName = COLLAPSIBLE_NAME;
   var TRIGGER_NAME6 = "CollapsibleTrigger";
-  var CollapsibleTrigger = React149.forwardRef(
+  var CollapsibleTrigger = React156.forwardRef(
     (props, forwardedRef) => {
       const _a10 = props, { __scopeCollapsible } = _a10, triggerProps = __objRest(_a10, ["__scopeCollapsible"]);
       const context = useCollapsibleContext(TRIGGER_NAME6, __scopeCollapsible);
-      return /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(
-        Primitive.button,
+      return /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(
+        Primitive2.button,
         __spreadProps(__spreadValues({
           type: "button",
           "aria-controls": context.contentId,
@@ -70608,28 +70947,28 @@
   );
   CollapsibleTrigger.displayName = TRIGGER_NAME6;
   var CONTENT_NAME8 = "CollapsibleContent";
-  var CollapsibleContent = React149.forwardRef(
+  var CollapsibleContent = React156.forwardRef(
     (props, forwardedRef) => {
       const _a10 = props, { forceMount } = _a10, contentProps = __objRest(_a10, ["forceMount"]);
       const context = useCollapsibleContext(CONTENT_NAME8, props.__scopeCollapsible);
-      return /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(Presence, { present: forceMount || context.open, children: ({ present }) => /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(CollapsibleContentImpl, __spreadProps(__spreadValues({}, contentProps), { ref: forwardedRef, present })) });
+      return /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(Presence, { present: forceMount || context.open, children: ({ present }) => /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(CollapsibleContentImpl, __spreadProps(__spreadValues({}, contentProps), { ref: forwardedRef, present })) });
     }
   );
   CollapsibleContent.displayName = CONTENT_NAME8;
-  var CollapsibleContentImpl = React149.forwardRef((props, forwardedRef) => {
+  var CollapsibleContentImpl = React156.forwardRef((props, forwardedRef) => {
     const _a10 = props, { __scopeCollapsible, present, children } = _a10, contentProps = __objRest(_a10, ["__scopeCollapsible", "present", "children"]);
     const context = useCollapsibleContext(CONTENT_NAME8, __scopeCollapsible);
-    const [isPresent, setIsPresent] = React149.useState(present);
-    const ref = React149.useRef(null);
-    const composedRefs = useComposedRefs(forwardedRef, ref);
-    const heightRef = React149.useRef(0);
+    const [isPresent, setIsPresent] = React156.useState(present);
+    const ref = React156.useRef(null);
+    const composedRefs = useComposedRefs2(forwardedRef, ref);
+    const heightRef = React156.useRef(0);
     const height = heightRef.current;
-    const widthRef = React149.useRef(0);
+    const widthRef = React156.useRef(0);
     const width = widthRef.current;
     const isOpen = context.open || isPresent;
-    const isMountAnimationPreventedRef = React149.useRef(isOpen);
-    const originalStylesRef = React149.useRef(void 0);
-    React149.useEffect(() => {
+    const isMountAnimationPreventedRef = React156.useRef(isOpen);
+    const originalStylesRef = React156.useRef(void 0);
+    React156.useEffect(() => {
       const rAF = requestAnimationFrame(() => isMountAnimationPreventedRef.current = false);
       return () => cancelAnimationFrame(rAF);
     }, []);
@@ -70652,8 +70991,8 @@
         setIsPresent(present);
       }
     }, [context.open, present]);
-    return /* @__PURE__ */ (0, import_jsx_runtime27.jsx)(
-      Primitive.div,
+    return /* @__PURE__ */ (0, import_jsx_runtime31.jsx)(
+      Primitive2.div,
       __spreadProps(__spreadValues({
         "data-state": getState4(context.open),
         "data-disabled": context.disabled ? "" : void 0,
@@ -70676,22 +71015,31 @@
   var Trigger5 = CollapsibleTrigger;
   var Content3 = CollapsibleContent;
 
-  // ../../node_modules/@radix-ui/react-accordion/dist/index.mjs
-  var import_jsx_runtime28 = __toESM(require_jsx_runtime(), 1);
+  // ../common-ui/node_modules/@radix-ui/react-direction/dist/index.mjs
+  var React157 = __toESM(require_react(), 1);
+  var import_jsx_runtime32 = __toESM(require_jsx_runtime(), 1);
+  var DirectionContext2 = React157.createContext(void 0);
+  function useDirection2(localDir) {
+    const globalDir = React157.useContext(DirectionContext2);
+    return localDir || globalDir || "ltr";
+  }
+
+  // ../common-ui/node_modules/@radix-ui/react-accordion/dist/index.mjs
+  var import_jsx_runtime33 = __toESM(require_jsx_runtime(), 1);
   var ACCORDION_NAME = "Accordion";
   var ACCORDION_KEYS = ["Home", "End", "ArrowDown", "ArrowUp", "ArrowLeft", "ArrowRight"];
-  var [Collection3, useCollection3, createCollectionScope3] = createCollection(ACCORDION_NAME);
-  var [createAccordionContext, createAccordionScope] = createContextScope(ACCORDION_NAME, [
+  var [Collection3, useCollection3, createCollectionScope3] = createCollection2(ACCORDION_NAME);
+  var [createAccordionContext, createAccordionScope] = createContextScope2(ACCORDION_NAME, [
     createCollectionScope3,
     createCollapsibleScope
   ]);
   var useCollapsibleScope = createCollapsibleScope();
-  var Accordion = import_react88.default.forwardRef(
+  var Accordion = import_react89.default.forwardRef(
     (props, forwardedRef) => {
       const _a10 = props, { type } = _a10, accordionProps = __objRest(_a10, ["type"]);
       const singleProps = accordionProps;
       const multipleProps = accordionProps;
-      return /* @__PURE__ */ (0, import_jsx_runtime28.jsx)(Collection3.Provider, { scope: props.__scopeAccordion, children: type === "multiple" ? /* @__PURE__ */ (0, import_jsx_runtime28.jsx)(AccordionImplMultiple, __spreadProps(__spreadValues({}, multipleProps), { ref: forwardedRef })) : /* @__PURE__ */ (0, import_jsx_runtime28.jsx)(AccordionImplSingle, __spreadProps(__spreadValues({}, singleProps), { ref: forwardedRef })) });
+      return /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(Collection3.Provider, { scope: props.__scopeAccordion, children: type === "multiple" ? /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(AccordionImplMultiple, __spreadProps(__spreadValues({}, multipleProps), { ref: forwardedRef })) : /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(AccordionImplSingle, __spreadProps(__spreadValues({}, singleProps), { ref: forwardedRef })) });
     }
   );
   Accordion.displayName = ACCORDION_NAME;
@@ -70700,7 +71048,7 @@
     ACCORDION_NAME,
     { collapsible: false }
   );
-  var AccordionImplSingle = import_react88.default.forwardRef(
+  var AccordionImplSingle = import_react89.default.forwardRef(
     (props, forwardedRef) => {
       const _a10 = props, {
         value: valueProp,
@@ -70714,24 +71062,24 @@
         "onValueChange",
         "collapsible"
       ]);
-      const [value, setValue] = useControllableState({
+      const [value, setValue] = useControllableState2({
         prop: valueProp,
         defaultProp: defaultValue,
         onChange: onValueChange
       });
-      return /* @__PURE__ */ (0, import_jsx_runtime28.jsx)(
+      return /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(
         AccordionValueProvider,
         {
           scope: props.__scopeAccordion,
           value: value ? [value] : [],
           onItemOpen: setValue,
-          onItemClose: import_react88.default.useCallback(() => collapsible && setValue(""), [collapsible, setValue]),
-          children: /* @__PURE__ */ (0, import_jsx_runtime28.jsx)(AccordionCollapsibleProvider, { scope: props.__scopeAccordion, collapsible, children: /* @__PURE__ */ (0, import_jsx_runtime28.jsx)(AccordionImpl, __spreadProps(__spreadValues({}, accordionSingleProps), { ref: forwardedRef })) })
+          onItemClose: import_react89.default.useCallback(() => collapsible && setValue(""), [collapsible, setValue]),
+          children: /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(AccordionCollapsibleProvider, { scope: props.__scopeAccordion, collapsible, children: /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(AccordionImpl, __spreadProps(__spreadValues({}, accordionSingleProps), { ref: forwardedRef })) })
         }
       );
     }
   );
-  var AccordionImplMultiple = import_react88.default.forwardRef((props, forwardedRef) => {
+  var AccordionImplMultiple = import_react89.default.forwardRef((props, forwardedRef) => {
     const _a10 = props, {
       value: valueProp,
       defaultValue,
@@ -70742,38 +71090,38 @@
       "defaultValue",
       "onValueChange"
     ]);
-    const [value = [], setValue] = useControllableState({
+    const [value = [], setValue] = useControllableState2({
       prop: valueProp,
       defaultProp: defaultValue,
       onChange: onValueChange
     });
-    const handleItemOpen = import_react88.default.useCallback(
+    const handleItemOpen = import_react89.default.useCallback(
       (itemValue) => setValue((prevValue = []) => [...prevValue, itemValue]),
       [setValue]
     );
-    const handleItemClose = import_react88.default.useCallback(
+    const handleItemClose = import_react89.default.useCallback(
       (itemValue) => setValue((prevValue = []) => prevValue.filter((value2) => value2 !== itemValue)),
       [setValue]
     );
-    return /* @__PURE__ */ (0, import_jsx_runtime28.jsx)(
+    return /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(
       AccordionValueProvider,
       {
         scope: props.__scopeAccordion,
         value,
         onItemOpen: handleItemOpen,
         onItemClose: handleItemClose,
-        children: /* @__PURE__ */ (0, import_jsx_runtime28.jsx)(AccordionCollapsibleProvider, { scope: props.__scopeAccordion, collapsible: true, children: /* @__PURE__ */ (0, import_jsx_runtime28.jsx)(AccordionImpl, __spreadProps(__spreadValues({}, accordionMultipleProps), { ref: forwardedRef })) })
+        children: /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(AccordionCollapsibleProvider, { scope: props.__scopeAccordion, collapsible: true, children: /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(AccordionImpl, __spreadProps(__spreadValues({}, accordionMultipleProps), { ref: forwardedRef })) })
       }
     );
   });
   var [AccordionImplProvider, useAccordionContext] = createAccordionContext(ACCORDION_NAME);
-  var AccordionImpl = import_react88.default.forwardRef(
+  var AccordionImpl = import_react89.default.forwardRef(
     (props, forwardedRef) => {
       const _a10 = props, { __scopeAccordion, disabled, dir, orientation = "vertical" } = _a10, accordionProps = __objRest(_a10, ["__scopeAccordion", "disabled", "dir", "orientation"]);
-      const accordionRef = import_react88.default.useRef(null);
-      const composedRefs = useComposedRefs(accordionRef, forwardedRef);
+      const accordionRef = import_react89.default.useRef(null);
+      const composedRefs = useComposedRefs2(accordionRef, forwardedRef);
       const getItems = useCollection3(__scopeAccordion);
-      const direction = useDirection(dir);
+      const direction = useDirection2(dir);
       const isDirectionLTR = direction === "ltr";
       const handleKeyDown = composeEventHandlers(props.onKeyDown, (event) => {
         var _a11;
@@ -70841,15 +71189,15 @@
         const clampedIndex = nextIndex % triggerCount;
         (_a11 = triggerCollection[clampedIndex].ref.current) == null ? void 0 : _a11.focus();
       });
-      return /* @__PURE__ */ (0, import_jsx_runtime28.jsx)(
+      return /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(
         AccordionImplProvider,
         {
           scope: __scopeAccordion,
           disabled,
           direction: dir,
           orientation,
-          children: /* @__PURE__ */ (0, import_jsx_runtime28.jsx)(Collection3.Slot, { scope: __scopeAccordion, children: /* @__PURE__ */ (0, import_jsx_runtime28.jsx)(
-            Primitive.div,
+          children: /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(Collection3.Slot, { scope: __scopeAccordion, children: /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(
+            Primitive2.div,
             __spreadProps(__spreadValues({}, accordionProps), {
               "data-orientation": orientation,
               ref: composedRefs,
@@ -70862,23 +71210,23 @@
   );
   var ITEM_NAME4 = "AccordionItem";
   var [AccordionItemProvider, useAccordionItemContext] = createAccordionContext(ITEM_NAME4);
-  var AccordionItem = import_react88.default.forwardRef(
+  var AccordionItem = import_react89.default.forwardRef(
     (props, forwardedRef) => {
       const _a10 = props, { __scopeAccordion, value } = _a10, accordionItemProps = __objRest(_a10, ["__scopeAccordion", "value"]);
       const accordionContext = useAccordionContext(ITEM_NAME4, __scopeAccordion);
       const valueContext = useAccordionValueContext(ITEM_NAME4, __scopeAccordion);
       const collapsibleScope = useCollapsibleScope(__scopeAccordion);
-      const triggerId = useId();
+      const triggerId = useId5();
       const open = value && valueContext.value.includes(value) || false;
       const disabled = accordionContext.disabled || props.disabled;
-      return /* @__PURE__ */ (0, import_jsx_runtime28.jsx)(
+      return /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(
         AccordionItemProvider,
         {
           scope: __scopeAccordion,
           open,
           disabled,
           triggerId,
-          children: /* @__PURE__ */ (0, import_jsx_runtime28.jsx)(
+          children: /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(
             Root9,
             __spreadProps(__spreadValues(__spreadValues({
               "data-orientation": accordionContext.orientation,
@@ -70902,13 +71250,13 @@
   );
   AccordionItem.displayName = ITEM_NAME4;
   var HEADER_NAME = "AccordionHeader";
-  var AccordionHeader = import_react88.default.forwardRef(
+  var AccordionHeader = import_react89.default.forwardRef(
     (props, forwardedRef) => {
       const _a10 = props, { __scopeAccordion } = _a10, headerProps = __objRest(_a10, ["__scopeAccordion"]);
       const accordionContext = useAccordionContext(ACCORDION_NAME, __scopeAccordion);
       const itemContext = useAccordionItemContext(HEADER_NAME, __scopeAccordion);
-      return /* @__PURE__ */ (0, import_jsx_runtime28.jsx)(
-        Primitive.h3,
+      return /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(
+        Primitive2.h3,
         __spreadProps(__spreadValues({
           "data-orientation": accordionContext.orientation,
           "data-state": getState5(itemContext.open),
@@ -70921,14 +71269,14 @@
   );
   AccordionHeader.displayName = HEADER_NAME;
   var TRIGGER_NAME7 = "AccordionTrigger";
-  var AccordionTrigger = import_react88.default.forwardRef(
+  var AccordionTrigger = import_react89.default.forwardRef(
     (props, forwardedRef) => {
       const _a10 = props, { __scopeAccordion } = _a10, triggerProps = __objRest(_a10, ["__scopeAccordion"]);
       const accordionContext = useAccordionContext(ACCORDION_NAME, __scopeAccordion);
       const itemContext = useAccordionItemContext(TRIGGER_NAME7, __scopeAccordion);
       const collapsibleContext = useAccordionCollapsibleContext(TRIGGER_NAME7, __scopeAccordion);
       const collapsibleScope = useCollapsibleScope(__scopeAccordion);
-      return /* @__PURE__ */ (0, import_jsx_runtime28.jsx)(Collection3.ItemSlot, { scope: __scopeAccordion, children: /* @__PURE__ */ (0, import_jsx_runtime28.jsx)(
+      return /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(Collection3.ItemSlot, { scope: __scopeAccordion, children: /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(
         Trigger5,
         __spreadProps(__spreadValues(__spreadValues({
           "aria-disabled": itemContext.open && !collapsibleContext.collapsible || void 0,
@@ -70942,13 +71290,13 @@
   );
   AccordionTrigger.displayName = TRIGGER_NAME7;
   var CONTENT_NAME9 = "AccordionContent";
-  var AccordionContent = import_react88.default.forwardRef(
+  var AccordionContent = import_react89.default.forwardRef(
     (props, forwardedRef) => {
       const _a10 = props, { __scopeAccordion } = _a10, contentProps = __objRest(_a10, ["__scopeAccordion"]);
       const accordionContext = useAccordionContext(ACCORDION_NAME, __scopeAccordion);
       const itemContext = useAccordionItemContext(CONTENT_NAME9, __scopeAccordion);
       const collapsibleScope = useCollapsibleScope(__scopeAccordion);
-      return /* @__PURE__ */ (0, import_jsx_runtime28.jsx)(
+      return /* @__PURE__ */ (0, import_jsx_runtime33.jsx)(
         Content3,
         __spreadProps(__spreadValues(__spreadValues({
           role: "region",
@@ -70975,11 +71323,11 @@
   var Content27 = AccordionContent;
 
   // ../common-ui/src/components/ui/accordion.tsx
-  var React151 = __toESM(require_react());
+  var React159 = __toESM(require_react());
   var Accordion2 = Root26;
-  var AccordionItem2 = React151.forwardRef((_a10, ref) => {
+  var AccordionItem2 = React159.forwardRef((_a10, ref) => {
     var _b2 = _a10, { className } = _b2, props = __objRest(_b2, ["className"]);
-    return /* @__PURE__ */ React151.createElement(
+    return /* @__PURE__ */ React159.createElement(
       Item3,
       __spreadValues({
         ref,
@@ -70988,9 +71336,9 @@
     );
   });
   AccordionItem2.displayName = "AccordionItem";
-  var AccordionTrigger2 = React151.forwardRef((_a10, ref) => {
+  var AccordionTrigger2 = React159.forwardRef((_a10, ref) => {
     var _b2 = _a10, { className, children } = _b2, props = __objRest(_b2, ["className", "children"]);
-    return /* @__PURE__ */ React151.createElement(Header, { className: "flex" }, /* @__PURE__ */ React151.createElement(
+    return /* @__PURE__ */ React159.createElement(Header, { className: "flex" }, /* @__PURE__ */ React159.createElement(
       Trigger23,
       __spreadValues({
         ref,
@@ -71000,19 +71348,19 @@
         )
       }, props),
       children,
-      /* @__PURE__ */ React151.createElement(ChevronDown, { className: "h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200" })
+      /* @__PURE__ */ React159.createElement(ChevronDown, { className: "h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200" })
     ));
   });
   AccordionTrigger2.displayName = Trigger23.displayName;
-  var AccordionContent2 = React151.forwardRef((_a10, ref) => {
+  var AccordionContent2 = React159.forwardRef((_a10, ref) => {
     var _b2 = _a10, { className, children } = _b2, props = __objRest(_b2, ["className", "children"]);
-    return /* @__PURE__ */ React151.createElement(
+    return /* @__PURE__ */ React159.createElement(
       Content27,
       __spreadValues({
         ref,
         className: "overflow-hidden text-sm data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down"
       }, props),
-      /* @__PURE__ */ React151.createElement("div", { className: cn2("pb-4 pt-0", className) }, children)
+      /* @__PURE__ */ React159.createElement("div", { className: cn2("pb-4 pt-0", className) }, children)
     );
   });
   AccordionContent2.displayName = Content27.displayName;
@@ -71028,7 +71376,7 @@
     const issueEmailVerificationChallengeMutation = useMutation2(
       issueEmailVerificationChallenge
     );
-    const [hasResent, setHasResent] = (0, import_react89.useState)(false);
+    const [hasResent, setHasResent] = (0, import_react90.useState)(false);
     async function handleResend() {
       var _a11;
       await issueEmailVerificationChallengeMutation.mutateAsync({
@@ -71037,7 +71385,7 @@
       ue.success("New verification link sent");
       setHasResent(true);
     }
-    (0, import_react89.useEffect)(() => {
+    (0, import_react90.useEffect)(() => {
       setTimeout(() => {
         setHasResent(false);
       }, 1e4);
@@ -71048,7 +71396,7 @@
         emailVerificationChallengeCode: ""
       }
     });
-    const [submitting, setSubmitting] = (0, import_react89.useState)(false);
+    const [submitting, setSubmitting] = (0, import_react90.useState)(false);
     const { mutateAsync: verifyEmailChallengeAsync } = useMutation2(verifyEmailChallenge);
     const navigate = useNavigate();
     async function handleSubmit(values) {
@@ -71059,7 +71407,7 @@
       navigate("/choose-organization");
     }
     const [searchParams] = useSearchParams();
-    (0, import_react89.useEffect)(() => {
+    (0, import_react90.useEffect)(() => {
       (async () => {
         const code = searchParams.get("code");
         if (code) {
@@ -71070,7 +71418,7 @@
         }
       })();
     }, [searchParams, verifyEmailChallengeAsync, navigate]);
-    return /* @__PURE__ */ import_react89.default.createElement(LoginFlowCard, null, /* @__PURE__ */ import_react89.default.createElement(CardHeader2, null, /* @__PURE__ */ import_react89.default.createElement(CardTitle2, null, "Check your email"), /* @__PURE__ */ import_react89.default.createElement(CardDescription2, null, "We've sent an email verification link to", " ", /* @__PURE__ */ import_react89.default.createElement("span", { className: "font-medium" }, (_a10 = whoamiResponse == null ? void 0 : whoamiResponse.intermediateSession) == null ? void 0 : _a10.email), ".")), /* @__PURE__ */ import_react89.default.createElement(CardContent2, null, /* @__PURE__ */ import_react89.default.createElement("p", { className: "text-sm text-muted-foreground" }, "Didn't receive an email?"), /* @__PURE__ */ import_react89.default.createElement(
+    return /* @__PURE__ */ import_react90.default.createElement(LoginFlowCard, null, /* @__PURE__ */ import_react90.default.createElement(CardHeader2, null, /* @__PURE__ */ import_react90.default.createElement(CardTitle2, null, "Check your email"), /* @__PURE__ */ import_react90.default.createElement(CardDescription2, null, "We've sent an email verification link to", " ", /* @__PURE__ */ import_react90.default.createElement("span", { className: "font-medium" }, (_a10 = whoamiResponse == null ? void 0 : whoamiResponse.intermediateSession) == null ? void 0 : _a10.email), ".")), /* @__PURE__ */ import_react90.default.createElement(CardContent2, null, /* @__PURE__ */ import_react90.default.createElement("p", { className: "text-sm text-muted-foreground" }, "Didn't receive an email?"), /* @__PURE__ */ import_react90.default.createElement(
       Button2,
       {
         className: "mt-4 w-full",
@@ -71079,26 +71427,26 @@
         onClick: handleResend
       },
       hasResent ? "Email verification resent!" : "Resend verification link"
-    ), /* @__PURE__ */ import_react89.default.createElement("div", { className: "block relative w-full cursor-default my-2 mt-4" }, /* @__PURE__ */ import_react89.default.createElement("div", { className: "absolute inset-0 flex items-center border-muted-foreground" }, /* @__PURE__ */ import_react89.default.createElement("span", { className: "w-full border-t" })), /* @__PURE__ */ import_react89.default.createElement("div", { className: "relative flex justify-center text-xs uppercase" }, /* @__PURE__ */ import_react89.default.createElement("span", { className: "bg-card px-2 text-muted-foreground" }, "or"))), /* @__PURE__ */ import_react89.default.createElement(Accordion2, { type: "single", collapsible: true }, /* @__PURE__ */ import_react89.default.createElement(AccordionItem2, { className: "border-b-0", value: "advanced" }, /* @__PURE__ */ import_react89.default.createElement(AccordionTrigger2, null, "Enter verification code manually"), /* @__PURE__ */ import_react89.default.createElement(AccordionContent2, null, /* @__PURE__ */ import_react89.default.createElement(Form3, __spreadValues({}, form), /* @__PURE__ */ import_react89.default.createElement(
+    ), /* @__PURE__ */ import_react90.default.createElement("div", { className: "block relative w-full cursor-default my-2 mt-4" }, /* @__PURE__ */ import_react90.default.createElement("div", { className: "absolute inset-0 flex items-center border-muted-foreground" }, /* @__PURE__ */ import_react90.default.createElement("span", { className: "w-full border-t" })), /* @__PURE__ */ import_react90.default.createElement("div", { className: "relative flex justify-center text-xs uppercase" }, /* @__PURE__ */ import_react90.default.createElement("span", { className: "bg-card px-2 text-muted-foreground" }, "or"))), /* @__PURE__ */ import_react90.default.createElement(Accordion2, { type: "single", collapsible: true }, /* @__PURE__ */ import_react90.default.createElement(AccordionItem2, { className: "border-b-0", value: "advanced" }, /* @__PURE__ */ import_react90.default.createElement(AccordionTrigger2, null, "Enter verification code manually"), /* @__PURE__ */ import_react90.default.createElement(AccordionContent2, null, /* @__PURE__ */ import_react90.default.createElement(Form3, __spreadValues({}, form), /* @__PURE__ */ import_react90.default.createElement(
       "form",
       {
         className: "mt-2",
         onSubmit: form.handleSubmit(handleSubmit)
       },
-      /* @__PURE__ */ import_react89.default.createElement(
+      /* @__PURE__ */ import_react90.default.createElement(
         FormField2,
         {
           control: form.control,
           name: "emailVerificationChallengeCode",
-          render: ({ field }) => /* @__PURE__ */ import_react89.default.createElement(FormItem2, { className: "px-1" }, /* @__PURE__ */ import_react89.default.createElement(FormLabel2, null, "Email Verification Challenge Code"), /* @__PURE__ */ import_react89.default.createElement(FormControl2, null, /* @__PURE__ */ import_react89.default.createElement(
+          render: ({ field }) => /* @__PURE__ */ import_react90.default.createElement(FormItem2, { className: "px-1" }, /* @__PURE__ */ import_react90.default.createElement(FormLabel2, null, "Email Verification Challenge Code"), /* @__PURE__ */ import_react90.default.createElement(FormControl2, null, /* @__PURE__ */ import_react90.default.createElement(
             Input2,
             __spreadValues({
               placeholder: "email_verification_challenge_code_..."
             }, field)
-          )), /* @__PURE__ */ import_react89.default.createElement(FormDescription2, null, "Paste the full verification code from the email you received."), /* @__PURE__ */ import_react89.default.createElement(FormMessage2, null))
+          )), /* @__PURE__ */ import_react90.default.createElement(FormDescription2, null, "Paste the full verification code from the email you received."), /* @__PURE__ */ import_react90.default.createElement(FormMessage2, null))
         }
       ),
-      /* @__PURE__ */ import_react89.default.createElement(
+      /* @__PURE__ */ import_react90.default.createElement(
         Button2,
         {
           type: "submit",
@@ -71106,21 +71454,21 @@
           variant: darkMode ? "outline" : "default",
           disabled: submitting
         },
-        submitting && /* @__PURE__ */ import_react89.default.createElement(LoaderCircle, { className: "h-4 w-4 animate-spin" }),
+        submitting && /* @__PURE__ */ import_react90.default.createElement(LoaderCircle, { className: "h-4 w-4 animate-spin" }),
         "Verify Email"
       )
     )))))));
   }
 
   // ../common-ui/src/pages/login/VerifyPasskeyPage.tsx
-  var import_react90 = __toESM(require_react());
+  var import_react91 = __toESM(require_react());
   function VerifyPasskeyPage() {
     const { mutateAsync: issuePasskeyChallengeAsync } = useMutation2(
       issuePasskeyChallenge
     );
     const { mutateAsync: verifyPasskeyAsync } = useMutation2(verifyPasskey);
     const redirectNextLoginFlowPage = useRedirectNextLoginFlowPage();
-    const handleVerifyPasskey = (0, import_react90.useCallback)(async () => {
+    const handleVerifyPasskey = (0, import_react91.useCallback)(async () => {
       const challengeResponse = await issuePasskeyChallengeAsync({});
       const allowCredentials = challengeResponse.credentialIds.map(
         (id) => ({
@@ -71152,14 +71500,14 @@
       redirectNextLoginFlowPage,
       verifyPasskeyAsync
     ]);
-    (0, import_react90.useEffect)(() => {
+    (0, import_react91.useEffect)(() => {
       void handleVerifyPasskey();
     }, [handleVerifyPasskey]);
-    return /* @__PURE__ */ import_react90.default.createElement(LoginFlowCard, null, /* @__PURE__ */ import_react90.default.createElement(CardHeader2, null, /* @__PURE__ */ import_react90.default.createElement(CardTitle2, null, "Verify passkey"), /* @__PURE__ */ import_react90.default.createElement(CardDescription2, null, "To continue logging in, follow the instructions on your authenticator.")), /* @__PURE__ */ import_react90.default.createElement(CardContent2, null, /* @__PURE__ */ import_react90.default.createElement(Button2, { onClick: handleVerifyPasskey }, "Verify passkey")));
+    return /* @__PURE__ */ import_react91.default.createElement(LoginFlowCard, null, /* @__PURE__ */ import_react91.default.createElement(CardHeader2, null, /* @__PURE__ */ import_react91.default.createElement(CardTitle2, null, "Verify passkey"), /* @__PURE__ */ import_react91.default.createElement(CardDescription2, null, "To continue logging in, follow the instructions on your authenticator.")), /* @__PURE__ */ import_react91.default.createElement(CardContent2, null, /* @__PURE__ */ import_react91.default.createElement(Button2, { onClick: handleVerifyPasskey }, "Verify passkey")));
   }
 
   // ../common-ui/src/pages/login/VerifyPasswordPage.tsx
-  var import_react91 = __toESM(require_react());
+  var import_react92 = __toESM(require_react());
   var schema18 = z2.object({
     password: z2.string().nonempty()
   });
@@ -71171,7 +71519,7 @@
         password: ""
       }
     });
-    const [submitting, setSubmitting] = (0, import_react91.useState)(false);
+    const [submitting, setSubmitting] = (0, import_react92.useState)(false);
     const { mutateAsync: verifyPasswordAsync } = useMutation2(verifyPassword);
     const redirectNextLoginFlowPage = useRedirectNextLoginFlowPage();
     async function handleSubmit(values) {
@@ -71181,14 +71529,14 @@
       });
       redirectNextLoginFlowPage();
     }
-    return /* @__PURE__ */ import_react91.default.createElement(LoginFlowCard, null, /* @__PURE__ */ import_react91.default.createElement(CardHeader2, null, /* @__PURE__ */ import_react91.default.createElement(CardTitle2, null, "Verify your password"), /* @__PURE__ */ import_react91.default.createElement(CardDescription2, null, "Enter your password below to continue logging in.")), /* @__PURE__ */ import_react91.default.createElement(CardContent2, null, /* @__PURE__ */ import_react91.default.createElement(Form3, __spreadValues({}, form), /* @__PURE__ */ import_react91.default.createElement("form", { className: "mt-2", onSubmit: form.handleSubmit(handleSubmit) }, /* @__PURE__ */ import_react91.default.createElement(
+    return /* @__PURE__ */ import_react92.default.createElement(LoginFlowCard, null, /* @__PURE__ */ import_react92.default.createElement(CardHeader2, null, /* @__PURE__ */ import_react92.default.createElement(CardTitle2, null, "Verify your password"), /* @__PURE__ */ import_react92.default.createElement(CardDescription2, null, "Enter your password below to continue logging in.")), /* @__PURE__ */ import_react92.default.createElement(CardContent2, null, /* @__PURE__ */ import_react92.default.createElement(Form3, __spreadValues({}, form), /* @__PURE__ */ import_react92.default.createElement("form", { className: "mt-2", onSubmit: form.handleSubmit(handleSubmit) }, /* @__PURE__ */ import_react92.default.createElement(
       FormField2,
       {
         control: form.control,
         name: "password",
-        render: ({ field }) => /* @__PURE__ */ import_react91.default.createElement(FormItem2, null, /* @__PURE__ */ import_react91.default.createElement(FormLabel2, null, "Password"), /* @__PURE__ */ import_react91.default.createElement(FormControl2, null, /* @__PURE__ */ import_react91.default.createElement(Input2, __spreadValues({ type: "password" }, field))), /* @__PURE__ */ import_react91.default.createElement(FormMessage2, null))
+        render: ({ field }) => /* @__PURE__ */ import_react92.default.createElement(FormItem2, null, /* @__PURE__ */ import_react92.default.createElement(FormLabel2, null, "Password"), /* @__PURE__ */ import_react92.default.createElement(FormControl2, null, /* @__PURE__ */ import_react92.default.createElement(Input2, __spreadValues({ type: "password" }, field))), /* @__PURE__ */ import_react92.default.createElement(FormMessage2, null))
       }
-    ), /* @__PURE__ */ import_react91.default.createElement(
+    ), /* @__PURE__ */ import_react92.default.createElement(
       Button2,
       {
         type: "submit",
@@ -71196,15 +71544,15 @@
         variant: darkMode ? "outline" : "default",
         disabled: submitting
       },
-      submitting && /* @__PURE__ */ import_react91.default.createElement(LoaderCircle, { className: "h-4 w-4 animate-spin" }),
+      submitting && /* @__PURE__ */ import_react92.default.createElement(LoaderCircle, { className: "h-4 w-4 animate-spin" }),
       "Verify Password"
     )))));
   }
 
   // ../common-ui/src/pages/login/VerifySecondaryFactorPage.tsx
-  var import_react92 = __toESM(require_react());
+  var import_react93 = __toESM(require_react());
   function VerifySecondaryFactorPage() {
-    return /* @__PURE__ */ import_react92.default.createElement(LoginFlowCard, null, /* @__PURE__ */ import_react92.default.createElement(CardHeader2, null, /* @__PURE__ */ import_react92.default.createElement(CardTitle2, null, "Verify secondary authentication factor"), /* @__PURE__ */ import_react92.default.createElement(CardDescription2, null, "To continue logging in, you must verify your identity using a secondary authentication factor.")), /* @__PURE__ */ import_react92.default.createElement(CardContent2, null, /* @__PURE__ */ import_react92.default.createElement("div", { className: "space-y-2" }, /* @__PURE__ */ import_react92.default.createElement(Button2, { className: "w-full", variant: "outline", asChild: true }, /* @__PURE__ */ import_react92.default.createElement(Link, { to: "/verify-passkey" }, "Verify using a passkey")), /* @__PURE__ */ import_react92.default.createElement(Button2, { className: "w-full", variant: "outline", asChild: true }, /* @__PURE__ */ import_react92.default.createElement(Link, { to: "/verify-authenticator-app" }, "Verify using an authenticator app")))));
+    return /* @__PURE__ */ import_react93.default.createElement(LoginFlowCard, null, /* @__PURE__ */ import_react93.default.createElement(CardHeader2, null, /* @__PURE__ */ import_react93.default.createElement(CardTitle2, null, "Verify secondary authentication factor"), /* @__PURE__ */ import_react93.default.createElement(CardDescription2, null, "To continue logging in, you must verify your identity using a secondary authentication factor.")), /* @__PURE__ */ import_react93.default.createElement(CardContent2, null, /* @__PURE__ */ import_react93.default.createElement("div", { className: "space-y-2" }, /* @__PURE__ */ import_react93.default.createElement(Button2, { className: "w-full", variant: "outline", asChild: true }, /* @__PURE__ */ import_react93.default.createElement(Link, { to: "/verify-passkey" }, "Verify using a passkey")), /* @__PURE__ */ import_react93.default.createElement(Button2, { className: "w-full", variant: "outline", asChild: true }, /* @__PURE__ */ import_react93.default.createElement(Link, { to: "/verify-authenticator-app" }, "Verify using an authenticator app")))));
   }
 
   // src/auth.ts
@@ -71237,29 +71585,29 @@
   };
   var AppWithinQueryClient = () => {
     const transport = useTransport2();
-    return /* @__PURE__ */ import_react93.default.createElement(TransportProvider, { transport }, /* @__PURE__ */ import_react93.default.createElement(BrowserRouter, null, /* @__PURE__ */ import_react93.default.createElement(Routes, null, /* @__PURE__ */ import_react93.default.createElement(Route, { path: "", element: /* @__PURE__ */ import_react93.default.createElement(LoginFlowLayout, null) }, /* @__PURE__ */ import_react93.default.createElement(Route, { path: "login", element: /* @__PURE__ */ import_react93.default.createElement(LoginPage, null) }), /* @__PURE__ */ import_react93.default.createElement(
+    return /* @__PURE__ */ import_react94.default.createElement(TransportProvider, { transport }, /* @__PURE__ */ import_react94.default.createElement(BrowserRouter, null, /* @__PURE__ */ import_react94.default.createElement(Routes, null, /* @__PURE__ */ import_react94.default.createElement(Route, { path: "", element: /* @__PURE__ */ import_react94.default.createElement(LoginFlowLayout, null) }, /* @__PURE__ */ import_react94.default.createElement(Route, { path: "login", element: /* @__PURE__ */ import_react94.default.createElement(LoginPage, null) }), /* @__PURE__ */ import_react94.default.createElement(
       Route,
       {
         path: "choose-organization",
-        element: /* @__PURE__ */ import_react93.default.createElement(Navigate, { to: "/choose-project" })
+        element: /* @__PURE__ */ import_react94.default.createElement(Navigate, { to: "/choose-project" })
       }
-    ), /* @__PURE__ */ import_react93.default.createElement(Route, { path: "verify-email", element: /* @__PURE__ */ import_react93.default.createElement(VerifyEmailPage, null) }), /* @__PURE__ */ import_react93.default.createElement(
+    ), /* @__PURE__ */ import_react94.default.createElement(Route, { path: "verify-email", element: /* @__PURE__ */ import_react94.default.createElement(VerifyEmailPage, null) }), /* @__PURE__ */ import_react94.default.createElement(
       Route,
       {
         path: "google-oauth-callback",
-        element: /* @__PURE__ */ import_react93.default.createElement(GoogleOAuthCallbackPage, null)
+        element: /* @__PURE__ */ import_react94.default.createElement(GoogleOAuthCallbackPage, null)
       }
-    ), /* @__PURE__ */ import_react93.default.createElement(
+    ), /* @__PURE__ */ import_react94.default.createElement(
       Route,
       {
         path: "microsoft-oauth-callback",
-        element: /* @__PURE__ */ import_react93.default.createElement(MicrosoftOAuthCallbackPage, null)
+        element: /* @__PURE__ */ import_react94.default.createElement(MicrosoftOAuthCallbackPage, null)
       }
-    ), /* @__PURE__ */ import_react93.default.createElement(
+    ), /* @__PURE__ */ import_react94.default.createElement(
       Route,
       {
         path: "choose-project",
-        element: /* @__PURE__ */ import_react93.default.createElement(
+        element: /* @__PURE__ */ import_react94.default.createElement(
           ChooseProjectPage,
           {
             setAccessToken,
@@ -71267,11 +71615,11 @@
           }
         )
       }
-    ), /* @__PURE__ */ import_react93.default.createElement(
+    ), /* @__PURE__ */ import_react94.default.createElement(
       Route,
       {
         path: "create-project",
-        element: /* @__PURE__ */ import_react93.default.createElement(
+        element: /* @__PURE__ */ import_react94.default.createElement(
           CreateProjectPage,
           {
             setAccessToken,
@@ -71279,191 +71627,191 @@
           }
         )
       }
-    ), /* @__PURE__ */ import_react93.default.createElement(
+    ), /* @__PURE__ */ import_react94.default.createElement(
       Route,
       {
         path: "organizations/:organizationId/login",
-        element: /* @__PURE__ */ import_react93.default.createElement(OrganizationLoginPage, null)
+        element: /* @__PURE__ */ import_react94.default.createElement(OrganizationLoginPage, null)
       }
-    ), /* @__PURE__ */ import_react93.default.createElement(
+    ), /* @__PURE__ */ import_react94.default.createElement(
       Route,
       {
         path: "authenticate-another-way",
-        element: /* @__PURE__ */ import_react93.default.createElement(AuthenticateAnotherWayPage, null)
+        element: /* @__PURE__ */ import_react94.default.createElement(AuthenticateAnotherWayPage, null)
       }
-    ), /* @__PURE__ */ import_react93.default.createElement(Route, { path: "verify-password", element: /* @__PURE__ */ import_react93.default.createElement(VerifyPasswordPage, null) }), /* @__PURE__ */ import_react93.default.createElement(
+    ), /* @__PURE__ */ import_react94.default.createElement(Route, { path: "verify-password", element: /* @__PURE__ */ import_react94.default.createElement(VerifyPasswordPage, null) }), /* @__PURE__ */ import_react94.default.createElement(
       Route,
       {
         path: "verify-secondary-factor",
-        element: /* @__PURE__ */ import_react93.default.createElement(VerifySecondaryFactorPage, null)
+        element: /* @__PURE__ */ import_react94.default.createElement(VerifySecondaryFactorPage, null)
       }
-    ), /* @__PURE__ */ import_react93.default.createElement(
+    ), /* @__PURE__ */ import_react94.default.createElement(
       Route,
       {
         path: "verify-authenticator-app",
-        element: /* @__PURE__ */ import_react93.default.createElement(VerifyAuthenticatorAppPage, null)
+        element: /* @__PURE__ */ import_react94.default.createElement(VerifyAuthenticatorAppPage, null)
       }
-    ), /* @__PURE__ */ import_react93.default.createElement(
+    ), /* @__PURE__ */ import_react94.default.createElement(
       Route,
       {
         path: "verify-authenticator-app-recovery-code",
-        element: /* @__PURE__ */ import_react93.default.createElement(VerifyAuthenticatorAppRecoveryCodePage, null)
+        element: /* @__PURE__ */ import_react94.default.createElement(VerifyAuthenticatorAppRecoveryCodePage, null)
       }
-    ), /* @__PURE__ */ import_react93.default.createElement(Route, { path: "verify-passkey", element: /* @__PURE__ */ import_react93.default.createElement(VerifyPasskeyPage, null) }), /* @__PURE__ */ import_react93.default.createElement(
+    ), /* @__PURE__ */ import_react94.default.createElement(Route, { path: "verify-passkey", element: /* @__PURE__ */ import_react94.default.createElement(VerifyPasskeyPage, null) }), /* @__PURE__ */ import_react94.default.createElement(
       Route,
       {
         path: "register-password",
-        element: /* @__PURE__ */ import_react93.default.createElement(RegisterPasswordPage, null)
+        element: /* @__PURE__ */ import_react94.default.createElement(RegisterPasswordPage, null)
       }
-    ), /* @__PURE__ */ import_react93.default.createElement(
+    ), /* @__PURE__ */ import_react94.default.createElement(
       Route,
       {
         path: "register-secondary-factor",
-        element: /* @__PURE__ */ import_react93.default.createElement(RegisterSecondaryFactorPage, null)
+        element: /* @__PURE__ */ import_react94.default.createElement(RegisterSecondaryFactorPage, null)
       }
-    ), /* @__PURE__ */ import_react93.default.createElement(Route, { path: "register-passkey", element: /* @__PURE__ */ import_react93.default.createElement(RegisterPasskeyPage, null) }), /* @__PURE__ */ import_react93.default.createElement(
+    ), /* @__PURE__ */ import_react94.default.createElement(Route, { path: "register-passkey", element: /* @__PURE__ */ import_react94.default.createElement(RegisterPasskeyPage, null) }), /* @__PURE__ */ import_react94.default.createElement(
       Route,
       {
         path: "register-authenticator-app",
-        element: /* @__PURE__ */ import_react93.default.createElement(RegisterAuthenticatorAppPage, null)
+        element: /* @__PURE__ */ import_react94.default.createElement(RegisterAuthenticatorAppPage, null)
       }
-    ), /* @__PURE__ */ import_react93.default.createElement(Route, { path: "finish-login", element: /* @__PURE__ */ import_react93.default.createElement(FinishLoginPage, null) }), /* @__PURE__ */ import_react93.default.createElement(Route, { path: "impersonate", element: /* @__PURE__ */ import_react93.default.createElement(ImpersonatePage, null) }), /* @__PURE__ */ import_react93.default.createElement(
+    ), /* @__PURE__ */ import_react94.default.createElement(Route, { path: "finish-login", element: /* @__PURE__ */ import_react94.default.createElement(FinishLoginPage, null) }), /* @__PURE__ */ import_react94.default.createElement(Route, { path: "impersonate", element: /* @__PURE__ */ import_react94.default.createElement(ImpersonatePage, null) }), /* @__PURE__ */ import_react94.default.createElement(
       Route,
       {
         path: "switch-organizations/:organizationId",
-        element: /* @__PURE__ */ import_react93.default.createElement(SwitchOrganizationsPage, null)
+        element: /* @__PURE__ */ import_react94.default.createElement(SwitchOrganizationsPage, null)
       }
-    ), /* @__PURE__ */ import_react93.default.createElement(Route, { path: "logout", element: /* @__PURE__ */ import_react93.default.createElement(LogoutPage, null) })), /* @__PURE__ */ import_react93.default.createElement(Route, { path: "/", element: /* @__PURE__ */ import_react93.default.createElement(PageShell, null) }, /* @__PURE__ */ import_react93.default.createElement(Route, { path: "", element: /* @__PURE__ */ import_react93.default.createElement(HomePage, null) }), /* @__PURE__ */ import_react93.default.createElement(
+    ), /* @__PURE__ */ import_react94.default.createElement(Route, { path: "logout", element: /* @__PURE__ */ import_react94.default.createElement(LogoutPage, null) })), /* @__PURE__ */ import_react94.default.createElement(Route, { path: "/", element: /* @__PURE__ */ import_react94.default.createElement(PageShell, null) }, /* @__PURE__ */ import_react94.default.createElement(Route, { path: "", element: /* @__PURE__ */ import_react94.default.createElement(HomePage, null) }), /* @__PURE__ */ import_react94.default.createElement(
       Route,
       {
         path: "project-settings",
-        element: /* @__PURE__ */ import_react93.default.createElement(ViewProjectSettingsPage, null)
+        element: /* @__PURE__ */ import_react94.default.createElement(ViewProjectSettingsPage, null)
       },
-      /* @__PURE__ */ import_react93.default.createElement(Route, { path: "", element: /* @__PURE__ */ import_react93.default.createElement(ProjectDetailsTab, null) }),
-      /* @__PURE__ */ import_react93.default.createElement(
+      /* @__PURE__ */ import_react94.default.createElement(Route, { path: "", element: /* @__PURE__ */ import_react94.default.createElement(ProjectDetailsTab, null) }),
+      /* @__PURE__ */ import_react94.default.createElement(
         Route,
         {
           path: "vault-domain-settings",
-          element: /* @__PURE__ */ import_react93.default.createElement(VaultDomainSettingsTab, null)
+          element: /* @__PURE__ */ import_react94.default.createElement(VaultDomainSettingsTab, null)
         }
       )
-    ), /* @__PURE__ */ import_react93.default.createElement(
+    ), /* @__PURE__ */ import_react94.default.createElement(
       Route,
       {
         path: "project-settings/log-in-with-google/edit",
-        element: /* @__PURE__ */ import_react93.default.createElement(EditProjectGoogleSettingsPage_default, null)
+        element: /* @__PURE__ */ import_react94.default.createElement(EditProjectGoogleSettingsPage_default, null)
       }
-    ), /* @__PURE__ */ import_react93.default.createElement(
+    ), /* @__PURE__ */ import_react94.default.createElement(
       Route,
       {
         path: "project-settings/log-in-with-microsoft/edit",
-        element: /* @__PURE__ */ import_react93.default.createElement(EditProjectMicrosoftSettingsPage_default, null)
+        element: /* @__PURE__ */ import_react94.default.createElement(EditProjectMicrosoftSettingsPage_default, null)
       }
-    ), /* @__PURE__ */ import_react93.default.createElement(
+    ), /* @__PURE__ */ import_react94.default.createElement(
       Route,
       {
         path: "project-settings/api-keys",
-        element: /* @__PURE__ */ import_react93.default.createElement(ListAPIKeysPage, null)
+        element: /* @__PURE__ */ import_react94.default.createElement(ListAPIKeysPage, null)
       }
-    ), /* @__PURE__ */ import_react93.default.createElement(
+    ), /* @__PURE__ */ import_react94.default.createElement(
       Route,
       {
         path: "project-settings/api-keys/publishable-keys/:publishableKeyId",
-        element: /* @__PURE__ */ import_react93.default.createElement(ViewPublishableKeyPage, null)
+        element: /* @__PURE__ */ import_react94.default.createElement(ViewPublishableKeyPage, null)
       }
-    ), /* @__PURE__ */ import_react93.default.createElement(
+    ), /* @__PURE__ */ import_react94.default.createElement(
       Route,
       {
         path: "project-settings/api-keys/backend-api-keys/:backendApiKeyId",
-        element: /* @__PURE__ */ import_react93.default.createElement(ViewBackendAPIKeyPage, null)
+        element: /* @__PURE__ */ import_react94.default.createElement(ViewBackendAPIKeyPage, null)
       }
-    ), /* @__PURE__ */ import_react93.default.createElement(
+    ), /* @__PURE__ */ import_react94.default.createElement(
       Route,
       {
         path: "project-settings/vault-ui-settings",
-        element: /* @__PURE__ */ import_react93.default.createElement(ProjectUISettings_default, null)
+        element: /* @__PURE__ */ import_react94.default.createElement(ProjectUISettings_default, null)
       }
-    ), /* @__PURE__ */ import_react93.default.createElement(Route, { path: "organizations", element: /* @__PURE__ */ import_react93.default.createElement(ListOrganizationsPage, null) }), /* @__PURE__ */ import_react93.default.createElement(
+    ), /* @__PURE__ */ import_react94.default.createElement(Route, { path: "organizations", element: /* @__PURE__ */ import_react94.default.createElement(ListOrganizationsPage, null) }), /* @__PURE__ */ import_react94.default.createElement(
       Route,
       {
         path: "organizations/:organizationId",
-        element: /* @__PURE__ */ import_react93.default.createElement(ViewOrganizationPage, null)
+        element: /* @__PURE__ */ import_react94.default.createElement(ViewOrganizationPage, null)
       },
-      /* @__PURE__ */ import_react93.default.createElement(Route, { path: "", element: /* @__PURE__ */ import_react93.default.createElement(OrganizationDetailsTab, null) }),
-      /* @__PURE__ */ import_react93.default.createElement(Route, { path: "users", element: /* @__PURE__ */ import_react93.default.createElement(OrganizationUsersTab, null) }),
-      /* @__PURE__ */ import_react93.default.createElement(
+      /* @__PURE__ */ import_react94.default.createElement(Route, { path: "", element: /* @__PURE__ */ import_react94.default.createElement(OrganizationDetailsTab, null) }),
+      /* @__PURE__ */ import_react94.default.createElement(Route, { path: "users", element: /* @__PURE__ */ import_react94.default.createElement(OrganizationUsersTab, null) }),
+      /* @__PURE__ */ import_react94.default.createElement(
         Route,
         {
           path: "user-invites",
-          element: /* @__PURE__ */ import_react93.default.createElement(OrganizationUserInvitesTab, null)
+          element: /* @__PURE__ */ import_react94.default.createElement(OrganizationUserInvitesTab, null)
         }
       ),
-      /* @__PURE__ */ import_react93.default.createElement(
+      /* @__PURE__ */ import_react94.default.createElement(
         Route,
         {
           path: "saml-connections",
-          element: /* @__PURE__ */ import_react93.default.createElement(OrganizationSAMLConnectionsTab, null)
+          element: /* @__PURE__ */ import_react94.default.createElement(OrganizationSAMLConnectionsTab, null)
         }
       ),
-      /* @__PURE__ */ import_react93.default.createElement(
+      /* @__PURE__ */ import_react94.default.createElement(
         Route,
         {
           path: "scim-api-keys",
-          element: /* @__PURE__ */ import_react93.default.createElement(OrganizationSCIMAPIKeysTab, null)
+          element: /* @__PURE__ */ import_react94.default.createElement(OrganizationSCIMAPIKeysTab, null)
         }
       )
-    ), /* @__PURE__ */ import_react93.default.createElement(
+    ), /* @__PURE__ */ import_react94.default.createElement(
       Route,
       {
         path: "organizations/:organizationId/edit",
-        element: /* @__PURE__ */ import_react93.default.createElement(EditOrganizationPage, null)
+        element: /* @__PURE__ */ import_react94.default.createElement(EditOrganizationPage, null)
       }
-    ), /* @__PURE__ */ import_react93.default.createElement(
+    ), /* @__PURE__ */ import_react94.default.createElement(
       Route,
       {
         path: "organizations/:organizationId/saml-connections/:samlConnectionId",
-        element: /* @__PURE__ */ import_react93.default.createElement(ViewSAMLConnectionPage, null)
+        element: /* @__PURE__ */ import_react94.default.createElement(ViewSAMLConnectionPage, null)
       }
-    ), /* @__PURE__ */ import_react93.default.createElement(
+    ), /* @__PURE__ */ import_react94.default.createElement(
       Route,
       {
         path: "organizations/:organizationId/saml-connections/:samlConnectionId/edit",
-        element: /* @__PURE__ */ import_react93.default.createElement(EditSAMLConnectionPage, null)
+        element: /* @__PURE__ */ import_react94.default.createElement(EditSAMLConnectionPage, null)
       }
-    ), /* @__PURE__ */ import_react93.default.createElement(
+    ), /* @__PURE__ */ import_react94.default.createElement(
       Route,
       {
         path: "organizations/:organizationId/users/:userId",
-        element: /* @__PURE__ */ import_react93.default.createElement(ViewUserPage, null)
+        element: /* @__PURE__ */ import_react94.default.createElement(ViewUserPage, null)
       }
-    ), /* @__PURE__ */ import_react93.default.createElement(
+    ), /* @__PURE__ */ import_react94.default.createElement(
       Route,
       {
         path: "organizations/:organizationId/users/:userId/passkeys/:passkeyId",
-        element: /* @__PURE__ */ import_react93.default.createElement(ViewPasskeyPage, null)
+        element: /* @__PURE__ */ import_react94.default.createElement(ViewPasskeyPage, null)
       }
-    ), /* @__PURE__ */ import_react93.default.createElement(
+    ), /* @__PURE__ */ import_react94.default.createElement(
       Route,
       {
         path: "organizations/:organizationId/user-invites/:userInviteId",
-        element: /* @__PURE__ */ import_react93.default.createElement(ViewUserInvitePage, null)
+        element: /* @__PURE__ */ import_react94.default.createElement(ViewUserInvitePage, null)
       }
-    ), /* @__PURE__ */ import_react93.default.createElement(
+    ), /* @__PURE__ */ import_react94.default.createElement(
       Route,
       {
         path: "organizations/:organizationId/scim-api-keys/:scimApiKeyId",
-        element: /* @__PURE__ */ import_react93.default.createElement(ViewSCIMAPIKeyPage, null)
+        element: /* @__PURE__ */ import_react94.default.createElement(ViewSCIMAPIKeyPage, null)
       }
-    )), /* @__PURE__ */ import_react93.default.createElement(Route, { path: "*", element: /* @__PURE__ */ import_react93.default.createElement(NotFound_default, null) }))));
+    )), /* @__PURE__ */ import_react94.default.createElement(Route, { path: "*", element: /* @__PURE__ */ import_react94.default.createElement(NotFound_default, null) }))));
   };
   var App = () => {
-    return /* @__PURE__ */ import_react93.default.createElement(QueryClientProvider, { client: queryClient }, /* @__PURE__ */ import_react93.default.createElement(AppWithinQueryClient, null), /* @__PURE__ */ import_react93.default.createElement(Toaster, null));
+    return /* @__PURE__ */ import_react94.default.createElement(QueryClientProvider, { client: queryClient }, /* @__PURE__ */ import_react94.default.createElement(AppWithinQueryClient, null), /* @__PURE__ */ import_react94.default.createElement(Toaster, null));
   };
   var App_default = App;
 
   // src/index.tsx
   var root = (0, import_client.createRoot)(document.getElementById("react-root"));
-  root.render(/* @__PURE__ */ import_react94.default.createElement(App_default, null));
+  root.render(/* @__PURE__ */ import_react95.default.createElement(App_default, null));
 })();
 /*! Bundled license information:
 

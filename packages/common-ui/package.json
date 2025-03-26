@@ -24,6 +24,8 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@types/react": "^19.0.12",
+    "@types/react-helmet": "^6.1.11",
     "esbuild": "^0.25.1",
     "typescript": "^5.8.2"
   }
