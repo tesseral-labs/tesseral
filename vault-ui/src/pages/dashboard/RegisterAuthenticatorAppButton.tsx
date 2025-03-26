@@ -33,20 +33,6 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
-import {
   getAuthenticatorAppOptions,
   registerAuthenticatorApp,
   whoami,
