@@ -142,8 +142,7 @@ func (s *Store) VerifyEmailChallenge(ctx context.Context, req *intermediatev1.Ve
 	return &intermediatev1.VerifyEmailChallengeResponse{}, nil
 }
 
-var emailVerificationEmailBodyTmpl = template.Must(template.New("emailVerificationEmailBody").Parse(`
-Hi,
+var emailVerificationEmailBodyTmpl = template.Must(template.New("emailVerificationEmailBody").Parse(`Hello,
 
 To continue logging in to {{ .ProjectDisplayName }}, please verify your email address by visiting the link below.
 

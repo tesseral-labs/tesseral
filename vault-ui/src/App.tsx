@@ -16,6 +16,7 @@ import { AuthenticateAnotherWayPage } from "@/pages/login/AuthenticateAnotherWay
 import { ChooseOrganizationPage } from "@/pages/login/ChooseOrganizationPage";
 import { CreateOrganizationPage } from "@/pages/login/CreateOrganizationPage";
 import { FinishLoginPage } from "@/pages/login/FinishLoginPage";
+import { ForgotPasswordPage } from "@/pages/login/ForgotPasswordPage";
 import { GoogleOAuthCallbackPage } from "@/pages/login/GoogleOAuthCallbackPage";
 import { ImpersonatePage } from "@/pages/login/ImpersonatePage";
 import { LoginFlowLayout } from "@/pages/login/LoginFlowLayout";
@@ -83,6 +84,7 @@ function AppWithRoutes() {
                 element={<AuthenticateAnotherWayPage />}
               />
               <Route path="verify-password" element={<VerifyPasswordPage />} />
+              <Route path="forgot-password" element={<ForgotPasswordPage />} />
               <Route
                 path="verify-secondary-factor"
                 element={<VerifySecondaryFactorPage />}

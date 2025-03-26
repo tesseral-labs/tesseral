@@ -37,6 +37,8 @@ const (
 	IntermediateService_VerifyEmailChallenge_FullMethodName                  = "/tesseral.intermediate.v1.IntermediateService/VerifyEmailChallenge"
 	IntermediateService_RegisterPassword_FullMethodName                      = "/tesseral.intermediate.v1.IntermediateService/RegisterPassword"
 	IntermediateService_VerifyPassword_FullMethodName                        = "/tesseral.intermediate.v1.IntermediateService/VerifyPassword"
+	IntermediateService_IssuePasswordResetCode_FullMethodName                = "/tesseral.intermediate.v1.IntermediateService/IssuePasswordResetCode"
+	IntermediateService_VerifyPasswordResetCode_FullMethodName               = "/tesseral.intermediate.v1.IntermediateService/VerifyPasswordResetCode"
 	IntermediateService_GetPasskeyOptions_FullMethodName                     = "/tesseral.intermediate.v1.IntermediateService/GetPasskeyOptions"
 	IntermediateService_RegisterPasskey_FullMethodName                       = "/tesseral.intermediate.v1.IntermediateService/RegisterPasskey"
 	IntermediateService_IssuePasskeyChallenge_FullMethodName                 = "/tesseral.intermediate.v1.IntermediateService/IssuePasskeyChallenge"
@@ -71,6 +73,8 @@ type IntermediateServiceClient interface {
 	VerifyEmailChallenge(ctx context.Context, in *VerifyEmailChallengeRequest, opts ...grpc.CallOption) (*VerifyEmailChallengeResponse, error)
 	RegisterPassword(ctx context.Context, in *RegisterPasswordRequest, opts ...grpc.CallOption) (*RegisterPasswordResponse, error)
 	VerifyPassword(ctx context.Context, in *VerifyPasswordRequest, opts ...grpc.CallOption) (*VerifyPasswordResponse, error)
+	IssuePasswordResetCode(ctx context.Context, in *IssuePasswordResetCodeRequest, opts ...grpc.CallOption) (*IssuePasswordResetCodeResponse, error)
+	VerifyPasswordResetCode(ctx context.Context, in *VerifyPasswordResetCodeRequest, opts ...grpc.CallOption) (*VerifyPasswordResetCodeResponse, error)
 	GetPasskeyOptions(ctx context.Context, in *GetPasskeyOptionsRequest, opts ...grpc.CallOption) (*GetPasskeyOptionsResponse, error)
 	RegisterPasskey(ctx context.Context, in *RegisterPasskeyRequest, opts ...grpc.CallOption) (*RegisterPasskeyResponse, error)
 	IssuePasskeyChallenge(ctx context.Context, in *IssuePasskeyChallengeRequest, opts ...grpc.CallOption) (*IssuePasskeyChallengeResponse, error)
@@ -271,6 +275,26 @@ func (c *intermediateServiceClient) VerifyPassword(ctx context.Context, in *Veri
 	return out, nil
 }
 
+func (c *intermediateServiceClient) IssuePasswordResetCode(ctx context.Context, in *IssuePasswordResetCodeRequest, opts ...grpc.CallOption) (*IssuePasswordResetCodeResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(IssuePasswordResetCodeResponse)
+	err := c.cc.Invoke(ctx, IntermediateService_IssuePasswordResetCode_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *intermediateServiceClient) VerifyPasswordResetCode(ctx context.Context, in *VerifyPasswordResetCodeRequest, opts ...grpc.CallOption) (*VerifyPasswordResetCodeResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(VerifyPasswordResetCodeResponse)
+	err := c.cc.Invoke(ctx, IntermediateService_VerifyPasswordResetCode_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *intermediateServiceClient) GetPasskeyOptions(ctx context.Context, in *GetPasskeyOptionsRequest, opts ...grpc.CallOption) (*GetPasskeyOptionsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetPasskeyOptionsResponse)
@@ -393,6 +417,8 @@ type IntermediateServiceServer interface {
 	VerifyEmailChallenge(context.Context, *VerifyEmailChallengeRequest) (*VerifyEmailChallengeResponse, error)
 	RegisterPassword(context.Context, *RegisterPasswordRequest) (*RegisterPasswordResponse, error)
 	VerifyPassword(context.Context, *VerifyPasswordRequest) (*VerifyPasswordResponse, error)
+	IssuePasswordResetCode(context.Context, *IssuePasswordResetCodeRequest) (*IssuePasswordResetCodeResponse, error)
+	VerifyPasswordResetCode(context.Context, *VerifyPasswordResetCodeRequest) (*VerifyPasswordResetCodeResponse, error)
 	GetPasskeyOptions(context.Context, *GetPasskeyOptionsRequest) (*GetPasskeyOptionsResponse, error)
 	RegisterPasskey(context.Context, *RegisterPasskeyRequest) (*RegisterPasskeyResponse, error)
 	IssuePasskeyChallenge(context.Context, *IssuePasskeyChallengeRequest) (*IssuePasskeyChallengeResponse, error)
@@ -466,6 +492,12 @@ func (UnimplementedIntermediateServiceServer) RegisterPassword(context.Context, 
 }
 func (UnimplementedIntermediateServiceServer) VerifyPassword(context.Context, *VerifyPasswordRequest) (*VerifyPasswordResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifyPassword not implemented")
+}
+func (UnimplementedIntermediateServiceServer) IssuePasswordResetCode(context.Context, *IssuePasswordResetCodeRequest) (*IssuePasswordResetCodeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IssuePasswordResetCode not implemented")
+}
+func (UnimplementedIntermediateServiceServer) VerifyPasswordResetCode(context.Context, *VerifyPasswordResetCodeRequest) (*VerifyPasswordResetCodeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerifyPasswordResetCode not implemented")
 }
 func (UnimplementedIntermediateServiceServer) GetPasskeyOptions(context.Context, *GetPasskeyOptionsRequest) (*GetPasskeyOptionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPasskeyOptions not implemented")
@@ -842,6 +874,42 @@ func _IntermediateService_VerifyPassword_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _IntermediateService_IssuePasswordResetCode_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IssuePasswordResetCodeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IntermediateServiceServer).IssuePasswordResetCode(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IntermediateService_IssuePasswordResetCode_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IntermediateServiceServer).IssuePasswordResetCode(ctx, req.(*IssuePasswordResetCodeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IntermediateService_VerifyPasswordResetCode_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VerifyPasswordResetCodeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IntermediateServiceServer).VerifyPasswordResetCode(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IntermediateService_VerifyPasswordResetCode_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IntermediateServiceServer).VerifyPasswordResetCode(ctx, req.(*VerifyPasswordResetCodeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _IntermediateService_GetPasskeyOptions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetPasskeyOptionsRequest)
 	if err := dec(in); err != nil {
@@ -1100,6 +1168,14 @@ var IntermediateService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "VerifyPassword",
 			Handler:    _IntermediateService_VerifyPassword_Handler,
+		},
+		{
+			MethodName: "IssuePasswordResetCode",
+			Handler:    _IntermediateService_IssuePasswordResetCode_Handler,
+		},
+		{
+			MethodName: "VerifyPasswordResetCode",
+			Handler:    _IntermediateService_VerifyPasswordResetCode_Handler,
 		},
 		{
 			MethodName: "GetPasskeyOptions",

@@ -95,6 +95,16 @@ export const registerPassword = IntermediateService.method.registerPassword;
 export const verifyPassword = IntermediateService.method.verifyPassword;
 
 /**
+ * @generated from rpc tesseral.intermediate.v1.IntermediateService.IssuePasswordResetCode
+ */
+export const issuePasswordResetCode = IntermediateService.method.issuePasswordResetCode;
+
+/**
+ * @generated from rpc tesseral.intermediate.v1.IntermediateService.VerifyPasswordResetCode
+ */
+export const verifyPasswordResetCode = IntermediateService.method.verifyPasswordResetCode;
+
+/**
  * @generated from rpc tesseral.intermediate.v1.IntermediateService.GetPasskeyOptions
  */
 export const getPasskeyOptions = IntermediateService.method.getPasskeyOptions;

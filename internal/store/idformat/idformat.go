@@ -20,6 +20,7 @@ var (
 	SAMLConnection                = prettyuuid.MustNewFormat("saml_connection_", alphabet)
 	Passkey                       = prettyuuid.MustNewFormat("passkey_", alphabet)
 	UserInvite                    = prettyuuid.MustNewFormat("user_invite_", alphabet)
+	PasswordResetCode             = prettyuuid.MustNewFormat("password_reset_code_", alphabet)
 
 	IntermediateSessionSecretToken = prettyuuid.MustNewFormat("tesseral_secret_intermediate_session_token_", alphabet)
 
