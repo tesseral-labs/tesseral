@@ -3,27 +3,34 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { LoaderCircleIcon } from "lucide-react";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 import { z } from "zod";
-
-
 
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
 import { Button } from "@/components/ui/button";
-import { CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
   issuePasswordResetCode,
   verifyPasswordResetCode,
   whoami,
 } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
-import { useNavigate } from "react-router";
-import { toast } from "sonner";
-
-
-
-
 
 const schema = z.object({
   passwordResetCode: z.string().startsWith("password_reset_code_"),
@@ -38,26 +45,30 @@ export function ForgotPasswordPage() {
     },
   });
 
-  const { mutateAsync: issuePasswordResetCodeAsync } = useMutation(issuePasswordResetCode)
+  const { mutateAsync: issuePasswordResetCodeAsync } = useMutation(
+    issuePasswordResetCode,
+  );
 
   // issue an email on mount
   useEffect(() => {
     (async () => {
-      await issuePasswordResetCodeAsync({})
-    })()
+      await issuePasswordResetCodeAsync({});
+    })();
   }, [issuePasswordResetCodeAsync]);
 
   async function handleResend() {
-    await issuePasswordResetCodeAsync({})
-    toast.success("New password reset code sent")
+    await issuePasswordResetCodeAsync({});
+    toast.success("New password reset code sent");
   }
 
-    const { mutateAsync: verifyPasswordResetCodeAsync } = useMutation(verifyPasswordResetCode)
+  const { mutateAsync: verifyPasswordResetCodeAsync } = useMutation(
+    verifyPasswordResetCode,
+  );
   const navigate = useNavigate();
   async function handleSubmit(values: z.infer<typeof schema>) {
     await verifyPasswordResetCodeAsync({
       passwordResetCode: values.passwordResetCode,
-    })
+    });
 
     navigate("/register-password");
   }

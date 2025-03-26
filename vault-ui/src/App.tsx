@@ -16,6 +16,7 @@ import { AuthenticateAnotherWayPage } from "@/pages/login/AuthenticateAnotherWay
 import { ChooseOrganizationPage } from "@/pages/login/ChooseOrganizationPage";
 import { CreateOrganizationPage } from "@/pages/login/CreateOrganizationPage";
 import { FinishLoginPage } from "@/pages/login/FinishLoginPage";
+import { ForgotPasswordPage } from "@/pages/login/ForgotPasswordPage";
 import { GoogleOAuthCallbackPage } from "@/pages/login/GoogleOAuthCallbackPage";
 import { ImpersonatePage } from "@/pages/login/ImpersonatePage";
 import { LoginFlowLayout } from "@/pages/login/LoginFlowLayout";
@@ -37,7 +38,6 @@ import { VerifySecondaryFactorPage } from "@/pages/login/VerifySecondaryFactorPa
 
 import { DashboardLayout } from "./pages/dashboard/DashboardLayout";
 import { UserSettingsPage } from "./pages/dashboard/UserSettingsPage";
-import { ForgotPasswordPage } from "@/pages/login/ForgotPasswordPage";
 
 const queryClient = new QueryClient();
 
