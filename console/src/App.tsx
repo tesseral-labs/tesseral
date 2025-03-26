@@ -25,14 +25,10 @@ import { PageShell } from '@/components/page';
 import { ViewSCIMAPIKeyPage } from '@/pages/scim-api-keys/ViewSCIMAPIKeyPage';
 import { HomePage } from '@/pages/home/HomePage';
 import { ProjectDetailsTab } from '@/pages/project/ProjectDetailsTab';
-import LoginPage from './pages/login/LoginPage';
 import { ViewPasskeyPage } from '@/pages/passkeys/ViewPasskeyPage';
 import { OrganizationUserInvitesTab } from '@/pages/organizations/OrganizationUserInvitesTab';
 import { ViewUserInvitePage } from '@/pages/user-invites/ViewUserInvitePage';
 import { API_URL } from './config';
-import { AuthType } from './lib/auth';
-import GoogleOAuthCallbackPage from './pages/login/GoogleOAuthCallbackPage';
-import MicrosoftOAuthCallbackPage from './pages/login/MicrosoftOAuthCallbackPage';
 import { ViewPublishableKeyPage } from '@/pages/api-keys/ViewPublishableKeyPage';
 import ProjectUISettingsPage from './pages/project/project-ui-settings/ProjectUISettings';
 import { VaultDomainSettingsTab } from '@/pages/project/VaultDomainSettingsTab';
@@ -68,19 +64,6 @@ const AppWithinQueryClient = () => {
     <TransportProvider transport={transport}>
       <BrowserRouter>
         <Routes>
-          <Route
-            path="/google-oauth-callback"
-            element={<GoogleOAuthCallbackPage />}
-          />
-          <Route path="/login" element={<LoginPage />} />
-          <Route
-            path="/microsoft-oauth-callback"
-            element={<MicrosoftOAuthCallbackPage />}
-          />
-          <Route
-            path="/signup"
-            element={<LoginPage authType={AuthType.SignUp} />}
-          />
 
           <Route path="/" element={<PageShell />}>
             <Route path="" element={<HomePage />} />
