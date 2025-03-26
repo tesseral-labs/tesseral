@@ -12,7 +12,7 @@ jobs:
         with:
           node-version-file: .nvmrc
       - run: |
-          yarn workspace @tesseral/vault-ui run ci
+          yarn install --frozen-lockfile
           yarn workspace @tesseral/vault-ui run fmt-check
   lint:
     runs-on: ubuntu-latest
@@ -22,7 +22,7 @@ jobs:
         with:
           node-version-file: .nvmrc
       - run: |
-          yarn workspace @tesseral/vault-ui run ci
+          yarn install --frozen-lockfile
           yarn workspace @tesseral/vault-ui run lint
   tsc-check:
     runs-on: ubuntu-latest
@@ -32,5 +32,5 @@ jobs:
         with:
           node-version-file: .nvmrc
       - run: |
-          yarn workpsace @tesseral/vault-ui run ci
+          yarn install --frozen-lockfile
           yarn workspace @tesseral/vault-ui run tsc-check
