@@ -1,13 +1,18 @@
-import { useMutation } from "@connectrpc/connect-query";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { LoaderCircleIcon } from "lucide-react";
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { useMutation } from '@connectrpc/connect-query';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { LoaderCircleIcon } from 'lucide-react';
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
-import { LoginFlowCard } from "@/components/login/LoginFlowCard";
-import { Button } from "@/components/ui/button";
-import { CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { LoginFlowCard } from '@/components/login/LoginFlowCard';
+import { Button } from '@/components/ui/button';
+import {
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import {
   Form,
   FormControl,
@@ -16,13 +21,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import {
-  createOrganization,
-  createProject,
+  onboardingCreateProjects,
 } from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
-import { useRedirectNextLoginFlowPage } from "@/hooks/use-redirect-next-login-flow-page";
+import { useNavigate } from 'react-router';
 
 const schema = z.object({
   displayName: z.string().nonempty(),
@@ -41,18 +45,20 @@ export function CreateOrganizationPage() {
   });
 
   const [submitting, setSubmitting] = useState(false);
-  const { mutateAsync: createOrganizationAsync } =
-    useMutation(createProject);
-  const redirectNextLoginFlowPage = useRedirectNextLoginFlowPage();
+  const { mutateAsync: onboardingCreateProjectsAsync } =
+    useMutation(onboardingCreateProjects);
+  const navigate = useNavigate();
 
   async function handleSubmit(values: z.infer<typeof schema>) {
     setSubmitting(true);
 
-    await createOrganizationAsync({
+    await onboardingCreateProjectsAsync({
       displayName: values.displayName,
+      prodUrl: values.productionAppUrl,
+      devUrl: values.localhostAppUrl,
     });
 
-    redirectNextLoginFlowPage();
+    navigate('/');
   }
 
   return (

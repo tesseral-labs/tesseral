@@ -91,7 +91,7 @@ func (c *Cookier) newCookie(ctx context.Context, name string, projectID uuid.UUI
 		SameSite: http.SameSiteLaxMode,
 		Secure:   true,
 		HttpOnly: httpOnly,
-		Domain:   fmt.Sprintf(".%s", cookieDomain),
+		Domain:   cookieDomain,
 	}
 	return cookie.String(), nil
 }

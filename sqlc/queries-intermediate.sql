@@ -611,8 +611,8 @@ RETURNING
     *;
 
 -- name: CreateProject :one
-INSERT INTO projects (id, organization_id, display_name, redirect_uri, vault_domain, email_send_from_domain, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_saml, log_in_with_email)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+INSERT INTO projects (id, organization_id, display_name, redirect_uri, vault_domain, email_send_from_domain, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_saml, log_in_with_email, cookie_domain)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
 RETURNING
     *;
 
@@ -631,6 +631,12 @@ RETURNING
 -- name: CreateUserInvite :one
 INSERT INTO user_invites (id, organization_id, email, is_owner)
     VALUES ($1, $2, $3, $4)
+RETURNING
+    *;
+
+-- name: CreateProjectTrustedDomain :one
+INSERT INTO project_trusted_domains (id, project_id, domain)
+    VALUES ($1, $2, $3)
 RETURNING
     *;
 

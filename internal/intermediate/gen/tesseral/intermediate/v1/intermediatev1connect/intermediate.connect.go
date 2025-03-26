@@ -123,6 +123,9 @@ const (
 	// IntermediateServiceCreateProjectProcedure is the fully-qualified name of the
 	// IntermediateService's CreateProject RPC.
 	IntermediateServiceCreateProjectProcedure = "/tesseral.intermediate.v1.IntermediateService/CreateProject"
+	// IntermediateServiceOnboardingCreateProjectsProcedure is the fully-qualified name of the
+	// IntermediateService's OnboardingCreateProjects RPC.
+	IntermediateServiceOnboardingCreateProjectsProcedure = "/tesseral.intermediate.v1.IntermediateService/OnboardingCreateProjects"
 )
 
 // IntermediateServiceClient is a client for the tesseral.intermediate.v1.IntermediateService
@@ -158,6 +161,7 @@ type IntermediateServiceClient interface {
 	SetEmailAsPrimaryLoginFactor(context.Context, *connect.Request[v1.SetEmailAsPrimaryLoginFactorRequest]) (*connect.Response[v1.SetEmailAsPrimaryLoginFactorResponse], error)
 	ExchangeSessionForIntermediateSession(context.Context, *connect.Request[v1.ExchangeSessionForIntermediateSessionRequest]) (*connect.Response[v1.ExchangeSessionForIntermediateSessionResponse], error)
 	CreateProject(context.Context, *connect.Request[v1.CreateProjectRequest]) (*connect.Response[v1.CreateProjectResponse], error)
+	OnboardingCreateProjects(context.Context, *connect.Request[v1.OnboardingCreateProjectsRequest]) (*connect.Response[v1.OnboardingCreateProjectsResponse], error)
 }
 
 // NewIntermediateServiceClient constructs a client for the
@@ -352,6 +356,12 @@ func NewIntermediateServiceClient(httpClient connect.HTTPClient, baseURL string,
 			connect.WithSchema(intermediateServiceMethods.ByName("CreateProject")),
 			connect.WithClientOptions(opts...),
 		),
+		onboardingCreateProjects: connect.NewClient[v1.OnboardingCreateProjectsRequest, v1.OnboardingCreateProjectsResponse](
+			httpClient,
+			baseURL+IntermediateServiceOnboardingCreateProjectsProcedure,
+			connect.WithSchema(intermediateServiceMethods.ByName("OnboardingCreateProjects")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -387,6 +397,7 @@ type intermediateServiceClient struct {
 	setEmailAsPrimaryLoginFactor          *connect.Client[v1.SetEmailAsPrimaryLoginFactorRequest, v1.SetEmailAsPrimaryLoginFactorResponse]
 	exchangeSessionForIntermediateSession *connect.Client[v1.ExchangeSessionForIntermediateSessionRequest, v1.ExchangeSessionForIntermediateSessionResponse]
 	createProject                         *connect.Client[v1.CreateProjectRequest, v1.CreateProjectResponse]
+	onboardingCreateProjects              *connect.Client[v1.OnboardingCreateProjectsRequest, v1.OnboardingCreateProjectsResponse]
 }
 
 // ListSAMLOrganizations calls tesseral.intermediate.v1.IntermediateService.ListSAMLOrganizations.
@@ -552,6 +563,12 @@ func (c *intermediateServiceClient) CreateProject(ctx context.Context, req *conn
 	return c.createProject.CallUnary(ctx, req)
 }
 
+// OnboardingCreateProjects calls
+// tesseral.intermediate.v1.IntermediateService.OnboardingCreateProjects.
+func (c *intermediateServiceClient) OnboardingCreateProjects(ctx context.Context, req *connect.Request[v1.OnboardingCreateProjectsRequest]) (*connect.Response[v1.OnboardingCreateProjectsResponse], error) {
+	return c.onboardingCreateProjects.CallUnary(ctx, req)
+}
+
 // IntermediateServiceHandler is an implementation of the
 // tesseral.intermediate.v1.IntermediateService service.
 type IntermediateServiceHandler interface {
@@ -585,6 +602,7 @@ type IntermediateServiceHandler interface {
 	SetEmailAsPrimaryLoginFactor(context.Context, *connect.Request[v1.SetEmailAsPrimaryLoginFactorRequest]) (*connect.Response[v1.SetEmailAsPrimaryLoginFactorResponse], error)
 	ExchangeSessionForIntermediateSession(context.Context, *connect.Request[v1.ExchangeSessionForIntermediateSessionRequest]) (*connect.Response[v1.ExchangeSessionForIntermediateSessionResponse], error)
 	CreateProject(context.Context, *connect.Request[v1.CreateProjectRequest]) (*connect.Response[v1.CreateProjectResponse], error)
+	OnboardingCreateProjects(context.Context, *connect.Request[v1.OnboardingCreateProjectsRequest]) (*connect.Response[v1.OnboardingCreateProjectsResponse], error)
 }
 
 // NewIntermediateServiceHandler builds an HTTP handler from the service implementation. It returns
@@ -774,6 +792,12 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 		connect.WithSchema(intermediateServiceMethods.ByName("CreateProject")),
 		connect.WithHandlerOptions(opts...),
 	)
+	intermediateServiceOnboardingCreateProjectsHandler := connect.NewUnaryHandler(
+		IntermediateServiceOnboardingCreateProjectsProcedure,
+		svc.OnboardingCreateProjects,
+		connect.WithSchema(intermediateServiceMethods.ByName("OnboardingCreateProjects")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/tesseral.intermediate.v1.IntermediateService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case IntermediateServiceListSAMLOrganizationsProcedure:
@@ -836,6 +860,8 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 			intermediateServiceExchangeSessionForIntermediateSessionHandler.ServeHTTP(w, r)
 		case IntermediateServiceCreateProjectProcedure:
 			intermediateServiceCreateProjectHandler.ServeHTTP(w, r)
+		case IntermediateServiceOnboardingCreateProjectsProcedure:
+			intermediateServiceOnboardingCreateProjectsHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -963,4 +989,8 @@ func (UnimplementedIntermediateServiceHandler) ExchangeSessionForIntermediateSes
 
 func (UnimplementedIntermediateServiceHandler) CreateProject(context.Context, *connect.Request[v1.CreateProjectRequest]) (*connect.Response[v1.CreateProjectResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.CreateProject is not implemented"))
+}
+
+func (UnimplementedIntermediateServiceHandler) OnboardingCreateProjects(context.Context, *connect.Request[v1.OnboardingCreateProjectsRequest]) (*connect.Response[v1.OnboardingCreateProjectsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.OnboardingCreateProjects is not implemented"))
 }
