@@ -97,8 +97,8 @@ export function RegisterAuthenticatorAppPage() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="flex justify-center">
-          <div className="p-2 bg-muted rounded-md font-mono text-sm">
+        <div className="max-w-full overflow-x-auto bg-muted rounded-md">
+          <div className="p-2 font-mono text-xs">
             {recoveryCodes.map((recoveryCode, i) => (
               <div key={i}>{recoveryCode}</div>
             ))}

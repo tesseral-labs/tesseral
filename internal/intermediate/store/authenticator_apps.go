@@ -1,20 +1,22 @@
 package store
 
 import (
+	"bytes"
 	"context"
 	"crypto/rand"
+	"crypto/sha256"
 	"fmt"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
-	"github.com/tesseral-labs/tesseral/internal/bcryptcost"
+	"github.com/google/uuid"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/intermediate/authn"
 	intermediatev1 "github.com/tesseral-labs/tesseral/internal/intermediate/gen/tesseral/intermediate/v1"
 	"github.com/tesseral-labs/tesseral/internal/intermediate/store/queries"
+	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"github.com/tesseral-labs/tesseral/internal/totp"
-	"golang.org/x/crypto/bcrypt"
 )
 
 const (
@@ -58,17 +60,17 @@ func (s *Store) GetAuthenticatorAppOptions(ctx context.Context, req *intermediat
 		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 
-	qOrg, err := q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
-		ProjectID: authn.ProjectID(ctx),
-		ID:        *qProject.OrganizationID,
-	})
-	if err != nil {
-		return nil, fmt.Errorf("get organization by id: %w", err)
-	}
-
 	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))
 	if err != nil {
 		return nil, fmt.Errorf("get intermediate session by id: %w", err)
+	}
+
+	qOrg, err := q.GetProjectOrganizationByID(ctx, queries.GetProjectOrganizationByIDParams{
+		ProjectID: authn.ProjectID(ctx),
+		ID:        *qIntermediateSession.OrganizationID,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("get organization by id: %w", err)
 	}
 
 	qMatchingUser, err := s.matchUser(ctx, q, qOrg, qIntermediateSession)
@@ -114,34 +116,25 @@ func (s *Store) RegisterAuthenticatorApp(ctx context.Context, req *intermediatev
 	}
 	defer rollback()
 
-	var backupCodes []string
-	var recoveryCodeBcrypts [][]byte
+	var recoveryCodes []string
+	var recoveryCodeSHA256s [][]byte
 	for i := 0; i < recoveryCodeCount; i++ {
-		var code [8]byte
-		if _, err := rand.Read(code[:]); err != nil {
-			return nil, fmt.Errorf("read random bytes: %w", err)
-		}
+		recoveryCode := uuid.New()
+		recoveryCodeSHA := sha256.Sum256(recoveryCode[:])
 
-		codeFormatted := fmt.Sprintf("%x-%x-%x-%x", code[:2], code[2:4], code[4:6], code[6:])
-
-		codeBcrypt, err := bcrypt.GenerateFromPassword([]byte(codeFormatted), bcryptcost.Cost)
-		if err != nil {
-			return nil, fmt.Errorf("generate bcrypt hash: %w", err)
-		}
-
-		backupCodes = append(backupCodes, codeFormatted)
-		recoveryCodeBcrypts = append(recoveryCodeBcrypts, codeBcrypt)
+		recoveryCodes = append(recoveryCodes, idformat.AuthenticatorAppRecoveryCode.Format(recoveryCode))
+		recoveryCodeSHA256s = append(recoveryCodeSHA256s, recoveryCodeSHA[:])
 	}
 
 	if _, err := q.UpdateIntermediateSessionAuthenticatorAppVerified(ctx, authn.IntermediateSessionID(ctx)); err != nil {
 		return nil, fmt.Errorf("update intermediate session authenticator app verified: %w", err)
 	}
 
-	if _, err := q.UpdateIntermediateSessionAuthenticatorAppBackupCodeBcrypts(ctx, queries.UpdateIntermediateSessionAuthenticatorAppBackupCodeBcryptsParams{
+	if _, err := q.UpdateIntermediateSessionAuthenticatorAppBackupCodeSHA256s(ctx, queries.UpdateIntermediateSessionAuthenticatorAppBackupCodeSHA256sParams{
 		ID:                                  authn.IntermediateSessionID(ctx),
-		AuthenticatorAppRecoveryCodeBcrypts: recoveryCodeBcrypts,
+		AuthenticatorAppRecoveryCodeSha256s: recoveryCodeSHA256s,
 	}); err != nil {
-		return nil, fmt.Errorf("update intermediate session authenticator app backup code bcrypts: %w", err)
+		return nil, fmt.Errorf("update intermediate session authenticator app backup code sha256s: %w", err)
 	}
 
 	if err := commit(); err != nil {
@@ -149,7 +142,7 @@ func (s *Store) RegisterAuthenticatorApp(ctx context.Context, req *intermediatev
 	}
 
 	return &intermediatev1.RegisterAuthenticatorAppResponse{
-		RecoveryCodes: backupCodes,
+		RecoveryCodes: recoveryCodes,
 	}, nil
 }
 
@@ -159,7 +152,7 @@ func (s *Store) VerifyAuthenticatorApp(ctx context.Context, req *intermediatev1.
 	}
 
 	if req.RecoveryCode != "" {
-		if err := s.verifyAuthenticatorAppByBackupCode(ctx, req.RecoveryCode); err != nil {
+		if err := s.verifyAuthenticatorAppByRecoveryCode(ctx, req.RecoveryCode); err != nil {
 			return nil, fmt.Errorf("verify authenticator app by backup code: %w", err)
 		}
 	} else {
@@ -207,7 +200,7 @@ func (s *Store) verifyAuthenticatorAppByTOTPCode(ctx context.Context, totpCode s
 	return nil
 }
 
-func (s *Store) verifyAuthenticatorAppByBackupCode(ctx context.Context, backupCode string) error {
+func (s *Store) verifyAuthenticatorAppByRecoveryCode(ctx context.Context, recoveryCode string) error {
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return err
@@ -232,23 +225,30 @@ func (s *Store) verifyAuthenticatorAppByBackupCode(ctx context.Context, backupCo
 		return fmt.Errorf("match user: %w", err)
 	}
 
+	recoveryCodeUUID, err := idformat.AuthenticatorAppRecoveryCode.Parse(recoveryCode)
+	if err != nil {
+		return fmt.Errorf("parse authenticator app recovery code: %w", err)
+	}
+
+	recoveryCodeSHA256 := sha256.Sum256(recoveryCodeUUID[:])
+
 	var ok bool
-	var recoveryCodeBcrypts [][]byte
-	for _, b := range qMatchingUser.AuthenticatorAppRecoveryCodeBcrypts {
-		if bcrypt.CompareHashAndPassword(b, []byte(backupCode)) == nil {
+	var recoveryCodeSHA256s [][]byte
+	for _, b := range qMatchingUser.AuthenticatorAppRecoveryCodeSha256s {
+		if bytes.Equal(recoveryCodeSHA256[:], b) {
 			ok = true
-			continue // do not keep this bcrypt around; the code is used
+			continue // do not keep this recovery code around; it's used
 		}
 
-		recoveryCodeBcrypts = append(recoveryCodeBcrypts, b)
+		recoveryCodeSHA256s = append(recoveryCodeSHA256s, b)
 	}
 
 	// write back the remaining backup codes to the user
-	if _, err := q.UpdateUserAuthenticatorAppRecoveryCodeBcrypts(ctx, queries.UpdateUserAuthenticatorAppRecoveryCodeBcryptsParams{
+	if _, err := q.UpdateUserAuthenticatorAppRecoveryCodeSHA256s(ctx, queries.UpdateUserAuthenticatorAppRecoveryCodeSHA256sParams{
 		ID:                                  qMatchingUser.ID,
-		AuthenticatorAppRecoveryCodeBcrypts: recoveryCodeBcrypts,
+		AuthenticatorAppRecoveryCodeSha256s: recoveryCodeSHA256s,
 	}); err != nil {
-		return fmt.Errorf("update intermediate session authenticator app backup code bcrypts: %w", err)
+		return fmt.Errorf("update intermediate session authenticator app backup code sha256s: %w", err)
 	}
 
 	// commit; our writes conflict with those from

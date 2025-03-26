@@ -19,6 +19,7 @@ import {
   whoami,
 } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
 import { base64urlEncode } from "@/lib/utils";
+import { RegisterAuthenticatorAppButton } from "@/pages/dashboard/RegisterAuthenticatorAppButton";
 
 export function UserSettingsPage() {
   const { data: whoamiResponse } = useQuery(whoami);
@@ -57,11 +58,7 @@ export function UserSettingsPage() {
                 </div>
               </div>
 
-              <Button variant="outline">
-                {whoamiResponse?.user?.hasAuthenticatorApp
-                  ? "Disable"
-                  : "Enable"}
-              </Button>
+              <RegisterAuthenticatorAppButton />
             </div>
 
             <div className="flex justify-between items-center">

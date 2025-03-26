@@ -177,12 +177,12 @@ type IntermediateSession struct {
 	PasskeyVerified                     bool
 	AuthenticatorAppSecretCiphertext    []byte
 	AuthenticatorAppVerified            bool
-	AuthenticatorAppRecoveryCodeBcrypts [][]byte
 	PasskeyRpID                         *string
 	PrimaryAuthFactor                   *PrimaryAuthFactor
 	RelayedSessionState                 *string
 	PasswordResetCodeSha256             []byte
 	PasswordResetCodeVerified           bool
+	AuthenticatorAppRecoveryCodeSha256s [][]byte
 }
 
 type OauthVerifiedEmail struct {
@@ -356,9 +356,9 @@ type User struct {
 	FailedPasswordAttempts              int32
 	PasswordLockoutExpireTime           *time.Time
 	AuthenticatorAppSecretCiphertext    []byte
-	AuthenticatorAppRecoveryCodeBcrypts [][]byte
 	FailedAuthenticatorAppAttempts      int32
 	AuthenticatorAppLockoutExpireTime   *time.Time
+	AuthenticatorAppRecoveryCodeSha256s [][]byte
 }
 
 type UserAuthenticatorAppChallenge struct {

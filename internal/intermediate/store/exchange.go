@@ -357,13 +357,13 @@ func (s *Store) copyRegisteredPasskeySettings(ctx context.Context, q *queries.Qu
 }
 
 func (s *Store) copyRegisteredAuthenticatorAppSettings(ctx context.Context, q *queries.Queries, qIntermediateSession queries.IntermediateSession, qUser queries.User) error {
-	if qUser.AuthenticatorAppSecretCiphertext != nil || qUser.AuthenticatorAppRecoveryCodeBcrypts != nil {
+	if qUser.AuthenticatorAppSecretCiphertext != nil || qUser.AuthenticatorAppRecoveryCodeSha256s != nil {
 		return fmt.Errorf("user already has authenticator app registered")
 	}
 
 	if _, err := q.UpdateUserAuthenticatorApp(ctx, queries.UpdateUserAuthenticatorAppParams{
 		AuthenticatorAppSecretCiphertext:    qIntermediateSession.AuthenticatorAppSecretCiphertext,
-		AuthenticatorAppRecoveryCodeBcrypts: qIntermediateSession.AuthenticatorAppRecoveryCodeBcrypts,
+		AuthenticatorAppRecoveryCodeSha256s: qIntermediateSession.AuthenticatorAppRecoveryCodeSha256s,
 		ID:                                  qUser.ID,
 	}); err != nil {
 		return fmt.Errorf("update user authenticator app: %w", err)

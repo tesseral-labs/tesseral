@@ -26,11 +26,7 @@ import { verifyAuthenticatorApp } from "@/gen/tesseral/intermediate/v1/intermedi
 import { useRedirectNextLoginFlowPage } from "@/hooks/use-redirect-next-login-flow-page";
 
 const schema = z.object({
-  recoveryCode: z
-    .string()
-    .regex(/[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}/, {
-      message: "Invalid recovery code",
-    }),
+  recoveryCode: z.string().startsWith("authenticator_app_recovery_code_"),
 });
 
 export function VerifyAuthenticatorAppRecoveryCodePage() {
@@ -73,7 +69,10 @@ export function VerifyAuthenticatorAppRecoveryCodePage() {
                 <FormItem>
                   <FormLabel>Recovery Code</FormLabel>
                   <FormControl>
-                    <Input placeholder="0123-4567-89ab-cdef" {...field} />
+                    <Input
+                      placeholder="authenticator_app_recovery_code_..."
+                      {...field}
+                    />
                   </FormControl>
                   <FormDescription>
                     When you registered an authenticator app, you received a
