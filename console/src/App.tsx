@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import EditProjectGoogleSettingsPage
   from './pages/project/edit/EditProjectGoogleSettingsPage';
 import EditProjectMicrosoftSettingsPage
@@ -97,30 +97,32 @@ import { FinishLoginPage } from '@/pages/login/FinishLoginPage';
 import { ImpersonatePage } from '@/pages/login/ImpersonatePage';
 import { SwitchOrganizationsPage } from '@/pages/login/SwitchOrganizationsPage';
 import { LogoutPage } from '@/pages/login/LogoutPage';
-import { useAccessToken } from '@/lib/use-access-token';
+import { useAccessToken } from '@/lib/AccessTokenProvider';
 
 const queryClient = new QueryClient();
 
 const useTransport = (): Transport => {
   const accessToken = useAccessToken();
 
-  return createConnectTransport({
-    baseUrl: `${API_URL}/api/internal/connect`,
-    fetch: (input, init) =>
-      fetch(input, {
-        ...init,
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
+  return useMemo(() => {
+    return createConnectTransport({
+      baseUrl: `${API_URL}/api/internal/connect`,
+      fetch: (input, init) =>
+        fetch(input, {
+          ...init,
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+        }),
+      interceptors: [
+        (next) => async (req) => {
+          return next(req);
         },
-        credentials: 'include',
-      }),
-    interceptors: [
-      (next) => async (req) => {
-        return next(req);
-      },
-    ],
-  });
+      ],
+    });
+  }, [accessToken]);
 };
 
 const AppWithinQueryClient = () => {
@@ -205,6 +207,8 @@ const AppWithinQueryClient = () => {
           </Route>
 
           <Route path="" element={<PageShell />}>
+            <Route path="" element={<HomePage />} />
+
             <Route
               path="project-settings"
               element={<ViewProjectSettingsPage />}

@@ -3,13 +3,20 @@ import { cn } from '@/lib/utils';
 import { Outlet, useNavigate } from 'react-router';
 import ConsoleSidebar from './ConsoleSidebar';
 import { SidebarInset, SidebarProvider } from './ui/sidebar';
-import { useAccessToken } from '@/lib/use-access-token';
+import { AccessTokenProvider, useAccessToken } from '@/lib/AccessTokenProvider';
 
 export const PageShell = () => {
-  const navigate = useNavigate();
+  return (
+    <AccessTokenProvider>
+      <PageShellInner />
+    </AccessTokenProvider>
+  );
+};
+
+function PageShellInner() {
   const accessToken = useAccessToken()
   if (!accessToken) {
-    navigate('/login');
+    window.location.href = '/login'
   }
 
   return (
@@ -24,8 +31,8 @@ export const PageShell = () => {
         </main>
       </SidebarInset>
     </SidebarProvider>
-  );
-};
+  )
+}
 
 export const PageTitle = ({
   className,
