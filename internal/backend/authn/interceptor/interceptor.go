@@ -5,6 +5,7 @@ import (
 	"crypto/ecdsa"
 	"errors"
 	"fmt"
+	"net/http"
 	"strings"
 	"time"
 
@@ -17,42 +18,24 @@ import (
 var errUnknownHost = errors.New("unknown host")
 var errAuthorizationHeaderRequired = errors.New("authorization header is required")
 
-var skipRPCs = []string{}
-
 func New(s *store.Store, host string, dogfoodProjectID string, dogfoodAuthDomain string) connect.UnaryInterceptorFunc {
+	cookieName := fmt.Sprintf("tesseral_%s_access_token", dogfoodProjectID)
+
 	return func(next connect.UnaryFunc) connect.UnaryFunc {
 		return func(ctx context.Context, req connect.AnyRequest) (connect.AnyResponse, error) {
-			// --- Start domain restrictions
-
-			hostHeader := req.Header().Get("Host")
-
-			// We only want to allow backend requests to the hosts we expect
-			// - the api host
-			// - the dogfood auth host
-			if hostHeader != host && hostHeader != dogfoodAuthDomain {
-				return nil, connect.NewError(connect.CodeNotFound, errUnknownHost)
-			}
-
-			// --- Start authentication
-
-			for _, rpc := range skipRPCs {
-				if req.Spec().Procedure == rpc {
-					return next(ctx, req)
+			switch req.Header().Get("Host") {
+			case host: // e.g. api.tesseral.com
+				// look for backend API in Authorization header
+				authorization := req.Header().Get("Authorization")
+				if authorization == "" {
+					return nil, connect.NewError(connect.CodeUnauthenticated, errAuthorizationHeaderRequired)
 				}
-			}
 
-			// Get the authorization header
-			authorization := req.Header().Get("Authorization")
-			if authorization == "" {
-				return nil, connect.NewError(connect.CodeUnauthenticated, errAuthorizationHeaderRequired)
-			}
+				secretValue, ok := strings.CutPrefix(authorization, "Bearer ")
+				if !ok {
+					return nil, connect.NewError(connect.CodeUnauthenticated, nil)
+				}
 
-			secretValue, ok := strings.CutPrefix(authorization, "Bearer ")
-			if !ok {
-				return nil, connect.NewError(connect.CodeUnauthenticated, nil)
-			}
-
-			if strings.HasPrefix(secretValue, "tesseral_secret_key_") {
 				res, err := s.AuthenticateBackendAPIKey(ctx, secretValue)
 				if err != nil {
 					if errors.Is(err, store.ErrBadBackendAPIKey) {
@@ -65,13 +48,31 @@ func New(s *store.Store, host string, dogfoodProjectID string, dogfoodAuthDomain
 					BackendAPIKeyID: res.BackendAPIKeyID,
 					ProjectID:       res.ProjectID,
 				})
-			} else {
-				sessionCtxData, err := authenticateAccessToken(ctx, s, dogfoodProjectID, secretValue)
+			case dogfoodAuthDomain: // e.g. vault.console.tesseral.com
+				// look for access token in cookie
+				var accessToken string
+				for _, h := range req.Header().Values("Cookie") {
+					cookies, err := http.ParseCookie(h)
+					if err != nil {
+						return nil, fmt.Errorf("parse cookie: %w", err)
+					}
+
+					for _, c := range cookies {
+						if c.Name != cookieName {
+							continue
+						}
+						accessToken = c.Value
+					}
+				}
+
+				sessionCtxData, err := authenticateAccessToken(ctx, s, dogfoodProjectID, accessToken)
 				if err != nil {
 					return nil, fmt.Errorf("authenticate access token: %w", err)
 				}
 
 				ctx = authn.NewDogfoodSessionContext(ctx, *sessionCtxData)
+			default:
+				return nil, connect.NewError(connect.CodeUnauthenticated, errUnknownHost)
 			}
 
 			return next(ctx, req)

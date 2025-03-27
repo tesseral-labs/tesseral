@@ -1,10 +1,24 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { Outlet } from 'react-router';
+import { Outlet, useNavigate } from 'react-router';
 import ConsoleSidebar from './ConsoleSidebar';
 import { SidebarInset, SidebarProvider } from './ui/sidebar';
+import { AccessTokenProvider, useAccessToken } from '@/lib/AccessTokenProvider';
 
 export const PageShell = () => {
+  return (
+    <AccessTokenProvider>
+      <PageShellInner />
+    </AccessTokenProvider>
+  );
+};
+
+function PageShellInner() {
+  const accessToken = useAccessToken()
+  if (!accessToken) {
+    window.location.href = '/login'
+  }
+
   return (
     <SidebarProvider>
       <ConsoleSidebar />
@@ -17,8 +31,8 @@ export const PageShell = () => {
         </main>
       </SidebarInset>
     </SidebarProvider>
-  );
-};
+  )
+}
 
 export const PageTitle = ({
   className,
