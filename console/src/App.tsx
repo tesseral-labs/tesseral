@@ -207,8 +207,6 @@ const AppWithinQueryClient = () => {
           </Route>
 
           <Route path="" element={<PageShell />}>
-            <Route path="" element={<HomePage />} />
-
             <Route
               path="project-settings"
               element={<ViewProjectSettingsPage />}
