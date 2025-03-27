@@ -1,10 +1,17 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { Outlet } from 'react-router';
+import { Outlet, useNavigate } from 'react-router';
 import ConsoleSidebar from './ConsoleSidebar';
 import { SidebarInset, SidebarProvider } from './ui/sidebar';
+import { useAccessToken } from '@/lib/use-access-token';
 
 export const PageShell = () => {
+  const navigate = useNavigate();
+  const accessToken = useAccessToken()
+  if (!accessToken) {
+    navigate('/login');
+  }
+
   return (
     <SidebarProvider>
       <ConsoleSidebar />

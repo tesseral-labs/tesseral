@@ -12,6 +12,9 @@ if (APP_BUILD_IS_DEV) {
 const context = await esbuild.context({
   bundle: true,
   define: {
+    __REPLACED_BY_ESBUILD_DOGFOOD_PROJECT_ID__: JSON.stringify(
+      process.env.CONSOLE_DOGFOOD_PROJECT_ID
+    ),
     __REPLACED_BY_ESBUILD_API_URL__: JSON.stringify(
       process.env.CONSOLE_API_URL,
     ),

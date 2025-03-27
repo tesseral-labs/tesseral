@@ -12,7 +12,6 @@ import NotFoundPage from './pages/NotFound';
 import {
   ListOrganizationsPage,
 } from '@/pages/organizations/ListOrganizationsPage';
-import { useAccessToken } from '@/lib/use-access-token';
 import {
   ViewOrganizationPage,
 } from '@/pages/organizations/ViewOrganizationPage';
@@ -98,6 +97,7 @@ import { FinishLoginPage } from '@/pages/login/FinishLoginPage';
 import { ImpersonatePage } from '@/pages/login/ImpersonatePage';
 import { SwitchOrganizationsPage } from '@/pages/login/SwitchOrganizationsPage';
 import { LogoutPage } from '@/pages/login/LogoutPage';
+import { useAccessToken } from '@/lib/use-access-token';
 
 const queryClient = new QueryClient();
 
