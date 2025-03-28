@@ -49,6 +49,7 @@ import Loader from '@/components/ui/loader';
 import { toast } from 'sonner';
 import { Switch } from '@/components/ui/switch';
 import { InputTags } from '@/components/input-tags';
+import { Project } from '@/gen/tesseral/backend/v1/models_pb';
 
 export const ProjectDetailsTab = () => {
   const { data: getProjectResponse } = useQuery(getProject, {});
@@ -353,9 +354,9 @@ const EditProjectRedirectURIsButton = () => {
       form.reset({
         redirectUri: getProjectResponse?.project?.redirectUri,
         afterLoginRedirectUri:
-          getProjectResponse?.project?.afterLoginRedirectUri,
+        getProjectResponse?.project?.afterLoginRedirectUri,
         afterSignupRedirectUri:
-          getProjectResponse?.project?.afterSignupRedirectUri,
+        getProjectResponse?.project?.afterSignupRedirectUri,
       });
     }
   }, [getProjectResponse]);
@@ -486,7 +487,7 @@ const EditProjectRedirectURIsButton = () => {
 
 const domainSettingsSchema = z.object({
   cookieDomain: z.string().regex(/^[^.]/, {
-    message: "Cookie domain must not start with a dot ('.')."
+    message: 'Cookie domain must not start with a dot (\'.\').',
   }),
   trustedDomains: z.array(
     z.string().regex(/^([a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+(:\d+)?$/),
@@ -524,8 +525,10 @@ const EditProjectDomainSettingsButton = () => {
 
     await updateProjectMutation.mutateAsync({
       project: {
-        cookieDomain: values.cookieDomain,
         trustedDomains: values.trustedDomains,
+
+        // only attempt to honor cookie domain if vault domain is custom
+        ...(getProjectResponse?.project?.vaultDomainCustom ? { cookieDomain: values.cookieDomain } : {}),
       },
     });
     await refetch();

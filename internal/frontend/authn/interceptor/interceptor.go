@@ -39,10 +39,20 @@ func New(s *store.Store, p *projectid.Sniffer, cookier *cookies.Cookier) connect
 				}
 			}
 
-			// get the access token from the cookie to enforce authentication
-			accessToken, err := cookier.GetAccessToken(*projectID, req)
-			if err != nil {
-				return nil, connect.NewError(connect.CodeUnauthenticated, err)
+			// look for the access token as an Authorization: Bearer header or a
+			// cookie
+			var accessToken string
+			if authorization := req.Header().Get("Authorization"); authorization != "" {
+				if !strings.HasPrefix(authorization, "Bearer ") {
+					return nil, connect.NewError(connect.CodeUnauthenticated, fmt.Errorf("invalid authorization header"))
+				}
+
+				accessToken = strings.TrimPrefix(authorization, "Bearer ")
+			} else {
+				accessToken, err = cookier.GetAccessToken(*projectID, req)
+				if err != nil {
+					return nil, connect.NewError(connect.CodeUnauthenticated, err)
+				}
 			}
 
 			// determine the session signing key for this access token
