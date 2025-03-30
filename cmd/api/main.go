@@ -76,7 +76,7 @@ func main() {
 		SESSPFMXRecordValue                 string        `conf:"ses_spf_mx_record_value,noredact"`
 		DB                                  dbconn.Config `conf:"db,noredact"`
 		CloudflareAPIToken                  string        `conf:"cloudflare_api_token"`
-		DogfoodAuthDomain                   string        `conf:"dogfood_auth_domain,noredact"`
+		DogfoodVaultDomain                  string        `conf:"dogfood_vault_domain,noredact"`
 		DogfoodProjectID                    string        `conf:"dogfood_project_id,noredact"`
 		IntermediateSessionKMSKeyID         string        `conf:"intermediate_session_kms_key_id,noredact"`
 		KMSEndpoint                         string        `conf:"kms_endpoint_resolver_url,noredact"`
@@ -180,7 +180,7 @@ func main() {
 			Store: backendStore,
 		},
 		connect.WithInterceptors(
-			backendinterceptor.New(backendStore, config.Host, config.DogfoodProjectID, config.DogfoodAuthDomain),
+			backendinterceptor.New(backendStore, config.Host, config.DogfoodProjectID, config.DogfoodVaultDomain),
 		),
 	)
 	backend := vanguard.NewService(backendConnectPath, backendConnectHandler)

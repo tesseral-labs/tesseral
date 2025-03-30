@@ -18,7 +18,7 @@ import (
 var errUnknownHost = errors.New("unknown host")
 var errAuthorizationHeaderRequired = errors.New("authorization header is required")
 
-func New(s *store.Store, host string, dogfoodProjectID string, dogfoodAuthDomain string) connect.UnaryInterceptorFunc {
+func New(s *store.Store, host string, dogfoodProjectID string, dogfoodVaultDomain string) connect.UnaryInterceptorFunc {
 	cookieName := fmt.Sprintf("tesseral_%s_access_token", dogfoodProjectID)
 
 	return func(next connect.UnaryFunc) connect.UnaryFunc {
@@ -48,7 +48,7 @@ func New(s *store.Store, host string, dogfoodProjectID string, dogfoodAuthDomain
 					BackendAPIKeyID: res.BackendAPIKeyID,
 					ProjectID:       res.ProjectID,
 				})
-			case dogfoodAuthDomain: // e.g. vault.console.tesseral.com
+			case dogfoodVaultDomain: // e.g. vault.console.tesseral.com
 				// look for access token in cookie
 				var accessToken string
 				for _, h := range req.Header().Values("Cookie") {
