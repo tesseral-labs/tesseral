@@ -15,10 +15,9 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/ujwt"
 )
 
-var errUnknownHost = errors.New("unknown host")
 var errAuthorizationHeaderRequired = errors.New("authorization header is required")
 
-func New(s *store.Store, host string, dogfoodProjectID string, dogfoodVaultDomain string) connect.UnaryInterceptorFunc {
+func New(s *store.Store, dogfoodProjectID string) connect.UnaryInterceptorFunc {
 	cookieName := fmt.Sprintf("tesseral_%s_access_token", dogfoodProjectID)
 
 	return func(next connect.UnaryFunc) connect.UnaryFunc {

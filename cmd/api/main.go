@@ -70,13 +70,11 @@ func main() {
 
 	config := struct {
 		RunAsLambda                         bool          `conf:"run_as_lambda,noredact"`
-		Host                                string        `conf:"host,noredact"`
 		AuthAppsRootDomain                  string        `conf:"auth_apps_root_domain,noredact"`
 		TesseralDNSVaultCNAMEValue          string        `conf:"tesseral_dns_vault_cname_value,noredact"`
 		SESSPFMXRecordValue                 string        `conf:"ses_spf_mx_record_value,noredact"`
 		DB                                  dbconn.Config `conf:"db,noredact"`
 		CloudflareAPIToken                  string        `conf:"cloudflare_api_token"`
-		DogfoodVaultDomain                  string        `conf:"dogfood_vault_domain,noredact"`
 		DogfoodProjectID                    string        `conf:"dogfood_project_id,noredact"`
 		IntermediateSessionKMSKeyID         string        `conf:"intermediate_session_kms_key_id,noredact"`
 		KMSEndpoint                         string        `conf:"kms_endpoint_resolver_url,noredact"`
@@ -180,7 +178,7 @@ func main() {
 			Store: backendStore,
 		},
 		connect.WithInterceptors(
-			backendinterceptor.New(backendStore, config.Host, config.DogfoodProjectID, config.DogfoodVaultDomain),
+			backendinterceptor.New(backendStore, config.DogfoodProjectID),
 		),
 	)
 	backend := vanguard.NewService(backendConnectPath, backendConnectHandler)
