@@ -23,8 +23,8 @@ func New(s *store.Store, host string, dogfoodProjectID string, dogfoodVaultDomai
 
 	return func(next connect.UnaryFunc) connect.UnaryFunc {
 		return func(ctx context.Context, req connect.AnyRequest) (connect.AnyResponse, error) {
-			switch req.Header().Get("Host") {
-			case host: // e.g. api.tesseral.com
+			authorizationHeader := req.Header().Get("Authorization")
+			if authorizationHeader != "" {
 				// look for backend API in Authorization header
 				authorization := req.Header().Get("Authorization")
 				if authorization == "" {
@@ -48,7 +48,7 @@ func New(s *store.Store, host string, dogfoodProjectID string, dogfoodVaultDomai
 					BackendAPIKeyID: res.BackendAPIKeyID,
 					ProjectID:       res.ProjectID,
 				})
-			case dogfoodVaultDomain: // e.g. vault.console.tesseral.com
+			} else {
 				// look for access token in cookie
 				var accessToken string
 				for _, h := range req.Header().Values("Cookie") {
@@ -65,14 +65,16 @@ func New(s *store.Store, host string, dogfoodProjectID string, dogfoodVaultDomai
 					}
 				}
 
+				if accessToken == "" {
+					return nil, connect.NewError(connect.CodeUnauthenticated, fmt.Errorf("no access token found in cookies"))
+				}
+
 				sessionCtxData, err := authenticateAccessToken(ctx, s, dogfoodProjectID, accessToken)
 				if err != nil {
 					return nil, fmt.Errorf("authenticate access token: %w", err)
 				}
 
 				ctx = authn.NewDogfoodSessionContext(ctx, *sessionCtxData)
-			default:
-				return nil, connect.NewError(connect.CodeUnauthenticated, errUnknownHost)
 			}
 
 			return next(ctx, req)
