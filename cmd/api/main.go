@@ -18,7 +18,6 @@ import (
 	"github.com/cloudflare/cloudflare-go/v4/option"
 	"github.com/cyrusaf/ctxlog"
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/ssoready/conf"
 	backendinterceptor "github.com/tesseral-labs/tesseral/internal/backend/authn/interceptor"
 	"github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1/backendv1connect"
@@ -32,6 +31,7 @@ import (
 	configapiservice "github.com/tesseral-labs/tesseral/internal/configapi/service"
 	configapistore "github.com/tesseral-labs/tesseral/internal/configapi/store"
 	"github.com/tesseral-labs/tesseral/internal/cookies"
+	"github.com/tesseral-labs/tesseral/internal/dbconn"
 	frontendinterceptor "github.com/tesseral-labs/tesseral/internal/frontend/authn/interceptor"
 	"github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1/frontendv1connect"
 	frontendservice "github.com/tesseral-labs/tesseral/internal/frontend/service"
@@ -39,7 +39,6 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/googleoauth"
 	"github.com/tesseral-labs/tesseral/internal/hexkey"
 	"github.com/tesseral-labs/tesseral/internal/httplambda"
-	"github.com/tesseral-labs/tesseral/internal/iamdbauth"
 	intermediateinterceptor "github.com/tesseral-labs/tesseral/internal/intermediate/authn/interceptor"
 	"github.com/tesseral-labs/tesseral/internal/intermediate/gen/tesseral/intermediate/v1/intermediatev1connect"
 	intermediateservice "github.com/tesseral-labs/tesseral/internal/intermediate/service"
@@ -70,29 +69,28 @@ func main() {
 	loadenv.LoadEnv()
 
 	config := struct {
-		RunAsLambda                         bool             `conf:"run_as_lambda,noredact"`
-		Host                                string           `conf:"host,noredact"`
-		AuthAppsRootDomain                  string           `conf:"auth_apps_root_domain,noredact"`
-		TesseralDNSVaultCNAMEValue          string           `conf:"tesseral_dns_vault_cname_value,noredact"`
-		SESSPFMXRecordValue                 string           `conf:"ses_spf_mx_record_value,noredact"`
-		DB                                  string           `conf:"db"`
-		IAMDB                               iamdbauth.Config `conf:"iamdb"`
-		CloudflareAPIToken                  string           `conf:"cloudflare_api_token"`
-		DogfoodAuthDomain                   string           `conf:"dogfood_auth_domain,noredact"`
-		DogfoodProjectID                    string           `conf:"dogfood_project_id,noredact"`
-		IntermediateSessionKMSKeyID         string           `conf:"intermediate_session_kms_key_id,noredact"`
-		KMSEndpoint                         string           `conf:"kms_endpoint_resolver_url,noredact"`
-		PageEncodingValue                   string           `conf:"page-encoding-value"`
-		S3UserContentBucketName             string           `conf:"s3_user_content_bucket_name,noredact"`
-		S3Endpoint                          string           `conf:"s3_endpoint_resolver_url,noredact"`
-		SESEndpoint                         string           `conf:"ses_endpoint_resolver_url,noredact"`
-		ServeAddr                           string           `conf:"serve_addr,noredact"`
-		SessionKMSKeyID                     string           `conf:"session_kms_key_id,noredact"`
-		GoogleOAuthClientSecretsKMSKeyID    string           `conf:"google_oauth_client_secrets_kms_key_id,noredact"`
-		MicrosoftOAuthClientSecretsKMSKeyID string           `conf:"microsoft_oauth_client_secrets_kms_key_id,noredact"`
-		AuthenticatorAppSecretsKMSKeyID     string           `conf:"authenticator_app_secrets_kms_key_id,noredact"`
-		UserContentBaseUrl                  string           `conf:"user_content_base_url,redact"`
-		TesseralDNSCloudflareZoneID         string           `conf:"tesseral_dns_cloudflare_zone_id,noredact"`
+		RunAsLambda                         bool          `conf:"run_as_lambda,noredact"`
+		Host                                string        `conf:"host,noredact"`
+		AuthAppsRootDomain                  string        `conf:"auth_apps_root_domain,noredact"`
+		TesseralDNSVaultCNAMEValue          string        `conf:"tesseral_dns_vault_cname_value,noredact"`
+		SESSPFMXRecordValue                 string        `conf:"ses_spf_mx_record_value,noredact"`
+		DB                                  dbconn.Config `conf:"db,noredact"`
+		CloudflareAPIToken                  string        `conf:"cloudflare_api_token"`
+		DogfoodAuthDomain                   string        `conf:"dogfood_auth_domain,noredact"`
+		DogfoodProjectID                    string        `conf:"dogfood_project_id,noredact"`
+		IntermediateSessionKMSKeyID         string        `conf:"intermediate_session_kms_key_id,noredact"`
+		KMSEndpoint                         string        `conf:"kms_endpoint_resolver_url,noredact"`
+		PageEncodingValue                   string        `conf:"page-encoding-value"`
+		S3UserContentBucketName             string        `conf:"s3_user_content_bucket_name,noredact"`
+		S3Endpoint                          string        `conf:"s3_endpoint_resolver_url,noredact"`
+		SESEndpoint                         string        `conf:"ses_endpoint_resolver_url,noredact"`
+		ServeAddr                           string        `conf:"serve_addr,noredact"`
+		SessionKMSKeyID                     string        `conf:"session_kms_key_id,noredact"`
+		GoogleOAuthClientSecretsKMSKeyID    string        `conf:"google_oauth_client_secrets_kms_key_id,noredact"`
+		MicrosoftOAuthClientSecretsKMSKeyID string        `conf:"microsoft_oauth_client_secrets_kms_key_id,noredact"`
+		AuthenticatorAppSecretsKMSKeyID     string        `conf:"authenticator_app_secrets_kms_key_id,noredact"`
+		UserContentBaseUrl                  string        `conf:"user_content_base_url,redact"`
+		TesseralDNSCloudflareZoneID         string        `conf:"tesseral_dns_cloudflare_zone_id,noredact"`
 	}{
 		PageEncodingValue: "0000000000000000000000000000000000000000000000000000000000000000",
 	}
@@ -102,20 +100,14 @@ func main() {
 
 	// TODO: Set up Sentry apps and error handling
 
-	connString := config.DB
-	if connString == "" {
-		slog.Info("connect_iam_db_auth")
-
-		s, err := iamdbauth.BuildConnectionString(context.Background(), config.IAMDB)
-		if err != nil {
-			panic(fmt.Errorf("iamdbauth: build connection string: %w", err))
-		}
-		connString = s
-	}
-
-	db, err := pgxpool.New(context.Background(), connString)
+	db, err := dbconn.Open(context.Background(), config.DB)
 	if err != nil {
-		panic(err)
+		panic(fmt.Errorf("open database: %w", err))
+	}
+	defer db.Close()
+
+	if err := db.Ping(context.Background()); err != nil {
+		panic(fmt.Errorf("ping database: %w", err))
 	}
 
 	pageEncodingValue, err := hexkey.New(config.PageEncodingValue)
