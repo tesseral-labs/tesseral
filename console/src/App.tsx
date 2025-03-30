@@ -101,32 +101,16 @@ import { useAccessToken } from '@/lib/AccessTokenProvider';
 
 const queryClient = new QueryClient();
 
-const useTransport = (): Transport => {
-  const accessToken = useAccessToken();
-
-  return useMemo(() => {
-    return createConnectTransport({
-      baseUrl: `${API_URL}/api/internal/connect`,
-      fetch: (input, init) =>
-        fetch(input, {
-          ...init,
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
-        }),
-      interceptors: [
-        (next) => async (req) => {
-          return next(req);
-        },
-      ],
-    });
-  }, [accessToken]);
-};
+const transport = createConnectTransport({
+  baseUrl: `${API_URL}/api/internal/connect`,
+  fetch: (input, init) =>
+    fetch(input, {
+      ...init,
+      credentials: 'include',
+    }),
+})
 
 const AppWithinQueryClient = () => {
-  const transport = useTransport();
   return (
     <TransportProvider transport={transport}>
       <BrowserRouter>

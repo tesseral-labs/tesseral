@@ -9,8 +9,11 @@ services:
           path: ./cmd/api/
         - action: rebuild
           path: ./internal/
+    depends_on:
+      postgres:
+        condition: service_healthy
     environment:
-      API_DB: "postgres://postgres:password@postgres:5432/postgres"
+      API_DB_DSN: "postgres://postgres:password@postgres:5432/postgres"
     env_file:
       - .env
     ports:
@@ -47,16 +50,24 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    depends_on:
+      - api
     volumes:
       - ./.local/nginx:/etc/nginx/conf.d
   postgres:
+    image: postgres:15.8
     environment:
       POSTGRES_PASSWORD: "password"
     expose:
       - 5432
-    image: postgres:15.8
     ports:
       - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "PGPASSWORD=password pg_isready -U postgres -d postgres"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
     volumes:
       - ./.local/postgres:/var/lib/postgresql/data
       - ./.local/tmp:/tmp/local
