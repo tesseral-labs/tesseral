@@ -3,7 +3,7 @@ import { TransportProvider } from "@connectrpc/connect-query";
 import { createConnectTransport } from "@connectrpc/connect-web";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React from "react";
-import { Route, Routes } from "react-router";
+import { Navigate, Route, Routes } from "react-router";
 import { BrowserRouter } from "react-router-dom";
 
 import { Toaster } from "@/components/ui/sonner";
@@ -57,6 +57,10 @@ function AppWithRoutes() {
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
           <Routes>
+            <Route
+              path="/"
+              element={<Navigate to="/user-settings" replace />}
+            />
             <Route path="login" element={<LoginPage />} />
             <Route path="signup" element={<SignupPage />} />
 
