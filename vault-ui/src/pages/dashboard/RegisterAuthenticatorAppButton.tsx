@@ -94,7 +94,7 @@ export function RegisterAuthenticatorAppButton() {
         <Button variant="outline" onClick={handleClick}>
           {whoamiResponse?.user?.hasAuthenticatorApp
             ? "Re-register authenticator app"
-            : "Register authenticator appj"}
+            : "Register authenticator app"}
         </Button>
         <AlertDialogContent>
           <AlertDialogHeader>
