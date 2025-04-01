@@ -223,22 +223,18 @@ export const ProjectDetailsTab = () => {
       </Card>
 
       <Card>
-        <CardHeader>
-          <CardTitle>
-            <div className="grid grid-cols-2 gap-8">
-              <span>Google settings</span>
-              <div className="text-right">
-                <Link to="/project-settings/log-in-with-google/edit">
-                  <Button variant="outline" size="sm">
-                    Edit
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </CardTitle>
-          <CardDescription>
-            Settings for "Log in with Google" in your project.
-          </CardDescription>
+        <CardHeader className="flex-row justify-between items-center">
+          <div className="flex flex-col space-y-1 5">
+            <CardTitle>Google settings</CardTitle>
+            <CardDescription>
+              Settings for "Log in with Google" in your project.
+            </CardDescription>
+          </div>
+          <Button variant="outline" asChild>
+            <Link to="/project-settings/log-in-with-google/edit">
+              Edit
+            </Link>
+          </Button>
         </CardHeader>
         <CardContent>
           <DetailsGrid>
@@ -276,22 +272,18 @@ export const ProjectDetailsTab = () => {
         </CardContent>
       </Card>
       <Card>
-        <CardHeader>
-          <CardTitle>
-            <div className="grid grid-cols-2 gap-8">
-              <span>Microsoft settings</span>
-              <div className="text-right">
-                <Link to="/project-settings/log-in-with-microsoft/edit">
-                  <Button variant="outline" size="sm">
-                    Edit
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </CardTitle>
-          <CardDescription>
-            Settings for "Log in with Microsoft" in your project.
-          </CardDescription>
+        <CardHeader className="flex-row justify-between items-center">
+          <div className="flex flex-col space-y-1 5">
+            <CardTitle>Microsoft settings</CardTitle>
+            <CardDescription>
+              Settings for "Log in with Microsoft" in your project.
+            </CardDescription>
+          </div>
+          <Button variant="outline" asChild>
+            <Link to="/project-settings/log-in-with-microsoft/edit">
+              Edit
+            </Link>
+          </Button>
         </CardHeader>
         <CardContent>
           <DetailsGrid>
