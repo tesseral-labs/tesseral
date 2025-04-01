@@ -112,7 +112,7 @@ export function CreateOrganizationPage() {
               name="localhostAppUrl"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Company Name</FormLabel>
+                  <FormLabel>Development App URL</FormLabel>
                   <FormControl>
                     <Input placeholder="http://localhost:3000" {...field} />
                   </FormControl>
