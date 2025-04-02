@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 import {
   Sidebar,
   SidebarContent,
@@ -15,29 +15,37 @@ import {
   SidebarRail,
 } from './ui/sidebar';
 import {
+  BadgeCheckIcon,
   Building2Icon,
   ChevronsUpDownIcon,
   LayoutGridIcon,
+  LogOutIcon,
   PlusIcon,
   Settings2Icon,
+  UserIcon,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useQuery } from '@connectrpc/connect-query';
+import { useMutation, useQuery } from '@connectrpc/connect-query';
 import {
   listSwitchableOrganizations,
+  logout,
   whoami,
 } from '@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery';
-import { DropdownMenu } from '@radix-ui/react-dropdown-menu';
 import {
+  DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { getProject } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useNavigate } from 'react-router';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { API_URL } from '@/config';
+import { toast } from 'sonner';
 
 const ConsoleSidebar: FC = () => {
   const { data: whoamiResponse } = useQuery(whoami, {});
@@ -47,7 +55,15 @@ const ConsoleSidebar: FC = () => {
     {},
   );
 
-  const navigate = useNavigate()
+  const isMobile = useIsMobile();
+  const navigate = useNavigate();
+
+  const { mutateAsync: logoutAsync } = useMutation(logout);
+  const handleLogout = async () => {
+    await logoutAsync({});
+    toast.success('You have been logged out.');
+    navigate('/login');
+  };
 
   return (
     <Sidebar collapsible="icon">
@@ -85,9 +101,13 @@ const ConsoleSidebar: FC = () => {
                 </DropdownMenuLabel>
                 {listSwitchableOrganizationsResponse?.switchableOrganizations?.map(
                   (org) => (
-                    <DropdownMenuItem key={org.id} className="gap-2 p-2" onClick={() => {
-                      navigate(`/switch-organizations/${org.id}`)
-                    }}>
+                    <DropdownMenuItem
+                      key={org.id}
+                      className="gap-2 p-2"
+                      onClick={() => {
+                        navigate(`/switch-organizations/${org.id}`);
+                      }}
+                    >
                       <div className="flex size-6 items-center justify-center rounded-sm border">
                         <LayoutGridIcon className="size-4 shrink-0" />
                       </div>
@@ -153,24 +173,76 @@ const ConsoleSidebar: FC = () => {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-            >
-              <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarFallback className="rounded-lg">
-                  {whoamiResponse?.user?.email?.substring(0, 1)?.toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">
-                  {whoamiResponse?.user?.email}
-                </span>
-                <span className="truncate text-xs">
-                  {whoamiResponse?.user?.email}
-                </span>
-              </div>
-            </SidebarMenuButton>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <SidebarMenuButton
+                  size="lg"
+                  className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                >
+                  <Avatar className="h-8 w-8 rounded-lg">
+                    <AvatarFallback className="rounded-lg">
+                      {whoamiResponse?.user?.email
+                        ?.substring(0, 1)
+                        ?.toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-semibold">
+                      {whoamiResponse?.user?.email}
+                    </span>
+                    <span className="truncate text-xs">
+                      {whoamiResponse?.user?.email}
+                    </span>
+                  </div>
+                </SidebarMenuButton>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+                side={isMobile ? 'bottom' : 'right'}
+                align="end"
+                sideOffset={4}
+              >
+                <DropdownMenuLabel className="p-0 font-normal">
+                  <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                    <Avatar className="h-8 w-8 rounded-lg">
+                      <AvatarFallback className="rounded-lg">
+                        {whoamiResponse?.user?.email
+                          ?.substring(0, 1)
+                          ?.toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="grid flex-1 text-left text-sm leading-tight">
+                      <span className="truncate font-semibold">
+                        {whoamiResponse?.user?.email}
+                      </span>
+                      <span className="truncate text-xs">
+                        {whoamiResponse?.user?.email}
+                      </span>
+                    </div>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <DropdownMenuItem asChild>
+                    <Link to={`${API_URL}/user-settings`}>
+                      <UserIcon />
+                      User Settings
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to={`${API_URL}/organization-settings`}>
+                      <Building2Icon />
+                      Collaboration Settings
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout}>
+                  <LogOutIcon />
+                  Log out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
