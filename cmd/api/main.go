@@ -304,6 +304,10 @@ func main() {
 		_, _ = w.Write([]byte("ok"))
 	}))
 
+	mux.Handle("/api/internal/panic", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		panic("deliberate panic")
+	}))
+
 	// Register the connect service
 	mux.Handle("/api/internal/connect/", corstrusteddomains.Handler(commonStore, projectid.NewSniffer(config.AuthAppsRootDomain, commonStore), http.StripPrefix("/api/internal/connect", connectMux)))
 
