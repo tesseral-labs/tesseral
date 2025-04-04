@@ -91,7 +91,7 @@ export const ListAPIKeysPage = () => {
       </Breadcrumb>
 
       <PageTitle>API Keys</PageTitle>
-      <PageDescription className="mt-2">Lorem ipsum dolor.</PageDescription>
+      <PageDescription className="mt-2">API Keys for your Tesseral Project.</PageDescription>
 
       <div className="mt-8 space-y-8">
         <Card>
@@ -101,7 +101,7 @@ export const ListAPIKeysPage = () => {
               <CardDescription>
                 Tesseral's client-side SDKs require a publishable key.
                 Publishable keys can be publicly accessible in your web or
-                mobile app's client-side code. Lorem ipsum dolor.
+                mobile app's client-side code.
               </CardDescription>
             </div>
             <CreatePublishableKeyButton />
@@ -262,7 +262,7 @@ const CreatePublishableKeyButton = () => {
             <AlertDialogDescription>
               Tesseral's client-side SDKs require a publishable key. Publishable
               keys can be publicly accessible in your web or mobile app's
-              client-side code. Lorem ipsum dolor.
+              client-side code.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <Form {...form}>

@@ -62,8 +62,7 @@ export const OrganizationUserInvitesTab = () => {
         <div className="flex flex-col space-y-1 5">
           <CardTitle>User Invites</CardTitle>
           <CardDescription>
-            A user invite lets outside collaborators join an organization. Lorem
-            ipsum dolor.
+            A User Invite lets outside collaborators join an Organization.
           </CardDescription>
         </div>
         <CreateUserInviteButton />
@@ -160,8 +159,7 @@ const CreateUserInviteButton = () => {
         <AlertDialogHeader>
           <AlertDialogTitle>Create User Invite</AlertDialogTitle>
           <AlertDialogDescription>
-            A user invite lets outside collaborators join an organization. Lorem
-            ipsum dolor.
+            A User Invite lets outside collaborators join an organization.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <Form {...form}>

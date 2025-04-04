@@ -44,8 +44,7 @@ export const ListOrganizationsPage = () => {
 
       <PageTitle>Organizations</PageTitle>
       <PageDescription>
-        An organization represents one of your business customers. Lorem ipsum
-        dolor.
+        An Organization represents one of your business customers.
       </PageDescription>
 
       <Card className="mt-8 overflow-hidden">

@@ -102,7 +102,7 @@ export const ViewBackendAPIKeyPage = () => {
         <CardHeader className="flex-row justify-between items-center">
           <div className="flex flex-col space-y-1 5">
             <CardTitle>Configuration</CardTitle>
-            <CardDescription>Lorem ipsum dolor.</CardDescription>
+            <CardDescription>Details about your Backend API.</CardDescription>
           </div>
           <EditBackendAPIKeyButton />
         </CardHeader>

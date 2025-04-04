@@ -33,7 +33,7 @@ export const OrganizationUsersTab = () => {
       <CardHeader>
         <CardTitle>Users</CardTitle>
         <CardDescription>
-          A user is what people using your product log into. Lorem ipsum dolor.
+          A user is what people using your product log into.
         </CardDescription>
       </CardHeader>
       <CardContent>

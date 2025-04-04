@@ -103,7 +103,7 @@ export const ViewUserPage = () => {
       <PageTitle>{getUserResponse?.user?.email}</PageTitle>
       <PageCodeSubtitle>{userId}</PageCodeSubtitle>
       <PageDescription>
-        A user is what people using your product log into. Lorem ipsum dolor.
+        A User is what people using your product log into.
       </PageDescription>
 
       <Card className="my-8">
@@ -177,8 +177,8 @@ export const ViewUserPage = () => {
         <CardHeader>
           <CardTitle>Sessions</CardTitle>
           <CardDescription>
-            Every time your users log in or perform an action, that's associated
-            with a session. Lorem ipsum dolor.
+            Every time your Users log in or perform an action, that's associated
+            with a Session.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -225,7 +225,7 @@ export const ViewUserPage = () => {
       <Card>
         <CardHeader>
           <CardTitle>Passkeys</CardTitle>
-          <CardDescription>Lorem ipsum dolor.</CardDescription>
+          <CardDescription>Passkeys associated with this User.</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>

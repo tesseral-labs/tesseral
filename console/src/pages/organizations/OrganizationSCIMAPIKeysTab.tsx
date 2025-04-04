@@ -62,7 +62,6 @@ export const OrganizationSCIMAPIKeysTab = () => {
           <CardTitle>SCIM API Keys</CardTitle>
           <CardDescription>
             A SCIM API key lets your customer do enterprise directory syncing.
-            Lorem ipsum dolor.
           </CardDescription>
         </div>
         <CreateSCIMAPIKeyButton />
@@ -196,7 +195,6 @@ const CreateSCIMAPIKeyButton = () => {
             <AlertDialogTitle>Create SCIM API Key</AlertDialogTitle>
             <AlertDialogDescription>
               A SCIM API key lets your customer do enterprise directory syncing.
-              Lorem ipsum dolor.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <Form {...form}>
