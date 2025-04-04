@@ -120,9 +120,8 @@ func (s *Store) IssueAccessToken(ctx context.Context, refreshToken string) (stri
 			Id: idformat.Session.Format(qDetails.SessionID),
 		},
 		User: &commonv1.AccessTokenUser{
-			Id:             idformat.User.Format(qDetails.UserID),
-			OrganizationId: idformat.Organization.Format(qDetails.OrganizationID),
-			Email:          qDetails.UserEmail,
+			Id:    idformat.User.Format(qDetails.UserID),
+			Email: qDetails.UserEmail,
 		},
 		Organization: &commonv1.AccessTokenOrganization{
 			Id:          idformat.Organization.Format(qDetails.OrganizationID),
