@@ -17,6 +17,8 @@ import (
 	"github.com/cloudflare/cloudflare-go/v4"
 	"github.com/cloudflare/cloudflare-go/v4/option"
 	"github.com/cyrusaf/ctxlog"
+	"github.com/getsentry/sentry-go"
+	sentryhttp "github.com/getsentry/sentry-go/http"
 	"github.com/google/uuid"
 	"github.com/ssoready/conf"
 	backendinterceptor "github.com/tesseral-labs/tesseral/internal/backend/authn/interceptor"
@@ -59,6 +61,15 @@ import (
 )
 
 func main() {
+	// do direct os.Getenv here so that we don't depend on secretload, conf, or
+	// other things that themselves may fail
+	if err := sentry.Init(sentry.ClientOptions{
+		Dsn:         os.Getenv("API_SENTRY_DSN"),
+		Environment: os.Getenv("API_SENTRY_ENVIRONMENT"),
+	}); err != nil {
+		panic(fmt.Errorf("init sentry: %w", err))
+	}
+
 	slog.SetDefault(slog.New(ctxlog.NewHandler(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{AddSource: true}))))
 
 	if err := secretload.Load(context.Background()); err != nil {
@@ -318,6 +329,9 @@ func main() {
 
 	// Use the slogcorrelation.NewHandler to add correlation IDs to the request
 	serve := slogcorrelation.NewHandler(mux)
+
+	// wrap all http requests with sentry
+	serve = sentryhttp.New(sentryhttp.Options{}).Handle(serve)
 
 	slog.Info("serve")
 	if config.RunAsLambda {
