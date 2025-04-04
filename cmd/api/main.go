@@ -332,7 +332,9 @@ func main() {
 	// a Matryoshka doll
 
 	// wrap all http requests with sentry
-	serve := sentryhttp.New(sentryhttp.Options{}).Handle(mux)
+	serve := sentryhttp.New(sentryhttp.Options{
+		Repanic: true,
+	}).Handle(mux)
 
 	// add correlation IDs to logs
 	serve = slogcorrelation.NewHandler(serve)
