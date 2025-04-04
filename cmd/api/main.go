@@ -331,11 +331,11 @@ func main() {
 	// These handlers are registered in a FILO order much like
 	// a Matryoshka doll
 
-	// Use the slogcorrelation.NewHandler to add correlation IDs to the request
-	serve := slogcorrelation.NewHandler(mux)
-
 	// wrap all http requests with sentry
-	serve = sentryhttp.New(sentryhttp.Options{}).Handle(serve)
+	serve := sentryhttp.New(sentryhttp.Options{}).Handle(mux)
+
+	// add correlation IDs to logs
+	serve = slogcorrelation.NewHandler(serve)
 
 	slog.Info("serve")
 	if config.RunAsLambda {
