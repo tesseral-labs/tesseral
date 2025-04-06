@@ -68,7 +68,7 @@ const settingsPage: FC = () => {
     useState<string>('#ffffff');
   const [detectDarkModeEnabled, setDetectDarkModeEnabled] =
     useState<boolean>(false);
-  const [layout, setLayout] = useState<string>('center');
+  const [layout, setLayout] = useState<string>('centered');
   const [logo, setLogo] = useState<string>();
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [primaryColor, setPrimaryColor] = useState('#0f172a');
@@ -208,7 +208,7 @@ const settingsPage: FC = () => {
   useEffect(() => {
     if (getProjectUISettingsResponse) {
       setLayout(
-        getProjectUISettingsResponse.projectUiSettings?.logInLayout || 'center',
+        getProjectUISettingsResponse.projectUiSettings?.logInLayout || 'centered',
       );
       setDetectDarkModeEnabled(
         getProjectUISettingsResponse.projectUiSettings?.detectDarkModeEnabled ||
@@ -334,16 +334,16 @@ const settingsPage: FC = () => {
                         <div
                           className={cn(
                             'p-4 border rounded-sm relative',
-                            layout === 'center'
+                            layout === 'centered'
                               ? 'border-primary border-2 cursor-default'
                               : 'cursor-pointer',
                           )}
-                          onClick={() => setLayout('center')}
+                          onClick={() => setLayout('centered')}
                         >
                           <div
                             className={cn(
                               'font-semibold text-sm',
-                              layout === 'center'
+                              layout === 'centered'
                                 ? 'text-primary'
                                 : 'text-muted-foreground',
                             )}
@@ -353,7 +353,7 @@ const settingsPage: FC = () => {
                               size={16}
                             />
                             Center card
-                            {layout === 'center' && (
+                            {layout === 'centered' && (
                               <div className="h-5 w-5 text-white bg-primary rounded-full flex justify-center items-center absolute top-2 right-2">
                                 <Check size={12} />
                               </div>
