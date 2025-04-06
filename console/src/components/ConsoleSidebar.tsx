@@ -4,7 +4,7 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
-  SidebarGroupContent,
+  SidebarGroupContent, SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -15,10 +15,10 @@ import {
   SidebarRail,
 } from './ui/sidebar';
 import {
-  BadgeCheckIcon,
+  BadgeCheckIcon, BookIcon, BookOpenIcon, BugIcon,
   Building2Icon,
-  ChevronsUpDownIcon,
-  LayoutGridIcon,
+  ChevronsUpDownIcon, HomeIcon,
+  LayoutGridIcon, LifeBuoyIcon,
   LogOutIcon,
   PlusIcon,
   Settings2Icon,
@@ -131,8 +131,17 @@ const ConsoleSidebar: FC = () => {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
+          <SidebarGroupLabel>Project</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link to="/">
+                    <HomeIcon />
+                    Project Home
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <Link to="/organizations">
@@ -141,9 +150,6 @@ const ConsoleSidebar: FC = () => {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-            </SidebarMenu>
-
-            <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <Link to="/project-settings">
@@ -154,7 +160,7 @@ const ConsoleSidebar: FC = () => {
                 <SidebarMenuSub>
                   <SidebarMenuSubItem>
                     <SidebarMenuSubButton asChild>
-                      <Link to="/project-settings">General</Link>
+                      <Link to="/project-settings">General Settings</Link>
                     </SidebarMenuSubButton>
                   </SidebarMenuSubItem>
                   <SidebarMenuSubItem>
@@ -171,7 +177,34 @@ const ConsoleSidebar: FC = () => {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <SidebarMenu>
+        <SidebarGroup>
+          <SidebarGroupLabel>Resources</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link to="https://tesseral.com/docs/quickstart">
+                    <BookOpenIcon />
+                    Tesseral Documentation
+                  </Link>
+                </SidebarMenuButton>
+                <SidebarMenuButton asChild>
+                  <Link to="https://github.com/tesseral-labs/tesseral/issues/new">
+                    <BugIcon />
+                    Report an Issue
+                  </Link>
+                </SidebarMenuButton>
+                <SidebarMenuButton asChild>
+                  <Link to="mailto:support@tesseral.com">
+                    <LifeBuoyIcon />
+                    Contact Support
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+          <SidebarMenu>
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

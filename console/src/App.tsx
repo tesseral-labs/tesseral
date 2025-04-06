@@ -196,6 +196,10 @@ const AppWithinQueryClient = () => {
               element={<ViewProjectSettingsPage />}
             >
               <Route path="" element={<ProjectDetailsTab />} />
+              <Route
+                path="vault-ui-settings"
+                element={<ProjectUISettingsPage />}
+              />
               <Route path="vault-domain-settings"
                      element={<VaultDomainSettingsTab />} />
             </Route>
@@ -221,11 +225,6 @@ const AppWithinQueryClient = () => {
             <Route
               path="project-settings/api-keys/backend-api-keys/:backendApiKeyId"
               element={<ViewBackendAPIKeyPage />}
-            />
-
-            <Route
-              path="project-settings/vault-ui-settings"
-              element={<ProjectUISettingsPage />}
             />
 
             <Route path="organizations" element={<ListOrganizationsPage />} />
