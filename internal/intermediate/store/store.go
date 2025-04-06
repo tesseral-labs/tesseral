@@ -18,6 +18,7 @@ import (
 )
 
 type Store struct {
+	consoleDomain                         string
 	authAppsRootDomain                    string
 	db                                    *pgxpool.Pool
 	dogfoodProjectID                      *uuid.UUID
@@ -37,6 +38,7 @@ type Store struct {
 }
 
 type NewStoreParams struct {
+	ConsoleDomain                         string
 	AuthAppsRootDomain                    string
 	DB                                    *pgxpool.Pool
 	DogfoodProjectID                      *uuid.UUID
@@ -55,6 +57,7 @@ type NewStoreParams struct {
 
 func New(p NewStoreParams) *Store {
 	store := &Store{
+		consoleDomain:      p.ConsoleDomain,
 		authAppsRootDomain: p.AuthAppsRootDomain,
 		db:                 p.DB,
 		dogfoodProjectID:   p.DogfoodProjectID,
