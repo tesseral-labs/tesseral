@@ -93,8 +93,7 @@ export const ViewUserInvitePage = () => {
       </PageTitle>
       <PageCodeSubtitle>{userInviteId}</PageCodeSubtitle>
       <PageDescription>
-        A user invite lets outside collaborators join an organization. Lorem
-        ipsum dolor.
+        A User Invite lets outside collaborators join an organization.
       </PageDescription>
 
       <Card className="my-8">

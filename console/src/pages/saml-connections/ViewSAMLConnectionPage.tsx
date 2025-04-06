@@ -98,14 +98,14 @@ export const ViewSAMLConnectionPage = () => {
       <PageCodeSubtitle>{samlConnectionId}</PageCodeSubtitle>
       <PageDescription>
         A SAML connection is a link between Tesseral and your customer's
-        enterprise Identity Provider. Lorem ipsum dolor.
+        enterprise Identity Provider.
       </PageDescription>
 
       <Card className="my-8">
         <CardHeader className="flex-row justify-between items-center">
           <div className="flex flex-col space-y-1 5">
             <CardTitle>Configuration</CardTitle>
-            <CardDescription>Lorem ipsum dolor.</CardDescription>
+            <CardDescription>Details about this SAML Connection.</CardDescription>
           </div>
           <Button variant="outline" asChild>
             <Link

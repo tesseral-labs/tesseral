@@ -59,7 +59,7 @@ export const OrganizationSAMLConnectionsTab = () => {
           <CardTitle>SAML Connections</CardTitle>
           <CardDescription>
             A SAML connection is a link between Tesseral and your customer's
-            enterprise Identity Provider. Lorem ipsum dolor.
+            enterprise Identity Provider.
           </CardDescription>
         </div>
         <Button variant="outline" onClick={handleCreateSAMLConnection}>

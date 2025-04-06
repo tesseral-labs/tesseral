@@ -59,7 +59,7 @@ export const OrganizationDetailsTab = () => {
           <div className="flex flex-col space-y-1 5">
             <CardTitle>Details</CardTitle>
             <CardDescription>
-              Additional details about your organization. Lorem ipsum dolor.
+              Additional details about this Organization.
             </CardDescription>
           </div>
           <Button variant="outline" asChild>

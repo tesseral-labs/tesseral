@@ -111,15 +111,14 @@ export const ViewSCIMAPIKeyPage = () => {
       <PageTitle>{getScimApiKeyResponse?.scimApiKey?.displayName}</PageTitle>
       <PageCodeSubtitle>{scimApiKeyId}</PageCodeSubtitle>
       <PageDescription>
-        A SCIM API key lets your customer do enterprise directory syncing. Lorem
-        ipsum dolor.
+        A SCIM API key lets your customer do enterprise directory syncing.
       </PageDescription>
 
       <Card className="my-8">
         <CardHeader className="flex-row justify-between items-center">
           <div className="flex flex-col space-y-1 5">
             <CardTitle>Configuration</CardTitle>
-            <CardDescription>Lorem ipsum dolor.</CardDescription>
+            <CardDescription>Details about this SCIM API Key.</CardDescription>
           </div>
           <EditSCIMAPIKeyButton />
         </CardHeader>

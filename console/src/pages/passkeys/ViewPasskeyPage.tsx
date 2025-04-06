@@ -118,7 +118,7 @@ export const ViewPasskeyPage = () => {
 
       <PageTitle>Passkey</PageTitle>
       <PageCodeSubtitle>{passkeyId}</PageCodeSubtitle>
-      <PageDescription>Lorem ipsum dolor.</PageDescription>
+      <PageDescription>A Passkey is a secondary authentication method tied a User, such a security key or Touch ID.</PageDescription>
 
       <Card className="my-8">
         <CardHeader>

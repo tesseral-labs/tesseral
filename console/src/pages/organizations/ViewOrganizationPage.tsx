@@ -100,8 +100,7 @@ export const ViewOrganizationPage = () => {
       </PageTitle>
       <PageCodeSubtitle>{organizationId}</PageCodeSubtitle>
       <PageDescription>
-        An organization represents one of your business customers. Lorem ipsum
-        dolor.
+        An Organization represents one of your business customers.
       </PageDescription>
 
       <Card className="my-8">

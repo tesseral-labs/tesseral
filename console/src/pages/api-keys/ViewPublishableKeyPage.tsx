@@ -96,16 +96,16 @@ export const ViewPublishableKeyPage = () => {
       </PageTitle>
       <PageCodeSubtitle>{publishableKeyId}</PageCodeSubtitle>
       <PageDescription>
-        Tesseral's client-side SDKs require a publishable key. Publishable keys
-        can be publicly accessible in your web or mobile app's client-side code.
-        Lorem ipsum dolor.
+        Tesseral's client-side SDKs require a Publishable Key. Publishable Keys
+        can safely be publicly accessible in your web or mobile app's
+        client-side code.
       </PageDescription>
 
       <Card className="my-8">
         <CardHeader className="flex-row justify-between items-center">
           <div className="flex flex-col space-y-1 5">
             <CardTitle>Configuration</CardTitle>
-            <CardDescription>Lorem ipsum dolor.</CardDescription>
+            <CardDescription>Details about this Publishable Key.</CardDescription>
           </div>
           <EditPublishableKeyButton />
         </CardHeader>
@@ -119,10 +119,10 @@ export const ViewPublishableKeyPage = () => {
                 </div>
               </div>
               <div>
-                <div className="font-semibold">Support Relayed Sessions</div>
+                <div className="font-semibold">Dev Mode</div>
                 <div className="truncate">
                   {getPublishableKeyResponse?.publishableKey
-                    ?.supportRelayedSessions
+                    ?.devMode
                     ? 'Enabled'
                     : 'Disabled'}
                 </div>
