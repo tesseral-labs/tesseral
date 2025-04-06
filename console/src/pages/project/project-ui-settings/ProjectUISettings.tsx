@@ -247,34 +247,6 @@ const settingsPage: FC = () => {
 
   return (
     <div>
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/">Home</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/project-settings">Project settings</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Vault UI settings</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-
-      <PageTitle>
-        {getProjectResponse?.project?.displayName} – Vault UI Settings
-      </PageTitle>
-      <PageCodeSubtitle>{getProjectResponse?.project?.id}</PageCodeSubtitle>
-      <PageDescription>
-        Control how your vault's UI looks for end-users.
-      </PageDescription>
-
       <div className="mt-8">
         <form onSubmit={handleSubmit}>
           <Card>
