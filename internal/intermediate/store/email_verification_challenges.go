@@ -163,6 +163,11 @@ func (s *Store) sendEmailVerificationChallenge(ctx context.Context, toAddress st
 
 	subject := fmt.Sprintf("%s - Verify your email address", qProject.DisplayName)
 
+	vaultDomain := qProject.VaultDomain
+	if authn.ProjectID(ctx) == *s.dogfoodProjectID {
+		vaultDomain = s.consoleDomain
+	}
+
 	var body bytes.Buffer
 	if err := emailVerificationEmailBodyTmpl.Execute(&body, struct {
 		ProjectDisplayName    string
@@ -170,7 +175,7 @@ func (s *Store) sendEmailVerificationChallenge(ctx context.Context, toAddress st
 		EmailVerificationCode string
 	}{
 		ProjectDisplayName:    qProject.DisplayName,
-		EmailVerificationLink: fmt.Sprintf("https://%s/verify-email?code=%s", qProject.VaultDomain, secretToken),
+		EmailVerificationLink: fmt.Sprintf("https://%s/verify-email?code=%s", vaultDomain, secretToken),
 		EmailVerificationCode: secretToken,
 	}); err != nil {
 		return fmt.Errorf("execute email verification email body template: %w", err)

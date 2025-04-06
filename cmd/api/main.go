@@ -81,6 +81,7 @@ func main() {
 
 	config := struct {
 		RunAsLambda                         bool          `conf:"run_as_lambda,noredact"`
+		ConsoleDomain                       string        `conf:"console_domain,noredact"`
 		AuthAppsRootDomain                  string        `conf:"auth_apps_root_domain,noredact"`
 		TesseralDNSVaultCNAMEValue          string        `conf:"tesseral_dns_vault_cname_value,noredact"`
 		SESSPFMXRecordValue                 string        `conf:"ses_spf_mx_record_value,noredact"`
@@ -226,6 +227,7 @@ func main() {
 
 	// Register the intermediate service
 	intermediateStore := intermediatestore.New(intermediatestore.NewStoreParams{
+		ConsoleDomain:                         config.ConsoleDomain,
 		AuthAppsRootDomain:                    config.AuthAppsRootDomain,
 		DB:                                    db,
 		DogfoodProjectID:                      &uuidDogfoodProjectID,
