@@ -2333,7 +2333,8 @@ SET
     update_time = now(),
     primary_color = $3,
     detect_dark_mode_enabled = $4,
-    dark_mode_primary_color = $5
+    dark_mode_primary_color = $5,
+    log_in_layout = $6
 WHERE
     id = $1
     AND project_id = $2
@@ -2347,6 +2348,7 @@ type UpdateProjectUISettingsParams struct {
 	PrimaryColor          *string
 	DetectDarkModeEnabled bool
 	DarkModePrimaryColor  *string
+	LogInLayout           LogInLayout
 }
 
 func (q *Queries) UpdateProjectUISettings(ctx context.Context, arg UpdateProjectUISettingsParams) (ProjectUiSetting, error) {
@@ -2356,6 +2358,7 @@ func (q *Queries) UpdateProjectUISettings(ctx context.Context, arg UpdateProject
 		arg.PrimaryColor,
 		arg.DetectDarkModeEnabled,
 		arg.DarkModePrimaryColor,
+		arg.LogInLayout,
 	)
 	var i ProjectUiSetting
 	err := row.Scan(

@@ -367,16 +367,16 @@ const settingsPage: FC = () => {
                         <div
                           className={cn(
                             'p-4 border rounded-sm relative',
-                            layout === 'side-by-side'
+                            layout === 'side_by_side'
                               ? 'border-primary border-2 cursor-default'
                               : 'cursor-pointer',
                           )}
-                          onClick={() => setLayout('side-by-side')}
+                          onClick={() => setLayout('side_by_side')}
                         >
                           <div
                             className={cn(
                               'font-semibold text-sm',
-                              layout === 'side-by-side'
+                              layout === 'side_by_side'
                                 ? 'text-primary'
                                 : 'text-muted-foreground',
                             )}
@@ -386,7 +386,7 @@ const settingsPage: FC = () => {
                               size={16}
                             />
                             Side by side
-                            {layout === 'side-by-side' && (
+                            {layout === 'side_by_side' && (
                               <div className="h-5 w-5 text-white bg-primary rounded-full flex justify-center items-center absolute top-2 right-2">
                                 <Check size={12} />
                               </div>
@@ -567,7 +567,7 @@ const settingsPage: FC = () => {
                         className={cn('rounded border', darkMode ? 'dark' : '')}
                         ref={previewRef}
                       >
-                        {layout === 'side-by-side' ? (
+                        {layout === 'side_by_side' ? (
                           <SideBySideLayout>
                             <AuthCardPreview
                               darkMode={darkMode}

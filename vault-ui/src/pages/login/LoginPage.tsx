@@ -38,13 +38,16 @@ import {
   ProjectSettingsProvider,
   useProjectSettings,
 } from "@/lib/project-settings";
+import { UISettingsInjector } from "@/components/login/UISettingsInjector";
 
 export function LoginPage() {
   return (
     <ProjectSettingsProvider>
-      <LoginPageInner>
-        <LoginPageContents />
-      </LoginPageInner>
+      <UISettingsInjector>
+        <LoginPageInner>
+          <LoginPageContents />
+        </LoginPageInner>
+      </UISettingsInjector>
     </ProjectSettingsProvider>
   );
 }

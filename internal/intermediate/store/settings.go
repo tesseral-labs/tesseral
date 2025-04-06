@@ -41,18 +41,15 @@ func (s *Store) GetSettings(ctx context.Context, req *intermediatev1.GetSettings
 }
 
 func (s *Store) parseSettings(qProject queries.Project, qProjectUISettings queries.ProjectUiSetting) *intermediatev1.Settings {
-	projectID := idformat.Project.Format(qProject.ID)
-
 	return &intermediatev1.Settings{
 		Id:                         idformat.ProjectUISettings.Format(qProjectUISettings.ID),
-		ProjectId:                  projectID,
+		ProjectId:                  idformat.Project.Format(qProject.ID),
 		ProjectDisplayName:         qProject.DisplayName,
 		ProjectEmailSendFromDomain: qProject.EmailSendFromDomain,
-		LogoUrl:                    fmt.Sprintf("%s/logos_v1/%s/logo", s.userContentBaseUrl, projectID),
-		FaviconUrl:                 fmt.Sprintf("%s/faviconss_v1/%s/favicon", s.userContentBaseUrl, projectID),
+		LogoUrl:                    fmt.Sprintf("%s/vault-ui-settings-v1/%s/logo", s.userContentBaseUrl, idformat.Project.Format(qProject.ID)),
 		PrimaryColor:               derefOrEmpty(qProjectUISettings.PrimaryColor),
 		DetectDarkModeEnabled:      qProjectUISettings.DetectDarkModeEnabled,
-		DarkModeLogoUrl:            fmt.Sprintf("%s/dark_mode_logos_v1/%s/dark_mode_logo", s.userContentBaseUrl, projectID),
+		DarkModeLogoUrl:            fmt.Sprintf("%s/vault-ui-settings-v1/%s/logo-dark", s.userContentBaseUrl, idformat.Project.Format(qProject.ID)),
 		DarkModePrimaryColor:       derefOrEmpty(qProjectUISettings.DarkModePrimaryColor),
 		LogInLayout:                string(qProjectUISettings.LogInLayout),
 		LogInWithEmail:             qProject.LogInWithEmail,
