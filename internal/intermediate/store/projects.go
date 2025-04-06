@@ -329,6 +329,7 @@ func (s *Store) createProjectForCurrentUser(ctx context.Context, q *queries.Quer
 		GoogleUserID:    qIntermediateSession.GoogleUserID,
 		MicrosoftUserID: qIntermediateSession.MicrosoftUserID,
 		PasswordBcrypt:  qIntermediateSession.NewUserPasswordBcrypt,
+		IsOwner:         true,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("create user: %w", err)
