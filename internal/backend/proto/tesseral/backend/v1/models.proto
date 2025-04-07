@@ -108,7 +108,6 @@ message ProjectUISettings {
   google.protobuf.Timestamp create_time = 3;
   google.protobuf.Timestamp update_time = 4;
   string logo_url = 5;
-  string favicon_url = 6;
   string primary_color = 7;
   bool detect_dark_mode_enabled = 8;
   string dark_mode_logo_url = 9;

@@ -230,7 +230,6 @@ message Settings {
   string project_display_name = 20;
   string project_email_send_from_domain = 21;
   string logo_url = 5;
-  string favicon_url = 6;
   string primary_color = 7;
   bool detect_dark_mode_enabled = 8;
   string dark_mode_logo_url = 9;

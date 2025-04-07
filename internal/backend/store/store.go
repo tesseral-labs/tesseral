@@ -28,6 +28,7 @@ type Store struct {
 	cloudflareDOH                         *cloudflaredoh.Client
 	pageEncoder                           pagetoken.Encoder
 	q                                     *queries.Queries
+	s3                                    *s3.Client
 	s3PresignClient                       *s3.PresignClient
 	s3UserContentBucketName               string
 	sessionSigningKeyKmsKeyID             string
@@ -72,6 +73,7 @@ func New(p NewStoreParams) *Store {
 		cloudflareDOH:                         p.CloudflareDOH,
 		pageEncoder:                           p.PageEncoder,
 		q:                                     queries.New(p.DB),
+		s3:                                    p.S3,
 		s3PresignClient:                       s3.NewPresignClient(p.S3),
 		s3UserContentBucketName:               p.S3UserContentBucketName,
 		sessionSigningKeyKmsKeyID:             p.SessionSigningKeyKmsKeyID,

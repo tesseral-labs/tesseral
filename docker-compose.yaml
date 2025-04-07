@@ -52,6 +52,7 @@ services:
       - "443:443"
     depends_on:
       - api
+    restart: always
     volumes:
       - ./.local/nginx:/etc/nginx/conf.d
   postgres:
@@ -76,6 +77,7 @@ services:
     environment:
       - initialBuckets=tesseral-user-content
       - root=containers3root
+      - retainFilesOnExit=true
     ports:
       - 9090:9090
     volumes:
