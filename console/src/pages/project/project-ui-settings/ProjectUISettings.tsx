@@ -153,6 +153,18 @@ const settingsPage: FC = () => {
 
       logoUploadUrl = logoPresignedUploadUrl;
       darkModeLogoUploadUrl = darkModeLogoPresignedUploadUrl;
+
+      // special-case local development, where the s3 that api can dial isn't
+      // the same s3 that the host can dial
+      if (logoPresignedUploadUrl.startsWith("http://s3:9090/")) {
+        logoUploadUrl = logoPresignedUploadUrl.replace("http://s3:9090/", "https://tesseralusercontent.example.com/");
+      }
+      if (darkModeLogoPresignedUploadUrl.startsWith('http://s3:9090/')) {
+        darkModeLogoUploadUrl = darkModeLogoPresignedUploadUrl.replace(
+          'http://s3:9090/',
+          'https://tesseralusercontent.example.com/',
+        );
+      }
     } catch (error) {
       const message = parseErrorMessage(error);
       toast.error('Failed to update vault UI settings', {
