@@ -183,6 +183,7 @@ const settingsPage: FC = () => {
           body: logoFile,
           headers: {
             'Content-Type': logoFile?.type || 'image/png',
+            'x-amz-meta-trigger': 'true',
           },
           method: 'PUT',
         });
@@ -204,6 +205,7 @@ const settingsPage: FC = () => {
           body: darkModeLogoFile,
           headers: {
             'Content-Type': darkModeLogoFile?.type || 'image/png',
+            'x-amz-meta-trigger': 'true',
           },
           method: 'PUT',
         });
