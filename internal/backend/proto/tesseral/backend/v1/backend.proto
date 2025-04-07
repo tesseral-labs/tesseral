@@ -826,6 +826,8 @@ message UpdateProjectUISettingsRequest {
   optional string primary_color = 2;
   bool detect_dark_mode_enabled = 3;
   optional string dark_mode_primary_color = 4;
+  optional string logo_content_type = 5;
+  optional string dark_mode_logo_content_type = 6;
 }
 
 message UpdateProjectUISettingsResponse {

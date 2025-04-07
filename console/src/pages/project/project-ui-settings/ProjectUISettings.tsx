@@ -149,6 +149,8 @@ const settingsPage: FC = () => {
           detectDarkModeEnabled,
           primaryColor,
           darkModePrimaryColor,
+          logoContentType: logoFile?.type,
+          darkModeLogoContentType: darkModeLogoFile?.type,
         });
 
       logoUploadUrl = logoPresignedUploadUrl;
@@ -156,8 +158,11 @@ const settingsPage: FC = () => {
 
       // special-case local development, where the s3 that api can dial isn't
       // the same s3 that the host can dial
-      if (logoPresignedUploadUrl.startsWith("http://s3:9090/")) {
-        logoUploadUrl = logoPresignedUploadUrl.replace("http://s3:9090/", "https://tesseralusercontent.example.com/");
+      if (logoPresignedUploadUrl.startsWith('http://s3:9090/')) {
+        logoUploadUrl = logoPresignedUploadUrl.replace(
+          'http://s3:9090/',
+          'https://tesseralusercontent.example.com/',
+        );
       }
       if (darkModeLogoPresignedUploadUrl.startsWith('http://s3:9090/')) {
         darkModeLogoUploadUrl = darkModeLogoPresignedUploadUrl.replace(
@@ -220,7 +225,8 @@ const settingsPage: FC = () => {
   useEffect(() => {
     if (getProjectUISettingsResponse) {
       setLayout(
-        getProjectUISettingsResponse.projectUiSettings?.logInLayout || 'centered',
+        getProjectUISettingsResponse.projectUiSettings?.logInLayout ||
+          'centered',
       );
       setDetectDarkModeEnabled(
         getProjectUISettingsResponse.projectUiSettings?.detectDarkModeEnabled ||
