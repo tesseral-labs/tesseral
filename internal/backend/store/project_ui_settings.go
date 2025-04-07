@@ -145,9 +145,7 @@ func (s *Store) getPresignedUrlForFile(ctx context.Context, fileKey string, cont
 
 	if contentType != nil {
 		putObjectParams.ContentType = aws.String(*contentType)
-		putObjectParams.Metadata = map[string]string{
-			"x-amz-meta-trigger": "true", // anything to force header signing path
-		}
+		putObjectParams.ContentLength = aws.Int64(1)
 	}
 
 	req, err := s.s3PresignClient.PresignPutObject(ctx, putObjectParams, func(opts *s3.PresignOptions) {
