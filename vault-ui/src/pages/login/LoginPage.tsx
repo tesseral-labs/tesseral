@@ -67,39 +67,18 @@ function LoginPageInner({ children }: { children?: React.ReactNode }) {
 }
 
 function CenteredLoginPage({ children }: { children?: React.ReactNode }) {
-  const settings = useProjectSettings();
-  const isDarkMode = useDarkMode();
-
-  const logo = isDarkMode ? settings?.darkModeLogoUrl : settings?.logoUrl
-
   return (
     <div className="bg-body w-screen min-h-screen mx-auto flex flex-col justify-center items-center py-8">
-      <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 flex justify-center">
-        {logo && (
-          <img alt="logo" src={logo} className="mb-8 max-w-[180px] max-h-[80px]" />
-        )}
-      </div>
-
       <div className="max-w-sm w-full mx-auto">{children}</div>
     </div>
   );
 }
 
 function SideBySideLoginPage({ children }: { children?: React.ReactNode }) {
-  const settings = useProjectSettings();
-  const isDarkMode = useDarkMode();
-  const logo = isDarkMode ? settings?.darkModeLogoUrl : settings?.logoUrl
-
   return (
     <div className="bg-body w-screen min-h-screen grid grid-cols-2 gap-0">
       <div className="bg-primary" />
       <div className="flex flex-col justify-center items-center p-4">
-        <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 flex justify-center">
-          {logo && (
-            <img alt="logo" src={logo} className="mb-8 max-w-[180px] max-h-[80px]" />
-          )}
-        </div>
-
         <div className="max-w-sm w-full mx-auto">{children}</div>
       </div>
     </div>
