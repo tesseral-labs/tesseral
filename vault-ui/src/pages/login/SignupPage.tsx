@@ -10,6 +10,7 @@ import { z } from "zod";
 import { GoogleIcon } from "@/components/login/GoogleIcon";
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
 import { MicrosoftIcon } from "@/components/login/MicrosoftIcon";
+import { UISettingsInjector } from "@/components/login/UISettingsInjector";
 import { Button } from "@/components/ui/button";
 import {
   CardContent,
@@ -33,12 +34,10 @@ import {
   issueEmailVerificationChallenge,
   setEmailAsPrimaryLoginFactor,
 } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
-import { useDarkMode } from "@/lib/dark-mode";
 import {
   ProjectSettingsProvider,
   useProjectSettings,
 } from "@/lib/project-settings";
-import { UISettingsInjector } from "@/components/login/UISettingsInjector";
 
 export function SignupPage() {
   return (
