@@ -121,14 +121,14 @@ func (s *Store) UpdateProjectUISettings(ctx context.Context, req *backendv1.Upda
 	}
 
 	// generate a presigned URL for the dark mode logo file
-	darkModeLogoPresignedUploadUrl, err := s.getPresignedUrlForFile(ctx, fmt.Sprintf("vault-ui-settings-v1/%s/logo-dark", idformat.Project.Format(authn.ProjectID(ctx))), *req.DarkModeLogoContentType)
+	darkModeLogoPresignedUploadUrl, err := s.getPresignedUrlForFile(ctx, fmt.Sprintf("vault-ui-settings-v1/%s/logo-dark", idformat.Project.Format(authn.ProjectID(ctx))), req.DarkModeLogoContentType)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get presigned URL for dark mode logo file: %w", err)
 	}
 	res.DarkModeLogoPresignedUploadUrl = darkModeLogoPresignedUploadUrl
 
 	// generate a presigned URL for the logo file
-	logoPresignedUploadUrl, err := s.getPresignedUrlForFile(ctx, fmt.Sprintf("vault-ui-settings-v1/%s/logo", idformat.Project.Format(authn.ProjectID(ctx))), *req.LogoContentType)
+	logoPresignedUploadUrl, err := s.getPresignedUrlForFile(ctx, fmt.Sprintf("vault-ui-settings-v1/%s/logo", idformat.Project.Format(authn.ProjectID(ctx))), req.LogoContentType)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get presigned URL for logo file: %w", err)
 	}
@@ -137,12 +137,17 @@ func (s *Store) UpdateProjectUISettings(ctx context.Context, req *backendv1.Upda
 	return res, nil
 }
 
-func (s *Store) getPresignedUrlForFile(ctx context.Context, fileKey string, contentType string) (string, error) {
-	req, err := s.s3PresignClient.PresignPutObject(ctx, &s3.PutObjectInput{
-		Bucket:      aws.String(s.s3UserContentBucketName),
-		Key:         aws.String(fileKey),
-		ContentType: aws.String(contentType),
-	}, func(opts *s3.PresignOptions) {
+func (s *Store) getPresignedUrlForFile(ctx context.Context, fileKey string, contentType *string) (string, error) {
+	putObjectParams := &s3.PutObjectInput{
+		Bucket: aws.String(s.s3UserContentBucketName),
+		Key:    aws.String(fileKey),
+	}
+
+	if contentType != nil {
+		putObjectParams.ContentType = contentType
+	}
+
+	req, err := s.s3PresignClient.PresignPutObject(ctx, putObjectParams, func(opts *s3.PresignOptions) {
 		opts.Expires = time.Minute // set expiry to one minute
 	})
 
