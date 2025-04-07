@@ -17,26 +17,12 @@ import React, {
 } from 'react';
 import SideBySideLayout from '@/components/vault-preview/layouts/side-by-side';
 import CenterLayout from '@/components/vault-preview/layouts/center';
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
-import {
-  PageCodeSubtitle,
-  PageDescription,
-  PageTitle,
-} from '@/components/page';
 import { useMutation, useQuery } from '@connectrpc/connect-query';
 import {
   getProject,
   getProjectUISettings,
   updateProjectUISettings,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
-import { Link } from 'react-router-dom';
 import { Label } from '@/components/ui/label';
 import {
   Check,
@@ -56,7 +42,6 @@ const settingsPage: FC = () => {
   const darkModeLogoPickerRef = createRef<HTMLInputElement>();
   const logoPickerRef = createRef<HTMLInputElement>();
   const previewRef = createRef<HTMLDivElement>();
-  const { data: getProjectResponse } = useQuery(getProject, {});
   const { data: getProjectUISettingsResponse } = useQuery(getProjectUISettings);
 
   const updateProjectUISettingsMutation = useMutation(updateProjectUISettings);
@@ -149,7 +134,9 @@ const settingsPage: FC = () => {
           detectDarkModeEnabled,
           primaryColor,
           darkModePrimaryColor,
+          logoContentLength: logoFile?.size,
           logoContentType: logoFile?.type,
+          darkModeLogoContentLength: darkModeLogoFile?.size,
           darkModeLogoContentType: darkModeLogoFile?.type,
         });
 
