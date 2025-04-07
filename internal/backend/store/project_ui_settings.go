@@ -144,7 +144,7 @@ func (s *Store) getPresignedUrlForFile(ctx context.Context, fileKey string, cont
 	}
 
 	if contentType != nil {
-		putObjectParams.ContentType = contentType
+		putObjectParams.ContentType = aws.String(*contentType)
 	}
 
 	req, err := s.s3PresignClient.PresignPutObject(ctx, putObjectParams, func(opts *s3.PresignOptions) {
