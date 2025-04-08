@@ -16,7 +16,7 @@ const ACCESS_TOKEN_NAME = `tesseral_${DOGFOOD_PROJECT_ID}_access_token`;
 
 function useAccessTokenInternal() {
   const accessToken = useMemo(() => {
-    return document.cookie.split(';').find((row) => row.startsWith(`${ACCESS_TOKEN_NAME}=`))?.split('=')[1];
+    return document.cookie.split(';').find((row) => row.trim().startsWith(`${ACCESS_TOKEN_NAME}=`))?.split('=')[1];
   }, [document.cookie]);
 
   const accessTokenLikelyValid = useAccessTokenLikelyValid(accessToken ?? '');
