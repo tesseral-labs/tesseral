@@ -18,19 +18,7 @@ const AuthCardPreview: FC<AuthCardProps> = ({
   return (
     <div>
       <div className="h-6 w-full flex flex-col justify-center">
-        {logo && (
-          <img
-            className="h-full w-full object-contain"
-            src={logo}
-            onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
-              const target = e.target as HTMLImageElement;
-              target.onerror = null;
-              target.src = darkMode
-                ? '/images/tesseral-logo-white.svg'
-                : '/images/tesseral-logo-black.svg';
-            }}
-          />
-        )}
+        {logo && <img className="h-full w-full object-contain" src={logo} />}
       </div>
 
       <div

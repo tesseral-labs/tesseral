@@ -156,8 +156,11 @@ const settingsPage: FC = () => {
 
       // special-case local development, where the s3 that api can dial isn't
       // the same s3 that the host can dial
-      if (logoPresignedUploadUrl.startsWith("http://s3:9090/")) {
-        logoUploadUrl = logoPresignedUploadUrl.replace("http://s3:9090/", "https://tesseralusercontent.example.com/");
+      if (logoPresignedUploadUrl.startsWith('http://s3:9090/')) {
+        logoUploadUrl = logoPresignedUploadUrl.replace(
+          'http://s3:9090/',
+          'https://tesseralusercontent.example.com/',
+        );
       }
       if (darkModeLogoPresignedUploadUrl.startsWith('http://s3:9090/')) {
         darkModeLogoUploadUrl = darkModeLogoPresignedUploadUrl.replace(
@@ -220,7 +223,8 @@ const settingsPage: FC = () => {
   useEffect(() => {
     if (getProjectUISettingsResponse) {
       setLayout(
-        getProjectUISettingsResponse.projectUiSettings?.logInLayout || 'centered',
+        getProjectUISettingsResponse.projectUiSettings?.logInLayout ||
+          'centered',
       );
       setDetectDarkModeEnabled(
         getProjectUISettingsResponse.projectUiSettings?.detectDarkModeEnabled ||
@@ -238,8 +242,6 @@ const settingsPage: FC = () => {
       // Light mode logo
       if (getProjectUISettingsResponse.projectUiSettings?.logoUrl) {
         setLogo(getProjectUISettingsResponse.projectUiSettings.logoUrl);
-      } else {
-        setLogo('/images/tesseral-logo-black.svg');
       }
 
       // Dark mode logo
@@ -247,8 +249,6 @@ const settingsPage: FC = () => {
         setDarkModeLogo(
           getProjectUISettingsResponse.projectUiSettings.darkModeLogoUrl,
         );
-      } else {
-        setDarkModeLogo('/images/tesseral-logo-white.svg');
       }
     }
   }, [getProjectUISettingsResponse]);
@@ -280,10 +280,9 @@ const settingsPage: FC = () => {
                       layout ===
                         getProjectUISettingsResponse?.projectUiSettings
                           ?.logInLayout &&
-                      (logo ===
+                      logo ===
                         getProjectUISettingsResponse?.projectUiSettings
-                          ?.logoUrl ||
-                        logo === '/images/tesseral-logo-black.svg') &&
+                          ?.logoUrl &&
                       (primaryColor ===
                         getProjectUISettingsResponse?.projectUiSettings
                           ?.primaryColor ||
@@ -292,10 +291,9 @@ const settingsPage: FC = () => {
                         getProjectUISettingsResponse?.projectUiSettings
                           ?.darkModePrimaryColor ||
                         darkModePrimaryColor === '#ffffff') &&
-                      (darkModeLogo ===
+                      darkModeLogo ===
                         getProjectUISettingsResponse?.projectUiSettings
-                          ?.darkModeLogoUrl ||
-                        darkModeLogo === '/images/tesseral-logo-white.svg')
+                          ?.darkModeLogoUrl
                     }
                     type="submit"
                   >
@@ -410,26 +408,14 @@ const settingsPage: FC = () => {
                         </p>
 
                         <div
-                          className="group cursor-pointer mt-2 p-4 rounded-sm border inline-block relative"
+                          className="group cursor-pointer mt-2 p-4 rounded-sm border inline-block relative min-w-32"
                           onClick={() => logoPickerRef.current?.click()}
                         >
-                          {logo && (
-                            <img
-                              className="max-h-8"
-                              src={logo}
-                              onError={(
-                                e: SyntheticEvent<HTMLImageElement, Event>,
-                              ) => {
-                                const target = e.target as HTMLImageElement;
-                                target.onerror = null;
-                                target.src = '/images/tesseral-logo-black.svg';
-                              }}
-                            />
-                          )}
+                          {logo && <img className="max-h-8" src={logo} />}
 
                           <div className="logo-overlay absolute top-0 left-0 w-full h-full hidden group-hover:block">
                             <div className="bg-black bg-opacity-75 h-full w-full rounded-sm" />
-                            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-sm font-semibold">
+                            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-xs font-semibold w-full text-center">
                               Update logo
                             </div>
                           </div>
@@ -464,29 +450,18 @@ const settingsPage: FC = () => {
                             </p>
 
                             <div
-                              className="group mt-2 p-4 rounded-sm border inline-block bg-primary cursor-pointer relative"
+                              className="group mt-2 p-4 rounded-sm border inline-block bg-primary cursor-pointer relative min-w-32"
                               onClick={() =>
                                 darkModeLogoPickerRef.current?.click()
                               }
                             >
                               {darkModeLogo && (
-                                <img
-                                  className="max-h-8"
-                                  src={darkModeLogo}
-                                  onError={(
-                                    e: SyntheticEvent<HTMLImageElement, Event>,
-                                  ) => {
-                                    const target = e.target as HTMLImageElement;
-                                    target.onerror = null;
-                                    target.src =
-                                      '/images/tesseral-logo-white.svg';
-                                  }}
-                                />
+                                <img className="max-h-8" src={darkModeLogo} />
                               )}
 
                               <div className="logo-overlay absolute top-0 left-0 w-full h-full hidden group-hover:block">
                                 <div className="bg-black bg-opacity-75 h-full w-full rounded-sm" />
-                                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-sm font-semibold">
+                                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-xs font-semibold w-full text-center">
                                   Update logo
                                 </div>
                               </div>
