@@ -138,12 +138,10 @@ func (s *Store) UpdateProjectUISettings(ctx context.Context, req *backendv1.Upda
 }
 
 func (s *Store) getPresignedUrlForFile(ctx context.Context, fileKey string) (string, error) {
-	putObjectParams := &s3.PutObjectInput{
+	req, err := s.s3PresignClient.PresignPutObject(ctx, &s3.PutObjectInput{
 		Bucket: aws.String(s.s3UserContentBucketName),
 		Key:    aws.String(fileKey),
-	}
-
-	req, err := s.s3PresignClient.PresignPutObject(ctx, putObjectParams, func(opts *s3.PresignOptions) {
+	}, func(opts *s3.PresignOptions) {
 		opts.Expires = time.Minute // set expiry to one minute
 	})
 
