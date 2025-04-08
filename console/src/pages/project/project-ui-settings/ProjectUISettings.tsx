@@ -168,7 +168,7 @@ const settingsPage: FC = () => {
           body: logoFile,
           headers: {
             'Content-Type': logoFile?.type || 'image/png',
-            'x-amz-acl': 'public-read',
+            'Content-Length': `${logoFile?.size}`,
           },
           method: 'PUT',
         });
@@ -190,7 +190,7 @@ const settingsPage: FC = () => {
           body: darkModeLogoFile,
           headers: {
             'Content-Type': darkModeLogoFile?.type || 'image/png',
-            'x-amz-acl': 'public-read',
+            'Content-Length': `${darkModeLogoFile?.size}`,
           },
           method: 'PUT',
         });

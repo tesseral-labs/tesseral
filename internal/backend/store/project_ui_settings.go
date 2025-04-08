@@ -139,13 +139,13 @@ func (s *Store) UpdateProjectUISettings(ctx context.Context, req *backendv1.Upda
 
 func (s *Store) getPresignedUrlForFile(ctx context.Context, fileKey string, contentType *string) (string, error) {
 	putObjectParams := &s3.PutObjectInput{
-		ACL:    types.ObjectCannedACLPublicRead,
 		Bucket: aws.String(s.s3UserContentBucketName),
 		Key:    aws.String(fileKey),
 	}
 
 	if contentType != nil {
 		putObjectParams.ContentType = aws.String(*contentType)
+		putObjectParams.ContentLength = aws.Int64(1)
 	}
 
 	req, err := s.s3PresignClient.PresignPutObject(ctx, putObjectParams, func(opts *s3.PresignOptions) {
