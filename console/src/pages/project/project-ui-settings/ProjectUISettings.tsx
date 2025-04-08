@@ -134,9 +134,7 @@ const settingsPage: FC = () => {
           detectDarkModeEnabled,
           primaryColor,
           darkModePrimaryColor,
-          logoContentLength: logoFile?.size,
           logoContentType: logoFile?.type,
-          darkModeLogoContentLength: darkModeLogoFile?.size,
           darkModeLogoContentType: darkModeLogoFile?.type,
         });
 
@@ -170,6 +168,7 @@ const settingsPage: FC = () => {
           body: logoFile,
           headers: {
             'Content-Type': logoFile?.type || 'image/png',
+            'x-amz-acl': 'public-read',
           },
           method: 'PUT',
         });
@@ -191,6 +190,7 @@ const settingsPage: FC = () => {
           body: darkModeLogoFile,
           headers: {
             'Content-Type': darkModeLogoFile?.type || 'image/png',
+            'x-amz-acl': 'public-read',
           },
           method: 'PUT',
         });
