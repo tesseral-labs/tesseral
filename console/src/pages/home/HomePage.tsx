@@ -111,15 +111,7 @@ export function HomePage() {
           </div>
 
           <div className="bg-muted flex items-center justify-center p-6">
-            <div className="aspect-video w-full overflow-hidden rounded-md">
-              <iframe
-                className="w-full h-full"
-                src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-                title="A message from our founders"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
-            </div>
+            <img className="max-h-16" src="/images/tesseral-beta.svg" />
           </div>
         </div>
       </Card>
