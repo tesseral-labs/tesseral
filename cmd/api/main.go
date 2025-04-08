@@ -41,12 +41,14 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/googleoauth"
 	"github.com/tesseral-labs/tesseral/internal/hexkey"
 	"github.com/tesseral-labs/tesseral/internal/httplambda"
+	"github.com/tesseral-labs/tesseral/internal/httplog"
 	intermediateinterceptor "github.com/tesseral-labs/tesseral/internal/intermediate/authn/interceptor"
 	"github.com/tesseral-labs/tesseral/internal/intermediate/gen/tesseral/intermediate/v1/intermediatev1connect"
 	intermediateservice "github.com/tesseral-labs/tesseral/internal/intermediate/service"
 	intermediatestore "github.com/tesseral-labs/tesseral/internal/intermediate/store"
 	"github.com/tesseral-labs/tesseral/internal/loadenv"
 	"github.com/tesseral-labs/tesseral/internal/microsoftoauth"
+	"github.com/tesseral-labs/tesseral/internal/opaqueinternalerror"
 	"github.com/tesseral-labs/tesseral/internal/pagetoken"
 	samlinterceptor "github.com/tesseral-labs/tesseral/internal/saml/authn/interceptor"
 	samlservice "github.com/tesseral-labs/tesseral/internal/saml/service"
@@ -190,6 +192,8 @@ func main() {
 			Store: backendStore,
 		},
 		connect.WithInterceptors(
+			opaqueinternalerror.NewInterceptor(),
+			httplog.NewInterceptor(),
 			backendinterceptor.New(backendStore, config.DogfoodProjectID),
 		),
 	)
@@ -216,6 +220,8 @@ func main() {
 			Cookier:           &cookier,
 		},
 		connect.WithInterceptors(
+			opaqueinternalerror.NewInterceptor(),
+			httplog.NewInterceptor(),
 			frontendinterceptor.New(frontendStore, projectid.NewSniffer(config.AuthAppsRootDomain, commonStore), &cookier),
 		),
 	)
@@ -250,6 +256,8 @@ func main() {
 			Cookier:           &cookier,
 		},
 		connect.WithInterceptors(
+			opaqueinternalerror.NewInterceptor(),
+			httplog.NewInterceptor(),
 			intermediateinterceptor.New(intermediateStore, projectid.NewSniffer(config.AuthAppsRootDomain, commonStore), &cookier),
 		),
 	)
@@ -265,6 +273,7 @@ func main() {
 	samlService := samlservice.Service{
 		Store:             samlStore,
 		AccessTokenIssuer: accesstoken.NewIssuer(commonStore),
+		Cookier:           &cookier,
 	}
 	samlServiceHandler := samlService.Handler()
 	samlServiceHandler = samlinterceptor.New(projectid.NewSniffer(config.AuthAppsRootDomain, commonStore), samlServiceHandler)

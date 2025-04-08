@@ -17,6 +17,7 @@ function PageShellInner() {
   const accessToken = useAccessToken()
   if (!accessToken) {
     window.location.href = '/login'
+    return null
   }
 
   return (
