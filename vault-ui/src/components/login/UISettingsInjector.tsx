@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 
 import { useDarkMode } from "@/lib/dark-mode";
 import { useProjectSettings } from "@/lib/project-settings";
-import { hexToHSL, isColorDark } from "@/lib/utils";
+import { cn, hexToHSL, isColorDark } from "@/lib/utils";
 
 export function UISettingsInjector({
   children,
@@ -43,5 +43,9 @@ export function UISettingsInjector({
     }
   }, [darkMode, settings]);
 
-  return <div ref={root}>{children}</div>;
+  return (
+    <div className={cn(darkMode ? "dark" : "light")} ref={root}>
+      {children}
+    </div>
+  );
 }

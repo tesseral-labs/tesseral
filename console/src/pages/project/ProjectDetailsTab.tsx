@@ -45,11 +45,9 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import Loader from '@/components/ui/loader';
 import { toast } from 'sonner';
 import { Switch } from '@/components/ui/switch';
 import { InputTags } from '@/components/input-tags';
-import { Project } from '@/gen/tesseral/backend/v1/models_pb';
 
 export const ProjectDetailsTab = () => {
   const { data: getProjectResponse } = useQuery(getProject, {});
@@ -161,22 +159,6 @@ export const ProjectDetailsTab = () => {
                     : 'Disabled'}
                 </DetailsGridValue>
               </DetailsGridEntry>
-              <DetailsGridEntry>
-                <DetailsGridKey>Log in with Google</DetailsGridKey>
-                <DetailsGridValue>
-                  {getProjectResponse?.project?.logInWithGoogle
-                    ? 'Enabled'
-                    : 'Disabled'}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-              <DetailsGridEntry>
-                <DetailsGridKey>Log in with Microsoft</DetailsGridKey>
-                <DetailsGridValue>
-                  {getProjectResponse?.project?.logInWithMicrosoft
-                    ? 'Enabled'
-                    : 'Disabled'}
-                </DetailsGridValue>
-              </DetailsGridEntry>
             </DetailsGridColumn>
             <DetailsGridColumn>
               <DetailsGridEntry>
@@ -231,9 +213,7 @@ export const ProjectDetailsTab = () => {
             </CardDescription>
           </div>
           <Button variant="outline" asChild>
-            <Link to="/project-settings/log-in-with-google/edit">
-              Edit
-            </Link>
+            <Link to="/project-settings/log-in-with-google/edit">Edit</Link>
           </Button>
         </CardHeader>
         <CardContent>
@@ -280,9 +260,7 @@ export const ProjectDetailsTab = () => {
             </CardDescription>
           </div>
           <Button variant="outline" asChild>
-            <Link to="/project-settings/log-in-with-microsoft/edit">
-              Edit
-            </Link>
+            <Link to="/project-settings/log-in-with-microsoft/edit">Edit</Link>
           </Button>
         </CardHeader>
         <CardContent>
@@ -346,9 +324,9 @@ const EditProjectRedirectURIsButton = () => {
       form.reset({
         redirectUri: getProjectResponse?.project?.redirectUri,
         afterLoginRedirectUri:
-        getProjectResponse?.project?.afterLoginRedirectUri,
+          getProjectResponse?.project?.afterLoginRedirectUri,
         afterSignupRedirectUri:
-        getProjectResponse?.project?.afterSignupRedirectUri,
+          getProjectResponse?.project?.afterSignupRedirectUri,
       });
     }
   }, [getProjectResponse]);
@@ -479,7 +457,7 @@ const EditProjectRedirectURIsButton = () => {
 
 const domainSettingsSchema = z.object({
   cookieDomain: z.string().regex(/^[^.]/, {
-    message: 'Cookie domain must not start with a dot (\'.\').',
+    message: "Cookie domain must not start with a dot ('.').",
   }),
   trustedDomains: z.array(
     z.string().regex(/^([a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+(:\d+)?$/),
@@ -508,7 +486,9 @@ const EditProjectDomainSettingsButton = () => {
   const updateProjectMutation = useMutation(updateProject);
   const [open, setOpen] = useState(false);
   const handleSubmit = async (values: z.infer<typeof domainSettingsSchema>) => {
-    if (!getProjectResponse?.project?.vaultDomain?.endsWith(values.cookieDomain)) {
+    if (
+      !getProjectResponse?.project?.vaultDomain?.endsWith(values.cookieDomain)
+    ) {
       form.setError('cookieDomain', {
         message: `Cookie Domain must be a parent domain of the Vault domain (${getProjectResponse?.project?.vaultDomain}).`,
       });
@@ -520,7 +500,9 @@ const EditProjectDomainSettingsButton = () => {
         trustedDomains: values.trustedDomains,
 
         // only attempt to honor cookie domain if vault domain is custom
-        ...(getProjectResponse?.project?.vaultDomainCustom ? { cookieDomain: values.cookieDomain } : {}),
+        ...(getProjectResponse?.project?.vaultDomainCustom
+          ? { cookieDomain: values.cookieDomain }
+          : {}),
       },
     });
     await refetch();
