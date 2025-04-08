@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"html/template"
+	"log/slog"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/sesv2"
@@ -67,6 +68,23 @@ func (s *Store) IssueEmailVerificationChallenge(ctx context.Context, req *interm
 	})
 	if err != nil {
 		return nil, fmt.Errorf("set email verification challenge: %w", err)
+	}
+
+	qEmailDailyQuotaUsage, err := q.IncrementProjectEmailDailyQuotaUsage(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("increment project email daily quota usage: %w", err)
+	}
+
+	emailQuotaDaily := int32(100)
+	if qProject.EmailQuotaDaily != nil {
+		emailQuotaDaily = *qProject.EmailQuotaDaily
+	}
+
+	slog.InfoContext(ctx, "email_daily_quota_usage", "usage", qEmailDailyQuotaUsage.QuotaUsage, "quota", qProject.EmailQuotaDaily)
+
+	if qEmailDailyQuotaUsage.QuotaUsage > emailQuotaDaily {
+		slog.InfoContext(ctx, "email_daily_quota_exceeded")
+		return nil, apierror.NewFailedPreconditionError("email daily quota exceeded", fmt.Errorf("email daily quota exceeded"))
 	}
 
 	if err := commit(); err != nil {
