@@ -11,7 +11,7 @@ export function DashboardLayout() {
       <SidebarProvider>
         <DashboardSidebar />
         <SidebarInset>
-          <main className="bg-body w-full">
+          <main className="bg-background w-full">
             <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 py-8">
               <Outlet />
             </div>
