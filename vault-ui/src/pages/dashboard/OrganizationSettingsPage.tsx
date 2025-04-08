@@ -89,7 +89,7 @@ export function OrganizationSettingsPage() {
             to={tab.url}
             className={clsx(
               tab.url === currentTab?.url
-                ? "border-foreground"
+                ? "border-foreground text-foreground"
                 : "border-transparent text-muted-foreground hover:text-foreground",
               "whitespace-nowrap border-b-2 px-4 py-2 pb-3 text-sm font-medium",
             )}
