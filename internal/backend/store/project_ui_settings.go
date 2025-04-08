@@ -143,11 +143,6 @@ func (s *Store) getPresignedUrlForFile(ctx context.Context, fileKey string, cont
 		Key:    aws.String(fileKey),
 	}
 
-	if contentType != nil {
-		putObjectParams.ContentType = aws.String(*contentType)
-		putObjectParams.ContentLength = aws.Int64(1)
-	}
-
 	req, err := s.s3PresignClient.PresignPutObject(ctx, putObjectParams, func(opts *s3.PresignOptions) {
 		opts.Expires = time.Minute // set expiry to one minute
 	})

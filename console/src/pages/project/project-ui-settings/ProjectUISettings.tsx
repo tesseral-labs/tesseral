@@ -134,8 +134,6 @@ const settingsPage: FC = () => {
           detectDarkModeEnabled,
           primaryColor,
           darkModePrimaryColor,
-          logoContentType: logoFile?.type,
-          darkModeLogoContentType: darkModeLogoFile?.type,
         });
 
       logoUploadUrl = logoPresignedUploadUrl;
@@ -168,7 +166,6 @@ const settingsPage: FC = () => {
           body: logoFile,
           headers: {
             'Content-Type': logoFile?.type || 'image/png',
-            'Content-Length': `${logoFile?.size}`,
           },
           method: 'PUT',
         });
@@ -190,7 +187,6 @@ const settingsPage: FC = () => {
           body: darkModeLogoFile,
           headers: {
             'Content-Type': darkModeLogoFile?.type || 'image/png',
-            'Content-Length': `${darkModeLogoFile?.size}`,
           },
           method: 'PUT',
         });
