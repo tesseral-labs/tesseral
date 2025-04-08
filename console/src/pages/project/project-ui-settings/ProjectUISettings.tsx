@@ -164,9 +164,6 @@ const settingsPage: FC = () => {
       if (logoUploadUrl && logo) {
         const response = await fetch(logoUploadUrl, {
           body: logoFile,
-          headers: {
-            'Content-Type': logoFile?.type || 'image/png',
-          },
           method: 'PUT',
         });
 
@@ -185,9 +182,6 @@ const settingsPage: FC = () => {
       if (darkModeLogoUploadUrl && darkModeLogo) {
         const response = await fetch(darkModeLogoUploadUrl, {
           body: darkModeLogoFile,
-          headers: {
-            'Content-Type': darkModeLogoFile?.type || 'image/png',
-          },
           method: 'PUT',
         });
 
