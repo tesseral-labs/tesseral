@@ -112,6 +112,7 @@ func (s *Store) ListOrganizations(ctx context.Context, req *backendv1.ListOrgani
 	limit := 10
 	qOrgs, err := q.ListOrganizationsByProjectId(ctx, queries.ListOrganizationsByProjectIdParams{
 		ProjectID: authn.ProjectID(ctx),
+		ID:        startID,
 		Limit:     int32(limit + 1),
 	})
 	if err != nil {
@@ -125,7 +126,7 @@ func (s *Store) ListOrganizations(ctx context.Context, req *backendv1.ListOrgani
 
 	var nextPageToken string
 	if len(organizations) == limit+1 {
-		nextPageToken = s.pageEncoder.Marshal(organizations[limit].Id)
+		nextPageToken = s.pageEncoder.Marshal(qOrgs[limit].ID)
 		organizations = organizations[:limit]
 	}
 
