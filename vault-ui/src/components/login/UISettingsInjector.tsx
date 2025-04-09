@@ -1,21 +1,22 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 
 import { useDarkMode } from "@/lib/dark-mode";
 import { useProjectSettings } from "@/lib/project-settings";
-import { cn, hexToHSL, isColorDark } from "@/lib/utils";
+import { hexToHSL, isColorDark } from "@/lib/utils";
 
 export function UISettingsInjector({
   children,
 }: {
   children?: React.ReactNode;
 }) {
-  const root = useRef<HTMLDivElement>(null);
   const settings = useProjectSettings();
   const darkMode = useDarkMode();
 
   useEffect(() => {
-    if (!root.current) {
-      return;
+    if (darkMode) {
+      document.body.classList.add("dark");
+    } else {
+      document.body.classList.remove("dark");
     }
 
     if (!darkMode && settings.primaryColor) {
@@ -23,11 +24,11 @@ export function UISettingsInjector({
         ? "0 0% 100%"
         : "0 0% 0%";
 
-      root.current.style.setProperty(
+      document.body.style.setProperty(
         "--primary",
         hexToHSL(settings.primaryColor),
       );
-      root.current.style.setProperty("--primary-foreground", foreground);
+      document.body.style.setProperty("--primary-foreground", foreground);
     }
 
     if (settings.darkModePrimaryColor && darkMode) {
@@ -35,17 +36,13 @@ export function UISettingsInjector({
         ? "0 0% 100%"
         : "0 0% 0%";
 
-      root.current.style.setProperty(
+      document.body.style.setProperty(
         "--primary",
         hexToHSL(settings.darkModePrimaryColor),
       );
-      root.current.style.setProperty("--primary-foreground", darkForeground);
+      document.body.style.setProperty("--primary-foreground", darkForeground);
     }
   }, [darkMode, settings]);
 
-  return (
-    <div className={cn(darkMode ? "dark" : "light")} ref={root}>
-      {children}
-    </div>
-  );
+  return <>{children}</>;
 }
