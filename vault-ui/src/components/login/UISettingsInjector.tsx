@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 
 import { useDarkMode } from "@/lib/dark-mode";
 import { useProjectSettings } from "@/lib/project-settings";
