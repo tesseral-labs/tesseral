@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@connectrpc/connect-query";
+import { useQuery } from "@connectrpc/connect-query";
 import {
   Building2Icon,
   ChevronsUpDownIcon,
@@ -33,7 +33,6 @@ import {
 import {
   getOrganization,
   listSwitchableOrganizations,
-  logout,
   whoami,
 } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -46,13 +45,6 @@ export function DashboardSidebar() {
     listSwitchableOrganizations,
   );
   const { data: whoamiResponse } = useQuery(whoami);
-  const { mutateAsync: logoutAsync } = useMutation(logout);
-
-  const handleLogout = async () => {
-    await logoutAsync({});
-    toast.success("You have been logged out.");
-    navigate("/login");
-  };
 
   const navigate = useNavigate();
 
@@ -174,9 +166,11 @@ export function DashboardSidebar() {
                 align="end"
                 sideOffset={4}
               >
-                <DropdownMenuItem onClick={handleLogout}>
-                  <LogOutIcon />
-                  Log out
+                <DropdownMenuItem>
+                  <Link to="/logout">
+                    <LogOutIcon className="inline mr-2" />
+                    Log out
+                  </Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
