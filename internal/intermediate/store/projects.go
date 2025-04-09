@@ -285,15 +285,24 @@ func (s *Store) createProjectForCurrentUser(ctx context.Context, q *queries.Quer
 		return nil, fmt.Errorf("parse redirect uri: %w", err)
 	}
 
+	qDogfoodProject, err := q.GetProjectByID(ctx, *s.dogfoodProjectID)
+	if err != nil {
+		return nil, fmt.Errorf("get dogfood project by id: %w", err)
+	}
+
 	// create a new organization under the dogfood project, accepting the same
 	// primary login method used to get to this point
 	qOrganization, err := q.CreateOrganization(ctx, queries.CreateOrganizationParams{
-		ID:                 uuid.New(),
-		DisplayName:        fmt.Sprintf("%s Backing Organization", formattedNewProjectID),
-		ProjectID:          *s.dogfoodProjectID,
-		LogInWithEmail:     *qIntermediateSession.PrimaryAuthFactor == queries.PrimaryAuthFactorEmail,
-		LogInWithGoogle:    *qIntermediateSession.PrimaryAuthFactor == queries.PrimaryAuthFactorGoogle,
-		LogInWithMicrosoft: *qIntermediateSession.PrimaryAuthFactor == queries.PrimaryAuthFactorMicrosoft,
+		ID:          uuid.New(),
+		DisplayName: fmt.Sprintf("%s Backing Organization", formattedNewProjectID),
+		ProjectID:   *s.dogfoodProjectID,
+
+		// same logic as in ordinary s.CreateOrganization, but against dogfood project
+		LogInWithEmail:     qDogfoodProject.LogInWithEmail,
+		LogInWithGoogle:    qDogfoodProject.LogInWithGoogle,
+		LogInWithMicrosoft: qDogfoodProject.LogInWithMicrosoft,
+		LogInWithPassword:  qDogfoodProject.LogInWithPassword,
+		ScimEnabled:        false,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("create organization: %w", err)
