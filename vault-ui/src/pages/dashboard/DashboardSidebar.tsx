@@ -1,9 +1,5 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import {
-  DropdownMenuGroup,
-  DropdownMenuSeparator,
-} from "@radix-ui/react-dropdown-menu";
-import {
   Building2Icon,
   ChevronsUpDownIcon,
   LayoutGridIcon,
