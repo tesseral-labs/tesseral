@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 
 import { useDarkMode } from "@/lib/dark-mode";
 import { useProjectSettings } from "@/lib/project-settings";
-import { cn, hexToHSL, isColorDark } from "@/lib/utils";
+import { hexToHSL, isColorDark } from "@/lib/utils";
 
 export function UISettingsInjector({
   children,
