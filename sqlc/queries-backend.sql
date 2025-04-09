@@ -44,9 +44,10 @@ FROM
     organizations
 WHERE
     project_id = $1
+    AND id > $2
 ORDER BY
     id
-LIMIT $2;
+LIMIT $3;
 
 -- name: GetProjectIDOrganizationBacks :one
 SELECT

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useQuery } from '@connectrpc/connect-query';
+import { useInfiniteQuery, useQuery } from '@connectrpc/connect-query';
 import { listOrganizations } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import {
   Table,
@@ -22,9 +22,22 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import { PageDescription, PageTitle } from '@/components/page';
+import { Button } from '@/components/ui/button';
+import { LoaderCircleIcon } from 'lucide-react';
 
 export const ListOrganizationsPage = () => {
-  const { data: listOrganizationsResponse } = useQuery(listOrganizations, {});
+  const { data: listOrganizationsResponses, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(
+    listOrganizations,
+    {
+      pageToken: "",
+    },
+    {
+      pageParamKey: "pageToken",
+      getNextPageParam: (page) => page.nextPageToken || undefined,
+    },
+  );
+
+  const organizations = listOrganizationsResponses?.pages?.flatMap(page => page.organizations);
 
   return (
     <div>
@@ -59,7 +72,7 @@ export const ListOrganizationsPage = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {listOrganizationsResponse?.organizations?.map((org) => (
+              {organizations?.map((org) => (
                 <TableRow key={org.id}>
                   <TableCell className="font-medium">
                     <Link
@@ -88,6 +101,17 @@ export const ListOrganizationsPage = () => {
           </Table>
         </CardContent>
       </Card>
+
+      {hasNextPage && (
+        <Button
+          className="mt-4"
+          variant="outline"
+          onClick={() => fetchNextPage()}
+        >
+          {isFetchingNextPage && <LoaderCircleIcon className="h-4 w-4 animate-spin" />}
+          Load more
+        </Button>
+      )}
     </div>
   );
 };
