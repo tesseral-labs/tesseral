@@ -6,7 +6,6 @@ import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { z } from "zod";
 
-import { Title } from "@/components/Title";
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
 import { Button } from "@/components/ui/button";
 import {
@@ -55,7 +54,6 @@ export function VerifyPasswordPage() {
 
   return (
     <LoginFlowCard>
-      <Title title="Verify Password" />
       <CardHeader>
         <CardTitle>Verify your password</CardTitle>
         <CardDescription>

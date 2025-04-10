@@ -1,19 +1,19 @@
-import { useMutation } from '@connectrpc/connect-query';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { LoaderCircleIcon } from 'lucide-react';
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
-import { z } from 'zod';
+import { useMutation } from "@connectrpc/connect-query";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { LoaderCircleIcon } from "lucide-react";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
+import { z } from "zod";
 
-import { LoginFlowCard } from '@/components/login/LoginFlowCard';
-import { Button } from '@/components/ui/button';
+import { LoginFlowCard } from "@/components/login/LoginFlowCard";
+import { Button } from "@/components/ui/button";
 import {
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -21,11 +21,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { verifyPassword } from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
-import { useRedirectNextLoginFlowPage } from '@/hooks/use-redirect-next-login-flow-page';
-import { Title } from '@/components/Title';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { verifyPassword } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
+import { useRedirectNextLoginFlowPage } from "@/hooks/use-redirect-next-login-flow-page";
 
 const schema = z.object({
   password: z.string().nonempty(),
@@ -35,7 +34,7 @@ export function VerifyPasswordPage() {
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
-      password: '',
+      password: "",
     },
   });
 
@@ -55,7 +54,6 @@ export function VerifyPasswordPage() {
 
   return (
     <LoginFlowCard>
-      <Title title="Verify your password" />
       <CardHeader>
         <CardTitle>Verify your password</CardTitle>
         <CardDescription>

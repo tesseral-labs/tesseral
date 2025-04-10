@@ -1,7 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-import { Title } from "@/components/Title";
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,7 +13,6 @@ import {
 export function RegisterSecondaryFactorPage() {
   return (
     <LoginFlowCard>
-      <Title title="Set up secondary authentication factor" />
       <CardHeader>
         <CardTitle>Set up secondary authentication factor</CardTitle>
         <CardDescription>

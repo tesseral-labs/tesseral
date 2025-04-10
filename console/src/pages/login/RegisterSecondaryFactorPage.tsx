@@ -1,20 +1,18 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 
-import { LoginFlowCard } from '@/components/login/LoginFlowCard';
-import { Button } from '@/components/ui/button';
+import { LoginFlowCard } from "@/components/login/LoginFlowCard";
+import { Button } from "@/components/ui/button";
 import {
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Title } from '@/components/Title';
+} from "@/components/ui/card";
 
 export function RegisterSecondaryFactorPage() {
   return (
     <LoginFlowCard>
-      <Title title="Set up secondary authentication factor" />
       <CardHeader>
         <CardTitle>Set up secondary authentication factor</CardTitle>
         <CardDescription>

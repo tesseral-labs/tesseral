@@ -6,7 +6,6 @@ import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import { Title } from "@/components/Title";
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
 import { Button } from "@/components/ui/button";
 import {
@@ -75,7 +74,6 @@ export function ForgotPasswordPage() {
 
   return (
     <LoginFlowCard>
-      <Title title="Forgot password" />
       <CardHeader>
         <CardTitle>Forgot password</CardTitle>
         <CardDescription>

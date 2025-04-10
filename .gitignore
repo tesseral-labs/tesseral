@@ -1,4 +1,3 @@
-.DS_Store
 .env
 .local/kms/data
 .local/postgres

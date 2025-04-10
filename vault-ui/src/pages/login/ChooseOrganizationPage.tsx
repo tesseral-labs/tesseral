@@ -3,7 +3,6 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 
-import { Title } from "@/components/Title";
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,7 +22,6 @@ export function ChooseOrganizationPage() {
 
   return (
     <LoginFlowCard>
-      <Title title="Choose an organization" />
       <CardHeader>
         <CardTitle>Choose an organization</CardTitle>
       </CardHeader>

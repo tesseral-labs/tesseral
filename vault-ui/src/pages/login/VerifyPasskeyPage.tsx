@@ -1,7 +1,6 @@
 import { useMutation } from "@connectrpc/connect-query";
 import React, { useCallback, useEffect } from "react";
 
-import { Title } from "@/components/Title";
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
 import { Button } from "@/components/ui/button";
 import {
@@ -69,7 +68,6 @@ export function VerifyPasskeyPage() {
 
   return (
     <LoginFlowCard>
-      <Title title="Verify passkey" />
       <CardHeader>
         <CardTitle>Verify passkey</CardTitle>
         <CardDescription>

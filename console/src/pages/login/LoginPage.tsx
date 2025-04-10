@@ -37,7 +37,6 @@ import {
   ProjectSettingsProvider,
   useProjectSettings,
 } from '@/lib/project-settings';
-import { Title } from '@/components/Title';
 
 export function LoginPage() {
   return (
@@ -51,7 +50,8 @@ export function LoginPage() {
 
 function CenteredLoginPage({ children }: { children?: React.ReactNode }) {
   return (
-    <div className="bg-indigo-600 w-screen min-h-screen mx-auto flex flex-col justify-center items-center py-8">
+    <div
+      className="bg-indigo-600 w-screen min-h-screen mx-auto flex flex-col justify-center items-center py-8">
       <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 flex justify-center">
         <div className="mb-8">
           <img
@@ -159,7 +159,6 @@ function LoginPageContents() {
 
   return (
     <LoginFlowCard>
-      <Title title="Login" />
       <CardHeader>
         <CardTitle>Log in to Tesseral</CardTitle>
         <CardDescription>Please sign in to continue.</CardDescription>
@@ -190,7 +189,8 @@ function LoginPageContents() {
 
         {hasAboveFoldMethod && hasBelowFoldMethod && (
           <div className="block relative w-full cursor-default my-2 mt-6">
-            <div className="absolute inset-0 flex items-center border-muted-foreground">
+            <div
+              className="absolute inset-0 flex items-center border-muted-foreground">
               <span className="w-full border-t"></span>
             </div>
             <div className="relative flex justify-center text-xs uppercase">
