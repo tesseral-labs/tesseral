@@ -1,20 +1,20 @@
-import { useMutation } from "@connectrpc/connect-query";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { REGEXP_ONLY_DIGITS } from "input-otp";
-import QRCode from "qrcode";
-import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { z } from "zod";
+import { useMutation } from '@connectrpc/connect-query';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { REGEXP_ONLY_DIGITS } from 'input-otp';
+import QRCode from 'qrcode';
+import React, { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { z } from 'zod';
 
-import { LoginFlowCard } from "@/components/login/LoginFlowCard";
-import { Button } from "@/components/ui/button";
+import { LoginFlowCard } from '@/components/login/LoginFlowCard';
+import { Button } from '@/components/ui/button';
 import {
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 import {
   Form,
   FormControl,
@@ -23,17 +23,18 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from '@/components/ui/form';
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
-} from "@/components/ui/input-otp";
+} from '@/components/ui/input-otp';
 import {
   getAuthenticatorAppOptions,
   registerAuthenticatorApp,
-} from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
-import { useRedirectNextLoginFlowPage } from "@/hooks/use-redirect-next-login-flow-page";
+} from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
+import { useRedirectNextLoginFlowPage } from '@/hooks/use-redirect-next-login-flow-page';
+import { Title } from '@/components/Title';
 
 const schema = z.object({
   totpCode: z.string().length(6),
@@ -43,14 +44,14 @@ export function RegisterAuthenticatorAppPage() {
   const { mutateAsync: getAuthenticatorAppOptionsAsync } = useMutation(
     getAuthenticatorAppOptions,
   );
-  const [qrCode, setQRCode] = useState("");
+  const [qrCode, setQRCode] = useState('');
 
   useEffect(() => {
     (async () => {
       const { otpauthUri } = await getAuthenticatorAppOptionsAsync({});
       setQRCode(
         await QRCode.toDataURL(otpauthUri, {
-          errorCorrectionLevel: "high",
+          errorCorrectionLevel: 'high',
         }),
       );
     })();
@@ -59,7 +60,7 @@ export function RegisterAuthenticatorAppPage() {
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
-      totpCode: "",
+      totpCode: '',
     },
   });
 
@@ -76,8 +77,8 @@ export function RegisterAuthenticatorAppPage() {
   }
 
   async function handleCopy() {
-    await navigator.clipboard.writeText(recoveryCodes!.join("\n"));
-    toast.success("Copied recovery codes to clipboard");
+    await navigator.clipboard.writeText(recoveryCodes!.join('\n'));
+    toast.success('Copied recovery codes to clipboard');
   }
 
   const redirectNextLoginFlowPage = useRedirectNextLoginFlowPage();
@@ -88,6 +89,7 @@ export function RegisterAuthenticatorAppPage() {
 
   return recoveryCodes ? (
     <LoginFlowCard>
+      <Title title="Register Authenticator App" />
       <CardHeader>
         <CardTitle>Authenticator app recovery codes</CardTitle>
         <CardDescription>
