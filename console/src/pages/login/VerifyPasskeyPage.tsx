@@ -1,20 +1,21 @@
-import { useMutation } from "@connectrpc/connect-query";
-import React, { useCallback, useEffect } from "react";
+import { useMutation } from '@connectrpc/connect-query';
+import React, { useCallback, useEffect } from 'react';
 
-import { LoginFlowCard } from "@/components/login/LoginFlowCard";
-import { Button } from "@/components/ui/button";
+import { LoginFlowCard } from '@/components/login/LoginFlowCard';
+import { Button } from '@/components/ui/button';
 import {
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 import {
   issuePasskeyChallenge,
   verifyPasskey,
-} from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
-import { useRedirectNextLoginFlowPage } from "@/hooks/use-redirect-next-login-flow-page";
-import { base64urlEncode } from "@/lib/utils";
+} from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
+import { useRedirectNextLoginFlowPage } from '@/hooks/use-redirect-next-login-flow-page';
+import { base64urlEncode } from '@/lib/utils';
+import { Title } from '@/components/Title';
 
 export function VerifyPasskeyPage() {
   const { mutateAsync: issuePasskeyChallengeAsync } = useMutation(
@@ -30,8 +31,8 @@ export function VerifyPasskeyPage() {
       (id) =>
         ({
           id: new Uint8Array(id).buffer,
-          type: "public-key",
-          transports: ["hybrid", "internal", "nfc", "usb"],
+          type: 'public-key',
+          transports: ['hybrid', 'internal', 'nfc', 'usb'],
         }) as PublicKeyCredentialDescriptor,
     );
 
@@ -39,7 +40,7 @@ export function VerifyPasskeyPage() {
       challenge: new Uint8Array(challengeResponse.challenge).buffer,
       allowCredentials,
       rpId: challengeResponse.rpId,
-      userVerification: "preferred",
+      userVerification: 'preferred',
       timeout: 60000,
     };
     const credential = (await navigator.credentials.get({
@@ -68,6 +69,7 @@ export function VerifyPasskeyPage() {
 
   return (
     <LoginFlowCard>
+      <Title title="Verify passkey" />
       <CardHeader>
         <CardTitle>Verify passkey</CardTitle>
         <CardDescription>

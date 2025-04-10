@@ -1,19 +1,19 @@
-import { useMutation } from "@connectrpc/connect-query";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { REGEXP_ONLY_DIGITS } from "input-otp";
-import React from "react";
-import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
-import { z } from "zod";
+import { useMutation } from '@connectrpc/connect-query';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { REGEXP_ONLY_DIGITS } from 'input-otp';
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { Link } from 'react-router-dom';
+import { z } from 'zod';
 
-import { LoginFlowCard } from "@/components/login/LoginFlowCard";
-import { Button } from "@/components/ui/button";
+import { LoginFlowCard } from '@/components/login/LoginFlowCard';
+import { Button } from '@/components/ui/button';
 import {
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 import {
   Form,
   FormControl,
@@ -22,14 +22,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from '@/components/ui/form';
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
-} from "@/components/ui/input-otp";
-import { verifyAuthenticatorApp } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
-import { useRedirectNextLoginFlowPage } from "@/hooks/use-redirect-next-login-flow-page";
+} from '@/components/ui/input-otp';
+import { verifyAuthenticatorApp } from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
+import { useRedirectNextLoginFlowPage } from '@/hooks/use-redirect-next-login-flow-page';
+import { Title } from '@/components/Title';
 
 const schema = z.object({
   totpCode: z.string().length(6),
@@ -39,7 +40,7 @@ export function VerifyAuthenticatorAppPage() {
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
-      totpCode: "",
+      totpCode: '',
     },
   });
 
@@ -58,6 +59,7 @@ export function VerifyAuthenticatorAppPage() {
 
   return (
     <LoginFlowCard>
+      <Title title="Verify authenticator app" />
       <CardHeader>
         <CardTitle>Verify authenticator app</CardTitle>
         <CardDescription>
@@ -105,7 +107,7 @@ export function VerifyAuthenticatorAppPage() {
         </Form>
 
         <p className="mt-4 text-xs text-muted-foreground">
-          Lost your authenticator app?{" "}
+          Lost your authenticator app?{' '}
           <Link
             to="/verify-authenticator-app-recovery-code"
             className="text-foreground underline underline-offset-2 decoration-muted-foreground"
