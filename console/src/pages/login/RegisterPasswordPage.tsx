@@ -1,19 +1,19 @@
-import { Code, ConnectError } from '@connectrpc/connect';
-import { useMutation } from '@connectrpc/connect-query';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { LoaderCircleIcon } from 'lucide-react';
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+import { Code, ConnectError } from "@connectrpc/connect";
+import { useMutation } from "@connectrpc/connect-query";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { LoaderCircleIcon } from "lucide-react";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
-import { LoginFlowCard } from '@/components/login/LoginFlowCard';
-import { Button } from '@/components/ui/button';
+import { LoginFlowCard } from "@/components/login/LoginFlowCard";
+import { Button } from "@/components/ui/button";
 import {
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -22,11 +22,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { registerPassword } from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
-import { useRedirectNextLoginFlowPage } from '@/hooks/use-redirect-next-login-flow-page';
-import { Title } from '@/components/Title';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { registerPassword } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
+import { useRedirectNextLoginFlowPage } from "@/hooks/use-redirect-next-login-flow-page";
 
 const schema = z.object({
   password: z.string().nonempty(),
@@ -36,7 +35,7 @@ export function RegisterPasswordPage() {
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
-      password: '',
+      password: "",
     },
   });
 
@@ -55,12 +54,12 @@ export function RegisterPasswordPage() {
       if (
         e instanceof ConnectError &&
         e.code === Code.FailedPrecondition &&
-        e.rawMessage === 'password_compromised'
+        e.rawMessage === "password_compromised"
       ) {
-        form.setError('password', {
-          type: 'manual',
+        form.setError("password", {
+          type: "manual",
           message:
-            'This password has been reported as compromised. Please choose a different password.',
+            "This password has been reported as compromised. Please choose a different password.",
         });
         return;
       }
@@ -75,7 +74,6 @@ export function RegisterPasswordPage() {
 
   return (
     <LoginFlowCard>
-      <Title title="Register Password" />
       <CardHeader>
         <CardTitle>Register password</CardTitle>
         <CardDescription>

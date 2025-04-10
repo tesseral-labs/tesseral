@@ -6,7 +6,6 @@ import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { z } from "zod";
 
-import { Title } from "@/components/Title";
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
 import { Button } from "@/components/ui/button";
 import {
@@ -59,7 +58,6 @@ export function VerifyAuthenticatorAppPage() {
 
   return (
     <LoginFlowCard>
-      <Title title="Verify authenticator app" />
       <CardHeader>
         <CardTitle>Verify authenticator app</CardTitle>
         <CardDescription>

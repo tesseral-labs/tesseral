@@ -4,7 +4,6 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { Title } from "@/components/Title";
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
 import { Button } from "@/components/ui/button";
 import {
@@ -53,7 +52,6 @@ export function VerifyAuthenticatorAppRecoveryCodePage() {
 
   return (
     <LoginFlowCard>
-      <Title title="Verify authenticator app recovery code" />
       <CardHeader>
         <CardTitle>Verify authenticator app recovery code</CardTitle>
         <CardDescription>

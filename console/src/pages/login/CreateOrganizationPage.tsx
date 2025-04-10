@@ -23,9 +23,10 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { onboardingCreateProjects } from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
+import {
+  onboardingCreateProjects,
+} from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
 import { useNavigate } from 'react-router';
-import { Title } from '@/components/Title';
 
 const schema = z.object({
   displayName: z.string().nonempty(),
@@ -37,16 +38,15 @@ export function CreateOrganizationPage() {
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
-      displayName: '',
-      productionAppUrl: '',
-      localhostAppUrl: '',
+      displayName: "",
+      productionAppUrl: "",
+      localhostAppUrl: "",
     },
   });
 
   const [submitting, setSubmitting] = useState(false);
-  const { mutateAsync: onboardingCreateProjectsAsync } = useMutation(
-    onboardingCreateProjects,
-  );
+  const { mutateAsync: onboardingCreateProjectsAsync } =
+    useMutation(onboardingCreateProjects);
   const navigate = useNavigate();
 
   async function handleSubmit(values: z.infer<typeof schema>) {
@@ -63,7 +63,6 @@ export function CreateOrganizationPage() {
 
   return (
     <LoginFlowCard>
-      <Title title="Create a new project" />
       <CardHeader>
         <CardTitle>Create a new project</CardTitle>
         <CardDescription>
@@ -73,10 +72,7 @@ export function CreateOrganizationPage() {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form
-            className="space-y-4"
-            onSubmit={form.handleSubmit(handleSubmit)}
-          >
+          <form className="space-y-4" onSubmit={form.handleSubmit(handleSubmit)}>
             <FormField
               control={form.control}
               name="displayName"
@@ -86,7 +82,9 @@ export function CreateOrganizationPage() {
                   <FormControl>
                     <Input placeholder="Example Corporation" {...field} />
                   </FormControl>
-                  <FormDescription>What's your company's name?</FormDescription>
+                  <FormDescription>
+                    What's your company's name?
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

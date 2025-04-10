@@ -1,7 +1,6 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import React from "react";
 
-import { Title } from "@/components/Title";
 import { GoogleIcon } from "@/components/login/GoogleIcon";
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
 import { MicrosoftIcon } from "@/components/login/MicrosoftIcon";
@@ -51,7 +50,6 @@ export function AuthenticateAnotherWayPage() {
 
   return (
     <LoginFlowCard>
-      <Title title="Authenticate another way" />
       <CardHeader>
         <CardTitle>Authenticate another way</CardTitle>
         <CardDescription>

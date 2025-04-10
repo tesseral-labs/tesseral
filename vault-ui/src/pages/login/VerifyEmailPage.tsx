@@ -8,7 +8,6 @@ import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import { Title } from "@/components/Title";
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
 import {
   Accordion,
@@ -107,7 +106,6 @@ export function VerifyEmailPage() {
 
   return (
     <LoginFlowCard>
-      <Title title="Verify email" />
       <CardHeader>
         <CardTitle>Check your email</CardTitle>
         <CardDescription>

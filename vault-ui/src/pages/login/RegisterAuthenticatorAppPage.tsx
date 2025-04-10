@@ -7,7 +7,6 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import { Title } from "@/components/Title";
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
 import { Button } from "@/components/ui/button";
 import {
@@ -89,7 +88,6 @@ export function RegisterAuthenticatorAppPage() {
 
   return recoveryCodes ? (
     <LoginFlowCard>
-      <Title title="Register authenticator app" />
       <CardHeader>
         <CardTitle>Authenticator app recovery codes</CardTitle>
         <CardDescription>
