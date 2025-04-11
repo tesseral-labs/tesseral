@@ -177,8 +177,8 @@ const settingsPage: FC = () => {
         await updateProjectUISettingsMutation.mutateAsync({
           logInLayout: layout,
           detectDarkModeEnabled,
-          primaryColor,
-          darkModePrimaryColor,
+          primaryColor: lastValidPrimaryColor,
+          darkModePrimaryColor: lastValidDarkModePrimaryColor,
         });
 
       logoUploadUrl = logoPresignedUploadUrl;
