@@ -3,7 +3,11 @@ import React, { createContext, useEffect, useMemo, useState } from 'react';
 
 const Context = createContext<string | undefined>(undefined);
 
-export function AccessTokenProvider({ children }: { children?: React.ReactNode }) {
+export function AccessTokenProvider({
+  children,
+}: {
+  children?: React.ReactNode;
+}) {
   const accessToken = useAccessTokenInternal();
   return <Context.Provider value={accessToken}>{children}</Context.Provider>;
 }
@@ -12,13 +16,9 @@ export function useAccessToken() {
   return React.useContext(Context);
 }
 
-const ACCESS_TOKEN_NAME = `tesseral_${DOGFOOD_PROJECT_ID}_access_token`;
-
-function useAccessTokenInternal() {
-  const accessToken = useMemo(() => {
-    return document.cookie.split(';').find((row) => row.trim().startsWith(`${ACCESS_TOKEN_NAME}=`))?.split('=')[1];
-  }, [document.cookie]);
-
+function useAccessTokenInternal(): string | undefined {
+  const [error, setError] = useState<unknown>();
+  const accessToken = getCookie(`tesseral_${DOGFOOD_PROJECT_ID}_access_token`);
   const accessTokenLikelyValid = useAccessTokenLikelyValid(accessToken ?? '');
 
   // whenever the access token is invalid or near-expired, refresh it
@@ -37,19 +37,25 @@ function useAccessTokenInternal() {
         credentials: 'include',
       });
 
-      if (response.ok) {
+      if (response.status === 401) {
+        // our refresh token is no good
+        window.location.href = `/login`;
         return;
       }
 
-      if (response.status === 401) {
-        return // refresh failed, caller's responsibility to redirect to /login
+      if (!response.ok) {
+        setError(
+          `Unexpected response from /api/frontend/refresh: ${response.status}`,
+        );
       }
-
-      console.error('internal useAccessToken(): error fetching refresh', response.status, await response.text());
     })();
   }, [accessTokenLikelyValid]);
 
-  return accessToken
+  if (error) {
+    throw error;
+  }
+
+  return accessToken;
 }
 
 const ACCESS_TOKEN_EXPIRY_BUFFER_MILLIS = 10 * 1000;
@@ -61,13 +67,17 @@ function useAccessTokenLikelyValid(accessToken: string): boolean {
       return false;
     }
     const parsedAccessToken = parseAccessToken(accessToken);
-    return parsedAccessToken.exp * 1000 > now + ACCESS_TOKEN_EXPIRY_BUFFER_MILLIS;
+    return (
+      parsedAccessToken.exp! * 1000 > now + ACCESS_TOKEN_EXPIRY_BUFFER_MILLIS
+    );
   }, [accessToken, now]);
 }
 
 function parseAccessToken(accessToken: string): any {
   const claimsPart = accessToken.split('.')[1];
-  const decodedClaims = new TextDecoder().decode(Uint8Array.from(atob(claimsPart), (c) => c.charCodeAt(0)));
+  const decodedClaims = new TextDecoder().decode(
+    Uint8Array.from(atob(claimsPart), (c) => c.charCodeAt(0)),
+  );
   return JSON.parse(decodedClaims);
 }
 
@@ -78,4 +88,11 @@ function useDebouncedNow(updatePeriodMillis: number): number {
     return () => clearInterval(interval);
   }, [updatePeriodMillis]);
   return now;
+}
+
+function getCookie(key: string): string | undefined {
+  return document.cookie
+    .split("; ")
+    .find((row) => row.startsWith(key + "="))
+    ?.split("=")[1];
 }
