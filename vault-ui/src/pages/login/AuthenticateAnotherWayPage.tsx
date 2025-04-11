@@ -28,7 +28,6 @@ import {
 import { Input } from "@/components/ui/input";
 import TextDivider from "@/components/ui/text-divider";
 import {
-  createIntermediateSession,
   getGoogleOAuthRedirectURL,
   getMicrosoftOAuthRedirectURL,
   issueEmailVerificationChallenge,
