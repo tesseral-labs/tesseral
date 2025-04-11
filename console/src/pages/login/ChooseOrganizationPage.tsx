@@ -1,12 +1,13 @@
-import { useQuery } from "@connectrpc/connect-query";
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router";
-import { Link } from "react-router-dom";
+import { useQuery } from '@connectrpc/connect-query';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router';
+import { Link } from 'react-router-dom';
 
-import { LoginFlowCard } from "@/components/login/LoginFlowCard";
-import { Button } from "@/components/ui/button";
-import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { listOrganizations } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
+import { LoginFlowCard } from '@/components/login/LoginFlowCard';
+import { Button } from '@/components/ui/button';
+import { CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { listOrganizations } from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
+import { Title } from '@/components/Title';
 
 export function ChooseOrganizationPage() {
   const { data: listOrganizationsResponse } = useQuery(listOrganizations);
@@ -15,13 +16,14 @@ export function ChooseOrganizationPage() {
   useEffect(() => {
     if (listOrganizationsResponse?.organizations) {
       if (listOrganizationsResponse.organizations.length === 0) {
-        navigate("/create-organization");
+        navigate('/create-organization');
       }
     }
   }, [listOrganizationsResponse, navigate]);
 
   return (
     <LoginFlowCard>
+      <Title title="Choose a project" />
       <CardHeader>
         <CardTitle>Choose a project</CardTitle>
       </CardHeader>
