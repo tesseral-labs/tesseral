@@ -321,7 +321,7 @@ func (s *Store) IssuePasswordResetCode(ctx context.Context, req *intermediatev1.
 		return nil, fmt.Errorf("increment project email daily quota usage: %w", err)
 	}
 
-	emailQuotaDaily := int32(100)
+	emailQuotaDaily := defaultEmailQuotaDaily
 	if qProject.EmailQuotaDaily != nil {
 		emailQuotaDaily = *qProject.EmailQuotaDaily
 	}

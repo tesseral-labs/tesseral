@@ -21,6 +21,10 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 )
 
+// defaultEmailQuotaDaily is the default number of emails a project may send per
+// day.
+var defaultEmailQuotaDaily int32 = 1000
+
 func (s *Store) IssueEmailVerificationChallenge(ctx context.Context, req *intermediatev1.IssueEmailVerificationChallengeRequest) (*intermediatev1.IssueEmailVerificationChallengeResponse, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
@@ -75,7 +79,7 @@ func (s *Store) IssueEmailVerificationChallenge(ctx context.Context, req *interm
 		return nil, fmt.Errorf("increment project email daily quota usage: %w", err)
 	}
 
-	emailQuotaDaily := int32(100)
+	emailQuotaDaily := defaultEmailQuotaDaily
 	if qProject.EmailQuotaDaily != nil {
 		emailQuotaDaily = *qProject.EmailQuotaDaily
 	}
