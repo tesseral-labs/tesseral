@@ -1,20 +1,21 @@
-import { useMutation } from "@connectrpc/connect-query";
-import React, { useCallback, useEffect } from "react";
+import { useMutation } from '@connectrpc/connect-query';
+import React, { useCallback, useEffect } from 'react';
 
-import { LoginFlowCard } from "@/components/login/LoginFlowCard";
-import { Button } from "@/components/ui/button";
+import { LoginFlowCard } from '@/components/login/LoginFlowCard';
+import { Button } from '@/components/ui/button';
 import {
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 import {
   getPasskeyOptions,
   registerPasskey,
-} from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
-import { useRedirectNextLoginFlowPage } from "@/hooks/use-redirect-next-login-flow-page";
-import { base64urlEncode } from "@/lib/utils";
+} from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
+import { useRedirectNextLoginFlowPage } from '@/hooks/use-redirect-next-login-flow-page';
+import { base64urlEncode } from '@/lib/utils';
+import { Title } from '@/components/Title';
 
 export function RegisterPasskeyPage() {
   const { mutateAsync: getPasskeyOptionsAsync } =
@@ -36,11 +37,11 @@ export function RegisterPasskeyPage() {
         displayName: passkeyOptions.userDisplayName,
       },
       pubKeyCredParams: [
-        { type: "public-key", alg: -7 }, // ECDSA with SHA-256
-        { type: "public-key", alg: -257 }, // RSA with SHA-256
+        { type: 'public-key', alg: -7 }, // ECDSA with SHA-256
+        { type: 'public-key', alg: -257 }, // RSA with SHA-256
       ],
       timeout: 60000,
-      attestation: "direct",
+      attestation: 'direct',
     };
 
     const credential = (await navigator.credentials.create({
@@ -48,7 +49,7 @@ export function RegisterPasskeyPage() {
     })) as PublicKeyCredential;
 
     if (!credential) {
-      throw new Error("No credential returned");
+      throw new Error('No credential returned');
     }
 
     await registerPasskeyAsync({
@@ -68,6 +69,7 @@ export function RegisterPasskeyPage() {
 
   return (
     <LoginFlowCard>
+      <Title title="Register a passkey" />
       <CardHeader>
         <CardTitle>Register a passkey</CardTitle>
         <CardDescription>

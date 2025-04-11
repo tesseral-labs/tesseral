@@ -37,6 +37,7 @@ import {
   ProjectSettingsProvider,
   useProjectSettings,
 } from '@/lib/project-settings';
+import { Title } from '@/components/Title';
 
 export function SignupPage() {
   return (
@@ -86,11 +87,11 @@ function SignupPageContents() {
     }
 
     setRelayedSessionState(
-      searchParams.get("relayed-session-state") ?? undefined,
+      searchParams.get('relayed-session-state') ?? undefined,
     );
 
     const searchParamsCopy = new URLSearchParams(searchParams);
-    searchParamsCopy.delete("relayed-session-state");
+    searchParamsCopy.delete('relayed-session-state');
     setSearchParams(searchParamsCopy);
   }, [relayedSessionState, searchParams, setSearchParams]);
 
@@ -127,7 +128,7 @@ function SignupPageContents() {
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
-      email: "",
+      email: '',
     },
   });
 
@@ -148,7 +149,7 @@ function SignupPageContents() {
       email: values.email,
     });
 
-    navigate("/verify-email");
+    navigate('/verify-email');
   }
 
   const hasAboveFoldMethod =
@@ -157,6 +158,7 @@ function SignupPageContents() {
 
   return (
     <LoginFlowCard>
+      <Title title="Sign up" />
       <CardHeader>
         <CardTitle>Sign up for Tesseral</CardTitle>
         <CardDescription>Please sign up to continue.</CardDescription>
@@ -228,7 +230,7 @@ function SignupPageContents() {
         )}
 
         <p className="mt-4 text-xs text-muted-foreground">
-          Already have an account?{" "}
+          Already have an account?{' '}
           <Link
             to="/login"
             className="cursor-pointer text-foreground underline underline-offset-2 decoration-muted-foreground"
