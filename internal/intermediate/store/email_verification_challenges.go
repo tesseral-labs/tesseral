@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"html/template"
+	"log/slog"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/sesv2"
@@ -19,6 +20,10 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/intermediate/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 )
+
+// defaultEmailQuotaDaily is the default number of emails a project may send per
+// day.
+var defaultEmailQuotaDaily int32 = 1000
 
 func (s *Store) IssueEmailVerificationChallenge(ctx context.Context, req *intermediatev1.IssueEmailVerificationChallengeRequest) (*intermediatev1.IssueEmailVerificationChallengeResponse, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
@@ -67,6 +72,23 @@ func (s *Store) IssueEmailVerificationChallenge(ctx context.Context, req *interm
 	})
 	if err != nil {
 		return nil, fmt.Errorf("set email verification challenge: %w", err)
+	}
+
+	qEmailDailyQuotaUsage, err := q.IncrementProjectEmailDailyQuotaUsage(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("increment project email daily quota usage: %w", err)
+	}
+
+	emailQuotaDaily := defaultEmailQuotaDaily
+	if qProject.EmailQuotaDaily != nil {
+		emailQuotaDaily = *qProject.EmailQuotaDaily
+	}
+
+	slog.InfoContext(ctx, "email_daily_quota_usage", "usage", qEmailDailyQuotaUsage.QuotaUsage, "quota", qProject.EmailQuotaDaily)
+
+	if qEmailDailyQuotaUsage.QuotaUsage > emailQuotaDaily {
+		slog.InfoContext(ctx, "email_daily_quota_exceeded")
+		return nil, apierror.NewFailedPreconditionError("email daily quota exceeded", fmt.Errorf("email daily quota exceeded"))
 	}
 
 	if err := commit(); err != nil {

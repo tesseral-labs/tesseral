@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"html/template"
+	"log/slog"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -283,6 +284,11 @@ func (s *Store) IssuePasswordResetCode(ctx context.Context, req *intermediatev1.
 	}
 	defer rollback()
 
+	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get project by id: %w", err)
+	}
+
 	qIntermediateSession, err := q.GetIntermediateSessionByID(ctx, authn.IntermediateSessionID(ctx))
 	if err != nil {
 		return nil, fmt.Errorf("get intermediate session by id: %w", err)
@@ -308,6 +314,23 @@ func (s *Store) IssuePasswordResetCode(ctx context.Context, req *intermediatev1.
 		PasswordResetCodeSha256: passwordResetCodeSHA256[:],
 	}); err != nil {
 		return nil, fmt.Errorf("update intermediate session password reset code sha256: %w", err)
+	}
+
+	qEmailDailyQuotaUsage, err := q.IncrementProjectEmailDailyQuotaUsage(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("increment project email daily quota usage: %w", err)
+	}
+
+	emailQuotaDaily := defaultEmailQuotaDaily
+	if qProject.EmailQuotaDaily != nil {
+		emailQuotaDaily = *qProject.EmailQuotaDaily
+	}
+
+	slog.InfoContext(ctx, "email_daily_quota_usage", "usage", qEmailDailyQuotaUsage.QuotaUsage, "quota", qProject.EmailQuotaDaily)
+
+	if qEmailDailyQuotaUsage.QuotaUsage > emailQuotaDaily {
+		slog.InfoContext(ctx, "email_daily_quota_exceeded")
+		return nil, apierror.NewFailedPreconditionError("email daily quota exceeded", fmt.Errorf("email daily quota exceeded"))
 	}
 
 	if err := commit(); err != nil {

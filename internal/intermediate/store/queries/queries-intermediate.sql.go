@@ -253,7 +253,7 @@ const createProject = `-- name: CreateProject :one
 INSERT INTO projects (id, organization_id, display_name, redirect_uri, vault_domain, email_send_from_domain, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_saml, log_in_with_email, cookie_domain)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
 RETURNING
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain, cookie_domain
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain, cookie_domain, email_quota_daily
 `
 
 type CreateProjectParams struct {
@@ -311,6 +311,7 @@ func (q *Queries) CreateProject(ctx context.Context, arg CreateProjectParams) (P
 		&i.VaultDomain,
 		&i.EmailSendFromDomain,
 		&i.CookieDomain,
+		&i.EmailQuotaDaily,
 	)
 	return i, err
 }
@@ -942,7 +943,7 @@ func (q *Queries) GetPasskeyByCredentialID(ctx context.Context, arg GetPasskeyBy
 
 const getProjectByBackingOrganizationID = `-- name: GetProjectByBackingOrganizationID :one
 SELECT
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain, cookie_domain
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain, cookie_domain, email_quota_daily
 FROM
     projects
 WHERE
@@ -976,13 +977,14 @@ func (q *Queries) GetProjectByBackingOrganizationID(ctx context.Context, organiz
 		&i.VaultDomain,
 		&i.EmailSendFromDomain,
 		&i.CookieDomain,
+		&i.EmailQuotaDaily,
 	)
 	return i, err
 }
 
 const getProjectByID = `-- name: GetProjectByID :one
 SELECT
-    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain, cookie_domain
+    id, organization_id, log_in_with_password, log_in_with_google, log_in_with_microsoft, google_oauth_client_id, microsoft_oauth_client_id, google_oauth_client_secret_ciphertext, microsoft_oauth_client_secret_ciphertext, display_name, create_time, update_time, logins_disabled, log_in_with_authenticator_app, log_in_with_passkey, log_in_with_email, log_in_with_saml, redirect_uri, after_login_redirect_uri, after_signup_redirect_uri, vault_domain, email_send_from_domain, cookie_domain, email_quota_daily
 FROM
     projects
 WHERE
@@ -1016,6 +1018,7 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 		&i.VaultDomain,
 		&i.EmailSendFromDomain,
 		&i.CookieDomain,
+		&i.EmailQuotaDaily,
 	)
 	return i, err
 }
@@ -1240,6 +1243,23 @@ func (q *Queries) GetUserPasskeyCredentialIDs(ctx context.Context, userID uuid.U
 		return nil, err
 	}
 	return items, nil
+}
+
+const incrementProjectEmailDailyQuotaUsage = `-- name: IncrementProjectEmailDailyQuotaUsage :one
+INSERT INTO project_email_quota_daily_usage (project_id, date, quota_usage)
+    VALUES ($1, CURRENT_DATE, 1)
+ON CONFLICT (project_id, date)
+    DO UPDATE SET
+        quota_usage = project_email_quota_daily_usage.quota_usage + 1
+    RETURNING
+        project_id, date, quota_usage
+`
+
+func (q *Queries) IncrementProjectEmailDailyQuotaUsage(ctx context.Context, projectID uuid.UUID) (ProjectEmailQuotaDailyUsage, error) {
+	row := q.db.QueryRow(ctx, incrementProjectEmailDailyQuotaUsage, projectID)
+	var i ProjectEmailQuotaDailyUsage
+	err := row.Scan(&i.ProjectID, &i.Date, &i.QuotaUsage)
+	return i, err
 }
 
 const invalidateSession = `-- name: InvalidateSession :exec

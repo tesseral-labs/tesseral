@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type AuthMethod string
@@ -266,6 +267,13 @@ type Project struct {
 	VaultDomain                          string
 	EmailSendFromDomain                  string
 	CookieDomain                         string
+	EmailQuotaDaily                      *int32
+}
+
+type ProjectEmailQuotaDailyUsage struct {
+	ProjectID  uuid.UUID
+	Date       pgtype.Date
+	QuotaUsage int32
 }
 
 type ProjectTrustedDomain struct {
