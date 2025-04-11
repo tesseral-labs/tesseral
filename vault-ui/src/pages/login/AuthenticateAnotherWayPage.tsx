@@ -1,5 +1,10 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
-import React from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { LoaderCircleIcon } from "lucide-react";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
+import { z } from "zod";
 
 import { Title } from "@/components/Title";
 import { GoogleIcon } from "@/components/login/GoogleIcon";
@@ -13,13 +18,33 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import TextDivider from "@/components/ui/text-divider";
+import {
   getGoogleOAuthRedirectURL,
   getMicrosoftOAuthRedirectURL,
+  issueEmailVerificationChallenge,
   listOrganizations,
+  setEmailAsPrimaryLoginFactor,
   whoami,
 } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
 
+const schema = z.object({
+  email: z.string().email(),
+});
+
 export function AuthenticateAnotherWayPage() {
+  const navigate = useNavigate();
+
+  const [submitting, setSubmitting] = useState(false);
+
   const { data: whoamiResponse } = useQuery(whoami);
   const { data: listOrganizationsResponse } = useQuery(listOrganizations);
 
@@ -29,6 +54,12 @@ export function AuthenticateAnotherWayPage() {
 
   const { mutateAsync: getGoogleOAuthRedirectURLAsync } = useMutation(
     getGoogleOAuthRedirectURL,
+  );
+  const setEmailAsPrimaryLoginFactorMutation = useMutation(
+    setEmailAsPrimaryLoginFactor,
+  );
+  const issueEmailVerificationChallengeMutation = useMutation(
+    issueEmailVerificationChallenge,
   );
 
   async function handleLogInWithGoogle() {
@@ -48,6 +79,23 @@ export function AuthenticateAnotherWayPage() {
     });
     window.location.href = url;
   }
+
+  async function handleSubmit(values: z.infer<typeof schema>) {
+    setSubmitting(true);
+    await setEmailAsPrimaryLoginFactorMutation.mutateAsync({});
+    await issueEmailVerificationChallengeMutation.mutateAsync({
+      email: values.email,
+    });
+
+    navigate("/verify-email");
+  }
+
+  const form = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      email: "",
+    },
+  });
 
   return (
     <LoginFlowCard>
@@ -80,6 +128,46 @@ export function AuthenticateAnotherWayPage() {
               <MicrosoftIcon />
               Log in with Microsoft
             </Button>
+          )}
+
+          {organization?.logInWithEmail && (
+            <>
+              {(organization?.logInWithGoogle ||
+                organization?.logInWithMicrosoft) && (
+                <TextDivider>or</TextDivider>
+              )}
+
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(handleSubmit)}>
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="john.doe@example.com"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button
+                    type="submit"
+                    className="mt-4 w-full"
+                    disabled={submitting}
+                  >
+                    {submitting && (
+                      <LoaderCircleIcon className="h-4 w-4 animate-spin" />
+                    )}
+                    Log in
+                  </Button>
+                </form>
+              </Form>
+            </>
           )}
         </div>
       </CardContent>
