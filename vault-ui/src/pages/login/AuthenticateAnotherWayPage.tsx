@@ -36,6 +36,10 @@ import {
   whoami,
 } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
 
+const schema = z.object({
+  email: z.string().email(),
+});
+
 export function AuthenticateAnotherWayPage() {
   const navigate = useNavigate();
 
@@ -85,10 +89,6 @@ export function AuthenticateAnotherWayPage() {
 
     navigate("/verify-email");
   }
-
-  const schema = z.object({
-    email: z.string().email(),
-  });
 
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),

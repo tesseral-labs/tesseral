@@ -36,6 +36,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router';
 import { Input } from '@/components/ui/input';
 
+const schema = z.object({
+  email: z.string().email(),
+});
+
 export function AuthenticateAnotherWayPage() {
   const navigate = useNavigate();
 
@@ -86,10 +90,6 @@ export function AuthenticateAnotherWayPage() {
 
     navigate('/verify-email');
   }
-
-  const schema = z.object({
-    email: z.string().email(),
-  });
 
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
