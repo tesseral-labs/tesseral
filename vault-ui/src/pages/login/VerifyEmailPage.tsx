@@ -38,6 +38,7 @@ import {
   verifyEmailChallenge,
   whoami,
 } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
+import { useRedirectNextLoginFlowPage } from "@/hooks/use-redirect-next-login-flow-page";
 
 const schema = z.object({
   emailVerificationChallengeCode: z
@@ -47,6 +48,8 @@ const schema = z.object({
 
 export function VerifyEmailPage() {
   const { data: whoamiResponse } = useQuery(whoami);
+
+  const redirectNextLoginFlowPage = useRedirectNextLoginFlowPage();
 
   const issueEmailVerificationChallengeMutation = useMutation(
     issueEmailVerificationChallenge,
@@ -88,7 +91,7 @@ export function VerifyEmailPage() {
       code: values.emailVerificationChallengeCode,
     });
 
-    navigate("/choose-organization");
+    redirectNextLoginFlowPage();
   }
 
   const [searchParams] = useSearchParams();

@@ -1,27 +1,27 @@
-import { useMutation, useQuery } from "@connectrpc/connect-query";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { LoaderCircleIcon } from "lucide-react";
-import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router";
-import { useSearchParams } from "react-router-dom";
-import { toast } from "sonner";
-import { z } from "zod";
+import { useMutation, useQuery } from '@connectrpc/connect-query';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { LoaderCircleIcon } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router';
+import { useSearchParams } from 'react-router-dom';
+import { toast } from 'sonner';
+import { z } from 'zod';
 
-import { LoginFlowCard } from "@/components/login/LoginFlowCard";
+import { LoginFlowCard } from '@/components/login/LoginFlowCard';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/accordion';
+import { Button } from '@/components/ui/button';
 import {
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 import {
   Form,
   FormControl,
@@ -30,21 +30,24 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import {
   issueEmailVerificationChallenge,
   verifyEmailChallenge,
   whoami,
-} from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
+} from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
+import { useRedirectNextLoginFlowPage } from '@/hooks/use-redirect-next-login-flow-page';
 
 const schema = z.object({
   emailVerificationChallengeCode: z
     .string()
-    .startsWith("email_verification_challenge_code_"),
+    .startsWith('email_verification_challenge_code_'),
 });
 
 export function VerifyEmailPage() {
+  const redirectNextLoginFlowPage = useRedirectNextLoginFlowPage();
+
   const { data: whoamiResponse } = useQuery(whoami);
 
   const issueEmailVerificationChallengeMutation = useMutation(
@@ -57,7 +60,7 @@ export function VerifyEmailPage() {
       email: whoamiResponse?.intermediateSession?.email,
     });
 
-    toast.success("New verification link sent");
+    toast.success('New verification link sent');
     setHasResent(true);
   }
 
@@ -71,7 +74,7 @@ export function VerifyEmailPage() {
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
-      emailVerificationChallengeCode: "",
+      emailVerificationChallengeCode: '',
     },
   });
 
@@ -87,19 +90,19 @@ export function VerifyEmailPage() {
       code: values.emailVerificationChallengeCode,
     });
 
-    navigate("/choose-organization");
+    redirectNextLoginFlowPage();
   }
 
   const [searchParams] = useSearchParams();
   useEffect(() => {
     (async () => {
-      const code = searchParams.get("code");
+      const code = searchParams.get('code');
       if (code) {
         await verifyEmailChallengeAsync({
           code,
         });
 
-        navigate("/choose-organization");
+        navigate('/choose-organization');
       }
     })();
   }, [searchParams, verifyEmailChallengeAsync, navigate]);
@@ -109,7 +112,7 @@ export function VerifyEmailPage() {
       <CardHeader>
         <CardTitle>Check your email</CardTitle>
         <CardDescription>
-          We've sent an email verification link to{" "}
+          We've sent an email verification link to{' '}
           <span className="font-medium">
             {whoamiResponse?.intermediateSession?.email}
           </span>
@@ -129,8 +132,8 @@ export function VerifyEmailPage() {
           onClick={handleResend}
         >
           {hasResent
-            ? "Email verification resent!"
-            : "Resend verification link"}
+            ? 'Email verification resent!'
+            : 'Resend verification link'}
         </Button>
 
         <div className="block relative w-full cursor-default my-2 mt-4">
