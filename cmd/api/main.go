@@ -242,12 +242,14 @@ func main() {
 		PageEncoder:                           pagetoken.Encoder{Secret: pageEncodingValue},
 		GoogleOAuthClient:                     &googleoauth.Client{HTTPClient: &http.Client{}},
 		MicrosoftOAuthClient:                  &microsoftoauth.Client{HTTPClient: &http.Client{}},
+		S3:                                    s3_,
 		SES:                                   ses_,
 		SessionSigningKeyKmsKeyID:             config.SessionKMSKeyID,
 		GoogleOAuthClientSecretsKMSKeyID:      config.GoogleOAuthClientSecretsKMSKeyID,
 		MicrosoftOAuthClientSecretsKMSKeyID:   config.MicrosoftOAuthClientSecretsKMSKeyID,
 		AuthenticatorAppSecretsKMSKeyID:       config.AuthenticatorAppSecretsKMSKeyID,
 		UserContentBaseUrl:                    config.UserContentBaseUrl,
+		S3UserContentBucketName:               config.S3UserContentBucketName,
 	})
 	intermediateConnectPath, intermediateConnectHandler := intermediatev1connect.NewIntermediateServiceHandler(
 		&intermediateservice.Service{
