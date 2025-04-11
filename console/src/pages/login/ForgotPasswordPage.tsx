@@ -1,19 +1,19 @@
-import { useMutation, useQuery } from '@connectrpc/connect-query';
-import { zodResolver } from '@hookform/resolvers/zod';
-import React, { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router';
-import { toast } from 'sonner';
-import { z } from 'zod';
+import { useMutation, useQuery } from "@connectrpc/connect-query";
+import { zodResolver } from "@hookform/resolvers/zod";
+import React, { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
+import { toast } from "sonner";
+import { z } from "zod";
 
-import { LoginFlowCard } from '@/components/login/LoginFlowCard';
-import { Button } from '@/components/ui/button';
+import { LoginFlowCard } from "@/components/login/LoginFlowCard";
+import { Button } from "@/components/ui/button";
 import {
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -22,17 +22,17 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   issuePasswordResetCode,
   verifyPasswordResetCode,
   whoami,
-} from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
-import { Title } from '@/components/Title';
+} from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
+import { Title } from "@/components/Title";
 
 const schema = z.object({
-  passwordResetCode: z.string().startsWith('password_reset_code_'),
+  passwordResetCode: z.string().startsWith("password_reset_code_"),
 });
 
 export function ForgotPasswordPage() {
@@ -40,7 +40,7 @@ export function ForgotPasswordPage() {
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
-      passwordResetCode: '',
+      passwordResetCode: "",
     },
   });
 
@@ -57,7 +57,7 @@ export function ForgotPasswordPage() {
 
   async function handleResend() {
     await issuePasswordResetCodeAsync({});
-    toast.success('New password reset code sent');
+    toast.success("New password reset code sent");
   }
 
   const { mutateAsync: verifyPasswordResetCodeAsync } = useMutation(
@@ -70,7 +70,7 @@ export function ForgotPasswordPage() {
       passwordResetCode: values.passwordResetCode,
     });
 
-    navigate('/register-password');
+    navigate("/register-password");
   }
 
   return (
@@ -79,7 +79,7 @@ export function ForgotPasswordPage() {
       <CardHeader>
         <CardTitle>Forgot password</CardTitle>
         <CardDescription>
-          We've sent a password reset code to{' '}
+          We've sent a password reset code to{" "}
           <span className="font-medium">
             {whoamiResponse?.intermediateSession?.email}
           </span>
@@ -114,7 +114,7 @@ export function ForgotPasswordPage() {
         </Form>
 
         <p className="mt-4 text-xs text-muted-foreground">
-          Didn't get an email?{' '}
+          Didn't get an email?{" "}
           <span
             className="cursor-pointer text-foreground underline underline-offset-2 decoration-muted-foreground"
             onClick={handleResend}

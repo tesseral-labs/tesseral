@@ -1,22 +1,22 @@
-import { useMutation } from '@connectrpc/connect-query';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { LoaderCircleIcon } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router';
-import { Link, useSearchParams } from 'react-router-dom';
-import { z } from 'zod';
+import { useMutation } from "@connectrpc/connect-query";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { LoaderCircleIcon } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
+import { Link, useSearchParams } from "react-router-dom";
+import { z } from "zod";
 
-import { GoogleIcon } from '@/components/login/GoogleIcon';
-import { LoginFlowCard } from '@/components/login/LoginFlowCard';
-import { MicrosoftIcon } from '@/components/login/MicrosoftIcon';
-import { Button } from '@/components/ui/button';
+import { GoogleIcon } from "@/components/login/GoogleIcon";
+import { LoginFlowCard } from "@/components/login/LoginFlowCard";
+import { MicrosoftIcon } from "@/components/login/MicrosoftIcon";
+import { Button } from "@/components/ui/button";
 import {
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -24,20 +24,20 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   createIntermediateSession,
   getGoogleOAuthRedirectURL,
   getMicrosoftOAuthRedirectURL,
   issueEmailVerificationChallenge,
   setEmailAsPrimaryLoginFactor,
-} from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
+} from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
 import {
   ProjectSettingsProvider,
   useProjectSettings,
-} from '@/lib/project-settings';
-import { Title } from '@/components/Title';
+} from "@/lib/project-settings";
+import { Title } from "@/components/Title";
 
 export function SignupPage() {
   return (
@@ -87,11 +87,11 @@ function SignupPageContents() {
     }
 
     setRelayedSessionState(
-      searchParams.get('relayed-session-state') ?? undefined,
+      searchParams.get("relayed-session-state") ?? undefined,
     );
 
     const searchParamsCopy = new URLSearchParams(searchParams);
-    searchParamsCopy.delete('relayed-session-state');
+    searchParamsCopy.delete("relayed-session-state");
     setSearchParams(searchParamsCopy);
   }, [relayedSessionState, searchParams, setSearchParams]);
 
@@ -128,7 +128,7 @@ function SignupPageContents() {
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
-      email: '',
+      email: "",
     },
   });
 
@@ -149,7 +149,7 @@ function SignupPageContents() {
       email: values.email,
     });
 
-    navigate('/verify-email');
+    navigate("/verify-email");
   }
 
   const hasAboveFoldMethod =
@@ -230,7 +230,7 @@ function SignupPageContents() {
         )}
 
         <p className="mt-4 text-xs text-muted-foreground">
-          Already have an account?{' '}
+          Already have an account?{" "}
           <Link
             to="/login"
             className="cursor-pointer text-foreground underline underline-offset-2 decoration-muted-foreground"

@@ -1,23 +1,23 @@
-import { useMutation, useQuery } from '@connectrpc/connect-query';
-import React from 'react';
+import { useMutation, useQuery } from "@connectrpc/connect-query";
+import React from "react";
 
-import { GoogleIcon } from '@/components/login/GoogleIcon';
-import { LoginFlowCard } from '@/components/login/LoginFlowCard';
-import { MicrosoftIcon } from '@/components/login/MicrosoftIcon';
-import { Button } from '@/components/ui/button';
+import { GoogleIcon } from "@/components/login/GoogleIcon";
+import { LoginFlowCard } from "@/components/login/LoginFlowCard";
+import { MicrosoftIcon } from "@/components/login/MicrosoftIcon";
+import { Button } from "@/components/ui/button";
 import {
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from "@/components/ui/card";
 import {
   getGoogleOAuthRedirectURL,
   getMicrosoftOAuthRedirectURL,
   listOrganizations,
   whoami,
-} from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
-import { Title } from '@/components/Title';
+} from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
+import { Title } from "@/components/Title";
 
 export function AuthenticateAnotherWayPage() {
   const { data: whoamiResponse } = useQuery(whoami);
