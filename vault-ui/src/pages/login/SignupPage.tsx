@@ -7,6 +7,7 @@ import { useNavigate } from "react-router";
 import { Link, useSearchParams } from "react-router-dom";
 import { z } from "zod";
 
+import { Title } from "@/components/Title";
 import { GoogleIcon } from "@/components/login/GoogleIcon";
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
 import { MicrosoftIcon } from "@/components/login/MicrosoftIcon";
@@ -176,6 +177,7 @@ function SignupPageContents() {
 
   return (
     <LoginFlowCard>
+      <Title title="Sign up" />
       <CardHeader>
         <CardTitle>Sign up for {settings.projectDisplayName}</CardTitle>
         <CardDescription>Please sign up to continue.</CardDescription>

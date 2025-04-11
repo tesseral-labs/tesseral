@@ -5,7 +5,7 @@ export function Title({ title }: { title?: string }) {
   return (
     <Helmet>
       {/* TODO: Make this conditionally load an organization's configured Display Name */}
-      {title ? <title>{title} | Tesseral</title> : <title>Tesseral</title>}
+      {title && <title>{title}</title>}
     </Helmet>
   );
 }
