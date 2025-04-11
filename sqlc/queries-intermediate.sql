@@ -665,7 +665,7 @@ WHERE
 -- name: IncrementProjectEmailDailyQuotaUsage :one
 INSERT INTO project_email_quota_daily_usage (project_id, date, quota_usage)
     VALUES ($1, CURRENT_DATE, 1)
-ON CONFLICT
+ON CONFLICT (project_id, date)
     DO UPDATE SET
         quota_usage = project_email_quota_daily_usage.quota_usage + 1
     RETURNING
