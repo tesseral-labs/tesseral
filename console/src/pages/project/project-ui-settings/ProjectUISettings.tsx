@@ -51,6 +51,10 @@ const settingsPage: FC = () => {
   const [darkModeLogoFile, setDarkModeLogoFile] = useState<File | null>(null);
   const [darkModePrimaryColor, setDarkModePrimaryColor] =
     useState<string>('#ffffff');
+  const [lastValidDarkModePrimaryColor, setLastValidDarkModePrimaryColor] =
+    useState<string>('#ffffff');
+  const [lastValidPrimaryColor, setLastValidPrimaryColor] =
+    useState<string>('#0f172a');
   const [detectDarkModeEnabled, setDetectDarkModeEnabled] =
     useState<boolean>(false);
   const [layout, setLayout] = useState<string>('centered');
@@ -61,8 +65,8 @@ const settingsPage: FC = () => {
   const applyTheme = () => {
     const root = previewRef.current as HTMLElement;
 
-    const primary = primaryColor;
-    const darkPrimary = darkModePrimaryColor;
+    const primary = lastValidPrimaryColor;
+    const darkPrimary = lastValidDarkModePrimaryColor;
 
     if (!darkMode && primary) {
       const foreground = isColorDark(primary) ? '0 0% 100%' : '0 0% 0%';
@@ -101,6 +105,28 @@ const settingsPage: FC = () => {
     reader.readAsDataURL(file);
   };
 
+  const handleDarkModePrimaryColorChange = () => {
+    const hexRegexp = /^#(?:[0-9a-fA-F]{3}){1,2}$/;
+    const hexWithAlphaRegexp =
+      /^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/;
+
+    if (
+      hexRegexp.test(darkModePrimaryColor) ||
+      hexWithAlphaRegexp.test(darkModePrimaryColor)
+    ) {
+      setDarkModePrimaryColor(darkModePrimaryColor);
+      setLastValidDarkModePrimaryColor(darkModePrimaryColor);
+    } else if (
+      hexRegexp.test(`#${darkModePrimaryColor}`) ||
+      hexWithAlphaRegexp.test(`#${darkModePrimaryColor}`)
+    ) {
+      setDarkModePrimaryColor(`#${darkModePrimaryColor}`);
+      setLastValidDarkModePrimaryColor(`#${darkModePrimaryColor}`);
+    } else {
+      setDarkModePrimaryColor(lastValidPrimaryColor);
+    }
+  };
+
   const handleLogoChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) {
@@ -121,6 +147,25 @@ const settingsPage: FC = () => {
     };
 
     reader.readAsDataURL(file);
+  };
+
+  const handlePrimaryColorChange = () => {
+    const hexRegexp = /^#(?:[0-9a-fA-F]{3}){1,2}$/;
+    const hexWithAlphaRegexp =
+      /^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/;
+
+    if (hexRegexp.test(primaryColor) || hexWithAlphaRegexp.test(primaryColor)) {
+      setPrimaryColor(primaryColor);
+      setLastValidPrimaryColor(primaryColor);
+    } else if (
+      hexRegexp.test(`#${primaryColor}`) ||
+      hexWithAlphaRegexp.test(`#${primaryColor}`)
+    ) {
+      setPrimaryColor(`#${primaryColor}`);
+      setLastValidPrimaryColor(`#${primaryColor}`);
+    } else {
+      setPrimaryColor(lastValidPrimaryColor);
+    }
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -414,6 +459,7 @@ const settingsPage: FC = () => {
 
                         <ColorPicker
                           className="mt-2"
+                          onBlur={handlePrimaryColorChange}
                           onChange={setPrimaryColor}
                           value={primaryColor}
                         />
@@ -462,6 +508,7 @@ const settingsPage: FC = () => {
 
                             <ColorPicker
                               className="mt-2"
+                              onBlur={handleDarkModePrimaryColorChange}
                               onChange={setDarkModePrimaryColor}
                               value={darkModePrimaryColor}
                             />
