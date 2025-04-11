@@ -1,17 +1,17 @@
-import { useMutation, useQuery } from "@connectrpc/connect-query";
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useMutation, useQuery } from '@connectrpc/connect-query';
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
 
-import { GoogleIcon } from "@/components/login/GoogleIcon";
-import { LoginFlowCard } from "@/components/login/LoginFlowCard";
-import { MicrosoftIcon } from "@/components/login/MicrosoftIcon";
-import { Button } from "@/components/ui/button";
+import { GoogleIcon } from '@/components/login/GoogleIcon';
+import { LoginFlowCard } from '@/components/login/LoginFlowCard';
+import { MicrosoftIcon } from '@/components/login/MicrosoftIcon';
+import { Button } from '@/components/ui/button';
 import {
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 import {
   getGoogleOAuthRedirectURL,
   getMicrosoftOAuthRedirectURL,
@@ -19,9 +19,9 @@ import {
   listOrganizations,
   setEmailAsPrimaryLoginFactor,
   whoami,
-} from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
-import { Title } from "@/components/Title";
-import TextDivider from "@/components/ui/text-divider";
+} from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
+import { Title } from '@/components/Title';
+import TextDivider from '@/components/ui/text-divider';
 import {
   Form,
   FormControl,
@@ -29,12 +29,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { LoaderCircleIcon } from "lucide-react";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from "react-router";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/form';
+import { LoaderCircleIcon } from 'lucide-react';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useNavigate } from 'react-router';
+import { Input } from '@/components/ui/input';
 
 export function AuthenticateAnotherWayPage() {
   const navigate = useNavigate();
@@ -84,7 +84,7 @@ export function AuthenticateAnotherWayPage() {
       email: values.email,
     });
 
-    navigate("/verify-email");
+    navigate('/verify-email');
   }
 
   const schema = z.object({
@@ -94,7 +94,7 @@ export function AuthenticateAnotherWayPage() {
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
-      email: "",
+      email: '',
     },
   });
 
