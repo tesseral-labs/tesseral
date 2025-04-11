@@ -7,6 +7,7 @@ import { useNavigate } from "react-router";
 import { Link, useSearchParams } from "react-router-dom";
 import { z } from "zod";
 
+import { Title } from "@/components/Title";
 import { GoogleIcon } from "@/components/login/GoogleIcon";
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
 import { MicrosoftIcon } from "@/components/login/MicrosoftIcon";
@@ -176,6 +177,7 @@ function LoginPageContents() {
 
   return (
     <LoginFlowCard>
+      <Title title="Log in" />
       <CardHeader>
         <CardTitle>Log in to {settings.projectDisplayName}</CardTitle>
         <CardDescription>Please sign in to continue.</CardDescription>

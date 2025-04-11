@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { Title } from "@/components/Title";
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
 import { Button } from "@/components/ui/button";
 import {
@@ -74,6 +75,7 @@ export function RegisterPasswordPage() {
 
   return (
     <LoginFlowCard>
+      <Title title="Register password" />
       <CardHeader>
         <CardTitle>Register password</CardTitle>
         <CardDescription>
