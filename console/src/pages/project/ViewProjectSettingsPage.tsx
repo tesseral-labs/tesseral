@@ -45,96 +45,85 @@ export const ViewProjectSettingsPage = () => {
     {
       name: 'Vault Domain Settings',
       url: `/project-settings/vault-domain-settings`,
-    }
+    },
   ];
 
   const currentTab = tabs.find((tab) => tab.url === pathname);
 
   return (
-    <div>
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/">Home</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Project settings</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-
-      <PageTitle>Project settings</PageTitle>
-      <PageCodeSubtitle>{getProjectResponse?.project?.id}</PageCodeSubtitle>
-      <PageDescription>
-        Everything you do in Tesseral happens inside a Project.
-      </PageDescription>
-
-      <Card className="my-8">
-        <CardHeader>
-          <CardTitle className="text-xl">General configuration</CardTitle>
-        </CardHeader>
-
-        <CardContent>
-          <DetailsGrid>
-            <DetailsGridColumn>
-              <DetailsGridEntry>
-                <DetailsGridKey>Display name</DetailsGridKey>
-                <DetailsGridValue>
-                  {getProjectResponse?.project?.displayName}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-            </DetailsGridColumn>
-            <DetailsGridColumn>
-              <DetailsGridEntry>
-                <DetailsGridKey>Created</DetailsGridKey>
-                <DetailsGridValue>
-                  {getProjectResponse?.project?.createTime &&
-                    DateTime.fromJSDate(
-                      timestampDate(getProjectResponse.project.createTime),
-                    ).toRelative()}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-            </DetailsGridColumn>
-            <DetailsGridColumn>
-              <DetailsGridEntry>
-                <DetailsGridKey>Updated</DetailsGridKey>
-                <DetailsGridValue>
-                  {getProjectResponse?.project?.updateTime &&
-                    DateTime.fromJSDate(
-                      timestampDate(getProjectResponse.project.updateTime),
-                    ).toRelative()}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-            </DetailsGridColumn>
-          </DetailsGrid>
-        </CardContent>
-      </Card>
-
-      <div className="border-b border-gray-200">
-        <nav aria-label="Tabs" className="-mb-px flex space-x-8">
-          {tabs.map((tab) => (
-            <Link
-              key={tab.name}
-              to={tab.url}
-              className={clsx(
-                tab.url === currentTab?.url
-                  ? 'border-indigo-500 text-indigo-600'
-                  : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
-                'whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium',
-              )}
-            >
-              {tab.name}
-            </Link>
-          ))}
-        </nav>
+    <>
+      <div className="bg-white  w-full">
+        <div className="border-b border-gray-200">
+          <nav aria-label="Tabs" className="-mb-px flex">
+            {tabs.map((tab) => (
+              <Link
+                key={tab.name}
+                to={tab.url}
+                className={clsx(
+                  tab.url === currentTab?.url
+                    ? 'border-indigo-500 text-indigo-600'
+                    : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
+                  'whitespace-nowrap border-b-2 py-2 px-4 text-sm font-medium',
+                )}
+              >
+                {tab.name}
+              </Link>
+            ))}
+          </nav>
+        </div>
       </div>
+      <div className="container p-4 m-auto">
+        <PageTitle>Project settings</PageTitle>
+        <PageCodeSubtitle>{getProjectResponse?.project?.id}</PageCodeSubtitle>
+        <PageDescription>
+          Everything you do in Tesseral happens inside a Project.
+        </PageDescription>
 
-      <div className="mt-4">
-        <Outlet />
+        <Card className="my-8">
+          <CardHeader>
+            <CardTitle>General configuration</CardTitle>
+          </CardHeader>
+
+          <CardContent>
+            <DetailsGrid>
+              <DetailsGridColumn>
+                <DetailsGridEntry>
+                  <DetailsGridKey>Display name</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getProjectResponse?.project?.displayName}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+              </DetailsGridColumn>
+              <DetailsGridColumn>
+                <DetailsGridEntry>
+                  <DetailsGridKey>Created</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getProjectResponse?.project?.createTime &&
+                      DateTime.fromJSDate(
+                        timestampDate(getProjectResponse.project.createTime),
+                      ).toRelative()}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+              </DetailsGridColumn>
+              <DetailsGridColumn>
+                <DetailsGridEntry>
+                  <DetailsGridKey>Updated</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getProjectResponse?.project?.updateTime &&
+                      DateTime.fromJSDate(
+                        timestampDate(getProjectResponse.project.updateTime),
+                      ).toRelative()}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+              </DetailsGridColumn>
+            </DetailsGrid>
+          </CardContent>
+        </Card>
+
+        <div className="mt-4">
+          <Outlet />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
