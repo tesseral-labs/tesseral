@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/sesv2"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -24,6 +25,7 @@ type Store struct {
 	dogfoodProjectID                      *uuid.UUID
 	hibp                                  *hibp.Client
 	intermediateSessionSigningKeyKMSKeyID string
+	s3                                    *s3.Client
 	kms                                   *kms.Client
 	pageEncoder                           pagetoken.Encoder
 	q                                     *queries.Queries
@@ -35,6 +37,7 @@ type Store struct {
 	googleOAuthClient                     *googleoauth.Client
 	microsoftOAuthClient                  *microsoftoauth.Client
 	userContentBaseUrl                    string
+	s3UserContentBucketName               string
 }
 
 type NewStoreParams struct {
@@ -43,6 +46,7 @@ type NewStoreParams struct {
 	DB                                    *pgxpool.Pool
 	DogfoodProjectID                      *uuid.UUID
 	IntermediateSessionSigningKeyKMSKeyID string
+	S3                                    *s3.Client
 	KMS                                   *kms.Client
 	PageEncoder                           pagetoken.Encoder
 	SES                                   *sesv2.Client
@@ -53,6 +57,7 @@ type NewStoreParams struct {
 	GoogleOAuthClient                     *googleoauth.Client
 	MicrosoftOAuthClient                  *microsoftoauth.Client
 	UserContentBaseUrl                    string
+	S3UserContentBucketName               string
 }
 
 func New(p NewStoreParams) *Store {
@@ -65,6 +70,7 @@ func New(p NewStoreParams) *Store {
 			HTTPClient: http.DefaultClient,
 		},
 		intermediateSessionSigningKeyKMSKeyID: p.IntermediateSessionSigningKeyKMSKeyID,
+		s3:                                    p.S3,
 		kms:                                   p.KMS,
 		pageEncoder:                           p.PageEncoder,
 		q:                                     queries.New(p.DB),
@@ -76,6 +82,7 @@ func New(p NewStoreParams) *Store {
 		microsoftOAuthClientSecretsKMSKeyID:   p.MicrosoftOAuthClientSecretsKMSKeyID,
 		authenticatorAppSecretsKMSKeyID:       p.AuthenticatorAppSecretsKMSKeyID,
 		userContentBaseUrl:                    p.UserContentBaseUrl,
+		s3UserContentBucketName:               p.S3UserContentBucketName,
 	}
 
 	return store
