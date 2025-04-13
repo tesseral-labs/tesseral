@@ -1,0 +1,1 @@
+alter table project_email_quota_daily_usage drop constraint project_email_quota_daily_usage_pkey;
