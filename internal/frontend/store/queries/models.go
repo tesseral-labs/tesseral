@@ -268,6 +268,7 @@ type Project struct {
 	EmailSendFromDomain                  string
 	CookieDomain                         string
 	EmailQuotaDaily                      *int32
+	StripeCustomerID                     *string
 }
 
 type ProjectEmailQuotaDailyUsage struct {

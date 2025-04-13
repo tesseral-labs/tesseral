@@ -17,6 +17,7 @@ require (
 	github.com/cloudflare/cloudflare-go/v4 v4.1.0
 	github.com/cyrusaf/ctxlog v1.3.3
 	github.com/fxamacker/cbor/v2 v2.7.0
+	github.com/getsentry/sentry-go v0.31.1
 	github.com/golang-migrate/migrate/v4 v4.17.1
 	github.com/google/go-cmp v0.6.0
 	github.com/google/uuid v1.6.0
@@ -27,8 +28,10 @@ require (
 	github.com/ssoready/conf v0.0.0-20240508183332-dbc356674c9e
 	github.com/ssoready/prettyuuid v0.0.0-20241023163822-285da46017b3
 	github.com/stretchr/testify v1.10.0
+	github.com/stripe/stripe-go/v82 v82.0.0
 	github.com/ucarion/cli v0.2.0
 	golang.org/x/crypto v0.36.0
+	golang.org/x/net v0.37.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20250407143221-ac9807e6c755
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250407143221-ac9807e6c755
 	google.golang.org/grpc v1.71.0
@@ -52,7 +55,6 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sts v1.32.4 // indirect
 	github.com/aws/smithy-go v1.22.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/getsentry/sentry-go v0.31.1 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
@@ -69,7 +71,6 @@ require (
 	github.com/x448/float16 v0.8.4 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
 	golang.org/x/mod v0.21.0 // indirect
-	golang.org/x/net v0.37.0 // indirect
 	golang.org/x/sync v0.12.0 // indirect
 	golang.org/x/sys v0.31.0 // indirect
 	golang.org/x/text v0.23.0 // indirect

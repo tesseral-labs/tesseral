@@ -265,6 +265,8 @@ service BackendService {
   rpc DeletePublishableKey(DeletePublishableKeyRequest) returns (DeletePublishableKeyResponse);
 
   rpc CreateUserImpersonationToken(CreateUserImpersonationTokenRequest) returns (CreateUserImpersonationTokenResponse);
+
+  rpc CreateStripeCheckoutLink(CreateStripeCheckoutLinkRequest) returns (CreateStripeCheckoutLinkResponse);
 }
 
 message GetProjectRequest {}
@@ -877,4 +879,10 @@ message CreateUserImpersonationTokenRequest {
 
 message CreateUserImpersonationTokenResponse {
   UserImpersonationToken user_impersonation_token = 1;
+}
+
+message CreateStripeCheckoutLinkRequest {}
+
+message CreateStripeCheckoutLinkResponse {
+  string url = 1;
 }

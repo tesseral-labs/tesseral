@@ -11,6 +11,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	stripeclient "github.com/stripe/stripe-go/v82/client"
 	"github.com/tesseral-labs/tesseral/internal/backend/authn"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/cloudflaredoh"
@@ -39,6 +40,8 @@ type Store struct {
 	tesseralDNSCloudflareZoneID           string
 	tesseralDNSVaultCNAMEValue            string
 	sesSPFMXRecordValue                   string
+	stripe                                *stripeclient.API
+	stripePriceIDGrowthTier               string
 }
 
 type NewStoreParams struct {
@@ -60,6 +63,8 @@ type NewStoreParams struct {
 	TesseralDNSCloudflareZoneID           string
 	TesseralDNSVaultCNAMEValue            string
 	SESSPFMXRecordValue                   string
+	Stripe                                *stripeclient.API
+	StripePriceIDGrowthTier               string
 }
 
 func New(p NewStoreParams) *Store {
@@ -84,6 +89,8 @@ func New(p NewStoreParams) *Store {
 		tesseralDNSCloudflareZoneID:           p.TesseralDNSCloudflareZoneID,
 		tesseralDNSVaultCNAMEValue:            p.TesseralDNSVaultCNAMEValue,
 		sesSPFMXRecordValue:                   p.SESSPFMXRecordValue,
+		stripe:                                p.Stripe,
+		stripePriceIDGrowthTier:               p.StripePriceIDGrowthTier,
 	}
 
 	return store
