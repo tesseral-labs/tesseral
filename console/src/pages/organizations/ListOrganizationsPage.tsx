@@ -1,6 +1,9 @@
-import React from 'react';
-import { useInfiniteQuery, useQuery } from '@connectrpc/connect-query';
-import { listOrganizations } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
+import React, { FC, useState } from 'react';
+import { useInfiniteQuery, useMutation } from '@connectrpc/connect-query';
+import {
+  createOrganization,
+  listOrganizations,
+} from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import {
   Table,
   TableBody,
@@ -12,7 +15,13 @@ import {
 import { DateTime } from 'luxon';
 import { timestampDate } from '@bufbuild/protobuf/wkt';
 import { Link } from 'react-router-dom';
-import { Card, CardContent } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -23,21 +32,51 @@ import {
 } from '@/components/ui/breadcrumb';
 import { PageDescription, PageTitle } from '@/components/page';
 import { Button } from '@/components/ui/button';
-import { LoaderCircleIcon } from 'lucide-react';
+import { CirclePlus, LoaderCircleIcon } from 'lucide-react';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import {
+  Form,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { toast } from 'sonner';
 
 export const ListOrganizationsPage = () => {
-  const { data: listOrganizationsResponses, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(
+  const {
+    data: listOrganizationsResponses,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    refetch,
+  } = useInfiniteQuery(
     listOrganizations,
     {
-      pageToken: "",
+      pageToken: '',
     },
     {
-      pageParamKey: "pageToken",
+      pageParamKey: 'pageToken',
       getNextPageParam: (page) => page.nextPageToken || undefined,
     },
   );
 
-  const organizations = listOrganizationsResponses?.pages?.flatMap(page => page.organizations);
+  const organizations = listOrganizationsResponses?.pages?.flatMap(
+    (page) => page.organizations,
+  );
 
   return (
     <div>
@@ -61,6 +100,20 @@ export const ListOrganizationsPage = () => {
       </PageDescription>
 
       <Card className="mt-8 overflow-hidden">
+        <CardHeader className="flex flex-row items-center space-x-4 justify-between">
+          <div className="flex flex-col space-y-1 5">
+            <CardTitle>Organizations list</CardTitle>
+            <CardDescription>
+              This is a list of all organizations in your project. You can
+              create and edit these organizations manually.
+            </CardDescription>
+          </div>
+          <CreateOrganizationButton
+            onSubmit={async () => {
+              await refetch();
+            }}
+          />
+        </CardHeader>
         <CardContent className="-m-6 mt-0">
           <Table>
             <TableHeader className="bg-gray-50">
@@ -108,10 +161,89 @@ export const ListOrganizationsPage = () => {
           variant="outline"
           onClick={() => fetchNextPage()}
         >
-          {isFetchingNextPage && <LoaderCircleIcon className="h-4 w-4 animate-spin" />}
+          {isFetchingNextPage && (
+            <LoaderCircleIcon className="h-4 w-4 animate-spin" />
+          )}
           Load more
         </Button>
       )}
     </div>
   );
 };
+
+interface CreateOrganizationButtonProps {
+  onSubmit: () => Promise<void>;
+}
+
+const CreateOrganizationButton: FC<CreateOrganizationButtonProps> = ({
+  onSubmit,
+}) => {
+  const form = useForm<z.infer<typeof organizationSchema>>({
+    resolver: zodResolver(organizationSchema),
+    defaultValues: {
+      displayName: '',
+    },
+  });
+
+  const createOrganizationMutation = useMutation(createOrganization);
+
+  const [open, setOpen] = useState(false);
+
+  const handleSubmit = async (values: z.infer<typeof organizationSchema>) => {
+    await createOrganizationMutation.mutateAsync({
+      organization: {
+        ...values,
+      },
+    });
+    toast.success('Organization created successfully');
+    await onSubmit();
+
+    setOpen(false);
+  };
+
+  return (
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogTrigger asChild>
+        <Button variant="outline">
+          <CirclePlus />
+          Create Organization
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Create Organization</AlertDialogTitle>
+          <AlertDialogDescription>
+            Create a new organization.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleSubmit)}>
+            <FormField
+              control={form.control}
+              name="displayName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Display Name</FormLabel>
+                  <Input placeholder="ACME Corp" {...field} />
+                  <FormDescription>
+                    The display name of the organization. This will be displayed
+                    to users during the login process.
+                  </FormDescription>
+                </FormItem>
+              )}
+            />
+            <AlertDialogFooter className="mt-8">
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <Button type="submit">Save</Button>
+            </AlertDialogFooter>
+          </form>
+        </Form>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+};
+
+const organizationSchema = z.object({
+  displayName: z.string(),
+});
