@@ -80,6 +80,7 @@ const (
 	BackendService_UpdatePublishableKey_FullMethodName                  = "/tesseral.backend.v1.BackendService/UpdatePublishableKey"
 	BackendService_DeletePublishableKey_FullMethodName                  = "/tesseral.backend.v1.BackendService/DeletePublishableKey"
 	BackendService_CreateUserImpersonationToken_FullMethodName          = "/tesseral.backend.v1.BackendService/CreateUserImpersonationToken"
+	BackendService_GetProjectEntitlements_FullMethodName                = "/tesseral.backend.v1.BackendService/GetProjectEntitlements"
 	BackendService_CreateStripeCheckoutLink_FullMethodName              = "/tesseral.backend.v1.BackendService/CreateStripeCheckoutLink"
 )
 
@@ -186,6 +187,7 @@ type BackendServiceClient interface {
 	UpdatePublishableKey(ctx context.Context, in *UpdatePublishableKeyRequest, opts ...grpc.CallOption) (*UpdatePublishableKeyResponse, error)
 	DeletePublishableKey(ctx context.Context, in *DeletePublishableKeyRequest, opts ...grpc.CallOption) (*DeletePublishableKeyResponse, error)
 	CreateUserImpersonationToken(ctx context.Context, in *CreateUserImpersonationTokenRequest, opts ...grpc.CallOption) (*CreateUserImpersonationTokenResponse, error)
+	GetProjectEntitlements(ctx context.Context, in *GetProjectEntitlementsRequest, opts ...grpc.CallOption) (*GetProjectEntitlementsResponse, error)
 	CreateStripeCheckoutLink(ctx context.Context, in *CreateStripeCheckoutLinkRequest, opts ...grpc.CallOption) (*CreateStripeCheckoutLinkResponse, error)
 }
 
@@ -807,6 +809,16 @@ func (c *backendServiceClient) CreateUserImpersonationToken(ctx context.Context,
 	return out, nil
 }
 
+func (c *backendServiceClient) GetProjectEntitlements(ctx context.Context, in *GetProjectEntitlementsRequest, opts ...grpc.CallOption) (*GetProjectEntitlementsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetProjectEntitlementsResponse)
+	err := c.cc.Invoke(ctx, BackendService_GetProjectEntitlements_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *backendServiceClient) CreateStripeCheckoutLink(ctx context.Context, in *CreateStripeCheckoutLinkRequest, opts ...grpc.CallOption) (*CreateStripeCheckoutLinkResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CreateStripeCheckoutLinkResponse)
@@ -920,6 +932,7 @@ type BackendServiceServer interface {
 	UpdatePublishableKey(context.Context, *UpdatePublishableKeyRequest) (*UpdatePublishableKeyResponse, error)
 	DeletePublishableKey(context.Context, *DeletePublishableKeyRequest) (*DeletePublishableKeyResponse, error)
 	CreateUserImpersonationToken(context.Context, *CreateUserImpersonationTokenRequest) (*CreateUserImpersonationTokenResponse, error)
+	GetProjectEntitlements(context.Context, *GetProjectEntitlementsRequest) (*GetProjectEntitlementsResponse, error)
 	CreateStripeCheckoutLink(context.Context, *CreateStripeCheckoutLinkRequest) (*CreateStripeCheckoutLinkResponse, error)
 	mustEmbedUnimplementedBackendServiceServer()
 }
@@ -1113,6 +1126,9 @@ func (UnimplementedBackendServiceServer) DeletePublishableKey(context.Context, *
 }
 func (UnimplementedBackendServiceServer) CreateUserImpersonationToken(context.Context, *CreateUserImpersonationTokenRequest) (*CreateUserImpersonationTokenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUserImpersonationToken not implemented")
+}
+func (UnimplementedBackendServiceServer) GetProjectEntitlements(context.Context, *GetProjectEntitlementsRequest) (*GetProjectEntitlementsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetProjectEntitlements not implemented")
 }
 func (UnimplementedBackendServiceServer) CreateStripeCheckoutLink(context.Context, *CreateStripeCheckoutLinkRequest) (*CreateStripeCheckoutLinkResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateStripeCheckoutLink not implemented")
@@ -2236,6 +2252,24 @@ func _BackendService_CreateUserImpersonationToken_Handler(srv interface{}, ctx c
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BackendService_GetProjectEntitlements_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetProjectEntitlementsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).GetProjectEntitlements(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_GetProjectEntitlements_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).GetProjectEntitlements(ctx, req.(*GetProjectEntitlementsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _BackendService_CreateStripeCheckoutLink_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateStripeCheckoutLinkRequest)
 	if err := dec(in); err != nil {
@@ -2504,6 +2538,10 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateUserImpersonationToken",
 			Handler:    _BackendService_CreateUserImpersonationToken_Handler,
+		},
+		{
+			MethodName: "GetProjectEntitlements",
+			Handler:    _BackendService_GetProjectEntitlements_Handler,
 		},
 		{
 			MethodName: "CreateStripeCheckoutLink",

@@ -269,6 +269,8 @@ type Project struct {
 	CookieDomain                         string
 	EmailQuotaDaily                      *int32
 	StripeCustomerID                     *string
+	EntitledCustomVaultDomains           bool
+	EntitledBackendApiKeys               bool
 }
 
 type ProjectEmailQuotaDailyUsage struct {

@@ -98,6 +98,7 @@ import { ImpersonatePage } from '@/pages/login/ImpersonatePage';
 import { SwitchOrganizationsPage } from '@/pages/login/SwitchOrganizationsPage';
 import { LogoutPage } from '@/pages/login/LogoutPage';
 import { useAccessToken } from '@/lib/AccessTokenProvider';
+import { StripeCheckoutSuccessPage } from './pages/stripe/StripeCheckoutSuccessPage';
 
 const queryClient = new QueryClient();
 
@@ -277,6 +278,8 @@ const AppWithinQueryClient = () => {
               path="organizations/:organizationId/scim-api-keys/:scimApiKeyId"
               element={<ViewSCIMAPIKeyPage />}
             />
+
+            <Route path="stripe-checkout-success" element={<StripeCheckoutSuccessPage />} />
           </Route>
 
           <Route path="*" element={<NotFoundPage />} />

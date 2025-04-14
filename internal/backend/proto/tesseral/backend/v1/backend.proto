@@ -266,6 +266,7 @@ service BackendService {
 
   rpc CreateUserImpersonationToken(CreateUserImpersonationTokenRequest) returns (CreateUserImpersonationTokenResponse);
 
+  rpc GetProjectEntitlements(GetProjectEntitlementsRequest) returns (GetProjectEntitlementsResponse);
   rpc CreateStripeCheckoutLink(CreateStripeCheckoutLinkRequest) returns (CreateStripeCheckoutLinkResponse);
 }
 
@@ -879,6 +880,13 @@ message CreateUserImpersonationTokenRequest {
 
 message CreateUserImpersonationTokenResponse {
   UserImpersonationToken user_impersonation_token = 1;
+}
+
+message GetProjectEntitlementsRequest {}
+
+message GetProjectEntitlementsResponse {
+  bool entitled_custom_vault_domains = 1;
+  bool entitled_backend_api_keys = 2;
 }
 
 message CreateStripeCheckoutLinkRequest {}

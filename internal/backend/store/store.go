@@ -22,6 +22,7 @@ import (
 type Store struct {
 	db                                    *pgxpool.Pool
 	dogfoodProjectID                      *uuid.UUID
+	consoleDomain                         string
 	intermediateSessionSigningKeyKMSKeyID string
 	kms                                   *kms.Client
 	ses                                   *sesv2.Client
@@ -47,6 +48,7 @@ type Store struct {
 type NewStoreParams struct {
 	DB                                    *pgxpool.Pool
 	DogfoodProjectID                      *uuid.UUID
+	ConsoleDomain                         string
 	IntermediateSessionSigningKeyKMSKeyID string
 	KMS                                   *kms.Client
 	SES                                   *sesv2.Client
@@ -71,6 +73,7 @@ func New(p NewStoreParams) *Store {
 	store := &Store{
 		db:                                    p.DB,
 		dogfoodProjectID:                      p.DogfoodProjectID,
+		consoleDomain:                         p.ConsoleDomain,
 		intermediateSessionSigningKeyKMSKeyID: p.IntermediateSessionSigningKeyKMSKeyID,
 		kms:                                   p.KMS,
 		ses:                                   p.SES,

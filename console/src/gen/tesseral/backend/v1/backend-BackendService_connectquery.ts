@@ -386,6 +386,11 @@ export const deletePublishableKey = BackendService.method.deletePublishableKey;
 export const createUserImpersonationToken = BackendService.method.createUserImpersonationToken;
 
 /**
+ * @generated from rpc tesseral.backend.v1.BackendService.GetProjectEntitlements
+ */
+export const getProjectEntitlements = BackendService.method.getProjectEntitlements;
+
+/**
  * @generated from rpc tesseral.backend.v1.BackendService.CreateStripeCheckoutLink
  */
 export const createStripeCheckoutLink = BackendService.method.createStripeCheckoutLink;

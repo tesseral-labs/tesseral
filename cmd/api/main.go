@@ -175,6 +175,7 @@ func main() {
 	backendStore := backendstore.New(backendstore.NewStoreParams{
 		DB:                                    db,
 		DogfoodProjectID:                      &uuidDogfoodProjectID,
+		ConsoleDomain:                         config.ConsoleDomain,
 		IntermediateSessionSigningKeyKMSKeyID: config.IntermediateSessionKMSKeyID,
 		KMS:                                   kms_,
 		SES:                                   ses_,
