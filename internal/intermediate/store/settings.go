@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
@@ -81,6 +82,8 @@ func (s *Store) GetSettings(ctx context.Context, req *intermediatev1.GetSettings
 }
 
 func (s *Store) getUserContentFileExists(ctx context.Context, key string) (bool, error) {
+	slog.InfoContext(ctx, "head_user_content_file", "key", key, "bucket", s.s3UserContentBucketName)
+
 	if _, err := s.s3.HeadObject(ctx, &s3.HeadObjectInput{
 		Bucket: &s.s3UserContentBucketName,
 		Key:    &key,
