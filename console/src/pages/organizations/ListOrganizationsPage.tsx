@@ -218,7 +218,10 @@ const CreateOrganizationButton: FC<CreateOrganizationButtonProps> = ({
         </AlertDialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)}>
+          <form
+            className="space-y-4"
+            onSubmit={form.handleSubmit(handleSubmit)}
+          >
             <FormField
               control={form.control}
               name="displayName"

@@ -193,7 +193,10 @@ const CreateUserButton: FC<CreateUserButtonProps> = ({ onSubmit }) => {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)}>
+          <form
+            className="space-y-4"
+            onSubmit={form.handleSubmit(handleSubmit)}
+          >
             <FormField
               control={form.control}
               name="email"
@@ -273,7 +276,7 @@ const CreateUserButton: FC<CreateUserButtonProps> = ({ onSubmit }) => {
                 </FormItem>
               )}
             />
-            <AlertDialogFooter>
+            <AlertDialogFooter className="mt-8">
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <Button type="submit">Create</Button>
             </AlertDialogFooter>
