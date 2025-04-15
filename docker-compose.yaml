@@ -50,8 +50,6 @@ services:
     ports:
       - "80:80"
       - "443:443"
-    depends_on:
-      - api
     restart: always
     volumes:
       - ./.local/nginx:/etc/nginx/conf.d
@@ -64,7 +62,8 @@ services:
     ports:
       - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "PGPASSWORD=password pg_isready -U postgres -d postgres"]
+      test:
+        ["CMD-SHELL", "PGPASSWORD=password pg_isready -U postgres -d postgres"]
       interval: 10s
       retries: 5
       start_period: 30s
