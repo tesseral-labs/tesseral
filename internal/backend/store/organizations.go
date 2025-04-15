@@ -22,6 +22,14 @@ func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrg
 	}
 	defer rollback()
 
+	// Creating organizations directly on the Dogfood Project
+	// without a project to back with the organization will
+	// break the intermediate service, so we restrict the
+	// ability to create an organization in this case.
+	if authn.ProjectID(ctx) == *s.dogfoodProjectID {
+		return nil, apierror.NewPermissionDeniedError("dogfood project cannot create organizations", fmt.Errorf("dogfood project cannot create organizations"))
+	}
+
 	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
