@@ -117,6 +117,13 @@ export const OrganizationUsersTab = () => {
   );
 };
 
+const schema = z.object({
+  email: z.string().email(),
+  googleUserId: z.string().optional(),
+  microsoftUserId: z.string().optional(),
+  owner: z.boolean(),
+});
+
 const CreateUserButton: FC = () => {
   const navigate = useNavigate();
 
@@ -127,7 +134,7 @@ const CreateUserButton: FC = () => {
     id: organizationId,
   });
 
-  const form = useForm<z.infer<typeof userSchema>>({
+  const form = useForm<z.infer<typeof schema>>({
     defaultValues: {
       email: '',
       googleUserId: '',
@@ -138,7 +145,7 @@ const CreateUserButton: FC = () => {
 
   const createUserMutation = useMutation(createUser);
 
-  const handleSubmit = async (data: z.infer<typeof userSchema>) => {
+  const handleSubmit = async (data: z.infer<typeof schema>) => {
     try {
       const newUser: Partial<User> = {
         organizationId: organizationId as string,
@@ -283,10 +290,3 @@ const CreateUserButton: FC = () => {
     </AlertDialog>
   );
 };
-
-const userSchema = z.object({
-  email: z.string().email(),
-  googleUserId: z.string().optional(),
-  microsoftUserId: z.string().optional(),
-  owner: z.boolean(),
-});
