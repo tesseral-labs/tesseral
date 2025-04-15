@@ -60,7 +60,7 @@ export const OrganizationUsersTab = () => {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-x-4">
-        <div>
+        <div className="flex flex-col space-y-1 5">
           <CardTitle>Users</CardTitle>
           <CardDescription>
             A user is what people using your product log into.
@@ -182,7 +182,7 @@ const CreateUserButton: FC = () => {
         <AlertDialogHeader>
           <AlertDialogTitle>Create User</AlertDialogTitle>
           <AlertDialogDescription>
-            Create a new user in the{' '}
+            Create a new User in the{' '}
             <span className="text-semibold">
               {organizationResponse?.organization?.displayName}
             </span>{' '}
@@ -206,7 +206,7 @@ const CreateUserButton: FC = () => {
                     {...field}
                   />
                   <FormDescription>
-                    The email address of the user being created.
+                    The email address of the User being created.
                   </FormDescription>
                 </FormItem>
               )}
@@ -224,8 +224,8 @@ const CreateUserButton: FC = () => {
                     </FormLabel>
                     <Input placeholder="Google User ID" {...field} />
                     <FormDescription>
-                      The Google User ID belonging to the user. This is
-                      optional, and will be set on the user automatically on a
+                      The Google User ID belonging to the User. This is
+                      optional, and will be set on the User automatically on a
                       successful login attempt.
                     </FormDescription>
                   </FormItem>
@@ -245,8 +245,8 @@ const CreateUserButton: FC = () => {
                     </FormLabel>
                     <Input placeholder="Microsoft User ID" {...field} />
                     <FormDescription>
-                      The Microsoft User ID belonging to the user. This is
-                      optional, and will be set on the user automatically on a
+                      The Microsoft User ID belonging to the User. This is
+                      optional, and will be set on the User automatically on a
                       successful login attempt.
                     </FormDescription>
                   </FormItem>
@@ -266,7 +266,7 @@ const CreateUserButton: FC = () => {
                     onCheckedChange={field.onChange}
                   />
                   <FormDescription>
-                    Whether the user should be an owner of the organization.
+                    Whether the User should be an owner of the organization.
                     This will give them full access to the organization and all
                     its resources.
                   </FormDescription>

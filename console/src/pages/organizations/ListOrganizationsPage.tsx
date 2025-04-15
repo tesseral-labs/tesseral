@@ -104,8 +104,8 @@ export const ListOrganizationsPage = () => {
           <div className="flex flex-col space-y-1 5">
             <CardTitle>Organizations list</CardTitle>
             <CardDescription>
-              This is a list of all organizations in your project. You can
-              create and edit these organizations manually.
+              This is a list of all Organizations in your project. You can
+              create and edit these Organizations manually.
             </CardDescription>
           </div>
           <CreateOrganizationButton />
@@ -207,7 +207,7 @@ const CreateOrganizationButton: FC = () => {
         <AlertDialogHeader>
           <AlertDialogTitle>Create Organization</AlertDialogTitle>
           <AlertDialogDescription>
-            Create a new organization.
+            Create a new Organization.
           </AlertDialogDescription>
         </AlertDialogHeader>
 
@@ -224,7 +224,7 @@ const CreateOrganizationButton: FC = () => {
                   <FormLabel>Display Name</FormLabel>
                   <Input placeholder="ACME Corp" {...field} />
                   <FormDescription>
-                    The display name of the organization. This will be displayed
+                    The display name of the Organization. This will be displayed
                     to users during the login process.
                   </FormDescription>
                 </FormItem>
