@@ -23,7 +23,7 @@ import {
 import { Link } from 'react-router-dom';
 import { DateTime } from 'luxon';
 import { timestampDate } from '@bufbuild/protobuf/wkt';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { Badge } from '@/components/ui/badge';
 import {
   AlertDialog,
@@ -66,11 +66,7 @@ export const OrganizationUsersTab = () => {
             A user is what people using your product log into.
           </CardDescription>
         </div>
-        <CreateUserButton
-          onSubmit={async () => {
-            await refetch();
-          }}
-        />
+        <CreateUserButton />
       </CardHeader>
       <CardContent>
         <Table>
@@ -121,11 +117,9 @@ export const OrganizationUsersTab = () => {
   );
 };
 
-interface CreateUserButtonProps {
-  onSubmit: () => Promise<void>;
-}
+const CreateUserButton: FC = () => {
+  const navigate = useNavigate();
 
-const CreateUserButton: FC<CreateUserButtonProps> = ({ onSubmit }) => {
   const { organizationId } = useParams();
   const [open, setOpen] = useState(false);
 
@@ -160,12 +154,15 @@ const CreateUserButton: FC<CreateUserButtonProps> = ({ onSubmit }) => {
         newUser.microsoftUserId = data.microsoftUserId;
       }
 
-      await createUserMutation.mutateAsync({
+      const createUserResponse = await createUserMutation.mutateAsync({
         user: newUser as User,
       });
 
-      await onSubmit();
       setOpen(false);
+
+      navigate(
+        `/organizations/${organizationId}/users/${createUserResponse.user?.id}`,
+      );
 
       toast.success(`User created successfully!`);
     } catch (error) {
@@ -176,7 +173,7 @@ const CreateUserButton: FC<CreateUserButtonProps> = ({ onSubmit }) => {
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
-        <Button variant="outline" onClick={onSubmit}>
+        <Button variant="outline">
           <CirclePlus />
           Create User
         </Button>

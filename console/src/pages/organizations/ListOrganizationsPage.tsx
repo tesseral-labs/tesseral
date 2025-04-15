@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/table';
 import { DateTime } from 'luxon';
 import { timestampDate } from '@bufbuild/protobuf/wkt';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Card,
   CardContent,
@@ -108,11 +108,7 @@ export const ListOrganizationsPage = () => {
               create and edit these organizations manually.
             </CardDescription>
           </div>
-          <CreateOrganizationButton
-            onSubmit={async () => {
-              await refetch();
-            }}
-          />
+          <CreateOrganizationButton />
         </CardHeader>
         <CardContent className="-m-6 mt-0">
           <Table>
@@ -171,13 +167,9 @@ export const ListOrganizationsPage = () => {
   );
 };
 
-interface CreateOrganizationButtonProps {
-  onSubmit: () => Promise<void>;
-}
+const CreateOrganizationButton: FC = () => {
+  const navigate = useNavigate();
 
-const CreateOrganizationButton: FC<CreateOrganizationButtonProps> = ({
-  onSubmit,
-}) => {
   const form = useForm<z.infer<typeof organizationSchema>>({
     resolver: zodResolver(organizationSchema),
     defaultValues: {
@@ -190,15 +182,17 @@ const CreateOrganizationButton: FC<CreateOrganizationButtonProps> = ({
   const [open, setOpen] = useState(false);
 
   const handleSubmit = async (values: z.infer<typeof organizationSchema>) => {
-    await createOrganizationMutation.mutateAsync({
-      organization: {
-        ...values,
-      },
-    });
+    const createOrganizationResponse =
+      await createOrganizationMutation.mutateAsync({
+        organization: {
+          ...values,
+        },
+      });
     toast.success('Organization created successfully');
-    await onSubmit();
 
     setOpen(false);
+
+    navigate(`/organizations/${createOrganizationResponse.organization?.id}`);
   };
 
   return (
