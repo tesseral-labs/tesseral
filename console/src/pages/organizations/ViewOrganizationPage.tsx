@@ -134,11 +134,7 @@ export const ViewOrganizationPage = () => {
           <div>
             <CardTitle className="text-xl">General configuration</CardTitle>
           </div>
-          <EditOrganizationButton
-            onSubmit={async () => {
-              await refetch();
-            }}
-          />
+          <EditOrganizationButton />
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-3 gap-x-2 text-sm">
@@ -202,13 +198,7 @@ const organizationSchema = z.object({
   displayName: z.string(),
 });
 
-interface EditOrganizationButtonProps {
-  onSubmit: () => Promise<void>;
-}
-
-const EditOrganizationButton: FC<EditOrganizationButtonProps> = ({
-  onSubmit,
-}) => {
+const EditOrganizationButton: FC = () => {
   const { organizationId } = useParams();
 
   const form = useForm<z.infer<typeof organizationSchema>>({
@@ -236,7 +226,7 @@ const EditOrganizationButton: FC<EditOrganizationButtonProps> = ({
         organization: updatedOrganization as Organization,
       });
 
-      await onSubmit();
+      await refetch();
 
       setOpen(false);
 

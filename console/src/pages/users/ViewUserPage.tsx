@@ -136,11 +136,7 @@ export const ViewUserPage = () => {
             <CardTitle>General settings</CardTitle>
             <CardDescription>Basic settings for this user.</CardDescription>
           </div>
-          <EditUserSettingsButton
-            onSubmit={async () => {
-              await refetch();
-            }}
-          />
+          <EditUserSettingsButton />
         </CardHeader>
         <CardContent>
           <DetailsGrid>
@@ -352,13 +348,7 @@ const userSettingsSchema = z.object({
   microsoftUserId: z.string().optional(),
 });
 
-interface EditUserSettingsButtonProps {
-  onSubmit: () => Promise<void>;
-}
-
-const EditUserSettingsButton: FC<EditUserSettingsButtonProps> = ({
-  onSubmit,
-}) => {
+const EditUserSettingsButton: FC = () => {
   const { userId } = useParams();
   const form = useForm<z.infer<typeof userSettingsSchema>>({
     defaultValues: {
@@ -406,7 +396,6 @@ const EditUserSettingsButton: FC<EditUserSettingsButtonProps> = ({
       });
 
       await refetch();
-      await onSubmit();
 
       setOpen(false);
       toast.success('User settings updated successfully.');
