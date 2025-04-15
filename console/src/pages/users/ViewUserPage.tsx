@@ -134,7 +134,7 @@ export const ViewUserPage = () => {
         <CardHeader className="flex flex-row items-center justify-between space-y-4">
           <div>
             <CardTitle>General settings</CardTitle>
-            <CardDescription>Basic settings for this user.</CardDescription>
+            <CardDescription>Basic settings for this User.</CardDescription>
           </div>
           <EditUserSettingsButton />
         </CardHeader>
@@ -327,7 +327,7 @@ const DangerZoneCard = () => {
           <div>
             <div className="text-sm font-semibold">Impersonate User</div>
             <p className="text-sm">
-              Impersonate this user. You will be logged in as this user. You can
+              Impersonate this User. You will be logged in as this User. You can
               end the impersonated session by logging out.
             </p>
           </div>
@@ -413,10 +413,6 @@ const EditUserSettingsButton: FC = () => {
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Edit User Settings</AlertDialogTitle>
-          <AlertDialogDescription>
-            Are you sure you want to edit this user settings? This action cannot
-            be undone.
-          </AlertDialogDescription>
         </AlertDialogHeader>
         <Form {...form}>
           <form
