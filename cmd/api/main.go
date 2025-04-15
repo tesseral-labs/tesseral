@@ -118,10 +118,6 @@ func main() {
 	}
 	defer db.Close()
 
-	if err := db.Ping(context.Background()); err != nil {
-		panic(fmt.Errorf("ping database: %w", err))
-	}
-
 	pageEncodingValue, err := hexkey.New(config.PageEncodingValue)
 	if err != nil {
 		panic(fmt.Errorf("parse page encoding secret: %w", err))
