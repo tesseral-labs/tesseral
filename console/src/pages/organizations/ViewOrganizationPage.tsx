@@ -194,14 +194,14 @@ export const ViewOrganizationPage = () => {
   );
 };
 
-const organizationSchema = z.object({
+const schema = z.object({
   displayName: z.string(),
 });
 
 const EditOrganizationButton: FC = () => {
   const { organizationId } = useParams();
 
-  const form = useForm<z.infer<typeof organizationSchema>>({
+  const form = useForm<z.infer<typeof schema>>({
     defaultValues: {
       displayName: '',
     },
@@ -215,26 +215,21 @@ const EditOrganizationButton: FC = () => {
 
   const [open, setOpen] = useState(false);
 
-  const handleSubmit = async (data: z.infer<typeof organizationSchema>) => {
-    try {
-      const updatedOrganization: Partial<Organization> = {
-        displayName: data.displayName,
-      };
+  const handleSubmit = async (data: z.infer<typeof schema>) => {
+    const updatedOrganization: Partial<Organization> = {
+      displayName: data.displayName,
+    };
 
-      await updateOrganizationMutation.mutateAsync({
-        id: organizationId,
-        organization: updatedOrganization as Organization,
-      });
+    await updateOrganizationMutation.mutateAsync({
+      id: organizationId,
+      organization: updatedOrganization as Organization,
+    });
 
-      await refetch();
+    await refetch();
 
-      setOpen(false);
+    setOpen(false);
 
-      toast.success('Organization updated successfully');
-    } catch (err) {
-      console.error(err);
-      toast.error('Failed to update organization');
-    }
+    toast.success('Organization updated successfully');
   };
 
   useEffect(() => {

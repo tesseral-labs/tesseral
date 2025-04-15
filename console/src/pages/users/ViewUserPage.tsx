@@ -341,7 +341,7 @@ const DangerZoneCard = () => {
   );
 };
 
-const userSettingsSchema = z.object({
+const schema = z.object({
   email: z.string().email(),
   owner: z.boolean(),
   googleUserId: z.string().optional(),
@@ -350,7 +350,7 @@ const userSettingsSchema = z.object({
 
 const EditUserSettingsButton: FC = () => {
   const { userId } = useParams();
-  const form = useForm<z.infer<typeof userSettingsSchema>>({
+  const form = useForm<z.infer<typeof schema>>({
     defaultValues: {
       email: '',
       owner: false,
@@ -376,33 +376,28 @@ const EditUserSettingsButton: FC = () => {
     }
   }, [getUserResponse]);
 
-  const handleSubmit = async (data: z.infer<typeof userSettingsSchema>) => {
-    try {
-      const updatedUser: Partial<User> = {
-        email: data.email,
-        owner: data.owner,
-      };
+  const handleSubmit = async (data: z.infer<typeof schema>) => {
+    const updatedUser: Partial<User> = {
+      email: data.email,
+      owner: data.owner,
+    };
 
-      if (data.googleUserId) {
-        updatedUser.googleUserId = data.googleUserId;
-      }
-      if (data.microsoftUserId) {
-        updatedUser.microsoftUserId = data.microsoftUserId;
-      }
-
-      await updateUserMutation.mutateAsync({
-        id: userId,
-        user: updatedUser as User,
-      });
-
-      await refetch();
-
-      setOpen(false);
-      toast.success('User settings updated successfully.');
-    } catch (err) {
-      console.error('Error updating user settings', err);
-      toast.error('Error updating user settings.');
+    if (data.googleUserId) {
+      updatedUser.googleUserId = data.googleUserId;
     }
+    if (data.microsoftUserId) {
+      updatedUser.microsoftUserId = data.microsoftUserId;
+    }
+
+    await updateUserMutation.mutateAsync({
+      id: userId,
+      user: updatedUser as User,
+    });
+
+    await refetch();
+
+    setOpen(false);
+    toast.success('User settings updated successfully.');
   };
 
   return (
@@ -475,7 +470,7 @@ const EditUserSettingsButton: FC = () => {
               name="owner"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Is Owner?</FormLabel>
+                  <FormLabel>Owner</FormLabel>
                   <FormControl>
                     <Switch
                       className="block"
