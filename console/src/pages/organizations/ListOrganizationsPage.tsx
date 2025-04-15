@@ -100,7 +100,7 @@ export const ListOrganizationsPage = () => {
       </PageDescription>
 
       <Card className="mt-8 overflow-hidden">
-        <CardHeader className="flex flex-row items-center space-x-4 justify-between">
+        <CardHeader className="flex-row justify-between items-center space-x-4">
           <div className="flex flex-col space-y-1 5">
             <CardTitle>Organizations list</CardTitle>
             <CardDescription>
@@ -167,11 +167,15 @@ export const ListOrganizationsPage = () => {
   );
 };
 
+const schema = z.object({
+  displayName: z.string(),
+});
+
 const CreateOrganizationButton: FC = () => {
   const navigate = useNavigate();
 
-  const form = useForm<z.infer<typeof organizationSchema>>({
-    resolver: zodResolver(organizationSchema),
+  const form = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
     defaultValues: {
       displayName: '',
     },
@@ -181,7 +185,7 @@ const CreateOrganizationButton: FC = () => {
 
   const [open, setOpen] = useState(false);
 
-  const handleSubmit = async (values: z.infer<typeof organizationSchema>) => {
+  const handleSubmit = async (values: z.infer<typeof schema>) => {
     const createOrganizationResponse =
       await createOrganizationMutation.mutateAsync({
         organization: {
@@ -240,7 +244,3 @@ const CreateOrganizationButton: FC = () => {
     </AlertDialog>
   );
 };
-
-const organizationSchema = z.object({
-  displayName: z.string(),
-});

@@ -53,13 +53,13 @@ import { User } from '@/gen/tesseral/backend/v1/models_pb';
 
 export const OrganizationUsersTab = () => {
   const { organizationId } = useParams();
-  const { data: listUsersResponse, refetch } = useQuery(listUsers, {
+  const { data: listUsersResponse } = useQuery(listUsers, {
     organizationId,
   });
 
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-x-4">
+      <CardHeader className="flex-row justify-between items-center space-x-4">
         <div className="flex flex-col space-y-1 5">
           <CardTitle>Users</CardTitle>
           <CardDescription>
@@ -259,7 +259,7 @@ const CreateUserButton: FC = () => {
               name="owner"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Is Owner?</FormLabel>
+                  <FormLabel>Owner</FormLabel>
                   <Switch
                     className="block"
                     checked={field.value}
