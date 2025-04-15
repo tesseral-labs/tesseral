@@ -215,6 +215,12 @@ const (
 	// BackendServiceCreateUserImpersonationTokenProcedure is the fully-qualified name of the
 	// BackendService's CreateUserImpersonationToken RPC.
 	BackendServiceCreateUserImpersonationTokenProcedure = "/tesseral.backend.v1.BackendService/CreateUserImpersonationToken"
+	// BackendServiceGetProjectEntitlementsProcedure is the fully-qualified name of the BackendService's
+	// GetProjectEntitlements RPC.
+	BackendServiceGetProjectEntitlementsProcedure = "/tesseral.backend.v1.BackendService/GetProjectEntitlements"
+	// BackendServiceCreateStripeCheckoutLinkProcedure is the fully-qualified name of the
+	// BackendService's CreateStripeCheckoutLink RPC.
+	BackendServiceCreateStripeCheckoutLinkProcedure = "/tesseral.backend.v1.BackendService/CreateStripeCheckoutLink"
 )
 
 // BackendServiceClient is a client for the tesseral.backend.v1.BackendService service.
@@ -318,6 +324,8 @@ type BackendServiceClient interface {
 	UpdatePublishableKey(context.Context, *connect.Request[v1.UpdatePublishableKeyRequest]) (*connect.Response[v1.UpdatePublishableKeyResponse], error)
 	DeletePublishableKey(context.Context, *connect.Request[v1.DeletePublishableKeyRequest]) (*connect.Response[v1.DeletePublishableKeyResponse], error)
 	CreateUserImpersonationToken(context.Context, *connect.Request[v1.CreateUserImpersonationTokenRequest]) (*connect.Response[v1.CreateUserImpersonationTokenResponse], error)
+	GetProjectEntitlements(context.Context, *connect.Request[v1.GetProjectEntitlementsRequest]) (*connect.Response[v1.GetProjectEntitlementsResponse], error)
+	CreateStripeCheckoutLink(context.Context, *connect.Request[v1.CreateStripeCheckoutLinkRequest]) (*connect.Response[v1.CreateStripeCheckoutLinkResponse], error)
 }
 
 // NewBackendServiceClient constructs a client for the tesseral.backend.v1.BackendService service.
@@ -697,6 +705,18 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(backendServiceMethods.ByName("CreateUserImpersonationToken")),
 			connect.WithClientOptions(opts...),
 		),
+		getProjectEntitlements: connect.NewClient[v1.GetProjectEntitlementsRequest, v1.GetProjectEntitlementsResponse](
+			httpClient,
+			baseURL+BackendServiceGetProjectEntitlementsProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("GetProjectEntitlements")),
+			connect.WithClientOptions(opts...),
+		),
+		createStripeCheckoutLink: connect.NewClient[v1.CreateStripeCheckoutLinkRequest, v1.CreateStripeCheckoutLinkResponse](
+			httpClient,
+			baseURL+BackendServiceCreateStripeCheckoutLinkProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("CreateStripeCheckoutLink")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -763,6 +783,8 @@ type backendServiceClient struct {
 	updatePublishableKey                  *connect.Client[v1.UpdatePublishableKeyRequest, v1.UpdatePublishableKeyResponse]
 	deletePublishableKey                  *connect.Client[v1.DeletePublishableKeyRequest, v1.DeletePublishableKeyResponse]
 	createUserImpersonationToken          *connect.Client[v1.CreateUserImpersonationTokenRequest, v1.CreateUserImpersonationTokenResponse]
+	getProjectEntitlements                *connect.Client[v1.GetProjectEntitlementsRequest, v1.GetProjectEntitlementsResponse]
+	createStripeCheckoutLink              *connect.Client[v1.CreateStripeCheckoutLinkRequest, v1.CreateStripeCheckoutLinkResponse]
 }
 
 // GetProject calls tesseral.backend.v1.BackendService.GetProject.
@@ -1075,6 +1097,16 @@ func (c *backendServiceClient) CreateUserImpersonationToken(ctx context.Context,
 	return c.createUserImpersonationToken.CallUnary(ctx, req)
 }
 
+// GetProjectEntitlements calls tesseral.backend.v1.BackendService.GetProjectEntitlements.
+func (c *backendServiceClient) GetProjectEntitlements(ctx context.Context, req *connect.Request[v1.GetProjectEntitlementsRequest]) (*connect.Response[v1.GetProjectEntitlementsResponse], error) {
+	return c.getProjectEntitlements.CallUnary(ctx, req)
+}
+
+// CreateStripeCheckoutLink calls tesseral.backend.v1.BackendService.CreateStripeCheckoutLink.
+func (c *backendServiceClient) CreateStripeCheckoutLink(ctx context.Context, req *connect.Request[v1.CreateStripeCheckoutLinkRequest]) (*connect.Response[v1.CreateStripeCheckoutLinkResponse], error) {
+	return c.createStripeCheckoutLink.CallUnary(ctx, req)
+}
+
 // BackendServiceHandler is an implementation of the tesseral.backend.v1.BackendService service.
 type BackendServiceHandler interface {
 	// Get the current project.
@@ -1176,6 +1208,8 @@ type BackendServiceHandler interface {
 	UpdatePublishableKey(context.Context, *connect.Request[v1.UpdatePublishableKeyRequest]) (*connect.Response[v1.UpdatePublishableKeyResponse], error)
 	DeletePublishableKey(context.Context, *connect.Request[v1.DeletePublishableKeyRequest]) (*connect.Response[v1.DeletePublishableKeyResponse], error)
 	CreateUserImpersonationToken(context.Context, *connect.Request[v1.CreateUserImpersonationTokenRequest]) (*connect.Response[v1.CreateUserImpersonationTokenResponse], error)
+	GetProjectEntitlements(context.Context, *connect.Request[v1.GetProjectEntitlementsRequest]) (*connect.Response[v1.GetProjectEntitlementsResponse], error)
+	CreateStripeCheckoutLink(context.Context, *connect.Request[v1.CreateStripeCheckoutLinkRequest]) (*connect.Response[v1.CreateStripeCheckoutLinkResponse], error)
 }
 
 // NewBackendServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -1551,6 +1585,18 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		connect.WithSchema(backendServiceMethods.ByName("CreateUserImpersonationToken")),
 		connect.WithHandlerOptions(opts...),
 	)
+	backendServiceGetProjectEntitlementsHandler := connect.NewUnaryHandler(
+		BackendServiceGetProjectEntitlementsProcedure,
+		svc.GetProjectEntitlements,
+		connect.WithSchema(backendServiceMethods.ByName("GetProjectEntitlements")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceCreateStripeCheckoutLinkHandler := connect.NewUnaryHandler(
+		BackendServiceCreateStripeCheckoutLinkProcedure,
+		svc.CreateStripeCheckoutLink,
+		connect.WithSchema(backendServiceMethods.ByName("CreateStripeCheckoutLink")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/tesseral.backend.v1.BackendService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case BackendServiceGetProjectProcedure:
@@ -1675,6 +1721,10 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceDeletePublishableKeyHandler.ServeHTTP(w, r)
 		case BackendServiceCreateUserImpersonationTokenProcedure:
 			backendServiceCreateUserImpersonationTokenHandler.ServeHTTP(w, r)
+		case BackendServiceGetProjectEntitlementsProcedure:
+			backendServiceGetProjectEntitlementsHandler.ServeHTTP(w, r)
+		case BackendServiceCreateStripeCheckoutLinkProcedure:
+			backendServiceCreateStripeCheckoutLinkHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -1926,4 +1976,12 @@ func (UnimplementedBackendServiceHandler) DeletePublishableKey(context.Context, 
 
 func (UnimplementedBackendServiceHandler) CreateUserImpersonationToken(context.Context, *connect.Request[v1.CreateUserImpersonationTokenRequest]) (*connect.Response[v1.CreateUserImpersonationTokenResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.CreateUserImpersonationToken is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) GetProjectEntitlements(context.Context, *connect.Request[v1.GetProjectEntitlementsRequest]) (*connect.Response[v1.GetProjectEntitlementsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.GetProjectEntitlements is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) CreateStripeCheckoutLink(context.Context, *connect.Request[v1.CreateStripeCheckoutLinkRequest]) (*connect.Response[v1.CreateStripeCheckoutLinkResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.CreateStripeCheckoutLink is not implemented"))
 }

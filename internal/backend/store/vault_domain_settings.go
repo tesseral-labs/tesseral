@@ -39,6 +39,15 @@ func (s *Store) UpdateVaultDomainSettings(ctx context.Context, req *backendv1.Up
 		return nil, fmt.Errorf("validate is dogfood session: %w", err)
 	}
 
+	qProject, err := s.q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get project by id: %w", err)
+	}
+
+	if !qProject.EntitledCustomVaultDomains {
+		return nil, fmt.Errorf("not entitled to custom vault domains")
+	}
+
 	previousPendingDomain, err := s.getCurrentPendingDomain(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("get current pending domain: %w", err)

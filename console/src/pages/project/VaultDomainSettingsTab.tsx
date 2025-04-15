@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import {
+  createStripeCheckoutLink,
   enableCustomVaultDomain,
   enableEmailSendFromDomain,
   getProject,
+  getProjectEntitlements,
   getVaultDomainSettings,
   updateVaultDomainSettings,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
@@ -68,6 +70,19 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { toast } from 'sonner';
 
 export const VaultDomainSettingsTab = () => {
+  const { data: getProjectEntitlementsResponse } = useQuery(
+    getProjectEntitlements,
+    {},
+  );
+  const createStripeCheckoutLinkMutation = useMutation(
+    createStripeCheckoutLink,
+  );
+
+  const handleUpgrade = async () => {
+    const { url } = await createStripeCheckoutLinkMutation.mutateAsync({});
+    window.location.href = url;
+  };
+
   const { data: getProjectResponse } = useQuery(getProject, {});
   const { data: getVaultDomainSettingsResponse } = useQuery(
     getVaultDomainSettings,
@@ -93,31 +108,56 @@ export const VaultDomainSettingsTab = () => {
           <EditCustomAuthDomainButton />
         </CardHeader>
         <CardContent>
-          <DetailsGrid>
-            <DetailsGridColumn>
-              <DetailsGridEntry>
-                <DetailsGridKey>Current Vault Domain</DetailsGridKey>
-                <DetailsGridValue>
-                  {getProjectResponse?.project?.vaultDomain}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-              <DetailsGridEntry>
-                <DetailsGridKey>Current Email Send-From Domain</DetailsGridKey>
-                <DetailsGridValue>
-                  {getProjectResponse?.project?.emailSendFromDomain}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-            </DetailsGridColumn>
-            <DetailsGridColumn>
-              <DetailsGridEntry>
-                <DetailsGridKey>Pending Custom Domain</DetailsGridKey>
-                <DetailsGridValue>
-                  {getVaultDomainSettingsResponse?.vaultDomainSettings
-                    ?.pendingDomain || '-'}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-            </DetailsGridColumn>
-          </DetailsGrid>
+          {/* do not treat undefined as unentitled, to avoid flickering here */}
+          {getProjectEntitlementsResponse?.entitledBackendApiKeys === false ? (
+            <div className="text-sm my-8 w-full flex flex-col items-center justify-center space-y-6">
+              <div className="font-medium">
+                Custom Vault Domains are available on the Growth Tier.
+              </div>
+
+              <div className="flex items-center gap-x-4">
+                <Button onClick={handleUpgrade}>Upgrade to Growth Tier</Button>
+                <span>
+                  or{' '}
+                  <a
+                    href="https://cal.com/ned-o-leary-j8ydyi/30min"
+                    className="font-medium underline underline-offset-2 decoration-muted-foreground/40"
+                  >
+                    meet an expert
+                  </a>
+                  .
+                </span>
+              </div>
+            </div>
+          ) : (
+            <DetailsGrid>
+              <DetailsGridColumn>
+                <DetailsGridEntry>
+                  <DetailsGridKey>Current Vault Domain</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getProjectResponse?.project?.vaultDomain}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+                <DetailsGridEntry>
+                  <DetailsGridKey>
+                    Current Email Send-From Domain
+                  </DetailsGridKey>
+                  <DetailsGridValue>
+                    {getProjectResponse?.project?.emailSendFromDomain}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+              </DetailsGridColumn>
+              <DetailsGridColumn>
+                <DetailsGridEntry>
+                  <DetailsGridKey>Pending Custom Domain</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getVaultDomainSettingsResponse?.vaultDomainSettings
+                      ?.pendingDomain || '-'}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+              </DetailsGridColumn>
+            </DetailsGrid>
+          )}
         </CardContent>
       </Card>
 
@@ -467,6 +507,11 @@ const schema = z.object({
 });
 
 const EditCustomAuthDomainButton = () => {
+  const { data: getProjectEntitlementsResponse } = useQuery(
+    getProjectEntitlements,
+    {},
+  );
+
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -502,8 +547,8 @@ const EditCustomAuthDomainButton = () => {
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger>
-        <Button variant="outline">Edit</Button>
+      <AlertDialogTrigger disabled={!getProjectEntitlementsResponse?.entitledCustomVaultDomains}>
+        <Button variant="outline" disabled={!getProjectEntitlementsResponse?.entitledCustomVaultDomains}>Edit</Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>

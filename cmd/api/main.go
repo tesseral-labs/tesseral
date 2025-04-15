@@ -21,6 +21,7 @@ import (
 	sentryhttp "github.com/getsentry/sentry-go/http"
 	"github.com/google/uuid"
 	"github.com/ssoready/conf"
+	stripeclient "github.com/stripe/stripe-go/v82/client"
 	backendinterceptor "github.com/tesseral-labs/tesseral/internal/backend/authn/interceptor"
 	"github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1/backendv1connect"
 	backendservice "github.com/tesseral-labs/tesseral/internal/backend/service"
@@ -103,6 +104,8 @@ func main() {
 		AuthenticatorAppSecretsKMSKeyID     string        `conf:"authenticator_app_secrets_kms_key_id,noredact"`
 		UserContentBaseUrl                  string        `conf:"user_content_base_url,redact"`
 		TesseralDNSCloudflareZoneID         string        `conf:"tesseral_dns_cloudflare_zone_id,noredact"`
+		StripeAPIKey                        string        `conf:"stripe_api_key"`
+		StripePriceIDGrowthTier             string        `conf:"stripe_price_id_growth_tier,noredact"`
 	}{
 		PageEncodingValue: "0000000000000000000000000000000000000000000000000000000000000000",
 	}
@@ -153,6 +156,8 @@ func main() {
 		}
 	})
 
+	stripeClient := stripeclient.New(config.StripeAPIKey, nil)
+
 	commonStore := commonstore.New(commonstore.NewStoreParams{
 		AppAuthRootDomain:         config.AuthAppsRootDomain,
 		DB:                        db,
@@ -166,6 +171,7 @@ func main() {
 	backendStore := backendstore.New(backendstore.NewStoreParams{
 		DB:                                    db,
 		DogfoodProjectID:                      &uuidDogfoodProjectID,
+		ConsoleDomain:                         config.ConsoleDomain,
 		IntermediateSessionSigningKeyKMSKeyID: config.IntermediateSessionKMSKeyID,
 		KMS:                                   kms_,
 		SES:                                   ses_,
@@ -182,6 +188,8 @@ func main() {
 		TesseralDNSCloudflareZoneID:           config.TesseralDNSCloudflareZoneID,
 		Cloudflare:                            cloudflare.NewClient(option.WithAPIToken(config.CloudflareAPIToken)),
 		CloudflareDOH:                         &cloudflaredoh.Client{HTTPClient: &http.Client{}},
+		Stripe:                                stripeClient,
+		StripePriceIDGrowthTier:               config.StripePriceIDGrowthTier,
 	})
 	backendConnectPath, backendConnectHandler := backendv1connect.NewBackendServiceHandler(
 		&backendservice.Service{
@@ -246,6 +254,7 @@ func main() {
 		AuthenticatorAppSecretsKMSKeyID:       config.AuthenticatorAppSecretsKMSKeyID,
 		UserContentBaseUrl:                    config.UserContentBaseUrl,
 		S3UserContentBucketName:               config.S3UserContentBucketName,
+		StripeClient:                          stripeClient,
 	})
 	intermediateConnectPath, intermediateConnectHandler := intermediatev1connect.NewIntermediateServiceHandler(
 		&intermediateservice.Service{

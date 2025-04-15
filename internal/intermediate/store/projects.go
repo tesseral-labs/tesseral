@@ -8,6 +8,7 @@ import (
 	"crypto/sha256"
 	"crypto/x509"
 	"fmt"
+	"log/slog"
 	"net/url"
 	"strings"
 	"time"
@@ -15,6 +16,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/google/uuid"
+	"github.com/stripe/stripe-go/v82"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/intermediate/authn"
 	intermediatev1 "github.com/tesseral-labs/tesseral/internal/intermediate/gen/tesseral/intermediate/v1"
@@ -188,6 +190,28 @@ func (s *Store) OnboardingCreateProjects(ctx context.Context, req *intermediatev
 		return nil, fmt.Errorf("generate prod session signing key: %w", err)
 	}
 
+	qDevProjectID := uuid.New()
+	qProdProjectID := uuid.New()
+
+	slog.InfoContext(ctx, "stripe_client_exists", "stripe_client_exists", s.stripeClient != nil)
+
+	var stripeCustomerID *string
+	if s.stripeClient != nil {
+		stripeCustomer, err := s.stripeClient.Customers.New(&stripe.CustomerParams{
+			Name:  &req.DisplayName,
+			Email: qIntermediateSession.Email,
+			Metadata: map[string]string{
+				"tesseral_project_ids": fmt.Sprintf("%s,%s", idformat.Project.Format(qDevProjectID), idformat.Project.Format(qProdProjectID)),
+			},
+		})
+		if err != nil {
+			return nil, fmt.Errorf("create stripe customer: %w", err)
+		}
+
+		slog.InfoContext(ctx, "create_stripe_customer", "stripe_customer_id", stripeCustomer.ID)
+		stripeCustomerID = &stripeCustomer.ID
+	}
+
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
@@ -195,6 +219,8 @@ func (s *Store) OnboardingCreateProjects(ctx context.Context, req *intermediatev
 	defer rollback()
 
 	qDevUser, err := s.createProjectForCurrentUser(ctx, q, &qIntermediateSession, createProjectForCurrentUserArgs{
+		ProjectID:                          qDevProjectID,
+		StripeCustomerID:                   stripeCustomerID,
 		RedirectURI:                        req.DevUrl,
 		DisplayName:                        fmt.Sprintf("%s Dev", req.DisplayName),
 		SessionSigningPublicKey:            devPublicKey,
@@ -205,6 +231,8 @@ func (s *Store) OnboardingCreateProjects(ctx context.Context, req *intermediatev
 	}
 
 	if _, err := s.createProjectForCurrentUser(ctx, q, &qIntermediateSession, createProjectForCurrentUserArgs{
+		ProjectID:                          qProdProjectID,
+		StripeCustomerID:                   stripeCustomerID,
 		RedirectURI:                        req.ProdUrl,
 		DisplayName:                        req.DisplayName,
 		SessionSigningPublicKey:            prodPublicKey,
@@ -268,6 +296,8 @@ func (s *Store) onboardingGenerateSessionSigningKey(ctx context.Context) (*ecdsa
 }
 
 type createProjectForCurrentUserArgs struct {
+	ProjectID                          uuid.UUID
+	StripeCustomerID                   *string
 	RedirectURI                        string
 	DisplayName                        string
 	SessionSigningPublicKey            *ecdsa.PublicKey
@@ -275,9 +305,7 @@ type createProjectForCurrentUserArgs struct {
 }
 
 func (s *Store) createProjectForCurrentUser(ctx context.Context, q *queries.Queries, qIntermediateSession *queries.IntermediateSession, args createProjectForCurrentUserArgs) (*queries.User, error) {
-	// create this ahead of time so we can use it in the display name and auth domain
-	newProjectID := uuid.New()
-	formattedNewProjectID := idformat.Project.Format(newProjectID)
+	formattedNewProjectID := idformat.Project.Format(args.ProjectID)
 	newProjectVaultDomain := fmt.Sprintf("%s.%s", strings.ReplaceAll(formattedNewProjectID, "_", "-"), s.authAppsRootDomain)
 
 	redirectURI, err := url.Parse(args.RedirectURI)
@@ -348,7 +376,8 @@ func (s *Store) createProjectForCurrentUser(ctx context.Context, q *queries.Quer
 	// here are only those that can work out of the box, without further
 	// configuration by the user
 	qProject, err := q.CreateProject(ctx, queries.CreateProjectParams{
-		ID:                  newProjectID,
+		ID:                  args.ProjectID,
+		StripeCustomerID:    args.StripeCustomerID,
 		RedirectUri:         args.RedirectURI,
 		OrganizationID:      &qOrganization.ID,
 		VaultDomain:         newProjectVaultDomain,

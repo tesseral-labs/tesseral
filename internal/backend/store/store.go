@@ -11,6 +11,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	stripeclient "github.com/stripe/stripe-go/v82/client"
 	"github.com/tesseral-labs/tesseral/internal/backend/authn"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/cloudflaredoh"
@@ -21,6 +22,7 @@ import (
 type Store struct {
 	db                                    *pgxpool.Pool
 	dogfoodProjectID                      *uuid.UUID
+	consoleDomain                         string
 	intermediateSessionSigningKeyKMSKeyID string
 	kms                                   *kms.Client
 	ses                                   *sesv2.Client
@@ -39,11 +41,14 @@ type Store struct {
 	tesseralDNSCloudflareZoneID           string
 	tesseralDNSVaultCNAMEValue            string
 	sesSPFMXRecordValue                   string
+	stripe                                *stripeclient.API
+	stripePriceIDGrowthTier               string
 }
 
 type NewStoreParams struct {
 	DB                                    *pgxpool.Pool
 	DogfoodProjectID                      *uuid.UUID
+	ConsoleDomain                         string
 	IntermediateSessionSigningKeyKMSKeyID string
 	KMS                                   *kms.Client
 	SES                                   *sesv2.Client
@@ -60,12 +65,15 @@ type NewStoreParams struct {
 	TesseralDNSCloudflareZoneID           string
 	TesseralDNSVaultCNAMEValue            string
 	SESSPFMXRecordValue                   string
+	Stripe                                *stripeclient.API
+	StripePriceIDGrowthTier               string
 }
 
 func New(p NewStoreParams) *Store {
 	store := &Store{
 		db:                                    p.DB,
 		dogfoodProjectID:                      p.DogfoodProjectID,
+		consoleDomain:                         p.ConsoleDomain,
 		intermediateSessionSigningKeyKMSKeyID: p.IntermediateSessionSigningKeyKMSKeyID,
 		kms:                                   p.KMS,
 		ses:                                   p.SES,
@@ -84,6 +92,8 @@ func New(p NewStoreParams) *Store {
 		tesseralDNSCloudflareZoneID:           p.TesseralDNSCloudflareZoneID,
 		tesseralDNSVaultCNAMEValue:            p.TesseralDNSVaultCNAMEValue,
 		sesSPFMXRecordValue:                   p.SESSPFMXRecordValue,
+		stripe:                                p.Stripe,
+		stripePriceIDGrowthTier:               p.StripePriceIDGrowthTier,
 	}
 
 	return store
