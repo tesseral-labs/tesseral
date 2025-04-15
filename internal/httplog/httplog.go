@@ -19,7 +19,7 @@ func NewInterceptor() connect.Interceptor {
 			}
 
 			// for convenience, log request details here too
-			slog.InfoContext(ctx, "http_response", "error_code", errorCode, "http_response", "x_tesseral_host", req.Header().Get("X-Tesseral-Host"), "rpc", req.Spec().Procedure, "user_agent", req.Header().Get("User-Agent"))
+			slog.InfoContext(ctx, "http_response", "error_code", errorCode, "x_tesseral_host", req.Header().Get("X-Tesseral-Host"), "rpc", req.Spec().Procedure, "user_agent", req.Header().Get("User-Agent"))
 			return res, err
 		}
 	})
