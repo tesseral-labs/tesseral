@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log/slog"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -139,8 +138,6 @@ func (s *Store) UpdateProjectUISettings(ctx context.Context, req *backendv1.Upda
 }
 
 func (s *Store) getPresignedUrlForFile(ctx context.Context, fileKey string) (string, error) {
-	slog.InfoContext(ctx, "get_presigned_url", "key", fileKey, "bucket", s.s3UserContentBucketName)
-
 	req, err := s.s3PresignClient.PresignPutObject(ctx, &s3.PutObjectInput{
 		Bucket: aws.String(s.s3UserContentBucketName),
 		Key:    aws.String(fileKey),
@@ -156,8 +153,6 @@ func (s *Store) getPresignedUrlForFile(ctx context.Context, fileKey string) (str
 }
 
 func (s *Store) getUserContentFileExists(ctx context.Context, key string) (bool, error) {
-	slog.InfoContext(ctx, "head_user_content_file", "key", key, "bucket", s.s3UserContentBucketName)
-
 	if _, err := s.s3.HeadObject(ctx, &s3.HeadObjectInput{
 		Bucket: &s.s3UserContentBucketName,
 		Key:    &key,
