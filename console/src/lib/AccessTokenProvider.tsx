@@ -18,7 +18,9 @@ export function useAccessToken() {
 
 function useAccessTokenInternal(): string | undefined {
   const [error, setError] = useState<unknown>();
-  const accessToken = getCookie(`tesseral_${DOGFOOD_PROJECT_ID}_access_token`);
+  const [accessToken, setAccessToken] = useState(() => {
+    return getCookie(`tesseral_${DOGFOOD_PROJECT_ID}_access_token`);
+  });
   const accessTokenLikelyValid = useAccessTokenLikelyValid(accessToken ?? '');
 
   // whenever the access token is invalid or near-expired, refresh it
@@ -47,7 +49,15 @@ function useAccessTokenInternal(): string | undefined {
         setError(
           `Unexpected response from /api/frontend/refresh: ${response.status}`,
         );
+        return;
       }
+
+      const { accessToken } = await response.json();
+      if (!accessToken) {
+        setError('No access token returned from /api/frontend/refresh');
+        return;
+      }
+      setAccessToken(accessToken);
     })();
   }, [accessTokenLikelyValid]);
 
@@ -92,7 +102,7 @@ function useDebouncedNow(updatePeriodMillis: number): number {
 
 function getCookie(key: string): string | undefined {
   return document.cookie
-    .split("; ")
-    .find((row) => row.startsWith(key + "="))
-    ?.split("=")[1];
+    .split('; ')
+    .find((row) => row.startsWith(key + '='))
+    ?.split('=')[1];
 }
