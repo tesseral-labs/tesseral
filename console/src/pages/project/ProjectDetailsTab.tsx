@@ -48,6 +48,12 @@ import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { Switch } from '@/components/ui/switch';
 import { InputTags } from '@/components/input-tags';
+import {
+  EditProjectGoogleSettingsButton
+} from '@/pages/project/EditProjectGoogleSettingsButton';
+import {
+  EditProjectMicrosoftSettingsButton
+} from '@/pages/project/EditProjectMicrosoftSettingsButton';
 
 export const ProjectDetailsTab = () => {
   const { data: getProjectResponse } = useQuery(getProject, {});
@@ -212,9 +218,7 @@ export const ProjectDetailsTab = () => {
               Settings for "Log in with Google" in your project.
             </CardDescription>
           </div>
-          <Button variant="outline" asChild>
-            <Link to="/project-settings/log-in-with-google/edit">Edit</Link>
-          </Button>
+          <EditProjectGoogleSettingsButton />
         </CardHeader>
         <CardContent>
           <DetailsGrid>
@@ -259,9 +263,7 @@ export const ProjectDetailsTab = () => {
               Settings for "Log in with Microsoft" in your project.
             </CardDescription>
           </div>
-          <Button variant="outline" asChild>
-            <Link to="/project-settings/log-in-with-microsoft/edit">Edit</Link>
-          </Button>
+          <EditProjectMicrosoftSettingsButton />
         </CardHeader>
         <CardContent>
           <DetailsGrid>
@@ -622,6 +624,16 @@ const EditLoginMethodsButton = () => {
   const updateProjectMutation = useMutation(updateProject);
   const [open, setOpen] = useState(false);
   const handleSubmit = async (values: z.infer<typeof loginMethodsSchema>) => {
+    if (!values.logInWithEmail) {
+      if (!getProjectResponse?.project?.logInWithGoogle && !getProjectResponse?.project?.logInWithMicrosoft) {
+        form.setError("logInWithEmail", {
+          message:
+            "At least one of Log in with Email, Log in with Google, or Log in with Microsoft must be enabled.",
+        });
+        return;
+      }
+    }
+
     await updateProjectMutation.mutateAsync({
       project: {
         ...values,

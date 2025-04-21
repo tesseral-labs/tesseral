@@ -2,6 +2,8 @@ import { useMutation, useQuery } from '@connectrpc/connect-query';
 import {
   createBackendAPIKey,
   createPublishableKey,
+  createStripeCheckoutLink,
+  getProjectEntitlements,
   listBackendAPIKeys,
   listPublishableKeys,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
@@ -62,6 +64,19 @@ import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 
 export const ListAPIKeysPage = () => {
+  const { data: getProjectEntitlementsResponse } = useQuery(
+    getProjectEntitlements,
+    {},
+  );
+  const createStripeCheckoutLinkMutation = useMutation(
+    createStripeCheckoutLink,
+  );
+
+  const handleUpgrade = async () => {
+    const { url } = await createStripeCheckoutLinkMutation.mutateAsync({});
+    window.location.href = url;
+  };
+
   const { data: listPublishableKeysResponse } = useQuery(
     listPublishableKeys,
     {},
@@ -91,7 +106,9 @@ export const ListAPIKeysPage = () => {
       </Breadcrumb>
 
       <PageTitle>API Keys</PageTitle>
-      <PageDescription className="mt-2">API Keys for your Tesseral Project.</PageDescription>
+      <PageDescription className="mt-2">
+        API Keys for your Tesseral Project.
+      </PageDescription>
 
       <div className="mt-8 space-y-8">
         <Card>
@@ -163,51 +180,76 @@ export const ListAPIKeysPage = () => {
             <CreateBackendAPIKeyButton />
           </CardHeader>
           <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableCell>Display Name</TableCell>
-                  <TableHead>ID</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Created At</TableHead>
-                  <TableHead>Updated At</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {listBackendAPIKeysResponse?.backendApiKeys?.map(
-                  (backendApiKey) => (
-                    <TableRow key={backendApiKey.id}>
-                      <TableCell className="font-medium">
-                        <Link
-                          className="font-medium underline underline-offset-2 decoration-muted-foreground/40"
-                          to={`/project-settings/api-keys/backend-api-keys/${backendApiKey.id}`}
-                        >
-                          {backendApiKey.displayName}
-                        </Link>
-                      </TableCell>
-                      <TableCell className="font-mono">
-                        {backendApiKey.id}
-                      </TableCell>
-                      <TableCell>
-                        {backendApiKey?.revoked ? 'Revoked' : 'Active'}
-                      </TableCell>
-                      <TableCell>
-                        {backendApiKey.createTime &&
-                          DateTime.fromJSDate(
-                            timestampDate(backendApiKey.createTime),
-                          ).toRelative()}
-                      </TableCell>
-                      <TableCell>
-                        {backendApiKey.updateTime &&
-                          DateTime.fromJSDate(
-                            timestampDate(backendApiKey.updateTime),
-                          ).toRelative()}
-                      </TableCell>
-                    </TableRow>
-                  ),
-                )}
-              </TableBody>
-            </Table>
+            {/* do not treat undefined as unentitled, to avoid flickering here */}
+            {getProjectEntitlementsResponse?.entitledBackendApiKeys === false ? (
+              <div className="text-sm my-8 w-full flex flex-col items-center justify-center space-y-6">
+                <div className="font-medium">
+                  Backend API Keys are available on the Growth Tier.
+                </div>
+
+                <div className="flex items-center gap-x-4">
+                  <Button onClick={handleUpgrade}>
+                    Upgrade to Growth Tier
+                  </Button>
+                  <span>
+                    or{' '}
+                    <a
+                      href="https://cal.com/ned-o-leary-j8ydyi/30min"
+                      className="font-medium underline underline-offset-2 decoration-muted-foreground/40"
+                    >
+                      meet an expert
+                    </a>
+                    .
+                  </span>
+                </div>
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableCell>Display Name</TableCell>
+                    <TableHead>ID</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Created At</TableHead>
+                    <TableHead>Updated At</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {listBackendAPIKeysResponse?.backendApiKeys?.map(
+                    (backendApiKey) => (
+                      <TableRow key={backendApiKey.id}>
+                        <TableCell className="font-medium">
+                          <Link
+                            className="font-medium underline underline-offset-2 decoration-muted-foreground/40"
+                            to={`/project-settings/api-keys/backend-api-keys/${backendApiKey.id}`}
+                          >
+                            {backendApiKey.displayName}
+                          </Link>
+                        </TableCell>
+                        <TableCell className="font-mono">
+                          {backendApiKey.id}
+                        </TableCell>
+                        <TableCell>
+                          {backendApiKey?.revoked ? 'Revoked' : 'Active'}
+                        </TableCell>
+                        <TableCell>
+                          {backendApiKey.createTime &&
+                            DateTime.fromJSDate(
+                              timestampDate(backendApiKey.createTime),
+                            ).toRelative()}
+                        </TableCell>
+                        <TableCell>
+                          {backendApiKey.updateTime &&
+                            DateTime.fromJSDate(
+                              timestampDate(backendApiKey.updateTime),
+                            ).toRelative()}
+                        </TableCell>
+                      </TableRow>
+                    ),
+                  )}
+                </TableBody>
+              </Table>
+            )}
           </CardContent>
         </Card>
       </div>
@@ -330,6 +372,11 @@ const backendAPIKeySchema = z.object({
 });
 
 const CreateBackendAPIKeyButton = () => {
+  const { data: getProjectEntitlementsResponse } = useQuery(
+    getProjectEntitlements,
+    {},
+  );
+
   const createBackendAPIKeyMutation = useMutation(createBackendAPIKey);
 
   // Currently there's an issue with the types of react-hook-form and zod
@@ -394,8 +441,15 @@ const CreateBackendAPIKeyButton = () => {
       </AlertDialog>
 
       <AlertDialog open={createOpen} onOpenChange={setCreateOpen}>
-        <AlertDialogTrigger>
-          <Button variant="outline">Create</Button>
+        <AlertDialogTrigger
+          disabled={!getProjectEntitlementsResponse?.entitledBackendApiKeys}
+        >
+          <Button
+            variant="outline"
+            disabled={!getProjectEntitlementsResponse?.entitledBackendApiKeys}
+          >
+            Create
+          </Button>
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>

@@ -11,6 +11,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	stripeclient "github.com/stripe/stripe-go/v82/client"
 	"github.com/tesseral-labs/tesseral/internal/googleoauth"
 	"github.com/tesseral-labs/tesseral/internal/hibp"
 	"github.com/tesseral-labs/tesseral/internal/intermediate/store/queries"
@@ -38,6 +39,7 @@ type Store struct {
 	microsoftOAuthClient                  *microsoftoauth.Client
 	userContentBaseUrl                    string
 	s3UserContentBucketName               string
+	stripeClient                          *stripeclient.API
 }
 
 type NewStoreParams struct {
@@ -58,6 +60,7 @@ type NewStoreParams struct {
 	MicrosoftOAuthClient                  *microsoftoauth.Client
 	UserContentBaseUrl                    string
 	S3UserContentBucketName               string
+	StripeClient                          *stripeclient.API
 }
 
 func New(p NewStoreParams) *Store {
@@ -83,6 +86,7 @@ func New(p NewStoreParams) *Store {
 		authenticatorAppSecretsKMSKeyID:       p.AuthenticatorAppSecretsKMSKeyID,
 		userContentBaseUrl:                    p.UserContentBaseUrl,
 		s3UserContentBucketName:               p.S3UserContentBucketName,
+		stripeClient:                          p.StripeClient,
 	}
 
 	return store

@@ -88,6 +88,15 @@ func (s *Store) CreateBackendAPIKey(ctx context.Context, req *backendv1.CreateBa
 		return nil, fmt.Errorf("validate is dogfood session: %w", err)
 	}
 
+	qProject, err := s.q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get project by id: %w", err)
+	}
+
+	if !qProject.EntitledBackendApiKeys {
+		return nil, fmt.Errorf("not entitled to backend api keys")
+	}
+
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
 		return nil, err
