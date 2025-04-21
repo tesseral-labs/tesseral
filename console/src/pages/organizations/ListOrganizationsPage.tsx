@@ -79,90 +79,78 @@ export const ListOrganizationsPage = () => {
   );
 
   return (
-    <div>
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/">Home</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Organizations</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+    <div className="w-full">
+      <div className="container p-4 m-auto">
+        <PageTitle>Organizations</PageTitle>
+        <PageDescription>
+          An Organization represents one of your business customers.
+        </PageDescription>
 
-      <PageTitle>Organizations</PageTitle>
-      <PageDescription>
-        An Organization represents one of your business customers.
-      </PageDescription>
-
-      <Card className="mt-8 overflow-hidden">
-        <CardHeader className="flex-row justify-between items-center space-x-4">
-          <div className="flex flex-col space-y-1 5">
-            <CardTitle>Organizations list</CardTitle>
-            <CardDescription>
-              This is a list of all Organizations in your project. You can
-              create and edit these Organizations manually.
-            </CardDescription>
-          </div>
-          <CreateOrganizationButton />
-        </CardHeader>
-        <CardContent className="-m-6 mt-0">
-          <Table>
-            <TableHeader className="bg-gray-50">
-              <TableRow>
-                <TableHead>Display Name</TableHead>
-                <TableHead>ID</TableHead>
-                <TableHead>Created</TableHead>
-                <TableHead>Updated</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {organizations?.map((org) => (
-                <TableRow key={org.id}>
-                  <TableCell className="font-medium">
-                    <Link
-                      className="underline underline-offset-2 decoration-muted-foreground/40"
-                      to={`/organizations/${org.id}`}
-                    >
-                      {org.displayName}
-                    </Link>
-                  </TableCell>
-                  <TableCell className="font-mono">{org.id}</TableCell>
-                  <TableCell>
-                    {org.createTime &&
-                      DateTime.fromJSDate(
-                        timestampDate(org.createTime),
-                      ).toRelative()}
-                  </TableCell>
-                  <TableCell>
-                    {org.updateTime &&
-                      DateTime.fromJSDate(
-                        timestampDate(org.updateTime),
-                      ).toRelative()}
-                  </TableCell>
+        <Card className="mt-8 overflow-hidden">
+          <CardHeader className="flex-row justify-between items-center space-x-4">
+            <div className="flex flex-col space-y-1 5">
+              <CardTitle>Organizations list</CardTitle>
+              <CardDescription>
+                This is a list of all Organizations in your project. You can
+                create and edit these Organizations manually.
+              </CardDescription>
+            </div>
+            <CreateOrganizationButton />
+          </CardHeader>
+          <CardContent className="-m-6 mt-0">
+            <Table>
+              <TableHeader className="bg-gray-50">
+                <TableRow>
+                  <TableHead>Display Name</TableHead>
+                  <TableHead>ID</TableHead>
+                  <TableHead>Created</TableHead>
+                  <TableHead>Updated</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+              </TableHeader>
+              <TableBody>
+                {organizations?.map((org) => (
+                  <TableRow key={org.id}>
+                    <TableCell className="font-medium">
+                      <Link
+                        className="underline underline-offset-2 decoration-muted-foreground/40"
+                        to={`/organizations/${org.id}`}
+                      >
+                        {org.displayName}
+                      </Link>
+                    </TableCell>
+                    <TableCell className="font-mono">{org.id}</TableCell>
+                    <TableCell>
+                      {org.createTime &&
+                        DateTime.fromJSDate(
+                          timestampDate(org.createTime),
+                        ).toRelative()}
+                    </TableCell>
+                    <TableCell>
+                      {org.updateTime &&
+                        DateTime.fromJSDate(
+                          timestampDate(org.updateTime),
+                        ).toRelative()}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
 
-      {hasNextPage && (
-        <Button
-          className="mt-4"
-          variant="outline"
-          onClick={() => fetchNextPage()}
-        >
-          {isFetchingNextPage && (
-            <LoaderCircleIcon className="h-4 w-4 animate-spin" />
-          )}
-          Load more
-        </Button>
-      )}
+        {hasNextPage && (
+          <Button
+            className="mt-4"
+            variant="outline"
+            onClick={() => fetchNextPage()}
+          >
+            {isFetchingNextPage && (
+              <LoaderCircleIcon className="h-4 w-4 animate-spin" />
+            )}
+            Load more
+          </Button>
+        )}
+      </div>
     </div>
   );
 };

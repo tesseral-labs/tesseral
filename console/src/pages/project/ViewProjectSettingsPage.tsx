@@ -27,6 +27,7 @@ import {
 } from '@/components/details-grid';
 import { clsx } from 'clsx';
 import { Outlet, useLocation } from 'react-router';
+import { TabBar, TabBarLink } from '@/components/ui/tab-bar';
 
 export const ViewProjectSettingsPage = () => {
   const { data: getProjectResponse } = useQuery(getProject, {});
@@ -52,26 +53,16 @@ export const ViewProjectSettingsPage = () => {
 
   return (
     <>
-      <div className="bg-white  w-full">
-        <div className="border-b border-gray-200">
-          <nav aria-label="Tabs" className="-mb-px flex">
-            {tabs.map((tab) => (
-              <Link
-                key={tab.name}
-                to={tab.url}
-                className={clsx(
-                  tab.url === currentTab?.url
-                    ? 'border-indigo-500 text-indigo-600'
-                    : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
-                  'whitespace-nowrap border-b-2 py-2 px-4 text-sm font-medium',
-                )}
-              >
-                {tab.name}
-              </Link>
-            ))}
-          </nav>
-        </div>
-      </div>
+      <TabBar>
+        {tabs.map((tab) => (
+          <TabBarLink
+            key={tab.name}
+            active={tab.url === currentTab?.url}
+            url={tab.url}
+            label={tab.name}
+          />
+        ))}
+      </TabBar>
       <div className="container p-4 m-auto">
         <PageTitle>Project settings</PageTitle>
         <PageCodeSubtitle>{getProjectResponse?.project?.id}</PageCodeSubtitle>
