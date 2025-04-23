@@ -100,3 +100,22 @@ export const isColorDark = (hex: string) => {
   // Return true if dark (luminance below 0.5)
   return luminance < 0.5;
 };
+
+export const titleCaseSlug = (str: string) => {
+  // Convert to lowercase and split by hyphen
+  const words = str.toLowerCase().split('-');
+
+  // Capitalize the first letter of each word
+  const capitalizedWords = words.map((word) => {
+    if (word.length === 0) return '';
+    return word.charAt(0).toUpperCase() + word.slice(1);
+  });
+
+  // Join the words back together with spaces
+  return capitalizedWords
+    .join(' ')
+    .replace(/(api)/gi, 'API')
+    .replace(/(oidc)/gi, 'OIDC')
+    .replace(/(saml)/gi, 'SAML')
+    .replace(/(scim)/gi, 'SCIM');
+};

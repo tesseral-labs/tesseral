@@ -43,7 +43,7 @@ import {
   listOrganizations,
   listUsers,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
-import { cn } from '@/lib/utils';
+import { cn, titleCaseSlug } from '@/lib/utils';
 
 const ConsoleNavigation: FC = () => {
   const navigate = useNavigate();
@@ -76,15 +76,30 @@ const ConsoleNavigation: FC = () => {
                         <div className="font-thin text-foreground-muted mx-2">
                           /
                         </div>
-                        {index === 1 && (
+                        {index === 1 ? (
                           <NavigationProjectPages
                             slug={slug as 'project-settings' | 'organizations'}
                           />
-                        )}
-                        {index === 2 &&
-                          pathname.startsWith('/organizations') && (
-                            <NavigationOrganizations />
-                          )}
+                        ) : index === 2 &&
+                          pathname.startsWith('/organizations') ? (
+                          <NavigationOrganizations />
+                        ) : index === 3 &&
+                          [
+                            'users',
+                            'user-invites',
+                            'saml-connections',
+                            'scim-api-keys',
+                          ].includes(slug) ? (
+                          <NavigationOrganizationPages slug={slug as any} />
+                        ) : index === pathname.split('/').length - 1 ? (
+                          slug.startsWith('user_') ? (
+                            <NavigationUsers />
+                          ) : (
+                            <div className="px-2 text-sm font-medium">
+                              {titleCaseSlug(slug)}
+                            </div>
+                          )
+                        ) : null}
                       </>
                     )}
                   </>
@@ -224,10 +239,17 @@ const NavigationProjectPages = ({
 }: {
   slug: 'project-settings' | 'organizations';
 }) => {
+  const [open, setOpen] = useState(false);
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger className="text-sm font-medium ring-0 active:ring-0 focus:ring-0">
+    <DropdownMenu open={open} onOpenChange={setOpen}>
+      <DropdownMenuTrigger className="text-sm font-medium ring-0 active:ring-0 focus:ring-0 px-2">
         {slug === 'project-settings' ? 'Project Settings' : 'Organizations'}
+        <ChevronDown
+          className={cn(
+            'inline max-h-3 transition-transform',
+            open ? 'rotate-180' : 'rotate-none',
+          )}
+        />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="block w-[300px]">
         <DropdownMenuItem
@@ -254,6 +276,7 @@ const NavigationProjectPages = ({
 
 const NavigationOrganizations = () => {
   const { organizationId } = useParams();
+  const [open, setOpen] = useState(false);
 
   const { data: organizationResponse } = useQuery(getOrganization, {
     id: organizationId,
@@ -263,13 +286,19 @@ const NavigationOrganizations = () => {
   });
 
   return (
-    <NavigationMenuItem>
-      <NavigationMenuTrigger>
+    <DropdownMenu open={open} onOpenChange={setOpen}>
+      <DropdownMenuTrigger className="text-sm font-medium ring-0 active:ring-0 focus:ring-0 px-2">
         {organizationResponse?.organization?.displayName}
-      </NavigationMenuTrigger>
-      <NavigationMenuContent className="block w-[300px]">
+        <ChevronDown
+          className={cn(
+            'inline max-h-3 transition-transform',
+            open ? 'rotate-180' : 'rotate-none',
+          )}
+        />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="block w-[300px]">
         {listOrganizationsResponse?.organizations?.map((org) => (
-          <NavigationMenuLink
+          <DropdownMenuItem
             asChild
             className="block w-full font-medium text-sm p-2"
             key={org.id}
@@ -281,15 +310,106 @@ const NavigationOrganizations = () => {
             >
               {org.displayName}
             </Link>
-          </NavigationMenuLink>
+          </DropdownMenuItem>
         ))}
-      </NavigationMenuContent>
-    </NavigationMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
+
+const NavigationOrganizationPages = ({
+  slug,
+}: {
+  slug:
+    | 'details'
+    | 'users'
+    | 'user-invites'
+    | 'saml-connections'
+    | 'scim-api-keys';
+}) => {
+  const { organizationId } = useParams();
+  const [open, setOpen] = useState(false);
+
+  return (
+    <DropdownMenu open={open} onOpenChange={setOpen}>
+      <DropdownMenuTrigger className="text-sm font-medium ring-0 active:ring-0 focus:ring-0 px-2">
+        {titleCaseSlug(slug)}
+        <ChevronDown
+          className={cn(
+            'inline max-h-3 transition-transform',
+            open ? 'rotate-180' : 'rotate-none',
+          )}
+        />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="block w-[300px]">
+        <DropdownMenuItem
+          asChild
+          className="block w-full font-medium text-sm p-2"
+        >
+          <Link
+            className="h-full w-full"
+            id={organizationId}
+            to={`/organizations/${organizationId}`}
+          >
+            Details
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          asChild
+          className="block w-full font-medium text-sm p-2"
+        >
+          <Link
+            className="h-full w-full"
+            id={organizationId}
+            to={`/organizations/${organizationId}/users`}
+          >
+            Users
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          asChild
+          className="block w-full font-medium text-sm p-2"
+        >
+          <Link
+            className="h-full w-full"
+            id={organizationId}
+            to={`/organizations/${organizationId}/user-invites`}
+          >
+            User Invites
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          asChild
+          className="block w-full font-medium text-sm p-2"
+        >
+          <Link
+            className="h-full w-full"
+            id={organizationId}
+            to={`/organizations/${organizationId}/saml-connections`}
+          >
+            SAML Connections
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          asChild
+          className="block w-full font-medium text-sm p-2"
+        >
+          <Link
+            className="h-full w-full"
+            id={organizationId}
+            to={`/organizations/${organizationId}/scim-api-keys`}
+          >
+            SCIM API Keys
+          </Link>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };
 
 const NavigationUsers = () => {
   const { organizationId, userId } = useParams();
+  const [open, setOpen] = useState(false);
 
   const { data: userResponse } = useQuery(getUser, {
     id: userId,
@@ -299,27 +419,44 @@ const NavigationUsers = () => {
   });
 
   return (
-    <NavigationMenuItem>
-      <NavigationMenuTrigger>{userResponse?.user?.email}</NavigationMenuTrigger>
-      <NavigationMenuContent className="block w-[300px]">
+    <DropdownMenu open={open} onOpenChange={setOpen}>
+      <DropdownMenuTrigger className="text-sm font-medium ring-0 active:ring-0 focus:ring-0 px-2">
+        {userResponse?.user?.email}
+        <ChevronDown
+          className={cn(
+            'inline max-h-3 transition-transform',
+            open ? 'rotate-180' : 'rotate-none',
+          )}
+        />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="block w-[300px]">
         <ul>
           {listUsersResponse?.users?.map((user) => (
             <li key={user.id}>
-              <NavigationMenuLink className="block w-full font-medium text-sm p-2">
+              <DropdownMenuItem className="block w-full font-medium text-sm p-2">
                 <Link
                   className="h-full w-full"
                   id={user.id}
                   to={`/organizations/${organizationId}/users/${user.id}`}
                 >
-                  <div>{user.email}</div>
-                  <div>{user.id}</div>
+                  <div className="flex items-center gap-2">
+                    <Avatar className="h-8 w-8 rounded-full">
+                      <AvatarFallback className="rounded-full bg-indigo-600 text-white font-semibold">
+                        {user.email?.substring(0, 1)?.toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="truncate">
+                      <div className="font-semibold">{user.email}</div>
+                      <div className="font-medium text-xs">{user.id}</div>
+                    </div>
+                  </div>
                 </Link>
-              </NavigationMenuLink>
+              </DropdownMenuItem>
             </li>
           ))}
         </ul>
-      </NavigationMenuContent>
-    </NavigationMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };
 

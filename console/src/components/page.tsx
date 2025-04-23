@@ -50,7 +50,7 @@ export const PageCodeSubtitle = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      'mt-2 inline-block rounded py-1 px-2 font-mono text-xs bg-indigo-700 text-gray-100',
+      'mt-2 inline-block rounded py-1 px-2 font-mono text-xs bg-foreground/5 text-foreground/50',
       className,
     )}
     {...props}
