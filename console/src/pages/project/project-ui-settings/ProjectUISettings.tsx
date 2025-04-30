@@ -105,25 +105,16 @@ const settingsPage: FC = () => {
     reader.readAsDataURL(file);
   };
 
-  const handleDarkModePrimaryColorChange = () => {
+  const handleDarkModePrimaryColorChange = (value: string) => {
     const hexRegexp = /^#(?:[0-9a-fA-F]{3}){1,2}$/;
-    const hexWithAlphaRegexp =
-      /^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/;
 
-    if (
-      hexRegexp.test(darkModePrimaryColor) ||
-      hexWithAlphaRegexp.test(darkModePrimaryColor)
-    ) {
-      setDarkModePrimaryColor(darkModePrimaryColor);
-      setLastValidDarkModePrimaryColor(darkModePrimaryColor);
-    } else if (
-      hexRegexp.test(`#${darkModePrimaryColor}`) ||
-      hexWithAlphaRegexp.test(`#${darkModePrimaryColor}`)
-    ) {
-      setDarkModePrimaryColor(`#${darkModePrimaryColor}`);
-      setLastValidDarkModePrimaryColor(`#${darkModePrimaryColor}`);
-    } else {
-      setDarkModePrimaryColor(lastValidPrimaryColor);
+    setDarkModePrimaryColor(value);
+
+    if (hexRegexp.test(value)) {
+      setLastValidDarkModePrimaryColor(value);
+    } else if (hexRegexp.test(`#${value}`)) {
+      setDarkModePrimaryColor(`#${value}`);
+      setLastValidDarkModePrimaryColor(`#${value}`);
     }
   };
 
@@ -149,22 +140,16 @@ const settingsPage: FC = () => {
     reader.readAsDataURL(file);
   };
 
-  const handlePrimaryColorChange = () => {
+  const handlePrimaryColorChange = (value: string) => {
     const hexRegexp = /^#(?:[0-9a-fA-F]{3}){1,2}$/;
-    const hexWithAlphaRegexp =
-      /^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/;
 
-    if (hexRegexp.test(primaryColor) || hexWithAlphaRegexp.test(primaryColor)) {
-      setPrimaryColor(primaryColor);
-      setLastValidPrimaryColor(primaryColor);
-    } else if (
-      hexRegexp.test(`#${primaryColor}`) ||
-      hexWithAlphaRegexp.test(`#${primaryColor}`)
-    ) {
-      setPrimaryColor(`#${primaryColor}`);
-      setLastValidPrimaryColor(`#${primaryColor}`);
-    } else {
-      setPrimaryColor(lastValidPrimaryColor);
+    setPrimaryColor(value);
+
+    if (hexRegexp.test(value)) {
+      setLastValidPrimaryColor(value);
+    } else if (hexRegexp.test(`#${value}`)) {
+      setPrimaryColor(`#${value}`);
+      setLastValidPrimaryColor(`#${value}`);
     }
   };
 
@@ -258,7 +243,15 @@ const settingsPage: FC = () => {
         getProjectUISettingsResponse.projectUiSettings?.primaryColor ||
           '#0f172a',
       );
+      setLastValidPrimaryColor(
+        getProjectUISettingsResponse.projectUiSettings?.primaryColor ||
+          '#0f172a',
+      );
       setDarkModePrimaryColor(
+        getProjectUISettingsResponse.projectUiSettings?.darkModePrimaryColor ||
+          '#ffffff',
+      );
+      setLastValidDarkModePrimaryColor(
         getProjectUISettingsResponse.projectUiSettings?.darkModePrimaryColor ||
           '#ffffff',
       );
@@ -279,7 +272,7 @@ const settingsPage: FC = () => {
 
   useEffect(() => {
     applyTheme();
-  }, [darkMode, primaryColor, darkModePrimaryColor]);
+  }, [darkMode, lastValidPrimaryColor, lastValidDarkModePrimaryColor]);
 
   return (
     <div>
@@ -459,8 +452,7 @@ const settingsPage: FC = () => {
 
                         <ColorPicker
                           className="mt-2"
-                          onBlur={handlePrimaryColorChange}
-                          onChange={setPrimaryColor}
+                          onChange={handlePrimaryColorChange}
                           value={primaryColor}
                         />
                       </div>
@@ -508,8 +500,7 @@ const settingsPage: FC = () => {
 
                             <ColorPicker
                               className="mt-2"
-                              onBlur={handleDarkModePrimaryColorChange}
-                              onChange={setDarkModePrimaryColor}
+                              onChange={handleDarkModePrimaryColorChange}
                               value={darkModePrimaryColor}
                             />
                           </div>
@@ -517,7 +508,7 @@ const settingsPage: FC = () => {
                       )}
                     </div>
                   </div>
-                  <div className="absolute bottom-0 h-24 bg-gradient-to-b from-white/0 to-white p-8 w-full"></div>
+                  <div className="absolute bottom-0 h-8 bg-gradient-to-b from-white/0 to-white p-8 w-full"></div>
                 </div>
 
                 <div className="col-span-2">
