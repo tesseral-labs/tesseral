@@ -190,3 +190,73 @@ export const deleteUserInvite = FrontendService.method.deleteUserInvite;
  * @generated from rpc tesseral.frontend.v1.FrontendService.ListSwitchableOrganizations
  */
 export const listSwitchableOrganizations = FrontendService.method.listSwitchableOrganizations;
+
+/**
+ * Get RBAC Policy.
+ *
+ * @generated from rpc tesseral.frontend.v1.FrontendService.GetRBACPolicy
+ */
+export const getRBACPolicy = FrontendService.method.getRBACPolicy;
+
+/**
+ * List Roles.
+ *
+ * @generated from rpc tesseral.frontend.v1.FrontendService.ListRoles
+ */
+export const listRoles = FrontendService.method.listRoles;
+
+/**
+ * Get a Role.
+ *
+ * @generated from rpc tesseral.frontend.v1.FrontendService.GetRole
+ */
+export const getRole = FrontendService.method.getRole;
+
+/**
+ * Create a Role.
+ *
+ * @generated from rpc tesseral.frontend.v1.FrontendService.CreateRole
+ */
+export const createRole = FrontendService.method.createRole;
+
+/**
+ * Update a Role.
+ *
+ * @generated from rpc tesseral.frontend.v1.FrontendService.UpdateRole
+ */
+export const updateRole = FrontendService.method.updateRole;
+
+/**
+ * Delete a Role.
+ *
+ * @generated from rpc tesseral.frontend.v1.FrontendService.DeleteRole
+ */
+export const deleteRole = FrontendService.method.deleteRole;
+
+/**
+ * List User Role Assignments.
+ *
+ * @generated from rpc tesseral.frontend.v1.FrontendService.ListUserRoleAssignments
+ */
+export const listUserRoleAssignments = FrontendService.method.listUserRoleAssignments;
+
+/**
+ * Get a User Role Assignment.
+ *
+ * @generated from rpc tesseral.frontend.v1.FrontendService.GetUserRoleAssignment
+ */
+export const getUserRoleAssignment = FrontendService.method.getUserRoleAssignment;
+
+/**
+ * Create a User Role Assignment.
+ *
+ * @generated from rpc tesseral.frontend.v1.FrontendService.CreateUserRoleAssignment
+ */
+export const createUserRoleAssignment = FrontendService.method.createUserRoleAssignment;
+
+/**
+ * Delete a User Role Assignment.
+ *
+ * @generated from rpc tesseral.frontend.v1.FrontendService.DeleteUserRoleAssignment
+ */
+export const deleteUserRoleAssignment = FrontendService.method.deleteUserRoleAssignment;

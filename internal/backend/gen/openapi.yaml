@@ -439,6 +439,180 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /v1/rbac-policy:
+        get:
+            tags:
+                - BackendService
+            description: Get RBAC Policy.
+            operationId: BackendService_GetRBACPolicy
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetRBACPolicyResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        patch:
+            tags:
+                - BackendService
+            description: Update RBAC Policy.
+            operationId: BackendService_UpdateRBACPolicy
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/RBACPolicy'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateRBACPolicyResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/roles:
+        get:
+            tags:
+                - BackendService
+            description: List Roles.
+            operationId: BackendService_ListRoles
+            parameters:
+                - name: organizationId
+                  in: query
+                  schema:
+                    type: string
+                - name: pageToken
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListRolesResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - BackendService
+            description: Create a Role.
+            operationId: BackendService_CreateRole
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Role'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateRoleResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/roles/{id}:
+        get:
+            tags:
+                - BackendService
+            description: Get a Role.
+            operationId: BackendService_GetRole
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetRoleResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        delete:
+            tags:
+                - BackendService
+            description: Delete a Role.
+            operationId: BackendService_DeleteRole
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DeleteRoleResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        patch:
+            tags:
+                - BackendService
+            description: Update a Role.
+            operationId: BackendService_UpdateRole
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Role'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateRoleResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /v1/saml-connections:
         get:
             tags:
@@ -904,6 +1078,111 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /v1/user-role-assignments:
+        get:
+            tags:
+                - BackendService
+            description: List User Role Assignments.
+            operationId: BackendService_ListUserRoleAssignments
+            parameters:
+                - name: userId
+                  in: query
+                  schema:
+                    type: string
+                - name: roleId
+                  in: query
+                  schema:
+                    type: string
+                - name: pageToken
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListUserRoleAssignmentsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - BackendService
+            description: Create a User Role Assignment.
+            operationId: BackendService_CreateUserRoleAssignment
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UserRoleAssignment'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateUserRoleAssignmentResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/user-role-assignments/{id}:
+        get:
+            tags:
+                - BackendService
+            description: Get a User Role Assignment.
+            operationId: BackendService_GetUserRoleAssignment
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetUserRoleAssignmentResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        delete:
+            tags:
+                - BackendService
+            description: Delete a User Role Assignment.
+            operationId: BackendService_DeleteUserRoleAssignment
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DeleteUserRoleAssignmentResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /v1/users:
         get:
             tags:
@@ -1042,6 +1321,16 @@ paths:
                                 $ref: '#/components/schemas/Status'
 components:
     schemas:
+        Action:
+            type: object
+            properties:
+                name:
+                    type: string
+                    description: The unique name of the Action.
+                description:
+                    type: string
+                    description: A human-readable description of the Action.
+            description: Action represents a permission within a Project.
         CreateOrganizationResponse:
             type: object
             properties:
@@ -1049,6 +1338,11 @@ components:
                     allOf:
                         - $ref: '#/components/schemas/Organization'
                     description: The Organization to create.
+        CreateRoleResponse:
+            type: object
+            properties:
+                role:
+                    $ref: '#/components/schemas/Role'
         CreateSAMLConnectionResponse:
             type: object
             properties:
@@ -1077,10 +1371,18 @@ components:
                     allOf:
                         - $ref: '#/components/schemas/User'
                     description: The created User.
+        CreateUserRoleAssignmentResponse:
+            type: object
+            properties:
+                userRoleAssignment:
+                    $ref: '#/components/schemas/UserRoleAssignment'
         DeleteOrganizationResponse:
             type: object
             properties: {}
         DeletePasskeyResponse:
+            type: object
+            properties: {}
+        DeleteRoleResponse:
             type: object
             properties: {}
         DeleteSAMLConnectionResponse:
@@ -1093,6 +1395,9 @@ components:
             type: object
             properties: {}
         DeleteUserResponse:
+            type: object
+            properties: {}
+        DeleteUserRoleAssignmentResponse:
             type: object
             properties: {}
         GetOrganizationDomainsResponse:
@@ -1137,6 +1442,16 @@ components:
                     allOf:
                         - $ref: '#/components/schemas/Project'
                     description: The requested Project.
+        GetRBACPolicyResponse:
+            type: object
+            properties:
+                rbacPolicy:
+                    $ref: '#/components/schemas/RBACPolicy'
+        GetRoleResponse:
+            type: object
+            properties:
+                role:
+                    $ref: '#/components/schemas/Role'
         GetSAMLConnectionResponse:
             type: object
             properties:
@@ -1172,6 +1487,11 @@ components:
                     allOf:
                         - $ref: '#/components/schemas/User'
                     description: The requested User.
+        GetUserRoleAssignmentResponse:
+            type: object
+            properties:
+                userRoleAssignment:
+                    $ref: '#/components/schemas/UserRoleAssignment'
         GoogleProtobufAny:
             type: object
             properties:
@@ -1204,6 +1524,15 @@ components:
                 nextPageToken:
                     type: string
                     description: The pagination token for the next page of results. Empty if there is no next page.
+        ListRolesResponse:
+            type: object
+            properties:
+                roles:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Role'
+                nextPageToken:
+                    type: string
         ListSAMLConnectionsResponse:
             type: object
             properties:
@@ -1252,6 +1581,15 @@ components:
                 nextPageToken:
                     type: string
                     description: The pagination token for the next page of results. Empty if there is no next page.
+        ListUserRoleAssignmentsResponse:
+            type: object
+            properties:
+                userRoleAssignments:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/UserRoleAssignment'
+                nextPageToken:
+                    type: string
         ListUsersResponse:
             type: object
             properties:
@@ -1307,6 +1645,9 @@ components:
                 scimEnabled:
                     type: boolean
                     description: Whether the Organization has SCIM enabled.
+                customRolesEnabled:
+                    type: boolean
+                    description: Whether the Organization's Users can create Organization-specific Roles.
             description: An Organization represents one of your corporate customers.
         OrganizationDomains:
             type: object
@@ -1489,6 +1830,17 @@ components:
                 Projects are the top-level object in Tesseral.
 
                  Everything in Tesseral happens within the context of a Project.
+        RBACPolicy:
+            type: object
+            properties:
+                actions:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Action'
+                    description: The set of valid Actions for this Project.
+            description: |-
+                RBACPolicy represents a Project's configuration for Role-Based Access Control
+                 (RBAC).
         RevokeSCIMAPIKeyResponse:
             type: object
             properties:
@@ -1496,6 +1848,35 @@ components:
                     allOf:
                         - $ref: '#/components/schemas/SCIMAPIKey'
                     description: The revoked SCIM API Key.
+        Role:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: The Role ID. Starts with `role_...`.
+                organizationId:
+                    type: string
+                    description: The Organization this Role belongs to, if any.
+                createTime:
+                    type: string
+                    description: When the Role was created.
+                    format: date-time
+                updateTime:
+                    type: string
+                    description: When the Role was last updated.
+                    format: date-time
+                displayName:
+                    type: string
+                    description: A human-readable display name for this Role.
+                description:
+                    type: string
+                    description: A human-readable description of the Role.
+                actions:
+                    type: array
+                    items:
+                        type: string
+                    description: The names of the Actions associated with this Role.
+            description: Role represents a logical grouping of permissions that Users may have.
         SAMLConnection:
             type: object
             properties:
@@ -1642,6 +2023,16 @@ components:
                     allOf:
                         - $ref: '#/components/schemas/Passkey'
                     description: The updated Passkey.
+        UpdateRBACPolicyResponse:
+            type: object
+            properties:
+                rbacPolicy:
+                    $ref: '#/components/schemas/RBACPolicy'
+        UpdateRoleResponse:
+            type: object
+            properties:
+                role:
+                    $ref: '#/components/schemas/Role'
         UpdateSAMLConnectionResponse:
             type: object
             properties:
@@ -1732,5 +2123,18 @@ components:
                         Indicates whether the invited User will have owner privileges in the
                          Organization.
             description: UserInvite represents an invitation for a User to join an Organization.
+        UserRoleAssignment:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: The User Role Assignment ID. Starts with `user_role_assignment_...`.
+                userId:
+                    type: string
+                    description: The User ID.
+                roleId:
+                    type: string
+                    description: The Role ID.
+            description: UserRoleAssignment represents a User being assigned to a Role.
 tags:
     - name: BackendService

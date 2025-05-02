@@ -81,7 +81,8 @@ SET
     log_in_with_passkey = $8,
     log_in_with_saml = $9,
     scim_enabled = $10,
-    require_mfa = $11
+    require_mfa = $11,
+    custom_roles_enabled = $12
 WHERE
     id = $1
 RETURNING
@@ -830,6 +831,143 @@ ON CONFLICT (project_id, date)
     RETURNING
         *;
 
+-- name: GetActions :many
+SELECT
+    *
+FROM
+    actions
+WHERE
+    project_id = $1;
+
+-- name: UpsertAction :exec
+INSERT INTO actions (id, project_id, name, description)
+    VALUES ($1, $2, $3, $4)
+ON CONFLICT (project_id, name)
+    DO NOTHING;
+
+-- name: DeleteActionsByNameNotInList :many
+DELETE FROM actions
+WHERE project_id = $1
+    AND NOT (name = ANY (@names::varchar[]))
+RETURNING
+    *;
+
+-- name: ListRoles :many
+SELECT
+    *
+FROM
+    roles
+WHERE
+    project_id = $1
+    AND organization_id IS NOT DISTINCT FROM $2
+    AND id >= $3
+ORDER BY
+    id
+LIMIT $4;
+
+-- name: BatchGetRoleActionsByRoleID :many
+SELECT
+    *
+FROM
+    role_actions
+WHERE
+    role_id = ANY ($1::uuid[]);
+
+-- name: GetRole :one
+SELECT
+    *
+FROM
+    roles
+WHERE
+    id = $1
+    AND project_id = $2;
+
+-- name: CreateRole :one
+INSERT INTO roles (id, project_id, organization_id, display_name, description)
+    VALUES ($1, $2, $3, $4, $5)
+RETURNING
+    *;
+
+-- name: UpdateRole :one
+UPDATE
+    roles
+SET
+    update_time = now(),
+    display_name = $2,
+    description = $3
+WHERE
+    id = $1
+RETURNING
+    *;
+
+-- name: UpsertRoleAction :exec
+INSERT INTO role_actions (id, role_id, action_id)
+    VALUES ($1, $2, $3)
+ON CONFLICT (role_id, action_id)
+    DO NOTHING;
+
+-- name: DeleteRoleActionsByActionIDNotInList :exec
+DELETE FROM role_actions
+WHERE role_id = $1
+    AND NOT (action_id = ANY (@action_ids::uuid[]));
+
+-- name: DeleteRole :exec
+DELETE FROM roles
+WHERE id = $1;
+
+-- name: ListUserRoleAssignmentsByRole :many
+SELECT
+    *
+FROM
+    user_role_assignments
+WHERE
+    role_id = $1
+    AND id >= $2
+ORDER BY
+    id
+LIMIT $3;
+
+-- name: ListUserRoleAssignmentsByUser :many
+SELECT
+    *
+FROM
+    user_role_assignments
+WHERE
+    user_id = $1
+    AND id >= $2
+ORDER BY
+    id
+LIMIT $3;
+
+-- name: GetUserRoleAssignment :one
+SELECT
+    user_role_assignments.*
+FROM
+    user_role_assignments
+    JOIN roles ON user_role_assignments.role_id = roles.id
+WHERE
+    public.user_role_assignments.id = $1
+    AND roles.project_id = $2;
+
+-- name: UpsertUserRoleAssignment :exec
+INSERT INTO user_role_assignments (id, role_id, user_id)
+    VALUES ($1, $2, $3)
+ON CONFLICT (role_id, user_id)
+    DO NOTHING;
+
+-- name: GetUserRoleAssignmentByUserAndRole :one
+SELECT
+    *
+FROM
+    user_role_assignments
+WHERE
+    user_id = $1
+    AND role_id = $2;
+
+-- name: DeleteUserRoleAssignment :exec
+DELETE FROM user_role_assignments
+WHERE id = $1;
+
 -- name: GetProjectWebhookSettings :one
 SELECT
     *
@@ -837,4 +975,3 @@ FROM
     project_webhook_settings
 WHERE
     project_id = $1;
-

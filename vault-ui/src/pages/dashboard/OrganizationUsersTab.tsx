@@ -1,9 +1,5 @@
 import { timestampDate } from "@bufbuild/protobuf/wkt";
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQuery,
-} from "@connectrpc/connect-query";
+import { useInfiniteQuery, useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DateTime } from "luxon";
 import React, { useState } from "react";
@@ -12,45 +8,30 @@ import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import {
-  AlertDialog,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+
+
+import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import {
   createUserInvite,
   deleteUserInvite,
   listUserInvites,
+  listUserRoleAssignments,
   listUsers,
   whoami,
 } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
 import { User, UserInvite } from "@/gen/tesseral/frontend/v1/models_pb";
+import { AssignUserRolesButton } from "@/pages/dashboard/AssignUserRolesButton";
+
+
+
+
 
 export function OrganizationUsersTab() {
   return (
@@ -329,25 +310,26 @@ function UserRow({ user }: { user: User }) {
   const isYou = whoamiResponse?.user?.id === user.id;
 
   return (
-    <div className="flex items-center gap-x-4">
-      <Avatar>
-        <AvatarFallback>
-          {user.email.substring(0, 1).toUpperCase()}
-        </AvatarFallback>
-      </Avatar>
+    <div className="flex items-center justify-between">
+      <div className="flex items-center gap-x-4">
+        <Avatar>
+          <AvatarFallback>
+            {user.email.substring(0, 1).toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
+
+        <div>
+          <div className="text-sm font-medium flex items-center gap-x-2">
+            {user.displayName || user.email}
+            {isYou && <Badge variant="outline">You</Badge>}
+            {user.owner && <Badge variant="outline">Owner</Badge>}
+          </div>
+          <div className="text-sm">{user.email}</div>
+        </div>
+      </div>
 
       <div>
-        <div className="text-sm font-medium flex items-center gap-x-2">
-          <Link
-            to={`/organization-settings/users/${user.id}`}
-            className="underline underline-offset-2 decoration-muted-foreground/50"
-          >
-            {user.email}
-          </Link>
-          {isYou && <Badge variant="outline">You</Badge>}
-          {user.owner && <Badge variant="outline">Owner</Badge>}
-        </div>
-        <div className="text-sm">{user.email}</div>
+        <AssignUserRolesButton userId={user.id} />
       </div>
     </div>
   );

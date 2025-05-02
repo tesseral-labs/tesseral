@@ -2,11 +2,14 @@ import { useParams } from 'react-router';
 import { useMutation, useQuery } from '@connectrpc/connect-query';
 import {
   createUserImpersonationToken,
+  deleteUserRoleAssignment,
   getOrganization,
   getProject,
+  getRole,
   getUser,
   listPasskeys,
   listSessions,
+  listUserRoleAssignments,
   updateUser,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import React, { FC, useEffect, useState } from 'react';
@@ -51,6 +54,7 @@ import { timestampDate } from '@bufbuild/protobuf/wkt';
 import { Button } from '@/components/ui/button';
 import {
   AlertDialog,
+  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -73,7 +77,8 @@ import { z } from 'zod';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
-import { User } from '@/gen/tesseral/backend/v1/models_pb';
+import { User, UserRoleAssignment } from '@/gen/tesseral/backend/v1/models_pb';
+import { AssignUserRolesButton } from './AssignUserRolesButton';
 
 export const ViewUserPage = () => {
   const { organizationId, userId } = useParams();
@@ -89,6 +94,12 @@ export const ViewUserPage = () => {
   const { data: listPasskeysResponse } = useQuery(listPasskeys, {
     userId,
   });
+  const { data: listUserRoleAssignmentsResponse } = useQuery(
+    listUserRoleAssignments,
+    {
+      userId,
+    },
+  );
 
   return (
     <div>
@@ -214,103 +225,211 @@ export const ViewUserPage = () => {
         </CardContent>
       </Card>
 
-      <Card className="my-8">
-        <CardHeader>
-          <CardTitle>Sessions</CardTitle>
-          <CardDescription>
-            Every time your Users log in or perform an action, that's associated
-            with a Session.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Created</TableHead>
-                <TableHead>Last Active</TableHead>
-                <TableHead>Expiration</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {listSessionsResponse?.sessions?.map((session) => (
-                <TableRow key={session.id}>
-                  <TableCell className="font-medium font-mono">
-                    {session.id}
-                  </TableCell>
-                  <TableCell>
-                    {session?.createTime &&
-                      DateTime.fromJSDate(
-                        timestampDate(session.createTime),
-                      ).toRelative()}
-                  </TableCell>
-                  <TableCell>
-                    {session?.lastActiveTime &&
-                      DateTime.fromJSDate(
-                        timestampDate(session.lastActiveTime),
-                      ).toRelative()}
-                  </TableCell>
-                  <TableCell>
-                    {session?.expireTime &&
-                      DateTime.fromJSDate(
-                        timestampDate(session.expireTime),
-                      ).toRelative()}
-                  </TableCell>
+      <div className="space-y-8">
+        <Card>
+          <CardHeader>
+            <CardTitle>Sessions</CardTitle>
+            <CardDescription>
+              Every time your Users log in or perform an action, that's
+              associated with a Session.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>ID</TableHead>
+                  <TableHead>Created</TableHead>
+                  <TableHead>Last Active</TableHead>
+                  <TableHead>Expiration</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+              </TableHeader>
+              <TableBody>
+                {listSessionsResponse?.sessions?.map((session) => (
+                  <TableRow key={session.id}>
+                    <TableCell className="font-medium font-mono">
+                      {session.id}
+                    </TableCell>
+                    <TableCell>
+                      {session?.createTime &&
+                        DateTime.fromJSDate(
+                          timestampDate(session.createTime),
+                        ).toRelative()}
+                    </TableCell>
+                    <TableCell>
+                      {session?.lastActiveTime &&
+                        DateTime.fromJSDate(
+                          timestampDate(session.lastActiveTime),
+                        ).toRelative()}
+                    </TableCell>
+                    <TableCell>
+                      {session?.expireTime &&
+                        DateTime.fromJSDate(
+                          timestampDate(session.expireTime),
+                        ).toRelative()}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Passkeys</CardTitle>
-          <CardDescription>Passkeys associated with this User.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Created</TableHead>
-                <TableHead>Updated</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {listPasskeysResponse?.passkeys?.map((passkey) => (
-                <TableRow key={passkey.id}>
-                  <TableCell className="font-medium font-mono">
-                    <Link
-                      className="font-mono font-medium underline underline-offset-2 decoration-muted-foreground/40"
-                      to={`/organizations/${organizationId}/users/${userId}/passkeys/${passkey.id}`}
-                    >
-                      {passkey.id}
-                    </Link>
-                  </TableCell>
-                  <TableCell>
-                    {passkey?.createTime &&
-                      DateTime.fromJSDate(
-                        timestampDate(passkey.createTime),
-                      ).toRelative()}
-                  </TableCell>
-                  <TableCell>
-                    {passkey?.updateTime &&
-                      DateTime.fromJSDate(
-                        timestampDate(passkey.updateTime),
-                      ).toRelative()}
-                  </TableCell>
+        <Card>
+          <CardHeader>
+            <CardTitle>Passkeys</CardTitle>
+            <CardDescription>
+              Passkeys associated with this User.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>ID</TableHead>
+                  <TableHead>Created</TableHead>
+                  <TableHead>Updated</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+              </TableHeader>
+              <TableBody>
+                {listPasskeysResponse?.passkeys?.map((passkey) => (
+                  <TableRow key={passkey.id}>
+                    <TableCell className="font-medium font-mono">
+                      <Link
+                        className="font-mono font-medium underline underline-offset-2 decoration-muted-foreground/40"
+                        to={`/organizations/${organizationId}/users/${userId}/passkeys/${passkey.id}`}
+                      >
+                        {passkey.id}
+                      </Link>
+                    </TableCell>
+                    <TableCell>
+                      {passkey?.createTime &&
+                        DateTime.fromJSDate(
+                          timestampDate(passkey.createTime),
+                        ).toRelative()}
+                    </TableCell>
+                    <TableCell>
+                      {passkey?.updateTime &&
+                        DateTime.fromJSDate(
+                          timestampDate(passkey.updateTime),
+                        ).toRelative()}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex-row justify-between items-center gap-x-2">
+            <div className="flex flex-col space-y-1.5">
+              <CardTitle>Assigned Roles</CardTitle>
+              <CardDescription>
+                Roles this User has been assigned.
+              </CardDescription>
+            </div>
+
+            <div className="shrink-0 space-x-4">
+              <AssignUserRolesButton />
+            </div>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Display Name</TableHead>
+                  <TableHead>Description</TableHead>
+                  <TableHead></TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {listUserRoleAssignmentsResponse?.userRoleAssignments?.map(
+                  (userRoleAssignment) => (
+                    <UserRoleAssignmentRow
+                      key={userRoleAssignment.roleId}
+                      userRoleAssignment={userRoleAssignment}
+                    />
+                  ),
+                )}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      </div>
 
       <DangerZoneCard />
     </div>
   );
 };
+
+function UserRoleAssignmentRow({
+  userRoleAssignment,
+}: {
+  userRoleAssignment: UserRoleAssignment;
+}) {
+  const { refetch } = useQuery(listUserRoleAssignments, {
+    userId: userRoleAssignment.userId,
+  });
+  const { data: getRoleResponse } = useQuery(getRole, {
+    id: userRoleAssignment.roleId,
+  });
+
+  const { data: getUserResponse } = useQuery(getUser, {
+    id: userRoleAssignment.userId,
+  })
+
+  const { mutateAsync: deleteUserRoleAssignmentAsync } = useMutation(
+    deleteUserRoleAssignment,
+  );
+
+  async function handleUnassign() {
+    await deleteUserRoleAssignmentAsync({ id: userRoleAssignment.id });
+    await refetch();
+    toast.success('Role unassigned');
+  }
+
+  const [open, setOpen] = useState(false);
+
+  return (
+    <TableRow>
+      <TableCell>
+        <Link
+          className="font-medium underline underline-offset-2 decoration-muted-foreground/40"
+          to={`/roles/${userRoleAssignment.roleId}`}
+        >
+          {getRoleResponse?.role?.displayName}
+        </Link>
+      </TableCell>
+      <TableCell>
+        {getRoleResponse?.role?.description}
+      </TableCell>
+      <TableCell className="text-right">
+        <AlertDialog open={open} onOpenChange={setOpen}>
+          <AlertDialogTrigger asChild>
+            <Button size="sm" variant="link">
+              Unassign
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Unassign Role</AlertDialogTitle>
+            </AlertDialogHeader>
+            <AlertDialogDescription>
+              Are you sure you want to unassign <span className="font-medium">{getUserResponse?.user?.email}</span> from the Role <span className="font-medium">{getRoleResponse?.role?.displayName}</span>?
+            </AlertDialogDescription>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleUnassign}>
+                Unassign
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </TableCell>
+    </TableRow>
+  );
+}
 
 const DangerZoneCard = () => {
   const { userId } = useParams();
