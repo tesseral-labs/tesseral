@@ -120,6 +120,8 @@ func (s *Store) RedeemGoogleOAuthCode(ctx context.Context, req *intermediatev1.R
 		Email:              &redeemRes.Email,
 		GoogleUserID:       &redeemRes.GoogleUserID,
 		GoogleHostedDomain: refOrNil(redeemRes.GoogleHostedDomain),
+		UserDisplayName:    refOrNil(redeemRes.DisplayName),
+		ProfilePictureUrl:  refOrNil(redeemRes.ProfilePictureURL),
 	}); err != nil {
 		return nil, fmt.Errorf("update intermediate session google details: %v", err)
 	}

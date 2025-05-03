@@ -31,6 +31,8 @@ func (s *Store) IssueAccessToken(ctx context.Context, refreshToken string) (stri
 		UserID                  uuid.UUID
 		OrganizationID          uuid.UUID
 		UserEmail               string
+		UserDisplayName         *string
+		UserProfilePictureUrl   *string
 		OrganizationDisplayName string
 		ImpersonatorUserID      *uuid.UUID
 		ProjectID               uuid.UUID
@@ -57,6 +59,8 @@ func (s *Store) IssueAccessToken(ctx context.Context, refreshToken string) (stri
 		qDetails.UserID = qSessionDetails.UserID
 		qDetails.OrganizationID = qSessionDetails.OrganizationID
 		qDetails.UserEmail = qSessionDetails.UserEmail
+		qDetails.UserDisplayName = qSessionDetails.UserDisplayName
+		qDetails.UserProfilePictureUrl = qSessionDetails.UserProfilePictureUrl
 		qDetails.OrganizationDisplayName = qSessionDetails.OrganizationDisplayName
 		qDetails.ImpersonatorUserID = qSessionDetails.ImpersonatorUserID
 		qDetails.ProjectID = qSessionDetails.ProjectID
@@ -80,6 +84,8 @@ func (s *Store) IssueAccessToken(ctx context.Context, refreshToken string) (stri
 		qDetails.UserID = qSessionDetails.UserID
 		qDetails.OrganizationID = qSessionDetails.OrganizationID
 		qDetails.UserEmail = qSessionDetails.UserEmail
+		qDetails.UserDisplayName = qSessionDetails.UserDisplayName
+		qDetails.UserProfilePictureUrl = qSessionDetails.UserProfilePictureUrl
 		qDetails.OrganizationDisplayName = qSessionDetails.OrganizationDisplayName
 		qDetails.ImpersonatorUserID = qSessionDetails.ImpersonatorUserID
 		qDetails.ProjectID = qSessionDetails.ProjectID
@@ -120,8 +126,10 @@ func (s *Store) IssueAccessToken(ctx context.Context, refreshToken string) (stri
 			Id: idformat.Session.Format(qDetails.SessionID),
 		},
 		User: &commonv1.AccessTokenUser{
-			Id:    idformat.User.Format(qDetails.UserID),
-			Email: qDetails.UserEmail,
+			Id:                idformat.User.Format(qDetails.UserID),
+			Email:             qDetails.UserEmail,
+			DisplayName:       derefOrEmpty(qDetails.UserDisplayName),
+			ProfilePictureUrl: derefOrEmpty(qDetails.UserProfilePictureUrl),
 		},
 		Organization: &commonv1.AccessTokenOrganization{
 			Id:          idformat.Organization.Format(qDetails.OrganizationID),

@@ -244,5 +244,7 @@ func parseUser(qUser queries.User) *backendv1.User {
 		GoogleUserId:        qUser.GoogleUserID,
 		MicrosoftUserId:     qUser.MicrosoftUserID,
 		HasAuthenticatorApp: qUser.AuthenticatorAppSecretCiphertext != nil,
+		DisplayName:         derefOrEmpty(qUser.DisplayName),
+		ProfilePictureUrl:   derefOrEmpty(qUser.ProfilePictureUrl),
 	}
 }

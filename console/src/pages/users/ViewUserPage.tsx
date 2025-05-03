@@ -148,6 +148,12 @@ export const ViewUserPage = () => {
                 </DetailsGridValue>
               </DetailsGridEntry>
               <DetailsGridEntry>
+                <DetailsGridKey>Display Name</DetailsGridKey>
+                <DetailsGridValue>
+                  {getUserResponse?.user?.displayName || '-'}
+                </DetailsGridValue>
+              </DetailsGridEntry>
+              <DetailsGridEntry>
                 <DetailsGridKey>Owner</DetailsGridKey>
                 <DetailsGridValue>
                   {getUserResponse?.user?.owner ? 'Yes' : 'No'}
@@ -163,6 +169,12 @@ export const ViewUserPage = () => {
               </DetailsGridEntry>
             </DetailsGridColumn>
             <DetailsGridColumn>
+              <DetailsGridEntry>
+                <DetailsGridKey>Profile Picture URL</DetailsGridKey>
+                <DetailsGridValue>
+                  {getUserResponse?.user?.profilePictureUrl || '-'}
+                </DetailsGridValue>
+              </DetailsGridEntry>
               <DetailsGridEntry>
                 <DetailsGridKey>Google User ID</DetailsGridKey>
                 <DetailsGridValue>
