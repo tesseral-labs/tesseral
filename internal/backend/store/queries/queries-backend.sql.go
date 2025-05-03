@@ -2574,7 +2574,9 @@ SET
     email = $2,
     google_user_id = $3,
     microsoft_user_id = $4,
-    is_owner = $5
+    is_owner = $5,
+    display_name = $6,
+    profile_picture_url = $7
 WHERE
     id = $1
 RETURNING
@@ -2582,11 +2584,13 @@ RETURNING
 `
 
 type UpdateUserParams struct {
-	ID              uuid.UUID
-	Email           string
-	GoogleUserID    *string
-	MicrosoftUserID *string
-	IsOwner         bool
+	ID                uuid.UUID
+	Email             string
+	GoogleUserID      *string
+	MicrosoftUserID   *string
+	IsOwner           bool
+	DisplayName       *string
+	ProfilePictureUrl *string
 }
 
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
@@ -2596,6 +2600,8 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 		arg.GoogleUserID,
 		arg.MicrosoftUserID,
 		arg.IsOwner,
+		arg.DisplayName,
+		arg.ProfilePictureUrl,
 	)
 	var i User
 	err := row.Scan(

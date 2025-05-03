@@ -187,6 +187,16 @@ func (s *Store) UpdateUser(ctx context.Context, req *backendv1.UpdateUserRequest
 		updates.MicrosoftUserID = refOrNil(*req.User.MicrosoftUserId)
 	}
 
+	updates.DisplayName = qUser.DisplayName
+	if req.User.DisplayName != nil {
+		updates.DisplayName = refOrNil(*req.User.DisplayName)
+	}
+
+	updates.ProfilePictureUrl = qUser.ProfilePictureUrl
+	if req.User.ProfilePictureUrl != nil {
+		updates.ProfilePictureUrl = refOrNil(*req.User.ProfilePictureUrl)
+	}
+
 	qUpdatedUser, err := q.UpdateUser(ctx, updates)
 	if err != nil {
 		return nil, fmt.Errorf("update user: %w", err)
@@ -244,7 +254,7 @@ func parseUser(qUser queries.User) *backendv1.User {
 		GoogleUserId:        qUser.GoogleUserID,
 		MicrosoftUserId:     qUser.MicrosoftUserID,
 		HasAuthenticatorApp: qUser.AuthenticatorAppSecretCiphertext != nil,
-		DisplayName:         derefOrEmpty(qUser.DisplayName),
-		ProfilePictureUrl:   derefOrEmpty(qUser.ProfilePictureUrl),
+		DisplayName:         qUser.DisplayName,
+		ProfilePictureUrl:   qUser.ProfilePictureUrl,
 	}
 }

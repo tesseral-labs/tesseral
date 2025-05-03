@@ -247,10 +247,10 @@ message User {
   bool has_authenticator_app = 9;
 
   // The User's human-friendly name.
-  string display_name = 10;
+  optional string display_name = 10;
 
   // The URL of the User's profile picture.
-  string profile_picture_url = 11;
+  optional string profile_picture_url = 11;
 }
 
 // Represents a Session for a logged-in User.

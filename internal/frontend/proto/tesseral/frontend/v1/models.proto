@@ -60,8 +60,8 @@ message User {
   string google_user_id = 6;
   string microsoft_user_id = 7;
   bool has_authenticator_app = 8;
-  string display_name = 9;
-  string profile_picture_url = 10;
+  optional string display_name = 9;
+  optional string profile_picture_url = 10;
 }
 
 message Session {

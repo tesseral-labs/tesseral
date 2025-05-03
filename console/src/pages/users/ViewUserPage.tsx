@@ -62,9 +62,11 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -358,6 +360,8 @@ const schema = z.object({
   owner: z.boolean(),
   googleUserId: z.string().optional(),
   microsoftUserId: z.string().optional(),
+  displayName: z.string().optional(),
+  profilePictureUrl: z.string().optional(),
 });
 
 const EditUserSettingsButton: FC = () => {
@@ -368,6 +372,8 @@ const EditUserSettingsButton: FC = () => {
       owner: false,
       googleUserId: '',
       microsoftUserId: '',
+      displayName: '',
+      profilePictureUrl: '',
     },
   });
   const { data: getUserResponse, refetch } = useQuery(getUser, {
@@ -384,6 +390,8 @@ const EditUserSettingsButton: FC = () => {
         owner: getUserResponse.user.owner,
         googleUserId: getUserResponse.user.googleUserId || '',
         microsoftUserId: getUserResponse.user.microsoftUserId || '',
+        displayName: getUserResponse.user.displayName || '',
+        profilePictureUrl: getUserResponse.user.profilePictureUrl || '',
       });
     }
   }, [getUserResponse]);
@@ -399,6 +407,12 @@ const EditUserSettingsButton: FC = () => {
     }
     if (data.microsoftUserId) {
       updatedUser.microsoftUserId = data.microsoftUserId;
+    }
+    if (data.displayName) {
+      updatedUser.displayName = data.displayName;
+    }
+    if (data.profilePictureUrl) {
+      updatedUser.profilePictureUrl = data.profilePictureUrl;
     }
 
     await updateUserMutation.mutateAsync({
@@ -439,6 +453,46 @@ const EditUserSettingsButton: FC = () => {
                       {...field}
                     />
                   </FormControl>
+                  <FormDescription>
+                    The User's email address. Must be unique within their
+                    Organization.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="displayName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Display Name</FormLabel>
+                  <FormControl>
+                    <Input type="text" placeholder="John Doe" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    The User's display name. This is typically their full
+                    personal name. Optional.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="profilePictureUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Profile Picture URL</FormLabel>
+                  <FormControl>
+                    <Input type="text" placeholder="https://..." {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    The URL of the User's profile picture. Optional.
+                  </FormDescription>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -456,6 +510,10 @@ const EditUserSettingsButton: FC = () => {
                       {...field}
                     />
                   </FormControl>
+                  <FormDescription>
+                    The User's Google-assigned ID. Optional.
+                  </FormDescription>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -473,6 +531,10 @@ const EditUserSettingsButton: FC = () => {
                       {...field}
                     />
                   </FormControl>
+                  <FormDescription>
+                    The User's Microsoft-assigned ID. Optional.
+                  </FormDescription>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -490,6 +552,11 @@ const EditUserSettingsButton: FC = () => {
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
+                  <FormDescription>
+                    Whether the User is an Owner of their Organization.
+                    Optional.
+                  </FormDescription>
+                  <FormMessage />
                 </FormItem>
               )}
             />
