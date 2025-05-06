@@ -360,13 +360,15 @@ func (s *Store) createProjectForCurrentUser(ctx context.Context, q *queries.Quer
 
 	// create a user from the intermediate session
 	qUser, err := q.CreateUser(ctx, queries.CreateUserParams{
-		ID:              uuid.New(),
-		OrganizationID:  qOrganization.ID,
-		Email:           *qIntermediateSession.Email,
-		GoogleUserID:    qIntermediateSession.GoogleUserID,
-		MicrosoftUserID: qIntermediateSession.MicrosoftUserID,
-		PasswordBcrypt:  qIntermediateSession.NewUserPasswordBcrypt,
-		IsOwner:         true,
+		ID:                uuid.New(),
+		OrganizationID:    qOrganization.ID,
+		Email:             *qIntermediateSession.Email,
+		DisplayName:       qIntermediateSession.UserDisplayName,
+		ProfilePictureUrl: qIntermediateSession.ProfilePictureUrl,
+		GoogleUserID:      qIntermediateSession.GoogleUserID,
+		MicrosoftUserID:   qIntermediateSession.MicrosoftUserID,
+		IsOwner:           true,
+		PasswordBcrypt:    qIntermediateSession.NewUserPasswordBcrypt,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("create user: %w", err)

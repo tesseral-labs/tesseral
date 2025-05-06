@@ -70,8 +70,8 @@ RETURNING
     *;
 
 -- name: CreateUser :one
-INSERT INTO users (id, organization_id, email, google_user_id, microsoft_user_id, is_owner, password_bcrypt)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
+INSERT INTO users (id, organization_id, email, display_name, profile_picture_url, google_user_id, microsoft_user_id, is_owner, password_bcrypt)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 RETURNING
     *;
 
@@ -260,11 +260,13 @@ RETURNING
 UPDATE
     intermediate_sessions
 SET
-    email = $1,
-    google_user_id = $2,
-    google_hosted_domain = $3
+    email = $2,
+    google_user_id = $3,
+    google_hosted_domain = $4,
+    user_display_name = $5,
+    profile_picture_url = $6
 WHERE
-    id = $4
+    id = $1
 RETURNING
     *;
 

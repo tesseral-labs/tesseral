@@ -1693,6 +1693,12 @@ components:
                 hasAuthenticatorApp:
                     type: boolean
                     description: Whether the User has an authenticator app set up.
+                displayName:
+                    type: string
+                    description: The User's human-friendly name.
+                profilePictureUrl:
+                    type: string
+                    description: The URL of the User's profile picture.
             description: A User represents an individual working for one of your corporate customers.
         UserInvite:
             type: object

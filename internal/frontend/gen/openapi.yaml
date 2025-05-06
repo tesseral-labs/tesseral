@@ -1293,6 +1293,10 @@ components:
                     type: string
                 hasAuthenticatorApp:
                     type: boolean
+                displayName:
+                    type: string
+                profilePictureUrl:
+                    type: string
         UserInvite:
             type: object
             properties:

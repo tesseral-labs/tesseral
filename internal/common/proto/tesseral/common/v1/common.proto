@@ -24,6 +24,8 @@ message AccessTokenSession {
 message AccessTokenUser {
   string id = 1;
   string email = 2;
+  string display_name = 3;
+  string profile_picture_url = 4;
 }
 
 message AccessTokenOrganization {

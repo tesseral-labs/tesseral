@@ -225,5 +225,7 @@ func parseUser(qUser queries.User) *frontendv1.User {
 		GoogleUserId:        derefOrEmpty(qUser.GoogleUserID),
 		MicrosoftUserId:     derefOrEmpty(qUser.MicrosoftUserID),
 		HasAuthenticatorApp: qUser.AuthenticatorAppSecretCiphertext != nil,
+		DisplayName:         qUser.DisplayName,
+		ProfilePictureUrl:   qUser.ProfilePictureUrl,
 	}
 }

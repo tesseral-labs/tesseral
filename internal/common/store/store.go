@@ -47,3 +47,11 @@ func (s *Store) tx(ctx context.Context) (tx pgx.Tx, q *queries.Queries, commit f
 	rollback = func() error { return tx.Rollback(ctx) }
 	return tx, queries.New(tx), commit, rollback, nil
 }
+
+func derefOrEmpty[T any](t *T) T {
+	var z T
+	if t == nil {
+		return z
+	}
+	return *t
+}

@@ -184,6 +184,8 @@ type IntermediateSession struct {
 	PasswordResetCodeSha256             []byte
 	PasswordResetCodeVerified           bool
 	AuthenticatorAppRecoveryCodeSha256s [][]byte
+	UserDisplayName                     *string
+	ProfilePictureUrl                   *string
 }
 
 type OauthVerifiedEmail struct {
@@ -370,6 +372,8 @@ type User struct {
 	FailedAuthenticatorAppAttempts      int32
 	AuthenticatorAppLockoutExpireTime   *time.Time
 	AuthenticatorAppRecoveryCodeSha256s [][]byte
+	DisplayName                         *string
+	ProfilePictureUrl                   *string
 }
 
 type UserAuthenticatorAppChallenge struct {

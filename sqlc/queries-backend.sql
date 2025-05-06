@@ -458,7 +458,9 @@ SET
     email = $2,
     google_user_id = $3,
     microsoft_user_id = $4,
-    is_owner = $5
+    is_owner = $5,
+    display_name = $6,
+    profile_picture_url = $7
 WHERE
     id = $1
 RETURNING

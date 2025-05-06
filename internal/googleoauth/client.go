@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
 	"net/url"
 	"strings"
@@ -31,7 +32,7 @@ func GetAuthorizeURL(req *GetAuthorizeURLRequest) string {
 	q.Set("redirect_uri", req.RedirectURI)
 	q.Set("state", req.State)
 	q.Set("response_type", "code")
-	q.Set("scope", "https://www.googleapis.com/auth/userinfo.email")
+	q.Set("scope", "email profile")
 
 	u.RawQuery = q.Encode()
 	return u.String()
@@ -49,6 +50,8 @@ type RedeemCodeResponse struct {
 	Email              string
 	EmailVerified      bool
 	GoogleHostedDomain string
+	DisplayName        string
+	ProfilePictureURL  string
 }
 
 func (c *Client) RedeemCode(ctx context.Context, req *RedeemCodeRequest) (*RedeemCodeResponse, error) {
@@ -71,6 +74,8 @@ func (c *Client) RedeemCode(ctx context.Context, req *RedeemCodeRequest) (*Redee
 		Email:              userInfo.Email,
 		EmailVerified:      userInfo.EmailVerified,
 		GoogleHostedDomain: userInfo.HD,
+		DisplayName:        userInfo.Name,
+		ProfilePictureURL:  userInfo.Picture,
 	}, nil
 }
 
@@ -119,6 +124,8 @@ type userinfoResponse struct {
 	Email         string `json:"email"`
 	EmailVerified bool   `json:"email_verified"`
 	HD            string `json:"hd"`
+	Name          string `json:"name"`
+	Picture       string `json:"picture"`
 }
 
 func (c *Client) userinfo(ctx context.Context, accessToken string) (*userinfoResponse, error) {
@@ -143,6 +150,8 @@ func (c *Client) userinfo(ctx context.Context, accessToken string) (*userinfoRes
 	if err != nil {
 		return nil, fmt.Errorf("read body: %w", err)
 	}
+
+	slog.InfoContext(ctx, "google_userinfo", "response_body", string(resBody))
 
 	var data userinfoResponse
 	if err := json.Unmarshal(resBody, &data); err != nil {

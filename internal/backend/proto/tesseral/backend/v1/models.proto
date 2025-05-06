@@ -245,6 +245,12 @@ message User {
 
   // Whether the User has an authenticator app set up.
   bool has_authenticator_app = 9;
+
+  // The User's human-friendly name.
+  optional string display_name = 10;
+
+  // The URL of the User's profile picture.
+  optional string profile_picture_url = 11;
 }
 
 // Represents a Session for a logged-in User.

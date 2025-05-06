@@ -66,12 +66,14 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 	// if no matching user, create a new one
 	if qUser == nil {
 		qNewUser, err := q.CreateUser(ctx, queries.CreateUserParams{
-			ID:              uuid.New(),
-			OrganizationID:  qOrg.ID,
-			Email:           *qIntermediateSession.Email,
-			GoogleUserID:    qIntermediateSession.GoogleUserID,
-			MicrosoftUserID: qIntermediateSession.MicrosoftUserID,
-			PasswordBcrypt:  qIntermediateSession.NewUserPasswordBcrypt,
+			ID:                uuid.New(),
+			OrganizationID:    qOrg.ID,
+			Email:             *qIntermediateSession.Email,
+			DisplayName:       qIntermediateSession.UserDisplayName,
+			ProfilePictureUrl: qIntermediateSession.ProfilePictureUrl,
+			GoogleUserID:      qIntermediateSession.GoogleUserID,
+			MicrosoftUserID:   qIntermediateSession.MicrosoftUserID,
+			PasswordBcrypt:    qIntermediateSession.NewUserPasswordBcrypt,
 		})
 		if err != nil {
 			return nil, fmt.Errorf("create user: %w", err)

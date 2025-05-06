@@ -139,6 +139,8 @@ SELECT
     sessions.id AS session_id,
     users.id AS user_id,
     users.email AS user_email,
+    users.display_name AS user_display_name,
+    users.profile_picture_url AS user_profile_picture_url,
     organizations.id AS organization_id,
     organizations.display_name AS organization_display_name,
     organizations.project_id AS project_id,
@@ -155,6 +157,8 @@ type GetSessionDetailsByRefreshTokenSHA256Row struct {
 	SessionID               uuid.UUID
 	UserID                  uuid.UUID
 	UserEmail               string
+	UserDisplayName         *string
+	UserProfilePictureUrl   *string
 	OrganizationID          uuid.UUID
 	OrganizationDisplayName string
 	ProjectID               uuid.UUID
@@ -168,6 +172,8 @@ func (q *Queries) GetSessionDetailsByRefreshTokenSHA256(ctx context.Context, ref
 		&i.SessionID,
 		&i.UserID,
 		&i.UserEmail,
+		&i.UserDisplayName,
+		&i.UserProfilePictureUrl,
 		&i.OrganizationID,
 		&i.OrganizationDisplayName,
 		&i.ProjectID,
@@ -181,6 +187,8 @@ SELECT
     sessions.id AS session_id,
     users.id AS user_id,
     users.email AS user_email,
+    users.display_name AS user_display_name,
+    users.profile_picture_url AS user_profile_picture_url,
     organizations.id AS organization_id,
     organizations.display_name AS organization_display_name,
     organizations.project_id AS project_id,
@@ -198,6 +206,8 @@ type GetSessionDetailsByRelayedSessionRefreshTokenSHA256Row struct {
 	SessionID               uuid.UUID
 	UserID                  uuid.UUID
 	UserEmail               string
+	UserDisplayName         *string
+	UserProfilePictureUrl   *string
 	OrganizationID          uuid.UUID
 	OrganizationDisplayName string
 	ProjectID               uuid.UUID
@@ -211,6 +221,8 @@ func (q *Queries) GetSessionDetailsByRelayedSessionRefreshTokenSHA256(ctx contex
 		&i.SessionID,
 		&i.UserID,
 		&i.UserEmail,
+		&i.UserDisplayName,
+		&i.UserProfilePictureUrl,
 		&i.OrganizationID,
 		&i.OrganizationDisplayName,
 		&i.ProjectID,
