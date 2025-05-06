@@ -16,8 +16,26 @@ import {
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { PageDescription, PageTitle } from '@/components/page';
+import { useMutation, useQuery } from '@connectrpc/connect-query';
+import {
+  createStripeCheckoutLink,
+  getProjectEntitlements,
+} from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
+import { Button } from '@/components/ui/button';
 
 export function HomePage() {
+  const { data: getProjectEntitlementsResponse } = useQuery(
+    getProjectEntitlements,
+  );
+  const createStripeCheckoutLinkMutation = useMutation(
+    createStripeCheckoutLink,
+  );
+
+  const handleUpgrade = async () => {
+    const { url } = await createStripeCheckoutLinkMutation.mutateAsync({});
+    window.location.href = url;
+  };
+
   return (
     <div className="">
       <PageTitle>Welcome to Tesseral</PageTitle>
@@ -67,7 +85,32 @@ export function HomePage() {
         </Link>
       </div>
 
-      <Card className="overflow-hidden">
+      {!getProjectEntitlementsResponse?.entitledBackendApiKeys && (
+        <Card className="mt-8 pt-4">
+          <CardContent>
+            <h2 className="text-lg font-semibold">Get more out of Tesseral</h2>
+            <p className="text-sm text-muted-foreground">
+              Upgrade to a the Growth tier to unlock more features and support.
+            </p>
+
+            <div className="flex items-center gap-x-4 mt-4">
+              <Button onClick={handleUpgrade}>Upgrade to Growth Tier</Button>
+              <span>
+                or{' '}
+                <a
+                  href="https://cal.com/ned-o-leary-j8ydyi/30min"
+                  className="font-medium underline underline-offset-2 decoration-muted-foreground/40"
+                >
+                  meet an expert
+                </a>
+                .
+              </span>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      <Card className="mt-8 overflow-hidden">
         <div className="grid grid-cols-1 md:grid-cols-2">
           <div>
             <CardHeader className="pb-4">
