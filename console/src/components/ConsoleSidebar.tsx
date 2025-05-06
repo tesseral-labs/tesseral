@@ -183,19 +183,19 @@ const ConsoleSidebar: FC = () => {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link to="https://tesseral.com/docs/quickstart">
+                  <Link to="https://tesseral.com/docs/quickstart" target="_blank">
                     <BookOpenIcon />
                     Tesseral Documentation
                   </Link>
                 </SidebarMenuButton>
                 <SidebarMenuButton asChild>
-                  <Link to="https://github.com/tesseral-labs/tesseral/issues/new">
+                  <Link to="https://github.com/tesseral-labs/tesseral/issues/new" target="_blank">
                     <BugIcon />
                     Report an Issue
                   </Link>
                 </SidebarMenuButton>
                 <SidebarMenuButton asChild>
-                  <Link to="mailto:support@tesseral.com">
+                  <Link to="mailto:support@tesseral.com" target="_blank">
                     <LifeBuoyIcon />
                     Contact Support
                   </Link>
