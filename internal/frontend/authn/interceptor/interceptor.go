@@ -24,7 +24,7 @@ func New(s *store.Store, p *projectid.Sniffer, cookier *cookies.Cookier) connect
 		return func(ctx context.Context, req connect.AnyRequest) (connect.AnyResponse, error) {
 			projectID, err := p.GetProjectID(req.Header().Get("X-Tesseral-Host"))
 			if err != nil {
-				return nil, connect.NewError(connect.CodeNotFound, err)
+				return nil, fmt.Errorf("get project id: %w", err)
 			}
 			requestProjectID := idformat.Project.Format(*projectID)
 
