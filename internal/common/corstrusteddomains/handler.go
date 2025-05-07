@@ -14,13 +14,13 @@ func Handler(s *store.Store, p *projectid.Sniffer, h http.Handler) http.Handler 
 
 		projectID, err := p.GetProjectID(r.Header.Get("X-Tesseral-Host"))
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusNotFound)
+			http.Error(w, "", http.StatusNotFound)
 			return
 		}
 
 		trustedOrigins, err := s.GetProjectTrustedOrigins(ctx, *projectID)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			http.Error(w, "", http.StatusInternalServerError)
 			return
 		}
 
