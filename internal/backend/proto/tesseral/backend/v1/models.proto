@@ -113,6 +113,7 @@ message ProjectUISettings {
   string dark_mode_logo_url = 9;
   string dark_mode_primary_color = 10;
   string log_in_layout = 11;
+  bool auto_create_organizations = 12;
 }
 
 // An Organization represents one of your corporate customers.

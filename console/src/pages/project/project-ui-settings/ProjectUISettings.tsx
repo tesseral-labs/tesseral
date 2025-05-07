@@ -37,6 +37,16 @@ import { ColorPicker } from '@/components/ui/color-picker';
 import { Switch } from '@/components/ui/switch';
 import { parseErrorMessage } from '@/lib/errors';
 import { toast } from 'sonner';
+import { Checkbox } from '@/components/ui/checkbox';
+import { z } from 'zod';
+import {
+  DetailsGrid,
+  DetailsGridColumn,
+  DetailsGridEntry,
+  DetailsGridKey,
+  DetailsGridValue,
+} from '@/components/details-grid';
+import { EditBehaviorSettingsButton } from '@/pages/project/project-ui-settings/EditBehaviorSettingsButton';
 
 const settingsPage: FC = () => {
   const darkModeLogoPickerRef = createRef<HTMLInputElement>();
@@ -567,9 +577,44 @@ const settingsPage: FC = () => {
             </CardContent>
           </Card>
         </form>
+
+        <BehaviorSettingsCard />
       </div>
     </div>
   );
 };
+
+function BehaviorSettingsCard() {
+  const { data: getProjectUISettingsResponse } = useQuery(getProjectUISettings);
+
+  return (
+    <Card className="mt-8">
+      <CardHeader className="flex-row justify-between items-center">
+        <div className="flex flex-col space-y-1 5">
+          <CardTitle>Behavior settings</CardTitle>
+          <CardDescription>
+            Settings for the login flow your Users will see.
+          </CardDescription>
+        </div>
+        <EditBehaviorSettingsButton />
+      </CardHeader>
+      <CardContent>
+        <DetailsGrid>
+          <DetailsGridColumn>
+            <DetailsGridEntry>
+              <DetailsGridKey>Auto-create Organizations</DetailsGridKey>
+              <DetailsGridValue>
+                {getProjectUISettingsResponse?.projectUiSettings
+                  ?.autoCreateOrganizations
+                  ? 'Enabled'
+                  : 'Disabled'}
+              </DetailsGridValue>
+            </DetailsGridEntry>
+          </DetailsGridColumn>
+        </DetailsGrid>
+      </CardContent>
+    </Card>
+  );
+}
 
 export default settingsPage;

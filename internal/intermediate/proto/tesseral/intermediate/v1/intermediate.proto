@@ -204,6 +204,7 @@ message IntermediateSession {
   string project_id = 2;
   string email = 3;
   bool email_verified = 4;
+  string user_display_name = 16;
   string google_user_id = 5;
   string google_hosted_domain = 6;
   string microsoft_user_id = 7;
@@ -243,6 +244,7 @@ message Settings {
   string redirect_uri = 17;
   optional string after_login_redirect_uri = 18;
   optional string after_signup_redirect_uri = 19;
+  bool auto_create_organizations = 22;
 }
 
 message CreateProjectRequest {

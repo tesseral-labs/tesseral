@@ -76,6 +76,7 @@ func (s *Store) GetSettings(ctx context.Context, req *intermediatev1.GetSettings
 			RedirectUri:                qProject.RedirectUri,
 			AfterLoginRedirectUri:      qProject.AfterLoginRedirectUri,
 			AfterSignupRedirectUri:     qProject.AfterSignupRedirectUri,
+			AutoCreateOrganizations:    qProjectUISettings.AutoCreateOrganizations,
 		},
 	}, nil
 }

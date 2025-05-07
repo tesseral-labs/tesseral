@@ -52,14 +52,15 @@ func (s *Store) GetProjectUISettings(ctx context.Context, req *backendv1.GetProj
 
 	return &backendv1.GetProjectUISettingsResponse{
 		ProjectUiSettings: &backendv1.ProjectUISettings{
-			PrimaryColor:          derefOrEmpty(qProjectUISettings.PrimaryColor),
-			DetectDarkModeEnabled: qProjectUISettings.DetectDarkModeEnabled,
-			DarkModePrimaryColor:  derefOrEmpty(qProjectUISettings.DarkModePrimaryColor),
-			LogInLayout:           string(qProjectUISettings.LogInLayout),
-			LogoUrl:               logoURL,
-			DarkModeLogoUrl:       darkModeLogoURL,
-			CreateTime:            timestamppb.New(*qProjectUISettings.CreateTime),
-			UpdateTime:            timestamppb.New(*qProjectUISettings.UpdateTime),
+			PrimaryColor:            derefOrEmpty(qProjectUISettings.PrimaryColor),
+			DetectDarkModeEnabled:   qProjectUISettings.DetectDarkModeEnabled,
+			DarkModePrimaryColor:    derefOrEmpty(qProjectUISettings.DarkModePrimaryColor),
+			LogInLayout:             string(qProjectUISettings.LogInLayout),
+			LogoUrl:                 logoURL,
+			DarkModeLogoUrl:         darkModeLogoURL,
+			CreateTime:              timestamppb.New(*qProjectUISettings.CreateTime),
+			UpdateTime:              timestamppb.New(*qProjectUISettings.UpdateTime),
+			AutoCreateOrganizations: qProjectUISettings.AutoCreateOrganizations,
 		},
 	}, nil
 }
@@ -85,20 +86,29 @@ func (s *Store) UpdateProjectUISettings(ctx context.Context, req *backendv1.Upda
 		ProjectID: authn.ProjectID(ctx),
 	}
 
+	updates.PrimaryColor = qProjectUISettings.PrimaryColor
 	if req.PrimaryColor != nil {
 		updates.PrimaryColor = req.PrimaryColor
 	}
 
-	if req.DetectDarkModeEnabled != qProjectUISettings.DetectDarkModeEnabled {
-		updates.DetectDarkModeEnabled = req.DetectDarkModeEnabled
+	updates.DetectDarkModeEnabled = qProjectUISettings.DetectDarkModeEnabled
+	if req.DetectDarkModeEnabled != nil {
+		updates.DetectDarkModeEnabled = *req.DetectDarkModeEnabled
 	}
 
+	updates.DarkModePrimaryColor = qProjectUISettings.DarkModePrimaryColor
 	if req.DarkModePrimaryColor != nil {
 		updates.DarkModePrimaryColor = req.DarkModePrimaryColor
 	}
 
+	updates.LogInLayout = qProjectUISettings.LogInLayout
 	if req.LogInLayout != "" {
 		updates.LogInLayout = queries.LogInLayout(req.LogInLayout)
+	}
+
+	updates.AutoCreateOrganizations = qProjectUISettings.AutoCreateOrganizations
+	if req.AutoCreateOrganizations != nil {
+		updates.AutoCreateOrganizations = *req.AutoCreateOrganizations
 	}
 
 	qUpdatedProjectUISettings, err := q.UpdateProjectUISettings(ctx, updates)
@@ -111,13 +121,14 @@ func (s *Store) UpdateProjectUISettings(ctx context.Context, req *backendv1.Upda
 	}
 
 	res := &backendv1.UpdateProjectUISettingsResponse{
-		Id:                    idformat.ProjectUISettings.Format(qUpdatedProjectUISettings.ID),
-		ProjectId:             idformat.Project.Format(authn.ProjectID(ctx)),
-		CreateTime:            timestamppb.New(*qUpdatedProjectUISettings.CreateTime),
-		UpdateTime:            timestamppb.New(*qUpdatedProjectUISettings.UpdateTime),
-		DarkModePrimaryColor:  derefOrEmpty(qUpdatedProjectUISettings.DarkModePrimaryColor),
-		DetectDarkModeEnabled: qUpdatedProjectUISettings.DetectDarkModeEnabled,
-		PrimaryColor:          derefOrEmpty(qUpdatedProjectUISettings.PrimaryColor),
+		Id:                      idformat.ProjectUISettings.Format(qUpdatedProjectUISettings.ID),
+		ProjectId:               idformat.Project.Format(authn.ProjectID(ctx)),
+		CreateTime:              timestamppb.New(*qUpdatedProjectUISettings.CreateTime),
+		UpdateTime:              timestamppb.New(*qUpdatedProjectUISettings.UpdateTime),
+		DarkModePrimaryColor:    derefOrEmpty(qUpdatedProjectUISettings.DarkModePrimaryColor),
+		DetectDarkModeEnabled:   qUpdatedProjectUISettings.DetectDarkModeEnabled,
+		PrimaryColor:            derefOrEmpty(qUpdatedProjectUISettings.PrimaryColor),
+		AutoCreateOrganizations: qUpdatedProjectUISettings.AutoCreateOrganizations,
 	}
 
 	// generate a presigned URL for the dark mode logo file

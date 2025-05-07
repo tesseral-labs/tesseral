@@ -1,4 +1,4 @@
-import { useQuery } from "@connectrpc/connect-query";
+import { useMutation, useQuery } from "@connectrpc/connect-query";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
@@ -7,19 +7,60 @@ import { Title } from "@/components/Title";
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { listOrganizations } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
+import {
+  createOrganization,
+  listOrganizations,
+  whoami,
+} from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
+import { useRedirectNextLoginFlowPage } from "@/hooks/use-redirect-next-login-flow-page";
+import { useProjectSettings } from "@/lib/project-settings";
 
 export function ChooseOrganizationPage() {
+  const projectSettings = useProjectSettings();
   const { data: listOrganizationsResponse } = useQuery(listOrganizations);
+  const { refetch: refetchWhoami } = useQuery(whoami, undefined, {
+    enabled: false, // disable by default, the useEffect needs the latest data
+  });
 
   const navigate = useNavigate();
+  const { mutateAsync: createOrganizationAsync } =
+    useMutation(createOrganization);
+  const redirectNextLoginFlowPage = useRedirectNextLoginFlowPage();
+
   useEffect(() => {
-    if (listOrganizationsResponse?.organizations) {
-      if (listOrganizationsResponse.organizations.length === 0) {
-        navigate("/create-organization");
+    (async () => {
+      if (!listOrganizationsResponse) {
+        return;
       }
-    }
-  }, [listOrganizationsResponse, navigate]);
+
+      if (listOrganizationsResponse.organizations.length === 0) {
+        if (projectSettings.autoCreateOrganizations) {
+          const { data: whoamiResponse } = await refetchWhoami();
+
+          const baseName =
+            whoamiResponse?.intermediateSession?.userDisplayName ||
+            whoamiResponse?.intermediateSession?.email.split("@")[0];
+
+          await createOrganizationAsync({
+            displayName: `${baseName}'s Organization`,
+          });
+
+          redirectNextLoginFlowPage();
+          return;
+        }
+
+        navigate("/create-organization");
+        return;
+      }
+    })();
+  }, [
+    listOrganizationsResponse,
+    navigate,
+    projectSettings,
+    createOrganizationAsync,
+    redirectNextLoginFlowPage,
+    refetchWhoami,
+  ]);
 
   return (
     <LoginFlowCard>

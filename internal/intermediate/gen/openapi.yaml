@@ -785,6 +785,8 @@ components:
                     type: string
                 emailVerified:
                     type: boolean
+                userDisplayName:
+                    type: string
                 googleUserId:
                     type: string
                 googleHostedDomain:
