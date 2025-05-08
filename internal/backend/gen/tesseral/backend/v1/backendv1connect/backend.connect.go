@@ -221,6 +221,9 @@ const (
 	// BackendServiceCreateStripeCheckoutLinkProcedure is the fully-qualified name of the
 	// BackendService's CreateStripeCheckoutLink RPC.
 	BackendServiceCreateStripeCheckoutLinkProcedure = "/tesseral.backend.v1.BackendService/CreateStripeCheckoutLink"
+	// BackendServiceGetProjectWebhookManagementURLProcedure is the fully-qualified name of the
+	// BackendService's GetProjectWebhookManagementURL RPC.
+	BackendServiceGetProjectWebhookManagementURLProcedure = "/tesseral.backend.v1.BackendService/GetProjectWebhookManagementURL"
 )
 
 // BackendServiceClient is a client for the tesseral.backend.v1.BackendService service.
@@ -326,6 +329,7 @@ type BackendServiceClient interface {
 	CreateUserImpersonationToken(context.Context, *connect.Request[v1.CreateUserImpersonationTokenRequest]) (*connect.Response[v1.CreateUserImpersonationTokenResponse], error)
 	GetProjectEntitlements(context.Context, *connect.Request[v1.GetProjectEntitlementsRequest]) (*connect.Response[v1.GetProjectEntitlementsResponse], error)
 	CreateStripeCheckoutLink(context.Context, *connect.Request[v1.CreateStripeCheckoutLinkRequest]) (*connect.Response[v1.CreateStripeCheckoutLinkResponse], error)
+	GetProjectWebhookManagementURL(context.Context, *connect.Request[v1.GetProjectWebhookManagementURLRequest]) (*connect.Response[v1.GetProjectWebhookManagementURLResponse], error)
 }
 
 // NewBackendServiceClient constructs a client for the tesseral.backend.v1.BackendService service.
@@ -717,6 +721,12 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(backendServiceMethods.ByName("CreateStripeCheckoutLink")),
 			connect.WithClientOptions(opts...),
 		),
+		getProjectWebhookManagementURL: connect.NewClient[v1.GetProjectWebhookManagementURLRequest, v1.GetProjectWebhookManagementURLResponse](
+			httpClient,
+			baseURL+BackendServiceGetProjectWebhookManagementURLProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("GetProjectWebhookManagementURL")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -785,6 +795,7 @@ type backendServiceClient struct {
 	createUserImpersonationToken          *connect.Client[v1.CreateUserImpersonationTokenRequest, v1.CreateUserImpersonationTokenResponse]
 	getProjectEntitlements                *connect.Client[v1.GetProjectEntitlementsRequest, v1.GetProjectEntitlementsResponse]
 	createStripeCheckoutLink              *connect.Client[v1.CreateStripeCheckoutLinkRequest, v1.CreateStripeCheckoutLinkResponse]
+	getProjectWebhookManagementURL        *connect.Client[v1.GetProjectWebhookManagementURLRequest, v1.GetProjectWebhookManagementURLResponse]
 }
 
 // GetProject calls tesseral.backend.v1.BackendService.GetProject.
@@ -1107,6 +1118,12 @@ func (c *backendServiceClient) CreateStripeCheckoutLink(ctx context.Context, req
 	return c.createStripeCheckoutLink.CallUnary(ctx, req)
 }
 
+// GetProjectWebhookManagementURL calls
+// tesseral.backend.v1.BackendService.GetProjectWebhookManagementURL.
+func (c *backendServiceClient) GetProjectWebhookManagementURL(ctx context.Context, req *connect.Request[v1.GetProjectWebhookManagementURLRequest]) (*connect.Response[v1.GetProjectWebhookManagementURLResponse], error) {
+	return c.getProjectWebhookManagementURL.CallUnary(ctx, req)
+}
+
 // BackendServiceHandler is an implementation of the tesseral.backend.v1.BackendService service.
 type BackendServiceHandler interface {
 	// Get the current project.
@@ -1210,6 +1227,7 @@ type BackendServiceHandler interface {
 	CreateUserImpersonationToken(context.Context, *connect.Request[v1.CreateUserImpersonationTokenRequest]) (*connect.Response[v1.CreateUserImpersonationTokenResponse], error)
 	GetProjectEntitlements(context.Context, *connect.Request[v1.GetProjectEntitlementsRequest]) (*connect.Response[v1.GetProjectEntitlementsResponse], error)
 	CreateStripeCheckoutLink(context.Context, *connect.Request[v1.CreateStripeCheckoutLinkRequest]) (*connect.Response[v1.CreateStripeCheckoutLinkResponse], error)
+	GetProjectWebhookManagementURL(context.Context, *connect.Request[v1.GetProjectWebhookManagementURLRequest]) (*connect.Response[v1.GetProjectWebhookManagementURLResponse], error)
 }
 
 // NewBackendServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -1597,6 +1615,12 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		connect.WithSchema(backendServiceMethods.ByName("CreateStripeCheckoutLink")),
 		connect.WithHandlerOptions(opts...),
 	)
+	backendServiceGetProjectWebhookManagementURLHandler := connect.NewUnaryHandler(
+		BackendServiceGetProjectWebhookManagementURLProcedure,
+		svc.GetProjectWebhookManagementURL,
+		connect.WithSchema(backendServiceMethods.ByName("GetProjectWebhookManagementURL")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/tesseral.backend.v1.BackendService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case BackendServiceGetProjectProcedure:
@@ -1725,6 +1749,8 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceGetProjectEntitlementsHandler.ServeHTTP(w, r)
 		case BackendServiceCreateStripeCheckoutLinkProcedure:
 			backendServiceCreateStripeCheckoutLinkHandler.ServeHTTP(w, r)
+		case BackendServiceGetProjectWebhookManagementURLProcedure:
+			backendServiceGetProjectWebhookManagementURLHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -1984,4 +2010,8 @@ func (UnimplementedBackendServiceHandler) GetProjectEntitlements(context.Context
 
 func (UnimplementedBackendServiceHandler) CreateStripeCheckoutLink(context.Context, *connect.Request[v1.CreateStripeCheckoutLinkRequest]) (*connect.Response[v1.CreateStripeCheckoutLinkResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.CreateStripeCheckoutLink is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) GetProjectWebhookManagementURL(context.Context, *connect.Request[v1.GetProjectWebhookManagementURLRequest]) (*connect.Response[v1.GetProjectWebhookManagementURLResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.GetProjectWebhookManagementURL is not implemented"))
 }

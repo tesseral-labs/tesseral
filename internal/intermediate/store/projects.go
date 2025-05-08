@@ -437,6 +437,11 @@ func (s *Store) createProjectForCurrentUser(ctx context.Context, q *queries.Quer
 		return nil, fmt.Errorf("create project trusted domain: %w", err)
 	}
 
+	// Create a Svix application for the project to send webhooks to
+	if _, err := s.createProjectWebhookSettings(ctx, &qProject); err != nil {
+		return nil, fmt.Errorf("create webhook: %w", err)
+	}
+
 	return &qUser, nil
 }
 

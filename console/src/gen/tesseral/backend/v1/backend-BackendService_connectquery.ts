@@ -394,3 +394,8 @@ export const getProjectEntitlements = BackendService.method.getProjectEntitlemen
  * @generated from rpc tesseral.backend.v1.BackendService.CreateStripeCheckoutLink
  */
 export const createStripeCheckoutLink = BackendService.method.createStripeCheckoutLink;
+
+/**
+ * @generated from rpc tesseral.backend.v1.BackendService.GetProjectWebhookManagementURL
+ */
+export const getProjectWebhookManagementURL = BackendService.method.getProjectWebhookManagementURL;

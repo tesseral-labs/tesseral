@@ -82,6 +82,7 @@ const (
 	BackendService_CreateUserImpersonationToken_FullMethodName          = "/tesseral.backend.v1.BackendService/CreateUserImpersonationToken"
 	BackendService_GetProjectEntitlements_FullMethodName                = "/tesseral.backend.v1.BackendService/GetProjectEntitlements"
 	BackendService_CreateStripeCheckoutLink_FullMethodName              = "/tesseral.backend.v1.BackendService/CreateStripeCheckoutLink"
+	BackendService_GetProjectWebhookManagementURL_FullMethodName        = "/tesseral.backend.v1.BackendService/GetProjectWebhookManagementURL"
 )
 
 // BackendServiceClient is the client API for BackendService service.
@@ -189,6 +190,7 @@ type BackendServiceClient interface {
 	CreateUserImpersonationToken(ctx context.Context, in *CreateUserImpersonationTokenRequest, opts ...grpc.CallOption) (*CreateUserImpersonationTokenResponse, error)
 	GetProjectEntitlements(ctx context.Context, in *GetProjectEntitlementsRequest, opts ...grpc.CallOption) (*GetProjectEntitlementsResponse, error)
 	CreateStripeCheckoutLink(ctx context.Context, in *CreateStripeCheckoutLinkRequest, opts ...grpc.CallOption) (*CreateStripeCheckoutLinkResponse, error)
+	GetProjectWebhookManagementURL(ctx context.Context, in *GetProjectWebhookManagementURLRequest, opts ...grpc.CallOption) (*GetProjectWebhookManagementURLResponse, error)
 }
 
 type backendServiceClient struct {
@@ -829,6 +831,16 @@ func (c *backendServiceClient) CreateStripeCheckoutLink(ctx context.Context, in 
 	return out, nil
 }
 
+func (c *backendServiceClient) GetProjectWebhookManagementURL(ctx context.Context, in *GetProjectWebhookManagementURLRequest, opts ...grpc.CallOption) (*GetProjectWebhookManagementURLResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetProjectWebhookManagementURLResponse)
+	err := c.cc.Invoke(ctx, BackendService_GetProjectWebhookManagementURL_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // BackendServiceServer is the server API for BackendService service.
 // All implementations must embed UnimplementedBackendServiceServer
 // for forward compatibility.
@@ -934,6 +946,7 @@ type BackendServiceServer interface {
 	CreateUserImpersonationToken(context.Context, *CreateUserImpersonationTokenRequest) (*CreateUserImpersonationTokenResponse, error)
 	GetProjectEntitlements(context.Context, *GetProjectEntitlementsRequest) (*GetProjectEntitlementsResponse, error)
 	CreateStripeCheckoutLink(context.Context, *CreateStripeCheckoutLinkRequest) (*CreateStripeCheckoutLinkResponse, error)
+	GetProjectWebhookManagementURL(context.Context, *GetProjectWebhookManagementURLRequest) (*GetProjectWebhookManagementURLResponse, error)
 	mustEmbedUnimplementedBackendServiceServer()
 }
 
@@ -1132,6 +1145,9 @@ func (UnimplementedBackendServiceServer) GetProjectEntitlements(context.Context,
 }
 func (UnimplementedBackendServiceServer) CreateStripeCheckoutLink(context.Context, *CreateStripeCheckoutLinkRequest) (*CreateStripeCheckoutLinkResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateStripeCheckoutLink not implemented")
+}
+func (UnimplementedBackendServiceServer) GetProjectWebhookManagementURL(context.Context, *GetProjectWebhookManagementURLRequest) (*GetProjectWebhookManagementURLResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetProjectWebhookManagementURL not implemented")
 }
 func (UnimplementedBackendServiceServer) mustEmbedUnimplementedBackendServiceServer() {}
 func (UnimplementedBackendServiceServer) testEmbeddedByValue()                        {}
@@ -2288,6 +2304,24 @@ func _BackendService_CreateStripeCheckoutLink_Handler(srv interface{}, ctx conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BackendService_GetProjectWebhookManagementURL_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetProjectWebhookManagementURLRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).GetProjectWebhookManagementURL(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_GetProjectWebhookManagementURL_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).GetProjectWebhookManagementURL(ctx, req.(*GetProjectWebhookManagementURLRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // BackendService_ServiceDesc is the grpc.ServiceDesc for BackendService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -2546,6 +2580,10 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateStripeCheckoutLink",
 			Handler:    _BackendService_CreateStripeCheckoutLink_Handler,
+		},
+		{
+			MethodName: "GetProjectWebhookManagementURL",
+			Handler:    _BackendService_GetProjectWebhookManagementURL_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

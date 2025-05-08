@@ -324,7 +324,7 @@ func (q *Queries) CreateProject(ctx context.Context, arg CreateProjectParams) (P
 }
 
 const createProjectTrustedDomain = `-- name: CreateProjectTrustedDomain :one
-INSERT INTO project_trusted_domains (id, project_id, domain)
+INSERT INTO project_trusted_domains (id, project_id, DOMAIN)
     VALUES ($1, $2, $3)
 RETURNING
     id, project_id, domain
@@ -363,6 +363,32 @@ func (q *Queries) CreateProjectUISettings(ctx context.Context, projectID uuid.UU
 		&i.UpdateTime,
 		&i.LogInLayout,
 		&i.AutoCreateOrganizations,
+	)
+	return i, err
+}
+
+const createProjectWebhookSettings = `-- name: CreateProjectWebhookSettings :one
+INSERT INTO project_webhook_settings (id, project_id, app_id)
+    VALUES ($1, $2, $3)
+RETURNING
+    id, project_id, app_id, created_at, updated_at
+`
+
+type CreateProjectWebhookSettingsParams struct {
+	ID        uuid.UUID
+	ProjectID uuid.UUID
+	AppID     string
+}
+
+func (q *Queries) CreateProjectWebhookSettings(ctx context.Context, arg CreateProjectWebhookSettingsParams) (ProjectWebhookSetting, error) {
+	row := q.db.QueryRow(ctx, createProjectWebhookSettings, arg.ID, arg.ProjectID, arg.AppID)
+	var i ProjectWebhookSetting
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.AppID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
 	)
 	return i, err
 }

@@ -143,7 +143,7 @@ func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganization
 }
 
 const createProjectTrustedDomain = `-- name: CreateProjectTrustedDomain :one
-INSERT INTO project_trusted_domains (id, project_id, domain)
+INSERT INTO project_trusted_domains (id, project_id, DOMAIN)
     VALUES ($1, $2, $3)
 RETURNING
     id, project_id, domain

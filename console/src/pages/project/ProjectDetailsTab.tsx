@@ -18,6 +18,7 @@ import { Link } from 'react-router-dom';
 import { useMutation, useQuery } from '@connectrpc/connect-query';
 import {
   getProject,
+  getProjectWebhookManagementURL,
   getVaultDomainSettings,
   updateProject,
   updateVaultDomainSettings,
@@ -48,15 +49,14 @@ import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { Switch } from '@/components/ui/switch';
 import { InputTags } from '@/components/input-tags';
-import {
-  EditProjectGoogleSettingsButton
-} from '@/pages/project/EditProjectGoogleSettingsButton';
-import {
-  EditProjectMicrosoftSettingsButton
-} from '@/pages/project/EditProjectMicrosoftSettingsButton';
+import { EditProjectGoogleSettingsButton } from '@/pages/project/EditProjectGoogleSettingsButton';
+import { EditProjectMicrosoftSettingsButton } from '@/pages/project/EditProjectMicrosoftSettingsButton';
 
 export const ProjectDetailsTab = () => {
   const { data: getProjectResponse } = useQuery(getProject, {});
+  const { data: getProjectWebhookManagementUrlResponse } = useQuery(
+    getProjectWebhookManagementURL,
+  );
 
   return (
     <div className="space-y-8">
@@ -299,6 +299,21 @@ export const ProjectDetailsTab = () => {
             </DetailsGridColumn>
           </DetailsGrid>
         </CardContent>
+      </Card>
+      <Card>
+        <CardHeader className="flex-row justify-between items-center">
+          <div className="flex flex-col space-y-1 5">
+            <CardTitle>Webhook settings</CardTitle>
+            <CardDescription>
+              Settings for Webhooks sent from Tesseral to your application about
+              your project.
+            </CardDescription>
+          </div>
+          <a href={getProjectWebhookManagementUrlResponse?.url} target="_blank">
+            <Button variant="outline">Edit</Button>
+          </a>
+        </CardHeader>
+        <CardContent></CardContent>
       </Card>
     </div>
   );
@@ -625,10 +640,13 @@ const EditLoginMethodsButton = () => {
   const [open, setOpen] = useState(false);
   const handleSubmit = async (values: z.infer<typeof loginMethodsSchema>) => {
     if (!values.logInWithEmail) {
-      if (!getProjectResponse?.project?.logInWithGoogle && !getProjectResponse?.project?.logInWithMicrosoft) {
-        form.setError("logInWithEmail", {
+      if (
+        !getProjectResponse?.project?.logInWithGoogle &&
+        !getProjectResponse?.project?.logInWithMicrosoft
+      ) {
+        form.setError('logInWithEmail', {
           message:
-            "At least one of Log in with Email, Log in with Google, or Log in with Microsoft must be enabled.",
+            'At least one of Log in with Email, Log in with Google, or Log in with Microsoft must be enabled.',
         });
         return;
       }

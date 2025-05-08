@@ -138,7 +138,7 @@ RETURNING
 -- name: UpsertProjectTrustedDomain :exec
 INSERT INTO project_trusted_domains (id, project_id, DOMAIN)
     VALUES ($1, $2, $3)
-ON CONFLICT (project_id, domain)
+ON CONFLICT (project_id, DOMAIN)
     DO NOTHING;
 
 -- name: DisableProjectOrganizationsLogInWithGoogle :exec
@@ -736,8 +736,7 @@ INSERT INTO user_invites (id, organization_id, email, is_owner)
     VALUES ($1, $2, $3, $4)
 ON CONFLICT (organization_id, email)
     DO UPDATE SET
-        email = excluded.email,
-        is_owner = excluded.is_owner
+        email = excluded.email, is_owner = excluded.is_owner
     RETURNING
         *;
 
@@ -820,4 +819,12 @@ SELECT
             vault_domain_settings
         WHERE
             pending_domain = $1);
+
+-- name: GetProjectWebhookSettings :one
+SELECT
+    *
+FROM
+    project_webhook_settings
+WHERE
+    project_id = $1;
 

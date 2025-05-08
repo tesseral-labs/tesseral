@@ -22,6 +22,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/ssoready/conf"
 	stripeclient "github.com/stripe/stripe-go/v82/client"
+	svix "github.com/svix/svix-webhooks/go"
 	backendinterceptor "github.com/tesseral-labs/tesseral/internal/backend/authn/interceptor"
 	"github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1/backendv1connect"
 	backendservice "github.com/tesseral-labs/tesseral/internal/backend/service"
@@ -106,6 +107,7 @@ func main() {
 		TesseralDNSCloudflareZoneID         string        `conf:"tesseral_dns_cloudflare_zone_id,noredact"`
 		StripeAPIKey                        string        `conf:"stripe_api_key"`
 		StripePriceIDGrowthTier             string        `conf:"stripe_price_id_growth_tier,noredact"`
+		SvixApiKey                          string        `conf:"svix_api_key,noredact"`
 	}{
 		PageEncodingValue: "0000000000000000000000000000000000000000000000000000000000000000",
 	}
@@ -156,6 +158,11 @@ func main() {
 		}
 	})
 
+	svixClient, err := svix.New(config.SvixApiKey, nil)
+	if err != nil {
+		panic(fmt.Errorf("create svix client: %w", err))
+	}
+
 	stripeClient := stripeclient.New(config.StripeAPIKey, nil)
 
 	commonStore := commonstore.New(commonstore.NewStoreParams{
@@ -190,6 +197,7 @@ func main() {
 		CloudflareDOH:                         &cloudflaredoh.Client{HTTPClient: &http.Client{}},
 		Stripe:                                stripeClient,
 		StripePriceIDGrowthTier:               config.StripePriceIDGrowthTier,
+		SvixClient:                            svixClient,
 	})
 	backendConnectPath, backendConnectHandler := backendv1connect.NewBackendServiceHandler(
 		&backendservice.Service{
@@ -255,6 +263,7 @@ func main() {
 		UserContentBaseUrl:                    config.UserContentBaseUrl,
 		S3UserContentBucketName:               config.S3UserContentBucketName,
 		StripeClient:                          stripeClient,
+		SvixClient:                            svixClient,
 	})
 	intermediateConnectPath, intermediateConnectHandler := intermediatev1connect.NewIntermediateServiceHandler(
 		&intermediateservice.Service{

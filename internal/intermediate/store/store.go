@@ -12,6 +12,7 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	stripeclient "github.com/stripe/stripe-go/v82/client"
+	svix "github.com/svix/svix-webhooks/go"
 	"github.com/tesseral-labs/tesseral/internal/googleoauth"
 	"github.com/tesseral-labs/tesseral/internal/hibp"
 	"github.com/tesseral-labs/tesseral/internal/intermediate/store/queries"
@@ -40,6 +41,7 @@ type Store struct {
 	userContentBaseUrl                    string
 	s3UserContentBucketName               string
 	stripeClient                          *stripeclient.API
+	svixClient                            *svix.Svix
 }
 
 type NewStoreParams struct {
@@ -61,6 +63,7 @@ type NewStoreParams struct {
 	UserContentBaseUrl                    string
 	S3UserContentBucketName               string
 	StripeClient                          *stripeclient.API
+	SvixClient                            *svix.Svix
 }
 
 func New(p NewStoreParams) *Store {
@@ -87,6 +90,7 @@ func New(p NewStoreParams) *Store {
 		userContentBaseUrl:                    p.UserContentBaseUrl,
 		s3UserContentBucketName:               p.S3UserContentBucketName,
 		stripeClient:                          p.StripeClient,
+		svixClient:                            p.SvixClient,
 	}
 
 	return store
