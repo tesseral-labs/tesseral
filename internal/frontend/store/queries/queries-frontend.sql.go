@@ -609,6 +609,28 @@ func (q *Queries) GetProjectTrustedDomains(ctx context.Context, projectID uuid.U
 	return items, nil
 }
 
+const getProjectWebhookSettings = `-- name: GetProjectWebhookSettings :one
+SELECT
+    id, project_id, app_id, create_time, update_time
+FROM
+    project_webhook_settings
+WHERE
+    project_id = $1
+`
+
+func (q *Queries) GetProjectWebhookSettings(ctx context.Context, projectID uuid.UUID) (ProjectWebhookSetting, error) {
+	row := q.db.QueryRow(ctx, getProjectWebhookSettings, projectID)
+	var i ProjectWebhookSetting
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.AppID,
+		&i.CreateTime,
+		&i.UpdateTime,
+	)
+	return i, err
+}
+
 const getSAMLConnection = `-- name: GetSAMLConnection :one
 SELECT
     id, organization_id, create_time, is_primary, idp_redirect_url, idp_x509_certificate, idp_entity_id, update_time

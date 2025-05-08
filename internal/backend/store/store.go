@@ -12,6 +12,7 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	stripeclient "github.com/stripe/stripe-go/v82/client"
+	svix "github.com/svix/svix-webhooks/go"
 	"github.com/tesseral-labs/tesseral/internal/backend/authn"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/cloudflaredoh"
@@ -43,6 +44,7 @@ type Store struct {
 	sesSPFMXRecordValue                   string
 	stripe                                *stripeclient.API
 	stripePriceIDGrowthTier               string
+	svixClient                            *svix.Svix
 }
 
 type NewStoreParams struct {
@@ -67,6 +69,7 @@ type NewStoreParams struct {
 	SESSPFMXRecordValue                   string
 	Stripe                                *stripeclient.API
 	StripePriceIDGrowthTier               string
+	SvixClient                            *svix.Svix
 }
 
 func New(p NewStoreParams) *Store {
@@ -94,6 +97,7 @@ func New(p NewStoreParams) *Store {
 		sesSPFMXRecordValue:                   p.SESSPFMXRecordValue,
 		stripe:                                p.Stripe,
 		stripePriceIDGrowthTier:               p.StripePriceIDGrowthTier,
+		svixClient:                            p.SvixClient,
 	}
 
 	return store

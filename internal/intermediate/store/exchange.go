@@ -5,10 +5,12 @@ import (
 	"crypto/sha256"
 	"errors"
 	"fmt"
+	"log/slog"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	"github.com/svix/svix-webhooks/go/models"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/intermediate/authn"
 	intermediatev1 "github.com/tesseral-labs/tesseral/internal/intermediate/gen/tesseral/intermediate/v1"
@@ -167,12 +169,45 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		return nil, err
 	}
 
+	if qUser != nil {
+		// Send sync user event
+		if err := s.sendSyncUserEvent(ctx, *qUser); err != nil {
+			return nil, fmt.Errorf("send sync user event: %w", err)
+		}
+	}
+
 	return &intermediatev1.ExchangeIntermediateSessionForSessionResponse{
 		AccessToken:         "", // populated in service
 		RefreshToken:        idformat.SessionRefreshToken.Format(refreshToken),
 		NewUser:             newUser,
 		RelayedSessionToken: relayedSessionToken,
 	}, nil
+}
+
+func (s *Store) sendSyncUserEvent(ctx context.Context, qUser queries.User) error {
+	qProjectWebhookSettings, err := s.q.GetProjectWebhookSettings(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		// We want to ignore this error if the project does not have webhook settings
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil
+		}
+		return fmt.Errorf("get project by id: %w", err)
+	}
+
+	message, err := s.svixClient.Message.Create(ctx, qProjectWebhookSettings.AppID, models.MessageIn{
+		EventType: "sync.user",
+		Payload: map[string]interface{}{
+			"type":   "sync.user",
+			"userId": idformat.User.Format(qUser.ID),
+		},
+	}, nil)
+	if err != nil {
+		return fmt.Errorf("create message: %w", err)
+	}
+
+	slog.InfoContext(ctx, "svix_message_created", "message_id", message.Id, "event_type", message.EventType, "user_id", idformat.User.Format(qUser.ID))
+
+	return nil
 }
 
 func (s *Store) validateAuthRequirementsSatisfied(ctx context.Context, q *queries.Queries, intermediateSessionID uuid.UUID) error {

@@ -637,7 +637,7 @@ RETURNING
     *;
 
 -- name: CreateProjectTrustedDomain :one
-INSERT INTO project_trusted_domains (id, project_id, domain)
+INSERT INTO project_trusted_domains (id, project_id, DOMAIN)
     VALUES ($1, $2, $3)
 RETURNING
     *;
@@ -672,4 +672,18 @@ ON CONFLICT (project_id, date)
         quota_usage = project_email_quota_daily_usage.quota_usage + 1
     RETURNING
         *;
+
+-- name: CreateProjectWebhookSettings :one
+INSERT INTO project_webhook_settings (id, project_id, app_id)
+    VALUES ($1, $2, $3)
+RETURNING
+    *;
+
+-- name: GetProjectWebhookSettings :one
+SELECT
+    *
+FROM
+    project_webhook_settings
+WHERE
+    project_id = $1;
 

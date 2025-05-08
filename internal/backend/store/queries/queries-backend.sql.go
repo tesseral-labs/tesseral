@@ -1087,6 +1087,28 @@ func (q *Queries) GetProjectUISettings(ctx context.Context, projectID uuid.UUID)
 	return i, err
 }
 
+const getProjectWebhookSettings = `-- name: GetProjectWebhookSettings :one
+SELECT
+    id, project_id, app_id, create_time, update_time
+FROM
+    project_webhook_settings
+WHERE
+    project_id = $1
+`
+
+func (q *Queries) GetProjectWebhookSettings(ctx context.Context, projectID uuid.UUID) (ProjectWebhookSetting, error) {
+	row := q.db.QueryRow(ctx, getProjectWebhookSettings, projectID)
+	var i ProjectWebhookSetting
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.AppID,
+		&i.CreateTime,
+		&i.UpdateTime,
+	)
+	return i, err
+}
+
 const getPublishableKey = `-- name: GetPublishableKey :one
 SELECT
     id, project_id, create_time, update_time, display_name, dev_mode
@@ -2695,7 +2717,7 @@ func (q *Queries) UpdateUserPassword(ctx context.Context, arg UpdateUserPassword
 const upsertProjectTrustedDomain = `-- name: UpsertProjectTrustedDomain :exec
 INSERT INTO project_trusted_domains (id, project_id, DOMAIN)
     VALUES ($1, $2, $3)
-ON CONFLICT (project_id, domain)
+ON CONFLICT (project_id, DOMAIN)
     DO NOTHING
 `
 

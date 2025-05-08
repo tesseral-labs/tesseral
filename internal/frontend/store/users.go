@@ -4,9 +4,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	"github.com/svix/svix-webhooks/go/models"
 	"github.com/tesseral-labs/tesseral/internal/bcryptcost"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
@@ -169,6 +171,11 @@ func (s *Store) UpdateUser(ctx context.Context, req *frontendv1.UpdateUserReques
 		return nil, fmt.Errorf("commit transaction: %w", err)
 	}
 
+	// send sync user event
+	if err := s.sendSyncUserEvent(ctx, qUpdatedUser); err != nil {
+		return nil, fmt.Errorf("send sync user event: %w", err)
+	}
+
 	return &frontendv1.UpdateUserResponse{User: parseUser(qUpdatedUser)}, nil
 }
 
@@ -193,7 +200,7 @@ func (s *Store) DeleteUser(ctx context.Context, req *frontendv1.DeleteUserReques
 	}
 
 	// Fetch the user to ensure it exists and belongs to the organization.
-	_, err = q.GetUser(ctx, queries.GetUserParams{
+	qUser, err := q.GetUser(ctx, queries.GetUserParams{
 		ID:             userID,
 		OrganizationID: authn.OrganizationID(ctx),
 	})
@@ -212,7 +219,38 @@ func (s *Store) DeleteUser(ctx context.Context, req *frontendv1.DeleteUserReques
 		return nil, fmt.Errorf("commit transaction: %w", err)
 	}
 
+	// send sync user event
+	if err := s.sendSyncUserEvent(ctx, qUser); err != nil {
+		return nil, fmt.Errorf("send sync user event: %w", err)
+	}
+
 	return &frontendv1.DeleteUserResponse{}, nil
+}
+
+func (s *Store) sendSyncUserEvent(ctx context.Context, qUser queries.User) error {
+	qProjectWebhookSettings, err := s.q.GetProjectWebhookSettings(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		// We want to ignore this error if the project does not have webhook settings
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil
+		}
+		return fmt.Errorf("get project by id: %w", err)
+	}
+
+	message, err := s.svixClient.Message.Create(ctx, qProjectWebhookSettings.AppID, models.MessageIn{
+		EventType: "sync.user",
+		Payload: map[string]interface{}{
+			"type":   "sync.user",
+			"userId": idformat.User.Format(qUser.ID),
+		},
+	}, nil)
+	if err != nil {
+		return fmt.Errorf("create message: %w", err)
+	}
+
+	slog.InfoContext(ctx, "svix_message_created", "message_id", message.Id, "event_type", message.EventType, "user_id", idformat.User.Format(qUser.ID))
+
+	return nil
 }
 
 func parseUser(qUser queries.User) *frontendv1.User {

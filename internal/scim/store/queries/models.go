@@ -299,6 +299,14 @@ type ProjectUiSetting struct {
 	AutoCreateOrganizations bool
 }
 
+type ProjectWebhookSetting struct {
+	ID         uuid.UUID
+	ProjectID  uuid.UUID
+	AppID      string
+	CreateTime *time.Time
+	UpdateTime *time.Time
+}
+
 type PublishableKey struct {
 	ID          uuid.UUID
 	ProjectID   uuid.UUID

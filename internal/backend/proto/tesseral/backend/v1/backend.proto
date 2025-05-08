@@ -268,6 +268,8 @@ service BackendService {
 
   rpc GetProjectEntitlements(GetProjectEntitlementsRequest) returns (GetProjectEntitlementsResponse);
   rpc CreateStripeCheckoutLink(CreateStripeCheckoutLinkRequest) returns (CreateStripeCheckoutLinkResponse);
+
+  rpc GetProjectWebhookManagementURL(GetProjectWebhookManagementURLRequest) returns (GetProjectWebhookManagementURLResponse);
 }
 
 message GetProjectRequest {}
@@ -897,5 +899,11 @@ message GetProjectEntitlementsResponse {
 message CreateStripeCheckoutLinkRequest {}
 
 message CreateStripeCheckoutLinkResponse {
+  string url = 1;
+}
+
+message GetProjectWebhookManagementURLRequest {}
+
+message GetProjectWebhookManagementURLResponse {
   string url = 1;
 }

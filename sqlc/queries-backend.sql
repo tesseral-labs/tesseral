@@ -138,7 +138,7 @@ RETURNING
 -- name: UpsertProjectTrustedDomain :exec
 INSERT INTO project_trusted_domains (id, project_id, DOMAIN)
     VALUES ($1, $2, $3)
-ON CONFLICT (project_id, domain)
+ON CONFLICT (project_id, DOMAIN)
     DO NOTHING;
 
 -- name: DisableProjectOrganizationsLogInWithGoogle :exec
@@ -829,4 +829,12 @@ ON CONFLICT (project_id, date)
         quota_usage = project_email_quota_daily_usage.quota_usage + 1
     RETURNING
         *;
+
+-- name: GetProjectWebhookSettings :one
+SELECT
+    *
+FROM
+    project_webhook_settings
+WHERE
+    project_id = $1;
 

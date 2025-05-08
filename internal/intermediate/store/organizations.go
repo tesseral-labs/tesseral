@@ -4,9 +4,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	"github.com/svix/svix-webhooks/go/models"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/emailaddr"
 	"github.com/tesseral-labs/tesseral/internal/intermediate/authn"
@@ -96,6 +98,11 @@ func (s *Store) CreateOrganization(ctx context.Context, req *intermediatev1.Crea
 
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
+	}
+
+	// Send a sync.organization event to the webhook.
+	if err := s.sendSyncOrganizationEvent(ctx, qOrganization); err != nil {
+		return nil, fmt.Errorf("send sync organization event: %w", err)
 	}
 
 	return &intermediatev1.CreateOrganizationResponse{
@@ -376,6 +383,33 @@ func (s *Store) getVisibleOrganizations(ctx context.Context, q *queries.Queries,
 	}
 
 	return qOrgsDeduped, nil
+}
+
+func (s *Store) sendSyncOrganizationEvent(ctx context.Context, qOrg queries.Organization) error {
+	qProjectWebhookSettings, err := s.q.GetProjectWebhookSettings(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		// We want to ignore this error if the project does not have webhook settings
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil
+		}
+
+		return fmt.Errorf("get project by id: %w", err)
+	}
+
+	message, err := s.svixClient.Message.Create(ctx, qProjectWebhookSettings.AppID, models.MessageIn{
+		EventType: "sync.organization",
+		Payload: map[string]interface{}{
+			"type":           "sync.organization",
+			"organizationId": idformat.Organization.Format(qOrg.ID),
+		},
+	}, nil)
+	if err != nil {
+		return fmt.Errorf("create message: %w", err)
+	}
+
+	slog.InfoContext(ctx, "svix_message_created", "message_id", message.Id, "event_type", message.EventType, "organization_id", idformat.Organization.Format(qOrg.ID))
+
+	return nil
 }
 
 func parseOrganization(qOrg queries.Organization, qProject queries.Project, qSAMLConnection *queries.SamlConnection) *intermediatev1.Organization {

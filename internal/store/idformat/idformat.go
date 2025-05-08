@@ -40,4 +40,6 @@ var (
 
 	ProjectRedirectURI = prettyuuid.MustNewFormat("project_redirect_uri_", alphabet)
 	ProjectUISettings  = prettyuuid.MustNewFormat("project_ui_settings_", alphabet)
+
+	ProjectWebhookSettings = prettyuuid.MustNewFormat("project_webhook_settings_", alphabet)
 )
