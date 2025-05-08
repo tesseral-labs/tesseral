@@ -56,8 +56,8 @@ func parseProjectWebhookSettings(qWebhook queries.ProjectWebhookSetting) *interm
 	return &intermediatev1.ProjectWebhookSettings{
 		Id:         idformat.ProjectWebhookSettings.Format(qWebhook.ID),
 		AppId:      qWebhook.AppID,
-		CreateTime: timestamppb.New(*qWebhook.CreatedAt),
-		UpdateTime: timestamppb.New(*qWebhook.UpdatedAt),
+		CreateTime: timestamppb.New(*qWebhook.CreateTime),
+		UpdateTime: timestamppb.New(*qWebhook.UpdateTime),
 	}
 
 }
