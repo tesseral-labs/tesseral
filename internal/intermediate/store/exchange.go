@@ -197,8 +197,8 @@ func (s *Store) sendSyncUserEvent(ctx context.Context, qUser queries.User) error
 	message, err := s.svixClient.Message.Create(ctx, qProjectWebhookSettings.AppID, models.MessageIn{
 		EventType: "sync.user",
 		Payload: map[string]interface{}{
-			"type": "sync.user",
-			"id":   idformat.User.Format(qUser.ID),
+			"type":   "sync.user",
+			"userId": idformat.User.Format(qUser.ID),
 		},
 	}, nil)
 	if err != nil {

@@ -172,8 +172,8 @@ func (s *Store) sendSyncOrganizationEvent(ctx context.Context, qOrg queries.Orga
 	message, err := s.svixClient.Message.Create(ctx, qProjectWebhookSettings.AppID, models.MessageIn{
 		EventType: "sync.organization",
 		Payload: map[string]interface{}{
-			"type": "sync.organization",
-			"id":   idformat.Organization.Format(qOrg.ID),
+			"type":           "sync.organization",
+			"organizationId": idformat.Organization.Format(qOrg.ID),
 		},
 	}, nil)
 	if err != nil {
