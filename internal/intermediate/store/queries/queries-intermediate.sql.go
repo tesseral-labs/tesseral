@@ -1172,6 +1172,28 @@ func (q *Queries) GetProjectUISettings(ctx context.Context, projectID uuid.UUID)
 	return i, err
 }
 
+const getProjectWebhookSettings = `-- name: GetProjectWebhookSettings :one
+SELECT
+    id, project_id, app_id, created_at, updated_at
+FROM
+    project_webhook_settings
+WHERE
+    project_id = $1
+`
+
+func (q *Queries) GetProjectWebhookSettings(ctx context.Context, projectID uuid.UUID) (ProjectWebhookSetting, error) {
+	row := q.db.QueryRow(ctx, getProjectWebhookSettings, projectID)
+	var i ProjectWebhookSetting
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.AppID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const getRelayedSessionByTokenSHA256 = `-- name: GetRelayedSessionByTokenSHA256 :one
 SELECT
     session_id, relayed_session_token_expire_time, relayed_session_token_sha256, state, relayed_refresh_token_sha256

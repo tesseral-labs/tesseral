@@ -7,6 +7,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	"github.com/svix/svix-webhooks/go/models"
 	"github.com/tesseral-labs/tesseral/internal/backend/authn"
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
@@ -136,6 +137,11 @@ func (s *Store) CreateUser(ctx context.Context, req *backendv1.CreateUserRequest
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
+	// send sync user event
+	if err := s.sendSyncUserEvent(ctx, qUser); err != nil {
+		return nil, fmt.Errorf("send sync user event: %w", err)
+	}
+
 	return &backendv1.CreateUserResponse{User: parseUser(qUser)}, nil
 }
 
@@ -206,6 +212,11 @@ func (s *Store) UpdateUser(ctx context.Context, req *backendv1.UpdateUserRequest
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
+	// send sync user event
+	if err := s.sendSyncUserEvent(ctx, qUpdatedUser); err != nil {
+		return nil, fmt.Errorf("send sync user event: %w", err)
+	}
+
 	return &backendv1.UpdateUserResponse{User: parseUser(qUpdatedUser)}, nil
 }
 
@@ -221,10 +232,11 @@ func (s *Store) DeleteUser(ctx context.Context, req *backendv1.DeleteUserRequest
 		return nil, apierror.NewInvalidArgumentError("invalid user id", fmt.Errorf("parse user id: %w", err))
 	}
 
-	if _, err := q.GetUser(ctx, queries.GetUserParams{
+	qUser, err := q.GetUser(ctx, queries.GetUserParams{
 		ProjectID: authn.ProjectID(ctx),
 		ID:        userID,
-	}); err != nil {
+	})
+	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, apierror.NewNotFoundError("user not found", fmt.Errorf("get user: %w", err))
 		}
@@ -240,7 +252,31 @@ func (s *Store) DeleteUser(ctx context.Context, req *backendv1.DeleteUserRequest
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
+	// send sync user event
+	if err := s.sendSyncUserEvent(ctx, qUser); err != nil {
+		return nil, fmt.Errorf("send sync user event: %w", err)
+	}
+
 	return &backendv1.DeleteUserResponse{}, nil
+}
+
+func (s *Store) sendSyncUserEvent(ctx context.Context, qUser queries.User) error {
+	qProjectWebhookSettings, err := s.q.GetProjectWebhookSettings(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return fmt.Errorf("get project by id: %w", err)
+	}
+
+	if _, err := s.svixClient.Message.Create(ctx, qProjectWebhookSettings.AppID, models.MessageIn{
+		EventType: "sync.user",
+		Payload: map[string]interface{}{
+			"type": "sync.user",
+			"id":   idformat.User.Format(qUser.ID),
+		},
+	}, nil); err != nil {
+		return fmt.Errorf("create message: %w", err)
+	}
+
+	return nil
 }
 
 func parseUser(qUser queries.User) *backendv1.User {

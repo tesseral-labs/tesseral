@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/jackc/pgx/v5"
+	"github.com/svix/svix-webhooks/go/models"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/frontend/authn"
 	frontendv1 "github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1"
@@ -147,9 +148,33 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *frontendv1.UpdateOr
 		return nil, fmt.Errorf("commit transaction: %w", err)
 	}
 
+	// send sync organization event
+	if err := s.sendSyncOrganizationEvent(ctx, qUpdatedOrg); err != nil {
+		return nil, fmt.Errorf("send sync organization event: %w", err)
+	}
+
 	return &frontendv1.UpdateOrganizationResponse{
 		Organization: parseOrganization(qProject, qUpdatedOrg),
 	}, nil
+}
+
+func (s *Store) sendSyncOrganizationEvent(ctx context.Context, qOrg queries.Organization) error {
+	qProjectWebhookSettings, err := s.q.GetProjectWebhookSettings(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return fmt.Errorf("get project by id: %w", err)
+	}
+
+	if _, err := s.svixClient.Message.Create(ctx, qProjectWebhookSettings.AppID, models.MessageIn{
+		EventType: "sync.organization",
+		Payload: map[string]interface{}{
+			"type": "sync.organization",
+			"id":   idformat.Organization.Format(qOrg.ID),
+		},
+	}, nil); err != nil {
+		return fmt.Errorf("create message: %w", err)
+	}
+
+	return nil
 }
 
 func parseOrganization(qProject queries.Project, qOrg queries.Organization) *frontendv1.Organization {

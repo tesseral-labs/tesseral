@@ -7,6 +7,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	"github.com/svix/svix-webhooks/go/models"
 	"github.com/tesseral-labs/tesseral/internal/backend/authn"
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
@@ -91,6 +92,11 @@ func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrg
 
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
+	}
+
+	// Send webhook event
+	if err := s.sendSyncOrganizationEvent(ctx, qOrg); err != nil {
+		return nil, fmt.Errorf("send sync organization event: %w", err)
 	}
 
 	return &backendv1.CreateOrganizationResponse{Organization: parseOrganization(qProject, qOrg)}, nil
@@ -303,6 +309,11 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *backendv1.UpdateOrg
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
+	// Send webhook event
+	if err := s.sendSyncOrganizationEvent(ctx, qUpdatedOrg); err != nil {
+		return nil, fmt.Errorf("send sync organization event: %w", err)
+	}
+
 	return &backendv1.UpdateOrganizationResponse{Organization: parseOrganization(qProject, qUpdatedOrg)}, nil
 }
 
@@ -319,10 +330,11 @@ func (s *Store) DeleteOrganization(ctx context.Context, req *backendv1.DeleteOrg
 	}
 
 	// authz check
-	if _, err := q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
+	qOrg, err := q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
 		ProjectID: authn.ProjectID(ctx),
 		ID:        orgID,
-	}); err != nil {
+	})
+	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, apierror.NewNotFoundError("organization not found", fmt.Errorf("get organization by id: %w", err))
 		}
@@ -336,6 +348,11 @@ func (s *Store) DeleteOrganization(ctx context.Context, req *backendv1.DeleteOrg
 
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
+	}
+
+	// Send webhook event
+	if err := s.sendSyncOrganizationEvent(ctx, qOrg); err != nil {
+		return nil, fmt.Errorf("send sync organization event: %w", err)
 	}
 
 	return &backendv1.DeleteOrganizationResponse{}, nil
@@ -387,6 +404,25 @@ func (s *Store) EnableOrganizationLogins(ctx context.Context, req *backendv1.Ena
 	}
 
 	return &backendv1.EnableOrganizationLoginsResponse{}, nil
+}
+
+func (s *Store) sendSyncOrganizationEvent(ctx context.Context, qOrg queries.Organization) error {
+	qProjectWebhookSettings, err := s.q.GetProjectWebhookSettings(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return fmt.Errorf("get project by id: %w", err)
+	}
+
+	if _, err := s.svixClient.Message.Create(ctx, qProjectWebhookSettings.AppID, models.MessageIn{
+		EventType: "sync.organization",
+		Payload: map[string]interface{}{
+			"type": "sync.organization",
+			"id":   idformat.Organization.Format(qOrg.ID),
+		},
+	}, nil); err != nil {
+		return fmt.Errorf("create message: %w", err)
+	}
+
+	return nil
 }
 
 func parseOrganization(qProject queries.Project, qOrg queries.Organization) *backendv1.Organization {

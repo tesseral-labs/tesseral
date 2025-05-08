@@ -10,6 +10,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	svix "github.com/svix/svix-webhooks/go"
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/hibp"
 	"github.com/tesseral-labs/tesseral/internal/pagetoken"
@@ -27,6 +28,7 @@ type Store struct {
 	q                                     *queries.Queries
 	sessionSigningKeyKmsKeyID             string
 	authenticatorAppSecretsKMSKeyID       string
+	svixClient                            *svix.Svix
 }
 
 type NewStoreParams struct {
@@ -39,6 +41,7 @@ type NewStoreParams struct {
 	PageEncoder                           pagetoken.Encoder
 	SessionSigningKeyKmsKeyID             string
 	AuthenticatorAppSecretsKMSKeyID       string
+	SvixClient                            *svix.Svix
 }
 
 func New(p NewStoreParams) *Store {
