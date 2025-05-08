@@ -186,6 +186,10 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 func (s *Store) sendSyncUserEvent(ctx context.Context, qUser queries.User) error {
 	qProjectWebhookSettings, err := s.q.GetProjectWebhookSettings(ctx, authn.ProjectID(ctx))
 	if err != nil {
+		// We want to ignore this error if the project does not have webhook settings
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil
+		}
 		return fmt.Errorf("get project by id: %w", err)
 	}
 

@@ -409,6 +409,10 @@ func (s *Store) EnableOrganizationLogins(ctx context.Context, req *backendv1.Ena
 func (s *Store) sendSyncOrganizationEvent(ctx context.Context, qOrg queries.Organization) error {
 	qProjectWebhookSettings, err := s.q.GetProjectWebhookSettings(ctx, authn.ProjectID(ctx))
 	if err != nil {
+		// We want to ignore this error if the project does not have webhook settings
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil
+		}
 		return fmt.Errorf("get project by id: %w", err)
 	}
 
