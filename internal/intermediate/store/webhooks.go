@@ -24,13 +24,7 @@ func (s *Store) createSvixApplication(ctx context.Context, displayName string) (
 	return app, nil
 }
 
-func (s *Store) createProjectWebhookSettings(ctx context.Context, qProject *queries.Project) (*intermediatev1.ProjectWebhookSettings, error) {
-	_, q, commit, rollback, err := s.tx(ctx)
-	if err != nil {
-		return nil, err
-	}
-	defer rollback()
-
+func (s *Store) createProjectWebhookSettings(ctx context.Context, q *queries.Queries, qProject queries.Project) (*intermediatev1.ProjectWebhookSettings, error) {
 	svixApplication, err := s.createSvixApplication(ctx, qProject.DisplayName)
 	if err != nil {
 		return nil, fmt.Errorf("create svix application: %w", err)
@@ -43,10 +37,6 @@ func (s *Store) createProjectWebhookSettings(ctx context.Context, qProject *quer
 	})
 	if err != nil {
 		return nil, fmt.Errorf("create webhook: %w", err)
-	}
-
-	if err := commit(); err != nil {
-		return nil, fmt.Errorf("commit: %w", err)
 	}
 
 	return parseProjectWebhookSettings(qWebhook), nil

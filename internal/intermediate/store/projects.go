@@ -438,7 +438,7 @@ func (s *Store) createProjectForCurrentUser(ctx context.Context, q *queries.Quer
 	}
 
 	// Create a Svix application for the project to send webhooks to
-	if _, err := s.createProjectWebhookSettings(ctx, &qProject); err != nil {
+	if _, err := s.createProjectWebhookSettings(ctx, q, qProject); err != nil {
 		return nil, fmt.Errorf("create webhook: %w", err)
 	}
 
