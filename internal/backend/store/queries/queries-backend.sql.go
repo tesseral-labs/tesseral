@@ -376,7 +376,8 @@ INSERT INTO user_invites (id, organization_id, email, is_owner)
     VALUES ($1, $2, $3, $4)
 ON CONFLICT (organization_id, email)
     DO UPDATE SET
-        email = excluded.email, is_owner = excluded.is_owner
+        email = excluded.email,
+        is_owner = excluded.is_owner
     RETURNING
         id, organization_id, create_time, update_time, email, is_owner
 `
