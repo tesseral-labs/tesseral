@@ -702,6 +702,11 @@ paths:
             tags:
                 - FrontendService
             operationId: FrontendService_CreateUserInvite
+            parameters:
+                - name: sendEmail
+                  in: query
+                  schema:
+                    type: boolean
             requestBody:
                 content:
                     application/json:

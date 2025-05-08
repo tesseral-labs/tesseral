@@ -49,6 +49,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
+import { toast } from 'sonner';
 
 export const OrganizationUserInvitesTab = () => {
   const { organizationId } = useParams();
@@ -119,6 +120,7 @@ export const OrganizationUserInvitesTab = () => {
 const schema = z.object({
   email: z.string().email(),
   owner: z.boolean(),
+  sendEmail: z.boolean(),
 });
 
 const CreateUserInviteButton = () => {
@@ -132,6 +134,7 @@ const CreateUserInviteButton = () => {
     defaultValues: {
       email: '',
       owner: false,
+      sendEmail: true,
     },
   });
   /* eslint-enable @typescript-eslint/no-unsafe-call */
@@ -145,8 +148,10 @@ const CreateUserInviteButton = () => {
         email: values.email,
         owner: values.owner,
       },
+      sendEmail: values.sendEmail,
     });
 
+    toast.success('User Invite created');
     navigate(`/organizations/${organizationId}/user-invites/${userInvite?.id}`);
   };
 
@@ -204,6 +209,26 @@ const CreateUserInviteButton = () => {
                   </FormControl>
                   <FormDescription>
                     Whether the collaborator will join as an owner.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="sendEmail"
+              render={({ field }: { field: any }) => (
+                <FormItem>
+                  <FormLabel>Send email</FormLabel>
+                  <FormControl>
+                    <Switch
+                      className="block"
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Send the collaborator an email to accept the invite.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

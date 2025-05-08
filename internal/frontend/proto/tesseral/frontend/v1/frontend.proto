@@ -457,6 +457,7 @@ message GetUserInviteResponse {
 
 message CreateUserInviteRequest {
   UserInvite user_invite = 1;
+  bool send_email = 2;
 }
 
 message CreateUserInviteResponse {

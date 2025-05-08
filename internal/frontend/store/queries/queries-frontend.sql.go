@@ -905,6 +905,23 @@ func (q *Queries) GetUserPasskey(ctx context.Context, arg GetUserPasskeyParams) 
 	return i, err
 }
 
+const incrementProjectEmailDailyQuotaUsage = `-- name: IncrementProjectEmailDailyQuotaUsage :one
+INSERT INTO project_email_quota_daily_usage (project_id, date, quota_usage)
+    VALUES ($1, CURRENT_DATE, 1)
+ON CONFLICT (project_id, date)
+    DO UPDATE SET
+        quota_usage = project_email_quota_daily_usage.quota_usage + 1
+    RETURNING
+        project_id, date, quota_usage
+`
+
+func (q *Queries) IncrementProjectEmailDailyQuotaUsage(ctx context.Context, projectID uuid.UUID) (ProjectEmailQuotaDailyUsage, error) {
+	row := q.db.QueryRow(ctx, incrementProjectEmailDailyQuotaUsage, projectID)
+	var i ProjectEmailQuotaDailyUsage
+	err := row.Scan(&i.ProjectID, &i.Date, &i.QuotaUsage)
+	return i, err
+}
+
 const invalidateSession = `-- name: InvalidateSession :exec
 UPDATE
     sessions
