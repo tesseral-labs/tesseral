@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -236,15 +237,18 @@ func (s *Store) sendSyncUserEvent(ctx context.Context, qUser queries.User) error
 		return fmt.Errorf("get project by id: %w", err)
 	}
 
-	if _, err := s.svixClient.Message.Create(ctx, qProjectWebhookSettings.AppID, models.MessageIn{
+	message, err := s.svixClient.Message.Create(ctx, qProjectWebhookSettings.AppID, models.MessageIn{
 		EventType: "sync.user",
 		Payload: map[string]interface{}{
-			"type": "sync.user",
-			"id":   idformat.User.Format(qUser.ID),
+			"type":   "sync.user",
+			"userId": idformat.User.Format(qUser.ID),
 		},
-	}, nil); err != nil {
+	}, nil)
+	if err != nil {
 		return fmt.Errorf("create message: %w", err)
 	}
+
+	slog.InfoContext(ctx, "svix_message_created", "message_id", message.Id, "event_type", message.EventType, "user_id", idformat.User.Format(qUser.ID))
 
 	return nil
 }

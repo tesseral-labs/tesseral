@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -416,15 +417,18 @@ func (s *Store) sendSyncOrganizationEvent(ctx context.Context, qOrg queries.Orga
 		return fmt.Errorf("get project by id: %w", err)
 	}
 
-	if _, err := s.svixClient.Message.Create(ctx, qProjectWebhookSettings.AppID, models.MessageIn{
+	message, err := s.svixClient.Message.Create(ctx, qProjectWebhookSettings.AppID, models.MessageIn{
 		EventType: "sync.organization",
 		Payload: map[string]interface{}{
 			"type": "sync.organization",
 			"id":   idformat.Organization.Format(qOrg.ID),
 		},
-	}, nil); err != nil {
+	}, nil)
+	if err != nil {
 		return fmt.Errorf("create message: %w", err)
 	}
+
+	slog.InfoContext(ctx, "svix_message_created", "message_id", message.Id, "event_type", message.EventType, "organization_id", idformat.Organization.Format(qOrg.ID))
 
 	return nil
 }
