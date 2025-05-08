@@ -611,7 +611,7 @@ func (q *Queries) GetProjectTrustedDomains(ctx context.Context, projectID uuid.U
 
 const getProjectWebhookSettings = `-- name: GetProjectWebhookSettings :one
 SELECT
-    id, project_id, app_id, created_at, updated_at
+    id, project_id, app_id, create_time, update_time
 FROM
     project_webhook_settings
 WHERE
@@ -625,8 +625,8 @@ func (q *Queries) GetProjectWebhookSettings(ctx context.Context, projectID uuid.
 		&i.ID,
 		&i.ProjectID,
 		&i.AppID,
-		&i.CreatedAt,
-		&i.UpdatedAt,
+		&i.CreateTime,
+		&i.UpdateTime,
 	)
 	return i, err
 }

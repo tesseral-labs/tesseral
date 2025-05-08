@@ -305,7 +305,7 @@ export const ProjectDetailsTab = () => {
           <div className="flex flex-col space-y-1 5">
             <CardTitle>Webhook settings</CardTitle>
             <CardDescription>
-              Settings for Webhooks sent from Tesseral to your application about
+              Settings for webhooks sent from Tesseral to your application about
               your project.
             </CardDescription>
           </div>

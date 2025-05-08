@@ -300,11 +300,11 @@ type ProjectUiSetting struct {
 }
 
 type ProjectWebhookSetting struct {
-	ID        uuid.UUID
-	ProjectID uuid.UUID
-	AppID     string
-	CreatedAt *time.Time
-	UpdatedAt *time.Time
+	ID         uuid.UUID
+	ProjectID  uuid.UUID
+	AppID      string
+	CreateTime *time.Time
+	UpdateTime *time.Time
 }
 
 type PublishableKey struct {

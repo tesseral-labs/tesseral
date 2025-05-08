@@ -16,9 +16,7 @@ func (s *Store) GetProjectWebhookManagementURL(ctx context.Context, req *backend
 	}
 	defer rollback()
 
-	projectID := authn.ProjectID(ctx)
-
-	qProjectWebhookSettings, err := q.GetProjectWebhookSettings(ctx, projectID)
+	qProjectWebhookSettings, err := q.GetProjectWebhookSettings(ctx, authn.ProjectID(ctx))
 	if err != nil {
 		return nil, fmt.Errorf("get project webhook settings: %w", err)
 	}

@@ -371,7 +371,7 @@ const createProjectWebhookSettings = `-- name: CreateProjectWebhookSettings :one
 INSERT INTO project_webhook_settings (id, project_id, app_id)
     VALUES ($1, $2, $3)
 RETURNING
-    id, project_id, app_id, created_at, updated_at
+    id, project_id, app_id, create_time, update_time
 `
 
 type CreateProjectWebhookSettingsParams struct {
@@ -387,8 +387,8 @@ func (q *Queries) CreateProjectWebhookSettings(ctx context.Context, arg CreatePr
 		&i.ID,
 		&i.ProjectID,
 		&i.AppID,
-		&i.CreatedAt,
-		&i.UpdatedAt,
+		&i.CreateTime,
+		&i.UpdateTime,
 	)
 	return i, err
 }
@@ -1174,7 +1174,7 @@ func (q *Queries) GetProjectUISettings(ctx context.Context, projectID uuid.UUID)
 
 const getProjectWebhookSettings = `-- name: GetProjectWebhookSettings :one
 SELECT
-    id, project_id, app_id, created_at, updated_at
+    id, project_id, app_id, create_time, update_time
 FROM
     project_webhook_settings
 WHERE
@@ -1188,8 +1188,8 @@ func (q *Queries) GetProjectWebhookSettings(ctx context.Context, projectID uuid.
 		&i.ID,
 		&i.ProjectID,
 		&i.AppID,
-		&i.CreatedAt,
-		&i.UpdatedAt,
+		&i.CreateTime,
+		&i.UpdateTime,
 	)
 	return i, err
 }
