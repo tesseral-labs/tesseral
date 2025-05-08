@@ -44,6 +44,7 @@ import {
   listUsers,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import { cn, titleCaseSlug } from '@/lib/utils';
+import { Input } from './ui/input';
 
 const ConsoleNavigation: FC = () => {
   const navigate = useNavigate();
@@ -410,6 +411,7 @@ const NavigationOrganizationPages = ({
 const NavigationUsers = () => {
   const { organizationId, userId } = useParams();
   const [open, setOpen] = useState(false);
+  const [q, setQ] = useState('');
 
   const { data: userResponse } = useQuery(getUser, {
     id: userId,
@@ -429,32 +431,80 @@ const NavigationUsers = () => {
           )}
         />
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="block w-[300px]">
-        <ul>
-          {listUsersResponse?.users?.map((user) => (
-            <li key={user.id}>
-              <DropdownMenuItem className="block w-full font-medium text-sm p-2">
-                <Link
-                  className="h-full w-full"
-                  id={user.id}
-                  to={`/organizations/${organizationId}/users/${user.id}`}
-                >
-                  <div className="flex items-center gap-2">
-                    <Avatar className="h-8 w-8 rounded-full">
-                      <AvatarFallback className="rounded-full bg-indigo-600 text-white font-semibold">
-                        {user.email?.substring(0, 1)?.toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="truncate">
-                      <div className="font-semibold">{user.email}</div>
-                      <div className="font-medium text-xs">{user.id}</div>
+      <DropdownMenuContent className="block">
+        <div className="grid grid-cols-2 pr-4">
+          <ul>
+            <li className="px-2 pt-2 font-semibold ">Recent users</li>
+            {listUsersResponse?.users?.map((user) => (
+              <li key={user.id}>
+                <DropdownMenuItem className="block w-full font-medium text-sm p-2">
+                  <Link
+                    className="h-full w-full"
+                    id={user.id}
+                    to={`/organizations/${organizationId}/users/${user.id}`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <Avatar className="h-8 w-8 rounded-full">
+                        <AvatarFallback className="rounded-full bg-indigo-600 text-white font-semibold">
+                          {user.email?.substring(0, 1)?.toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="truncate">
+                        <div className="font-semibold">{user.email}</div>
+                        <div className="font-medium text-xs">{user.id}</div>
+                      </div>
                     </div>
-                  </div>
-                </Link>
-              </DropdownMenuItem>
-            </li>
-          ))}
-        </ul>
+                  </Link>
+                </DropdownMenuItem>
+              </li>
+            ))}
+          </ul>
+          <div className="pl-4 mx-2 border-l w-full">
+            <div className="border-b w-full">
+              <Input
+                className="w-full rounded-none border-none border-bottom focus-visible:ring-0"
+                onChange={(e) => setQ(e.target.value)}
+                placeholder="Search by email or id..."
+                value={q}
+              />
+            </div>
+            <ul>
+              {q.length > 2 &&
+                listUsersResponse?.users
+                  ?.filter((user) => {
+                    return (
+                      user.email?.toLowerCase().includes(q.toLowerCase()) ||
+                      user.id?.toLowerCase().includes(q.toLowerCase())
+                    );
+                  })
+                  .map((user) => (
+                    <li key={user.id}>
+                      <DropdownMenuItem className="block w-full font-medium text-sm p-2">
+                        <Link
+                          className="h-full w-full"
+                          id={user.id}
+                          to={`/organizations/${organizationId}/users/${user.id}`}
+                        >
+                          <div className="flex items-center gap-2">
+                            <Avatar className="h-8 w-8 rounded-full">
+                              <AvatarFallback className="rounded-full bg-indigo-600 text-white font-semibold">
+                                {user.email?.substring(0, 1)?.toUpperCase()}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div className="truncate">
+                              <div className="font-semibold">{user.email}</div>
+                              <div className="font-medium text-xs">
+                                {user.id}
+                              </div>
+                            </div>
+                          </div>
+                        </Link>
+                      </DropdownMenuItem>
+                    </li>
+                  ))}
+            </ul>
+          </div>
+        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   );
