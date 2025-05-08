@@ -696,6 +696,9 @@ message GetUserInviteResponse {
 message CreateUserInviteRequest {
   // The User Invite to create.
   UserInvite user_invite = 1;
+
+  // Whether to send an email automatically as part of the invite.
+  bool send_email = 2;
 }
 
 message CreateUserInviteResponse {

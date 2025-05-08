@@ -828,6 +828,12 @@ paths:
                 - BackendService
             description: Create a User Invite.
             operationId: BackendService_CreateUserInvite
+            parameters:
+                - name: sendEmail
+                  in: query
+                  description: Whether to send an email automatically as part of the invite.
+                  schema:
+                    type: boolean
             requestBody:
                 content:
                     application/json:

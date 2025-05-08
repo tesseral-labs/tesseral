@@ -117,6 +117,7 @@ function InvitesCard() {
 const schema = z.object({
   email: z.string().email(),
   owner: z.boolean(),
+  sendEmail: z.boolean(),
 });
 
 function CreateUserInviteButton() {
@@ -137,6 +138,7 @@ function CreateUserInviteButton() {
     defaultValues: {
       email: "",
       owner: false,
+      sendEmail: true,
     },
   });
 
@@ -148,6 +150,7 @@ function CreateUserInviteButton() {
         email: values.email,
         owner: values.owner,
       },
+      sendEmail: values.sendEmail,
     });
     await refetchListUserInvites();
     setOpen(false);
@@ -204,6 +207,26 @@ function CreateUserInviteButton() {
                   </FormControl>
                   <FormDescription>
                     Whether the new user will join as an owner.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="sendEmail"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Send email</FormLabel>
+                  <FormControl>
+                    <Switch
+                      className="block"
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Send the new user an email notifying them of their invite.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

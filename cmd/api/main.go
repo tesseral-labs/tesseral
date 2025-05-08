@@ -219,8 +219,10 @@ func main() {
 	frontendStore := frontendstore.New(frontendstore.NewStoreParams{
 		DB:                                    db,
 		DogfoodProjectID:                      &uuidDogfoodProjectID,
+		ConsoleDomain:                         config.ConsoleDomain,
 		IntermediateSessionSigningKeyKMSKeyID: config.IntermediateSessionKMSKeyID,
 		KMS:                                   kms_,
+		SES:                                   ses_,
 		PageEncoder:                           pagetoken.Encoder{Secret: pageEncodingValue},
 		SessionSigningKeyKmsKeyID:             config.SessionKMSKeyID,
 		AuthenticatorAppSecretsKMSKeyID:       config.AuthenticatorAppSecretsKMSKeyID,

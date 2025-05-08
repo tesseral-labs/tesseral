@@ -1,10 +1,16 @@
 package store
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
+	"text/template"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/sesv2"
+	"github.com/aws/aws-sdk-go-v2/service/sesv2/types"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/tesseral-labs/tesseral/internal/backend/authn"
@@ -14,6 +20,10 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
+
+// defaultEmailQuotaDaily is the default number of emails a project may send per
+// day.
+var defaultEmailQuotaDaily int32 = 1000
 
 func (s *Store) ListUserInvites(ctx context.Context, req *backendv1.ListUserInvitesRequest) (*backendv1.ListUserInvitesResponse, error) {
 	_, q, _, rollback, err := s.tx(ctx)
@@ -100,15 +110,21 @@ func (s *Store) CreateUserInvite(ctx context.Context, req *backendv1.CreateUserI
 	}
 	defer rollback()
 
+	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get project by id: %w", err)
+	}
+
 	orgID, err := idformat.Organization.Parse(req.UserInvite.OrganizationId)
 	if err != nil {
 		return nil, fmt.Errorf("parse organization id: %w", err)
 	}
 
-	if _, err := q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
+	qOrg, err := q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
 		ProjectID: authn.ProjectID(ctx),
 		ID:        orgID,
-	}); err != nil {
+	})
+	if err != nil {
 		return nil, fmt.Errorf("get organization: %w", err)
 	}
 
@@ -135,8 +151,31 @@ func (s *Store) CreateUserInvite(ctx context.Context, req *backendv1.CreateUserI
 		return nil, fmt.Errorf("create user invite: %w", err)
 	}
 
+	qEmailDailyQuotaUsage, err := q.IncrementProjectEmailDailyQuotaUsage(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("increment project email daily quota usage: %w", err)
+	}
+
+	emailQuotaDaily := defaultEmailQuotaDaily
+	if qProject.EmailQuotaDaily != nil {
+		emailQuotaDaily = *qProject.EmailQuotaDaily
+	}
+
+	slog.InfoContext(ctx, "email_daily_quota_usage", "usage", qEmailDailyQuotaUsage.QuotaUsage, "quota", qProject.EmailQuotaDaily)
+
+	if qEmailDailyQuotaUsage.QuotaUsage > emailQuotaDaily {
+		slog.InfoContext(ctx, "email_daily_quota_exceeded")
+		return nil, apierror.NewFailedPreconditionError("email daily quota exceeded", fmt.Errorf("email daily quota exceeded"))
+	}
+
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
+	}
+
+	if req.SendEmail {
+		if err := s.sendUserInviteEmail(ctx, req.UserInvite.Email, qOrg.DisplayName); err != nil {
+			return nil, fmt.Errorf("send user invite email: %w", err)
+		}
 	}
 
 	return &backendv1.CreateUserInviteResponse{UserInvite: parseUserInvite(qUserInvite)}, nil
@@ -185,4 +224,63 @@ func parseUserInvite(qUserInvite queries.UserInvite) *backendv1.UserInvite {
 		Email:          qUserInvite.Email,
 		Owner:          qUserInvite.IsOwner,
 	}
+}
+
+var userInviteEmailBodyTmpl = template.Must(template.New("userInviteEmailBodyTmpl").Parse(`Hello,
+
+You have been invited to join {{ .OrganizationDisplayName }} in {{ .ProjectDisplayName }}.
+
+You can accept this invite by signing up for {{ .ProjectDisplayName }}:
+
+{{ .SignupLink }}
+`))
+
+func (s *Store) sendUserInviteEmail(ctx context.Context, toAddress string, organizationDisplayName string) error {
+	qProject, err := s.q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return fmt.Errorf("get project by id: %w", err)
+	}
+
+	subject := fmt.Sprintf("%s - You've been invited to join %s", qProject.DisplayName, organizationDisplayName)
+
+	vaultDomain := qProject.VaultDomain
+	if authn.ProjectID(ctx) == *s.dogfoodProjectID {
+		vaultDomain = s.consoleDomain
+	}
+
+	var body bytes.Buffer
+	if err := userInviteEmailBodyTmpl.Execute(&body, struct {
+		ProjectDisplayName      string
+		OrganizationDisplayName string
+		SignupLink              string
+	}{
+		ProjectDisplayName:      qProject.DisplayName,
+		OrganizationDisplayName: organizationDisplayName,
+		SignupLink:              fmt.Sprintf("https://%s/signup", vaultDomain),
+	}); err != nil {
+		return fmt.Errorf("execute email verification email body template: %w", err)
+	}
+
+	if _, err := s.ses.SendEmail(ctx, &sesv2.SendEmailInput{
+		Content: &types.EmailContent{
+			Simple: &types.Message{
+				Subject: &types.Content{
+					Data: &subject,
+				},
+				Body: &types.Body{
+					Text: &types.Content{
+						Data: aws.String(body.String()),
+					},
+				},
+			},
+		},
+		Destination: &types.Destination{
+			ToAddresses: []string{toAddress},
+		},
+		FromEmailAddress: aws.String(fmt.Sprintf("noreply@%s", qProject.EmailSendFromDomain)),
+	}); err != nil {
+		return fmt.Errorf("send email: %w", err)
+	}
+
+	return nil
 }
