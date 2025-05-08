@@ -827,8 +827,9 @@ message GetProjectUISettingsResponse {
 message UpdateProjectUISettingsRequest {
   string log_in_layout = 1;
   optional string primary_color = 2;
-  bool detect_dark_mode_enabled = 3;
+  optional bool detect_dark_mode_enabled = 3;
   optional string dark_mode_primary_color = 4;
+  optional bool auto_create_organizations = 5;
 }
 
 message UpdateProjectUISettingsResponse {
@@ -843,6 +844,7 @@ message UpdateProjectUISettingsResponse {
   bool detect_dark_mode_enabled = 9;
   string primary_color = 10;
   string log_in_layout = 11;
+  bool auto_create_organizations = 12;
 }
 
 message DisableOrganizationLoginsRequest {

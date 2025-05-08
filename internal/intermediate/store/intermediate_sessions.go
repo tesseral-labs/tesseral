@@ -132,5 +132,6 @@ func parseIntermediateSession(qIntermediateSession queries.IntermediateSession, 
 		PrimaryAuthFactor:                    primaryAuthFactor,
 		NewUserPasswordRegistered:            qIntermediateSession.NewUserPasswordBcrypt != nil,
 		OrganizationId:                       organizationID,
+		UserDisplayName:                      derefOrEmpty(qIntermediateSession.UserDisplayName),
 	}
 }
