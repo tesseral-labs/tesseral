@@ -7,16 +7,26 @@ import { useNavigate } from "react-router";
 import { Link, useSearchParams } from "react-router-dom";
 import { z } from "zod";
 
-
-
 import { Title } from "@/components/Title";
 import { GoogleIcon } from "@/components/login/GoogleIcon";
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
 import { MicrosoftIcon } from "@/components/login/MicrosoftIcon";
 import { UISettingsInjector } from "@/components/login/UISettingsInjector";
 import { Button } from "@/components/ui/button";
-import { CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
   createIntermediateSession,
@@ -26,11 +36,10 @@ import {
   listSAMLOrganizations,
   setEmailAsPrimaryLoginFactor,
 } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
-import { ProjectSettingsProvider, useProjectSettings } from "@/lib/project-settings";
-
-
-
-
+import {
+  ProjectSettingsProvider,
+  useProjectSettings,
+} from "@/lib/project-settings";
 
 export function SignupPage() {
   return (
