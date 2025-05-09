@@ -1,4 +1,4 @@
-import { useMutation } from "@connectrpc/connect-query";
+import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoaderCircleIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
@@ -7,38 +7,30 @@ import { useNavigate } from "react-router";
 import { Link, useSearchParams } from "react-router-dom";
 import { z } from "zod";
 
+
+
 import { Title } from "@/components/Title";
 import { GoogleIcon } from "@/components/login/GoogleIcon";
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
 import { MicrosoftIcon } from "@/components/login/MicrosoftIcon";
 import { UISettingsInjector } from "@/components/login/UISettingsInjector";
 import { Button } from "@/components/ui/button";
-import {
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
   createIntermediateSession,
   getGoogleOAuthRedirectURL,
   getMicrosoftOAuthRedirectURL,
   issueEmailVerificationChallenge,
+  listSAMLOrganizations,
   setEmailAsPrimaryLoginFactor,
 } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
-import {
-  ProjectSettingsProvider,
-  useProjectSettings,
-} from "@/lib/project-settings";
+import { ProjectSettingsProvider, useProjectSettings } from "@/lib/project-settings";
+
+
+
+
 
 export function SignupPage() {
   return (
@@ -171,6 +163,23 @@ function SignupPageContents() {
     navigate("/verify-email");
   }
 
+  const watchEmail = form.watch("email");
+  const [debouncedEmail, setDebouncedEmail] = useState("");
+  useEffect(() => {
+    const interval = setInterval(() => setDebouncedEmail(watchEmail), 250);
+    return () => clearInterval(interval);
+  }, [watchEmail]);
+
+  const { data: listSAMLOrganizationsResponse } = useQuery(
+    listSAMLOrganizations,
+    {
+      email: debouncedEmail,
+    },
+    {
+      enabled: settings.logInWithSaml && debouncedEmail.includes("@"),
+    },
+  );
+
   const hasAboveFoldMethod =
     settings.logInWithGoogle || settings.logInWithMicrosoft;
   const hasBelowFoldMethod = settings.logInWithEmail || settings.logInWithSaml;
@@ -244,6 +253,17 @@ function SignupPageContents() {
                 )}
                 Sign up
               </Button>
+
+              {listSAMLOrganizationsResponse?.organizations?.map(org => (
+                <a key={org.id} href={`/api/saml/v1/${org.primarySamlConnectionId}/init`}>
+                  <Button
+                    type="button"
+                    className="mt-4 w-full"
+                  >
+                    Log in with SAML ({org.displayName})
+                  </Button>
+                </a>
+              ))}
             </form>
           </Form>
         )}
