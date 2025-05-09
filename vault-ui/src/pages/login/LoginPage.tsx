@@ -191,9 +191,7 @@ function LoginPageContents() {
 
   const hasAboveFoldMethod =
     settings.logInWithGoogle || settings.logInWithMicrosoft;
-  const hasBelowFoldMethod =
-    settings.logInWithEmail ||
-    settings.logInWithSaml;
+  const hasBelowFoldMethod = settings.logInWithEmail || settings.logInWithSaml;
 
   return (
     <LoginFlowCard>
@@ -265,12 +263,12 @@ function LoginPageContents() {
                 Log in
               </Button>
 
-              {listSAMLOrganizationsResponse?.organizations?.map(org => (
-                <a key={org.id} href={`/api/saml/v1/${org.primarySamlConnectionId}/init`}>
-                  <Button
-                    type="button"
-                    className="mt-4 w-full"
-                  >
+              {listSAMLOrganizationsResponse?.organizations?.map((org) => (
+                <a
+                  key={org.id}
+                  href={`/api/saml/v1/${org.primarySamlConnectionId}/init`}
+                >
+                  <Button type="button" className="mt-4 w-full">
                     Log in with SAML ({org.displayName})
                   </Button>
                 </a>
