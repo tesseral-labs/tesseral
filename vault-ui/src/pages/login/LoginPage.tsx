@@ -1,4 +1,4 @@
-import { useMutation } from "@connectrpc/connect-query";
+import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoaderCircleIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
@@ -33,6 +33,7 @@ import {
   getGoogleOAuthRedirectURL,
   getMicrosoftOAuthRedirectURL,
   issueEmailVerificationChallenge,
+  listSAMLOrganizations,
   setEmailAsPrimaryLoginFactor,
 } from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
 import {
@@ -171,6 +172,23 @@ function LoginPageContents() {
     navigate("/verify-email");
   }
 
+  const watchEmail = form.watch("email");
+  const [debouncedEmail, setDebouncedEmail] = useState("");
+  useEffect(() => {
+    const interval = setInterval(() => setDebouncedEmail(watchEmail), 250);
+    return () => clearInterval(interval);
+  }, [watchEmail]);
+
+  const { data: listSAMLOrganizationsResponse } = useQuery(
+    listSAMLOrganizations,
+    {
+      email: debouncedEmail,
+    },
+    {
+      enabled: settings.logInWithSaml && debouncedEmail.includes("@"),
+    },
+  );
+
   const hasAboveFoldMethod =
     settings.logInWithGoogle || settings.logInWithMicrosoft;
   const hasBelowFoldMethod = settings.logInWithEmail || settings.logInWithSaml;
@@ -244,6 +262,17 @@ function LoginPageContents() {
                 )}
                 Log in
               </Button>
+
+              {listSAMLOrganizationsResponse?.organizations?.map((org) => (
+                <a
+                  key={org.id}
+                  href={`/api/saml/v1/${org.primarySamlConnectionId}/init`}
+                >
+                  <Button type="button" className="mt-4 w-full">
+                    Log in with SAML ({org.displayName})
+                  </Button>
+                </a>
+              ))}
             </form>
           </Form>
         )}
