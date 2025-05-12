@@ -6,7 +6,6 @@ import (
 	"crypto/x509"
 	"errors"
 	"fmt"
-	"time"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
@@ -21,11 +20,9 @@ func (s *Store) GetSessionSigningKeyPublicKey(ctx context.Context, sessionSignin
 		return nil, err
 	}
 
-	now := time.Now()
 	publicKeyBytes, err := s.q.GetSessionSigningKeyPublicKey(ctx, queries.GetSessionSigningKeyPublicKeyParams{
 		ProjectID: authn.ProjectID(ctx),
 		ID:        sessionSigningKeyUUID,
-		Now:       &now,
 	})
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
