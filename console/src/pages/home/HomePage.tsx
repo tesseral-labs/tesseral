@@ -90,7 +90,7 @@ export function HomePage() {
           <CardContent>
             <h2 className="text-lg font-semibold">Get more out of Tesseral</h2>
             <p className="text-sm text-muted-foreground">
-              Upgrade to a the Growth tier to unlock more features and support.
+              Upgrade to the Growth tier to unlock more features and support.
             </p>
 
             <div className="flex items-center gap-x-4 mt-4">
