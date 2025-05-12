@@ -336,9 +336,7 @@ type BackendServiceClient interface {
 	CreateUserInvite(context.Context, *connect.Request[v1.CreateUserInviteRequest]) (*connect.Response[v1.CreateUserInviteResponse], error)
 	// Delete a User Invite.
 	DeleteUserInvite(context.Context, *connect.Request[v1.DeleteUserInviteRequest]) (*connect.Response[v1.DeleteUserInviteResponse], error)
-	// Get RBAC Policy.
 	GetRBACPolicy(context.Context, *connect.Request[v1.GetRBACPolicyRequest]) (*connect.Response[v1.GetRBACPolicyResponse], error)
-	// Update RBAC Policy.
 	UpdateRBACPolicy(context.Context, *connect.Request[v1.UpdateRBACPolicyRequest]) (*connect.Response[v1.UpdateRBACPolicyResponse], error)
 	// List Roles.
 	ListRoles(context.Context, *connect.Request[v1.ListRolesRequest]) (*connect.Response[v1.ListRolesResponse], error)
@@ -1388,9 +1386,7 @@ type BackendServiceHandler interface {
 	CreateUserInvite(context.Context, *connect.Request[v1.CreateUserInviteRequest]) (*connect.Response[v1.CreateUserInviteResponse], error)
 	// Delete a User Invite.
 	DeleteUserInvite(context.Context, *connect.Request[v1.DeleteUserInviteRequest]) (*connect.Response[v1.DeleteUserInviteResponse], error)
-	// Get RBAC Policy.
 	GetRBACPolicy(context.Context, *connect.Request[v1.GetRBACPolicyRequest]) (*connect.Response[v1.GetRBACPolicyResponse], error)
-	// Update RBAC Policy.
 	UpdateRBACPolicy(context.Context, *connect.Request[v1.UpdateRBACPolicyRequest]) (*connect.Response[v1.UpdateRBACPolicyResponse], error)
 	// List Roles.
 	ListRoles(context.Context, *connect.Request[v1.ListRolesRequest]) (*connect.Response[v1.ListRolesResponse], error)

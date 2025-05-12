@@ -176,9 +176,7 @@ type BackendServiceClient interface {
 	CreateUserInvite(ctx context.Context, in *CreateUserInviteRequest, opts ...grpc.CallOption) (*CreateUserInviteResponse, error)
 	// Delete a User Invite.
 	DeleteUserInvite(ctx context.Context, in *DeleteUserInviteRequest, opts ...grpc.CallOption) (*DeleteUserInviteResponse, error)
-	// Get RBAC Policy.
 	GetRBACPolicy(ctx context.Context, in *GetRBACPolicyRequest, opts ...grpc.CallOption) (*GetRBACPolicyResponse, error)
-	// Update RBAC Policy.
 	UpdateRBACPolicy(ctx context.Context, in *UpdateRBACPolicyRequest, opts ...grpc.CallOption) (*UpdateRBACPolicyResponse, error)
 	// List Roles.
 	ListRoles(ctx context.Context, in *ListRolesRequest, opts ...grpc.CallOption) (*ListRolesResponse, error)
@@ -1064,9 +1062,7 @@ type BackendServiceServer interface {
 	CreateUserInvite(context.Context, *CreateUserInviteRequest) (*CreateUserInviteResponse, error)
 	// Delete a User Invite.
 	DeleteUserInvite(context.Context, *DeleteUserInviteRequest) (*DeleteUserInviteResponse, error)
-	// Get RBAC Policy.
 	GetRBACPolicy(context.Context, *GetRBACPolicyRequest) (*GetRBACPolicyResponse, error)
-	// Update RBAC Policy.
 	UpdateRBACPolicy(context.Context, *UpdateRBACPolicyRequest) (*UpdateRBACPolicyResponse, error)
 	// List Roles.
 	ListRoles(context.Context, *ListRolesRequest) (*ListRolesResponse, error)

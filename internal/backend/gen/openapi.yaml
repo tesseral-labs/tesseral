@@ -439,49 +439,6 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /v1/rbac-policy:
-        get:
-            tags:
-                - BackendService
-            description: Get RBAC Policy.
-            operationId: BackendService_GetRBACPolicy
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/GetRBACPolicyResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-        patch:
-            tags:
-                - BackendService
-            description: Update RBAC Policy.
-            operationId: BackendService_UpdateRBACPolicy
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/RBACPolicy'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/UpdateRBACPolicyResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
     /v1/roles:
         get:
             tags:
@@ -1321,16 +1278,6 @@ paths:
                                 $ref: '#/components/schemas/Status'
 components:
     schemas:
-        Action:
-            type: object
-            properties:
-                name:
-                    type: string
-                    description: The unique name of the Action.
-                description:
-                    type: string
-                    description: A human-readable description of the Action.
-            description: Action represents a permission within a Project.
         CreateOrganizationResponse:
             type: object
             properties:
@@ -1442,11 +1389,6 @@ components:
                     allOf:
                         - $ref: '#/components/schemas/Project'
                     description: The requested Project.
-        GetRBACPolicyResponse:
-            type: object
-            properties:
-                rbacPolicy:
-                    $ref: '#/components/schemas/RBACPolicy'
         GetRoleResponse:
             type: object
             properties:
@@ -1830,17 +1772,6 @@ components:
                 Projects are the top-level object in Tesseral.
 
                  Everything in Tesseral happens within the context of a Project.
-        RBACPolicy:
-            type: object
-            properties:
-                actions:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/Action'
-                    description: The set of valid Actions for this Project.
-            description: |-
-                RBACPolicy represents a Project's configuration for Role-Based Access Control
-                 (RBAC).
         RevokeSCIMAPIKeyResponse:
             type: object
             properties:
@@ -2023,11 +1954,6 @@ components:
                     allOf:
                         - $ref: '#/components/schemas/Passkey'
                     description: The updated Passkey.
-        UpdateRBACPolicyResponse:
-            type: object
-            properties:
-                rbacPolicy:
-                    $ref: '#/components/schemas/RBACPolicy'
         UpdateRoleResponse:
             type: object
             properties:

@@ -53,7 +53,7 @@ func (s *Store) UpdateRBACPolicy(ctx context.Context, req *backendv1.UpdateRBACP
 		}
 	}
 
-	var names []string
+	names := []string{} // initialize because passing NULL has the wrong behavior in the postgres query
 	for _, action := range req.RbacPolicy.Actions {
 		names = append(names, action.Name)
 		if err := q.UpsertAction(ctx, queries.UpsertActionParams{

@@ -271,15 +271,11 @@ export const createUserInvite = BackendService.method.createUserInvite;
 export const deleteUserInvite = BackendService.method.deleteUserInvite;
 
 /**
- * Get RBAC Policy.
- *
  * @generated from rpc tesseral.backend.v1.BackendService.GetRBACPolicy
  */
 export const getRBACPolicy = BackendService.method.getRBACPolicy;
 
 /**
- * Update RBAC Policy.
- *
  * @generated from rpc tesseral.backend.v1.BackendService.UpdateRBACPolicy
  */
 export const updateRBACPolicy = BackendService.method.updateRBACPolicy;

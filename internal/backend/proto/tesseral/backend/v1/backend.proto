@@ -236,18 +236,8 @@ service BackendService {
     option (google.api.http) = {delete: "/v1/user-invites/{id}"};
   }
 
-  // Get RBAC Policy.
-  rpc GetRBACPolicy(GetRBACPolicyRequest) returns (GetRBACPolicyResponse) {
-    option (google.api.http) = {get: "/v1/rbac-policy"};
-  }
-
-  // Update RBAC Policy.
-  rpc UpdateRBACPolicy(UpdateRBACPolicyRequest) returns (UpdateRBACPolicyResponse) {
-    option (google.api.http) = {
-      patch: "/v1/rbac-policy"
-      body: "rbac_policy"
-    };
-  }
+  rpc GetRBACPolicy(GetRBACPolicyRequest) returns (GetRBACPolicyResponse);
+  rpc UpdateRBACPolicy(UpdateRBACPolicyRequest) returns (UpdateRBACPolicyResponse);
 
   // List Roles.
   rpc ListRoles(ListRolesRequest) returns (ListRolesResponse) {
