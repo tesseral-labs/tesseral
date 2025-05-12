@@ -12,6 +12,35 @@ import (
 	"github.com/google/uuid"
 )
 
+const batchGetRoleActionsByRoleID = `-- name: BatchGetRoleActionsByRoleID :many
+SELECT
+    id, role_id, action_id
+FROM
+    role_actions
+WHERE
+    role_id = ANY ($1::uuid[])
+`
+
+func (q *Queries) BatchGetRoleActionsByRoleID(ctx context.Context, dollar_1 []uuid.UUID) ([]RoleAction, error) {
+	rows, err := q.db.Query(ctx, batchGetRoleActionsByRoleID, dollar_1)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []RoleAction
+	for rows.Next() {
+		var i RoleAction
+		if err := rows.Scan(&i.ID, &i.RoleID, &i.ActionID); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const createOrganizationGoogleHostedDomain = `-- name: CreateOrganizationGoogleHostedDomain :one
 INSERT INTO organization_google_hosted_domains (id, organization_id, google_hosted_domain)
     VALUES ($1, $2, $3)
@@ -88,6 +117,42 @@ func (q *Queries) CreatePasskey(ctx context.Context, arg CreatePasskeyParams) (P
 		&i.Aaguid,
 		&i.Disabled,
 		&i.RpID,
+	)
+	return i, err
+}
+
+const createRole = `-- name: CreateRole :one
+INSERT INTO roles (id, project_id, organization_id, display_name, description)
+    VALUES ($1, $2, $3, $4, $5)
+RETURNING
+    id, project_id, organization_id, create_time, update_time, display_name, description
+`
+
+type CreateRoleParams struct {
+	ID             uuid.UUID
+	ProjectID      uuid.UUID
+	OrganizationID *uuid.UUID
+	DisplayName    string
+	Description    string
+}
+
+func (q *Queries) CreateRole(ctx context.Context, arg CreateRoleParams) (Role, error) {
+	row := q.db.QueryRow(ctx, createRole,
+		arg.ID,
+		arg.ProjectID,
+		arg.OrganizationID,
+		arg.DisplayName,
+		arg.Description,
+	)
+	var i Role
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.OrganizationID,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.DisplayName,
+		&i.Description,
 	)
 	return i, err
 }
@@ -243,7 +308,7 @@ ON CONFLICT (organization_id, email)
         email = excluded.email,
         is_owner = excluded.is_owner
     RETURNING
-        id, organization_id, create_time, update_time, email, is_owner
+        id, organization_id, create_time, update_time, email, is_owner, role_id
 `
 
 type CreateUserInviteParams struct {
@@ -268,6 +333,7 @@ func (q *Queries) CreateUserInvite(ctx context.Context, arg CreateUserInvitePara
 		&i.UpdateTime,
 		&i.Email,
 		&i.IsOwner,
+		&i.RoleID,
 	)
 	return i, err
 }
@@ -299,6 +365,32 @@ WHERE id = $1
 
 func (q *Queries) DeletePasskey(ctx context.Context, id uuid.UUID) error {
 	_, err := q.db.Exec(ctx, deletePasskey, id)
+	return err
+}
+
+const deleteRole = `-- name: DeleteRole :exec
+DELETE FROM roles
+WHERE id = $1
+`
+
+func (q *Queries) DeleteRole(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteRole, id)
+	return err
+}
+
+const deleteRoleActionsByActionIDNotInList = `-- name: DeleteRoleActionsByActionIDNotInList :exec
+DELETE FROM role_actions
+WHERE role_id = $1
+    AND NOT (action_id = ANY ($2::uuid[]))
+`
+
+type DeleteRoleActionsByActionIDNotInListParams struct {
+	RoleID    uuid.UUID
+	ActionIds []uuid.UUID
+}
+
+func (q *Queries) DeleteRoleActionsByActionIDNotInList(ctx context.Context, arg DeleteRoleActionsByActionIDNotInListParams) error {
+	_, err := q.db.Exec(ctx, deleteRoleActionsByActionIDNotInList, arg.RoleID, arg.ActionIds)
 	return err
 }
 
@@ -352,6 +444,16 @@ func (q *Queries) DeleteUserInvite(ctx context.Context, id uuid.UUID) error {
 	return err
 }
 
+const deleteUserRoleAssignment = `-- name: DeleteUserRoleAssignment :exec
+DELETE FROM user_role_assignments
+WHERE id = $1
+`
+
+func (q *Queries) DeleteUserRoleAssignment(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteUserRoleAssignment, id)
+	return err
+}
+
 const existsUserWithEmail = `-- name: ExistsUserWithEmail :one
 SELECT
     EXISTS (
@@ -374,6 +476,40 @@ func (q *Queries) ExistsUserWithEmail(ctx context.Context, arg ExistsUserWithEma
 	var exists bool
 	err := row.Scan(&exists)
 	return exists, err
+}
+
+const getActions = `-- name: GetActions :many
+SELECT
+    id, project_id, name, description
+FROM
+    actions
+WHERE
+    project_id = $1
+`
+
+func (q *Queries) GetActions(ctx context.Context, projectID uuid.UUID) ([]Action, error) {
+	rows, err := q.db.Query(ctx, getActions, projectID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Action
+	for rows.Next() {
+		var i Action
+		if err := rows.Scan(
+			&i.ID,
+			&i.ProjectID,
+			&i.Name,
+			&i.Description,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const getCurrentSessionKeyByProjectID = `-- name: GetCurrentSessionKeyByProjectID :one
@@ -404,7 +540,7 @@ func (q *Queries) GetCurrentSessionKeyByProjectID(ctx context.Context, projectID
 
 const getOrganizationByID = `-- name: GetOrganizationByID :one
 SELECT
-    id, project_id, display_name, scim_enabled, create_time, update_time, logins_disabled, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_authenticator_app, log_in_with_passkey, require_mfa, log_in_with_email, log_in_with_saml
+    id, project_id, display_name, scim_enabled, create_time, update_time, logins_disabled, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_authenticator_app, log_in_with_passkey, require_mfa, log_in_with_email, log_in_with_saml, custom_roles_enabled
 FROM
     organizations
 WHERE
@@ -430,6 +566,7 @@ func (q *Queries) GetOrganizationByID(ctx context.Context, id uuid.UUID) (Organi
 		&i.RequireMfa,
 		&i.LogInWithEmail,
 		&i.LogInWithSaml,
+		&i.CustomRolesEnabled,
 	)
 	return i, err
 }
@@ -627,6 +764,71 @@ func (q *Queries) GetProjectWebhookSettings(ctx context.Context, projectID uuid.
 		&i.AppID,
 		&i.CreateTime,
 		&i.UpdateTime,
+	)
+	return i, err
+}
+
+const getRole = `-- name: GetRole :one
+SELECT
+    id, project_id, organization_id, create_time, update_time, display_name, description
+FROM
+    roles
+WHERE
+    id = $1
+    AND project_id = $2
+    AND (organization_id IS NULL
+        OR organization_id = $3)
+`
+
+type GetRoleParams struct {
+	ID             uuid.UUID
+	ProjectID      uuid.UUID
+	OrganizationID *uuid.UUID
+}
+
+func (q *Queries) GetRole(ctx context.Context, arg GetRoleParams) (Role, error) {
+	row := q.db.QueryRow(ctx, getRole, arg.ID, arg.ProjectID, arg.OrganizationID)
+	var i Role
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.OrganizationID,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.DisplayName,
+		&i.Description,
+	)
+	return i, err
+}
+
+const getRoleInOrganization = `-- name: GetRoleInOrganization :one
+SELECT
+    id, project_id, organization_id, create_time, update_time, display_name, description
+FROM
+    roles
+WHERE
+    id = $1
+    AND project_id = $2
+    AND organization_id = $3
+`
+
+type GetRoleInOrganizationParams struct {
+	ID             uuid.UUID
+	ProjectID      uuid.UUID
+	OrganizationID *uuid.UUID
+}
+
+func (q *Queries) GetRoleInOrganization(ctx context.Context, arg GetRoleInOrganizationParams) (Role, error) {
+	row := q.db.QueryRow(ctx, getRoleInOrganization, arg.ID, arg.ProjectID, arg.OrganizationID)
+	var i Role
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.OrganizationID,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.DisplayName,
+		&i.Description,
 	)
 	return i, err
 }
@@ -868,7 +1070,7 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 
 const getUserInvite = `-- name: GetUserInvite :one
 SELECT
-    id, organization_id, create_time, update_time, email, is_owner
+    id, organization_id, create_time, update_time, email, is_owner, role_id
 FROM
     user_invites
 WHERE
@@ -891,6 +1093,7 @@ func (q *Queries) GetUserInvite(ctx context.Context, arg GetUserInviteParams) (U
 		&i.UpdateTime,
 		&i.Email,
 		&i.IsOwner,
+		&i.RoleID,
 	)
 	return i, err
 }
@@ -924,6 +1127,54 @@ func (q *Queries) GetUserPasskey(ctx context.Context, arg GetUserPasskeyParams) 
 		&i.Disabled,
 		&i.RpID,
 	)
+	return i, err
+}
+
+const getUserRoleAssignment = `-- name: GetUserRoleAssignment :one
+SELECT
+    user_role_assignments.id, user_role_assignments.role_id, user_role_assignments.user_id
+FROM
+    user_role_assignments
+    JOIN roles ON user_role_assignments.role_id = roles.id
+WHERE
+    public.user_role_assignments.id = $1
+    AND roles.project_id = $2
+    AND (roles.organization_id IS NULL
+        OR roles.organization_id = $3)
+`
+
+type GetUserRoleAssignmentParams struct {
+	ID             uuid.UUID
+	ProjectID      uuid.UUID
+	OrganizationID *uuid.UUID
+}
+
+func (q *Queries) GetUserRoleAssignment(ctx context.Context, arg GetUserRoleAssignmentParams) (UserRoleAssignment, error) {
+	row := q.db.QueryRow(ctx, getUserRoleAssignment, arg.ID, arg.ProjectID, arg.OrganizationID)
+	var i UserRoleAssignment
+	err := row.Scan(&i.ID, &i.RoleID, &i.UserID)
+	return i, err
+}
+
+const getUserRoleAssignmentByUserAndRole = `-- name: GetUserRoleAssignmentByUserAndRole :one
+SELECT
+    id, role_id, user_id
+FROM
+    user_role_assignments
+WHERE
+    user_id = $1
+    AND role_id = $2
+`
+
+type GetUserRoleAssignmentByUserAndRoleParams struct {
+	UserID uuid.UUID
+	RoleID uuid.UUID
+}
+
+func (q *Queries) GetUserRoleAssignmentByUserAndRole(ctx context.Context, arg GetUserRoleAssignmentByUserAndRoleParams) (UserRoleAssignment, error) {
+	row := q.db.QueryRow(ctx, getUserRoleAssignmentByUserAndRole, arg.UserID, arg.RoleID)
+	var i UserRoleAssignment
+	err := row.Scan(&i.ID, &i.RoleID, &i.UserID)
 	return i, err
 }
 
@@ -997,6 +1248,61 @@ func (q *Queries) ListPasskeys(ctx context.Context, arg ListPasskeysParams) ([]P
 			&i.Aaguid,
 			&i.Disabled,
 			&i.RpID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listRoles = `-- name: ListRoles :many
+SELECT
+    id, project_id, organization_id, create_time, update_time, display_name, description
+FROM
+    roles
+WHERE
+    project_id = $1
+    AND (organization_id IS NULL
+        OR organization_id = $2)
+    AND id >= $3
+ORDER BY
+    id
+LIMIT $4
+`
+
+type ListRolesParams struct {
+	ProjectID      uuid.UUID
+	OrganizationID *uuid.UUID
+	ID             uuid.UUID
+	Limit          int32
+}
+
+func (q *Queries) ListRoles(ctx context.Context, arg ListRolesParams) ([]Role, error) {
+	rows, err := q.db.Query(ctx, listRoles,
+		arg.ProjectID,
+		arg.OrganizationID,
+		arg.ID,
+		arg.Limit,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Role
+	for rows.Next() {
+		var i Role
+		if err := rows.Scan(
+			&i.ID,
+			&i.ProjectID,
+			&i.OrganizationID,
+			&i.CreateTime,
+			&i.UpdateTime,
+			&i.DisplayName,
+			&i.Description,
 		); err != nil {
 			return nil, err
 		}
@@ -1152,7 +1458,7 @@ func (q *Queries) ListSwitchableOrganizations(ctx context.Context, arg ListSwitc
 
 const listUserInvites = `-- name: ListUserInvites :many
 SELECT
-    id, organization_id, create_time, update_time, email, is_owner
+    id, organization_id, create_time, update_time, email, is_owner, role_id
 FROM
     user_invites
 WHERE
@@ -1185,7 +1491,86 @@ func (q *Queries) ListUserInvites(ctx context.Context, arg ListUserInvitesParams
 			&i.UpdateTime,
 			&i.Email,
 			&i.IsOwner,
+			&i.RoleID,
 		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listUserRoleAssignmentsByRole = `-- name: ListUserRoleAssignmentsByRole :many
+SELECT
+    id, role_id, user_id
+FROM
+    user_role_assignments
+WHERE
+    role_id = $1
+    AND id >= $2
+ORDER BY
+    id
+LIMIT $3
+`
+
+type ListUserRoleAssignmentsByRoleParams struct {
+	RoleID uuid.UUID
+	ID     uuid.UUID
+	Limit  int32
+}
+
+func (q *Queries) ListUserRoleAssignmentsByRole(ctx context.Context, arg ListUserRoleAssignmentsByRoleParams) ([]UserRoleAssignment, error) {
+	rows, err := q.db.Query(ctx, listUserRoleAssignmentsByRole, arg.RoleID, arg.ID, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []UserRoleAssignment
+	for rows.Next() {
+		var i UserRoleAssignment
+		if err := rows.Scan(&i.ID, &i.RoleID, &i.UserID); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listUserRoleAssignmentsByUser = `-- name: ListUserRoleAssignmentsByUser :many
+SELECT
+    id, role_id, user_id
+FROM
+    user_role_assignments
+WHERE
+    user_id = $1
+    AND id >= $2
+ORDER BY
+    id
+LIMIT $3
+`
+
+type ListUserRoleAssignmentsByUserParams struct {
+	UserID uuid.UUID
+	ID     uuid.UUID
+	Limit  int32
+}
+
+func (q *Queries) ListUserRoleAssignmentsByUser(ctx context.Context, arg ListUserRoleAssignmentsByUserParams) ([]UserRoleAssignment, error) {
+	rows, err := q.db.Query(ctx, listUserRoleAssignmentsByUser, arg.UserID, arg.ID, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []UserRoleAssignment
+	for rows.Next() {
+		var i UserRoleAssignment
+		if err := rows.Scan(&i.ID, &i.RoleID, &i.UserID); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -1339,7 +1724,7 @@ SET
 WHERE
     id = $1
 RETURNING
-    id, project_id, display_name, scim_enabled, create_time, update_time, logins_disabled, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_authenticator_app, log_in_with_passkey, require_mfa, log_in_with_email, log_in_with_saml
+    id, project_id, display_name, scim_enabled, create_time, update_time, logins_disabled, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_authenticator_app, log_in_with_passkey, require_mfa, log_in_with_email, log_in_with_saml, custom_roles_enabled
 `
 
 type UpdateOrganizationParams struct {
@@ -1383,6 +1768,7 @@ func (q *Queries) UpdateOrganization(ctx context.Context, arg UpdateOrganization
 		&i.RequireMfa,
 		&i.LogInWithEmail,
 		&i.LogInWithSaml,
+		&i.CustomRolesEnabled,
 	)
 	return i, err
 }
@@ -1404,6 +1790,40 @@ type UpdatePrimarySAMLConnectionParams struct {
 func (q *Queries) UpdatePrimarySAMLConnection(ctx context.Context, arg UpdatePrimarySAMLConnectionParams) error {
 	_, err := q.db.Exec(ctx, updatePrimarySAMLConnection, arg.ID, arg.OrganizationID)
 	return err
+}
+
+const updateRole = `-- name: UpdateRole :one
+UPDATE
+    roles
+SET
+    update_time = now(),
+    display_name = $2,
+    description = $3
+WHERE
+    id = $1
+RETURNING
+    id, project_id, organization_id, create_time, update_time, display_name, description
+`
+
+type UpdateRoleParams struct {
+	ID          uuid.UUID
+	DisplayName string
+	Description string
+}
+
+func (q *Queries) UpdateRole(ctx context.Context, arg UpdateRoleParams) (Role, error) {
+	row := q.db.QueryRow(ctx, updateRole, arg.ID, arg.DisplayName, arg.Description)
+	var i Role
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.OrganizationID,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.DisplayName,
+		&i.Description,
+	)
+	return i, err
 }
 
 const updateSAMLConnection = `-- name: UpdateSAMLConnection :one
@@ -1567,4 +1987,40 @@ func (q *Queries) UpdateUserAuthenticatorApp(ctx context.Context, arg UpdateUser
 		&i.ProfilePictureUrl,
 	)
 	return i, err
+}
+
+const upsertRoleAction = `-- name: UpsertRoleAction :exec
+INSERT INTO role_actions (id, role_id, action_id)
+    VALUES ($1, $2, $3)
+ON CONFLICT (role_id, action_id)
+    DO NOTHING
+`
+
+type UpsertRoleActionParams struct {
+	ID       uuid.UUID
+	RoleID   uuid.UUID
+	ActionID uuid.UUID
+}
+
+func (q *Queries) UpsertRoleAction(ctx context.Context, arg UpsertRoleActionParams) error {
+	_, err := q.db.Exec(ctx, upsertRoleAction, arg.ID, arg.RoleID, arg.ActionID)
+	return err
+}
+
+const upsertUserRoleAssignment = `-- name: UpsertUserRoleAssignment :exec
+INSERT INTO user_role_assignments (id, role_id, user_id)
+    VALUES ($1, $2, $3)
+ON CONFLICT (role_id, user_id)
+    DO NOTHING
+`
+
+type UpsertUserRoleAssignmentParams struct {
+	ID     uuid.UUID
+	RoleID uuid.UUID
+	UserID uuid.UUID
+}
+
+func (q *Queries) UpsertUserRoleAssignment(ctx context.Context, arg UpsertUserRoleAssignmentParams) error {
+	_, err := q.db.Exec(ctx, upsertUserRoleAssignment, arg.ID, arg.RoleID, arg.UserID)
+	return err
 }

@@ -143,6 +143,13 @@ func (ns NullPrimaryAuthFactor) Value() (driver.Value, error) {
 	return string(ns.PrimaryAuthFactor), nil
 }
 
+type Action struct {
+	ID          uuid.UUID
+	ProjectID   uuid.UUID
+	Name        string
+	Description string
+}
+
 type BackendApiKey struct {
 	ID                uuid.UUID
 	ProjectID         uuid.UUID
@@ -213,6 +220,7 @@ type Organization struct {
 	RequireMfa                bool
 	LogInWithEmail            bool
 	LogInWithSaml             bool
+	CustomRolesEnabled        bool
 }
 
 type OrganizationDomain struct {
@@ -324,6 +332,22 @@ type RelayedSession struct {
 	RelayedRefreshTokenSha256     []byte
 }
 
+type Role struct {
+	ID             uuid.UUID
+	ProjectID      uuid.UUID
+	OrganizationID *uuid.UUID
+	CreateTime     *time.Time
+	UpdateTime     *time.Time
+	DisplayName    string
+	Description    string
+}
+
+type RoleAction struct {
+	ID       uuid.UUID
+	RoleID   uuid.UUID
+	ActionID uuid.UUID
+}
+
 type SamlConnection struct {
 	ID                 uuid.UUID
 	OrganizationID     uuid.UUID
@@ -406,6 +430,13 @@ type UserInvite struct {
 	UpdateTime     *time.Time
 	Email          string
 	IsOwner        bool
+	RoleID         *uuid.UUID
+}
+
+type UserRoleAssignment struct {
+	ID     uuid.UUID
+	RoleID uuid.UUID
+	UserID uuid.UUID
 }
 
 type VaultDomainSetting struct {

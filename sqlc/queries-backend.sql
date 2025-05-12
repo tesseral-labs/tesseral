@@ -975,3 +975,4 @@ FROM
     project_webhook_settings
 WHERE
     project_id = $1;
+

@@ -146,6 +146,38 @@ const (
 	// BackendServiceDeleteUserInviteProcedure is the fully-qualified name of the BackendService's
 	// DeleteUserInvite RPC.
 	BackendServiceDeleteUserInviteProcedure = "/tesseral.backend.v1.BackendService/DeleteUserInvite"
+	// BackendServiceGetRBACPolicyProcedure is the fully-qualified name of the BackendService's
+	// GetRBACPolicy RPC.
+	BackendServiceGetRBACPolicyProcedure = "/tesseral.backend.v1.BackendService/GetRBACPolicy"
+	// BackendServiceUpdateRBACPolicyProcedure is the fully-qualified name of the BackendService's
+	// UpdateRBACPolicy RPC.
+	BackendServiceUpdateRBACPolicyProcedure = "/tesseral.backend.v1.BackendService/UpdateRBACPolicy"
+	// BackendServiceListRolesProcedure is the fully-qualified name of the BackendService's ListRoles
+	// RPC.
+	BackendServiceListRolesProcedure = "/tesseral.backend.v1.BackendService/ListRoles"
+	// BackendServiceGetRoleProcedure is the fully-qualified name of the BackendService's GetRole RPC.
+	BackendServiceGetRoleProcedure = "/tesseral.backend.v1.BackendService/GetRole"
+	// BackendServiceCreateRoleProcedure is the fully-qualified name of the BackendService's CreateRole
+	// RPC.
+	BackendServiceCreateRoleProcedure = "/tesseral.backend.v1.BackendService/CreateRole"
+	// BackendServiceUpdateRoleProcedure is the fully-qualified name of the BackendService's UpdateRole
+	// RPC.
+	BackendServiceUpdateRoleProcedure = "/tesseral.backend.v1.BackendService/UpdateRole"
+	// BackendServiceDeleteRoleProcedure is the fully-qualified name of the BackendService's DeleteRole
+	// RPC.
+	BackendServiceDeleteRoleProcedure = "/tesseral.backend.v1.BackendService/DeleteRole"
+	// BackendServiceListUserRoleAssignmentsProcedure is the fully-qualified name of the
+	// BackendService's ListUserRoleAssignments RPC.
+	BackendServiceListUserRoleAssignmentsProcedure = "/tesseral.backend.v1.BackendService/ListUserRoleAssignments"
+	// BackendServiceGetUserRoleAssignmentProcedure is the fully-qualified name of the BackendService's
+	// GetUserRoleAssignment RPC.
+	BackendServiceGetUserRoleAssignmentProcedure = "/tesseral.backend.v1.BackendService/GetUserRoleAssignment"
+	// BackendServiceCreateUserRoleAssignmentProcedure is the fully-qualified name of the
+	// BackendService's CreateUserRoleAssignment RPC.
+	BackendServiceCreateUserRoleAssignmentProcedure = "/tesseral.backend.v1.BackendService/CreateUserRoleAssignment"
+	// BackendServiceDeleteUserRoleAssignmentProcedure is the fully-qualified name of the
+	// BackendService's DeleteUserRoleAssignment RPC.
+	BackendServiceDeleteUserRoleAssignmentProcedure = "/tesseral.backend.v1.BackendService/DeleteUserRoleAssignment"
 	// BackendServiceDisableOrganizationLoginsProcedure is the fully-qualified name of the
 	// BackendService's DisableOrganizationLogins RPC.
 	BackendServiceDisableOrganizationLoginsProcedure = "/tesseral.backend.v1.BackendService/DisableOrganizationLogins"
@@ -304,6 +336,28 @@ type BackendServiceClient interface {
 	CreateUserInvite(context.Context, *connect.Request[v1.CreateUserInviteRequest]) (*connect.Response[v1.CreateUserInviteResponse], error)
 	// Delete a User Invite.
 	DeleteUserInvite(context.Context, *connect.Request[v1.DeleteUserInviteRequest]) (*connect.Response[v1.DeleteUserInviteResponse], error)
+	// Get RBAC Policy.
+	GetRBACPolicy(context.Context, *connect.Request[v1.GetRBACPolicyRequest]) (*connect.Response[v1.GetRBACPolicyResponse], error)
+	// Update RBAC Policy.
+	UpdateRBACPolicy(context.Context, *connect.Request[v1.UpdateRBACPolicyRequest]) (*connect.Response[v1.UpdateRBACPolicyResponse], error)
+	// List Roles.
+	ListRoles(context.Context, *connect.Request[v1.ListRolesRequest]) (*connect.Response[v1.ListRolesResponse], error)
+	// Get a Role.
+	GetRole(context.Context, *connect.Request[v1.GetRoleRequest]) (*connect.Response[v1.GetRoleResponse], error)
+	// Create a Role.
+	CreateRole(context.Context, *connect.Request[v1.CreateRoleRequest]) (*connect.Response[v1.CreateRoleResponse], error)
+	// Update a Role.
+	UpdateRole(context.Context, *connect.Request[v1.UpdateRoleRequest]) (*connect.Response[v1.UpdateRoleResponse], error)
+	// Delete a Role.
+	DeleteRole(context.Context, *connect.Request[v1.DeleteRoleRequest]) (*connect.Response[v1.DeleteRoleResponse], error)
+	// List User Role Assignments.
+	ListUserRoleAssignments(context.Context, *connect.Request[v1.ListUserRoleAssignmentsRequest]) (*connect.Response[v1.ListUserRoleAssignmentsResponse], error)
+	// Get a User Role Assignment.
+	GetUserRoleAssignment(context.Context, *connect.Request[v1.GetUserRoleAssignmentRequest]) (*connect.Response[v1.GetUserRoleAssignmentResponse], error)
+	// Create a User Role Assignment.
+	CreateUserRoleAssignment(context.Context, *connect.Request[v1.CreateUserRoleAssignmentRequest]) (*connect.Response[v1.CreateUserRoleAssignmentResponse], error)
+	// Delete a User Role Assignment.
+	DeleteUserRoleAssignment(context.Context, *connect.Request[v1.DeleteUserRoleAssignmentRequest]) (*connect.Response[v1.DeleteUserRoleAssignmentResponse], error)
 	DisableOrganizationLogins(context.Context, *connect.Request[v1.DisableOrganizationLoginsRequest]) (*connect.Response[v1.DisableOrganizationLoginsResponse], error)
 	DisableProjectLogins(context.Context, *connect.Request[v1.DisableProjectLoginsRequest]) (*connect.Response[v1.DisableProjectLoginsResponse], error)
 	EnableOrganizationLogins(context.Context, *connect.Request[v1.EnableOrganizationLoginsRequest]) (*connect.Response[v1.EnableOrganizationLoginsResponse], error)
@@ -571,6 +625,72 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(backendServiceMethods.ByName("DeleteUserInvite")),
 			connect.WithClientOptions(opts...),
 		),
+		getRBACPolicy: connect.NewClient[v1.GetRBACPolicyRequest, v1.GetRBACPolicyResponse](
+			httpClient,
+			baseURL+BackendServiceGetRBACPolicyProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("GetRBACPolicy")),
+			connect.WithClientOptions(opts...),
+		),
+		updateRBACPolicy: connect.NewClient[v1.UpdateRBACPolicyRequest, v1.UpdateRBACPolicyResponse](
+			httpClient,
+			baseURL+BackendServiceUpdateRBACPolicyProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("UpdateRBACPolicy")),
+			connect.WithClientOptions(opts...),
+		),
+		listRoles: connect.NewClient[v1.ListRolesRequest, v1.ListRolesResponse](
+			httpClient,
+			baseURL+BackendServiceListRolesProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("ListRoles")),
+			connect.WithClientOptions(opts...),
+		),
+		getRole: connect.NewClient[v1.GetRoleRequest, v1.GetRoleResponse](
+			httpClient,
+			baseURL+BackendServiceGetRoleProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("GetRole")),
+			connect.WithClientOptions(opts...),
+		),
+		createRole: connect.NewClient[v1.CreateRoleRequest, v1.CreateRoleResponse](
+			httpClient,
+			baseURL+BackendServiceCreateRoleProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("CreateRole")),
+			connect.WithClientOptions(opts...),
+		),
+		updateRole: connect.NewClient[v1.UpdateRoleRequest, v1.UpdateRoleResponse](
+			httpClient,
+			baseURL+BackendServiceUpdateRoleProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("UpdateRole")),
+			connect.WithClientOptions(opts...),
+		),
+		deleteRole: connect.NewClient[v1.DeleteRoleRequest, v1.DeleteRoleResponse](
+			httpClient,
+			baseURL+BackendServiceDeleteRoleProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("DeleteRole")),
+			connect.WithClientOptions(opts...),
+		),
+		listUserRoleAssignments: connect.NewClient[v1.ListUserRoleAssignmentsRequest, v1.ListUserRoleAssignmentsResponse](
+			httpClient,
+			baseURL+BackendServiceListUserRoleAssignmentsProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("ListUserRoleAssignments")),
+			connect.WithClientOptions(opts...),
+		),
+		getUserRoleAssignment: connect.NewClient[v1.GetUserRoleAssignmentRequest, v1.GetUserRoleAssignmentResponse](
+			httpClient,
+			baseURL+BackendServiceGetUserRoleAssignmentProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("GetUserRoleAssignment")),
+			connect.WithClientOptions(opts...),
+		),
+		createUserRoleAssignment: connect.NewClient[v1.CreateUserRoleAssignmentRequest, v1.CreateUserRoleAssignmentResponse](
+			httpClient,
+			baseURL+BackendServiceCreateUserRoleAssignmentProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("CreateUserRoleAssignment")),
+			connect.WithClientOptions(opts...),
+		),
+		deleteUserRoleAssignment: connect.NewClient[v1.DeleteUserRoleAssignmentRequest, v1.DeleteUserRoleAssignmentResponse](
+			httpClient,
+			baseURL+BackendServiceDeleteUserRoleAssignmentProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("DeleteUserRoleAssignment")),
+			connect.WithClientOptions(opts...),
+		),
 		disableOrganizationLogins: connect.NewClient[v1.DisableOrganizationLoginsRequest, v1.DisableOrganizationLoginsResponse](
 			httpClient,
 			baseURL+BackendServiceDisableOrganizationLoginsProcedure,
@@ -770,6 +890,17 @@ type backendServiceClient struct {
 	getUserInvite                         *connect.Client[v1.GetUserInviteRequest, v1.GetUserInviteResponse]
 	createUserInvite                      *connect.Client[v1.CreateUserInviteRequest, v1.CreateUserInviteResponse]
 	deleteUserInvite                      *connect.Client[v1.DeleteUserInviteRequest, v1.DeleteUserInviteResponse]
+	getRBACPolicy                         *connect.Client[v1.GetRBACPolicyRequest, v1.GetRBACPolicyResponse]
+	updateRBACPolicy                      *connect.Client[v1.UpdateRBACPolicyRequest, v1.UpdateRBACPolicyResponse]
+	listRoles                             *connect.Client[v1.ListRolesRequest, v1.ListRolesResponse]
+	getRole                               *connect.Client[v1.GetRoleRequest, v1.GetRoleResponse]
+	createRole                            *connect.Client[v1.CreateRoleRequest, v1.CreateRoleResponse]
+	updateRole                            *connect.Client[v1.UpdateRoleRequest, v1.UpdateRoleResponse]
+	deleteRole                            *connect.Client[v1.DeleteRoleRequest, v1.DeleteRoleResponse]
+	listUserRoleAssignments               *connect.Client[v1.ListUserRoleAssignmentsRequest, v1.ListUserRoleAssignmentsResponse]
+	getUserRoleAssignment                 *connect.Client[v1.GetUserRoleAssignmentRequest, v1.GetUserRoleAssignmentResponse]
+	createUserRoleAssignment              *connect.Client[v1.CreateUserRoleAssignmentRequest, v1.CreateUserRoleAssignmentResponse]
+	deleteUserRoleAssignment              *connect.Client[v1.DeleteUserRoleAssignmentRequest, v1.DeleteUserRoleAssignmentResponse]
 	disableOrganizationLogins             *connect.Client[v1.DisableOrganizationLoginsRequest, v1.DisableOrganizationLoginsResponse]
 	disableProjectLogins                  *connect.Client[v1.DisableProjectLoginsRequest, v1.DisableProjectLoginsResponse]
 	enableOrganizationLogins              *connect.Client[v1.EnableOrganizationLoginsRequest, v1.EnableOrganizationLoginsResponse]
@@ -992,6 +1123,61 @@ func (c *backendServiceClient) DeleteUserInvite(ctx context.Context, req *connec
 	return c.deleteUserInvite.CallUnary(ctx, req)
 }
 
+// GetRBACPolicy calls tesseral.backend.v1.BackendService.GetRBACPolicy.
+func (c *backendServiceClient) GetRBACPolicy(ctx context.Context, req *connect.Request[v1.GetRBACPolicyRequest]) (*connect.Response[v1.GetRBACPolicyResponse], error) {
+	return c.getRBACPolicy.CallUnary(ctx, req)
+}
+
+// UpdateRBACPolicy calls tesseral.backend.v1.BackendService.UpdateRBACPolicy.
+func (c *backendServiceClient) UpdateRBACPolicy(ctx context.Context, req *connect.Request[v1.UpdateRBACPolicyRequest]) (*connect.Response[v1.UpdateRBACPolicyResponse], error) {
+	return c.updateRBACPolicy.CallUnary(ctx, req)
+}
+
+// ListRoles calls tesseral.backend.v1.BackendService.ListRoles.
+func (c *backendServiceClient) ListRoles(ctx context.Context, req *connect.Request[v1.ListRolesRequest]) (*connect.Response[v1.ListRolesResponse], error) {
+	return c.listRoles.CallUnary(ctx, req)
+}
+
+// GetRole calls tesseral.backend.v1.BackendService.GetRole.
+func (c *backendServiceClient) GetRole(ctx context.Context, req *connect.Request[v1.GetRoleRequest]) (*connect.Response[v1.GetRoleResponse], error) {
+	return c.getRole.CallUnary(ctx, req)
+}
+
+// CreateRole calls tesseral.backend.v1.BackendService.CreateRole.
+func (c *backendServiceClient) CreateRole(ctx context.Context, req *connect.Request[v1.CreateRoleRequest]) (*connect.Response[v1.CreateRoleResponse], error) {
+	return c.createRole.CallUnary(ctx, req)
+}
+
+// UpdateRole calls tesseral.backend.v1.BackendService.UpdateRole.
+func (c *backendServiceClient) UpdateRole(ctx context.Context, req *connect.Request[v1.UpdateRoleRequest]) (*connect.Response[v1.UpdateRoleResponse], error) {
+	return c.updateRole.CallUnary(ctx, req)
+}
+
+// DeleteRole calls tesseral.backend.v1.BackendService.DeleteRole.
+func (c *backendServiceClient) DeleteRole(ctx context.Context, req *connect.Request[v1.DeleteRoleRequest]) (*connect.Response[v1.DeleteRoleResponse], error) {
+	return c.deleteRole.CallUnary(ctx, req)
+}
+
+// ListUserRoleAssignments calls tesseral.backend.v1.BackendService.ListUserRoleAssignments.
+func (c *backendServiceClient) ListUserRoleAssignments(ctx context.Context, req *connect.Request[v1.ListUserRoleAssignmentsRequest]) (*connect.Response[v1.ListUserRoleAssignmentsResponse], error) {
+	return c.listUserRoleAssignments.CallUnary(ctx, req)
+}
+
+// GetUserRoleAssignment calls tesseral.backend.v1.BackendService.GetUserRoleAssignment.
+func (c *backendServiceClient) GetUserRoleAssignment(ctx context.Context, req *connect.Request[v1.GetUserRoleAssignmentRequest]) (*connect.Response[v1.GetUserRoleAssignmentResponse], error) {
+	return c.getUserRoleAssignment.CallUnary(ctx, req)
+}
+
+// CreateUserRoleAssignment calls tesseral.backend.v1.BackendService.CreateUserRoleAssignment.
+func (c *backendServiceClient) CreateUserRoleAssignment(ctx context.Context, req *connect.Request[v1.CreateUserRoleAssignmentRequest]) (*connect.Response[v1.CreateUserRoleAssignmentResponse], error) {
+	return c.createUserRoleAssignment.CallUnary(ctx, req)
+}
+
+// DeleteUserRoleAssignment calls tesseral.backend.v1.BackendService.DeleteUserRoleAssignment.
+func (c *backendServiceClient) DeleteUserRoleAssignment(ctx context.Context, req *connect.Request[v1.DeleteUserRoleAssignmentRequest]) (*connect.Response[v1.DeleteUserRoleAssignmentResponse], error) {
+	return c.deleteUserRoleAssignment.CallUnary(ctx, req)
+}
+
 // DisableOrganizationLogins calls tesseral.backend.v1.BackendService.DisableOrganizationLogins.
 func (c *backendServiceClient) DisableOrganizationLogins(ctx context.Context, req *connect.Request[v1.DisableOrganizationLoginsRequest]) (*connect.Response[v1.DisableOrganizationLoginsResponse], error) {
 	return c.disableOrganizationLogins.CallUnary(ctx, req)
@@ -1202,6 +1388,28 @@ type BackendServiceHandler interface {
 	CreateUserInvite(context.Context, *connect.Request[v1.CreateUserInviteRequest]) (*connect.Response[v1.CreateUserInviteResponse], error)
 	// Delete a User Invite.
 	DeleteUserInvite(context.Context, *connect.Request[v1.DeleteUserInviteRequest]) (*connect.Response[v1.DeleteUserInviteResponse], error)
+	// Get RBAC Policy.
+	GetRBACPolicy(context.Context, *connect.Request[v1.GetRBACPolicyRequest]) (*connect.Response[v1.GetRBACPolicyResponse], error)
+	// Update RBAC Policy.
+	UpdateRBACPolicy(context.Context, *connect.Request[v1.UpdateRBACPolicyRequest]) (*connect.Response[v1.UpdateRBACPolicyResponse], error)
+	// List Roles.
+	ListRoles(context.Context, *connect.Request[v1.ListRolesRequest]) (*connect.Response[v1.ListRolesResponse], error)
+	// Get a Role.
+	GetRole(context.Context, *connect.Request[v1.GetRoleRequest]) (*connect.Response[v1.GetRoleResponse], error)
+	// Create a Role.
+	CreateRole(context.Context, *connect.Request[v1.CreateRoleRequest]) (*connect.Response[v1.CreateRoleResponse], error)
+	// Update a Role.
+	UpdateRole(context.Context, *connect.Request[v1.UpdateRoleRequest]) (*connect.Response[v1.UpdateRoleResponse], error)
+	// Delete a Role.
+	DeleteRole(context.Context, *connect.Request[v1.DeleteRoleRequest]) (*connect.Response[v1.DeleteRoleResponse], error)
+	// List User Role Assignments.
+	ListUserRoleAssignments(context.Context, *connect.Request[v1.ListUserRoleAssignmentsRequest]) (*connect.Response[v1.ListUserRoleAssignmentsResponse], error)
+	// Get a User Role Assignment.
+	GetUserRoleAssignment(context.Context, *connect.Request[v1.GetUserRoleAssignmentRequest]) (*connect.Response[v1.GetUserRoleAssignmentResponse], error)
+	// Create a User Role Assignment.
+	CreateUserRoleAssignment(context.Context, *connect.Request[v1.CreateUserRoleAssignmentRequest]) (*connect.Response[v1.CreateUserRoleAssignmentResponse], error)
+	// Delete a User Role Assignment.
+	DeleteUserRoleAssignment(context.Context, *connect.Request[v1.DeleteUserRoleAssignmentRequest]) (*connect.Response[v1.DeleteUserRoleAssignmentResponse], error)
 	DisableOrganizationLogins(context.Context, *connect.Request[v1.DisableOrganizationLoginsRequest]) (*connect.Response[v1.DisableOrganizationLoginsResponse], error)
 	DisableProjectLogins(context.Context, *connect.Request[v1.DisableProjectLoginsRequest]) (*connect.Response[v1.DisableProjectLoginsResponse], error)
 	EnableOrganizationLogins(context.Context, *connect.Request[v1.EnableOrganizationLoginsRequest]) (*connect.Response[v1.EnableOrganizationLoginsResponse], error)
@@ -1465,6 +1673,72 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		connect.WithSchema(backendServiceMethods.ByName("DeleteUserInvite")),
 		connect.WithHandlerOptions(opts...),
 	)
+	backendServiceGetRBACPolicyHandler := connect.NewUnaryHandler(
+		BackendServiceGetRBACPolicyProcedure,
+		svc.GetRBACPolicy,
+		connect.WithSchema(backendServiceMethods.ByName("GetRBACPolicy")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceUpdateRBACPolicyHandler := connect.NewUnaryHandler(
+		BackendServiceUpdateRBACPolicyProcedure,
+		svc.UpdateRBACPolicy,
+		connect.WithSchema(backendServiceMethods.ByName("UpdateRBACPolicy")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceListRolesHandler := connect.NewUnaryHandler(
+		BackendServiceListRolesProcedure,
+		svc.ListRoles,
+		connect.WithSchema(backendServiceMethods.ByName("ListRoles")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceGetRoleHandler := connect.NewUnaryHandler(
+		BackendServiceGetRoleProcedure,
+		svc.GetRole,
+		connect.WithSchema(backendServiceMethods.ByName("GetRole")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceCreateRoleHandler := connect.NewUnaryHandler(
+		BackendServiceCreateRoleProcedure,
+		svc.CreateRole,
+		connect.WithSchema(backendServiceMethods.ByName("CreateRole")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceUpdateRoleHandler := connect.NewUnaryHandler(
+		BackendServiceUpdateRoleProcedure,
+		svc.UpdateRole,
+		connect.WithSchema(backendServiceMethods.ByName("UpdateRole")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceDeleteRoleHandler := connect.NewUnaryHandler(
+		BackendServiceDeleteRoleProcedure,
+		svc.DeleteRole,
+		connect.WithSchema(backendServiceMethods.ByName("DeleteRole")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceListUserRoleAssignmentsHandler := connect.NewUnaryHandler(
+		BackendServiceListUserRoleAssignmentsProcedure,
+		svc.ListUserRoleAssignments,
+		connect.WithSchema(backendServiceMethods.ByName("ListUserRoleAssignments")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceGetUserRoleAssignmentHandler := connect.NewUnaryHandler(
+		BackendServiceGetUserRoleAssignmentProcedure,
+		svc.GetUserRoleAssignment,
+		connect.WithSchema(backendServiceMethods.ByName("GetUserRoleAssignment")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceCreateUserRoleAssignmentHandler := connect.NewUnaryHandler(
+		BackendServiceCreateUserRoleAssignmentProcedure,
+		svc.CreateUserRoleAssignment,
+		connect.WithSchema(backendServiceMethods.ByName("CreateUserRoleAssignment")),
+		connect.WithHandlerOptions(opts...),
+	)
+	backendServiceDeleteUserRoleAssignmentHandler := connect.NewUnaryHandler(
+		BackendServiceDeleteUserRoleAssignmentProcedure,
+		svc.DeleteUserRoleAssignment,
+		connect.WithSchema(backendServiceMethods.ByName("DeleteUserRoleAssignment")),
+		connect.WithHandlerOptions(opts...),
+	)
 	backendServiceDisableOrganizationLoginsHandler := connect.NewUnaryHandler(
 		BackendServiceDisableOrganizationLoginsProcedure,
 		svc.DisableOrganizationLogins,
@@ -1699,6 +1973,28 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceCreateUserInviteHandler.ServeHTTP(w, r)
 		case BackendServiceDeleteUserInviteProcedure:
 			backendServiceDeleteUserInviteHandler.ServeHTTP(w, r)
+		case BackendServiceGetRBACPolicyProcedure:
+			backendServiceGetRBACPolicyHandler.ServeHTTP(w, r)
+		case BackendServiceUpdateRBACPolicyProcedure:
+			backendServiceUpdateRBACPolicyHandler.ServeHTTP(w, r)
+		case BackendServiceListRolesProcedure:
+			backendServiceListRolesHandler.ServeHTTP(w, r)
+		case BackendServiceGetRoleProcedure:
+			backendServiceGetRoleHandler.ServeHTTP(w, r)
+		case BackendServiceCreateRoleProcedure:
+			backendServiceCreateRoleHandler.ServeHTTP(w, r)
+		case BackendServiceUpdateRoleProcedure:
+			backendServiceUpdateRoleHandler.ServeHTTP(w, r)
+		case BackendServiceDeleteRoleProcedure:
+			backendServiceDeleteRoleHandler.ServeHTTP(w, r)
+		case BackendServiceListUserRoleAssignmentsProcedure:
+			backendServiceListUserRoleAssignmentsHandler.ServeHTTP(w, r)
+		case BackendServiceGetUserRoleAssignmentProcedure:
+			backendServiceGetUserRoleAssignmentHandler.ServeHTTP(w, r)
+		case BackendServiceCreateUserRoleAssignmentProcedure:
+			backendServiceCreateUserRoleAssignmentHandler.ServeHTTP(w, r)
+		case BackendServiceDeleteUserRoleAssignmentProcedure:
+			backendServiceDeleteUserRoleAssignmentHandler.ServeHTTP(w, r)
 		case BackendServiceDisableOrganizationLoginsProcedure:
 			backendServiceDisableOrganizationLoginsHandler.ServeHTTP(w, r)
 		case BackendServiceDisableProjectLoginsProcedure:
@@ -1910,6 +2206,50 @@ func (UnimplementedBackendServiceHandler) CreateUserInvite(context.Context, *con
 
 func (UnimplementedBackendServiceHandler) DeleteUserInvite(context.Context, *connect.Request[v1.DeleteUserInviteRequest]) (*connect.Response[v1.DeleteUserInviteResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.DeleteUserInvite is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) GetRBACPolicy(context.Context, *connect.Request[v1.GetRBACPolicyRequest]) (*connect.Response[v1.GetRBACPolicyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.GetRBACPolicy is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) UpdateRBACPolicy(context.Context, *connect.Request[v1.UpdateRBACPolicyRequest]) (*connect.Response[v1.UpdateRBACPolicyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.UpdateRBACPolicy is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) ListRoles(context.Context, *connect.Request[v1.ListRolesRequest]) (*connect.Response[v1.ListRolesResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.ListRoles is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) GetRole(context.Context, *connect.Request[v1.GetRoleRequest]) (*connect.Response[v1.GetRoleResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.GetRole is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) CreateRole(context.Context, *connect.Request[v1.CreateRoleRequest]) (*connect.Response[v1.CreateRoleResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.CreateRole is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) UpdateRole(context.Context, *connect.Request[v1.UpdateRoleRequest]) (*connect.Response[v1.UpdateRoleResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.UpdateRole is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) DeleteRole(context.Context, *connect.Request[v1.DeleteRoleRequest]) (*connect.Response[v1.DeleteRoleResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.DeleteRole is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) ListUserRoleAssignments(context.Context, *connect.Request[v1.ListUserRoleAssignmentsRequest]) (*connect.Response[v1.ListUserRoleAssignmentsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.ListUserRoleAssignments is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) GetUserRoleAssignment(context.Context, *connect.Request[v1.GetUserRoleAssignmentRequest]) (*connect.Response[v1.GetUserRoleAssignmentResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.GetUserRoleAssignment is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) CreateUserRoleAssignment(context.Context, *connect.Request[v1.CreateUserRoleAssignmentRequest]) (*connect.Response[v1.CreateUserRoleAssignmentResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.CreateUserRoleAssignment is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) DeleteUserRoleAssignment(context.Context, *connect.Request[v1.DeleteUserRoleAssignmentRequest]) (*connect.Response[v1.DeleteUserRoleAssignmentResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.DeleteUserRoleAssignment is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) DisableOrganizationLogins(context.Context, *connect.Request[v1.DisableOrganizationLoginsRequest]) (*connect.Response[v1.DisableOrganizationLoginsResponse], error) {
