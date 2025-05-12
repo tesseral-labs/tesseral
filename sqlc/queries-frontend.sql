@@ -5,8 +5,7 @@ FROM
     session_signing_keys
 WHERE
     project_id = $1
-    AND id = $2
-    AND expire_time > @now;
+    AND id = $2;
 
 -- name: CreateUser :one
 INSERT INTO users (id, organization_id, email, password_bcrypt, google_user_id, microsoft_user_id)

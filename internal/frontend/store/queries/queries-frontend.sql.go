@@ -7,7 +7,6 @@ package queries
 
 import (
 	"context"
-	"time"
 
 	"github.com/google/uuid"
 )
@@ -758,17 +757,15 @@ FROM
 WHERE
     project_id = $1
     AND id = $2
-    AND expire_time > $3
 `
 
 type GetSessionSigningKeyPublicKeyParams struct {
 	ProjectID uuid.UUID
 	ID        uuid.UUID
-	Now       *time.Time
 }
 
 func (q *Queries) GetSessionSigningKeyPublicKey(ctx context.Context, arg GetSessionSigningKeyPublicKeyParams) ([]byte, error) {
-	row := q.db.QueryRow(ctx, getSessionSigningKeyPublicKey, arg.ProjectID, arg.ID, arg.Now)
+	row := q.db.QueryRow(ctx, getSessionSigningKeyPublicKey, arg.ProjectID, arg.ID)
 	var public_key []byte
 	err := row.Scan(&public_key)
 	return public_key, err
