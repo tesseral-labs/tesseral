@@ -91,6 +91,17 @@ export const OrganizationDetailsTab = () => {
                 </DetailsGridEntry>
               )}
 
+              {getProjectResponse?.project?.logInWithGithub && (
+                <DetailsGridEntry>
+                  <DetailsGridKey>Log in with Github</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getOrganizationResponse?.organization?.logInWithGithub
+                      ? 'Enabled'
+                      : 'Disabled'}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+              )}
+
               {getProjectResponse?.project?.logInWithEmail && (
                 <DetailsGridEntry>
                   <DetailsGridKey>Log in with Email</DetailsGridKey>
@@ -164,11 +175,10 @@ export const OrganizationDetailsTab = () => {
               <DetailsGridEntry>
                 <DetailsGridKey>SAML / SCIM Domains</DetailsGridKey>
                 <DetailsGridValue>
-                  {getOrganizationDomainsResponse
-                    ?.organizationDomains?.domains
+                  {getOrganizationDomainsResponse?.organizationDomains?.domains
                     ? getOrganizationDomainsResponse.organizationDomains.domains.map(
-                      (s) => <div key={s}>{s}</div>,
-                    )
+                        (s) => <div key={s}>{s}</div>,
+                      )
                     : '-'}
                 </DetailsGridValue>
               </DetailsGridEntry>

@@ -51,6 +51,7 @@ import { Switch } from '@/components/ui/switch';
 import { InputTags } from '@/components/input-tags';
 import { EditProjectGoogleSettingsButton } from '@/pages/project/EditProjectGoogleSettingsButton';
 import { EditProjectMicrosoftSettingsButton } from '@/pages/project/EditProjectMicrosoftSettingsButton';
+import { EditProjectGithubSettingsButton } from './EditProjectGithubSettingsButton';
 
 export const ProjectDetailsTab = () => {
   const { data: getProjectResponse } = useQuery(getProject, {});
@@ -300,6 +301,53 @@ export const ProjectDetailsTab = () => {
           </DetailsGrid>
         </CardContent>
       </Card>
+
+      <Card>
+        <CardHeader className="flex-row justify-between items-center">
+          <div className="flex flex-col space-y-1 5">
+            <CardTitle>Github settings</CardTitle>
+            <CardDescription>
+              Settings for "Log in with Github" in your project.
+            </CardDescription>
+          </div>
+          <EditProjectGithubSettingsButton />
+        </CardHeader>
+        <CardContent>
+          <DetailsGrid>
+            <DetailsGridColumn>
+              <DetailsGridEntry>
+                <DetailsGridKey>Status</DetailsGridKey>
+                <DetailsGridValue>
+                  {getProjectResponse?.project?.logInWithGithub
+                    ? 'Enabled'
+                    : 'Disabled'}
+                </DetailsGridValue>
+              </DetailsGridEntry>
+            </DetailsGridColumn>
+            <DetailsGridColumn>
+              <DetailsGridEntry>
+                <DetailsGridKey>Github OAuth Client ID</DetailsGridKey>
+                <DetailsGridValue>
+                  {getProjectResponse?.project?.githubOauthClientId || '-'}
+                </DetailsGridValue>
+              </DetailsGridEntry>
+            </DetailsGridColumn>
+            <DetailsGridColumn>
+              <DetailsGridEntry>
+                <DetailsGridKey>Github OAuth Client Secret</DetailsGridKey>
+                <DetailsGridValue>
+                  {getProjectResponse?.project?.githubOauthClientId ? (
+                    <div className="text-muted-foreground">Encrypted</div>
+                  ) : (
+                    '-'
+                  )}
+                </DetailsGridValue>
+              </DetailsGridEntry>
+            </DetailsGridColumn>
+          </DetailsGrid>
+        </CardContent>
+      </Card>
+
       <Card>
         <CardHeader className="flex-row justify-between items-center">
           <div className="flex flex-col space-y-1 5">

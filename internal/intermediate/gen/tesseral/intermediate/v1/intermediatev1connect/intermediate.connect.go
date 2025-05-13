@@ -63,6 +63,12 @@ const (
 	// IntermediateServiceExchangeRelayedSessionTokenForSessionProcedure is the fully-qualified name of
 	// the IntermediateService's ExchangeRelayedSessionTokenForSession RPC.
 	IntermediateServiceExchangeRelayedSessionTokenForSessionProcedure = "/tesseral.intermediate.v1.IntermediateService/ExchangeRelayedSessionTokenForSession"
+	// IntermediateServiceGetGithubOAuthRedirectURLProcedure is the fully-qualified name of the
+	// IntermediateService's GetGithubOAuthRedirectURL RPC.
+	IntermediateServiceGetGithubOAuthRedirectURLProcedure = "/tesseral.intermediate.v1.IntermediateService/GetGithubOAuthRedirectURL"
+	// IntermediateServiceRedeemGithubOAuthCodeProcedure is the fully-qualified name of the
+	// IntermediateService's RedeemGithubOAuthCode RPC.
+	IntermediateServiceRedeemGithubOAuthCodeProcedure = "/tesseral.intermediate.v1.IntermediateService/RedeemGithubOAuthCode"
 	// IntermediateServiceGetGoogleOAuthRedirectURLProcedure is the fully-qualified name of the
 	// IntermediateService's GetGoogleOAuthRedirectURL RPC.
 	IntermediateServiceGetGoogleOAuthRedirectURLProcedure = "/tesseral.intermediate.v1.IntermediateService/GetGoogleOAuthRedirectURL"
@@ -141,6 +147,8 @@ type IntermediateServiceClient interface {
 	SetOrganization(context.Context, *connect.Request[v1.SetOrganizationRequest]) (*connect.Response[v1.SetOrganizationResponse], error)
 	ExchangeIntermediateSessionForSession(context.Context, *connect.Request[v1.ExchangeIntermediateSessionForSessionRequest]) (*connect.Response[v1.ExchangeIntermediateSessionForSessionResponse], error)
 	ExchangeRelayedSessionTokenForSession(context.Context, *connect.Request[v1.ExchangeRelayedSessionTokenForSessionRequest]) (*connect.Response[v1.ExchangeRelayedSessionTokenForSessionResponse], error)
+	GetGithubOAuthRedirectURL(context.Context, *connect.Request[v1.GetGithubOAuthRedirectURLRequest]) (*connect.Response[v1.GetGithubOAuthRedirectURLResponse], error)
+	RedeemGithubOAuthCode(context.Context, *connect.Request[v1.RedeemGithubOAuthCodeRequest]) (*connect.Response[v1.RedeemGithubOAuthCodeResponse], error)
 	GetGoogleOAuthRedirectURL(context.Context, *connect.Request[v1.GetGoogleOAuthRedirectURLRequest]) (*connect.Response[v1.GetGoogleOAuthRedirectURLResponse], error)
 	RedeemGoogleOAuthCode(context.Context, *connect.Request[v1.RedeemGoogleOAuthCodeRequest]) (*connect.Response[v1.RedeemGoogleOAuthCodeResponse], error)
 	GetMicrosoftOAuthRedirectURL(context.Context, *connect.Request[v1.GetMicrosoftOAuthRedirectURLRequest]) (*connect.Response[v1.GetMicrosoftOAuthRedirectURLResponse], error)
@@ -234,6 +242,18 @@ func NewIntermediateServiceClient(httpClient connect.HTTPClient, baseURL string,
 			httpClient,
 			baseURL+IntermediateServiceExchangeRelayedSessionTokenForSessionProcedure,
 			connect.WithSchema(intermediateServiceMethods.ByName("ExchangeRelayedSessionTokenForSession")),
+			connect.WithClientOptions(opts...),
+		),
+		getGithubOAuthRedirectURL: connect.NewClient[v1.GetGithubOAuthRedirectURLRequest, v1.GetGithubOAuthRedirectURLResponse](
+			httpClient,
+			baseURL+IntermediateServiceGetGithubOAuthRedirectURLProcedure,
+			connect.WithSchema(intermediateServiceMethods.ByName("GetGithubOAuthRedirectURL")),
+			connect.WithClientOptions(opts...),
+		),
+		redeemGithubOAuthCode: connect.NewClient[v1.RedeemGithubOAuthCodeRequest, v1.RedeemGithubOAuthCodeResponse](
+			httpClient,
+			baseURL+IntermediateServiceRedeemGithubOAuthCodeProcedure,
+			connect.WithSchema(intermediateServiceMethods.ByName("RedeemGithubOAuthCode")),
 			connect.WithClientOptions(opts...),
 		),
 		getGoogleOAuthRedirectURL: connect.NewClient[v1.GetGoogleOAuthRedirectURLRequest, v1.GetGoogleOAuthRedirectURLResponse](
@@ -377,6 +397,8 @@ type intermediateServiceClient struct {
 	setOrganization                       *connect.Client[v1.SetOrganizationRequest, v1.SetOrganizationResponse]
 	exchangeIntermediateSessionForSession *connect.Client[v1.ExchangeIntermediateSessionForSessionRequest, v1.ExchangeIntermediateSessionForSessionResponse]
 	exchangeRelayedSessionTokenForSession *connect.Client[v1.ExchangeRelayedSessionTokenForSessionRequest, v1.ExchangeRelayedSessionTokenForSessionResponse]
+	getGithubOAuthRedirectURL             *connect.Client[v1.GetGithubOAuthRedirectURLRequest, v1.GetGithubOAuthRedirectURLResponse]
+	redeemGithubOAuthCode                 *connect.Client[v1.RedeemGithubOAuthCodeRequest, v1.RedeemGithubOAuthCodeResponse]
 	getGoogleOAuthRedirectURL             *connect.Client[v1.GetGoogleOAuthRedirectURLRequest, v1.GetGoogleOAuthRedirectURLResponse]
 	redeemGoogleOAuthCode                 *connect.Client[v1.RedeemGoogleOAuthCodeRequest, v1.RedeemGoogleOAuthCodeResponse]
 	getMicrosoftOAuthRedirectURL          *connect.Client[v1.GetMicrosoftOAuthRedirectURLRequest, v1.GetMicrosoftOAuthRedirectURLResponse]
@@ -452,6 +474,17 @@ func (c *intermediateServiceClient) ExchangeIntermediateSessionForSession(ctx co
 // tesseral.intermediate.v1.IntermediateService.ExchangeRelayedSessionTokenForSession.
 func (c *intermediateServiceClient) ExchangeRelayedSessionTokenForSession(ctx context.Context, req *connect.Request[v1.ExchangeRelayedSessionTokenForSessionRequest]) (*connect.Response[v1.ExchangeRelayedSessionTokenForSessionResponse], error) {
 	return c.exchangeRelayedSessionTokenForSession.CallUnary(ctx, req)
+}
+
+// GetGithubOAuthRedirectURL calls
+// tesseral.intermediate.v1.IntermediateService.GetGithubOAuthRedirectURL.
+func (c *intermediateServiceClient) GetGithubOAuthRedirectURL(ctx context.Context, req *connect.Request[v1.GetGithubOAuthRedirectURLRequest]) (*connect.Response[v1.GetGithubOAuthRedirectURLResponse], error) {
+	return c.getGithubOAuthRedirectURL.CallUnary(ctx, req)
+}
+
+// RedeemGithubOAuthCode calls tesseral.intermediate.v1.IntermediateService.RedeemGithubOAuthCode.
+func (c *intermediateServiceClient) RedeemGithubOAuthCode(ctx context.Context, req *connect.Request[v1.RedeemGithubOAuthCodeRequest]) (*connect.Response[v1.RedeemGithubOAuthCodeResponse], error) {
+	return c.redeemGithubOAuthCode.CallUnary(ctx, req)
 }
 
 // GetGoogleOAuthRedirectURL calls
@@ -582,6 +615,8 @@ type IntermediateServiceHandler interface {
 	SetOrganization(context.Context, *connect.Request[v1.SetOrganizationRequest]) (*connect.Response[v1.SetOrganizationResponse], error)
 	ExchangeIntermediateSessionForSession(context.Context, *connect.Request[v1.ExchangeIntermediateSessionForSessionRequest]) (*connect.Response[v1.ExchangeIntermediateSessionForSessionResponse], error)
 	ExchangeRelayedSessionTokenForSession(context.Context, *connect.Request[v1.ExchangeRelayedSessionTokenForSessionRequest]) (*connect.Response[v1.ExchangeRelayedSessionTokenForSessionResponse], error)
+	GetGithubOAuthRedirectURL(context.Context, *connect.Request[v1.GetGithubOAuthRedirectURLRequest]) (*connect.Response[v1.GetGithubOAuthRedirectURLResponse], error)
+	RedeemGithubOAuthCode(context.Context, *connect.Request[v1.RedeemGithubOAuthCodeRequest]) (*connect.Response[v1.RedeemGithubOAuthCodeResponse], error)
 	GetGoogleOAuthRedirectURL(context.Context, *connect.Request[v1.GetGoogleOAuthRedirectURLRequest]) (*connect.Response[v1.GetGoogleOAuthRedirectURLResponse], error)
 	RedeemGoogleOAuthCode(context.Context, *connect.Request[v1.RedeemGoogleOAuthCodeRequest]) (*connect.Response[v1.RedeemGoogleOAuthCodeResponse], error)
 	GetMicrosoftOAuthRedirectURL(context.Context, *connect.Request[v1.GetMicrosoftOAuthRedirectURLRequest]) (*connect.Response[v1.GetMicrosoftOAuthRedirectURLResponse], error)
@@ -670,6 +705,18 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 		IntermediateServiceExchangeRelayedSessionTokenForSessionProcedure,
 		svc.ExchangeRelayedSessionTokenForSession,
 		connect.WithSchema(intermediateServiceMethods.ByName("ExchangeRelayedSessionTokenForSession")),
+		connect.WithHandlerOptions(opts...),
+	)
+	intermediateServiceGetGithubOAuthRedirectURLHandler := connect.NewUnaryHandler(
+		IntermediateServiceGetGithubOAuthRedirectURLProcedure,
+		svc.GetGithubOAuthRedirectURL,
+		connect.WithSchema(intermediateServiceMethods.ByName("GetGithubOAuthRedirectURL")),
+		connect.WithHandlerOptions(opts...),
+	)
+	intermediateServiceRedeemGithubOAuthCodeHandler := connect.NewUnaryHandler(
+		IntermediateServiceRedeemGithubOAuthCodeProcedure,
+		svc.RedeemGithubOAuthCode,
+		connect.WithSchema(intermediateServiceMethods.ByName("RedeemGithubOAuthCode")),
 		connect.WithHandlerOptions(opts...),
 	)
 	intermediateServiceGetGoogleOAuthRedirectURLHandler := connect.NewUnaryHandler(
@@ -820,6 +867,10 @@ func NewIntermediateServiceHandler(svc IntermediateServiceHandler, opts ...conne
 			intermediateServiceExchangeIntermediateSessionForSessionHandler.ServeHTTP(w, r)
 		case IntermediateServiceExchangeRelayedSessionTokenForSessionProcedure:
 			intermediateServiceExchangeRelayedSessionTokenForSessionHandler.ServeHTTP(w, r)
+		case IntermediateServiceGetGithubOAuthRedirectURLProcedure:
+			intermediateServiceGetGithubOAuthRedirectURLHandler.ServeHTTP(w, r)
+		case IntermediateServiceRedeemGithubOAuthCodeProcedure:
+			intermediateServiceRedeemGithubOAuthCodeHandler.ServeHTTP(w, r)
 		case IntermediateServiceGetGoogleOAuthRedirectURLProcedure:
 			intermediateServiceGetGoogleOAuthRedirectURLHandler.ServeHTTP(w, r)
 		case IntermediateServiceRedeemGoogleOAuthCodeProcedure:
@@ -909,6 +960,14 @@ func (UnimplementedIntermediateServiceHandler) ExchangeIntermediateSessionForSes
 
 func (UnimplementedIntermediateServiceHandler) ExchangeRelayedSessionTokenForSession(context.Context, *connect.Request[v1.ExchangeRelayedSessionTokenForSessionRequest]) (*connect.Response[v1.ExchangeRelayedSessionTokenForSessionResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.ExchangeRelayedSessionTokenForSession is not implemented"))
+}
+
+func (UnimplementedIntermediateServiceHandler) GetGithubOAuthRedirectURL(context.Context, *connect.Request[v1.GetGithubOAuthRedirectURLRequest]) (*connect.Response[v1.GetGithubOAuthRedirectURLResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.GetGithubOAuthRedirectURL is not implemented"))
+}
+
+func (UnimplementedIntermediateServiceHandler) RedeemGithubOAuthCode(context.Context, *connect.Request[v1.RedeemGithubOAuthCodeRequest]) (*connect.Response[v1.RedeemGithubOAuthCodeResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.intermediate.v1.IntermediateService.RedeemGithubOAuthCode is not implemented"))
 }
 
 func (UnimplementedIntermediateServiceHandler) GetGoogleOAuthRedirectURL(context.Context, *connect.Request[v1.GetGoogleOAuthRedirectURLRequest]) (*connect.Response[v1.GetGoogleOAuthRedirectURLResponse], error) {

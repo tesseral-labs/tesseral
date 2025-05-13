@@ -1,6 +1,6 @@
 -- name: CreateOrganization :one
-INSERT INTO organizations (id, project_id, display_name, log_in_with_google, log_in_with_microsoft, log_in_with_email, log_in_with_password, log_in_with_saml, log_in_with_authenticator_app, log_in_with_passkey, scim_enabled)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+INSERT INTO organizations (id, project_id, display_name, log_in_with_google, log_in_with_microsoft, log_in_with_github, log_in_with_email, log_in_with_password, log_in_with_saml, log_in_with_authenticator_app, log_in_with_passkey, scim_enabled)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
 RETURNING
     *;
 
@@ -75,6 +75,7 @@ SET
     display_name = $2,
     log_in_with_google = $3,
     log_in_with_microsoft = $4,
+    log_in_with_github = $13,
     log_in_with_email = $5,
     log_in_with_password = $6,
     log_in_with_authenticator_app = $7,
@@ -100,6 +101,7 @@ SET
     display_name = $2,
     log_in_with_google = $3,
     log_in_with_microsoft = $4,
+    log_in_with_github = $18,
     log_in_with_email = $5,
     log_in_with_password = $6,
     log_in_with_saml = $7,
@@ -109,6 +111,8 @@ SET
     google_oauth_client_secret_ciphertext = $11,
     microsoft_oauth_client_id = $12,
     microsoft_oauth_client_secret_ciphertext = $13,
+    github_oauth_client_id = $19,
+    github_oauth_client_secret_ciphertext = $20,
     redirect_uri = $14,
     after_login_redirect_uri = $15,
     after_signup_redirect_uri = $16,
@@ -155,6 +159,22 @@ UPDATE
     organizations
 SET
     log_in_with_microsoft = FALSE
+WHERE
+    project_id = $1;
+
+-- name: DisableProjectOrganizationsLogInWithGithub :exec
+UPDATE
+    organizations
+SET
+    log_in_with_github = FALSE
+WHERE
+    project_id = $1;
+
+-- name: DisableProjectOrganizationsLogInWithGithub :exec
+UPDATE
+    organizations
+SET
+    log_in_with_github = FALSE
 WHERE
     project_id = $1;
 
@@ -446,8 +466,8 @@ WHERE
     AND organizations.project_id = $2;
 
 -- name: CreateUser :one
-INSERT INTO users (id, organization_id, google_user_id, microsoft_user_id, email, is_owner)
-    VALUES ($1, $2, $3, $4, $5, $6)
+INSERT INTO users (id, organization_id, google_user_id, microsoft_user_id, github_user_id, email, is_owner)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
 RETURNING
     *;
 
@@ -459,6 +479,7 @@ SET
     email = $2,
     google_user_id = $3,
     microsoft_user_id = $4,
+    github_user_id = $8,
     is_owner = $5,
     display_name = $6,
     profile_picture_url = $7

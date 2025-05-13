@@ -67,11 +67,12 @@ export function EditProjectGoogleSettingsButton() {
     if (!values.logInWithGoogle) {
       if (
         !getProjectResponse?.project?.logInWithEmail &&
-        !getProjectResponse?.project?.logInWithMicrosoft
+        !getProjectResponse?.project?.logInWithMicrosoft &&
+        !getProjectResponse?.project?.logInWithGithub
       ) {
         form.setError('logInWithGoogle', {
           message:
-            'At least one of Log in with Email, Log in with Google, or Log in with Microsoft must be enabled.',
+            'At least one of Log in with Email, Log in with Google, Log in with Microsoft, or Log in with Github must be enabled.',
         });
         return;
       }

@@ -41,6 +41,7 @@ func parseProject(qProject *queries.Project) *frontendv1.Project {
 		DisplayName:               qProject.DisplayName,
 		LogInWithGoogle:           qProject.LogInWithGoogle,
 		LogInWithMicrosoft:        qProject.LogInWithMicrosoft,
+		LogInWithGithub:           qProject.LogInWithGithub,
 		LogInWithEmail:            qProject.LogInWithEmail,
 		LogInWithPassword:         qProject.LogInWithPassword,
 		LogInWithAuthenticatorApp: qProject.LogInWithAuthenticatorApp,

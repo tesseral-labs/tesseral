@@ -106,6 +106,7 @@ const (
 	PrimaryAuthFactorMicrosoft     PrimaryAuthFactor = "microsoft"
 	PrimaryAuthFactorSaml          PrimaryAuthFactor = "saml"
 	PrimaryAuthFactorImpersonation PrimaryAuthFactor = "impersonation"
+	PrimaryAuthFactorGithub        PrimaryAuthFactor = "github"
 )
 
 func (e *PrimaryAuthFactor) Scan(src interface{}) error {
@@ -193,6 +194,8 @@ type IntermediateSession struct {
 	AuthenticatorAppRecoveryCodeSha256s [][]byte
 	UserDisplayName                     *string
 	ProfilePictureUrl                   *string
+	GithubUserID                        *string
+	GithubOauthStateSha256              []byte
 }
 
 type OauthVerifiedEmail struct {
@@ -202,6 +205,7 @@ type OauthVerifiedEmail struct {
 	Email           string
 	GoogleUserID    *string
 	MicrosoftUserID *string
+	GithubUserID    *string
 }
 
 type Organization struct {
@@ -221,6 +225,7 @@ type Organization struct {
 	LogInWithEmail            bool
 	LogInWithSaml             bool
 	CustomRolesEnabled        bool
+	LogInWithGithub           bool
 }
 
 type OrganizationDomain struct {
@@ -281,6 +286,9 @@ type Project struct {
 	StripeCustomerID                     *string
 	EntitledCustomVaultDomains           bool
 	EntitledBackendApiKeys               bool
+	LogInWithGithub                      bool
+	GithubOauthClientID                  *string
+	GithubOauthClientSecretCiphertext    []byte
 }
 
 type ProjectEmailQuotaDailyUsage struct {
@@ -407,6 +415,7 @@ type User struct {
 	AuthenticatorAppRecoveryCodeSha256s [][]byte
 	DisplayName                         *string
 	ProfilePictureUrl                   *string
+	GithubUserID                        *string
 }
 
 type UserAuthenticatorAppChallenge struct {

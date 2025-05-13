@@ -1566,6 +1566,9 @@ components:
                 logInWithMicrosoft:
                     type: boolean
                     description: Whether the Organization supports "Log in with Microsoft".
+                logInWithGithub:
+                    type: boolean
+                    description: Whether the Organization supports Log in with Github.
                 logInWithEmail:
                     type: boolean
                     description: Whether the Organization supports "Log in with email".
@@ -1705,6 +1708,9 @@ components:
                 logInWithMicrosoft:
                     type: boolean
                     description: Whether the Project supports "Log in with Microsoft".
+                logInWithGithub:
+                    type: boolean
+                    description: Whether the Project supports "Log in with Github".
                 logInWithEmail:
                     type: boolean
                     description: Whether the Project supports "Log in with email".
@@ -1738,6 +1744,15 @@ components:
                         The OAuth Client Secret to use for "Log in with Microsoft".
 
                          This field is write-only.
+                githubOauthClientId:
+                    type: string
+                    description: The OAuth Client ID to use for "Log in with Github".
+                githubOauthClientSecret:
+                    type: string
+                    description: |-
+                        The OAuth Client ID to use for "Log in with Github"
+
+                         This field is write only.
                 vaultDomain:
                     type: string
                     description: The domain where the Project's Vault lives.
@@ -2013,6 +2028,9 @@ components:
                 microsoftUserId:
                     type: string
                     description: The Microsoft User ID, if the User has ever logged in with Microsoft.
+                githubUserId:
+                    type: string
+                    description: The Github User ID, if the User has ever logged in with Github.
                 hasAuthenticatorApp:
                     type: boolean
                     description: Whether the User has an authenticator app set up.

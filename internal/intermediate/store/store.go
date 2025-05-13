@@ -13,6 +13,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	stripeclient "github.com/stripe/stripe-go/v82/client"
 	svix "github.com/svix/svix-webhooks/go"
+	"github.com/tesseral-labs/tesseral/internal/githuboauth"
 	"github.com/tesseral-labs/tesseral/internal/googleoauth"
 	"github.com/tesseral-labs/tesseral/internal/hibp"
 	"github.com/tesseral-labs/tesseral/internal/intermediate/store/queries"
@@ -33,9 +34,11 @@ type Store struct {
 	q                                     *queries.Queries
 	ses                                   *sesv2.Client
 	sessionSigningKeyKmsKeyID             string
+	githubOAuthClientSecretsKMSKeyID      string
 	googleOAuthClientSecretsKMSKeyID      string
 	microsoftOAuthClientSecretsKMSKeyID   string
 	authenticatorAppSecretsKMSKeyID       string
+	githubOAuthClient                     *githuboauth.Client
 	googleOAuthClient                     *googleoauth.Client
 	microsoftOAuthClient                  *microsoftoauth.Client
 	userContentBaseUrl                    string
@@ -55,9 +58,11 @@ type NewStoreParams struct {
 	PageEncoder                           pagetoken.Encoder
 	SES                                   *sesv2.Client
 	SessionSigningKeyKmsKeyID             string
+	GithubOAuthClientSecretsKMSKeyID      string
 	GoogleOAuthClientSecretsKMSKeyID      string
 	MicrosoftOAuthClientSecretsKMSKeyID   string
 	AuthenticatorAppSecretsKMSKeyID       string
+	GithubOAuthClient                     *githuboauth.Client
 	GoogleOAuthClient                     *googleoauth.Client
 	MicrosoftOAuthClient                  *microsoftoauth.Client
 	UserContentBaseUrl                    string
@@ -82,8 +87,10 @@ func New(p NewStoreParams) *Store {
 		q:                                     queries.New(p.DB),
 		ses:                                   p.SES,
 		sessionSigningKeyKmsKeyID:             p.SessionSigningKeyKmsKeyID,
+		githubOAuthClient:                     p.GithubOAuthClient,
 		googleOAuthClient:                     p.GoogleOAuthClient,
 		microsoftOAuthClient:                  p.MicrosoftOAuthClient,
+		githubOAuthClientSecretsKMSKeyID:      p.GithubOAuthClientSecretsKMSKeyID,
 		googleOAuthClientSecretsKMSKeyID:      p.GoogleOAuthClientSecretsKMSKeyID,
 		microsoftOAuthClientSecretsKMSKeyID:   p.MicrosoftOAuthClientSecretsKMSKeyID,
 		authenticatorAppSecretsKMSKeyID:       p.AuthenticatorAppSecretsKMSKeyID,

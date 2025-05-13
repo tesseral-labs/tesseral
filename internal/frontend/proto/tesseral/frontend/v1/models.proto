@@ -12,6 +12,7 @@ message Project {
   google.protobuf.Timestamp update_time = 4;
   bool log_in_with_google = 6;
   bool log_in_with_microsoft = 7;
+  bool log_in_with_github = 13;
   bool log_in_with_email = 11;
   bool log_in_with_password = 5;
   bool log_in_with_saml = 12;
@@ -27,6 +28,7 @@ message Organization {
   google.protobuf.Timestamp update_time = 4;
   optional bool log_in_with_google = 7;
   optional bool log_in_with_microsoft = 8;
+  optional bool log_in_with_github = 18;
   optional bool log_in_with_email = 16;
   optional bool log_in_with_password = 6;
   optional bool log_in_with_saml = 12;
@@ -60,6 +62,7 @@ message User {
   optional bool owner = 5;
   string google_user_id = 6;
   string microsoft_user_id = 7;
+  string github_user_id = 11;
   bool has_authenticator_app = 8;
   optional string display_name = 9;
   optional string profile_picture_url = 10;

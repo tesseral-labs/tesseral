@@ -55,6 +55,16 @@ export const exchangeIntermediateSessionForSession = IntermediateService.method.
 export const exchangeRelayedSessionTokenForSession = IntermediateService.method.exchangeRelayedSessionTokenForSession;
 
 /**
+ * @generated from rpc tesseral.intermediate.v1.IntermediateService.GetGithubOAuthRedirectURL
+ */
+export const getGithubOAuthRedirectURL = IntermediateService.method.getGithubOAuthRedirectURL;
+
+/**
+ * @generated from rpc tesseral.intermediate.v1.IntermediateService.RedeemGithubOAuthCode
+ */
+export const redeemGithubOAuthCode = IntermediateService.method.redeemGithubOAuthCode;
+
+/**
  * @generated from rpc tesseral.intermediate.v1.IntermediateService.GetGoogleOAuthRedirectURL
  */
 export const getGoogleOAuthRedirectURL = IntermediateService.method.getGoogleOAuthRedirectURL;

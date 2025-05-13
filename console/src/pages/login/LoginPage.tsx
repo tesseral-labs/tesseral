@@ -28,6 +28,7 @@ import {
 import { Input } from '@/components/ui/input';
 import {
   createIntermediateSession,
+  getGithubOAuthRedirectURL,
   getGoogleOAuthRedirectURL,
   getMicrosoftOAuthRedirectURL,
   issueEmailVerificationChallenge,
@@ -38,6 +39,7 @@ import {
   useProjectSettings,
 } from '@/lib/project-settings';
 import { Title } from '@/components/Title';
+import GithubIcon from '@/components/login/GithubIcon';
 
 export function LoginPage() {
   return (
@@ -106,9 +108,21 @@ function LoginPageContents() {
     });
   }
 
+  const { mutateAsync: getGithubOAuthRedirectURLAsync } = useMutation(
+    getGithubOAuthRedirectURL,
+  );
+
   const { mutateAsync: getGoogleOAuthRedirectURLAsync } = useMutation(
     getGoogleOAuthRedirectURL,
   );
+
+  async function handleLogInWithGithub() {
+    await createIntermediateSessionWithRelayedSessionState();
+    const { url } = await getGithubOAuthRedirectURLAsync({
+      redirectUrl: `${window.location.origin}/github-oauth-callback`,
+    });
+    window.location.href = url;
+  }
 
   async function handleLogInWithGoogle() {
     await createIntermediateSessionWithRelayedSessionState();
@@ -188,6 +202,16 @@ function LoginPageContents() {
             >
               <MicrosoftIcon />
               Log in with Microsoft
+            </Button>
+          )}
+          {settings.logInWithGithub && (
+            <Button
+              className="w-full"
+              variant="outline"
+              onClick={handleLogInWithGithub}
+            >
+              <GithubIcon />
+              Log in with Github
             </Button>
           )}
         </div>

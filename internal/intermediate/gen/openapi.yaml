@@ -126,6 +126,30 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /intermediate/v1/github-oauth-redirect-url:
+        post:
+            tags:
+                - IntermediateService
+            operationId: IntermediateService_GetGithubOAuthRedirectURL
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/GetGithubOAuthRedirectURLRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetGithubOAuthRedirectURLResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /intermediate/v1/google-oauth-redirect-url:
         post:
             tags:
@@ -305,6 +329,30 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/CreateOrganizationResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /intermediate/v1/redeem-github-oauth-code:
+        post:
+            tags:
+                - IntermediateService
+            operationId: IntermediateService_RedeemGithubOAuthCode
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/RedeemGithubOAuthCodeRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/RedeemGithubOAuthCodeResponse'
                 default:
                     description: Default error response
                     content:
@@ -732,6 +780,16 @@ components:
             properties:
                 otpauthUri:
                     type: string
+        GetGithubOAuthRedirectURLRequest:
+            type: object
+            properties:
+                redirectUrl:
+                    type: string
+        GetGithubOAuthRedirectURLResponse:
+            type: object
+            properties:
+                url:
+                    type: string
         GetGoogleOAuthRedirectURLRequest:
             type: object
             properties:
@@ -794,6 +852,8 @@ components:
                 microsoftUserId:
                     type: string
                 microsoftTenantId:
+                    type: string
+                githubUserId:
                     type: string
                 organizationId:
                     type: string
@@ -872,6 +932,8 @@ components:
                     type: boolean
                 logInWithMicrosoft:
                     type: boolean
+                logInWithGithub:
+                    type: boolean
                 logInWithPassword:
                     type: boolean
                 logInWithSaml:
@@ -892,6 +954,18 @@ components:
                     type: boolean
                 userHasPasskey:
                     type: boolean
+        RedeemGithubOAuthCodeRequest:
+            type: object
+            properties:
+                code:
+                    type: string
+                state:
+                    type: string
+                redirectUrl:
+                    type: string
+        RedeemGithubOAuthCodeResponse:
+            type: object
+            properties: {}
         RedeemGoogleOAuthCodeRequest:
             type: object
             properties:

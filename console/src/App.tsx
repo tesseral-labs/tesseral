@@ -59,11 +59,10 @@ import { StripeCheckoutSuccessPage } from './pages/stripe/StripeCheckoutSuccessP
 import { RBACSettingsTab } from '@/pages/project/RBACSettingsTab';
 import { EditRBACPolicyPage } from '@/pages/project/EditRBACPolicyPage';
 import { ViewRolePage } from '@/pages/roles/ViewRolePage';
-import {
-  OrganizationRolesTab
-} from '@/pages/organizations/OrganizationRolesTab';
+import { OrganizationRolesTab } from '@/pages/organizations/OrganizationRolesTab';
 import { CreateRolePage } from '@/pages/roles/CreateRolePage';
 import { EditRolePage } from '@/pages/roles/EditRolePage';
+import { GithubOAuthCallbackPage } from './pages/login/GithubOAuthCallbackPage';
 
 const queryClient = new QueryClient();
 
@@ -90,6 +89,10 @@ const AppWithinQueryClient = () => {
 
           <Route path="" element={<LoginFlowLayout />}>
             <Route path="verify-email" element={<VerifyEmailPage />} />
+            <Route
+              path="github-oauth-callback"
+              element={<GithubOAuthCallbackPage />}
+            />
             <Route
               path="google-oauth-callback"
               element={<GoogleOAuthCallbackPage />}
@@ -167,10 +170,7 @@ const AppWithinQueryClient = () => {
                 path="vault-domain-settings"
                 element={<VaultDomainSettingsTab />}
               />
-              <Route
-                path="rbac-settings"
-                element={<RBACSettingsTab />}
-              />
+              <Route path="rbac-settings" element={<RBACSettingsTab />} />
             </Route>
 
             <Route

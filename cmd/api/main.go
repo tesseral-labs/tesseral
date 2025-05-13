@@ -40,6 +40,7 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/frontend/gen/tesseral/frontend/v1/frontendv1connect"
 	frontendservice "github.com/tesseral-labs/tesseral/internal/frontend/service"
 	frontendstore "github.com/tesseral-labs/tesseral/internal/frontend/store"
+	"github.com/tesseral-labs/tesseral/internal/githuboauth"
 	"github.com/tesseral-labs/tesseral/internal/googleoauth"
 	"github.com/tesseral-labs/tesseral/internal/hexkey"
 	"github.com/tesseral-labs/tesseral/internal/httplambda"
@@ -100,6 +101,7 @@ func main() {
 		SESEndpoint                         string        `conf:"ses_endpoint_resolver_url,noredact"`
 		ServeAddr                           string        `conf:"serve_addr,noredact"`
 		SessionKMSKeyID                     string        `conf:"session_kms_key_id,noredact"`
+		GithubOAuthClientSecretsKMSKeyID    string        `conf:"github_oauth_client_secrets_kms_key_id,noredact"`
 		GoogleOAuthClientSecretsKMSKeyID    string        `conf:"google_oauth_client_secrets_kms_key_id,noredact"`
 		MicrosoftOAuthClientSecretsKMSKeyID string        `conf:"microsoft_oauth_client_secrets_kms_key_id,noredact"`
 		AuthenticatorAppSecretsKMSKeyID     string        `conf:"authenticator_app_secrets_kms_key_id,noredact"`
@@ -188,6 +190,7 @@ func main() {
 		SessionSigningKeyKmsKeyID:             config.SessionKMSKeyID,
 		GoogleOAuthClientSecretsKMSKeyID:      config.GoogleOAuthClientSecretsKMSKeyID,
 		MicrosoftOAuthClientSecretsKMSKeyID:   config.MicrosoftOAuthClientSecretsKMSKeyID,
+		GithubOAuthClientSecretsKMSKeyID:      config.GithubOAuthClientSecretsKMSKeyID,
 		UserContentBaseUrl:                    config.UserContentBaseUrl,
 		AuthAppsRootDomain:                    config.AuthAppsRootDomain,
 		TesseralDNSVaultCNAMEValue:            config.TesseralDNSVaultCNAMEValue,
@@ -255,11 +258,13 @@ func main() {
 		IntermediateSessionSigningKeyKMSKeyID: config.IntermediateSessionKMSKeyID,
 		KMS:                                   kms_,
 		PageEncoder:                           pagetoken.Encoder{Secret: pageEncodingValue},
+		GithubOAuthClient:                     &githuboauth.Client{HTTPClient: &http.Client{}},
 		GoogleOAuthClient:                     &googleoauth.Client{HTTPClient: &http.Client{}},
 		MicrosoftOAuthClient:                  &microsoftoauth.Client{HTTPClient: &http.Client{}},
 		S3:                                    s3_,
 		SES:                                   ses_,
 		SessionSigningKeyKmsKeyID:             config.SessionKMSKeyID,
+		GithubOAuthClientSecretsKMSKeyID:      config.GithubOAuthClientSecretsKMSKeyID,
 		GoogleOAuthClientSecretsKMSKeyID:      config.GoogleOAuthClientSecretsKMSKeyID,
 		MicrosoftOAuthClientSecretsKMSKeyID:   config.MicrosoftOAuthClientSecretsKMSKeyID,
 		AuthenticatorAppSecretsKMSKeyID:       config.AuthenticatorAppSecretsKMSKeyID,

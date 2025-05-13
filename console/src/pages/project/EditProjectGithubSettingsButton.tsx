@@ -33,18 +33,18 @@ import { toast } from 'sonner';
 import { Switch } from '@/components/ui/switch';
 
 const schema = z.object({
-  logInWithMicrosoft: z.boolean(),
-  microsoftOAuthClientId: z.string(),
-  microsoftOAuthClientSecret: z.string(),
+  logInWithGithub: z.boolean(),
+  githubOAuthClientId: z.string(),
+  githubOAuthClientSecret: z.string(),
 });
 
-export function EditProjectMicrosoftSettingsButton() {
+export function EditProjectGithubSettingsButton() {
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
-      logInWithMicrosoft: true,
-      microsoftOAuthClientId: '',
-      microsoftOAuthClientSecret: '',
+      logInWithGithub: true,
+      githubOAuthClientId: '',
+      githubOAuthClientSecret: '',
     },
   });
 
@@ -52,10 +52,9 @@ export function EditProjectMicrosoftSettingsButton() {
   useEffect(() => {
     if (getProjectResponse?.project) {
       form.reset({
-        logInWithMicrosoft: getProjectResponse.project.logInWithMicrosoft,
-        microsoftOAuthClientId:
-          getProjectResponse.project.microsoftOauthClientId,
-        microsoftOAuthClientSecret: '',
+        logInWithGithub: getProjectResponse.project.logInWithGithub,
+        githubOAuthClientId: getProjectResponse.project.githubOauthClientId,
+        githubOAuthClientSecret: '',
       });
     }
   }, [getProjectResponse]);
@@ -65,13 +64,13 @@ export function EditProjectMicrosoftSettingsButton() {
   const [open, setOpen] = useState(false);
 
   const handleSubmit = async (values: z.infer<typeof schema>) => {
-    if (!values.logInWithMicrosoft) {
+    if (!values.logInWithGithub) {
       if (
         !getProjectResponse?.project?.logInWithEmail &&
         !getProjectResponse?.project?.logInWithGoogle &&
-        !getProjectResponse?.project?.logInWithGithub
+        !getProjectResponse?.project?.logInWithMicrosoft
       ) {
-        form.setError('logInWithMicrosoft', {
+        form.setError('logInWithGithub', {
           message:
             'At least one of Log in with Email, Log in with Microsoft, Log in with Google, or Log in with Github must be enabled.',
         });
@@ -81,13 +80,13 @@ export function EditProjectMicrosoftSettingsButton() {
 
     await updateProjectMutationAsync({
       project: {
-        logInWithMicrosoft: values.logInWithMicrosoft,
-        microsoftOauthClientId: values.microsoftOAuthClientId,
-        microsoftOauthClientSecret: values.microsoftOAuthClientSecret,
+        logInWithGithub: values.logInWithGithub,
+        githubOauthClientId: values.githubOAuthClientId,
+        githubOauthClientSecret: values.githubOAuthClientSecret,
       },
     });
     await refetch();
-    toast.success('Microsoft settings updated');
+    toast.success('Github settings updated');
     setOpen(false);
   };
 
@@ -98,9 +97,9 @@ export function EditProjectMicrosoftSettingsButton() {
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Edit Microsoft Settings</AlertDialogTitle>
+          <AlertDialogTitle>Edit Github Settings</AlertDialogTitle>
           <AlertDialogDescription>
-            Edit the settings for "Log in with Microsoft" in your project.
+            Edit the settings for "Log in with Github" in your project.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <Form {...form}>
@@ -110,10 +109,10 @@ export function EditProjectMicrosoftSettingsButton() {
           >
             <FormField
               control={form.control}
-              name="logInWithMicrosoft"
+              name="logInWithGithub"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Log in with Microsoft</FormLabel>
+                  <FormLabel>Log in with Github</FormLabel>
                   <FormControl>
                     <Switch
                       className="block"
@@ -122,7 +121,7 @@ export function EditProjectMicrosoftSettingsButton() {
                     />
                   </FormControl>
                   <FormDescription>
-                    Whether Users can log in using their Microsoft account.
+                    Whether Users can log in using their Github account.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -131,15 +130,15 @@ export function EditProjectMicrosoftSettingsButton() {
 
             <FormField
               control={form.control}
-              name="microsoftOAuthClientId"
+              name="githubOAuthClientId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Microsoft OAuth Client ID</FormLabel>
+                  <FormLabel>Github OAuth Client ID</FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
                   <FormDescription>
-                    Your company's Microsoft OAuth Client ID.
+                    Your company's Github OAuth Client ID.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -148,15 +147,15 @@ export function EditProjectMicrosoftSettingsButton() {
 
             <FormField
               control={form.control}
-              name="microsoftOAuthClientSecret"
+              name="githubOAuthClientSecret"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Microsoft OAuth Client Secret</FormLabel>
+                  <FormLabel>Github OAuth Client Secret</FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
                   <FormDescription>
-                    Your company's Microsoft OAuth Client Secret.
+                    Your company's Github OAuth Client Secret.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
