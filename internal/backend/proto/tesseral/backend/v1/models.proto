@@ -156,6 +156,9 @@ message Organization {
 
   // Whether the Organization has SCIM enabled.
   optional bool scim_enabled = 10;
+
+  // Whether the Organization's Users can create Organization-specific Roles.
+  optional bool custom_roles_enabled = 15;
 }
 
 // OrganizationDomains defines the domains associated with an Organization.
@@ -418,4 +421,56 @@ message UserInvite {
   // Indicates whether the invited User will have owner privileges in the
   // Organization.
   bool owner = 6;
+}
+
+// RBACPolicy represents a Project's configuration for Role-Based Access Control
+// (RBAC).
+message RBACPolicy {
+  // The set of valid Actions for this Project.
+  repeated Action actions = 1;
+}
+
+// Action represents a permission within a Project.
+message Action {
+  // The unique name of the Action.
+  string name = 1;
+
+  // A human-readable description of the Action.
+  string description = 2;
+}
+
+// Role represents a logical grouping of permissions that Users may have.
+message Role {
+  // The Role ID. Starts with `role_...`.
+  string id = 1;
+
+  // The Organization this Role belongs to, if any.
+  string organization_id = 2;
+
+  // When the Role was created.
+  google.protobuf.Timestamp create_time = 3;
+
+  // When the Role was last updated.
+  google.protobuf.Timestamp update_time = 4;
+
+  // A human-readable display name for this Role.
+  string display_name = 5;
+
+  // A human-readable description of the Role.
+  string description = 6;
+
+  // The names of the Actions associated with this Role.
+  repeated string actions = 7;
+}
+
+// UserRoleAssignment represents a User being assigned to a Role.
+message UserRoleAssignment {
+  // The User Role Assignment ID. Starts with `user_role_assignment_...`.
+  string id = 1;
+
+  // The User ID.
+  string user_id = 2;
+
+  // The Role ID.
+  string role_id = 3;
 }

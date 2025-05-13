@@ -196,6 +196,65 @@ service FrontendService {
   rpc ListSwitchableOrganizations(ListSwitchableOrganizationsRequest) returns (ListSwitchableOrganizationsResponse) {
     option (google.api.http) = {get: "/frontend/v1/switch-organizations/organizations"};
   }
+
+  // Get RBAC Policy.
+  rpc GetRBACPolicy(GetRBACPolicyRequest) returns (GetRBACPolicyResponse) {
+    option (google.api.http) = {get: "/v1/rbac-policy"};
+  }
+
+  // List Roles.
+  rpc ListRoles(ListRolesRequest) returns (ListRolesResponse) {
+    option (google.api.http) = {get: "/v1/roles"};
+  }
+
+  // Get a Role.
+  rpc GetRole(GetRoleRequest) returns (GetRoleResponse) {
+    option (google.api.http) = {get: "/v1/roles/{id}"};
+  }
+
+  // Create a Role.
+  rpc CreateRole(CreateRoleRequest) returns (CreateRoleResponse) {
+    option (google.api.http) = {
+      post: "/v1/roles"
+      body: "role"
+    };
+  }
+
+  // Update a Role.
+  rpc UpdateRole(UpdateRoleRequest) returns (UpdateRoleResponse) {
+    option (google.api.http) = {
+      patch: "/v1/roles/{id}"
+      body: "role"
+    };
+  }
+
+  // Delete a Role.
+  rpc DeleteRole(DeleteRoleRequest) returns (DeleteRoleResponse) {
+    option (google.api.http) = {delete: "/v1/roles/{id}"};
+  }
+
+  // List User Role Assignments.
+  rpc ListUserRoleAssignments(ListUserRoleAssignmentsRequest) returns (ListUserRoleAssignmentsResponse) {
+    option (google.api.http) = {get: "/v1/user-role-assignments"};
+  }
+
+  // Get a User Role Assignment.
+  rpc GetUserRoleAssignment(GetUserRoleAssignmentRequest) returns (GetUserRoleAssignmentResponse) {
+    option (google.api.http) = {get: "/v1/user-role-assignments/{id}"};
+  }
+
+  // Create a User Role Assignment.
+  rpc CreateUserRoleAssignment(CreateUserRoleAssignmentRequest) returns (CreateUserRoleAssignmentResponse) {
+    option (google.api.http) = {
+      post: "/v1/user-role-assignments"
+      body: "user_role_assignment"
+    };
+  }
+
+  // Delete a User Role Assignment.
+  rpc DeleteUserRoleAssignment(DeleteUserRoleAssignmentRequest) returns (DeleteUserRoleAssignmentResponse) {
+    option (google.api.http) = {delete: "/v1/user-role-assignments/{id}"};
+  }
 }
 
 message LogoutRequest {}
@@ -482,3 +541,83 @@ message ListSwitchableOrganizationsRequest {}
 message ListSwitchableOrganizationsResponse {
   repeated SwitchableOrganization switchable_organizations = 1;
 }
+
+message GetRBACPolicyRequest {}
+
+message GetRBACPolicyResponse {
+  RBACPolicy rbac_policy = 1;
+}
+
+message ListRolesRequest {
+  string organization_id = 1;
+  string page_token = 2;
+}
+
+message ListRolesResponse {
+  repeated Role roles = 1;
+  string next_page_token = 2;
+}
+
+message GetRoleRequest {
+  string id = 1;
+}
+
+message GetRoleResponse {
+  Role role = 1;
+}
+
+message CreateRoleRequest {
+  Role role = 1;
+}
+
+message CreateRoleResponse {
+  Role role = 1;
+}
+
+message UpdateRoleRequest {
+  string id = 1;
+  Role role = 2;
+}
+
+message UpdateRoleResponse {
+  Role role = 1;
+}
+
+message DeleteRoleRequest {
+  string id = 1;
+}
+
+message DeleteRoleResponse {}
+
+message ListUserRoleAssignmentsRequest {
+  string user_id = 1;
+  string role_id = 2;
+  string page_token = 3;
+}
+
+message ListUserRoleAssignmentsResponse {
+  repeated UserRoleAssignment user_role_assignments = 1;
+  string next_page_token = 2;
+}
+
+message GetUserRoleAssignmentRequest {
+  string id = 1;
+}
+
+message GetUserRoleAssignmentResponse {
+  UserRoleAssignment user_role_assignment = 1;
+}
+
+message CreateUserRoleAssignmentRequest {
+  UserRoleAssignment user_role_assignment = 1;
+}
+
+message CreateUserRoleAssignmentResponse {
+  UserRoleAssignment user_role_assignment = 1;
+}
+
+message DeleteUserRoleAssignmentRequest {
+  string id = 1;
+}
+
+message DeleteUserRoleAssignmentResponse {}

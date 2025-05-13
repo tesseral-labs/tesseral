@@ -271,6 +271,79 @@ export const createUserInvite = BackendService.method.createUserInvite;
 export const deleteUserInvite = BackendService.method.deleteUserInvite;
 
 /**
+ * @generated from rpc tesseral.backend.v1.BackendService.GetRBACPolicy
+ */
+export const getRBACPolicy = BackendService.method.getRBACPolicy;
+
+/**
+ * @generated from rpc tesseral.backend.v1.BackendService.UpdateRBACPolicy
+ */
+export const updateRBACPolicy = BackendService.method.updateRBACPolicy;
+
+/**
+ * List Roles.
+ *
+ * @generated from rpc tesseral.backend.v1.BackendService.ListRoles
+ */
+export const listRoles = BackendService.method.listRoles;
+
+/**
+ * Get a Role.
+ *
+ * @generated from rpc tesseral.backend.v1.BackendService.GetRole
+ */
+export const getRole = BackendService.method.getRole;
+
+/**
+ * Create a Role.
+ *
+ * @generated from rpc tesseral.backend.v1.BackendService.CreateRole
+ */
+export const createRole = BackendService.method.createRole;
+
+/**
+ * Update a Role.
+ *
+ * @generated from rpc tesseral.backend.v1.BackendService.UpdateRole
+ */
+export const updateRole = BackendService.method.updateRole;
+
+/**
+ * Delete a Role.
+ *
+ * @generated from rpc tesseral.backend.v1.BackendService.DeleteRole
+ */
+export const deleteRole = BackendService.method.deleteRole;
+
+/**
+ * List User Role Assignments.
+ *
+ * @generated from rpc tesseral.backend.v1.BackendService.ListUserRoleAssignments
+ */
+export const listUserRoleAssignments = BackendService.method.listUserRoleAssignments;
+
+/**
+ * Get a User Role Assignment.
+ *
+ * @generated from rpc tesseral.backend.v1.BackendService.GetUserRoleAssignment
+ */
+export const getUserRoleAssignment = BackendService.method.getUserRoleAssignment;
+
+/**
+ * Create a User Role Assignment.
+ *
+ * @generated from rpc tesseral.backend.v1.BackendService.CreateUserRoleAssignment
+ */
+export const createUserRoleAssignment = BackendService.method.createUserRoleAssignment;
+
+/**
+ * Delete a User Role Assignment.
+ *
+ * @generated from rpc tesseral.backend.v1.BackendService.DeleteUserRoleAssignment
+ */
+export const deleteUserRoleAssignment = BackendService.method.deleteUserRoleAssignment;
+
+/**
  * @generated from rpc tesseral.backend.v1.BackendService.DisableOrganizationLogins
  */
 export const disableOrganizationLogins = BackendService.method.disableOrganizationLogins;

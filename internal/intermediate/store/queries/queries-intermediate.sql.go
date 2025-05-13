@@ -125,7 +125,7 @@ const createOrganization = `-- name: CreateOrganization :one
 INSERT INTO organizations (id, project_id, display_name, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_email, scim_enabled)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 RETURNING
-    id, project_id, display_name, scim_enabled, create_time, update_time, logins_disabled, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_authenticator_app, log_in_with_passkey, require_mfa, log_in_with_email, log_in_with_saml
+    id, project_id, display_name, scim_enabled, create_time, update_time, logins_disabled, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_authenticator_app, log_in_with_passkey, require_mfa, log_in_with_email, log_in_with_saml, custom_roles_enabled
 `
 
 type CreateOrganizationParams struct {
@@ -167,6 +167,7 @@ func (q *Queries) CreateOrganization(ctx context.Context, arg CreateOrganization
 		&i.RequireMfa,
 		&i.LogInWithEmail,
 		&i.LogInWithSaml,
+		&i.CustomRolesEnabled,
 	)
 	return i, err
 }
@@ -560,7 +561,7 @@ const createUserInvite = `-- name: CreateUserInvite :one
 INSERT INTO user_invites (id, organization_id, email, is_owner)
     VALUES ($1, $2, $3, $4)
 RETURNING
-    id, organization_id, create_time, update_time, email, is_owner
+    id, organization_id, create_time, update_time, email, is_owner, role_id
 `
 
 type CreateUserInviteParams struct {
@@ -585,6 +586,7 @@ func (q *Queries) CreateUserInvite(ctx context.Context, arg CreateUserInvitePara
 		&i.UpdateTime,
 		&i.Email,
 		&i.IsOwner,
+		&i.RoleID,
 	)
 	return i, err
 }
@@ -629,7 +631,7 @@ DELETE FROM user_invites
 WHERE organization_id = $1
     AND email = $2
 RETURNING
-    id, organization_id, create_time, update_time, email, is_owner
+    id, organization_id, create_time, update_time, email, is_owner, role_id
 `
 
 type DeleteIntermediateSessionUserInviteParams struct {
@@ -647,6 +649,7 @@ func (q *Queries) DeleteIntermediateSessionUserInvite(ctx context.Context, arg D
 		&i.UpdateTime,
 		&i.Email,
 		&i.IsOwner,
+		&i.RoleID,
 	)
 	return i, err
 }
@@ -1081,7 +1084,7 @@ func (q *Queries) GetProjectByID(ctx context.Context, id uuid.UUID) (Project, er
 
 const getProjectOrganizationByID = `-- name: GetProjectOrganizationByID :one
 SELECT
-    id, project_id, display_name, scim_enabled, create_time, update_time, logins_disabled, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_authenticator_app, log_in_with_passkey, require_mfa, log_in_with_email, log_in_with_saml
+    id, project_id, display_name, scim_enabled, create_time, update_time, logins_disabled, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_authenticator_app, log_in_with_passkey, require_mfa, log_in_with_email, log_in_with_saml, custom_roles_enabled
 FROM
     organizations
 WHERE
@@ -1113,6 +1116,7 @@ func (q *Queries) GetProjectOrganizationByID(ctx context.Context, arg GetProject
 		&i.RequireMfa,
 		&i.LogInWithEmail,
 		&i.LogInWithSaml,
+		&i.CustomRolesEnabled,
 	)
 	return i, err
 }
@@ -1358,7 +1362,7 @@ func (q *Queries) InvalidateSession(ctx context.Context, id uuid.UUID) error {
 
 const listOrganizationsByGoogleHostedDomain = `-- name: ListOrganizationsByGoogleHostedDomain :many
 SELECT
-    organizations.id, organizations.project_id, organizations.display_name, organizations.scim_enabled, organizations.create_time, organizations.update_time, organizations.logins_disabled, organizations.log_in_with_google, organizations.log_in_with_microsoft, organizations.log_in_with_password, organizations.log_in_with_authenticator_app, organizations.log_in_with_passkey, organizations.require_mfa, organizations.log_in_with_email, organizations.log_in_with_saml
+    organizations.id, organizations.project_id, organizations.display_name, organizations.scim_enabled, organizations.create_time, organizations.update_time, organizations.logins_disabled, organizations.log_in_with_google, organizations.log_in_with_microsoft, organizations.log_in_with_password, organizations.log_in_with_authenticator_app, organizations.log_in_with_passkey, organizations.require_mfa, organizations.log_in_with_email, organizations.log_in_with_saml, organizations.custom_roles_enabled
 FROM
     organizations
     JOIN organization_google_hosted_domains ON organizations.id = organization_google_hosted_domains.organization_id
@@ -1398,6 +1402,7 @@ func (q *Queries) ListOrganizationsByGoogleHostedDomain(ctx context.Context, arg
 			&i.RequireMfa,
 			&i.LogInWithEmail,
 			&i.LogInWithSaml,
+			&i.CustomRolesEnabled,
 		); err != nil {
 			return nil, err
 		}
@@ -1411,7 +1416,7 @@ func (q *Queries) ListOrganizationsByGoogleHostedDomain(ctx context.Context, arg
 
 const listOrganizationsByMatchingUser = `-- name: ListOrganizationsByMatchingUser :many
 SELECT
-    organizations.id, organizations.project_id, organizations.display_name, organizations.scim_enabled, organizations.create_time, organizations.update_time, organizations.logins_disabled, organizations.log_in_with_google, organizations.log_in_with_microsoft, organizations.log_in_with_password, organizations.log_in_with_authenticator_app, organizations.log_in_with_passkey, organizations.require_mfa, organizations.log_in_with_email, organizations.log_in_with_saml
+    organizations.id, organizations.project_id, organizations.display_name, organizations.scim_enabled, organizations.create_time, organizations.update_time, organizations.logins_disabled, organizations.log_in_with_google, organizations.log_in_with_microsoft, organizations.log_in_with_password, organizations.log_in_with_authenticator_app, organizations.log_in_with_passkey, organizations.require_mfa, organizations.log_in_with_email, organizations.log_in_with_saml, organizations.custom_roles_enabled
 FROM
     organizations
     JOIN users ON organizations.id = users.organization_id
@@ -1462,6 +1467,7 @@ func (q *Queries) ListOrganizationsByMatchingUser(ctx context.Context, arg ListO
 			&i.RequireMfa,
 			&i.LogInWithEmail,
 			&i.LogInWithSaml,
+			&i.CustomRolesEnabled,
 		); err != nil {
 			return nil, err
 		}
@@ -1475,7 +1481,7 @@ func (q *Queries) ListOrganizationsByMatchingUser(ctx context.Context, arg ListO
 
 const listOrganizationsByMatchingUserInvite = `-- name: ListOrganizationsByMatchingUserInvite :many
 SELECT
-    organizations.id, organizations.project_id, organizations.display_name, organizations.scim_enabled, organizations.create_time, organizations.update_time, organizations.logins_disabled, organizations.log_in_with_google, organizations.log_in_with_microsoft, organizations.log_in_with_password, organizations.log_in_with_authenticator_app, organizations.log_in_with_passkey, organizations.require_mfa, organizations.log_in_with_email, organizations.log_in_with_saml
+    organizations.id, organizations.project_id, organizations.display_name, organizations.scim_enabled, organizations.create_time, organizations.update_time, organizations.logins_disabled, organizations.log_in_with_google, organizations.log_in_with_microsoft, organizations.log_in_with_password, organizations.log_in_with_authenticator_app, organizations.log_in_with_passkey, organizations.require_mfa, organizations.log_in_with_email, organizations.log_in_with_saml, organizations.custom_roles_enabled
 FROM
     organizations
     JOIN user_invites ON organizations.id = user_invites.organization_id
@@ -1514,6 +1520,7 @@ func (q *Queries) ListOrganizationsByMatchingUserInvite(ctx context.Context, arg
 			&i.RequireMfa,
 			&i.LogInWithEmail,
 			&i.LogInWithSaml,
+			&i.CustomRolesEnabled,
 		); err != nil {
 			return nil, err
 		}
@@ -1527,7 +1534,7 @@ func (q *Queries) ListOrganizationsByMatchingUserInvite(ctx context.Context, arg
 
 const listOrganizationsByMicrosoftTenantID = `-- name: ListOrganizationsByMicrosoftTenantID :many
 SELECT
-    organizations.id, organizations.project_id, organizations.display_name, organizations.scim_enabled, organizations.create_time, organizations.update_time, organizations.logins_disabled, organizations.log_in_with_google, organizations.log_in_with_microsoft, organizations.log_in_with_password, organizations.log_in_with_authenticator_app, organizations.log_in_with_passkey, organizations.require_mfa, organizations.log_in_with_email, organizations.log_in_with_saml
+    organizations.id, organizations.project_id, organizations.display_name, organizations.scim_enabled, organizations.create_time, organizations.update_time, organizations.logins_disabled, organizations.log_in_with_google, organizations.log_in_with_microsoft, organizations.log_in_with_password, organizations.log_in_with_authenticator_app, organizations.log_in_with_passkey, organizations.require_mfa, organizations.log_in_with_email, organizations.log_in_with_saml, organizations.custom_roles_enabled
 FROM
     organizations
     JOIN organization_microsoft_tenant_ids ON organizations.id = organization_microsoft_tenant_ids.organization_id
@@ -1567,6 +1574,7 @@ func (q *Queries) ListOrganizationsByMicrosoftTenantID(ctx context.Context, arg 
 			&i.RequireMfa,
 			&i.LogInWithEmail,
 			&i.LogInWithSaml,
+			&i.CustomRolesEnabled,
 		); err != nil {
 			return nil, err
 		}
@@ -1580,7 +1588,7 @@ func (q *Queries) ListOrganizationsByMicrosoftTenantID(ctx context.Context, arg 
 
 const listSAMLOrganizations = `-- name: ListSAMLOrganizations :many
 SELECT
-    organizations.id, organizations.project_id, organizations.display_name, organizations.scim_enabled, organizations.create_time, organizations.update_time, organizations.logins_disabled, organizations.log_in_with_google, organizations.log_in_with_microsoft, organizations.log_in_with_password, organizations.log_in_with_authenticator_app, organizations.log_in_with_passkey, organizations.require_mfa, organizations.log_in_with_email, organizations.log_in_with_saml
+    organizations.id, organizations.project_id, organizations.display_name, organizations.scim_enabled, organizations.create_time, organizations.update_time, organizations.logins_disabled, organizations.log_in_with_google, organizations.log_in_with_microsoft, organizations.log_in_with_password, organizations.log_in_with_authenticator_app, organizations.log_in_with_passkey, organizations.require_mfa, organizations.log_in_with_email, organizations.log_in_with_saml, organizations.custom_roles_enabled
 FROM
     organizations
     JOIN organization_domains ON organizations.id = organization_domains.organization_id
@@ -1620,6 +1628,7 @@ func (q *Queries) ListSAMLOrganizations(ctx context.Context, arg ListSAMLOrganiz
 			&i.RequireMfa,
 			&i.LogInWithEmail,
 			&i.LogInWithSaml,
+			&i.CustomRolesEnabled,
 		); err != nil {
 			return nil, err
 		}

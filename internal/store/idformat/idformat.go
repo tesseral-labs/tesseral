@@ -22,6 +22,8 @@ var (
 	UserInvite                    = prettyuuid.MustNewFormat("user_invite_", alphabet)
 	AuthenticatorAppRecoveryCode  = prettyuuid.MustNewFormat("authenticator_app_recovery_code_", alphabet)
 	PasswordResetCode             = prettyuuid.MustNewFormat("password_reset_code_", alphabet)
+	Role                          = prettyuuid.MustNewFormat("role_", alphabet)
+	UserRoleAssignment            = prettyuuid.MustNewFormat("user_role_assignment_", alphabet)
 
 	IntermediateSessionSecretToken = prettyuuid.MustNewFormat("tesseral_secret_intermediate_session_token_", alphabet)
 

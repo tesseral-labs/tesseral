@@ -57,6 +57,17 @@ const (
 	BackendService_GetUserInvite_FullMethodName                         = "/tesseral.backend.v1.BackendService/GetUserInvite"
 	BackendService_CreateUserInvite_FullMethodName                      = "/tesseral.backend.v1.BackendService/CreateUserInvite"
 	BackendService_DeleteUserInvite_FullMethodName                      = "/tesseral.backend.v1.BackendService/DeleteUserInvite"
+	BackendService_GetRBACPolicy_FullMethodName                         = "/tesseral.backend.v1.BackendService/GetRBACPolicy"
+	BackendService_UpdateRBACPolicy_FullMethodName                      = "/tesseral.backend.v1.BackendService/UpdateRBACPolicy"
+	BackendService_ListRoles_FullMethodName                             = "/tesseral.backend.v1.BackendService/ListRoles"
+	BackendService_GetRole_FullMethodName                               = "/tesseral.backend.v1.BackendService/GetRole"
+	BackendService_CreateRole_FullMethodName                            = "/tesseral.backend.v1.BackendService/CreateRole"
+	BackendService_UpdateRole_FullMethodName                            = "/tesseral.backend.v1.BackendService/UpdateRole"
+	BackendService_DeleteRole_FullMethodName                            = "/tesseral.backend.v1.BackendService/DeleteRole"
+	BackendService_ListUserRoleAssignments_FullMethodName               = "/tesseral.backend.v1.BackendService/ListUserRoleAssignments"
+	BackendService_GetUserRoleAssignment_FullMethodName                 = "/tesseral.backend.v1.BackendService/GetUserRoleAssignment"
+	BackendService_CreateUserRoleAssignment_FullMethodName              = "/tesseral.backend.v1.BackendService/CreateUserRoleAssignment"
+	BackendService_DeleteUserRoleAssignment_FullMethodName              = "/tesseral.backend.v1.BackendService/DeleteUserRoleAssignment"
 	BackendService_DisableOrganizationLogins_FullMethodName             = "/tesseral.backend.v1.BackendService/DisableOrganizationLogins"
 	BackendService_DisableProjectLogins_FullMethodName                  = "/tesseral.backend.v1.BackendService/DisableProjectLogins"
 	BackendService_EnableOrganizationLogins_FullMethodName              = "/tesseral.backend.v1.BackendService/EnableOrganizationLogins"
@@ -165,6 +176,26 @@ type BackendServiceClient interface {
 	CreateUserInvite(ctx context.Context, in *CreateUserInviteRequest, opts ...grpc.CallOption) (*CreateUserInviteResponse, error)
 	// Delete a User Invite.
 	DeleteUserInvite(ctx context.Context, in *DeleteUserInviteRequest, opts ...grpc.CallOption) (*DeleteUserInviteResponse, error)
+	GetRBACPolicy(ctx context.Context, in *GetRBACPolicyRequest, opts ...grpc.CallOption) (*GetRBACPolicyResponse, error)
+	UpdateRBACPolicy(ctx context.Context, in *UpdateRBACPolicyRequest, opts ...grpc.CallOption) (*UpdateRBACPolicyResponse, error)
+	// List Roles.
+	ListRoles(ctx context.Context, in *ListRolesRequest, opts ...grpc.CallOption) (*ListRolesResponse, error)
+	// Get a Role.
+	GetRole(ctx context.Context, in *GetRoleRequest, opts ...grpc.CallOption) (*GetRoleResponse, error)
+	// Create a Role.
+	CreateRole(ctx context.Context, in *CreateRoleRequest, opts ...grpc.CallOption) (*CreateRoleResponse, error)
+	// Update a Role.
+	UpdateRole(ctx context.Context, in *UpdateRoleRequest, opts ...grpc.CallOption) (*UpdateRoleResponse, error)
+	// Delete a Role.
+	DeleteRole(ctx context.Context, in *DeleteRoleRequest, opts ...grpc.CallOption) (*DeleteRoleResponse, error)
+	// List User Role Assignments.
+	ListUserRoleAssignments(ctx context.Context, in *ListUserRoleAssignmentsRequest, opts ...grpc.CallOption) (*ListUserRoleAssignmentsResponse, error)
+	// Get a User Role Assignment.
+	GetUserRoleAssignment(ctx context.Context, in *GetUserRoleAssignmentRequest, opts ...grpc.CallOption) (*GetUserRoleAssignmentResponse, error)
+	// Create a User Role Assignment.
+	CreateUserRoleAssignment(ctx context.Context, in *CreateUserRoleAssignmentRequest, opts ...grpc.CallOption) (*CreateUserRoleAssignmentResponse, error)
+	// Delete a User Role Assignment.
+	DeleteUserRoleAssignment(ctx context.Context, in *DeleteUserRoleAssignmentRequest, opts ...grpc.CallOption) (*DeleteUserRoleAssignmentResponse, error)
 	DisableOrganizationLogins(ctx context.Context, in *DisableOrganizationLoginsRequest, opts ...grpc.CallOption) (*DisableOrganizationLoginsResponse, error)
 	DisableProjectLogins(ctx context.Context, in *DisableProjectLoginsRequest, opts ...grpc.CallOption) (*DisableProjectLoginsResponse, error)
 	EnableOrganizationLogins(ctx context.Context, in *EnableOrganizationLoginsRequest, opts ...grpc.CallOption) (*EnableOrganizationLoginsResponse, error)
@@ -581,6 +612,116 @@ func (c *backendServiceClient) DeleteUserInvite(ctx context.Context, in *DeleteU
 	return out, nil
 }
 
+func (c *backendServiceClient) GetRBACPolicy(ctx context.Context, in *GetRBACPolicyRequest, opts ...grpc.CallOption) (*GetRBACPolicyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetRBACPolicyResponse)
+	err := c.cc.Invoke(ctx, BackendService_GetRBACPolicy_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) UpdateRBACPolicy(ctx context.Context, in *UpdateRBACPolicyRequest, opts ...grpc.CallOption) (*UpdateRBACPolicyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateRBACPolicyResponse)
+	err := c.cc.Invoke(ctx, BackendService_UpdateRBACPolicy_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) ListRoles(ctx context.Context, in *ListRolesRequest, opts ...grpc.CallOption) (*ListRolesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListRolesResponse)
+	err := c.cc.Invoke(ctx, BackendService_ListRoles_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) GetRole(ctx context.Context, in *GetRoleRequest, opts ...grpc.CallOption) (*GetRoleResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetRoleResponse)
+	err := c.cc.Invoke(ctx, BackendService_GetRole_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) CreateRole(ctx context.Context, in *CreateRoleRequest, opts ...grpc.CallOption) (*CreateRoleResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateRoleResponse)
+	err := c.cc.Invoke(ctx, BackendService_CreateRole_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) UpdateRole(ctx context.Context, in *UpdateRoleRequest, opts ...grpc.CallOption) (*UpdateRoleResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateRoleResponse)
+	err := c.cc.Invoke(ctx, BackendService_UpdateRole_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) DeleteRole(ctx context.Context, in *DeleteRoleRequest, opts ...grpc.CallOption) (*DeleteRoleResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteRoleResponse)
+	err := c.cc.Invoke(ctx, BackendService_DeleteRole_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) ListUserRoleAssignments(ctx context.Context, in *ListUserRoleAssignmentsRequest, opts ...grpc.CallOption) (*ListUserRoleAssignmentsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListUserRoleAssignmentsResponse)
+	err := c.cc.Invoke(ctx, BackendService_ListUserRoleAssignments_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) GetUserRoleAssignment(ctx context.Context, in *GetUserRoleAssignmentRequest, opts ...grpc.CallOption) (*GetUserRoleAssignmentResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetUserRoleAssignmentResponse)
+	err := c.cc.Invoke(ctx, BackendService_GetUserRoleAssignment_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) CreateUserRoleAssignment(ctx context.Context, in *CreateUserRoleAssignmentRequest, opts ...grpc.CallOption) (*CreateUserRoleAssignmentResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateUserRoleAssignmentResponse)
+	err := c.cc.Invoke(ctx, BackendService_CreateUserRoleAssignment_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) DeleteUserRoleAssignment(ctx context.Context, in *DeleteUserRoleAssignmentRequest, opts ...grpc.CallOption) (*DeleteUserRoleAssignmentResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteUserRoleAssignmentResponse)
+	err := c.cc.Invoke(ctx, BackendService_DeleteUserRoleAssignment_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *backendServiceClient) DisableOrganizationLogins(ctx context.Context, in *DisableOrganizationLoginsRequest, opts ...grpc.CallOption) (*DisableOrganizationLoginsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(DisableOrganizationLoginsResponse)
@@ -921,6 +1062,26 @@ type BackendServiceServer interface {
 	CreateUserInvite(context.Context, *CreateUserInviteRequest) (*CreateUserInviteResponse, error)
 	// Delete a User Invite.
 	DeleteUserInvite(context.Context, *DeleteUserInviteRequest) (*DeleteUserInviteResponse, error)
+	GetRBACPolicy(context.Context, *GetRBACPolicyRequest) (*GetRBACPolicyResponse, error)
+	UpdateRBACPolicy(context.Context, *UpdateRBACPolicyRequest) (*UpdateRBACPolicyResponse, error)
+	// List Roles.
+	ListRoles(context.Context, *ListRolesRequest) (*ListRolesResponse, error)
+	// Get a Role.
+	GetRole(context.Context, *GetRoleRequest) (*GetRoleResponse, error)
+	// Create a Role.
+	CreateRole(context.Context, *CreateRoleRequest) (*CreateRoleResponse, error)
+	// Update a Role.
+	UpdateRole(context.Context, *UpdateRoleRequest) (*UpdateRoleResponse, error)
+	// Delete a Role.
+	DeleteRole(context.Context, *DeleteRoleRequest) (*DeleteRoleResponse, error)
+	// List User Role Assignments.
+	ListUserRoleAssignments(context.Context, *ListUserRoleAssignmentsRequest) (*ListUserRoleAssignmentsResponse, error)
+	// Get a User Role Assignment.
+	GetUserRoleAssignment(context.Context, *GetUserRoleAssignmentRequest) (*GetUserRoleAssignmentResponse, error)
+	// Create a User Role Assignment.
+	CreateUserRoleAssignment(context.Context, *CreateUserRoleAssignmentRequest) (*CreateUserRoleAssignmentResponse, error)
+	// Delete a User Role Assignment.
+	DeleteUserRoleAssignment(context.Context, *DeleteUserRoleAssignmentRequest) (*DeleteUserRoleAssignmentResponse, error)
 	DisableOrganizationLogins(context.Context, *DisableOrganizationLoginsRequest) (*DisableOrganizationLoginsResponse, error)
 	DisableProjectLogins(context.Context, *DisableProjectLoginsRequest) (*DisableProjectLoginsResponse, error)
 	EnableOrganizationLogins(context.Context, *EnableOrganizationLoginsRequest) (*EnableOrganizationLoginsResponse, error)
@@ -1070,6 +1231,39 @@ func (UnimplementedBackendServiceServer) CreateUserInvite(context.Context, *Crea
 }
 func (UnimplementedBackendServiceServer) DeleteUserInvite(context.Context, *DeleteUserInviteRequest) (*DeleteUserInviteResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteUserInvite not implemented")
+}
+func (UnimplementedBackendServiceServer) GetRBACPolicy(context.Context, *GetRBACPolicyRequest) (*GetRBACPolicyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetRBACPolicy not implemented")
+}
+func (UnimplementedBackendServiceServer) UpdateRBACPolicy(context.Context, *UpdateRBACPolicyRequest) (*UpdateRBACPolicyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateRBACPolicy not implemented")
+}
+func (UnimplementedBackendServiceServer) ListRoles(context.Context, *ListRolesRequest) (*ListRolesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListRoles not implemented")
+}
+func (UnimplementedBackendServiceServer) GetRole(context.Context, *GetRoleRequest) (*GetRoleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetRole not implemented")
+}
+func (UnimplementedBackendServiceServer) CreateRole(context.Context, *CreateRoleRequest) (*CreateRoleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateRole not implemented")
+}
+func (UnimplementedBackendServiceServer) UpdateRole(context.Context, *UpdateRoleRequest) (*UpdateRoleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateRole not implemented")
+}
+func (UnimplementedBackendServiceServer) DeleteRole(context.Context, *DeleteRoleRequest) (*DeleteRoleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteRole not implemented")
+}
+func (UnimplementedBackendServiceServer) ListUserRoleAssignments(context.Context, *ListUserRoleAssignmentsRequest) (*ListUserRoleAssignmentsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListUserRoleAssignments not implemented")
+}
+func (UnimplementedBackendServiceServer) GetUserRoleAssignment(context.Context, *GetUserRoleAssignmentRequest) (*GetUserRoleAssignmentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserRoleAssignment not implemented")
+}
+func (UnimplementedBackendServiceServer) CreateUserRoleAssignment(context.Context, *CreateUserRoleAssignmentRequest) (*CreateUserRoleAssignmentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateUserRoleAssignment not implemented")
+}
+func (UnimplementedBackendServiceServer) DeleteUserRoleAssignment(context.Context, *DeleteUserRoleAssignmentRequest) (*DeleteUserRoleAssignmentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteUserRoleAssignment not implemented")
 }
 func (UnimplementedBackendServiceServer) DisableOrganizationLogins(context.Context, *DisableOrganizationLoginsRequest) (*DisableOrganizationLoginsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DisableOrganizationLogins not implemented")
@@ -1854,6 +2048,204 @@ func _BackendService_DeleteUserInvite_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BackendService_GetRBACPolicy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetRBACPolicyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).GetRBACPolicy(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_GetRBACPolicy_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).GetRBACPolicy(ctx, req.(*GetRBACPolicyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_UpdateRBACPolicy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateRBACPolicyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).UpdateRBACPolicy(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_UpdateRBACPolicy_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).UpdateRBACPolicy(ctx, req.(*UpdateRBACPolicyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_ListRoles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListRolesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).ListRoles(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_ListRoles_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).ListRoles(ctx, req.(*ListRolesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_GetRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetRoleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).GetRole(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_GetRole_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).GetRole(ctx, req.(*GetRoleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_CreateRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateRoleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).CreateRole(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_CreateRole_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).CreateRole(ctx, req.(*CreateRoleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_UpdateRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateRoleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).UpdateRole(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_UpdateRole_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).UpdateRole(ctx, req.(*UpdateRoleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_DeleteRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteRoleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).DeleteRole(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_DeleteRole_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).DeleteRole(ctx, req.(*DeleteRoleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_ListUserRoleAssignments_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListUserRoleAssignmentsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).ListUserRoleAssignments(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_ListUserRoleAssignments_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).ListUserRoleAssignments(ctx, req.(*ListUserRoleAssignmentsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_GetUserRoleAssignment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserRoleAssignmentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).GetUserRoleAssignment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_GetUserRoleAssignment_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).GetUserRoleAssignment(ctx, req.(*GetUserRoleAssignmentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_CreateUserRoleAssignment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateUserRoleAssignmentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).CreateUserRoleAssignment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_CreateUserRoleAssignment_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).CreateUserRoleAssignment(ctx, req.(*CreateUserRoleAssignmentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_DeleteUserRoleAssignment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteUserRoleAssignmentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).DeleteUserRoleAssignment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_DeleteUserRoleAssignment_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).DeleteUserRoleAssignment(ctx, req.(*DeleteUserRoleAssignmentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _BackendService_DisableOrganizationLogins_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DisableOrganizationLoginsRequest)
 	if err := dec(in); err != nil {
@@ -2480,6 +2872,50 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteUserInvite",
 			Handler:    _BackendService_DeleteUserInvite_Handler,
+		},
+		{
+			MethodName: "GetRBACPolicy",
+			Handler:    _BackendService_GetRBACPolicy_Handler,
+		},
+		{
+			MethodName: "UpdateRBACPolicy",
+			Handler:    _BackendService_UpdateRBACPolicy_Handler,
+		},
+		{
+			MethodName: "ListRoles",
+			Handler:    _BackendService_ListRoles_Handler,
+		},
+		{
+			MethodName: "GetRole",
+			Handler:    _BackendService_GetRole_Handler,
+		},
+		{
+			MethodName: "CreateRole",
+			Handler:    _BackendService_CreateRole_Handler,
+		},
+		{
+			MethodName: "UpdateRole",
+			Handler:    _BackendService_UpdateRole_Handler,
+		},
+		{
+			MethodName: "DeleteRole",
+			Handler:    _BackendService_DeleteRole_Handler,
+		},
+		{
+			MethodName: "ListUserRoleAssignments",
+			Handler:    _BackendService_ListUserRoleAssignments_Handler,
+		},
+		{
+			MethodName: "GetUserRoleAssignment",
+			Handler:    _BackendService_GetUserRoleAssignment_Handler,
+		},
+		{
+			MethodName: "CreateUserRoleAssignment",
+			Handler:    _BackendService_CreateUserRoleAssignment_Handler,
+		},
+		{
+			MethodName: "DeleteUserRoleAssignment",
+			Handler:    _BackendService_DeleteUserRoleAssignment_Handler,
 		},
 		{
 			MethodName: "DisableOrganizationLogins",

@@ -9,6 +9,7 @@ import { CopyIcon } from "lucide-react";
 import { DateTime } from "luxon";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -44,14 +45,16 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import {
   createSAMLConnection,
+  deleteRole,
   deleteSAMLConnection,
   getOrganization,
   getProject,
+  listRoles,
   listSAMLConnections,
   updateSAMLConnection,
   whoami,
 } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
-import { SAMLConnection } from "@/gen/tesseral/frontend/v1/models_pb";
+import { Role, SAMLConnection } from "@/gen/tesseral/frontend/v1/models_pb";
 import { EditAuthenticationMethodsButton } from "@/pages/dashboard/EditAuthenticationMethodsButton";
 import { EditSecondaryAuthenticationSettingsButton } from "@/pages/dashboard/EditSecondaryAuthenticationSettingsButton";
 
@@ -61,6 +64,7 @@ export function OrganizationAdvancedTab() {
       <AuthenticationMethodsCard />
       <SecondaryAuthenticationMethodsCard />
       <SAMLConnectionsCard />
+      <RolesCard />
     </div>
   );
 }
@@ -583,6 +587,128 @@ function ConfigureSAMLConnectionButton({
             </AlertDialogFooter>
           </form>
         </Form>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+
+function RolesCard() {
+  const { data: listRolesResponse } = useInfiniteQuery(
+    listRoles,
+    {
+      pageToken: "",
+    },
+    {
+      pageParamKey: "pageToken",
+      getNextPageParam: (page) => page.nextPageToken || undefined,
+    },
+  );
+
+  const roles = listRolesResponse?.pages?.flatMap((page) => page.roles);
+
+  const { data: getOrganizationResponse } = useQuery(getOrganization);
+  if (!getOrganizationResponse?.organization?.customRolesEnabled) {
+    return null;
+  }
+
+  return (
+    <Card>
+      <div className="flex items-center justify-between">
+        <CardHeader>
+          <CardTitle>Roles</CardTitle>
+          <CardDescription>
+            Roles allow you to define permissions for users in your
+            organization.
+          </CardDescription>
+        </CardHeader>
+
+        <div className="pr-6">
+          <Link to={`/organization-settings/roles/new`}>
+            <Button variant="outline">Create custom role</Button>
+          </Link>
+        </div>
+      </div>
+
+      <CardContent>
+        <div className="space-y-4">
+          {roles?.map((role) => (
+            <div key={role.id} className="flex items-center justify-between">
+              <div>
+                <div className="text-sm font-medium">
+                  <div className="text-sm font-medium flex items-center gap-x-2">
+                    {role.displayName}
+                    {role.organizationId ? (
+                      <Badge variant="outline">Custom</Badge>
+                    ) : (
+                      <Badge variant="outline">Built-in</Badge>
+                    )}
+                  </div>
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  {role.description}
+                </div>
+              </div>
+
+              {role.organizationId && (
+                <div className="flex gap-x-2">
+                  <Link to={`/organization-settings/roles/${role.id}/edit`}>
+                    <Button variant="outline">Edit</Button>
+                  </Link>
+
+                  <DeleteRoleButton role={role} />
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function DeleteRoleButton({ role }: { role: Role }) {
+  const { mutateAsync: deleteRoleAsync } = useMutation(deleteRole);
+
+  const { refetch: refetchListRoles } = useInfiniteQuery(
+    listRoles,
+    {
+      pageToken: "",
+    },
+    {
+      pageParamKey: "pageToken",
+      getNextPageParam: (page) => page.nextPageToken || undefined,
+    },
+  );
+
+  async function handleDelete() {
+    await deleteRoleAsync({
+      id: role.id,
+    });
+    await refetchListRoles();
+    toast.success("Role deleted");
+  }
+
+  const [open, setOpen] = useState(false);
+  return (
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogTrigger asChild>
+        <Button variant="outline">Delete</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
+          <AlertDialogDescription>
+            Are you sure you want to delete{" "}
+            <span className="font-medium">{role.displayName}</span>? This action
+            cannot be undone.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <Button variant="destructive" onClick={handleDelete}>
+            Delete
+          </Button>
+        </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
   );
