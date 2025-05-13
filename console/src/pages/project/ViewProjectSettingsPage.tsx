@@ -4,15 +4,6 @@ import React from 'react';
 import { DateTime } from 'luxon';
 import { timestampDate } from '@bufbuild/protobuf/wkt';
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
-import { Link } from 'react-router-dom';
-import {
   PageCodeSubtitle,
   PageContent,
   PageDescription,
@@ -27,7 +18,6 @@ import {
   DetailsGridKey,
   DetailsGridValue,
 } from '@/components/details-grid';
-import { clsx } from 'clsx';
 import { Outlet, useLocation } from 'react-router';
 import { TabBar, TabBarLink } from '@/components/ui/tab-bar';
 import { Settings2 } from 'lucide-react';
@@ -53,7 +43,7 @@ export const ViewProjectSettingsPage = () => {
     {
       name: 'Role-Based Access Control Settings',
       url: `/project-settings/rbac-settings`,
-    }
+    },
   ];
 
   const currentTab = tabs.find((tab) => tab.url === pathname);

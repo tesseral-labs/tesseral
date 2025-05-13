@@ -23,14 +23,6 @@ import {
 } from '@/components/ui/table';
 import { Link } from 'react-router-dom';
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
-import {
   PageCodeSubtitle,
   PageContent,
   PageDescription,
@@ -290,7 +282,7 @@ export const ViewUserPage = () => {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="mt-8">
           <CardHeader className="flex-row justify-between items-center gap-x-2">
             <div className="flex flex-col space-y-1.5">
               <CardTitle>Assigned Roles</CardTitle>
@@ -346,7 +338,7 @@ function UserRoleAssignmentRow({
 
   const { data: getUserResponse } = useQuery(getUser, {
     id: userRoleAssignment.userId,
-  })
+  });
 
   const { mutateAsync: deleteUserRoleAssignmentAsync } = useMutation(
     deleteUserRoleAssignment,
@@ -370,9 +362,7 @@ function UserRoleAssignmentRow({
           {getRoleResponse?.role?.displayName}
         </Link>
       </TableCell>
-      <TableCell>
-        {getRoleResponse?.role?.description}
-      </TableCell>
+      <TableCell>{getRoleResponse?.role?.description}</TableCell>
       <TableCell className="text-right">
         <AlertDialog open={open} onOpenChange={setOpen}>
           <AlertDialogTrigger asChild>
@@ -385,7 +375,15 @@ function UserRoleAssignmentRow({
               <AlertDialogTitle>Unassign Role</AlertDialogTitle>
             </AlertDialogHeader>
             <AlertDialogDescription>
-              Are you sure you want to unassign <span className="font-medium">{getUserResponse?.user?.email}</span> from the Role <span className="font-medium">{getRoleResponse?.role?.displayName}</span>?
+              Are you sure you want to unassign{' '}
+              <span className="font-medium">
+                {getUserResponse?.user?.email}
+              </span>{' '}
+              from the Role{' '}
+              <span className="font-medium">
+                {getRoleResponse?.role?.displayName}
+              </span>
+              ?
             </AlertDialogDescription>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
