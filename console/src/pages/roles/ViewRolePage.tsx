@@ -88,87 +88,88 @@ export function ViewRolePage() {
       </PageHeader>
 
       <PageContent>
-        <Card>
-          <CardHeader className="flex-row justify-between items-center gap-x-2">
-            <div className="flex flex-col space-y-1.5">
-              <CardTitle>General settings</CardTitle>
-              <CardDescription>Basic settings for this Role.</CardDescription>
-            </div>
-            <Link to={`/roles/${roleId}/edit`}>
-              <Button variant="outline">Edit</Button>
-            </Link>
-          </CardHeader>
-          <CardContent>
-            <DetailsGrid>
-              <DetailsGridColumn>
-                <DetailsGridEntry>
-                  <DetailsGridKey>Display Name</DetailsGridKey>
-                  <DetailsGridValue>
-                    {getRoleResponse?.role?.displayName}
-                  </DetailsGridValue>
-                </DetailsGridEntry>
-                <DetailsGridEntry>
-                  <DetailsGridKey>Description</DetailsGridKey>
-                  <DetailsGridValue>
-                    {getRoleResponse?.role?.description}
-                  </DetailsGridValue>
-                </DetailsGridEntry>
-                <DetailsGridEntry>
-                  <DetailsGridKey>Role Type</DetailsGridKey>
-                  <DetailsGridValue>
-                    {getRoleResponse?.role?.organizationId
-                      ? 'Organization-Specific Role'
-                      : 'Project-Level Role'}
-                  </DetailsGridValue>
-                </DetailsGridEntry>
-                {getRoleResponse?.role?.organizationId && (
+        <div className="space-y-8">
+          <Card>
+            <CardHeader className="flex-row justify-between items-center gap-x-2">
+              <div className="flex flex-col space-y-1.5">
+                <CardTitle>General settings</CardTitle>
+                <CardDescription>Basic settings for this Role.</CardDescription>
+              </div>
+              <Link to={`/roles/${roleId}/edit`}>
+                <Button variant="outline">Edit</Button>
+              </Link>
+            </CardHeader>
+            <CardContent>
+              <DetailsGrid>
+                <DetailsGridColumn>
                   <DetailsGridEntry>
-                    <DetailsGridKey>Organization</DetailsGridKey>
+                    <DetailsGridKey>Display Name</DetailsGridKey>
                     <DetailsGridValue>
-                      <Link
-                        className="underline underline-offset-2 decoration-muted-foreground/40"
-                        to={`/organizations/${getRoleResponse?.role?.organizationId}`}
-                      >
-                        {getOrganizationResponse?.organization?.displayName}
-                      </Link>
+                      {getRoleResponse?.role?.displayName}
                     </DetailsGridValue>
                   </DetailsGridEntry>
-                )}
-              </DetailsGridColumn>
-              <DetailsGridColumn>
-                <DetailsGridEntry>
-                  <DetailsGridKey>Role Actions</DetailsGridKey>
-                  <DetailsGridValue>
-                    {getRoleResponse?.role?.actions.map((action) => (
-                      <div>{action}</div>
-                    ))}
-                  </DetailsGridValue>
-                </DetailsGridEntry>
-              </DetailsGridColumn>
-              <DetailsGridColumn>
-                <DetailsGridEntry>
-                  <DetailsGridKey>Created</DetailsGridKey>
-                  <DetailsGridValue>
-                    {getRoleResponse?.role?.createTime &&
-                      DateTime.fromJSDate(
-                        timestampDate(getRoleResponse?.role?.createTime),
-                      ).toRelative()}
-                  </DetailsGridValue>
-                </DetailsGridEntry>
-                <DetailsGridEntry>
-                  <DetailsGridKey>Updated</DetailsGridKey>
-                  <DetailsGridValue>
-                    {getRoleResponse?.role?.updateTime &&
-                      DateTime.fromJSDate(
-                        timestampDate(getRoleResponse?.role?.updateTime),
-                      ).toRelative()}
-                  </DetailsGridValue>
-                </DetailsGridEntry>
-              </DetailsGridColumn>
-            </DetailsGrid>
-          </CardContent>
-        </Card>
-        <div className="space-y-8">
+                  <DetailsGridEntry>
+                    <DetailsGridKey>Description</DetailsGridKey>
+                    <DetailsGridValue>
+                      {getRoleResponse?.role?.description}
+                    </DetailsGridValue>
+                  </DetailsGridEntry>
+                  <DetailsGridEntry>
+                    <DetailsGridKey>Role Type</DetailsGridKey>
+                    <DetailsGridValue>
+                      {getRoleResponse?.role?.organizationId
+                        ? 'Organization-Specific Role'
+                        : 'Project-Level Role'}
+                    </DetailsGridValue>
+                  </DetailsGridEntry>
+                  {getRoleResponse?.role?.organizationId && (
+                    <DetailsGridEntry>
+                      <DetailsGridKey>Organization</DetailsGridKey>
+                      <DetailsGridValue>
+                        <Link
+                          className="underline underline-offset-2 decoration-muted-foreground/40"
+                          to={`/organizations/${getRoleResponse?.role?.organizationId}`}
+                        >
+                          {getOrganizationResponse?.organization?.displayName}
+                        </Link>
+                      </DetailsGridValue>
+                    </DetailsGridEntry>
+                  )}
+                </DetailsGridColumn>
+                <DetailsGridColumn>
+                  <DetailsGridEntry>
+                    <DetailsGridKey>Role Actions</DetailsGridKey>
+                    <DetailsGridValue>
+                      {getRoleResponse?.role?.actions.map((action) => (
+                        <div>{action}</div>
+                      ))}
+                    </DetailsGridValue>
+                  </DetailsGridEntry>
+                </DetailsGridColumn>
+                <DetailsGridColumn>
+                  <DetailsGridEntry>
+                    <DetailsGridKey>Created</DetailsGridKey>
+                    <DetailsGridValue>
+                      {getRoleResponse?.role?.createTime &&
+                        DateTime.fromJSDate(
+                          timestampDate(getRoleResponse?.role?.createTime),
+                        ).toRelative()}
+                    </DetailsGridValue>
+                  </DetailsGridEntry>
+                  <DetailsGridEntry>
+                    <DetailsGridKey>Updated</DetailsGridKey>
+                    <DetailsGridValue>
+                      {getRoleResponse?.role?.updateTime &&
+                        DateTime.fromJSDate(
+                          timestampDate(getRoleResponse?.role?.updateTime),
+                        ).toRelative()}
+                    </DetailsGridValue>
+                  </DetailsGridEntry>
+                </DetailsGridColumn>
+              </DetailsGrid>
+            </CardContent>
+          </Card>
+
           <Card>
             <CardHeader>
               <CardTitle>Assigned Users</CardTitle>
