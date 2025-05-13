@@ -198,24 +198,22 @@ service FrontendService {
   }
 
   // Get RBAC Policy.
-  rpc GetRBACPolicy(GetRBACPolicyRequest) returns (GetRBACPolicyResponse) {
-    option (google.api.http) = {get: "/v1/rbac-policy"};
-  }
+  rpc GetRBACPolicy(GetRBACPolicyRequest) returns (GetRBACPolicyResponse);
 
   // List Roles.
   rpc ListRoles(ListRolesRequest) returns (ListRolesResponse) {
-    option (google.api.http) = {get: "/v1/roles"};
+    option (google.api.http) = {get: "/frontend/v1/roles"};
   }
 
   // Get a Role.
   rpc GetRole(GetRoleRequest) returns (GetRoleResponse) {
-    option (google.api.http) = {get: "/v1/roles/{id}"};
+    option (google.api.http) = {get: "/frontend/v1/roles/{id}"};
   }
 
   // Create a Role.
   rpc CreateRole(CreateRoleRequest) returns (CreateRoleResponse) {
     option (google.api.http) = {
-      post: "/v1/roles"
+      post: "/frontend/v1/roles"
       body: "role"
     };
   }
@@ -223,37 +221,37 @@ service FrontendService {
   // Update a Role.
   rpc UpdateRole(UpdateRoleRequest) returns (UpdateRoleResponse) {
     option (google.api.http) = {
-      patch: "/v1/roles/{id}"
+      patch: "/frontend/v1/roles/{id}"
       body: "role"
     };
   }
 
   // Delete a Role.
   rpc DeleteRole(DeleteRoleRequest) returns (DeleteRoleResponse) {
-    option (google.api.http) = {delete: "/v1/roles/{id}"};
+    option (google.api.http) = {delete: "/frontend/v1/roles/{id}"};
   }
 
   // List User Role Assignments.
   rpc ListUserRoleAssignments(ListUserRoleAssignmentsRequest) returns (ListUserRoleAssignmentsResponse) {
-    option (google.api.http) = {get: "/v1/user-role-assignments"};
+    option (google.api.http) = {get: "/frontend/v1/user-role-assignments"};
   }
 
   // Get a User Role Assignment.
   rpc GetUserRoleAssignment(GetUserRoleAssignmentRequest) returns (GetUserRoleAssignmentResponse) {
-    option (google.api.http) = {get: "/v1/user-role-assignments/{id}"};
+    option (google.api.http) = {get: "/frontend/v1/user-role-assignments/{id}"};
   }
 
   // Create a User Role Assignment.
   rpc CreateUserRoleAssignment(CreateUserRoleAssignmentRequest) returns (CreateUserRoleAssignmentResponse) {
     option (google.api.http) = {
-      post: "/v1/user-role-assignments"
+      post: "/frontend/v1/user-role-assignments"
       body: "user_role_assignment"
     };
   }
 
   // Delete a User Role Assignment.
   rpc DeleteUserRoleAssignment(DeleteUserRoleAssignmentRequest) returns (DeleteUserRoleAssignmentResponse) {
-    option (google.api.http) = {delete: "/v1/user-role-assignments/{id}"};
+    option (google.api.http) = {delete: "/frontend/v1/user-role-assignments/{id}"};
   }
 }
 

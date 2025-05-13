@@ -364,6 +364,137 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /frontend/v1/roles:
+        get:
+            tags:
+                - FrontendService
+            description: List Roles.
+            operationId: FrontendService_ListRoles
+            parameters:
+                - name: organizationId
+                  in: query
+                  schema:
+                    type: string
+                - name: pageToken
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListRolesResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - FrontendService
+            description: Create a Role.
+            operationId: FrontendService_CreateRole
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Role'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateRoleResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /frontend/v1/roles/{id}:
+        get:
+            tags:
+                - FrontendService
+            description: Get a Role.
+            operationId: FrontendService_GetRole
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetRoleResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        delete:
+            tags:
+                - FrontendService
+            description: Delete a Role.
+            operationId: FrontendService_DeleteRole
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DeleteRoleResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        patch:
+            tags:
+                - FrontendService
+            description: Update a Role.
+            operationId: FrontendService_UpdateRole
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Role'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateRoleResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /frontend/v1/saml-connections:
         get:
             tags:
@@ -773,6 +904,111 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /frontend/v1/user-role-assignments:
+        get:
+            tags:
+                - FrontendService
+            description: List User Role Assignments.
+            operationId: FrontendService_ListUserRoleAssignments
+            parameters:
+                - name: userId
+                  in: query
+                  schema:
+                    type: string
+                - name: roleId
+                  in: query
+                  schema:
+                    type: string
+                - name: pageToken
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListUserRoleAssignmentsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - FrontendService
+            description: Create a User Role Assignment.
+            operationId: FrontendService_CreateUserRoleAssignment
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UserRoleAssignment'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateUserRoleAssignmentResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /frontend/v1/user-role-assignments/{id}:
+        get:
+            tags:
+                - FrontendService
+            description: Get a User Role Assignment.
+            operationId: FrontendService_GetUserRoleAssignment
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetUserRoleAssignmentResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        delete:
+            tags:
+                - FrontendService
+            description: Delete a User Role Assignment.
+            operationId: FrontendService_DeleteUserRoleAssignment
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DeleteUserRoleAssignmentResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /frontend/v1/users:
         get:
             tags:
@@ -876,273 +1112,8 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /v1/rbac-policy:
-        get:
-            tags:
-                - FrontendService
-            description: Get RBAC Policy.
-            operationId: FrontendService_GetRBACPolicy
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/GetRBACPolicyResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-    /v1/roles:
-        get:
-            tags:
-                - FrontendService
-            description: List Roles.
-            operationId: FrontendService_ListRoles
-            parameters:
-                - name: organizationId
-                  in: query
-                  schema:
-                    type: string
-                - name: pageToken
-                  in: query
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ListRolesResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-        post:
-            tags:
-                - FrontendService
-            description: Create a Role.
-            operationId: FrontendService_CreateRole
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/Role'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/CreateRoleResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-    /v1/roles/{id}:
-        get:
-            tags:
-                - FrontendService
-            description: Get a Role.
-            operationId: FrontendService_GetRole
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/GetRoleResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-        delete:
-            tags:
-                - FrontendService
-            description: Delete a Role.
-            operationId: FrontendService_DeleteRole
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/DeleteRoleResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-        patch:
-            tags:
-                - FrontendService
-            description: Update a Role.
-            operationId: FrontendService_UpdateRole
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                    type: string
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/Role'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/UpdateRoleResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-    /v1/user-role-assignments:
-        get:
-            tags:
-                - FrontendService
-            description: List User Role Assignments.
-            operationId: FrontendService_ListUserRoleAssignments
-            parameters:
-                - name: userId
-                  in: query
-                  schema:
-                    type: string
-                - name: roleId
-                  in: query
-                  schema:
-                    type: string
-                - name: pageToken
-                  in: query
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ListUserRoleAssignmentsResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-        post:
-            tags:
-                - FrontendService
-            description: Create a User Role Assignment.
-            operationId: FrontendService_CreateUserRoleAssignment
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/UserRoleAssignment'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/CreateUserRoleAssignmentResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-    /v1/user-role-assignments/{id}:
-        get:
-            tags:
-                - FrontendService
-            description: Get a User Role Assignment.
-            operationId: FrontendService_GetUserRoleAssignment
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/GetUserRoleAssignmentResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-        delete:
-            tags:
-                - FrontendService
-            description: Delete a User Role Assignment.
-            operationId: FrontendService_DeleteUserRoleAssignment
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/DeleteUserRoleAssignmentResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
 components:
     schemas:
-        Action:
-            type: object
-            properties:
-                name:
-                    type: string
-                    description: The unique name of the Action.
-                description:
-                    type: string
-                    description: A human-readable description of the Action.
-            description: Action represents a permission within a Project.
         CreateRoleResponse:
             type: object
             properties:
@@ -1225,11 +1196,6 @@ components:
             properties:
                 project:
                     $ref: '#/components/schemas/Project'
-        GetRBACPolicyResponse:
-            type: object
-            properties:
-                rbacPolicy:
-                    $ref: '#/components/schemas/RBACPolicy'
         GetRoleResponse:
             type: object
             properties:
@@ -1452,17 +1418,6 @@ components:
                     type: boolean
                 vaultDomain:
                     type: string
-        RBACPolicy:
-            type: object
-            properties:
-                actions:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/Action'
-                    description: The set of valid Actions for this Project.
-            description: |-
-                RBACPolicy represents a Project's configuration for Role-Based Access Control
-                 (RBAC).
         RefreshRequest:
             type: object
             properties:
