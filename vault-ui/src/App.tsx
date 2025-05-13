@@ -12,6 +12,7 @@ import { LoggedInGate } from "@/pages/dashboard/LoggedInGate";
 import { OrganizationAdvancedTab } from "@/pages/dashboard/OrganizationAdvancedTab";
 import { OrganizationSettingsPage } from "@/pages/dashboard/OrganizationSettingsPage";
 import { OrganizationUsersTab } from "@/pages/dashboard/OrganizationUsersTab";
+import { CreateRolePage } from "@/pages/dashboard/roles/CreateRolePage";
 import { EditRolePage } from "@/pages/dashboard/roles/EditRolePage";
 import { AuthenticateAnotherWayPage } from "@/pages/login/AuthenticateAnotherWayPage";
 import { ChooseOrganizationPage } from "@/pages/login/ChooseOrganizationPage";
@@ -40,7 +41,6 @@ import { VerifySecondaryFactorPage } from "@/pages/login/VerifySecondaryFactorPa
 
 import { DashboardLayout } from "./pages/dashboard/DashboardLayout";
 import { UserSettingsPage } from "./pages/dashboard/UserSettingsPage";
-import { CreateRolePage } from "@/pages/dashboard/roles/CreateRolePage";
 
 const queryClient = new QueryClient();
 
@@ -148,8 +148,14 @@ function AppWithRoutes() {
                   />
                 </Route>
 
-                <Route path="organization-settings/roles/new" element={<CreateRolePage />} />
-                <Route path="organization-settings/roles/:roleId/edit" element={<EditRolePage />} />
+                <Route
+                  path="organization-settings/roles/new"
+                  element={<CreateRolePage />}
+                />
+                <Route
+                  path="organization-settings/roles/:roleId/edit"
+                  element={<EditRolePage />}
+                />
               </Route>
             </Route>
 
