@@ -1159,24 +1159,6 @@ func local_request_FrontendService_ListSwitchableOrganizations_0(ctx context.Con
 	return msg, metadata, err
 }
 
-func request_FrontendService_GetRBACPolicy_0(ctx context.Context, marshaler runtime.Marshaler, client FrontendServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq GetRBACPolicyRequest
-		metadata runtime.ServerMetadata
-	)
-	msg, err := client.GetRBACPolicy(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
-	return msg, metadata, err
-}
-
-func local_request_FrontendService_GetRBACPolicy_0(ctx context.Context, marshaler runtime.Marshaler, server FrontendServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var (
-		protoReq GetRBACPolicyRequest
-		metadata runtime.ServerMetadata
-	)
-	msg, err := server.GetRBACPolicy(ctx, &protoReq)
-	return msg, metadata, err
-}
-
 var filter_FrontendService_ListRoles_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 
 func request_FrontendService_ListRoles_0(ctx context.Context, marshaler runtime.Marshaler, client FrontendServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -2221,33 +2203,13 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		}
 		forward_FrontendService_ListSwitchableOrganizations_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodGet, pattern_FrontendService_GetRBACPolicy_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		var stream runtime.ServerTransportStream
-		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/GetRBACPolicy", runtime.WithHTTPPathPattern("/v1/rbac-policy"))
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := local_request_FrontendService_GetRBACPolicy_0(annotatedContext, inboundMarshaler, server, req, pathParams)
-		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
-		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
-		if err != nil {
-			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		forward_FrontendService_GetRBACPolicy_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-	})
 	mux.Handle(http.MethodGet, pattern_FrontendService_ListRoles_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/ListRoles", runtime.WithHTTPPathPattern("/v1/roles"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/ListRoles", runtime.WithHTTPPathPattern("/frontend/v1/roles"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2267,7 +2229,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/GetRole", runtime.WithHTTPPathPattern("/v1/roles/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/GetRole", runtime.WithHTTPPathPattern("/frontend/v1/roles/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2287,7 +2249,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/CreateRole", runtime.WithHTTPPathPattern("/v1/roles"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/CreateRole", runtime.WithHTTPPathPattern("/frontend/v1/roles"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2307,7 +2269,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/UpdateRole", runtime.WithHTTPPathPattern("/v1/roles/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/UpdateRole", runtime.WithHTTPPathPattern("/frontend/v1/roles/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2327,7 +2289,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/DeleteRole", runtime.WithHTTPPathPattern("/v1/roles/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/DeleteRole", runtime.WithHTTPPathPattern("/frontend/v1/roles/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2347,7 +2309,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/ListUserRoleAssignments", runtime.WithHTTPPathPattern("/v1/user-role-assignments"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/ListUserRoleAssignments", runtime.WithHTTPPathPattern("/frontend/v1/user-role-assignments"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2367,7 +2329,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/GetUserRoleAssignment", runtime.WithHTTPPathPattern("/v1/user-role-assignments/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/GetUserRoleAssignment", runtime.WithHTTPPathPattern("/frontend/v1/user-role-assignments/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2387,7 +2349,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/CreateUserRoleAssignment", runtime.WithHTTPPathPattern("/v1/user-role-assignments"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/CreateUserRoleAssignment", runtime.WithHTTPPathPattern("/frontend/v1/user-role-assignments"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2407,7 +2369,7 @@ func RegisterFrontendServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/DeleteUserRoleAssignment", runtime.WithHTTPPathPattern("/v1/user-role-assignments/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/DeleteUserRoleAssignment", runtime.WithHTTPPathPattern("/frontend/v1/user-role-assignments/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -3090,28 +3052,11 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		}
 		forward_FrontendService_ListSwitchableOrganizations_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle(http.MethodGet, pattern_FrontendService_GetRBACPolicy_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/GetRBACPolicy", runtime.WithHTTPPathPattern("/v1/rbac-policy"))
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := request_FrontendService_GetRBACPolicy_0(annotatedContext, inboundMarshaler, client, req, pathParams)
-		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
-		if err != nil {
-			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		forward_FrontendService_GetRBACPolicy_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-	})
 	mux.Handle(http.MethodGet, pattern_FrontendService_ListRoles_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/ListRoles", runtime.WithHTTPPathPattern("/v1/roles"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/ListRoles", runtime.WithHTTPPathPattern("/frontend/v1/roles"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -3128,7 +3073,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/GetRole", runtime.WithHTTPPathPattern("/v1/roles/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/GetRole", runtime.WithHTTPPathPattern("/frontend/v1/roles/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -3145,7 +3090,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/CreateRole", runtime.WithHTTPPathPattern("/v1/roles"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/CreateRole", runtime.WithHTTPPathPattern("/frontend/v1/roles"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -3162,7 +3107,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/UpdateRole", runtime.WithHTTPPathPattern("/v1/roles/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/UpdateRole", runtime.WithHTTPPathPattern("/frontend/v1/roles/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -3179,7 +3124,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/DeleteRole", runtime.WithHTTPPathPattern("/v1/roles/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/DeleteRole", runtime.WithHTTPPathPattern("/frontend/v1/roles/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -3196,7 +3141,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/ListUserRoleAssignments", runtime.WithHTTPPathPattern("/v1/user-role-assignments"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/ListUserRoleAssignments", runtime.WithHTTPPathPattern("/frontend/v1/user-role-assignments"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -3213,7 +3158,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/GetUserRoleAssignment", runtime.WithHTTPPathPattern("/v1/user-role-assignments/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/GetUserRoleAssignment", runtime.WithHTTPPathPattern("/frontend/v1/user-role-assignments/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -3230,7 +3175,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/CreateUserRoleAssignment", runtime.WithHTTPPathPattern("/v1/user-role-assignments"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/CreateUserRoleAssignment", runtime.WithHTTPPathPattern("/frontend/v1/user-role-assignments"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -3247,7 +3192,7 @@ func RegisterFrontendServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/DeleteUserRoleAssignment", runtime.WithHTTPPathPattern("/v1/user-role-assignments/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/tesseral.frontend.v1.FrontendService/DeleteUserRoleAssignment", runtime.WithHTTPPathPattern("/frontend/v1/user-role-assignments/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -3301,16 +3246,15 @@ var (
 	pattern_FrontendService_CreateUserInvite_0                      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"frontend", "v1", "user-invites"}, ""))
 	pattern_FrontendService_DeleteUserInvite_0                      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"frontend", "v1", "user-invites", "id"}, ""))
 	pattern_FrontendService_ListSwitchableOrganizations_0           = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"frontend", "v1", "switch-organizations", "organizations"}, ""))
-	pattern_FrontendService_GetRBACPolicy_0                         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "rbac-policy"}, ""))
-	pattern_FrontendService_ListRoles_0                             = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "roles"}, ""))
-	pattern_FrontendService_GetRole_0                               = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "roles", "id"}, ""))
-	pattern_FrontendService_CreateRole_0                            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "roles"}, ""))
-	pattern_FrontendService_UpdateRole_0                            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "roles", "id"}, ""))
-	pattern_FrontendService_DeleteRole_0                            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "roles", "id"}, ""))
-	pattern_FrontendService_ListUserRoleAssignments_0               = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "user-role-assignments"}, ""))
-	pattern_FrontendService_GetUserRoleAssignment_0                 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "user-role-assignments", "id"}, ""))
-	pattern_FrontendService_CreateUserRoleAssignment_0              = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "user-role-assignments"}, ""))
-	pattern_FrontendService_DeleteUserRoleAssignment_0              = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "user-role-assignments", "id"}, ""))
+	pattern_FrontendService_ListRoles_0                             = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"frontend", "v1", "roles"}, ""))
+	pattern_FrontendService_GetRole_0                               = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"frontend", "v1", "roles", "id"}, ""))
+	pattern_FrontendService_CreateRole_0                            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"frontend", "v1", "roles"}, ""))
+	pattern_FrontendService_UpdateRole_0                            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"frontend", "v1", "roles", "id"}, ""))
+	pattern_FrontendService_DeleteRole_0                            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"frontend", "v1", "roles", "id"}, ""))
+	pattern_FrontendService_ListUserRoleAssignments_0               = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"frontend", "v1", "user-role-assignments"}, ""))
+	pattern_FrontendService_GetUserRoleAssignment_0                 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"frontend", "v1", "user-role-assignments", "id"}, ""))
+	pattern_FrontendService_CreateUserRoleAssignment_0              = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"frontend", "v1", "user-role-assignments"}, ""))
+	pattern_FrontendService_DeleteUserRoleAssignment_0              = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"frontend", "v1", "user-role-assignments", "id"}, ""))
 )
 
 var (
@@ -3351,7 +3295,6 @@ var (
 	forward_FrontendService_CreateUserInvite_0                      = runtime.ForwardResponseMessage
 	forward_FrontendService_DeleteUserInvite_0                      = runtime.ForwardResponseMessage
 	forward_FrontendService_ListSwitchableOrganizations_0           = runtime.ForwardResponseMessage
-	forward_FrontendService_GetRBACPolicy_0                         = runtime.ForwardResponseMessage
 	forward_FrontendService_ListRoles_0                             = runtime.ForwardResponseMessage
 	forward_FrontendService_GetRole_0                               = runtime.ForwardResponseMessage
 	forward_FrontendService_CreateRole_0                            = runtime.ForwardResponseMessage
