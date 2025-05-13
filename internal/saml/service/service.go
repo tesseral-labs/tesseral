@@ -63,6 +63,7 @@ func (s *Service) init(w http.ResponseWriter, r *http.Request) error {
 		Now:        time.Now(),
 	})
 
+	w.Header().Set("Content-Type", "text/html")
 	if err := initTemplate.Execute(w, initTemplateData{
 		SignOnURL:   samlConnectionInitData.IDPRedirectURL,
 		SAMLRequest: initRes.SAMLRequest,
