@@ -8,7 +8,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { DateTime } from "luxon";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -47,7 +46,6 @@ import {
   createUserInvite,
   deleteUserInvite,
   listUserInvites,
-  listUserRoleAssignments,
   listUsers,
   whoami,
 } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";

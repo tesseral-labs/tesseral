@@ -1,7 +1,7 @@
 import { useMutation } from "@connectrpc/connect-query";
 import React from "react";
 import { useNavigate } from "react-router";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 
 import {
@@ -23,7 +23,7 @@ export function CreateRolePage() {
     description: string;
     actions: string[];
   }) {
-    const createRoleResponse = await createRoleAsync({
+    await createRoleAsync({
       role: {
         organizationId: searchParams.get("organization-id") ?? "",
         displayName: role.displayName,
