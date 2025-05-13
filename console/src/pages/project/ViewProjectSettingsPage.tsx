@@ -50,6 +50,10 @@ export const ViewProjectSettingsPage = () => {
       name: 'Vault Domain Settings',
       url: `/project-settings/vault-domain-settings`,
     },
+    {
+      name: 'Role-Based Access Control Settings',
+      url: `/project-settings/rbac-settings`,
+    }
   ];
 
   const currentTab = tabs.find((tab) => tab.url === pathname);

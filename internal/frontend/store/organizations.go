@@ -200,7 +200,8 @@ func parseOrganization(qProject queries.Project, qOrg queries.Organization) *fro
 		LogInWithPasskey:          &qOrg.LogInWithPasskey,
 		RequireMfa:                &qOrg.RequireMfa,
 		GoogleHostedDomains:       nil, // TODO
-		MicrosoftTenantIds:        nil, // TODO
+		MicrosoftTenantIds:        nil, // TODO,
+		CustomRolesEnabled:        qOrg.CustomRolesEnabled,
 	}
 }
 

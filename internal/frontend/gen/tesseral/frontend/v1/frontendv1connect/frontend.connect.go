@@ -140,6 +140,35 @@ const (
 	// FrontendServiceListSwitchableOrganizationsProcedure is the fully-qualified name of the
 	// FrontendService's ListSwitchableOrganizations RPC.
 	FrontendServiceListSwitchableOrganizationsProcedure = "/tesseral.frontend.v1.FrontendService/ListSwitchableOrganizations"
+	// FrontendServiceGetRBACPolicyProcedure is the fully-qualified name of the FrontendService's
+	// GetRBACPolicy RPC.
+	FrontendServiceGetRBACPolicyProcedure = "/tesseral.frontend.v1.FrontendService/GetRBACPolicy"
+	// FrontendServiceListRolesProcedure is the fully-qualified name of the FrontendService's ListRoles
+	// RPC.
+	FrontendServiceListRolesProcedure = "/tesseral.frontend.v1.FrontendService/ListRoles"
+	// FrontendServiceGetRoleProcedure is the fully-qualified name of the FrontendService's GetRole RPC.
+	FrontendServiceGetRoleProcedure = "/tesseral.frontend.v1.FrontendService/GetRole"
+	// FrontendServiceCreateRoleProcedure is the fully-qualified name of the FrontendService's
+	// CreateRole RPC.
+	FrontendServiceCreateRoleProcedure = "/tesseral.frontend.v1.FrontendService/CreateRole"
+	// FrontendServiceUpdateRoleProcedure is the fully-qualified name of the FrontendService's
+	// UpdateRole RPC.
+	FrontendServiceUpdateRoleProcedure = "/tesseral.frontend.v1.FrontendService/UpdateRole"
+	// FrontendServiceDeleteRoleProcedure is the fully-qualified name of the FrontendService's
+	// DeleteRole RPC.
+	FrontendServiceDeleteRoleProcedure = "/tesseral.frontend.v1.FrontendService/DeleteRole"
+	// FrontendServiceListUserRoleAssignmentsProcedure is the fully-qualified name of the
+	// FrontendService's ListUserRoleAssignments RPC.
+	FrontendServiceListUserRoleAssignmentsProcedure = "/tesseral.frontend.v1.FrontendService/ListUserRoleAssignments"
+	// FrontendServiceGetUserRoleAssignmentProcedure is the fully-qualified name of the
+	// FrontendService's GetUserRoleAssignment RPC.
+	FrontendServiceGetUserRoleAssignmentProcedure = "/tesseral.frontend.v1.FrontendService/GetUserRoleAssignment"
+	// FrontendServiceCreateUserRoleAssignmentProcedure is the fully-qualified name of the
+	// FrontendService's CreateUserRoleAssignment RPC.
+	FrontendServiceCreateUserRoleAssignmentProcedure = "/tesseral.frontend.v1.FrontendService/CreateUserRoleAssignment"
+	// FrontendServiceDeleteUserRoleAssignmentProcedure is the fully-qualified name of the
+	// FrontendService's DeleteUserRoleAssignment RPC.
+	FrontendServiceDeleteUserRoleAssignmentProcedure = "/tesseral.frontend.v1.FrontendService/DeleteUserRoleAssignment"
 )
 
 // FrontendServiceClient is a client for the tesseral.frontend.v1.FrontendService service.
@@ -182,6 +211,26 @@ type FrontendServiceClient interface {
 	CreateUserInvite(context.Context, *connect.Request[v1.CreateUserInviteRequest]) (*connect.Response[v1.CreateUserInviteResponse], error)
 	DeleteUserInvite(context.Context, *connect.Request[v1.DeleteUserInviteRequest]) (*connect.Response[v1.DeleteUserInviteResponse], error)
 	ListSwitchableOrganizations(context.Context, *connect.Request[v1.ListSwitchableOrganizationsRequest]) (*connect.Response[v1.ListSwitchableOrganizationsResponse], error)
+	// Get RBAC Policy.
+	GetRBACPolicy(context.Context, *connect.Request[v1.GetRBACPolicyRequest]) (*connect.Response[v1.GetRBACPolicyResponse], error)
+	// List Roles.
+	ListRoles(context.Context, *connect.Request[v1.ListRolesRequest]) (*connect.Response[v1.ListRolesResponse], error)
+	// Get a Role.
+	GetRole(context.Context, *connect.Request[v1.GetRoleRequest]) (*connect.Response[v1.GetRoleResponse], error)
+	// Create a Role.
+	CreateRole(context.Context, *connect.Request[v1.CreateRoleRequest]) (*connect.Response[v1.CreateRoleResponse], error)
+	// Update a Role.
+	UpdateRole(context.Context, *connect.Request[v1.UpdateRoleRequest]) (*connect.Response[v1.UpdateRoleResponse], error)
+	// Delete a Role.
+	DeleteRole(context.Context, *connect.Request[v1.DeleteRoleRequest]) (*connect.Response[v1.DeleteRoleResponse], error)
+	// List User Role Assignments.
+	ListUserRoleAssignments(context.Context, *connect.Request[v1.ListUserRoleAssignmentsRequest]) (*connect.Response[v1.ListUserRoleAssignmentsResponse], error)
+	// Get a User Role Assignment.
+	GetUserRoleAssignment(context.Context, *connect.Request[v1.GetUserRoleAssignmentRequest]) (*connect.Response[v1.GetUserRoleAssignmentResponse], error)
+	// Create a User Role Assignment.
+	CreateUserRoleAssignment(context.Context, *connect.Request[v1.CreateUserRoleAssignmentRequest]) (*connect.Response[v1.CreateUserRoleAssignmentResponse], error)
+	// Delete a User Role Assignment.
+	DeleteUserRoleAssignment(context.Context, *connect.Request[v1.DeleteUserRoleAssignmentRequest]) (*connect.Response[v1.DeleteUserRoleAssignmentResponse], error)
 }
 
 // NewFrontendServiceClient constructs a client for the tesseral.frontend.v1.FrontendService
@@ -417,6 +466,66 @@ func NewFrontendServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			connect.WithSchema(frontendServiceMethods.ByName("ListSwitchableOrganizations")),
 			connect.WithClientOptions(opts...),
 		),
+		getRBACPolicy: connect.NewClient[v1.GetRBACPolicyRequest, v1.GetRBACPolicyResponse](
+			httpClient,
+			baseURL+FrontendServiceGetRBACPolicyProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("GetRBACPolicy")),
+			connect.WithClientOptions(opts...),
+		),
+		listRoles: connect.NewClient[v1.ListRolesRequest, v1.ListRolesResponse](
+			httpClient,
+			baseURL+FrontendServiceListRolesProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("ListRoles")),
+			connect.WithClientOptions(opts...),
+		),
+		getRole: connect.NewClient[v1.GetRoleRequest, v1.GetRoleResponse](
+			httpClient,
+			baseURL+FrontendServiceGetRoleProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("GetRole")),
+			connect.WithClientOptions(opts...),
+		),
+		createRole: connect.NewClient[v1.CreateRoleRequest, v1.CreateRoleResponse](
+			httpClient,
+			baseURL+FrontendServiceCreateRoleProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("CreateRole")),
+			connect.WithClientOptions(opts...),
+		),
+		updateRole: connect.NewClient[v1.UpdateRoleRequest, v1.UpdateRoleResponse](
+			httpClient,
+			baseURL+FrontendServiceUpdateRoleProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("UpdateRole")),
+			connect.WithClientOptions(opts...),
+		),
+		deleteRole: connect.NewClient[v1.DeleteRoleRequest, v1.DeleteRoleResponse](
+			httpClient,
+			baseURL+FrontendServiceDeleteRoleProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("DeleteRole")),
+			connect.WithClientOptions(opts...),
+		),
+		listUserRoleAssignments: connect.NewClient[v1.ListUserRoleAssignmentsRequest, v1.ListUserRoleAssignmentsResponse](
+			httpClient,
+			baseURL+FrontendServiceListUserRoleAssignmentsProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("ListUserRoleAssignments")),
+			connect.WithClientOptions(opts...),
+		),
+		getUserRoleAssignment: connect.NewClient[v1.GetUserRoleAssignmentRequest, v1.GetUserRoleAssignmentResponse](
+			httpClient,
+			baseURL+FrontendServiceGetUserRoleAssignmentProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("GetUserRoleAssignment")),
+			connect.WithClientOptions(opts...),
+		),
+		createUserRoleAssignment: connect.NewClient[v1.CreateUserRoleAssignmentRequest, v1.CreateUserRoleAssignmentResponse](
+			httpClient,
+			baseURL+FrontendServiceCreateUserRoleAssignmentProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("CreateUserRoleAssignment")),
+			connect.WithClientOptions(opts...),
+		),
+		deleteUserRoleAssignment: connect.NewClient[v1.DeleteUserRoleAssignmentRequest, v1.DeleteUserRoleAssignmentResponse](
+			httpClient,
+			baseURL+FrontendServiceDeleteUserRoleAssignmentProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("DeleteUserRoleAssignment")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -459,6 +568,16 @@ type frontendServiceClient struct {
 	createUserInvite                      *connect.Client[v1.CreateUserInviteRequest, v1.CreateUserInviteResponse]
 	deleteUserInvite                      *connect.Client[v1.DeleteUserInviteRequest, v1.DeleteUserInviteResponse]
 	listSwitchableOrganizations           *connect.Client[v1.ListSwitchableOrganizationsRequest, v1.ListSwitchableOrganizationsResponse]
+	getRBACPolicy                         *connect.Client[v1.GetRBACPolicyRequest, v1.GetRBACPolicyResponse]
+	listRoles                             *connect.Client[v1.ListRolesRequest, v1.ListRolesResponse]
+	getRole                               *connect.Client[v1.GetRoleRequest, v1.GetRoleResponse]
+	createRole                            *connect.Client[v1.CreateRoleRequest, v1.CreateRoleResponse]
+	updateRole                            *connect.Client[v1.UpdateRoleRequest, v1.UpdateRoleResponse]
+	deleteRole                            *connect.Client[v1.DeleteRoleRequest, v1.DeleteRoleResponse]
+	listUserRoleAssignments               *connect.Client[v1.ListUserRoleAssignmentsRequest, v1.ListUserRoleAssignmentsResponse]
+	getUserRoleAssignment                 *connect.Client[v1.GetUserRoleAssignmentRequest, v1.GetUserRoleAssignmentResponse]
+	createUserRoleAssignment              *connect.Client[v1.CreateUserRoleAssignmentRequest, v1.CreateUserRoleAssignmentResponse]
+	deleteUserRoleAssignment              *connect.Client[v1.DeleteUserRoleAssignmentRequest, v1.DeleteUserRoleAssignmentResponse]
 }
 
 // Logout calls tesseral.frontend.v1.FrontendService.Logout.
@@ -651,6 +770,56 @@ func (c *frontendServiceClient) ListSwitchableOrganizations(ctx context.Context,
 	return c.listSwitchableOrganizations.CallUnary(ctx, req)
 }
 
+// GetRBACPolicy calls tesseral.frontend.v1.FrontendService.GetRBACPolicy.
+func (c *frontendServiceClient) GetRBACPolicy(ctx context.Context, req *connect.Request[v1.GetRBACPolicyRequest]) (*connect.Response[v1.GetRBACPolicyResponse], error) {
+	return c.getRBACPolicy.CallUnary(ctx, req)
+}
+
+// ListRoles calls tesseral.frontend.v1.FrontendService.ListRoles.
+func (c *frontendServiceClient) ListRoles(ctx context.Context, req *connect.Request[v1.ListRolesRequest]) (*connect.Response[v1.ListRolesResponse], error) {
+	return c.listRoles.CallUnary(ctx, req)
+}
+
+// GetRole calls tesseral.frontend.v1.FrontendService.GetRole.
+func (c *frontendServiceClient) GetRole(ctx context.Context, req *connect.Request[v1.GetRoleRequest]) (*connect.Response[v1.GetRoleResponse], error) {
+	return c.getRole.CallUnary(ctx, req)
+}
+
+// CreateRole calls tesseral.frontend.v1.FrontendService.CreateRole.
+func (c *frontendServiceClient) CreateRole(ctx context.Context, req *connect.Request[v1.CreateRoleRequest]) (*connect.Response[v1.CreateRoleResponse], error) {
+	return c.createRole.CallUnary(ctx, req)
+}
+
+// UpdateRole calls tesseral.frontend.v1.FrontendService.UpdateRole.
+func (c *frontendServiceClient) UpdateRole(ctx context.Context, req *connect.Request[v1.UpdateRoleRequest]) (*connect.Response[v1.UpdateRoleResponse], error) {
+	return c.updateRole.CallUnary(ctx, req)
+}
+
+// DeleteRole calls tesseral.frontend.v1.FrontendService.DeleteRole.
+func (c *frontendServiceClient) DeleteRole(ctx context.Context, req *connect.Request[v1.DeleteRoleRequest]) (*connect.Response[v1.DeleteRoleResponse], error) {
+	return c.deleteRole.CallUnary(ctx, req)
+}
+
+// ListUserRoleAssignments calls tesseral.frontend.v1.FrontendService.ListUserRoleAssignments.
+func (c *frontendServiceClient) ListUserRoleAssignments(ctx context.Context, req *connect.Request[v1.ListUserRoleAssignmentsRequest]) (*connect.Response[v1.ListUserRoleAssignmentsResponse], error) {
+	return c.listUserRoleAssignments.CallUnary(ctx, req)
+}
+
+// GetUserRoleAssignment calls tesseral.frontend.v1.FrontendService.GetUserRoleAssignment.
+func (c *frontendServiceClient) GetUserRoleAssignment(ctx context.Context, req *connect.Request[v1.GetUserRoleAssignmentRequest]) (*connect.Response[v1.GetUserRoleAssignmentResponse], error) {
+	return c.getUserRoleAssignment.CallUnary(ctx, req)
+}
+
+// CreateUserRoleAssignment calls tesseral.frontend.v1.FrontendService.CreateUserRoleAssignment.
+func (c *frontendServiceClient) CreateUserRoleAssignment(ctx context.Context, req *connect.Request[v1.CreateUserRoleAssignmentRequest]) (*connect.Response[v1.CreateUserRoleAssignmentResponse], error) {
+	return c.createUserRoleAssignment.CallUnary(ctx, req)
+}
+
+// DeleteUserRoleAssignment calls tesseral.frontend.v1.FrontendService.DeleteUserRoleAssignment.
+func (c *frontendServiceClient) DeleteUserRoleAssignment(ctx context.Context, req *connect.Request[v1.DeleteUserRoleAssignmentRequest]) (*connect.Response[v1.DeleteUserRoleAssignmentResponse], error) {
+	return c.deleteUserRoleAssignment.CallUnary(ctx, req)
+}
+
 // FrontendServiceHandler is an implementation of the tesseral.frontend.v1.FrontendService service.
 type FrontendServiceHandler interface {
 	Logout(context.Context, *connect.Request[v1.LogoutRequest]) (*connect.Response[v1.LogoutResponse], error)
@@ -691,6 +860,26 @@ type FrontendServiceHandler interface {
 	CreateUserInvite(context.Context, *connect.Request[v1.CreateUserInviteRequest]) (*connect.Response[v1.CreateUserInviteResponse], error)
 	DeleteUserInvite(context.Context, *connect.Request[v1.DeleteUserInviteRequest]) (*connect.Response[v1.DeleteUserInviteResponse], error)
 	ListSwitchableOrganizations(context.Context, *connect.Request[v1.ListSwitchableOrganizationsRequest]) (*connect.Response[v1.ListSwitchableOrganizationsResponse], error)
+	// Get RBAC Policy.
+	GetRBACPolicy(context.Context, *connect.Request[v1.GetRBACPolicyRequest]) (*connect.Response[v1.GetRBACPolicyResponse], error)
+	// List Roles.
+	ListRoles(context.Context, *connect.Request[v1.ListRolesRequest]) (*connect.Response[v1.ListRolesResponse], error)
+	// Get a Role.
+	GetRole(context.Context, *connect.Request[v1.GetRoleRequest]) (*connect.Response[v1.GetRoleResponse], error)
+	// Create a Role.
+	CreateRole(context.Context, *connect.Request[v1.CreateRoleRequest]) (*connect.Response[v1.CreateRoleResponse], error)
+	// Update a Role.
+	UpdateRole(context.Context, *connect.Request[v1.UpdateRoleRequest]) (*connect.Response[v1.UpdateRoleResponse], error)
+	// Delete a Role.
+	DeleteRole(context.Context, *connect.Request[v1.DeleteRoleRequest]) (*connect.Response[v1.DeleteRoleResponse], error)
+	// List User Role Assignments.
+	ListUserRoleAssignments(context.Context, *connect.Request[v1.ListUserRoleAssignmentsRequest]) (*connect.Response[v1.ListUserRoleAssignmentsResponse], error)
+	// Get a User Role Assignment.
+	GetUserRoleAssignment(context.Context, *connect.Request[v1.GetUserRoleAssignmentRequest]) (*connect.Response[v1.GetUserRoleAssignmentResponse], error)
+	// Create a User Role Assignment.
+	CreateUserRoleAssignment(context.Context, *connect.Request[v1.CreateUserRoleAssignmentRequest]) (*connect.Response[v1.CreateUserRoleAssignmentResponse], error)
+	// Delete a User Role Assignment.
+	DeleteUserRoleAssignment(context.Context, *connect.Request[v1.DeleteUserRoleAssignmentRequest]) (*connect.Response[v1.DeleteUserRoleAssignmentResponse], error)
 }
 
 // NewFrontendServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -922,6 +1111,66 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 		connect.WithSchema(frontendServiceMethods.ByName("ListSwitchableOrganizations")),
 		connect.WithHandlerOptions(opts...),
 	)
+	frontendServiceGetRBACPolicyHandler := connect.NewUnaryHandler(
+		FrontendServiceGetRBACPolicyProcedure,
+		svc.GetRBACPolicy,
+		connect.WithSchema(frontendServiceMethods.ByName("GetRBACPolicy")),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceListRolesHandler := connect.NewUnaryHandler(
+		FrontendServiceListRolesProcedure,
+		svc.ListRoles,
+		connect.WithSchema(frontendServiceMethods.ByName("ListRoles")),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceGetRoleHandler := connect.NewUnaryHandler(
+		FrontendServiceGetRoleProcedure,
+		svc.GetRole,
+		connect.WithSchema(frontendServiceMethods.ByName("GetRole")),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceCreateRoleHandler := connect.NewUnaryHandler(
+		FrontendServiceCreateRoleProcedure,
+		svc.CreateRole,
+		connect.WithSchema(frontendServiceMethods.ByName("CreateRole")),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceUpdateRoleHandler := connect.NewUnaryHandler(
+		FrontendServiceUpdateRoleProcedure,
+		svc.UpdateRole,
+		connect.WithSchema(frontendServiceMethods.ByName("UpdateRole")),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceDeleteRoleHandler := connect.NewUnaryHandler(
+		FrontendServiceDeleteRoleProcedure,
+		svc.DeleteRole,
+		connect.WithSchema(frontendServiceMethods.ByName("DeleteRole")),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceListUserRoleAssignmentsHandler := connect.NewUnaryHandler(
+		FrontendServiceListUserRoleAssignmentsProcedure,
+		svc.ListUserRoleAssignments,
+		connect.WithSchema(frontendServiceMethods.ByName("ListUserRoleAssignments")),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceGetUserRoleAssignmentHandler := connect.NewUnaryHandler(
+		FrontendServiceGetUserRoleAssignmentProcedure,
+		svc.GetUserRoleAssignment,
+		connect.WithSchema(frontendServiceMethods.ByName("GetUserRoleAssignment")),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceCreateUserRoleAssignmentHandler := connect.NewUnaryHandler(
+		FrontendServiceCreateUserRoleAssignmentProcedure,
+		svc.CreateUserRoleAssignment,
+		connect.WithSchema(frontendServiceMethods.ByName("CreateUserRoleAssignment")),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceDeleteUserRoleAssignmentHandler := connect.NewUnaryHandler(
+		FrontendServiceDeleteUserRoleAssignmentProcedure,
+		svc.DeleteUserRoleAssignment,
+		connect.WithSchema(frontendServiceMethods.ByName("DeleteUserRoleAssignment")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/tesseral.frontend.v1.FrontendService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case FrontendServiceLogoutProcedure:
@@ -998,6 +1247,26 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 			frontendServiceDeleteUserInviteHandler.ServeHTTP(w, r)
 		case FrontendServiceListSwitchableOrganizationsProcedure:
 			frontendServiceListSwitchableOrganizationsHandler.ServeHTTP(w, r)
+		case FrontendServiceGetRBACPolicyProcedure:
+			frontendServiceGetRBACPolicyHandler.ServeHTTP(w, r)
+		case FrontendServiceListRolesProcedure:
+			frontendServiceListRolesHandler.ServeHTTP(w, r)
+		case FrontendServiceGetRoleProcedure:
+			frontendServiceGetRoleHandler.ServeHTTP(w, r)
+		case FrontendServiceCreateRoleProcedure:
+			frontendServiceCreateRoleHandler.ServeHTTP(w, r)
+		case FrontendServiceUpdateRoleProcedure:
+			frontendServiceUpdateRoleHandler.ServeHTTP(w, r)
+		case FrontendServiceDeleteRoleProcedure:
+			frontendServiceDeleteRoleHandler.ServeHTTP(w, r)
+		case FrontendServiceListUserRoleAssignmentsProcedure:
+			frontendServiceListUserRoleAssignmentsHandler.ServeHTTP(w, r)
+		case FrontendServiceGetUserRoleAssignmentProcedure:
+			frontendServiceGetUserRoleAssignmentHandler.ServeHTTP(w, r)
+		case FrontendServiceCreateUserRoleAssignmentProcedure:
+			frontendServiceCreateUserRoleAssignmentHandler.ServeHTTP(w, r)
+		case FrontendServiceDeleteUserRoleAssignmentProcedure:
+			frontendServiceDeleteUserRoleAssignmentHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -1153,4 +1422,44 @@ func (UnimplementedFrontendServiceHandler) DeleteUserInvite(context.Context, *co
 
 func (UnimplementedFrontendServiceHandler) ListSwitchableOrganizations(context.Context, *connect.Request[v1.ListSwitchableOrganizationsRequest]) (*connect.Response[v1.ListSwitchableOrganizationsResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.ListSwitchableOrganizations is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) GetRBACPolicy(context.Context, *connect.Request[v1.GetRBACPolicyRequest]) (*connect.Response[v1.GetRBACPolicyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.GetRBACPolicy is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) ListRoles(context.Context, *connect.Request[v1.ListRolesRequest]) (*connect.Response[v1.ListRolesResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.ListRoles is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) GetRole(context.Context, *connect.Request[v1.GetRoleRequest]) (*connect.Response[v1.GetRoleResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.GetRole is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) CreateRole(context.Context, *connect.Request[v1.CreateRoleRequest]) (*connect.Response[v1.CreateRoleResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.CreateRole is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) UpdateRole(context.Context, *connect.Request[v1.UpdateRoleRequest]) (*connect.Response[v1.UpdateRoleResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.UpdateRole is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) DeleteRole(context.Context, *connect.Request[v1.DeleteRoleRequest]) (*connect.Response[v1.DeleteRoleResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.DeleteRole is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) ListUserRoleAssignments(context.Context, *connect.Request[v1.ListUserRoleAssignmentsRequest]) (*connect.Response[v1.ListUserRoleAssignmentsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.ListUserRoleAssignments is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) GetUserRoleAssignment(context.Context, *connect.Request[v1.GetUserRoleAssignmentRequest]) (*connect.Response[v1.GetUserRoleAssignmentResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.GetUserRoleAssignment is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) CreateUserRoleAssignment(context.Context, *connect.Request[v1.CreateUserRoleAssignmentRequest]) (*connect.Response[v1.CreateUserRoleAssignmentResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.CreateUserRoleAssignment is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) DeleteUserRoleAssignment(context.Context, *connect.Request[v1.DeleteUserRoleAssignmentRequest]) (*connect.Response[v1.DeleteUserRoleAssignmentResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.DeleteUserRoleAssignment is not implemented"))
 }

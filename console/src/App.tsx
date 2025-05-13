@@ -56,6 +56,14 @@ import { SwitchOrganizationsPage } from '@/pages/login/SwitchOrganizationsPage';
 import { LogoutPage } from '@/pages/login/LogoutPage';
 import { useAccessToken } from '@/lib/AccessTokenProvider';
 import { StripeCheckoutSuccessPage } from './pages/stripe/StripeCheckoutSuccessPage';
+import { RBACSettingsTab } from '@/pages/project/RBACSettingsTab';
+import { EditRBACPolicyPage } from '@/pages/project/EditRBACPolicyPage';
+import { ViewRolePage } from '@/pages/roles/ViewRolePage';
+import {
+  OrganizationRolesTab
+} from '@/pages/organizations/OrganizationRolesTab';
+import { CreateRolePage } from '@/pages/roles/CreateRolePage';
+import { EditRolePage } from '@/pages/roles/EditRolePage';
 
 const queryClient = new QueryClient();
 
@@ -159,7 +167,16 @@ const AppWithinQueryClient = () => {
                 path="vault-domain-settings"
                 element={<VaultDomainSettingsTab />}
               />
+              <Route
+                path="rbac-settings"
+                element={<RBACSettingsTab />}
+              />
             </Route>
+
+            <Route
+              path="project-settings/rbac-settings/rbac-policy/edit"
+              element={<EditRBACPolicyPage />}
+            />
 
             <Route
               path="project-settings/api-keys"
@@ -188,6 +205,7 @@ const AppWithinQueryClient = () => {
                 path="user-invites"
                 element={<OrganizationUserInvitesTab />}
               />
+              <Route path="roles" element={<OrganizationRolesTab />} />
               <Route
                 path="saml-connections"
                 element={<OrganizationSAMLConnectionsTab />}
@@ -226,6 +244,10 @@ const AppWithinQueryClient = () => {
               path="organizations/:organizationId/scim-api-keys/:scimApiKeyId"
               element={<ViewSCIMAPIKeyPage />}
             />
+
+            <Route path="roles/new" element={<CreateRolePage />} />
+            <Route path="roles/:roleId" element={<ViewRolePage />} />
+            <Route path="roles/:roleId/edit" element={<EditRolePage />} />
 
             <Route
               path="stripe-checkout-success"

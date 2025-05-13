@@ -301,6 +301,11 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *backendv1.UpdateOrg
 		updates.RequireMfa = *req.Organization.RequireMfa
 	}
 
+	updates.CustomRolesEnabled = qOrg.CustomRolesEnabled
+	if req.Organization.CustomRolesEnabled != nil {
+		updates.CustomRolesEnabled = *req.Organization.CustomRolesEnabled
+	}
+
 	qUpdatedOrg, err := q.UpdateOrganization(ctx, updates)
 	if err != nil {
 		return nil, fmt.Errorf("update organization: %w", err)
@@ -448,5 +453,6 @@ func parseOrganization(qProject queries.Project, qOrg queries.Organization) *bac
 		LogInWithPasskey:          &qOrg.LogInWithPasskey,
 		RequireMfa:                &qOrg.RequireMfa,
 		ScimEnabled:               &qOrg.ScimEnabled,
+		CustomRolesEnabled:        &qOrg.CustomRolesEnabled,
 	}
 }

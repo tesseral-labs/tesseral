@@ -72,6 +72,10 @@ export const ViewOrganizationPage = () => {
       url: `/organizations/${organizationId}/user-invites`,
     },
     {
+      name: 'Roles',
+      url: `/organizations/${organizationId}/roles`,
+    },
+    {
       name: 'SAML Connections',
       url: `/organizations/${organizationId}/saml-connections`,
     },

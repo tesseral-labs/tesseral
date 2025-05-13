@@ -18,6 +18,7 @@ WHERE
 SELECT
     sessions.id AS session_id,
     users.id AS user_id,
+    users.is_owner AS user_is_owner,
     users.email AS user_email,
     users.display_name AS user_display_name,
     users.profile_picture_url AS user_profile_picture_url,
@@ -36,6 +37,7 @@ WHERE
 -- name: GetSessionDetailsByRefreshTokenSHA256 :one
 SELECT
     sessions.id AS session_id,
+    users.is_owner AS user_is_owner,
     users.id AS user_id,
     users.email AS user_email,
     users.display_name AS user_display_name,
@@ -59,6 +61,26 @@ FROM
     users
 WHERE
     id = $1;
+
+-- name: GetProjectActions :many
+SELECT
+    name
+FROM
+    actions
+WHERE
+    project_id = $1;
+
+-- name: GetUserActions :many
+SELECT DISTINCT
+    (actions.name)
+FROM
+    users
+    JOIN user_role_assignments ON users.id = user_role_assignments.user_id
+    JOIN roles ON user_role_assignments.role_id = roles.id
+    JOIN role_actions ON roles.id = role_actions.role_id
+    JOIN actions ON role_actions.action_id = actions.id
+WHERE
+    user_id = $1;
 
 -- name: GetCurrentSessionSigningKeyByProjectID :one
 SELECT

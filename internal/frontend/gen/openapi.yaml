@@ -364,6 +364,137 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /frontend/v1/roles:
+        get:
+            tags:
+                - FrontendService
+            description: List Roles.
+            operationId: FrontendService_ListRoles
+            parameters:
+                - name: organizationId
+                  in: query
+                  schema:
+                    type: string
+                - name: pageToken
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListRolesResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - FrontendService
+            description: Create a Role.
+            operationId: FrontendService_CreateRole
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Role'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateRoleResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /frontend/v1/roles/{id}:
+        get:
+            tags:
+                - FrontendService
+            description: Get a Role.
+            operationId: FrontendService_GetRole
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetRoleResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        delete:
+            tags:
+                - FrontendService
+            description: Delete a Role.
+            operationId: FrontendService_DeleteRole
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DeleteRoleResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        patch:
+            tags:
+                - FrontendService
+            description: Update a Role.
+            operationId: FrontendService_UpdateRole
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Role'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateRoleResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /frontend/v1/saml-connections:
         get:
             tags:
@@ -773,6 +904,111 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /frontend/v1/user-role-assignments:
+        get:
+            tags:
+                - FrontendService
+            description: List User Role Assignments.
+            operationId: FrontendService_ListUserRoleAssignments
+            parameters:
+                - name: userId
+                  in: query
+                  schema:
+                    type: string
+                - name: roleId
+                  in: query
+                  schema:
+                    type: string
+                - name: pageToken
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListUserRoleAssignmentsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - FrontendService
+            description: Create a User Role Assignment.
+            operationId: FrontendService_CreateUserRoleAssignment
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UserRoleAssignment'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateUserRoleAssignmentResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /frontend/v1/user-role-assignments/{id}:
+        get:
+            tags:
+                - FrontendService
+            description: Get a User Role Assignment.
+            operationId: FrontendService_GetUserRoleAssignment
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetUserRoleAssignmentResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        delete:
+            tags:
+                - FrontendService
+            description: Delete a User Role Assignment.
+            operationId: FrontendService_DeleteUserRoleAssignment
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DeleteUserRoleAssignmentResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /frontend/v1/users:
         get:
             tags:
@@ -878,6 +1114,11 @@ paths:
                                 $ref: '#/components/schemas/Status'
 components:
     schemas:
+        CreateRoleResponse:
+            type: object
+            properties:
+                role:
+                    $ref: '#/components/schemas/Role'
         CreateSAMLConnectionResponse:
             type: object
             properties:
@@ -893,7 +1134,15 @@ components:
             properties:
                 userInvite:
                     $ref: '#/components/schemas/UserInvite'
+        CreateUserRoleAssignmentResponse:
+            type: object
+            properties:
+                userRoleAssignment:
+                    $ref: '#/components/schemas/UserRoleAssignment'
         DeleteMyPasskeyResponse:
+            type: object
+            properties: {}
+        DeleteRoleResponse:
             type: object
             properties: {}
         DeleteSAMLConnectionResponse:
@@ -906,6 +1155,9 @@ components:
             type: object
             properties: {}
         DeleteUserResponse:
+            type: object
+            properties: {}
+        DeleteUserRoleAssignmentResponse:
             type: object
             properties: {}
         GetAuthenticatorAppOptionsResponse:
@@ -944,6 +1196,11 @@ components:
             properties:
                 project:
                     $ref: '#/components/schemas/Project'
+        GetRoleResponse:
+            type: object
+            properties:
+                role:
+                    $ref: '#/components/schemas/Role'
         GetSAMLConnectionResponse:
             type: object
             properties:
@@ -964,6 +1221,11 @@ components:
             properties:
                 user:
                     $ref: '#/components/schemas/User'
+        GetUserRoleAssignmentResponse:
+            type: object
+            properties:
+                userRoleAssignment:
+                    $ref: '#/components/schemas/UserRoleAssignment'
         GoogleProtobufAny:
             type: object
             properties:
@@ -979,6 +1241,15 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/Passkey'
+                nextPageToken:
+                    type: string
+        ListRolesResponse:
+            type: object
+            properties:
+                roles:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Role'
                 nextPageToken:
                     type: string
         ListSAMLConnectionsResponse:
@@ -1013,6 +1284,15 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/UserInvite'
+                nextPageToken:
+                    type: string
+        ListUserRoleAssignmentsResponse:
+            type: object
+            properties:
+                userRoleAssignments:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/UserRoleAssignment'
                 nextPageToken:
                     type: string
         ListUsersResponse:
@@ -1068,6 +1348,8 @@ components:
                     items:
                         type: string
                 samlEnabled:
+                    type: boolean
+                customRolesEnabled:
                     type: boolean
         OrganizationGoogleHostedDomains:
             type: object
@@ -1175,6 +1457,35 @@ components:
             properties:
                 scimApiKey:
                     $ref: '#/components/schemas/SCIMAPIKey'
+        Role:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: The Role ID. Starts with `role_...`.
+                organizationId:
+                    type: string
+                    description: The Organization this Role belongs to, if any.
+                createTime:
+                    type: string
+                    description: When the Role was created.
+                    format: date-time
+                updateTime:
+                    type: string
+                    description: When the Role was last updated.
+                    format: date-time
+                displayName:
+                    type: string
+                    description: A human-readable display name for this Role.
+                description:
+                    type: string
+                    description: A human-readable description of the Role.
+                actions:
+                    type: array
+                    items:
+                        type: string
+                    description: The names of the Actions associated with this Role.
+            description: Role represents a logical grouping of permissions that Users may have.
         SAMLConnection:
             type: object
             properties:
@@ -1262,6 +1573,11 @@ components:
             properties:
                 organization:
                     $ref: '#/components/schemas/Organization'
+        UpdateRoleResponse:
+            type: object
+            properties:
+                role:
+                    $ref: '#/components/schemas/Role'
         UpdateSAMLConnectionResponse:
             type: object
             properties:
@@ -1317,6 +1633,19 @@ components:
                     type: string
                 owner:
                     type: boolean
+        UserRoleAssignment:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: The User Role Assignment ID. Starts with `user_role_assignment_...`.
+                userId:
+                    type: string
+                    description: The User ID.
+                roleId:
+                    type: string
+                    description: The Role ID.
+            description: UserRoleAssignment represents a User being assigned to a Role.
         WhoamiResponse:
             type: object
             properties:

@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"slices"
 	"strings"
 	"time"
 
@@ -30,6 +31,7 @@ func (s *Store) IssueAccessToken(ctx context.Context, refreshToken string) (stri
 		SessionID               uuid.UUID
 		UserID                  uuid.UUID
 		OrganizationID          uuid.UUID
+		UserIsOwner             bool
 		UserEmail               string
 		UserDisplayName         *string
 		UserProfilePictureUrl   *string
@@ -58,6 +60,7 @@ func (s *Store) IssueAccessToken(ctx context.Context, refreshToken string) (stri
 		qDetails.SessionID = qSessionDetails.SessionID
 		qDetails.UserID = qSessionDetails.UserID
 		qDetails.OrganizationID = qSessionDetails.OrganizationID
+		qDetails.UserIsOwner = qSessionDetails.UserIsOwner
 		qDetails.UserEmail = qSessionDetails.UserEmail
 		qDetails.UserDisplayName = qSessionDetails.UserDisplayName
 		qDetails.UserProfilePictureUrl = qSessionDetails.UserProfilePictureUrl
@@ -83,6 +86,7 @@ func (s *Store) IssueAccessToken(ctx context.Context, refreshToken string) (stri
 		qDetails.SessionID = qSessionDetails.SessionID
 		qDetails.UserID = qSessionDetails.UserID
 		qDetails.OrganizationID = qSessionDetails.OrganizationID
+		qDetails.UserIsOwner = qSessionDetails.UserIsOwner
 		qDetails.UserEmail = qSessionDetails.UserEmail
 		qDetails.UserDisplayName = qSessionDetails.UserDisplayName
 		qDetails.UserProfilePictureUrl = qSessionDetails.UserProfilePictureUrl
@@ -115,6 +119,25 @@ func (s *Store) IssueAccessToken(ctx context.Context, refreshToken string) (stri
 		}
 	}
 
+	var actions []string
+	if qDetails.UserIsOwner {
+		projectActions, err := s.q.GetProjectActions(ctx, qDetails.ProjectID)
+		if err != nil {
+			return "", fmt.Errorf("get project actions: %w", err)
+		}
+
+		actions = projectActions
+	} else {
+		userActions, err := s.q.GetUserActions(ctx, qDetails.UserID)
+		if err != nil {
+			return "", fmt.Errorf("get user actions: %w", err)
+		}
+
+		actions = userActions
+	}
+
+	slices.Sort(actions)
+
 	claims := &commonv1.AccessTokenData{
 		Iss: issAndAud,
 		Sub: idformat.User.Format(qDetails.UserID),
@@ -135,6 +158,7 @@ func (s *Store) IssueAccessToken(ctx context.Context, refreshToken string) (stri
 			Id:          idformat.Organization.Format(qDetails.OrganizationID),
 			DisplayName: qDetails.OrganizationDisplayName,
 		},
+		Actions:      actions,
 		Impersonator: impersonator,
 	}
 

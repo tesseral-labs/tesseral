@@ -73,6 +73,35 @@ func (q *Queries) GetImpersonatorUserByID(ctx context.Context, id uuid.UUID) (Ge
 	return i, err
 }
 
+const getProjectActions = `-- name: GetProjectActions :many
+SELECT
+    name
+FROM
+    actions
+WHERE
+    project_id = $1
+`
+
+func (q *Queries) GetProjectActions(ctx context.Context, projectID uuid.UUID) ([]string, error) {
+	rows, err := q.db.Query(ctx, getProjectActions, projectID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []string
+	for rows.Next() {
+		var name string
+		if err := rows.Scan(&name); err != nil {
+			return nil, err
+		}
+		items = append(items, name)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getProjectCookieDomainByProjectID = `-- name: GetProjectCookieDomainByProjectID :one
 SELECT
     cookie_domain
@@ -137,6 +166,7 @@ func (q *Queries) GetProjectTrustedDomains(ctx context.Context, projectID uuid.U
 const getSessionDetailsByRefreshTokenSHA256 = `-- name: GetSessionDetailsByRefreshTokenSHA256 :one
 SELECT
     sessions.id AS session_id,
+    users.is_owner AS user_is_owner,
     users.id AS user_id,
     users.email AS user_email,
     users.display_name AS user_display_name,
@@ -155,6 +185,7 @@ WHERE
 
 type GetSessionDetailsByRefreshTokenSHA256Row struct {
 	SessionID               uuid.UUID
+	UserIsOwner             bool
 	UserID                  uuid.UUID
 	UserEmail               string
 	UserDisplayName         *string
@@ -170,6 +201,7 @@ func (q *Queries) GetSessionDetailsByRefreshTokenSHA256(ctx context.Context, ref
 	var i GetSessionDetailsByRefreshTokenSHA256Row
 	err := row.Scan(
 		&i.SessionID,
+		&i.UserIsOwner,
 		&i.UserID,
 		&i.UserEmail,
 		&i.UserDisplayName,
@@ -186,6 +218,7 @@ const getSessionDetailsByRelayedSessionRefreshTokenSHA256 = `-- name: GetSession
 SELECT
     sessions.id AS session_id,
     users.id AS user_id,
+    users.is_owner AS user_is_owner,
     users.email AS user_email,
     users.display_name AS user_display_name,
     users.profile_picture_url AS user_profile_picture_url,
@@ -205,6 +238,7 @@ WHERE
 type GetSessionDetailsByRelayedSessionRefreshTokenSHA256Row struct {
 	SessionID               uuid.UUID
 	UserID                  uuid.UUID
+	UserIsOwner             bool
 	UserEmail               string
 	UserDisplayName         *string
 	UserProfilePictureUrl   *string
@@ -220,6 +254,7 @@ func (q *Queries) GetSessionDetailsByRelayedSessionRefreshTokenSHA256(ctx contex
 	err := row.Scan(
 		&i.SessionID,
 		&i.UserID,
+		&i.UserIsOwner,
 		&i.UserEmail,
 		&i.UserDisplayName,
 		&i.UserProfilePictureUrl,
@@ -229,4 +264,37 @@ func (q *Queries) GetSessionDetailsByRelayedSessionRefreshTokenSHA256(ctx contex
 		&i.ImpersonatorUserID,
 	)
 	return i, err
+}
+
+const getUserActions = `-- name: GetUserActions :many
+SELECT DISTINCT
+    (actions.name)
+FROM
+    users
+    JOIN user_role_assignments ON users.id = user_role_assignments.user_id
+    JOIN roles ON user_role_assignments.role_id = roles.id
+    JOIN role_actions ON roles.id = role_actions.role_id
+    JOIN actions ON role_actions.action_id = actions.id
+WHERE
+    user_id = $1
+`
+
+func (q *Queries) GetUserActions(ctx context.Context, userID uuid.UUID) ([]string, error) {
+	rows, err := q.db.Query(ctx, getUserActions, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []string
+	for rows.Next() {
+		var name string
+		if err := rows.Scan(&name); err != nil {
+			return nil, err
+		}
+		items = append(items, name)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
