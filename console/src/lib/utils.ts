@@ -100,3 +100,31 @@ export const isColorDark = (hex: string) => {
   // Return true if dark (luminance below 0.5)
   return luminance < 0.5;
 };
+
+export const titleCaseSlug = (str: string, lastId: boolean = false) => {
+  if (str.includes('_')) {
+    if (!lastId) {
+      return str.substring(0, str.lastIndexOf('_') + 6) + '...';
+    }
+
+    return str;
+  }
+
+  // Convert to lowercase and split by hyphen
+  const words = str.toLowerCase().split('-');
+
+  // Capitalize the first letter of each word
+  const capitalizedWords = words.map((word) => {
+    if (word.length === 0) return '';
+    return word.charAt(0).toUpperCase() + word.slice(1);
+  });
+
+  // Join the words back together with spaces
+  return capitalizedWords
+    .join(' ')
+    .replace(/(api)/gi, 'API')
+    .replace(/(oidc)/gi, 'OIDC')
+    .replace(/(saml)/gi, 'SAML')
+    .replace(/(scim)/gi, 'SCIM')
+    .replace(/(ui)/gi, 'UI');
+};

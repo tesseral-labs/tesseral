@@ -29,7 +29,9 @@ import {
 } from '@/components/ui/breadcrumb';
 import {
   PageCodeSubtitle,
+  PageContent,
   PageDescription,
+  PageHeader,
   PageTitle,
 } from '@/components/page';
 import {
@@ -91,224 +93,195 @@ export const ViewUserPage = () => {
   });
 
   return (
-    <div>
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/">Home</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/organizations">Organizations</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to={`/organizations/${organizationId}`}>
-                {getOrganizationResponse?.organization?.displayName}
-              </Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to={`/organizations/${organizationId}/users`}>Users</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>{getUserResponse?.user?.email}</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-
-      <PageTitle>{getUserResponse?.user?.email}</PageTitle>
-      <PageCodeSubtitle>{userId}</PageCodeSubtitle>
-      <PageDescription>
-        A User is what people using your product log into.
-      </PageDescription>
-
-      <Card className="my-8">
-        <CardHeader className="flex flex-row items-center justify-between space-y-4">
-          <div>
-            <CardTitle>General settings</CardTitle>
-            <CardDescription>Basic settings for this User.</CardDescription>
-          </div>
-          <EditUserSettingsButton />
-        </CardHeader>
-        <CardContent>
-          <DetailsGrid>
-            <DetailsGridColumn>
-              <DetailsGridEntry>
-                <DetailsGridKey>Email</DetailsGridKey>
-                <DetailsGridValue>
-                  {getUserResponse?.user?.email}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-              <DetailsGridEntry>
-                <DetailsGridKey>Display Name</DetailsGridKey>
-                <DetailsGridValue>
-                  {getUserResponse?.user?.displayName || '-'}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-              <DetailsGridEntry>
-                <DetailsGridKey>Owner</DetailsGridKey>
-                <DetailsGridValue>
-                  {getUserResponse?.user?.owner ? 'Yes' : 'No'}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-              <DetailsGridEntry>
-                <DetailsGridKey>Authenticator App</DetailsGridKey>
-                <DetailsGridValue>
-                  {getUserResponse?.user?.hasAuthenticatorApp
-                    ? 'Enabled'
-                    : 'Not Enabled'}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-            </DetailsGridColumn>
-            <DetailsGridColumn>
-              <DetailsGridEntry>
-                <DetailsGridKey>Profile Picture URL</DetailsGridKey>
-                <DetailsGridValue>
-                  {getUserResponse?.user?.profilePictureUrl || '-'}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-              <DetailsGridEntry>
-                <DetailsGridKey>Google User ID</DetailsGridKey>
-                <DetailsGridValue>
-                  {getUserResponse?.user?.googleUserId || '-'}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-              <DetailsGridEntry>
-                <DetailsGridKey>Microsoft User ID</DetailsGridKey>
-                <DetailsGridValue>
-                  {getUserResponse?.user?.microsoftUserId || '-'}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-            </DetailsGridColumn>
-            <DetailsGridColumn>
-              <DetailsGridEntry>
-                <DetailsGridKey>Created</DetailsGridKey>
-                <DetailsGridValue>
-                  {getUserResponse?.user?.createTime &&
-                    DateTime.fromJSDate(
-                      timestampDate(getUserResponse?.user?.createTime),
-                    ).toRelative()}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-              <DetailsGridEntry>
-                <DetailsGridKey>Updated</DetailsGridKey>
-                <DetailsGridValue>
-                  {getUserResponse?.user?.updateTime &&
-                    DateTime.fromJSDate(
-                      timestampDate(getUserResponse?.user?.updateTime),
-                    ).toRelative()}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-            </DetailsGridColumn>
-          </DetailsGrid>
-        </CardContent>
-      </Card>
-
-      <Card className="my-8">
-        <CardHeader>
-          <CardTitle>Sessions</CardTitle>
-          <CardDescription>
-            Every time your Users log in or perform an action, that's associated
-            with a Session.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Created</TableHead>
-                <TableHead>Last Active</TableHead>
-                <TableHead>Expiration</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {listSessionsResponse?.sessions?.map((session) => (
-                <TableRow key={session.id}>
-                  <TableCell className="font-medium font-mono">
-                    {session.id}
-                  </TableCell>
-                  <TableCell>
-                    {session?.createTime &&
+    <>
+      <PageHeader>
+        <PageTitle>{getUserResponse?.user?.email}</PageTitle>
+        <PageCodeSubtitle>{userId}</PageCodeSubtitle>
+        <PageDescription>
+          A User is what people using your product log into.
+        </PageDescription>
+      </PageHeader>
+      <PageContent>
+        <Card className="my-8">
+          <CardHeader className="flex flex-row items-center justify-between space-y-4">
+            <div>
+              <CardTitle>General settings</CardTitle>
+              <CardDescription>Basic settings for this User.</CardDescription>
+            </div>
+            <EditUserSettingsButton />
+          </CardHeader>
+          <CardContent>
+            <DetailsGrid>
+              <DetailsGridColumn>
+                <DetailsGridEntry>
+                  <DetailsGridKey>Email</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getUserResponse?.user?.email}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+                <DetailsGridEntry>
+                  <DetailsGridKey>Display Name</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getUserResponse?.user?.displayName || '-'}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+                <DetailsGridEntry>
+                  <DetailsGridKey>Owner</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getUserResponse?.user?.owner ? 'Yes' : 'No'}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+                <DetailsGridEntry>
+                  <DetailsGridKey>Authenticator App</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getUserResponse?.user?.hasAuthenticatorApp
+                      ? 'Enabled'
+                      : 'Not Enabled'}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+              </DetailsGridColumn>
+              <DetailsGridColumn>
+                <DetailsGridEntry>
+                  <DetailsGridKey>Profile Picture URL</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getUserResponse?.user?.profilePictureUrl || '-'}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+                <DetailsGridEntry>
+                  <DetailsGridKey>Google User ID</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getUserResponse?.user?.googleUserId || '-'}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+                <DetailsGridEntry>
+                  <DetailsGridKey>Microsoft User ID</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getUserResponse?.user?.microsoftUserId || '-'}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+              </DetailsGridColumn>
+              <DetailsGridColumn>
+                <DetailsGridEntry>
+                  <DetailsGridKey>Created</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getUserResponse?.user?.createTime &&
                       DateTime.fromJSDate(
-                        timestampDate(session.createTime),
+                        timestampDate(getUserResponse?.user?.createTime),
                       ).toRelative()}
-                  </TableCell>
-                  <TableCell>
-                    {session?.lastActiveTime &&
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+                <DetailsGridEntry>
+                  <DetailsGridKey>Updated</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getUserResponse?.user?.updateTime &&
                       DateTime.fromJSDate(
-                        timestampDate(session.lastActiveTime),
+                        timestampDate(getUserResponse?.user?.updateTime),
                       ).toRelative()}
-                  </TableCell>
-                  <TableCell>
-                    {session?.expireTime &&
-                      DateTime.fromJSDate(
-                        timestampDate(session.expireTime),
-                      ).toRelative()}
-                  </TableCell>
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+              </DetailsGridColumn>
+            </DetailsGrid>
+          </CardContent>
+        </Card>
+
+        <Card className="my-8">
+          <CardHeader>
+            <CardTitle>Sessions</CardTitle>
+            <CardDescription>
+              Every time your Users log in or perform an action, that's
+              associated with a Session.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>ID</TableHead>
+                  <TableHead>Created</TableHead>
+                  <TableHead>Last Active</TableHead>
+                  <TableHead>Expiration</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+              </TableHeader>
+              <TableBody>
+                {listSessionsResponse?.sessions?.map((session) => (
+                  <TableRow key={session.id}>
+                    <TableCell className="font-medium font-mono">
+                      {session.id}
+                    </TableCell>
+                    <TableCell>
+                      {session?.createTime &&
+                        DateTime.fromJSDate(
+                          timestampDate(session.createTime),
+                        ).toRelative()}
+                    </TableCell>
+                    <TableCell>
+                      {session?.lastActiveTime &&
+                        DateTime.fromJSDate(
+                          timestampDate(session.lastActiveTime),
+                        ).toRelative()}
+                    </TableCell>
+                    <TableCell>
+                      {session?.expireTime &&
+                        DateTime.fromJSDate(
+                          timestampDate(session.expireTime),
+                        ).toRelative()}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Passkeys</CardTitle>
-          <CardDescription>Passkeys associated with this User.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Created</TableHead>
-                <TableHead>Updated</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {listPasskeysResponse?.passkeys?.map((passkey) => (
-                <TableRow key={passkey.id}>
-                  <TableCell className="font-medium font-mono">
-                    <Link
-                      className="font-mono font-medium underline underline-offset-2 decoration-muted-foreground/40"
-                      to={`/organizations/${organizationId}/users/${userId}/passkeys/${passkey.id}`}
-                    >
-                      {passkey.id}
-                    </Link>
-                  </TableCell>
-                  <TableCell>
-                    {passkey?.createTime &&
-                      DateTime.fromJSDate(
-                        timestampDate(passkey.createTime),
-                      ).toRelative()}
-                  </TableCell>
-                  <TableCell>
-                    {passkey?.updateTime &&
-                      DateTime.fromJSDate(
-                        timestampDate(passkey.updateTime),
-                      ).toRelative()}
-                  </TableCell>
+        <Card>
+          <CardHeader>
+            <CardTitle>Passkeys</CardTitle>
+            <CardDescription>
+              Passkeys associated with this User.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>ID</TableHead>
+                  <TableHead>Created</TableHead>
+                  <TableHead>Updated</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+              </TableHeader>
+              <TableBody>
+                {listPasskeysResponse?.passkeys?.map((passkey) => (
+                  <TableRow key={passkey.id}>
+                    <TableCell className="font-medium font-mono">
+                      <Link
+                        className="font-mono font-medium underline underline-offset-2 decoration-muted-foreground/40"
+                        to={`/organizations/${organizationId}/users/${userId}/passkeys/${passkey.id}`}
+                      >
+                        {passkey.id}
+                      </Link>
+                    </TableCell>
+                    <TableCell>
+                      {passkey?.createTime &&
+                        DateTime.fromJSDate(
+                          timestampDate(passkey.createTime),
+                        ).toRelative()}
+                    </TableCell>
+                    <TableCell>
+                      {passkey?.updateTime &&
+                        DateTime.fromJSDate(
+                          timestampDate(passkey.updateTime),
+                        ).toRelative()}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
 
-      <DangerZoneCard />
-    </div>
+        <DangerZoneCard />
+      </PageContent>
+    </>
   );
 };
 

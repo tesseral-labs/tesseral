@@ -38,6 +38,7 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
+import { PageContent, PageHeader, PageTitle } from '@/components/page';
 
 const schema = z.object({
   primary: z.boolean(),
@@ -102,199 +103,157 @@ export const EditSAMLConnectionPage = () => {
 
   return (
     // TODO remove padding when app shell in place
-    <div className="pt-8">
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/">Home</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/organizations">Organizations</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to={`/organizations/${organizationId}`}>
-                {getOrganizationResponse?.organization?.displayName}
-              </Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to={`/organizations/${organizationId}/saml-connections`}>
-                SAML Connections
-              </Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link
-                to={`/organizations/${organizationId}/saml-connections/${samlConnectionId}`}
-              >
-                {samlConnectionId}
-              </Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Edit</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+    <>
+      <PageHeader>
+        <PageTitle>Edit SAML Connection</PageTitle>
+      </PageHeader>
 
-      <h1 className="mt-4 mb-8 font-semibold text-2xl">Edit SAML Connection</h1>
-
-      <Form {...form}>
-        {/* eslint-disable @typescript-eslint/no-unsafe-call */}
-        {/** Currently there's an issue with the types of react-hook-form and zod 
+      <PageContent>
+        <Form {...form}>
+          {/* eslint-disable @typescript-eslint/no-unsafe-call */}
+          {/** Currently there's an issue with the types of react-hook-form and zod 
         preventing the compiler from inferring the correct types.*/}
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          {/* eslint-enable @typescript-eslint/no-unsafe-call */}
-          <Card>
-            <CardHeader>
-              <CardTitle>SAML connection settings</CardTitle>
-              <CardDescription>
-                Configure basic settings on this SAML connection.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-8">
-              <FormField
-                control={form.control}
-                name="primary"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Primary</FormLabel>
-                    <FormControl>
-                      <Switch
-                        className="block"
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      A primary SAML connection gets used by default within its
-                      organization.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </CardContent>
-          </Card>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            {/* eslint-enable @typescript-eslint/no-unsafe-call */}
+            <Card>
+              <CardHeader>
+                <CardTitle>SAML connection settings</CardTitle>
+                <CardDescription>
+                  Configure basic settings on this SAML connection.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-8">
+                <FormField
+                  control={form.control}
+                  name="primary"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Primary</FormLabel>
+                      <FormControl>
+                        <Switch
+                          className="block"
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        A primary SAML connection gets used by default within
+                        its organization.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Service Provider settings</CardTitle>
-              <CardDescription>
-                The configuration here is assigned automatically by Tesseral,
-                and needs to be inputted into your customer's Identity Provider
-                by their IT admin.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-8">
-              <div>
-                <div className="text-sm font-medium leading-none">
-                  Assertion Consumer Service (ACS) URL
+            <Card>
+              <CardHeader>
+                <CardTitle>Service Provider settings</CardTitle>
+                <CardDescription>
+                  The configuration here is assigned automatically by Tesseral,
+                  and needs to be inputted into your customer's Identity
+                  Provider by their IT admin.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-8">
+                <div>
+                  <div className="text-sm font-medium leading-none">
+                    Assertion Consumer Service (ACS) URL
+                  </div>
+                  <div className="mt-1">
+                    {getSAMLConnectionResponse?.samlConnection?.spAcsUrl}
+                  </div>
                 </div>
-                <div className="mt-1">
-                  {getSAMLConnectionResponse?.samlConnection?.spAcsUrl}
+                <div>
+                  <div className="text-sm font-medium leading-none">
+                    SP Entity ID
+                  </div>
+                  <div className="mt-1">
+                    {getSAMLConnectionResponse?.samlConnection?.spEntityId}
+                  </div>
                 </div>
-              </div>
-              <div>
-                <div className="text-sm font-medium leading-none">
-                  SP Entity ID
-                </div>
-                <div className="mt-1">
-                  {getSAMLConnectionResponse?.samlConnection?.spEntityId}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>Identity Provider settings</CardTitle>
-              <CardDescription>
-                The configuration here needs to be copied over from the
-                customer's Identity Provider ("IDP").
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-8">
-              <FormField
-                control={form.control}
-                name="idpEntityId"
-                render={({ field }: { field: any }) => (
-                  <FormItem>
-                    <FormLabel>IDP Entity ID</FormLabel>
-                    <FormControl>
-                      <Input className="max-w-96" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="idpRedirectUrl"
-                render={({ field }: { field: any }) => (
-                  <FormItem>
-                    <FormLabel>IDP Redirect URL</FormLabel>
-                    <FormControl>
-                      <Input className="max-w-96" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="idpX509Certificate"
-                render={({
-                  field: { onChange },
-                }: {
-                  field: { onChange: (value: string) => void };
-                }) => (
-                  <FormItem>
-                    <FormLabel>IDP Certificate</FormLabel>
-                    <FormControl>
-                      <Input
-                        className="max-w-96"
-                        type="file"
-                        onChange={async (e) => {
-                          // File inputs are special; they are necessarily "uncontrolled", and their value is a FileList.
-                          // We just copy over the file's contents to the react-form-hook state manually on input change.
-                          if (e.target.files) {
-                            onChange(await e.target.files[0].text());
-                          }
-                        }}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      IDP Certificate, as a PEM-encoded X.509 certificate. These
-                      start with '-----BEGIN CERTIFICATE-----' and end with
-                      '-----END CERTIFICATE-----'.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Identity Provider settings</CardTitle>
+                <CardDescription>
+                  The configuration here needs to be copied over from the
+                  customer's Identity Provider ("IDP").
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-8">
+                <FormField
+                  control={form.control}
+                  name="idpEntityId"
+                  render={({ field }: { field: any }) => (
+                    <FormItem>
+                      <FormLabel>IDP Entity ID</FormLabel>
+                      <FormControl>
+                        <Input className="max-w-96" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="idpRedirectUrl"
+                  render={({ field }: { field: any }) => (
+                    <FormItem>
+                      <FormLabel>IDP Redirect URL</FormLabel>
+                      <FormControl>
+                        <Input className="max-w-96" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="idpX509Certificate"
+                  render={({
+                    field: { onChange },
+                  }: {
+                    field: { onChange: (value: string) => void };
+                  }) => (
+                    <FormItem>
+                      <FormLabel>IDP Certificate</FormLabel>
+                      <FormControl>
+                        <Input
+                          className="max-w-96"
+                          type="file"
+                          onChange={async (e) => {
+                            // File inputs are special; they are necessarily "uncontrolled", and their value is a FileList.
+                            // We just copy over the file's contents to the react-form-hook state manually on input change.
+                            if (e.target.files) {
+                              onChange(await e.target.files[0].text());
+                            }
+                          }}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        IDP Certificate, as a PEM-encoded X.509 certificate.
+                        These start with '-----BEGIN CERTIFICATE-----' and end
+                        with '-----END CERTIFICATE-----'.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+            </Card>
 
-          <div className="flex justify-end gap-x-4 pb-8">
-            <Button variant="outline" asChild>
-              <Link to={`/organizations/${organizationId}`}>Cancel</Link>
-            </Button>
-            <Button type="submit">Save Changes</Button>
-          </div>
-        </form>
-      </Form>
-    </div>
+            <div className="flex justify-end gap-x-4 pb-8">
+              <Button variant="outline" asChild>
+                <Link to={`/organizations/${organizationId}`}>Cancel</Link>
+              </Button>
+              <Button type="submit">Save Changes</Button>
+            </div>
+          </form>
+        </Form>
+      </PageContent>
+    </>
   );
 };

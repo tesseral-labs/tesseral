@@ -44,7 +44,9 @@ import {
 } from '@/components/details-grid';
 import {
   PageCodeSubtitle,
+  PageContent,
   PageDescription,
+  PageHeader,
   PageTitle,
 } from '@/components/page';
 
@@ -57,156 +59,126 @@ export const ViewSAMLConnectionPage = () => {
     id: samlConnectionId,
   });
   return (
-    <div>
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/">Home</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/organizations">Organizations</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to={`/organizations/${organizationId}`}>
-                {getOrganizationResponse?.organization?.displayName}
+    <>
+      <PageHeader>
+        <PageTitle>SAML Connection</PageTitle>
+        <PageCodeSubtitle>{samlConnectionId}</PageCodeSubtitle>
+        <PageDescription>
+          A SAML connection is a link between Tesseral and your customer's
+          enterprise Identity Provider.
+        </PageDescription>
+      </PageHeader>
+
+      <PageContent>
+        <Card className="my-8">
+          <CardHeader className="flex-row justify-between items-center">
+            <div className="flex flex-col space-y-1 5">
+              <CardTitle>Configuration</CardTitle>
+              <CardDescription>
+                Details about this SAML Connection.
+              </CardDescription>
+            </div>
+            <Button variant="outline" asChild>
+              <Link
+                to={`/organizations/${organizationId}/saml-connections/${samlConnectionId}/edit`}
+              >
+                Edit
               </Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to={`/organizations/${organizationId}/saml-connections`}>
-                SAML Connections
-              </Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>{samlConnectionId}</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+            </Button>
+          </CardHeader>
+          <CardContent>
+            <DetailsGrid>
+              <DetailsGridColumn>
+                <DetailsGridEntry>
+                  <DetailsGridKey>
+                    Assertion Consumer Service (ACS) URL
+                  </DetailsGridKey>
+                  <DetailsGridValue>
+                    {getSAMLConnectionResponse?.samlConnection?.spAcsUrl}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
 
-      <PageTitle>SAML Connection</PageTitle>
-      <PageCodeSubtitle>{samlConnectionId}</PageCodeSubtitle>
-      <PageDescription>
-        A SAML connection is a link between Tesseral and your customer's
-        enterprise Identity Provider.
-      </PageDescription>
+                <DetailsGridEntry>
+                  <DetailsGridKey>SP Entity ID</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getSAMLConnectionResponse?.samlConnection?.spEntityId}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+              </DetailsGridColumn>
+              <DetailsGridColumn>
+                <DetailsGridEntry>
+                  <DetailsGridKey>IDP Entity ID</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getSAMLConnectionResponse?.samlConnection?.idpEntityId ||
+                      '-'}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+                <DetailsGridEntry>
+                  <DetailsGridKey>IDP Redirect URL</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getSAMLConnectionResponse?.samlConnection
+                      ?.idpRedirectUrl || '-'}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+                <DetailsGridEntry>
+                  <DetailsGridKey>IDP Certificate</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getSAMLConnectionResponse?.samlConnection
+                      ?.idpX509Certificate ? (
+                      <a
+                        className="font-medium underline underline-offset-2 decoration-muted-foreground/40"
+                        download={`Certificate ${samlConnectionId}.crt`}
+                        href={`data:text/plain;base64,${btoa(getSAMLConnectionResponse.samlConnection.idpX509Certificate)}`}
+                      >
+                        Download (.crt)
+                      </a>
+                    ) : (
+                      '-'
+                    )}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+              </DetailsGridColumn>
+              <DetailsGridColumn>
+                <DetailsGridEntry>
+                  <DetailsGridKey>Primary</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getSAMLConnectionResponse?.samlConnection?.primary
+                      ? 'Yes'
+                      : 'No'}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
 
-      <Card className="my-8">
-        <CardHeader className="flex-row justify-between items-center">
-          <div className="flex flex-col space-y-1 5">
-            <CardTitle>Configuration</CardTitle>
-            <CardDescription>Details about this SAML Connection.</CardDescription>
-          </div>
-          <Button variant="outline" asChild>
-            <Link
-              to={`/organizations/${organizationId}/saml-connections/${samlConnectionId}/edit`}
-            >
-              Edit
-            </Link>
-          </Button>
-        </CardHeader>
-        <CardContent>
-          <DetailsGrid>
-            <DetailsGridColumn>
-              <DetailsGridEntry>
-                <DetailsGridKey>
-                  Assertion Consumer Service (ACS) URL
-                </DetailsGridKey>
-                <DetailsGridValue>
-                  {getSAMLConnectionResponse?.samlConnection?.spAcsUrl}
-                </DetailsGridValue>
-              </DetailsGridEntry>
+                <DetailsGridEntry>
+                  <DetailsGridKey>Created</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getSAMLConnectionResponse?.samlConnection?.createTime &&
+                      DateTime.fromJSDate(
+                        timestampDate(
+                          getSAMLConnectionResponse?.samlConnection?.createTime,
+                        ),
+                      ).toRelative()}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
 
-              <DetailsGridEntry>
-                <DetailsGridKey>SP Entity ID</DetailsGridKey>
-                <DetailsGridValue>
-                  {getSAMLConnectionResponse?.samlConnection?.spEntityId}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-            </DetailsGridColumn>
-            <DetailsGridColumn>
-              <DetailsGridEntry>
-                <DetailsGridKey>IDP Entity ID</DetailsGridKey>
-                <DetailsGridValue>
-                  {getSAMLConnectionResponse?.samlConnection?.idpEntityId ||
-                    '-'}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-              <DetailsGridEntry>
-                <DetailsGridKey>IDP Redirect URL</DetailsGridKey>
-                <DetailsGridValue>
-                  {getSAMLConnectionResponse?.samlConnection?.idpRedirectUrl ||
-                    '-'}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-              <DetailsGridEntry>
-                <DetailsGridKey>IDP Certificate</DetailsGridKey>
-                <DetailsGridValue>
-                  {getSAMLConnectionResponse?.samlConnection
-                    ?.idpX509Certificate ? (
-                    <a
-                      className="font-medium underline underline-offset-2 decoration-muted-foreground/40"
-                      download={`Certificate ${samlConnectionId}.crt`}
-                      href={`data:text/plain;base64,${btoa(getSAMLConnectionResponse.samlConnection.idpX509Certificate)}`}
-                    >
-                      Download (.crt)
-                    </a>
-                  ) : (
-                    '-'
-                  )}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-            </DetailsGridColumn>
-            <DetailsGridColumn>
-              <DetailsGridEntry>
-                <DetailsGridKey>Primary</DetailsGridKey>
-                <DetailsGridValue>
-                  {getSAMLConnectionResponse?.samlConnection?.primary
-                    ? 'Yes'
-                    : 'No'}
-                </DetailsGridValue>
-              </DetailsGridEntry>
+                <DetailsGridEntry>
+                  <DetailsGridKey>Updated</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getSAMLConnectionResponse?.samlConnection?.updateTime &&
+                      DateTime.fromJSDate(
+                        timestampDate(
+                          getSAMLConnectionResponse?.samlConnection?.updateTime,
+                        ),
+                      ).toRelative()}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+              </DetailsGridColumn>
+            </DetailsGrid>
+          </CardContent>
+        </Card>
 
-              <DetailsGridEntry>
-                <DetailsGridKey>Created</DetailsGridKey>
-                <DetailsGridValue>
-                  {getSAMLConnectionResponse?.samlConnection?.createTime &&
-                    DateTime.fromJSDate(
-                      timestampDate(
-                        getSAMLConnectionResponse?.samlConnection?.createTime,
-                      ),
-                    ).toRelative()}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-
-              <DetailsGridEntry>
-                <DetailsGridKey>Updated</DetailsGridKey>
-                <DetailsGridValue>
-                  {getSAMLConnectionResponse?.samlConnection?.updateTime &&
-                    DateTime.fromJSDate(
-                      timestampDate(
-                        getSAMLConnectionResponse?.samlConnection?.updateTime,
-                      ),
-                    ).toRelative()}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-            </DetailsGridColumn>
-          </DetailsGrid>
-        </CardContent>
-      </Card>
-
-      <DangerZoneCard />
-    </div>
+        <DangerZoneCard />
+      </PageContent>
+    </>
   );
 };
 
