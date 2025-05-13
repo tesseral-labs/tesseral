@@ -30,9 +30,14 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
-import { PageDescription, PageTitle } from '@/components/page';
+import {
+  PageContent,
+  PageDescription,
+  PageHeader,
+  PageTitle,
+} from '@/components/page';
 import { Button } from '@/components/ui/button';
-import { CirclePlus, LoaderCircleIcon } from 'lucide-react';
+import { Building2, CirclePlus, LoaderCircleIcon } from 'lucide-react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -79,91 +84,83 @@ export const ListOrganizationsPage = () => {
   );
 
   return (
-    <div>
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/">Home</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Organizations</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-
-      <PageTitle>Organizations</PageTitle>
-      <PageDescription>
-        An Organization represents one of your business customers.
-      </PageDescription>
-
-      <Card className="mt-8 overflow-hidden">
-        <CardHeader className="flex-row justify-between items-center space-x-4">
-          <div className="flex flex-col space-y-1 5">
-            <CardTitle>Organizations list</CardTitle>
-            <CardDescription>
-              This is a list of all Organizations in your project. You can
-              create and edit these Organizations manually.
-            </CardDescription>
-          </div>
-          <CreateOrganizationButton />
-        </CardHeader>
-        <CardContent className="-m-6 mt-0">
-          <Table>
-            <TableHeader className="bg-gray-50">
-              <TableRow>
-                <TableHead>Display Name</TableHead>
-                <TableHead>ID</TableHead>
-                <TableHead>Created</TableHead>
-                <TableHead>Updated</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {organizations?.map((org) => (
-                <TableRow key={org.id}>
-                  <TableCell className="font-medium">
-                    <Link
-                      className="underline underline-offset-2 decoration-muted-foreground/40"
-                      to={`/organizations/${org.id}`}
-                    >
-                      {org.displayName}
-                    </Link>
-                  </TableCell>
-                  <TableCell className="font-mono">{org.id}</TableCell>
-                  <TableCell>
-                    {org.createTime &&
-                      DateTime.fromJSDate(
-                        timestampDate(org.createTime),
-                      ).toRelative()}
-                  </TableCell>
-                  <TableCell>
-                    {org.updateTime &&
-                      DateTime.fromJSDate(
-                        timestampDate(org.updateTime),
-                      ).toRelative()}
-                  </TableCell>
+    <>
+      <PageHeader>
+        <PageTitle className="flex items-center">
+          <Building2 className="inline mr-2 h-6 w-6" />
+          Organizations
+        </PageTitle>
+        <PageDescription>
+          An Organization represents one of your business customers.
+        </PageDescription>
+      </PageHeader>
+      <PageContent>
+        <Card className="mt-8 overflow-hidden">
+          <CardHeader className="flex-row justify-between items-center space-x-4">
+            <div className="flex flex-col space-y-1 5">
+              <CardTitle>Organizations list</CardTitle>
+              <CardDescription>
+                This is a list of all Organizations in your project. You can
+                create and edit these Organizations manually.
+              </CardDescription>
+            </div>
+            <CreateOrganizationButton />
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader className="bg-gray-50">
+                <TableRow>
+                  <TableHead>Display Name</TableHead>
+                  <TableHead>ID</TableHead>
+                  <TableHead>Created</TableHead>
+                  <TableHead>Updated</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+              </TableHeader>
+              <TableBody>
+                {organizations?.map((org) => (
+                  <TableRow key={org.id}>
+                    <TableCell className="font-medium">
+                      <Link
+                        className="underline underline-offset-2 decoration-muted-foreground/40"
+                        to={`/organizations/${org.id}`}
+                      >
+                        {org.displayName}
+                      </Link>
+                    </TableCell>
+                    <TableCell className="font-mono">{org.id}</TableCell>
+                    <TableCell>
+                      {org.createTime &&
+                        DateTime.fromJSDate(
+                          timestampDate(org.createTime),
+                        ).toRelative()}
+                    </TableCell>
+                    <TableCell>
+                      {org.updateTime &&
+                        DateTime.fromJSDate(
+                          timestampDate(org.updateTime),
+                        ).toRelative()}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
 
-      {hasNextPage && (
-        <Button
-          className="mt-4"
-          variant="outline"
-          onClick={() => fetchNextPage()}
-        >
-          {isFetchingNextPage && (
-            <LoaderCircleIcon className="h-4 w-4 animate-spin" />
-          )}
-          Load more
-        </Button>
-      )}
-    </div>
+        {hasNextPage && (
+          <Button
+            className="mt-4"
+            variant="outline"
+            onClick={() => fetchNextPage()}
+          >
+            {isFetchingNextPage && (
+              <LoaderCircleIcon className="h-4 w-4 animate-spin" />
+            )}
+            Load more
+          </Button>
+        )}
+      </PageContent>
+    </>
   );
 };
 

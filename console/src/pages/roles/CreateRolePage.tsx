@@ -8,7 +8,12 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import { Link, useSearchParams } from 'react-router-dom';
-import { PageDescription, PageTitle } from '@/components/page';
+import {
+  PageContent,
+  PageDescription,
+  PageHeader,
+  PageTitle,
+} from '@/components/page';
 import { EditRoleForm } from '@/pages/roles/EditRoleForm';
 import { useMutation } from '@connectrpc/connect-query';
 import { createRole } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
@@ -38,32 +43,20 @@ export function CreateRolePage() {
   }
 
   return (
-    <div>
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/">Home</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Create Role</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+    <>
+      <PageHeader>
+        <PageTitle>Create Role</PageTitle>
+        <PageDescription>
+          Roles are a named collection of Actions, and can be assigned to Users.
+        </PageDescription>
+      </PageHeader>
 
-      <PageTitle>Create Role</PageTitle>
-      <PageDescription>
-        Roles are a named collection of Actions, and can be assigned to Users.
-      </PageDescription>
-
-      <div className="mt-8">
+      <PageContent>
         <EditRoleForm
           role={{ displayName: '', description: '', actions: [] }}
           onSubmit={handleSubmit}
         />
-      </div>
-    </div>
+      </PageContent>
+    </>
   );
 }

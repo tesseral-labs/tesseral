@@ -287,8 +287,10 @@ const settingsPage: FC = () => {
   return (
     <div>
       <div className="mt-8">
+        <BehaviorSettingsCard />
+
         <form onSubmit={handleSubmit}>
-          <Card>
+          <Card className="mt-8">
             <CardHeader>
               <div className="grid grid-cols-2 gap-8">
                 <div>
@@ -533,12 +535,12 @@ const settingsPage: FC = () => {
                               onCheckedChange={setDarkMode}
                             />
                             {darkMode ? (
-                              <div className="absolute top-1 right-6 text-white">
-                                <Moon size={16} />
+                              <div className="absolute top-1 right-5 text-white">
+                                <Moon size={12} />
                               </div>
                             ) : (
                               <div className="absolute top-1 right-1 text-muted-foreground">
-                                <Sun size={16} />
+                                <Sun size={12} />
                               </div>
                             )}
                           </div>
@@ -577,8 +579,6 @@ const settingsPage: FC = () => {
             </CardContent>
           </Card>
         </form>
-
-        <BehaviorSettingsCard />
       </div>
     </div>
   );

@@ -1,9 +1,11 @@
 import { useNavigate, useParams } from 'react-router';
 import { useMutation, useQuery } from '@connectrpc/connect-query';
 import {
-  getOrganization, getOrganizationDomains,
+  getOrganization,
+  getOrganizationDomains,
   getProject,
-  updateOrganization, updateOrganizationDomains,
+  updateOrganization,
+  updateOrganizationDomains,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -37,7 +39,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { PageTitle } from '@/components/page';
+import { PageContent, PageHeader, PageTitle } from '@/components/page';
 import { toast } from 'sonner';
 import { InputTags } from '@/components/input-tags';
 
@@ -62,18 +64,23 @@ export const EditOrganizationPage = () => {
   const { data: getOrganizationResponse } = useQuery(getOrganization, {
     id: organizationId,
   });
-  const { data: getOrganizationDomainsResponse } = useQuery(getOrganizationDomains, {
-    organizationId,
-  })
-   
+  const { data: getOrganizationDomainsResponse } = useQuery(
+    getOrganizationDomains,
+    {
+      organizationId,
+    },
+  );
+
   // Currently there's an issue with the types of react-hook-form and zod
   // preventing the compiler from inferring the correct types.
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
   });
-   
+
   const updateOrganizationMutation = useMutation(updateOrganization);
-  const updateOrganizationDomainsMutation = useMutation(updateOrganizationDomains);
+  const updateOrganizationDomainsMutation = useMutation(
+    updateOrganizationDomains,
+  );
 
   useEffect(() => {
     if (getOrganizationResponse?.organization) {
@@ -101,7 +108,7 @@ export const EditOrganizationPage = () => {
       form.reset({
         ...form.getValues(),
         domains: getOrganizationDomainsResponse.organizationDomains.domains,
-      })
+      });
     }
   }, [getOrganizationResponse, getOrganizationDomainsResponse]);
 
@@ -109,8 +116,9 @@ export const EditOrganizationPage = () => {
     if (values.requireMfa) {
       if (!values.logInWithAuthenticatorApp && !values.logInWithPasskey) {
         form.setError('requireMfa', {
-          message: 'To require MFA, you must enable either Log in with Authenticator App or Log in with Passkey.',
-        })
+          message:
+            'To require MFA, you must enable either Log in with Authenticator App or Log in with Passkey.',
+        });
         return;
       }
     }
@@ -136,245 +144,246 @@ export const EditOrganizationPage = () => {
       organizationDomains: {
         domains: values.domains,
       },
-    })
+    });
 
     toast.success('Organization updated successfully');
     navigate(`/organizations/${organizationId}`);
   };
 
   return (
-    <div>
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/">Home</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/organizations">Organizations</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink>
-              <Link to={`/organizations/${organizationId}`}>
-                {getOrganizationResponse?.organization?.displayName}
-              </Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Edit</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+    <>
+      <PageHeader>
+        <PageTitle>
+          Edit {getOrganizationResponse?.organization?.displayName}
+        </PageTitle>
+      </PageHeader>
 
-      <PageTitle>
-        Edit {getOrganizationResponse?.organization?.displayName}
-      </PageTitle>
-
-      <Form {...form}>
-        { }
-        {/** There's an issue with the types of react-hook-form and zod
+      <PageContent>
+        <Form {...form}>
+          {}
+          {/** There's an issue with the types of react-hook-form and zod
         preventing the compiler from inferring the correct types.*/}
-        <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-8">
-          {/** eslint-enable @typescript-eslint/no-unsafe-call */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Organization settings</CardTitle>
-              <CardDescription>
-                Configure basic settings on this organization.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-8">
-              <FormField
-                control={form.control}
-                name="displayName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Display Name</FormLabel>
-                    <FormControl>
-                      <Input
-                        className="max-w-80"
-                        placeholder="Acme Corporation"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      A human-friendly name for the organization.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="mt-8 space-y-8"
+          >
+            {/** eslint-enable @typescript-eslint/no-unsafe-call */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Organization settings</CardTitle>
+                <CardDescription>
+                  Configure basic settings on this organization.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-8">
+                <FormField
+                  control={form.control}
+                  name="displayName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Display Name</FormLabel>
+                      <FormControl>
+                        <Input
+                          className="max-w-80"
+                          placeholder="Acme Corporation"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        A human-friendly name for the organization.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Login settings</CardTitle>
+                <CardDescription>
+                  Configure how users can log into this organization.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-8">
+                {getProjectResponse?.project?.logInWithGoogle && (
+                  <FormField
+                    control={form.control}
+                    name="logInWithGoogle"
+                    render={({ field }: { field: any }) => (
+                      <FormItem>
+                        <FormLabel>Log in with Google</FormLabel>
+                        <FormControl>
+                          <Switch
+                            className="block"
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 )}
-              />
-            </CardContent>
-          </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Login settings</CardTitle>
-              <CardDescription>
-                Configure how users can log into this organization.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-8">
-              {getProjectResponse?.project?.logInWithGoogle && (
-                <FormField
-                  control={form.control}
-                  name="logInWithGoogle"
-                  render={({ field }: { field: any }) => (
-                    <FormItem>
-                      <FormLabel>Log in with Google</FormLabel>
-                      <FormControl>
-                        <Switch
-                          className="block"
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              )}
-
-              {getProjectResponse?.project?.logInWithMicrosoft && (
-                <FormField
-                  control={form.control}
-                  name="logInWithMicrosoft"
-                  render={({ field }: { field: any }) => (
-                    <FormItem>
-                      <FormLabel>Log in with Microsoft</FormLabel>
-                      <FormControl>
-                        <Switch
-                          className="block"
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              )}
-
-              {getProjectResponse?.project?.logInWithEmail && (
-                <FormField
-                  control={form.control}
-                  name="logInWithEmail"
-                  render={({ field }: { field: any }) => (
-                    <FormItem>
-                      <FormLabel>Log in with Email</FormLabel>
-                      <FormControl>
-                        <Switch
-                          className="block"
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              )}
-
-              {getProjectResponse?.project?.logInWithPassword && (
-                <FormField
-                  control={form.control}
-                  name="logInWithPassword"
-                  render={({ field }: { field: any }) => (
-                    <FormItem>
-                      <FormLabel>Log in with Password</FormLabel>
-                      <FormControl>
-                        <Switch
-                          className="block"
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              )}
-
-              {getProjectResponse?.project?.logInWithAuthenticatorApp && (
-                <FormField
-                  control={form.control}
-                  name="logInWithAuthenticatorApp"
-                  render={({ field }: { field: any }) => (
-                    <FormItem>
-                      <FormLabel>Log in with Authenticator App</FormLabel>
-                      <FormControl>
-                        <Switch
-                          className="block"
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              )}
-
-              {getProjectResponse?.project?.logInWithPasskey && (
-                <FormField
-                  control={form.control}
-                  name="logInWithPasskey"
-                  render={({ field }: { field: any }) => (
-                    <FormItem>
-                      <FormLabel>Log in with Passkey</FormLabel>
-                      <FormControl>
-                        <Switch
-                          className="block"
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              )}
-
-              <FormField
-                control={form.control}
-                name="requireMfa"
-                render={({ field }: { field: any }) => (
-                  <FormItem>
-                    <FormLabel>Require MFA</FormLabel>
-                    <FormControl>
-                      <Switch
-                        className="block"
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                {getProjectResponse?.project?.logInWithMicrosoft && (
+                  <FormField
+                    control={form.control}
+                    name="logInWithMicrosoft"
+                    render={({ field }: { field: any }) => (
+                      <FormItem>
+                        <FormLabel>Log in with Microsoft</FormLabel>
+                        <FormControl>
+                          <Switch
+                            className="block"
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 )}
-              />
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>Enterprise settings</CardTitle>
-              <CardDescription>
-                Configure whether this organization can use SCIM.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-8">
-              {getProjectResponse?.project?.logInWithSaml && (
+
+                {getProjectResponse?.project?.logInWithEmail && (
+                  <FormField
+                    control={form.control}
+                    name="logInWithEmail"
+                    render={({ field }: { field: any }) => (
+                      <FormItem>
+                        <FormLabel>Log in with Email</FormLabel>
+                        <FormControl>
+                          <Switch
+                            className="block"
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+
+                {getProjectResponse?.project?.logInWithPassword && (
+                  <FormField
+                    control={form.control}
+                    name="logInWithPassword"
+                    render={({ field }: { field: any }) => (
+                      <FormItem>
+                        <FormLabel>Log in with Password</FormLabel>
+                        <FormControl>
+                          <Switch
+                            className="block"
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+
+                {getProjectResponse?.project?.logInWithAuthenticatorApp && (
+                  <FormField
+                    control={form.control}
+                    name="logInWithAuthenticatorApp"
+                    render={({ field }: { field: any }) => (
+                      <FormItem>
+                        <FormLabel>Log in with Authenticator App</FormLabel>
+                        <FormControl>
+                          <Switch
+                            className="block"
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+
+                {getProjectResponse?.project?.logInWithPasskey && (
+                  <FormField
+                    control={form.control}
+                    name="logInWithPasskey"
+                    render={({ field }: { field: any }) => (
+                      <FormItem>
+                        <FormLabel>Log in with Passkey</FormLabel>
+                        <FormControl>
+                          <Switch
+                            className="block"
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+
                 <FormField
                   control={form.control}
-                  name="logInWithSaml"
+                  name="requireMfa"
                   render={({ field }: { field: any }) => (
                     <FormItem>
-                      <FormLabel>Log in with SAML</FormLabel>
+                      <FormLabel>Require MFA</FormLabel>
+                      <FormControl>
+                        <Switch
+                          className="block"
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Enterprise settings</CardTitle>
+                <CardDescription>
+                  Configure whether this organization can use SCIM.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-8">
+                {getProjectResponse?.project?.logInWithSaml && (
+                  <FormField
+                    control={form.control}
+                    name="logInWithSaml"
+                    render={({ field }: { field: any }) => (
+                      <FormItem>
+                        <FormLabel>Log in with SAML</FormLabel>
+                        <FormControl>
+                          <Switch
+                            className="block"
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          Whether this organization can configure SAML
+                          Connections and use them to log in with SAML.
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+
+                <FormField
+                  control={form.control}
+                  name="scimEnabled"
+                  render={({ field }: { field: any }) => (
+                    <FormItem>
+                      <FormLabel>SCIM Enabled</FormLabel>
                       <FormControl>
                         <Switch
                           className="block"
@@ -383,70 +392,48 @@ export const EditOrganizationPage = () => {
                         />
                       </FormControl>
                       <FormDescription>
-                        Whether this organization can configure SAML Connections
-                        and use them to log in with SAML.
+                        Whether this organization can configure SCIM
+                        ("Enterprise Directory Sync").
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-              )}
 
-              <FormField
-                control={form.control}
-                name="scimEnabled"
-                render={({ field }: { field: any }) => (
-                  <FormItem>
-                    <FormLabel>SCIM Enabled</FormLabel>
-                    <FormControl>
-                      <Switch
-                        className="block"
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Whether this organization can configure SCIM ("Enterprise
-                      Directory Sync").
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name="domains"
+                  render={({ field }: { field: any }) => (
+                    <FormItem>
+                      <FormLabel>SAML / SCIM Domains</FormLabel>
+                      <FormControl>
+                        <InputTags
+                          className="max-w-96"
+                          placeholder="example.com"
+                          {...field}
+                          value={field.value || []}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        SAML and SCIM users must have emails from this list of
+                        domains.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+            </Card>
 
-              <FormField
-                control={form.control}
-                name="domains"
-                render={({ field }: { field: any }) => (
-                  <FormItem>
-                    <FormLabel>SAML / SCIM Domains</FormLabel>
-                    <FormControl>
-                      <InputTags
-                        className="max-w-96"
-                        placeholder="example.com"
-                        {...field}
-                        value={field.value || []}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      SAML and SCIM users must have emails from this list of
-                      domains.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </CardContent>
-          </Card>
-
-          <div className="flex justify-end gap-x-4 pb-8">
-            <Button variant="outline" asChild>
-              <Link to={`/organizations/${organizationId}`}>Cancel</Link>
-            </Button>
-            <Button type="submit">Save Changes</Button>
-          </div>
-        </form>
-      </Form>
-    </div>
+            <div className="flex justify-end gap-x-4 pb-8">
+              <Button variant="outline" asChild>
+                <Link to={`/organizations/${organizationId}`}>Cancel</Link>
+              </Button>
+              <Button type="submit">Save Changes</Button>
+            </div>
+          </form>
+        </Form>
+      </PageContent>
+    </>
   );
 };

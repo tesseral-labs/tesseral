@@ -54,7 +54,9 @@ import {
 import { Input } from '@/components/ui/input';
 import {
   PageCodeSubtitle,
+  PageContent,
   PageDescription,
+  PageHeader,
   PageTitle,
 } from '@/components/page';
 
@@ -69,111 +71,79 @@ export const ViewSCIMAPIKeyPage = () => {
   });
   return (
     // TODO remove padding when app shell in place
-    <div>
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/">Home</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/organizations">Organizations</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to={`/organizations/${organizationId}`}>
-                {getOrganizationResponse?.organization?.displayName}
-              </Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to={`/organizations/${organizationId}/scim-api-keys`}>
-                SCIM API Keys
-              </Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>
-              {getScimApiKeyResponse?.scimApiKey?.displayName}
-            </BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+    <>
+      <PageHeader>
+        <PageTitle>{getScimApiKeyResponse?.scimApiKey?.displayName}</PageTitle>
+        <PageCodeSubtitle>{scimApiKeyId}</PageCodeSubtitle>
+        <PageDescription>
+          A SCIM API key lets your customer do enterprise directory syncing.
+        </PageDescription>
+      </PageHeader>
 
-      <PageTitle>{getScimApiKeyResponse?.scimApiKey?.displayName}</PageTitle>
-      <PageCodeSubtitle>{scimApiKeyId}</PageCodeSubtitle>
-      <PageDescription>
-        A SCIM API key lets your customer do enterprise directory syncing.
-      </PageDescription>
-
-      <Card className="my-8">
-        <CardHeader className="flex-row justify-between items-center">
-          <div className="flex flex-col space-y-1 5">
-            <CardTitle>Configuration</CardTitle>
-            <CardDescription>Details about this SCIM API Key.</CardDescription>
-          </div>
-          <EditSCIMAPIKeyButton />
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 gap-x-2 text-sm">
-            <div className="border-r border-gray-200 pr-8 flex flex-col gap-4">
-              <div>
-                <div className="font-semibold">Display Name</div>
-                <div className="truncate">
-                  {getScimApiKeyResponse?.scimApiKey?.displayName}
+      <PageContent>
+        <Card className="my-8">
+          <CardHeader className="flex-row justify-between items-center">
+            <div className="flex flex-col space-y-1 5">
+              <CardTitle>Configuration</CardTitle>
+              <CardDescription>
+                Details about this SCIM API Key.
+              </CardDescription>
+            </div>
+            <EditSCIMAPIKeyButton />
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 gap-x-2 text-sm">
+              <div className="border-r border-gray-200 pr-8 flex flex-col gap-4">
+                <div>
+                  <div className="font-semibold">Display Name</div>
+                  <div className="truncate">
+                    {getScimApiKeyResponse?.scimApiKey?.displayName}
+                  </div>
+                </div>
+                <div>
+                  <div className="font-semibold">SCIM Base URL</div>
+                  <div className="truncate">
+                    {`https://${getProjectResponse?.project?.vaultDomain}/api/scim/v1`}
+                  </div>
+                </div>
+                <div>
+                  <div className="font-semibold">Revoked</div>
+                  <div className="truncate">
+                    {getScimApiKeyResponse?.scimApiKey?.revoked ? 'Yes' : 'No'}
+                  </div>
                 </div>
               </div>
-              <div>
-                <div className="font-semibold">SCIM Base URL</div>
-                <div className="truncate">
-                  {`https://${getProjectResponse?.project?.vaultDomain}/api/scim/v1`}
+              <div className="border-gray-200 pl-8 flex flex-col gap-4">
+                <div>
+                  <div className="font-semibold">Created</div>
+                  <div className="truncate">
+                    {getScimApiKeyResponse?.scimApiKey?.createTime &&
+                      DateTime.fromJSDate(
+                        timestampDate(
+                          getScimApiKeyResponse?.scimApiKey?.createTime,
+                        ),
+                      ).toRelative()}
+                  </div>
                 </div>
-              </div>
-              <div>
-                <div className="font-semibold">Revoked</div>
-                <div className="truncate">
-                  {getScimApiKeyResponse?.scimApiKey?.revoked ? 'Yes' : 'No'}
+                <div>
+                  <div className="font-semibold">Updated</div>
+                  <div className="truncate">
+                    {getScimApiKeyResponse?.scimApiKey?.updateTime &&
+                      DateTime.fromJSDate(
+                        timestampDate(
+                          getScimApiKeyResponse?.scimApiKey?.updateTime,
+                        ),
+                      ).toRelative()}
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="border-gray-200 pl-8 flex flex-col gap-4">
-              <div>
-                <div className="font-semibold">Created</div>
-                <div className="truncate">
-                  {getScimApiKeyResponse?.scimApiKey?.createTime &&
-                    DateTime.fromJSDate(
-                      timestampDate(
-                        getScimApiKeyResponse?.scimApiKey?.createTime,
-                      ),
-                    ).toRelative()}
-                </div>
-              </div>
-              <div>
-                <div className="font-semibold">Updated</div>
-                <div className="truncate">
-                  {getScimApiKeyResponse?.scimApiKey?.updateTime &&
-                    DateTime.fromJSDate(
-                      timestampDate(
-                        getScimApiKeyResponse?.scimApiKey?.updateTime,
-                      ),
-                    ).toRelative()}
-                </div>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
 
-      <DangerZoneCard />
-    </div>
+        <DangerZoneCard />
+      </PageContent>
+    </>
   );
 };
 

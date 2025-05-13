@@ -1,18 +1,13 @@
 import React from 'react';
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
-import { Link, useSearchParams } from 'react-router-dom';
-import { PageDescription, PageTitle } from '@/components/page';
+  PageContent,
+  PageDescription,
+  PageHeader,
+  PageTitle,
+} from '@/components/page';
 import { EditRoleForm } from '@/pages/roles/EditRoleForm';
 import { useMutation, useQuery } from '@connectrpc/connect-query';
 import {
-  createRole,
   getOrganization,
   getRole,
   updateRole,
@@ -57,79 +52,15 @@ export function EditRolePage() {
   }
 
   return (
-    <div>
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/">Home</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          {getRoleResponse?.role?.organizationId ? (
-            <>
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link to="/organizations">Organizations</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link
-                    to={`/organizations/${getRoleResponse?.role?.organizationId}`}
-                  >
-                    {getOrganizationResponse?.organization?.displayName}
-                  </Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link
-                    to={`/organizations/${getRoleResponse?.role?.organizationId}/roles`}
-                  >
-                    Roles
-                  </Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>
-                  {getRoleResponse?.role?.displayName}
-                </BreadcrumbPage>
-              </BreadcrumbItem>
-            </>
-          ) : (
-            <>
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link to="/project-settings">Project settings</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link to="/project-settings/rbac-settings">Roles</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>
-                  {getRoleResponse?.role?.displayName}
-                </BreadcrumbPage>
-              </BreadcrumbItem>
-            </>
-          )}
-        </BreadcrumbList>
-      </Breadcrumb>
+    <>
+      <PageHeader>
+        <PageTitle>Edit Role</PageTitle>
+        <PageDescription>
+          Roles are a named collection of Actions, and can be assigned to Users.
+        </PageDescription>
+      </PageHeader>
 
-      <PageTitle>Edit Role</PageTitle>
-      <PageDescription>
-        Roles are a named collection of Actions, and can be assigned to Users.
-      </PageDescription>
-
-      <div className="mt-8">
+      <PageContent>
         {getRoleResponse?.role && (
           <EditRoleForm
             role={{
@@ -140,7 +71,7 @@ export function EditRolePage() {
             onSubmit={handleSubmit}
           />
         )}
-      </div>
-    </div>
+      </PageContent>
+    </>
   );
 }

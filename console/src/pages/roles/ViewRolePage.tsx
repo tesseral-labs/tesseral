@@ -1,21 +1,14 @@
 import { useNavigate, useParams } from 'react-router';
 import { useMutation, useQuery } from '@connectrpc/connect-query';
 import {
-  createUserImpersonationToken,
   deleteRole,
   deleteUserRoleAssignment,
   getOrganization,
-  getProject,
-  getRBACPolicy,
   getRole,
   getUser,
-  listPasskeys,
-  listSessions,
   listUserRoleAssignments,
-  updateRole,
-  updateUser,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
-import React, { FC, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Table,
   TableBody,
@@ -26,16 +19,10 @@ import {
 } from '@/components/ui/table';
 import { Link } from 'react-router-dom';
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
-import {
   PageCodeSubtitle,
+  PageContent,
   PageDescription,
+  PageHeader,
   PageTitle,
 } from '@/components/page';
 import {
@@ -66,22 +53,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { Input } from '@/components/ui/input';
-import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
-import { User, UserRoleAssignment } from '@/gen/tesseral/backend/v1/models_pb';
-import { Checkbox } from '@/components/ui/checkbox';
+import { UserRoleAssignment } from '@/gen/tesseral/backend/v1/models_pb';
 
 export function ViewRolePage() {
   const { roleId } = useParams();
@@ -105,192 +78,129 @@ export function ViewRolePage() {
   );
 
   return (
-    <div>
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/">Home</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          {getRoleResponse?.role?.organizationId ? (
-            <>
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link to="/organizations">Organizations</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link
-                    to={`/organizations/${getRoleResponse?.role?.organizationId}`}
-                  >
-                    {getOrganizationResponse?.organization?.displayName}
-                  </Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link
-                    to={`/organizations/${getRoleResponse?.role?.organizationId}/roles`}
-                  >
-                    Roles
-                  </Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>
-                  {getRoleResponse?.role?.displayName}
-                </BreadcrumbPage>
-              </BreadcrumbItem>
-            </>
-          ) : (
-            <>
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link to="/project-settings">Project settings</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link to="/project-settings/rbac-settings">Roles</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>
-                  {getRoleResponse?.role?.displayName}
-                </BreadcrumbPage>
-              </BreadcrumbItem>
-            </>
-          )}
-        </BreadcrumbList>
-      </Breadcrumb>
+    <>
+      <PageHeader>
+        <PageTitle>{getRoleResponse?.role?.displayName}</PageTitle>
+        <PageCodeSubtitle>{roleId}</PageCodeSubtitle>
+        <PageDescription>
+          Roles are a named collection of Actions, and can be assigned to Users.
+        </PageDescription>
+      </PageHeader>
 
-      <PageTitle>{getRoleResponse?.role?.displayName}</PageTitle>
-      <PageCodeSubtitle>{roleId}</PageCodeSubtitle>
-      <PageDescription>
-        Roles are a named collection of Actions, and can be assigned to Users.
-      </PageDescription>
+      <PageContent>
+        <div className="space-y-8">
+          <Card>
+            <CardHeader className="flex-row justify-between items-center gap-x-2">
+              <div className="flex flex-col space-y-1.5">
+                <CardTitle>General settings</CardTitle>
+                <CardDescription>Basic settings for this Role.</CardDescription>
+              </div>
+              <Link to={`/roles/${roleId}/edit`}>
+                <Button variant="outline">Edit</Button>
+              </Link>
+            </CardHeader>
+            <CardContent>
+              <DetailsGrid>
+                <DetailsGridColumn>
+                  <DetailsGridEntry>
+                    <DetailsGridKey>Display Name</DetailsGridKey>
+                    <DetailsGridValue>
+                      {getRoleResponse?.role?.displayName}
+                    </DetailsGridValue>
+                  </DetailsGridEntry>
+                  <DetailsGridEntry>
+                    <DetailsGridKey>Description</DetailsGridKey>
+                    <DetailsGridValue>
+                      {getRoleResponse?.role?.description}
+                    </DetailsGridValue>
+                  </DetailsGridEntry>
+                  <DetailsGridEntry>
+                    <DetailsGridKey>Role Type</DetailsGridKey>
+                    <DetailsGridValue>
+                      {getRoleResponse?.role?.organizationId
+                        ? 'Organization-Specific Role'
+                        : 'Project-Level Role'}
+                    </DetailsGridValue>
+                  </DetailsGridEntry>
+                  {getRoleResponse?.role?.organizationId && (
+                    <DetailsGridEntry>
+                      <DetailsGridKey>Organization</DetailsGridKey>
+                      <DetailsGridValue>
+                        <Link
+                          className="underline underline-offset-2 decoration-muted-foreground/40"
+                          to={`/organizations/${getRoleResponse?.role?.organizationId}`}
+                        >
+                          {getOrganizationResponse?.organization?.displayName}
+                        </Link>
+                      </DetailsGridValue>
+                    </DetailsGridEntry>
+                  )}
+                </DetailsGridColumn>
+                <DetailsGridColumn>
+                  <DetailsGridEntry>
+                    <DetailsGridKey>Role Actions</DetailsGridKey>
+                    <DetailsGridValue>
+                      {getRoleResponse?.role?.actions.map((action) => (
+                        <div>{action}</div>
+                      ))}
+                    </DetailsGridValue>
+                  </DetailsGridEntry>
+                </DetailsGridColumn>
+                <DetailsGridColumn>
+                  <DetailsGridEntry>
+                    <DetailsGridKey>Created</DetailsGridKey>
+                    <DetailsGridValue>
+                      {getRoleResponse?.role?.createTime &&
+                        DateTime.fromJSDate(
+                          timestampDate(getRoleResponse?.role?.createTime),
+                        ).toRelative()}
+                    </DetailsGridValue>
+                  </DetailsGridEntry>
+                  <DetailsGridEntry>
+                    <DetailsGridKey>Updated</DetailsGridKey>
+                    <DetailsGridValue>
+                      {getRoleResponse?.role?.updateTime &&
+                        DateTime.fromJSDate(
+                          timestampDate(getRoleResponse?.role?.updateTime),
+                        ).toRelative()}
+                    </DetailsGridValue>
+                  </DetailsGridEntry>
+                </DetailsGridColumn>
+              </DetailsGrid>
+            </CardContent>
+          </Card>
 
-      <Card className="my-8">
-        <CardHeader className="flex-row justify-between items-center gap-x-2">
-          <div className="flex flex-col space-y-1.5">
-            <CardTitle>General settings</CardTitle>
-            <CardDescription>Basic settings for this Role.</CardDescription>
-          </div>
-          <Link to={`/roles/${roleId}/edit`}>
-            <Button variant="outline">Edit</Button>
-          </Link>
-        </CardHeader>
-        <CardContent>
-          <DetailsGrid>
-            <DetailsGridColumn>
-              <DetailsGridEntry>
-                <DetailsGridKey>Display Name</DetailsGridKey>
-                <DetailsGridValue>
-                  {getRoleResponse?.role?.displayName}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-              <DetailsGridEntry>
-                <DetailsGridKey>Description</DetailsGridKey>
-                <DetailsGridValue>
-                  {getRoleResponse?.role?.description}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-              <DetailsGridEntry>
-                <DetailsGridKey>Role Type</DetailsGridKey>
-                <DetailsGridValue>
-                  {getRoleResponse?.role?.organizationId
-                    ? 'Organization-Specific Role'
-                    : 'Project-Level Role'}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-              {getRoleResponse?.role?.organizationId && (
-                <DetailsGridEntry>
-                  <DetailsGridKey>Organization</DetailsGridKey>
-                  <DetailsGridValue>
-                    <Link
-                      className="underline underline-offset-2 decoration-muted-foreground/40"
-                      to={`/organizations/${getRoleResponse?.role?.organizationId}`}
-                    >
-                      {getOrganizationResponse?.organization?.displayName}
-                    </Link>
-                  </DetailsGridValue>
-                </DetailsGridEntry>
-              )}
-            </DetailsGridColumn>
-            <DetailsGridColumn>
-              <DetailsGridEntry>
-                <DetailsGridKey>Role Actions</DetailsGridKey>
-                <DetailsGridValue>
-                  {getRoleResponse?.role?.actions.map((action) => (
-                    <div>{action}</div>
-                  ))}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-            </DetailsGridColumn>
-            <DetailsGridColumn>
-              <DetailsGridEntry>
-                <DetailsGridKey>Created</DetailsGridKey>
-                <DetailsGridValue>
-                  {getRoleResponse?.role?.createTime &&
-                    DateTime.fromJSDate(
-                      timestampDate(getRoleResponse?.role?.createTime),
-                    ).toRelative()}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-              <DetailsGridEntry>
-                <DetailsGridKey>Updated</DetailsGridKey>
-                <DetailsGridValue>
-                  {getRoleResponse?.role?.updateTime &&
-                    DateTime.fromJSDate(
-                      timestampDate(getRoleResponse?.role?.updateTime),
-                    ).toRelative()}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-            </DetailsGridColumn>
-          </DetailsGrid>
-        </CardContent>
-      </Card>
-
-      <div className="space-y-8">
-        <Card>
-          <CardHeader>
-            <CardTitle>Assigned Users</CardTitle>
-            <CardDescription>Users assigned to this Role.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>User Email</TableHead>
-                  <TableHead>User Organization</TableHead>
-                  <TableHead></TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {listUserRoleAssignmentsResponse?.userRoleAssignments?.map(
-                  (userRoleAssignment) => (
-                    <UserRoleAssignmentRow
-                      key={userRoleAssignment.roleId}
-                      userRoleAssignment={userRoleAssignment}
-                    />
-                  ),
-                )}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-      </div>
-
-      <DangerZoneCard />
-    </div>
+          <Card>
+            <CardHeader>
+              <CardTitle>Assigned Users</CardTitle>
+              <CardDescription>Users assigned to this Role.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>User Email</TableHead>
+                    <TableHead>User Organization</TableHead>
+                    <TableHead></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {listUserRoleAssignmentsResponse?.userRoleAssignments?.map(
+                    (userRoleAssignment) => (
+                      <UserRoleAssignmentRow
+                        key={userRoleAssignment.roleId}
+                        userRoleAssignment={userRoleAssignment}
+                      />
+                    ),
+                  )}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </div>
+        <DangerZoneCard />
+      </PageContent>
+    </>
   );
 }
 

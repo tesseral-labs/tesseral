@@ -69,7 +69,7 @@ function SignupPageInner({ children }: { children?: React.ReactNode }) {
 
 function CenteredSignupPage({ children }: { children?: React.ReactNode }) {
   return (
-    <div className="bg-background w-screen min-h-screen mx-auto flex flex-col justify-center items-center py-8">
+    <div className="bg-background w-full min-h-screen mx-auto flex flex-col justify-center items-center py-8">
       <div className="max-w-sm w-full mx-auto">{children}</div>
     </div>
   );
@@ -77,7 +77,7 @@ function CenteredSignupPage({ children }: { children?: React.ReactNode }) {
 
 function SideBySideSignupPage({ children }: { children?: React.ReactNode }) {
   return (
-    <div className="bg-background w-screen min-h-screen grid grid-cols-2 gap-0">
+    <div className="bg-background w-full min-h-screen grid grid-cols-2 gap-0">
       <div className="bg-primary" />
       <div className="flex flex-col justify-center items-center p-4">
         <div className="max-w-sm w-full mx-auto">{children}</div>

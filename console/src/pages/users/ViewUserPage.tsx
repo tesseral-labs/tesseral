@@ -23,16 +23,10 @@ import {
 } from '@/components/ui/table';
 import { Link } from 'react-router-dom';
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
-import {
   PageCodeSubtitle,
+  PageContent,
   PageDescription,
+  PageHeader,
   PageTitle,
 } from '@/components/page';
 import {
@@ -102,131 +96,98 @@ export const ViewUserPage = () => {
   );
 
   return (
-    <div>
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/">Home</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/organizations">Organizations</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to={`/organizations/${organizationId}`}>
-                {getOrganizationResponse?.organization?.displayName}
-              </Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to={`/organizations/${organizationId}/users`}>Users</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>{getUserResponse?.user?.email}</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+    <>
+      <PageHeader>
+        <PageTitle>{getUserResponse?.user?.email}</PageTitle>
+        <PageCodeSubtitle>{userId}</PageCodeSubtitle>
+        <PageDescription>
+          A User is what people using your product log into.
+        </PageDescription>
+      </PageHeader>
+      <PageContent>
+        <Card className="my-8">
+          <CardHeader className="flex flex-row items-center justify-between space-y-4">
+            <div>
+              <CardTitle>General settings</CardTitle>
+              <CardDescription>Basic settings for this User.</CardDescription>
+            </div>
+            <EditUserSettingsButton />
+          </CardHeader>
+          <CardContent>
+            <DetailsGrid>
+              <DetailsGridColumn>
+                <DetailsGridEntry>
+                  <DetailsGridKey>Email</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getUserResponse?.user?.email}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+                <DetailsGridEntry>
+                  <DetailsGridKey>Display Name</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getUserResponse?.user?.displayName || '-'}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+                <DetailsGridEntry>
+                  <DetailsGridKey>Owner</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getUserResponse?.user?.owner ? 'Yes' : 'No'}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+                <DetailsGridEntry>
+                  <DetailsGridKey>Authenticator App</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getUserResponse?.user?.hasAuthenticatorApp
+                      ? 'Enabled'
+                      : 'Not Enabled'}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+              </DetailsGridColumn>
+              <DetailsGridColumn>
+                <DetailsGridEntry>
+                  <DetailsGridKey>Profile Picture URL</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getUserResponse?.user?.profilePictureUrl || '-'}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+                <DetailsGridEntry>
+                  <DetailsGridKey>Google User ID</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getUserResponse?.user?.googleUserId || '-'}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+                <DetailsGridEntry>
+                  <DetailsGridKey>Microsoft User ID</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getUserResponse?.user?.microsoftUserId || '-'}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+              </DetailsGridColumn>
+              <DetailsGridColumn>
+                <DetailsGridEntry>
+                  <DetailsGridKey>Created</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getUserResponse?.user?.createTime &&
+                      DateTime.fromJSDate(
+                        timestampDate(getUserResponse?.user?.createTime),
+                      ).toRelative()}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+                <DetailsGridEntry>
+                  <DetailsGridKey>Updated</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getUserResponse?.user?.updateTime &&
+                      DateTime.fromJSDate(
+                        timestampDate(getUserResponse?.user?.updateTime),
+                      ).toRelative()}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+              </DetailsGridColumn>
+            </DetailsGrid>
+          </CardContent>
+        </Card>
 
-      <PageTitle>{getUserResponse?.user?.email}</PageTitle>
-      <PageCodeSubtitle>{userId}</PageCodeSubtitle>
-      <PageDescription>
-        A User is what people using your product log into.
-      </PageDescription>
-
-      <Card className="my-8">
-        <CardHeader className="flex flex-row items-center justify-between space-y-4">
-          <div>
-            <CardTitle>General settings</CardTitle>
-            <CardDescription>Basic settings for this User.</CardDescription>
-          </div>
-          <EditUserSettingsButton />
-        </CardHeader>
-        <CardContent>
-          <DetailsGrid>
-            <DetailsGridColumn>
-              <DetailsGridEntry>
-                <DetailsGridKey>Email</DetailsGridKey>
-                <DetailsGridValue>
-                  {getUserResponse?.user?.email}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-              <DetailsGridEntry>
-                <DetailsGridKey>Display Name</DetailsGridKey>
-                <DetailsGridValue>
-                  {getUserResponse?.user?.displayName || '-'}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-              <DetailsGridEntry>
-                <DetailsGridKey>Owner</DetailsGridKey>
-                <DetailsGridValue>
-                  {getUserResponse?.user?.owner ? 'Yes' : 'No'}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-              <DetailsGridEntry>
-                <DetailsGridKey>Authenticator App</DetailsGridKey>
-                <DetailsGridValue>
-                  {getUserResponse?.user?.hasAuthenticatorApp
-                    ? 'Enabled'
-                    : 'Not Enabled'}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-            </DetailsGridColumn>
-            <DetailsGridColumn>
-              <DetailsGridEntry>
-                <DetailsGridKey>Profile Picture URL</DetailsGridKey>
-                <DetailsGridValue>
-                  {getUserResponse?.user?.profilePictureUrl || '-'}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-              <DetailsGridEntry>
-                <DetailsGridKey>Google User ID</DetailsGridKey>
-                <DetailsGridValue>
-                  {getUserResponse?.user?.googleUserId || '-'}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-              <DetailsGridEntry>
-                <DetailsGridKey>Microsoft User ID</DetailsGridKey>
-                <DetailsGridValue>
-                  {getUserResponse?.user?.microsoftUserId || '-'}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-            </DetailsGridColumn>
-            <DetailsGridColumn>
-              <DetailsGridEntry>
-                <DetailsGridKey>Created</DetailsGridKey>
-                <DetailsGridValue>
-                  {getUserResponse?.user?.createTime &&
-                    DateTime.fromJSDate(
-                      timestampDate(getUserResponse?.user?.createTime),
-                    ).toRelative()}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-              <DetailsGridEntry>
-                <DetailsGridKey>Updated</DetailsGridKey>
-                <DetailsGridValue>
-                  {getUserResponse?.user?.updateTime &&
-                    DateTime.fromJSDate(
-                      timestampDate(getUserResponse?.user?.updateTime),
-                    ).toRelative()}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-            </DetailsGridColumn>
-          </DetailsGrid>
-        </CardContent>
-      </Card>
-
-      <div className="space-y-8">
-        <Card>
+        <Card className="my-8">
           <CardHeader>
             <CardTitle>Sessions</CardTitle>
             <CardDescription>
@@ -321,7 +282,7 @@ export const ViewUserPage = () => {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="mt-8">
           <CardHeader className="flex-row justify-between items-center gap-x-2">
             <div className="flex flex-col space-y-1.5">
               <CardTitle>Assigned Roles</CardTitle>
@@ -356,10 +317,10 @@ export const ViewUserPage = () => {
             </Table>
           </CardContent>
         </Card>
-      </div>
 
-      <DangerZoneCard />
-    </div>
+        <DangerZoneCard />
+      </PageContent>
+    </>
   );
 };
 
@@ -377,7 +338,7 @@ function UserRoleAssignmentRow({
 
   const { data: getUserResponse } = useQuery(getUser, {
     id: userRoleAssignment.userId,
-  })
+  });
 
   const { mutateAsync: deleteUserRoleAssignmentAsync } = useMutation(
     deleteUserRoleAssignment,
@@ -401,9 +362,7 @@ function UserRoleAssignmentRow({
           {getRoleResponse?.role?.displayName}
         </Link>
       </TableCell>
-      <TableCell>
-        {getRoleResponse?.role?.description}
-      </TableCell>
+      <TableCell>{getRoleResponse?.role?.description}</TableCell>
       <TableCell className="text-right">
         <AlertDialog open={open} onOpenChange={setOpen}>
           <AlertDialogTrigger asChild>
@@ -416,7 +375,15 @@ function UserRoleAssignmentRow({
               <AlertDialogTitle>Unassign Role</AlertDialogTitle>
             </AlertDialogHeader>
             <AlertDialogDescription>
-              Are you sure you want to unassign <span className="font-medium">{getUserResponse?.user?.email}</span> from the Role <span className="font-medium">{getRoleResponse?.role?.displayName}</span>?
+              Are you sure you want to unassign{' '}
+              <span className="font-medium">
+                {getUserResponse?.user?.email}
+              </span>{' '}
+              from the Role{' '}
+              <span className="font-medium">
+                {getRoleResponse?.role?.displayName}
+              </span>
+              ?
             </AlertDialogDescription>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
