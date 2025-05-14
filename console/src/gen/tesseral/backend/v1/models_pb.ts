@@ -65,7 +65,7 @@ export type Project = Message<"tesseral.backend.v1.Project"> & {
   logInWithMicrosoft?: boolean;
 
   /**
-   * Whether the Project supports "Log in with Github".
+   * Whether the Project supports "Log in with GitHub".
    *
    * @generated from field: optional bool log_in_with_github = 24;
    */
@@ -139,14 +139,14 @@ export type Project = Message<"tesseral.backend.v1.Project"> & {
   microsoftOauthClientSecret: string;
 
   /**
-   * The OAuth Client ID to use for "Log in with Github".
+   * The OAuth Client ID to use for "Log in with GitHub".
    *
    * @generated from field: string github_oauth_client_id = 26;
    */
   githubOauthClientId: string;
 
   /**
-   * The OAuth Client ID to use for "Log in with Github"
+   * The OAuth Client ID to use for "Log in with GitHub"
    *
    * This field is write only.
    *
@@ -416,7 +416,7 @@ export type Organization = Message<"tesseral.backend.v1.Organization"> & {
   logInWithMicrosoft?: boolean;
 
   /**
-   * Whether the Organization supports Log in with Github.
+   * Whether the Organization supports Log in with GitHub.
    *
    * @generated from field: optional bool log_in_with_github = 17;
    */
@@ -728,7 +728,7 @@ export type User = Message<"tesseral.backend.v1.User"> & {
   microsoftUserId?: string;
 
   /**
-   * The Github User ID, if the User has ever logged in with Github.
+   * The Github User ID, if the User has ever logged in with GitHub.
    *
    * @generated from field: optional string github_user_id = 12;
    */

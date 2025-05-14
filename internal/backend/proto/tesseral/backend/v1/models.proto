@@ -26,7 +26,7 @@ message Project {
   // Whether the Project supports "Log in with Microsoft".
   optional bool log_in_with_microsoft = 7;
 
-  // Whether the Project supports "Log in with Github".
+  // Whether the Project supports "Log in with GitHub".
   optional bool log_in_with_github = 24;
 
   // Whether the Project supports "Log in with email".
@@ -60,10 +60,10 @@ message Project {
   // This field is write-only.
   string microsoft_oauth_client_secret = 11;
 
-  // The OAuth Client ID to use for "Log in with Github".
+  // The OAuth Client ID to use for "Log in with GitHub".
   string github_oauth_client_id = 26;
 
-  // The OAuth Client ID to use for "Log in with Github"
+  // The OAuth Client ID to use for "Log in with GitHub"
   //
   // This field is write only.
   string github_oauth_client_secret = 25;
@@ -147,7 +147,7 @@ message Organization {
   // Whether the Organization supports "Log in with Microsoft".
   optional bool log_in_with_microsoft = 8;
 
-  // Whether the Organization supports Log in with Github.
+  // Whether the Organization supports Log in with GitHub.
   optional bool log_in_with_github = 17;
 
   // Whether the Organization supports "Log in with email".
@@ -261,7 +261,7 @@ message User {
   // The Microsoft User ID, if the User has ever logged in with Microsoft.
   optional string microsoft_user_id = 8;
 
-  // The Github User ID, if the User has ever logged in with Github.
+  // The Github User ID, if the User has ever logged in with GitHub.
   optional string github_user_id = 12;
 
   // Whether the User has an authenticator app set up.

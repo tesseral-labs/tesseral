@@ -103,7 +103,7 @@ type Project struct {
 	LogInWithGoogle *bool `protobuf:"varint,6,opt,name=log_in_with_google,json=logInWithGoogle,proto3,oneof" json:"log_in_with_google,omitempty"`
 	// Whether the Project supports "Log in with Microsoft".
 	LogInWithMicrosoft *bool `protobuf:"varint,7,opt,name=log_in_with_microsoft,json=logInWithMicrosoft,proto3,oneof" json:"log_in_with_microsoft,omitempty"`
-	// Whether the Project supports "Log in with Github".
+	// Whether the Project supports "Log in with GitHub".
 	LogInWithGithub *bool `protobuf:"varint,24,opt,name=log_in_with_github,json=logInWithGithub,proto3,oneof" json:"log_in_with_github,omitempty"`
 	// Whether the Project supports "Log in with email".
 	LogInWithEmail *bool `protobuf:"varint,15,opt,name=log_in_with_email,json=logInWithEmail,proto3,oneof" json:"log_in_with_email,omitempty"`
@@ -127,9 +127,9 @@ type Project struct {
 	//
 	// This field is write-only.
 	MicrosoftOauthClientSecret string `protobuf:"bytes,11,opt,name=microsoft_oauth_client_secret,json=microsoftOauthClientSecret,proto3" json:"microsoft_oauth_client_secret,omitempty"`
-	// The OAuth Client ID to use for "Log in with Github".
+	// The OAuth Client ID to use for "Log in with GitHub".
 	GithubOauthClientId string `protobuf:"bytes,26,opt,name=github_oauth_client_id,json=githubOauthClientId,proto3" json:"github_oauth_client_id,omitempty"`
-	// The OAuth Client ID to use for "Log in with Github"
+	// The OAuth Client ID to use for "Log in with GitHub"
 	//
 	// This field is write only.
 	GithubOauthClientSecret string `protobuf:"bytes,25,opt,name=github_oauth_client_secret,json=githubOauthClientSecret,proto3" json:"github_oauth_client_secret,omitempty"`
@@ -667,7 +667,7 @@ type Organization struct {
 	LogInWithGoogle *bool `protobuf:"varint,7,opt,name=log_in_with_google,json=logInWithGoogle,proto3,oneof" json:"log_in_with_google,omitempty"`
 	// Whether the Organization supports "Log in with Microsoft".
 	LogInWithMicrosoft *bool `protobuf:"varint,8,opt,name=log_in_with_microsoft,json=logInWithMicrosoft,proto3,oneof" json:"log_in_with_microsoft,omitempty"`
-	// Whether the Organization supports Log in with Github.
+	// Whether the Organization supports Log in with GitHub.
 	LogInWithGithub *bool `protobuf:"varint,17,opt,name=log_in_with_github,json=logInWithGithub,proto3,oneof" json:"log_in_with_github,omitempty"`
 	// Whether the Organization supports "Log in with email".
 	LogInWithEmail *bool `protobuf:"varint,14,opt,name=log_in_with_email,json=logInWithEmail,proto3,oneof" json:"log_in_with_email,omitempty"`
@@ -1184,7 +1184,7 @@ type User struct {
 	GoogleUserId *string `protobuf:"bytes,7,opt,name=google_user_id,json=googleUserId,proto3,oneof" json:"google_user_id,omitempty"`
 	// The Microsoft User ID, if the User has ever logged in with Microsoft.
 	MicrosoftUserId *string `protobuf:"bytes,8,opt,name=microsoft_user_id,json=microsoftUserId,proto3,oneof" json:"microsoft_user_id,omitempty"`
-	// The Github User ID, if the User has ever logged in with Github.
+	// The Github User ID, if the User has ever logged in with GitHub.
 	GithubUserId *string `protobuf:"bytes,12,opt,name=github_user_id,json=githubUserId,proto3,oneof" json:"github_user_id,omitempty"`
 	// Whether the User has an authenticator app set up.
 	HasAuthenticatorApp bool `protobuf:"varint,9,opt,name=has_authenticator_app,json=hasAuthenticatorApp,proto3" json:"has_authenticator_app,omitempty"`
