@@ -155,9 +155,9 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 		updates.MicrosoftOauthClientSecretCiphertext = encryptRes.CiphertextBlob
 	}
 
-	updates.MicrosoftOauthClientID = qProject.MicrosoftOauthClientID
-	if req.Project.MicrosoftOauthClientId != "" {
-		updates.MicrosoftOauthClientID = &req.Project.MicrosoftOauthClientId
+	updates.GithubOauthClientID = qProject.GithubOauthClientID
+	if req.Project.GithubOauthClientId != "" {
+		updates.GithubOauthClientID = &req.Project.GithubOauthClientId
 	}
 
 	updates.GithubOauthClientSecretCiphertext = qProject.GithubOauthClientSecretCiphertext
@@ -172,11 +172,6 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 		}
 
 		updates.GithubOauthClientSecretCiphertext = encryptRes.CiphertextBlob
-	}
-
-	updates.GithubOauthClientID = qProject.GithubOauthClientID
-	if req.Project.GithubOauthClientId != "" {
-		updates.GithubOauthClientID = &req.Project.GithubOauthClientId
 	}
 
 	updates.LogInWithGoogle = qProject.LogInWithGoogle
