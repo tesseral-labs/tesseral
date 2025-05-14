@@ -92,6 +92,15 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *frontendv1.UpdateOr
 		updates.LogInWithMicrosoft = *req.Organization.LogInWithMicrosoft
 	}
 
+	updates.LogInWithGithub = qOrg.LogInWithGithub
+	if req.Organization.LogInWithGithub != nil {
+		if *req.Organization.LogInWithGithub && !qProject.LogInWithGithub {
+			return nil, apierror.NewPermissionDeniedError("log in with github is not enabled for this project", fmt.Errorf("log in with github is not enabled for this project"))
+		}
+
+		updates.LogInWithGithub = *req.Organization.LogInWithGithub
+	}
+
 	updates.LogInWithEmail = qOrg.LogInWithEmail
 	if req.Organization.LogInWithEmail != nil {
 		if *req.Organization.LogInWithEmail && !qProject.LogInWithEmail {
@@ -193,6 +202,7 @@ func parseOrganization(qProject queries.Project, qOrg queries.Organization) *fro
 		UpdateTime:                timestamppb.New(*qOrg.UpdateTime),
 		LogInWithGoogle:           &qOrg.LogInWithGoogle,
 		LogInWithMicrosoft:        &qOrg.LogInWithMicrosoft,
+		LogInWithGithub:           &qOrg.LogInWithGithub,
 		LogInWithEmail:            &qOrg.LogInWithEmail,
 		LogInWithPassword:         &qOrg.LogInWithPassword,
 		LogInWithSaml:             &qOrg.LogInWithSaml,

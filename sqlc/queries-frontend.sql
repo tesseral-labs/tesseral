@@ -8,8 +8,8 @@ WHERE
     AND id = $2;
 
 -- name: CreateUser :one
-INSERT INTO users (id, organization_id, email, password_bcrypt, google_user_id, microsoft_user_id)
-    VALUES ($1, $2, $3, $4, $5, $6)
+INSERT INTO users (id, organization_id, email, password_bcrypt, google_user_id, microsoft_user_id, github_user_id)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
 RETURNING
     *;
 
@@ -40,6 +40,7 @@ SET
     display_name = $2,
     log_in_with_google = $3,
     log_in_with_microsoft = $4,
+    log_in_with_github = $10,
     log_in_with_email = $5,
     log_in_with_password = $6,
     log_in_with_authenticator_app = $7,

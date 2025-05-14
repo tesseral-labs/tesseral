@@ -37,6 +37,7 @@ type Store struct {
 	sessionSigningKeyKmsKeyID             string
 	googleOAuthClientSecretsKMSKeyID      string
 	microsoftOAuthClientSecretsKMSKeyID   string
+	githubOAuthClientSecretsKMSKeyID      string
 	userContentBaseUrl                    string
 	authAppsRootDomain                    string
 	tesseralDNSCloudflareZoneID           string
@@ -62,6 +63,7 @@ type NewStoreParams struct {
 	SessionSigningKeyKmsKeyID             string
 	GoogleOAuthClientSecretsKMSKeyID      string
 	MicrosoftOAuthClientSecretsKMSKeyID   string
+	GithubOAuthClientSecretsKMSKeyID      string
 	UserContentBaseUrl                    string
 	AuthAppsRootDomain                    string
 	TesseralDNSCloudflareZoneID           string
@@ -90,6 +92,7 @@ func New(p NewStoreParams) *Store {
 		sessionSigningKeyKmsKeyID:             p.SessionSigningKeyKmsKeyID,
 		googleOAuthClientSecretsKMSKeyID:      p.GoogleOAuthClientSecretsKMSKeyID,
 		microsoftOAuthClientSecretsKMSKeyID:   p.MicrosoftOAuthClientSecretsKMSKeyID,
+		githubOAuthClientSecretsKMSKeyID:      p.GithubOAuthClientSecretsKMSKeyID,
 		userContentBaseUrl:                    p.UserContentBaseUrl,
 		authAppsRootDomain:                    p.AuthAppsRootDomain,
 		tesseralDNSCloudflareZoneID:           p.TesseralDNSCloudflareZoneID,

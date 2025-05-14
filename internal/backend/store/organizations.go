@@ -49,6 +49,10 @@ func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrg
 		return nil, apierror.NewPermissionDeniedError("log in with microsoft is not enabled for this project", fmt.Errorf("log in with microsoft is not enabled for this project"))
 	}
 
+	if derefOrEmpty(req.Organization.LogInWithGithub) && !qProject.LogInWithGithub {
+		return nil, apierror.NewPermissionDeniedError("log in with github is not enabled for this project", fmt.Errorf("log in with github is not enabled for this project"))
+	}
+
 	if derefOrEmpty(req.Organization.LogInWithEmail) && !qProject.LogInWithEmail {
 		return nil, apierror.NewPermissionDeniedError("log in with email is not enabled for this project", fmt.Errorf("log in with email is not enabled for this project"))
 	}
@@ -80,6 +84,7 @@ func (s *Store) CreateOrganization(ctx context.Context, req *backendv1.CreateOrg
 		DisplayName:               req.Organization.DisplayName,
 		LogInWithGoogle:           derefOrEmpty(req.Organization.LogInWithGoogle),
 		LogInWithMicrosoft:        derefOrEmpty(req.Organization.LogInWithMicrosoft),
+		LogInWithGithub:           derefOrEmpty(req.Organization.LogInWithGithub),
 		LogInWithEmail:            derefOrEmpty(req.Organization.LogInWithEmail),
 		LogInWithPassword:         derefOrEmpty(req.Organization.LogInWithPassword),
 		LogInWithSaml:             derefOrEmpty(req.Organization.LogInWithSaml),
@@ -238,6 +243,15 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *backendv1.UpdateOrg
 		}
 
 		updates.LogInWithMicrosoft = *req.Organization.LogInWithMicrosoft
+	}
+
+	updates.LogInWithGithub = qOrg.LogInWithGithub
+	if req.Organization.LogInWithGithub != nil {
+		if *req.Organization.LogInWithGithub && !qProject.LogInWithGithub {
+			return nil, apierror.NewPermissionDeniedError("log in with github is not enabled for this project", fmt.Errorf("log in with github is not enabled for this project"))
+		}
+
+		updates.LogInWithGithub = *req.Organization.LogInWithGithub
 	}
 
 	updates.LogInWithEmail = qOrg.LogInWithEmail
@@ -446,6 +460,7 @@ func parseOrganization(qProject queries.Project, qOrg queries.Organization) *bac
 		UpdateTime:                timestamppb.New(*qOrg.UpdateTime),
 		LogInWithGoogle:           &qOrg.LogInWithGoogle,
 		LogInWithMicrosoft:        &qOrg.LogInWithMicrosoft,
+		LogInWithGithub:           &qOrg.LogInWithGithub,
 		LogInWithEmail:            &qOrg.LogInWithEmail,
 		LogInWithPassword:         &qOrg.LogInWithPassword,
 		LogInWithSaml:             &qOrg.LogInWithSaml,

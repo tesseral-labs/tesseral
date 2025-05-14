@@ -155,6 +155,25 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 		updates.MicrosoftOauthClientSecretCiphertext = encryptRes.CiphertextBlob
 	}
 
+	updates.GithubOauthClientID = qProject.GithubOauthClientID
+	if req.Project.GithubOauthClientId != "" {
+		updates.GithubOauthClientID = &req.Project.GithubOauthClientId
+	}
+
+	updates.GithubOauthClientSecretCiphertext = qProject.GithubOauthClientSecretCiphertext
+	if req.Project.GithubOauthClientSecret != "" {
+		encryptRes, err := s.kms.Encrypt(ctx, &kms.EncryptInput{
+			KeyId:               &s.githubOAuthClientSecretsKMSKeyID,
+			Plaintext:           []byte(req.Project.GithubOauthClientSecret),
+			EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
+		})
+		if err != nil {
+			return nil, fmt.Errorf("encrypt github oauth client secret: %w", err)
+		}
+
+		updates.GithubOauthClientSecretCiphertext = encryptRes.CiphertextBlob
+	}
+
 	updates.LogInWithGoogle = qProject.LogInWithGoogle
 	if req.Project.LogInWithGoogle != nil {
 		// todo: validate that google is configured?
@@ -165,6 +184,12 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 	if req.Project.LogInWithMicrosoft != nil {
 		// todo: validate that microsoft is configured?
 		updates.LogInWithMicrosoft = *req.Project.LogInWithMicrosoft
+	}
+
+	updates.LogInWithGithub = qProject.LogInWithGithub
+	if req.Project.LogInWithGithub != nil {
+		// todo: validate that github is configured?
+		updates.LogInWithGithub = *req.Project.LogInWithGithub
 	}
 
 	updates.LogInWithEmail = qProject.LogInWithEmail
@@ -252,6 +277,13 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 		slog.InfoContext(ctx, "disable_project_organizations_log_in_with_microsoft")
 		if err := q.DisableProjectOrganizationsLogInWithMicrosoft(ctx, authn.ProjectID(ctx)); err != nil {
 			return nil, fmt.Errorf("disable project organizations log in with Microsoft: %w", err)
+		}
+	}
+
+	if !qUpdatedProject.LogInWithGithub {
+		slog.InfoContext(ctx, "disable_project_organizations_log_in_with_github")
+		if err := q.DisableProjectOrganizationsLogInWithGithub(ctx, authn.ProjectID(ctx)); err != nil {
+			return nil, fmt.Errorf("disable project organizations log in with Github: %w", err)
 		}
 	}
 
@@ -350,6 +382,7 @@ func (s *Store) parseProject(qProject *queries.Project, qProjectTrustedDomains [
 		UpdateTime:                 timestamppb.New(*qProject.UpdateTime),
 		LogInWithGoogle:            &qProject.LogInWithGoogle,
 		LogInWithMicrosoft:         &qProject.LogInWithMicrosoft,
+		LogInWithGithub:            &qProject.LogInWithGithub,
 		LogInWithEmail:             &qProject.LogInWithEmail,
 		LogInWithPassword:          &qProject.LogInWithPassword,
 		LogInWithSaml:              &qProject.LogInWithSaml,
@@ -359,6 +392,8 @@ func (s *Store) parseProject(qProject *queries.Project, qProjectTrustedDomains [
 		GoogleOauthClientSecret:    "", // intentionally left blank
 		MicrosoftOauthClientId:     derefOrEmpty(qProject.MicrosoftOauthClientID),
 		MicrosoftOauthClientSecret: "", // intentionally left blank
+		GithubOauthClientId:        derefOrEmpty(qProject.GithubOauthClientID),
+		GithubOauthClientSecret:    "", // intentionally left blank
 		VaultDomain:                qProject.VaultDomain,
 		VaultDomainCustom:          qProject.VaultDomain != fmt.Sprintf("%s.%s", strings.ReplaceAll(idformat.Project.Format(qProject.ID), "_", "-"), s.authAppsRootDomain),
 		TrustedDomains:             trustedDomains,

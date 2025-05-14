@@ -20,14 +20,14 @@ RETURNING
     *;
 
 -- name: CreateVerifiedEmail :one
-INSERT INTO oauth_verified_emails (id, project_id, email, google_user_id, microsoft_user_id)
-    VALUES ($1, $2, $3, $4, $5)
+INSERT INTO oauth_verified_emails (id, project_id, email, google_user_id, microsoft_user_id, github_user_id)
+    VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING
     *;
 
 -- name: CreateIntermediateSession :one
-INSERT INTO intermediate_sessions (id, project_id, expire_time, email, google_user_id, microsoft_user_id, secret_token_sha256, primary_auth_factor, email_verification_challenge_completed, relayed_session_state)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+INSERT INTO intermediate_sessions (id, project_id, expire_time, email, google_user_id, microsoft_user_id, github_user_id, secret_token_sha256, primary_auth_factor, email_verification_challenge_completed, relayed_session_state)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
 RETURNING
     *;
 
@@ -58,8 +58,8 @@ RETURNING
     *;
 
 -- name: CreateOrganization :one
-INSERT INTO organizations (id, project_id, display_name, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_email, scim_enabled)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+INSERT INTO organizations (id, project_id, display_name, log_in_with_google, log_in_with_microsoft, log_in_with_github, log_in_with_password, log_in_with_email, scim_enabled)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 RETURNING
     *;
 
@@ -70,8 +70,8 @@ RETURNING
     *;
 
 -- name: CreateUser :one
-INSERT INTO users (id, organization_id, email, display_name, profile_picture_url, google_user_id, microsoft_user_id, is_owner, password_bcrypt)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+INSERT INTO users (id, organization_id, email, display_name, profile_picture_url, google_user_id, microsoft_user_id, github_user_id, is_owner, password_bcrypt)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
 RETURNING
     *;
 
@@ -195,7 +195,9 @@ WHERE
         OR (users.google_user_id IS NOT NULL
             AND users.google_user_id = $3)
         OR (users.microsoft_user_id IS NOT NULL
-            AND users.microsoft_user_id = $4))
+            AND users.microsoft_user_id = $4)
+        OR (users.github_user_id IS NOT NULL
+            AND users.github_user_id = $5))
     AND NOT organizations.logins_disabled;
 
 -- name: ListOrganizationsByMatchingUserInvite :many
@@ -686,4 +688,48 @@ FROM
     project_webhook_settings
 WHERE
     project_id = $1;
+
+-- name: UpdateIntermediateSessionGithubOAuthStateSHA256 :one
+UPDATE
+    intermediate_sessions
+SET
+    github_oauth_state_sha256 = $1
+WHERE
+    id = $2
+RETURNING
+    *;
+
+-- name: UpdateIntermediateSessionGithubDetails :one
+UPDATE
+    intermediate_sessions
+SET
+    email = $2,
+    github_user_id = $3,
+    user_display_name = $4,
+    profile_picture_url = $5
+WHERE
+    id = $1
+RETURNING
+    *;
+
+-- name: GetEmailVerifiedByGithubUserID :one
+SELECT
+    EXISTS (
+        SELECT
+            *
+        FROM
+            oauth_verified_emails
+        WHERE
+            project_id = $1
+            AND email = $2
+            AND github_user_id = $3);
+
+-- name: GetOrganizationUserByGithubUserID :one
+SELECT
+    *
+FROM
+    users
+WHERE
+    organization_id = $1
+    AND github_user_id = $2;
 

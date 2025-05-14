@@ -1327,6 +1327,8 @@ components:
                     type: boolean
                 logInWithMicrosoft:
                     type: boolean
+                logInWithGithub:
+                    type: boolean
                 logInWithEmail:
                     type: boolean
                 logInWithPassword:
@@ -1405,6 +1407,8 @@ components:
                 logInWithGoogle:
                     type: boolean
                 logInWithMicrosoft:
+                    type: boolean
+                logInWithGithub:
                     type: boolean
                 logInWithEmail:
                     type: boolean
@@ -1611,6 +1615,8 @@ components:
                 googleUserId:
                     type: string
                 microsoftUserId:
+                    type: string
+                githubUserId:
                     type: string
                 hasAuthenticatorApp:
                     type: boolean

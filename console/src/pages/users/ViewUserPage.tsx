@@ -162,6 +162,12 @@ export const ViewUserPage = () => {
                     {getUserResponse?.user?.microsoftUserId || '-'}
                   </DetailsGridValue>
                 </DetailsGridEntry>
+                <DetailsGridEntry>
+                  <DetailsGridKey>GitHub User ID</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getUserResponse?.user?.githubUserId || '-'}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
               </DetailsGridColumn>
               <DetailsGridColumn>
                 <DetailsGridEntry>
@@ -446,6 +452,7 @@ const schema = z.object({
   owner: z.boolean(),
   googleUserId: z.string().optional(),
   microsoftUserId: z.string().optional(),
+  githubUserId: z.string().optional(),
   displayName: z.string().optional(),
   profilePictureUrl: z.string().optional(),
 });
@@ -619,6 +626,27 @@ const EditUserSettingsButton: FC = () => {
                   </FormControl>
                   <FormDescription>
                     The User's Microsoft-assigned ID. Optional.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="githubUserId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>GitHub User ID</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      placeholder="GitHub User ID"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    The User's GitHub-assigned ID. Optional.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

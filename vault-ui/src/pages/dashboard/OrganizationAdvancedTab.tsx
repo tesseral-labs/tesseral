@@ -111,6 +111,17 @@ function AuthenticationMethodsCard() {
             </div>
           )}
 
+          {getProjectResponse?.project?.logInWithGithub && (
+            <div>
+              <div className="text-sm font-medium">Log in with GitHub</div>
+              <div className="text-sm">
+                {getOrganizationResponse?.organization?.logInWithGithub
+                  ? "Enabled"
+                  : "Disabled"}
+              </div>
+            </div>
+          )}
+
           {getProjectResponse?.project?.logInWithEmail && (
             <div>
               <div className="text-sm font-medium">

@@ -62,6 +62,20 @@ service IntermediateService {
     };
   }
 
+  rpc GetGithubOAuthRedirectURL(GetGithubOAuthRedirectURLRequest) returns (GetGithubOAuthRedirectURLResponse) {
+    option (google.api.http) = {
+      post: "/intermediate/v1/github-oauth-redirect-url"
+      body: "*"
+    };
+  }
+
+  rpc RedeemGithubOAuthCode(RedeemGithubOAuthCodeRequest) returns (RedeemGithubOAuthCodeResponse) {
+    option (google.api.http) = {
+      post: "/intermediate/v1/redeem-github-oauth-code"
+      body: "*"
+    };
+  }
+
   rpc GetGoogleOAuthRedirectURL(GetGoogleOAuthRedirectURLRequest) returns (GetGoogleOAuthRedirectURLResponse) {
     option (google.api.http) = {
       post: "/intermediate/v1/google-oauth-redirect-url"
@@ -209,6 +223,7 @@ message IntermediateSession {
   string google_hosted_domain = 6;
   string microsoft_user_id = 7;
   string microsoft_tenant_id = 8;
+  string github_user_id = 17;
   string organization_id = 9;
   bool password_verified = 10;
   bool authenticator_app_verified = 14;
@@ -223,6 +238,7 @@ enum PrimaryAuthFactor {
   PRIMARY_AUTH_FACTOR_EMAIL = 1;
   PRIMARY_AUTH_FACTOR_GOOGLE = 2;
   PRIMARY_AUTH_FACTOR_MICROSOFT = 3;
+  PRIMARY_AUTH_FACTOR_GITHUB = 4;
 }
 
 message Settings {
@@ -238,6 +254,7 @@ message Settings {
   string log_in_layout = 11;
   bool log_in_with_email = 12;
   bool log_in_with_google = 13;
+  bool log_in_with_github = 23;
   bool log_in_with_microsoft = 14;
   bool log_in_with_password = 15;
   bool log_in_with_saml = 16;
@@ -314,6 +331,22 @@ message ExchangeRelayedSessionTokenForSessionResponse {
   string relayed_session_state = 3;
 }
 
+message GetGithubOAuthRedirectURLRequest {
+  string redirect_url = 1;
+}
+
+message GetGithubOAuthRedirectURLResponse {
+  string url = 1;
+}
+
+message RedeemGithubOAuthCodeRequest {
+  string code = 1;
+  string state = 2;
+  string redirect_url = 3;
+}
+
+message RedeemGithubOAuthCodeResponse {}
+
 message GetGoogleOAuthRedirectURLRequest {
   string redirect_url = 1;
 }
@@ -352,6 +385,7 @@ message Organization {
   bool log_in_with_email = 3;
   bool log_in_with_google = 4;
   bool log_in_with_microsoft = 5;
+  bool log_in_with_github = 16;
   bool log_in_with_password = 6;
   bool log_in_with_saml = 7;
   bool log_in_with_authenticator_app = 8;

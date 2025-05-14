@@ -33,6 +33,7 @@ import {
 } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
 
 const schema = z.object({
+  logInWithGithub: z.boolean(),
   logInWithGoogle: z.boolean(),
   logInWithMicrosoft: z.boolean(),
   logInWithEmail: z.boolean(),
@@ -46,6 +47,7 @@ export function EditAuthenticationMethodsButton() {
     resolver: zodResolver(schema),
     defaultValues: {
       logInWithEmail: false,
+      logInWithGithub: false,
       logInWithGoogle: false,
       logInWithMicrosoft: false,
       logInWithPassword: false,
@@ -58,6 +60,7 @@ export function EditAuthenticationMethodsButton() {
     if (getOrganizationResponse?.organization) {
       form.reset({
         logInWithEmail: getOrganizationResponse.organization.logInWithEmail,
+        logInWithGithub: getOrganizationResponse.organization.logInWithGithub,
         logInWithGoogle: getOrganizationResponse.organization.logInWithGoogle,
         logInWithMicrosoft:
           getOrganizationResponse.organization.logInWithMicrosoft,
@@ -74,6 +77,7 @@ export function EditAuthenticationMethodsButton() {
     await updateOrganizationAsync({
       organization: {
         logInWithEmail: values.logInWithEmail,
+        logInWithGithub: values.logInWithGithub,
         logInWithGoogle: values.logInWithGoogle,
         logInWithMicrosoft: values.logInWithMicrosoft,
         logInWithPassword: values.logInWithPassword,
@@ -144,6 +148,30 @@ export function EditAuthenticationMethodsButton() {
                     </FormControl>
                     <FormDescription>
                       Users authenticate by signing in with their Microsoft
+                      account.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+
+            {getProjectResponse?.project?.logInWithGithub && (
+              <FormField
+                control={form.control}
+                name="logInWithGithub"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Log in with GitHub</FormLabel>
+                    <FormControl>
+                      <Switch
+                        className="block"
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Users authenticate by signing in with their GitHub
                       account.
                     </FormDescription>
                     <FormMessage />

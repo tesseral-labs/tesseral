@@ -145,13 +145,14 @@ func (s *Store) VerifyEmailChallenge(ctx context.Context, req *intermediatev1.Ve
 		return nil, fmt.Errorf("update intermediate session email verified: %w", err)
 	}
 
-	if qIntermediateSession.GoogleUserID != nil || qIntermediateSession.MicrosoftUserID != nil {
+	if qIntermediateSession.GoogleUserID != nil || qIntermediateSession.MicrosoftUserID != nil || qIntermediateSession.GithubUserID != nil {
 		if _, err := q.CreateVerifiedEmail(ctx, queries.CreateVerifiedEmailParams{
 			ID:              uuid.New(),
 			ProjectID:       authn.ProjectID(ctx),
 			Email:           *qIntermediateSession.Email,
 			GoogleUserID:    qIntermediateSession.GoogleUserID,
 			MicrosoftUserID: qIntermediateSession.MicrosoftUserID,
+			GithubUserID:    qIntermediateSession.GithubUserID,
 		}); err != nil {
 			return nil, fmt.Errorf("create verified email: %w", err)
 		}

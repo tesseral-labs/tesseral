@@ -172,6 +172,8 @@ function isPrimaryAuthFactorAcceptable(
       return organization.logInWithGoogle;
     case PrimaryAuthFactor.MICROSOFT:
       return organization.logInWithMicrosoft;
+    case PrimaryAuthFactor.GITHUB:
+      return organization.logInWithGithub;
     default:
       return false;
   }

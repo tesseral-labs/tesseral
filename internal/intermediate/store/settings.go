@@ -70,6 +70,7 @@ func (s *Store) GetSettings(ctx context.Context, req *intermediatev1.GetSettings
 			LogInLayout:                string(qProjectUISettings.LogInLayout),
 			LogInWithEmail:             qProject.LogInWithEmail,
 			LogInWithGoogle:            qProject.LogInWithGoogle,
+			LogInWithGithub:            qProject.LogInWithGithub,
 			LogInWithMicrosoft:         qProject.LogInWithMicrosoft,
 			LogInWithPassword:          qProject.LogInWithPassword,
 			LogInWithSaml:              qProject.LogInWithSaml,

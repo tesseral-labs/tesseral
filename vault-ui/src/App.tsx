@@ -41,6 +41,7 @@ import { VerifySecondaryFactorPage } from "@/pages/login/VerifySecondaryFactorPa
 
 import { DashboardLayout } from "./pages/dashboard/DashboardLayout";
 import { UserSettingsPage } from "./pages/dashboard/UserSettingsPage";
+import { GithubOAuthCallbackPage } from "./pages/login/GithubOAuthCallbackPage";
 
 const queryClient = new QueryClient();
 
@@ -68,6 +69,10 @@ function AppWithRoutes() {
 
             <Route path="" element={<LoginFlowLayout />}>
               <Route path="verify-email" element={<VerifyEmailPage />} />
+              <Route
+                path="github-oauth-callback"
+                element={<GithubOAuthCallbackPage />}
+              />
               <Route
                 path="google-oauth-callback"
                 element={<GoogleOAuthCallbackPage />}

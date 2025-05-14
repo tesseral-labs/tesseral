@@ -128,6 +128,7 @@ func (s *Store) CreateUser(ctx context.Context, req *backendv1.CreateUserRequest
 		IsOwner:         req.User.GetOwner(),
 		GoogleUserID:    req.User.GoogleUserId,
 		MicrosoftUserID: req.User.MicrosoftUserId,
+		GithubUserID:    req.User.GithubUserId,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("create user: %w", err)
@@ -191,6 +192,11 @@ func (s *Store) UpdateUser(ctx context.Context, req *backendv1.UpdateUserRequest
 	updates.MicrosoftUserID = qUser.MicrosoftUserID
 	if req.User.MicrosoftUserId != nil {
 		updates.MicrosoftUserID = refOrNil(*req.User.MicrosoftUserId)
+	}
+
+	updates.GithubUserID = qUser.GithubUserID
+	if req.User.GithubUserId != nil {
+		updates.GithubUserID = refOrNil(*req.User.GithubUserId)
 	}
 
 	updates.DisplayName = qUser.DisplayName
@@ -293,6 +299,7 @@ func parseUser(qUser queries.User) *backendv1.User {
 		Owner:               &qUser.IsOwner,
 		GoogleUserId:        qUser.GoogleUserID,
 		MicrosoftUserId:     qUser.MicrosoftUserID,
+		GithubUserId:        qUser.GithubUserID,
 		HasAuthenticatorApp: qUser.AuthenticatorAppSecretCiphertext != nil,
 		DisplayName:         qUser.DisplayName,
 		ProfilePictureUrl:   qUser.ProfilePictureUrl,
