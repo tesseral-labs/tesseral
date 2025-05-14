@@ -79,8 +79,8 @@ function CenteredSignupPage({ children }: { children?: React.ReactNode }) {
 
 function SideBySideSignupPage({ children }: { children?: React.ReactNode }) {
   return (
-    <div className="bg-background w-full min-h-screen grid grid-cols-2 gap-0">
-      <div className="bg-primary" />
+    <div className="bg-background w-full min-h-screen grid grid-cols-1 md:grid-cols-2 gap-0">
+      <div className="bg-primary hidden md:block" />
       <div className="flex flex-col justify-center items-center p-4">
         <div className="max-w-sm w-full mx-auto">{children}</div>
       </div>
