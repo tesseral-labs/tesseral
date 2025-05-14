@@ -49,6 +49,7 @@ func (s *Store) CreateOrganization(ctx context.Context, req *intermediatev1.Crea
 		DisplayName:        req.DisplayName,
 		LogInWithEmail:     qProject.LogInWithEmail,
 		LogInWithGoogle:    qProject.LogInWithGoogle,
+		LogInWithGithub:    qProject.LogInWithGithub,
 		LogInWithMicrosoft: qProject.LogInWithMicrosoft,
 		LogInWithPassword:  qProject.LogInWithPassword,
 		ScimEnabled:        false,
