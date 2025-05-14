@@ -8,6 +8,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { z } from "zod";
 
 import { Title } from "@/components/Title";
+import { GithubIcon } from "@/components/login/GithubIcon";
 import { GoogleIcon } from "@/components/login/GoogleIcon";
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
 import { MicrosoftIcon } from "@/components/login/MicrosoftIcon";
@@ -30,6 +31,7 @@ import {
 import { Input } from "@/components/ui/input";
 import {
   createIntermediateSession,
+  getGithubOAuthRedirectURL,
   getGoogleOAuthRedirectURL,
   getMicrosoftOAuthRedirectURL,
   issueEmailVerificationChallenge,
@@ -145,6 +147,18 @@ function SignupPageContents() {
     window.location.href = url;
   }
 
+  const { mutateAsync: getGithubOAuthRedirectURLAsync } = useMutation(
+    getGithubOAuthRedirectURL,
+  );
+
+  async function handleLogInWithGithub() {
+    await createIntermediateSessionWithRelayedSessionState();
+    const { url } = await getGithubOAuthRedirectURLAsync({
+      redirectUrl: `${window.location.origin}/github-oauth-callback`,
+    });
+    window.location.href = url;
+  }
+
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -190,7 +204,9 @@ function SignupPageContents() {
   );
 
   const hasAboveFoldMethod =
-    settings.logInWithGoogle || settings.logInWithMicrosoft;
+    settings.logInWithGoogle ||
+    settings.logInWithMicrosoft ||
+    settings.logInWithGithub;
   const hasBelowFoldMethod = settings.logInWithEmail || settings.logInWithSaml;
 
   return (
@@ -220,6 +236,16 @@ function SignupPageContents() {
             >
               <MicrosoftIcon />
               Sign up with Microsoft
+            </Button>
+          )}
+          {settings.logInWithGithub && (
+            <Button
+              className="w-full"
+              variant="outline"
+              onClick={handleLogInWithGithub}
+            >
+              <GithubIcon />
+              Sign up with Github
             </Button>
           )}
         </div>
