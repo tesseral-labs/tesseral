@@ -245,7 +245,7 @@ function LoginPageContents() {
               onClick={handleLogInWithGithub}
             >
               <GithubIcon />
-              Log in with Github
+              Log in with GitHub
             </Button>
           )}
         </div>

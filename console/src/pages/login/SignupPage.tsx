@@ -209,7 +209,7 @@ function SignupPageContents() {
               onClick={handleLogInWithGithub}
             >
               <GithubIcon />
-              Sign up with Github
+              Sign up with GitHub
             </Button>
           )}
         </div>

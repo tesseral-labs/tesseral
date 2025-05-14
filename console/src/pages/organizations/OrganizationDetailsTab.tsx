@@ -93,7 +93,7 @@ export const OrganizationDetailsTab = () => {
 
               {getProjectResponse?.project?.logInWithGithub && (
                 <DetailsGridEntry>
-                  <DetailsGridKey>Log in with Github</DetailsGridKey>
+                  <DetailsGridKey>Log in with GitHub</DetailsGridKey>
                   <DetailsGridValue>
                     {getOrganizationResponse?.organization?.logInWithGithub
                       ? 'Enabled'

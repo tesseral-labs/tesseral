@@ -162,7 +162,7 @@ export function EditAuthenticationMethodsButton() {
                 name="logInWithGithub"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Log in with Github</FormLabel>
+                    <FormLabel>Log in with GitHub</FormLabel>
                     <FormControl>
                       <Switch
                         className="block"
@@ -171,7 +171,7 @@ export function EditAuthenticationMethodsButton() {
                       />
                     </FormControl>
                     <FormDescription>
-                      Users authenticate by signing in with their Github
+                      Users authenticate by signing in with their GitHub
                       account.
                     </FormDescription>
                     <FormMessage />

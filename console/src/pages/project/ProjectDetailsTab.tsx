@@ -305,9 +305,9 @@ export const ProjectDetailsTab = () => {
       <Card>
         <CardHeader className="flex-row justify-between items-center">
           <div className="flex flex-col space-y-1 5">
-            <CardTitle>Github settings</CardTitle>
+            <CardTitle>GitHub settings</CardTitle>
             <CardDescription>
-              Settings for "Log in with Github" in your project.
+              Settings for "Log in with GitHub" in your project.
             </CardDescription>
           </div>
           <EditProjectGithubSettingsButton />
@@ -326,7 +326,7 @@ export const ProjectDetailsTab = () => {
             </DetailsGridColumn>
             <DetailsGridColumn>
               <DetailsGridEntry>
-                <DetailsGridKey>Github OAuth Client ID</DetailsGridKey>
+                <DetailsGridKey>GitHub OAuth Client ID</DetailsGridKey>
                 <DetailsGridValue>
                   {getProjectResponse?.project?.githubOauthClientId || '-'}
                 </DetailsGridValue>
@@ -334,7 +334,7 @@ export const ProjectDetailsTab = () => {
             </DetailsGridColumn>
             <DetailsGridColumn>
               <DetailsGridEntry>
-                <DetailsGridKey>Github OAuth Client Secret</DetailsGridKey>
+                <DetailsGridKey>GitHub OAuth Client Secret</DetailsGridKey>
                 <DetailsGridValue>
                   {getProjectResponse?.project?.githubOauthClientId ? (
                     <div className="text-muted-foreground">Encrypted</div>

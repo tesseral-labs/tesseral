@@ -163,7 +163,7 @@ export const ViewUserPage = () => {
                   </DetailsGridValue>
                 </DetailsGridEntry>
                 <DetailsGridEntry>
-                  <DetailsGridKey>Github User ID</DetailsGridKey>
+                  <DetailsGridKey>GitHub User ID</DetailsGridKey>
                   <DetailsGridValue>
                     {getUserResponse?.user?.githubUserId || '-'}
                   </DetailsGridValue>
@@ -637,16 +637,16 @@ const EditUserSettingsButton: FC = () => {
               name="githubUserId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Github User ID</FormLabel>
+                  <FormLabel>GitHub User ID</FormLabel>
                   <FormControl>
                     <Input
                       type="text"
-                      placeholder="Github User ID"
+                      placeholder="GitHub User ID"
                       {...field}
                     />
                   </FormControl>
                   <FormDescription>
-                    The User's Github-assigned ID. Optional.
+                    The User's GitHub-assigned ID. Optional.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

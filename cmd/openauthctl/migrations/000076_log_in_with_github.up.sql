@@ -21,7 +21,7 @@ alter table oauth_verified_emails
     add constraint oauth_user_ids_not_all_blank check (
         google_user_id is not null or
         microsoft_user_id is not null or
-        github_user_id is not null  -- This is redundant; example placeholder
+        github_user_id is not null
     );
 
 alter type primary_auth_factor add value 'github';

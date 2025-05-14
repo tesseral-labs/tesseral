@@ -56,11 +56,6 @@ export function useRedirectNextLoginFlowPage(): () => void {
       (org) => org.id === intermediateSession.organizationId,
     )!;
 
-    console.log(
-      'primaryAuthFactor',
-      whoamiResponse?.intermediateSession?.primaryAuthFactor,
-    );
-
     // authenticate another way if our current primary auth factor is
     // unacceptable
     if (

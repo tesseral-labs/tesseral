@@ -72,7 +72,7 @@ export function EditProjectGithubSettingsButton() {
       ) {
         form.setError('logInWithGithub', {
           message:
-            'At least one of Log in with Email, Log in with Microsoft, Log in with Google, or Log in with Github must be enabled.',
+            'At least one of Log in with Email, Log in with Microsoft, Log in with Google, or Log in with GitHub must be enabled.',
         });
         return;
       }
@@ -86,7 +86,7 @@ export function EditProjectGithubSettingsButton() {
       },
     });
     await refetch();
-    toast.success('Github settings updated');
+    toast.success('GitHub settings updated');
     setOpen(false);
   };
 
@@ -97,9 +97,9 @@ export function EditProjectGithubSettingsButton() {
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Edit Github Settings</AlertDialogTitle>
+          <AlertDialogTitle>Edit GitHub Settings</AlertDialogTitle>
           <AlertDialogDescription>
-            Edit the settings for "Log in with Github" in your project.
+            Edit the settings for "Log in with GitHub" in your project.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <Form {...form}>
@@ -112,7 +112,7 @@ export function EditProjectGithubSettingsButton() {
               name="logInWithGithub"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Log in with Github</FormLabel>
+                  <FormLabel>Log in with GitHub</FormLabel>
                   <FormControl>
                     <Switch
                       className="block"
@@ -121,7 +121,7 @@ export function EditProjectGithubSettingsButton() {
                     />
                   </FormControl>
                   <FormDescription>
-                    Whether Users can log in using their Github account.
+                    Whether Users can log in using their GitHub account.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -133,12 +133,12 @@ export function EditProjectGithubSettingsButton() {
               name="githubOAuthClientId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Github OAuth Client ID</FormLabel>
+                  <FormLabel>GitHub OAuth Client ID</FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
                   <FormDescription>
-                    Your company's Github OAuth Client ID.
+                    Your company's GitHub OAuth Client ID.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -150,12 +150,12 @@ export function EditProjectGithubSettingsButton() {
               name="githubOAuthClientSecret"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Github OAuth Client Secret</FormLabel>
+                  <FormLabel>GitHub OAuth Client Secret</FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
                   <FormDescription>
-                    Your company's Github OAuth Client Secret.
+                    Your company's GitHub OAuth Client Secret.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

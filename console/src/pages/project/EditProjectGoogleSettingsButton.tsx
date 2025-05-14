@@ -72,7 +72,7 @@ export function EditProjectGoogleSettingsButton() {
       ) {
         form.setError('logInWithGoogle', {
           message:
-            'At least one of Log in with Email, Log in with Google, Log in with Microsoft, or Log in with Github must be enabled.',
+            'At least one of Log in with Email, Log in with Google, Log in with Microsoft, or Log in with GitHub must be enabled.',
         });
         return;
       }
