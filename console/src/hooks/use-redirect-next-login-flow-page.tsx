@@ -1,17 +1,17 @@
-import { useMutation, useQuery } from "@connectrpc/connect-query";
-import { useCallback } from "react";
-import { useNavigate } from "react-router";
+import { useMutation, useQuery } from '@connectrpc/connect-query';
+import { useCallback } from 'react';
+import { useNavigate } from 'react-router';
 
 import {
   issueEmailVerificationChallenge,
   listOrganizations,
   whoami,
-} from "@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery";
+} from '@/gen/tesseral/intermediate/v1/intermediate-IntermediateService_connectquery';
 import {
   IntermediateSession,
   PrimaryAuthFactor,
-} from "@/gen/tesseral/intermediate/v1/intermediate_pb";
-import { Organization } from "@/gen/tesseral/intermediate/v1/intermediate_pb";
+} from '@/gen/tesseral/intermediate/v1/intermediate_pb';
+import { Organization } from '@/gen/tesseral/intermediate/v1/intermediate_pb';
 
 export function useRedirectNextLoginFlowPage(): () => void {
   // don't eagerly fetch; we won't use their initial values
@@ -55,6 +55,11 @@ export function useRedirectNextLoginFlowPage(): () => void {
     const organization = listOrganizationsResponse!.organizations.find(
       (org) => org.id === intermediateSession.organizationId,
     )!;
+
+    console.log(
+      'primaryAuthFactor',
+      whoamiResponse?.intermediateSession?.primaryAuthFactor,
+    );
 
     // authenticate another way if our current primary auth factor is
     // unacceptable
@@ -172,6 +177,8 @@ function isPrimaryAuthFactorAcceptable(
       return organization.logInWithGoogle;
     case PrimaryAuthFactor.MICROSOFT:
       return organization.logInWithMicrosoft;
+    case PrimaryAuthFactor.GITHUB:
+      return organization.logInWithGithub;
     default:
       return false;
   }

@@ -283,6 +283,14 @@ func validateAuthRequirementsSatisfiedInner(qIntermediateSession queries.Interme
 		if qOrg.LogInWithMicrosoft {
 			return nil
 		}
+	case queries.PrimaryAuthFactorGithub:
+		if qIntermediateSession.GithubUserID == nil {
+			panic(fmt.Errorf("intermediate session missing github user id: %v", qIntermediateSession.ID))
+		}
+
+		if qOrg.LogInWithGithub {
+			return nil
+		}
 	}
 
 	return apierror.NewFailedPreconditionError("no authentication method satisfied", nil)

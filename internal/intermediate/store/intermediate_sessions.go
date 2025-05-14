@@ -76,6 +76,20 @@ func (s *Store) getIntermediateSessionEmailVerified(ctx context.Context, q *quer
 			return true, nil
 		}
 	}
+	if qIntermediateSession.GithubUserID != nil {
+		qVerifiedGithubUserID, err := q.GetEmailVerifiedByGithubUserID(ctx, queries.GetEmailVerifiedByGithubUserIDParams{
+			ProjectID:    authn.ProjectID(ctx),
+			Email:        *qIntermediateSession.Email,
+			GithubUserID: qIntermediateSession.GithubUserID,
+		})
+		if err != nil {
+			return false, fmt.Errorf("get email verified by github user id: %w", err)
+		}
+
+		if qVerifiedGithubUserID {
+			return true, nil
+		}
+	}
 
 	if qIntermediateSession.EmailVerificationChallengeCompleted {
 		return true, nil
@@ -113,6 +127,8 @@ func parseIntermediateSession(qIntermediateSession queries.IntermediateSession, 
 			primaryAuthFactor = intermediatev1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_GOOGLE
 		case queries.PrimaryAuthFactorMicrosoft:
 			primaryAuthFactor = intermediatev1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_MICROSOFT
+		case queries.PrimaryAuthFactorGithub:
+			primaryAuthFactor = intermediatev1.PrimaryAuthFactor_PRIMARY_AUTH_FACTOR_GITHUB
 		}
 	}
 

@@ -92,7 +92,7 @@ func New(p NewStoreParams) *Store {
 		sessionSigningKeyKmsKeyID:             p.SessionSigningKeyKmsKeyID,
 		googleOAuthClientSecretsKMSKeyID:      p.GoogleOAuthClientSecretsKMSKeyID,
 		microsoftOAuthClientSecretsKMSKeyID:   p.MicrosoftOAuthClientSecretsKMSKeyID,
-		githubOAuthClientSecretsKMSKeyID:      p.GoogleOAuthClientSecretsKMSKeyID,
+		githubOAuthClientSecretsKMSKeyID:      p.GithubOAuthClientSecretsKMSKeyID,
 		userContentBaseUrl:                    p.UserContentBaseUrl,
 		authAppsRootDomain:                    p.AuthAppsRootDomain,
 		tesseralDNSCloudflareZoneID:           p.TesseralDNSCloudflareZoneID,

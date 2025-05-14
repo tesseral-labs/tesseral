@@ -423,6 +423,7 @@ func parseOrganization(qOrg queries.Organization, qProject queries.Project, qSAM
 		DisplayName:               qOrg.DisplayName,
 		LogInWithEmail:            qOrg.LogInWithEmail,
 		LogInWithGoogle:           qOrg.LogInWithGoogle,
+		LogInWithGithub:           qOrg.LogInWithGithub,
 		LogInWithMicrosoft:        qOrg.LogInWithMicrosoft,
 		LogInWithPassword:         qOrg.LogInWithPassword,
 		LogInWithAuthenticatorApp: qOrg.LogInWithAuthenticatorApp,
