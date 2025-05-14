@@ -8,7 +8,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { z } from "zod";
 
 import { Title } from "@/components/Title";
-import GithubIcon from "@/components/login/GithubIcon";
+import { GithubIcon } from "@/components/login/GithubIcon";
 import { GoogleIcon } from "@/components/login/GoogleIcon";
 import { LoginFlowCard } from "@/components/login/LoginFlowCard";
 import { MicrosoftIcon } from "@/components/login/MicrosoftIcon";

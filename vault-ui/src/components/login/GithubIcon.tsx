@@ -1,6 +1,6 @@
-import React, { FC } from 'react';
+import React from "react";
 
-const GithubIcon: FC = () => {
+export function GithubIcon() {
   return (
     <svg
       height="24"
@@ -16,6 +16,4 @@ const GithubIcon: FC = () => {
       />
     </svg>
   );
-};
-
-export default GithubIcon;
+}

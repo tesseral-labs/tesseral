@@ -170,14 +170,6 @@ SET
 WHERE
     project_id = $1;
 
--- name: DisableProjectOrganizationsLogInWithGithub :exec
-UPDATE
-    organizations
-SET
-    log_in_with_github = FALSE
-WHERE
-    project_id = $1;
-
 -- name: DisableProjectOrganizationsLogInWithEmail :exec
 UPDATE
     organizations
