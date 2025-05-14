@@ -28,6 +28,7 @@ import {
 import { Input } from '@/components/ui/input';
 import {
   createIntermediateSession,
+  getGithubOAuthRedirectURL,
   getGoogleOAuthRedirectURL,
   getMicrosoftOAuthRedirectURL,
   issueEmailVerificationChallenge,
@@ -38,6 +39,7 @@ import {
   useProjectSettings,
 } from '@/lib/project-settings';
 import { Title } from '@/components/Title';
+import GithubIcon from '@/components/login/GithubIcon';
 
 export function SignupPage() {
   return (
@@ -128,6 +130,18 @@ function SignupPageContents() {
     window.location.href = url;
   }
 
+  const { mutateAsync: getGithubOAuthRedirectURLAsync } = useMutation(
+    getGithubOAuthRedirectURL,
+  );
+
+  async function handleLogInWithGithub() {
+    await createIntermediateSessionWithRelayedSessionState();
+    const { url } = await getGithubOAuthRedirectURLAsync({
+      redirectUrl: `${window.location.origin}/github-oauth-callback`,
+    });
+    window.location.href = url;
+  }
+
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -186,6 +200,16 @@ function SignupPageContents() {
             >
               <MicrosoftIcon />
               Sign up with Microsoft
+            </Button>
+          )}
+          {settings.logInWithGithub && (
+            <Button
+              className="w-full"
+              variant="outline"
+              onClick={handleLogInWithGithub}
+            >
+              <GithubIcon />
+              Sign up with Github
             </Button>
           )}
         </div>
