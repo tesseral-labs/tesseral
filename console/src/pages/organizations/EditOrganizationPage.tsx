@@ -47,6 +47,7 @@ const schema = z.object({
   displayName: z.string(),
   logInWithGoogle: z.boolean(),
   logInWithMicrosoft: z.boolean(),
+  logInWithGithub: z.boolean(),
   logInWithEmail: z.boolean(),
   logInWithPassword: z.boolean(),
   logInWithSaml: z.boolean(),
@@ -92,6 +93,7 @@ export const EditOrganizationPage = () => {
         logInWithGoogle: getOrganizationResponse.organization.logInWithGoogle,
         logInWithMicrosoft:
           getOrganizationResponse.organization.logInWithMicrosoft,
+        logInWithGithub: getOrganizationResponse.organization.logInWithGithub,
         logInWithEmail: getOrganizationResponse.organization.logInWithEmail,
         logInWithPassword:
           getOrganizationResponse.organization.logInWithPassword,
@@ -129,6 +131,7 @@ export const EditOrganizationPage = () => {
         displayName: values.displayName,
         logInWithGoogle: values.logInWithGoogle,
         logInWithMicrosoft: values.logInWithMicrosoft,
+        logInWithGithub: values.logInWithGithub,
         logInWithEmail: values.logInWithEmail,
         logInWithPassword: values.logInWithPassword,
         logInWithSaml: values.logInWithSaml,
@@ -234,6 +237,26 @@ export const EditOrganizationPage = () => {
                     render={({ field }: { field: any }) => (
                       <FormItem>
                         <FormLabel>Log in with Microsoft</FormLabel>
+                        <FormControl>
+                          <Switch
+                            className="block"
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+
+                {getProjectResponse?.project?.logInWithGithub && (
+                  <FormField
+                    control={form.control}
+                    name="logInWithGithub"
+                    render={({ field }: { field: any }) => (
+                      <FormItem>
+                        <FormLabel>Log in with GitHub</FormLabel>
                         <FormControl>
                           <Switch
                             className="block"
