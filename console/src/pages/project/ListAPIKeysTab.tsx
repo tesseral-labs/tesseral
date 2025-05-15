@@ -20,14 +20,11 @@ import React, { useState } from 'react';
 import { DateTime } from 'luxon';
 import { timestampDate } from '@bufbuild/protobuf/wkt';
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
-import { PageDescription, PageTitle } from '@/components/page';
+  PageContent,
+  PageDescription,
+  PageHeader,
+  PageTitle,
+} from '@/components/page';
 import {
   Card,
   CardContent,
@@ -63,7 +60,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 
-export const ListAPIKeysPage = () => {
+export const ListAPIKeysTab = () => {
   const { data: getProjectEntitlementsResponse } = useQuery(
     getProjectEntitlements,
     {},
@@ -84,80 +81,136 @@ export const ListAPIKeysPage = () => {
   const { data: listBackendAPIKeysResponse } = useQuery(listBackendAPIKeys, {});
 
   return (
-    <div>
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/">Home</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/project-settings">Project Settings</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>API Keys</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+    <div className="mt-8 space-y-8">
+      <Card>
+        <CardHeader className="flex-row justify-between items-center">
+          <div className="flex flex-col space-y-1 5">
+            <CardTitle>Publishable Keys</CardTitle>
+            <CardDescription>
+              Tesseral's client-side SDKs require a publishable key. Publishable
+              keys can be publicly accessible in your web or mobile app's
+              client-side code.
+            </CardDescription>
+          </div>
+          <CreatePublishableKeyButton />
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableCell>Display Name</TableCell>
+                <TableHead>ID</TableHead>
+                <TableHead>Created</TableHead>
+                <TableHead>Updated</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {listPublishableKeysResponse?.publishableKeys?.map(
+                (publishableKey) => (
+                  <TableRow key={publishableKey.id}>
+                    <TableCell className="font-medium">
+                      <Link
+                        className="font-medium underline underline-offset-2 decoration-muted-foreground/40"
+                        to={`/project-settings/api-keys/publishable-keys/${publishableKey.id}`}
+                      >
+                        {publishableKey.displayName}
+                      </Link>
+                    </TableCell>
+                    <TableCell className="font-mono">
+                      {publishableKey.id}
+                    </TableCell>
+                    <TableCell>
+                      {publishableKey.createTime &&
+                        DateTime.fromJSDate(
+                          timestampDate(publishableKey.createTime),
+                        ).toRelative()}
+                    </TableCell>
+                    <TableCell>
+                      {publishableKey.updateTime &&
+                        DateTime.fromJSDate(
+                          timestampDate(publishableKey.updateTime),
+                        ).toRelative()}
+                    </TableCell>
+                  </TableRow>
+                ),
+              )}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
 
-      <PageTitle>API Keys</PageTitle>
-      <PageDescription className="mt-2">
-        API Keys for your Tesseral Project.
-      </PageDescription>
+      <Card>
+        <CardHeader className="flex-row justify-between items-center">
+          <div className="flex flex-col space-y-1 5">
+            <CardTitle>Backend API Keys</CardTitle>
+            <CardDescription>
+              Backend API keys are how your backend can automate operations in
+              Tesseral using the Tesseral Backend API.
+            </CardDescription>
+          </div>
+          <CreateBackendAPIKeyButton />
+        </CardHeader>
+        <CardContent>
+          {/* do not treat undefined as unentitled, to avoid flickering here */}
+          {getProjectEntitlementsResponse?.entitledBackendApiKeys === false ? (
+            <div className="text-sm my-8 w-full flex flex-col items-center justify-center space-y-6">
+              <div className="font-medium">
+                Backend API Keys are available on the Growth Tier.
+              </div>
 
-      <div className="mt-8 space-y-8">
-        <Card>
-          <CardHeader className="flex-row justify-between items-center">
-            <div className="flex flex-col space-y-1 5">
-              <CardTitle>Publishable Keys</CardTitle>
-              <CardDescription>
-                Tesseral's client-side SDKs require a publishable key.
-                Publishable keys can be publicly accessible in your web or
-                mobile app's client-side code.
-              </CardDescription>
+              <div className="flex items-center gap-x-4">
+                <Button onClick={handleUpgrade}>Upgrade to Growth Tier</Button>
+                <span>
+                  or{' '}
+                  <a
+                    href="https://cal.com/ned-o-leary-j8ydyi/30min"
+                    className="font-medium underline underline-offset-2 decoration-muted-foreground/40"
+                  >
+                    meet an expert
+                  </a>
+                  .
+                </span>
+              </div>
             </div>
-            <CreatePublishableKeyButton />
-          </CardHeader>
-          <CardContent>
+          ) : (
             <Table>
               <TableHeader>
                 <TableRow>
                   <TableCell>Display Name</TableCell>
                   <TableHead>ID</TableHead>
-                  <TableHead>Created</TableHead>
-                  <TableHead>Updated</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Created At</TableHead>
+                  <TableHead>Updated At</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {listPublishableKeysResponse?.publishableKeys?.map(
-                  (publishableKey) => (
-                    <TableRow key={publishableKey.id}>
+                {listBackendAPIKeysResponse?.backendApiKeys?.map(
+                  (backendApiKey) => (
+                    <TableRow key={backendApiKey.id}>
                       <TableCell className="font-medium">
                         <Link
                           className="font-medium underline underline-offset-2 decoration-muted-foreground/40"
-                          to={`/project-settings/api-keys/publishable-keys/${publishableKey.id}`}
+                          to={`/project-settings/api-keys/backend-api-keys/${backendApiKey.id}`}
                         >
-                          {publishableKey.displayName}
+                          {backendApiKey.displayName}
                         </Link>
                       </TableCell>
                       <TableCell className="font-mono">
-                        {publishableKey.id}
+                        {backendApiKey.id}
                       </TableCell>
                       <TableCell>
-                        {publishableKey.createTime &&
+                        {backendApiKey?.revoked ? 'Revoked' : 'Active'}
+                      </TableCell>
+                      <TableCell>
+                        {backendApiKey.createTime &&
                           DateTime.fromJSDate(
-                            timestampDate(publishableKey.createTime),
+                            timestampDate(backendApiKey.createTime),
                           ).toRelative()}
                       </TableCell>
                       <TableCell>
-                        {publishableKey.updateTime &&
+                        {backendApiKey.updateTime &&
                           DateTime.fromJSDate(
-                            timestampDate(publishableKey.updateTime),
+                            timestampDate(backendApiKey.updateTime),
                           ).toRelative()}
                       </TableCell>
                     </TableRow>
@@ -165,94 +218,9 @@ export const ListAPIKeysPage = () => {
                 )}
               </TableBody>
             </Table>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex-row justify-between items-center">
-            <div className="flex flex-col space-y-1 5">
-              <CardTitle>Backend API Keys</CardTitle>
-              <CardDescription>
-                Backend API keys are how your backend can automate operations in
-                Tesseral using the Tesseral Backend API.
-              </CardDescription>
-            </div>
-            <CreateBackendAPIKeyButton />
-          </CardHeader>
-          <CardContent>
-            {/* do not treat undefined as unentitled, to avoid flickering here */}
-            {getProjectEntitlementsResponse?.entitledBackendApiKeys === false ? (
-              <div className="text-sm my-8 w-full flex flex-col items-center justify-center space-y-6">
-                <div className="font-medium">
-                  Backend API Keys are available on the Growth Tier.
-                </div>
-
-                <div className="flex items-center gap-x-4">
-                  <Button onClick={handleUpgrade}>
-                    Upgrade to Growth Tier
-                  </Button>
-                  <span>
-                    or{' '}
-                    <a
-                      href="https://cal.com/ned-o-leary-j8ydyi/30min"
-                      className="font-medium underline underline-offset-2 decoration-muted-foreground/40"
-                    >
-                      meet an expert
-                    </a>
-                    .
-                  </span>
-                </div>
-              </div>
-            ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableCell>Display Name</TableCell>
-                    <TableHead>ID</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Created At</TableHead>
-                    <TableHead>Updated At</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {listBackendAPIKeysResponse?.backendApiKeys?.map(
-                    (backendApiKey) => (
-                      <TableRow key={backendApiKey.id}>
-                        <TableCell className="font-medium">
-                          <Link
-                            className="font-medium underline underline-offset-2 decoration-muted-foreground/40"
-                            to={`/project-settings/api-keys/backend-api-keys/${backendApiKey.id}`}
-                          >
-                            {backendApiKey.displayName}
-                          </Link>
-                        </TableCell>
-                        <TableCell className="font-mono">
-                          {backendApiKey.id}
-                        </TableCell>
-                        <TableCell>
-                          {backendApiKey?.revoked ? 'Revoked' : 'Active'}
-                        </TableCell>
-                        <TableCell>
-                          {backendApiKey.createTime &&
-                            DateTime.fromJSDate(
-                              timestampDate(backendApiKey.createTime),
-                            ).toRelative()}
-                        </TableCell>
-                        <TableCell>
-                          {backendApiKey.updateTime &&
-                            DateTime.fromJSDate(
-                              timestampDate(backendApiKey.updateTime),
-                            ).toRelative()}
-                        </TableCell>
-                      </TableRow>
-                    ),
-                  )}
-                </TableBody>
-              </Table>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 };
