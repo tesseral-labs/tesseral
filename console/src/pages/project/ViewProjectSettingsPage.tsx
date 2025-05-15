@@ -44,6 +44,10 @@ export const ViewProjectSettingsPage = () => {
       name: 'Role-Based Access Control Settings',
       url: `/project-settings/rbac-settings`,
     },
+    {
+      name: 'API Keys',
+      url: `/project-settings/api-keys`,
+    },
   ];
 
   const currentTab = tabs.find((tab) => tab.url === pathname);
