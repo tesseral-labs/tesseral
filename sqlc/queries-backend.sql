@@ -989,3 +989,74 @@ FROM
 WHERE
     project_id = $1;
 
+-- name: CreateAPIKey :one
+INSERT INTO api_keys (id, organization_id, display_name, secret_token_sha256, secret_token_suffix, expire_time)
+    VALUES ($1, $2, $3, $4, $5, $6)
+RETURNING
+    *;
+
+-- name: DeleteAPIKey :exec
+DELETE FROM api_keys
+WHERE id = $1;
+
+-- name: UpdateAPIKey :one
+UPDATE
+    api_keys
+SET
+    update_time = now(),
+    display_name = $2
+WHERE
+    id = $1
+RETURNING
+    *;
+
+-- name: GetAPIKey :one
+SELECT
+    *
+FROM
+    api_keys
+WHERE
+    id = $1
+    AND organization_id = $2;
+
+-- name: ListAPIKeys :many
+SELECT
+    *
+FROM
+    api_keys
+WHERE
+    organization_id = $1
+    AND id >= $2;
+
+-- name: RevokeAPIKey :exec
+UPDATE
+    api_keys
+SET
+    update_time = now(),
+    secret_token_sha256 = NULL,
+    secret_token_suffix = NULL
+WHERE
+    id = $1;
+
+-- name: CreateAPIKeyRoleAssignment :one
+INSERT INTO api_key_role_assignments (id, api_key_id, role_id)
+    VALUES ($1, $2, $3)
+RETURNING
+    *;
+
+-- name: ListAPIKeyRoleAssignments :many
+SELECT
+    *
+FROM
+    api_key_role_assignments
+WHERE
+    api_key_id = $1
+    AND id >= $2
+ORDER BY
+    id
+LIMIT $3;
+
+-- name: DeleteAPIKeyRoleAssignment :exec
+DELETE FROM api_key_role_assignments
+WHERE id = $1;
+

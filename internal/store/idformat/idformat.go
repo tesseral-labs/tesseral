@@ -5,6 +5,7 @@ import "github.com/ssoready/prettyuuid"
 const alphabet = "0123456789abcdefghijklmnopqrstuvwxyz"
 
 var (
+	APIKey                        = prettyuuid.MustNewFormat("api_key_", alphabet)
 	EmailVerificationChallenge    = prettyuuid.MustNewFormat("email_verification_challenge_", alphabet)
 	IntermediateSession           = prettyuuid.MustNewFormat("intermediate_session_", alphabet)
 	IntermediateSessionSigningKey = prettyuuid.MustNewFormat("intermediate_session_signing_key_", alphabet)
@@ -45,3 +46,7 @@ var (
 
 	ProjectWebhookSettings = prettyuuid.MustNewFormat("project_webhook_settings_", alphabet)
 )
+
+func MustNewFormat(prefix string) prettyuuid.Format {
+	return prettyuuid.MustNewFormat(prefix, alphabet)
+}
