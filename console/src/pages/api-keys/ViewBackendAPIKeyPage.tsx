@@ -12,7 +12,9 @@ import { useNavigate, useParams } from 'react-router';
 import { useMutation, useQuery } from '@connectrpc/connect-query';
 import {
   deleteBackendAPIKey,
-  getBackendAPIKey, revokeBackendAPIKey, updateBackendAPIKey,
+  getBackendAPIKey,
+  revokeBackendAPIKey,
+  updateBackendAPIKey,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import {
   Card,
@@ -50,7 +52,9 @@ import {
 import { Input } from '@/components/ui/input';
 import {
   PageCodeSubtitle,
+  PageContent,
   PageDescription,
+  PageHeader,
   PageTitle,
 } from '@/components/page';
 
@@ -60,102 +64,78 @@ export const ViewBackendAPIKeyPage = () => {
     id: backendApiKeyId,
   });
   return (
-    <div>
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/">Home</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/project-settings">Project Settings</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/project-settings/api-keys">API Keys</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>
-              {getBackendApiKeyResponse?.backendApiKey?.displayName}
-            </BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+    <>
+      <PageHeader>
+        <PageTitle>
+          {getBackendApiKeyResponse?.backendApiKey?.displayName}
+        </PageTitle>
+        <PageCodeSubtitle>{backendApiKeyId}</PageCodeSubtitle>
+        <PageDescription>
+          Backend API keys are how your backend can automate operations in
+          Tesseral using the Tesseral Backend API.
+        </PageDescription>
+      </PageHeader>
 
-      <PageTitle>
-        {getBackendApiKeyResponse?.backendApiKey?.displayName}
-      </PageTitle>
-      <PageCodeSubtitle>{backendApiKeyId}</PageCodeSubtitle>
-      <PageDescription>
-        Backend API keys are how your backend can automate operations in
-        Tesseral using the Tesseral Backend API.
-      </PageDescription>
-
-      <Card className="my-8">
-        <CardHeader className="flex-row justify-between items-center">
-          <div className="flex flex-col space-y-1 5">
-            <CardTitle>Configuration</CardTitle>
-            <CardDescription>Details about your Backend API.</CardDescription>
-          </div>
-          <EditBackendAPIKeyButton />
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-3 gap-x-2 text-sm">
-            <div className="border-r border-gray-200 pr-8 flex flex-col gap-4">
-              <div>
-                <div className="font-semibold">Display Name</div>
-                <div className="truncate">
-                  {getBackendApiKeyResponse?.backendApiKey?.displayName}
+      <PageContent>
+        <Card className="my-8">
+          <CardHeader className="flex-row justify-between items-center">
+            <div className="flex flex-col space-y-1 5">
+              <CardTitle>Configuration</CardTitle>
+              <CardDescription>Details about your Backend API.</CardDescription>
+            </div>
+            <EditBackendAPIKeyButton />
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-3 gap-x-2 text-sm">
+              <div className="border-r border-gray-200 pr-8 flex flex-col gap-4">
+                <div>
+                  <div className="font-semibold">Display Name</div>
+                  <div className="truncate">
+                    {getBackendApiKeyResponse?.backendApiKey?.displayName}
+                  </div>
+                </div>
+                <div>
+                  <div className="font-semibold">Revoked</div>
+                  <div className="truncate">
+                    {getBackendApiKeyResponse?.backendApiKey?.revoked
+                      ? 'Yes'
+                      : 'No'}
+                  </div>
                 </div>
               </div>
-              <div>
-                <div className="font-semibold">Revoked</div>
-                <div className="truncate">
-                  {getBackendApiKeyResponse?.backendApiKey?.revoked
-                    ? 'Yes'
-                    : 'No'}
+              <div className="border-r border-gray-200 pr-8 pl-8 flex flex-col gap-4">
+                <div>
+                  <div className="font-semibold">Created</div>
+                  <div className="truncate">
+                    {getBackendApiKeyResponse?.backendApiKey?.createTime &&
+                      DateTime.fromJSDate(
+                        timestampDate(
+                          getBackendApiKeyResponse?.backendApiKey?.createTime,
+                        ),
+                      ).toRelative()}
+                  </div>
+                </div>
+              </div>
+              <div className="border-gray-200 pl-8 flex flex-col gap-4">
+                <div>
+                  <div className="font-semibold">Updated</div>
+                  <div className="truncate">
+                    {getBackendApiKeyResponse?.backendApiKey?.updateTime &&
+                      DateTime.fromJSDate(
+                        timestampDate(
+                          getBackendApiKeyResponse?.backendApiKey?.updateTime,
+                        ),
+                      ).toRelative()}
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="border-r border-gray-200 pr-8 pl-8 flex flex-col gap-4">
-              <div>
-                <div className="font-semibold">Created</div>
-                <div className="truncate">
-                  {getBackendApiKeyResponse?.backendApiKey?.createTime &&
-                    DateTime.fromJSDate(
-                      timestampDate(
-                        getBackendApiKeyResponse?.backendApiKey?.createTime,
-                      ),
-                    ).toRelative()}
-                </div>
-              </div>
-            </div>
-            <div className="border-gray-200 pl-8 flex flex-col gap-4">
-              <div>
-                <div className="font-semibold">Updated</div>
-                <div className="truncate">
-                  {getBackendApiKeyResponse?.backendApiKey?.updateTime &&
-                    DateTime.fromJSDate(
-                      timestampDate(
-                        getBackendApiKeyResponse?.backendApiKey?.updateTime,
-                      ),
-                    ).toRelative()}
-                </div>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
 
-      <DangerZoneCard />
-    </div>
+        <DangerZoneCard />
+      </PageContent>
+    </>
   );
 };
 
@@ -172,7 +152,7 @@ const EditBackendAPIKeyButton = () => {
     },
   );
   const updateBackendAPIKeyMutation = useMutation(updateBackendAPIKey);
-   
+
   // Currently there's an issue with the types of react-hook-form and zod
   // preventing the compiler from inferring the correct types.
   const form = useForm<z.infer<typeof schema>>({
@@ -188,7 +168,6 @@ const EditBackendAPIKeyButton = () => {
       });
     }
   }, [getBackendAPIKeyResponse]);
-   
 
   const [open, setOpen] = useState(false);
 
@@ -216,11 +195,11 @@ const EditBackendAPIKeyButton = () => {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <Form {...form}>
-          { }
+          {}
           {/** Currently there's an issue with the types of react-hook-form and zod
           preventing the compiler from inferring the correct types.*/}
           <form onSubmit={form.handleSubmit(handleSubmit)}>
-            { }
+            {}
             <FormField
               control={form.control}
               name="displayName"

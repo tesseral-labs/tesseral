@@ -87,7 +87,10 @@ const ConsoleNavigation: FC = () => {
                           <NavigationOrganizationPages slug={slug as any} />
                         ) : (
                           <div className="px-2 text-sm font-medium">
-                            {index === pathname.split('/').length - 1 ? (
+                            {index === pathname.split('/').length - 1 ||
+                            ['publishable-keys', 'backend-api-keys'].includes(
+                              slug,
+                            ) ? (
                               <span className="text-muted-foreground">
                                 {titleCaseSlug(
                                   slug,

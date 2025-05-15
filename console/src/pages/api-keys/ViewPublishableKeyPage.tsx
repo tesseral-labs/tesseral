@@ -51,7 +51,9 @@ import {
 import { Input } from '@/components/ui/input';
 import {
   PageCodeSubtitle,
+  PageContent,
   PageDescription,
+  PageHeader,
   PageTitle,
 } from '@/components/page';
 
@@ -62,104 +64,81 @@ export const ViewPublishableKeyPage = () => {
   });
 
   return (
-    <div>
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/">Home</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/project-settings">Project Settings</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link to="/project-settings/api-keys">API Keys</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>
-              {getPublishableKeyResponse?.publishableKey?.displayName}
-            </BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+    <>
+      <PageHeader>
+        <PageTitle>
+          {getPublishableKeyResponse?.publishableKey?.displayName}
+        </PageTitle>
+        <PageCodeSubtitle>{publishableKeyId}</PageCodeSubtitle>
+        <PageDescription>
+          Tesseral's client-side SDKs require a Publishable Key. Publishable
+          Keys can safely be publicly accessible in your web or mobile app's
+          client-side code.
+        </PageDescription>
+      </PageHeader>
 
-      <PageTitle>
-        {getPublishableKeyResponse?.publishableKey?.displayName}
-      </PageTitle>
-      <PageCodeSubtitle>{publishableKeyId}</PageCodeSubtitle>
-      <PageDescription>
-        Tesseral's client-side SDKs require a Publishable Key. Publishable Keys
-        can safely be publicly accessible in your web or mobile app's
-        client-side code.
-      </PageDescription>
-
-      <Card className="my-8">
-        <CardHeader className="flex-row justify-between items-center">
-          <div className="flex flex-col space-y-1 5">
-            <CardTitle>Configuration</CardTitle>
-            <CardDescription>Details about this Publishable Key.</CardDescription>
-          </div>
-          <EditPublishableKeyButton />
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-3 gap-x-2 text-sm">
-            <div className="border-r border-gray-200 pr-8 flex flex-col gap-4">
-              <div>
-                <div className="font-semibold">Display Name</div>
-                <div className="truncate">
-                  {getPublishableKeyResponse?.publishableKey?.displayName}
+      <PageContent>
+        <Card className="my-8">
+          <CardHeader className="flex-row justify-between items-center">
+            <div className="flex flex-col space-y-1 5">
+              <CardTitle>Configuration</CardTitle>
+              <CardDescription>
+                Details about this Publishable Key.
+              </CardDescription>
+            </div>
+            <EditPublishableKeyButton />
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-3 gap-x-2 text-sm">
+              <div className="border-r border-gray-200 pr-8 flex flex-col gap-4">
+                <div>
+                  <div className="font-semibold">Display Name</div>
+                  <div className="truncate">
+                    {getPublishableKeyResponse?.publishableKey?.displayName}
+                  </div>
+                </div>
+                <div>
+                  <div className="font-semibold">Dev Mode</div>
+                  <div className="truncate">
+                    {getPublishableKeyResponse?.publishableKey?.devMode
+                      ? 'Enabled'
+                      : 'Disabled'}
+                  </div>
                 </div>
               </div>
-              <div>
-                <div className="font-semibold">Dev Mode</div>
-                <div className="truncate">
-                  {getPublishableKeyResponse?.publishableKey
-                    ?.devMode
-                    ? 'Enabled'
-                    : 'Disabled'}
+              <div className="border-r border-gray-200 pr-8 pl-8 flex flex-col gap-4">
+                <div>
+                  <div className="font-semibold">Created</div>
+                  <div className="truncate">
+                    {getPublishableKeyResponse?.publishableKey?.createTime &&
+                      DateTime.fromJSDate(
+                        timestampDate(
+                          getPublishableKeyResponse?.publishableKey?.createTime,
+                        ),
+                      ).toRelative()}
+                  </div>
+                </div>
+              </div>
+              <div className="border-gray-200 pl-8 flex flex-col gap-4">
+                <div>
+                  <div className="font-semibold">Updated</div>
+                  <div className="truncate">
+                    {getPublishableKeyResponse?.publishableKey?.updateTime &&
+                      DateTime.fromJSDate(
+                        timestampDate(
+                          getPublishableKeyResponse?.publishableKey?.updateTime,
+                        ),
+                      ).toRelative()}
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="border-r border-gray-200 pr-8 pl-8 flex flex-col gap-4">
-              <div>
-                <div className="font-semibold">Created</div>
-                <div className="truncate">
-                  {getPublishableKeyResponse?.publishableKey?.createTime &&
-                    DateTime.fromJSDate(
-                      timestampDate(
-                        getPublishableKeyResponse?.publishableKey?.createTime,
-                      ),
-                    ).toRelative()}
-                </div>
-              </div>
-            </div>
-            <div className="border-gray-200 pl-8 flex flex-col gap-4">
-              <div>
-                <div className="font-semibold">Updated</div>
-                <div className="truncate">
-                  {getPublishableKeyResponse?.publishableKey?.updateTime &&
-                    DateTime.fromJSDate(
-                      timestampDate(
-                        getPublishableKeyResponse?.publishableKey?.updateTime,
-                      ),
-                    ).toRelative()}
-                </div>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
 
-      <DangerZoneCard />
-    </div>
+        <DangerZoneCard />
+      </PageContent>
+    </>
   );
 };
 

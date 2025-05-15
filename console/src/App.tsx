@@ -1,14 +1,12 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createConnectTransport } from '@connectrpc/connect-web';
-import { type Transport } from '@connectrpc/connect';
 import { TransportProvider } from '@connectrpc/connect-query';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import NotFoundPage from './pages/NotFound';
 import { ListOrganizationsPage } from '@/pages/organizations/ListOrganizationsPage';
 import { ViewOrganizationPage } from '@/pages/organizations/ViewOrganizationPage';
 import { ViewUserPage } from '@/pages/users/ViewUserPage';
-import { ListAPIKeysPage } from '@/pages/api-keys/ListAPIKeysPage';
 import { ViewProjectSettingsPage } from '@/pages/project/ViewProjectSettingsPage';
 import { OrganizationUsersTab } from '@/pages/organizations/OrganizationUsersTab';
 import { OrganizationSAMLConnectionsTab } from '@/pages/organizations/OrganizationSAMLConnectionsTab';
@@ -54,7 +52,6 @@ import { FinishLoginPage } from '@/pages/login/FinishLoginPage';
 import { ImpersonatePage } from '@/pages/login/ImpersonatePage';
 import { SwitchOrganizationsPage } from '@/pages/login/SwitchOrganizationsPage';
 import { LogoutPage } from '@/pages/login/LogoutPage';
-import { useAccessToken } from '@/lib/AccessTokenProvider';
 import { StripeCheckoutSuccessPage } from './pages/stripe/StripeCheckoutSuccessPage';
 import { RBACSettingsTab } from '@/pages/project/RBACSettingsTab';
 import { EditRBACPolicyPage } from '@/pages/project/EditRBACPolicyPage';
@@ -63,6 +60,7 @@ import { OrganizationRolesTab } from '@/pages/organizations/OrganizationRolesTab
 import { CreateRolePage } from '@/pages/roles/CreateRolePage';
 import { EditRolePage } from '@/pages/roles/EditRolePage';
 import { GithubOAuthCallbackPage } from './pages/login/GithubOAuthCallbackPage';
+import { ListAPIKeysTab } from './pages/project/ListAPIKeysTab';
 
 const queryClient = new QueryClient();
 
@@ -171,16 +169,13 @@ const AppWithinQueryClient = () => {
                 element={<VaultDomainSettingsTab />}
               />
               <Route path="rbac-settings" element={<RBACSettingsTab />} />
+
+              <Route path="api-keys" element={<ListAPIKeysTab />} />
             </Route>
 
             <Route
               path="project-settings/rbac-settings/rbac-policy/edit"
               element={<EditRBACPolicyPage />}
-            />
-
-            <Route
-              path="project-settings/api-keys"
-              element={<ListAPIKeysPage />}
             />
 
             <Route
