@@ -1,22 +1,57 @@
-import React, { useEffect, useState } from 'react';
+import { timestampDate, timestampFromDate } from "@bufbuild/protobuf/wkt";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+} from "@connectrpc/connect-query";
+import { format } from "date-fns";
+import { CalendarIcon, CirclePlus, Copy, LoaderCircle } from "lucide-react";
+import { DateTime } from "luxon";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useParams } from "react-router";
+import { Link } from "react-router-dom";
+import { toast } from "sonner";
+import { z } from "zod";
+
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { useNavigate, useParams } from 'react-router';
+} from "@/components/ui/card";
 import {
-  createAPIKey,
-  getProject,
-  listAPIKeys,
-} from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
-  useInfiniteQuery,
-  useMutation,
-  useQuery,
-} from '@connectrpc/connect-query';
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -24,51 +59,19 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { DateTime } from 'luxon';
-import { timestampDate, timestampFromDate } from '@bufbuild/protobuf/wkt';
+} from "@/components/ui/table";
 import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTrigger,
-  AlertDialogCancel,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { Button } from '@/components/ui/button';
-import { CalendarIcon, CirclePlus, Copy, LoaderCircle } from 'lucide-react';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from '@/components/ui/form';
-import { z } from 'zod';
-import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
-import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
-import { Calendar } from '@/components/ui/calendar';
-import { format } from 'date-fns';
-import { Link } from 'react-router-dom';
-import { APIKey } from '@/gen/tesseral/backend/v1/models_pb';
+  createAPIKey,
+  getOrganization,
+  getProject,
+  listAPIKeys,
+} from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
+import { APIKey } from "@/gen/tesseral/frontend/v1/models_pb";
+import { cn } from "@/lib/utils";
 
-export const OrganizationAPIKeysTab = () => {
-  const { organizationId } = useParams();
+export function APIKeysTab() {
+  const { data: getOrganizationResponse } = useQuery(getOrganization);
+  const { data: getProjectResponse } = useQuery(getProject);
   const {
     data: listApiKeysResponses,
     fetchNextPage,
@@ -77,27 +80,28 @@ export const OrganizationAPIKeysTab = () => {
   } = useInfiniteQuery(
     listAPIKeys,
     {
-      organizationId,
-      pageToken: '',
+      organizationId: getOrganizationResponse?.organization?.id,
+      pageToken: "",
     },
     {
-      pageParamKey: 'pageToken',
+      pageParamKey: "pageToken",
       getNextPageParam: (page) => page.nextPageToken || undefined,
     },
   );
-  const { data: getProjectResponse } = useQuery(getProject);
 
-  const apiKeys = listApiKeysResponses?.pages?.flatMap((page) => page.apiKeys);
+  const apiKeys = listApiKeysResponses?.pages.flatMap((page) => page.apiKeys);
 
   return (
     <Card>
-      <CardHeader className="py-4 flex flex-row items-center justify-between">
+      <CardHeader className="flex flex-row justify-between gap-x-4">
         <div>
           <CardTitle>API Keys</CardTitle>
           <CardDescription>
-            Manage the API keys for this organization.
+            API keys are used to authenticate and authorize access to the API.
+            You can create, manage, and revoke API keys for your organization.
           </CardDescription>
         </div>
+
         <CreateAPIKeyButton />
       </CardHeader>
       <CardContent>
@@ -117,16 +121,12 @@ export const OrganizationAPIKeysTab = () => {
               apiKeys.map((apiKey) => (
                 <TableRow key={apiKey.id}>
                   <TableCell>
-                    <Link
-                      to={`/organizations/${organizationId}/api-keys/${apiKey.id}`}
-                    >
+                    <Link to={`/organization-settings/api-keys/${apiKey.id}`}>
                       {apiKey.displayName}
                     </Link>
                   </TableCell>
                   <TableCell>
-                    <Link
-                      to={`/organizations/${organizationId}/api-keys/${apiKey.id}`}
-                    >
+                    <Link to={`/organization-settings/api-keys/${apiKey.id}`}>
                       {apiKey.id}
                     </Link>
                   </TableCell>
@@ -134,11 +134,11 @@ export const OrganizationAPIKeysTab = () => {
                     {apiKey.secretTokenSuffix ? (
                       <span className="font-mono text-sm">
                         {getProjectResponse?.project?.apiKeySecretTokenPrefix ||
-                          'api_key_'}
+                          "api_key_"}
                         ...{apiKey.secretTokenSuffix}
                       </span>
                     ) : (
-                      '—'
+                      "—"
                     )}
                   </TableCell>
                   <TableCell>
@@ -153,7 +153,7 @@ export const OrganizationAPIKeysTab = () => {
                       ? DateTime.fromJSDate(
                           timestampDate(apiKey.expireTime),
                         ).toRelative()
-                      : 'never'}
+                      : "never"}
                   </TableCell>
                   <TableCell>
                     {apiKey.createTime &&
@@ -183,16 +183,15 @@ export const OrganizationAPIKeysTab = () => {
       </CardContent>
     </Card>
   );
-};
+}
 
 const schema = z.object({
   displayName: z.string(),
   expireTime: z.string(),
 });
 
-const CreateAPIKeyButton = () => {
+function CreateAPIKeyButton() {
   const [apiKey, setApiKey] = useState<APIKey>();
-  const navigate = useNavigate();
 
   const [customDate, setCustomDate] = useState<Date>();
 
@@ -205,8 +204,8 @@ const CreateAPIKeyButton = () => {
 
   const form = useForm<z.infer<typeof schema>>({
     defaultValues: {
-      displayName: '',
-      expireTime: '1 day',
+      displayName: "",
+      expireTime: "1 day",
     },
   });
 
@@ -217,27 +216,27 @@ const CreateAPIKeyButton = () => {
     };
 
     switch (data.expireTime) {
-      case '1 day':
+      case "1 day":
         createParams.expireTime = timestampFromDate(
           new Date(Date.now() + 24 * 60 * 60 * 1000),
         );
         break;
-      case '7 days':
+      case "7 days":
         createParams.expireTime = timestampFromDate(
           new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         );
         break;
-      case '30 days':
+      case "30 days":
         createParams.expireTime = timestampFromDate(
           new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         );
         break;
-      case 'custom':
+      case "custom":
         if (customDate) {
           createParams.expireTime = timestampFromDate(customDate);
         }
         break;
-      case 'noexpire':
+      case "noexpire":
         break;
     }
 
@@ -246,7 +245,7 @@ const CreateAPIKeyButton = () => {
     if (apiKey) {
       setApiKey(apiKey);
 
-      toast.success('API Key created successfully');
+      toast.success("API Key created successfully");
 
       await refetch();
     }
@@ -314,19 +313,19 @@ const CreateAPIKeyButton = () => {
                           </SelectContent>
                         </Select>
 
-                        {field.value === 'custom' && (
+                        {field.value === "custom" && (
                           <Popover>
                             <PopoverTrigger asChild>
                               <Button
-                                variant={'outline'}
+                                variant={"outline"}
                                 className={cn(
-                                  'w-[270px] justify-start text-left font-normal',
-                                  !customDate && 'text-muted-foreground',
+                                  "w-[270px] justify-start text-left font-normal",
+                                  !customDate && "text-muted-foreground",
                                 )}
                               >
                                 <CalendarIcon className="mr-2 h-4 w-4" />
                                 {customDate ? (
-                                  format(customDate, 'PPP')
+                                  format(customDate, "PPP")
                                 ) : (
                                   <span>Pick a date</span>
                                 )}
@@ -369,7 +368,7 @@ const CreateAPIKeyButton = () => {
               variant="outline"
               onClick={() => {
                 navigator.clipboard.writeText(apiKey.secretToken);
-                toast.success('API Key copied to clipboard');
+                toast.success("API Key copied to clipboard");
               }}
             >
               <Copy className="h-4 w-4" />
@@ -389,4 +388,4 @@ const CreateAPIKeyButton = () => {
       </AlertDialogContent>
     </AlertDialog>
   );
-};
+}

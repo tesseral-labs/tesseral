@@ -1,28 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import {
-  PageCodeSubtitle,
-  PageContent,
-  PageDescription,
-  PageHeader,
-  PageTitle,
-} from '@/components/page';
-import {
-  deleteAPIKey,
-  deleteAPIKeyRoleAssignment,
-  getAPIKey,
-  listAPIKeyRoleAssignments,
-  listRoles,
-  revokeAPIKey,
-} from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
-import { useMutation, useQuery } from '@connectrpc/connect-query';
-import { useNavigate, useParams } from 'react-router';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { timestampDate } from "@bufbuild/protobuf/wkt";
+import { useMutation, useQuery } from "@connectrpc/connect-query";
+import { DateTime } from "luxon";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate, useParams } from "react-router";
+import { toast } from "sonner";
+import { z } from "zod";
+
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -32,28 +16,24 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
-import { Button } from '@/components/ui/button';
-import { Form, useForm } from 'react-hook-form';
-import { z } from 'zod';
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import {
-  DetailsGrid,
-  DetailsGridColumn,
-  DetailsGridEntry,
-  DetailsGridKey,
-  DetailsGridValue,
-} from '@/components/details-grid';
-import { DateTime } from 'luxon';
-import { timestampDate } from '@bufbuild/protobuf/wkt';
-import { CirclePlus } from 'lucide-react';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -61,18 +41,23 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { Label } from '@/components/ui/label';
-import { toast } from 'sonner';
-import { Checkbox } from '@/components/ui/checkbox';
-import { AddAPIKeyRoleButton } from './AddAPIKeyRoleButton';
+} from "@/components/ui/table";
+import {
+  deleteAPIKey,
+  deleteAPIKeyRoleAssignment,
+  getAPIKey,
+  getOrganization,
+  listAPIKeyRoleAssignments,
+  revokeAPIKey,
+} from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
 
-export const ViewAPIKeyPage = () => {
-  const { organizationId, apiKeyId } = useParams();
+import { AddAPIKeyRoleButton } from "./AddAPIKeyRoleButton";
+
+export function ViewAPIKeyPage() {
+  const { apiKeyId } = useParams();
 
   const { data: getAPIKeyResponse } = useQuery(getAPIKey, {
     id: apiKeyId,
-    organizationId,
   });
   const { data: listApiKeyRoleAssignmentsResponse } = useQuery(
     listAPIKeyRoleAssignments,
@@ -82,25 +67,53 @@ export const ViewAPIKeyPage = () => {
   );
 
   return (
-    <>
-      <PageHeader>
-        <PageTitle>{getAPIKeyResponse?.apiKey?.displayName}</PageTitle>
-        <PageCodeSubtitle>{getAPIKeyResponse?.apiKey?.id}</PageCodeSubtitle>
-        <PageDescription>View and manage your API key.</PageDescription>
-      </PageHeader>
-      <PageContent>
-        <div className="space-y-8">
-          <Card>
-            <CardHeader className="py-4 flex flex-row items-center justify-between">
-              <div>
-                <CardTitle>API Key Details</CardTitle>
-                <CardDescription></CardDescription>
-              </div>
+    <div className="space-y-8">
+      <Card>
+        <CardHeader className="py-4 flex flex-row items-center justify-between">
+          <div>
+            <CardTitle>API Key Details</CardTitle>
+            <CardDescription></CardDescription>
+          </div>
 
-              <EditAPIKeyButton />
-            </CardHeader>
-            <CardContent>
-              <DetailsGrid>
+          <EditAPIKeyButton />
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-4 gap-4">
+            <div>
+              <div className="text-sm font-semibold">Display name</div>
+              <div className="text-sm">
+                {getAPIKeyResponse?.apiKey?.displayName}
+              </div>
+            </div>
+
+            <div className="border-l pl-8">
+              <div className="text-sm font-semibold">Status</div>
+              <div className="text-sm">
+                {getAPIKeyResponse?.apiKey?.revoked ? "Revoked" : "Active"}
+              </div>
+            </div>
+
+            <div className="border-l pl-8">
+              <div className="text-sm font-semibold">Expires</div>
+              <div className="text-sm">
+                {getAPIKeyResponse?.apiKey?.expireTime &&
+                  DateTime.fromJSDate(
+                    timestampDate(getAPIKeyResponse?.apiKey?.expireTime),
+                  ).toRelative()}
+              </div>
+            </div>
+
+            <div className="border-l pl-8">
+              <div className="text-sm font-semibold">Created</div>
+              <div className="text-sm">
+                {getAPIKeyResponse?.apiKey?.createTime &&
+                  DateTime.fromJSDate(
+                    timestampDate(getAPIKeyResponse?.apiKey?.createTime),
+                  ).toRelative()}
+              </div>
+            </div>
+          </div>
+          {/* <DetailsGrid>
                 <DetailsGridColumn>
                   <DetailsGridEntry>
                     <DetailsGridKey>Created at</DetailsGridKey>
@@ -151,67 +164,63 @@ export const ViewAPIKeyPage = () => {
                     </DetailsGridValue>
                   </DetailsGridEntry>
                 </DetailsGridColumn>
-              </DetailsGrid>
-            </CardContent>
-          </Card>
+              </DetailsGrid> */}
+        </CardContent>
+      </Card>
 
-          <Card>
-            <CardHeader className="py-4 flex flex-row items-center justify-between">
-              <div>
-                <CardTitle>API Key Roles</CardTitle>
-                <CardDescription>
-                  Manage the roles associated with this API key.
-                </CardDescription>
-              </div>
+      <Card>
+        <CardHeader className="py-4 flex flex-row items-center justify-between">
+          <div>
+            <CardTitle>API Key Roles</CardTitle>
+            <CardDescription>
+              Manage the roles associated with this API key.
+            </CardDescription>
+          </div>
 
-              <AddAPIKeyRoleButton />
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Role</TableHead>
-                    <TableHead>Actions</TableHead>
-                    <TableHead></TableHead>
+          <AddAPIKeyRoleButton />
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Role</TableHead>
+                <TableHead>Actions</TableHead>
+                <TableHead></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {listApiKeyRoleAssignmentsResponse?.apiKeyRoleAssignments?.map(
+                (roleAssignment) => (
+                  <TableRow key={roleAssignment.id}>
+                    <TableCell>{roleAssignment.role?.displayName}</TableCell>
+                    <TableCell className="space-x-2">
+                      {roleAssignment.role?.actions.map((action) => (
+                        <span
+                          key={action}
+                          className="p-1 text-xs text-mono bg-muted text-muted-foreground rounded"
+                        >
+                          {action}
+                        </span>
+                      ))}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <RemoveRoleButton id={roleAssignment.id} />
+                    </TableCell>
                   </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {listApiKeyRoleAssignmentsResponse?.apiKeyRoleAssignments?.map(
-                    (roleAssignment) => (
-                      <TableRow key={roleAssignment.id}>
-                        <TableCell>
-                          {roleAssignment.role?.displayName}
-                        </TableCell>
-                        <TableCell className="space-x-2">
-                          {roleAssignment.role?.actions.map((action) => (
-                            <span
-                              key={action}
-                              className="p-1 text-xs text-mono bg-muted text-muted-foreground rounded"
-                            >
-                              {action}
-                            </span>
-                          ))}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <RemoveRoleButton id={roleAssignment.id} />
-                        </TableCell>
-                      </TableRow>
-                    ),
-                  )}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
+                ),
+              )}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
 
-          <DangerZoneCard />
-        </div>
-      </PageContent>
-    </>
+      <DangerZoneCard />
+    </div>
   );
-};
+}
 
 const schema = z.object({
-  displayName: z.string().min(1, { message: 'Display name is required' }),
+  displayName: z.string().min(1, { message: "Display name is required" }),
 });
 
 const EditAPIKeyButton = () => {
@@ -223,7 +232,7 @@ const EditAPIKeyButton = () => {
 
   const form = useForm<z.infer<typeof schema>>({
     defaultValues: {
-      displayName: '',
+      displayName: "",
     },
   });
 
@@ -263,7 +272,7 @@ const EditAPIKeyButton = () => {
               )}
             />
 
-            <AlertDialogFooter>
+            <AlertDialogFooter className="mt-8">
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <Button type="submit">Save</Button>
             </AlertDialogFooter>
@@ -289,7 +298,7 @@ const RemoveRoleButton = ({ id }: { id: string }) => {
       id,
     });
 
-    toast.success('Role removed successfully');
+    toast.success("Role removed successfully");
     await refetch();
     setOpen(false);
   };
@@ -336,7 +345,7 @@ const DangerZoneCard = () => {
       id: apiKeyId,
     });
 
-    toast.success('API key deleted successfully');
+    toast.success("API key deleted successfully");
 
     navigate(`/organizations/${organizationId}/api-keys`);
   };
@@ -346,7 +355,7 @@ const DangerZoneCard = () => {
       id: apiKeyId,
     });
 
-    toast.success('API key revoked successfully');
+    toast.success("API key revoked successfully");
 
     await refetch();
   };
@@ -365,7 +374,7 @@ const DangerZoneCard = () => {
             <div className="space-y-2">
               <div className="font-semibold text-sm">Revoke this API Key</div>
               <div className="text-sm text-muted-foreground">
-                This action cannot be undone. The{' '}
+                This action cannot be undone. The{" "}
                 <b>{getAPIKeyResponse?.apiKey?.displayName}</b> API key will no
                 longer be usable, but all database entries will be retained.
               </div>
@@ -377,7 +386,7 @@ const DangerZoneCard = () => {
                   <AlertDialogHeader>
                     <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                     <p>
-                      This action cannot be undone. The{' '}
+                      This action cannot be undone. The{" "}
                       <b>{getAPIKeyResponse?.apiKey?.displayName}</b> API key
                       will no longer be usable, but all database entries will be
                       retained.
@@ -396,7 +405,7 @@ const DangerZoneCard = () => {
             <div className="space-y-2">
               <div className="font-semibold text-sm">Delete this API Key</div>
               <div className="text-sm text-muted-foreground">
-                This action cannot be undone. The{' '}
+                This action cannot be undone. The{" "}
                 <b>{getAPIKeyResponse?.apiKey?.displayName}</b> API key will no
                 longer be usable and all database entries will be permanently
                 deleted.
@@ -409,7 +418,7 @@ const DangerZoneCard = () => {
                   <AlertDialogHeader>
                     <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                     <p>
-                      This action cannot be undone.{' '}
+                      This action cannot be undone.{" "}
                       <b>{getAPIKeyResponse?.apiKey?.displayName}</b> will no
                       longer be usable and all database entries will be
                       permanently deleted.

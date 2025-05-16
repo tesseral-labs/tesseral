@@ -260,3 +260,60 @@ export const createUserRoleAssignment = FrontendService.method.createUserRoleAss
  * @generated from rpc tesseral.frontend.v1.FrontendService.DeleteUserRoleAssignment
  */
 export const deleteUserRoleAssignment = FrontendService.method.deleteUserRoleAssignment;
+
+/**
+ * Create an API Key for an Organization.
+ *
+ * @generated from rpc tesseral.frontend.v1.FrontendService.CreateAPIKey
+ */
+export const createAPIKey = FrontendService.method.createAPIKey;
+
+/**
+ * Delete an API Key.
+ *
+ * @generated from rpc tesseral.frontend.v1.FrontendService.DeleteAPIKey
+ */
+export const deleteAPIKey = FrontendService.method.deleteAPIKey;
+
+/**
+ * Get an API Key.
+ *
+ * @generated from rpc tesseral.frontend.v1.FrontendService.GetAPIKey
+ */
+export const getAPIKey = FrontendService.method.getAPIKey;
+
+/**
+ * List API Keys.
+ *
+ * @generated from rpc tesseral.frontend.v1.FrontendService.ListAPIKeys
+ */
+export const listAPIKeys = FrontendService.method.listAPIKeys;
+
+/**
+ * Revoke an API Key.
+ *
+ * @generated from rpc tesseral.frontend.v1.FrontendService.RevokeAPIKey
+ */
+export const revokeAPIKey = FrontendService.method.revokeAPIKey;
+
+/**
+ * Update an API Key.
+ *
+ * @generated from rpc tesseral.frontend.v1.FrontendService.UpdateAPIKey
+ */
+export const updateAPIKey = FrontendService.method.updateAPIKey;
+
+/**
+ * @generated from rpc tesseral.frontend.v1.FrontendService.CreateAPIKeyRoleAssignment
+ */
+export const createAPIKeyRoleAssignment = FrontendService.method.createAPIKeyRoleAssignment;
+
+/**
+ * @generated from rpc tesseral.frontend.v1.FrontendService.DeleteAPIKeyRoleAssignment
+ */
+export const deleteAPIKeyRoleAssignment = FrontendService.method.deleteAPIKeyRoleAssignment;
+
+/**
+ * @generated from rpc tesseral.frontend.v1.FrontendService.ListAPIKeyRoleAssignments
+ */
+export const listAPIKeyRoleAssignments = FrontendService.method.listAPIKeyRoleAssignments;

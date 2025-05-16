@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { clsx } from "clsx";
 import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import { Outlet } from "react-router";
 import { Link, useLocation } from "react-router-dom";
 import { toast } from "sonner";
@@ -38,13 +38,12 @@ import {
 import { Input } from "@/components/ui/input";
 import {
   getOrganization,
+  getProject,
   updateOrganization,
 } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
 
 export function OrganizationSettingsPage() {
-  const { data: getOrganizationResponse } = useQuery(getOrganization);
-
-  const tabs = [
+  const [tabs, setTabs] = useState([
     {
       root: true,
       name: "Users",
@@ -54,10 +53,29 @@ export function OrganizationSettingsPage() {
       name: "Advanced Settings",
       url: `/organization-settings/advanced`,
     },
-  ];
+  ]);
+  const { data: getProjectResponse } = useQuery(getProject);
+  const { data: getOrganizationResponse } = useQuery(getOrganization);
 
   const { pathname } = useLocation();
-  const currentTab = tabs.find((tab) => tab.url === pathname);
+  const currentTab = tabs.find(
+    (tab) =>
+      tab.url === pathname ||
+      (tab.url === "/organization-settings/api-keys" &&
+        pathname.startsWith("/organization-settings/api-keys/")),
+  );
+
+  useEffect(() => {
+    if (getProjectResponse?.project?.apiKeysEnabled) {
+      // Only add the API Keys tab if the project has API keys enabled
+      tabs.splice(1, 0, {
+        name: "API Keys",
+        url: `/organization-settings/api-keys`,
+      });
+
+      setTabs([...tabs]);
+    }
+  }, [getProjectResponse]);
 
   return (
     <div className="space-y-8">
