@@ -1013,7 +1013,7 @@ WHERE
     api_keys.id = $1
     AND organization.project_id = $3
 RETURNING
-    *;
+    api_keys.*;
 
 -- name: GetAPIKeyByID :one
 SELECT

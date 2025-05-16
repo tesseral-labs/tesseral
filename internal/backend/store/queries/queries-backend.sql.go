@@ -2807,7 +2807,7 @@ WHERE
     api_keys.id = $1
     AND organization.project_id = $3
 RETURNING
-    organization.id, project_id, organization.display_name, scim_enabled, organization.create_time, organization.update_time, logins_disabled, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_authenticator_app, log_in_with_passkey, require_mfa, log_in_with_email, log_in_with_saml, custom_roles_enabled, log_in_with_github, api_keys_enabled, api_keys.id, organization_id, api_keys.display_name, secret_token_sha256, secret_token_suffix, expire_time, api_keys.create_time, api_keys.update_time
+    api_keys.id, api_keys.organization_id, api_keys.display_name, api_keys.secret_token_sha256, api_keys.secret_token_suffix, api_keys.expire_time, api_keys.create_time, api_keys.update_time
 `
 
 type UpdateAPIKeyParams struct {
@@ -2816,65 +2816,18 @@ type UpdateAPIKeyParams struct {
 	ProjectID   uuid.UUID
 }
 
-type UpdateAPIKeyRow struct {
-	ID                        uuid.UUID
-	ProjectID                 uuid.UUID
-	DisplayName               string
-	ScimEnabled               bool
-	CreateTime                *time.Time
-	UpdateTime                *time.Time
-	LoginsDisabled            bool
-	LogInWithGoogle           bool
-	LogInWithMicrosoft        bool
-	LogInWithPassword         bool
-	LogInWithAuthenticatorApp bool
-	LogInWithPasskey          bool
-	RequireMfa                bool
-	LogInWithEmail            bool
-	LogInWithSaml             bool
-	CustomRolesEnabled        bool
-	LogInWithGithub           bool
-	ApiKeysEnabled            bool
-	ID_2                      uuid.UUID
-	OrganizationID            uuid.UUID
-	DisplayName_2             string
-	SecretTokenSha256         []byte
-	SecretTokenSuffix         *string
-	ExpireTime                *time.Time
-	CreateTime_2              *time.Time
-	UpdateTime_2              *time.Time
-}
-
-func (q *Queries) UpdateAPIKey(ctx context.Context, arg UpdateAPIKeyParams) (UpdateAPIKeyRow, error) {
+func (q *Queries) UpdateAPIKey(ctx context.Context, arg UpdateAPIKeyParams) (ApiKey, error) {
 	row := q.db.QueryRow(ctx, updateAPIKey, arg.ID, arg.DisplayName, arg.ProjectID)
-	var i UpdateAPIKeyRow
+	var i ApiKey
 	err := row.Scan(
 		&i.ID,
-		&i.ProjectID,
-		&i.DisplayName,
-		&i.ScimEnabled,
-		&i.CreateTime,
-		&i.UpdateTime,
-		&i.LoginsDisabled,
-		&i.LogInWithGoogle,
-		&i.LogInWithMicrosoft,
-		&i.LogInWithPassword,
-		&i.LogInWithAuthenticatorApp,
-		&i.LogInWithPasskey,
-		&i.RequireMfa,
-		&i.LogInWithEmail,
-		&i.LogInWithSaml,
-		&i.CustomRolesEnabled,
-		&i.LogInWithGithub,
-		&i.ApiKeysEnabled,
-		&i.ID_2,
 		&i.OrganizationID,
-		&i.DisplayName_2,
+		&i.DisplayName,
 		&i.SecretTokenSha256,
 		&i.SecretTokenSuffix,
 		&i.ExpireTime,
-		&i.CreateTime_2,
-		&i.UpdateTime_2,
+		&i.CreateTime,
+		&i.UpdateTime,
 	)
 	return i, err
 }
