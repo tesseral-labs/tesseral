@@ -200,7 +200,7 @@ func (s *Store) ListAPIKeys(ctx context.Context, req *backendv1.ListAPIKeysReque
 
 	var nextPageToken string
 	if len(apiKeys) == limit+1 {
-		nextPageToken = s.pageEncoder.Marshal(apiKeys[limit].Id)
+		nextPageToken = s.pageEncoder.Marshal(qAPIKeys[limit].ID)
 		apiKeys = apiKeys[:limit]
 	}
 

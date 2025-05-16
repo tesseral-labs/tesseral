@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Card,
   CardContent,
@@ -12,7 +12,11 @@ import {
   getProject,
   listAPIKeys,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
-import { useMutation, useQuery } from '@connectrpc/connect-query';
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+} from '@connectrpc/connect-query';
 import {
   Table,
   TableBody,
@@ -22,7 +26,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { DateTime } from 'luxon';
-import { timestampDate } from '@bufbuild/protobuf/wkt';
+import { timestampDate, timestampFromDate } from '@bufbuild/protobuf/wkt';
 import {
   AlertDialog,
   AlertDialogContent,
@@ -33,7 +37,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { CalendarIcon, CirclePlus, Copy } from 'lucide-react';
+import { CalendarIcon, CirclePlus, Copy, LoaderCircle } from 'lucide-react';
 import {
   Form,
   FormControl,
@@ -65,10 +69,25 @@ import { APIKey } from '@/gen/tesseral/backend/v1/models_pb';
 
 export const OrganizationAPIKeysTab = () => {
   const { organizationId } = useParams();
-  const { data: listApiKeysResponse } = useQuery(listAPIKeys, {
-    organizationId,
-  });
+  const {
+    data: listApiKeysResponses,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery(
+    listAPIKeys,
+    {
+      organizationId,
+      pageToken: '',
+    },
+    {
+      pageParamKey: 'pageToken',
+      getNextPageParam: (page) => page.nextPageToken || undefined,
+    },
+  );
   const { data: getProjectResponse } = useQuery(getProject);
+
+  const apiKeys = listApiKeysResponses?.pages?.flatMap((page) => page.apiKeys);
 
   return (
     <Card>
@@ -94,57 +113,73 @@ export const OrganizationAPIKeysTab = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {listApiKeysResponse?.apiKeys.map((apiKey) => (
-              <TableRow key={apiKey.id}>
-                <TableCell>
-                  <Link
-                    to={`/organizations/${organizationId}/api-keys/${apiKey.id}`}
-                  >
-                    {apiKey.displayName}
-                  </Link>
-                </TableCell>
-                <TableCell>
-                  <Link
-                    to={`/organizations/${organizationId}/api-keys/${apiKey.id}`}
-                  >
-                    {apiKey.id}
-                  </Link>
-                </TableCell>
-                <TableCell>
-                  {apiKey.secretTokenSuffix ? (
-                    <span className="font-mono text-sm">
-                      {getProjectResponse?.project?.apiKeySecretTokenPrefix ||
-                        'api_key_'}
-                      ...{apiKey.secretTokenSuffix}
-                    </span>
-                  ) : (
-                    '—'
-                  )}
-                </TableCell>
-                <TableCell>
-                  {apiKey.secretTokenSuffix ? (
-                    <span>Active</span>
-                  ) : (
-                    <span>Revoked</span>
-                  )}
-                </TableCell>
-                <TableCell>
-                  {apiKey.expireTime
-                    ? DateTime.fromJSDate(
-                        timestampDate(apiKey.expireTime),
-                      ).toRelative()
-                    : 'never'}
-                </TableCell>
-                <TableCell>
-                  {apiKey.createTime &&
-                    DateTime.fromJSDate(
-                      timestampDate(apiKey.createTime),
-                    ).toRelative()}
-                </TableCell>
-              </TableRow>
-            ))}
+            {apiKeys &&
+              apiKeys.map((apiKey) => (
+                <TableRow key={apiKey.id}>
+                  <TableCell>
+                    <Link
+                      to={`/organizations/${organizationId}/api-keys/${apiKey.id}`}
+                    >
+                      {apiKey.displayName}
+                    </Link>
+                  </TableCell>
+                  <TableCell>
+                    <Link
+                      to={`/organizations/${organizationId}/api-keys/${apiKey.id}`}
+                    >
+                      {apiKey.id}
+                    </Link>
+                  </TableCell>
+                  <TableCell>
+                    {apiKey.secretTokenSuffix ? (
+                      <span className="font-mono text-sm">
+                        {getProjectResponse?.project?.apiKeySecretTokenPrefix ||
+                          'api_key_'}
+                        ...{apiKey.secretTokenSuffix}
+                      </span>
+                    ) : (
+                      '—'
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {apiKey.secretTokenSuffix ? (
+                      <span>Active</span>
+                    ) : (
+                      <span>Revoked</span>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {apiKey.expireTime
+                      ? DateTime.fromJSDate(
+                          timestampDate(apiKey.expireTime),
+                        ).toRelative()
+                      : 'never'}
+                  </TableCell>
+                  <TableCell>
+                    {apiKey.createTime &&
+                      DateTime.fromJSDate(
+                        timestampDate(apiKey.createTime),
+                      ).toRelative()}
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
+
+        {hasNextPage && (
+          <div className="flex justify-center mt-8">
+            <Button
+              className="mt-4"
+              variant="outline"
+              onClick={() => fetchNextPage()}
+            >
+              {isFetchingNextPage && (
+                <LoaderCircle className="h-4 w-4 animate-spin" />
+              )}
+              Load more
+            </Button>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
@@ -181,12 +216,30 @@ const CreateAPIKeyButton = () => {
       displayName: data.displayName,
     };
 
-    // if (data.expireTime === 'custom') {
-    //   createParams.expireTime = customDate?.toISOString();
-    // } else if (data.expireTime !== 'noexpire') {
-    //   createParams.expireTime = data.expireTime;
-    // } else {
-    // }
+    switch (data.expireTime) {
+      case '1 day':
+        createParams.expireTime = timestampFromDate(
+          new Date(Date.now() + 24 * 60 * 60 * 1000),
+        );
+        break;
+      case '7 days':
+        createParams.expireTime = timestampFromDate(
+          new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        );
+        break;
+      case '30 days':
+        createParams.expireTime = timestampFromDate(
+          new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+        );
+        break;
+      case 'custom':
+        if (customDate) {
+          createParams.expireTime = timestampFromDate(customDate);
+        }
+        break;
+      case 'noexpire':
+        break;
+    }
 
     const { apiKey } = await createApiKeyMutation.mutateAsync(createParams);
 
@@ -194,6 +247,8 @@ const CreateAPIKeyButton = () => {
       setApiKey(apiKey);
 
       toast.success('API Key created successfully');
+
+      await refetch();
     }
   };
 
