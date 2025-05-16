@@ -1069,10 +1069,7 @@ func (q *Queries) GetAPIKeyByID(ctx context.Context, arg GetAPIKeyByIDParams) (A
 const getAPIKeyDetailsBySecretTokenSHA256 = `-- name: GetAPIKeyDetailsBySecretTokenSHA256 :one
 SELECT
     api_keys.id,
-    api_keys.organization_id,
-    api_keys.display_name,
-    api_keys.expire_time,
-    api_keys.secret_token_suffix
+    api_keys.organization_id
 FROM
     api_keys
     JOIN organizations AS organization ON api_keys.organization_id = organization.id
@@ -1088,23 +1085,14 @@ type GetAPIKeyDetailsBySecretTokenSHA256Params struct {
 }
 
 type GetAPIKeyDetailsBySecretTokenSHA256Row struct {
-	ID                uuid.UUID
-	OrganizationID    uuid.UUID
-	DisplayName       string
-	ExpireTime        *time.Time
-	SecretTokenSuffix *string
+	ID             uuid.UUID
+	OrganizationID uuid.UUID
 }
 
 func (q *Queries) GetAPIKeyDetailsBySecretTokenSHA256(ctx context.Context, arg GetAPIKeyDetailsBySecretTokenSHA256Params) (GetAPIKeyDetailsBySecretTokenSHA256Row, error) {
 	row := q.db.QueryRow(ctx, getAPIKeyDetailsBySecretTokenSHA256, arg.SecretTokenSha256, arg.ProjectID)
 	var i GetAPIKeyDetailsBySecretTokenSHA256Row
-	err := row.Scan(
-		&i.ID,
-		&i.OrganizationID,
-		&i.DisplayName,
-		&i.ExpireTime,
-		&i.SecretTokenSuffix,
-	)
+	err := row.Scan(&i.ID, &i.OrganizationID)
 	return i, err
 }
 

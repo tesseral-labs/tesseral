@@ -1031,10 +1031,7 @@ WHERE
 -- name: GetAPIKeyDetailsBySecretTokenSHA256 :one
 SELECT
     api_keys.id,
-    api_keys.organization_id,
-    api_keys.display_name,
-    api_keys.expire_time,
-    api_keys.secret_token_suffix
+    api_keys.organization_id
 FROM
     api_keys
     JOIN organizations AS organization ON api_keys.organization_id = organization.id

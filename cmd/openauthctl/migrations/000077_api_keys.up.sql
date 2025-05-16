@@ -3,7 +3,7 @@ create table api_keys (
     organization_id uuid not null references organizations (id) on delete cascade,
     display_name varchar not null,
     secret_token_sha256 bytea,
-    secret_token_suffix varchar(4),
+    secret_token_suffix varchar,
     expire_time timestamp with time zone,
     create_time timestamp with time zone not null default now(),
     update_time timestamp with time zone not null default now()
