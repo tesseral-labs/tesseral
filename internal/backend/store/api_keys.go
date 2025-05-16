@@ -6,6 +6,7 @@ import (
 	"crypto/sha256"
 	"errors"
 	"fmt"
+	"slices"
 	"time"
 
 	"github.com/google/uuid"
@@ -301,53 +302,15 @@ func (s *Store) ValidateAPIKey(ctx context.Context, req *backendv1.ValidateAPIKe
 		return nil, fmt.Errorf("get api key details: %w", err)
 	}
 
-	// Get all role assignments for the API key
-	qApiKeyRoleAssignments, err := q.ListAllAPIKeyRoleAssignments(ctx, queries.ListAllAPIKeyRoleAssignmentsParams{
-		ApiKeyID:  qApiKeyDetails.ID,
-		ProjectID: authn.ProjectID(ctx),
-	})
-	if err != nil {
-		return nil, fmt.Errorf("get api key role assignments: %w", err)
-	}
-
 	// Get all actions for the project
-	qActions, err := q.GetActions(ctx, authn.ProjectID(ctx))
+	var actions []string
+	qActions, err := q.GetAPIKeyActions(ctx, qApiKeyDetails.ID)
 	if err != nil {
 		return nil, fmt.Errorf("get actions: %w", err)
 	}
+	actions = qActions
 
-	// Build a map of all actions to avoid duplicates
-	allActions := make(map[string]struct{})
-	for _, qApiKeyRoleAssignment := range qApiKeyRoleAssignments {
-		// Get the role for each role assignment
-		qRole, err := q.GetRole(ctx, queries.GetRoleParams{
-			ID:        qApiKeyRoleAssignment.RoleID,
-			ProjectID: authn.ProjectID(ctx),
-		})
-		if err != nil {
-			return nil, fmt.Errorf("get role: %w", err)
-		}
-
-		// Get the actions for the role
-		qRoleActions, err := q.BatchGetRoleActionsByRoleID(ctx, []uuid.UUID{qRole.ID})
-		if err != nil {
-			return nil, fmt.Errorf("list role actions: %w", err)
-		}
-
-		// Parse the role and its assigned actions
-		role := parseRole(qRole, qRoleActions, qActions)
-
-		// Add the actions to the map
-		for _, actions := range role.Actions {
-			allActions[actions] = struct{}{}
-		}
-	}
-
-	// Convert the map keys to a slice for the response
-	var actions []string
-	for action := range allActions {
-		actions = append(actions, action)
-	}
+	slices.Sort(actions)
 
 	return &backendv1.ValidateAPIKeyResponse{
 		ApiKeyId:       idformat.APIKey.Format(qApiKeyDetails.ID),

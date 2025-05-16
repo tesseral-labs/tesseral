@@ -1001,6 +1001,39 @@ func (q *Queries) ExistsUserWithEmailInOrganization(ctx context.Context, arg Exi
 	return exists, err
 }
 
+const getAPIKeyActions = `-- name: GetAPIKeyActions :many
+SELECT DISTINCT
+    (actions.name)
+FROM
+    api_keys
+    JOIN api_key_role_assignments ON api_key.id = api_key_role_assignments.api_key_id
+    JOIN roles ON api_key_role_assignments.role_id = roles.id
+    JOIN role_actions ON roles.id = role_actions.role_id
+    JOIN actions ON role_actions.action_id = actions.id
+WHERE
+    api_key_id = $1
+`
+
+func (q *Queries) GetAPIKeyActions(ctx context.Context, apiKeyID uuid.UUID) ([]string, error) {
+	rows, err := q.db.Query(ctx, getAPIKeyActions, apiKeyID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []string
+	for rows.Next() {
+		var name string
+		if err := rows.Scan(&name); err != nil {
+			return nil, err
+		}
+		items = append(items, name)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getAPIKeyByID = `-- name: GetAPIKeyByID :one
 SELECT
     api_keys.id, api_keys.organization_id, api_keys.display_name, api_keys.secret_token_sha256, api_keys.secret_token_suffix, api_keys.expire_time, api_keys.create_time, api_keys.update_time
