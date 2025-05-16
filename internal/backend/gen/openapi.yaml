@@ -2155,6 +2155,12 @@ components:
                 emailSendFromDomain:
                     type: string
                     description: Emails sent to Users come from this domain.
+                apiKeysEnabled:
+                    type: boolean
+                    description: Whether Organizations are allowed to create API Keys.
+                apiKeySecretTokenPrefix:
+                    type: string
+                    description: The prefix used for API Key secret tokens.
             description: |-
                 Projects are the top-level object in Tesseral.
 

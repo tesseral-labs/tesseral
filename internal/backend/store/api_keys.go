@@ -10,12 +10,12 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	"github.com/tesseral-labs/tesseral/internal/backend/authn"
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"github.com/tesseral-labs/tesseral/internal/store/secretformat"
-	"github.com/tesseral-labs/tesseral/internal/wellknown/authn"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -62,7 +62,7 @@ func (s *Store) CreateAPIKey(ctx context.Context, req *backendv1.CreateAPIKeyReq
 	}
 
 	secretToken := secretTokenFormatter.Format(secretTokenValue)
-	secretTokenSuffix := secretToken[len(secretToken)-5:]
+	secretTokenSuffix := secretToken[len(secretToken)-4:]
 
 	secretTokenSha256 := sha256.Sum256(secretTokenValue[:])
 
@@ -150,7 +150,48 @@ func (s *Store) GetAPIKey(ctx context.Context, req *backendv1.GetAPIKeyRequest) 
 }
 
 func (s *Store) ListAPIKeys(ctx context.Context, req *backendv1.ListAPIKeysRequest) (*backendv1.ListAPIKeysResponse, error) {
-	return &backendv1.ListAPIKeysResponse{}, nil
+	_, q, _, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	orgID, err := idformat.Organization.Parse(req.OrganizationId)
+	if err != nil {
+		return nil, apierror.NewInvalidArgumentError("invalid organization id", fmt.Errorf("parse organization id: %w", err))
+	}
+
+	var startID uuid.UUID
+	if err := s.pageEncoder.Unmarshal(req.PageToken, &startID); err != nil {
+		return nil, err
+	}
+
+	limit := 10
+	qAPIKeys, err := q.ListAPIKeys(ctx, queries.ListAPIKeysParams{
+		ID:        orgID,
+		ID_2:      startID,
+		ProjectID: authn.ProjectID(ctx),
+		Limit:     int32(limit + 1),
+	})
+	if err != nil {
+		return nil, fmt.Errorf("list api keys: %w", err)
+	}
+
+	apiKeys := make([]*backendv1.APIKey, len(qAPIKeys))
+	for i, qAPIKey := range qAPIKeys {
+		apiKeys[i] = parseAPIKey(qAPIKey, nil)
+	}
+
+	var nextPageToken string
+	if len(apiKeys) == limit+1 {
+		nextPageToken = s.pageEncoder.Marshal(apiKeys[limit].Id)
+		apiKeys = apiKeys[:limit]
+	}
+
+	return &backendv1.ListAPIKeysResponse{
+		ApiKeys:       apiKeys,
+		NextPageToken: nextPageToken,
+	}, nil
 }
 
 func (s *Store) RevokeAPIKey(ctx context.Context, req *backendv1.RevokeAPIKeyRequest) (*backendv1.RevokeAPIKeyResponse, error) {
@@ -306,7 +347,7 @@ func parseAPIKey(qAPIKey queries.ApiKey, secretToken *string) *backendv1.APIKey 
 		DisplayName:       qAPIKey.DisplayName,
 		CreateTime:        timestamppb.New(*qAPIKey.CreateTime),
 		UpdateTime:        timestamppb.New(*qAPIKey.UpdateTime),
-		ExpireTime:        timestamppb.New(*qAPIKey.ExpireTime),
+		ExpireTime:        timestampOrNil(qAPIKey.ExpireTime),
 		Revoked:           qAPIKey.SecretTokenSha256 == nil,
 		SecretToken:       derefOrEmpty(secretToken),
 		SecretTokenSuffix: derefOrEmpty(qAPIKey.SecretTokenSuffix),

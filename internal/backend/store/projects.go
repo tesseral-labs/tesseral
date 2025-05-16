@@ -402,5 +402,7 @@ func (s *Store) parseProject(qProject *queries.Project, qProjectTrustedDomains [
 		AfterLoginRedirectUri:      qProject.AfterLoginRedirectUri,
 		AfterSignupRedirectUri:     qProject.AfterSignupRedirectUri,
 		EmailSendFromDomain:        qProject.EmailSendFromDomain,
+		ApiKeysEnabled:             &qProject.ApiKeysEnabled,
+		ApiKeySecretTokenPrefix:    qProject.ApiKeysPrefix,
 	}
 }

@@ -6,11 +6,11 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	"github.com/tesseral-labs/tesseral/internal/backend/authn"
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
-	"github.com/tesseral-labs/tesseral/internal/wellknown/authn"
 )
 
 func (s *Store) CreateAPIKeyRoleAssignment(ctx context.Context, req *backendv1.CreateAPIKeyRoleAssignmentRequest) (*backendv1.CreateAPIKeyRoleAssignmentResponse, error) {
@@ -136,8 +136,10 @@ func (s *Store) ListAPIKeyRoleAssignments(ctx context.Context, req *backendv1.Li
 
 	limit := 10
 	qAPIKeyRoleAssignments, err := q.ListAPIKeyRoleAssignments(ctx, queries.ListAPIKeyRoleAssignmentsParams{
+		ID:        startID,
 		ApiKeyID:  apiKeyID,
 		ProjectID: authn.ProjectID(ctx),
+		Limit:     int32(limit + 1),
 	})
 	if err != nil {
 		return nil, fmt.Errorf("list api key role assignments: %w", err)
