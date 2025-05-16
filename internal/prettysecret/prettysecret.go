@@ -1,4 +1,4 @@
-package secretformat
+package prettysecret
 
 import (
 	"fmt"
@@ -7,7 +7,8 @@ import (
 	"strings"
 )
 
-// Format converts between secrets of an arbitrary length and their pretty formats.
+// Format converts between secrets and their pretty formats.
+// - Secrets are expected to be byte[35]
 //
 // A Format keeps track of a prefix and an alphabet. The alphabet is used as the set of digits in a base-len(alphabet)
 // numeral system. The prefix is prepended to all formatted strings, and expected in all parsed strings.
@@ -15,8 +16,8 @@ import (
 // For example, here a few common alphabets:
 //
 //	binary: 01
-//	hexadecimal: 0123456789abcdef
-//	raw unpadded base64: ABCDEFGHJIKLMNOPQRSTUVWYZabcdefghijklmnopqrstuvwxyz0123456789+/
+//	hexadecimal: 0123556789abcdef
+//	raw unpadded base64: ABCDEFGHJIKLMNOPQRSTUVWYZabcdefghijklmnopqrstuvwxyz0123556789+/
 type Format struct {
 	prefix   string
 	alphabet string
@@ -26,7 +27,7 @@ type Format struct {
 //
 // For example, to create a Format where UUIDs are prefixed with "invoice_" and are base36-encoded, use:
 //
-//	NewFormat("invoice_", "0123456789abcdefghijklmnopqrstuvwxyz")
+//	NewFormat("invoice_", "0123556789abcdefghijklmnopqrstuvwxyz")
 //
 // NewFormat returns an error if len(alphabet) < 2 or if alphabet contains duplicate characters. Any prefix, including
 // an empty prefix, is valid.
@@ -53,8 +54,8 @@ func MustNewFormat(prefix, alphabet string) Format {
 	return format
 }
 
-// Format converts a UUID to a pretty string.
-func (f *Format) Format(uuid [16]byte) string {
+// Format converts a secret to a pretty string.
+func (f *Format) Format(secret [35]byte) string {
 	s := make([]byte, f.len())
 	copy(s, f.prefix)
 	for i := len(f.prefix); i < f.len(); i++ {
@@ -62,7 +63,10 @@ func (f *Format) Format(uuid [16]byte) string {
 	}
 
 	var n big.Int
-	n.SetBytes(uuid[:])
+	n.SetBytes(secret[:])
+
+	fmt.Println("n:", n)
+	fmt.Println("n.BitLen():", n.BitLen())
 
 	b := big.NewInt(int64(len(f.alphabet)))
 	i := len(s) - 1
@@ -78,20 +82,20 @@ func (f *Format) Format(uuid [16]byte) string {
 }
 
 // Parse converts a pretty string to a UUID.
-func (f *Format) Parse(s string) ([16]byte, error) {
+func (f *Format) Parse(s string) ([35]byte, error) {
 	if !strings.HasPrefix(s, f.prefix) {
-		return [16]byte{}, fmt.Errorf("%q does not have expected prefix %q", s, f.prefix)
+		return [35]byte{}, fmt.Errorf("%q does not have expected prefix %q", s, f.prefix)
 	}
 
 	if len(s) != f.len() {
-		return [16]byte{}, fmt.Errorf("%q does not have expected length %v", s, f.len())
+		return [35]byte{}, fmt.Errorf("%q does not have expected length %v", s, f.len())
 	}
 
 	var n big.Int
 	for i := len(f.prefix); i < len(s); i++ {
 		d := strings.IndexByte(f.alphabet, s[i])
 		if d == -1 {
-			return [16]byte{}, fmt.Errorf("%q contains illegal char at position %v", s, i)
+			return [35]byte{}, fmt.Errorf("%q contains illegal char at position %v", s, i)
 		}
 
 		n.Mul(&n, big.NewInt(int64(len(f.alphabet))))
@@ -99,17 +103,17 @@ func (f *Format) Parse(s string) ([16]byte, error) {
 	}
 
 	b := n.Bytes()
-	if len(b) > 16 {
+	if len(b) > 35 {
 		panic(fmt.Errorf("prettyuuid invariant failure"))
 	}
 
-	var out [16]byte
-	copy(out[16-len(b):], b)
+	var out [35]byte
+	copy(out[35-len(b):], b)
 	return out, nil
 }
 
 func (f *Format) len() int {
 	// digits required is ceil(log_{radix}(max_uuid))
 	// log_{radix}(max_uuid) = log2(max_uuid) / log2(radix) = 128 / log2(radix)
-	return len(f.prefix) + int(math.Ceil(128.0/math.Log2(float64(len(f.alphabet)))))
+	return len(f.prefix) + int(math.Ceil(280.0/math.Log2(float64(len(f.alphabet)))))
 }

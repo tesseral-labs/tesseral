@@ -2,18 +2,186 @@ package store
 
 import (
 	"context"
+	"fmt"
 
+	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
+	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
+	"github.com/tesseral-labs/tesseral/internal/common/apierror"
+	"github.com/tesseral-labs/tesseral/internal/store/idformat"
+	"github.com/tesseral-labs/tesseral/internal/wellknown/authn"
 )
 
 func (s *Store) CreateAPIKeyRoleAssignment(ctx context.Context, req *backendv1.CreateAPIKeyRoleAssignmentRequest) (*backendv1.CreateAPIKeyRoleAssignmentResponse, error) {
-	return &backendv1.CreateAPIKeyRoleAssignmentResponse{}, nil
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	apiKeyID, err := idformat.APIKey.Parse(req.ApiKeyId)
+	if err != nil {
+		return nil, apierror.NewInvalidArgumentError("invalid api key id", fmt.Errorf("parse api key id: %w", err))
+	}
+
+	roleID, err := idformat.Role.Parse(req.RoleId)
+	if err != nil {
+		return nil, apierror.NewInvalidArgumentError("invalid role id", fmt.Errorf("parse role id: %w", err))
+	}
+
+	qAPIKey, err := q.GetAPIKeyByID(ctx, queries.GetAPIKeyByIDParams{
+		ID:        apiKeyID,
+		ProjectID: authn.ProjectID(ctx),
+	})
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, apierror.NewNotFoundError("api key not found", fmt.Errorf("get api key: %w", err))
+		}
+		return nil, fmt.Errorf("get api key: %w", err)
+	}
+
+	qRole, err := q.GetRole(ctx, queries.GetRoleParams{
+		ID:        roleID,
+		ProjectID: authn.ProjectID(ctx),
+	})
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, apierror.NewNotFoundError("role not found", fmt.Errorf("get role: %w", err))
+		}
+
+		return nil, fmt.Errorf("get role: %w", err)
+	}
+
+	qRoleActions, err := q.BatchGetRoleActionsByRoleID(ctx, []uuid.UUID{qRole.ID})
+	if err != nil {
+		return nil, fmt.Errorf("batch get role actions by role id: %w", err)
+	}
+
+	qActions, err := q.GetActions(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get actions: %w", err)
+	}
+
+	if _, err := q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
+		ID:        qAPIKey.OrganizationID,
+		ProjectID: authn.ProjectID(ctx),
+	}); err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, apierror.NewNotFoundError("api key not found", fmt.Errorf("get organization: %w", err))
+		}
+		return nil, fmt.Errorf("get organization: %w", err)
+	}
+
+	qAPIKeyRoleAssignment, err := q.CreateAPIKeyRoleAssignment(ctx, queries.CreateAPIKeyRoleAssignmentParams{
+		ID:       uuid.New(),
+		ApiKeyID: apiKeyID,
+		RoleID:   roleID,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("create api key role assignment: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit transaction: %w", err)
+	}
+
+	return &backendv1.CreateAPIKeyRoleAssignmentResponse{
+		ApiKeyRoleAssignment: parseAPIKeyRoleAssignment(qAPIKeyRoleAssignment, parseRole(qRole, qRoleActions, qActions)),
+	}, nil
 }
 
 func (s *Store) DeleteAPIKeyRoleAssignment(ctx context.Context, req *backendv1.DeleteAPIKeyRoleAssignmentRequest) (*backendv1.DeleteAPIKeyRoleAssignmentResponse, error) {
+	_, q, commit, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	apiKeyRoleAssignmentID, err := idformat.APIKeyRoleAssignment.Parse(req.Id)
+	if err != nil {
+		return nil, apierror.NewInvalidArgumentError("invalid api key role assignment id", fmt.Errorf("parse api key role assignment id: %w", err))
+	}
+
+	if err := q.DeleteAPIKeyRoleAssignment(ctx, queries.DeleteAPIKeyRoleAssignmentParams{
+		ID:        apiKeyRoleAssignmentID,
+		ProjectID: authn.ProjectID(ctx),
+	}); err != nil {
+		return nil, fmt.Errorf("delete api key role assignment: %w", err)
+	}
+
+	if err := commit(); err != nil {
+		return nil, fmt.Errorf("commit transaction: %w", err)
+	}
+
 	return &backendv1.DeleteAPIKeyRoleAssignmentResponse{}, nil
 }
 
 func (s *Store) ListAPIKeyRoleAssignments(ctx context.Context, req *backendv1.ListAPIKeyRoleAssignmentsRequest) (*backendv1.ListAPIKeyRoleAssignmentsResponse, error) {
-	return &backendv1.ListAPIKeyRoleAssignmentsResponse{}, nil
+	_, q, _, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	apiKeyID, err := idformat.APIKey.Parse(req.ApiKeyId)
+	if err != nil {
+		return nil, apierror.NewInvalidArgumentError("invalid api key id", fmt.Errorf("parse api key id: %w", err))
+	}
+
+	var startID uuid.UUID
+	if err := s.pageEncoder.Unmarshal(req.PageToken, &startID); err != nil {
+		return nil, err
+	}
+
+	limit := 10
+	qAPIKeyRoleAssignments, err := q.ListAPIKeyRoleAssignments(ctx, queries.ListAPIKeyRoleAssignmentsParams{
+		ApiKeyID:  apiKeyID,
+		ProjectID: authn.ProjectID(ctx),
+	})
+	if err != nil {
+		return nil, fmt.Errorf("list api key role assignments: %w", err)
+	}
+
+	var apiKeyRoleAssignments []*backendv1.APIKeyRoleAssignment
+	for _, qAPIKeyRoleAssignment := range qAPIKeyRoleAssignments {
+		qRole, err := q.GetRole(ctx, queries.GetRoleParams{
+			ID:        qAPIKeyRoleAssignment.RoleID,
+			ProjectID: authn.ProjectID(ctx),
+		})
+		if err != nil {
+			return nil, fmt.Errorf("get role: %w", err)
+		}
+
+		qRoleActions, err := q.BatchGetRoleActionsByRoleID(ctx, []uuid.UUID{qRole.ID})
+		if err != nil {
+			return nil, fmt.Errorf("batch get role actions by role id: %w", err)
+		}
+
+		qActions, err := q.GetActions(ctx, authn.ProjectID(ctx))
+		if err != nil {
+			return nil, fmt.Errorf("get actions: %w", err)
+		}
+
+		apiKeyRoleAssignments = append(apiKeyRoleAssignments, parseAPIKeyRoleAssignment(qAPIKeyRoleAssignment, parseRole(qRole, qRoleActions, qActions)))
+	}
+
+	var nextPageToken string
+	if len(apiKeyRoleAssignments) == limit+1 {
+		nextPageToken = s.pageEncoder.Marshal(apiKeyRoleAssignments[limit].Id)
+		apiKeyRoleAssignments = apiKeyRoleAssignments[:limit]
+	}
+
+	return &backendv1.ListAPIKeyRoleAssignmentsResponse{
+		ApiKeyRoleAssignments: make([]*backendv1.APIKeyRoleAssignment, 0, len(qAPIKeyRoleAssignments)),
+		NextPageToken:         nextPageToken,
+	}, nil
+}
+
+func parseAPIKeyRoleAssignment(qAPIKeyRoleAssignment queries.ApiKeyRoleAssignment, role *backendv1.Role) *backendv1.APIKeyRoleAssignment {
+	return &backendv1.APIKeyRoleAssignment{
+		Id:       idformat.APIKeyRoleAssignment.Format(qAPIKeyRoleAssignment.ID),
+		ApiKeyId: idformat.APIKey.Format(qAPIKeyRoleAssignment.ApiKeyID),
+		Role:     role,
+	}
 }

@@ -547,22 +547,37 @@ func (q *Queries) CreateUserInvite(ctx context.Context, arg CreateUserInvitePara
 }
 
 const deleteAPIKey = `-- name: DeleteAPIKey :exec
-DELETE FROM api_keys
-WHERE id = $1
+DELETE FROM api_keys USING organizations
+WHERE api_keys.organization_id = organizations.id
+    AND api_keys.id = $1
+    AND organizations.project_id = $2
 `
 
-func (q *Queries) DeleteAPIKey(ctx context.Context, id uuid.UUID) error {
-	_, err := q.db.Exec(ctx, deleteAPIKey, id)
+type DeleteAPIKeyParams struct {
+	ID        uuid.UUID
+	ProjectID uuid.UUID
+}
+
+func (q *Queries) DeleteAPIKey(ctx context.Context, arg DeleteAPIKeyParams) error {
+	_, err := q.db.Exec(ctx, deleteAPIKey, arg.ID, arg.ProjectID)
 	return err
 }
 
 const deleteAPIKeyRoleAssignment = `-- name: DeleteAPIKeyRoleAssignment :exec
-DELETE FROM api_key_role_assignments
-WHERE id = $1
+DELETE FROM api_key_role_assignments USING api_keys, organizations
+WHERE api_key_role_assignments.api_key_id = api_keys.id
+    AND api_keys.organization_id = organizations.id
+    AND api_key_role_assignments.id = $1
+    AND organizations.project_id = $2
 `
 
-func (q *Queries) DeleteAPIKeyRoleAssignment(ctx context.Context, id uuid.UUID) error {
-	_, err := q.db.Exec(ctx, deleteAPIKeyRoleAssignment, id)
+type DeleteAPIKeyRoleAssignmentParams struct {
+	ID        uuid.UUID
+	ProjectID uuid.UUID
+}
+
+func (q *Queries) DeleteAPIKeyRoleAssignment(ctx context.Context, arg DeleteAPIKeyRoleAssignmentParams) error {
+	_, err := q.db.Exec(ctx, deleteAPIKeyRoleAssignment, arg.ID, arg.ProjectID)
 	return err
 }
 
@@ -985,23 +1000,24 @@ func (q *Queries) ExistsUserWithEmailInOrganization(ctx context.Context, arg Exi
 	return exists, err
 }
 
-const getAPIKey = `-- name: GetAPIKey :one
+const getAPIKeyByID = `-- name: GetAPIKeyByID :one
 SELECT
-    id, organization_id, display_name, secret_token_sha256, secret_token_suffix, expire_time, create_time, update_time
+    api_keys.id, api_keys.organization_id, api_keys.display_name, api_keys.secret_token_sha256, api_keys.secret_token_suffix, api_keys.expire_time, api_keys.create_time, api_keys.update_time
 FROM
     api_keys
+    JOIN organizations AS organization ON api_keys.organization_id = organization.id
 WHERE
-    id = $1
-    AND organization_id = $2
+    api_keys.id = $1
+    AND organization.project_id = $2
 `
 
-type GetAPIKeyParams struct {
-	ID             uuid.UUID
-	OrganizationID uuid.UUID
+type GetAPIKeyByIDParams struct {
+	ID        uuid.UUID
+	ProjectID uuid.UUID
 }
 
-func (q *Queries) GetAPIKey(ctx context.Context, arg GetAPIKeyParams) (ApiKey, error) {
-	row := q.db.QueryRow(ctx, getAPIKey, arg.ID, arg.OrganizationID)
+func (q *Queries) GetAPIKeyByID(ctx context.Context, arg GetAPIKeyByIDParams) (ApiKey, error) {
+	row := q.db.QueryRow(ctx, getAPIKeyByID, arg.ID, arg.ProjectID)
 	var i ApiKey
 	err := row.Scan(
 		&i.ID,
@@ -1012,6 +1028,73 @@ func (q *Queries) GetAPIKey(ctx context.Context, arg GetAPIKeyParams) (ApiKey, e
 		&i.ExpireTime,
 		&i.CreateTime,
 		&i.UpdateTime,
+	)
+	return i, err
+}
+
+const getAPIKeyDetailsBySecretTokenSHA256 = `-- name: GetAPIKeyDetailsBySecretTokenSHA256 :one
+SELECT
+    api_keys.id,
+    api_keys.organization_id,
+    api_keys.display_name,
+    api_keys.expire_time,
+    api_keys.secret_token_suffix,
+    organization.project_id
+FROM
+    api_keys
+    JOIN organizations AS organization ON api_keys.organization_id = organization.id
+WHERE
+    secret_token_sha256 = $1
+`
+
+type GetAPIKeyDetailsBySecretTokenSHA256Row struct {
+	ID                uuid.UUID
+	OrganizationID    uuid.UUID
+	DisplayName       string
+	ExpireTime        *time.Time
+	SecretTokenSuffix *string
+	ProjectID         uuid.UUID
+}
+
+func (q *Queries) GetAPIKeyDetailsBySecretTokenSHA256(ctx context.Context, secretTokenSha256 []byte) (GetAPIKeyDetailsBySecretTokenSHA256Row, error) {
+	row := q.db.QueryRow(ctx, getAPIKeyDetailsBySecretTokenSHA256, secretTokenSha256)
+	var i GetAPIKeyDetailsBySecretTokenSHA256Row
+	err := row.Scan(
+		&i.ID,
+		&i.OrganizationID,
+		&i.DisplayName,
+		&i.ExpireTime,
+		&i.SecretTokenSuffix,
+		&i.ProjectID,
+	)
+	return i, err
+}
+
+const getAPIKeyRoleAssignment = `-- name: GetAPIKeyRoleAssignment :one
+SELECT
+    api_key_role_assignments.id, api_key_role_assignments.api_key_id, api_key_role_assignments.role_id, api_key_role_assignments.create_time
+FROM
+    api_key_role_assignments
+    JOIN api_keys ON api_key_role_assignments.api_key_id = api_keys.id
+    JOIN organizations AS organization ON api_keys.organization_id = organization.id
+WHERE
+    api_key_role_assignments.id = $1
+    AND organization.project_id = $2
+`
+
+type GetAPIKeyRoleAssignmentParams struct {
+	ID        uuid.UUID
+	ProjectID uuid.UUID
+}
+
+func (q *Queries) GetAPIKeyRoleAssignment(ctx context.Context, arg GetAPIKeyRoleAssignmentParams) (ApiKeyRoleAssignment, error) {
+	row := q.db.QueryRow(ctx, getAPIKeyRoleAssignment, arg.ID, arg.ProjectID)
+	var i ApiKeyRoleAssignment
+	err := row.Scan(
+		&i.ID,
+		&i.ApiKeyID,
+		&i.RoleID,
+		&i.CreateTime,
 	)
 	return i, err
 }
@@ -1841,25 +1924,34 @@ func (q *Queries) IncrementProjectEmailDailyQuotaUsage(ctx context.Context, proj
 
 const listAPIKeyRoleAssignments = `-- name: ListAPIKeyRoleAssignments :many
 SELECT
-    id, api_key_id, role_id, create_time
+    api_key_role_assignments.id, api_key_role_assignments.api_key_id, api_key_role_assignments.role_id, api_key_role_assignments.create_time
 FROM
     api_key_role_assignments
+    JOIN api_keys ON api_key_role_assignments.api_key_id = api_keys.id
+    JOIN organizations AS organization ON api_keys.organization_id = organization.id
 WHERE
-    api_key_id = $1
-    AND id >= $2
+    api_key_role_assignments.api_key_id = $1
+    AND organization.project_id = $2
+    AND api_key_role_assignments.id >= $3
 ORDER BY
-    id
-LIMIT $3
+    api_key_role_assignments.id
+LIMIT $4
 `
 
 type ListAPIKeyRoleAssignmentsParams struct {
-	ApiKeyID uuid.UUID
-	ID       uuid.UUID
-	Limit    int32
+	ApiKeyID  uuid.UUID
+	ProjectID uuid.UUID
+	ID        uuid.UUID
+	Limit     int32
 }
 
 func (q *Queries) ListAPIKeyRoleAssignments(ctx context.Context, arg ListAPIKeyRoleAssignmentsParams) ([]ApiKeyRoleAssignment, error) {
-	rows, err := q.db.Query(ctx, listAPIKeyRoleAssignments, arg.ApiKeyID, arg.ID, arg.Limit)
+	rows, err := q.db.Query(ctx, listAPIKeyRoleAssignments,
+		arg.ApiKeyID,
+		arg.ProjectID,
+		arg.ID,
+		arg.Limit,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -1885,21 +1977,33 @@ func (q *Queries) ListAPIKeyRoleAssignments(ctx context.Context, arg ListAPIKeyR
 
 const listAPIKeys = `-- name: ListAPIKeys :many
 SELECT
-    id, organization_id, display_name, secret_token_sha256, secret_token_suffix, expire_time, create_time, update_time
+    api_keys.id, api_keys.organization_id, api_keys.display_name, api_keys.secret_token_sha256, api_keys.secret_token_suffix, api_keys.expire_time, api_keys.create_time, api_keys.update_time
 FROM
     api_keys
+    JOIN organizations AS organization ON api_keys.organization_id = organization.id
 WHERE
-    organization_id = $1
-    AND id >= $2
+    api_keys.id = $1
+    AND organization.project_id = $2
+    AND api_keys.id >= $3
+ORDER BY
+    api_keys.id
+LIMIT $4
 `
 
 type ListAPIKeysParams struct {
-	OrganizationID uuid.UUID
-	ID             uuid.UUID
+	ID        uuid.UUID
+	ProjectID uuid.UUID
+	ID_2      uuid.UUID
+	Limit     int32
 }
 
 func (q *Queries) ListAPIKeys(ctx context.Context, arg ListAPIKeysParams) ([]ApiKey, error) {
-	rows, err := q.db.Query(ctx, listAPIKeys, arg.OrganizationID, arg.ID)
+	rows, err := q.db.Query(ctx, listAPIKeys,
+		arg.ID,
+		arg.ProjectID,
+		arg.ID_2,
+		arg.Limit,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -2576,12 +2680,20 @@ SET
     update_time = now(),
     secret_token_sha256 = NULL,
     secret_token_suffix = NULL
+FROM
+    organizations AS organization
 WHERE
-    id = $1
+    api_keys.id = $1
+    AND organization.project_id = $2
 `
 
-func (q *Queries) RevokeAPIKey(ctx context.Context, id uuid.UUID) error {
-	_, err := q.db.Exec(ctx, revokeAPIKey, id)
+type RevokeAPIKeyParams struct {
+	ID        uuid.UUID
+	ProjectID uuid.UUID
+}
+
+func (q *Queries) RevokeAPIKey(ctx context.Context, arg RevokeAPIKeyParams) error {
+	_, err := q.db.Exec(ctx, revokeAPIKey, arg.ID, arg.ProjectID)
 	return err
 }
 
@@ -2689,10 +2801,13 @@ UPDATE
 SET
     update_time = now(),
     display_name = $2
+FROM
+    organizations AS organization
 WHERE
-    id = $1
+    api_keys.id = $1
+    AND organization.project_id = $2
 RETURNING
-    id, organization_id, display_name, secret_token_sha256, secret_token_suffix, expire_time, create_time, update_time
+    organization.id, project_id, organization.display_name, scim_enabled, organization.create_time, organization.update_time, logins_disabled, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_authenticator_app, log_in_with_passkey, require_mfa, log_in_with_email, log_in_with_saml, custom_roles_enabled, log_in_with_github, api_keys_enabled, api_keys.id, organization_id, api_keys.display_name, secret_token_sha256, secret_token_suffix, expire_time, api_keys.create_time, api_keys.update_time
 `
 
 type UpdateAPIKeyParams struct {
@@ -2700,18 +2815,65 @@ type UpdateAPIKeyParams struct {
 	DisplayName string
 }
 
-func (q *Queries) UpdateAPIKey(ctx context.Context, arg UpdateAPIKeyParams) (ApiKey, error) {
+type UpdateAPIKeyRow struct {
+	ID                        uuid.UUID
+	ProjectID                 uuid.UUID
+	DisplayName               string
+	ScimEnabled               bool
+	CreateTime                *time.Time
+	UpdateTime                *time.Time
+	LoginsDisabled            bool
+	LogInWithGoogle           bool
+	LogInWithMicrosoft        bool
+	LogInWithPassword         bool
+	LogInWithAuthenticatorApp bool
+	LogInWithPasskey          bool
+	RequireMfa                bool
+	LogInWithEmail            bool
+	LogInWithSaml             bool
+	CustomRolesEnabled        bool
+	LogInWithGithub           bool
+	ApiKeysEnabled            bool
+	ID_2                      uuid.UUID
+	OrganizationID            uuid.UUID
+	DisplayName_2             string
+	SecretTokenSha256         []byte
+	SecretTokenSuffix         *string
+	ExpireTime                *time.Time
+	CreateTime_2              *time.Time
+	UpdateTime_2              *time.Time
+}
+
+func (q *Queries) UpdateAPIKey(ctx context.Context, arg UpdateAPIKeyParams) (UpdateAPIKeyRow, error) {
 	row := q.db.QueryRow(ctx, updateAPIKey, arg.ID, arg.DisplayName)
-	var i ApiKey
+	var i UpdateAPIKeyRow
 	err := row.Scan(
 		&i.ID,
-		&i.OrganizationID,
+		&i.ProjectID,
 		&i.DisplayName,
+		&i.ScimEnabled,
+		&i.CreateTime,
+		&i.UpdateTime,
+		&i.LoginsDisabled,
+		&i.LogInWithGoogle,
+		&i.LogInWithMicrosoft,
+		&i.LogInWithPassword,
+		&i.LogInWithAuthenticatorApp,
+		&i.LogInWithPasskey,
+		&i.RequireMfa,
+		&i.LogInWithEmail,
+		&i.LogInWithSaml,
+		&i.CustomRolesEnabled,
+		&i.LogInWithGithub,
+		&i.ApiKeysEnabled,
+		&i.ID_2,
+		&i.OrganizationID,
+		&i.DisplayName_2,
 		&i.SecretTokenSha256,
 		&i.SecretTokenSuffix,
 		&i.ExpireTime,
-		&i.CreateTime,
-		&i.UpdateTime,
+		&i.CreateTime_2,
+		&i.UpdateTime_2,
 	)
 	return i, err
 }
