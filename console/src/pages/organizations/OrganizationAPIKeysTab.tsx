@@ -33,7 +33,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { CalendarIcon, CirclePlus } from 'lucide-react';
+import { CalendarIcon, CirclePlus, Copy } from 'lucide-react';
 import {
   Form,
   FormControl,
@@ -61,6 +61,7 @@ import { cn } from '@/lib/utils';
 import { Calendar } from '@/components/ui/calendar';
 import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
+import { APIKey } from '@/gen/tesseral/backend/v1/models_pb';
 
 export const OrganizationAPIKeysTab = () => {
   const { organizationId } = useParams();
@@ -84,6 +85,7 @@ export const OrganizationAPIKeysTab = () => {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead>Display Name</TableHead>
               <TableHead>ID</TableHead>
               <TableHead>Value</TableHead>
               <TableHead>Created At</TableHead>
@@ -93,6 +95,13 @@ export const OrganizationAPIKeysTab = () => {
           <TableBody>
             {listApiKeysResponse?.apiKeys.map((apiKey) => (
               <TableRow key={apiKey.id}>
+                <TableCell>
+                  <Link
+                    to={`/organizations/${organizationId}/api-keys/${apiKey.id}`}
+                  >
+                    {apiKey.displayName}
+                  </Link>
+                </TableCell>
                 <TableCell>
                   <Link
                     to={`/organizations/${organizationId}/api-keys/${apiKey.id}`}
@@ -134,6 +143,7 @@ const schema = z.object({
 });
 
 const CreateAPIKeyButton = () => {
+  const [apiKey, setApiKey] = useState<APIKey>();
   const navigate = useNavigate();
 
   const [customDate, setCustomDate] = useState<Date>();
@@ -168,7 +178,7 @@ const CreateAPIKeyButton = () => {
     const { apiKey } = await createApiKeyMutation.mutateAsync(createParams);
 
     if (apiKey) {
-      navigate(`/organizations/${organizationId}/api-keys/${apiKey.id}`);
+      setApiKey(apiKey);
 
       toast.success('API Key created successfully');
     }
@@ -187,94 +197,127 @@ const CreateAPIKeyButton = () => {
           <AlertDialogTitle>Create API Key</AlertDialogTitle>
         </AlertDialogHeader>
 
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleSubmit)}
-            className="space-y-4"
-          >
-            <FormField
-              control={form.control}
-              name="displayName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Display Name</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+        {!apiKey ? (
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="space-y-4"
+            >
+              <FormField
+                control={form.control}
+                name="displayName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Display Name</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="expireTime"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Expire time</FormLabel>
-                  <FormControl>
-                    <div className="flex flex-row gap-2">
-                      <Select
-                        {...field}
-                        onValueChange={(value) => {
-                          field.onChange(value);
+              <FormField
+                control={form.control}
+                name="expireTime"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Expire time</FormLabel>
+                    <FormControl>
+                      <div className="flex flex-row gap-2">
+                        <Select
+                          {...field}
+                          onValueChange={(value) => {
+                            field.onChange(value);
 
-                          console.log(value);
-                        }}
-                      >
-                        <SelectTrigger className="w-[180px]">
-                          <SelectValue placeholder="Pick a custom date" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="1 day">1 day</SelectItem>
-                          <SelectItem value="7 days">7 days</SelectItem>
-                          <SelectItem value="30 days">30 days</SelectItem>
-                          <SelectItem value="custom">Custom</SelectItem>
-                          <SelectItem value="noexpire">
-                            No expiration
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
+                            console.log(value);
+                          }}
+                        >
+                          <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Pick a custom date" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="1 day">1 day</SelectItem>
+                            <SelectItem value="7 days">7 days</SelectItem>
+                            <SelectItem value="30 days">30 days</SelectItem>
+                            <SelectItem value="custom">Custom</SelectItem>
+                            <SelectItem value="noexpire">
+                              No expiration
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
 
-                      {field.value === 'custom' && (
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <Button
-                              variant={'outline'}
-                              className={cn(
-                                'w-[270px] justify-start text-left font-normal',
-                                !customDate && 'text-muted-foreground',
-                              )}
-                            >
-                              <CalendarIcon className="mr-2 h-4 w-4" />
-                              {customDate ? (
-                                format(customDate, 'PPP')
-                              ) : (
-                                <span>Pick a date</span>
-                              )}
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0">
-                            <Calendar
-                              mode="single"
-                              selected={customDate}
-                              onSelect={setCustomDate}
-                              initialFocus
-                            />
-                          </PopoverContent>
-                        </Popover>
-                      )}
-                    </div>
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+                        {field.value === 'custom' && (
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant={'outline'}
+                                className={cn(
+                                  'w-[270px] justify-start text-left font-normal',
+                                  !customDate && 'text-muted-foreground',
+                                )}
+                              >
+                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                {customDate ? (
+                                  format(customDate, 'PPP')
+                                ) : (
+                                  <span>Pick a date</span>
+                                )}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0">
+                              <Calendar
+                                mode="single"
+                                selected={customDate}
+                                onSelect={setCustomDate}
+                                initialFocus
+                              />
+                            </PopoverContent>
+                          </Popover>
+                        )}
+                      </div>
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
 
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <Button type="submit">Save</Button>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <Button type="submit">Save</Button>
+              </AlertDialogFooter>
+            </form>
+          </Form>
+        ) : (
+          <div className="space-y-4">
+            <div className="text-muted-foreground text-sm text-wrap">
+              This is your secret token. This token will not be shown again, so
+              please save it now.
+            </div>
+
+            <div className="p-2 bg-muted text-muted-foreground font-mono text-xs overflow-x-hidden text-wrap word-break rounded">
+              {apiKey.secretToken}
+            </div>
+
+            <Button
+              variant="outline"
+              onClick={() => {
+                navigator.clipboard.writeText(apiKey.secretToken);
+                toast.success('API Key copied to clipboard');
+              }}
+            >
+              <Copy className="h-4 w-4" />
+              Copy
+            </Button>
+
+            <AlertDialogFooter className="flex justify-end">
+              <AlertDialogCancel>Done</AlertDialogCancel>
+              <Link
+                to={`/organizations/${organizationId}/api-keys/${apiKey.id}`}
+              >
+                <Button>Manage API Key</Button>
+              </Link>
             </AlertDialogFooter>
-          </form>
-        </Form>
+          </div>
+        )}
       </AlertDialogContent>
     </AlertDialog>
   );

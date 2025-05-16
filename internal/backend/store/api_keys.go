@@ -57,8 +57,8 @@ func (s *Store) CreateAPIKey(ctx context.Context, req *backendv1.CreateAPIKeyReq
 	secretTokenFormatter := secretformat.APIKeySecretToken
 
 	// Handle custom api key prefixes
-	if qProject.ApiKeysPrefix != nil {
-		secretTokenFormatter = secretformat.MustNewFormat(*qProject.ApiKeysPrefix)
+	if qProject.ApiKeySecretTokenPrefix != nil {
+		secretTokenFormatter = secretformat.MustNewFormat(*qProject.ApiKeySecretTokenPrefix)
 	}
 
 	secretToken := secretTokenFormatter.Format(secretTokenValue)
@@ -266,11 +266,11 @@ func (s *Store) ValidateAPIKey(ctx context.Context, req *backendv1.ValidateAPIKe
 		return nil, apierror.NewPermissionDeniedError("api keys are not enabled for this project", fmt.Errorf("api keys not enabled for project"))
 	}
 
-	if qProject.ApiKeysPrefix == nil {
-		return nil, apierror.NewPermissionDeniedError("api keys prefix is not set for this project", fmt.Errorf("api keys prefix not set for project"))
+	if qProject.ApiKeySecretTokenPrefix == nil {
+		return nil, apierror.NewPermissionDeniedError("api key secret token prefix is not set for this project", fmt.Errorf("api key secret token prefix not set for project"))
 	}
 
-	secretTokenFormatter := secretformat.MustNewFormat(*qProject.ApiKeysPrefix)
+	secretTokenFormatter := secretformat.MustNewFormat(*qProject.ApiKeySecretTokenPrefix)
 
 	secretTokenBytes, err := secretTokenFormatter.Parse(req.SecretToken)
 	secretTokenSha256 := sha256.Sum256(secretTokenBytes[:])

@@ -309,7 +309,7 @@ type Project struct {
 	GithubOauthClientID                  *string
 	GithubOauthClientSecretCiphertext    []byte
 	ApiKeysEnabled                       bool
-	ApiKeysPrefix                        *string
+	ApiKeySecretTokenPrefix              *string
 }
 
 type ProjectEmailQuotaDailyUsage struct {

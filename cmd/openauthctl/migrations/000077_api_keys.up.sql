@@ -20,7 +20,7 @@ create table api_key_role_assignments(
 
 alter table projects 
     add column api_keys_enabled boolean not null default false,
-    add column api_keys_prefix varchar;
+    add column api_key_secret_token_prefix varchar;
 
 alter table organizations
     add column api_keys_enabled boolean not null default false;

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   PageCodeSubtitle,
   PageContent,
@@ -7,12 +7,14 @@ import {
   PageTitle,
 } from '@/components/page';
 import {
+  deleteAPIKey,
   getAPIKey,
   listAPIKeyRoleAssignments,
   listRoles,
+  revokeAPIKey,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
-import { useQuery } from '@connectrpc/connect-query';
-import { useParams } from 'react-router';
+import { useMutation, useQuery } from '@connectrpc/connect-query';
+import { useNavigate, useParams } from 'react-router';
 import {
   Card,
   CardContent,
@@ -58,6 +60,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Label } from '@/components/ui/label';
+import { toast } from 'sonner';
 
 export const ViewAPIKeyPage = () => {
   const { organizationId, apiKeyId } = useParams();
@@ -112,6 +115,16 @@ export const ViewAPIKeyPage = () => {
                         DateTime.fromJSDate(
                           timestampDate(getAPIKeyResponse?.apiKey?.updateTime),
                         ).toRelative()}
+                    </DetailsGridValue>
+                  </DetailsGridEntry>
+                </DetailsGridColumn>
+                <DetailsGridColumn>
+                  <DetailsGridEntry>
+                    <DetailsGridKey>Status</DetailsGridKey>
+                    <DetailsGridValue>
+                      {getAPIKeyResponse?.apiKey?.secretTokenSuffix
+                        ? 'Active'
+                        : 'Revoked'}
                     </DetailsGridValue>
                   </DetailsGridEntry>
                 </DetailsGridColumn>
@@ -182,6 +195,8 @@ export const ViewAPIKeyPage = () => {
               </Table>
             </CardContent>
           </Card>
+
+          <DangerZoneCard />
         </div>
       </PageContent>
     </>
@@ -306,5 +321,114 @@ const RemoveRoleButton = () => {
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
+  );
+};
+
+const DangerZoneCard = () => {
+  const navigate = useNavigate();
+  const { organizationId, apiKeyId } = useParams();
+  const { data: getAPIKeyResponse, refetch } = useQuery(getAPIKey, {
+    id: apiKeyId,
+    organizationId,
+  });
+  const deleteAPIKeyMutation = useMutation(deleteAPIKey);
+  const revokeAPIKeyMutation = useMutation(revokeAPIKey);
+
+  const [revokeOpen, setRevokeOpen] = useState(false);
+
+  const handleDelete = async () => {
+    await deleteAPIKeyMutation.mutateAsync({
+      id: apiKeyId,
+    });
+
+    toast.success('API key deleted successfully');
+
+    navigate(`/organizations/${organizationId}/api-keys`);
+  };
+
+  const handleRevoke = async () => {
+    await revokeAPIKeyMutation.mutateAsync({
+      id: apiKeyId,
+    });
+
+    toast.success('API key revoked successfully');
+
+    await refetch();
+  };
+
+  return (
+    <Card className="border-destructive">
+      <CardHeader>
+        <CardTitle>Danger Zone</CardTitle>
+        <CardDescription>
+          Actions in this section cannot be undone. Please proceed with caution.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-8">
+          <div className="space-y-2">
+            <div className="font-semibold text-sm">Revoke this API Key</div>
+            <div className="text-sm text-muted-foreground">
+              This action cannot be undone. The{' '}
+              <b>{getAPIKeyResponse?.apiKey?.displayName}</b> API key will no
+              longer be usable, but all database entries will be retained.
+            </div>
+            <AlertDialog open={revokeOpen} onOpenChange={setRevokeOpen}>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive">Revoke API Key</Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                  <p>
+                    This action cannot be undone. The{' '}
+                    <b>{getAPIKeyResponse?.apiKey?.displayName}</b> API key will
+                    no longer be usable, but all database entries will be
+                    retained.
+                  </p>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <Button variant="destructive" onClick={handleRevoke}>
+                    Revoke API Key
+                  </Button>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+          <div className="space-y-2">
+            <div className="font-semibold text-sm">Delete this API Key</div>
+            <div className="text-sm text-muted-foreground">
+              This action cannot be undone. The{' '}
+              <b>{getAPIKeyResponse?.apiKey?.displayName}</b> API key will no
+              longer be usable and all database entries will be permanently
+              deleted.
+            </div>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive">Delete API Key</Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                  <p>
+                    This action cannot be undone.{' '}
+                    <b>{getAPIKeyResponse?.apiKey?.displayName}</b> will no
+                    longer be usable and all database entries will be
+                    permanently deleted.
+                  </p>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <Button variant="destructive" onClick={handleDelete}>
+                    Delete API Key
+                  </Button>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
