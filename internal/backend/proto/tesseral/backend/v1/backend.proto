@@ -344,6 +344,13 @@ service BackendService {
     option (google.api.http) = {get: "/v1/api-keys/{api_key_id}/role-assignments"};
   }
 
+  rpc ValidateAPIKey(ValidateAPIKeyRequest) returns (ValidateAPIKeyResponse) {
+    option (google.api.http) = {
+      post: "/v1/api-keys/validate"
+      body: "*"
+    };
+  }
+
   rpc DisableOrganizationLogins(DisableOrganizationLoginsRequest) returns (DisableOrganizationLoginsResponse) {}
   rpc DisableProjectLogins(DisableProjectLoginsRequest) returns (DisableProjectLoginsResponse) {}
   rpc EnableOrganizationLogins(EnableOrganizationLoginsRequest) returns (EnableOrganizationLoginsResponse) {}
@@ -1170,3 +1177,13 @@ message DeleteAPIKeyRoleAssignmentRequest {
 }
 
 message DeleteAPIKeyRoleAssignmentResponse {}
+
+message ValidateAPIKeyRequest {
+  string secret_token = 1;
+}
+
+message ValidateAPIKeyResponse {
+  string api_key_id = 1;
+  string organization_id = 2;
+  repeated string actions = 3;
+}

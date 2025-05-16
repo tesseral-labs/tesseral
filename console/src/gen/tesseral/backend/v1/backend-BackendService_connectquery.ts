@@ -401,6 +401,11 @@ export const deleteAPIKeyRoleAssignment = BackendService.method.deleteAPIKeyRole
 export const listAPIKeyRoleAssignments = BackendService.method.listAPIKeyRoleAssignments;
 
 /**
+ * @generated from rpc tesseral.backend.v1.BackendService.ValidateAPIKey
+ */
+export const validateAPIKey = BackendService.method.validateAPIKey;
+
+/**
  * @generated from rpc tesseral.backend.v1.BackendService.DisableOrganizationLogins
  */
 export const disableOrganizationLogins = BackendService.method.disableOrganizationLogins;

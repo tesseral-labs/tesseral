@@ -1038,14 +1038,20 @@ SELECT
     api_keys.organization_id,
     api_keys.display_name,
     api_keys.expire_time,
-    api_keys.secret_token_suffix,
-    organization.project_id
+    api_keys.secret_token_suffix
 FROM
     api_keys
     JOIN organizations AS organization ON api_keys.organization_id = organization.id
 WHERE
     secret_token_sha256 = $1
+    AND organization.project_id = $2
+    AND expire_time > now()
 `
+
+type GetAPIKeyDetailsBySecretTokenSHA256Params struct {
+	SecretTokenSha256 []byte
+	ProjectID         uuid.UUID
+}
 
 type GetAPIKeyDetailsBySecretTokenSHA256Row struct {
 	ID                uuid.UUID
@@ -1053,11 +1059,10 @@ type GetAPIKeyDetailsBySecretTokenSHA256Row struct {
 	DisplayName       string
 	ExpireTime        *time.Time
 	SecretTokenSuffix *string
-	ProjectID         uuid.UUID
 }
 
-func (q *Queries) GetAPIKeyDetailsBySecretTokenSHA256(ctx context.Context, secretTokenSha256 []byte) (GetAPIKeyDetailsBySecretTokenSHA256Row, error) {
-	row := q.db.QueryRow(ctx, getAPIKeyDetailsBySecretTokenSHA256, secretTokenSha256)
+func (q *Queries) GetAPIKeyDetailsBySecretTokenSHA256(ctx context.Context, arg GetAPIKeyDetailsBySecretTokenSHA256Params) (GetAPIKeyDetailsBySecretTokenSHA256Row, error) {
+	row := q.db.QueryRow(ctx, getAPIKeyDetailsBySecretTokenSHA256, arg.SecretTokenSha256, arg.ProjectID)
 	var i GetAPIKeyDetailsBySecretTokenSHA256Row
 	err := row.Scan(
 		&i.ID,
@@ -1065,7 +1070,6 @@ func (q *Queries) GetAPIKeyDetailsBySecretTokenSHA256(ctx context.Context, secre
 		&i.DisplayName,
 		&i.ExpireTime,
 		&i.SecretTokenSuffix,
-		&i.ProjectID,
 	)
 	return i, err
 }
@@ -2020,6 +2024,48 @@ func (q *Queries) ListAPIKeys(ctx context.Context, arg ListAPIKeysParams) ([]Api
 			&i.ExpireTime,
 			&i.CreateTime,
 			&i.UpdateTime,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listAllAPIKeyRoleAssignments = `-- name: ListAllAPIKeyRoleAssignments :many
+SELECT
+    api_key_role_assignments.id, api_key_role_assignments.api_key_id, api_key_role_assignments.role_id, api_key_role_assignments.create_time
+FROM
+    api_key_role_assignments
+    JOIN api_keys ON api_key_role_assignments.api_key_id = api_keys.id
+    JOIN organizations AS organization ON api_keys.organization_id = organization.id
+WHERE
+    api_key_role_assignments.api_key_id = $1
+    AND organization.project_id = $2
+`
+
+type ListAllAPIKeyRoleAssignmentsParams struct {
+	ApiKeyID  uuid.UUID
+	ProjectID uuid.UUID
+}
+
+func (q *Queries) ListAllAPIKeyRoleAssignments(ctx context.Context, arg ListAllAPIKeyRoleAssignmentsParams) ([]ApiKeyRoleAssignment, error) {
+	rows, err := q.db.Query(ctx, listAllAPIKeyRoleAssignments, arg.ApiKeyID, arg.ProjectID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ApiKeyRoleAssignment
+	for rows.Next() {
+		var i ApiKeyRoleAssignment
+		if err := rows.Scan(
+			&i.ID,
+			&i.ApiKeyID,
+			&i.RoleID,
+			&i.CreateTime,
 		); err != nil {
 			return nil, err
 		}

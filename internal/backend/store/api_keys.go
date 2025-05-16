@@ -209,6 +209,97 @@ func (s *Store) UpdateAPIKey(ctx context.Context, req *backendv1.UpdateAPIKeyReq
 	}, nil
 }
 
+func (s *Store) ValidateAPIKey(ctx context.Context, req *backendv1.ValidateAPIKeyRequest) (*backendv1.ValidateAPIKeyResponse, error) {
+	_, q, _, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	qProject, err := q.GetProjectByID(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get project by id: %w", err)
+	}
+
+	if !qProject.ApiKeysEnabled {
+		return nil, apierror.NewPermissionDeniedError("api keys are not enabled for this project", fmt.Errorf("api keys not enabled for project"))
+	}
+
+	if qProject.ApiKeysPrefix == nil {
+		return nil, apierror.NewPermissionDeniedError("api keys prefix is not set for this project", fmt.Errorf("api keys prefix not set for project"))
+	}
+
+	secretTokenFormatter := secretformat.MustNewFormat(*qProject.ApiKeysPrefix)
+
+	secretTokenBytes, err := secretTokenFormatter.Parse(req.SecretToken)
+	secretTokenSha256 := sha256.Sum256(secretTokenBytes[:])
+
+	qApiKeyDetails, err := q.GetAPIKeyDetailsBySecretTokenSHA256(ctx, queries.GetAPIKeyDetailsBySecretTokenSHA256Params{
+		SecretTokenSha256: secretTokenSha256[:],
+		ProjectID:         authn.ProjectID(ctx),
+	})
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewNotFoundError("api key not found", fmt.Errorf("get api key details: %w", err))
+		}
+		return nil, fmt.Errorf("get api key details: %w", err)
+	}
+
+	// Get all role assignments for the API key
+	qApiKeyRoleAssignments, err := q.ListAllAPIKeyRoleAssignments(ctx, queries.ListAllAPIKeyRoleAssignmentsParams{
+		ApiKeyID:  qApiKeyDetails.ID,
+		ProjectID: authn.ProjectID(ctx),
+	})
+	if err != nil {
+		return nil, fmt.Errorf("get api key role assignments: %w", err)
+	}
+
+	// Get all actions for the project
+	qActions, err := q.GetActions(ctx, authn.ProjectID(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("get actions: %w", err)
+	}
+
+	// Build a map of all actions to avoid duplicates
+	allActions := make(map[string]struct{})
+	for _, qApiKeyRoleAssignment := range qApiKeyRoleAssignments {
+		// Get the role for each role assignment
+		qRole, err := q.GetRole(ctx, queries.GetRoleParams{
+			ID:        qApiKeyRoleAssignment.RoleID,
+			ProjectID: authn.ProjectID(ctx),
+		})
+		if err != nil {
+			return nil, fmt.Errorf("get role: %w", err)
+		}
+
+		// Get the actions for the role
+		qRoleActions, err := q.BatchGetRoleActionsByRoleID(ctx, []uuid.UUID{qRole.ID})
+		if err != nil {
+			return nil, fmt.Errorf("list role actions: %w", err)
+		}
+
+		// Parse the role and its assigned actions
+		role := parseRole(qRole, qRoleActions, qActions)
+
+		// Add the actions to the map
+		for _, actions := range role.Actions {
+			allActions[actions] = struct{}{}
+		}
+	}
+
+	// Convert the map keys to a slice for the response
+	var actions []string
+	for action := range allActions {
+		actions = append(actions, action)
+	}
+
+	return &backendv1.ValidateAPIKeyResponse{
+		ApiKeyId:       idformat.APIKey.Format(qApiKeyDetails.ID),
+		Actions:        actions,
+		OrganizationId: idformat.Organization.Format(qApiKeyDetails.OrganizationID),
+	}, nil
+}
+
 func parseAPIKey(qAPIKey queries.ApiKey, secretToken *string) *backendv1.APIKey {
 	return &backendv1.APIKey{
 		Id:                idformat.APIKey.Format(qAPIKey.ID),

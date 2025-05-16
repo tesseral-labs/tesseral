@@ -61,3 +61,12 @@ func (s *Service) UpdateAPIKey(ctx context.Context, req *connect.Request[backend
 
 	return connect.NewResponse(res), nil
 }
+
+func (s *Service) ValidateAPIKey(ctx context.Context, req *connect.Request[backendv1.ValidateAPIKeyRequest]) (*connect.Response[backendv1.ValidateAPIKeyResponse], error) {
+	res, err := s.Store.ValidateAPIKey(ctx, req.Msg)
+	if err != nil {
+		return nil, fmt.Errorf("store: %w", err)
+	}
+
+	return connect.NewResponse(res), nil
+}

@@ -58,6 +58,30 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /v1/api-keys/validate:
+        post:
+            tags:
+                - BackendService
+            operationId: BackendService_ValidateAPIKey
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/ValidateAPIKeyRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ValidateAPIKeyResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /v1/api-keys/{apiKeyId}/role-assignments:
         get:
             tags:
@@ -2443,5 +2467,21 @@ components:
                     type: string
                     description: The Role ID.
             description: UserRoleAssignment represents a User being assigned to a Role.
+        ValidateAPIKeyRequest:
+            type: object
+            properties:
+                secretToken:
+                    type: string
+        ValidateAPIKeyResponse:
+            type: object
+            properties:
+                apiKeyId:
+                    type: string
+                organizationId:
+                    type: string
+                actions:
+                    type: array
+                    items:
+                        type: string
 tags:
     - name: BackendService

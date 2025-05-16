@@ -1031,13 +1031,14 @@ SELECT
     api_keys.organization_id,
     api_keys.display_name,
     api_keys.expire_time,
-    api_keys.secret_token_suffix,
-    organization.project_id
+    api_keys.secret_token_suffix
 FROM
     api_keys
     JOIN organizations AS organization ON api_keys.organization_id = organization.id
 WHERE
-    secret_token_sha256 = $1;
+    secret_token_sha256 = $1
+    AND organization.project_id = $2
+    AND expire_time > now();
 
 -- name: ListAPIKeys :many
 SELECT
@@ -1097,6 +1098,17 @@ WHERE
 ORDER BY
     api_key_role_assignments.id
 LIMIT $4;
+
+-- name: ListAllAPIKeyRoleAssignments :many
+SELECT
+    api_key_role_assignments.*
+FROM
+    api_key_role_assignments
+    JOIN api_keys ON api_key_role_assignments.api_key_id = api_keys.id
+    JOIN organizations AS organization ON api_keys.organization_id = organization.id
+WHERE
+    api_key_role_assignments.api_key_id = $1
+    AND organization.project_id = $2;
 
 -- name: DeleteAPIKeyRoleAssignment :exec
 DELETE FROM api_key_role_assignments USING api_keys, organizations
