@@ -88,8 +88,9 @@ export const OrganizationAPIKeysTab = () => {
               <TableHead>Display Name</TableHead>
               <TableHead>ID</TableHead>
               <TableHead>Value</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Expires</TableHead>
               <TableHead>Created At</TableHead>
-              <TableHead>Updated At</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -110,22 +111,34 @@ export const OrganizationAPIKeysTab = () => {
                   </Link>
                 </TableCell>
                 <TableCell>
-                  <span className="font-mono text-sm">
-                    {getProjectResponse?.project?.apiKeySecretTokenPrefix ||
-                      'api_key_'}
-                    ...{apiKey.secretTokenSuffix}
-                  </span>
+                  {apiKey.secretTokenSuffix ? (
+                    <span className="font-mono text-sm">
+                      {getProjectResponse?.project?.apiKeySecretTokenPrefix ||
+                        'api_key_'}
+                      ...{apiKey.secretTokenSuffix}
+                    </span>
+                  ) : (
+                    '—'
+                  )}
+                </TableCell>
+                <TableCell>
+                  {apiKey.secretTokenSuffix ? (
+                    <span>Active</span>
+                  ) : (
+                    <span>Revoked</span>
+                  )}
+                </TableCell>
+                <TableCell>
+                  {apiKey.expireTime
+                    ? DateTime.fromJSDate(
+                        timestampDate(apiKey.expireTime),
+                      ).toRelative()
+                    : 'never'}
                 </TableCell>
                 <TableCell>
                   {apiKey.createTime &&
                     DateTime.fromJSDate(
                       timestampDate(apiKey.createTime),
-                    ).toRelative()}
-                </TableCell>
-                <TableCell>
-                  {apiKey.updateTime &&
-                    DateTime.fromJSDate(
-                      timestampDate(apiKey.updateTime),
                     ).toRelative()}
                 </TableCell>
               </TableRow>

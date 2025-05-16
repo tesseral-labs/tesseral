@@ -182,7 +182,7 @@ export const ViewAPIKeyPage = () => {
                         <TableCell>
                           {roleAssignment.role?.displayName}
                         </TableCell>
-                        <TableCell>
+                        <TableCell className="space-x-2">
                           {roleAssignment.role?.actions.map((action) => (
                             <span
                               key={action}
