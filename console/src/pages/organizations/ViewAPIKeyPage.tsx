@@ -8,6 +8,7 @@ import {
 } from '@/components/page';
 import {
   deleteAPIKey,
+  deleteAPIKeyRoleAssignment,
   getAPIKey,
   listAPIKeyRoleAssignments,
   listRoles,
@@ -26,6 +27,7 @@ import {
   AlertDialog,
   AlertDialogCancel,
   AlertDialogContent,
+  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
@@ -55,12 +57,15 @@ import { CirclePlus } from 'lucide-react';
 import {
   Table,
   TableBody,
+  TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
+import { Checkbox } from '@/components/ui/checkbox';
+import { AddAPIKeyRoleButton } from './AddAPIKeyRoleButton';
 
 export const ViewAPIKeyPage = () => {
   const { organizationId, apiKeyId } = useParams();
@@ -159,7 +164,7 @@ export const ViewAPIKeyPage = () => {
                 </CardDescription>
               </div>
 
-              <AddRoleButton />
+              <AddAPIKeyRoleButton />
             </CardHeader>
             <CardContent>
               <Table>
@@ -172,11 +177,13 @@ export const ViewAPIKeyPage = () => {
                 </TableHeader>
                 <TableBody>
                   {listApiKeyRoleAssignmentsResponse?.apiKeyRoleAssignments?.map(
-                    (role) => (
-                      <TableRow key={role.id}>
-                        <TableHead>{role.id}</TableHead>
-                        <TableHead>
-                          {role.role?.actions.map((action) => (
+                    (roleAssignment) => (
+                      <TableRow key={roleAssignment.id}>
+                        <TableCell>
+                          {roleAssignment.role?.displayName}
+                        </TableCell>
+                        <TableCell>
+                          {roleAssignment.role?.actions.map((action) => (
                             <span
                               key={action}
                               className="p-1 text-xs text-mono bg-muted text-muted-foreground rounded"
@@ -184,10 +191,10 @@ export const ViewAPIKeyPage = () => {
                               {action}
                             </span>
                           ))}
-                        </TableHead>
-                        <TableHead>
-                          <RemoveRoleButton />
-                        </TableHead>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <RemoveRoleButton id={roleAssignment.id} />
+                        </TableCell>
                       </TableRow>
                     ),
                   )}
@@ -267,57 +274,45 @@ const EditAPIKeyButton = () => {
   );
 };
 
-const AddRoleButton = () => {
-  const { organizationId } = useParams();
-  const { data: listRolesResponse } = useQuery(listRoles, {
-    organizationId,
+const RemoveRoleButton = ({ id }: { id: string }) => {
+  const { apiKeyId } = useParams();
+  const [open, setOpen] = useState(false);
+  const { refetch } = useQuery(listAPIKeyRoleAssignments, {
+    apiKeyId,
   });
-
-  return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Button variant="outline">
-          <CirclePlus className="h-4 w-4" />
-          Add Role
-        </Button>
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Add Role</AlertDialogTitle>
-        </AlertDialogHeader>
-
-        <form>
-          {listRolesResponse?.roles?.map((role) => (
-            <div key={role.id}>
-              <Label>{role.displayName}</Label>
-              <Input type="checkbox" value={role.id} />
-            </div>
-          ))}
-
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <Button type="submit">Save</Button>
-          </AlertDialogFooter>
-        </form>
-      </AlertDialogContent>
-    </AlertDialog>
+  const deleteAPIKeyRoleAssignmentMutation = useMutation(
+    deleteAPIKeyRoleAssignment,
   );
-};
 
-const RemoveRoleButton = () => {
+  const handleDelete = async () => {
+    await deleteAPIKeyRoleAssignmentMutation.mutateAsync({
+      id,
+    });
+
+    toast.success('Role removed successfully');
+    await refetch();
+    setOpen(false);
+  };
+
   return (
-    <AlertDialog>
+    <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
         <Button variant="destructive">Remove</Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Remove Role</AlertDialogTitle>
+          <AlertDialogDescription>
+            Are you sure you want to remove this role from the API key? This
+            disable all actions associated with this role for this API key.
+          </AlertDialogDescription>
         </AlertDialogHeader>
 
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <Button type="submit">Remove</Button>
+          <Button variant="destructive" onClick={() => handleDelete()}>
+            Remove
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
@@ -366,67 +361,70 @@ const DangerZoneCard = () => {
       </CardHeader>
       <CardContent>
         <div className="space-y-8">
-          <div className="space-y-2">
-            <div className="font-semibold text-sm">Revoke this API Key</div>
-            <div className="text-sm text-muted-foreground">
-              This action cannot be undone. The{' '}
-              <b>{getAPIKeyResponse?.apiKey?.displayName}</b> API key will no
-              longer be usable, but all database entries will be retained.
+          {getAPIKeyResponse?.apiKey?.secretTokenSuffix ? (
+            <div className="space-y-2">
+              <div className="font-semibold text-sm">Revoke this API Key</div>
+              <div className="text-sm text-muted-foreground">
+                This action cannot be undone. The{' '}
+                <b>{getAPIKeyResponse?.apiKey?.displayName}</b> API key will no
+                longer be usable, but all database entries will be retained.
+              </div>
+              <AlertDialog open={revokeOpen} onOpenChange={setRevokeOpen}>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive">Revoke API Key</Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                    <p>
+                      This action cannot be undone. The{' '}
+                      <b>{getAPIKeyResponse?.apiKey?.displayName}</b> API key
+                      will no longer be usable, but all database entries will be
+                      retained.
+                    </p>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <Button variant="destructive" onClick={handleRevoke}>
+                      Revoke API Key
+                    </Button>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
-            <AlertDialog open={revokeOpen} onOpenChange={setRevokeOpen}>
-              <AlertDialogTrigger asChild>
-                <Button variant="destructive">Revoke API Key</Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                  <p>
-                    This action cannot be undone. The{' '}
-                    <b>{getAPIKeyResponse?.apiKey?.displayName}</b> API key will
-                    no longer be usable, but all database entries will be
-                    retained.
-                  </p>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <Button variant="destructive" onClick={handleRevoke}>
-                    Revoke API Key
-                  </Button>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          </div>
-          <div className="space-y-2">
-            <div className="font-semibold text-sm">Delete this API Key</div>
-            <div className="text-sm text-muted-foreground">
-              This action cannot be undone. The{' '}
-              <b>{getAPIKeyResponse?.apiKey?.displayName}</b> API key will no
-              longer be usable and all database entries will be permanently
-              deleted.
+          ) : (
+            <div className="space-y-2">
+              <div className="font-semibold text-sm">Delete this API Key</div>
+              <div className="text-sm text-muted-foreground">
+                This action cannot be undone. The{' '}
+                <b>{getAPIKeyResponse?.apiKey?.displayName}</b> API key will no
+                longer be usable and all database entries will be permanently
+                deleted.
+              </div>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive">Delete API Key</Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                    <p>
+                      This action cannot be undone.{' '}
+                      <b>{getAPIKeyResponse?.apiKey?.displayName}</b> will no
+                      longer be usable and all database entries will be
+                      permanently deleted.
+                    </p>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <Button variant="destructive" onClick={handleDelete}>
+                      Delete API Key
+                    </Button>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button variant="destructive">Delete API Key</Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                  <p>
-                    This action cannot be undone.{' '}
-                    <b>{getAPIKeyResponse?.apiKey?.displayName}</b> will no
-                    longer be usable and all database entries will be
-                    permanently deleted.
-                  </p>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <Button variant="destructive" onClick={handleDelete}>
-                    Delete API Key
-                  </Button>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          </div>
+          )}
         </div>
       </CardContent>
     </Card>

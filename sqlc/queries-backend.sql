@@ -1001,7 +1001,8 @@ RETURNING
 DELETE FROM api_keys USING organizations
 WHERE api_keys.organization_id = organizations.id
     AND api_keys.id = $1
-    AND organizations.project_id = $2;
+    AND organizations.project_id = $2
+    AND api_keys.secret_token_sha256 IS NULL;
 
 -- name: UpdateAPIKey :one
 UPDATE
@@ -1074,6 +1075,18 @@ INSERT INTO api_key_role_assignments (id, api_key_id, role_id)
     VALUES ($1, $2, $3)
 RETURNING
     *;
+
+-- name: GetAPIKeyActions :many
+SELECT DISTINCT
+    (actions.name)
+FROM
+    api_keys
+    JOIN api_key_role_assignments ON api_key.id = api_key_role_assignments.api_key_id
+    JOIN roles ON api_key_role_assignments.role_id = roles.id
+    JOIN role_actions ON roles.id = role_actions.role_id
+    JOIN actions ON role_actions.action_id = actions.id
+WHERE
+    api_key_id = $1;
 
 -- name: GetAPIKeyRoleAssignment :one
 SELECT

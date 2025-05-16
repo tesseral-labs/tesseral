@@ -165,7 +165,9 @@ func (s *Store) ListAPIKeyRoleAssignments(ctx context.Context, req *backendv1.Li
 			return nil, fmt.Errorf("get actions: %w", err)
 		}
 
-		apiKeyRoleAssignments = append(apiKeyRoleAssignments, parseAPIKeyRoleAssignment(qAPIKeyRoleAssignment, parseRole(qRole, qRoleActions, qActions)))
+		role := parseRole(qRole, qRoleActions, qActions)
+
+		apiKeyRoleAssignments = append(apiKeyRoleAssignments, parseAPIKeyRoleAssignment(qAPIKeyRoleAssignment, role))
 	}
 
 	var nextPageToken string
@@ -175,7 +177,7 @@ func (s *Store) ListAPIKeyRoleAssignments(ctx context.Context, req *backendv1.Li
 	}
 
 	return &backendv1.ListAPIKeyRoleAssignmentsResponse{
-		ApiKeyRoleAssignments: make([]*backendv1.APIKeyRoleAssignment, 0, len(qAPIKeyRoleAssignments)),
+		ApiKeyRoleAssignments: apiKeyRoleAssignments,
 		NextPageToken:         nextPageToken,
 	}, nil
 }

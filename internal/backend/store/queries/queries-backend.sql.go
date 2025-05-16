@@ -551,6 +551,7 @@ DELETE FROM api_keys USING organizations
 WHERE api_keys.organization_id = organizations.id
     AND api_keys.id = $1
     AND organizations.project_id = $2
+    AND api_keys.secret_token_sha256 IS NULL
 `
 
 type DeleteAPIKeyParams struct {
