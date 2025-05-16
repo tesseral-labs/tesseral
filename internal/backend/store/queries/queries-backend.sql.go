@@ -2805,7 +2805,7 @@ FROM
     organizations AS organization
 WHERE
     api_keys.id = $1
-    AND organization.project_id = $2
+    AND organization.project_id = $3
 RETURNING
     organization.id, project_id, organization.display_name, scim_enabled, organization.create_time, organization.update_time, logins_disabled, log_in_with_google, log_in_with_microsoft, log_in_with_password, log_in_with_authenticator_app, log_in_with_passkey, require_mfa, log_in_with_email, log_in_with_saml, custom_roles_enabled, log_in_with_github, api_keys_enabled, api_keys.id, organization_id, api_keys.display_name, secret_token_sha256, secret_token_suffix, expire_time, api_keys.create_time, api_keys.update_time
 `
@@ -2813,6 +2813,7 @@ RETURNING
 type UpdateAPIKeyParams struct {
 	ID          uuid.UUID
 	DisplayName string
+	ProjectID   uuid.UUID
 }
 
 type UpdateAPIKeyRow struct {
@@ -2845,7 +2846,7 @@ type UpdateAPIKeyRow struct {
 }
 
 func (q *Queries) UpdateAPIKey(ctx context.Context, arg UpdateAPIKeyParams) (UpdateAPIKeyRow, error) {
-	row := q.db.QueryRow(ctx, updateAPIKey, arg.ID, arg.DisplayName)
+	row := q.db.QueryRow(ctx, updateAPIKey, arg.ID, arg.DisplayName, arg.ProjectID)
 	var i UpdateAPIKeyRow
 	err := row.Scan(
 		&i.ID,

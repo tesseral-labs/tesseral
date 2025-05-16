@@ -1011,7 +1011,7 @@ FROM
     organizations AS organization
 WHERE
     api_keys.id = $1
-    AND organization.project_id = $2
+    AND organization.project_id = $3
 RETURNING
     *;
 
