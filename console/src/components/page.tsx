@@ -73,12 +73,12 @@ export const PageHeader = ({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div className="bg-zinc-950 pt-16 pb-32 w-full relative overflow-hidden -mb-32 z-0">
-    <div className="absolute flex justify-center items-center blur-3xl w-full">
+    <div className="absolute flex justify-center items-center blur-3xl w-full z-0">
       <div className="relative rounded-full w-[750px] h-[750px] bg-indigo-600/30 blur-3xl m-auto" />
     </div>
 
     <div
-      className={cn('container p-4 m-auto text-white', className)}
+      className={cn('container p-4 m-auto text-white relative z-5', className)}
       {...props}
     >
       {children}
