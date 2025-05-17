@@ -1006,16 +1006,16 @@ SELECT DISTINCT
     (actions.name)
 FROM
     api_keys
-    JOIN api_key_role_assignments ON api_key.id = api_key_role_assignments.api_key_id
+    JOIN api_key_role_assignments ON api_keys.id = api_key_role_assignments.api_key_id
     JOIN roles ON api_key_role_assignments.role_id = roles.id
     JOIN role_actions ON roles.id = role_actions.role_id
     JOIN actions ON role_actions.action_id = actions.id
 WHERE
-    api_key_id = $1
+    api_keys.id = $1
 `
 
-func (q *Queries) GetAPIKeyActions(ctx context.Context, apiKeyID uuid.UUID) ([]string, error) {
-	rows, err := q.db.Query(ctx, getAPIKeyActions, apiKeyID)
+func (q *Queries) GetAPIKeyActions(ctx context.Context, id uuid.UUID) ([]string, error) {
+	rows, err := q.db.Query(ctx, getAPIKeyActions, id)
 	if err != nil {
 		return nil, err
 	}
@@ -1074,9 +1074,10 @@ FROM
     api_keys
     JOIN organizations AS organization ON api_keys.organization_id = organization.id
 WHERE
-    secret_token_sha256 = $1
+    api_keys.secret_token_sha256 = $1
     AND organization.project_id = $2
-    AND expire_time > now()
+    AND (api_keys.expire_time > now()
+        OR api_keys.expire_time IS NULL)
 `
 
 type GetAPIKeyDetailsBySecretTokenSHA256Params struct {

@@ -6,6 +6,7 @@ import (
 	"crypto/sha256"
 	"errors"
 	"fmt"
+	"log/slog"
 	"slices"
 	"time"
 
@@ -52,20 +53,21 @@ func (s *Store) CreateAPIKey(ctx context.Context, req *backendv1.CreateAPIKeyReq
 	}
 
 	var secretTokenValue [35]byte
+	var secretToken string
 	if _, err := rand.Read(secretTokenValue[:]); err != nil {
 		return nil, fmt.Errorf("generate secret token: %w", err)
 	}
-	secretTokenFormatter := secretformat.APIKeySecretToken
 
 	// Handle custom api key prefixes
 	if qProject.ApiKeySecretTokenPrefix != nil {
-		secretTokenFormatter = secretformat.MustNewFormat(*qProject.ApiKeySecretTokenPrefix)
+		secretTokenFormatter := secretformat.MustNewFormat(*qProject.ApiKeySecretTokenPrefix)
+		secretToken = secretTokenFormatter.Format(secretTokenValue)
 	}
 
-	secretToken := secretTokenFormatter.Format(secretTokenValue)
 	secretTokenSuffix := secretToken[len(secretToken)-4:]
-
 	secretTokenSha256 := sha256.Sum256(secretTokenValue[:])
+
+	slog.InfoContext(ctx, "generated secret token", "secretTokenValue:", secretTokenValue, "secretTokenSha256:", secretTokenSha256)
 
 	var expireTime *time.Time
 	if req.ExpireTime != nil {
@@ -290,6 +292,8 @@ func (s *Store) ValidateAPIKey(ctx context.Context, req *backendv1.ValidateAPIKe
 
 	secretTokenBytes, err := secretTokenFormatter.Parse(req.SecretToken)
 	secretTokenSha256 := sha256.Sum256(secretTokenBytes[:])
+
+	slog.InfoContext(ctx, "generated secret token", "secretTokenBytes:", secretTokenBytes, "secretTokenSha256:", secretTokenSha256)
 
 	qApiKeyDetails, err := q.GetAPIKeyDetailsBySecretTokenSHA256(ctx, queries.GetAPIKeyDetailsBySecretTokenSHA256Params{
 		SecretTokenSha256: secretTokenSha256[:],
