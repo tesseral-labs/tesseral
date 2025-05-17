@@ -83,6 +83,10 @@ export const ViewOrganizationPage = () => {
       name: 'SCIM API Keys',
       url: `/organizations/${organizationId}/scim-api-keys`,
     },
+    {
+      name: 'API Keys',
+      url: `/organizations/${organizationId}/api-keys`,
+    },
   ];
 
   const currentTab = tabs.find((tab) => tab.url === pathname);

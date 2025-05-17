@@ -151,6 +151,24 @@ type Action struct {
 	Description string
 }
 
+type ApiKey struct {
+	ID                uuid.UUID
+	OrganizationID    uuid.UUID
+	DisplayName       string
+	SecretTokenSha256 []byte
+	SecretTokenSuffix *string
+	ExpireTime        *time.Time
+	CreateTime        *time.Time
+	UpdateTime        *time.Time
+}
+
+type ApiKeyRoleAssignment struct {
+	ID         uuid.UUID
+	ApiKeyID   uuid.UUID
+	RoleID     uuid.UUID
+	CreateTime *time.Time
+}
+
 type BackendApiKey struct {
 	ID                uuid.UUID
 	ProjectID         uuid.UUID
@@ -226,6 +244,7 @@ type Organization struct {
 	LogInWithSaml             bool
 	CustomRolesEnabled        bool
 	LogInWithGithub           bool
+	ApiKeysEnabled            bool
 }
 
 type OrganizationDomain struct {
@@ -289,6 +308,8 @@ type Project struct {
 	LogInWithGithub                      bool
 	GithubOauthClientID                  *string
 	GithubOauthClientSecretCiphertext    []byte
+	ApiKeysEnabled                       bool
+	ApiKeySecretTokenPrefix              *string
 }
 
 type ProjectEmailQuotaDailyUsage struct {

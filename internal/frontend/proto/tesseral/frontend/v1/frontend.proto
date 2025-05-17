@@ -3,6 +3,7 @@ syntax = "proto3";
 package tesseral.frontend.v1;
 
 import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
 import "tesseral/frontend/v1/models.proto";
 
 service FrontendService {
@@ -252,6 +253,57 @@ service FrontendService {
   // Delete a User Role Assignment.
   rpc DeleteUserRoleAssignment(DeleteUserRoleAssignmentRequest) returns (DeleteUserRoleAssignmentResponse) {
     option (google.api.http) = {delete: "/frontend/v1/user-role-assignments/{id}"};
+  }
+
+  // Create an API Key for an Organization.
+  rpc CreateAPIKey(CreateAPIKeyRequest) returns (CreateAPIKeyResponse) {
+    option (google.api.http) = {
+      post: "/frontend/v1/api-keys"
+      body: "*"
+    };
+  }
+
+  // Delete an API Key.
+  rpc DeleteAPIKey(DeleteAPIKeyRequest) returns (DeleteAPIKeyResponse) {
+    option (google.api.http) = {delete: "/frontend/v1/api-keys/{id}"};
+  }
+
+  // Get an API Key.
+  rpc GetAPIKey(GetAPIKeyRequest) returns (GetAPIKeyResponse) {
+    option (google.api.http) = {get: "/frontend/v1/api-keys/{id}"};
+  }
+
+  // List API Keys.
+  rpc ListAPIKeys(ListAPIKeysRequest) returns (ListAPIKeysResponse) {
+    option (google.api.http) = {get: "/frontend/v1/api-keys"};
+  }
+
+  // Revoke an API Key.
+  rpc RevokeAPIKey(RevokeAPIKeyRequest) returns (RevokeAPIKeyResponse) {
+    option (google.api.http) = {post: "/frontend/v1/api-keys/{id}/revoke"};
+  }
+
+  // Update an API Key.
+  rpc UpdateAPIKey(UpdateAPIKeyRequest) returns (UpdateAPIKeyResponse) {
+    option (google.api.http) = {
+      patch: "/frontend/v1/api-keys/{id}"
+      body: "*"
+    };
+  }
+
+  rpc CreateAPIKeyRoleAssignment(CreateAPIKeyRoleAssignmentRequest) returns (CreateAPIKeyRoleAssignmentResponse) {
+    option (google.api.http) = {
+      post: "/frontend/v1/api-keys/{api_key_id}/role-assignments"
+      body: "*"
+    };
+  }
+
+  rpc DeleteAPIKeyRoleAssignment(DeleteAPIKeyRoleAssignmentRequest) returns (DeleteAPIKeyRoleAssignmentResponse) {
+    option (google.api.http) = {delete: "/frontend/v1/api-keys/{api_key_id}/role-assignments/{id}"};
+  }
+
+  rpc ListAPIKeyRoleAssignments(ListAPIKeyRoleAssignmentsRequest) returns (ListAPIKeyRoleAssignmentsResponse) {
+    option (google.api.http) = {get: "/frontend/v1/api-keys/{api_key_id}/role-assignments"};
   }
 }
 
@@ -619,3 +671,79 @@ message DeleteUserRoleAssignmentRequest {
 }
 
 message DeleteUserRoleAssignmentResponse {}
+
+message CreateAPIKeyRequest {
+  string organization_id = 1;
+  string display_name = 2;
+  google.protobuf.Timestamp expire_time = 3;
+}
+
+message CreateAPIKeyResponse {
+  APIKey api_key = 1;
+}
+
+message DeleteAPIKeyRequest {
+  string id = 1;
+}
+
+message DeleteAPIKeyResponse {}
+
+message GetAPIKeyRequest {
+  string organization_id = 1;
+  string id = 2;
+}
+
+message GetAPIKeyResponse {
+  APIKey api_key = 1;
+}
+
+message ListAPIKeysRequest {
+  string organization_id = 1;
+  string page_token = 2;
+}
+
+message ListAPIKeysResponse {
+  repeated APIKey api_keys = 1;
+  string next_page_token = 2;
+}
+
+message RevokeAPIKeyRequest {
+  string id = 1;
+}
+
+message RevokeAPIKeyResponse {}
+
+message UpdateAPIKeyRequest {
+  string id = 1;
+  string display_name = 2;
+}
+
+message UpdateAPIKeyResponse {
+  APIKey api_key = 1;
+}
+
+message CreateAPIKeyRoleAssignmentRequest {
+  string api_key_id = 1;
+  string role_id = 2;
+}
+
+message CreateAPIKeyRoleAssignmentResponse {
+  APIKeyRoleAssignment api_key_role_assignment = 1;
+}
+
+message ListAPIKeyRoleAssignmentsRequest {
+  string api_key_id = 1;
+  string page_token = 2;
+}
+
+message ListAPIKeyRoleAssignmentsResponse {
+  repeated APIKeyRoleAssignment api_key_role_assignments = 1;
+  string next_page_token = 2;
+}
+
+message DeleteAPIKeyRoleAssignmentRequest {
+  string id = 1;
+  string api_key_id = 2;
+}
+
+message DeleteAPIKeyRoleAssignmentResponse {}

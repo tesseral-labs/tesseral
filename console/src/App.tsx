@@ -61,6 +61,8 @@ import { CreateRolePage } from '@/pages/roles/CreateRolePage';
 import { EditRolePage } from '@/pages/roles/EditRolePage';
 import { GithubOAuthCallbackPage } from './pages/login/GithubOAuthCallbackPage';
 import { ListAPIKeysTab } from './pages/project/ListAPIKeysTab';
+import { OrganizationAPIKeysTab } from './pages/organizations/OrganizationAPIKeysTab';
+import { ViewAPIKeyPage } from './pages/organizations/ViewAPIKeyPage';
 
 const queryClient = new QueryClient();
 
@@ -209,6 +211,7 @@ const AppWithinQueryClient = () => {
                 path="scim-api-keys"
                 element={<OrganizationSCIMAPIKeysTab />}
               />
+              <Route path="api-keys" element={<OrganizationAPIKeysTab />} />
             </Route>
 
             <Route
@@ -238,6 +241,11 @@ const AppWithinQueryClient = () => {
             <Route
               path="organizations/:organizationId/scim-api-keys/:scimApiKeyId"
               element={<ViewSCIMAPIKeyPage />}
+            />
+
+            <Route
+              path="organizations/:organizationId/api-keys/:apiKeyId"
+              element={<ViewAPIKeyPage />}
             />
 
             <Route path="roles/new" element={<CreateRolePage />} />
