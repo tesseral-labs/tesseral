@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { clsx } from "clsx";
 import React, { useEffect, useState } from "react";
-import { set, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Outlet } from "react-router";
 import { Link, useLocation } from "react-router-dom";
 import { toast } from "sonner";
@@ -66,7 +66,7 @@ export function OrganizationSettingsPage() {
   );
 
   useEffect(() => {
-    if (getProjectResponse?.project?.apiKeysEnabled) {
+    if (getProjectResponse?.project?.apiKeysEnabled && tabs.length === 2) {
       // Only add the API Keys tab if the project has API keys enabled
       tabs.splice(1, 0, {
         name: "API Keys",
@@ -75,7 +75,7 @@ export function OrganizationSettingsPage() {
 
       setTabs([...tabs]);
     }
-  }, [getProjectResponse]);
+  }, [getProjectResponse, tabs]);
 
   return (
     <div className="space-y-8">

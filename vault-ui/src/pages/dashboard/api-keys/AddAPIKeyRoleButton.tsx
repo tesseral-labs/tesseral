@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { CirclePlus } from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -40,10 +41,12 @@ const schema = z.object({
   roleId: z.string(),
 });
 
-export const AddAPIKeyRoleButton = () => {
+export function AddAPIKeyRoleButton() {
   const [open, setOpen] = useState(false);
 
-  const form = useForm<z.infer<typeof schema>>({});
+  const form = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
+  });
   const { apiKeyId, organizationId } = useParams();
   const { data: listAPIKeyRoleAssignmentsResponse, refetch } = useQuery(
     listAPIKeyRoleAssignments,
@@ -74,7 +77,7 @@ export const AddAPIKeyRoleButton = () => {
     );
   });
 
-  const handleSubmit = async (data: z.infer<typeof schema>) => {
+  async function handleSubmit(data: z.infer<typeof schema>) {
     await createAPIKeyRoleAssignmentMutation.mutateAsync({
       apiKeyId,
       roleId: data.roleId,
@@ -84,7 +87,7 @@ export const AddAPIKeyRoleButton = () => {
 
     toast.success("Role added successfully");
     setOpen(false);
-  };
+  }
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
@@ -142,4 +145,4 @@ export const AddAPIKeyRoleButton = () => {
       </AlertDialogContent>
     </AlertDialog>
   );
-};
+}

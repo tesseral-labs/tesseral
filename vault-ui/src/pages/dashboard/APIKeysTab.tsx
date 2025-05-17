@@ -4,6 +4,7 @@ import {
   useMutation,
   useQuery,
 } from "@connectrpc/connect-query";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { CalendarIcon, CirclePlus, Copy, LoaderCircle } from "lucide-react";
 import { DateTime } from "luxon";
@@ -203,17 +204,20 @@ function CreateAPIKeyButton() {
   const createApiKeyMutation = useMutation(createAPIKey);
 
   const form = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
     defaultValues: {
       displayName: "",
       expireTime: "1 day",
     },
   });
 
-  const handleSubmit = async (data: z.infer<typeof schema>) => {
+  async function handleSubmit(data: z.infer<typeof schema>) {
+    /* eslint-disable @typescript-eslint/no-explicit-any */
     const createParams: Record<string, any> = {
       organizationId: organizationId!,
       displayName: data.displayName,
     };
+    /* eslint-enable @typescript-eslint/no-explicit-any */
 
     switch (data.expireTime) {
       case "1 day":
@@ -249,7 +253,7 @@ function CreateAPIKeyButton() {
 
       await refetch();
     }
-  };
+  }
 
   return (
     <AlertDialog>

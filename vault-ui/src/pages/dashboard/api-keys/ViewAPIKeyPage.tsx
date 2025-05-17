@@ -1,5 +1,6 @@
 import { timestampDate } from "@bufbuild/protobuf/wkt";
 import { useMutation, useQuery } from "@connectrpc/connect-query";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { DateTime } from "luxon";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -46,9 +47,9 @@ import {
   deleteAPIKey,
   deleteAPIKeyRoleAssignment,
   getAPIKey,
-  getOrganization,
   listAPIKeyRoleAssignments,
   revokeAPIKey,
+  updateAPIKey,
 } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
 
 import { AddAPIKeyRoleButton } from "./AddAPIKeyRoleButton";
@@ -113,58 +114,6 @@ export function ViewAPIKeyPage() {
               </div>
             </div>
           </div>
-          {/* <DetailsGrid>
-                <DetailsGridColumn>
-                  <DetailsGridEntry>
-                    <DetailsGridKey>Created at</DetailsGridKey>
-                    <DetailsGridValue>
-                      {getAPIKeyResponse?.apiKey?.createTime &&
-                        DateTime.fromJSDate(
-                          timestampDate(getAPIKeyResponse?.apiKey?.createTime),
-                        ).toRelative()}
-                    </DetailsGridValue>
-                  </DetailsGridEntry>
-                </DetailsGridColumn>
-                <DetailsGridColumn>
-                  <DetailsGridEntry>
-                    <DetailsGridKey>Updated at</DetailsGridKey>
-                    <DetailsGridValue>
-                      {getAPIKeyResponse?.apiKey?.updateTime &&
-                        DateTime.fromJSDate(
-                          timestampDate(getAPIKeyResponse?.apiKey?.updateTime),
-                        ).toRelative()}
-                    </DetailsGridValue>
-                  </DetailsGridEntry>
-                </DetailsGridColumn>
-                <DetailsGridColumn>
-                  <DetailsGridEntry>
-                    <DetailsGridKey>Status</DetailsGridKey>
-                    <DetailsGridValue>
-                      {getAPIKeyResponse?.apiKey?.revoked
-                        ? 'Revoked'
-                        : 'Active'}
-                    </DetailsGridValue>
-                  </DetailsGridEntry>
-                </DetailsGridColumn>
-                <DetailsGridColumn>
-                  <DetailsGridEntry>
-                    <DetailsGridKey>Expires at</DetailsGridKey>
-                    <DetailsGridValue>
-                      {getAPIKeyResponse?.apiKey?.expireTime ? (
-                        <>
-                          {DateTime.fromJSDate(
-                            timestampDate(
-                              getAPIKeyResponse?.apiKey?.expireTime,
-                            ),
-                          ).toRelative()}
-                        </>
-                      ) : (
-                        <>{'never'}</>
-                      )}
-                    </DetailsGridValue>
-                  </DetailsGridEntry>
-                </DetailsGridColumn>
-              </DetailsGrid> */}
         </CardContent>
       </Card>
 
@@ -223,20 +172,34 @@ const schema = z.object({
   displayName: z.string().min(1, { message: "Display name is required" }),
 });
 
-const EditAPIKeyButton = () => {
+function EditAPIKeyButton() {
+  const [open, setOpen] = useState(false);
+
   const { organizationId, apiKeyId } = useParams();
-  const { data: getAPIKeyResponse } = useQuery(getAPIKey, {
+  const { data: getAPIKeyResponse, refetch } = useQuery(getAPIKey, {
     id: apiKeyId,
     organizationId,
   });
 
+  const updateAPIKeyMutation = useMutation(updateAPIKey);
+
   const form = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
     defaultValues: {
       displayName: "",
     },
   });
 
-  const handleSubmit = async (data: z.infer<typeof schema>) => {};
+  async function handleSubmit(data: z.infer<typeof schema>) {
+    await updateAPIKeyMutation.mutateAsync({
+      id: apiKeyId,
+      displayName: data.displayName,
+    });
+
+    await refetch();
+    toast.success("API key updated successfully");
+    setOpen(false);
+  }
 
   useEffect(() => {
     if (getAPIKeyResponse?.apiKey) {
@@ -244,10 +207,10 @@ const EditAPIKeyButton = () => {
         displayName: getAPIKeyResponse.apiKey.displayName,
       });
     }
-  }, [getAPIKeyResponse]);
+  }, [getAPIKeyResponse, form]);
 
   return (
-    <AlertDialog>
+    <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
         <Button variant="outline">Edit</Button>
       </AlertDialogTrigger>
@@ -281,9 +244,9 @@ const EditAPIKeyButton = () => {
       </AlertDialogContent>
     </AlertDialog>
   );
-};
+}
 
-const RemoveRoleButton = ({ id }: { id: string }) => {
+function RemoveRoleButton({ id }: { id: string }) {
   const { apiKeyId } = useParams();
   const [open, setOpen] = useState(false);
   const { refetch } = useQuery(listAPIKeyRoleAssignments, {
@@ -293,7 +256,7 @@ const RemoveRoleButton = ({ id }: { id: string }) => {
     deleteAPIKeyRoleAssignment,
   );
 
-  const handleDelete = async () => {
+  async function handleDelete() {
     await deleteAPIKeyRoleAssignmentMutation.mutateAsync({
       id,
     });
@@ -301,7 +264,7 @@ const RemoveRoleButton = ({ id }: { id: string }) => {
     toast.success("Role removed successfully");
     await refetch();
     setOpen(false);
-  };
+  }
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
@@ -326,9 +289,9 @@ const RemoveRoleButton = ({ id }: { id: string }) => {
       </AlertDialogContent>
     </AlertDialog>
   );
-};
+}
 
-const DangerZoneCard = () => {
+function DangerZoneCard() {
   const navigate = useNavigate();
   const { organizationId, apiKeyId } = useParams();
   const { data: getAPIKeyResponse, refetch } = useQuery(getAPIKey, {
@@ -340,7 +303,7 @@ const DangerZoneCard = () => {
 
   const [revokeOpen, setRevokeOpen] = useState(false);
 
-  const handleDelete = async () => {
+  async function handleDelete() {
     await deleteAPIKeyMutation.mutateAsync({
       id: apiKeyId,
     });
@@ -348,9 +311,9 @@ const DangerZoneCard = () => {
     toast.success("API key deleted successfully");
 
     navigate(`/organizations/${organizationId}/api-keys`);
-  };
+  }
 
-  const handleRevoke = async () => {
+  async function handleRevoke() {
     await revokeAPIKeyMutation.mutateAsync({
       id: apiKeyId,
     });
@@ -358,7 +321,7 @@ const DangerZoneCard = () => {
     toast.success("API key revoked successfully");
 
     await refetch();
-  };
+  }
 
   return (
     <Card className="border-destructive">
@@ -438,4 +401,4 @@ const DangerZoneCard = () => {
       </CardContent>
     </Card>
   );
-};
+}
