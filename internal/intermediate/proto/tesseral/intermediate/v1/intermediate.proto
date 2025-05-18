@@ -286,6 +286,8 @@ message OnboardingCreateProjectsResponse {
 
 message CreateIntermediateSessionRequest {
   string relayed_session_state = 1;
+  string redirect_uri = 2;
+  bool return_relayed_session_token_as_query_param = 3;
 }
 
 message CreateIntermediateSessionResponse {
@@ -319,6 +321,8 @@ message ExchangeIntermediateSessionForSessionResponse {
   string access_token = 2;
   bool new_user = 3;
   string relayed_session_token = 4;
+  string redirect_uri = 5;
+  bool return_relayed_session_token_as_query_param = 6;
 }
 
 message ExchangeRelayedSessionTokenForSessionRequest {

@@ -5,6 +5,8 @@ import (
 	"crypto/sha256"
 	"errors"
 	"fmt"
+	"log/slog"
+	"net/url"
 	"time"
 
 	"github.com/google/uuid"
@@ -38,16 +40,44 @@ func (s *Store) CreateIntermediateSession(ctx context.Context, req *intermediate
 		return nil, fmt.Errorf("enforce project login enabled: %w", err)
 	}
 
+	if req.RedirectUri != "" {
+		redirectURL, err := url.Parse(req.RedirectUri)
+		if err != nil {
+			return nil, apierror.NewInvalidArgumentError("redirect uri must be a well-formed URL", fmt.Errorf("parse redirect uri: %w", err))
+		}
+
+		qTrustedDomains, err := q.GetProjectTrustedDomains(ctx, authn.ProjectID(ctx))
+		if err != nil {
+			return nil, fmt.Errorf("get project trusted domains: %w", err)
+		}
+
+		slog.InfoContext(ctx, "check_redirect_uri_trusted_domain", "redirect_uri", req.RedirectUri, "trusted_domains", qTrustedDomains)
+
+		var ok bool
+		for _, qTrustedDomain := range qTrustedDomains {
+			if qTrustedDomain.Domain == redirectURL.Host {
+				ok = true
+				break
+			}
+		}
+
+		if !ok {
+			return nil, apierror.NewInvalidArgumentError("redirect uri must be from a trusted domain", fmt.Errorf("redirect uri: %w", err))
+		}
+	}
+
 	expireTime := time.Now().Add(intermediateSessionDuration)
 
 	secretToken := uuid.New()
 	secretTokenSHA256 := sha256.Sum256(secretToken[:])
 	if _, err := q.CreateIntermediateSession(ctx, queries.CreateIntermediateSessionParams{
-		ID:                  uuid.Must(uuid.NewV7()),
-		ProjectID:           authn.ProjectID(ctx),
-		ExpireTime:          &expireTime,
-		SecretTokenSha256:   secretTokenSHA256[:],
-		RelayedSessionState: refOrNil(req.RelayedSessionState),
+		ID:                                    uuid.Must(uuid.NewV7()),
+		ProjectID:                             authn.ProjectID(ctx),
+		ExpireTime:                            &expireTime,
+		SecretTokenSha256:                     secretTokenSHA256[:],
+		RelayedSessionState:                   refOrNil(req.RelayedSessionState),
+		RedirectUri:                           refOrNil(req.RedirectUri),
+		ReturnRelayedSessionTokenAsQueryParam: req.ReturnRelayedSessionTokenAsQueryParam,
 	}); err != nil {
 		return nil, fmt.Errorf("create intermediate session: %w", err)
 	}
