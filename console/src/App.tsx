@@ -61,6 +61,7 @@ import { CreateRolePage } from '@/pages/roles/CreateRolePage';
 import { EditRolePage } from '@/pages/roles/EditRolePage';
 import { GithubOAuthCallbackPage } from './pages/login/GithubOAuthCallbackPage';
 import { ListAPIKeysTab } from './pages/project/ListAPIKeysTab';
+import { LoginSettingsTab } from './pages/project/LoginSettingsTab';
 
 const queryClient = new QueryClient();
 
@@ -160,6 +161,7 @@ const AppWithinQueryClient = () => {
               element={<ViewProjectSettingsPage />}
             >
               <Route path="" element={<ProjectDetailsTab />} />
+              <Route path="login-settings" element={<LoginSettingsTab />} />
               <Route
                 path="vault-ui-settings"
                 element={<ProjectUISettingsPage />}
