@@ -97,7 +97,7 @@ export const ViewOrganizationPage = () => {
     if (getProjectEntitlementsResponse?.entitledBackendApiKeys) {
       const newTabs = [...tabs];
 
-      if (!newTabs.some((e) => e.name === 'Api Keys')) {
+      if (newTabs.length === 6) {
         newTabs.push({
           name: 'API Keys',
           url: `/organizations/${organizationId}/api-keys`,
