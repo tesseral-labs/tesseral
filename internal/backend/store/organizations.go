@@ -320,6 +320,11 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *backendv1.UpdateOrg
 		updates.CustomRolesEnabled = *req.Organization.CustomRolesEnabled
 	}
 
+	updates.ApiKeysEnabled = qOrg.ApiKeysEnabled
+	if req.Organization.ApiKeysEnabled != nil {
+		updates.ApiKeysEnabled = *req.Organization.ApiKeysEnabled
+	}
+
 	qUpdatedOrg, err := q.UpdateOrganization(ctx, updates)
 	if err != nil {
 		return nil, fmt.Errorf("update organization: %w", err)
@@ -453,6 +458,8 @@ func (s *Store) sendSyncOrganizationEvent(ctx context.Context, qOrg queries.Orga
 }
 
 func parseOrganization(qProject queries.Project, qOrg queries.Organization) *backendv1.Organization {
+	apiKeysEnabled := qProject.EntitledBackendApiKeys && qProject.ApiKeysEnabled && qOrg.ApiKeysEnabled
+
 	return &backendv1.Organization{
 		Id:                        idformat.Organization.Format(qOrg.ID),
 		DisplayName:               qOrg.DisplayName,
@@ -469,5 +476,6 @@ func parseOrganization(qProject queries.Project, qOrg queries.Organization) *bac
 		RequireMfa:                &qOrg.RequireMfa,
 		ScimEnabled:               &qOrg.ScimEnabled,
 		CustomRolesEnabled:        &qOrg.CustomRolesEnabled,
+		ApiKeysEnabled:            &apiKeysEnabled,
 	}
 }

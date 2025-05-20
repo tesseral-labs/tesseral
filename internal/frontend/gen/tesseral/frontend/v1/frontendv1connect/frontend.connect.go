@@ -169,6 +169,33 @@ const (
 	// FrontendServiceDeleteUserRoleAssignmentProcedure is the fully-qualified name of the
 	// FrontendService's DeleteUserRoleAssignment RPC.
 	FrontendServiceDeleteUserRoleAssignmentProcedure = "/tesseral.frontend.v1.FrontendService/DeleteUserRoleAssignment"
+	// FrontendServiceCreateAPIKeyProcedure is the fully-qualified name of the FrontendService's
+	// CreateAPIKey RPC.
+	FrontendServiceCreateAPIKeyProcedure = "/tesseral.frontend.v1.FrontendService/CreateAPIKey"
+	// FrontendServiceDeleteAPIKeyProcedure is the fully-qualified name of the FrontendService's
+	// DeleteAPIKey RPC.
+	FrontendServiceDeleteAPIKeyProcedure = "/tesseral.frontend.v1.FrontendService/DeleteAPIKey"
+	// FrontendServiceGetAPIKeyProcedure is the fully-qualified name of the FrontendService's GetAPIKey
+	// RPC.
+	FrontendServiceGetAPIKeyProcedure = "/tesseral.frontend.v1.FrontendService/GetAPIKey"
+	// FrontendServiceListAPIKeysProcedure is the fully-qualified name of the FrontendService's
+	// ListAPIKeys RPC.
+	FrontendServiceListAPIKeysProcedure = "/tesseral.frontend.v1.FrontendService/ListAPIKeys"
+	// FrontendServiceRevokeAPIKeyProcedure is the fully-qualified name of the FrontendService's
+	// RevokeAPIKey RPC.
+	FrontendServiceRevokeAPIKeyProcedure = "/tesseral.frontend.v1.FrontendService/RevokeAPIKey"
+	// FrontendServiceUpdateAPIKeyProcedure is the fully-qualified name of the FrontendService's
+	// UpdateAPIKey RPC.
+	FrontendServiceUpdateAPIKeyProcedure = "/tesseral.frontend.v1.FrontendService/UpdateAPIKey"
+	// FrontendServiceCreateAPIKeyRoleAssignmentProcedure is the fully-qualified name of the
+	// FrontendService's CreateAPIKeyRoleAssignment RPC.
+	FrontendServiceCreateAPIKeyRoleAssignmentProcedure = "/tesseral.frontend.v1.FrontendService/CreateAPIKeyRoleAssignment"
+	// FrontendServiceDeleteAPIKeyRoleAssignmentProcedure is the fully-qualified name of the
+	// FrontendService's DeleteAPIKeyRoleAssignment RPC.
+	FrontendServiceDeleteAPIKeyRoleAssignmentProcedure = "/tesseral.frontend.v1.FrontendService/DeleteAPIKeyRoleAssignment"
+	// FrontendServiceListAPIKeyRoleAssignmentsProcedure is the fully-qualified name of the
+	// FrontendService's ListAPIKeyRoleAssignments RPC.
+	FrontendServiceListAPIKeyRoleAssignmentsProcedure = "/tesseral.frontend.v1.FrontendService/ListAPIKeyRoleAssignments"
 )
 
 // FrontendServiceClient is a client for the tesseral.frontend.v1.FrontendService service.
@@ -231,6 +258,21 @@ type FrontendServiceClient interface {
 	CreateUserRoleAssignment(context.Context, *connect.Request[v1.CreateUserRoleAssignmentRequest]) (*connect.Response[v1.CreateUserRoleAssignmentResponse], error)
 	// Delete a User Role Assignment.
 	DeleteUserRoleAssignment(context.Context, *connect.Request[v1.DeleteUserRoleAssignmentRequest]) (*connect.Response[v1.DeleteUserRoleAssignmentResponse], error)
+	// Create an API Key for an Organization.
+	CreateAPIKey(context.Context, *connect.Request[v1.CreateAPIKeyRequest]) (*connect.Response[v1.CreateAPIKeyResponse], error)
+	// Delete an API Key.
+	DeleteAPIKey(context.Context, *connect.Request[v1.DeleteAPIKeyRequest]) (*connect.Response[v1.DeleteAPIKeyResponse], error)
+	// Get an API Key.
+	GetAPIKey(context.Context, *connect.Request[v1.GetAPIKeyRequest]) (*connect.Response[v1.GetAPIKeyResponse], error)
+	// List API Keys.
+	ListAPIKeys(context.Context, *connect.Request[v1.ListAPIKeysRequest]) (*connect.Response[v1.ListAPIKeysResponse], error)
+	// Revoke an API Key.
+	RevokeAPIKey(context.Context, *connect.Request[v1.RevokeAPIKeyRequest]) (*connect.Response[v1.RevokeAPIKeyResponse], error)
+	// Update an API Key.
+	UpdateAPIKey(context.Context, *connect.Request[v1.UpdateAPIKeyRequest]) (*connect.Response[v1.UpdateAPIKeyResponse], error)
+	CreateAPIKeyRoleAssignment(context.Context, *connect.Request[v1.CreateAPIKeyRoleAssignmentRequest]) (*connect.Response[v1.CreateAPIKeyRoleAssignmentResponse], error)
+	DeleteAPIKeyRoleAssignment(context.Context, *connect.Request[v1.DeleteAPIKeyRoleAssignmentRequest]) (*connect.Response[v1.DeleteAPIKeyRoleAssignmentResponse], error)
+	ListAPIKeyRoleAssignments(context.Context, *connect.Request[v1.ListAPIKeyRoleAssignmentsRequest]) (*connect.Response[v1.ListAPIKeyRoleAssignmentsResponse], error)
 }
 
 // NewFrontendServiceClient constructs a client for the tesseral.frontend.v1.FrontendService
@@ -526,6 +568,60 @@ func NewFrontendServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			connect.WithSchema(frontendServiceMethods.ByName("DeleteUserRoleAssignment")),
 			connect.WithClientOptions(opts...),
 		),
+		createAPIKey: connect.NewClient[v1.CreateAPIKeyRequest, v1.CreateAPIKeyResponse](
+			httpClient,
+			baseURL+FrontendServiceCreateAPIKeyProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("CreateAPIKey")),
+			connect.WithClientOptions(opts...),
+		),
+		deleteAPIKey: connect.NewClient[v1.DeleteAPIKeyRequest, v1.DeleteAPIKeyResponse](
+			httpClient,
+			baseURL+FrontendServiceDeleteAPIKeyProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("DeleteAPIKey")),
+			connect.WithClientOptions(opts...),
+		),
+		getAPIKey: connect.NewClient[v1.GetAPIKeyRequest, v1.GetAPIKeyResponse](
+			httpClient,
+			baseURL+FrontendServiceGetAPIKeyProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("GetAPIKey")),
+			connect.WithClientOptions(opts...),
+		),
+		listAPIKeys: connect.NewClient[v1.ListAPIKeysRequest, v1.ListAPIKeysResponse](
+			httpClient,
+			baseURL+FrontendServiceListAPIKeysProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("ListAPIKeys")),
+			connect.WithClientOptions(opts...),
+		),
+		revokeAPIKey: connect.NewClient[v1.RevokeAPIKeyRequest, v1.RevokeAPIKeyResponse](
+			httpClient,
+			baseURL+FrontendServiceRevokeAPIKeyProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("RevokeAPIKey")),
+			connect.WithClientOptions(opts...),
+		),
+		updateAPIKey: connect.NewClient[v1.UpdateAPIKeyRequest, v1.UpdateAPIKeyResponse](
+			httpClient,
+			baseURL+FrontendServiceUpdateAPIKeyProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("UpdateAPIKey")),
+			connect.WithClientOptions(opts...),
+		),
+		createAPIKeyRoleAssignment: connect.NewClient[v1.CreateAPIKeyRoleAssignmentRequest, v1.CreateAPIKeyRoleAssignmentResponse](
+			httpClient,
+			baseURL+FrontendServiceCreateAPIKeyRoleAssignmentProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("CreateAPIKeyRoleAssignment")),
+			connect.WithClientOptions(opts...),
+		),
+		deleteAPIKeyRoleAssignment: connect.NewClient[v1.DeleteAPIKeyRoleAssignmentRequest, v1.DeleteAPIKeyRoleAssignmentResponse](
+			httpClient,
+			baseURL+FrontendServiceDeleteAPIKeyRoleAssignmentProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("DeleteAPIKeyRoleAssignment")),
+			connect.WithClientOptions(opts...),
+		),
+		listAPIKeyRoleAssignments: connect.NewClient[v1.ListAPIKeyRoleAssignmentsRequest, v1.ListAPIKeyRoleAssignmentsResponse](
+			httpClient,
+			baseURL+FrontendServiceListAPIKeyRoleAssignmentsProcedure,
+			connect.WithSchema(frontendServiceMethods.ByName("ListAPIKeyRoleAssignments")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -578,6 +674,15 @@ type frontendServiceClient struct {
 	getUserRoleAssignment                 *connect.Client[v1.GetUserRoleAssignmentRequest, v1.GetUserRoleAssignmentResponse]
 	createUserRoleAssignment              *connect.Client[v1.CreateUserRoleAssignmentRequest, v1.CreateUserRoleAssignmentResponse]
 	deleteUserRoleAssignment              *connect.Client[v1.DeleteUserRoleAssignmentRequest, v1.DeleteUserRoleAssignmentResponse]
+	createAPIKey                          *connect.Client[v1.CreateAPIKeyRequest, v1.CreateAPIKeyResponse]
+	deleteAPIKey                          *connect.Client[v1.DeleteAPIKeyRequest, v1.DeleteAPIKeyResponse]
+	getAPIKey                             *connect.Client[v1.GetAPIKeyRequest, v1.GetAPIKeyResponse]
+	listAPIKeys                           *connect.Client[v1.ListAPIKeysRequest, v1.ListAPIKeysResponse]
+	revokeAPIKey                          *connect.Client[v1.RevokeAPIKeyRequest, v1.RevokeAPIKeyResponse]
+	updateAPIKey                          *connect.Client[v1.UpdateAPIKeyRequest, v1.UpdateAPIKeyResponse]
+	createAPIKeyRoleAssignment            *connect.Client[v1.CreateAPIKeyRoleAssignmentRequest, v1.CreateAPIKeyRoleAssignmentResponse]
+	deleteAPIKeyRoleAssignment            *connect.Client[v1.DeleteAPIKeyRoleAssignmentRequest, v1.DeleteAPIKeyRoleAssignmentResponse]
+	listAPIKeyRoleAssignments             *connect.Client[v1.ListAPIKeyRoleAssignmentsRequest, v1.ListAPIKeyRoleAssignmentsResponse]
 }
 
 // Logout calls tesseral.frontend.v1.FrontendService.Logout.
@@ -820,6 +925,51 @@ func (c *frontendServiceClient) DeleteUserRoleAssignment(ctx context.Context, re
 	return c.deleteUserRoleAssignment.CallUnary(ctx, req)
 }
 
+// CreateAPIKey calls tesseral.frontend.v1.FrontendService.CreateAPIKey.
+func (c *frontendServiceClient) CreateAPIKey(ctx context.Context, req *connect.Request[v1.CreateAPIKeyRequest]) (*connect.Response[v1.CreateAPIKeyResponse], error) {
+	return c.createAPIKey.CallUnary(ctx, req)
+}
+
+// DeleteAPIKey calls tesseral.frontend.v1.FrontendService.DeleteAPIKey.
+func (c *frontendServiceClient) DeleteAPIKey(ctx context.Context, req *connect.Request[v1.DeleteAPIKeyRequest]) (*connect.Response[v1.DeleteAPIKeyResponse], error) {
+	return c.deleteAPIKey.CallUnary(ctx, req)
+}
+
+// GetAPIKey calls tesseral.frontend.v1.FrontendService.GetAPIKey.
+func (c *frontendServiceClient) GetAPIKey(ctx context.Context, req *connect.Request[v1.GetAPIKeyRequest]) (*connect.Response[v1.GetAPIKeyResponse], error) {
+	return c.getAPIKey.CallUnary(ctx, req)
+}
+
+// ListAPIKeys calls tesseral.frontend.v1.FrontendService.ListAPIKeys.
+func (c *frontendServiceClient) ListAPIKeys(ctx context.Context, req *connect.Request[v1.ListAPIKeysRequest]) (*connect.Response[v1.ListAPIKeysResponse], error) {
+	return c.listAPIKeys.CallUnary(ctx, req)
+}
+
+// RevokeAPIKey calls tesseral.frontend.v1.FrontendService.RevokeAPIKey.
+func (c *frontendServiceClient) RevokeAPIKey(ctx context.Context, req *connect.Request[v1.RevokeAPIKeyRequest]) (*connect.Response[v1.RevokeAPIKeyResponse], error) {
+	return c.revokeAPIKey.CallUnary(ctx, req)
+}
+
+// UpdateAPIKey calls tesseral.frontend.v1.FrontendService.UpdateAPIKey.
+func (c *frontendServiceClient) UpdateAPIKey(ctx context.Context, req *connect.Request[v1.UpdateAPIKeyRequest]) (*connect.Response[v1.UpdateAPIKeyResponse], error) {
+	return c.updateAPIKey.CallUnary(ctx, req)
+}
+
+// CreateAPIKeyRoleAssignment calls tesseral.frontend.v1.FrontendService.CreateAPIKeyRoleAssignment.
+func (c *frontendServiceClient) CreateAPIKeyRoleAssignment(ctx context.Context, req *connect.Request[v1.CreateAPIKeyRoleAssignmentRequest]) (*connect.Response[v1.CreateAPIKeyRoleAssignmentResponse], error) {
+	return c.createAPIKeyRoleAssignment.CallUnary(ctx, req)
+}
+
+// DeleteAPIKeyRoleAssignment calls tesseral.frontend.v1.FrontendService.DeleteAPIKeyRoleAssignment.
+func (c *frontendServiceClient) DeleteAPIKeyRoleAssignment(ctx context.Context, req *connect.Request[v1.DeleteAPIKeyRoleAssignmentRequest]) (*connect.Response[v1.DeleteAPIKeyRoleAssignmentResponse], error) {
+	return c.deleteAPIKeyRoleAssignment.CallUnary(ctx, req)
+}
+
+// ListAPIKeyRoleAssignments calls tesseral.frontend.v1.FrontendService.ListAPIKeyRoleAssignments.
+func (c *frontendServiceClient) ListAPIKeyRoleAssignments(ctx context.Context, req *connect.Request[v1.ListAPIKeyRoleAssignmentsRequest]) (*connect.Response[v1.ListAPIKeyRoleAssignmentsResponse], error) {
+	return c.listAPIKeyRoleAssignments.CallUnary(ctx, req)
+}
+
 // FrontendServiceHandler is an implementation of the tesseral.frontend.v1.FrontendService service.
 type FrontendServiceHandler interface {
 	Logout(context.Context, *connect.Request[v1.LogoutRequest]) (*connect.Response[v1.LogoutResponse], error)
@@ -880,6 +1030,21 @@ type FrontendServiceHandler interface {
 	CreateUserRoleAssignment(context.Context, *connect.Request[v1.CreateUserRoleAssignmentRequest]) (*connect.Response[v1.CreateUserRoleAssignmentResponse], error)
 	// Delete a User Role Assignment.
 	DeleteUserRoleAssignment(context.Context, *connect.Request[v1.DeleteUserRoleAssignmentRequest]) (*connect.Response[v1.DeleteUserRoleAssignmentResponse], error)
+	// Create an API Key for an Organization.
+	CreateAPIKey(context.Context, *connect.Request[v1.CreateAPIKeyRequest]) (*connect.Response[v1.CreateAPIKeyResponse], error)
+	// Delete an API Key.
+	DeleteAPIKey(context.Context, *connect.Request[v1.DeleteAPIKeyRequest]) (*connect.Response[v1.DeleteAPIKeyResponse], error)
+	// Get an API Key.
+	GetAPIKey(context.Context, *connect.Request[v1.GetAPIKeyRequest]) (*connect.Response[v1.GetAPIKeyResponse], error)
+	// List API Keys.
+	ListAPIKeys(context.Context, *connect.Request[v1.ListAPIKeysRequest]) (*connect.Response[v1.ListAPIKeysResponse], error)
+	// Revoke an API Key.
+	RevokeAPIKey(context.Context, *connect.Request[v1.RevokeAPIKeyRequest]) (*connect.Response[v1.RevokeAPIKeyResponse], error)
+	// Update an API Key.
+	UpdateAPIKey(context.Context, *connect.Request[v1.UpdateAPIKeyRequest]) (*connect.Response[v1.UpdateAPIKeyResponse], error)
+	CreateAPIKeyRoleAssignment(context.Context, *connect.Request[v1.CreateAPIKeyRoleAssignmentRequest]) (*connect.Response[v1.CreateAPIKeyRoleAssignmentResponse], error)
+	DeleteAPIKeyRoleAssignment(context.Context, *connect.Request[v1.DeleteAPIKeyRoleAssignmentRequest]) (*connect.Response[v1.DeleteAPIKeyRoleAssignmentResponse], error)
+	ListAPIKeyRoleAssignments(context.Context, *connect.Request[v1.ListAPIKeyRoleAssignmentsRequest]) (*connect.Response[v1.ListAPIKeyRoleAssignmentsResponse], error)
 }
 
 // NewFrontendServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -1171,6 +1336,60 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 		connect.WithSchema(frontendServiceMethods.ByName("DeleteUserRoleAssignment")),
 		connect.WithHandlerOptions(opts...),
 	)
+	frontendServiceCreateAPIKeyHandler := connect.NewUnaryHandler(
+		FrontendServiceCreateAPIKeyProcedure,
+		svc.CreateAPIKey,
+		connect.WithSchema(frontendServiceMethods.ByName("CreateAPIKey")),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceDeleteAPIKeyHandler := connect.NewUnaryHandler(
+		FrontendServiceDeleteAPIKeyProcedure,
+		svc.DeleteAPIKey,
+		connect.WithSchema(frontendServiceMethods.ByName("DeleteAPIKey")),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceGetAPIKeyHandler := connect.NewUnaryHandler(
+		FrontendServiceGetAPIKeyProcedure,
+		svc.GetAPIKey,
+		connect.WithSchema(frontendServiceMethods.ByName("GetAPIKey")),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceListAPIKeysHandler := connect.NewUnaryHandler(
+		FrontendServiceListAPIKeysProcedure,
+		svc.ListAPIKeys,
+		connect.WithSchema(frontendServiceMethods.ByName("ListAPIKeys")),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceRevokeAPIKeyHandler := connect.NewUnaryHandler(
+		FrontendServiceRevokeAPIKeyProcedure,
+		svc.RevokeAPIKey,
+		connect.WithSchema(frontendServiceMethods.ByName("RevokeAPIKey")),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceUpdateAPIKeyHandler := connect.NewUnaryHandler(
+		FrontendServiceUpdateAPIKeyProcedure,
+		svc.UpdateAPIKey,
+		connect.WithSchema(frontendServiceMethods.ByName("UpdateAPIKey")),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceCreateAPIKeyRoleAssignmentHandler := connect.NewUnaryHandler(
+		FrontendServiceCreateAPIKeyRoleAssignmentProcedure,
+		svc.CreateAPIKeyRoleAssignment,
+		connect.WithSchema(frontendServiceMethods.ByName("CreateAPIKeyRoleAssignment")),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceDeleteAPIKeyRoleAssignmentHandler := connect.NewUnaryHandler(
+		FrontendServiceDeleteAPIKeyRoleAssignmentProcedure,
+		svc.DeleteAPIKeyRoleAssignment,
+		connect.WithSchema(frontendServiceMethods.ByName("DeleteAPIKeyRoleAssignment")),
+		connect.WithHandlerOptions(opts...),
+	)
+	frontendServiceListAPIKeyRoleAssignmentsHandler := connect.NewUnaryHandler(
+		FrontendServiceListAPIKeyRoleAssignmentsProcedure,
+		svc.ListAPIKeyRoleAssignments,
+		connect.WithSchema(frontendServiceMethods.ByName("ListAPIKeyRoleAssignments")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/tesseral.frontend.v1.FrontendService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case FrontendServiceLogoutProcedure:
@@ -1267,6 +1486,24 @@ func NewFrontendServiceHandler(svc FrontendServiceHandler, opts ...connect.Handl
 			frontendServiceCreateUserRoleAssignmentHandler.ServeHTTP(w, r)
 		case FrontendServiceDeleteUserRoleAssignmentProcedure:
 			frontendServiceDeleteUserRoleAssignmentHandler.ServeHTTP(w, r)
+		case FrontendServiceCreateAPIKeyProcedure:
+			frontendServiceCreateAPIKeyHandler.ServeHTTP(w, r)
+		case FrontendServiceDeleteAPIKeyProcedure:
+			frontendServiceDeleteAPIKeyHandler.ServeHTTP(w, r)
+		case FrontendServiceGetAPIKeyProcedure:
+			frontendServiceGetAPIKeyHandler.ServeHTTP(w, r)
+		case FrontendServiceListAPIKeysProcedure:
+			frontendServiceListAPIKeysHandler.ServeHTTP(w, r)
+		case FrontendServiceRevokeAPIKeyProcedure:
+			frontendServiceRevokeAPIKeyHandler.ServeHTTP(w, r)
+		case FrontendServiceUpdateAPIKeyProcedure:
+			frontendServiceUpdateAPIKeyHandler.ServeHTTP(w, r)
+		case FrontendServiceCreateAPIKeyRoleAssignmentProcedure:
+			frontendServiceCreateAPIKeyRoleAssignmentHandler.ServeHTTP(w, r)
+		case FrontendServiceDeleteAPIKeyRoleAssignmentProcedure:
+			frontendServiceDeleteAPIKeyRoleAssignmentHandler.ServeHTTP(w, r)
+		case FrontendServiceListAPIKeyRoleAssignmentsProcedure:
+			frontendServiceListAPIKeyRoleAssignmentsHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -1462,4 +1699,40 @@ func (UnimplementedFrontendServiceHandler) CreateUserRoleAssignment(context.Cont
 
 func (UnimplementedFrontendServiceHandler) DeleteUserRoleAssignment(context.Context, *connect.Request[v1.DeleteUserRoleAssignmentRequest]) (*connect.Response[v1.DeleteUserRoleAssignmentResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.DeleteUserRoleAssignment is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) CreateAPIKey(context.Context, *connect.Request[v1.CreateAPIKeyRequest]) (*connect.Response[v1.CreateAPIKeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.CreateAPIKey is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) DeleteAPIKey(context.Context, *connect.Request[v1.DeleteAPIKeyRequest]) (*connect.Response[v1.DeleteAPIKeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.DeleteAPIKey is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) GetAPIKey(context.Context, *connect.Request[v1.GetAPIKeyRequest]) (*connect.Response[v1.GetAPIKeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.GetAPIKey is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) ListAPIKeys(context.Context, *connect.Request[v1.ListAPIKeysRequest]) (*connect.Response[v1.ListAPIKeysResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.ListAPIKeys is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) RevokeAPIKey(context.Context, *connect.Request[v1.RevokeAPIKeyRequest]) (*connect.Response[v1.RevokeAPIKeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.RevokeAPIKey is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) UpdateAPIKey(context.Context, *connect.Request[v1.UpdateAPIKeyRequest]) (*connect.Response[v1.UpdateAPIKeyResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.UpdateAPIKey is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) CreateAPIKeyRoleAssignment(context.Context, *connect.Request[v1.CreateAPIKeyRoleAssignmentRequest]) (*connect.Response[v1.CreateAPIKeyRoleAssignmentResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.CreateAPIKeyRoleAssignment is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) DeleteAPIKeyRoleAssignment(context.Context, *connect.Request[v1.DeleteAPIKeyRoleAssignmentRequest]) (*connect.Response[v1.DeleteAPIKeyRoleAssignmentResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.DeleteAPIKeyRoleAssignment is not implemented"))
+}
+
+func (UnimplementedFrontendServiceHandler) ListAPIKeyRoleAssignments(context.Context, *connect.Request[v1.ListAPIKeyRoleAssignmentsRequest]) (*connect.Response[v1.ListAPIKeyRoleAssignmentsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.frontend.v1.FrontendService.ListAPIKeyRoleAssignments is not implemented"))
 }

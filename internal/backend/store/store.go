@@ -3,6 +3,7 @@ package store
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
@@ -18,6 +19,7 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/cloudflaredoh"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/pagetoken"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type Store struct {
@@ -131,6 +133,13 @@ func refOrNil[T comparable](t T) *T {
 		return nil
 	}
 	return &t
+}
+
+func timestampOrNil(t *time.Time) *timestamppb.Timestamp {
+	if t == nil || t.IsZero() {
+		return nil
+	}
+	return timestamppb.New(*t)
 }
 
 // validateIsDogfoodSession returns an error if the caller isn't a dogfood

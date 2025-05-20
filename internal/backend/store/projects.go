@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"regexp"
 	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
@@ -232,6 +233,24 @@ func (s *Store) UpdateProject(ctx context.Context, req *backendv1.UpdateProjectR
 		updates.AfterSignupRedirectUri = req.Project.AfterSignupRedirectUri
 	}
 
+	updates.ApiKeysEnabled = qProject.ApiKeysEnabled
+	if req.Project.ApiKeysEnabled != nil {
+		updates.ApiKeysEnabled = *req.Project.ApiKeysEnabled
+	}
+
+	updates.ApiKeySecretTokenPrefix = qProject.ApiKeySecretTokenPrefix
+	if req.Project.ApiKeySecretTokenPrefix != nil {
+		if len(*req.Project.ApiKeySecretTokenPrefix) > 64 {
+			return nil, apierror.NewFailedPreconditionError("api key secret token prefix must be no longer than 64 characters", fmt.Errorf("api key secret token prefix too long: %s", *req.Project.ApiKeySecretTokenPrefix))
+		}
+
+		if !regexp.MustCompile(`^[a-z0-9_]+$`).MatchString(*req.Project.ApiKeySecretTokenPrefix) {
+			return nil, apierror.NewFailedPreconditionError("api key secret token prefix must contain only lowercase letters, numbers, and underscores", fmt.Errorf("api key secret token prefix contains invalid characters: %s", *req.Project.ApiKeySecretTokenPrefix))
+		}
+
+		updates.ApiKeySecretTokenPrefix = req.Project.ApiKeySecretTokenPrefix
+	}
+
 	updates.CookieDomain = qProject.CookieDomain
 	if req.Project.CookieDomain != "" {
 		// only allow updates to cookie domain if the vault domain is custom
@@ -402,5 +421,7 @@ func (s *Store) parseProject(qProject *queries.Project, qProjectTrustedDomains [
 		AfterLoginRedirectUri:      qProject.AfterLoginRedirectUri,
 		AfterSignupRedirectUri:     qProject.AfterSignupRedirectUri,
 		EmailSendFromDomain:        qProject.EmailSendFromDomain,
+		ApiKeysEnabled:             &qProject.ApiKeysEnabled,
+		ApiKeySecretTokenPrefix:    qProject.ApiKeySecretTokenPrefix,
 	}
 }

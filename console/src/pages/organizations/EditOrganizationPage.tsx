@@ -44,6 +44,7 @@ import { toast } from 'sonner';
 import { InputTags } from '@/components/input-tags';
 
 const schema = z.object({
+  apiKeysEnabled: z.boolean(),
   displayName: z.string(),
   logInWithGoogle: z.boolean(),
   logInWithMicrosoft: z.boolean(),
@@ -89,6 +90,8 @@ export const EditOrganizationPage = () => {
       // preventing the compiler from inferring the correct types.
       form.reset({
         ...form.getValues(),
+        apiKeysEnabled:
+          getOrganizationResponse.organization.apiKeysEnabled || false,
         displayName: getOrganizationResponse.organization.displayName,
         logInWithGoogle: getOrganizationResponse.organization.logInWithGoogle,
         logInWithMicrosoft:
@@ -128,6 +131,7 @@ export const EditOrganizationPage = () => {
     await updateOrganizationMutation.mutateAsync({
       id: organizationId,
       organization: {
+        apiKeysEnabled: values.apiKeysEnabled,
         displayName: values.displayName,
         logInWithGoogle: values.logInWithGoogle,
         logInWithMicrosoft: values.logInWithMicrosoft,
@@ -369,6 +373,35 @@ export const EditOrganizationPage = () => {
                 />
               </CardContent>
             </Card>
+            {getProjectResponse?.project?.apiKeysEnabled && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>API Keys settings</CardTitle>
+                  <CardDescription>
+                    Configure whether this organization can use API Keys.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-8">
+                  <FormField
+                    control={form.control}
+                    name="apiKeysEnabled"
+                    render={({ field }: { field: any }) => (
+                      <FormItem>
+                        <FormLabel>API Keys Enabled</FormLabel>
+                        <FormControl>
+                          <Switch
+                            className="block"
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </CardContent>
+              </Card>
+            )}
             <Card>
               <CardHeader>
                 <CardTitle>Enterprise settings</CardTitle>

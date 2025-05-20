@@ -38,13 +38,12 @@ import {
 import { Input } from "@/components/ui/input";
 import {
   getOrganization,
+  getProject,
   updateOrganization,
 } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
 
 export function OrganizationSettingsPage() {
-  const { data: getOrganizationResponse } = useQuery(getOrganization);
-
-  const tabs = [
+  const [tabs, setTabs] = useState([
     {
       root: true,
       name: "Users",
@@ -54,10 +53,33 @@ export function OrganizationSettingsPage() {
       name: "Advanced Settings",
       url: `/organization-settings/advanced`,
     },
-  ];
+  ]);
+  const { data: getProjectResponse } = useQuery(getProject);
+  const { data: getOrganizationResponse } = useQuery(getOrganization);
 
   const { pathname } = useLocation();
-  const currentTab = tabs.find((tab) => tab.url === pathname);
+  const currentTab = tabs.find(
+    (tab) =>
+      tab.url === pathname ||
+      (tab.url === "/organization-settings/api-keys" &&
+        pathname.startsWith("/organization-settings/api-keys/")),
+  );
+
+  useEffect(() => {
+    if (
+      getProjectResponse?.project?.apiKeysEnabled &&
+      getOrganizationResponse?.organization?.apiKeysEnabled &&
+      tabs.length === 2
+    ) {
+      // Only add the API Keys tab if the project has API keys enabled
+      tabs.splice(1, 0, {
+        name: "API Keys",
+        url: `/organization-settings/api-keys`,
+      });
+
+      setTabs([...tabs]);
+    }
+  }, [getOrganizationResponse, getProjectResponse, tabs]);
 
   return (
     <div className="space-y-8">

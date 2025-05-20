@@ -40,12 +40,12 @@ export const SecretCopier = ({
     <div
       ref={refs.setReference}
       onClick={handleCopy}
-      className="flex select-none cursor-pointer bg-muted font-mono text-xs border border-input rounded-md px-3 py-2"
+      className="flex select-none cursor-pointer bg-muted font-mono text-xs border border-input rounded-md px-3 py-2 pr-12 max-w-full overflow-x-hidden whitespace-nowrap relative"
     >
       <span>{placeholder}</span>
-      <span className="ml-auto flex gap-x-2">
+      <div className="ml-auto flex gap-x-2 absolute right-0 top-0 p-2 bg-muted">
         <CopyIcon className="cursor-pointer text-muted-foreground hover:text-foreground h-4 w-4" />
-      </span>
+      </div>
 
       {open && (
         <div ref={refs.setFloating} style={floatingStyles}>

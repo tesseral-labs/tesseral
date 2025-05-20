@@ -19,6 +19,8 @@ message Project {
   bool log_in_with_authenticator_app = 9;
   bool log_in_with_passkey = 10;
   string vault_domain = 8;
+  bool api_keys_enabled = 14;
+  string api_key_secret_token_prefix = 15;
 }
 
 message Organization {
@@ -39,6 +41,7 @@ message Organization {
   repeated string microsoft_tenant_ids = 10;
   bool saml_enabled = 11;
   bool custom_roles_enabled = 17;
+  bool api_keys_enabled = 19;
 }
 
 message OrganizationGoogleHostedDomains {
@@ -181,5 +184,35 @@ message UserRoleAssignment {
   string user_id = 2;
 
   // The Role ID.
+  string role_id = 3;
+}
+
+message APIKey {
+  // The API Key ID. Starts with `api_key_...`.
+  string id = 1;
+  // The Organization this API Key belongs to.
+  string organization_id = 2;
+  // When the API Key was created.
+  google.protobuf.Timestamp create_time = 3;
+  // When the API Key was last updated.
+  google.protobuf.Timestamp update_time = 4;
+  // The expire time of the API Key.
+  optional google.protobuf.Timestamp expire_time = 5;
+  // A human-readable display name for this API Key.
+  string display_name = 6;
+  // The secret token for this API Key.
+  string secret_token = 7;
+  // The secret token suffix for this API Key.
+  string secret_token_suffix = 8;
+  // Whether this API Key is revoked.
+  bool revoked = 9;
+}
+
+message APIKeyRoleAssignment {
+  // The API Key Role Assignment ID. Starts with `api_key_role_assignment_...`.
+  string id = 1;
+  // The API Key ID.
+  string api_key_id = 2;
+  // The Role
   string role_id = 3;
 }

@@ -83,7 +83,8 @@ SET
     log_in_with_saml = $9,
     scim_enabled = $10,
     require_mfa = $11,
-    custom_roles_enabled = $12
+    custom_roles_enabled = $12,
+    api_keys_enabled = $14
 WHERE
     id = $1
 RETURNING
@@ -116,7 +117,9 @@ SET
     redirect_uri = $14,
     after_login_redirect_uri = $15,
     after_signup_redirect_uri = $16,
-    cookie_domain = $17
+    cookie_domain = $17,
+    api_keys_enabled = $21,
+    api_key_secret_token_prefix = $22
 WHERE
     id = $1
 RETURNING
@@ -988,4 +991,143 @@ FROM
     project_webhook_settings
 WHERE
     project_id = $1;
+
+-- name: CreateAPIKey :one
+INSERT INTO api_keys (id, organization_id, display_name, secret_token_sha256, secret_token_suffix, expire_time)
+    VALUES ($1, $2, $3, $4, $5, $6)
+RETURNING
+    *;
+
+-- name: DeleteAPIKey :exec
+DELETE FROM api_keys USING organizations
+WHERE api_keys.organization_id = organizations.id
+    AND api_keys.id = $1
+    AND organizations.project_id = $2
+    AND api_keys.secret_token_sha256 IS NULL;
+
+-- name: UpdateAPIKey :one
+UPDATE
+    api_keys
+SET
+    update_time = now(),
+    display_name = $2
+FROM
+    organizations AS organization
+WHERE
+    api_keys.id = $1
+    AND organization.project_id = $3
+RETURNING
+    api_keys.*;
+
+-- name: GetAPIKeyByID :one
+SELECT
+    api_keys.*
+FROM
+    api_keys
+    JOIN organizations AS organization ON api_keys.organization_id = organization.id
+WHERE
+    api_keys.id = $1
+    AND organization.project_id = $2;
+
+-- name: GetAPIKeyDetailsBySecretTokenSHA256 :one
+SELECT
+    api_keys.id,
+    api_keys.organization_id
+FROM
+    api_keys
+    JOIN organizations AS organization ON api_keys.organization_id = organization.id
+WHERE
+    api_keys.secret_token_sha256 = $1
+    AND organization.project_id = $2
+    AND (api_keys.expire_time > now()
+        OR api_keys.expire_time IS NULL);
+
+-- name: ListAPIKeys :many
+SELECT
+    api_keys.*
+FROM
+    api_keys
+    JOIN organizations AS organization ON api_keys.organization_id = organization.id
+WHERE
+    organization.id = $1
+    AND organization.project_id = $2
+    AND api_keys.id > $3
+ORDER BY
+    api_keys.id
+LIMIT $4;
+
+-- name: RevokeAPIKey :exec
+UPDATE
+    api_keys
+SET
+    update_time = now(),
+    secret_token_sha256 = NULL,
+    secret_token_suffix = NULL
+FROM
+    organizations AS organization
+WHERE
+    api_keys.id = $1
+    AND organization.project_id = $2;
+
+-- name: CreateAPIKeyRoleAssignment :one
+INSERT INTO api_key_role_assignments (id, api_key_id, role_id)
+    VALUES ($1, $2, $3)
+RETURNING
+    *;
+
+-- name: GetAPIKeyActions :many
+SELECT DISTINCT
+    (actions.name)
+FROM
+    api_keys
+    JOIN api_key_role_assignments ON api_keys.id = api_key_role_assignments.api_key_id
+    JOIN roles ON api_key_role_assignments.role_id = roles.id
+    JOIN role_actions ON roles.id = role_actions.role_id
+    JOIN actions ON role_actions.action_id = actions.id
+WHERE
+    api_keys.id = $1;
+
+-- name: GetAPIKeyRoleAssignment :one
+SELECT
+    api_key_role_assignments.*
+FROM
+    api_key_role_assignments
+    JOIN api_keys ON api_key_role_assignments.api_key_id = api_keys.id
+    JOIN organizations AS organization ON api_keys.organization_id = organization.id
+WHERE
+    api_key_role_assignments.id = $1
+    AND organization.project_id = $2;
+
+-- name: ListAPIKeyRoleAssignments :many
+SELECT
+    api_key_role_assignments.*
+FROM
+    api_key_role_assignments
+    JOIN api_keys ON api_key_role_assignments.api_key_id = api_keys.id
+    JOIN organizations AS organization ON api_keys.organization_id = organization.id
+WHERE
+    api_key_role_assignments.api_key_id = $1
+    AND organization.project_id = $2
+    AND api_key_role_assignments.id > $3
+ORDER BY
+    api_key_role_assignments.id
+LIMIT $4;
+
+-- name: ListAllAPIKeyRoleAssignments :many
+SELECT
+    api_key_role_assignments.*
+FROM
+    api_key_role_assignments
+    JOIN api_keys ON api_key_role_assignments.api_key_id = api_keys.id
+    JOIN organizations AS organization ON api_keys.organization_id = organization.id
+WHERE
+    api_key_role_assignments.api_key_id = $1
+    AND organization.project_id = $2;
+
+-- name: DeleteAPIKeyRoleAssignment :exec
+DELETE FROM api_key_role_assignments USING api_keys, organizations
+WHERE api_key_role_assignments.api_key_id = api_keys.id
+    AND api_keys.organization_id = organizations.id
+    AND api_key_role_assignments.id = $1
+    AND organizations.project_id = $2;
 
