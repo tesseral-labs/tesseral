@@ -212,7 +212,7 @@ func parseOrganization(qProject queries.Project, qOrg queries.Organization) *fro
 		GoogleHostedDomains:       nil, // TODO
 		MicrosoftTenantIds:        nil, // TODO,
 		CustomRolesEnabled:        qOrg.CustomRolesEnabled,
-		ApiKeysEnabled:            qOrg.ApiKeysEnabled,
+		ApiKeysEnabled:            qOrg.ApiKeysEnabled && qProject.ApiKeysEnabled && qProject.EntitledBackendApiKeys,
 	}
 }
 
