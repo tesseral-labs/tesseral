@@ -213,6 +213,65 @@ export const ProjectDetailsTab = () => {
       <Card>
         <CardHeader className="flex-row justify-between items-center">
           <div className="flex flex-col space-y-1 5">
+            <CardTitle>API key settings</CardTitle>
+            <CardDescription>
+              Settings for API keys used by your customers with your product.
+            </CardDescription>
+          </div>
+          {getProjectEntitlementsResponse?.entitledBackendApiKeys && (
+            <EditAPIKeySettingsButton />
+          )}
+        </CardHeader>
+        <CardContent>
+          {!getProjectEntitlementsResponse?.entitledBackendApiKeys ? (
+            <div className="text-sm my-8 w-full flex flex-col items-center justify-center space-y-6">
+              <div className="font-medium">
+                API Keys are available on the Growth Tier.
+              </div>
+
+              <div className="flex items-center gap-x-4">
+                <Button onClick={handleUpgrade}>Upgrade to Growth Tier</Button>
+                <span>
+                  or{' '}
+                  <a
+                    href="https://cal.com/ned-o-leary-j8ydyi/30min"
+                    className="font-medium underline underline-offset-2 decoration-muted-foreground/40"
+                  >
+                    meet an expert
+                  </a>
+                  .
+                </span>
+              </div>
+            </div>
+          ) : (
+            <DetailsGrid>
+              <DetailsGridColumn>
+                <DetailsGridEntry>
+                  <DetailsGridKey>Status</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getProjectResponse?.project?.apiKeysEnabled
+                      ? 'Enabled'
+                      : 'Disabled'}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+              </DetailsGridColumn>
+              <DetailsGridColumn>
+                <DetailsGridEntry>
+                  <DetailsGridKey>API Key Prefix</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getProjectResponse?.project?.apiKeySecretTokenPrefix ||
+                      '-'}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+              </DetailsGridColumn>
+            </DetailsGrid>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="flex-row justify-between items-center">
+          <div className="flex flex-col space-y-1 5">
             <CardTitle>Webhook settings</CardTitle>
             <CardDescription>
               Settings for webhooks sent from Tesseral to your application about
