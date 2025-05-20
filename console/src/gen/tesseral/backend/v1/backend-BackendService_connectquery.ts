@@ -344,6 +344,68 @@ export const createUserRoleAssignment = BackendService.method.createUserRoleAssi
 export const deleteUserRoleAssignment = BackendService.method.deleteUserRoleAssignment;
 
 /**
+ * Create an API Key for an Organization.
+ *
+ * @generated from rpc tesseral.backend.v1.BackendService.CreateAPIKey
+ */
+export const createAPIKey = BackendService.method.createAPIKey;
+
+/**
+ * Delete an API Key.
+ *
+ * @generated from rpc tesseral.backend.v1.BackendService.DeleteAPIKey
+ */
+export const deleteAPIKey = BackendService.method.deleteAPIKey;
+
+/**
+ * Get an API Key.
+ *
+ * @generated from rpc tesseral.backend.v1.BackendService.GetAPIKey
+ */
+export const getAPIKey = BackendService.method.getAPIKey;
+
+/**
+ * List API Keys.
+ *
+ * @generated from rpc tesseral.backend.v1.BackendService.ListAPIKeys
+ */
+export const listAPIKeys = BackendService.method.listAPIKeys;
+
+/**
+ * Revoke an API Key.
+ *
+ * @generated from rpc tesseral.backend.v1.BackendService.RevokeAPIKey
+ */
+export const revokeAPIKey = BackendService.method.revokeAPIKey;
+
+/**
+ * Update an API Key.
+ *
+ * @generated from rpc tesseral.backend.v1.BackendService.UpdateAPIKey
+ */
+export const updateAPIKey = BackendService.method.updateAPIKey;
+
+/**
+ * @generated from rpc tesseral.backend.v1.BackendService.CreateAPIKeyRoleAssignment
+ */
+export const createAPIKeyRoleAssignment = BackendService.method.createAPIKeyRoleAssignment;
+
+/**
+ * @generated from rpc tesseral.backend.v1.BackendService.DeleteAPIKeyRoleAssignment
+ */
+export const deleteAPIKeyRoleAssignment = BackendService.method.deleteAPIKeyRoleAssignment;
+
+/**
+ * @generated from rpc tesseral.backend.v1.BackendService.ListAPIKeyRoleAssignments
+ */
+export const listAPIKeyRoleAssignments = BackendService.method.listAPIKeyRoleAssignments;
+
+/**
+ * @generated from rpc tesseral.backend.v1.BackendService.AuthenticateAPIKey
+ */
+export const authenticateAPIKey = BackendService.method.authenticateAPIKey;
+
+/**
  * @generated from rpc tesseral.backend.v1.BackendService.DisableOrganizationLogins
  */
 export const disableOrganizationLogins = BackendService.method.disableOrganizationLogins;

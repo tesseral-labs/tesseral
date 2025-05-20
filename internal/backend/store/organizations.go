@@ -320,6 +320,11 @@ func (s *Store) UpdateOrganization(ctx context.Context, req *backendv1.UpdateOrg
 		updates.CustomRolesEnabled = *req.Organization.CustomRolesEnabled
 	}
 
+	updates.ApiKeysEnabled = qOrg.ApiKeysEnabled
+	if req.Organization.ApiKeysEnabled != nil {
+		updates.ApiKeysEnabled = *req.Organization.ApiKeysEnabled
+	}
+
 	qUpdatedOrg, err := q.UpdateOrganization(ctx, updates)
 	if err != nil {
 		return nil, fmt.Errorf("update organization: %w", err)

@@ -48,5 +48,7 @@ func parseProject(qProject *queries.Project) *frontendv1.Project {
 		LogInWithPasskey:          qProject.LogInWithPasskey,
 		LogInWithSaml:             qProject.LogInWithSaml,
 		VaultDomain:               qProject.VaultDomain,
+		ApiKeysEnabled:            qProject.ApiKeysEnabled,
+		ApiKeySecretTokenPrefix:   derefOrEmpty(qProject.ApiKeySecretTokenPrefix),
 	}
 }

@@ -293,6 +293,64 @@ service BackendService {
     option (google.api.http) = {delete: "/v1/user-role-assignments/{id}"};
   }
 
+  // Create an API Key for an Organization.
+  rpc CreateAPIKey(CreateAPIKeyRequest) returns (CreateAPIKeyResponse) {
+    option (google.api.http) = {
+      post: "/v1/api-keys"
+      body: "*"
+    };
+  }
+
+  // Delete an API Key.
+  rpc DeleteAPIKey(DeleteAPIKeyRequest) returns (DeleteAPIKeyResponse) {
+    option (google.api.http) = {delete: "/v1/api-keys/{id}"};
+  }
+
+  // Get an API Key.
+  rpc GetAPIKey(GetAPIKeyRequest) returns (GetAPIKeyResponse) {
+    option (google.api.http) = {get: "/v1/api-keys/{id}"};
+  }
+
+  // List API Keys.
+  rpc ListAPIKeys(ListAPIKeysRequest) returns (ListAPIKeysResponse) {
+    option (google.api.http) = {get: "/v1/api-keys"};
+  }
+
+  // Revoke an API Key.
+  rpc RevokeAPIKey(RevokeAPIKeyRequest) returns (RevokeAPIKeyResponse) {
+    option (google.api.http) = {post: "/v1/api-keys/{id}/revoke"};
+  }
+
+  // Update an API Key.
+  rpc UpdateAPIKey(UpdateAPIKeyRequest) returns (UpdateAPIKeyResponse) {
+    option (google.api.http) = {
+      patch: "/v1/api-keys/{id}"
+      body: "*"
+    };
+  }
+
+  rpc CreateAPIKeyRoleAssignment(CreateAPIKeyRoleAssignmentRequest) returns (CreateAPIKeyRoleAssignmentResponse) {
+    option (google.api.http) = {
+      post: "/v1/api-key-role-assignments"
+      body: "*"
+    };
+  }
+
+  rpc DeleteAPIKeyRoleAssignment(DeleteAPIKeyRoleAssignmentRequest) returns (DeleteAPIKeyRoleAssignmentResponse) {
+    option (google.api.http) = {delete: "/v1/api-key-role-assignments/{id}"};
+  }
+
+  rpc ListAPIKeyRoleAssignments(ListAPIKeyRoleAssignmentsRequest) returns (ListAPIKeyRoleAssignmentsResponse) {
+    option (google.api.http) = {get: "/v1/api-key-role-assignments"};
+  }
+
+  rpc AuthenticateAPIKey(AuthenticateAPIKeyRequest) returns (AuthenticateAPIKeyResponse) {
+    option (google.api.http) = {
+      post: "/v1/api-keys/authenticate"
+      body: "*"
+    };
+  }
+
   rpc DisableOrganizationLogins(DisableOrganizationLoginsRequest) returns (DisableOrganizationLoginsResponse) {}
   rpc DisableProjectLogins(DisableProjectLoginsRequest) returns (DisableProjectLoginsResponse) {}
   rpc EnableOrganizationLogins(EnableOrganizationLoginsRequest) returns (EnableOrganizationLoginsResponse) {}
@@ -1042,4 +1100,86 @@ message GetProjectWebhookManagementURLRequest {}
 
 message GetProjectWebhookManagementURLResponse {
   string url = 1;
+}
+
+message CreateAPIKeyRequest {
+  APIKey api_key = 1;
+}
+
+message CreateAPIKeyResponse {
+  APIKey api_key = 1;
+}
+
+message DeleteAPIKeyRequest {
+  string id = 1;
+}
+
+message DeleteAPIKeyResponse {}
+
+message GetAPIKeyRequest {
+  string id = 1;
+}
+
+message GetAPIKeyResponse {
+  APIKey api_key = 1;
+}
+
+message ListAPIKeysRequest {
+  string organization_id = 1;
+  string page_token = 2;
+}
+
+message ListAPIKeysResponse {
+  repeated APIKey api_keys = 1;
+  string next_page_token = 2;
+}
+
+message RevokeAPIKeyRequest {
+  string id = 1;
+}
+
+message RevokeAPIKeyResponse {}
+
+message UpdateAPIKeyRequest {
+  string id = 1;
+  APIKey api_key = 2;
+}
+
+message UpdateAPIKeyResponse {
+  APIKey api_key = 1;
+}
+
+message CreateAPIKeyRoleAssignmentRequest {
+  APIKeyRoleAssignment api_key_role_assignment = 1;
+}
+
+message CreateAPIKeyRoleAssignmentResponse {
+  APIKeyRoleAssignment api_key_role_assignment = 1;
+}
+
+message ListAPIKeyRoleAssignmentsRequest {
+  string api_key_id = 1;
+  string page_token = 2;
+}
+
+message ListAPIKeyRoleAssignmentsResponse {
+  repeated APIKeyRoleAssignment api_key_role_assignments = 1;
+  string next_page_token = 2;
+}
+
+message DeleteAPIKeyRoleAssignmentRequest {
+  string id = 1;
+  string api_key_id = 2;
+}
+
+message DeleteAPIKeyRoleAssignmentResponse {}
+
+message AuthenticateAPIKeyRequest {
+  string secret_token = 1;
+}
+
+message AuthenticateAPIKeyResponse {
+  string api_key_id = 1;
+  string organization_id = 2;
+  repeated string actions = 3;
 }

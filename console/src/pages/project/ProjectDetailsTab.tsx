@@ -52,6 +52,7 @@ import { InputTags } from '@/components/input-tags';
 import { EditProjectGoogleSettingsButton } from '@/pages/project/EditProjectGoogleSettingsButton';
 import { EditProjectMicrosoftSettingsButton } from '@/pages/project/EditProjectMicrosoftSettingsButton';
 import { EditProjectGithubSettingsButton } from './EditProjectGithubSettingsButton';
+import { EditAPIKeySettingsButton } from './project-ui-settings/EditAPIKeySettingsButton';
 
 export const ProjectDetailsTab = () => {
   const { data: getProjectResponse } = useQuery(getProject, {});
@@ -341,6 +342,40 @@ export const ProjectDetailsTab = () => {
                   ) : (
                     '-'
                   )}
+                </DetailsGridValue>
+              </DetailsGridEntry>
+            </DetailsGridColumn>
+          </DetailsGrid>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="flex-row justify-between items-center">
+          <div className="flex flex-col space-y-1 5">
+            <CardTitle>API key settings</CardTitle>
+            <CardDescription>
+              Settings for API keys used by your customers with your prduct.
+            </CardDescription>
+          </div>
+          <EditAPIKeySettingsButton />
+        </CardHeader>
+        <CardContent>
+          <DetailsGrid>
+            <DetailsGridColumn>
+              <DetailsGridEntry>
+                <DetailsGridKey>Status</DetailsGridKey>
+                <DetailsGridValue>
+                  {getProjectResponse?.project?.apiKeysEnabled
+                    ? 'Enabled'
+                    : 'Disabled'}
+                </DetailsGridValue>
+              </DetailsGridEntry>
+            </DetailsGridColumn>
+            <DetailsGridColumn>
+              <DetailsGridEntry>
+                <DetailsGridKey>API Key Prefix</DetailsGridKey>
+                <DetailsGridValue>
+                  {getProjectResponse?.project?.apiKeySecretTokenPrefix || '-'}
                 </DetailsGridValue>
               </DetailsGridEntry>
             </DetailsGridColumn>

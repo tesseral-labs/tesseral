@@ -39,8 +39,10 @@ import { VerifyPasskeyPage } from "@/pages/login/VerifyPasskeyPage";
 import { VerifyPasswordPage } from "@/pages/login/VerifyPasswordPage";
 import { VerifySecondaryFactorPage } from "@/pages/login/VerifySecondaryFactorPage";
 
+import { APIKeysTab } from "./pages/dashboard/APIKeysTab";
 import { DashboardLayout } from "./pages/dashboard/DashboardLayout";
 import { UserSettingsPage } from "./pages/dashboard/UserSettingsPage";
+import { ViewAPIKeyPage } from "./pages/dashboard/api-keys/ViewAPIKeyPage";
 import { GithubOAuthCallbackPage } from "./pages/login/GithubOAuthCallbackPage";
 
 const queryClient = new QueryClient();
@@ -147,6 +149,11 @@ function AppWithRoutes() {
                   element={<OrganizationSettingsPage />}
                 >
                   <Route path="" element={<OrganizationUsersTab />} />
+                  <Route path="api-keys" element={<APIKeysTab />} />
+                  <Route
+                    path="api-keys/:apiKeyId"
+                    element={<ViewAPIKeyPage />}
+                  />
                   <Route
                     path="advanced"
                     element={<OrganizationAdvancedTab />}

@@ -585,3 +585,117 @@ FROM
 WHERE
     project_id = $1;
 
+-- name: CreateAPIKey :one
+INSERT INTO api_keys (id, organization_id, display_name, secret_token_sha256, secret_token_suffix, expire_time)
+    VALUES ($1, $2, $3, $4, $5, $6)
+RETURNING
+    *;
+
+-- name: DeleteAPIKey :exec
+DELETE FROM api_keys USING organizations
+WHERE api_keys.id = $1
+    AND organization_id = $2
+    AND api_keys.secret_token_sha256 IS NULL;
+
+-- name: UpdateAPIKey :one
+UPDATE
+    api_keys
+SET
+    update_time = now(),
+    display_name = $2
+WHERE
+    id = $1
+    AND organization_id = $3
+RETURNING
+    *;
+
+-- name: GetAPIKeyByID :one
+SELECT
+    *
+FROM
+    api_keys
+WHERE
+    id = $1
+    AND organization_id = $2;
+
+-- name: ListAPIKeys :many
+SELECT
+    *
+FROM
+    api_keys
+WHERE
+    organization_id = $1
+    AND id > $2
+ORDER BY
+    id
+LIMIT $3;
+
+-- name: RevokeAPIKey :exec
+UPDATE
+    api_keys
+SET
+    update_time = now(),
+    secret_token_sha256 = NULL,
+    secret_token_suffix = NULL
+WHERE
+    id = $1
+    AND organization_id = $2;
+
+-- name: CreateAPIKeyRoleAssignment :one
+INSERT INTO api_key_role_assignments (id, api_key_id, role_id)
+    VALUES ($1, $2, $3)
+RETURNING
+    *;
+
+-- name: GetAPIKeyActions :many
+SELECT DISTINCT
+    (actions.name)
+FROM
+    api_keys
+    JOIN api_key_role_assignments ON api_key.id = api_key_role_assignments.api_key_id
+    JOIN roles ON api_key_role_assignments.role_id = roles.id
+    JOIN role_actions ON roles.id = role_actions.role_id
+    JOIN actions ON role_actions.action_id = actions.id
+WHERE
+    api_key_id = $1;
+
+-- name: GetAPIKeyRoleAssignment :one
+SELECT
+    api_key_role_assignments.*
+FROM
+    api_key_role_assignments
+    JOIN api_keys ON api_key_role_assignments.api_key_id = api_keys.id
+WHERE
+    api_key_role_assignments.id = $1
+    AND api_keys.organization_id = $2;
+
+-- name: ListAPIKeyRoleAssignments :many
+SELECT
+    api_key_role_assignments.*
+FROM
+    api_key_role_assignments
+    JOIN api_keys ON api_key_role_assignments.api_key_id = api_keys.id
+WHERE
+    api_key_role_assignments.api_key_id = $1
+    AND api_keys.organization_id = $2
+    AND api_key_role_assignments.id > $3
+ORDER BY
+    api_key_role_assignments.id
+LIMIT $4;
+
+-- name: ListAllAPIKeyRoleAssignments :many
+SELECT
+    api_key_role_assignments.*
+FROM
+    api_key_role_assignments
+    JOIN api_keys ON api_key_role_assignments.api_key_id = api_keys.id
+WHERE
+    api_key_role_assignments.api_key_id = $1
+    AND api_keys.organization_id = $2;
+
+-- name: DeleteAPIKeyRoleAssignment :exec
+DELETE FROM api_key_role_assignments USING api_keys, organizations
+WHERE api_key_role_assignments.api_key_id = api_keys.id
+    AND api_key_role_assignments.id = $1
+    AND api_keys.organization_id = $2;
+
