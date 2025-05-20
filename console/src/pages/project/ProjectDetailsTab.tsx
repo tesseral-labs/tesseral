@@ -18,6 +18,7 @@ import { Link } from 'react-router-dom';
 import { useMutation, useQuery } from '@connectrpc/connect-query';
 import {
   getProject,
+  getProjectEntitlements,
   getProjectWebhookManagementURL,
   getVaultDomainSettings,
   updateProject,
@@ -58,6 +59,9 @@ export const ProjectDetailsTab = () => {
   const { data: getProjectResponse } = useQuery(getProject, {});
   const { data: getProjectWebhookManagementUrlResponse } = useQuery(
     getProjectWebhookManagementURL,
+  );
+  const { data: getProjectEntitlementsResponse } = useQuery(
+    getProjectEntitlements,
   );
 
   return (
@@ -349,39 +353,42 @@ export const ProjectDetailsTab = () => {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader className="flex-row justify-between items-center">
-          <div className="flex flex-col space-y-1 5">
-            <CardTitle>API key settings</CardTitle>
-            <CardDescription>
-              Settings for API keys used by your customers with your prduct.
-            </CardDescription>
-          </div>
-          <EditAPIKeySettingsButton />
-        </CardHeader>
-        <CardContent>
-          <DetailsGrid>
-            <DetailsGridColumn>
-              <DetailsGridEntry>
-                <DetailsGridKey>Status</DetailsGridKey>
-                <DetailsGridValue>
-                  {getProjectResponse?.project?.apiKeysEnabled
-                    ? 'Enabled'
-                    : 'Disabled'}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-            </DetailsGridColumn>
-            <DetailsGridColumn>
-              <DetailsGridEntry>
-                <DetailsGridKey>API Key Prefix</DetailsGridKey>
-                <DetailsGridValue>
-                  {getProjectResponse?.project?.apiKeySecretTokenPrefix || '-'}
-                </DetailsGridValue>
-              </DetailsGridEntry>
-            </DetailsGridColumn>
-          </DetailsGrid>
-        </CardContent>
-      </Card>
+      {getProjectEntitlementsResponse?.entitledBackendApiKeys && (
+        <Card>
+          <CardHeader className="flex-row justify-between items-center">
+            <div className="flex flex-col space-y-1 5">
+              <CardTitle>API key settings</CardTitle>
+              <CardDescription>
+                Settings for API keys used by your customers with your prduct.
+              </CardDescription>
+            </div>
+            <EditAPIKeySettingsButton />
+          </CardHeader>
+          <CardContent>
+            <DetailsGrid>
+              <DetailsGridColumn>
+                <DetailsGridEntry>
+                  <DetailsGridKey>Status</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getProjectResponse?.project?.apiKeysEnabled
+                      ? 'Enabled'
+                      : 'Disabled'}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+              </DetailsGridColumn>
+              <DetailsGridColumn>
+                <DetailsGridEntry>
+                  <DetailsGridKey>API Key Prefix</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getProjectResponse?.project?.apiKeySecretTokenPrefix ||
+                      '-'}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+              </DetailsGridColumn>
+            </DetailsGrid>
+          </CardContent>
+        </Card>
+      )}
 
       <Card>
         <CardHeader className="flex-row justify-between items-center">

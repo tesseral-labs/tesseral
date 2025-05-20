@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@connectrpc/connect-query';
 import {
   getOrganization,
+  getProjectEntitlements,
   updateOrganization,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import { Outlet, useLocation, useParams } from 'react-router';
@@ -52,12 +53,19 @@ import { TabBar, TabBarLink } from '@/components/ui/tab-bar';
 
 export const ViewOrganizationPage = () => {
   const { organizationId } = useParams();
-  const { data: getOrganizationResponse, refetch } = useQuery(getOrganization, {
+
+  const { data: getOrganizationResponse } = useQuery(getOrganization, {
     id: organizationId,
   });
+  const { data: getProjectEntitlementsResponse } = useQuery(
+    getProjectEntitlements,
+  );
   const { pathname } = useLocation();
 
-  const tabs = [
+  const [currentTab, setCurrentTab] = useState<
+    { name: string; root?: Boolean; url: string } | undefined
+  >();
+  const [tabs, setTabs] = useState([
     {
       root: true,
       name: 'Details',
@@ -83,13 +91,23 @@ export const ViewOrganizationPage = () => {
       name: 'SCIM API Keys',
       url: `/organizations/${organizationId}/scim-api-keys`,
     },
-    {
-      name: 'API Keys',
-      url: `/organizations/${organizationId}/api-keys`,
-    },
-  ];
+  ]);
 
-  const currentTab = tabs.find((tab) => tab.url === pathname);
+  useEffect(() => {
+    if (getProjectEntitlementsResponse?.entitledBackendApiKeys) {
+      const newTabs = [...tabs];
+
+      if (!tabs.some((e) => e.name === 'Api Keys')) {
+        newTabs.push({
+          name: 'API Keys',
+          url: `/organizations/${organizationId}/api-keys`,
+        });
+        setTabs(newTabs);
+      }
+    }
+
+    setCurrentTab(tabs.find((tab) => tab.url === pathname));
+  }, [currentTab, getProjectEntitlementsResponse, tabs]);
 
   return (
     // TODO remove padding when app shell in place
