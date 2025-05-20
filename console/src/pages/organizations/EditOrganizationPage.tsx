@@ -90,7 +90,8 @@ export const EditOrganizationPage = () => {
       // preventing the compiler from inferring the correct types.
       form.reset({
         ...form.getValues(),
-        apiKeysEnabled: getOrganizationResponse.organization.apiKeysEnabled,
+        apiKeysEnabled:
+          getOrganizationResponse.organization.apiKeysEnabled || false,
         displayName: getOrganizationResponse.organization.displayName,
         logInWithGoogle: getOrganizationResponse.organization.logInWithGoogle,
         logInWithMicrosoft:

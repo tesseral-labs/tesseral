@@ -20,6 +20,8 @@ func (s *Store) CreateAPIKeyRoleAssignment(ctx context.Context, req *frontendv1.
 	}
 	defer rollback()
 
+	orgID := authn.OrganizationID(ctx)
+
 	apiKeyID, err := idformat.APIKey.Parse(req.ApiKeyRoleAssignment.ApiKeyId)
 	if err != nil {
 		return nil, apierror.NewInvalidArgumentError("invalid api key id", fmt.Errorf("parse api key id: %w", err))
@@ -41,8 +43,9 @@ func (s *Store) CreateAPIKeyRoleAssignment(ctx context.Context, req *frontendv1.
 	}
 
 	if _, err := q.GetRole(ctx, queries.GetRoleParams{
-		ID:        roleID,
-		ProjectID: authn.ProjectID(ctx),
+		ID:             roleID,
+		OrganizationID: &orgID,
+		ProjectID:      authn.ProjectID(ctx),
 	}); err != nil {
 		if err == pgx.ErrNoRows {
 			return nil, apierror.NewNotFoundError("role not found", fmt.Errorf("get role: %w", err))
