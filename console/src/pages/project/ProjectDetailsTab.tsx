@@ -368,7 +368,7 @@ export const ProjectDetailsTab = () => {
           <div className="flex flex-col space-y-1 5">
             <CardTitle>API key settings</CardTitle>
             <CardDescription>
-              Settings for API keys used by your customers with your prduct.
+              Settings for API keys used by your customers with your product.
             </CardDescription>
           </div>
           {getProjectEntitlementsResponse?.entitledBackendApiKeys && (
