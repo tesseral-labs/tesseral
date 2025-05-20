@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/sesv2"
@@ -14,6 +15,7 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/hibp"
 	"github.com/tesseral-labs/tesseral/internal/pagetoken"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type Store struct {
@@ -81,4 +83,11 @@ func derefOrEmpty[T any](t *T) T {
 		return z
 	}
 	return *t
+}
+
+func timestampOrNil(t *time.Time) *timestamppb.Timestamp {
+	if t == nil || t.IsZero() {
+		return nil
+	}
+	return timestamppb.New(*t)
 }

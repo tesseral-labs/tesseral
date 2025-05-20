@@ -68,6 +68,16 @@ const (
 	BackendService_GetUserRoleAssignment_FullMethodName                 = "/tesseral.backend.v1.BackendService/GetUserRoleAssignment"
 	BackendService_CreateUserRoleAssignment_FullMethodName              = "/tesseral.backend.v1.BackendService/CreateUserRoleAssignment"
 	BackendService_DeleteUserRoleAssignment_FullMethodName              = "/tesseral.backend.v1.BackendService/DeleteUserRoleAssignment"
+	BackendService_CreateAPIKey_FullMethodName                          = "/tesseral.backend.v1.BackendService/CreateAPIKey"
+	BackendService_DeleteAPIKey_FullMethodName                          = "/tesseral.backend.v1.BackendService/DeleteAPIKey"
+	BackendService_GetAPIKey_FullMethodName                             = "/tesseral.backend.v1.BackendService/GetAPIKey"
+	BackendService_ListAPIKeys_FullMethodName                           = "/tesseral.backend.v1.BackendService/ListAPIKeys"
+	BackendService_RevokeAPIKey_FullMethodName                          = "/tesseral.backend.v1.BackendService/RevokeAPIKey"
+	BackendService_UpdateAPIKey_FullMethodName                          = "/tesseral.backend.v1.BackendService/UpdateAPIKey"
+	BackendService_CreateAPIKeyRoleAssignment_FullMethodName            = "/tesseral.backend.v1.BackendService/CreateAPIKeyRoleAssignment"
+	BackendService_DeleteAPIKeyRoleAssignment_FullMethodName            = "/tesseral.backend.v1.BackendService/DeleteAPIKeyRoleAssignment"
+	BackendService_ListAPIKeyRoleAssignments_FullMethodName             = "/tesseral.backend.v1.BackendService/ListAPIKeyRoleAssignments"
+	BackendService_AuthenticateAPIKey_FullMethodName                    = "/tesseral.backend.v1.BackendService/AuthenticateAPIKey"
 	BackendService_DisableOrganizationLogins_FullMethodName             = "/tesseral.backend.v1.BackendService/DisableOrganizationLogins"
 	BackendService_DisableProjectLogins_FullMethodName                  = "/tesseral.backend.v1.BackendService/DisableProjectLogins"
 	BackendService_EnableOrganizationLogins_FullMethodName              = "/tesseral.backend.v1.BackendService/EnableOrganizationLogins"
@@ -196,6 +206,22 @@ type BackendServiceClient interface {
 	CreateUserRoleAssignment(ctx context.Context, in *CreateUserRoleAssignmentRequest, opts ...grpc.CallOption) (*CreateUserRoleAssignmentResponse, error)
 	// Delete a User Role Assignment.
 	DeleteUserRoleAssignment(ctx context.Context, in *DeleteUserRoleAssignmentRequest, opts ...grpc.CallOption) (*DeleteUserRoleAssignmentResponse, error)
+	// Create an API Key for an Organization.
+	CreateAPIKey(ctx context.Context, in *CreateAPIKeyRequest, opts ...grpc.CallOption) (*CreateAPIKeyResponse, error)
+	// Delete an API Key.
+	DeleteAPIKey(ctx context.Context, in *DeleteAPIKeyRequest, opts ...grpc.CallOption) (*DeleteAPIKeyResponse, error)
+	// Get an API Key.
+	GetAPIKey(ctx context.Context, in *GetAPIKeyRequest, opts ...grpc.CallOption) (*GetAPIKeyResponse, error)
+	// List API Keys.
+	ListAPIKeys(ctx context.Context, in *ListAPIKeysRequest, opts ...grpc.CallOption) (*ListAPIKeysResponse, error)
+	// Revoke an API Key.
+	RevokeAPIKey(ctx context.Context, in *RevokeAPIKeyRequest, opts ...grpc.CallOption) (*RevokeAPIKeyResponse, error)
+	// Update an API Key.
+	UpdateAPIKey(ctx context.Context, in *UpdateAPIKeyRequest, opts ...grpc.CallOption) (*UpdateAPIKeyResponse, error)
+	CreateAPIKeyRoleAssignment(ctx context.Context, in *CreateAPIKeyRoleAssignmentRequest, opts ...grpc.CallOption) (*CreateAPIKeyRoleAssignmentResponse, error)
+	DeleteAPIKeyRoleAssignment(ctx context.Context, in *DeleteAPIKeyRoleAssignmentRequest, opts ...grpc.CallOption) (*DeleteAPIKeyRoleAssignmentResponse, error)
+	ListAPIKeyRoleAssignments(ctx context.Context, in *ListAPIKeyRoleAssignmentsRequest, opts ...grpc.CallOption) (*ListAPIKeyRoleAssignmentsResponse, error)
+	AuthenticateAPIKey(ctx context.Context, in *AuthenticateAPIKeyRequest, opts ...grpc.CallOption) (*AuthenticateAPIKeyResponse, error)
 	DisableOrganizationLogins(ctx context.Context, in *DisableOrganizationLoginsRequest, opts ...grpc.CallOption) (*DisableOrganizationLoginsResponse, error)
 	DisableProjectLogins(ctx context.Context, in *DisableProjectLoginsRequest, opts ...grpc.CallOption) (*DisableProjectLoginsResponse, error)
 	EnableOrganizationLogins(ctx context.Context, in *EnableOrganizationLoginsRequest, opts ...grpc.CallOption) (*EnableOrganizationLoginsResponse, error)
@@ -722,6 +748,106 @@ func (c *backendServiceClient) DeleteUserRoleAssignment(ctx context.Context, in 
 	return out, nil
 }
 
+func (c *backendServiceClient) CreateAPIKey(ctx context.Context, in *CreateAPIKeyRequest, opts ...grpc.CallOption) (*CreateAPIKeyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateAPIKeyResponse)
+	err := c.cc.Invoke(ctx, BackendService_CreateAPIKey_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) DeleteAPIKey(ctx context.Context, in *DeleteAPIKeyRequest, opts ...grpc.CallOption) (*DeleteAPIKeyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteAPIKeyResponse)
+	err := c.cc.Invoke(ctx, BackendService_DeleteAPIKey_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) GetAPIKey(ctx context.Context, in *GetAPIKeyRequest, opts ...grpc.CallOption) (*GetAPIKeyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetAPIKeyResponse)
+	err := c.cc.Invoke(ctx, BackendService_GetAPIKey_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) ListAPIKeys(ctx context.Context, in *ListAPIKeysRequest, opts ...grpc.CallOption) (*ListAPIKeysResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListAPIKeysResponse)
+	err := c.cc.Invoke(ctx, BackendService_ListAPIKeys_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) RevokeAPIKey(ctx context.Context, in *RevokeAPIKeyRequest, opts ...grpc.CallOption) (*RevokeAPIKeyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RevokeAPIKeyResponse)
+	err := c.cc.Invoke(ctx, BackendService_RevokeAPIKey_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) UpdateAPIKey(ctx context.Context, in *UpdateAPIKeyRequest, opts ...grpc.CallOption) (*UpdateAPIKeyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateAPIKeyResponse)
+	err := c.cc.Invoke(ctx, BackendService_UpdateAPIKey_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) CreateAPIKeyRoleAssignment(ctx context.Context, in *CreateAPIKeyRoleAssignmentRequest, opts ...grpc.CallOption) (*CreateAPIKeyRoleAssignmentResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateAPIKeyRoleAssignmentResponse)
+	err := c.cc.Invoke(ctx, BackendService_CreateAPIKeyRoleAssignment_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) DeleteAPIKeyRoleAssignment(ctx context.Context, in *DeleteAPIKeyRoleAssignmentRequest, opts ...grpc.CallOption) (*DeleteAPIKeyRoleAssignmentResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteAPIKeyRoleAssignmentResponse)
+	err := c.cc.Invoke(ctx, BackendService_DeleteAPIKeyRoleAssignment_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) ListAPIKeyRoleAssignments(ctx context.Context, in *ListAPIKeyRoleAssignmentsRequest, opts ...grpc.CallOption) (*ListAPIKeyRoleAssignmentsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListAPIKeyRoleAssignmentsResponse)
+	err := c.cc.Invoke(ctx, BackendService_ListAPIKeyRoleAssignments_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) AuthenticateAPIKey(ctx context.Context, in *AuthenticateAPIKeyRequest, opts ...grpc.CallOption) (*AuthenticateAPIKeyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AuthenticateAPIKeyResponse)
+	err := c.cc.Invoke(ctx, BackendService_AuthenticateAPIKey_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *backendServiceClient) DisableOrganizationLogins(ctx context.Context, in *DisableOrganizationLoginsRequest, opts ...grpc.CallOption) (*DisableOrganizationLoginsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(DisableOrganizationLoginsResponse)
@@ -1082,6 +1208,22 @@ type BackendServiceServer interface {
 	CreateUserRoleAssignment(context.Context, *CreateUserRoleAssignmentRequest) (*CreateUserRoleAssignmentResponse, error)
 	// Delete a User Role Assignment.
 	DeleteUserRoleAssignment(context.Context, *DeleteUserRoleAssignmentRequest) (*DeleteUserRoleAssignmentResponse, error)
+	// Create an API Key for an Organization.
+	CreateAPIKey(context.Context, *CreateAPIKeyRequest) (*CreateAPIKeyResponse, error)
+	// Delete an API Key.
+	DeleteAPIKey(context.Context, *DeleteAPIKeyRequest) (*DeleteAPIKeyResponse, error)
+	// Get an API Key.
+	GetAPIKey(context.Context, *GetAPIKeyRequest) (*GetAPIKeyResponse, error)
+	// List API Keys.
+	ListAPIKeys(context.Context, *ListAPIKeysRequest) (*ListAPIKeysResponse, error)
+	// Revoke an API Key.
+	RevokeAPIKey(context.Context, *RevokeAPIKeyRequest) (*RevokeAPIKeyResponse, error)
+	// Update an API Key.
+	UpdateAPIKey(context.Context, *UpdateAPIKeyRequest) (*UpdateAPIKeyResponse, error)
+	CreateAPIKeyRoleAssignment(context.Context, *CreateAPIKeyRoleAssignmentRequest) (*CreateAPIKeyRoleAssignmentResponse, error)
+	DeleteAPIKeyRoleAssignment(context.Context, *DeleteAPIKeyRoleAssignmentRequest) (*DeleteAPIKeyRoleAssignmentResponse, error)
+	ListAPIKeyRoleAssignments(context.Context, *ListAPIKeyRoleAssignmentsRequest) (*ListAPIKeyRoleAssignmentsResponse, error)
+	AuthenticateAPIKey(context.Context, *AuthenticateAPIKeyRequest) (*AuthenticateAPIKeyResponse, error)
 	DisableOrganizationLogins(context.Context, *DisableOrganizationLoginsRequest) (*DisableOrganizationLoginsResponse, error)
 	DisableProjectLogins(context.Context, *DisableProjectLoginsRequest) (*DisableProjectLoginsResponse, error)
 	EnableOrganizationLogins(context.Context, *EnableOrganizationLoginsRequest) (*EnableOrganizationLoginsResponse, error)
@@ -1264,6 +1406,36 @@ func (UnimplementedBackendServiceServer) CreateUserRoleAssignment(context.Contex
 }
 func (UnimplementedBackendServiceServer) DeleteUserRoleAssignment(context.Context, *DeleteUserRoleAssignmentRequest) (*DeleteUserRoleAssignmentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteUserRoleAssignment not implemented")
+}
+func (UnimplementedBackendServiceServer) CreateAPIKey(context.Context, *CreateAPIKeyRequest) (*CreateAPIKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateAPIKey not implemented")
+}
+func (UnimplementedBackendServiceServer) DeleteAPIKey(context.Context, *DeleteAPIKeyRequest) (*DeleteAPIKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteAPIKey not implemented")
+}
+func (UnimplementedBackendServiceServer) GetAPIKey(context.Context, *GetAPIKeyRequest) (*GetAPIKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAPIKey not implemented")
+}
+func (UnimplementedBackendServiceServer) ListAPIKeys(context.Context, *ListAPIKeysRequest) (*ListAPIKeysResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListAPIKeys not implemented")
+}
+func (UnimplementedBackendServiceServer) RevokeAPIKey(context.Context, *RevokeAPIKeyRequest) (*RevokeAPIKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RevokeAPIKey not implemented")
+}
+func (UnimplementedBackendServiceServer) UpdateAPIKey(context.Context, *UpdateAPIKeyRequest) (*UpdateAPIKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateAPIKey not implemented")
+}
+func (UnimplementedBackendServiceServer) CreateAPIKeyRoleAssignment(context.Context, *CreateAPIKeyRoleAssignmentRequest) (*CreateAPIKeyRoleAssignmentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateAPIKeyRoleAssignment not implemented")
+}
+func (UnimplementedBackendServiceServer) DeleteAPIKeyRoleAssignment(context.Context, *DeleteAPIKeyRoleAssignmentRequest) (*DeleteAPIKeyRoleAssignmentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteAPIKeyRoleAssignment not implemented")
+}
+func (UnimplementedBackendServiceServer) ListAPIKeyRoleAssignments(context.Context, *ListAPIKeyRoleAssignmentsRequest) (*ListAPIKeyRoleAssignmentsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListAPIKeyRoleAssignments not implemented")
+}
+func (UnimplementedBackendServiceServer) AuthenticateAPIKey(context.Context, *AuthenticateAPIKeyRequest) (*AuthenticateAPIKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AuthenticateAPIKey not implemented")
 }
 func (UnimplementedBackendServiceServer) DisableOrganizationLogins(context.Context, *DisableOrganizationLoginsRequest) (*DisableOrganizationLoginsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DisableOrganizationLogins not implemented")
@@ -2246,6 +2418,186 @@ func _BackendService_DeleteUserRoleAssignment_Handler(srv interface{}, ctx conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BackendService_CreateAPIKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateAPIKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).CreateAPIKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_CreateAPIKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).CreateAPIKey(ctx, req.(*CreateAPIKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_DeleteAPIKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteAPIKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).DeleteAPIKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_DeleteAPIKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).DeleteAPIKey(ctx, req.(*DeleteAPIKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_GetAPIKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAPIKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).GetAPIKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_GetAPIKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).GetAPIKey(ctx, req.(*GetAPIKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_ListAPIKeys_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListAPIKeysRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).ListAPIKeys(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_ListAPIKeys_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).ListAPIKeys(ctx, req.(*ListAPIKeysRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_RevokeAPIKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RevokeAPIKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).RevokeAPIKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_RevokeAPIKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).RevokeAPIKey(ctx, req.(*RevokeAPIKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_UpdateAPIKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateAPIKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).UpdateAPIKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_UpdateAPIKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).UpdateAPIKey(ctx, req.(*UpdateAPIKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_CreateAPIKeyRoleAssignment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateAPIKeyRoleAssignmentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).CreateAPIKeyRoleAssignment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_CreateAPIKeyRoleAssignment_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).CreateAPIKeyRoleAssignment(ctx, req.(*CreateAPIKeyRoleAssignmentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_DeleteAPIKeyRoleAssignment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteAPIKeyRoleAssignmentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).DeleteAPIKeyRoleAssignment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_DeleteAPIKeyRoleAssignment_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).DeleteAPIKeyRoleAssignment(ctx, req.(*DeleteAPIKeyRoleAssignmentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_ListAPIKeyRoleAssignments_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListAPIKeyRoleAssignmentsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).ListAPIKeyRoleAssignments(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_ListAPIKeyRoleAssignments_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).ListAPIKeyRoleAssignments(ctx, req.(*ListAPIKeyRoleAssignmentsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_AuthenticateAPIKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AuthenticateAPIKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).AuthenticateAPIKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_AuthenticateAPIKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).AuthenticateAPIKey(ctx, req.(*AuthenticateAPIKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _BackendService_DisableOrganizationLogins_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DisableOrganizationLoginsRequest)
 	if err := dec(in); err != nil {
@@ -2916,6 +3268,46 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteUserRoleAssignment",
 			Handler:    _BackendService_DeleteUserRoleAssignment_Handler,
+		},
+		{
+			MethodName: "CreateAPIKey",
+			Handler:    _BackendService_CreateAPIKey_Handler,
+		},
+		{
+			MethodName: "DeleteAPIKey",
+			Handler:    _BackendService_DeleteAPIKey_Handler,
+		},
+		{
+			MethodName: "GetAPIKey",
+			Handler:    _BackendService_GetAPIKey_Handler,
+		},
+		{
+			MethodName: "ListAPIKeys",
+			Handler:    _BackendService_ListAPIKeys_Handler,
+		},
+		{
+			MethodName: "RevokeAPIKey",
+			Handler:    _BackendService_RevokeAPIKey_Handler,
+		},
+		{
+			MethodName: "UpdateAPIKey",
+			Handler:    _BackendService_UpdateAPIKey_Handler,
+		},
+		{
+			MethodName: "CreateAPIKeyRoleAssignment",
+			Handler:    _BackendService_CreateAPIKeyRoleAssignment_Handler,
+		},
+		{
+			MethodName: "DeleteAPIKeyRoleAssignment",
+			Handler:    _BackendService_DeleteAPIKeyRoleAssignment_Handler,
+		},
+		{
+			MethodName: "ListAPIKeyRoleAssignments",
+			Handler:    _BackendService_ListAPIKeyRoleAssignments_Handler,
+		},
+		{
+			MethodName: "AuthenticateAPIKey",
+			Handler:    _BackendService_AuthenticateAPIKey_Handler,
 		},
 		{
 			MethodName: "DisableOrganizationLogins",

@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@connectrpc/connect-query';
 import {
   getOrganization,
+  getProjectEntitlements,
   updateOrganization,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import { Outlet, useLocation, useParams } from 'react-router';
@@ -52,7 +53,8 @@ import { TabBar, TabBarLink } from '@/components/ui/tab-bar';
 
 export const ViewOrganizationPage = () => {
   const { organizationId } = useParams();
-  const { data: getOrganizationResponse, refetch } = useQuery(getOrganization, {
+
+  const { data: getOrganizationResponse } = useQuery(getOrganization, {
     id: organizationId,
   });
   const { pathname } = useLocation();
@@ -82,6 +84,10 @@ export const ViewOrganizationPage = () => {
     {
       name: 'SCIM API Keys',
       url: `/organizations/${organizationId}/scim-api-keys`,
+    },
+    {
+      name: 'API Keys',
+      url: `/organizations/${organizationId}/api-keys`,
     },
   ];
 

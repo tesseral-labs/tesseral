@@ -6,6 +6,264 @@ info:
     title: BackendService API
     version: 0.0.1
 paths:
+    /v1/api-key-role-assignments:
+        get:
+            tags:
+                - BackendService
+            operationId: BackendService_ListAPIKeyRoleAssignments
+            parameters:
+                - name: apiKeyId
+                  in: query
+                  schema:
+                    type: string
+                - name: pageToken
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListAPIKeyRoleAssignmentsResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - BackendService
+            operationId: BackendService_CreateAPIKeyRoleAssignment
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateAPIKeyRoleAssignmentRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateAPIKeyRoleAssignmentResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/api-key-role-assignments/{id}:
+        delete:
+            tags:
+                - BackendService
+            operationId: BackendService_DeleteAPIKeyRoleAssignment
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+                - name: apiKeyId
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DeleteAPIKeyRoleAssignmentResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/api-keys:
+        get:
+            tags:
+                - BackendService
+            description: List API Keys.
+            operationId: BackendService_ListAPIKeys
+            parameters:
+                - name: organizationId
+                  in: query
+                  schema:
+                    type: string
+                - name: pageToken
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListAPIKeysResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - BackendService
+            description: Create an API Key for an Organization.
+            operationId: BackendService_CreateAPIKey
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateAPIKeyRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateAPIKeyResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/api-keys/authenticate:
+        post:
+            tags:
+                - BackendService
+            operationId: BackendService_AuthenticateAPIKey
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/AuthenticateAPIKeyRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/AuthenticateAPIKeyResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/api-keys/{id}:
+        get:
+            tags:
+                - BackendService
+            description: Get an API Key.
+            operationId: BackendService_GetAPIKey
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetAPIKeyResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        delete:
+            tags:
+                - BackendService
+            description: Delete an API Key.
+            operationId: BackendService_DeleteAPIKey
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DeleteAPIKeyResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        patch:
+            tags:
+                - BackendService
+            description: Update an API Key.
+            operationId: BackendService_UpdateAPIKey
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UpdateAPIKeyRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateAPIKeyResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/api-keys/{id}/revoke:
+        post:
+            tags:
+                - BackendService
+            description: Revoke an API Key.
+            operationId: BackendService_RevokeAPIKey
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/RevokeAPIKeyResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /v1/organizations:
         get:
             tags:
@@ -1278,6 +1536,87 @@ paths:
                                 $ref: '#/components/schemas/Status'
 components:
     schemas:
+        APIKey:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: The API Key ID. Starts with `api_key_...`.
+                organizationId:
+                    type: string
+                    description: The Organization this API Key belongs to.
+                createTime:
+                    type: string
+                    description: When the API Key was created.
+                    format: date-time
+                updateTime:
+                    type: string
+                    description: When the API Key was last updated.
+                    format: date-time
+                expireTime:
+                    type: string
+                    description: The expire time of the API Key.
+                    format: date-time
+                displayName:
+                    type: string
+                    description: A human-readable display name for this API Key.
+                secretToken:
+                    type: string
+                    description: The secret token for this API Key.
+                secretTokenSuffix:
+                    type: string
+                    description: The secret token suffix for this API Key.
+                revoked:
+                    type: boolean
+                    description: Whether this API Key is revoked.
+        APIKeyRoleAssignment:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: The API Key Role Assignment ID. Starts with `api_key_role_assignment_...`.
+                apiKeyId:
+                    type: string
+                    description: The API Key ID.
+                roleId:
+                    type: string
+                    description: The Role ID.
+        AuthenticateAPIKeyRequest:
+            type: object
+            properties:
+                secretToken:
+                    type: string
+        AuthenticateAPIKeyResponse:
+            type: object
+            properties:
+                apiKeyId:
+                    type: string
+                organizationId:
+                    type: string
+                actions:
+                    type: array
+                    items:
+                        type: string
+        CreateAPIKeyRequest:
+            type: object
+            properties:
+                apiKey:
+                    $ref: '#/components/schemas/APIKey'
+        CreateAPIKeyResponse:
+            type: object
+            properties:
+                apiKey:
+                    $ref: '#/components/schemas/APIKey'
+        CreateAPIKeyRoleAssignmentRequest:
+            type: object
+            properties:
+                apiKeyRoleAssignment:
+                    $ref: '#/components/schemas/APIKeyRoleAssignment'
+        CreateAPIKeyRoleAssignmentResponse:
+            type: object
+            properties:
+                apiKeyRoleAssignment:
+                    $ref: '#/components/schemas/APIKeyRoleAssignment'
         CreateOrganizationResponse:
             type: object
             properties:
@@ -1323,6 +1662,12 @@ components:
             properties:
                 userRoleAssignment:
                     $ref: '#/components/schemas/UserRoleAssignment'
+        DeleteAPIKeyResponse:
+            type: object
+            properties: {}
+        DeleteAPIKeyRoleAssignmentResponse:
+            type: object
+            properties: {}
         DeleteOrganizationResponse:
             type: object
             properties: {}
@@ -1347,6 +1692,11 @@ components:
         DeleteUserRoleAssignmentResponse:
             type: object
             properties: {}
+        GetAPIKeyResponse:
+            type: object
+            properties:
+                apiKey:
+                    $ref: '#/components/schemas/APIKey'
         GetOrganizationDomainsResponse:
             type: object
             properties:
@@ -1442,6 +1792,24 @@ components:
                     description: The type of the serialized message.
             additionalProperties: true
             description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+        ListAPIKeyRoleAssignmentsResponse:
+            type: object
+            properties:
+                apiKeyRoleAssignments:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/APIKeyRoleAssignment'
+                nextPageToken:
+                    type: string
+        ListAPIKeysResponse:
+            type: object
+            properties:
+                apiKeys:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/APIKey'
+                nextPageToken:
+                    type: string
         ListOrganizationsResponse:
             type: object
             properties:
@@ -1593,6 +1961,9 @@ components:
                 customRolesEnabled:
                     type: boolean
                     description: Whether the Organization's Users can create Organization-specific Roles.
+                apiKeysEnabled:
+                    type: boolean
+                    description: Whether API Keys are enabled for the Organization.
             description: An Organization represents one of your corporate customers.
         OrganizationDomains:
             type: object
@@ -1783,10 +2154,19 @@ components:
                 emailSendFromDomain:
                     type: string
                     description: Emails sent to Users come from this domain.
+                apiKeysEnabled:
+                    type: boolean
+                    description: Whether the Project supports API Keys.
+                apiKeySecretTokenPrefix:
+                    type: string
+                    description: The prefix used for API Key secret tokens.
             description: |-
                 Projects are the top-level object in Tesseral.
 
                  Everything in Tesseral happens within the context of a Project.
+        RevokeAPIKeyResponse:
+            type: object
+            properties: {}
         RevokeSCIMAPIKeyResponse:
             type: object
             properties:
@@ -1934,6 +2314,18 @@ components:
                         $ref: '#/components/schemas/GoogleProtobufAny'
                     description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
             description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
+        UpdateAPIKeyRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+                apiKey:
+                    $ref: '#/components/schemas/APIKey'
+        UpdateAPIKeyResponse:
+            type: object
+            properties:
+                apiKey:
+                    $ref: '#/components/schemas/APIKey'
         UpdateOrganizationDomainsResponse:
             type: object
             properties:

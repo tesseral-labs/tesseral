@@ -16,7 +16,9 @@ import {
 import { Button } from '@/components/ui/button';
 import { useMutation, useQuery } from '@connectrpc/connect-query';
 import {
+  createStripeCheckoutLink,
   getProject,
+  getProjectEntitlements,
   getProjectWebhookManagementURL,
   updateProject,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
@@ -45,12 +47,25 @@ import {
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { InputTags } from '@/components/input-tags';
+import { EditAPIKeySettingsButton } from './project-ui-settings/EditAPIKeySettingsButton';
 
 export const ProjectDetailsTab = () => {
   const { data: getProjectResponse } = useQuery(getProject, {});
   const { data: getProjectWebhookManagementUrlResponse } = useQuery(
     getProjectWebhookManagementURL,
   );
+  const { data: getProjectEntitlementsResponse } = useQuery(
+    getProjectEntitlements,
+  );
+
+  const createStripeCheckoutLinkMutation = useMutation(
+    createStripeCheckoutLink,
+  );
+
+  async function handleUpgrade() {
+    const { url } = await createStripeCheckoutLinkMutation.mutateAsync({});
+    window.location.href = url;
+  }
 
   return (
     <div className="space-y-8">
@@ -133,6 +148,65 @@ export const ProjectDetailsTab = () => {
               </DetailsGridEntry>
             </DetailsGridColumn>
           </DetailsGrid>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="flex-row justify-between items-center">
+          <div className="flex flex-col space-y-1 5">
+            <CardTitle>API key settings</CardTitle>
+            <CardDescription>
+              Settings for API keys used by your customers with your product.
+            </CardDescription>
+          </div>
+          {getProjectEntitlementsResponse?.entitledBackendApiKeys && (
+            <EditAPIKeySettingsButton />
+          )}
+        </CardHeader>
+        <CardContent>
+          {!getProjectEntitlementsResponse?.entitledBackendApiKeys ? (
+            <div className="text-sm my-8 w-full flex flex-col items-center justify-center space-y-6">
+              <div className="font-medium">
+                API Keys are available on the Growth Tier.
+              </div>
+
+              <div className="flex items-center gap-x-4">
+                <Button onClick={handleUpgrade}>Upgrade to Growth Tier</Button>
+                <span>
+                  or{' '}
+                  <a
+                    href="https://cal.com/ned-o-leary-j8ydyi/30min"
+                    className="font-medium underline underline-offset-2 decoration-muted-foreground/40"
+                  >
+                    meet an expert
+                  </a>
+                  .
+                </span>
+              </div>
+            </div>
+          ) : (
+            <DetailsGrid>
+              <DetailsGridColumn>
+                <DetailsGridEntry>
+                  <DetailsGridKey>Status</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getProjectResponse?.project?.apiKeysEnabled
+                      ? 'Enabled'
+                      : 'Disabled'}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+              </DetailsGridColumn>
+              <DetailsGridColumn>
+                <DetailsGridEntry>
+                  <DetailsGridKey>API Key Prefix</DetailsGridKey>
+                  <DetailsGridValue>
+                    {getProjectResponse?.project?.apiKeySecretTokenPrefix ||
+                      '-'}
+                  </DetailsGridValue>
+                </DetailsGridEntry>
+              </DetailsGridColumn>
+            </DetailsGrid>
+          )}
         </CardContent>
       </Card>
 

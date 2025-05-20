@@ -94,6 +94,12 @@ message Project {
 
   // Emails sent to Users come from this domain.
   string email_send_from_domain = 21;
+
+  // Whether the Project supports API Keys.
+  optional bool api_keys_enabled = 27;
+
+  // The prefix used for API Key secret tokens.
+  optional string api_key_secret_token_prefix = 28;
 }
 
 message VaultDomainSettings {
@@ -173,6 +179,9 @@ message Organization {
 
   // Whether the Organization's Users can create Organization-specific Roles.
   optional bool custom_roles_enabled = 15;
+
+  // Whether API Keys are enabled for the Organization.
+  optional bool api_keys_enabled = 16;
 }
 
 // OrganizationDomains defines the domains associated with an Organization.
@@ -488,6 +497,36 @@ message UserRoleAssignment {
   // The User ID.
   string user_id = 2;
 
+  // The Role ID.
+  string role_id = 3;
+}
+
+message APIKey {
+  // The API Key ID. Starts with `api_key_...`.
+  string id = 1;
+  // The Organization this API Key belongs to.
+  string organization_id = 2;
+  // When the API Key was created.
+  google.protobuf.Timestamp create_time = 3;
+  // When the API Key was last updated.
+  google.protobuf.Timestamp update_time = 4;
+  // The expire time of the API Key.
+  optional google.protobuf.Timestamp expire_time = 5;
+  // A human-readable display name for this API Key.
+  string display_name = 6;
+  // The secret token for this API Key.
+  string secret_token = 7;
+  // The secret token suffix for this API Key.
+  string secret_token_suffix = 8;
+  // Whether this API Key is revoked.
+  bool revoked = 9;
+}
+
+message APIKeyRoleAssignment {
+  // The API Key Role Assignment ID. Starts with `api_key_role_assignment_...`.
+  string id = 1;
+  // The API Key ID.
+  string api_key_id = 2;
   // The Role ID.
   string role_id = 3;
 }
