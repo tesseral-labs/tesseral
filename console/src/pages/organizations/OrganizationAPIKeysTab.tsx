@@ -6,11 +6,14 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { useNavigate, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import {
-  createAPIKey,
+  createStripeCheckoutLink,
+  getOrganization,
   getProject,
+  getProjectEntitlements,
   listAPIKeys,
+  updateOrganization,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import {
   useInfiniteQuery,
@@ -26,7 +29,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { DateTime } from 'luxon';
-import { timestampDate, timestampFromDate } from '@bufbuild/protobuf/wkt';
+import { timestampDate } from '@bufbuild/protobuf/wkt';
 import {
   AlertDialog,
   AlertDialogContent,
@@ -38,10 +41,11 @@ import {
   AlertDialogDescription,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { CalendarIcon, CirclePlus, Copy, LoaderCircle } from 'lucide-react';
+import { LoaderCircle } from 'lucide-react';
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -49,25 +53,17 @@ import {
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
-import { Calendar } from '@/components/ui/calendar';
-import { format, set } from 'date-fns';
 import { Link } from 'react-router-dom';
-import { APIKey } from '@/gen/tesseral/backend/v1/models_pb';
-import { SecretCopier } from '@/components/SecretCopier';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Switch } from '@/components/ui/switch';
+import { CreateAPIKeyButton } from './api-keys/CreateAPIKeyButton';
+import {
+  DetailsGrid,
+  DetailsGridColumn,
+  DetailsGridEntry,
+  DetailsGridKey,
+  DetailsGridValue,
+} from '@/components/details-grid';
 
 export const OrganizationAPIKeysTab = () => {
   const { organizationId } = useParams();
@@ -88,334 +84,276 @@ export const OrganizationAPIKeysTab = () => {
     },
   );
   const { data: getProjectResponse } = useQuery(getProject);
+  const { data: getOrganizationResponse } = useQuery(getOrganization, {
+    id: organizationId,
+  });
+  const { data: getProjectEntitlementsResponse } = useQuery(
+    getProjectEntitlements,
+  );
+  const createStripeCheckoutLinkMutation = useMutation(
+    createStripeCheckoutLink,
+  );
 
   const apiKeys = listApiKeysResponses?.pages?.flatMap((page) => page.apiKeys);
 
-  return (
-    <Card>
-      <CardHeader className="py-4 flex flex-row items-center justify-between">
-        <div>
-          <CardTitle>API Keys</CardTitle>
-          <CardDescription>
-            Manage the API keys for this organization.
-          </CardDescription>
-        </div>
-        <CreateAPIKeyButton />
-      </CardHeader>
-      <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Display Name</TableHead>
-              <TableHead>ID</TableHead>
-              <TableHead>Value</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Expires</TableHead>
-              <TableHead>Created At</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {apiKeys &&
-              apiKeys.map((apiKey) => (
-                <TableRow key={apiKey.id}>
-                  <TableCell>
-                    <Link
-                      to={`/organizations/${organizationId}/api-keys/${apiKey.id}`}
-                    >
-                      {apiKey.displayName}
-                    </Link>
-                  </TableCell>
-                  <TableCell>
-                    <Link
-                      to={`/organizations/${organizationId}/api-keys/${apiKey.id}`}
-                    >
-                      {apiKey.id}
-                    </Link>
-                  </TableCell>
-                  <TableCell>
-                    {apiKey.secretTokenSuffix ? (
-                      <span className="font-mono text-sm">
-                        {getProjectResponse?.project?.apiKeySecretTokenPrefix ||
-                          'api_key_'}
-                        ...{apiKey.secretTokenSuffix}
-                      </span>
-                    ) : (
-                      '—'
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {apiKey.revoked ? (
-                      <span>Active</span>
-                    ) : (
-                      <span>Revoked</span>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {apiKey.expireTime
-                      ? DateTime.fromJSDate(
-                          timestampDate(apiKey.expireTime),
-                        ).toRelative()
-                      : 'Never'}
-                  </TableCell>
-                  <TableCell>
-                    {apiKey.createTime &&
-                      DateTime.fromJSDate(
-                        timestampDate(apiKey.createTime),
-                      ).toRelative()}
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
+  async function handleUpgrade() {
+    const { url } = await createStripeCheckoutLinkMutation.mutateAsync({});
+    window.location.href = url;
+  }
 
-        {hasNextPage && (
-          <div className="flex justify-center mt-8">
-            <Button
-              className="mt-4"
-              variant="outline"
-              onClick={() => fetchNextPage()}
-            >
-              {isFetchingNextPage && (
-                <LoaderCircle className="h-4 w-4 animate-spin" />
+  return (
+    <div className="space-y-8">
+      {!getProjectEntitlementsResponse?.entitledBackendApiKeys ? (
+        <Card>
+          <CardHeader>
+            <div className="flex flex-col space-y-1 5">
+              <CardTitle>API Key Management</CardTitle>
+              <CardDescription>
+                API keys are used to authenticate requests to your service. You
+                can create and manage API keys for this Organization.
+              </CardDescription>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="text-sm my-8 w-full flex flex-col items-center justify-center space-y-6">
+              <div className="font-medium">
+                API Keys are available on the Growth Tier.
+              </div>
+
+              <div className="flex items-center gap-x-4">
+                <Button onClick={handleUpgrade}>Upgrade to Growth Tier</Button>
+                <span>
+                  or{' '}
+                  <a
+                    href="https://cal.com/ned-o-leary-j8ydyi/30min"
+                    className="font-medium underline underline-offset-2 decoration-muted-foreground/40"
+                  >
+                    meet an expert
+                  </a>
+                  .
+                </span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      ) : (
+        <>
+          <Card>
+            <CardHeader className="py-4 flex flex-row items-center justify-between">
+              <div className="flex flex-col space-y-1 5">
+                <CardTitle>API Key Management</CardTitle>
+                <CardDescription>
+                  API keys are used to authenticate requests to your service.
+                  You can create and manage API keys for this Organization.
+                </CardDescription>
+              </div>
+              <EditAPIKeySettingsButton />
+            </CardHeader>
+            <CardContent>
+              <DetailsGrid>
+                <DetailsGridColumn>
+                  <DetailsGridEntry>
+                    <DetailsGridKey>Status</DetailsGridKey>
+                    <DetailsGridValue>
+                      {getOrganizationResponse?.organization?.apiKeysEnabled
+                        ? 'Enabled'
+                        : 'Disabled'}
+                    </DetailsGridValue>
+                  </DetailsGridEntry>
+                </DetailsGridColumn>
+              </DetailsGrid>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="py-4 flex flex-row items-center justify-between">
+              <div className="flex flex-col space-y-1 5">
+                <CardTitle>API Keys</CardTitle>
+                <CardDescription>
+                  Manage the API keys for this organization.
+                </CardDescription>
+              </div>
+              <CreateAPIKeyButton />
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Display Name</TableHead>
+                    <TableHead>ID</TableHead>
+                    <TableHead>Value</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Expires</TableHead>
+                    <TableHead>Created At</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {apiKeys &&
+                    apiKeys.map((apiKey) => (
+                      <TableRow key={apiKey.id}>
+                        <TableCell>
+                          <Link
+                            to={`/organizations/${organizationId}/api-keys/${apiKey.id}`}
+                          >
+                            {apiKey.displayName}
+                          </Link>
+                        </TableCell>
+                        <TableCell>
+                          <Link
+                            to={`/organizations/${organizationId}/api-keys/${apiKey.id}`}
+                          >
+                            {apiKey.id}
+                          </Link>
+                        </TableCell>
+                        <TableCell>
+                          {apiKey.secretTokenSuffix ? (
+                            <span className="font-mono text-sm">
+                              {getProjectResponse?.project
+                                ?.apiKeySecretTokenPrefix || 'api_key_'}
+                              ...{apiKey.secretTokenSuffix}
+                            </span>
+                          ) : (
+                            '—'
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {apiKey.revoked ? (
+                            <span>Active</span>
+                          ) : (
+                            <span>Revoked</span>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {apiKey.expireTime
+                            ? DateTime.fromJSDate(
+                                timestampDate(apiKey.expireTime),
+                              ).toRelative()
+                            : 'Never'}
+                        </TableCell>
+                        <TableCell>
+                          {apiKey.createTime &&
+                            DateTime.fromJSDate(
+                              timestampDate(apiKey.createTime),
+                            ).toRelative()}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+
+              {hasNextPage && (
+                <div className="flex justify-center mt-8">
+                  <Button
+                    className="mt-4"
+                    variant="outline"
+                    onClick={() => fetchNextPage()}
+                  >
+                    {isFetchingNextPage && (
+                      <LoaderCircle className="h-4 w-4 animate-spin" />
+                    )}
+                    Load more
+                  </Button>
+                </div>
               )}
-              Load more
-            </Button>
-          </div>
-        )}
-      </CardContent>
-    </Card>
+            </CardContent>
+          </Card>
+        </>
+      )}
+    </div>
   );
 };
 
 const schema = z.object({
-  displayName: z.string(),
-  expireTime: z.string(),
+  apiKeysEnabled: z.boolean(),
 });
 
-const CreateAPIKeyButton = () => {
-  const [createOpen, setCreateOpen] = useState(false);
-  const [secretOpen, setSecretOpen] = useState(false);
-  const [apiKey, setApiKey] = useState<APIKey>();
-  const navigate = useNavigate();
-
-  const [customDate, setCustomDate] = useState<Date>();
-
+function EditAPIKeySettingsButton() {
   const { organizationId } = useParams();
-  const { data: getProjectResponse } = useQuery(getProject);
-  const { refetch } = useInfiniteQuery(
-    listAPIKeys,
-    {
-      organizationId,
-      pageToken: '',
-    },
-    {
-      pageParamKey: 'pageToken',
-      getNextPageParam: (page) => page.nextPageToken || undefined,
-    },
-  );
-
-  const createApiKeyMutation = useMutation(createAPIKey);
+  const [open, setOpen] = useState(false);
 
   const form = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
     defaultValues: {
-      displayName: '',
-      expireTime: '1 day',
+      apiKeysEnabled: false,
     },
   });
 
-  const handleSubmit = async (data: z.infer<typeof schema>) => {
-    const createParams: Record<string, any> = {
-      organizationId: organizationId!,
-      displayName: data.displayName,
-    };
+  const { data: getOrganizationResponse, refetch } = useQuery(getOrganization, {
+    id: organizationId,
+  });
+  const updateOrganizationMutation = useMutation(updateOrganization);
 
-    switch (data.expireTime) {
-      case '1 day':
-        createParams.expireTime = timestampFromDate(
-          new Date(Date.now() + 24 * 60 * 60 * 1000),
-        );
-        break;
-      case '7 days':
-        createParams.expireTime = timestampFromDate(
-          new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-        );
-        break;
-      case '30 days':
-        createParams.expireTime = timestampFromDate(
-          new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-        );
-        break;
-      case 'custom':
-        if (customDate) {
-          createParams.expireTime = timestampFromDate(customDate);
-        }
-        break;
-      case 'noexpire':
-        break;
-    }
-
-    const { apiKey } = await createApiKeyMutation.mutateAsync({
-      apiKey: createParams,
+  async function handleSubmit(data: z.infer<typeof schema>) {
+    await updateOrganizationMutation.mutateAsync({
+      id: organizationId,
+      organization: {
+        apiKeysEnabled: data.apiKeysEnabled,
+      },
     });
 
-    if (apiKey) {
-      setApiKey(apiKey);
-      setCreateOpen(false);
-      setSecretOpen(true);
+    await refetch();
 
-      toast.success('API Key created successfully');
+    toast.success('API key settings updated successfully');
+    setOpen(false);
+  }
 
-      await refetch();
+  useEffect(() => {
+    if (getOrganizationResponse?.organization) {
+      form.reset({
+        apiKeysEnabled:
+          getOrganizationResponse?.organization?.apiKeysEnabled || false,
+      });
     }
-  };
+  }, [getOrganizationResponse]);
 
   return (
-    <>
-      <AlertDialog
-        open={!!apiKey?.secretToken && secretOpen}
-        onOpenChange={setSecretOpen}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>API Key Created</AlertDialogTitle>
-            <AlertDialogDescription>
-              API Key was created successfully.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogTrigger asChild>
+        <Button variant="outline">Edit API Key Settings</Button>
+      </AlertDialogTrigger>
 
-          <div className="text-sm font-medium leading-none">
-            API Key Secret Token
-          </div>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Edit API Key Settings</AlertDialogTitle>
+          <AlertDialogDescription>
+            Manage the API key settings for this Organization.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
 
-          {apiKey?.secretToken && (
-            <SecretCopier
-              placeholder={`${getProjectResponse?.project?.apiKeySecretTokenPrefix}•••••••••••••••••••••••••••••••••••••••••••••••••••••••`}
-              secret={apiKey.secretToken}
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-4"
+          >
+            <FormField
+              control={form.control}
+              name="apiKeysEnabled"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>API Keys Enabled</FormLabel>
+                  <FormControl>
+                    <Switch
+                      className="block"
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Whether this Organization can use API keys to authenticate
+                    to your service.
+                  </FormDescription>
+                </FormItem>
+              )}
             />
-          )}
 
-          <div className="text-sm text-muted-foreground">
-            Store this secret in your secrets manager. You will not be able to
-            see this secret token again later.
-          </div>
-
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setSecretOpen(false)}>
-              Close
-            </AlertDialogCancel>
-            {!!apiKey?.id && (
-              <Link
-                to={`/organizations/${organizationId}/api-keys/${apiKey.id}`}
-              >
-                <Button>View API Key</Button>
-              </Link>
-            )}
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      <AlertDialog open={createOpen} onOpenChange={setCreateOpen}>
-        <AlertDialogTrigger asChild>
-          <Button variant="outline">
-            <CirclePlus className="h-4 w-4" />
-            Create API Key
-          </Button>
-        </AlertDialogTrigger>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Create API Key</AlertDialogTitle>
-          </AlertDialogHeader>
-
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(handleSubmit)}
-              className="space-y-4"
-            >
-              <FormField
-                control={form.control}
-                name="displayName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Display Name</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="expireTime"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Expire time</FormLabel>
-                    <FormControl>
-                      <div className="flex flex-row gap-2">
-                        <Select
-                          {...field}
-                          onValueChange={(value) => {
-                            field.onChange(value);
-
-                            console.log(value);
-                          }}
-                        >
-                          <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="Pick a custom date" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="1 day">1 day</SelectItem>
-                            <SelectItem value="7 days">7 days</SelectItem>
-                            <SelectItem value="30 days">30 days</SelectItem>
-                            <SelectItem value="custom">Custom</SelectItem>
-                            <SelectItem value="noexpire">
-                              No expiration
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-
-                        {field.value === 'custom' && (
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <Button
-                                variant={'outline'}
-                                className={cn(
-                                  'w-[270px] justify-start text-left font-normal',
-                                  !customDate && 'text-muted-foreground',
-                                )}
-                              >
-                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                {customDate ? (
-                                  format(customDate, 'PPP')
-                                ) : (
-                                  <span>Pick a date</span>
-                                )}
-                              </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0">
-                              <Calendar
-                                mode="single"
-                                selected={customDate}
-                                onSelect={setCustomDate}
-                                initialFocus
-                              />
-                            </PopoverContent>
-                          </Popover>
-                        )}
-                      </div>
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <Button type="submit">Save</Button>
-              </AlertDialogFooter>
-            </form>
-          </Form>
-        </AlertDialogContent>
-      </AlertDialog>
-    </>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={() => setOpen(false)}>
+                Cancel
+              </AlertDialogCancel>
+              <Button type="submit">Save</Button>
+            </AlertDialogFooter>
+          </form>
+        </Form>
+      </AlertDialogContent>
+    </AlertDialog>
   );
-};
+}

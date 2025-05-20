@@ -458,6 +458,8 @@ func (s *Store) sendSyncOrganizationEvent(ctx context.Context, qOrg queries.Orga
 }
 
 func parseOrganization(qProject queries.Project, qOrg queries.Organization) *backendv1.Organization {
+	apiKeysEnabled := qProject.EntitledBackendApiKeys && qProject.ApiKeysEnabled && qOrg.ApiKeysEnabled
+
 	return &backendv1.Organization{
 		Id:                        idformat.Organization.Format(qOrg.ID),
 		DisplayName:               qOrg.DisplayName,
@@ -474,5 +476,6 @@ func parseOrganization(qProject queries.Project, qOrg queries.Organization) *bac
 		RequireMfa:                &qOrg.RequireMfa,
 		ScimEnabled:               &qOrg.ScimEnabled,
 		CustomRolesEnabled:        &qOrg.CustomRolesEnabled,
+		ApiKeysEnabled:            &apiKeysEnabled,
 	}
 }

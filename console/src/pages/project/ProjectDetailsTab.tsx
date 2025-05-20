@@ -17,6 +17,7 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { useMutation, useQuery } from '@connectrpc/connect-query';
 import {
+  createStripeCheckoutLink,
   getProject,
   getProjectEntitlements,
   getProjectWebhookManagementURL,
@@ -63,6 +64,15 @@ export const ProjectDetailsTab = () => {
   const { data: getProjectEntitlementsResponse } = useQuery(
     getProjectEntitlements,
   );
+
+  const createStripeCheckoutLinkMutation = useMutation(
+    createStripeCheckoutLink,
+  );
+
+  async function handleUpgrade() {
+    const { url } = await createStripeCheckoutLinkMutation.mutateAsync({});
+    window.location.href = url;
+  }
 
   return (
     <div className="space-y-8">
@@ -353,18 +363,40 @@ export const ProjectDetailsTab = () => {
         </CardContent>
       </Card>
 
-      {getProjectEntitlementsResponse?.entitledBackendApiKeys && (
-        <Card>
-          <CardHeader className="flex-row justify-between items-center">
-            <div className="flex flex-col space-y-1 5">
-              <CardTitle>API key settings</CardTitle>
-              <CardDescription>
-                Settings for API keys used by your customers with your prduct.
-              </CardDescription>
-            </div>
+      <Card>
+        <CardHeader className="flex-row justify-between items-center">
+          <div className="flex flex-col space-y-1 5">
+            <CardTitle>API key settings</CardTitle>
+            <CardDescription>
+              Settings for API keys used by your customers with your prduct.
+            </CardDescription>
+          </div>
+          {getProjectEntitlementsResponse?.entitledBackendApiKeys && (
             <EditAPIKeySettingsButton />
-          </CardHeader>
-          <CardContent>
+          )}
+        </CardHeader>
+        <CardContent>
+          {!getProjectEntitlementsResponse?.entitledBackendApiKeys ? (
+            <div className="text-sm my-8 w-full flex flex-col items-center justify-center space-y-6">
+              <div className="font-medium">
+                API Keys are available on the Growth Tier.
+              </div>
+
+              <div className="flex items-center gap-x-4">
+                <Button onClick={handleUpgrade}>Upgrade to Growth Tier</Button>
+                <span>
+                  or{' '}
+                  <a
+                    href="https://cal.com/ned-o-leary-j8ydyi/30min"
+                    className="font-medium underline underline-offset-2 decoration-muted-foreground/40"
+                  >
+                    meet an expert
+                  </a>
+                  .
+                </span>
+              </div>
+            </div>
+          ) : (
             <DetailsGrid>
               <DetailsGridColumn>
                 <DetailsGridEntry>
@@ -386,9 +418,9 @@ export const ProjectDetailsTab = () => {
                 </DetailsGridEntry>
               </DetailsGridColumn>
             </DetailsGrid>
-          </CardContent>
-        </Card>
-      )}
+          )}
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader className="flex-row justify-between items-center">

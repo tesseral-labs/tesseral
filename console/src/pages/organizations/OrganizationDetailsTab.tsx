@@ -123,17 +123,6 @@ export const OrganizationDetailsTab = () => {
                   </DetailsGridValue>
                 </DetailsGridEntry>
               )}
-
-              {getProjectResponse?.project?.apiKeysEnabled && (
-                <DetailsGridEntry>
-                  <DetailsGridKey>API Keys</DetailsGridKey>
-                  <DetailsGridValue>
-                    {getOrganizationResponse?.organization?.apiKeysEnabled
-                      ? 'Enabled'
-                      : 'Disabled'}
-                  </DetailsGridValue>
-                </DetailsGridEntry>
-              )}
             </DetailsGridColumn>
             <DetailsGridColumn>
               {getProjectResponse?.project?.logInWithAuthenticatorApp && (

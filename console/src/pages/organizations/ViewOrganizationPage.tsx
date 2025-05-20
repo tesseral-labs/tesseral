@@ -57,15 +57,9 @@ export const ViewOrganizationPage = () => {
   const { data: getOrganizationResponse } = useQuery(getOrganization, {
     id: organizationId,
   });
-  const { data: getProjectEntitlementsResponse } = useQuery(
-    getProjectEntitlements,
-  );
   const { pathname } = useLocation();
 
-  const [currentTab, setCurrentTab] = useState<
-    { name: string; root?: Boolean; url: string } | undefined
-  >();
-  const [tabs, setTabs] = useState([
+  const tabs = [
     {
       root: true,
       name: 'Details',
@@ -91,23 +85,13 @@ export const ViewOrganizationPage = () => {
       name: 'SCIM API Keys',
       url: `/organizations/${organizationId}/scim-api-keys`,
     },
-  ]);
+    {
+      name: 'API Keys',
+      url: `/organizations/${organizationId}/api-keys`,
+    },
+  ];
 
-  useEffect(() => {
-    if (getProjectEntitlementsResponse?.entitledBackendApiKeys) {
-      const newTabs = [...tabs];
-
-      if (newTabs.length === 6) {
-        newTabs.push({
-          name: 'API Keys',
-          url: `/organizations/${organizationId}/api-keys`,
-        });
-        setTabs(newTabs);
-      }
-    }
-
-    setCurrentTab(tabs.find((tab) => tab.url === pathname));
-  }, [currentTab, getProjectEntitlementsResponse, tabs]);
+  const currentTab = tabs.find((tab) => tab.url === pathname);
 
   return (
     // TODO remove padding when app shell in place
