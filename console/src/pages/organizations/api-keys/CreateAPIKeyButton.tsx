@@ -27,6 +27,7 @@ import {
 import {
   Select,
   SelectContent,
+  SelectItem,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
@@ -43,7 +44,6 @@ import {
   useMutation,
   useQuery,
 } from '@connectrpc/connect-query';
-import { SelectItem } from '@radix-ui/react-select';
 import { format } from 'date-fns';
 import { CalendarIcon, CirclePlus } from 'lucide-react';
 import React, { useState } from 'react';
