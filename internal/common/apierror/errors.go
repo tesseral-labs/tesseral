@@ -107,7 +107,7 @@ func NewUnauthenticatedError(description string, sourceError error) error {
 func NewUnauthenticatedApiKeyError(description string, sourceError error) error {
 	apiErr := New(errUnauthenticatedApiKey, sourceError)
 
-	err := connect.NewError(connect.CodeUnauthenticated, apiErr)
+	err := connect.NewError(connect.CodeInvalidArgument, apiErr)
 
 	// Add details to the connect error
 	if detail, detailErr := connect.NewErrorDetail(&commonv1.ErrorDetail{
