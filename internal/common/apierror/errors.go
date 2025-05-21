@@ -9,9 +9,10 @@ var errAlreadyExists = "already_exists"
 var errFailedPrecondition = "failed_precondition"
 var errInvalidArgument = "invalid_argument"
 var errNotFound = "not_found"
+var errPasswordCompromised = "password_compromised"
 var errPermissionDenied = "permission_denied"
 var errUnauthenticated = "unauthenticated"
-var errPasswordCompromised = "password_compromised"
+var errUnauthenticatedApiKey = "unauthenticated_api_key"
 
 func NewAlreadyExistsError(description string, sourceError error) error {
 	apiErr := New(errAlreadyExists, sourceError)
@@ -92,6 +93,21 @@ func NewUnauthenticatedError(description string, sourceError error) error {
 	apiErr := New(errUnauthenticated, sourceError)
 
 	err := connect.NewError(connect.CodeUnauthenticated, apiErr)
+
+	// Add details to the connect error
+	if detail, detailErr := connect.NewErrorDetail(&commonv1.ErrorDetail{
+		Description: description,
+	}); detailErr == nil {
+		err.AddDetail(detail)
+	}
+
+	return err
+}
+
+func NewUnauthenticatedApiKeyError(description string, sourceError error) error {
+	apiErr := New(errUnauthenticatedApiKey, sourceError)
+
+	err := connect.NewError(connect.CodeInvalidArgument, apiErr)
 
 	// Add details to the connect error
 	if detail, detailErr := connect.NewErrorDetail(&commonv1.ErrorDetail{

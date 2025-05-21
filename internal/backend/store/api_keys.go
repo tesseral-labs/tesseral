@@ -288,7 +288,7 @@ func (s *Store) AuthenticateAPIKey(ctx context.Context, req *backendv1.Authentic
 
 	secretTokenBytes, err := prettysecret.Parse(*qProject.ApiKeySecretTokenPrefix, req.SecretToken)
 	if err != nil {
-		return nil, apierror.NewInvalidArgumentError("invalid secret token", fmt.Errorf("parse secret token: %w", err))
+		return nil, apierror.NewUnauthenticatedApiKeyError("malformed_api_key_secret_token", fmt.Errorf("parse secret token: %w", err))
 	}
 	secretTokenSHA256 := sha256.Sum256(secretTokenBytes[:])
 
@@ -298,7 +298,7 @@ func (s *Store) AuthenticateAPIKey(ctx context.Context, req *backendv1.Authentic
 	})
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, apierror.NewNotFoundError("api key not found", fmt.Errorf("get api key details: %w", err))
+			return nil, apierror.NewUnauthenticatedApiKeyError("invalid_api_key_secret_token", fmt.Errorf("get api key details: %w", err))
 		}
 
 		return nil, fmt.Errorf("get api key details: %w", err)
