@@ -31,7 +31,7 @@ func (s *Store) CreateAPIKey(ctx context.Context, req *backendv1.CreateAPIKeyReq
 
 	orgID, err := idformat.Organization.Parse(req.ApiKey.OrganizationId)
 	if err != nil {
-		return nil, apierror.NewInvalidArgumentError("invalid_organization_id", fmt.Errorf("parse organization id: %w", err))
+		return nil, apierror.NewInvalidArgumentError("invalid organization id", fmt.Errorf("parse organization id: %w", err))
 	}
 
 	if _, err := s.q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
@@ -39,7 +39,7 @@ func (s *Store) CreateAPIKey(ctx context.Context, req *backendv1.CreateAPIKeyReq
 		ProjectID: authn.ProjectID(ctx),
 	}); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, apierror.NewNotFoundError("organization_not_found", fmt.Errorf("get organization: %w", err))
+			return nil, apierror.NewNotFoundError("organization not found", fmt.Errorf("get organization: %w", err))
 		}
 		return nil, fmt.Errorf("get organization: %w", err)
 	}
@@ -50,7 +50,7 @@ func (s *Store) CreateAPIKey(ctx context.Context, req *backendv1.CreateAPIKeyReq
 	}
 
 	if !qProject.ApiKeysEnabled {
-		return nil, apierror.NewPermissionDeniedError("api_keys_not_enabled", fmt.Errorf("api keys not enabled for project"))
+		return nil, apierror.NewPermissionDeniedError("api keys are not enabled for this project", fmt.Errorf("api keys not enabled for project"))
 	}
 
 	var secretTokenValue [35]byte
@@ -103,7 +103,7 @@ func (s *Store) DeleteAPIKey(ctx context.Context, req *backendv1.DeleteAPIKeyReq
 
 	apiKeyID, err := idformat.APIKey.Parse(req.Id)
 	if err != nil {
-		return nil, apierror.NewInvalidArgumentError("invalid_api_key_id", fmt.Errorf("parse api key id: %w", err))
+		return nil, apierror.NewInvalidArgumentError("invalid api key id", fmt.Errorf("parse api key id: %w", err))
 	}
 
 	qApiKey, err := q.GetAPIKeyByID(ctx, queries.GetAPIKeyByIDParams{
@@ -112,13 +112,13 @@ func (s *Store) DeleteAPIKey(ctx context.Context, req *backendv1.DeleteAPIKeyReq
 	})
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, apierror.NewNotFoundError("api_key_not_found", fmt.Errorf("get api key: %w", err))
+			return nil, apierror.NewNotFoundError("api key not found", fmt.Errorf("get api key: %w", err))
 		}
 		return nil, fmt.Errorf("get api key: %w", err)
 	}
 
 	if qApiKey.SecretTokenSha256 != nil {
-		return nil, apierror.NewFailedPreconditionError("api_key_not_revoked", fmt.Errorf("api key mut be revoked to be deleted"))
+		return nil, apierror.NewFailedPreconditionError("api key must be revoked to be deleted", fmt.Errorf("api key mut be revoked to be deleted"))
 	}
 
 	if err := q.DeleteAPIKey(ctx, queries.DeleteAPIKeyParams{
@@ -145,7 +145,7 @@ func (s *Store) GetAPIKey(ctx context.Context, req *backendv1.GetAPIKeyRequest) 
 
 	apiKeyID, err := idformat.APIKey.Parse(req.Id)
 	if err != nil {
-		return nil, apierror.NewInvalidArgumentError("invalid_api_key_id", fmt.Errorf("parse api key id: %w", err))
+		return nil, apierror.NewInvalidArgumentError("invalid api key id", fmt.Errorf("parse api key id: %w", err))
 	}
 
 	qAPIKey, err := q.GetAPIKeyByID(ctx, queries.GetAPIKeyByIDParams{
@@ -174,7 +174,7 @@ func (s *Store) ListAPIKeys(ctx context.Context, req *backendv1.ListAPIKeysReque
 
 	orgID, err := idformat.Organization.Parse(req.OrganizationId)
 	if err != nil {
-		return nil, apierror.NewInvalidArgumentError("invalid_organization_id", fmt.Errorf("parse organization id: %w", err))
+		return nil, apierror.NewInvalidArgumentError("invalid organization id", fmt.Errorf("parse organization id: %w", err))
 	}
 
 	var startID uuid.UUID
@@ -219,7 +219,7 @@ func (s *Store) RevokeAPIKey(ctx context.Context, req *backendv1.RevokeAPIKeyReq
 
 	apiKeyID, err := idformat.APIKey.Parse(req.Id)
 	if err != nil {
-		return nil, apierror.NewInvalidArgumentError("invalid_api_key_id", fmt.Errorf("parse api key id: %w", err))
+		return nil, apierror.NewInvalidArgumentError("invalid api key id", fmt.Errorf("parse api key id: %w", err))
 	}
 
 	if err := q.RevokeAPIKey(ctx, queries.RevokeAPIKeyParams{
@@ -245,7 +245,7 @@ func (s *Store) UpdateAPIKey(ctx context.Context, req *backendv1.UpdateAPIKeyReq
 
 	apiKeyID, err := idformat.APIKey.Parse(req.Id)
 	if err != nil {
-		return nil, apierror.NewInvalidArgumentError("invalid_api_key_id", fmt.Errorf("parse api key id: %w", err))
+		return nil, apierror.NewInvalidArgumentError("invalid api key id", fmt.Errorf("parse api key id: %w", err))
 	}
 
 	updatedApiKey, err := q.UpdateAPIKey(ctx, queries.UpdateAPIKeyParams{
@@ -279,16 +279,16 @@ func (s *Store) AuthenticateAPIKey(ctx context.Context, req *backendv1.Authentic
 	}
 
 	if !qProject.ApiKeysEnabled {
-		return nil, apierror.NewFailedPreconditionError("api_keys_not_enabled", fmt.Errorf("api keys not enabled for project"))
+		return nil, apierror.NewPermissionDeniedError("api keys are not enabled for this project", fmt.Errorf("api keys not enabled for project"))
 	}
 
 	if qProject.ApiKeySecretTokenPrefix == nil {
-		return nil, apierror.NewFailedPreconditionError("no_api_key_secret_token_prefix", fmt.Errorf("api key secret token prefix not set for project"))
+		return nil, apierror.NewPermissionDeniedError("api key secret token prefix is not set for this project", fmt.Errorf("api key secret token prefix not set for project"))
 	}
 
 	secretTokenBytes, err := prettysecret.Parse(*qProject.ApiKeySecretTokenPrefix, req.SecretToken)
 	if err != nil {
-		return nil, apierror.NewInvalidArgumentError("invalid_secret_token", fmt.Errorf("parse secret token: %w", err))
+		return nil, apierror.NewInvalidArgumentError("malformed_api_key_secret_token", fmt.Errorf("parse secret token: %w", err))
 	}
 	secretTokenSHA256 := sha256.Sum256(secretTokenBytes[:])
 
@@ -298,7 +298,7 @@ func (s *Store) AuthenticateAPIKey(ctx context.Context, req *backendv1.Authentic
 	})
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, apierror.NewNotFoundError("api_key_not_found", fmt.Errorf("get api key details: %w", err))
+			return nil, apierror.NewInvalidArgumentError("invalid_api_key_secret_token", fmt.Errorf("get api key details: %w", err))
 		}
 
 		return nil, fmt.Errorf("get api key details: %w", err)
