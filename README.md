@@ -15,24 +15,24 @@ Tesseral](https://tesseral.com/docs/features/self-hosting-tesseral).
 
 Tesseral bundles everything that a developer needs to manage users in business software. 
 
-|                                                           |                                                  |
-|-----------------------------------------------------------|:------------------------------------------------:|
-| Hosted, customizable login pages                          | ![](./.github/img/hosted_custom_login_pages.png) |
-| B2B multitenancy                                          |     ![](./.github/img/b2b_multitenancy.png)      |
-| Session management                                        |    ![](./.github/img/session_management.png)     |
-| Magic Links                                               |        ![](./.github/img/magic_links.png)        |
-| Social login (e.g., Login with Google, Login with GitHub) |       ![](./.github/img/social_login.png)        |
-| Enterprise single sign-on (SAML SSO)                      |           ![](./.github/img/saml.png)            |
-| Directory provisioning (SCIM)                             |           ![](./.github/img/scim.png)            |
-| Role-based access control (RBAC)                          |           ![](./.github/img/rbac.png)            |
-| Multi-factor authentication (MFA)                         |            ![](./.github/img/mfa.png)            |
-| Passkeys (WebAuthn)                                       |         ![](./.github/img/passkeys.png)          |
-| Authenticator apps (TOTPs)                                |           ![](./.github/img/totp.png)            |
-| API key management                                        |         ![](./.github/img/api_keys.png)          |
-| User impersonation                                        |        ![](./.github/img/impersonate.png)        |
-| User invitations                                          |          ![](./.github/img/invites.png)          |
-| Self-service config for your customers                    |        ![](./.github/img/self_serve.png)         |
-| Webhooks (CDC)                                            |         ![](./.github/img/webhooks.png)          |
+|                                                           |                                                                       |
+|-----------------------------------------------------------|-----------------------------------------------------------------------|
+| Hosted, customizable login pages                          | <img src="./.github/img/hosted_custom_login_pages.png" width="250" /> |
+| B2B multitenancy                                          | <img src="./.github/img/b2b_multitenancy.png" width="250" />          |
+| Session management                                        | <img src="./.github/img/session_management.png" width="250" />        |
+| Magic Links                                               | <img src="./.github/img/magic_links.png" width="250" />               |
+| Social login (e.g., Login with Google, Login with GitHub) | <img src="./.github/img/social_login.png" width="250" />              |
+| Enterprise single sign-on (SAML SSO)                      | <img src="./.github/img/saml.png" width="250" />                      |
+| Directory provisioning (SCIM)                             | <img src="./.github/img/scim.png" width="250" />                      |
+| Role-based access control (RBAC)                          | <img src="./.github/img/rbac.png" width="250" />                      |
+| Multi-factor authentication (MFA)                         | <img src="./.github/img/mfa.png" width="250" />                       |
+| Passkeys (WebAuthn)                                       | <img src="./.github/img/passkeys.png" width="250" />                  |
+| Authenticator apps (TOTPs)                                | <img src="./.github/img/totp.png" width="250" />                      |
+| API key management                                        | <img src="./.github/img/api_keys.png" width="250" />                  |
+| User impersonation                                        | <img src="./.github/img/impersonate.png" width="250" />               |
+| User invitations                                          | <img src="./.github/img/invites.png" width="250" />                   |
+| Self-service config for your customers                    | <img src="./.github/img/self_serve.png" width="250" />                |
+| Webhooks (CDC)                                            | <img src="./.github/img/webhooks.png" width="250" />                  |
 
 ## Get Started
 
