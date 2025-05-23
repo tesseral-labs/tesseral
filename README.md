@@ -1,3 +1,5 @@
+![](./.github/img/splash.png)
+
 # Tesseral
 
 Tesseral is **open source auth infrastructure for business software** (i.e., B2B
