@@ -105,6 +105,7 @@ const (
 	BackendService_CreateStripeCheckoutLink_FullMethodName              = "/tesseral.backend.v1.BackendService/CreateStripeCheckoutLink"
 	BackendService_GetProjectWebhookManagementURL_FullMethodName        = "/tesseral.backend.v1.BackendService/GetProjectWebhookManagementURL"
 	BackendService_CreateAuditLogEvent_FullMethodName                   = "/tesseral.backend.v1.BackendService/CreateAuditLogEvent"
+	BackendService_ListAuditLogEvents_FullMethodName                    = "/tesseral.backend.v1.BackendService/ListAuditLogEvents"
 )
 
 // BackendServiceClient is the client API for BackendService service.
@@ -254,6 +255,8 @@ type BackendServiceClient interface {
 	// Audit log events will be recorded in the event history and asynchronously delivered to any endpoints
 	// configured by the organization.
 	CreateAuditLogEvent(ctx context.Context, in *CreateAuditLogEventRequest, opts ...grpc.CallOption) (*CreateAuditLogEventResponse, error)
+	// Lists audit log events for an organization.
+	ListAuditLogEvents(ctx context.Context, in *ListAuditLogEventsRequest, opts ...grpc.CallOption) (*ListAuditLogEventsResponse, error)
 }
 
 type backendServiceClient struct {
@@ -1124,6 +1127,16 @@ func (c *backendServiceClient) CreateAuditLogEvent(ctx context.Context, in *Crea
 	return out, nil
 }
 
+func (c *backendServiceClient) ListAuditLogEvents(ctx context.Context, in *ListAuditLogEventsRequest, opts ...grpc.CallOption) (*ListAuditLogEventsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListAuditLogEventsResponse)
+	err := c.cc.Invoke(ctx, BackendService_ListAuditLogEvents_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // BackendServiceServer is the server API for BackendService service.
 // All implementations must embed UnimplementedBackendServiceServer
 // for forward compatibility.
@@ -1271,6 +1284,8 @@ type BackendServiceServer interface {
 	// Audit log events will be recorded in the event history and asynchronously delivered to any endpoints
 	// configured by the organization.
 	CreateAuditLogEvent(context.Context, *CreateAuditLogEventRequest) (*CreateAuditLogEventResponse, error)
+	// Lists audit log events for an organization.
+	ListAuditLogEvents(context.Context, *ListAuditLogEventsRequest) (*ListAuditLogEventsResponse, error)
 	mustEmbedUnimplementedBackendServiceServer()
 }
 
@@ -1538,6 +1553,9 @@ func (UnimplementedBackendServiceServer) GetProjectWebhookManagementURL(context.
 }
 func (UnimplementedBackendServiceServer) CreateAuditLogEvent(context.Context, *CreateAuditLogEventRequest) (*CreateAuditLogEventResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateAuditLogEvent not implemented")
+}
+func (UnimplementedBackendServiceServer) ListAuditLogEvents(context.Context, *ListAuditLogEventsRequest) (*ListAuditLogEventsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListAuditLogEvents not implemented")
 }
 func (UnimplementedBackendServiceServer) mustEmbedUnimplementedBackendServiceServer() {}
 func (UnimplementedBackendServiceServer) testEmbeddedByValue()                        {}
@@ -3108,6 +3126,24 @@ func _BackendService_CreateAuditLogEvent_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BackendService_ListAuditLogEvents_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListAuditLogEventsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).ListAuditLogEvents(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_ListAuditLogEvents_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).ListAuditLogEvents(ctx, req.(*ListAuditLogEventsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // BackendService_ServiceDesc is the grpc.ServiceDesc for BackendService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -3458,6 +3494,10 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateAuditLogEvent",
 			Handler:    _BackendService_CreateAuditLogEvent_Handler,
+		},
+		{
+			MethodName: "ListAuditLogEvents",
+			Handler:    _BackendService_ListAuditLogEvents_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

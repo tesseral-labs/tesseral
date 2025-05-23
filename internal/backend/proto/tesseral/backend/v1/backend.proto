@@ -396,6 +396,11 @@ service BackendService {
       body: "audit_log_event"
     };
   }
+
+  // Lists audit log events for an organization.
+  rpc ListAuditLogEvents(ListAuditLogEventsRequest) returns (ListAuditLogEventsResponse) {
+    option (google.api.http) = {get: "/v1/events"};
+  }
 }
 
 message GetProjectRequest {}
@@ -1203,4 +1208,50 @@ message CreateAuditLogEventRequest {
 message CreateAuditLogEventResponse {
   // The published event.
   AuditLogEvent audit_log_event = 1;
+}
+
+message ListAuditLogEventsRequest {
+  // The organization to list events for.
+  string organization_id = 1;
+
+  // The maximum number of events to return.
+  int32 page_size = 2;
+
+  // A page token, received from a previous `ListAuditLogEvents` call.
+  string page_token = 3;
+
+  // The field to sort the results by.
+  string order_by = 4;
+
+  // Filters for the results.
+  message Filter {
+    // The start time.
+    google.protobuf.Timestamp start_time = 1;
+
+    // The event names to filter by, if any.
+    repeated string event_name = 2;
+
+    // The user ID to filter by, if any.
+    string user_id = 3;
+
+    // The session ID to filter by, if any.
+    string session_id = 4;
+
+    // The API key ID to filter by, if any.
+    string api_key_id = 5;
+  }
+
+  // Filters for the results.
+  //
+  // May only be provided on the initial call. Subsequent page
+  // requests will use the initial filter.
+  Filter filter = 5;
+}
+
+message ListAuditLogEventsResponse {
+  // The events.
+  repeated AuditLogEvent audit_log_events = 1;
+
+  // A token to retrieve the next page of results.
+  string next_page_token = 2;
 }

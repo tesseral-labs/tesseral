@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"time"
 
+	sq "github.com/Masterminds/squirrel"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/tesseral-labs/tesseral/internal/backend/authn"
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
@@ -166,7 +168,12 @@ func makeUUIDv7(ts time.Time) (uuid.UUID, error) {
 	if err != nil {
 		return uuid.UUID{}, err
 	}
+	return makeUUIDv7Base(ts, id), nil
+}
 
+// makeUUIDv7 copies google/uuid for constructing a UUIDv7 at a point in time
+// given a base UUID data.
+func makeUUIDv7Base(ts time.Time, id uuid.UUID) uuid.UUID {
 	nano := ts.UnixNano()
 	const nanoPerMilli = 1_000_000
 	milli := nano / nanoPerMilli
@@ -196,10 +203,10 @@ func makeUUIDv7(ts time.Time) (uuid.UUID, error) {
 	id[4] = byte(milli >> 8)
 	id[5] = byte(milli)
 
-	// Swap version for V7
-	id[6] = 0x70 | (0x0F & id[6])
+	id[6] = 0x70 | (0x0F & id[6]) // Version is 7 (0b0111)
+	id[8] = 0x80 | (0x3F & id[8]) // Variant is 0b10
 
-	return id, nil
+	return id
 }
 
 // tsFromUUIDv7 reconstructs a timestamp from a UUIDv7, accurate to millisecond precision.
@@ -244,5 +251,104 @@ func parseAuditLogEvent(qEvent queries.OrganizationAuditLogEvent) (*backendv1.Au
 		EventName:      qEvent.EventName,
 		EventTime:      timestamppb.New(ts),
 		EventDetails:   &eventDetails,
+	}, nil
+}
+
+func (s *Store) ListAuditLogEvents(ctx context.Context, req *backendv1.ListAuditLogEventsRequest) (*backendv1.ListAuditLogEventsResponse, error) {
+	tx, _, _, rollback, err := s.tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rollback()
+
+	orgID, err := idformat.Organization.Parse(req.OrganizationId)
+	if err != nil {
+		return nil, apierror.NewInvalidArgumentError("invalid organization id", fmt.Errorf("parse organization id: %w", err))
+	}
+
+	var filter *backendv1.ListAuditLogEventsRequest_Filter
+	if req.PageToken != "" {
+		filter = new(backendv1.ListAuditLogEventsRequest_Filter)
+		if err := s.pageEncoder.Unmarshal(req.PageToken, filter); err != nil {
+			return nil, apierror.NewInvalidArgumentError("invalid page_token", err)
+		}
+	} else {
+		filter = req.Filter
+	}
+
+	limit := uint64(10)
+	if req.PageSize != 0 {
+		limit = uint64(req.PageSize)
+	}
+
+	startTime := filter.GetStartTime().AsTime()
+	startID := makeUUIDv7Base(startTime, uuid.UUID{})
+
+	wheres := []sq.Sqlizer{
+		sq.Eq{"organization_id": orgID},
+		sq.Gt{"id": startID},
+	}
+	if len(filter.GetEventName()) > 0 {
+		wheres = append(wheres, sq.Eq{"event_name": filter.EventName})
+	}
+	if filter.GetUserId() != "" {
+		wheres = append(wheres, sq.Eq{"user_id": filter.UserId})
+	}
+	if filter.GetSessionId() != "" {
+		wheres = append(wheres, sq.Eq{"session_id": filter.SessionId})
+	}
+	if filter.GetApiKeyId() != "" {
+		wheres = append(wheres, sq.Eq{"api_key_id": filter.ApiKeyId})
+	}
+
+	orderBy := []string{}
+	if req.OrderBy != "" {
+		orderBy = append(orderBy, req.OrderBy)
+	}
+	orderBy = append(orderBy, "id desc")
+
+	query := sq.Select("*").
+		From("organization_audit_log_events").
+		Where(sq.And(wheres)).
+		OrderBy(orderBy...).
+		Limit(limit)
+
+	sql, args, err := query.ToSql()
+	if err != nil {
+		return nil, fmt.Errorf("failed to construct sql query: %w", err)
+	}
+	rows, err := tx.Query(ctx, sql, args...)
+	if err != nil {
+		return nil, fmt.Errorf("failed to execute sql query: %w", err)
+	}
+	results, err := pgx.CollectRows(rows, func(row pgx.CollectableRow) (*backendv1.AuditLogEvent, error) {
+		var dto queries.OrganizationAuditLogEvent
+		if err := row.Scan(
+			&dto.ID,
+			&dto.OrganizationID,
+			&dto.UserID,
+			&dto.SessionID,
+			&dto.ApiKeyID,
+			&dto.EventName,
+			&dto.EventDetails,
+		); err != nil {
+			return nil, err
+		}
+		return parseAuditLogEvent(dto)
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to collect audit log events: %w", err)
+	}
+
+	var nextPageToken string
+	if len(results) > 0 {
+		last := results[len(results)-1]
+		filter.StartTime = last.EventTime
+		nextPageToken = s.pageEncoder.Marshal(filter)
+	}
+
+	return &backendv1.ListAuditLogEventsResponse{
+		AuditLogEvents: results,
+		NextPageToken:  nextPageToken,
 	}, nil
 }
