@@ -128,7 +128,7 @@ func (s *Store) CreateAuditLogEvent(ctx context.Context, req *backendv1.CreateAu
 			return nil, apierror.NewInvalidArgumentError("invalid organization_id", err)
 		}
 	default:
-		return nil, apierror.NewInvalidArgumentError("", errors.New("either actor_credentials, organization_id, user_id, session_id, or api_key_id must be provided"))
+		return nil, apierror.NewInvalidArgumentError("", errors.New("either organization_id, user_id, session_id, or api_key_id must be provided"))
 	}
 
 	// Marshal the details to JSON if provided.
