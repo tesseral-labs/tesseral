@@ -1131,3 +1131,9 @@ WHERE api_key_role_assignments.api_key_id = api_keys.id
     AND api_key_role_assignments.id = $1
     AND organizations.project_id = $2;
 
+-- name: CreateAuditLogEvent :one
+INSERT INTO organization_audit_log_events (id, organization_id, event_time, event_name, actor_type, actor_id, event_details)
+    VALUES (@id, @organization_id, cast(coalesce(sqlc.narg (event_time), now()) AS timestamptz), @event_name, @actor_type, @actor_id, sqlc.narg (event_details))
+RETURNING
+    *;
+
