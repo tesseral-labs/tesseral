@@ -719,6 +719,10 @@ components:
             properties:
                 relayedSessionState:
                     type: string
+                redirectUri:
+                    type: string
+                returnRelayedSessionTokenAsQueryParam:
+                    type: boolean
         CreateIntermediateSessionResponse:
             type: object
             properties:
@@ -748,6 +752,10 @@ components:
                     type: boolean
                 relayedSessionToken:
                     type: string
+                redirectUri:
+                    type: string
+                returnRelayedSessionTokenAsQueryParam:
+                    type: boolean
         ExchangeRelayedSessionTokenForSessionRequest:
             type: object
             properties:

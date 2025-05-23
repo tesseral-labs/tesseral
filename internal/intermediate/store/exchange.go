@@ -177,10 +177,12 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 	}
 
 	return &intermediatev1.ExchangeIntermediateSessionForSessionResponse{
-		AccessToken:         "", // populated in service
-		RefreshToken:        idformat.SessionRefreshToken.Format(refreshToken),
-		NewUser:             newUser,
-		RelayedSessionToken: relayedSessionToken,
+		AccessToken:                           "", // populated in service
+		RefreshToken:                          idformat.SessionRefreshToken.Format(refreshToken),
+		NewUser:                               newUser,
+		RelayedSessionToken:                   relayedSessionToken,
+		RedirectUri:                           derefOrEmpty(qIntermediateSession.RedirectUri),
+		ReturnRelayedSessionTokenAsQueryParam: qIntermediateSession.ReturnRelayedSessionTokenAsQueryParam,
 	}, nil
 }
 
