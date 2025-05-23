@@ -26,8 +26,8 @@ RETURNING
     *;
 
 -- name: CreateIntermediateSession :one
-INSERT INTO intermediate_sessions (id, project_id, expire_time, email, google_user_id, microsoft_user_id, github_user_id, secret_token_sha256, primary_auth_factor, email_verification_challenge_completed, relayed_session_state)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+INSERT INTO intermediate_sessions (id, project_id, expire_time, email, google_user_id, microsoft_user_id, github_user_id, secret_token_sha256, primary_auth_factor, email_verification_challenge_completed, relayed_session_state, redirect_uri, return_relayed_session_token_as_query_param)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
 RETURNING
     *;
 

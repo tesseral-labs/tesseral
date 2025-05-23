@@ -12,17 +12,35 @@ export function FinishLoginPage() {
 
   useEffect(() => {
     (async () => {
-      const { newUser, relayedSessionToken } =
-        await exchangeIntermediateSessionForSessionAsync({});
+      const {
+        newUser,
+        relayedSessionToken,
+        redirectUri,
+        returnRelayedSessionTokenAsQueryParam,
+      } = await exchangeIntermediateSessionForSessionAsync({});
 
-      const preferredRedirect = newUser
-        ? settings.afterSignupRedirectUri
-        : settings.afterLoginRedirectUri;
+      const preferredRedirect =
+        (newUser
+          ? settings.afterSignupRedirectUri
+          : settings.afterLoginRedirectUri) || settings.redirectUri;
 
-      const url = new URL(preferredRedirect ?? settings.redirectUri);
+      const url = new URL(redirectUri || preferredRedirect);
 
       if (relayedSessionToken) {
-        url.hash = `#__tesseral_${settings.projectId}_relayed_session_token=${relayedSessionToken}`;
+        const params = new URLSearchParams({
+          [`__tesseral_${settings.projectId}_relayed_session_token`]:
+            relayedSessionToken,
+        });
+
+        if (returnRelayedSessionTokenAsQueryParam) {
+          params.set(
+            `__tesseral_${settings.projectId}_redirect_uri`,
+            preferredRedirect,
+          );
+          url.search = params.toString();
+        } else {
+          url.hash = params.toString();
+        }
       }
 
       window.location.href = url.toString();
