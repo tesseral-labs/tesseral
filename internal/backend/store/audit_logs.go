@@ -1,25 +1,19 @@
 package store
 
 import (
-	"bytes"
 	"context"
-	"crypto/ecdsa"
-	"crypto/sha256"
 	"errors"
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5"
-	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/tesseral-labs/tesseral/internal/backend/authn"
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
-	"github.com/tesseral-labs/tesseral/internal/ujwt"
 	"google.golang.org/protobuf/types/known/structpb"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type ActorType string
@@ -36,86 +30,123 @@ func (s *Store) CreateAuditLogEvent(ctx context.Context, req *backendv1.CreateAu
 	}
 	defer rollback()
 
-	orgID, err := idformat.Organization.Parse(req.AuditLogEvent.OrganizationId)
-	if err != nil {
-		return nil, apierror.NewInvalidArgumentError("invalid organization id", fmt.Errorf("parse organization id: %w", err))
-	}
-
 	projectID := authn.ProjectID(ctx)
-
-	if _, err := q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
-		ID:        orgID,
-		ProjectID: projectID,
-	}); err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, apierror.NewNotFoundError("organization not found", fmt.Errorf("get organization: %w", err))
-		}
-		return nil, fmt.Errorf("create audit log event: get organization: %w", err)
-	}
 
 	// TODO: Feature flag check?
 
-	id, err := uuid.NewV7()
+	eventTime := time.Now().UTC()
+	if req.AuditLogEvent.EventTime != nil {
+		eventTime = req.AuditLogEvent.EventTime.AsTime()
+	}
+
+	// Generate the UUIDv7 based on the event time.
+	id, err := makeUUIDv7(eventTime)
 	if err != nil {
 		return nil, fmt.Errorf("create audit log event: failed to create UUID: %w", err)
 	}
-	eventTime := pgtype.Timestamptz{
-		Time:  time.Now(),
-		Valid: true,
-	}
-	if req.AuditLogEvent.Timestamp != nil {
-		eventTime.Time = req.AuditLogEvent.Timestamp.AsTime()
-	}
-	eventName := req.AuditLogEvent.Name
+	eventName := req.AuditLogEvent.EventName
 	if eventName == "" {
 		return nil, apierror.NewInvalidArgumentError("", errors.New("missing event name"))
 	}
 
 	// Resolve the actor type/ID from the given inputs.
 	var (
-		actorType   ActorType
-		actorID     uuid.UUID
-		credentials = req.AuditLogEvent.ActorCredentials
+		orgID       = req.AuditLogEvent.OrganizationId
+		orgUUID     uuid.UUID
 		userID      = req.AuditLogEvent.GetUserId()
+		userUUID    *uuid.UUID
+		sessionID   = req.AuditLogEvent.GetSessionId()
+		sessionUUID *uuid.UUID
 		apiKeyID    = req.AuditLogEvent.GetApiKeyId()
+		apiKeyUUID  *uuid.UUID
 	)
 	switch {
-	case credentials != "":
-		actorType, actorID, err = s.parseActorCredentials(ctx, credentials, projectID, orgID, q)
+	case sessionID != "":
+		id, err := idformat.Session.Parse(sessionID)
 		if err != nil {
-			return nil, err
+			return nil, apierror.NewInvalidArgumentError("invalid session_id", err)
 		}
+		// Lookup session, user, and organization
+		session, err := q.GetSession(ctx, queries.GetSessionParams{
+			ID:        id,
+			ProjectID: projectID,
+		})
+		if err != nil {
+			return nil, apierror.NewInvalidArgumentError("invalid session_id", err)
+		}
+		sessionUUID = (*uuid.UUID)(&session.ID)
+
+		user, err := q.GetUser(ctx, queries.GetUserParams{
+			ID:        session.UserID,
+			ProjectID: projectID,
+		})
+		if err != nil {
+			return nil, apierror.NewInvalidArgumentError("invalid session_id", fmt.Errorf("get user: %w", err))
+		}
+		userUUID = (*uuid.UUID)(&user.ID)
+		orgUUID = user.OrganizationID
 	case userID != "":
-		actorType = ActorTypeUser
-		actorID, err = idformat.User.Parse(userID)
+		id, err := idformat.User.Parse(userID)
 		if err != nil {
 			return nil, apierror.NewInvalidArgumentError("invalid user_id", err)
 		}
+		// Lookup user and organization
+		user, err := q.GetUser(ctx, queries.GetUserParams{
+			ID:        id,
+			ProjectID: projectID,
+		})
+		if err != nil {
+			return nil, apierror.NewInvalidArgumentError("invalid user_id", err)
+		}
+		userUUID = (*uuid.UUID)(&user.ID)
+		orgUUID = user.OrganizationID
 	case apiKeyID != "":
-		actorType = ActorTypeApiKey
-		actorID, err = idformat.APIKey.Parse(apiKeyID)
+		id, err := idformat.APIKey.Parse(apiKeyID)
 		if err != nil {
 			return nil, apierror.NewInvalidArgumentError("invalid api_key_id", err)
 		}
+		// Lookup API key and organization
+		apiKey, err := q.GetAPIKeyByID(ctx, queries.GetAPIKeyByIDParams{
+			ID:        id,
+			ProjectID: projectID,
+		})
+		if err != nil {
+			return nil, apierror.NewInvalidArgumentError("invalid api_key_id", err)
+		}
+		apiKeyUUID = (*uuid.UUID)(&apiKey.ID)
+		orgUUID = apiKey.OrganizationID
+	case orgID != "":
+		orgUUID, err = idformat.Organization.Parse(orgID)
+		if err != nil {
+			return nil, apierror.NewInvalidArgumentError("invalid organization_id", err)
+		}
+		_, err = q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
+			ID:        orgUUID,
+			ProjectID: projectID,
+		})
+		if err != nil {
+			return nil, apierror.NewInvalidArgumentError("invalid organization_id", err)
+		}
 	default:
-		return nil, apierror.NewInvalidArgumentError("", errors.New("either actor_credentials, user_id, or api_key_id must be provided"))
+		return nil, apierror.NewInvalidArgumentError("", errors.New("either actor_credentials, organization_id, user_id, session_id, or api_key_id must be provided"))
 	}
 
 	// Marshal the details to JSON if provided.
 	var detailsJSON []byte
-	if details := req.AuditLogEvent.Details; details != nil {
+	if details := req.AuditLogEvent.EventDetails; details != nil {
 		detailsJSON, err = details.MarshalJSON()
 		if err != nil {
 			return nil, fmt.Errorf("create audit log event: failed to marshal event details JSON: %w", err)
 		}
 	}
+
 	qEventParams := queries.CreateAuditLogEventParams{
 		ID:             id,
-		OrganizationID: orgID,
-		EventTime:      eventTime,
+		OrganizationID: orgUUID,
+		UserID:         userUUID,
+		SessionID:      sessionUUID,
+		ApiKeyID:       apiKeyUUID,
 		EventName:      eventName,
-		ActorType:      string(actorType),
-		ActorID:        actorID,
 		EventDetails:   detailsJSON,
 	}
 	qEvent, err := q.CreateAuditLogEvent(ctx, qEventParams)
@@ -137,79 +168,53 @@ func (s *Store) CreateAuditLogEvent(ctx context.Context, req *backendv1.CreateAu
 	}, nil
 }
 
-// parseActorCredentials decodes the given access token or API key and extracts its identifying details.
-func (s *Store) parseActorCredentials(
-	ctx context.Context,
-	credentials string,
-	requestProjectID uuid.UUID,
-	requestOrgID uuid.UUID,
-	q *queries.Queries,
-) (ActorType, uuid.UUID, error) {
-	projectID := idformat.Project.Format(requestProjectID)
-	orgID := idformat.Organization.Format(requestOrgID)
-
-	// Check if it's an access token
-	kid, err := ujwt.KeyID(credentials)
-	if err == nil {
-		publicKeys, err := s.GetSessionPublicKeysByProjectID(ctx, projectID)
-		if err != nil {
-			return "", uuid.UUID{}, fmt.Errorf("failed to get signing keys for project %q: %w", projectID, err)
-		}
-		var publicKey *ecdsa.PublicKey
-		for _, key := range publicKeys {
-			if kid == key.ID {
-				publicKey = key.PublicKey
-			}
-		}
-		if publicKey == nil {
-			return "", uuid.UUID{}, apierror.NewInvalidArgumentError("invalid actor_credentials", fmt.Errorf("invalid access token: no signing key found for key ID %q in project ID %q", kid, projectID))
-		}
-
-		aud := fmt.Sprintf("https://%s.tesseral.app", strings.ReplaceAll(projectID, "_", "-"))
-		var claims map[string]any
-		if err := ujwt.Claims(publicKey, aud, time.Now(), &claims, credentials); err != nil {
-			return "", uuid.UUID{}, apierror.NewInvalidArgumentError("invalid actor_credentials", fmt.Errorf("failed to get claims from access token: %w", err))
-		}
-
-		userID, err := idformat.User.Parse(claims["user"].(map[string]any)["id"].(string))
-		if err != nil {
-			return "", uuid.UUID{}, err
-		}
-		userOrgID, err := idformat.Organization.Parse(claims["organization"].(map[string]any)["id"].(string))
-		if err != nil {
-			return "", uuid.UUID{}, err
-		}
-
-		if !bytes.Equal(userOrgID[:], requestOrgID[:]) {
-			return "", uuid.UUID{}, apierror.NewInvalidArgumentError("invalid actor_credentials", fmt.Errorf("user with ID %q does not belong to organization %q", idformat.User.Format(userID), orgID))
-		}
-		return ActorTypeUser, userID, nil
-	}
-
-	// Ensure it's a valid API key
-	secretToken, err := idformat.APIKey.Parse(credentials)
+// makeUUIDv7 copies google/uuid for constructing a UUIDv7 at a point in time
+// (as opposed to making one for the current instant).
+func makeUUIDv7(ts time.Time) (uuid.UUID, error) {
+	id, err := uuid.NewRandom()
 	if err != nil {
-		return "", uuid.UUID{}, apierror.NewInvalidArgumentError("invalid actor_credentials", errors.New("actor_credentials must be either a valid API key or user access token"))
+		return uuid.UUID{}, err
 	}
 
-	secretTokenSHA := sha256.Sum256(secretToken[:])
-	qApiKey, err := q.GetAPIKeyDetailsBySecretTokenSHA256(ctx, queries.GetAPIKeyDetailsBySecretTokenSHA256Params{
-		ProjectID:         requestProjectID,
-		SecretTokenSha256: secretTokenSHA[:],
-	})
-	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return "", uuid.UUID{}, apierror.NewInvalidArgumentError("invalid actor_credentials", fmt.Errorf("api key not found"))
-		}
-		return "", uuid.UUID{}, fmt.Errorf("get api key details by secret token sha256: %w", err)
-	}
+	nano := ts.UnixNano()
+	const nanoPerMilli = 1_000_000
+	milli := nano / nanoPerMilli
 
-	if !bytes.Equal(requestOrgID[:], qApiKey.OrganizationID[:]) {
-		apiKeyID := idformat.APIKey.Format(qApiKey.ID)
-		return "", uuid.UUID{}, apierror.NewInvalidArgumentError("invalid actor_credentials", fmt.Errorf("API Key with ID %q does not belong to organization %q", apiKeyID, orgID))
-	}
+	// Sequence number is not used since there is no accurate way to establish one.
+	// Instead we leave the random bits from the V4 in place.
 
-	return ActorTypeApiKey, qApiKey.ID, nil
+	/*
+		 0                   1                   2                   3
+		 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+		+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+		|                           unix_ts_ms                          |
+		+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+		|          unix_ts_ms           |  ver  |  rand_a (12 bit seq)  |
+		+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+		|var|                        rand_b                             |
+		+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+		|                            rand_b                             |
+		+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	*/
+	_ = id[15] // bounds check
+
+	id[0] = byte(milli >> 40)
+	id[1] = byte(milli >> 32)
+	id[2] = byte(milli >> 24)
+	id[3] = byte(milli >> 16)
+	id[4] = byte(milli >> 8)
+	id[5] = byte(milli)
+
+	// Swap version for V7
+	id[6] = 0x70 | (0x0F & id[6])
+
+	return id, nil
+}
+
+// tsFromUUIDv7 reconstructs a timestamp from a UUIDv7, accurate to millisecond precision.
+func tsFromUUIDv7(id uuid.UUID) time.Time {
+	milli := (int64(id[0]) << 40) | (int64(id[1]) << 32) | (int64(id[2]) << 24) | (int64(id[3]) << 16) | (int64(id[4]) << 8) | int64(id[5])
+	return time.UnixMilli(milli).UTC()
 }
 
 func parseAuditLogEvent(qEvent queries.OrganizationAuditLogEvent) (*backendv1.AuditLogEvent, error) {
@@ -219,28 +224,34 @@ func parseAuditLogEvent(qEvent queries.OrganizationAuditLogEvent) (*backendv1.Au
 		return nil, err
 	}
 
-	event := &backendv1.AuditLogEvent{
+	ts := tsFromUUIDv7(qEvent.ID)
+
+	var (
+		userID    *string
+		sessionID *string
+		apiKeyID  *string
+	)
+	if userUUID := qEvent.UserID; userUUID != nil {
+		id := idformat.User.Format(*userUUID)
+		userID = &id
+	}
+	if sessionUUID := qEvent.SessionID; sessionUUID != nil {
+		id := idformat.Session.Format(*sessionUUID)
+		sessionID = &id
+	}
+	if apiKeyUUID := qEvent.ApiKeyID; apiKeyUUID != nil {
+		id := idformat.APIKey.Format(*apiKeyUUID)
+		apiKeyID = &id
+	}
+
+	return &backendv1.AuditLogEvent{
 		Id:             idformat.AuditLogEvent.Format(qEvent.ID),
 		OrganizationId: idformat.Organization.Format(qEvent.OrganizationID),
-		Name:           qEvent.EventName,
-		Timestamp:      timestampOrNil(&qEvent.EventTime.Time),
-		Details:        &details,
-
-		ActorCredentials: "",  // input only
-		Actor:            nil, // oneof, defined below
-	}
-	switch ActorType(qEvent.ActorType) {
-	case ActorTypeUser:
-		event.Actor = &backendv1.AuditLogEvent_UserId{
-			UserId: idformat.User.Format(qEvent.ActorID),
-		}
-	case ActorTypeApiKey:
-		event.Actor = &backendv1.AuditLogEvent_ApiKeyId{
-			ApiKeyId: idformat.APIKey.Format(qEvent.ActorID),
-		}
-	default:
-		return nil, fmt.Errorf("invalid actor_type: %q", qEvent.ActorType)
-	}
-
-	return event, nil
+		UserId:         userID,
+		SessionId:      sessionID,
+		ApiKeyId:       apiKeyID,
+		EventName:      qEvent.EventName,
+		EventTime:      timestamppb.New(ts),
+		EventDetails:   &details,
+	}, nil
 }

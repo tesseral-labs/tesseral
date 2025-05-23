@@ -250,10 +250,10 @@ type Organization struct {
 type OrganizationAuditLogEvent struct {
 	ID             uuid.UUID
 	OrganizationID uuid.UUID
-	EventTime      pgtype.Timestamptz
+	UserID         *uuid.UUID
+	SessionID      *uuid.UUID
+	ApiKeyID       *uuid.UUID
 	EventName      string
-	ActorType      string
-	ActorID        uuid.UUID
 	EventDetails   []byte
 }
 
