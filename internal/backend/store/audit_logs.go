@@ -16,13 +16,6 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-type ActorType string
-
-const (
-	ActorTypeUser   ActorType = "user"
-	ActorTypeApiKey ActorType = "api_key"
-)
-
 func (s *Store) CreateAuditLogEvent(ctx context.Context, req *backendv1.CreateAuditLogEventRequest) (*backendv1.CreateAuditLogEventResponse, error) {
 	_, q, commit, rollback, err := s.tx(ctx)
 	if err != nil {
@@ -31,8 +24,6 @@ func (s *Store) CreateAuditLogEvent(ctx context.Context, req *backendv1.CreateAu
 	defer rollback()
 
 	projectID := authn.ProjectID(ctx)
-
-	// TODO: Feature flag check?
 
 	eventTime := time.Now().UTC()
 	if req.AuditLogEvent.EventTime != nil {
@@ -132,9 +123,9 @@ func (s *Store) CreateAuditLogEvent(ctx context.Context, req *backendv1.CreateAu
 	}
 
 	// Marshal the details to JSON if provided.
-	var detailsJSON []byte
-	if details := req.AuditLogEvent.EventDetails; details != nil {
-		detailsJSON, err = details.MarshalJSON()
+	var eventDetailsJSON []byte
+	if eventDetails := req.AuditLogEvent.EventDetails; eventDetails != nil {
+		eventDetailsJSON, err = eventDetails.MarshalJSON()
 		if err != nil {
 			return nil, fmt.Errorf("create audit log event: failed to marshal event details JSON: %w", err)
 		}
@@ -147,7 +138,7 @@ func (s *Store) CreateAuditLogEvent(ctx context.Context, req *backendv1.CreateAu
 		SessionID:      sessionUUID,
 		ApiKeyID:       apiKeyUUID,
 		EventName:      eventName,
-		EventDetails:   detailsJSON,
+		EventDetails:   eventDetailsJSON,
 	}
 	qEvent, err := q.CreateAuditLogEvent(ctx, qEventParams)
 	if err != nil {
@@ -218,9 +209,9 @@ func tsFromUUIDv7(id uuid.UUID) time.Time {
 }
 
 func parseAuditLogEvent(qEvent queries.OrganizationAuditLogEvent) (*backendv1.AuditLogEvent, error) {
-	detailsJSON := qEvent.EventDetails
-	var details structpb.Struct
-	if err := details.UnmarshalJSON(detailsJSON); err != nil {
+	eventDetailsJSON := qEvent.EventDetails
+	var eventDetails structpb.Struct
+	if err := eventDetails.UnmarshalJSON(eventDetailsJSON); err != nil {
 		return nil, err
 	}
 
@@ -252,6 +243,6 @@ func parseAuditLogEvent(qEvent queries.OrganizationAuditLogEvent) (*backendv1.Au
 		ApiKeyId:       apiKeyID,
 		EventName:      qEvent.EventName,
 		EventTime:      timestamppb.New(ts),
-		EventDetails:   &details,
+		EventDetails:   &eventDetails,
 	}, nil
 }
