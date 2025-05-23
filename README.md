@@ -15,24 +15,24 @@ Tesseral](https://tesseral.com/docs/features/self-hosting-tesseral).
 
 Tesseral bundles everything that a developer needs to manage users in business software. 
 
-|                                                           |                                                                       |
-|-----------------------------------------------------------|-----------------------------------------------------------------------|
-| Hosted, customizable login pages                          | <img width="500" src="./.github/img/hosted_custom_login_pages.png" /> |
-| B2B multitenancy                                          | <img width="500" src="./.github/img/b2b_multitenancy.png" />          |
-| Session management                                        | <img width="500" src="./.github/img/session_management.png" />        |
-| Magic Links                                               | <img width="500" src="./.github/img/magic_links.png" />               |
-| Social login (e.g., Login with Google, Login with GitHub) | <img width="500" src="./.github/img/social_login.png" />              |
-| Enterprise single sign-on (SAML SSO)                      | <img width="500" src="./.github/img/saml.png" />                      |
-| Directory provisioning (SCIM)                             | <img width="500" src="./.github/img/scim.png" />                      |
-| Role-based access control (RBAC)                          | <img width="500" src="./.github/img/rbac.png" />                      |
-| Multi-factor authentication (MFA)                         | <img width="500" src="./.github/img/mfa.png" />                       |
-| Passkeys (WebAuthn)                                       | <img width="500" src="./.github/img/passkeys.png" />                  |
-| Authenticator apps (TOTPs)                                | <img width="500" src="./.github/img/totp.png" />                      |
-| API key management                                        | <img width="500" src="./.github/img/api_keys.png" />                  |
-| User impersonation                                        | <img width="500" src="./.github/img/impersonate.png" />               |
-| User invitations                                          | <img width="500" src="./.github/img/invites.png" />                   |
-| Self-service config for your customers                    | <img width="500" src="./.github/img/self_serve.png" />                |
-| Webhooks (CDC)                                            | <img width="500" src="./.github/img/webhooks.png" />                  |
+|                                                                                                                                                                                                                                                       |                                                                       |
+|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------|
+| **Hosted, customizable login pages**                                                                                                                                                                                                                  | <img width="500" src="./.github/img/hosted_custom_login_pages.png" /> |
+| B2B multitenancy                                                                                                                                                                                                                                      | <img width="500" src="./.github/img/b2b_multitenancy.png" />          |
+| Session management                                                                                                                                                                                                                                    | <img width="500" src="./.github/img/session_management.png" />        |
+| Magic Links                                                                                                                                                                                                                                           | <img width="500" src="./.github/img/magic_links.png" />               |
+| Social login (e.g., Login with Google, Login with GitHub)                                                                                                                                                                                             | <img width="500" src="./.github/img/social_login.png" />              |
+| Enterprise single sign-on (SAML SSO)                                                                                                                                                                                                                  | <img width="500" src="./.github/img/saml.png" />                      |
+| Directory provisioning (SCIM)                                                                                                                                                                                                                         | <img width="500" src="./.github/img/scim.png" />                      |
+| Role-based access control (RBAC)                                                                                                                                                                                                                      | <img width="500" src="./.github/img/rbac.png" />                      |
+| Multi-factor authentication (MFA)                                                                                                                                                                                                                     | <img width="500" src="./.github/img/mfa.png" />                       |
+| [**Passkeys**](https://tesseral.com/docs/login-methods/secondary-factors/login-with-passkey)<br />Add "Log in with Passkey" support to your product without writing any code. Supports all passkey platforms, including Touch ID, Yubikeys, and more. | <img width="500" src="./.github/img/passkeys.png" />                  |
+| Authenticator apps (TOTPs)                                                                                                                                                                                                                            | <img width="500" src="./.github/img/totp.png" />                      |
+| API key management                                                                                                                                                                                                                                    | <img width="500" src="./.github/img/api_keys.png" />                  |
+| User impersonation                                                                                                                                                                                                                                    | <img width="500" src="./.github/img/impersonate.png" />               |
+| User invitations                                                                                                                                                                                                                                      | <img width="500" src="./.github/img/invites.png" />                   |
+| Self-service config for your customers                                                                                                                                                                                                                | <img width="500" src="./.github/img/self_serve.png" />                |
+| Webhooks (CDC)                                                                                                                                                                                                                                        | <img width="500" src="./.github/img/webhooks.png" />                  |
 
 ## Get Started
 
