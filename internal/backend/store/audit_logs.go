@@ -285,22 +285,33 @@ func (s *Store) ListAuditLogEvents(ctx context.Context, req *backendv1.ListAudit
 	startID := makeUUIDv7Base(startTime, uuid.UUID{})
 
 	wheres := []sq.Sqlizer{
-		sq.Eq{"organization_id": orgID},
+		sq.Eq{"organization_id": orgID[:]},
 		sq.Gt{"id": startID},
 	}
 	if len(filter.GetEventName()) > 0 {
 		wheres = append(wheres, sq.Eq{"event_name": filter.EventName})
 	}
 	if filter.GetUserId() != "" {
-		wheres = append(wheres, sq.Eq{"user_id": filter.UserId})
+		userID, err := idformat.User.Parse(filter.UserId)
+		if err != nil {
+			return nil, apierror.NewInvalidArgumentError("invalid filter.user_id", err)
+		}
+		wheres = append(wheres, sq.Eq{"user_id": userID[:]})
 	}
 	if filter.GetSessionId() != "" {
-		wheres = append(wheres, sq.Eq{"session_id": filter.SessionId})
+		sessionID, err := idformat.Session.Parse(filter.SessionId)
+		if err != nil {
+			return nil, apierror.NewInvalidArgumentError("invalid filter.session_id", err)
+		}
+		wheres = append(wheres, sq.Eq{"session_id": sessionID[:]})
 	}
 	if filter.GetApiKeyId() != "" {
-		wheres = append(wheres, sq.Eq{"api_key_id": filter.ApiKeyId})
+		apiKeyID, err := idformat.APIKey.Parse(filter.ApiKeyId)
+		if err != nil {
+			return nil, apierror.NewInvalidArgumentError("invalid filter.api_key_id", err)
+		}
+		wheres = append(wheres, sq.Eq{"api_key_id": apiKeyID[:]})
 	}
-
 	orderBy := []string{}
 	if req.OrderBy != "" {
 		orderBy = append(orderBy, req.OrderBy)
