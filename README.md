@@ -15,24 +15,24 @@ Tesseral](https://tesseral.com/docs/features/self-hosting-tesseral).
 
 Tesseral bundles everything that a developer needs to manage users in business software. 
 
-|                                                           |  |
-|-----------------------------------------------------------|::|
+|                                                           |                                                  |
+|-----------------------------------------------------------|:------------------------------------------------:|
 | Hosted, customizable login pages                          | ![](./.github/img/hosted_custom_login_pages.png) |
-| B2B multitenancy                                          | ![](./.github/img/b2b_multitenancy.png) |
-| Session management                                        | ![](./.github/img/session_management.png) |
-| Magic Links                                               | ![](./.github/img/magic_links.png) |
-| Social login (e.g., Login with Google, Login with GitHub) | ![](./.github/img/social_login.png) |
-| Enterprise single sign-on (SAML SSO)                      | ![](./.github/img/saml.png) |
-| Directory provisioning (SCIM)                             | ![](./.github/img/scim.png) |
-| Role-based access control (RBAC)                          | ![](./.github/img/rbac.png) |
-| Multi-factor authentication (MFA)                         | ![](./.github/img/mfa.png) |
-| Passkeys (WebAuthn)                                       | ![](./.github/img/passkeys.png) |
-| Authenticator apps (TOTPs)                                | ![](./.github/img/totp.png) |
-| API key management                                        | ![](./.github/img/api_keys.png) |
-| User impersonation                                        | ![](./.github/img/impersonate.png) |
-| User invitations                                          | ![](./.github/img/invites.png) |
-| Self-service config for your customers                    | ![](./.github/img/self_serve.png) |
-| Webhooks (CDC)                                            | ![](./.github/img/webhooks.png) |
+| B2B multitenancy                                          |     ![](./.github/img/b2b_multitenancy.png)      |
+| Session management                                        |    ![](./.github/img/session_management.png)     |
+| Magic Links                                               |        ![](./.github/img/magic_links.png)        |
+| Social login (e.g., Login with Google, Login with GitHub) |       ![](./.github/img/social_login.png)        |
+| Enterprise single sign-on (SAML SSO)                      |           ![](./.github/img/saml.png)            |
+| Directory provisioning (SCIM)                             |           ![](./.github/img/scim.png)            |
+| Role-based access control (RBAC)                          |           ![](./.github/img/rbac.png)            |
+| Multi-factor authentication (MFA)                         |            ![](./.github/img/mfa.png)            |
+| Passkeys (WebAuthn)                                       |         ![](./.github/img/passkeys.png)          |
+| Authenticator apps (TOTPs)                                |           ![](./.github/img/totp.png)            |
+| API key management                                        |         ![](./.github/img/api_keys.png)          |
+| User impersonation                                        |        ![](./.github/img/impersonate.png)        |
+| User invitations                                          |          ![](./.github/img/invites.png)          |
+| Self-service config for your customers                    |        ![](./.github/img/self_serve.png)         |
+| Webhooks (CDC)                                            |         ![](./.github/img/webhooks.png)          |
 
 ## Get Started
 
