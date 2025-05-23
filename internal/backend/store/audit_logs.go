@@ -318,7 +318,8 @@ func (s *Store) ListAuditLogEvents(ctx context.Context, req *backendv1.ListAudit
 	}
 	orderBy = append(orderBy, "id desc")
 
-	query := sq.Select("*").
+	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
+	query := psql.Select("*").
 		From("organization_audit_log_events").
 		Where(sq.And(wheres)).
 		OrderBy(orderBy...).
