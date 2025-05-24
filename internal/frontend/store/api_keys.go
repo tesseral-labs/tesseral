@@ -28,7 +28,8 @@ func (s *Store) CreateAPIKey(ctx context.Context, req *frontendv1.CreateAPIKeyRe
 	}
 	defer rollback()
 
-	if _, err := q.GetOrganizationByID(ctx, authn.OrganizationID(ctx)); err != nil {
+	qOrg, err := q.GetOrganizationByID(ctx, authn.OrganizationID(ctx))
+	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, apierror.NewNotFoundError("organization not found", fmt.Errorf("get organization: %w", err))
 		}
@@ -42,6 +43,10 @@ func (s *Store) CreateAPIKey(ctx context.Context, req *frontendv1.CreateAPIKeyRe
 
 	if !qProject.ApiKeysEnabled {
 		return nil, apierror.NewPermissionDeniedError("api keys are not enabled for this project", fmt.Errorf("api keys not enabled for project"))
+	}
+
+	if !qOrg.ApiKeysEnabled {
+		return nil, apierror.NewPermissionDeniedError("api keys are not enabled for this organization", fmt.Errorf("api keys not enabled for organization"))
 	}
 
 	if qProject.ApiKeySecretTokenPrefix == nil || *qProject.ApiKeySecretTokenPrefix == "" {
