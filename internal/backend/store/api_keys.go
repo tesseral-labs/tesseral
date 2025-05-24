@@ -34,10 +34,11 @@ func (s *Store) CreateAPIKey(ctx context.Context, req *backendv1.CreateAPIKeyReq
 		return nil, apierror.NewInvalidArgumentError("invalid organization id", fmt.Errorf("parse organization id: %w", err))
 	}
 
-	if _, err := s.q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
+	qOrg, err := s.q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
 		ID:        orgID,
 		ProjectID: authn.ProjectID(ctx),
-	}); err != nil {
+	})
+	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, apierror.NewNotFoundError("organization not found", fmt.Errorf("get organization: %w", err))
 		}
@@ -51,6 +52,10 @@ func (s *Store) CreateAPIKey(ctx context.Context, req *backendv1.CreateAPIKeyReq
 
 	if !qProject.ApiKeysEnabled {
 		return nil, apierror.NewPermissionDeniedError("api keys are not enabled for this project", fmt.Errorf("api keys not enabled for project"))
+	}
+
+	if !qOrg.ApiKeysEnabled {
+		return nil, apierror.NewPermissionDeniedError("api keys are not enabled for this organization", fmt.Errorf("api keys not enabled for organization"))
 	}
 
 	var secretTokenValue [35]byte
