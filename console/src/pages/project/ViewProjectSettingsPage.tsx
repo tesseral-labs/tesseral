@@ -33,6 +33,10 @@ export const ViewProjectSettingsPage = () => {
       url: `/project-settings`,
     },
     {
+      name: 'Login Settings',
+      url: `/project-settings/login-settings`,
+    },
+    {
       name: 'Vault UI Settings',
       url: `/project-settings/vault-ui-settings`,
     },
