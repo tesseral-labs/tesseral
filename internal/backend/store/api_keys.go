@@ -304,6 +304,21 @@ func (s *Store) AuthenticateAPIKey(ctx context.Context, req *backendv1.Authentic
 		return nil, fmt.Errorf("get api key details: %w", err)
 	}
 
+	qOrg, err := q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
+		ID:        qApiKeyDetails.OrganizationID,
+		ProjectID: authn.ProjectID(ctx),
+	})
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, apierror.NewUnauthenticatedApiKeyError("invalid_api_key_secret_token", fmt.Errorf("get organization: %w", err))
+		}
+		return nil, fmt.Errorf("get organization: %w", err)
+	}
+
+	if !qOrg.ApiKeysEnabled {
+		return nil, apierror.NewPermissionDeniedError("api keys are not enabled for this organization", fmt.Errorf("api keys not enabled for organization"))
+	}
+
 	// Get all actions for the api key
 	actions, err := q.GetAPIKeyActions(ctx, qApiKeyDetails.ID)
 	if err != nil {
