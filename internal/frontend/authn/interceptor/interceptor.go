@@ -41,7 +41,10 @@ func New(s *store.Store, p *projectid.Sniffer, cookier *cookies.Cookier) connect
 
 			// look for the access token as an Authorization: Bearer header or a
 			// cookie
-			var accessToken string
+			var (
+				accessToken string
+				usesCookie  bool
+			)
 			if authorization := req.Header().Get("Authorization"); authorization != "" {
 				if !strings.HasPrefix(authorization, "Bearer ") {
 					return nil, connect.NewError(connect.CodeUnauthenticated, fmt.Errorf("invalid authorization header"))
@@ -53,26 +56,43 @@ func New(s *store.Store, p *projectid.Sniffer, cookier *cookies.Cookier) connect
 				if err != nil {
 					return nil, connect.NewError(connect.CodeUnauthenticated, err)
 				}
+				usesCookie = true
+			}
+
+			// If an access token was provided but it's invalid, ensure that any associated credentials are erased.
+			unauthenticated := func(err error) error {
+				connectErr := connect.NewError(connect.CodeUnauthenticated, err)
+				if usesCookie {
+					headers := connectErr.Meta()
+					// These should never fail since projectID is valid.
+					if accessTokenCookie, err := cookier.ExpiredAccessToken(ctx, *projectID); err == nil {
+						headers.Add("Set-Cookie", accessTokenCookie)
+					}
+					if refreshTokenCookie, err := cookier.ExpiredRefreshToken(ctx, *projectID); err == nil {
+						headers.Add("Set-Cookie", refreshTokenCookie)
+					}
+				}
+				return connectErr
 			}
 
 			// determine the session signing key for this access token
 			kid, err := ujwt.KeyID(accessToken)
 			if err != nil {
-				return nil, connect.NewError(connect.CodeUnauthenticated, err)
+				return nil, unauthenticated(err)
 			}
 
 			// get the public key for this key; the store will check to make
 			// sure it's actually a session signing key for the current project
 			publicKey, err := s.GetSessionSigningKeyPublicKey(ctx, kid)
 			if err != nil {
-				return nil, connect.NewError(connect.CodeUnauthenticated, err)
+				return nil, unauthenticated(err)
 			}
 
 			aud := fmt.Sprintf("https://%s.tesseral.app", strings.ReplaceAll(requestProjectID, "_", "-"))
 
 			var claims map[string]interface{}
 			if err := ujwt.Claims(publicKey, aud, time.Now(), &claims, accessToken); err != nil {
-				return nil, connect.NewError(connect.CodeUnauthenticated, err)
+				return nil, unauthenticated(err)
 			}
 
 			ctx = authn.NewContext(ctx, authn.ContextData{

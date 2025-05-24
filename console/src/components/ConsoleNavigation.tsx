@@ -41,6 +41,7 @@ import {
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
 import { cn, titleCaseSlug } from '@/lib/utils';
 import { Input } from './ui/input';
+import { ConnectError } from '@connectrpc/connect';
 
 const ConsoleNavigation: FC = () => {
   const navigate = useNavigate();
@@ -50,7 +51,17 @@ const ConsoleNavigation: FC = () => {
   const { mutateAsync: logoutAsync } = useMutation(logout);
 
   const handleLogout = async () => {
-    await logoutAsync({});
+    try {
+      await logoutAsync({});
+    } catch (e) {
+      if (e instanceof ConnectError && e.metadata.has('set-cookie')) {
+        // OK. Even though the request failed, the credentials were cleared.
+      } else {
+        // Fail hard since credentials were not cleared by the server and the action
+        // must be retried.
+        throw e;
+      }
+    }
     toast.success('You have been logged out.');
     navigate('/login');
   };
