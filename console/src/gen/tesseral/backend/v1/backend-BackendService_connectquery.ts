@@ -534,3 +534,20 @@ export const createStripeCheckoutLink = BackendService.method.createStripeChecko
  * @generated from rpc tesseral.backend.v1.BackendService.GetProjectWebhookManagementURL
  */
 export const getProjectWebhookManagementURL = BackendService.method.getProjectWebhookManagementURL;
+
+/**
+ * Creates an audit log event for an organization.
+ *
+ * Audit log events will be recorded in the event history and asynchronously delivered to any endpoints
+ * configured by the organization.
+ *
+ * @generated from rpc tesseral.backend.v1.BackendService.CreateAuditLogEvent
+ */
+export const createAuditLogEvent = BackendService.method.createAuditLogEvent;
+
+/**
+ * Lists audit log events for an organization.
+ *
+ * @generated from rpc tesseral.backend.v1.BackendService.ListAuditLogEvents
+ */
+export const listAuditLogEvents = BackendService.method.listAuditLogEvents;

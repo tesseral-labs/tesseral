@@ -1131,3 +1131,9 @@ WHERE api_key_role_assignments.api_key_id = api_keys.id
     AND api_key_role_assignments.id = $1
     AND organizations.project_id = $2;
 
+-- name: CreateAuditLogEvent :one
+INSERT INTO organization_audit_log_events (id, organization_id, user_id, session_id, api_key_id, event_name, event_details)
+    VALUES (@id, @organization_id, @user_id, @session_id, @api_key_id, @event_name, @event_details)
+RETURNING
+    *;
+
