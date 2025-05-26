@@ -182,6 +182,9 @@ func (s *Store) IssueAccessToken(ctx context.Context, refreshToken string) (stri
 		return "", fmt.Errorf("get current session signing key by project id: %w", err)
 	}
 
+	sessionSigningKeyID := idformat.SessionSigningKey.Format(qSessionSigningKey.ID)
+	slog.InfoContext(ctx, "sign_with_session_key", "session_signing_key_id", sessionSigningKeyID)
+
 	decryptRes, err := s.kms.Decrypt(ctx, &kms.DecryptInput{
 		CiphertextBlob:      qSessionSigningKey.PrivateKeyCipherText,
 		EncryptionAlgorithm: types.EncryptionAlgorithmSpecRsaesOaepSha256,
@@ -200,6 +203,6 @@ func (s *Store) IssueAccessToken(ctx context.Context, refreshToken string) (stri
 		return "", fmt.Errorf("bump session last active time: %w", err)
 	}
 
-	accessToken := ujwt.Sign(idformat.SessionSigningKey.Format(qSessionSigningKey.ID), priv, json.RawMessage(encodedClaims))
+	accessToken := ujwt.Sign(sessionSigningKeyID, priv, json.RawMessage(encodedClaims))
 	return accessToken, nil
 }
