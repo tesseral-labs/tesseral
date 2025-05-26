@@ -94,11 +94,11 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		qUser = &qNewUser
 	} else {
 		detailsUpdated =
-			derefOrEmpty(qIntermediateSession.GithubUserID) != derefOrEmpty(qUser.GithubUserID) ||
-				derefOrEmpty(qIntermediateSession.GoogleUserID) != derefOrEmpty(qUser.GoogleUserID) ||
-				derefOrEmpty(qIntermediateSession.MicrosoftUserID) != derefOrEmpty(qUser.MicrosoftUserID) ||
-				derefOrEmpty(qIntermediateSession.UserDisplayName) != derefOrEmpty(qUser.DisplayName) ||
-				derefOrEmpty(qIntermediateSession.ProfilePictureUrl) != derefOrEmpty(qUser.ProfilePictureUrl)
+			(qIntermediateSession.GithubUserID != nil && *qIntermediateSession.GithubUserID != derefOrEmpty(qUser.GithubUserID)) ||
+				(qIntermediateSession.GoogleUserID != nil && *qIntermediateSession.GoogleUserID != derefOrEmpty(qUser.GoogleUserID)) ||
+				(qIntermediateSession.MicrosoftUserID != nil && *qIntermediateSession.MicrosoftUserID != derefOrEmpty(qUser.MicrosoftUserID)) ||
+				(qIntermediateSession.UserDisplayName != nil && *qIntermediateSession.UserDisplayName != derefOrEmpty(qUser.DisplayName)) ||
+				(qIntermediateSession.ProfilePictureUrl != nil && *qIntermediateSession.ProfilePictureUrl != derefOrEmpty(qUser.ProfilePictureUrl))
 
 		if detailsUpdated {
 			slog.InfoContext(ctx, "update_user")
