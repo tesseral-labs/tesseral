@@ -254,6 +254,7 @@ type OrganizationAuditLogEvent struct {
 	SessionID      *uuid.UUID
 	ApiKeyID       *uuid.UUID
 	EventName      string
+	EventTime      *time.Time
 	EventDetails   []byte
 }
 

@@ -107,10 +107,10 @@ func (q *Queries) CreateAPIKeyRoleAssignment(ctx context.Context, arg CreateAPIK
 }
 
 const createAuditLogEvent = `-- name: CreateAuditLogEvent :one
-INSERT INTO organization_audit_log_events (id, organization_id, user_id, session_id, api_key_id, event_name, event_details)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
+INSERT INTO organization_audit_log_events (id, organization_id, user_id, session_id, api_key_id, event_name, event_time, event_details)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 RETURNING
-    id, organization_id, user_id, session_id, api_key_id, event_name, event_details
+    id, organization_id, user_id, session_id, api_key_id, event_name, event_time, event_details
 `
 
 type CreateAuditLogEventParams struct {
@@ -120,6 +120,7 @@ type CreateAuditLogEventParams struct {
 	SessionID      *uuid.UUID
 	ApiKeyID       *uuid.UUID
 	EventName      string
+	EventTime      *time.Time
 	EventDetails   []byte
 }
 
@@ -131,6 +132,7 @@ func (q *Queries) CreateAuditLogEvent(ctx context.Context, arg CreateAuditLogEve
 		arg.SessionID,
 		arg.ApiKeyID,
 		arg.EventName,
+		arg.EventTime,
 		arg.EventDetails,
 	)
 	var i OrganizationAuditLogEvent
@@ -141,6 +143,7 @@ func (q *Queries) CreateAuditLogEvent(ctx context.Context, arg CreateAuditLogEve
 		&i.SessionID,
 		&i.ApiKeyID,
 		&i.EventName,
+		&i.EventTime,
 		&i.EventDetails,
 	)
 	return i, err

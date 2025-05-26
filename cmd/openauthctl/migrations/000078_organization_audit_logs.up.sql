@@ -35,6 +35,9 @@ create table organization_audit_log_events (
     -- is enforced at the application level, outside the database.
     event_name varchar not null,
 
+    -- The time the event occurred.
+    event_time timestamp with time zone not null,
+
     -- The event details as a JSON blob.
     event_details jsonb not null default '{}'::jsonb
 );

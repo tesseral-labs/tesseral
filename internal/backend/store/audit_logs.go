@@ -15,7 +15,6 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/structpb"
-	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func (s *Store) CreateAuditLogEvent(ctx context.Context, req *backendv1.CreateAuditLogEventRequest) (*backendv1.CreateAuditLogEventResponse, error) {
@@ -140,6 +139,7 @@ func (s *Store) CreateAuditLogEvent(ctx context.Context, req *backendv1.CreateAu
 		SessionID:      sessionUUID,
 		ApiKeyID:       apiKeyUUID,
 		EventName:      eventName,
+		EventTime:      &eventTime,
 		EventDetails:   eventDetailsJSON,
 	}
 	qEvent, err := q.CreateAuditLogEvent(ctx, qEventParams)
@@ -222,8 +222,6 @@ func parseAuditLogEvent(qEvent queries.OrganizationAuditLogEvent) (*backendv1.Au
 		return nil, err
 	}
 
-	ts := tsFromUUIDv7(qEvent.ID)
-
 	var (
 		userID    *string
 		sessionID *string
@@ -249,7 +247,7 @@ func parseAuditLogEvent(qEvent queries.OrganizationAuditLogEvent) (*backendv1.Au
 		SessionId:      sessionID,
 		ApiKeyId:       apiKeyID,
 		EventName:      qEvent.EventName,
-		EventTime:      timestamppb.New(ts),
+		EventTime:      timestampOrNil(qEvent.EventTime),
 		EventDetails:   &eventDetails,
 	}, nil
 }
@@ -342,6 +340,7 @@ func (s *Store) ListAuditLogEvents(ctx context.Context, req *backendv1.ListAudit
 			&dto.SessionID,
 			&dto.ApiKeyID,
 			&dto.EventName,
+			&dto.EventTime,
 			&dto.EventDetails,
 		); err != nil {
 			return nil, err
