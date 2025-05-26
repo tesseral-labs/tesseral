@@ -733,3 +733,18 @@ WHERE
     organization_id = $1
     AND github_user_id = $2;
 
+-- name: UpdateUserDetails :one
+UPDATE
+    users
+SET
+    update_time = now(),
+    github_user_id = coalesce(sqlc.narg (github_user_id), github_user_id),
+    google_user_id = coalesce(sqlc.narg (google_user_id), google_user_id),
+    microsoft_user_id = coalesce(sqlc.narg (microsoft_user_id), microsoft_user_id),
+    display_name = coalesce(sqlc.narg (display_name), display_name),
+    profile_picture_url = coalesce(sqlc.narg (profile_picture_url), profile_picture_url)
+WHERE
+    id = @user_id
+RETURNING
+    *;
+
