@@ -63,8 +63,8 @@ support@tesseral.com; we may be able to give you early access.
 For Tesseral’s managed service, you will first need to create an account at
 https://console.tesseral.com. 
 
-You will need to create a Project and generate a Publishable Key that looks like
-this: `publishable_key_...`.
+You will need to create a Project and generate a Publishable Key. Publishable
+Keys always look like this: `publishable_key_...`.
 
 ### Integrate your frontend
 
@@ -142,10 +142,12 @@ if __name__ == "__main__":
     app.run(debug=True, port=5050)
 ```
 
-Tesseral's `require_auth()` middleware (or its equivalent in your framework's
-SDK) validates access tokens for you, and only authenticated requests will go
-through to your endpoint handlers. A client can successfully `GET /api/hello` if
-and only if it has a valid Tesseral access token.
+Tesseral's
+[`require_auth()`](https://tesseral.com/docs/sdks/serverside-sdks/tesseral-sdk-flask#getting-started)
+middleware (or its equivalent in your framework's SDK) validates access tokens
+for you, and only authenticated requests will go through to your endpoint
+handlers. A client can successfully `GET /api/hello` if and only if it has a
+valid Tesseral access token.
 
 You can extract out details about the requester using:
 
