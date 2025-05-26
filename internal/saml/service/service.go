@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"time"
 
+	"slices"
+
 	"github.com/google/uuid"
 	"github.com/tesseral-labs/tesseral/internal/common/accesstoken"
 	"github.com/tesseral-labs/tesseral/internal/cookies"
@@ -108,16 +110,9 @@ func (s *Service) acs(w http.ResponseWriter, r *http.Request) error {
 		return nil
 	}
 
-	var domainOk bool
-	for _, orgDomain := range samlConnectionACSData.OrganizationDomains {
-		if orgDomain == domain {
-			domainOk = true
-			break
-		}
-	}
-
-	if !domainOk {
+	if !slices.Contains(samlConnectionACSData.OrganizationDomains, domain) {
 		http.Error(w, "bad domain", http.StatusBadRequest)
+		return nil
 	}
 
 	createSessionRes, err := s.Store.CreateSession(ctx, &store.CreateSessionRequest{
