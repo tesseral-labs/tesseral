@@ -20,6 +20,7 @@ import CenterLayout from '@/components/vault-preview/layouts/center';
 import { useMutation, useQuery } from '@connectrpc/connect-query';
 import {
   getProject,
+  getProjectLogoURLs,
   getProjectUISettings,
   updateProjectUISettings,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
@@ -53,6 +54,7 @@ const settingsPage: FC = () => {
   const logoPickerRef = createRef<HTMLInputElement>();
   const previewRef = createRef<HTMLDivElement>();
   const { data: getProjectUISettingsResponse } = useQuery(getProjectUISettings);
+  const getProjectLogoURLsMutation = useMutation(getProjectLogoURLs);
 
   const updateProjectUISettingsMutation = useMutation(updateProjectUISettings);
 
@@ -237,6 +239,11 @@ const settingsPage: FC = () => {
         description: message,
       });
     }
+
+    const { logoUrl, darkModeLogoUrl } =
+      await getProjectLogoURLsMutation.mutateAsync({});
+    setLogo(logoUrl);
+    setDarkModeLogo(darkModeLogoUrl);
   };
 
   useEffect(() => {

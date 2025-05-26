@@ -235,6 +235,9 @@ const (
 	// BackendServiceEnableEmailSendFromDomainProcedure is the fully-qualified name of the
 	// BackendService's EnableEmailSendFromDomain RPC.
 	BackendServiceEnableEmailSendFromDomainProcedure = "/tesseral.backend.v1.BackendService/EnableEmailSendFromDomain"
+	// BackendServiceGetProjectLogoURLsProcedure is the fully-qualified name of the BackendService's
+	// GetProjectLogoURLs RPC.
+	BackendServiceGetProjectLogoURLsProcedure = "/tesseral.backend.v1.BackendService/GetProjectLogoURLs"
 	// BackendServiceGetProjectUISettingsProcedure is the fully-qualified name of the BackendService's
 	// GetProjectUISettings RPC.
 	BackendServiceGetProjectUISettingsProcedure = "/tesseral.backend.v1.BackendService/GetProjectUISettings"
@@ -411,6 +414,7 @@ type BackendServiceClient interface {
 	UpdateVaultDomainSettings(context.Context, *connect.Request[v1.UpdateVaultDomainSettingsRequest]) (*connect.Response[v1.UpdateVaultDomainSettingsResponse], error)
 	EnableCustomVaultDomain(context.Context, *connect.Request[v1.EnableCustomVaultDomainRequest]) (*connect.Response[v1.EnableCustomVaultDomainResponse], error)
 	EnableEmailSendFromDomain(context.Context, *connect.Request[v1.EnableEmailSendFromDomainRequest]) (*connect.Response[v1.EnableEmailSendFromDomainResponse], error)
+	GetProjectLogoURLs(context.Context, *connect.Request[v1.GetProjectLogoURLsRequest]) (*connect.Response[v1.GetProjectLogoURLsResponse], error)
 	GetProjectUISettings(context.Context, *connect.Request[v1.GetProjectUISettingsRequest]) (*connect.Response[v1.GetProjectUISettingsResponse], error)
 	UpdateProjectUISettings(context.Context, *connect.Request[v1.UpdateProjectUISettingsRequest]) (*connect.Response[v1.UpdateProjectUISettingsResponse], error)
 	ListBackendAPIKeys(context.Context, *connect.Request[v1.ListBackendAPIKeysRequest]) (*connect.Response[v1.ListBackendAPIKeysResponse], error)
@@ -849,6 +853,12 @@ func NewBackendServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(backendServiceMethods.ByName("EnableEmailSendFromDomain")),
 			connect.WithClientOptions(opts...),
 		),
+		getProjectLogoURLs: connect.NewClient[v1.GetProjectLogoURLsRequest, v1.GetProjectLogoURLsResponse](
+			httpClient,
+			baseURL+BackendServiceGetProjectLogoURLsProcedure,
+			connect.WithSchema(backendServiceMethods.ByName("GetProjectLogoURLs")),
+			connect.WithClientOptions(opts...),
+		),
 		getProjectUISettings: connect.NewClient[v1.GetProjectUISettingsRequest, v1.GetProjectUISettingsResponse](
 			httpClient,
 			baseURL+BackendServiceGetProjectUISettingsProcedure,
@@ -1024,6 +1034,7 @@ type backendServiceClient struct {
 	updateVaultDomainSettings             *connect.Client[v1.UpdateVaultDomainSettingsRequest, v1.UpdateVaultDomainSettingsResponse]
 	enableCustomVaultDomain               *connect.Client[v1.EnableCustomVaultDomainRequest, v1.EnableCustomVaultDomainResponse]
 	enableEmailSendFromDomain             *connect.Client[v1.EnableEmailSendFromDomainRequest, v1.EnableEmailSendFromDomainResponse]
+	getProjectLogoURLs                    *connect.Client[v1.GetProjectLogoURLsRequest, v1.GetProjectLogoURLsResponse]
 	getProjectUISettings                  *connect.Client[v1.GetProjectUISettingsRequest, v1.GetProjectUISettingsResponse]
 	updateProjectUISettings               *connect.Client[v1.UpdateProjectUISettingsRequest, v1.UpdateProjectUISettingsResponse]
 	listBackendAPIKeys                    *connect.Client[v1.ListBackendAPIKeysRequest, v1.ListBackendAPIKeysResponse]
@@ -1387,6 +1398,11 @@ func (c *backendServiceClient) EnableEmailSendFromDomain(ctx context.Context, re
 	return c.enableEmailSendFromDomain.CallUnary(ctx, req)
 }
 
+// GetProjectLogoURLs calls tesseral.backend.v1.BackendService.GetProjectLogoURLs.
+func (c *backendServiceClient) GetProjectLogoURLs(ctx context.Context, req *connect.Request[v1.GetProjectLogoURLsRequest]) (*connect.Response[v1.GetProjectLogoURLsResponse], error) {
+	return c.getProjectLogoURLs.CallUnary(ctx, req)
+}
+
 // GetProjectUISettings calls tesseral.backend.v1.BackendService.GetProjectUISettings.
 func (c *backendServiceClient) GetProjectUISettings(ctx context.Context, req *connect.Request[v1.GetProjectUISettingsRequest]) (*connect.Response[v1.GetProjectUISettingsResponse], error) {
 	return c.getProjectUISettings.CallUnary(ctx, req)
@@ -1597,6 +1613,7 @@ type BackendServiceHandler interface {
 	UpdateVaultDomainSettings(context.Context, *connect.Request[v1.UpdateVaultDomainSettingsRequest]) (*connect.Response[v1.UpdateVaultDomainSettingsResponse], error)
 	EnableCustomVaultDomain(context.Context, *connect.Request[v1.EnableCustomVaultDomainRequest]) (*connect.Response[v1.EnableCustomVaultDomainResponse], error)
 	EnableEmailSendFromDomain(context.Context, *connect.Request[v1.EnableEmailSendFromDomainRequest]) (*connect.Response[v1.EnableEmailSendFromDomainResponse], error)
+	GetProjectLogoURLs(context.Context, *connect.Request[v1.GetProjectLogoURLsRequest]) (*connect.Response[v1.GetProjectLogoURLsResponse], error)
 	GetProjectUISettings(context.Context, *connect.Request[v1.GetProjectUISettingsRequest]) (*connect.Response[v1.GetProjectUISettingsResponse], error)
 	UpdateProjectUISettings(context.Context, *connect.Request[v1.UpdateProjectUISettingsRequest]) (*connect.Response[v1.UpdateProjectUISettingsResponse], error)
 	ListBackendAPIKeys(context.Context, *connect.Request[v1.ListBackendAPIKeysRequest]) (*connect.Response[v1.ListBackendAPIKeysResponse], error)
@@ -2031,6 +2048,12 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 		connect.WithSchema(backendServiceMethods.ByName("EnableEmailSendFromDomain")),
 		connect.WithHandlerOptions(opts...),
 	)
+	backendServiceGetProjectLogoURLsHandler := connect.NewUnaryHandler(
+		BackendServiceGetProjectLogoURLsProcedure,
+		svc.GetProjectLogoURLs,
+		connect.WithSchema(backendServiceMethods.ByName("GetProjectLogoURLs")),
+		connect.WithHandlerOptions(opts...),
+	)
 	backendServiceGetProjectUISettingsHandler := connect.NewUnaryHandler(
 		BackendServiceGetProjectUISettingsProcedure,
 		svc.GetProjectUISettings,
@@ -2271,6 +2294,8 @@ func NewBackendServiceHandler(svc BackendServiceHandler, opts ...connect.Handler
 			backendServiceEnableCustomVaultDomainHandler.ServeHTTP(w, r)
 		case BackendServiceEnableEmailSendFromDomainProcedure:
 			backendServiceEnableEmailSendFromDomainHandler.ServeHTTP(w, r)
+		case BackendServiceGetProjectLogoURLsProcedure:
+			backendServiceGetProjectLogoURLsHandler.ServeHTTP(w, r)
 		case BackendServiceGetProjectUISettingsProcedure:
 			backendServiceGetProjectUISettingsHandler.ServeHTTP(w, r)
 		case BackendServiceUpdateProjectUISettingsProcedure:
@@ -2584,6 +2609,10 @@ func (UnimplementedBackendServiceHandler) EnableCustomVaultDomain(context.Contex
 
 func (UnimplementedBackendServiceHandler) EnableEmailSendFromDomain(context.Context, *connect.Request[v1.EnableEmailSendFromDomainRequest]) (*connect.Response[v1.EnableEmailSendFromDomainResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.EnableEmailSendFromDomain is not implemented"))
+}
+
+func (UnimplementedBackendServiceHandler) GetProjectLogoURLs(context.Context, *connect.Request[v1.GetProjectLogoURLsRequest]) (*connect.Response[v1.GetProjectLogoURLsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tesseral.backend.v1.BackendService.GetProjectLogoURLs is not implemented"))
 }
 
 func (UnimplementedBackendServiceHandler) GetProjectUISettings(context.Context, *connect.Request[v1.GetProjectUISettingsRequest]) (*connect.Response[v1.GetProjectUISettingsResponse], error) {
