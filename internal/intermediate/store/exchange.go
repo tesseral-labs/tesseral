@@ -46,6 +46,11 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 
+	slog.InfoContext(ctx, "exchange_intermediate_session_for_session",
+		"organization_id", idformat.Organization.Format(qOrg.ID),
+		"intermediate_session_id", idformat.IntermediateSession.Format(qIntermediateSession.ID),
+		"email", qIntermediateSession.Email)
+
 	if err := enforceProjectLoginEnabled(qProject); err != nil {
 		return nil, fmt.Errorf("enforce project login enabled: %w", err)
 	}
@@ -67,6 +72,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 
 	// if no matching user, create a new one
 	if qUser == nil {
+		slog.InfoContext(ctx, "create_user")
 		qNewUser, err := q.CreateUser(ctx, queries.CreateUserParams{
 			ID:                uuid.New(),
 			OrganizationID:    qOrg.ID,
@@ -87,6 +93,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 	// if a passkey is registered on the intermediate session, copy it onto the
 	// user
 	if qIntermediateSession.PasskeyCredentialID != nil {
+		slog.InfoContext(ctx, "register_passkey")
 		if err := s.copyRegisteredPasskeySettings(ctx, q, qIntermediateSession, *qUser); err != nil {
 			return nil, fmt.Errorf("copy registered passkey settings: %w", err)
 		}
@@ -95,6 +102,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 	// if an authenticator app is registered on the intermediate session, copy
 	// it onto the user
 	if qIntermediateSession.AuthenticatorAppSecretCiphertext != nil {
+		slog.InfoContext(ctx, "register_authenticator_app")
 		if err := s.copyRegisteredAuthenticatorAppSettings(ctx, q, qIntermediateSession, *qUser); err != nil {
 			return nil, fmt.Errorf("copy registered authenticator app settings: %w", err)
 		}
@@ -134,6 +142,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 	}
 
 	if qUserInvite.ID != uuid.Nil {
+		slog.InfoContext(ctx, "upgrade_user_invite", "is_owner", qUserInvite.IsOwner)
 		if qUserInvite.IsOwner {
 			if _, err := q.UpdateUserIsOwner(ctx, queries.UpdateUserIsOwnerParams{
 				ID:      qUser.ID,
@@ -148,6 +157,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 	// session
 	var relayedSessionToken string
 	if qIntermediateSession.RelayedSessionState != nil {
+		slog.InfoContext(ctx, "create_relayed_session")
 		relayedSessionTokenUUID := uuid.New()
 		relayedSessionTokenSHA256 := sha256.Sum256(relayedSessionTokenUUID[:])
 		relayedSessionTokenExpireTime := time.Now().Add(relayedSessionTokenDuration)

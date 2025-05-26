@@ -241,6 +241,11 @@ func (s *Store) OnboardingCreateProjects(ctx context.Context, req *intermediatev
 		return nil, fmt.Errorf("create prod project for current user: %w", err)
 	}
 
+	slog.InfoContext(ctx, "created_projects",
+		"display_name", req.DisplayName,
+		"dev_project_id", idformat.Project.Format(qDevProjectID),
+		"prod_project_id", idformat.Project.Format(qProdProjectID))
+
 	expireTime := time.Now().Add(sessionDuration)
 
 	// Create a new session for the user
