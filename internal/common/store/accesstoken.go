@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log/slog"
 	"slices"
 	"strings"
 	"time"
@@ -42,6 +43,8 @@ func (s *Store) IssueAccessToken(ctx context.Context, refreshToken string) (stri
 
 	switch {
 	case strings.HasPrefix(refreshToken, "tesseral_secret_session_refresh_token_"):
+		slog.InfoContext(ctx, "refresh_session_token")
+
 		refreshTokenUUID, err := idformat.SessionRefreshToken.Parse(refreshToken)
 		if err != nil {
 			return "", fmt.Errorf("parse refresh token: %w", err)
@@ -68,6 +71,8 @@ func (s *Store) IssueAccessToken(ctx context.Context, refreshToken string) (stri
 		qDetails.ImpersonatorUserID = qSessionDetails.ImpersonatorUserID
 		qDetails.ProjectID = qSessionDetails.ProjectID
 	case strings.HasPrefix(refreshToken, "tesseral_secret_relayed_session_refresh_token_"):
+		slog.InfoContext(ctx, "refresh_relayed_session_token")
+
 		relayedRefreshTokenUUID, err := idformat.RelayedSessionRefreshToken.Parse(refreshToken)
 		if err != nil {
 			return "", fmt.Errorf("parse refresh token: %w", err)
@@ -162,6 +167,10 @@ func (s *Store) IssueAccessToken(ctx context.Context, refreshToken string) (stri
 		Impersonator: impersonator,
 	}
 
+	slog.InfoContext(ctx, "issue_access_token",
+		"project_id", idformat.Project.Format(qDetails.ProjectID),
+		"claims", claims)
+
 	// claims is a proto message, so we have to use protojson to encode it first
 	encodedClaims, err := protojson.Marshal(claims)
 	if err != nil {
@@ -172,6 +181,9 @@ func (s *Store) IssueAccessToken(ctx context.Context, refreshToken string) (stri
 	if err != nil {
 		return "", fmt.Errorf("get current session signing key by project id: %w", err)
 	}
+
+	sessionSigningKeyID := idformat.SessionSigningKey.Format(qSessionSigningKey.ID)
+	slog.InfoContext(ctx, "sign_with_session_key", "session_signing_key_id", sessionSigningKeyID)
 
 	decryptRes, err := s.kms.Decrypt(ctx, &kms.DecryptInput{
 		CiphertextBlob:      qSessionSigningKey.PrivateKeyCipherText,
@@ -191,6 +203,6 @@ func (s *Store) IssueAccessToken(ctx context.Context, refreshToken string) (stri
 		return "", fmt.Errorf("bump session last active time: %w", err)
 	}
 
-	accessToken := ujwt.Sign(idformat.SessionSigningKey.Format(qSessionSigningKey.ID), priv, json.RawMessage(encodedClaims))
+	accessToken := ujwt.Sign(sessionSigningKeyID, priv, json.RawMessage(encodedClaims))
 	return accessToken, nil
 }
