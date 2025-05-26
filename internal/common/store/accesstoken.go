@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log/slog"
 	"slices"
 	"strings"
 	"time"
@@ -42,6 +43,8 @@ func (s *Store) IssueAccessToken(ctx context.Context, refreshToken string) (stri
 
 	switch {
 	case strings.HasPrefix(refreshToken, "tesseral_secret_session_refresh_token_"):
+		slog.InfoContext(ctx, "refresh_session_token")
+
 		refreshTokenUUID, err := idformat.SessionRefreshToken.Parse(refreshToken)
 		if err != nil {
 			return "", fmt.Errorf("parse refresh token: %w", err)
@@ -68,6 +71,8 @@ func (s *Store) IssueAccessToken(ctx context.Context, refreshToken string) (stri
 		qDetails.ImpersonatorUserID = qSessionDetails.ImpersonatorUserID
 		qDetails.ProjectID = qSessionDetails.ProjectID
 	case strings.HasPrefix(refreshToken, "tesseral_secret_relayed_session_refresh_token_"):
+		slog.InfoContext(ctx, "refresh_relayed_session_token")
+
 		relayedRefreshTokenUUID, err := idformat.RelayedSessionRefreshToken.Parse(refreshToken)
 		if err != nil {
 			return "", fmt.Errorf("parse refresh token: %w", err)
@@ -161,6 +166,10 @@ func (s *Store) IssueAccessToken(ctx context.Context, refreshToken string) (stri
 		Actions:      actions,
 		Impersonator: impersonator,
 	}
+
+	slog.InfoContext(ctx, "issue_access_token",
+		"project_id", idformat.Project.Format(qDetails.ProjectID),
+		"claims", claims)
 
 	// claims is a proto message, so we have to use protojson to encode it first
 	encodedClaims, err := protojson.Marshal(claims)
