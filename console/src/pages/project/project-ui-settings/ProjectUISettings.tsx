@@ -11,7 +11,6 @@ import React, {
   createRef,
   FC,
   FormEvent,
-  SyntheticEvent,
   useEffect,
   useState,
 } from 'react';
@@ -19,8 +18,6 @@ import SideBySideLayout from '@/components/vault-preview/layouts/side-by-side';
 import CenterLayout from '@/components/vault-preview/layouts/center';
 import { useMutation, useQuery } from '@connectrpc/connect-query';
 import {
-  getProject,
-  getProjectLogoURLs,
   getProjectUISettings,
   updateProjectUISettings,
 } from '@/gen/tesseral/backend/v1/backend-BackendService_connectquery';
@@ -38,7 +35,6 @@ import { ColorPicker } from '@/components/ui/color-picker';
 import { Switch } from '@/components/ui/switch';
 import { parseErrorMessage } from '@/lib/errors';
 import { toast } from 'sonner';
-import { Checkbox } from '@/components/ui/checkbox';
 import { z } from 'zod';
 import {
   DetailsGrid,
@@ -53,8 +49,8 @@ const settingsPage: FC = () => {
   const darkModeLogoPickerRef = createRef<HTMLInputElement>();
   const logoPickerRef = createRef<HTMLInputElement>();
   const previewRef = createRef<HTMLDivElement>();
-  const { data: getProjectUISettingsResponse } = useQuery(getProjectUISettings);
-  const getProjectLogoURLsMutation = useMutation(getProjectLogoURLs);
+  const { data: getProjectUISettingsResponse, refetch } =
+    useQuery(getProjectUISettings);
 
   const updateProjectUISettingsMutation = useMutation(updateProjectUISettings);
 
@@ -240,10 +236,7 @@ const settingsPage: FC = () => {
       });
     }
 
-    const { logoUrl, darkModeLogoUrl } =
-      await getProjectLogoURLsMutation.mutateAsync({});
-    setLogo(logoUrl);
-    setDarkModeLogo(darkModeLogoUrl);
+    await refetch();
   };
 
   useEffect(() => {

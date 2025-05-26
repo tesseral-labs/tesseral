@@ -363,7 +363,6 @@ service BackendService {
   rpc EnableCustomVaultDomain(EnableCustomVaultDomainRequest) returns (EnableCustomVaultDomainResponse);
   rpc EnableEmailSendFromDomain(EnableEmailSendFromDomainRequest) returns (EnableEmailSendFromDomainResponse);
 
-  rpc GetProjectLogoURLs(GetProjectLogoURLsRequest) returns (GetProjectLogoURLsResponse);
   rpc GetProjectUISettings(GetProjectUISettingsRequest) returns (GetProjectUISettingsResponse) {}
   rpc UpdateProjectUISettings(UpdateProjectUISettingsRequest) returns (UpdateProjectUISettingsResponse) {}
 
@@ -1183,11 +1182,4 @@ message AuthenticateAPIKeyResponse {
   string api_key_id = 1;
   string organization_id = 2;
   repeated string actions = 3;
-}
-
-message GetProjectLogoURLsRequest {}
-
-message GetProjectLogoURLsResponse {
-  string logo_url = 1;
-  string dark_mode_logo_url = 2;
 }
