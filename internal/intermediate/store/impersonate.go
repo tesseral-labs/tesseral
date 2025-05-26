@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/sha256"
 	"fmt"
+	"log/slog"
 	"time"
 
 	"github.com/google/uuid"
@@ -33,6 +34,10 @@ func (s *Store) RedeemUserImpersonationToken(ctx context.Context, req *intermedi
 	expireTime := time.Now().Add(sessionDuration)
 
 	// Create a new session for the user
+	slog.InfoContext(ctx, "impersonate_user",
+		"impersonator_id", idformat.User.Format(qUserImpersonationToken.ImpersonatorID),
+		"impersonated_id", idformat.User.Format(qUserImpersonationToken.ImpersonatedID))
+
 	refreshToken := uuid.New()
 	refreshTokenSHA256 := sha256.Sum256(refreshToken[:])
 	if _, err := q.CreateImpersonatedSession(ctx, queries.CreateImpersonatedSessionParams{
