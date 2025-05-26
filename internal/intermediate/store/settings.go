@@ -99,7 +99,7 @@ func (s *Store) buildPresignedGetUrlForFile(ctx context.Context, fileKey string)
 		Bucket: aws.String(s.s3UserContentBucketName),
 		Key:    aws.String(fileKey),
 	}, func(opts *s3.PresignOptions) {
-		opts.Expires = time.Minute // set expiry to one minute
+		opts.Expires = time.Hour * 12 // set expiry to 12 hours
 	})
 
 	if err != nil {
