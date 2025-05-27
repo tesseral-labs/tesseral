@@ -44,6 +44,7 @@ import { OrganizationLoginSettingsTab } from "./pages/dashboard/OrganizationLogi
 import { OrganizationSAMLConnectionsTab } from "./pages/dashboard/OrganizationSAMLConnectionsTab";
 import { UserSettingsPage } from "./pages/dashboard/UserSettingsPage";
 import { ViewAPIKeyPage } from "./pages/dashboard/api-keys/ViewAPIKeyPage";
+import { ViewSAMLConnectionPage } from "./pages/dashboard/saml-connections/ViewSAMLConnectionPage";
 import { GithubOAuthCallbackPage } from "./pages/login/GithubOAuthCallbackPage";
 
 const queryClient = new QueryClient();
@@ -156,12 +157,16 @@ function AppWithRoutes() {
                     element={<ViewAPIKeyPage />}
                   />
                   <Route
-                    path="login"
+                    path="login-settings"
                     element={<OrganizationLoginSettingsTab />}
                   />
                   <Route
                     path="saml-connections"
                     element={<OrganizationSAMLConnectionsTab />}
+                  />
+                  <Route
+                    path="saml-connections/:samlConnectionId"
+                    element={<ViewSAMLConnectionPage />}
                   />
                 </Route>
 

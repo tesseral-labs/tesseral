@@ -1,6 +1,9 @@
+import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
+import { toast } from "sonner";
 import { z } from "zod";
 
 import {
@@ -15,49 +18,35 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
+import {
+  createSAMLConnection,
+  listSAMLConnections,
+} from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
 
 const schema = z.object({});
 
 export function CreateSAMLConnectionButton() {
-  const form = useForm<z.infer<typeof schema>>({
-    resolver: zodResolver(schema),
-    defaultValues: {},
-  });
+  const navigate = useNavigate();
 
-  async function handleSubmit(data: z.infer<typeof schema>) {
-    // Handle form submission logic here
-    console.log("Form submitted with data:", data);
-    // You can call an API to create the SAML connection
+  const { data: listSAMLConnectionsResponse } = useQuery(listSAMLConnections);
+  const createSAMLConnectionMutation = useMutation(createSAMLConnection);
+
+  async function handleCreateSAMLConnection() {
+    const { samlConnection } = await createSAMLConnectionMutation.mutateAsync({
+      samlConnection: {
+        // if there are no saml connections on the org yet, default to making
+        // the first one be primary
+        primary: !!listSAMLConnectionsResponse?.samlConnections,
+      },
+    });
+
+    toast.success("SAML Connection created");
+    navigate(`/organization-settings/saml-connections/${samlConnection?.id}`);
   }
 
   return (
-    <AlertDialog>
-      <AlertDialogTrigger>
-        <Button variant="outline">Create SAML Connection</Button>
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Create SAML Connection</AlertDialogTitle>
-          <AlertDialogDescription>
-            To create a SAML connection, you will need to provide the necessary
-            details such as the SAML metadata URL or file, and any additional
-            configuration required by your Identity Provider (IdP). Please
-            ensure that you have the required information ready before
-            proceeding.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleSubmit)}
-            className="space-y-4"
-          ></form>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <Button type="submit">Create Connection</Button>
-          </AlertDialogFooter>
-        </Form>
-      </AlertDialogContent>
-    </AlertDialog>
+    <Button variant="outline" onClick={handleCreateSAMLConnection}>
+      Create SAML Connection
+    </Button>
   );
 }

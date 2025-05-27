@@ -2,6 +2,7 @@ import { timestampDate } from "@bufbuild/protobuf/wkt";
 import { useInfiniteQuery } from "@connectrpc/connect-query";
 import { DateTime } from "luxon";
 import React from "react";
+import { Link } from "react-router-dom";
 
 import {
   Card,
@@ -67,7 +68,14 @@ export function OrganizationSAMLConnectionsTab() {
             <TableBody>
               {samlConnections?.map((samlConnection) => (
                 <TableRow key={samlConnection.id}>
-                  <TableCell>{samlConnection.id}</TableCell>
+                  <TableCell>
+                    <Link
+                      className="font-mono font-medium underline underline-offset-2 decoration-muted-foreground/40"
+                      to={`/organization-settings/saml-connections/${samlConnection.id}`}
+                    >
+                      {samlConnection.id}
+                    </Link>
+                  </TableCell>
                   <TableCell>
                     {samlConnection.createTime &&
                       DateTime.fromJSDate(

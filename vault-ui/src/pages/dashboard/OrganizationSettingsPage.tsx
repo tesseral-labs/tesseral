@@ -43,7 +43,7 @@ import {
 } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
 
 export function OrganizationSettingsPage() {
-  const [tabs, setTabs] = useState([
+  const initialTabs = [
     {
       root: true,
       name: "Users",
@@ -51,13 +51,10 @@ export function OrganizationSettingsPage() {
     },
     {
       name: "Login Settings",
-      url: `/organization-settings/login`,
+      url: `/organization-settings/login-settings`,
     },
-    {
-      name: "SAML Connections",
-      url: `/organization-settings/saml-connections`,
-    },
-  ]);
+  ];
+  const [tabs, setTabs] = useState(initialTabs);
   const { data: getProjectResponse } = useQuery(getProject);
   const { data: getOrganizationResponse } = useQuery(getOrganization);
 
@@ -66,24 +63,39 @@ export function OrganizationSettingsPage() {
     (tab) =>
       tab.url === pathname ||
       (tab.url === "/organization-settings/api-keys" &&
-        pathname.startsWith("/organization-settings/api-keys/")),
+        pathname.startsWith("/organization-settings/api-keys/")) ||
+      (tab.url === "/organization-settings/saml-connections" &&
+        pathname.startsWith("/organization-settings/saml-connections/")),
   );
 
   useEffect(() => {
+    const newTabs = [...initialTabs];
+
+    if (
+      getProjectResponse?.project?.logInWithSaml &&
+      getOrganizationResponse?.organization?.logInWithSaml
+    ) {
+      newTabs.push({
+        name: "SAML Connections",
+        url: `/organization-settings/saml-connections`,
+      });
+    }
     if (
       getProjectResponse?.project?.apiKeysEnabled &&
-      getOrganizationResponse?.organization?.apiKeysEnabled &&
-      tabs.length === 3
+      getOrganizationResponse?.organization?.apiKeysEnabled
     ) {
-      // Only add the API Keys tab if the project has API keys enabled
-      tabs.splice(2, 0, {
+      newTabs.push({
         name: "API Keys",
         url: `/organization-settings/api-keys`,
       });
-
-      setTabs([...tabs]);
     }
-  }, [getOrganizationResponse, getProjectResponse, tabs]);
+
+    setTabs((prevTabs) => {
+      const prev = JSON.stringify(prevTabs);
+      const next = JSON.stringify(newTabs);
+      return prev !== next ? newTabs : prevTabs;
+    });
+  }, [getOrganizationResponse, getProjectResponse]);
 
   return (
     <div className="space-y-8">
