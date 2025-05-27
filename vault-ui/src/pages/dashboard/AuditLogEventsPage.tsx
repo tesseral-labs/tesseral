@@ -21,8 +21,8 @@ const PAGE_SIZE = 10;
 
 enum EventName {
     LoginAttempt = 'tesseral:login_attempt',
-    UserCreated = 'tesseral:user_created',
-    UserUpdated = 'tesseral:user_updated',
+    UserCreated = 'tesseral:create_user',
+    UserUpdated = 'tesseral:update_user',
 }
 
 type EventData = {
