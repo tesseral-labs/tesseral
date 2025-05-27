@@ -2,15 +2,12 @@ import { useMutation, useQuery } from "@connectrpc/connect-query";
 import React from "react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
-import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
   createSAMLConnection,
   listSAMLConnections,
 } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
-
-const schema = z.object({});
 
 export function CreateSAMLConnectionButton() {
   const navigate = useNavigate();

@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { clsx } from "clsx";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Outlet } from "react-router";
 import { Link, useLocation } from "react-router-dom";
@@ -43,17 +43,20 @@ import {
 } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
 
 export function OrganizationSettingsPage() {
-  const initialTabs = [
-    {
-      root: true,
-      name: "Users",
-      url: `/organization-settings`,
-    },
-    {
-      name: "Login Settings",
-      url: `/organization-settings/login-settings`,
-    },
-  ];
+  const initialTabs = useMemo(
+    () => [
+      {
+        root: true,
+        name: "Users",
+        url: `/organization-settings`,
+      },
+      {
+        name: "Login Settings",
+        url: `/organization-settings/login-settings`,
+      },
+    ],
+    [],
+  );
   const [tabs, setTabs] = useState(initialTabs);
   const { data: getProjectResponse } = useQuery(getProject);
   const { data: getOrganizationResponse } = useQuery(getOrganization);
