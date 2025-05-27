@@ -12,6 +12,7 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/svix/svix-webhooks/go/models"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
+	"github.com/tesseral-labs/tesseral/internal/common/auditlog"
 	"github.com/tesseral-labs/tesseral/internal/intermediate/authn"
 	intermediatev1 "github.com/tesseral-labs/tesseral/internal/intermediate/gen/tesseral/intermediate/v1"
 	"github.com/tesseral-labs/tesseral/internal/intermediate/store/queries"
@@ -209,7 +210,45 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		return nil, err
 	}
 
+	// Create audit log event
+	userData := auditlog.UserData{
+		ID:             qUser.ID,
+		OrganizationID: qUser.OrganizationID,
+		Email:          qUser.Email,
+	}
+	event, err := auditlog.NewLoginAttemptEvent(auditlog.LoginAttemptEventData{
+		ProjectID:             qProject.ID,
+		User:                  &userData,
+		OrganizationID:        qOrg.ID,
+		IntermediateSessionID: qIntermediateSession.ID,
+		SessionID:             &qSession.ID,
+		Success:               true,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("create event: %w", err)
+	}
+	if _, err := s.common.CreateAuditLogEvent(ctx, event); err != nil {
+		return nil, fmt.Errorf("create audit log: %w", err)
+	}
+
 	if detailsUpdated {
+		eventData := auditlog.UserEventData{
+			ProjectID: qProject.ID,
+			User:      userData,
+		}
+		var event auditlog.Event
+		if newUser {
+			event, err = auditlog.NewCreateUserEvent(eventData)
+		} else {
+			event, err = auditlog.NewUpdateUserEvent(eventData)
+		}
+		if err != nil {
+			return nil, fmt.Errorf("create event: %w", err)
+		}
+		if _, err := s.common.CreateAuditLogEvent(ctx, event); err != nil {
+			return nil, fmt.Errorf("create audit log: %w", err)
+		}
+
 		// Send sync user event
 		if err := s.sendSyncUserEvent(ctx, *qUser); err != nil {
 			return nil, fmt.Errorf("send sync user event: %w", err)

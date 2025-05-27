@@ -7,7 +7,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { CalendarIcon, ArrowLeft, ArrowRight, X, FilterX, ArrowUpDown, Search, ShieldIcon } from 'lucide-react';
+import { CalendarIcon, ArrowLeft, ArrowRight, X, FilterX, ArrowUpDown, Search, ShieldIcon, LucideIcon, KeyRoundIcon, UserPenIcon, UserIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { DateRange } from 'react-day-picker';
 import { timestampDate, timestampFromDate } from '@bufbuild/protobuf/wkt';
@@ -17,17 +17,40 @@ import { useQuery } from '@connectrpc/connect-query';
 import { listAuditLogEvents } from '@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery';
 import { AuditLogEvent } from '@/gen/tesseral/common/v1/common_pb';
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 10;
 
-// --- Mock Event Names (Replace with actual fetch if dynamic) ---
-const availableEventNames = [
-    { value: 'user.login', label: 'User Login' },
-    { value: 'user.logout', label: 'User Logout' },
-    { value: 'file.create', label: 'File Created' },
-    { value: 'file.delete', label: 'File Deleted' },
-    { value: 'file.update', label: 'File Updated' },
-    { value: 'settings.update', label: 'Settings Updated' },
-];
+enum EventName {
+    LoginAttempt = 'tesseral:login_attempt',
+    UserCreated = 'tesseral:user_created',
+    UserUpdated = 'tesseral:user_updated',
+}
+
+type EventData = {
+    /**
+     * The label to use in the events list.
+     */
+    label: string;
+
+    /**
+     * The icon to use.
+     */
+    icon: LucideIcon;
+}
+
+const TESSERAL_EVENTS: Record<EventName, EventData> = {
+    [EventName.LoginAttempt]: {
+        label: 'Login Attempt',
+        icon: KeyRoundIcon,
+    },
+    [EventName.UserCreated]: {
+        label: 'User Created',
+        icon: UserIcon,
+    },
+    [EventName.UserUpdated]: {
+        label: 'User Updated',
+        icon: UserPenIcon,
+    },
+};
 
 // --- Filter Bar Component ---
 interface FilterBarProps {
@@ -112,7 +135,10 @@ const FilterBar: React.FC<FilterBarProps> = ({ onApply, isLoading }) => {
 
                 {/* Event Name Selector */}
                 <MultiSelect
-                    options={availableEventNames}
+                    options={Object.entries(TESSERAL_EVENTS).map(([eventName, data]) => ({
+                        value: eventName,
+                        label: data.label,
+                    }))}
                     selected={eventNames}
                     onChange={setEventNames}
                     placeholder="Filter by event name..."
@@ -169,13 +195,14 @@ export function AuditLogEventsPage() {
         setCurrentPageIndex(0);
     }, []);
 
-    const currentRequest = {
+    const currentRequest: ListAuditLogEventsRequest = {
         ...request,
-        pageToken: pageTokens[currentPageIndex] || undefined,
+        pageToken: pageTokens[currentPageIndex] ?? '',
     };
 
     const { data, isLoading, isError, error, isFetching } = useQuery(
-        listAuditLogEvents
+        listAuditLogEvents,
+        currentRequest
     );
 
     const handleNextPage = () => {
@@ -213,9 +240,15 @@ export function AuditLogEventsPage() {
        handleApplyFilters(request.filter || makeFilter({}), newOrderBy);
     };
 
-
     const renderActor = (event: AuditLogEvent) => {
-        if (event.userId) return `User: ${event.userId.substring(0, 8)}...`;
+        const eventData = event.eventDetails ?? {};
+        if (event.userId) {
+            type UserData = {
+                email: string;
+            }
+            const userEmail = (eventData.user as UserData).email;
+            return `User: ${userEmail}`;
+        }
         if (event.sessionId) return `Session: ${event.sessionId.substring(0, 8)}...`;
         if (event.apiKeyId) return `API Key: ${event.apiKeyId.substring(0, 8)}...`;
         return <span className="text-muted-foreground">System</span>;
@@ -295,7 +328,7 @@ export function AuditLogEventsPage() {
                                             </TooltipContent>
                                         </Tooltip>
                                     </TableCell>
-                                    <TableCell className="font-medium">{event.eventName}</TableCell>
+                                    <TableCell className="font-medium">{TESSERAL_EVENTS[event.eventName as EventName]?.label ?? event.eventName}</TableCell>
                                     <TableCell>
                                         <Tooltip>
                                             <TooltipTrigger>
@@ -355,13 +388,11 @@ export function AuditLogEventsPage() {
     );
 };
 
-interface AuditLogIconProps {
+const AuditLogIcon: React.FC<{
   eventName: string;
   className?: string;
-}
-
-const AuditLogIcon: React.FC<AuditLogIconProps> = ({ eventName, className }) => {
+}> = ({ eventName, className }) => {
     // Try to find a specific match, then a prefix match, then default
-    const IconComponent = ShieldIcon;
+    const IconComponent = TESSERAL_EVENTS[eventName as EventName]?.icon ?? ShieldIcon;
     return <IconComponent className={className || "h-4 w-4 text-muted-foreground"} />;
 };

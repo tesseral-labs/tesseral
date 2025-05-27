@@ -3,6 +3,8 @@ package store
 import (
 	"context"
 	"fmt"
+	"log/slog"
+	"time"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/jackc/pgx/v5"
@@ -29,13 +31,12 @@ func (s *Store) ListAuditLogEvents(ctx context.Context, req *frontendv1.ListAudi
 
 	// TODO: Enforce owner-only
 
-	var filter *frontendv1.ListAuditLogEventsRequest_Filter
+	filter := new(frontendv1.ListAuditLogEventsRequest_Filter)
 	if req.PageToken != "" {
-		filter = new(frontendv1.ListAuditLogEventsRequest_Filter)
 		if err := s.pageEncoder.Unmarshal(req.PageToken, filter); err != nil {
 			return nil, apierror.NewInvalidArgumentError("invalid page_token", err)
 		}
-	} else {
+	} else if req.Filter != nil {
 		filter = req.Filter
 	}
 
@@ -44,13 +45,19 @@ func (s *Store) ListAuditLogEvents(ctx context.Context, req *frontendv1.ListAudi
 		limit = uint64(req.PageSize)
 	}
 
-	startTime := filter.GetStartTime().AsTime()
+	var startTime time.Time
+	if filterStartTime := filter.GetStartTime(); filterStartTime != nil {
+		startTime = filterStartTime.AsTime()
+	} else {
+		startTime = time.Now().UTC()
+	}
+	slog.InfoContext(ctx, "list_audit_log_events", "startTime", startTime.UnixMilli(), "filter", filter)
 	startID := uuidv7.NilWithTime(startTime)
 
 	wheres := []sq.Sqlizer{
 		sq.Eq{"project_id": projectID[:]},
 		sq.Eq{"organization_id": orgID[:]},
-		sq.Gt{"id": startID},
+		sq.Lt{"id": startID},
 	}
 	if len(filter.GetEventName()) > 0 {
 		wheres = append(wheres, sq.Eq{"event_name": filter.EventName})
@@ -93,6 +100,8 @@ func (s *Store) ListAuditLogEvents(ctx context.Context, req *frontendv1.ListAudi
 	if err != nil {
 		return nil, fmt.Errorf("failed to construct sql query: %w", err)
 	}
+
+	slog.InfoContext(ctx, "execute_query", "sql", sql, "args", args)
 	rows, err := tx.Query(ctx, sql, args...)
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute sql query: %w", err)
@@ -119,9 +128,10 @@ func (s *Store) ListAuditLogEvents(ctx context.Context, req *frontendv1.ListAudi
 	}
 
 	var nextPageToken string
-	if len(results) > 0 {
+	if len(results) == int(limit) {
 		last := results[len(results)-1]
 		filter.StartTime = last.EventTime
+		slog.InfoContext(ctx, "next_page_data", "startTime", last.EventTime.AsTime())
 		nextPageToken = s.pageEncoder.Marshal(filter)
 	}
 
