@@ -14,12 +14,12 @@ export function base64Decode(s: string): string {
 
 export function base64UrlDecode(encoded: string): string {
   // Normalize to standard
-  encoded = encoded.replace(/-/g, '+').replace(/_/g, '/');
+  encoded = encoded.replace(/-/g, "+").replace(/_/g, "/");
 
   // Add padding if necessary
   const padding = encoded.length % 4;
   if (padding) {
-    encoded += '='.repeat(4 - padding);
+    encoded += "=".repeat(4 - padding);
   }
 
   return base64Decode(encoded);
