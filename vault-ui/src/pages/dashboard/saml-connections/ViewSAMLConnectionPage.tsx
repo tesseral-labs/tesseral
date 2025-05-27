@@ -338,9 +338,9 @@ function DangerZoneCard() {
   const { samlConnectionId } = useParams();
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
 
-  const handleDelete = () => {
+  function handleDelete() {
     setConfirmDeleteOpen(true);
-  };
+  }
 
   const deleteSAMLConnectionMutation = useMutation(deleteSAMLConnection);
   const navigate = useNavigate();
