@@ -107,15 +107,16 @@ func (q *Queries) CreateAPIKeyRoleAssignment(ctx context.Context, arg CreateAPIK
 }
 
 const createAuditLogEvent = `-- name: CreateAuditLogEvent :one
-INSERT INTO organization_audit_log_events (id, organization_id, user_id, session_id, api_key_id, event_name, event_time, event_details)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+INSERT INTO audit_log_events (id, project_id, organization_id, user_id, session_id, api_key_id, event_name, event_time, event_details)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 RETURNING
-    id, organization_id, user_id, session_id, api_key_id, event_name, event_time, event_details
+    id, project_id, organization_id, user_id, session_id, api_key_id, event_name, event_time, event_details
 `
 
 type CreateAuditLogEventParams struct {
 	ID             uuid.UUID
-	OrganizationID uuid.UUID
+	ProjectID      uuid.UUID
+	OrganizationID *uuid.UUID
 	UserID         *uuid.UUID
 	SessionID      *uuid.UUID
 	ApiKeyID       *uuid.UUID
@@ -124,9 +125,10 @@ type CreateAuditLogEventParams struct {
 	EventDetails   []byte
 }
 
-func (q *Queries) CreateAuditLogEvent(ctx context.Context, arg CreateAuditLogEventParams) (OrganizationAuditLogEvent, error) {
+func (q *Queries) CreateAuditLogEvent(ctx context.Context, arg CreateAuditLogEventParams) (AuditLogEvent, error) {
 	row := q.db.QueryRow(ctx, createAuditLogEvent,
 		arg.ID,
+		arg.ProjectID,
 		arg.OrganizationID,
 		arg.UserID,
 		arg.SessionID,
@@ -135,9 +137,10 @@ func (q *Queries) CreateAuditLogEvent(ctx context.Context, arg CreateAuditLogEve
 		arg.EventTime,
 		arg.EventDetails,
 	)
-	var i OrganizationAuditLogEvent
+	var i AuditLogEvent
 	err := row.Scan(
 		&i.ID,
+		&i.ProjectID,
 		&i.OrganizationID,
 		&i.UserID,
 		&i.SessionID,

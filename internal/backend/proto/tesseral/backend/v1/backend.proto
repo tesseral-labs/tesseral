@@ -5,6 +5,7 @@ package tesseral.backend.v1;
 import "google/api/annotations.proto";
 import "google/protobuf/timestamp.proto";
 import "tesseral/backend/v1/models.proto";
+import "tesseral/common/v1/common.proto";
 
 service BackendService {
   // Get the current project.
@@ -1202,12 +1203,12 @@ message AuthenticateAPIKeyResponse {
 
 message CreateAuditLogEventRequest {
   // The event to publish.
-  AuditLogEvent audit_log_event = 1;
+  tesseral.common.v1.AuditLogEvent audit_log_event = 1;
 }
 
 message CreateAuditLogEventResponse {
   // The published event.
-  AuditLogEvent audit_log_event = 1;
+  tesseral.common.v1.AuditLogEvent audit_log_event = 1;
 }
 
 message ListAuditLogEventsRequest {
@@ -1250,7 +1251,7 @@ message ListAuditLogEventsRequest {
 
 message ListAuditLogEventsResponse {
   // The events.
-  repeated AuditLogEvent audit_log_events = 1;
+  repeated tesseral.common.v1.AuditLogEvent audit_log_events = 1;
 
   // A token to retrieve the next page of results.
   string next_page_token = 2;

@@ -44,6 +44,7 @@ import { DashboardLayout } from "./pages/dashboard/DashboardLayout";
 import { UserSettingsPage } from "./pages/dashboard/UserSettingsPage";
 import { ViewAPIKeyPage } from "./pages/dashboard/api-keys/ViewAPIKeyPage";
 import { GithubOAuthCallbackPage } from "./pages/login/GithubOAuthCallbackPage";
+import { AuditLogEventsPage } from "./pages/dashboard/AuditLogEventsPage";
 
 const queryClient = new QueryClient();
 
@@ -167,6 +168,11 @@ function AppWithRoutes() {
                 <Route
                   path="organization-settings/roles/:roleId/edit"
                   element={<EditRolePage />}
+                />
+
+                <Route
+                  path="audit-logs"
+                  element={<AuditLogEventsPage />}
                 />
               </Route>
             </Route>

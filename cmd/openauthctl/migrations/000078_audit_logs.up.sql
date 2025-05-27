@@ -1,12 +1,17 @@
--- The history of audit log events generated for an organization.
-create table organization_audit_log_events (
+-- The history of audit log events.
+create table audit_log_events (
     -- Unique event ID, generated at time of creation.
     --
     -- This is a UUIDv7 which encode the creation timestamp, allowing filtering/sorting by this field.
     id uuid not null primary key,
 
-    -- The parent organization ID.
-    organization_id uuid not null references organizations(id),
+    -- The parent project ID.
+    project_id uuid not null references projects(id),
+
+    -- The parent organization ID, if any.
+    --
+    -- This may be null for logs at the project level.
+    organization_id uuid references organizations(id),
 
     -- The user associated with this event, if any.
     --
@@ -51,12 +56,12 @@ create table organization_audit_log_events (
 --
 -- Postgres can intelligently use this index to order by id ASC or DESC.
 -- See: https://www.postgresql.org/docs/current/indexes-ordering.html
-create index on organization_audit_log_events (organization_id, id desc);
+create index on audit_log_events (project_id, organization_id, id desc);
 
 -- To allow for filtering/sorting by event name.
-create index on organization_audit_log_events (organization_id, event_name, id desc);
+create index on audit_log_events (project_id, organization_id, event_name, id desc);
 
 -- To allow for filtering/sorting by actor ID.
-create index on organization_audit_log_events (organization_id, user_id, id desc);
-create index on organization_audit_log_events (organization_id, session_id, id desc);
-create index on organization_audit_log_events (organization_id, api_key_id, id desc);
+create index on audit_log_events (project_id, organization_id, user_id, id desc);
+create index on audit_log_events (project_id, organization_id, session_id, id desc);
+create index on audit_log_events (project_id, organization_id, api_key_id, id desc);

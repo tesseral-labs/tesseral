@@ -201,6 +201,7 @@ func main() {
 		Stripe:                                stripeClient,
 		StripePriceIDGrowthTier:               config.StripePriceIDGrowthTier,
 		SvixClient:                            svixClient,
+		CommonStore:                           commonStore,
 	})
 	backendConnectPath, backendConnectHandler := backendv1connect.NewBackendServiceHandler(
 		&backendservice.Service{
@@ -272,6 +273,7 @@ func main() {
 		S3UserContentBucketName:               config.S3UserContentBucketName,
 		StripeClient:                          stripeClient,
 		SvixClient:                            svixClient,
+		CommonStore:                           commonStore,
 	})
 	intermediateConnectPath, intermediateConnectHandler := intermediatev1connect.NewIntermediateServiceHandler(
 		&intermediateservice.Service{

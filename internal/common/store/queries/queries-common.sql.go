@@ -7,6 +7,7 @@ package queries
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -23,6 +24,52 @@ WHERE
 func (q *Queries) BumpSessionLastActiveTime(ctx context.Context, id uuid.UUID) error {
 	_, err := q.db.Exec(ctx, bumpSessionLastActiveTime, id)
 	return err
+}
+
+const createAuditLogEvent = `-- name: CreateAuditLogEvent :one
+INSERT INTO audit_log_events (id, project_id, organization_id, user_id, session_id, api_key_id, event_name, event_time, event_details)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+RETURNING
+    id, project_id, organization_id, user_id, session_id, api_key_id, event_name, event_time, event_details
+`
+
+type CreateAuditLogEventParams struct {
+	ID             uuid.UUID
+	ProjectID      uuid.UUID
+	OrganizationID *uuid.UUID
+	UserID         *uuid.UUID
+	SessionID      *uuid.UUID
+	ApiKeyID       *uuid.UUID
+	EventName      string
+	EventTime      *time.Time
+	EventDetails   []byte
+}
+
+func (q *Queries) CreateAuditLogEvent(ctx context.Context, arg CreateAuditLogEventParams) (AuditLogEvent, error) {
+	row := q.db.QueryRow(ctx, createAuditLogEvent,
+		arg.ID,
+		arg.ProjectID,
+		arg.OrganizationID,
+		arg.UserID,
+		arg.SessionID,
+		arg.ApiKeyID,
+		arg.EventName,
+		arg.EventTime,
+		arg.EventDetails,
+	)
+	var i AuditLogEvent
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectID,
+		&i.OrganizationID,
+		&i.UserID,
+		&i.SessionID,
+		&i.ApiKeyID,
+		&i.EventName,
+		&i.EventTime,
+		&i.EventDetails,
+	)
+	return i, err
 }
 
 const getCurrentSessionSigningKeyByProjectID = `-- name: GetCurrentSessionSigningKeyByProjectID :one
