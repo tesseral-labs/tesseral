@@ -143,6 +143,8 @@ export function ViewSAMLConnectionPage() {
           </div>
         </CardContent>
       </Card>
+
+      <DangerZoneCard />
     </div>
   );
 }
