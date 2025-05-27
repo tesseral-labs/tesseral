@@ -176,9 +176,13 @@ const schema = z.object({
 
 function EditSAMLConnnectionConfigurationButton() {
   const { samlConnectionId } = useParams();
-  const { data: getSAMLConnectionResponse } = useQuery(getSAMLConnection, {
-    id: samlConnectionId,
-  });
+  const [open, setOpen] = useState(false);
+  const { data: getSAMLConnectionResponse, refetch } = useQuery(
+    getSAMLConnection,
+    {
+      id: samlConnectionId,
+    },
+  );
   const updateSamlConnectionMutation = useMutation(updateSAMLConnection);
 
   const form = useForm<z.infer<typeof schema>>({
@@ -203,6 +207,10 @@ function EditSAMLConnnectionConfigurationButton() {
           : undefined,
       },
     });
+
+    toast.success("SAML connection updated successfully");
+    await refetch();
+    setOpen(false);
   }
 
   useEffect(() => {
@@ -219,7 +227,7 @@ function EditSAMLConnnectionConfigurationButton() {
   }, [form, getSAMLConnectionResponse]);
 
   return (
-    <AlertDialog>
+    <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
         <Button variant="outline">Edit Configuration</Button>
       </AlertDialogTrigger>
