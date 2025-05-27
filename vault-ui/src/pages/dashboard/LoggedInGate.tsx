@@ -11,6 +11,7 @@ import React from "react";
 import { Outlet, useNavigate } from "react-router";
 
 import { refresh } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
+import { base64UrlDecode } from "@/lib/utils";
 
 export function LoggedInGate() {
   const accessToken = useAccessTokenInternal();
@@ -86,9 +87,7 @@ function useDebouncedNow(updatePeriodMillis: number): number {
 
 function parseAccessToken(accessToken: string): AccessTokenClaims {
   const claimsPart = accessToken.split(".")[1];
-  const decodedClaims = new TextDecoder().decode(
-    Uint8Array.from(atob(claimsPart), (c) => c.charCodeAt(0)),
-  );
+  const decodedClaims = base64UrlDecode(claimsPart);
   return JSON.parse(decodedClaims) as AccessTokenClaims;
 }
 
