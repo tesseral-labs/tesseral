@@ -1,10 +1,11 @@
 import { useMutation, useQuery } from "@connectrpc/connect-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronLeft } from "lucide-react";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 import { z } from "zod";
 
 import {
@@ -37,6 +38,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import {
+  deleteSAMLConnection,
   getSAMLConnection,
   updateSAMLConnection,
 } from "@/gen/tesseral/frontend/v1/frontend-FrontendService_connectquery";
@@ -329,3 +331,67 @@ function EditSAMLConnnectionConfigurationButton() {
     </AlertDialog>
   );
 }
+
+const DangerZoneCard = () => {
+  const { organizationId, samlConnectionId } = useParams();
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+
+  const handleDelete = () => {
+    setConfirmDeleteOpen(true);
+  };
+
+  const deleteSAMLConnectionMutation = useMutation(deleteSAMLConnection);
+  const navigate = useNavigate();
+  const handleConfirmDelete = async () => {
+    await deleteSAMLConnectionMutation.mutateAsync({
+      id: samlConnectionId,
+    });
+
+    toast.success("SAML connection deleted");
+    navigate(`/organization-settings/saml-connections`);
+  };
+
+  return (
+    <>
+      <AlertDialog open={confirmDeleteOpen} onOpenChange={setConfirmDeleteOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete SAML Connection?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Deleting a SAML connection cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <Button variant="destructive" onClick={handleConfirmDelete}>
+              Permanently Delete SAML Connection
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <Card className="border-destructive">
+        <CardHeader>
+          <CardTitle>Danger Zone</CardTitle>
+        </CardHeader>
+
+        <CardContent>
+          <div className="flex justify-between items-center">
+            <div>
+              <div className="text-sm font-semibold">
+                Delete SAML Connection
+              </div>
+              <p className="text-sm">
+                Delete this SAML connection. This cannot be undone.
+              </p>
+            </div>
+
+            <Button variant="destructive" onClick={handleDelete}>
+              Delete SAML Connection
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    </>
+  );
+};
