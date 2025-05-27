@@ -17,43 +17,42 @@ const (
 	AuthLoginEventName  EventName = "auth.login"
 )
 
-type UserEventData struct {
-	ProjectID uuid.UUID
-	User      UserData
-	SessionID *uuid.UUID
-}
-
-type userEventDetails struct {
-	User userDetails `json:"user"`
-}
-
-func (data UserEventData) details() userEventDetails {
-	return userEventDetails{
-		User: data.User.details(),
-	}
-}
-
 type UserData struct {
-	ID             uuid.UUID
-	OrganizationID uuid.UUID
-	Email          string
+	ID    uuid.UUID
+	Email string
 }
 
 type userDetails struct {
-	ID             string `json:"id"`
-	OrganizationID string `json:"organization_id"`
-	Email          string `json:"email"`
+	ID    string `json:"id"`
+	Email string `json:"email"`
 }
 
 func (data UserData) details() userDetails {
 	return userDetails{
-		ID:             idformat.User.Format(data.ID),
-		OrganizationID: idformat.Organization.Format(data.OrganizationID),
-		Email:          data.Email,
+		ID:    idformat.User.Format(data.ID),
+		Email: data.Email,
 	}
 }
 
-func NewCreateUserEvent(data UserEventData) (Event, error) {
+type CreateUserEventData struct {
+	ProjectID      uuid.UUID
+	OrganizationID uuid.UUID
+
+	// The user created.
+	User UserData
+}
+
+type createUserEventDetails struct {
+	User userDetails `json:"user"`
+}
+
+func (data CreateUserEventData) details() createUserEventDetails {
+	return createUserEventDetails{
+		User: data.User.details(),
+	}
+}
+
+func NewCreateUserEvent(data CreateUserEventData) (Event, error) {
 	details := data.details()
 	detailsJSON, err := json.Marshal(details)
 	if err != nil {
@@ -61,15 +60,46 @@ func NewCreateUserEvent(data UserEventData) (Event, error) {
 	}
 	return Event{
 		ProjectID:      data.ProjectID,
-		OrganizationID: &data.User.OrganizationID,
-		UserID:         &data.User.ID,
-		SessionID:      data.SessionID,
+		OrganizationID: &data.OrganizationID,
 		EventName:      string(CreateUserEventName),
 		EventDetails:   detailsJSON,
 	}, nil
 }
 
-func NewUpdateUserEvent(data UserEventData) (Event, error) {
+type UserUpdate struct {
+	Email             string `json:"email,omitempty"`
+	GoogleUserID      string `json:"google_user_id,omitempty"`
+	MicrosoftUserID   string `json:"microsoft_user_id,omitempty"`
+	GithubUserID      string `json:"github_user_id,omitempty"`
+	IsOwner           *bool  `json:"is_owner,omitempty"`
+	DisplayName       string `json:"display_name,omitempty"`
+	ProfilePictureURL string `json:"profile_picture_url,omitempty"`
+}
+
+type UpdateUserEventData struct {
+	ProjectID      uuid.UUID
+	OrganizationID uuid.UUID
+
+	// The user updated.
+	User UserData
+
+	// The information updated for the user.
+	Update UserUpdate
+}
+
+type updateUserEventDetails struct {
+	User   userDetails `json:"user"`
+	Update UserUpdate  `json:"update"`
+}
+
+func (data UpdateUserEventData) details() updateUserEventDetails {
+	return updateUserEventDetails{
+		User:   data.User.details(),
+		Update: data.Update,
+	}
+}
+
+func NewUpdateUserEvent(data UpdateUserEventData) (Event, error) {
 	details := data.details()
 	detailsJSON, err := json.Marshal(details)
 	if err != nil {
@@ -77,9 +107,7 @@ func NewUpdateUserEvent(data UserEventData) (Event, error) {
 	}
 	return Event{
 		ProjectID:      data.ProjectID,
-		OrganizationID: &data.User.OrganizationID,
-		UserID:         &data.User.ID,
-		SessionID:      data.SessionID,
+		OrganizationID: &data.OrganizationID,
 		EventName:      string(UpdateUserEventName),
 		EventDetails:   detailsJSON,
 	}, nil
@@ -87,29 +115,25 @@ func NewUpdateUserEvent(data UserEventData) (Event, error) {
 
 type AuthLoginEventData struct {
 	ProjectID             uuid.UUID
-	User                  *UserData
 	OrganizationID        uuid.UUID
 	IntermediateSessionID uuid.UUID
-	SessionID             *uuid.UUID
+	SessionID             uuid.UUID
+	User                  UserData
 	Success               bool
 }
 
 type authLoginEventDetails struct {
-	User                  *userDetails `json:"user,omitempty"`
-	IntermediateSessionID string       `json:"intermediate_session_id"`
-	Success               bool         `json:"success"`
+	User                  userDetails `json:"user"`
+	IntermediateSessionID string      `json:"intermediate_session_id"`
+	Success               bool        `json:"success"`
 }
 
 func (data AuthLoginEventData) details() authLoginEventDetails {
-	details := authLoginEventDetails{
+	return authLoginEventDetails{
 		IntermediateSessionID: idformat.IntermediateSession.Format(data.IntermediateSessionID),
+		User:                  data.User.details(),
 		Success:               data.Success,
 	}
-	if user := data.User; user != nil {
-		userDetails := user.details()
-		details.User = &userDetails
-	}
-	return details
 }
 
 func NewAuthLoginEvent(data AuthLoginEventData) (Event, error) {
@@ -122,7 +146,7 @@ func NewAuthLoginEvent(data AuthLoginEventData) (Event, error) {
 		ProjectID:      data.ProjectID,
 		OrganizationID: &data.OrganizationID,
 		UserID:         &data.User.ID,
-		SessionID:      data.SessionID,
+		SessionID:      &data.SessionID,
 		EventName:      string(AuthLoginEventName),
 		EventDetails:   detailsJSON,
 	}, nil

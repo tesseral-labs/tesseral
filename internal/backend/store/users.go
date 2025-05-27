@@ -12,6 +12,7 @@ import (
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
+	"github.com/tesseral-labs/tesseral/internal/common/auditlog"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -111,8 +112,9 @@ func (s *Store) CreateUser(ctx context.Context, req *backendv1.CreateUserRequest
 		return nil, apierror.NewInvalidArgumentError("invalid organization id", fmt.Errorf("parse organization id: %w", err))
 	}
 
+	projectID := authn.ProjectID(ctx)
 	if _, err := q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
-		ProjectID: authn.ProjectID(ctx),
+		ProjectID: projectID,
 		ID:        orgID,
 	}); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
@@ -138,6 +140,22 @@ func (s *Store) CreateUser(ctx context.Context, req *backendv1.CreateUserRequest
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
+	// send create user event
+	event, err := auditlog.NewCreateUserEvent(auditlog.CreateUserEventData{
+		ProjectID:      projectID,
+		OrganizationID: qUser.OrganizationID,
+		User: auditlog.UserData{
+			ID:    qUser.ID,
+			Email: qUser.Email,
+		},
+	})
+	if err != nil {
+		return nil, fmt.Errorf("create event: %w", err)
+	}
+	if _, err := s.common.CreateAuditLogEvent(ctx, event); err != nil {
+		return nil, fmt.Errorf("create audit log: %w", err)
+	}
+
 	// send sync user event
 	if err := s.sendSyncUserEvent(ctx, qUser); err != nil {
 		return nil, fmt.Errorf("send sync user event: %w", err)
@@ -158,8 +176,9 @@ func (s *Store) UpdateUser(ctx context.Context, req *backendv1.UpdateUserRequest
 		return nil, apierror.NewInvalidArgumentError("invalid user id", fmt.Errorf("parse user id: %w", err))
 	}
 
+	projectID := authn.ProjectID(ctx)
 	qUser, err := q.GetUser(ctx, queries.GetUserParams{
-		ProjectID: authn.ProjectID(ctx),
+		ProjectID: projectID,
 		ID:        userID,
 	})
 	if err != nil {
@@ -170,16 +189,19 @@ func (s *Store) UpdateUser(ctx context.Context, req *backendv1.UpdateUserRequest
 	}
 
 	var updates queries.UpdateUserParams
+	var updatesEventData auditlog.UserUpdate
 	updates.ID = userID
 
 	updates.Email = qUser.Email
 	if req.User.Email != "" {
 		updates.Email = req.User.Email
+		updatesEventData.Email = req.User.Email
 	}
 
 	updates.IsOwner = qUser.IsOwner
 	if req.User.Owner != nil {
 		updates.IsOwner = *req.User.Owner
+		updatesEventData.IsOwner = req.User.Owner
 	}
 
 	updates.GoogleUserID = qUser.GoogleUserID
@@ -187,26 +209,31 @@ func (s *Store) UpdateUser(ctx context.Context, req *backendv1.UpdateUserRequest
 		// if value was actively set to empty string, then reset value in
 		// database to null
 		updates.GoogleUserID = refOrNil(*req.User.GoogleUserId)
+		updatesEventData.GoogleUserID = *req.User.GoogleUserId
 	}
 
 	updates.MicrosoftUserID = qUser.MicrosoftUserID
 	if req.User.MicrosoftUserId != nil {
 		updates.MicrosoftUserID = refOrNil(*req.User.MicrosoftUserId)
+		updatesEventData.MicrosoftUserID = *req.User.MicrosoftUserId
 	}
 
 	updates.GithubUserID = qUser.GithubUserID
 	if req.User.GithubUserId != nil {
 		updates.GithubUserID = refOrNil(*req.User.GithubUserId)
+		updatesEventData.GithubUserID = *req.User.GithubUserId
 	}
 
 	updates.DisplayName = qUser.DisplayName
 	if req.User.DisplayName != nil {
 		updates.DisplayName = refOrNil(*req.User.DisplayName)
+		updatesEventData.DisplayName = *req.User.DisplayName
 	}
 
 	updates.ProfilePictureUrl = qUser.ProfilePictureUrl
 	if req.User.ProfilePictureUrl != nil {
 		updates.ProfilePictureUrl = refOrNil(*req.User.ProfilePictureUrl)
+		updatesEventData.ProfilePictureURL = *req.User.ProfilePictureUrl
 	}
 
 	qUpdatedUser, err := q.UpdateUser(ctx, updates)
@@ -216,6 +243,23 @@ func (s *Store) UpdateUser(ctx context.Context, req *backendv1.UpdateUserRequest
 
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
+	}
+
+	// send update user event
+	event, err := auditlog.NewUpdateUserEvent(auditlog.UpdateUserEventData{
+		ProjectID:      projectID,
+		OrganizationID: qUser.OrganizationID,
+		User: auditlog.UserData{
+			ID:    qUser.ID,
+			Email: qUser.Email,
+		},
+		Update: updatesEventData,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("create event: %w", err)
+	}
+	if _, err := s.common.CreateAuditLogEvent(ctx, event); err != nil {
+		return nil, fmt.Errorf("create audit log: %w", err)
 	}
 
 	// send sync user event

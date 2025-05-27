@@ -70,8 +70,9 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 	}
 
 	var (
-		newUser        = qUser == nil
-		detailsUpdated = newUser
+		newUser                 = qUser == nil
+		detailsUpdated          = newUser
+		detailsUpdatedEventData auditlog.UserUpdate
 	)
 
 	// if no matching user, create a new one
@@ -94,12 +95,26 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 
 		qUser = &qNewUser
 	} else {
-		detailsUpdated =
-			(qIntermediateSession.GithubUserID != nil && *qIntermediateSession.GithubUserID != derefOrEmpty(qUser.GithubUserID)) ||
-				(qIntermediateSession.GoogleUserID != nil && *qIntermediateSession.GoogleUserID != derefOrEmpty(qUser.GoogleUserID)) ||
-				(qIntermediateSession.MicrosoftUserID != nil && *qIntermediateSession.MicrosoftUserID != derefOrEmpty(qUser.MicrosoftUserID)) ||
-				(qIntermediateSession.UserDisplayName != nil && *qIntermediateSession.UserDisplayName != derefOrEmpty(qUser.DisplayName)) ||
-				(qIntermediateSession.ProfilePictureUrl != nil && *qIntermediateSession.ProfilePictureUrl != derefOrEmpty(qUser.ProfilePictureUrl))
+		if githubUserID := derefOrEmpty(qIntermediateSession.GithubUserID); githubUserID != "" && githubUserID != derefOrEmpty(qUser.GithubUserID) {
+			detailsUpdated = true
+			detailsUpdatedEventData.GithubUserID = githubUserID
+		}
+		if googleUserID := derefOrEmpty(qIntermediateSession.GoogleUserID); googleUserID != "" && googleUserID != derefOrEmpty(qUser.GoogleUserID) {
+			detailsUpdated = true
+			detailsUpdatedEventData.GoogleUserID = googleUserID
+		}
+		if microsoftUserID := derefOrEmpty(qIntermediateSession.MicrosoftUserID); microsoftUserID != "" && microsoftUserID != derefOrEmpty(qUser.MicrosoftUserID) {
+			detailsUpdated = true
+			detailsUpdatedEventData.MicrosoftUserID = microsoftUserID
+		}
+		if displayName := derefOrEmpty(qIntermediateSession.UserDisplayName); displayName != "" && displayName != derefOrEmpty(qUser.DisplayName) {
+			detailsUpdated = true
+			detailsUpdatedEventData.DisplayName = displayName
+		}
+		if profilePictureURL := derefOrEmpty(qIntermediateSession.ProfilePictureUrl); profilePictureURL != "" && profilePictureURL != derefOrEmpty(qUser.ProfilePictureUrl) {
+			detailsUpdated = true
+			detailsUpdatedEventData.ProfilePictureURL = profilePictureURL
+		}
 
 		if detailsUpdated {
 			slog.InfoContext(ctx, "update_user")
@@ -212,16 +227,15 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 
 	// Create audit log event
 	userData := auditlog.UserData{
-		ID:             qUser.ID,
-		OrganizationID: qUser.OrganizationID,
-		Email:          qUser.Email,
+		ID:    qUser.ID,
+		Email: qUser.Email,
 	}
 	event, err := auditlog.NewAuthLoginEvent(auditlog.AuthLoginEventData{
 		ProjectID:             qProject.ID,
-		User:                  &userData,
 		OrganizationID:        qOrg.ID,
 		IntermediateSessionID: qIntermediateSession.ID,
-		SessionID:             &qSession.ID,
+		SessionID:             qSession.ID,
+		User:                  userData,
 		Success:               true,
 	})
 	if err != nil {
@@ -232,16 +246,18 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 	}
 
 	if detailsUpdated {
-		eventData := auditlog.UserEventData{
-			ProjectID: qProject.ID,
-			SessionID: &qSession.ID,
-			User:      userData,
-		}
 		var event auditlog.Event
 		if newUser {
-			event, err = auditlog.NewCreateUserEvent(eventData)
+			event, err = auditlog.NewCreateUserEvent(auditlog.CreateUserEventData{
+				ProjectID: qProject.ID,
+				User:      userData,
+			})
 		} else {
-			event, err = auditlog.NewUpdateUserEvent(eventData)
+			event, err = auditlog.NewUpdateUserEvent(auditlog.UpdateUserEventData{
+				ProjectID: qProject.ID,
+				User:      userData,
+				Update:    detailsUpdatedEventData,
+			})
 		}
 		if err != nil {
 			return nil, fmt.Errorf("create event: %w", err)
