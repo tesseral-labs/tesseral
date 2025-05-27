@@ -53,9 +53,9 @@ import {
 const PAGE_SIZE = 10;
 
 enum EventName {
-  LoginAttempt = "tesseral:login_attempt",
-  UserCreated = "tesseral:create_user",
-  UserUpdated = "tesseral:update_user",
+  AuthLogin = "auth.login",
+  CreateUser = "user.create",
+  UpdateUser = "user.update",
 }
 
 type EventData = {
@@ -71,15 +71,15 @@ type EventData = {
 };
 
 const TESSERAL_EVENTS: Record<EventName, EventData> = {
-  [EventName.LoginAttempt]: {
+  [EventName.AuthLogin]: {
     label: "Login Attempt",
     icon: KeyRoundIcon,
   },
-  [EventName.UserCreated]: {
+  [EventName.CreateUser]: {
     label: "User Created",
     icon: UserIcon,
   },
-  [EventName.UserUpdated]: {
+  [EventName.UpdateUser]: {
     label: "User Updated",
     icon: UserPenIcon,
   },
@@ -202,9 +202,6 @@ const FilterBar: React.FC<FilterBarProps> = ({ onApply, isLoading }) => {
           )}
         </div>
       </div>
-      <p className="text-xs text-muted-foreground mt-2">
-        Sorting by: {orderBy}. (Click headers to change - requires API support)
-      </p>
     </div>
   );
 };
@@ -265,7 +262,7 @@ export function AuditLogEventsPage() {
   };
 
   const handleSort = (field: "id" | "event_name" | "user_id") => {
-    const currentOrderBy = request.orderBy || "id desc";
+    const currentOrderBy = request.orderBy ?? "id desc";
     let newOrderBy: string;
 
     if (currentOrderBy.startsWith(field)) {
@@ -275,13 +272,10 @@ export function AuditLogEventsPage() {
     } else {
       newOrderBy = `${field} desc`; // Default to desc when changing field
     }
-    // IMPORTANT: Ensure your backend supports these order_by strings!
-    // The SQL only explicitly indexes `id desc`. Other sorts might be slow
-    // or require additional indexes or backend logic.
     console.warn(
       `Sorting by ${newOrderBy}. Ensure your backend supports this.`,
     );
-    handleApplyFilters(request.filter || makeFilter({}), newOrderBy);
+    handleApplyFilters(request.filter ?? makeFilter({}), newOrderBy);
   };
 
   const renderActor = (event: AuditLogEvent) => {
@@ -293,14 +287,17 @@ export function AuditLogEventsPage() {
       const userEmail = (eventData.user as UserData).email;
       return `User: ${userEmail}`;
     }
-    if (event.sessionId)
-      return `Session: ${event.sessionId.substring(0, 8)}...`;
-    if (event.apiKeyId) return `API Key: ${event.apiKeyId.substring(0, 8)}...`;
+    if (event.sessionId) {
+      return `Session: ${event.sessionId}`;
+    }
+    if (event.apiKeyId) {
+      return `API Key: ${event.apiKeyId}`;
+    }
     return <span className="text-muted-foreground">System</span>;
   };
 
   const getSortIndicator = (field: string) => {
-    const currentOrderBy = request.orderBy || "id desc";
+    const currentOrderBy = request.orderBy ?? "id desc";
     if (currentOrderBy.startsWith(field)) {
       return currentOrderBy.endsWith("desc") ? " ▼" : " ▲";
     }
@@ -369,7 +366,7 @@ export function AuditLogEventsPage() {
                     className="text-center text-destructive"
                   >
                     Failed to load audit logs:{" "}
-                    {(error as Error)?.message || "Unknown error"}
+                    {(error as Error)?.message ?? "Unknown error"}
                   </TableCell>
                 </TableRow>
               )}
@@ -473,6 +470,6 @@ const AuditLogIcon: React.FC<{
   const IconComponent =
     TESSERAL_EVENTS[eventName as EventName]?.icon ?? ShieldIcon;
   return (
-    <IconComponent className={className || "h-4 w-4 text-muted-foreground"} />
+    <IconComponent className={className ?? "h-4 w-4 text-muted-foreground"} />
   );
 };

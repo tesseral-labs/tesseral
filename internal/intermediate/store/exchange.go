@@ -216,7 +216,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		OrganizationID: qUser.OrganizationID,
 		Email:          qUser.Email,
 	}
-	event, err := auditlog.NewLoginAttemptEvent(auditlog.LoginAttemptEventData{
+	event, err := auditlog.NewAuthLoginEvent(auditlog.AuthLoginEventData{
 		ProjectID:             qProject.ID,
 		User:                  &userData,
 		OrganizationID:        qOrg.ID,
@@ -234,6 +234,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 	if detailsUpdated {
 		eventData := auditlog.UserEventData{
 			ProjectID: qProject.ID,
+			SessionID: &qSession.ID,
 			User:      userData,
 		}
 		var event auditlog.Event

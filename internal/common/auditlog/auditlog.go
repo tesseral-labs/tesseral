@@ -12,14 +12,15 @@ type Event queries.AuditLogEvent
 type EventName string
 
 const (
-	CreateUserEventName   EventName = "tesseral:create_user"
-	UpdateUserEventName   EventName = "tesseral:update_user"
-	LoginAttemptEventName EventName = "tesseral:login_attempt"
+	CreateUserEventName EventName = "user.create"
+	UpdateUserEventName EventName = "user.update"
+	AuthLoginEventName  EventName = "auth.login"
 )
 
 type UserEventData struct {
 	ProjectID uuid.UUID
 	User      UserData
+	SessionID *uuid.UUID
 }
 
 type userEventDetails struct {
@@ -62,6 +63,7 @@ func NewCreateUserEvent(data UserEventData) (Event, error) {
 		ProjectID:      data.ProjectID,
 		OrganizationID: &data.User.OrganizationID,
 		UserID:         &data.User.ID,
+		SessionID:      data.SessionID,
 		EventName:      string(CreateUserEventName),
 		EventDetails:   detailsJSON,
 	}, nil
@@ -77,12 +79,13 @@ func NewUpdateUserEvent(data UserEventData) (Event, error) {
 		ProjectID:      data.ProjectID,
 		OrganizationID: &data.User.OrganizationID,
 		UserID:         &data.User.ID,
+		SessionID:      data.SessionID,
 		EventName:      string(UpdateUserEventName),
 		EventDetails:   detailsJSON,
 	}, nil
 }
 
-type LoginAttemptEventData struct {
+type AuthLoginEventData struct {
 	ProjectID             uuid.UUID
 	User                  *UserData
 	OrganizationID        uuid.UUID
@@ -91,14 +94,14 @@ type LoginAttemptEventData struct {
 	Success               bool
 }
 
-type loginAttemptEventDetails struct {
+type authLoginEventDetails struct {
 	User                  *userDetails `json:"user,omitempty"`
 	IntermediateSessionID string       `json:"intermediate_session_id"`
 	Success               bool         `json:"success"`
 }
 
-func (data LoginAttemptEventData) details() loginAttemptEventDetails {
-	details := loginAttemptEventDetails{
+func (data AuthLoginEventData) details() authLoginEventDetails {
+	details := authLoginEventDetails{
 		IntermediateSessionID: idformat.IntermediateSession.Format(data.IntermediateSessionID),
 		Success:               data.Success,
 	}
@@ -109,7 +112,7 @@ func (data LoginAttemptEventData) details() loginAttemptEventDetails {
 	return details
 }
 
-func NewLoginAttemptEvent(data LoginAttemptEventData) (Event, error) {
+func NewAuthLoginEvent(data AuthLoginEventData) (Event, error) {
 	details := data.details()
 	detailsJSON, err := json.Marshal(details)
 	if err != nil {
@@ -120,7 +123,7 @@ func NewLoginAttemptEvent(data LoginAttemptEventData) (Event, error) {
 		OrganizationID: &data.OrganizationID,
 		UserID:         &data.User.ID,
 		SessionID:      data.SessionID,
-		EventName:      string(LoginAttemptEventName),
+		EventName:      string(AuthLoginEventName),
 		EventDetails:   detailsJSON,
 	}, nil
 }
