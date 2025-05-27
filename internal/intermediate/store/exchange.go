@@ -46,6 +46,11 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		return nil, fmt.Errorf("get project by id: %w", err)
 	}
 
+	slog.InfoContext(ctx, "exchange_intermediate_session_for_session",
+		"organization_id", idformat.Organization.Format(qOrg.ID),
+		"intermediate_session_id", idformat.IntermediateSession.Format(qIntermediateSession.ID),
+		"email", qIntermediateSession.Email)
+
 	if err := enforceProjectLoginEnabled(qProject); err != nil {
 		return nil, fmt.Errorf("enforce project login enabled: %w", err)
 	}
@@ -63,10 +68,14 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		return nil, fmt.Errorf("match user: %w", err)
 	}
 
-	newUser := qUser == nil
+	var (
+		newUser        = qUser == nil
+		detailsUpdated = newUser
+	)
 
 	// if no matching user, create a new one
 	if qUser == nil {
+		slog.InfoContext(ctx, "create_user")
 		qNewUser, err := q.CreateUser(ctx, queries.CreateUserParams{
 			ID:                uuid.New(),
 			OrganizationID:    qOrg.ID,
@@ -75,6 +84,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 			ProfilePictureUrl: qIntermediateSession.ProfilePictureUrl,
 			GoogleUserID:      qIntermediateSession.GoogleUserID,
 			MicrosoftUserID:   qIntermediateSession.MicrosoftUserID,
+			GithubUserID:      qIntermediateSession.GithubUserID,
 			PasswordBcrypt:    qIntermediateSession.NewUserPasswordBcrypt,
 		})
 		if err != nil {
@@ -82,11 +92,36 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		}
 
 		qUser = &qNewUser
+	} else {
+		detailsUpdated =
+			(qIntermediateSession.GithubUserID != nil && *qIntermediateSession.GithubUserID != derefOrEmpty(qUser.GithubUserID)) ||
+				(qIntermediateSession.GoogleUserID != nil && *qIntermediateSession.GoogleUserID != derefOrEmpty(qUser.GoogleUserID)) ||
+				(qIntermediateSession.MicrosoftUserID != nil && *qIntermediateSession.MicrosoftUserID != derefOrEmpty(qUser.MicrosoftUserID)) ||
+				(qIntermediateSession.UserDisplayName != nil && *qIntermediateSession.UserDisplayName != derefOrEmpty(qUser.DisplayName)) ||
+				(qIntermediateSession.ProfilePictureUrl != nil && *qIntermediateSession.ProfilePictureUrl != derefOrEmpty(qUser.ProfilePictureUrl))
+
+		if detailsUpdated {
+			slog.InfoContext(ctx, "update_user")
+			qUpdatedUser, err := q.UpdateUserDetails(ctx, queries.UpdateUserDetailsParams{
+				UserID:            qUser.ID,
+				GithubUserID:      qIntermediateSession.GithubUserID,
+				GoogleUserID:      qIntermediateSession.GoogleUserID,
+				MicrosoftUserID:   qIntermediateSession.MicrosoftUserID,
+				DisplayName:       qIntermediateSession.UserDisplayName,
+				ProfilePictureUrl: qIntermediateSession.ProfilePictureUrl,
+			})
+			if err != nil {
+				return nil, fmt.Errorf("update user: %w", err)
+			}
+			qUser = &qUpdatedUser
+		}
 	}
 
 	// if a passkey is registered on the intermediate session, copy it onto the
 	// user
 	if qIntermediateSession.PasskeyCredentialID != nil {
+		slog.InfoContext(ctx, "register_passkey")
+		detailsUpdated = true
 		if err := s.copyRegisteredPasskeySettings(ctx, q, qIntermediateSession, *qUser); err != nil {
 			return nil, fmt.Errorf("copy registered passkey settings: %w", err)
 		}
@@ -95,6 +130,8 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 	// if an authenticator app is registered on the intermediate session, copy
 	// it onto the user
 	if qIntermediateSession.AuthenticatorAppSecretCiphertext != nil {
+		slog.InfoContext(ctx, "register_authenticator_app")
+		detailsUpdated = true
 		if err := s.copyRegisteredAuthenticatorAppSettings(ctx, q, qIntermediateSession, *qUser); err != nil {
 			return nil, fmt.Errorf("copy registered authenticator app settings: %w", err)
 		}
@@ -134,7 +171,9 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 	}
 
 	if qUserInvite.ID != uuid.Nil {
+		slog.InfoContext(ctx, "upgrade_user_invite", "is_owner", qUserInvite.IsOwner)
 		if qUserInvite.IsOwner {
+			detailsUpdated = true
 			if _, err := q.UpdateUserIsOwner(ctx, queries.UpdateUserIsOwnerParams{
 				ID:      qUser.ID,
 				IsOwner: true,
@@ -148,6 +187,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 	// session
 	var relayedSessionToken string
 	if qIntermediateSession.RelayedSessionState != nil {
+		slog.InfoContext(ctx, "create_relayed_session")
 		relayedSessionTokenUUID := uuid.New()
 		relayedSessionTokenSHA256 := sha256.Sum256(relayedSessionTokenUUID[:])
 		relayedSessionTokenExpireTime := time.Now().Add(relayedSessionTokenDuration)
@@ -169,7 +209,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		return nil, err
 	}
 
-	if qUser != nil {
+	if detailsUpdated {
 		// Send sync user event
 		if err := s.sendSyncUserEvent(ctx, *qUser); err != nil {
 			return nil, fmt.Errorf("send sync user event: %w", err)
@@ -177,10 +217,12 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 	}
 
 	return &intermediatev1.ExchangeIntermediateSessionForSessionResponse{
-		AccessToken:         "", // populated in service
-		RefreshToken:        idformat.SessionRefreshToken.Format(refreshToken),
-		NewUser:             newUser,
-		RelayedSessionToken: relayedSessionToken,
+		AccessToken:                           "", // populated in service
+		RefreshToken:                          idformat.SessionRefreshToken.Format(refreshToken),
+		NewUser:                               newUser,
+		RelayedSessionToken:                   relayedSessionToken,
+		RedirectUri:                           derefOrEmpty(qIntermediateSession.RedirectUri),
+		ReturnRelayedSessionTokenAsQueryParam: qIntermediateSession.ReturnRelayedSessionTokenAsQueryParam,
 	}, nil
 }
 

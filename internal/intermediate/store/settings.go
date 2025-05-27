@@ -4,7 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/jackc/pgx/v5"
@@ -36,24 +38,34 @@ func (s *Store) GetSettings(ctx context.Context, req *intermediatev1.GetSettings
 		return nil, fmt.Errorf("get project ui settings: %w", err)
 	}
 
-	logoURL := fmt.Sprintf("%s/vault-ui-settings-v1/%s/logo", s.userContentBaseUrl, idformat.Project.Format(projectID))
 	logoKey := fmt.Sprintf("vault-ui-settings-v1/%s/logo", idformat.Project.Format(projectID))
+	logoURL := fmt.Sprintf("%s/%s", s.userContentBaseUrl, logoKey)
 	logoExists, err := s.getUserContentFileExists(ctx, logoKey)
 	if err != nil {
 		return nil, fmt.Errorf("failed to check if logo file exists: %w", err)
 	}
 	if !logoExists {
 		logoURL = ""
+	} else {
+		logoURL, err = s.buildPresignedGetUrlForFile(ctx, logoKey)
+		if err != nil {
+			return nil, fmt.Errorf("failed to build presigned URL for logo file: %w", err)
+		}
 	}
 
-	darkModeLogoURL := fmt.Sprintf("%s/vault-ui-settings-v1/%s/logo-dark", s.userContentBaseUrl, idformat.Project.Format(projectID))
 	darkModeLogoKey := fmt.Sprintf("vault-ui-settings-v1/%s/logo-dark", idformat.Project.Format(projectID))
+	darkModeLogoURL := fmt.Sprintf("%s/%s", s.userContentBaseUrl, darkModeLogoKey)
 	darkModeLogoExists, err := s.getUserContentFileExists(ctx, darkModeLogoKey)
 	if err != nil {
 		return nil, fmt.Errorf("failed to check if dark mode logo file exists: %w", err)
 	}
 	if !darkModeLogoExists {
 		darkModeLogoURL = ""
+	} else {
+		darkModeLogoURL, err = s.buildPresignedGetUrlForFile(ctx, darkModeLogoKey)
+		if err != nil {
+			return nil, fmt.Errorf("failed to build presigned URL for dark mode logo file: %w", err)
+		}
 	}
 
 	return &intermediatev1.GetSettingsResponse{
@@ -80,6 +92,21 @@ func (s *Store) GetSettings(ctx context.Context, req *intermediatev1.GetSettings
 			AutoCreateOrganizations:    qProjectUISettings.AutoCreateOrganizations,
 		},
 	}, nil
+}
+
+func (s *Store) buildPresignedGetUrlForFile(ctx context.Context, fileKey string) (string, error) {
+	req, err := s.s3PresignClient.PresignGetObject(ctx, &s3.GetObjectInput{
+		Bucket: aws.String(s.s3UserContentBucketName),
+		Key:    aws.String(fileKey),
+	}, func(opts *s3.PresignOptions) {
+		opts.Expires = time.Hour * 12 // set expiry to 12 hours
+	})
+
+	if err != nil {
+		return "", fmt.Errorf("failed to create presigned URL: %w", err)
+	}
+
+	return req.URL, nil
 }
 
 func (s *Store) getUserContentFileExists(ctx context.Context, key string) (bool, error) {

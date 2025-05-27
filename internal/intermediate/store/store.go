@@ -30,6 +30,7 @@ type Store struct {
 	hibp                                  *hibp.Client
 	intermediateSessionSigningKeyKMSKeyID string
 	s3                                    *s3.Client
+	s3PresignClient                       *s3.PresignClient
 	kms                                   *kms.Client
 	pageEncoder                           pagetoken.Encoder
 	q                                     *queries.Queries
@@ -85,6 +86,7 @@ func New(p NewStoreParams) *Store {
 		},
 		intermediateSessionSigningKeyKMSKeyID: p.IntermediateSessionSigningKeyKMSKeyID,
 		s3:                                    p.S3,
+		s3PresignClient:                       s3.NewPresignClient(p.S3),
 		kms:                                   p.KMS,
 		pageEncoder:                           p.PageEncoder,
 		q:                                     queries.New(p.DB),
