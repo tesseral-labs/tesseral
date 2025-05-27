@@ -95,7 +95,7 @@ export function OrganizationSettingsPage() {
       const next = JSON.stringify(newTabs);
       return prev !== next ? newTabs : prevTabs;
     });
-  }, [getOrganizationResponse, getProjectResponse]);
+  }, [getOrganizationResponse, getProjectResponse, initialTabs]);
 
   return (
     <div className="space-y-8">

@@ -212,7 +212,7 @@ function EditSAMLConnnectionConfigurationButton() {
           getSAMLConnectionResponse.samlConnection.idpX509Certificate || "",
       });
     }
-  }, [getSAMLConnectionResponse]);
+  }, [form, getSAMLConnectionResponse]);
 
   return (
     <AlertDialog>
