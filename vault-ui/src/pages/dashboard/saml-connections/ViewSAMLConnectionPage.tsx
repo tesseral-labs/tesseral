@@ -334,8 +334,8 @@ function EditSAMLConnnectionConfigurationButton() {
   );
 }
 
-const DangerZoneCard = () => {
-  const { organizationId, samlConnectionId } = useParams();
+function DangerZoneCard() {
+  const { samlConnectionId } = useParams();
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
 
   const handleDelete = () => {
@@ -344,14 +344,14 @@ const DangerZoneCard = () => {
 
   const deleteSAMLConnectionMutation = useMutation(deleteSAMLConnection);
   const navigate = useNavigate();
-  const handleConfirmDelete = async () => {
+  async function handleConfirmDelete() {
     await deleteSAMLConnectionMutation.mutateAsync({
       id: samlConnectionId,
     });
 
     toast.success("SAML connection deleted");
     navigate(`/organization-settings/saml-connections`);
-  };
+  }
 
   return (
     <>
@@ -396,4 +396,4 @@ const DangerZoneCard = () => {
       </Card>
     </>
   );
-};
+}
