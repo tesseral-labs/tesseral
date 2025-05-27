@@ -135,7 +135,7 @@ export function DashboardSidebar() {
 
             <SidebarSeparator />
 
-              {/* TODO: Make these items owner-only */}
+            {/* TODO: Make these items owner-only */}
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>

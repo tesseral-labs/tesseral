@@ -40,11 +40,11 @@ import { VerifyPasswordPage } from "@/pages/login/VerifyPasswordPage";
 import { VerifySecondaryFactorPage } from "@/pages/login/VerifySecondaryFactorPage";
 
 import { APIKeysTab } from "./pages/dashboard/APIKeysTab";
+import { AuditLogEventsPage } from "./pages/dashboard/AuditLogEventsPage";
 import { DashboardLayout } from "./pages/dashboard/DashboardLayout";
 import { UserSettingsPage } from "./pages/dashboard/UserSettingsPage";
 import { ViewAPIKeyPage } from "./pages/dashboard/api-keys/ViewAPIKeyPage";
 import { GithubOAuthCallbackPage } from "./pages/login/GithubOAuthCallbackPage";
-import { AuditLogEventsPage } from "./pages/dashboard/AuditLogEventsPage";
 
 const queryClient = new QueryClient();
 
@@ -170,10 +170,7 @@ function AppWithRoutes() {
                   element={<EditRolePage />}
                 />
 
-                <Route
-                  path="audit-logs"
-                  element={<AuditLogEventsPage />}
-                />
+                <Route path="audit-logs" element={<AuditLogEventsPage />} />
               </Route>
             </Route>
 
