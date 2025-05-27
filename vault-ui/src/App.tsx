@@ -9,7 +9,6 @@ import { BrowserRouter } from "react-router-dom";
 import { Toaster } from "@/components/ui/sonner";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 import { LoggedInGate } from "@/pages/dashboard/LoggedInGate";
-import { OrganizationAdvancedTab } from "@/pages/dashboard/OrganizationAdvancedTab";
 import { OrganizationSettingsPage } from "@/pages/dashboard/OrganizationSettingsPage";
 import { OrganizationUsersTab } from "@/pages/dashboard/OrganizationUsersTab";
 import { CreateRolePage } from "@/pages/dashboard/roles/CreateRolePage";
@@ -41,8 +40,11 @@ import { VerifySecondaryFactorPage } from "@/pages/login/VerifySecondaryFactorPa
 
 import { APIKeysTab } from "./pages/dashboard/APIKeysTab";
 import { DashboardLayout } from "./pages/dashboard/DashboardLayout";
+import { OrganizationLoginSettingsTab } from "./pages/dashboard/OrganizationLoginSettingsTab";
+import { OrganizationSAMLConnectionsTab } from "./pages/dashboard/OrganizationSAMLConnectionsTab";
 import { UserSettingsPage } from "./pages/dashboard/UserSettingsPage";
 import { ViewAPIKeyPage } from "./pages/dashboard/api-keys/ViewAPIKeyPage";
+import { ViewSAMLConnectionPage } from "./pages/dashboard/saml-connections/ViewSAMLConnectionPage";
 import { GithubOAuthCallbackPage } from "./pages/login/GithubOAuthCallbackPage";
 
 const queryClient = new QueryClient();
@@ -155,8 +157,16 @@ function AppWithRoutes() {
                     element={<ViewAPIKeyPage />}
                   />
                   <Route
-                    path="advanced"
-                    element={<OrganizationAdvancedTab />}
+                    path="login-settings"
+                    element={<OrganizationLoginSettingsTab />}
+                  />
+                  <Route
+                    path="saml-connections"
+                    element={<OrganizationSAMLConnectionsTab />}
+                  />
+                  <Route
+                    path="saml-connections/:samlConnectionId"
+                    element={<ViewSAMLConnectionPage />}
                   />
                 </Route>
 
