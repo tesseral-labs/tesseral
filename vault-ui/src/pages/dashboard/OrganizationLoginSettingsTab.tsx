@@ -58,7 +58,7 @@ import { Role, SAMLConnection } from "@/gen/tesseral/frontend/v1/models_pb";
 import { EditAuthenticationMethodsButton } from "@/pages/dashboard/EditAuthenticationMethodsButton";
 import { EditSecondaryAuthenticationSettingsButton } from "@/pages/dashboard/EditSecondaryAuthenticationSettingsButton";
 
-export function OrganizationAdvancedTab() {
+export function OrganizationLoginSettingsTab() {
   return (
     <div className="space-y-4">
       <AuthenticationMethodsCard />

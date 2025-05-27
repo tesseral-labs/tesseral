@@ -50,8 +50,12 @@ export function OrganizationSettingsPage() {
       url: `/organization-settings`,
     },
     {
-      name: "Advanced Settings",
-      url: `/organization-settings/advanced`,
+      name: "Login Settings",
+      url: `/organization-settings/login`,
+    },
+    {
+      name: "SAML Connections",
+      url: `/organization-settings/saml-connections`,
     },
   ]);
   const { data: getProjectResponse } = useQuery(getProject);
@@ -69,10 +73,10 @@ export function OrganizationSettingsPage() {
     if (
       getProjectResponse?.project?.apiKeysEnabled &&
       getOrganizationResponse?.organization?.apiKeysEnabled &&
-      tabs.length === 2
+      tabs.length === 3
     ) {
       // Only add the API Keys tab if the project has API keys enabled
-      tabs.splice(1, 0, {
+      tabs.splice(2, 0, {
         name: "API Keys",
         url: `/organization-settings/api-keys`,
       });
