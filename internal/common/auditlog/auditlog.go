@@ -29,22 +29,21 @@ type EventData struct {
 	ResourceAfter  proto.Message
 }
 
-func NewEvent(event EventData) (Event, error) {
+func NewEvent(data EventData) (event Event, err error) {
 	var (
 		beforeBytes []byte
 		afterBytes  []byte
-		err         error
 	)
-	if event.ResourceBefore != nil {
-		beforeBytes, err = protojson.Marshal(event.ResourceBefore)
+	if data.ResourceBefore != nil {
+		beforeBytes, err = protojson.Marshal(data.ResourceBefore)
 		if err != nil {
-			return Event{}, err
+			return
 		}
 	}
-	if event.ResourceAfter != nil {
-		afterBytes, err = protojson.Marshal(event.ResourceAfter)
+	if data.ResourceAfter != nil {
+		afterBytes, err = protojson.Marshal(data.ResourceAfter)
 		if err != nil {
-			return Event{}, err
+			return
 		}
 	}
 	details := struct {
@@ -59,12 +58,12 @@ func NewEvent(event EventData) (Event, error) {
 		return Event{}, err
 	}
 	return Event{
-		ProjectID:      event.ProjectID,
-		OrganizationID: event.OrganizationID,
-		UserID:         event.UserID,
-		SessionID:      event.SessionID,
-		ApiKeyID:       event.ApiKeyID,
-		EventName:      string(event.EventName),
+		ProjectID:      data.ProjectID,
+		OrganizationID: data.OrganizationID,
+		UserID:         data.UserID,
+		SessionID:      data.SessionID,
+		ApiKeyID:       data.ApiKeyID,
+		EventName:      string(data.EventName),
 		EventDetails:   detailsBytes,
 	}, nil
 }
