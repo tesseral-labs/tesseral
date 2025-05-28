@@ -2,10 +2,12 @@ package store
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/tesseral-labs/tesseral/internal/common/apierror"
 	"github.com/tesseral-labs/tesseral/internal/common/auditlog"
 	commonv1 "github.com/tesseral-labs/tesseral/internal/common/gen/tesseral/common/v1"
 	"github.com/tesseral-labs/tesseral/internal/common/store/queries"
@@ -13,7 +15,6 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/uuidv7"
 	"google.golang.org/protobuf/types/known/structpb"
 	"google.golang.org/protobuf/types/known/timestamppb"
-	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
 func (s *Store) CreateAuditLogEvent(ctx context.Context, event auditlog.Event) (*commonv1.AuditLogEvent, error) {
@@ -37,13 +38,72 @@ func (s *Store) CreateAuditLogEvent(ctx context.Context, event auditlog.Event) (
 		}
 	}
 
+	var (
+		projectID = event.ProjectID
+		orgID     = event.OrganizationID
+		userID    = event.UserID
+		sessionID = event.SessionID
+		apiKeyID  = event.ApiKeyID
+	)
+	switch {
+	case projectID == uuid.Nil:
+		return nil, errors.New("missing project_id")
+	case sessionID != nil:
+		// Lookup session, user, and organization
+		session, err := q.GetSession(ctx, queries.GetSessionParams{
+			ID:        *sessionID,
+			ProjectID: projectID,
+		})
+		if err != nil {
+			return nil, apierror.NewInvalidArgumentError("invalid session_id", fmt.Errorf("get session: %w", err))
+		}
+
+		user, err := q.GetUser(ctx, queries.GetUserParams{
+			ID:        session.UserID,
+			ProjectID: projectID,
+		})
+		if err != nil {
+			return nil, apierror.NewInvalidArgumentError("invalid session_id", fmt.Errorf("get user: %w", err))
+		}
+		userID = (*uuid.UUID)(&user.ID)
+		orgID = (*uuid.UUID)(&user.OrganizationID)
+	case userID != nil:
+		// Lookup user and organization
+		user, err := q.GetUser(ctx, queries.GetUserParams{
+			ID:        *userID,
+			ProjectID: projectID,
+		})
+		if err != nil {
+			return nil, apierror.NewInvalidArgumentError("invalid user_id", fmt.Errorf("get user: %w", err))
+		}
+		orgID = (*uuid.UUID)(&user.OrganizationID)
+	case apiKeyID != nil:
+		// Lookup API key and organization
+		apiKey, err := q.GetAPIKeyByID(ctx, queries.GetAPIKeyByIDParams{
+			ID:        *apiKeyID,
+			ProjectID: projectID,
+		})
+		if err != nil {
+			return nil, apierror.NewInvalidArgumentError("invalid api_key_id", fmt.Errorf("get api key: %w", err))
+		}
+		orgID = (*uuid.UUID)(&apiKey.OrganizationID)
+	case orgID != nil:
+		_, err = q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
+			ID:        *orgID,
+			ProjectID: projectID,
+		})
+		if err != nil {
+			return nil, apierror.NewInvalidArgumentError("invalid organization_id", fmt.Errorf("get organization: %w", err))
+		}
+	}
+
 	qEventParams := queries.CreateAuditLogEventParams{
 		ID:             event.ID,
-		ProjectID:      event.ProjectID,
-		OrganizationID: event.OrganizationID,
-		UserID:         event.UserID,
-		SessionID:      event.SessionID,
-		ApiKeyID:       event.ApiKeyID,
+		ProjectID:      projectID,
+		OrganizationID: orgID,
+		UserID:         userID,
+		SessionID:      sessionID,
+		ApiKeyID:       apiKeyID,
 		EventName:      event.EventName,
 		EventTime:      eventTime,
 		EventDetails:   event.EventDetails,
@@ -73,22 +133,25 @@ func parseAuditLogEvent(qEvent queries.AuditLogEvent) (*commonv1.AuditLogEvent, 
 	}
 
 	var (
-		organizationID *wrapperspb.StringValue
-		userID         *wrapperspb.StringValue
-		sessionID      *wrapperspb.StringValue
-		apiKeyID       *wrapperspb.StringValue
+		organizationID string
+		userID         *string
+		sessionID      *string
+		apiKeyID       *string
 	)
 	if orgUUID := qEvent.OrganizationID; orgUUID != nil {
-		organizationID = wrapperspb.String(idformat.Organization.Format(*orgUUID))
+		organizationID = idformat.Organization.Format(*orgUUID)
 	}
 	if userUUID := qEvent.UserID; userUUID != nil {
-		userID = wrapperspb.String(idformat.User.Format(*userUUID))
+		userID_ := idformat.User.Format(*userUUID)
+		userID = &userID_
 	}
 	if sessionUUID := qEvent.SessionID; sessionUUID != nil {
-		sessionID = wrapperspb.String(idformat.Session.Format(*sessionUUID))
+		sessionID_ := idformat.Session.Format(*sessionUUID)
+		sessionID = &sessionID_
 	}
 	if apiKeyUUID := qEvent.ApiKeyID; apiKeyUUID != nil {
-		apiKeyID = wrapperspb.String(idformat.APIKey.Format(*apiKeyUUID))
+		apiKeyID_ := idformat.APIKey.Format(*apiKeyUUID)
+		apiKeyID = &apiKeyID_
 	}
 
 	return &commonv1.AuditLogEvent{

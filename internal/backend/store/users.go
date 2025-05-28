@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -150,10 +151,9 @@ func (s *Store) CreateUser(ctx context.Context, req *backendv1.CreateUserRequest
 		},
 	})
 	if err != nil {
-		return nil, fmt.Errorf("create event: %w", err)
-	}
-	if _, err := s.common.CreateAuditLogEvent(ctx, event); err != nil {
-		return nil, fmt.Errorf("create audit log: %w", err)
+		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
+	} else if _, err := s.common.CreateAuditLogEvent(ctx, event); err != nil {
+		slog.ErrorContext(ctx, "create_audit_log_event", "event", event, "error", err)
 	}
 
 	// send sync user event
@@ -256,10 +256,9 @@ func (s *Store) UpdateUser(ctx context.Context, req *backendv1.UpdateUserRequest
 		Update: updatesEventData,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("create event: %w", err)
-	}
-	if _, err := s.common.CreateAuditLogEvent(ctx, event); err != nil {
-		return nil, fmt.Errorf("create audit log: %w", err)
+		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
+	} else if _, err := s.common.CreateAuditLogEvent(ctx, event); err != nil {
+		slog.ErrorContext(ctx, "create_audit_log_event", "event", event, "error", err)
 	}
 
 	// send sync user event

@@ -16,7 +16,6 @@ import (
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"github.com/tesseral-labs/tesseral/internal/uuidv7"
 	"google.golang.org/protobuf/types/known/structpb"
-	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
 func (s *Store) ListAuditLogEvents(ctx context.Context, req *frontendv1.ListAuditLogEventsRequest) (*frontendv1.ListAuditLogEventsResponse, error) {
@@ -149,22 +148,25 @@ func parseAuditLogEvent(qEvent queries.AuditLogEvent) (*commonv1.AuditLogEvent, 
 	}
 
 	var (
-		organizationID *wrapperspb.StringValue
-		userID         *wrapperspb.StringValue
-		sessionID      *wrapperspb.StringValue
-		apiKeyID       *wrapperspb.StringValue
+		organizationID string
+		userID         *string
+		sessionID      *string
+		apiKeyID       *string
 	)
 	if orgUUID := qEvent.OrganizationID; orgUUID != nil {
-		organizationID = wrapperspb.String(idformat.Organization.Format(*orgUUID))
+		organizationID = idformat.Organization.Format(*orgUUID)
 	}
 	if userUUID := qEvent.UserID; userUUID != nil {
-		userID = wrapperspb.String(idformat.User.Format(*userUUID))
+		userID_ := idformat.User.Format(*userUUID)
+		userID = &userID_
 	}
 	if sessionUUID := qEvent.SessionID; sessionUUID != nil {
-		sessionID = wrapperspb.String(idformat.Session.Format(*sessionUUID))
+		sessionID_ := idformat.Session.Format(*sessionUUID)
+		sessionID = &sessionID_
 	}
 	if apiKeyUUID := qEvent.ApiKeyID; apiKeyUUID != nil {
-		apiKeyID = wrapperspb.String(idformat.APIKey.Format(*apiKeyUUID))
+		apiKeyID_ := idformat.APIKey.Format(*apiKeyUUID)
+		apiKeyID = &apiKeyID_
 	}
 
 	return &commonv1.AuditLogEvent{

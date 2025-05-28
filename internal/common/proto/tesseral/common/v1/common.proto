@@ -52,17 +52,17 @@ message AuditLogEvent {
   // The unique ID of the event.
   string id = 1;
 
-  // The ID of the organization associated with the event, if any.
-  google.protobuf.StringValue organization_id = 2;
+  // The ID of the organization associated with the event.
+  string organization_id = 2;
 
   // The ID of the user associated with the event, if any.
-  google.protobuf.StringValue user_id = 3;
+  optional string user_id = 3;
 
   // The ID of the session associated with the event, if any.
-  google.protobuf.StringValue session_id = 4;
+  optional string session_id = 4;
 
   // The ID of the API Key associated with the event, if any.
-  google.protobuf.StringValue api_key_id = 5;
+  optional string api_key_id = 5;
 
   // The time the event occurred.
   //

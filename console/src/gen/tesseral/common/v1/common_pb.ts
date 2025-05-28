@@ -12,7 +12,7 @@ import type { JsonObject, Message } from "@bufbuild/protobuf";
  * Describes the file tesseral/common/v1/common.proto.
  */
 export const file_tesseral_common_v1_common: GenFile = /*@__PURE__*/
-  fileDesc("Ch90ZXNzZXJhbC9jb21tb24vdjEvY29tbW9uLnByb3RvEhJ0ZXNzZXJhbC5jb21tb24udjEi4gIKD0FjY2Vzc1Rva2VuRGF0YRILCgNpc3MYASABKAkSCwoDc3ViGAIgASgJEgsKA2F1ZBgDIAEoCRILCgNleHAYBCABKAESCwoDbmJmGAUgASgBEgsKA2lhdBgGIAEoARI3CgdzZXNzaW9uGAggASgLMiYudGVzc2VyYWwuY29tbW9uLnYxLkFjY2Vzc1Rva2VuU2Vzc2lvbhIxCgR1c2VyGAkgASgLMiMudGVzc2VyYWwuY29tbW9uLnYxLkFjY2Vzc1Rva2VuVXNlchJBCgxvcmdhbml6YXRpb24YCiABKAsyKy50ZXNzZXJhbC5jb21tb24udjEuQWNjZXNzVG9rZW5Pcmdhbml6YXRpb24SDwoHYWN0aW9ucxgMIAMoCRJBCgxpbXBlcnNvbmF0b3IYCyABKAsyKy50ZXNzZXJhbC5jb21tb24udjEuQWNjZXNzVG9rZW5JbXBlcnNvbmF0b3IiIAoSQWNjZXNzVG9rZW5TZXNzaW9uEgoKAmlkGAEgASgJIl8KD0FjY2Vzc1Rva2VuVXNlchIKCgJpZBgBIAEoCRINCgVlbWFpbBgCIAEoCRIUCgxkaXNwbGF5X25hbWUYAyABKAkSGwoTcHJvZmlsZV9waWN0dXJlX3VybBgEIAEoCSI7ChdBY2Nlc3NUb2tlbk9yZ2FuaXphdGlvbhIKCgJpZBgBIAEoCRIUCgxkaXNwbGF5X25hbWUYAiABKAkiKAoXQWNjZXNzVG9rZW5JbXBlcnNvbmF0b3ISDQoFZW1haWwYASABKAkiNQoLRXJyb3JEZXRhaWwSEwoLZGVzY3JpcHRpb24YASABKAkSEQoJZG9jc19saW5rGAIgASgJItkCCg1BdWRpdExvZ0V2ZW50EgoKAmlkGAEgASgJEjUKD29yZ2FuaXphdGlvbl9pZBgCIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5TdHJpbmdWYWx1ZRItCgd1c2VyX2lkGAMgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlN0cmluZ1ZhbHVlEjAKCnNlc3Npb25faWQYBCABKAsyHC5nb29nbGUucHJvdG9idWYuU3RyaW5nVmFsdWUSMAoKYXBpX2tleV9pZBgFIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5TdHJpbmdWYWx1ZRIuCgpldmVudF90aW1lGAYgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBISCgpldmVudF9uYW1lGAcgASgJEi4KDWV2ZW50X2RldGFpbHMYCCABKAsyFy5nb29nbGUucHJvdG9idWYuU3RydWN0QuIBChZjb20udGVzc2VyYWwuY29tbW9uLnYxQgtDb21tb25Qcm90b1ABWlFnaXRodWIuY29tL3Rlc3NlcmFsLWxhYnMvdGVzc2VyYWwvaW50ZXJuYWwvY29tbW9uL2dlbi90ZXNzZXJhbC9jb21tb24vdjE7Y29tbW9udjGiAgNUQ1iqAhJUZXNzZXJhbC5Db21tb24uVjHKAhJUZXNzZXJhbFxDb21tb25cVjHiAh5UZXNzZXJhbFxDb21tb25cVjFcR1BCTWV0YWRhdGHqAhRUZXNzZXJhbDo6Q29tbW9uOjpWMWIGcHJvdG8z", [file_google_protobuf_struct, file_google_protobuf_timestamp, file_google_protobuf_wrappers]);
+  fileDesc("Ch90ZXNzZXJhbC9jb21tb24vdjEvY29tbW9uLnByb3RvEhJ0ZXNzZXJhbC5jb21tb24udjEi4gIKD0FjY2Vzc1Rva2VuRGF0YRILCgNpc3MYASABKAkSCwoDc3ViGAIgASgJEgsKA2F1ZBgDIAEoCRILCgNleHAYBCABKAESCwoDbmJmGAUgASgBEgsKA2lhdBgGIAEoARI3CgdzZXNzaW9uGAggASgLMiYudGVzc2VyYWwuY29tbW9uLnYxLkFjY2Vzc1Rva2VuU2Vzc2lvbhIxCgR1c2VyGAkgASgLMiMudGVzc2VyYWwuY29tbW9uLnYxLkFjY2Vzc1Rva2VuVXNlchJBCgxvcmdhbml6YXRpb24YCiABKAsyKy50ZXNzZXJhbC5jb21tb24udjEuQWNjZXNzVG9rZW5Pcmdhbml6YXRpb24SDwoHYWN0aW9ucxgMIAMoCRJBCgxpbXBlcnNvbmF0b3IYCyABKAsyKy50ZXNzZXJhbC5jb21tb24udjEuQWNjZXNzVG9rZW5JbXBlcnNvbmF0b3IiIAoSQWNjZXNzVG9rZW5TZXNzaW9uEgoKAmlkGAEgASgJIl8KD0FjY2Vzc1Rva2VuVXNlchIKCgJpZBgBIAEoCRINCgVlbWFpbBgCIAEoCRIUCgxkaXNwbGF5X25hbWUYAyABKAkSGwoTcHJvZmlsZV9waWN0dXJlX3VybBgEIAEoCSI7ChdBY2Nlc3NUb2tlbk9yZ2FuaXphdGlvbhIKCgJpZBgBIAEoCRIUCgxkaXNwbGF5X25hbWUYAiABKAkiKAoXQWNjZXNzVG9rZW5JbXBlcnNvbmF0b3ISDQoFZW1haWwYASABKAkiNQoLRXJyb3JEZXRhaWwSEwoLZGVzY3JpcHRpb24YASABKAkSEQoJZG9jc19saW5rGAIgASgJIpoCCg1BdWRpdExvZ0V2ZW50EgoKAmlkGAEgASgJEhcKD29yZ2FuaXphdGlvbl9pZBgCIAEoCRIUCgd1c2VyX2lkGAMgASgJSACIAQESFwoKc2Vzc2lvbl9pZBgEIAEoCUgBiAEBEhcKCmFwaV9rZXlfaWQYBSABKAlIAogBARIuCgpldmVudF90aW1lGAYgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBISCgpldmVudF9uYW1lGAcgASgJEi4KDWV2ZW50X2RldGFpbHMYCCABKAsyFy5nb29nbGUucHJvdG9idWYuU3RydWN0QgoKCF91c2VyX2lkQg0KC19zZXNzaW9uX2lkQg0KC19hcGlfa2V5X2lkQuIBChZjb20udGVzc2VyYWwuY29tbW9uLnYxQgtDb21tb25Qcm90b1ABWlFnaXRodWIuY29tL3Rlc3NlcmFsLWxhYnMvdGVzc2VyYWwvaW50ZXJuYWwvY29tbW9uL2dlbi90ZXNzZXJhbC9jb21tb24vdjE7Y29tbW9udjGiAgNUQ1iqAhJUZXNzZXJhbC5Db21tb24uVjHKAhJUZXNzZXJhbFxDb21tb25cVjHiAh5UZXNzZXJhbFxDb21tb25cVjFcR1BCTWV0YWRhdGHqAhRUZXNzZXJhbDo6Q29tbW9uOjpWMWIGcHJvdG8z", [file_google_protobuf_struct, file_google_protobuf_timestamp, file_google_protobuf_wrappers]);
 
 /**
  * @generated from message tesseral.common.v1.AccessTokenData
@@ -206,30 +206,30 @@ export type AuditLogEvent = Message<"tesseral.common.v1.AuditLogEvent"> & {
   id: string;
 
   /**
-   * The ID of the organization associated with the event, if any.
+   * The ID of the organization associated with the event.
    *
-   * @generated from field: google.protobuf.StringValue organization_id = 2;
+   * @generated from field: string organization_id = 2;
    */
-  organizationId?: string;
+  organizationId: string;
 
   /**
    * The ID of the user associated with the event, if any.
    *
-   * @generated from field: google.protobuf.StringValue user_id = 3;
+   * @generated from field: optional string user_id = 3;
    */
   userId?: string;
 
   /**
    * The ID of the session associated with the event, if any.
    *
-   * @generated from field: google.protobuf.StringValue session_id = 4;
+   * @generated from field: optional string session_id = 4;
    */
   sessionId?: string;
 
   /**
    * The ID of the API Key associated with the event, if any.
    *
-   * @generated from field: google.protobuf.StringValue api_key_id = 5;
+   * @generated from field: optional string api_key_id = 5;
    */
   apiKeyId?: string;
 

@@ -1686,7 +1686,7 @@ components:
                     description: The unique ID of the event.
                 organizationId:
                     type: string
-                    description: The ID of the organization associated with the event, if any.
+                    description: The ID of the organization associated with the event.
                 userId:
                     type: string
                     description: The ID of the user associated with the event, if any.

@@ -239,10 +239,9 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		Success:               true,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("create event: %w", err)
-	}
-	if _, err := s.common.CreateAuditLogEvent(ctx, event); err != nil {
-		return nil, fmt.Errorf("create audit log: %w", err)
+		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
+	} else if _, err := s.common.CreateAuditLogEvent(ctx, event); err != nil {
+		slog.ErrorContext(ctx, "create_audit_log_event", "event", event, "error", err)
 	}
 
 	if detailsUpdated {
@@ -260,10 +259,9 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 			})
 		}
 		if err != nil {
-			return nil, fmt.Errorf("create event: %w", err)
-		}
-		if _, err := s.common.CreateAuditLogEvent(ctx, event); err != nil {
-			return nil, fmt.Errorf("create audit log: %w", err)
+			slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
+		} else if _, err := s.common.CreateAuditLogEvent(ctx, event); err != nil {
+			slog.ErrorContext(ctx, "create_audit_log_event", "event", event, "error", err)
 		}
 
 		// Send sync user event

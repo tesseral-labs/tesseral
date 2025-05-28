@@ -115,3 +115,43 @@ INSERT INTO audit_log_events (id, project_id, organization_id, user_id, session_
 RETURNING
     *;
 
+-- name: GetUser :one
+SELECT
+    *
+FROM
+    users
+    JOIN organizations ON users.organization_id = organizations.id
+WHERE
+    users.id = @id
+    AND organizations.project_id = @project_id;
+
+-- name: GetSession :one
+SELECT
+    *
+FROM
+    sessions
+    JOIN users ON sessions.user_id = users.id
+    JOIN organizations ON users.organization_id = organizations.id
+WHERE
+    sessions.id = @id
+    AND organizations.project_id = @project_id;
+
+-- name: GetAPIKeyByID :one
+SELECT
+    *
+FROM
+    api_keys
+    JOIN organizations ON api_keys.organization_id = organization.id
+WHERE
+    api_keys.id = @id
+    AND organizations.project_id = @project_id;
+
+-- name: GetOrganizationByProjectIDAndID :one
+SELECT
+    *
+FROM
+    organizations
+WHERE
+    id = @id
+    AND project_id = @project_id;
+
