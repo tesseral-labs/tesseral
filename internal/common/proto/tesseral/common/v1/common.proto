@@ -4,7 +4,6 @@ package tesseral.common.v1;
 
 import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
-import "google/protobuf/wrappers.proto";
 
 message AccessTokenData {
   string iss = 1;

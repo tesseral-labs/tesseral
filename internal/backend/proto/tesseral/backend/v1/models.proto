@@ -2,7 +2,6 @@ syntax = "proto3";
 
 package tesseral.backend.v1;
 
-import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
 
 // Projects are the top-level object in Tesseral.

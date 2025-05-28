@@ -544,10 +544,3 @@ export const getProjectWebhookManagementURL = BackendService.method.getProjectWe
  * @generated from rpc tesseral.backend.v1.BackendService.CreateAuditLogEvent
  */
 export const createAuditLogEvent = BackendService.method.createAuditLogEvent;
-
-/**
- * Lists audit log events for an organization.
- *
- * @generated from rpc tesseral.backend.v1.BackendService.ListAuditLogEvents
- */
-export const listAuditLogEvents = BackendService.method.listAuditLogEvents;

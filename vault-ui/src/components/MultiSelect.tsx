@@ -4,8 +4,6 @@ import { X } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 
-type Option = Record<"value" | "label", string>;
-
 interface MultiSelectProps {
   selected: string[];
   onChange: (selected: string[]) => void;

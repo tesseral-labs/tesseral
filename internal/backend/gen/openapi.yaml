@@ -265,74 +265,6 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/Status'
     /v1/events:
-        get:
-            tags:
-                - BackendService
-            description: Lists audit log events for an organization.
-            operationId: BackendService_ListAuditLogEvents
-            parameters:
-                - name: organizationId
-                  in: query
-                  description: The organization to list events for.
-                  schema:
-                    type: string
-                - name: pageSize
-                  in: query
-                  description: The maximum number of events to return.
-                  schema:
-                    type: integer
-                    format: int32
-                - name: pageToken
-                  in: query
-                  description: A page token, received from a previous `ListAuditLogEvents` call.
-                  schema:
-                    type: string
-                - name: orderBy
-                  in: query
-                  description: The field to sort the results by.
-                  schema:
-                    type: string
-                - name: filter.startTime
-                  in: query
-                  description: The start time.
-                  schema:
-                    type: string
-                    format: date-time
-                - name: filter.eventName
-                  in: query
-                  description: The event names to filter by, if any.
-                  schema:
-                    type: array
-                    items:
-                        type: string
-                - name: filter.userId
-                  in: query
-                  description: The user ID to filter by, if any.
-                  schema:
-                    type: string
-                - name: filter.sessionId
-                  in: query
-                  description: The session ID to filter by, if any.
-                  schema:
-                    type: string
-                - name: filter.apiKeyId
-                  in: query
-                  description: The API key ID to filter by, if any.
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ListAuditLogEventsResponse'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
         post:
             tags:
                 - BackendService
@@ -1949,17 +1881,6 @@ components:
                         $ref: '#/components/schemas/APIKey'
                 nextPageToken:
                     type: string
-        ListAuditLogEventsResponse:
-            type: object
-            properties:
-                auditLogEvents:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/AuditLogEvent'
-                    description: The events.
-                nextPageToken:
-                    type: string
-                    description: A token to retrieve the next page of results.
         ListOrganizationsResponse:
             type: object
             properties:

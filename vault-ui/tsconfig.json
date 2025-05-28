@@ -5,8 +5,7 @@
       "@/*": ["./src/*"]
     },
     "rootDir": "src",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
+    "module": "commonjs",
     "target": "es2015",
     "sourceMap": true,
     "jsx": "react",

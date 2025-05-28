@@ -111,9 +111,8 @@ func (s *Store) CreateUser(ctx context.Context, req *backendv1.CreateUserRequest
 		return nil, apierror.NewInvalidArgumentError("invalid organization id", fmt.Errorf("parse organization id: %w", err))
 	}
 
-	projectID := authn.ProjectID(ctx)
 	if _, err := q.GetOrganizationByProjectIDAndID(ctx, queries.GetOrganizationByProjectIDAndIDParams{
-		ProjectID: projectID,
+		ProjectID: authn.ProjectID(ctx),
 		ID:        orgID,
 	}); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
@@ -159,9 +158,8 @@ func (s *Store) UpdateUser(ctx context.Context, req *backendv1.UpdateUserRequest
 		return nil, apierror.NewInvalidArgumentError("invalid user id", fmt.Errorf("parse user id: %w", err))
 	}
 
-	projectID := authn.ProjectID(ctx)
 	qUser, err := q.GetUser(ctx, queries.GetUserParams{
-		ProjectID: projectID,
+		ProjectID: authn.ProjectID(ctx),
 		ID:        userID,
 	})
 	if err != nil {
