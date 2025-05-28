@@ -42,9 +42,11 @@ import { APIKeysTab } from "./pages/dashboard/APIKeysTab";
 import { DashboardLayout } from "./pages/dashboard/DashboardLayout";
 import { OrganizationLoginSettingsTab } from "./pages/dashboard/OrganizationLoginSettingsTab";
 import { OrganizationSAMLConnectionsTab } from "./pages/dashboard/OrganizationSAMLConnectionsTab";
+import { OrganizationSCIMAPIKeysTab } from "./pages/dashboard/OrganizationSCIMAPIKeysTab";
 import { UserSettingsPage } from "./pages/dashboard/UserSettingsPage";
 import { ViewAPIKeyPage } from "./pages/dashboard/api-keys/ViewAPIKeyPage";
 import { ViewSAMLConnectionPage } from "./pages/dashboard/saml-connections/ViewSAMLConnectionPage";
+import { ViewSCIMAPIKeyPage } from "./pages/dashboard/scim-api-keys/ViewSCIMAPIKeyPage";
 import { GithubOAuthCallbackPage } from "./pages/login/GithubOAuthCallbackPage";
 
 const queryClient = new QueryClient();
@@ -167,6 +169,14 @@ function AppWithRoutes() {
                   <Route
                     path="saml-connections/:samlConnectionId"
                     element={<ViewSAMLConnectionPage />}
+                  />
+                  <Route
+                    path="scim-api-keys"
+                    element={<OrganizationSCIMAPIKeysTab />}
+                  />
+                  <Route
+                    path="scim-api-keys/:scimApiKeyId"
+                    element={<ViewSCIMAPIKeyPage />}
                   />
                 </Route>
 
