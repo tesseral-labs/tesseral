@@ -1,23 +1,17 @@
 // src/components/audit-log-viewer.tsx
 import { timestampDate, timestampFromDate } from "@bufbuild/protobuf/wkt";
 import { useQuery } from "@connectrpc/connect-query";
-import { format, set } from "date-fns";
+import { format } from "date-fns";
 import {
   ArrowLeft,
   ArrowRight,
-  ArrowUpDown,
   CalendarIcon,
   ChevronDown,
   ChevronRight,
   FilterX,
-  LucideIcon,
   Search,
-  ShieldCloseIcon,
-  ShieldEllipsisIcon,
-  ShieldIcon,
-  ShieldPlusIcon,
 } from "lucide-react";
-import React, { act, useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { DateRange } from "react-day-picker";
 
 import { MultiSelect } from "@/components/MultiSelect";
@@ -59,7 +53,7 @@ const PAGE_SIZE = 10;
 
 // --- Filter Bar Component ---
 interface FilterBarProps {
-  onApply: (filter: ListAuditLogEventsRequest_Filter, orderBy: string) => void;
+  onApply: (filter: ListAuditLogEventsRequest_Filter) => void;
   isLoading: boolean;
 }
 
@@ -75,11 +69,10 @@ function makeFilter(
   };
 }
 
-const FilterBar: React.FC<FilterBarProps> = ({ onApply, isLoading }) => {
+function FilterBar({ onApply, isLoading }: FilterBarProps) {
   const [date, setDate] = React.useState<DateRange | undefined>(undefined);
   const [eventNames, setEventNames] = useState<string[]>([]);
   const [userId, setUserId] = useState("");
-  const [orderBy, setOrderBy] = useState("id desc"); // Default sort
 
   const handleApply = () => {
     const filter: ListAuditLogEventsRequest_Filter = makeFilter({});
@@ -95,15 +88,14 @@ const FilterBar: React.FC<FilterBarProps> = ({ onApply, isLoading }) => {
     if (eventNames.length > 0) filter.eventName = eventNames;
     if (userId) filter.userId = userId;
 
-    onApply(filter, orderBy);
+    onApply(filter);
   };
 
   const handleReset = () => {
     setDate(undefined);
     setEventNames([]);
     setUserId("");
-    setOrderBy("id desc");
-    onApply(makeFilter({}), "id desc");
+    onApply(makeFilter({}));
   };
 
   const hasFilters = date || eventNames.length > 0 || userId;
@@ -178,7 +170,7 @@ const FilterBar: React.FC<FilterBarProps> = ({ onApply, isLoading }) => {
       </div>
     </div>
   );
-};
+}
 
 // --- Main Viewer Component ---
 export function AuditLogEventsPage() {
@@ -201,7 +193,7 @@ export function AuditLogEventsPage() {
   };
 
   const handleApplyFilters = useCallback(
-    (filter: ListAuditLogEventsRequest_Filter, orderBy: string) => {
+    (filter: ListAuditLogEventsRequest_Filter) => {
       setRequest({
         $typeName: "tesseral.frontend.v1.ListAuditLogEventsRequest",
         pageSize: PAGE_SIZE,
