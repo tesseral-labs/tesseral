@@ -465,6 +465,7 @@ const EditUserSettingsButton: FC = () => {
       owner: false,
       googleUserId: '',
       microsoftUserId: '',
+      githubUserId: '',
       displayName: '',
       profilePictureUrl: '',
     },
@@ -483,6 +484,7 @@ const EditUserSettingsButton: FC = () => {
         owner: getUserResponse.user.owner,
         googleUserId: getUserResponse.user.googleUserId || '',
         microsoftUserId: getUserResponse.user.microsoftUserId || '',
+        githubUserId: getUserResponse.user.githubUserId || '',
         displayName: getUserResponse.user.displayName || '',
         profilePictureUrl: getUserResponse.user.profilePictureUrl || '',
       });
@@ -500,6 +502,9 @@ const EditUserSettingsButton: FC = () => {
     }
     if (data.microsoftUserId) {
       updatedUser.microsoftUserId = data.microsoftUserId;
+    }
+    if (data.githubUserId) {
+      updatedUser.githubUserId = data.githubUserId;
     }
     if (data.displayName) {
       updatedUser.displayName = data.displayName;
