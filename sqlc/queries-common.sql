@@ -111,7 +111,7 @@ WHERE
 
 -- name: CreateAuditLogEvent :one
 INSERT INTO audit_log_events (id, project_id, organization_id, user_id, session_id, api_key_id, event_name, event_time, event_details)
-    VALUES (@id, @project_id, @organization_id, @user_id, @session_id, @api_key_id, @event_name, @event_time, @event_details)
+    VALUES (@id, @project_id, @organization_id, @user_id, @session_id, @api_key_id, @event_name, @event_time, coalesce(@event_details, '{}'::jsonb))
 RETURNING
     *;
 

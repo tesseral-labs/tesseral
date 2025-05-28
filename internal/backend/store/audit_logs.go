@@ -40,7 +40,6 @@ func (s *Store) CreateAuditLogEvent(ctx context.Context, req *backendv1.CreateAu
 	if orgID == "" && userID == "" && sessionID == "" && apiKeyID == "" {
 		return nil, apierror.NewInvalidArgumentError("", errors.New("either organization_id, user_id, session_id, or api_key_id must be provided"))
 	}
-
 	if sessionID != "" {
 		id, err := idformat.Session.Parse(sessionID)
 		if err != nil {

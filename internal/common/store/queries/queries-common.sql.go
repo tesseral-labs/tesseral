@@ -28,7 +28,7 @@ func (q *Queries) BumpSessionLastActiveTime(ctx context.Context, id uuid.UUID) e
 
 const createAuditLogEvent = `-- name: CreateAuditLogEvent :one
 INSERT INTO audit_log_events (id, project_id, organization_id, user_id, session_id, api_key_id, event_name, event_time, event_details)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, coalesce($9, '{}'::jsonb))
 RETURNING
     id, project_id, organization_id, user_id, session_id, api_key_id, event_name, event_time, event_details
 `
@@ -42,7 +42,7 @@ type CreateAuditLogEventParams struct {
 	ApiKeyID       *uuid.UUID
 	EventName      string
 	EventTime      *time.Time
-	EventDetails   []byte
+	EventDetails   interface{}
 }
 
 func (q *Queries) CreateAuditLogEvent(ctx context.Context, arg CreateAuditLogEventParams) (AuditLogEvent, error) {
