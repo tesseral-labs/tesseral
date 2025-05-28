@@ -231,6 +231,7 @@ func main() {
 		SessionSigningKeyKmsKeyID:             config.SessionKMSKeyID,
 		AuthenticatorAppSecretsKMSKeyID:       config.AuthenticatorAppSecretsKMSKeyID,
 		SvixClient:                            svixClient,
+		CommonStore:                           commonStore,
 	})
 	frontendConnectPath, frontendConnectHandler := frontendv1connect.NewFrontendServiceHandler(
 		&frontendservice.Service{

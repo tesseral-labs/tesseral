@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log/slog"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -13,7 +12,6 @@ import (
 	backendv1 "github.com/tesseral-labs/tesseral/internal/backend/gen/tesseral/backend/v1"
 	"github.com/tesseral-labs/tesseral/internal/backend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
-	"github.com/tesseral-labs/tesseral/internal/common/auditlog"
 	"github.com/tesseral-labs/tesseral/internal/store/idformat"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -141,21 +139,6 @@ func (s *Store) CreateUser(ctx context.Context, req *backendv1.CreateUserRequest
 		return nil, fmt.Errorf("commit: %w", err)
 	}
 
-	// send create user event
-	event, err := auditlog.NewCreateUserEvent(auditlog.CreateUserEventData{
-		ProjectID:      projectID,
-		OrganizationID: qUser.OrganizationID,
-		User: auditlog.UserData{
-			ID:    qUser.ID,
-			Email: qUser.Email,
-		},
-	})
-	if err != nil {
-		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
-	} else if _, err := s.common.CreateAuditLogEvent(ctx, event); err != nil {
-		slog.ErrorContext(ctx, "create_audit_log_event", "event", event, "error", err)
-	}
-
 	// send sync user event
 	if err := s.sendSyncUserEvent(ctx, qUser); err != nil {
 		return nil, fmt.Errorf("send sync user event: %w", err)
@@ -235,37 +218,6 @@ func (s *Store) UpdateUser(ctx context.Context, req *backendv1.UpdateUserRequest
 
 	if err := commit(); err != nil {
 		return nil, fmt.Errorf("commit: %w", err)
-	}
-
-	// send update user event
-	event, err := auditlog.NewUpdateUserEvent(auditlog.UpdateUserEventData{
-		ProjectID:      projectID,
-		OrganizationID: qUser.OrganizationID,
-		PreviousUser: auditlog.UserData{
-			ID:                qUser.ID,
-			Email:             qUser.Email,
-			GoogleUserID:      qUser.GoogleUserID,
-			MicrosoftUserID:   qUser.MicrosoftUserID,
-			GithubUserID:      qUser.GithubUserID,
-			IsOwner:           qUser.IsOwner,
-			DisplayName:       qUser.DisplayName,
-			ProfilePictureURL: qUser.ProfilePictureUrl,
-		},
-		User: auditlog.UserData{
-			ID:                qUpdatedUser.ID,
-			Email:             qUpdatedUser.Email,
-			GoogleUserID:      qUpdatedUser.GoogleUserID,
-			MicrosoftUserID:   qUpdatedUser.MicrosoftUserID,
-			GithubUserID:      qUpdatedUser.GithubUserID,
-			IsOwner:           qUpdatedUser.IsOwner,
-			DisplayName:       qUpdatedUser.DisplayName,
-			ProfilePictureURL: qUpdatedUser.ProfilePictureUrl,
-		},
-	})
-	if err != nil {
-		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
-	} else if _, err := s.common.CreateAuditLogEvent(ctx, event); err != nil {
-		slog.ErrorContext(ctx, "create_audit_log_event", "event", event, "error", err)
 	}
 
 	// send sync user event

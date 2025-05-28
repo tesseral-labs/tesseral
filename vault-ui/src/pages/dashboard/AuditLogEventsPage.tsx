@@ -8,13 +8,12 @@ import {
   ArrowUpDown,
   CalendarIcon,
   FilterX,
-  KeyRoundIcon,
   LucideIcon,
   Search,
+  ShieldCloseIcon,
+  ShieldEllipsisIcon,
   ShieldIcon,
-  UserIcon,
-  UserPenIcon,
-  X,
+  ShieldPlusIcon,
 } from "lucide-react";
 import React, { useCallback, useState } from "react";
 import { DateRange } from "react-day-picker";
@@ -53,9 +52,9 @@ import {
 const PAGE_SIZE = 10;
 
 enum EventName {
-  AuthLogin = "auth.login",
-  CreateUser = "user.create",
-  UpdateUser = "user.update",
+  CreateSAMLConnection = "tesseral.saml_connection.create",
+  UpdateSAMLConnection = "tesseral.saml_connection.update",
+  DeleteSAMLConnection = "tesseral.saml_connection.delete",
 }
 
 type EventData = {
@@ -71,17 +70,17 @@ type EventData = {
 };
 
 const TESSERAL_EVENTS: Record<EventName, EventData> = {
-  [EventName.AuthLogin]: {
-    label: "Login Attempt",
-    icon: KeyRoundIcon,
+  [EventName.CreateSAMLConnection]: {
+    label: "Create SAML Connection",
+    icon: ShieldPlusIcon,
   },
-  [EventName.CreateUser]: {
-    label: "User Created",
-    icon: UserIcon,
+  [EventName.UpdateSAMLConnection]: {
+    label: "Update SAML Connection",
+    icon: ShieldEllipsisIcon,
   },
-  [EventName.UpdateUser]: {
-    label: "User Updated",
-    icon: UserPenIcon,
+  [EventName.DeleteSAMLConnection]: {
+    label: "Delete SAML Connection",
+    icon: ShieldCloseIcon,
   },
 };
 
@@ -279,13 +278,8 @@ export function AuditLogEventsPage() {
   };
 
   const renderActor = (event: AuditLogEvent) => {
-    const eventData = event.eventDetails ?? {};
     if (event.userId) {
-      type UserData = {
-        email: string;
-      };
-      const userEmail = (eventData.user as UserData).email;
-      return `User: ${userEmail}`;
+      return `User: ${event.userId}`;
     }
     if (event.sessionId) {
       return `Session: ${event.sessionId}`;

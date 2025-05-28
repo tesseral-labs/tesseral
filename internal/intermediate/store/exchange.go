@@ -12,7 +12,6 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/svix/svix-webhooks/go/models"
 	"github.com/tesseral-labs/tesseral/internal/common/apierror"
-	"github.com/tesseral-labs/tesseral/internal/common/auditlog"
 	"github.com/tesseral-labs/tesseral/internal/intermediate/authn"
 	intermediatev1 "github.com/tesseral-labs/tesseral/internal/intermediate/gen/tesseral/intermediate/v1"
 	"github.com/tesseral-labs/tesseral/internal/intermediate/store/queries"
@@ -70,9 +69,8 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 	}
 
 	var (
-		newUser          = qUser == nil
-		detailsUpdated   = newUser
-		previousUserData auditlog.UserData
+		newUser        = qUser == nil
+		detailsUpdated = newUser
 	)
 
 	// if no matching user, create a new one
@@ -103,17 +101,6 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 				(qIntermediateSession.ProfilePictureUrl != nil && *qIntermediateSession.ProfilePictureUrl != derefOrEmpty(qUser.ProfilePictureUrl))
 
 		if detailsUpdated {
-			previousUserData = auditlog.UserData{
-				ID:                qUser.ID,
-				Email:             qUser.Email,
-				GoogleUserID:      qUser.GoogleUserID,
-				MicrosoftUserID:   qUser.MicrosoftUserID,
-				GithubUserID:      qUser.GithubUserID,
-				IsOwner:           qUser.IsOwner,
-				DisplayName:       qUser.DisplayName,
-				ProfilePictureURL: qUser.ProfilePictureUrl,
-			}
-
 			slog.InfoContext(ctx, "update_user")
 			qUpdatedUser, err := q.UpdateUserDetails(ctx, queries.UpdateUserDetailsParams{
 				UserID:            qUser.ID,
@@ -222,52 +209,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		return nil, err
 	}
 
-	// Create audit log event
-	userData := auditlog.UserData{
-		ID:                qUser.ID,
-		Email:             qUser.Email,
-		GoogleUserID:      qUser.GoogleUserID,
-		MicrosoftUserID:   qUser.MicrosoftUserID,
-		GithubUserID:      qUser.GithubUserID,
-		IsOwner:           qUser.IsOwner,
-		DisplayName:       qUser.DisplayName,
-		ProfilePictureURL: qUser.ProfilePictureUrl,
-	}
-	event, err := auditlog.NewAuthLoginEvent(auditlog.AuthLoginEventData{
-		ProjectID:             qProject.ID,
-		OrganizationID:        qOrg.ID,
-		IntermediateSessionID: qIntermediateSession.ID,
-		SessionID:             qSession.ID,
-		User:                  userData,
-		PrimaryAuthFactor:     string(qSession.PrimaryAuthFactor),
-		Success:               true,
-	})
-	if err != nil {
-		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
-	} else if _, err := s.common.CreateAuditLogEvent(ctx, event); err != nil {
-		slog.ErrorContext(ctx, "create_audit_log_event", "event", event, "error", err)
-	}
-
 	if detailsUpdated {
-		var event auditlog.Event
-		if newUser {
-			event, err = auditlog.NewCreateUserEvent(auditlog.CreateUserEventData{
-				ProjectID: qProject.ID,
-				User:      userData,
-			})
-		} else {
-			event, err = auditlog.NewUpdateUserEvent(auditlog.UpdateUserEventData{
-				ProjectID:    qProject.ID,
-				PreviousUser: previousUserData,
-				User:         userData,
-			})
-		}
-		if err != nil {
-			slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
-		} else if _, err := s.common.CreateAuditLogEvent(ctx, event); err != nil {
-			slog.ErrorContext(ctx, "create_audit_log_event", "event", event, "error", err)
-		}
-
 		// Send sync user event
 		if err := s.sendSyncUserEvent(ctx, *qUser); err != nil {
 			return nil, fmt.Errorf("send sync user event: %w", err)

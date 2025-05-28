@@ -12,6 +12,7 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	svix "github.com/svix/svix-webhooks/go"
+	common "github.com/tesseral-labs/tesseral/internal/common/store"
 	"github.com/tesseral-labs/tesseral/internal/frontend/store/queries"
 	"github.com/tesseral-labs/tesseral/internal/hibp"
 	"github.com/tesseral-labs/tesseral/internal/pagetoken"
@@ -31,6 +32,7 @@ type Store struct {
 	sessionSigningKeyKmsKeyID             string
 	authenticatorAppSecretsKMSKeyID       string
 	svixClient                            *svix.Svix
+	common                                *common.Store
 }
 
 type NewStoreParams struct {
@@ -44,6 +46,7 @@ type NewStoreParams struct {
 	SessionSigningKeyKmsKeyID             string
 	AuthenticatorAppSecretsKMSKeyID       string
 	SvixClient                            *svix.Svix
+	CommonStore                           *common.Store
 }
 
 func New(p NewStoreParams) *Store {
@@ -61,6 +64,8 @@ func New(p NewStoreParams) *Store {
 		q:                                     queries.New(p.DB),
 		sessionSigningKeyKmsKeyID:             p.SessionSigningKeyKmsKeyID,
 		authenticatorAppSecretsKMSKeyID:       p.AuthenticatorAppSecretsKMSKeyID,
+		svixClient:                            p.SvixClient,
+		common:                                p.CommonStore,
 	}
 
 	return store
