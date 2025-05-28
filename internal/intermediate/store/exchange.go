@@ -236,6 +236,7 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 		IntermediateSessionID: qIntermediateSession.ID,
 		SessionID:             qSession.ID,
 		User:                  userData,
+		Factor:                string(*qIntermediateSession.PrimaryAuthFactor),
 		Success:               true,
 	})
 	if err != nil {

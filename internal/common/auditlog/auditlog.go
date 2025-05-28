@@ -119,12 +119,14 @@ type AuthLoginEventData struct {
 	IntermediateSessionID uuid.UUID
 	SessionID             uuid.UUID
 	User                  UserData
+	Factor                string
 	Success               bool
 }
 
 type authLoginEventDetails struct {
-	User                  userDetails `json:"user"`
 	IntermediateSessionID string      `json:"intermediate_session_id"`
+	User                  userDetails `json:"user"`
+	Factor                string      `json:"factor"`
 	Success               bool        `json:"success"`
 }
 
@@ -132,6 +134,7 @@ func (data AuthLoginEventData) details() authLoginEventDetails {
 	return authLoginEventDetails{
 		IntermediateSessionID: idformat.IntermediateSession.Format(data.IntermediateSessionID),
 		User:                  data.User.details(),
+		Factor:                data.Factor,
 		Success:               data.Success,
 	}
 }
