@@ -18,19 +18,37 @@ const (
 )
 
 type UserData struct {
-	ID    uuid.UUID
-	Email string
+	ID                uuid.UUID
+	Email             string
+	GoogleUserID      *string
+	MicrosoftUserID   *string
+	GithubUserID      *string
+	IsOwner           bool
+	DisplayName       *string
+	ProfilePictureURL *string
 }
 
 type userDetails struct {
-	ID    string `json:"id"`
-	Email string `json:"email"`
+	ID                string  `json:"id"`
+	Email             string  `json:"email"`
+	GoogleUserID      *string `json:"google_user_id"`
+	MicrosoftUserID   *string `json:"microsoft_user_id"`
+	GithubUserID      *string `json:"github_user_id"`
+	IsOwner           bool    `json:"is_owner"`
+	DisplayName       *string `json:"display_name"`
+	ProfilePictureURL *string `json:"profile_picture_url"`
 }
 
 func (data UserData) details() userDetails {
 	return userDetails{
-		ID:    idformat.User.Format(data.ID),
-		Email: data.Email,
+		ID:                idformat.User.Format(data.ID),
+		Email:             data.Email,
+		GoogleUserID:      data.GoogleUserID,
+		MicrosoftUserID:   data.MicrosoftUserID,
+		GithubUserID:      data.GithubUserID,
+		IsOwner:           data.IsOwner,
+		DisplayName:       data.DisplayName,
+		ProfilePictureURL: data.ProfilePictureURL,
 	}
 }
 
@@ -66,36 +84,26 @@ func NewCreateUserEvent(data CreateUserEventData) (Event, error) {
 	}, nil
 }
 
-type UserUpdate struct {
-	Email             string `json:"email,omitempty"`
-	GoogleUserID      string `json:"google_user_id,omitempty"`
-	MicrosoftUserID   string `json:"microsoft_user_id,omitempty"`
-	GithubUserID      string `json:"github_user_id,omitempty"`
-	IsOwner           *bool  `json:"is_owner,omitempty"`
-	DisplayName       string `json:"display_name,omitempty"`
-	ProfilePictureURL string `json:"profile_picture_url,omitempty"`
-}
-
 type UpdateUserEventData struct {
 	ProjectID      uuid.UUID
 	OrganizationID uuid.UUID
 
-	// The user updated.
+	// The user after the update.
 	User UserData
 
-	// The information updated for the user.
-	Update UserUpdate
+	// The user before the update.
+	PreviousUser UserData
 }
 
 type updateUserEventDetails struct {
-	User   userDetails `json:"user"`
-	Update UserUpdate  `json:"update"`
+	User         userDetails `json:"user"`
+	PreviousUser userDetails `json:"previous_user"`
 }
 
 func (data UpdateUserEventData) details() updateUserEventDetails {
 	return updateUserEventDetails{
-		User:   data.User.details(),
-		Update: data.Update,
+		User:         data.User.details(),
+		PreviousUser: data.PreviousUser.details(),
 	}
 }
 

@@ -70,9 +70,9 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 	}
 
 	var (
-		newUser                 = qUser == nil
-		detailsUpdated          = newUser
-		detailsUpdatedEventData auditlog.UserUpdate
+		newUser          = qUser == nil
+		detailsUpdated   = newUser
+		previousUserData auditlog.UserData
 	)
 
 	// if no matching user, create a new one
@@ -95,28 +95,25 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 
 		qUser = &qNewUser
 	} else {
-		if githubUserID := derefOrEmpty(qIntermediateSession.GithubUserID); githubUserID != "" && githubUserID != derefOrEmpty(qUser.GithubUserID) {
-			detailsUpdated = true
-			detailsUpdatedEventData.GithubUserID = githubUserID
-		}
-		if googleUserID := derefOrEmpty(qIntermediateSession.GoogleUserID); googleUserID != "" && googleUserID != derefOrEmpty(qUser.GoogleUserID) {
-			detailsUpdated = true
-			detailsUpdatedEventData.GoogleUserID = googleUserID
-		}
-		if microsoftUserID := derefOrEmpty(qIntermediateSession.MicrosoftUserID); microsoftUserID != "" && microsoftUserID != derefOrEmpty(qUser.MicrosoftUserID) {
-			detailsUpdated = true
-			detailsUpdatedEventData.MicrosoftUserID = microsoftUserID
-		}
-		if displayName := derefOrEmpty(qIntermediateSession.UserDisplayName); displayName != "" && displayName != derefOrEmpty(qUser.DisplayName) {
-			detailsUpdated = true
-			detailsUpdatedEventData.DisplayName = displayName
-		}
-		if profilePictureURL := derefOrEmpty(qIntermediateSession.ProfilePictureUrl); profilePictureURL != "" && profilePictureURL != derefOrEmpty(qUser.ProfilePictureUrl) {
-			detailsUpdated = true
-			detailsUpdatedEventData.ProfilePictureURL = profilePictureURL
-		}
+		detailsUpdated =
+			(qIntermediateSession.GithubUserID != nil && *qIntermediateSession.GithubUserID != derefOrEmpty(qUser.GithubUserID)) ||
+				(qIntermediateSession.GoogleUserID != nil && *qIntermediateSession.GoogleUserID != derefOrEmpty(qUser.GoogleUserID)) ||
+				(qIntermediateSession.MicrosoftUserID != nil && *qIntermediateSession.MicrosoftUserID != derefOrEmpty(qUser.MicrosoftUserID)) ||
+				(qIntermediateSession.UserDisplayName != nil && *qIntermediateSession.UserDisplayName != derefOrEmpty(qUser.DisplayName)) ||
+				(qIntermediateSession.ProfilePictureUrl != nil && *qIntermediateSession.ProfilePictureUrl != derefOrEmpty(qUser.ProfilePictureUrl))
 
 		if detailsUpdated {
+			previousUserData = auditlog.UserData{
+				ID:                qUser.ID,
+				Email:             qUser.Email,
+				GoogleUserID:      qUser.GoogleUserID,
+				MicrosoftUserID:   qUser.MicrosoftUserID,
+				GithubUserID:      qUser.GithubUserID,
+				IsOwner:           qUser.IsOwner,
+				DisplayName:       qUser.DisplayName,
+				ProfilePictureURL: qUser.ProfilePictureUrl,
+			}
+
 			slog.InfoContext(ctx, "update_user")
 			qUpdatedUser, err := q.UpdateUserDetails(ctx, queries.UpdateUserDetailsParams{
 				UserID:            qUser.ID,
@@ -227,8 +224,14 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 
 	// Create audit log event
 	userData := auditlog.UserData{
-		ID:    qUser.ID,
-		Email: qUser.Email,
+		ID:                qUser.ID,
+		Email:             qUser.Email,
+		GoogleUserID:      qUser.GoogleUserID,
+		MicrosoftUserID:   qUser.MicrosoftUserID,
+		GithubUserID:      qUser.GithubUserID,
+		IsOwner:           qUser.IsOwner,
+		DisplayName:       qUser.DisplayName,
+		ProfilePictureURL: qUser.ProfilePictureUrl,
 	}
 	event, err := auditlog.NewAuthLoginEvent(auditlog.AuthLoginEventData{
 		ProjectID:             qProject.ID,
@@ -254,9 +257,9 @@ func (s *Store) ExchangeIntermediateSessionForSession(ctx context.Context, req *
 			})
 		} else {
 			event, err = auditlog.NewUpdateUserEvent(auditlog.UpdateUserEventData{
-				ProjectID: qProject.ID,
-				User:      userData,
-				Update:    detailsUpdatedEventData,
+				ProjectID:    qProject.ID,
+				PreviousUser: previousUserData,
+				User:         userData,
 			})
 		}
 		if err != nil {

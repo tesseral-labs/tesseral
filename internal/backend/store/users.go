@@ -189,19 +189,16 @@ func (s *Store) UpdateUser(ctx context.Context, req *backendv1.UpdateUserRequest
 	}
 
 	var updates queries.UpdateUserParams
-	var updatesEventData auditlog.UserUpdate
 	updates.ID = userID
 
 	updates.Email = qUser.Email
 	if req.User.Email != "" {
 		updates.Email = req.User.Email
-		updatesEventData.Email = req.User.Email
 	}
 
 	updates.IsOwner = qUser.IsOwner
 	if req.User.Owner != nil {
 		updates.IsOwner = *req.User.Owner
-		updatesEventData.IsOwner = req.User.Owner
 	}
 
 	updates.GoogleUserID = qUser.GoogleUserID
@@ -209,31 +206,26 @@ func (s *Store) UpdateUser(ctx context.Context, req *backendv1.UpdateUserRequest
 		// if value was actively set to empty string, then reset value in
 		// database to null
 		updates.GoogleUserID = refOrNil(*req.User.GoogleUserId)
-		updatesEventData.GoogleUserID = *req.User.GoogleUserId
 	}
 
 	updates.MicrosoftUserID = qUser.MicrosoftUserID
 	if req.User.MicrosoftUserId != nil {
 		updates.MicrosoftUserID = refOrNil(*req.User.MicrosoftUserId)
-		updatesEventData.MicrosoftUserID = *req.User.MicrosoftUserId
 	}
 
 	updates.GithubUserID = qUser.GithubUserID
 	if req.User.GithubUserId != nil {
 		updates.GithubUserID = refOrNil(*req.User.GithubUserId)
-		updatesEventData.GithubUserID = *req.User.GithubUserId
 	}
 
 	updates.DisplayName = qUser.DisplayName
 	if req.User.DisplayName != nil {
 		updates.DisplayName = refOrNil(*req.User.DisplayName)
-		updatesEventData.DisplayName = *req.User.DisplayName
 	}
 
 	updates.ProfilePictureUrl = qUser.ProfilePictureUrl
 	if req.User.ProfilePictureUrl != nil {
 		updates.ProfilePictureUrl = refOrNil(*req.User.ProfilePictureUrl)
-		updatesEventData.ProfilePictureURL = *req.User.ProfilePictureUrl
 	}
 
 	qUpdatedUser, err := q.UpdateUser(ctx, updates)
@@ -249,11 +241,26 @@ func (s *Store) UpdateUser(ctx context.Context, req *backendv1.UpdateUserRequest
 	event, err := auditlog.NewUpdateUserEvent(auditlog.UpdateUserEventData{
 		ProjectID:      projectID,
 		OrganizationID: qUser.OrganizationID,
-		User: auditlog.UserData{
-			ID:    qUser.ID,
-			Email: qUser.Email,
+		PreviousUser: auditlog.UserData{
+			ID:                qUser.ID,
+			Email:             qUser.Email,
+			GoogleUserID:      qUser.GoogleUserID,
+			MicrosoftUserID:   qUser.MicrosoftUserID,
+			GithubUserID:      qUser.GithubUserID,
+			IsOwner:           qUser.IsOwner,
+			DisplayName:       qUser.DisplayName,
+			ProfilePictureURL: qUser.ProfilePictureUrl,
 		},
-		Update: updatesEventData,
+		User: auditlog.UserData{
+			ID:                qUpdatedUser.ID,
+			Email:             qUpdatedUser.Email,
+			GoogleUserID:      qUpdatedUser.GoogleUserID,
+			MicrosoftUserID:   qUpdatedUser.MicrosoftUserID,
+			GithubUserID:      qUpdatedUser.GithubUserID,
+			IsOwner:           qUpdatedUser.IsOwner,
+			DisplayName:       qUpdatedUser.DisplayName,
+			ProfilePictureURL: qUpdatedUser.ProfilePictureUrl,
+		},
 	})
 	if err != nil {
 		slog.ErrorContext(ctx, "create_audit_log_event", "error", err)
