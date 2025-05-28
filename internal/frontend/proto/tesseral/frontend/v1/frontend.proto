@@ -758,9 +758,6 @@ message ListAuditLogEventsRequest {
   // A page token, received from a previous `ListAuditLogEvents` call.
   string page_token = 2;
 
-  // The field to sort the results by.
-  string order_by = 3;
-
   // Filters for the results.
   message Filter {
     // The start time.
@@ -786,7 +783,7 @@ message ListAuditLogEventsRequest {
   //
   // May only be provided on the initial call. Subsequent page
   // requests will use the initial filter.
-  Filter filter = 4;
+  Filter filter = 3;
 }
 
 message ListAuditLogEventsResponse {

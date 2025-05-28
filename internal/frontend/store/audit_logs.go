@@ -3,7 +3,6 @@ package store
 import (
 	"context"
 	"fmt"
-	"slices"
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
@@ -93,17 +92,12 @@ func (s *Store) ListAuditLogEvents(ctx context.Context, req *frontendv1.ListAudi
 		}
 		wheres = append(wheres, sq.Eq{"api_key_id": apiKeyID[:]})
 	}
-	orderBy := []string{}
-	if req.OrderBy != "" {
-		orderBy = append(orderBy, req.OrderBy)
-	}
-	orderBy = append(orderBy, "id desc")
 
 	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 	query := psql.Select("*").
 		From("audit_log_events").
 		Where(sq.And(wheres)).
-		OrderBy(orderBy...).
+		OrderBy("id desc").
 		Limit(limit)
 
 	sql, args, err := query.ToSql()
@@ -139,11 +133,7 @@ func (s *Store) ListAuditLogEvents(ctx context.Context, req *frontendv1.ListAudi
 	var nextPageToken string
 	if len(results) == int(limit) {
 		last := results[len(results)-1]
-		if slices.Contains(orderBy, "id asc") {
-			filter.StartTime = last.EventTime
-		} else {
-			filter.EndTime = last.EventTime
-		}
+		filter.EndTime = last.EventTime
 		nextPageToken = s.pageEncoder.Marshal(filter)
 	}
 

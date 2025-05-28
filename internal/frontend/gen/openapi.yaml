@@ -258,11 +258,6 @@ paths:
                   description: A page token, received from a previous `ListAuditLogEvents` call.
                   schema:
                     type: string
-                - name: orderBy
-                  in: query
-                  description: The field to sort the results by.
-                  schema:
-                    type: string
                 - name: filter.startTime
                   in: query
                   description: The start time.

@@ -185,7 +185,6 @@ export function AuditLogEventsPage() {
   const [request, setRequest] = useState<ListAuditLogEventsRequest>({
     $typeName: "tesseral.frontend.v1.ListAuditLogEventsRequest",
     pageSize: PAGE_SIZE,
-    orderBy: "id desc",
     pageToken: "",
   });
   const [pageTokens, setPageTokens] = useState<string[]>([""]);
@@ -207,7 +206,6 @@ export function AuditLogEventsPage() {
         $typeName: "tesseral.frontend.v1.ListAuditLogEventsRequest",
         pageSize: PAGE_SIZE,
         filter: Object.keys(filter).length > 0 ? filter : undefined,
-        orderBy: orderBy,
         pageToken: "",
       });
       setPageTokens([""]); // Reset pagination on filter change
@@ -247,23 +245,6 @@ export function AuditLogEventsPage() {
     }
   };
 
-  const handleSort = (field: "id" | "event_name" | "user_id") => {
-    const currentOrderBy = request.orderBy ?? "id desc";
-    let newOrderBy: string;
-
-    if (currentOrderBy.startsWith(field)) {
-      newOrderBy = currentOrderBy.endsWith("desc")
-        ? `${field} asc`
-        : `${field} desc`;
-    } else {
-      newOrderBy = `${field} desc`; // Default to desc when changing field
-    }
-    console.warn(
-      `Sorting by ${newOrderBy}. Ensure your backend supports this.`,
-    );
-    handleApplyFilters(request.filter ?? makeFilter({}), newOrderBy);
-  };
-
   const renderActor = (event: AuditLogEvent) => {
     if (event.userId) {
       return event.userId;
@@ -272,16 +253,6 @@ export function AuditLogEventsPage() {
       return event.apiKeyId;
     }
     return <span className="text-muted-foreground">System</span>;
-  };
-
-  const getSortIndicator = (field: string) => {
-    const currentOrderBy = request.orderBy ?? "id desc";
-    if (currentOrderBy.startsWith(field)) {
-      return currentOrderBy.endsWith("desc") ? " ▼" : " ▲";
-    }
-    return (
-      <ArrowUpDown className="ml-2 h-3 w-3 inline-block opacity-30 group-hover:opacity-100" />
-    );
   };
 
   return (
@@ -296,19 +267,9 @@ export function AuditLogEventsPage() {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[40px]"></TableHead>
-                <TableHead
-                  className="cursor-pointer group"
-                  onClick={() => handleSort("event_name")}
-                >
-                  Event {getSortIndicator("event_name")}
-                </TableHead>
+                <TableHead className="group">Event</TableHead>
                 <TableHead>Actor</TableHead>
-                <TableHead
-                  className="cursor-pointer group"
-                  onClick={() => handleSort("id")}
-                >
-                  Time {getSortIndicator("id")}
-                </TableHead>
+                <TableHead className="group">Time ▼</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
